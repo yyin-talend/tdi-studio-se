@@ -828,7 +828,7 @@ public class Node extends Element implements INode {
             }
             if ((getCurrentActiveLinksNbInput(EConnectionType.FLOW_MAIN) == 0)
                     && (getCurrentActiveLinksNbInput(EConnectionType.FLOW_REF) > 0)) {
-                String errorMessage = "This component should have at least a link Row Main.";
+                String errorMessage = "This component should have at least a Row Main link.";
                 Problems.add(Problems.WARNING_STATUS, this, errorMessage);
             }
         }
