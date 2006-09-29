@@ -822,9 +822,13 @@ public class Node extends Element implements INode {
         // check not startable components not linked
         if (!(Boolean) getPropertyValue(EParameterName.STARTABLE.getName())) {
             if ((getCurrentActiveLinksNbInput(EConnectionType.FLOW_MAIN) == 0)
-                    && (getConnectorFromType(EConnectionType.FLOW_MAIN).getMinLinkInput() == 0))
-            {
+                    && (getConnectorFromType(EConnectionType.FLOW_MAIN).getMinLinkInput() == 0)) {
                 String errorMessage = "This component should have input link(s).";
+                Problems.add(Problems.WARNING_STATUS, this, errorMessage);
+            }
+            if ((getCurrentActiveLinksNbInput(EConnectionType.FLOW_MAIN) == 0)
+                    && (getCurrentActiveLinksNbInput(EConnectionType.FLOW_REF) > 0)) {
+                String errorMessage = "This component should have at least a link Row Main.";
                 Problems.add(Problems.WARNING_STATUS, this, errorMessage);
             }
         }
