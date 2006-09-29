@@ -1,0 +1,58 @@
+<%@ jet 
+	package="org.talend.designer.codegen.translators" 
+	imports="
+		org.talend.core.model.process.INode
+		org.talend.core.model.temp.ECodePart		
+		org.talend.core.model.process.IConnection 
+		org.talend.core.model.metadata.IMetadataTable 
+		org.talend.core.model.process.EConnectionType 
+		org.talend.core.model.process.IExternalNode
+                org.talend.core.model.process.ElementParameterParser
+		org.talend.designer.codegen.config.CodeGeneratorArgument
+		java.util.List
+	"
+	class="ComponentPartHeader" 
+%>
+<%
+	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+	INode node = (INode)codeGenArgument.getArgument();
+	ECodePart codePart = codeGenArgument.getCodePart();
+%>
+# +-------------------------------------------------------------------------+
+# | [<%=node.getUniqueName() %> <%=codePart %> ] starts here                |
+# +-------------------------------------------------------------------------+ 
+
+$current_component="<%=node.getUniqueName() %>";
+
+
+<%
+	if (codePart.equals(ECodePart.START)) {
+%>
+
+=head1 <%=ElementParameterParser.getValue(node, "__COMPONENT_NAME__") %> <%=node.getUniqueName() %>
+<%=ElementParameterParser.getValue(node, "__COMMENT__") %>
+=cut
+
+$_globals{<%=node.getUniqueName() %>}{OK} = false;
+<%
+	}
+
+	if (!(node instanceof IExternalNode)) {
+		if (codePart.equals(ECodePart.MAIN)) {
+			List<IMetadataTable> metadatas = node.getMetadataList();
+			if ((metadatas!=null)&&(metadatas.size()>0)) {
+				IMetadataTable metadata = metadatas.get(0);
+				if (metadata!=null) {
+					List< ? extends IConnection> conns = node.getIncomingConnections();
+					for (IConnection conn : conns) {
+						if (conn.getLineStyle().equals(EConnectionType.FLOW_MAIN)) {
+%>
+	my @<%=metadata.getTableName() %> = @<%=conn.getName() %>;
+<%
+						}
+					}
+        		}
+			}
+		}
+	}
+%>

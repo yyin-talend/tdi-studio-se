@@ -1,0 +1,94 @@
+<COMPONENT>
+   <HEADER NAME="tLog" ID="" DISPLAY_NAME="Log" PLATEFORM="ALL" SERIAL="" VERSION="0.101" STATUS="ALPHA" ICON="tLog32.ico" COMPATIBILITY="ALL" AUTHOR="talend" RELEASE_DATE="20050320A" FAMILY="GUI">
+      <SIGNATURE></SIGNATURE>
+   </HEADER>
+   <DISPLAY>
+      <POSITION LEFT="100" TOP="100" WIDTH="49" HEIGHT="49"/>
+      <LABEL FORMAT="label : __NAME__" VALUE="tLog" SHOW="true" DEFAULT=""/>
+      <HINT FORMAT="hint : __NAME__" VALUE="tLog" SHOW="false" DEFAULT=""/>
+   </DISPLAY>
+   <DOCUMENTATION>
+      <URL/>
+   </DOCUMENTATION>
+   <CODE LANGUAGE="Perl" LOCALISATION="INTERNAL" URI=".">
+      <VALUE/>
+      <CALL><![CDATA[
+my ($e_current_row) = (@_);
+my $mResult = &tLog(
+  Message  => __MESSAGE__,
+  Priority => __PRIORITY__,
+  Form     => __FORM__,
+  Crlf     => __CRLF__,
+  EachLine => __MOD__);
+    
+UpdateStat('__NAME__', 1);
+]]></CALL>
+   </CODE>
+   <CONNECTORS>
+      <CONNECTOR DIRECTION="IN" CTYPE="START" DISPLAY_NAME="Start">
+         <OTYPES>
+            <OTYPE>TFileDesc</OTYPE>
+         </OTYPES>
+      </CONNECTOR>
+      <CONNECTOR DIRECTION="OUT" CTYPE="BEFORE" DISPLAY_NAME="Before">
+         <OTYPES>
+            <OTYPE>TFileDesc</OTYPE>
+            <OTYPE>THashRow (FirstRow)</OTYPE>
+         </OTYPES>
+         <CONNECTIONS>
+            <TO COMPONENT_ID="AA" CTYPE="AA" OTYPE="AA"/>
+            <TO COMPONENT_ID="AA" CTYPE="AA" OTYPE="AA"/>
+            <FROM COMPONENT_ID="AA" CTYPE="AA" OTYPE="AA"/>
+            <FROM COMPONENT_ID="AA" CTYPE="AA" OTYPE="AA"/>
+         </CONNECTIONS>
+      </CONNECTOR>
+      <CONNECTOR DIRECTION="OUT" CTYPE="AFTER" DISPLAY_NAME="After">
+         <OTYPES>
+            <OTYPE>TFileDesc</OTYPE>
+            <OTYPE>THashRow (LastRow + RowNumber)</OTYPE>
+         </OTYPES>
+      </CONNECTOR>
+      <CONNECTOR DIRECTION="OUT" CTYPE="OK" DISPLAY_NAME="Ok">
+         <OTYPES>
+            <OTYPE>TFileDesc</OTYPE>
+            <OTYPE>THashRow (LastRow + RowNumber)</OTYPE>
+            <OTYPE>TErrorNumber</OTYPE>
+            <OTYPE>TErrorMessage</OTYPE>
+         </OTYPES>
+      </CONNECTOR>
+      <CONNECTOR DIRECTION="OUT" CTYPE="ERROR" DISPLAY_NAME="Error">
+         <OTYPES>
+            <OTYPE>TFileDesc</OTYPE>
+            <OTYPE>THashRow (LastRow + RowNumber)</OTYPE>
+            <OTYPE>TErrorNumber</OTYPE>
+            <OTYPE>TErrorMessage</OTYPE>
+         </OTYPES>
+      </CONNECTOR>
+   </CONNECTORS>
+   <PARAMETERS>
+      <PARAMETER NAME="MESSAGE" DISPLAY_NAME="Message" TYPE="INTEGER" FIELD="MEMO" SHOW="YES" REQUIRED="No" DEFAULT="''" READONLY="FALSE">
+         <VALUE>''</VALUE>
+      </PARAMETER>
+      <PARAMETER NAME="PRIORITY" DISPLAY_NAME="Priority" TYPE="INTEGER" FIELD="TEXT" SHOW="YES" REQUIRED="No" DEFAULT="10" READONLY="FALSE">
+         <VALUE>10</VALUE>
+      </PARAMETER>
+      <PARAMETER NAME="FORM" DISPLAY_NAME="Form" TYPE="INTEGER" FIELD="TEXT" SHOW="YES" REQUIRED="No" DEFAULT="'DATE'" READONLY="FALSE">
+         <VALUE>'DATE'</VALUE>
+      </PARAMETER>
+      <PARAMETER NAME="CRLF" DISPLAY_NAME="Line feed ?" TYPE="INTEGER" FIELD="CLOSED_LIST" SHOW="YES" REQUIRED="No" DEFAULT="Yes (1)" READONLY="FALSE">
+         <ITEMS>
+            <ITEM VALUE="Yes (1)" IID="1"/>
+            <ITEM VALUE="No (0)" IID="0"/>
+         </ITEMS>
+         <VALUE/>
+      </PARAMETER>
+      <PARAMETER NAME="MOD" DISPLAY_NAME="Log every # line ?" TYPE="INTEGER" FIELD="TEXT" SHOW="YES" REQUIRED="No" DEFAULT="1" READONLY="FALSE">
+         <VALUE/>
+      </PARAMETER>         
+   </PARAMETERS>
+   <RETURNS>
+      <RETURN NAME="LOOP_ID" DISPLAY_NAME="Loop Id" TYPE="STRING" AVAILABILITY="In Row" CODE="$gv{tFor}{Row}{id}"/>
+      <RETURN NAME="ERROR_CODE" DISPLAY_NAME="Error Code" TYPE="INTEGER" AVAILABILITY="After" CODE="$gv{tFor}{Error}{Code}"/>
+      <RETURN NAME="ERROR_MESSAGE" DISPLAY_NAME="Error Message" TYPE="STRING" AVAILABILITY="After" CODE="$gv{tFor}{Error}{Message}"/>
+   </RETURNS>
+</COMPONENT>

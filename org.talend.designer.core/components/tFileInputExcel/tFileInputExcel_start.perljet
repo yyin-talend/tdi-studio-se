@@ -1,0 +1,139 @@
+<%@ jet 
+	package="org.talend.designer.codegen.translators" 
+	imports="
+		org.talend.core.model.process.INode 
+		org.talend.core.model.process.ElementParameterParser 
+		org.talend.core.model.metadata.IMetadataTable 
+		org.talend.core.model.metadata.IMetadataColumn 
+		org.talend.designer.codegen.config.CodeGeneratorArgument
+		java.util.List
+	" 
+	class="FileInputExcelStart" 
+%>
+
+<%
+	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+	INode node = (INode)codeGenArgument.getArgument();
+	boolean stats = codeGenArgument.isStatistics();
+
+	List<IMetadataTable> metadatas = node.getMetadataList();
+	if ((metadatas!=null)&&(metadatas.size()>0)) {
+		IMetadataTable metadata = metadatas.get(0);
+		if (metadata!=null) {
+			// component id
+			String cid = metadata.getTableName();
+%>
+
+use FileHandle;
+use List::Util qw/min/;
+use Spreadsheet::ParseExcel;
+use talend::filesOp;
+
+my %desc_<%=cid%> = (
+    filename      => <%=ElementParameterParser.getValue(node, "__FILENAME__") %>,
+    sheetname     => <%=ElementParameterParser.getValue(node, "__SHEETNAME__") %>,
+    header        => <%=ElementParameterParser.getValue(node, "__HEADER__") %>,
+    footer        => <% String myFooter = ElementParameterParser.getValue(node, "__FOOTER__"); if (myFooter.equals("")) myFooter = null; %><%=myFooter%>,
+    limit         => <% String myLimit = ElementParameterParser.getValue(node, "__LIMIT__"); if (myLimit.equals("")) myLimit = null; %><%=myLimit%>,
+    first_column  => <% String myFirstColumn = ElementParameterParser.getValue(node, "__FIRST_COLUMN__"); if (myFirstColumn.equals("")) myFirstColumn = null; %><%=myFirstColumn%>,
+    last_column  => <% String myLastColumn = ElementParameterParser.getValue(node, "__LAST_COLUMN__"); if (myLastColumn.equals("")) myLastColumn = null; %><%=myLastColumn%>,
+    schema        => [
+    <%
+		for (IMetadataColumn column: metadata.getListColumns()) {
+    %>
+    	{
+            name    => '<%=column.getLabel() %>',
+            key     => <%=column.isKey() %>,
+            type    => '<%=column.getType() %>',
+            len     => <%=column.getLength() %>,
+            null    => <%=column.isNullable() %>,
+            default => '<%=column.getDefault() %>',
+            comment => '<%=column.getComment() %>',
+		},
+	<%
+		}
+    %>
+    ]
+);
+
+my $nb_fields_<%=cid%> = scalar @{ $desc_<%=cid%>{schema} };
+
+<%
+    if (stats) {
+%>
+    UpdateStat('<%=cid%>', 0);
+<%
+    }
+%>
+
+my $book_<%=cid%> =  Spreadsheet::ParseExcel::Workbook->Parse($desc_<%=cid%>{filename});
+
+my @worksheets = map { $_->{Name} } @{$book_<%=cid%>->{Worksheet}};
+
+if (not grep /^$desc_<%=cid%>{sheetname}$/, @worksheets) {
+    die(
+        sprintf(
+            'The worksheet "%s" does not exist in this Excel book, existing worksheets are {%s}',
+            $desc_<%=cid%>{sheetname},
+            join(
+                ',',
+                @worksheets
+            )
+        ),
+        "\n"
+    );
+}
+
+my $worksheet_<%=cid%> = $book_<%=cid%>->Worksheet($desc_<%=cid%>{sheetname});
+
+$nb_line_<%=cid%> = 0;
+
+my $total_line_<%=cid%> = $worksheet_<%=cid%>->{MaxRow} - $worksheet_<%=cid%>->{MinRow} + 1;
+
+my ($first_row_<%=cid%>, $last_row_<%=cid%>) = getFirstAndLastRowNumber(
+    header  => $worksheet_<%=cid%>->{MinRow} + $desc_<%=cid%>{header},
+    footer  => $desc_<%=cid%>{footer},
+    limit   => $desc_<%=cid%>{limit},
+    total   => $total_line_<%=cid%>,
+);
+
+my ($first_column_<%=cid%>, $last_column_<%=cid%>) =
+    ($worksheet_<%=cid%>->{MinCol}, $worksheet_<%=cid%>->{MaxCol});
+
+if (defined $desc_<%=cid%>{first_column}
+    and $desc_<%=cid%>{first_column} >= 1) {
+    $first_column_<%=cid%> = $desc_<%=cid%>{first_column} - 1;
+}
+
+if (defined $desc_<%=cid%>{last_column}
+    and $desc_<%=cid%>{last_column} < $worksheet_<%=cid%>->{MaxCol} + 1) {
+    $last_column_<%=cid%> = $desc_<%=cid%>{last_column} - 1;
+}
+
+for ($first_row_<%=cid%> .. $last_row_<%=cid%>) {
+    my $current_row = $_ - 1;
+    my @line_<%=cid%> = ();
+    $nb_line_<%=cid%>++;
+
+<%
+    if (stats) {
+%>
+    UpdateStat('<%=cid%>', 1);
+<%
+    }
+%>
+
+    for (my $current_column = $first_column_<%=cid%>;
+         $current_column <= $last_column_<%=cid%>;
+         $current_column++) {
+        my $current_cell = $worksheet_<%=cid%>->{Cells}[$current_row][$current_column];
+        push(@line_<%=cid%>, $current_cell->Value) if($current_cell);
+    }
+    $current_row++;
+
+    my @<%=cid%> = (@line_<%=cid%>)<% if (metadata.getListColumns().size()>0) { %>[0 .. $nb_fields_<%=cid%> - 1]<% } %>;
+
+<%
+		}
+	}
+%>

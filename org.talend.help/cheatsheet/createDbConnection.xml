@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cheatsheet title="Metadata DbConnection">
+		   <dependency task="prepareRepository" />
+  <intro>
+    <description>This tutorial guides you through the creation of metadata DbConnection on the repository.</description>
+  </intro>
+  <item title="Select the destination folder" skip="true">
+	  <description>On Repository, select a sub-folder of "Db Connection". By default, the metadata will be saved on the roots of "Db Connection".</description>
+  </item>  
+  <item title="Create a Metadata Db Connection" dialog="true">
+		  <action pluginId="org.talend.help"
+		  class="org.talend.help.cheatsheet.actions.metadata.CreateDbConnectionAction"
+		  param1="sampleMySql"
+		  param2="This is a sample to a metadata Db Connection"
+		  param3="MySql"
+		  param4="localhost"
+		  param5="3306"
+		  param6="database"
+		  param7="root" />
+	  <description>
+	  	Define the settings of this metadata Db Connection like we can see on the opening of this wizard. To this sample, we present the setting of a MySql database.
+	  	<br /><br/>Use the button "Check" as many time as you would and click on "Finish" (or press "Enter") to save it !
+	  </description>
+	  <onCompletion>
+	  	Congratulation, you can now create metadata Db Connection ! You must now define the metadata table of this.
+	  </onCompletion>
+  </item>
+
+</cheatsheet>

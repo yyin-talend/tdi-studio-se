@@ -1,0 +1,102 @@
+<%@ jet 
+	package="org.talend.designer.codegen.translators" 
+	imports="
+		org.talend.core.model.process.INode 
+		org.talend.core.model.process.ElementParameterParser 
+		org.talend.core.model.metadata.IMetadataTable 
+		org.talend.core.model.metadata.IMetadataColumn
+		org.talend.designer.codegen.config.CodeGeneratorArgument
+		java.util.List
+	" 
+	class="DBSQLRowStart" 
+%>
+
+<%
+	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+	INode node = (INode)codeGenArgument.getArgument();
+	boolean stats = codeGenArgument.isStatistics();
+	
+	List<IMetadataTable> metadatas = node.getMetadataList();
+	if ((metadatas!=null)&&(metadatas.size()>0)) {
+		IMetadataTable metadata = metadatas.get(0);
+		if (metadata!=null) {
+                        String cid = metadata.getTableName();
+
+                        String dbtypeDefinition = ElementParameterParser.getValue(node, "__TYPE__");
+                        String[] dbtypes = dbtypeDefinition.split(";");
+                        
+                        String perlDbtype   = dbtypes[0];
+                        String perlDriver   = dbtypes[1];
+%>
+
+use DBI;
+use talend::dbOp;
+
+my %desc_<%=cid %> = (
+    dbtype        => <%=perlDbtype %>,
+    driver        => <%=perlDriver %>,
+    dbhost        => <%=ElementParameterParser.getValue(node, "__HOST__") %>,
+    dbport        => <%=ElementParameterParser.getValue(node, "__PORT__") %>,
+    dbname        => <%=ElementParameterParser.getValue(node, "__DBNAME__") %>,
+    dbuser        => <%=ElementParameterParser.getValue(node, "__USER__") %>,
+    dbpass        => <%=ElementParameterParser.getValue(node, "__PASS__") %>,
+    encoding      => <%=ElementParameterParser.getValue(node, "__ENCODING__") %>,
+    query         => <%=ElementParameterParser.getValue(node, "__QUERY__") %>,
+    schema        => [
+    <%
+		for (IMetadataColumn column: metadata.getListColumns()) {
+    %>
+    	{
+            name    => '<%=column.getLabel() %>',
+            key     => <%=column.isKey() %>,
+            type    => '<%=column.getType() %>',
+            len     => <%=column.getLength() %>,
+            null    => <%=column.isNullable() %>,
+            default => '<%=column.getDefault() %>',
+            comment => '<%=column.getComment() %>',
+		},
+	<%
+		}
+    %>
+    ]
+);
+
+my $nb_fields_<%=cid %> = scalar @{ $desc_<%=cid %>{schema} };
+
+<%
+    if (stats) {
+%>
+    UpdateStat('<%=cid %>', 0);
+<%
+    }
+%>
+
+my $dbh_<%=cid %> = DBI->connect(
+    getConnectionString(
+        driver => $desc_<%=cid %>{driver},
+        dbname => $desc_<%=cid %>{dbname},
+        dbhost => $desc_<%=cid %>{dbhost},
+        dbport => $desc_<%=cid %>{dbport},
+    ),
+    $desc_<%=cid %>{dbuser},
+    $desc_<%=cid %>{dbpass},
+)
+    or die "can't connect to database";
+
+my $sth_<%=cid %>;
+
+if ($desc_<%=cid %>{dbtype} eq 'mysql'
+    and lc $desc_<%=cid %>{encoding} eq 'utf-8') {
+    my $query = '
+set names "UTF8"
+';
+    $sth_<%=cid %> = $dbh_<%=cid %>->prepare($query);
+    $sth_<%=cid %>->execute();
+    $sth_<%=cid %>->finish();
+}
+
+<%
+		}
+	}
+%>
+

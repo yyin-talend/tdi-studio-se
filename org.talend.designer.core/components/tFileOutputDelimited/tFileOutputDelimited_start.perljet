@@ -1,0 +1,71 @@
+<%@ jet 
+	package="org.talend.designer.codegen.translators" 
+	imports="
+		org.talend.core.model.process.INode 
+		org.talend.core.model.process.ElementParameterParser
+		org.talend.core.model.metadata.IMetadataTable
+        org.talend.core.model.metadata.IMetadataColumn
+		org.talend.designer.codegen.config.CodeGeneratorArgument
+		java.util.List
+	"
+	class="FileOutputDelimitedStart"
+%>
+
+<%
+	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+	INode node = (INode)codeGenArgument.getArgument();
+	boolean stats = codeGenArgument.isStatistics();
+	
+	List<IMetadataTable> metadatas = node.getMetadataList();
+	if ((metadatas!=null)&&(metadatas.size()>0)) {
+		IMetadataTable metadata = metadatas.get(0);
+		if (metadata!=null) {
+%>
+
+use FileHandle;
+
+my %desc_<%=metadata.getTableName() %> = (
+    filename => <%=ElementParameterParser.getValue(node, "__FILENAME__") %>,
+    field_separator => <%=ElementParameterParser.getValue(node, "__FIELDSEPARATOR__") %>,
+    row_separator => <%=ElementParameterParser.getValue(node, "__ROWSEPARATOR__") %>,
+    append => <%=ElementParameterParser.getValue(node, "__APPEND__") %>,
+    schema        => [
+    <%
+		for (IMetadataColumn column: metadata.getListColumns()) {
+    %>
+    	{
+            name    => '<%=column.getLabel() %>',
+            key     => <%=column.isKey() %>,
+            type    => '<%=column.getType() %>',
+            len     => <%=column.getLength() %>,
+            null    => <%=column.isNullable() %>,
+            default => '<%=column.getDefault() %>',
+            comment => '<%=column.getComment() %>',
+		},
+	<%
+		}
+    %>
+    ]
+);
+
+use constant OUTPUT_FIELD_SEPARATOR_<%=metadata.getTableName() %> => <%=ElementParameterParser.getValue(node, "__FIELDSEPARATOR__") %>;
+use constant OUTPUT_ROW_SEPARATOR_<%=metadata.getTableName() %> => <%=ElementParameterParser.getValue(node, "__ROWSEPARATOR__") %>;
+my $nb_fields_<%=metadata.getTableName() %> = scalar @{ $desc_<%=metadata.getTableName() %>{schema} };
+
+my $output_FH_<%=metadata.getTableName() %> = new FileHandle;
+
+my $mode;
+if ($desc_<%=metadata.getTableName() %>{append}) {
+    $mode = '>>';
+}
+else {
+    $mode = '>';
+}
+
+open($output_FH_<%=metadata.getTableName() %>, $mode, $desc_<%=metadata.getTableName() %>{filename})
+    or die 'cannot open file "' . $desc_<%=metadata.getTableName() %>{filename} . '"';
+
+<%
+		}
+	}
+%>

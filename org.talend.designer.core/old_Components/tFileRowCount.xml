@@ -1,0 +1,90 @@
+<COMPONENT>
+   <HEADER NAME="tFileRowCount" ID="" DISPLAY_NAME="File Row Count" PLATEFORM="ALL" SERIAL="" VERSION="0.101" STATUS="ALPHA" ICON="tFileRowCount32.ico" COMPATIBILITY="ALL" AUTHOR="talend" RELEASE_DATE="20050320A" FAMILY="File">
+      <SIGNATURE></SIGNATURE>
+   </HEADER>
+   <DISPLAY>
+      <POSITION LEFT="100" TOP="100" WIDTH="49" HEIGHT="49"/>
+      <LABEL FORMAT="label : __NAME__" VALUE="" SHOW="true" DEFAULT=""/>
+      <HINT FORMAT="hint : __NAME__" VALUE="" SHOW="false" DEFAULT=""/>
+   </DISPLAY>
+   <DOCUMENTATION>
+      <URL/>
+   </DOCUMENTATION>
+   <CODE LANGUAGE="Perl" LOCALISATION="INTERNAL" URI=".">
+      <VALUE/>
+      <CALL><![CDATA[
+my $mResult = &tFileRowCount(
+  Filename     => __FILENAME__,
+  RowSeparator => __ROWSEPARATOR__,
+  BufferSize   => __BUFFERSIZE__,
+  TFileDesc    => __TFILEDESC__);
+]]></CALL>
+   </CODE>
+   <CONNECTORS>
+      <CONNECTOR DIRECTION="IN" CTYPE="START" DISPLAY_NAME="Start">
+         <OTYPES>
+            <OTYPE>TFileDesc</OTYPE>
+         </OTYPES>
+      </CONNECTOR>
+      <CONNECTOR DIRECTION="OUT" CTYPE="BEFORE" DISPLAY_NAME="Before">
+         <OTYPES>
+            <OTYPE>TFileDesc</OTYPE>
+            <OTYPE>THashRow (FirstRow)</OTYPE>
+         </OTYPES>
+         <CONNECTIONS>
+            <TO COMPONENT_ID="AA" CTYPE="AA" OTYPE="AA"/>
+            <TO COMPONENT_ID="AA" CTYPE="AA" OTYPE="AA"/>
+            <FROM COMPONENT_ID="AA" CTYPE="AA" OTYPE="AA"/>
+            <FROM COMPONENT_ID="AA" CTYPE="AA" OTYPE="AA"/>
+         </CONNECTIONS>
+      </CONNECTOR>
+      <CONNECTOR DIRECTION="OUT" CTYPE="AFTER" DISPLAY_NAME="After">
+         <OTYPES>
+            <OTYPE>TFileDesc</OTYPE>
+            <OTYPE>THashRow (LastRow + RowNumber)</OTYPE>
+         </OTYPES>
+      </CONNECTOR>
+      <CONNECTOR DIRECTION="OUT" CTYPE="OK" DISPLAY_NAME="Ok">
+         <OTYPES>
+            <OTYPE>TFileDesc</OTYPE>
+            <OTYPE>THashRow (LastRow + RowNumber)</OTYPE>
+            <OTYPE>TErrorNumber</OTYPE>
+            <OTYPE>TErrorMessage</OTYPE>
+         </OTYPES>
+      </CONNECTOR>
+      <CONNECTOR DIRECTION="OUT" CTYPE="ERROR" DISPLAY_NAME="Error">
+         <OTYPES>
+            <OTYPE>TFileDesc</OTYPE>
+            <OTYPE>THashRow (LastRow + RowNumber)</OTYPE>
+            <OTYPE>TErrorNumber</OTYPE>
+            <OTYPE>TErrorMessage</OTYPE>
+         </OTYPES>
+      </CONNECTOR>
+   </CONNECTORS>
+   <PARAMETERS>
+      <PARAMETER NAME="FILENAME" DISPLAY_NAME="File Name" TYPE="STRING" FIELD="TEXT" SHOW="YES" REQUIRED="No" DEFAULT="'c:\talendStudio\input\bcpdemo.csv'" READONLY="FALSE">
+         <VALUE/>
+      </PARAMETER>
+      <PARAMETER NAME="ROWSEPARATOR" DISPLAY_NAME="Row Separator" TYPE="STRING" FIELD="TEXT" SHOW="YES" REQUIRED="No" DEFAULT="'\n'" READONLY="FALSE">
+         <VALUE>''</VALUE>
+      </PARAMETER>
+      <PARAMETER NAME="BUFFERSIZE" DISPLAY_NAME="Buffer Size" TYPE="STRING" FIELD="CLOSED_LIST" SHOW="YES" REQUIRED="No" DEFAULT="8192">
+         <VALUE>8192</VALUE>
+         <ITEMS>
+            <ITEM VALUE="1024" IID="1024"/>
+            <ITEM VALUE="2048" IID="2048"/>
+            <ITEM VALUE="4096" IID="4096"/>
+            <ITEM VALUE="8192" IID="8192"/>
+            <ITEM VALUE="16384" IID="16384"/>
+         </ITEMS>
+      </PARAMETER>
+      <PARAMETER NAME="TFILEDESC" DISPLAY_NAME="TFile Descriptor" TYPE="STRING" FIELD="TEXT" SHOW="YES" REQUIRED="No" DEFAULT="undef" READONLY="TRUE">
+         <VALUE>''</VALUE>
+      </PARAMETER>
+   </PARAMETERS>
+   <RETURNS>
+      <RETURN NAME="FILEROWCOUNT" DISPLAY_NAME="Number of row in the file" TYPE="STRING" AVAILABILITY="After" CODE="$gv{tFileRowCount}{Count}"/>
+      <RETURN NAME="ERROR_CODE" DISPLAY_NAME="Error Code" TYPE="INTEGER" AVAILABILITY="After" CODE="$gv{tFileRowCount}{Error}{Code}"/>
+      <RETURN NAME="ERROR_MESSAGE" DISPLAY_NAME="Error Message" TYPE="STRING" AVAILABILITY="After" CODE="$gv{tFileRowCount}{Error}{Message}"/>
+   </RETURNS>
+</COMPONENT>

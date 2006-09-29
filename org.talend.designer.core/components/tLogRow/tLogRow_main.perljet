@@ -1,0 +1,42 @@
+<%@ jet
+	package="org.talend.designer.codegen.translators" 
+	imports="
+		org.talend.core.model.process.INode 
+		org.talend.core.model.metadata.IMetadataTable 
+		org.talend.designer.codegen.config.CodeGeneratorArgument
+		java.util.List
+	"
+	class="LogRowMain"
+%>
+
+<%
+	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+	INode node = (INode)codeGenArgument.getArgument();
+	boolean stats = codeGenArgument.isStatistics();
+	
+	List<IMetadataTable> metadatas = node.getMetadataList();
+	if ((metadatas!=null)&&(metadatas.size()>0)) {
+		IMetadataTable metadata = metadatas.get(0);
+		if (metadata!=null) {
+%>
+
+if (@<%=metadata.getTableName() %>) {
+    print STDOUT (
+	    join(OUTPUT_FIELD_SEPARATOR_<%=metadata.getTableName() %>, @<%=metadata.getTableName() %>),
+	    "\n"
+    )
+        or die "can't print to STDOUT\n";
+
+<%
+    if (stats) {
+%>
+    UpdateStat('<%=metadata.getTableName() %>', 1);
+<%
+    }
+%>
+}
+    
+<%
+		}
+	}
+%>

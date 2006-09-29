@@ -1,0 +1,102 @@
+// ============================================================================
+//
+// Talend Community Edition
+//
+// Copyright (C) 2006 Talend - www.talend.com
+//
+// This library is free software; you can redistribute it and/or
+// modify it under the terms of the GNU Lesser General Public
+// License as published by the Free Software Foundation; either
+// version 2.1 of the License, or (at your option) any later version.
+//
+// This library is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+// Lesser General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program; if not, write to the Free Software
+// Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+//
+// ============================================================================
+package org.talend.repository.ui.actions.documentation;
+
+import java.io.File;
+import java.io.IOException;
+
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.FileDialog;
+import org.talend.commons.exception.MessageBoxExceptionHandler;
+import org.talend.core.model.properties.DocumentationItem;
+import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.core.ui.ImageProvider;
+import org.talend.core.ui.ImageProvider.EImage;
+import org.talend.repository.model.RepositoryNode;
+import org.talend.repository.model.RepositoryNode.ENodeType;
+import org.talend.repository.ui.actions.AContextualAction;
+
+/**
+ * Saves the content of a document on the local file system. <br/>
+ * 
+ * $Id$
+ * 
+ */
+public class ExtractDocumentationAction extends AContextualAction {
+
+    /**
+     * Constructs a new ExtractDocumentationAction.
+     */
+    public ExtractDocumentationAction() {
+        super();
+
+        setText("Save as...");
+        setToolTipText("Extract documentation to the file system");
+        setImageDescriptor(ImageProvider.getImageDesc(EImage.DOCUMENTATION_ICON));
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.repository.ui.actions.ITreeContextualAction#init(org.eclipse.jface.viewers.TreeViewer,
+     * org.eclipse.jface.viewers.IStructuredSelection)
+     */
+    public void init(TreeViewer viewer, IStructuredSelection selection) {
+        boolean canWork = !selection.isEmpty() && selection.size() == 1;
+        if (canWork) {
+            RepositoryNode node = (RepositoryNode) selection.getFirstElement();
+            canWork = node.getType() == ENodeType.REPOSITORY_ELEMENT
+                    && node.getObject().getType() == ERepositoryObjectType.DOCUMENTATION;
+        }
+        setEnabled(canWork);
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.jface.action.Action#run()
+     */
+    public void run() {
+        RepositoryNode node = (RepositoryNode) ((IStructuredSelection) getSelection()).getFirstElement();
+        DocumentationItem documentationItem = (DocumentationItem) node.getObject().getProperty().getItem();
+
+        FileDialog fileDlg = new FileDialog(Display.getCurrent().getActiveShell(), SWT.SAVE);
+        String initialFileName = documentationItem.getName();
+        if (documentationItem.getExtension() != null) {
+            initialFileName = initialFileName + "." + documentationItem.getExtension();
+        }
+        fileDlg.setFileName(initialFileName);
+        String filename = fileDlg.open();
+        if (filename != null) {
+            File file = new File(filename);
+            try {
+                documentationItem.getContent().setInnerContentToFile(file);
+            } catch (IOException ioe) {
+                MessageBoxExceptionHandler.process(ioe);
+            }
+        }
+    }
+
+}

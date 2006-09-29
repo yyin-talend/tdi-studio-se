@@ -1,0 +1,165 @@
+// ============================================================================
+//
+// Talend Community Edition
+//
+// Copyright (C) 2006 Talend - www.talend.com
+//
+// This library is free software; you can redistribute it and/or
+// modify it under the terms of the GNU Lesser General Public
+// License as published by the Free Software Foundation; either
+// version 2.1 of the License, or (at your option) any later version.
+//
+// This library is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+// Lesser General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program; if not, write to the Free Software
+// Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+//
+// ============================================================================
+package org.talend.designer.core.ui.editor.connections;
+
+import java.util.List;
+
+import org.eclipse.draw2d.geometry.Point;
+import org.talend.core.model.process.IElementParameter;
+import org.talend.designer.core.ui.editor.Element;
+
+/**
+ * Label object of a connection. This is the model part of the Gef item. <br/>
+ * 
+ * $Id$
+ * 
+ */
+public class ConnectionLabel extends Element {
+
+    private static final int MAX_DISTANCE = 50;
+
+    private String labelText = ""; //$NON-NLS-1$
+
+    private Point offset = new Point();
+
+    private Connection parent = null;
+
+    /**
+     * Create a new label for a connection with a given label, position and connection.
+     * 
+     * @param labelText
+     * @param position (can be either start, end or center)
+     * @param parent
+     */
+    public ConnectionLabel(String labelText, Connection parent) {
+        this.labelText = labelText;
+        this.parent = parent;
+    }
+
+    /**
+     * Set the text of the label.
+     * 
+     * @param labelText
+     */
+    public void setLabelText(String labelText) {
+        this.labelText = labelText;
+        firePropertyChange("textChange", null, null); //$NON-NLS-1$
+    }
+
+    /**
+     * Get the text of the label.
+     * 
+     * @return label
+     */
+    public String getLabelText() {
+        return labelText;
+    }
+
+    /**
+     * Get the connection parent of the label.
+     * 
+     * @return Connection
+     */
+    public Connection getConnection() {
+        return parent;
+    }
+
+    /**
+     * Set the offset for the label. The offset is linked to the position of the label. The offset will be limited to a
+     * distance maximum to avoid to have a label too far away from the connection.
+     * 
+     * @param offset Point
+     */
+    public void setOffset(Point offset) {
+        if (offset.x > MAX_DISTANCE) {
+            this.offset.x = MAX_DISTANCE;
+        } else {
+            if (offset.x < -MAX_DISTANCE) {
+                this.offset.x = -MAX_DISTANCE;
+            } else {
+                this.offset.x = offset.x;
+            }
+        }
+
+        if (offset.y > MAX_DISTANCE) {
+            this.offset.y = MAX_DISTANCE;
+        } else {
+            if (offset.y < -MAX_DISTANCE) {
+                this.offset.y = -MAX_DISTANCE;
+            } else {
+                this.offset.y = offset.y;
+            }
+        }
+        firePropertyChange("positionChange", null, null); //$NON-NLS-1$
+    }
+
+    /**
+     * Return the offset of the label.
+     * 
+     * @return
+     */
+    public Point getOffset() {
+        return offset;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.core.ui.editor.Element#setPropertyValue(java.lang.Object, java.lang.Object)
+     */
+    public void setPropertyValue(String id, Object value) {
+        parent.setPropertyValue(id, value);
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.core.ui.editor.Element#getPropertyValue(java.lang.Object)
+     */
+    public Object getPropertyValue(String id) {
+        return parent.getPropertyValue(id);
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.core.ui.editor.Element#getElementName()
+     */
+    @Override
+    public String getElementName() {
+        return parent.getElementName();
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.core.ui.editor.Element#getElementParameters()
+     */
+    @Override
+    public List<? extends IElementParameter> getElementParameters() {
+        return parent.getElementParameters();
+    }
+
+    public IElementParameter getElementParameter(String name) {
+        return parent.getElementParameter(name);
+    }
+}

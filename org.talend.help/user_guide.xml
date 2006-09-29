@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?NLS TYPE="org.eclipse.help.toc"?>
+
+<toc label="Talend Open Studio - User Guide">
+    <topic label="Tutorial" href="http://www.talend.com/beta/training/tutorials/index.html" />
+    <topic label="Components">
+        <topic label="DBInput" href="guide/components/DBInput.html"/>
+        <topic label="DBOutput" href="guide/components/DBOutput.html"/>
+        <topic label="FileInputCSV" href="guide/components/FileInputCSV.html"/>
+        <topic label="FileInputDelimited" href="guide/components/FileInputDelimited.html"/>
+        <topic label="FileInputRegex" href="guide/components/FileInputRegex.html"/>
+        <topic label="FileList" href="guide/components/FileList.html"/>
+        <topic label="FileOutputDelimited" href="guide/components/FileOutputDelimited.html"/>
+        <topic label="FileOutputXML" href="guide/components/FileOutputXML.html"/>
+        <topic label="FTP" href="guide/components/FTP.html"/>
+        <topic label="Hash" href="guide/components/Hash.html"/>
+        <topic label="LogRow" href="guide/components/LogRow.html"/>
+        <topic label="Mapper" href="guide/components/Mapper.html"/>
+        <topic label="MsgBox" href="guide/components/MsgBox.html"/>
+        <topic label="Perl" href="guide/components/Perl.html"/>
+        <topic label="PerlRow" href="guide/components/PerlRow.html"/>
+        <topic label="SendMail" href="guide/components/SendMail.html"/>
+        <topic label="System" href="guide/components/System.html"/>
+    </topic> 
+</toc>

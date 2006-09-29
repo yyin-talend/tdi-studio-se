@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Help Plug-in
+Bundle-SymbolicName: org.talend.help; singleton:=true
+Bundle-Version: 0.9.0.qualifier
+Bundle-Activator: org.talend.help.Activator
+Bundle-Vendor: .Talend SA.
+Bundle-Localization: plugin
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime
+Eclipse-LazyStart: true

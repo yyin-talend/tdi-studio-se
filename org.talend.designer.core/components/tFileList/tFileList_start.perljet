@@ -1,0 +1,43 @@
+<%@ jet 
+	package="org.talend.designer.codegen.translators" 
+	imports="
+		org.talend.core.model.process.INode 
+		org.talend.core.model.process.ElementParameterParser 
+		org.talend.core.model.metadata.IMetadataTable 
+		org.talend.core.model.metadata.IMetadataColumn 
+		org.talend.designer.codegen.config.CodeGeneratorArgument
+		java.util.List
+	" 
+	class="FileListStart" 
+%>
+
+<%
+	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+	INode node = (INode)codeGenArgument.getArgument();
+	boolean stats = codeGenArgument.isStatistics();
+	
+	List<IMetadataTable> metadatas = node.getMetadataList();
+	if ((metadatas!=null)&&(metadatas.size()>0)) {
+		IMetadataTable metadata = metadatas.get(0);
+		if (metadata!=null) {
+%>
+
+use File::Basename;
+use talend::filesOp;
+use talend::misc;
+
+my @files = getFileList(
+        directory      => <%=ElementParameterParser.getValue(node, "__DIRECTORY__") %>,
+        filemask       => filemaskToRegex(<%=ElementParameterParser.getValue(node, "__FILEMASK__") %>),
+        case_sensitive => <%=ElementParameterParser.getValue(node, "__CASE_SENSITIVE__") %>,
+    );
+
+for my $filename (@files) {
+
+    $_globals{<%=metadata.getTableName() %>}{CURRENT_FILE} = basename($filename);
+    $_globals{<%=metadata.getTableName() %>}{CURRENT_FILEPATH} = <%=ElementParameterParser.getValue(node, "__DIRECTORY__") %>.'/'.$filename;
+
+<%
+		}
+	}
+%>

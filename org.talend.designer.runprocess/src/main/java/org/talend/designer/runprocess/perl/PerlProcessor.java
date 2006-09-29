@@ -1,0 +1,407 @@
+// ============================================================================
+//
+// Talend Community Edition
+//
+// Copyright (C) 2006 Talend - www.talend.com
+//
+// This library is free software; you can redistribute it and/or
+// modify it under the terms of the GNU Lesser General Public
+// License as published by the Free Software Foundation; either
+// version 2.1 of the License, or (at your option) any later version.
+//
+// This library is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+// Lesser General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program; if not, write to the Free Software
+// Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+//
+// ============================================================================
+package org.talend.designer.runprocess.perl;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.LineNumberReader;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IMarker;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IWorkspaceRoot;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.IExtensionRegistry;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.debug.core.DebugPlugin;
+import org.eclipse.debug.core.IBreakpointManager;
+import org.eclipse.debug.core.model.IBreakpoint;
+import org.eclipse.jface.preference.IPreferenceStore;
+import org.talend.commons.exception.PersistenceException;
+import org.talend.core.CorePlugin;
+import org.talend.core.context.Context;
+import org.talend.core.context.RepositoryContext;
+import org.talend.core.model.general.Project;
+import org.talend.core.model.process.IContext;
+import org.talend.core.model.process.INode;
+import org.talend.core.model.process.IProcess;
+import org.talend.core.model.properties.RoutineItem;
+import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.core.prefs.ITalendCorePrefConstants;
+import org.talend.designer.codegen.CodeGenerator;
+import org.talend.designer.codegen.exception.CodeGeneratorException;
+import org.talend.designer.runprocess.ProcessorException;
+import org.talend.designer.runprocess.RunProcessPlugin;
+import org.talend.designer.runprocess.i18n.Messages;
+import org.talend.repository.model.IRepositoryFactory;
+import org.talend.repository.model.RepositoryFactoryProvider;
+
+/**
+ * DOC chuger class global comment. Detailled comment <br/>
+ * 
+ * $Id$
+ * 
+ */
+public class PerlProcessor {
+
+    /** Process to be turned in PERL code. */
+    private IProcess process;
+
+    /** Perl project. */
+    private IProject perlProject;
+
+    /** Path to generated perl code. */
+    private IPath codePath;
+
+    /** Path to generated context code. */
+    private IPath contextPath;
+
+    /** Tells if filename is based on id or label of the process. */
+    private boolean filenameFromLabel;
+
+    /**
+     * Constructs a new PerlProcessor.
+     * 
+     * @param process Process to be turned in PERL code.
+     * @param filenameFromLabel Tells if filename is based on id or label of the process.
+     */
+    public PerlProcessor(IProcess process, boolean filenameFromLabel) {
+        super();
+
+        this.process = process;
+        this.filenameFromLabel = filenameFromLabel;
+    }
+
+    public void initPaths(IContext context) throws ProcessorException {
+        try {
+            perlProject = PerlUtils.getProject();
+        } catch (CoreException e1) {
+            throw new ProcessorException("Perl project not found.");
+        }
+        RepositoryContext repositoryContext = (RepositoryContext) CorePlugin.getContext().getProperty(
+                Context.REPOSITORY_CONTEXT_KEY);
+        Project project = repositoryContext.getProject();
+        String filePrefix = project.getTechnicalLabel() + ".";
+        filePrefix += Messages.getString("Processor.fileSuffix"); //$NON-NLS-1$
+        filePrefix += filenameFromLabel ? escapeFilename(process.getLabel()) : process.getId();
+        codePath = new Path(filePrefix + Messages.getString("Processor.perlExt")); //$NON-NLS-1$
+        contextPath = new Path(filePrefix
+                + "_" + escapeFilename(context.getName()) + Messages.getString("Processor.perlExt")); //$NON-NLS-1$ //$NON-NLS-2$
+    }
+
+    public void generateCode(IContext context, boolean statistics, boolean trace, boolean perlProperties)
+            throws ProcessorException {
+        initPaths(context);
+        try {
+            RepositoryContext repositoryContext = (RepositoryContext) CorePlugin.getContext().getProperty(
+                    Context.REPOSITORY_CONTEXT_KEY);
+            Project project = repositoryContext.getProject();
+            retrieveRoutines(project);
+
+            CodeGenerator codeGen;
+            if (perlProperties) {
+                String perlInterpreter = getPerlInterpreter();
+                String perlLib = getPerlLib();
+                String currentPerlProject = project.getTechnicalLabel();
+                String perlContext = getPerlContext();
+                codeGen = new CodeGenerator(process, statistics, trace, perlInterpreter, perlLib, perlContext,
+                        currentPerlProject);
+            } else {
+                codeGen = new CodeGenerator(process, statistics, trace);
+            }
+
+            String processCode = "";
+            String processContext = "";
+            try {
+                processCode = codeGen.generateProcessCode();
+                processContext = codeGen.generateContextCode(context);
+            } catch (CodeGeneratorException e) {
+                throw new ProcessorException(Messages.getString("Processor.generationFailed"), e); //$NON-NLS-1$
+            }
+
+            // Generating files
+            IFile codeFile = perlProject.getFile(codePath);
+            InputStream codeStream = new ByteArrayInputStream(processCode.getBytes());
+            if (!codeFile.exists()) {
+                codeFile.create(codeStream, true, null);
+            } else {
+                codeFile.setContents(codeStream, true, false, null);
+            }
+
+            // Set Breakpoints in generated code file
+            List<INode> breakpointNodes = CorePlugin.getContext().getBreakpointNodes(process);
+            if (!breakpointNodes.isEmpty()) {
+                String[] nodeNames = new String[breakpointNodes.size()];
+                int pos = 0;
+                for (INode node : breakpointNodes) {
+                    nodeNames[pos++] = node.getUniqueName();
+                }
+                int[] lineNumbers = getLineNumbers(codeFile, nodeNames);
+                setBreakpoints(codeFile, lineNumbers);
+            }
+
+            IFile contextFile = perlProject.getFile(contextPath);
+            InputStream contextStream = new ByteArrayInputStream(processContext.getBytes());
+            if (!contextFile.exists()) {
+                contextFile.create(contextStream, true, null);
+            } else {
+                contextFile.setContents(contextStream, true, false, null);
+            }
+
+            retrieveRoutines(project);
+        } catch (CoreException e1) {
+            throw new ProcessorException(Messages.getString("Processor.tempFailed"), e1); //$NON-NLS-1$
+        } catch (PersistenceException pe) {
+            throw new ProcessorException(Messages.getString("Processor.tempFailed"), pe); //$NON-NLS-1$
+        }
+    }
+
+    /**
+     * DOC mhirt Comment method "getPerlContext".
+     * 
+     * @return
+     */
+    public String getPerlContext() {
+        return getPerlProject().getLocation().append(getContextPath()).removeLastSegments(1).toOSString();
+    }
+
+    /**
+     * DOC mhirt Comment method "getPerlLib".
+     * 
+     * @throws ProcessorException
+     */
+    public static String getPerlLib() throws ProcessorException {
+        String perlLib;
+        try {
+            perlLib = PerlUtils.getPerlModulePath().toOSString();
+        } catch (CoreException e) {
+            throw new ProcessorException(Messages.getString("Processor.perlModuleNotFound")); //$NON-NLS-1$
+        }
+        return perlLib;
+    }
+
+    /**
+     * DOC mhirt Comment method "getPerlInterpreter".
+     * 
+     * @throws ProcessorException
+     */
+    public static String getPerlInterpreter() throws ProcessorException {
+        IPreferenceStore prefStore = CorePlugin.getDefault().getPreferenceStore();
+        String perlInterpreter = prefStore.getString(ITalendCorePrefConstants.PERL_INTERPRETER);
+        if (perlInterpreter == null || perlInterpreter.length() == 0) {
+            throw new ProcessorException(Messages.getString("Processor.configurePerl")); //$NON-NLS-1$
+        }
+        return perlInterpreter;
+    }
+
+    private String escapeFilename(final String filename) {
+        return filename != null ? filename.replace(" ", "") : ""; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+    }
+
+    /**
+     * Getter for codePath.
+     * 
+     * @return the codePath
+     */
+    public IPath getCodePath() {
+        return this.codePath;
+    }
+
+    /**
+     * Getter for contextPath.
+     * 
+     * @return the contextPath
+     */
+    public IPath getContextPath() {
+        return this.contextPath;
+    }
+
+    /**
+     * Getter for perlProject.
+     * 
+     * @return the perlProject
+     */
+    public IProject getPerlProject() {
+        return this.perlProject;
+    }
+
+    /**
+     * Find line numbers of the beginning of the code of process nodes.
+     * 
+     * @param file Code file where we are searching node's code.
+     * @param nodes List of nodes searched.
+     * @return Line numbers where code of nodes appears.
+     * @throws CoreException Search failed.
+     */
+    private static int[] getLineNumbers(IFile file, String[] nodes) throws CoreException {
+        List<Integer> lineNumbers = new ArrayList<Integer>();
+
+        // List of code's lines searched in the file
+        List<String> searchedLines = new ArrayList<String>();
+        for (String node : nodes) {
+            searchedLines.add("[" + node + " main ] starts here");
+        }
+
+        LineNumberReader lineReader = new LineNumberReader(new InputStreamReader(file.getContents()));
+        try {
+            String line = lineReader.readLine();
+            while (!searchedLines.isEmpty() && line != null) {
+                boolean nodeFound = false;
+                for (Iterator<String> i = searchedLines.iterator(); !nodeFound && i.hasNext();) {
+                    String nodeMain = i.next();
+                    if (line.indexOf(nodeMain) != -1) {
+                        nodeFound = true;
+                        i.remove();
+
+                        // Search the first valid code line
+                        boolean lineCodeFound = false;
+                        line = lineReader.readLine();
+                        while (line != null && !lineCodeFound) {
+                            if (isCodeLine(line)) {
+                                lineCodeFound = true;
+                                lineNumbers.add(new Integer(lineReader.getLineNumber()));
+                            }
+                            line = lineReader.readLine();
+                        }
+                    }
+                }
+                line = lineReader.readLine();
+            }
+        } catch (IOException ioe) {
+            IStatus status = new Status(IStatus.ERROR, "", IStatus.OK, "Source code read failure.", ioe);
+            throw new CoreException(status);
+        }
+
+        int[] res = new int[lineNumbers.size()];
+        int pos = 0;
+        for (Integer i : lineNumbers) {
+            res[pos++] = i.intValue();
+        }
+        return res;
+    }
+
+    /**
+     * Return line number where stands specific node in code generated.
+     * 
+     * @param nodeName
+     */
+    public int getLineNumber(String nodeName) {
+        IFile codeFile = perlProject.getFile(codePath);
+        int[] lineNumbers = new int[] { 0 };
+        try {
+            lineNumbers = PerlProcessor.getLineNumbers(codeFile, new String[] { nodeName });
+        } catch (CoreException e) {
+            e.printStackTrace();
+        }
+        return lineNumbers[0];
+
+    }
+
+    /**
+     * Tells if a line is a line of perl code, not an empty or comment line.
+     * 
+     * @param line The tested line of code.
+     * @return true if the line is a line of code.
+     */
+    private static boolean isCodeLine(String line) {
+        String trimed = line.trim();
+        return trimed.length() > 0 && trimed.charAt(0) != '#';
+    }
+
+    /**
+     * Set perl breakpoints on a perl file.
+     * 
+     * @param codeFile Perl file in wich breakpoints are added.
+     * @param lineNumbers Line numbers in the source file where breakpoints are installed.
+     * @throws CoreException Breakpoint addition failed.
+     */
+    private static void setBreakpoints(IFile codeFile, int[] lineNumbers) throws CoreException {
+        final String perlBrekPointMarker = "org.epic.debug.perlLineBreakpointMarker";
+        codeFile.deleteMarkers(perlBrekPointMarker, true, IResource.DEPTH_ZERO);
+
+        IExtensionRegistry registry = Platform.getExtensionRegistry();
+        IConfigurationElement[] configElems = registry
+                .getConfigurationElementsFor("org.eclipse.debug.core.breakpoints");
+        IConfigurationElement perlBreakConfigElem = null;
+        for (IConfigurationElement elem : configElems) {
+            if (elem.getAttribute("id").equals("perlLineBreakpoint")) {
+                perlBreakConfigElem = elem;
+            }
+        }
+        if (perlBreakConfigElem == null) {
+            IStatus status = new Status(IStatus.ERROR, RunProcessPlugin.PLUGIN_ID, IStatus.OK,
+                    "Breakpoint implementation not found.", null);
+            throw new CoreException(status);
+        }
+
+        IBreakpointManager breakpointManager = DebugPlugin.getDefault().getBreakpointManager();
+        for (int line : lineNumbers) {
+            IMarker breakMarker = codeFile.createMarker(perlBrekPointMarker);
+            breakMarker.setAttribute(IBreakpoint.ID, "perlBreak" + line);
+            breakMarker.setAttribute(IMarker.LINE_NUMBER, new Integer(line));
+            breakMarker.setAttribute(IMarker.CHAR_START, new Integer(-1));
+            breakMarker.setAttribute(IMarker.CHAR_END, new Integer(-1));
+            breakMarker.setAttribute("PerlDebug_INVALID_POS", Boolean.FALSE);
+            breakMarker.setAttribute(IBreakpoint.PERSISTED, Boolean.TRUE);
+            breakMarker.setAttribute(IBreakpoint.ENABLED, Boolean.TRUE);
+            breakMarker.setAttribute(IBreakpoint.REGISTERED, Boolean.TRUE);
+
+            IBreakpoint breakpoint = (IBreakpoint) perlBreakConfigElem.createExecutableExtension("class");
+            breakpoint.setMarker(breakMarker);
+            breakpointManager.addBreakpoint(breakpoint);
+        }
+    }
+
+    private void retrieveRoutines(Project project) throws CoreException, PersistenceException {
+        IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
+
+        IRepositoryFactory repositoryFactory = RepositoryFactoryProvider.getInstance();
+        // RootContainer<Integer, IRoutine> container = repositoryFactory.getRoutine();
+        // List<IRoutine> routines = container.getMembers();
+
+        List<IRepositoryObject> routines = repositoryFactory.getAll(ERepositoryObjectType.ROUTINES);
+
+        for (IRepositoryObject routine : routines) {
+            IFile routineFile = root.getFile(perlProject.getFullPath().append(
+                    project.getTechnicalLabel() + "__" + routine.getLabel() + ".pm"));
+            RoutineItem routineItem = (RoutineItem) routine.getProperty().getItem();
+            try {
+                routineItem.getContent().setInnerContentToFile(routineFile.getLocation().toFile());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+}

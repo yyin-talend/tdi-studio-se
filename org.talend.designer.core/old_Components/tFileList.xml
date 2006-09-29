@@ -1,0 +1,94 @@
+<COMPONENT>
+   <HEADER NAME="tFileList" ID="XXX-XXX-XXX" DISPLAY_NAME="FileLost" PLATEFORM="WIN32" SERIAL="" VERSION="0.101" STATUS="ALPHA" ICON="tFileList32.ico" COMPATIBILITY="WIN32" AUTHOR="talend" RELEASE_DATE="20050320A" FAMILY="File">
+      <SIGNATURE></SIGNATURE>
+   </HEADER>
+   <DISPLAY>
+      <POSITION LEFT="100" TOP="100" WIDTH="49" HEIGHT="49"/>
+      <LABEL FORMAT="label : __NAME__" VALUE="" SHOW="true" DEFAULT=""/>
+      <HINT FORMAT="hint : __NAME__" VALUE="" SHOW="false" DEFAULT=""/>
+   </DISPLAY>
+   <DOCUMENTATION>
+      <URL/>
+   </DOCUMENTATION>
+   <CODE LANGUAGE="Perl" LOCALISATION="INTERNAL" URI=".">
+      <VALUE/>
+      <CALL><![CDATA[
+
+__STARTLIST__
+      
+my $mResult = &tFileList(
+ Directory       => __DIRECTORY__,
+ Filemask        => __FILEMASK__,
+ CaseInsensitive => __CASEINSENSITIVE__,
+ WhileCode       => __WHILECODE__);
+ 
+]]></CALL>
+   </CODE>
+   <CONNECTORS>
+      <CONNECTOR DIRECTION="IN" CTYPE="START" DISPLAY_NAME="Start">
+         <OTYPES>
+            <OTYPE>TFileDesc</OTYPE>
+         </OTYPES>
+      </CONNECTOR>
+      <CONNECTOR DIRECTION="OUT" CTYPE="BEFORE" DISPLAY_NAME="Before">
+         <OTYPES>
+            <OTYPE>TFileDesc</OTYPE>
+            <OTYPE>THashRow (FirstRow)</OTYPE>
+         </OTYPES>
+         <CONNECTIONS>
+            <TO COMPONENT_ID="AA" CTYPE="AA" OTYPE="AA"/>
+            <TO COMPONENT_ID="AA" CTYPE="AA" OTYPE="AA"/>
+            <FROM COMPONENT_ID="AA" CTYPE="AA" OTYPE="AA"/>
+            <FROM COMPONENT_ID="AA" CTYPE="AA" OTYPE="AA"/>
+         </CONNECTIONS>
+      </CONNECTOR>
+      <CONNECTOR DIRECTION="OUT" CTYPE="AFTER" DISPLAY_NAME="After">
+         <OTYPES>
+            <OTYPE>TFileDesc</OTYPE>
+            <OTYPE>THashRow (LastRow + RowNumber)</OTYPE>
+         </OTYPES>
+      </CONNECTOR>
+      <CONNECTOR DIRECTION="OUT" CTYPE="OK" DISPLAY_NAME="Ok">
+         <OTYPES>
+            <OTYPE>TFileDesc</OTYPE>
+            <OTYPE>THashRow (LastRow + RowNumber)</OTYPE>
+            <OTYPE>TErrorNumber</OTYPE>
+            <OTYPE>TErrorMessage</OTYPE>
+         </OTYPES>
+      </CONNECTOR>
+      <CONNECTOR DIRECTION="OUT" CTYPE="ERROR" DISPLAY_NAME="Error">
+         <OTYPES>
+            <OTYPE>TFileDesc</OTYPE>
+            <OTYPE>THashRow (LastRow + RowNumber)</OTYPE>
+            <OTYPE>TErrorNumber</OTYPE>
+            <OTYPE>TErrorMessage</OTYPE>
+         </OTYPES>
+      </CONNECTOR>
+   </CONNECTORS>
+   <PARAMETERS>
+      <PARAMETER NAME="DIRECTORY" DISPLAY_NAME="Directory" TYPE="STRING" FIELD="TEXT" SHOW="YES" REQUIRED="No" DEFAULT="'c:\\'" READONLY="FALSE">
+         <VALUE/>
+      </PARAMETER>
+      <PARAMETER NAME="FILEMASK" DISPLAY_NAME="Filemask" TYPE="STRING" FIELD="TEXT" SHOW="YES" REQUIRED="YES" DEFAULT="'.csv'" READONLY="FALSE">
+         <VALUE/>
+      </PARAMETER>
+      <PARAMETER NAME="CASEINSENSITIVE" DISPLAY_NAME="Case Insensitive" TYPE="INTEGER" FIELD="CLOSED_LIST" SHOW="YES" REQUIRED="No" DEFAULT="Yes (Ignore Case)" READONLY="FALSE">
+         <VALUE/>
+         <ITEMS>
+            <ITEM IID="1" VALUE="Yes (Ignore Case)"/>
+            <ITEM IID="0" VALUE="No"/>
+         </ITEMS>
+      </PARAMETER>
+      <PARAMETER NAME="WHILECODE" DISPLAY_NAME="While Call" TYPE="STRING" FIELD="TEXT" SHOW="YES" REQUIRED="No" DEFAULT="\&amp;tNothing" READONLY="TRUE">
+         <VALUE>''</VALUE>
+      </PARAMETER>
+   </PARAMETERS>
+   <RETURNS>
+      <RETURN NAME="FILENAME" DISPLAY_NAME="Current File Name with complete path" TYPE="STRING" AVAILABILITY="In Row" CODE="$gv{tFileList}{Row}{PathFileName}"/>
+      <RETURN NAME="FILENAME" DISPLAY_NAME="Current File Name" TYPE="STRING" AVAILABILITY="In Row" CODE="$gv{tFileList}{Row}{FileName}"/>
+      <RETURN NAME="FILESIZE" DISPLAY_NAME="Current File Size" TYPE="STRING" AVAILABILITY="In Row" CODE="$gv{tFileList}{Row}{FileSize}"/>
+      <RETURN NAME="FILECOUNT" DISPLAY_NAME="Number of file" TYPE="STRING" AVAILABILITY="In Row, After" CODE="$gv{tFileList}{Count}"/>
+      <RETURN NAME="ERROR_CODE" DISPLAY_NAME="Error Code" TYPE="INTEGER" AVAILABILITY="After" CODE="$gv{tFileList}{Error}{Code}"/>
+      <RETURN NAME="ERROR_MESSAGE" DISPLAY_NAME="Error Message" TYPE="STRING" AVAILABILITY="After" CODE="$gv{tFileList}{Error}{Message}"/>
+   </RETURNS>
+</COMPONENT>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?NLS TYPE="org.eclipse.help.toc"?>
+
+<toc label="Talend Open Studio - Developer Guide">
+    <topic label="Reference">
+        <topic label="API Reference">
+            <topic label="All the plugins API" href="reference/api/index.html?overview-summary.html"/>
+            <topic label="..." />
+        </topic>
+        <topic label="Extension Points Reference">
+            <topic label="org_talend_repository_actions" href="reference/extension-points/repository/org_talend_repository_actions.html"/>
+            <topic label="org_talend_repository_components_provider" href="reference/extension-points/repository/org_talend_repository_components_provider.html"/>
+            <topic label="org_talend_repository_external_component" href="reference/extension-points/repository/org_talend_repository_external_component.html"/>
+            <topic label="org_talend_repository_filepreview_provider" href="reference/extension-points/repository/org_talend_repository_filepreview_provider.html"/>
+            <topic label="org_talend_repository_repository_provider" href="reference/extension-points/repository/org_talend_repository_repository_provider.html"/>
+        </topic>
+    </topic>
+</toc>

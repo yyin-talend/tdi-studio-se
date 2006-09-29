@@ -1,0 +1,20 @@
+<%@ jet 
+	package="org.talend.designer.codegen.translators" 
+	imports="org.talend.designer.codegen.config.CodeGeneratorArgument"
+	class="ComponentPartEndMain" 
+%>
+<%
+	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+        boolean trace =  codeGenArgument.isTrace();
+%>
+# +-------------------------------------------------------------------------+
+# | [                                                                       |
+# +-------------------------------------------------------------------------+ 
+
+<%
+if (trace) {
+%>
+sleep 2;
+<%
+}
+%>

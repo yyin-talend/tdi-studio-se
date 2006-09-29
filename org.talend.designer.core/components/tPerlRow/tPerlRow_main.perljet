@@ -1,0 +1,57 @@
+<%@ jet
+	package="org.talend.designer.codegen.translators" 
+	imports="
+		org.talend.core.model.process.INode 
+		org.talend.core.model.metadata.IMetadataTable 
+                org.talend.core.model.metadata.IMetadataColumn
+                org.talend.core.model.process.ElementParameterParser
+		org.talend.designer.codegen.config.CodeGeneratorArgument
+                org.talend.commons.utils.generation.LocationUtils
+                org.talend.commons.utils.generation.EntryLocation
+		java.util.List
+	"
+	class="PerlRowMain"
+%>
+
+<%
+	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+	INode node = (INode)codeGenArgument.getArgument();
+	boolean stats = codeGenArgument.isStatistics();
+	
+	LocationUtils locationUtils = new LocationUtils();
+	
+	List<IMetadataTable> metadatas = node.getMetadataList();
+	if ((metadatas!=null)&&(metadatas.size()>0)) {
+		IMetadataTable metadata = metadatas.get(0);
+		if (metadata!=null) {
+
+                  String code = ElementParameterParser.getValue(node, "__CODE__");
+
+			String tableName = metadata.getTableName();
+			List<IMetadataColumn> columns = metadata.getListColumns();
+			EntryLocation[] locations = new EntryLocation[columns.size()];
+			int indexCol = 0;
+			for(IMetadataColumn column : columns) {
+				locations[indexCol] = new EntryLocation(tableName, column.getLabel());
+				indexCol++;
+			}
+
+                        String newCode = code.replaceAll("\\$row\\[", "\\$"+ tableName +"[");
+ 			newCode = locationUtils.replaceColumnNameToConstantName(newCode, locations);
+%>
+
+if (@<%= tableName %>) {
+    <%= newCode %>
+<%
+    if (stats) {
+%>
+    UpdateStat('<%=metadata.getTableName() %>', 1);
+<%
+    }
+%>
+}
+    
+<%
+		}
+	}
+%>

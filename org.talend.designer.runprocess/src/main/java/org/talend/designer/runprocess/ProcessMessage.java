@@ -1,0 +1,74 @@
+// ============================================================================
+//
+// Talend Community Edition
+//
+// Copyright (C) 2006 Talend - www.talend.com
+//
+// This library is free software; you can redistribute it and/or
+// modify it under the terms of the GNU Lesser General Public
+// License as published by the Free Software Foundation; either
+// version 2.1 of the License, or (at your option) any later version.
+//
+// This library is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+// Lesser General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program; if not, write to the Free Software
+// Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+//
+// ============================================================================
+package org.talend.designer.runprocess;
+
+/**
+ * Message about a process. <br/>
+ * 
+ * $Id$
+ * 
+ */
+public class ProcessMessage {
+
+    /** Type of the message. */
+    public enum MsgType {
+        STD_OUT,
+        STD_ERR,
+        CORE_OUT,
+        CORE_ERR
+    }
+
+    /** Type of the message. */
+    private MsgType type;
+
+    /** Content of the message. */
+    private String content;
+
+    /**
+     * Constrcucts a new ProcessMessage.
+     */
+    public ProcessMessage(MsgType type, String content) {
+        super();
+
+        this.type = type;
+        this.content = content;
+    }
+
+    /**
+     * Getter for content.
+     * 
+     * @return the content
+     */
+    public String getContent() {
+        return this.content;
+    }
+
+    /**
+     * Getter for type.
+     * 
+     * @return the type
+     */
+    public MsgType getType() {
+        return this.type;
+    }
+
+}

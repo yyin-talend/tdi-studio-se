@@ -1,0 +1,38 @@
+<%@ jet package="org.talend.designer.codegen.translators" imports="
+	org.talend.core.model.process.INode 
+	org.talend.core.model.process.ElementParameterParser
+	org.talend.core.model.metadata.IMetadataTable
+	java.util.List
+" class="FileOutputStart" %>
+
+# +-------------------------------------------------------------------------+
+# | [outputFile begin] starts here                                          |
+# +-------------------------------------------------------------------------+
+
+<%
+	INode node = (INode) argument;
+	List<IMetadataTable> metadatas = node.getMetaDataList();
+	if ((metadatas!=null)&&(metadatas.size()>0)) {
+		IMetadataTable metadata = metadatas.get(0);
+		if (metadata!=null) {
+%>
+
+use FileHandle;
+
+my %output_desc_<%=metadata.getTableName() %> = (
+    filename => <%=ElementParameterParser.getValue(node, "__FILENAME__") %>,
+);
+use constant OUTPUT_FIELD_SEPARATOR_<%=metadata.getTableName() %> => <%=ElementParameterParser.getValue(node, "__FIELDSEPARATOR__") %>;
+use constant OUTPUT_ROW_SEPARATOR_<%=metadata.getTableName() %> => <%=ElementParameterParser.getValue(node, "__ROWSEPARATOR__") %>;
+
+my $output_FH_<%=metadata.getTableName() %> = new FileHandle;
+open($output_FH_<%=metadata.getTableName() %>, '>', $output_desc_<%=metadata.getTableName() %>{filename})
+    or die 'cannot open file "' . $output_desc_<%=metadata.getTableName() %>{filename} . '"';
+
+<%
+		}
+	}
+%>
+# +-------------------------------------------------------------------------+
+# | [outputFile begin] stops here                                           |
+# +-------------------------------------------------------------------------+

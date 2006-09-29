@@ -1,0 +1,102 @@
+<%@ jet 
+	package="org.talend.designer.codegen.translators" 
+	imports="
+		org.talend.core.model.process.INode 
+		org.talend.core.model.process.ElementParameterParser 
+		org.talend.core.model.metadata.IMetadataTable 
+		org.talend.core.model.metadata.IMetadataColumn 
+		org.talend.designer.codegen.config.CodeGeneratorArgument
+		java.util.Map
+		java.util.List
+	" 
+	class="RowGeneratorStart" 
+%>
+
+<%
+	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+	INode node = (INode)codeGenArgument.getArgument();
+	boolean stats = codeGenArgument.isStatistics();
+	
+	List<IMetadataTable> metadatas = node.getMetadataList();
+	if ((metadatas!=null)&&(metadatas.size()>0)) {
+		IMetadataTable metadata = metadatas.get(0);
+		if (metadata!=null) {
+
+                    String cid = metadata.getTableName();
+                    List<Map<String, String>> tableValues = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__VALUES__");
+%>
+
+use talend::misc;
+
+my %desc_<%=cid %> = (
+    nb_rows       => <%=ElementParameterParser.getValue(node, "__NB_ROWS__") %>,
+    schema        => [
+    <%
+		for (IMetadataColumn column: metadata.getListColumns()) {
+    %>
+    	{
+            name    => '<%=column.getLabel() %>',
+            key     => <%=column.isKey() %>,
+            type    => '<%=column.getType() %>',
+            len     => <%=column.getLength() %>,
+            null    => <%=column.isNullable() %>,
+            default => '<%=column.getDefault() %>',
+            comment => '<%=column.getComment() %>',
+		},
+	<%
+		}
+    %>
+    ],
+    values => [
+<%
+  for (int i=0; i<tableValues.size(); i++) {
+    Map<String, String> lineValue = tableValues.get(i);
+%>
+        [<%= lineValue.get("ARRAY") %>],
+<%
+  }
+%>
+    ],
+);
+
+<%
+    if (stats) {
+%>
+    UpdateStat('<%=cid %>', 0);
+<%
+    }
+%>
+
+for (1..$desc_<%=cid %>{nb_rows}) {
+
+<%
+    if (stats) {
+%>
+    UpdateStat('<%=cid %>', 1);
+<%
+    }
+%>
+
+    my @<%=cid %> = ();
+
+    foreach my $values_aref (@{ $desc_<%=cid %>{values} }) {
+        my $value;
+        my $index = int rand scalar @$values_aref;
+
+        if (ref $values_aref->[$index] eq 'CODE') {
+            $value = &{ $values_aref->[$index] };
+        }
+        else {
+            $value = $values_aref->[$index];
+        }
+
+        push(
+            @<%=cid %>,
+            $value
+        )
+    }
+
+<%
+		}
+	}
+%>

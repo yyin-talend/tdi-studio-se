@@ -1,0 +1,56 @@
+<%@ jet 
+	package="org.talend.designer.codegen.translators" 
+	imports="
+		org.talend.core.model.process.INode 
+		org.talend.core.model.process.ElementParameterParser
+		org.talend.core.model.metadata.IMetadataTable 
+		org.talend.designer.codegen.config.CodeGeneratorArgument
+		java.util.List
+	"
+	class="DBOutputMain"
+%>
+
+<%
+	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+	INode node = (INode)codeGenArgument.getArgument();
+	boolean stats = codeGenArgument.isStatistics();
+	
+	List<IMetadataTable> metadatas = node.getMetadataList();
+	if ((metadatas!=null)&&(metadatas.size()>0)) {
+		IMetadataTable metadata = metadatas.get(0);
+		if (metadata!=null) {
+%>
+
+push(
+    @lines_<%=metadata.getTableName() %>,
+    [ @<%=metadata.getTableName() %>[0 .. $nb_fields_<%=metadata.getTableName() %> - 1] ]
+);
+
+my $nb_lines_current = scalar @lines_<%=metadata.getTableName() %>;
+
+if ($nb_lines_current >= $desc_<%=metadata.getTableName() %>{packet_size}) {
+    my @values = ();
+
+    foreach my $line_aref (@lines_<%=metadata.getTableName() %>) {
+        push @values, @$line_aref;
+    }
+
+    $sth_<%=metadata.getTableName() %>->execute(@values)
+        or die "can't execute insert query\n";
+
+<%
+    if (stats) {
+%>
+    UpdateStat('<%=metadata.getTableName() %>', $nb_lines_current);
+<%
+    }
+%>
+
+    $nb_line_<%=metadata.getTableName() %> += $nb_lines_current;
+    @lines_<%=metadata.getTableName() %> = ();
+}
+
+<%
+		}
+	}
+%>

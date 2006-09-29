@@ -1,0 +1,729 @@
+// ============================================================================
+//
+// Talend Community Edition
+//
+// Copyright (C) 2006 Talend - www.talend.com
+//
+// This library is free software; you can redistribute it and/or
+// modify it under the terms of the GNU Lesser General Public
+// License as published by the Free Software Foundation; either
+// version 2.1 of the License, or (at your option) any later version.
+//
+// This library is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+// Lesser General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program; if not, write to the Free Software
+// Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+//
+// ============================================================================
+package org.talend.designer.mapper.managers;
+
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.StringReader;
+import java.io.StringWriter;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.TableItem;
+import org.exolab.castor.xml.MarshalException;
+import org.exolab.castor.xml.Marshaller;
+import org.exolab.castor.xml.Unmarshaller;
+import org.exolab.castor.xml.ValidationException;
+import org.talend.commons.exception.ExceptionHandler;
+import org.talend.commons.exception.PersistenceException;
+import org.talend.commons.utils.time.TimeMeasure;
+import org.talend.commons.utils.workbench.resources.ResourceUtils;
+import org.talend.core.CorePlugin;
+import org.talend.core.context.Context;
+import org.talend.core.context.RepositoryContext;
+import org.talend.core.model.general.Project;
+import org.talend.core.model.metadata.IMetadataColumn;
+import org.talend.core.model.metadata.MetadataTable;
+import org.talend.core.model.metadata.editor.MetadataTableEditor;
+import org.talend.core.model.process.IElementParameter;
+import org.talend.core.model.process.IProcess;
+import org.talend.core.ui.metadata.editor.MetadataTableEditorView;
+import org.talend.designer.core.model.components.EParameterName;
+import org.talend.designer.mapper.MapperComponent;
+import org.talend.designer.mapper.external.data.ExternalMapperData;
+import org.talend.designer.mapper.model.table.AbstractDataMapTable;
+import org.talend.designer.mapper.model.table.InputTable;
+import org.talend.designer.mapper.model.table.OutputTable;
+import org.talend.designer.mapper.model.table.VarsTable;
+import org.talend.designer.mapper.model.tableentry.ConstraintTableEntry;
+import org.talend.designer.mapper.model.tableentry.IColumnEntry;
+import org.talend.designer.mapper.model.tableentry.ITableEntry;
+import org.talend.designer.mapper.model.tableentry.InputColumnTableEntry;
+import org.talend.designer.mapper.model.tableentry.OutputColumnTableEntry;
+import org.talend.designer.mapper.model.tableentry.TableEntryLocation;
+import org.talend.designer.mapper.model.tableentry.VarTableEntry;
+import org.talend.designer.mapper.ui.visualmap.TableEntryProperties;
+import org.talend.designer.mapper.ui.visualmap.link.IGraphicLink;
+import org.talend.designer.mapper.ui.visualmap.link.LinkState;
+import org.talend.designer.mapper.ui.visualmap.table.DataMapTableView;
+import org.talend.designer.mapper.ui.visualmap.table.EntryState;
+import org.talend.designer.mapper.ui.visualmap.zone.Zone;
+import org.talend.designer.mapper.ui.visualmap.zone.scrollable.TablesZoneView;
+import org.talend.repository.model.RepositoryConstants;
+import org.talend.repository.model.ResourceModelUtils;
+
+/**
+ * DOC amaumont class global comment. Detailled comment <br/>
+ * 
+ * $Id$
+ * 
+ */
+public class MapperManager {
+
+    public static final String MAPPER_MODEL_DATA = "MAPPER_MODEL_DATA";
+
+    private TableEntriesManager tableEntriesManager;
+
+    private TableManager tableManager;
+
+    private LinkManager linkManager;
+
+    private UIManager uiManager;
+
+    private MapperComponent mapperComponent;
+
+    public MapperManager(MapperComponent mapperComponent) {
+        super();
+        tableEntriesManager = new TableEntriesManager(this);
+        tableManager = new TableManager();
+        linkManager = new LinkManager();
+        uiManager = new UIManager(this, tableManager);
+        this.mapperComponent = mapperComponent;
+    }
+
+    public void addTablePair(DataMapTableView view, AbstractDataMapTable data) {
+        tableManager.addTable(view, data);
+        tableEntriesManager.addAll(data.getColumnEntries());
+        if (data instanceof OutputTable) {
+            tableEntriesManager.addAll(((OutputTable) data).getConstraintEntries());
+        }
+    }
+
+    /**
+     * 
+     * Remove the <code>DataMapTableView</code>-<code>DataMapTable</code> pair.
+     * 
+     * @param view
+     */
+    public void removeTablePair(DataMapTableView view) {
+        AbstractDataMapTable dataTable = tableManager.getData(view);
+        List<IColumnEntry> dataMapTableEntries = dataTable.getColumnEntries();
+        tableEntriesManager.removeAll(dataMapTableEntries);
+        if (dataTable instanceof OutputTable) {
+            List<ConstraintTableEntry> constraintEntries = ((OutputTable) dataTable).getConstraintEntries();
+            tableEntriesManager.removeAll(constraintEntries);
+        }
+        tableManager.removeTable(view);
+    }
+
+    /**
+     * 
+     * Remove the <code>DataMapTable</code>-<code>DataMapTableView</code> pair.
+     * 
+     * @param view
+     */
+    public void removeTablePair(AbstractDataMapTable dataTable) {
+        List<IColumnEntry> dataMapTableEntries = dataTable.getColumnEntries();
+        tableEntriesManager.removeAll(dataMapTableEntries);
+        if (dataTable instanceof OutputTable) {
+            List<ConstraintTableEntry> constraintEntries = ((OutputTable) dataTable).getConstraintEntries();
+            tableEntriesManager.removeAll(constraintEntries);
+        }
+        tableManager.removeTable(dataTable);
+    }
+
+    /**
+     * DOC amaumont Comment method "getDataMapTable".
+     */
+    public AbstractDataMapTable retrieveAbstractDataMapTable(DataMapTableView dataMapTableView) {
+        return tableManager.getData(dataMapTableView);
+    }
+
+    /**
+     * DOC amaumont Comment method "getDataMapTableView".
+     */
+    public DataMapTableView retrieveAbstractDataMapTableView(AbstractDataMapTable abstractDataMapTable) {
+        return tableManager.getView(abstractDataMapTable);
+    }
+
+    public ITableEntry retrieveTableEntry(TableEntryLocation location) {
+        return tableEntriesManager.retrieveTableEntry(location);
+    }
+
+    public DataMapTableView retrieveDataMapTableView(ITableEntry dataMapTableEntry) {
+        return tableManager.getView(dataMapTableEntry.getParent());
+    }
+
+    /**
+     * DOC amaumont Comment method "getDataMapTable".
+     */
+    public DataMapTableView retrieveDataMapTableView(TableEntryLocation names) {
+        ITableEntry dataMapTableEntry = retrieveTableEntry(names);
+        if (dataMapTableEntry == null) {
+            return null;
+        }
+        return retrieveDataMapTableView(dataMapTableEntry);
+    }
+
+    public DataMapTableView retrieveDataMapTableView(Table swtTable) {
+        return this.tableManager.getView(swtTable);
+    }
+
+    /**
+     * DOC amaumont Comment method "getDataMapTable".
+     */
+    public AbstractDataMapTable retrieveAbstractDataMapTable(TableEntryLocation names) {
+        ITableEntry dataMapTableEntry = retrieveTableEntry(names);
+        if (dataMapTableEntry == null) {
+            return null;
+        }
+        return dataMapTableEntry.getParent();
+    }
+
+    /**
+     * DOC amaumont Comment method "clearLinks".
+     */
+    public void clearLinks() {
+        linkManager.clearLinks();
+
+    }
+
+    /**
+     * DOC amaumont Comment method "addLink".
+     * 
+     * @param link
+     */
+    public void addLink(IGraphicLink link) {
+        linkManager.addLink(link);
+        changeDependentSourcesAndTargetEntriesState(link.getPointLinkDescriptorTarget().getTableEntry(), link, false);
+    }
+
+    /**
+     * DOC amaumont Comment method "removeLink".
+     * 
+     * @param link
+     */
+    public void removeLink(IGraphicLink link, ITableEntry entryCauseOfRemove) {
+        changeDependentSourcesAndTargetEntriesState(entryCauseOfRemove, link, true);
+        linkManager.removeLink(link);
+    }
+
+    /**
+     * 
+     * DOC amaumont Comment method "changeDependentSourcesAndTargetEntriesState".
+     * 
+     * @param entryCauseOfChange
+     * @param currentLink
+     * @param removedLink
+     */
+    private void changeDependentSourcesAndTargetEntriesState(ITableEntry entryCauseOfChange, IGraphicLink currentLink, boolean removedLink) {
+
+        boolean sourceIsCauseOfChange = false;
+        if (currentLink.getPointLinkDescriptorSource().getTableEntry() == entryCauseOfChange) {
+            sourceIsCauseOfChange = true;
+        } else if (currentLink.getPointLinkDescriptorTarget().getTableEntry() == entryCauseOfChange) {
+            sourceIsCauseOfChange = false;
+        } else {
+            throw new IllegalArgumentException("The entryCauseOfChange must be the source or the target of the link");
+        }
+
+        if (sourceIsCauseOfChange) {
+            Set<IGraphicLink> dependentLinks = linkManager.getLinksFromSource(entryCauseOfChange);
+            for (IGraphicLink dependentLink : dependentLinks) {
+                changeDependentEntriesState(currentLink, dependentLink.getPointLinkDescriptorTarget().getTableEntry(), removedLink);
+            }
+        } else {
+            Set<IGraphicLink> dependentLinks = linkManager.getLinksFromTarget(entryCauseOfChange);
+            for (IGraphicLink dependentLink : dependentLinks) {
+                changeDependentEntriesState(currentLink, dependentLink.getPointLinkDescriptorSource().getTableEntry(), removedLink);
+            }
+        }
+        changeDependentEntriesState(currentLink, entryCauseOfChange, removedLink);
+    }
+
+    /**
+     * 
+     * DOC amaumont Comment method "changeDependentEntriesState".
+     * 
+     * @param link
+     * @param currentEntry
+     * @param removedLink
+     */
+    private void changeDependentEntriesState(IGraphicLink link, ITableEntry currentEntry, boolean removedLink) {
+        Set<IGraphicLink> dependentLinks = linkManager.getLinksFromSource(currentEntry);
+        dependentLinks.addAll(linkManager.getLinksFromTarget(currentEntry));
+        boolean hasSelectedLink = false;
+        for (IGraphicLink dependentLink : dependentLinks) {
+            if (dependentLink.getState() == LinkState.SELECTED && dependentLink != link) {
+                hasSelectedLink = true;
+                break;
+            }
+        }
+        if (!hasSelectedLink && link.getState() == LinkState.UNSELECTED || removedLink) {
+            uiManager.setEntryState(this, EntryState.NONE, currentEntry);
+        } else {
+            uiManager.setEntryState(this, EntryState.HIGHLIGHT, currentEntry);
+        }
+    }
+
+    /**
+     * DOC amaumont Comment method "removeLink".
+     * 
+     * @param link
+     */
+    public Set<ITableEntry> getSourcesForTarget(ITableEntry dataMapTableEntry) {
+        return linkManager.getSourcesForTarget(dataMapTableEntry);
+    }
+
+    /**
+     * DOC amaumont Comment method "removeLink".
+     * 
+     * @param link
+     */
+    public Set<IGraphicLink> getGraphicalLinksFromSource(ITableEntry dataMapTableEntry) {
+        return linkManager.getLinksFromSource(dataMapTableEntry);
+    }
+
+    public Set<IGraphicLink> getGraphicalLinksFromTarget(ITableEntry dataMapTableEntry) {
+        return linkManager.getLinksFromTarget(dataMapTableEntry);
+    }
+
+    public List<IGraphicLink> getLinks() {
+        return linkManager.getLinks();
+    }
+
+    /**
+     * DOC amaumont Comment method "retrieveTableFromTableEntry".
+     * 
+     * @param dataMapTableEntry
+     * @return
+     */
+    public Table retrieveTable(ITableEntry dataMapTableEntry) {
+        return tableEntriesManager.retrieveTable(dataMapTableEntry);
+    }
+
+    public TableItem retrieveTableItem(ITableEntry dataMapTableEntry) {
+        return tableEntriesManager.retrieveTableItem(dataMapTableEntry);
+    }
+
+    public Collection<DataMapTableView> getTablesView() {
+        return tableManager.getTablesView();
+    }
+
+    /**
+     * Return all table data. Order is not assured. DOC amaumont Comment method "getTablesData".
+     * 
+     * @return
+     */
+    public Collection<AbstractDataMapTable> getTablesData() {
+        return tableManager.getTablesData();
+    }
+
+    public List<InputTable> getInputTables() {
+        return this.tableManager.getInputTables();
+    }
+
+    public List<OutputTable> getOutputTables() {
+        return this.tableManager.getOutputTables();
+    }
+
+    public List<VarsTable> getVarsTables() {
+        return this.tableManager.getVarsTables();
+    }
+
+    /**
+     * DOC amaumont Comment method "renameProcessColumnName".
+     * 
+     * @param currentModifiedTableEntry
+     * @param newColumnName
+     */
+    public void changeColumnName(ITableEntry dataMapTableEntry, String newColumnName) {
+        // tableEntriesManager.remove(dataMapTableEntry);
+        // dataMapTableEntry.getMetadataColumn().setLabel(newColumnName);
+        // tableEntriesManager.addITableEntry(dataMapTableEntry);
+        tableEntriesManager.renameEntryName(dataMapTableEntry, newColumnName);
+        // getUiManager().processExpression(dataMapTableEntry.getExpression(),
+        // retrieveDataMapTableView(dataMapTableEntry), dataMapTableEntry, false);
+
+    }
+
+    public void removeTableEntry(ITableEntry dataMapTableEntry) {
+        tableEntriesManager.remove(dataMapTableEntry);
+    }
+
+    /**
+     * DOC amaumont Comment method "removeLinksFrom".
+     * 
+     * @param dataMapTableEntry
+     */
+    public void removeLinksOf(ITableEntry dataMapTableEntry) {
+        Set<IGraphicLink> links = linkManager.getLinksFromSource(dataMapTableEntry);
+        links.addAll(linkManager.getLinksFromTarget(dataMapTableEntry));
+        for (IGraphicLink link : links) {
+            removeLink(link, dataMapTableEntry);
+        }
+    }
+
+    public UIManager getUiManager() {
+        return this.uiManager;
+    }
+
+    /**
+     * DOC amaumont Comment method "getTableEntryProperties".
+     * 
+     * @param dataMapTableEntry
+     * @return
+     */
+    public TableEntryProperties getTableEntryProperties(ITableEntry dataMapTableEntry) {
+        return tableEntriesManager.getTableEntryProperties(dataMapTableEntry);
+    }
+
+    /**
+     * This method is called when "addMetadataTableEditorEntry" is called (event on list of MetadataEditor) , so if you
+     * want keep synchronisation between inputs/outputs DataMaps and MetadataEditors don't call this method.
+     * 
+     * @param dataMapTableView
+     * @param metadataColumn, can be null if added in VarsTable
+     * @param index
+     */
+    public IColumnEntry addNewColumnEntry(DataMapTableView dataMapTableView, IMetadataColumn metadataColumn, Integer index) {
+        AbstractDataMapTable abstractDataMapTable = dataMapTableView.getDataMapTable();
+        IColumnEntry dataMapTableEntry = null;
+        if (dataMapTableView.getZone() == Zone.INPUTS) {
+            dataMapTableEntry = new InputColumnTableEntry(abstractDataMapTable, metadataColumn);
+        } else if (dataMapTableView.getZone() == Zone.OUTPUTS) {
+            dataMapTableEntry = new OutputColumnTableEntry(abstractDataMapTable, metadataColumn);
+        } else {
+            throw new IllegalArgumentException("Use other signature method to add entry");
+        }
+        tableEntriesManager.addTableEntry(dataMapTableEntry, index);
+        return dataMapTableEntry;
+    }
+
+    /**
+     * This method is called when "addMetadataTableEditorEntry" is called (event on list of MetadataEditor) , so if you
+     * want keep synchronisation between inputs/outputs DataMaps and MetadataEditors don't call this method.
+     * 
+     * For other uses such as add an entry to VarsTable or add entries to inputs or outputs DataMaps when
+     * MetadataEditors are not active, call it.
+     * 
+     * @param dataMapTableView
+     * @param metadataColumn, can be null if added in VarsTable
+     * @param index
+     */
+    public IColumnEntry addNewColumnEntry(DataMapTableView dataMapTableView, String name, Integer index) {
+        AbstractDataMapTable abstractDataMapTable = dataMapTableView.getDataMapTable();
+        IColumnEntry dataMapTableEntry = null;
+        if (dataMapTableView.getZone() == Zone.VARS) {
+            dataMapTableEntry = new VarTableEntry(abstractDataMapTable, name);
+        } else {
+            throw new IllegalArgumentException("Use other signature method to add entry");
+        }
+        tableEntriesManager.addTableEntry(dataMapTableEntry, index);
+        return dataMapTableEntry;
+    }
+
+    /**
+     * DOC amaumont Comment method "addTableEntry".
+     * 
+     * @param dataMapTableEntry
+     * @param index
+     */
+    public void addMetadataTableEditorEntry(MetadataTableEditorView metadataTableEditorView, IMetadataColumn metadataColumn, Integer index) {
+        MetadataTableEditor metadataTableEditor = metadataTableEditorView.getMetadataTableEditor();
+        metadataTableEditor.add(metadataColumn, index);
+    }
+
+    public ConstraintTableEntry addNewConstraintEntry(DataMapTableView dataMapTableView, String name, Integer index) {
+        AbstractDataMapTable abstractDataMapTable = dataMapTableView.getDataMapTable();
+        ConstraintTableEntry constraintEntry = new ConstraintTableEntry(abstractDataMapTable, name, null);
+        tableEntriesManager.addTableEntry(constraintEntry, index);
+        return constraintEntry;
+    }
+
+    /**
+     * DOC amaumont Comment method "addOutput".
+     */
+    public void addOutput() {
+
+        String tableName = uiManager.openNewOutputCreationDialog();
+        if (tableName == null) {
+            return;
+        }
+
+        IProcess process = mapperComponent.getProcess();
+        process.addUniqueConnectionName(tableName);
+
+        MetadataTable metadataTable = new MetadataTable();
+        metadataTable.setTableName(tableName);
+
+        List<DataMapTableView> outputsTablesView = getOutputsTablesView();
+        int sizeOutputsView = outputsTablesView.size();
+        Control lastChild = null;
+        if (sizeOutputsView - 1 >= 0) {
+            lastChild = outputsTablesView.get(sizeOutputsView - 1);
+        }
+
+        AbstractDataMapTable abstractDataMapTable = new OutputTable(metadataTable, null, tableName);
+
+        TablesZoneView tablesZoneViewOutputs = uiManager.getTablesZoneViewOutputs();
+        DataMapTableView dataMapTableView = uiManager.createNewOutputTableView(lastChild, abstractDataMapTable, tablesZoneViewOutputs);
+        tablesZoneViewOutputs.setSize(tablesZoneViewOutputs.computeSize(SWT.DEFAULT, SWT.DEFAULT));
+        tablesZoneViewOutputs.layout();
+        uiManager.moveOutputScrollBarZoneToMax();
+        uiManager.refreshBackground(true, false);
+        tablesZoneViewOutputs.layout();
+        uiManager.selectDataMapTableView(dataMapTableView);
+    }
+
+    public void removeSelectedOutput() {
+        DataMapTableView currentSelectedDataMapTableView = uiManager.getCurrentSelectedOutputTableView();
+        if (currentSelectedDataMapTableView != null) {
+            IProcess process = mapperComponent.getProcess();
+            uiManager.removeOutputTableView(currentSelectedDataMapTableView);
+            uiManager.updateToolbarButtonsStates(Zone.OUTPUTS);
+            process.removeUniqueConnectionName(currentSelectedDataMapTableView.getDataMapTable().getName());
+        }
+
+    }
+
+    /**
+     * DOC amaumont Comment method "isTableOfInputMetadataEditor".
+     * 
+     * @param table
+     * @return
+     */
+    public boolean isTableOfInputMetadataEditor(Table table) {
+        MetadataTableEditorView inputEditorView = uiManager.getInputMetaEditorView();
+        Table tableEditorView = inputEditorView.getTableViewerCreator().getTable();
+        return tableEditorView == table;
+    }
+
+    /**
+     * DOC amaumont Comment method "isTableOfOutputMetadataEditor".
+     * 
+     * @param table
+     * @return
+     */
+    public boolean isTableOfOutputMetadataEditor(Table table) {
+        MetadataTableEditorView outputEditorView = uiManager.getOutputMetaEditorView();
+        Table tableEditorView = outputEditorView.getTableViewerCreator().getTable();
+        return tableEditorView == table;
+    }
+
+    public List<DataMapTableView> getInputsTablesView() {
+        return this.tableManager.getInputsTablesView();
+    }
+
+    public List<DataMapTableView> getOutputsTablesView() {
+        return this.tableManager.getOutputsTablesView();
+    }
+
+    public List<DataMapTableView> getVarsTablesView() {
+        return this.tableManager.getVarsTablesView();
+    }
+
+    public TableEntryLocation findUniqueLocation(final TableEntryLocation proposedLocation, String[] columnsBeingCreated) {
+        TableEntryLocation tableEntryLocation = new TableEntryLocation(proposedLocation);
+        int counter = 1;
+        boolean exists = true;
+        while (exists) {
+            exists = retrieveTableEntry(tableEntryLocation) != null;
+            if (!exists) {
+                for (int i = 0; i < columnsBeingCreated.length; i++) {
+                    String columnBeingCreated = columnsBeingCreated[i];
+                    if (columnBeingCreated.equals(tableEntryLocation.columnName)) {
+                        exists = true;
+                        break;
+                    }
+                }
+            }
+            if (!exists) {
+                break;
+            }
+            tableEntryLocation.columnName = proposedLocation.columnName + "_" + counter++;
+        }
+        return tableEntryLocation;
+    }
+
+    /**
+     * DOC amaumont Comment method "orderLinks".
+     */
+    public void orderLinks() {
+        linkManager.orderLinks();
+    }
+
+    /**
+     * DOC amaumont Comment method "changeEntryExpression".
+     * 
+     * @param currentEntry
+     * @param text
+     */
+    public void changeEntryExpression(ITableEntry currentEntry, String text) {
+        currentEntry.setExpression(text);
+        DataMapTableView dataMapTableView = retrieveDataMapTableView(currentEntry);
+        if (currentEntry instanceof IColumnEntry) {
+            dataMapTableView.getTableViewerCreatorForColumns().getTableViewer().refresh(currentEntry);
+        } else if (currentEntry instanceof ConstraintTableEntry) {
+            dataMapTableView.getTableViewerCreatorForConstraints().getTableViewer().refresh(currentEntry);
+        }
+        uiManager.processNewExpression(text, currentEntry);
+    }
+
+    public MapperComponent getConnector() {
+        return this.mapperComponent;
+    }
+
+    /**
+     * DOC amaumont Comment method "checkLocationIsValid".
+     * 
+     * @param couple
+     * @param currentModifiedITableEntry
+     * @return
+     */
+    public boolean checkSourceLocationIsValid(TableEntryLocation locationSource, ITableEntry entryTarget) {
+        return checkSourceLocationIsValid(retrieveTableEntry(locationSource), entryTarget);
+    }
+
+    public boolean checkSourceLocationIsValid(ITableEntry entrySource, ITableEntry entryTarget) {
+
+        if (entrySource instanceof VarTableEntry && entrySource.getParent() == entryTarget.getParent()) {
+            List<IColumnEntry> columnEntries = entrySource.getParent().getColumnEntries();
+            if (columnEntries.indexOf(entrySource) < columnEntries.indexOf(entryTarget)) {
+                return true;
+            }
+        } else if (entrySource instanceof InputColumnTableEntry && entryTarget instanceof InputColumnTableEntry
+                && entrySource.getParent() != entryTarget.getParent()) {
+            List<InputTable> inputTables = getInputTables();
+            int indexTableSource = inputTables.indexOf(entrySource.getParent());
+            int indexTableTarget = inputTables.indexOf(entryTarget.getParent());
+            if (indexTableSource < indexTableTarget) {
+                return true;
+            }
+        } else if (entryTarget instanceof VarTableEntry || entryTarget instanceof OutputColumnTableEntry
+                || entryTarget instanceof ConstraintTableEntry) {
+            if (entrySource instanceof InputColumnTableEntry || entrySource instanceof VarTableEntry) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * DOC amaumont Comment method "getPreviewPath".
+     * 
+     * @return
+     */
+    public String getPreviewFilePath() {
+        RepositoryContext repositoryContext = (RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY);
+        Project project = repositoryContext.getProject();
+        String filePath = null;
+        try {
+            IProject iProject = ResourceModelUtils.getProject(project);
+            IFolder folder = ResourceUtils.getFolder(iProject, RepositoryConstants.IMG_DIRECTORY, true);
+            filePath = folder.getLocation().append(getPreviewFileName()).toString();
+            return filePath;
+        } catch (PersistenceException e) {
+            return null;
+        }
+    }
+
+    /**
+     * DOC amaumont Comment method "getPreviewFileName".
+     * 
+     * @return
+     */
+    private String getPreviewFileName() {
+        return mapperComponent.getProcess().getId() + "-" + mapperComponent.getUniqueName() + "-" + EParameterName.PREVIEW.getName()
+                + ".bmp";
+    }
+
+    public void updateEmfParameters(String... parametersToUpdate) {
+
+        HashSet<String> hParametersToUpdate = new HashSet<String>();
+        for (int i = 0; i < parametersToUpdate.length; i++) {
+            hParametersToUpdate.add(parametersToUpdate[i]);
+        }
+
+        List<? extends IElementParameter> elementParameters = mapperComponent.getElementParameters();
+        for (IElementParameter parameter : elementParameters) {
+            if (hParametersToUpdate.contains(parameter.getName())) {
+                // set preview path to PREVIEW parameter
+                if (EParameterName.PREVIEW.getName().equals(parameter.getName())) {
+                    String previewPath = getPreviewFilePath();
+                    parameter.setValue(previewPath == null ? "" : previewPath);
+                }
+
+//                if (MAPPER_MODEL_DATA.equals(parameter.getName())) {
+////                    TimeMeasurer.start("test");
+//                    StringWriter stringWriter = new StringWriter();
+//                    try {
+//                        Marshaller marshaller = new Marshaller(stringWriter);
+//                        marshaller.marshal(mapperComponent.getExternalData());
+//                    } catch (MarshalException e) {
+//                        ExceptionHandler.process(e);
+//                    } catch (ValidationException e) {
+//                        ExceptionHandler.process(e);
+//                    } catch (IOException e) {
+//                        ExceptionHandler.process(e);
+//                    } finally {
+//                        // if (outputStreamWriter != null) {
+//                        // outputStreamWriter.close();
+//                        // }
+//                    }
+//                    // StringWriter writer = new StringWriter();
+//                    // OutputStreamWriter outputStreamWriter = new OutputStreamWriter(writer);
+//                    // mapperComponent.getExternalCustomData(outputStreamWriter);
+//                    String persistentData = stringWriter.toString();
+//                    parameter.setValue(persistentData == null ? "" : persistentData);
+////                    TimeMeasurer.end("test");
+//                }
+            }
+        }
+    }
+
+//    public Object getEmfParameterValue(String parameterName) {
+//        List<? extends IElementParameter> elementParameters = mapperComponent.getElementParameters();
+//        for (IElementParameter parameter : elementParameters) {
+//            if (parameterName.equals(parameter.getName())) {
+//                if (MAPPER_MODEL_DATA.equals(parameterName)) {
+//                    ExternalMapperData externalData = null;
+//                     System.out.println("getEmfParameterValue="+(String)parameter.getValue());
+//                    StringReader stringReader = new StringReader((String) parameter.getValue());
+//                    Unmarshaller unmarshaller = new Unmarshaller(ExternalMapperData.class);
+//                    // unmarshaller.setReuseObjects(false);
+//                    try {
+//                        externalData = (ExternalMapperData) unmarshaller.unmarshal(stringReader);
+//                    } catch (MarshalException e) {
+//                        ExceptionHandler.process(e);
+//                    } catch (ValidationException e) {
+//                        ExceptionHandler.process(e);
+//                    } finally {
+//                        if (stringReader != null) {
+//                            stringReader.close();
+//                        }
+//                    }
+//                    return externalData;
+//                }
+//            }
+//        }
+//        return null;
+//    }
+
+}

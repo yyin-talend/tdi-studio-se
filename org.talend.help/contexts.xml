@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<contexts>
+	<context id="DBInput">
+		<description>Help about the DBInput component</description>
+		<topic href="guide/components/DBInput.html"
+			label="Help About DBInput" />
+	</context>
+	<context id="DBOutput">
+		<description>Help about the DBOutput component</description>
+		<topic href="guide/components/DBOutput.html"
+			label="Help About DBOutput" />
+	</context>
+	<context id="FileInputCSV">
+		<description>Help about the fileInputCSV component</description>
+		<topic href="guide/components/FileInputCSV.html"
+			label="Help About FileInputCSV" />
+	</context>
+	<context id="FileInputDelimited">
+		<description>
+			Help about the FileInputDelimited component
+		</description>
+		<topic href="guide/components/FileInputDelimited.html"
+			label="Help About FileInputDelimited" />
+	</context>
+	<context id="FileInputPositional">
+		<description>
+			Help about the FileInputPositional component
+		</description>
+		<topic href="guide/components/FileInputPositional.html"
+			label="Help About FileInputPositional" />
+	</context>
+	<context id="FileInputRegex">
+		<description>
+			Help about the FileInputRegex component
+		</description>
+		<topic href="guide/components/FileInputRegex.html"
+			label="Help About FileInputRegex" />
+	</context>
+	<context id="FileList">
+		<description>Help about the FileList component</description>
+		<topic href="guide/components/FileList.html"
+			label="Help About FileList" />
+	</context>
+	<context id="FileOutputDelimited">
+		<description>
+			Help about the FileOutputDelimited component
+		</description>
+		<topic href="guide/components/FileOutputDelimited.html"
+			label="Help About FileOutputDelimited" />
+	</context>
+	<context id="FileOutputXML">
+		<description>
+			Help about the FileOutputXML component
+		</description>
+		<topic href="guide/components/FileOutputXML.html"
+			label="Help About FileOutputXML" />
+	</context>
+	<context id="FTP">
+		<description>Help about the FTP component</description>
+		<topic href="guide/components/FTP.html"
+			label="Help About FTP" />
+	</context>
+	<context id="LogRow">
+		<description>Help about the LogRow component</description>
+		<topic href="guide/components/LogRow.html"
+			label="Help About LogRow" />
+	</context>
+	<context id="Mapper">
+		<description>Help about the Mapper component</description>
+		<topic href="guide/components/Mapper.html" label="Help About Mapper" />
+	</context>
+	<context id="MsgBox">
+		<description>Help about the MsgBox component</description>
+		<topic href="guide/components/MsgBox.html"
+			label="Help About MsgBox" />
+	</context>
+	<context id="Perl">
+		<description>Help about the Perl component</description>
+		<topic href="guide/components/Perl.html"
+			label="Help About Perl" />
+	</context>
+	<context id="PerlRow">
+		<description>Help about the PerlRow component</description>
+		<topic href="guide/components/PerlRow.html"
+			label="Help About PerlRow" />
+	</context>
+	<context id="SendMail">
+		<description>Help about the SendMail component</description>
+		<topic href="guide/components/SendMail.html"
+			label="Help About SendMail" />
+	</context>
+	<context id="System">
+		<description>Help about the System component</description>
+		<topic href="guide/components/System.html"
+			label="Help About System" />
+	</context>
+
+
+
+</contexts>

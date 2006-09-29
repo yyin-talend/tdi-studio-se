@@ -1,0 +1,151 @@
+<%@ jet 
+	package="org.talend.designer.codegen.translators" 
+	imports="
+		org.talend.core.model.process.INode 
+		org.talend.core.model.metadata.IMetadataTable 
+		org.talend.core.model.process.ElementParameterParser
+		org.talend.designer.codegen.config.CodeGeneratorArgument
+		java.util.List
+                java.util.Map
+	"
+	class="FTPMain"
+%>
+
+<%
+	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+	INode node = (INode)codeGenArgument.getArgument();
+	boolean stats = codeGenArgument.isStatistics();
+	
+	List<IMetadataTable> metadatas = node.getMetadataList();
+	if ((metadatas!=null)&&(metadatas.size()>0)) {
+		IMetadataTable metadata = metadatas.get(0);
+		if (metadata!=null) {
+%>
+
+<%
+String localdir    = ElementParameterParser.getValue(node, "__LOCALDIR__");
+String remotedir   = ElementParameterParser.getValue(node, "__REMOTEDIR__");
+String action      = ElementParameterParser.getValue(node, "__ACTION__");
+
+List<Map<String, String>> files = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__FILES__");
+
+// component id
+String cid = metadata.getTableName();
+%>
+use talend::misc;
+
+# keep all "my" variables local to the block, thus we can use several
+# tFTP components in the same process
+{
+    my $localdir  = <%=localdir%>;
+    my $remotedir = <%=remotedir%>;
+    my @files = (
+<%
+  for (int i=0; i<files.size(); i++) {
+    Map<String, String> line = files.get(i);
+%>
+        {
+            filemask => <%= line.get("FILEMASK") %>,
+            newname  => <%= line.get("NEWNAME") %>,
+        },
+<%
+  }
+%>
+    );
+    my $ftp = $ftp_<%=cid%>;
+
+    chdir($localdir)
+        or die "Cannot change local working directory to $localdir ", $@;
+
+    $ftp->cwd($remotedir)
+        or die "Cannot change remote working directory ", $ftp->message;
+
+<%
+if (action.equals("get")) {
+%>
+    foreach my $file (@files) {
+        my $dir     = dirname($file->{filemask});
+        my $pattern = filemaskToRegex(basename($file->{filemask}));
+    
+        $ftp->cwd($dir)
+            or die "Cannot change remote working directory to $dir", $ftp->message;
+     
+        my @raw_filelist = $ftp->ls()
+            or die "ls failed", $ftp->message;
+    
+        my @filelist = grep(
+            /$pattern/,
+            @raw_filelist
+        );
+    
+        foreach my $file (@filelist) {
+            $ftp->get($file)
+                or die "get failed ", $ftp->message;
+        }
+    }
+<%
+}
+else if (action.equals("put")) {
+%>
+    foreach my $file (@files) {
+        my $dir     = dirname($file->{filemask});
+        my $pattern = filemaskToRegex(basename($file->{filemask}));
+    
+        my @filelist = getFileList(
+            filemask        => $pattern,
+            directory       => $dir,
+            case_sensitive  => 1,
+        );
+    
+        chdir($dir)
+            or die "Cannot change local working directory to $dir ", $@;
+    
+        foreach my $file (@filelist) {
+            $ftp->put($file)
+                or die "put failed ", $ftp->message;
+        }
+    }
+<%
+}
+else if (action.equals("delete")) {
+%>
+    foreach my $file (@files) {
+        my $dir     = dirname($file->{filemask});
+        my $pattern = filemaskToRegex(basename($file->{filemask}));
+    
+        $ftp->cwd($dir)
+            or die "Cannot change remote working directory to $dir", $ftp->message;
+     
+        my @raw_filelist = $ftp->ls()
+            or die "ls failed", $ftp->message;
+
+        my @filelist = grep(
+            /$pattern/,
+            @raw_filelist
+        );
+    
+        foreach my $file (@filelist) {
+            $ftp->delete($file)
+                or die "delete failed ", $ftp->message;
+        }
+    }
+<%
+}
+else if (action.equals("rename")) {
+%>
+    foreach my $file (@files) {
+        my $oldname = $file->{filemask};
+        my $newname = $file->{newname};
+
+        $ftp->rename($oldname, $newname)
+            or die 'Cannot rename file ', $ftp->message;
+    }
+<%
+}
+%>
+} # block end
+
+<%
+		}
+	}
+%>

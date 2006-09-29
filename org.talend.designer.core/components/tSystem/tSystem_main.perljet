@@ -1,0 +1,86 @@
+<%@ jet
+	package="org.talend.designer.codegen.translators" 
+	imports="
+		org.talend.core.model.process.INode 
+		org.talend.core.model.metadata.IMetadataTable 
+                org.talend.core.model.metadata.IMetadataColumn
+                org.talend.core.model.process.ElementParameterParser
+		org.talend.designer.codegen.config.CodeGeneratorArgument
+                org.talend.commons.utils.generation.LocationUtils
+                org.talend.commons.utils.generation.EntryLocation
+		java.util.List
+		java.util.Map
+	"
+	class="SystemMain"
+%>
+
+<%
+	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+	INode node = (INode)codeGenArgument.getArgument();
+	boolean stats = codeGenArgument.isStatistics();
+	
+	LocationUtils locationUtils = new LocationUtils();
+
+        String command       = ElementParameterParser.getValue(node, "__COMMAND__");
+        String outputAction  = ElementParameterParser.getValue(node, "__OUTPUT__");
+	
+	List<IMetadataTable> metadatas = node.getMetadataList();
+	if ((metadatas!=null)&&(metadatas.size()>0)) {
+		IMetadataTable metadata = metadatas.get(0);
+		if (metadata!=null) {
+%>
+
+my $command = <%=command%>;
+
+<%
+if (outputAction.equals("OUTPUT_TO_CONSOLE")) {
+%>
+
+system($command);
+
+<%
+}
+else if (outputAction.equals("RETRIEVE_OUTPUT")) {
+%>
+$_globals{<%=metadata.getTableName() %>}{OUTPUT} = `$command`;
+<%
+}
+%>
+
+if ($? == -1) {
+    warn "failed to execute: $!\n";
+    $_globals{<%=metadata.getTableName() %>}{PERL_ERROR_CODE} = $?;
+    $_globals{<%=metadata.getTableName() %>}{PERL_ERROR_MESSAGE} = "failed to execute: $!";
+}
+# elsif ($? & 127) {
+#     warn sprintf(
+#         "child died with signal %d, %s coredump\n",
+#         ($? & 127),
+#         ($? & 128) ? 'with' : 'without'
+#     );
+#
+#     $_globals{<%=metadata.getTableName() %>}{PERL_ERROR_CODE} = ''; # TODO
+# }
+else {
+    $_globals{<%=metadata.getTableName() %>}{PERL_ERROR_CODE} = $? >> 8;
+
+    if ($_globals{<%=metadata.getTableName() %>}{PERL_ERROR_CODE} != 0) {
+        warn sprintf(
+            "child exited with value %d\n",
+            $_globals{<%=metadata.getTableName() %>}{PERL_ERROR_CODE}
+        );
+    }
+}
+
+<%
+    if (stats) {
+%>
+UpdateStat('<%=metadata.getTableName() %>', 1);
+<%
+    }
+%>
+    
+<%
+		}
+	}
+%>

@@ -1,0 +1,122 @@
+<%@ jet 
+  package="org.talend.designer.codegen.translators" 
+  imports="
+		org.talend.core.model.process.INode
+		org.talend.core.model.temp.ECodePart		
+		org.talend.core.model.process.IConnection 
+		org.talend.core.model.metadata.IMetadataTable 
+		org.talend.core.model.process.EConnectionType 
+		org.talend.core.model.process.IExternalNode
+		org.talend.designer.codegen.config.CodeGeneratorArgument
+		java.util.List
+	"
+  class="ComponentPartFooter"     
+%>
+<%
+
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+ECodePart codePart = codeGenArgument.getCodePart();
+boolean trace = codeGenArgument.isTrace();
+%>
+
+<%
+if (!(node instanceof IExternalNode)) {
+  if (codePart.equals(ECodePart.START)) {
+    List<IMetadataTable> metadatas = node.getMetadataList();
+    if ((metadatas!=null)&&(metadatas.size()>0)) {
+      IMetadataTable metadata = metadatas.get(0);
+      if (metadata!=null) {
+        List< ? extends IConnection> conns = node.getOutgoingConnections();
+        for (IConnection conn : conns) {
+          if (conn.getLineStyle().equals(EConnectionType.FLOW_MAIN)) {
+            if (trace) {
+%>
+
+my @colnames_<%=conn.getName() %> = undef;
+if (scalar @{ $desc_<%=node.getUniqueName() %>{schema} }) {
+    @colnames_<%=conn.getName() %> = map { $_->{name} } @{ $desc_<%=node.getUniqueName() %>{schema} };
+}
+
+<%
+            }
+          }
+        }
+      }
+    }
+  }
+  if (codePart.equals(ECodePart.MAIN)) {
+    List<IMetadataTable> metadatas = node.getMetadataList();
+    if ((metadatas!=null)&&(metadatas.size()>0)) {
+      IMetadataTable metadata = metadatas.get(0);
+      if (metadata!=null) {
+        List< ? extends IConnection> conns = node.getOutgoingConnections();
+        for (IConnection conn : conns) {
+          if (conn.getLineStyle().equals(EConnectionType.FLOW_MAIN)) {
+%>
+
+my @<%=conn.getName() %> = @<%=metadata.getTableName() %>;
+
+<%
+          }
+        }
+      }
+    }
+  }
+}
+
+if (codePart.equals(ECodePart.MAIN)) {
+  List<IMetadataTable> metadatas = node.getMetadataList();
+  if ((metadatas!=null)&&(metadatas.size()>0)) {
+    IMetadataTable metadata = metadatas.get(0);
+    if (metadata!=null) {
+      List< ? extends IConnection> conns = node.getOutgoingConnections();
+      for (IConnection conn : conns) {
+        if (conn.getLineStyle().equals(EConnectionType.FLOW_MAIN)) {
+          if (trace) {
+%>
+
+# here we dump the line content for trace purpose
+SendTrace(
+    '<%=conn.getName() %>',
+    ++$<%=conn.getName() %>_trace_num,
+    \@<%=conn.getName() %>,
+    \@colnames_<%=conn.getName() %>,
+);
+
+<%
+          }
+        }
+      }
+    }
+  }
+}
+if (codePart.equals(ECodePart.END)) {
+%>
+
+$_globals{<%=node.getUniqueName() %>}{OK} = true;
+
+<%
+  for (IConnection outgoingConn : node.getOutgoingConnections()) {
+    if (outgoingConn.getLineStyle().equals(EConnectionType.RUN_IF_OK)) {
+%>
+
+<%=outgoingConn.getTarget().getUniqueName() %>_subprocess();
+
+<%
+    }
+    if (outgoingConn.getLineStyle().equals(EConnectionType.RUN_IF)) {
+%>
+
+if (<%=outgoingConn.getCondition() %>) {
+    <%=outgoingConn.getTarget().getUniqueName() %>_subprocess();
+}
+
+<%
+    }
+  }
+}
+%>
+# +-------------------------------------------------------------------------+
+# | [<%=node.getUniqueName() %> <%=codePart %> ] ends here                  |
+# +-------------------------------------------------------------------------+ 

@@ -1,0 +1,66 @@
+<%@ jet package="org.talend.designer.codegen.translators" imports="
+	org.talend.core.model.process.INode 
+	org.talend.core.model.process.ElementParameterParser
+	org.talend.core.model.metadata.IMetadataTable
+    org.talend.core.model.metadata.IMetadataColumn
+	org.talend.designer.codegen.config.CodeGeneratorArgument
+	java.util.List
+" class="FileOutputXMLStart" %>
+
+<%
+	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+	INode node = (INode)codeGenArgument.getArgument();
+	boolean stats = codeGenArgument.isStatistics();
+	
+	List<IMetadataTable> metadatas = node.getMetadataList();
+	if ((metadatas!=null)&&(metadatas.size()>0)) {
+		IMetadataTable metadata = metadatas.get(0);
+		if (metadata!=null) {
+                        String encoding = ElementParameterParser.getValue(node, "__ENCODING__");
+                        if (encoding!=null) {
+                          if (encoding.equals("")) {
+                            encoding = "undef";
+                          }
+                        }
+
+                        String cid = metadata.getTableName();
+%>
+
+use FileHandle;
+
+my %desc_<%=cid %> = (
+    filename => <%=ElementParameterParser.getValue(node, "__FILENAME__") %>,
+    encoding => <%=encoding%> || 'UTF-8',
+    schema        => [
+    <%
+		for (IMetadataColumn column: metadata.getListColumns()) {
+    %>
+    	{
+            name    => '<%=column.getLabel() %>',
+            key     => <%=column.isKey() %>,
+            type    => '<%=column.getType() %>',
+            len     => <%=column.getLength() %>,
+            null    => <%=column.isNullable() %>,
+            default => '<%=column.getDefault() %>',
+            comment => '<%=column.getComment() %>',
+		},
+	<%
+		}
+    %>
+    ]
+);
+
+my $nb_fields_<%=cid %> = scalar @{ $desc_<%=cid %>{schema} };
+
+my $output_FH_<%=cid %> = new FileHandle;
+open($output_FH_<%=cid %>, '>', $desc_<%=cid %>{filename})
+    or die 'cannot open file "' . $desc_<%=cid %>{filename} . '"';
+
+print {$output_FH_<%=cid %>} '<?xml version="1.0" encoding="', $desc_<%=cid %>{encoding}, '"?>', "\n";
+
+print {$output_FH_<%=cid %>} '<array>', "\n";
+
+<%
+		}
+	}
+%>

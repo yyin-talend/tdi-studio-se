@@ -1,0 +1,40 @@
+<%@ jet package="org.talend.designer.codegen.translators" 
+imports="
+	org.talend.core.model.process.INode 
+	org.talend.core.model.process.IConnection 
+	org.talend.core.model.metadata.IMetadataTable 
+	java.util.List
+" class="FileInputMain" %>
+
+# +-------------------------------------------------------------------------+
+# | [inputFile main] starts here                                            |
+# +-------------------------------------------------------------------------+
+<%
+	INode node = (INode) argument;				
+	List<IMetadataTable> metadatas = node.getMetaDataList();
+	if ((metadatas!=null)&&(metadatas.size()>0)) {
+		IMetadataTable metadata = metadatas.get(0);
+		if (metadata!=null) {
+%>
+    my $_<%=metadata.getTableName() %> = <$input_FH_<%=metadata.getTableName() %>>;
+    chomp $_<%=metadata.getTableName() %>;
+
+    # remove empty rows ?
+    next if ($_<%=metadata.getTableName() %> eq '');
+
+    my @<%=metadata.getTableName() %> = split(INPUT_FIELD_SEPARATOR_<%=metadata.getTableName() %>, $_<%=metadata.getTableName() %>);
+
+<%
+		List< ? extends IConnection> conns = node.getOutgoingConnections();
+        	for (IConnection conn : conns) {
+%>
+	my @<%=conn.getName() %> = @<%=metadata.getTableName() %>;
+<%
+        	}
+		}
+	}
+%>
+
+# +-------------------------------------------------------------------------+
+# | [inputFile main] stops here                                             |
+# +-------------------------------------------------------------------------+

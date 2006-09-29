@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin>
+
+   <extension
+         point="org.eclipse.ui.editors">
+      <editor
+            class="org.talend.designer.core.ui.MultiPageTalendEditor"
+            contributorClass="org.talend.designer.core.ui.MultiPageEditorContributor"
+            extensions="tl2"
+            icon="icons/designer.ico"
+            id="org.talend.designer.core.ui.MultiPageTalendEditor"
+            name="Designer">
+      </editor>
+      <editor
+            name="Epic Perl Editor"
+            icon="icons/epic.gif"
+            extensions="pl, ipl, pm, cgi, epl"
+            contributorClass="org.epic.perleditor.editors.PerlActionContributor"
+            class="org.talend.designer.core.ui.editor.StandAloneTalendPerlEditor"
+            id="org.talend.designer.core.ui.editor.StandAloneTalendPerlEditor">
+      </editor> 
+   </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            category="org.talend.core.prefs"
+            class="org.talend.designer.core.ui.preferences.DesignerPreferencePage"
+            id="org.talend.designer.core.ui.preferences.TalendPreferencePage"
+            name="%designer">
+      </page>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.preferences">
+      <initializer
+            class="org.talend.designer.core.ui.preferences.PreferenceInitializer">
+      </initializer>
+   </extension>
+   <extension
+         point="org.eclipse.ui.views.properties.tabbed.propertyContributor">
+      <propertyContributor
+            contributorId="org.talend.designer.core.ui.editor.TalendEditor"
+            labelProvider="org.talend.designer.core.ui.editor.properties.GefEditorLabelProvider"
+            typeMapper="org.talend.designer.core.ui.editor.properties.GefEditorTypeMapper">
+         <propertyCategory category="TalendEditor"/>
+      </propertyContributor>
+   </extension>
+   <extension
+         point="org.eclipse.ui.views.properties.tabbed.propertyTabs">
+      <propertyTabs contributorId="org.talend.designer.core.ui.editor.TalendEditor">
+         <propertyTab
+               category="TalendEditor"
+               id="mainTab"
+               indented="false"
+               label="Main"/>
+         <propertyTab
+               afterTab="mainTab"
+               category="TalendEditor"
+               id="propertyTab"
+               indented="false"
+               label="Properties"/>
+         <propertyTab
+               afterTab="propertyTab"
+               category="TalendEditor"
+               id="viewTab"
+               label="View"/>
+         <propertyTab
+               afterTab="viewTab"
+               category="TalendEditor"
+               id="docTab"
+               label="Documentation"/>
+         <propertyTab
+               afterTab="mainTab"
+               category="TalendEditor"
+               id="contextTab"
+               label="Contexts"/>
+         <propertyTab
+               afterTab="contextTab"
+               category="TalendEditor"
+               id="versionsTab"
+               label="Versions"/>
+         <propertyTab
+               afterTab="versionsTab"
+               category="TalendEditor"
+               id="logsTab"
+               label="Logs"/>
+      </propertyTabs>
+   </extension>
+   <extension
+         point="org.eclipse.ui.views.properties.tabbed.propertySections">
+        <propertySections contributorId="org.talend.designer.core.ui.editor.TalendEditor">
+         <propertySection
+               class="org.talend.designer.core.ui.editor.properties.nodes.MainNodeSection"
+               id="MainNodeSection"
+               tab="mainTab">
+            <input type="org.talend.designer.core.ui.editor.nodes.Node"/>
+            <input type="org.talend.designer.core.ui.editor.nodes.NodeLabel"/>
+       </propertySection>
+         <propertySection
+               class="org.talend.designer.core.ui.editor.properties.nodes.PropertyNodeSection"
+               id="PropertyNodeSection"
+               tab="propertyTab">
+            <input type="org.talend.designer.core.ui.editor.nodes.Node"/>
+            <input type="org.talend.designer.core.ui.editor.nodes.NodeLabel"/>
+         </propertySection>
+         <propertySection
+               class="org.talend.designer.core.ui.editor.properties.nodes.ViewNodeSection"
+               id="ViewNodeSection"
+               tab="viewTab">
+            <input type="org.talend.designer.core.ui.editor.nodes.Node"/>
+            <input type="org.talend.designer.core.ui.editor.nodes.NodeLabel"/>
+         </propertySection>
+         <propertySection
+               class="org.talend.designer.core.ui.editor.properties.nodes.DocumentationNodeSection"
+               id="DocumentationNodeSection"
+               tab="docTab">
+            <input type="org.talend.designer.core.ui.editor.nodes.Node"/>
+            <input type="org.talend.designer.core.ui.editor.nodes.NodeLabel"/>
+         </propertySection>
+         <propertySection
+               class="org.talend.designer.core.ui.editor.properties.connections.MainConnectionSection"
+               id="MainConnectionSection"
+               tab="mainTab">
+            <input type="org.talend.designer.core.ui.editor.connections.Connection"/>
+            <input type="org.talend.designer.core.ui.editor.connections.ConnectionLabel"/>
+         </propertySection>
+         <propertySection
+               class="org.talend.designer.core.ui.editor.properties.process.MainProcessSection"
+               id="MainProcessSection"
+               tab="mainTab">
+            <input type="org.talend.designer.core.ui.editor.nodecontainer.NodeContainer"/>
+         </propertySection>
+         <propertySection
+               class="org.talend.designer.core.ui.editor.properties.process.ContextProcessSection"
+               id="ContextProcessSection"
+               tab="contextTab">
+            <input type="org.talend.designer.core.ui.editor.process.Process"/>
+            <input type="org.talend.designer.core.ui.editor.nodecontainer.NodeContainer"/>
+         </propertySection>
+         <propertySection
+               class="org.talend.designer.core.ui.editor.properties.process.VersionsProcessSection"
+               id="VersionsProcessSection"
+               tab="versionsTab">
+         </propertySection>
+         <propertySection
+               class="org.talend.designer.core.ui.editor.properties.process.LogsProcessSection"
+               id="LogsProcessSection"
+               tab="logsTab">
+         </propertySection>
+      </propertySections>
+   </extension>
+   <extension
+         point="org.eclipse.ui.views">
+      <view
+            allowMultiple="false"
+            category="org.talend.core.root"
+            class="org.talend.designer.core.ui.views.CodeView"
+            icon="icons/codeViewer_view.gif"
+            id="org.talend.designer.core.codeView"
+            name="Code Viewer"/>
+                  <view
+                        allowMultiple="false"
+                        category="org.talend.core.root"
+                        class="org.talend.designer.core.ui.views.problems.ProblemsView"
+                        icon="icons/problems_view.gif"
+                        id="org.talend.designer.core.ui.views.ProblemsView"
+                        name="Problems"/>
+                  <view
+                        category="org.talend.core.root"
+                        class="org.talend.designer.core.ui.views.modules.ModulesView"
+                        icon="icons/modules_view.gif"
+                        id="org.talend.designer.core.ui.views.ModulesView"
+                        name="Modules"/>
+   </extension>
+   <extension
+         point="org.talend.repository.actions">
+      <Action
+            class="org.talend.designer.core.ui.action.EditProcess"
+            id="org.talend.designer.core.actions.editprocess"
+            level="10"
+            name="Edit process"/>
+      <Action
+            class="org.talend.designer.core.ui.action.CreateProcess"
+            id="org.talend.designer.core.actions.createprocess"
+            level="10"
+            name="Create process"/>
+      <Action
+            class="org.talend.designer.core.ui.action.EditRoutinesAction"
+            id="org.talend.designer.core.actions.editroutines"
+            level="10"
+            name="Edit routines"/>
+   </extension>
+</plugin>

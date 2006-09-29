@@ -1,0 +1,23 @@
+<%@ jet package="org.talend.designer.codegen.translators" imports="org.talend.core.model.process.INode org.talend.core.model.metadata.IMetadataTable java.util.List" class="FileInputEnd" %>
+
+# +-------------------------------------------------------------------------+
+# | [inputFile end] starts here                                             |
+# +-------------------------------------------------------------------------+
+<%
+	INode node = (INode) argument;
+	List<IMetadataTable> metadatas = node.getMetaDataList();
+	if ((metadatas!=null)&&(metadatas.size()>0)) {
+		IMetadataTable metadata = metadatas.get(0);
+		if (metadata!=null) {
+%>
+
+}
+
+close($input_FH_<%=metadata.getTableName() %>);
+<%
+		}
+	}
+%>
+# +-------------------------------------------------------------------------+
+# | [inputFile end] stops here                                              |
+# +-------------------------------------------------------------------------+

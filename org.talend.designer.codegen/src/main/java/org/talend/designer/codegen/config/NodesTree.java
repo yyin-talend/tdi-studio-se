@@ -1,0 +1,97 @@
+// ============================================================================
+//
+// Talend Community Edition
+//
+// Copyright (C) 2006 Talend - www.talend.com
+//
+// This library is free software; you can redistribute it and/or
+// modify it under the terms of the GNU Lesser General Public
+// License as published by the Free Software Foundation; either
+// version 2.1 of the License, or (at your option) any later version.
+//
+// This library is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+// Lesser General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program; if not, write to the Free Software
+// Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+//
+// ============================================================================
+package org.talend.designer.codegen.config;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.talend.core.model.process.INode;
+
+/**
+ * A NodesTree is the Code Gerator Implementation of a process. A NodesTree is built using the Nodes of the Process.
+ * It's made of a list of NodesSubTree.
+ * 
+ * $Id$
+ */
+public class NodesTree {
+
+    private List<NodesSubTree> subTrees;
+
+    private List<? extends INode> nodes;
+
+    private List<INode> rootNodes;
+
+    /**
+     * Constuctor for NodesTree.
+     * 
+     * @param List of Available Nodes in this tree.
+     */
+    public NodesTree(List<? extends INode> treeNodes) {
+        this.nodes = treeNodes;
+        buildRootNodes();
+        buildSubTrees();
+    }
+
+    /**
+     * Build SubTrees List.
+     */
+    private void buildSubTrees() {
+        subTrees = new ArrayList<NodesSubTree>();
+        for (INode node : nodes) {
+            if ((node.isSubProcessStart()) && (node.isActivate())) {
+                subTrees.add(new NodesSubTree(node));
+            }
+        }
+    }
+
+    /**
+     * Build Root Nodes List.
+     * 
+     * @return
+     */
+    public void buildRootNodes() {
+        rootNodes = new ArrayList<INode>();
+        for (INode node : nodes) {
+            if ((node.isStart()) && (node.isActivate())) {
+                rootNodes.add(node);
+            }
+        }
+    }
+
+    /**
+     * Getter for RootNodes.
+     * 
+     * @return
+     */
+    public List<INode> getRootNodes() {
+        return rootNodes;
+    }
+
+    /**
+     * Getter for subTrees.
+     * 
+     * @return the subTrees
+     */
+    public List<NodesSubTree> getSubTrees() {
+        return this.subTrees;
+    }
+}

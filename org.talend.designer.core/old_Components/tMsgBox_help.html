@@ -1,0 +1,164 @@
+<html><head />
+<body bgcolor="#FFFFFF">
+<META http-equiv="Content-Type" content="text/html; charset=UTF-16">
+<a name="HOME"></a> 
+<table border="0" cellpadding="4" cellspacing="1" width="100%">
+  <thead> 
+  <tr bgcolor="#EEEEEE"> 
+    <td> 
+      <div align="center"></div>
+    </td>
+    <td><font face="Arial, Helvetica, sans-serif" size="2"><b>tMsgBox</b></font></td>
+  </tr>
+  </thead><tbody> 
+  <tr bgcolor="#A9D3EB" valign="top"> 
+    <td valign="top" height="37"><span style="font-family:Arial; font-size:x-small; "><font face="Arial, Helvetica, sans-serif" size="2">Purpose 
+      </font></span></td>
+    <td bgcolor="#A9D3EB" height="37"><span style="font-family:Arial; font-size:x-small; "><font face="Arial, Helvetica, sans-serif" size="2">Create 
+      a dialogbox containing a message.<br>
+      You can specifies title, icon and buttons of the dialog box. </font> </span></td>
+  </tr>
+  <tr bgcolor="#A9D3EB" valign="top"> 
+    <td valign="top"><font face="Arial, Helvetica, sans-serif" size="2">Plateform</font></td>
+    <td><span style="font-family:Arial; font-size:x-small; "><font face="Arial, Helvetica, sans-serif" size="2">Win32</font> 
+      </span></td>
+  </tr>
+  <tr bgcolor="#A9D3EB" valign="top"> 
+    <td valign="top"><font face="Arial, Helvetica, sans-serif" size="2">Version</font></td>
+    <td><span style="font-family:Arial; font-size:x-small; "><font face="Arial, Helvetica, sans-serif" size="2">0.101 
+      (ALPHA)</font> </span></td>
+  </tr>
+  <tr bgcolor="#A9D3EB" valign="top"> 
+    <td valign="top"><font face="Arial, Helvetica, sans-serif" size="2">Signature</font></td>
+    <td><span style="font-family:Arial; font-size:x-small; "><font face="Arial, Helvetica, sans-serif" size="2">This 
+      component is signed by talend</font></span></td>
+  </tr>
+  </tbody> 
+</table>
+<br>
+<table border="0" cellpadding="4" cellspacing="1" width="100%"><tbody><tr bgcolor="#AAAAAA">
+					
+    <td height="22"><span style="font-family:Arial; font-size:x-small; font-style:italic; ">Example 
+      :</span></td>
+				</tr>
+				<tr bgcolor="#A9D3EB" valign="top">
+					
+    <td valign="top">
+
+      <PRE><B>tMsgBox</B>(
+      Message =&gt;  "We're currently running on a " . Win32::GetOSName() . " OS !",
+      Title =&gt;  'My OS...',
+      Icon =&gt; MB_ICONINFORMATION,
+      Buttons =&gt; 0 );
+</PRE>
+</td>
+				</tr>
+			</tbody></table>
+<span style="font-family:Arial; font-size:x-small; ">Parameters :</span><br>
+<table border="0" cellpadding="4" cellspacing="1">
+  <thead>
+  <tr bgcolor="#AAAAAA"> 
+    <td><span style="font-family:Arial; font-size:x-small; ">Name</span></td>
+    <td><span style="font-family:Arial; font-size:x-small; ">Documentation</span></td>
+    <td><span style="font-family:Arial; font-size:x-small; ">Req.&nbsp;?</span></td>
+    <td><span style="font-family:Arial; font-size:x-small; ">Default value</span></td>
+    <td><span style="font-family:Arial; font-size:x-small; ">Type</span></td>
+  </tr>
+  </thead><tbody>
+  <tr bgcolor="#A9D3EB" valign="top"> 
+    <td valign="top"><span style="font-family:Arial; font-size:x-small; "> <A NAME="P_TITLE">Title</A></SPAN></td>
+    <td><span style="font-family:Arial; font-size:x-small; "> The title of the 
+      message box. </span></td>
+    <td><span style="font-family:Arial; font-size:x-small; ">No</span></td>
+    <td><span style="font-family:Arial; font-size:x-small; ">'Integration Studio'</span></td>
+    <td><span style="font-family:Arial; font-size:x-small; ">STRING</span></td>
+  </tr>
+  <tr bgcolor="#A9D3EB" valign="top"> 
+    <td valign="top"><span style="font-family:Arial; font-size:x-small; "><a name="P_MESSAGE">Message</a></span></td>
+    <td><span style="font-family:Arial; font-size:x-small; ">The message that 
+      will be displayed in the the message box.<BR>
+      <BR>
+      <I>Note : you can use standard IS variable in it.</I> </span></td>
+    <td><span style="font-family:Arial; font-size:x-small; ">No</span></td>
+    <td><span style="font-family:Arial; font-size:x-small; ">'Integration Studio 
+      Message from $caller !'</span></td>
+    <td><span style="font-family:Arial; font-size:x-small; ">STRING</span></td>
+  </tr>
+  <tr bgcolor="#A9D3EB" valign="top"> 
+    <td valign="top"><span style="font-family:Arial; font-size:x-small; "><a name="P_ICON"></a>Icon</span></td>
+    <td><span style="font-family:Arial; font-size:x-small; "> The icon which will 
+      be display in the left upper corner of the message box.<BR>
+      This parameter can take one of the following value :
+      <UL>
+        <LI> MB_ICONSTOP "X" in a red circle 
+        <LI> MB_ICONQUESTION question mark in a bubble 
+        <LI> MB_ICONEXCLAMATION exclamation mark in a yellow triangle 
+        <LI> MB_ICONINFORMATION "i" in a bubble 
+      </UL>
+      </span></td>
+    <td><span style="font-family:Arial; font-size:x-small; ">No</span></td>
+    <td><span style="font-family:Arial; font-size:x-small; ">MB_ICONINFORMATION</span></td>
+    <td><span style="font-family:Arial; font-size:x-small; ">ELT</span></td>
+  </tr>
+  <tr bgcolor="#A9D3EB" valign="top"> 
+    <td valign="top"><span style="font-family:Arial; font-size:x-small; "><a name="P_BUTTONS"></a>Buttons</span></td>
+    <td><span style="font-family:Arial; font-size:x-small; "> The button(s) of 
+      the message box.<BR>
+      This parameter can take one of the following value :
+      <UL>
+        <LI>OK (code 0) 
+        <LI>OK and Cancel (code 1) 
+        <LI>Abort, Retry, and Ignore (code 2) 
+        <LI>Yes, No and Cancel (code 3) 
+        <LI>Yes and No (code 4) 
+        <LI>Retry and Cancel (code 5)
+      </UL>
+      </span></td>
+    <td><span style="font-family:Arial; font-size:x-small; ">No</span></td>
+    <td><span style="font-family:Arial; font-size:x-small; ">OK</span></td>
+    <td><span style="font-family:Arial; font-size:x-small; ">INT</span></td>
+  </tr>
+  </tbody>
+</table>
+<span style="font-family:Arial; font-size:x-small; ">Returns :</span> 
+<table border="0" cellpadding="4" cellspacing="1" width="100%">
+  <thead> 
+  <tr bgcolor="#AAAAAA"> 
+    <td><span style="font-family:Arial; font-size:x-small; ">Name</span></td>
+    <td><span style="font-family:Arial; font-size:x-small; ">Type</span></td>
+    <td width="100%"><span style="font-family:Arial; font-size:x-small; ">Documentation</span></td>
+  </tr>
+  </thead><tbody> 
+  <tr bgcolor="#A9D3EB" valign="top"> 
+    <td valign="top"><span style="font-family:Arial; font-size:x-small; ">Error 
+      Code</span></td>
+    <td><span style="font-family:Arial; font-size:x-small; ">INTEGER</span></td>
+    <td><span style="font-family:Arial; font-size:x-small; ">The function returns 
+      the menu id of the selected push button:
+      <UL>
+        <LI>0 Error 
+        <LI>1 OK 
+        <LI>2 Cancel 
+        <LI>3 Abort 
+        <LI>4 Retry 
+        <LI>5 Ignore 
+        <LI>6 Yes 
+        <LI>7 No 
+      </UL>
+      </span></td>
+  </tr>
+  <tr bgcolor="#A9D3EB" valign="top"> 
+    <td valign="top"><span style="font-family:Arial; font-size:x-small; ">Error 
+      Message</span></td>
+    <td><span style="font-family:Arial; font-size:x-small; ">STRING</span></td>
+    <td><span style="font-family:Arial; font-size:x-small; "> The error message 
+      corresponding to the error code. </span></td>
+  </tr>
+  <tr> 
+    <td height="9"><img height="1" width="85" src="/spacer.gif"></td>
+    <td><img height="1" width="56" src="/spacer.gif"></td>
+    <td></td>
+  </tr>
+  </tbody> 
+</table>
+	</body></html>

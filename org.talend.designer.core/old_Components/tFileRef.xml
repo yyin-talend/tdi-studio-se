@@ -1,0 +1,95 @@
+<COMPONENT>
+   <HEADER NAME="tFileRef" ID="XXX-XXX-XXX" DISPLAY_NAME="" PLATEFORM="WIN32" SERIAL="XXX-XXX-XXX" VERSION="0.101" STATUS="ALPHA" ICON="tFileRef32.ico" COMPATIBILITY="WIN32" AUTHOR="talend" RELEASE_DATE="20050320A" FAMILY="File">
+      <SIGNATURE>XXX-XXX-XXX</SIGNATURE>
+   </HEADER>
+   <DISPLAY>
+      <POSITION LEFT="100" TOP="100" WIDTH="49" HEIGHT="49"/>
+      <LABEL FORMAT="label : __NAME__" VALUE="" SHOW="true" DEFAULT=""/>
+      <HINT FORMAT="hint : __NAME__" VALUE="" SHOW="false" DEFAULT=""/>
+   </DISPLAY>
+   <DOCUMENTATION>
+      <URL/>
+   </DOCUMENTATION>
+   <CODE LANGUAGE="Perl" LOCALISATION="INTERNAL" URI=".">
+      <VALUE/>
+      <CALL/>
+      <CALLREF UNIT="files.pm">__NAME___FD = (
+ type           =&gt; 'input',
+ filename       =&gt; __FILENAME__,
+ filehandle     =&gt; __NAME___FH,
+ rowseparator   =&gt; __ROWSEPARATOR__,
+ fieldseparator =&gt; __FIELDSEPARATOR__,
+ includeheader  =&gt; 0,
+ startatline    =&gt; __STARTATLINE__,
+ debug          =&gt; 0,
+ columns        =&gt; __COLUMNS__);
+</CALLREF>
+   </CODE>
+   <CONNECTORS>
+      <CONNECTOR DIRECTION="IN" CTYPE="START" DISPLAY_NAME="Start">
+         <OTYPES>
+            <OTYPE>TFileDesc</OTYPE>
+         </OTYPES>
+      </CONNECTOR>
+      <CONNECTOR DIRECTION="OUT" CTYPE="BEFORE" DISPLAY_NAME="Before">
+         <OTYPES>
+            <OTYPE>TFileDesc</OTYPE>
+            <OTYPE>THashRow (FirstRow)</OTYPE>
+         </OTYPES>
+         <CONNECTIONS>
+            <TO COMPONENT_ID="AA" CTYPE="AA" OTYPE="AA"/>
+            <TO COMPONENT_ID="AA" CTYPE="AA" OTYPE="AA"/>
+            <FROM COMPONENT_ID="AA" CTYPE="AA" OTYPE="AA"/>
+            <FROM COMPONENT_ID="AA" CTYPE="AA" OTYPE="AA"/>
+         </CONNECTIONS>
+      </CONNECTOR>
+      <CONNECTOR DIRECTION="OUT" CTYPE="AFTER" DISPLAY_NAME="After">
+         <OTYPES>
+            <OTYPE>TFileDesc</OTYPE>
+            <OTYPE>THashRow (LastRow + RowNumber)</OTYPE>
+         </OTYPES>
+      </CONNECTOR>
+      <CONNECTOR DIRECTION="OUT" CTYPE="OK" DISPLAY_NAME="Ok">
+         <OTYPES>
+            <OTYPE>TFileDesc</OTYPE>
+            <OTYPE>THashRow (LastRow + RowNumber)</OTYPE>
+            <OTYPE>TErrorNumber</OTYPE>
+            <OTYPE>TErrorMessage</OTYPE>
+         </OTYPES>
+      </CONNECTOR>
+      <CONNECTOR DIRECTION="OUT" CTYPE="ERROR" DISPLAY_NAME="Error">
+         <OTYPES>
+            <OTYPE>TFileDesc</OTYPE>
+            <OTYPE>THashRow (LastRow + RowNumber)</OTYPE>
+            <OTYPE>TErrorNumber</OTYPE>
+            <OTYPE>TErrorMessage</OTYPE>
+         </OTYPES>
+      </CONNECTOR>
+   </CONNECTORS>
+   <PARAMETERS>
+      <PARAMETER NAME="FILENAME" DISPLAY_NAME="File Name" TYPE="STRING" FIELD="TEXT" SHOW="YES" REQUIRED="No" DEFAULT="'c:\talend\input\bcpdemo.csv'" READONLY="FALSE">
+         <VALUE/>
+      </PARAMETER>
+      <PARAMETER NAME="ROWSEPARATOR" DISPLAY_NAME="Row Separator" TYPE="STRING" FIELD="TEXT" SHOW="YES" REQUIRED="No" DEFAULT="&quot;\n&quot;" READONLY="FALSE">
+         <VALUE>''</VALUE>
+      </PARAMETER>
+      <PARAMETER NAME="FIELDSEPARATOR" DISPLAY_NAME="Field Separator" TYPE="STRING" FIELD="TEXT" SHOW="YES" REQUIRED="No" DEFAULT="&quot;;&quot;" READONLY="FALSE">
+         <VALUE>''</VALUE>
+      </PARAMETER>
+      <PARAMETER NAME="STARTATLINE" DISPLAY_NAME="Start At Line" TYPE="STRING" FIELD="TEXT" SHOW="YES" REQUIRED="No" DEFAULT="0" READONLY="FALSE">
+         <VALUE>''</VALUE>
+      </PARAMETER>
+      <PARAMETER NAME="COLUMNS" DISPLAY_NAME="Columns" TYPE="STRING" FIELD="MEMO" SHOW="YES" REQUIRED="No" DEFAULT="['id', 'name', 'addr1', 'state', 'id2', 'RegTime']" READONLY="FALSE">
+         <VALUE/>
+      </PARAMETER>
+      <PARAMETER NAME="WHILECODE" DISPLAY_NAME="While Call" TYPE="STRING" FIELD="TEXT" SHOW="YES" REQUIRED="No" DEFAULT="\&amp;tNothing" READONLY="TRUE">
+         <VALUE>''</VALUE>
+      </PARAMETER>
+   </PARAMETERS>
+   <RETURNS>
+      <RETURN NAME="FILENAME" DISPLAY_NAME="Current Row" TYPE="STRING" AVAILABILITY="In Row" CODE="$gv{tFileInput}{Row}"/>
+      <RETURN NAME="FILECOUNT" DISPLAY_NAME="Number of row" TYPE="STRING" AVAILABILITY="After" CODE="$gv{tFileInput}{Count}"/>
+      <RETURN NAME="ERROR_CODE" DISPLAY_NAME="Error Code" TYPE="INTEGER" AVAILABILITY="After" CODE="$gv{tFileInput}{Error}{Code}"/>
+      <RETURN NAME="ERROR_MESSAGE" DISPLAY_NAME="Error Message" TYPE="STRING" AVAILABILITY="After" CODE="$gv{tFileInput}{Error}{Message}"/>
+   </RETURNS>
+</COMPONENT>

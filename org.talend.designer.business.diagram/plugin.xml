@@ -1,0 +1,443 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+
+<plugin>
+
+   <extension point="org.eclipse.core.runtime.preferences">
+      <initializer class="org.talend.designer.business.model.business.diagram.part.BusinessDiagramPreferenceInitializer"/>
+   </extension>
+
+  <extension point="org.eclipse.team.core.fileTypes">
+      <fileTypes
+         type="text"
+         extension="business_diagram">
+      </fileTypes>
+  </extension>
+
+   <extension point="org.eclipse.emf.ecore.extension_parser">
+      <parser
+         type="business_diagram"
+         class="org.eclipse.gmf.runtime.emf.core.resources.GMFResourceFactory">
+      </parser>
+   </extension>
+
+   <extension point="org.eclipse.ui.editors">
+     <editor
+        id="org.talend.designer.business.model.business.diagram.part.BusinessDiagramEditorID"
+        name="Business Diagram Editor"
+        icon="icons/obj16/BusinessDiagramFile.gif"
+        extensions="business_diagram"
+        default="true"
+        class="org.talend.designer.business.model.business.diagram.part.BusinessDiagramEditor"
+        matchingStrategy="org.talend.designer.business.model.business.diagram.part.BusinessMatchingStrategy"
+        contributorClass="org.talend.designer.business.model.business.diagram.part.BusinessDiagramActionBarContributor">
+     </editor>
+   </extension>
+
+   <extension point="org.eclipse.ui.newWizards">
+  	  <wizard
+  	     name="Business Diagram"
+  	     icon="icons/obj16/BusinessDiagramFile.gif"
+  	     category="org.talend.designer.core.ui"
+  	     class="org.talend.designer.business.model.business.diagram.part.BusinessCreationWizard"
+  	     id="org.talend.designer.business.model.business.diagram.part.BusinessCreationWizardID">
+  	  	 <description>
+  	  		Creates Business diagram.
+  	  	 </description>  
+      </wizard>
+   </extension>
+
+   <extension point="org.eclipse.ui.popupMenus">
+      <objectContribution
+            id="org.talend.designer.business.diagram.ui.objectContribution.IFile1"
+            nameFilter="*.business"
+            objectClass="org.eclipse.core.resources.IFile">
+         <action
+               label="Initialize business_diagram diagram file"
+               class="org.talend.designer.business.model.business.diagram.part.BusinessInitDiagramFileAction"
+               menubarPath="additions"
+               enablesFor="1"
+               id="org.talend.designer.business.model.business.diagram.part.BusinessInitDiagramFileActionID">
+         </action>
+      </objectContribution>  
+      <objectContribution
+            adaptable="false"
+            id="org.talend.designer.business.diagram.ui.objectContribution.BusinessProcessEditPart2"
+            objectClass="org.talend.designer.business.model.business.diagram.edit.parts.BusinessProcessEditPart">
+         <action
+               class="org.talend.designer.business.model.business.diagram.part.BusinessLoadResourceAction"
+               enablesFor="1"
+               id="org.talend.designer.business.model.business.diagram.part.BusinessLoadResourceActionID"
+               label="Load Resource..."
+               menubarPath="additions">
+         </action>
+      </objectContribution>                      
+  </extension>
+
+   <extension point="org.eclipse.gmf.runtime.common.ui.services.action.contributionItemProviders">
+      <contributionItemProvider class="org.talend.designer.business.model.business.diagram.providers.BusinessContributionItemProvider">
+         <Priority name="Low">
+         </Priority>
+         <partContribution id="org.talend.designer.business.model.business.diagram.part.BusinessDiagramEditorID">
+            <partAction menubarPath="/file/print" id="printPreviewAction">
+            </partAction>
+         </partContribution>
+      </contributionItemProvider>
+      <contributionItemProvider
+            class="org.eclipse.gmf.runtime.diagram.ui.providers.DiagramContributionItemProvider"
+            checkPluginLoaded="false">
+         <Priority name="Low"/>
+         <popupContribution class="org.eclipse.gmf.runtime.diagram.ui.providers.DiagramContextMenuProvider">
+            <popupStructuredContributionCriteria objectClass="org.talend.designer.business.model.business.diagram.edit.parts.ActionBusinessItemEditPart"/>
+            <popupPredefinedItem id="deleteFromDiagramAction" remove="true"/>
+         </popupContribution>
+         <popupContribution class="org.eclipse.gmf.runtime.diagram.ui.providers.DiagramContextMenuProvider">
+            <popupStructuredContributionCriteria objectClass="org.talend.designer.business.model.business.diagram.edit.parts.ActionBusinessItemNameEditPart"/>
+            <popupPredefinedItem id="deleteFromDiagramAction" remove="true"/>
+         </popupContribution>
+         <popupContribution class="org.eclipse.gmf.runtime.diagram.ui.providers.DiagramContextMenuProvider">
+            <popupStructuredContributionCriteria objectClass="org.talend.designer.business.model.business.diagram.edit.parts.TerminalBusinessItemEditPart"/>
+            <popupPredefinedItem id="deleteFromDiagramAction" remove="true"/>
+         </popupContribution>
+         <popupContribution class="org.eclipse.gmf.runtime.diagram.ui.providers.DiagramContextMenuProvider">
+            <popupStructuredContributionCriteria objectClass="org.talend.designer.business.model.business.diagram.edit.parts.TerminalBusinessItemNameEditPart"/>
+            <popupPredefinedItem id="deleteFromDiagramAction" remove="true"/>
+         </popupContribution>
+         <popupContribution class="org.eclipse.gmf.runtime.diagram.ui.providers.DiagramContextMenuProvider">
+            <popupStructuredContributionCriteria objectClass="org.talend.designer.business.model.business.diagram.edit.parts.DocumentBusinessItemEditPart"/>
+            <popupPredefinedItem id="deleteFromDiagramAction" remove="true"/>
+         </popupContribution>
+         <popupContribution class="org.eclipse.gmf.runtime.diagram.ui.providers.DiagramContextMenuProvider">
+            <popupStructuredContributionCriteria objectClass="org.talend.designer.business.model.business.diagram.edit.parts.DocumentBusinessItemNameEditPart"/>
+            <popupPredefinedItem id="deleteFromDiagramAction" remove="true"/>
+         </popupContribution>
+         <popupContribution class="org.eclipse.gmf.runtime.diagram.ui.providers.DiagramContextMenuProvider">
+            <popupStructuredContributionCriteria objectClass="org.talend.designer.business.model.business.diagram.edit.parts.DatabaseBusinessItemEditPart"/>
+            <popupPredefinedItem id="deleteFromDiagramAction" remove="true"/>
+         </popupContribution>
+         <popupContribution class="org.eclipse.gmf.runtime.diagram.ui.providers.DiagramContextMenuProvider">
+            <popupStructuredContributionCriteria objectClass="org.talend.designer.business.model.business.diagram.edit.parts.DatabaseBusinessItemNameEditPart"/>
+            <popupPredefinedItem id="deleteFromDiagramAction" remove="true"/>
+         </popupContribution>
+         <popupContribution class="org.eclipse.gmf.runtime.diagram.ui.providers.DiagramContextMenuProvider">
+            <popupStructuredContributionCriteria objectClass="org.talend.designer.business.model.business.diagram.edit.parts.ListBusinessItemEditPart"/>
+            <popupPredefinedItem id="deleteFromDiagramAction" remove="true"/>
+         </popupContribution>
+         <popupContribution class="org.eclipse.gmf.runtime.diagram.ui.providers.DiagramContextMenuProvider">
+            <popupStructuredContributionCriteria objectClass="org.talend.designer.business.model.business.diagram.edit.parts.ListBusinessItemNameEditPart"/>
+            <popupPredefinedItem id="deleteFromDiagramAction" remove="true"/>
+         </popupContribution>
+         <popupContribution class="org.eclipse.gmf.runtime.diagram.ui.providers.DiagramContextMenuProvider">
+            <popupStructuredContributionCriteria objectClass="org.talend.designer.business.model.business.diagram.edit.parts.DataBusinessItemEditPart"/>
+            <popupPredefinedItem id="deleteFromDiagramAction" remove="true"/>
+         </popupContribution>
+         <popupContribution class="org.eclipse.gmf.runtime.diagram.ui.providers.DiagramContextMenuProvider">
+            <popupStructuredContributionCriteria objectClass="org.talend.designer.business.model.business.diagram.edit.parts.DataBusinessItemNameEditPart"/>
+            <popupPredefinedItem id="deleteFromDiagramAction" remove="true"/>
+         </popupContribution>
+         <popupContribution class="org.eclipse.gmf.runtime.diagram.ui.providers.DiagramContextMenuProvider">
+            <popupStructuredContributionCriteria objectClass="org.talend.designer.business.model.business.diagram.edit.parts.InputBusinessItemEditPart"/>
+            <popupPredefinedItem id="deleteFromDiagramAction" remove="true"/>
+         </popupContribution>
+         <popupContribution class="org.eclipse.gmf.runtime.diagram.ui.providers.DiagramContextMenuProvider">
+            <popupStructuredContributionCriteria objectClass="org.talend.designer.business.model.business.diagram.edit.parts.InputBusinessItemNameEditPart"/>
+            <popupPredefinedItem id="deleteFromDiagramAction" remove="true"/>
+         </popupContribution>
+         <popupContribution class="org.eclipse.gmf.runtime.diagram.ui.providers.DiagramContextMenuProvider">
+            <popupStructuredContributionCriteria objectClass="org.talend.designer.business.model.business.diagram.edit.parts.DecisionBusinessItemEditPart"/>
+            <popupPredefinedItem id="deleteFromDiagramAction" remove="true"/>
+         </popupContribution>
+         <popupContribution class="org.eclipse.gmf.runtime.diagram.ui.providers.DiagramContextMenuProvider">
+            <popupStructuredContributionCriteria objectClass="org.talend.designer.business.model.business.diagram.edit.parts.DecisionBusinessItemNameEditPart"/>
+            <popupPredefinedItem id="deleteFromDiagramAction" remove="true"/>
+         </popupContribution>
+         <popupContribution class="org.eclipse.gmf.runtime.diagram.ui.providers.DiagramContextMenuProvider">
+            <popupStructuredContributionCriteria objectClass="org.talend.designer.business.model.business.diagram.edit.parts.BusinessItemRelationshipEditPart"/>
+            <popupPredefinedItem id="deleteFromDiagramAction" remove="true"/>
+         </popupContribution>
+         <popupContribution class="org.eclipse.gmf.runtime.diagram.ui.providers.DiagramContextMenuProvider">
+            <popupStructuredContributionCriteria objectClass="org.talend.designer.business.model.business.diagram.edit.parts.BusinessItemRelationshipNameEditPart"/>
+            <popupPredefinedItem id="deleteFromDiagramAction" remove="true"/>
+            <popupPredefinedItem id="deleteFromModelAction" remove="true"/>
+         </popupContribution>
+      </contributionItemProvider>
+   </extension>
+
+   <extension point="org.eclipse.gmf.runtime.common.ui.services.action.globalActionHandlerProviders">
+      <GlobalActionHandlerProvider
+         class="org.eclipse.gmf.runtime.diagram.ui.providers.DiagramGlobalActionHandlerProvider"
+         id="BusinessPresentation">
+         <Priority name="Lowest"/>
+         <ViewId id="org.talend.designer.business.model.business.diagram.part.BusinessDiagramEditorID">
+            <ElementType class="org.eclipse.gmf.runtime.diagram.ui.editparts.IGraphicalEditPart">
+               <GlobalActionId actionId="delete"/>
+            </ElementType>
+            <ElementType class="org.eclipse.gmf.runtime.diagram.ui.editparts.DiagramEditPart">
+               <GlobalActionId actionId="save"/>
+            </ElementType>
+         </ViewId>
+      </GlobalActionHandlerProvider>
+      <GlobalActionHandlerProvider
+         class="org.eclipse.gmf.runtime.diagram.ui.printing.render.providers.DiagramWithPrintGlobalActionHandlerProvider"
+         id="BusinessPresentationPrint">
+         <Priority name="Lowest"/>
+         <ViewId id="org.talend.designer.business.model.business.diagram.part.BusinessDiagramEditorID">
+            <ElementType class="org.eclipse.gmf.runtime.diagram.ui.editparts.IGraphicalEditPart">
+               <GlobalActionId actionId="print"/>
+            </ElementType>
+         </ViewId>
+      </GlobalActionHandlerProvider>
+      <GlobalActionHandlerProvider
+         class="org.eclipse.gmf.runtime.diagram.ui.providers.ide.providers.DiagramIDEGlobalActionHandlerProvider"
+         id="BusinessPresentationIDE">
+         <Priority name="Lowest"/>
+         <ViewId id="org.talend.designer.business.model.business.diagram.part.BusinessDiagramEditorID">
+            <ElementType class="org.eclipse.gmf.runtime.diagram.ui.editparts.IGraphicalEditPart">
+               <GlobalActionId actionId="bookmark"/>
+            </ElementType>
+         </ViewId>
+      </GlobalActionHandlerProvider>
+      <GlobalActionHandlerProvider
+            class="org.eclipse.gmf.runtime.diagram.ui.render.providers.DiagramUIRenderGlobalActionHandlerProvider"
+            id="BusinessRender">
+         <Priority name="Lowest"/>
+         <ViewId id="org.talend.designer.business.model.business.diagram.part.BusinessDiagramEditorID">
+            <ElementType class="org.eclipse.gmf.runtime.diagram.ui.editparts.IGraphicalEditPart">
+               <GlobalActionId actionId="cut"/>
+               <GlobalActionId actionId="copy"/>
+               <GlobalActionId actionId="paste"/>
+            </ElementType>
+         </ViewId>
+      </GlobalActionHandlerProvider>
+   </extension>
+
+   <extension point="org.eclipse.gmf.runtime.diagram.core.viewProviders">
+      <viewProvider class="org.talend.designer.business.model.business.diagram.providers.BusinessViewProvider">
+         <Priority name="Lowest"/>
+         <context viewClass="org.eclipse.gmf.runtime.notation.Diagram" semanticHints="Business"/>
+         <context viewClass="org.eclipse.gmf.runtime.notation.Node" semanticHints=""/>
+         <context viewClass="org.eclipse.gmf.runtime.notation.Edge" semanticHints=""/>
+      </viewProvider>
+   </extension>
+
+   <extension point="org.eclipse.gmf.runtime.diagram.ui.editpartProviders">
+      <editpartProvider class="org.talend.designer.business.model.business.diagram.providers.BusinessEditPartProvider">
+         <Priority name="Lowest"/>
+      </editpartProvider>
+   </extension>
+
+   <extension point="org.eclipse.gmf.runtime.diagram.ui.paletteProviders">
+      <paletteProvider class="org.talend.designer.business.model.business.diagram.providers.BusinessPaletteProvider">
+         <Priority name="Lowest"/>
+         <editor id="org.talend.designer.business.model.business.diagram.part.BusinessDiagramEditorID"/>
+      </paletteProvider>
+   </extension>
+
+   <extension point="org.eclipse.gmf.runtime.emf.ui.modelingAssistantProviders">
+      <modelingAssistantProvider class="org.talend.designer.business.model.business.diagram.providers.BusinessModelingAssistantProvider">
+         <Priority name="Lowest"/>
+      </modelingAssistantProvider>
+   </extension>
+
+   <extension point="org.eclipse.gmf.runtime.common.ui.services.properties.propertiesProviders">
+      <PropertiesProvider
+            verifyPluginLoaded="false"
+            class="org.talend.designer.business.model.business.diagram.providers.BusinessPropertyProvider">
+         <Priority name="Lowest"/>
+      </PropertiesProvider>
+   </extension>
+
+   <extension point="org.eclipse.gmf.runtime.common.ui.services.iconProviders">
+      <IconProvider class="org.talend.designer.business.model.business.diagram.providers.BusinessIconProvider">
+         <Priority name="Low"/>
+      </IconProvider>
+   </extension>
+
+   <extension point="org.eclipse.gmf.runtime.common.ui.services.parserProviders">
+      <ParserProvider class="org.talend.designer.business.model.business.diagram.providers.BusinessParserProvider">
+         <Priority name="Lowest"/>
+      </ParserProvider>
+   </extension>
+
+   <extension point="org.eclipse.gmf.runtime.emf.type.core.elementTypes">
+
+      <metamodel nsURI="business">
+         <metamodelType
+               id="org.talend.designer.business.diagram.BusinessProcess_79"
+               kind="org.eclipse.gmf.runtime.emf.type.core.IHintedType"
+               eclass="BusinessProcess"
+               edithelper="org.talend.designer.business.model.business.diagram.edit.helpers.BusinessProcessEditHelper">
+            <param name="semanticHint" value="79"/>
+         </metamodelType>
+      </metamodel>
+
+      <metamodel nsURI="business">
+         <metamodelType
+               id="org.talend.designer.business.diagram.ActionBusinessItem_1001"
+               name="Action"
+               kind="org.eclipse.gmf.runtime.emf.type.core.IHintedType"
+               eclass="ActionBusinessItem"
+               edithelper="org.talend.designer.business.model.business.diagram.edit.helpers.ActionBusinessItemEditHelper">
+            <param name="semanticHint" value="1001"/>
+         </metamodelType>
+      </metamodel>
+
+      <metamodel nsURI="business">
+         <metamodelType
+               id="org.talend.designer.business.diagram.TerminalBusinessItem_1002"
+               name="Terminal"
+               kind="org.eclipse.gmf.runtime.emf.type.core.IHintedType"
+               eclass="TerminalBusinessItem"
+               edithelper="org.talend.designer.business.model.business.diagram.edit.helpers.TerminalBusinessItemEditHelper">
+            <param name="semanticHint" value="1002"/>
+         </metamodelType>
+      </metamodel>
+
+      <metamodel nsURI="business">
+         <metamodelType
+               id="org.talend.designer.business.diagram.DocumentBusinessItem_1003"
+               name="Document"
+               kind="org.eclipse.gmf.runtime.emf.type.core.IHintedType"
+               eclass="DocumentBusinessItem"
+               edithelper="org.talend.designer.business.model.business.diagram.edit.helpers.DocumentBusinessItemEditHelper">
+            <param name="semanticHint" value="1003"/>
+         </metamodelType>
+      </metamodel>
+
+      <metamodel nsURI="business">
+         <metamodelType
+               id="org.talend.designer.business.diagram.DatabaseBusinessItem_1004"
+               name="Database"
+               kind="org.eclipse.gmf.runtime.emf.type.core.IHintedType"
+               eclass="DatabaseBusinessItem"
+               edithelper="org.talend.designer.business.model.business.diagram.edit.helpers.DatabaseBusinessItemEditHelper">
+            <param name="semanticHint" value="1004"/>
+         </metamodelType>
+      </metamodel>
+
+      <metamodel nsURI="business">
+         <metamodelType
+               id="org.talend.designer.business.diagram.ListBusinessItem_1005"
+               name="List"
+               kind="org.eclipse.gmf.runtime.emf.type.core.IHintedType"
+               eclass="ListBusinessItem"
+               edithelper="org.talend.designer.business.model.business.diagram.edit.helpers.ListBusinessItemEditHelper">
+            <param name="semanticHint" value="1005"/>
+         </metamodelType>
+      </metamodel>
+
+      <metamodel nsURI="business">
+         <metamodelType
+               id="org.talend.designer.business.diagram.DataBusinessItem_1006"
+               name="Data"
+               kind="org.eclipse.gmf.runtime.emf.type.core.IHintedType"
+               eclass="DataBusinessItem"
+               edithelper="org.talend.designer.business.model.business.diagram.edit.helpers.DataBusinessItemEditHelper">
+            <param name="semanticHint" value="1006"/>
+         </metamodelType>
+      </metamodel>
+
+      <metamodel nsURI="business">
+         <metamodelType
+               id="org.talend.designer.business.diagram.InputBusinessItem_1007"
+               name="Input"
+               kind="org.eclipse.gmf.runtime.emf.type.core.IHintedType"
+               eclass="InputBusinessItem"
+               edithelper="org.talend.designer.business.model.business.diagram.edit.helpers.InputBusinessItemEditHelper">
+            <param name="semanticHint" value="1007"/>
+         </metamodelType>
+      </metamodel>
+
+      <metamodel nsURI="business">
+         <metamodelType
+               id="org.talend.designer.business.diagram.DecisionBusinessItem_1008"
+               name="Decision"
+               kind="org.eclipse.gmf.runtime.emf.type.core.IHintedType"
+               eclass="DecisionBusinessItem"
+               edithelper="org.talend.designer.business.model.business.diagram.edit.helpers.DecisionBusinessItemEditHelper">
+            <param name="semanticHint" value="1008"/>
+         </metamodelType>
+      </metamodel>
+
+      <metamodel nsURI="business">
+         <metamodelType
+               id="org.talend.designer.business.diagram.BusinessItemRelationship_3001"
+               name="Relationship"
+               kind="org.eclipse.gmf.runtime.emf.type.core.IHintedType"
+               eclass="BusinessItemRelationship"
+               edithelper="org.talend.designer.business.model.business.diagram.edit.helpers.BusinessItemRelationshipEditHelper">
+            <param name="semanticHint" value="3001"/>
+         </metamodelType>
+      </metamodel>
+   </extension>
+
+   <extension point="org.eclipse.gmf.runtime.emf.type.core.elementTypeBindings">
+      <clientContext id="BusinessClientContext">
+         <enablement>
+            <test
+               property="org.eclipse.gmf.runtime.emf.core.editingDomain"
+               value="org.talend.designer.business.diagram.EditingDomain"/>
+         </enablement>
+      </clientContext> 
+      <binding context="BusinessClientContext">
+         <elementType ref="org.talend.designer.business.diagram.BusinessProcess_79"/>
+         <elementType ref="org.talend.designer.business.diagram.ActionBusinessItem_1001"/>
+         <elementType ref="org.talend.designer.business.diagram.TerminalBusinessItem_1002"/>
+         <elementType ref="org.talend.designer.business.diagram.DocumentBusinessItem_1003"/>
+         <elementType ref="org.talend.designer.business.diagram.DatabaseBusinessItem_1004"/>
+         <elementType ref="org.talend.designer.business.diagram.ListBusinessItem_1005"/>
+         <elementType ref="org.talend.designer.business.diagram.DataBusinessItem_1006"/>
+         <elementType ref="org.talend.designer.business.diagram.InputBusinessItem_1007"/>
+         <elementType ref="org.talend.designer.business.diagram.DecisionBusinessItem_1008"/>
+         <elementType ref="org.talend.designer.business.diagram.BusinessItemRelationship_3001"/>
+         <advice ref="org.eclipse.gmf.runtime.diagram.core.advice.notationDepdendents"/>
+      </binding>
+   </extension>
+
+   <extension
+         point="org.eclipse.ui.views.properties.tabbed.propertyContributor">
+      <propertyContributor
+            contributorId="org.eclipse.gmf.runtime.diagram.ui.properties"
+            typeMapper="org.eclipse.gmf.runtime.diagram.ui.properties.filters.ModelElementTypeMapper"
+            labelProvider="org.eclipse.gmf.runtime.common.ui.services.util.CommonLabelProvider">  
+         <propertyCategory category="Assignment"/>
+      </propertyContributor>
+   </extension>
+   
+   <extension
+         point="org.eclipse.ui.views.properties.tabbed.propertyTabs">
+      <propertyTabs contributorId="org.eclipse.gmf.runtime.diagram.ui.properties">
+         <propertyTab
+               category="Assignment"
+               id="org.talend.designer.business.diagram.properties.AssignmentTab"
+               label="Assignment"/>
+      </propertyTabs>
+   </extension>
+   
+   <extension
+         point="org.eclipse.ui.views.properties.tabbed.propertySections">
+      <propertySections contributorId="org.eclipse.gmf.runtime.diagram.ui.properties">
+         <propertySection
+               class="org.talend.designer.business.diagram.custom.properties.AssignmentPropertySection"
+               filter="org.talend.designer.business.diagram.custom.properties.AssignmentPropertySectionFilter"
+               id="org.talend.designer.business.diagram.properties.AssignmentSection"
+               tab="org.talend.designer.business.diagram.properties.AssignmentTab"/>
+      </propertySections>
+   </extension>
+   
+   <extension
+         point="org.talend.repository.actions">
+      <Action
+            class="org.talend.designer.business.diagram.custom.actions.CreateDiagramAction"
+            id="org.talend.designer.business.diagram.custom.Action1"
+            level="10"/>
+      <Action
+            class="org.talend.designer.business.diagram.custom.actions.OpenDiagramAction"
+            id="org.talend.designer.business.diagram.custom.Action2"
+            level="10"/>
+      <Action
+            class="org.talend.designer.business.diagram.custom.actions.FindAssignmentAction"
+            id="org.talend.designer.business.diagram.Action3"/>
+   </extension>
+   
+</plugin>

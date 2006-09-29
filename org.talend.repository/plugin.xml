@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+   <extension-point id="repository_provider" name="Repository provider" schema="schema/repository_provider.exsd"/>
+   <extension-point id="components_provider" name="Components provider" schema="schema/components_provider.exsd"/>
+   <extension-point id="external_component" name="External component" schema="schema/external_component.exsd"/>
+   <extension-point id="actions" name="Repository actions" schema="schema/repository_actions.exsd"/>
+   <extension-point id="filepreview_provider" name="File Preview Provider" schema="schema/filepreview_provider.exsd"/>
+   <extension
+         point="org.eclipse.ui.views">
+      <view
+            category="org.talend.core.root"
+            class="org.talend.repository.ui.views.RepositoryView"
+            icon="icons/repository.png"
+            id="org.talend.repository.views.repository"
+            name="Repository"/>
+   </extension>
+   <extension
+         id="rep.actions"
+         name="Actions"
+         point="org.talend.repository.actions">
+      <Action
+            class="org.talend.repository.ui.actions.folder.CreateFolderAction"
+            id="org.talend.repository.actions.createfolder"
+            level="20"
+            name="Create folder"/>
+      <Action
+            class="org.talend.repository.ui.actions.metadata.CreateConnectionAction"
+            id="org.talend.repository.actions.createconnection"
+            level="10"
+            name="Metadata/Create connection"/>
+      <Action
+            class="org.talend.repository.ui.actions.metadata.CreateTableAction"
+            id="org.talend.repository.actions.createtable"
+            level="10"
+            name="Metadata/Create table"/>
+      <Action
+            class="org.talend.repository.ui.actions.metadata.DeleteTableAction"
+            id="org.talend.repository.actions.deletetable"
+            level="40"
+            name="Metadata/Delete table"/>
+      <Action
+            class="org.talend.repository.ui.actions.metadata.RestoreTableAction"
+            id="org.talend.repository.actions.restoretable"
+            level="40"
+            name="Metadata/Restore table"/>
+      <Action
+            class="org.talend.repository.ui.actions.metadata.CreateFileDelimitedAction"
+            id="org.talend.repository.actions.createfiledelimited"
+            level="10"
+            name="Metadata/Create file delimited"/>
+      <Action
+            class="org.talend.repository.ui.actions.metadata.CreateFilePositionalAction"
+            id="org.talend.repository.actions.createfilepositional"
+            level="10"
+            name="Metadata/Create file positional"/>
+      <Action
+            class="org.talend.repository.ui.actions.metadata.CreateFileRegexpAction"
+            id="org.talend.repository.actions.createfileregexp"
+            level="10"
+            name="Metadata/Create file regexp"/>
+      <Action
+            class="org.talend.repository.ui.actions.DeleteAction"
+            id="org.talend.repository.actions.delete"
+            level="40"
+            name="Delete"/>
+      <Action
+            class="org.talend.repository.ui.actions.RestoreAction"
+            id="org.talend.repository.actions.restore"
+            level="40"
+            name="Restore"/>
+      <Action
+            class="org.talend.repository.ui.actions.EmptyRecycleBinAction"
+            id="org.talend.repository.actions.emptyrecyclebin"
+            name="Empty recycle bin"/>
+      <Action
+            class="org.talend.repository.ui.actions.documentation.CreateDocumentationAction"
+            id="org.talend.repository.actions.createdocumentation"
+            level="10"
+            name="Create documentation"/>
+      <Action
+            class="org.talend.repository.ui.actions.documentation.OpenDocumentationAction"
+            id="org.talend.repository.actions.opendocumentation"
+            level="11"
+            name="Open documentation"/>
+      <Action
+            class="org.talend.repository.ui.actions.documentation.ExtractDocumentationAction"
+            id="org.talend.repository.actions.extractdocumentation"
+            level="12"
+            name="Extract documentation"/>
+      <Action
+            class="org.talend.repository.ui.actions.documentation.UpdateDocumentationAction"
+            id="org.talend.repository.actions.updatedocumentation"
+            level="10"
+            name="Update documentation"/>
+      <Action
+            class="org.talend.repository.ui.actions.ExpandAllAction"
+            id="org.talend.repository.actions.expand"
+            level="39"
+            name="ExpandAll"/>
+      <Action
+            class="org.talend.repository.ui.actions.CopyAction"
+            id="org.talend.repository.actions.copy"
+            level="41"
+            name="Copy"/>
+      <Action
+            class="org.talend.repository.ui.actions.PasteAction"
+            id="org.talend.repository.actions.paste"
+            level="42"
+            name="Paste"/>
+   </extension>
+   <extension
+         point="org.eclipse.ui.views.properties.tabbed.propertyContributor">
+      <propertyContributor
+            contributorId="org.talend.repository.views.repository"
+            labelProvider="org.talend.repository.ui.properties.PropsTitleLabelProvider">
+         <propertyCategory category="main"/>
+      </propertyContributor>
+   </extension>
+   <extension
+         point="org.eclipse.ui.views.properties.tabbed.propertyTabs">
+      <propertyTabs contributorId="org.talend.repository.views.repository">
+         <propertyTab
+               category="main"
+               id="repository.maintab"
+               label="%repository.prop.main"/>
+      </propertyTabs>
+   </extension>
+   <extension
+         point="org.eclipse.ui.views.properties.tabbed.propertySections">
+      <propertySections contributorId="org.talend.repository.views.repository">
+         <propertySection
+               class="org.talend.repository.ui.properties.DateSection"
+               enablesFor="1"
+               filter="org.talend.repository.ui.properties.SectionFilter"
+               id="repository.datesection"
+               tab="repository.maintab">
+         </propertySection>
+         <propertySection
+               class="org.talend.repository.ui.properties.DescriptionSection"
+               enablesFor="1"
+               filter="org.talend.repository.ui.properties.SectionFilter"
+               id="repository.description"
+               tab="repository.maintab">
+         </propertySection>
+         <propertySection
+               class="org.talend.repository.ui.properties.PurposeStatusSection"
+               enablesFor="1"
+               filter="org.talend.repository.ui.properties.SectionFilter"
+               id="repository.purposestatussection"
+               tab="repository.maintab">
+         </propertySection>
+         <propertySection
+               class="org.talend.repository.ui.properties.VersionAuthorSection"
+               enablesFor="1"
+               filter="org.talend.repository.ui.properties.SectionFilter"
+               id="repository.versionauthorsection"
+               tab="repository.maintab">
+         </propertySection>
+         <propertySection
+               class="org.talend.repository.ui.properties.NameSection"
+               enablesFor="1"
+               filter="org.talend.repository.ui.properties.SectionFilter"
+               id="repository.namesection"
+               tab="repository.maintab">
+         </propertySection>
+      </propertySections>
+   </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            category="org.talend.core.prefs"
+            class="org.talend.repository.preference.StatusPreferencePage"
+            id="org.talend.repository.prefs.status"
+            name="%prefsStatusName"/>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <category
+            id="talend.repository"
+            name="Talend"/>
+      <context
+            id="talend.repository"
+            name="Talend repository"
+            parentId="org.eclipse.ui.contexts.window"/>
+      <command
+            categoryId="talend.repository"
+            id="copyItem"
+            name="Copy"/>
+      <command
+            categoryId="talend.repository"
+            id="pasteItem"
+            name="Paste"/>
+      <command
+            categoryId="talend.repository"
+            id="deleteItem"
+            name="Delete"/>
+      <command
+            categoryId="talend.repository"
+            id="restoreItem"
+            name="Restore"/>
+      <command
+            categoryId="talend.repository"
+            id="refresh"
+            name="Refresh"/>
+   </extension>
+   <extension
+         point="org.eclipse.ui.bindings">
+      <key
+            commandId="copyItem"
+            contextId="talend.repository"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="CTRL+C"/>
+      <key
+            commandId="pasteItem"
+            contextId="talend.repository"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="CTRL+V"/>
+      <key
+            commandId="deleteItem"
+            contextId="talend.repository"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="DEL"/>
+      <key
+            commandId="restoreItem"
+            contextId="talend.repository"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="CTRL+R"/>
+      <key
+            commandId="refresh"
+            contextId="talend.repository"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="F5"/>
+   </extension>
+
+</plugin>

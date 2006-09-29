@@ -1,0 +1,67 @@
+<%@ jet 
+	package="org.talend.designer.codegen.translators" 
+	imports="
+		org.talend.core.model.process.INode 
+		org.talend.core.model.metadata.IMetadataTable 
+		java.util.List
+		org.talend.designer.codegen.config.CodeGeneratorArgument
+	" 
+	class="DBOutputEnd" 
+%>
+
+<%
+	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+	INode node = (INode)codeGenArgument.getArgument();
+	boolean stats = codeGenArgument.isStatistics();
+	
+	List<IMetadataTable> metadatas = node.getMetadataList();
+	if ((metadatas!=null)&&(metadatas.size()>0)) {
+		IMetadataTable metadata = metadatas.get(0);
+		if (metadata!=null) {
+%>
+
+# TODO: insert last lines (< packet_size)
+my $nb_lines_remaining = scalar @lines_<%=metadata.getTableName() %>;
+
+if ($nb_lines_remaining > 0) {
+    $query = $query_start_<%=metadata.getTableName() %>.'
+  '.$question_marks_<%=metadata.getTableName() %>.",$question_marks_<%=metadata.getTableName() %>" x ($nb_lines_remaining - 1).'
+';
+
+    $sth_<%=metadata.getTableName() %> = $dbh_<%=metadata.getTableName() %>->prepare(
+        $query
+    );
+
+    my @values = ();
+
+    foreach my $line_aref (@lines_<%=metadata.getTableName() %>) {
+        push @values, @$line_aref;
+    }
+
+    $sth_<%=metadata.getTableName() %>->execute(@values)
+        or die "can't execute insert query\n";
+<%
+    if (stats) {
+%>
+    UpdateStat('<%=metadata.getTableName() %>', $nb_lines_remaining);
+<%
+    }
+%>
+
+    $nb_line_<%=metadata.getTableName() %> += $nb_lines_remaining;
+}
+
+$dbh_<%=metadata.getTableName() %>->disconnect();
+<%
+    if (stats) {
+%>
+UpdateStat('<%=metadata.getTableName() %>', 0, 2);
+<%
+    }
+%>
+$_globals{<%=metadata.getTableName() %>}{NB_LINE} = $nb_line_<%=metadata.getTableName() %>;
+
+<%
+		}
+	}
+%>

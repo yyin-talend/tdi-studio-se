@@ -1,0 +1,46 @@
+<%@ jet 
+	package="org.talend.designer.codegen.translators" 
+	imports="
+		org.talend.core.model.process.INode 
+		org.talend.core.model.metadata.IMetadataTable 
+		org.talend.core.model.process.ElementParameterParser
+		org.talend.designer.codegen.config.CodeGeneratorArgument
+		java.util.List
+	"
+	class="RunProcessMain"
+%>
+
+<%
+	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+	INode node = (INode)codeGenArgument.getArgument();
+	boolean stats = codeGenArgument.isStatistics();
+	
+	List<IMetadataTable> metadatas = node.getMetadataList();
+	if ((metadatas!=null)&&(metadatas.size()>0)) {
+		IMetadataTable metadata = metadatas.get(0);
+		if (metadata!=null) {
+                  String interpreterPath    = codeGenArgument.getInterpreterPath().replace("\\","/");
+                  String libPath            = codeGenArgument.getLibPath().replace("\\","/");
+                  String runtimeFilePath    = codeGenArgument.getRuntimeFilePath().replace("\\","/");
+                  String currentProjectName = codeGenArgument.getCurrentProjectName();
+
+                  String process = ElementParameterParser.getValue(node, "__PROCESS_TYPE_PROCESS__");
+                  String context = ElementParameterParser.getValue(node, "__PROCESS_TYPE_CONTEXT__");
+%>
+
+my @arguments = (
+    '"<%=interpreterPath %>"',
+    '-I "<%=libPath %>"',
+    '-I "<%=runtimeFilePath %>"',
+    '"<%=runtimeFilePath %>/<%=currentProjectName %>.process_'.<%=process %>.'.pl"',
+    '--context="<%=runtimeFilePath %>/<%=currentProjectName %>.process_'.<%=process %>.'_'.<%=context %>.'.pl"',
+);
+
+system(
+    join(' ', @arguments)
+);
+    
+<%
+		}
+	}
+%>

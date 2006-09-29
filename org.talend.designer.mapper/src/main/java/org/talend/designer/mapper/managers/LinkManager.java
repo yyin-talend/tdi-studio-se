@@ -1,0 +1,205 @@
+// ============================================================================
+//
+// Talend Community Edition
+//
+// Copyright (C) 2006 Talend - www.talend.com
+//
+// This library is free software; you can redistribute it and/or
+// modify it under the terms of the GNU Lesser General Public
+// License as published by the Free Software Foundation; either
+// version 2.1 of the License, or (at your option) any later version.
+//
+// This library is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+// Lesser General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program; if not, write to the Free Software
+// Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+//
+// ============================================================================
+package org.talend.designer.mapper.managers;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.talend.designer.mapper.model.tableentry.ITableEntry;
+import org.talend.designer.mapper.ui.visualmap.link.IGraphicLink;
+import org.talend.designer.mapper.ui.visualmap.link.LinkState;
+
+/**
+ * DOC amaumont class global comment. Detailled comment <br/>
+ * 
+ * $Id$
+ * 
+ */
+public class LinkManager {
+
+    private static final Comparator<IGraphicLink> COMPARATOR = new Comparator<IGraphicLink>() {
+
+        public int compare(IGraphicLink link1, IGraphicLink link2) {
+            if (link1.getState() == link2.getState()) {
+                return 0;
+            }
+            if (link1.getState() == LinkState.SELECTED) {
+                return 1;
+            }
+            return -1;
+        }
+
+    };
+
+    private List<IGraphicLink> links = new ArrayList<IGraphicLink>();
+
+    public final boolean limitMaxLinks = false;
+
+    public static int currentNumberLinks = 0;
+
+    private Map<ITableEntry, Set<ITableEntry>> targetToSources = new HashMap<ITableEntry, Set<ITableEntry>>();
+
+    private Map<ITableEntry, Set<IGraphicLink>> sourceTableEntryToLinks = new HashMap<ITableEntry, Set<IGraphicLink>>();
+
+    private Map<ITableEntry, Set<IGraphicLink>> targetTableEntryToLinks = new HashMap<ITableEntry, Set<IGraphicLink>>();
+
+    public LinkManager() {
+        super();
+        currentNumberLinks = 0;
+    }
+
+    /**
+     * DOC amaumont Comment method "addLink".
+     * 
+     * @param link
+     */
+    public void addLink(IGraphicLink link) {
+        currentNumberLinks++;
+        // System.out.println(currentNumberLinks + " links");
+
+        links.add(link);
+        ITableEntry sourceITableEntry = link.getPointLinkDescriptorSource().getTableEntry();
+        ITableEntry targetITableEntry = link.getPointLinkDescriptorTarget().getTableEntry();
+        Set<ITableEntry> targetDataMapTableEntries = getSourcesCollection(targetITableEntry);
+        targetDataMapTableEntries.add(sourceITableEntry);
+        Set<IGraphicLink> targetGraphicalLinks = getGraphicalLinksFromTarget(targetITableEntry);
+        targetGraphicalLinks.add(link);
+        Set<IGraphicLink> sourceGraphicalLinks = getGraphicalLinksFromSource(sourceITableEntry);
+        sourceGraphicalLinks.add(link);
+    }
+
+    /**
+     * DOC amaumont Comment method "getGraphicalLinks".
+     * 
+     * @param targetTableEntry
+     * @return
+     */
+    private Set<IGraphicLink> getGraphicalLinksFromTarget(ITableEntry dataMapTableEntry) {
+        Set<IGraphicLink> graphicalLinks = targetTableEntryToLinks.get(dataMapTableEntry);
+        if (graphicalLinks == null) {
+            graphicalLinks = new HashSet<IGraphicLink>();
+            targetTableEntryToLinks.put(dataMapTableEntry, graphicalLinks);
+        }
+        return graphicalLinks;
+    }
+
+    /**
+     * DOC amaumont Comment method "getGraphicalLinks".
+     * 
+     * @param targetTableEntry
+     * @return
+     */
+    public Set<IGraphicLink> getLinksFromTarget(ITableEntry dataMapTableEntry) {
+        return new HashSet<IGraphicLink>(getGraphicalLinksFromTarget(dataMapTableEntry));
+    }
+
+    /**
+     * DOC amaumont Comment method "getGraphicalLinks".
+     * 
+     * @param targetTableEntry
+     * @return
+     */
+    private Set<IGraphicLink> getGraphicalLinksFromSource(ITableEntry dataMapTableEntry) {
+        Set<IGraphicLink> graphicalLinks = sourceTableEntryToLinks.get(dataMapTableEntry);
+        if (graphicalLinks == null) {
+            graphicalLinks = new HashSet<IGraphicLink>();
+            sourceTableEntryToLinks.put(dataMapTableEntry, graphicalLinks);
+        }
+        return graphicalLinks;
+    }
+
+    public Set<IGraphicLink> getLinksFromSource(ITableEntry dataMapTableEntry) {
+        return new HashSet<IGraphicLink>(getGraphicalLinksFromSource(dataMapTableEntry));
+    }
+
+    /**
+     * DOC amaumont Comment method "getSourcesCollection".
+     * 
+     * @param targetITableEntry
+     * @return
+     */
+    private Set<ITableEntry> getSourcesCollection(ITableEntry targetITableEntry) {
+        Set<ITableEntry> targetDataMapTableEntries = targetToSources.get(targetITableEntry);
+        if (targetDataMapTableEntries == null) {
+            targetDataMapTableEntries = new HashSet<ITableEntry>();
+            targetToSources.put(targetITableEntry, targetDataMapTableEntries);
+        }
+        return targetDataMapTableEntries;
+    }
+
+    /**
+     * DOC amaumont Comment method "addLink".
+     * 
+     * @param link
+     */
+    public void removeLink(IGraphicLink link) {
+        currentNumberLinks--;
+
+        links.remove(link);
+        ITableEntry sourceITableEntry = link.getPointLinkDescriptorSource().getTableEntry();
+        ITableEntry targetITableEntry = link.getPointLinkDescriptorTarget().getTableEntry();
+        Set<ITableEntry> targetDataMapTableEntries = getSourcesCollection(targetITableEntry);
+        targetDataMapTableEntries.remove(sourceITableEntry);
+        getGraphicalLinksFromSource(sourceITableEntry).remove(link);
+        getGraphicalLinksFromTarget(targetITableEntry).remove(link);
+    }
+
+    /**
+     * DOC amaumont Comment method "clearLinks".
+     */
+    public void clearLinks() {
+        links.clear();
+        targetToSources.clear();
+    }
+
+    /**
+     * DOC amaumont Comment method "getLinks".
+     * 
+     * @return
+     */
+    public List<IGraphicLink> getLinks() {
+        return this.links;
+    }
+
+    /**
+     * DOC amaumont Comment method "getSourcesForTarget".
+     * 
+     * @param dataMapTableEntry
+     */
+    public Set<ITableEntry> getSourcesForTarget(ITableEntry dataMapTableEntry) {
+        return Collections.unmodifiableSet(getSourcesCollection(dataMapTableEntry));
+
+    }
+
+    /**
+     * DOC amaumont Comment method "orderLinks".
+     */
+    public void orderLinks() {
+        Collections.sort(links, COMPARATOR);
+    }
+}

@@ -1,0 +1,115 @@
+<%@ jet 
+	package="org.talend.designer.codegen.translators" 
+	imports="
+		org.talend.core.model.process.INode 
+		org.talend.core.model.metadata.IMetadataTable 
+		org.talend.core.model.process.ElementParameterParser
+		org.talend.designer.codegen.config.CodeGeneratorArgument
+		java.util.Map
+		java.util.List
+	"
+	class="SendMailMain"
+%>
+
+<%
+	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+	INode node = (INode)codeGenArgument.getArgument();
+	boolean stats = codeGenArgument.isStatistics();
+	
+	List<IMetadataTable> metadatas = node.getMetadataList();
+	if ((metadatas!=null)&&(metadatas.size()>0)) {
+		IMetadataTable metadata = metadatas.get(0);
+		if (metadata!=null) {
+%>
+
+<%
+String smtpHost    = ElementParameterParser.getValue(node, "__SMTP_HOST__");
+String smtpPort    = ElementParameterParser.getValue(node, "__SMTP_PORT__");
+String to          = ElementParameterParser.getValue(node, "__TO__");
+String from        = ElementParameterParser.getValue(node, "__FROM__");
+String cc          = ElementParameterParser.getValue(node, "__CC__");
+String subject     = ElementParameterParser.getValue(node, "__SUBJECT__");
+String message     = ElementParameterParser.getValue(node, "__MESSAGE__");
+List<Map<String, String>> tableValues = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__ATTACHMENTS__");
+%>
+
+my $smtp_server = sprintf(
+    '%s:%s',
+    <%= smtpHost %>,
+    <%= smtpPort %>,
+);
+
+<%
+if (tableValues.size() == 0) {
+%>
+
+use Net::SMTP;
+
+my $smtp = Net::SMTP->new(
+    <%= smtpHost %>,
+    Port => <%= smtpPort %>
+)
+    or die('cannot connect to SMTP host '.$smtp_server);
+$smtp->mail(<%= from %>);
+$smtp->to(<%= to %>);
+$smtp->data();
+$smtp->datasend("To: ".     <%= to %>.      "\n");
+$smtp->datasend("Cc: ".     <%= cc %>.      "\n");
+$smtp->datasend("From: ".   <%= from %>.    "\n");
+$smtp->datasend("Subject: ".<%= subject %>. "\n\n");
+$smtp->datasend(<%=message%>.               "\n");
+$smtp->dataend();
+$smtp->quit;
+
+<%
+}
+else {
+%>
+
+
+use MIME::Lite;
+use File::Basename;
+
+my $msg = MIME::Lite->new(
+    From    => <%= from %>,
+    To      => <%= to %>,
+    Cc      => <%= cc %>,
+    Subject => <%= subject %>,
+    Data    => <%=message %>,
+);
+
+my @attachments = (
+<%
+  for (int i=0; i<tableValues.size(); i++) {
+    Map<String, String> lineValue = tableValues.get(i);
+%>
+    <%= lineValue.get("FILE") %>,
+<%
+  }
+%>
+);
+
+foreach my $path (@attachments) {
+    $msg->attach(
+        Type     => 'AUTO',
+        Encoding => 'base64',
+        Path     => $path,
+        Filename => basename($path),
+    );
+}
+
+$msg->send(
+    'smtp',
+    <%= smtpHost %>,
+    Port => <%= smtpPort %>,
+)
+    or die('cannot send mail with attachment on '.$smtp_server);
+
+<%
+}
+%>
+    
+<%
+		}
+	}
+%>

@@ -1,0 +1,6 @@
+<%@ jet package="org.talend.designer.codegen.translators" imports="org.talend.core.model.process.INode org.talend.core.model.process.ElementParameterParser" class="MapperMain" %>
+<%
+	INode node = (INode) argument;
+%>
+
+<%=ElementParameterParser.getValue(node, "__NAME__") %>

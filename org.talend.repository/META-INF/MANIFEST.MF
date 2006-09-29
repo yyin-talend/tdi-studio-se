@@ -1,0 +1,29 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Repository Plug-in
+Bundle-SymbolicName: org.talend.repository;singleton:=true
+Bundle-Version: 0.9.0.qualifier
+Bundle-Localization: plugin
+Eclipse-LazyStart: true
+Bundle-Vendor: .Talend SA.
+Require-Bundle: org.eclipse.core.resources,
+ org.eclipse.core.runtime,
+ org.eclipse.ui.views.properties.tabbed,
+ org.talend.commons,
+ org.talend.core,
+ org.talend.libraries,
+ org.eclipse.ui.editors,
+ org.eclipse.ui.ide,
+ org.apache.axis
+Export-Package: org.talend.repository.editor,
+ org.talend.repository.i18n,
+ org.talend.repository.model,
+ org.talend.repository.preview,
+ org.talend.repository.ui.actions,
+ org.talend.repository.ui.login,
+ org.talend.repository.ui.views,
+ org.talend.repository.ui.wizards,
+ org.talend.repository.ui.wizards.metadata.connection.database,
+ org.talend.repository.ui.wizards.metadata.table.database,
+ org.talend.repository.ui.wizards.newfolder
+Bundle-Activator: org.talend.repository.RepositoryPlugin

@@ -1,0 +1,42 @@
+<%@ jet 
+	package="org.talend.designer.codegen.translators" 
+	imports="
+		org.talend.core.model.process.INode 
+		org.talend.core.model.process.ElementParameterParser
+		org.talend.core.model.metadata.IMetadataTable 
+		org.talend.designer.codegen.config.CodeGeneratorArgument
+		java.util.List
+	"
+	class="DBSQLRowMain"
+%>
+
+<%
+	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+	INode node = (INode)codeGenArgument.getArgument();
+	boolean stats = codeGenArgument.isStatistics();
+	
+	List<IMetadataTable> metadatas = node.getMetadataList();
+	if ((metadatas!=null)&&(metadatas.size()>0)) {
+		IMetadataTable metadata = metadatas.get(0);
+		if (metadata!=null) {
+                        String cid = metadata.getTableName();
+%>
+
+$sth_<%=cid %> = $dbh_<%=cid %>->prepare(
+    <%=ElementParameterParser.getValue(node, "__QUERY__") %>
+);
+$sth_<%=cid %>->execute();
+$sth_<%=cid %>->finish();
+
+<%
+    if (stats) {
+%>
+    UpdateStat('<%=cid %>', 1);
+<%
+    }
+%>
+
+<%
+		}
+	}
+%>

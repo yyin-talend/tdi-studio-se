@@ -1,0 +1,55 @@
+<%@ jet 
+	package="org.talend.designer.codegen.translators" 
+	imports="
+		org.talend.core.model.process.INode 
+		org.talend.designer.codegen.config.CodeGeneratorArgument
+		java.util.List
+	" 
+	class="Footer" 
+%>
+<%
+	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+	List<INode> rootNodes = (List<INode>)codeGenArgument.getArgument();
+	boolean stats = codeGenArgument.isStatistics();
+	boolean trace = codeGenArgument.isTrace();
+%>
+
+# +-------------------------------------------------------------------------+
+# | [footer] starts here                                                    |
+# +-------------------------------------------------------------------------+ 
+
+<%
+        if (stats) {
+%>
+StartThreadStat();
+<%
+       }
+%>
+
+<%
+        if (trace) {
+%>
+StartTrace($opt{trace_port}, '127.0.0.1');
+<%
+       }
+%>
+
+<%
+	for (INode rootNode : rootNodes) {
+%>
+<%=rootNode.getUniqueName() %>_subprocess();
+<%
+	}
+%>
+
+<%
+        if (stats) {
+%>
+StopThreadStat();
+<%
+        }
+%>
+
+# +-------------------------------------------------------------------------+
+# | [footer] stops here                                                     |
+# +-------------------------------------------------------------------------+ 

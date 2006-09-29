@@ -1,0 +1,122 @@
+// ============================================================================
+//
+// Talend Community Edition
+//
+// Copyright (C) 2006 Talend - www.talend.com
+//
+// This library is free software; you can redistribute it and/or
+// modify it under the terms of the GNU Lesser General Public
+// License as published by the Free Software Foundation; either
+// version 2.1 of the License, or (at your option) any later version.
+//
+// This library is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+// Lesser General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program; if not, write to the Free Software
+// Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+//
+// ============================================================================
+package org.talend.designer.core.ui.action;
+
+import java.io.IOException;
+
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.ui.PartInitException;
+import org.talend.commons.exception.MessageBoxExceptionHandler;
+import org.talend.core.CorePlugin;
+import org.talend.core.context.Context;
+import org.talend.core.context.RepositoryContext;
+import org.talend.core.model.general.Project;
+import org.talend.core.model.properties.RoutineItem;
+import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.core.ui.ImageProvider;
+import org.talend.core.ui.ImageProvider.EImage;
+import org.talend.designer.runprocess.perl.PerlUtils;
+import org.talend.repository.editor.RepositoryEditorInput;
+import org.talend.repository.model.RepositoryNode;
+import org.talend.repository.model.RepositoryNode.ENodeType;
+import org.talend.repository.ui.actions.AContextualAction;
+
+/**
+ * Action that will edit routines.
+ * 
+ * $Id$
+ * 
+ */
+public class EditRoutinesAction extends AContextualAction {
+
+    // private Map<IFile, RoutineItem> routinesByFiles;
+
+    public EditRoutinesAction() {
+        super();
+
+        setText("Edit routines");
+        setToolTipText("Edit routines");
+        setImageDescriptor(ImageProvider.getImageDesc(EImage.ROUTINE_ICON));
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.repository.ui.actions.ITreeContextualAction#init(org.eclipse.jface.viewers.TreeViewer,
+     * org.eclipse.jface.viewers.IStructuredSelection)
+     */
+    public void init(TreeViewer viewer, IStructuredSelection selection) {
+        boolean canWork = !selection.isEmpty() && selection.size() == 1;
+        if (canWork) {
+            RepositoryNode node = (RepositoryNode) selection.getFirstElement();
+            canWork = node.getType() == ENodeType.REPOSITORY_ELEMENT
+                    && node.getObject().getType() == ERepositoryObjectType.ROUTINES;
+        }
+        setEnabled(canWork);
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.jface.action.Action#run()
+     */
+    public void run() {
+        RepositoryNode node = (RepositoryNode) ((IStructuredSelection) getSelection()).getFirstElement();
+        RoutineItem routineItem = (RoutineItem) node.getObject().getProperty().getItem();
+
+        try {
+            // Copy the routines stream to a temporary file
+            IProject perlProject = PerlUtils.getProject();
+            Project project = ((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY))
+                    .getProject();
+            IFile file = perlProject.getFile(project.getTechnicalLabel() + "__" + routineItem.getProperty().getLabel()
+                    + PerlUtils.ROUTINE_FILENAME_EXT);
+            routineItem.getContent().setInnerContentToFile(file.getLocation().toFile());
+            // routinesByFiles.put(file, routineItem);
+            RepositoryEditorInput input = new RepositoryEditorInput(file, routineItem);
+
+            getActivePage().openEditor(input, "org.talend.designer.core.ui.editor.StandAloneTalendPerlEditor");
+
+        } catch (PartInitException e) {
+            MessageBoxExceptionHandler.process(e);
+        } catch (CoreException e) {
+            MessageBoxExceptionHandler.process(e);
+        } catch (IOException e) {
+            MessageBoxExceptionHandler.process(e);
+        }
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.repository.ui.actions.AContextualView#getClassForDoubleClick()
+     */
+    @Override
+    public Class getClassForDoubleClick() {
+        return RoutineItem.class;
+    }
+
+}
