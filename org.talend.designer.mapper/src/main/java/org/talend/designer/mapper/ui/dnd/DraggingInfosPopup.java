@@ -291,25 +291,28 @@ public final class DraggingInfosPopup {
         if (overwrite) {
             mode = " > Overwrite mode";
         } else {
-            mode = " > Append mode (Ctrl key to change)";
+            mode = " > Append mode (Ctrl key to overwrite)";
         }
         popup.setWriteModeText(mode);
     }
 
     /**
-     * DOC amaumont Comment method "setCountDragginEntries".
+     * method "setCountDragginEntries".
+     * 
+     * if mapOneToOneAuthorized, mapOneToOne is forced to false
      * 
      * @param mapOneToOne
      * @param mapOneToOneAuthorized
      */
     public void setMapOneToOneMode(boolean mapOneToOne, boolean mapOneToOneAuthorized) {
-        this.mapOneToOne = mapOneToOne;
         String mode = null;
-        if (mapOneToOne) {
+        if (mapOneToOne && mapOneToOneAuthorized) {
             mode = " > Each source entry to each target expression";
+            this.mapOneToOne = mapOneToOne;
         } else {
             mode = " > All source entries to a single one "
-                    + (mapOneToOneAuthorized ? "target expression (Shift key to change)" : "target expression");
+                    + (mapOneToOneAuthorized ? "target expression (Shift key to change mapping)" : "target expression");
+            this.mapOneToOne = false;
         }
         popup.setMappingModeText(mode);
     }

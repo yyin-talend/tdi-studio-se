@@ -240,12 +240,14 @@ public class DragNDrop {
                         draggingInfosPopup.setInsertionEntryContext(false);
                     } else if (analyzer.isCursorOverExpressionCell()) {
                         draggingInfosPopup.setExpressionContext(true);
+                    } else if (analyzer.targetTableIsConstraintsTable()) {
+                        draggingInfosPopup.setExpressionContext(true);
                     } else {
                         draggingInfosPopup.setExpressionContext(false);
                     }
 
                     draggingInfosPopup.setMapOneToOneMode(analyzer.isMapOneToOneMode(), analyzer.isMapOneToOneAuthorized());
-                    if (analyzer.isMapOneToOneMode()) {
+                    if (analyzer.isMapOneToOneMode() && analyzer.isMapOneToOneAuthorized()) {
                         int size = draggedData.getTransferableEntryList().size();
                         Integer itemIndexWhereInsertFromPosition = getItemIndexFromPosition(new Point(event.x, event.y));
                         if (itemIndexWhereInsertFromPosition != null) {
@@ -300,6 +302,9 @@ public class DragNDrop {
                     } else if (analyzer.isCursorOverExpressionCell()) {
                         draggingInfosPopup.setExpressionContext(true);
                         draggingInfosPopup.setInsertionEntryContext(analyzer.isInsertionEntryMode());
+                    } else if (analyzer.targetTableIsConstraintsTable()) {
+                        draggingInfosPopup.setExpressionContext(true);
+                        draggingInfosPopup.setInsertionEntryContext(false);
                     } else {
                         draggingInfosPopup.setExpressionContext(false);
                         draggingInfosPopup.setInsertionEntryContext(true);

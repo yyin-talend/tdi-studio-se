@@ -84,7 +84,7 @@ public class DropContextAnalyzer {
 
     private boolean isInputToInput;
 
-    private boolean isOutputTuOutput;
+    private boolean isOutputToOutput;
 
     public DropContextAnalyzer(DraggedData draggedData, DropTargetEvent event, MapperManager mapperManager) {
         super();
@@ -124,6 +124,11 @@ public class DropContextAnalyzer {
 
         isInputToInput = false;
         mapOneToOneAuthorized = true;
+        
+        if (targetTableIsConstraintsTable() || draggedData.getTransferableEntryList().size() <= 1) {
+            mapOneToOneAuthorized = false;
+        }
+        
         /*
          * INPUT => INPUT
          */
@@ -150,7 +155,7 @@ public class DropContextAnalyzer {
          */
         if (zoneSource == Zone.OUTPUTS && zoneTarget == Zone.OUTPUTS) {
             
-            isOutputTuOutput = true;
+            isOutputToOutput = true;
             mapOneToOneAuthorized = true;
             List<OutputTable> outputTables = mapperManager.getOutputTables();
             if (outputTables.indexOf(dataMapTableViewSource.getDataMapTable()) == outputTables.indexOf(dataMapTableViewTarget
@@ -265,7 +270,7 @@ public class DropContextAnalyzer {
 
                 if (isCursorOverExpressionCell) {
                     insertionEntryMode = false;
-                    if (mapperManager.getUiManager().isShiftPressed()) {
+                    if (mapperManager.getUiManager().isShiftPressed() && draggedData.getTransferableEntryList().size() > 1) {
                         mapOneToOneMode = true;
                     } else {
                         dropFeedback |= DND.FEEDBACK_SELECT;
@@ -416,12 +421,12 @@ public class DropContextAnalyzer {
 
     
     public boolean isOutputTuOutput() {
-        return this.isOutputTuOutput;
+        return this.isOutputToOutput;
     }
 
     
     public void setOutputTuOutput(boolean isOutputTuOutput) {
-        this.isOutputTuOutput = isOutputTuOutput;
+        this.isOutputToOutput = isOutputTuOutput;
     }
 
     
