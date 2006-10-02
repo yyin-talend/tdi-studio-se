@@ -23,6 +23,7 @@ package org.talend.designer.core;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.IPartService;
+import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
@@ -61,8 +62,11 @@ public class DesignerPlugin extends AbstractUIPlugin {
     public void start(final BundleContext context) throws Exception {
         super.start(context);
 
-        IPartService partService = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getPartService();
-        partService.addPartListener(new ActiveProcessTracker());
+        IWorkbenchWindow activeWorkbenchWindow = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+        if (activeWorkbenchWindow != null) {
+            IPartService partService = activeWorkbenchWindow.getPartService();
+            partService.addPartListener(new ActiveProcessTracker());
+        }
     }
 
     public void stop(final BundleContext context) throws Exception {

@@ -192,7 +192,9 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
             e.printStackTrace();
         }
         IRepositoryView viewPart = (IRepositoryView) getSite().getPage().findView(RepositoryView.VIEW_ID);
-        viewPart.refresh();
+        if (viewPart != null) {
+            viewPart.refresh();
+        }
 
     }
 
@@ -252,7 +254,7 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
             } catch (PersistenceException e) {
                 e.printStackTrace();
             }
-        }        
+        }
     }
 
     @Override
@@ -380,8 +382,8 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
                 public void run() {
                     IWorkbenchPage[] pages = getSite().getWorkbenchWindow().getPages();
                     for (int i = 0; i < pages.length; i++) {
-                        if (((FileEditorInput) designerEditor.getEditorInput()).getFile().getProject().equals(
-                                event.getResource())) {
+                        if (((FileEditorInput) designerEditor.getEditorInput()).getFile().getProject()
+                                .equals(event.getResource())) {
                             IEditorPart editorPart = pages[i].findEditor(designerEditor.getEditorInput());
                             pages[i].closeEditor(editorPart, true);
                         }

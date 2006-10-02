@@ -136,19 +136,7 @@ public class ProcessEditorInput extends RepositoryEditorInput {
     }
 
     private void loadProcess() throws PersistenceException {
-        // if (file.exists()) {
-        // ResourceUtils.deleteFile(file);
-        // }
-        // ResourceUtils.createFile(sourceProcess.getXmlStream(), file);
-
-        try {
-            loadedProcess.loadXmlFile((ProcessType) getProcessItem().getProcess());
-        } catch (Exception e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-
-        // loadedProcess.setId(process.getId());
+        loadedProcess.loadXmlFile((ProcessType) getProcessItem().getProcess());
     }
 
     /**
