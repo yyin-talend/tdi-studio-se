@@ -1286,7 +1286,6 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
 
             CLabel labelLabel = getWidgetFactory().createCLabel(subComposite, param.getDisplayName() + " :");
             FormData formDataLabel = new FormData();
-            System.out.println(lastControl);
             labelLabel.setVisible(true);
             if (numInRow != 1) {
                 labelLabel.setAlignment(SWT.RIGHT);
