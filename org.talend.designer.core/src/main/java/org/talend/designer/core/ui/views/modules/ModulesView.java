@@ -139,23 +139,26 @@ public class ModulesView extends ViewPart {
                 BufferedReader buf = new BufferedReader(inR);
                 String line;
                 while ((line = buf.readLine()) != null) {
-                    // Treat a perl response line :
-                    String[] elts = line.split(RESULT_SEPARATOR);
+                    System.out.println("Treating : " + line);
+                    if (line != null && line.length() > 0) {
+                        // Treat a perl response line :
+                        String[] elts = line.split(RESULT_SEPARATOR);
 
-                    List<ComponentImportNeeds> componentsToTreat = componentsByModules.get(elts[0]);
+                        List<ComponentImportNeeds> componentsToTreat = componentsByModules.get(elts[0]);
 
-                    if (componentsToTreat != null) {
-                        // Define status regarding the perl response :
-                        int status = ComponentImportNeeds.UNKNOWN;
-                        if (elts[1].equals(RESULT_KEY_OK)) {
-                            status = ComponentImportNeeds.INSTALLED;
-                        } else if (elts[1].equals(RESULT_KEY_KO)) {
-                            status = ComponentImportNeeds.NOT_INSTALLED;
-                        }
+                        if (componentsToTreat != null) {
+                            // Define status regarding the perl response :
+                            int status = ComponentImportNeeds.UNKNOWN;
+                            if (elts[1].equals(RESULT_KEY_OK)) {
+                                status = ComponentImportNeeds.INSTALLED;
+                            } else if (elts[1].equals(RESULT_KEY_KO)) {
+                                status = ComponentImportNeeds.NOT_INSTALLED;
+                            }
 
-                        // Step on objects using this module and set their status :
-                        for (ComponentImportNeeds current : componentsToTreat) {
-                            current.setStatus(status);
+                            // Step on objects using this module and set their status :
+                            for (ComponentImportNeeds current : componentsToTreat) {
+                                current.setStatus(status);
+                            }
                         }
                     }
                 }
