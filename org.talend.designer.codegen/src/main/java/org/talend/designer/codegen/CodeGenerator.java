@@ -71,6 +71,10 @@ public class CodeGenerator {
     private String runtimeFilePath;
     
     private String currentProjectName;
+    
+    private String jobName;
+    
+    private String contextName;
 
     private ECodeLanguage language;
 
@@ -96,6 +100,9 @@ public class CodeGenerator {
             this.process = process;
             this.statistics = statistics;
             this.trace = trace;
+            this.jobName = process.getLabel();
+            this.contextName = process.getContextManager().getDefaultContext().getName();
+            
             if ((options != null) && (options.length == 4)) {
                 this.interpreterPath = options[0];
                 this.libPath = options[1];
@@ -236,8 +243,17 @@ public class CodeGenerator {
      */
     private StringBuffer generateTypedComponentCode(EInternalTemplate type, Object argument, ECodePart part)
             throws CodeGeneratorException {
-        CodeGeneratorArgument codeGenArgument = new CodeGeneratorArgument(argument, part, statistics, trace,
-                interpreterPath, libPath, runtimeFilePath, currentProjectName);
+        CodeGeneratorArgument codeGenArgument = new CodeGeneratorArgument();
+        codeGenArgument.setNode(argument);
+        codeGenArgument.setCodePart(part);
+        codeGenArgument.setStatistics(statistics);
+        codeGenArgument.setTrace(trace);
+        codeGenArgument.setInterpreterPath(interpreterPath);
+        codeGenArgument.setLibPath(libPath);
+        codeGenArgument.setRuntimeFilePath(runtimeFilePath);
+        codeGenArgument.setCurrentProjectName(currentProjectName);
+        codeGenArgument.setContextName(contextName);
+        codeGenArgument.setJobName(jobName);
         JetBean jetBean = initializeJetBean(codeGenArgument);
 
         jetBean.setTemplateRelativeUri(TemplateUtil.RESOURCES_DIRECTORY + TemplateUtil.DIR_SEP + type
@@ -360,8 +376,17 @@ public class CodeGenerator {
      * @throws CoreException
      */
     public String generateComponentCode(INode node, ECodePart part) throws CodeGeneratorException {
-        CodeGeneratorArgument argument = new CodeGeneratorArgument(node, part, statistics, trace, interpreterPath,
-                libPath, runtimeFilePath, currentProjectName);
+        CodeGeneratorArgument argument = new CodeGeneratorArgument();
+        argument.setNode(node);
+        argument.setCodePart(part);
+        argument.setStatistics(statistics);
+        argument.setTrace(trace);
+        argument.setInterpreterPath(interpreterPath);
+        argument.setLibPath(libPath);
+        argument.setRuntimeFilePath(runtimeFilePath);
+        argument.setCurrentProjectName(currentProjectName);
+        argument.setContextName(contextName);
+        argument.setJobName(jobName);
 
         JetBean jetBean = initializeJetBean(argument);
 

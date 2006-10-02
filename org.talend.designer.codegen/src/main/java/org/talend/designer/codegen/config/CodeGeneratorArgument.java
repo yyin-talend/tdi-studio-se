@@ -44,35 +44,17 @@ public class CodeGeneratorArgument {
     String runtimeFilePath;
 
     String currentProjectName;
+    
+    String jobName;
+    
+    String contextName;
 
     private ECodePart codePart;
 
     /**
      * Constructor.
-     * @param argument
-     * @param codePart
-     * @param statistics
-     * @param trace
-     * @param interpreterPath
-     * @param libPath
-     * @param runtimeFilePath
-     * @param currentProjectName
      */
-    public CodeGeneratorArgument(Object argument, ECodePart codePart, boolean statistics, boolean trace,
-            String interpreterPath, String libPath, String runtimeFilePath, String currentProjectName) {
-        this.argument = argument;
-        this.statistics = statistics;
-        this.codePart = codePart;
-        this.trace = trace;
-
-        this.interpreterPath = interpreterPath;
-
-        this.libPath = libPath;
-
-        this.runtimeFilePath = runtimeFilePath;
-
-        this.currentProjectName = currentProjectName;
-
+    public CodeGeneratorArgument() {
     }
 
     /**
@@ -178,4 +160,20 @@ public class CodeGeneratorArgument {
     public void setRuntimeFilePath(String projectContext) {
         this.runtimeFilePath = projectContext;
     }
+    
+    public String getContextName() {
+        return this.contextName;
+    }
+    
+    public void setContextName(String contextName) {
+        this.contextName = contextName;
+    }
+    
+    public String getJobName() {
+        return this.jobName;
+    }
+    
+    public void setJobName(String jobName) {
+        this.jobName = jobName;
+    }   
 }
