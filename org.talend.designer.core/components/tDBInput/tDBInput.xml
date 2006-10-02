@@ -66,7 +66,8 @@
      <IMPORTS>
        <IMPORT NAME="DBI" MODULE="DBI" REQUIRED="true" />
        <IMPORT NAME="DBD-Oracle" MODULE="DBD::Oracle" REQUIRED="false" />
-       <IMPORT NAME="DBD-mysql" MODULE="DBD::Mysql" REQUIRED="false" />
+       <IMPORT NAME="DBD-Pg" MODULE="DBD::Pg" REQUIRED="false" />
+       <IMPORT NAME="DBD-mysql" MODULE="DBD::mysql" REQUIRED="false" />
        <IMPORT NAME="DBD-ODBC" MODULE="DBD::ODBC" REQUIRED="false" />
      </IMPORTS>
    </CODEGENERATION>

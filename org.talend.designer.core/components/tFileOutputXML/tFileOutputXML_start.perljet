@@ -52,6 +52,14 @@ my %desc_<%=cid %> = (
 
 my $nb_fields_<%=cid %> = scalar @{ $desc_<%=cid %>{schema} };
 
+<%
+    if (stats) {
+%>
+    UpdateStat('<%=cid %>', 0);
+<%
+    }
+%>
+
 my $output_FH_<%=cid %> = new FileHandle;
 open($output_FH_<%=cid %>, '>', $desc_<%=cid %>{filename})
     or die 'cannot open file "' . $desc_<%=cid %>{filename} . '"';

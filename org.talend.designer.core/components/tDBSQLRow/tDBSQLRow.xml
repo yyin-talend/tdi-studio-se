@@ -84,6 +84,13 @@
       <TEMPLATE NAME="java" MULTIPLE_METHODS="true"/>
       <TEMPLATE NAME="perl" MULTIPLE_METHODS="true"/>
     </TEMPLATES>
+     <IMPORTS>
+       <IMPORT NAME="DBI" MODULE="DBI" REQUIRED="true" />
+       <IMPORT NAME="DBD-Oracle" MODULE="DBD::Oracle" REQUIRED="false" />
+       <IMPORT NAME="DBD-Pg" MODULE="DBD::Pg" REQUIRED="false" />
+       <IMPORT NAME="DBD-mysql" MODULE="DBD::mysql" REQUIRED="false" />
+       <IMPORT NAME="DBD-ODBC" MODULE="DBD::ODBC" REQUIRED="false" />
+     </IMPORTS>
   </CODEGENERATION>
 
   <RETURNS/>

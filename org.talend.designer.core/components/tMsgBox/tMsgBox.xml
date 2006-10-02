@@ -65,6 +65,9 @@ COMPATIBILITY="ALL"
        <TEMPLATE NAME="java" MULTIPLE_METHODS="true"/>
        <TEMPLATE NAME="perl" MULTIPLE_METHODS="true"/>
      </TEMPLATES>
+    <IMPORTS>
+      <IMPORT NAME="Win32" MODULE="Win32" REQUIRED="true" />
+    </IMPORTS>
    </CODEGENERATION>
 
    <RETURNS/>

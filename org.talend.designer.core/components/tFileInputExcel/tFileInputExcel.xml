@@ -72,6 +72,9 @@
       <TEMPLATE NAME="java" MULTIPLE_METHODS="true" />
       <TEMPLATE NAME="perl" MULTIPLE_METHODS="true" />
     </TEMPLATES>
+    <IMPORTS>
+      <IMPORT NAME="Spreadsheet-ParseExcel" MODULE="Spreadsheet::ParseExcel" REQUIRED="true" />
+    </IMPORTS>
   </CODEGENERATION>
 
   <RETURNS>
