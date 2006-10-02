@@ -41,7 +41,7 @@ my %desc_<%=cid %> = (
     dbuser        => <%=ElementParameterParser.getValue(node, "__USER__") %>,
     dbpass        => <%=ElementParameterParser.getValue(node, "__PASS__") %>,
     encoding      => <%=ElementParameterParser.getValue(node, "__ENCODING__") %>,
-    query         => '<%=ElementParameterParser.getValue(node, "__QUERY__") %>',
+    query         => <%=ElementParameterParser.getValue(node, "__QUERY__") %>,
     schema        => [
     <%
 		for (IMetadataColumn column: metadata.getListColumns()) {

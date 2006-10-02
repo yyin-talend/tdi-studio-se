@@ -50,7 +50,7 @@
 		<DEFAULT>''</DEFAULT>
 		</PARAMETER>
       <PARAMETER NAME="QUERY" FIELD="MEMO_SQL" NUM_ROW="6">
-        <DEFAULT>select id, name from employee</DEFAULT>
+        <DEFAULT>'select id, name from employee'</DEFAULT>
       </PARAMETER>
 
      <PARAMETER NAME="ENCODING" FIELD="TEXT" NUM_ROW="7" REQUIRED="true">
