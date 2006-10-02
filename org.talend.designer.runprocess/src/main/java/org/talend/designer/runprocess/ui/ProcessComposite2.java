@@ -80,6 +80,7 @@ public class ProcessComposite2 extends Composite {
     private static final int H_WEIGHT = 5;
 
     private static final int MINIMUM_HEIGHT = 65;
+    private static final int MINIMUM_WIDTH = 530;
 
     private RunProcessContext processContext;
 
@@ -281,6 +282,7 @@ public class ProcessComposite2 extends Composite {
         data = new GridData(GridData.FILL_BOTH);
         data.horizontalSpan = 2;
         data.minimumHeight = MINIMUM_HEIGHT;
+        data.minimumWidth = MINIMUM_WIDTH;
         consoleText.setLayoutData(data);
         Font font = new Font(parent.getDisplay(), "courier", 8, SWT.NONE);
         consoleText.setFont(font);
