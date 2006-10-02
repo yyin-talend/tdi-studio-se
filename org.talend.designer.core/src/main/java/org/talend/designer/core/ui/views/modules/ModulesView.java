@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.ArrayUtils;
+import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
@@ -66,6 +67,8 @@ import org.talend.repository.model.ComponentsFactoryProvider;
  * 
  */
 public class ModulesView extends ViewPart {
+
+    private static Logger log = Logger.getLogger(ModulesView.class);
 
     private static final Bundle PERL_MODULE_PLUGIN = Platform.getBundle("org.talend.designer.codegen.perlmodule");
 
@@ -125,7 +128,11 @@ public class ModulesView extends ViewPart {
             String checkPerlModuleAbsolutePath = FileLocator.toFileURL(
                     PERL_MODULE_PLUGIN.getEntry(CHECK_PERL_MODULE_RELATIVE_PATH)).getPath();
 
+            long time = System.currentTimeMillis();
+            System.out.println("Launch " + checkPerlModuleAbsolutePath);
             Process result = Processor.exec(new Path(checkPerlModuleAbsolutePath), null, "", "", -1, -1, params);
+            System.out.println("Get response in " + ((System.currentTimeMillis() - time) / 1000) + " sec");
+            time = System.currentTimeMillis();
             InputStream is = result.getInputStream();
             try {
                 InputStreamReader inR = new InputStreamReader(is);
@@ -153,6 +160,8 @@ public class ModulesView extends ViewPart {
                     }
                 }
             } finally {
+                System.out.println("Finish parsing response in " + ((System.currentTimeMillis() - time) / 1000) + " sec");
+
                 is.close();
             }
             is = result.getErrorStream();
@@ -326,7 +335,7 @@ public class ModulesView extends ViewPart {
         makeActions();
         contributeToActionBars();
 
-        check();
+        // check();
     }
 
     private void makeActions() {
