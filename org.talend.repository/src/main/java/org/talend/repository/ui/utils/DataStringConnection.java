@@ -57,7 +57,7 @@ public class DataStringConnection {
         dataConnection[1] = new DataConnection("PostgreSQL", "jdbc:postgresql://<host>:<port>/<sid>", "jdbc:postgresql://" + host + ":"
                 + port + "/" + sid, "5432");
 
-        dataConnection[2] = new DataConnection("Oracle", "jdbc:oracle:thin:@<host>:<port>:<sid>", "jdbc:oracle:thin:@" + host + ":"
+        dataConnection[2] = new DataConnection("Oracle with SID", "jdbc:oracle:thin:@<host>:<port>:<sid>", "jdbc:oracle:thin:@" + host + ":"
                 + port + ":" + sid, "1521");
 
         dataConnection[3] = new DataConnection("Oracle with service name", "jdbc:oracle:thin:@(description=(address=(protocol=tcp)(host=<host>)(port=<port>))(connect_data=(service_name=<service_name>)))", 
