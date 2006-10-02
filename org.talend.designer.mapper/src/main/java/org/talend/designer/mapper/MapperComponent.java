@@ -23,18 +23,11 @@ package org.talend.designer.mapper;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.io.Reader;
-import java.io.StringReader;
-import java.io.StringWriter;
 import java.io.Writer;
-import java.util.Collections;
 import java.util.List;
 
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang.ArrayUtils;
 import org.apache.log4j.Logger;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
@@ -44,7 +37,6 @@ import org.exolab.castor.xml.Marshaller;
 import org.exolab.castor.xml.Unmarshaller;
 import org.exolab.castor.xml.ValidationException;
 import org.talend.commons.exception.ExceptionHandler;
-import org.talend.commons.utils.time.TimeMeasure;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.process.AbstractExternalNode;
 import org.talend.core.model.temp.ECodePart;
@@ -52,7 +44,6 @@ import org.talend.designer.codegen.CodeGenerator;
 import org.talend.designer.codegen.exception.CodeGeneratorException;
 import org.talend.designer.mapper.external.data.ExternalMapperData;
 import org.talend.designer.mapper.external.data.ExternalMapperTable;
-import org.talend.designer.mapper.managers.MapperManager;
 
 /**
  * DOC amaumont class global comment. Detailled comment <br/>

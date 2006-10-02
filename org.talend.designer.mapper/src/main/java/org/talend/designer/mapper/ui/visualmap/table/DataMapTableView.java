@@ -95,7 +95,6 @@ import org.talend.designer.mapper.model.table.AbstractInOutTable;
 import org.talend.designer.mapper.model.table.OutputTable;
 import org.talend.designer.mapper.model.table.VarsTable;
 import org.talend.designer.mapper.model.tableentry.AbstractInOutTableEntry;
-import org.talend.designer.mapper.model.tableentry.ConstraintTableEntry;
 import org.talend.designer.mapper.model.tableentry.ITableEntry;
 import org.talend.designer.mapper.ui.dnd.DragNDrop;
 import org.talend.designer.mapper.ui.event.MousePositionAnalyser;

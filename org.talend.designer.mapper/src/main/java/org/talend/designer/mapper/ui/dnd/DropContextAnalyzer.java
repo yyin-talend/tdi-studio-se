@@ -124,16 +124,16 @@ public class DropContextAnalyzer {
 
         isInputToInput = false;
         mapOneToOneAuthorized = true;
-        
+
         if (targetTableIsConstraintsTable() || draggedData.getTransferableEntryList().size() <= 1) {
             mapOneToOneAuthorized = false;
         }
-        
+
         /*
          * INPUT => INPUT
          */
         if (zoneSource == Zone.INPUTS && zoneTarget == Zone.INPUTS) {
-            
+
             isInputToInput = true;
             mapOneToOneAuthorized = false;
             List<InputTable> inputTables = mapperManager.getInputTables();
@@ -154,13 +154,13 @@ public class DropContextAnalyzer {
          * OUTPUT => OUTPUT
          */
         if (zoneSource == Zone.OUTPUTS && zoneTarget == Zone.OUTPUTS) {
-            
+
             isOutputToOutput = true;
             mapOneToOneAuthorized = true;
             List<OutputTable> outputTables = mapperManager.getOutputTables();
             if (outputTables.indexOf(dataMapTableViewSource.getDataMapTable()) == outputTables.indexOf(dataMapTableViewTarget
                     .getDataMapTable())) {
-                
+
                 /*
                  * INPUT => INPUT && index of table source >= index of table target
                  */
@@ -168,9 +168,9 @@ public class DropContextAnalyzer {
             } else {
                 return true;
             }
-            
+
         }
-        
+
         TableItem tableItemTarget = getTableItemFromPosition(new Point(event.x, event.y));
         if (zoneSource == Zone.VARS && zoneTarget == Zone.VARS && tableItemTarget != null) {
             if (tableItemSource == tableItemTarget || !dropVarsEntryIsValid(tableItemTarget)) {
@@ -181,8 +181,8 @@ public class DropContextAnalyzer {
             }
         }
 
-        if (zoneSource == Zone.VARS && zoneTarget == Zone.INPUTS
-                || zoneSource == Zone.OUTPUTS && zoneTarget == Zone.INPUTS || zoneSource == Zone.OUTPUTS && zoneTarget == Zone.VARS) {
+        if (zoneSource == Zone.VARS && zoneTarget == Zone.INPUTS || zoneSource == Zone.OUTPUTS && zoneTarget == Zone.INPUTS
+                || zoneSource == Zone.OUTPUTS && zoneTarget == Zone.VARS) {
             /*
              * VAR => INPUT OUTPUT => OUTPUT OUTPUT => INPUT OUTPUT => VAR
              */
@@ -265,8 +265,7 @@ public class DropContextAnalyzer {
                 dropFeedback |= DND.FEEDBACK_SELECT;
             } else if (zoneSource == Zone.INPUTS && zoneTarget == Zone.VARS || zoneSource == Zone.INPUTS && zoneTarget == Zone.OUTPUTS
                     || zoneSource == Zone.VARS && zoneTarget == Zone.VARS || zoneSource == Zone.VARS && zoneTarget == Zone.OUTPUTS
-                    || zoneSource == Zone.OUTPUTS && zoneTarget == Zone.OUTPUTS
-            ) {
+                    || zoneSource == Zone.OUTPUTS && zoneTarget == Zone.OUTPUTS) {
 
                 if (isCursorOverExpressionCell) {
                     insertionEntryMode = false;
@@ -414,20 +413,16 @@ public class DropContextAnalyzer {
         return tableItemSource.getParent() == currentTableTarget;
     }
 
-    
     public boolean isInputToInput() {
         return this.isInputToInput;
     }
 
-    
     public boolean isOutputTuOutput() {
         return this.isOutputToOutput;
     }
 
-    
     public void setOutputTuOutput(boolean isOutputTuOutput) {
         this.isOutputToOutput = isOutputTuOutput;
     }
 
-    
 }

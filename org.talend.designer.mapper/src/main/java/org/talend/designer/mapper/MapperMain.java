@@ -29,12 +29,10 @@ import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
-import org.talend.commons.utils.time.TimeMeasure;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.process.AbstractExternalNode;
 import org.talend.core.model.process.IConnection;
 import org.talend.designer.core.model.components.EParameterName;
-import org.talend.designer.core.model.components.ElementParameter;
 import org.talend.designer.mapper.external.converter.ExternalDataConverter;
 import org.talend.designer.mapper.external.data.ExternalMapperData;
 import org.talend.designer.mapper.external.data.ExternalMapperUiProperties;
@@ -47,8 +45,6 @@ import org.talend.designer.mapper.model.table.OutputTable;
 import org.talend.designer.mapper.ui.MapperUI;
 import org.talend.designer.mapper.ui.image.ImageInfo;
 import org.talend.designer.mapper.ui.image.ImageProviderMapper;
-
-import com.sun.org.apache.xalan.internal.xsltc.runtime.Parameter;
 
 /**
  * DOC amaumont class global comment. Detailled comment <br/>

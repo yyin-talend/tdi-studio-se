@@ -23,7 +23,6 @@ package org.talend.designer.mapper.ui.dnd;
 
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.designer.mapper.model.tableentry.ITableEntry;
-import org.talend.designer.mapper.model.tableentry.TableEntryLocation;
 import org.talend.designer.mapper.ui.visualmap.zone.Zone;
 
 /**

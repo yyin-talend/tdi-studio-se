@@ -28,7 +28,6 @@ import org.eclipse.jface.util.DelegatingDragAdapter;
 import org.eclipse.jface.util.DelegatingDropAdapter;
 import org.eclipse.jface.util.TransferDragSourceListener;
 import org.eclipse.jface.util.TransferDropTargetListener;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DragSource;
 import org.eclipse.swt.dnd.DragSourceEvent;
@@ -39,8 +38,6 @@ import org.eclipse.swt.dnd.DropTargetListener;
 import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
@@ -54,7 +51,6 @@ import org.talend.core.ui.metadata.editor.MetadataTableEditorView;
 import org.talend.designer.mapper.language.ILanguage;
 import org.talend.designer.mapper.language.LanguageProvider;
 import org.talend.designer.mapper.managers.MapperManager;
-import org.talend.designer.mapper.managers.TableEntriesManager;
 import org.talend.designer.mapper.managers.UIManager;
 import org.talend.designer.mapper.model.tableentry.AbstractInOutTableEntry;
 import org.talend.designer.mapper.model.tableentry.IColumnEntry;
@@ -494,8 +490,8 @@ public class DragNDrop {
                         }
                         if (zoneSourceEntry == Zone.INPUTS && zoneTarget == Zone.VARS || zoneSourceEntry == Zone.VARS
                                 && zoneTarget == Zone.VARS) {
-                            currentIndex = insertNewVarEntry(currentLanguage, dataMapTableViewTarget, currentIndex,
-                                    tableEntrySource, columnName);
+                            currentIndex = insertNewVarEntry(currentLanguage, dataMapTableViewTarget, currentIndex, tableEntrySource,
+                                    columnName);
                             atLeastOneEntryInserted = true;
 
                         } else if (zoneSourceEntry == Zone.VARS && zoneTarget == Zone.OUTPUTS) {
@@ -511,11 +507,11 @@ public class DragNDrop {
                         } else if (zoneSourceEntry == Zone.OUTPUTS && zoneTarget == Zone.VARS) {
                             // nothing
                         } else if (zoneSourceEntry == Zone.OUTPUTS && zoneTarget == Zone.OUTPUTS) {
-                            
+
                             insertClonedOutpuEntryToOutput(sourceEntriesOfEntriesBeingAdded, metadataEditorEvent, tableEntrySource,
                                     metadataColumnDragged, columnName);
                             atLeastOneEntryInserted = true;
-                            
+
                         } else {
                             // throw new IllegalStateException("Drop case not found !");
                         }
@@ -546,10 +542,9 @@ public class DragNDrop {
                             if (zoneSource == Zone.OUTPUTS) {
                                 location = tableEntrySource.getExpression();
                             } else {
-                                location = currentLanguage.getLocation(tableEntrySource.getParentName(),
-                                        tableEntrySource.getName());
+                                location = currentLanguage.getLocation(tableEntrySource.getParentName(), tableEntrySource.getName());
                             }
-                                
+
                             dataMapTableEntry.setExpression(location + " ");
                         }
                     }
@@ -587,26 +582,24 @@ public class DragNDrop {
                 }
             }
 
-            private void insertNewInOutEntryFromInputEntry(ArrayList<ITableEntry> sources,
-                    MetadataEditorEvent metadataEditorEvent, ITableEntry tableEntrySource,
-                    IMetadataColumn metadataColumnDragged, String columnName) {
+            private void insertNewInOutEntryFromInputEntry(ArrayList<ITableEntry> sources, MetadataEditorEvent metadataEditorEvent,
+                    ITableEntry tableEntrySource, IMetadataColumn metadataColumnDragged, String columnName) {
                 MetadataColumn metadataColumn = new MetadataColumn(metadataColumnDragged);
                 metadataColumn.setLabel(columnName);
                 metadataEditorEvent.entries.add(metadataColumn);
                 sources.add(tableEntrySource);
             }
 
-            private void insertClonedOutpuEntryToOutput(ArrayList<ITableEntry> sources,
-                    MetadataEditorEvent metadataEditorEvent, ITableEntry tableEntrySource,
-                    IMetadataColumn metadataColumnDragged, String columnName) {
+            private void insertClonedOutpuEntryToOutput(ArrayList<ITableEntry> sources, MetadataEditorEvent metadataEditorEvent,
+                    ITableEntry tableEntrySource, IMetadataColumn metadataColumnDragged, String columnName) {
                 MetadataColumn metadataColumn = new MetadataColumn(metadataColumnDragged);
                 metadataColumn.setLabel(columnName);
                 metadataEditorEvent.entries.add(metadataColumn);
                 sources.add(tableEntrySource);
             }
-            
-            private void insertNewOutputEntryFromVarEntry(ArrayList<ITableEntry> sources,
-                    MetadataEditorEvent metadataEditorEvent, ITableEntry tableEntrySource, String columnName) {
+
+            private void insertNewOutputEntryFromVarEntry(ArrayList<ITableEntry> sources, MetadataEditorEvent metadataEditorEvent,
+                    ITableEntry tableEntrySource, String columnName) {
                 MetadataColumn metadataColumn = new MetadataColumn();
                 metadataColumn.setLabel(columnName);
                 metadataEditorEvent.entries.add(metadataColumn);
@@ -622,8 +615,8 @@ public class DragNDrop {
                 return currentIndex;
             }
 
-            private void modifyExistingExpression(ILanguage currentLanguage, ITableEntry entryTarget,
-                    ITableEntry tableEntrySource, boolean overwriteExpression, Zone zoneSourceEntry) {
+            private void modifyExistingExpression(ILanguage currentLanguage, ITableEntry entryTarget, ITableEntry tableEntrySource,
+                    boolean overwriteExpression, Zone zoneSourceEntry) {
                 String location = null;
                 if (zoneSourceEntry == Zone.OUTPUTS) {
                     location = tableEntrySource.getExpression();

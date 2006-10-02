@@ -38,20 +38,20 @@ public class ExternalMapperUiProperties implements Serializable {
      */
     private static final long serialVersionUID = -6720565045409231632L;
 
-    // must be null by default to unmarshal correctly 
+    // must be null by default to unmarshal correctly
     private int[] weightsMainSashForm = new int[0];
 
     public static final int[] DEFAULT_WEIGHTS_MAIN_SASH_FORM = new int[] { 70, 30 };
-    
-    // must be null by default to unmarshal correctly 
+
+    // must be null by default to unmarshal correctly
     private int[] weightsDatasFlowViewSashForm = new int[0];
 
     public static final int[] DEFAULT_WEIGHTS_DATAS_FLOW_SASH_FORM = new int[] { 33, 33, 34 };
-    
+
     private Rectangle boundsMapper = new Rectangle(50, 50, 800, 600);
 
     private boolean shellMaximized = false;
-    
+
     public Rectangle getBoundsMapper() {
         return this.boundsMapper;
     }
@@ -74,12 +74,14 @@ public class ExternalMapperUiProperties implements Serializable {
 
     /**
      * Setter for array of exactly three values which represents width pixels of each zone (input, var and output).
-     * @param weightsDatasFlowViewSashForm array of three values which represents width pixels of each zone (input, var and output)
+     * 
+     * @param weightsDatasFlowViewSashForm array of three values which represents width pixels of each zone (input, var
+     * and output)
      */
     public void setWeightsDatasFlowViewSashForm(int[] weightsDatasFlowViewSashForm) {
-//        if (weightsDatasFlowViewSashForm.length != 3) {
-//            throw new IllegalArgumentException("weightsDatasFlowViewSashForm must be an array of exactly 3 values");
-//        }
+        // if (weightsDatasFlowViewSashForm.length != 3) {
+        // throw new IllegalArgumentException("weightsDatasFlowViewSashForm must be an array of exactly 3 values");
+        // }
         this.weightsDatasFlowViewSashForm = weightsDatasFlowViewSashForm;
     }
 
@@ -89,14 +91,14 @@ public class ExternalMapperUiProperties implements Serializable {
 
     /**
      * Setter for array of exactly two values which represents height pixels of each zone (flow view, tabs view).
+     * 
      * @param weightsMainSashForm
      */
     public void setWeightsMainSashForm(int[] weightsMainSashForm) {
-//        if (weightsMainSashForm.length != 2) {
-//            throw new IllegalArgumentException("weightsMainSashForm must be an array of exactly 2 values");
-//        }
+        // if (weightsMainSashForm.length != 2) {
+        // throw new IllegalArgumentException("weightsMainSashForm must be an array of exactly 2 values");
+        // }
         this.weightsMainSashForm = weightsMainSashForm;
     }
 
-    
 }

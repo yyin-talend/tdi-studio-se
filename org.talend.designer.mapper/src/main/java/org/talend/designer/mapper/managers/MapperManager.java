@@ -21,10 +21,6 @@
 // ============================================================================
 package org.talend.designer.mapper.managers;
 
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.StringReader;
-import java.io.StringWriter;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -36,13 +32,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
-import org.exolab.castor.xml.MarshalException;
-import org.exolab.castor.xml.Marshaller;
-import org.exolab.castor.xml.Unmarshaller;
-import org.exolab.castor.xml.ValidationException;
-import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
-import org.talend.commons.utils.time.TimeMeasure;
 import org.talend.commons.utils.workbench.resources.ResourceUtils;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
@@ -56,7 +46,6 @@ import org.talend.core.model.process.IProcess;
 import org.talend.core.ui.metadata.editor.MetadataTableEditorView;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.mapper.MapperComponent;
-import org.talend.designer.mapper.external.data.ExternalMapperData;
 import org.talend.designer.mapper.model.table.AbstractDataMapTable;
 import org.talend.designer.mapper.model.table.InputTable;
 import org.talend.designer.mapper.model.table.OutputTable;

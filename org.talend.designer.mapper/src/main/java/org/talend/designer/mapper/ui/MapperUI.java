@@ -57,7 +57,6 @@ import org.talend.commons.utils.performance.IPerformanceEvaluatorListener;
 import org.talend.commons.utils.performance.PerformanceEvaluator;
 import org.talend.commons.utils.performance.PerformanceEvaluatorEvent;
 import org.talend.commons.utils.threading.ExecutionLimiter;
-import org.talend.commons.utils.time.TimeMeasure;
 import org.talend.designer.mapper.external.data.ExternalMapperUiProperties;
 import org.talend.designer.mapper.managers.LinkManager;
 import org.talend.designer.mapper.managers.MapperManager;
