@@ -24,7 +24,6 @@ package org.talend.designer.runprocess.perl;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
 
@@ -38,7 +37,6 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
-import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
@@ -88,8 +86,6 @@ public final class PerlUtils {
         super();
     }
 
-    private static final String PERL_LIB_NAME = "check_modules.pl";
-
     public static IProject getProject() throws CoreException {
         IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
         IProject prj = root.getProject(PERL_PROJECT_NAME);
@@ -106,26 +102,6 @@ public final class PerlUtils {
             }
             prj.create(desc, null);
             prj.open(IResource.BACKGROUND_REFRESH, null);
-
-            URL url = Platform.getBundle("org.talend.designer.codegen.perlmodule").getEntry("perl/talend/check_modules.pl");
-            IPath monSuperModule = new Path(PERL_LIB_NAME);
-            IFile module = prj.getFile(monSuperModule);
-            InputStream stream = null;
-            try {
-                stream = url.openStream();
-                module.create(stream, true, null);
-            } catch (IOException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            } finally {
-                try {
-                    stream.close();
-                } catch (IOException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
-            }
-
         } else if (prj.getNature(PERL_NATURE) == null && nature != null) {
             IProjectDescription description = prj.getDescription();
             String[] natures = description.getNatureIds();

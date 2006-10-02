@@ -31,8 +31,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.ArrayUtils;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
@@ -42,6 +43,7 @@ import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.part.ViewPart;
+import org.osgi.framework.Bundle;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.MessageBoxExceptionHandler;
 import org.talend.commons.ui.swt.tableviewer.IBeanPropertyAccessors;
@@ -55,7 +57,6 @@ import org.talend.designer.core.model.components.ComponentImportNeeds;
 import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.runprocess.Processor;
 import org.talend.designer.runprocess.ProcessorException;
-import org.talend.designer.runprocess.perl.PerlUtils;
 import org.talend.repository.model.ComponentsFactoryProvider;
 
 /**
@@ -66,7 +67,9 @@ import org.talend.repository.model.ComponentsFactoryProvider;
  */
 public class ModulesView extends ViewPart {
 
-    private static final String PERL_LIB_NAME = "check_modules.pl";
+    private static final Bundle PERL_MODULE_PLUGIN = Platform.getBundle("org.talend.designer.codegen.perlmodule");
+
+    private static final String CHECK_PERL_MODULE_RELATIVE_PATH = "perl/talend/check_modules.pl";
 
     private static final String MODULE_PARAM_KEY = "--module=";
 
@@ -119,8 +122,10 @@ public class ModulesView extends ViewPart {
         }
 
         try {
-            IPath monSuperModule = PerlUtils.getProject().getLocation().append(PERL_LIB_NAME);
-            Process result = Processor.exec(monSuperModule, null, "", "", -1, -1, params);
+            String checkPerlModuleAbsolutePath = FileLocator.toFileURL(
+                    PERL_MODULE_PLUGIN.getEntry(CHECK_PERL_MODULE_RELATIVE_PATH)).getPath();
+
+            Process result = Processor.exec(new Path(checkPerlModuleAbsolutePath), null, "", "", -1, -1, params);
             InputStream is = result.getInputStream();
             try {
                 InputStreamReader inR = new InputStreamReader(is);
@@ -157,7 +162,6 @@ public class ModulesView extends ViewPart {
                 String line;
                 StringBuffer error = new StringBuffer();
                 while ((line = buf.readLine()) != null) {
-                    System.out.println(line);
                     error.append(line + "\n");
                 }
                 if (error.length() > 0) {
@@ -169,8 +173,6 @@ public class ModulesView extends ViewPart {
         } catch (IOException e) {
             ExceptionHandler.process(e);
         } catch (ProcessorException e) {
-            MessageBoxExceptionHandler.process(e);
-        } catch (CoreException e) {
             MessageBoxExceptionHandler.process(e);
         }
     }
