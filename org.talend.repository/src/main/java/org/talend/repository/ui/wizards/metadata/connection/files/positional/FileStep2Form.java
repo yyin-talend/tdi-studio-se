@@ -296,13 +296,13 @@ public class FileStep2Form extends AbstractPositionalFileStepForm {
 
         // escape Char Combo
         escapeCharCombo = new LabelledCombo(compositeEscapeChar, Messages.getString("FileStep2.escapeChar"), Messages
-                .getString("FileStep2.escapeCharTip"), ESCAPE_CHAR_DATA, 1, false, SWT.NONE);
+                .getString("FileStep2.escapeCharTip"), ESCAPE_CHAR_DATA, 1, false, SWT.READ_ONLY);
         escapeCharFlag = new Label(compositeEscapeChar, SWT.NONE);
         escapeCharFlag.setText("                            ");
 
         // Text Enclosure Combo
         textEnclosureCombo = new LabelledCombo(compositeEscapeChar, Messages.getString("FileStep2.textEnclosure"), Messages
-                .getString("FileStep2.textEnclosureTip"), TEXT_ENCLOSURE_DATA, 1, false, SWT.NONE);
+                .getString("FileStep2.textEnclosureTip"), TEXT_ENCLOSURE_DATA, 1, false, SWT.READ_ONLY);
         textEnclosureFlag = new Label(compositeEscapeChar, SWT.NONE);
         textEnclosureFlag.setText("                            ");
 

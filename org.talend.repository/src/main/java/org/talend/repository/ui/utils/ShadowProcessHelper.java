@@ -57,28 +57,41 @@ public class ShadowProcessHelper {
         processDescription.setServer(connection.getServer());
         processDescription.setFilepath(connection.getFilePath());
         processDescription.setFieldSeparator("\"" + connection.getFieldSeparatorValue() + "\"");
-        processDescription.setRowSeparator("\""+ connection.getRowSeparatorValue() + "\"");
+        processDescription.setRowSeparator("\"" + connection.getRowSeparatorValue() + "\"");
 
         processDescription.setPattern("'" + connection.getFieldSeparatorValue() + "'");
-        
+
         processDescription.setHeaderRow(connection.getHeaderValue());
         processDescription.setFooterRow(connection.getFooterValue());
         processDescription.setLimitRows(connection.getLimitValue());
 
-        if(connection.getEscapeChar()!= null && (!connection.getEscapeChar().equals("") || !connection.getEscapeChar().equals("Empty"))){
-            processDescription.setEscapeCharacter("'" + connection.getEscapeChar() + "'");
-        }else{
+        if (connection.getEscapeChar() != null && !connection.getEscapeChar().equals("") && !connection.getEscapeChar().equals("Empty")) {
+            if(connection.getEscapeChar().equals("\\")){
+                processDescription.setEscapeCharacter("\"" + connection.getEscapeChar()+"\\" + "\"");
+            } else if(connection.getEscapeChar().equals("'")) {
+                processDescription.setEscapeCharacter("\"" + connection.getEscapeChar() + "\"");
+            }else{
+                processDescription.setEscapeCharacter("'" + connection.getEscapeChar() + "'");
+            }
+        } else {
             processDescription.setEscapeCharacter(null);
         }
-        if(connection.getTextEnclosure()!= null && (!connection.getTextEnclosure().equals("") || !connection.getTextEnclosure().equals("Empty"))){
-            processDescription.setTextEnclosure("'" + connection.getTextEnclosure() + "'");
-        }else{
+        if (connection.getTextEnclosure() != null
+                && !connection.getTextEnclosure().equals("") && !connection.getTextEnclosure().equals("Empty")) {
+            if(connection.getTextEnclosure().equals("\\")){
+                processDescription.setTextEnclosure("\"" + connection.getTextEnclosure()+"\\" + "\"");
+            } else if(connection.getTextEnclosure().equals("'")) {
+                processDescription.setTextEnclosure("\"" + connection.getTextEnclosure() + "\"");
+            }else{
+                processDescription.setTextEnclosure("'" + connection.getTextEnclosure() + "'");
+            }
+        } else {
             processDescription.setTextEnclosure(null);
         }
         processDescription.setRemoveEmptyRow(connection.isRemoveEmptyRow());
-        if(connection.getEncoding() != null &&  !connection.getEncoding().equals("")){
+        if (connection.getEncoding() != null && !connection.getEncoding().equals("")) {
             processDescription.setEncoding("\"" + connection.getEncoding() + "\"");
-        }else{
+        } else {
             connection.setEncoding("UTF-8");
             processDescription.setEncoding("\"" + connection.getEncoding() + "\"");
         }
@@ -110,12 +123,10 @@ public class ShadowProcessHelper {
         IExtensionRegistry registry = Platform.getExtensionRegistry();
 
         // use the org.talend.repository.filepreview_provider
-        IConfigurationElement[] configurationElements = registry
-                .getConfigurationElementsFor("org.talend.repository.filepreview_provider");
+        IConfigurationElement[] configurationElements = registry.getConfigurationElementsFor("org.talend.repository.filepreview_provider");
 
         if (configurationElements.length > 0) {
-            IPreview iPreview = (IPreview) configurationElements[0]
-                    .createExecutableExtension("class");
+            IPreview iPreview = (IPreview) configurationElements[0].createExecutableExtension("class");
             xmlArray = iPreview.preview(processDescription, type);
         } else {
             log.error("\nThe ShadowProcess use to extract data or metadata on a File don't run."
