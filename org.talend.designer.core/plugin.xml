@@ -21,6 +21,9 @@
             id="org.talend.designer.core.ui.editor.StandAloneTalendPerlEditor">
       </editor> 
    </extension>
+   <extension  point="org.eclipse.ui.startup">
+	   <startup class="org.eclipse.update.internal.scheduler.SchedulerStartup"/>
+	</extension>
    <extension
          point="org.eclipse.ui.preferencePages">
       <page
