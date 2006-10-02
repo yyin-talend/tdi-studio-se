@@ -70,9 +70,9 @@ public class DelimitedFileStep2Form extends AbstractDelimitedFileStepForm {
 
     private static final String EMPTY_VALUE = Messages.getString("FileStep2.empty");
 
-    private static final String[] TEXT_ENCLOSURE_DATA = { EMPTY_VALUE, "\"", "\"\"" };
+    private static final String[] TEXT_ENCLOSURE_DATA = { EMPTY_VALUE, "\"", "'", "\\" };
 
-    private static final String[] ESCAPE_CHAR_DATA = { EMPTY_VALUE };
+    private static final String[] ESCAPE_CHAR_DATA = { EMPTY_VALUE, "\"", "'", "\\" }; 
 
     private static final String[] STRING_NUMBERS_DATA = { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15",
             "16", "17", "18", "19", "20" };
@@ -1007,13 +1007,11 @@ public class DelimitedFileStep2Form extends AbstractDelimitedFileStepForm {
         }
 
         // escape Char Combo
-        if ((escapeCharCombo.getText() == "") || escapeCharCombo.getText().equals("\\") || escapeCharCombo.getText().endsWith("\\")) {
+        if (escapeCharCombo.getText() == "") { //|| escapeCharCombo.getText().equals("\\") || escapeCharCombo.getText().endsWith("\\")
             updateStatus(IStatus.ERROR, Messages.getString("FileStep2.escapeCharAlert"));
             return false;
         }
-
-        if ((textEnclosureCombo.getText() == "") || textEnclosureCombo.getText().equals("\\")
-                || textEnclosureCombo.getText().endsWith("\\")) {
+        if (textEnclosureCombo.getText() == "") { //|| textEnclosureCombo.getText().equals("\\") || textEnclosureCombo.getText().endsWith("\\")
             updateStatus(IStatus.ERROR, Messages.getString("FileStep2.textEnclosureAlert"));
             return false;
         }

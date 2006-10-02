@@ -69,10 +69,6 @@ public class RegexpFileStep2Form extends AbstractRegexpFileStepForm {
 
     private static final String EMPTY_VALUE = Messages.getString("FileStep2.empty");
 
-    private static final String[] TEXT_ENCLOSURE_DATA = { EMPTY_VALUE, "\"", "\"\"" };
-
-    private static final String[] ESCAPE_CHAR_DATA = { EMPTY_VALUE };
-
     private static final String[] STRING_NUMBERS_DATA = { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13",
             "14", "15", "16", "17", "18", "19", "20" };
 
