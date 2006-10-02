@@ -27,6 +27,8 @@ import org.talend.commons.exception.PersistenceException;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.model.general.Project;
 import org.talend.core.model.temp.ECodeLanguage;
+import org.talend.core.ui.ImageProvider;
+import org.talend.core.ui.ImageProvider.EImage;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IRepositoryFactory;
 import org.talend.repository.model.RepositoryFactoryProvider;
@@ -55,6 +57,7 @@ public class NewProjectWizard extends Wizard {
     public NewProjectWizard(RepositoryContext repositoryContext) {
         super();
         this.repositoryContext = repositoryContext;
+        setDefaultPageImageDescriptor(ImageProvider.getImageDesc(EImage.PROJECT_WIZ));
     }
 
     /**
