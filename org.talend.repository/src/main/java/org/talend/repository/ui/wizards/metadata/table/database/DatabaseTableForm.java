@@ -280,7 +280,7 @@ public class DatabaseTableForm extends AbstractForm {
         int leftCompositeWidth = 125;
         int rightCompositeWidth = WIDTH_GRIDDATA_PIXEL - leftCompositeWidth;
         int headerCompositeHeight = 60;
-        int tableSettingsCompositeHeight = 90;
+        int tableSettingsCompositeHeight = 15;
         int tableCompositeHeight = 200;
 
         int height = headerCompositeHeight + tableSettingsCompositeHeight + tableCompositeHeight;
@@ -297,30 +297,24 @@ public class DatabaseTableForm extends AbstractForm {
         addTreeNavigator(leftComposite, leftCompositeWidth, height);
 
         // Header Fields
-        Composite composite1 = Form.startNewDimensionnedGridLayout(rightComposite, 2, rightCompositeWidth, headerCompositeHeight);
-        nameText = new LabelledText(composite1, Messages.getString("DatabaseTableForm.name"));
-        commentText = new LabelledText(composite1, Messages.getString("DatabaseTableForm.comment"));
+        Composite composite1 = Form.startNewDimensionnedGridLayout(rightComposite, 3, rightCompositeWidth, headerCompositeHeight);
+        nameText = new LabelledText(composite1, Messages.getString("DatabaseTableForm.name"), 2);
+        commentText = new LabelledText(composite1, Messages.getString("DatabaseTableForm.comment"), 2);
 
         // Group Table Settings
-        Group groupTableSettings = Form.createGroup(rightComposite, 3,
-                Messages.getString("DatabaseTableForm.groupTableSettings"), tableSettingsCompositeHeight);
+//        Group groupTableSettings = Form.createGroup(rightComposite, 3,
+//                Messages.getString("DatabaseTableForm.groupTableSettings"), tableSettingsCompositeHeight);
 
         // Composite TableSettings
-        Composite compositeTableSettings = Form.startNewDimensionnedGridLayout(groupTableSettings, 3, rightCompositeWidth,
-                tableSettingsCompositeHeight);
-        tableSettingsInfoLabel = new Label(compositeTableSettings, SWT.NONE);
-        gridData = new GridData(SWT.FILL, SWT.BOTTOM, true, false);
-        gridData.widthHint = rightCompositeWidth;
-        gridData.horizontalSpan = 3;
-        tableSettingsInfoLabel.setLayoutData(gridData);
-
+//        Composite compositeTableSettings = Form.startNewDimensionnedGridLayout(groupTableSettings, 3, rightCompositeWidth,
+//                tableSettingsCompositeHeight);
         // Combo Table
-        tableCombo = new LabelledCombo(compositeTableSettings, Messages.getString("DatabaseTableForm.table"), Messages
-                .getString("DatabaseTableForm.tableTip"), itemTableName);
+        tableCombo = new LabelledCombo(composite1, Messages.getString("DatabaseTableForm.table"), Messages
+                .getString("DatabaseTableForm.tableTip"), itemTableName, true);
 
         // Button retreiveSchema
-        Composite compositeRetreiveSchemaButton = Form.startNewGridLayout(compositeTableSettings, 1, false, SWT.CENTER,
-                SWT.BOTTOM);
+        Composite compositeRetreiveSchemaButton = Form.startNewGridLayout(composite1, 1, false, SWT.CENTER,
+                SWT.TOP);
         retreiveSchemaButton = new UtilsButton(compositeRetreiveSchemaButton, Messages
                 .getString("DatabaseTableForm.retreiveSchema"), WIDTH_BUTTON_PIXEL, HEIGHT_BUTTON_PIXEL);
 
@@ -328,12 +322,18 @@ public class DatabaseTableForm extends AbstractForm {
         checkConnectionButton = new UtilsButton(compositeRetreiveSchemaButton, Messages
                 .getString("DatabaseTableForm.checkConnection"), WIDTH_BUTTON_PIXEL, HEIGHT_BUTTON_PIXEL);
 
+        tableSettingsInfoLabel = new Label(composite1, SWT.NONE);
+        gridData = new GridData(SWT.FILL, SWT.BOTTOM, true, false);
+        gridData.widthHint = rightCompositeWidth;
+        gridData.horizontalSpan = 3;
+        tableSettingsInfoLabel.setLayoutData(gridData);
+        
         // Checkbox streamDetach
-        streamDetachCheckbox = new Button(compositeTableSettings, SWT.CHECK);
+        streamDetachCheckbox = new Button(composite1, SWT.CHECK);
         streamDetachCheckbox.setText(Messages.getString("DatabaseTableForm.streamDetach"));
         streamDetachCheckbox.setAlignment(SWT.LEFT);
         streamDetachCheckbox.setVisible(STREAM_DETACH_IS_VISIBLE);
-
+        
         // Group MetaData
         Group groupMetaData = Form.createGroup(rightComposite, 1, Messages.getString("DatabaseTableForm.groupMetaData"),
                 tableCompositeHeight);
