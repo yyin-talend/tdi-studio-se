@@ -51,7 +51,7 @@ import org.talend.repository.ui.actions.AContextualAction;
  */
 public class CreateProcess extends AContextualAction {
 
-    private static final String CREATE_LABEL = "Create process";
+    private static final String CREATE_LABEL = "Create job";
 
     public CreateProcess() {
         super();

@@ -36,7 +36,7 @@ public class CreateProcessCommand extends Command {
      */
     public CreateProcessCommand() {
         super();
-        setLabel("Create process");
+        setLabel("Create job");
     }
 
     /*

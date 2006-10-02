@@ -49,9 +49,9 @@ import org.talend.repository.ui.actions.AContextualAction;
  */
 public class EditProcess extends AContextualAction {
 
-    private static final String EDIT_LABEL = "Edit process";
+    private static final String EDIT_LABEL = "Edit job";
 
-    private static final String OPEN_LABEL = "Open process";
+    private static final String OPEN_LABEL = "Open job";
 
     public EditProcess() {
         super();
