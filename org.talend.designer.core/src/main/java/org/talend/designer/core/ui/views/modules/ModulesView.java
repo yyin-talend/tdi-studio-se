@@ -132,7 +132,16 @@ public class ModulesView extends ViewPart {
             System.out.println("Launch " + checkPerlModuleAbsolutePath);
             Process result = Processor.exec(new Path(checkPerlModuleAbsolutePath), null, "", "", -1, -1, params);
             System.out.println("Get response in " + ((System.currentTimeMillis() - time) / 1000) + " sec");
-            readAndPrint(result);
+            try {
+//                Thread.sleep(2000);
+                result.waitFor();
+            } catch (InterruptedException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+//            readAndPrint(result.getInputStream());
+//            System.out.println("---");
+//            readAndPrint(result.getErrorStream());
             time = System.currentTimeMillis();
             InputStream is = result.getInputStream();
             try {
@@ -189,37 +198,34 @@ public class ModulesView extends ViewPart {
             MessageBoxExceptionHandler.process(e);
         }
     }
-    public static void readAndPrint(Process process) {
+
+    public static void readAndPrint(InputStream is) {
+        String msg = null;
+        int len;
         try {
-            boolean stopped = false;
-            while (!stopped) {
-                InputStream is = process.getInputStream();
-                int len = is.available();
-                if (len > 0) {
-                    byte[] data = new byte[len];
-                    is.read(data);
-                    for (byte b:data)
-                    System.out.print((char)b);
-                }
-
-                is = process.getErrorStream();
-                len = is.available();
-                if (len > 0) {
-                    byte[] data = new byte[len];
-                    is.read(data);
-                }
-
-                try {
-                    process.exitValue();
-                    stopped = true;
-                } catch (IllegalThreadStateException itse) {
-                    // Do nothing
-                }
+            len = is.available();
+            if (len > 0) {
+                byte[] data = new byte[len];
+                is.read(data);
+                final String dataStr = new String(data);
+                msg = dataStr;
+            } else {
+                msg = "Vide";
             }
-        } catch (IOException ioe) {
-            // Do nothing
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } finally {
+            try {
+                is.close();
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
         }
+        System.out.println(msg);
     }
+
     /*
      * (non-Javadoc)
      * 
