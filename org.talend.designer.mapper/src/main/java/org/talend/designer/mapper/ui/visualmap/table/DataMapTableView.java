@@ -1251,30 +1251,6 @@ public abstract class DataMapTableView extends Composite {
                         .getProcess()) };
             }
             this.expressionProposalProvider = new ExpressionProposalProvider(mapperManager, contentProposalProviders);
-
-            // this.expressionProposal.getContentProposalAdapter().setProposalAcceptanceStyle(ContentProposalAdapter.PROPOSAL_INSERT);
-            // this.expressionProposal.addContentProposalListener(new IContentProposalListener() {
-            //
-            // public void proposalAccepted(IContentProposal proposal) {
-            // Object previousModifiedBean = tableViewerCreator.getModifiedObjectInfo().getPreviousModifiedBean();
-            // Point selection = null;
-            // if (!textControl.isFocusControl()) {
-            // selection = expressionEditorTextSelectionBeforeFocusLost;
-            // tableViewerCreator.getTableViewer().editElement(previousModifiedBean, 1);
-            // } else {
-            // selection = textControl.getSelection();
-            // }
-            // final String insertedContent = proposal.getContent();
-            // String beforeSelection = textControl.getText(0, selection.x - 1);
-            // String afterSelection = textControl.getText(selection.y, textControl.getCharCount());
-            // String newText = beforeSelection + insertedContent + afterSelection;
-            // textControl.setText(newText);
-            // int newCursorPosition = insertedContent.length() + selection.x;
-            // textControl.setSelection(new Point(newCursorPosition, newCursorPosition));
-            //
-            // }
-            //
-            // });
         }
         this.expressionProposalProvider.init(abstractDataMapTable, zones, currentModifiedEntry);
         textCellEditor.setContentProposalProvider(this.expressionProposalProvider);
@@ -1307,7 +1283,7 @@ public abstract class DataMapTableView extends Composite {
             public void applyEditorValue() {
                 ModifiedObjectInfo modifiedObjectInfo = tableViewerCreator.getModifiedObjectInfo();
                 mapperManager.getUiManager()
-                        .processNewExpression(text.getText(), (ITableEntry) modifiedObjectInfo.getCurrentModifiedBean());
+                        .processNewExpression(text.getText(), (ITableEntry) modifiedObjectInfo.getCurrentModifiedBean(), true);
             }
 
             public void cancelEditor() {
@@ -1316,7 +1292,7 @@ public abstract class DataMapTableView extends Composite {
                 ITableEntry tableEntry = (ITableEntry) (modifiedObjectInfo.getCurrentModifiedBean() != null ? modifiedObjectInfo
                         .getCurrentModifiedBean() : modifiedObjectInfo.getPreviousModifiedBean());
                 String originalExpression = (String) modifiedObjectInfo.getOriginalPropertyBeanValue();
-                mapperManager.getUiManager().processNewExpression(originalExpression, tableEntry);
+                mapperManager.getUiManager().processNewExpression(originalExpression, tableEntry, true);
             }
 
             public void editorValueChanged(boolean oldValidState, boolean newValidState) {
@@ -1325,7 +1301,7 @@ public abstract class DataMapTableView extends Composite {
                     ModifiedObjectInfo modifiedObjectInfo = tableViewerCreator.getModifiedObjectInfo();
                     ITableEntry tableEntry = (ITableEntry) (modifiedObjectInfo.getCurrentModifiedBean() != null ? modifiedObjectInfo
                             .getCurrentModifiedBean() : modifiedObjectInfo.getPreviousModifiedBean());
-                    mapperManager.getUiManager().processNewExpression(text.getText(), tableEntry);
+                    mapperManager.getUiManager().processNewExpression(text.getText(), tableEntry, false);
                     resizeTextEditor(text, tableViewerCreator);
                 }
             }

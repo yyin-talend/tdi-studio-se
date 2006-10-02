@@ -477,7 +477,7 @@ public class DragNDrop {
 
                         boolean overwrite = (lastEntryTarget != currentEntryTarget && analyzer.isOverwriteExpression());
                         modifyExistingExpression(currentLanguage, currentEntryTarget, tableEntrySource, overwrite, zoneSourceEntry);
-                        uiManager.processExpression(currentEntryTarget.getExpression(), currentEntryTarget, false, true);
+                        uiManager.processExpression(currentEntryTarget.getExpression(), currentEntryTarget, false, true, true);
 
                     } else {
                         String columnName = transferableEntry.getTableEntrySource().getName();
@@ -553,7 +553,7 @@ public class DragNDrop {
 
                     List<ITableEntry> refreshedTableEntriesList = tableViewerCreatorTarget.getInputList();
                     for (ITableEntry tableEntry : refreshedTableEntriesList) {
-                        uiManager.processExpression(tableEntry.getExpression(), tableEntry, false, true);
+                        uiManager.processExpression(tableEntry.getExpression(), tableEntry, false, true, false);
                     }
                 }
                 dataMapTableViewTarget.resizeAtExpandedSize();
@@ -682,13 +682,6 @@ public class DragNDrop {
         dropTarget = new DropTarget(draggableTable, DND.DROP_DEFAULT | DND.DROP_MOVE | DND.DROP_COPY | DND.DROP_LINK);
         dropTarget.setTransfer(new Transfer[] { TableEntriesTransfer.getInstance() });
         dropTarget.addDropListener(dropTargetListener);
-        dropTarget.addListener(SWT.MouseMove, new Listener() {
-
-            public void handleEvent(Event event) {
-                System.out.println("SWT.MouseMove");
-            }
-
-        });
     }
 
     /**

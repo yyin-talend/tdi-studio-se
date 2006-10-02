@@ -95,7 +95,7 @@ public class VarsDataMapTableView extends DataMapTableView {
         column.setWeight(COLUMN_EXPRESSION_SIZE_WEIGHT);
 
         column = new TableViewerCreatorColumn(tableViewerCreatorForColumns);
-        column.setTitle(DataMapTableView.COLUMN_NAME);
+        column.setTitle("Variable");
         column.setId(DataMapTableView.ID_NAME_COLUMN);
         column.setBeanPropertyAccessors(new IBeanPropertyAccessors<VarTableEntry, String>() {
 

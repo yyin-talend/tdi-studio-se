@@ -583,7 +583,7 @@ public class MapperManager {
         } else if (currentEntry instanceof ConstraintTableEntry) {
             dataMapTableView.getTableViewerCreatorForConstraints().getTableViewer().refresh(currentEntry);
         }
-        uiManager.processNewExpression(text, currentEntry);
+        uiManager.processNewExpression(text, currentEntry, false);
     }
 
     public MapperComponent getConnector() {
