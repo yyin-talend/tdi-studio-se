@@ -66,25 +66,13 @@ public class ShadowProcessHelper {
         processDescription.setLimitRows(connection.getLimitValue());
 
         if (connection.getEscapeChar() != null && !connection.getEscapeChar().equals("") && !connection.getEscapeChar().equals("Empty")) {
-            if(connection.getEscapeChar().equals("\\")){
-                processDescription.setEscapeCharacter("\"" + connection.getEscapeChar()+"\\" + "\"");
-            } else if(connection.getEscapeChar().equals("'")) {
-                processDescription.setEscapeCharacter("\"" + connection.getEscapeChar() + "\"");
-            }else{
-                processDescription.setEscapeCharacter("'" + connection.getEscapeChar() + "'");
-            }
+            processDescription.setEscapeCharacter("'" + connection.getEscapeChar() + "'");
         } else {
             processDescription.setEscapeCharacter(null);
         }
         if (connection.getTextEnclosure() != null
                 && !connection.getTextEnclosure().equals("") && !connection.getTextEnclosure().equals("Empty")) {
-            if(connection.getTextEnclosure().equals("\\")){
-                processDescription.setTextEnclosure("\"" + connection.getTextEnclosure()+"\\" + "\"");
-            } else if(connection.getTextEnclosure().equals("'")) {
-                processDescription.setTextEnclosure("\"" + connection.getTextEnclosure() + "\"");
-            }else{
-                processDescription.setTextEnclosure("'" + connection.getTextEnclosure() + "'");
-            }
+            processDescription.setTextEnclosure("'" + connection.getTextEnclosure() + "'");
         } else {
             processDescription.setTextEnclosure(null);
         }

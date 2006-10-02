@@ -220,7 +220,9 @@ public class DataStringConnection {
             startTemplateString = dataConnection[i].getString().substring(0, dataConnection[i].getString().indexOf("<"));
             if (startTemplateString.length() <= stringConnection.length()) {
                 startStringConnection = stringConnection.substring(0, startTemplateString.length());
-                if (startTemplateString.equals(startStringConnection)) {
+                if (stringConnection.contains("(description=(address=(protocol=tcp)")){
+                    return 3; 
+                }else if(startTemplateString.equals(startStringConnection)){
                     return i;
                 }
             }
