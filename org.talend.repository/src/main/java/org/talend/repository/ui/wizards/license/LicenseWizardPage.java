@@ -81,13 +81,13 @@ public class LicenseWizardPage extends WizardPage {
         Label subTitleLabel = new Label(container, SWT.NONE);
         subTitleLabel.setText(Messages.getString("LicenseWizard.subtitle")); //$NON-NLS-1$
 
-        clufText = new Text(container, SWT.MULTI | SWT.WRAP | SWT.V_SCROLL | SWT.H_SCROLL | SWT.CENTER);
+        clufText = new Text(container, SWT.MULTI | SWT.WRAP | SWT.V_SCROLL | SWT.H_SCROLL | SWT.LEFT | SWT.BORDER);
         clufText.setBackground(new Color(null, 255, 255, 255));
         clufText.setEditable(false);
         String license = getLicense();
         clufText.setText(license);
 
-        GridData data = new GridData(400, 250);
+        GridData data = new GridData(450, 300);
         clufText.setLayoutData(data);
 
         Label footerLabel = new Label(container, SWT.NONE);
