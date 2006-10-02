@@ -362,6 +362,9 @@ public class RegexpFileStep3Form extends AbstractRegexpFileStepForm {
             for (int i = 0; i < numberOfCol; i++) {
                 // define the first currentType and assimile it to globalType
                 String globalType = null;
+                int lengthValue = -1;
+                int precisionValue = 0;
+                
                 int current = firstRowToExtractMetadata;
                 while (globalType == null) {
                     if (i >= xmlRows.get(current).getFields().size()) {
@@ -383,6 +386,15 @@ public class RegexpFileStep3Form extends AbstractRegexpFileStepForm {
                             if (!DataTypeHelper.getTalendTypeOfValue(value).equals(globalType)) {
                                 globalType = DataTypeHelper.getCommonType(globalType, DataTypeHelper.getTalendTypeOfValue(value));
                             }
+                            lengthValue = value.length();
+                            int positionDecimal = 0;
+                            if(value.indexOf(',') > -1){
+                                positionDecimal = value.lastIndexOf(',');
+                                precisionValue = lengthValue - positionDecimal;
+                            }else if(value.indexOf('.') > -1){
+                                positionDecimal = value.lastIndexOf('.');
+                                precisionValue = lengthValue - positionDecimal;
+                            }
                         }
                     }
                 }
@@ -392,7 +404,12 @@ public class RegexpFileStep3Form extends AbstractRegexpFileStepForm {
                 // Convert javaType to TalendType
                 String talendType = MetadataTalendType.loadTalendType(globalType, "TALENDDEFAULT", false);
                 metadataColumn.setTalendType(talendType);
-
+                metadataColumn.setLength(lengthValue);
+                if(globalType.equals("FLOAT") || globalType.equals("DOUBLE")){
+                    metadataColumn.setPrecision(precisionValue);
+                }else{
+                    metadataColumn.setPrecision(0);
+                }
                 // Check the label and add it to the table
                 metadataColumn.setLabel(tableEditorView.getMetadataEditor().getValidateColumnName(label[i], i));
                 tableEditorView.getMetadataEditor().add(metadataColumn, i);
