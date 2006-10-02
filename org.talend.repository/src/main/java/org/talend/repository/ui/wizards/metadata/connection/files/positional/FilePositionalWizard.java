@@ -108,6 +108,10 @@ public class FilePositionalWizard extends RepositoryWizard implements INewWizard
         case SYSTEM_FOLDER:
             connection = ConnectionFactory.eINSTANCE.createPositionalFileConnection();
             MetadataTable metadataTable = ConnectionFactory.eINSTANCE.createMetadataTable();
+            RepositoryContext repositoryContext = (RepositoryContext) org.talend.core.CorePlugin.getContext().getProperty(
+                    org.talend.core.context.Context.REPOSITORY_CONTEXT_KEY);
+            IRepositoryFactory factory = RepositoryFactoryProvider.getInstance(repositoryContext);
+            metadataTable.setId(factory.getNextId());
             connection.getTables().add(metadataTable);
             connectionProperty = PropertiesFactory.eINSTANCE.createProperty();
             connectionProperty
