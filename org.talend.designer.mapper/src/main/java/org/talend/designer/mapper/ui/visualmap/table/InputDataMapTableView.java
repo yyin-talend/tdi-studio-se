@@ -22,8 +22,8 @@
 package org.talend.designer.mapper.ui.visualmap.table;
 
 import org.eclipse.swt.widgets.Composite;
-import org.talend.commons.ui.swt.tableviewer.IBeanPropertyAccessors;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumn;
+import org.talend.commons.utils.data.bean.IBeanPropertyAccessors;
 import org.talend.designer.mapper.managers.MapperManager;
 import org.talend.designer.mapper.model.table.InputTable;
 import org.talend.designer.mapper.model.tableentry.InputColumnTableEntry;
