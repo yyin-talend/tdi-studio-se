@@ -132,6 +132,7 @@ public class ModulesView extends ViewPart {
             System.out.println("Launch " + checkPerlModuleAbsolutePath);
             Process result = Processor.exec(new Path(checkPerlModuleAbsolutePath), null, "", "", -1, -1, params);
             System.out.println("Get response in " + ((System.currentTimeMillis() - time) / 1000) + " sec");
+            readAndPrint(result);
             time = System.currentTimeMillis();
             InputStream is = result.getInputStream();
             try {
@@ -188,7 +189,37 @@ public class ModulesView extends ViewPart {
             MessageBoxExceptionHandler.process(e);
         }
     }
+    public static void readAndPrint(Process process) {
+        try {
+            boolean stopped = false;
+            while (!stopped) {
+                InputStream is = process.getInputStream();
+                int len = is.available();
+                if (len > 0) {
+                    byte[] data = new byte[len];
+                    is.read(data);
+                    for (byte b:data)
+                    System.out.print((char)b);
+                }
 
+                is = process.getErrorStream();
+                len = is.available();
+                if (len > 0) {
+                    byte[] data = new byte[len];
+                    is.read(data);
+                }
+
+                try {
+                    process.exitValue();
+                    stopped = true;
+                } catch (IllegalThreadStateException itse) {
+                    // Do nothing
+                }
+            }
+        } catch (IOException ioe) {
+            // Do nothing
+        }
+    }
     /*
      * (non-Javadoc)
      * 
