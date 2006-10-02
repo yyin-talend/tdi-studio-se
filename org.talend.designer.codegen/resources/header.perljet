@@ -106,6 +106,16 @@ sub global_die_catcher {
         $_globals{$current_component}{PERL_ERROR_MESSAGE} = $!;
         $_globals{$current_component}{PERL_ERROR_CODE}    = int($!);
 
+        if (defined &main::tCatcher_1_subprocess) {
+            tCatcher_1_subprocess(
+                origin => 'die',
+                priority => 100,
+                error_message => $_globals{$current_component}{ERROR_MESSAGE},
+                perl_error_message => $_globals{$current_component}{PERL_ERROR_MESSAGE},
+                perl_error_code => $_globals{$current_component}{PERL_ERROR_CODE},
+            );
+        }
+
         no strict 'refs';
         &{$current_component.'_error'}();
     }
