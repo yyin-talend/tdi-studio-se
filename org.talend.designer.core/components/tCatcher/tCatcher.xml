@@ -1,0 +1,71 @@
+<!-- $Id$ -->
+<COMPONENT>
+  <HEADER
+    PLATEFORM="ALL"
+       SERIAL=""
+      VERSION="0.101"
+       STATUS="ALPHA"
+         ICON="tCatcher32.ico"
+COMPATIBILITY="ALL"
+       AUTHOR="Talend"
+ RELEASE_DATE="20050320A"
+    STARTABLE="true"
+    SCHEMA_AUTO_PROPAGATE="false"
+  >
+    <SIGNATURE></SIGNATURE>
+  </HEADER>
+
+  <DOCUMENTATION>
+    <URL/>
+  </DOCUMENTATION>
+
+  <CONNECTORS>
+    <CONNECTOR CTYPE="FLOW" MAX_INPUT="1"/>
+    <CONNECTOR CTYPE="ITERATE" MAX_OUTPUT="1" MAX_INPUT="1"/>
+    <CONNECTOR CTYPE="BEFORE" MAX_INPUT="1"/>
+    <CONNECTOR CTYPE="AFTER" MAX_INPUT="1"/>
+    <CONNECTOR CTYPE="REFERENCE"/>
+    <CONNECTOR CTYPE="RUN_OK"/>
+    <CONNECTOR CTYPE="RUN_ERROR"/>
+    <CONNECTOR CTYPE="RUN_IF"/>
+  </CONNECTORS>
+
+  <PARAMETERS>
+<!-- CREATE TABLE `catcher` ( -->
+<!--   `moment` datetime NOT NULL, -->
+<!--   `pid` int(10) NOT NULL, -->
+<!--   `job` varchar(50) NOT NULL, -->
+<!--   `context` varchar(50) NOT NULL, -->
+<!--   `priority` int(3) NOT NULL, -->
+<!--   `origin` varchar(5) NOT NULL, -->
+<!--   `message` varchar(255) default NULL, -->
+<!--   `code` int(255) default NULL, -->
+<!--   `perl_error_message` varchar(255) default NULL, -->
+<!--   `perl_error_code` varchar(255) default NULL -->
+<!-- ); -->
+    <PARAMETER NAME="SCHEMA" FIELD="SCHEMA_TYPE" REQUIRED="true" NUM_ROW="1">
+      <DEFAULT/> 
+    </PARAMETER>
+
+    <PARAMETER NAME="CATCH_PERL_DIE" FIELD="CHECK" REQUIRED="true" NUM_ROW="2" REPOSITORY_VALUE="CATCH_PERL_DIE">
+      <DEFAULT>true</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER NAME="CATCH_TDIE" FIELD="CHECK" REQUIRED="true" NUM_ROW="2" REPOSITORY_VALUE="CATCH_TDIE">
+      <DEFAULT>true</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER NAME="CATCH_TWARN" FIELD="CHECK" REQUIRED="true" NUM_ROW="2" REPOSITORY_VALUE="CATCH_TWARN">
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER>
+   </PARAMETERS>
+
+   <CODEGENERATION>
+     <TEMPLATES>
+       <TEMPLATE NAME="perl" MULTIPLE_METHODS="true"/>
+     </TEMPLATES>
+   </CODEGENERATION>
+
+   <RETURNS/>
+
+</COMPONENT>

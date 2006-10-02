@@ -1,0 +1,72 @@
+<%@ jet 
+	package="org.talend.designer.codegen.translators" 
+	imports="
+		org.talend.core.model.process.INode 
+		org.talend.core.model.process.ElementParameterParser
+		org.talend.core.model.metadata.IMetadataTable
+		org.talend.designer.codegen.config.CodeGeneratorArgument
+		java.util.List
+	"
+	class="CatcherStart"
+%>
+
+<%
+	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+	INode node = (INode)codeGenArgument.getArgument();
+	boolean stats = codeGenArgument.isStatistics();
+	
+	List<IMetadataTable> metadatas = node.getMetadataList();
+	if ((metadatas!=null)&&(metadatas.size()>0)) {
+		IMetadataTable metadata = metadatas.get(0);
+		if (metadata!=null) {
+                        String cid = metadata.getTableName();
+%>
+
+# start part of your Perl code
+return if (not scalar @_);
+
+my @catched_origins = (
+<%
+    if (ElementParameterParser.getValue(node, "__CATCH_PERL_DIE__").equals("true")) {
+%>
+    'die',
+<%
+    }
+    if (ElementParameterParser.getValue(node, "__CATCH_TDIE__").equals("true")) {
+%>
+    'tDie',
+<%
+    }
+    if (ElementParameterParser.getValue(node, "__CATCH_TWARN__").equals("true")) {
+%>
+    'tWarn',
+<%
+    }
+%>
+);
+
+my %params = @_;
+
+if (not grep /^$params{origin}$/, @catched_origins) {
+    return;
+}
+
+my @<%=cid %> = (
+    getDate('CCYY-MM-DD hh:mm:ss'),
+    $$,
+    '<%=codeGenArgument.getJobName() %>',
+    '<%=codeGenArgument.getContextName() %>',
+    $params{priority},
+    $params{origin},
+    $params{error_message},
+    $params{error_code},
+    $params{perl_error_message},
+    $params{perl_error_code},
+);
+
+$| = 1;
+
+<%
+		}
+	}
+%>
