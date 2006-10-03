@@ -377,7 +377,7 @@ public class DatabaseTableForm extends AbstractForm {
         tableViewerCreator.setHorizontalScroll(false);
         tableViewerCreator.setLayoutMode(LAYOUT_MODE.NONE);
         tableViewerCreator.setCheckboxInFirstColumn(false);
-        tableViewerCreator.maskFirstColumn(false);
+        tableViewerCreator.setFirstColumnMasked(false);
 
         tableNavigator = tableViewerCreator.createTable();
         tableNavigator.setLayoutData(new GridData(GridData.FILL_BOTH));

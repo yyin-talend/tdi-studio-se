@@ -75,14 +75,14 @@ import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
 import org.talend.commons.ui.swt.proposal.ContentProposalAdapterExtended;
 import org.talend.commons.ui.swt.proposal.TextCellEditorWithProposal;
-import org.talend.commons.ui.swt.tableviewer.CellEditorValueAdapter;
-import org.talend.commons.ui.swt.tableviewer.DefaultTableLabelProvider;
-import org.talend.commons.ui.swt.tableviewer.ModifiedObjectInfo;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumn;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator.LAYOUT_MODE;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator.LINE_SELECTION;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator.SHOW_SELECTION;
+import org.talend.commons.ui.swt.tableviewer.behavior.CellEditorValueAdapter;
+import org.talend.commons.ui.swt.tableviewer.behavior.DefaultTableLabelProvider;
+import org.talend.commons.ui.swt.tableviewer.data.ModifiedObjectInfo;
 import org.talend.commons.ui.ws.WindowSystem;
 import org.talend.commons.utils.threading.ExecutionLimiter;
 import org.talend.core.ui.ImageProvider.EImage;
@@ -327,7 +327,7 @@ public abstract class DataMapTableView extends Composite {
         tableViewerCreatorForColumns.setLineSelection(LINE_SELECTION.MULTI);
         tableViewerCreatorForColumns.setLayoutMode(LAYOUT_MODE.CONTINUOUS_CURRENT);
         tableViewerCreatorForColumns.setAdjustWidthValue(ADJUST_WIDTH_VALUE);
-        tableViewerCreatorForColumns.maskFirstColumn(true);
+        tableViewerCreatorForColumns.setFirstColumnMasked(true);
         if (getDataMapTable() instanceof AbstractInOutTable) {
 
             if (imageKey == null) {
@@ -716,7 +716,7 @@ public abstract class DataMapTableView extends Composite {
         tableViewerCreatorForConstraints.setLineSelection(LINE_SELECTION.MULTI);
         tableViewerCreatorForConstraints.setLayoutMode(LAYOUT_MODE.CONTINUOUS_CURRENT);
         tableViewerCreatorForConstraints.setAdjustWidthValue(ADJUST_WIDTH_VALUE);
-        tableViewerCreatorForConstraints.maskFirstColumn(true);
+        tableViewerCreatorForConstraints.setFirstColumnMasked(true);
 
         tableForConstraints = tableViewerCreatorForConstraints.createTable();
         // tableForConstraintsGridData = new GridData(SWT.NONE, SWT.FILL, true, false);

@@ -190,7 +190,7 @@ public class SelectorTableForm extends AbstractForm {
         tableViewerCreator.setLayoutMode(LAYOUT_MODE.SHOW_ALWAYS_ALL_COLUMNS);
         tableViewerCreator.setCheckboxInFirstColumn(true);
         // tableViewerCreator.setAdjustWidthValue(-15);
-        tableViewerCreator.maskFirstColumn(true);
+        tableViewerCreator.setFirstColumnMasked(true);
 
         table = tableViewerCreator.createTable();
         table.setLayoutData(new GridData(GridData.FILL_BOTH));
