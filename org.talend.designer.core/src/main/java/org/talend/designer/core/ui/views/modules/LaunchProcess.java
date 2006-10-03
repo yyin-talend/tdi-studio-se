@@ -32,7 +32,7 @@ import java.io.InputStream;
  * 
  */
 
-public class TestProcess {
+public class LaunchProcess {
 
     private StringBuffer out;
 
@@ -41,10 +41,10 @@ public class TestProcess {
     private Runtime runtime;
 
     private Process process = null;
-    private InputStream input = null; 
+
     private long timeout = 0;
 
-    public TestProcess(StringBuffer out, StringBuffer err) {
+    public LaunchProcess(StringBuffer out, StringBuffer err) {
         runtime = Runtime.getRuntime();
         this.out = out;
         this.err = err;
@@ -53,16 +53,12 @@ public class TestProcess {
     public int execute(String[] args) throws IOException {
         int status = -1;
 
-        /* Creation du sous-processus */
         process = runtime.exec(args, null, null);
 
-        /* Consomme la sortie d'erreur */
         createProdConsThread(process.getErrorStream(), true, 1024).start();
 
-        /* Consomme la sortie standard */
         createProdConsThread(process.getInputStream(), false, 1024).start();
 
-        /*  */
         if (timeout > 0L) {
             Thread subProcess = createSubProcess(process);
             subProcess.start();
@@ -78,13 +74,10 @@ public class TestProcess {
             } catch (InterruptedException ie) {
                 ie.printStackTrace();
             }
-        }
-        /* On attend que le sous-processus se termine */
-        else if (timeout == 0L) {
+        } else if (timeout == 0L) {
             try {
                 status = process.waitFor();
             } catch (InterruptedException ie) {
-                // TODO Auto-generated catch block
                 ie.printStackTrace();
             }
         }
@@ -124,7 +117,6 @@ public class TestProcess {
                     }
                     outStreamProcess.close();
                 } catch (IOException ioe) {
-                    // TODO Auto-generated catch block
                     ioe.printStackTrace();
                 }
             }

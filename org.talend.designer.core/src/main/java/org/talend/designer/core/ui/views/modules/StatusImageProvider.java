@@ -21,9 +21,11 @@
 // ============================================================================
 package org.talend.designer.core.ui.views.modules;
 
-import org.eclipse.jface.action.Action;
+import org.eclipse.swt.graphics.Image;
+import org.talend.commons.ui.swt.tableviewer.IColumnImageProvider;
 import org.talend.core.ui.ImageProvider;
 import org.talend.core.ui.ImageProvider.EImage;
+import org.talend.designer.core.model.components.ComponentImportNeeds;
 
 /**
  * DOC smallet class global comment. Detailled comment <br/>
@@ -31,26 +33,22 @@ import org.talend.core.ui.ImageProvider.EImage;
  * $Id$
  * 
  */
-public class CheckAction extends Action {
+public class StatusImageProvider implements IColumnImageProvider {
 
-    private ModulesView view;
-
-    public CheckAction(ModulesView view) {
-        super();
-        setText("Refresh");
-        setToolTipText("Refresh");
-        setImageDescriptor(ImageProvider.getImageDesc(EImage.REFRESH_ICON));
-        this.view = view;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.eclipse.jface.action.Action#run()
-     */
-    @Override
-    public void run() {
-        view.check();
+    public Image getImage(Object bean) {
+        ComponentImportNeeds componentImportNeeds = (ComponentImportNeeds) bean;
+        switch (componentImportNeeds.getStatus()) {
+        case ComponentImportNeeds.INSTALLED:
+            return ImageProvider.getImage(EImage.MODULE_INSTALLED_ICON);
+        case ComponentImportNeeds.NOT_INSTALLED:
+            if (componentImportNeeds.isRequired()) {
+                return ImageProvider.getImage(EImage.MODULE_ERROR_ICON);
+            } else {
+                return ImageProvider.getImage(EImage.MODULE_WARNING_ICON);
+            }
+        default:
+            return ImageProvider.getImage(EImage.MODULE_UNKNOWN_ICON);
+        }
     }
 
 }

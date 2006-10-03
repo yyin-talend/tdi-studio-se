@@ -28,7 +28,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.ArrayUtils;
-import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
@@ -64,8 +63,6 @@ import org.talend.repository.model.ComponentsFactoryProvider;
  * 
  */
 public class ModulesView extends ViewPart {
-
-    private static Logger log = Logger.getLogger(ModulesView.class);
 
     private static final Bundle PERL_MODULE_PLUGIN = Platform.getBundle("org.talend.designer.codegen.perlmodule");
 
@@ -131,7 +128,7 @@ public class ModulesView extends ViewPart {
             StringBuffer out = new StringBuffer();
             StringBuffer err = new StringBuffer();
 
-            TestProcess tp = new TestProcess(out, err);
+            LaunchProcess tp = new LaunchProcess(out, err);
             tp.setTimeout(0L);
             tp.execute(cmd);
 
@@ -195,28 +192,9 @@ public class ModulesView extends ViewPart {
         parent.setLayout(new FormLayout());
         FormData formData = new FormData();
 
-        /*
-         * Composite leftPartComposite = new Composite(parent, SWT.NONE); formData.top = new FormAttachment(0);
-         * formData.left = new FormAttachment(0); formData.right = new FormAttachment(0, 150); formData.bottom = new
-         * FormAttachment(100); leftPartComposite.setLayoutData(formData);
-         * 
-         * GridLayout gridLayout = new GridLayout(1, false); gridLayout.numColumns = 1;
-         * leftPartComposite.setLayout(gridLayout);
-         * 
-         * Button checkInstalledBtn = new Button(leftPartComposite, SWT.PUSH); checkInstalledBtn.setText("Check
-         * installed"); // checkInstalledBtn.setEnabled(false); checkInstalledBtn.addSelectionListener(new
-         * SelectionAdapter() {
-         * 
-         * public void widgetSelected(final SelectionEvent e) { check(); } }); checkInstalledBtn.setVisible(false);
-         * 
-         * Button installBtn = new Button(leftPartComposite, SWT.PUSH); installBtn.setText("Install all required
-         * modules"); installBtn.setVisible(false);
-         */
-
         Composite rightPartComposite = new Composite(parent, SWT.NONE);
         formData = new FormData();
         formData.top = new FormAttachment(0);
-        // formData.left = new FormAttachment(leftPartComposite, 0, SWT.RIGHT);
         formData.left = new FormAttachment(0);
         formData.right = new FormAttachment(100);
         formData.bottom = new FormAttachment(100);
@@ -234,11 +212,11 @@ public class ModulesView extends ViewPart {
         tableViewerCreator.setLayoutMode(LAYOUT_MODE.CONTINUOUS_CURRENT);
         tableViewerCreator.createTable();
 
-        tableViewerCreator.setLabelProvider(new LabelProvider(tableViewerCreator));
-
         TableViewerCreatorColumn column = new TableViewerCreatorColumn(tableViewerCreator);
         column.setTitle("Status");
         column.setId(ID_STATUS);
+        column.setSortable(true);
+        column.setImageProvider(new StatusImageProvider());
         column.setBeanPropertyAccessors(new IBeanPropertyAccessors<ComponentImportNeeds, String>() {
 
             public String get(ComponentImportNeeds bean) {
@@ -265,7 +243,7 @@ public class ModulesView extends ViewPart {
 
         column = new TableViewerCreatorColumn(tableViewerCreator);
         column.setTitle("Component Name");
-
+        column.setSortable(true);
         column.setBeanPropertyAccessors(new IBeanPropertyAccessors<ComponentImportNeeds, String>() {
 
             public String get(ComponentImportNeeds bean) {
@@ -281,7 +259,7 @@ public class ModulesView extends ViewPart {
 
         column = new TableViewerCreatorColumn(tableViewerCreator);
         column.setTitle("Module Name");
-
+        column.setSortable(true);
         column.setBeanPropertyAccessors(new IBeanPropertyAccessors<ComponentImportNeeds, String>() {
 
             public String get(ComponentImportNeeds bean) {
@@ -313,7 +291,9 @@ public class ModulesView extends ViewPart {
 
         column = new TableViewerCreatorColumn(tableViewerCreator);
         column.setTitle("Required");
-
+        column.setImageProvider(new RequiredImageProvider());
+        column.setSortable(true);
+        column.setDisplayedValue("");
         column.setBeanPropertyAccessors(new IBeanPropertyAccessors<ComponentImportNeeds, String>() {
 
             public String get(ComponentImportNeeds bean) {

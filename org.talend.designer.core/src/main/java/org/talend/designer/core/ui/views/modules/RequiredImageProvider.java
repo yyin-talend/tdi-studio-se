@@ -21,9 +21,11 @@
 // ============================================================================
 package org.talend.designer.core.ui.views.modules;
 
-import org.eclipse.jface.action.Action;
+import org.eclipse.swt.graphics.Image;
+import org.talend.commons.ui.swt.tableviewer.IColumnImageProvider;
 import org.talend.core.ui.ImageProvider;
 import org.talend.core.ui.ImageProvider.EImage;
+import org.talend.designer.core.model.components.ComponentImportNeeds;
 
 /**
  * DOC smallet class global comment. Detailled comment <br/>
@@ -31,26 +33,17 @@ import org.talend.core.ui.ImageProvider.EImage;
  * $Id$
  * 
  */
-public class CheckAction extends Action {
+public class RequiredImageProvider implements IColumnImageProvider {
 
-    private ModulesView view;
+    public Image getImage(Object bean) {
+        ComponentImportNeeds componentImportNeeds = (ComponentImportNeeds) bean;
 
-    public CheckAction(ModulesView view) {
-        super();
-        setText("Refresh");
-        setToolTipText("Refresh");
-        setImageDescriptor(ImageProvider.getImageDesc(EImage.REFRESH_ICON));
-        this.view = view;
-    }
+        if (componentImportNeeds.isRequired()) {
+            return ImageProvider.getImage(EImage.MODULE_REQUIRED_ICON);
+        } else {
+            return ImageProvider.getImage(EImage.MODULE_NOTREQUIRED_ICON);
+        }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.eclipse.jface.action.Action#run()
-     */
-    @Override
-    public void run() {
-        view.check();
     }
 
 }
