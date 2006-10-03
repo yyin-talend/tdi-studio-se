@@ -112,7 +112,11 @@ public class TMapperMainPerljet {
                 ExternalMapperTable externalTable = hExternalInpuTables.get(tableName);
                 if (externalTable != null) {
                     hExternalInputTableEntries.clear();
-                    for (ExternalMapperTableEntry externalTableEntry : externalTable.getMetadataTableEntries()) {
+                    List<ExternalMapperTableEntry> metadataTableEntries = externalTable.getMetadataTableEntries();
+                    if (metadataTableEntries == null) {
+                        continue;
+                    }
+                    for (ExternalMapperTableEntry externalTableEntry : metadataTableEntries) {
                         hExternalInputTableEntries.put(externalTableEntry.getName(), externalTableEntry);
                     }
                     List<IMetadataColumn> listColumns = metadataTable.getListColumns();
@@ -146,6 +150,9 @@ public class TMapperMainPerljet {
         sb.append(CR + gm.indent(indent) + "# Vars tables");
         for (ExternalMapperTable varsTable : varsTables) {
             List<ExternalMapperTableEntry> varsTableEntries = varsTable.getMetadataTableEntries();
+            if (varsTableEntries == null) {
+                continue;
+            }
             if (varsTableEntries.size() > 0) {
                 sb.append(CR + gm.indent(indent) + gm.buildNewArrayDeclaration(varsTable.getName(), indent));
             }
@@ -222,6 +229,9 @@ public class TMapperMainPerljet {
         for (int indexCurrentTable = 0; indexCurrentTable < lstSize; indexCurrentTable++) {
             ExternalMapperTable outputTable = (ExternalMapperTable) outputTablesSortedByReject.get(indexCurrentTable);
             List<ExternalMapperTableEntry> outputTableEntries = outputTable.getMetadataTableEntries();
+            if (outputTableEntries == null) {
+                continue;
+            }
             String outputTableName = outputTable.getName();
 
             List<ExternalMapperTableEntry> constraints = outputTable.getConstraintTableEntries();
