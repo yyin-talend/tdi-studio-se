@@ -161,7 +161,7 @@ public class DelimitedFileStep2Form extends AbstractDelimitedFileStepForm {
         fieldSeparatorText.setText(getConnection().getFieldSeparatorValue());
         fieldSeparatorText.setEditable(false);
 
-        rowSeparatorCombo.setText(getConnection().getRowSeparatorType().getName());
+        rowSeparatorCombo.setText(getConnection().getRowSeparatorType().getLiteral());
         rowSeparatorText.setText(getConnection().getRowSeparatorValue());
         rowSeparatorText.setEditable(false);
 
@@ -287,7 +287,7 @@ public class DelimitedFileStep2Form extends AbstractDelimitedFileStepForm {
         fieldSeparatorText.setLayoutData(gridData);
 
         // Row Separator Combo & Text
-        String[] rowSeparatorData = { RowSeparator.STANDART_EOL_LITERAL.getName(), RowSeparator.CUSTOM_STRING_LITERAL.getName() };
+        String[] rowSeparatorData = { RowSeparator.STANDART_EOL_LITERAL.getLiteral(), RowSeparator.CUSTOM_STRING_LITERAL.getLiteral() };
         rowSeparatorCombo = new LabelledCombo(compositeFileDelimitor, Messages.getString("FileStep2.rowSeparator"), Messages
                 .getString("FileStep2.rowSeparatorTip"), rowSeparatorData, 1, true, SWT.READ_ONLY);
         rowSeparatorText = new LabelledText(compositeFileDelimitor, "", 1, true, SWT.RIGHT);
