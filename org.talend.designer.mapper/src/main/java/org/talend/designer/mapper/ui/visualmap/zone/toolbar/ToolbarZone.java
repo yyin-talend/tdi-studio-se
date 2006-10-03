@@ -80,14 +80,14 @@ public abstract class ToolbarZone {
 
         upTableButton = new ToolItem(toolBarActions, SWT.PUSH);
         upTableButton.setEnabled(false);
-        upTableButton.setToolTipText("Move input table up");
+        upTableButton.setToolTipText("Move up input table");
         upTableButton.setImage(org.talend.core.ui.ImageProvider.getImage(org.talend.core.ui.ImageProvider.getImageDesc(EImage.UP_ICON)));
 
         downTableButton = new ToolItem(toolBarActions, SWT.PUSH);
         downTableButton.setEnabled(false);
         downTableButton
                 .setImage(org.talend.core.ui.ImageProvider.getImage(org.talend.core.ui.ImageProvider.getImageDesc(EImage.DOWN_ICON)));
-        downTableButton.setToolTipText("Move input table down");
+        downTableButton.setToolTipText("Move down input table");
 
         minimizeButton = new ToolItem(toolBarActions, SWT.PUSH);
         minimizeButton.setEnabled(false);

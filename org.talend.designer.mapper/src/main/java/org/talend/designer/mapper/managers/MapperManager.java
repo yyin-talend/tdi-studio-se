@@ -28,6 +28,7 @@ import java.util.Set;
 
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Table;
@@ -484,11 +485,17 @@ public class MapperManager {
 
     public void removeSelectedOutput() {
         DataMapTableView currentSelectedDataMapTableView = uiManager.getCurrentSelectedOutputTableView();
+        
+        
         if (currentSelectedDataMapTableView != null) {
-            IProcess process = mapperComponent.getProcess();
-            uiManager.removeOutputTableView(currentSelectedDataMapTableView);
-            uiManager.updateToolbarButtonsStates(Zone.OUTPUTS);
-            process.removeUniqueConnectionName(currentSelectedDataMapTableView.getDataMapTable().getName());
+            String tableName = currentSelectedDataMapTableView.getDataMapTable().getName();
+            if(MessageDialog.openConfirm(currentSelectedDataMapTableView.getShell(), 
+                    "Remove output table", "Are you sure you want to remove the output table '"+ tableName + "' ?")) {
+                IProcess process = mapperComponent.getProcess();
+                uiManager.removeOutputTableView(currentSelectedDataMapTableView);
+                uiManager.updateToolbarButtonsStates(Zone.OUTPUTS);
+                process.removeUniqueConnectionName(currentSelectedDataMapTableView.getDataMapTable().getName());
+            }
         }
 
     }
@@ -650,60 +657,60 @@ public class MapperManager {
                     parameter.setValue(previewFileName == null ? "" : previewFileName);
                 }
 
-//                if (MAPPER_MODEL_DATA.equals(parameter.getName())) {
-////                    TimeMeasurer.start("test");
-//                    StringWriter stringWriter = new StringWriter();
-//                    try {
-//                        Marshaller marshaller = new Marshaller(stringWriter);
-//                        marshaller.marshal(mapperComponent.getExternalData());
-//                    } catch (MarshalException e) {
-//                        ExceptionHandler.process(e);
-//                    } catch (ValidationException e) {
-//                        ExceptionHandler.process(e);
-//                    } catch (IOException e) {
-//                        ExceptionHandler.process(e);
-//                    } finally {
-//                        // if (outputStreamWriter != null) {
-//                        // outputStreamWriter.close();
-//                        // }
-//                    }
-//                    // StringWriter writer = new StringWriter();
-//                    // OutputStreamWriter outputStreamWriter = new OutputStreamWriter(writer);
-//                    // mapperComponent.getExternalCustomData(outputStreamWriter);
-//                    String persistentData = stringWriter.toString();
-//                    parameter.setValue(persistentData == null ? "" : persistentData);
-////                    TimeMeasurer.end("test");
-//                }
+                // if (MAPPER_MODEL_DATA.equals(parameter.getName())) {
+                // // TimeMeasurer.start("test");
+                // StringWriter stringWriter = new StringWriter();
+                // try {
+                // Marshaller marshaller = new Marshaller(stringWriter);
+                // marshaller.marshal(mapperComponent.getExternalData());
+                // } catch (MarshalException e) {
+                // ExceptionHandler.process(e);
+                // } catch (ValidationException e) {
+                // ExceptionHandler.process(e);
+                // } catch (IOException e) {
+                // ExceptionHandler.process(e);
+                // } finally {
+                // // if (outputStreamWriter != null) {
+                // // outputStreamWriter.close();
+                // // }
+                // }
+                // // StringWriter writer = new StringWriter();
+                // // OutputStreamWriter outputStreamWriter = new OutputStreamWriter(writer);
+                // // mapperComponent.getExternalCustomData(outputStreamWriter);
+                // String persistentData = stringWriter.toString();
+                // parameter.setValue(persistentData == null ? "" : persistentData);
+                // // TimeMeasurer.end("test");
+                // }
             }
         }
     }
 
-//    public Object getEmfParameterValue(String parameterName) {
-//        List<? extends IElementParameter> elementParameters = mapperComponent.getElementParameters();
-//        for (IElementParameter parameter : elementParameters) {
-//            if (parameterName.equals(parameter.getName())) {
-//                if (MAPPER_MODEL_DATA.equals(parameterName)) {
-//                    ExternalMapperData externalData = null;
-//                     System.out.println("getEmfParameterValue="+(String)parameter.getValue());
-//                    StringReader stringReader = new StringReader((String) parameter.getValue());
-//                    Unmarshaller unmarshaller = new Unmarshaller(ExternalMapperData.class);
-//                    // unmarshaller.setReuseObjects(false);
-//                    try {
-//                        externalData = (ExternalMapperData) unmarshaller.unmarshal(stringReader);
-//                    } catch (MarshalException e) {
-//                        ExceptionHandler.process(e);
-//                    } catch (ValidationException e) {
-//                        ExceptionHandler.process(e);
-//                    } finally {
-//                        if (stringReader != null) {
-//                            stringReader.close();
-//                        }
-//                    }
-//                    return externalData;
-//                }
-//            }
-//        }
-//        return null;
-//    }
+    // public Object getEmfParameterValue(String parameterName) {
+    // List<? extends IElementParameter> elementParameters = mapperComponent.getElementParameters();
+    // for (IElementParameter parameter : elementParameters) {
+    // if (parameterName.equals(parameter.getName())) {
+    // if (MAPPER_MODEL_DATA.equals(parameterName)) {
+    // ExternalMapperData externalData = null;
+    // System.out.println("getEmfParameterValue="+(String)parameter.getValue());
+    // StringReader stringReader = new StringReader((String) parameter.getValue());
+    // Unmarshaller unmarshaller = new Unmarshaller(ExternalMapperData.class);
+    // // unmarshaller.setReuseObjects(false);
+    // try {
+    // externalData = (ExternalMapperData) unmarshaller.unmarshal(stringReader);
+    // } catch (MarshalException e) {
+    // ExceptionHandler.process(e);
+    // } catch (ValidationException e) {
+    // ExceptionHandler.process(e);
+    // } finally {
+    // if (stringReader != null) {
+    // stringReader.close();
+    // }
+    // }
+    // return externalData;
+    // }
+    // }
+    // }
+    // return null;
+    // }
 
 }

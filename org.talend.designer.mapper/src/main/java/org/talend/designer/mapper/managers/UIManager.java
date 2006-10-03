@@ -29,6 +29,7 @@ import java.util.Set;
 
 import org.eclipse.jface.dialogs.IInputValidator;
 import org.eclipse.jface.dialogs.InputDialog;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
@@ -734,6 +735,7 @@ public class UIManager {
 
     /**
      * DOC amaumont Comment method "processNewExpression".
+     * 
      * @param appliedOrCanceled TODO
      * @param text
      * @param dataMapTableView
@@ -820,7 +822,7 @@ public class UIManager {
                 checkTargetInputKey(currentModifiedITableEntry, dataMapTableView, checkInputKeyAutomatically, appliedOrCanceled);
             }
             if (appliedOrCanceled) {
-                openChangeKeysDialog(dataMapTableView);                
+                openChangeKeysDialog(dataMapTableView);
             }
         }
 
@@ -845,15 +847,16 @@ public class UIManager {
     /**
      * 
      * DOC amaumont Comment method "hasInvalidInputKeys".
+     * 
      * @param dataMapTableView
      * @return
      */
     private boolean hasInvalidInputKeys(DataMapTableView dataMapTableView) {
-        
+
         if (dataMapTableView.getTableViewerCreatorForColumns() == null) {
             return false;
         }
-        
+
         List<InputColumnTableEntry> targetTableEntries = dataMapTableView.getTableViewerCreatorForColumns().getInputList();
         for (InputColumnTableEntry entry : targetTableEntries) {
             Set<ITableEntry> sourcesForTarget = mapperManager.getSourcesForTarget(entry);
@@ -863,7 +866,7 @@ public class UIManager {
         }
         return false;
     }
-    
+
     /**
      * 
      * DOC amaumont Comment method "checkTargetInputKey".
@@ -888,6 +891,7 @@ public class UIManager {
 
     /**
      * DOC amaumont Comment method "refreshInOutTableAndMetaTable".
+     * 
      * @param currentModifiedTableEntry can be null
      */
     private void refreshInOutTableAndMetaTable(AbstractInOutTableEntry currentModifiedTableEntry) {
@@ -905,6 +909,7 @@ public class UIManager {
     /**
      * 
      * DOC amaumont Comment method "refreshInOutTableAndMetaTable".
+     * 
      * @param dataMapTableView
      */
     private void refreshInOutTableAndMetaTable(DataMapTableView dataMapTableView) {
@@ -917,7 +922,7 @@ public class UIManager {
             metadataEditorView.getTableViewerCreator().refreshTableEditorControls();
         }
     }
-    
+
     /**
      * DOC amaumont Comment method "processNewProcessColumnName".
      * 
@@ -1041,12 +1046,12 @@ public class UIManager {
     public String openNewOutputCreationDialog() {
         final IProcess process = mapperManager.getConnector().getProcess();
         String outputName = process.generateUniqueConnectionName("newOutput");
-        InputDialog id = new InputDialog(getMapperContainer().getShell(), "Add new output", //$NON-NLS-1$
-                "Type a valid output name :", outputName, new IInputValidator() {
+        InputDialog id = new InputDialog(getMapperContainer().getShell(), "Add a new output table", //$NON-NLS-1$
+                "Type a valid output table name :", outputName, new IInputValidator() {
 
                     public String isValid(String newText) {
                         if (!process.checkValidConnectionName(newText)) {
-                            return "The name of this connection is not valid or already exists";
+                            return "The name of this connection/table is not valid or already exists";
                         }
                         return null;
                     }
@@ -1061,10 +1066,11 @@ public class UIManager {
 
     /**
      * DOC amaumont Comment method "openAddNewOutputDialog".
-     * @param dataMapTableView 
+     * 
+     * @param dataMapTableView
      */
     private void openChangeKeysDialog(final DataMapTableView dataMapTableView) {
-        
+
         (new Thread() {
 
             @Override
@@ -1078,12 +1084,9 @@ public class UIManager {
 
                     public void run() {
                         if (hasInvalidInputKeys(dataMapTableView)) {
-                            MessageBox messageBox = new MessageBox(refComposite.getShell(), SWT.OK | SWT.CANCEL | SWT.APPLICATION_MODAL);
-                            
-                            messageBox.setText("Remove invalid keys");
-                            messageBox.setMessage("Press [Ok] to remove all invalid keys");
-                            int response = messageBox.open();
-                            if (response == SWT.OK) {
+                            if (MessageDialog.openConfirm(dataMapTableView.getShell(), "Remove invalid keys",
+                                    "Press [Ok] to remove invalid keys of the input table '" + dataMapTableView.getDataMapTable().getName()
+                                            + "'")) {
                                 removeInvalidInputKeys(dataMapTableView);
                             }
                             refreshInOutTableAndMetaTable(dataMapTableView);

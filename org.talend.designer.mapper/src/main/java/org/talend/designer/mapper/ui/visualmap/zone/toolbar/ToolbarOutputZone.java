@@ -70,14 +70,14 @@ public class ToolbarOutputZone extends ToolbarZone {
         new ToolItem(getToolBarActions(), SWT.SEPARATOR);
 
         addOutputItem = new ToolItem(getToolBarActions(), SWT.PUSH);
-        addOutputItem.setToolTipText("Add output");
+        addOutputItem.setToolTipText("Add output table");
         addOutputItem.setImage(org.talend.core.ui.ImageProvider.getImage(org.talend.core.ui.ImageProvider.getImageDesc(EImage.ADD_ICON)));
 
         removeOutputItem = new ToolItem(getToolBarActions(), SWT.PUSH);
         removeOutputItem.setEnabled(false);
         removeOutputItem.setImage(org.talend.core.ui.ImageProvider.getImage(org.talend.core.ui.ImageProvider
                 .getImageDesc(EImage.MINUS_ICON)));
-        removeOutputItem.setToolTipText("Remove selected output");
+        removeOutputItem.setToolTipText("Remove selected output table");
 
     }
 
