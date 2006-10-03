@@ -2,6 +2,7 @@
 <?NLS TYPE="org.eclipse.help.toc"?>
 
 <toc label="Talend Open Studio - User Guide">
+    <topic label="Tutorial" href="http://www.talend.com/beta/training/tutorials/index.html" />
     <topic label="Perl">
     	<topic label="Perl Functions" href="guide/perl/perlfunc.html" />
     </topic>
