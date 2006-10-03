@@ -22,6 +22,7 @@
 package org.talend.designer.core.ui.views.modules;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -125,18 +126,45 @@ public class ModulesView extends ViewPart {
             System.out.println("Launch " + checkPerlModuleAbsolutePath);
             String[] cmd = Processor.getCommandLine(new Path(checkPerlModuleAbsolutePath), null, "", "", -1, -1, params);
 
-            StringBuffer out = new StringBuffer();
-            StringBuffer err = new StringBuffer();
-
-            LaunchProcess tp = new LaunchProcess(out, err);
-            tp.setTimeout(0L);
-            tp.execute(cmd);
-
-            analyzeResponse(out, componentsByModules);
-
-            if (err.length() > 0) {
-                throw new ProcessorException(err.toString());
+            byte iobuf[] = new byte[1024];
+            int bytes;
+            Process proc = Runtime.getRuntime().exec(cmd);
+            InputStream errStream,inStream;
+            System.out.print('e');
+            inStream = proc.getInputStream();
+            errStream = proc.getErrorStream();
+            while ((bytes = inStream.read(iobuf)) > 0)
+              System.out.write(iobuf,0,bytes);
+            while ((bytes = errStream.read(iobuf)) > 0)
+              System.err.write(iobuf,0,bytes);
+            
+            System.out.print('W');
+            try {
+                proc.waitFor();
+            } catch (InterruptedException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
             }
+            System.out.print('w');
+      
+            System.out.print('C');
+            errStream.close();
+            inStream.close();
+            proc.getOutputStream().close();
+            System.out.print('c');
+            
+//            StringBuffer out = new StringBuffer();
+//            StringBuffer err = new StringBuffer();
+//
+//            LaunchProcess tp = new LaunchProcess(out, err);
+//            tp.setTimeout(0L);
+//            tp.execute(cmd);
+//
+//            analyzeResponse(out, componentsByModules);
+//
+//            if (err.length() > 0) {
+//                throw new ProcessorException(err.toString());
+//            }
 
         } catch (IOException e) {
             ExceptionHandler.process(e);
