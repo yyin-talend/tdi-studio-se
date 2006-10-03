@@ -26,7 +26,6 @@ import java.util.List;
 
 import org.junit.Assert;
 import org.talend.core.model.process.IElementParameter;
-import org.talend.designer.core.model.components.ElementParameter;
 
 /**
  * Test of the ElementParameter class with the Expression.

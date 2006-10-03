@@ -21,7 +21,6 @@
 // ============================================================================
 package org.talend.designer.core.ui.preferences;
 
-import org.eclipse.gef.ui.palette.FlyoutPaletteComposite;
 import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.StringFieldEditor;
