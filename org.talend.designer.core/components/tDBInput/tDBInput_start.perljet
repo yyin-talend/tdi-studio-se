@@ -103,6 +103,10 @@ $sth_<%=cid %> = $dbh_<%=cid %>->prepare(
 $_globals{<%=cid %>}{NB_LINE} = $sth_<%=cid %>->execute()
     or die "can't execute input query";
 
+if ($_context{StoreSQLRequest}) {
+    $_globals{<%=cid %>}{QUERY} = $desc_<%=cid %>{query};
+}
+
 # fetch the N first columns (defined by component schema) from the SQL
 # result
 while (my @<%=cid %> = ($sth_<%=cid %>->fetchrow_array())[0 .. $nb_fields_<%=cid %> - 1]) {
