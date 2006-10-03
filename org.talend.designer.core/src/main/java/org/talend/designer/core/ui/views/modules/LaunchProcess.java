@@ -42,8 +42,6 @@ public class LaunchProcess {
 
     private Process process = null;
 
-    private long timeout = 0;
-
     public LaunchProcess(StringBuffer out, StringBuffer err) {
         runtime = Runtime.getRuntime();
         this.out = out;
@@ -53,50 +51,19 @@ public class LaunchProcess {
     public int execute(String[] args) throws IOException {
         int status = -1;
 
-        process = runtime.exec(args, null, null);
+        process = runtime.exec(args);
 
         createProdConsThread(process.getErrorStream(), true, 1024).start();
 
         createProdConsThread(process.getInputStream(), false, 1024).start();
 
-        if (timeout > 0L) {
-            Thread subProcess = createSubProcess(process);
-            subProcess.start();
-
-            try {
-                subProcess.join(timeout);
-                try {
-                    status = process.exitValue();
-                } catch (IllegalThreadStateException itse) {
-                    process.destroy();
-                    status = process.exitValue();
-                }
-            } catch (InterruptedException ie) {
-                ie.printStackTrace();
-            }
-        } else if (timeout == 0L) {
-            try {
-                status = process.waitFor();
-            } catch (InterruptedException ie) {
-                ie.printStackTrace();
-            }
+        try {
+            status = process.waitFor();
+        } catch (InterruptedException ie) {
+            ie.printStackTrace();
         }
-
+        
         return status;
-    }
-
-    /**
-     * @return Returns the timeout.
-     */
-    public long getTimeout() {
-        return timeout;
-    }
-
-    /**
-     * @param timeout The timeout to set.
-     */
-    public void setTimeout(long timeout) {
-        this.timeout = timeout;
     }
 
     private Thread createProdConsThread(final InputStream input, final boolean isError, final int bufferSize) {
@@ -112,7 +79,7 @@ public class LaunchProcess {
                         if (isError) {
                             err.append(buffer);
                         } else {
-                            System.out.println(new String(buffer));
+                            // System.out.println(new String(buffer));
                             out.append(new String(buffer));
                         }
                     }
@@ -123,18 +90,5 @@ public class LaunchProcess {
             }
         };
         return thread;
-    }
-
-    private Thread createSubProcess(final Process process) {
-        return new Thread() {
-
-            public void run() {
-                try {
-                    process.waitFor();
-                } catch (InterruptedException ie) {
-                    ie.printStackTrace();
-                }
-            }
-        };
     }
 }

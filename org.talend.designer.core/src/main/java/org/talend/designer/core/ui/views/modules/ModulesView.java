@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ThreadFactory;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.eclipse.core.runtime.FileLocator;
@@ -129,9 +130,15 @@ public class ModulesView extends ViewPart {
             StringBuffer err = new StringBuffer();
 
             LaunchProcess tp = new LaunchProcess(out, err);
-            tp.setTimeout(0L);
             tp.execute(cmd);
-
+            System.out.println("W");
+            try {
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            System.out.println("w");
             analyzeResponse(out, componentsByModules);
 
             if (err.length() > 0) {
