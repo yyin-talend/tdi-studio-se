@@ -62,7 +62,7 @@ public class LaunchProcess {
         } catch (InterruptedException ie) {
             ie.printStackTrace();
         }
-        
+
         return status;
     }
 
@@ -73,13 +73,11 @@ public class LaunchProcess {
                 try {
                     BufferedInputStream outStreamProcess = new BufferedInputStream(input);
                     byte[] buffer = new byte[bufferSize];
-                    int read;
 
-                    while ((read = outStreamProcess.read(buffer, 0, buffer.length)) != -1) {
+                    while (outStreamProcess.read(buffer, 0, buffer.length) != -1) {
                         if (isError) {
                             err.append(buffer);
                         } else {
-                             System.out.println(new String(buffer));
                             out.append(new String(buffer));
                         }
                     }

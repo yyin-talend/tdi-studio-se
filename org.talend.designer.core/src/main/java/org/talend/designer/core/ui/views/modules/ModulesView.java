@@ -26,7 +26,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ThreadFactory;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.eclipse.core.runtime.FileLocator;
@@ -123,7 +122,6 @@ public class ModulesView extends ViewPart {
             String checkPerlModuleAbsolutePath = FileLocator.toFileURL(
                     PERL_MODULE_PLUGIN.getEntry(CHECK_PERL_MODULE_RELATIVE_PATH)).getPath();
 
-            System.out.println("Launch " + checkPerlModuleAbsolutePath);
             String[] cmd = Processor.getCommandLine(new Path(checkPerlModuleAbsolutePath), null, "", "", -1, -1, params);
 
             StringBuffer out = new StringBuffer();
@@ -131,22 +129,7 @@ public class ModulesView extends ViewPart {
 
             LaunchProcess tp = new LaunchProcess(out, err);
             tp.execute(cmd);
-            
-//            Process p = Runtime.getRuntime().exec(cmd);
-//
-//         Thread stdTh = new InputStreamConsumerThread("STDStream", p.getInputStream(), System.out);
-//         Thread errTh = new InputStreamConsumerThread("ErrorStream", p.getErrorStream(), System.out);
-//         errTh.start();
-//         stdTh.start();
-//
-////          Attends la fin du process
-//         try {
-//            p.waitFor();
-//        } catch (InterruptedException e) {
-//            // TODO Auto-generated catch block
-//            e.printStackTrace();
-//        }
-            
+
             analyzeResponse(out, componentsByModules);
 
             if (err.length() > 0) {
@@ -169,8 +152,6 @@ public class ModulesView extends ViewPart {
 
         String[] lines = buff.toString().split("\n");
         for (String line : lines) {
-            line = line.substring(0, line.length() - 1);
-            System.out.println("Treating : " + line);
             if (line != null && line.length() > 0) {
                 // Treat a perl response line :
                 String[] elts = line.split(RESULT_SEPARATOR);
@@ -180,9 +161,9 @@ public class ModulesView extends ViewPart {
                 if (componentsToTreat != null) {
                     // Define status regarding the perl response :
                     int status = ComponentImportNeeds.UNKNOWN;
-                    if (elts[1].equals(RESULT_KEY_OK)) {
+                    if (elts[1].startsWith(RESULT_KEY_OK)) {
                         status = ComponentImportNeeds.INSTALLED;
-                    } else if (elts[1].equals(RESULT_KEY_KO)) {
+                    } else if (elts[1].startsWith(RESULT_KEY_KO)) {
                         status = ComponentImportNeeds.NOT_INSTALLED;
                     }
 

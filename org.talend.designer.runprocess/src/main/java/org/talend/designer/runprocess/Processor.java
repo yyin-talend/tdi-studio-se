@@ -188,13 +188,20 @@ public class Processor {
             throw new ProcessorException(Messages.getString("Processor.configurePerl")); //$NON-NLS-1$
         }
 
-        String[] cmd = new String[] { perlInterpreter, perlInterpreterLibOption, perlInterpreterLibCtxOption,
-                absCodePath.toOSString() };
+        String[] cmd = new String[] { perlInterpreter };
 
+        if (perlInterpreterLibOption != null) {
+            cmd = (String[]) ArrayUtils.add(cmd, perlInterpreterLibOption);
+        }
+        if (perlInterpreterLibCtxOption != null) {
+            cmd = (String[]) ArrayUtils.add(cmd, perlInterpreterLibCtxOption);
+        }
+        if (absCodePath != null) {
+            cmd = (String[]) ArrayUtils.add(cmd, absCodePath.toOSString());
+        }
         if (absContextPath != null) {
             cmd = (String[]) ArrayUtils.add(cmd, CTX_ARG + absContextPath.toOSString());
         }
-
         cmd = (String[]) ArrayUtils.addAll(cmd, codeOptions);
         if (statOption != -1) {
             cmd = (String[]) ArrayUtils.add(cmd, STAT_PORT_ARG + statOption);
