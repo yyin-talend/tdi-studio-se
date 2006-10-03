@@ -66,6 +66,9 @@ package="org.talend.designer.codegen.translators"
         // constants
         for (ExternalMapperTable table : allTablesList) {
             List<ExternalMapperTableEntry> tableEntries = table.getMetadataTableEntries();
+            if (tableEntries == null) {
+                continue;
+            }
             String tableName = table.getName();
             sb.append(CR);
             int lstSize = tableEntries.size();
@@ -79,17 +82,16 @@ package="org.talend.designer.codegen.translators"
         for (ExternalMapperTable table : outputTables) {
             List<ExternalMapperTableEntry> tableEntries = table.getMetadataTableEntries();
             String tableName = table.getName();
-            sb.append(CR + CR + gm.indent(indent) + "my @colnames_" + tableName +" = (");
+            sb.append(CR + CR + gm.indent(indent) + "my @colnames_" + tableName + " = (");
             int lstSize = tableEntries.size();
             indent++;
             for (int i = 0; i < lstSize; i++) {
                 ExternalMapperTableEntry tableEntry = (ExternalMapperTableEntry) tableEntries.get(i);
                 sb.append(CR + gm.indent(indent) + "'" + tableEntry.getName() + "',");
             }
-            indent--; 
-            sb.append( CR + gm.indent(indent) + ");");
+            indent--;
+            sb.append(CR + gm.indent(indent) + ");");
         }
-
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

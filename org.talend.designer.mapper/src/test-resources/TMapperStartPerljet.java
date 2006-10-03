@@ -83,6 +83,9 @@ public class TMapperStartPerljet {
         // constants
         for (ExternalMapperTable table : allTablesList) {
             List<ExternalMapperTableEntry> tableEntries = table.getMetadataTableEntries();
+            if (tableEntries == null) {
+                continue;
+            }
             String tableName = table.getName();
             sb.append(CR);
             int lstSize = tableEntries.size();
