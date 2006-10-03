@@ -66,6 +66,7 @@ import org.talend.designer.mapper.ui.visualmap.zone.Zone;
 import org.talend.designer.mapper.ui.visualmap.zone.scrollable.TablesZoneView;
 import org.talend.repository.model.RepositoryConstants;
 import org.talend.repository.model.ResourceModelUtils;
+import org.talend.repository.utils.RepositoryPathProvider;
 
 /**
  * DOC amaumont class global comment. Detailled comment <br/>
@@ -620,17 +621,7 @@ public class MapperManager {
      * @return
      */
     public String getPreviewFilePath() {
-        RepositoryContext repositoryContext = (RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY);
-        Project project = repositoryContext.getProject();
-        String filePath = null;
-        try {
-            IProject iProject = ResourceModelUtils.getProject(project);
-            IFolder folder = ResourceUtils.getFolder(iProject, RepositoryConstants.IMG_DIRECTORY, true);
-            filePath = folder.getLocation().append(getPreviewFileName()).toString();
-            return filePath;
-        } catch (PersistenceException e) {
-            return null;
-        }
+        return RepositoryPathProvider.getPathFileName(RepositoryConstants.IMG_DIRECTORY, getPreviewFileName()).toString();
     }
 
     /**
@@ -655,8 +646,8 @@ public class MapperManager {
             if (hParametersToUpdate.contains(parameter.getName())) {
                 // set preview path to PREVIEW parameter
                 if (EParameterName.PREVIEW.getName().equals(parameter.getName())) {
-                    String previewPath = getPreviewFilePath();
-                    parameter.setValue(previewPath == null ? "" : previewPath);
+                    String previewFileName = getPreviewFileName();
+                    parameter.setValue(previewFileName == null ? "" : previewFileName);
                 }
 
 //                if (MAPPER_MODEL_DATA.equals(parameter.getName())) {

@@ -80,6 +80,8 @@ import org.talend.designer.mapper.model.tableentry.TableEntryLocation;
 import org.talend.designer.mapper.ui.MapperUI;
 import org.talend.designer.mapper.ui.dnd.DraggingInfosPopup;
 import org.talend.designer.mapper.ui.dnd.DropTargetOperationListener;
+import org.talend.designer.mapper.ui.image.ImageInfo;
+import org.talend.designer.mapper.ui.image.ImageProviderMapper;
 import org.talend.designer.mapper.ui.tabs.TabFolderEditors;
 import org.talend.designer.mapper.ui.visualmap.TableEntryProperties;
 import org.talend.designer.mapper.ui.visualmap.link.AbstractLink;
@@ -464,10 +466,11 @@ public class UIManager {
      * DOC amaumont Comment method "createVisualMapImage".
      */
     private void createVisualMapImage() {
-        if (mapperManager.getPreviewFilePath() != null) {
+        String previewFilePath = mapperManager.getPreviewFilePath();
+        if (previewFilePath != null) {
             Image image = ImageCapture.capture(mapperUI.getDatasFlowViewSashForm());
             image = ImageUtils.scale(image, 50);
-            ImageUtils.save(image, mapperManager.getPreviewFilePath(), SWT.IMAGE_BMP);
+            ImageUtils.save(image, previewFilePath, SWT.IMAGE_BMP);
         }
     }
 

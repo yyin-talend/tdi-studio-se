@@ -139,7 +139,9 @@ import org.talend.designer.core.ui.editor.outline.NodeReturnsTreeEditPart;
 import org.talend.designer.core.ui.editor.outline.NodeTreeEditPart;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.repository.model.IRepositoryFactory;
+import org.talend.repository.model.RepositoryConstants;
 import org.talend.repository.model.RepositoryFactoryProvider;
+import org.talend.repository.utils.RepositoryPathProvider;
 
 /**
  * Dynamic node's property section. This allow the tabbed property to be dynamic dependings on node's parameters. <br/>
@@ -1270,11 +1272,12 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
             final int top, final Control lastControl) {
 
         String fileName = (String) param.getValue();
-
-        if (fileName != null && new java.io.File(fileName).canRead()) {
+        String filePath = RepositoryPathProvider.getPathFileName(RepositoryConstants.IMG_DIRECTORY, fileName).toPortableString();
+        
+        if (filePath != null && new java.io.File(filePath).canRead()) {
 
             final Composite compositeImage = new Composite(subComposite, SWT.BORDER);
-            final Image image = new Image(subComposite.getDisplay(), fileName);
+            final Image image = new Image(subComposite.getDisplay(), filePath);
             compositeImage.addDisposeListener(new DisposeListener() {
 
                 public void widgetDisposed(DisposeEvent e) {
