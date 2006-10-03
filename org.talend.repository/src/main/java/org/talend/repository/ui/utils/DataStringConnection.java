@@ -61,7 +61,7 @@ public class DataStringConnection {
                 + port + ":" + sid, "1521");
 
         dataConnection[3] = new DataConnection("Oracle with service name", "jdbc:oracle:thin:@(description=(address=(protocol=tcp)(host=<host>)(port=<port>))(connect_data=(service_name=<service_name>)))", 
-                "jdbc:oracle:thin:@(description=(address=(protocol=tcp)(host=" + host + ")(port="+ port + "))(connect_data=(service_name=" + sid + ")))",
+                "jdbc:oracle:thin:@\\(description=\\(address=\\(protocol=tcp\\)\\(host=" + host + "\\)\\(port="+ port + "\\)\\)\\(connect_data=\\(service_name=" + sid + "\\)\\)\\)",
                  "1521");
 
         dataConnection[4] = new DataConnection("Generic ODBC", "jdbc:odbc:<datasource>", "jdbc:odbc:" + word);
