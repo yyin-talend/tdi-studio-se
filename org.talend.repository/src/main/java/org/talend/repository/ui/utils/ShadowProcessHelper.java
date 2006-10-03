@@ -68,14 +68,26 @@ public class ShadowProcessHelper {
         if (connection.getEscapeChar() != null && !connection.getEscapeChar().equals("") && !connection.getEscapeChar().equals("Empty")) {
             processDescription.setEscapeCharacter("'" + connection.getEscapeChar() + "'");
         } else {
-            processDescription.setEscapeCharacter(null);
+            processDescription.setEscapeCharacter("''");
         }
         if (connection.getTextEnclosure() != null
                 && !connection.getTextEnclosure().equals("") && !connection.getTextEnclosure().equals("Empty")) {
             processDescription.setTextEnclosure("'" + connection.getTextEnclosure() + "'");
         } else {
-            processDescription.setTextEnclosure(null);
+            processDescription.setTextEnclosure("''");
         }
+        
+//        if(connection.getEscapeChar()!= null && (!connection.getEscapeChar().equals("") || !connection.getEscapeChar().equals("Empty"))){
+//            processDescription.setEscapeCharacter("'" + connection.getEscapeChar() + "'");
+//        }else{
+//            processDescription.setEscapeCharacter(null);
+//        }
+//        if(connection.getTextEnclosure()!= null && (!connection.getTextEnclosure().equals("") || !connection.getTextEnclosure().equals("Empty"))){
+//            processDescription.setTextEnclosure("'" + connection.getTextEnclosure() + "'");
+//        }else{
+//            processDescription.setTextEnclosure(null);
+//        }
+        
         processDescription.setRemoveEmptyRow(connection.isRemoveEmptyRow());
         if (connection.getEncoding() != null && !connection.getEncoding().equals("")) {
             processDescription.setEncoding("\"" + connection.getEncoding() + "\"");

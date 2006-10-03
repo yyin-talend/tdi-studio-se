@@ -666,14 +666,22 @@ public class DelimitedFileStep2Form extends AbstractDelimitedFileStepForm {
         escapeCharCombo.addModifyListener(new ModifyListener() {
 
             public void modifyText(final ModifyEvent e) {
-                getConnection().setEscapeChar(escapeCharCombo.getText());
+                if (escapeCharCombo.getText() != null && !("").equals(escapeCharCombo.getText()) && !(EMPTY_VALUE).equals(escapeCharCombo.getText())) {
+                    getConnection().setEscapeChar(escapeCharCombo.getText());
+                } else {
+                    getConnection().setEscapeChar(null);
+                }
                 checkFieldsValue();
             }
         });
         textEnclosureCombo.addModifyListener(new ModifyListener() {
 
             public void modifyText(final ModifyEvent e) {
-                getConnection().setTextEnclosure(textEnclosureCombo.getText());
+                if (textEnclosureCombo.getText() != null && !("").equals(textEnclosureCombo.getText()) && !(EMPTY_VALUE).equals(textEnclosureCombo.getText())) {
+                    getConnection().setTextEnclosure(textEnclosureCombo.getText());
+                } else {
+                    getConnection().setTextEnclosure(null);
+                }
                 checkFieldsValue();
             }
         });
