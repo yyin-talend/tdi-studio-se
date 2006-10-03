@@ -79,7 +79,7 @@ public class LaunchProcess {
                         if (isError) {
                             err.append(buffer);
                         } else {
-                            // System.out.println(new String(buffer));
+                             System.out.println(new String(buffer));
                             out.append(new String(buffer));
                         }
                     }
