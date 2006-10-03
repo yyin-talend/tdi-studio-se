@@ -21,10 +21,7 @@
 // ============================================================================
 package org.talend.designer.core.ui.views.modules;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -128,70 +125,22 @@ public class ModulesView extends ViewPart {
             String checkPerlModuleAbsolutePath = FileLocator.toFileURL(
                     PERL_MODULE_PLUGIN.getEntry(CHECK_PERL_MODULE_RELATIVE_PATH)).getPath();
 
-            long time = System.currentTimeMillis();
             System.out.println("Launch " + checkPerlModuleAbsolutePath);
-            Process result = Processor.exec(new Path(checkPerlModuleAbsolutePath), null, "", "", -1, -1, params);
-            System.out.println("Get response in " + ((System.currentTimeMillis() - time) / 1000) + " sec");
-            try {
-//                Thread.sleep(2000);
-                result.waitFor();
-            } catch (InterruptedException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+            String[] cmd = Processor.getCommandLine(new Path(checkPerlModuleAbsolutePath), null, "", "", -1, -1, params);
+
+            StringBuffer out = new StringBuffer();
+            StringBuffer err = new StringBuffer();
+
+            TestProcess tp = new TestProcess(out, err);
+            tp.setTimeout(0L);
+            tp.execute(cmd);
+
+            analyzeResponse(out, componentsByModules);
+
+            if (err.length() > 0) {
+                throw new ProcessorException(err.toString());
             }
-//            readAndPrint(result.getInputStream());
-//            System.out.println("---");
-//            readAndPrint(result.getErrorStream());
-            time = System.currentTimeMillis();
-            InputStream is = result.getInputStream();
-            try {
-                InputStreamReader inR = new InputStreamReader(is);
-                BufferedReader buf = new BufferedReader(inR);
-                String line;
-                while ((line = buf.readLine()) != null) {
-                    System.out.println("Treating : " + line);
-                    if (line != null && line.length() > 0) {
-                        // Treat a perl response line :
-                        String[] elts = line.split(RESULT_SEPARATOR);
 
-                        List<ComponentImportNeeds> componentsToTreat = componentsByModules.get(elts[0]);
-
-                        if (componentsToTreat != null) {
-                            // Define status regarding the perl response :
-                            int status = ComponentImportNeeds.UNKNOWN;
-                            if (elts[1].equals(RESULT_KEY_OK)) {
-                                status = ComponentImportNeeds.INSTALLED;
-                            } else if (elts[1].equals(RESULT_KEY_KO)) {
-                                status = ComponentImportNeeds.NOT_INSTALLED;
-                            }
-
-                            // Step on objects using this module and set their status :
-                            for (ComponentImportNeeds current : componentsToTreat) {
-                                current.setStatus(status);
-                            }
-                        }
-                    }
-                }
-            } finally {
-                System.out.println("Finish parsing response in " + ((System.currentTimeMillis() - time) / 1000) + " sec");
-
-                is.close();
-            }
-            is = result.getErrorStream();
-            try {
-                InputStreamReader inR = new InputStreamReader(is);
-                BufferedReader buf = new BufferedReader(inR);
-                String line;
-                StringBuffer error = new StringBuffer();
-                while ((line = buf.readLine()) != null) {
-                    error.append(line + "\n");
-                }
-                if (error.length() > 0) {
-                    throw new ProcessorException(error.toString());
-                }
-            } finally {
-                is.close();
-            }
         } catch (IOException e) {
             ExceptionHandler.process(e);
         } catch (ProcessorException e) {
@@ -199,31 +148,40 @@ public class ModulesView extends ViewPart {
         }
     }
 
-    public static void readAndPrint(InputStream is) {
-        String msg = null;
-        int len;
-        try {
-            len = is.available();
-            if (len > 0) {
-                byte[] data = new byte[len];
-                is.read(data);
-                final String dataStr = new String(data);
-                msg = dataStr;
-            } else {
-                msg = "Vide";
+    /**
+     * DOC smallet Comment method "analyzeResponse".
+     * 
+     * @param out
+     */
+    private static void analyzeResponse(StringBuffer buff, Map<String, List<ComponentImportNeeds>> componentsByModules) {
+
+        String[] lines = buff.toString().split("\n");
+        for (String line : lines) {
+            line = line.substring(0, line.length() - 1);
+            System.out.println("Treating : " + line);
+            if (line != null && line.length() > 0) {
+                // Treat a perl response line :
+                String[] elts = line.split(RESULT_SEPARATOR);
+
+                List<ComponentImportNeeds> componentsToTreat = componentsByModules.get(elts[0]);
+
+                if (componentsToTreat != null) {
+                    // Define status regarding the perl response :
+                    int status = ComponentImportNeeds.UNKNOWN;
+                    if (elts[1].equals(RESULT_KEY_OK)) {
+                        status = ComponentImportNeeds.INSTALLED;
+                    } else if (elts[1].equals(RESULT_KEY_KO)) {
+                        status = ComponentImportNeeds.NOT_INSTALLED;
+                    }
+
+                    // Step on objects using this module and set their status :
+                    for (ComponentImportNeeds current : componentsToTreat) {
+                        current.setStatus(status);
+                    }
+                }
             }
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } finally {
-            try {
-                is.close();
-            } catch (IOException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
+
         }
-        System.out.println(msg);
     }
 
     /*

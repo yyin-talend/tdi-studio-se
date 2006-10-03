@@ -154,6 +154,32 @@ public class Processor {
     public static Process exec(IPath absCodePath, IPath absContextPath, String perlInterpreterLibOption,
             String perlInterpreterLibCtxOption, int statOption, int traceOption, String... codeOptions) throws ProcessorException {
 
+        String[] cmd = getCommandLine(absCodePath, absContextPath, perlInterpreterLibOption, perlInterpreterLibCtxOption,
+                statOption, traceOption, codeOptions);
+
+        logCommandLine(cmd);
+        try {
+            return Runtime.getRuntime().exec(cmd);
+        } catch (IOException ioe) {
+            throw new ProcessorException(Messages.getString("Processor.execFailed"), ioe); //$NON-NLS-1$
+        }
+    }
+
+    /**
+     * DOC smallet Comment method "getCommandLine".
+     * 
+     * @param absCodePath
+     * @param absContextPath
+     * @param perlInterpreterLibOption
+     * @param perlInterpreterLibCtxOption
+     * @param statOption
+     * @param traceOption
+     * @param codeOptions
+     * @return
+     * @throws ProcessorException
+     */
+    public static String[] getCommandLine(IPath absCodePath, IPath absContextPath, String perlInterpreterLibOption,
+            String perlInterpreterLibCtxOption, int statOption, int traceOption, String... codeOptions) throws ProcessorException {
         assert (absCodePath != null);
 
         IPreferenceStore prefStore = CorePlugin.getDefault().getPreferenceStore();
@@ -176,13 +202,7 @@ public class Processor {
         if (traceOption != -1) {
             cmd = (String[]) ArrayUtils.add(cmd, TRACE_PORT_ARG + traceOption);
         }
-
-        logCommandLine(cmd);
-        try {
-            return Runtime.getRuntime().exec(cmd);
-        } catch (IOException ioe) {
-            throw new ProcessorException(Messages.getString("Processor.execFailed"), ioe); //$NON-NLS-1$
-        }
+        return cmd;
     }
 
     private static void logCommandLine(String[] cmd) {
