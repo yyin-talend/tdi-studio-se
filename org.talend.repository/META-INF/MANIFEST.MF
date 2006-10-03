@@ -25,5 +25,6 @@ Export-Package: org.talend.repository.editor,
  org.talend.repository.ui.wizards,
  org.talend.repository.ui.wizards.metadata.connection.database,
  org.talend.repository.ui.wizards.metadata.table.database,
- org.talend.repository.ui.wizards.newfolder
+ org.talend.repository.ui.wizards.newfolder,
+ org.talend.repository.utils
 Bundle-Activator: org.talend.repository.RepositoryPlugin
