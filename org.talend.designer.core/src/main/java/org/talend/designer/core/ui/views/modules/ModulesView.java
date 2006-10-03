@@ -129,21 +129,29 @@ public class ModulesView extends ViewPart {
             StringBuffer out = new StringBuffer();
             StringBuffer err = new StringBuffer();
 
-            LaunchProcess tp = new LaunchProcess(out, err);
-            tp.execute(cmd);
-            System.out.println("W");
-            try {
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-            System.out.println("w");
-            analyzeResponse(out, componentsByModules);
+          //  LaunchProcess tp = new LaunchProcess(out, err);
+            //tp.execute(cmd);
+            
+            Process p = Runtime.getRuntime().exec(cmd);
 
-            if (err.length() > 0) {
-                throw new ProcessorException(err.toString());
-            }
+         Thread stdTh = new InputStreamConsumerThread("STDStream", p.getInputStream(), System.out);
+         Thread errTh = new InputStreamConsumerThread("ErrorStream", p.getErrorStream(), System.out);
+         errTh.start();
+         stdTh.start();
+
+//          Attends la fin du process
+         try {
+            p.waitFor();
+        } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+            
+//            analyzeResponse(out, componentsByModules);
+//
+//            if (err.length() > 0) {
+//                throw new ProcessorException(err.toString());
+//            }
 
         } catch (IOException e) {
             ExceptionHandler.process(e);
