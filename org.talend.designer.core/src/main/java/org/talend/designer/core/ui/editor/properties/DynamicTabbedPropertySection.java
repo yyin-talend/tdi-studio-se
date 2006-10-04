@@ -21,6 +21,7 @@
 // ============================================================================
 package org.talend.designer.core.ui.editor.properties;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -1274,19 +1275,22 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
         String fileName = (String) param.getValue();
         String filePath = RepositoryPathProvider.getPathFileName(RepositoryConstants.IMG_DIRECTORY, fileName).toPortableString();
         
-        if (filePath != null && new java.io.File(filePath).canRead()) {
-
+        if (filePath != null) {
+            File fileOrFolder = new java.io.File(filePath);
+            if(!fileOrFolder.isFile() || !fileOrFolder.canRead()) {
+                return lastControl;
+            }
             final Composite compositeImage = new Composite(subComposite, SWT.BORDER);
             final Image image = new Image(subComposite.getDisplay(), filePath);
             compositeImage.addDisposeListener(new DisposeListener() {
-
+                
                 public void widgetDisposed(DisposeEvent e) {
                     image.dispose();
                     compositeImage.removeDisposeListener(this);
                 }
-
+                
             });
-
+            
             CLabel labelLabel = getWidgetFactory().createCLabel(subComposite, param.getDisplayName() + " :");
             FormData formDataLabel = new FormData();
             labelLabel.setVisible(true);
@@ -1300,7 +1304,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                 formDataLabel.top = new FormAttachment(0, top);
             }
             labelLabel.setLayoutData(formDataLabel);
-
+            
             compositeImage.setToolTipText(param.getDisplayName());
             Point size = new Point(image.getImageData().width, image.getImageData().height);
             FormData formData = new FormData(size.x, size.y);
@@ -1308,7 +1312,6 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
             formData.left = new FormAttachment(labelLabel);
             compositeImage.setBackgroundImage(image);
             compositeImage.setLayoutData(formData);
-
             return compositeImage;
         } else {
             return lastControl;
