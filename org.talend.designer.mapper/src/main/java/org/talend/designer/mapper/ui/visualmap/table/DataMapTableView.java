@@ -715,7 +715,8 @@ public abstract class DataMapTableView extends Composite {
         tableViewerCreatorForConstraints.setShowSelection(SHOW_SELECTION.FULL);
         tableViewerCreatorForConstraints.setLineSelection(LINE_SELECTION.MULTI);
         tableViewerCreatorForConstraints.setLayoutMode(LAYOUT_MODE.CONTINUOUS_CURRENT);
-        tableViewerCreatorForConstraints.setFirstColumnMasked(WindowSystem.isWIN32());
+        tableViewerCreatorForConstraints.setAdjustWidthValue(ADJUST_WIDTH_VALUE);
+        tableViewerCreatorForConstraints.setFirstColumnMasked(true);
 
         tableForConstraints = tableViewerCreatorForConstraints.createTable();
         // tableForConstraintsGridData = new GridData(SWT.NONE, SWT.FILL, true, false);
@@ -1342,9 +1343,6 @@ public abstract class DataMapTableView extends Composite {
         expressionTextEditor.addFocusListener(new FocusListener() {
 
             public void focusGained(FocusEvent e) {
-                if(WindowSystem.isGTK()) {
-                    tableViewerCreator.layout();
-                }
                 ITableEntry currentModifiedEntry = (ITableEntry) tableViewerCreator.getModifiedObjectInfo().getCurrentModifiedBean();
                 initExpressionProposals(cellEditor, zones, tableViewerCreator, currentModifiedEntry);
                 resizeTextEditor(expressionTextEditor, tableViewerCreator);
@@ -1356,9 +1354,6 @@ public abstract class DataMapTableView extends Composite {
 
             public void focusLost(FocusEvent e) {
                 expressionEditorTextSelectionBeforeFocusLost = expressionTextEditor.getSelection();
-                if(WindowSystem.isGTK()) {
-                    tableViewerCreator.layout();
-                }
             }
 
         });
@@ -1406,6 +1401,7 @@ public abstract class DataMapTableView extends Composite {
      * DOC amaumont Comment method "updateGridDataHeightForTableConstraints".
      */
     public void updateGridDataHeightForTableConstraints() {
+        
         int moreSpace = WindowSystem.isGTK() ? tableForConstraints.getItemHeight() / 3 : 0;
         tableForConstraintsGridData.heightHint = ((OutputTable) abstractDataMapTable).getConstraintEntries().size()
                 * tableForConstraints.getItemHeight() + tableForConstraints.getItemHeight() / 2 + moreSpace;
