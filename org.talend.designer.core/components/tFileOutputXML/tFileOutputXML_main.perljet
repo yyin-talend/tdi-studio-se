@@ -38,6 +38,10 @@ if (@<%=metadata.getTableName() %>) {
     }
 %>
 }
+else {
+    print {$output_FH_<%=metadata.getTableName() %>} '<row/>', "\n"
+        or die "can't write to file " . $output_desc_<%=metadata.getTableName() %>{filename} . "\n";
+}
 
 <%
 		}
