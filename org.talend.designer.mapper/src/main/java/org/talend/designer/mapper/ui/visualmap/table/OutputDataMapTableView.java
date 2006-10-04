@@ -224,7 +224,7 @@ public class OutputDataMapTableView extends DataMapTableView {
 
     @Override
     public void unselectAllConstraintEntries() {
-        tableViewerCreatorForConstraints.getTable().deselectAll();
+        tableViewerCreatorForConstraints.getSelectionHelper().deselectAll();
     }
 
     

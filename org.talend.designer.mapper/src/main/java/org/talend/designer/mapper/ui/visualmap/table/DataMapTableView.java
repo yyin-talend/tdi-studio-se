@@ -780,7 +780,7 @@ public abstract class DataMapTableView extends Composite {
      */
     public void setTableSelection(int[] selectionIndices) {
         this.executeSelectionEvent = false;
-        this.tableViewerCreatorForColumns.getTable().setSelection(selectionIndices);
+        this.tableViewerCreatorForColumns.getSelectionHelper().setSelection(selectionIndices);
         this.executeSelectionEvent = true;
 
     }
@@ -1423,7 +1423,7 @@ public abstract class DataMapTableView extends Composite {
      * DOC amaumont Comment method "unselectAllColumnEntries".
      */
     public void unselectAllColumnEntries() {
-        tableViewerCreatorForColumns.getTable().deselectAll();
+        tableViewerCreatorForColumns.getSelectionHelper().deselectAll();
     }
 
     /*

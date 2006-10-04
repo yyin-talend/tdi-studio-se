@@ -37,6 +37,8 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
@@ -53,7 +55,10 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.ToolItem;
+import org.eclipse.ui.ISelectionListener;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
+import org.talend.commons.ui.swt.tableviewer.selection.ILineSelectionListener;
+import org.talend.commons.ui.swt.tableviewer.selection.LineSelectionEvent;
 import org.talend.commons.utils.data.list.IListenableListListener;
 import org.talend.commons.utils.data.list.ListenableListEvent;
 import org.talend.commons.utils.data.list.ListenableListEvent.TYPE;
@@ -123,9 +128,9 @@ public class UIManager {
 
     private TableManager tableManager;
 
-    private ISelectionChangedListener inputsSelectionChangedListener;
+    private ILineSelectionListener inputsSelectionChangedListener;
 
-    private ISelectionChangedListener outputsSelectionChangedListener;
+    private ILineSelectionListener outputsSelectionChangedListener;
 
     private List<IColumnEntry> lastCreatedInOutColumnEntries = new ArrayList<IColumnEntry>();
 
@@ -142,6 +147,8 @@ public class UIManager {
     int currentDragDetail;
 
     private boolean dragging;
+
+    private DisposeListener commonMetadataDisposeListener;
 
     /**
      * DOC amaumont UIManager constructor comment.
@@ -185,6 +192,7 @@ public class UIManager {
             final AbstractInOutTable abstractDataMapTable = (AbstractInOutTable) mapperManager
                     .retrieveAbstractDataMapTable(dataMapTableView);
             MetadataTableEditor currentMetadataTableEditor = metadataTableEditorView.getMetadataTableEditor();
+            final TableViewerCreator dataMapTVCreator = dataMapTableView.getTableViewerCreatorForColumns();
             final TableViewer dataMapTableViewer = dataMapTableView.getTableViewerCreatorForColumns().getTableViewer();
             if (currentMetadataTableEditor == null || currentMetadataTableEditor != null
                     && !currentMetadataTableEditor.getMetadataTable().equals(abstractDataMapTable.getMetadataTable())) {
@@ -219,10 +227,11 @@ public class UIManager {
                 });
 
                 final MetadataTableEditorView metadataTableEditorViewFinal = metadataTableEditorView;
-                final TableViewer metadataEditorTableViewer = metadataTableEditorViewFinal.getTableViewerCreator().getTableViewer();
+                final TableViewerCreator metadataTVCreator = metadataTableEditorViewFinal.getTableViewerCreator();
+                final TableViewer metadataEditorTableViewer = metadataTVCreator.getTableViewer();
                 final MetadataTableEditor metadataTableEditor = currentMetadataTableEditor;
 
-                modifySelectionChangedListener(currentZone, metadataTableEditorViewFinal, metadataEditorTableViewer, metadataTableEditor);
+                modifySelectionChangedListener(currentZone, metadataTableEditorViewFinal, metadataTVCreator, metadataTableEditor);
 
                 // init actions listeners for list which contains metadata
                 metadataTableEditor.addModifiedListListener(new IListenableListListener() {
@@ -244,7 +253,7 @@ public class UIManager {
                             refreshBackground(false, false);
                             dataMapTableView.changeSize(view.getPreferredSize(true, false, false), true, true);
                             dataMapTableViewer.refresh();
-                            dataMapTableViewer.getTable().setSelection(event.getIndex());
+                            dataMapTVCreator.getSelectionHelper().setSelection(event.getIndex());
                         }
 
                         if (event.getType() == TYPE.REMOVED) {
@@ -315,36 +324,64 @@ public class UIManager {
     }
 
     private void modifySelectionChangedListener(final Zone currentZone, final MetadataTableEditorView metadataTableEditorViewFinal,
-            final TableViewer metadataEditorTableViewer, final MetadataTableEditor metadataTableEditor) {
-        ISelectionChangedListener metadataEditorViewerSelectionChangedListener = new ISelectionChangedListener() {
+            final TableViewerCreator metadataTVCreator, final MetadataTableEditor metadataTableEditor) {
+//        ISelectionChangedListener metadataEditorViewerSelectionChangedListener = new ISelectionChangedListener() {
+//
+//            public void selectionChanged(SelectionChangedEvent event) {
+//                // System.out.println("Metadata editor selectionChanged");
+//                onSelectionChanged();
+//            }
+//
+//            public void onSelectionChanged() {
+//                if (metadataTableEditorViewFinal.isExecuteSelectionEvent()) {
+//                    mapperManager.getUiManager().selectLinkedTableEntries(metadataTableEditor.getMetadataTable(),
+//                            metadataTVCreator.getTable().getSelectionIndices());
+//                }
+//            }
+//        };
+        
+        ILineSelectionListener metadataEditorViewerSelectionChangedListener = new ILineSelectionListener() {
 
-            public void selectionChanged(SelectionChangedEvent event) {
-                // System.out.println("Metadata editor selectionChanged");
-                onSelectionChanged();
-            }
-
-            public void onSelectionChanged() {
+            public void handle(LineSelectionEvent e) {
                 if (metadataTableEditorViewFinal.isExecuteSelectionEvent()) {
                     mapperManager.getUiManager().selectLinkedTableEntries(metadataTableEditor.getMetadataTable(),
-                            metadataEditorTableViewer.getTable().getSelectionIndices());
+                            metadataTVCreator.getTable().getSelectionIndices());
                 }
             }
+            
         };
-        ISelectionChangedListener previousSelectionChangedListener = null;
+        
+        
+//        ISelectionChangedListener previousSelectionChangedListener = null;
+        ILineSelectionListener previousSelectionChangedListener = null;
         if (currentZone == Zone.INPUTS) {
             previousSelectionChangedListener = inputsSelectionChangedListener;
         } else if (currentZone == Zone.OUTPUTS) {
             previousSelectionChangedListener = outputsSelectionChangedListener;
         }
         if (previousSelectionChangedListener != null) {
-            metadataEditorTableViewer.removeSelectionChangedListener(previousSelectionChangedListener);
+//            metadataTVCreator.removeSelectionChangedListener(previousSelectionChangedListener);
+            metadataTVCreator.getSelectionHelper().removeBeforeSelectionListener(previousSelectionChangedListener);
         }
         if (currentZone == Zone.INPUTS) {
             inputsSelectionChangedListener = metadataEditorViewerSelectionChangedListener;
         } else if (currentZone == Zone.OUTPUTS) {
             outputsSelectionChangedListener = metadataEditorViewerSelectionChangedListener;
         }
-        metadataEditorTableViewer.addSelectionChangedListener(metadataEditorViewerSelectionChangedListener);
+//        metadataTVCreator.addSelectionChangedListener(metadataEditorViewerSelectionChangedListener);
+        metadataTVCreator.getSelectionHelper().addBeforeSelectionListener(metadataEditorViewerSelectionChangedListener);
+        
+        if (this.commonMetadataDisposeListener == null) {
+            this.commonMetadataDisposeListener = new DisposeListener() {
+                public void widgetDisposed(DisposeEvent e) {
+                    getMetadataEditorView(Zone.INPUTS).getTableViewerCreator().getSelectionHelper().removeBeforeSelectionListener(inputsSelectionChangedListener);
+                    getMetadataEditorView(Zone.OUTPUTS).getTableViewerCreator().getSelectionHelper().removeBeforeSelectionListener(outputsSelectionChangedListener);
+                }
+            };
+            metadataTVCreator.getTable().addDisposeListener(this.commonMetadataDisposeListener);
+        }
+        
+        
     }
 
     public void setMapperUI(MapperUI mapperUI) {
@@ -648,11 +685,11 @@ public class UIManager {
     }
 
     private void unselectAllInputMetaDataEntries() {
-        getInputMetaEditorView().getTableViewerCreator().getTableViewer().getTable().deselectAll();
+        getInputMetaEditorView().getTableViewerCreator().getSelectionHelper().deselectAll();
     }
 
     private void unselectAllOutputMetaDataEntries() {
-        getOutputMetaEditorView().getTableViewerCreator().getTableViewer().getTable().deselectAll();
+        getOutputMetaEditorView().getTableViewerCreator().getSelectionHelper().deselectAll();
     }
 
     public void setEntryState(MapperManager mapperManager, EntryState entryState, ITableEntry entry) {
