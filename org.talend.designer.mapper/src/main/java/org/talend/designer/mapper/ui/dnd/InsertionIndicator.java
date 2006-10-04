@@ -67,7 +67,7 @@ public class InsertionIndicator {
     private MapperManager mapperManager;
 
     /**
-     * current y of the indicator
+     * current y of the indicator.
      */
     private int indicYPositionRefTable;
 
@@ -109,13 +109,11 @@ public class InsertionIndicator {
         leftArrowDraggingIndicator.setVisible(false);
         leftArrowDraggingIndicator.setBackgroundMode(SWT.INHERIT_DEFAULT);
         FormData formDataLeftArrow = new FormData();
-        // formDataLeftArrow.left = new FormAttachment(0, -10);
         formDataLeftArrow.width = 12;
         formDataLeftArrow.height = HEIGHT_INDICATOR;
         formDataLeftArrow.left = new FormAttachment(0, 0);
         formDataLeftArrow.left = new FormAttachment(0, -formDataLeftArrow.width + 2);
         formDataLeftArrow.top = new FormAttachment(0, 0);
-        // formDataLeftArrow.bottom = new FormAttachment(0,0);
         leftArrowDraggingIndicator.setLayoutData(formDataLeftArrow);
 
         rightArrowDraggingIndicator = new Composite(tablesZoneViewParent, SWT.NONE | SWT.NO_BACKGROUND);
@@ -126,7 +124,6 @@ public class InsertionIndicator {
         formDataRightArrow.height = HEIGHT_INDICATOR;
         formDataRightArrow.left = new FormAttachment(0, 0); // this property is recalculated at each top changement
         formDataRightArrow.top = new FormAttachment(0, 0);
-        // formDataRightArrow.bottom = new FormAttachment(0,0);
         rightArrowDraggingIndicator.setLayoutData(formDataRightArrow);
 
         addListeners();
@@ -235,11 +232,8 @@ public class InsertionIndicator {
             indicYPositionRefZone = boundsTableView.y + boundsTableView.height - formLayout.marginTop - HEIGHT_INDICATOR / 2 - 5;
         }
 
-        // Point pointRefZone = display.map(draggableTable, tablesZoneViewOutputs, new Point(0, indicYPositionRefZone));
-
         draggableTable.addListener(SWT.Paint, tablePaintListener);
         if (lastIndicYPositionRefZone != indicYPositionRefZone) {
-            // int newY = indicYPositionRefZone;
             formDataLeftArrow.top.offset = indicYPositionRefZone;
             formDataRightArrow.top.offset = indicYPositionRefZone;
 

@@ -124,18 +124,6 @@ public class DragNDrop {
             createDropTarget(dropTargetListener);
         }
 
-        // this.draggableTable.addMouseMoveListener(new MouseMoveListener() {
-        //
-        // public void mouseMove(MouseEvent e) {
-        // System.out.println("---------------- MouseEvent");
-        //
-        // if ((e.stateMask & SWT.SHIFT) != 0) {
-        // System.out.println("MouseEvent : Shift pressed");
-        // }
-        //
-        // }
-        //
-        // });
     }
 
     /**
@@ -248,7 +236,8 @@ public class DragNDrop {
                         Integer itemIndexWhereInsertFromPosition = getItemIndexFromPosition(new Point(event.x, event.y));
                         if (itemIndexWhereInsertFromPosition != null) {
                             draggableTable.setSelection(itemIndexWhereInsertFromPosition, itemIndexWhereInsertFromPosition + size - 1);
-                            if (itemIndexWhereInsertFromPosition + size - 1 >= draggableTable.getItemCount()) {
+                            if (!analyzer.targetTableIsConstraintsTable()
+                                    && itemIndexWhereInsertFromPosition + size - 1 >= draggableTable.getItemCount()) {
                                 insertionIndicator.updatePosition(draggableTable, draggableTable.getItemCount());
                                 insertionIndicator.setVisible(true);
                                 draggingInfosPopup.setInsertionEntryContext(true);
@@ -256,7 +245,6 @@ public class DragNDrop {
                                 insertionIndicator.setVisible(false);
                                 draggingInfosPopup.setInsertionEntryContext(false);
                             }
-                            // insertionIndicator.redraw();
                         } else {
                             draggableTable.deselectAll();
                             insertionIndicator.setVisible(false);
@@ -267,8 +255,10 @@ public class DragNDrop {
                             draggableTable.deselectAll();
                         }
 
-                        updateInsertionIndicator(event);
-                        insertionIndicator.setVisible(analyzer.isInsertionEntryMode());
+                        if (!analyzer.targetTableIsConstraintsTable()) {
+                            updateInsertionIndicator(event);
+                            insertionIndicator.setVisible(analyzer.isInsertionEntryMode());
+                        }
                         draggingInfosPopup.setInsertionEntryContext(analyzer.isInsertionEntryMode());
                     }
                 }
