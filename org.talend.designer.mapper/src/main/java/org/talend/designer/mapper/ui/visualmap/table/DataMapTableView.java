@@ -185,7 +185,7 @@ public abstract class DataMapTableView extends Composite {
 
     protected static final int COLUMN_NAME_SIZE_WEIGHT = 40;
 
-    private static final int ADJUST_WIDTH_VALUE = -1;
+    protected static final int ADJUST_WIDTH_VALUE = -1;
 
     private static final int HEADER_HEIGHT = 22;
 
@@ -715,8 +715,7 @@ public abstract class DataMapTableView extends Composite {
         tableViewerCreatorForConstraints.setShowSelection(SHOW_SELECTION.FULL);
         tableViewerCreatorForConstraints.setLineSelection(LINE_SELECTION.MULTI);
         tableViewerCreatorForConstraints.setLayoutMode(LAYOUT_MODE.CONTINUOUS_CURRENT);
-        tableViewerCreatorForConstraints.setAdjustWidthValue(ADJUST_WIDTH_VALUE);
-        tableViewerCreatorForConstraints.setFirstColumnMasked(true);
+        tableViewerCreatorForConstraints.setFirstColumnMasked(WindowSystem.isWIN32());
 
         tableForConstraints = tableViewerCreatorForConstraints.createTable();
         // tableForConstraintsGridData = new GridData(SWT.NONE, SWT.FILL, true, false);
@@ -1243,7 +1242,6 @@ public abstract class DataMapTableView extends Composite {
      */
     protected void initExpressionProposals(final TextCellEditorWithProposal textCellEditor, Zone[] zones,
             final TableViewerCreator tableViewerCreator, ITableEntry currentModifiedEntry) {
-        Control textControl = textCellEditor.getControl();
         if (this.expressionProposalProvider == null) {
             IContentProposalProvider[] contentProposalProviders = new IContentProposalProvider[0];
             if (!MapperMain.isStandAloneMode()) {
@@ -1344,6 +1342,9 @@ public abstract class DataMapTableView extends Composite {
         expressionTextEditor.addFocusListener(new FocusListener() {
 
             public void focusGained(FocusEvent e) {
+                if(WindowSystem.isGTK()) {
+                    tableViewerCreator.layout();
+                }
                 ITableEntry currentModifiedEntry = (ITableEntry) tableViewerCreator.getModifiedObjectInfo().getCurrentModifiedBean();
                 initExpressionProposals(cellEditor, zones, tableViewerCreator, currentModifiedEntry);
                 resizeTextEditor(expressionTextEditor, tableViewerCreator);
@@ -1355,6 +1356,9 @@ public abstract class DataMapTableView extends Composite {
 
             public void focusLost(FocusEvent e) {
                 expressionEditorTextSelectionBeforeFocusLost = expressionTextEditor.getSelection();
+                if(WindowSystem.isGTK()) {
+                    tableViewerCreator.layout();
+                }
             }
 
         });
@@ -1402,8 +1406,9 @@ public abstract class DataMapTableView extends Composite {
      * DOC amaumont Comment method "updateGridDataHeightForTableConstraints".
      */
     public void updateGridDataHeightForTableConstraints() {
+        int moreSpace = WindowSystem.isGTK() ? tableForConstraints.getItemHeight() / 3 : 0;
         tableForConstraintsGridData.heightHint = ((OutputTable) abstractDataMapTable).getConstraintEntries().size()
-                * tableForConstraints.getItemHeight() + tableForConstraints.getItemHeight() / 2;
+                * tableForConstraints.getItemHeight() + tableForConstraints.getItemHeight() / 2 + moreSpace;
     }
 
     /**

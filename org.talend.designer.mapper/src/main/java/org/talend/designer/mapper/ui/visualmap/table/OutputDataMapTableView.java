@@ -21,8 +21,11 @@
 // ============================================================================
 package org.talend.designer.mapper.ui.visualmap.table;
 
+import java.util.List;
+
 import org.eclipse.swt.widgets.Composite;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumn;
+import org.talend.commons.ui.ws.WindowSystem;
 import org.talend.commons.utils.data.bean.IBeanPropertyAccessors;
 import org.talend.designer.mapper.managers.MapperManager;
 import org.talend.designer.mapper.model.table.AbstractDataMapTable;
@@ -110,73 +113,11 @@ public class OutputDataMapTableView extends DataMapTableView {
         column.setModifiable(true);
         column.setDefaultInternalValue("");
         createExpressionCellEditor(tableViewerCreatorForConstraints, column, new Zone[] { Zone.INPUTS, Zone.VARS }, true);
-        // final TextCellEditor cellEditor = new TextCellEditor(tableViewerCreatorForConstraints.getTable());
-        // cellEditor.addListener(new ICellEditorListener() {
-        //
-        // Text text = (Text) cellEditor.getControl();
-        //
-        // public void applyEditorValue() {
-        // ModifiedObjectInfo modifiedObjectInfo = tableViewerCreatorForEntries.getModifiedObjectInfo();
-        // // System.out.println("applyEditorValue -> text.getText()=" + text.getText()
-        // // + " modifiedObjectInfo.getCurrentModifiedBean() = " + modifiedObjectInfo.getCurrentModifiedBean()
-        // // + " modifiedObjectInfo.getPreviousModifiedBean() = " + modifiedObjectInfo.getPreviousModifiedBean()
-        // // + " modifiedObjectInfo.getPreviousModifiedBean() = " + modifiedObjectInfo.getPreviousModifiedBean()
-        // // + " modifiedObjectInfo.getPreviousPropertyBeanValue()=" +
-        // // modifiedObjectInfo.getPreviousPropertyBeanValue());
-        // mapperManager.getUiManager().processNewExpression(text.getText(), dataMapTableView,
-        // (ConstraintTableEntry) modifiedObjectInfo.getCurrentModifiedBean());
-        // }
-        //
-        // public void cancelEditor() {
-        // ModifiedObjectInfo modifiedObjectInfo = tableViewerCreatorForEntries.getModifiedObjectInfo();
-        // text.setText((String) modifiedObjectInfo.getOriginalPropertyBeanValue());
-        // // System.out.println("cancelEditor -> text.getText()=" + text.getText() + "
-        // // modifiedObjectInfo.getCurrentModifiedBean() = "
-        // // + modifiedObjectInfo.getCurrentModifiedBean() + " modifiedObjectInfo.getPreviousModifiedBean() = " +
-        // // modifiedObjectInfo.getPreviousModifiedBean()
-        // // + " modifiedObjectInfo.getPreviousPropertyBeanValue()="
-        // // + modifiedObjectInfo.getPreviousPropertyBeanValue());
-        // mapperManager.getUiManager().processNewExpression(originalExpression, dataMapTableView,
-        // (ConstraintTableEntry) modifiedObjectInfo.getPreviousModifiedBean());
-        // }
-        //
-        // public void editorValueChanged(boolean oldValidState, boolean newValidState) {
-        //
-        // text.setFocus();
-        // ModifiedObjectInfo modifiedObjectInfo = tableViewerCreatorForEntries.getModifiedObjectInfo();
-        // // System.out.println("editorValueChanged -> text.getText()=" + text.getText()
-        // // + " modifiedObjectInfo.getCurrentModifiedBean() = " + modifiedObjectInfo.getCurrentModifiedBean()
-        // // + " modifiedObjectInfo.getPreviousModifiedBean() = " + modifiedObjectInfo.getPreviousModifiedBean()
-        // // + " modifiedObjectInfo.getPreviousPropertyBeanValue()=" +
-        // // modifiedObjectInfo.getPreviousPropertyBeanValue());
-        // ITableEntry tableEntry = (ITableEntry) (modifiedObjectInfo.getCurrentModifiedBean() != null ?
-        // modifiedObjectInfo
-        // .getCurrentModifiedBean()
-        // : modifiedObjectInfo.getPreviousModifiedBean());
-        // mapperManager.getUiManager().processNewExpression(text.getText(), dataMapTableView, tableEntry);
-        // tableEntry.setExpression(text.getText());
-        // tableViewerCreatorForEntries.getTableViewer().refresh(tableEntry);
-        // }
-        //
-        // });
-        // cellEditor.getControl().addFocusListener(new FocusListener() {
-        //
-        // private ExpressionProposal proposal;
-        //
-        // public void focusGained(FocusEvent e) {
-        // initExpressionProposal((Text) cellEditor.getControl(), new Zone[] { Zone.INPUTS, Zone.VARS });
-        // }
-        //
-        // public void focusLost(FocusEvent e) {
-        // // TODO Auto-generated method stub
-        //
-        // }
-        //
-        // });
-        // column.setCellEditor(cellEditor);
         column.setWeight(100);
 
-        tableViewerCreatorForConstraints.init(((OutputTable) getDataMapTable()).getConstraintEntries());
+        List<ConstraintTableEntry> entries = ((OutputTable) getDataMapTable()).getConstraintEntries();
+        tableViewerCreatorForConstraints.setAdjustWidthValue(WindowSystem.isGTK() && entries.size() == 0 ? -20 : ADJUST_WIDTH_VALUE);
+        tableViewerCreatorForConstraints.init(entries);
         updateGridDataHeightForTableConstraints();
     }
 
