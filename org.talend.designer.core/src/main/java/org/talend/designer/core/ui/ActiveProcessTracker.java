@@ -51,7 +51,7 @@ public class ActiveProcessTracker implements IPartListener {
             currentProcess = process;
             RunProcessPlugin.getDefault().getRunProcessContextManager().setActiveProcess(process);
 
-            Problems.setTitle("Process " + process.getProperty().getLabel());
+            Problems.setTitle("Job " + process.getProperty().getLabel());
             ((Process) process).checkProcess();
         }
     }
