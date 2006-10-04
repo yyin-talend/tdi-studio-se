@@ -2,7 +2,7 @@
 <feature
       id="org.talend.repository_feature"
       label="Repository_feature Feature"
-      version="0.9.0.qualifier"
+      version="1.0.0.qualifier"
       provider-name=".Talend SA.">
 
    <description url="http://www.talend.com/beta/">
