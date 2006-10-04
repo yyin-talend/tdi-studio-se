@@ -47,6 +47,7 @@ import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumn;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator.LAYOUT_MODE;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator.SHOW_SELECTION;
+import org.talend.commons.ui.swt.tableviewer.TableViewerCreator.SORT;
 import org.talend.commons.utils.data.bean.IBeanPropertyAccessors;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IComponentsFactory;
@@ -122,13 +123,10 @@ public class ModulesView extends ViewPart {
             String checkPerlModuleAbsolutePath = FileLocator.toFileURL(
                     PERL_MODULE_PLUGIN.getEntry(CHECK_PERL_MODULE_RELATIVE_PATH)).getPath();
 
-            String[] cmd = Processor.getCommandLine(new Path(checkPerlModuleAbsolutePath), null, "", "", -1, -1, params);
-
             StringBuffer out = new StringBuffer();
             StringBuffer err = new StringBuffer();
 
-            LaunchProcess tp = new LaunchProcess(out, err);
-            tp.execute(cmd);
+            Processor.exec(out, err, new Path(checkPerlModuleAbsolutePath), null, "", "", -1, -1, params);
 
             analyzeResponse(out, componentsByModules);
 
@@ -256,6 +254,7 @@ public class ModulesView extends ViewPart {
         column = new TableViewerCreatorColumn(tableViewerCreator);
         column.setTitle("Module Name");
         column.setSortable(true);
+        tableViewerCreator.setDefaultSort(column, SORT.ASC);
         column.setBeanPropertyAccessors(new IBeanPropertyAccessors<ComponentImportNeeds, String>() {
 
             public String get(ComponentImportNeeds bean) {
@@ -309,7 +308,7 @@ public class ModulesView extends ViewPart {
         makeActions();
         contributeToActionBars();
 
-        // check();
+        check();
     }
 
     private void makeActions() {

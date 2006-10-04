@@ -21,7 +21,9 @@
 // ============================================================================
 package org.talend.designer.runprocess;
 
+import java.io.BufferedInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.eclipse.core.runtime.CoreException;
@@ -163,6 +165,58 @@ public class Processor {
         } catch (IOException ioe) {
             throw new ProcessorException(Messages.getString("Processor.execFailed"), ioe); //$NON-NLS-1$
         }
+    }
+
+    public static int exec(StringBuffer out, StringBuffer err, IPath absCodePath, IPath absContextPath,
+            String perlInterpreterLibOption, String perlInterpreterLibCtxOption, int statOption, int traceOption,
+            String... codeOptions) throws ProcessorException {
+
+        String[] cmd = getCommandLine(absCodePath, absContextPath, perlInterpreterLibOption, perlInterpreterLibCtxOption,
+                statOption, traceOption, codeOptions);
+
+        logCommandLine(cmd);
+        try {
+            int status = -1;
+
+            Process process = Runtime.getRuntime().exec(cmd);
+
+            createProdConsThread(process.getErrorStream(), true, 1024, out, err).start();
+
+            createProdConsThread(process.getInputStream(), false, 1024, out, err).start();
+
+            status = process.waitFor();
+
+            return status;
+        } catch (IOException ioe) {
+            throw new ProcessorException(Messages.getString("Processor.execFailed"), ioe); //$NON-NLS-1$
+        } catch (InterruptedException ie) {
+            throw new ProcessorException(Messages.getString("Processor.execFailed"), ie); //$NON-NLS-1$
+        }
+    }
+
+    private static Thread createProdConsThread(final InputStream input, final boolean isError, final int bufferSize,
+            final StringBuffer out, final StringBuffer err) {
+        Thread thread = new Thread() {
+
+            public void run() {
+                try {
+                    BufferedInputStream outStreamProcess = new BufferedInputStream(input);
+                    byte[] buffer = new byte[bufferSize];
+
+                    while (outStreamProcess.read(buffer, 0, buffer.length) != -1) {
+                        if (isError) {
+                            err.append(buffer);
+                        } else {
+                            out.append(new String(buffer));
+                        }
+                    }
+                    outStreamProcess.close();
+                } catch (IOException ioe) {
+                    ioe.printStackTrace();
+                }
+            }
+        };
+        return thread;
     }
 
     /**
