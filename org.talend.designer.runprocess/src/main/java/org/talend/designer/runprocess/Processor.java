@@ -190,10 +190,10 @@ public class Processor {
 
         String[] cmd = new String[] { perlInterpreter };
 
-        if (perlInterpreterLibOption != null) {
+        if (perlInterpreterLibOption != null && perlInterpreterLibOption.length() > 0) {
             cmd = (String[]) ArrayUtils.add(cmd, perlInterpreterLibOption);
         }
-        if (perlInterpreterLibCtxOption != null) {
+        if (perlInterpreterLibCtxOption != null && perlInterpreterLibCtxOption.length() > 0) {
             cmd = (String[]) ArrayUtils.add(cmd, perlInterpreterLibCtxOption);
         }
         if (absCodePath != null) {
