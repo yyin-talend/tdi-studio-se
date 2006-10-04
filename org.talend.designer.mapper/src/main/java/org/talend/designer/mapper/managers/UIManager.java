@@ -284,6 +284,7 @@ public class UIManager {
                 metadataTableEditorView.getTableViewerCreator().getSelectionHelper().setActiveFireSelectionChanged(false);
                 metadataTableEditorView.setMetadataTableEditor(metadataTableEditor);
                 metadataTableEditorView.getTableViewerCreator().getSelectionHelper().setActiveFireSelectionChanged(true);
+                metadataTableEditorView.getTableViewerCreator().getTable().setSelection(dataMapTableViewer.getTable().getSelectionIndices());
 
                 // disable highlight for other DataMapTableView and highlight selected DataMapTableView
                 for (AbstractDataMapTable table : tables) {
