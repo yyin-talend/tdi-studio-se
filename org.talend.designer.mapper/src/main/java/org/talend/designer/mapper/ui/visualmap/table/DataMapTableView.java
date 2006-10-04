@@ -194,7 +194,7 @@ public abstract class DataMapTableView extends Composite {
     public static final String ID_EXPRESSION_COLUMN = "ID_EXPRESSION_COLUMN";
 
     public static final String COLUMN_NAME = "Column";
-    
+
     /**
      * 
      * Call finalizeInitialization(...) after instanciate this class.
@@ -372,6 +372,7 @@ public abstract class DataMapTableView extends Composite {
         tableViewerForEntries.addSelectionChangedListener(new ISelectionChangedListener() {
 
             public void selectionChanged(SelectionChangedEvent event) {
+                selectThisDataMapTableView();
                 if (!dragDetected) { // useful when drag finished
                     onSelectedEntries(event.getSelection(), tableViewerForEntries.getTable().getSelectionIndices());
                 }
@@ -587,7 +588,6 @@ public abstract class DataMapTableView extends Composite {
 
         this.addListener(SWT.MouseDown, onSelectDataMapTableViewListener);
         headerComposite.addListener(SWT.MouseDown, onSelectDataMapTableViewListener);
-        table.addListener(SWT.MouseDown, onSelectDataMapTableViewListener);
         if (tableForConstraints != null) {
             tableForConstraints.addListener(SWT.MouseDown, onSelectDataMapTableViewListener);
         }
@@ -752,6 +752,7 @@ public abstract class DataMapTableView extends Composite {
         tableViewer.addSelectionChangedListener(new ISelectionChangedListener() {
 
             public void selectionChanged(SelectionChangedEvent event) {
+                selectThisDataMapTableView();
                 UIManager uiManager = mapperManager.getUiManager();
                 uiManager.processSelectedMetadataTableEntries(dataMapTableView, uiManager.extractSelectedTableEntries(tableViewer
                         .getSelection()), true);
@@ -1281,8 +1282,8 @@ public abstract class DataMapTableView extends Composite {
 
             public void applyEditorValue() {
                 ModifiedObjectInfo modifiedObjectInfo = tableViewerCreator.getModifiedObjectInfo();
-                mapperManager.getUiManager()
-                        .processNewExpression(text.getText(), (ITableEntry) modifiedObjectInfo.getCurrentModifiedBean(), true);
+                mapperManager.getUiManager().processNewExpression(text.getText(),
+                        (ITableEntry) modifiedObjectInfo.getCurrentModifiedBean(), true);
             }
 
             public void cancelEditor() {
@@ -1310,7 +1311,8 @@ public abstract class DataMapTableView extends Composite {
 
             ExecutionLimiter executionLimiter = null;
 
-            public void controlMoved(ControlEvent e) {}
+            public void controlMoved(ControlEvent e) {
+            }
 
             public void controlResized(ControlEvent e) {
                 if (executionLimiter == null) {
@@ -1438,6 +1440,18 @@ public abstract class DataMapTableView extends Composite {
         }
         this.currentCursor = cursor;
         super.setCursor(cursor);
+    }
+
+    /**
+     * DOC amaumont Comment method "selectThisDataMapTableView".
+     */
+    private void selectThisDataMapTableView() {
+        UIManager uiManager = mapperManager.getUiManager();
+        if (uiManager.getCurrentSelectedInputTableView() != DataMapTableView.this
+                && uiManager.getCurrentSelectedOutputTableView() != DataMapTableView.this) {
+            
+            uiManager.selectDataMapTableView(DataMapTableView.this);
+        }
     }
 
 }

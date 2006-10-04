@@ -288,9 +288,11 @@ public class UIManager {
                     }
 
                 });
+                metadataTableEditorView.getTableViewerCreator().getSelectionHelper().setActiveFireChanged(false);
                 metadataTableEditorView.setMetadataTableEditor(metadataTableEditor);
-                metadataTableEditorView.getTableViewerCreator().getTable()
-                        .setSelection(dataMapTableViewer.getTable().getSelectionIndices());
+                metadataTableEditorView.getTableViewerCreator().getSelectionHelper().setActiveFireChanged(true);
+//                metadataTableEditorView.getTableViewerCreator().getTable()
+//                        .setSelection(dataMapTableViewer.getTable().getSelectionIndices());
 
                 // disable highlight for other DataMapTableView and highlight selected DataMapTableView
                 for (AbstractDataMapTable table : tables) {
@@ -685,11 +687,11 @@ public class UIManager {
     }
 
     private void unselectAllInputMetaDataEntries() {
-        getInputMetaEditorView().getTableViewerCreator().getSelectionHelper().deselectAll();
+        getInputMetaEditorView().getTableViewerCreator().getTable().deselectAll();
     }
 
     private void unselectAllOutputMetaDataEntries() {
-        getOutputMetaEditorView().getTableViewerCreator().getSelectionHelper().deselectAll();
+        getOutputMetaEditorView().getTableViewerCreator().getTable().deselectAll();
     }
 
     public void setEntryState(MapperManager mapperManager, EntryState entryState, ITableEntry entry) {
