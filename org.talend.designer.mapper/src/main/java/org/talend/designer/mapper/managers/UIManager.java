@@ -274,13 +274,6 @@ public class UIManager {
                         if (event.getType() == TYPE.SWAPED) {
                             List<Integer> listIndexDestination = event.getIndexDestination();
                             abstractDataMapTable.swapColumnEntries(event.getIndexOrigin(), listIndexDestination);
-                            // metadataEditorTableViewerCreator.refresh(false);
-                            // metadataEditorTableReflect.refresh(event.swapedObject2, true);
-                            // List<ITableEntry> metadataTableEntries = dataMapTable.getMetadataTableEntries();
-                            // Object[] swapedObjects = event.swapedObjects;
-                            // for (int i = 0; i < swapedObjects.length; i++) {
-                            // dataMapTableViewer.refresh(swapedObjects[i]);
-                            // }
                             dataMapTableViewer.refresh();
                             refreshBackground(true, false);
                         }
@@ -288,11 +281,9 @@ public class UIManager {
                     }
 
                 });
-                metadataTableEditorView.getTableViewerCreator().getSelectionHelper().setActiveFireChanged(false);
+                metadataTableEditorView.getTableViewerCreator().getSelectionHelper().setActiveFireSelectionChanged(false);
                 metadataTableEditorView.setMetadataTableEditor(metadataTableEditor);
-                metadataTableEditorView.getTableViewerCreator().getSelectionHelper().setActiveFireChanged(true);
-//                metadataTableEditorView.getTableViewerCreator().getTable()
-//                        .setSelection(dataMapTableViewer.getTable().getSelectionIndices());
+                metadataTableEditorView.getTableViewerCreator().getSelectionHelper().setActiveFireSelectionChanged(true);
 
                 // disable highlight for other DataMapTableView and highlight selected DataMapTableView
                 for (AbstractDataMapTable table : tables) {
