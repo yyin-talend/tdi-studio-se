@@ -24,11 +24,19 @@ package org.talend.repository.ui.actions;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
+import org.talend.core.model.metadata.builder.connection.MetadataTable;
+import org.talend.core.model.metadata.builder.connection.TableHelper;
+import org.talend.core.model.properties.ConnectionItem;
+import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.ui.ImageProvider;
 import org.talend.core.ui.ImageProvider.EImage;
 import org.talend.repository.i18n.Messages;
+import org.talend.repository.model.IRepositoryFactory;
+import org.talend.repository.model.RepositoryFactoryProvider;
 import org.talend.repository.model.RepositoryNode;
+import org.talend.repository.model.RepositoryNode.EProperties;
 import org.talend.repository.model.actions.RestoreObjectAction;
+import org.talend.repository.ui.views.RepositoryContentProvider.MetadataTableRepositoryObject;
 
 /**
  * Action used to restore obects that had been logically deleted.<br/>
@@ -51,9 +59,20 @@ public class RestoreAction extends AContextualAction {
         for (Object obj : ((IStructuredSelection) selection).toArray()) {
             if (obj instanceof RepositoryNode) {
                 try {
-                    RestoreObjectAction restoreObjectAction = RestoreObjectAction.getInstance();
-                    restoreObjectAction.execute((RepositoryNode) obj, null);
-
+                    RepositoryNode node = (RepositoryNode)obj;
+                    ERepositoryObjectType nodeType = (ERepositoryObjectType) (node)
+                            .getProperties(EProperties.CONTENT_TYPE);
+                    if (ERepositoryObjectType.METADATA_CON_TABLE.equals(nodeType)) {
+                        IRepositoryFactory factory = RepositoryFactoryProvider.getInstance(getViewPart()
+                                .getRepositoryContext());
+                        ConnectionItem item = (ConnectionItem) node.getObject().getProperty().getItem();
+                        MetadataTable metadataTable = ((MetadataTableRepositoryObject) node.getObject()).getTable();
+                        TableHelper.setDeleted(metadataTable, false);
+                        factory.save(item);
+                    } else {
+                        RestoreObjectAction restoreObjectAction = RestoreObjectAction.getInstance();
+                        restoreObjectAction.execute(node, null);
+                    }
                     refresh();
                 } catch (Exception e) {
                     // TODO Auto-generated catch block

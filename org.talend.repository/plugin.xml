@@ -40,11 +40,6 @@
             level="40"
             name="Metadata/Delete table"/>
       <Action
-            class="org.talend.repository.ui.actions.metadata.RestoreTableAction"
-            id="org.talend.repository.actions.restoretable"
-            level="40"
-            name="Metadata/Restore table"/>
-      <Action
             class="org.talend.repository.ui.actions.metadata.CreateFileDelimitedAction"
             id="org.talend.repository.actions.createfiledelimited"
             level="10"
