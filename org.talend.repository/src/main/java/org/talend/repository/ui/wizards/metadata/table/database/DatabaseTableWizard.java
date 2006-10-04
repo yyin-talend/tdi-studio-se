@@ -60,8 +60,8 @@ public class DatabaseTableWizard extends RepositoryWizard implements INewWizard 
      * @param existingNames
      */
     @SuppressWarnings("unchecked")
-    public DatabaseTableWizard(IWorkbench workbench, boolean creation, ConnectionItem connectionItem,
-            MetadataTable metadataTable, String[] existingNames) {
+    public DatabaseTableWizard(IWorkbench workbench, boolean creation, ConnectionItem connectionItem, MetadataTable metadataTable,
+            String[] existingNames) {
         super(workbench, creation);
         this.connectionItem = connectionItem;
         this.metadataTable = metadataTable;
@@ -85,23 +85,23 @@ public class DatabaseTableWizard extends RepositoryWizard implements INewWizard 
         tableWizardpage = new DatabaseTableWizardPage(connectionItem, metadataTable, isRepositoryObjectEditable());
 
         if (creation) {
-            selectorWizardPage.setTitle(Messages.getString("TableWizardPage.titleCreate") + " \""
-                    + connectionItem.getProperty().getLabel() + "\"");
+            selectorWizardPage.setTitle(Messages.getString("TableWizardPage.titleCreate") + " \"" + connectionItem.getProperty().getLabel()
+                    + "\"");
             selectorWizardPage.setDescription(Messages.getString("TableWizardPage.descriptionCreate"));
             selectorWizardPage.setPageComplete(true);
 
-            tableWizardpage.setTitle(Messages.getString("TableWizardPage.titleUpdate") + " \""
-                    + connectionItem.getProperty().getLabel() + "\"");
-            tableWizardpage.setDescription(Messages.getString("TableWizardPage.descriptionUpdate"));
+            tableWizardpage.setTitle(Messages.getString("TableWizardPage.titleCreate") + " \"" + connectionItem.getProperty().getLabel()
+                    + "\"");
+            tableWizardpage.setDescription(Messages.getString("TableWizardPage.descriptionCreate"));
             tableWizardpage.setPageComplete(false);
 
             addPage(selectorWizardPage);
             addPage(tableWizardpage);
 
         } else {
-            tableWizardpage.setTitle(Messages.getString("TableWizardPage.titleCreate") + " \""
-                    + connectionItem.getProperty().getLabel() + "\"");
-            tableWizardpage.setDescription(Messages.getString("TableWizardPage.descriptionCreate"));
+            tableWizardpage.setTitle(Messages.getString("TableWizardPage.titleUpdate") + " \"" + connectionItem.getProperty().getLabel()
+                    + "\"");
+            tableWizardpage.setDescription(Messages.getString("TableWizardPage.descriptionUpdate"));
             tableWizardpage.setPageComplete(false);
             addPage(tableWizardpage);
         }

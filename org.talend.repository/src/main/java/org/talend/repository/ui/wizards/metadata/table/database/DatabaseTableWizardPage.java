@@ -24,7 +24,6 @@ package org.talend.repository.ui.wizards.metadata.table.database;
 import org.eclipse.jface.dialogs.IDialogPage;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.widgets.Composite;
-import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.repository.ui.swt.utils.AbstractForm;
@@ -42,7 +41,7 @@ public class DatabaseTableWizardPage extends WizardPage {
     private ConnectionItem connectionItem;
 
     private boolean isRepositoryObjectEditable;
-    
+
     /**
      * DatabaseWizardPage constructor (to instance IMetadataConnection OR MetaDataTableType). If MetaDataTableType
      * exist, it's an update of existing metadata else it's a new metadata.
@@ -62,8 +61,8 @@ public class DatabaseTableWizardPage extends WizardPage {
      * @see IDialogPage#createControl(Composite)
      */
     public void createControl(final Composite parent) {
-        
-        tableForm = new DatabaseTableForm(parent, connectionItem, metadataTable);        
+
+        tableForm = new DatabaseTableForm(parent, connectionItem, metadataTable);
         tableForm.setReadOnly(!isRepositoryObjectEditable);
 
         AbstractForm.ICheckListener listener = new AbstractForm.ICheckListener() {

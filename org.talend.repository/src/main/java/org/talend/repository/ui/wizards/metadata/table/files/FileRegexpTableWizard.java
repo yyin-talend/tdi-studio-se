@@ -57,8 +57,7 @@ public class FileRegexpTableWizard extends RepositoryWizard implements INewWizar
      * @param ISelection
      */
     @SuppressWarnings("unchecked")
-    public FileRegexpTableWizard(IWorkbench workbench, boolean creation, ConnectionItem connectionItem,
-            MetadataTable metadataTable) {
+    public FileRegexpTableWizard(IWorkbench workbench, boolean creation, ConnectionItem connectionItem, MetadataTable metadataTable) {
         super(workbench, creation);
         this.connectionItem = connectionItem;
         this.metadataTable = metadataTable;
@@ -73,13 +72,12 @@ public class FileRegexpTableWizard extends RepositoryWizard implements INewWizar
      */
 
     public void addPages() {
-        setWindowTitle(Messages.getString("TableWizard.windowTitle"));
+        setWindowTitle(Messages.getString("SchemaWizard.windowTitle"));
 
         tableWizardpage = new FileTableWizardPage(connectionItem, metadataTable, isRepositoryObjectEditable());
 
         if (creation) {
-            tableWizardpage.setTitle(Messages.getString("FileTableWizardPage.titleCreate", connectionItem.getProperty()
-                    .getLabel()));
+            tableWizardpage.setTitle(Messages.getString("FileTableWizardPage.titleCreate", connectionItem.getProperty().getLabel()));
             tableWizardpage.setDescription(Messages.getString("FileTableWizardPage.descriptionCreate"));
             tableWizardpage.setPageComplete(false);
         } else {
@@ -103,8 +101,7 @@ public class FileRegexpTableWizard extends RepositoryWizard implements INewWizar
                 factory.save(repositoryObject.getProperty().getItem());
             } catch (PersistenceException e) {
                 String detailError = e.toString();
-                new ErrorDialogWidthDetailArea(getShell(), PID, Messages.getString("CommonWizard.persistenceException"),
-                        detailError);
+                new ErrorDialogWidthDetailArea(getShell(), PID, Messages.getString("CommonWizard.persistenceException"), detailError);
                 log.error(Messages.getString("CommonWizard.persistenceException") + "\n" + detailError);
             }
             return true;

@@ -21,7 +21,6 @@
 // ============================================================================
 package org.talend.repository.ui.wizards.metadata.table.database;
 
-import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.dialogs.IDialogPage;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.widgets.Composite;
@@ -42,7 +41,7 @@ public class SelectorTableWizardPage extends WizardPage {
     private ConnectionItem connectionItem;
 
     private boolean isRepositoryObjectEditable;
-    
+
     /**
      * SelectorTableWizardPage constructor (to instance IMetadataConnection OR MetaDataTableType). If MetaDataTableType
      * exist, it's an update of existing metadata else it's a new metadata.
@@ -63,22 +62,22 @@ public class SelectorTableWizardPage extends WizardPage {
      */
     public void createControl(final Composite parent) {
 
-      tableForm = new SelectorTableForm(parent, connectionItem);        
-      tableForm.setReadOnly(!isRepositoryObjectEditable);
+        tableForm = new SelectorTableForm(parent, connectionItem);
+        tableForm.setReadOnly(!isRepositoryObjectEditable);
 
-      AbstractForm.ICheckListener listener = new AbstractForm.ICheckListener() {
+        AbstractForm.ICheckListener listener = new AbstractForm.ICheckListener() {
 
-          public void checkPerformed(final AbstractForm source) {
-              if (source.isStatusOnError()) {
-                  SelectorTableWizardPage.this.setPageComplete(false);
-              }
-              if (source.isStatusOnValid()) {
-                  SelectorTableWizardPage.this.setPageComplete(true);
-              }
-          }
-      };
-      tableForm.setListener(listener);
-      setControl(tableForm);
+            public void checkPerformed(final AbstractForm source) {
+                if (source.isStatusOnError()) {
+                    SelectorTableWizardPage.this.setPageComplete(false);
+                }
+                if (source.isStatusOnValid()) {
+                    SelectorTableWizardPage.this.setPageComplete(true);
+                }
+            }
+        };
+        tableForm.setListener(listener);
+        setControl(tableForm);
     }
 
 }
