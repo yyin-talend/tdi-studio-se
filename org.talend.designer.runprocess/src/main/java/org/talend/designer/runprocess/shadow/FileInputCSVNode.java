@@ -33,13 +33,14 @@ public class FileInputCSVNode extends FileInputNode {
      * Constructs a new FileInputCSVNode.
      */
     public FileInputCSVNode(String filename, String rowSep, String fieldSep, int limitRows, int headerRows,
-            int footerRows, String escapeChar, String textEnclosure) {
+            int footerRows, String escapeChar, String textEnclosure, boolean removeEmptyRow) {
         super("tFileInputCSV");
 
         String[] paramNames = new String[] { "FILENAME", "ROWSEPARATOR", "FIELDSEPARATOR", "LIMIT", "HEADER", "FOOTER",
-                "ESCAPE_CHAR", "TEXT_ENCLOSURE" };
+                "ESCAPE_CHAR", "TEXT_ENCLOSURE", "REMOVE_EMPTY_ROW" };
         String[] paramValues = new String[] { filename, rowSep, fieldSep, Integer.toString(limitRows),
-                Integer.toString(headerRows), Integer.toString(footerRows), escapeChar, textEnclosure };
+                Integer.toString(headerRows), Integer.toString(footerRows), escapeChar, textEnclosure,
+                Boolean.toString(removeEmptyRow) };
 
         for (int i = 0; i < paramNames.length; i++) {
             if (paramValues[i] != null) {

@@ -33,12 +33,12 @@ public class FileInputPositionalNode extends FileInputNode {
      * Constructs a new FileInputPositionalNode.
      */
     public FileInputPositionalNode(String filename, String rowSep, String pattern, int headerRows, int footerRows,
-            int limitRows) {
+            int limitRows, boolean removeEmptyRow) {
         super("tFileInputPositional");
 
-        String[] paramNames = new String[] { "FILENAME", "ROWSEPARATOR", "PATTERN", "HEADER", "FOOTER", "LIMIT" };
+        String[] paramNames = new String[] { "FILENAME", "ROWSEPARATOR", "PATTERN", "HEADER", "FOOTER", "LIMIT", "REMOVE_EMPTY_ROW" };
         String[] paramValues = new String[] { filename, rowSep, pattern, Integer.toString(headerRows),
-                Integer.toString(footerRows), Integer.toString(limitRows) };
+                Integer.toString(footerRows), Integer.toString(limitRows), Boolean.toString(removeEmptyRow)  };
 
         for (int i = 0; i < paramNames.length; i++) {
             if (paramValues[i] != null) {

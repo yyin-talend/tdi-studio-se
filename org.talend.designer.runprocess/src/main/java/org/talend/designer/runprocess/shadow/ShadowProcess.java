@@ -75,7 +75,7 @@ public class ShadowProcess<T extends IProcessDescription> {
     private IPath inPath;
 
     private IPath outPath;
-    
+
     private EShadowProcessType type;
 
     /**
@@ -95,27 +95,28 @@ public class ShadowProcess<T extends IProcessDescription> {
         FileOutputXmlNode outNode = new FileOutputXmlNode("'" + outPath.toOSString() + "'", description.getEncoding());
         switch (type) {
         case FILE_DELIMITED:
-            FileInputDelimitedNode inDelimitedNode = new FileInputDelimitedNode("'" + inPath.toOSString() + "'", description
-                    .getRowSeparator(), description.getFieldSeparator(), description.getLimitRows(), description
-                    .getHeaderRow(), description.getFooterRow());
+            FileInputDelimitedNode inDelimitedNode = new FileInputDelimitedNode("'" + inPath.toOSString() + "'",
+                    description.getRowSeparator(), description.getFieldSeparator(), description.getLimitRows(),
+                    description.getHeaderRow(), description.getFooterRow(), description.getRemoveEmptyRowsToSkip());
             ps = new FileinToXmlProcess<FileInputDelimitedNode>(inDelimitedNode, outNode);
             break;
         case FILE_POSITIONAL:
             FileInputPositionalNode inPositionalNode = new FileInputPositionalNode("'" + inPath.toOSString() + "'",
                     description.getRowSeparator(), description.getPattern(), description.getHeaderRow(), description
-                            .getFooterRow(), description.getLimitRows());            
+                            .getFooterRow(), description.getLimitRows(), description.getRemoveEmptyRowsToSkip());
             ps = new FileinToXmlProcess<FileInputPositionalNode>(inPositionalNode, outNode);
             break;
         case FILE_CSV:
             FileInputCSVNode inCSVNode = new FileInputCSVNode("'" + inPath.toOSString() + "'", description
                     .getRowSeparator(), description.getFieldSeparator(), description.getLimitRows(), description
-                    .getHeaderRow(), description.getFooterRow(), description.getEscapeCharacter(), description.getTextEnclosure());
+                    .getHeaderRow(), description.getFooterRow(), description.getEscapeCharacter(), description
+                    .getTextEnclosure(), description.getRemoveEmptyRowsToSkip());
             ps = new FileinToXmlProcess<FileInputCSVNode>(inCSVNode, outNode);
             break;
         case FILE_REGEXP:
             FileInputRegExpNode inRegExpNode = new FileInputRegExpNode("'" + inPath.toOSString() + "'", description
                     .getRowSeparator(), description.getPattern(), description.getLimitRows(), description
-                    .getHeaderRow(), description.getFooterRow());
+                    .getHeaderRow(), description.getFooterRow(), description.getRemoveEmptyRowsToSkip());
             ps = new FileinToXmlProcess<FileInputRegExpNode>(inRegExpNode, outNode);
             break;
         default:
@@ -149,7 +150,8 @@ public class ShadowProcess<T extends IProcessDescription> {
                 previousFile.delete();
             }
 
-            Process ps = processor.run(process.getContextManager().getDefaultContext(), Processor.NO_STATISTICS, Processor.NO_TRACES);
+            Process ps = processor.run(process.getContextManager().getDefaultContext(), Processor.NO_STATISTICS,
+                    Processor.NO_TRACES);
             ProcessStreamTrashReader.readAndForget(ps);
 
             if (!outPath.toFile().exists()) {

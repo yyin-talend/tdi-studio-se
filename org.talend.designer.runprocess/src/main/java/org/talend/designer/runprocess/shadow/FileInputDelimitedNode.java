@@ -32,12 +32,14 @@ public class FileInputDelimitedNode extends FileInputNode {
     /**
      * Constructs a new FileInputNode.
      */
-    public FileInputDelimitedNode(String filename, String rowSep, String fieldSep, int limitRows, int headerRows, int footerRows) {
+    public FileInputDelimitedNode(String filename, String rowSep, String fieldSep, int limitRows, int headerRows,
+            int footerRows, boolean removeEmptyRow) {
         super("tFileInputDelimited");
 
-        String[] paramNames = new String[] { "FILENAME", "ROWSEPARATOR", "FIELDSEPARATOR", "LIMIT", "HEADER", "FOOTER" };
+        String[] paramNames = new String[] { "FILENAME", "ROWSEPARATOR", "FIELDSEPARATOR", "LIMIT", "HEADER", "FOOTER",
+                "REMOVE_EMPTY_ROW" };
         String[] paramValues = new String[] { filename, rowSep, fieldSep, Integer.toString(limitRows),
-                Integer.toString(headerRows), Integer.toString(footerRows) };
+                Integer.toString(headerRows), Integer.toString(footerRows), Boolean.toString(removeEmptyRow) };
 
         for (int i = 0; i < paramNames.length; i++) {
             if (paramValues[i] != null) {
