@@ -233,7 +233,7 @@ public class MapperUI {
         });
 
         /* Create the tabs */
-        tabFolderEditors = new TabFolderEditors(mainSashForm, SWT.NONE, mapperManager);
+        tabFolderEditors = new TabFolderEditors(mainSashForm, SWT.BORDER, mapperManager);
 
         createInputZoneWithTables(mapperModel, display);
 

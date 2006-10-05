@@ -79,11 +79,12 @@ public class TabFolderEditors extends CTabFolder {
      */
     private void createComponents() {
 
+        setSimple(false);
         // TableEditorCompositeBase metaDatasDescriptorView3 = new TableEditorCompositeBase(tabFolder1);
         // item.setControl(metaDatasDescriptorView3);
 
         CTabItem item = new CTabItem(tabFolderEditors, SWT.BORDER);
-        item.setText("Metadata editor");
+        item.setText("Schemas editor");
 
         SashForm inOutMetaEditorContainer = new SashForm(tabFolderEditors, SWT.SMOOTH | SWT.HORIZONTAL | SWT.SHADOW_OUT);
         inOutMetaEditorContainer.setLayout(new RowLayout(SWT.HORIZONTAL));
