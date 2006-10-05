@@ -56,6 +56,7 @@ import org.talend.commons.ui.ws.WindowSystem;
 import org.talend.commons.utils.performance.IPerformanceEvaluatorListener;
 import org.talend.commons.utils.performance.PerformanceEvaluator;
 import org.talend.commons.utils.performance.PerformanceEvaluatorEvent;
+import org.talend.commons.utils.threading.AsynchronousThread;
 import org.talend.commons.utils.threading.ExecutionLimiter;
 import org.talend.designer.mapper.external.data.ExternalMapperUiProperties;
 import org.talend.designer.mapper.managers.LinkManager;
@@ -238,7 +239,7 @@ public class MapperUI {
         createInputZoneWithTables(mapperModel, display);
 
         createVarsZoneWithTables(mapperModel, display);
-        
+
         createOutputZoneWithTables(mapperModel, uiManager, display);
 
         this.draggingInfosPopup = DraggingInfosPopup.getNewShell(this.mapperUIParent.getShell(), mapperManager);
@@ -252,11 +253,11 @@ public class MapperUI {
         int[] weightsMainSashForm = uiProperties.getWeightsMainSashForm();
         mainSashForm.setWeights(weightsMainSashForm.length != 0 ? weightsMainSashForm
                 : ExternalMapperUiProperties.DEFAULT_WEIGHTS_MAIN_SASH_FORM);
-        
+
         new FooterComposite(this.mapperUIParent, SWT.NONE, mapperManager);
-        
+
         initTimeLimitForBackgroundRefresh();
-        
+
         if (WindowSystem.isGTK()) {
             // resize especially for GTK
             resizeNotMinimizedTablesAtExpandedSize(display);
@@ -840,38 +841,26 @@ public class MapperUI {
     }
 
     private void initTimeLimitForBackgroundRefresh() {
-        new Object() {
+        (new Object() {
 
             void init() {
                 performanceEvaluator.addListener(new IPerformanceEvaluatorListener() {
 
                     public void handleEvent(PerformanceEvaluatorEvent event) {
-                        // System.out.println("Evaluation indice performance : " + event.getIndicePerformance());
                         antialiasActivated = event.getIndicePerformance() < 310;
-                        // antialiasActivated = false;
-                        // int result = (int) Math.round(0.222 * event.getIndicePerformance() - 50.55
-                        // + mapperManager.getLinks().size() * 1/2
-                        // );
-                        // backgroundRefreshTimeForScrolling = result < 5 ? 5 : result;
-                        // backgroundRefreshLimiter.setTimeBeforeNewExecution(backgroundRefreshTimeForScrolling);
-                        // //System.out.println("new background refresh time : " + backgroundRefreshTimeForScrolling);
                     }
                 });
             }
-        }.init();
-        new Thread() {
+        }).init();
 
-            @Override
+        new AsynchronousThread(50, new Runnable() {
             public void run() {
-                try {
-                    // to start evaluation after window loaded
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    // nothing
-                }
+
                 launchEvaluatingPerformanceLoop();
+
             }
-        }.start();
+        }).start();
+
     }
 
     public Composite getVisualMapReferenceComposite() {

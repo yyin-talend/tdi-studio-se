@@ -34,6 +34,7 @@ import org.eclipse.swt.widgets.Text;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumn;
 import org.talend.commons.ui.swt.tableviewer.data.ModifiedObjectInfo;
 import org.talend.commons.utils.data.bean.IBeanPropertyAccessors;
+import org.talend.commons.utils.threading.AsynchronousThread;
 import org.talend.designer.mapper.managers.MapperManager;
 import org.talend.designer.mapper.model.table.AbstractDataMapTable;
 import org.talend.designer.mapper.model.table.VarsTable;
@@ -161,33 +162,21 @@ public class VarsDataMapTableView extends DataMapTableView {
                     text.setBackground(text.getDisplay().getSystemColor(SWT.COLOR_RED));
                     if (showAlertIfError) {
                         final Point selection = text.getSelection();
-                        // System.out.println("setText:lastValidValue"+lastValidValue);
                         text.setText(lastValidValue);
 
-                        new Thread() {
-
+                        new AsynchronousThread(50, true, text.getDisplay(), new Runnable() {
                             public void run() {
 
-                                try {
-                                    Thread.sleep(20);
-                                } catch (InterruptedException e) {
-                                    e.printStackTrace();
-                                }
-
-                                text.getDisplay().asyncExec(new Runnable() {
-
-                                    public void run() {
-                                        MessageDialog.openError(dataMapTableView.getShell(), "Error", errorMessage);
-                                        // System.out.println("setText:" + newValue);
-                                        final int columnPosition = tableViewerCreatorForColumns.getColumns().indexOf(nameColumn);
-                                        tableViewerCreatorForColumns.getTableViewer().editElement(currentModifiedBean, columnPosition);
-                                        text.setText(newValue);
-                                        text.setSelection(selection.x, selection.y);
-                                    }
-
-                                });
-                            };
-                        }.start();
+                                MessageDialog.openError(dataMapTableView.getShell(), "Error", errorMessage);
+                                // System.out.println("setText:" + newValue);
+                                final int columnPosition = tableViewerCreatorForColumns.getColumns().indexOf(nameColumn);
+                                tableViewerCreatorForColumns.getTableViewer().editElement(currentModifiedBean, columnPosition);
+                                text.setText(newValue);
+                                text.setSelection(selection.x, selection.y);
+                                
+                            }
+                        }).start();
+                        
                     }
                 }
             }

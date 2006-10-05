@@ -24,6 +24,7 @@ package org.talend.designer.mapper.ui.visualmap.table;
 import java.util.Iterator;
 import java.util.List;
 
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.fieldassist.IContentProposalProvider;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ICellEditorListener;
@@ -84,6 +85,7 @@ import org.talend.commons.ui.swt.tableviewer.behavior.CellEditorValueAdapter;
 import org.talend.commons.ui.swt.tableviewer.behavior.DefaultTableLabelProvider;
 import org.talend.commons.ui.swt.tableviewer.data.ModifiedObjectInfo;
 import org.talend.commons.ui.ws.WindowSystem;
+import org.talend.commons.utils.threading.AsynchronousThread;
 import org.talend.commons.utils.threading.ExecutionLimiter;
 import org.talend.core.ui.ImageProvider.EImage;
 import org.talend.core.ui.proposal.ProcessProposalProvider;
@@ -1174,56 +1176,48 @@ public abstract class DataMapTableView extends Composite {
 
     private void highlightLineAndSetSelectionOfStyledText(final Text expressionTextEditor) {
         final StyledTextHandler styledTextHandler = mapperManager.getUiManager().getTabFolderEditors().getStyledTextHandler();
-        new Thread() {
 
-            @Override
+        Runnable runnable = new Runnable() {
+
             public void run() {
-                try {
-                    Thread.sleep(10);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+
+                StyledText styledText = styledTextHandler.getStyledText();
+                if (styledText.isDisposed()) {
+                    return;
                 }
-                styledTextHandler.getStyledText().getDisplay().syncExec(new Runnable() {
 
-                    public void run() {
-
-                        StyledText styledText = styledTextHandler.getStyledText();
-                        if (styledText.isDisposed()) {
-                            return;
-                        }
-
-                        String text = expressionTextEditor.getText();
-                        Point selection = expressionTextEditor.getSelection();
-                        if (selection.x - 1 > 0) {
-                            while (expressionTextEditor.getLineDelimiter().equals(text.charAt(selection.x - 1))) {
-                                selection.x++;
-                            }
-                        }
-                        if (selection.y - 1 > 0) {
-                            while (expressionTextEditor.getLineDelimiter().equals(text.charAt(selection.y - 1))) {
-                                selection.y++;
-                            }
-                        }
-                        int length = styledText.getText().length();
-                        if (selection.x < 0) {
-                            selection.x = 0;
-                        }
-                        if (selection.x > length) {
-                            selection.x = length;
-                        }
-                        if (selection.y < 0) {
-                            selection.y = 0;
-                        }
-                        if (selection.y > length) {
-                            selection.y = length;
-                        }
-                        styledText.setSelection(selection);
-                        styledTextHandler.highlightLineOfCursorPosition(selection);
+                String text = expressionTextEditor.getText();
+                Point selection = expressionTextEditor.getSelection();
+                if (selection.x - 1 > 0) {
+                    while (expressionTextEditor.getLineDelimiter().equals(text.charAt(selection.x - 1))) {
+                        selection.x++;
                     }
-                });
-            }
+                }
+                if (selection.y - 1 > 0) {
+                    while (expressionTextEditor.getLineDelimiter().equals(text.charAt(selection.y - 1))) {
+                        selection.y++;
+                    }
+                }
+                int length = styledText.getText().length();
+                if (selection.x < 0) {
+                    selection.x = 0;
+                }
+                if (selection.x > length) {
+                    selection.x = length;
+                }
+                if (selection.y < 0) {
+                    selection.y = 0;
+                }
+                if (selection.y > length) {
+                    selection.y = length;
+                }
+                styledText.setSelection(selection);
+                styledTextHandler.highlightLineOfCursorPosition(selection);
 
-        }.start();
+            }
+        };
+        new AsynchronousThread(50, true, dataMapTableView.getDisplay(), runnable).start();
+
     }
 
     /**
@@ -1349,28 +1343,15 @@ public abstract class DataMapTableView extends Composite {
             public void focusLost(FocusEvent e) {
                 expressionEditorTextSelectionBeforeFocusLost = expressionTextEditor.getSelection();
                 if (WindowSystem.isGTK()) {
-                    
-                    new Thread() {
 
-                        @Override
+                    new AsynchronousThread(50, false, expressionTextEditor.getDisplay(), new Runnable() {
                         public void run() {
+
+                            tableViewerCreator.layout();
                             
-                            try {
-                                Thread.sleep(50);
-                            } catch (InterruptedException e) {
-                                // nothing
-                            }
-                            
-                            expressionTextEditor.getDisplay().syncExec(new Runnable() {
-                                
-                                public void run() {
-                                    tableViewerCreator.layout();
-                                }
-                                
-                            });
                         }
-                        
-                    }.start();
+                    }).start();
+
                 }
             }
 
@@ -1397,7 +1378,7 @@ public abstract class DataMapTableView extends Composite {
     }
 
     private void resizeTextEditor(Text textEditor, TableViewerCreator tableViewerCreator) {
-        
+
         Point currentSize = textEditor.getSize();
         Rectangle currentBounds = textEditor.getBounds();
         String text = textEditor.getText();
@@ -1420,7 +1401,7 @@ public abstract class DataMapTableView extends Composite {
      * DOC amaumont Comment method "updateGridDataHeightForTableConstraints".
      */
     public void updateGridDataHeightForTableConstraints() {
-        
+
         int moreSpace = WindowSystem.isGTK() ? tableForConstraints.getItemHeight() / 3 : 0;
         tableForConstraintsGridData.heightHint = ((OutputTable) abstractDataMapTable).getConstraintEntries().size()
                 * tableForConstraints.getItemHeight() + tableForConstraints.getItemHeight() / 2 + moreSpace;
@@ -1469,7 +1450,7 @@ public abstract class DataMapTableView extends Composite {
         UIManager uiManager = mapperManager.getUiManager();
         if (uiManager.getCurrentSelectedInputTableView() != DataMapTableView.this
                 && uiManager.getCurrentSelectedOutputTableView() != DataMapTableView.this) {
-            
+
             uiManager.selectDataMapTableView(DataMapTableView.this);
         }
     }
