@@ -60,6 +60,7 @@ import org.talend.core.model.process.INodeReturn;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.temp.ECodeLanguage;
 import org.talend.designer.core.DesignerPlugin;
+import org.talend.designer.core.model.components.ComponentImportNeeds;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.MultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.Element;
@@ -68,7 +69,10 @@ import org.talend.designer.core.ui.editor.connections.EDesignerConnection;
 import org.talend.designer.core.ui.editor.nodecontainer.NodeContainer;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
+import org.talend.designer.core.ui.views.modules.ModulesView;
+import org.talend.designer.core.ui.views.problems.Problem;
 import org.talend.designer.core.ui.views.problems.Problems;
+import org.talend.designer.core.ui.views.problems.Problem.ProblemStatus;
 import org.talend.repository.model.ExternalNodesFactory;
 
 /**
@@ -625,8 +629,8 @@ public class Node extends Element implements INode {
                 connec = (Connection) getIncomingConnections().get(j);
                 if (connec.isActivate()
                         && ((connec.getLineStyle().equals(EConnectionType.FLOW_MAIN)
-                                || connec.getLineStyle().equals(EConnectionType.FLOW_REF) || connec.getLineStyle()
-                                .equals(EConnectionType.ITERATE)))) {
+                                || connec.getLineStyle().equals(EConnectionType.FLOW_REF) || connec.getLineStyle().equals(
+                                EConnectionType.ITERATE)))) {
                     return false;
                 }
             }
@@ -691,8 +695,8 @@ public class Node extends Element implements INode {
      * @see org.talend.core.model.process.INode#isMultipleMethods(org.talend.core.model.temp.ECodeLanguage)
      */
     public boolean isMultipleMethods() {
-        ECodeLanguage currentLanguage = ((RepositoryContext) CorePlugin.getContext().getProperty(
-                Context.REPOSITORY_CONTEXT_KEY)).getProject().getLanguage();
+        ECodeLanguage currentLanguage = ((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY))
+                .getProject().getLanguage();
         return component.isMultipleMethods(currentLanguage);
     }
 
@@ -778,9 +782,8 @@ public class Node extends Element implements INode {
                 case TABLE:
                     List<Map<String, String>> tableValues = (List<Map<String, String>>) param.getValue();
                     if (tableValues.size() == 0) {
-                        String errorMessage = "Parameter (" + param.getDisplayName()
-                                + ") must have at least one value.";
-                        Problems.add(Problems.ERROR_STATUS, this, errorMessage);
+                        String errorMessage = "Parameter (" + param.getDisplayName() + ") must have at least one value.";
+                        Problems.add(ProblemStatus.ERROR, this, errorMessage);
                     }
                     break;
                 case CHECK:
@@ -791,7 +794,7 @@ public class Node extends Element implements INode {
                     String value = (String) param.getValue();
                     if (value.equals("")) {
                         String errorMessage = "Parameter (" + param.getDisplayName() + ") is empty but is required.";
-                        Problems.add(Problems.ERROR_STATUS, this, errorMessage);
+                        Problems.add(ProblemStatus.ERROR, this, errorMessage);
                     }
                 }
             }
@@ -818,18 +821,39 @@ public class Node extends Element implements INode {
         return nb;
     }
 
+    private void checkModules() {
+        List<ComponentImportNeeds> list = ModulesView.getImports(getComponentName());
+        for (ComponentImportNeeds current : list) {
+            Problem problem = getProblem(current);
+            if (problem != null) {
+                Problems.add(problem);
+            }
+        }
+    }
+
+    private Problem getProblem(ComponentImportNeeds componentImportNeeds) {
+        if (componentImportNeeds.getStatus() == ComponentImportNeeds.INSTALLED) {
+            return null;
+        }
+        if (componentImportNeeds.getStatus() == ComponentImportNeeds.NOT_INSTALLED && componentImportNeeds.isRequired()) {
+            return new Problem(this, "Module " + componentImportNeeds.getName() + " required", ProblemStatus.ERROR);
+        }
+
+        return null;
+    }
+
     private void checkLinks() {
         // check not startable components not linked
         if (!(Boolean) getPropertyValue(EParameterName.STARTABLE.getName())) {
             if ((getCurrentActiveLinksNbInput(EConnectionType.FLOW_MAIN) == 0)
                     && (getConnectorFromType(EConnectionType.FLOW_MAIN).getMinLinkInput() == 0)) {
                 String errorMessage = "This component should have input link(s).";
-                Problems.add(Problems.WARNING_STATUS, this, errorMessage);
+                Problems.add(ProblemStatus.WARNING, this, errorMessage);
             }
             if ((getCurrentActiveLinksNbInput(EConnectionType.FLOW_MAIN) == 0)
                     && (getCurrentActiveLinksNbInput(EConnectionType.FLOW_REF) > 0)) {
                 String errorMessage = "This component should have at least a Row Main link.";
-                Problems.add(Problems.WARNING_STATUS, this, errorMessage);
+                Problems.add(ProblemStatus.WARNING, this, errorMessage);
             }
         }
 
@@ -839,7 +863,7 @@ public class Node extends Element implements INode {
                     && (getCurrentActiveLinksNbOutput(EConnectionType.FLOW_REF) == 0)
                     && (getCurrentActiveLinksNbOutput(EConnectionType.ITERATE) == 0)) {
                 String errorMessage = "This component should have outputs linked.";
-                Problems.add(Problems.WARNING_STATUS, this, errorMessage);
+                Problems.add(ProblemStatus.WARNING, this, errorMessage);
             }
         }
 
@@ -848,7 +872,7 @@ public class Node extends Element implements INode {
             if ((getCurrentActiveLinksNbOutput(EConnectionType.RUN_AFTER) > 0)
                     || (getCurrentActiveLinksNbOutput(EConnectionType.RUN_BEFORE) > 0)) {
                 String errorMessage = "A component that is not a sub process start can not have any link run after / run before in output.";
-                Problems.add(Problems.ERROR_STATUS, this, errorMessage);
+                Problems.add(ProblemStatus.ERROR, this, errorMessage);
             }
         }
 
@@ -860,7 +884,7 @@ public class Node extends Element implements INode {
                     || (getCurrentActiveLinksNbInput(EConnectionType.RUN_IF_OK) > 0)
                     || (getCurrentActiveLinksNbInput(EConnectionType.RUN_IF_ERROR) > 0)) {
                 String errorMessage = "A component that is not a sub process start can only have a data link or iterate link in input.";
-                Problems.add(Problems.ERROR_STATUS, this, errorMessage);
+                Problems.add(ProblemStatus.ERROR, this, errorMessage);
             }
         }
 
@@ -886,28 +910,28 @@ public class Node extends Element implements INode {
                 if (nbMaxOut != -1) {
                     if (curLinkOut > nbMaxOut) {
                         String errorMessage = "This component has too much \"" + typeName + "\" type outputs.";
-                        Problems.add(Problems.WARNING_STATUS, this, errorMessage);
+                        Problems.add(ProblemStatus.WARNING, this, errorMessage);
                     }
                 }
 
                 if (nbMaxIn != -1) {
                     if (curLinkIn > nbMaxIn) {
                         String errorMessage = "This component has too much \"" + typeName + "\" type inputs.";
-                        Problems.add(Problems.WARNING_STATUS, this, errorMessage);
+                        Problems.add(ProblemStatus.WARNING, this, errorMessage);
                     }
                 }
 
                 if (nbMinOut != 0) {
                     if (curLinkOut < nbMinOut) {
                         String errorMessage = "This component has not enough \"" + typeName + "\" type outputs.";
-                        Problems.add(Problems.WARNING_STATUS, this, errorMessage);
+                        Problems.add(ProblemStatus.WARNING, this, errorMessage);
                     }
                 }
 
                 if (nbMinIn != 0) {
                     if (curLinkIn < nbMinIn) {
                         String errorMessage = "This component has not enough \"" + typeName + "\" type inputs.";
-                        Problems.add(Problems.WARNING_STATUS, this, errorMessage);
+                        Problems.add(ProblemStatus.WARNING, this, errorMessage);
                     }
                 }
             }
@@ -927,7 +951,7 @@ public class Node extends Element implements INode {
                 if (getConnectorFromType(EConnectionType.FLOW_MAIN).getMaxLinkInput() == 0) {
                     if (metadataList.get(0).getListColumns().size() == 0) {
                         String errorMessage = "No schema has been defined yet.";
-                        Problems.add(Problems.ERROR_STATUS, this, errorMessage);
+                        Problems.add(ProblemStatus.ERROR, this, errorMessage);
                         noSchema = true;
                     }
                 }
@@ -936,7 +960,7 @@ public class Node extends Element implements INode {
                     if ((getCurrentActiveLinksNbOutput(EConnectionType.FLOW_MAIN) > 0)
                             || (getCurrentActiveLinksNbOutput(EConnectionType.FLOW_REF) > 0)) {
                         String errorMessage = "If this component has output, there must be an input link to propagate the data.";
-                        Problems.add(Problems.ERROR_STATUS, this, errorMessage);
+                        Problems.add(ProblemStatus.ERROR, this, errorMessage);
                     }
                 }
             }
@@ -950,7 +974,7 @@ public class Node extends Element implements INode {
                         if (meta.getListColumns().size() == 0) {
                             String errorMessage = "The output schema/link named \"" + meta.getTableName()
                                     + "\" has no column defined, please check it.";
-                            Problems.add(Problems.ERROR_STATUS, this, errorMessage);
+                            Problems.add(ProblemStatus.ERROR, this, errorMessage);
                         }
                     }
                 }
@@ -1013,7 +1037,7 @@ public class Node extends Element implements INode {
                 if (!equal) {
                     String errorMessage = "The schema in the input link \"" + inputMeta.getTableName()
                             + "\" is different from the schema defined in the component.";
-                    Problems.add(Problems.ERROR_STATUS, this, errorMessage);
+                    Problems.add(ProblemStatus.ERROR, this, errorMessage);
                 }
             }
         }
@@ -1023,6 +1047,7 @@ public class Node extends Element implements INode {
         checkParameters();
         checkSchema();
         checkLinks();
+        checkModules();
     }
 
     public IComponent getComponent() {

@@ -37,6 +37,7 @@ import org.talend.designer.core.ui.editor.nodes.NodeLabel;
 import org.talend.designer.core.ui.editor.nodes.NodePerformance;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.views.problems.Problems;
+import org.talend.designer.core.ui.views.problems.Problem.ProblemStatus;
 
 /**
  * This class create a figure with the given image. <br/>eh
@@ -141,12 +142,12 @@ public class NodeContainerFigure extends Figure {
             String text = "<b>" + nodeContainer.getNode().getUniqueName() + "</b><br><br>";
             text += "<i>Warnings:</i><br>";
 
-            problemsList = Problems.getStatusList(Problems.WARNING_STATUS, nodeContainer.getNode());
+            problemsList = Problems.getStatusList(ProblemStatus.WARNING, nodeContainer.getNode());
             for (String str : problemsList) {
                 text += "\t" + str + "<br>";
             }
             text += "<i>Errors:</i><br>";
-            problemsList = Problems.getStatusList(Problems.ERROR_STATUS, nodeContainer.getNode());
+            problemsList = Problems.getStatusList(ProblemStatus.ERROR, nodeContainer.getNode());
             for (String str : problemsList) {
                 text += "\t" + str + "<br>";
             }

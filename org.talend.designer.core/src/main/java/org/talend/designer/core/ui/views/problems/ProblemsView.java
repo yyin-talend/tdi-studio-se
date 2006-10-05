@@ -46,6 +46,7 @@ import org.talend.designer.core.ui.MultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.nodes.NodePart;
 import org.talend.designer.core.ui.editor.process.ProcessPart;
+import org.talend.designer.core.ui.views.problems.Problem.ProblemStatus;
 
 /**
  * DOC nrousseau class global comment. Detailled comment <br/>
@@ -176,12 +177,12 @@ public class ProblemsView extends ViewPart {
         warningItem.setText(new String[] { WARNINGS_TEXT + " (0)", "" });
     }
 
-    public void addProblem(int status, Problem problem) {
+    public void addProblem(ProblemStatus status, Problem problem) {
         TreeItem subItem;
         int nbItems;
 
         switch (status) {
-        case Problems.ERROR_STATUS:
+        case ERROR:
             subItem = new TreeItem(errorItem, SWT.NONE);
             subItem.setImage(errorImage);
             subItem.setText(new String[] { problem.getElement().getElementName(), problem.getDescription() });
@@ -191,7 +192,7 @@ public class ProblemsView extends ViewPart {
             errorItem.setText(new String[] { ERRORS_TEXT + " (" + nbItems + ")", "" });
 
             break;
-        case Problems.WARNING_STATUS:
+        case WARNING:
             subItem = new TreeItem(warningItem, SWT.NONE);
             subItem.setImage(warningImage);
             subItem.setText(new String[] { problem.getElement().getElementName(), problem.getDescription() });
@@ -204,13 +205,13 @@ public class ProblemsView extends ViewPart {
         }
     }
 
-    public void removeProblem(int status, Problem problem) {
+    public void removeProblem(ProblemStatus status, Problem problem) {
         int nbItems;
         Set<Problem> setProblems;
         List<Problem> problemsToRemove = new ArrayList<Problem>();
 
         switch (status) {
-        case Problems.ERROR_STATUS:
+        case ERROR:
             setProblems = errorsMap.keySet();
 
             for (Problem currentProblem : setProblems) {
@@ -228,7 +229,7 @@ public class ProblemsView extends ViewPart {
             nbItems = errorsMap.size();
             errorItem.setText(new String[] { ERRORS_TEXT + " (" + nbItems + ")", "" });
             break;
-        case Problems.WARNING_STATUS:
+        case WARNING:
             setProblems = warningsMap.keySet();
 
             for (Problem currentProblem : setProblems) {
@@ -250,19 +251,19 @@ public class ProblemsView extends ViewPart {
         }
     }
 
-    public List<Problem> getProblemList(int status) {
+    public List<Problem> getProblemList(ProblemStatus status) {
         Set<Problem> setProblems;
         List<Problem> problemList = new ArrayList<Problem>();
 
         switch (status) {
-        case Problems.ERROR_STATUS:
+        case ERROR:
             setProblems = errorsMap.keySet();
 
             for (Problem problem : setProblems) {
                 problemList.add(problem);
             }
             break;
-        case Problems.WARNING_STATUS:
+        case WARNING:
             setProblems = warningsMap.keySet();
 
             for (Problem problem : setProblems) {

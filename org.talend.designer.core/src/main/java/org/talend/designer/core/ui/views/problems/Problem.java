@@ -31,9 +31,42 @@ import org.talend.designer.core.ui.editor.Element;
  */
 public class Problem {
 
+    /**
+     * DOC smallet Problem class global comment. Detailled comment <br/>
+     * 
+     * $Id$
+     */
+    public enum ProblemStatus {
+        ERROR,
+        WARNING;
+    }
+
     private Element element;
 
     private String description;
+
+    private ProblemStatus status;
+
+    /**
+     * DOC smallet Problem constructor comment.
+     */
+    public Problem() {
+        super();
+    }
+
+    /**
+     * DOC smallet Problem constructor comment.
+     * 
+     * @param element
+     * @param description
+     * @param status
+     */
+    public Problem(Element element, String description, ProblemStatus status) {
+        super();
+        this.element = element;
+        this.description = description;
+        this.status = status;
+    }
 
     public String getDescription() {
         return this.description;
@@ -49,5 +82,23 @@ public class Problem {
 
     public void setElement(Element element) {
         this.element = element;
+    }
+
+    /**
+     * Getter for status.
+     * 
+     * @return the status
+     */
+    public ProblemStatus getStatus() {
+        return this.status;
+    }
+
+    /**
+     * Sets the status.
+     * 
+     * @param status the status to set
+     */
+    public void setStatus(ProblemStatus status) {
+        this.status = status;
     }
 }

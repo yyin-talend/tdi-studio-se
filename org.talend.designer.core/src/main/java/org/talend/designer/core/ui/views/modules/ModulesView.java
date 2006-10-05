@@ -65,6 +65,8 @@ import org.talend.repository.model.ComponentsFactoryProvider;
  */
 public class ModulesView extends ViewPart {
 
+    public static final String VIEW_ID = "";
+
     private static final Bundle PERL_MODULE_PLUGIN = Platform.getBundle("org.talend.designer.codegen.perlmodule");
 
     private static final String CHECK_PERL_MODULE_RELATIVE_PATH = "perl/talend/check_modules.pl";
@@ -79,9 +81,9 @@ public class ModulesView extends ViewPart {
 
     protected static final String ID_STATUS = "status";
 
-    private List<ComponentImportNeeds> componentImportNeedsList;
+    private static List<ComponentImportNeeds> componentImportNeedsList;
 
-    private TableViewerCreator tableViewerCreator;
+    private static TableViewerCreator tableViewerCreator;
 
     private CheckAction checkAction;
 
@@ -91,17 +93,32 @@ public class ModulesView extends ViewPart {
     public ModulesView() {
     }
 
-    public void check() {
-        check(componentImportNeedsList);
-        tableViewerCreator.getTableViewer().refresh();
+    public static List<ComponentImportNeeds> getImports(String componentName) {
+        List<ComponentImportNeeds> toReturn = new ArrayList<ComponentImportNeeds>();
+      // check();
+        for (ComponentImportNeeds current : getCompList()) {
+            if (current.getComponentName().equals(componentName)) {
+                toReturn.add(current);
+            }
+        }
+
+        return toReturn;
     }
 
-    public static void check(List<ComponentImportNeeds> componentImportNeedsList) {
+    private static List<ComponentImportNeeds> getCompList() {
+        if (componentImportNeedsList == null) {
+            componentImportNeedsList = getImportNeedsList();
+            check();
+        }
+        return componentImportNeedsList;
+    }
+
+    public static void check() {
         // This map contains perl module name as keys and list of object using it as values :
         Map<String, List<ComponentImportNeeds>> componentsByModules = new HashMap<String, List<ComponentImportNeeds>>();
 
         String[] params = new String[] {};
-        for (ComponentImportNeeds current : componentImportNeedsList) {
+        for (ComponentImportNeeds current : getCompList()) {
             String moduleName = current.getModuleName();
             List<ComponentImportNeeds> listForThisModule = componentsByModules.get(moduleName);
             if (listForThisModule == null) {
@@ -139,6 +156,11 @@ public class ModulesView extends ViewPart {
         } catch (ProcessorException e) {
             MessageBoxExceptionHandler.process(e);
         }
+
+    }
+
+    public void refresh() {
+        tableViewerCreator.getTableViewer().refresh();
     }
 
     /**
@@ -302,13 +324,11 @@ public class ModulesView extends ViewPart {
         column.setModifiable(false);
         column.setWeight(2);
 
-        componentImportNeedsList = getImportNeedsList();
-        tableViewerCreator.init(componentImportNeedsList);
+     //   check();
+        tableViewerCreator.init(getCompList());
 
         makeActions();
         contributeToActionBars();
-
-        check();
     }
 
     private void makeActions() {
@@ -324,7 +344,7 @@ public class ModulesView extends ViewPart {
         manager.add(checkAction);
     }
 
-    private List<ComponentImportNeeds> getImportNeedsList() {
+    private static List<ComponentImportNeeds> getImportNeedsList() {
         List<ComponentImportNeeds> importNeedsList = new ArrayList<ComponentImportNeeds>();
         IComponentsFactory compFac = ComponentsFactoryProvider.getInstance();
         List<IComponent> componentList = compFac.getComponents();

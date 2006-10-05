@@ -51,6 +51,7 @@ public class CheckAction extends Action {
     @Override
     public void run() {
         view.check();
+        view.refresh();
     }
 
 }
