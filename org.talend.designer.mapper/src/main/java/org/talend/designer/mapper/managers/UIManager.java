@@ -64,7 +64,7 @@ import org.talend.commons.utils.data.list.ListenableListEvent;
 import org.talend.commons.utils.data.list.ListenableListEvent.TYPE;
 import org.talend.commons.utils.image.ImageCapture;
 import org.talend.commons.utils.image.ImageUtils;
-import org.talend.commons.utils.threading.AsynchronousThread;
+import org.talend.commons.utils.threading.AsynchronousThreading;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.editor.IMetadataEditorListener;
@@ -1103,7 +1103,7 @@ public class UIManager {
      */
     private void openChangeKeysDialog(final DataMapTableView dataMapTableView) {
 
-        new AsynchronousThread(50, false, dataMapTableView.getDisplay(), new Runnable() {
+        new AsynchronousThreading(50, false, dataMapTableView.getDisplay(), new Runnable() {
             public void run() {
                 
                 if (hasInvalidInputKeys(dataMapTableView)) {

@@ -56,7 +56,7 @@ import org.talend.commons.ui.ws.WindowSystem;
 import org.talend.commons.utils.performance.IPerformanceEvaluatorListener;
 import org.talend.commons.utils.performance.PerformanceEvaluator;
 import org.talend.commons.utils.performance.PerformanceEvaluatorEvent;
-import org.talend.commons.utils.threading.AsynchronousThread;
+import org.talend.commons.utils.threading.AsynchronousThreading;
 import org.talend.commons.utils.threading.ExecutionLimiter;
 import org.talend.designer.mapper.external.data.ExternalMapperUiProperties;
 import org.talend.designer.mapper.managers.LinkManager;
@@ -853,7 +853,7 @@ public class MapperUI {
             }
         }).init();
 
-        new AsynchronousThread(50, new Runnable() {
+        new AsynchronousThreading(50, new Runnable() {
             public void run() {
 
                 launchEvaluatingPerformanceLoop();

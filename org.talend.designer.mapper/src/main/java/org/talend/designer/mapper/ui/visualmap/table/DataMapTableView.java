@@ -85,7 +85,7 @@ import org.talend.commons.ui.swt.tableviewer.behavior.CellEditorValueAdapter;
 import org.talend.commons.ui.swt.tableviewer.behavior.DefaultTableLabelProvider;
 import org.talend.commons.ui.swt.tableviewer.data.ModifiedObjectInfo;
 import org.talend.commons.ui.ws.WindowSystem;
-import org.talend.commons.utils.threading.AsynchronousThread;
+import org.talend.commons.utils.threading.AsynchronousThreading;
 import org.talend.commons.utils.threading.ExecutionLimiter;
 import org.talend.core.ui.ImageProvider.EImage;
 import org.talend.core.ui.proposal.ProcessProposalProvider;
@@ -1216,7 +1216,7 @@ public abstract class DataMapTableView extends Composite {
 
             }
         };
-        new AsynchronousThread(50, true, dataMapTableView.getDisplay(), runnable).start();
+        new AsynchronousThreading(50, true, dataMapTableView.getDisplay(), runnable).start();
 
     }
 
@@ -1344,7 +1344,7 @@ public abstract class DataMapTableView extends Composite {
                 expressionEditorTextSelectionBeforeFocusLost = expressionTextEditor.getSelection();
                 if (WindowSystem.isGTK()) {
 
-                    new AsynchronousThread(50, false, expressionTextEditor.getDisplay(), new Runnable() {
+                    new AsynchronousThreading(50, false, expressionTextEditor.getDisplay(), new Runnable() {
                         public void run() {
 
                             tableViewerCreator.layout();

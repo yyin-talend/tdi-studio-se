@@ -34,7 +34,7 @@ import org.eclipse.swt.widgets.Text;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumn;
 import org.talend.commons.ui.swt.tableviewer.data.ModifiedObjectInfo;
 import org.talend.commons.utils.data.bean.IBeanPropertyAccessors;
-import org.talend.commons.utils.threading.AsynchronousThread;
+import org.talend.commons.utils.threading.AsynchronousThreading;
 import org.talend.designer.mapper.managers.MapperManager;
 import org.talend.designer.mapper.model.table.AbstractDataMapTable;
 import org.talend.designer.mapper.model.table.VarsTable;
@@ -164,7 +164,7 @@ public class VarsDataMapTableView extends DataMapTableView {
                         final Point selection = text.getSelection();
                         text.setText(lastValidValue);
 
-                        new AsynchronousThread(50, true, text.getDisplay(), new Runnable() {
+                        new AsynchronousThreading(50, true, text.getDisplay(), new Runnable() {
                             public void run() {
 
                                 MessageDialog.openError(dataMapTableView.getShell(), "Error", errorMessage);
