@@ -96,6 +96,7 @@ public class OutputDataMapTableView extends DataMapTableView {
     @Override
     protected void initTableConstraints() {
         super.createTableConstraints();
+
         TableViewerCreatorColumn column = new TableViewerCreatorColumn(tableViewerCreatorForConstraints);
         column.setTitle("Constraint conditions (AND)");
         column.setId(DataMapTableView.ID_EXPRESSION_COLUMN);
@@ -116,9 +117,16 @@ public class OutputDataMapTableView extends DataMapTableView {
         column.setWeight(100);
 
         List<ConstraintTableEntry> entries = ((OutputTable) getDataMapTable()).getConstraintEntries();
-        tableViewerCreatorForConstraints.setAdjustWidthValue(WindowSystem.isGTK() && entries.size() == 0 ? -20 : ADJUST_WIDTH_VALUE);
+        
+        // correct partially layout problem with GTK when cell editor value is applied
+        tableViewerCreatorForConstraints.setAdjustWidthValue(WindowSystem.isGTK() ? -20 : ADJUST_WIDTH_VALUE);
+
         tableViewerCreatorForConstraints.init(entries);
         updateGridDataHeightForTableConstraints();
+        
+        if (WindowSystem.isGTK()) {
+            tableViewerCreatorForConstraints.layout();
+        }
     }
 
     /*

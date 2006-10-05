@@ -719,14 +719,7 @@ public abstract class DataMapTableView extends Composite {
         tableViewerCreatorForConstraints.setFirstColumnMasked(true);
 
         tableForConstraints = tableViewerCreatorForConstraints.createTable();
-        // tableForConstraintsGridData = new GridData(SWT.NONE, SWT.FILL, true, false);
         tableForConstraintsGridData = new GridData(GridData.FILL_HORIZONTAL);
-        // tableForConstraintsGridData.grabExcessVerticalSpace = true;
-        // tableForConstraintsGridData.widthHint = 15;
-        // tableForConstraintsGridData.minimumHeight = tableForConstraints.getHeaderHeight() +
-        // tableForConstraints.getItemHeight();
-        // tableForConstraintsGridData.verticalAlignment = GridData.VERTICAL_ALIGN_FILL;
-        // tableForConstraintsGridData.verticalIndent = 10;
         tableForConstraints.setLayoutData(tableForConstraintsGridData);
 
         boolean tableConstraintsVisible = false;
@@ -833,6 +826,7 @@ public abstract class DataMapTableView extends Composite {
                     mapperManager.getUiManager().refreshBackground(true, false);
                     showTableConstraints(true);
                     changeMinimizeState(false);
+                    tableViewerCreatorForConstraints.layout();
                 }
 
             });
@@ -1315,7 +1309,7 @@ public abstract class DataMapTableView extends Composite {
 
             public void controlResized(ControlEvent e) {
                 if (executionLimiter == null) {
-                    executionLimiter = new ExecutionLimiter(100, true) {
+                    executionLimiter = new ExecutionLimiter(50, true) {
 
                         @Override
                         public void execute(boolean isFinalExecution) {
@@ -1354,6 +1348,30 @@ public abstract class DataMapTableView extends Composite {
 
             public void focusLost(FocusEvent e) {
                 expressionEditorTextSelectionBeforeFocusLost = expressionTextEditor.getSelection();
+                if (WindowSystem.isGTK()) {
+                    
+                    new Thread() {
+
+                        @Override
+                        public void run() {
+                            
+                            try {
+                                Thread.sleep(50);
+                            } catch (InterruptedException e) {
+                                // nothing
+                            }
+                            
+                            expressionTextEditor.getDisplay().syncExec(new Runnable() {
+                                
+                                public void run() {
+                                    tableViewerCreator.layout();
+                                }
+                                
+                            });
+                        }
+                        
+                    }.start();
+                }
             }
 
         });
@@ -1379,6 +1397,7 @@ public abstract class DataMapTableView extends Composite {
     }
 
     private void resizeTextEditor(Text textEditor, TableViewerCreator tableViewerCreator) {
+        
         Point currentSize = textEditor.getSize();
         Rectangle currentBounds = textEditor.getBounds();
         String text = textEditor.getText();
