@@ -34,8 +34,8 @@ import org.eclipse.gef.editparts.AbstractConnectionEditPart;
 import org.eclipse.gef.editpolicies.ConnectionEditPolicy;
 import org.eclipse.gef.editpolicies.ConnectionEndpointEditPolicy;
 import org.eclipse.gef.requests.GroupRequest;
+import org.talend.core.model.process.Element;
 import org.talend.designer.core.model.components.EParameterName;
-import org.talend.designer.core.ui.editor.Element;
 import org.talend.designer.core.ui.editor.cmd.ConnectionDeleteCommand;
 
 /**

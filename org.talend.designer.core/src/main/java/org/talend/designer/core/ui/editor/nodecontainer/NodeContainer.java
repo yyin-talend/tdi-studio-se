@@ -24,7 +24,7 @@ package org.talend.designer.core.ui.editor.nodecontainer;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.talend.designer.core.ui.editor.Element;
+import org.talend.core.model.process.Element;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.nodes.NodeLabel;
 import org.talend.designer.core.ui.editor.nodes.NodePerformance;

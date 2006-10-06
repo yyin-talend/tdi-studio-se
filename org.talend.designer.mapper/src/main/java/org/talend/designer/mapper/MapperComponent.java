@@ -26,6 +26,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Reader;
 import java.io.Writer;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -39,6 +40,8 @@ import org.exolab.castor.xml.ValidationException;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.process.AbstractExternalNode;
+import org.talend.core.model.process.Problem;
+import org.talend.core.model.process.Problem.ProblemStatus;
 import org.talend.core.model.temp.ECodePart;
 import org.talend.designer.codegen.CodeGenerator;
 import org.talend.designer.codegen.exception.CodeGeneratorException;
@@ -93,13 +96,13 @@ public class MapperComponent extends AbstractExternalNode {
      * @see org.talend.designer.core.model.components.IExternalComponent#open(org.eclipse.swt.widgets.Display)
      */
     public int open(final Display display) {
-//        TimeMeasure.start("Total open");
+        // TimeMeasure.start("Total open");
         // TimeMeasure.display = false;
         initMapperMain();
         mapperMain.loadFromExternalData(getIncomingConnections(), getOutgoingConnections(), getMetadataList(), externalData);
         Shell shell = mapperMain.createUI(display);
-//        TimeMeasure.display = true;
-//        TimeMeasure.end("Total open");
+        // TimeMeasure.display = true;
+        // TimeMeasure.end("Total open");
         while (!shell.isDisposed()) {
             try {
                 if (!display.readAndDispatch()) {
@@ -221,7 +224,7 @@ public class MapperComponent extends AbstractExternalNode {
         mapperMain.loadFromExternalData(getIncomingConnections(), getOutgoingConnections(), getMetadataList(), externalData);
         ExternalMapperData data = mapperMain.buildExternalData();
         if (mapperMain != null && data != null) {
-            
+
             try {
                 Marshaller marshaller = new Marshaller(writer);
                 marshaller.marshal(externalData);
@@ -236,18 +239,18 @@ public class MapperComponent extends AbstractExternalNode {
                     writer.close();
                 }
             }
-            
-//            ObjectOutputStream objectOut = null;
-//            try {
-//                objectOut = new ObjectOutputStream(out);
-//                objectOut.writeObject(data);
-//            } catch (IOException e) {
-//                ExceptionHandler.process(e);
-//            } finally {
-//                if (objectOut != null) {
-//                    objectOut.close();
-//                }
-//            }
+
+            // ObjectOutputStream objectOut = null;
+            // try {
+            // objectOut = new ObjectOutputStream(out);
+            // objectOut.writeObject(data);
+            // } catch (IOException e) {
+            // ExceptionHandler.process(e);
+            // } finally {
+            // if (objectOut != null) {
+            // objectOut.close();
+            // }
+            // }
         }
     }
 
@@ -273,6 +276,18 @@ public class MapperComponent extends AbstractExternalNode {
                 }
             }
         }
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.process.AbstractExternalNode#getProblems()
+     */
+    @Override
+    public List<Problem> getProblems() {
+        List<Problem> toReturn = new ArrayList<Problem>();
+        toReturn.add(new Problem(null, "Pas de réel problème", ProblemStatus.WARNING));
+        return toReturn;
     }
 
 }

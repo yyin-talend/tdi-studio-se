@@ -27,7 +27,7 @@ import java.util.Map;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.swt.widgets.Display;
-import org.talend.designer.core.ui.editor.Element;
+import org.talend.core.model.process.Element;
 import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
 
 /**

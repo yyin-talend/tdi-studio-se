@@ -27,8 +27,8 @@ import java.util.Locale;
 
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
+import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IElementParameter;
-import org.talend.designer.core.ui.editor.Element;
 import org.talend.designer.core.ui.editor.nodecontainer.NodeContainer;
 import org.talend.designer.runprocess.data.PerformanceData;
 

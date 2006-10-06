@@ -50,6 +50,7 @@ import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataTable;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.EParameterFieldType;
+import org.talend.core.model.process.Element;
 import org.talend.core.model.process.ElementParameterParser;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IElementParameter;
@@ -58,21 +59,20 @@ import org.talend.core.model.process.INode;
 import org.talend.core.model.process.INodeConnector;
 import org.talend.core.model.process.INodeReturn;
 import org.talend.core.model.process.IProcess;
+import org.talend.core.model.process.Problem;
+import org.talend.core.model.process.Problem.ProblemStatus;
 import org.talend.core.model.temp.ECodeLanguage;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.model.components.ComponentImportNeeds;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.MultiPageTalendEditor;
-import org.talend.designer.core.ui.editor.Element;
 import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.connections.EDesignerConnection;
 import org.talend.designer.core.ui.editor.nodecontainer.NodeContainer;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
 import org.talend.designer.core.ui.views.modules.ModulesView;
-import org.talend.designer.core.ui.views.problems.Problem;
 import org.talend.designer.core.ui.views.problems.Problems;
-import org.talend.designer.core.ui.views.problems.Problem.ProblemStatus;
 import org.talend.repository.model.ExternalNodesFactory;
 
 /**
@@ -1048,6 +1048,13 @@ public class Node extends Element implements INode {
         checkSchema();
         checkLinks();
         checkModules();
+        if (externalNode != null) {
+            List<Problem> problems = externalNode.getProblems();
+            for (Problem current : problems) {
+                current.setElement(this);
+                Problems.add(current);
+            }
+        }
     }
 
     public IComponent getComponent() {

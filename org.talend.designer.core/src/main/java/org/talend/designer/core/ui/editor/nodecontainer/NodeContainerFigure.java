@@ -32,12 +32,12 @@ import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.talend.commons.utils.workbench.gef.SimpleHtmlFigure;
 import org.talend.core.CorePlugin;
+import org.talend.core.model.process.Problem.ProblemStatus;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.nodes.NodeLabel;
 import org.talend.designer.core.ui.editor.nodes.NodePerformance;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.views.problems.Problems;
-import org.talend.designer.core.ui.views.problems.Problem.ProblemStatus;
 
 /**
  * This class create a figure with the given image. <br/>eh

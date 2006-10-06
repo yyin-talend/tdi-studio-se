@@ -42,11 +42,12 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 import org.talend.core.CorePlugin;
+import org.talend.core.model.process.Problem;
+import org.talend.core.model.process.Problem.ProblemStatus;
 import org.talend.designer.core.ui.MultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.nodes.NodePart;
 import org.talend.designer.core.ui.editor.process.ProcessPart;
-import org.talend.designer.core.ui.views.problems.Problem.ProblemStatus;
 
 /**
  * DOC nrousseau class global comment. Detailled comment <br/>

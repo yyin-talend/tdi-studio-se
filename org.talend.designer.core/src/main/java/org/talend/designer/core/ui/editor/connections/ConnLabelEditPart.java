@@ -40,7 +40,7 @@ import org.eclipse.jface.viewers.TextCellEditor;
 import org.talend.commons.utils.workbench.gef.LabelCellEditorLocator;
 import org.talend.commons.utils.workbench.gef.TextEditManager;
 import org.talend.core.model.process.EConnectionType;
-import org.talend.designer.core.ui.editor.Element;
+import org.talend.core.model.process.Element;
 import org.talend.designer.core.ui.editor.cmd.ConnectionDeleteCommand;
 
 /**

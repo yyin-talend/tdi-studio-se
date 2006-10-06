@@ -31,7 +31,7 @@ import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.GraphicalEditPart;
 import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
-import org.talend.designer.core.ui.editor.Element;
+import org.talend.core.model.process.Element;
 
 /**
  * EditPart of the NodeTrace.

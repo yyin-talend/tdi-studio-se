@@ -65,6 +65,7 @@ import org.talend.core.model.metadata.designerproperties.RepositoryToComponentPr
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.EParameterFieldType;
+import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IContextManager;
@@ -102,7 +103,6 @@ import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
 import org.talend.designer.core.model.utils.emf.talendfile.TalendFileFactory;
 import org.talend.designer.core.model.utils.emf.talendfile.util.TalendFileResourceImpl;
 import org.talend.designer.core.ui.MultiPageTalendEditor;
-import org.talend.designer.core.ui.editor.Element;
 import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.nodecontainer.NodeContainer;
 import org.talend.designer.core.ui.editor.nodes.Node;
@@ -1545,15 +1545,6 @@ public class Process extends Element implements IProcess {
 
     @Override
     public void setPropertyValue(String propertyName, Object value) {
-        // PTODO SML j'ai comment� �a car pour moi, on ne g�re plus les properties du process ici => autres modifs
-        // ?
-        // if (propertyName.equals(EParameterName.NAME.getName())) {
-        // IEditorPart editorPart =
-        // PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
-        // if (editorPart instanceof MultiPageTalendEditor) {
-        // ((MultiPageTalendEditor) editorPart).updateProcessName((String) value);
-        // }
-        // }
         super.setPropertyValue(propertyName, value);
     }
 
