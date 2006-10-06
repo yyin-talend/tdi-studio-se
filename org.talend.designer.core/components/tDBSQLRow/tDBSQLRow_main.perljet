@@ -28,7 +28,7 @@ $sth_<%=cid %> = $dbh_<%=cid %>->prepare(
 $sth_<%=cid %>->execute();
 $sth_<%=cid %>->finish();
 
-if ($_context{StoreSQLRequest}) {
+if ($_context{StoreSQLQuery}) {
     $_globals{<%=cid %>}{QUERY} =
 <%=ElementParameterParser.getValue(node, "__QUERY__") %>;
 }

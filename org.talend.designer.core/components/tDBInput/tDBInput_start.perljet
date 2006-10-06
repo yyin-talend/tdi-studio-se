@@ -103,7 +103,7 @@ $sth_<%=cid %> = $dbh_<%=cid %>->prepare(
 $_globals{<%=cid %>}{NB_LINE} = $sth_<%=cid %>->execute()
     or die "can't execute input query";
 
-if ($_context{StoreSQLRequest}) {
+if ($_context{StoreSQLQuery}) {
     $_globals{<%=cid %>}{QUERY} = $desc_<%=cid %>{query};
 }
 
