@@ -1234,7 +1234,7 @@ public abstract class DataMapTableView extends Composite {
         if (this.expressionProposalProvider == null) {
             IContentProposalProvider[] contentProposalProviders = new IContentProposalProvider[0];
             if (!MapperMain.isStandAloneMode()) {
-                contentProposalProviders = new IContentProposalProvider[] { new ProcessProposalProvider(mapperManager.getConnector()
+                contentProposalProviders = new IContentProposalProvider[] { new ProcessProposalProvider(mapperManager.getComponent()
                         .getProcess()) };
             }
             this.expressionProposalProvider = new ExpressionProposalProvider(mapperManager, contentProposalProviders);
