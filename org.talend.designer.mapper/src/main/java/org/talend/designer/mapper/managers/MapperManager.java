@@ -34,6 +34,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 import org.talend.commons.exception.PersistenceException;
+import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
 import org.talend.commons.utils.workbench.resources.ResourceUtils;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
@@ -483,12 +484,11 @@ public class MapperManager {
 
     public void removeSelectedOutput() {
         DataMapTableView currentSelectedDataMapTableView = uiManager.getCurrentSelectedOutputTableView();
-        
-        
+
         if (currentSelectedDataMapTableView != null) {
             String tableName = currentSelectedDataMapTableView.getDataMapTable().getName();
-            if(MessageDialog.openConfirm(currentSelectedDataMapTableView.getShell(), 
-                    "Remove output table", "Are you sure you want to remove the output table '"+ tableName + "' ?")) {
+            if (MessageDialog.openConfirm(currentSelectedDataMapTableView.getShell(), "Remove output table",
+                    "Are you sure you want to remove the output table '" + tableName + "' ?")) {
                 IProcess process = mapperComponent.getProcess();
                 uiManager.removeOutputTableView(currentSelectedDataMapTableView);
                 uiManager.updateToolbarButtonsStates(Zone.OUTPUTS);
@@ -686,41 +686,63 @@ public class MapperManager {
     /**
      * DOC amaumont Comment method "replacePreviousLocationInAllExpressions".
      */
-    public void replacePreviousLocationInAllExpressions(TableEntryLocation previousLocation, TableEntryLocation newLocation) {
-        
-        
+    public void replacePreviousLocationInAllExpressions(final TableEntryLocation previousLocation, final TableEntryLocation newLocation) {
+
+        DataMapExpressionParser dataMapExpressionParser = new DataMapExpressionParser(LanguageProvider.getCurrentLanguage());
         Collection<AbstractDataMapTable> tablesData = getTablesData();
         for (AbstractDataMapTable table : tablesData) {
             List<IColumnEntry> columnEntries = table.getColumnEntries();
             for (IColumnEntry entry : columnEntries) {
-                
-                
-//                DataMapExpressionParser dataMapExpressionParser = new DataMapExpressionParser(LanguageProvider.getCurrentLanguage());
-//                TableEntryLocation oldLocation = new TableEntryLocation();
-//                oldLocation.tableName = conectionName;
-//                TableEntryLocation newLocation = new TableEntryLocation();
-//                newLocation.tableName = conectionName;
-//                // loop on all tables
-//                for (ExternalMapperTable table : tables) {
-//                    List<ExternalMapperTableEntry> metadataTableEntries = table.getMetadataTableEntries();
-//                    // loop on all entries of current table
-//                    for (ExternalMapperTableEntry entry : metadataTableEntries) {
-//                        String currentExpression = entry.getExpression();
-//                        TableEntryLocation[] tableEntryLocations = dataMapExpressionParser.parseTableEntryLocations(currentExpression);
-//                        // loop on all locations of current expression
-//                        for (int i = 0; i < tableEntryLocations.length; i++) {
-//                            TableEntryLocation currentLocation = tableEntryLocations[i];
-//                            if (currentLocation.tableName.equals(conectionName) && currentLocation.columnName.equals(oldColumnName)) {
-//                                newLocation.columnName = newColumnName;
-//                                currentExpression = dataMapExpressionParser
-//                                        .replaceLocation(entry.getExpression(), currentLocation, newLocation);
-//
-//                expression
-//                entry.getExpression()
+                replaceLocation(previousLocation, newLocation, dataMapExpressionParser, table, entry);
             }
-            
+            if (table instanceof OutputTable) {
+                List<ConstraintTableEntry> constraintEntries = ((OutputTable) table).getConstraintEntries();
+                for (ConstraintTableEntry entry : constraintEntries) {
+                    replaceLocation(previousLocation, newLocation, dataMapExpressionParser, table, entry);
+                }
+            }
+
         }
-        
+        uiManager.refreshBackground(false, false);
+    }
+
+    /**
+     * 
+     * DOC amaumont Comment method "replaceLocation".
+     * @param previousLocation
+     * @param newLocation
+     * @param dataMapExpressionParser
+     * @param table
+     * @param entry
+     * @return true if expression of entry has changed
+     */
+    private boolean replaceLocation(final TableEntryLocation previousLocation, final TableEntryLocation newLocation,
+            DataMapExpressionParser dataMapExpressionParser, AbstractDataMapTable table, ITableEntry entry) {
+        boolean expressionHasChanged = false;
+        String currentExpression = entry.getExpression();
+        TableEntryLocation[] tableEntryLocations = dataMapExpressionParser.parseTableEntryLocations(currentExpression);
+        // loop on all locations of current expression
+        for (int i = 0; i < tableEntryLocations.length; i++) {
+            TableEntryLocation currentLocation = tableEntryLocations[i];
+            if (currentLocation.equals(previousLocation)) {
+                currentExpression = dataMapExpressionParser.replaceLocation(currentExpression, previousLocation, newLocation);
+                expressionHasChanged = true;
+            }
+        }
+        if (expressionHasChanged) {
+            entry.setExpression(currentExpression);
+            DataMapTableView dataMapTableView = retrieveAbstractDataMapTableView(table);
+            TableViewerCreator tableViewerCreator = null;
+            if (entry instanceof IColumnEntry) {
+                tableViewerCreator = dataMapTableView.getTableViewerCreatorForColumns();
+            } else if (entry instanceof ConstraintTableEntry) {
+                tableViewerCreator = dataMapTableView.getTableViewerCreatorForConstraints();
+            }
+            tableViewerCreator.getTableViewer().refresh(entry);
+            uiManager.processExpression(currentExpression, entry, false, true, false);
+            return true;
+        }
+        return false;
     }
 
     // public Object getEmfParameterValue(String parameterName) {

@@ -56,23 +56,20 @@ public class VarsDataMapTableView extends DataMapTableView {
         super(parent, style, abstractDataMapTable, mapperManager);
     }
 
-    
-    
     @Override
     protected void addListeners() {
         super.addListeners();
         tableViewerCreatorForColumns.getTable().addSelectionListener(new SelectionListener() {
 
-            public void widgetDefaultSelected(SelectionEvent e) {}
+            public void widgetDefaultSelected(SelectionEvent e) {
+            }
 
             public void widgetSelected(SelectionEvent e) {
                 removeEntryItem.setEnabled(tableViewerCreatorForColumns.getTable().getSelectionCount() > 0);
             }
-            
+
         });
     }
-
-
 
     @Override
     public void initColumns() {
@@ -124,7 +121,7 @@ public class VarsDataMapTableView extends DataMapTableView {
                 // System.out.println("------- applyEditorValue=" + text.getText());
                 Object bean = modifiedObjectInfo.getCurrentModifiedBean() != null ? modifiedObjectInfo.getCurrentModifiedBean()
                         : modifiedObjectInfo.getPreviousModifiedBean();
-                fireEventIfValidColumnName(text.getText(), true, bean);
+                fireEventIfValidColumnName(text.getText(), true, bean, true);
                 lastValidValue = null;
             }
 
@@ -132,7 +129,7 @@ public class VarsDataMapTableView extends DataMapTableView {
                 ModifiedObjectInfo<ITableEntry> modifiedObjectInfo = tableViewerCreatorForColumns.getModifiedObjectInfo();
                 String originalName = (String) modifiedObjectInfo.getOriginalPropertyBeanValue();
                 text.setText(originalName);
-                fireEventIfValidColumnName(originalName, false, modifiedObjectInfo.getCurrentModifiedBean());
+                fireEventIfValidColumnName(originalName, false, modifiedObjectInfo.getCurrentModifiedBean(), false);
                 lastValidValue = null;
             }
 
@@ -143,10 +140,11 @@ public class VarsDataMapTableView extends DataMapTableView {
                 } else {
                 }
                 String newValue = text.getText();
-                fireEventIfValidColumnName(newValue, false, modifiedObjectInfo.getCurrentModifiedBean());
+                fireEventIfValidColumnName(newValue, false, modifiedObjectInfo.getCurrentModifiedBean(), false);
             }
 
-            private void fireEventIfValidColumnName(final String newValue, boolean showAlertIfError, final Object currentModifiedBean) {
+            private void fireEventIfValidColumnName(final String newValue, boolean showAlertIfError, final Object currentModifiedBean,
+                    boolean applied) {
                 final ModifiedObjectInfo<ITableEntry> modifiedObjectInfo = tableViewerCreatorForColumns.getModifiedObjectInfo();
                 String originalValue = (String) modifiedObjectInfo.getOriginalPropertyBeanValue();
                 lastValidValue = lastValidValue != null ? lastValidValue : originalValue;
@@ -155,7 +153,10 @@ public class VarsDataMapTableView extends DataMapTableView {
                 final String errorMessage = ((VarsTable) getDataMapTable()).validateColumnName(newValue, beanPosition);
                 // System.out.println(errorMessage);
                 if (errorMessage == null) {
-                    mapperManager.getUiManager().processColumnNameChanged(newValue, dataMapTableView, (ITableEntry) currentModifiedBean);
+                    if (applied) {
+                        mapperManager.getUiManager()
+                                .processColumnNameChanged(originalValue, newValue, dataMapTableView, (ITableEntry) currentModifiedBean);
+                    }
                     text.setBackground(text.getDisplay().getSystemColor(SWT.COLOR_WHITE));
                     lastValidValue = newValue;
                 } else {
@@ -165,6 +166,7 @@ public class VarsDataMapTableView extends DataMapTableView {
                         text.setText(lastValidValue);
 
                         new AsynchronousThreading(50, true, text.getDisplay(), new Runnable() {
+
                             public void run() {
 
                                 MessageDialog.openError(dataMapTableView.getShell(), "Error", errorMessage);
@@ -173,10 +175,10 @@ public class VarsDataMapTableView extends DataMapTableView {
                                 tableViewerCreatorForColumns.getTableViewer().editElement(currentModifiedBean, columnPosition);
                                 text.setText(newValue);
                                 text.setSelection(selection.x, selection.y);
-                                
+
                             }
                         }).start();
-                        
+
                     }
                 }
             }
@@ -236,14 +238,10 @@ public class VarsDataMapTableView extends DataMapTableView {
         return Zone.VARS;
     }
 
-
-
     @Override
     public void unselectAllColumnEntries() {
         super.unselectAllColumnEntries();
         removeEntryItem.setEnabled(false);
     }
 
-    
-    
 }

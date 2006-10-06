@@ -205,10 +205,8 @@ public class UIManager {
                 currentMetadataTableEditor.addListener(new IMetadataEditorListener() {
 
                     public void handleEvent(final MetadataEditorEvent event) {
-                        if (event.type == MetadataEditorEvent.TYPE.METADATA_NAME_VALUE_CHANGED 
-                                && event.state == STATE.APPLYING 
-                                && !event.previousValue.equals(event.newValue)
-                        ) {
+                        if (event.type == MetadataEditorEvent.TYPE.METADATA_NAME_VALUE_CHANGED && event.state == STATE.APPLYING
+                                && !event.previousValue.equals(event.newValue)) {
                             List modifiedObjects = event.entries;
                             IMetadataColumn modifiedObject = null;
                             if (modifiedObjects != null && modifiedObjects.size() > 0) {
@@ -218,25 +216,8 @@ public class UIManager {
                                 TableEntryLocation tableEntryLocation = new TableEntryLocation(
                                         dataMapTableView.getDataMapTable().getName(), (String) event.previousValue);
                                 final ITableEntry dataMapTableEntry = mapperManager.retrieveTableEntry(tableEntryLocation);
-                                Set<IGraphicLink> graphicalLinksFromSource = mapperManager.getGraphicalLinksFromSource(dataMapTableEntry);
-                                processColumnNameChanged((String) event.newValue, dataMapTableView, dataMapTableEntry);
-                                if (!graphicalLinksFromSource.isEmpty()) {
-                                    new AsynchronousThreading(20, false, dataMapTableView.getDisplay(), new Runnable() {
-
-                                        public void run() {
-
-                                            boolean refactor = MessageDialog.openQuestion(dataMapTVCreator.getTable().getShell(),
-                                                    "Refactoring", "Do you want update all expressions to keep links valid ?");
-                                            if (refactor) {
-                                                TableEntryLocation previousLocation = new TableEntryLocation(dataMapTableEntry
-                                                        .getParentName(), (String) event.previousValue);
-                                                TableEntryLocation newLocation = new TableEntryLocation(dataMapTableEntry.getParentName(),
-                                                        (String) event.newValue);
-                                                mapperManager.replacePreviousLocationInAllExpressions(previousLocation, newLocation);
-                                            }
-                                        }
-                                    }).start();
-                                }
+                                processColumnNameChanged((String) event.previousValue, (String) event.newValue, dataMapTableView,
+                                        dataMapTableEntry);
                             }
                             dataMapTableViewer.refresh();
                         } else if (event.type == MetadataEditorEvent.TYPE.METADATA_KEY_VALUE_CHANGED) {
@@ -798,7 +779,8 @@ public class UIManager {
      * @param currentModifiedObject
      */
     public void processNewExpression(String expression, ITableEntry currentModifiedITableEntry, boolean appliedOrCanceled) {
-        if (processExpression(expression, currentModifiedITableEntry, true, true, appliedOrCanceled)) {
+        ProcessExpressionResult result = processExpression(expression, currentModifiedITableEntry, true, true, appliedOrCanceled);
+        if (result.isAtLeastOneLinkHasBeenAddedOrRemoved()) {
             mapperManager.getUiManager().refreshBackground(false, false);
         }
 
@@ -808,7 +790,7 @@ public class UIManager {
      * DOC amaumont Comment method "processAllExpressions".
      */
     public void processAllExpressions(DataMapTableView dataMapTableView) {
-        List<ITableEntry> columnsEntriesList = dataMapTableView.getTableViewerCreatorForColumns().getInputList();
+        List<IColumnEntry> columnsEntriesList = dataMapTableView.getDataMapTable().getColumnEntries();
         processAllExpressions(columnsEntriesList);
         if (dataMapTableView.getZone() == Zone.OUTPUTS) {
             List<ITableEntry> constraintEntriesList = dataMapTableView.getTableViewerCreatorForConstraints().getInputList();
@@ -816,7 +798,7 @@ public class UIManager {
         }
     }
 
-    private void processAllExpressions(List<ITableEntry> inputList) {
+    private void processAllExpressions(List<? extends ITableEntry> inputList) {
         for (ITableEntry entry : inputList) {
             processExpression(entry.getExpression(), entry, false, false, false);
         }
@@ -829,12 +811,12 @@ public class UIManager {
      * @param currentModifiedITableEntry
      * @param linkMustHaveSelectedState
      * @param checkInputKeyAutomatically TODO
-     * @param appliedOrCanceled TODO
+     * @param inputExpressionAppliedOrCanceled TODO
      * @param dataMapTableView
      * @return true if a link has been added or removed, false else
      */
-    public boolean processExpression(String expression, ITableEntry currentModifiedITableEntry, boolean linkMustHaveSelectedState,
-            boolean checkInputKeyAutomatically, boolean appliedOrCanceled) {
+    public ProcessExpressionResult processExpression(String expression, ITableEntry currentModifiedITableEntry,
+            boolean linkMustHaveSelectedState, boolean checkInputKeyAutomatically, boolean inputExpressionAppliedOrCanceled) {
 
         DataMapTableView dataMapTableView = mapperManager.retrieveDataMapTableView(currentModifiedITableEntry);
         boolean linkHasBeenAdded = false;
@@ -875,14 +857,15 @@ public class UIManager {
 
         if (dataMapTableView.getZone() == Zone.INPUTS) {
             if (linkHasBeenAdded || linkHasBeenRemoved) {
-                checkTargetInputKey(currentModifiedITableEntry, dataMapTableView, checkInputKeyAutomatically, appliedOrCanceled);
+                checkTargetInputKey(currentModifiedITableEntry, dataMapTableView, checkInputKeyAutomatically,
+                        inputExpressionAppliedOrCanceled);
             }
-            if (appliedOrCanceled) {
+            if (inputExpressionAppliedOrCanceled) {
                 openChangeKeysDialog(dataMapTableView);
             }
         }
 
-        return linkHasBeenAdded || linkHasBeenRemoved;
+        return new ProcessExpressionResult(linkHasBeenAdded, linkHasBeenRemoved);
     }
 
     /**
@@ -982,27 +965,53 @@ public class UIManager {
     /**
      * DOC amaumont Comment method "processNewProcessColumnName".
      * 
-     * @param text
+     * @param previousColumnName TODO
      * @param dataMapTableView
+     * @param text
      * @param entry
      */
-    public void processColumnNameChanged(String newColumnName, DataMapTableView dataMapTableView, ITableEntry currentModifiedITableEntry) {
+    public void processColumnNameChanged(final String previousColumnName, final String newColumnName,
+            final DataMapTableView dataMapTableView, final ITableEntry currentModifiedITableEntry) {
+
         mapperManager.changeColumnName(currentModifiedITableEntry, newColumnName);
         Collection<DataMapTableView> tableViews = mapperManager.getTablesView();
+        boolean atLeastOneLinkHasBeenRemoved = false;
         for (DataMapTableView view : tableViews) {
             AbstractDataMapTable dataMapTable = view.getDataMapTable();
             List<IColumnEntry> metadataTableEntries = dataMapTable.getColumnEntries();
             for (IColumnEntry entry : metadataTableEntries) {
-                processExpression(entry.getExpression(), entry, true, true, false);
+                if (processExpression(entry.getExpression(), entry, true, true, false).atLeastOneLinkRemoved) {
+                    atLeastOneLinkHasBeenRemoved = true;
+                }
             }
             if (dataMapTable instanceof OutputTable) {
                 List<ConstraintTableEntry> constraintEntries = ((OutputTable) dataMapTable).getConstraintEntries();
                 for (ConstraintTableEntry entry : constraintEntries) {
-                    processExpression(entry.getExpression(), entry, true, true, false);
+                    if (processExpression(entry.getExpression(), entry, true, true, false).atLeastOneLinkRemoved) {
+                        atLeastOneLinkHasBeenRemoved = true;
+                    }
                 }
             }
         }
         mapperManager.getUiManager().refreshBackground(false, false);
+
+        if (atLeastOneLinkHasBeenRemoved) {
+            new AsynchronousThreading(20, false, dataMapTableView.getDisplay(), new Runnable() {
+
+                public void run() {
+
+                    TableViewerCreator tableViewerCreatorForColumns = dataMapTableView.getTableViewerCreatorForColumns();
+                    boolean refactor = MessageDialog.openQuestion(tableViewerCreatorForColumns.getTable().getShell(), "Refactoring",
+                            "Do you want update all expressions to keep links valid ?");
+                    if (refactor) {
+                        TableEntryLocation previousLocation = new TableEntryLocation(currentModifiedITableEntry.getParentName(),
+                                previousColumnName);
+                        TableEntryLocation newLocation = new TableEntryLocation(currentModifiedITableEntry.getParentName(), newColumnName);
+                        mapperManager.replacePreviousLocationInAllExpressions(previousLocation, newLocation);
+                    }
+                }
+            }).start();
+        }
     }
 
     public OutputDataMapTableView createNewOutputTableView(Control previousControl, AbstractDataMapTable abstractDataMapTable,

@@ -65,6 +65,12 @@ public class PerlLanguage extends AbstractLanguage {
     /**
      * {0} and {1} must be replaced respectively by the table name and the column name.
      */
+    private static final String SUBST_PATTERN_FOR_REPLACE_LOCATION = PREFIX_TABLE_NAME_REGEXP + "(\\s*){0}(\\s*)"
+     + SUFFIX_TABLE_NAME_REGEXP +  "(\\s*)" + PREFIX_FIELD_NAME_REGEXP + "(\\s*){1}(\\s*)" + SUFFIX_FIELD_NAME_REGEXP;
+    
+    /**
+     * {0} and {1} must be replaced respectively by the table name and the column name.
+     */
     private static final String TEMPLATE_TABLE_VARIABLE = PREFIX_TABLE_NAME + "{0}";
 
     /**
@@ -131,12 +137,21 @@ public class PerlLanguage extends AbstractLanguage {
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.designer.mapper.model.language.ILanguage#getSUBST_PATTERN_FOR_PREFIX_COLUMN_NAME()
+     * @see org.talend.designer.mapper.model.language.ILanguage#getSubstPatternForPrefixColumnName()
      */
     public String getSubstPatternForPrefixColumnName() {
         return SUBST_PATTERN_FOR_PREFIX_COLUMN_NAME;
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.mapper.model.language.ILanguage#getSubstPatternForReplaceLocation()
+     */
+    public String getSubstPatternForReplaceLocation() {
+        return SUBST_PATTERN_FOR_REPLACE_LOCATION;
+    }
+    
     /*
      * (non-Javadoc)
      * 

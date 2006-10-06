@@ -312,8 +312,7 @@ public class MapperComponent extends AbstractExternalNode {
             tables.addAll(new ArrayList<ExternalMapperTable>(externalData.getVarsTables()));
             tables.addAll(new ArrayList<ExternalMapperTable>(externalData.getOutputTables()));
             DataMapExpressionParser dataMapExpressionParser = new DataMapExpressionParser(LanguageProvider.getCurrentLanguage());
-            TableEntryLocation oldLocation = new TableEntryLocation();
-            oldLocation.tableName = conectionName;
+            TableEntryLocation oldLocation = new TableEntryLocation(conectionName, oldColumnName);
             TableEntryLocation newLocation = new TableEntryLocation();
             newLocation.tableName = conectionName;
             // loop on all tables
@@ -322,14 +321,17 @@ public class MapperComponent extends AbstractExternalNode {
                 // loop on all entries of current table
                 for (ExternalMapperTableEntry entry : metadataTableEntries) {
                     String currentExpression = entry.getExpression();
+                    if (currentExpression == null || currentExpression.length() == 0) {
+                        continue;
+                    }
                     TableEntryLocation[] tableEntryLocations = dataMapExpressionParser.parseTableEntryLocations(currentExpression);
                     // loop on all locations of current expression
                     for (int i = 0; i < tableEntryLocations.length; i++) {
                         TableEntryLocation currentLocation = tableEntryLocations[i];
-                        if (currentLocation.tableName.equals(conectionName) && currentLocation.columnName.equals(oldColumnName)) {
+                        if (currentLocation.equals(oldLocation)) {
                             newLocation.columnName = newColumnName;
                             currentExpression = dataMapExpressionParser
-                                    .replaceLocation(entry.getExpression(), currentLocation, newLocation);
+                                    .replaceLocation(currentExpression, currentLocation, newLocation);
                         }
                     } // for (int i = 0; i < tableEntryLocations.length; i++) {
                     entry.setExpression(currentExpression);

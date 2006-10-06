@@ -49,6 +49,8 @@ public interface ILanguage {
 
     public String getSubstPatternForPrefixColumnName();
 
+    public String getSubstPatternForReplaceLocation();
+    
     public String getTemplateTableColumnVariable();
 
     public String getTemplateTableVariable();
