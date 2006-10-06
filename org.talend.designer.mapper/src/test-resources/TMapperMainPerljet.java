@@ -61,9 +61,11 @@ public class TMapperMainPerljet {
         List<IConnection> connections;
         ExternalMapperData data;
         if (node != null) {
+            // normal use
             connections = (List<IConnection>) node.getIncomingConnections();
             data = (ExternalMapperData) node.getExternalData();
         } else {
+            // Stand alone / tests
             org.talend.designer.mapper.MapperMain.setStandAloneMode(true);
             MapperDataTestGenerator testGenerator = new MapperDataTestGenerator(LanguageProvider.getCurrentLanguage(), false);
             connections = testGenerator.getConnectionList();
@@ -90,7 +92,10 @@ public class TMapperMainPerljet {
         gm.setInputTables(inputTables);
         gm.setVarsTables(varsTables);
 
-        // inputs
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////
+        // INPUTS : initialization of input arrays from expressions keys and hashes 
+        // 
         sb.append(CR + gm.indent(indent));
         sb.append(CR + gm.indent(indent) + "###############################");
         sb.append(CR + gm.indent(indent) + "# Input tables ");
@@ -144,7 +149,14 @@ public class TMapperMainPerljet {
         } // for (IConnection connection : connections) {
 
         sb.append(CR + gm.indent(indent) + "###############################");
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
+        
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////
+        // VARIABLES
+        // 
         sb.append(CR + gm.indent(indent));
         sb.append(CR + gm.indent(indent) + "###############################");
         sb.append(CR + gm.indent(indent) + "# Vars tables");
@@ -178,11 +190,19 @@ public class TMapperMainPerljet {
             }
         }
         sb.append(CR + gm.indent(indent) + "###############################");
-
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////
+        
+        
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////
+        // OUTPPUTS
+        // 
         sb.append(CR + gm.indent(indent));
         sb.append(CR + gm.indent(indent) + "###############################");
 
         ArrayList<ExternalMapperTable> outputTablesSortedByReject = new ArrayList<ExternalMapperTable>(outputTables);
+        // sorting outputs : not rejects first, rejects after
         Collections.sort(outputTablesSortedByReject, new Comparator<ExternalMapperTable>() {
 
             public int compare(ExternalMapperTable o1, ExternalMapperTable o2) {
@@ -201,31 +221,36 @@ public class TMapperMainPerljet {
         boolean lastValueReject = false;
         boolean oneConstraintForNotRejectTable = false;
         boolean serialRejectCanBeWrite = false;
-
         boolean allNotRejectTablesHaveConstraint = true;
         boolean atLeastOneReject = false;
         boolean closeTestRejectConditionsBracket = false;
+        
         int lstSize = outputTablesSortedByReject.size();
+        /////////////////////////////////////////////////////////////////////
+        // init of allNotRejectTablesHaveConstraint and atLeastOneReject
         for (int i = 0; i < lstSize; i++) {
             ExternalMapperTable outputTable = (ExternalMapperTable) outputTablesSortedByReject.get(i);
             List<ExternalMapperTableEntry> columnsEntries = outputTable.getMetadataTableEntries();
             List<ExternalMapperTableEntry> constraints = outputTable.getConstraintTableEntries();
             boolean hasConstraint = constraints != null && constraints.size() > 0 && !gm.checkConstraintsAreEmpty(outputTable);
-            if (columnsEntries.size() > 0) {
+            if (columnsEntries != null && columnsEntries.size() > 0) {
                 if (!hasConstraint && !outputTable.isReject()) {
                     allNotRejectTablesHaveConstraint = false;
-                    // break;
                 }
                 if (outputTable.isReject()) {
                     atLeastOneReject = true;
                 }
             }
         }
+        /////////////////////////////////////////////////////////////////////
 
         if (allNotRejectTablesHaveConstraint && atLeastOneReject) {
+            // write $oneNotRejectConstraintValidated = false;
             sb.append(CR + gm.indent(indent) + "$" + ONE_NOT_REJECT_CONSTRAINT_VALIDATED_VAR_NAME + " = false;");
         }
 
+        /////////////////////////////////////////////////////////////////////
+        // run through output tables list for generating intilization of outputs arrays
         for (int indexCurrentTable = 0; indexCurrentTable < lstSize; indexCurrentTable++) {
             ExternalMapperTable outputTable = (ExternalMapperTable) outputTablesSortedByReject.get(indexCurrentTable);
             List<ExternalMapperTableEntry> outputTableEntries = outputTable.getMetadataTableEntries();
@@ -246,20 +271,23 @@ public class TMapperMainPerljet {
 
             if (!currentIsReject && outputTableEntries.size() > 0) {
                 sb.append(CR + gm.indent(indent) + "# Output table: '" + outputTableName + "'");
+                // write output array initialization with empty list
                 sb.append(CR + gm.indent(indent) + gm.buildNewArrayDeclaration(outputTableName, indent));
 
             } else if (rejectValueHasJustChanged) {
                 sb.append(CR + gm.indent(indent) + "###### START REJECTS ##### ");
-                // init array rejects declaration
+                // write outputs arrays initialization with empty list for reject tables
                 for (int indexReject = indexCurrentTable; indexReject < lstSize; indexReject++) {
                     ExternalMapperTable outputRejectTable = (ExternalMapperTable) outputTablesSortedByReject.get(indexReject);
-                    if (outputRejectTable.getMetadataTableEntries().size() > 0) {
+                    List<ExternalMapperTableEntry> metadataTableEntries = outputRejectTable.getMetadataTableEntries();
+                    if (metadataTableEntries != null  && metadataTableEntries.size() > 0) {
                         sb.append(CR + gm.indent(indent) + "# Output reject table: '" + outputRejectTable.getName() + "'");
                         sb.append(CR + gm.indent(indent) + gm.buildNewArrayDeclaration(outputRejectTable.getName(), indent));
                     }
                 }
             }
 
+            // write condition of rejects code execution  
             if (rejectValueHasJustChanged && atLeastOneReject) {
                 serialRejectCanBeWrite = allNotRejectTablesHaveConstraint;
                 if (currentIsReject && serialRejectCanBeWrite) {
@@ -270,6 +298,7 @@ public class TMapperMainPerljet {
 
             }
 
+            // write condition of constraints and code to execute
             if (!currentIsReject || rejectValueHasJustChanged && oneConstraintForNotRejectTable || serialRejectCanBeWrite
                     && currentIsReject) {
 
@@ -312,6 +341,8 @@ public class TMapperMainPerljet {
             sb.append(CR + gm.indent(indent) + "}");
         }
         sb.append(CR + gm.indent(indent) + "###############################");
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
         // end of code to copy in template
         // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
