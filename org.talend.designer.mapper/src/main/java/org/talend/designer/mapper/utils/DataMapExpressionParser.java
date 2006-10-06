@@ -119,34 +119,18 @@ public class DataMapExpressionParser {
         return returnedExpression;
     }
 
-    // /**
-    // *
-    // * DOC amaumont Comment method "retrieveCurrentSource".
-    // * @param text
-    // * @param cursorPosition
-    // * @return StringCouple
-    // */
-    // public static StringMetadataCouple retrieveCurrentSource(final String text, final int cursorPosition) {
-    //        
-    // }
-    //
-    // public int searchChar(final String text, char searchedChar, boolean ascDirection, char[] stopWhen) {
-    //     
-    // byte[] bytes = text.getBytes();
-    // int currentPosition = cursorPosition;
-    // char previousChar = (char)bytes[cursorPosition-1];
-    // while(true) {
-    //            
-    // currentPosition--;
-    // if(currentPosition < 0) {
-    // break;
-    // }
-    // char currentChar = (char)bytes[currentPosition];
-    // if(currentChar == '$') {
-    //                
-    // }
-    //            
-    // }
-    //   
-    // }
+    public String replaceLocation(String expression, TableEntryLocation oldLocation, TableEntryLocation newLocation) {
+        String returnedExpression = expression;
+        recompilePatternIfNecessary(StringHelper.replacePrms(language.getSubstPatternForPrefixColumnName(), new Object[] {
+                oldLocation.tableName, oldLocation.columnName }));
+        if (returnedExpression != null) {
+            matcher.setMultiline(true);
+            Perl5Substitution substitution = new Perl5Substitution(language.getPrefixTableRegexp() + newLocation.tableName
+                    + language.getSuffixTableRegexp() + language.getPrefixFieldRegexp() + newLocation.columnName
+                    + language.getSuffixFieldRegexp(), Perl5Substitution.INTERPOLATE_ALL);
+            returnedExpression = Util.substitute(matcher, pattern, substitution, returnedExpression, Util.SUBSTITUTE_ALL);
+        }
+        return returnedExpression;
+    }
+
 }

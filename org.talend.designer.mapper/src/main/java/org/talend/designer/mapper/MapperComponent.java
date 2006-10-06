@@ -47,6 +47,10 @@ import org.talend.designer.codegen.CodeGenerator;
 import org.talend.designer.codegen.exception.CodeGeneratorException;
 import org.talend.designer.mapper.external.data.ExternalMapperData;
 import org.talend.designer.mapper.external.data.ExternalMapperTable;
+import org.talend.designer.mapper.external.data.ExternalMapperTableEntry;
+import org.talend.designer.mapper.language.LanguageProvider;
+import org.talend.designer.mapper.model.tableentry.TableEntryLocation;
+import org.talend.designer.mapper.utils.DataMapExpressionParser;
 
 /**
  * DOC amaumont class global comment. Detailled comment <br/>
@@ -255,6 +259,9 @@ public class MapperComponent extends AbstractExternalNode {
     }
 
     public void renameInputConnection(String oldName, String newName) {
+        if (oldName == null || newName == null) {
+            throw new NullPointerException();
+        }
         if (externalData != null) {
             List<ExternalMapperTable> inputTables = externalData.getInputTables();
             for (ExternalMapperTable table : inputTables) {
@@ -267,6 +274,9 @@ public class MapperComponent extends AbstractExternalNode {
     }
 
     public void renameOutputConnection(String oldName, String newName) {
+        if (oldName == null || newName == null) {
+            throw new NullPointerException();
+        }
         if (externalData != null) {
             List<ExternalMapperTable> outputTables = externalData.getOutputTables();
             for (ExternalMapperTable table : outputTables) {
@@ -275,6 +285,57 @@ public class MapperComponent extends AbstractExternalNode {
                     break;
                 }
             }
+        }
+    }
+
+    public void renameMetadataColumnName(String conectionName, String oldColumnName, String newColumnName) {
+        if (conectionName == null || oldColumnName == null || newColumnName == null) {
+            throw new NullPointerException();
+        }
+        if (externalData != null) {
+            // rename metadata column name
+            List<ExternalMapperTable> inputTables = externalData.getInputTables();
+            for (ExternalMapperTable table : inputTables) {
+                if (table.getName().equals(conectionName)) {
+                    List<ExternalMapperTableEntry> metadataTableEntries = table.getMetadataTableEntries();
+                    for (ExternalMapperTableEntry entry : metadataTableEntries) {
+                        if (entry.getName().equals(oldColumnName)) {
+                            entry.setName(newColumnName);
+                            break;
+                        }
+                    }
+                }
+            }
+
+            // replace old location by new location for all expressions in mapper
+            List<ExternalMapperTable> tables = new ArrayList<ExternalMapperTable>(externalData.getInputTables());
+            tables.addAll(new ArrayList<ExternalMapperTable>(externalData.getVarsTables()));
+            tables.addAll(new ArrayList<ExternalMapperTable>(externalData.getOutputTables()));
+            DataMapExpressionParser dataMapExpressionParser = new DataMapExpressionParser(LanguageProvider.getCurrentLanguage());
+            TableEntryLocation oldLocation = new TableEntryLocation();
+            oldLocation.tableName = conectionName;
+            TableEntryLocation newLocation = new TableEntryLocation();
+            newLocation.tableName = conectionName;
+            // loop on all tables
+            for (ExternalMapperTable table : tables) {
+                List<ExternalMapperTableEntry> metadataTableEntries = table.getMetadataTableEntries();
+                // loop on all entries of current table
+                for (ExternalMapperTableEntry entry : metadataTableEntries) {
+                    String currentExpression = entry.getExpression();
+                    TableEntryLocation[] tableEntryLocations = dataMapExpressionParser.parseTableEntryLocations(currentExpression);
+                    // loop on all locations of current expression
+                    for (int i = 0; i < tableEntryLocations.length; i++) {
+                        TableEntryLocation currentLocation = tableEntryLocations[i];
+                        if (currentLocation.tableName.equals(conectionName) && currentLocation.columnName.equals(oldColumnName)) {
+                            newLocation.columnName = newColumnName;
+                            currentExpression = dataMapExpressionParser
+                                    .replaceLocation(entry.getExpression(), currentLocation, newLocation);
+                        }
+                    } // for (int i = 0; i < tableEntryLocations.length; i++) {
+                    entry.setExpression(currentExpression);
+                } // for (ExternalMapperTableEntry entry : metadataTableEntries) {
+            } // for (ExternalMapperTable table : tables) {
+
         }
     }
 
@@ -289,5 +350,4 @@ public class MapperComponent extends AbstractExternalNode {
         toReturn.add(new Problem(null, "Pas de réel problème", ProblemStatus.WARNING));
         return toReturn;
     }
-
 }

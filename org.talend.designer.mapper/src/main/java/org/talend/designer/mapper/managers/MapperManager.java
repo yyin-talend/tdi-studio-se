@@ -47,6 +47,9 @@ import org.talend.core.model.process.IProcess;
 import org.talend.core.ui.metadata.editor.MetadataTableEditorView;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.mapper.MapperComponent;
+import org.talend.designer.mapper.external.data.ExternalMapperTable;
+import org.talend.designer.mapper.external.data.ExternalMapperTableEntry;
+import org.talend.designer.mapper.language.LanguageProvider;
 import org.talend.designer.mapper.model.table.AbstractDataMapTable;
 import org.talend.designer.mapper.model.table.InputTable;
 import org.talend.designer.mapper.model.table.OutputTable;
@@ -65,6 +68,7 @@ import org.talend.designer.mapper.ui.visualmap.table.DataMapTableView;
 import org.talend.designer.mapper.ui.visualmap.table.EntryState;
 import org.talend.designer.mapper.ui.visualmap.zone.Zone;
 import org.talend.designer.mapper.ui.visualmap.zone.scrollable.TablesZoneView;
+import org.talend.designer.mapper.utils.DataMapExpressionParser;
 import org.talend.repository.model.RepositoryConstants;
 import org.talend.repository.model.ResourceModelUtils;
 import org.talend.repository.utils.RepositoryPathProvider;
@@ -345,13 +349,7 @@ public class MapperManager {
      * @param newColumnName
      */
     public void changeColumnName(ITableEntry dataMapTableEntry, String newColumnName) {
-        // tableEntriesManager.remove(dataMapTableEntry);
-        // dataMapTableEntry.getMetadataColumn().setLabel(newColumnName);
-        // tableEntriesManager.addITableEntry(dataMapTableEntry);
         tableEntriesManager.renameEntryName(dataMapTableEntry, newColumnName);
-        // getUiManager().processExpression(dataMapTableEntry.getExpression(),
-        // retrieveDataMapTableView(dataMapTableEntry), dataMapTableEntry, false);
-
     }
 
     public void removeTableEntry(ITableEntry dataMapTableEntry) {
@@ -583,7 +581,7 @@ public class MapperManager {
         uiManager.processNewExpression(text, currentEntry, false);
     }
 
-    public MapperComponent getConnector() {
+    public MapperComponent getComponent() {
         return this.mapperComponent;
     }
 
@@ -683,6 +681,46 @@ public class MapperManager {
                 // }
             }
         }
+    }
+
+    /**
+     * DOC amaumont Comment method "replacePreviousLocationInAllExpressions".
+     */
+    public void replacePreviousLocationInAllExpressions(TableEntryLocation previousLocation, TableEntryLocation newLocation) {
+        
+        
+        Collection<AbstractDataMapTable> tablesData = getTablesData();
+        for (AbstractDataMapTable table : tablesData) {
+            List<IColumnEntry> columnEntries = table.getColumnEntries();
+            for (IColumnEntry entry : columnEntries) {
+                
+                
+//                DataMapExpressionParser dataMapExpressionParser = new DataMapExpressionParser(LanguageProvider.getCurrentLanguage());
+//                TableEntryLocation oldLocation = new TableEntryLocation();
+//                oldLocation.tableName = conectionName;
+//                TableEntryLocation newLocation = new TableEntryLocation();
+//                newLocation.tableName = conectionName;
+//                // loop on all tables
+//                for (ExternalMapperTable table : tables) {
+//                    List<ExternalMapperTableEntry> metadataTableEntries = table.getMetadataTableEntries();
+//                    // loop on all entries of current table
+//                    for (ExternalMapperTableEntry entry : metadataTableEntries) {
+//                        String currentExpression = entry.getExpression();
+//                        TableEntryLocation[] tableEntryLocations = dataMapExpressionParser.parseTableEntryLocations(currentExpression);
+//                        // loop on all locations of current expression
+//                        for (int i = 0; i < tableEntryLocations.length; i++) {
+//                            TableEntryLocation currentLocation = tableEntryLocations[i];
+//                            if (currentLocation.tableName.equals(conectionName) && currentLocation.columnName.equals(oldColumnName)) {
+//                                newLocation.columnName = newColumnName;
+//                                currentExpression = dataMapExpressionParser
+//                                        .replaceLocation(entry.getExpression(), currentLocation, newLocation);
+//
+//                expression
+//                entry.getExpression()
+            }
+            
+        }
+        
     }
 
     // public Object getEmfParameterValue(String parameterName) {
