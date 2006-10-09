@@ -193,14 +193,6 @@ public class DatabaseTableForm extends AbstractForm {
      */
     public void initialize() {
 
-        // init the nodes of the left tree navigator
-        // initTreeNavigatorNodes();
-        //
-        // init existingNames
-        // String[] exisNames = TableHelper.getTableNames(getConnection(), metadataTable.getLabel());
-        // this.existingNames = existingNames == null ? Collections.EMPTY_LIST : Arrays.asList(exisNames);
-        //
-        // initMetadataForm();
     }
 
     /**
@@ -212,10 +204,6 @@ public class DatabaseTableForm extends AbstractForm {
 
         // init the nodes of the left tree navigator
         initTreeNavigatorNodes();
-
-        // init existingNames
-        // initExistingNames();
-
         initMetadataForm();
     }
 
@@ -233,10 +221,9 @@ public class DatabaseTableForm extends AbstractForm {
         }
 
         tableNavigator.removeAll();
-        // TreeItem navigationRoot = new TreeItem(treeNavigator, SWT.NULL);
-        // navigationRoot.setText(connectionItem.getProperty().getLabel());
 
         String[] allTableLabel = TableHelper.getTableNames(getConnection());
+        Arrays.sort(allTableLabel);
 
         for (int i = 0; i < allTableLabel.length; i++) {
             if (allTableLabel[i].equals(metadataTable.getLabel())) {
@@ -248,7 +235,6 @@ public class DatabaseTableForm extends AbstractForm {
                 subItem.setText(allTableLabel[i]);
             }
         }
-        // navigationRoot.setExpanded(true);
     }
 
     /**
@@ -301,13 +287,6 @@ public class DatabaseTableForm extends AbstractForm {
         nameText = new LabelledText(composite1, Messages.getString("DatabaseTableForm.name"), 2);
         commentText = new LabelledText(composite1, Messages.getString("DatabaseTableForm.comment"), 2);
 
-        // Group Table Settings
-//        Group groupTableSettings = Form.createGroup(rightComposite, 3,
-//                Messages.getString("DatabaseTableForm.groupTableSettings"), tableSettingsCompositeHeight);
-
-        // Composite TableSettings
-//        Composite compositeTableSettings = Form.startNewDimensionnedGridLayout(groupTableSettings, 3, rightCompositeWidth,
-//                tableSettingsCompositeHeight);
         // Combo Table
         tableCombo = new LabelledCombo(composite1, Messages.getString("DatabaseTableForm.table"), Messages
                 .getString("DatabaseTableForm.tableTip"), itemTableName, true);
@@ -369,7 +348,7 @@ public class DatabaseTableForm extends AbstractForm {
         gridData1.horizontalSpan = 2;
         scrolledCompositeFileViewer.setLayoutData(gridData1);
         
-        TableViewerCreator tableViewerCreator = new TableViewerCreator(scrolledCompositeFileViewer);
+        tableViewerCreator = new TableViewerCreator(scrolledCompositeFileViewer);
         tableViewerCreator.setHeaderVisible(false);
         tableViewerCreator.setAllColumnsResizable(false);
         tableViewerCreator.setBorderVisible(false);
