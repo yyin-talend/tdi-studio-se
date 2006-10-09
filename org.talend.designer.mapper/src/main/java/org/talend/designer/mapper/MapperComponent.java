@@ -320,25 +320,35 @@ public class MapperComponent extends AbstractExternalNode {
                 List<ExternalMapperTableEntry> metadataTableEntries = table.getMetadataTableEntries();
                 // loop on all entries of current table
                 for (ExternalMapperTableEntry entry : metadataTableEntries) {
-                    String currentExpression = entry.getExpression();
-                    if (currentExpression == null || currentExpression.length() == 0) {
-                        continue;
-                    }
-                    TableEntryLocation[] tableEntryLocations = dataMapExpressionParser.parseTableEntryLocations(currentExpression);
-                    // loop on all locations of current expression
-                    for (int i = 0; i < tableEntryLocations.length; i++) {
-                        TableEntryLocation currentLocation = tableEntryLocations[i];
-                        if (currentLocation.equals(oldLocation)) {
-                            newLocation.columnName = newColumnName;
-                            currentExpression = dataMapExpressionParser
-                                    .replaceLocation(currentExpression, currentLocation, newLocation);
-                        }
-                    } // for (int i = 0; i < tableEntryLocations.length; i++) {
-                    entry.setExpression(currentExpression);
+                    replaceLocation(oldLocation, newLocation, newColumnName, entry, dataMapExpressionParser);
                 } // for (ExternalMapperTableEntry entry : metadataTableEntries) {
+                if (table.getConstraintTableEntries() != null) {
+                    for (ExternalMapperTableEntry entry : table.getConstraintTableEntries()) {
+                        replaceLocation(oldLocation, newLocation, newColumnName, entry, dataMapExpressionParser);
+                    }
+                }
             } // for (ExternalMapperTable table : tables) {
 
         }
+    }
+
+    public void replaceLocation(TableEntryLocation oldLocation, TableEntryLocation newLocation, String newColumnName,
+            ExternalMapperTableEntry entry, DataMapExpressionParser dataMapExpressionParser) {
+        String currentExpression = entry.getExpression();
+        if (currentExpression == null || currentExpression.length() == 0) {
+            return;
+        }
+        TableEntryLocation[] tableEntryLocations = dataMapExpressionParser.parseTableEntryLocations(currentExpression);
+        // loop on all locations of current expression
+        for (int i = 0; i < tableEntryLocations.length; i++) {
+            TableEntryLocation currentLocation = tableEntryLocations[i];
+            if (currentLocation.equals(oldLocation)) {
+                newLocation.columnName = newColumnName;
+                currentExpression = dataMapExpressionParser.replaceLocation(currentExpression, currentLocation, newLocation);
+            }
+        } // for (int i = 0; i < tableEntryLocations.length; i++) {
+        entry.setExpression(currentExpression);
+
     }
 
     /*
