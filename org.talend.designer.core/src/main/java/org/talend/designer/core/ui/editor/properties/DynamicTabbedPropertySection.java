@@ -114,6 +114,7 @@ import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IContextManager;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.IExternalNode;
+import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.ProcessItem;
@@ -241,7 +242,8 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                             Object oldValue = elemParam.getValue();
                             String text = ((Text) ctrl).getText();
                             if (!oldValue.equals(text)) {
-                                TextPropertyChangeUtil.changeText(((Text) ctrl).getDisplay(), elem, name, text, getCommandStack());
+                                TextPropertyChangeUtil
+                                        .changeText(((Text) ctrl).getDisplay(), elem, name, text, getCommandStack());
                                 // Command cmd = new PropertyChangeCommand(elem, name, text);
                                 // getCommandStack().execute(cmd);
                             }
@@ -356,8 +358,8 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
 
                 MetadataDialog metaDialog;
                 if (inputMetadata != null) {
-                    metaDialog = new MetadataDialog(composite.getShell(), inputMetaCopy, inputMetadata.getTableName(), outputMetaCopy, node
-                            .getUniqueName());
+                    metaDialog = new MetadataDialog(composite.getShell(), inputMetaCopy, inputMetadata.getTableName(),
+                            outputMetaCopy, node.getUniqueName());
                 } else {
                     metaDialog = new MetadataDialog(composite.getShell(), outputMetaCopy, node.getUniqueName());
                 }
@@ -376,6 +378,18 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                     }
 
                     if (modified) {
+                        // Manage columns names changed :
+                        // TODO SML Ask user by a dialogbox
+                        List<? extends IConnection> outgoingConnections = node.getOutgoingConnections();
+                        for (IConnection currentConnection : outgoingConnections) {
+                            INode mynode = currentConnection.getTarget();
+                            for (IMetadataColumn column : metaDialog.changedNameColumns.keySet()) {
+                                mynode.renameMetadataColumnName(currentConnection.getName(), metaDialog.changedNameColumns
+                                        .get(column), column.getLabel());
+                            }
+                        }
+                        // End Manage columns names changed
+
                         Node inputNode = null;
                         if (inputConec != null) {
                             inputNode = inputConec.getSource();
@@ -444,7 +458,8 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                                         IElementParameter param = elem.getElementParameters().get(i);
                                         if (param.getName().equals(name)) {
                                             for (int j = 0; j < param.getListItemsValue(currentLanguage).length; j++) {
-                                                if (((CCombo) ctrl).getText().equals(param.getListItemsDisplayName(currentLanguage)[j])) {
+                                                if (((CCombo) ctrl).getText().equals(
+                                                        param.getListItemsDisplayName(currentLanguage)[j])) {
                                                     value = (String) param.getListItemsValue(currentLanguage)[j];
                                                 }
                                             }
@@ -458,7 +473,8 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                                             } else {
                                                 repositoryMetadata = new MetadataTable();
                                             }
-                                            Command cmd = new SchemaPropertyChangeCommand((Node) elem, name, value, repositoryMetadata);
+                                            Command cmd = new SchemaPropertyChangeCommand((Node) elem, name, value,
+                                                    repositoryMetadata);
                                             getCommandStack().execute(cmd);
                                         }
                                     } else if (name.equals(EParameterName.REPOSITORY_PROPERTY_TYPE.getName())) {
@@ -478,8 +494,8 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                                         updateRepositoryList();
 
                                         String connectionSelected;
-                                        connectionSelected = (String) elem.getPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE
-                                                .getName());
+                                        connectionSelected = (String) elem
+                                                .getPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE.getName());
                                         if (repositoryConnectionItemMap.containsKey(connectionSelected)) {
                                             repositoryConnection = (org.talend.core.model.metadata.builder.connection.Connection) repositoryConnectionItemMap
                                                     .get(connectionSelected).getConnection();
@@ -505,7 +521,8 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                                             } else {
                                                 repositoryMetadata = new MetadataTable();
                                             }
-                                            Command cmd = new SchemaPropertyChangeCommand((Node) elem, name, value, repositoryMetadata);
+                                            Command cmd = new SchemaPropertyChangeCommand((Node) elem, name, value,
+                                                    repositoryMetadata);
                                             getCommandStack().execute(cmd);
                                         }
                                     } else {
@@ -544,7 +561,8 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
         List<String> processNameList = new ArrayList<String>();
         List<String> processValueList = new ArrayList<String>();
         processMap = new HashMap<String, IRepositoryObject>();
-        RepositoryContext repositoryContext = (RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY);
+        RepositoryContext repositoryContext = (RepositoryContext) CorePlugin.getContext().getProperty(
+                Context.REPOSITORY_CONTEXT_KEY);
         IRepositoryFactory factory = RepositoryFactoryProvider.getInstance(repositoryContext);
         try {
             RootContainer<String, IRepositoryObject> processContainer = factory.getProcess();
@@ -591,7 +609,8 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
     private void updateContextList() {
         List<String> contextNameList = new ArrayList<String>();
         List<String> contextValueList = new ArrayList<String>();
-        RepositoryContext repositoryContext = (RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY);
+        RepositoryContext repositoryContext = (RepositoryContext) CorePlugin.getContext().getProperty(
+                Context.REPOSITORY_CONTEXT_KEY);
         IRepositoryFactory factory = RepositoryFactoryProvider.getInstance(repositoryContext);
 
         String selectedProcess = null;
@@ -648,7 +667,8 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
     }
 
     private void updateRepositoryList() {
-        RepositoryContext repositoryContext = (RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY);
+        RepositoryContext repositoryContext = (RepositoryContext) CorePlugin.getContext().getProperty(
+                Context.REPOSITORY_CONTEXT_KEY);
         IRepositoryFactory factory = RepositoryFactoryProvider.getInstance(repositoryContext);
         List<ConnectionItem> metadataConnectionsItem = null;
         String[] repositoryTableNameList = new String[] {};
@@ -742,7 +762,9 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                 param.setListItemsValue(repositoryConnectionValueList);
                 if (!repositoryConnectionItemMap.keySet().contains(param.getValue())) {
                     if (repositoryConnectionNameList.length > 0) {
-                        elem.setPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE.getName(), repositoryConnectionValueList[0]);
+                        elem
+                                .setPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE.getName(),
+                                        repositoryConnectionValueList[0]);
                     }
                 }
             }
@@ -814,8 +836,8 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
 
     }
 
-    private Control addVersion(final Composite subComposite, final IElementParameter param, final int numInRow, final int nbInRow,
-            final int top, final Control lastControl) {
+    private Control addVersion(final Composite subComposite, final IElementParameter param, final int numInRow,
+            final int nbInRow, final int top, final Control lastControl) {
         Button btnUp, btnDown;
         Text labelText;
 
@@ -848,7 +870,8 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
 
         DecoratedField dField = new DecoratedField(subComposite, SWT.BORDER, new TextControlCreator());
         if (param.isRequired()) {
-            FieldDecoration decoration = FieldDecorationRegistry.getDefault().getFieldDecoration(FieldDecorationRegistry.DEC_REQUIRED);
+            FieldDecoration decoration = FieldDecorationRegistry.getDefault().getFieldDecoration(
+                    FieldDecorationRegistry.DEC_REQUIRED);
             dField.addFieldDecoration(decoration, SWT.RIGHT | SWT.TOP, false);
         }
 
@@ -901,8 +924,8 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
         return btnDown;
     }
 
-    private Control addDirectory(final Composite subComposite, final IElementParameter param, final int numInRow, final int nbInRow,
-            final int top, final Control lastControl) {
+    private Control addDirectory(final Composite subComposite, final IElementParameter param, final int numInRow,
+            final int nbInRow, final int top, final Control lastControl) {
         Button btnEdit;
         Text labelText;
 
@@ -924,7 +947,8 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
 
         DecoratedField dField = new DecoratedField(subComposite, SWT.BORDER, new TextControlCreator());
         if (param.isRequired()) {
-            FieldDecoration decoration = FieldDecorationRegistry.getDefault().getFieldDecoration(FieldDecorationRegistry.DEC_REQUIRED);
+            FieldDecoration decoration = FieldDecorationRegistry.getDefault().getFieldDecoration(
+                    FieldDecorationRegistry.DEC_REQUIRED);
             dField.addFieldDecoration(decoration, SWT.RIGHT | SWT.TOP, false);
         }
 
@@ -1011,7 +1035,8 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
 
         DecoratedField dField = new DecoratedField(subComposite, SWT.BORDER, new TextControlCreator());
         if (param.isRequired()) {
-            FieldDecoration decoration = FieldDecorationRegistry.getDefault().getFieldDecoration(FieldDecorationRegistry.DEC_REQUIRED);
+            FieldDecoration decoration = FieldDecorationRegistry.getDefault().getFieldDecoration(
+                    FieldDecorationRegistry.DEC_REQUIRED);
             dField.addFieldDecoration(decoration, SWT.RIGHT | SWT.TOP, false);
         }
         if (param.isRepositoryValueUsed()) {
@@ -1081,8 +1106,8 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
         return btnEdit;
     }
 
-    private Control addExternal(final Composite subComposite, final IElementParameter param, final int numInRow, final int nbInRow,
-            final int top, final Control lastControl) {
+    private Control addExternal(final Composite subComposite, final IElementParameter param, final int numInRow,
+            final int nbInRow, final int top, final Control lastControl) {
         Button btnEdit;
 
         btnEdit = getWidgetFactory().createButton(subComposite, "", SWT.PUSH); //$NON-NLS-1$
@@ -1142,8 +1167,8 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
         return btnEdit;
     }
 
-    private Control addSchemaType(final Composite subComposite, final IElementParameter param, final int numInRow, final int nbInRow,
-            final int top, final Control lastControl) {
+    private Control addSchemaType(final Composite subComposite, final IElementParameter param, final int numInRow,
+            final int nbInRow, final int top, final Control lastControl) {
 
         FormData data;
         Control lastControlUsed;
@@ -1274,23 +1299,23 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
 
         String fileName = (String) param.getValue();
         String filePath = RepositoryPathProvider.getPathFileName(RepositoryConstants.IMG_DIRECTORY, fileName).toPortableString();
-        
+
         if (filePath != null) {
             File fileOrFolder = new java.io.File(filePath);
-            if(!fileOrFolder.isFile() || !fileOrFolder.canRead()) {
+            if (!fileOrFolder.isFile() || !fileOrFolder.canRead()) {
                 return lastControl;
             }
             final Composite compositeImage = new Composite(subComposite, SWT.BORDER);
             final Image image = new Image(subComposite.getDisplay(), filePath);
             compositeImage.addDisposeListener(new DisposeListener() {
-                
+
                 public void widgetDisposed(DisposeEvent e) {
                     image.dispose();
                     compositeImage.removeDisposeListener(this);
                 }
-                
+
             });
-            
+
             CLabel labelLabel = getWidgetFactory().createCLabel(subComposite, param.getDisplayName() + " :");
             FormData formDataLabel = new FormData();
             labelLabel.setVisible(true);
@@ -1304,7 +1329,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                 formDataLabel.top = new FormAttachment(0, top);
             }
             labelLabel.setLayoutData(formDataLabel);
-            
+
             compositeImage.setToolTipText(param.getDisplayName());
             Point size = new Point(image.getImageData().width, image.getImageData().height);
             FormData formData = new FormData(size.x, size.y);
@@ -1325,7 +1350,8 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
 
         final DecoratedField dField = new DecoratedField(subComposite, SWT.BORDER, new TextControlCreator());
         if (param.isRequired()) {
-            FieldDecoration decoration = FieldDecorationRegistry.getDefault().getFieldDecoration(FieldDecorationRegistry.DEC_REQUIRED);
+            FieldDecoration decoration = FieldDecorationRegistry.getDefault().getFieldDecoration(
+                    FieldDecorationRegistry.DEC_REQUIRED);
             dField.addFieldDecoration(decoration, SWT.RIGHT | SWT.TOP, false);
         }
         if (param.isRepositoryValueUsed()) {
@@ -1405,7 +1431,8 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
         };
         DecoratedField dField = new DecoratedField(subComposite, SWT.BORDER, cbCtrl);
         if (param.isRequired()) {
-            FieldDecoration decoration = FieldDecorationRegistry.getDefault().getFieldDecoration(FieldDecorationRegistry.DEC_REQUIRED);
+            FieldDecoration decoration = FieldDecorationRegistry.getDefault().getFieldDecoration(
+                    FieldDecorationRegistry.DEC_REQUIRED);
             dField.addFieldDecoration(decoration, SWT.RIGHT | SWT.TOP, false);
         }
         if (param.isRepositoryValueUsed()) {
@@ -1493,7 +1520,8 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
         DecoratedField dField = new DecoratedField(subComposite, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL | SWT.H_SCROLL,
                 new TextControlCreator());
         if (param.isRequired()) {
-            FieldDecoration decoration = FieldDecorationRegistry.getDefault().getFieldDecoration(FieldDecorationRegistry.DEC_REQUIRED);
+            FieldDecoration decoration = FieldDecorationRegistry.getDefault().getFieldDecoration(
+                    FieldDecorationRegistry.DEC_REQUIRED);
             dField.addFieldDecoration(decoration, SWT.RIGHT | SWT.TOP, false);
         }
         Control cLayout = dField.getLayoutControl();
@@ -1559,8 +1587,8 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
         return null;
     }
 
-    private Control addLanguageMemo(final Composite subComposite, final IElementParameter param, final int numInRow, final int nbInRow,
-            final int top, final Control lastControl, final String language) {
+    private Control addLanguageMemo(final Composite subComposite, final IElementParameter param, final int numInRow,
+            final int nbInRow, final int top, final Control lastControl, final String language) {
 
         ColorStyledText text;
         int nbLines = param.getNbLines();
@@ -1580,7 +1608,8 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
             dField = new DecoratedField(subComposite, SWT.BORDER, txtCtrl);
         }
         if (param.isRequired()) {
-            FieldDecoration decoration = FieldDecorationRegistry.getDefault().getFieldDecoration(FieldDecorationRegistry.DEC_REQUIRED);
+            FieldDecoration decoration = FieldDecorationRegistry.getDefault().getFieldDecoration(
+                    FieldDecorationRegistry.DEC_REQUIRED);
             dField.addFieldDecoration(decoration, SWT.RIGHT | SWT.TOP, false);
         }
         Control cLayout = dField.getLayoutControl();
@@ -1807,7 +1836,8 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
         return null;
     }
 
-    private void copyTableValue(final List<Map<String, String>> paramValues, final List<Map<String, String>> tableValues, String[] items) {
+    private void copyTableValue(final List<Map<String, String>> paramValues, final List<Map<String, String>> tableValues,
+            String[] items) {
         for (Map<String, String> currentLine : paramValues) {
             Map<String, String> newLine = new HashMap<String, String>();
             for (int i = 0; i < items.length; i++) {
@@ -1915,10 +1945,12 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                             lastControl = addMemo(composite, listParam.get(i), numInRow, nbInRow, heightSize, lastControl);
                             break;
                         case MEMO_SQL:
-                            lastControl = addLanguageMemo(composite, listParam.get(i), numInRow, nbInRow, heightSize, lastControl, "tsql");
+                            lastControl = addLanguageMemo(composite, listParam.get(i), numInRow, nbInRow, heightSize,
+                                    lastControl, "tsql");
                             break;
                         case MEMO_PERL:
-                            lastControl = addLanguageMemo(composite, listParam.get(i), numInRow, nbInRow, heightSize, lastControl, "perl");
+                            lastControl = addLanguageMemo(composite, listParam.get(i), numInRow, nbInRow, heightSize,
+                                    lastControl, "perl");
                             break;
                         case CHECK:
                             lastControl = addCheck(composite, listParam.get(i), numInRow, nbInRow, heightSize, lastControl);
@@ -2013,7 +2045,8 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                 if (hashCurControls.containsKey(param.getName())) {
                     object = hashCurControls.get(param.getName());
                     if ((param.getField() == EParameterFieldType.TEXT) || (param.getField() == EParameterFieldType.MEMO)
-                            || (param.getField() == EParameterFieldType.FILE) || (param.getField() == EParameterFieldType.DIRECTORY)) {
+                            || (param.getField() == EParameterFieldType.FILE)
+                            || (param.getField() == EParameterFieldType.DIRECTORY)) {
                         Text t = (Text) object;
                         t.removeModifyListener(listenerModify);
                         Object value = elem.getPropertyValue(param.getName());

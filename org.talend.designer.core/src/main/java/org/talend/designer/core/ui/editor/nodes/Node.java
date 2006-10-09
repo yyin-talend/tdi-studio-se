@@ -1110,4 +1110,18 @@ public class Node extends Element implements INode {
         }
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.process.INode#renameMetadataColumnName(java.lang.String, java.lang.String,
+     * java.lang.String)
+     */
+    public void renameMetadataColumnName(String conectionName, String oldColumnName, String newColumnName) {
+        // TODO Auto-generated method stub
+        System.out.println("Name=" + getComponentName() + ", " + conectionName + " " + oldColumnName + " " + newColumnName);
+        
+        if (externalNode!=null)
+            externalNode.renameMetadataColumnName(conectionName, oldColumnName, newColumnName);
+    }
+
 }

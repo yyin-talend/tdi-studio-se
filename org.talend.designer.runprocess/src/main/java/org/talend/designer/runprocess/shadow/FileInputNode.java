@@ -22,11 +22,10 @@
 package org.talend.designer.runprocess.shadow;
 
 /**
- * DOC mhirt  class global comment. Detailled comment
- * <br/>
- *
+ * DOC mhirt class global comment. Detailled comment <br/>
+ * 
  * $Id$
- *
+ * 
  */
 public abstract class FileInputNode extends ShadowNode {
 
@@ -55,4 +54,5 @@ public abstract class FileInputNode extends ShadowNode {
     public boolean isSubProcessStart() {
         return true;
     }
+
 }

@@ -45,7 +45,7 @@ import org.talend.designer.codegen.exception.CodeGeneratorException;
  * 
  */
 public abstract class ShadowNode implements INode {
-    
+
     private String componentName;
 
     private IConnection inCnx;
@@ -80,17 +80,17 @@ public abstract class ShadowNode implements INode {
      * 
      * @see org.talend.core.model.process.INode#getElementParameters()
      */
-    public List< ? extends IElementParameter> getElementParameters() {
+    public List<? extends IElementParameter> getElementParameters() {
         return parameters;
     }
 
-    
-
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.core.model.process.INode#setElementParameters(java.util.List)
      */
     @SuppressWarnings("unchecked")
-    public void setElementParameters(List< ? extends IElementParameter> newParameters) {
+    public void setElementParameters(List<? extends IElementParameter> newParameters) {
         this.parameters = (List<IElementParameter>) newParameters;
     }
 
@@ -118,9 +118,8 @@ public abstract class ShadowNode implements INode {
      * 
      * @see org.talend.core.model.process.INode#getIncomingConnections()
      */
-    public List< ? extends IConnection> getIncomingConnections() {
-        return (List< ? extends IConnection>) Arrays.asList(inCnx != null ? new IConnection[] { inCnx }
-                : new IConnection[0]);
+    public List<? extends IConnection> getIncomingConnections() {
+        return (List<? extends IConnection>) Arrays.asList(inCnx != null ? new IConnection[] { inCnx } : new IConnection[0]);
     }
 
     /*
@@ -139,9 +138,8 @@ public abstract class ShadowNode implements INode {
      * 
      * @see org.talend.core.model.process.INode#getOutgoingConnections()
      */
-    public List< ? extends IConnection> getOutgoingConnections() {
-        return (List< ? extends IConnection>) Arrays.asList(outCnx != null ? new IConnection[] { outCnx }
-                : new IConnection[0]);
+    public List<? extends IConnection> getOutgoingConnections() {
+        return (List<? extends IConnection>) Arrays.asList(outCnx != null ? new IConnection[] { outCnx } : new IConnection[0]);
     }
 
     /*
@@ -266,7 +264,7 @@ public abstract class ShadowNode implements INode {
      * 
      * @see org.talend.core.model.process.INode#getReturns()
      */
-    public List< ? extends INodeReturn> getReturns() {
+    public List<? extends INodeReturn> getReturns() {
         return new ArrayList<INodeReturn>();
     }
 
@@ -276,9 +274,19 @@ public abstract class ShadowNode implements INode {
 
     public void setProcess(IProcess process) {
     }
-    
+
     public IComponent getComponent() {
         return null;
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.process.INode#renameMetadataColumnName(java.lang.String, java.lang.String,
+     * java.lang.String)
+     */
+    public void renameMetadataColumnName(String conectionName, String oldColumnName, String newColumnName) {
+        // Nothing to do as it's shadow node
+        return;
+    }
 }

@@ -52,12 +52,23 @@ public class DataNode extends AbstractNode {
         setMetadataList(metaList);
         setUniqueName(uniqueName);
 
-        ECodeLanguage currentLanguage = ((RepositoryContext) CorePlugin.getContext().getProperty(
-                Context.REPOSITORY_CONTEXT_KEY)).getProject().getLanguage();
+        ECodeLanguage currentLanguage = ((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY))
+                .getProject().getLanguage();
         setMultipleMethods(component.isMultipleMethods(currentLanguage));
     }
 
     public DataNode() {
         // nothing
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.process.INode#renameMetadataColumnName(java.lang.String, java.lang.String,
+     * java.lang.String)
+     */
+    public void renameMetadataColumnName(String conectionName, String oldColumnName, String newColumnName) {
+        // TODO Auto-generated method stub
+
     }
 }
