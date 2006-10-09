@@ -21,7 +21,9 @@
 // ============================================================================
 package org.talend.designer.mapper.ui.visualmap.zone.scrollable;
 
+import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Layout;
 import org.talend.designer.mapper.managers.MapperManager;
 
 /**
@@ -36,4 +38,20 @@ public class InputTablesZoneView extends TablesZoneView {
         super(parent, style, mapperManager);
     }
 
+    @Override
+    public Layout initLayout() {
+        FormLayout formLayout = new FormLayout();
+        formLayout.marginLeft = 30;
+        formLayout.marginRight = 40;
+        formLayout.marginTop = MARGIN_TOP_ZONE_WITHOUT_ACTION_BAR;
+        formLayout.marginBottom = 10;
+        formLayout.marginWidth = 0;
+        formLayout.marginHeight = 0;
+        formLayout.spacing = 10;
+        setLayout(formLayout);
+        return formLayout;
+    }
+
+    
 }
+

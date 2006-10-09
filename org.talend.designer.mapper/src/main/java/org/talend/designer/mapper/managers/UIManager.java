@@ -56,6 +56,7 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.ui.ISelectionListener;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
 import org.talend.commons.ui.swt.tableviewer.selection.ILineSelectionListener;
 import org.talend.commons.ui.swt.tableviewer.selection.LineSelectionEvent;
@@ -1386,13 +1387,18 @@ public class UIManager {
         }
 
         Layout layout = tablesZoneView.getLayout();
-        tablesZoneView.setLayout(null);
 
-        for (DataMapTableView view : tablesView) {
-            view.minimizeTable(minimize);
+        try {
+	        tablesZoneView.setLayout(null);
+            for (DataMapTableView view : tablesView) {
+                view.minimizeTable(minimize);
+            }
+        } catch (RuntimeException e) {
+            ExceptionHandler.process(e);
+        } finally {
+            tablesZoneView.setLayout(layout);
         }
 
-        tablesZoneView.setLayout(layout);
         tablesZoneView.layout();
         for (DataMapTableView view : tablesView) {
             view.layout();

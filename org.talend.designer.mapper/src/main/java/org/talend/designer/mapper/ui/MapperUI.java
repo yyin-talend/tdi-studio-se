@@ -167,8 +167,6 @@ public class MapperUI {
 
     private static final int INCREMENT_VERTICAL_SCROLLBAR_ZONE = 100;
 
-    private static final int MARGIN_TOP_ZONE_WITHOUT_ACTION_BAR = 10;
-
     private static final int OFFSET_VISIBLES_POINTS = 15;
 
     private boolean antialiasActivated;
@@ -501,18 +499,8 @@ public class MapperUI {
 
         sc1.setContent(inputTablesZoneView);
 
-        final FormLayout tablesZoneViewInputsLayout = new FormLayout();
-        inputTablesZoneView.setLayout(tablesZoneViewInputsLayout);
         inputTablesZoneView.initInsertionIndicator();
-        tablesZoneViewInputsLayout.marginLeft = 30;
-        tablesZoneViewInputsLayout.marginRight = 40;
-        tablesZoneViewInputsLayout.marginTop = MARGIN_TOP_ZONE_WITHOUT_ACTION_BAR;
-        tablesZoneViewInputsLayout.marginBottom = 10;
-        tablesZoneViewInputsLayout.marginWidth = 0;
-        tablesZoneViewInputsLayout.marginHeight = 0;
-        tablesZoneViewInputsLayout.spacing = 10;
 
-        // final Composite finalTablesZoneViewInputs = tablesZoneViewInputs;
         Control previousControl = null;
 
         List<InputTable> tables = mapperModel.getInputDataMapTables();
@@ -589,16 +577,7 @@ public class MapperUI {
 
         });
 
-        FormLayout tablesZoneViewVarsLayout = new FormLayout();
-        varsTableZoneView.setLayout(tablesZoneViewVarsLayout);
         varsTableZoneView.initInsertionIndicator();
-        tablesZoneViewVarsLayout.marginLeft = 60;
-        tablesZoneViewVarsLayout.marginRight = 60;
-        tablesZoneViewVarsLayout.marginTop = 10;
-        tablesZoneViewVarsLayout.marginBottom = 10;
-        tablesZoneViewVarsLayout.marginWidth = 0;
-        tablesZoneViewVarsLayout.marginHeight = 0;
-        tablesZoneViewVarsLayout.spacing = 10;
 
         // final Composite finalTablesZoneViewVars = tablesZoneViewVars;
 
@@ -656,16 +635,7 @@ public class MapperUI {
         sc3.setExpandHorizontal(true);
         sc3.setContent(outputTablesZoneView);
 
-        FormLayout tablesZoneViewOutputsLayout = new FormLayout();
-        outputTablesZoneView.setLayout(tablesZoneViewOutputsLayout);
         outputTablesZoneView.initInsertionIndicator();
-        tablesZoneViewOutputsLayout.marginLeft = 40;
-        tablesZoneViewOutputsLayout.marginRight = 10;
-        tablesZoneViewOutputsLayout.marginTop = MARGIN_TOP_ZONE_WITHOUT_ACTION_BAR;
-        tablesZoneViewOutputsLayout.marginBottom = 10;
-        tablesZoneViewOutputsLayout.marginWidth = 0;
-        tablesZoneViewOutputsLayout.marginHeight = 0;
-        tablesZoneViewOutputsLayout.spacing = 10;
 
         previousControl = null;
 

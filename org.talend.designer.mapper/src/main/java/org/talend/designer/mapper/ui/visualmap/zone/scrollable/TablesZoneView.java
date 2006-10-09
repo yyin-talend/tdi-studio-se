@@ -21,7 +21,9 @@
 // ============================================================================
 package org.talend.designer.mapper.ui.visualmap.zone.scrollable;
 
+import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Layout;
 import org.talend.designer.mapper.managers.MapperManager;
 import org.talend.designer.mapper.ui.dnd.InsertionIndicator;
 
@@ -31,7 +33,9 @@ import org.talend.designer.mapper.ui.dnd.InsertionIndicator;
  * $Id$
  * 
  */
-public class TablesZoneView extends Composite {
+public abstract class TablesZoneView extends Composite {
+
+    protected static final int MARGIN_TOP_ZONE_WITHOUT_ACTION_BAR = 10;
 
     private InsertionIndicator insertionIndicator;
 
@@ -40,8 +44,14 @@ public class TablesZoneView extends Composite {
     public TablesZoneView(Composite parent, int style, MapperManager mapperManager) {
         super(parent, style);
         this.mapperManager = mapperManager;
-        // setBackground(this.getDisplay().getSystemColor(SWT.COLOR_BLUE));
+        initLayout();
     }
+
+    /**
+     * DOC amaumont Comment method "getFormLayout".
+     * @return
+     */
+    public abstract Layout initLayout();
 
     public InsertionIndicator getInsertionIndicator() {
         return this.insertionIndicator;
@@ -54,4 +64,24 @@ public class TablesZoneView extends Composite {
         this.insertionIndicator = new InsertionIndicator(this, mapperManager);
     }
 
+    @Override
+    public void layout() {
+        if (super.getLayout() == null) {
+            initLayout();
+        }
+        super.layout();
+    }
+
+    @Override
+    public FormLayout getLayout() {
+        FormLayout formLayout = (FormLayout) super.getLayout();
+        if (formLayout == null) {
+            formLayout = (FormLayout) initLayout();
+        }
+        return formLayout;
+    }
+
+    
+    
+    
 }
