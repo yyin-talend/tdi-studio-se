@@ -43,6 +43,8 @@ else {
         or die "can't write to file " . $output_desc_<%=metadata.getTableName() %>{filename} . "\n";
 }
 
+$nb_line_<%=metadata.getTableName() %>++;
+
 <%
 		}
 	}
