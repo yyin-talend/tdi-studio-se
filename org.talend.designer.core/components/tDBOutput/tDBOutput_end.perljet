@@ -20,7 +20,6 @@
 		if (metadata!=null) {
 %>
 
-# TODO: insert last lines (< packet_size)
 my $nb_lines_remaining = scalar @lines_<%=metadata.getTableName() %>;
 
 if ($nb_lines_remaining > 0) {
