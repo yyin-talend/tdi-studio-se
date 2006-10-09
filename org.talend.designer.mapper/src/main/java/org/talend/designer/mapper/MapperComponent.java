@@ -38,6 +38,7 @@ import org.exolab.castor.xml.Marshaller;
 import org.exolab.castor.xml.Unmarshaller;
 import org.exolab.castor.xml.ValidationException;
 import org.talend.commons.exception.ExceptionHandler;
+import org.talend.core.model.components.IODataComponentContainer;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.process.AbstractExternalNode;
 import org.talend.core.model.process.Problem;
@@ -361,5 +362,13 @@ public class MapperComponent extends AbstractExternalNode {
         List<Problem> toReturn = new ArrayList<Problem>();
         toReturn.add(new Problem(null, "Pas de réel problème", ProblemStatus.WARNING));
         return toReturn;
+    }
+
+    /* (non-Javadoc)
+     * @see org.talend.core.model.process.IExternalNode#setIODataComponents(org.talend.core.model.components.IODataComponentContainer)
+     */
+    public void setIODataComponents(IODataComponentContainer components) {
+        // TODO Auto-generated method stub
+        
     }
 }
