@@ -104,7 +104,7 @@ public class MapperComponent extends AbstractExternalNode {
         // TimeMeasure.start("Total open");
         // TimeMeasure.display = false;
         initMapperMain();
-        mapperMain.loadFromExternalData(getIncomingConnections(), getOutgoingConnections(), getMetadataList(), externalData);
+        mapperMain.loadFromExternalData(getIODataComponents(), getMetadataList(), externalData);
         Shell shell = mapperMain.createUI(display);
         // TimeMeasure.display = true;
         // TimeMeasure.end("Total open");
@@ -144,7 +144,7 @@ public class MapperComponent extends AbstractExternalNode {
      */
     public int open(final Composite parent) {
         initMapperMain();
-        mapperMain.loadFromExternalData(getIncomingConnections(), getOutgoingConnections(), getMetadataList(), externalData);
+        mapperMain.loadFromExternalData(getIODataComponents(), getMetadataList(), externalData);
         mapperMain.createUI(parent);
         return mapperMain.getMapperDialogResponse();
     }
@@ -226,7 +226,7 @@ public class MapperComponent extends AbstractExternalNode {
     public void loadDataOut(final OutputStream out, Writer writer) throws IOException {
 
         initMapperMain();
-        mapperMain.loadFromExternalData(getIncomingConnections(), getOutgoingConnections(), getMetadataList(), externalData);
+        mapperMain.loadFromExternalData(getIODataComponents(), getMetadataList(), externalData);
         ExternalMapperData data = mapperMain.buildExternalData();
         if (mapperMain != null && data != null) {
 
@@ -364,11 +364,4 @@ public class MapperComponent extends AbstractExternalNode {
         return toReturn;
     }
 
-    /* (non-Javadoc)
-     * @see org.talend.core.model.process.IExternalNode#setIODataComponents(org.talend.core.model.components.IODataComponentContainer)
-     */
-    public void setIODataComponents(IODataComponentContainer components) {
-        // TODO Auto-generated method stub
-        
-    }
 }

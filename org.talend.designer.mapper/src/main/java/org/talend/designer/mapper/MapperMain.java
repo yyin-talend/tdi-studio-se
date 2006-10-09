@@ -29,6 +29,7 @@ import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
+import org.talend.core.model.components.IODataComponentContainer;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.process.AbstractExternalNode;
 import org.talend.core.model.process.IConnection;
@@ -156,14 +157,14 @@ public class MapperMain {
 
     }
 
-    public void loadFromExternalData(List<? extends IConnection> inputConnections, List<? extends IConnection> outputConnections,
+    public void loadFromExternalData(IODataComponentContainer ioDataContainer,
             List<IMetadataTable> outputMetadataTables, ExternalMapperData externalData) {
         if (externalData == null) {
             externalData = new ExternalMapperData();
         }
         mapperManager.getUiManager().setUiProperties(externalData.getUiProperties());
         ExternalDataConverter converter = new ExternalDataConverter();
-        this.mapperModel = converter.prepareModel(inputConnections, outputConnections, outputMetadataTables, externalData);
+        this.mapperModel = converter.prepareModel(ioDataContainer, outputMetadataTables, externalData);
     }
 
     /**
