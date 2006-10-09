@@ -96,6 +96,8 @@ import org.talend.commons.utils.data.container.RootContainer;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
+import org.talend.core.model.components.IODataComponent;
+import org.talend.core.model.components.IODataComponentContainer;
 import org.talend.core.model.general.Version;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
@@ -279,6 +281,20 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                     mBox.setMessage("Component plugin not found: " + node.getPluginFullName());
                     mBox.open();
                 } else {
+                    IODataComponentContainer tagada = new IODataComponentContainer();
+
+                    List<IODataComponent> inputs = tagada.getInputs();
+                    for (IConnection con : node.getIncomingConnections()) {
+                        IODataComponent ou = new IODataComponent(con);
+                        inputs.add(ou);
+                    }
+                    List<IODataComponent> outputs = tagada.getOuputs();
+                    for (IConnection con : node.getOutgoingConnections()) {
+                        IODataComponent ou = new IODataComponent(con);
+                        outputs.add(ou);
+                    }
+
+                    externalNode.setIODataComponents(tagada);
                     if (externalNode.open(composite.getDisplay()) == SWT.OK) {
                         Command cmd = new ExternalNodeChangeCommand(node, externalNode);
                         getCommandStack().execute(cmd);
@@ -345,16 +361,26 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                 Node node = (Node) elem;
                 IMetadataTable inputMetadata = null, inputMetaCopy = null;
                 Connection inputConec = null;
+                IODataComponentContainer inAndOut = new IODataComponentContainer();
+                IODataComponent input = null;
                 for (Connection connec : (List<Connection>) node.getIncomingConnections()) {
                     if (connec.isActivate() && connec.getLineStyle().equals(EConnectionType.FLOW_MAIN)) {
                         inputMetadata = connec.getMetadataTable();
                         inputMetaCopy = inputMetadata.clone();
                         inputConec = connec;
+                        input = new IODataComponent(connec);
                     }
                 }
+                inAndOut.getInputs().add(input);
 
                 IMetadataTable outputMetadata = (IMetadataTable) node.getMetadataList().get(0);
                 IMetadataTable outputMetaCopy = outputMetadata.clone();
+
+                for (Connection connec : (List<Connection>) node.getOutgoingConnections()) {
+                    if (connec.isActivate() && connec.getLineStyle().equals(EConnectionType.FLOW_MAIN)) {
+                        inAndOut.getOuputs().add(new IODataComponent(connec));
+                    }
+                }
 
                 MetadataDialog metaDialog;
                 if (inputMetadata != null) {
