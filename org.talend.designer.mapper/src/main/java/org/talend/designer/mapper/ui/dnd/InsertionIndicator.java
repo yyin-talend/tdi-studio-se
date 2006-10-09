@@ -58,7 +58,7 @@ import org.talend.designer.mapper.ui.visualmap.zone.scrollable.TablesZoneView;
  */
 public class InsertionIndicator {
 
-    private Composite tablesZoneViewParent;
+    private TablesZoneView tablesZoneViewParent;
 
     private Composite leftArrowDraggingIndicator;
 
@@ -94,7 +94,7 @@ public class InsertionIndicator {
      * @param tablesZoneViewParent
      * @param mapperManager
      */
-    public InsertionIndicator(Composite tablesZoneViewParent, MapperManager mapperManager) {
+    public InsertionIndicator(TablesZoneView tablesZoneViewParent, MapperManager mapperManager) {
         this.tablesZoneViewParent = tablesZoneViewParent;
         this.mapperManager = mapperManager;
         createComponents();

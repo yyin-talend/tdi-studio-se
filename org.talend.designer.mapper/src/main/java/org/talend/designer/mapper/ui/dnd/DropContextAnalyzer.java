@@ -417,7 +417,7 @@ public class DropContextAnalyzer {
         return this.isInputToInput;
     }
 
-    public boolean isOutputTuOutput() {
+    public boolean isOutputToOutput() {
         return this.isOutputToOutput;
     }
 

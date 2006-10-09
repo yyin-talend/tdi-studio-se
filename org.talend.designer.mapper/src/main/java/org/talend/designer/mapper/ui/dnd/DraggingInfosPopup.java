@@ -56,6 +56,8 @@ public final class DraggingInfosPopup {
 
     private Shell parent;
 
+    private boolean outputToOutputMode;
+
     private DraggingInfosPopup(Shell parent, MapperManager mapperManager) {
         this.mapperManager = mapperManager;
         this.parent = parent;
@@ -307,16 +309,20 @@ public final class DraggingInfosPopup {
     public void setMapOneToOneMode(boolean mapOneToOne, boolean mapOneToOneAuthorized) {
         String mode = null;
         if (mapOneToOne && mapOneToOneAuthorized) {
-            mode = " > Each source entry to each target expression";
+            mode = " > Each source entry " + (this.outputToOutputMode ? "expression " : "") + "to each target expression";
             this.mapOneToOne = mapOneToOne;
         } else {
-            mode = " > All source entries to a single one "
+            mode = " > All source entries " + (this.outputToOutputMode ? "expression " : "") + "to a single one "
                     + (mapOneToOneAuthorized ? "target expression (Shift key to change mapping)" : "target expression");
             this.mapOneToOne = false;
         }
         popup.setMappingModeText(mode);
     }
-
+    
+    public void setOutputToOutputMode(boolean outputToOutputMode) {
+        this.outputToOutputMode = outputToOutputMode;
+    }
+    
     /**
      * DOC amaumont Comment method "setCursorPosition".
      * 

@@ -219,6 +219,8 @@ public class DragNDrop {
                 InsertionIndicator insertionIndicator = retrieveInsertionIndicator();
                 if (analyzer.isTargetEntryValid()) {
 
+                    draggingInfosPopup.setOutputToOutputMode(analyzer.isOutputToOutput());
+
                     if (analyzer.isInputToInput()) {
                         draggingInfosPopup.setExpressionContext(true);
                         draggingInfosPopup.setInsertionEntryContext(false);
@@ -270,6 +272,8 @@ public class DragNDrop {
 
                 if (analyzer.isTargetEntryValid()) {
 
+                    draggingInfosPopup.setOutputToOutputMode(analyzer.isOutputToOutput());
+                    
                     if (uiManager.isCtrlPressed()) {
                         draggingInfosPopup.setOverwriteMode(true);
                     } else {
