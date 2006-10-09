@@ -51,6 +51,7 @@ my %desc_<%=metadata.getTableName() %> = (
 use constant OUTPUT_FIELD_SEPARATOR_<%=metadata.getTableName() %> => <%=ElementParameterParser.getValue(node, "__FIELDSEPARATOR__") %>;
 use constant OUTPUT_ROW_SEPARATOR_<%=metadata.getTableName() %> => <%=ElementParameterParser.getValue(node, "__ROWSEPARATOR__") %>;
 my $nb_fields_<%=metadata.getTableName() %> = scalar @{ $desc_<%=metadata.getTableName() %>{schema} };
+my $nb_line_<%=metadata.getTableName() %> = 0;
 
 my $output_FH_<%=metadata.getTableName() %> = new FileHandle;
 

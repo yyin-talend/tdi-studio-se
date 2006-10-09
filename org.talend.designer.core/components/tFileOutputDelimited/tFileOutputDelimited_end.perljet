@@ -21,6 +21,8 @@
 %>
 close($output_FH_<%=metadata.getTableName() %>);
 
+$_globals{<%=metadata.getTableName() %>}{NB_LINE} = $nb_line_<%=metadata.getTableName() %>;
+
 <%
         if (stats) {
 %>
