@@ -28,7 +28,6 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
@@ -73,8 +72,6 @@ import org.talend.repository.ui.views.RepositoryView;
  * 
  */
 public class SelectorTableForm extends AbstractForm {
-
-    private static Logger log = Logger.getLogger(SelectorTableForm.class);
 
     /**
      * FormTable Settings.
