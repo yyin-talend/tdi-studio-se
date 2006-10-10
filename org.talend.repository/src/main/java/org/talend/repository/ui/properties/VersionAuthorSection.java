@@ -21,7 +21,6 @@
 // ============================================================================
 package org.talend.repository.ui.properties;
 
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CLabel;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -136,22 +135,18 @@ public class VersionAuthorSection extends AbstractSection {
 
     private void versionMajorUp() {
         Shell shell = getPart().getSite().getShell();
-        if (MessageDialog.openConfirm(shell, "Upgrade version", "Upgrade major version number ?")) {
-            Version version = new Version(versionText.getText());
-            version.upMajor();
-            versionText.setText(version.toString());
-            beforeSave();
-        }
+        Version version = new Version(versionText.getText());
+        version.upMajor();
+        versionText.setText(version.toString());
+        beforeSave();
     }
 
     private void versionMinorUp() {
         Shell shell = getPart().getSite().getShell();
-        if (MessageDialog.openConfirm(shell, "Upgrade version", "Upgrade minor version number ?")) {
-            Version version = new Version(versionText.getText());
-            version.upMinor();
-            versionText.setText(version.toString());
-            beforeSave();
-        }
+        Version version = new Version(versionText.getText());
+        version.upMinor();
+        versionText.setText(version.toString());
+        beforeSave();
     }
 
     protected User getAuthor() {
