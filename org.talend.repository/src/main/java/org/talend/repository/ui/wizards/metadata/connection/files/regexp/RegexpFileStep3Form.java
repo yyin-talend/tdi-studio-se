@@ -95,13 +95,14 @@ public class RegexpFileStep3Form extends AbstractRegexpFileStepForm {
      * 
      * @param Composite
      */
-    public RegexpFileStep3Form(Composite parent, ConnectionItem connectionItem, MetadataTable metadataTable, String[] existingNames) {
+    public RegexpFileStep3Form(Composite parent, ConnectionItem connectionItem, MetadataTable metadataTable,
+            String[] existingNames) {
         super(parent, connectionItem, metadataTable, existingNames);
         this.connectionItem = connectionItem;
         this.metadataTable = metadataTable;
         setupForm();
     }
-    
+
     /**
      * 
      * Initialize value, forceFocus first field.
@@ -150,7 +151,8 @@ public class RegexpFileStep3Form extends AbstractRegexpFileStepForm {
         informationLabel.setText(Messages.getString("FileStep3.guessTip") + "                                                  ");
         informationLabel.setSize(500, HEIGHT_BUTTON_PIXEL);
 
-        guessButton = new UtilsButton(compositeGuessButton, Messages.getString("FileStep3.guess"), WIDTH_BUTTON_PIXEL, HEIGHT_BUTTON_PIXEL);
+        guessButton = new UtilsButton(compositeGuessButton, Messages.getString("FileStep3.guess"), WIDTH_BUTTON_PIXEL,
+                HEIGHT_BUTTON_PIXEL);
         guessButton.setToolTipText(Messages.getString("FileStep3.guessTip"));
 
         // Composite MetadataTableEditorView
@@ -364,7 +366,7 @@ public class RegexpFileStep3Form extends AbstractRegexpFileStepForm {
                 String globalType = null;
                 int lengthValue = -1;
                 int precisionValue = 0;
-                
+
                 int current = firstRowToExtractMetadata;
                 while (globalType == null) {
                     if (i >= xmlRows.get(current).getFields().size()) {
@@ -388,10 +390,10 @@ public class RegexpFileStep3Form extends AbstractRegexpFileStepForm {
                             }
                             lengthValue = value.length();
                             int positionDecimal = 0;
-                            if(value.indexOf(',') > -1){
+                            if (value.indexOf(',') > -1) {
                                 positionDecimal = value.lastIndexOf(',');
                                 precisionValue = lengthValue - positionDecimal;
-                            }else if(value.indexOf('.') > -1){
+                            } else if (value.indexOf('.') > -1) {
                                 positionDecimal = value.lastIndexOf('.');
                                 precisionValue = lengthValue - positionDecimal;
                             }
@@ -405,9 +407,9 @@ public class RegexpFileStep3Form extends AbstractRegexpFileStepForm {
                 String talendType = MetadataTalendType.loadTalendType(globalType, "TALENDDEFAULT", false);
                 metadataColumn.setTalendType(talendType);
                 metadataColumn.setLength(lengthValue);
-                if(globalType.equals("FLOAT") || globalType.equals("DOUBLE")){
+                if (globalType.equals("FLOAT") || globalType.equals("DOUBLE")) {
                     metadataColumn.setPrecision(precisionValue);
-                }else{
+                } else {
                     metadataColumn.setPrecision(0);
                 }
                 // Check the label and add it to the table
@@ -416,6 +418,7 @@ public class RegexpFileStep3Form extends AbstractRegexpFileStepForm {
             }
         }
         checkFieldsValue();
+        tableEditorView.getTableViewerCreator().layout();
         informationLabel.setText(Messages.getString("FileStep3.guessTip"));
     }
 

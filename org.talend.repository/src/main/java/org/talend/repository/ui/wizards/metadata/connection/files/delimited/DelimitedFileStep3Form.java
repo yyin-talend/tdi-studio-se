@@ -84,7 +84,7 @@ public class DelimitedFileStep3Form extends AbstractDelimitedFileStepForm {
     private Label informationLabel;
 
     private MetadataTable metadataTable;
-    
+
     private LabelledText metadataNameText;
 
     private LabelledText metadataCommentText;
@@ -96,7 +96,8 @@ public class DelimitedFileStep3Form extends AbstractDelimitedFileStepForm {
      * 
      * @param Composite
      */
-    public DelimitedFileStep3Form(Composite parent, ConnectionItem connectionItem, MetadataTable metadataTable, String[] existingNames) {
+    public DelimitedFileStep3Form(Composite parent, ConnectionItem connectionItem, MetadataTable metadataTable,
+            String[] existingNames) {
         super(parent, connectionItem, metadataTable, existingNames);
         this.connectionItem = connectionItem;
         this.metadataTable = metadataTable;
@@ -151,7 +152,8 @@ public class DelimitedFileStep3Form extends AbstractDelimitedFileStepForm {
         informationLabel.setText(Messages.getString("FileStep3.guessTip") + "                                                  ");
         informationLabel.setSize(500, HEIGHT_BUTTON_PIXEL);
 
-        guessButton = new UtilsButton(compositeGuessButton, Messages.getString("FileStep3.guess"), WIDTH_BUTTON_PIXEL, HEIGHT_BUTTON_PIXEL);
+        guessButton = new UtilsButton(compositeGuessButton, Messages.getString("FileStep3.guess"), WIDTH_BUTTON_PIXEL,
+                HEIGHT_BUTTON_PIXEL);
         guessButton.setToolTipText(Messages.getString("FileStep3.guessTip"));
 
         // Composite MetadataTableEditorView
@@ -304,7 +306,7 @@ public class DelimitedFileStep3Form extends AbstractDelimitedFileStepForm {
             informationLabel.setText("   " + Messages.getString("FileStep3.guessProgress"));
 
             // get the XmlArray width an adapt ProcessDescription
-            if(Escape.CSV_LITERAL.equals(getConnection().getEscapeType())){
+            if (Escape.CSV_LITERAL.equals(getConnection().getEscapeType())) {
                 XmlArray xmlArray = ShadowProcessHelper.getXmlArray(getProcessDescription(), "FILE_CSV");
                 if (xmlArray == null) {
                     informationLabel.setText("   " + Messages.getString("FileStep3.guessFailure"));
@@ -313,7 +315,7 @@ public class DelimitedFileStep3Form extends AbstractDelimitedFileStepForm {
                     refreshMetaDataTable(xmlArray);
                 }
 
-            }else{
+            } else {
                 XmlArray xmlArray = ShadowProcessHelper.getXmlArray(getProcessDescription(), "FILE_DELIMITED");
                 if (xmlArray == null) {
                     informationLabel.setText("   " + Messages.getString("FileStep3.guessFailure"));
@@ -352,10 +354,10 @@ public class DelimitedFileStep3Form extends AbstractDelimitedFileStepForm {
 
             List<XmlRow> xmlRows = xmlArray.getRows();
             List<XmlField> fields = xmlRows.get(0).getFields();
-//            int numberOfCol = fields.size();
+            // int numberOfCol = fields.size();
 
             Integer numberOfCol = getRightFirstRow(xmlRows);
-            
+
             // define the label to the metadata width the content of the first row
             int firstRowToExtractMetadata = 0;
             if (getConnection().isFirstLineCaption()) {
@@ -367,20 +369,20 @@ public class DelimitedFileStep3Form extends AbstractDelimitedFileStepForm {
             for (int i = 0; i < numberOfCol; i++) {
                 label[i] = Messages.getString("FileStep3.column") + i;
                 if (firstRowToExtractMetadata == 1) {
-//                    String value = fields.get(i).getValue();
-//                    if (!value.equals("")) {
-//                        label[i] = value;
-//                    }
+                    // String value = fields.get(i).getValue();
+                    // if (!value.equals("")) {
+                    // label[i] = value;
+                    // }
                     if (numberOfCol <= fields.size()) {
-                        if(fields.get(i).getValue() != null  && !("").equals(fields.get(i).getValue())){
+                        if (fields.get(i).getValue() != null && !("").equals(fields.get(i).getValue())) {
                             label[i] = fields.get(i).getValue();
-                        }else{
+                        } else {
                             label[i] = Messages.getString("FileStep3.column") + " " + i;
                         }
                     } else {
                         if (i < fields.size()) {
                             label[i] = fields.get(i).getValue();
-                        }else{
+                        } else {
                             label[i] = Messages.getString("FileStep3.column") + " " + i;
                         }
                     }
@@ -392,7 +394,7 @@ public class DelimitedFileStep3Form extends AbstractDelimitedFileStepForm {
                 String globalType = null;
                 int lengthValue = -1;
                 int precisionValue = 0;
-                
+
                 int current = firstRowToExtractMetadata;
                 while (globalType == null) {
                     if (i >= xmlRows.get(current).getFields().size()) {
@@ -417,10 +419,10 @@ public class DelimitedFileStep3Form extends AbstractDelimitedFileStepForm {
                             }
                             lengthValue = value.length();
                             int positionDecimal = 0;
-                            if(value.indexOf(',') > -1){
+                            if (value.indexOf(',') > -1) {
                                 positionDecimal = value.lastIndexOf(',');
                                 precisionValue = lengthValue - positionDecimal;
-                            }else if(value.indexOf('.') > -1){
+                            } else if (value.indexOf('.') > -1) {
                                 positionDecimal = value.lastIndexOf('.');
                                 precisionValue = lengthValue - positionDecimal;
                             }
@@ -434,9 +436,9 @@ public class DelimitedFileStep3Form extends AbstractDelimitedFileStepForm {
                 String talendType = MetadataTalendType.loadTalendType(globalType, "TALENDDEFAULT", false);
                 metadataColumn.setTalendType(talendType);
                 metadataColumn.setLength(lengthValue);
-                if(globalType.equals("FLOAT") || globalType.equals("DOUBLE")){
+                if (globalType.equals("FLOAT") || globalType.equals("DOUBLE")) {
                     metadataColumn.setPrecision(precisionValue);
-                }else{
+                } else {
                     metadataColumn.setPrecision(0);
                 }
                 // Check the label and add it to the table
@@ -445,15 +447,16 @@ public class DelimitedFileStep3Form extends AbstractDelimitedFileStepForm {
             }
         }
         checkFieldsValue();
+        tableEditorView.getTableViewerCreator().layout();
         informationLabel.setText(Messages.getString("FileStep3.guessTip"));
     }
 
-    //CALCULATE THE NULBER OF COLUMNS IN THE PREVIEW
+    // CALCULATE THE NULBER OF COLUMNS IN THE PREVIEW
     public Integer getRightFirstRow(List<XmlRow> xmlRows) {
-        
+
         Integer numbersOfColumns = null;
         int parserLine = xmlRows.size();
-        if(parserLine > 50){
+        if (parserLine > 50) {
             parserLine = 50;
         }
         for (int i = 0; i < parserLine; i++) {
@@ -467,8 +470,7 @@ public class DelimitedFileStep3Form extends AbstractDelimitedFileStepForm {
         }
         return numbersOfColumns;
     }
-    
-    
+
     /**
      * Ensures that fields are set. Update checkEnable / use to checkConnection().
      * 

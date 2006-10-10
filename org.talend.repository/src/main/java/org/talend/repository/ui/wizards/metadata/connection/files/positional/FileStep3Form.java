@@ -103,7 +103,7 @@ public class FileStep3Form extends AbstractPositionalFileStepForm {
         this.metadataTable = metadataTable;
         setupForm();
     }
-    
+
     /**
      * run a ShadowProcess to determined the Metadata.
      */
@@ -360,7 +360,7 @@ public class FileStep3Form extends AbstractPositionalFileStepForm {
             String globalType = null;
             int lengthValue = -1;
             int precisionValue = 0;
-            
+
             int current = firstRowToExtractMetadata;
             while (globalType == null) {
                 globalType = DataTypeHelper.getTalendTypeOfValue(xmlRows.get(current).getFields().get(i).getValue());
@@ -380,13 +380,13 @@ public class FileStep3Form extends AbstractPositionalFileStepForm {
                         }
                         lengthValue = value.length();
                         int positionDecimal = 0;
-                        if(value.indexOf(',') > -1){
+                        if (value.indexOf(',') > -1) {
                             positionDecimal = value.lastIndexOf(',');
                             precisionValue = lengthValue - positionDecimal;
-                        }else if(value.indexOf('.') > -1){
+                        } else if (value.indexOf('.') > -1) {
                             positionDecimal = value.lastIndexOf('.');
                             precisionValue = lengthValue - positionDecimal;
-                        }                        
+                        }
                     }
                 }
             }
@@ -396,9 +396,9 @@ public class FileStep3Form extends AbstractPositionalFileStepForm {
             String talendType = MetadataTalendType.loadTalendType(globalType, "TALENDDEFAULT", false);
             metadataColumn.setTalendType(talendType);
             metadataColumn.setLength(lengthValue);
-            if(globalType.equals("FLOAT") || globalType.equals("DOUBLE")){
+            if (globalType.equals("FLOAT") || globalType.equals("DOUBLE")) {
                 metadataColumn.setPrecision(precisionValue);
-            }else{
+            } else {
                 metadataColumn.setPrecision(0);
             }
             // Check the label and add it to the table
@@ -406,6 +406,7 @@ public class FileStep3Form extends AbstractPositionalFileStepForm {
             tableEditorView.getMetadataEditor().add(metadataColumn, i);
         }
         checkFieldsValue();
+        tableEditorView.getTableViewerCreator().layout();
         informationLabel.setText(Messages.getString("FileStep3.guessTip"));
     }
 
