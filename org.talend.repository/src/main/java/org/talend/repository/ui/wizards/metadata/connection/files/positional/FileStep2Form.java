@@ -911,6 +911,14 @@ public class FileStep2Form extends AbstractPositionalFileStepForm {
             fieldSeparatorText.setText(getConnection().getFieldSeparatorValue());
             // Adapt the UI rowSeparator to the file format
             rowSeparatorManager();
+            
+            // Fields to the Group Delimited File Settings
+            if (getConnection().getEncoding() != null && !getConnection().getEncoding().equals("")) {
+                encodingCombo.setText(getConnection().getEncoding());
+            } else {
+                encodingCombo.select(0);
+            }
+            
             // Refresh the preview width the adapted rowSeparator
             refreshPreview();
 

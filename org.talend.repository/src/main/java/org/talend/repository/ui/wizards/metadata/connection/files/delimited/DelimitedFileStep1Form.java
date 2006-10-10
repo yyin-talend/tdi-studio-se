@@ -23,9 +23,12 @@ package org.talend.repository.ui.wizards.metadata.connection.files.delimited;
 
 import java.io.BufferedReader;
 import java.io.EOFException;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.charset.Charset;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IStatus;
@@ -42,6 +45,7 @@ import org.talend.commons.ui.swt.formtools.Form;
 import org.talend.commons.ui.swt.formtools.LabelledCombo;
 import org.talend.commons.ui.swt.formtools.LabelledFileField;
 import org.talend.commons.ui.swt.formtools.UtilsButton;
+import org.talend.commons.utils.encoding.CharsetToolkit;
 import org.talend.core.model.metadata.builder.connection.FileFormat;
 import org.talend.core.model.metadata.builder.connection.RowSeparator;
 import org.talend.core.model.properties.ConnectionItem;
@@ -252,16 +256,25 @@ public class DelimitedFileStep1Form extends AbstractDelimitedFileStepForm {
 
             String previewRows = "";
             try {
+
+                File file = new File(fileField.getText());
+                Charset guessedCharset = CharsetToolkit.guessEncoding(file, 4096);
+                getConnection().setEncoding(guessedCharset.displayName());
+                
                 String str;
                 int numberLine = 0;
                 // read the file width the limit : MAXIMUM_ROWS_TO_PREVIEW
-                BufferedReader in = new BufferedReader(new FileReader(fileField.getText()));
+                BufferedReader in = 
+                    new BufferedReader(
+                        new InputStreamReader(new FileInputStream(fileField.getText()),
+                                guessedCharset.displayName()));
+
                 while (((str = in.readLine()) != null) && (numberLine <= MAXIMUM_ROWS_TO_PREVIEW)) {
                     numberLine++;
                     previewRows = previewRows + str + "\n";
                 }
                 in.close();
-
+                
                 // show lines
                 fileViewerText.setText(previewRows);
                 filePathIsDone = true;
