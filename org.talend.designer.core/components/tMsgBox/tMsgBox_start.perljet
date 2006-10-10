@@ -21,8 +21,6 @@
 		if (metadata!=null) {
 %>
 
-use Win32;
-
 <%
 		}
 	}

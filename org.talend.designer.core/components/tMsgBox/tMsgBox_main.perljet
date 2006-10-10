@@ -26,12 +26,29 @@ if ($title eq '') {
     $title = 'Default message';
 }
 
-Win32::MsgBox(
-    <%=ElementParameterParser.getValue(node, "__MESSAGE__") %>,
-    <%=ElementParameterParser.getValue(node, "__ICON__") %> | <%=ElementParameterParser.getValue(node, "__BUTTONS__") %>,
-    $title
-);
-    
+if (eval "require Win32") {
+    Win32::MsgBox(
+        <%=ElementParameterParser.getValue(node, "__MESSAGE__") %>,
+        <%=ElementParameterParser.getValue(node, "__ICON__") %> | <%=ElementParameterParser.getValue(node, "__BUTTONS__") %>,
+        $title
+    );
+}
+elsif (eval "require Text::ASCIITable") {
+    my $t = Text::ASCIITable->new();
+    $t->setCols($title);
+    $t->alignColName($title, 'center');
+    $t->setColWidth($title,80);
+    $t->addRow(<%=ElementParameterParser.getValue(node, "__MESSAGE__") %>);
+    $t->addRowLine();
+    print $t;
+}
+else {
+    print "\n";
+    print "=========== ", $title, " ============\n";
+    print <%=ElementParameterParser.getValue(node, "__MESSAGE__") %>, "\n";
+    print "===========", "=" x (length($title) + 2), "============\n";
+}
+
 <%
 		}
 	}
