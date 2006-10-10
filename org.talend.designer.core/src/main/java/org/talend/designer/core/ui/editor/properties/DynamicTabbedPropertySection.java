@@ -98,6 +98,7 @@ import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.model.components.IODataComponent;
 import org.talend.core.model.components.IODataComponentContainer;
+import org.talend.core.model.components.IODataComponent.ColumnNameChanged;
 import org.talend.core.model.general.Version;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
@@ -366,9 +367,11 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                 for (Connection connec : (List<Connection>) node.getIncomingConnections()) {
                     if (connec.isActivate() && connec.getLineStyle().equals(EConnectionType.FLOW_MAIN)) {
                         inputMetadata = connec.getMetadataTable();
-                        inputMetaCopy = inputMetadata.clone();
+                        // inputMetaCopy = inputMetadata.clone();
                         inputConec = connec;
+
                         input = new IODataComponent(connec);
+                        inputMetaCopy = input.getTable();
                     }
                 }
                 inAndOut.getInputs().add(input);
@@ -378,7 +381,9 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
 
                 for (Connection connec : (List<Connection>) node.getOutgoingConnections()) {
                     if (connec.isActivate() && connec.getLineStyle().equals(EConnectionType.FLOW_MAIN)) {
-                        inAndOut.getOuputs().add(new IODataComponent(connec));
+                        IODataComponent dataComponent = new IODataComponent(connec);
+                        inAndOut.getOuputs().add(dataComponent);
+                        outputMetaCopy=dataComponent.getTable();
                     }
                 }
 
@@ -412,6 +417,13 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                             for (IMetadataColumn column : metaDialog.changedNameColumns.keySet()) {
                                 mynode.renameMetadataColumnName(currentConnection.getName(), metaDialog.changedNameColumns
                                         .get(column), column.getLabel());
+                            }
+                        }
+
+                        for (IODataComponent currentIO : inAndOut.getOuputs()) {
+                            for (ColumnNameChanged col : currentIO.getColumnNameChanged()) {
+                                currentIO.getTarget().renameMetadataColumnName(col.getConnectionName(), col.getOldName(),
+                                        col.getNewName());
                             }
                         }
                         // End Manage columns names changed

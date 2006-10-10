@@ -46,7 +46,7 @@ public class FindAssignmentAction extends AContextualAction {
 
     public FindAssignmentAction() {
         super();
-        this.setImageDescriptor(ImageProvider.getImageDesc(EImage.LOAD_ICON));
+        this.setImageDescriptor(ImageProvider.getImageDesc(EImage.IMPORT_ICON));
         this.setText("Find Assignments");
     }
 
