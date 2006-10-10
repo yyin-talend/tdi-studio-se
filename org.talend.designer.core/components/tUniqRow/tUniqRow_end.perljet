@@ -1,0 +1,30 @@
+<%@ jet 
+	package="org.talend.designer.codegen.translators" 
+	imports="
+		org.talend.core.model.process.INode 
+		org.talend.core.model.metadata.IMetadataTable 
+		org.talend.designer.codegen.config.CodeGeneratorArgument
+		java.util.List
+	"
+	class="UniqRowEnd"
+%>
+
+<%
+	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+	INode node = (INode)codeGenArgument.getArgument();
+	boolean stats = codeGenArgument.isStatistics();
+	
+	List<IMetadataTable> metadatas = node.getMetadataList();
+	if ((metadatas!=null)&&(metadatas.size()>0)) {
+		IMetadataTable metadata = metadatas.get(0);
+		if (metadata!=null) {
+                  String cid = metadata.getTableName();
+%>
+
+$_globals{<%=cid %>}{NB_LINE_INPUT} = $nb_line_input_<%=cid %>;
+$_globals{<%=cid %>}{NB_LINE_OUTPUT} = $nb_line_output_<%=cid %>;
+
+<%
+		}
+	}
+%>
