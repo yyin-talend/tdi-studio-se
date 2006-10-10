@@ -159,6 +159,7 @@ public class DataStringConnection {
     
     public String getStringReplace(final String init, final String before, final String after) {
         String s = init;
+        
         if (after != null) {
             s = init.replaceFirst(before, after);
         }
@@ -175,11 +176,10 @@ public class DataStringConnection {
         Integer selectionIndex = getSelectionIndex();
         String[] s = { selectionIndex.toString(), "", "", "" };
         String regex = getRegex();
-
         if (stringConnection == "") {
             return s;
         }
-
+        
         Perl5Compiler compiler = new Perl5Compiler();
         Perl5Matcher matcher = new Perl5Matcher();
         Pattern pattern = null;
@@ -189,8 +189,10 @@ public class DataStringConnection {
                 matcher.matches(stringConnection, pattern);
                 MatchResult matchResult = matcher.getMatch();
                 s[0] = selectionIndex.toString();
-                for (int i = 1; i < matchResult.groups(); i++) {
-                    s[i] = matchResult.group(i);
+                if( matchResult !=null ){
+                    for (int i = 1; i < matchResult.groups(); i++) {
+                        s[i] = matchResult.group(i);
+                    }
                 }
             } else {
                 // search if another regex corresponding at the string of connection
