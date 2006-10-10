@@ -48,10 +48,10 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
-import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.process.IExternalNode;
 import org.talend.core.model.process.INode;
 import org.talend.designer.core.model.components.EParameterName;
+import org.talend.designer.core.model.components.ExternalUtilities;
 import org.talend.designer.core.ui.MultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.cmd.ExternalNodeChangeCommand;
 import org.talend.designer.core.ui.editor.nodecontainer.NodeContainer;
@@ -329,9 +329,9 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
     public void performRequest(Request req) {
         if (req.getType().equals("open")) {
             Node node = (Node) getModel();
-            IExternalNode externalNode = node.getExternalNode();
-            IWorkbenchPart part = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
-                    .getActiveEditor();
+            IExternalNode externalNode = ExternalUtilities.getExternalNodeReadyToOpen(node);
+
+            IWorkbenchPart part = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
             if (externalNode != null && (part instanceof MultiPageTalendEditor) && !node.isReadOnly()) {
                 if (externalNode.open(getViewer().getControl().getDisplay()) == SWT.OK) {
                     Command cmd = new ExternalNodeChangeCommand(node, externalNode);
@@ -339,19 +339,21 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
                     cmdStack.execute(cmd);
                 } else {
                     // if some connections has been created but canceled they will be removed
-                    for (IMetadataTable metaExternalTable : externalNode.getMetadataList()) {
-                        String connectionName = metaExternalTable.getTableName();
-                        boolean exist = false;
-                        for (IMetadataTable metaNodeTable : node.getMetadataList()) {
-                            if (metaNodeTable.getTableName().equals(connectionName)) {
-                                exist = true;
-                            }
-                        }
 
-                        if (!exist) {
-                            node.getProcess().removeUniqueConnectionName(connectionName);
-                        }
-                    }
+                    // PTODO SML Remove block if no problems
+                    // for (IMetadataTable metaExternalTable : externalNode.getMetadataList()) {
+                    // String connectionName = metaExternalTable.getTableName();
+                    // boolean exist = false;
+                    // for (IMetadataTable metaNodeTable : node.getMetadataList()) {
+                    // if (metaNodeTable.getTableName().equals(connectionName)) {
+                    // exist = true;
+                    // }
+                    // }
+                    //
+                    // if (!exist) {
+                    // node.getProcess().removeUniqueConnectionName(connectionName);
+                    // }
+                    // }
                 }
             } else {
                 IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();

@@ -289,7 +289,7 @@ public class MapperComponent extends AbstractExternalNode {
         }
     }
 
-    public void renameMetadataColumnName(String conectionName, String oldColumnName, String newColumnName) {
+    protected void renameMetadataColumnName(String conectionName, String oldColumnName, String newColumnName) {
         if (conectionName == null || oldColumnName == null || newColumnName == null) {
             throw new NullPointerException();
         }

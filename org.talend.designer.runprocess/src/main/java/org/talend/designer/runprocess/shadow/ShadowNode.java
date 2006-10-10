@@ -26,6 +26,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.talend.core.model.components.IComponent;
+import org.talend.core.model.components.IODataComponent;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataTable;
 import org.talend.core.model.process.IConnection;
@@ -285,7 +286,7 @@ public abstract class ShadowNode implements INode {
      * @see org.talend.core.model.process.INode#renameMetadataColumnName(java.lang.String, java.lang.String,
      * java.lang.String)
      */
-    public void renameMetadataColumnName(String conectionName, String oldColumnName, String newColumnName) {
+    public void metadataChanged(IODataComponent dataComponent) {
         // Nothing to do as it's shadow node
         return;
     }

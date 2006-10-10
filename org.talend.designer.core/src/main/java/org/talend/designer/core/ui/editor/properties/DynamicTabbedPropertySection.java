@@ -117,7 +117,6 @@ import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IContextManager;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.IExternalNode;
-import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.ProcessItem;
@@ -129,6 +128,7 @@ import org.talend.core.ui.proposal.ProcessProposalUtils;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
+import org.talend.designer.core.model.components.ExternalUtilities;
 import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
 import org.talend.designer.core.ui.MultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.cmd.ChangeActivateStatusNodeCommand;
@@ -275,27 +275,14 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
         private void specificButtonSelected(String info, Button button) {
             if (info.equals(EXTERNAL)) {
                 Node node = (Node) elem;
-                IExternalNode externalNode = node.getExternalNode();
+                IExternalNode externalNode = ExternalUtilities.getExternalNodeReadyToOpen(node);
+
                 if (externalNode == null) {
                     MessageBox mBox = new MessageBox(composite.getShell(), SWT.ICON_ERROR);
                     mBox.setText("Error");
                     mBox.setMessage("Component plugin not found: " + node.getPluginFullName());
                     mBox.open();
                 } else {
-                    IODataComponentContainer tagada = new IODataComponentContainer();
-
-                    List<IODataComponent> inputs = tagada.getInputs();
-                    for (IConnection con : node.getIncomingConnections()) {
-                        IODataComponent ou = new IODataComponent(con);
-                        inputs.add(ou);
-                    }
-                    List<IODataComponent> outputs = tagada.getOuputs();
-                    for (IConnection con : node.getOutgoingConnections()) {
-                        IODataComponent ou = new IODataComponent(con);
-                        outputs.add(ou);
-                    }
-
-                    externalNode.setIODataComponents(tagada);
                     if (externalNode.open(composite.getDisplay()) == SWT.OK) {
                         Command cmd = new ExternalNodeChangeCommand(node, externalNode);
                         getCommandStack().execute(cmd);
@@ -365,26 +352,25 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                 IODataComponentContainer inAndOut = new IODataComponentContainer();
                 IODataComponent input = null;
                 for (Connection connec : (List<Connection>) node.getIncomingConnections()) {
-                    if (connec.isActivate() && connec.getLineStyle().equals(EConnectionType.FLOW_MAIN)) {
-                        inputMetadata = connec.getMetadataTable();
-                        // inputMetaCopy = inputMetadata.clone();
-                        inputConec = connec;
+                    // if (connec.isActivate() && connec.getLineStyle().equals(EConnectionType.FLOW_MAIN)) {
+                    inputMetadata = connec.getMetadataTable();
+                    // inputMetaCopy = inputMetadata.clone();
+                    inputConec = connec;
 
-                        input = new IODataComponent(connec);
-                        inputMetaCopy = input.getTable();
-                    }
+                    input = new IODataComponent(connec);
+                    inputMetaCopy = input.getTable();
+                    // }
                 }
                 inAndOut.getInputs().add(input);
 
-                IMetadataTable outputMetadata = (IMetadataTable) node.getMetadataList().get(0);
-                IMetadataTable outputMetaCopy = outputMetadata.clone();
+                IMetadataTable originaleOutputTable = (IMetadataTable) node.getMetadataList().get(0);
+                IMetadataTable outputMetaCopy = originaleOutputTable.clone();
 
                 for (Connection connec : (List<Connection>) node.getOutgoingConnections()) {
-                    if (connec.isActivate() && connec.getLineStyle().equals(EConnectionType.FLOW_MAIN)) {
-                        IODataComponent dataComponent = new IODataComponent(connec);
-                        inAndOut.getOuputs().add(dataComponent);
-                        outputMetaCopy=dataComponent.getTable();
-                    }
+                    // if (connec.isActivate() && connec.getLineStyle().equals(EConnectionType.FLOW_MAIN)) {
+                    IODataComponent dataComponent = new IODataComponent(connec, outputMetaCopy);
+                    inAndOut.getOuputs().add(dataComponent);
+                    // }
                 }
 
                 MetadataDialog metaDialog;
@@ -397,43 +383,30 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                 metaDialog.setText("Schema of " + node.getLabel());
 
                 if (metaDialog.open() == MetadataDialog.OK) {
+                    inputMetaCopy = metaDialog.getInputMetaData();
+                    outputMetaCopy = metaDialog.getOutputMetaData();
                     boolean modified = false;
-                    if (!metaDialog.getOutputMetaData().sameMetadataAs(outputMetadata)) {
+                    if (!outputMetaCopy.sameMetadataAs(originaleOutputTable)) {
                         modified = true;
                     } else {
                         if (inputMetadata != null) {
-                            if (!metaDialog.getInputMetaData().sameMetadataAs(inputMetadata)) {
+                            if (!inputMetaCopy.sameMetadataAs(inputMetadata)) {
                                 modified = true;
                             }
                         }
                     }
 
                     if (modified) {
-                        // Manage columns names changed :
-                        // TODO SML Ask user by a dialogbox
-                        List<? extends IConnection> outgoingConnections = node.getOutgoingConnections();
-                        for (IConnection currentConnection : outgoingConnections) {
-                            INode mynode = currentConnection.getTarget();
-                            for (IMetadataColumn column : metaDialog.changedNameColumns.keySet()) {
-                                mynode.renameMetadataColumnName(currentConnection.getName(), metaDialog.changedNameColumns
-                                        .get(column), column.getLabel());
-                            }
-                        }
-
                         for (IODataComponent currentIO : inAndOut.getOuputs()) {
-                            for (ColumnNameChanged col : currentIO.getColumnNameChanged()) {
-                                currentIO.getTarget().renameMetadataColumnName(col.getConnectionName(), col.getOldName(),
-                                        col.getNewName());
-                            }
+                            currentIO.getTarget().metadataChanged(currentIO);
                         }
-                        // End Manage columns names changed
 
                         Node inputNode = null;
                         if (inputConec != null) {
                             inputNode = inputConec.getSource();
                         }
-                        ChangeMetadataCommand cmd = new ChangeMetadataCommand(node, inputNode, inputMetadata, metaDialog
-                                .getInputMetaData(), outputMetadata, metaDialog.getOutputMetaData());
+                        ChangeMetadataCommand cmd = new ChangeMetadataCommand(node, inputNode, inputMetadata, inputMetaCopy,
+                                originaleOutputTable, outputMetaCopy);
                         getCommandStack().execute(cmd);
                     }
                 }

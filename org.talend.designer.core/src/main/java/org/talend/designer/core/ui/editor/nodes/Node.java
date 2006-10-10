@@ -45,6 +45,7 @@ import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IComponentsFactory;
+import org.talend.core.model.components.IODataComponent;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataTable;
@@ -1116,12 +1117,10 @@ public class Node extends Element implements INode {
      * @see org.talend.core.model.process.INode#renameMetadataColumnName(java.lang.String, java.lang.String,
      * java.lang.String)
      */
-    public void renameMetadataColumnName(String conectionName, String oldColumnName, String newColumnName) {
-        // TODO Auto-generated method stub
-        System.out.println("Name=" + getComponentName() + ", " + conectionName + " " + oldColumnName + " " + newColumnName);
-        
-        if (externalNode!=null)
-            externalNode.renameMetadataColumnName(conectionName, oldColumnName, newColumnName);
+    public void metadataChanged(IODataComponent dataComponent) {
+        if (externalNode != null) {
+            externalNode.metadataChanged(dataComponent);
+        }
     }
 
 }

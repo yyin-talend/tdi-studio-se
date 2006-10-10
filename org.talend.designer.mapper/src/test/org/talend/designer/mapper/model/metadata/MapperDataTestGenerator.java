@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Random;
 
 import org.talend.core.model.components.IComponent;
+import org.talend.core.model.components.IODataComponent;
 import org.talend.core.model.metadata.EMetadataType;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
@@ -1304,7 +1305,7 @@ public class MapperDataTestGenerator {
          * @see org.talend.core.model.process.INode#renameMetadataColumnName(java.lang.String, java.lang.String,
          * java.lang.String)
          */
-        public void renameMetadataColumnName(String conectionName, String oldColumnName, String newColumnName) {
+        public void metadataChanged(IODataComponent dataComponent) {
             // TODO Auto-generated method stub
         }
 

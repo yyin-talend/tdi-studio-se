@@ -31,6 +31,7 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.views.properties.PropertySheet;
 import org.eclipse.ui.views.properties.tabbed.ISection;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
+import org.talend.core.model.components.IODataComponentContainer;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.process.IExternalNode;
 import org.talend.core.model.process.INodeConnector;
@@ -65,9 +66,13 @@ public class ExternalNodeChangeCommand extends Command {
 
     List<Connection> connectionsToDelete;
 
+    private IODataComponentContainer inAndOut;
+
     @SuppressWarnings("unchecked")
     public ExternalNodeChangeCommand(Node node, IExternalNode externalNode) {
         this.node = node;
+
+        this.inAndOut = externalNode.getIODataComponents();
 
         oldExternalData = node.getExternalData();
         oldMetaDataList = node.getMetadataList();
@@ -97,14 +102,12 @@ public class ExternalNodeChangeCommand extends Command {
                             EParameterName.REPOSITORY_SCHEMA_TYPE.getName());
                     IMetadataTable repositoryMetadata = Process.getMetadataFromRepository(metaRepositoryName);
                     if (repositoryMetadata == null) {
-                        connection.getSource().setPropertyValue(EParameterName.SCHEMA_TYPE.getName(),
-                                EmfComponent.BUILTIN);
+                        connection.getSource().setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), EmfComponent.BUILTIN);
                     } else {
                         repositoryMetadata = repositoryMetadata.clone();
                         repositoryMetadata.setTableName(connection.getSource().getUniqueName());
                         if (!repositoryMetadata.sameMetadataAs(connection.getMetadataTable())) {
-                            connection.getSource().setPropertyValue(EParameterName.SCHEMA_TYPE.getName(),
-                                    EmfComponent.BUILTIN);
+                            connection.getSource().setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), EmfComponent.BUILTIN);
                         }
                     }
                 }
@@ -133,6 +136,35 @@ public class ExternalNodeChangeCommand extends Command {
 
     @Override
     public void execute() {
+        for (Connection connection : (List<Connection>) node.getIncomingConnections()) {
+            String schemaType = (String) connection.getSource().getPropertyValue(EParameterName.SCHEMA_TYPE.getName());
+            if (schemaType != null) {
+                String metaRepositoryName = (String) connection.getSource().getPropertyValue(
+                        EParameterName.REPOSITORY_SCHEMA_TYPE.getName());
+
+                // IMetadataTable repositoryMetadata = Process.getMetadataFromRepository(metaRepositoryName);
+                IMetadataTable repositoryMetadata = inAndOut.getTable(connection);
+
+                if (repositoryMetadata == null) {
+                    if (schemaType.equals(EmfComponent.REPOSITORY)) {
+                        connection.getSource().setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), EmfComponent.BUILTIN);
+                    }
+                    connection.getSource().getMetadataList().remove(connection.getMetadataTable());
+                    connection.getSource().getMetadataList().add(repositoryMetadata);
+                } else {
+                    repositoryMetadata = repositoryMetadata.clone();
+                    repositoryMetadata.setTableName(connection.getSource().getUniqueName());
+                    if (!repositoryMetadata.sameMetadataAs(connection.getMetadataTable())) {
+                        if (schemaType.equals(EmfComponent.REPOSITORY)) {
+                            connection.getSource().setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), EmfComponent.BUILTIN);
+                        }
+                        connection.getSource().getMetadataList().remove(connection.getMetadataTable());
+                        connection.getSource().getMetadataList().add(repositoryMetadata);
+                    }
+                }
+            }
+        }
+
         node.setExternalData(newExternalData);
         node.setMetadataList(newMetaDataList);
         for (Connection connection : connectionsToDelete) {

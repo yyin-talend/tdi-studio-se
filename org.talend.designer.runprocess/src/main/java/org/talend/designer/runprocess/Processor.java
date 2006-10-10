@@ -213,6 +213,12 @@ public class Processor {
                     outStreamProcess.close();
                 } catch (IOException ioe) {
                     ioe.printStackTrace();
+                } finally {
+                    try {
+                        input.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         };
