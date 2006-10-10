@@ -205,7 +205,7 @@ public class Processor {
 
                     while (outStreamProcess.read(buffer, 0, buffer.length) != -1) {
                         if (isError) {
-                            err.append(buffer);
+                            err.append(new String(buffer));
                         } else {
                             out.append(new String(buffer));
                         }
