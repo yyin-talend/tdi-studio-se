@@ -148,7 +148,7 @@ public class RegexpFileStep3Form extends AbstractRegexpFileStepForm {
         // Composite Guess
         Composite compositeGuessButton = Form.startNewDimensionnedGridLayout(compositeMetaData, 2, WIDTH_GRIDDATA_PIXEL, 40);
         informationLabel = new Label(compositeGuessButton, SWT.NONE);
-        informationLabel.setText(Messages.getString("FileStep3.guessTip") + "                                                  ");
+        informationLabel.setText(Messages.getString("FileStep3.informationLabel") + "                                                  ");
         informationLabel.setSize(500, HEIGHT_BUTTON_PIXEL);
 
         guessButton = new UtilsButton(compositeGuessButton, Messages.getString("FileStep3.guess"), WIDTH_BUTTON_PIXEL,
