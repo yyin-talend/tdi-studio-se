@@ -1117,10 +1117,14 @@ public class Node extends Element implements INode {
      * @see org.talend.core.model.process.INode#renameMetadataColumnName(java.lang.String, java.lang.String,
      * java.lang.String)
      */
-    public void metadataChanged(IODataComponent dataComponent) {
+    public void metadataInputChanged(IODataComponent dataComponent) {
+        System.out.println("InputChanged : Node=" + this + ", IOData=[" + dataComponent + "]");
         if (externalNode != null) {
-            externalNode.metadataChanged(dataComponent);
+            externalNode.metadataInputChanged(dataComponent);
         }
     }
 
+    public void metadataOutputChanged(IODataComponent dataComponent) {
+        System.out.println("InputChanged : Node=" + this + ", IOData=[" + dataComponent + "]");
+    }
 }

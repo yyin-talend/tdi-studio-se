@@ -361,6 +361,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                     inputMetaCopy = input.getTable();
                     // }
                 }
+                if (input!=null)
                 inAndOut.getInputs().add(input);
 
                 IMetadataTable originaleOutputTable = (IMetadataTable) node.getMetadataList().get(0);
@@ -398,7 +399,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
 
                     if (modified) {
                         for (IODataComponent currentIO : inAndOut.getOuputs()) {
-                            currentIO.getTarget().metadataChanged(currentIO);
+                            currentIO.getTarget().metadataInputChanged(currentIO);
                         }
 
                         Node inputNode = null;
