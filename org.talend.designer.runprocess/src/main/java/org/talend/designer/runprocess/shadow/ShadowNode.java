@@ -286,8 +286,11 @@ public abstract class ShadowNode implements INode {
      * @see org.talend.core.model.process.INode#renameMetadataColumnName(java.lang.String, java.lang.String,
      * java.lang.String)
      */
-    public void metadataChanged(IODataComponent dataComponent) {
+    public void metadataInputChanged(IODataComponent dataComponent) {
         // Nothing to do as it's shadow node
-        return;
+    }
+
+    public void metadataOutputChanged(IODataComponent dataComponent) {
+        // Nothing to do as it's shadow node
     }
 }

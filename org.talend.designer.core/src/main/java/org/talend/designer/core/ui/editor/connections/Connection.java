@@ -100,6 +100,11 @@ public class Connection extends Element implements IConnection {
         }
     }
 
+    @Override
+    public String toString() {
+        return "Name=" + getName() + ", Table=" + getMetadataTable();
+    }
+
     /**
      * Get the name/label of the connection.
      * 

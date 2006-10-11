@@ -68,7 +68,12 @@ public class DataNode extends AbstractNode {
      * @see org.talend.core.model.process.INode#renameMetadataColumnName(java.lang.String, java.lang.String,
      * java.lang.String)
      */
-    public void metadataChanged(IODataComponent dataComponent) {
+    public void metadataInputChanged(IODataComponent dataComponent) {
+        // TODO Auto-generated method stub
+
+    }
+
+    public void metadataOutputChanged(IODataComponent dataComponent) {
         // TODO Auto-generated method stub
 
     }
