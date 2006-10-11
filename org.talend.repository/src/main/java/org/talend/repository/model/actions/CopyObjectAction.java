@@ -59,11 +59,6 @@ public class CopyObjectAction {
         }
 
         IRepositoryObject objectToCopy = sourceNode.getObject();
-        if (objectToCopy.getType() != ERepositoryObjectType.BUSINESS_PROCESS
-                && objectToCopy.getType() != ERepositoryObjectType.PROCESS
-                && objectToCopy.getType() != ERepositoryObjectType.DOCUMENTATION) {
-            return false;
-        }
 
         // Cannot move logically deleted objects :
         IRepositoryFactory factory = RepositoryFactoryProvider.getInstance();
