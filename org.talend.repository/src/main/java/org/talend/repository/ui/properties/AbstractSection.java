@@ -101,6 +101,8 @@ public abstract class AbstractSection extends AbstractPropertySection {
         }
     };
 
+    private RepositoryNode repositoryNode;
+
     /**
      * DOC tguiu AbstractSection constructor comment.
      */
@@ -124,6 +126,14 @@ public abstract class AbstractSection extends AbstractPropertySection {
 
     protected IRepositoryObject getObject() {
         return repositoryObject;
+    }
+    
+    protected RepositoryNode getNode() {
+        return repositoryNode;
+    }
+    
+    protected ERepositoryObjectType getType() {
+        return repositoryObject.getType();
     }
 
     /**
@@ -157,7 +167,8 @@ public abstract class AbstractSection extends AbstractPropertySection {
         Object input = ((IStructuredSelection) selection).getFirstElement();
 
         Assert.isTrue(input instanceof RepositoryNode);
-        repositoryObject = ((RepositoryNode) input).getObject();
+        repositoryNode = (RepositoryNode) input;
+        repositoryObject = repositoryNode.getObject();
         if (repositoryObject == null) {
             repositoryObject = new EmptyRepositoryObject();
             enableControls(false);
@@ -166,7 +177,7 @@ public abstract class AbstractSection extends AbstractPropertySection {
         }
         manageLock();
         ERepositoryObjectType type = repositoryObject.getType();
-        showControls(type != ERepositoryObjectType.METADATA_CON_TABLE && type != ERepositoryObjectType.FOLDER);
+        showControls(type != ERepositoryObjectType.METADATA_CON_TABLE);
     }
 
     /**

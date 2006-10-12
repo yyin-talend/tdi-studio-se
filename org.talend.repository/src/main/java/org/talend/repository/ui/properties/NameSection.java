@@ -23,6 +23,7 @@ package org.talend.repository.ui.properties;
 
 import java.util.regex.Pattern;
 
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.swt.SWT;
@@ -42,6 +43,10 @@ import org.talend.core.ui.ImageProvider;
 import org.talend.core.ui.ImageProvider.EImage;
 import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.model.RepositoryConstants;
+import org.talend.repository.model.RepositoryNode;
+import org.talend.repository.model.RepositoryNodeUtilities;
+import org.talend.repository.model.RepositoryNode.EProperties;
+import org.talend.repository.ui.views.RepositoryView;
 
 /**
  * DOC mhelleboid class global comment. Detailled comment <br/>
@@ -147,6 +152,20 @@ public class NameSection extends AbstractSection {
         if (status.getSeverity() != IStatus.ERROR) {
             String text = nameText.getText();
             if (!text.equals(getObject().getLabel())) {
+                if (getType() == ERepositoryObjectType.FOLDER)
+                {
+                    IPath path = RepositoryNodeUtilities.getPath(getNode());
+                    try {
+                        ERepositoryObjectType type = (ERepositoryObjectType) getNode().getProperties(EProperties.CONTENT_TYPE);
+                        getRepositoryFactory().renameFolder(type, path, text);
+                        RepositoryView view = (RepositoryView)getActivePage().findView(RepositoryView.VIEW_ID);
+                        view.refresh();
+                    } catch (PersistenceException e) {
+                        e.printStackTrace();
+                        return ;
+                    }
+                    
+                }
                 getObject().setLabel(text);
             }
         }
@@ -154,7 +173,10 @@ public class NameSection extends AbstractSection {
 
     @Override
     protected void enableControl(boolean locked) {
-        nameText.setEditable(locked);
+        if (getType() == ERepositoryObjectType.FOLDER)
+            nameText.setEditable(true);
+        else
+            nameText.setEditable(locked);
     }
 
     @Override
