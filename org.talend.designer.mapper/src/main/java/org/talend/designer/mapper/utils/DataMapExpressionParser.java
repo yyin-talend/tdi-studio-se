@@ -121,14 +121,14 @@ public class DataMapExpressionParser {
 
     public String replaceLocation(String expression, TableEntryLocation oldLocation, TableEntryLocation newLocation) {
         String returnedExpression = expression;
-        String tempPattern = StringHelper.replacePrms(language.getSubstPatternForReplaceLocation(), new Object[] {
-            oldLocation.tableName, oldLocation.columnName });
+        String tempPattern = StringHelper.replacePrms(language.getSubstPatternForReplaceLocation(), new Object[] { oldLocation.tableName,
+                oldLocation.columnName });
         recompilePatternIfNecessary(tempPattern);
         if (returnedExpression != null) {
             matcher.setMultiline(true);
-            Perl5Substitution substitution = new Perl5Substitution(language.getPrefixTableRegexp() + "$1" + newLocation.tableName
-                    + "$2" + language.getSuffixTableRegexp() + "$3" + language.getPrefixFieldRegexp() + "$4" + newLocation.columnName + "$5" + 
-                    language.getSuffixFieldRegexp(), Perl5Substitution.INTERPOLATE_ALL);
+            Perl5Substitution substitution = new Perl5Substitution(language.getPrefixTableRegexp() + "$1" + newLocation.tableName + "$2"
+                    + language.getSuffixTableRegexp() + "$3" + language.getPrefixFieldRegexp() + "$4" + newLocation.columnName + "$5"
+                    + language.getSuffixFieldRegexp(), Perl5Substitution.INTERPOLATE_ALL);
             returnedExpression = Util.substitute(matcher, pattern, substitution, returnedExpression, Util.SUBSTITUTE_ALL);
         }
         return returnedExpression;

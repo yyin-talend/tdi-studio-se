@@ -141,7 +141,7 @@ public class InsertionIndicator {
 
                 Rectangle bounds = composite.getBounds();
 
-                ////////////////////////////////////////////////////////////
+                // //////////////////////////////////////////////////////////
                 // draw image filled with transparent pixels
                 RGB transparentColor = new RGB(0, 255, 0);
                 PaletteData paletteData = new PaletteData(new RGB[] { transparentColor });
@@ -157,7 +157,7 @@ public class InsertionIndicator {
                 image.dispose();
                 // ////////////////////////////////////////////////////////////////////////////
 
-                ////////////////////////////////////////////////////////////
+                // //////////////////////////////////////////////////////////
                 // draw left arrow
                 int yCenter = bounds.height / 2;
                 int widthExternalArrow = 10;

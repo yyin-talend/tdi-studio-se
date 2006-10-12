@@ -117,13 +117,13 @@ public class OutputDataMapTableView extends DataMapTableView {
         column.setWeight(100);
 
         List<ConstraintTableEntry> entries = ((OutputTable) getDataMapTable()).getConstraintEntries();
-        
+
         // correct partially layout problem with GTK when cell editor value is applied
         tableViewerCreatorForConstraints.setAdjustWidthValue(WindowSystem.isGTK() ? -20 : ADJUST_WIDTH_VALUE);
 
         tableViewerCreatorForConstraints.init(entries);
         updateGridDataHeightForTableConstraints();
-        
+
         if (WindowSystem.isGTK()) {
             tableViewerCreatorForConstraints.layout();
         }
@@ -176,6 +176,4 @@ public class OutputDataMapTableView extends DataMapTableView {
         tableViewerCreatorForConstraints.getSelectionHelper().deselectAll();
     }
 
-    
-    
 }

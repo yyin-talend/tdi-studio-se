@@ -31,8 +31,6 @@ import org.eclipse.jface.dialogs.IInputValidator;
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
@@ -49,13 +47,11 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Layout;
-import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.ScrollBar;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.ToolItem;
-import org.eclipse.ui.ISelectionListener;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
 import org.talend.commons.ui.swt.tableviewer.selection.ILineSelectionListener;
@@ -89,8 +85,6 @@ import org.talend.designer.mapper.model.tableentry.TableEntryLocation;
 import org.talend.designer.mapper.ui.MapperUI;
 import org.talend.designer.mapper.ui.dnd.DraggingInfosPopup;
 import org.talend.designer.mapper.ui.dnd.DropTargetOperationListener;
-import org.talend.designer.mapper.ui.image.ImageInfo;
-import org.talend.designer.mapper.ui.image.ImageProviderMapper;
 import org.talend.designer.mapper.ui.tabs.TabFolderEditors;
 import org.talend.designer.mapper.ui.visualmap.TableEntryProperties;
 import org.talend.designer.mapper.ui.visualmap.link.AbstractLink;
@@ -108,6 +102,7 @@ import org.talend.designer.mapper.ui.visualmap.zone.scrollable.TablesZoneView;
 import org.talend.designer.mapper.ui.visualmap.zone.toolbar.ToolbarOutputZone;
 import org.talend.designer.mapper.ui.visualmap.zone.toolbar.ToolbarZone;
 import org.talend.designer.mapper.utils.DataMapExpressionParser;
+import org.talend.designer.mapper.utils.ProcessExpressionResult;
 
 /**
  * DOC amaumont class global comment. Detailled comment <br/>
@@ -981,14 +976,14 @@ public class UIManager {
             AbstractDataMapTable dataMapTable = view.getDataMapTable();
             List<IColumnEntry> metadataTableEntries = dataMapTable.getColumnEntries();
             for (IColumnEntry entry : metadataTableEntries) {
-                if (processExpression(entry.getExpression(), entry, true, true, false).atLeastOneLinkRemoved) {
+                if (processExpression(entry.getExpression(), entry, true, true, false).isAtLeastOneLinkRemoved()) {
                     atLeastOneLinkHasBeenRemoved = true;
                 }
             }
             if (dataMapTable instanceof OutputTable) {
                 List<ConstraintTableEntry> constraintEntries = ((OutputTable) dataMapTable).getConstraintEntries();
                 for (ConstraintTableEntry entry : constraintEntries) {
-                    if (processExpression(entry.getExpression(), entry, true, true, false).atLeastOneLinkRemoved) {
+                    if (processExpression(entry.getExpression(), entry, true, true, false).isAtLeastOneLinkRemoved()) {
                         atLeastOneLinkHasBeenRemoved = true;
                     }
                 }
@@ -1389,7 +1384,7 @@ public class UIManager {
         Layout layout = tablesZoneView.getLayout();
 
         try {
-	        tablesZoneView.setLayout(null);
+            tablesZoneView.setLayout(null);
             for (DataMapTableView view : tablesView) {
                 view.minimizeTable(minimize);
             }

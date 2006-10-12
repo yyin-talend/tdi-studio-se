@@ -42,7 +42,6 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
-import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -824,6 +823,7 @@ public class MapperUI {
         }).init();
 
         new AsynchronousThreading(50, new Runnable() {
+
             public void run() {
 
                 launchEvaluatingPerformanceLoop();

@@ -26,20 +26,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.eclipse.core.resources.IFolder;
-import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
-import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
-import org.talend.commons.utils.workbench.resources.ResourceUtils;
-import org.talend.core.CorePlugin;
-import org.talend.core.context.Context;
-import org.talend.core.context.RepositoryContext;
-import org.talend.core.model.general.Project;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.MetadataTable;
 import org.talend.core.model.metadata.editor.MetadataTableEditor;
@@ -48,8 +40,6 @@ import org.talend.core.model.process.IProcess;
 import org.talend.core.ui.metadata.editor.MetadataTableEditorView;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.mapper.MapperComponent;
-import org.talend.designer.mapper.external.data.ExternalMapperTable;
-import org.talend.designer.mapper.external.data.ExternalMapperTableEntry;
 import org.talend.designer.mapper.language.LanguageProvider;
 import org.talend.designer.mapper.model.table.AbstractDataMapTable;
 import org.talend.designer.mapper.model.table.InputTable;
@@ -71,7 +61,6 @@ import org.talend.designer.mapper.ui.visualmap.zone.Zone;
 import org.talend.designer.mapper.ui.visualmap.zone.scrollable.TablesZoneView;
 import org.talend.designer.mapper.utils.DataMapExpressionParser;
 import org.talend.repository.model.RepositoryConstants;
-import org.talend.repository.model.ResourceModelUtils;
 import org.talend.repository.utils.RepositoryPathProvider;
 
 /**
@@ -83,6 +72,8 @@ import org.talend.repository.utils.RepositoryPathProvider;
 public class MapperManager {
 
     public static final String MAPPER_MODEL_DATA = "MAPPER_MODEL_DATA";
+
+    private static final String EMPTY_STRING = "";
 
     private TableEntriesManager tableEntriesManager;
 

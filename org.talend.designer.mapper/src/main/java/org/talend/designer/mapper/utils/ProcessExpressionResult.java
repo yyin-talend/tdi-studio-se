@@ -19,24 +19,23 @@
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 // ============================================================================
-package org.talend.designer.mapper.managers;
-
+package org.talend.designer.mapper.utils;
 
 /**
- * DOC amaumont  class global comment. Detailled comment
- * <br/>
- *
+ * DOC amaumont class global comment. Detailled comment <br/>
+ * 
  * $Id$
- *
+ * 
  */
 public class ProcessExpressionResult {
 
-    public boolean atLeastOneLinkAdded;
-    
-    public boolean atLeastOneLinkRemoved;
+    private boolean atLeastOneLinkAdded;
+
+    private boolean atLeastOneLinkRemoved;
 
     /**
      * DOC amaumont ProcessExpressionResult constructor comment.
+     * 
      * @param atLeastOneLinkAdded
      * @param atLeastOneLinkRemoved
      */
@@ -45,9 +44,20 @@ public class ProcessExpressionResult {
         this.atLeastOneLinkAdded = atLeastOneLinkAdded;
         this.atLeastOneLinkRemoved = atLeastOneLinkRemoved;
     }
-    
+
     public boolean isAtLeastOneLinkHasBeenAddedOrRemoved() {
         return atLeastOneLinkAdded || atLeastOneLinkRemoved;
     }
+
+    
+    public boolean isAtLeastOneLinkAdded() {
+        return this.atLeastOneLinkAdded;
+    }
+
+    
+    public boolean isAtLeastOneLinkRemoved() {
+        return this.atLeastOneLinkRemoved;
+    }
+
     
 }

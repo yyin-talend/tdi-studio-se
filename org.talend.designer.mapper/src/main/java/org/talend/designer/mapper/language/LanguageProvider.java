@@ -37,6 +37,8 @@ import org.talend.designer.mapper.language.perl.PerlLanguage;
  */
 public class LanguageProvider {
 
+    private static ILanguage language;
+
     public static ILanguage getCurrentLanguage() {
         ECodeLanguage codeLanguage = null;
         if (!MapperMain.isStandAloneMode()) {
@@ -46,13 +48,16 @@ public class LanguageProvider {
             codeLanguage = ECodeLanguage.PERL;
         }
         switch (codeLanguage) {
-        case PERL:
-            return new PerlLanguage();
         case JAVA:
-            return new JavaLanguage();
+            if (!(language instanceof JavaLanguage) || LanguageProvider.language == null) {
+                LanguageProvider.language = new JavaLanguage();
+            }
         default:
-            return new PerlLanguage();
+            if (!(language instanceof PerlLanguage) || LanguageProvider.language == null) {
+                LanguageProvider.language = new PerlLanguage();
+            }
         }
+        return LanguageProvider.language;
     }
 
 }

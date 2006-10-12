@@ -66,8 +66,8 @@ public class PerlLanguage extends AbstractLanguage {
      * {0} and {1} must be replaced respectively by the table name and the column name.
      */
     private static final String SUBST_PATTERN_FOR_REPLACE_LOCATION = PREFIX_TABLE_NAME_REGEXP + "(\\s*){0}(\\s*)"
-     + SUFFIX_TABLE_NAME_REGEXP +  "(\\s*)" + PREFIX_FIELD_NAME_REGEXP + "(\\s*){1}(\\s*)" + SUFFIX_FIELD_NAME_REGEXP;
-    
+            + SUFFIX_TABLE_NAME_REGEXP + "(\\s*)" + PREFIX_FIELD_NAME_REGEXP + "(\\s*){1}(\\s*)" + SUFFIX_FIELD_NAME_REGEXP;
+
     /**
      * {0} and {1} must be replaced respectively by the table name and the column name.
      */
@@ -88,6 +88,16 @@ public class PerlLanguage extends AbstractLanguage {
      * {0} and {1} must be replaced respectively by the table name and the column name.
      */
     private static final String TEMPLATE_VARS_COLUMN_VARIABLE = PREFIX_VARIABLE_NAME + "{0}";
+
+    private PerlExpressionSyntaxChecker syntaxChecker;
+
+    /**
+     * DOC amaumont PerlLanguage constructor comment.
+     */
+    public PerlLanguage() {
+        super();
+        this.syntaxChecker = new PerlExpressionSyntaxChecker();
+    }
 
     /*
      * (non-Javadoc)
@@ -151,7 +161,7 @@ public class PerlLanguage extends AbstractLanguage {
     public String getSubstPatternForReplaceLocation() {
         return SUBST_PATTERN_FOR_REPLACE_LOCATION;
     }
-    
+
     /*
      * (non-Javadoc)
      * 
@@ -232,6 +242,15 @@ public class PerlLanguage extends AbstractLanguage {
      */
     public String getTemplateTableVariable() {
         return TEMPLATE_TABLE_VARIABLE;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.mapper.language.ILanguage#checkExpressionSyntax(java.lang.String)
+     */
+    public String checkExpressionSyntax(String expression) {
+        return syntaxChecker.checkSyntax(expression);
     }
 
 }

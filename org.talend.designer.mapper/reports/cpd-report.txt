@@ -1,0 +1,2074 @@
+Found a 25 line (130 tokens) duplication in the following files: 
+Starting at line 947 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\test\org\talend\designer\mapper\model\metadata\MapperDataTestGenerator.java
+Starting at line 974 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\test\org\talend\designer\mapper\model\metadata\MapperDataTestGenerator.java
+
+        metadataTable.setTableName("newPageRejected2");
+
+        metadatColumns = new ArrayList<IMetadataColumn>();
+
+        metadataColumn = new MetadataColumnTest();
+        metadataColumn.setLabel("id");
+        metadataColumn.setKey(true);
+        metadataColumn.setType(EMetadataType.INTEGER.toString());
+        metadatColumns.add(metadataColumn);
+
+        metadataColumn = new MetadataColumnTest();
+        metadataColumn.setLabel("id_book");
+        metadataColumn.setKey(false);
+        metadataColumn.setType(EMetadataType.INTEGER.toString());
+        metadatColumns.add(metadataColumn);
+
+        metadataColumn = new MetadataColumnTest();
+        metadataColumn.setLabel("content");
+        metadataColumn.setKey(false);
+        metadataColumn.setType(EMetadataType.STRING.toString());
+        metadatColumns.add(metadataColumn);
+
+        metadataTable.setListColumns(metadatColumns);
+
+        list.add(metadataTable);
+=====================================================================
+Found a 23 line (124 tokens) duplication in the following files: 
+Starting at line 822 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\test\org\talend\designer\mapper\model\metadata\MapperDataTestGenerator.java
+Starting at line 947 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\test\org\talend\designer\mapper\model\metadata\MapperDataTestGenerator.java
+
+        metadataTable.setTableName("newPageRejected");
+
+        metadatColumns = new ArrayList<IMetadataColumn>();
+
+        metadataColumn = new MetadataColumnTest();
+        metadataColumn.setLabel("id");
+        metadataColumn.setKey(true);
+        metadataColumn.setType(EMetadataType.INTEGER.toString());
+        metadatColumns.add(metadataColumn);
+
+        metadataColumn = new MetadataColumnTest();
+        metadataColumn.setLabel("id_book");
+        metadataColumn.setKey(false);
+        metadataColumn.setType(EMetadataType.INTEGER.toString());
+        metadatColumns.add(metadataColumn);
+
+        metadataColumn = new MetadataColumnTest();
+        metadataColumn.setLabel("content");
+        metadataColumn.setKey(false);
+        metadataColumn.setType(EMetadataType.STRING.toString());
+        metadatColumns.add(metadataColumn);
+
+        metadataTable.setListColumns(metadatColumns);
+=====================================================================
+Found a 37 line (120 tokens) duplication in the following files: 
+Starting at line 32 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\language\perl\PerlLanguage.java
+Starting at line 32 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\language\java\JavaLanguage.java
+
+public class JavaLanguage extends AbstractLanguage {
+
+    private static final String DOUBLE_ESCAPE = "\\";
+
+    private static final String PREFIX_VARIABLE_NAME = "$";
+
+    private static final String AND_CONDITION = " && ";
+
+    private static final String PREFIX_FIELD_NAME = "[";
+
+    private static final String SUFFIX_FIELD_NAME = "]";
+
+    private static final String PREFIX_TABLE_NAME = PREFIX_VARIABLE_NAME;
+
+    private static final String PREFIX_TABLE_NAME_REGEXP = DOUBLE_ESCAPE + PREFIX_TABLE_NAME;
+
+    private static final String SUFFIX_TABLE_NAME = "";
+
+    private static final String SUFFIX_TABLE_NAME_REGEXP = SUFFIX_TABLE_NAME;
+
+    private static final String PREFIX_FIELD_NAME_REGEXP = DOUBLE_ESCAPE + PREFIX_FIELD_NAME;
+
+    private static final String SUFFIX_FIELD_NAME_REGEXP = DOUBLE_ESCAPE + SUFFIX_FIELD_NAME;
+
+    private static final String LOCATION_PATTERN = PREFIX_TABLE_NAME_REGEXP + "\\s*(\\w+)\\s*" + PREFIX_FIELD_NAME_REGEXP
+            + "\\s*(\\w+)\\s*" + SUFFIX_FIELD_NAME_REGEXP;
+
+    /**
+     * {0} and {1} must be replaced respectively by the table name and the column name.
+     */
+    private static final String SUBST_PATTERN_FOR_PREFIX_COLUMN_NAME = PREFIX_TABLE_NAME_REGEXP + "\\s*({0})\\s*"
+            + PREFIX_FIELD_NAME_REGEXP + "\\s*({1})\\s*" + SUFFIX_FIELD_NAME_REGEXP;
+
+    /**
+     * {0} and {1} must be replaced respectively by the table name and the column name.
+     */
+    private static final String TEMPLATE_TABLE_COLUMN_VARIABLE = PREFIX_TABLE_NAME + "{0}" + PREFIX_FIELD_NAME + "{1}" + SUFFIX_FIELD_NAME;
+=====================================================================
+Found a 20 line (115 tokens) duplication in the following files: 
+Starting at line 116 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\business\problems\ProblemsAnalyser.java
+Starting at line 334 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\MapperComponent.java
+
+    }
+
+    public void replaceLocation(TableEntryLocation oldLocation, TableEntryLocation newLocation, String newColumnName,
+            ExternalMapperTableEntry entry, DataMapExpressionParser dataMapExpressionParser) {
+        String currentExpression = entry.getExpression();
+        if (currentExpression == null || currentExpression.length() == 0) {
+            return;
+        }
+        TableEntryLocation[] tableEntryLocations = dataMapExpressionParser.parseTableEntryLocations(currentExpression);
+        // loop on all locations of current expression
+        for (int i = 0; i < tableEntryLocations.length; i++) {
+            TableEntryLocation currentLocation = tableEntryLocations[i];
+            if (currentLocation.equals(oldLocation)) {
+                newLocation.columnName = newColumnName;
+                currentExpression = dataMapExpressionParser.replaceLocation(currentExpression, currentLocation, newLocation);
+            }
+        } // for (int i = 0; i < tableEntryLocations.length; i++) {
+        entry.setExpression(currentExpression);
+
+    }
+=====================================================================
+Found a 21 line (110 tokens) duplication in the following files: 
+Starting at line 618 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\test\org\talend\designer\mapper\model\metadata\MapperDataTestGenerator.java
+Starting at line 658 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\test\org\talend\designer\mapper\model\metadata\MapperDataTestGenerator.java
+
+        mapperTable.setName("newPageRejected2");
+        mapperTable.setReject(true);
+
+        tableEntries = new ArrayList<ExternalMapperTableEntry>();
+
+        mapperTableEntry = new ExternalMapperTableEntry();
+        mapperTableEntry.setName("id_page");
+        mapperTableEntry.setExpression("");
+        tableEntries.add(mapperTableEntry);
+
+        mapperTableEntry = new ExternalMapperTableEntry();
+        mapperTableEntry.setName("id_book");
+        mapperTableEntry.setExpression(gen.getTableColumnVariable("page", "id_book"));
+        tableEntries.add(mapperTableEntry);
+
+        mapperTableEntry = new ExternalMapperTableEntry();
+        mapperTableEntry.setName("content");
+        mapperTableEntry.setExpression(gen.getTableColumnVariable(VarsTable.PREFIX_VARS_TABLE_NAME, "upperCaseContent"));
+        tableEntries.add(mapperTableEntry);
+
+        mapperTable.setMetadataTableEntries(tableEntries);
+=====================================================================
+Found a 18 line (103 tokens) duplication in the following files: 
+Starting at line 794 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\test\org\talend\designer\mapper\model\metadata\MapperDataTestGenerator.java
+Starting at line 898 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\test\org\talend\designer\mapper\model\metadata\MapperDataTestGenerator.java
+
+        metadataColumn.setLabel("newIdBook");
+        metadataColumn.setKey(true);
+        metadataColumn.setType(EMetadataType.INTEGER.toString());
+        metadatColumns.add(metadataColumn);
+
+        metadataColumn = new MetadataColumnTest();
+        metadataColumn.setLabel("name");
+        metadataColumn.setKey(false);
+        metadataColumn.setType(EMetadataType.STRING.toString());
+        metadatColumns.add(metadataColumn);
+
+        metadataColumn = new MetadataColumnTest();
+        metadataColumn.setLabel("nb_pages");
+        metadataColumn.setKey(false);
+        metadataColumn.setType(EMetadataType.INTEGER.toString());
+        metadatColumns.add(metadataColumn);
+
+        metadataTable.setListColumns(metadatColumns);
+=====================================================================
+Found a 20 line (98 tokens) duplication in the following files: 
+Starting at line 820 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\test\org\talend\designer\mapper\model\metadata\MapperDataTestGenerator.java
+Starting at line 853 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\test\org\talend\designer\mapper\model\metadata\MapperDataTestGenerator.java
+
+        metadataTable.setTableName("user_input50");
+
+        connection.setMetadataTable(metadataTable);
+
+        metadatColumns = new ArrayList<IMetadataColumn>();
+
+        metadataColumn = new MetadataColumnTest();
+        metadataColumn.setLabel("id");
+        metadataColumn.setKey(true);
+        metadataColumn.setType(EMetadataType.INTEGER.toString());
+        metadatColumns.add(metadataColumn);
+
+        metadataColumn = new MetadataColumnTest();
+        metadataColumn.setLabel("id_book");
+        metadataColumn.setKey(false);
+        metadataColumn.setType(EMetadataType.INTEGER.toString());
+        metadatColumns.add(metadataColumn);
+
+        metadataColumn = new MetadataColumnTest();
+        metadataColumn.setLabel("id_page_different");
+=====================================================================
+Found a 43 line (98 tokens) duplication in the following files: 
+Starting at line 138 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\test\org\talend\designer\mapper\model\metadata\MapperDataTestGenerator.java
+Starting at line 165 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\test\org\talend\designer\mapper\model\metadata\MapperDataTestGenerator.java
+
+        metadataTable.setTableName("in" + ++inputsCounter);
+
+        ArrayList<IMetadataColumn> metadatColumns = new ArrayList<IMetadataColumn>();
+
+        MetadataColumn metadataColumn = new MetadataColumn();
+        metadataColumn.setLabel("id");
+        metadataColumn.setKey(true);
+        metadataColumn.setType(EMetadataType.INTEGER.toString());
+        metadatColumns.add(metadataColumn);
+
+        metadataColumn = new MetadataColumn();
+        metadataColumn.setLabel("name");
+        metadataColumn.setKey(false);
+        metadataColumn.setType(EMetadataType.STRING.toString());
+        metadatColumns.add(metadataColumn);
+        /*
+         * metadataColumn = new MetadataColumn(); metadataColumn.setLabel("name2"); metadataColumn.setKey(false);
+         * metadataColumn.setType(EMetadataType.STRING); metadatColumns.add(metadataColumn);
+         * 
+         * metadataColumn = new MetadataColumn(); metadataColumn.setLabel("name3"); metadataColumn.setKey(false);
+         * metadataColumn.setType(EMetadataType.STRING); metadatColumns.add(metadataColumn);
+         * 
+         * metadataColumn = new MetadataColumn(); metadataColumn.setLabel("name4"); metadataColumn.setKey(false);
+         * metadataColumn.setType(EMetadataType.STRING); metadatColumns.add(metadataColumn);
+         * 
+         * metadataColumn = new MetadataColumn(); metadataColumn.setLabel("name5"); metadataColumn.setKey(false);
+         * metadataColumn.setType(EMetadataType.STRING); metadatColumns.add(metadataColumn);
+         * 
+         * metadataColumn = new MetadataColumn(); metadataColumn.setLabel("name6"); metadataColumn.setKey(false);
+         * metadataColumn.setType(EMetadataType.STRING); metadatColumns.add(metadataColumn);
+         */
+        metadataTable.setListColumns(metadatColumns);
+
+        return metadataTable;
+
+    }
+
+    /**
+     * DOC amaumont Comment method "initMetadataTable".
+     * 
+     * @return
+     */
+    private IMetadataTable initOutputsDataMapTable() {
+=====================================================================
+Found a 20 line (96 tokens) duplication in the following files: 
+Starting at line 44 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\test-resources\TMapperStartPerljet.java
+Starting at line 54 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\test-resources\TMapperMainPerljet.java
+
+        IExternalNode argument = null;
+
+        AbstractExternalNode node = (AbstractExternalNode) argument;
+
+        // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // start of code to copy in template
+
+        List<IConnection> connections;
+        ExternalMapperData data;
+        if (node != null) {
+            // normal use
+            connections = (List<IConnection>) node.getIncomingConnections();
+            data = (ExternalMapperData) node.getExternalData();
+        } else {
+            // Stand alone / tests
+            org.talend.designer.mapper.MapperMain.setStandAloneMode(true);
+            MapperDataTestGenerator testGenerator = new MapperDataTestGenerator(LanguageProvider.getCurrentLanguage(), false);
+            connections = testGenerator.getConnectionList();
+            data = (ExternalMapperData) testGenerator.getExternalData();
+        }
+=====================================================================
+Found a 18 line (92 tokens) duplication in the following files: 
+Starting at line 855 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\test\org\talend\designer\mapper\model\metadata\MapperDataTestGenerator.java
+Starting at line 947 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\test\org\talend\designer\mapper\model\metadata\MapperDataTestGenerator.java
+
+        metadataTable.setTableName("newPageRejected");
+
+        metadatColumns = new ArrayList<IMetadataColumn>();
+
+        metadataColumn = new MetadataColumnTest();
+        metadataColumn.setLabel("id");
+        metadataColumn.setKey(true);
+        metadataColumn.setType(EMetadataType.INTEGER.toString());
+        metadatColumns.add(metadataColumn);
+
+        metadataColumn = new MetadataColumnTest();
+        metadataColumn.setLabel("id_book");
+        metadataColumn.setKey(false);
+        metadataColumn.setType(EMetadataType.INTEGER.toString());
+        metadatColumns.add(metadataColumn);
+
+        metadataColumn = new MetadataColumnTest();
+        metadataColumn.setLabel("content");
+=====================================================================
+Found a 20 line (88 tokens) duplication in the following files: 
+Starting at line 43 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\ui\visualmap\zone\OutputsZone.java
+Starting at line 43 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\ui\visualmap\zone\InputsZone.java
+
+    public InputsZone(Composite parent, int style, MapperManager mapperManager) {
+        super(parent, style);
+        GridLayout gridLayout = new GridLayout(1, true);
+        gridLayout.marginBottom = 0;
+        gridLayout.marginHeight = 0;
+        gridLayout.marginLeft = 0;
+        gridLayout.marginRight = 0;
+        gridLayout.marginTop = 0;
+        gridLayout.marginWidth = 0;
+        gridLayout.verticalSpacing = 0;
+        gridLayout.horizontalSpacing = 0;
+        this.setLayout(gridLayout);
+        // RowLayout layout = new RowLayout(SWT.VERTICAL);
+        // this.setLayout(layout);
+
+        this.mapperManager = mapperManager;
+    }
+
+    public void createHeaderZoneComponents() {
+        toolbar = new ToolbarInputZone(this, SWT.BORDER, this.mapperManager);
+=====================================================================
+Found a 9 line (80 tokens) duplication in the following files: 
+Starting at line 656 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\managers\UIManager.java
+Starting at line 667 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\managers\UIManager.java
+
+                ITableEntry sourceITableEntry = link.getPointLinkDescriptorSource().getTableEntry();
+                if (linkState == LinkState.SELECTED || !linksAlreadySelected.contains(link) && linkState == LinkState.UNSELECTED) {
+                    link.setState(linkState);
+                    if (linkState == LinkState.SELECTED) {
+                        linksAlreadySelected.add(link);
+                    }
+                }
+                EntryState entryState = (link.getState() == LinkState.SELECTED ? EntryState.HIGHLIGHT : EntryState.NONE);
+                setEntryState(mapperManager, entryState, sourceITableEntry);
+=====================================================================
+Found a 18 line (69 tokens) duplication in the following files: 
+Starting at line 533 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\test\org\talend\designer\mapper\model\metadata\MapperDataTestGenerator.java
+Starting at line 570 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\test\org\talend\designer\mapper\model\metadata\MapperDataTestGenerator.java
+
+        mapperTableEntry.setName("id_book");
+        mapperTableEntry.setExpression(gen.getTableColumnVariable("book", "id_book"));
+        tableEntries.add(mapperTableEntry);
+
+        mapperTableEntry = new ExternalMapperTableEntry();
+        mapperTableEntry.setName("content");
+        mapperTableEntry.setExpression("");
+        tableEntries.add(mapperTableEntry);
+
+        mapperTable.setMetadataTableEntries(tableEntries);
+
+        tableEntries = new ArrayList<ExternalMapperTableEntry>();
+
+        // #########################################################################
+        // CONSTRAINTS newBook
+
+        mapperTableEntry = new ExternalMapperTableEntry();
+        mapperTableEntry.setExpression(" ");
+=====================================================================
+Found a 11 line (67 tokens) duplication in the following files: 
+Starting at line 62 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\ui\visualmap\zone\OutputsZone.java
+Starting at line 62 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\ui\visualmap\zone\InputsZone.java
+
+        toolbar = new ToolbarInputZone(this, SWT.BORDER, this.mapperManager);
+        Composite toolBarComposite = toolbar.getComposite();
+        toolBarComposite.setBackgroundMode(SWT.INHERIT_NONE);
+        toolBarComposite.setBackground(toolBarComposite.getDisplay().getSystemColor(SWT.COLOR_WIDGET_LIGHT_SHADOW));
+        GridData gridDataToolbar = new GridData(GridData.FILL_HORIZONTAL);
+        toolBarComposite.setLayoutData(gridDataToolbar);
+        gridDataToolbar.grabExcessHorizontalSpace = true;
+
+    }
+
+    public ToolbarInputZone getToolbar() {
+=====================================================================
+Found a 4 line (64 tokens) duplication in the following files: 
+Starting at line 59 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\business\problems\ProblemsAnalyser.java
+Starting at line 312 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\MapperComponent.java
+
+            List<ExternalMapperTable> tables = new ArrayList<ExternalMapperTable>(externalData.getInputTables());
+            tables.addAll(new ArrayList<ExternalMapperTable>(externalData.getVarsTables()));
+            tables.addAll(new ArrayList<ExternalMapperTable>(externalData.getOutputTables()));
+            DataMapExpressionParser dataMapExpressionParser = new DataMapExpressionParser(LanguageProvider.getCurrentLanguage());
+=====================================================================
+Found a 8 line (64 tokens) duplication in the following files: 
+Starting at line 332 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\ui\dnd\DropContextAnalyzer.java
+Starting at line 740 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\ui\dnd\DragNDrop.java
+
+        TableItem[] tableItems = draggableTable.getItems();
+        TableItem tableItemBehindCursor = getTableItemFromPosition(cursorPosition);
+        if (tableItemBehindCursor != null) {
+            for (int i = 0; i < tableItems.length; i++) {
+                if (tableItems[i] == tableItemBehindCursor) {
+                    Rectangle boundsItem = tableItemBehindCursor.getBounds();
+                    startInsertAtThisIndex = i;
+                    if (pointCursor.y > boundsItem.y + draggableTable.getItemHeight() / 2) {
+=====================================================================
+Found a 29 line (59 tokens) duplication in the following files: 
+Starting at line 317 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\ui\dnd\DropContextAnalyzer.java
+Starting at line 711 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\ui\dnd\DragNDrop.java
+
+        return draggableTable.getItem(pointCursor);
+    }
+
+    /**
+     * 
+     * DOC amaumont Comment method "getEntryFromPosition".
+     * 
+     * @param cursorPosition
+     * @return
+     */
+    private ITableEntry getEntryFromPosition(Point cursorPosition) {
+        TableItem tableItemBehindCursor = getTableItemFromPosition(cursorPosition);
+        if (tableItemBehindCursor != null) {
+            return (ITableEntry) tableItemBehindCursor.getData();
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * 
+     * DOC amaumont Comment method "getItemIndexWhereInsertFromPosition".
+     * 
+     * @param cursorPosition
+     * @return
+     */
+    private int getItemIndexWhereInsertFromPosition(Point cursorPosition) {
+        int startInsertAtThisIndex = 0;
+        Point pointCursor = draggableTable.toControl(cursorPosition.x, cursorPosition.y);
+=====================================================================
+Found a 55 line (56 tokens) duplication in the following files: 
+Starting at line 109 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\language\perl\PerlLanguage.java
+Starting at line 86 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\language\java\JavaLanguage.java
+
+    public String getLocationPattern() {
+        return LOCATION_PATTERN;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.mapper.model.language.ILanguage#getPREFIX_FIELD_NAME_REGEXP()
+     */
+    public String getPrefixFieldRegexp() {
+        return PREFIX_FIELD_NAME_REGEXP;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.mapper.model.language.ILanguage#getPREFIX_TABLE_NAME_REGEXP()
+     */
+    public String getPrefixTableRegexp() {
+        return PREFIX_TABLE_NAME_REGEXP;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.mapper.model.language.ILanguage#getSUFFIX_FIELD_NAME_REGEXP()
+     */
+    public String getSuffixFieldRegexp() {
+        return SUFFIX_FIELD_NAME_REGEXP;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.mapper.model.language.ILanguage#getSUFFIX_TABLE_NAME_REGEXP()
+     */
+    public String getSuffixTableRegexp() {
+        return SUFFIX_TABLE_NAME_REGEXP;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.mapper.model.language.ILanguage#getSUBST_PATTERN_FOR_PREFIX_COLUMN_NAME()
+     */
+    public String getSubstPatternForPrefixColumnName() {
+        return SUBST_PATTERN_FOR_PREFIX_COLUMN_NAME;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.mapper.model.language.ILanguage#getTEMPLATE_TABLE_COLUMN_VARIABLE()
+     */
+    public String getTemplateTableColumnVariable() {
+=====================================================================
+Found a 11 line (55 tokens) duplication in the following files: 
+Starting at line 86 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\ui\visualmap\table\VarsDataMapTableView.java
+Starting at line 65 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\ui\visualmap\table\OutputDataMapTableView.java
+
+                tableViewerCreatorForColumns.getTableViewer().refresh(bean);
+            }
+
+        });
+        column.setModifiable(true);
+        column.setDefaultInternalValue("");
+        createExpressionCellEditor(tableViewerCreatorForColumns, column, new Zone[] { Zone.INPUTS, Zone.VARS }, false);
+        column.setWeight(COLUMN_EXPRESSION_SIZE_WEIGHT);
+
+        column = new TableViewerCreatorColumn(tableViewerCreatorForColumns);
+        column.setTitle(DataMapTableView.COLUMN_NAME);
+=====================================================================
+Found a 11 line (54 tokens) duplication in the following files: 
+Starting at line 425 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\test\org\talend\designer\mapper\model\metadata\MapperDataTestGenerator.java
+Starting at line 451 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\test\org\talend\designer\mapper\model\metadata\MapperDataTestGenerator.java
+
+        mapperTableEntry.setName("id");
+        mapperTableEntry.setExpression("");
+        tableEntries.add(mapperTableEntry);
+
+        mapperTableEntry = new ExternalMapperTableEntry();
+        mapperTableEntry.setName("id_book");
+        mapperTableEntry.setExpression(gen.getTableColumnVariable("book", "id"));
+        tableEntries.add(mapperTableEntry);
+
+        mapperTableEntry = new ExternalMapperTableEntry();
+        mapperTableEntry.setName("id_page");
+=====================================================================
+Found a 12 line (54 tokens) duplication in the following files: 
+Starting at line 420 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\test\org\talend\designer\mapper\model\metadata\MapperDataTestGenerator.java
+Starting at line 619 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\test\org\talend\designer\mapper\model\metadata\MapperDataTestGenerator.java
+
+        mapperTable.setReject(true);
+
+        tableEntries = new ArrayList<ExternalMapperTableEntry>();
+
+        mapperTableEntry = new ExternalMapperTableEntry();
+        mapperTableEntry.setName("id_page");
+        mapperTableEntry.setExpression("");
+        tableEntries.add(mapperTableEntry);
+
+        mapperTableEntry = new ExternalMapperTableEntry();
+        mapperTableEntry.setName("id_book");
+        mapperTableEntry.setExpression(gen.getTableColumnVariable("page", "id_book"));
+=====================================================================
+Found a 6 line (53 tokens) duplication in the following files: 
+Starting at line 587 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\ui\MapperUI.java
+Starting at line 1021 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\managers\UIManager.java
+
+        OutputDataMapTableView dataMapTableView = new OutputDataMapTableView(parent, SWT.BORDER, abstractDataMapTable, mapperManager);
+        FormData formData = new FormData();
+        formData.left = new FormAttachment(0, 0);
+        formData.right = new FormAttachment(100, 0);
+        formData.top = new FormAttachment(previousControl);
+        dataMapTableView.setLayoutData(formData);
+=====================================================================
+Found a 7 line (51 tokens) duplication in the following files: 
+Starting at line 124 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\managers\MapperManager.java
+Starting at line 140 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\managers\MapperManager.java
+
+        List<IColumnEntry> dataMapTableEntries = dataTable.getColumnEntries();
+        tableEntriesManager.removeAll(dataMapTableEntries);
+        if (dataTable instanceof OutputTable) {
+            List<ConstraintTableEntry> constraintEntries = ((OutputTable) dataTable).getConstraintEntries();
+            tableEntriesManager.removeAll(constraintEntries);
+        }
+        tableManager.removeTable(dataTable);
+=====================================================================
+Found a 5 line (51 tokens) duplication in the following files: 
+Starting at line 941 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\managers\UIManager.java
+Starting at line 958 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\managers\UIManager.java
+
+        dataMapTableView.getTableViewerCreatorForColumns().getTableViewer().refresh();
+        MetadataTableEditorView metadataEditorView = getMetadataEditorView(dataMapTableView.getZone());
+        if (metadataEditorView != null && metadataEditorView.getMetadataTableEditor() != null
+                && metadataEditorView.getMetadataTableEditor().getMetadataTable() == metadataTableTarget) {
+            metadataEditorView.getTableViewerCreator().getTableViewer().refresh();
+=====================================================================
+Found a 9 line (51 tokens) duplication in the following files: 
+Starting at line 579 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\ui\dnd\DragNDrop.java
+Starting at line 587 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\ui\dnd\DragNDrop.java
+
+            private void insertClonedOutpuEntryToOutput(ArrayList<ITableEntry> sources, MetadataEditorEvent metadataEditorEvent,
+                    ITableEntry tableEntrySource, IMetadataColumn metadataColumnDragged, String columnName) {
+                MetadataColumn metadataColumn = new MetadataColumn(metadataColumnDragged);
+                metadataColumn.setLabel(columnName);
+                metadataEditorEvent.entries.add(metadataColumn);
+                sources.add(tableEntrySource);
+            }
+
+            private void insertNewOutputEntryFromVarEntry(ArrayList<ITableEntry> sources, MetadataEditorEvent metadataEditorEvent,
+=====================================================================
+Found a 8 line (50 tokens) duplication in the following files: 
+Starting at line 513 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\ui\MapperUI.java
+Starting at line 587 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\ui\MapperUI.java
+
+            DataMapTableView dataMapTableView = new VarsDataMapTableView(varsTableZoneView, SWT.BORDER, abstractDataMapTable, mapperManager);
+
+            FormData formData = new FormData();
+            formData.left = new FormAttachment(0, 0);
+            formData.right = new FormAttachment(100, 0);
+            formData.top = new FormAttachment(previousControl);
+            dataMapTableView.setLayoutData(formData);
+            previousControl = dataMapTableView;
+=====================================================================
+Found a 5 line (49 tokens) duplication in the following files: 
+Starting at line 687 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\ui\dnd\DragNDrop.java
+Starting at line 740 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\ui\dnd\DragNDrop.java
+
+        TableItem[] tableItems = draggableTable.getItems();
+        TableItem tableItemBehindCursor = getTableItemFromPosition(cursorPosition);
+        if (tableItemBehindCursor != null) {
+            for (int i = 0; i < tableItems.length; i++) {
+                if (tableItems[i] == tableItemBehindCursor) {
+=====================================================================
+Found a 6 line (47 tokens) duplication in the following files: 
+Starting at line 513 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\ui\MapperUI.java
+Starting at line 1021 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\managers\UIManager.java
+
+        OutputDataMapTableView dataMapTableView = new OutputDataMapTableView(parent, SWT.BORDER, abstractDataMapTable, mapperManager);
+        FormData formData = new FormData();
+        formData.left = new FormAttachment(0, 0);
+        formData.right = new FormAttachment(100, 0);
+        formData.top = new FormAttachment(previousControl);
+        dataMapTableView.setLayoutData(formData);
+=====================================================================
+Found a 11 line (47 tokens) duplication in the following files: 
+Starting at line 910 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\test\org\talend\designer\mapper\model\metadata\MapperDataTestGenerator.java
+Starting at line 937 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\test\org\talend\designer\mapper\model\metadata\MapperDataTestGenerator.java
+
+        metadataColumn.setLabel("content");
+        metadataColumn.setKey(false);
+        metadataColumn.setType(EMetadataType.INTEGER.toString());
+        metadatColumns.add(metadataColumn);
+
+        metadataTable.setListColumns(metadatColumns);
+
+        list.add(metadataTable);
+
+        metadataTable = new MetadataTable();
+        metadataTable.setTableName("newPageRejected");
+=====================================================================
+Found a 8 line (46 tokens) duplication in the following files: 
+Starting at line 263 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\MapperComponent.java
+Starting at line 293 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\MapperComponent.java
+
+        if (conectionName == null || oldColumnName == null || newColumnName == null) {
+            throw new NullPointerException();
+        }
+        if (externalData != null) {
+            // rename metadata column name
+            List<ExternalMapperTable> inputTables = externalData.getInputTables();
+            for (ExternalMapperTable table : inputTables) {
+                if (table.getName().equals(conectionName)) {
+=====================================================================
+Found a 13 line (45 tokens) duplication in the following files: 
+Starting at line 148 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\test-resources\TMapperMainPerljet.java
+Starting at line 190 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\test-resources\TMapperMainPerljet.java
+
+            }
+        }
+        sb.append(CR + gm.indent(indent) + "###############################");
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////
+        
+        
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////
+        // OUTPPUTS
+        // 
+        sb.append(CR + gm.indent(indent));
+        sb.append(CR + gm.indent(indent) + "###############################");
+=====================================================================
+Found a 46 line (44 tokens) duplication in the following files: 
+Starting at line 165 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\language\perl\PerlLanguage.java
+Starting at line 133 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\language\java\JavaLanguage.java
+
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.mapper.model.language.ILanguage#getTEMPLATE_TABLE_COLUMN_VARIABLE()
+     */
+    public String getTemplateTableColumnVariable() {
+        return TEMPLATE_TABLE_COLUMN_VARIABLE;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.mapper.language.ILanguage#getTEMPLATE_PROCESS_COLUMN_VARIABLE()
+     */
+    public String getTemplateVarsColumnVariable() {
+        return TEMPLATE_VARS_COLUMN_VARIABLE;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.mapper.language.ILanguage#getTEMPLATE_GENERATED_CODE_TABLE_COLUMN_VARIABLE()
+     */
+    public String getTemplateGeneratedCodeTableColumnVariable() {
+        return TEMPLATE_GENERATED_CODE_TABLE_COLUMN_VARIABLE;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.mapper.language.ILanguage#getAndCondition()
+     */
+    public String getAndCondition() {
+        return AND_CONDITION;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.mapper.language.ILanguage#getPrefixField()
+     */
+    public String getPrefixField() {
+        // TODO Auto-generated method stub
+        return null;
+=====================================================================
+Found a 20 line (43 tokens) duplication in the following files: 
+Starting at line 31 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\geometry\Point.java
+Starting at line 61 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\geometry\Curve.java
+
+    public boolean isVisible() {
+        return visible;
+    }
+
+    // setVisible
+    public void setVisible(boolean b) {
+        visible = b;
+    }
+
+    // getColor
+    public Color getColor() {
+        return color;
+    }
+
+    // setColor
+    public void setColor(Color c) {
+        color = c;
+    }
+
+}
+=====================================================================
+Found a 5 line (43 tokens) duplication in the following files: 
+Starting at line 332 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\ui\dnd\DropContextAnalyzer.java
+Starting at line 687 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\ui\dnd\DragNDrop.java
+
+        TableItem[] tableItems = draggableTable.getItems();
+        TableItem tableItemBehindCursor = getTableItemFromPosition(cursorPosition);
+        if (tableItemBehindCursor != null) {
+            for (int i = 0; i < tableItems.length; i++) {
+                if (tableItems[i] == tableItemBehindCursor) {
+=====================================================================
+Found a 5 line (42 tokens) duplication in the following files: 
+Starting at line 1397 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\ui\visualmap\table\DataMapTableView.java
+Starting at line 50 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\ui\proposal\expression\ExpressionProposal.java
+
+        IContentProposalProvider[] contentProposalProviders = new IContentProposalProvider[0];
+        if (!MapperMain.isStandAloneMode()) {
+            contentProposalProviders = new IContentProposalProvider[] { new ProcessProposalProvider(mapperManager.getComponent()
+                    .getProcess()) };
+        }
+=====================================================================
+Found a 12 line (42 tokens) duplication in the following files: 
+Starting at line 93 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\test-resources\TMapperMainPerljet.java
+Starting at line 151 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\test-resources\TMapperMainPerljet.java
+
+        sb.append(CR + gm.indent(indent) + "###############################");
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////
+        // VARIABLES
+        // 
+        sb.append(CR + gm.indent(indent));
+        sb.append(CR + gm.indent(indent) + "###############################");
+        sb.append(CR + gm.indent(indent) + "# Vars tables");
+=====================================================================
+Found a 8 line (41 tokens) duplication in the following files: 
+Starting at line 85 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\ui\visualmap\table\VarsDataMapTableView.java
+Starting at line 59 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\ui\visualmap\table\InputDataMapTableView.java
+
+                public void set(InputColumnTableEntry bean, String value) {
+                    bean.setExpression(value);
+                }
+
+            });
+            column.setModifiable(true);
+            column.setDefaultInternalValue("");
+            createExpressionCellEditor(tableViewerCreatorForColumns, column, new Zone[] { Zone.INPUTS }, false);
+=====================================================================
+Found a 5 line (39 tokens) duplication in the following files: 
+Starting at line 85 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\managers\LinkManager.java
+Starting at line 163 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\managers\LinkManager.java
+
+        links.remove(link);
+        ITableEntry sourceITableEntry = link.getPointLinkDescriptorSource().getTableEntry();
+        ITableEntry targetITableEntry = link.getPointLinkDescriptorTarget().getTableEntry();
+        Set<ITableEntry> targetDataMapTableEntries = getSourcesCollection(targetITableEntry);
+        targetDataMapTableEntries.remove(sourceITableEntry);
+=====================================================================
+Found a 5 line (39 tokens) duplication in the following files: 
+Starting at line 725 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\managers\MapperManager.java
+Starting at line 124 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\business\problems\ProblemsAnalyser.java
+
+        TableEntryLocation[] tableEntryLocations = dataMapExpressionParser.parseTableEntryLocations(currentExpression);
+        // loop on all locations of current expression
+        for (int i = 0; i < tableEntryLocations.length; i++) {
+            TableEntryLocation currentLocation = tableEntryLocations[i];
+            if (currentLocation.equals(oldLocation)) {
+=====================================================================
+Found a 7 line (39 tokens) duplication in the following files: 
+Starting at line 82 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\managers\TableEntriesManager.java
+Starting at line 103 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\managers\TableEntriesManager.java
+
+    void addTableEntry(ITableEntry dataMapTableEntry, Integer index) {
+        if (dataMapTableEntry == null) {
+            throw new IllegalArgumentException("dataMapTableEntry can't be null.");
+        }
+        AbstractDataMapTable dataMapTable = dataMapTableEntry.getParent();
+        if (dataMapTableEntry instanceof IColumnEntry) {
+            dataMapTable.addColumnEntry((IColumnEntry) dataMapTableEntry, index);
+=====================================================================
+Found a 9 line (39 tokens) duplication in the following files: 
+Starting at line 71 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\ui\visualmap\table\VarsDataMapTableView.java
+Starting at line 49 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\ui\visualmap\table\OutputDataMapTableView.java
+
+        super(parent, style, abstractDataMapTable, mapperManager);
+    }
+
+    @Override
+    public void initColumns() {
+        TableViewerCreatorColumn column = new TableViewerCreatorColumn(tableViewerCreatorForColumns);
+        column.setTitle("Expression");
+        column.setId(DataMapTableView.ID_EXPRESSION_COLUMN);
+        column.setBeanPropertyAccessors(new IBeanPropertyAccessors<OutputColumnTableEntry, String>() {
+=====================================================================
+Found a 8 line (39 tokens) duplication in the following files: 
+Starting at line 37 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\ui\visualmap\zone\scrollable\VarsTableZoneView.java
+Starting at line 37 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\ui\visualmap\zone\scrollable\OutputTablesZoneView.java
+Starting at line 37 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\ui\visualmap\zone\scrollable\InputTablesZoneView.java
+
+    public InputTablesZoneView(Composite parent, int style, MapperManager mapperManager) {
+        super(parent, style, mapperManager);
+    }
+
+    @Override
+    public Layout initLayout() {
+        FormLayout formLayout = new FormLayout();
+        formLayout.marginLeft = 30;
+=====================================================================
+Found a 5 line (38 tokens) duplication in the following files: 
+Starting at line 224 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\ui\dnd\DragNDrop.java
+Starting at line 289 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\ui\dnd\DragNDrop.java
+
+                    if (analyzer.isInputToInput()) {
+                        draggingInfosPopup.setExpressionContext(true);
+                        draggingInfosPopup.setInsertionEntryContext(false);
+                    } else if (analyzer.isCursorOverExpressionCell()) {
+                        draggingInfosPopup.setExpressionContext(true);
+=====================================================================
+Found a 3 line (38 tokens) duplication in the following files: 
+Starting at line 92 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\test-resources\TMapperStartPerljet.java
+Starting at line 105 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\test-resources\TMapperStartPerljet.java
+
+            for (int i = 0; i < lstSize; i++) {
+                ExternalMapperTableEntry tableEntry = (ExternalMapperTableEntry) tableEntries.get(i);
+                sb.append(CR + gm.indent(indent) + "'" + tableEntry.getName() + "',");
+=====================================================================
+Found a 12 line (37 tokens) duplication in the following files: 
+Starting at line 68 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\geometry\PointList.java
+Starting at line 83 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\geometry\PointList.java
+
+        list.remove(i);
+        if (size() == 0) {
+            current = null;
+            return 1;
+        }
+        if (cr)
+            setCurrent(Math.max(i - 1, 0));
+        return 0;
+    }
+
+    // clear
+    public void clear() {
+=====================================================================
+Found a 4 line (37 tokens) duplication in the following files: 
+Starting at line 879 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\managers\UIManager.java
+Starting at line 901 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\managers\UIManager.java
+
+        List<InputColumnTableEntry> targetTableEntries = dataMapTableView.getTableViewerCreatorForColumns().getInputList();
+        for (InputColumnTableEntry entry : targetTableEntries) {
+            Set<ITableEntry> sourcesForTarget = mapperManager.getSourcesForTarget(entry);
+            if (entry.getMetadataColumn().isKey() && sourcesForTarget.isEmpty()) {
+=====================================================================
+Found a 8 line (37 tokens) duplication in the following files: 
+Starting at line 334 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\ui\MapperUI.java
+Starting at line 354 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\ui\MapperUI.java
+
+        backgroundRefreshLimiterForceRecalculate = new ExecutionLimiter(DEFAULT_TIME_BEFORE_NEW_BG_REFRESH, true) {
+
+            @Override
+            public void execute(final boolean isFinalExecution) {
+                display.asyncExec(new Runnable() {
+
+                    public void run() {
+                        if (!isFinalExecution) {
+=====================================================================
+Found a 8 line (37 tokens) duplication in the following files: 
+Starting at line 839 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\test\org\talend\designer\mapper\model\metadata\MapperDataTestGenerator.java
+Starting at line 872 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\test\org\talend\designer\mapper\model\metadata\MapperDataTestGenerator.java
+
+        metadataColumn.setLabel("id_page_different");
+        metadataColumn.setKey(false);
+        metadataColumn.setType(EMetadataType.STRING.toString());
+        metadatColumns.add(metadataColumn);
+
+        metadataTable.setListColumns(metadatColumns);
+
+        connectionList.add(connection);
+=====================================================================
+Found a 6 line (36 tokens) duplication in the following files: 
+Starting at line 262 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\MapperComponent.java
+Starting at line 277 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\MapperComponent.java
+
+    public void renameOutputConnection(String oldName, String newName) {
+        if (oldName == null || newName == null) {
+            throw new NullPointerException();
+        }
+        if (externalData != null) {
+            List<ExternalMapperTable> outputTables = externalData.getOutputTables();
+=====================================================================
+Found a 5 line (36 tokens) duplication in the following files: 
+Starting at line 108 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\ui\proposal\expression\EntryContentProposal.java
+Starting at line 115 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\ui\proposal\expression\EntryContentProposal.java
+
+            sb.append("Variable '").append(entry.getName()).append("' :");
+            sb.append(AbstractLanguage.CARRIAGE_RETURN);
+            sb.append(" - Expression key :");
+            sb.append(AbstractLanguage.CARRIAGE_RETURN);
+            sb.append(format(entry.getExpression()));
+=====================================================================
+Found a 5 line (35 tokens) duplication in the following files: 
+Starting at line 536 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\ui\dnd\DragNDrop.java
+Starting at line 615 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\ui\dnd\DragNDrop.java
+
+                if (zoneSourceEntry == Zone.OUTPUTS) {
+                    location = tableEntrySource.getExpression();
+                } else {
+                    location = currentLanguage.getLocation(tableEntrySource.getParentName(), tableEntrySource.getName());
+                }
+=====================================================================
+Found a 7 line (35 tokens) duplication in the following files: 
+Starting at line 925 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\test\org\talend\designer\mapper\model\metadata\MapperDataTestGenerator.java
+Starting at line 952 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\test\org\talend\designer\mapper\model\metadata\MapperDataTestGenerator.java
+
+        metadataColumn.setLabel("id");
+        metadataColumn.setKey(true);
+        metadataColumn.setType(EMetadataType.INTEGER.toString());
+        metadatColumns.add(metadataColumn);
+
+        metadataColumn = new MetadataColumnTest();
+        metadataColumn.setLabel("id_book");
+=====================================================================
+Found a 7 line (35 tokens) duplication in the following files: 
+Starting at line 904 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\test\org\talend\designer\mapper\model\metadata\MapperDataTestGenerator.java
+Starting at line 931 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\test\org\talend\designer\mapper\model\metadata\MapperDataTestGenerator.java
+
+        metadataColumn.setLabel("idBook");
+        metadataColumn.setKey(false);
+        metadataColumn.setType(EMetadataType.STRING.toString());
+        metadatColumns.add(metadataColumn);
+
+        metadataColumn = new MetadataColumnTest();
+        metadataColumn.setLabel("content");
+=====================================================================
+Found a 7 line (35 tokens) duplication in the following files: 
+Starting at line 827 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\test\org\talend\designer\mapper\model\metadata\MapperDataTestGenerator.java
+Starting at line 898 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\test\org\talend\designer\mapper\model\metadata\MapperDataTestGenerator.java
+Starting at line 925 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\test\org\talend\designer\mapper\model\metadata\MapperDataTestGenerator.java
+
+        metadataColumn.setLabel("idUser");
+        metadataColumn.setKey(true);
+        metadataColumn.setType(EMetadataType.INTEGER.toString());
+        metadatColumns.add(metadataColumn);
+
+        metadataColumn = new MetadataColumnTest();
+        metadataColumn.setLabel("idBook");
+=====================================================================
+Found a 7 line (35 tokens) duplication in the following files: 
+Starting at line 800 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\test\org\talend\designer\mapper\model\metadata\MapperDataTestGenerator.java
+Starting at line 931 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\test\org\talend\designer\mapper\model\metadata\MapperDataTestGenerator.java
+
+        metadataColumn.setLabel("idBook");
+        metadataColumn.setKey(false);
+        metadataColumn.setType(EMetadataType.STRING.toString());
+        metadatColumns.add(metadataColumn);
+
+        metadataColumn = new MetadataColumnTest();
+        metadataColumn.setLabel("content");
+=====================================================================
+Found a 7 line (35 tokens) duplication in the following files: 
+Starting at line 794 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\test\org\talend\designer\mapper\model\metadata\MapperDataTestGenerator.java
+Starting at line 827 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\test\org\talend\designer\mapper\model\metadata\MapperDataTestGenerator.java
+
+        metadataColumn.setLabel("id");
+        metadataColumn.setKey(true);
+        metadataColumn.setType(EMetadataType.INTEGER.toString());
+        metadatColumns.add(metadataColumn);
+
+        metadataColumn = new MetadataColumnTest();
+        metadataColumn.setLabel("id_book");
+=====================================================================
+Found a 7 line (35 tokens) duplication in the following files: 
+Starting at line 170 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\test\org\talend\designer\mapper\model\metadata\MapperDataTestGenerator.java
+Starting at line 214 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\test\org\talend\designer\mapper\model\metadata\MapperDataTestGenerator.java
+
+        metadataColumn.setLabel("newId");
+        metadataColumn.setKey(true);
+        metadataColumn.setType(EMetadataType.INTEGER.toString());
+        metadatColumns.add(metadataColumn);
+
+        metadataColumn = new MetadataColumn();
+        metadataColumn.setLabel("newName");
+=====================================================================
+Found a 7 line (35 tokens) duplication in the following files: 
+Starting at line 169 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\test\org\talend\designer\mapper\model\metadata\MapperDataTestGenerator.java
+Starting at line 826 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\test\org\talend\designer\mapper\model\metadata\MapperDataTestGenerator.java
+
+        metadataColumn = new MetadataColumnTest();
+        metadataColumn.setLabel("id");
+        metadataColumn.setKey(true);
+        metadataColumn.setType(EMetadataType.INTEGER.toString());
+        metadatColumns.add(metadataColumn);
+
+        metadataColumn = new MetadataColumnTest();
+=====================================================================
+Found a 7 line (35 tokens) duplication in the following files: 
+Starting at line 143 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\test\org\talend\designer\mapper\model\metadata\MapperDataTestGenerator.java
+Starting at line 214 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\test\org\talend\designer\mapper\model\metadata\MapperDataTestGenerator.java
+
+        metadataColumn.setLabel("newId");
+        metadataColumn.setKey(true);
+        metadataColumn.setType(EMetadataType.INTEGER.toString());
+        metadatColumns.add(metadataColumn);
+
+        metadataColumn = new MetadataColumn();
+        metadataColumn.setLabel("newName");
+=====================================================================
+Found a 7 line (35 tokens) duplication in the following files: 
+Starting at line 142 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\test\org\talend\designer\mapper\model\metadata\MapperDataTestGenerator.java
+Starting at line 826 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\test\org\talend\designer\mapper\model\metadata\MapperDataTestGenerator.java
+
+        metadataColumn = new MetadataColumnTest();
+        metadataColumn.setLabel("id");
+        metadataColumn.setKey(true);
+        metadataColumn.setType(EMetadataType.INTEGER.toString());
+        metadatColumns.add(metadataColumn);
+
+        metadataColumn = new MetadataColumnTest();
+=====================================================================
+Found a 8 line (34 tokens) duplication in the following files: 
+Starting at line 126 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\geometry\Curve2DBezier.java
+Starting at line 59 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\geometry\Curve2D.java
+
+    public void draw(GC gc, Point2DList current, Point2DList active, Color foregroundColor) {
+        if (plist == null)
+            return;
+
+        Point2DList pl = (Point2DList) plist;
+
+        if (!visible || pl.size() <= (nbMin - 1))
+            return;
+=====================================================================
+Found a 15 line (34 tokens) duplication in the following files: 
+Starting at line 83 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\ui\visualmap\table\OutputDataMapTableView.java
+Starting at line 79 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\ui\visualmap\table\InputDataMapTableView.java
+
+            public void set(InputColumnTableEntry bean, String value) {
+                bean.getMetadataColumn().setLabel(value);
+            }
+
+        });
+        column.setWeight(COLUMN_NAME_SIZE_WEIGHT);
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.mapper.ui.visualmap.table.DataMapTableView#initTableConstraints()
+     */
+    @Override
+    protected void initTableConstraints() {
+=====================================================================
+Found a 10 line (34 tokens) duplication in the following files: 
+Starting at line 149 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\test\org\talend\designer\mapper\model\metadata\MapperDataTestGenerator.java
+Starting at line 220 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\test\org\talend\designer\mapper\model\metadata\MapperDataTestGenerator.java
+
+        metadataColumn.setLabel("newName");
+        metadataColumn.setKey(false);
+        metadataColumn.setType(EMetadataType.STRING.toString());
+        metadatColumns.add(metadataColumn);
+
+        metadataTable.setListColumns(metadatColumns);
+
+        return metadataTable;
+
+    }
+=====================================================================
+Found a 8 line (33 tokens) duplication in the following files: 
+Starting at line 275 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\ui\dnd\DragNDrop.java
+Starting at line 77 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\ui\dnd\DefaultDropTargetListener.java
+
+        DraggingInfosPopup draggingInfosPopup = uiManager.getDraggingInfosPopup();
+        if (uiManager.isCtrlPressed()) {
+            draggingInfosPopup.setOverwriteMode(true);
+        } else {
+            draggingInfosPopup.setOverwriteMode(false);
+        }
+
+        if (uiManager.isShiftPressed()) {
+=====================================================================
+Found a 11 line (33 tokens) duplication in the following files: 
+Starting at line 46 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\ui\visualmap\zone\scrollable\OutputTablesZoneView.java
+Starting at line 46 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\ui\visualmap\zone\scrollable\InputTablesZoneView.java
+
+        formLayout.marginTop = MARGIN_TOP_ZONE_WITHOUT_ACTION_BAR;
+        formLayout.marginBottom = 10;
+        formLayout.marginWidth = 0;
+        formLayout.marginHeight = 0;
+        formLayout.spacing = 10;
+        setLayout(formLayout);
+        return formLayout;
+    }
+
+    
+}
+=====================================================================
+Found a 2 line (33 tokens) duplication in the following files: 
+Starting at line 78 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\ui\visualmap\zone\toolbar\ToolbarOutputZone.java
+Starting at line 1075 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\ui\visualmap\table\DataMapTableView.java
+
+        removeEntryItem.setImage(org.talend.core.ui.ImageProvider
+                .getImage(org.talend.core.ui.ImageProvider.getImageDesc(EImage.MINUS_ICON)));
+=====================================================================
+Found a 1 line (33 tokens) duplication in the following files: 
+Starting at line 74 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\ui\visualmap\zone\toolbar\ToolbarOutputZone.java
+Starting at line 1071 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\ui\visualmap\table\DataMapTableView.java
+
+        addEntryItem.setImage(org.talend.core.ui.ImageProvider.getImage(org.talend.core.ui.ImageProvider.getImageDesc(EImage.ADD_ICON)));
+=====================================================================
+Found a 9 line (33 tokens) duplication in the following files: 
+Starting at line 912 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\test\org\talend\designer\mapper\model\metadata\MapperDataTestGenerator.java
+Starting at line 966 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\test\org\talend\designer\mapper\model\metadata\MapperDataTestGenerator.java
+
+        metadataColumn.setType(EMetadataType.STRING.toString());
+        metadatColumns.add(metadataColumn);
+
+        metadataTable.setListColumns(metadatColumns);
+
+        list.add(metadataTable);
+
+        metadataTable = new MetadataTable();
+        metadataTable.setTableName("newPageRejected2");
+=====================================================================
+Found a 9 line (33 tokens) duplication in the following files: 
+Starting at line 808 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\test\org\talend\designer\mapper\model\metadata\MapperDataTestGenerator.java
+Starting at line 841 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\test\org\talend\designer\mapper\model\metadata\MapperDataTestGenerator.java
+
+        metadataColumn.setType(EMetadataType.STRING.toString());
+        metadatColumns.add(metadataColumn);
+
+        metadataTable.setListColumns(metadatColumns);
+
+        connectionList.add(connection);
+
+        connection = new Connection();
+        connection.setName("userInput");
+=====================================================================
+Found a 7 line (33 tokens) duplication in the following files: 
+Starting at line 451 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\test\org\talend\designer\mapper\model\metadata\MapperDataTestGenerator.java
+Starting at line 624 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\test\org\talend\designer\mapper\model\metadata\MapperDataTestGenerator.java
+
+        mapperTableEntry.setName("id_page");
+        mapperTableEntry.setExpression("");
+        tableEntries.add(mapperTableEntry);
+
+        mapperTableEntry = new ExternalMapperTableEntry();
+        mapperTableEntry.setName("id_book");
+        mapperTableEntry.setExpression(gen.getTableColumnVariable("page", "id_book"));
+=====================================================================
+Found a 3 line (33 tokens) duplication in the following files: 
+Starting at line 62 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\test-resources\TMapperStartPerljet.java
+Starting at line 78 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\test-resources\TMapperMainPerljet.java
+
+        List<ExternalMapperTable> inputTables = data.getInputTables();
+        List<ExternalMapperTable> varsTables = data.getVarsTables();
+        List<ExternalMapperTable> outputTables = data.getOutputTables();
+=====================================================================
+Found a 15 line (32 tokens) duplication in the following files: 
+Starting at line 480 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\ui\MapperUI.java
+Starting at line 566 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\ui\MapperUI.java
+Starting at line 615 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\ui\MapperUI.java
+
+        sc3.addControlListener(new ControlListener() {
+
+            public void controlMoved(ControlEvent e) {
+                // System.out.println("sc3 controlMoved");
+
+            }
+
+            public void controlResized(ControlEvent e) {
+                // System.out.println("sc3 controlResized");
+
+                onSashResized(display);
+
+            }
+
+        });
+=====================================================================
+Found a 6 line (32 tokens) duplication in the following files: 
+Starting at line 209 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\ui\dnd\DragNDrop.java
+Starting at line 363 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\ui\dnd\DragNDrop.java
+
+                super.dragLeave(event);
+
+                DraggedData draggedData = TableEntriesTransfer.getInstance().getDraggedData();
+                DropContextAnalyzer analyzer = analyzeDropTarget(event, draggedData);
+
+                UIManager uiManager = mapperManager.getUiManager();
+=====================================================================
+Found a 13 line (32 tokens) duplication in the following files: 
+Starting at line 539 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\test\org\talend\designer\mapper\model\metadata\MapperDataTestGenerator.java
+Starting at line 635 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\test\org\talend\designer\mapper\model\metadata\MapperDataTestGenerator.java
+
+        mapperTableEntry.setExpression(gen.getTableColumnVariable(VarsTable.PREFIX_VARS_TABLE_NAME, "upperCaseContent"));
+        tableEntries.add(mapperTableEntry);
+
+        mapperTable.setMetadataTableEntries(tableEntries);
+
+        // #########################################################################
+
+        // CONSTRAINTS
+
+        tableEntries = new ArrayList<ExternalMapperTableEntry>();
+
+        mapperTableEntry = new ExternalMapperTableEntry();
+        mapperTableEntry.setExpression(gen.getTableColumnVariable("page", "newId") + " == 1");
+=====================================================================
+Found a 6 line (32 tokens) duplication in the following files: 
+Starting at line 528 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\test\org\talend\designer\mapper\model\metadata\MapperDataTestGenerator.java
+Starting at line 565 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\test\org\talend\designer\mapper\model\metadata\MapperDataTestGenerator.java
+
+        mapperTableEntry.setName("newIdBook");
+        mapperTableEntry.setExpression(gen.getTableColumnVariable(VarsTable.PREFIX_VARS_TABLE_NAME, "newId"));
+        tableEntries.add(mapperTableEntry);
+
+        mapperTableEntry = new ExternalMapperTableEntry();
+        mapperTableEntry.setName("id_book");
+=====================================================================
+Found a 5 line (32 tokens) duplication in the following files: 
+Starting at line 148 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\test\org\talend\designer\mapper\model\metadata\MapperDataTestGenerator.java
+Starting at line 799 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\test\org\talend\designer\mapper\model\metadata\MapperDataTestGenerator.java
+
+        metadataColumn = new MetadataColumnTest();
+        metadataColumn.setLabel("name");
+        metadataColumn.setKey(false);
+        metadataColumn.setType(EMetadataType.STRING.toString());
+        metadatColumns.add(metadataColumn);
+=====================================================================
+Found a 5 line (31 tokens) duplication in the following files: 
+Starting at line 138 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\geometry\PointList.java
+Starting at line 165 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\geometry\PointList.java
+
+    public void refreshColor() {
+        Point point;
+
+        for (ListIterator li = list.listIterator(); li.hasNext();) {
+            point = (Point) li.next();
+=====================================================================
+Found a 7 line (31 tokens) duplication in the following files: 
+Starting at line 79 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\ui\footer\FooterComposite.java
+Starting at line 110 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\ui\footer\FooterComposite.java
+
+        cancelButton.addSelectionListener(new SelectionListener() {
+
+            public void widgetDefaultSelected(SelectionEvent e) {
+            }
+
+            public void widgetSelected(SelectionEvent e) {
+                uiManager.closeMapper(SWT.CANCEL);
+=====================================================================
+Found a 19 line (31 tokens) duplication in the following files: 
+Starting at line 103 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\ui\visualmap\zone\toolbar\ToolbarOutputZone.java
+Starting at line 50 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\ui\visualmap\zone\toolbar\ToolbarInputZone.java
+
+        addCommonsComponents();
+    }
+
+    public String getMinimizeTooltipText() {
+        return MINIMIZE_TOOLTIP;
+    }
+
+    public String getRestoreTooltipText() {
+        return RESTORE_TOOLTIP;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.mapper.ui.visualmap.zone.ToolbarZone#getZone()
+     */
+    @Override
+    public Zone getZone() {
+        return Zone.INPUTS;
+=====================================================================
+Found a 6 line (31 tokens) duplication in the following files: 
+Starting at line 806 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\test\org\talend\designer\mapper\model\metadata\MapperDataTestGenerator.java
+Starting at line 937 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\test\org\talend\designer\mapper\model\metadata\MapperDataTestGenerator.java
+
+        metadataColumn.setLabel("content");
+        metadataColumn.setKey(false);
+        metadataColumn.setType(EMetadataType.INTEGER.toString());
+        metadatColumns.add(metadataColumn);
+
+        metadataTable.setListColumns(metadatColumns);
+=====================================================================
+Found a 6 line (31 tokens) duplication in the following files: 
+Starting at line 149 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\test\org\talend\designer\mapper\model\metadata\MapperDataTestGenerator.java
+Starting at line 839 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\test\org\talend\designer\mapper\model\metadata\MapperDataTestGenerator.java
+
+        metadataColumn.setLabel("content");
+        metadataColumn.setKey(false);
+        metadataColumn.setType(EMetadataType.STRING.toString());
+        metadatColumns.add(metadataColumn);
+
+        metadataTable.setListColumns(metadatColumns);
+=====================================================================
+Found a 12 line (30 tokens) duplication in the following files: 
+Starting at line 79 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\language\perl\PerlLanguage.java
+Starting at line 68 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\language\java\JavaLanguage.java
+
+    private static final String TEMPLATE_TABLE_COLUMN_VARIABLE = PREFIX_TABLE_NAME + "{0}" + PREFIX_FIELD_NAME + "{1}" + SUFFIX_FIELD_NAME;
+
+    /**
+     * {0} and {1} must be replaced respectively by the table name and the column name.
+     */
+    private static final String TEMPLATE_GENERATED_CODE_TABLE_COLUMN_VARIABLE = PREFIX_TABLE_NAME + "{0}" + PREFIX_FIELD_NAME + "{0}__{1}"
+            + SUFFIX_FIELD_NAME;
+
+    /**
+     * {0} and {1} must be replaced respectively by the table name and the column name.
+     */
+    private static final String TEMPLATE_VARS_COLUMN_VARIABLE = PREFIX_VARIABLE_NAME + "{0}";
+=====================================================================
+Found a 4 line (30 tokens) duplication in the following files: 
+Starting at line 74 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\ui\visualmap\table\OutputDataMapTableView.java
+Starting at line 70 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\ui\visualmap\table\InputDataMapTableView.java
+
+        column = new TableViewerCreatorColumn(tableViewerCreatorForColumns);
+        column.setTitle(DataMapTableView.COLUMN_NAME);
+        column.setId(DataMapTableView.ID_NAME_COLUMN);
+        column.setBeanPropertyAccessors(new IBeanPropertyAccessors<InputColumnTableEntry, String>() {
+=====================================================================
+Found a 7 line (30 tokens) duplication in the following files: 
+Starting at line 65 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\ui\visualmap\table\OutputDataMapTableView.java
+Starting at line 60 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\ui\visualmap\table\InputDataMapTableView.java
+
+                    bean.setExpression(value);
+                }
+
+            });
+            column.setModifiable(true);
+            column.setDefaultInternalValue("");
+            createExpressionCellEditor(tableViewerCreatorForColumns, column, new Zone[] { Zone.INPUTS }, false);
+=====================================================================
+Found a 4 line (30 tokens) duplication in the following files: 
+Starting at line 115 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\utils\DataMapExpressionParser.java
+Starting at line 130 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\utils\DataMapExpressionParser.java
+
+                    + "$2" + language.getSuffixTableRegexp() + "$3" + language.getPrefixFieldRegexp() + "$4" + newLocation.columnName + "$5" + 
+                    language.getSuffixFieldRegexp(), Perl5Substitution.INTERPOLATE_ALL);
+            returnedExpression = Util.substitute(matcher, pattern, substitution, returnedExpression, Util.SUBSTITUTE_ALL);
+        }
+=====================================================================
+Found a 3 line (29 tokens) duplication in the following files: 
+Starting at line 54 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\geometry\Curve2DBezierFixed.java
+Starting at line 81 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\geometry\Curve2DBezier.java
+
+        tmp = new double[size + 1];
+        for (int i = 0; i <= size; i++)
+            tmp[i] = (double) time * i / size;
+=====================================================================
+Found a 5 line (29 tokens) duplication in the following files: 
+Starting at line 984 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\managers\UIManager.java
+Starting at line 991 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\managers\UIManager.java
+
+                for (ConstraintTableEntry entry : constraintEntries) {
+                    if (processExpression(entry.getExpression(), entry, true, true, false).atLeastOneLinkRemoved) {
+                        atLeastOneLinkHasBeenRemoved = true;
+                    }
+                }
+=====================================================================
+Found a 2 line (29 tokens) duplication in the following files: 
+Starting at line 940 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\managers\UIManager.java
+Starting at line 957 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\managers\UIManager.java
+
+        IMetadataTable metadataTableTarget = ((AbstractInOutTable) dataMapTableView.getDataMapTable()).getMetadataTable();
+        dataMapTableView.getTableViewerCreatorForColumns().getTableViewer().refresh();
+=====================================================================
+Found a 2 line (29 tokens) duplication in the following files: 
+Starting at line 1071 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\ui\visualmap\table\DataMapTableView.java
+Starting at line 1075 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\ui\visualmap\table\DataMapTableView.java
+
+        removeEntryItem.setImage(org.talend.core.ui.ImageProvider
+                .getImage(org.talend.core.ui.ImageProvider.getImageDesc(EImage.MINUS_ICON)));
+=====================================================================
+Found a 8 line (29 tokens) duplication in the following files: 
+Starting at line 85 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\ui\visualmap\table\VarsDataMapTableView.java
+Starting at line 109 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\ui\visualmap\table\OutputDataMapTableView.java
+
+            public void set(ConstraintTableEntry bean, String value) {
+                bean.setExpression(value);
+            }
+
+        });
+        column.setModifiable(true);
+        column.setDefaultInternalValue("");
+        createExpressionCellEditor(tableViewerCreatorForConstraints, column, new Zone[] { Zone.INPUTS, Zone.VARS }, true);
+=====================================================================
+Found a 2 line (29 tokens) duplication in the following files: 
+Starting at line 84 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\ui\visualmap\zone\toolbar\ToolbarZone.java
+Starting at line 89 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\ui\visualmap\zone\toolbar\ToolbarZone.java
+Starting at line 74 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\ui\visualmap\zone\toolbar\ToolbarOutputZone.java
+Starting at line 78 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\ui\visualmap\zone\toolbar\ToolbarOutputZone.java
+
+        removeOutputItem.setImage(org.talend.core.ui.ImageProvider.getImage(org.talend.core.ui.ImageProvider
+                .getImageDesc(EImage.MINUS_ICON)));
+=====================================================================
+Found a 6 line (29 tokens) duplication in the following files: 
+Starting at line 795 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\test\org\talend\designer\mapper\model\metadata\MapperDataTestGenerator.java
+Starting at line 834 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\test\org\talend\designer\mapper\model\metadata\MapperDataTestGenerator.java
+
+        metadataColumn.setKey(false);
+        metadataColumn.setType(EMetadataType.INTEGER.toString());
+        metadatColumns.add(metadataColumn);
+
+        metadataColumn = new MetadataColumnTest();
+        metadataColumn.setLabel("content");
+=====================================================================
+Found a 32 line (29 tokens) duplication in the following files: 
+Starting at line 549 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\test\org\talend\designer\mapper\model\metadata\MapperDataTestGenerator.java
+Starting at line 587 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\test\org\talend\designer\mapper\model\metadata\MapperDataTestGenerator.java
+
+        mapperTableEntry.setExpression(" ");
+        tableEntries.add(mapperTableEntry);
+
+        // mapperTableEntry = new ExternalMapperTableEntry();
+        // mapperTableEntry.setExpression(gen.getTableColumnVariable(VarsTable.PREFIX_VARS_TABLE_NAME, "newId") + " ==
+        // 1");
+        // tableEntries.add(mapperTableEntry);
+        //
+        // mapperTableEntry = new ExternalMapperTableEntry();
+        // mapperTableEntry.setExpression(gen.getTableColumnVariable(VarsTable.PREFIX_VARS_TABLE_NAME, "newId") + " ==
+        // 2");
+        // tableEntries.add(mapperTableEntry);
+        //
+        // mapperTableEntry = new ExternalMapperTableEntry();
+        // mapperTableEntry.setExpression(gen.getTableColumnVariable(VarsTable.PREFIX_VARS_TABLE_NAME, "newId") + " ==
+        // 3");
+        // tableEntries.add(mapperTableEntry);
+        //
+        mapperTable.setConstraintTableEntries(tableEntries);
+
+        tables.add(mapperTable);
+
+        // #########################################################################
+        // #########################################################################
+
+        // REJECTS
+
+        // #########################################################################
+        // #########################################################################
+
+        mapperTable = new ExternalMapperTable();
+        mapperTable.setName("newPageRejected");
+=====================================================================
+Found a 6 line (29 tokens) duplication in the following files: 
+Starting at line 426 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\test\org\talend\designer\mapper\model\metadata\MapperDataTestGenerator.java
+Starting at line 566 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\test\org\talend\designer\mapper\model\metadata\MapperDataTestGenerator.java
+
+        mapperTableEntry.setExpression(gen.getTableColumnVariable(VarsTable.PREFIX_VARS_TABLE_NAME, "newId"));
+        tableEntries.add(mapperTableEntry);
+
+        mapperTableEntry = new ExternalMapperTableEntry();
+        mapperTableEntry.setName("id_book");
+        mapperTableEntry.setExpression(gen.getTableColumnVariable("book", "id_book"));
+=====================================================================
+Found a 11 line (29 tokens) duplication in the following files: 
+Starting at line 410 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\test\org\talend\designer\mapper\model\metadata\MapperDataTestGenerator.java
+Starting at line 436 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\test\org\talend\designer\mapper\model\metadata\MapperDataTestGenerator.java
+
+        mapperTableEntry.setExpression(gen.getTableColumnVariable("book", "name"));
+        tableEntries.add(mapperTableEntry);
+
+        mapperTable.setMetadataTableEntries(tableEntries);
+
+        tables.add(mapperTable);
+
+        // #########################################################################
+
+        mapperTable = new ExternalMapperTable();
+        mapperTable.setName("userInput");
+=====================================================================
+Found a 6 line (29 tokens) duplication in the following files: 
+Starting at line 45 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\test\org\talend\designer\mapper\utils\DataMapExpressionParserTest.java
+Starting at line 88 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\test\org\talend\designer\mapper\utils\DataMapExpressionParserTest.java
+
+    public void testaddTablePrefixToColumnNameString() {
+        ILanguage language = new PerlLanguage();
+        DataMapExpressionParser expressionParser = new DataMapExpressionParser(language);
+        GenerationManager gen = new GenerationManager(language);
+
+        TableEntryLocation[] locations = new TableEntryLocation[] { new TableEntryLocation("page", "content"),
+=====================================================================
+Found a 11 line (29 tokens) duplication in the following files: 
+Starting at line 93 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\test-resources\TMapperMainPerljet.java
+Starting at line 192 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\test-resources\TMapperMainPerljet.java
+
+        sb.append(CR + gm.indent(indent) + "###############################");
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////
+        
+        
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////
+        // OUTPPUTS
+        // 
+        sb.append(CR + gm.indent(indent));
+        sb.append(CR + gm.indent(indent) + "###############################");
+=====================================================================
+Found a 6 line (28 tokens) duplication in the following files: 
+Starting at line 214 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\MapperComponent.java
+Starting at line 235 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\MapperComponent.java
+
+                marshaller.marshal(externalData);
+            } catch (MarshalException e) {
+                ExceptionHandler.process(e);
+            } catch (ValidationException e) {
+                ExceptionHandler.process(e);
+            } catch (IOException e) {
+=====================================================================
+Found a 5 line (28 tokens) duplication in the following files: 
+Starting at line 1308 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\managers\UIManager.java
+Starting at line 1344 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\managers\UIManager.java
+
+    private void moveSelectedTableDown(DataMapTableView currentSelectedTableView, List<DataMapTableView> tablesView,
+            int indexStartMovedAuthorized) {
+        int indexCurrentTable = tablesView.indexOf(currentSelectedTableView);
+
+        if (indexCurrentTable < indexStartMovedAuthorized || indexCurrentTable == tablesView.size() - 1) {
+=====================================================================
+Found a 3 line (28 tokens) duplication in the following files: 
+Starting at line 1440 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\ui\visualmap\table\DataMapTableView.java
+Starting at line 1450 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\ui\visualmap\table\DataMapTableView.java
+
+                    ModifiedObjectInfo modifiedObjectInfo = tableViewerCreator.getModifiedObjectInfo();
+                    ITableEntry tableEntry = (ITableEntry) (modifiedObjectInfo.getCurrentModifiedBean() != null ? modifiedObjectInfo
+                            .getCurrentModifiedBean() : modifiedObjectInfo.getPreviousModifiedBean());
+=====================================================================
+Found a 30 line (28 tokens) duplication in the following files: 
+Starting at line 188 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\ui\visualmap\table\VarsDataMapTableView.java
+Starting at line 84 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\ui\visualmap\table\InputDataMapTableView.java
+
+        column.setWeight(COLUMN_NAME_SIZE_WEIGHT);
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.mapper.ui.visualmap.table.DataMapTableView#initTableConstraints()
+     */
+    @Override
+    protected void initTableConstraints() {
+        // nothing
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.mapper.ui.visualmap.table.DataMapTableView#addConstraintsActionsButtons()
+     */
+    @Override
+    protected void addConstraintsActionsComponents() {
+        // nothing
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.mapper.ui.visualmap.table.DataMapTableView#addEntriesActionsComponents()
+     */
+    @Override
+    protected void addEntriesActionsComponents() {
+=====================================================================
+Found a 10 line (28 tokens) duplication in the following files: 
+Starting at line 47 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\ui\visualmap\zone\scrollable\VarsTableZoneView.java
+Starting at line 47 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\ui\visualmap\zone\scrollable\OutputTablesZoneView.java
+
+        formLayout.marginBottom = 10;
+        formLayout.marginWidth = 0;
+        formLayout.marginHeight = 0;
+        formLayout.spacing = 10;
+        setLayout(formLayout);
+        return formLayout;
+    }
+
+
+}
+=====================================================================
+Found a 4 line (28 tokens) duplication in the following files: 
+Starting at line 103 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\ui\visualmap\zone\toolbar\ToolbarZone.java
+Starting at line 111 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\ui\visualmap\zone\toolbar\ToolbarZone.java
+
+        downTableButton.addListener(SWT.Selection, new Listener() {
+
+            public void handleEvent(Event event) {
+                uiManager.moveSelectedTable(getZone(), false);
+=====================================================================
+Found a 4 line (28 tokens) duplication in the following files: 
+Starting at line 111 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\utils\DataMapExpressionParser.java
+Starting at line 126 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\utils\DataMapExpressionParser.java
+
+        recompilePatternIfNecessary(tempPattern);
+        if (returnedExpression != null) {
+            matcher.setMultiline(true);
+            Perl5Substitution substitution = new Perl5Substitution(language.getPrefixTableRegexp() + "$1" + newLocation.tableName
+=====================================================================
+Found a 6 line (28 tokens) duplication in the following files: 
+Starting at line 431 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\test\org\talend\designer\mapper\model\metadata\MapperDataTestGenerator.java
+Starting at line 630 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\test\org\talend\designer\mapper\model\metadata\MapperDataTestGenerator.java
+
+        mapperTableEntry.setExpression(gen.getTableColumnVariable("page", "id_book"));
+        tableEntries.add(mapperTableEntry);
+
+        mapperTableEntry = new ExternalMapperTableEntry();
+        mapperTableEntry.setName("content");
+        mapperTableEntry.setExpression(gen.getTableColumnVariable(VarsTable.PREFIX_VARS_TABLE_NAME, "upperCaseContent"));
+=====================================================================
+Found a 6 line (28 tokens) duplication in the following files: 
+Starting at line 143 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\test\org\talend\designer\mapper\model\metadata\MapperDataTestGenerator.java
+Starting at line 794 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\test\org\talend\designer\mapper\model\metadata\MapperDataTestGenerator.java
+
+        metadataColumn.setLabel("id_book");
+        metadataColumn.setKey(true);
+        metadataColumn.setType(EMetadataType.INTEGER.toString());
+        metadatColumns.add(metadataColumn);
+
+        metadataColumn = new MetadataColumnTest();
+=====================================================================
+Found a 8 line (28 tokens) duplication in the following files: 
+Starting at line 70 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\test-resources\TMapperStartPerljet.java
+Starting at line 86 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\test-resources\TMapperMainPerljet.java
+
+        DataMapExpressionParser expressionParser = new DataMapExpressionParser(currentLanguage);
+
+        GenerationManager gm = new GenerationManager(currentLanguage);
+
+        StringBuilder sb = new StringBuilder();
+
+        gm.setInputTables(inputTables);
+        gm.setVarsTables(varsTables);
+=====================================================================
+Found a 8 line (27 tokens) duplication in the following files: 
+Starting at line 268 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\MapperComponent.java
+Starting at line 283 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\MapperComponent.java
+
+            for (ExternalMapperTable table : outputTables) {
+                if (table.getName().equals(oldName)) {
+                    table.setName(newName);
+                    break;
+                }
+            }
+        }
+    }
+=====================================================================
+Found a 4 line (27 tokens) duplication in the following files: 
+Starting at line 67 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\business\problems\ProblemsAnalyser.java
+Starting at line 320 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\MapperComponent.java
+
+            for (ExternalMapperTable table : tables) {
+                List<ExternalMapperTableEntry> metadataTableEntries = table.getMetadataTableEntries();
+                // loop on all entries of current table
+                for (ExternalMapperTableEntry entry : metadataTableEntries) {
+=====================================================================
+Found a 4 line (27 tokens) duplication in the following files: 
+Starting at line 64 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\geometry\Curve2DBezierFixed.java
+Starting at line 91 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\geometry\Curve2DBezier.java
+
+        for (int t = 0; t <= size; t++) {
+            x = 0;
+            y = 0;
+            for (int i = 0; i <= n; i++) {
+=====================================================================
+Found a 3 line (27 tokens) duplication in the following files: 
+Starting at line 62 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\geometry\Math.java
+Starting at line 65 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\geometry\Math.java
+
+            if ((num = fact(n, n - p + 1)) <= 0 || (den = fact(p)) <= 0)
+                return comb(n - 1, p) + comb(n - 1, p - 1);
+        }
+=====================================================================
+Found a 4 line (27 tokens) duplication in the following files: 
+Starting at line 397 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\managers\MapperManager.java
+Starting at line 422 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\managers\MapperManager.java
+
+    public IColumnEntry addNewColumnEntry(DataMapTableView dataMapTableView, String name, Integer index) {
+        AbstractDataMapTable abstractDataMapTable = dataMapTableView.getDataMapTable();
+        IColumnEntry dataMapTableEntry = null;
+        if (dataMapTableView.getZone() == Zone.VARS) {
+=====================================================================
+Found a 5 line (27 tokens) duplication in the following files: 
+Starting at line 220 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\managers\TableManager.java
+Starting at line 239 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\managers\TableManager.java
+
+    boolean swapWithPreviousTable(AbstractDataMapTable dataMapTable) {
+        List currentList = null;
+        currentList = getMatchedList(dataMapTable);
+        int indexTable = currentList.indexOf(dataMapTable);
+        if (indexTable - 1 >= 0) {
+=====================================================================
+Found a 11 line (27 tokens) duplication in the following files: 
+Starting at line 100 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\model\table\AbstractDataMapTable.java
+Starting at line 59 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\external\data\ExternalMapperTable.java
+
+    }
+
+    public boolean isMinimized() {
+        return this.minimized;
+    }
+
+    public void setMinimized(boolean minimized) {
+        this.minimized = minimized;
+    }
+
+    public List<ExternalMapperTableEntry> getMetadataTableEntries() {
+=====================================================================
+Found a 5 line (27 tokens) duplication in the following files: 
+Starting at line 55 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\ui\visualmap\table\VarsDataMapTableView.java
+Starting at line 48 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\ui\visualmap\table\OutputDataMapTableView.java
+
+    public OutputDataMapTableView(Composite parent, int style, AbstractDataMapTable abstractDataMapTable, MapperManager mapperManager) {
+        super(parent, style, abstractDataMapTable, mapperManager);
+    }
+
+    @Override
+=====================================================================
+Found a 6 line (27 tokens) duplication in the following files: 
+Starting at line 436 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\test\org\talend\designer\mapper\model\metadata\MapperDataTestGenerator.java
+Starting at line 463 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\test\org\talend\designer\mapper\model\metadata\MapperDataTestGenerator.java
+
+                + gen.getTableColumnVariable("book", "name"));
+        tableEntries.add(mapperTableEntry);
+
+        mapperTable.setMetadataTableEntries(tableEntries);
+
+        tables.add(mapperTable);
+=====================================================================
+Found a 2 line (27 tokens) duplication in the following files: 
+Starting at line 151 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\test-resources\TMapperMainPerljet.java
+Starting at line 161 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\test-resources\TMapperMainPerljet.java
+
+        sb.append(CR + gm.indent(indent) + "###############################");
+        sb.append(CR + gm.indent(indent) + "# Vars tables");
+=====================================================================
+Found a 21 line (26 tokens) duplication in the following files: 
+Starting at line 67 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\model\table\OutputTable.java
+Starting at line 83 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\external\data\ExternalMapperTable.java
+
+    }
+
+    /**
+     * 
+     * used only for outputs.
+     * 
+     * @return
+     */
+    public boolean isReject() {
+        return this.reject;
+    }
+
+    /**
+     * 
+     * used only for outputs.
+     * 
+     * @param reject
+     */
+    public void setReject(boolean reject) {
+        this.reject = reject;
+    }
+=====================================================================
+Found a 3 line (26 tokens) duplication in the following files: 
+Starting at line 1122 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\ui\visualmap\table\DataMapTableView.java
+Starting at line 165 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\ui\dnd\DragNDrop.java
+
+                            TableItem[] tableItems = table.getSelection();
+                            for (int i = 0; i < tableItems.length; i++) {
+                                TableItem item = tableItems[i];
+=====================================================================
+Found a 5 line (26 tokens) duplication in the following files: 
+Starting at line 960 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\ui\visualmap\table\DataMapTableView.java
+Starting at line 1050 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\ui\visualmap\table\DataMapTableView.java
+
+                    if (WindowSystem.isGTK()) {
+                        rejectConstraintCheck.setImage(image);
+                        rejectConstraintCheck.setHotImage(image);
+                    } else {
+                        rejectConstraintCheck.setHotImage(image);
+=====================================================================
+Found a 5 line (26 tokens) duplication in the following files: 
+Starting at line 52 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\ui\visualmap\table\InputDataMapTableView.java
+Starting at line 72 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\ui\visualmap\table\InputDataMapTableView.java
+
+        column.setId(DataMapTableView.ID_NAME_COLUMN);
+        column.setBeanPropertyAccessors(new IBeanPropertyAccessors<InputColumnTableEntry, String>() {
+
+            public String get(InputColumnTableEntry bean) {
+                return bean.getMetadataColumn().getLabel();
+=====================================================================
+Found a 5 line (26 tokens) duplication in the following files: 
+Starting at line 56 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\ui\visualmap\table\OutputDataMapTableView.java
+Starting at line 76 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\ui\visualmap\table\OutputDataMapTableView.java
+
+        column.setId(DataMapTableView.ID_NAME_COLUMN);
+        column.setBeanPropertyAccessors(new IBeanPropertyAccessors<OutputColumnTableEntry, String>() {
+
+            public String get(OutputColumnTableEntry bean) {
+                return bean.getMetadataColumn().getLabel();
+=====================================================================
+Found a 5 line (26 tokens) duplication in the following files: 
+Starting at line 78 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\ui\visualmap\table\VarsDataMapTableView.java
+Starting at line 97 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\ui\visualmap\table\VarsDataMapTableView.java
+
+        column.setId(DataMapTableView.ID_NAME_COLUMN);
+        column.setBeanPropertyAccessors(new IBeanPropertyAccessors<VarTableEntry, String>() {
+
+            public String get(VarTableEntry bean) {
+                return bean.getName();
+=====================================================================
+Found a 6 line (26 tokens) duplication in the following files: 
+Starting at line 571 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\test\org\talend\designer\mapper\model\metadata\MapperDataTestGenerator.java
+Starting at line 670 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\test\org\talend\designer\mapper\model\metadata\MapperDataTestGenerator.java
+
+        mapperTableEntry.setExpression(gen.getTableColumnVariable("page", "id_book"));
+        tableEntries.add(mapperTableEntry);
+
+        mapperTableEntry = new ExternalMapperTableEntry();
+        mapperTableEntry.setName("content");
+        mapperTableEntry.setExpression(gen.getTableColumnVariable(VarsTable.PREFIX_VARS_TABLE_NAME, "upperCaseContent"));
+=====================================================================
+Found a 2 line (26 tokens) duplication in the following files: 
+Starting at line 368 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\test\org\talend\designer\mapper\model\metadata\MapperDataTestGenerator.java
+Starting at line 370 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\test\org\talend\designer\mapper\model\metadata\MapperDataTestGenerator.java
+
+                                + "{test_var}" : "")
+                        + (rand.nextInt(4) == 0 ? (rand.nextBoolean() ? " + " : " - ") + "$var" + rand.nextInt(10) : "")
+=====================================================================
+Found a 4 line (26 tokens) duplication in the following files: 
+Starting at line 45 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\test\org\talend\designer\mapper\utils\DataMapExpressionParserTest.java
+Starting at line 124 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\test\org\talend\designer\mapper\utils\DataMapExpressionParserTest.java
+
+    public void testreplaceLocationString() {
+        ILanguage language = new PerlLanguage();
+        DataMapExpressionParser expressionParser = new DataMapExpressionParser(language);
+        GenerationManager gen = new GenerationManager(language);
+=====================================================================
+Found a 4 line (25 tokens) duplication in the following files: 
+Starting at line 71 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\business\problems\ProblemsAnalyser.java
+Starting at line 324 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\MapperComponent.java
+
+                    replaceLocation(oldLocation, newLocation, newColumnName, entry, dataMapExpressionParser);
+                } // for (ExternalMapperTableEntry entry : metadataTableEntries) {
+                if (table.getConstraintTableEntries() != null) {
+                    for (ExternalMapperTableEntry entry : table.getConstraintTableEntries()) {
+=====================================================================
+Found a 8 line (25 tokens) duplication in the following files: 
+Starting at line 72 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\model\tableentry\TableEntry.java
+Starting at line 56 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\external\data\ExternalMapperTableEntry.java
+
+    }
+
+    public String getExpression() {
+        return this.expression;
+    }
+
+    public void setExpression(String expression) {
+        this.expression = expression;
+=====================================================================
+Found a 8 line (25 tokens) duplication in the following files: 
+Starting at line 220 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\ui\MapperUI.java
+Starting at line 454 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\ui\MapperUI.java
+Starting at line 480 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\ui\MapperUI.java
+
+        sc1.addControlListener(new ControlListener() {
+
+            public void controlMoved(ControlEvent e) {
+                // System.out.println("sc1 controlMoved");
+
+            }
+
+            public void controlResized(ControlEvent e) {
+=====================================================================
+Found a 7 line (25 tokens) duplication in the following files: 
+Starting at line 339 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\ui\dnd\DropContextAnalyzer.java
+Starting at line 747 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\ui\dnd\DragNDrop.java
+
+                    if (pointCursor.y > boundsItem.y + draggableTable.getItemHeight() / 2) {
+                        startInsertAtThisIndex = i + 1;
+                    }
+                    break;
+                }
+            }
+        } else if (pointCursor.y < draggableTable.getHeaderHeight()) {
+=====================================================================
+Found a 8 line (25 tokens) duplication in the following files: 
+Starting at line 106 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\ui\tabs\StyledTextHandler.java
+Starting at line 220 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\ui\MapperUI.java
+
+        datasFlowViewSashForm.addControlListener(new ControlListener() {
+
+            public void controlMoved(ControlEvent e) {
+                // TODO Auto-generated method stub
+
+            }
+
+            public void controlResized(ControlEvent e) {
+=====================================================================
+Found a 6 line (25 tokens) duplication in the following files: 
+Starting at line 665 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\ui\visualmap\table\DataMapTableView.java
+Starting at line 973 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\ui\visualmap\table\DataMapTableView.java
+Starting at line 1003 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\ui\visualmap\table\DataMapTableView.java
+Starting at line 1036 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\ui\visualmap\table\DataMapTableView.java
+Starting at line 1082 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\ui\visualmap\table\DataMapTableView.java
+Starting at line 1116 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\ui\visualmap\table\DataMapTableView.java
+Starting at line 79 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\ui\footer\FooterComposite.java
+
+        okButton.addSelectionListener(new SelectionListener() {
+
+            public void widgetDefaultSelected(SelectionEvent e) {
+            }
+
+            public void widgetSelected(SelectionEvent e) {
+=====================================================================
+Found a 6 line (25 tokens) duplication in the following files: 
+Starting at line 361 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\ui\visualmap\table\DataMapTableView.java
+Starting at line 910 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\ui\visualmap\table\DataMapTableView.java
+
+        tableViewerCreatorForConstraints.setLabelProvider(new DefaultTableLabelProvider(tableViewerCreatorForConstraints) {
+
+            @Override
+            public Color getBackground(Object element, int columnIndex) {
+                return getBackgroundCellColor(tableViewerCreator, element, columnIndex);
+            }
+=====================================================================
+Found a 8 line (25 tokens) duplication in the following files: 
+Starting at line 62 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\ui\visualmap\table\VarsDataMapTableView.java
+Starting at line 665 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\main\java\org\talend\designer\mapper\ui\visualmap\table\DataMapTableView.java
+
+        minimizeButton.addSelectionListener(new SelectionListener() {
+
+            public void widgetDefaultSelected(SelectionEvent e) {
+                // TODO Auto-generated method stub
+
+            }
+
+            public void widgetSelected(SelectionEvent e) {
+=====================================================================
+Found a 4 line (25 tokens) duplication in the following files: 
+Starting at line 833 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\test\org\talend\designer\mapper\model\metadata\MapperDataTestGenerator.java
+Starting at line 937 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\test\org\talend\designer\mapper\model\metadata\MapperDataTestGenerator.java
+
+        metadataColumn.setLabel("content");
+        metadataColumn.setKey(false);
+        metadataColumn.setType(EMetadataType.INTEGER.toString());
+        metadatColumns.add(metadataColumn);
+=====================================================================
+Found a 4 line (25 tokens) duplication in the following files: 
+Starting at line 800 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\test\org\talend\designer\mapper\model\metadata\MapperDataTestGenerator.java
+Starting at line 839 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\test\org\talend\designer\mapper\model\metadata\MapperDataTestGenerator.java
+
+        metadataColumn.setLabel("content");
+        metadataColumn.setKey(false);
+        metadataColumn.setType(EMetadataType.STRING.toString());
+        metadatColumns.add(metadataColumn);
+=====================================================================
+Found a 6 line (25 tokens) duplication in the following files: 
+Starting at line 789 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\test\org\talend\designer\mapper\model\metadata\MapperDataTestGenerator.java
+Starting at line 893 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\test\org\talend\designer\mapper\model\metadata\MapperDataTestGenerator.java
+
+        metadataTable.setTableName("newBook");
+
+        ArrayList<IMetadataColumn> metadatColumns = new ArrayList<IMetadataColumn>();
+
+        MetadataColumn metadataColumn = new MetadataColumnTest();
+        metadataColumn.setLabel("newIdBook");
+=====================================================================
+Found a 5 line (25 tokens) duplication in the following files: 
+Starting at line 494 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\test\org\talend\designer\mapper\model\metadata\MapperDataTestGenerator.java
+Starting at line 534 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\test\org\talend\designer\mapper\model\metadata\MapperDataTestGenerator.java
+
+        mapperTableEntry.setExpression(gen.getTableColumnVariable("book", "id_book"));
+        tableEntries.add(mapperTableEntry);
+
+        mapperTableEntry = new ExternalMapperTableEntry();
+        mapperTableEntry.setName("content");
+=====================================================================
+Found a 6 line (25 tokens) duplication in the following files: 
+Starting at line 317 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\test\org\talend\designer\mapper\model\metadata\MapperDataTestGenerator.java
+Starting at line 756 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\test\org\talend\designer\mapper\model\metadata\MapperDataTestGenerator.java
+
+                MetadataColumn metadataColumn = new MetadataColumn();
+                // metadataColumn.setLabel(FIELD_NAME + j);
+                String baseColumnName = FIELDS[rand.nextInt(FIELDS.length)];
+                if (fixedData) {
+                    baseColumnName = COLUMN_NAME;
+                }
+=====================================================================
+Found a 4 line (25 tokens) duplication in the following files: 
+Starting at line 176 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\test\org\talend\designer\mapper\model\metadata\MapperDataTestGenerator.java
+Starting at line 931 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\test\org\talend\designer\mapper\model\metadata\MapperDataTestGenerator.java
+
+        metadataColumn.setLabel("idBook");
+        metadataColumn.setKey(false);
+        metadataColumn.setType(EMetadataType.STRING.toString());
+        metadatColumns.add(metadataColumn);
+=====================================================================
+Found a 6 line (25 tokens) duplication in the following files: 
+Starting at line 165 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\test\org\talend\designer\mapper\model\metadata\MapperDataTestGenerator.java
+Starting at line 209 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\test\org\talend\designer\mapper\model\metadata\MapperDataTestGenerator.java
+
+        metadataTable.setTableName("out" + ++outputsCounter);
+
+        ArrayList<IMetadataColumn> metadatColumns = new ArrayList<IMetadataColumn>();
+
+        MetadataColumn metadataColumn = new MetadataColumn();
+        metadataColumn.setLabel("newId");
+=====================================================================
+Found a 4 line (25 tokens) duplication in the following files: 
+Starting at line 149 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\test\org\talend\designer\mapper\model\metadata\MapperDataTestGenerator.java
+Starting at line 931 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\test\org\talend\designer\mapper\model\metadata\MapperDataTestGenerator.java
+
+        metadataColumn.setLabel("idBook");
+        metadataColumn.setKey(false);
+        metadataColumn.setType(EMetadataType.STRING.toString());
+        metadatColumns.add(metadataColumn);
+=====================================================================
+Found a 6 line (25 tokens) duplication in the following files: 
+Starting at line 138 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\test\org\talend\designer\mapper\model\metadata\MapperDataTestGenerator.java
+Starting at line 209 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\test\org\talend\designer\mapper\model\metadata\MapperDataTestGenerator.java
+
+        metadataTable.setTableName("out" + ++outputsCounter);
+
+        ArrayList<IMetadataColumn> metadatColumns = new ArrayList<IMetadataColumn>();
+
+        MetadataColumn metadataColumn = new MetadataColumn();
+        metadataColumn.setLabel("newId");
+=====================================================================
+Found a 2 line (25 tokens) duplication in the following files: 
+Starting at line 96 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\test\org\talend\designer\mapper\utils\DataMapExpressionParserTest.java
+Starting at line 493 of D:\dev\eclipse\workspaces\workspace-talend2\org.talend.designer.mapper\src\test\org\talend\designer\mapper\model\metadata\MapperDataTestGenerator.java
+
+        mapperTableEntry.setExpression("uc " + gen.getTableColumnVariable("page", "content") + " + "
+                + gen.getTableColumnVariable("book", "id_book") + " - 2 * " + gen.getTableColumnVariable("book", "id_book"));

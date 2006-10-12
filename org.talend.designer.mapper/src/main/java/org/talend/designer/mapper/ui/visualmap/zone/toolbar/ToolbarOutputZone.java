@@ -124,6 +124,7 @@ public class ToolbarOutputZone extends ToolbarZone {
 
     /**
      * DOC amaumont Comment method "setEnabledRemoveTableButton".
+     * 
      * @param b
      */
     public void setEnabledRemoveTableButton(boolean enabled) {

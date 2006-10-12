@@ -49,6 +49,7 @@ public abstract class TablesZoneView extends Composite {
 
     /**
      * DOC amaumont Comment method "getFormLayout".
+     * 
      * @return
      */
     public abstract Layout initLayout();
@@ -81,7 +82,4 @@ public abstract class TablesZoneView extends Composite {
         return formLayout;
     }
 
-    
-    
-    
 }

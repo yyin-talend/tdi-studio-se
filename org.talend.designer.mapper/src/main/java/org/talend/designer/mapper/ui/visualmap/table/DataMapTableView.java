@@ -24,7 +24,6 @@ package org.talend.designer.mapper.ui.visualmap.table;
 import java.util.Iterator;
 import java.util.List;
 
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.fieldassist.IContentProposalProvider;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ICellEditorListener;
@@ -63,13 +62,13 @@ import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Layout;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.ToolBar;
@@ -84,6 +83,7 @@ import org.talend.commons.ui.swt.tableviewer.TableViewerCreator.SHOW_SELECTION;
 import org.talend.commons.ui.swt.tableviewer.behavior.CellEditorValueAdapter;
 import org.talend.commons.ui.swt.tableviewer.behavior.DefaultTableLabelProvider;
 import org.talend.commons.ui.swt.tableviewer.data.ModifiedObjectInfo;
+import org.talend.commons.ui.utils.TableUtils;
 import org.talend.commons.ui.ws.WindowSystem;
 import org.talend.commons.utils.threading.AsynchronousThreading;
 import org.talend.commons.utils.threading.ExecutionLimiter;
@@ -98,6 +98,8 @@ import org.talend.designer.mapper.model.table.OutputTable;
 import org.talend.designer.mapper.model.table.VarsTable;
 import org.talend.designer.mapper.model.tableentry.AbstractInOutTableEntry;
 import org.talend.designer.mapper.model.tableentry.ITableEntry;
+import org.talend.designer.mapper.ui.color.ColorInfo;
+import org.talend.designer.mapper.ui.color.ColorProviderMapper;
 import org.talend.designer.mapper.ui.dnd.DragNDrop;
 import org.talend.designer.mapper.ui.event.MousePositionAnalyser;
 import org.talend.designer.mapper.ui.event.ResizeHelper;
@@ -118,6 +120,8 @@ import org.talend.designer.mapper.ui.visualmap.zone.Zone;
  * 
  */
 public abstract class DataMapTableView extends Composite {
+
+    private static final String EMPTY_STRING = "";
 
     private Table table;
 
@@ -171,6 +175,10 @@ public abstract class DataMapTableView extends Composite {
 
     private Cursor currentCursor;
 
+    private ExpressionColorProvider expressionColorProvider;
+
+    private Listener showErrorMessageListener;
+
     private static Image imageKey;
 
     private static Image imageEmpty;
@@ -211,12 +219,14 @@ public abstract class DataMapTableView extends Composite {
         dataMapTableView = this;
         this.mapperManager = mapperManager;
         this.abstractDataMapTable = abstractDataMapTable;
+        expressionColorProvider = new ExpressionColorProvider();
         createComponents();
         addListeners();
         mapperManager.addTablePair(dataMapTableView, abstractDataMapTable);
     }
 
     private void createComponents() {
+
         final Display display = this.getDisplay();
         // final Color listForeground = display.getSystemColor(SWT.COLOR_WIDGET_FOREGROUND);
         final Color listBackground = display.getSystemColor(SWT.COLOR_WIDGET_LIGHT_SHADOW);
@@ -333,15 +343,22 @@ public abstract class DataMapTableView extends Composite {
         if (getDataMapTable() instanceof AbstractInOutTable) {
 
             if (imageKey == null) {
-                imageKey = org.talend.core.ui.ImageProvider.getImage(EImage.KEY);
+                imageKey = org.talend.core.ui.ImageProvider.getImage(EImage.KEY16);
             }
             if (imageEmpty == null) {
-                imageEmpty = org.talend.core.ui.ImageProvider.getImage(EImage.EMPTY16);
+                imageEmpty = org.talend.core.ui.ImageProvider.getImage(EImage.TRANSPARENT16x16);
             }
-            tableViewerCreatorForColumns.setLabelProvider(new DefaultTableLabelProvider(tableViewerCreatorForColumns) {
+        }
+        tableViewerCreatorForColumns.setLabelProvider(new DefaultTableLabelProvider(tableViewerCreatorForColumns) {
 
-                @Override
-                public Image getColumnImage(Object element, int columnIndex) {
+            @Override
+            public Color getBackground(Object element, int columnIndex) {
+                return getBackgroundCellColor(tableViewerCreator, element, columnIndex);
+            }
+
+            @Override
+            public Image getColumnImage(Object element, int columnIndex) {
+                if (getDataMapTable() instanceof AbstractInOutTable) {
                     AbstractInOutTableEntry entry = (AbstractInOutTableEntry) element;
                     TableViewerCreatorColumn column = (TableViewerCreatorColumn) tableViewerCreatorForColumns.getColumns().get(columnIndex);
                     if (column.getId().equals(ID_NAME_COLUMN)) {
@@ -351,11 +368,11 @@ public abstract class DataMapTableView extends Composite {
                             return imageEmpty;
                         }
                     }
-                    return null;
                 }
+                return null;
+            }
 
-            });
-        }
+        });
 
         table = tableViewerCreatorForColumns.createTable();
 
@@ -402,9 +419,48 @@ public abstract class DataMapTableView extends Composite {
 
         Composite footerComposite = new Composite(this, SWT.NONE);
         GridData footerGridData = new GridData(10, 2);
-        // footerGridData.minimumHeight = 2;
         footerComposite.setLayoutData(footerGridData);
 
+    }
+
+    /**
+     * DOC amaumont Comment method "initShowMessageErrorListener".
+     * 
+     * @param table
+     */
+    private void initShowMessageErrorListener(final Table table) {
+        showErrorMessageListener = new Listener() {
+
+            private String lastErrorMessage;
+
+            public void handleEvent(Event event) {
+
+                switch (event.type) {
+                case SWT.MouseMove:
+
+                    Point cursorPositionFromTableOrigin = TableUtils.getCursorPositionFromTableOrigin(table, event);
+                    TableColumn tableColumn = TableUtils.getTableColumn(table, cursorPositionFromTableOrigin);
+                    if (tableColumn == null) {
+                        return;
+                    }
+                    TableItem tableItem = TableUtils.getTableItem(table, cursorPositionFromTableOrigin);
+                    if (tableItem == null) {
+                        tableColumn.setToolTipText(null);
+                        table.setToolTipText(null);
+                        return;
+                    }
+                    ITableEntry tableEntry = (ITableEntry) tableItem.getData();
+                    String toolTip = tableEntry.getErrorMessage() == null ? null : "Error: " + tableEntry.getErrorMessage();
+                    if (toolTip == null || !toolTip.equals(lastErrorMessage)) {
+                        table.setToolTipText(toolTip);
+                        lastErrorMessage = toolTip;
+                    }
+                    break;
+                }
+            }
+
+        };
+        table.addListener(SWT.MouseMove, showErrorMessageListener);
     }
 
     /**
@@ -612,6 +668,93 @@ public abstract class DataMapTableView extends Composite {
 
         // /////////////////////////////////////////////////////////////////
 
+        // final Listener eraseItemListener = new Listener() {
+        //
+        // public void handleEvent(Event event) {
+        //
+        // System.out.println("EraseItem");
+        //
+        // if ((event.detail & SWT.SELECTED) != 0) {
+        //
+        // GC gc = event.gc;
+        //                    
+        //
+        // Rectangle rect = event.getBounds();
+        //
+        // Color background = gc.getBackground();
+        //
+        // gc.setBackground(table.getDisplay().getSystemColor(SWT.COLOR_RED));
+        //
+        // // TODO: uncomment to see selection on linux gtk
+        //
+        // // ((TableItem)event.item).setBackground(null);
+        //
+        // gc.fillRectangle(rect);
+        //
+        // gc.setBackground(background);
+        //
+        // event.detail &= ~SWT.SELECTED;
+        //
+        // }
+        //
+        // }
+        //
+        // };
+        //        
+        // Listener paintListener = new Listener() {
+        //
+        // public void handleEvent(Event event) {
+        // System.out.println("PaintItem");
+        // }
+        //            
+        // };
+        //        
+        // Listener measureItemListener = new Listener() {
+        //            
+        // public void handleEvent(Event event) {
+        // System.out.println("MeasureItem");
+        // }
+        //            
+        // };
+        //        
+        // // table.addListener(SWT.PaintItem, paintListener);
+        // // table.addListener(SWT.MeasureItem, measureItemListener);
+        //
+        //        
+        // Listener addRemoveEraseItemListener = new Listener() {
+        //
+        // public void handleEvent(Event event) {
+        //
+        // boolean leftMouseButton = (event.stateMask & SWT.BUTTON1) != 0 || event.button == 1;
+        //
+        // switch (event.type) {
+        // case SWT.MouseDown:
+        // if (leftMouseButton) {
+        // System.out.println("add");
+        // table.addListener(SWT.EraseItem, eraseItemListener);
+        // }
+        // break;
+        // case SWT.MouseUp:
+        // if (leftMouseButton) {
+        // System.out.println("remove");
+        // table.removeListener(SWT.EraseItem, eraseItemListener);
+        // OS.SendMessage (table.handle, OS.LVM_SETEXTENDEDLISTVIEWSTYLE, OS.LVS_EX_LABELTIP, OS.LVS_EX_LABELTIP);
+        // table.setToolTipText("test");
+        // table.setBackgroundImage(imageEmpty);
+        // table.setBackgroundMode(SWT.INHERIT_DEFAULT);
+        // }
+        // break;
+        //
+        // }
+        // }
+        //            
+        // };
+        //        
+        // table.addListener(SWT.MouseDown, addRemoveEraseItemListener);
+        // table.addListener(SWT.MouseUp, addRemoveEraseItemListener);
+
+        initShowMessageErrorListener(table);
+
     }
 
     /**
@@ -755,6 +898,16 @@ public abstract class DataMapTableView extends Composite {
 
         });
 
+        tableViewerCreatorForConstraints.setLabelProvider(new DefaultTableLabelProvider(tableViewerCreatorForConstraints) {
+
+            @Override
+            public Color getBackground(Object element, int columnIndex) {
+                return getBackgroundCellColor(tableViewerCreator, element, columnIndex);
+            }
+
+        });
+
+        initShowMessageErrorListener(tableForConstraints);
     }
 
     public void onSelectedEntries(ISelection selection, int[] selectionIndices) {
@@ -1345,10 +1498,11 @@ public abstract class DataMapTableView extends Composite {
                 if (WindowSystem.isGTK()) {
 
                     new AsynchronousThreading(50, false, expressionTextEditor.getDisplay(), new Runnable() {
+
                         public void run() {
 
                             tableViewerCreator.layout();
-                            
+
                         }
                     }).start();
 
@@ -1453,6 +1607,55 @@ public abstract class DataMapTableView extends Composite {
 
             uiManager.selectDataMapTableView(DataMapTableView.this);
         }
+    }
+
+    /**
+     * 
+     * Provide a color provider for Constraints table and dataMap table.
+     * 
+     * 
+     * <br/>
+     * 
+     * $Id$
+     * 
+     */
+    class ExpressionColorProvider {
+
+        /**
+         * DOC amaumont Comment method "getBackgroundColor".
+         * 
+         * @param expression
+         */
+        public Color getBackgroundColor(boolean validCell) {
+
+            if (validCell) {
+                return ColorProviderMapper.getColor(ColorInfo.COLOR_BACKGROUND_VALID_EXPRESSION_CELL);
+            } else {
+                return ColorProviderMapper.getColor(ColorInfo.COLOR_BACKGROUND_ERROR_EXPRESSION_CELL);
+            }
+
+        }
+
+    }
+
+    protected ExpressionColorProvider getExpressionColorProvider() {
+        return this.expressionColorProvider;
+    }
+
+    /**
+     * DOC amaumont Comment method "getCommonBackgroundColor".
+     * 
+     * @param element
+     * @param columnIndex
+     * @return
+     */
+    private Color getBackgroundCellColor(TableViewerCreator tableViewerCreator, Object element, int columnIndex) {
+        ITableEntry entry = (ITableEntry) element;
+        TableViewerCreatorColumn column = (TableViewerCreatorColumn) tableViewerCreator.getColumns().get(columnIndex);
+        if (column.getId().equals(ID_EXPRESSION_COLUMN)) {
+            return expressionColorProvider.getBackgroundColor(entry.getErrorMessage() == null ? true : false);
+        }
+        return null;
     }
 
 }

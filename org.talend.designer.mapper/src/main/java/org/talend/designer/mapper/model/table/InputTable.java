@@ -21,9 +21,9 @@
 // ============================================================================
 package org.talend.designer.mapper.model.table;
 
-import org.talend.core.model.components.IODataComponent;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.process.EConnectionType;
+import org.talend.designer.mapper.external.connection.IOConnection;
 import org.talend.designer.mapper.external.data.ExternalMapperTable;
 import org.talend.designer.mapper.model.tableentry.AbstractInOutTableEntry;
 import org.talend.designer.mapper.model.tableentry.InputColumnTableEntry;
@@ -36,7 +36,7 @@ import org.talend.designer.mapper.model.tableentry.InputColumnTableEntry;
  */
 public class InputTable extends AbstractInOutTable {
 
-    private IODataComponent connection;
+    private IOConnection connection;
 
     /**
      * DOC amaumont InputTable constructor comment.
@@ -45,7 +45,7 @@ public class InputTable extends AbstractInOutTable {
      * @param externalMapperTable can be null
      * @param mainConnection
      */
-    public InputTable(IODataComponent connection, ExternalMapperTable externalMapperTable, String name) {
+    public InputTable(IOConnection connection, ExternalMapperTable externalMapperTable, String name) {
         super(connection.getTable(), externalMapperTable, name);
         this.connection = connection;
     }

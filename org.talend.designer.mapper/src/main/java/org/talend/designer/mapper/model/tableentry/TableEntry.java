@@ -21,6 +21,7 @@
 // ============================================================================
 package org.talend.designer.mapper.model.tableentry;
 
+import org.talend.designer.mapper.language.LanguageProvider;
 import org.talend.designer.mapper.model.table.AbstractDataMapTable;
 
 /**
@@ -31,11 +32,15 @@ import org.talend.designer.mapper.model.table.AbstractDataMapTable;
  */
 public abstract class TableEntry implements ITableEntry {
 
+    private static final String EMPTY_STRING = "";
+
     private String expression;
 
     private AbstractDataMapTable parent;
 
     private String name;
+
+    private String errorMessage;
 
     public TableEntry(AbstractDataMapTable abstractDataMapTable, String expression) {
         super();
@@ -61,6 +66,7 @@ public abstract class TableEntry implements ITableEntry {
             throw new IllegalArgumentException("Name of the TableEntry must not be null !");
         }
         this.expression = expression;
+        checkErrors();
     }
 
     public String getExpression() {
@@ -69,6 +75,7 @@ public abstract class TableEntry implements ITableEntry {
 
     public void setExpression(String expression) {
         this.expression = expression;
+        checkErrors();
     }
 
     public AbstractDataMapTable getParent() {
@@ -95,4 +102,28 @@ public abstract class TableEntry implements ITableEntry {
         }
     }
 
+    public String getErrorMessage() {
+        return this.errorMessage;
+    }
+
+    public void setErrorMessage(String errorMessage) {
+        this.errorMessage = errorMessage;
+    }
+
+    /**
+     * DOC amaumont Comment method "checkErrors".
+     * @param columnEntries
+     */
+    private void checkErrors() {
+        
+        if (expression == null || EMPTY_STRING.equals(expression)) {
+            this.errorMessage = null;
+        } else {
+            this.errorMessage = LanguageProvider.getCurrentLanguage().checkExpressionSyntax(expression);
+        }
+
+    }
+
+
+    
 }

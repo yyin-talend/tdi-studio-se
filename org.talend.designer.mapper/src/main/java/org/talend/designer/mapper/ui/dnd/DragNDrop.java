@@ -273,7 +273,7 @@ public class DragNDrop {
                 if (analyzer.isTargetEntryValid()) {
 
                     draggingInfosPopup.setOutputToOutputMode(analyzer.isOutputToOutput());
-                    
+
                     if (uiManager.isCtrlPressed()) {
                         draggingInfosPopup.setOverwriteMode(true);
                     } else {

@@ -52,6 +52,4 @@ public class InputTablesZoneView extends TablesZoneView {
         return formLayout;
     }
 
-    
 }
-

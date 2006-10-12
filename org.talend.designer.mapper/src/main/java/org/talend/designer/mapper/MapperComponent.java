@@ -38,7 +38,6 @@ import org.exolab.castor.xml.Marshaller;
 import org.exolab.castor.xml.Unmarshaller;
 import org.exolab.castor.xml.ValidationException;
 import org.talend.commons.exception.ExceptionHandler;
-import org.talend.core.model.components.IODataComponentContainer;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.process.AbstractExternalNode;
 import org.talend.core.model.process.Problem;
@@ -226,7 +225,7 @@ public class MapperComponent extends AbstractExternalNode {
     public void loadDataOut(final OutputStream out, Writer writer) throws IOException {
 
         initMapperMain();
-        mapperMain.loadFromExternalData(getIODataComponents(), getMetadataList(), externalData);
+        mapperMain.loadFromExternalData(getIncomingConnections(), getOutgoingConnections(), externalData, getMetadataList());
         ExternalMapperData data = mapperMain.buildExternalData();
         if (mapperMain != null && data != null) {
 

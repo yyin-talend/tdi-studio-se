@@ -218,10 +218,22 @@ public class JavaLanguage extends AbstractLanguage {
         return null;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.designer.mapper.language.ILanguage#getSubstPatternForReplaceLocation()
      */
     public String getSubstPatternForReplaceLocation() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.mapper.language.ILanguage#checkExpressionSyntax(java.lang.String)
+     */
+    public String checkExpressionSyntax(String expression) {
         // TODO Auto-generated method stub
         return null;
     }

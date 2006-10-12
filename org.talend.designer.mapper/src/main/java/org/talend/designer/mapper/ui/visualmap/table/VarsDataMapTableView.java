@@ -154,8 +154,8 @@ public class VarsDataMapTableView extends DataMapTableView {
                 // System.out.println(errorMessage);
                 if (errorMessage == null) {
                     if (applied) {
-                        mapperManager.getUiManager()
-                                .processColumnNameChanged(originalValue, newValue, dataMapTableView, (ITableEntry) currentModifiedBean);
+                        mapperManager.getUiManager().processColumnNameChanged(originalValue, newValue, dataMapTableView,
+                                (ITableEntry) currentModifiedBean);
                     }
                     text.setBackground(text.getDisplay().getSystemColor(SWT.COLOR_WHITE));
                     lastValidValue = newValue;
@@ -196,6 +196,7 @@ public class VarsDataMapTableView extends DataMapTableView {
      */
     @Override
     protected void initTableConstraints() {
+        // no table constraint
     }
 
     /*

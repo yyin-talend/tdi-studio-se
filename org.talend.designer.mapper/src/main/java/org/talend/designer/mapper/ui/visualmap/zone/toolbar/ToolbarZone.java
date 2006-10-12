@@ -179,7 +179,5 @@ public abstract class ToolbarZone {
     public void setEnabledMinimizeTablesButton(boolean enabled) {
         minimizeButton.setEnabled(enabled);
     }
-    
-    
-    
+
 }

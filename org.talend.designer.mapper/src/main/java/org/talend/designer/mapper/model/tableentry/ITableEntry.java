@@ -43,4 +43,8 @@ public interface ITableEntry {
 
     public void setExpression(String expression);
 
+    public String getErrorMessage();
+
+    public void setErrorMessage(String errorMessage);
+
 }

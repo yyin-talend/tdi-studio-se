@@ -84,7 +84,7 @@ public class TabFolderEditors extends CTabFolder {
         // item.setControl(metaDatasDescriptorView3);
 
         CTabItem item = new CTabItem(tabFolderEditors, SWT.BORDER);
-        item.setText("Schemas editor");
+        item.setText("Schema editor");
 
         SashForm inOutMetaEditorContainer = new SashForm(tabFolderEditors, SWT.SMOOTH | SWT.HORIZONTAL | SWT.SHADOW_OUT);
         inOutMetaEditorContainer.setLayout(new RowLayout(SWT.HORIZONTAL));

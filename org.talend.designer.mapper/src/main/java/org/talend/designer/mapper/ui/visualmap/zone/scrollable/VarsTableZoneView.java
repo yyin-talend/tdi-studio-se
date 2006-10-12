@@ -52,5 +52,4 @@ public class VarsTableZoneView extends TablesZoneView {
         return formLayout;
     }
 
-
 }

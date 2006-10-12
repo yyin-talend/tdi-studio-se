@@ -29,11 +29,13 @@ import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
+import org.talend.core.model.components.IODataComponent;
 import org.talend.core.model.components.IODataComponentContainer;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.process.AbstractExternalNode;
 import org.talend.core.model.process.IConnection;
 import org.talend.designer.core.model.components.EParameterName;
+import org.talend.designer.mapper.external.connection.IOConnection;
 import org.talend.designer.mapper.external.converter.ExternalDataConverter;
 import org.talend.designer.mapper.external.data.ExternalMapperData;
 import org.talend.designer.mapper.external.data.ExternalMapperUiProperties;
@@ -107,9 +109,10 @@ public class MapperMain {
         if (uiProperties.isShellMaximized()) {
             shell.setMaximized(uiProperties.isShellMaximized());
         } else {
-//            // move shell at outer of display zone to avoid visual effect on loading
-//            Rectangle tmpBoundsMapper = new Rectangle(-boundsMapper.width, boundsMapper.y, boundsMapper.width, boundsMapper.height);
-//            shell.setBounds(tmpBoundsMapper);
+            // // move shell at outer of display zone to avoid visual effect on loading
+            // Rectangle tmpBoundsMapper = new Rectangle(-boundsMapper.width, boundsMapper.y, boundsMapper.width,
+            // boundsMapper.height);
+            // shell.setBounds(tmpBoundsMapper);
             boundsMapper = uiProperties.getBoundsMapper();
             if (boundsMapper.x < 0) {
                 boundsMapper.x = 0;
@@ -157,14 +160,51 @@ public class MapperMain {
 
     }
 
-    public void loadFromExternalData(IODataComponentContainer ioDataContainer,
-            List<IMetadataTable> outputMetadataTables, ExternalMapperData externalData) {
+    /**
+     * DOC amaumont Comment method "loadFromExternalData".
+     * 
+     * @param incomingConnections
+     * @param outgoingConnections
+     * @param metadataList
+     * @param externalData
+     */
+    public void loadFromExternalData(List<? extends IConnection> incomingConnections, List<? extends IConnection> outgoingConnections,
+            ExternalMapperData externalData, List<IMetadataTable> outputMetadataTables) {
+        ArrayList<IOConnection> inputs = new ArrayList<IOConnection>(incomingConnections.size());
+        for (IConnection connection : incomingConnections) {
+            inputs.add(new IOConnection(connection));
+        }
+        ArrayList<IOConnection> outputs = new ArrayList<IOConnection>(outgoingConnections.size());
+        for (IConnection connection : incomingConnections) {
+            outputs.add(new IOConnection(connection));
+        }
+        loadFromExternalData(inputs, outputs, outputMetadataTables, externalData);
+    }
+
+    public void loadFromExternalData(IODataComponentContainer ioDataContainer, List<IMetadataTable> outputMetadataTables,
+            ExternalMapperData externalData) {
+        List<IODataComponent> inputsData = ioDataContainer.getInputs();
+        List<IODataComponent> ouputsData = ioDataContainer.getOuputs();
+
+        ArrayList<IOConnection> inputs = new ArrayList<IOConnection>(inputsData.size());
+        for (IODataComponent iData : inputsData) {
+            inputs.add(new IOConnection(iData));
+        }
+        ArrayList<IOConnection> outputs = new ArrayList<IOConnection>(ouputsData.size());
+        for (IODataComponent oData : ouputsData) {
+            outputs.add(new IOConnection(oData));
+        }
+        loadFromExternalData(inputs, outputs, outputMetadataTables, externalData);
+    }
+
+    public void loadFromExternalData(List<IOConnection> inputs, List<IOConnection> outputs, List<IMetadataTable> outputMetadataTables,
+            ExternalMapperData externalData) {
         if (externalData == null) {
             externalData = new ExternalMapperData();
         }
         mapperManager.getUiManager().setUiProperties(externalData.getUiProperties());
         ExternalDataConverter converter = new ExternalDataConverter();
-        this.mapperModel = converter.prepareModel(ioDataContainer, outputMetadataTables, externalData);
+        this.mapperModel = converter.prepareModel(inputs, outputs, outputMetadataTables, externalData);
     }
 
     /**
@@ -212,7 +252,7 @@ public class MapperMain {
 
     public void loadInitialParamters() {
         this.mapperManager.updateEmfParameters(EParameterName.PREVIEW.getName());// ,
-                                                                                    // MapperManager.MAPPER_MODEL_DATA);
+        // MapperManager.MAPPER_MODEL_DATA);
     }
 
 }

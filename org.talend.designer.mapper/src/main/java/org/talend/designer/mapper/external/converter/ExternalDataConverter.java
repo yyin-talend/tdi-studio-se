@@ -29,10 +29,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.talend.core.model.components.IODataComponent;
-import org.talend.core.model.components.IODataComponentContainer;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.process.EConnectionType;
+import org.talend.designer.mapper.external.connection.IOConnection;
 import org.talend.designer.mapper.external.data.ExternalMapperData;
 import org.talend.designer.mapper.external.data.ExternalMapperTable;
 import org.talend.designer.mapper.external.data.ExternalMapperTableEntry;
@@ -67,12 +66,12 @@ public class ExternalDataConverter {
      * @param outputMetadataTables
      * @param externalData
      */
-    public MapperModel prepareModel(IODataComponentContainer ioDataContainer,
-            List<IMetadataTable> outputMetadataTables, ExternalMapperData externalData) {
+    public MapperModel prepareModel(List<IOConnection> inputs, List<IOConnection> outputs, List<IMetadataTable> outputMetadataTables,
+            ExternalMapperData externalData) {
 
-        ArrayList<InputTable> inputDataMapTables = prepareInputTables(ioDataContainer.getInputs(), externalData);
+        ArrayList<InputTable> inputDataMapTables = prepareInputTables(inputs, externalData);
 
-        ArrayList<OutputTable> outputDataMapTables = prepareOutputTables(ioDataContainer.getOuputs(), outputMetadataTables, externalData);
+        ArrayList<OutputTable> outputDataMapTables = prepareOutputTables(outputs, outputMetadataTables, externalData);
 
         List<VarsTable> varsTablesList = prepareVarsTables(externalData);
 
@@ -97,17 +96,17 @@ public class ExternalDataConverter {
         return varsTablesList;
     }
 
-    private ArrayList<OutputTable> prepareOutputTables(List<IODataComponent> outputConnections,
-            List<IMetadataTable> outputMetadataTables, ExternalMapperData externalData) {
+    private ArrayList<OutputTable> prepareOutputTables(List<IOConnection> outputConnections, List<IMetadataTable> outputMetadataTables,
+            ExternalMapperData externalData) {
         Map<String, ExternalMapperTable> nameToOutpuPersistentTable = new HashMap<String, ExternalMapperTable>();
         if (externalData != null) {
             for (ExternalMapperTable persistentTable : externalData.getOutputTables()) {
                 nameToOutpuPersistentTable.put(persistentTable.getName(), persistentTable);
             }
         }
-        Map<String, IODataComponent> nameMetadataToOutpuConn = new HashMap<String, IODataComponent>();
+        Map<String, IOConnection> nameMetadataToOutpuConn = new HashMap<String, IOConnection>();
         if (outputConnections != null) {
-            for (IODataComponent connection : outputConnections) {
+            for (IOConnection connection : outputConnections) {
                 if (connection.getConnectionType().equals(EConnectionType.FLOW_MAIN)
                         || connection.getConnectionType().equals(EConnectionType.FLOW_REF)) {
                     nameMetadataToOutpuConn.put(connection.getTable().getTableName(), connection);
@@ -116,7 +115,7 @@ public class ExternalDataConverter {
         }
         ArrayList<OutputTable> outputDataMapTables = new ArrayList<OutputTable>();
         for (IMetadataTable table : outputMetadataTables) {
-            IODataComponent connection = nameMetadataToOutpuConn.get(table.getTableName());
+            IOConnection connection = nameMetadataToOutpuConn.get(table.getTableName());
             if (connection != null) {
                 ExternalMapperTable persistentTable = nameToOutpuPersistentTable.get(connection.getName());
                 outputDataMapTables.add(new OutputTable(table, persistentTable, connection.getName()));
@@ -128,25 +127,25 @@ public class ExternalDataConverter {
         return outputDataMapTables;
     }
 
-    private ArrayList<InputTable> prepareInputTables(List<IODataComponent> inputConnections, ExternalMapperData externalData) {
-        Map<String, IODataComponent> nameToConnection = new HashMap<String, IODataComponent>();
+    private ArrayList<InputTable> prepareInputTables(List<IOConnection> inputConnections, ExternalMapperData externalData) {
+        Map<String, IOConnection> nameToConnection = new HashMap<String, IOConnection>();
         if (externalData != null) {
-            for (IODataComponent connection : inputConnections) {
+            for (IOConnection connection : inputConnections) {
                 nameToConnection.put(connection.getName(), connection);
             }
         }
 
-        ArrayList<IODataComponent> remainingConnections = new ArrayList<IODataComponent>(inputConnections);
+        ArrayList<IOConnection> remainingConnections = new ArrayList<IOConnection>(inputConnections);
         ArrayList<InputTable> inputDataMapTables = new ArrayList<InputTable>();
         for (ExternalMapperTable persistentTable : externalData.getInputTables()) {
-            IODataComponent connection = nameToConnection.get(persistentTable.getName());
+            IOConnection connection = nameToConnection.get(persistentTable.getName());
             if (connection != null) {
                 inputDataMapTables.add(new InputTable(connection, persistentTable, connection.getName()));
                 remainingConnections.remove(connection);
             }
         }
 
-        for (IODataComponent connection : remainingConnections) {
+        for (IOConnection connection : remainingConnections) {
             inputDataMapTables.add(new InputTable(connection, null, connection.getName()));
         }
 

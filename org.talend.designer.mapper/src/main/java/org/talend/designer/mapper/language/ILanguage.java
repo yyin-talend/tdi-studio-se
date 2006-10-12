@@ -50,7 +50,7 @@ public interface ILanguage {
     public String getSubstPatternForPrefixColumnName();
 
     public String getSubstPatternForReplaceLocation();
-    
+
     public String getTemplateTableColumnVariable();
 
     public String getTemplateTableVariable();
@@ -69,5 +69,14 @@ public interface ILanguage {
     public String getLocation(String tableName, String columnName);
 
     public String getLocation(String tableName);
+
+    /**
+     * 
+     * DOC amaumont Comment method "checkExpressionSyntax".
+     * 
+     * @param expression
+     * @return error message, null if no error
+     */
+    public String checkExpressionSyntax(String expression);
 
 }

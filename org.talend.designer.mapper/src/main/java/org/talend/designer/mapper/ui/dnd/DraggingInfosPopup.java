@@ -318,11 +318,11 @@ public final class DraggingInfosPopup {
         }
         popup.setMappingModeText(mode);
     }
-    
+
     public void setOutputToOutputMode(boolean outputToOutputMode) {
         this.outputToOutputMode = outputToOutputMode;
     }
-    
+
     /**
      * DOC amaumont Comment method "setCursorPosition".
      * 
