@@ -190,7 +190,9 @@ public class BusinessDiagramEditor extends FileDiagramEditor implements IGotoMar
         try {
             RepositoryEditorInput processEditorInput = (RepositoryEditorInput) editorInput;
             processEditorInput.getItem().getProperty().eAdapters().add(dirtyListener);
-            repFactory.lock(processEditorInput.getItem());
+            boolean deleted = repFactory.isDeleted(processEditorInput.getItem());
+            if (!deleted)
+                repFactory.lock(processEditorInput.getItem());
         } catch (PersistenceException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

@@ -205,6 +205,9 @@ public abstract class RepositoryWizard extends Wizard {
         if (repositoryObject != null) {
             IRepositoryFactory factory = RepositoryFactoryProvider.getInstance();
             try {
+                boolean deleted = factory.isDeleted(repositoryObject);
+                if (deleted)
+                    return ;
                 boolean isLock = factory.isLocked(repositoryObject);
                 // if needed, lock the repositoryObject
                 if (!isLock) {
