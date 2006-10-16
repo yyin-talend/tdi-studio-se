@@ -36,6 +36,7 @@ import org.eclipse.debug.core.ILaunchConfigurationType;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.CorePlugin;
 import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IProcess;
@@ -169,12 +170,14 @@ public class Processor {
 
     public static int exec(StringBuffer out, StringBuffer err, IPath absCodePath, IPath absContextPath,
             String perlInterpreterLibOption, String perlInterpreterLibCtxOption, int statOption, int traceOption,
-            String... codeOptions) throws ProcessorException {
+            boolean logExecution, String... codeOptions) throws ProcessorException {
 
         String[] cmd = getCommandLine(absCodePath, absContextPath, perlInterpreterLibOption, perlInterpreterLibCtxOption,
                 statOption, traceOption, codeOptions);
 
-        logCommandLine(cmd);
+        if (logExecution) {
+            logCommandLine(cmd);
+        }
         try {
             int status = -1;
 
@@ -202,22 +205,22 @@ public class Processor {
                 try {
                     BufferedInputStream outStreamProcess = new BufferedInputStream(input);
                     byte[] buffer = new byte[bufferSize];
-
-                    while (outStreamProcess.read(buffer, 0, buffer.length) != -1) {
+                    int count = 0;
+                    while ((count = outStreamProcess.read(buffer, 0, buffer.length)) != -1) {
                         if (isError) {
-                            err.append(new String(buffer));
+                            err.append(new String(buffer, 0, count));
                         } else {
-                            out.append(new String(buffer));
+                            out.append(new String(buffer, 0, count));
                         }
                     }
                     outStreamProcess.close();
                 } catch (IOException ioe) {
-                    ioe.printStackTrace();
+                    ExceptionHandler.process(ioe);
                 } finally {
                     try {
                         input.close();
                     } catch (IOException e) {
-                        e.printStackTrace();
+                        ExceptionHandler.process(e);
                     }
                 }
             }
