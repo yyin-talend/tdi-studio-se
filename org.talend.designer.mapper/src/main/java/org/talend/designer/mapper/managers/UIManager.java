@@ -853,11 +853,10 @@ public class UIManager {
 
         if (dataMapTableView.getZone() == Zone.INPUTS) {
             if (linkHasBeenAdded || linkHasBeenRemoved) {
-                checkTargetInputKey(currentModifiedITableEntry, dataMapTableView, checkInputKeyAutomatically,
-                        inputExpressionAppliedOrCanceled);
-            }
-            if (inputExpressionAppliedOrCanceled) {
-                openChangeKeysDialog(dataMapTableView);
+                checkTargetInputKey(currentModifiedITableEntry, checkInputKeyAutomatically, inputExpressionAppliedOrCanceled);
+                if (inputExpressionAppliedOrCanceled) {
+                    openChangeKeysDialog((InputDataMapTableView) dataMapTableView);
+                }
             }
         }
 
@@ -869,14 +868,24 @@ public class UIManager {
      * 
      * @param dataMapTableView
      */
-    private void removeInvalidInputKeys(DataMapTableView dataMapTableView) {
-        List<InputColumnTableEntry> targetTableEntries = dataMapTableView.getTableViewerCreatorForColumns().getInputList();
-        for (InputColumnTableEntry entry : targetTableEntries) {
-            Set<ITableEntry> sourcesForTarget = mapperManager.getSourcesForTarget(entry);
-            if (sourcesForTarget.isEmpty()) {
-                entry.getMetadataColumn().setKey(false);
+    private void removeInvalidInputKeys(InputDataMapTableView inputDataMapTableView) {
+        List<IColumnEntry> targetTableEntries = inputDataMapTableView.getDataMapTable().getColumnEntries();
+        for (IColumnEntry entry : targetTableEntries) {
+            InputColumnTableEntry inputEntry = (InputColumnTableEntry) entry;
+            if (!checkEntryHasValidKey(inputEntry)) {
+                inputEntry.getMetadataColumn().setKey(false);
             }
         }
+    }
+
+    /**
+     * DOC amaumont Comment method "checkEntryHasValidKey".
+     * 
+     * @param inputEntry
+     */
+    private boolean checkEntryHasValidKey(InputColumnTableEntry inputEntry) {
+        return inputEntry.getMetadataColumn().isKey() && inputEntry.getExpression() == null
+                || inputEntry.getExpression().trim().length() == 0;
     }
 
     /**
@@ -886,16 +895,16 @@ public class UIManager {
      * @param dataMapTableView
      * @return
      */
-    private boolean hasInvalidInputKeys(DataMapTableView dataMapTableView) {
+    private boolean hasInvalidInputExpressionKeys(InputDataMapTableView inputDataMapTableView) {
 
-        if (dataMapTableView.getTableViewerCreatorForColumns() == null) {
+        if (inputDataMapTableView.getTableViewerCreatorForColumns() == null) {
             return false;
         }
 
-        List<InputColumnTableEntry> targetTableEntries = dataMapTableView.getTableViewerCreatorForColumns().getInputList();
-        for (InputColumnTableEntry entry : targetTableEntries) {
-            Set<ITableEntry> sourcesForTarget = mapperManager.getSourcesForTarget(entry);
-            if (entry.getMetadataColumn().isKey() && sourcesForTarget.isEmpty()) {
+        List<IColumnEntry> targetTableEntries = inputDataMapTableView.getDataMapTable().getColumnEntries();
+        for (IColumnEntry entry : targetTableEntries) {
+            InputColumnTableEntry inputEntry = (InputColumnTableEntry) entry;
+            if (checkEntryHasValidKey(inputEntry)) {
                 return true;
             }
         }
@@ -907,12 +916,11 @@ public class UIManager {
      * DOC amaumont Comment method "checkTargetInputKey".
      * 
      * @param currentModifiedTableEntry
-     * @param dataMapTableView
+     * @param inputDataMapTableView
      * @param checkInputKeyAutomatically
      * @param appliedOrCanceled TODO
      */
-    private void checkTargetInputKey(ITableEntry currentModifiedTableEntry, DataMapTableView dataMapTableView,
-            boolean checkInputKeyAutomatically, boolean appliedOrCanceled) {
+    private void checkTargetInputKey(ITableEntry currentModifiedTableEntry, boolean checkInputKeyAutomatically, boolean appliedOrCanceled) {
         // check key
         if (checkInputKeyAutomatically && currentModifiedTableEntry instanceof InputColumnTableEntry) {
 
@@ -997,9 +1005,9 @@ public class UIManager {
                 public void run() {
 
                     TableViewerCreator tableViewerCreatorForColumns = dataMapTableView.getTableViewerCreatorForColumns();
-                    boolean refactor = MessageDialog.openQuestion(tableViewerCreatorForColumns.getTable().getShell(), "Refactoring",
-                            "Do you want update all expressions to keep links valid ?");
-                    if (refactor) {
+                    boolean propagate = MessageDialog.openQuestion(tableViewerCreatorForColumns.getTable().getShell(), "Propagate",
+                            "Propagate changes to all related expressions in order to keep the links valid ?");
+                    if (propagate) {
                         TableEntryLocation previousLocation = new TableEntryLocation(currentModifiedITableEntry.getParentName(),
                                 previousColumnName);
                         TableEntryLocation newLocation = new TableEntryLocation(currentModifiedITableEntry.getParentName(), newColumnName);
@@ -1128,20 +1136,21 @@ public class UIManager {
     /**
      * DOC amaumont Comment method "openAddNewOutputDialog".
      * 
-     * @param dataMapTableView
+     * @param inputDataMapTableView
      */
-    private void openChangeKeysDialog(final DataMapTableView dataMapTableView) {
+    private void openChangeKeysDialog(final InputDataMapTableView inputDataMapTableView) {
 
-        new AsynchronousThreading(50, false, dataMapTableView.getDisplay(), new Runnable() {
+        new AsynchronousThreading(50, false, inputDataMapTableView.getDisplay(), new Runnable() {
 
             public void run() {
 
-                if (hasInvalidInputKeys(dataMapTableView)) {
-                    if (MessageDialog.openConfirm(dataMapTableView.getShell(), "Remove invalid keys",
-                            "Press [Ok] to remove invalid keys of the input table '" + dataMapTableView.getDataMapTable().getName() + "'")) {
-                        removeInvalidInputKeys(dataMapTableView);
+                if (hasInvalidInputExpressionKeys(inputDataMapTableView)) {
+                    if (MessageDialog.openConfirm(inputDataMapTableView.getShell(), "Remove invalid keys",
+                            "Press [Ok] to remove invalid keys of the input table '" + inputDataMapTableView.getDataMapTable().getName()
+                                    + "'")) {
+                        removeInvalidInputKeys(inputDataMapTableView);
                     }
-                    refreshInOutTableAndMetaTable(dataMapTableView);
+                    refreshInOutTableAndMetaTable(inputDataMapTableView);
                 }
 
             }

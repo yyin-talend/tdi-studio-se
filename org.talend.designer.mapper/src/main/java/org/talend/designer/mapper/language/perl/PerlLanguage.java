@@ -21,6 +21,7 @@
 // ============================================================================
 package org.talend.designer.mapper.language.perl;
 
+import org.talend.designer.core.language.perl.PerlExpressionSyntaxChecker;
 import org.talend.designer.mapper.language.AbstractLanguage;
 
 /**

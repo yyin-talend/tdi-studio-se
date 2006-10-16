@@ -736,6 +736,17 @@ public class MapperManager {
         return false;
     }
 
+
+    /**
+     * DOC amaumont Comment method "checkExpressionSyntax".
+     * @param expression
+     */
+    public String checkExpressionSyntax(String expression) {
+        return LanguageProvider.getCurrentLanguage().checkExpressionSyntax(expression);
+    }
+    
+    
+    
     // public Object getEmfParameterValue(String parameterName) {
     // List<? extends IElementParameter> elementParameters = mapperComponent.getElementParameters();
     // for (IElementParameter parameter : elementParameters) {

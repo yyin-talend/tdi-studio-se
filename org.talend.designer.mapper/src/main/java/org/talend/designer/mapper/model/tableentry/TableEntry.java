@@ -21,6 +21,7 @@
 // ============================================================================
 package org.talend.designer.mapper.model.tableentry;
 
+import org.talend.commons.utils.time.TimeMeasure;
 import org.talend.designer.mapper.language.LanguageProvider;
 import org.talend.designer.mapper.model.table.AbstractDataMapTable;
 
@@ -66,7 +67,9 @@ public abstract class TableEntry implements ITableEntry {
             throw new IllegalArgumentException("Name of the TableEntry must not be null !");
         }
         this.expression = expression;
+//        TimeMeasure.start("checkErrors");
         checkErrors();
+//        TimeMeasure.end("checkErrors");
     }
 
     public String getExpression() {
@@ -75,7 +78,9 @@ public abstract class TableEntry implements ITableEntry {
 
     public void setExpression(String expression) {
         this.expression = expression;
+//        TimeMeasure.start("checkErrors2");
         checkErrors();
+//        TimeMeasure.end("checkErrors2");
     }
 
     public AbstractDataMapTable getParent() {
@@ -116,9 +121,10 @@ public abstract class TableEntry implements ITableEntry {
      */
     private void checkErrors() {
         
-        if (expression == null || EMPTY_STRING.equals(expression)) {
+        if (expression == null || EMPTY_STRING.equals(expression.trim())) {
             this.errorMessage = null;
         } else {
+//            System.out.println("check=" + expression);
             this.errorMessage = LanguageProvider.getCurrentLanguage().checkExpressionSyntax(expression);
         }
 

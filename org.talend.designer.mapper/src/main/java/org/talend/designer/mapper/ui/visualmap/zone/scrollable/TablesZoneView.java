@@ -41,6 +41,12 @@ public abstract class TablesZoneView extends Composite {
 
     private MapperManager mapperManager;
 
+    private int i;
+
+    private int j;
+
+    private int k;
+
     public TablesZoneView(Composite parent, int style, MapperManager mapperManager) {
         super(parent, style);
         this.mapperManager = mapperManager;
@@ -67,6 +73,7 @@ public abstract class TablesZoneView extends Composite {
 
     @Override
     public void layout() {
+//        System.out.println("TablesZoneView layout " + toString() + (i++) );
         if (super.getLayout() == null) {
             initLayout();
         }
@@ -75,6 +82,7 @@ public abstract class TablesZoneView extends Composite {
 
     @Override
     public FormLayout getLayout() {
+//        System.out.println("TablesZoneView getLayout " + toString() + (j++) );
         FormLayout formLayout = (FormLayout) super.getLayout();
         if (formLayout == null) {
             formLayout = (FormLayout) initLayout();
@@ -82,4 +90,13 @@ public abstract class TablesZoneView extends Composite {
         return formLayout;
     }
 
+    @Override
+    public void setLayout(Layout layout) {
+//        System.out.println("TablesZoneView getLayout " + toString() + (k++) );
+        // TODO Auto-generated method stub
+        super.setLayout(layout);
+    }
+
+    
+    
 }

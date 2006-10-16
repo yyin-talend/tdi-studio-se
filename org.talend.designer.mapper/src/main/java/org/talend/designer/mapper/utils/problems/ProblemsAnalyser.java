@@ -24,12 +24,11 @@ package org.talend.designer.mapper.utils.problems;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.talend.core.model.process.Problem;
 import org.talend.designer.mapper.external.data.ExternalMapperData;
 import org.talend.designer.mapper.external.data.ExternalMapperTable;
 import org.talend.designer.mapper.external.data.ExternalMapperTableEntry;
-import org.talend.designer.mapper.language.LanguageProvider;
 import org.talend.designer.mapper.managers.MapperManager;
-import org.talend.designer.mapper.model.tableentry.ITableEntry;
 import org.talend.designer.mapper.model.tableentry.TableEntryLocation;
 import org.talend.designer.mapper.utils.DataMapExpressionParser;
 
@@ -43,6 +42,8 @@ public class ProblemsAnalyser {
 
     private MapperManager mapperManager;
 
+    private List<Problem> problems = new ArrayList<Problem>();
+    
     /**
      * DOC amaumont ProblemsAnalyser constructor comment.
      */
@@ -51,53 +52,56 @@ public class ProblemsAnalyser {
         this.mapperManager = mapperManager;
     }
 
-    public void checkSyntaxForAllExpressions(ExternalMapperData externalData) {
+    public List<Problem> checkProblems(ExternalMapperData externalData) {
 
+        problems.clear();
+        
         if (externalData != null) {
 
             // replace old location by new location for all expressions in mapper
             List<ExternalMapperTable> tables = new ArrayList<ExternalMapperTable>(externalData.getInputTables());
             tables.addAll(new ArrayList<ExternalMapperTable>(externalData.getVarsTables()));
             tables.addAll(new ArrayList<ExternalMapperTable>(externalData.getOutputTables()));
-            DataMapExpressionParser dataMapExpressionParser = new DataMapExpressionParser(LanguageProvider.getCurrentLanguage());
-            // TableEntryLocation oldLocation = new TableEntryLocation(conectionName, oldColumnName);
-            // TableEntryLocation newLocation = new TableEntryLocation();
-            // newLocation.tableName = conectionName;
             // loop on all tables
             for (ExternalMapperTable table : tables) {
                 List<ExternalMapperTableEntry> metadataTableEntries = table.getMetadataTableEntries();
                 // loop on all entries of current table
-                for (ExternalMapperTableEntry entry : metadataTableEntries) {
-                    checkEntryValidity(entry);
-                } // for (ExternalMapperTableEntry entry : metadataTableEntries) {
+                if (metadataTableEntries != null) {
+                    for (ExternalMapperTableEntry entry : metadataTableEntries) {
+                        checkProblems(entry);
+                    } // for (ExternalMapperTableEntry entry : metadataTableEntries) {
+                }
                 if (table.getConstraintTableEntries() != null) {
                     for (ExternalMapperTableEntry entry : table.getConstraintTableEntries()) {
-                        checkEntryValidity(entry);
+                        checkProblems(entry);
                     }
                 }
             } // for (ExternalMapperTable table : tables) {
 
         }
+        
+        return getProblems();
+    }
+
+    /**
+     * DOC amaumont Comment method "getProblems".
+     * @return
+     */
+    public List<Problem> getProblems() {
+        return new ArrayList<Problem>(problems);
     }
 
     /**
      * DOC amaumont Comment method "checkEntryValidity".
      * 
      * @param entry
+     * @return 
      */
-    private void checkEntryValidity(ExternalMapperTableEntry entry) {
+    private void checkProblems(ExternalMapperTableEntry entry) {
         String errorMessage = checkExpressionSyntax(entry.getExpression());
-
-    }
-
-    /**
-     * DOC amaumont Comment method "checkEntryValidity".
-     * 
-     * @param entry
-     */
-    private void checkEntryValidity(ITableEntry entry) {
-        String errorMessage = checkExpressionSyntax(entry.getExpression());
-
+        if (errorMessage != null) {
+            problems.add(new Problem(null, errorMessage, Problem.ProblemStatus.ERROR));
+        }
     }
 
     /**
@@ -107,11 +111,7 @@ public class ProblemsAnalyser {
      * @return
      */
     private String checkExpressionSyntax(String expression) {
-        if (expression == null) {
-            return null;
-        }
-
-        return null;
+        return mapperManager.checkExpressionSyntax(expression);
     }
 
     public void replaceLocation(TableEntryLocation oldLocation, TableEntryLocation newLocation, String newColumnName,
@@ -133,4 +133,7 @@ public class ProblemsAnalyser {
 
     }
 
+    
+    
+    
 }

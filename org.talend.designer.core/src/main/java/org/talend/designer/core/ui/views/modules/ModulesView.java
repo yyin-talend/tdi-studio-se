@@ -143,7 +143,7 @@ public class ModulesView extends ViewPart {
             StringBuffer out = new StringBuffer();
             StringBuffer err = new StringBuffer();
 
-            Processor.exec(out, err, new Path(checkPerlModuleAbsolutePath), null, "", "", -1, -1, params);
+            Processor.exec(out, err, new Path(checkPerlModuleAbsolutePath), null, "", "", -1, -1, true, params);
 
             analyzeResponse(out, componentsByModules);
 
