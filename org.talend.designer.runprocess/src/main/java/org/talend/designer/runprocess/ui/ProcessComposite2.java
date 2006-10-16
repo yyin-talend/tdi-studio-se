@@ -153,9 +153,6 @@ public class ProcessComposite2 extends Composite {
         execContent.setLayout(layout);
         execScroll.setContent(execContent);
 
-        // layout = new GridLayout(GRID, false);
-        // layout.marginHeight = 0;
-        // layout.marginWidth = 0;
         Composite execHeader = new Composite(execContent, SWT.NONE);
         FormLayout formLayout = new FormLayout();
         formLayout.marginWidth = 7;
@@ -164,16 +161,9 @@ public class ProcessComposite2 extends Composite {
         execHeader.setLayout(formLayout);
         execHeader.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
-        // Composite buttonBar = new Composite(execHeader, SWT.NONE);
-        // layout = new GridLayout(3, true);
-        // layout.marginWidth = 0;
-        // layout.horizontalSpacing = 2;
-        // buttonBar.setLayout(layout);
-        // buttonBar.setLayoutData(new GridData(GridData.FILL_VERTICAL));
-
         debugBtn = new Button(execHeader, SWT.PUSH);
         debugBtn.setText("Debug");
-        debugBtn.setToolTipText("Launch process in debug mode");
+        debugBtn.setToolTipText("Launch job in debug mode");
         debugBtn.setImage(RunProcessPlugin.imageDescriptorFromPlugin(RunProcessPlugin.PLUGIN_ID,
                 "icons/process_debug.gif").createImage());
         FormData formData = new FormData();
@@ -182,25 +172,15 @@ public class ProcessComposite2 extends Composite {
         formData.right = new FormAttachment(0, BUTTON_SIZE);
         debugBtn.setLayoutData(formData);
 
-        /*
-         * 
-         * Composite execButtonComposite = new Composite(buttonBar, SWT.NONE); layout = new GridLayout(1, false);
-         * layout.marginWidth = 0; execButtonComposite.setLayout(layout);
-         */
-        // execButtonComposite.setLayoutData(new GridData(GridData.FILL_VERTICAL));
         execBtn = new Button(execHeader, SWT.PUSH);
         execBtn.setText(Messages.getString("ProcessComposite.exec")); //$NON-NLS-1$
         execBtn.setToolTipText(Messages.getString("ProcessComposite.execHint")); //$NON-NLS-1$
         execBtn.setImage(RunProcessPlugin
                 .imageDescriptorFromPlugin(RunProcessPlugin.PLUGIN_ID, "icons/process_run.png").createImage()); //$NON-NLS-1$
-        // setButtonLayoutData(execBtn);
         execBtn.setEnabled(false);
         formData = new FormData();
         formData.top = new FormAttachment(debugBtn, 0, SWT.TOP);
         formData.left = new FormAttachment(debugBtn, 0, SWT.RIGHT);
-        // final int widthHint = 80;
-        // Point minSize = execBtn.computeSize(SWT.DEFAULT, SWT.DEFAULT, true);
-        // formData.widthHint = Math.max(widthHint, minSize.x);
         formData.right = new FormAttachment(debugBtn, BUTTON_SIZE, SWT.RIGHT);
         execBtn.setLayoutData(formData);
 
@@ -219,7 +199,7 @@ public class ProcessComposite2 extends Composite {
 
         clearBeforeExec = new Button(execHeader, SWT.CHECK);
         clearBeforeExec.setText("Clear before run"); //$NON-NLS-1$
-        clearBeforeExec.setToolTipText("Clear the logs before run this process"); //$NON-NLS-1$
+        clearBeforeExec.setToolTipText("Clear the logs before run this job"); //$NON-NLS-1$
         clearBeforeExec.setEnabled(false);
         clearBeforeExec.setSelection(true);
         data = new GridData();
@@ -236,7 +216,6 @@ public class ProcessComposite2 extends Composite {
         layout = new GridLayout(3, false);
         layout.marginWidth = 0;
         statisticsComposite.setLayout(layout);
-        // statisticsComposite.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_END));
         formData = new FormData();
         formData.right = new FormAttachment(100, 0);
         statisticsComposite.setLayoutData(formData);
@@ -250,18 +229,11 @@ public class ProcessComposite2 extends Composite {
         perfBtn = new Button(statisticsButtonComposite, SWT.CHECK);
         perfBtn.setText(Messages.getString("ProcessComposite.stat")); //$NON-NLS-1$
         perfBtn.setToolTipText(Messages.getString("ProcessComposite.statHint")); //$NON-NLS-1$
-        // perfBtn.setImage(RunProcessPlugin.imageDescriptorFromPlugin(RunProcessPlugin.PLUGIN_ID,
-        // "icons/process_stat.gif").createImage()); //$NON-NLS-1$
-        // perfBtn.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_CENTER | GridData.FILL_HORIZONTAL));
         perfBtn.setEnabled(false);
 
         traceBtn = new Button(statisticsButtonComposite, SWT.CHECK);
         traceBtn.setText(Messages.getString("ProcessComposite.trace")); //$NON-NLS-1$
         traceBtn.setToolTipText(Messages.getString("ProcessComposite.traceHint")); //$NON-NLS-1$
-        // PTODO MHI Change this image
-        // traceBtn.setImage(RunProcessPlugin.imageDescriptorFromPlugin(RunProcessPlugin.PLUGIN_ID,
-        // "icons/process_stat.gif").createImage()); //$NON-NLS-1$
-        // traceBtn.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_CENTER | GridData.FILL_HORIZONTAL));
         traceBtn.setEnabled(false);
 
         clearTracePerfBtn = new Button(statisticsComposite, SWT.PUSH);
@@ -270,13 +242,6 @@ public class ProcessComposite2 extends Composite {
         clearTracePerfBtn.setImage(RunProcessPlugin.imageDescriptorFromPlugin(RunProcessPlugin.PLUGIN_ID,
                 "icons/process_stat_clear.gif").createImage()); //$NON-NLS-1$
         clearTracePerfBtn.setEnabled(false);
-        /*
-         * clearLogBtn = new Button(statisticsComposite, SWT.PUSH); clearLogBtn.setText("Clear log");
-         * clearLogBtn.setToolTipText("Clear all logged data in the console");
-         * clearLogBtn.setImage(RunProcessPlugin.imageDescriptorFromPlugin(RunProcessPlugin.PLUGIN_ID,
-         * "icons/clear_co.gif").createImage()); data = new GridData(); data.horizontalIndent = HORIZONTAL_INDENT;
-         * clearLogBtn.setLayoutData(data);
-         */
 
         consoleText = new StyledText(execContent, SWT.BORDER | SWT.WRAP | SWT.V_SCROLL | SWT.READ_ONLY);
         data = new GridData(GridData.FILL_BOTH);
