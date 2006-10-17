@@ -21,6 +21,7 @@
 // ============================================================================
 package org.talend.designer.mapper.language.perl;
 
+import org.talend.core.model.process.Problem;
 import org.talend.designer.core.language.perl.PerlExpressionSyntaxChecker;
 import org.talend.designer.mapper.language.AbstractLanguage;
 
@@ -250,7 +251,7 @@ public class PerlLanguage extends AbstractLanguage {
      * 
      * @see org.talend.designer.mapper.language.ILanguage#checkExpressionSyntax(java.lang.String)
      */
-    public String checkExpressionSyntax(String expression) {
+    public Problem checkExpressionSyntax(String expression) {
         return syntaxChecker.checkSyntax(expression);
     }
 

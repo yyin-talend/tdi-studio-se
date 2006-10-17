@@ -195,7 +195,7 @@ public abstract class DataMapTableView extends Composite {
 
     protected static final int COLUMN_NAME_SIZE_WEIGHT = 40;
 
-    protected static final int ADJUST_WIDTH_VALUE = -1;
+    protected static final int ADJUST_WIDTH_VALUE = 0;
 
     private static final int HEADER_HEIGHT = 22;
 
@@ -338,7 +338,7 @@ public abstract class DataMapTableView extends Composite {
         tableViewerCreatorForColumns.setShowSelection(SHOW_SELECTION.FULL);
         tableViewerCreatorForColumns.setLineSelection(LINE_SELECTION.MULTI);
         tableViewerCreatorForColumns.setLayoutMode(LAYOUT_MODE.CONTINUOUS_CURRENT);
-        tableViewerCreatorForColumns.setAdjustWidthValue(ADJUST_WIDTH_VALUE);
+//        tableViewerCreatorForColumns.setAdjustWidthValue(ADJUST_WIDTH_VALUE);
         tableViewerCreatorForColumns.setFirstColumnMasked(true);
         if (getDataMapTable() instanceof AbstractInOutTable) {
 
@@ -457,7 +457,7 @@ public abstract class DataMapTableView extends Composite {
                         return;
                     }
                     ITableEntry tableEntry = (ITableEntry) tableItem.getData();
-                    String toolTip = tableEntry.getErrorMessage() == null ? null : tableEntry.getErrorMessage();
+                    String toolTip = tableEntry.getProblem() == null ? null : tableEntry.getProblem().getDescription();
 //                    if (toolTip == null || !toolTip.equals(lastErrorMessage)) {
                         setTableToolTipText(table, tableColumn, tableEntry, toolTip);
                         lastErrorMessage = toolTip;
@@ -888,7 +888,7 @@ public abstract class DataMapTableView extends Composite {
         tableViewerCreatorForConstraints.setShowSelection(SHOW_SELECTION.FULL);
         tableViewerCreatorForConstraints.setLineSelection(LINE_SELECTION.MULTI);
         tableViewerCreatorForConstraints.setLayoutMode(LAYOUT_MODE.CONTINUOUS_CURRENT);
-        tableViewerCreatorForConstraints.setAdjustWidthValue(ADJUST_WIDTH_VALUE);
+//        tableViewerCreatorForConstraints.setAdjustWidthValue(ADJUST_WIDTH_VALUE);
         tableViewerCreatorForConstraints.setFirstColumnMasked(true);
 
         tableForConstraints = tableViewerCreatorForConstraints.createTable();
@@ -1700,7 +1700,7 @@ public abstract class DataMapTableView extends Composite {
         ITableEntry entry = (ITableEntry) element;
         TableViewerCreatorColumn column = (TableViewerCreatorColumn) tableViewerCreator.getColumns().get(columnIndex);
         if (column.getId().equals(ID_EXPRESSION_COLUMN)) {
-            return expressionColorProvider.getBackgroundColor(entry.getErrorMessage() == null ? true : false);
+            return expressionColorProvider.getBackgroundColor(entry.getProblem() == null ? true : false);
         }
         return null;
     }
@@ -1716,7 +1716,7 @@ public abstract class DataMapTableView extends Composite {
         ITableEntry entry = (ITableEntry) element;
         TableViewerCreatorColumn column = (TableViewerCreatorColumn) tableViewerCreator.getColumns().get(columnIndex);
         if (column.getId().equals(ID_EXPRESSION_COLUMN)) {
-            return expressionColorProvider.getForegroundColor(entry.getErrorMessage() == null ? true : false);
+            return expressionColorProvider.getForegroundColor(entry.getProblem() == null ? true : false);
         }
         return null;
     }

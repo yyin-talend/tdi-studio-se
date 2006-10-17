@@ -21,6 +21,8 @@
 // ============================================================================
 package org.talend.designer.mapper.language;
 
+import org.talend.core.model.process.Problem;
+
 /**
  * DOC amaumont class global comment. Detailled comment <br/>
  * 
@@ -77,6 +79,6 @@ public interface ILanguage {
      * @param expression
      * @return error message, null if no error
      */
-    public String checkExpressionSyntax(String expression);
+    public Problem checkExpressionSyntax(String expression);
 
 }

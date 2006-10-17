@@ -22,6 +22,8 @@
 package org.talend.designer.mapper.model.tableentry;
 
 import org.talend.commons.utils.time.TimeMeasure;
+import org.talend.core.model.process.Problem;
+import org.talend.core.model.process.Problem.ProblemStatus;
 import org.talend.designer.mapper.language.LanguageProvider;
 import org.talend.designer.mapper.model.table.AbstractDataMapTable;
 
@@ -41,7 +43,7 @@ public abstract class TableEntry implements ITableEntry {
 
     private String name;
 
-    private String errorMessage;
+    private Problem problem;
 
     public TableEntry(AbstractDataMapTable abstractDataMapTable, String expression) {
         super();
@@ -107,12 +109,12 @@ public abstract class TableEntry implements ITableEntry {
         }
     }
 
-    public String getErrorMessage() {
-        return this.errorMessage;
+    public Problem getProblem() {
+        return this.problem;
     }
 
-    public void setErrorMessage(String errorMessage) {
-        this.errorMessage = errorMessage;
+    public void setProblem(Problem problem) {
+        this.problem = problem;
     }
 
     /**
@@ -122,10 +124,16 @@ public abstract class TableEntry implements ITableEntry {
     private void checkErrors() {
         
         if (expression == null || EMPTY_STRING.equals(expression.trim())) {
-            this.errorMessage = null;
+            this.problem = null;
         } else {
 //            System.out.println("check=" + expression);
-            this.errorMessage = LanguageProvider.getCurrentLanguage().checkExpressionSyntax(expression);
+            Problem syntaxProblem = LanguageProvider.getCurrentLanguage().checkExpressionSyntax(expression);
+            if (syntaxProblem != null) {
+                ProblemStatus status = syntaxProblem.getStatus();
+                if (status == ProblemStatus.ERROR || this.problem == null) {
+                    this.problem = syntaxProblem;
+                }
+            }
         }
 
     }

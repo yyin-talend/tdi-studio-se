@@ -98,9 +98,9 @@ public class ProblemsAnalyser {
      * @return 
      */
     private void checkProblems(ExternalMapperTableEntry entry) {
-        String errorMessage = checkExpressionSyntax(entry.getExpression());
-        if (errorMessage != null) {
-            problems.add(new Problem(null, errorMessage, Problem.ProblemStatus.ERROR));
+        Problem problem = checkExpressionSyntax(entry.getExpression());
+        if (problem != null) {
+            problems.add(problem);
         }
     }
 
@@ -110,7 +110,7 @@ public class ProblemsAnalyser {
      * @param expression
      * @return
      */
-    private String checkExpressionSyntax(String expression) {
+    private Problem checkExpressionSyntax(String expression) {
         return mapperManager.checkExpressionSyntax(expression);
     }
 

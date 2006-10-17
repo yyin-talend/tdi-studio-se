@@ -21,6 +21,7 @@
 // ============================================================================
 package org.talend.designer.mapper.model.tableentry;
 
+import org.talend.core.model.process.Problem;
 import org.talend.designer.mapper.model.table.AbstractDataMapTable;
 
 /**
@@ -43,8 +44,8 @@ public interface ITableEntry {
 
     public void setExpression(String expression);
 
-    public String getErrorMessage();
+    public Problem getProblem();
 
-    public void setErrorMessage(String errorMessage);
+    public void setProblem(Problem errorMessage);
 
 }

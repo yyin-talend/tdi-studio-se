@@ -37,6 +37,7 @@ import org.talend.core.model.metadata.MetadataTable;
 import org.talend.core.model.metadata.editor.MetadataTableEditor;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.IProcess;
+import org.talend.core.model.process.Problem;
 import org.talend.core.ui.metadata.editor.MetadataTableEditorView;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.mapper.MapperComponent;
@@ -741,7 +742,7 @@ public class MapperManager {
      * DOC amaumont Comment method "checkExpressionSyntax".
      * @param expression
      */
-    public String checkExpressionSyntax(String expression) {
+    public Problem checkExpressionSyntax(String expression) {
         return LanguageProvider.getCurrentLanguage().checkExpressionSyntax(expression);
     }
     

@@ -21,6 +21,7 @@
 // ============================================================================
 package org.talend.designer.mapper.language.java;
 
+import org.talend.core.model.process.Problem;
 import org.talend.designer.mapper.language.AbstractLanguage;
 
 /**
@@ -233,7 +234,7 @@ public class JavaLanguage extends AbstractLanguage {
      * 
      * @see org.talend.designer.mapper.language.ILanguage#checkExpressionSyntax(java.lang.String)
      */
-    public String checkExpressionSyntax(String expression) {
+    public Problem checkExpressionSyntax(String expression) {
         // TODO Auto-generated method stub
         return null;
     }
