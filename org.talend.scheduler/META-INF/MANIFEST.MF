@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Scheduler Plug-in
+Bundle-SymbolicName: org.talend.scheduler; singleton:=true
+Bundle-Version: 1.0.0
+Bundle-Activator: org.talend.scheduler.Activator
+Bundle-Vendor: talend
+Bundle-Localization: plugin
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.talend.commons,
+ org.talend.core
+Eclipse-LazyStart: true

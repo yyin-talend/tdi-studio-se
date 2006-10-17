@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+
+  <extension
+         point="org.eclipse.ui.views">
+      <view
+            category="org.talend.core.root"
+            class="org.talend.scheduler.ui.SchedulerView"
+            icon="icons/sample.gif"
+            id="org.talend.scheduler.views.Scheduler"
+            name="Scheduler">
+      </view>
+   </extension>
+   
+   
+   <!--extension
+         point="org.eclipse.ui.perspectiveExtensions">
+      <perspectiveExtension
+            targetID="Test.perspective">
+         <view
+               ratio="0.1"
+               relative="Test.view"
+               relationship="right"
+               id="org.talend.scheduler.views.SampleView">
+         </view>
+      </perspectiveExtension>
+   </extension-->
+
+</plugin>
