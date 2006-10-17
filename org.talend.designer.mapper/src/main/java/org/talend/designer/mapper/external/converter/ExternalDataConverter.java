@@ -118,7 +118,7 @@ public class ExternalDataConverter {
             IOConnection connection = nameMetadataToOutpuConn.get(table.getTableName());
             if (connection != null) {
                 ExternalMapperTable persistentTable = nameToOutpuPersistentTable.get(connection.getName());
-                outputDataMapTables.add(new OutputTable(table, persistentTable, connection.getName()));
+                outputDataMapTables.add(new OutputTable(connection.getTable(), persistentTable, connection.getName()));
             } else {
                 ExternalMapperTable persistentTable = nameToOutpuPersistentTable.get(table.getTableName());
                 outputDataMapTables.add(new OutputTable(table, persistentTable, table.getTableName()));
