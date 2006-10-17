@@ -443,7 +443,7 @@ public abstract class DataMapTableView extends Composite {
                 switch (event.type) {
                 case SWT.MouseMove:
 
-                    System.out.println("ToolTipText:" + table.getToolTipText());
+//                    System.out.println("ToolTipText:" + table.getToolTipText());
 
                     Point cursorPositionFromTableOrigin = TableUtils.getCursorPositionFromTableOrigin(table, event);
                     TableColumn tableColumn = TableUtils.getTableColumn(table, cursorPositionFromTableOrigin);
