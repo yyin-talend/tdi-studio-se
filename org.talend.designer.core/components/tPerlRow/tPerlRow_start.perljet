@@ -3,6 +3,7 @@
 	imports="
 		org.talend.core.model.process.INode 
 		org.talend.core.model.process.ElementParameterParser
+		org.talend.core.model.process.IConnection
 		org.talend.core.model.metadata.IMetadataTable
 		org.talend.core.model.metadata.IMetadataColumn
 		org.talend.designer.codegen.config.CodeGeneratorArgument
@@ -55,4 +56,41 @@ use constant <%=metadata.getTableName() %>__<%=column.getLabel() %> => <%= i %>;
 <%
 		}
 	}
+
+    List<? extends IConnection> incomingConnections = node.getIncomingConnections();
+    if (incomingConnections != null && !incomingConnections.isEmpty()) {
+        IMetadataTable metadata =incomingConnections.get(0).getMetadataTable();
+        %>
+
+my %desc_<%=metadata.getTableName() %> = (
+    inputschema        => [
+    <%
+		for (IMetadataColumn column: metadata.getListColumns()) {
+    %>
+    	{
+            name    => '<%=column.getLabel() %>',
+            key     => <%=column.isKey() %>,
+            type    => '<%=column.getType() %>',
+            len     => <%=column.getLength() %>,
+            null    => <%=column.isNullable() %>,
+            default => '<%=column.getDefault() %>',
+            comment => '<%=column.getComment() %>',
+		},
+	<%
+		}
+    %>
+    ]
+);
+
+<%
+    int j = 0;
+    for (IMetadataColumn column: metadata.getListColumns()) {
+%>
+use constant <%=metadata.getTableName() %>__<%=column.getLabel() %> => <%= j %>;
+<%
+    j++;
+    }
+%>
+<%
+    }
 %>

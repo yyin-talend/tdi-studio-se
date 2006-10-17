@@ -363,8 +363,9 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                     inputMetaCopy = input.getTable();
                     // }
                 }
-                if (input != null)
+                if (input != null) {
                     inAndOut.getInputs().add(input);
+                }
 
                 IMetadataTable originaleOutputTable = (IMetadataTable) node.getMetadataList().get(0);
                 IMetadataTable outputMetaCopy = originaleOutputTable.clone();
@@ -400,16 +401,12 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                     }
 
                     if (modified) {
-                        for (IODataComponent currentIO : inAndOut.getOuputs()) {
-                            currentIO.getTarget().metadataInputChanged(currentIO);
-                        }
-
                         Node inputNode = null;
                         if (inputConec != null) {
                             inputNode = inputConec.getSource();
                         }
-                        ChangeMetadataCommand cmd = new ChangeMetadataCommand(node, inputNode, inputMetadata,
-                                inputMetaCopy, originaleOutputTable, outputMetaCopy);
+                        ChangeMetadataCommand cmd = new ChangeMetadataCommand(node, inputNode, inputMetadata, inputMetaCopy,
+                                originaleOutputTable, outputMetaCopy, inAndOut);
                         getCommandStack().execute(cmd);
                     }
                 }
@@ -421,7 +418,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                 IMetadataTable metaCopy = meta.clone();
                 metaCopy.setListColumns(new ArrayList<IMetadataColumn>());
 
-                ChangeMetadataCommand cmd = new ChangeMetadataCommand(node, meta, metaCopy);
+                ChangeMetadataCommand cmd = new ChangeMetadataCommand(node, meta, metaCopy, null);
                 getCommandStack().execute(cmd);
             }
         }

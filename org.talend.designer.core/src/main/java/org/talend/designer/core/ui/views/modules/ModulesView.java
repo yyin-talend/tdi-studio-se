@@ -95,7 +95,7 @@ public class ModulesView extends ViewPart {
 
     public static List<ComponentImportNeeds> getImports(String componentName) {
         List<ComponentImportNeeds> toReturn = new ArrayList<ComponentImportNeeds>();
-      // check();
+        // check();
         for (ComponentImportNeeds current : getCompList()) {
             if (current.getComponentName().equals(componentName)) {
                 toReturn.add(current);
@@ -143,7 +143,7 @@ public class ModulesView extends ViewPart {
             StringBuffer out = new StringBuffer();
             StringBuffer err = new StringBuffer();
 
-            Processor.exec(out, err, new Path(checkPerlModuleAbsolutePath), null, "", "", -1, -1, true, params);
+            Processor.exec(out, err, new Path(checkPerlModuleAbsolutePath), null, "", "", -1, -1, params);
 
             analyzeResponse(out, componentsByModules);
 
@@ -324,7 +324,7 @@ public class ModulesView extends ViewPart {
         column.setModifiable(false);
         column.setWeight(2);
 
-     //   check();
+        // check();
         tableViewerCreator.init(getCompList());
 
         makeActions();

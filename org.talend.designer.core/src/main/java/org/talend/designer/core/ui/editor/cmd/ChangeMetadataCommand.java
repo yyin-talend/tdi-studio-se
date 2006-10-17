@@ -22,12 +22,17 @@
 package org.talend.designer.core.ui.editor.cmd;
 
 import org.eclipse.gef.commands.Command;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.views.properties.PropertySheet;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
+import org.talend.core.model.components.IODataComponent;
+import org.talend.core.model.components.IODataComponentContainer;
 import org.talend.core.model.metadata.IMetadataTable;
+import org.talend.core.model.process.IConnection;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.ui.editor.nodes.Node;
@@ -49,24 +54,34 @@ public class ChangeMetadataCommand extends Command {
 
     private IMetadataTable currentInputMetadata, newInputMetadata;
 
-    public ChangeMetadataCommand(Node node, Node inputNode, IMetadataTable currentInputMetadata,
-            IMetadataTable newInputMetadata, IMetadataTable currentOutputMetadata, IMetadataTable newOutputMetadata) {
+    private IODataComponentContainer dataContainer;
+
+    private IODataComponent dataComponent;
+
+    public ChangeMetadataCommand(Node node, Node inputNode, IMetadataTable currentInputMetadata, IMetadataTable newInputMetadata,
+            IMetadataTable currentOutputMetadata, IMetadataTable newOutputMetadata, IODataComponentContainer dataContainer) {
         this.node = node;
         this.inputNode = inputNode;
         this.currentInputMetadata = currentInputMetadata;
         this.newInputMetadata = newInputMetadata;
         this.currentOutputMetadata = currentOutputMetadata;
         this.newOutputMetadata = newOutputMetadata;
+        this.dataContainer = dataContainer;
         setLabel("Change Metadata values");
     }
 
-    public ChangeMetadataCommand(Node node, IMetadataTable currentOutputMetadata, IMetadataTable newOutputMetadata) {
+    public ChangeMetadataCommand(Node node, IMetadataTable currentOutputMetadata, IMetadataTable newOutputMetadata,
+            IODataComponent dataComponent) {
         this.node = node;
         this.inputNode = null;
         this.currentInputMetadata = null;
         this.newInputMetadata = null;
         this.currentOutputMetadata = currentOutputMetadata;
         this.newOutputMetadata = newOutputMetadata;
+        if (dataComponent != null) {
+            this.newOutputMetadata = dataComponent.getTable();
+            this.dataComponent = dataComponent;
+        }
         setLabel("Change Metadata values");
     }
 
@@ -78,8 +93,52 @@ public class ChangeMetadataCommand extends Command {
         tabbedPropertySheetPage.refresh();
     }
 
+    private Boolean propagate;
+
+    private boolean getPropagate(Boolean returnIfNull) {
+        if (propagate == null) {
+            if (returnIfNull != null) {
+                return returnIfNull;
+            }
+            propagate = MessageDialog.openQuestion(new Shell(), "Propagate", "Are you sure ?");
+        }
+        return propagate;
+    }
+
+    private boolean getPropagate() {
+        return getPropagate(null);
+    }
+
+    public void execute(Boolean propagate) {
+        this.propagate = propagate;
+        execute();
+    }
+
     @Override
     public void execute() {
+        if (dataContainer != null && (!dataContainer.getInputs().isEmpty() || !dataContainer.getOuputs().isEmpty())) {
+            if (dataContainer != null) {
+                for (IODataComponent currentIO : dataContainer.getInputs()) {
+                    if (currentIO.hasChanged()) {
+                        if (getPropagate()) {
+                            currentIO.getSource().metadataOutputChanged(currentIO);
+                        }
+                    }
+                }
+                for (IODataComponent currentIO : dataContainer.getOuputs()) {
+                    if (currentIO.hasChanged()) {
+                        if (getPropagate()) {
+                            currentIO.getTarget().metadataInputChanged(currentIO);
+                        }
+                    }
+                }
+            }
+        } else if (dataComponent != null) {
+            for (IConnection outgoingConnection : node.getOutgoingConnections()) {
+                outgoingConnection.getTarget().metadataInputChanged(dataComponent);
+            }
+        }
+
         if (currentInputMetadata != null) {
             inputNode.getMetadataList().remove(currentInputMetadata);
             inputNode.getMetadataList().add(newInputMetadata);
@@ -91,15 +150,21 @@ public class ChangeMetadataCommand extends Command {
                 }
             }
         }
-        node.getMetadataList().remove(currentOutputMetadata);
+
+        if (currentOutputMetadata == null) {
+            node.getMetadataList().remove(0);
+        } else {
+            node.getMetadataList().remove(currentOutputMetadata);
+        }
         node.getMetadataList().add(newOutputMetadata);
+
         String type = (String) node.getPropertyValue(EParameterName.SCHEMA_TYPE.getName());
         if (type.equals(EmfComponent.REPOSITORY)) {
             outputWasRepository = true;
             node.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), EmfComponent.BUILTIN);
         }
         refreshPropertyView();
-        ((Process) node.getProcess()).checkProcess();
+        ((Process) node.getProcess()).checkProcess(getPropagate(true));
     }
 
     @Override

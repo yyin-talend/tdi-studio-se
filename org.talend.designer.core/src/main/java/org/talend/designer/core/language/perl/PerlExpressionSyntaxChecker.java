@@ -57,14 +57,14 @@ public class PerlExpressionSyntaxChecker {
 
     public static final int PERL_STATUS_ERROR = 2;
 
-//    private PerlValidatorErrors errors;
+    // private PerlValidatorErrors errors;
 
     /**
      * DOC amaumont PerlExpressionSyntaxChecker constructor comment.
      */
     public PerlExpressionSyntaxChecker() {
         super();
-//        this.errors = new PerlValidatorErrors();
+        // this.errors = new PerlValidatorErrors();
     }
 
     public String checkSyntax(String expression) {
@@ -79,10 +79,10 @@ public class PerlExpressionSyntaxChecker {
         String expressionEscaped = StringUtils.replace(expression, "\"", "\\\"");
         String expressionEscapedQuoted = "\"" + expressionEscaped + "\"";
         try {
-//            TimeMeasure.start("Processor.exec");
-//            System.out.println(expression);
-            status = Processor.exec(out, err, null, null, "-ce", expressionEscapedQuoted, -1, -1, false, new String[0]);
-//            TimeMeasure.end("Processor.exec");
+            // TimeMeasure.start("Processor.exec");
+            // System.out.println(expression);
+            status = Processor.exec(out, err, null, null, "-ce", expressionEscapedQuoted, -1, -1, new String[0]);
+            // TimeMeasure.end("Processor.exec");
         } catch (ProcessorException e) {
             ExceptionHandler.process(e);
         }
@@ -93,21 +93,21 @@ public class PerlExpressionSyntaxChecker {
 
         } else if (status == PERL_STATUS_ERROR) {
             stdErr = err.toString();
-//            List<String> lines = makeLinesList(err.toString());
-//            
-//            stdErr = lines.get(lines.size()-2);
-//            stdErr = StringUtils.capitalize(stdErr);
-//            for (int i = 0; i < lines.size() - 2; i++) {
-//                stdErr += "\n" + lines.get(i);
-//            }
+            // List<String> lines = makeLinesList(err.toString());
+            //            
+            // stdErr = lines.get(lines.size()-2);
+            // stdErr = StringUtils.capitalize(stdErr);
+            // for (int i = 0; i < lines.size() - 2; i++) {
+            // stdErr += "\n" + lines.get(i);
+            // }
             stdErr = stdErr.replaceAll(SEARCHED_STRING1, REPLACED_STRING1);
-            
-//            ErrorMessage errorMessage = findErrorMessage(stdErr);
-//            System.out.println("######################################");
-//            System.out.println(errorMessage.getExplanation());
-//            System.out.println(errorMessage.getSeverity());
-//            System.out.println(errorMessage.isUnknown());
-//            System.out.println(errorMessage.isWarning());
+
+            // ErrorMessage errorMessage = findErrorMessage(stdErr);
+            // System.out.println("######################################");
+            // System.out.println(errorMessage.getExplanation());
+            // System.out.println(errorMessage.getSeverity());
+            // System.out.println(errorMessage.isUnknown());
+            // System.out.println(errorMessage.isWarning());
 
             stdErr = stdErr.replaceAll(SEARCHED_STRING2, REPLACED_STRING2);
         } else {
@@ -120,139 +120,140 @@ public class PerlExpressionSyntaxChecker {
         return stdErr;
     }
 
-//    /**
-//     * DOC amaumont Comment method "findErrorMessage".
-//     * 
-//     * @param stdErr
-//     */
-//    private ErrorMessage findErrorMessage(String stdErr) {
-//        List lines = makeLinesList(stdErr);
-//        boolean continued = false;
-//
-//        PerlValidatorErrors.ErrorMessage errorMsg = null;
-//        // Markers have to be added in reverse order
-//        // Otherwise lower line number will appear at the end of the list
-//        for (int i = lines.size() - 1; i >= 0; i--) {
-//            String line = (String) lines.get(i);
-//
-//            // Is this a continuation of the line i-1?
-//            if (line.startsWith(" ")) {
-//                continued = true;
-//                continue;
-//            } else {
-//                if (continued) {
-//                    line += lines.get(i + 1);
-//                }
-//                continued = false;
-//            }
-//
-//            ParsedErrorLine pline = new ParsedErrorLine(line);
-//            errorMsg = errors.getErrorMessage(pline.getMessage());
-//        }
-//        return errorMsg;
-//
-//    }
-//
-//    /**
-//     * Splits up the given text content into a list of up to maxErrorsShown lines. If there are more lines in content,
-//     * remaining lines are ignored.
-//     * 
-//     * @return a list of Strings, one per line (without line terminators)
-//     */
-//    private static List makeLinesList(String perlOutput) {
-//        List lines = new ArrayList();
-//        StringTokenizer st = new StringTokenizer(perlOutput, "\r\n");
-//        int lineCount = 0;
-//
-//        while (st.hasMoreTokens() && lineCount < maxErrorsShown) {
-//            lines.add(st.nextToken());
-//            lineCount++;
-//        }
-//        return lines;
-//    }
-//
-//    /**
-//     * 
-//     * DOC amaumont PerlExpressionSyntaxChecker class global comment. Detailled comment <br/>
-//     * 
-//     * $Id$
-//     * 
-//     */
-//    protected static class ParsedErrorLine {
-//
-//        private static final Pattern ERROR_LINE_NO_PATTERN = Pattern.compile("^(.*) at (\\S+) line (\\d+)[\\.,]");
-//
-//        private static final Pattern CGI_CARP_PATTERN = Pattern.compile("^\\[.*?\\] \\S+: (.*)");
-//
-//        private final String line;
-//
-//        private final String msg;
-//
-//        private final String path;
-//
-//        private final int lineNo;
-//
-//        public ParsedErrorLine(String line) {
-//            this.line = line;
-//
-//            Matcher m = ERROR_LINE_NO_PATTERN.matcher(line);
-//            if (m.find()) {
-//                msg = normalizeMsg(m.group(1));
-//                path = m.group(2);
-//                lineNo = parseInt(m.group(3));
-//            } else {
-//                msg = normalizeMsg(line);
-//                path = "-";
-//                lineNo = -1;
-//            }
-//        }
-//
-//        public int getLineNumber() {
-//            return lineNo;
-//        }
-//
-//        public String getMessage() {
-//            return msg;
-//        }
-//
-//        public String getPath() {
-//            return path;
-//        }
-//
-//        public boolean isLocalError() {
-//            return "-".equals(path);
-//        }
-//
-//        public String toString() {
-//            return msg + ", " + path + ":" + lineNo;
-//        }
-//
-//        private int parseInt(String str) {
-//            try {
-//                return Integer.parseInt(str);
-//            } catch (NumberFormatException e) {
-//                // this one should never occur
-//                ExceptionHandler.process(new RuntimeException("Could not parse line number contained in Perl " + "error message {" + line
-//                        + "}; report it as a bug ", e));
-//                return -1;
-//            }
-//        }
-//
-//        private String normalizeMsg(String msg) {
-//            return stripCGICarpOutput(msg);
-//        }
-//
-//        /**
-//         * @return msg with CGI::Carp's timestamp stripped from the beginning (if it was present)
-//         */
-//        private String stripCGICarpOutput(String msg) {
-//            if (msg.startsWith("[")) {
-//                Matcher m = CGI_CARP_PATTERN.matcher(msg);
-//                if (m.find())
-//                    return m.group(1);
-//            }
-//            return msg;
-//        }
-//    }
+    // /**
+    // * DOC amaumont Comment method "findErrorMessage".
+    // *
+    // * @param stdErr
+    // */
+    // private ErrorMessage findErrorMessage(String stdErr) {
+    // List lines = makeLinesList(stdErr);
+    // boolean continued = false;
+    //
+    // PerlValidatorErrors.ErrorMessage errorMsg = null;
+    // // Markers have to be added in reverse order
+    // // Otherwise lower line number will appear at the end of the list
+    // for (int i = lines.size() - 1; i >= 0; i--) {
+    // String line = (String) lines.get(i);
+    //
+    // // Is this a continuation of the line i-1?
+    // if (line.startsWith(" ")) {
+    // continued = true;
+    // continue;
+    // } else {
+    // if (continued) {
+    // line += lines.get(i + 1);
+    // }
+    // continued = false;
+    // }
+    //
+    // ParsedErrorLine pline = new ParsedErrorLine(line);
+    // errorMsg = errors.getErrorMessage(pline.getMessage());
+    // }
+    // return errorMsg;
+    //
+    // }
+    //
+    // /**
+    // * Splits up the given text content into a list of up to maxErrorsShown lines. If there are more lines in content,
+    // * remaining lines are ignored.
+    // *
+    // * @return a list of Strings, one per line (without line terminators)
+    // */
+    // private static List makeLinesList(String perlOutput) {
+    // List lines = new ArrayList();
+    // StringTokenizer st = new StringTokenizer(perlOutput, "\r\n");
+    // int lineCount = 0;
+    //
+    // while (st.hasMoreTokens() && lineCount < maxErrorsShown) {
+    // lines.add(st.nextToken());
+    // lineCount++;
+    // }
+    // return lines;
+    // }
+    //
+    // /**
+    // *
+    // * DOC amaumont PerlExpressionSyntaxChecker class global comment. Detailled comment <br/>
+    // *
+    // * $Id$
+    // *
+    // */
+    // protected static class ParsedErrorLine {
+    //
+    // private static final Pattern ERROR_LINE_NO_PATTERN = Pattern.compile("^(.*) at (\\S+) line (\\d+)[\\.,]");
+    //
+    // private static final Pattern CGI_CARP_PATTERN = Pattern.compile("^\\[.*?\\] \\S+: (.*)");
+    //
+    // private final String line;
+    //
+    // private final String msg;
+    //
+    // private final String path;
+    //
+    // private final int lineNo;
+    //
+    // public ParsedErrorLine(String line) {
+    // this.line = line;
+    //
+    // Matcher m = ERROR_LINE_NO_PATTERN.matcher(line);
+    // if (m.find()) {
+    // msg = normalizeMsg(m.group(1));
+    // path = m.group(2);
+    // lineNo = parseInt(m.group(3));
+    // } else {
+    // msg = normalizeMsg(line);
+    // path = "-";
+    // lineNo = -1;
+    // }
+    // }
+    //
+    // public int getLineNumber() {
+    // return lineNo;
+    // }
+    //
+    // public String getMessage() {
+    // return msg;
+    // }
+    //
+    // public String getPath() {
+    // return path;
+    // }
+    //
+    // public boolean isLocalError() {
+    // return "-".equals(path);
+    // }
+    //
+    // public String toString() {
+    // return msg + ", " + path + ":" + lineNo;
+    // }
+    //
+    // private int parseInt(String str) {
+    // try {
+    // return Integer.parseInt(str);
+    // } catch (NumberFormatException e) {
+    // // this one should never occur
+    // ExceptionHandler.process(new RuntimeException("Could not parse line number contained in Perl " + "error message
+    // {" + line
+    // + "}; report it as a bug ", e));
+    // return -1;
+    // }
+    // }
+    //
+    // private String normalizeMsg(String msg) {
+    // return stripCGICarpOutput(msg);
+    // }
+    //
+    // /**
+    // * @return msg with CGI::Carp's timestamp stripped from the beginning (if it was present)
+    // */
+    // private String stripCGICarpOutput(String msg) {
+    // if (msg.startsWith("[")) {
+    // Matcher m = CGI_CARP_PATTERN.matcher(msg);
+    // if (m.find())
+    // return m.group(1);
+    // }
+    // return msg;
+    // }
+    // }
 
 }

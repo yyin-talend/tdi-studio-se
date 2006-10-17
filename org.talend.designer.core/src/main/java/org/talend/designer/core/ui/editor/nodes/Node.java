@@ -66,7 +66,9 @@ import org.talend.core.model.temp.ECodeLanguage;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.model.components.ComponentImportNeeds;
 import org.talend.designer.core.model.components.EParameterName;
+import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.ui.MultiPageTalendEditor;
+import org.talend.designer.core.ui.editor.cmd.ChangeMetadataCommand;
 import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.connections.EDesignerConnection;
 import org.talend.designer.core.ui.editor.nodecontainer.NodeContainer;
@@ -1111,6 +1113,11 @@ public class Node extends Element implements INode {
         }
     }
 
+    @Override
+    public String toString() {
+        return getComponentName();
+    }
+
     /*
      * (non-Javadoc)
      * 
@@ -1121,10 +1128,21 @@ public class Node extends Element implements INode {
         System.out.println("InputChanged : Node=" + this + ", IOData=[" + dataComponent + "]");
         if (externalNode != null) {
             externalNode.metadataInputChanged(dataComponent);
+        } else {
+            if (this.getComponent() instanceof EmfComponent) {
+                boolean prop = ((EmfComponent) this.getComponent()).isPropagateSchema();
+                if (prop) {
+                    ChangeMetadataCommand cmd = new ChangeMetadataCommand(this, null,null, dataComponent);
+                    cmd.execute(true);
+                }
+            }
         }
     }
 
     public void metadataOutputChanged(IODataComponent dataComponent) {
-        System.out.println("InputChanged : Node=" + this + ", IOData=[" + dataComponent + "]");
+        System.out.println("OutputChanged : Node=" + this + ", IOData=[" + dataComponent + "]");
+        if (externalNode != null) {
+            externalNode.metadataOutputChanged(dataComponent);
+        }
     }
 }

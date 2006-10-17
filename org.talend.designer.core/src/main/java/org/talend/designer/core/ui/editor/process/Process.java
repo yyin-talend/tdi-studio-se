@@ -1436,7 +1436,7 @@ public class Process extends Element implements IProcess {
         return refLink;
     }
 
-    public void propagate(Node node) {
+    public void propagate(Node node, boolean force) {
         for (IConnection connec : node.getOutgoingConnections()) {
             Node targetNode = (Node) connec.getTarget();
             if (connec.getLineStyle().equals(EConnectionType.FLOW_MAIN)) {
@@ -1446,19 +1446,10 @@ public class Process extends Element implements IProcess {
                         IMetadataTable metaSource = connec.getMetadataTable();
                         IMetadataTable metaTarget = targetNode.getMetadataList().get(0);
                         IMetadataTable metaClone = metaSource.clone();
-                        boolean canModifySchema = false;
-                        List<? extends IElementParameter> listParam = targetNode.getElementParameters();
-                        for (int i = 0; i < listParam.size(); i++) {
-                            IElementParameter param = listParam.get(i);
-                            if (param.isShow(listParam)) {
-                                if (param.getField().equals(EParameterFieldType.SCHEMA_TYPE)) {
-                                    canModifySchema = true;
-                                }
-                            }
-                        }
+
                         // if the next component can modify the schema, then the columns
                         // will be propagated only if there's no columns.
-                        if (canModifySchema) {
+                        if (force || canModifySchema(targetNode)) {
                             if (metaTarget.getListColumns().size() == 0) {
                                 metaTarget.setListColumns(metaClone.getListColumns());
                             }
@@ -1467,26 +1458,53 @@ public class Process extends Element implements IProcess {
                         }
                     }
                 }
-                propagate(targetNode);
+                propagate(targetNode, force);
             }
             if (connec.getLineStyle().equals(EConnectionType.ITERATE)) {
-                propagate(targetNode);
+                propagate(targetNode, force);
             }
         }
     }
 
-    public void propagateDatas() {
+    /**
+     * DOC smallet Comment method "canModifySchema".
+     * 
+     * TODO SML Move in node class
+     * 
+     * @param targetNode
+     * @return
+     */
+    private boolean canModifySchema(Node targetNode) {
+        boolean canModifySchema = false;
+        List<? extends IElementParameter> listParam = targetNode.getElementParameters();
+        for (int i = 0; i < listParam.size(); i++) {
+            IElementParameter param = listParam.get(i);
+            if (param.isShow(listParam)) {
+                if (param.getField().equals(EParameterFieldType.SCHEMA_TYPE)) {
+                    canModifySchema = true;
+                }
+            }
+        }
+        return canModifySchema;
+    }
+
+    public void propagateDatas(boolean force) {
         for (Node node : nodes) {
             if (node.isSubProcessStart()) {
-                propagate(node);
+                propagate(node,force);
             }
         }
     }
 
     public void checkProcess() {
+        checkProcess(true);
+    }
+
+    public void checkProcess(boolean propagate) {
         if (isActivate()) {
             checkStartNodes();
-            propagateDatas();
+//            if (propagate)
+                propagateDatas(propagate);
             checkProblems();
         }
     }

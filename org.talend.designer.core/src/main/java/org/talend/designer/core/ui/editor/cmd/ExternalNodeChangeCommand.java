@@ -31,6 +31,7 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.views.properties.PropertySheet;
 import org.eclipse.ui.views.properties.tabbed.ISection;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
+import org.talend.core.model.components.IODataComponent;
 import org.talend.core.model.components.IODataComponentContainer;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.process.IExternalNode;
@@ -139,30 +140,26 @@ public class ExternalNodeChangeCommand extends Command {
         for (Connection connection : (List<Connection>) node.getIncomingConnections()) {
             String schemaType = (String) connection.getSource().getPropertyValue(EParameterName.SCHEMA_TYPE.getName());
             if (schemaType != null) {
-                String metaRepositoryName = (String) connection.getSource().getPropertyValue(
-                        EParameterName.REPOSITORY_SCHEMA_TYPE.getName());
-
-                // IMetadataTable repositoryMetadata = Process.getMetadataFromRepository(metaRepositoryName);
                 IMetadataTable repositoryMetadata = inAndOut.getTable(connection);
 
-                if (repositoryMetadata == null) {
+                // repositoryMetadata = repositoryMetadata.clone();
+                repositoryMetadata.setTableName(connection.getSource().getUniqueName());
+                if (!repositoryMetadata.sameMetadataAs(connection.getMetadataTable())) {
                     if (schemaType.equals(EmfComponent.REPOSITORY)) {
                         connection.getSource().setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), EmfComponent.BUILTIN);
                     }
-                    connection.getSource().getMetadataList().remove(connection.getMetadataTable());
-                    connection.getSource().getMetadataList().add(repositoryMetadata);
-                } else {
-                    repositoryMetadata = repositoryMetadata.clone();
-                    repositoryMetadata.setTableName(connection.getSource().getUniqueName());
-                    if (!repositoryMetadata.sameMetadataAs(connection.getMetadataTable())) {
-                        if (schemaType.equals(EmfComponent.REPOSITORY)) {
-                            connection.getSource().setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), EmfComponent.BUILTIN);
-                        }
-                        connection.getSource().getMetadataList().remove(connection.getMetadataTable());
-                        connection.getSource().getMetadataList().add(repositoryMetadata);
-                    }
+
+                    connection.getSource().getMetadataTable(connection.getMetaName()).setListColumns(
+                            repositoryMetadata.getListColumns());
+                    connection.getSource().getMetadataTable(connection.getMetaName()).setTableName(
+                            repositoryMetadata.getTableName());
                 }
             }
+        }
+        for (Connection connection : (List<Connection>) node.getOutgoingConnections()) {
+            IODataComponent dataComponent = inAndOut.getDataComponent(connection);
+            // TODO SML J'ai l'impression que AMU ne modifie pas l'instance que je lui passe
+            connection.getTarget().metadataInputChanged(dataComponent);
         }
 
         node.setExternalData(newExternalData);

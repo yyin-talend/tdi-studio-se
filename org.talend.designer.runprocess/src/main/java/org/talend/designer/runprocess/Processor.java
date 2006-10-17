@@ -26,10 +26,10 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import org.apache.commons.lang.ArrayUtils;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationType;
@@ -52,6 +52,8 @@ import org.talend.designer.runprocess.perl.PerlUtils;
  * 
  */
 public class Processor {
+
+    private static Logger log = Logger.getLogger(Processor.class);
 
     public static final int NO_STATISTICS = -1;
 
@@ -160,7 +162,7 @@ public class Processor {
         String[] cmd = getCommandLine(absCodePath, absContextPath, perlInterpreterLibOption, perlInterpreterLibCtxOption,
                 statOption, traceOption, codeOptions);
 
-        logCommandLine(cmd);
+        logCommandLine(cmd, Level.INFO);
         try {
             return Runtime.getRuntime().exec(cmd);
         } catch (IOException ioe) {
@@ -170,14 +172,12 @@ public class Processor {
 
     public static int exec(StringBuffer out, StringBuffer err, IPath absCodePath, IPath absContextPath,
             String perlInterpreterLibOption, String perlInterpreterLibCtxOption, int statOption, int traceOption,
-            boolean logExecution, String... codeOptions) throws ProcessorException {
+            String... codeOptions) throws ProcessorException {
 
         String[] cmd = getCommandLine(absCodePath, absContextPath, perlInterpreterLibOption, perlInterpreterLibCtxOption,
                 statOption, traceOption, codeOptions);
 
-        if (logExecution) {
-            logCommandLine(cmd);
-        }
+        logCommandLine(cmd, Level.DEBUG);
         try {
             int status = -1;
 
@@ -275,13 +275,14 @@ public class Processor {
         return cmd;
     }
 
-    private static void logCommandLine(String[] cmd) {
+    private static void logCommandLine(String[] cmd, Level level) {
         StringBuffer sb = new StringBuffer();
         sb.append("Command line:");
         for (String s : cmd) {
             sb.append(' ').append(s);
         }
-        IStatus status = new Status(IStatus.INFO, RunProcessPlugin.PLUGIN_ID, IStatus.OK, sb.toString(), null);
-        RunProcessPlugin.getDefault().getLog().log(status);
+        log.log(level, sb.toString());
+        // IStatus status = new Status(IStatus.INFO, RunProcessPlugin.PLUGIN_ID, IStatus.OK, sb.toString(), null);
+        // RunProcessPlugin.getDefault().getLog().log(status);
     }
 }

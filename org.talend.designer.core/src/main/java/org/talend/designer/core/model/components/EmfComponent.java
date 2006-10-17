@@ -93,6 +93,13 @@ public class EmfComponent implements IComponent {
                 .getLanguage();
     }
 
+   public boolean isPropagateSchema() {
+        if (getName().equals("tFileOutputDelimited")) {
+            return true;
+        }
+        return false;
+    }
+
     private String getTranslatedValue(final String nameValue) {
 
         String returnValue = nameValue;
