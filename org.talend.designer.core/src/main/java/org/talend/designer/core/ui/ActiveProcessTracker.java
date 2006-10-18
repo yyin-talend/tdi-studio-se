@@ -52,7 +52,7 @@ public class ActiveProcessTracker implements IPartListener {
             RunProcessPlugin.getDefault().getRunProcessContextManager().setActiveProcess(process);
 
             Problems.setTitle("Job " + process.getProperty().getLabel());
-            ((Process) process).checkProcess();
+            ((Process) process).checkProcess(false);
         }
     }
 

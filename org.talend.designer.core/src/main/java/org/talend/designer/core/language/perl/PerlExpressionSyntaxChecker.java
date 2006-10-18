@@ -21,15 +21,8 @@
 // ============================================================================
 package org.talend.designer.core.language.perl;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.StringTokenizer;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import org.apache.commons.lang.StringUtils;
-import org.epic.perleditor.editors.util.PerlValidatorErrors;
-import org.epic.perleditor.editors.util.PerlValidatorErrors.ErrorMessage;
+import org.apache.log4j.Level;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.utils.time.TimeMeasure;
 import org.talend.core.model.process.Problem;
@@ -81,7 +74,7 @@ public class PerlExpressionSyntaxChecker {
         String expressionEscaped = StringUtils.replace(expression, "\"", "\\\"");
         String expressionEscapedQuoted = "\"" + expressionEscaped + "\"";
         try {
-            status = Processor.exec(out, err, null, null, "-ce", expressionEscapedQuoted, -1, -1, new String[0]);
+            status = Processor.exec(out, err, null, null, Level.TRACE, "-ce", expressionEscapedQuoted, -1, -1, new String[0]);
         } catch (ProcessorException e) {
             ExceptionHandler.process(e);
         }

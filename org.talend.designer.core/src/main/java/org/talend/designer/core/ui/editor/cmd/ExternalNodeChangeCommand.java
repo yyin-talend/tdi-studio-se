@@ -25,6 +25,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.gef.commands.Command;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
@@ -34,6 +36,7 @@ import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 import org.talend.core.model.components.IODataComponent;
 import org.talend.core.model.components.IODataComponentContainer;
 import org.talend.core.model.metadata.IMetadataTable;
+import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IExternalNode;
 import org.talend.core.model.process.INodeConnector;
 import org.talend.designer.core.model.components.EParameterName;
@@ -68,6 +71,8 @@ public class ExternalNodeChangeCommand extends Command {
     List<Connection> connectionsToDelete;
 
     private IODataComponentContainer inAndOut;
+
+    private Boolean propagate;
 
     @SuppressWarnings("unchecked")
     public ExternalNodeChangeCommand(Node node, IExternalNode externalNode) {
@@ -135,6 +140,13 @@ public class ExternalNodeChangeCommand extends Command {
         }
     }
 
+    private boolean getPropagate() {
+        if (propagate == null) {
+            propagate = MessageDialog.openQuestion(new Shell(), "Propagate", "Are you sure ?");
+        }
+        return propagate;
+    }
+
     @Override
     public void execute() {
         for (Connection connection : (List<Connection>) node.getIncomingConnections()) {
@@ -156,10 +168,13 @@ public class ExternalNodeChangeCommand extends Command {
                 }
             }
         }
-        for (Connection connection : (List<Connection>) node.getOutgoingConnections()) {
+        for (IConnection connection : node.getOutgoingConnections()) {
             IODataComponent dataComponent = inAndOut.getDataComponent(connection);
-            // TODO SML J'ai l'impression que AMU ne modifie pas l'instance que je lui passe
-            connection.getTarget().metadataInputChanged(dataComponent);
+            if (!connection.getMetadataTable().sameMetadataAs(dataComponent.getTable())) {
+                if (getPropagate()) {
+                    connection.getTarget().metadataInputChanged(dataComponent);
+                }
+            }
         }
 
         node.setExternalData(newExternalData);

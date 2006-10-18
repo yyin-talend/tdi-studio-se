@@ -103,7 +103,7 @@ public class Processor {
         IPath absContextPath = plProcessor.getPerlProject().getLocation().append(plProcessor.getContextPath());
         String perlLibCtxOption = "-I" + absContextPath.removeLastSegments(1).toOSString(); //$NON-NLS-1$     
 
-        return exec(absCodePath, absContextPath, perlLibOption, perlLibCtxOption, statisticsPort, tracePort);
+        return exec(absCodePath, absContextPath, Level.INFO, perlLibOption, perlLibCtxOption, statisticsPort, tracePort);
     }
 
     /**
@@ -156,13 +156,13 @@ public class Processor {
      * @return Command Process Launched
      * @throws ProcessorException
      */
-    public static Process exec(IPath absCodePath, IPath absContextPath, String perlInterpreterLibOption,
+    public static Process exec(IPath absCodePath, IPath absContextPath, Level level, String perlInterpreterLibOption,
             String perlInterpreterLibCtxOption, int statOption, int traceOption, String... codeOptions) throws ProcessorException {
 
         String[] cmd = getCommandLine(absCodePath, absContextPath, perlInterpreterLibOption, perlInterpreterLibCtxOption,
                 statOption, traceOption, codeOptions);
 
-        logCommandLine(cmd, Level.INFO);
+        logCommandLine(cmd, level);
         try {
             return Runtime.getRuntime().exec(cmd);
         } catch (IOException ioe) {
@@ -170,14 +170,14 @@ public class Processor {
         }
     }
 
-    public static int exec(StringBuffer out, StringBuffer err, IPath absCodePath, IPath absContextPath,
+    public static int exec(StringBuffer out, StringBuffer err, IPath absCodePath, IPath absContextPath, Level level,
             String perlInterpreterLibOption, String perlInterpreterLibCtxOption, int statOption, int traceOption,
             String... codeOptions) throws ProcessorException {
 
         String[] cmd = getCommandLine(absCodePath, absContextPath, perlInterpreterLibOption, perlInterpreterLibCtxOption,
                 statOption, traceOption, codeOptions);
 
-        logCommandLine(cmd, Level.DEBUG);
+        logCommandLine(cmd, level);
         try {
             int status = -1;
 

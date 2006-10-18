@@ -176,7 +176,7 @@ public class ProcessComposite2 extends Composite {
         execBtn.setText(Messages.getString("ProcessComposite.exec")); //$NON-NLS-1$
         execBtn.setToolTipText(Messages.getString("ProcessComposite.execHint")); //$NON-NLS-1$
         execBtn.setImage(RunProcessPlugin
-                .imageDescriptorFromPlugin(RunProcessPlugin.PLUGIN_ID, "icons/process_run.png").createImage()); //$NON-NLS-1$
+                .imageDescriptorFromPlugin(RunProcessPlugin.PLUGIN_ID, "icons/process_run.gif").createImage()); //$NON-NLS-1$
         execBtn.setEnabled(false);
         formData = new FormData();
         formData.top = new FormAttachment(debugBtn, 0, SWT.TOP);

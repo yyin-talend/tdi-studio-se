@@ -58,6 +58,8 @@ public class ChangeMetadataCommand extends Command {
 
     private IODataComponent dataComponent;
 
+    private Boolean propagate;
+
     public ChangeMetadataCommand(Node node, Node inputNode, IMetadataTable currentInputMetadata, IMetadataTable newInputMetadata,
             IMetadataTable currentOutputMetadata, IMetadataTable newOutputMetadata, IODataComponentContainer dataContainer) {
         this.node = node;
@@ -93,14 +95,12 @@ public class ChangeMetadataCommand extends Command {
         tabbedPropertySheetPage.refresh();
     }
 
-    private Boolean propagate;
-
     private boolean getPropagate(Boolean returnIfNull) {
         if (propagate == null) {
             if (returnIfNull != null) {
                 return returnIfNull;
             }
-            propagate = MessageDialog.openQuestion(new Shell(), "Propagate", "Are you sure ?");
+            propagate = MessageDialog.openQuestion(new Shell(), "Propagate", "Would you like to propagate changes ?");
         }
         return propagate;
     }
@@ -109,27 +109,26 @@ public class ChangeMetadataCommand extends Command {
         return getPropagate(null);
     }
 
-    public void execute(Boolean propagate) {
-        this.propagate = propagate;
+    public void execute(Boolean propagateP) {
+        this.propagate = propagateP;
         execute();
     }
 
     @Override
     public void execute() {
+        // Propagate :
         if (dataContainer != null && (!dataContainer.getInputs().isEmpty() || !dataContainer.getOuputs().isEmpty())) {
-            if (dataContainer != null) {
-                for (IODataComponent currentIO : dataContainer.getInputs()) {
-                    if (currentIO.hasChanged()) {
-                        if (getPropagate()) {
-                            currentIO.getSource().metadataOutputChanged(currentIO);
-                        }
+            for (IODataComponent currentIO : dataContainer.getInputs()) {
+                if (currentIO.hasChanged()) {
+                    if (getPropagate()) {
+                        currentIO.getSource().metadataOutputChanged(currentIO);
                     }
                 }
-                for (IODataComponent currentIO : dataContainer.getOuputs()) {
-                    if (currentIO.hasChanged()) {
-                        if (getPropagate()) {
-                            currentIO.getTarget().metadataInputChanged(currentIO);
-                        }
+            }
+            for (IODataComponent currentIO : dataContainer.getOuputs()) {
+                if (currentIO.hasChanged()) {
+                    if (getPropagate()) {
+                        currentIO.getTarget().metadataInputChanged(currentIO);
                     }
                 }
             }
@@ -138,10 +137,12 @@ public class ChangeMetadataCommand extends Command {
                 outgoingConnection.getTarget().metadataInputChanged(dataComponent);
             }
         }
+        // End propagate
 
         if (currentInputMetadata != null) {
-            inputNode.getMetadataList().remove(currentInputMetadata);
-            inputNode.getMetadataList().add(newInputMetadata);
+            // inputNode.getMetadataList().remove(currentInputMetadata);
+            // inputNode.getMetadataList().add(newInputMetadata);
+            currentInputMetadata.setListColumns(newInputMetadata.getListColumns());
             String type = (String) inputNode.getPropertyValue(EParameterName.SCHEMA_TYPE.getName());
             if (type != null) {
                 if (type.equals(EmfComponent.REPOSITORY)) {
@@ -152,17 +153,16 @@ public class ChangeMetadataCommand extends Command {
         }
 
         if (currentOutputMetadata == null) {
-            node.getMetadataList().remove(0);
-        } else {
-            node.getMetadataList().remove(currentOutputMetadata);
+            currentOutputMetadata = node.getMetadataList().get(0);
         }
-        node.getMetadataList().add(newOutputMetadata);
+        currentOutputMetadata.setListColumns(newOutputMetadata.getListColumns());
 
         String type = (String) node.getPropertyValue(EParameterName.SCHEMA_TYPE.getName());
         if (type.equals(EmfComponent.REPOSITORY)) {
             outputWasRepository = true;
             node.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), EmfComponent.BUILTIN);
         }
+
         refreshPropertyView();
         ((Process) node.getProcess()).checkProcess(getPropagate(true));
     }

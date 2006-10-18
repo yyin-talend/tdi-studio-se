@@ -1132,7 +1132,7 @@ public class Node extends Element implements INode {
             if (this.getComponent() instanceof EmfComponent) {
                 boolean prop = ((EmfComponent) this.getComponent()).isPropagateSchema();
                 if (prop) {
-                    ChangeMetadataCommand cmd = new ChangeMetadataCommand(this, null,null, dataComponent);
+                    ChangeMetadataCommand cmd = new ChangeMetadataCommand(this, null, null, dataComponent);
                     cmd.execute(true);
                 }
             }

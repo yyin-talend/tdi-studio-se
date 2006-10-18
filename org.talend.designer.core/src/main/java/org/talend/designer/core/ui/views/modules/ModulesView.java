@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.ArrayUtils;
+import org.apache.log4j.Level;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
@@ -143,7 +144,7 @@ public class ModulesView extends ViewPart {
             StringBuffer out = new StringBuffer();
             StringBuffer err = new StringBuffer();
 
-            Processor.exec(out, err, new Path(checkPerlModuleAbsolutePath), null, "", "", -1, -1, params);
+            Processor.exec(out, err, new Path(checkPerlModuleAbsolutePath), null, Level.DEBUG, "", "", -1, -1, params);
 
             analyzeResponse(out, componentsByModules);
 
