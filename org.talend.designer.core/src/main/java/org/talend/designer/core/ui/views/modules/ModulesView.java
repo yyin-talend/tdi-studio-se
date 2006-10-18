@@ -225,7 +225,7 @@ public class ModulesView extends ViewPart {
         tableViewerCreator.setVerticalScroll(true);
         tableViewerCreator.setCheckboxInFirstColumn(false);
         tableViewerCreator.setAllColumnsResizable(true);
-        tableViewerCreator.setLayoutMode(LAYOUT_MODE.CONTINUOUS_CURRENT);
+        tableViewerCreator.setLayoutMode(LAYOUT_MODE.FILL_HORIZONTAL);
         tableViewerCreator.createTable();
 
         TableViewerCreatorColumn column = new TableViewerCreatorColumn(tableViewerCreator);

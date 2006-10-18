@@ -590,7 +590,7 @@ public class ContextProcessSection extends AbstractPropertySection {
         tableViewerCreator.setCheckboxInFirstColumn(true);
         tableViewerCreator.setAllColumnsResizable(true);
         tableViewerCreator.setAllColumnsSortable(true);
-        tableViewerCreator.setLayoutMode(LAYOUT_MODE.CONTINUOUS_CURRENT);
+        tableViewerCreator.setLayoutMode(LAYOUT_MODE.FILL_HORIZONTAL);
 
         final Table table = tableViewerCreator.createTable();
         table.addSelectionListener(new SelectionListener() {

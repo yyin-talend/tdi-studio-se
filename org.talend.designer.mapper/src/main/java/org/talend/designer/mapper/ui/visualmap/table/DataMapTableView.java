@@ -337,7 +337,7 @@ public abstract class DataMapTableView extends Composite {
         tableViewerCreatorForColumns.setLinesVisible(true);
         tableViewerCreatorForColumns.setShowSelection(SHOW_SELECTION.FULL);
         tableViewerCreatorForColumns.setLineSelection(LINE_SELECTION.MULTI);
-        tableViewerCreatorForColumns.setLayoutMode(LAYOUT_MODE.CONTINUOUS_CURRENT);
+        tableViewerCreatorForColumns.setLayoutMode(LAYOUT_MODE.FILL_HORIZONTAL);
 //        tableViewerCreatorForColumns.setAdjustWidthValue(ADJUST_WIDTH_VALUE);
         tableViewerCreatorForColumns.setFirstColumnMasked(true);
         if (getDataMapTable() instanceof AbstractInOutTable) {
@@ -887,7 +887,7 @@ public abstract class DataMapTableView extends Composite {
         tableViewerCreatorForConstraints.setLinesVisible(true);
         tableViewerCreatorForConstraints.setShowSelection(SHOW_SELECTION.FULL);
         tableViewerCreatorForConstraints.setLineSelection(LINE_SELECTION.MULTI);
-        tableViewerCreatorForConstraints.setLayoutMode(LAYOUT_MODE.CONTINUOUS_CURRENT);
+        tableViewerCreatorForConstraints.setLayoutMode(LAYOUT_MODE.FILL_HORIZONTAL);
 //        tableViewerCreatorForConstraints.setAdjustWidthValue(ADJUST_WIDTH_VALUE);
         tableViewerCreatorForConstraints.setFirstColumnMasked(true);
 

@@ -184,7 +184,7 @@ public class SelectorTableForm extends AbstractForm {
         tableViewerCreator.setBorderVisible(true);
         tableViewerCreator.setLinesVisible(true);
         tableViewerCreator.setHorizontalScroll(false);
-        tableViewerCreator.setLayoutMode(LAYOUT_MODE.SHOW_ALWAYS_ALL_COLUMNS);
+        tableViewerCreator.setLayoutMode(LAYOUT_MODE.FILL_HORIZONTAL);
         tableViewerCreator.setCheckboxInFirstColumn(true);
         // tableViewerCreator.setAdjustWidthValue(-15);
         tableViewerCreator.setFirstColumnMasked(true);
