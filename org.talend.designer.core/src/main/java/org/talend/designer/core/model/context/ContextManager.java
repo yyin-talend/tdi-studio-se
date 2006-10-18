@@ -33,6 +33,8 @@ import org.talend.core.model.process.IContextListener;
 import org.talend.core.model.process.IContextManager;
 import org.talend.core.model.process.IContextParameter;
 import org.talend.core.model.temp.ECodeLanguage;
+import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
+import org.talend.designer.core.ui.editor.process.Process;
 
 /**
  * DOC nrousseau class global comment. Detailled comment <br/>
@@ -137,5 +139,18 @@ public class ContextManager implements IContextManager {
         }
 
         return true;
+    }
+
+    /**
+     * Load a temporary process from a xml file to have an access to the context manager.
+     * @param processType
+     * @return
+     */
+    public static IContextManager getContextManagerFromXmlProcess(ProcessType processType) {
+        Process process = new Process();
+        process.loadXmlFile(processType);
+        IContextManager contextManager = process.getContextManager();
+
+        return contextManager;
     }
 }

@@ -129,6 +129,7 @@ import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.model.components.ExternalUtilities;
+import org.talend.designer.core.model.context.ContextManager;
 import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
 import org.talend.designer.core.ui.MultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.cmd.ChangeActivateStatusNodeCommand;
@@ -646,11 +647,9 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                 if (selectedProcess.equals(id)) {
                     if (process.getProperty().getItem() instanceof ProcessItem) {
                         ProcessItem processItem = (ProcessItem) process.getProperty().getItem();
-                        // processItem.getProperty().getItem().getProperty().g
-                        Process p = new Process();
-                        p.loadXmlFile((ProcessType) processItem.getProcess());
-                        IContextManager c = p.getContextManager();
-                        for (IContext context : c.getListContext()) {
+                        IContextManager contextManager = ContextManager
+                                .getContextManagerFromXmlProcess((ProcessType) processItem.getProcess());
+                        for (IContext context : contextManager.getListContext()) {
                             contextNameList.add(context.getName());
                             contextValueList.add("'" + context.getName() + "'");
                         }
