@@ -1115,7 +1115,7 @@ public class Node extends Element implements INode {
 
     @Override
     public String toString() {
-        return getComponentName();
+        return getComponentName() + "/" + getLabel();
     }
 
     /*
@@ -1124,10 +1124,10 @@ public class Node extends Element implements INode {
      * @see org.talend.core.model.process.INode#renameMetadataColumnName(java.lang.String, java.lang.String,
      * java.lang.String)
      */
-    public void metadataInputChanged(IODataComponent dataComponent) {
-        System.out.println("InputChanged : Node=" + this + ", IOData=[" + dataComponent + "]");
+    public void metadataInputChanged(IODataComponent dataComponent, String connectionToApply) {
+        System.out.println("InputChanged : Node=" + this + ", IOData=[" + dataComponent + "] on " + connectionToApply);
         if (externalNode != null) {
-            externalNode.metadataInputChanged(dataComponent);
+            externalNode.metadataInputChanged(dataComponent, connectionToApply);
         } else {
             if (this.getComponent() instanceof EmfComponent) {
                 boolean prop = ((EmfComponent) this.getComponent()).isPropagateSchema();
@@ -1139,10 +1139,10 @@ public class Node extends Element implements INode {
         }
     }
 
-    public void metadataOutputChanged(IODataComponent dataComponent) {
-        System.out.println("OutputChanged : Node=" + this + ", IOData=[" + dataComponent + "]");
+    public void metadataOutputChanged(IODataComponent dataComponent, String connectionToApply) {
+        System.out.println("OutputChanged : Node=" + this + ", IOData=[" + dataComponent + "] on " + connectionToApply);
         if (externalNode != null) {
-            externalNode.metadataOutputChanged(dataComponent);
+            externalNode.metadataOutputChanged(dataComponent, connectionToApply);
         }
     }
 }

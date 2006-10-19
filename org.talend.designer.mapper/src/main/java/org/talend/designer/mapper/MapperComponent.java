@@ -308,13 +308,13 @@ public class MapperComponent extends AbstractExternalNode {
                             break;
                         }
                     }
+                    break;
                 }
             }
             TableEntryLocation oldLocation = new TableEntryLocation(conectionName, oldColumnName);
             TableEntryLocation newLocation = new TableEntryLocation(conectionName, newColumnName);
 
             replaceLocationsInAllExpressions(oldLocation, newLocation, false);
-
         }
     }
 

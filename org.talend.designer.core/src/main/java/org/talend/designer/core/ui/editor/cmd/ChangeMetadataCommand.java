@@ -121,20 +121,20 @@ public class ChangeMetadataCommand extends Command {
             for (IODataComponent currentIO : dataContainer.getInputs()) {
                 if (currentIO.hasChanged()) {
                     if (getPropagate()) {
-                        currentIO.getSource().metadataOutputChanged(currentIO);
+                        currentIO.getSource().metadataOutputChanged(currentIO, currentIO.getName());
                     }
                 }
             }
             for (IODataComponent currentIO : dataContainer.getOuputs()) {
                 if (currentIO.hasChanged()) {
                     if (getPropagate()) {
-                        currentIO.getTarget().metadataInputChanged(currentIO);
+                        currentIO.getTarget().metadataInputChanged(currentIO, currentIO.getName());
                     }
                 }
             }
         } else if (dataComponent != null) {
             for (IConnection outgoingConnection : node.getOutgoingConnections()) {
-                outgoingConnection.getTarget().metadataInputChanged(dataComponent);
+                outgoingConnection.getTarget().metadataInputChanged(dataComponent, outgoingConnection.getName());
             }
         }
         // End propagate
@@ -155,12 +155,14 @@ public class ChangeMetadataCommand extends Command {
         if (currentOutputMetadata == null) {
             currentOutputMetadata = node.getMetadataList().get(0);
         }
-        currentOutputMetadata.setListColumns(newOutputMetadata.getListColumns());
+        if (!currentOutputMetadata.sameMetadataAs(newOutputMetadata)) {
+            currentOutputMetadata.setListColumns(newOutputMetadata.getListColumns());
 
-        String type = (String) node.getPropertyValue(EParameterName.SCHEMA_TYPE.getName());
-        if (type.equals(EmfComponent.REPOSITORY)) {
-            outputWasRepository = true;
-            node.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), EmfComponent.BUILTIN);
+            String type = (String) node.getPropertyValue(EParameterName.SCHEMA_TYPE.getName());
+            if (type.equals(EmfComponent.REPOSITORY)) {
+                outputWasRepository = true;
+                node.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), EmfComponent.BUILTIN);
+            }
         }
 
         refreshPropertyView();

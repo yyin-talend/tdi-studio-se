@@ -142,7 +142,7 @@ public class ExternalNodeChangeCommand extends Command {
 
     private boolean getPropagate() {
         if (propagate == null) {
-            propagate = MessageDialog.openQuestion(new Shell(), "Propagate", "Are you sure ?");
+            propagate = MessageDialog.openQuestion(new Shell(), "Propagate", "Would you like to propagate changes ?");
         }
         return propagate;
     }
@@ -172,7 +172,7 @@ public class ExternalNodeChangeCommand extends Command {
             IODataComponent dataComponent = inAndOut.getDataComponent(connection);
             if (!connection.getMetadataTable().sameMetadataAs(dataComponent.getTable())) {
                 if (getPropagate()) {
-                    connection.getTarget().metadataInputChanged(dataComponent);
+                    connection.getTarget().metadataInputChanged(dataComponent, connection.getName());
                 }
             }
         }
