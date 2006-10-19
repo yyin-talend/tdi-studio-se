@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Table;
@@ -565,12 +566,18 @@ public class MapperManager {
     public void changeEntryExpression(ITableEntry currentEntry, String text) {
         currentEntry.setExpression(text);
         DataMapTableView dataMapTableView = retrieveDataMapTableView(currentEntry);
+        TableViewer tableViewer = null;
         if (currentEntry instanceof IColumnEntry) {
-            dataMapTableView.getTableViewerCreatorForColumns().getTableViewer().refresh(currentEntry);
+            tableViewer = dataMapTableView.getTableViewerCreatorForColumns().getTableViewer();
         } else if (currentEntry instanceof ConstraintTableEntry) {
-            dataMapTableView.getTableViewerCreatorForConstraints().getTableViewer().refresh(currentEntry);
+            tableViewer = dataMapTableView.getTableViewerCreatorForConstraints().getTableViewer();
         }
-        uiManager.processNewExpression(text, currentEntry, false);
+        if (currentEntry.getProblem() != null) {
+            tableViewer.getTable().deselectAll();
+        }
+        tableViewer.refresh(currentEntry);
+        
+        uiManager.parseNewExpression(text, currentEntry, false);
     }
 
     public MapperComponent getComponent() {
@@ -731,7 +738,7 @@ public class MapperManager {
                 tableViewerCreator = dataMapTableView.getTableViewerCreatorForConstraints();
             }
             tableViewerCreator.getTableViewer().refresh(entry);
-            uiManager.processExpression(currentExpression, entry, false, true, false);
+            uiManager.parseExpression(currentExpression, entry, false, true, false);
             return true;
         }
         return false;

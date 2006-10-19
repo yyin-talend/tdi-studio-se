@@ -27,7 +27,7 @@ package org.talend.designer.mapper.utils;
  * $Id$
  * 
  */
-public class ProcessExpressionResult {
+public class ParseExpressionResult {
 
     private boolean atLeastOneLinkAdded;
 
@@ -39,7 +39,7 @@ public class ProcessExpressionResult {
      * @param atLeastOneLinkAdded
      * @param atLeastOneLinkRemoved
      */
-    public ProcessExpressionResult(boolean atLeastOneLinkAdded, boolean atLeastOneLinkRemoved) {
+    public ParseExpressionResult(boolean atLeastOneLinkAdded, boolean atLeastOneLinkRemoved) {
         super();
         this.atLeastOneLinkAdded = atLeastOneLinkAdded;
         this.atLeastOneLinkRemoved = atLeastOneLinkRemoved;

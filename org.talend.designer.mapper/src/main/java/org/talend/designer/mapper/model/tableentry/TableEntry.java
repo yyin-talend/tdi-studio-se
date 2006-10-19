@@ -133,6 +133,8 @@ public abstract class TableEntry implements ITableEntry {
                 if (status == ProblemStatus.ERROR || this.problem == null) {
                     this.problem = syntaxProblem;
                 }
+            } else {
+                this.problem = null;
             }
         }
 

@@ -202,19 +202,20 @@ public class DragNDrop {
 
             public void dragEnter(DropTargetEvent event) {
                 super.dragEnter(event);
+                draggableTable.setFocus();
             }
 
             public void dragOver(DropTargetEvent event) {
 
                 super.dragOver(event);
 
-                // System.out.println("\n>>dragOver");
+//                 System.out.println("\n>>dragOver");
 
                 DraggedData draggedData = TableEntriesTransfer.getInstance().getDraggedData();
                 DropContextAnalyzer analyzer = analyzeDropTarget(event, draggedData);
                 UIManager uiManager = mapperManager.getUiManager();
                 DraggingInfosPopup draggingInfosPopup = uiManager.getDraggingInfosPopup();
-
+                
                 fillEvent(event, analyzer);
                 InsertionIndicator insertionIndicator = retrieveInsertionIndicator();
                 if (analyzer.isTargetEntryValid()) {
@@ -233,13 +234,14 @@ public class DragNDrop {
                     }
 
                     draggingInfosPopup.setMapOneToOneMode(analyzer.isMapOneToOneMode(), analyzer.isMapOneToOneAuthorized());
+                    Integer itemIndexWhereInsertFromPosition = getItemIndexFromPosition(new Point(event.x, event.y));
                     if (analyzer.isMapOneToOneMode() && analyzer.isMapOneToOneAuthorized()) {
                         int size = draggedData.getTransferableEntryList().size();
-                        Integer itemIndexWhereInsertFromPosition = getItemIndexFromPosition(new Point(event.x, event.y));
                         if (itemIndexWhereInsertFromPosition != null) {
                             draggableTable.setSelection(itemIndexWhereInsertFromPosition, itemIndexWhereInsertFromPosition + size - 1);
                             if (!analyzer.targetTableIsConstraintsTable()
-                                    && itemIndexWhereInsertFromPosition + size - 1 >= draggableTable.getItemCount()) {
+                                    && itemIndexWhereInsertFromPosition + size - 1 >= draggableTable.getItemCount()
+                                    ) {
                                 insertionIndicator.updatePosition(draggableTable, draggableTable.getItemCount());
                                 insertionIndicator.setVisible(true);
                                 draggingInfosPopup.setInsertionEntryContext(true);
@@ -256,7 +258,9 @@ public class DragNDrop {
                         if (!analyzer.isTableSourceAndTargetAreSame()) {
                             draggableTable.deselectAll();
                         }
-
+                        if (itemIndexWhereInsertFromPosition != null && !analyzer.isInsertionEntryMode()) {
+                            draggableTable.setSelection(itemIndexWhereInsertFromPosition);
+                        }
                         if (!analyzer.targetTableIsConstraintsTable()) {
                             updateInsertionIndicator(event);
                             insertionIndicator.setVisible(analyzer.isInsertionEntryMode());
@@ -472,7 +476,7 @@ public class DragNDrop {
 
                         boolean overwrite = (lastEntryTarget != currentEntryTarget && analyzer.isOverwriteExpression());
                         modifyExistingExpression(currentLanguage, currentEntryTarget, tableEntrySource, overwrite, zoneSourceEntry);
-                        uiManager.processExpression(currentEntryTarget.getExpression(), currentEntryTarget, false, true, true);
+                        uiManager.parseExpression(currentEntryTarget.getExpression(), currentEntryTarget, false, true, true);
 
                     } else {
                         String columnName = transferableEntry.getTableEntrySource().getName();
@@ -547,7 +551,7 @@ public class DragNDrop {
 
                     List<ITableEntry> refreshedTableEntriesList = tableViewerCreatorTarget.getInputList();
                     for (ITableEntry tableEntry : refreshedTableEntriesList) {
-                        uiManager.processExpression(tableEntry.getExpression(), tableEntry, false, true, false);
+                        uiManager.parseExpression(tableEntry.getExpression(), tableEntry, false, true, false);
                     }
                 }
                 dataMapTableViewTarget.resizeAtExpandedSize();

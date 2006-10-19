@@ -649,7 +649,7 @@ public class ContextProcessSection extends AbstractPropertySection {
         column.setTitle("Prompt"); //$NON-NLS-1$
         column.setModifiable(true);
         column.setWidth(FIRST_COLUMN_WIDTH);
-        column.setToolTipText(Messages.getString("ContextProcessSection.38")); //$NON-NLS-1$
+        column.setToolTipHeader(Messages.getString("ContextProcessSection.38")); //$NON-NLS-1$
 
         column = new TableViewerCreatorColumn(tableViewerCreator);
         column.setTitle(Messages.getString("ContextProcessSection.39")); //$NON-NLS-1$

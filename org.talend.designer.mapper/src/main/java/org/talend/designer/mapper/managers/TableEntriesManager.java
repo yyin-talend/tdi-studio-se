@@ -122,7 +122,7 @@ public class TableEntriesManager {
      */
     private void add(ITableEntry dataMapTableEntry) {
         tableEntries.put(TableEntryLocation.getNewInstance(dataMapTableEntry), dataMapTableEntry);
-        mapperManager.getUiManager().processExpression(dataMapTableEntry.getExpression(), dataMapTableEntry, false, false, false);
+        mapperManager.getUiManager().parseExpression(dataMapTableEntry.getExpression(), dataMapTableEntry, false, false, false);
     }
 
     void remove(ITableEntry dataMapTableEntry) {

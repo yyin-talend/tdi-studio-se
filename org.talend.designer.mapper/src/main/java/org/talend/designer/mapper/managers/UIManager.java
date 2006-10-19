@@ -102,7 +102,7 @@ import org.talend.designer.mapper.ui.visualmap.zone.scrollable.TablesZoneView;
 import org.talend.designer.mapper.ui.visualmap.zone.toolbar.ToolbarOutputZone;
 import org.talend.designer.mapper.ui.visualmap.zone.toolbar.ToolbarZone;
 import org.talend.designer.mapper.utils.DataMapExpressionParser;
-import org.talend.designer.mapper.utils.ProcessExpressionResult;
+import org.talend.designer.mapper.utils.ParseExpressionResult;
 
 /**
  * DOC amaumont class global comment. Detailled comment <br/>
@@ -774,8 +774,8 @@ public class UIManager {
      * @param dataMapTableView
      * @param currentModifiedObject
      */
-    public void processNewExpression(String expression, ITableEntry currentModifiedITableEntry, boolean appliedOrCanceled) {
-        ProcessExpressionResult result = processExpression(expression, currentModifiedITableEntry, true, true, appliedOrCanceled);
+    public void parseNewExpression(String expression, ITableEntry currentModifiedITableEntry, boolean appliedOrCanceled) {
+        ParseExpressionResult result = parseExpression(expression, currentModifiedITableEntry, true, true, appliedOrCanceled);
         if (result.isAtLeastOneLinkHasBeenAddedOrRemoved()) {
             mapperManager.getUiManager().refreshBackground(false, false);
         }
@@ -785,18 +785,18 @@ public class UIManager {
     /**
      * DOC amaumont Comment method "processAllExpressions".
      */
-    public void processAllExpressions(DataMapTableView dataMapTableView) {
+    public void parseAllExpressions(DataMapTableView dataMapTableView) {
         List<IColumnEntry> columnsEntriesList = dataMapTableView.getDataMapTable().getColumnEntries();
-        processAllExpressions(columnsEntriesList);
+        parseAllExpressions(columnsEntriesList);
         if (dataMapTableView.getZone() == Zone.OUTPUTS) {
             List<ITableEntry> constraintEntriesList = dataMapTableView.getTableViewerCreatorForConstraints().getInputList();
-            processAllExpressions(constraintEntriesList);
+            parseAllExpressions(constraintEntriesList);
         }
     }
 
-    private void processAllExpressions(List<? extends ITableEntry> inputList) {
+    private void parseAllExpressions(List<? extends ITableEntry> inputList) {
         for (ITableEntry entry : inputList) {
-            processExpression(entry.getExpression(), entry, false, false, false);
+            parseExpression(entry.getExpression(), entry, false, false, false);
         }
     }
 
@@ -811,7 +811,7 @@ public class UIManager {
      * @param dataMapTableView
      * @return true if a link has been added or removed, false else
      */
-    public ProcessExpressionResult processExpression(String expression, ITableEntry currentModifiedITableEntry,
+    public ParseExpressionResult parseExpression(String expression, ITableEntry currentModifiedITableEntry,
             boolean linkMustHaveSelectedState, boolean checkInputKeyAutomatically, boolean inputExpressionAppliedOrCanceled) {
 
         DataMapTableView dataMapTableView = mapperManager.retrieveDataMapTableView(currentModifiedITableEntry);
@@ -860,7 +860,7 @@ public class UIManager {
             }
         }
 
-        return new ProcessExpressionResult(linkHasBeenAdded, linkHasBeenRemoved);
+        return new ParseExpressionResult(linkHasBeenAdded, linkHasBeenRemoved);
     }
 
     /**
@@ -984,14 +984,14 @@ public class UIManager {
             AbstractDataMapTable dataMapTable = view.getDataMapTable();
             List<IColumnEntry> metadataTableEntries = dataMapTable.getColumnEntries();
             for (IColumnEntry entry : metadataTableEntries) {
-                if (processExpression(entry.getExpression(), entry, true, true, false).isAtLeastOneLinkRemoved()) {
+                if (parseExpression(entry.getExpression(), entry, true, true, false).isAtLeastOneLinkRemoved()) {
                     atLeastOneLinkHasBeenRemoved = true;
                 }
             }
             if (dataMapTable instanceof OutputTable) {
                 List<ConstraintTableEntry> constraintEntries = ((OutputTable) dataMapTable).getConstraintEntries();
                 for (ConstraintTableEntry entry : constraintEntries) {
-                    if (processExpression(entry.getExpression(), entry, true, true, false).isAtLeastOneLinkRemoved()) {
+                    if (parseExpression(entry.getExpression(), entry, true, true, false).isAtLeastOneLinkRemoved()) {
                         atLeastOneLinkHasBeenRemoved = true;
                     }
                 }
@@ -1340,8 +1340,8 @@ public class UIManager {
 
         tableManager.swapWithPreviousTable(currentSelectedTableView.getDataMapTable());
         currentSelectedTableView.getParent().layout();
-        processAllExpressions(currentSelectedTableView);
-        processAllExpressions(previousTableView);
+        parseAllExpressions(currentSelectedTableView);
+        parseAllExpressions(previousTableView);
     }
 
     private void moveSelectedTableDown(DataMapTableView currentSelectedTableView, List<DataMapTableView> tablesView,
@@ -1372,8 +1372,8 @@ public class UIManager {
         tableManager.swapWithNextTable(currentSelectedTableView.getDataMapTable());
 
         currentSelectedTableView.getParent().layout();
-        processAllExpressions(currentSelectedTableView);
-        processAllExpressions(nextTableView);
+        parseAllExpressions(currentSelectedTableView);
+        parseAllExpressions(nextTableView);
     }
 
     public void minimizeAllTables(Zone zone, boolean minimize, ToolItem minimizeButton) {
@@ -1467,4 +1467,22 @@ public class UIManager {
         this.currentSelectedOutputTableView = null;
     }
 
+    public void registerCustomPaint() {
+        List<DataMapTableView> tablesView = mapperManager.getOutputsTablesView();
+        tablesView.addAll(mapperManager.getInputsTablesView());
+        for (DataMapTableView view : tablesView) {
+            view.getTableViewerCreatorForColumns().setUseCustomColoring(false);
+        }
+        
+    }
+    
+    public void unregisterCustomPaint() {
+        List<DataMapTableView> tablesView = mapperManager.getOutputsTablesView();
+        tablesView.addAll(mapperManager.getInputsTablesView());
+        for (DataMapTableView view : tablesView) {
+            view.getTableViewerCreatorForColumns().setUseCustomColoring(false);
+        }
+    }
+    
+    
 }

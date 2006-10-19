@@ -55,13 +55,18 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Cursor;
+import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.ImageData;
+import org.eclipse.swt.graphics.PaletteData;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
@@ -82,6 +87,8 @@ import org.talend.commons.ui.swt.tableviewer.TableViewerCreator.LINE_SELECTION;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator.SHOW_SELECTION;
 import org.talend.commons.ui.swt.tableviewer.behavior.CellEditorValueAdapter;
 import org.talend.commons.ui.swt.tableviewer.behavior.DefaultTableLabelProvider;
+import org.talend.commons.ui.swt.tableviewer.behavior.ITableCellValueModifiedListener;
+import org.talend.commons.ui.swt.tableviewer.behavior.TableCellValueModifiedEvent;
 import org.talend.commons.ui.swt.tableviewer.data.ModifiedObjectInfo;
 import org.talend.commons.ui.utils.TableUtils;
 import org.talend.commons.ui.ws.WindowSystem;
@@ -97,6 +104,8 @@ import org.talend.designer.mapper.model.table.AbstractInOutTable;
 import org.talend.designer.mapper.model.table.OutputTable;
 import org.talend.designer.mapper.model.table.VarsTable;
 import org.talend.designer.mapper.model.tableentry.AbstractInOutTableEntry;
+import org.talend.designer.mapper.model.tableentry.ConstraintTableEntry;
+import org.talend.designer.mapper.model.tableentry.IColumnEntry;
 import org.talend.designer.mapper.model.tableentry.ITableEntry;
 import org.talend.designer.mapper.ui.color.ColorInfo;
 import org.talend.designer.mapper.ui.color.ColorProviderMapper;
@@ -338,8 +347,9 @@ public abstract class DataMapTableView extends Composite {
         tableViewerCreatorForColumns.setShowSelection(SHOW_SELECTION.FULL);
         tableViewerCreatorForColumns.setLineSelection(LINE_SELECTION.MULTI);
         tableViewerCreatorForColumns.setLayoutMode(LAYOUT_MODE.FILL_HORIZONTAL);
-//        tableViewerCreatorForColumns.setAdjustWidthValue(ADJUST_WIDTH_VALUE);
+        tableViewerCreatorForColumns.setUseCustomColoring(this.getDataMapTable() instanceof AbstractInOutTable);
         tableViewerCreatorForColumns.setFirstColumnMasked(true);
+
         if (getDataMapTable() instanceof AbstractInOutTable) {
 
             if (imageKey == null) {
@@ -363,6 +373,17 @@ public abstract class DataMapTableView extends Composite {
 
             @Override
             public Image getColumnImage(Object element, int columnIndex) {
+                return getColumnImageExecute(element, columnIndex);
+            }
+
+            /**
+             * DOC amaumont Comment method "getColumnImageExecute".
+             * 
+             * @param element
+             * @param columnIndex
+             * @return
+             */
+            private Image getColumnImageExecute(Object element, int columnIndex) {
                 if (getDataMapTable() instanceof AbstractInOutTable) {
                     AbstractInOutTableEntry entry = (AbstractInOutTableEntry) element;
                     TableViewerCreatorColumn column = (TableViewerCreatorColumn) tableViewerCreatorForColumns.getColumns().get(columnIndex);
@@ -370,7 +391,36 @@ public abstract class DataMapTableView extends Composite {
                         if (entry.getMetadataColumn().isKey()) {
                             return imageKey;
                         } else {
-                            return imageEmpty;
+
+                            Rectangle bounds = imageEmpty.getBounds();
+
+                            // //////////////////////////////////////////////////////////
+                            // draw image filled with transparent pixels
+                            RGB transparentColor = new RGB(0, 255, 0);
+                            PaletteData paletteData = new PaletteData(new RGB[] { transparentColor });
+
+                            ImageData imageData = new ImageData(bounds.width, bounds.height, 1, paletteData);
+                            int transparentPixelValue = imageData.palette.getPixel(transparentColor);
+                            imageData.transparentPixel = transparentPixelValue;
+
+                            // GC gc = event.gc;
+                            final Image image = new Image(table.getDisplay(), imageData);
+
+                            // gc.drawImage(image, 0, 0);
+                            // image.dispose();
+                            // ////////////////////////////////////////////////////////////////////////////
+                            // ImageData imageData = imageEmpty.getImageData();
+                            // System.out.println("\n"+entry.getName());
+                            // System.out.println(imageData.getPixel(0, 0));
+                            // System.out.println(imageData.transparentPixel);
+                            // System.out.println(imageData.getTransparencyType());
+                            // System.out.println("SWT.TRANSPARENCY_MASK="+SWT.TRANSPARENCY_MASK);
+                            // System.out.println("SWT.TRANSPARENCY_ALPHA="+SWT.TRANSPARENCY_ALPHA);
+                            // System.out.println("SWT.TRANSPARENCY_PIXEL="+SWT.TRANSPARENCY_PIXEL);
+                            // System.out.println("SWT.TRANSPARENCY_NONE="+SWT.TRANSPARENCY_NONE);
+                            // ImageData transparencyMask = imageData.getTransparencyMask();
+                            // System.out.println(transparencyMask);
+                            return image;
                         }
                     }
                 }
@@ -391,6 +441,13 @@ public abstract class DataMapTableView extends Composite {
         tableEntriesGridData.minimumHeight = table.getHeaderHeight() + table.getItemHeight();
         table.setLayoutData(tableEntriesGridData);
 
+        tableViewerCreatorForColumns.addCellValueModifiedListener(new ITableCellValueModifiedListener() {
+
+            public void cellValueModified(TableCellValueModifiedEvent e) {
+                unselectAllEntriesIfErrorDetected(e);
+            }
+        });
+
         final TableViewer tableViewerForEntries = tableViewerCreatorForColumns.getTableViewer();
 
         tableViewerForEntries.addSelectionChangedListener(new ISelectionChangedListener() {
@@ -405,7 +462,7 @@ public abstract class DataMapTableView extends Composite {
 
         });
 
-        tableViewerCreatorForColumns.getTable().addListener(SWT.DragDetect, new Listener() {
+        table.addListener(SWT.DragDetect, new Listener() {
 
             public void handleEvent(Event event) {
                 dragDetected = true;
@@ -414,7 +471,16 @@ public abstract class DataMapTableView extends Composite {
 
         });
 
-        // table.addListener(SWT.DragDetect, listener)
+        table.addListener(SWT.KeyDown, new Listener() {
+
+            public void handleEvent(Event event) {
+                if (event.character == '\u0001') { // CTRL + A
+                    table.selectAll();
+                }
+                processEnterKeyDown(tableViewerCreatorForColumns, event);
+            }
+
+        });
 
         new DragNDrop(mapperManager, table, true, true);
 
@@ -443,7 +509,7 @@ public abstract class DataMapTableView extends Composite {
                 switch (event.type) {
                 case SWT.MouseMove:
 
-//                    System.out.println("ToolTipText:" + table.getToolTipText());
+                    // System.out.println("ToolTipText:" + table.getToolTipText());
 
                     Point cursorPositionFromTableOrigin = TableUtils.getCursorPositionFromTableOrigin(table, event);
                     TableColumn tableColumn = TableUtils.getTableColumn(table, cursorPositionFromTableOrigin);
@@ -458,10 +524,10 @@ public abstract class DataMapTableView extends Composite {
                     }
                     ITableEntry tableEntry = (ITableEntry) tableItem.getData();
                     String toolTip = tableEntry.getProblem() == null ? null : tableEntry.getProblem().getDescription();
-//                    if (toolTip == null || !toolTip.equals(lastErrorMessage)) {
-                        setTableToolTipText(table, tableColumn, tableEntry, toolTip);
-                        lastErrorMessage = toolTip;
-//                    }
+                    // if (toolTip == null || !toolTip.equals(lastErrorMessage)) {
+                    setTableToolTipText(table, tableColumn, tableEntry, toolTip);
+                    lastErrorMessage = toolTip;
+                    // }
                     break;
                 }
             }
@@ -470,21 +536,21 @@ public abstract class DataMapTableView extends Composite {
              * DOC amaumont Comment method "setTableToolTipText".
              * 
              * @param table
-             * @param tableColumn 
-             * @param text 
+             * @param tableColumn
+             * @param text
              */
             private void setTableToolTipText(final Table table, TableColumn tableColumn, ITableEntry tableEntry, String text) {
                 table.setToolTipText(text);
-//                tableColumn.setToolTipText(text);
-//                if (tableEntry != null) {
-//                    if(table == tableViewerCreatorForColumns.getTable()) {
-//                        System.out.println("entry refreshed:" + tableEntry.getExpression());
-//                        table.setToolTipText(text);
-//                        tableViewerCreatorForColumns.getTableViewer().refresh(tableEntry);
-//                    } else if(table == tableViewerCreatorForConstraints.getTable()) {
-//                        tableViewerCreatorForConstraints.getTableViewer().refresh(tableEntry);
-//                    }
-//                }
+                // tableColumn.setToolTipText(text);
+                // if (tableEntry != null) {
+                // if(table == tableViewerCreatorForColumns.getTable()) {
+                // System.out.println("entry refreshed:" + tableEntry.getExpression());
+                // table.setToolTipText(text);
+                // tableViewerCreatorForColumns.getTableViewer().refresh(tableEntry);
+                // } else if(table == tableViewerCreatorForConstraints.getTable()) {
+                // tableViewerCreatorForConstraints.getTableViewer().refresh(tableEntry);
+                // }
+                // }
             }
 
         };
@@ -696,91 +762,6 @@ public abstract class DataMapTableView extends Composite {
 
         // /////////////////////////////////////////////////////////////////
 
-        // final Listener eraseItemListener = new Listener() {
-        //        
-        // public void handleEvent(Event event) {
-        //        
-        // System.out.println("EraseItem");
-        //        
-        // if ((event.detail & SWT.SELECTED) != 0) {
-        //        
-        // GC gc = event.gc;
-        //                            
-        //        
-        // Rectangle rect = event.getBounds();
-        //        
-        // Color background = gc.getBackground();
-        //        
-        // gc.setBackground(table.getDisplay().getSystemColor(SWT.COLOR_RED));
-        //        
-        // // TODO: uncomment to see selection on linux gtk
-        //        
-        // // ((TableItem)event.item).setBackground(null);
-        //        
-        // gc.fillRectangle(rect);
-        //        
-        // gc.setBackground(background);
-        //        
-        // event.detail &= ~SWT.SELECTED;
-        //        
-        // }
-        //        
-        // }
-        //        
-        // };
-        //                
-        // Listener paintListener = new Listener() {
-        //        
-        // public void handleEvent(Event event) {
-        // System.out.println("PaintItem");
-        // }
-        //                    
-        // };
-        //                
-        // Listener measureItemListener = new Listener() {
-        //                    
-        // public void handleEvent(Event event) {
-        // System.out.println("MeasureItem");
-        // }
-        //                    
-        // };
-
-        // table.addListener(SWT.PaintItem, paintListener);
-        // table.addListener(SWT.MeasureItem, measureItemListener);
-        //
-        //        
-        // Listener addRemoveEraseItemListener = new Listener() {
-        //
-        // public void handleEvent(Event event) {
-        //
-        // boolean leftMouseButton = (event.stateMask & SWT.BUTTON1) != 0 || event.button == 1;
-        //
-        // switch (event.type) {
-        // case SWT.MouseDown:
-        // if (leftMouseButton) {
-        // System.out.println("add");
-        // table.addListener(SWT.EraseItem, eraseItemListener);
-        // }
-        // break;
-        // case SWT.MouseUp:
-        // if (leftMouseButton) {
-        // System.out.println("remove");
-        // table.removeListener(SWT.EraseItem, eraseItemListener);
-        // OS.SendMessage (table.handle, OS.LVM_SETEXTENDEDLISTVIEWSTYLE, OS.LVS_EX_LABELTIP, OS.LVS_EX_LABELTIP);
-        // table.setToolTipText("test");
-        // table.setBackgroundImage(imageEmpty);
-        // table.setBackgroundMode(SWT.INHERIT_DEFAULT);
-        // }
-        // break;
-        //
-        // }
-        // }
-        //            
-        // };
-        //        
-        // table.addListener(SWT.MouseDown, addRemoveEraseItemListener);
-        // table.addListener(SWT.MouseUp, addRemoveEraseItemListener);
-
         initShowMessageErrorListener(table);
 
     }
@@ -888,7 +869,7 @@ public abstract class DataMapTableView extends Composite {
         tableViewerCreatorForConstraints.setShowSelection(SHOW_SELECTION.FULL);
         tableViewerCreatorForConstraints.setLineSelection(LINE_SELECTION.MULTI);
         tableViewerCreatorForConstraints.setLayoutMode(LAYOUT_MODE.FILL_HORIZONTAL);
-//        tableViewerCreatorForConstraints.setAdjustWidthValue(ADJUST_WIDTH_VALUE);
+        // tableViewerCreatorForConstraints.setAdjustWidthValue(ADJUST_WIDTH_VALUE);
         tableViewerCreatorForConstraints.setFirstColumnMasked(true);
 
         tableForConstraints = tableViewerCreatorForConstraints.createTable();
@@ -905,15 +886,22 @@ public abstract class DataMapTableView extends Composite {
 
         new DragNDrop(mapperManager, tableForConstraints, false, true);
 
-        final TableViewer tableViewer = tableViewerCreatorForConstraints.getTableViewer();
-        tableViewer.addOpenListener(new IOpenListener() {
+        tableViewerCreatorForConstraints.addCellValueModifiedListener(new ITableCellValueModifiedListener() {
 
-            public void open(OpenEvent event) {
-                // System.out.println("OpenEvent");
-
+            public void cellValueModified(TableCellValueModifiedEvent e) {
+                unselectAllEntriesIfErrorDetected(e);
             }
-
         });
+
+        final TableViewer tableViewer = tableViewerCreatorForConstraints.getTableViewer();
+        // tableViewer.addOpenListener(new IOpenListener() {
+        //
+        // public void open(OpenEvent event) {
+        // // System.out.println("OpenEvent");
+        //
+        // }
+        //
+        // });
 
         tableViewer.addSelectionChangedListener(new ISelectionChangedListener() {
 
@@ -926,6 +914,16 @@ public abstract class DataMapTableView extends Composite {
 
         });
 
+        tableForConstraints.addListener(SWT.KeyDown, new Listener() {
+
+            public void handleEvent(Event event) {
+                processEnterKeyDown(tableViewerCreatorForConstraints, event);
+            }
+
+        });
+
+
+        
         tableViewerCreatorForConstraints.setLabelProvider(new DefaultTableLabelProvider(tableViewerCreatorForConstraints) {
 
             @Override
@@ -1334,13 +1332,13 @@ public abstract class DataMapTableView extends Composite {
 
         });
 
-        expressionTextEditor.addListener(SWT.KeyDown, new Listener() {
-
-            public void handleEvent(Event event) {
-                // highlightLineOfCursorPosition();
-            }
-
-        });
+        // expressionTextEditor.addListener(SWT.KeyDown, new Listener() {
+        //
+        // public void handleEvent(Event event) {
+        // // highlightLineOfCursorPosition();
+        // }
+        //
+        // });
 
         expressionTextEditor.addMouseListener(new MouseListener() {
 
@@ -1455,8 +1453,8 @@ public abstract class DataMapTableView extends Composite {
 
             public void applyEditorValue() {
                 ModifiedObjectInfo modifiedObjectInfo = tableViewerCreator.getModifiedObjectInfo();
-                mapperManager.getUiManager().processNewExpression(text.getText(),
-                        (ITableEntry) modifiedObjectInfo.getCurrentModifiedBean(), true);
+                mapperManager.getUiManager().parseNewExpression(text.getText(), (ITableEntry) modifiedObjectInfo.getCurrentModifiedBean(),
+                        true);
             }
 
             public void cancelEditor() {
@@ -1465,7 +1463,7 @@ public abstract class DataMapTableView extends Composite {
                 ITableEntry tableEntry = (ITableEntry) (modifiedObjectInfo.getCurrentModifiedBean() != null ? modifiedObjectInfo
                         .getCurrentModifiedBean() : modifiedObjectInfo.getPreviousModifiedBean());
                 String originalExpression = (String) modifiedObjectInfo.getOriginalPropertyBeanValue();
-                mapperManager.getUiManager().processNewExpression(originalExpression, tableEntry, true);
+                mapperManager.getUiManager().parseNewExpression(originalExpression, tableEntry, true);
             }
 
             public void editorValueChanged(boolean oldValidState, boolean newValidState) {
@@ -1474,7 +1472,7 @@ public abstract class DataMapTableView extends Composite {
                     ModifiedObjectInfo modifiedObjectInfo = tableViewerCreator.getModifiedObjectInfo();
                     ITableEntry tableEntry = (ITableEntry) (modifiedObjectInfo.getCurrentModifiedBean() != null ? modifiedObjectInfo
                             .getCurrentModifiedBean() : modifiedObjectInfo.getPreviousModifiedBean());
-                    mapperManager.getUiManager().processNewExpression(text.getText(), tableEntry, false);
+                    mapperManager.getUiManager().parseNewExpression(text.getText(), tableEntry, false);
                     resizeTextEditor(text, tableViewerCreator);
                 }
             }
@@ -1720,5 +1718,45 @@ public abstract class DataMapTableView extends Composite {
         }
         return null;
     }
+
+    /**
+     * DOC amaumont Comment method "unselectAllEntriesIfErrorDetected".
+     * 
+     * @param e
+     */
+    private void unselectAllEntriesIfErrorDetected(TableCellValueModifiedEvent e) {
+        if (e.column.getId().equals(ID_EXPRESSION_COLUMN)) {
+            ITableEntry currentEntry = (ITableEntry) e.bean;
+            TableViewer tableViewer = null;
+            if (currentEntry instanceof IColumnEntry) {
+                tableViewer = dataMapTableView.getTableViewerCreatorForColumns().getTableViewer();
+            } else if (currentEntry instanceof ConstraintTableEntry) {
+                tableViewer = dataMapTableView.getTableViewerCreatorForConstraints().getTableViewer();
+            }
+            if (currentEntry.getProblem() != null) {
+                tableViewer.getTable().deselectAll();
+            }
+        }
+    }
+
+    /**
+     * DOC amaumont Comment method "processEnterKeyDown".
+     * @param tableViewer
+     * @param event
+     */
+    private void processEnterKeyDown(final TableViewerCreator tableViewerCreator, Event event) {
+        if (event.character == '\r') {
+            Object element = null;
+            if (tableViewerCreator.getTable().getSelectionCount() == 1) {
+                element = table.getSelection()[0].getData();
+            } else {
+                element = tableViewerCreator.getModifiedObjectInfo().getPreviousModifiedBean();
+            }
+            if (element != null) {
+                tableViewerCreator.getTableViewer().editElement(element, 1);
+            }
+        }
+    }
+
 
 }
