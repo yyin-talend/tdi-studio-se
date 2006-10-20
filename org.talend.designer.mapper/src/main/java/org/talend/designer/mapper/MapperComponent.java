@@ -298,23 +298,30 @@ public class MapperComponent extends AbstractExternalNode {
         }
         if (externalData != null) {
             // rename metadata column name
-            List<ExternalMapperTable> inputTables = externalData.getInputTables();
-            for (ExternalMapperTable table : inputTables) {
+            List<ExternalMapperTable> tables = new ArrayList<ExternalMapperTable>(externalData.getInputTables());
+            tables.addAll(externalData.getOutputTables());
+            ExternalMapperTable tableFound = null;
+            for (ExternalMapperTable table : tables) {
                 if (table.getName().equals(conectionName)) {
                     List<ExternalMapperTableEntry> metadataTableEntries = table.getMetadataTableEntries();
                     for (ExternalMapperTableEntry entry : metadataTableEntries) {
                         if (entry.getName().equals(oldColumnName)) {
                             entry.setName(newColumnName);
+                            tableFound = table;
                             break;
                         }
                     }
                     break;
                 }
             }
-            TableEntryLocation oldLocation = new TableEntryLocation(conectionName, oldColumnName);
-            TableEntryLocation newLocation = new TableEntryLocation(conectionName, newColumnName);
 
-            replaceLocationsInAllExpressions(oldLocation, newLocation, false);
+            // it is necessary to update expressions only if renamed column come from input table
+            if (tableFound != null && externalData.getInputTables().indexOf(tableFound) != -1) {
+                TableEntryLocation oldLocation = new TableEntryLocation(conectionName, oldColumnName);
+                TableEntryLocation newLocation = new TableEntryLocation(conectionName, newColumnName);
+                replaceLocationsInAllExpressions(oldLocation, newLocation, false);
+            }
+
         }
     }
 
@@ -327,8 +334,7 @@ public class MapperComponent extends AbstractExternalNode {
      * @param newTableName
      * @param newColumnName
      */
-    private void replaceLocationsInAllExpressions(TableEntryLocation oldLocation, TableEntryLocation newLocation,
-            boolean tableRenamed) {
+    private void replaceLocationsInAllExpressions(TableEntryLocation oldLocation, TableEntryLocation newLocation, boolean tableRenamed) {
         // replace old location by new location for all expressions in mapper
         List<ExternalMapperTable> tables = new ArrayList<ExternalMapperTable>(externalData.getInputTables());
         tables.addAll(new ArrayList<ExternalMapperTable>(externalData.getVarsTables()));
