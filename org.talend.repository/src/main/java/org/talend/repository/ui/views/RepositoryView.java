@@ -21,6 +21,7 @@
 // ============================================================================
 package org.talend.repository.ui.views;
 
+import java.awt.event.FocusAdapter;
 import java.util.List;
 
 import org.eclipse.jface.action.Action;
@@ -44,6 +45,8 @@ import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DragSourceAdapter;
 import org.eclipse.swt.dnd.DragSourceEvent;
 import org.eclipse.swt.dnd.Transfer;
+import org.eclipse.swt.events.FocusEvent;
+import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
@@ -53,6 +56,8 @@ import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.IWorkbenchActionConstants;
+import org.eclipse.ui.contexts.IContextActivation;
+import org.eclipse.ui.contexts.IContextService;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.views.properties.IPropertySheetPage;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertySheetPageContributor;
@@ -63,6 +68,7 @@ import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.ui.ImageProvider;
 import org.talend.core.ui.ImageProvider.EImage;
+import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNode.ENodeType;
@@ -179,8 +185,27 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
         setPartName(Messages.getString("repository.title", ((RepositoryContext) CorePlugin.getContext().getProperty(
                 Context.REPOSITORY_CONTEXT_KEY)).getProject()));
 
-        getSite().getKeyBindingService().setScopes(new String[] { "talend.repository" });
+        viewer.getTree().addFocusListener(new FocusListener() {
+
+            public void focusGained(FocusEvent e) {
+                System.out.println("Repository gain focus");
+                IContextService contextService = (IContextService) RepositoryPlugin.getDefault().getWorkbench().getAdapter(
+                        IContextService.class);
+                ca = contextService.activateContext("talend.repository");
+            }
+
+            public void focusLost(FocusEvent e) {
+                System.out.println("Repository lost focus");
+                if (ca != null) {
+                    IContextService contextService = (IContextService) RepositoryPlugin.getDefault().getWorkbench().getAdapter(
+                            IContextService.class);
+                    contextService.deactivateContext(ca);
+                }
+            }
+        });
     }
+
+    IContextActivation ca;
 
     private TreeItem getObject(Tree tree, Object objectToFind) {
         for (TreeItem item : tree.getItems()) {
