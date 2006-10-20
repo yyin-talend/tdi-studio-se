@@ -24,14 +24,21 @@ package org.talend.designer.runprocess.ui.views;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
+import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.FocusEvent;
+import org.eclipse.swt.events.FocusListener;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.ui.contexts.IContextActivation;
+import org.eclipse.ui.contexts.IContextService;
 import org.eclipse.ui.part.ViewPart;
 import org.talend.designer.runprocess.RunProcessContext;
 import org.talend.designer.runprocess.RunProcessContextManager;
@@ -72,7 +79,7 @@ public class ProcessView extends ViewPart {
      */
     @Override
     public void createPartControl(Composite parent) {
-        Composite container = new Composite(parent, SWT.NONE);
+        final Composite container = new Composite(parent, SWT.NONE);
         GridLayout layout = new GridLayout();
         layout.marginHeight = 0;
         layout.marginWidth = 0;
@@ -95,7 +102,7 @@ public class ProcessView extends ViewPart {
         processComposite2 = new ProcessComposite2(container, SWT.NONE);
         processComposite2.setLayoutData(new GridData(GridData.FILL_BOTH));
 
-        //fillActionBars();
+        // fillActionBars();
 
         contextManagerListener = new PropertyChangeListener() {
 
@@ -108,7 +115,46 @@ public class ProcessView extends ViewPart {
         RunProcessPlugin.getDefault().getRunProcessContextManager().addPropertyChangeListener(contextManagerListener);
 
         runningProcessChanged();
+
+        Action runAction = new RunAction();
+        getViewSite().getKeyBindingService().registerAction(runAction);
+        Action debugAction = new DebugAction();
+        getViewSite().getKeyBindingService().registerAction(debugAction);
+        Action killAction = new KillAction();
+        getViewSite().getKeyBindingService().registerAction(killAction);
+
+        FocusListener fl = new FocusListener() {
+
+            public void focusGained(FocusEvent e) {
+                System.out.println("Run process gain focus");
+                IContextService contextService = (IContextService) RunProcessPlugin.getDefault().getWorkbench().getAdapter(
+                        IContextService.class);
+                ca = contextService.activateContext("talend.runProcess");
+            }
+
+            public void focusLost(FocusEvent e) {
+                System.out.println("Run process lost focus");
+                if (ca != null) {
+                    IContextService contextService = (IContextService) RunProcessPlugin.getDefault().getWorkbench().getAdapter(
+                            IContextService.class);
+                    contextService.deactivateContext(ca);
+                }
+            }
+        };
+
+        addListenerOnChildren(container, fl);
     }
+
+    private void addListenerOnChildren(Control parent, FocusListener focusListener) {
+        parent.addFocusListener(focusListener);
+        if (parent instanceof Composite) {
+            for (Control child : ((Composite) parent).getChildren()) {
+                addListenerOnChildren(child, focusListener);
+            }
+        }
+    }
+
+    private IContextActivation ca;
 
     private void fillActionBars() {
         IMenuManager menuManager = getViewSite().getActionBars().getMenuManager();
@@ -125,8 +171,7 @@ public class ProcessView extends ViewPart {
     @Override
     public void dispose() {
         if (contextManagerListener != null) {
-            RunProcessPlugin.getDefault().getRunProcessContextManager().removePropertyChangeListener(
-                    contextManagerListener);
+            RunProcessPlugin.getDefault().getRunProcessContextManager().removePropertyChangeListener(contextManagerListener);
             contextManagerListener = null;
         }
         super.dispose();
@@ -140,6 +185,10 @@ public class ProcessView extends ViewPart {
     @Override
     public void setFocus() {
         processComposite2.setFocus();
+
+        // IContextService contextService = (IContextService) RunProcessPlugin.getDefault().getWorkbench().getAdapter(
+        // IContextService.class);
+        // contextService.activateContext("talend.runProcess");
     }
 
     private void runningProcessChanged() {
@@ -147,9 +196,8 @@ public class ProcessView extends ViewPart {
     }
 
     public void refresh() {
-        RunProcessContext activeContext = RunProcessPlugin.getDefault().getRunProcessContextManager()
-                .getActiveContext();
-        //clearPerfAction.setProcess(activeContext != null ? activeContext.getProcess() : null);
+        RunProcessContext activeContext = RunProcessPlugin.getDefault().getRunProcessContextManager().getActiveContext();
+        // clearPerfAction.setProcess(activeContext != null ? activeContext.getProcess() : null);
         processComposite2.setProcessContext(activeContext);
 
         if (activeContext != null) {
@@ -160,5 +208,74 @@ public class ProcessView extends ViewPart {
             processNameLab.setText(Messages.getString("ProcessView.subtitleEmpty")); //$NON-NLS-1$
         }
         processNameLab.getParent().layout(true, true);
+    }
+
+    /**
+     * DOC smallet ProcessView class global comment. Detailled comment <br/>
+     * 
+     * $Id$
+     * 
+     */
+    private class RunAction extends Action {
+
+        /**
+         * DOC smallet RunAction constructor comment.
+         */
+        public RunAction() {
+            super();
+            this.setActionDefinitionId("runProcess");
+        }
+
+        @Override
+        public void run() {
+            processComposite2.exec();
+        }
+
+    }
+
+    /**
+     * DOC smallet ProcessView class global comment. Detailled comment <br/>
+     * 
+     * $Id$
+     * 
+     */
+    private class DebugAction extends Action {
+
+        /**
+         * DOC smallet RunAction constructor comment.
+         */
+        public DebugAction() {
+            super();
+            this.setActionDefinitionId("debugProcess");
+        }
+
+        @Override
+        public void run() {
+            processComposite2.debug();
+        }
+
+    }
+
+    /**
+     * DOC smallet ProcessView class global comment. Detailled comment <br/>
+     * 
+     * $Id$
+     * 
+     */
+    private class KillAction extends Action {
+
+        /**
+         * DOC smallet RunAction constructor comment.
+         */
+        public KillAction() {
+            super();
+            this.setActionDefinitionId("killProcess");
+        }
+
+        @Override
+        public void run() {
+            processComposite2.kill();
+        }
+
     }
 }

@@ -17,5 +17,45 @@
             id="org.talend.designer.runprocess.ui.views.processview"
             name="%ProcessView.label"/>
    </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <context
+            id="talend.runProcess"
+            name="Run process view"
+            parentId="org.eclipse.ui.contexts.window"/>
+      <category
+            id="Talend"
+            name="Talend"/>
+      <command
+            categoryId="Talend"
+            id="runProcess"
+            name="Run"/>
+      <command
+            categoryId="Talend"
+            id="debugProcess"
+            name="Debug"/>
+      <command
+            categoryId="Talend"
+            id="killProcess"
+            name="Kill"/>
+   </extension>
+   <extension
+         point="org.eclipse.ui.bindings">
+      <key
+            commandId="runProcess"
+            contextId="talend.runProcess"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="F5"/>
+      <key
+            commandId="debugProcess"
+            contextId="talend.runProcess"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="F7"/>
+      <key
+            commandId="killProcess"
+            contextId="talend.runProcess"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="F8"/>
+   </extension>
 
 </plugin>

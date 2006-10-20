@@ -432,7 +432,7 @@ public class ProcessComposite2 extends Composite {
         consoleText.showSelection();
     }
 
-    private void exec() {
+    public void exec() {
         if (clearBeforeExec.getSelection()) {
             processContext.clearMessages();
         }
@@ -440,13 +440,13 @@ public class ProcessComposite2 extends Composite {
         processContext.exec(getShell());
     }
 
-    private void kill() {
+    public void kill() {
         killBtn.setEnabled(false);
 
         processContext.kill();
     }
 
-    private void debug() {
+    public void debug() {
         if (contextComposite.promptConfirmLauch()) {
 
             final IContext context = contextComposite.getSelectedContext();
@@ -517,4 +517,6 @@ public class ProcessComposite2 extends Composite {
             });
         }
     }
+    
+    
 }
