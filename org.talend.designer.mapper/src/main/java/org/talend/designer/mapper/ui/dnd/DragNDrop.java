@@ -209,13 +209,13 @@ public class DragNDrop {
 
                 super.dragOver(event);
 
-//                 System.out.println("\n>>dragOver");
+                // System.out.println("\n>>dragOver");
 
                 DraggedData draggedData = TableEntriesTransfer.getInstance().getDraggedData();
                 DropContextAnalyzer analyzer = analyzeDropTarget(event, draggedData);
                 UIManager uiManager = mapperManager.getUiManager();
                 DraggingInfosPopup draggingInfosPopup = uiManager.getDraggingInfosPopup();
-                
+
                 fillEvent(event, analyzer);
                 InsertionIndicator insertionIndicator = retrieveInsertionIndicator();
                 if (analyzer.isTargetEntryValid()) {
@@ -240,8 +240,7 @@ public class DragNDrop {
                         if (itemIndexWhereInsertFromPosition != null) {
                             draggableTable.setSelection(itemIndexWhereInsertFromPosition, itemIndexWhereInsertFromPosition + size - 1);
                             if (!analyzer.targetTableIsConstraintsTable()
-                                    && itemIndexWhereInsertFromPosition + size - 1 >= draggableTable.getItemCount()
-                                    ) {
+                                    && itemIndexWhereInsertFromPosition + size - 1 >= draggableTable.getItemCount()) {
                                 insertionIndicator.updatePosition(draggableTable, draggableTable.getItemCount());
                                 insertionIndicator.setVisible(true);
                                 draggingInfosPopup.setInsertionEntryContext(true);
@@ -506,7 +505,7 @@ public class DragNDrop {
                             // nothing
                         } else if (zoneSourceEntry == Zone.OUTPUTS && zoneTarget == Zone.OUTPUTS) {
 
-                            insertClonedOutpuEntryToOutput(sourceEntriesOfEntriesBeingAdded, metadataEditorEvent, tableEntrySource,
+                            insertOutpuEntryCopyToOtherOutput(sourceEntriesOfEntriesBeingAdded, metadataEditorEvent, tableEntrySource,
                                     metadataColumnDragged, columnName);
                             atLeastOneEntryInserted = true;
 
@@ -588,7 +587,7 @@ public class DragNDrop {
                 sources.add(tableEntrySource);
             }
 
-            private void insertClonedOutpuEntryToOutput(ArrayList<ITableEntry> sources, MetadataEditorEvent metadataEditorEvent,
+            private void insertOutpuEntryCopyToOtherOutput(ArrayList<ITableEntry> sources, MetadataEditorEvent metadataEditorEvent,
                     ITableEntry tableEntrySource, IMetadataColumn metadataColumnDragged, String columnName) {
                 MetadataColumn metadataColumn = new MetadataColumn(metadataColumnDragged);
                 metadataColumn.setLabel(columnName);
@@ -615,14 +614,17 @@ public class DragNDrop {
 
             private void modifyExistingExpression(ILanguage currentLanguage, ITableEntry entryTarget, ITableEntry tableEntrySource,
                     boolean overwriteExpression, Zone zoneSourceEntry) {
-                String location = null;
+                String expression = null;
                 if (zoneSourceEntry == Zone.OUTPUTS) {
-                    location = tableEntrySource.getExpression();
+                    expression = tableEntrySource.getExpression();
                 } else {
-                    location = currentLanguage.getLocation(tableEntrySource.getParentName(), tableEntrySource.getName());
+                    expression = currentLanguage.getLocation(tableEntrySource.getParentName(), tableEntrySource.getName());
+                }
+                if (expression == null) {
+                    return;
                 }
                 if (overwriteExpression) {
-                    entryTarget.setExpression(location + "  ");
+                    entryTarget.setExpression(expression + "  ");
                 } else {
                     String currentTargetExpression = entryTarget.getExpression();
                     if (currentTargetExpression == null) {
@@ -637,7 +639,7 @@ public class DragNDrop {
                     } else if (!isEmpty) {
                         space = "  ";
                     }
-                    entryTarget.setExpression(currentTargetExpression + space + location + " ");
+                    entryTarget.setExpression(currentTargetExpression + space + expression + " ");
                 }
             }
 
