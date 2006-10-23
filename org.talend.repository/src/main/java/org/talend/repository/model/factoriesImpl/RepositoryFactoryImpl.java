@@ -531,13 +531,15 @@ public class RepositoryFactoryImpl implements IRepositoryFactory {
         }
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.repository.model.IRepositoryFactory#createUser(org.talend.core.model.general.User)
-     */
-    public void findUser(Project project, RepositoryContext repositoryContext) throws PersistenceException {
-        this.repositoryFactoryFromProvider.findUser(project, repositoryContext);
+    public boolean findUser(Project project, RepositoryContext repositoryContext) throws PersistenceException {
+        return this.repositoryFactoryFromProvider.findUser(project, repositoryContext);
     }
 
+    public void createUser(Project project, RepositoryContext repositoryContext) throws PersistenceException {
+        this.repositoryFactoryFromProvider.createUser(project, repositoryContext);
+    }
+
+    public void initialize() {
+        this.repositoryFactoryFromProvider.initialize();
+    }
 }

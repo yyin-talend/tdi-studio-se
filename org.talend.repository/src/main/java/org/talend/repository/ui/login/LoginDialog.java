@@ -183,7 +183,10 @@ public class LoginDialog extends TitleAreaDialog {
             // check if user already exists retrieve it else create it
             IRepositoryFactory repositoryFactory = RepositoryFactoryProvider.getInstance(repositoryContext);
             try {
-                repositoryFactory.findUser(project, repositoryContext);
+                boolean found = repositoryFactory.findUser(project, repositoryContext);
+                if (!found && repositoryFactory.getType().equals(ERepositoryType.LOCAL)) {
+                    repositoryFactory.createUser(project, repositoryContext);
+                }
             } catch (PersistenceException e) {
                 logged = false;
                 e.printStackTrace();

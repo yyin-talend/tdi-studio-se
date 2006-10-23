@@ -50,13 +50,17 @@ public interface IRepositoryFactory {
 
     public void setRepositoryContext(RepositoryContext repositoryContext);
 
+    public void initialize();
+    
     public String getNextId();
 
     public Project createProject(String label, String description, ECodeLanguage language, User author)
             throws PersistenceException;
 
-    public void findUser(Project project, RepositoryContext repositoryContext) throws PersistenceException;
+    public boolean findUser(Project project, RepositoryContext repositoryContext) throws PersistenceException;
 
+    public void createUser(Project project, RepositoryContext repositoryContext) throws PersistenceException;
+    
     public Project[] readProject(String server, String port, User user) throws PersistenceException;
 
     public Folder createFolder(ERepositoryObjectType type, IPath path, String label) throws PersistenceException;

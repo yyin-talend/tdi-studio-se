@@ -77,6 +77,7 @@ public class RepositoryFactoryProvider {
                     if (type == type2) {
                         toReturn = new RepositoryFactoryImpl(repositoryFactory);
                         toReturn.setRepositoryContext(repositoryContext);
+                        toReturn.initialize();
                         listSingleton.put(repositoryContext, toReturn);
                         break;
                     }
