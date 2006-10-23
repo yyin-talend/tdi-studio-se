@@ -71,8 +71,9 @@ public class FolderHelper {
         doCreateFolder(path, FolderType.SYSTEM_FOLDER_LITERAL);
     }
 
-    public void createFolder(String path) {
+    public String createFolder(String path) {
         createFolder(new Path(path));
+        return getFolder(path).getProperty().getId();
     }
 
     public void createFolder(IPath path) {
