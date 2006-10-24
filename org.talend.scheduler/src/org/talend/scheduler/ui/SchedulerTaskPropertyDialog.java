@@ -1,8 +1,30 @@
+// ============================================================================
+//
+// Talend Community Edition
+//
+// Copyright (C) 2006 Talend - www.talend.com
+//
+// This library is free software; you can redistribute it and/or
+// modify it under the terms of the GNU Lesser General Public
+// License as published by the Free Software Foundation; either
+// version 2.1 of the License, or (at your option) any later version.
+//
+// This library is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+// Lesser General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program; if not, write to the Free Software
+// Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+//
+// ============================================================================
 package org.talend.scheduler.ui;
+
+import java.util.List;
 
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -11,273 +33,628 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.FileDialog;
-import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.TabFolder;
+import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Text;
+import org.talend.scheduler.SchedulerPlugin;
+import org.talend.scheduler.core.CommandModeType;
+import org.talend.scheduler.core.ExceptionHandler;
 import org.talend.scheduler.core.ScheduleTask;
+import org.talend.scheduler.core.SchedulerException;
+import org.talend.scheduler.core.TalendJobManager;
+import org.talend.scheduler.i18n.Messages;
 
+/**
+ * A Scheduler Task property dialog. $Id$
+ */
 public class SchedulerTaskPropertyDialog extends Dialog {
 
-	public enum DialogType {
-		ADD, MODIFY
-	}
+    /** Enum to distinguish Dialog's type add or modify. */
+    public enum DialogType {
+        ADD,
+        MODIFY
+    }
 
-	DialogType dialogType = DialogType.ADD;
+    DialogType dialogType = DialogType.ADD;
 
-	private ScheduleTask task;
+    private ScheduleTask task;
 
-	private CommandModeGroup commandGroup;
+    private CommandModeComposite commandComposite;
 
-	private DisplayResultComposite resultComposite;
+    private DisplayResultComposite resultComposite;
 
-	private HoursMinutesGroup hourMinGroup;
+    private HoursMinutesGroup hourMinGroup;
 
-	private DayOfWeekGroup dayofWeekGroup;
+    private DayOfWeekGroup dayofWeekGroup;
 
-	private MonthGroup monthGroup;
+    private MonthGroup monthGroup;
 
-	private DayOfMonthGroup dayofMonth;
+    private DayOfMonthGroup dayofMonth;
 
-	/**
-	 * Create a new task
-	 * 
-	 * @param parentShell
-	 */
-	public SchedulerTaskPropertyDialog(Shell parentShell) {
-		super(parentShell);
-		dialogType = DialogType.ADD;
-	}
+    /**
+     * Create a new task.
+     * 
+     * @param parentShell
+     */
+    public SchedulerTaskPropertyDialog(Shell parentShell) {
+        super(parentShell);
+        dialogType = DialogType.ADD;
+    }
 
-	/**
-	 * Used for updating a existing task
-	 * 
-	 * @param parentShell
-	 * @param task
-	 */
-	public SchedulerTaskPropertyDialog(Shell parentShell, ScheduleTask task) {
-		super(parentShell);
-		this.task = task;
-		dialogType = DialogType.MODIFY;
-	}
+    /**
+     * Used for updating a existing task.
+     * 
+     * @param parentShell
+     * @param task
+     */
+    public SchedulerTaskPropertyDialog(Shell parentShell, ScheduleTask task) {
+        super(parentShell);
+        this.task = task;
+        dialogType = DialogType.MODIFY;
+    }
 
-	protected void configureShell(Shell shell) {
-		super.configureShell(shell);
-		// Set the title bar text
-		if (dialogType == DialogType.ADD) {
-			shell.setText("TOS - Talend Scheduler - Add a task");
-		} else {
-			shell.setText("TOS - Talend Scheduler - Modify a task");
-		}
-		
-	}
+   
+    /* (non-Javadoc)
+     * @see org.eclipse.jface.window.Window#configureShell(org.eclipse.swt.widgets.Shell)
+     */
+    protected void configureShell(Shell shell) {
+        super.configureShell(shell);
+        // Set the title bar text
+        if (dialogType == DialogType.ADD) {
+            shell.setText(Messages.getString("SchedulerTaskPropertyDialog.addTaskPrompt")); //$NON-NLS-1$
+        } else {
+            shell.setText(Messages.getString("SchedulerTaskPropertyDialog.modifyTaskPrompt")); //$NON-NLS-1$
+        }
 
-	@Override
-	protected void setShellStyle(int newShellStyle) {
-		super.setShellStyle(newShellStyle | SWT.RESIZE);
-	}
+    }
 
-	/**
-	 * Create contents of the dialog
-	 * 
-	 * @param parent
-	 */
-	@Override
-	protected Control createDialogArea(Composite parent) {
-		Composite container = (Composite) super.createDialogArea(parent);
-		final GridLayout gridLayout = new GridLayout();
-		gridLayout.numColumns = 2;
-		container.setLayout(gridLayout);
+    /**
+     * @Override
+     */
+    protected void setShellStyle(int newShellStyle) {
+        super.setShellStyle(newShellStyle | SWT.RESIZE);
+    }
 
-		createCommandGroup(container);
-		createDayofmonthGroup(container);
+    /*
+     * Create contents of the dialog.
+     * 
+     * @see org.eclipse.jface.dialogs.Dialog#createDialogArea(org.eclipse.swt.widgets.Composite)
+     */
+    @Override
+    protected Control createDialogArea(Composite parent) {
+        Composite container = (Composite) super.createDialogArea(parent);
+        final GridLayout gridLayout = new GridLayout();
+        gridLayout.numColumns = 2;
+        container.setLayout(gridLayout);
 
-		createMonthGroup(container);
-		createDayofweekGroup(container);
-		createHourminuteGroup(container);
+        createCommandGroup(container);
+        createDayofmonthGroup(container);
 
-		createResultComposite(container);
+        createMonthGroup(container);
+        createDayofweekGroup(container);
+        createHourminuteGroup(container);
 
-		commandGroup.setChangeListener(resultComposite);
+        createResultComposite(container);
 
-		hourMinGroup.setChangeListener(resultComposite);
+        commandComposite.setChangeListener(resultComposite);
 
-		dayofWeekGroup.setChangeListener(resultComposite);
+        hourMinGroup.setChangeListener(resultComposite);
 
-		monthGroup.setChangeListener(resultComposite);
+        dayofWeekGroup.setChangeListener(resultComposite);
 
-		dayofMonth.setChangeListener(resultComposite);
+        monthGroup.setChangeListener(resultComposite);
 
-		updateUI();
+        dayofMonth.setChangeListener(resultComposite);
 
-		return container;
-	}
+        resultComposite.addWidgetEnableListener(commandComposite);
+        resultComposite.addWidgetEnableListener(hourMinGroup);
+        resultComposite.addWidgetEnableListener(dayofWeekGroup);
+        resultComposite.addWidgetEnableListener(monthGroup);
+        resultComposite.addWidgetEnableListener(dayofMonth);
 
-	/**
-	 * Refresh the UI according to the input task
-	 */
-	private void updateUI() {
-		if (task == null) {
-			return;
-		}
+        resultComposite.enableAllWidgets(false);
 
-		commandGroup.update(task);
-		hourMinGroup.update(task);
-		dayofWeekGroup.update(task);
-		monthGroup.update(task);
-		dayofMonth.update(task);
-		resultComposite.update(task);
-	}
+        updateUI();
 
-	@Override
-	protected void okPressed() {
-		String checkResult = resultComposite.check();
-		if (checkResult != null) {
+        return container;
+    }
 
-			MessageDialog.openError(this.getShell(), "Warn", checkResult);
+    /**
+     * Refresh the UI according to the input task.
+     */
+    private void updateUI() {
+        if (task == null) {
+            return;
+        }
 
-			return;
-		}
+        commandComposite.update(task);
+        hourMinGroup.update(task);
+        dayofWeekGroup.update(task);
+        monthGroup.update(task);
+        dayofMonth.update(task);
+        resultComposite.update(task);
 
-		if (task == null) {
-			task = new ScheduleTask();
-		}
-		resultComposite.updateTaskProperty(task);
-		super.okPressed();
-	}
+    }
 
-	public ScheduleTask getResult() {
-		return task;
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.jface.dialogs.Dialog#okPressed()
+     */
+    @Override
+    protected void okPressed() {
 
-	private void createResultComposite(Composite container) {
-		resultComposite = new DisplayResultComposite(container, SWT.NONE);
-		final GridData gridData = new GridData(GridData.FILL_BOTH);
-		gridData.horizontalSpan = 2;
-		resultComposite.setLayoutData(gridData);
+        if (task == null) {
+            task = new ScheduleTask();
+        }
+        try {
+            resultComposite.updateTaskProperty(task);
+        } catch (SchedulerException e) {
+            ExceptionHandler.handleErrorWithDialog(this.getShell(), e);
+            return;
+            // MessageDialog.openError(this.getShell(), "Warn", e.getMessage());
+        }
 
-	}
+        if (commandComposite.getCommandMode() == CommandModeType.TalendJob) {
+            commandComposite.updateTaskProperty(task);
+        } else if (commandComposite.getCommandMode() == CommandModeType.Crontab) {
+            task.setContext(null);
+            task.setProject(null);
+            task.setJob(null);
+        }
+        super.okPressed();
+    }
 
-	private void createCommandGroup(Composite container) {
-		commandGroup = new CommandModeGroup(container, SWT.NONE);
-		final GridData gridData = new GridData(GridData.FILL_HORIZONTAL);
-		gridData.horizontalSpan = 2;
-		commandGroup.setLayoutData(gridData);
-	}
+    /**
+     * Gets the schduler task added or modified.
+     * 
+     * @return ScheduleTask
+     */
+    public ScheduleTask getResult() {
+        return task;
+    }
 
-	private void createDayofmonthGroup(Composite container) {
-		dayofMonth = new DayOfMonthGroup(container, SWT.NONE);
-		final GridData gridData = new GridData(GridData.FILL_HORIZONTAL);
-		dayofMonth.setLayoutData(gridData);
-	}
+    /**
+     * Creates the result coposite .
+     * 
+     * @param container Composite
+     */
+    private void createResultComposite(Composite container) {
+        resultComposite = new DisplayResultComposite(container, SWT.NONE);
+        final GridData gridData = new GridData(GridData.FILL_BOTH);
+        gridData.horizontalSpan = 2;
+        resultComposite.setLayoutData(gridData);
 
-	private void createMonthGroup(Composite container) {
-		monthGroup = new MonthGroup(container, SWT.NONE);
-		final GridData gridData = new GridData(GridData.FILL_HORIZONTAL
-				| GridData.VERTICAL_ALIGN_FILL);
-		monthGroup.setLayoutData(gridData);
-	}
+    }
 
-	private void createDayofweekGroup(Composite container) {
-		dayofWeekGroup = new DayOfWeekGroup(container, SWT.NONE);
-		final GridData gridData = new GridData(GridData.FILL_HORIZONTAL
-				| GridData.VERTICAL_ALIGN_FILL);
-		dayofWeekGroup.setLayoutData(gridData);
-	}
+    /**
+     * Creates the command coposite .
+     * 
+     * @param container Composite
+     */
+    private void createCommandGroup(Composite container) {
+        commandComposite = new CommandModeComposite(container, SWT.NONE);
+        final GridData gridData = new GridData(GridData.FILL_HORIZONTAL);
+        gridData.horizontalSpan = 2;
+        commandComposite.setLayoutData(gridData);
+    }
 
-	private void createHourminuteGroup(Composite container) {
-		hourMinGroup = new HoursMinutesGroup(container, SWT.NONE);
-		final GridData gridData = new GridData(GridData.FILL_HORIZONTAL);
-		hourMinGroup.setLayoutData(gridData);
-	}
+    /**
+     * Creates the Dayofmonth coposite .
+     * 
+     * @param container Composite
+     */
+    private void createDayofmonthGroup(Composite container) {
+        dayofMonth = new DayOfMonthGroup(container, SWT.NONE);
+        final GridData gridData = new GridData(GridData.FILL_HORIZONTAL);
+        dayofMonth.setLayoutData(gridData);
+    }
 
-	/**
-	 * Create contents of the button bar
-	 * 
-	 * @param parent
-	 */
-	@Override
-	protected void createButtonsForButtonBar(Composite parent) {
-		if (dialogType == DialogType.ADD) {
-			createButton(parent, IDialogConstants.OK_ID, "Add this entry", true);
-		} else {
-			createButton(parent, IDialogConstants.OK_ID, "Modify this entry",
-					true);
-		}
-		createButton(parent, IDialogConstants.CANCEL_ID,
-				IDialogConstants.CANCEL_LABEL, false);
-	}
+    /**
+     * Creates the Month coposite .
+     * 
+     * @param container Composite
+     */
+    private void createMonthGroup(Composite container) {
+        monthGroup = new MonthGroup(container, SWT.NONE);
+        final GridData gridData = new GridData(GridData.FILL_HORIZONTAL | GridData.VERTICAL_ALIGN_FILL);
+        monthGroup.setLayoutData(gridData);
+    }
 
-	class CommandModeGroup extends Group {
+    /**
+     * Creates the week coposite .
+     * 
+     * @param container Composite
+     */
+    private void createDayofweekGroup(Composite container) {
+        dayofWeekGroup = new DayOfWeekGroup(container, SWT.NONE);
+        final GridData gridData = new GridData(GridData.FILL_HORIZONTAL | GridData.VERTICAL_ALIGN_FILL);
+        dayofWeekGroup.setLayoutData(gridData);
+    }
 
-		ResultChangedListener changeListener = null;
+    /**
+     * Creates the Hour/Minutes coposite .
+     * 
+     * @param container Composite
+     */
+    private void createHourminuteGroup(Composite container) {
+        hourMinGroup = new HoursMinutesGroup(container, SWT.NONE);
+        final GridData gridData = new GridData(GridData.FILL_HORIZONTAL);
+        hourMinGroup.setLayoutData(gridData);
+    }
 
-		private Text text;
+    /**
+     * Create contents of the button bar.
+     * 
+     * @param parent Composite
+     */
+    @Override
+    protected void createButtonsForButtonBar(Composite parent) {
+        if (dialogType == DialogType.ADD) {
+            createButton(parent, IDialogConstants.OK_ID, Messages
+                    .getString("SchedulerTaskPropertyDialog.addTaskButton"), true); //$NON-NLS-1$
+        } else {
+            createButton(parent, IDialogConstants.OK_ID, Messages
+                    .getString("SchedulerTaskPropertyDialog.modifyTaskButton"), true); //$NON-NLS-1$
+        }
+        createButton(parent, IDialogConstants.CANCEL_ID, IDialogConstants.CANCEL_LABEL, false);
+    }
 
-		public void setChangeListener(ResultChangedListener changeListener) {
-			this.changeListener = changeListener;
-		}
+    /**
+     * The Command mode composite,it contains a tab folder with command and Talend job tab.
+     * 
+     * @author qianbing
+     * 
+     */
+    class CommandModeComposite extends Composite implements IWidgetEnableListener {
 
-		public void update(ScheduleTask task) {
-			text.setText(task.getCommand());
+        IResultChangedListener changeListener = null;
 
-		}
+        private Text text;
 
-		public CommandModeGroup(Composite parent, int style) {
-			super(parent, style);
-			this.setText("Command");
+        private Combo contextCombo;
 
-			final GridLayout gridLayout_1 = new GridLayout();
-			gridLayout_1.numColumns = 3;
-			this.setLayout(gridLayout_1);
+        private Combo jobCombo;
 
-			final Label label = new Label(this, SWT.NONE);
-			label.setText("Command");
+        private Combo projectCombo;
 
-			text = new Text(this, SWT.BORDER);
-			final GridData gridData_1 = new GridData(SWT.FILL, SWT.CENTER,
-					true, false);
-			gridData_1.widthHint = 525;
-			text.setLayoutData(gridData_1);
-			text.addModifyListener(new ModifyListener() {
-				public void modifyText(ModifyEvent e) {
-					if (changeListener == null) {
-						return;
-					}
-					changeListener.commandChanged(text.getText());
-				}
-			});
+        private Button button;
 
-			final Button button = new Button(this, SWT.NONE);
-			button.setText("...");
-			button.addSelectionListener(new SelectionAdapter() {
-				public void widgetSelected(SelectionEvent e) {
-					FileDialog fd = new FileDialog(getParent().getShell());
-					String fileName = fd.open();
-					if (fileName == null) {
-						return;
-					}
-					updateFileName(fileName);
-				}
-			});
-		}
+        private TabFolder tf;
 
-		public void updateFileName(String newFileName) {
-			String cmd = text.getText();
-			int index = cmd.indexOf(">>");
-			if (index != -1) {
-				cmd = cmd.substring(0, index);
-			}
-			cmd = cmd.trim();
-			cmd += " >> " + newFileName;
-			text.setText(cmd);
-		}
+        private TalendJobManager jobManager;
 
-		protected void checkSubclass() {
-		}
-	}
+        /**
+         * Sets the changeListener.
+         * 
+         * @param changeListener IResultChangedListener
+         */
+        public void setChangeListener(IResultChangedListener changeListener) {
+            this.changeListener = changeListener;
+        }
+
+        /**
+         * DOC qianbing Comment method "updateTaskProperty".
+         * 
+         * @param taskInput ScheduleTask
+         */
+        public void updateTaskProperty(ScheduleTask taskInput) {
+            taskInput.setJob(jobCombo.getText());
+            taskInput.setContext(contextCombo.getText());
+            taskInput.setProject(projectCombo.getText());
+        }
+
+        /**
+         * Update the command text or the combo by the input ScheduleTasks.
+         * 
+         * @param taskInput ScheduleTask
+         */
+        public void update(ScheduleTask taskInput) {
+            if (taskInput.getTaskMode() == CommandModeType.Crontab) {
+                tf.setSelection(CommandModeType.Crontab.ordinal());
+                text.setText(taskInput.getCommand());
+
+            } else {
+                tf.setSelection(CommandModeType.TalendJob.ordinal());
+                projectCombo.setText(taskInput.getProject());
+                jobCombo.setText(taskInput.getJob());
+                contextCombo.setText(taskInput.getContext());
+            }
+        }
+
+        public CommandModeComposite(Composite parent, int style) {
+            super(parent, style);
+            createAreaContent();
+        }
+
+        /**
+         * Gets the command mode type.
+         * 
+         * @return CommandModeType
+         */
+        public CommandModeType getCommandMode() {
+            if (tf.getSelectionIndex() == CommandModeType.Crontab.ordinal()) {
+                return CommandModeType.Crontab;
+            } else {
+                return CommandModeType.TalendJob;
+            }
+        }
+
+        /**
+         * Creates the content area.
+         */
+        private void createAreaContent() {
+
+            GridLayout layout = new GridLayout();
+            this.setLayout(layout);
+
+            tf = new TabFolder(this, SWT.NONE);
+            GridData gd = new GridData(GridData.FILL_HORIZONTAL);
+            tf.setLayoutData(gd);
+
+            TabItem tab1 = new TabItem(tf, SWT.BORDER);
+            tab1.setText(Messages.getString("SchedulerTaskPropertyDialog.commandLabel")); //$NON-NLS-1$
+            tab1.setControl(createCrontabCommand(tf));
+
+            TabItem tab2 = new TabItem(tf, SWT.BORDER);
+            tab2.setText(Messages.getString("SchedulerTaskPropertyDialog.talendJobText")); //$NON-NLS-1$
+            tab2.setControl(createTalendCommand(tf));
+
+            tf.addSelectionListener(new SelectionAdapter() {
+
+                public void widgetSelected(SelectionEvent e) {
+
+                    refreshResultCompositeByTab();
+
+                }
+            });
+        }
+
+        /**
+         * DOC dev Comment method "refreshResultCompositeByTab".
+         */
+        protected void refreshResultCompositeByTab() {
+
+            if (tf.getSelectionIndex() == CommandModeType.Crontab.ordinal()) {
+                // selects crontab command tab
+                refreshCommandDiaplay(text.getText());
+            } else {
+                refreshTalendJobCommand();
+            }
+        }
+
+        /**
+         * Creates Talend Command composite.
+         * @param parent Composite
+         * @return Composite
+         */
+        private Composite createTalendCommand(Composite parent) {
+            Composite container = new Composite(parent, SWT.NONE);
+            GridLayout layout = new GridLayout();
+            layout.numColumns = 6;
+            layout.horizontalSpacing = 20;
+            container.setLayout(layout);
+
+            Label label = new Label(container, SWT.NONE);
+            label.setText(Messages.getString("SchedulerTaskPropertyDialog.projectLabel")); //$NON-NLS-1$
+
+            projectCombo = new Combo(container, SWT.PUSH);
+
+            GridData gd = new GridData(SWT.FILL, SWT.CENTER, true, false);
+            // gridData_1.widthHint = 525;
+            projectCombo.setLayoutData(gd);
+
+            label = new Label(container, SWT.NONE);
+            label.setText(Messages.getString("SchedulerTaskPropertyDialog.jobLabel")); //$NON-NLS-1$
+
+            jobCombo = new Combo(container, SWT.PUSH);
+
+            gd = new GridData(SWT.FILL, SWT.CENTER, true, false);
+            // gridData_1.widthHint = 525;
+            jobCombo.setLayoutData(gd);
+
+            label = new Label(container, SWT.NONE);
+            label.setText(Messages.getString("SchedulerTaskPropertyDialog.contextLabel")); //$NON-NLS-1$
+
+            contextCombo = new Combo(container, SWT.PUSH);
+
+            gd = new GridData(SWT.FILL, SWT.CENTER, true, false);
+            // gridData_1.widthHint = 525;
+            contextCombo.setLayoutData(gd);
+
+            initailCombo();
+
+            ModifyListener genCommandListener = new ModifyListener() {
+
+                public void modifyText(ModifyEvent e) {
+                    refreshTalendJobCommand();
+                }
+
+            };
+
+            projectCombo.addModifyListener(genCommandListener);
+            jobCombo.addModifyListener(genCommandListener);
+            contextCombo.addModifyListener(genCommandListener);
+
+            ModifyListener syncJobAndContextListener = new ModifyListener() {
+
+                public void modifyText(ModifyEvent e) {
+                    String jobName = jobCombo.getText();
+                    jobName = jobName.substring(jobName.lastIndexOf("/") + 1);
+
+                    List<String> contextList = jobManager.updateContextList(jobName);
+
+                    contextCombo.setItems(contextList.toArray(new String[contextList.size()]));
+
+                    contextCombo.select(0);
+
+                }
+            };
+
+            jobCombo.addModifyListener(syncJobAndContextListener);
+
+            return container;
+        }
+
+        /**
+         * Refreshes talend Job Command.
+         */
+        private void refreshTalendJobCommand() {
+            try {
+                String command = jobManager.getCommandByTalendJob(projectCombo.getText(), jobCombo.getText(),
+                        contextCombo.getText());
+                refreshCommandDiaplay(command);
+            } catch (Exception ex) {
+                SchedulerPlugin.log(ex);
+            }
+        }
+
+        /**
+         * Initial the status of the project combo,job combo and context combo.
+         */
+        void initailCombo() {
+            jobManager = new TalendJobManager();
+
+            projectCombo.setItems(new String[] { (jobManager.getCurrentProject().getLabel()) });
+            projectCombo.select(0);
+
+            List<String> jobs = jobManager.getCurrentProjectJobs();
+            if (jobs.isEmpty()) {
+                return;
+            }
+            String[] jobItems = jobs.toArray(new String[jobs.size()]);
+
+            jobCombo.setItems(jobItems);
+
+            if (dialogType.equals(DialogType.ADD)) {
+
+                jobCombo.select(0);
+
+                String selectedJobName = jobItems[0];
+                selectedJobName = selectedJobName.substring(selectedJobName.lastIndexOf("/") + 1);
+                // change context's value
+                List<String> contextList = jobManager.updateContextList(selectedJobName);
+                contextCombo.setItems(contextList.toArray(new String[contextList.size()]));
+                contextCombo.select(0);
+
+            }
+
+            if (dialogType.equals(DialogType.MODIFY)) {
+
+                if (task.getTaskMode() != CommandModeType.TalendJob) {
+                    return;
+                }
+                String selectedJobName = task.getJob();
+
+                jobCombo.setText(selectedJobName);
+
+                selectedJobName = selectedJobName.substring(selectedJobName.lastIndexOf("/") + 1);
+
+                // change context's value
+                List<String> contextList = jobManager.updateContextList(selectedJobName);
+                contextCombo.setItems(contextList.toArray(new String[contextList.size()]));
+
+                String selectedContextName = task.getContext();
+                contextCombo.setText(selectedContextName);
+            }
+        }
+
+        /**
+         * Creates Crontab Command composite.
+         * 
+         * @param parent Composite
+         * @return Composite
+         */
+        private Composite createCrontabCommand(Composite parent) {
+            Composite container = new Composite(parent, SWT.NONE);
+            GridLayout layout = new GridLayout();
+            layout.numColumns = 3;
+            container.setLayout(layout);
+
+            final Label label = new Label(container, SWT.NONE);
+            label.setText(Messages.getString("SchedulerTaskPropertyDialog.commandLabel")); //$NON-NLS-1$
+
+            text = new Text(container, SWT.BORDER);
+            final GridData gd = new GridData(SWT.FILL, SWT.CENTER, true, false);
+            gd.widthHint = 525;
+            text.setLayoutData(gd);
+            text.addModifyListener(new ModifyListener() {
+
+                public void modifyText(ModifyEvent e) {
+                    refreshCommandDiaplay(text.getText());
+                }
+            });
+
+            button = new Button(container, SWT.NONE);
+            button.setText("..."); //$NON-NLS-1$
+            button.addSelectionListener(new SelectionAdapter() {
+
+                public void widgetSelected(SelectionEvent e) {
+                    FileDialog fd = new FileDialog(getParent().getShell());
+                    String fileName = fd.open();
+                    if (fileName == null) {
+                        return;
+                    }
+                    updateFileName(fileName);
+                }
+            });
+            return container;
+        }
+
+        /**
+         * When command changes,refresh the displaying of the command field.
+         * 
+         * @param msg String
+         */
+        private void refreshCommandDiaplay(String msg) {
+            if (changeListener == null) {
+                return;
+            }
+            changeListener.commandChanged(msg);
+        }
+
+        /**
+         * Caculates the file's name.
+         * 
+         * @param newFileName String
+         */
+        public void updateFileName(String newFileName) {
+            String cmd = text.getText();
+            int index = cmd.indexOf(">>"); //$NON-NLS-1$
+            if (index != -1) {
+                cmd = cmd.substring(0, index);
+            }
+            cmd = cmd.trim();
+            cmd += " >> " + newFileName; //$NON-NLS-1$
+            text.setText(cmd);
+        }
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see org.eclipse.swt.widgets.Composite#checkSubclass()
+         */
+        protected void checkSubclass() {
+        }
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see org.talend.scheduler.ui.IWidgetEnableListener#enableAll(boolean)
+         */
+        public void enableAll(boolean enabled) {
+            button.setEnabled(enabled);
+            text.setEnabled(enabled);
+            contextCombo.setEnabled(enabled);
+            jobCombo.setEnabled(enabled);
+            projectCombo.setEnabled(enabled);
+        }
+    }
 
 }

@@ -13,18 +13,21 @@
       </view>
    </extension>
    
-   
-   <!--extension
+   <extension
          point="org.eclipse.ui.perspectiveExtensions">
       <perspectiveExtension
-            targetID="Test.perspective">
-         <view
-               ratio="0.1"
-               relative="Test.view"
-               relationship="right"
-               id="org.talend.scheduler.views.SampleView">
+            targetID="org.talend.rcp.perspective">
+          <view
+               relative="org.talend.designer.runprocess.ui.views.processviews"
+               visible="true"
+               id="org.talend.scheduler.views.Schedulers"
+               relationship="stack">
          </view>
+        
+          <showInPart
+               id="org.talend.scheduler.views.Scheduler">
+         </showInPart>
       </perspectiveExtension>
-   </extension-->
+   </extension>
 
 </plugin>

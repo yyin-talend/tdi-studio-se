@@ -1,9 +1,30 @@
+// ============================================================================
+//
+// Talend Community Edition
+//
+// Copyright (C) 2006 Talend - www.talend.com
+//
+// This library is free software; you can redistribute it and/or
+// modify it under the terms of the GNU Lesser General Public
+// License as published by the Free Software Foundation; either
+// version 2.1 of the License, or (at your option) any later version.
+//
+// This library is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+// Lesser General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program; if not, write to the Free Software
+// Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+//
+// ============================================================================
 package org.talend.scheduler.ui;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.dnd.Clipboard;
-import org.eclipse.swt.dnd.TextTransfer;
-import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
@@ -13,16 +34,23 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.talend.scheduler.core.ScheduleTask;
+import org.talend.scheduler.core.SchedulerException;
+import org.talend.scheduler.i18n.Messages;
+
 
 /**
  * 
- * @author Tang Fengneng
+ * This class is using for displaying result composite.
+ * 
+ * $Id$
  * 
  */
 public class DisplayResultComposite extends Composite implements
-		ResultChangedListener {
+		IResultChangedListener {
 
-	private Text txtCustom;
+	private static final int NUM_COLUMN = 8;
+
+    private Text txtCustom;
 
 	private Text txtCommand;
 
@@ -39,15 +67,21 @@ public class DisplayResultComposite extends Composite implements
 	private Button btnCopy;
 
 	private Button customCrontabEntryButton;
+    
+    private Button rdbtnGenerated;
 
 	public DisplayResultComposite(Composite parent, int style) {
 		super(parent, style);
 		init();
 	}
 
-	private void init() {
+	/**
+     * 
+     * Initialize.
+	 */
+    private void init() {
 		final GridLayout gridLayout = new GridLayout();
-		gridLayout.numColumns = 8;
+		gridLayout.numColumns = NUM_COLUMN;
 		this.setLayout(gridLayout);
 
 		new Label(this, SWT.NONE);
@@ -55,33 +89,33 @@ public class DisplayResultComposite extends Composite implements
 		GridData gd = new GridData();
 		gd.horizontalSpan = 1;
 		lblMinute.setLayoutData(gd);
-		lblMinute.setText("Minute");
+		lblMinute.setText(Messages.getString("DisplayResultComposite.minuteLabel")); //$NON-NLS-1$
 
 		final Label lblHour = new Label(this, SWT.NONE);
 		lblHour.setLayoutData(new GridData());
-		lblHour.setText("Hour");
+		lblHour.setText(Messages.getString("DisplayResultComposite.hourLabel")); //$NON-NLS-1$
 
 		final Label lblMonth = new Label(this, SWT.NONE);
 		lblMonth.setLayoutData(new GridData());
-		lblMonth.setText("Month");
+		lblMonth.setText(Messages.getString("DisplayResultComposite.monthLabel")); //$NON-NLS-1$
 
 		final Label lblDay = new Label(this, SWT.NONE);
 		lblDay.setLayoutData(new GridData());
-		lblDay.setText("Day");
+		lblDay.setText(Messages.getString("DisplayResultComposite.dayLabel")); //$NON-NLS-1$
 
 		final Label lblWeekday = new Label(this, SWT.NONE);
 		lblWeekday.setLayoutData(new GridData());
-		lblWeekday.setText("Weekday");
+		lblWeekday.setText(Messages.getString("DisplayResultComposite.weekdayLabel")); //$NON-NLS-1$
 
 		final Label lblCommand = new Label(this, SWT.NONE);
 		lblCommand.setLayoutData(new GridData());
-		lblCommand.setText("Command");
+		lblCommand.setText(Messages.getString("DisplayResultComposite.commandLabel")); //$NON-NLS-1$
 		new Label(this, SWT.NONE);
 
-		final Button rdbtnGenerated = new Button(this, SWT.RADIO);
+		rdbtnGenerated = new Button(this, SWT.RADIO);
 		rdbtnGenerated.setLayoutData(new GridData());
-		rdbtnGenerated.setText("Generated CronTab entry");
-		rdbtnGenerated.setSelection(true);
+		rdbtnGenerated.setText(Messages.getString("DisplayResultComposite.generatedCronTabText")); //$NON-NLS-1$
+		rdbtnGenerated.setSelection(false);
 
 		txtMinute = new Text(this, SWT.BORDER);
 		txtMinute.setEditable(false);
@@ -107,18 +141,18 @@ public class DisplayResultComposite extends Composite implements
 
 		txtCommand = new Text(this, SWT.BORDER);
 		txtCommand.setEditable(false);
-		final GridData gridData_1 = new GridData(SWT.FILL, SWT.CENTER, true,
+		final GridData gridData1 = new GridData(SWT.FILL, SWT.CENTER, true,
 				false);
-		gridData_1.heightHint = 15;
-		gridData_1.widthHint = 130;
-		txtCommand.setLayoutData(gridData_1);
+		gridData1.heightHint = 15;
+		gridData1.widthHint = 130;
+		txtCommand.setLayoutData(gridData1);
 
 		btnCopy = new Button(this, SWT.NONE);
-		final GridData gridData_2 = new GridData(SWT.LEFT, SWT.CENTER, false,
+		final GridData gridData2 = new GridData(SWT.LEFT, SWT.CENTER, false,
 				false, 1, 2);
-		gridData_2.widthHint = 53;
-		btnCopy.setLayoutData(gridData_2);
-		btnCopy.setText("Copy");
+		gridData2.widthHint = 53;
+		btnCopy.setLayoutData(gridData2);
+		btnCopy.setText(Messages.getString("DisplayResultComposite.copyButtonText")); //$NON-NLS-1$
 
 		btnCopy.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
@@ -134,7 +168,7 @@ public class DisplayResultComposite extends Composite implements
 					if (tempTxt == null || tempTxt.length() == 0) {
 						return;
 					}
-					String space = " ";
+					String space = " "; //$NON-NLS-1$
 					data = checkString(txtMinute.getText()) + space
 							+ checkString(txtHour.getText()) + space
 							+ checkString(txtDay.getText()) + space
@@ -143,13 +177,13 @@ public class DisplayResultComposite extends Composite implements
 							+ txtCommand.getText();
 				}
 
-				Clipboard board = new Clipboard(null);
+				// Clipboard board = new Clipboard(null);
 
 				if (data != null && data.length() > 0) {
-					board.setContents(new Object[] { data },
-							new Transfer[] { TextTransfer.getInstance() });
+					// board.setContents(new Object[] { data },
+					// new Transfer[] { TextTransfer.getInstance()});
+					txtCustom.setText(data);
 				}
-
 			}
 
 			public void widgetDefaultSelected(SelectionEvent e) {
@@ -160,78 +194,189 @@ public class DisplayResultComposite extends Composite implements
 
 		customCrontabEntryButton = new Button(this, SWT.RADIO);
 		customCrontabEntryButton.setLayoutData(new GridData());
-		customCrontabEntryButton.setText("Custom crontab entry");
+		customCrontabEntryButton.setText(Messages.getString("DisplayResultComposite.customCronTabText")); //$NON-NLS-1$
+
+		customCrontabEntryButton.addSelectionListener(new SelectionAdapter() {
+
+			/**
+             * @Override
+			 */
+			public void widgetSelected(SelectionEvent e) {
+				if (customCrontabEntryButton.getSelection()) {
+					// all the widgets are disabled
+					enableAllWidgets(false);
+
+				} else {
+					// all the widgets are enabled
+					enableAllWidgets(true);
+				}
+			}
+		});
+
+		customCrontabEntryButton.setSelection(true);
+		
 
 		txtCustom = new Text(this, SWT.BORDER);
 		txtCustom.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false,
 				6, 1));
 	}
 
-	public void commandChanged(String newCommand) {
+	List<IWidgetEnableListener> enableWidgetsLisenter = new ArrayList<IWidgetEnableListener>();
+
+	/**
+     * 
+     * Adds widgetEnableListener.
+     * @param l IWidgetEnableListener
+	 */
+    public void addWidgetEnableListener(IWidgetEnableListener l) {
+		enableWidgetsLisenter.add(l);
+	}
+
+	/**
+	 * Set the enablements of the widgets which implemented IWidgetEnableListener
+	 * contained in the List enableWidgetsLisenter.
+	 * 
+	 * @param enable boolean.
+	 */
+	public void enableAllWidgets(boolean enable) {
+		btnCopy.setEnabled(enable);
+
+		for (IWidgetEnableListener listener : enableWidgetsLisenter) {
+			listener.enableAll(enable);
+		}
+	}
+
+	/**
+     * @param newCommand String
+	 */
+    public void commandChanged(String newCommand) {
 		txtCommand.setText(newCommand);
 	}
 
-	public void hourChanged(String newHour) {
+	/**
+     * @param newHour String
+	 */
+    public void hourChanged(String newHour) {
 		txtHour.setText(newHour);
 	}
 
-	public void minuteChanged(String newminute) {
+	/**
+     * @param newminute String
+	 */
+    public void minuteChanged(String newminute) {
 		txtMinute.setText(newminute);
 	}
 
-	public void dayofWeekChanged(String newDayofWeek) {
+	/**
+     * @param newDayofWeek String
+	 */
+    public void dayofWeekChanged(String newDayofWeek) {
 		txtWeekday.setText(newDayofWeek);
 	}
 
-	public void dayofMonthChanged(String newdayofMonth) {
+	/**
+     * @param newdayofMonth String
+	 */
+    public void dayofMonthChanged(String newdayofMonth) {
 		txtDay.setText(newdayofMonth);
 	}
 
-	public void monthChanged(String newMonth) {
+	/**
+     * @param newMonth String 
+	 */
+    public void monthChanged(String newMonth) {
 		txtMonth.setText(newMonth);
 	}
 
-	public void updateTaskProperty(ScheduleTask task) {
-		task.setCommand(txtCommand.getText());
-		task.setDay(txtDay.getText());
-		task.setHour(txtHour.getText());
-		task.setMinute(txtMinute.getText());
-		task.setMonth(txtMonth.getText());
-		task.setWeekly(txtWeekday.getText());
+	/**
+	 * Updates the propertes of task from GUI wigdet.
+	 * 
+	 * @param task ScheduleTask
+	 * @throws SchedulerException  e
+	 */
+	public void updateTaskProperty(ScheduleTask task) throws SchedulerException {
+	    
+        if (task == null) {
+            return;
+        }
+        
+        if (rdbtnGenerated.getSelection()) {
+            check();
+    		task.setCommand(txtCommand.getText());
+    		task.setDay(txtDay.getText());
+    		task.setHour(txtHour.getText());
+    		task.setMinute(txtMinute.getText());
+    		task.setMonth(txtMonth.getText());
+    		task.setWeekly(txtWeekday.getText());
+        } else {
+            checkPlainCommand();
+            task.setPlainCommand(txtCustom.getText());
+        }
 	}
 
-	private String checkString(String s) {
+
+    /**
+     * 
+     * Checks plain command.
+     * @throws SchedulerException e
+     */
+    private void checkPlainCommand() throws SchedulerException {
+        if (txtCustom.getText() == null || txtCustom.getText().trim().equals("")) {
+            throw new SchedulerException(Messages.getString("DisplayResultComposite.customCronTabEmptyPrompt")); //$NON-NLS-1$
+        }
+    }
+
+    /**
+     * 
+     * Checks if string is null or empty.
+     * @param s String
+     * @return String
+     */
+    private String checkString(String s) {
 		if (s == null || s.length() == 0) {
-			return "*";
+			return "*"; //$NON-NLS-1$
 		}
 		return s;
 	}
 
-	public String check() {
-		if (txtCommand.getText().equals("")) {
-			return "Command can not be empty.";
-		} else if (txtDay.getText().equals("")) {
-			return "Day can not be empty.";
-		} else if (txtMonth.getText().equals("")) {
-			return ("Month can not be empty.");
-		} else if (txtWeekday.getText().equals("")) {
-			return ("Weekday can not be empty.");
-		} else if (txtHour.getText().equals("")) {
-			return ("Hour can not be empty.");
-		} else if (txtMinute.getText().equals("")) {
-			return ("Minute can not be empty.");
+	/**
+     * 
+     * Checks the value of day, month, weekday, hour, minute. 
+     * @throws SchedulerException e
+	 */
+    public void check() throws SchedulerException {
+	    String message = null;
+		if (txtCommand.getText().equals("")) { //$NON-NLS-1$
+            message = Messages.getString("DisplayResultComposite.commandEmptyPrompt"); //$NON-NLS-1$
+		} else if (txtDay.getText().equals("")) { //$NON-NLS-1$
+			message = Messages.getString("DisplayResultComposite.dayEmptyPrompt"); //$NON-NLS-1$
+		} else if (txtMonth.getText().equals("")) { //$NON-NLS-1$
+			message = Messages.getString("DisplayResultComposite.monthEmptyPrompt"); //$NON-NLS-1$
+		} else if (txtWeekday.getText().equals("")) { //$NON-NLS-1$
+			message = Messages.getString("DisplayResultComposite.weekdayEmptyPrompt"); //$NON-NLS-1$
+		} else if (txtHour.getText().equals("")) { //$NON-NLS-1$
+			message = Messages.getString("DisplayResultComposite.hourEmptyPrompt"); //$NON-NLS-1$
+		} else if (txtMinute.getText().equals("")) { //$NON-NLS-1$
+			message = Messages.getString("DisplayResultComposite.minuteEmptyPrompt"); //$NON-NLS-1$
 		}
-
-		return null;
+        
+        if (message != null) {
+            throw new SchedulerException(message);
+        }
 	}
 
+	/**
+	 * Refreshes the GUI widget according to the task input.
+	 * 
+	 * @param task ScheduleTask
+	 */
 	public void update(ScheduleTask task) {
 		txtCommand.setText(task.getCommand());
 		txtDay.setText(task.getDay());
 		txtHour.setText(task.getHour());
 		txtMinute.setText(task.getMinute());
 		txtMonth.setText(task.getMonth());
-		txtWeekday.setText(task.getMonth());
+		txtWeekday.setText(task.getWeekly());
+        txtCustom.setText(task.getPlainCommand());
 	}
-
 }
