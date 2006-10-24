@@ -34,7 +34,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.impl.AdapterImpl;
 import org.eclipse.gef.EditPart;
-import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
@@ -50,7 +49,6 @@ import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PartInitException;
-import org.eclipse.ui.contexts.IContextService;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.part.MultiPageEditorPart;
 import org.epic.perleditor.PerlEditorPlugin;
@@ -58,11 +56,7 @@ import org.talend.commons.exception.MessageBoxExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.model.process.IProcess;
-import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
-import org.talend.designer.core.ui.action.showViews.ShowProblemsViewAction;
-import org.talend.designer.core.ui.action.showViews.ShowPropertiesViewAction;
-import org.talend.designer.core.ui.action.showViews.ShowRunProcessViewAction;
 import org.talend.designer.core.ui.editor.ProcessEditorInput;
 import org.talend.designer.core.ui.editor.TalendEditor;
 import org.talend.designer.core.ui.editor.TalendPerlEditor;
@@ -172,16 +166,6 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
     protected void createPages() {
         createPage0();
         createPage1();
-
-        IContextService contextService = (IContextService) DesignerPlugin.getDefault().getWorkbench().getAdapter(
-                IContextService.class);
-        contextService.activateContext("talend.editor");
-        Action showViewProcess = new ShowRunProcessViewAction();
-        getEditorSite().getKeyBindingService().registerAction(showViewProcess);
-        Action showViewProblems = new ShowProblemsViewAction();
-        getEditorSite().getKeyBindingService().registerAction(showViewProblems);
-        Action showViewProps = new ShowPropertiesViewAction();
-        getEditorSite().getKeyBindingService().registerAction(showViewProps);
     }
 
     /**

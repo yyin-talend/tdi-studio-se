@@ -21,9 +21,9 @@
 // ============================================================================
 package org.talend.repository.ui.views;
 
-import java.awt.event.FocusAdapter;
 import java.util.List;
 
+import org.eclipse.core.commands.IHandler;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
@@ -56,8 +56,10 @@ import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.IWorkbenchActionConstants;
+import org.eclipse.ui.commands.ActionHandler;
 import org.eclipse.ui.contexts.IContextActivation;
 import org.eclipse.ui.contexts.IContextService;
+import org.eclipse.ui.handlers.IHandlerService;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.views.properties.IPropertySheetPage;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertySheetPageContributor;
@@ -292,11 +294,18 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
     }
 
     private void makeActions() {
+        IHandlerService handlerService = (IHandlerService) getSite().getService(IHandlerService.class);
+
         refreshAction = new RefreshAction(this);
-        this.getSite().getKeyBindingService().registerAction(refreshAction);
+        IHandler handler1 = new ActionHandler(refreshAction);
+        handlerService.activateHandler(refreshAction.getActionDefinitionId(), handler1);
+
         contextualsActions = ActionsHelper.getActions();
         for (ITreeContextualAction action : contextualsActions) {
-            this.getSite().getKeyBindingService().registerAction(action);
+            if (action.getActionDefinitionId() != null) {
+                handler1 = new ActionHandler(action);
+                handlerService.activateHandler(action.getActionDefinitionId(), handler1);
+            }
         }
         doubleClickAction = new RepositoryDoubleClickAction(this, contextualsActions);
     }

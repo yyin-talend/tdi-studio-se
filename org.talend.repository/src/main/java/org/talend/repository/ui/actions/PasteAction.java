@@ -27,7 +27,6 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeSelection;
 import org.eclipse.jface.viewers.TreeViewer;
-import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.swt.widgets.Shell;
 import org.talend.core.ui.ImageProvider;
 import org.talend.core.ui.ImageProvider.EImage;
@@ -43,13 +42,6 @@ import org.talend.repository.model.actions.CopyObjectAction;
  */
 public class PasteAction extends AContextualAction {
 
-    // private Clipboard clipboard;
-
-    public PasteAction(Clipboard clipboard) {
-        this();
-        // this.clipboard = clipboard;
-    }
-
     public PasteAction() {
         super();
         this.setText("Paste");
@@ -64,10 +56,6 @@ public class PasteAction extends AContextualAction {
 
         CopyObjectAction copyObjectAction = CopyObjectAction.getInstance();
 
-        // LocalSelectionTransfer transfer = LocalSelectionTransfer.getTransfer();
-        // System.out.println("get content : "+transfer);
-        // Object contents = clipboard.getContents(transfer);
-        // TreeSelection selection = (TreeSelection) contents;
         TreeSelection selectionInClipboard = (TreeSelection) LocalSelectionTransfer.getTransfer().getSelection();
         if (selectionInClipboard != null) {
             for (Object currentSource : selectionInClipboard.toArray()) {

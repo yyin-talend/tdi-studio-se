@@ -180,10 +180,6 @@
       <category
             id="talend.repository"
             name="Talend"/>
-      <context
-            id="talend.repository"
-            name="Talend repository view"
-            parentId="org.eclipse.ui.contexts.window"/>
       <command
             categoryId="talend.repository"
             id="copyItem"
@@ -232,6 +228,13 @@
             contextId="talend.repository"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
             sequence="F5"/>
+   </extension>
+   <extension
+         point="org.eclipse.ui.contexts">
+      <context
+            id="talend.repository"
+            name="Repository view"
+            parentId="org.eclipse.ui.contexts.window"/>
    </extension>
 
 </plugin>

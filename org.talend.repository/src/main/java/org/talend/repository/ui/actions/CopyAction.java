@@ -25,7 +25,6 @@ import org.eclipse.jface.util.LocalSelectionTransfer;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
-import org.eclipse.swt.dnd.Clipboard;
 import org.talend.core.ui.ImageProvider;
 import org.talend.core.ui.ImageProvider.EImage;
 import org.talend.repository.model.RepositoryNode;
@@ -39,13 +38,6 @@ import org.talend.repository.model.actions.CopyObjectAction;
  */
 public class CopyAction extends AContextualAction {
 
-    // private Clipboard clipboard;
-
-    public CopyAction(Clipboard clipboard) {
-        this();
-        // this.clipboard = clipboard;
-    }
-
     public CopyAction() {
         super();
         this.setText("Copy");
@@ -56,18 +48,8 @@ public class CopyAction extends AContextualAction {
     @Override
     public void run() {
         IStructuredSelection selection = (IStructuredSelection) getSelection();
-        // RepositoryNode[] gadgets = (RepositoryNode[]) selection.toList().toArray(new
-        // RepositoryNode[selection.size()]);
-        // LocalSelectionTransfer transfer = LocalSelectionTransfer.getTransfer();
-        // Transfer[] transfers = new Transfer[] { transfer };
-
-        // clipboard.setContents(new Object[] { gadgets }, transfers);
         LocalSelectionTransfer.getTransfer().setSelection(selection);
-
         LocalSelectionTransfer.getTransfer().setSelectionSetTime(System.currentTimeMillis());
-        // for (RepositoryNode current : gadgets) {
-        // System.out.println("Copy " + current+" -> "+transfer);
-        // }
         refresh();
     }
 

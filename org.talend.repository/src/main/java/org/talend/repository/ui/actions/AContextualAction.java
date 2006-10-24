@@ -38,7 +38,7 @@ import org.talend.repository.ui.views.RepositoryView;
  */
 public abstract class AContextualAction extends Action implements ITreeContextualAction {
 
-    private int level;
+    private int level; // Used to manage order of actions in contextual menu
 
     /**
      * Getter for level.

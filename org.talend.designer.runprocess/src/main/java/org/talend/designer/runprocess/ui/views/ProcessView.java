@@ -29,7 +29,6 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.FocusListener;
-import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.layout.GridData;
@@ -228,7 +227,9 @@ public class ProcessView extends ViewPart {
 
         @Override
         public void run() {
-            processComposite2.exec();
+            if (processComposite2.hasProcess()) {
+                processComposite2.exec();
+            }
         }
 
     }
@@ -251,7 +252,9 @@ public class ProcessView extends ViewPart {
 
         @Override
         public void run() {
-            processComposite2.debug();
+            if (processComposite2.hasProcess()) {
+                processComposite2.debug();
+            }
         }
 
     }
@@ -274,7 +277,9 @@ public class ProcessView extends ViewPart {
 
         @Override
         public void run() {
-            processComposite2.kill();
+            if (processComposite2.hasProcess()) {
+                processComposite2.kill();
+            }
         }
 
     }

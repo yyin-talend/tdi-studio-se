@@ -80,6 +80,7 @@ public class ProcessComposite2 extends Composite {
     private static final int H_WEIGHT = 5;
 
     private static final int MINIMUM_HEIGHT = 65;
+
     private static final int MINIMUM_WIDTH = 530;
 
     private RunProcessContext processContext;
@@ -164,8 +165,8 @@ public class ProcessComposite2 extends Composite {
         debugBtn = new Button(execHeader, SWT.PUSH);
         debugBtn.setText("Debug");
         debugBtn.setToolTipText("Launch job in debug mode");
-        debugBtn.setImage(RunProcessPlugin.imageDescriptorFromPlugin(RunProcessPlugin.PLUGIN_ID,
-                "icons/process_debug.gif").createImage());
+        debugBtn.setImage(RunProcessPlugin.imageDescriptorFromPlugin(RunProcessPlugin.PLUGIN_ID, "icons/process_debug.gif")
+                .createImage());
         FormData formData = new FormData();
         formData.top = new FormAttachment(0, 15);
         formData.left = new FormAttachment(0);
@@ -187,8 +188,8 @@ public class ProcessComposite2 extends Composite {
         killBtn = new Button(execHeader, SWT.PUSH);
         killBtn.setText(Messages.getString("ProcessComposite.kill")); //$NON-NLS-1$
         killBtn.setToolTipText(Messages.getString("ProcessComposite.killHint")); //$NON-NLS-1$
-        killBtn.setImage(RunProcessPlugin.imageDescriptorFromPlugin(RunProcessPlugin.PLUGIN_ID,
-                "icons/process_kill.gif").createImage()); //$NON-NLS-1$
+        killBtn.setImage(RunProcessPlugin
+                .imageDescriptorFromPlugin(RunProcessPlugin.PLUGIN_ID, "icons/process_kill.gif").createImage()); //$NON-NLS-1$
         setButtonLayoutData(killBtn);
         killBtn.setEnabled(false);
         formData = new FormData();
@@ -264,6 +265,10 @@ public class ProcessComposite2 extends Composite {
         };
 
         addListeners();
+    }
+
+    public boolean hasProcess() {
+        return processContext != null;
     }
 
     private void addListeners() {
@@ -463,16 +468,15 @@ public class ProcessComposite2 extends Composite {
                             // DebugInNewWindowListener());
                             DebugUITools.launch(config, ILaunchManager.DEBUG_MODE);
                         } else {
-                            MessageDialog.openInformation(getShell(), Messages
-                                    .getString("ProcessDebugDialog.errorTitle"), Messages
-                                    .getString("ProcessDebugDialog.errortext")); //$NON-NLS-1$ //$NON-NLS-2$
+                            MessageDialog.openInformation(getShell(), Messages.getString("ProcessDebugDialog.errorTitle"),
+                                    Messages.getString("ProcessDebugDialog.errortext")); //$NON-NLS-1$ //$NON-NLS-2$
                         }
                     } catch (ProcessorException e) {
                         IStatus status = new Status(IStatus.ERROR, RunProcessPlugin.PLUGIN_ID, IStatus.OK,
                                 "Debug launch failed.", e); //$NON-NLS-1$
                         RunProcessPlugin.getDefault().getLog().log(status);
-                        MessageDialog.openError(getShell(), Messages.getString("ProcessDebugDialog.errorTitle"),
-                                Messages.getString("ProcessDebugDialog.errorText")); //$NON-NLS-1$ //$NON-NLS-2$
+                        MessageDialog.openError(getShell(), Messages.getString("ProcessDebugDialog.errorTitle"), Messages
+                                .getString("ProcessDebugDialog.errorText")); //$NON-NLS-1$ //$NON-NLS-2$
                     } finally {
                         monitor.done();
                     }
@@ -481,8 +485,8 @@ public class ProcessComposite2 extends Composite {
 
             IProgressService progressService = PlatformUI.getWorkbench().getProgressService();
             try {
-                progressService.runInUI(PlatformUI.getWorkbench().getProgressService(), worker, ResourcesPlugin
-                        .getWorkspace().getRoot());
+                progressService.runInUI(PlatformUI.getWorkbench().getProgressService(), worker, ResourcesPlugin.getWorkspace()
+                        .getRoot());
             } catch (InvocationTargetException e) {
                 e.printStackTrace();
             } catch (InterruptedException e) {
@@ -517,6 +521,5 @@ public class ProcessComposite2 extends Composite {
             });
         }
     }
-    
-    
+
 }

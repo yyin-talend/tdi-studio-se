@@ -193,46 +193,4 @@
             level="10"
             name="Edit routines"/>
    </extension>
-   <extension
-         point="org.eclipse.ui.commands">
-      <context
-            id="talend.editor"
-            name="Talend editor"
-            parentId="org.eclipse.ui.contexts.window"/>
-      <category
-            id="talend"
-            name="Talend"/>
-      <command
-            categoryId="talend"
-            id="showRunProcessView"
-            name="Show run process view"/>
-      <command
-            categoryId="talend"
-            id="showProblemsView"
-            name="Show prolems view"/>
-      <command
-            categoryId="talend"
-            id="showPropertiesView"
-            name="Show properties view"/>
-   </extension>
-   <extension
-         point="org.eclipse.ui.bindings">
-      <key
-            commandId="showRunProcessView"
-            contextId="talend.editor"
-            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
-            sequence="CTRL+F2"/>
-         point="org.eclipse.ui.bindings">
-      <key
-            commandId="showProblemsView"
-            contextId="talend.editor"
-            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
-            sequence="CTRL+F3"/>
-         point="org.eclipse.ui.bindings">
-      <key
-            commandId="showPropertiesView"
-            contextId="talend.editor"
-            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
-            sequence="CTRL+F1"/>
-   </extension>
 </plugin>

@@ -48,6 +48,7 @@ public class RefreshAction extends Action {
     }
 
     public void run() {
+        System.out.println("Refresh");
         view.refresh();
     }
 }
