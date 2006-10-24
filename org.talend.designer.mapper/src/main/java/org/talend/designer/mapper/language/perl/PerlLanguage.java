@@ -22,8 +22,11 @@
 package org.talend.designer.mapper.language.perl;
 
 import org.talend.core.model.process.Problem;
-import org.talend.designer.core.language.perl.PerlExpressionSyntaxChecker;
+import org.talend.core.model.temp.ECodeLanguage;
+import org.talend.designer.core.language.perl.ICodeSyntaxChecker;
 import org.talend.designer.mapper.language.AbstractLanguage;
+import org.talend.designer.runprocess.language.perl.PerlExpressionSyntaxChecker;
+import org.talend.designer.runprocess.language.perl.SyntaxCheckerFactory;
 
 /**
  * DOC amaumont class global comment. Detailled comment <br/>
@@ -91,14 +94,14 @@ public class PerlLanguage extends AbstractLanguage {
      */
     private static final String TEMPLATE_VARS_COLUMN_VARIABLE = PREFIX_VARIABLE_NAME + "{0}";
 
-    private PerlExpressionSyntaxChecker syntaxChecker;
+    private ICodeSyntaxChecker syntaxChecker;
 
     /**
      * DOC amaumont PerlLanguage constructor comment.
      */
     public PerlLanguage() {
         super();
-        this.syntaxChecker = new PerlExpressionSyntaxChecker();
+        this.syntaxChecker = SyntaxCheckerFactory.getInstance().getSyntaxChecker(ECodeLanguage.PERL);
     }
 
     /*

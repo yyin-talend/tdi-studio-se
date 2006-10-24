@@ -27,6 +27,7 @@ import java.util.Map;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.swt.widgets.Display;
+import org.talend.commons.utils.time.TimeMeasure;
 import org.talend.core.model.process.Element;
 import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
 
@@ -110,9 +111,12 @@ public class TextPropertyChangeUtil {
         final Runnable applyProperty = new Runnable() {
 
             public void run() {
+                TimeMeasure.start("PropertyChangeCommand()");
+
                 Command cmd = new PropertyChangeCommand(textElement.getElement(), textElement.getPropertyName(),
                         currentText);
                 cmdStack.execute(cmd);
+                TimeMeasure.end("PropertyChangeCommand()");
             }
         };
 
@@ -124,6 +128,7 @@ public class TextPropertyChangeUtil {
 
         @Override
         public void run() {
+            TimeMeasure.start("run()");
             try {
                 long currentTime;
                 do {
@@ -138,6 +143,7 @@ public class TextPropertyChangeUtil {
             } catch (Throwable t) {
                 t.printStackTrace();
             }
+            TimeMeasure.end("run()");
         }
 
         public void setCurrentText(String currentText) {

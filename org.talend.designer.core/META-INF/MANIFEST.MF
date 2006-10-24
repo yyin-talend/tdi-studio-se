@@ -23,7 +23,6 @@ Require-Bundle: org.eclipse.core.expressions,
  org.talend.repository
 Eclipse-LazyStart: true
 Plugin-Class: org.talend.designer.core.DesignerPlugin
-Export-Package: org.talend.designer.core.language.perl,
- org.talend.designer.core.model.components,
+Export-Package: org.talend.designer.core.model.components,
  org.talend.designer.core.model.context
 Bundle-Vendor: .Talend SA.

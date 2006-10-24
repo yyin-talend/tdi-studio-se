@@ -30,6 +30,7 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.views.properties.PropertySheet;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
+import org.talend.commons.utils.time.TimeMeasure;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.Element;
@@ -153,14 +154,15 @@ public class PropertyChangeCommand extends Command {
         if (toUpdate) {
             elem.setPropertyValue(EParameterName.UPDATE_COMPONENTS.getName(), new Boolean(true));
         }
-        if (elem instanceof Node) {
-            ((Process) ((Node) elem).getProcess()).checkProcess();
-        } else {
-            if (elem instanceof Process) {
-                ((Process) elem).checkProcess();
-            }
-        }
-        refreshPropertyView();
+//        if (elem instanceof Node) {
+//            ((Process) ((Node) elem).getProcess()).checkProcess();
+//        } else {
+//            if (elem instanceof Process) {
+//                ((Process) elem).checkProcess();
+//            }
+//        }
+        
+//        refreshPropertyView();
     }
 
     @Override
@@ -183,13 +185,13 @@ public class PropertyChangeCommand extends Command {
         if (toUpdate) {
             elem.setPropertyValue(EParameterName.UPDATE_COMPONENTS.getName(), new Boolean(true));
         }
-        if (elem instanceof Node) {
-            ((Process) ((Node) elem).getProcess()).checkProcess();
-        } else {
-            if (elem instanceof Process) {
-                ((Process) elem).checkProcess();
-            }
-        }
+//        if (elem instanceof Node) {
+//            ((Process) ((Node) elem).getProcess()).checkProcess();
+//        } else {
+//            if (elem instanceof Process) {
+//                ((Process) elem).checkProcess();
+//            }
+//        }
         refreshPropertyView();
     }
 
@@ -218,13 +220,25 @@ public class PropertyChangeCommand extends Command {
         if (toUpdate) {
             elem.setPropertyValue(EParameterName.UPDATE_COMPONENTS.getName(), new Boolean(true));
         }
-        if (elem instanceof Node) {
-            ((Process) ((Node) elem).getProcess()).checkProcess();
-        } else {
-            if (elem instanceof Process) {
-                ((Process) elem).checkProcess();
-            }
-        }
+//        if (elem instanceof Node) {
+//            ((Process) ((Node) elem).getProcess()).checkProcess();
+//        } else {
+//            if (elem instanceof Process) {
+//                ((Process) elem).checkProcess();
+//            }
+//        }
         refreshPropertyView();
     }
+    
+    public void modifyValue(String value) {
+        newValue = value;
+        elem.setPropertyValue(propName, value);
+    }
+
+    
+    public String getPropName() {
+        return this.propName;
+    }
+    
+    
 }
