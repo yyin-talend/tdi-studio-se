@@ -220,6 +220,9 @@ public interface IRepositoryFactory {
     // PTODO can : add pour faire fonctionner avec Regexp
     public RootContainer<String, IRepositoryObject> getMetadataFileRegexp() throws PersistenceException;
 
+    // PTODO can : add pour faire fonctionner avec Xml
+    public RootContainer<String, IRepositoryObject> getMetadataFileXml() throws PersistenceException;
+
     /**
      * gather all the metadata connections (file / db / etc ...).
      */

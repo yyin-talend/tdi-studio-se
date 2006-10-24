@@ -37,10 +37,12 @@ import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.builder.connection.PositionalFileConnection;
 import org.talend.core.model.metadata.builder.connection.RegexpFileConnection;
 import org.talend.core.model.metadata.builder.connection.TableHelper;
+import org.talend.core.model.metadata.builder.connection.XmlFileConnection;
 import org.talend.core.model.properties.DatabaseConnectionItem;
 import org.talend.core.model.properties.DelimitedFileConnectionItem;
 import org.talend.core.model.properties.PositionalFileConnectionItem;
 import org.talend.core.model.properties.RegExFileConnectionItem;
+import org.talend.core.model.properties.XmlFileConnectionItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.ui.ImageProvider;
 import org.talend.core.ui.ImageProvider.EImage;
@@ -55,6 +57,7 @@ import org.talend.repository.ui.wizards.metadata.table.database.DatabaseTableWiz
 import org.talend.repository.ui.wizards.metadata.table.files.FileDelimitedTableWizard;
 import org.talend.repository.ui.wizards.metadata.table.files.FilePositionalTableWizard;
 import org.talend.repository.ui.wizards.metadata.table.files.FileRegexpTableWizard;
+import org.talend.repository.ui.wizards.metadata.table.files.FileXmlTableWizard;
 
 /**
  * Action used to create table on metadata.<br/>
@@ -118,6 +121,10 @@ public class CreateTableAction extends AbstractCreateAction {
         } else if (ERepositoryObjectType.METADATA_FILE_REGEXP.equals(nodeType)) {
             getViewPart().expand(metadataNode.getChildren().get(0), true);
             createFileRegexpTableWizard(selection);
+
+        } else if (ERepositoryObjectType.METADATA_FILE_XML.equals(nodeType)) {
+            getViewPart().expand(metadataNode.getChildren().get(0), true);
+            createFileXmlTableWizard(selection);
         }
 
     }
@@ -218,6 +225,55 @@ public class CreateTableAction extends AbstractCreateAction {
             fileRegexpTableWizard.setRepositoryObject(node.getObject());
 
             WizardDialog wizardDialog = new WizardDialog(new Shell(), fileRegexpTableWizard);
+            handleWizard(node, wizardDialog);
+        }
+    }
+
+    /**
+     * DOC cantoine Comment method "createFileXmlTableWizard".
+     * 
+     * @param selection
+     * @return
+     */
+    @SuppressWarnings("unchecked")
+    private void createFileXmlTableWizard(IStructuredSelection selection) {
+        Object obj = ((IStructuredSelection) selection).getFirstElement();
+        RepositoryNode node = (RepositoryNode) obj;
+        XmlFileConnection connection = null;
+        MetadataTable metadataTable = null;
+
+        boolean creation = false;
+        if (node.getType() == ENodeType.REPOSITORY_ELEMENT) {
+            ERepositoryObjectType nodeType = (ERepositoryObjectType) node.getProperties(EProperties.CONTENT_TYPE);
+            String tableLabel = (String) node.getProperties(EProperties.LABEL);
+
+            XmlFileConnectionItem item = null;
+            switch (nodeType) {
+            case METADATA_CON_TABLE:
+                item = (XmlFileConnectionItem) node.getParent().getObject().getProperty().getItem();
+                connection = (XmlFileConnection) item.getConnection();
+                metadataTable = TableHelper.findByLabel(connection, tableLabel);
+                creation = false;
+                break;
+            case METADATA_FILE_XML:
+                item = (XmlFileConnectionItem) node.getObject().getProperty().getItem();
+                connection = (XmlFileConnection) item.getConnection();
+                metadataTable = ConnectionFactory.eINSTANCE.createMetadataTable();
+                String nextId = RepositoryFactoryProvider.getInstance().getNextId();
+                metadataTable.setId(nextId);
+                metadataTable.setLabel(getStringIndexed(metadataTable.getLabel()));
+                connection.getTables().add(metadataTable);
+                creation = true;
+                break;
+            default:
+                return;
+            }
+            // set the repositoryObject, lock and set isRepositoryObjectEditable
+            FileXmlTableWizard fileXmlTableWizard = new FileXmlTableWizard(PlatformUI.getWorkbench(), creation, item,
+                    metadataTable);
+            fileXmlTableWizard.setRepositoryObject(node.getObject());
+
+            WizardDialog wizardDialog = new WizardDialog(new Shell(), fileXmlTableWizard);
             handleWizard(node, wizardDialog);
         }
     }
@@ -399,7 +455,8 @@ public class CreateTableAction extends AbstractCreateAction {
             if (ERepositoryObjectType.METADATA_CONNECTIONS.equals(nodeType)
                     || ERepositoryObjectType.METADATA_FILE_DELIMITED.equals(nodeType)
                     || ERepositoryObjectType.METADATA_FILE_POSITIONAL.equals(nodeType)
-                    || ERepositoryObjectType.METADATA_FILE_REGEXP.equals(nodeType)) {
+                    || ERepositoryObjectType.METADATA_FILE_REGEXP.equals(nodeType)
+                    || ERepositoryObjectType.METADATA_FILE_XML.equals(nodeType)) {
                 setText(CREATE_LABEL);
                 collectChildNames(node);
                 setEnabled(true);

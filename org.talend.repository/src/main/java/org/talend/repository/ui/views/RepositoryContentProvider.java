@@ -36,6 +36,7 @@ import org.talend.core.model.metadata.builder.connection.DelimitedFileConnection
 import org.talend.core.model.metadata.builder.connection.PositionalFileConnection;
 import org.talend.core.model.metadata.builder.connection.RegexpFileConnection;
 import org.talend.core.model.metadata.builder.connection.TableHelper;
+import org.talend.core.model.metadata.builder.connection.XmlFileConnection;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
@@ -186,6 +187,15 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
             convert(factory.getMetadataFileRegexp(), metadataFileRegexpNode, ERepositoryObjectType.METADATA_FILE_REGEXP,
                     recBinNode);
 
+            // 5.5. Metadata file xml
+            RepositoryNode metadataFileXmlNode = new RepositoryNode(null, root, ENodeType.SYSTEM_FOLDER);
+            metadataFileXmlNode.setProperties(EProperties.LABEL, ERepositoryObjectType.METADATA_FILE_XML);
+            metadataFileXmlNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.METADATA_FILE_XML);
+            metadataNode.getChildren().add(metadataFileXmlNode);
+
+            convert(factory.getMetadataFileXml(), metadataFileXmlNode, ERepositoryObjectType.METADATA_FILE_XML,
+                    recBinNode);
+            
         } catch (PersistenceException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -257,6 +267,11 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
         }
         if (type == ERepositoryObjectType.METADATA_FILE_REGEXP) {
             RegexpFileConnection metadataConnection = (RegexpFileConnection) ((ConnectionItem) repositoryObject.getProperty()
+                    .getItem()).getConnection();
+            createTables(recBinNode, node, repositoryObject, metadataConnection);
+        }
+        if (type == ERepositoryObjectType.METADATA_FILE_XML) {
+            XmlFileConnection metadataConnection = (XmlFileConnection) ((ConnectionItem) repositoryObject.getProperty()
                     .getItem()).getConnection();
             createTables(recBinNode, node, repositoryObject, metadataConnection);
         }

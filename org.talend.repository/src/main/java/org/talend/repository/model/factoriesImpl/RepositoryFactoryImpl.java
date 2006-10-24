@@ -344,6 +344,17 @@ public class RepositoryFactoryImpl implements IRepositoryFactory {
         return this.repositoryFactoryFromProvider.getMetadataFileRegexp();
     }
 
+    /**
+     * @param project
+     * @return
+     * @throws PersistenceException
+     * @see org.talend.core.model.repository.factories.IMetadataFactory#getMetadataFileXml(org.talend.core.model.general.Project)
+     */
+    public RootContainer<String, IRepositoryObject> getMetadataFileXml() throws PersistenceException {
+        return this.repositoryFactoryFromProvider.getMetadataFileXml();
+    }
+
+    
     /*
      * (non-Javadoc)
      * 

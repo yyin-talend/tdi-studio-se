@@ -108,6 +108,7 @@ import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.metadata.builder.connection.DelimitedFileConnection;
 import org.talend.core.model.metadata.builder.connection.PositionalFileConnection;
 import org.talend.core.model.metadata.builder.connection.RegexpFileConnection;
+import org.talend.core.model.metadata.builder.connection.XmlFileConnection;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.EParameterFieldType;
@@ -751,6 +752,10 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                             connectionValuesList.add(key);
                         }
                         if ((connection instanceof RegexpFileConnection) && (repositoryValue.equals("REGEX"))) {
+                            connectionNamesList.add(connectionItem.getProperty().getLabel());
+                            connectionValuesList.add(key);
+                        }
+                        if ((connection instanceof XmlFileConnection) && (repositoryValue.equals("XML"))) {
                             connectionNamesList.add(connectionItem.getProperty().getLabel());
                             connectionValuesList.add(key);
                         }

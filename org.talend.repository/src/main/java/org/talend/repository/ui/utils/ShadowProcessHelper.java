@@ -27,6 +27,7 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
 import org.talend.core.model.metadata.builder.connection.FileConnection;
+import org.talend.core.model.metadata.builder.connection.XmlFileConnection;
 import org.talend.core.utils.XmlArray;
 import org.talend.repository.preview.IPreview;
 import org.talend.repository.preview.ProcessDescription;
@@ -82,6 +83,21 @@ public class ShadowProcessHelper {
         return processDescription;
     }
 
+    /**
+     * Create a ProcessDescription and set it width the value of FileConnection. Particularity : field FieldSeparator,
+     * RowSeparator, EscapeChar and TextEnclosure are surround by double quote.
+     * 
+     * This method is usefull to adapt a processDescription before run the shadow process.
+     * 
+     * @param XmlFileConnection
+     * 
+     * @return ProcessDescription
+     */
+    public static ProcessDescription getProcessDescription(final XmlFileConnection connection) {
+        ProcessDescription processDescription = new ProcessDescription();
+        //PTODO voir les param envoyé pour le ProcessDescription
+        return processDescription;
+    }
     /**
      * parse a file describe by a fileConnection in XmlArray. Simple method to run the shadow process from the
      * fileConnection.

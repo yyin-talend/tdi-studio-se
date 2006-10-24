@@ -61,7 +61,8 @@ public class ShadowProcess<T extends IProcessDescription> {
         FILE_DELIMITED,
         FILE_POSITIONAL,
         FILE_CSV,
-        FILE_REGEXP;
+        FILE_REGEXP,
+        FILE_XML;
 
         private EShadowProcessType() {
 
@@ -118,6 +119,12 @@ public class ShadowProcess<T extends IProcessDescription> {
                     .getRowSeparator(), description.getPattern(), description.getLimitRows(), description
                     .getHeaderRow(), description.getFooterRow(), description.getRemoveEmptyRowsToSkip());
             ps = new FileinToXmlProcess<FileInputRegExpNode>(inRegExpNode, outNode);
+            break;
+        case FILE_XML:
+            FileInputXmlNode inXmlNode = new FileInputXmlNode("'" + inPath.toOSString() + "'", description
+                    .getRowSeparator(), description.getPattern(), description.getLimitRows(), description
+                    .getHeaderRow(), description.getFooterRow(), description.getRemoveEmptyRowsToSkip());
+            ps = new FileinToXmlProcess<FileInputXmlNode>(inXmlNode, outNode);
             break;
         default:
             break;

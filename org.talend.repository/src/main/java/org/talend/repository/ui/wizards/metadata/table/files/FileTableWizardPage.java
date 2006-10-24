@@ -30,12 +30,14 @@ import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.builder.connection.PositionalFileConnection;
 import org.talend.core.model.metadata.builder.connection.RegexpFileConnection;
 import org.talend.core.model.metadata.builder.connection.TableHelper;
+import org.talend.core.model.metadata.builder.connection.XmlFileConnection;
 import org.talend.core.model.metadata.builder.connection.util.ConnectionSwitch;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.repository.ui.swt.utils.AbstractForm;
 import org.talend.repository.ui.wizards.metadata.connection.files.delimited.DelimitedFileStep3Form;
 import org.talend.repository.ui.wizards.metadata.connection.files.positional.FileStep3Form;
 import org.talend.repository.ui.wizards.metadata.connection.files.regexp.RegexpFileStep3Form;
+import org.talend.repository.ui.wizards.metadata.connection.files.xml.XmlFileStep3Form;
 
 /**
  * TableWizard present the TableForm width the MetaDataTable. Use to create a new table (need a connection to a DB).
@@ -114,6 +116,14 @@ public class FileTableWizardPage extends WizardPage {
                 regexpFileStep3Form.setReadOnly(!isRepositoryObjectEditable);
                 regexpFileStep3Form.setListener(listener);
                 return regexpFileStep3Form;
+            }
+
+            public Object caseXmlFileConnection(final XmlFileConnection object) {
+                XmlFileStep3Form xmlFileStep3Form = new XmlFileStep3Form(parent, connectionItem, metadataTable, TableHelper
+                        .getTableNames(object, metadataTable.getLabel()));
+                xmlFileStep3Form.setReadOnly(!isRepositoryObjectEditable);
+                xmlFileStep3Form.setListener(listener);
+                return xmlFileStep3Form;
             }
             
         }.doSwitch(connection);

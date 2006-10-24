@@ -15,6 +15,7 @@
             id="org.talend.repository.views.repository"
             name="Repository"/>
    </extension>
+
    <extension
          id="rep.actions"
          name="Actions"
@@ -54,6 +55,11 @@
             id="org.talend.repository.actions.createfileregexp"
             level="10"
             name="Metadata/Create file regexp"/>
+      <Action
+            class="org.talend.repository.ui.actions.metadata.CreateFileXmlAction"
+            id="org.talend.repository.actions.createfilexml"
+            level="10"
+            name="Metadata/Create file xml"/>
       <Action
             class="org.talend.repository.ui.actions.DeleteAction"
             id="org.talend.repository.actions.delete"
