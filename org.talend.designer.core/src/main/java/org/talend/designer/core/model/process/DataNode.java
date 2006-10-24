@@ -52,6 +52,7 @@ public class DataNode extends AbstractNode {
         metaList.add(metaTable);
         setMetadataList(metaList);
         setUniqueName(uniqueName);
+        setComponent(component);
 
         ECodeLanguage currentLanguage = ((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY))
                 .getProject().getLanguage();

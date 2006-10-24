@@ -49,8 +49,7 @@
    </PARAMETERS>
    <CODEGENERATION>
      <TEMPLATES>
-      <TEMPLATE NAME="java" MULTIPLE_METHODS="true"/>
-      <TEMPLATE NAME="perl" MULTIPLE_METHODS="true"/>
+      <TEMPLATE NAME="tFileInputPositional" MULTIPLE_METHODS="true"/>
      </TEMPLATES>
    </CODEGENERATION>
    <RETURNS>
