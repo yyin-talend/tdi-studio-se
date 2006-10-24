@@ -85,6 +85,9 @@ public class RepositoryHelper {
             return BusinessPackage.eINSTANCE.getFilePositionalMetadata();
         } else if (type == ERepositoryObjectType.METADATA_FILE_REGEXP) {
             return BusinessPackage.eINSTANCE.getFileRegexpMetadata();
+// PTODO CAN XmlFile
+//        } else if (type == ERepositoryObjectType.METADATA_FILE_XML) {
+//            return BusinessPackage.eINSTANCE.getFileXmlMetadata();
         }
         return null;
     }
