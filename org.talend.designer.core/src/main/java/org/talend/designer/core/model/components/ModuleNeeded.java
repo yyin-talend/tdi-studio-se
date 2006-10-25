@@ -21,17 +21,19 @@
 // ============================================================================
 package org.talend.designer.core.model.components;
 
+import org.talend.core.model.components.IComponent;
+
 /**
  * DOC nrousseau class global comment. Detailled comment <br/>
  * 
  * $Id$
  * 
  */
-public class ComponentImportNeeds {
+public class ModuleNeeded {
 
-    private String name;
+    private static final String GLOBAL_MODULE_NAME = "--";
 
-    private String componentName;
+    private IComponent component;
 
     private String moduleName;
 
@@ -46,6 +48,45 @@ public class ComponentImportNeeds {
     public static final int INSTALLED = 1;
 
     public static final int NOT_INSTALLED = 2;
+
+    /**
+     * DOC smallet ModuleNeeded constructor comment.
+     * 
+     * @param component
+     * @param moduleName
+     * @param informationMsg
+     * @param required
+     * @param status
+     */
+    public ModuleNeeded(IComponent component, String moduleName, String informationMsg, boolean required) {
+        super();
+        this.component = component;
+        this.moduleName = moduleName;
+        this.informationMsg = informationMsg;
+        this.required = required;
+    }
+
+    /**
+     * Getter for component.
+     * 
+     * @return the component
+     */
+    public String getComponentName() {
+        if (component == null) {
+            return GLOBAL_MODULE_NAME;
+        } else {
+            return this.component.getName();
+        }
+    }
+
+    /**
+     * Sets the component.
+     * 
+     * @param component the component to set
+     */
+    public void setComponent(IComponent component) {
+        this.component = component;
+    }
 
     public String getInformationMsg() {
         return this.informationMsg;
@@ -63,28 +104,12 @@ public class ComponentImportNeeds {
         this.moduleName = moduleName;
     }
 
-    public String getName() {
-        return this.name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public boolean isRequired() {
         return this.required;
     }
 
     public void setRequired(boolean required) {
         this.required = required;
-    }
-
-    public String getComponentName() {
-        return this.componentName;
-    }
-
-    public void setComponentName(String componentName) {
-        this.componentName = componentName;
     }
 
     public int getStatus() {

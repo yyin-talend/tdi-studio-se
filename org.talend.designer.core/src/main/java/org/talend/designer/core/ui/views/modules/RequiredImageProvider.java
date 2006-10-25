@@ -25,7 +25,7 @@ import org.eclipse.swt.graphics.Image;
 import org.talend.commons.ui.swt.tableviewer.behavior.IColumnImageProvider;
 import org.talend.core.ui.ImageProvider;
 import org.talend.core.ui.ImageProvider.EImage;
-import org.talend.designer.core.model.components.ComponentImportNeeds;
+import org.talend.designer.core.model.components.ModuleNeeded;
 
 /**
  * DOC smallet class global comment. Detailled comment <br/>
@@ -36,7 +36,7 @@ import org.talend.designer.core.model.components.ComponentImportNeeds;
 public class RequiredImageProvider implements IColumnImageProvider {
 
     public Image getImage(Object bean) {
-        ComponentImportNeeds componentImportNeeds = (ComponentImportNeeds) bean;
+        ModuleNeeded componentImportNeeds = (ModuleNeeded) bean;
 
         if (componentImportNeeds.isRequired()) {
             return ImageProvider.getImage(EImage.MODULE_REQUIRED_ICON);

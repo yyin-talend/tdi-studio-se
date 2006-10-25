@@ -193,4 +193,29 @@
             level="10"
             name="Edit routines"/>
    </extension>
+   <extension
+         point="org.eclipse.ui.contexts">
+      <context
+            id="talend.modules"
+            name="Modules view"
+            parentId="org.eclipse.ui.contexts.window"/>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            categoryId="Talend"
+            id="refresh"
+            name="Refresh"/>
+      <category
+            id="Talend"
+            name="Talend"/>
+   </extension>
+   <extension
+         point="org.eclipse.ui.bindings">
+      <key
+            commandId="refresh"
+            contextId="talend.modules"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="F5"/>
+   </extension>
 </plugin>

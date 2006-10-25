@@ -88,14 +88,14 @@ public class EmfComponent implements IComponent {
     private static final String TEXT_BUILTIN = "Built-In";
 
     private static final String TEXT_REPOSITORY = "Repository";
-    
+
     private IMultipleComponentManager multipleComponentManager;
 
     public EmfComponent(File file) {
         this.file = file;
         load();
-        codeLanguage = ((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY))
-                .getProject().getLanguage();
+        codeLanguage = ((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY)).getProject()
+                .getLanguage();
     }
 
     public boolean isPropagateSchema() {
@@ -120,8 +120,8 @@ public class EmfComponent implements IComponent {
         ComponentResourceFactoryImpl compFact;
         compFact = new ComponentResourceFactoryImpl();
         compFact.createResource(URI.createURI(file.toURI().toString()));
-        resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put(
-                Resource.Factory.Registry.DEFAULT_EXTENSION, compFact);
+        resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put(Resource.Factory.Registry.DEFAULT_EXTENSION,
+                compFact);
 
         Resource res = resourceSet.getResource(URI.createURI(file.toURI().toString()), true);
 
@@ -129,9 +129,9 @@ public class EmfComponent implements IComponent {
         xmlDoc = (DocumentRoot) res.getContents().get(0);
 
         compType = (COMPONENTType) xmlDoc.eContents().get(0);
-        
+
         loadMultipleComponentManagerFromTemplates();
-        
+
         isLoaded = true;
     }
 
@@ -530,8 +530,7 @@ public class EmfComponent implements IComponent {
             param.setNotShowIf(xmlParam.getNOTSHOWIF());
             param.setRepositoryValue(xmlParam.getREPOSITORYVALUE());
 
-            if (!param.getField().equals(EParameterFieldType.TABLE)
-                    && !param.getField().equals(EParameterFieldType.CLOSED_LIST)) {
+            if (!param.getField().equals(EParameterFieldType.TABLE) && !param.getField().equals(EParameterFieldType.CLOSED_LIST)) {
                 List<DEFAULTType> listDefault = xmlParam.getDEFAULT();
                 for (DEFAULTType defaultType : listDefault) {
                     IElementParameterDefaultValue defaultValue = new ElementParameterDefaultValue();
@@ -593,8 +592,8 @@ public class EmfComponent implements IComponent {
                 for (int k = 0; k < nbItems; k++) {
                     item = (ITEMType) items.getITEM().get(k);
                     listItemsDisplayCodeValue[k] = item.getNAME();
-                    listItemsDisplayValue[k] = getTranslatedValue(xmlParam.getNAME() + "." + language.getName()
-                            + ".ITEM." + item.getNAME());
+                    listItemsDisplayValue[k] = getTranslatedValue(xmlParam.getNAME() + "." + language.getName() + ".ITEM."
+                            + item.getNAME());
                     if (!type.equals(EParameterFieldType.TABLE)) {
                         listItemsValue[k] = item.getVALUE();
                     } else {
@@ -781,39 +780,34 @@ public class EmfComponent implements IComponent {
         return String.valueOf(compType.getHEADER().getVERSION());
     }
 
-    public List<ComponentImportNeeds> getImportsNeeded() {
-        List<ComponentImportNeeds> componentImportNeedsList = new ArrayList<ComponentImportNeeds>();
+    public List<ModuleNeeded> getModulesNeeded() {
+        List<ModuleNeeded> componentImportNeedsList = new ArrayList<ModuleNeeded>();
         if (compType.getCODEGENERATION().getIMPORTS() != null) {
             EList emfImportList;
             emfImportList = compType.getCODEGENERATION().getIMPORTS().getIMPORT();
             for (int i = 0; i < emfImportList.size(); i++) {
                 IMPORTType importType = (IMPORTType) emfImportList.get(i);
-                ComponentImportNeeds componentImportNeeds = new ComponentImportNeeds();
-
-                componentImportNeeds.setName(importType.getNAME());
-                componentImportNeeds.setComponentName(getName());
-                componentImportNeeds.setModuleName(importType.getMODULE());
-                componentImportNeeds.setRequired(importType.isREQUIRED());
 
                 String msg = getTranslatedValue(importType.getNAME() + ".INFO");
                 if (msg.startsWith(Messages.KEY_NOT_FOUND_PREFIX)) {
                     msg = Messages.getString("modules.required");
                 }
-                componentImportNeeds.setInformationMsg(msg);
+
+                ModuleNeeded componentImportNeeds = new ModuleNeeded(this, importType.getMODULE(), msg, importType.isREQUIRED());
 
                 componentImportNeedsList.add(componentImportNeeds);
             }
         }
         return componentImportNeedsList;
     }
-    
+
     public IMultipleComponentManager getMultipleComponentManager() {
         if (!isLoaded) {
             load();
         }
         return this.multipleComponentManager;
     }
-    
+
     /**
      * DOC nrousseau Comment method "loadMultipleComponentManagerFromTemplates".
      */
@@ -821,42 +815,42 @@ public class EmfComponent implements IComponent {
         TEMPLATEType templateType;
         TEMPLATEPARAMType templateParamType;
         TEMPLATESType templatesType;
-        
+
         templatesType = compType.getCODEGENERATION().getTEMPLATES();
         String input, output;
-        
+
         input = templatesType.getINPUT();
         output = templatesType.getOUTPUT();
-        
+
         if (input == null || output == null) {
             return;
         }
-        
+
         multipleComponentManager = new MultipleComponentManager(input, output);
-        
+
         EList listTempType = templatesType.getTEMPLATE();
         for (int i = 0; i < listTempType.size(); i++) {
             templateType = (TEMPLATEType) listTempType.get(i);
-            
+
             String name, connection, linkTo;
             name = templateType.getNAME();
             connection = templateType.getCTYPE();
             linkTo = templateType.getLINKTO();
-            
+
             multipleComponentManager.addItem(name, connection, linkTo);
         }
-        
+
         EList listTempParamType = templatesType.getTEMPLATEPARAM();
         for (int i = 0; i < listTempParamType.size(); i++) {
             templateParamType = (TEMPLATEPARAMType) listTempParamType.get(i);
-            
+
             String source, target;
             source = templateParamType.getSOURCE();
             target = templateParamType.getTARGET();
-            
+
             multipleComponentManager.addParam(source, target);
         }
-        
+
         multipleComponentManager.validateItems();
     }
 }

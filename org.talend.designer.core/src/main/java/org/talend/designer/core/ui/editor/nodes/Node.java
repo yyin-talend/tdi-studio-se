@@ -64,9 +64,10 @@ import org.talend.core.model.process.Problem;
 import org.talend.core.model.process.Problem.ProblemStatus;
 import org.talend.core.model.temp.ECodeLanguage;
 import org.talend.designer.core.DesignerPlugin;
-import org.talend.designer.core.model.components.ComponentImportNeeds;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
+import org.talend.designer.core.model.components.ModuleNeeded;
+import org.talend.designer.core.model.components.ModulesNeededProvider;
 import org.talend.designer.core.ui.MultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.cmd.ChangeMetadataCommand;
 import org.talend.designer.core.ui.editor.connections.Connection;
@@ -74,7 +75,6 @@ import org.talend.designer.core.ui.editor.connections.EDesignerConnection;
 import org.talend.designer.core.ui.editor.nodecontainer.NodeContainer;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
-import org.talend.designer.core.ui.views.modules.ModulesView;
 import org.talend.designer.core.ui.views.problems.Problems;
 import org.talend.repository.model.ExternalNodesFactory;
 
@@ -632,8 +632,8 @@ public class Node extends Element implements INode {
                 connec = (Connection) getIncomingConnections().get(j);
                 if (connec.isActivate()
                         && ((connec.getLineStyle().equals(EConnectionType.FLOW_MAIN)
-                                || connec.getLineStyle().equals(EConnectionType.FLOW_REF) || connec.getLineStyle()
-                                .equals(EConnectionType.ITERATE)))) {
+                                || connec.getLineStyle().equals(EConnectionType.FLOW_REF) || connec.getLineStyle().equals(
+                                EConnectionType.ITERATE)))) {
                     return false;
                 }
             }
@@ -698,8 +698,8 @@ public class Node extends Element implements INode {
      * @see org.talend.core.model.process.INode#isMultipleMethods(org.talend.core.model.temp.ECodeLanguage)
      */
     public boolean isMultipleMethods() {
-        ECodeLanguage currentLanguage = ((RepositoryContext) CorePlugin.getContext().getProperty(
-                Context.REPOSITORY_CONTEXT_KEY)).getProject().getLanguage();
+        ECodeLanguage currentLanguage = ((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY))
+                .getProject().getLanguage();
         return component.isMultipleMethods(currentLanguage);
     }
 
@@ -791,8 +791,7 @@ public class Node extends Element implements INode {
                 case TABLE:
                     List<Map<String, String>> tableValues = (List<Map<String, String>>) param.getValue();
                     if (tableValues.size() == 0) {
-                        String errorMessage = "Parameter (" + param.getDisplayName()
-                                + ") must have at least one value.";
+                        String errorMessage = "Parameter (" + param.getDisplayName() + ") must have at least one value.";
                         Problems.add(ProblemStatus.ERROR, this, errorMessage);
                     }
                     break;
@@ -832,8 +831,8 @@ public class Node extends Element implements INode {
     }
 
     private void checkModules() {
-        List<ComponentImportNeeds> list = ModulesView.getImports(getComponentName());
-        for (ComponentImportNeeds current : list) {
+        List<ModuleNeeded> list = ModulesNeededProvider.getModulesNeeded(getComponentName());
+        for (ModuleNeeded current : list) {
             Problem problem = getProblem(current);
             if (problem != null) {
                 Problems.add(problem);
@@ -841,12 +840,12 @@ public class Node extends Element implements INode {
         }
     }
 
-    private Problem getProblem(ComponentImportNeeds componentImportNeeds) {
-        if (componentImportNeeds.getStatus() == ComponentImportNeeds.INSTALLED) {
+    private Problem getProblem(ModuleNeeded componentImportNeeds) {
+        if (componentImportNeeds.getStatus() == ModuleNeeded.INSTALLED) {
             return null;
         }
-        if (componentImportNeeds.getStatus() == ComponentImportNeeds.NOT_INSTALLED && componentImportNeeds.isRequired()) {
-            return new Problem(this, "Module " + componentImportNeeds.getName() + " required", ProblemStatus.ERROR);
+        if (componentImportNeeds.getStatus() == ModuleNeeded.NOT_INSTALLED && componentImportNeeds.isRequired()) {
+            return new Problem(this, "Module " + componentImportNeeds.getModuleName() + " required", ProblemStatus.ERROR);
         }
 
         return null;

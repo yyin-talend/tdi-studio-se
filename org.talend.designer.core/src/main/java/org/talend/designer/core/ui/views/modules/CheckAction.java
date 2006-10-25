@@ -41,6 +41,7 @@ public class CheckAction extends Action {
         setToolTipText("Refresh");
         setImageDescriptor(ImageProvider.getImageDesc(EImage.REFRESH_ICON));
         this.view = view;
+        this.setActionDefinitionId("refresh");
     }
 
     /*
@@ -50,7 +51,6 @@ public class CheckAction extends Action {
      */
     @Override
     public void run() {
-        view.check();
         view.refresh();
     }
 
