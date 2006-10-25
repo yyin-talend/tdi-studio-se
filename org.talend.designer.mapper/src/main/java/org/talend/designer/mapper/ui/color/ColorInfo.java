@@ -22,6 +22,7 @@
 package org.talend.designer.mapper.ui.color;
 
 import org.eclipse.swt.graphics.RGB;
+import org.eclipse.swt.widgets.Display;
 
 /**
  * DOC mhelleboid class global comment. Detailled comment <br/>
@@ -57,10 +58,16 @@ public enum ColorInfo {
 
     private int blue;
 
+    private int systemColor = -1;
+
     private ColorInfo(int red, int green, int blue) {
         this.red = red;
         this.green = green;
         this.blue = blue;
+    }
+
+    private ColorInfo(int systemColor) {
+        this.systemColor = systemColor;
     }
 
     public int getBlue() {
@@ -76,7 +83,11 @@ public enum ColorInfo {
     }
 
     public RGB getRGB() {
-        return new RGB(red, green, blue);
+        if (systemColor != -1) {
+            return Display.getCurrent().getSystemColor(systemColor).getRGB();
+        } else {
+            return new RGB(red, green, blue);
+        }
     }
 
 }
