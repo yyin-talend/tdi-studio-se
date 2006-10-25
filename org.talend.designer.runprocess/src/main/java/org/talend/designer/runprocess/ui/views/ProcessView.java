@@ -24,6 +24,8 @@ package org.talend.designer.runprocess.ui.views;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
+import org.apache.log4j.Logger;
+import org.eclipse.core.commands.IHandler;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.swt.SWT;
@@ -36,8 +38,10 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.ui.commands.ActionHandler;
 import org.eclipse.ui.contexts.IContextActivation;
 import org.eclipse.ui.contexts.IContextService;
+import org.eclipse.ui.handlers.IHandlerService;
 import org.eclipse.ui.part.ViewPart;
 import org.talend.designer.runprocess.RunProcessContext;
 import org.talend.designer.runprocess.RunProcessContextManager;
@@ -53,6 +57,8 @@ import org.talend.designer.runprocess.ui.actions.ClearPerformanceAction;
  * 
  */
 public class ProcessView extends ViewPart {
+
+    private static Logger log = Logger.getLogger(ProcessView.class);
 
     public static final String ID = RunProcessPlugin.PLUGIN_ID + ".ui.view.processview"; //$NON-NLS-1$
 
@@ -115,24 +121,31 @@ public class ProcessView extends ViewPart {
 
         runningProcessChanged();
 
+        IHandlerService handlerService = (IHandlerService) getSite().getService(IHandlerService.class);
+
         Action runAction = new RunAction();
-        getViewSite().getKeyBindingService().registerAction(runAction);
+        IHandler handler1 = new ActionHandler(runAction);
+        handlerService.activateHandler(runAction.getActionDefinitionId(), handler1);
+
         Action debugAction = new DebugAction();
-        getViewSite().getKeyBindingService().registerAction(debugAction);
+        handler1 = new ActionHandler(debugAction);
+        handlerService.activateHandler(debugAction.getActionDefinitionId(), handler1);
+
         Action killAction = new KillAction();
-        getViewSite().getKeyBindingService().registerAction(killAction);
+        handler1 = new ActionHandler(killAction);
+        handlerService.activateHandler(killAction.getActionDefinitionId(), handler1);
 
         FocusListener fl = new FocusListener() {
 
             public void focusGained(FocusEvent e) {
-                System.out.println("Run process gain focus");
+                log.trace("Run process gain focus");
                 IContextService contextService = (IContextService) RunProcessPlugin.getDefault().getWorkbench().getAdapter(
                         IContextService.class);
                 ca = contextService.activateContext("talend.runProcess");
             }
 
             public void focusLost(FocusEvent e) {
-                System.out.println("Run process lost focus");
+                log.trace("Run process lost focus");
                 if (ca != null) {
                     IContextService contextService = (IContextService) RunProcessPlugin.getDefault().getWorkbench().getAdapter(
                             IContextService.class);

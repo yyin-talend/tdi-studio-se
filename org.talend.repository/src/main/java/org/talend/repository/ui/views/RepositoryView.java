@@ -23,6 +23,7 @@ package org.talend.repository.ui.views;
 
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.eclipse.core.commands.IHandler;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
@@ -87,6 +88,8 @@ import org.talend.repository.ui.actions.RepositoryDoubleClickAction;
  * 
  */
 public class RepositoryView extends ViewPart implements IRepositoryView, ITabbedPropertySheetPageContributor {
+
+    private static Logger log = Logger.getLogger(RepositoryView.class);
 
     private static TreeViewer viewer;
 
@@ -190,14 +193,14 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
         viewer.getTree().addFocusListener(new FocusListener() {
 
             public void focusGained(FocusEvent e) {
-                System.out.println("Repository gain focus");
+                log.trace("Repository gain focus");
                 IContextService contextService = (IContextService) RepositoryPlugin.getDefault().getWorkbench().getAdapter(
                         IContextService.class);
                 ca = contextService.activateContext("talend.repository");
             }
 
             public void focusLost(FocusEvent e) {
-                System.out.println("Repository lost focus");
+                log.trace("Repository lost focus");
                 if (ca != null) {
                     IContextService contextService = (IContextService) RepositoryPlugin.getDefault().getWorkbench().getAdapter(
                             IContextService.class);
