@@ -54,7 +54,7 @@ public class PerlExpressionSyntaxChecker implements ICodeSyntaxChecker {
 
     public static final String STRING2_SUFFIX = " had compilation errors";
 
-    public static final String STRING2_REPLACED = ", expression had compilation errors";
+    public static final String STRING2_REPLACED = "=> expression had compilation errors";
 
     public static final int PERL_STATUS_OK = 0;
 
