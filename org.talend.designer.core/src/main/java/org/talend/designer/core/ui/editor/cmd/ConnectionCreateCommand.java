@@ -132,8 +132,8 @@ public class ConnectionCreateCommand extends Command {
                 }
             }
             if (lineStyle.equals(EConnectionType.FLOW_REF)) {
-                Node sourceStart = source.getSubProcessStartNode();
-                Node targetStart = target.getSubProcessStartNode();
+                Node sourceStart = source.getSubProcessStartNode(false);
+                Node targetStart = target.getSubProcessStartNode(false);
                 if (sourceStart.equals(targetStart)) {
                     return false;
                 }

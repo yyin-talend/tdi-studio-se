@@ -31,6 +31,7 @@ import org.talend.core.model.components.IMultipleComponentItem;
 import org.talend.core.model.components.IMultipleComponentManager;
 import org.talend.core.model.components.IMultipleComponentParameter;
 import org.talend.core.model.metadata.IMetadataTable;
+import org.talend.core.model.process.AbstractConnection;
 import org.talend.core.model.process.AbstractNode;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.IConnection;
@@ -56,11 +57,14 @@ public class DataProcess {
 
     private static List<Node> checkRefList = null;
 
+    private static Map<Node, INode> checkMultipleMap = null;
+
     private static List<INode> dataNodeList;
 
     private static void initialize() {
         buildCheckMap = new HashMap<Node, INode>();
         checkRefList = new ArrayList<Node>();
+        checkMultipleMap = new HashMap<Node, INode>();
         dataNodeList = new ArrayList<INode>();
     }
 
@@ -72,221 +76,260 @@ public class DataProcess {
         }
 
         AbstractNode dataNode;
-        IMultipleComponentManager multipleComponentManager = graphicalNode.getComponent().getMultipleComponentManager();
 
-        if (multipleComponentManager == null) {
-            if (graphicalNode.getExternalNode() == null) {
-                dataNode = new DataNode();
-            } else {
-                // mapper
-                dataNode = (AbstractNode) ExternalNodesFactory.getInstance(graphicalNode.getPluginFullName());
-                Object externalData = graphicalNode.getExternalData();
-                if (externalData != null) {
-                    ((IExternalNode) dataNode).setExternalData(externalData);
-                }
-            }
-            buildCheckMap.put(graphicalNode, dataNode);
-            dataNodeList.add(dataNode);
-            dataNode.setActivate(graphicalNode.isActivate());
-            dataNode.setStart(graphicalNode.isStart());
-            dataNode.setComponentName(graphicalNode.getComponentName());
-            dataNode.setMetadataList(graphicalNode.getMetadataList());
-            dataNode.setPluginFullName(graphicalNode.getPluginFullName());
-            dataNode.setElementParameters(graphicalNode.getElementParameters());
-            dataNode.setUniqueName(graphicalNode.getUniqueName());
-            dataNode.setSubProcessStart(graphicalNode.isSubProcessStart());
-            dataNode.setMultipleMethods(graphicalNode.isMultipleMethods());
-            dataNode.setProcess(graphicalNode.getProcess());
-            dataNode.setComponent(graphicalNode.getComponent());
-
-            List<IConnection> outgoingConnections = new ArrayList<IConnection>();
-            List<IConnection> incomingConnections = new ArrayList<IConnection>();
-            dataNode.setIncomingConnections(incomingConnections);
-            dataNode.setOutgoingConnections(outgoingConnections);
-
-            DataConnection dataConnec;
-            for (IConnection connection : graphicalNode.getOutgoingConnections()) {
-                dataConnec = new DataConnection();
-                dataConnec.setActivate(connection.isActivate());
-                dataConnec.setLineStyle(connection.getLineStyle());
-                dataConnec.setMetadataTable(connection.getMetadataTable());
-                dataConnec.setName(connection.getName());
-                dataConnec.setSource(dataNode);
-                dataConnec.setCondition(connection.getCondition());
-                INode target = buildfromNode((Node) connection.getTarget());
-                dataConnec.setTarget(target);
-                incomingConnections = (List<IConnection>) target.getIncomingConnections();
-                if (incomingConnections == null) {
-                    incomingConnections = new ArrayList<IConnection>();
-                }
-                outgoingConnections.add(dataConnec);
-                // incomingConnections.add(dataConnec);
-            }
+        if (graphicalNode.getExternalNode() == null) {
+            dataNode = new DataNode();
         } else {
-            // prepare all the nodes
-            Map<IMultipleComponentItem, AbstractNode> itemsMap = new HashMap<IMultipleComponentItem, AbstractNode>();
-            List<IMultipleComponentItem> itemList = multipleComponentManager.getItemList();
-            for (IMultipleComponentItem curItem : itemList) {
-                String componentName = curItem.getName();
-                String uniqueName = graphicalNode.getUniqueName() + "_" + componentName;
-                IComponent component = ComponentsFactoryProvider.getInstance().get(componentName);
-                DataNode curNode = new DataNode(component, uniqueName);
-                curNode.setActivate(graphicalNode.isActivate());
-                IMetadataTable newMetadata = graphicalNode.getMetadataList().get(0).clone();
-                newMetadata.setTableName(uniqueName);
-                curNode.getMetadataList().remove(0);
-                curNode.getMetadataList().add(newMetadata);
-
-                List<IConnection> outgoingConnections = new ArrayList<IConnection>();
-                List<IConnection> incomingConnections = new ArrayList<IConnection>();
-                curNode.setIncomingConnections(incomingConnections);
-                curNode.setOutgoingConnections(outgoingConnections);
-
-                dataNodeList.add(curNode);
-                itemsMap.put(curItem, curNode);
+            // mapper
+            dataNode = (AbstractNode) ExternalNodesFactory.getInstance(graphicalNode.getPluginFullName());
+            Object externalData = graphicalNode.getExternalData();
+            if (externalData != null) {
+                ((IExternalNode) dataNode).setExternalData(externalData);
             }
+        }
+        buildCheckMap.put(graphicalNode, dataNode);
+        dataNodeList.add(dataNode);
+        dataNode.setActivate(graphicalNode.isActivate());
+        dataNode.setStart(graphicalNode.isStart());
+        dataNode.setComponentName(graphicalNode.getComponentName());
+        dataNode.setMetadataList(graphicalNode.getMetadataList());
+        dataNode.setPluginFullName(graphicalNode.getPluginFullName());
+        dataNode.setElementParameters(graphicalNode.getElementParameters());
+        dataNode.setUniqueName(graphicalNode.getUniqueName());
+        dataNode.setSubProcessStart(graphicalNode.isSubProcessStart());
+        dataNode.setMultipleMethods(graphicalNode.isMultipleMethods());
+        dataNode.setProcess(graphicalNode.getProcess());
+        dataNode.setComponent(graphicalNode.getComponent());
 
-            // set the specific parameters value.
-            String currentNodeName = graphicalNode.getComponentName();
-            for (IMultipleComponentParameter param : multipleComponentManager.getParamList()) {
-                INode sourceNode = null, targetNode = null;
+        List<IConnection> outgoingConnections = new ArrayList<IConnection>();
+        List<IConnection> incomingConnections = new ArrayList<IConnection>();
+        dataNode.setIncomingConnections(incomingConnections);
+        dataNode.setOutgoingConnections(outgoingConnections);
 
-                boolean sourceFound = false, targetFound = false;
+        DataConnection dataConnec;
+        for (IConnection connection : graphicalNode.getOutgoingConnections()) {
+            dataConnec = new DataConnection();
+            dataConnec.setActivate(connection.isActivate());
+            dataConnec.setLineStyle(connection.getLineStyle());
+            dataConnec.setMetadataTable(connection.getMetadataTable());
+            dataConnec.setName(connection.getName());
+            dataConnec.setSource(dataNode);
+            dataConnec.setCondition(connection.getCondition());
+            INode target = buildfromNode((Node) connection.getTarget());
+            dataConnec.setTarget(target);
+            incomingConnections = (List<IConnection>) target.getIncomingConnections();
+            if (incomingConnections == null) {
+                incomingConnections = new ArrayList<IConnection>();
+            }
+            outgoingConnections.add(dataConnec);
+            incomingConnections.add(dataConnec);
+        }
 
-                if (param.getSourceComponent().equals(currentNodeName)) {
-                    sourceNode = graphicalNode;
+        return dataNode;
+    }
+
+    /**
+     * DOC nrousseau Comment method "addMultipleNode".
+     * 
+     * @param graphicalNode
+     * @param multipleComponentManager
+     * @return
+     */
+    @SuppressWarnings("unchecked")
+    private static AbstractNode addMultipleNode(Node graphicalNode, IMultipleComponentManager multipleComponentManager) {
+        AbstractNode dataNode;
+        // prepare all the nodes
+
+        INode previousNode = buildCheckMap.get(graphicalNode);
+        dataNodeList.remove(previousNode);
+
+        Map<IMultipleComponentItem, AbstractNode> itemsMap = new HashMap<IMultipleComponentItem, AbstractNode>();
+
+        prepareAllMultipleComponentNodes(itemsMap, multipleComponentManager, graphicalNode);
+        setMultipleComponentParameters(multipleComponentManager, itemsMap, graphicalNode);
+
+        // set the first one (input) with the properties of the graphical node.
+        dataNode = itemsMap.get(multipleComponentManager.getInput());
+        dataNode.setStart(graphicalNode.isStart());
+        dataNode.setSubProcessStart(graphicalNode.isSubProcessStart());
+        List<IConnection> incomingConnections = (List<IConnection>) dataNode.getIncomingConnections();
+
+        for (IConnection connection : previousNode.getIncomingConnections()) {
+            AbstractConnection asbractConnect = (AbstractConnection) connection;
+            asbractConnect.setTarget(dataNode);
+            incomingConnections.add(connection);
+        }
+
+        // set informations for the last node, so the outgoing connections.
+        INode outputNode = itemsMap.get(multipleComponentManager.getOutput());
+        List<IConnection> outgoingConnections = (List<IConnection>) outputNode.getOutgoingConnections();
+
+        for (IConnection connection : previousNode.getOutgoingConnections()) {
+            AbstractConnection asbractConnect = (AbstractConnection) connection;
+            asbractConnect.setSource(outputNode);
+            outgoingConnections.add(connection);
+        }
+
+        // adds all connections between these nodes
+        for (IMultipleComponentItem curItem : multipleComponentManager.getItemList()) {
+            if (curItem.isConnectionExist()) {
+                AbstractNode nodeSource = itemsMap.get(curItem);
+                AbstractNode nodeTarget;
+                if (curItem.getLinkTo() == null) {
+                    nodeTarget = dataNode;
                 } else {
-                    for (int i = 0; i < itemList.size() && !sourceFound; i++) {
-                        if (itemList.get(i).getName().equals(param.getSourceComponent())) {
-                            sourceNode = itemsMap.get(itemList.get(i));
-                            sourceFound = true;
-                        }
-                    }
+                    nodeTarget = itemsMap.get(curItem.getLinkTo());
                 }
+                DataConnection dataConnec = new DataConnection();
+                dataConnec.setActivate(graphicalNode.isActivate());
+                dataConnec.setLineStyle(curItem.getConnectionType());
+                dataConnec.setMetadataTable(nodeSource.getMetadataList().get(0));
+                String linkName;
 
-                for (int i = 0; i < itemList.size() && !targetFound; i++) {
-                    if (itemList.get(i).getName().equals(param.getTargetComponent())) {
-                        targetNode = itemsMap.get(itemList.get(i));
-                        targetFound = true;
-                    }
-                }
+                EDesignerConnection designerConnection = EDesignerConnection.getConnection(curItem.getConnectionType());
+                dataConnec.setName(designerConnection.getLinkName());
 
-                if ((sourceNode != null) && (targetNode != null)) {
-                    sourceFound = false;
-                    targetFound = false;
-
-                    IElementParameter paramSource = null, paramTarget = null;
-
-                    for (int i = 0; i < sourceNode.getElementParameters().size() && !sourceFound; i++) {
-                        if (sourceNode.getElementParameters().get(i).getName().equals(param.getSourceValue())) {
-                            paramSource = sourceNode.getElementParameters().get(i);
-                            sourceFound = true;
+                switch (curItem.getConnectionType()) {
+                case FLOW_MAIN:
+                    linkName = "row_" + itemsMap.get(curItem).getUniqueName();
+                    dataConnec.setName(linkName);
+                    break;
+                case RUN_BEFORE:
+                case RUN_AFTER:
+                case RUN_IF_OK:
+                case RUN_IF_ERROR:
+                    if (nodeTarget.equals(dataNode)) {
+                        INode startNode = graphicalNode.getSubProcessStartNode(false);
+                        INode dataStartNode = buildCheckMap.get(startNode);
+                        if (dataStartNode != previousNode) {
+                            nodeTarget = (AbstractNode) dataStartNode;
                         }
                     }
-
-                    for (int i = 0; i < targetNode.getElementParameters().size() && !targetFound; i++) {
-                        if (targetNode.getElementParameters().get(i).getName().equals(param.getTargetValue())) {
-                            paramTarget = targetNode.getElementParameters().get(i);
-                            targetFound = true;
-                        }
-                    }
-
-                    if ((paramSource != null) && (paramTarget != null)) {
-                        paramTarget.setValue(paramSource.getValue());
-                    }
-                }
-            }
-
-            // set the first one (input) with the properties of the graphical node.
-            dataNode = itemsMap.get(multipleComponentManager.getInput());
-            dataNode.setStart(graphicalNode.isStart());
-            dataNode.setSubProcessStart(graphicalNode.isSubProcessStart());
-
-            // set informations for the last node, so the outgoing connections.
-            INode outputNode = itemsMap.get(multipleComponentManager.getOutput());
-            buildCheckMap.put(graphicalNode, outputNode);
-
-            List<IConnection> outgoingConnections = (List<IConnection>) outputNode.getOutgoingConnections();
-            List<IConnection> incomingConnections = (List<IConnection>) outputNode.getIncomingConnections();
-
-            DataConnection dataConnec;
-            for (IConnection connection : graphicalNode.getOutgoingConnections()) {
-                dataConnec = new DataConnection();
-                dataConnec.setActivate(connection.isActivate());
-                dataConnec.setLineStyle(connection.getLineStyle());
-                dataConnec.setMetadataTable(connection.getMetadataTable());
-                dataConnec.setName(connection.getName());
-                dataConnec.setSource(dataNode);
-                dataConnec.setCondition(connection.getCondition());
-                INode target = buildfromNode((Node) connection.getTarget());
-                dataConnec.setTarget(target);
-                incomingConnections = (List<IConnection>) target.getIncomingConnections();
-                if (incomingConnections == null) {
-                    incomingConnections = new ArrayList<IConnection>();
-                }
-                outgoingConnections.add(dataConnec);
-                // incomingConnections.add(dataConnec);
-            }
-
-            // adds all connections between these nodes
-            for (IMultipleComponentItem curItem : multipleComponentManager.getItemList()) {
-                if (curItem.isConnectionExist()) {
-                    AbstractNode nodeSource = itemsMap.get(curItem);
-                    AbstractNode nodeTarget;
-                    if (curItem.getLinkTo() == null) {
-                        nodeTarget = dataNode;
-                    } else {
-                        nodeTarget = itemsMap.get(curItem.getLinkTo());
-                    }
-
-                    dataConnec = new DataConnection();
-                    dataConnec.setActivate(graphicalNode.isActivate());
-                    dataConnec.setLineStyle(curItem.getConnectionType());
-                    dataConnec.setMetadataTable(nodeSource.getMetadataList().get(0));
-                    String linkName;
-
-                    EDesignerConnection designerConnection = EDesignerConnection.getConnection(curItem
-                            .getConnectionType());
-                    dataConnec.setName(designerConnection.getLinkName());
-
-                    switch (curItem.getConnectionType()) {
-                    case FLOW_MAIN:
-                        linkName = "row_" + itemsMap.get(curItem).getUniqueName();
-                        dataConnec.setName(linkName);
-                        break;
-                    case RUN_BEFORE:
-                    case RUN_AFTER:
-                    case RUN_IF_OK:
-                    case RUN_IF_ERROR:
-                        if (nodeTarget.equals(dataNode)) {
-                            INode startNode = graphicalNode.getSubProcessStartNode();
-                            INode dataStartNode = buildCheckMap.get(startNode);
-                            if (dataStartNode != outputNode) {
-                                nodeTarget = (AbstractNode) dataStartNode;
-                            }
-                        }
-                        if (nodeTarget.isStart()) {
-                            nodeTarget.setStart(false);
-                            nodeSource.setStart(true);
-                        }
-                        nodeSource.setSubProcessStart(true);
-                        break;
-                    default:
-                        break;
-                    }
-                    
-                    dataConnec.setSource(nodeSource);
-                    dataConnec.setTarget(nodeTarget);
-                    dataConnec.setCondition("");
-
-                    outgoingConnections = (List<IConnection>) nodeSource.getOutgoingConnections();
-                    outgoingConnections.add(dataConnec);
+                    List<IConnection> connectionsToRemoveFromList = new ArrayList<IConnection>();
                     incomingConnections = (List<IConnection>) nodeTarget.getIncomingConnections();
-                    incomingConnections.add(dataConnec);
+                    for (IConnection connec : incomingConnections) {
+                        switch (connec.getLineStyle()) {
+                        case RUN_BEFORE:
+                        case RUN_AFTER:
+                        case RUN_IF_OK:
+                        case RUN_IF_ERROR:
+                        case RUN_IF:
+                            connectionsToRemoveFromList.add(connec);
+                            AbstractConnection connection = (AbstractConnection) connec;
+                            connection.setTarget(nodeSource);
+                            break;
+                        default:
+                            break;
+                        }
+                    }
+                    incomingConnections.removeAll(connectionsToRemoveFromList);
+                    incomingConnections = (List<IConnection>) nodeSource.getIncomingConnections();
+                    incomingConnections.addAll(connectionsToRemoveFromList);
+                    if (nodeTarget.isStart()) {
+                        nodeTarget.setStart(false);
+                        nodeSource.setStart(true);
+                    }
+                    nodeSource.setSubProcessStart(true);
+                    break;
+                default:
+                    break;
                 }
+                dataConnec.setSource(nodeSource);
+                dataConnec.setTarget(nodeTarget);
+                dataConnec.setCondition("");
+                outgoingConnections = (List<IConnection>) nodeSource.getOutgoingConnections();
+                outgoingConnections.add(dataConnec);
+                incomingConnections = (List<IConnection>) nodeTarget.getIncomingConnections();
+                incomingConnections.add(dataConnec);
             }
         }
         return dataNode;
+    }
+
+    /**
+     * DOC nrousseau Comment method "prepareAllMultipleComponentNodes".
+     * 
+     * @param itemsMap
+     * @param multipleComponentManager
+     * @param graphicalNode
+     */
+    private static void prepareAllMultipleComponentNodes(Map<IMultipleComponentItem, AbstractNode> itemsMap,
+            IMultipleComponentManager multipleComponentManager, Node graphicalNode) {
+
+        List<IMultipleComponentItem> itemList = multipleComponentManager.getItemList();
+
+        for (IMultipleComponentItem curItem : itemList) {
+            String uniqueName = graphicalNode.getUniqueName() + "_" + curItem.getName();
+            IComponent component = ComponentsFactoryProvider.getInstance().get(curItem.getName());
+            DataNode curNode = new DataNode(component, uniqueName);
+            curNode.setActivate(graphicalNode.isActivate());
+            IMetadataTable newMetadata = graphicalNode.getMetadataList().get(0).clone();
+            newMetadata.setTableName(uniqueName);
+            curNode.getMetadataList().remove(0);
+            curNode.getMetadataList().add(newMetadata);
+            List<IConnection> outgoingConnections = new ArrayList<IConnection>();
+            List<IConnection> incomingConnections = new ArrayList<IConnection>();
+            curNode.setIncomingConnections(incomingConnections);
+            curNode.setOutgoingConnections(outgoingConnections);
+            dataNodeList.add(curNode);
+            itemsMap.put(curItem, curNode);
+        }
+    }
+
+    /**
+     * DOC nrousseau Comment method "setMultipleComponentParameters".
+     * 
+     * @param multipleComponentManager
+     * @param itemsMap
+     * @param graphicalNode
+     */
+    private static void setMultipleComponentParameters(IMultipleComponentManager multipleComponentManager,
+            Map<IMultipleComponentItem, AbstractNode> itemsMap, Node graphicalNode) {
+
+        List<IMultipleComponentItem> itemList = multipleComponentManager.getItemList();
+
+        // set the specific parameters value.
+        for (IMultipleComponentParameter param : multipleComponentManager.getParamList()) {
+            INode sourceNode = null, targetNode = null;
+            boolean sourceFound = false, targetFound = false;
+            if (param.getSourceComponent().equals(graphicalNode.getComponentName())) {
+                sourceNode = graphicalNode;
+            } else {
+                for (int i = 0; i < itemList.size() && !sourceFound; i++) {
+                    if (itemList.get(i).getName().equals(param.getSourceComponent())) {
+                        sourceNode = itemsMap.get(itemList.get(i));
+                        sourceFound = true;
+                    }
+                }
+            }
+            for (int i = 0; i < itemList.size() && !targetFound; i++) {
+                if (itemList.get(i).getName().equals(param.getTargetComponent())) {
+                    targetNode = itemsMap.get(itemList.get(i));
+                    targetFound = true;
+                }
+            }
+            if ((sourceNode != null) && (targetNode != null)) {
+                sourceFound = false;
+                targetFound = false;
+                IElementParameter paramSource = null, paramTarget = null;
+                for (int i = 0; i < sourceNode.getElementParameters().size() && !sourceFound; i++) {
+                    if (sourceNode.getElementParameters().get(i).getName().equals(param.getSourceValue())) {
+                        paramSource = sourceNode.getElementParameters().get(i);
+                        sourceFound = true;
+                    }
+                }
+
+                for (int i = 0; i < targetNode.getElementParameters().size() && !targetFound; i++) {
+                    if (targetNode.getElementParameters().get(i).getName().equals(param.getTargetValue())) {
+                        paramTarget = targetNode.getElementParameters().get(i);
+                        targetFound = true;
+                    }
+                }
+                if ((paramSource != null) && (paramTarget != null)) {
+                    paramTarget.setValue(paramSource.getValue());
+                }
+            }
+        }
     }
 
     @SuppressWarnings("unchecked")
@@ -300,8 +343,8 @@ public class DataProcess {
                 INode refSource = buildCheckMap.get(graphicalNode);
 
                 // retrieve the starts node of each current nodes to add a before link
-                Node subNodeStartTarget = graphicalNode.getSubProcessStartNode();
-                Node subNodeStartSource = ((Node) connection.getTarget()).getSubProcessStartNode();
+                Node subNodeStartTarget = graphicalNode.getSubProcessStartNode(true);
+                Node subNodeStartSource = ((Node) connection.getTarget()).getSubProcessStartNode(false);
                 AbstractNode subDataNodeStartSource = (AbstractNode) buildCheckMap.get(subNodeStartSource);
                 AbstractNode subDataNodeStartTarget = (AbstractNode) buildCheckMap.get(subNodeStartTarget);
 
@@ -357,6 +400,31 @@ public class DataProcess {
         }
     }
 
+    /**
+     * DOC nrousseau Comment method "replaceMultipleComponents".
+     * 
+     * @param node
+     */
+    private static INode replaceMultipleComponents(Node graphicalNode) {
+        if (checkMultipleMap.containsKey(graphicalNode)) {
+            return checkMultipleMap.get(graphicalNode);
+        }
+        AbstractNode dataNode;
+
+        IMultipleComponentManager multipleComponentManager = graphicalNode.getComponent().getMultipleComponentManager();
+
+        dataNode = (AbstractNode) buildCheckMap.get(graphicalNode);
+        checkMultipleMap.put(graphicalNode, dataNode);
+        if (multipleComponentManager != null) {
+            dataNode = addMultipleNode(graphicalNode, multipleComponentManager);
+        }
+
+        for (IConnection connection : graphicalNode.getOutgoingConnections()) {
+            replaceMultipleComponents((Node) connection.getTarget());
+        }
+        return dataNode;
+    }
+
     public static void buildFromGraphicalProcess(List<Node> graphicalNodeList) {
         initialize();
         for (Node node : graphicalNodeList) {
@@ -367,6 +435,11 @@ public class DataProcess {
         for (Node node : graphicalNodeList) {
             if (node.getIncomingConnections().size() == 0) {
                 checkFlowRefLink(node);
+            }
+        }
+        for (Node node : graphicalNodeList) {
+            if (node.getIncomingConnections().size() == 0) {
+                replaceMultipleComponents(node);
             }
         }
     }

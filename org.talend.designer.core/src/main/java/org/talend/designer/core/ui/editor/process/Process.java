@@ -1324,15 +1324,15 @@ public class Process extends Element implements IProcess {
 
     @SuppressWarnings("unchecked")
     private void setActivate(Node node, boolean active, Node activateNode) {
-        Node mainSubProcess = node.getSubProcessStartNode();
+        Node mainSubProcess = node.getSubProcessStartNode(false);
 
         // if the selected node is the start node, then everything will be desacticated
         if (activateNode.isStart()) {
             for (Connection connec : (List<Connection>) node.getIncomingConnections()) {
                 if (connec.getSource().isActivate() != active) {
                     if (connec.getLineStyle().equals(EConnectionType.FLOW_REF)) {
-                        if (connec.getSource().getSubProcessStartNode().isActivate() != active) {
-                            setActivate(connec.getSource().getSubProcessStartNode(), active, activateNode);
+                        if (connec.getSource().getSubProcessStartNode(false).isActivate() != active) {
+                            setActivate(connec.getSource().getSubProcessStartNode(false), active, activateNode);
                         }
                     }
                 }
@@ -1344,7 +1344,7 @@ public class Process extends Element implements IProcess {
                 }
             }
         } else {
-            if (node.getSubProcessStartNode().equals(mainSubProcess)) {
+            if (node.getSubProcessStartNode(false).equals(mainSubProcess)) {
                 node.setPropertyValue(EParameterName.ACTIVATE.getName(), new Boolean(active));
                 for (Connection connec : (List<Connection>) node.getIncomingConnections()) {
                     if (connec.getLineStyle().equals(EConnectionType.FLOW_MAIN)

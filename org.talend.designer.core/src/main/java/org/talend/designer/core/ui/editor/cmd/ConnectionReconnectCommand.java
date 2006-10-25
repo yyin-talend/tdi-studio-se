@@ -217,8 +217,8 @@ public class ConnectionReconnectCommand extends Command {
             }
         }
         if (newConnectionType.equals(EConnectionType.FLOW_REF)) {
-            Node sourceStart = oldSource.getSubProcessStartNode();
-            Node targetStart = newTarget.getSubProcessStartNode();
+            Node sourceStart = oldSource.getSubProcessStartNode(false);
+            Node targetStart = newTarget.getSubProcessStartNode(false);
             if (sourceStart.equals(targetStart)) {
                 return false;
             }

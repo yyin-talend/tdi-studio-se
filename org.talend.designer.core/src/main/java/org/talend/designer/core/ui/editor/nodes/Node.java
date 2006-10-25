@@ -632,8 +632,8 @@ public class Node extends Element implements INode {
                 connec = (Connection) getIncomingConnections().get(j);
                 if (connec.isActivate()
                         && ((connec.getLineStyle().equals(EConnectionType.FLOW_MAIN)
-                                || connec.getLineStyle().equals(EConnectionType.FLOW_REF) || connec.getLineStyle().equals(
-                                EConnectionType.ITERATE)))) {
+                                || connec.getLineStyle().equals(EConnectionType.FLOW_REF) || connec.getLineStyle()
+                                .equals(EConnectionType.ITERATE)))) {
                     return false;
                 }
             }
@@ -698,43 +698,49 @@ public class Node extends Element implements INode {
      * @see org.talend.core.model.process.INode#isMultipleMethods(org.talend.core.model.temp.ECodeLanguage)
      */
     public boolean isMultipleMethods() {
-        ECodeLanguage currentLanguage = ((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY))
-                .getProject().getLanguage();
+        ECodeLanguage currentLanguage = ((RepositoryContext) CorePlugin.getContext().getProperty(
+                Context.REPOSITORY_CONTEXT_KEY)).getProject().getLanguage();
         return component.isMultipleMethods(currentLanguage);
     }
 
-    // doesn't work if the node has several start points (will return a random start node)
-    public Node getSubProcessStartNode() {
-        if ((getCurrentActiveLinksNbInput(EConnectionType.FLOW_MAIN) == 0)
-                && (getCurrentActiveLinksNbInput(EConnectionType.FLOW_REF) == 0)
-                && (getCurrentActiveLinksNbInput(EConnectionType.ITERATE) == 0)) {
-            return this;
+    /**
+     * Will return the first item of the subprocess. If "withCondition" is true, if there is links from type RunIf /
+     * RunAfter / RunBefore, it will return the first element found. If "withCondition" is false, it will return the
+     * first element with no active link from type Main/Ref/Iterate.<br>
+     * <i><b>Note:</b></i> This function doesn't work if the node has several start points (will return a random
+     * start node).
+     * 
+     * @param withCondition
+     * @return Start Node found.
+     */
+    public Node getSubProcessStartNode(boolean withConditions) {
+        if (!withConditions) {
+            if ((getCurrentActiveLinksNbInput(EConnectionType.FLOW_MAIN) == 0)
+                    && (getCurrentActiveLinksNbInput(EConnectionType.FLOW_REF) == 0)
+                    && (getCurrentActiveLinksNbInput(EConnectionType.ITERATE) == 0)) {
+                return this;
+            }
+        } else {
+            int nb = 0;
+            for (Connection connection : inputs) {
+                if (connection.isActivate()) {
+                    nb++;
+                }
+            }
+            if (nb == 0) {
+                return this;
+            }
         }
         Connection connec;
 
         for (int j = 0; j < getIncomingConnections().size(); j++) {
             connec = (Connection) getIncomingConnections().get(j);
             if (!connec.getLineStyle().equals(EConnectionType.FLOW_REF)) {
-                return connec.getSource().getSubProcessStartNode();
+                return connec.getSource().getSubProcessStartNode(withConditions);
             }
         }
         return null;
     }
-
-    // not finished and maybe not needed.
-    // public Node getProcessStartNode() {
-    // Node node = getSubProcessStartNode();
-    //
-    // if (node.isStart()) {
-    // return node;
-    // } else {
-    // return getIndirectProcessStartNode();
-    // }
-    // }
-    //    
-    // private Node getIndirectProcessStartNode() {
-    // return null;
-    // }
 
     public boolean isReadOnly() {
         return this.readOnly;
@@ -785,7 +791,8 @@ public class Node extends Element implements INode {
                 case TABLE:
                     List<Map<String, String>> tableValues = (List<Map<String, String>>) param.getValue();
                     if (tableValues.size() == 0) {
-                        String errorMessage = "Parameter (" + param.getDisplayName() + ") must have at least one value.";
+                        String errorMessage = "Parameter (" + param.getDisplayName()
+                                + ") must have at least one value.";
                         Problems.add(ProblemStatus.ERROR, this, errorMessage);
                     }
                     break;
