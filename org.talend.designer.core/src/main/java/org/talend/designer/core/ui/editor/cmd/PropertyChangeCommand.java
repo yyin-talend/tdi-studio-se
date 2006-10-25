@@ -154,15 +154,15 @@ public class PropertyChangeCommand extends Command {
         if (toUpdate) {
             elem.setPropertyValue(EParameterName.UPDATE_COMPONENTS.getName(), new Boolean(true));
         }
-//        if (elem instanceof Node) {
-//            ((Process) ((Node) elem).getProcess()).checkProcess();
-//        } else {
-//            if (elem instanceof Process) {
-//                ((Process) elem).checkProcess();
-//            }
-//        }
-        
-//        refreshPropertyView();
+        // if (elem instanceof Node) {
+        // ((Process) ((Node) elem).getProcess()).checkProcess();
+        // } else {
+        // if (elem instanceof Process) {
+        // ((Process) elem).checkProcess();
+        // }
+        // }
+
+        refreshPropertyView();
     }
 
     @Override
@@ -185,13 +185,13 @@ public class PropertyChangeCommand extends Command {
         if (toUpdate) {
             elem.setPropertyValue(EParameterName.UPDATE_COMPONENTS.getName(), new Boolean(true));
         }
-//        if (elem instanceof Node) {
-//            ((Process) ((Node) elem).getProcess()).checkProcess();
-//        } else {
-//            if (elem instanceof Process) {
-//                ((Process) elem).checkProcess();
-//            }
-//        }
+        // if (elem instanceof Node) {
+        // ((Process) ((Node) elem).getProcess()).checkProcess();
+        // } else {
+        // if (elem instanceof Process) {
+        // ((Process) elem).checkProcess();
+        // }
+        // }
         refreshPropertyView();
     }
 
@@ -220,25 +220,23 @@ public class PropertyChangeCommand extends Command {
         if (toUpdate) {
             elem.setPropertyValue(EParameterName.UPDATE_COMPONENTS.getName(), new Boolean(true));
         }
-//        if (elem instanceof Node) {
-//            ((Process) ((Node) elem).getProcess()).checkProcess();
-//        } else {
-//            if (elem instanceof Process) {
-//                ((Process) elem).checkProcess();
-//            }
-//        }
+        // if (elem instanceof Node) {
+        // ((Process) ((Node) elem).getProcess()).checkProcess();
+        // } else {
+        // if (elem instanceof Process) {
+        // ((Process) elem).checkProcess();
+        // }
+        // }
         refreshPropertyView();
     }
-    
+
     public void modifyValue(String value) {
         newValue = value;
         elem.setPropertyValue(propName, value);
     }
 
-    
     public String getPropName() {
         return this.propName;
     }
-    
-    
+
 }
