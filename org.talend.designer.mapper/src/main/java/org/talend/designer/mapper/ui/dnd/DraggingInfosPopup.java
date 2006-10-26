@@ -32,6 +32,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
+import org.talend.commons.ui.ws.WindowSystem;
 import org.talend.designer.mapper.managers.MapperManager;
 
 /**
@@ -142,7 +143,10 @@ public final class DraggingInfosPopup {
             if (newX < 0) {
                 newX = 0;
             }
-            int newY = cursorPosition.y - height - 40;
+            int newY = cursorPosition.y - height - 20;
+            if(WindowSystem.isGTK()) {
+                newY -= 25;
+            }
             if (newY < 0) {
                 newY = 0;
             }
