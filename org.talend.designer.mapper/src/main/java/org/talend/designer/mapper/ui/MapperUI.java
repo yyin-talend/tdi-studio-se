@@ -213,15 +213,16 @@ public class MapperUI {
         datasFlowViewSashForm = new SashForm(mainSashForm, SWT.SMOOTH | SWT.HORIZONTAL | SWT.BORDER);
 
         datasFlowViewSashForm.setBackgroundMode(SWT.INHERIT_FORCE);
+        
+        if(WindowSystem.isGTK()) {
+            datasFlowViewSashForm.setBackground(display.getSystemColor(SWT.COLOR_DARK_GRAY));
+        }
 
         // dropTargetOperationListener.addControl(datasFlowViewSashForm);
 
         datasFlowViewSashForm.addControlListener(new ControlListener() {
 
-            public void controlMoved(ControlEvent e) {
-                // TODO Auto-generated method stub
-
-            }
+            public void controlMoved(ControlEvent e) {}
 
             public void controlResized(ControlEvent e) {
                 createBgImages();

@@ -346,7 +346,7 @@ public abstract class DataMapTableView extends Composite {
         tableViewerCreatorForColumns.setLinesVisible(true);
         tableViewerCreatorForColumns.setShowSelection(SHOW_SELECTION.FULL);
         tableViewerCreatorForColumns.setLineSelection(LINE_SELECTION.MULTI);
-        tableViewerCreatorForColumns.setLayoutMode(LAYOUT_MODE.FILL_HORIZONTAL);
+        tableViewerCreatorForColumns.setLayoutMode(LAYOUT_MODE.CONTINUOUS);
         tableViewerCreatorForColumns.setUseCustomColoring(this.getDataMapTable() instanceof AbstractInOutTable);
         tableViewerCreatorForColumns.setFirstColumnMasked(true);
 
@@ -1219,6 +1219,9 @@ public abstract class DataMapTableView extends Composite {
         heightOffset += newConstraintEntryWillBeAdded ? tableViewerCreatorForConstraints.getTable().getItemHeight() : 0;
 
         int newHeight = this.computeSize(SWT.DEFAULT, SWT.DEFAULT).y - tableEntryItemHeight + heightOffset;
+        if(WindowSystem.isGTK()) {
+            newHeight += tableEntryItemHeight / 2;
+        }
         if (tableViewerCreatorForColumns.getInputList().size() == 0) {
             newHeight += tableEntryItemHeight;
         } else {
