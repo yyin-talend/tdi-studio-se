@@ -48,8 +48,8 @@ public class DefaultDropTargetListener implements TransferDropTargetListener {
     }
 
     public void dragEnter(DropTargetEvent event) {
-        setPopupVisible(true);
         updatePopupPosition(event);
+        setPopupVisible(true);
         event.detail = mapperManager.getUiManager().getCurrentDragDetail();
     }
 
