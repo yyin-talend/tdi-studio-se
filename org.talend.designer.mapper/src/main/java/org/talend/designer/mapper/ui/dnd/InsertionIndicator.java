@@ -237,7 +237,7 @@ public class InsertionIndicator {
             formDataLeftArrow.top.offset = indicYPositionRefZone;
             formDataRightArrow.top.offset = indicYPositionRefZone;
 
-            formDataRightArrow.left.offset = draggableTable.getSize().x + 1;
+            formDataRightArrow.left.offset = draggableTable.getSize().x + 2;
             draggableTable.redraw();
             tablesZoneViewParent.layout();
         }

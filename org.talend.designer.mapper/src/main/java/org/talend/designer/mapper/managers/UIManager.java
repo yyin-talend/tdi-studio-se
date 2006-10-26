@@ -54,6 +54,7 @@ import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.ToolItem;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
+import org.talend.commons.ui.swt.tableviewer.TableViewerCreator.CELL_EDITOR_STATE;
 import org.talend.commons.ui.swt.tableviewer.selection.ILineSelectionListener;
 import org.talend.commons.ui.swt.tableviewer.selection.LineSelectionEvent;
 import org.talend.commons.utils.data.list.IListenableListListener;
@@ -67,8 +68,8 @@ import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.editor.IMetadataEditorListener;
 import org.talend.core.model.metadata.editor.MetadataEditorEvent;
 import org.talend.core.model.metadata.editor.MetadataTableEditor;
-import org.talend.core.model.metadata.editor.MetadataEditorEvent.STATE;
 import org.talend.core.model.process.IProcess;
+import org.talend.core.model.targetschema.editor.TargetSchemaEditorEvent.STATE;
 import org.talend.core.ui.metadata.editor.MetadataTableEditorView;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.mapper.external.data.ExternalMapperUiProperties;
@@ -201,7 +202,7 @@ public class UIManager {
                 currentMetadataTableEditor.addListener(new IMetadataEditorListener() {
 
                     public void handleEvent(final MetadataEditorEvent event) {
-                        if (event.type == MetadataEditorEvent.TYPE.METADATA_NAME_VALUE_CHANGED && event.state == STATE.APPLYING
+                        if (event.type == MetadataEditorEvent.TYPE.METADATA_NAME_VALUE_CHANGED && event.state == CELL_EDITOR_STATE.APPLYING
                                 && !event.previousValue.equals(event.newValue)) {
                             List modifiedObjects = event.entries;
                             IMetadataColumn modifiedObject = null;
