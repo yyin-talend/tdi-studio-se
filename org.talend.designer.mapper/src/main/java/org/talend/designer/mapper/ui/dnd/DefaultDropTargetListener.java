@@ -26,6 +26,7 @@ import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DropTargetEvent;
 import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.graphics.Point;
+import org.talend.commons.ui.ws.WindowSystem;
 import org.talend.designer.mapper.managers.MapperManager;
 import org.talend.designer.mapper.managers.UIManager;
 
@@ -121,6 +122,7 @@ public class DefaultDropTargetListener implements TransferDropTargetListener {
         // System.out.println(((DropTarget)event.widget).getControl());
         event.detail = DND.DROP_NONE;
         updatePopupPosition(event);
+        setPopupVisible(true);
     }
 
     private void updatePopupPosition(DropTargetEvent event) {

@@ -142,7 +142,11 @@ public final class DraggingInfosPopup {
             if (newX < 0) {
                 newX = 0;
             }
-            Rectangle newBounds = new Rectangle(newX, cursorPosition.y - height - 20, width, height);
+            int newY = cursorPosition.y - height - 40;
+            if (newY < 0) {
+                newY = 0;
+            }
+            Rectangle newBounds = new Rectangle(newX, newY, width, height);
             getShell().setBounds(newBounds);
 
             // to get round refresh problem
@@ -243,7 +247,7 @@ public final class DraggingInfosPopup {
     private void init(Shell parent) {
         popup = new Popup(parent);
         popup.open();
-        popup.setVisible(false);
+//        popup.setVisible(false);
         setOverwriteMode(false);
         setMapOneToOneMode(false, true);
     }
