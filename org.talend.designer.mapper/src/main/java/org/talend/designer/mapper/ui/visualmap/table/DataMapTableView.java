@@ -509,7 +509,7 @@ public abstract class DataMapTableView extends Composite {
                 switch (event.type) {
                 case SWT.MouseMove:
 
-                    // System.out.println("ToolTipText:" + table.getToolTipText());
+                     System.out.println("ToolTipText:" + table.getToolTipText());
 
                     Point cursorPositionFromTableOrigin = TableUtils.getCursorPositionFromTableOrigin(table, event);
                     TableColumn tableColumn = TableUtils.getTableColumn(table, cursorPositionFromTableOrigin);
@@ -524,10 +524,18 @@ public abstract class DataMapTableView extends Composite {
                     }
                     ITableEntry tableEntry = (ITableEntry) tableItem.getData();
                     String toolTip = tableEntry.getProblem() == null ? null : tableEntry.getProblem().getDescription();
-                    // if (toolTip == null || !toolTip.equals(lastErrorMessage)) {
-                    setTableToolTipText(table, tableColumn, tableEntry, toolTip);
-                    lastErrorMessage = toolTip;
-                    // }
+                    String tableToolTip = table.getToolTipText();
+                    if (!WindowSystem.isGTK()
+                            ||
+                            WindowSystem.isGTK() 
+                            &&
+                            ((tableToolTip == null || tableToolTip.equals("")) && toolTip != null
+                            || tableToolTip != null && toolTip == null
+                            || toolTip != null && !toolTip.equals(tableToolTip))
+                    ) {
+                        setTableToolTipText(table, tableColumn, tableEntry, toolTip);
+                        lastErrorMessage = toolTip;
+                    }
                     break;
                 }
             }
