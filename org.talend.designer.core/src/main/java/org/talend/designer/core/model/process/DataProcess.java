@@ -153,7 +153,6 @@ public class DataProcess {
         dataNode.setStart(graphicalNode.isStart());
         dataNode.setSubProcessStart(graphicalNode.isSubProcessStart());
         List<IConnection> incomingConnections = (List<IConnection>) dataNode.getIncomingConnections();
-
         for (IConnection connection : previousNode.getIncomingConnections()) {
             AbstractConnection asbractConnect = (AbstractConnection) connection;
             asbractConnect.setTarget(dataNode);
@@ -164,13 +163,93 @@ public class DataProcess {
         INode outputNode = itemsMap.get(multipleComponentManager.getOutput());
         List<IConnection> outgoingConnections = (List<IConnection>) outputNode.getOutgoingConnections();
 
+        // RunBefore / RunAfter Links won't be linked to the output but on the first element of the subprocess.
         for (IConnection connection : previousNode.getOutgoingConnections()) {
-            AbstractConnection asbractConnect = (AbstractConnection) connection;
-            asbractConnect.setSource(outputNode);
-            outgoingConnections.add(connection);
+            if (!connection.getLineStyle().equals(EConnectionType.RUN_BEFORE)
+                    && !connection.getLineStyle().equals(EConnectionType.RUN_AFTER)) {
+                AbstractConnection asbractConnect = (AbstractConnection) connection;
+                asbractConnect.setSource(outputNode);
+                outgoingConnections.add(connection);
+            }
         }
 
         // adds all connections between these nodes
+        addAllMultipleComponentConnections(itemsMap, multipleComponentManager, graphicalNode, dataNode, previousNode);
+
+        // adds the RunBefore / RunAfter link that were on the output of the previousNode to the new "start".
+        INode nodeSourceAfter, nodeSourceBefore;
+        INode startNode = graphicalNode.getSubProcessStartNode(false);
+        INode dataStartNode = buildCheckMap.get(startNode);
+        if (dataStartNode != previousNode) {
+            nodeSourceAfter = dataNode;
+            nodeSourceBefore = dataNode;
+        } else {
+            INode newNodeSourceAfter = dataNode;
+            INode newNodeSourceBefore = dataNode;
+            INode nextNode = newNodeSourceAfter;
+            boolean found;
+            do {
+                found = false;
+                for (IConnection connection : newNodeSourceAfter.getIncomingConnections()) {
+                    if (connection.getLineStyle().equals(EConnectionType.RUN_BEFORE)) {
+                        if (itemsMap.containsValue(connection.getSource())) {
+                            nextNode = connection.getSource();
+                            found = true;
+                        }
+                    }
+                }
+                newNodeSourceAfter = nextNode;
+            } while (found);
+            nodeSourceAfter = newNodeSourceAfter;
+            
+            do {
+                found = false;
+                for (IConnection connection : newNodeSourceBefore.getIncomingConnections()) {
+                    if (connection.getLineStyle().equals(EConnectionType.RUN_AFTER)) {
+                        if (itemsMap.containsValue(connection.getSource())) {
+                            nextNode = connection.getSource();
+                            found = true;
+                        }
+                    }
+                }
+                newNodeSourceBefore = nextNode;
+            } while (found);
+            nodeSourceBefore = newNodeSourceBefore;
+        }
+        outgoingConnections = (List<IConnection>) nodeSourceAfter.getOutgoingConnections();
+        for (IConnection connection : previousNode.getOutgoingConnections()) {
+            if (connection.getLineStyle().equals(EConnectionType.RUN_AFTER)) {
+                AbstractConnection asbractConnect = (AbstractConnection) connection;
+                asbractConnect.setSource(nodeSourceAfter);
+                outgoingConnections.add(connection);
+            }
+        }
+        
+        outgoingConnections = (List<IConnection>) nodeSourceBefore.getOutgoingConnections();
+        for (IConnection connection : previousNode.getOutgoingConnections()) {
+            if (connection.getLineStyle().equals(EConnectionType.RUN_BEFORE)) {
+                AbstractConnection asbractConnect = (AbstractConnection) connection;
+                asbractConnect.setSource(nodeSourceBefore);
+                outgoingConnections.add(connection);
+            }
+        }
+
+        return dataNode;
+    }
+
+    /**
+     * DOC nrousseau Comment method "addAllMultipleComponentConnections".
+     * 
+     * @param itemsMap
+     * @param multipleComponentManager
+     * @param graphicalNode
+     * @param dataNode
+     */
+    private static void addAllMultipleComponentConnections(Map<IMultipleComponentItem, AbstractNode> itemsMap,
+            IMultipleComponentManager multipleComponentManager, Node graphicalNode, AbstractNode dataNode,
+            INode previousNode) {
+        List<IConnection> incomingConnections, outgoingConnections;
+
         for (IMultipleComponentItem curItem : multipleComponentManager.getItemList()) {
             if (curItem.isConnectionExist()) {
                 AbstractNode nodeSource = itemsMap.get(curItem);
@@ -184,15 +263,13 @@ public class DataProcess {
                 dataConnec.setActivate(graphicalNode.isActivate());
                 dataConnec.setLineStyle(curItem.getConnectionType());
                 dataConnec.setMetadataTable(nodeSource.getMetadataList().get(0));
-                String linkName;
 
                 EDesignerConnection designerConnection = EDesignerConnection.getConnection(curItem.getConnectionType());
                 dataConnec.setName(designerConnection.getLinkName());
 
                 switch (curItem.getConnectionType()) {
                 case FLOW_MAIN:
-                    linkName = "row_" + itemsMap.get(curItem).getUniqueName();
-                    dataConnec.setName(linkName);
+                    dataConnec.setName("row_" + itemsMap.get(curItem).getUniqueName());
                     break;
                 case RUN_BEFORE:
                 case RUN_AFTER:
@@ -243,7 +320,6 @@ public class DataProcess {
                 incomingConnections.add(dataConnec);
             }
         }
-        return dataNode;
     }
 
     /**
@@ -426,6 +502,7 @@ public class DataProcess {
     }
 
     public static void buildFromGraphicalProcess(List<Node> graphicalNodeList) {
+
         initialize();
         for (Node node : graphicalNodeList) {
             if (node.getIncomingConnections().size() == 0) {
