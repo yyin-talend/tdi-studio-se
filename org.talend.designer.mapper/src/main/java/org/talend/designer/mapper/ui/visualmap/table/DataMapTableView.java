@@ -1220,7 +1220,7 @@ public abstract class DataMapTableView extends Composite {
 
         int newHeight = this.computeSize(SWT.DEFAULT, SWT.DEFAULT).y - tableEntryItemHeight + heightOffset;
         if(WindowSystem.isGTK()) {
-            newHeight += tableEntryItemHeight / 2;
+            newHeight += tableEntryItemHeight;
         }
         if (tableViewerCreatorForColumns.getInputList().size() == 0) {
             newHeight += tableEntryItemHeight;

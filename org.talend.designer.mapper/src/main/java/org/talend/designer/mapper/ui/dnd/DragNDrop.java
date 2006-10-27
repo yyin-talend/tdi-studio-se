@@ -108,11 +108,11 @@ public class DragNDrop {
 
         initListeners();
 
-        DelegatingDragAdapter dragAdapter = new DelegatingDragAdapter();
-        dragAdapter.addDragSourceListener(dragSourceListener);
-
-        DelegatingDropAdapter dropAdapter = new DelegatingDropAdapter();
-        dropAdapter.addDropTargetListener(dropTargetListener);
+//        DelegatingDragAdapter dragAdapter = new DelegatingDragAdapter();
+//        dragAdapter.addDragSourceListener(dragSourceListener);
+//
+//        DelegatingDropAdapter dropAdapter = new DelegatingDropAdapter();
+//        dropAdapter.addDropTargetListener(dropTargetListener);
 
         // createDragSource(dragAdapter);
         // createDropTarget(dropAdapter);
@@ -199,6 +199,7 @@ public class DragNDrop {
         this.dropTargetListener = new DefaultDropTargetListener(mapperManager) {
 
             private boolean isIntersectAtPreviousDragOver;
+            private Point lastDragPosition;
 
             public void dragEnter(DropTargetEvent event) {
                 super.dragEnter(event);
@@ -218,7 +219,7 @@ public class DragNDrop {
 
                 fillEvent(event, analyzer);
                 InsertionIndicator insertionIndicator = retrieveInsertionIndicator();
-                if (analyzer.isTargetEntryValid()) {
+                if (analyzer.isDropValid()) {
 
                     draggingInfosPopup.setOutputToOutputMode(analyzer.isOutputToOutput());
 
@@ -266,6 +267,12 @@ public class DragNDrop {
                         }
                         draggingInfosPopup.setInsertionEntryContext(analyzer.isInsertionEntryMode());
                     }
+                    draggingInfosPopup.setDropInvalid(false);
+                } else {
+                    draggingInfosPopup.setMapOneToOneMode(false, false);
+                    draggingInfosPopup.setExpressionContext(false);
+                    draggingInfosPopup.setInsertionEntryContext(false);
+                    draggingInfosPopup.setDropInvalid(true);
                 }
             }
 
@@ -273,7 +280,7 @@ public class DragNDrop {
                 UIManager uiManager = mapperManager.getUiManager();
                 DraggingInfosPopup draggingInfosPopup = uiManager.getDraggingInfosPopup();
 
-                if (analyzer.isTargetEntryValid()) {
+                if (analyzer.isDropValid()) {
 
                     draggingInfosPopup.setOutputToOutputMode(analyzer.isOutputToOutput());
 
@@ -302,9 +309,12 @@ public class DragNDrop {
                         draggingInfosPopup.setExpressionContext(false);
                         draggingInfosPopup.setInsertionEntryContext(true);
                     }
+                    draggingInfosPopup.setDropInvalid(false);
                 } else {
                     draggingInfosPopup.setExpressionContext(false);
+                    draggingInfosPopup.setMapOneToOneMode(false, false);
                     draggingInfosPopup.setInsertionEntryContext(false);
+                    draggingInfosPopup.setDropInvalid(true);
                 }
             }
 
@@ -342,15 +352,26 @@ public class DragNDrop {
                 int itemIndexTarget = getItemIndexWhereInsertFromPosition(eventPosition);
                 insertionIndicator.updatePosition(draggableTable, itemIndexTarget);
 
-                if (isIntersectAtPreviousDragOver || intersect) {
-                    insertionIndicator.setLefArrowVisible(false);
-                    isIntersectAtPreviousDragOver = false;
-                    // //////////////////////////////////////////////////////////////////////
+                if (WindowSystem.isGTK()) {
+                    if (insertionIndicator.isRightArrowVisible() && !eventPosition.equals(lastDragPosition)) {
+                        insertionIndicator.setRightArrowVisible(false);
+                        insertionIndicator.setLefArrowVisible(false);
+                    } else {
+                        insertionIndicator.setRightArrowVisible(insertionIndicator.isVisible());
+                        insertionIndicator.setLefArrowVisible(insertionIndicator.isVisible());
+                    }
+                    
                 } else {
-                    insertionIndicator.setLefArrowVisible(insertionIndicator.isVisible());
+                    if (isIntersectAtPreviousDragOver || intersect) {
+                        insertionIndicator.setLefArrowVisible(false);
+                        isIntersectAtPreviousDragOver = false;
+                    } else {
+                        insertionIndicator.setLefArrowVisible(insertionIndicator.isVisible());
+                    }
                 }
+                
                 isIntersectAtPreviousDragOver = intersect;
-
+                lastDragPosition = eventPosition;
             }
 
             private InsertionIndicator retrieveInsertionIndicator() {
@@ -750,7 +771,9 @@ public class DragNDrop {
                 if (tableItems[i] == tableItemBehindCursor) {
                     Rectangle boundsItem = tableItemBehindCursor.getBounds();
                     startInsertAtThisIndex = i;
-                    if (pointCursor.y > boundsItem.y + draggableTable.getItemHeight() / 2) {
+                    if (pointCursor.y > boundsItem.y + draggableTable.getItemHeight() / 2
+                            + (WindowSystem.isGTK() ? draggableTable.getHeaderHeight() : 0)
+                    ) {
                         startInsertAtThisIndex = i + 1;
                     }
                     break;

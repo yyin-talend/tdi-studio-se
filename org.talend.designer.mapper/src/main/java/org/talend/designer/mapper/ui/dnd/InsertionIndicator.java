@@ -40,6 +40,7 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.ScrollBar;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
+import org.talend.commons.ui.ws.WindowSystem;
 import org.talend.designer.mapper.managers.MapperManager;
 import org.talend.designer.mapper.managers.UIManager;
 import org.talend.designer.mapper.ui.color.ColorInfo;
@@ -217,13 +218,24 @@ public class InsertionIndicator {
         FormData formDataRightArrow = (FormData) rightArrowDraggingIndicator.getLayoutData();
         ScrollBar verticalBar = draggableTable.getVerticalBar();
         int offsetVerticalBar = -verticalBar.getSelection() * draggableTable.getItemHeight();
-        if (itemIndexTarget == 0) {
-            indicYPositionRefTable = 0 + offsetVerticalBar;
+        int indicYPositionRefZone = 0;
+        if (WindowSystem.isGTK()) {
+            if (itemIndexTarget == 0) {
+                indicYPositionRefTable = 0 + offsetVerticalBar;
+            } else {
+                indicYPositionRefTable = itemIndexTarget * (draggableTable.getItemHeight() + 2) + offsetVerticalBar;
+            }
+            indicYPositionRefZone = indicYPositionRefTable + tablePositionRefZone.y + formLayout.marginTop - HEIGHT_INDICATOR / 2;
+            indicYPositionRefZone -= draggableTable.getItemHeight() - 3;
         } else {
-            indicYPositionRefTable = itemIndexTarget * draggableTable.getItemHeight() - 1 + offsetVerticalBar;
+            if (itemIndexTarget == 0) {
+                indicYPositionRefTable = 0 + offsetVerticalBar;
+            } else {
+                indicYPositionRefTable = itemIndexTarget * draggableTable.getItemHeight() - 1 + offsetVerticalBar;
+            }
+            indicYPositionRefZone = indicYPositionRefTable + tablePositionRefZone.y + formLayout.marginTop - HEIGHT_INDICATOR / 2;
         }
-
-        int indicYPositionRefZone = indicYPositionRefTable + tablePositionRefZone.y + formLayout.marginTop - HEIGHT_INDICATOR / 2;
+        
 
         DataMapTableView dataMapTableView = mapperManager.retrieveDataMapTableView(draggableTable);
         Rectangle boundsTableView = dataMapTableView.getBounds();
@@ -298,7 +310,7 @@ public class InsertionIndicator {
             GC gc = event.gc;
             Rectangle area = draggableTable.getClientArea();
 
-            int y = draggableTable.getHeaderHeight() + indicYPositionRefTable;
+            int y = indicYPositionRefTable;
 
             gc.setForeground(colorIndicator);
             gc.drawLine(0, y, area.width, y);
@@ -336,6 +348,14 @@ public class InsertionIndicator {
 
     public void setLefArrowVisible(boolean visible) {
         leftArrowDraggingIndicator.setVisible(visible);
+    }
+
+    public void setRightArrowVisible(boolean visible) {
+        rightArrowDraggingIndicator.setVisible(visible);
+    }
+
+    public boolean isRightArrowVisible() {
+        return rightArrowDraggingIndicator.getVisible();
     }
 
 }

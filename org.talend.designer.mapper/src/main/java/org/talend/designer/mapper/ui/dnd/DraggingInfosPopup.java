@@ -59,6 +59,8 @@ public final class DraggingInfosPopup {
 
     private boolean outputToOutputMode;
 
+    private boolean dropInvalid = true;
+
     private DraggingInfosPopup(Shell parent, MapperManager mapperManager) {
         this.mapperManager = mapperManager;
         this.parent = parent;
@@ -84,7 +86,7 @@ public final class DraggingInfosPopup {
 
         private Label labelInsertionEntryMode;
 
-        private boolean visible;
+        private Label labelDropInvalid;
 
         public Popup(Shell parent) {
             super(parent, SWT.ON_TOP, false, false, false, false, null, null);
@@ -113,7 +115,10 @@ public final class DraggingInfosPopup {
             labelInsertionEntryMode = new Label(mainComposite, SWT.HORIZONTAL);
             labelInsertionEntryMode.setLayoutData(new RowData());
 
-            setLabelsVisible(false, false, false);
+            labelDropInvalid = new Label(mainComposite, SWT.HORIZONTAL);
+            labelDropInvalid.setLayoutData(new RowData());
+
+            setLabelsVisible(false, false, false, true);
 
             return mainComposite;
         }
@@ -135,7 +140,7 @@ public final class DraggingInfosPopup {
             Point preferredSize = getPreferredSize();
             int width = preferredSize.x;
             int height = preferredSize.y;
-            boolean isVisible = this.visible;
+            boolean isVisible = popup.isVisible();
             if (width != popupBounds.width || height != popupBounds.height) {
                 setVisible(false);
             }
@@ -154,7 +159,7 @@ public final class DraggingInfosPopup {
             getShell().setBounds(newBounds);
 
             // to get round refresh problem
-            if (isVisible != this.visible) {
+            if (isVisible != isVisible) {
                 setVisible(isVisible);
                 // System.out.println("Adjust setVisible");
             } else {
@@ -169,11 +174,15 @@ public final class DraggingInfosPopup {
          * @param visible
          */
         public void setVisible(boolean visible) {
-            if (visible != this.visible) {
-                this.visible = visible;
+            if (visible != getShell().isVisible()) {
                 getShell().setVisible(visible);
             }
         }
+
+        public boolean isVisible() {
+            return getShell().isVisible();
+        }
+
 
         /**
          * DOC amaumont Comment method "setText".
@@ -227,18 +236,32 @@ public final class DraggingInfosPopup {
             }
         }
 
+        /**
+         * DOC amaumont Comment method "setMappingModeText".
+         * 
+         * @param mode
+         */
+        public void setDropInvalidText(String text) {
+            if (!text.equals(labelDropInvalid.getText())) {
+                labelDropInvalid.setText(text);
+                adjustBounds();
+            }
+        }
+
         private Point getPreferredSize() {
             return mainComposite.computeSize(SWT.DEFAULT, SWT.DEFAULT);
         }
 
-        public void setLabelsVisible(boolean boolLabelWriteMode, boolean boolLabelMappingMode, boolean boolLabelInsertionEntryMode) {
+        public void setLabelsVisible(boolean boolLabelWriteMode, boolean boolLabelMappingMode, boolean boolLabelInsertionEntryMode, boolean boolDropInvalid) {
             // System.out.println("setLabelsVisible");
             ((RowData) labelWriteMode.getLayoutData()).exclude = !boolLabelWriteMode;
             ((RowData) labelMappingMode.getLayoutData()).exclude = !boolLabelMappingMode;
             ((RowData) labelInsertionEntryMode.getLayoutData()).exclude = !boolLabelInsertionEntryMode;
+            ((RowData) labelDropInvalid.getLayoutData()).exclude = !boolDropInvalid;
             labelWriteMode.setVisible(boolLabelWriteMode);
             labelMappingMode.setVisible(boolLabelMappingMode);
             labelInsertionEntryMode.setVisible(boolLabelInsertionEntryMode);
+            labelDropInvalid.setVisible(boolDropInvalid);
         }
 
     }
@@ -251,7 +274,8 @@ public final class DraggingInfosPopup {
     private void init(Shell parent) {
         popup = new Popup(parent);
         popup.open();
-//        popup.setVisible(false);
+        popup.setVisible(false);
+        setDropInvalid(true);
         setOverwriteMode(false);
         setMapOneToOneMode(false, true);
     }
@@ -301,7 +325,11 @@ public final class DraggingInfosPopup {
         if (overwrite) {
             mode = " > Overwrite mode";
         } else {
-            mode = " > Append mode (Ctrl key to overwrite)";
+            if(WindowSystem.isGTK()) {
+                mode = " > Append mode";
+            } else {
+                mode = " > Append mode (Ctrl key to overwrite)";
+            }
         }
         popup.setWriteModeText(mode);
     }
@@ -321,7 +349,7 @@ public final class DraggingInfosPopup {
             this.mapOneToOne = mapOneToOne;
         } else {
             mode = " > All source entries " + (this.outputToOutputMode ? "expression " : "") + "to a single one "
-                    + (mapOneToOneAuthorized ? "target expression (Shift key to change mapping)" : "target expression");
+                    + (mapOneToOneAuthorized && !WindowSystem.isGTK() ? "target expression (Shift key to change mapping)" : "target expression");
             this.mapOneToOne = false;
         }
         popup.setMappingModeText(mode);
@@ -364,7 +392,7 @@ public final class DraggingInfosPopup {
 
     public void updateVisibleLabels() {
         // System.out.println(expressionContext + " "+insertionEntryContext);
-        popup.setLabelsVisible(expressionContext, expressionContext, this.insertionEntryContext);
+        popup.setLabelsVisible(expressionContext, expressionContext, this.insertionEntryContext, this.dropInvalid);
         popup.adjustBounds();
     }
 
@@ -386,6 +414,25 @@ public final class DraggingInfosPopup {
 
     public boolean isMapOneToOne() {
         return this.mapOneToOne;
+    }
+
+    public void setDropInvalid(boolean dropInvalid) {
+        String newText = "null";
+        if (dropInvalid) {
+            if(WindowSystem.isGTK()) {
+                newText = "\n<< Drop invalid >>\n";
+            }
+        }
+        if(WindowSystem.isGTK()) {
+            this.dropInvalid = dropInvalid;
+        } else {
+            this.dropInvalid = false;
+        }
+            
+        if (!popup.labelDropInvalid.getText().equals(newText)) {
+            popup.setDropInvalidText(newText);
+            updateVisibleLabels();
+        }
     }
 
 }

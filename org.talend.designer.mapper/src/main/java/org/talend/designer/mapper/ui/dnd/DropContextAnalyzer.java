@@ -33,7 +33,9 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumn;
+import org.talend.commons.ui.ws.WindowSystem;
 import org.talend.designer.mapper.managers.MapperManager;
+import org.talend.designer.mapper.managers.UIManager;
 import org.talend.designer.mapper.model.table.InputTable;
 import org.talend.designer.mapper.model.table.OutputTable;
 import org.talend.designer.mapper.model.tableentry.ITableEntry;
@@ -62,7 +64,7 @@ public class DropContextAnalyzer {
 
     private DataMapTableView dataMapTableViewSource;
 
-    private boolean isTargetEntryValid;
+    private boolean isDropValid;
 
     private TableItem tableItemSource;
 
@@ -110,7 +112,7 @@ public class DropContextAnalyzer {
 
         analyzeCursorOverExpressionCell();
 
-        isTargetEntryValid = checkTargetIsValid();
+        isDropValid = checkDropIsValid();
 
         analyzeForFeedback();
         analyzeForDetail();
@@ -120,7 +122,7 @@ public class DropContextAnalyzer {
     /**
      * DOC amaumont Comment method "checkDropHasValidTarget".
      */
-    private boolean checkTargetIsValid() {
+    private boolean checkDropIsValid() {
 
         isInputToInput = false;
         mapOneToOneAuthorized = true;
@@ -129,6 +131,11 @@ public class DropContextAnalyzer {
             mapOneToOneAuthorized = false;
         }
 
+        UIManager uiManager = mapperManager.getUiManager();
+        if (WindowSystem.isGTK() && uiManager.isCtrlPressed() ^ uiManager.isShiftPressed()) {
+            return false;
+        }
+        
         /*
          * INPUT => INPUT
          */
@@ -245,7 +252,7 @@ public class DropContextAnalyzer {
         int dropFeedback = DND.FEEDBACK_SCROLL;
         boolean targetTableIsConstraintsTable = targetTableIsConstraintsTable(dataMapTableViewTarget);
 
-        if (isTargetEntryValid) {
+        if (isDropValid) {
 
             if (mapperManager.getUiManager().isCtrlPressed()) {
                 overwriteExpression = true;
@@ -291,7 +298,7 @@ public class DropContextAnalyzer {
     private void analyzeForDetail() {
 
         int dropOperation = DND.DROP_NONE;
-        if (isTargetEntryValid) {
+        if (isDropValid) {
             if (overwriteExpression && !insertionEntryMode) {
                 dropOperation = DND.DROP_LINK;
             } else {
@@ -364,8 +371,8 @@ public class DropContextAnalyzer {
         return false;
     }
 
-    public boolean isTargetEntryValid() {
-        return this.isTargetEntryValid;
+    public boolean isDropValid() {
+        return this.isDropValid;
     }
 
     public boolean isInsertionEntryMode() {
@@ -391,7 +398,7 @@ public class DropContextAnalyzer {
      */
     @Override
     public String toString() {
-        return "\nDropContextAnalyzer instance:" + "\n isTargetEntryValid=" + isTargetEntryValid + "\n insertionIndicatorVisible="
+        return "\nDropContextAnalyzer instance:" + "\n isTargetEntryValid=" + isDropValid + "\n insertionIndicatorVisible="
                 + insertionEntryMode + "\n mapOneToOne=" + mapOneToOneMode + "\n overwriteExpression=" + overwriteExpression
                 + "\n isCursorOverExpressionColumn=" + isCursorOverExpressionCell;
     }
