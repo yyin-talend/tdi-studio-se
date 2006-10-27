@@ -1987,6 +1987,8 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
 
     private Map<String, String> clipboard;
 
+    private boolean checkErrorsWhenViewRefreshed;
+
     private void copyToCliboard(Map<String, String> line, String[] items) {
         clipboard = copyLine(line, items);
     }
@@ -1995,6 +1997,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
      * Initialize all components for the defined section for this node.
      */
     public void addComponents() {
+        checkErrorsWhenViewRefreshed = true;
         int heightSize = 0, maxRowSize = 0, nbInRow, numInRow;
         int maxRow;
         List<? extends IElementParameter> listParam = elem.getElementParameters();
@@ -2202,7 +2205,9 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                             }
                         }
                         // editionControlHelper.register(param.getName(), t, false);
-                        editionControlHelper.checkErrors(t, false);
+                        if(checkErrorsWhenViewRefreshed) {
+                            editionControlHelper.checkErrors(t);
+                        }
                     }
                     if (param.getField() == EParameterFieldType.VERSION) {
                         Text t = (Text) object;
@@ -2219,8 +2224,9 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                                 t.setText(value);
                             }
                         }
-                        // editionControlHelper.register(param.getName(), t, false);
-                        editionControlHelper.checkErrors(t, false);
+                        if(checkErrorsWhenViewRefreshed) {
+                            editionControlHelper.checkErrors(t);
+                        }
                     }
                     if (param.getField() == EParameterFieldType.CLOSED_LIST) {
                         CCombo c = (CCombo) object;
@@ -2250,6 +2256,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
             }
         }
         composite.getParent().layout(true, true);
+        checkErrorsWhenViewRefreshed = false;
     }
 
     @Override
@@ -2351,8 +2358,8 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
          * @param t
          * @param b
          */
-        public void checkErrors(Control control, boolean modifying) {
-            this.checkErrorsHelper.checkErrors(control, modifying);
+        public void checkErrors(Control control) {
+            this.checkErrorsHelper.checkErrors(control);
         }
 
         /**
@@ -2490,7 +2497,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
             public void focusLost(FocusEvent event) {
                 if (!extendedProposal.isProposalOpened()) {
                     Control control = (Control) event.widget;
-                    checkErrors(control, false);
+                    checkErrors(control);
                 }
             }
 
@@ -2536,7 +2543,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
          * @param control
          * @param modifying
          */
-        public void checkErrors(final Control control, final boolean modifying) {
+        public void checkErrors(final Control control) {
 
             boolean isReadonly = elem.getElementParameter(getParameterName(control)).isReadOnly();
             if (isReadonly) {
