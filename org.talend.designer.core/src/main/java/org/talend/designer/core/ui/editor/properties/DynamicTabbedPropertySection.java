@@ -145,6 +145,7 @@ import org.talend.designer.core.model.components.ExternalUtilities;
 import org.talend.designer.core.model.context.ContextManager;
 import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
 import org.talend.designer.core.ui.MultiPageTalendEditor;
+import org.talend.designer.core.ui.editor.TalendEditor;
 import org.talend.designer.core.ui.editor.cmd.ChangeActivateStatusNodeCommand;
 import org.talend.designer.core.ui.editor.cmd.ChangeMetadataCommand;
 import org.talend.designer.core.ui.editor.cmd.ChangeValuesFromRepository;
@@ -171,7 +172,7 @@ import org.talend.repository.utils.RepositoryPathProvider;
  */
 public class DynamicTabbedPropertySection extends AbstractPropertySection {
 
-    private MultiPageTalendEditor part;
+    protected MultiPageTalendEditor part;
 
     protected Element elem;
 
@@ -183,7 +184,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
 
     protected EComponentCategory section;
 
-    private int curRowSize;
+    protected int curRowSize;
 
     private String oldSchemaType;
 
@@ -241,7 +242,9 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
      * @return
      */
     protected CommandStack getCommandStack() {
-        return (CommandStack) part.getTalendEditor().getAdapter(CommandStack.class);
+        TalendEditor talendEditor = part.getTalendEditor();
+        Object adapter = talendEditor.getAdapter(CommandStack.class);
+        return (CommandStack) adapter;
     }
 
     private SelectionListener listenerSelection = new SelectionListener() {
@@ -384,6 +387,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                         ChangeMetadataCommand cmd = new ChangeMetadataCommand(node, inputNode, inputMetadata, inputMetaCopy,
                                 originaleOutputTable, outputMetaCopy, inAndOut);
                         getCommandStack().execute(cmd);
+                        refresh();
                     }
                 }
 
@@ -1133,7 +1137,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
         return btnEdit;
     }
 
-    private Control addSchemaType(final Composite subComposite, final IElementParameter param, final int numInRow,
+    protected Control addSchemaType(final Composite subComposite, final IElementParameter param, final int numInRow,
             final int nbInRow, final int top, final Control lastControl) {
 
         FormData data;

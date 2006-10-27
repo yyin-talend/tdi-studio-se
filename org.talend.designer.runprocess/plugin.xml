@@ -45,17 +45,17 @@
             commandId="runProcess"
             contextId="talend.runProcess"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
-            sequence="F5"/>
+            sequence="F6"/>
       <key
             commandId="debugProcess"
             contextId="talend.runProcess"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
-            sequence="F6"/>
+            sequence="F7"/>
       <key
             commandId="killProcess"
             contextId="talend.runProcess"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
-            sequence="F7"/>
+            sequence="F8"/>
    </extension>
 
 </plugin>
