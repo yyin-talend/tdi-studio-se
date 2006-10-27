@@ -235,13 +235,13 @@ public class InsertionIndicator {
             }
             indicYPositionRefZone = indicYPositionRefTable + tablePositionRefZone.y + formLayout.marginTop - HEIGHT_INDICATOR / 2;
         }
-        
 
         DataMapTableView dataMapTableView = mapperManager.retrieveDataMapTableView(draggableTable);
         Rectangle boundsTableView = dataMapTableView.getBounds();
 
-        if (indicYPositionRefZone > boundsTableView.y + boundsTableView.height - formLayout.marginTop - HEIGHT_INDICATOR / 2 - 5) {
-            indicYPositionRefZone = boundsTableView.y + boundsTableView.height - formLayout.marginTop - HEIGHT_INDICATOR / 2 - 5;
+        int testValue = boundsTableView.y + boundsTableView.height - formLayout.marginTop - HEIGHT_INDICATOR / 2 - 5;
+        if (indicYPositionRefZone > testValue) {
+            indicYPositionRefZone = testValue;
         }
 
         draggableTable.addListener(SWT.Paint, tablePaintListener);
@@ -309,8 +309,12 @@ public class InsertionIndicator {
         if (visible) {
             GC gc = event.gc;
             Rectangle area = draggableTable.getClientArea();
-
-            int y = indicYPositionRefTable;
+            int y = 0;
+            if (WindowSystem.isGTK()) {
+                y = indicYPositionRefTable;
+            } else {
+                y = draggableTable.getHeaderHeight() + indicYPositionRefTable;
+            }
 
             gc.setForeground(colorIndicator);
             gc.drawLine(0, y, area.width, y);
