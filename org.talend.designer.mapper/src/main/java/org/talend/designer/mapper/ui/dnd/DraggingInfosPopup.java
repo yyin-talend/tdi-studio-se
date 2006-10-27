@@ -61,6 +61,8 @@ public final class DraggingInfosPopup {
 
     private boolean dropInvalid = true;
 
+    private boolean invalidKeyPressed;
+
     private DraggingInfosPopup(Shell parent, MapperManager mapperManager) {
         this.mapperManager = mapperManager;
         this.parent = parent;
@@ -275,7 +277,7 @@ public final class DraggingInfosPopup {
         popup = new Popup(parent);
         popup.open();
         popup.setVisible(false);
-        setDropInvalid(true);
+        setDropInvalid(true, false);
         setOverwriteMode(false);
         setMapOneToOneMode(false, true);
     }
@@ -416,11 +418,14 @@ public final class DraggingInfosPopup {
         return this.mapOneToOne;
     }
 
-    public void setDropInvalid(boolean dropInvalid) {
+    public void setDropInvalid(boolean dropInvalid, boolean invalidKeyPressed) {
         String newText = "null";
         if (dropInvalid) {
             if(WindowSystem.isGTK()) {
-                newText = "\n<< Drop invalid >>\n";
+                newText = "\n<< Drop invalid >>\n" 
+                    + (invalidKeyPressed ? 
+                            "Press both Shift and Ctrl keys to map one to one and overwrite" 
+                            : "");
             }
         }
         if(WindowSystem.isGTK()) {
@@ -434,5 +439,6 @@ public final class DraggingInfosPopup {
             updateVisibleLabels();
         }
     }
+
 
 }

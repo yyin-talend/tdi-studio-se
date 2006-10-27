@@ -88,6 +88,8 @@ public class DropContextAnalyzer {
 
     private boolean isOutputToOutput;
 
+    private boolean invalidKeyPressed;
+
     public DropContextAnalyzer(DraggedData draggedData, DropTargetEvent event, MapperManager mapperManager) {
         super();
         this.draggedData = draggedData;
@@ -111,6 +113,8 @@ public class DropContextAnalyzer {
         zoneSource = dataMapTableViewSource.getZone();
 
         analyzeCursorOverExpressionCell();
+        
+        invalidKeyPressed = hasInvalidKeyPressed();
 
         isDropValid = checkDropIsValid();
 
@@ -131,8 +135,7 @@ public class DropContextAnalyzer {
             mapOneToOneAuthorized = false;
         }
 
-        UIManager uiManager = mapperManager.getUiManager();
-        if (WindowSystem.isGTK() && uiManager.isCtrlPressed() ^ uiManager.isShiftPressed()) {
+        if(invalidKeyPressed) {
             return false;
         }
         
@@ -197,6 +200,14 @@ public class DropContextAnalyzer {
         }
 
         return true;
+    }
+
+    private boolean hasInvalidKeyPressed() {
+        UIManager uiManager = mapperManager.getUiManager();
+        if (WindowSystem.isGTK() && uiManager.isCtrlPressed() ^ uiManager.isShiftPressed()) {
+            return true;
+        }
+        return false;
     }
 
     public int getDetail() {
@@ -430,6 +441,11 @@ public class DropContextAnalyzer {
 
     public void setOutputTuOutput(boolean isOutputTuOutput) {
         this.isOutputToOutput = isOutputTuOutput;
+    }
+
+    
+    public boolean isInvalidKeyPressed() {
+        return invalidKeyPressed;
     }
 
 }

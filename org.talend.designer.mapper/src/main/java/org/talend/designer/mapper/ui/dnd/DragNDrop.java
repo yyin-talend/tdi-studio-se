@@ -267,12 +267,12 @@ public class DragNDrop {
                         }
                         draggingInfosPopup.setInsertionEntryContext(analyzer.isInsertionEntryMode());
                     }
-                    draggingInfosPopup.setDropInvalid(false);
+                    draggingInfosPopup.setDropInvalid(false, false);
                 } else {
                     draggingInfosPopup.setMapOneToOneMode(false, false);
                     draggingInfosPopup.setExpressionContext(false);
                     draggingInfosPopup.setInsertionEntryContext(false);
-                    draggingInfosPopup.setDropInvalid(true);
+                    draggingInfosPopup.setDropInvalid(true, analyzer.isInvalidKeyPressed());
                 }
             }
 
@@ -309,12 +309,12 @@ public class DragNDrop {
                         draggingInfosPopup.setExpressionContext(false);
                         draggingInfosPopup.setInsertionEntryContext(true);
                     }
-                    draggingInfosPopup.setDropInvalid(false);
+                    draggingInfosPopup.setDropInvalid(false, false);
                 } else {
                     draggingInfosPopup.setExpressionContext(false);
                     draggingInfosPopup.setMapOneToOneMode(false, false);
                     draggingInfosPopup.setInsertionEntryContext(false);
-                    draggingInfosPopup.setDropInvalid(true);
+                    draggingInfosPopup.setDropInvalid(true, analyzer.isInvalidKeyPressed());
                 }
             }
 
