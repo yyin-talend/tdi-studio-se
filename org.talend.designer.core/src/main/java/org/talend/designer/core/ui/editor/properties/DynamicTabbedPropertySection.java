@@ -162,6 +162,7 @@ import org.talend.designer.runprocess.language.perl.SyntaxCheckerFactory;
 import org.talend.repository.model.IRepositoryFactory;
 import org.talend.repository.model.RepositoryConstants;
 import org.talend.repository.model.RepositoryFactoryProvider;
+import org.talend.repository.model.RepositoryNode.EProperties;
 import org.talend.repository.utils.RepositoryPathProvider;
 
 /**
@@ -2204,9 +2205,8 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                                 t.setText((String) value);
                             }
                         }
-                        // editionControlHelper.register(param.getName(), t, false);
                         if(checkErrorsWhenViewRefreshed) {
-                            editionControlHelper.checkErrors(t);
+                            checkErrorsForPropertiesOnly(t);
                         }
                     }
                     if (param.getField() == EParameterFieldType.VERSION) {
@@ -2225,7 +2225,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                             }
                         }
                         if(checkErrorsWhenViewRefreshed) {
-                            editionControlHelper.checkErrors(t);
+                            checkErrorsForPropertiesOnly(t);
                         }
                     }
                     if (param.getField() == EParameterFieldType.CLOSED_LIST) {
@@ -2257,6 +2257,16 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
         }
         composite.getParent().layout(true, true);
         checkErrorsWhenViewRefreshed = false;
+    }
+
+    /**
+     * DOC amaumont Comment method "checkErrors".
+     * @param control must be or extends <code>Text</code> or <code>StyledText</code>  
+     */
+    private void checkErrorsForPropertiesOnly(Control control) {
+        if(this.section == EComponentCategory.PROPERTY) {
+            editionControlHelper.checkErrors(control);
+        }
     }
 
     @Override
@@ -2497,7 +2507,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
             public void focusLost(FocusEvent event) {
                 if (!extendedProposal.isProposalOpened()) {
                     Control control = (Control) event.widget;
-                    checkErrors(control);
+                    checkErrorsForPropertiesOnly(control);
                 }
             }
 
