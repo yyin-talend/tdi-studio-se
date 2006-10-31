@@ -168,9 +168,14 @@ public class XmlFileWizard extends RepositoryWizard implements INewWizard {
             xmlFileWizardPage3.setDescription(Messages.getString("FileWizardPage.descriptionCreateStep3"));
             addPage(xmlFileWizardPage3);
 
-            xmlFileWizardPage1.setPageComplete(false);
-            xmlFileWizardPage2.setPageComplete(false);
-            xmlFileWizardPage3.setPageComplete(false);
+//            PTODO CAN : comment setPageComplete(true);
+//          xmlFileWizardPage1.setPageComplete(false);
+//          xmlFileWizardPage2.setPageComplete(false);
+//          xmlFileWizardPage3.setPageComplete(false);
+
+            xmlFileWizardPage1.setPageComplete(true);
+            xmlFileWizardPage2.setPageComplete(true);
+            xmlFileWizardPage3.setPageComplete(true);
 
         } else {
             setWindowTitle(Messages.getString("XmlFileWizard.windowTitleUpdate"));
@@ -191,7 +196,9 @@ public class XmlFileWizard extends RepositoryWizard implements INewWizard {
             addPage(xmlFileWizardPage2);
 
             xmlFileWizardPage1.setPageComplete(true);
-            xmlFileWizardPage2.setPageComplete(isRepositoryObjectEditable());
+//          PTODO CAN : comment setPageComplete(true);
+//          xmlFileWizardPage2.setPageComplete(isRepositoryObjectEditable());
+            xmlFileWizardPage2.setPageComplete(true);
         }
     }
 

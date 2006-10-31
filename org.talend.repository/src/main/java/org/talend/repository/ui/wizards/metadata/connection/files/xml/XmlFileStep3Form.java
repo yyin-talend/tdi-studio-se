@@ -115,11 +115,11 @@ public class XmlFileStep3Form extends AbstractXmlFileStepForm {
         tableEditorView.setMetadataEditor(metadataEditor);
         tableEditorView.getTableViewerCreator().layout();
 
-        if (getConnection().isReadOnly()) {
-            adaptFormToReadOnly();
-        } else {
-            updateStatus(IStatus.OK, null);
-        }
+//        if (getConnection().isReadOnly()) {
+//            adaptFormToReadOnly();
+//        } else {
+//            updateStatus(IStatus.OK, null);
+//        }
     }
 
     /**

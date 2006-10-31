@@ -23,12 +23,9 @@ package org.talend.repository.ui.wizards.metadata.connection.files.xml;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IStatus;
-//import org.eclipse.datatools.connectivity.oda.OdaException;
-//import org.eclipse.datatools.enablement.oda.xml.Constants;
-//import org.eclipse.datatools.enablement.oda.xml.ui.utils.XMLRelationInfoUtil;
-//import org.eclipse.datatools.enablement.oda.xml.ui.wizards.XMLInformationHolder;
-//import org.eclipse.datatools.enablement.oda.xml.util.ui.ATreeNode;
-//import org.eclipse.datatools.enablement.oda.xml.util.ui.SchemaPopulationUtil;
+import org.eclipse.datatools.connectivity.oda.OdaException;
+import org.eclipse.datatools.enablement.oda.xml.util.ui.ATreeNode;
+import org.eclipse.datatools.enablement.oda.xml.util.ui.SchemaPopulationUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -82,7 +79,7 @@ public class XmlFileStep1Form extends AbstractXmlFileStepForm {
 
     private transient Tree availableXmlTree;
     
-//    private ATreeNode treeNode;
+    private ATreeNode treeNode;
 
     private UtilsButton cancelButton;
 
@@ -237,21 +234,21 @@ public class XmlFileStep1Form extends AbstractXmlFileStepForm {
      * 
      */
     private void populateTree(LabelledFileField fileField) {
-//        try {
-//            availableXmlTree.removeAll();
-//            if (fileField != null && fileField.getText() != null && fileField.getText().trim().length() > 0) {
-//                int numberOfElement = MAXIMUM_ROWS_TO_PREVIEW;
-//                treeNode = SchemaPopulationUtil.getSchemaTree(fileField.getText(), true, numberOfElement);
-//                if (treeNode == null || treeNode.getChildren().length == 0) {
-//                    OdaException ex = new OdaException(Messages.getString("dataset.error.populateXMLTree"));
+        try {
+            availableXmlTree.removeAll();
+            if (fileField != null && fileField.getText() != null && fileField.getText().trim().length() > 0) {
+                int numberOfElement = MAXIMUM_ROWS_TO_PREVIEW;
+                treeNode = SchemaPopulationUtil.getSchemaTree(fileField.getText(), true, numberOfElement);
+                if (treeNode == null || treeNode.getChildren().length == 0) {
+                    OdaException ex = new OdaException(Messages.getString("dataset.error.populateXMLTree"));
 ////                    ExceptionHandler.showException(getShell(),
 ////                            Messages.getString("error.label"),
 ////                            ex.getMessage(),
 ////                            ex);
-//                } else {
-//                    Object[] childs = treeNode.getChildren();
-//                    populateTreeItems(availableXmlTree, childs, 0);
-//                }
+                } else {
+                    Object[] childs = treeNode.getChildren();
+                    populateTreeItems(availableXmlTree, childs, 0);
+                }
                 
                 
                 
@@ -267,14 +264,14 @@ public class XmlFileStep1Form extends AbstractXmlFileStepForm {
 //                    String selectedTreeItemText = XMLRelationInfoUtil.getXPathExpression( queryText,
 //                            tableName );
                 
-//            }
-//            checkFieldsValue();
-//        } catch (Exception e) {
+            }
+            checkFieldsValue();
+        } catch (Exception e) {
 //            ExceptionHandler.showException(getShell(),
 //                    Messages.getString("error.label"),
 //                    e.getMessage(),
 //                    e);
-//        }
+        }
     }
 
     /**
@@ -283,31 +280,31 @@ public class XmlFileStep1Form extends AbstractXmlFileStepForm {
      * @param node
      */
     private void populateTreeItems(Object tree, Object[] node, int level) {
-//        level++;
-//        if (level > 10) {
-//            return;
-//        } else {
-//            for (int i = 0; i < node.length; i++) {
-//                TreeItem treeItem;
-//                if (tree instanceof Tree) {
-//                    treeItem = new TreeItem((Tree) tree, 0);
-//                } else {
-//                    treeItem = new TreeItem((TreeItem) tree, 0);
-//                }
-//                ATreeNode treeNode = (ATreeNode) node[i];
-//                treeItem.setData(treeNode);
-//                int type = treeNode.getType();
-//                if (type == ATreeNode.ATTRIBUTE_TYPE) {
-//                    treeItem.setText("@" + treeNode.getValue().toString());
-//                } else {
-//                    treeItem.setText(treeNode.getValue().toString());
-//                }
-//                if (treeNode.getChildren() != null && treeNode.getChildren().length > 0) {
-//                    populateTreeItems(treeItem, treeNode.getChildren(), level);
-//                }
-//                setExpanded(treeItem);
-//            }
-//        }
+        level++;
+        if (level > 10) {
+            return;
+        } else {
+            for (int i = 0; i < node.length; i++) {
+                TreeItem treeItem;
+                if (tree instanceof Tree) {
+                    treeItem = new TreeItem((Tree) tree, 0);
+                } else {
+                    treeItem = new TreeItem((TreeItem) tree, 0);
+                }
+                ATreeNode treeNode = (ATreeNode) node[i];
+                treeItem.setData(treeNode);
+                int type = treeNode.getType();
+                if (type == ATreeNode.ATTRIBUTE_TYPE) {
+                    treeItem.setText("@" + treeNode.getValue().toString());
+                } else {
+                    treeItem.setText(treeNode.getValue().toString());
+                }
+                if (treeNode.getChildren() != null && treeNode.getChildren().length > 0) {
+                    populateTreeItems(treeItem, treeNode.getChildren(), level);
+                }
+                setExpanded(treeItem);
+            }
+        }
     }
     
     /**
