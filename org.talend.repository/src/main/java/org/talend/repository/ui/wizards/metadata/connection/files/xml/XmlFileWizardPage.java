@@ -24,6 +24,7 @@ package org.talend.repository.ui.wizards.metadata.connection.files.xml;
 import org.eclipse.jface.dialogs.IDialogPage;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.widgets.Composite;
+import org.talend.core.model.metadata.builder.connection.MetadataSchema;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.builder.connection.TableHelper;
 import org.talend.core.model.metadata.builder.connection.XmlFileConnection;
@@ -72,7 +73,10 @@ public class XmlFileWizardPage extends WizardPage {
         if (step == 1) {
             currentComposite = new XmlFileStep1Form(parent, connectionItem, existingNames);
         } else if (step == 2) {
-            currentComposite = new XmlFileStep2Form(parent, connectionItem);
+//            MetadataSchema metadataSchema = (MetadataSchema) ((XmlFileConnection)connectionItem.getConnection()).getSchema().get(0);
+//            currentComposite = new XmlFileStep2Form(parent, connectionItem, metadataSchema);
+          currentComposite = new XmlFileStep2Form(parent, connectionItem);
+
         } else if (step == 3) {
             MetadataTable metadataTable = (MetadataTable) ((XmlFileConnection)connectionItem.getConnection()).getTables().get(0);
             currentComposite = new XmlFileStep3Form(parent, connectionItem, metadataTable, TableHelper.getTableNames( ((XmlFileConnection)connectionItem.getConnection()), metadataTable

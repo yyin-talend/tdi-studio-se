@@ -36,6 +36,7 @@ import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.model.general.Version;
 import org.talend.core.model.metadata.builder.connection.ConnectionFactory;
+import org.talend.core.model.metadata.builder.connection.MetadataSchema;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.builder.connection.XmlFileConnection;
 import org.talend.core.model.properties.ConnectionItem;
@@ -105,11 +106,13 @@ public class XmlFileWizard extends RepositoryWizard implements INewWizard {
         case SIMPLE_FOLDER:
         case SYSTEM_FOLDER:
             connection = ConnectionFactory.eINSTANCE.createXmlFileConnection();
+//            MetadataSchema metadataSchema = ConnectionFactory.eINSTANCE.createMetadataSchema();
             MetadataTable metadataTable = ConnectionFactory.eINSTANCE.createMetadataTable();
             RepositoryContext repositoryContext = (RepositoryContext) org.talend.core.CorePlugin.getContext().getProperty(
                     org.talend.core.context.Context.REPOSITORY_CONTEXT_KEY);
             IRepositoryFactory factory = RepositoryFactoryProvider.getInstance(repositoryContext);
             metadataTable.setId(factory.getNextId());
+//            connection.getTables().add(metadataSchema);
             connection.getTables().add(metadataTable);
             connectionProperty = PropertiesFactory.eINSTANCE.createProperty();
             connectionProperty

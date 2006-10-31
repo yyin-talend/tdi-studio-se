@@ -136,22 +136,9 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
      */
     @Override
     protected void initialize() {
-		MetadataSchema metadataSchema = ConnectionFactory.eINSTANCE.createMetadataSchema();
 
-		SchemaTarget schemaTarget = ConnectionFactory.eINSTANCE.createSchemaTarget();
-        schemaTarget.setXPathQuery("toto");
-        schemaTarget.setTagName("titi");
-        schemaTarget.setIsBoucle(false);
-        schemaTarget.setLimitBoucle(3);
-
-        metadataSchema.getSchemaTargets().add(schemaTarget);
-//        metadataSchema.setConnection(getConnection());
-        getConnection().getSchema().add(metadataSchema);
-
-		
-		
         checkFieldsValue();
-        targetSchemaEditor.setMetadataSchema(metadataSchema);
+        targetSchemaEditor.setMetadataSchema((MetadataSchema)getConnection().getSchema().iterator().next());
         tableEditorView.setTargetSchemaEditor(targetSchemaEditor);
         tableEditorView.getTableViewerCreator().layout();
     }
