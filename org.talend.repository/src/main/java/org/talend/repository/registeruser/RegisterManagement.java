@@ -27,6 +27,7 @@ import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.ui.PlatformUI;
 import org.talend.commons.exception.BusinessException;
 import org.talend.core.CorePlugin;
+import org.talend.core.prefs.CorePreferenceInitializer;
 import org.talend.core.prefs.PreferenceManipulator;
 import org.talend.repository.registeruser.proxy.RegisterUserPortTypeProxy;
 
@@ -38,13 +39,25 @@ import org.talend.repository.registeruser.proxy.RegisterUserPortTypeProxy;
  */
 public class RegisterManagement {
 
-    private static final int REGISTRATION_MAX_TRIES = 11;
+    private static final int REGISTRATION_MAX_TRIES = 6;
 
     // REGISTRATION_DONE = 1 : registration OK
     private static final double REGISTRATION_DONE = 2;
 
-    public static boolean register(String email, String country, String designerVersion) throws BusinessException {
+    public static boolean register(String email, String country, boolean isProxyEnabled, String proxyHost,
+            String proxyPort, String designerVersion) throws BusinessException {
         boolean result = false;
+
+        // if proxy is enabled
+        if (isProxyEnabled) {
+            // get parameter and put them in System.properties.
+            System.setProperty("http.proxyHost", proxyHost);
+            System.setProperty("http.proxyPort", proxyPort);
+
+            // override automatic update parameters
+            CorePreferenceInitializer.setProxy(proxyHost, proxyPort);
+        }
+
         RegisterUserPortTypeProxy proxy = new RegisterUserPortTypeProxy();
         proxy.setEndpoint("http://www.talend.com/TalendRegisterWS/registerws.php");
         try {
@@ -65,7 +78,6 @@ public class RegisterManagement {
 
     /**
      * DOC mhirt Comment method "isProductRegistered".
-     * 
      * @return
      */
     public static boolean isProductRegistered() {

@@ -25,18 +25,23 @@ import org.eclipse.jface.wizard.Wizard;
 import org.talend.repository.i18n.Messages;
 
 /**
- * Wizard for the creation of a new project. <br/>
- * 
- * $Id$
- * 
+ * Wizard for the creation of a new project. <br/> $Id: RegisterWizard.java 1 2006-09-29 17:06:40 +0000 (ven., 29 sept.
+ * 2006) nrousseau $
  */
 public class RegisterWizard extends Wizard {
 
     /** Main page. */
     private RegisterWizardPage mainPage;
-    
+
     private String email;
+
     private String country;
+
+    private boolean proxyEnabled = false;
+
+    private String proxyHost = "";
+
+    private String proxyPort = "";
 
     /**
      * Constructs a new RegisterWizard.
@@ -67,38 +72,89 @@ public class RegisterWizard extends Wizard {
     public boolean performFinish() {
         this.email = mainPage.getEmail();
         this.country = mainPage.getCountry();
+        this.proxyEnabled = mainPage.getEnableHttpProxy().getEnabled();
+        this.proxyHost = mainPage.getHttpProxyHostText().getText();
+        this.proxyPort = mainPage.getHttpProxyPortText().getText();
+
         return true;
     }
-    
+
     /**
      * Getter for country.
+     * 
      * @return the country
      */
     public String getCountry() {
         return this.country;
     }
-    
+
     /**
      * Sets the country.
+     * 
      * @param country the country to set
      */
     public void setCountry(String country) {
         this.country = country;
     }
-    
+
     /**
      * Getter for email.
+     * 
      * @return the email
      */
     public String getEmail() {
         return this.email;
     }
-    
+
     /**
      * Sets the email.
+     * 
      * @param email the email to set
      */
     public void setEmail(String email) {
         this.email = email;
     }
+
+    /**
+     * @return the proxyEnabled
+     */
+    public boolean isProxyEnabled() {
+        return proxyEnabled;
+    }
+
+    /**
+     * @param proxyEnabled the proxyEnabled to set
+     */
+    public void setProxyEnabled(boolean proxyEnabled) {
+        this.proxyEnabled = proxyEnabled;
+    }
+
+    /**
+     * @return the proxyHost
+     */
+    public String getProxyHost() {
+        return proxyHost;
+    }
+
+    /**
+     * @param proxyHost the proxyHost to set
+     */
+    public void setProxyHost(String proxyHost) {
+        this.proxyHost = proxyHost;
+    }
+
+    /**
+     * @return the proxyPort
+     */
+    public String getProxyPort() {
+        return proxyPort;
+    }
+
+    /**
+     * @param proxyPort the proxyPort to set
+     */
+    public void setProxyPort(String proxyPort) {
+        this.proxyPort = proxyPort;
+    }
+
 }
