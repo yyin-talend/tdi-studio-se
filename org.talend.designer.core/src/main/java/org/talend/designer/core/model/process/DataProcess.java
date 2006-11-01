@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.talend.core.model.components.IComponent;
+import org.talend.core.model.components.IMultipleComponentConnection;
 import org.talend.core.model.components.IMultipleComponentItem;
 import org.talend.core.model.components.IMultipleComponentManager;
 import org.talend.core.model.components.IMultipleComponentParameter;
@@ -158,10 +159,21 @@ public class DataProcess {
             asbractConnect.setTarget(dataNode);
             incomingConnections.add(connection);
         }
+        List<IConnection> outgoingConnections = (List<IConnection>) dataNode.getOutgoingConnections();
+
+        // RunBefore / RunAfter Links won't be linked to the output but on the first element of the subprocess.
+        for (IConnection connection : previousNode.getOutgoingConnections()) {
+            if (connection.getLineStyle().equals(EConnectionType.RUN_BEFORE)
+                    || connection.getLineStyle().equals(EConnectionType.RUN_AFTER)) {
+                AbstractConnection asbractConnect = (AbstractConnection) connection;
+                asbractConnect.setSource(dataNode);
+                outgoingConnections.add(connection);
+            }
+        }
 
         // set informations for the last node, so the outgoing connections.
         INode outputNode = itemsMap.get(multipleComponentManager.getOutput());
-        List<IConnection> outgoingConnections = (List<IConnection>) outputNode.getOutgoingConnections();
+        outgoingConnections = (List<IConnection>) outputNode.getOutgoingConnections();
 
         // RunBefore / RunAfter Links won't be linked to the output but on the first element of the subprocess.
         for (IConnection connection : previousNode.getOutgoingConnections()) {
@@ -175,65 +187,7 @@ public class DataProcess {
 
         // adds all connections between these nodes
         addAllMultipleComponentConnections(itemsMap, multipleComponentManager, graphicalNode, dataNode, previousNode);
-
-        // adds the RunBefore / RunAfter link that were on the output of the previousNode to the new "start".
-        INode nodeSourceAfter, nodeSourceBefore;
-        INode startNode = graphicalNode.getSubProcessStartNode(false);
-        INode dataStartNode = buildCheckMap.get(startNode);
-        if (dataStartNode != previousNode) {
-            nodeSourceAfter = dataNode;
-            nodeSourceBefore = dataNode;
-        } else {
-            INode newNodeSourceAfter = dataNode;
-            INode newNodeSourceBefore = dataNode;
-            INode nextNode = newNodeSourceAfter;
-            boolean found;
-            do {
-                found = false;
-                for (IConnection connection : newNodeSourceAfter.getIncomingConnections()) {
-                    if (connection.getLineStyle().equals(EConnectionType.RUN_BEFORE)) {
-                        if (itemsMap.containsValue(connection.getSource())) {
-                            nextNode = connection.getSource();
-                            found = true;
-                        }
-                    }
-                }
-                newNodeSourceAfter = nextNode;
-            } while (found);
-            nodeSourceAfter = newNodeSourceAfter;
-            
-            do {
-                found = false;
-                for (IConnection connection : newNodeSourceBefore.getIncomingConnections()) {
-                    if (connection.getLineStyle().equals(EConnectionType.RUN_AFTER)) {
-                        if (itemsMap.containsValue(connection.getSource())) {
-                            nextNode = connection.getSource();
-                            found = true;
-                        }
-                    }
-                }
-                newNodeSourceBefore = nextNode;
-            } while (found);
-            nodeSourceBefore = newNodeSourceBefore;
-        }
-        outgoingConnections = (List<IConnection>) nodeSourceAfter.getOutgoingConnections();
-        for (IConnection connection : previousNode.getOutgoingConnections()) {
-            if (connection.getLineStyle().equals(EConnectionType.RUN_AFTER)) {
-                AbstractConnection asbractConnect = (AbstractConnection) connection;
-                asbractConnect.setSource(nodeSourceAfter);
-                outgoingConnections.add(connection);
-            }
-        }
         
-        outgoingConnections = (List<IConnection>) nodeSourceBefore.getOutgoingConnections();
-        for (IConnection connection : previousNode.getOutgoingConnections()) {
-            if (connection.getLineStyle().equals(EConnectionType.RUN_BEFORE)) {
-                AbstractConnection asbractConnect = (AbstractConnection) connection;
-                asbractConnect.setSource(nodeSourceBefore);
-                outgoingConnections.add(connection);
-            }
-        }
-
         return dataNode;
     }
 
@@ -251,62 +205,55 @@ public class DataProcess {
         List<IConnection> incomingConnections, outgoingConnections;
 
         for (IMultipleComponentItem curItem : multipleComponentManager.getItemList()) {
-            if (curItem.isConnectionExist()) {
+            for (IMultipleComponentConnection curConnec : curItem.getOutputConnections()) {
                 AbstractNode nodeSource = itemsMap.get(curItem);
                 AbstractNode nodeTarget;
-                if (curItem.getLinkTo() == null) {
-                    nodeTarget = dataNode;
-                } else {
-                    nodeTarget = itemsMap.get(curItem.getLinkTo());
-                }
+
+                nodeTarget = itemsMap.get(curConnec.getTarget());
+
                 DataConnection dataConnec = new DataConnection();
                 dataConnec.setActivate(graphicalNode.isActivate());
-                dataConnec.setLineStyle(curItem.getConnectionType());
+                dataConnec.setLineStyle(curConnec.getConnectionType());
                 dataConnec.setMetadataTable(nodeSource.getMetadataList().get(0));
 
-                EDesignerConnection designerConnection = EDesignerConnection.getConnection(curItem.getConnectionType());
+                EDesignerConnection designerConnection = EDesignerConnection.getConnection(curConnec
+                        .getConnectionType());
                 dataConnec.setName(designerConnection.getLinkName());
 
-                switch (curItem.getConnectionType()) {
+                switch (curConnec.getConnectionType()) {
                 case FLOW_MAIN:
                     dataConnec.setName("row_" + itemsMap.get(curItem).getUniqueName());
                     break;
                 case RUN_BEFORE:
                 case RUN_AFTER:
+                    if (nodeSource.equals(dataNode)) {
+                        INode dataStartNode = ((DataNode) nodeSource).getSubProcessStartNode(false);
+                        if (dataStartNode != previousNode) {
+                            nodeSource = (AbstractNode) dataStartNode;
+                        }
+                        nodeTarget.setSubProcessStart(true);
+
+                        List<IConnection> connectionsToRemoveFromList = new ArrayList<IConnection>();
+                        outgoingConnections = (List<IConnection>) nodeSource.getOutgoingConnections();
+                        for (IConnection connec : outgoingConnections) {
+                            if (connec.getLineStyle().equals(curConnec.getConnectionType())) {
+                                connectionsToRemoveFromList.add(connec);
+                                AbstractConnection connection = (AbstractConnection) connec;
+                                connection.setSource(nodeTarget);
+                                nodeTarget.getIncomingConnections().remove(connec);
+                                ((List<IConnection>) connec.getTarget().getIncomingConnections()).add(connec);
+                            }
+                        }
+                        outgoingConnections.removeAll(connectionsToRemoveFromList);
+                        outgoingConnections = (List<IConnection>) nodeTarget.getOutgoingConnections();
+                        outgoingConnections.addAll(connectionsToRemoveFromList);
+
+                    }
+
+                    break;
                 case RUN_IF_OK:
                 case RUN_IF_ERROR:
-                    if (nodeTarget.equals(dataNode)) {
-                        INode startNode = graphicalNode.getSubProcessStartNode(false);
-                        INode dataStartNode = buildCheckMap.get(startNode);
-                        if (dataStartNode != previousNode) {
-                            nodeTarget = (AbstractNode) dataStartNode;
-                        }
-                    }
-                    List<IConnection> connectionsToRemoveFromList = new ArrayList<IConnection>();
-                    incomingConnections = (List<IConnection>) nodeTarget.getIncomingConnections();
-                    for (IConnection connec : incomingConnections) {
-                        switch (connec.getLineStyle()) {
-                        case RUN_BEFORE:
-                        case RUN_AFTER:
-                        case RUN_IF_OK:
-                        case RUN_IF_ERROR:
-                        case RUN_IF:
-                            connectionsToRemoveFromList.add(connec);
-                            AbstractConnection connection = (AbstractConnection) connec;
-                            connection.setTarget(nodeSource);
-                            break;
-                        default:
-                            break;
-                        }
-                    }
-                    incomingConnections.removeAll(connectionsToRemoveFromList);
-                    incomingConnections = (List<IConnection>) nodeSource.getIncomingConnections();
-                    incomingConnections.addAll(connectionsToRemoveFromList);
-                    if (nodeTarget.isStart()) {
-                        nodeTarget.setStart(false);
-                        nodeSource.setStart(true);
-                    }
-                    nodeSource.setSubProcessStart(true);
+                    nodeTarget.setSubProcessStart(true);
                     break;
                 default:
                     break;
@@ -336,7 +283,7 @@ public class DataProcess {
 
         for (IMultipleComponentItem curItem : itemList) {
             String uniqueName = graphicalNode.getUniqueName() + "_" + curItem.getName();
-            IComponent component = ComponentsFactoryProvider.getInstance().get(curItem.getName());
+            IComponent component = ComponentsFactoryProvider.getInstance().get(curItem.getComponent());
             DataNode curNode = new DataNode(component, uniqueName);
             curNode.setActivate(graphicalNode.isActivate());
             IMetadataTable newMetadata = graphicalNode.getMetadataList().get(0).clone();
@@ -368,7 +315,7 @@ public class DataProcess {
         for (IMultipleComponentParameter param : multipleComponentManager.getParamList()) {
             INode sourceNode = null, targetNode = null;
             boolean sourceFound = false, targetFound = false;
-            if (param.getSourceComponent().equals(graphicalNode.getComponentName())) {
+            if (param.getSourceComponent().equals("self")) {
                 sourceNode = graphicalNode;
             } else {
                 for (int i = 0; i < itemList.size() && !sourceFound; i++) {

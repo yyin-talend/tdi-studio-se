@@ -40,6 +40,7 @@ import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IComponentsFactory;
+import org.talend.core.model.components.IMultipleComponentItem;
 import org.talend.core.model.components.IMultipleComponentManager;
 import org.talend.core.model.metadata.EMetadataType;
 import org.talend.core.model.process.EComponentCategory;
@@ -55,6 +56,7 @@ import org.talend.designer.core.model.utils.emf.component.DocumentRoot;
 import org.talend.designer.core.model.utils.emf.component.IMPORTType;
 import org.talend.designer.core.model.utils.emf.component.ITEMSType;
 import org.talend.designer.core.model.utils.emf.component.ITEMType;
+import org.talend.designer.core.model.utils.emf.component.LINKTOType;
 import org.talend.designer.core.model.utils.emf.component.PARAMETERType;
 import org.talend.designer.core.model.utils.emf.component.RETURNType;
 import org.talend.designer.core.model.utils.emf.component.TEMPLATEPARAMType;
@@ -94,8 +96,8 @@ public class EmfComponent implements IComponent {
     public EmfComponent(File file) {
         this.file = file;
         load();
-        codeLanguage = ((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY)).getProject()
-                .getLanguage();
+        codeLanguage = ((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY))
+                .getProject().getLanguage();
     }
 
     public boolean isPropagateSchema() {
@@ -120,8 +122,8 @@ public class EmfComponent implements IComponent {
         ComponentResourceFactoryImpl compFact;
         compFact = new ComponentResourceFactoryImpl();
         compFact.createResource(URI.createURI(file.toURI().toString()));
-        resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put(Resource.Factory.Registry.DEFAULT_EXTENSION,
-                compFact);
+        resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put(
+                Resource.Factory.Registry.DEFAULT_EXTENSION, compFact);
 
         Resource res = resourceSet.getResource(URI.createURI(file.toURI().toString()), true);
 
@@ -530,7 +532,8 @@ public class EmfComponent implements IComponent {
             param.setNotShowIf(xmlParam.getNOTSHOWIF());
             param.setRepositoryValue(xmlParam.getREPOSITORYVALUE());
 
-            if (!param.getField().equals(EParameterFieldType.TABLE) && !param.getField().equals(EParameterFieldType.CLOSED_LIST)) {
+            if (!param.getField().equals(EParameterFieldType.TABLE)
+                    && !param.getField().equals(EParameterFieldType.CLOSED_LIST)) {
                 List<DEFAULTType> listDefault = xmlParam.getDEFAULT();
                 for (DEFAULTType defaultType : listDefault) {
                     IElementParameterDefaultValue defaultValue = new ElementParameterDefaultValue();
@@ -592,8 +595,8 @@ public class EmfComponent implements IComponent {
                 for (int k = 0; k < nbItems; k++) {
                     item = (ITEMType) items.getITEM().get(k);
                     listItemsDisplayCodeValue[k] = item.getNAME();
-                    listItemsDisplayValue[k] = getTranslatedValue(xmlParam.getNAME() + "." + language.getName() + ".ITEM."
-                            + item.getNAME());
+                    listItemsDisplayValue[k] = getTranslatedValue(xmlParam.getNAME() + "." + language.getName()
+                            + ".ITEM." + item.getNAME());
                     if (!type.equals(EParameterFieldType.TABLE)) {
                         listItemsValue[k] = item.getVALUE();
                     } else {
@@ -633,22 +636,20 @@ public class EmfComponent implements IComponent {
         return getTranslatedValue(PROP_FAMILY);
     }
 
-    public boolean isMultipleMethods(ECodeLanguage language) {
+    public Boolean isMultipleMethods(ECodeLanguage language) {
         // language is not used anymore for the moment.
 
-        boolean multiple = false;
+        Boolean multiple = null;
         if (!isLoaded) {
             load();
         }
         TEMPLATEType tempType;
         EList listTempType = compType.getCODEGENERATION().getTEMPLATES().getTEMPLATE();
-        for (int i = 0; i < listTempType.size(); i++) {
-            tempType = (TEMPLATEType) listTempType.get(i);
-
-            if (tempType.getNAME().equals(getName())) {
-                if (tempType.isSetMULTIPLEMETHODS()) {
-                    multiple = tempType.isMULTIPLEMETHODS();
-                }
+        
+        if (listTempType.size() == 1) {
+            tempType = (TEMPLATEType) listTempType.get(0);
+            if (tempType.isSetMULTIPLEMETHODS()) {
+                multiple = new Boolean(tempType.isMULTIPLEMETHODS());
             }
         }
         return multiple;
@@ -793,7 +794,8 @@ public class EmfComponent implements IComponent {
                     msg = Messages.getString("modules.required");
                 }
 
-                ModuleNeeded componentImportNeeds = new ModuleNeeded(this, importType.getMODULE(), msg, importType.isREQUIRED());
+                ModuleNeeded componentImportNeeds = new ModuleNeeded(this, importType.getMODULE(), msg, importType
+                        .isREQUIRED());
 
                 componentImportNeedsList.add(componentImportNeeds);
             }
@@ -812,8 +814,6 @@ public class EmfComponent implements IComponent {
      * DOC nrousseau Comment method "loadMultipleComponentManagerFromTemplates".
      */
     private void loadMultipleComponentManagerFromTemplates() {
-        TEMPLATEType templateType;
-        TEMPLATEPARAMType templateParamType;
         TEMPLATESType templatesType;
 
         templatesType = compType.getCODEGENERATION().getTEMPLATES();
@@ -830,19 +830,26 @@ public class EmfComponent implements IComponent {
 
         EList listTempType = templatesType.getTEMPLATE();
         for (int i = 0; i < listTempType.size(); i++) {
-            templateType = (TEMPLATEType) listTempType.get(i);
+            TEMPLATEType templateType = (TEMPLATEType) listTempType.get(i);
 
-            String name, connection, linkTo;
+            String name, component;
             name = templateType.getNAME();
-            connection = templateType.getCTYPE();
-            linkTo = templateType.getLINKTO();
+            component = templateType.getCOMPONENT();
 
-            multipleComponentManager.addItem(name, connection, linkTo);
+            IMultipleComponentItem currentItem = multipleComponentManager.addItem(name, component);
+            EList listLinkTo = templateType.getLINKTO();
+            for (int j = 0; j < listLinkTo.size(); j++) {
+                LINKTOType linkTo = (LINKTOType) listLinkTo.get(j);
+
+                name = linkTo.getNAME();
+                String cType = linkTo.getCTYPE();
+                currentItem.getOutputConnections().add(new MultipleComponentConnection(cType, name));
+            }
         }
 
         EList listTempParamType = templatesType.getTEMPLATEPARAM();
         for (int i = 0; i < listTempParamType.size(); i++) {
-            templateParamType = (TEMPLATEPARAMType) listTempParamType.get(i);
+            TEMPLATEPARAMType templateParamType = (TEMPLATEPARAMType) listTempParamType.get(i);
 
             String source, target;
             source = templateParamType.getSOURCE();

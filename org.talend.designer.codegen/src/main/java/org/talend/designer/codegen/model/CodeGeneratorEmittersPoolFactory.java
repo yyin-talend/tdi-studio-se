@@ -139,6 +139,10 @@ public final class CodeGeneratorEmittersPoolFactory {
      */
     private static void initComponent(ECodeLanguage codeLanguage, List<JetBean> jetBeans, ECodePart codePart,
             IComponent component) {
+        // if this function returns null then there is no code to generate
+        if (component.isMultipleMethods(codeLanguage) == null) {
+            return;
+        }
         JetBean jetBean = new JetBean(IComponentsFactory.COMPONENTS_LOCATION, IComponentsFactory.COMPONENTS_DIRECTORY
                 + TemplateUtil.DIR_SEP + component.getName() + TemplateUtil.DIR_SEP + component.getName() + "_"
                 + codePart + "." + codeLanguage.getExtension() + TemplateUtil.TEMPLATE_EXT, component.getVersion());

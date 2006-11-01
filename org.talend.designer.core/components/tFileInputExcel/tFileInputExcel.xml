@@ -69,7 +69,7 @@
 
   <CODEGENERATION>
     <TEMPLATES>
-      <TEMPLATE NAME="tFileInputExcel" MULTIPLE_METHODS="true" />
+      <TEMPLATE MULTIPLE_METHODS="true" />
     </TEMPLATES>
     <IMPORTS>
       <IMPORT NAME="Spreadsheet-ParseExcel" MODULE="Spreadsheet::ParseExcel" REQUIRED="true" />

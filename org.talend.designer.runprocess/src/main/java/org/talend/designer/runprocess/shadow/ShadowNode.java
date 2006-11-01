@@ -244,8 +244,8 @@ public abstract class ShadowNode implements INode {
 
     }
 
-    public boolean isMultipleMethods() {
-        return true;
+    public Boolean isMultipleMethods() {
+        return new Boolean(true);
     }
 
     public IExternalNode getExternalNode() {

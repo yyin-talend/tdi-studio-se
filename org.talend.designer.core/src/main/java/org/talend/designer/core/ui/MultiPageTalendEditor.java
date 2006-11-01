@@ -335,6 +335,7 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
      * @return the component selected name or "" if component is not found or is not activated
      */
     private String getSelectedNode() {
+        Node node = null;
         String nodeName = "";
         List selections = designerEditor.getViewer().getSelectedEditParts();
         if (selections.size() == 1) {
@@ -342,30 +343,25 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
 
             if (selection instanceof NodeTreeEditPart) {
                 NodeTreeEditPart nTreePart = (NodeTreeEditPart) selection;
-                Node node = (Node) nTreePart.getModel();
-                if (node.isActivate()) {
-                    nodeName = node.getUniqueName();
-                } else {
-                    nodeName = "";
-                }
+                node = (Node) nTreePart.getModel();
             } else {
                 if (selection instanceof NodePart) {
                     NodePart editPart = (NodePart) selection;
-                    Node node = (Node) editPart.getModel();
-                    if (node.isActivate()) {
-                        nodeName = node.getUniqueName();
-                    } else {
-                        nodeName = "";
-                    }
+                    node = (Node) editPart.getModel();
                 } else if (selection instanceof NodeLabelEditPart) {
                     NodeLabelEditPart editPart = (NodeLabelEditPart) selection;
-                    Node node = (Node) ((NodeLabel) editPart.getModel()).getNode();
-                    if (node.isActivate()) {
-                        nodeName = node.getUniqueName();
-                    } else {
-                        nodeName = "";
-                    }
+                    node = (Node) ((NodeLabel) editPart.getModel()).getNode();
                 }
+            }
+        }
+        if (node != null) {
+            if (node.isActivate()) {
+                nodeName = node.getUniqueName();
+            } else {
+                nodeName = "";
+            }
+            if (node.getComponent().getMultipleComponentManager() != null) {
+                nodeName += "_" + node.getComponent().getMultipleComponentManager().getInput().getName();
             }
         }
         return nodeName;
@@ -382,8 +378,8 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
                 public void run() {
                     IWorkbenchPage[] pages = getSite().getWorkbenchWindow().getPages();
                     for (int i = 0; i < pages.length; i++) {
-                        if (((FileEditorInput) designerEditor.getEditorInput()).getFile().getProject()
-                                .equals(event.getResource())) {
+                        if (((FileEditorInput) designerEditor.getEditorInput()).getFile().getProject().equals(
+                                event.getResource())) {
                             IEditorPart editorPart = pages[i].findEditor(designerEditor.getEditorInput());
                             pages[i].closeEditor(editorPart, true);
                         }

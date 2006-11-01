@@ -64,7 +64,7 @@
 
    <CODEGENERATION>
      <TEMPLATES>
-       <TEMPLATE NAME="tFileOutputDelimited" MULTIPLE_METHODS="true"/>
+       <TEMPLATE MULTIPLE_METHODS="true"/>
      </TEMPLATES>
    </CODEGENERATION>
 

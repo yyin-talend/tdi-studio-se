@@ -21,97 +21,59 @@
 // ============================================================================
 package org.talend.designer.core.model.components;
 
-import org.talend.core.model.components.IMultipleComponentItem;
-import org.talend.core.model.process.EConnectionType;
+import java.util.ArrayList;
+import java.util.List;
 
+import org.talend.core.model.components.IMultipleComponentConnection;
+import org.talend.core.model.components.IMultipleComponentItem;
 
 /**
- * DOC nrousseau  class global comment. Detailled comment
- * <br/>
- *
+ * DOC nrousseau class global comment. Detailled comment <br/>
+ * 
  * $Id$
- *
+ * 
  */
 public class MultipleComponentItem implements IMultipleComponentItem {
 
     String name;
 
-    boolean connectionExist;
+    String component;
 
-    EConnectionType connectionType;
+    List<IMultipleComponentConnection> outputConnections = new ArrayList<IMultipleComponentConnection>();
 
-    IMultipleComponentItem linkFrom;
+    List<IMultipleComponentConnection> inputConnections = new ArrayList<IMultipleComponentConnection>();
 
-    IMultipleComponentItem linkTo;
-
-    String nameLinkTo;
-
-    /* (non-Javadoc)
-     * @see org.talend.designer.core.model.components.IMultipleComponentItem#isConnectionExist()
-     */
-    public boolean isConnectionExist() {
-        return this.connectionExist;
+    public List<IMultipleComponentConnection> getOutputConnections() {
+        return this.outputConnections;
     }
 
-    /* (non-Javadoc)
-     * @see org.talend.designer.core.model.components.IMultipleComponentItem#setConnectionExist(boolean)
-     */
-    public void setConnectionExist(boolean connectionExist) {
-        this.connectionExist = connectionExist;
+    public List<IMultipleComponentConnection> getInputConnections() {
+        return this.inputConnections;
     }
 
-    /* (non-Javadoc)
-     * @see org.talend.designer.core.model.components.IMultipleComponentItem#getConnectionType()
-     */
-    public EConnectionType getConnectionType() {
-        return this.connectionType;
-    }
-
-    public void setConnectionType(EConnectionType connectionType) {
-        this.connectionType = connectionType;
-    }
-
-    /* (non-Javadoc)
-     * @see org.talend.designer.core.model.components.IMultipleComponentItem#getLinkFrom()
-     */
-    public IMultipleComponentItem getLinkFrom() {
-        return this.linkFrom;
-    }
-
-    public void setLinkFrom(IMultipleComponentItem linkFrom) {
-        this.linkFrom = linkFrom;
-    }
-
-    /* (non-Javadoc)
-     * @see org.talend.designer.core.model.components.IMultipleComponentItem#getLinkTo()
-     */
-    public IMultipleComponentItem getLinkTo() {
-        return this.linkTo;
-    }
-
-    public void setLinkTo(IMultipleComponentItem linkTo) {
-        this.linkTo = linkTo;
-    }
-
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.designer.core.model.components.IMultipleComponentItem#getName()
      */
     public String getName() {
         return this.name;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.designer.core.model.components.IMultipleComponentItem#setName(java.lang.String)
      */
     public void setName(String name) {
         this.name = name;
     }
 
-    public String getNameLinkTo() {
-        return this.nameLinkTo;
+    public String getComponent() {
+        return this.component;
     }
 
-    public void setNameLinkTo(String nameLinkTo) {
-        this.nameLinkTo = nameLinkTo;
+    public void setComponent(String component) {
+        this.component = component;
     }
 }

@@ -24,10 +24,10 @@ package org.talend.designer.core.model.components;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.talend.core.model.components.IMultipleComponentConnection;
 import org.talend.core.model.components.IMultipleComponentItem;
 import org.talend.core.model.components.IMultipleComponentManager;
 import org.talend.core.model.components.IMultipleComponentParameter;
-import org.talend.core.model.process.EConnectionType;
 
 /**
  * DOC nrousseau class global comment. Detailled comment <br/>
@@ -46,7 +46,7 @@ public class MultipleComponentManager implements IMultipleComponentManager {
     String outputName;
 
     List<IMultipleComponentItem> itemList = new ArrayList<IMultipleComponentItem>();
-    
+
     List<IMultipleComponentParameter> paramList = new ArrayList<IMultipleComponentParameter>();
 
     public MultipleComponentManager(String inputName, String outputName) {
@@ -54,7 +54,7 @@ public class MultipleComponentManager implements IMultipleComponentManager {
         this.outputName = outputName;
     }
 
-    public void addItem(String name, String connection, String linkTo) {
+    public IMultipleComponentItem addItem(String name, String component) {
         MultipleComponentItem currentItem = new MultipleComponentItem();
 
         if (name.equals(inputName)) {
@@ -65,14 +65,10 @@ public class MultipleComponentManager implements IMultipleComponentManager {
         }
 
         currentItem.setName(name);
-        currentItem.setNameLinkTo(linkTo);
-        if (connection != null) {
-            currentItem.setConnectionType(EConnectionType.getTypeFromName(connection));
-            currentItem.setConnectionExist(true);
-        } else {
-            currentItem.setConnectionExist(false);
-        }
+        currentItem.setComponent(component);
         itemList.add(currentItem);
+        
+        return currentItem;
     }
 
     /*
@@ -86,15 +82,18 @@ public class MultipleComponentManager implements IMultipleComponentManager {
 
     public void validateItems() {
         for (IMultipleComponentItem mainItem : itemList) {
-            String nameLinkedTo = mainItem.getNameLinkTo();
-            if (nameLinkedTo != null) {
-                boolean found = false;
-                for (int i = 0; i < itemList.size() && !found; i++) {
-                    IMultipleComponentItem linkedItem = itemList.get(i);
-                    if (linkedItem.getName().equals(nameLinkedTo)) {
-                        mainItem.setLinkTo(linkedItem);
-                        linkedItem.setLinkFrom(mainItem);
-                        found = true;
+            for (IMultipleComponentConnection connection : mainItem.getOutputConnections()) {
+                String nameLinkedTo = connection.getNameTarget();
+                if (nameLinkedTo != null) {
+                    boolean found = false;
+                    for (int i = 0; i < itemList.size() && !found; i++) {
+                        IMultipleComponentItem linkedItem = itemList.get(i);
+                        if (linkedItem.getName().equals(nameLinkedTo)) {
+                            connection.setSource(mainItem);
+                            connection.setTarget(linkedItem);
+                            linkedItem.getInputConnections().add(connection);
+                            found = true;
+                        }
                     }
                 }
             }
@@ -122,7 +121,7 @@ public class MultipleComponentManager implements IMultipleComponentManager {
     public List<IMultipleComponentItem> getItemList() {
         return this.itemList;
     }
-    
+
     public List<IMultipleComponentParameter> getParamList() {
         return this.paramList;
     }

@@ -73,7 +73,7 @@
 
    <CODEGENERATION>
      <TEMPLATES>
-      <TEMPLATE NAME="tDBOutput" MULTIPLE_METHODS="true"/>
+      <TEMPLATE MULTIPLE_METHODS="true"/>
      </TEMPLATES>
      <IMPORTS>
        <IMPORT NAME="DBI" MODULE="DBI" REQUIRED="true" />
