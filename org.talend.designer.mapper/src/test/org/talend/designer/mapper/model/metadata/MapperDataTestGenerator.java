@@ -1213,16 +1213,6 @@ public class MapperDataTestGenerator {
         /*
          * (non-Javadoc)
          * 
-         * @see org.talend.core.model.process.INode#isMultipleMethods()
-         */
-        public Boolean isMultipleMethods() {
-            // TODO Auto-generated method stub
-            return new Boolean(false);
-        }
-
-        /*
-         * (non-Javadoc)
-         * 
          * @see org.talend.core.model.process.INode#isStart()
          */
         public boolean isStart() {
@@ -1311,6 +1301,14 @@ public class MapperDataTestGenerator {
 
         public void metadataOutputChanged(IODataComponent dataComponent, String connectionToApply) {
             // TODO Auto-generated method stub
+        }
+
+        /* (non-Javadoc)
+         * @see org.talend.core.model.process.INode#isMultipleMethods()
+         */
+        public boolean isMultipleMethods() {
+            // TODO Auto-generated method stub
+            return false;
         }
 
     }
