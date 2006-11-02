@@ -22,6 +22,7 @@
 package org.talend.designer.mapper.ui.visualmap.link;
 
 import org.eclipse.swt.graphics.GC;
+import org.eclipse.swt.graphics.Rectangle;
 
 /**
  * DOC amaumont class global comment. Detailled comment <br/>
@@ -29,9 +30,9 @@ import org.eclipse.swt.graphics.GC;
  * $Id$
  * 
  */
-public interface IGraphicLink {
+public interface IMapperLink {
 
-    public void draw(GC gc, int yMinVisiblePoints, int yMaxVisiblePoints);
+    public void draw(GC gc, Rectangle boundsOfDrawing);
 
     public void calculate();
 

@@ -31,7 +31,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.talend.designer.mapper.model.tableentry.ITableEntry;
-import org.talend.designer.mapper.ui.visualmap.link.IGraphicLink;
+import org.talend.designer.mapper.ui.visualmap.link.IMapperLink;
 import org.talend.designer.mapper.ui.visualmap.link.LinkState;
 
 /**
@@ -42,9 +42,9 @@ import org.talend.designer.mapper.ui.visualmap.link.LinkState;
  */
 public class LinkManager {
 
-    private static final Comparator<IGraphicLink> COMPARATOR = new Comparator<IGraphicLink>() {
+    private static final Comparator<IMapperLink> COMPARATOR = new Comparator<IMapperLink>() {
 
-        public int compare(IGraphicLink link1, IGraphicLink link2) {
+        public int compare(IMapperLink link1, IMapperLink link2) {
             if (link1.getState() == link2.getState()) {
                 return 0;
             }
@@ -56,7 +56,7 @@ public class LinkManager {
 
     };
 
-    private List<IGraphicLink> links = new ArrayList<IGraphicLink>();
+    private List<IMapperLink> links = new ArrayList<IMapperLink>();
 
     public final boolean limitMaxLinks = false;
 
@@ -64,9 +64,9 @@ public class LinkManager {
 
     private Map<ITableEntry, Set<ITableEntry>> targetToSources = new HashMap<ITableEntry, Set<ITableEntry>>();
 
-    private Map<ITableEntry, Set<IGraphicLink>> sourceTableEntryToLinks = new HashMap<ITableEntry, Set<IGraphicLink>>();
+    private Map<ITableEntry, Set<IMapperLink>> sourceTableEntryToLinks = new HashMap<ITableEntry, Set<IMapperLink>>();
 
-    private Map<ITableEntry, Set<IGraphicLink>> targetTableEntryToLinks = new HashMap<ITableEntry, Set<IGraphicLink>>();
+    private Map<ITableEntry, Set<IMapperLink>> targetTableEntryToLinks = new HashMap<ITableEntry, Set<IMapperLink>>();
 
     public LinkManager() {
         super();
@@ -78,7 +78,7 @@ public class LinkManager {
      * 
      * @param link
      */
-    public void addLink(IGraphicLink link) {
+    public void addLink(IMapperLink link) {
         currentNumberLinks++;
         // System.out.println(currentNumberLinks + " links");
 
@@ -87,9 +87,9 @@ public class LinkManager {
         ITableEntry targetITableEntry = link.getPointLinkDescriptorTarget().getTableEntry();
         Set<ITableEntry> targetDataMapTableEntries = getSourcesCollection(targetITableEntry);
         targetDataMapTableEntries.add(sourceITableEntry);
-        Set<IGraphicLink> targetGraphicalLinks = getGraphicalLinksFromTarget(targetITableEntry);
+        Set<IMapperLink> targetGraphicalLinks = getGraphicalLinksFromTarget(targetITableEntry);
         targetGraphicalLinks.add(link);
-        Set<IGraphicLink> sourceGraphicalLinks = getGraphicalLinksFromSource(sourceITableEntry);
+        Set<IMapperLink> sourceGraphicalLinks = getGraphicalLinksFromSource(sourceITableEntry);
         sourceGraphicalLinks.add(link);
     }
 
@@ -99,10 +99,10 @@ public class LinkManager {
      * @param targetTableEntry
      * @return
      */
-    private Set<IGraphicLink> getGraphicalLinksFromTarget(ITableEntry dataMapTableEntry) {
-        Set<IGraphicLink> graphicalLinks = targetTableEntryToLinks.get(dataMapTableEntry);
+    private Set<IMapperLink> getGraphicalLinksFromTarget(ITableEntry dataMapTableEntry) {
+        Set<IMapperLink> graphicalLinks = targetTableEntryToLinks.get(dataMapTableEntry);
         if (graphicalLinks == null) {
-            graphicalLinks = new HashSet<IGraphicLink>();
+            graphicalLinks = new HashSet<IMapperLink>();
             targetTableEntryToLinks.put(dataMapTableEntry, graphicalLinks);
         }
         return graphicalLinks;
@@ -114,8 +114,8 @@ public class LinkManager {
      * @param targetTableEntry
      * @return
      */
-    public Set<IGraphicLink> getLinksFromTarget(ITableEntry dataMapTableEntry) {
-        return new HashSet<IGraphicLink>(getGraphicalLinksFromTarget(dataMapTableEntry));
+    public Set<IMapperLink> getLinksFromTarget(ITableEntry dataMapTableEntry) {
+        return new HashSet<IMapperLink>(getGraphicalLinksFromTarget(dataMapTableEntry));
     }
 
     /**
@@ -124,17 +124,17 @@ public class LinkManager {
      * @param targetTableEntry
      * @return
      */
-    private Set<IGraphicLink> getGraphicalLinksFromSource(ITableEntry dataMapTableEntry) {
-        Set<IGraphicLink> graphicalLinks = sourceTableEntryToLinks.get(dataMapTableEntry);
+    private Set<IMapperLink> getGraphicalLinksFromSource(ITableEntry dataMapTableEntry) {
+        Set<IMapperLink> graphicalLinks = sourceTableEntryToLinks.get(dataMapTableEntry);
         if (graphicalLinks == null) {
-            graphicalLinks = new HashSet<IGraphicLink>();
+            graphicalLinks = new HashSet<IMapperLink>();
             sourceTableEntryToLinks.put(dataMapTableEntry, graphicalLinks);
         }
         return graphicalLinks;
     }
 
-    public Set<IGraphicLink> getLinksFromSource(ITableEntry dataMapTableEntry) {
-        return new HashSet<IGraphicLink>(getGraphicalLinksFromSource(dataMapTableEntry));
+    public Set<IMapperLink> getLinksFromSource(ITableEntry dataMapTableEntry) {
+        return new HashSet<IMapperLink>(getGraphicalLinksFromSource(dataMapTableEntry));
     }
 
     /**
@@ -157,7 +157,7 @@ public class LinkManager {
      * 
      * @param link
      */
-    public void removeLink(IGraphicLink link) {
+    public void removeLink(IMapperLink link) {
         currentNumberLinks--;
 
         links.remove(link);
@@ -182,7 +182,7 @@ public class LinkManager {
      * 
      * @return
      */
-    public List<IGraphicLink> getLinks() {
+    public List<IMapperLink> getLinks() {
         return this.links;
     }
 

@@ -272,8 +272,6 @@ public class DropContextAnalyzer {
             }
 
             if (zoneSource == Zone.INPUTS && zoneTarget == Zone.INPUTS) {
-                if (isCursorOverExpressionCell) {
-                }
                 dropFeedback |= DND.FEEDBACK_SELECT;
                 mapOneToOneMode = false;
                 insertionEntryMode = false;

@@ -24,6 +24,7 @@ package org.talend.designer.mapper.ui;
 import java.util.Collection;
 import java.util.List;
 
+import org.eclipse.draw2d.Polygon;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.custom.ScrolledComposite;
@@ -75,7 +76,7 @@ import org.talend.designer.mapper.ui.footer.FooterComposite;
 import org.talend.designer.mapper.ui.image.ImageProviderMapper;
 import org.talend.designer.mapper.ui.tabs.TabFolderEditors;
 import org.talend.designer.mapper.ui.visualmap.link.AbstractLink;
-import org.talend.designer.mapper.ui.visualmap.link.IGraphicLink;
+import org.talend.designer.mapper.ui.visualmap.link.IMapperLink;
 import org.talend.designer.mapper.ui.visualmap.table.DataMapTableView;
 import org.talend.designer.mapper.ui.visualmap.table.InputDataMapTableView;
 import org.talend.designer.mapper.ui.visualmap.table.OutputDataMapTableView;
@@ -166,7 +167,7 @@ public class MapperUI {
 
     private static final int INCREMENT_VERTICAL_SCROLLBAR_ZONE = 100;
 
-    private static final int OFFSET_VISIBLES_POINTS = 15;
+    public static final int OFFSET_VISIBLES_POINTS = 15;
 
     private boolean antialiasActivated;
 
@@ -708,7 +709,7 @@ public class MapperUI {
             // gc.setLineJoin(SWT.JOIN_BEVEL);
 
             // TODO utiliser une liste tri?e pour les liens
-            List<IGraphicLink> links = mapperManager.getLinks();
+            List<IMapperLink> links = mapperManager.getLinks();
 
             // System.out.println("forceRecalculate="+forceRecalculate);
             // System.out.println("Antialias On ="+(antialias && antialiasActivated));
@@ -726,15 +727,22 @@ public class MapperUI {
             // for (int i = 0; i < lstSize; i++) {
             // IGraphicLink link = localLinksArray[i];
             AbstractLink.keyLinksCounter = 0;
+            
+            Rectangle bounds = newImage.getBounds();
+            Rectangle boundsOfDrawing = new Rectangle(0,0,0,0);
+            int heightToolbarZone = inputsZone.getToolbar().getComposite().getSize().y;
+            boundsOfDrawing.x = -OFFSET_VISIBLES_POINTS;
+            boundsOfDrawing.y = heightToolbarZone - OFFSET_VISIBLES_POINTS;
+            boundsOfDrawing.width = bounds.width + 2 * OFFSET_VISIBLES_POINTS;
+            boundsOfDrawing.height = bounds.height + 2 * OFFSET_VISIBLES_POINTS - heightToolbarZone;
             for (int i = 0; i < lstSize; i++) {
-                IGraphicLink link = links.get(i);
+                IMapperLink link = links.get(i);
                 // System.out.println("index :" + i);
                 if (forceRecalculate) {
                     // System.out.println("forceRecalculate");
                     link.calculate();
                 }
-                Rectangle bounds = newImage.getBounds();
-                link.draw(gc, -OFFSET_VISIBLES_POINTS, bounds.height + OFFSET_VISIBLES_POINTS);
+                link.draw(gc, boundsOfDrawing);
             }
             // System.out.println("Advanced:"+gc.getAdvanced());
             gc.dispose();
