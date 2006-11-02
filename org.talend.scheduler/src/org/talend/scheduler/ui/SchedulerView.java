@@ -143,6 +143,7 @@ public class SchedulerView extends ViewPart {
         viewer.setContentProvider(provider);
         viewer.setLabelProvider(provider);
         viewer.setSorter(new SchedulerViewSorter());
+        viewer.setCellEditors(null);
         viewer.setInput(getAllSchedulTasks());
 
         makeActions();
@@ -461,8 +462,9 @@ public class SchedulerView extends ViewPart {
         tableViewerCreator.getTableViewer().addDoubleClickListener(new IDoubleClickListener() {
 
             public void doubleClick(DoubleClickEvent event) {
-                new ModifyTaskAction(tableViewerCreator.getTableViewer(), Messages
-                        .getString("SchedulerView.modifyTaskTitle")).run(); //$NON-NLS-1$
+//                new ModifyTaskAction(tableViewerCreator.getTableViewer(), Messages
+//                        .getString("SchedulerView.modifyTaskTitle")).run(); //$NON-NLS-1$
+                editTaskAction.run();
             }
         });
     }

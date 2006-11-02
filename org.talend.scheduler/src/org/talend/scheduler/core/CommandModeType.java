@@ -28,7 +28,6 @@ package org.talend.scheduler.core;
  * 
  */
 public enum CommandModeType {
-    Crontab,
-    TalendJob
-
+    TalendJob,
+    Crontab
 }

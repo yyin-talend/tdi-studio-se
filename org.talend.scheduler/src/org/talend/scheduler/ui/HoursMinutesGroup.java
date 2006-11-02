@@ -232,13 +232,15 @@ public class HoursMinutesGroup extends Group implements IWidgetEnableListener {
         new Label(this, SWT.NONE);
         new Label(this, SWT.NONE);
         new Label(this, SWT.NONE);
+//         Begin  modify the defect 0000220: Size of button
+        new Label(this, SWT.NONE);
         final Label minutesLabel = new Label(this, SWT.NONE);
         minutesLabel.setText(Messages.getString("HoursMinutesGroup.minutesLabelText")); //$NON-NLS-1$
         new Label(this, SWT.NONE);
+//      End  modify the defect 0000220: Size of button
         for (int j = 0; j < 60; j += 5) {
             createButton(String.valueOf(j), String.valueOf(j / 5), new MinutesButtonListener(), minutesButtons);
         }
-        //
     }
 
     /**

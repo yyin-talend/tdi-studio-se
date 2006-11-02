@@ -99,8 +99,9 @@ public class SchedulerTaskPropertyDialog extends Dialog {
         dialogType = DialogType.MODIFY;
     }
 
-   
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.eclipse.jface.window.Window#configureShell(org.eclipse.swt.widgets.Shell)
      */
     protected void configureShell(Shell shell) {
@@ -111,7 +112,6 @@ public class SchedulerTaskPropertyDialog extends Dialog {
         } else {
             shell.setText(Messages.getString("SchedulerTaskPropertyDialog.modifyTaskPrompt")); //$NON-NLS-1$
         }
-
     }
 
     /**
@@ -158,8 +158,9 @@ public class SchedulerTaskPropertyDialog extends Dialog {
         resultComposite.addWidgetEnableListener(monthGroup);
         resultComposite.addWidgetEnableListener(dayofMonth);
 
-        resultComposite.enableAllWidgets(false);
-
+        resultComposite.enableAllWidgets(true);
+        commandComposite.refreshTalendJobCommand();
+        
         updateUI();
 
         return container;
@@ -297,11 +298,9 @@ public class SchedulerTaskPropertyDialog extends Dialog {
     @Override
     protected void createButtonsForButtonBar(Composite parent) {
         if (dialogType == DialogType.ADD) {
-            createButton(parent, IDialogConstants.OK_ID, Messages
-                    .getString("SchedulerTaskPropertyDialog.addTaskButton"), true); //$NON-NLS-1$
+            createButton(parent, IDialogConstants.OK_ID, Messages.getString("SchedulerTaskPropertyDialog.addTaskButton"), true); //$NON-NLS-1$
         } else {
-            createButton(parent, IDialogConstants.OK_ID, Messages
-                    .getString("SchedulerTaskPropertyDialog.modifyTaskButton"), true); //$NON-NLS-1$
+            createButton(parent, IDialogConstants.OK_ID, Messages.getString("SchedulerTaskPropertyDialog.modifyTaskButton"), true); //$NON-NLS-1$
         }
         createButton(parent, IDialogConstants.CANCEL_ID, IDialogConstants.CANCEL_LABEL, false);
     }
@@ -398,13 +397,16 @@ public class SchedulerTaskPropertyDialog extends Dialog {
             GridData gd = new GridData(GridData.FILL_HORIZONTAL);
             tf.setLayoutData(gd);
 
-            TabItem tab1 = new TabItem(tf, SWT.BORDER);
-            tab1.setText(Messages.getString("SchedulerTaskPropertyDialog.commandLabel")); //$NON-NLS-1$
-            tab1.setControl(createCrontabCommand(tf));
-
+            // Begin modify the defect 0000218: Default value : "Talend Jobs tab" and "Generated Cron Tab entry"
+            // selected
             TabItem tab2 = new TabItem(tf, SWT.BORDER);
             tab2.setText(Messages.getString("SchedulerTaskPropertyDialog.talendJobText")); //$NON-NLS-1$
             tab2.setControl(createTalendCommand(tf));
+            // End modify the defect 0000218: Default value : "Talend Jobs tab" and "Generated Cron Tab entry" selected
+
+            TabItem tab1 = new TabItem(tf, SWT.BORDER);
+            tab1.setText(Messages.getString("SchedulerTaskPropertyDialog.commandLabel")); //$NON-NLS-1$
+            tab1.setControl(createCrontabCommand(tf));
 
             tf.addSelectionListener(new SelectionAdapter() {
 
@@ -431,6 +433,7 @@ public class SchedulerTaskPropertyDialog extends Dialog {
 
         /**
          * Creates Talend Command composite.
+         * 
          * @param parent Composite
          * @return Composite
          */
@@ -507,8 +510,8 @@ public class SchedulerTaskPropertyDialog extends Dialog {
          */
         private void refreshTalendJobCommand() {
             try {
-                String command = jobManager.getCommandByTalendJob(projectCombo.getText(), jobCombo.getText(),
-                        contextCombo.getText());
+                String command = jobManager.getCommandByTalendJob(projectCombo.getText(), jobCombo.getText(), contextCombo
+                        .getText());
                 refreshCommandDiaplay(command);
             } catch (Exception ex) {
                 SchedulerPlugin.log(ex);
