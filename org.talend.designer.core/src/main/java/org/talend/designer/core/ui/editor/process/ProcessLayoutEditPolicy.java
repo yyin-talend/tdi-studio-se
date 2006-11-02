@@ -81,8 +81,7 @@ public class ProcessLayoutEditPolicy extends XYLayoutEditPolicy {
             if (((Node) child.getModel()).isReadOnly()) {
                 return null;
             }
-            MoveNodeCommand locationCommand = new MoveNodeCommand((Node) child.getModel(), ((Rectangle) constraint)
-                    .getLocation());
+            MoveNodeCommand locationCommand = new MoveNodeCommand((Node) child.getModel(), ((Rectangle) constraint).getLocation());
             return locationCommand;
         }
         return null;
@@ -101,8 +100,8 @@ public class ProcessLayoutEditPolicy extends XYLayoutEditPolicy {
             return null;
         }
         Rectangle constraint = (Rectangle) getConstraintFor(request);
-        CreateNodeContainerCommand command = new CreateNodeContainerCommand((Process) getHost().getModel(),
-                new NodeContainer((Node) request.getNewObject()), constraint.getLocation());
+        CreateNodeContainerCommand command = new CreateNodeContainerCommand((Process) getHost().getModel(), new NodeContainer(
+                (Node) request.getNewObject()), constraint.getLocation());
         return command;
     }
 

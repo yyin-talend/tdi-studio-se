@@ -113,7 +113,7 @@ public class DropContextAnalyzer {
         zoneSource = dataMapTableViewSource.getZone();
 
         analyzeCursorOverExpressionCell();
-        
+
         invalidKeyPressed = hasInvalidKeyPressed();
 
         isDropValid = checkDropIsValid();
@@ -135,10 +135,10 @@ public class DropContextAnalyzer {
             mapOneToOneAuthorized = false;
         }
 
-        if(invalidKeyPressed) {
+        if (invalidKeyPressed) {
             return false;
         }
-        
+
         /*
          * INPUT => INPUT
          */
@@ -281,9 +281,10 @@ public class DropContextAnalyzer {
                 mapOneToOneMode = false;
                 insertionEntryMode = false;
                 dropFeedback |= DND.FEEDBACK_SELECT;
-            } else if (zoneSource == Zone.INPUTS && zoneTarget == Zone.VARS || zoneSource == Zone.INPUTS && zoneTarget == Zone.OUTPUTS
-                    || zoneSource == Zone.VARS && zoneTarget == Zone.VARS || zoneSource == Zone.VARS && zoneTarget == Zone.OUTPUTS
-                    || zoneSource == Zone.OUTPUTS && zoneTarget == Zone.OUTPUTS) {
+            } else if (zoneSource == Zone.INPUTS && zoneTarget == Zone.VARS || zoneSource == Zone.INPUTS
+                    && zoneTarget == Zone.OUTPUTS || zoneSource == Zone.VARS && zoneTarget == Zone.VARS
+                    || zoneSource == Zone.VARS && zoneTarget == Zone.OUTPUTS || zoneSource == Zone.OUTPUTS
+                    && zoneTarget == Zone.OUTPUTS) {
 
                 if (isCursorOverExpressionCell) {
                     insertionEntryMode = false;
@@ -443,7 +444,6 @@ public class DropContextAnalyzer {
         this.isOutputToOutput = isOutputTuOutput;
     }
 
-    
     public boolean isInvalidKeyPressed() {
         return invalidKeyPressed;
     }

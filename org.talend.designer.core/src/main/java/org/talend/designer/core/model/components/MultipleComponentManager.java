@@ -67,7 +67,7 @@ public class MultipleComponentManager implements IMultipleComponentManager {
         currentItem.setName(name);
         currentItem.setComponent(component);
         itemList.add(currentItem);
-        
+
         return currentItem;
     }
 

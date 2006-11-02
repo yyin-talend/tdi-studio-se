@@ -43,7 +43,7 @@ public class ProblemsAnalyser {
     private MapperManager mapperManager;
 
     private List<Problem> problems = new ArrayList<Problem>();
-    
+
     /**
      * DOC amaumont ProblemsAnalyser constructor comment.
      */
@@ -55,7 +55,7 @@ public class ProblemsAnalyser {
     public List<Problem> checkProblems(ExternalMapperData externalData) {
 
         problems.clear();
-        
+
         if (externalData != null) {
 
             // replace old location by new location for all expressions in mapper
@@ -79,12 +79,13 @@ public class ProblemsAnalyser {
             } // for (ExternalMapperTable table : tables) {
 
         }
-        
+
         return getProblems();
     }
 
     /**
      * DOC amaumont Comment method "getProblems".
+     * 
      * @return
      */
     public List<Problem> getProblems() {
@@ -95,7 +96,7 @@ public class ProblemsAnalyser {
      * DOC amaumont Comment method "checkEntryValidity".
      * 
      * @param entry
-     * @return 
+     * @return
      */
     private void checkProblems(ExternalMapperTableEntry entry) {
         Problem problem = checkExpressionSyntax(entry.getExpression());
@@ -133,7 +134,4 @@ public class ProblemsAnalyser {
 
     }
 
-    
-    
-    
 }

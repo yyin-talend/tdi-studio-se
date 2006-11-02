@@ -386,7 +386,8 @@ public abstract class DataMapTableView extends Composite {
             private Image getColumnImageExecute(Object element, int columnIndex) {
                 if (getDataMapTable() instanceof AbstractInOutTable) {
                     AbstractInOutTableEntry entry = (AbstractInOutTableEntry) element;
-                    TableViewerCreatorColumn column = (TableViewerCreatorColumn) tableViewerCreatorForColumns.getColumns().get(columnIndex);
+                    TableViewerCreatorColumn column = (TableViewerCreatorColumn) tableViewerCreatorForColumns.getColumns().get(
+                            columnIndex);
                     if (column.getId().equals(ID_NAME_COLUMN)) {
                         if (entry.getMetadataColumn().isKey()) {
                             return imageKey;
@@ -509,7 +510,7 @@ public abstract class DataMapTableView extends Composite {
                 switch (event.type) {
                 case SWT.MouseMove:
 
-                     System.out.println("ToolTipText:" + table.getToolTipText());
+                    System.out.println("ToolTipText:" + table.getToolTipText());
 
                     Point cursorPositionFromTableOrigin = TableUtils.getCursorPositionFromTableOrigin(table, event);
                     TableColumn tableColumn = TableUtils.getTableColumn(table, cursorPositionFromTableOrigin);
@@ -526,13 +527,9 @@ public abstract class DataMapTableView extends Composite {
                     String toolTip = tableEntry.getProblem() == null ? null : tableEntry.getProblem().getDescription();
                     String tableToolTip = table.getToolTipText();
                     if (!WindowSystem.isGTK()
-                            ||
-                            WindowSystem.isGTK() 
-                            &&
-                            ((tableToolTip == null || tableToolTip.equals("")) && toolTip != null
-                            || tableToolTip != null && toolTip == null
-                            || toolTip != null && !toolTip.equals(tableToolTip))
-                    ) {
+                            || WindowSystem.isGTK()
+                            && ((tableToolTip == null || tableToolTip.equals("")) && toolTip != null || tableToolTip != null
+                                    && toolTip == null || toolTip != null && !toolTip.equals(tableToolTip))) {
                         setTableToolTipText(table, tableColumn, tableEntry, toolTip);
                         lastErrorMessage = toolTip;
                     }
@@ -657,10 +654,10 @@ public abstract class DataMapTableView extends Composite {
                         rect.height += 2 * dataMapTableView.getBorderWidth();
 
                         RESIZE_MODE currentMode = resizeHelper.getCurrentMode();
-                        int newWidth = (currentMode == RESIZE_MODE.HORIZONTAL || currentMode == RESIZE_MODE.BOTH) ? rect.width + diff.x * 2
-                                : rect.width;
-                        int newHeight = (currentMode == RESIZE_MODE.VERTICAL || currentMode == RESIZE_MODE.BOTH) ? rect.height + diff.y
-                                : rect.height;
+                        int newWidth = (currentMode == RESIZE_MODE.HORIZONTAL || currentMode == RESIZE_MODE.BOTH) ? rect.width
+                                + diff.x * 2 : rect.width;
+                        int newHeight = (currentMode == RESIZE_MODE.VERTICAL || currentMode == RESIZE_MODE.BOTH) ? rect.height
+                                + diff.y : rect.height;
 
                         if (newHeight < MINIMUM_HEIGHT + OFFSET_HEIGHT_TRIGGER && diff.y < 0) {
                             changeMinimizeState(true);
@@ -930,8 +927,6 @@ public abstract class DataMapTableView extends Composite {
 
         });
 
-
-        
         tableViewerCreatorForConstraints.setLabelProvider(new DefaultTableLabelProvider(tableViewerCreatorForConstraints) {
 
             @Override
@@ -952,7 +947,8 @@ public abstract class DataMapTableView extends Composite {
     public void onSelectedEntries(ISelection selection, int[] selectionIndices) {
         if (executeSelectionEvent) {
             UIManager uiManager = mapperManager.getUiManager();
-            uiManager.processSelectedMetadataTableEntries(dataMapTableView, uiManager.extractSelectedTableEntries(selection), false);
+            uiManager.processSelectedMetadataTableEntries(dataMapTableView, uiManager.extractSelectedTableEntries(selection),
+                    false);
             uiManager.selectLinkedMetadataEditorEntries(this, selectionIndices);
         }
     }
@@ -1037,7 +1033,8 @@ public abstract class DataMapTableView extends Composite {
 
                 public void widgetSelected(SelectionEvent e) {
 
-                    StructuredSelection selection = (StructuredSelection) tableViewerCreatorForConstraints.getTableViewer().getSelection();
+                    StructuredSelection selection = (StructuredSelection) tableViewerCreatorForConstraints.getTableViewer()
+                            .getSelection();
                     List list = tableViewerCreatorForConstraints.getInputList();
                     int sizeBeforeRemoving = list.size();
                     Iterator iterator = selection.iterator();
@@ -1098,12 +1095,13 @@ public abstract class DataMapTableView extends Composite {
         ToolItem addEntryItem = new ToolItem(toolBarActions, SWT.PUSH);
 
         addEntryItem.setToolTipText("Add variable");
-        addEntryItem.setImage(org.talend.core.ui.ImageProvider.getImage(org.talend.core.ui.ImageProvider.getImageDesc(EImage.ADD_ICON)));
+        addEntryItem.setImage(org.talend.core.ui.ImageProvider.getImage(org.talend.core.ui.ImageProvider
+                .getImageDesc(EImage.ADD_ICON)));
 
         removeEntryItem = new ToolItem(toolBarActions, SWT.PUSH);
         removeEntryItem.setEnabled(false);
-        removeEntryItem.setImage(org.talend.core.ui.ImageProvider
-                .getImage(org.talend.core.ui.ImageProvider.getImageDesc(EImage.MINUS_ICON)));
+        removeEntryItem.setImage(org.talend.core.ui.ImageProvider.getImage(org.talend.core.ui.ImageProvider
+                .getImageDesc(EImage.MINUS_ICON)));
         removeEntryItem.setToolTipText("Remove selected variable(s)");
 
         // /////////////////////////////////////////////////////////////////
@@ -1227,7 +1225,7 @@ public abstract class DataMapTableView extends Composite {
         heightOffset += newConstraintEntryWillBeAdded ? tableViewerCreatorForConstraints.getTable().getItemHeight() : 0;
 
         int newHeight = this.computeSize(SWT.DEFAULT, SWT.DEFAULT).y - tableEntryItemHeight + heightOffset;
-        if(WindowSystem.isGTK()) {
+        if (WindowSystem.isGTK()) {
             newHeight += tableEntryItemHeight;
         }
         if (tableViewerCreatorForColumns.getInputList().size() == 0) {
@@ -1247,7 +1245,8 @@ public abstract class DataMapTableView extends Composite {
             attachCellExpressionToStyledTextEditor(tableViewerCreatorForColumns, columnExpressionTextEditor, styledTextHandler);
         }
         if (constraintExpressionTextEditor != null) {
-            attachCellExpressionToStyledTextEditor(tableViewerCreatorForConstraints, constraintExpressionTextEditor, styledTextHandler);
+            attachCellExpressionToStyledTextEditor(tableViewerCreatorForConstraints, constraintExpressionTextEditor,
+                    styledTextHandler);
         }
     }
 
@@ -1258,12 +1257,13 @@ public abstract class DataMapTableView extends Composite {
      * @param styledTextHandler
      * @param expressionEditorText2
      */
-    protected void attachCellExpressionToStyledTextEditor(final TableViewerCreator tableViewerCreator, final Text expressionTextEditor,
-            final StyledTextHandler styledTextHandler) {
+    protected void attachCellExpressionToStyledTextEditor(final TableViewerCreator tableViewerCreator,
+            final Text expressionTextEditor, final StyledTextHandler styledTextHandler) {
         expressionTextEditor.addModifyListener(new ModifyListener() {
 
             public void modifyText(ModifyEvent e) {
-                ITableEntry currentModifiedEntry = (ITableEntry) tableViewerCreator.getModifiedObjectInfo().getCurrentModifiedBean();
+                ITableEntry currentModifiedEntry = (ITableEntry) tableViewerCreator.getModifiedObjectInfo()
+                        .getCurrentModifiedBean();
                 styledTextHandler.setCurrentEntry(currentModifiedEntry);
                 Text text = (Text) e.widget;
                 if (Math.abs(text.getText().length() - styledTextHandler.getStyledText().getText().length()) > 1) {
@@ -1321,15 +1321,16 @@ public abstract class DataMapTableView extends Composite {
                                 }
 
                             } else {
-                                mapperColorStyledText.replaceTextRangeWithoutNotifyListeners(selection.x, selection.y - selection.x, "");
+                                mapperColorStyledText.replaceTextRangeWithoutNotifyListeners(selection.x, selection.y
+                                        - selection.x, "");
                                 highlightLineAndSetSelectionOfStyledText(expressionTextEditor);
                             }
                         } else {
                             // System.out.println("selection.x="+selection.x);
                             // System.out.println("selection.y="+selection.y);
                             // System.out.println("mapperColorStyledText.getText()="+mapperColorStyledText.getText().length());
-                            mapperColorStyledText.replaceTextRangeWithoutNotifyListeners(selection.x, selection.y - selection.x, String
-                                    .valueOf(e.character));
+                            mapperColorStyledText.replaceTextRangeWithoutNotifyListeners(selection.x, selection.y - selection.x,
+                                    String.valueOf(e.character));
                             highlightLineAndSetSelectionOfStyledText(expressionTextEditor);
                         }
                     }
@@ -1429,8 +1430,8 @@ public abstract class DataMapTableView extends Composite {
         if (this.expressionProposalProvider == null) {
             IContentProposalProvider[] contentProposalProviders = new IContentProposalProvider[0];
             if (!MapperMain.isStandAloneMode()) {
-                contentProposalProviders = new IContentProposalProvider[] { new ProcessProposalProvider(mapperManager.getComponent()
-                        .getProcess()) };
+                contentProposalProviders = new IContentProposalProvider[] { new ProcessProposalProvider(mapperManager
+                        .getComponent().getProcess()) };
             }
             this.expressionProposalProvider = new ExpressionProposalProvider(mapperManager, contentProposalProviders);
         }
@@ -1446,10 +1447,10 @@ public abstract class DataMapTableView extends Composite {
         // System.out.println("init expression proposal:"+this.expressionProposal);
     }
 
-    protected TextCellEditor createExpressionCellEditor(final TableViewerCreator tableViewerCreator, TableViewerCreatorColumn column,
-            final Zone[] zones, boolean isConstraintExpressionCellEditor) {
-        final TextCellEditorWithProposal cellEditor = new TextCellEditorWithProposal(tableViewerCreator.getTable(), SWT.MULTI | SWT.BORDER,
-                column);
+    protected TextCellEditor createExpressionCellEditor(final TableViewerCreator tableViewerCreator,
+            TableViewerCreatorColumn column, final Zone[] zones, boolean isConstraintExpressionCellEditor) {
+        final TextCellEditorWithProposal cellEditor = new TextCellEditorWithProposal(tableViewerCreator.getTable(), SWT.MULTI
+                | SWT.BORDER, column);
         final Text expressionTextEditor = (Text) cellEditor.getControl();
 
         if (isConstraintExpressionCellEditor) {
@@ -1464,8 +1465,8 @@ public abstract class DataMapTableView extends Composite {
 
             public void applyEditorValue() {
                 ModifiedObjectInfo modifiedObjectInfo = tableViewerCreator.getModifiedObjectInfo();
-                mapperManager.getUiManager().parseNewExpression(text.getText(), (ITableEntry) modifiedObjectInfo.getCurrentModifiedBean(),
-                        true);
+                mapperManager.getUiManager().parseNewExpression(text.getText(),
+                        (ITableEntry) modifiedObjectInfo.getCurrentModifiedBean(), true);
             }
 
             public void cancelEditor() {
@@ -1482,7 +1483,8 @@ public abstract class DataMapTableView extends Composite {
                 if (expressionTextEditor.isFocusControl()) {
                     ModifiedObjectInfo modifiedObjectInfo = tableViewerCreator.getModifiedObjectInfo();
                     ITableEntry tableEntry = (ITableEntry) (modifiedObjectInfo.getCurrentModifiedBean() != null ? modifiedObjectInfo
-                            .getCurrentModifiedBean() : modifiedObjectInfo.getPreviousModifiedBean());
+                            .getCurrentModifiedBean()
+                            : modifiedObjectInfo.getPreviousModifiedBean());
                     mapperManager.getUiManager().parseNewExpression(text.getText(), tableEntry, false);
                     resizeTextEditor(text, tableViewerCreator);
                 }
@@ -1526,7 +1528,8 @@ public abstract class DataMapTableView extends Composite {
         expressionTextEditor.addFocusListener(new FocusListener() {
 
             public void focusGained(FocusEvent e) {
-                ITableEntry currentModifiedEntry = (ITableEntry) tableViewerCreator.getModifiedObjectInfo().getCurrentModifiedBean();
+                ITableEntry currentModifiedEntry = (ITableEntry) tableViewerCreator.getModifiedObjectInfo()
+                        .getCurrentModifiedBean();
                 initExpressionProposals(cellEditor, zones, tableViewerCreator, currentModifiedEntry);
                 resizeTextEditor(expressionTextEditor, tableViewerCreator);
                 StyledTextHandler styledTextHandler = mapperManager.getUiManager().getTabFolderEditors().getStyledTextHandler();
@@ -1752,6 +1755,7 @@ public abstract class DataMapTableView extends Composite {
 
     /**
      * DOC amaumont Comment method "processEnterKeyDown".
+     * 
      * @param tableViewer
      * @param event
      */
@@ -1768,6 +1772,5 @@ public abstract class DataMapTableView extends Composite {
             }
         }
     }
-
 
 }

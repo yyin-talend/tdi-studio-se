@@ -334,7 +334,8 @@ public class MapperComponent extends AbstractExternalNode {
      * @param newTableName
      * @param newColumnName
      */
-    private void replaceLocationsInAllExpressions(TableEntryLocation oldLocation, TableEntryLocation newLocation, boolean tableRenamed) {
+    private void replaceLocationsInAllExpressions(TableEntryLocation oldLocation, TableEntryLocation newLocation,
+            boolean tableRenamed) {
         // replace old location by new location for all expressions in mapper
         List<ExternalMapperTable> tables = new ArrayList<ExternalMapperTable>(externalData.getInputTables());
         tables.addAll(new ArrayList<ExternalMapperTable>(externalData.getVarsTables()));

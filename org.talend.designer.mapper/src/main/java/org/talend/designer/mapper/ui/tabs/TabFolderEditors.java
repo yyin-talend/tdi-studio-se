@@ -123,14 +123,15 @@ public class TabFolderEditors extends CTabFolder {
         if (MapperMain.isStandAloneMode()) {
             styledText = new StyledText(tabFolderEditors, SWT.V_SCROLL | SWT.H_SCROLL);
         } else {
-            RepositoryContext repositoryContext = (RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY);
+            RepositoryContext repositoryContext = (RepositoryContext) CorePlugin.getContext().getProperty(
+                    Context.REPOSITORY_CONTEXT_KEY);
             ECodeLanguage language = repositoryContext.getProject().getLanguage();
             IPreferenceStore preferenceStore = CorePlugin.getDefault().getPreferenceStore();
             ColorManager colorManager = new ColorManager(preferenceStore);
             // styledText = new ColorStyledText(tabFolderEditors, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL,
             // colorManager, language.getName());
-            styledText = new MapperColorStyledText(tabFolderEditors, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL, colorManager, language
-                    .getName());
+            styledText = new MapperColorStyledText(tabFolderEditors, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL, colorManager,
+                    language.getName());
         }
         styledText.setEnabled(false);
         item.setControl(styledText);

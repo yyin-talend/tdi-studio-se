@@ -37,48 +37,54 @@ public class ElementParameterDefaultValue implements IElementParameterDefaultVal
 
     String notIfCondition;
 
-    
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.designer.core.model.components.IElementParameterDefaultValue#getDefaultValue()
      */
     public String getDefaultValue() {
         return this.defaultValue;
     }
 
-    
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.designer.core.model.components.IElementParameterDefaultValue#setDefaultValue(java.lang.String)
      */
     public void setDefaultValue(String defaultValue) {
         this.defaultValue = defaultValue;
     }
 
-    
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.designer.core.model.components.IElementParameterDefaultValue#getIfCondition()
      */
     public String getIfCondition() {
         return this.ifCondition;
     }
 
-    
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.designer.core.model.components.IElementParameterDefaultValue#setIfCondition(java.lang.String)
      */
     public void setIfCondition(String ifCondition) {
         this.ifCondition = ifCondition;
     }
 
-    
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.designer.core.model.components.IElementParameterDefaultValue#getNotIfCondition()
      */
     public String getNotIfCondition() {
         return this.notIfCondition;
     }
 
-    
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.designer.core.model.components.IElementParameterDefaultValue#setNotIfCondition(java.lang.String)
      */
     public void setNotIfCondition(String notIfCondition) {

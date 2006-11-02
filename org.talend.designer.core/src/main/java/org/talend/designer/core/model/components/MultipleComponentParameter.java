@@ -25,61 +25,62 @@ import java.util.StringTokenizer;
 
 import org.talend.core.model.components.IMultipleComponentParameter;
 
-
 /**
- * DOC nrousseau  class global comment. Detailled comment
- * <br/>
- *
+ * DOC nrousseau class global comment. Detailled comment <br/>
+ * 
  * $Id$
- *
+ * 
  */
 public class MultipleComponentParameter implements IMultipleComponentParameter {
+
     String sourceComponent;
+
     String targetComponent;
+
     String sourceValue;
+
     String targetValue;
-    
-    
+
     public MultipleComponentParameter(String source, String target) {
         StringTokenizer token = new StringTokenizer(source, ".");
         sourceComponent = token.nextToken();
         sourceValue = token.nextToken();
-        
+
         token = new StringTokenizer(target, ".");
         targetComponent = token.nextToken();
         targetValue = token.nextToken();
     }
 
-
-    
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.designer.core.model.components.IMultipleComponentParameter#getSourceComponent()
      */
     public String getSourceComponent() {
         return this.sourceComponent;
     }
 
-
-    
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.designer.core.model.components.IMultipleComponentParameter#getSourceValue()
      */
     public String getSourceValue() {
         return this.sourceValue;
     }
 
-
-    
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.designer.core.model.components.IMultipleComponentParameter#getTargetComponent()
      */
     public String getTargetComponent() {
         return this.targetComponent;
     }
 
-
-    
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.designer.core.model.components.IMultipleComponentParameter#getTargetValue()
      */
     public String getTargetValue() {

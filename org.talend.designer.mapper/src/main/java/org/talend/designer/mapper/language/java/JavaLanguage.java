@@ -66,13 +66,14 @@ public class JavaLanguage extends AbstractLanguage {
     /**
      * {0} and {1} must be replaced respectively by the table name and the column name.
      */
-    private static final String TEMPLATE_TABLE_COLUMN_VARIABLE = PREFIX_TABLE_NAME + "{0}" + PREFIX_FIELD_NAME + "{1}" + SUFFIX_FIELD_NAME;
+    private static final String TEMPLATE_TABLE_COLUMN_VARIABLE = PREFIX_TABLE_NAME + "{0}" + PREFIX_FIELD_NAME + "{1}"
+            + SUFFIX_FIELD_NAME;
 
     /**
      * {0} and {1} must be replaced respectively by the table name and the column name.
      */
-    private static final String TEMPLATE_GENERATED_CODE_TABLE_COLUMN_VARIABLE = PREFIX_TABLE_NAME + "{0}" + PREFIX_FIELD_NAME + "{0}__{1}"
-            + SUFFIX_FIELD_NAME;
+    private static final String TEMPLATE_GENERATED_CODE_TABLE_COLUMN_VARIABLE = PREFIX_TABLE_NAME + "{0}" + PREFIX_FIELD_NAME
+            + "{0}__{1}" + SUFFIX_FIELD_NAME;
 
     /**
      * {0} and {1} must be replaced respectively by the table name and the column name.

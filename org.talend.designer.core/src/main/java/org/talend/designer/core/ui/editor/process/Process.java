@@ -1491,7 +1491,7 @@ public class Process extends Element implements IProcess {
     public void propagateDatas(boolean force) {
         for (Node node : nodes) {
             if (node.isSubProcessStart()) {
-                propagate(node,force);
+                propagate(node, force);
             }
         }
     }
@@ -1503,8 +1503,8 @@ public class Process extends Element implements IProcess {
     public void checkProcess(boolean propagate) {
         if (isActivate()) {
             checkStartNodes();
-//            if (propagate)
-                propagateDatas(propagate);
+            // if (propagate)
+            propagateDatas(propagate);
             checkProblems();
         }
     }

@@ -66,8 +66,8 @@ public class ExternalDataConverter {
      * @param outputMetadataTables
      * @param externalData
      */
-    public MapperModel prepareModel(List<IOConnection> inputs, List<IOConnection> outputs, List<IMetadataTable> outputMetadataTables,
-            ExternalMapperData externalData) {
+    public MapperModel prepareModel(List<IOConnection> inputs, List<IOConnection> outputs,
+            List<IMetadataTable> outputMetadataTables, ExternalMapperData externalData) {
 
         ArrayList<InputTable> inputDataMapTables = prepareInputTables(inputs, externalData);
 
@@ -96,8 +96,8 @@ public class ExternalDataConverter {
         return varsTablesList;
     }
 
-    private ArrayList<OutputTable> prepareOutputTables(List<IOConnection> outputConnections, List<IMetadataTable> outputMetadataTables,
-            ExternalMapperData externalData) {
+    private ArrayList<OutputTable> prepareOutputTables(List<IOConnection> outputConnections,
+            List<IMetadataTable> outputMetadataTables, ExternalMapperData externalData) {
         Map<String, ExternalMapperTable> nameToOutpuPersistentTable = new HashMap<String, ExternalMapperTable>();
         if (externalData != null) {
             for (ExternalMapperTable persistentTable : externalData.getOutputTables()) {

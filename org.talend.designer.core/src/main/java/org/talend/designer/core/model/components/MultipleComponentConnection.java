@@ -25,76 +25,93 @@ import org.talend.core.model.components.IMultipleComponentConnection;
 import org.talend.core.model.components.IMultipleComponentItem;
 import org.talend.core.model.process.EConnectionType;
 
-
 /**
- * DOC nrousseau  class global comment. Detailled comment
- * <br/>
- *
+ * DOC nrousseau class global comment. Detailled comment <br/>
+ * 
  * $Id$
- *
+ * 
  */
 public class MultipleComponentConnection implements IMultipleComponentConnection {
+
     String nameTarget;
+
     IMultipleComponentItem source;
+
     IMultipleComponentItem target;
+
     EConnectionType connectionType;
-    
-    public MultipleComponentConnection (String cType, String targetName) {
+
+    public MultipleComponentConnection(String cType, String targetName) {
         connectionType = EConnectionType.getTypeFromName(cType);
         nameTarget = targetName;
     }
-    
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.designer.core.model.components.IMultipleComponentConnection#getConnectionType()
      */
     public EConnectionType getConnectionType() {
         return this.connectionType;
     }
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.designer.core.model.components.IMultipleComponentConnection#setConnectionType(org.talend.core.model.process.EConnectionType)
      */
     public void setConnectionType(EConnectionType connectionType) {
         this.connectionType = connectionType;
     }
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.designer.core.model.components.IMultipleComponentConnection#getNameTarget()
      */
     public String getNameTarget() {
         return this.nameTarget;
     }
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.designer.core.model.components.IMultipleComponentConnection#setNameTarget(java.lang.String)
      */
     public void setNameTarget(String nameTarget) {
         this.nameTarget = nameTarget;
     }
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.designer.core.model.components.IMultipleComponentConnection#getSource()
      */
     public IMultipleComponentItem getSource() {
         return this.source;
     }
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.designer.core.model.components.IMultipleComponentConnection#setSource(org.talend.core.model.components.IMultipleComponentItem)
      */
     public void setSource(IMultipleComponentItem source) {
         this.source = source;
     }
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.designer.core.model.components.IMultipleComponentConnection#getTarget()
      */
     public IMultipleComponentItem getTarget() {
         return this.target;
     }
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.designer.core.model.components.IMultipleComponentConnection#setTarget(org.talend.core.model.components.IMultipleComponentItem)
      */
     public void setTarget(IMultipleComponentItem target) {

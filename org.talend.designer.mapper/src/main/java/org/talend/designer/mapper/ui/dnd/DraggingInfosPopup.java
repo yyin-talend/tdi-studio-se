@@ -151,7 +151,7 @@ public final class DraggingInfosPopup {
                 newX = 0;
             }
             int newY = cursorPosition.y - height - 20;
-            if(WindowSystem.isGTK()) {
+            if (WindowSystem.isGTK()) {
                 newY -= 25;
             }
             if (newY < 0) {
@@ -184,7 +184,6 @@ public final class DraggingInfosPopup {
         public boolean isVisible() {
             return getShell().isVisible();
         }
-
 
         /**
          * DOC amaumont Comment method "setText".
@@ -254,7 +253,8 @@ public final class DraggingInfosPopup {
             return mainComposite.computeSize(SWT.DEFAULT, SWT.DEFAULT);
         }
 
-        public void setLabelsVisible(boolean boolLabelWriteMode, boolean boolLabelMappingMode, boolean boolLabelInsertionEntryMode, boolean boolDropInvalid) {
+        public void setLabelsVisible(boolean boolLabelWriteMode, boolean boolLabelMappingMode,
+                boolean boolLabelInsertionEntryMode, boolean boolDropInvalid) {
             // System.out.println("setLabelsVisible");
             ((RowData) labelWriteMode.getLayoutData()).exclude = !boolLabelWriteMode;
             ((RowData) labelMappingMode.getLayoutData()).exclude = !boolLabelMappingMode;
@@ -327,7 +327,7 @@ public final class DraggingInfosPopup {
         if (overwrite) {
             mode = " > Overwrite mode";
         } else {
-            if(WindowSystem.isGTK()) {
+            if (WindowSystem.isGTK()) {
                 mode = " > Append mode";
             } else {
                 mode = " > Append mode (Ctrl key to overwrite)";
@@ -350,8 +350,11 @@ public final class DraggingInfosPopup {
             mode = " > Each source entry " + (this.outputToOutputMode ? "expression " : "") + "to each target expression";
             this.mapOneToOne = mapOneToOne;
         } else {
-            mode = " > All source entries " + (this.outputToOutputMode ? "expression " : "") + "to a single one "
-                    + (mapOneToOneAuthorized && !WindowSystem.isGTK() ? "target expression (Shift key to change mapping)" : "target expression");
+            mode = " > All source entries "
+                    + (this.outputToOutputMode ? "expression " : "")
+                    + "to a single one "
+                    + (mapOneToOneAuthorized && !WindowSystem.isGTK() ? "target expression (Shift key to change mapping)"
+                            : "target expression");
             this.mapOneToOne = false;
         }
         popup.setMappingModeText(mode);
@@ -421,24 +424,21 @@ public final class DraggingInfosPopup {
     public void setDropInvalid(boolean dropInvalid, boolean invalidKeyPressed) {
         String newText = "null";
         if (dropInvalid) {
-            if(WindowSystem.isGTK()) {
-                newText = "\n<< Drop invalid >>\n" 
-                    + (invalidKeyPressed ? 
-                            "Press both Shift and Ctrl keys to map one to one and overwrite" 
-                            : "");
+            if (WindowSystem.isGTK()) {
+                newText = "\n<< Drop invalid >>\n"
+                        + (invalidKeyPressed ? "Press both Shift and Ctrl keys to map one to one and overwrite" : "");
             }
         }
-        if(WindowSystem.isGTK()) {
+        if (WindowSystem.isGTK()) {
             this.dropInvalid = dropInvalid;
         } else {
             this.dropInvalid = false;
         }
-            
+
         if (!popup.labelDropInvalid.getText().equals(newText)) {
             popup.setDropInvalidText(newText);
             updateVisibleLabels();
         }
     }
-
 
 }

@@ -101,10 +101,10 @@ public class AbstractLink implements IGraphicLink {
     public void calculate() {
         point1 = this.uiManager.getTableEntryPosition(pointDescriptor1.getTableEntry(), true);
         point2 = this.uiManager.getTableEntryPosition(pointDescriptor2.getTableEntry(), true);
-        DataMapTableView viewTable1 = this.mapperManager.retrieveDataMapTableView(this.mapperManager.retrieveTable(pointDescriptor1
-                .getTableEntry()));
-        DataMapTableView viewTable2 = this.mapperManager.retrieveDataMapTableView(this.mapperManager.retrieveTable(pointDescriptor2
-                .getTableEntry()));
+        DataMapTableView viewTable1 = this.mapperManager.retrieveDataMapTableView(this.mapperManager
+                .retrieveTable(pointDescriptor1.getTableEntry()));
+        DataMapTableView viewTable2 = this.mapperManager.retrieveDataMapTableView(this.mapperManager
+                .retrieveTable(pointDescriptor2.getTableEntry()));
         widthTable1 = viewTable1.getBounds().width + 2 * viewTable1.getBorderWidth();
         widthTable2 = viewTable2.getBounds().width + 2 * viewTable2.getBorderWidth();
     }
@@ -160,8 +160,8 @@ public class AbstractLink implements IGraphicLink {
         // int spaceBetweenPoints = 1;
 
         if (BEZIER_MODE) {
-            distance = new java.awt.Point(point1x_forTraceLink, point1y_yOffsetPoint1)
-                    .distance(point2x_forTraceLink, point2y_yOffsetPoint2);
+            distance = new java.awt.Point(point1x_forTraceLink, point1y_yOffsetPoint1).distance(point2x_forTraceLink,
+                    point2y_yOffsetPoint2);
             // //System.out.println("distance= "+distance);
             // spaceBetweenPoints = (int) ((double) (100d * (double) MAX_SPACE_BETWEEN_POINTS) / distance);
             // // //System.out.println("spaceBetweenPoints = " +spaceBetweenPoints);
@@ -257,8 +257,9 @@ public class AbstractLink implements IGraphicLink {
             // System.out.println("Time Draw Line 3 :" + (System.currentTimeMillis() - timeDrawLine3) + " ms");
 
             long timeDrawPolyLine = System.currentTimeMillis();
-            gc.drawPolyline(new int[] { point1x_forTraceLink, point1y_yOffsetPoint1, point1x_forTraceLink + NORMAL_CONNECTOR_WIDTH,
-                    point1y_yOffsetPoint1, point2x_forTraceLink - NORMAL_CONNECTOR_WIDTH, point2y_yOffsetPoint2, point2x_forTraceLink,
+            gc.drawPolyline(new int[] { point1x_forTraceLink, point1y_yOffsetPoint1,
+                    point1x_forTraceLink + NORMAL_CONNECTOR_WIDTH, point1y_yOffsetPoint1,
+                    point2x_forTraceLink - NORMAL_CONNECTOR_WIDTH, point2y_yOffsetPoint2, point2x_forTraceLink,
                     point2y_yOffsetPoint2 });
             // if(System.currentTimeMillis() - timeDrawPolyLine > 10) {
             // System.out.println("Time Draw PolyLine :" + (System.currentTimeMillis() - timeDrawPolyLine) + " ms");
@@ -281,8 +282,8 @@ public class AbstractLink implements IGraphicLink {
 
             // // in1 pr
             gc.drawLine(point1x_forTraceLink - SIDE_CONNECTOR_WIDTH - halfSizeCircle - xOffset, point1y_yOffsetPoint1 - mult
-                    * halfSizeCircle, point2x_forTraceLink - SIDE_CONNECTOR_WIDTH - halfSizeCircle - xOffset, point2y_yOffsetPoint2 + mult
-                    * halfSizeCircle);
+                    * halfSizeCircle, point2x_forTraceLink - SIDE_CONNECTOR_WIDTH - halfSizeCircle - xOffset,
+                    point2y_yOffsetPoint2 + mult * halfSizeCircle);
 
             gc.drawArc(point2x_forTraceLink - SIDE_CONNECTOR_WIDTH - halfSizeCircle - xOffset, point2y_yOffsetPoint2
                     - (point1Above ? 0 : 2 * halfSizeCircle), 2 * halfSizeCircle, 2 * halfSizeCircle, point1Above ? 90 : 180, 90);

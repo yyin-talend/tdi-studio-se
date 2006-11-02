@@ -48,8 +48,7 @@ public class TalendGridLayer extends GridLayer {
         paintGrid(g, this, origin, gridX, gridY);
     }
 
-    protected void paintGrid(Graphics g, IFigure f, org.eclipse.draw2d.geometry.Point origin, int distanceX,
-            int distanceY) {
+    protected void paintGrid(Graphics g, IFigure f, org.eclipse.draw2d.geometry.Point origin, int distanceX, int distanceY) {
         Rectangle clip = g.getClip(Rectangle.SINGLETON);
 
         if (distanceX > 0 && distanceY > 0) {

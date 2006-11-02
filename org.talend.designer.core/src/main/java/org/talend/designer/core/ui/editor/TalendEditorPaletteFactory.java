@@ -102,8 +102,8 @@ public final class TalendEditorPaletteFactory {
             ImageDescriptor imageSmall, imageLarge;
             imageSmall = ImageDescriptor.createFromImageData(im.getImageData().scaledTo(16, 16));
             imageLarge = ImageDescriptor.createFromImageData(im.getImageData().scaledTo(24, 24));
-            component = new CombinedTemplateCreationEntry(name, name, Node.class, new PaletteComponentFactory(
-                    xmlComponent), imageSmall, imageLarge);
+            component = new CombinedTemplateCreationEntry(name, name, Node.class, new PaletteComponentFactory(xmlComponent),
+                    imageSmall, imageLarge);
             component.setDescription(longName);
             componentsDrawer.add(component);
         }
@@ -206,7 +206,7 @@ public final class TalendEditorPaletteFactory {
         palette.setDefaultEntry(tool);
 
         // Add a marquee tool to the group
-        //toolGroup.add(new MarqueeToolEntry());
+        // toolGroup.add(new MarqueeToolEntry());
 
         // Add a (unnamed) separator to the group
         toolGroup.add(new PaletteSeparator());

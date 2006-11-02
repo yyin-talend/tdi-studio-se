@@ -54,7 +54,7 @@ public class StandAloneTalendPerlEditor extends PerlEditor {
         IRepositoryFactory repFactory = RepositoryFactoryProvider.getInstance(repositoryContext);
         try {
             RepositoryEditorInput rEditorInput = (RepositoryEditorInput) input;
-            item = (RoutineItem)rEditorInput.getItem();
+            item = (RoutineItem) rEditorInput.getItem();
             item.getProperty().eAdapters().add(dirtyListener);
             repFactory.lock(item);
         } catch (PersistenceException e) {
@@ -79,35 +79,36 @@ public class StandAloneTalendPerlEditor extends PerlEditor {
         }
         IRepositoryView viewPart = (IRepositoryView) getSite().getPage().findView(RepositoryView.VIEW_ID);
         viewPart.refresh();
-    //    viewPart1.refresh();
+        // viewPart1.refresh();
     }
 
     @Override
     public boolean isDirty() {
         return propertyIsDirty || super.isDirty();
     }
+
     protected void editorSaved() {
-        
+
     }
+
     public void doSave(final IProgressMonitor monitor) {
         EList adapters = item.getProperty().eAdapters();
         adapters.remove(dirtyListener);
         super.doSave(monitor);
 
-        
-            try {
-                ByteArray byteArray = PropertiesFactory.eINSTANCE.createByteArray();
-                byteArray.setInnerContentFromFile(((RepositoryEditorInput)getEditorInput()).getFile());
-                item.setContent(byteArray);
-                RepositoryFactoryProvider.getInstance().save(item);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            propertyIsDirty = false;
-            adapters.add(dirtyListener);
-            firePropertyChange(IEditorPart.PROP_DIRTY);
-            IRepositoryView viewPart = (IRepositoryView) getSite().getPage().findView(RepositoryView.VIEW_ID);
-            viewPart.refresh();
+        try {
+            ByteArray byteArray = PropertiesFactory.eINSTANCE.createByteArray();
+            byteArray.setInnerContentFromFile(((RepositoryEditorInput) getEditorInput()).getFile());
+            item.setContent(byteArray);
+            RepositoryFactoryProvider.getInstance().save(item);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        propertyIsDirty = false;
+        adapters.add(dirtyListener);
+        firePropertyChange(IEditorPart.PROP_DIRTY);
+        IRepositoryView viewPart = (IRepositoryView) getSite().getPage().findView(RepositoryView.VIEW_ID);
+        viewPart.refresh();
     }
 
     private RoutineItem item;

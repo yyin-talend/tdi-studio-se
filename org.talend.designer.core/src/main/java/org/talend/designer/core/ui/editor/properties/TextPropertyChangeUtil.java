@@ -48,8 +48,8 @@ public class TextPropertyChangeUtil {
 
     private static TextPropertyChangeUtil propertyChangeUtil = new TextPropertyChangeUtil();
 
-    public static void changeText(final Display display, final Element elem, final String propertyName,
-            final String text, final CommandStack cmdStack) {
+    public static void changeText(final Display display, final Element elem, final String propertyName, final String text,
+            final CommandStack cmdStack) {
         boolean found = false;
         TextPropertyChangeThread textThread;
         if (lastElement != null) {
@@ -113,8 +113,7 @@ public class TextPropertyChangeUtil {
             public void run() {
                 TimeMeasure.start("PropertyChangeCommand()");
 
-                Command cmd = new PropertyChangeCommand(textElement.getElement(), textElement.getPropertyName(),
-                        currentText);
+                Command cmd = new PropertyChangeCommand(textElement.getElement(), textElement.getPropertyName(), currentText);
                 cmdStack.execute(cmd);
                 TimeMeasure.end("PropertyChangeCommand()");
             }

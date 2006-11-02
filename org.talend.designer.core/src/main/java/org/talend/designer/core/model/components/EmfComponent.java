@@ -96,8 +96,8 @@ public class EmfComponent implements IComponent {
     public EmfComponent(File file) {
         this.file = file;
         load();
-        codeLanguage = ((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY))
-                .getProject().getLanguage();
+        codeLanguage = ((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY)).getProject()
+                .getLanguage();
     }
 
     public boolean isPropagateSchema() {
@@ -122,8 +122,8 @@ public class EmfComponent implements IComponent {
         ComponentResourceFactoryImpl compFact;
         compFact = new ComponentResourceFactoryImpl();
         compFact.createResource(URI.createURI(file.toURI().toString()));
-        resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put(
-                Resource.Factory.Registry.DEFAULT_EXTENSION, compFact);
+        resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put(Resource.Factory.Registry.DEFAULT_EXTENSION,
+                compFact);
 
         Resource res = resourceSet.getResource(URI.createURI(file.toURI().toString()), true);
 
@@ -532,8 +532,7 @@ public class EmfComponent implements IComponent {
             param.setNotShowIf(xmlParam.getNOTSHOWIF());
             param.setRepositoryValue(xmlParam.getREPOSITORYVALUE());
 
-            if (!param.getField().equals(EParameterFieldType.TABLE)
-                    && !param.getField().equals(EParameterFieldType.CLOSED_LIST)) {
+            if (!param.getField().equals(EParameterFieldType.TABLE) && !param.getField().equals(EParameterFieldType.CLOSED_LIST)) {
                 List<DEFAULTType> listDefault = xmlParam.getDEFAULT();
                 for (DEFAULTType defaultType : listDefault) {
                     IElementParameterDefaultValue defaultValue = new ElementParameterDefaultValue();
@@ -595,8 +594,8 @@ public class EmfComponent implements IComponent {
                 for (int k = 0; k < nbItems; k++) {
                     item = (ITEMType) items.getITEM().get(k);
                     listItemsDisplayCodeValue[k] = item.getNAME();
-                    listItemsDisplayValue[k] = getTranslatedValue(xmlParam.getNAME() + "." + language.getName()
-                            + ".ITEM." + item.getNAME());
+                    listItemsDisplayValue[k] = getTranslatedValue(xmlParam.getNAME() + "." + language.getName() + ".ITEM."
+                            + item.getNAME());
                     if (!type.equals(EParameterFieldType.TABLE)) {
                         listItemsValue[k] = item.getVALUE();
                     } else {
@@ -645,7 +644,7 @@ public class EmfComponent implements IComponent {
         }
         TEMPLATEType tempType;
         EList listTempType = compType.getCODEGENERATION().getTEMPLATES().getTEMPLATE();
-        
+
         if (listTempType.size() == 1) {
             tempType = (TEMPLATEType) listTempType.get(0);
             if (tempType.isSetMULTIPLEMETHODS()) {
@@ -794,8 +793,7 @@ public class EmfComponent implements IComponent {
                     msg = Messages.getString("modules.required");
                 }
 
-                ModuleNeeded componentImportNeeds = new ModuleNeeded(this, importType.getMODULE(), msg, importType
-                        .isREQUIRED());
+                ModuleNeeded componentImportNeeds = new ModuleNeeded(this, importType.getMODULE(), msg, importType.isREQUIRED());
 
                 componentImportNeedsList.add(componentImportNeeds);
             }

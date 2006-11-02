@@ -242,8 +242,7 @@ public final class Expression {
                 String rightString = string.substring(i + 3, string.length()).trim();
                 Expression rightExpression = new Expression(rightString);
                 expression.setRightExpression(rightExpression);
-                if (rightString.contains("(") || isThereCondition(rightString, AND)
-                        || isThereCondition(rightString, OR)) {
+                if (rightString.contains("(") || isThereCondition(rightString, AND) || isThereCondition(rightString, OR)) {
                     evaluateExpression(rightExpression, listParam);
                 } else { // no bracket == evaluate expression
                     rightExpression.setValid(evaluateSimpleExpression(rightString, listParam));

@@ -66,13 +66,11 @@ public final class ContextParameterExtractor {
             public void keyPressed(KeyEvent e) {
                 if (e.keyCode == SWT.F5) {
                     IContextParameter parameter = buildParameterFrom(text, process.getContextManager());
-                    ContextParameterWizard prmWizard = new ContextParameterWizard(process.getContextManager(),
-                            parameter);
+                    ContextParameterWizard prmWizard = new ContextParameterWizard(process.getContextManager(), parameter);
                     WizardDialog dlg = new WizardDialog(text.getShell(), prmWizard);
                     if (dlg.open() == WizardDialog.OK) {
-                        String replaceCode = ContextParameterUtils.getScriptCode(parameter,
-                                ((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY))
-                                        .getProject().getLanguage());
+                        String replaceCode = ContextParameterUtils.getScriptCode(parameter, ((RepositoryContext) CorePlugin
+                                .getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY)).getProject().getLanguage());
                         if (text instanceof Text) {
                             if (((Text) text).getSelectionCount() == 0) {
                                 ((Text) text).setText(replaceCode);

@@ -1641,9 +1641,9 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
     @SuppressWarnings("unchecked")
     private Control addTable(final Composite subComposite, final IElementParameter param, final int numInRow, final int nbInRow,
             final int top, final Control lastControl) {
-        
-        Composite container =subComposite;// new Composite(subComposite, SWT.NONE);
-        
+
+        Composite container = subComposite; // new Composite(subComposite, SWT.NONE);
+
         final TableViewerCreator tableViewerCreator = new TableViewerCreator(container);
         tableViewerCreator.setHeaderVisible(true);
         tableViewerCreator.setBorderVisible(true);
@@ -1942,7 +1942,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
         pasteButton.setLayoutData(data);
         pasteButton.addListener(SWT.Selection, pasteLineListener);
         pasteButton.setVisible(!param.isReadOnly());
-        
+
         Button upButton;
         upButton = getWidgetFactory().createButton(container, "", SWT.PUSH); //$NON-NLS-1$
         upButton.setImage(ImageProvider.getImage(EImage.UP_ICON));
@@ -1953,7 +1953,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
         upButton.setLayoutData(data);
         upButton.addListener(SWT.Selection, upLineListener);
         upButton.setVisible(!param.isReadOnly());
-        
+
         Button downButton;
         downButton = getWidgetFactory().createButton(container, "", SWT.PUSH); //$NON-NLS-1$
         downButton.setImage(ImageProvider.getImage(EImage.DOWN_ICON));
@@ -1964,7 +1964,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
         downButton.setLayoutData(data);
         downButton.addListener(SWT.Selection, downLineListener);
         downButton.setVisible(!param.isReadOnly());
-        
+
         curRowSize += 23 + ITabbedPropertyConstants.VSPACE * 2;
 
         return null;
@@ -2204,7 +2204,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                                 t.setText((String) value);
                             }
                         }
-                        if(checkErrorsWhenViewRefreshed) {
+                        if (checkErrorsWhenViewRefreshed) {
                             checkErrorsForPropertiesOnly(t);
                         }
                     }
@@ -2223,7 +2223,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                                 t.setText(value);
                             }
                         }
-                        if(checkErrorsWhenViewRefreshed) {
+                        if (checkErrorsWhenViewRefreshed) {
                             checkErrorsForPropertiesOnly(t);
                         }
                     }
@@ -2260,10 +2260,11 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
 
     /**
      * DOC amaumont Comment method "checkErrors".
-     * @param control must be or extends <code>Text</code> or <code>StyledText</code>  
+     * 
+     * @param control must be or extends <code>Text</code> or <code>StyledText</code>
      */
     private void checkErrorsForPropertiesOnly(Control control) {
-        if(this.section == EComponentCategory.PROPERTY) {
+        if (this.section == EComponentCategory.PROPERTY) {
             editionControlHelper.checkErrors(control);
         }
     }
@@ -2341,7 +2342,8 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
      * 
      * DOC amaumont DynamicTabbedPropertySection class global comment. Detailled comment <br/>
      * 
-     * @author amaumont $Id$
+     * @author amaumont $Id: DynamicTabbedPropertySection.java 295 2006-11-02 08:28:03 +0000 (jeu., 02 nov. 2006)
+     * smallet $
      * 
      */
     class EditionControlHelper {
@@ -2483,7 +2485,8 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
      * 
      * DOC amaumont DynamicTabbedPropertySection class global comment. Detailled comment <br/>
      * 
-     * @author amaumont $Id$
+     * @author amaumont $Id: DynamicTabbedPropertySection.java 295 2006-11-02 08:28:03 +0000 (jeu., 02 nov. 2006)
+     * smallet $
      * 
      */
     class CheckErrorsHelper {

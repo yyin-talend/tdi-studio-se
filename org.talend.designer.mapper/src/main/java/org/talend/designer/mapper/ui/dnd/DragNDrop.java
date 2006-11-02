@@ -108,11 +108,11 @@ public class DragNDrop {
 
         initListeners();
 
-//        DelegatingDragAdapter dragAdapter = new DelegatingDragAdapter();
-//        dragAdapter.addDragSourceListener(dragSourceListener);
-//
-//        DelegatingDropAdapter dropAdapter = new DelegatingDropAdapter();
-//        dropAdapter.addDropTargetListener(dropTargetListener);
+        // DelegatingDragAdapter dragAdapter = new DelegatingDragAdapter();
+        // dragAdapter.addDragSourceListener(dragSourceListener);
+        //
+        // DelegatingDropAdapter dropAdapter = new DelegatingDropAdapter();
+        // dropAdapter.addDropTargetListener(dropTargetListener);
 
         // createDragSource(dragAdapter);
         // createDropTarget(dropAdapter);
@@ -199,6 +199,7 @@ public class DragNDrop {
         this.dropTargetListener = new DefaultDropTargetListener(mapperManager) {
 
             private boolean isIntersectAtPreviousDragOver;
+
             private Point lastDragPosition;
 
             public void dragEnter(DropTargetEvent event) {
@@ -239,7 +240,8 @@ public class DragNDrop {
                     if (analyzer.isMapOneToOneMode() && analyzer.isMapOneToOneAuthorized()) {
                         int size = draggedData.getTransferableEntryList().size();
                         if (itemIndexWhereInsertFromPosition != null) {
-                            draggableTable.setSelection(itemIndexWhereInsertFromPosition, itemIndexWhereInsertFromPosition + size - 1);
+                            draggableTable.setSelection(itemIndexWhereInsertFromPosition, itemIndexWhereInsertFromPosition + size
+                                    - 1);
                             if (!analyzer.targetTableIsConstraintsTable()
                                     && itemIndexWhereInsertFromPosition + size - 1 >= draggableTable.getItemCount()) {
                                 insertionIndicator.updatePosition(draggableTable, draggableTable.getItemCount());
@@ -360,7 +362,7 @@ public class DragNDrop {
                         insertionIndicator.setRightArrowVisible(insertionIndicator.isVisible());
                         insertionIndicator.setLefArrowVisible(insertionIndicator.isVisible());
                     }
-                    
+
                 } else {
                     if (isIntersectAtPreviousDragOver || intersect) {
                         insertionIndicator.setLefArrowVisible(false);
@@ -369,7 +371,7 @@ public class DragNDrop {
                         insertionIndicator.setLefArrowVisible(insertionIndicator.isVisible());
                     }
                 }
-                
+
                 isIntersectAtPreviousDragOver = intersect;
                 lastDragPosition = eventPosition;
             }
@@ -484,8 +486,8 @@ public class DragNDrop {
                     IMetadataColumn metadataColumnDragged = transferableEntry.getMetadataColumn();
                     Zone zoneSourceEntry = transferableEntry.getZoneSourceEntry();
 
-                    TableEntryLocation tableEntryLocationTarget = new TableEntryLocation(
-                            dataMapTableViewTarget.getDataMapTable().getName(), tableEntrySource.getName());
+                    TableEntryLocation tableEntryLocationTarget = new TableEntryLocation(dataMapTableViewTarget.getDataMapTable()
+                            .getName(), tableEntrySource.getName());
 
                     if (zoneSourceEntry == Zone.INPUTS && zoneTarget == Zone.INPUTS
                             && tableEntrySource.getParentName().equals(tableEntryLocationTarget.tableName)) {
@@ -495,7 +497,8 @@ public class DragNDrop {
                     } else if (currentEntryTarget != null && !insertionEntryMode) {
 
                         boolean overwrite = (lastEntryTarget != currentEntryTarget && analyzer.isOverwriteExpression());
-                        modifyExistingExpression(currentLanguage, currentEntryTarget, tableEntrySource, overwrite, zoneSourceEntry);
+                        modifyExistingExpression(currentLanguage, currentEntryTarget, tableEntrySource, overwrite,
+                                zoneSourceEntry);
                         uiManager.parseExpression(currentEntryTarget.getExpression(), currentEntryTarget, false, true, true);
 
                     } else {
@@ -508,26 +511,26 @@ public class DragNDrop {
                         }
                         if (zoneSourceEntry == Zone.INPUTS && zoneTarget == Zone.VARS || zoneSourceEntry == Zone.VARS
                                 && zoneTarget == Zone.VARS) {
-                            currentIndex = insertNewVarEntry(currentLanguage, dataMapTableViewTarget, currentIndex, tableEntrySource,
-                                    columnName);
+                            currentIndex = insertNewVarEntry(currentLanguage, dataMapTableViewTarget, currentIndex,
+                                    tableEntrySource, columnName);
                             atLeastOneEntryInserted = true;
 
                         } else if (zoneSourceEntry == Zone.VARS && zoneTarget == Zone.OUTPUTS) {
-                            insertNewOutputEntryFromVarEntry(sourceEntriesOfEntriesBeingAdded, metadataEditorEvent, tableEntrySource,
-                                    columnName);
+                            insertNewOutputEntryFromVarEntry(sourceEntriesOfEntriesBeingAdded, metadataEditorEvent,
+                                    tableEntrySource, columnName);
                             atLeastOneEntryInserted = true;
 
                         } else if (zoneSourceEntry == Zone.INPUTS && zoneTarget != Zone.VARS) {
-                            insertNewInOutEntryFromInputEntry(sourceEntriesOfEntriesBeingAdded, metadataEditorEvent, tableEntrySource,
-                                    metadataColumnDragged, columnName);
+                            insertNewInOutEntryFromInputEntry(sourceEntriesOfEntriesBeingAdded, metadataEditorEvent,
+                                    tableEntrySource, metadataColumnDragged, columnName);
                             atLeastOneEntryInserted = true;
 
                         } else if (zoneSourceEntry == Zone.OUTPUTS && zoneTarget == Zone.VARS) {
                             // nothing
                         } else if (zoneSourceEntry == Zone.OUTPUTS && zoneTarget == Zone.OUTPUTS) {
 
-                            insertOutpuEntryCopyToOtherOutput(sourceEntriesOfEntriesBeingAdded, metadataEditorEvent, tableEntrySource,
-                                    metadataColumnDragged, columnName);
+                            insertOutpuEntryCopyToOtherOutput(sourceEntriesOfEntriesBeingAdded, metadataEditorEvent,
+                                    tableEntrySource, metadataColumnDragged, columnName);
                             atLeastOneEntryInserted = true;
 
                         } else {
@@ -548,19 +551,22 @@ public class DragNDrop {
                 } else {
                     if (metadataEditorView != null && !targetTableIsConstraintsTable) {
                         metadataEditorEvent.indexStartInsert = currentIndex;
-                        IAction action = MetadataEditorActionFactory.getInstance().getAction(metadataEditorView, metadataEditorEvent);
+                        IAction action = MetadataEditorActionFactory.getInstance().getAction(metadataEditorView,
+                                metadataEditorEvent);
                         action.run(metadataEditorEvent);
 
                         List<IColumnEntry> lastCreatedTableEntries = uiManager.getLastCreatedInOutColumnEntries();
                         for (int i = 0; i < lastCreatedTableEntries.size(); i++) {
                             ITableEntry tableEntrySource = sourceEntriesOfEntriesBeingAdded.get(i);
                             ITableEntry dataMapTableEntry = lastCreatedTableEntries.get(i);
-                            Zone zoneSource = mapperManager.retrieveAbstractDataMapTableView(tableEntrySource.getParent()).getZone();
+                            Zone zoneSource = mapperManager.retrieveAbstractDataMapTableView(tableEntrySource.getParent())
+                                    .getZone();
                             String location = null;
                             if (zoneSource == Zone.OUTPUTS) {
                                 location = tableEntrySource.getExpression();
                             } else {
-                                location = currentLanguage.getLocation(tableEntrySource.getParentName(), tableEntrySource.getName());
+                                location = currentLanguage.getLocation(tableEntrySource.getParentName(), tableEntrySource
+                                        .getName());
                             }
 
                             dataMapTableEntry.setExpression(location + " ");
@@ -600,24 +606,26 @@ public class DragNDrop {
                 }
             }
 
-            private void insertNewInOutEntryFromInputEntry(ArrayList<ITableEntry> sources, MetadataEditorEvent metadataEditorEvent,
-                    ITableEntry tableEntrySource, IMetadataColumn metadataColumnDragged, String columnName) {
+            private void insertNewInOutEntryFromInputEntry(ArrayList<ITableEntry> sources,
+                    MetadataEditorEvent metadataEditorEvent, ITableEntry tableEntrySource, IMetadataColumn metadataColumnDragged,
+                    String columnName) {
                 MetadataColumn metadataColumn = new MetadataColumn(metadataColumnDragged);
                 metadataColumn.setLabel(columnName);
                 metadataEditorEvent.entries.add(metadataColumn);
                 sources.add(tableEntrySource);
             }
 
-            private void insertOutpuEntryCopyToOtherOutput(ArrayList<ITableEntry> sources, MetadataEditorEvent metadataEditorEvent,
-                    ITableEntry tableEntrySource, IMetadataColumn metadataColumnDragged, String columnName) {
+            private void insertOutpuEntryCopyToOtherOutput(ArrayList<ITableEntry> sources,
+                    MetadataEditorEvent metadataEditorEvent, ITableEntry tableEntrySource, IMetadataColumn metadataColumnDragged,
+                    String columnName) {
                 MetadataColumn metadataColumn = new MetadataColumn(metadataColumnDragged);
                 metadataColumn.setLabel(columnName);
                 metadataEditorEvent.entries.add(metadataColumn);
                 sources.add(tableEntrySource);
             }
 
-            private void insertNewOutputEntryFromVarEntry(ArrayList<ITableEntry> sources, MetadataEditorEvent metadataEditorEvent,
-                    ITableEntry tableEntrySource, String columnName) {
+            private void insertNewOutputEntryFromVarEntry(ArrayList<ITableEntry> sources,
+                    MetadataEditorEvent metadataEditorEvent, ITableEntry tableEntrySource, String columnName) {
                 MetadataColumn metadataColumn = new MetadataColumn();
                 metadataColumn.setLabel(columnName);
                 metadataEditorEvent.entries.add(metadataColumn);
@@ -633,8 +641,8 @@ public class DragNDrop {
                 return currentIndex;
             }
 
-            private void modifyExistingExpression(ILanguage currentLanguage, ITableEntry entryTarget, ITableEntry tableEntrySource,
-                    boolean overwriteExpression, Zone zoneSourceEntry) {
+            private void modifyExistingExpression(ILanguage currentLanguage, ITableEntry entryTarget,
+                    ITableEntry tableEntrySource, boolean overwriteExpression, Zone zoneSourceEntry) {
                 String expression = null;
                 if (zoneSourceEntry == Zone.OUTPUTS) {
                     expression = tableEntrySource.getExpression();
@@ -772,8 +780,7 @@ public class DragNDrop {
                     Rectangle boundsItem = tableItemBehindCursor.getBounds();
                     startInsertAtThisIndex = i;
                     if (pointCursor.y > boundsItem.y + draggableTable.getItemHeight() / 2
-                            + (WindowSystem.isGTK() ? draggableTable.getHeaderHeight() : 0)
-                    ) {
+                            + (WindowSystem.isGTK() ? draggableTable.getHeaderHeight() : 0)) {
                         startInsertAtThisIndex = i + 1;
                     }
                     break;

@@ -49,15 +49,12 @@ public class ParseExpressionResult {
         return atLeastOneLinkAdded || atLeastOneLinkRemoved;
     }
 
-    
     public boolean isAtLeastOneLinkAdded() {
         return this.atLeastOneLinkAdded;
     }
 
-    
     public boolean isAtLeastOneLinkRemoved() {
         return this.atLeastOneLinkRemoved;
     }
 
-    
 }

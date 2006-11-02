@@ -174,7 +174,8 @@ public class InsertionIndicator {
                 } else {
                     // external right arrow
                     Point rightCrossPoint = new Point(bounds.width - widthExternalArrow, yCenter);
-                    gc.fillPolygon(new int[] { bounds.width, 0, rightCrossPoint.x, rightCrossPoint.y, bounds.width, bounds.height, });
+                    gc.fillPolygon(new int[] { bounds.width, 0, rightCrossPoint.x, rightCrossPoint.y, bounds.width,
+                            bounds.height, });
                     gc.drawLine(rightCrossPoint.x, rightCrossPoint.y, -bounds.width, rightCrossPoint.y);
                 }
             }
@@ -338,8 +339,9 @@ public class InsertionIndicator {
         Display display = parentShell.getDisplay();
         Point positionFromMapperShellOrigin = display.map(leftArrowDraggingIndicator, parentShell, new Point(0, 0));
         Rectangle leftArrowDraggingIndicatorBounds = leftArrowDraggingIndicator.getBounds();
-        Rectangle boundsFromPositionOrigin = new Rectangle(positionFromMapperShellOrigin.x - 4, positionFromMapperShellOrigin.y - 4,
-                leftArrowDraggingIndicatorBounds.width + 8, leftArrowDraggingIndicatorBounds.height + 8);
+        Rectangle boundsFromPositionOrigin = new Rectangle(positionFromMapperShellOrigin.x - 4,
+                positionFromMapperShellOrigin.y - 4, leftArrowDraggingIndicatorBounds.width + 8,
+                leftArrowDraggingIndicatorBounds.height + 8);
         Rectangle rectangleIntersect = boundsFromPositionOrigin.intersection(boundsPopupFromMapperShellOrigin);
         int nPixelsCoveredByPopup = rectangleIntersect.width * rectangleIntersect.height;
         boolean response = false;

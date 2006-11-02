@@ -64,8 +64,7 @@ public enum EParameterName {
     UPDATE_COMPONENTS("Update components"), //$NON-NLS-1$  Hidden parameter so no translation needed
     PROCESS_TYPE_PROCESS("Process"),
     PROCESS_TYPE_CONTEXT("Context"),
-    PREVIEW("Preview"),
-    ; //$NON-NLS-1$
+    PREVIEW("Preview"); //$NON-NLS-1$
 
     private String displayName;
 

@@ -142,7 +142,7 @@ public class TalendEditor extends GraphicalEditorWithFlyoutPalette implements IT
     public static final String ID = "org.talend.designer.core.ui.editor.TalendEditor"; //$NON-NLS-1$
 
     public static final int GRID_SIZE = 32;
-    
+
     public TalendEditor() {
         // an EditDomain is a "session" of editing which contains things
         // like the CommandStack
@@ -152,12 +152,11 @@ public class TalendEditor extends GraphicalEditorWithFlyoutPalette implements IT
     public Process getProcess() {
         return this.process;
     }
-    
+
     public Property getProperty() {
         return this.property;
     }
-    
-    
+
     protected KeyHandler getCommonKeyHandler() {
         if (sharedKeyHandler == null) {
             sharedKeyHandler = new KeyHandler();

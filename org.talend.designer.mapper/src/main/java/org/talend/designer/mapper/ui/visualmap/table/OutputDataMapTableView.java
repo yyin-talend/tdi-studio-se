@@ -45,7 +45,8 @@ public class OutputDataMapTableView extends DataMapTableView {
 
     protected ExpressionProposal proposal;
 
-    public OutputDataMapTableView(Composite parent, int style, AbstractDataMapTable abstractDataMapTable, MapperManager mapperManager) {
+    public OutputDataMapTableView(Composite parent, int style, AbstractDataMapTable abstractDataMapTable,
+            MapperManager mapperManager) {
         super(parent, style, abstractDataMapTable, mapperManager);
     }
 

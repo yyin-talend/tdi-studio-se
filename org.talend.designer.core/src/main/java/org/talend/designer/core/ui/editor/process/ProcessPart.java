@@ -93,7 +93,7 @@ public class ProcessPart extends AbstractGraphicalEditPart implements PropertyCh
     protected IFigure createFigure() {
         Figure figure = new FreeformLayer();
         figure.setLayoutManager(new FreeformLayout());
-        
+
         if (((Process) getModel()).isReadOnly()) {
             Figure fig2 = new FreeformLayer();
             fig2.setBackgroundColor(Process.READ_ONLY_COLOR);

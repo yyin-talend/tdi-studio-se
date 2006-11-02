@@ -213,8 +213,8 @@ public class MapperUI {
         datasFlowViewSashForm = new SashForm(mainSashForm, SWT.SMOOTH | SWT.HORIZONTAL | SWT.BORDER);
 
         datasFlowViewSashForm.setBackgroundMode(SWT.INHERIT_FORCE);
-        
-        if(WindowSystem.isGTK()) {
+
+        if (WindowSystem.isGTK()) {
             datasFlowViewSashForm.setBackground(display.getSystemColor(SWT.COLOR_DARK_GRAY));
         }
 
@@ -222,7 +222,8 @@ public class MapperUI {
 
         datasFlowViewSashForm.addControlListener(new ControlListener() {
 
-            public void controlMoved(ControlEvent e) {}
+            public void controlMoved(ControlEvent e) {
+            }
 
             public void controlResized(ControlEvent e) {
                 createBgImages();
@@ -510,7 +511,8 @@ public class MapperUI {
         }
         for (InputTable inputTable : tables) {
 
-            InputDataMapTableView dataMapTableView = new InputDataMapTableView(inputTablesZoneView, SWT.BORDER, inputTable, mapperManager);
+            InputDataMapTableView dataMapTableView = new InputDataMapTableView(inputTablesZoneView, SWT.BORDER, inputTable,
+                    mapperManager);
             FormData formData = new FormData();
             formData.left = new FormAttachment(0, 0);
             formData.right = new FormAttachment(100, 0);
@@ -584,7 +586,8 @@ public class MapperUI {
         previousControl = null;
         for (AbstractDataMapTable abstractDataMapTable : mapperModel.getVarsDataMapTables()) {
 
-            DataMapTableView dataMapTableView = new VarsDataMapTableView(varsTableZoneView, SWT.BORDER, abstractDataMapTable, mapperManager);
+            DataMapTableView dataMapTableView = new VarsDataMapTableView(varsTableZoneView, SWT.BORDER, abstractDataMapTable,
+                    mapperManager);
 
             FormData formData = new FormData();
             formData.left = new FormAttachment(0, 0);

@@ -100,7 +100,8 @@ public class MapperMain {
      * @return the created shell
      */
     public Shell createUI(Display display) {
-        Shell shell = new Shell(display, SWT.APPLICATION_MODAL | SWT.BORDER | SWT.RESIZE | SWT.CLOSE | SWT.MIN | SWT.MAX | SWT.TITLE);
+        Shell shell = new Shell(display, SWT.APPLICATION_MODAL | SWT.BORDER | SWT.RESIZE | SWT.CLOSE | SWT.MIN | SWT.MAX
+                | SWT.TITLE);
         // Shell shell = new Shell(display);
         shell.setImage(ImageProviderMapper.getImage(ImageInfo.MAPPER_ICON));
         shell.setText("Talend Open Studio - tMapper - " + connector.getUniqueName());
@@ -142,7 +143,8 @@ public class MapperMain {
     }
 
     public void loadModelFromInternalData() {
-        this.mapperModel = new MapperModel(mapperManager.getInputTables(), mapperManager.getOutputTables(), mapperManager.getVarsTables());
+        this.mapperModel = new MapperModel(mapperManager.getInputTables(), mapperManager.getOutputTables(), mapperManager
+                .getVarsTables());
     }
 
     /**
@@ -168,8 +170,9 @@ public class MapperMain {
      * @param metadataList
      * @param externalData
      */
-    public void loadFromExternalData(List<? extends IConnection> incomingConnections, List<? extends IConnection> outgoingConnections,
-            ExternalMapperData externalData, List<IMetadataTable> outputMetadataTables) {
+    public void loadFromExternalData(List<? extends IConnection> incomingConnections,
+            List<? extends IConnection> outgoingConnections, ExternalMapperData externalData,
+            List<IMetadataTable> outputMetadataTables) {
         ArrayList<IOConnection> inputs = new ArrayList<IOConnection>(incomingConnections.size());
         for (IConnection connection : incomingConnections) {
             inputs.add(new IOConnection(connection));
@@ -197,8 +200,8 @@ public class MapperMain {
         loadFromExternalData(inputs, outputs, outputMetadataTables, externalData);
     }
 
-    public void loadFromExternalData(List<IOConnection> inputs, List<IOConnection> outputs, List<IMetadataTable> outputMetadataTables,
-            ExternalMapperData externalData) {
+    public void loadFromExternalData(List<IOConnection> inputs, List<IOConnection> outputs,
+            List<IMetadataTable> outputMetadataTables, ExternalMapperData externalData) {
         if (externalData == null) {
             externalData = new ExternalMapperData();
         }

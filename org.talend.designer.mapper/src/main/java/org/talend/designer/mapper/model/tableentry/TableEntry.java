@@ -69,9 +69,9 @@ public abstract class TableEntry implements ITableEntry {
             throw new IllegalArgumentException("Name of the TableEntry must not be null !");
         }
         this.expression = expression;
-//        TimeMeasure.start("checkErrors");
+        // TimeMeasure.start("checkErrors");
         checkErrors();
-//        TimeMeasure.end("checkErrors");
+        // TimeMeasure.end("checkErrors");
     }
 
     public String getExpression() {
@@ -80,9 +80,9 @@ public abstract class TableEntry implements ITableEntry {
 
     public void setExpression(String expression) {
         this.expression = expression;
-//        TimeMeasure.start("checkErrors2");
+        // TimeMeasure.start("checkErrors2");
         checkErrors();
-//        TimeMeasure.end("checkErrors2");
+        // TimeMeasure.end("checkErrors2");
     }
 
     public AbstractDataMapTable getParent() {
@@ -119,14 +119,15 @@ public abstract class TableEntry implements ITableEntry {
 
     /**
      * DOC amaumont Comment method "checkErrors".
+     * 
      * @param columnEntries
      */
     private void checkErrors() {
-        
+
         if (expression == null || EMPTY_STRING.equals(expression.trim())) {
             this.problem = null;
         } else {
-//            System.out.println("check=" + expression);
+            // System.out.println("check=" + expression);
             Problem syntaxProblem = LanguageProvider.getCurrentLanguage().checkExpressionSyntax(expression);
             if (syntaxProblem != null) {
                 ProblemStatus status = syntaxProblem.getStatus();
@@ -140,6 +141,4 @@ public abstract class TableEntry implements ITableEntry {
 
     }
 
-
-    
 }
