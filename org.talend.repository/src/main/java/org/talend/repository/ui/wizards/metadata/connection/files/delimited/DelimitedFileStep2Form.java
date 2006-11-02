@@ -72,10 +72,10 @@ public class DelimitedFileStep2Form extends AbstractDelimitedFileStepForm {
 
     private static final String[] TEXT_ENCLOSURE_DATA = { EMPTY_VALUE, "\"", "\\'", "\\\\" };
 
-    private static final String[] ESCAPE_CHAR_DATA = { EMPTY_VALUE, "\"", "\\'", "\\\\" }; 
+    private static final String[] ESCAPE_CHAR_DATA = { EMPTY_VALUE, "\"", "\\'", "\\\\" };
 
-    private static final String[] STRING_NUMBERS_DATA = { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15",
-            "16", "17", "18", "19", "20" };
+    private static final String[] STRING_NUMBERS_DATA = { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13",
+            "14", "15", "16", "17", "18", "19", "20" };
 
     /**
      * Main Fields.
@@ -287,7 +287,8 @@ public class DelimitedFileStep2Form extends AbstractDelimitedFileStepForm {
         fieldSeparatorText.setLayoutData(gridData);
 
         // Row Separator Combo & Text
-        String[] rowSeparatorData = { RowSeparator.STANDART_EOL_LITERAL.getLiteral(), RowSeparator.CUSTOM_STRING_LITERAL.getLiteral() };
+        String[] rowSeparatorData = { RowSeparator.STANDART_EOL_LITERAL.getLiteral(),
+                RowSeparator.CUSTOM_STRING_LITERAL.getLiteral() };
         rowSeparatorCombo = new LabelledCombo(compositeFileDelimitor, Messages.getString("FileStep2.rowSeparator"), Messages
                 .getString("FileStep2.rowSeparatorTip"), rowSeparatorData, 1, true, SWT.READ_ONLY);
         rowSeparatorText = new LabelledText(compositeFileDelimitor, "", 1, true, SWT.RIGHT);
@@ -306,12 +307,12 @@ public class DelimitedFileStep2Form extends AbstractDelimitedFileStepForm {
         info.setText(Messages.getString("FileStep2.rowsToSkipTip"));
 
         // Header
-        rowsToSkipHeaderCheckboxCombo = new LabelledCheckboxCombo(compositeRowsToSkip, Messages.getString("FileStep2.header"), Messages
-                .getString("FileStep2.headerTip"), STRING_NUMBERS_DATA, 1, true, SWT.NONE);
+        rowsToSkipHeaderCheckboxCombo = new LabelledCheckboxCombo(compositeRowsToSkip, Messages.getString("FileStep2.header"),
+                Messages.getString("FileStep2.headerTip"), STRING_NUMBERS_DATA, 1, true, SWT.NONE);
 
         // Footer
-        rowsToSkipFooterCheckboxCombo = new LabelledCheckboxCombo(compositeRowsToSkip, Messages.getString("FileStep2.footer"), Messages
-                .getString("FileStep2.footerTip"), STRING_NUMBERS_DATA, 1, true, SWT.NONE);
+        rowsToSkipFooterCheckboxCombo = new LabelledCheckboxCombo(compositeRowsToSkip, Messages.getString("FileStep2.footer"),
+                Messages.getString("FileStep2.footerTip"), STRING_NUMBERS_DATA, 1, true, SWT.NONE);
 
         // Empty row
         emptyRowsToSkipCheckbox = new Button(compositeRowsToSkip, SWT.CHECK);
@@ -396,7 +397,8 @@ public class DelimitedFileStep2Form extends AbstractDelimitedFileStepForm {
     private void addGroupFileViewer(final Composite parent, final int width, int height) {
         // composite Delimited File Preview
         previewGroup = Form.createGroup(parent, 1, Messages.getString("FileStep2.groupPreview"), height);
-        Composite compositeDelimitedFilePreviewButton = Form.startNewDimensionnedGridLayout(previewGroup, 4, width, HEIGHT_BUTTON_PIXEL);
+        Composite compositeDelimitedFilePreviewButton = Form.startNewDimensionnedGridLayout(previewGroup, 4, width,
+                HEIGHT_BUTTON_PIXEL);
         height = height - HEIGHT_BUTTON_PIXEL - 15;
 
         // Delimited File Preview Info
@@ -666,7 +668,8 @@ public class DelimitedFileStep2Form extends AbstractDelimitedFileStepForm {
         escapeCharCombo.addModifyListener(new ModifyListener() {
 
             public void modifyText(final ModifyEvent e) {
-                if (escapeCharCombo.getText() != null && !("").equals(escapeCharCombo.getText()) && !(EMPTY_VALUE).equals(escapeCharCombo.getText())) {
+                if (escapeCharCombo.getText() != null && !("").equals(escapeCharCombo.getText())
+                        && !(EMPTY_VALUE).equals(escapeCharCombo.getText())) {
                     getConnection().setEscapeChar(escapeCharCombo.getText());
                 } else {
                     getConnection().setEscapeChar(null);
@@ -677,7 +680,8 @@ public class DelimitedFileStep2Form extends AbstractDelimitedFileStepForm {
         textEnclosureCombo.addModifyListener(new ModifyListener() {
 
             public void modifyText(final ModifyEvent e) {
-                if (textEnclosureCombo.getText() != null && !("").equals(textEnclosureCombo.getText()) && !(EMPTY_VALUE).equals(textEnclosureCombo.getText())) {
+                if (textEnclosureCombo.getText() != null && !("").equals(textEnclosureCombo.getText())
+                        && !(EMPTY_VALUE).equals(textEnclosureCombo.getText())) {
                     getConnection().setTextEnclosure(textEnclosureCombo.getText());
                 } else {
                     getConnection().setTextEnclosure(null);
@@ -1008,18 +1012,21 @@ public class DelimitedFileStep2Form extends AbstractDelimitedFileStepForm {
             // if the checkbox is checked, check Numeric value
             if (labelledCheckboxCombo.getCheckbox().getSelection()) {
                 if (labelledCheckboxCombo.getText() == "") {
-                    updateStatus(IStatus.ERROR, labelledCheckboxCombo.getLabelText() + Messages.getString("FileStep2.mustBePrecised"));
+                    updateStatus(IStatus.ERROR, labelledCheckboxCombo.getLabelText()
+                            + Messages.getString("FileStep2.mustBePrecised"));
                     return false;
                 }
             }
         }
 
         // escape Char Combo
-        if (escapeCharCombo.getText() == "") { //|| escapeCharCombo.getText().equals("\\") || escapeCharCombo.getText().endsWith("\\")
+        if (escapeCharCombo.getText() == "") { // || escapeCharCombo.getText().equals("\\") ||
+                                                // escapeCharCombo.getText().endsWith("\\")
             updateStatus(IStatus.ERROR, Messages.getString("FileStep2.escapeCharAlert"));
             return false;
         }
-        if (textEnclosureCombo.getText() == "") { //|| textEnclosureCombo.getText().equals("\\") || textEnclosureCombo.getText().endsWith("\\")
+        if (textEnclosureCombo.getText() == "") { // || textEnclosureCombo.getText().equals("\\") ||
+                                                    // textEnclosureCombo.getText().endsWith("\\")
             updateStatus(IStatus.ERROR, Messages.getString("FileStep2.textEnclosureAlert"));
             return false;
         }

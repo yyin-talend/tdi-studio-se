@@ -102,7 +102,7 @@ public class PurposeStatusSection extends AbstractSection {
         super.setInput(part, selection);
         try {
             Property property = getObject().getProperty();
-            List<Status> status = property == null? new ArrayList<Status>():statusHelper.getStatusList(property);
+            List<Status> status = property == null ? new ArrayList<Status>() : statusHelper.getStatusList(property);
             statusText.setItems(toArray(status));
         } catch (PersistenceException e) {
             e.printStackTrace();
@@ -157,6 +157,7 @@ public class PurposeStatusSection extends AbstractSection {
         statusText.setEnabled(enable);
         // nameText.setEditable(enable);
     }
+
     @Override
     protected void showControl(boolean visible) {
         purposeText.getParent().setVisible(visible);

@@ -136,8 +136,7 @@ public class StatusDialog extends Dialog {
         Label label1 = new Label(composite, SWT.None);
         label1.setText("Code:");
         // label.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_BEGINNING));
-        GridData data = new GridData(GridData.GRAB_VERTICAL | GridData.HORIZONTAL_ALIGN_FILL
-                | GridData.VERTICAL_ALIGN_CENTER);
+        GridData data = new GridData(GridData.GRAB_VERTICAL | GridData.HORIZONTAL_ALIGN_FILL | GridData.VERTICAL_ALIGN_CENTER);
         label1.setLayoutData(data);
         label1.setFont(parent.getFont());
         codeText = new Text(composite, SWT.SINGLE | SWT.BORDER);
@@ -150,7 +149,7 @@ public class StatusDialog extends Dialog {
                 validateInput();
             }
         });
-        label1= new Label(composite, SWT.WRAP);
+        label1 = new Label(composite, SWT.WRAP);
         data = new GridData(GridData.FILL_HORIZONTAL);
         label1.setLayoutData(data);
 

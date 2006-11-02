@@ -54,7 +54,8 @@ public class RegexpFileWizardPage extends WizardPage {
      * @param isRepositoryObjectEditable
      * @param existingNames
      */
-    public RegexpFileWizardPage(int step, ConnectionItem connectionItem, boolean isRepositoryObjectEditable, String[] existingNames) {
+    public RegexpFileWizardPage(int step, ConnectionItem connectionItem, boolean isRepositoryObjectEditable,
+            String[] existingNames) {
         super("wizardPage");
         this.step = step;
         this.connectionItem = connectionItem;
@@ -74,9 +75,10 @@ public class RegexpFileWizardPage extends WizardPage {
         } else if (step == 2) {
             currentComposite = new RegexpFileStep2Form(parent, connectionItem);
         } else if (step == 3) {
-            MetadataTable metadataTable = (MetadataTable) ((RegexpFileConnection)connectionItem.getConnection()).getTables().get(0);
-            currentComposite = new RegexpFileStep3Form(parent, connectionItem, metadataTable, TableHelper.getTableNames( ((RegexpFileConnection)connectionItem.getConnection()), metadataTable
-                    .getLabel()));
+            MetadataTable metadataTable = (MetadataTable) ((RegexpFileConnection) connectionItem.getConnection()).getTables()
+                    .get(0);
+            currentComposite = new RegexpFileStep3Form(parent, connectionItem, metadataTable, TableHelper.getTableNames(
+                    ((RegexpFileConnection) connectionItem.getConnection()), metadataTable.getLabel()));
         }
 
         currentComposite.setReadOnly(!isRepositoryObjectEditable);

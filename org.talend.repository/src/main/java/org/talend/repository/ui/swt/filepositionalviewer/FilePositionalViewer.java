@@ -212,7 +212,7 @@ public class FilePositionalViewer extends Composite {
             } else if (s.endsWith("*")) {
                 s = s.substring(0, s.length() - 1);
             }
-            
+
             String[] drawLine = s.split(",");
             int oldToPrint = 0;
             for (int i = 0; i < drawLine.length; i++) {

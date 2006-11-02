@@ -72,16 +72,17 @@ public class XmlFileWizardPage extends WizardPage {
         if (step == 1) {
             currentComposite = new XmlFileStep1Form(parent, connectionItem, existingNames);
         } else if (step == 2) {
-//            MetadataSchema metadataSchema = (MetadataSchema) ((XmlFileConnection)connectionItem.getConnection()).getSchema().get(0);
-//            currentComposite = new XmlFileStep2Form(parent, connectionItem, metadataSchema);
-          currentComposite = new XmlFileStep2Form(parent, connectionItem);
+            // MetadataSchema metadataSchema = (MetadataSchema)
+            // ((XmlFileConnection)connectionItem.getConnection()).getSchema().get(0);
+            // currentComposite = new XmlFileStep2Form(parent, connectionItem, metadataSchema);
+            currentComposite = new XmlFileStep2Form(parent, connectionItem);
 
         } else if (step == 3) {
-            MetadataTable metadataTable = (MetadataTable) ((XmlFileConnection)connectionItem.getConnection()).getTables().get(0);
-            currentComposite = new XmlFileStep3Form(parent, connectionItem, metadataTable, TableHelper.getTableNames( ((XmlFileConnection)connectionItem.getConnection()), metadataTable
-                    .getLabel()));
+            MetadataTable metadataTable = (MetadataTable) ((XmlFileConnection) connectionItem.getConnection()).getTables().get(0);
+            currentComposite = new XmlFileStep3Form(parent, connectionItem, metadataTable, TableHelper.getTableNames(
+                    ((XmlFileConnection) connectionItem.getConnection()), metadataTable.getLabel()));
         }
-        
+
         currentComposite.setReadOnly(!isRepositoryObjectEditable);
 
         AbstractForm.ICheckListener listener = new AbstractForm.ICheckListener() {
@@ -89,13 +90,13 @@ public class XmlFileWizardPage extends WizardPage {
             public void checkPerformed(final AbstractForm source) {
 
                 if (source.isStatusOnError()) {
-//                  PTODO CAN : comment setPageComplete(true);
-//                    XmlFileWizardPage.this.setPageComplete(false);
+                    // PTODO CAN : comment setPageComplete(true);
+                    // XmlFileWizardPage.this.setPageComplete(false);
                     XmlFileWizardPage.this.setPageComplete(true);
                     setErrorMessage(source.getStatus());
                 } else {
-//                  PTODO CAN : comment setPageComplete(true);
-//                    XmlFileWizardPage.this.setPageComplete(isRepositoryObjectEditable);
+                    // PTODO CAN : comment setPageComplete(true);
+                    // XmlFileWizardPage.this.setPageComplete(isRepositoryObjectEditable);
                     XmlFileWizardPage.this.setPageComplete(true);
                     setErrorMessage(null);
                     setMessage(source.getStatus());

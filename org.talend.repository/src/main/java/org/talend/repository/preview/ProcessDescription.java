@@ -21,7 +21,6 @@
 // ============================================================================
 package org.talend.repository.preview;
 
-
 /**
  * Describes a process for shadow execution. <br/>
  * 

@@ -72,7 +72,7 @@ public class FileStep2Form extends AbstractPositionalFileStepForm {
 
     private static final String[] TEXT_ENCLOSURE_DATA = { EMPTY_VALUE, "\"", "\\'", "\\\\" };
 
-    private static final String[] ESCAPE_CHAR_DATA = { EMPTY_VALUE, "\"", "\\'", "\\\\" }; 
+    private static final String[] ESCAPE_CHAR_DATA = { EMPTY_VALUE, "\"", "\\'", "\\\\" };
 
     private static final String[] STRING_NUMBERS_DATA = { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13",
             "14", "15", "16", "17", "18", "19", "20" };
@@ -244,7 +244,8 @@ public class FileStep2Form extends AbstractPositionalFileStepForm {
         fieldSeparatorText.setToolTipText(Messages.getString("FileStep2.fieldSeparatorPositionalTip"));
 
         // Row Separator Combo & Text
-        String[] rowSeparatorData = { RowSeparator.STANDART_EOL_LITERAL.getLiteral(), RowSeparator.CUSTOM_STRING_LITERAL.getLiteral() };
+        String[] rowSeparatorData = { RowSeparator.STANDART_EOL_LITERAL.getLiteral(),
+                RowSeparator.CUSTOM_STRING_LITERAL.getLiteral() };
         rowSeparatorCombo = new LabelledCombo(compositeFileDelimitor, Messages.getString("FileStep2.rowSeparator"), Messages
                 .getString("FileStep2.rowSeparatorTip"), rowSeparatorData, 1, true, SWT.READ_ONLY);
         rowSeparatorText = new LabelledText(compositeFileDelimitor, "", 1, true, SWT.RIGHT);
@@ -344,7 +345,8 @@ public class FileStep2Form extends AbstractPositionalFileStepForm {
     private void addGroupFileViewer(final Composite parent, final int width, int height) {
         // composite File Preview
         previewGroup = Form.createGroup(parent, 1, Messages.getString("FileStep2.groupPreview"), height);
-        Composite compositeDelimitedFilePreviewButton = Form.startNewDimensionnedGridLayout(previewGroup, 4, width, HEIGHT_BUTTON_PIXEL);
+        Composite compositeDelimitedFilePreviewButton = Form.startNewDimensionnedGridLayout(previewGroup, 4, width,
+                HEIGHT_BUTTON_PIXEL);
         height = height - HEIGHT_BUTTON_PIXEL - 15;
 
         // File Preview Info
@@ -552,7 +554,8 @@ public class FileStep2Form extends AbstractPositionalFileStepForm {
         escapeCharCombo.addModifyListener(new ModifyListener() {
 
             public void modifyText(final ModifyEvent e) {
-                if (escapeCharCombo.getText() != null && !("").equals(escapeCharCombo.getText()) && !(EMPTY_VALUE).equals(escapeCharCombo.getText())) {
+                if (escapeCharCombo.getText() != null && !("").equals(escapeCharCombo.getText())
+                        && !(EMPTY_VALUE).equals(escapeCharCombo.getText())) {
                     getConnection().setEscapeChar(escapeCharCombo.getText());
                 } else {
                     getConnection().setEscapeChar(null);
@@ -563,7 +566,8 @@ public class FileStep2Form extends AbstractPositionalFileStepForm {
         textEnclosureCombo.addModifyListener(new ModifyListener() {
 
             public void modifyText(final ModifyEvent e) {
-                if (textEnclosureCombo.getText() != null && !("").equals(textEnclosureCombo.getText()) && !(EMPTY_VALUE).equals(textEnclosureCombo.getText())) {
+                if (textEnclosureCombo.getText() != null && !("").equals(textEnclosureCombo.getText())
+                        && !(EMPTY_VALUE).equals(textEnclosureCombo.getText())) {
                     getConnection().setTextEnclosure(textEnclosureCombo.getText());
                 } else {
                     getConnection().setTextEnclosure(null);
@@ -851,12 +855,14 @@ public class FileStep2Form extends AbstractPositionalFileStepForm {
         }
 
         // escape Char Combo
-        if (escapeCharCombo.getText() == "") { // || escapeCharCombo.getText().equals("\\") || escapeCharCombo.getText().endsWith("\\"
+        if (escapeCharCombo.getText() == "") { // || escapeCharCombo.getText().equals("\\") ||
+                                                // escapeCharCombo.getText().endsWith("\\"
             updateStatus(IStatus.ERROR, Messages.getString("FileStep2.escapeCharAlert"));
             return false;
         }
 
-        if (textEnclosureCombo.getText() == "") { //|| textEnclosureCombo.getText().equals("\\") || textEnclosureCombo.getText().endsWith("\\")
+        if (textEnclosureCombo.getText() == "") { // || textEnclosureCombo.getText().equals("\\") ||
+                                                    // textEnclosureCombo.getText().endsWith("\\")
             updateStatus(IStatus.ERROR, Messages.getString("FileStep2.textEnclosureAlert"));
             return false;
         }
@@ -911,14 +917,14 @@ public class FileStep2Form extends AbstractPositionalFileStepForm {
             fieldSeparatorText.setText(getConnection().getFieldSeparatorValue());
             // Adapt the UI rowSeparator to the file format
             rowSeparatorManager();
-            
+
             // Fields to the Group Delimited File Settings
             if (getConnection().getEncoding() != null && !getConnection().getEncoding().equals("")) {
                 encodingCombo.setText(getConnection().getEncoding());
             } else {
                 encodingCombo.select(0);
             }
-            
+
             // Refresh the preview width the adapted rowSeparator
             refreshPreview();
 

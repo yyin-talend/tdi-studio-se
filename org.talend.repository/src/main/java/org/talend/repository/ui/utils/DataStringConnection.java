@@ -52,43 +52,51 @@ public class DataStringConnection {
 
         defaultTable = new String[6];
 
-        dataConnection[0] = new DataConnection("MySQL", "jdbc:mysql://<host>:<port>/<sid>", "jdbc:mysql://" + host + ":" + port + "/" + sid, "3306");
+        dataConnection[0] = new DataConnection("MySQL", "jdbc:mysql://<host>:<port>/<sid>", "jdbc:mysql://" + host + ":" + port
+                + "/" + sid, "3306");
 
-        dataConnection[1] = new DataConnection("PostgreSQL", "jdbc:postgresql://<host>:<port>/<sid>", "jdbc:postgresql://" + host + ":"
-                + port + "/" + sid, "5432");
+        dataConnection[1] = new DataConnection("PostgreSQL", "jdbc:postgresql://<host>:<port>/<sid>", "jdbc:postgresql://" + host
+                + ":" + port + "/" + sid, "5432");
 
-        dataConnection[2] = new DataConnection("Oracle with SID", "jdbc:oracle:thin:@<host>:<port>:<sid>", "jdbc:oracle:thin:@" + host + ":"
-                + port + ":" + sid, "1521");
+        dataConnection[2] = new DataConnection("Oracle with SID", "jdbc:oracle:thin:@<host>:<port>:<sid>", "jdbc:oracle:thin:@"
+                + host + ":" + port + ":" + sid, "1521");
 
-        dataConnection[3] = new DataConnection("Oracle with service name", "jdbc:oracle:thin:@(description=(address=(protocol=tcp)(host=<host>)(port=<port>))(connect_data=(service_name=<service_name>)))", 
-                "jdbc:oracle:thin:@\\(description=\\(address=\\(protocol=tcp\\)\\(host=" + host + "\\)\\(port="+ port + "\\)\\)\\(connect_data=\\(service_name=" + sid + "\\)\\)\\)",
-                 "1521");
+        dataConnection[3] = new DataConnection(
+                "Oracle with service name",
+                "jdbc:oracle:thin:@(description=(address=(protocol=tcp)(host=<host>)(port=<port>))(connect_data=(service_name=<service_name>)))",
+                "jdbc:oracle:thin:@\\(description=\\(address=\\(protocol=tcp\\)\\(host=" + host + "\\)\\(port=" + port
+                        + "\\)\\)\\(connect_data=\\(service_name=" + sid + "\\)\\)\\)", "1521");
 
         dataConnection[4] = new DataConnection("Generic ODBC", "jdbc:odbc:<datasource>", "jdbc:odbc:" + word);
 
-        dataConnection[5] = new DataConnection("Microsoft SQL Server (Odbc driver)", "jdbc:odbc:<datasource>", "jdbc:odbc:" + word);
+        dataConnection[5] = new DataConnection("Microsoft SQL Server (Odbc driver)", "jdbc:odbc:<datasource>", "jdbc:odbc:"
+                + word);
 
-        
-        //TODO CAN : reactivate this Connections when PerlModule can connect with this Databases.
-//      dataConnection[2] = new DataConnection("Odbc/Jdbc", "jdbc:odbc:<datasource>", "jdbc:odbc:" + word);
-//        
-//        dataConnection[3] = new DataConnection("Oracle Thin", "jdbc:oracle:thin:@<host>:<port>:<sid>", "jdbc:oracle:thin:@" + host + ":"
-//                + port + ":" + sid, "1521");
-//        
-//        dataConnection[4] = new DataConnection("Oracle Oci", "jdbc:oracle:oci:@<host>:<port>:<sid>", "jdbc:oracle:oci:@" + host + ":"
-//                + port + ":" + sid, "1521");
-//
-//        dataConnection[5] = new DataConnection("IBM DB2", "jdbc:db2://<host>:<port>/<sid>", "jdbc:db2://" + host + ":" + port + "/" + sid, "50000");
-//
-//        dataConnection[6] = new DataConnection("Sybase", "jdbc:sybase:Tds:<host>:<port>/<sid>", "jdbc:sybase:Tds:" + host + ":" + port
-//                + "/" + sid, "2048");
-//
-//        dataConnection[7] = new DataConnection("Microsoft SQL Server", "jdbc:jtds:sqlserver://<host>:<port>/<sid>", "jdbc:jtds:sqlserver://"
-//                + host + ":" + port + "/" + sid, "1433");
-//
-//        dataConnection[8] = new DataConnection("Microsoft Access",
-//                "jdbc:odbc:Driver={Microsoft Access Driver (*.mdb)};DBQ=<filename>;UID=%<login>%;PWD=%<password>%",
-//                "jdbc:odbc:Driver={Microsoft Access Driver (*.mdb)};DBQ=" + fileMdb + ";UID=%" + word + ";PWD=%" + word);
+        // TODO CAN : reactivate this Connections when PerlModule can connect with this Databases.
+        // dataConnection[2] = new DataConnection("Odbc/Jdbc", "jdbc:odbc:<datasource>", "jdbc:odbc:" + word);
+        //        
+        // dataConnection[3] = new DataConnection("Oracle Thin", "jdbc:oracle:thin:@<host>:<port>:<sid>",
+        // "jdbc:oracle:thin:@" + host + ":"
+        // + port + ":" + sid, "1521");
+        //        
+        // dataConnection[4] = new DataConnection("Oracle Oci", "jdbc:oracle:oci:@<host>:<port>:<sid>",
+        // "jdbc:oracle:oci:@" + host + ":"
+        // + port + ":" + sid, "1521");
+        //
+        // dataConnection[5] = new DataConnection("IBM DB2", "jdbc:db2://<host>:<port>/<sid>", "jdbc:db2://" + host +
+        // ":" + port + "/" + sid, "50000");
+        //
+        // dataConnection[6] = new DataConnection("Sybase", "jdbc:sybase:Tds:<host>:<port>/<sid>", "jdbc:sybase:Tds:" +
+        // host + ":" + port
+        // + "/" + sid, "2048");
+        //
+        // dataConnection[7] = new DataConnection("Microsoft SQL Server", "jdbc:jtds:sqlserver://<host>:<port>/<sid>",
+        // "jdbc:jtds:sqlserver://"
+        // + host + ":" + port + "/" + sid, "1433");
+        //
+        // dataConnection[8] = new DataConnection("Microsoft Access",
+        // "jdbc:odbc:Driver={Microsoft Access Driver (*.mdb)};DBQ=<filename>;UID=%<login>%;PWD=%<password>%",
+        // "jdbc:odbc:Driver={Microsoft Access Driver (*.mdb)};DBQ=" + fileMdb + ";UID=%" + word + ";PWD=%" + word);
     }
 
     public String[] getItem() {
@@ -113,8 +121,8 @@ public class DataStringConnection {
      * 
      * @return string
      */
-    public String getString(final int dbTypeItemIndex, final String host, final String login, final String password, final String port,
-            final String sid, final String filename, final String datasource) {
+    public String getString(final int dbTypeItemIndex, final String host, final String login, final String password,
+            final String port, final String sid, final String filename, final String datasource) {
         String s = getStringConnectionTemplate();
         if (s == null)
             return "";
@@ -156,10 +164,10 @@ public class DataStringConnection {
             return dataConnection[selectionIndex].getDefaultPort();
         }
     }
-    
+
     public String getStringReplace(final String init, final String before, final String after) {
         String s = init;
-        
+
         if (after != null) {
             s = init.replaceFirst(before, after);
         }
@@ -179,7 +187,7 @@ public class DataStringConnection {
         if (stringConnection == "") {
             return s;
         }
-        
+
         Perl5Compiler compiler = new Perl5Compiler();
         Perl5Matcher matcher = new Perl5Matcher();
         Pattern pattern = null;
@@ -189,7 +197,7 @@ public class DataStringConnection {
                 matcher.matches(stringConnection, pattern);
                 MatchResult matchResult = matcher.getMatch();
                 s[0] = selectionIndex.toString();
-                if( matchResult !=null ){
+                if (matchResult != null) {
                     for (int i = 1; i < matchResult.groups(); i++) {
                         s[i] = matchResult.group(i);
                     }
@@ -222,9 +230,9 @@ public class DataStringConnection {
             startTemplateString = dataConnection[i].getString().substring(0, dataConnection[i].getString().indexOf("<"));
             if (startTemplateString.length() <= stringConnection.length()) {
                 startStringConnection = stringConnection.substring(0, startTemplateString.length());
-                if (stringConnection.contains("(description=(address=(protocol=tcp)")){
-                    return 3; 
-                }else if(startTemplateString.equals(startStringConnection)){
+                if (stringConnection.contains("(description=(address=(protocol=tcp)")) {
+                    return 3;
+                } else if (startTemplateString.equals(startStringConnection)) {
                     return i;
                 }
             }
@@ -273,6 +281,7 @@ public class DataStringConnection {
         if (selectionIndex < 0) {
             return false;
         }
-        return getStringConnectionTemplate().substring(0, 12).equals("jdbc:oracle:") || getStringConnectionTemplate().substring(0, 15).equals("jdbc:postgresql");
+        return getStringConnectionTemplate().substring(0, 12).equals("jdbc:oracle:")
+                || getStringConnectionTemplate().substring(0, 15).equals("jdbc:postgresql");
     }
 }

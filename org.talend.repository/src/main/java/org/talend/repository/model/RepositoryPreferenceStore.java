@@ -29,19 +29,19 @@ import org.talend.commons.exception.PersistenceException;
 import org.talend.core.model.properties.Status;
 import org.talend.core.model.properties.helper.StatusHelper;
 
-
 /**
- * DOC tguiu  class global comment. Detailled comment
- * Implementation for local repository
- * remote implementation will save/load content using methods on RepositoryFactory
- * <br/>
- *
+ * DOC tguiu class global comment. Detailled comment Implementation for local repository remote implementation will
+ * save/load content using methods on RepositoryFactory <br/>
+ * 
  * $Id$
- *
+ * 
  */
-public class RepositoryPreferenceStore implements IPersistentPreferenceStore{
+public class RepositoryPreferenceStore implements IPersistentPreferenceStore {
+
     private String initialTechStatusList, techStatusList, defaultTechnicalStatusList;
+
     private String initialDocStatusList, docStatusList, defaultDocumentationStatusList;
+
     private final IRepositoryFactory factory;
 
     /**
@@ -62,7 +62,7 @@ public class RepositoryPreferenceStore implements IPersistentPreferenceStore{
         }
     }
 
-    public void load()  throws PersistenceException {
+    public void load() throws PersistenceException {
         initialTechStatusList = StatusHelper.flat(factory.getTechnicalStatus());
         techStatusList = initialTechStatusList;
         defaultTechnicalStatusList = "DEV development;TEST testing;PROD production";
@@ -70,7 +70,7 @@ public class RepositoryPreferenceStore implements IPersistentPreferenceStore{
         docStatusList = initialDocStatusList;
         defaultDocumentationStatusList = "1ER 1er lecture;2EM 2eme lecture;VAL validée";
     }
-    
+
     public void setValue(String name, String value) {
         if (Status.TECHNICAL_STATUS.equals(name))
             techStatusList = value;
@@ -143,7 +143,6 @@ public class RepositoryPreferenceStore implements IPersistentPreferenceStore{
     public long getLong(String name) {
         return 0;
     }
-
 
     public boolean isDefault(String name) {
 

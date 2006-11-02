@@ -39,10 +39,11 @@ import org.talend.core.prefs.ITalendCorePrefConstants;
  */
 public abstract class AbstractPositionalFileStepForm extends AbstractForm {
 
-    protected static final int MAXIMUM_ROWS_TO_PREVIEW = CorePlugin.getDefault().getPreferenceStore().getInt(ITalendCorePrefConstants.PREVIEW_LIMIT);
+    protected static final int MAXIMUM_ROWS_TO_PREVIEW = CorePlugin.getDefault().getPreferenceStore().getInt(
+            ITalendCorePrefConstants.PREVIEW_LIMIT);
 
     protected ConnectionItem connectionItem;
-    
+
     protected static PositionalFileConnection connection;
 
     /**
@@ -73,11 +74,12 @@ public abstract class AbstractPositionalFileStepForm extends AbstractForm {
     /**
      * DOC tguiu AbstractDelimitedFileStepForm constructor comment. Use to step1
      */
-    public AbstractPositionalFileStepForm(Composite parent, ConnectionItem connectionItem, MetadataTable metadataTable, String[] existingNames) {
+    public AbstractPositionalFileStepForm(Composite parent, ConnectionItem connectionItem, MetadataTable metadataTable,
+            String[] existingNames) {
         super(parent, SWT.NONE, existingNames);
         this.connectionItem = connectionItem;
     }
-    
+
     /**
      * DOC ocarbone Comment method "checkPositionalFieldSeparatorValue". return a cleaned value of FieldSeparatorValue
      * 
@@ -201,8 +203,8 @@ public abstract class AbstractPositionalFileStepForm extends AbstractForm {
      * @return value
      */
     protected String getValidateFieldSeparator(String value) {
-        // if needed delete last comma 
-        if (value.lastIndexOf(",") == value.length()- 1) {
+        // if needed delete last comma
+        if (value.lastIndexOf(",") == value.length() - 1) {
             value = value.substring(0, value.length() - 1);
         }
 

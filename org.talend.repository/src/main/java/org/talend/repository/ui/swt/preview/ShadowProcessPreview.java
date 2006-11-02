@@ -44,8 +44,9 @@ import org.talend.repository.i18n.Messages;
  */
 public class ShadowProcessPreview {
 
-    protected static final int MAXIMUM_ROWS_TO_PREVIEW = CorePlugin.getDefault().getPreferenceStore().getInt(ITalendCorePrefConstants.PREVIEW_LIMIT);
-    
+    protected static final int MAXIMUM_ROWS_TO_PREVIEW = CorePlugin.getDefault().getPreferenceStore().getInt(
+            ITalendCorePrefConstants.PREVIEW_LIMIT);
+
     /**
      * Constante and main var.
      */
@@ -140,22 +141,22 @@ public class ShadowProcessPreview {
         XmlRow firstRow = xmlRows.get(0);
 
         List<XmlField> firstRowFields = firstRow.getFields();
-        
+
         Integer numbersOfColumns = getRightFirstRow(xmlRows);
-        
+
         String[] title = new String[numbersOfColumns];
         for (int i = 0; i < numbersOfColumns; i++) {
             if (firstRowIsLabel) {
                 if (numbersOfColumns <= firstRowFields.size()) {
-                    if(firstRowFields.get(i).getValue() != null  && !("").equals(firstRowFields.get(i).getValue())){
+                    if (firstRowFields.get(i).getValue() != null && !("").equals(firstRowFields.get(i).getValue())) {
                         title[i] = firstRowFields.get(i).getValue();
-                    }else{
+                    } else {
                         title[i] = Messages.getString("DelimitedFilePreview.column") + " " + i;
                     }
                 } else {
                     if (i < firstRowFields.size()) {
                         title[i] = firstRowFields.get(i).getValue();
-                    }else{
+                    } else {
                         title[i] = Messages.getString("DelimitedFilePreview.column") + " " + i;
                     }
                 }
@@ -185,13 +186,13 @@ public class ShadowProcessPreview {
 
     }
 
-    //CALCULATE THE NULBER OF COLUMNS IN THE PREVIEW
+    // CALCULATE THE NULBER OF COLUMNS IN THE PREVIEW
     public Integer getRightFirstRow(List<XmlRow> xmlRows) {
-        
+
         Integer numbersOfColumns = null;
         int parserLine = xmlRows.size();
 
-        if(parserLine > MAXIMUM_ROWS_TO_PREVIEW){
+        if (parserLine > MAXIMUM_ROWS_TO_PREVIEW) {
             parserLine = MAXIMUM_ROWS_TO_PREVIEW;
         }
         for (int i = 0; i < parserLine; i++) {
@@ -205,7 +206,7 @@ public class ShadowProcessPreview {
         }
         return numbersOfColumns;
     }
-    
+
     /**
      * refresh the Item of Preview.
      * 

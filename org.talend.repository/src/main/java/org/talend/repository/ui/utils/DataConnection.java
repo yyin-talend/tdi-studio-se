@@ -34,7 +34,7 @@ public class DataConnection {
     private String string;
 
     private String regex;
-    
+
     private String defaultPort;
 
     /**
@@ -50,7 +50,7 @@ public class DataConnection {
         this.label = label;
         this.string = string;
         this.regex = regex;
-        this.defaultPort = defaultPort;        
+        this.defaultPort = defaultPort;
     }
 
     /**
@@ -63,7 +63,7 @@ public class DataConnection {
     public DataConnection(String label, String string, String regex) {
         this(label, string, regex, null);
     }
-    
+
     /**
      * Getter for label.
      * 
@@ -135,5 +135,5 @@ public class DataConnection {
     public void setDefaultPort(final String defaultPort) {
         this.defaultPort = defaultPort;
     }
-    
+
 }

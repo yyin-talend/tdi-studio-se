@@ -37,10 +37,11 @@ import org.talend.core.prefs.ITalendCorePrefConstants;
  */
 public abstract class AbstractDelimitedFileStepForm extends AbstractForm {
 
-    protected static final int MAXIMUM_ROWS_TO_PREVIEW = CorePlugin.getDefault().getPreferenceStore().getInt(ITalendCorePrefConstants.PREVIEW_LIMIT);
+    protected static final int MAXIMUM_ROWS_TO_PREVIEW = CorePlugin.getDefault().getPreferenceStore().getInt(
+            ITalendCorePrefConstants.PREVIEW_LIMIT);
 
     protected ConnectionItem connectionItem;
-    
+
     protected DelimitedFileConnection connection;
 
     /**
@@ -50,25 +51,26 @@ public abstract class AbstractDelimitedFileStepForm extends AbstractForm {
         super(parent, SWT.NONE, existingNames);
         this.connectionItem = connectionItem;
     }
-    
+
     /**
      * DOC ocarbone AbstractDelimitedFileStepForm constructor comment. Use to step2
+     * 
      * @param parent
      * @param connection2
      */
     public AbstractDelimitedFileStepForm(Composite parent, ConnectionItem connectionItem) {
         this(parent, connectionItem, null);
     }
-    
 
     /**
      * DOC tguiu AbstractDelimitedFileStepForm constructor comment. Use to step1
      */
-    public AbstractDelimitedFileStepForm(Composite parent, ConnectionItem connectionItem, MetadataTable metadataTable, String[] existingNames) {
+    public AbstractDelimitedFileStepForm(Composite parent, ConnectionItem connectionItem, MetadataTable metadataTable,
+            String[] existingNames) {
         super(parent, SWT.NONE, existingNames);
         this.connectionItem = connectionItem;
     }
-    
+
     protected DelimitedFileConnection getConnection() {
         return (DelimitedFileConnection) connectionItem.getConnection();
     }

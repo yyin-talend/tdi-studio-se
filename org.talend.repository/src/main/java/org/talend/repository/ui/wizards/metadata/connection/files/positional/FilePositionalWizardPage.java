@@ -38,7 +38,7 @@ import org.talend.repository.ui.swt.utils.AbstractForm.ICheckListener;
 public class FilePositionalWizardPage extends WizardPage {
 
     private ConnectionItem connectionItem;
-    
+
     private int step;
 
     private AbstractPositionalFileStepForm currentComposite;
@@ -77,9 +77,10 @@ public class FilePositionalWizardPage extends WizardPage {
         } else if (step == 2) {
             currentComposite = new FileStep2Form(parent, connectionItem);
         } else if (step == 3) {
-            MetadataTable metadataTable = (MetadataTable) ((PositionalFileConnection)connectionItem.getConnection()).getTables().get(0);
-            currentComposite = new FileStep3Form(parent, connectionItem, metadataTable, TableHelper.getTableNames( ((PositionalFileConnection)connectionItem.getConnection()), metadataTable
-                    .getLabel()));
+            MetadataTable metadataTable = (MetadataTable) ((PositionalFileConnection) connectionItem.getConnection()).getTables()
+                    .get(0);
+            currentComposite = new FileStep3Form(parent, connectionItem, metadataTable, TableHelper.getTableNames(
+                    ((PositionalFileConnection) connectionItem.getConnection()), metadataTable.getLabel()));
         }
         currentComposite.setReadOnly(!isRepositoryObjectEditable);
 

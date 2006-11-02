@@ -193,9 +193,8 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
             metadataFileXmlNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.METADATA_FILE_XML);
             metadataNode.getChildren().add(metadataFileXmlNode);
 
-            convert(factory.getMetadataFileXml(), metadataFileXmlNode, ERepositoryObjectType.METADATA_FILE_XML,
-                    recBinNode);
-            
+            convert(factory.getMetadataFileXml(), metadataFileXmlNode, ERepositoryObjectType.METADATA_FILE_XML, recBinNode);
+
         } catch (PersistenceException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -219,7 +218,7 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
             Folder oFolder = new Folder(container.getId(), container.getLabel());
             RepositoryNode folder = new RepositoryNode(oFolder, parent, ENodeType.SIMPLE_FOLDER);
             folder.setProperties(EProperties.LABEL, container.getLabel());
-            folder.setProperties(EProperties.CONTENT_TYPE, type);//ERepositoryObjectType.FOLDER);
+            folder.setProperties(EProperties.CONTENT_TYPE, type);// ERepositoryObjectType.FOLDER);
             parent.getChildren().add(folder);
             convert(container, folder, type, recBinNode);
         }
@@ -271,8 +270,8 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
             createTables(recBinNode, node, repositoryObject, metadataConnection);
         }
         if (type == ERepositoryObjectType.METADATA_FILE_XML) {
-            XmlFileConnection metadataConnection = (XmlFileConnection) ((ConnectionItem) repositoryObject.getProperty()
-                    .getItem()).getConnection();
+            XmlFileConnection metadataConnection = (XmlFileConnection) ((ConnectionItem) repositoryObject.getProperty().getItem())
+                    .getConnection();
             createTables(recBinNode, node, repositoryObject, metadataConnection);
         }
     }

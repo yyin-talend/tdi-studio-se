@@ -37,10 +37,11 @@ import org.talend.core.prefs.ITalendCorePrefConstants;
  */
 public abstract class AbstractRegexpFileStepForm extends AbstractForm {
 
-    protected static final int MAXIMUM_ROWS_TO_PREVIEW = CorePlugin.getDefault().getPreferenceStore().getInt(ITalendCorePrefConstants.PREVIEW_LIMIT);
-    
+    protected static final int MAXIMUM_ROWS_TO_PREVIEW = CorePlugin.getDefault().getPreferenceStore().getInt(
+            ITalendCorePrefConstants.PREVIEW_LIMIT);
+
     protected ConnectionItem connectionItem;
-    
+
     protected RegexpFileConnection connection;
 
     /**
@@ -50,9 +51,10 @@ public abstract class AbstractRegexpFileStepForm extends AbstractForm {
         super(parent, SWT.NONE, existingNames);
         this.connectionItem = connectionItem;
     }
-    
+
     /**
      * DOC ocarbone AbstractRegexpFileStepForm constructor comment. Use to step2
+     * 
      * @param parent
      * @param connection2
      */
@@ -63,11 +65,12 @@ public abstract class AbstractRegexpFileStepForm extends AbstractForm {
     /**
      * DOC tguiu AbstractDelimitedFileStepForm constructor comment. Use to step1
      */
-    public AbstractRegexpFileStepForm(Composite parent, ConnectionItem connectionItem, MetadataTable metadataTable, String[] existingNames) {
+    public AbstractRegexpFileStepForm(Composite parent, ConnectionItem connectionItem, MetadataTable metadataTable,
+            String[] existingNames) {
         super(parent, SWT.NONE, existingNames);
         this.connectionItem = connectionItem;
     }
-    
+
     protected RegexpFileConnection getConnection() {
         return (RegexpFileConnection) connectionItem.getConnection();
     }

@@ -86,13 +86,13 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
      */
 
     private transient Tree availableXmlTree;
-    
+
     private ATreeNode treeNode;
-    
+
     private TargetSchemaEditor2 targetSchemaEditor;
 
     private TargetSchemaTableEditorView2 tableEditorView;
-    
+
     private Button previewButton;
 
     private Label previewInformationLabel;
@@ -127,7 +127,7 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
     protected void initialize() {
 
         checkFieldsValue();
-        targetSchemaEditor.setMetadataSchema((MetadataSchema)getConnection().getSchema().iterator().next());
+        targetSchemaEditor.setMetadataSchema((MetadataSchema) getConnection().getSchema().iterator().next());
         tableEditorView.setTargetSchemaEditor(targetSchemaEditor);
         tableEditorView.getTableViewerCreator().layout();
     }
@@ -136,27 +136,26 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
      * DOC ocarbone Comment method "adaptFormToReadOnly".
      */
     protected void adaptFormToReadOnly() {
-//        readOnly = isReadOnly();
+        // readOnly = isReadOnly();
     }
 
     protected void addFields() {
 
         // compositeFileDelimitor Main Fields
-//        Composite mainComposite = Form.startNewGridLayout(this, 1);
+        // Composite mainComposite = Form.startNewGridLayout(this, 1);
         SashForm mainComposite = new SashForm(this, SWT.VERTICAL | SWT.SMOOTH);
         mainComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
-        
-        
+
         // Splitter
         SashForm sash = new SashForm(mainComposite, SWT.HORIZONTAL | SWT.SMOOTH);
         sash.setLayoutData(new GridData(GridData.FILL_BOTH));
-        
+
         addGroupXmlFileSettings(sash, 400, 110);
         addGroupSchemaTarget(sash, 300, 110);
 
         SashForm sash2 = new SashForm(mainComposite, SWT.HORIZONTAL | SWT.SMOOTH);
         sash2.setLayoutData(new GridData(GridData.FILL_BOTH));
-        
+
         addGroupFileViewer(sash2, 400, 210);
         addGroupXmlViewer(sash2, 300, 110);
 
@@ -169,7 +168,7 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
         }
         addUtilsButtonListeners();
     }
-    
+
     /**
      * add Field to Group Delimited File Settings.
      * 
@@ -188,7 +187,7 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
         gridData.minimumWidth = width;
         gridData.minimumHeight = height;
 
-        //PTODO CAN : the XmlTree
+        // PTODO CAN : the XmlTree
         availableXmlTree = new Tree(compositeFileViewer, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
         availableXmlTree.setLayoutData(gridData);
         availableXmlTree.setToolTipText(Messages.getString("FileStep1.fileViewerTip1") + " " + MAXIMUM_ROWS_TO_PREVIEW + " "
@@ -211,11 +210,12 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
         targetSchemaEditor = new TargetSchemaEditor2(Messages.getString("FileStep3.metadataDescription"));
         tableEditorView = new TargetSchemaTableEditorView2(scrolledCompositeFileViewer, SWT.NONE, targetSchemaEditor);
         scrolledCompositeFileViewer.setContent(tableEditorView.getTableViewerCreator().getTable());
-        scrolledCompositeFileViewer.setSize(width , height);
-        
-//        Composite toolbar = new Composite(group, SWT.BORDER);
-        TargetSchemaToolbarEditorView2 targetSchemaToolbarEditorView2 = new TargetSchemaToolbarEditorView2(group, SWT.NONE, tableEditorView);
-        
+        scrolledCompositeFileViewer.setSize(width, height);
+
+        // Composite toolbar = new Composite(group, SWT.BORDER);
+        TargetSchemaToolbarEditorView2 targetSchemaToolbarEditorView2 = new TargetSchemaToolbarEditorView2(group, SWT.NONE,
+                tableEditorView);
+
     }
 
     /**
@@ -229,7 +229,8 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
     private void addGroupFileViewer(final Composite parent, final int width, int height) {
         // composite Delimited File Preview
         Group previewGroup = Form.createGroup(parent, 1, Messages.getString("FileStep2.groupPreview"), height);
-        Composite compositeDelimitedFilePreviewButton = Form.startNewDimensionnedGridLayout(previewGroup, 4, width, HEIGHT_BUTTON_PIXEL);
+        Composite compositeDelimitedFilePreviewButton = Form.startNewDimensionnedGridLayout(previewGroup, 4, width,
+                HEIGHT_BUTTON_PIXEL);
         height = height - HEIGHT_BUTTON_PIXEL - 15;
 
         // Preview Button
@@ -251,7 +252,7 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
         xmlFilePreview = new ShadowProcessPreview(compositeDelimitedFilePreview, null, width, height - 10);
         xmlFilePreview.newTablePreview();
     }
-    
+
     /**
      * add Field to Group File Viewer.
      * 
@@ -287,8 +288,7 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
      */
     private ProcessDescription getProcessDescription() {
 
-        ProcessDescription processDescription = ShadowProcessHelper
-                .getProcessDescription(getConnection());
+        ProcessDescription processDescription = ShadowProcessHelper.getProcessDescription(getConnection());
 
         // adapt the limit to the preview
         processDescription.setLimitRows(MAXIMUM_ROWS_TO_PREVIEW);
@@ -309,7 +309,8 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
         clearPreview();
 
         // if no file, the process don't be executed
-        if (getConnection().getXsdFilePath() != null && !getConnection().getXsdFilePath().equals("") && getConnection().getXmlFilePath() != null && !getConnection().getXmlFilePath().equals("")) {
+        if (getConnection().getXsdFilePath() != null && !getConnection().getXsdFilePath().equals("")
+                && getConnection().getXmlFilePath() != null && !getConnection().getXmlFilePath().equals("")) {
             previewInformationLabel.setText("   " + Messages.getString("FileStep2.filePathIncomplete"));
             return;
         }
@@ -354,7 +355,7 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
             }
         });
     }
-    
+
     /**
      * Ensures that fields are set. Update checkEnable / use to checkConnection().
      * 
@@ -432,10 +433,10 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
                 treeNode = SchemaPopulationUtil.getSchemaTree(filePath, true, numberOfElement);
                 if (treeNode == null || treeNode.getChildren().length == 0) {
                     OdaException ex = new OdaException(Messages.getString("dataset.error.populateXMLTree"));
-////                    ExceptionHandler.showException(getShell(),
-////                            Messages.getString("error.label"),
-////                            ex.getMessage(),
-////                            ex);
+                    // // ExceptionHandler.showException(getShell(),
+                    // // Messages.getString("error.label"),
+                    // // ex.getMessage(),
+                    // // ex);
                 } else {
                     Object[] childs = treeNode.getChildren();
                     populateTreeItems(availableXmlTree, childs, 0);
@@ -443,15 +444,16 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
             }
             checkFieldsValue();
         } catch (Exception e) {
-//            ExceptionHandler.showException(getShell(),
-//                    Messages.getString("error.label"),
-//                    e.getMessage(),
-//                    e);
+            // ExceptionHandler.showException(getShell(),
+            // Messages.getString("error.label"),
+            // e.getMessage(),
+            // e);
         }
     }
 
     /**
      * populate tree items
+     * 
      * @param tree
      * @param node
      */
@@ -482,6 +484,7 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
             }
         }
     }
+
     // expand the tree
     private void setExpanded(TreeItem treeItem) {
         if (treeItem.getParentItem() != null) {
@@ -504,17 +507,15 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
 
             String previewRows = "";
             try {
-                
+
                 File file = new File(getConnection().getXmlFilePath());
                 Charset guessedCharset = CharsetToolkit.guessEncoding(file, 4096);
-                
+
                 String str;
                 int numberLine = 0;
                 // read the file width the limit : MAXIMUM_ROWS_TO_PREVIEW
-                BufferedReader in = 
-                    new BufferedReader(
-                        new InputStreamReader(new FileInputStream(getConnection().getXmlFilePath()),
-                                guessedCharset.displayName()));
+                BufferedReader in = new BufferedReader(new InputStreamReader(
+                        new FileInputStream(getConnection().getXmlFilePath()), guessedCharset.displayName()));
                 while (((str = in.readLine()) != null) && (numberLine <= MAXIMUM_ROWS_TO_PREVIEW)) {
                     numberLine++;
                     previewRows = previewRows + str + "\n";
@@ -524,7 +525,7 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
                 // show lines
                 fileXmlText.setText(previewRows);
                 filePathIsDone = true;
-                
+
             } catch (Exception e) {
                 String msgError = Messages.getString("FileStep1.filepath") + " \"" + fileXmlText.getText().replace("\\\\", "\\")
                         + "\"\n";
@@ -548,27 +549,27 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
         }
     }
 
-    //PTODO CAN : logically call by runProcessShadow refresh....view to adapt it on this MetadataSchema TABLE.
+    // PTODO CAN : logically call by runProcessShadow refresh....view to adapt it on this MetadataSchema TABLE.
     /**
      * DOC cantoine Comment method "refreshMetaDataSchema".
      */
     public void refreshMetaDataSchema() {
 
-		MetadataSchema metadataSchema = ConnectionFactory.eINSTANCE.createMetadataSchema();
+        MetadataSchema metadataSchema = ConnectionFactory.eINSTANCE.createMetadataSchema();
         // define the schemaTarget to field i
         SchemaTarget schemaTarget = ConnectionFactory.eINSTANCE.createSchemaTarget();
         schemaTarget.setXPathQuery("toto");
         schemaTarget.setTagName("titi");
         schemaTarget.setIsBoucle(false);
         schemaTarget.setLimitBoucle(3);
-        tableEditorView.getTargetSchemaEditor().add(schemaTarget, 0); //i
+        tableEditorView.getTargetSchemaEditor().add(schemaTarget, 0); // i
         metadataSchema.getSchemaTargets().add(0, schemaTarget);
         getConnection().getSchema().add(0, metadataSchema);
 
         checkFieldsValue();
         tableEditorView.getTableViewerCreator().layout();
     }
-    
+
     /*
      * (non-Javadoc)
      * 
@@ -580,16 +581,16 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
         if (super.isVisible()) {
             populateTree(getConnection().getXmlFilePath());
             checkFilePathAndManageIt();
-//            refreshMetaDataSchema();
+            // refreshMetaDataSchema();
             // Refresh the preview width the adapted rowSeparator
             // If metadata exist, refreshMetadata
-            if (getConnection().getXsdFilePath() != null && !getConnection().getXsdFilePath().equals("") 
+            if (getConnection().getXsdFilePath() != null && !getConnection().getXsdFilePath().equals("")
                     && getConnection().getXmlFilePath() != null && !getConnection().getXmlFilePath().equals("")) {
                 refreshPreview();
             }
-//            if (isReadOnly() != readOnly) {
-//                adaptFormToReadOnly();
-//            }
+            // if (isReadOnly() != readOnly) {
+            // adaptFormToReadOnly();
+            // }
         }
     }
 }

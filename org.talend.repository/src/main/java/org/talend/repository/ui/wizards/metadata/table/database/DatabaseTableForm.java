@@ -296,8 +296,7 @@ public class DatabaseTableForm extends AbstractForm {
                 .getString("DatabaseTableForm.tableTip"), itemTableName, true);
 
         // Button retreiveSchema
-        Composite compositeRetreiveSchemaButton = Form.startNewGridLayout(composite1, 1, false, SWT.CENTER,
-                SWT.TOP);
+        Composite compositeRetreiveSchemaButton = Form.startNewGridLayout(composite1, 1, false, SWT.CENTER, SWT.TOP);
         retreiveSchemaButton = new UtilsButton(compositeRetreiveSchemaButton, Messages
                 .getString("DatabaseTableForm.retreiveSchema"), WIDTH_BUTTON_PIXEL, HEIGHT_BUTTON_PIXEL);
 
@@ -310,13 +309,13 @@ public class DatabaseTableForm extends AbstractForm {
         gridData.widthHint = rightCompositeWidth;
         gridData.horizontalSpan = 3;
         tableSettingsInfoLabel.setLayoutData(gridData);
-        
+
         // Checkbox streamDetach
         streamDetachCheckbox = new Button(composite1, SWT.CHECK);
         streamDetachCheckbox.setText(Messages.getString("DatabaseTableForm.streamDetach"));
         streamDetachCheckbox.setAlignment(SWT.LEFT);
         streamDetachCheckbox.setVisible(STREAM_DETACH_IS_VISIBLE);
-        
+
         // Group MetaData
         Group groupMetaData = Form.createGroup(rightComposite, 1, Messages.getString("DatabaseTableForm.groupMetaData"),
                 tableCompositeHeight);
@@ -351,7 +350,7 @@ public class DatabaseTableForm extends AbstractForm {
         gridData1.heightHint = height;
         gridData1.horizontalSpan = 2;
         scrolledCompositeFileViewer.setLayoutData(gridData1);
-        
+
         tableViewerCreator = new TableViewerCreator(scrolledCompositeFileViewer);
         tableViewerCreator.setHeaderVisible(false);
         tableViewerCreator.setAllColumnsResizable(false);
@@ -370,8 +369,8 @@ public class DatabaseTableForm extends AbstractForm {
         tableColumn.setWidth(width + 12);
 
         scrolledCompositeFileViewer.setContent(tableNavigator);
-        scrolledCompositeFileViewer.setSize(width + 12 , height);
-        
+        scrolledCompositeFileViewer.setSize(width + 12, height);
+
         // Button Add metadata Table
         Composite button = Form.startNewGridLayout(group, HEIGHT_BUTTON_PIXEL, false, SWT.CENTER, SWT.CENTER);
         addTableButton = new UtilsButton(button, Messages.getString("DatabaseTableForm.AddTable"), width, HEIGHT_BUTTON_PIXEL);
@@ -505,9 +504,9 @@ public class DatabaseTableForm extends AbstractForm {
                     items = new String[itemTableName.size()];
                     tableCombo.setVisibleItemCount(itemTableName.size());
                     // fill the combo
-                    for(int i=0; i < itemTableName.size(); i++){
+                    for (int i = 0; i < itemTableName.size(); i++) {
                         tableCombo.add(itemTableName.get(i));
-                        if(itemTableName.get(i).equals(metadataTable.getSourceName())){
+                        if (itemTableName.get(i).equals(metadataTable.getSourceName())) {
                             tableCombo.select(i);
                         }
                     }

@@ -95,8 +95,7 @@ public class XmlFileStep3Form extends AbstractXmlFileStepForm {
      * 
      * @param Composite
      */
-    public XmlFileStep3Form(Composite parent, ConnectionItem connectionItem, MetadataTable metadataTable,
-            String[] existingNames) {
+    public XmlFileStep3Form(Composite parent, ConnectionItem connectionItem, MetadataTable metadataTable, String[] existingNames) {
         super(parent, connectionItem, metadataTable, existingNames);
         this.connectionItem = connectionItem;
         this.metadataTable = metadataTable;
@@ -115,11 +114,11 @@ public class XmlFileStep3Form extends AbstractXmlFileStepForm {
         tableEditorView.setMetadataEditor(metadataEditor);
         tableEditorView.getTableViewerCreator().layout();
 
-//        if (getConnection().isReadOnly()) {
-//            adaptFormToReadOnly();
-//        } else {
-//            updateStatus(IStatus.OK, null);
-//        }
+        // if (getConnection().isReadOnly()) {
+        // adaptFormToReadOnly();
+        // } else {
+        // updateStatus(IStatus.OK, null);
+        // }
     }
 
     /**
@@ -148,7 +147,8 @@ public class XmlFileStep3Form extends AbstractXmlFileStepForm {
         // Composite Guess
         Composite compositeGuessButton = Form.startNewDimensionnedGridLayout(compositeMetaData, 2, WIDTH_GRIDDATA_PIXEL, 40);
         informationLabel = new Label(compositeGuessButton, SWT.NONE);
-        informationLabel.setText(Messages.getString("FileStep3.informationLabel") + "                                                  ");
+        informationLabel.setText(Messages.getString("FileStep3.informationLabel")
+                + "                                                  ");
         informationLabel.setSize(500, HEIGHT_BUTTON_PIXEL);
 
         guessButton = new UtilsButton(compositeGuessButton, Messages.getString("FileStep3.guess"), WIDTH_BUTTON_PIXEL,
@@ -281,8 +281,8 @@ public class XmlFileStep3Form extends AbstractXmlFileStepForm {
     protected void runShadowProcess() {
 
         // if no file, the process don't be executed
-        if (getConnection().getXsdFilePath() != null && !getConnection().getXsdFilePath().equals("") && getConnection().getXmlFilePath() != null 
-                && !getConnection().getXmlFilePath().equals("")) {
+        if (getConnection().getXsdFilePath() != null && !getConnection().getXsdFilePath().equals("")
+                && getConnection().getXmlFilePath() != null && !getConnection().getXmlFilePath().equals("")) {
             informationLabel.setText("   " + Messages.getString("FileStep3.filepathAlert")
                     + "                                                                              ");
             return;
@@ -445,9 +445,9 @@ public class XmlFileStep3Form extends AbstractXmlFileStepForm {
     public void setVisible(boolean visible) {
         super.setVisible(visible);
         if (super.isVisible()) {
-            if (getConnection().getXsdFilePath() != null && !getConnection().getXsdFilePath().equals("") 
+            if (getConnection().getXsdFilePath() != null && !getConnection().getXsdFilePath().equals("")
                     && getConnection().getXmlFilePath() != null && !getConnection().getXmlFilePath().equals("")
-                            && tableEditorView.getMetadataEditor().getItemCount() <= 0) {
+                    && tableEditorView.getMetadataEditor().getItemCount() <= 0) {
                 runShadowProcess();
             }
 

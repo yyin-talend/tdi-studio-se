@@ -151,19 +151,18 @@ public class NameSection extends AbstractSection {
         if (status.getSeverity() != IStatus.ERROR) {
             String text = nameText.getText();
             if (!text.equals(getObject().getLabel())) {
-                if (getType() == ERepositoryObjectType.FOLDER)
-                {
+                if (getType() == ERepositoryObjectType.FOLDER) {
                     IPath path = RepositoryNodeUtilities.getPath(getNode());
                     try {
                         ERepositoryObjectType type = (ERepositoryObjectType) getNode().getProperties(EProperties.CONTENT_TYPE);
                         getRepositoryFactory().renameFolder(type, path, text);
-                        RepositoryView view = (RepositoryView)getActivePage().findView(RepositoryView.VIEW_ID);
+                        RepositoryView view = (RepositoryView) getActivePage().findView(RepositoryView.VIEW_ID);
                         view.refresh();
                     } catch (PersistenceException e) {
                         e.printStackTrace();
-                        return ;
+                        return;
                     }
-                    
+
                 }
                 getObject().setLabel(text);
             }
@@ -182,5 +181,5 @@ public class NameSection extends AbstractSection {
     protected void showControl(boolean visible) {
         nameText.getParent().setVisible(visible);
     }
-    
+
 }

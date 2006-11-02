@@ -73,7 +73,7 @@ public class RegexpFileStep2Form extends AbstractRegexpFileStepForm {
             "14", "15", "16", "17", "18", "19", "20" };
 
     private static final String REGEXP_DEFAULT = "^(.*)$";
-    
+
     /**
      * Main Fields.
      */
@@ -146,10 +146,11 @@ public class RegexpFileStep2Form extends AbstractRegexpFileStepForm {
             encodingCombo.select(0);
         }
 
-//        fieldSeparatorType.setText(getConnection().getFieldSeparatorType().getName());
+        // fieldSeparatorType.setText(getConnection().getFieldSeparatorType().getName());
         if (getConnection().getFieldSeparatorValue() != null) {
-            fieldSeparatorText.setText(getConnection().getFieldSeparatorValue()); //+"\n tototototot"+"\n ouuuuuuuuuuu"
-        }else{
+            fieldSeparatorText.setText(getConnection().getFieldSeparatorValue()); // +"\n tototototot"+"\n
+                                                                                    // ouuuuuuuuuuu"
+        } else {
             fieldSeparatorText.setText(REGEXP_DEFAULT);
         }
         fieldSeparatorText.setEditable(true);
@@ -180,7 +181,7 @@ public class RegexpFileStep2Form extends AbstractRegexpFileStepForm {
 
         // clearSelection of the selected combo
         encodingCombo.clearSelection();
-//        fieldSeparatorType.clearSelection();
+        // fieldSeparatorType.clearSelection();
         rowSeparatorCombo.clearSelection();
 
         emptyRowsToSkipCheckbox.setSelection(getConnection().isRemoveEmptyRow());
@@ -224,7 +225,8 @@ public class RegexpFileStep2Form extends AbstractRegexpFileStepForm {
                 .getString("FileStep2.encodingTip"), encodingData, 3, true, SWT.NONE);
 
         // Row Separator Combo & Text
-        String[] rowSeparatorData = { RowSeparator.STANDART_EOL_LITERAL.getLiteral(), RowSeparator.CUSTOM_STRING_LITERAL.getLiteral() };
+        String[] rowSeparatorData = { RowSeparator.STANDART_EOL_LITERAL.getLiteral(),
+                RowSeparator.CUSTOM_STRING_LITERAL.getLiteral() };
         rowSeparatorCombo = new LabelledCombo(compositeFileDelimitor, Messages.getString("FileStep2.rowSeparator"), Messages
                 .getString("FileStep2.rowSeparatorTip"), rowSeparatorData, 1, true, SWT.READ_ONLY);
         rowSeparatorText = new LabelledText(compositeFileDelimitor, "", 1, true, SWT.RIGHT);
@@ -274,7 +276,8 @@ public class RegexpFileStep2Form extends AbstractRegexpFileStepForm {
         Group group = Form.createGroup(mainComposite, 2, Messages.getString("RegexpStep2.groupRegexSettings"), height);
         Composite compositeRegex = Form.startNewDimensionnedGridLayout(group, 1, width, height);
 
-        fieldSeparatorText = new Text(compositeRegex, SWT.MULTI | SWT.LEFT | SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL); //| SWT.WRAP 
+        fieldSeparatorText = new Text(compositeRegex, SWT.MULTI | SWT.LEFT | SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL); // |
+                                                                                                                        // SWT.WRAP
 
         // Dimension of columb of Separator Text
         GridData gridData = new GridData(GridData.FILL_BOTH);
@@ -282,14 +285,14 @@ public class RegexpFileStep2Form extends AbstractRegexpFileStepForm {
         gridData.minimumHeight = 70;
 
         fieldSeparatorText.setLayoutData(gridData);
-        
+
         // Field Separator Text & Text
         fieldSeparatorType = new Text(compositeRegex, SWT.NONE);
         fieldSeparatorType.setVisible(false);
         fieldSeparatorType.setText(FieldSeparator.CUSTOM_REG_EXP_LITERAL.getName());
         FieldSeparator seperator = FieldSeparator.getByName(fieldSeparatorType.getText());
         getConnection().setFieldSeparatorType(seperator);
-        
+
     }
 
     /**
@@ -328,7 +331,8 @@ public class RegexpFileStep2Form extends AbstractRegexpFileStepForm {
     private void addGroupFileViewer(final Composite parent, final int width, int height) {
         // composite Delimited File Preview
         previewGroup = Form.createGroup(parent, 1, Messages.getString("FileStep2.groupPreview"), height);
-        Composite compositeDelimitedFilePreviewButton = Form.startNewDimensionnedGridLayout(previewGroup, 4, width, HEIGHT_BUTTON_PIXEL);
+        Composite compositeDelimitedFilePreviewButton = Form.startNewDimensionnedGridLayout(previewGroup, 4, width,
+                HEIGHT_BUTTON_PIXEL);
         height = height - HEIGHT_BUTTON_PIXEL - 15;
 
         // Delimited File Preview Info
@@ -387,8 +391,7 @@ public class RegexpFileStep2Form extends AbstractRegexpFileStepForm {
      */
     private ProcessDescription getProcessDescription() {
 
-        ProcessDescription processDescription = ShadowProcessHelper
-                .getProcessDescription(getConnection());
+        ProcessDescription processDescription = ShadowProcessHelper.getProcessDescription(getConnection());
 
         // Adapt Header width firstRowIsCaption to preview the first line on caption or not
         Integer i = 0;
@@ -520,21 +523,21 @@ public class RegexpFileStep2Form extends AbstractRegexpFileStepForm {
      * add Controls to group Escape Char.
      */
     private void addFieldsListenersGroupsRegex() {
-//        // Escape Char Combo
-//        escapeCharCombo.addModifyListener(new ModifyListener() {
-//
-//            public void modifyText(final ModifyEvent e) {
-//                getConnection().setEscapeChar(escapeCharCombo.getText());
-//                checkFieldsValue();
-//            }
-//        });
-//        textEnclosureCombo.addModifyListener(new ModifyListener() {
-//
-//            public void modifyText(final ModifyEvent e) {
-//                getConnection().setTextEnclosure(textEnclosureCombo.getText());
-//                checkFieldsValue();
-//            }
-//        });
+        // // Escape Char Combo
+        // escapeCharCombo.addModifyListener(new ModifyListener() {
+        //
+        // public void modifyText(final ModifyEvent e) {
+        // getConnection().setEscapeChar(escapeCharCombo.getText());
+        // checkFieldsValue();
+        // }
+        // });
+        // textEnclosureCombo.addModifyListener(new ModifyListener() {
+        //
+        // public void modifyText(final ModifyEvent e) {
+        // getConnection().setTextEnclosure(textEnclosureCombo.getText());
+        // checkFieldsValue();
+        // }
+        // });
     }
 
     /**
@@ -862,14 +865,14 @@ public class RegexpFileStep2Form extends AbstractRegexpFileStepForm {
         if (super.isVisible()) {
             // Adapt the UI rowSeparator to the file format
             rowSeparatorManager();
-            
+
             // Fields to the Group Delimited File Settings
             if (getConnection().getEncoding() != null && !getConnection().getEncoding().equals("")) {
                 encodingCombo.setText(getConnection().getEncoding());
             } else {
                 encodingCombo.select(0);
             }
-            
+
             // Refresh the preview width the adapted rowSeparator
             // If metadata exist, refreshMetadata
             if (getConnection().getFilePath() != null && !("").equals(getConnection().getFilePath())) {

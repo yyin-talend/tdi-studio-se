@@ -57,7 +57,7 @@ public class CreateFileXmlAction extends AbstractCreateAction {
     protected static final int WIZARD_HEIGHT = 475;
 
     private boolean creation = false;
-    
+
     /**
      * DOC cantoine CreateFileXmlAction constructor comment.
      * 
@@ -73,8 +73,9 @@ public class CreateFileXmlAction extends AbstractCreateAction {
 
     public void run() {
         ISelection selection = getSelection();
-        WizardDialog wizardDialog = new WizardDialog(new Shell(), new XmlFileWizard(PlatformUI.getWorkbench(), creation, selection, getExistingNames()));
-//        
+        WizardDialog wizardDialog = new WizardDialog(new Shell(), new XmlFileWizard(PlatformUI.getWorkbench(), creation,
+                selection, getExistingNames()));
+        //        
         wizardDialog.setPageSize(WIZARD_WIDTH, WIZARD_HEIGHT);
         wizardDialog.create();
         wizardDialog.open();

@@ -62,7 +62,7 @@ public class HoursMinutesGroup extends Group implements IWidgetEnableListener {
 
     /**
      * 
-     * This class is a button listener using for minute buttons. 
+     * This class is a button listener using for minute buttons.
      * 
      * $Id$
      * 
@@ -70,7 +70,9 @@ public class HoursMinutesGroup extends Group implements IWidgetEnableListener {
     class MinutesButtonListener extends SelectionAdapter {
 
         private static final int SELECTED_BUTTON_VALUE = 38;
+
         private static final int SELECTED_BUTTON_NUM = 12;
+
         int[] selectedButton = new int[SELECTED_BUTTON_NUM];
 
         MinutesButtonListener() {
@@ -117,8 +119,9 @@ public class HoursMinutesGroup extends Group implements IWidgetEnableListener {
      * 
      */
     class HoursButtonListener extends SelectionAdapter {
-        
+
         private static final int SELECTED_BUTTON_VALUE = 38;
+
         private static final int SELECTED_BUTTON_NUM = 24;
 
         int selectedButton[] = new int[SELECTED_BUTTON_NUM];
@@ -232,12 +235,12 @@ public class HoursMinutesGroup extends Group implements IWidgetEnableListener {
         new Label(this, SWT.NONE);
         new Label(this, SWT.NONE);
         new Label(this, SWT.NONE);
-//         Begin  modify the defect 0000220: Size of button
+        // Begin modify the defect 0000220: Size of button
         new Label(this, SWT.NONE);
         final Label minutesLabel = new Label(this, SWT.NONE);
         minutesLabel.setText(Messages.getString("HoursMinutesGroup.minutesLabelText")); //$NON-NLS-1$
         new Label(this, SWT.NONE);
-//      End  modify the defect 0000220: Size of button
+        // End modify the defect 0000220: Size of button
         for (int j = 0; j < 60; j += 5) {
             createButton(String.valueOf(j), String.valueOf(j / 5), new MinutesButtonListener(), minutesButtons);
         }
@@ -260,6 +263,7 @@ public class HoursMinutesGroup extends Group implements IWidgetEnableListener {
     /**
      * 
      * Updates.
+     * 
      * @param task ScheduleTask.
      */
     public void update(ScheduleTask task) {
@@ -294,6 +298,7 @@ public class HoursMinutesGroup extends Group implements IWidgetEnableListener {
     /**
      * 
      * Updates selected hour buttons.
+     * 
      * @param cronRunningHours cronRunningHours
      */
     private void updateSelectedHoursButtons(String cronRunningHours) {
@@ -343,10 +348,11 @@ public class HoursMinutesGroup extends Group implements IWidgetEnableListener {
     /**
      * 
      * Creates button.
+     * 
      * @param txt String
-     * @param data String 
+     * @param data String
      * @param listener SelectionAdapter
-     * @param buttons  the list of buttons
+     * @param buttons the list of buttons
      */
     private void createButton(String txt, String data, SelectionAdapter listener, ArrayList<Button> buttons) {
         final Button btn = new Button(this, SWT.TOGGLE);
@@ -360,6 +366,7 @@ public class HoursMinutesGroup extends Group implements IWidgetEnableListener {
 
     /**
      * Enable all buttons.
+     * 
      * @param enable boolean
      */
     public void enableAll(boolean enable) {

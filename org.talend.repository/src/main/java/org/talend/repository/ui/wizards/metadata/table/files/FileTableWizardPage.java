@@ -93,8 +93,8 @@ public class FileTableWizardPage extends WizardPage {
 
             @Override
             public Object caseDelimitedFileConnection(final DelimitedFileConnection object) {
-                DelimitedFileStep3Form delimitedFileStep3Form = new DelimitedFileStep3Form(parent, connectionItem, metadataTable, TableHelper
-                        .getTableNames(object, metadataTable.getLabel()));
+                DelimitedFileStep3Form delimitedFileStep3Form = new DelimitedFileStep3Form(parent, connectionItem, metadataTable,
+                        TableHelper.getTableNames(object, metadataTable.getLabel()));
                 delimitedFileStep3Form.setReadOnly(!isRepositoryObjectEditable);
                 delimitedFileStep3Form.setListener(listener);
                 return delimitedFileStep3Form;
@@ -102,8 +102,8 @@ public class FileTableWizardPage extends WizardPage {
 
             @Override
             public Object casePositionalFileConnection(final PositionalFileConnection object) {
-                FileStep3Form fileStep3Form = new FileStep3Form(parent, connectionItem, metadataTable, TableHelper
-                        .getTableNames(object, metadataTable.getLabel()));
+                FileStep3Form fileStep3Form = new FileStep3Form(parent, connectionItem, metadataTable, TableHelper.getTableNames(
+                        object, metadataTable.getLabel()));
                 fileStep3Form.setReadOnly(!isRepositoryObjectEditable);
                 fileStep3Form.setListener(listener);
                 return fileStep3Form;
@@ -111,8 +111,8 @@ public class FileTableWizardPage extends WizardPage {
 
             @Override
             public Object caseRegexpFileConnection(final RegexpFileConnection object) {
-                RegexpFileStep3Form regexpFileStep3Form = new RegexpFileStep3Form(parent, connectionItem, metadataTable, TableHelper
-                        .getTableNames(object, metadataTable.getLabel()));
+                RegexpFileStep3Form regexpFileStep3Form = new RegexpFileStep3Form(parent, connectionItem, metadataTable,
+                        TableHelper.getTableNames(object, metadataTable.getLabel()));
                 regexpFileStep3Form.setReadOnly(!isRepositoryObjectEditable);
                 regexpFileStep3Form.setListener(listener);
                 return regexpFileStep3Form;
@@ -125,7 +125,7 @@ public class FileTableWizardPage extends WizardPage {
                 xmlFileStep3Form.setListener(listener);
                 return xmlFileStep3Form;
             }
-            
+
         }.doSwitch(connection);
         setControl(theForm);
     }

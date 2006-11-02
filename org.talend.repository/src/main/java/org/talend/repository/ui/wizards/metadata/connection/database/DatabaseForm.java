@@ -645,10 +645,10 @@ public class DatabaseForm extends AbstractForm {
     private void setPropertiesFormEditable(boolean visible) {
         // update the UI label
         if (urlDataStringConnection.isSchemaNeeded()) {
-            if(urlDataStringConnection.getStringConnectionTemplate().contains("(description=(address=(protocol=tcp)")){
+            if (urlDataStringConnection.getStringConnectionTemplate().contains("(description=(address=(protocol=tcp)")) {
                 sidOrDatabaseText.setLabelText(Messages.getString("DatabaseForm.service_name"));
                 sidOrDatabaseText.setLabelWidth(65);
-            }else{
+            } else {
                 sidOrDatabaseText.setLabelText(Messages.getString("DatabaseForm.sid"));
             }
         } else {
