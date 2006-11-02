@@ -55,7 +55,7 @@ import org.talend.designer.mapper.model.tableentry.OutputColumnTableEntry;
 import org.talend.designer.mapper.model.tableentry.TableEntryLocation;
 import org.talend.designer.mapper.model.tableentry.VarTableEntry;
 import org.talend.designer.mapper.ui.visualmap.TableEntryProperties;
-import org.talend.designer.mapper.ui.visualmap.link.IGraphicLink;
+import org.talend.designer.mapper.ui.visualmap.link.IMapperLink;
 import org.talend.designer.mapper.ui.visualmap.link.LinkState;
 import org.talend.designer.mapper.ui.visualmap.table.DataMapTableView;
 import org.talend.designer.mapper.ui.visualmap.table.EntryState;
@@ -198,7 +198,7 @@ public class MapperManager {
      * 
      * @param link
      */
-    public void addLink(IGraphicLink link) {
+    public void addLink(IMapperLink link) {
         linkManager.addLink(link);
         changeDependentSourcesAndTargetEntriesState(link.getPointLinkDescriptorTarget().getTableEntry(), link, false);
     }
@@ -208,7 +208,7 @@ public class MapperManager {
      * 
      * @param link
      */
-    public void removeLink(IGraphicLink link, ITableEntry entryCauseOfRemove) {
+    public void removeLink(IMapperLink link, ITableEntry entryCauseOfRemove) {
         changeDependentSourcesAndTargetEntriesState(entryCauseOfRemove, link, true);
         linkManager.removeLink(link);
     }
@@ -221,8 +221,7 @@ public class MapperManager {
      * @param currentLink
      * @param removedLink
      */
-    private void changeDependentSourcesAndTargetEntriesState(ITableEntry entryCauseOfChange, IGraphicLink currentLink,
-            boolean removedLink) {
+    private void changeDependentSourcesAndTargetEntriesState(ITableEntry entryCauseOfChange, IMapperLink currentLink, boolean removedLink) {
 
         boolean sourceIsCauseOfChange = false;
         if (currentLink.getPointLinkDescriptorSource().getTableEntry() == entryCauseOfChange) {
@@ -234,16 +233,14 @@ public class MapperManager {
         }
 
         if (sourceIsCauseOfChange) {
-            Set<IGraphicLink> dependentLinks = linkManager.getLinksFromSource(entryCauseOfChange);
-            for (IGraphicLink dependentLink : dependentLinks) {
-                changeDependentEntriesState(currentLink, dependentLink.getPointLinkDescriptorTarget().getTableEntry(),
-                        removedLink);
+            Set<IMapperLink> dependentLinks = linkManager.getLinksFromSource(entryCauseOfChange);
+            for (IMapperLink dependentLink : dependentLinks) {
+                changeDependentEntriesState(currentLink, dependentLink.getPointLinkDescriptorTarget().getTableEntry(), removedLink);
             }
         } else {
-            Set<IGraphicLink> dependentLinks = linkManager.getLinksFromTarget(entryCauseOfChange);
-            for (IGraphicLink dependentLink : dependentLinks) {
-                changeDependentEntriesState(currentLink, dependentLink.getPointLinkDescriptorSource().getTableEntry(),
-                        removedLink);
+            Set<IMapperLink> dependentLinks = linkManager.getLinksFromTarget(entryCauseOfChange);
+            for (IMapperLink dependentLink : dependentLinks) {
+                changeDependentEntriesState(currentLink, dependentLink.getPointLinkDescriptorSource().getTableEntry(), removedLink);
             }
         }
         changeDependentEntriesState(currentLink, entryCauseOfChange, removedLink);
@@ -257,11 +254,11 @@ public class MapperManager {
      * @param currentEntry
      * @param removedLink
      */
-    private void changeDependentEntriesState(IGraphicLink link, ITableEntry currentEntry, boolean removedLink) {
-        Set<IGraphicLink> dependentLinks = linkManager.getLinksFromSource(currentEntry);
+    private void changeDependentEntriesState(IMapperLink link, ITableEntry currentEntry, boolean removedLink) {
+        Set<IMapperLink> dependentLinks = linkManager.getLinksFromSource(currentEntry);
         dependentLinks.addAll(linkManager.getLinksFromTarget(currentEntry));
         boolean hasSelectedLink = false;
-        for (IGraphicLink dependentLink : dependentLinks) {
+        for (IMapperLink dependentLink : dependentLinks) {
             if (dependentLink.getState() == LinkState.SELECTED && dependentLink != link) {
                 hasSelectedLink = true;
                 break;
@@ -288,15 +285,15 @@ public class MapperManager {
      * 
      * @param link
      */
-    public Set<IGraphicLink> getGraphicalLinksFromSource(ITableEntry dataMapTableEntry) {
+    public Set<IMapperLink> getGraphicalLinksFromSource(ITableEntry dataMapTableEntry) {
         return linkManager.getLinksFromSource(dataMapTableEntry);
     }
 
-    public Set<IGraphicLink> getGraphicalLinksFromTarget(ITableEntry dataMapTableEntry) {
+    public Set<IMapperLink> getGraphicalLinksFromTarget(ITableEntry dataMapTableEntry) {
         return linkManager.getLinksFromTarget(dataMapTableEntry);
     }
 
-    public List<IGraphicLink> getLinks() {
+    public List<IMapperLink> getLinks() {
         return linkManager.getLinks();
     }
 
@@ -359,9 +356,9 @@ public class MapperManager {
      * @param dataMapTableEntry
      */
     public void removeLinksOf(ITableEntry dataMapTableEntry) {
-        Set<IGraphicLink> links = linkManager.getLinksFromSource(dataMapTableEntry);
+        Set<IMapperLink> links = linkManager.getLinksFromSource(dataMapTableEntry);
         links.addAll(linkManager.getLinksFromTarget(dataMapTableEntry));
-        for (IGraphicLink link : links) {
+        for (IMapperLink link : links) {
             removeLink(link, dataMapTableEntry);
         }
     }
@@ -431,8 +428,7 @@ public class MapperManager {
      * @param dataMapTableEntry
      * @param index
      */
-    public void addMetadataTableEditorEntry(MetadataTableEditorView metadataTableEditorView, IMetadataColumn metadataColumn,
-            Integer index) {
+    public void addMetadataTableEditorEntry(MetadataTableEditorView metadataTableEditorView, IMetadataColumn metadataColumn, Integer index) {
         MetadataTableEditor metadataTableEditor = metadataTableEditorView.getMetadataTableEditor();
         metadataTableEditor.add(metadataColumn, index);
     }
@@ -470,8 +466,7 @@ public class MapperManager {
         AbstractDataMapTable abstractDataMapTable = new OutputTable(metadataTable, null, tableName);
 
         TablesZoneView tablesZoneViewOutputs = uiManager.getTablesZoneViewOutputs();
-        DataMapTableView dataMapTableView = uiManager.createNewOutputTableView(lastChild, abstractDataMapTable,
-                tablesZoneViewOutputs);
+        DataMapTableView dataMapTableView = uiManager.createNewOutputTableView(lastChild, abstractDataMapTable, tablesZoneViewOutputs);
         tablesZoneViewOutputs.setSize(tablesZoneViewOutputs.computeSize(SWT.DEFAULT, SWT.DEFAULT));
         tablesZoneViewOutputs.layout();
         uiManager.moveOutputScrollBarZoneToMax();
@@ -581,7 +576,7 @@ public class MapperManager {
             tableViewer.getTable().deselectAll();
         }
         tableViewer.refresh(currentEntry);
-
+        
         uiManager.parseNewExpression(text, currentEntry, false);
     }
 
@@ -639,8 +634,8 @@ public class MapperManager {
      * @return
      */
     private String getPreviewFileName() {
-        return mapperComponent.getProcess().getId() + "-" + mapperComponent.getUniqueName() + "-"
-                + EParameterName.PREVIEW.getName() + ".bmp";
+        return mapperComponent.getProcess().getId() + "-" + mapperComponent.getUniqueName() + "-" + EParameterName.PREVIEW.getName()
+                + ".bmp";
     }
 
     public void updateEmfParameters(String... parametersToUpdate) {
@@ -690,8 +685,7 @@ public class MapperManager {
     /**
      * DOC amaumont Comment method "replacePreviousLocationInAllExpressions".
      */
-    public void replacePreviousLocationInAllExpressions(final TableEntryLocation previousLocation,
-            final TableEntryLocation newLocation) {
+    public void replacePreviousLocationInAllExpressions(final TableEntryLocation previousLocation, final TableEntryLocation newLocation) {
 
         DataMapExpressionParser dataMapExpressionParser = new DataMapExpressionParser(LanguageProvider.getCurrentLanguage());
         Collection<AbstractDataMapTable> tablesData = getTablesData();
@@ -714,7 +708,6 @@ public class MapperManager {
     /**
      * 
      * DOC amaumont Comment method "replaceLocation".
-     * 
      * @param previousLocation
      * @param newLocation
      * @param dataMapExpressionParser
@@ -751,15 +744,17 @@ public class MapperManager {
         return false;
     }
 
+
     /**
      * DOC amaumont Comment method "checkExpressionSyntax".
-     * 
      * @param expression
      */
     public Problem checkExpressionSyntax(String expression) {
         return LanguageProvider.getCurrentLanguage().checkExpressionSyntax(expression);
     }
-
+    
+    
+    
     // public Object getEmfParameterValue(String parameterName) {
     // List<? extends IElementParameter> elementParameters = mapperComponent.getElementParameters();
     // for (IElementParameter parameter : elementParameters) {

@@ -29,9 +29,10 @@ import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.PaletteData;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.RGB;
-import org.talend.designer.mapper.geometry.Curve2DBezier;
-import org.talend.designer.mapper.geometry.Point2D;
-import org.talend.designer.mapper.geometry.Point2DList;
+import org.eclipse.swt.graphics.Rectangle;
+import org.talend.commons.ui.geometry.Curve2DBezier;
+import org.talend.commons.ui.geometry.Point2D;
+import org.talend.commons.ui.geometry.Point2DList;
 import org.talend.designer.mapper.managers.MapperManager;
 import org.talend.designer.mapper.managers.UIManager;
 import org.talend.designer.mapper.model.tableentry.ConstraintTableEntry;
@@ -47,7 +48,7 @@ import org.talend.designer.mapper.ui.visualmap.zone.Zone;
  * $Id$
  * 
  */
-public class AbstractLink implements IGraphicLink {
+public class AbstractLink implements IMapperLink {
 
     private static final boolean BEZIER_MODE = true;
 
@@ -55,25 +56,25 @@ public class AbstractLink implements IGraphicLink {
 
     private static final int BEZIER_CONNECTOR_WIDTH = 70;
 
-    private PointLinkDescriptor pointDescriptor1;
+    protected PointLinkDescriptor pointDescriptor1;
 
-    private PointLinkDescriptor pointDescriptor2;
+    protected PointLinkDescriptor pointDescriptor2;
 
-    private Point point1;
+    protected Point point1;
 
-    private Point point2;
+    protected Point point2;
 
     private LinkState linkState;
 
+    protected UIManager uiManager;
+
+    protected MapperManager mapperManager;
+
     private Curve2DBezier curve;
 
-    private UIManager uiManager;
+    protected int widthTable1;
 
-    private MapperManager mapperManager;
-
-    private int widthTable1;
-
-    private int widthTable2;
+    protected int widthTable2;
 
     private static Color normalLinkColor;
 
@@ -85,7 +86,8 @@ public class AbstractLink implements IGraphicLink {
 
     public static int keyLinksCounter;
 
-    public AbstractLink(PointLinkDescriptor pointDescriptor1, PointLinkDescriptor pointDescriptor2, MapperManager mapperManager) {
+    public AbstractLink(PointLinkDescriptor pointDescriptor1, PointLinkDescriptor pointDescriptor2,
+            MapperManager mapperManager) {
         super();
         this.pointDescriptor1 = pointDescriptor1;
         this.pointDescriptor2 = pointDescriptor2;
@@ -111,7 +113,6 @@ public class AbstractLink implements IGraphicLink {
 
     @Override
     public String toString() {
-
         return pointDescriptor1 + " " + pointDescriptor2;
     }
 
@@ -120,8 +121,11 @@ public class AbstractLink implements IGraphicLink {
      * 
      * @see org.talend.designer.mapper.ui.datamap.linking.GraphicLink#draw(org.eclipse.swt.graphics.GC, int, int, int)
      */
-    public void draw(GC gc, int yMinVisiblePoints, int yMaxVisiblePoints) {
+    public void draw(GC gc, Rectangle boundsOf) {
 
+        int yMinVisiblePoints = boundsOf.y;
+        int yMaxVisiblePoints = boundsOf.height;
+        
         ColorInfo foregroundColorInfo = null;
         if (linkState == LinkState.SELECTED && pointDescriptor2.getTableEntry() instanceof IColumnEntry) {
             foregroundColorInfo = ColorInfo.COLOR_LINK_HIGHLIGHTED;
@@ -140,18 +144,11 @@ public class AbstractLink implements IGraphicLink {
 
         boolean leftSidePosition = ((zone1 == Zone.INPUTS || zone1 == Zone.VARS) && zone1 == zone2);
 
-        // System.out.println("halfTableWidth1="+halfTableWidth1);
-        // System.out.println("halfTableWidth2="+halfTableWidth2);
-
-        // int point1x_halfTableWidth1 = (int)Math.floor(point1.x + (leftSidePosition ? 0 : endTable1));
         int point1x_forTraceLink = point1.x + (leftSidePosition ? 0 : widthTable1 - 4);
         int point2x_forTraceLink = point2.x + (leftSidePosition ? 0 : 4);
 
         int point1x_forTraceArrow = point1.x + (leftSidePosition ? 0 : widthTable1 - 4);
         int point2x_forTraceArrow = point2.x + (leftSidePosition ? 0 : 0);
-
-        // gc.drawLine(point1x_halfTableWidth1, 0, point1x_halfTableWidth1, 1000);
-        // gc.drawLine(point2x_halfTableWidth2, 0, point2x_halfTableWidth2, 1000);
 
         int point1y_yOffsetPoint1 = point1.y + yOffsetPoint1;
         int point2y_yOffsetPoint2 = point2.y + yOffsetPoint2;
@@ -162,22 +159,12 @@ public class AbstractLink implements IGraphicLink {
         if (BEZIER_MODE) {
             distance = new java.awt.Point(point1x_forTraceLink, point1y_yOffsetPoint1).distance(point2x_forTraceLink,
                     point2y_yOffsetPoint2);
-            // //System.out.println("distance= "+distance);
-            // spaceBetweenPoints = (int) ((double) (100d * (double) MAX_SPACE_BETWEEN_POINTS) / distance);
-            // // //System.out.println("spaceBetweenPoints = " +spaceBetweenPoints);
-            // if (spaceBetweenPoints < 1) {
-            // spaceBetweenPoints = 1;
-            // }
-            // if (spaceBetweenPoints > MAX_SPACE_BETWEEN_POINTS) {
-            // spaceBetweenPoints = MAX_SPACE_BETWEEN_POINTS;
-            // }
-
         }
 
         int heightRefComposite = this.uiManager.getReferenceComposite().getSize().y;
 
-        if (point1y_yOffsetPoint1 > heightRefComposite || point2y_yOffsetPoint2 > heightRefComposite || point1y_yOffsetPoint1 < 0
-                || point2y_yOffsetPoint2 < 0) {
+        if (point1y_yOffsetPoint1 > heightRefComposite || point2y_yOffsetPoint2 > heightRefComposite
+                || point1y_yOffsetPoint1 < 0 || point2y_yOffsetPoint2 < 0) {
             // gc.setLineDash(new int[] { 1, spaceBetweenPoints, 1 });
             gc.setLineStyle(SWT.LINE_DOT);
             // gc.setLineStyle(SWT.LINE_CUSTOM);
@@ -187,14 +174,6 @@ public class AbstractLink implements IGraphicLink {
             // System.out.println("SWT.LINE_SOLID");
         }
 
-        // gc.drawLine(point1.x, 0,
-        // point1.x, 1000);
-        // gc.drawLine(point2.x, 0,
-        // point2.x, 1000);
-        // gc.drawLine(point1x_halfTableWidth1, 0,
-        // point1x_halfTableWidth1, 1000);
-        // gc.drawLine(point2x_halfTableWidth2, 0,
-        // point2x_halfTableWidth2, 1000);
         long timeDrawLines = System.currentTimeMillis();
         if (BEZIER_MODE && !leftSidePosition) {
 
@@ -211,24 +190,23 @@ public class AbstractLink implements IGraphicLink {
                 pl = (Point2DList) curve.getPointList();
             }
 
-            // System.out.println("distance = " + distance);
-            // System.out.println("subdiv = " + subdiv);
             curve.setSubdiv((int) (DISTANCE_REFERENCE / distance));
-            // double coefDist = distance / 1500;
             double coefDist_connectorWidth = distance / 1500 * BEZIER_CONNECTOR_WIDTH;
 
             int point1x_halfTableWidth1_connWidth = point1x_forTraceLink + BEZIER_CONNECTOR_WIDTH;
             int point2x_halfTableWidth2_connWidth = point2x_forTraceLink - BEZIER_CONNECTOR_WIDTH;
 
             ((Point2D) pl.get(0)).setLocation(point1x_forTraceLink, point1y_yOffsetPoint1);
-            ((Point2D) pl.get(1)).setLocation(point1x_halfTableWidth1_connWidth + coefDist_connectorWidth, point1y_yOffsetPoint1);
+            ((Point2D) pl.get(1)).setLocation(point1x_halfTableWidth1_connWidth + coefDist_connectorWidth,
+                    point1y_yOffsetPoint1);
 
             ((Point2D) pl.get(2))
                     .setLocation(
                             (point1x_halfTableWidth1_connWidth + coefDist_connectorWidth + (point2x_halfTableWidth2_connWidth - coefDist_connectorWidth)) / 2,
                             (point1y_yOffsetPoint1 + (point2y_yOffsetPoint2)) / 2);
 
-            ((Point2D) pl.get(3)).setLocation(point2x_halfTableWidth2_connWidth - coefDist_connectorWidth, point2y_yOffsetPoint2);
+            ((Point2D) pl.get(3)).setLocation(point2x_halfTableWidth2_connWidth - coefDist_connectorWidth,
+                    point2y_yOffsetPoint2);
             ((Point2D) pl.get(4)).setLocation(point2x_forTraceLink, point2y_yOffsetPoint2);
 
             // //System.out.println("");
@@ -238,33 +216,11 @@ public class AbstractLink implements IGraphicLink {
             curve.draw(gc, pl, pl, yMinVisiblePoints, yMaxVisiblePoints);
 
         } else if (!BEZIER_MODE && !leftSidePosition) {
-            // long timeDrawLine1 = System.currentTimeMillis();
-            // gc.drawLine(point1x_halfTableWidth1, point1y_yOffsetPoint1, point1x_halfTableWidth1 +
-            // NORMAL_CONNECTOR_WIDTH,
-            // point1y_yOffsetPoint1);
-            // System.out.println("Time Draw Line 1 :" + (System.currentTimeMillis() - timeDrawLine1) + " ms");
-            // // // in1 pr
-            // long timeDrawLine2 = System.currentTimeMillis();
-            // gc.drawLine(point1x_halfTableWidth1 + NORMAL_CONNECTOR_WIDTH, point1y_yOffsetPoint1,
-            // point2x_halfTableWidth2
-            // - NORMAL_CONNECTOR_WIDTH, point2y_yOffsetPoint2);
-            // System.out.println("Time Draw Line 2 :" + (System.currentTimeMillis() - timeDrawLine2) + " ms");
-            // // // connector pr (in)
-            // long timeDrawLine3 = System.currentTimeMillis();
-            // gc.drawLine(point2x_halfTableWidth2 - NORMAL_CONNECTOR_WIDTH, point2y_yOffsetPoint2,
-            // point2x_halfTableWidth2,
-            // point2y_yOffsetPoint2);
-            // System.out.println("Time Draw Line 3 :" + (System.currentTimeMillis() - timeDrawLine3) + " ms");
-
             long timeDrawPolyLine = System.currentTimeMillis();
             gc.drawPolyline(new int[] { point1x_forTraceLink, point1y_yOffsetPoint1,
                     point1x_forTraceLink + NORMAL_CONNECTOR_WIDTH, point1y_yOffsetPoint1,
                     point2x_forTraceLink - NORMAL_CONNECTOR_WIDTH, point2y_yOffsetPoint2, point2x_forTraceLink,
                     point2y_yOffsetPoint2 });
-            // if(System.currentTimeMillis() - timeDrawPolyLine > 10) {
-            // System.out.println("Time Draw PolyLine :" + (System.currentTimeMillis() - timeDrawPolyLine) + " ms");
-            // System.out.println("zone1 :" + zone1 + " zone2:"+zone2);
-            // }
         } else if (leftSidePosition) {
 
             boolean point1Above = point1y_yOffsetPoint1 > point2y_yOffsetPoint2;
@@ -274,23 +230,25 @@ public class AbstractLink implements IGraphicLink {
             int halfSizeCircle = 10;
             int xOffset = 4 * keyLinksCounter + 1;
 
-            gc.drawLine(point1x_forTraceLink, point1y_yOffsetPoint1, point1x_forTraceLink - SIDE_CONNECTOR_WIDTH - xOffset,
-                    point1y_yOffsetPoint1);
+            gc.drawLine(point1x_forTraceLink, point1y_yOffsetPoint1, point1x_forTraceLink - SIDE_CONNECTOR_WIDTH
+                    - xOffset, point1y_yOffsetPoint1);
 
             gc.drawArc(point1x_forTraceLink - SIDE_CONNECTOR_WIDTH - halfSizeCircle - xOffset, point1y_yOffsetPoint1
-                    - (point1Above ? 2 * halfSizeCircle : 0), 2 * halfSizeCircle, 2 * halfSizeCircle, point1Above ? 180 : 90, 90);
+                    - (point1Above ? 2 * halfSizeCircle : 0), 2 * halfSizeCircle, 2 * halfSizeCircle, point1Above ? 180
+                    : 90, 90);
 
             // // in1 pr
-            gc.drawLine(point1x_forTraceLink - SIDE_CONNECTOR_WIDTH - halfSizeCircle - xOffset, point1y_yOffsetPoint1 - mult
-                    * halfSizeCircle, point2x_forTraceLink - SIDE_CONNECTOR_WIDTH - halfSizeCircle - xOffset,
+            gc.drawLine(point1x_forTraceLink - SIDE_CONNECTOR_WIDTH - halfSizeCircle - xOffset, point1y_yOffsetPoint1
+                    - mult * halfSizeCircle, point2x_forTraceLink - SIDE_CONNECTOR_WIDTH - halfSizeCircle - xOffset,
                     point2y_yOffsetPoint2 + mult * halfSizeCircle);
 
             gc.drawArc(point2x_forTraceLink - SIDE_CONNECTOR_WIDTH - halfSizeCircle - xOffset, point2y_yOffsetPoint2
-                    - (point1Above ? 0 : 2 * halfSizeCircle), 2 * halfSizeCircle, 2 * halfSizeCircle, point1Above ? 90 : 180, 90);
+                    - (point1Above ? 0 : 2 * halfSizeCircle), 2 * halfSizeCircle, 2 * halfSizeCircle, point1Above ? 90
+                    : 180, 90);
 
             // // connector pr (in)
-            gc.drawLine(point2x_forTraceLink - SIDE_CONNECTOR_WIDTH - xOffset, point2y_yOffsetPoint2, point2x_forTraceLink,
-                    point2y_yOffsetPoint2);
+            gc.drawLine(point2x_forTraceLink - SIDE_CONNECTOR_WIDTH - xOffset, point2y_yOffsetPoint2,
+                    point2x_forTraceLink, point2y_yOffsetPoint2);
 
             keyLinksCounter++;
         }
@@ -339,12 +297,6 @@ public class AbstractLink implements IGraphicLink {
             gc.drawImage(eastArrow, point2x_forTraceArrow - widthArrow, point2y_yOffsetPoint2 - heightArrow / 2);
             eastArrow.dispose();
         }
-
-        // if(System.currentTimeMillis() - timeDrawLines != 0)
-        // System.out.println("Time Draw Lines :" + (System.currentTimeMillis() - timeDrawLines) + " ms");
-        //
-        // if(System.currentTimeMillis() - timeDrawLink != 0)
-        // System.out.println("Time Draw Link :" + (System.currentTimeMillis() - timeDrawLink) + " ms");
 
     }
 
