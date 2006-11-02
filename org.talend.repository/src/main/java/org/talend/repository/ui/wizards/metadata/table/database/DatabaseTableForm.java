@@ -214,7 +214,11 @@ public class DatabaseTableForm extends AbstractForm {
 
         if (metadataTable == null) {
             if (getConnection().getTables() != null && !getConnection().getTables().isEmpty()) {
-                metadataTable = (MetadataTable) getConnection().getTables().iterator().next();
+                for (int i = 0; i < getConnection().getTables().size(); i++) {
+                    if (!TableHelper.isDeleted((MetadataTable) getConnection().getTables().get(i))) {
+                        metadataTable = (MetadataTable) getConnection().getTables().get(i);
+                    }
+                }
             } else {
                 addMetadataTable();
             }
