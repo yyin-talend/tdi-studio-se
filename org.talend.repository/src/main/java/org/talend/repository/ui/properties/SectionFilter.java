@@ -23,7 +23,6 @@ package org.talend.repository.ui.properties;
 
 import org.eclipse.jface.viewers.IFilter;
 import org.talend.repository.model.RepositoryNode;
-import org.talend.repository.model.RepositoryNode.ENodeType;
 
 /**
  * DOC mhelleboid class global comment. Detailled comment <br/>

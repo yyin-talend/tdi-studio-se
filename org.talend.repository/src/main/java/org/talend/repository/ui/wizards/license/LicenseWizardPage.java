@@ -41,8 +41,8 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.osgi.framework.Bundle;
 import org.talend.commons.exception.PersistenceException;
-import org.talend.repository.i18n.Messages;
 import org.talend.repository.RepositoryPlugin;
+import org.talend.repository.i18n.Messages;
 
 /**
  * Page for new project details. <br/>

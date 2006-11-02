@@ -21,7 +21,6 @@
 // ============================================================================
 package org.talend.repository.preview;
 
-import org.talend.repository.preview.IProcessDescription;
 
 /**
  * Describes a process for shadow execution. <br/>

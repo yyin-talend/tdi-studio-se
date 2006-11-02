@@ -162,7 +162,6 @@ import org.talend.designer.runprocess.language.perl.SyntaxCheckerFactory;
 import org.talend.repository.model.IRepositoryFactory;
 import org.talend.repository.model.RepositoryConstants;
 import org.talend.repository.model.RepositoryFactoryProvider;
-import org.talend.repository.model.RepositoryNode.EProperties;
 import org.talend.repository.utils.RepositoryPathProvider;
 
 /**

@@ -21,8 +21,11 @@
 // ============================================================================
 package org.talend.designer.runprocess.shadow;
 
+import static org.talend.designer.runprocess.shadow.ShadowProcess.EShadowProcessType.FILE_CSV;
 import static org.talend.designer.runprocess.shadow.ShadowProcess.EShadowProcessType.FILE_DELIMITED;
 import static org.talend.designer.runprocess.shadow.ShadowProcess.EShadowProcessType.FILE_POSITIONAL;
+import static org.talend.designer.runprocess.shadow.ShadowProcess.EShadowProcessType.FILE_REGEXP;
+import static org.talend.designer.runprocess.shadow.ShadowProcess.EShadowProcessType.FILE_XML;
 
 import java.io.File;
 import java.io.FileInputStream;

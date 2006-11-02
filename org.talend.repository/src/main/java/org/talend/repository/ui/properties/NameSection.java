@@ -43,7 +43,6 @@ import org.talend.core.ui.ImageProvider;
 import org.talend.core.ui.ImageProvider.EImage;
 import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.model.RepositoryConstants;
-import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNodeUtilities;
 import org.talend.repository.model.RepositoryNode.EProperties;
 import org.talend.repository.ui.views.RepositoryView;

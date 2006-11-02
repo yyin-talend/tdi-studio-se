@@ -24,7 +24,6 @@ package org.talend.repository.model;
 import java.io.IOException;
 
 import org.eclipse.jface.preference.IPersistentPreferenceStore;
-import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.core.model.properties.Status;

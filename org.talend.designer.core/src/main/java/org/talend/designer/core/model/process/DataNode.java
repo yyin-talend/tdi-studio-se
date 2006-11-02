@@ -34,10 +34,7 @@ import org.talend.core.model.metadata.MetadataTable;
 import org.talend.core.model.process.AbstractNode;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.IConnection;
-import org.talend.core.model.process.INode;
 import org.talend.core.model.temp.ECodeLanguage;
-import org.talend.designer.core.ui.editor.connections.Connection;
-import org.talend.designer.core.ui.editor.nodes.Node;
 
 /**
  * Virtual node that will be used for the generated code.
