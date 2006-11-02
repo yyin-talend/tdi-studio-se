@@ -23,7 +23,6 @@ package org.talend.designer.core.ui.editor.properties.connections;
 
 import java.util.List;
 
-import org.eclipse.jface.util.Assert;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
@@ -83,6 +82,8 @@ public class MainConnectionSection extends DynamicTabbedPropertySection {
         metadataTableEditor.setMetadataTable(outputMetaTable);
         metadataTableEditorView.setMetadataTableEditor(metadataTableEditor);
         metadataTableEditorView.getTableViewerCreator().getTableViewer().refresh();
+
+        composite.pack();
     }
 
     /*
@@ -103,7 +104,6 @@ public class MainConnectionSection extends DynamicTabbedPropertySection {
             part = (MultiPageTalendEditor) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
         }
 
-        Assert.isTrue(selection instanceof IStructuredSelection);
         Object input = ((IStructuredSelection) selection).getFirstElement();
         if (input instanceof ConnectionPart) {
             elem = (Element) ((ConnectionPart) input).getSource().getModel();
