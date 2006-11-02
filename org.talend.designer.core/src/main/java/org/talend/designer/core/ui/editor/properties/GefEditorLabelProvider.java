@@ -95,7 +95,6 @@ public class GefEditorLabelProvider extends LabelProvider {
                 }
                 if ((object instanceof NodeLabelEditPart)) {
                     object = ((NodeLabelEditPart) object).getNodePart();
-                    return null;
                 }
                 if (!(object instanceof NodePart)) {
                     return null;
