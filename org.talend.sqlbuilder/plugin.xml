@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+ <extension
+         point="org.eclipse.ui.viewActions">
+      <viewContribution
+            id="org.talend.sqlbuilder.actions.contribute"
+            targetID="org.talend.repository.views.repository">
+         <action
+               class="org.talend.sqlbuilder.ui.actions.OpenSqlBuilderDialogAction"
+               icon="icons/configs.gif"
+               id="org.talend.sqlbuilder.ui.actions.OpenSqlBuilderDialogAction"
+               label="open"
+               style="push"
+               toolbarPath="additions"/>
+      </viewContribution>
+   </extension>
+   
+   
+   <extension
+         point="org.eclipse.core.runtime.preferences">
+      <initializer class="org.talend.sqlbuilder.ui.PreferenceInitializer"/>
+   </extension>
+   
+   <extension
+         point="org.eclipse.ui.commands">
+      <category
+            name="Talend Commands"
+            id="talend.commands">
+      </category>
+      <command
+            categoryId="talend.commands"
+            id="org.talend.sqlbuilder.actions.ExecSQLAction"
+            description="Execute the SQL"
+            name="Execute SQL">
+      </command>
+   </extension>
+   <extension
+         point="org.eclipse.ui.bindings">
+      <key
+            commandId="org.talend.sqlbuilder.actions.ExecSQLAction"
+            contextId="org.eclipse.ui.contexts.window"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="CTRL+L">
+      </key>
+   </extension>
+</plugin>

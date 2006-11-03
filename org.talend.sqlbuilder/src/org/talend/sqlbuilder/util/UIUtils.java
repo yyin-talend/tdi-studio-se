@@ -1,0 +1,54 @@
+// ============================================================================
+//
+// Talend Community Edition
+//
+// Copyright (C) 2006 Talend - www.talend.com
+//
+// This library is free software; you can redistribute it and/or
+// modify it under the terms of the GNU Lesser General Public
+// License as published by the Free Software Foundation; either
+// version 2.1 of the License, or (at your option) any later version.
+//
+// This library is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+// Lesser General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program; if not, write to the Free Software
+// Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+//
+// ============================================================================
+package org.talend.sqlbuilder.util;
+
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.PlatformUI;
+import org.talend.sqlbuilder.SqlBuilderPlugin;
+
+/**
+ * DOC qianbing class global comment. Detailled comment <br/>
+ * 
+ * $Id: UIUtils.java,v 1.2 2006/10/26 23:47:18 tangfn Exp $
+ * 
+ */
+public class UIUtils {
+
+    /**
+     * Open a error dialog.
+     * @param msg String 
+     * @param e Exception
+     */
+    public static void openErrorDialog(final String msg, final Exception e) {
+
+        SqlBuilderPlugin.log(msg,e);
+        final Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
+        Display.getDefault().asyncExec(new Runnable() {
+
+            public void run() {
+                MessageDialog.openError(shell, msg, e.getMessage());
+            }
+        });
+    }
+}

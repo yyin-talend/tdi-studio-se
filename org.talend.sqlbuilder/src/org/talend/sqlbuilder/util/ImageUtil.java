@@ -1,0 +1,203 @@
+// ============================================================================
+//
+// Talend Community Edition
+//
+// Copyright (C) 2006 Talend - www.talend.com
+//
+// This library is free software; you can redistribute it and/or
+// modify it under the terms of the GNU Lesser General Public
+// License as published by the Free Software Foundation; either
+// version 2.1 of the License, or (at your option) any later version.
+//
+// This library is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+// Lesser General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program; if not, write to the Free Software
+// Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+//
+// ============================================================================
+package org.talend.sqlbuilder.util;
+
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.HashMap;
+
+import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.swt.graphics.Image;
+import org.talend.sqlbuilder.Messages;
+import org.talend.sqlbuilder.SqlBuilderPlugin;
+/**
+ * 
+ * DOC dev  class global comment. Detailled comment
+ * <br/>
+ *
+ * $Id: ImageUtil.java,v 1.3 2006/10/26 21:44:30 qiang.zhang Exp $
+ *
+ */
+public class ImageUtil {
+
+    private static HashMap pimageCount = new HashMap();
+
+    private static HashMap pimages = new HashMap();
+
+
+    /**
+     * Dispose of an image in cache. Once there are no more open handles to the
+     * image it will be disposed of.
+     * 
+     */
+    public static void disposeImage(String propertyName) {
+
+        try {
+
+            Image image = (Image) pimages.get(propertyName);
+
+            if (image == null) {
+                return;
+            }
+
+            image.dispose();
+            pimages.remove(propertyName);
+
+            // decrease image handle count by one
+
+            Integer handleCount = (Integer) pimageCount.get(propertyName);
+
+            if (handleCount == null) {
+                handleCount = new Integer(0);
+            } else {
+                handleCount = new Integer(handleCount.intValue() - 1);
+            }
+            pimageCount.put(propertyName, handleCount);
+
+        } catch (Throwable e) {
+            SqlBuilderPlugin.log("Error disposing images", e);
+        }
+    }
+
+
+    /**
+     * Create an image descriptor for the given image property in the
+     * text.properties file.
+     * 
+     * @param propertyName
+     * @return
+     */
+    public static ImageDescriptor getDescriptor(String propertyName) {
+
+        try {
+
+            if (propertyName == null) {
+                return null;
+            }
+            
+            // get image path
+            String path = Messages.getString(propertyName);
+
+            if (path == null || path.trim().length() == 0) {
+                SqlBuilderPlugin.log("Missing image path for " + propertyName, null);
+                return null;
+            }
+
+            // create image
+            URL url = URLUtil.getResourceURL(path);
+            return ImageDescriptor.createFromURL(url);
+
+        } catch (Exception e) {
+            SqlBuilderPlugin.log("Couldn't create image for " + propertyName, e);
+            return null;
+        }
+
+    }
+
+    private static URL newURL(String url)
+    {
+        try
+        {
+          return new URL(url);
+        }
+        catch (MalformedURLException e)
+        {
+          throw new RuntimeException("Malformed URL " + url, e);
+        }
+    }
+
+    /**
+     * Get an image object from cache or create one if it doesn't exist yet.
+     * Everytime an object is retrieved, it should be disposed of using the
+     * ImageUtil.disposeImage method.
+     * 
+     * @param propertyName
+     */
+    public static Image getImage(String propertyName) {
+
+        Image image = (Image) pimages.get(propertyName);
+
+        if (image == null) {
+            image = getDescriptor(propertyName).createImage();
+
+            if (image == null) {
+                return null;
+            }
+
+            pimages.put(propertyName, image);
+        }
+
+        // increase image handle count by one
+
+        Integer handleCount = (Integer) pimageCount.get(propertyName);
+
+        if (handleCount == null) {
+            handleCount = new Integer(1);
+        } else {
+            handleCount = new Integer(handleCount.intValue() + 1);
+        }
+        pimageCount.put(propertyName, handleCount);
+
+        return image;
+    }
+    
+    public static ImageDescriptor getFragmentDescriptor(String fragmentId, String path) {
+        
+        try {
+
+            if (path == null || path.trim().length() == 0) {
+                return null;
+            }
+            
+            // create image
+            URL url = URLUtil.getFragmentResourceURL(fragmentId, path);
+            return ImageDescriptor.createFromURL(url);
+
+        } catch (Exception e) {
+            SqlBuilderPlugin.log("Couldn't create image for " + fragmentId + ": " + path, e);
+            return null;
+        }
+        
+    }
+    
+    public static Image getFragmentImage(String fragmentId, String path) {
+        
+        try {
+
+            if (path == null || path.trim().length() == 0) {
+                return null;
+            }
+            
+            // create image
+            URL url = URLUtil.getFragmentResourceURL(fragmentId, path);
+            ImageDescriptor descriptor = ImageDescriptor.createFromURL(url);
+            if (descriptor == null) {
+                return null;
+            }
+            return descriptor.createImage();
+
+        } catch (Exception e) {
+            SqlBuilderPlugin.log("Couldn't create image for " + fragmentId + ": " + path, e);
+            return null;
+        }
+    }
+}

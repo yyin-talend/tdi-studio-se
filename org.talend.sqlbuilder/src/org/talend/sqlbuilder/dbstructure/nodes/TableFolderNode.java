@@ -1,0 +1,234 @@
+// ============================================================================
+//
+// Talend Community Edition
+//
+// Copyright (C) 2006 Talend - www.talend.com
+//
+// This library is free software; you can redistribute it and/or
+// modify it under the terms of the GNU Lesser General Public
+// License as published by the Free Software Foundation; either
+// version 2.1 of the License, or (at your option) any later version.
+//
+// This library is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+// Lesser General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program; if not, write to the Free Software
+// Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+//
+// ============================================================================
+package org.talend.sqlbuilder.dbstructure.nodes;
+
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import net.sourceforge.squirrel_sql.fw.sql.ITableInfo;
+
+import org.eclipse.emf.common.util.EList;
+import org.talend.core.model.metadata.builder.connection.impl.MetadataColumnImpl;
+import org.talend.repository.model.RepositoryNode;
+import org.talend.repository.model.RepositoryNode.EProperties;
+import org.talend.sqlbuilder.Messages;
+import org.talend.sqlbuilder.SqlBuilderPlugin;
+import org.talend.sqlbuilder.dbstructure.SessionTreeNodeUtils;
+import org.talend.sqlbuilder.sessiontree.model.SessionTreeNode;
+
+/**
+ * TableTypeNode can represents a parent node for VIEW, TABLE, .. depending on
+ * what the database supports.
+ * 
+ * @author Davy Vanherbergen
+ * 
+ */
+public class TableFolderNode extends AbstractFolderNode {
+
+    private ITableInfo[] pallTables;
+
+    private String porigName;
+
+
+    /**
+     * Create new database table object type node (view, table, etc...).
+     * 
+     * @param parent node
+     * @param name of this node
+     * @param sessionNode session for this node
+     */
+    public TableFolderNode(INode parent, String name, SessionTreeNode sessionNode, ITableInfo[] tables) {
+
+        pallTables = tables;
+        psessionNode = sessionNode;
+        pparent = parent;
+        porigName = name;
+
+        // cleanup the names a little
+        String[] words = porigName.split(" ");
+        pname = "";
+        for (int i = 0; i < words.length; i++) {
+            pname = pname + words[i].substring(0, 1).toUpperCase() + words[i].substring(1).toLowerCase() + " ";
+        }
+        pname = pname.trim();
+
+        if (pname.equals("View")) {
+            pname = Messages.getString("DatabaseStructureView.view");
+        }
+        if (pname.equals("Table")) {
+            pname = Messages.getString("DatabaseStructureView.table");
+        }
+    }
+
+    /**
+     * @return Name.
+     */
+    public String getName() {
+
+        return pname;
+    }
+
+    /**
+     * @return QualifiedName.
+     */
+    public String getQualifiedName() {
+
+        return porigName;
+    }
+
+
+    /**
+     * Returns the type for this node. The type is always suffixed with
+     * "_FOLDER".
+     * 
+     * @return Type.
+     * @see org.talend.sqlbuilder.dbstructure.nodes.INode#getType()
+     */
+    public String getType() {
+
+        return porigName + "_FOLDER";
+    }
+
+
+    /**
+     * Load all the children of this table type.
+     * 
+     * @see org.talend.sqlbuilder.dbstructure.nodes.AbstractNode#loadChildren()
+     */
+    public void loadChildren() {
+
+        try {
+
+            ITableInfo[] tables = null;
+
+            if (pallTables != null && pallTables.length != 0) {
+
+                // we have received all tables from parent node, use
+                // those for initial load only.
+
+                tables = (ITableInfo[]) pallTables.clone();
+                pallTables = null;
+
+            } else {
+
+                // reload only tables specific for this node.
+
+                String catalogName = null;
+                String schemaName = null;
+
+                // get catalog name
+                if (pparent instanceof CatalogNode) {
+                    catalogName = pparent.toString();
+                    if (!pparent.hasChildNodes()) {
+                        catalogName = null;
+                    }
+                }
+
+                // get schema name
+                if (pparent instanceof SchemaNode) {
+                    schemaName = pparent.toString();
+                }
+
+                // get all relevant tables
+                tables = psessionNode.getMetaData().getTables(catalogName, schemaName, "%", new String[] {porigName});
+
+            }
+
+            // add child nodes for all relevant tables
+            for (int i = 0; i < tables.length; i++) {
+                if (tables[i].getType().equalsIgnoreCase(porigName)) {
+                    if (!isExcludedByFilter(tables[i].getSimpleName())) {
+                        addChildNode(new TableNode(this, tables[i].getSimpleName(), psessionNode, tables[i]));
+                    }
+                }
+            }
+
+        } catch (Throwable e) {
+            SqlBuilderPlugin.log("Could not load child nodes for " + pname, e);
+        }
+    }
+
+    /**
+     * @return ChildNodes.
+     */
+    @Override
+    public INode[] getChildNodes() {
+        INode[] nodesInDB = super.getChildNodes();
+        RepositoryNode root = psessionNode.getRepositoryNode();
+        if (root == null) {
+            return nodesInDB;
+        }
+        List<RepositoryNode> repositoryNodes = root.getChildren();
+        
+        Map<String, INode> allNodes = new HashMap<String, INode>();
+        
+        //add db nodes.
+        if (nodesInDB != null) {
+            for (INode node : nodesInDB) {
+                allNodes.put(node.getLabelText(), node);
+            }
+        }
+        
+//        Set<String> repositoryTableNames = new HashSet<String>();
+        for (RepositoryNode repositoryNode : repositoryNodes) {
+            String repositoryName = repositoryNode.getProperties(EProperties.LABEL).toString();
+            String tableSourceName = TableNode.getMetadataTable(repositoryNode).getSourceName();
+            tableSourceName = tableSourceName.replaceAll("_", "-");
+            if (!allNodes.keySet().contains(repositoryNode.getProperties(EProperties.LABEL)) 
+                    && !allNodes.keySet().contains(tableSourceName)) {
+                allNodes.put(repositoryName, convert2TableNode(repositoryNode));
+            } else {
+                TableNode tNode = (TableNode) allNodes.get(tableSourceName);
+                tNode.setRepositoryName(repositoryName);
+                tNode.setCurrentRepositoryNode(repositoryNode);
+                tNode.setSourceName(tableSourceName);
+                SessionTreeNodeUtils.getTableNodes().add(tNode);
+            }
+        }
+        
+        return allNodes.values().toArray(new INode[]{});
+    }
+
+    /**
+     * @param repositoryNode RepsitoryNode.
+     * @return INode.
+     */
+    private INode convert2TableNode(RepositoryNode repositoryNode) {
+        TableNode tableNode = new TableNode(this, "", psessionNode, null);
+        tableNode.setRepositoryName(repositoryNode.getProperties(EProperties.LABEL).toString());
+        tableNode.setCurrentRepositoryNode(repositoryNode);
+        tableNode.setFromRepository(true);
+        
+        EList columns = TableNode.getColumns(repositoryNode);
+        for (int i = 0, size = columns.size(); i < size; i++) {
+            MetadataColumnImpl column = (MetadataColumnImpl) columns.get(i);
+            tableNode.addChildNode(TableNode.convert2ColumnNode(tableNode, column));
+        }
+        
+        return tableNode;
+    }
+
+    
+}
