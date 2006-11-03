@@ -31,13 +31,17 @@ import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.datatools.connectivity.oda.OdaException;
+import org.eclipse.datatools.enablement.oda.xml.ui.wizards.RowMappingDialog;
 import org.eclipse.datatools.enablement.oda.xml.util.ui.ATreeNode;
 import org.eclipse.datatools.enablement.oda.xml.util.ui.SchemaPopulationUtil;
+import org.eclipse.datatools.enablement.oda.xml.util.ui.XPathPopulationUtil;
+import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.custom.ScrolledComposite;
@@ -52,6 +56,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
+import org.eclipse.ui.PlatformUI;
 import org.talend.commons.ui.swt.dialogs.ErrorDialogWidthDetailArea;
 import org.talend.commons.ui.swt.formtools.Form;
 import org.talend.commons.ui.swt.formtools.LabelledCheckboxCombo;
@@ -354,6 +359,48 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
                 checkFieldsValue();
             }
         });
+        
+        availableXmlTree.addSelectionListener( new SelectionAdapter( ) {
+
+            /* (non-Javadoc)
+             * @see org.eclipse.swt.events.SelectionAdapter#widgetSelected(org.eclipse.swt.events.SelectionEvent)
+             */
+            public void widgetSelected( SelectionEvent e )
+            {
+                List xpathList = getSelectedXPath( availableXmlTree.getSelection()[0]);
+                System.out.println("Node : "+availableXmlTree.getSelection()[0].getText()+" Xpath : "+xpathList.get(0));
+            }
+        } );
+    }
+
+    /**
+     * get the standby XPath expression
+     * 
+     * @return
+     */
+    protected List getSelectedXPath(TreeItem selected)
+    {
+//        TreeItem selected = this.selectedItem;
+        String rootPath = "";
+        if (selected.getData() instanceof ATreeNode) {
+            ATreeNode node = (ATreeNode) selected.getData();
+            if (node.getType() == ATreeNode.ATTRIBUTE_TYPE) {
+                return null;
+            } else {
+                rootPath = "/" + selected.getText();
+            }
+        }
+
+        while (selected.getParentItem() != null) {
+            selected = selected.getParentItem();
+            if (selected.getData() instanceof ATreeNode) {
+                ATreeNode node = (ATreeNode) selected.getData();
+                if (node.getType() == ATreeNode.ELEMENT_TYPE) {
+                    rootPath = "/" + selected.getText() + rootPath;
+                }
+            }
+        }
+        return XPathPopulationUtil.populateRootPath(rootPath);
     }
 
     /**
