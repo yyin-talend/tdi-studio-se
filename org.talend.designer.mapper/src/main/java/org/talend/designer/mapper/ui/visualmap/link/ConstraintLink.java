@@ -31,7 +31,8 @@ import org.talend.designer.mapper.managers.MapperManager;
  */
 public class ConstraintLink extends AbstractLink {
 
-    public ConstraintLink(PointLinkDescriptor pointDescriptor1, PointLinkDescriptor pointDescriptor2, MapperManager mapperManager) {
+    public ConstraintLink(PointLinkDescriptor pointDescriptor1, PointLinkDescriptor pointDescriptor2,
+            MapperManager mapperManager) {
         super(pointDescriptor1, pointDescriptor2, mapperManager);
     }
 

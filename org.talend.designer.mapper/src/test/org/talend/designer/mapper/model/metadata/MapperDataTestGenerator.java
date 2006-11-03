@@ -255,13 +255,14 @@ public class MapperDataTestGenerator {
 
         externalData.setInputTables(generateExternalTables(TableType.INPUT, new TableType[] { TableType.INPUT }, 5, 5));
         externalData.setVarsTables(generateExternalTables(TableType.VARS, new TableType[] { TableType.INPUT }, 20));
-        externalData.setOutputTables(generateExternalTables(TableType.OUTPUT,
-                new TableType[] { TableType.INPUT, TableType.VARS }, 20));
+        externalData.setOutputTables(generateExternalTables(TableType.OUTPUT, new TableType[] { TableType.INPUT,
+                TableType.VARS }, 20));
 
         return externalData;
     }
 
-    private List<ExternalMapperTable> generateExternalTables(TableType tableType, TableType[] tableTypes, int nExpressionsMax) {
+    private List<ExternalMapperTable> generateExternalTables(TableType tableType, TableType[] tableTypes,
+            int nExpressionsMax) {
         return generateExternalTables(tableType, tableTypes, nExpressionsMax, null);
     }
 
@@ -320,8 +321,8 @@ public class MapperDataTestGenerator {
                         baseColumnName = COLUMN_NAME;
                     }
                     mapperTableEntry.setName(baseColumnName + j);
-                    mapperTableEntry.setExpression(generateExpression(tableTypes, N_FIELDS, rand.nextInt(nFieldsMaxInExpression),
-                            j));
+                    mapperTableEntry.setExpression(generateExpression(tableTypes, N_FIELDS, rand
+                            .nextInt(nFieldsMaxInExpression), j));
                     tableEntries.add(mapperTableEntry);
                 }
 
@@ -361,11 +362,10 @@ public class MapperDataTestGenerator {
                 expression += (rand.nextInt(4) == 0 ? "\n" : "")
                         + (rand.nextBoolean() ? " + " : " - ")
                         + gen.getTableColumnVariable(tableType.getBaseTableName()
-                                + (tableType != TableType.VARS ? (rand.nextInt(tableType.getNTables()) + 1) : ""), FIELDS[rand
-                                .nextInt(FIELDS.length)]
-                                + (rand.nextInt(nFields) + 1))
-                        + (rand.nextInt(4) == 0 ? (rand.nextBoolean() ? " + " : " - ") + "$array_var" + rand.nextInt(10)
-                                + "[test_var]" : "")
+                                + (tableType != TableType.VARS ? (rand.nextInt(tableType.getNTables()) + 1) : ""),
+                                FIELDS[rand.nextInt(FIELDS.length)] + (rand.nextInt(nFields) + 1))
+                        + (rand.nextInt(4) == 0 ? (rand.nextBoolean() ? " + " : " - ") + "$array_var"
+                                + rand.nextInt(10) + "[test_var]" : "")
                         + (rand.nextInt(4) == 0 ? (rand.nextBoolean() ? " + " : " - ") + "$hash_var" + rand.nextInt(10)
                                 + "{test_var}" : "")
                         + (rand.nextInt(4) == 0 ? (rand.nextBoolean() ? " + " : " - ") + "$var" + rand.nextInt(10) : "")
@@ -491,7 +491,8 @@ public class MapperDataTestGenerator {
         mapperTableEntry = new ExternalMapperTableEntry();
         mapperTableEntry.setName("upperCaseContent");
         mapperTableEntry.setExpression("uc " + gen.getTableColumnVariable("page", "content") + " + "
-                + gen.getTableColumnVariable("book", "id_book") + " - 2 * " + gen.getTableColumnVariable("book", "id_book"));
+                + gen.getTableColumnVariable("book", "id_book") + " - 2 * "
+                + gen.getTableColumnVariable("book", "id_book"));
         tableEntries.add(mapperTableEntry);
 
         mapperTableEntry = new ExternalMapperTableEntry();
@@ -632,7 +633,8 @@ public class MapperDataTestGenerator {
 
         mapperTableEntry = new ExternalMapperTableEntry();
         mapperTableEntry.setName("content");
-        mapperTableEntry.setExpression(gen.getTableColumnVariable(VarsTable.PREFIX_VARS_TABLE_NAME, "upperCaseContent"));
+        mapperTableEntry
+                .setExpression(gen.getTableColumnVariable(VarsTable.PREFIX_VARS_TABLE_NAME, "upperCaseContent"));
         tableEntries.add(mapperTableEntry);
 
         mapperTable.setMetadataTableEntries(tableEntries);
@@ -672,7 +674,8 @@ public class MapperDataTestGenerator {
 
         mapperTableEntry = new ExternalMapperTableEntry();
         mapperTableEntry.setName("content");
-        mapperTableEntry.setExpression(gen.getTableColumnVariable(VarsTable.PREFIX_VARS_TABLE_NAME, "upperCaseContent"));
+        mapperTableEntry
+                .setExpression(gen.getTableColumnVariable(VarsTable.PREFIX_VARS_TABLE_NAME, "upperCaseContent"));
         tableEntries.add(mapperTableEntry);
 
         mapperTable.setMetadataTableEntries(tableEntries);
@@ -1303,7 +1306,9 @@ public class MapperDataTestGenerator {
             // TODO Auto-generated method stub
         }
 
-        /* (non-Javadoc)
+        /*
+         * (non-Javadoc)
+         * 
          * @see org.talend.core.model.process.INode#isMultipleMethods()
          */
         public boolean isMultipleMethods() {

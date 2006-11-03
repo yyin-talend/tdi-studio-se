@@ -21,8 +21,6 @@
 // ============================================================================
 package org.talend.designer.mapper.ui.visualmap.link;
 
-import javax.swing.UIManager;
-
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Point;

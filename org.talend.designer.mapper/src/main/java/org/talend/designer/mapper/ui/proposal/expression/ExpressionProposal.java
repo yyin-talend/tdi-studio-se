@@ -49,8 +49,8 @@ public class ExpressionProposal {
         super();
         IContentProposalProvider[] contentProposalProviders = new IContentProposalProvider[0];
         if (!MapperMain.isStandAloneMode()) {
-            contentProposalProviders = new IContentProposalProvider[] { new ProcessProposalProvider(mapperManager.getComponent()
-                    .getProcess()) };
+            contentProposalProviders = new IContentProposalProvider[] { new ProcessProposalProvider(mapperManager
+                    .getComponent().getProcess()) };
         }
         proposalProvider = new ExpressionProposalProvider(mapperManager, contentProposalProviders);
         contentProposalAdapter = ProposalUtils.getCommonProposal(control, proposalProvider);

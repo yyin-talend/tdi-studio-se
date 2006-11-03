@@ -125,7 +125,7 @@ public class AbstractLink implements IMapperLink {
 
         int yMinVisiblePoints = boundsOf.y;
         int yMaxVisiblePoints = boundsOf.height;
-        
+
         ColorInfo foregroundColorInfo = null;
         if (linkState == LinkState.SELECTED && pointDescriptor2.getTableEntry() instanceof IColumnEntry) {
             foregroundColorInfo = ColorInfo.COLOR_LINK_HIGHLIGHTED;

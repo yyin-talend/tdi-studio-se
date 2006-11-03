@@ -24,7 +24,6 @@ package org.talend.designer.mapper.ui;
 import java.util.Collection;
 import java.util.List;
 
-import org.eclipse.draw2d.Polygon;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.custom.ScrolledComposite;
@@ -512,8 +511,8 @@ public class MapperUI {
         }
         for (InputTable inputTable : tables) {
 
-            InputDataMapTableView dataMapTableView = new InputDataMapTableView(inputTablesZoneView, SWT.BORDER, inputTable,
-                    mapperManager);
+            InputDataMapTableView dataMapTableView = new InputDataMapTableView(inputTablesZoneView, SWT.BORDER,
+                    inputTable, mapperManager);
             FormData formData = new FormData();
             formData.left = new FormAttachment(0, 0);
             formData.right = new FormAttachment(100, 0);
@@ -587,8 +586,8 @@ public class MapperUI {
         previousControl = null;
         for (AbstractDataMapTable abstractDataMapTable : mapperModel.getVarsDataMapTables()) {
 
-            DataMapTableView dataMapTableView = new VarsDataMapTableView(varsTableZoneView, SWT.BORDER, abstractDataMapTable,
-                    mapperManager);
+            DataMapTableView dataMapTableView = new VarsDataMapTableView(varsTableZoneView, SWT.BORDER,
+                    abstractDataMapTable, mapperManager);
 
             FormData formData = new FormData();
             formData.left = new FormAttachment(0, 0);
@@ -651,8 +650,8 @@ public class MapperUI {
 
         for (AbstractDataMapTable abstractDataMapTable : tables) {
 
-            OutputDataMapTableView dataMapTableView = uiManager.createNewOutputTableView(previousControl, abstractDataMapTable,
-                    outputTablesZoneView);
+            OutputDataMapTableView dataMapTableView = uiManager.createNewOutputTableView(previousControl,
+                    abstractDataMapTable, outputTablesZoneView);
             previousControl = dataMapTableView;
         }
         outputTablesZoneView.setSize(outputTablesZoneView.computeSize(SWT.DEFAULT, SWT.DEFAULT));
@@ -727,9 +726,9 @@ public class MapperUI {
             // for (int i = 0; i < lstSize; i++) {
             // IGraphicLink link = localLinksArray[i];
             AbstractLink.keyLinksCounter = 0;
-            
+
             Rectangle bounds = newImage.getBounds();
-            Rectangle boundsOfDrawing = new Rectangle(0,0,0,0);
+            Rectangle boundsOfDrawing = new Rectangle(0, 0, 0, 0);
             int heightToolbarZone = inputsZone.getToolbar().getComposite().getSize().y;
             boundsOfDrawing.x = -OFFSET_VISIBLES_POINTS;
             boundsOfDrawing.y = heightToolbarZone - OFFSET_VISIBLES_POINTS;

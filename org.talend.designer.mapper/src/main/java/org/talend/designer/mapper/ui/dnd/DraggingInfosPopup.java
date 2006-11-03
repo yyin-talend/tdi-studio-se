@@ -165,7 +165,8 @@ public final class DraggingInfosPopup {
                 setVisible(isVisible);
                 // System.out.println("Adjust setVisible");
             } else {
-                mapperShell.redraw(boundsToRedraw.x, boundsToRedraw.y, boundsToRedraw.width, boundsToRedraw.height, false);
+                mapperShell.redraw(boundsToRedraw.x, boundsToRedraw.y, boundsToRedraw.width, boundsToRedraw.height,
+                        false);
                 // System.out.println("Adjust redraw");
             }
         }
@@ -347,7 +348,8 @@ public final class DraggingInfosPopup {
     public void setMapOneToOneMode(boolean mapOneToOne, boolean mapOneToOneAuthorized) {
         String mode = null;
         if (mapOneToOne && mapOneToOneAuthorized) {
-            mode = " > Each source entry " + (this.outputToOutputMode ? "expression " : "") + "to each target expression";
+            mode = " > Each source entry " + (this.outputToOutputMode ? "expression " : "")
+                    + "to each target expression";
             this.mapOneToOne = mapOneToOne;
         } else {
             mode = " > All source entries "

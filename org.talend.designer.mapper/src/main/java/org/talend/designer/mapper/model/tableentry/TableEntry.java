@@ -21,7 +21,6 @@
 // ============================================================================
 package org.talend.designer.mapper.model.tableentry;
 
-import org.talend.commons.utils.time.TimeMeasure;
 import org.talend.core.model.process.Problem;
 import org.talend.core.model.process.Problem.ProblemStatus;
 import org.talend.designer.mapper.language.LanguageProvider;

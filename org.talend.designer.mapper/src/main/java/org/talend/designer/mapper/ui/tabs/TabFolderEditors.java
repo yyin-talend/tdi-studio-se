@@ -130,8 +130,8 @@ public class TabFolderEditors extends CTabFolder {
             ColorManager colorManager = new ColorManager(preferenceStore);
             // styledText = new ColorStyledText(tabFolderEditors, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL,
             // colorManager, language.getName());
-            styledText = new MapperColorStyledText(tabFolderEditors, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL, colorManager,
-                    language.getName());
+            styledText = new MapperColorStyledText(tabFolderEditors, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL,
+                    colorManager, language.getName());
         }
         styledText.setEnabled(false);
         item.setControl(styledText);

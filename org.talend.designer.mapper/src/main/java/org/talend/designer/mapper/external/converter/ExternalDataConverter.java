@@ -127,7 +127,8 @@ public class ExternalDataConverter {
         return outputDataMapTables;
     }
 
-    private ArrayList<InputTable> prepareInputTables(List<IOConnection> inputConnections, ExternalMapperData externalData) {
+    private ArrayList<InputTable> prepareInputTables(List<IOConnection> inputConnections,
+            ExternalMapperData externalData) {
         Map<String, IOConnection> nameToConnection = new HashMap<String, IOConnection>();
         if (externalData != null) {
             for (IOConnection connection : inputConnections) {

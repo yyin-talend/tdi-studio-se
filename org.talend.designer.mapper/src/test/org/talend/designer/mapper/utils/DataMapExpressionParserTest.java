@@ -47,8 +47,8 @@ public class DataMapExpressionParserTest {
         DataMapExpressionParser expressionParser = new DataMapExpressionParser(language);
         GenerationManager gen = new GenerationManager(language);
         TableEntryLocation[] stringCouples = expressionParser.parseTableEntryLocations("abc * "
-                + gen.getTableColumnVariable("table1", "col1") + " + " + gen.getTableColumnVariable("ta_ble2", "co_l2") + " - "
-                + gen.getTableColumnVariable("$table1", "col2"));
+                + gen.getTableColumnVariable("table1", "col1") + " + " + gen.getTableColumnVariable("ta_ble2", "co_l2")
+                + " - " + gen.getTableColumnVariable("$table1", "col2"));
         assertEquals(stringCouples[0].tableName, "table1");
         assertEquals(stringCouples[0].columnName, "col1");
 
@@ -93,12 +93,13 @@ public class DataMapExpressionParserTest {
         TableEntryLocation[] locations = new TableEntryLocation[] { new TableEntryLocation("page", "content"),
                 new TableEntryLocation("book", "id_book"), };
 
-        String result = expressionParser.addTablePrefixToColumnName("uc " + gen.getTableColumnVariable("page", "content") + " + "
-                + gen.getTableColumnVariable("book", "id_book") + " - 2 * " + language.getPrefixTable() + " book "
-                + language.getSuffixTable() + language.getPrefixField() + "  id_book " + language.getSuffixField(), locations);
+        String result = expressionParser.addTablePrefixToColumnName("uc "
+                + gen.getTableColumnVariable("page", "content") + " + " + gen.getTableColumnVariable("book", "id_book")
+                + " - 2 * " + language.getPrefixTable() + " book " + language.getSuffixTable()
+                + language.getPrefixField() + "  id_book " + language.getSuffixField(), locations);
         assertEquals("uc " + gen.getTableColumnVariable("page", "page__content") + " + "
-                + gen.getTableColumnVariable("book", "book__id_book") + " - 2 * " + gen.getTableColumnVariable("book", "book__id_book"),
-                result);
+                + gen.getTableColumnVariable("book", "book__id_book") + " - 2 * "
+                + gen.getTableColumnVariable("book", "book__id_book"), result);
 
         locations = new TableEntryLocation[] { new TableEntryLocation("book", "id_book"), };
 
@@ -118,8 +119,8 @@ public class DataMapExpressionParserTest {
         DataMapExpressionParser expressionParser = new DataMapExpressionParser(language);
         GenerationManager gen = new GenerationManager(language);
 
-        String result = expressionParser.replaceLocation(" $ book [ id_book ] ", new TableEntryLocation("book", "id_book"),
-                new TableEntryLocation("book", "id_book_changed"));
+        String result = expressionParser.replaceLocation(" $ book [ id_book ] ", new TableEntryLocation("book",
+                "id_book"), new TableEntryLocation("book", "id_book_changed"));
         System.out.println(result);
         assertEquals(" $ book [ id_book_changed ] ", result);
 

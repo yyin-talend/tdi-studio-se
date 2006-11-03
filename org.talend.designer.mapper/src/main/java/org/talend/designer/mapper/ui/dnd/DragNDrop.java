@@ -24,8 +24,6 @@ package org.talend.designer.mapper.ui.dnd;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.jface.util.DelegatingDragAdapter;
-import org.eclipse.jface.util.DelegatingDropAdapter;
 import org.eclipse.jface.util.TransferDragSourceListener;
 import org.eclipse.jface.util.TransferDropTargetListener;
 import org.eclipse.swt.dnd.DND;
@@ -101,7 +99,8 @@ public class DragNDrop {
      * @param canBeSourceOfDragging
      * @param canBeTargetOfDragging
      */
-    public DragNDrop(MapperManager mapperManager, Table draggedTable, boolean canBeSourceOfDragging, boolean canBeTargetOfDragging) {
+    public DragNDrop(MapperManager mapperManager, Table draggedTable, boolean canBeSourceOfDragging,
+            boolean canBeTargetOfDragging) {
         super();
         this.mapperManager = mapperManager;
         this.draggableTable = draggedTable;
@@ -156,7 +155,8 @@ public class DragNDrop {
                     if (dataMapTableViewSource != null) {
                         DraggedData draggedData = new DraggedData();
 
-                        ArrayList<DataMapTableView> list = new ArrayList<DataMapTableView>(mapperManager.getVarsTablesView());
+                        ArrayList<DataMapTableView> list = new ArrayList<DataMapTableView>(mapperManager
+                                .getVarsTablesView());
                         list.addAll(mapperManager.getInputsTablesView());
                         list.addAll(mapperManager.getOutputsTablesView());
 
@@ -167,8 +167,9 @@ public class DragNDrop {
                                 TableItem item = tableItems[i];
                                 ITableEntry dataMapTableEntry = (ITableEntry) item.getData();
                                 if (dataMapTableEntry instanceof AbstractInOutTableEntry) {
-                                    draggedData.addEntry(dataMapTableEntry, ((AbstractInOutTableEntry) dataMapTableEntry)
-                                            .getMetadataColumn(), dataMapTableView.getZone());
+                                    draggedData.addEntry(dataMapTableEntry,
+                                            ((AbstractInOutTableEntry) dataMapTableEntry).getMetadataColumn(),
+                                            dataMapTableView.getZone());
                                 } else {
                                     draggedData.addEntry(dataMapTableEntry, null, dataMapTableView.getZone());
                                 }
@@ -235,13 +236,14 @@ public class DragNDrop {
                         draggingInfosPopup.setExpressionContext(false);
                     }
 
-                    draggingInfosPopup.setMapOneToOneMode(analyzer.isMapOneToOneMode(), analyzer.isMapOneToOneAuthorized());
+                    draggingInfosPopup.setMapOneToOneMode(analyzer.isMapOneToOneMode(), analyzer
+                            .isMapOneToOneAuthorized());
                     Integer itemIndexWhereInsertFromPosition = getItemIndexFromPosition(new Point(event.x, event.y));
                     if (analyzer.isMapOneToOneMode() && analyzer.isMapOneToOneAuthorized()) {
                         int size = draggedData.getTransferableEntryList().size();
                         if (itemIndexWhereInsertFromPosition != null) {
-                            draggableTable.setSelection(itemIndexWhereInsertFromPosition, itemIndexWhereInsertFromPosition + size
-                                    - 1);
+                            draggableTable.setSelection(itemIndexWhereInsertFromPosition,
+                                    itemIndexWhereInsertFromPosition + size - 1);
                             if (!analyzer.targetTableIsConstraintsTable()
                                     && itemIndexWhereInsertFromPosition + size - 1 >= draggableTable.getItemCount()) {
                                 insertionIndicator.updatePosition(draggableTable, draggableTable.getItemCount());
@@ -378,7 +380,8 @@ public class DragNDrop {
 
             private InsertionIndicator retrieveInsertionIndicator() {
                 DataMapTableView dataMapTableViewTarget = mapperManager.retrieveDataMapTableView(draggableTable);
-                TablesZoneView targetTablesZoneView = mapperManager.getUiManager().getTablesZoneView(dataMapTableViewTarget);
+                TablesZoneView targetTablesZoneView = mapperManager.getUiManager().getTablesZoneView(
+                        dataMapTableViewTarget);
                 InsertionIndicator insertionIndicator = targetTablesZoneView.getInsertionIndicator();
                 return insertionIndicator;
             }
@@ -486,8 +489,8 @@ public class DragNDrop {
                     IMetadataColumn metadataColumnDragged = transferableEntry.getMetadataColumn();
                     Zone zoneSourceEntry = transferableEntry.getZoneSourceEntry();
 
-                    TableEntryLocation tableEntryLocationTarget = new TableEntryLocation(dataMapTableViewTarget.getDataMapTable()
-                            .getName(), tableEntrySource.getName());
+                    TableEntryLocation tableEntryLocationTarget = new TableEntryLocation(dataMapTableViewTarget
+                            .getDataMapTable().getName(), tableEntrySource.getName());
 
                     if (zoneSourceEntry == Zone.INPUTS && zoneTarget == Zone.INPUTS
                             && tableEntrySource.getParentName().equals(tableEntryLocationTarget.tableName)) {
@@ -499,12 +502,13 @@ public class DragNDrop {
                         boolean overwrite = (lastEntryTarget != currentEntryTarget && analyzer.isOverwriteExpression());
                         modifyExistingExpression(currentLanguage, currentEntryTarget, tableEntrySource, overwrite,
                                 zoneSourceEntry);
-                        uiManager.parseExpression(currentEntryTarget.getExpression(), currentEntryTarget, false, true, true);
+                        uiManager.parseExpression(currentEntryTarget.getExpression(), currentEntryTarget, false, true,
+                                true);
 
                     } else {
                         String columnName = transferableEntry.getTableEntrySource().getName();
-                        tableEntryLocationTarget = mapperManager.findUniqueLocation(tableEntryLocationTarget, columnsBeingAdded
-                                .toArray(new String[0]));
+                        tableEntryLocationTarget = mapperManager.findUniqueLocation(tableEntryLocationTarget,
+                                columnsBeingAdded.toArray(new String[0]));
                         columnName = tableEntryLocationTarget.columnName;
                         if (currentEntryTarget == null && analyzer.isMapOneToOneMode()) {
                             currentIndex = tableViewerCreatorTarget.getInputList().size();
@@ -559,14 +563,14 @@ public class DragNDrop {
                         for (int i = 0; i < lastCreatedTableEntries.size(); i++) {
                             ITableEntry tableEntrySource = sourceEntriesOfEntriesBeingAdded.get(i);
                             ITableEntry dataMapTableEntry = lastCreatedTableEntries.get(i);
-                            Zone zoneSource = mapperManager.retrieveAbstractDataMapTableView(tableEntrySource.getParent())
-                                    .getZone();
+                            Zone zoneSource = mapperManager.retrieveAbstractDataMapTableView(
+                                    tableEntrySource.getParent()).getZone();
                             String location = null;
                             if (zoneSource == Zone.OUTPUTS) {
                                 location = tableEntrySource.getExpression();
                             } else {
-                                location = currentLanguage.getLocation(tableEntrySource.getParentName(), tableEntrySource
-                                        .getName());
+                                location = currentLanguage.getLocation(tableEntrySource.getParentName(),
+                                        tableEntrySource.getName());
                             }
 
                             dataMapTableEntry.setExpression(location + " ");
@@ -591,7 +595,8 @@ public class DragNDrop {
                 uiManager.setDragging(false);
             }
 
-            private ITableEntry getNextEntryTarget(ITableEntry currentEntryTarget, TableViewerCreator tableViewerCreatorTarget) {
+            private ITableEntry getNextEntryTarget(ITableEntry currentEntryTarget,
+                    TableViewerCreator tableViewerCreatorTarget) {
                 // mapperManager.get
                 // currentEntryTarget.getParent()
                 if (currentEntryTarget == null) {
@@ -607,8 +612,8 @@ public class DragNDrop {
             }
 
             private void insertNewInOutEntryFromInputEntry(ArrayList<ITableEntry> sources,
-                    MetadataEditorEvent metadataEditorEvent, ITableEntry tableEntrySource, IMetadataColumn metadataColumnDragged,
-                    String columnName) {
+                    MetadataEditorEvent metadataEditorEvent, ITableEntry tableEntrySource,
+                    IMetadataColumn metadataColumnDragged, String columnName) {
                 MetadataColumn metadataColumn = new MetadataColumn(metadataColumnDragged);
                 metadataColumn.setLabel(columnName);
                 metadataEditorEvent.entries.add(metadataColumn);
@@ -616,8 +621,8 @@ public class DragNDrop {
             }
 
             private void insertOutpuEntryCopyToOtherOutput(ArrayList<ITableEntry> sources,
-                    MetadataEditorEvent metadataEditorEvent, ITableEntry tableEntrySource, IMetadataColumn metadataColumnDragged,
-                    String columnName) {
+                    MetadataEditorEvent metadataEditorEvent, ITableEntry tableEntrySource,
+                    IMetadataColumn metadataColumnDragged, String columnName) {
                 MetadataColumn metadataColumn = new MetadataColumn(metadataColumnDragged);
                 metadataColumn.setLabel(columnName);
                 metadataEditorEvent.entries.add(metadataColumn);
@@ -632,11 +637,12 @@ public class DragNDrop {
                 sources.add(tableEntrySource);
             }
 
-            private int insertNewVarEntry(ILanguage currentLanguage, DataMapTableView dataMapTableViewTarget, int currentIndex,
-                    ITableEntry tableEntrySource, String columnName) {
+            private int insertNewVarEntry(ILanguage currentLanguage, DataMapTableView dataMapTableViewTarget,
+                    int currentIndex, ITableEntry tableEntrySource, String columnName) {
                 ITableEntry dataMapTableEntry;
                 dataMapTableEntry = mapperManager.addNewColumnEntry(dataMapTableViewTarget, columnName, currentIndex++);
-                String location = currentLanguage.getLocation(tableEntrySource.getParentName(), tableEntrySource.getName());
+                String location = currentLanguage.getLocation(tableEntrySource.getParentName(), tableEntrySource
+                        .getName());
                 dataMapTableEntry.setExpression(location + " ");
                 return currentIndex;
             }
@@ -647,7 +653,8 @@ public class DragNDrop {
                 if (zoneSourceEntry == Zone.OUTPUTS) {
                     expression = tableEntrySource.getExpression();
                 } else {
-                    expression = currentLanguage.getLocation(tableEntrySource.getParentName(), tableEntrySource.getName());
+                    expression = currentLanguage.getLocation(tableEntrySource.getParentName(), tableEntrySource
+                            .getName());
                 }
                 if (expression == null) {
                     return;

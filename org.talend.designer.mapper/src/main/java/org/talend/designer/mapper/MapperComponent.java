@@ -41,7 +41,6 @@ import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.process.AbstractExternalNode;
 import org.talend.core.model.process.Problem;
-import org.talend.core.model.process.Problem.ProblemStatus;
 import org.talend.core.model.temp.ECodePart;
 import org.talend.designer.codegen.CodeGenerator;
 import org.talend.designer.codegen.exception.CodeGeneratorException;
@@ -226,7 +225,8 @@ public class MapperComponent extends AbstractExternalNode {
     public void loadDataOut(final OutputStream out, Writer writer) throws IOException {
 
         initMapperMain();
-        mapperMain.loadFromExternalData(getIncomingConnections(), getOutgoingConnections(), externalData, getMetadataList());
+        mapperMain.loadFromExternalData(getIncomingConnections(), getOutgoingConnections(), externalData,
+                getMetadataList());
         ExternalMapperData data = mapperMain.buildExternalData();
         if (mapperMain != null && data != null) {
 
@@ -340,7 +340,8 @@ public class MapperComponent extends AbstractExternalNode {
         List<ExternalMapperTable> tables = new ArrayList<ExternalMapperTable>(externalData.getInputTables());
         tables.addAll(new ArrayList<ExternalMapperTable>(externalData.getVarsTables()));
         tables.addAll(new ArrayList<ExternalMapperTable>(externalData.getOutputTables()));
-        DataMapExpressionParser dataMapExpressionParser = new DataMapExpressionParser(LanguageProvider.getCurrentLanguage());
+        DataMapExpressionParser dataMapExpressionParser = new DataMapExpressionParser(LanguageProvider
+                .getCurrentLanguage());
         // loop on all tables
         for (ExternalMapperTable table : tables) {
             List<ExternalMapperTableEntry> metadataTableEntries = table.getMetadataTableEntries();
@@ -358,8 +359,8 @@ public class MapperComponent extends AbstractExternalNode {
         } // for (ExternalMapperTable table : tables) {
     }
 
-    public void replaceLocation(TableEntryLocation oldLocation, TableEntryLocation newLocation, ExternalMapperTableEntry entry,
-            DataMapExpressionParser dataMapExpressionParser, boolean tableRenamed) {
+    public void replaceLocation(TableEntryLocation oldLocation, TableEntryLocation newLocation,
+            ExternalMapperTableEntry entry, DataMapExpressionParser dataMapExpressionParser, boolean tableRenamed) {
         String currentExpression = entry.getExpression();
         if (currentExpression == null || currentExpression.length() == 0) {
             return;
@@ -373,7 +374,8 @@ public class MapperComponent extends AbstractExternalNode {
                 newLocation.columnName = currentLocation.columnName;
             }
             if (currentLocation.equals(oldLocation)) {
-                currentExpression = dataMapExpressionParser.replaceLocation(currentExpression, currentLocation, newLocation);
+                currentExpression = dataMapExpressionParser.replaceLocation(currentExpression, currentLocation,
+                        newLocation);
             }
         } // for (int i = 0; i < tableEntryLocations.length; i++) {
         entry.setExpression(currentExpression);

@@ -67,7 +67,8 @@ public class TMapperMainPerljet {
         } else {
             // Stand alone / tests
             org.talend.designer.mapper.MapperMain.setStandAloneMode(true);
-            MapperDataTestGenerator testGenerator = new MapperDataTestGenerator(LanguageProvider.getCurrentLanguage(), false);
+            MapperDataTestGenerator testGenerator = new MapperDataTestGenerator(LanguageProvider.getCurrentLanguage(),
+                    false);
             connections = testGenerator.getConnectionList();
             data = (ExternalMapperData) testGenerator.getExternalData();
         }
@@ -132,8 +133,8 @@ public class TMapperMainPerljet {
                         if (externalInputTableEntry != null) {
                             String expressionKey = externalInputTableEntry.getExpression();
                             if (column.isKey() && expressionKey != null && !"".equals(expressionKey.trim())) {
-                                String outputExpressionKeyToWrite = gm.prefixEntryLocationsForOutputExpression(expressionKey,
-                                        expressionParser, new TableType[] { TableType.INPUT });
+                                String outputExpressionKeyToWrite = gm.prefixEntryLocationsForOutputExpression(
+                                        expressionKey, expressionParser, new TableType[] { TableType.INPUT });
 
                                 keysValues.add(outputExpressionKeyToWrite);
                             }
@@ -141,7 +142,8 @@ public class TMapperMainPerljet {
                     }
                     String[] aKeysValues = keysValues.toArray(new String[0]);
                     if (aKeysValues.length > 0) {
-                        sb.append(CR + gm.indent(indent) + gm.buildNewArrayDeclarationWithKeyValue(tableName, aKeysValues, indent));
+                        sb.append(CR + gm.indent(indent)
+                                + gm.buildNewArrayDeclarationWithKeyValue(tableName, aKeysValues, indent));
                     }
 
                 } // if(externalTable != null) {
@@ -181,9 +183,11 @@ public class TMapperMainPerljet {
                         listCoupleForAddTablePrefix.add(location);
                     }
                 }
-                String varExpressionWithPrefixs = expressionParser.addTablePrefixToColumnName(varExpression, entryLocations);
+                String varExpressionWithPrefixs = expressionParser.addTablePrefixToColumnName(varExpression,
+                        entryLocations);
 
-                sb.append(CR + gm.indent(indent) + "" + gm.getGeneratedCodeTableColumnVariable(varsTableName, varsColumnName) + " = "
+                sb.append(CR + gm.indent(indent) + ""
+                        + gm.getGeneratedCodeTableColumnVariable(varsTableName, varsColumnName) + " = "
                         + varExpressionWithPrefixs + ";");
 
             }
@@ -230,7 +234,8 @@ public class TMapperMainPerljet {
             ExternalMapperTable outputTable = (ExternalMapperTable) outputTablesSortedByReject.get(i);
             List<ExternalMapperTableEntry> columnsEntries = outputTable.getMetadataTableEntries();
             List<ExternalMapperTableEntry> constraints = outputTable.getConstraintTableEntries();
-            boolean hasConstraint = constraints != null && constraints.size() > 0 && !gm.checkConstraintsAreEmpty(outputTable);
+            boolean hasConstraint = constraints != null && constraints.size() > 0
+                    && !gm.checkConstraintsAreEmpty(outputTable);
             if (columnsEntries != null && columnsEntries.size() > 0) {
                 if (!hasConstraint && !outputTable.isReject()) {
                     allNotRejectTablesHaveConstraint = false;
@@ -261,7 +266,8 @@ public class TMapperMainPerljet {
 
             boolean currentIsReject = outputTable.isReject();
 
-            boolean hasConstraint = constraints != null && constraints.size() > 0 && !gm.checkConstraintsAreEmpty(outputTable);
+            boolean hasConstraint = constraints != null && constraints.size() > 0
+                    && !gm.checkConstraintsAreEmpty(outputTable);
 
             boolean rejectValueHasJustChanged = lastValueReject != currentIsReject;
 
@@ -276,11 +282,14 @@ public class TMapperMainPerljet {
                 sb.append(CR + gm.indent(indent) + "###### START REJECTS ##### ");
                 // write outputs arrays initialization with empty list for reject tables
                 for (int indexReject = indexCurrentTable; indexReject < lstSize; indexReject++) {
-                    ExternalMapperTable outputRejectTable = (ExternalMapperTable) outputTablesSortedByReject.get(indexReject);
+                    ExternalMapperTable outputRejectTable = (ExternalMapperTable) outputTablesSortedByReject
+                            .get(indexReject);
                     List<ExternalMapperTableEntry> metadataTableEntries = outputRejectTable.getMetadataTableEntries();
                     if (metadataTableEntries != null && metadataTableEntries.size() > 0) {
-                        sb.append(CR + gm.indent(indent) + "# Output reject table: '" + outputRejectTable.getName() + "'");
-                        sb.append(CR + gm.indent(indent) + gm.buildNewArrayDeclaration(outputRejectTable.getName(), indent));
+                        sb.append(CR + gm.indent(indent) + "# Output reject table: '" + outputRejectTable.getName()
+                                + "'");
+                        sb.append(CR + gm.indent(indent)
+                                + gm.buildNewArrayDeclaration(outputRejectTable.getName(), indent));
                     }
                 }
             }
@@ -289,7 +298,8 @@ public class TMapperMainPerljet {
             if (rejectValueHasJustChanged && atLeastOneReject) {
                 serialRejectCanBeWrite = allNotRejectTablesHaveConstraint;
                 if (currentIsReject && serialRejectCanBeWrite) {
-                    sb.append(CR + gm.indent(indent) + "if( ! $" + ONE_NOT_REJECT_CONSTRAINT_VALIDATED_VAR_NAME + " ) {");
+                    sb.append(CR + gm.indent(indent) + "if( ! $" + ONE_NOT_REJECT_CONSTRAINT_VALIDATED_VAR_NAME
+                            + " ) {");
                     closeTestRejectConditionsBracket = true;
                     indent++;
                 }
@@ -297,8 +307,8 @@ public class TMapperMainPerljet {
             }
 
             // write condition of constraints and code to execute
-            if (!currentIsReject || rejectValueHasJustChanged && oneConstraintForNotRejectTable || serialRejectCanBeWrite
-                    && currentIsReject) {
+            if (!currentIsReject || rejectValueHasJustChanged && oneConstraintForNotRejectTable
+                    || serialRejectCanBeWrite && currentIsReject) {
 
                 if (hasConstraint) {
                     sb.append(CR + gm.indent(indent) + "# Constraint condition ");
@@ -307,7 +317,8 @@ public class TMapperMainPerljet {
                     sb.append("  ) {");
                     indent++;
                     if (allNotRejectTablesHaveConstraint && !currentIsReject && atLeastOneReject) {
-                        sb.append(CR + gm.indent(indent) + "$" + ONE_NOT_REJECT_CONSTRAINT_VALIDATED_VAR_NAME + " = true;");
+                        sb.append(CR + gm.indent(indent) + "$" + ONE_NOT_REJECT_CONSTRAINT_VALIDATED_VAR_NAME
+                                + " = true;");
                     }
                 }
 
@@ -316,11 +327,12 @@ public class TMapperMainPerljet {
                     String outputExpression = outputTableEntry.getExpression();
                     if (outputExpression != null && outputExpression.trim().length() != 0) {
 
-                        String outputExpressionToWrite = gm.prefixEntryLocationsForOutputExpression(outputExpression, expressionParser,
-                                new TableType[] { TableType.INPUT, TableType.VARS });
+                        String outputExpressionToWrite = gm.prefixEntryLocationsForOutputExpression(outputExpression,
+                                expressionParser, new TableType[] { TableType.INPUT, TableType.VARS });
 
-                        sb.append(CR + gm.indent(indent) + gm.getGeneratedCodeTableColumnVariable(outputTableName, outputColumnName)
-                                + " = " + outputExpressionToWrite + ";");
+                        sb.append(CR + gm.indent(indent)
+                                + gm.getGeneratedCodeTableColumnVariable(outputTableName, outputColumnName) + " = "
+                                + outputExpressionToWrite + ";");
 
                     }
 

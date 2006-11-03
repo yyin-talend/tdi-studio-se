@@ -25,17 +25,14 @@ import org.eclipse.swt.graphics.Color;
 import org.talend.commons.ui.swt.drawing.link.HorizontalBezierLink;
 import org.talend.commons.ui.swt.drawing.link.IDrawableLink;
 import org.talend.commons.ui.swt.drawing.link.IStyleLink;
-import org.talend.commons.ui.swt.drawing.link.ITipLink;
 import org.talend.commons.ui.swt.drawing.link.StyleLink;
 import org.talend.commons.ui.swt.drawing.link.TipEastArrow;
 import org.talend.commons.ui.swt.drawing.link.TipWestArrow;
 import org.talend.commons.ui.swt.drawing.link.VerticalRoundedCornerLink;
 import org.talend.designer.mapper.model.tableentry.ConstraintTableEntry;
-import org.talend.designer.mapper.model.tableentry.IColumnEntry;
 import org.talend.designer.mapper.model.tableentry.ITableEntry;
 import org.talend.designer.mapper.ui.color.ColorInfo;
 import org.talend.designer.mapper.ui.color.ColorProviderMapper;
-import org.w3c.dom.stylesheets.LinkStyle;
 
 /**
  * DOC amaumont class global comment. Detailled comment <br/>
@@ -45,7 +42,7 @@ import org.w3c.dom.stylesheets.LinkStyle;
  */
 public class StyleLinkFactory {
 
-//    private static DrawableLinkFactory instance;
+    // private static DrawableLinkFactory instance;
 
     private IStyleLink selectedZoneToZoneStyle;
 
@@ -69,7 +66,7 @@ public class StyleLinkFactory {
      * DOC amaumont Comment method "init".
      */
     private void init() {
-        
+
         selectedZoneToZoneStyle = getSelectedZoneToOtherZoneStyle(ColorProviderMapper
                 .getColor(ColorInfo.COLOR_LINK_HIGHLIGHTED));
         selectedConstraintStyle = getSelectedZoneToOtherZoneStyle(ColorProviderMapper
@@ -80,25 +77,25 @@ public class StyleLinkFactory {
 
     }
 
-//    public static DrawableLinkFactory getInstance() {
-//        if (instance == null) {
-//            instance = new DrawableLinkFactory();
-//        }
-//        return instance;
-//    }
-//
-//    public IDrawableLink getDrawableLink(IMapperLink link) {
-//        IDrawableLink drawableLink = null;
-//        PointLinkDescriptor pointLinkDescriptorSource = link.getPointLinkDescriptorSource();
-//        PointLinkDescriptor pointLinkDescriptorTarget = link.getPointLinkDescriptorTarget();
-//        if (pointLinkDescriptorSource.getZone() != pointLinkDescriptorTarget.getZone()) {
-//            drawableLink = new HorizontalBezierLink();
-//        } else if (pointLinkDescriptorSource.getZone() == pointLinkDescriptorTarget.getZone()) {
-//            drawableLink = new VerticalRoundedCornerLink();
-//        }
-//        return drawableLink;
-//    }
-//
+    // public static DrawableLinkFactory getInstance() {
+    // if (instance == null) {
+    // instance = new DrawableLinkFactory();
+    // }
+    // return instance;
+    // }
+    //
+    // public IDrawableLink getDrawableLink(IMapperLink link) {
+    // IDrawableLink drawableLink = null;
+    // PointLinkDescriptor pointLinkDescriptorSource = link.getPointLinkDescriptorSource();
+    // PointLinkDescriptor pointLinkDescriptorTarget = link.getPointLinkDescriptorTarget();
+    // if (pointLinkDescriptorSource.getZone() != pointLinkDescriptorTarget.getZone()) {
+    // drawableLink = new HorizontalBezierLink();
+    // } else if (pointLinkDescriptorSource.getZone() == pointLinkDescriptorTarget.getZone()) {
+    // drawableLink = new VerticalRoundedCornerLink();
+    // }
+    // return drawableLink;
+    // }
+    //
     public IStyleLink getStyleLink(IMapperLink link) {
         LinkState linkState = link.getState();
         PointLinkDescriptor pointLinkDescriptorSource = link.getPointLinkDescriptorSource();
@@ -166,7 +163,7 @@ public class StyleLinkFactory {
         style.setForegroundColor(ColorProviderMapper.getColor(ColorInfo.COLOR_UNSELECTED_METADATA_LINK));
         return style;
     }
-    
+
     /**
      * DOC amaumont Comment method "getSelectedSameZoneStyle".
      * 
@@ -187,7 +184,8 @@ public class StyleLinkFactory {
 
     /**
      * DOC amaumont Comment method "getSameZoneLink".
-     * @param style 
+     * 
+     * @param style
      * @return
      */
     private IDrawableLink getSameZoneLink(StyleLink style) {
@@ -196,12 +194,11 @@ public class StyleLinkFactory {
 
     /**
      * DOC amaumont Comment method "getZoneToZoneLink".
+     * 
      * @return
      */
     private IDrawableLink getZoneToZoneLink(StyleLink style) {
         return new HorizontalBezierLink(style);
     }
 
-    
-    
 }

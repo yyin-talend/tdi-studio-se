@@ -70,7 +70,8 @@ public abstract class AbstractInOutTable extends AbstractDataMapTable {
 
         for (IMetadataColumn column : columns) {
             AbstractInOutTableEntry columnEntry = getNewTableEntry(column);
-            ExternalMapperTableEntry externalMapperTableEntry = nameToPerTabEntry.get(columnEntry.getMetadataColumn().getLabel());
+            ExternalMapperTableEntry externalMapperTableEntry = nameToPerTabEntry.get(columnEntry.getMetadataColumn()
+                    .getLabel());
             if (externalMapperTableEntry != null) {
                 columnEntry.setExpression(externalMapperTableEntry.getExpression());
             }

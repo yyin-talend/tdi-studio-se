@@ -127,7 +127,8 @@ public class ProblemsAnalyser {
             TableEntryLocation currentLocation = tableEntryLocations[i];
             if (currentLocation.equals(oldLocation)) {
                 newLocation.columnName = newColumnName;
-                currentExpression = dataMapExpressionParser.replaceLocation(currentExpression, currentLocation, newLocation);
+                currentExpression = dataMapExpressionParser.replaceLocation(currentExpression, currentLocation,
+                        newLocation);
             }
         } // for (int i = 0; i < tableEntryLocations.length; i++) {
         entry.setExpression(currentExpression);

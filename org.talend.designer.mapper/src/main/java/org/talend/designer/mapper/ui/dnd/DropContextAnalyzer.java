@@ -147,8 +147,8 @@ public class DropContextAnalyzer {
             isInputToInput = true;
             mapOneToOneAuthorized = false;
             List<InputTable> inputTables = mapperManager.getInputTables();
-            if (inputTables.indexOf(dataMapTableViewSource.getDataMapTable()) >= inputTables.indexOf(dataMapTableViewTarget
-                    .getDataMapTable())) {
+            if (inputTables.indexOf(dataMapTableViewSource.getDataMapTable()) >= inputTables
+                    .indexOf(dataMapTableViewTarget.getDataMapTable())) {
 
                 /*
                  * INPUT => INPUT && index of table source >= index of table target
@@ -168,8 +168,8 @@ public class DropContextAnalyzer {
             isOutputToOutput = true;
             mapOneToOneAuthorized = true;
             List<OutputTable> outputTables = mapperManager.getOutputTables();
-            if (outputTables.indexOf(dataMapTableViewSource.getDataMapTable()) == outputTables.indexOf(dataMapTableViewTarget
-                    .getDataMapTable())) {
+            if (outputTables.indexOf(dataMapTableViewSource.getDataMapTable()) == outputTables
+                    .indexOf(dataMapTableViewTarget.getDataMapTable())) {
 
                 /*
                  * INPUT => INPUT && index of table source >= index of table target
@@ -191,8 +191,8 @@ public class DropContextAnalyzer {
             }
         }
 
-        if (zoneSource == Zone.VARS && zoneTarget == Zone.INPUTS || zoneSource == Zone.OUTPUTS && zoneTarget == Zone.INPUTS
-                || zoneSource == Zone.OUTPUTS && zoneTarget == Zone.VARS) {
+        if (zoneSource == Zone.VARS && zoneTarget == Zone.INPUTS || zoneSource == Zone.OUTPUTS
+                && zoneTarget == Zone.INPUTS || zoneSource == Zone.OUTPUTS && zoneTarget == Zone.VARS) {
             /*
              * VAR => INPUT OUTPUT => OUTPUT OUTPUT => INPUT OUTPUT => VAR
              */
@@ -286,7 +286,8 @@ public class DropContextAnalyzer {
 
                 if (isCursorOverExpressionCell) {
                     insertionEntryMode = false;
-                    if (mapperManager.getUiManager().isShiftPressed() && draggedData.getTransferableEntryList().size() > 1) {
+                    if (mapperManager.getUiManager().isShiftPressed()
+                            && draggedData.getTransferableEntryList().size() > 1) {
                         mapOneToOneMode = true;
                     } else {
                         dropFeedback |= DND.FEEDBACK_SELECT;
@@ -408,9 +409,10 @@ public class DropContextAnalyzer {
      */
     @Override
     public String toString() {
-        return "\nDropContextAnalyzer instance:" + "\n isTargetEntryValid=" + isDropValid + "\n insertionIndicatorVisible="
-                + insertionEntryMode + "\n mapOneToOne=" + mapOneToOneMode + "\n overwriteExpression=" + overwriteExpression
-                + "\n isCursorOverExpressionColumn=" + isCursorOverExpressionCell;
+        return "\nDropContextAnalyzer instance:" + "\n isTargetEntryValid=" + isDropValid
+                + "\n insertionIndicatorVisible=" + insertionEntryMode + "\n mapOneToOne=" + mapOneToOneMode
+                + "\n overwriteExpression=" + overwriteExpression + "\n isCursorOverExpressionColumn="
+                + isCursorOverExpressionCell;
     }
 
     public boolean isMapOneToOneAuthorized() {

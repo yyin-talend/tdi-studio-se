@@ -122,7 +122,8 @@ public class TableEntriesManager {
      */
     private void add(ITableEntry dataMapTableEntry) {
         tableEntries.put(TableEntryLocation.getNewInstance(dataMapTableEntry), dataMapTableEntry);
-        mapperManager.getUiManager().parseExpression(dataMapTableEntry.getExpression(), dataMapTableEntry, false, false, false);
+        mapperManager.getUiManager().parseExpression(dataMapTableEntry.getExpression(), dataMapTableEntry, false,
+                false, false);
     }
 
     void remove(ITableEntry dataMapTableEntry) {
@@ -169,7 +170,8 @@ public class TableEntriesManager {
     }
 
     TableItem retrieveTableItem(ITableEntry dataMapTableEntry) {
-        DataMapTableView dataMapTableView = this.mapperManager.retrieveAbstractDataMapTableView(dataMapTableEntry.getParent());
+        DataMapTableView dataMapTableView = this.mapperManager.retrieveAbstractDataMapTableView(dataMapTableEntry
+                .getParent());
         TableItem[] tableItems = new TableItem[0];
         if (dataMapTableEntry instanceof IColumnEntry) {
             tableItems = dataMapTableView.getTableViewerCreatorForColumns().getTable().getItems();
