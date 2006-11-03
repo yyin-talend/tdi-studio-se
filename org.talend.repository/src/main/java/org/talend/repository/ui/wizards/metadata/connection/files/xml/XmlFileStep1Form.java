@@ -65,20 +65,20 @@ public class XmlFileStep1Form extends AbstractXmlFileStepForm {
     private LabelledFileField fileFieldXsd;
 
     private LabelledFileField fileFieldXml;
-    
+
     private LabelledText fieldMaskXPattern;
 
     private Label labelIsGuess;
-    
+
     private Button checkBoxIsGuess;
-    
+
     /**
      * Another.
      */
     private boolean filePathIsDone;
 
     private transient Tree availableXmlTree;
-    
+
     private ATreeNode treeNode;
 
     private UtilsButton cancelButton;
@@ -106,7 +106,7 @@ public class XmlFileStep1Form extends AbstractXmlFileStepForm {
     @Override
     protected void initialize() {
 
-        //PTODO CAN : add init of CheckBoxIsGuess and Determine the Initialize checkFileXsdorXml
+        // PTODO CAN : add init of CheckBoxIsGuess and Determine the Initialize checkFileXsdorXml
         if (getConnection().getXsdFilePath() != null) {
             fileFieldXsd.setText(getConnection().getXsdFilePath().replace("\\\\", "\\"));
             // init the fileViewer
@@ -129,7 +129,7 @@ public class XmlFileStep1Form extends AbstractXmlFileStepForm {
         }
         treeItem.setExpanded(true);
     }
-    
+
     /**
      * DOC ocarbone Comment method "adaptFormToReadOnly".
      * 
@@ -139,7 +139,7 @@ public class XmlFileStep1Form extends AbstractXmlFileStepForm {
         fileFieldXsd.setReadOnly(isReadOnly());
         fileFieldXml.setReadOnly(isReadOnly());
         fieldMaskXPattern.setReadOnly(isReadOnly());
-//        checkBoxIsGuess.setReadOnly(isReadOnly());
+        // checkBoxIsGuess.setReadOnly(isReadOnly());
         updateStatus(IStatus.OK, "");
     }
 
@@ -150,7 +150,8 @@ public class XmlFileStep1Form extends AbstractXmlFileStepForm {
 
         // file Field XSD
         String[] xsdExtensions = { "*.xsd", "*.*", "*" };
-        fileFieldXsd = new LabelledFileField(compositeFileLocation, Messages.getString("XmlFileStep1.filepathXsd"), xsdExtensions);
+        fileFieldXsd = new LabelledFileField(compositeFileLocation, Messages.getString("XmlFileStep1.filepathXsd"),
+                xsdExtensions);
 
         // checkBox IsGuess
         checkBoxIsGuess = new Button(compositeFileLocation, SWT.CHECK);
@@ -159,14 +160,15 @@ public class XmlFileStep1Form extends AbstractXmlFileStepForm {
         gridDataLabel.horizontalSpan = 2;
         labelIsGuess.setLayoutData(gridDataLabel);
         labelIsGuess.setText(Messages.getString("XmlFileStep1.checkBoxIsGuess"));
-        
+
         // file Field XML
         String[] xmlExtensions = { "*.xml", "*.*", "*" };
-        fileFieldXml = new LabelledFileField(compositeFileLocation, Messages.getString("XmlFileStep1.filepathXml"), xmlExtensions);
+        fileFieldXml = new LabelledFileField(compositeFileLocation, Messages.getString("XmlFileStep1.filepathXml"),
+                xmlExtensions);
 
         // field XmaskPattern
         fieldMaskXPattern = new LabelledText(compositeFileLocation, Messages.getString("XmlFileStep1.maskXPattern"));
-        
+
         // Group Schema Viewer
         group = Form.createGroup(this, 1, Messages.getString("XmlFileStep1.groupFileViewer"), 220);
         Composite compositeFileViewer = Form.startNewDimensionnedGridLayout(group, 1, WIDTH_GRIDDATA_PIXEL, 220);
@@ -175,19 +177,19 @@ public class XmlFileStep1Form extends AbstractXmlFileStepForm {
         gridData.minimumWidth = WIDTH_GRIDDATA_PIXEL;
         gridData.minimumHeight = 150;
 
-        //PTODO CAN : the XmlTree
+        // PTODO CAN : the XmlTree
         availableXmlTree = new Tree(compositeFileViewer, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
         availableXmlTree.setLayoutData(gridData);
-        availableXmlTree.setToolTipText(Messages.getString("FileStep1.fileViewerTip1") + " " + MAXIMUM_ROWS_TO_PREVIEW + " "
-                + Messages.getString("FileStep1.fileViewerTip2"));
-        
+        availableXmlTree.setToolTipText(Messages.getString("FileStep1.fileViewerTip1") + " " + MAXIMUM_ROWS_TO_PREVIEW
+                + " " + Messages.getString("FileStep1.fileViewerTip2"));
+
         if (!isInWizard()) {
             // Composite BottomButton
             Composite compositeBottomButton = Form.startNewGridLayout(this, 2, false, SWT.CENTER, SWT.CENTER);
 
             // Button Cancel
-            cancelButton = new UtilsButton(compositeBottomButton, Messages.getString("CommonWizard.cancel"), WIDTH_BUTTON_PIXEL,
-                    HEIGHT_BUTTON_PIXEL);
+            cancelButton = new UtilsButton(compositeBottomButton, Messages.getString("CommonWizard.cancel"),
+                    WIDTH_BUTTON_PIXEL, HEIGHT_BUTTON_PIXEL);
         }
         addUtilsButtonListeners();
     }
@@ -212,6 +214,7 @@ public class XmlFileStep1Form extends AbstractXmlFileStepForm {
 
         // fileFieldXsd : Event modifyText
         fileFieldXsd.addModifyListener(new ModifyListener() {
+
             public void modifyText(final ModifyEvent e) {
                 getConnection().setXsdFilePath(fileFieldXsd.getText());
                 populateTree(fileFieldXsd);
@@ -220,6 +223,7 @@ public class XmlFileStep1Form extends AbstractXmlFileStepForm {
 
         // fileFieldXml : Event modifyText
         fileFieldXml.addModifyListener(new ModifyListener() {
+
             public void modifyText(final ModifyEvent e) {
                 getConnection().setXmlFilePath(fileFieldXml.getText());
                 populateTree(fileFieldXml);
@@ -241,41 +245,40 @@ public class XmlFileStep1Form extends AbstractXmlFileStepForm {
                 treeNode = SchemaPopulationUtil.getSchemaTree(fileField.getText(), true, numberOfElement);
                 if (treeNode == null || treeNode.getChildren().length == 0) {
                     OdaException ex = new OdaException(Messages.getString("dataset.error.populateXMLTree"));
-////                    ExceptionHandler.showException(getShell(),
-////                            Messages.getString("error.label"),
-////                            ex.getMessage(),
-////                            ex);
+                    // // ExceptionHandler.showException(getShell(),
+                    // // Messages.getString("error.label"),
+                    // // ex.getMessage(),
+                    // // ex);
                 } else {
                     Object[] childs = treeNode.getChildren();
                     populateTreeItems(availableXmlTree, childs, 0);
                 }
-                
-                
-                
-//                String queryText = XMLInformationHolder.getPropertyValue( Constants.CONST_PROP_RELATIONINFORMATION );
-//                String tableName = XMLRelationInfoUtil.getTableName( queryText );
-//
-//                if ( tableName != null && tableName.trim( ).length( ) > 0 )
-//                {
-//                    String selectedTreeItemText = XMLRelationInfoUtil.getXPathExpression( queryText,
-//                            tableName );
-//                }
-//                
-//                    String selectedTreeItemText = XMLRelationInfoUtil.getXPathExpression( queryText,
-//                            tableName );
-                
+
+                // String queryText = XMLInformationHolder.getPropertyValue( Constants.CONST_PROP_RELATIONINFORMATION );
+                // String tableName = XMLRelationInfoUtil.getTableName( queryText );
+                //
+                // if ( tableName != null && tableName.trim( ).length( ) > 0 )
+                // {
+                // String selectedTreeItemText = XMLRelationInfoUtil.getXPathExpression( queryText,
+                // tableName );
+                // }
+                //                
+                // String selectedTreeItemText = XMLRelationInfoUtil.getXPathExpression( queryText,
+                // tableName );
+
             }
             checkFieldsValue();
         } catch (Exception e) {
-//            ExceptionHandler.showException(getShell(),
-//                    Messages.getString("error.label"),
-//                    e.getMessage(),
-//                    e);
+            // ExceptionHandler.showException(getShell(),
+            // Messages.getString("error.label"),
+            // e.getMessage(),
+            // e);
         }
     }
 
     /**
      * populate tree items
+     * 
      * @param tree
      * @param node
      */
@@ -306,7 +309,7 @@ public class XmlFileStep1Form extends AbstractXmlFileStepForm {
             }
         }
     }
-    
+
     /**
      * Ensures that fields are set.
      * 

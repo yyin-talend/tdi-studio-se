@@ -37,11 +37,9 @@ import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.datatools.connectivity.oda.OdaException;
-import org.eclipse.datatools.enablement.oda.xml.ui.wizards.RowMappingDialog;
 import org.eclipse.datatools.enablement.oda.xml.util.ui.ATreeNode;
 import org.eclipse.datatools.enablement.oda.xml.util.ui.SchemaPopulationUtil;
 import org.eclipse.datatools.enablement.oda.xml.util.ui.XPathPopulationUtil;
-import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.custom.ScrolledComposite;
@@ -56,7 +54,6 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
-import org.eclipse.ui.PlatformUI;
 import org.talend.commons.ui.swt.dialogs.ErrorDialogWidthDetailArea;
 import org.talend.commons.ui.swt.formtools.Form;
 import org.talend.commons.ui.swt.formtools.LabelledCheckboxCombo;
@@ -112,6 +109,8 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
 
     private boolean readOnly;
 
+    private MetadataSchema metadataSchema;
+
     /**
      * Constructor to use by RCP Wizard.
      * 
@@ -132,7 +131,15 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
     protected void initialize() {
 
         checkFieldsValue();
-        targetSchemaEditor.setMetadataSchema((MetadataSchema) getConnection().getSchema().iterator().next());
+
+        if (metadataSchema == null) {
+            if (getConnection().getSchema() != null && !getConnection().getSchema().isEmpty()) {
+                metadataSchema = (MetadataSchema) getConnection().getSchema().get(0);
+            } else {
+                metadataSchema = ConnectionFactory.eINSTANCE.createMetadataSchema();
+            }
+        }
+        targetSchemaEditor.setMetadataSchema(metadataSchema);
         tableEditorView.setTargetSchemaEditor(targetSchemaEditor);
         tableEditorView.getTableViewerCreator().layout();
     }
@@ -168,8 +175,8 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
             // Bottom Button
             Composite compositeBottomButton = Form.startNewGridLayout(this, 2, false, SWT.CENTER, SWT.CENTER);
             // Button Cancel
-            cancelButton = new UtilsButton(compositeBottomButton, Messages.getString("CommonWizard.cancel"), WIDTH_BUTTON_PIXEL,
-                    HEIGHT_BUTTON_PIXEL);
+            cancelButton = new UtilsButton(compositeBottomButton, Messages.getString("CommonWizard.cancel"),
+                    WIDTH_BUTTON_PIXEL, HEIGHT_BUTTON_PIXEL);
         }
         addUtilsButtonListeners();
     }
@@ -195,15 +202,16 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
         // PTODO CAN : the XmlTree
         availableXmlTree = new Tree(compositeFileViewer, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
         availableXmlTree.setLayoutData(gridData);
-        availableXmlTree.setToolTipText(Messages.getString("FileStep1.fileViewerTip1") + " " + MAXIMUM_ROWS_TO_PREVIEW + " "
-                + Messages.getString("FileStep1.fileViewerTip2"));
+        availableXmlTree.setToolTipText(Messages.getString("FileStep1.fileViewerTip1") + " " + MAXIMUM_ROWS_TO_PREVIEW
+                + " " + Messages.getString("FileStep1.fileViewerTip2"));
     }
 
     private void addGroupSchemaTarget(final Composite mainComposite, final int width, final int height) {
         // Group Schema Viewer
         Group group = Form.createGroup(mainComposite, 1, Messages.getString("XmlFileStep1.groupSchemaTarget"), height);
 
-        ScrolledComposite scrolledCompositeFileViewer = new ScrolledComposite(group, SWT.H_SCROLL | SWT.V_SCROLL | SWT.NONE);
+        ScrolledComposite scrolledCompositeFileViewer = new ScrolledComposite(group, SWT.H_SCROLL | SWT.V_SCROLL
+                | SWT.NONE);
         scrolledCompositeFileViewer.setExpandHorizontal(true);
         scrolledCompositeFileViewer.setExpandVertical(true);
         GridData gridData1 = new GridData(GridData.FILL_BOTH);
@@ -218,8 +226,8 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
         scrolledCompositeFileViewer.setSize(width, height);
 
         // Composite toolbar = new Composite(group, SWT.BORDER);
-        TargetSchemaToolbarEditorView2 targetSchemaToolbarEditorView2 = new TargetSchemaToolbarEditorView2(group, SWT.NONE,
-                tableEditorView);
+        TargetSchemaToolbarEditorView2 targetSchemaToolbarEditorView2 = new TargetSchemaToolbarEditorView2(group,
+                SWT.NONE, tableEditorView);
 
     }
 
@@ -343,7 +351,8 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
             }
         } catch (CoreException e) {
             previewInformationLabel.setText("   " + Messages.getString("FileStep2.previewFailure"));
-            new ErrorDialogWidthDetailArea(getShell(), PID, Messages.getString("FileStep2.previewFailure"), e.getMessage());
+            new ErrorDialogWidthDetailArea(getShell(), PID, Messages.getString("FileStep2.previewFailure"), e
+                    .getMessage());
             log.error(Messages.getString("FileStep2.previewFailure") + " " + e.getMessage());
         }
     }
@@ -359,18 +368,22 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
                 checkFieldsValue();
             }
         });
-        
-        availableXmlTree.addSelectionListener( new SelectionAdapter( ) {
 
-            /* (non-Javadoc)
+        availableXmlTree.addSelectionListener(new SelectionAdapter() {
+
+            /*
+             * (non-Javadoc)
+             * 
              * @see org.eclipse.swt.events.SelectionAdapter#widgetSelected(org.eclipse.swt.events.SelectionEvent)
              */
-            public void widgetSelected( SelectionEvent e )
-            {
-                List xpathList = getSelectedXPath( availableXmlTree.getSelection()[0]);
-                System.out.println("Node : "+availableXmlTree.getSelection()[0].getText()+" Xpath : "+xpathList.get(0));
+            public void widgetSelected(SelectionEvent e) {
+                List xpathList = getSelectedXPath(availableXmlTree.getSelection()[0]);
+                if (xpathList != null) {
+                    System.out.println("Node : " + availableXmlTree.getSelection()[0].getText() + " Xpath : "
+                            + xpathList.get(0));
+                }
             }
-        } );
+        });
     }
 
     /**
@@ -378,17 +391,16 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
      * 
      * @return
      */
-    protected List getSelectedXPath(TreeItem selected)
-    {
-//        TreeItem selected = this.selectedItem;
+    protected List getSelectedXPath(TreeItem selected) {
+        // TreeItem selected = this.selectedItem;
         String rootPath = "";
         if (selected.getData() instanceof ATreeNode) {
             ATreeNode node = (ATreeNode) selected.getData();
-            if (node.getType() == ATreeNode.ATTRIBUTE_TYPE) {
-                return null;
-            } else {
-                rootPath = "/" + selected.getText();
-            }
+            // if (node.getType() == ATreeNode.ATTRIBUTE_TYPE) {
+            // return null;
+            // } else {
+            rootPath = "/" + selected.getText();
+            // }
         }
 
         while (selected.getParentItem() != null) {
@@ -401,6 +413,11 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
             }
         }
         return XPathPopulationUtil.populateRootPath(rootPath);
+
+    }
+
+    protected String getSelectedFullXPath(TreeItem selected) {
+        return XPathPopulationUtil.populateColumnPath("/biblio/livre", selected.getText());
     }
 
     /**
@@ -561,8 +578,8 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
                 String str;
                 int numberLine = 0;
                 // read the file width the limit : MAXIMUM_ROWS_TO_PREVIEW
-                BufferedReader in = new BufferedReader(new InputStreamReader(
-                        new FileInputStream(getConnection().getXmlFilePath()), guessedCharset.displayName()));
+                BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(getConnection()
+                        .getXmlFilePath()), guessedCharset.displayName()));
                 while (((str = in.readLine()) != null) && (numberLine <= MAXIMUM_ROWS_TO_PREVIEW)) {
                     numberLine++;
                     previewRows = previewRows + str + "\n";
@@ -574,8 +591,8 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
                 filePathIsDone = true;
 
             } catch (Exception e) {
-                String msgError = Messages.getString("FileStep1.filepath") + " \"" + fileXmlText.getText().replace("\\\\", "\\")
-                        + "\"\n";
+                String msgError = Messages.getString("FileStep1.filepath") + " \""
+                        + fileXmlText.getText().replace("\\\\", "\\") + "\"\n";
                 if (e instanceof FileNotFoundException) {
                     msgError = msgError + Messages.getString("FileStep1.fileNotFoundException");
                 } else if (e instanceof EOFException) {

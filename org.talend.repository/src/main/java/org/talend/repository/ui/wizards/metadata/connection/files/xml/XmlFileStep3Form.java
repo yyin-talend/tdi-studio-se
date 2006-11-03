@@ -95,7 +95,8 @@ public class XmlFileStep3Form extends AbstractXmlFileStepForm {
      * 
      * @param Composite
      */
-    public XmlFileStep3Form(Composite parent, ConnectionItem connectionItem, MetadataTable metadataTable, String[] existingNames) {
+    public XmlFileStep3Form(Composite parent, ConnectionItem connectionItem, MetadataTable metadataTable,
+            String[] existingNames) {
         super(parent, connectionItem, metadataTable, existingNames);
         this.connectionItem = connectionItem;
         this.metadataTable = metadataTable;
@@ -145,7 +146,8 @@ public class XmlFileStep3Form extends AbstractXmlFileStepForm {
         Composite compositeMetaData = Form.startNewGridLayout(groupMetaData, 1);
 
         // Composite Guess
-        Composite compositeGuessButton = Form.startNewDimensionnedGridLayout(compositeMetaData, 2, WIDTH_GRIDDATA_PIXEL, 40);
+        Composite compositeGuessButton = Form.startNewDimensionnedGridLayout(compositeMetaData, 2,
+                WIDTH_GRIDDATA_PIXEL, 40);
         informationLabel = new Label(compositeGuessButton, SWT.NONE);
         informationLabel.setText(Messages.getString("FileStep3.informationLabel")
                 + "                                                  ");
@@ -165,8 +167,8 @@ public class XmlFileStep3Form extends AbstractXmlFileStepForm {
             // Bottom Button
             Composite compositeBottomButton = Form.startNewGridLayout(this, 2, false, SWT.CENTER, SWT.CENTER);
             // Button Cancel
-            cancelButton = new UtilsButton(compositeBottomButton, Messages.getString("CommonWizard.cancel"), WIDTH_BUTTON_PIXEL,
-                    HEIGHT_BUTTON_PIXEL);
+            cancelButton = new UtilsButton(compositeBottomButton, Messages.getString("CommonWizard.cancel"),
+                    WIDTH_BUTTON_PIXEL, HEIGHT_BUTTON_PIXEL);
         }
         addUtilsButtonListeners();
     }
@@ -226,8 +228,8 @@ public class XmlFileStep3Form extends AbstractXmlFileStepForm {
 
                     if (!guessButton.getEnabled()) {
                         guessButton.setEnabled(true);
-                        if (MessageDialog.openConfirm(getShell(), Messages.getString("FileStep3.guessConfirmation"), Messages
-                                .getString("FileStep3.guessConfirmationMessage"))) {
+                        if (MessageDialog.openConfirm(getShell(), Messages.getString("FileStep3.guessConfirmation"),
+                                Messages.getString("FileStep3.guessConfirmationMessage"))) {
                             runShadowProcess();
                         }
                     } else {
@@ -304,7 +306,8 @@ public class XmlFileStep3Form extends AbstractXmlFileStepForm {
                 new ErrorDialogWidthDetailArea(getShell(), PID, Messages.getString("FileStep3.guessFailureTip") + "\n"
                         + Messages.getString("FileStep3.guessFailureTip2"), e.getMessage());
             } else {
-                new ErrorDialogWidthDetailArea(getShell(), PID, Messages.getString("FileStep3.guessFailureTip"), e.getMessage());
+                new ErrorDialogWidthDetailArea(getShell(), PID, Messages.getString("FileStep3.guessFailureTip"), e
+                        .getMessage());
             }
             log.error(Messages.getString("FileStep3.guessFailure") + " " + e.getMessage());
         }
@@ -356,7 +359,8 @@ public class XmlFileStep3Form extends AbstractXmlFileStepForm {
                     if (i >= xmlRows.get(current).getFields().size()) {
                         globalType = "String";
                     } else {
-                        globalType = DataTypeHelper.getTalendTypeOfValue(xmlRows.get(current).getFields().get(i).getValue());
+                        globalType = DataTypeHelper.getTalendTypeOfValue(xmlRows.get(current).getFields().get(i)
+                                .getValue());
                         current++;
                         if (current == xmlRows.size()) {
                             globalType = "String";
@@ -370,7 +374,8 @@ public class XmlFileStep3Form extends AbstractXmlFileStepForm {
                         String value = fields.get(i).getValue();
                         if (!value.equals("")) {
                             if (!DataTypeHelper.getTalendTypeOfValue(value).equals(globalType)) {
-                                globalType = DataTypeHelper.getCommonType(globalType, DataTypeHelper.getTalendTypeOfValue(value));
+                                globalType = DataTypeHelper.getCommonType(globalType, DataTypeHelper
+                                        .getTalendTypeOfValue(value));
                             }
                             lengthValue = value.length();
                             int positionDecimal = 0;
