@@ -63,7 +63,6 @@ import org.talend.commons.utils.data.list.ListenableListEvent;
 import org.talend.commons.utils.encoding.CharsetToolkit;
 import org.talend.core.model.metadata.builder.connection.ConnectionFactory;
 import org.talend.core.model.metadata.builder.connection.MetadataSchema;
-import org.talend.core.model.metadata.builder.connection.SchemaTarget;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.targetschema.editor.TargetSchemaEditor2;
 import org.talend.core.ui.targetschema.editor.TargetSchemaTableEditorView2;
@@ -139,6 +138,8 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
                 metadataSchema = ConnectionFactory.eINSTANCE.createMetadataSchema();
             }
         }
+        
+        getConnection().getSchema().add(metadataSchema);
         targetSchemaEditor.setMetadataSchema(metadataSchema);
         tableEditorView.setTargetSchemaEditor(targetSchemaEditor);
         tableEditorView.getTableViewerCreator().layout();
@@ -416,10 +417,6 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
 
     }
 
-    protected String getSelectedFullXPath(TreeItem selected) {
-        return XPathPopulationUtil.populateColumnPath("/biblio/livre", selected.getText());
-    }
-
     /**
      * Ensures that fields are set. Update checkEnable / use to checkConnection().
      * 
@@ -617,22 +614,22 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
     /**
      * DOC cantoine Comment method "refreshMetaDataSchema".
      */
-    public void refreshMetaDataSchema() {
-
-        MetadataSchema metadataSchema = ConnectionFactory.eINSTANCE.createMetadataSchema();
-        // define the schemaTarget to field i
-        SchemaTarget schemaTarget = ConnectionFactory.eINSTANCE.createSchemaTarget();
-        schemaTarget.setXPathQuery("toto");
-        schemaTarget.setTagName("titi");
-        schemaTarget.setIsBoucle(false);
-        schemaTarget.setLimitBoucle(3);
-        tableEditorView.getTargetSchemaEditor().add(schemaTarget, 0); // i
-        metadataSchema.getSchemaTargets().add(0, schemaTarget);
-        getConnection().getSchema().add(0, metadataSchema);
-
-        checkFieldsValue();
-        tableEditorView.getTableViewerCreator().layout();
-    }
+//    public void refreshMetaDataSchema() {
+//
+//        MetadataSchema metadataSchema = ConnectionFactory.eINSTANCE.createMetadataSchema();
+//        // define the schemaTarget to field i
+//        SchemaTarget schemaTarget = ConnectionFactory.eINSTANCE.createSchemaTarget();
+//        schemaTarget.setXPathQuery("toto");
+//        schemaTarget.setTagName("titi");
+//        schemaTarget.setIsBoucle(false);
+//        schemaTarget.setLimitBoucle(3);
+//        tableEditorView.getTargetSchemaEditor().add(schemaTarget, 0); // i
+//        metadataSchema.getSchemaTargets().add(0, schemaTarget);
+//        getConnection().getSchema().add(0, metadataSchema);
+//
+//        checkFieldsValue();
+//        tableEditorView.getTableViewerCreator().layout();
+//    }
 
     /*
      * (non-Javadoc)

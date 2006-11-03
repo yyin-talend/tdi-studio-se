@@ -73,11 +73,7 @@ public class XmlFileWizardPage extends WizardPage {
         if (step == 1) {
             currentComposite = new XmlFileStep1Form(parent, connectionItem, existingNames);
         } else if (step == 2) {
-            // MetadataSchema metadataSchema = (MetadataSchema)
-            // ((XmlFileConnection)connectionItem.getConnection()).getSchema().get(0);
-            // currentComposite = new XmlFileStep2Form(parent, connectionItem, metadataSchema);
             currentComposite = new XmlFileStep2Form(parent, connectionItem);
-
         } else if (step == 3) {
             MetadataTable metadataTable = (MetadataTable) ((XmlFileConnection) connectionItem.getConnection())
                     .getTables().get(0);
