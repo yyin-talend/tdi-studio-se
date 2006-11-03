@@ -57,7 +57,8 @@ public class FilePositionalTableWizard extends RepositoryWizard implements INewW
      * @param ISelection
      */
     @SuppressWarnings("unchecked")
-    public FilePositionalTableWizard(IWorkbench workbench, boolean creation, ConnectionItem connectionItem, MetadataTable metadataTable) {
+    public FilePositionalTableWizard(IWorkbench workbench, boolean creation, ConnectionItem connectionItem,
+            MetadataTable metadataTable) {
         super(workbench, creation);
         this.connectionItem = connectionItem;
         this.metadataTable = metadataTable;
@@ -78,7 +79,8 @@ public class FilePositionalTableWizard extends RepositoryWizard implements INewW
         addPage(tableWizardpage);
 
         if (creation) {
-            tableWizardpage.setTitle(Messages.getString("FileTableWizardPage.titleCreate", connectionItem.getProperty().getLabel()));
+            tableWizardpage.setTitle(Messages.getString("FileTableWizardPage.titleCreate", connectionItem.getProperty()
+                    .getLabel()));
             tableWizardpage.setDescription(Messages.getString("FileTableWizardPage.descriptionCreate"));
             tableWizardpage.setPageComplete(false);
         } else {

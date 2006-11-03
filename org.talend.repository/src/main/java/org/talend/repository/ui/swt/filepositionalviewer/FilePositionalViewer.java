@@ -504,7 +504,7 @@ public class FilePositionalViewer extends Composite {
 
         boolean stopDrag = false;
 
-        final private ResizeHelper resizeHelper = new ResizeHelper();
+        private final  ResizeHelper resizeHelper = new ResizeHelper();
 
         public TopMarkerEditor(Composite parent, int style) {
             super(parent, style);

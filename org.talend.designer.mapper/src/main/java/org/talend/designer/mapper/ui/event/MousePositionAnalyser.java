@@ -34,13 +34,13 @@ public class MousePositionAnalyser {
 
     private Composite composite;
 
-    private final static int DEFAULT_VALUE = 10;
+    private static final int DEFAULT_VALUE = 10;
 
-    public final static int DEFAULT_LEFT_BORDER_OFFSET = DEFAULT_VALUE;
+    public static final int DEFAULT_LEFT_BORDER_OFFSET = DEFAULT_VALUE;
 
-    public final static int DEFAULT_RIGHT_BORDER_OFFSET = DEFAULT_VALUE;
+    public static final int DEFAULT_RIGHT_BORDER_OFFSET = DEFAULT_VALUE;
 
-    public final static int DEFAULT_BOTTOM_BORDER_OFFSET = DEFAULT_VALUE;
+    public static final int DEFAULT_BOTTOM_BORDER_OFFSET = DEFAULT_VALUE;
 
     private int leftBorderOffset = DEFAULT_LEFT_BORDER_OFFSET;
 

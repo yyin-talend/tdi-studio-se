@@ -105,13 +105,13 @@ public class XmlFileWizard extends RepositoryWizard implements INewWizard {
         case SIMPLE_FOLDER:
         case SYSTEM_FOLDER:
             connection = ConnectionFactory.eINSTANCE.createXmlFileConnection();
-//            MetadataSchema metadataSchema = ConnectionFactory.eINSTANCE.createMetadataSchema();
+            // MetadataSchema metadataSchema = ConnectionFactory.eINSTANCE.createMetadataSchema();
             MetadataTable metadataTable = ConnectionFactory.eINSTANCE.createMetadataTable();
             RepositoryContext repositoryContext = (RepositoryContext) org.talend.core.CorePlugin.getContext().getProperty(
                     org.talend.core.context.Context.REPOSITORY_CONTEXT_KEY);
             IRepositoryFactory factory = RepositoryFactoryProvider.getInstance(repositoryContext);
             metadataTable.setId(factory.getNextId());
-//            connection.getTables().add(metadataSchema);
+            // connection.getTables().add(metadataSchema);
             connection.getTables().add(metadataTable);
             connectionProperty = PropertiesFactory.eINSTANCE.createProperty();
             connectionProperty
@@ -170,10 +170,10 @@ public class XmlFileWizard extends RepositoryWizard implements INewWizard {
             xmlFileWizardPage3.setDescription(Messages.getString("FileWizardPage.descriptionCreateStep3"));
             addPage(xmlFileWizardPage3);
 
-//            PTODO CAN : comment setPageComplete(true);
-//          xmlFileWizardPage1.setPageComplete(false);
-//          xmlFileWizardPage2.setPageComplete(false);
-//          xmlFileWizardPage3.setPageComplete(false);
+            // PTODO CAN : comment setPageComplete(true);
+            // xmlFileWizardPage1.setPageComplete(false);
+            // xmlFileWizardPage2.setPageComplete(false);
+            // xmlFileWizardPage3.setPageComplete(false);
 
             xmlFileWizardPage1.setPageComplete(true);
             xmlFileWizardPage2.setPageComplete(true);
@@ -198,8 +198,8 @@ public class XmlFileWizard extends RepositoryWizard implements INewWizard {
             addPage(xmlFileWizardPage2);
 
             xmlFileWizardPage1.setPageComplete(true);
-//          PTODO CAN : comment setPageComplete(true);
-//          xmlFileWizardPage2.setPageComplete(isRepositoryObjectEditable());
+            // PTODO CAN : comment setPageComplete(true);
+            // xmlFileWizardPage2.setPageComplete(isRepositoryObjectEditable());
             xmlFileWizardPage2.setPageComplete(true);
         }
     }

@@ -381,7 +381,8 @@ public class PositionalTextTest extends Composite {
 
                             for (VerticalMarkerEditor marker : listVerticalMarker) {
                                 if (posX == marker.getPosX()) {
-                                    if (!composite.translateVerticalMarker(marker, (marker.posX * largeurFont) + decalScreen, newPoint.x)) {
+                                    if (!composite.translateVerticalMarker(marker, (marker.posX * largeurFont) + decalScreen,
+                                            newPoint.x)) {
 
                                         event.type = SWT.MouseUp;
                                         break;
@@ -458,7 +459,7 @@ public class PositionalTextTest extends Composite {
 
         int posX;
 
-        final private ResizeHelper resizeHelper = new ResizeHelper();
+        private final ResizeHelper resizeHelper = new ResizeHelper();
 
         public OvalMarkerEditor(Composite parent, int style) {
             super(parent, style);
@@ -510,7 +511,8 @@ public class PositionalTextTest extends Composite {
 
                             for (VerticalMarkerEditor marker : listVerticalMarker) {
                                 if (posX == marker.getPosX()) {
-                                    if (!composite.translateVerticalMarker(marker, (marker.posX * largeurFont) + decalScreen, newPoint.x)) {
+                                    if (!composite.translateVerticalMarker(marker, (marker.posX * largeurFont) + decalScreen,
+                                            newPoint.x)) {
 
                                         event.type = SWT.MouseUp;
                                         break;

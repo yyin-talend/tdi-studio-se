@@ -61,7 +61,7 @@ public class MapperDataTestGenerator {
 
     private boolean fixedData = true;
 
-    private final static String COLUMN_NAME = "column";
+    private static final String COLUMN_NAME = "column";
 
     // private ILanguage language;
     private GenerationManager gen;

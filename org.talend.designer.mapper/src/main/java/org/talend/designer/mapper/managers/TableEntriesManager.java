@@ -51,7 +51,7 @@ public class TableEntriesManager {
 
     MapperManager mapperManager;
 
-    final static int HEIGHT_REACTION = 2;
+    static final int HEIGHT_REACTION = 2;
 
     TableEntriesManager(MapperManager mapperManager) {
         super();
