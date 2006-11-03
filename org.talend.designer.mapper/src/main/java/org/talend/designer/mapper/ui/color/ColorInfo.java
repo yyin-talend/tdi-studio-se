@@ -39,7 +39,7 @@ public enum ColorInfo {
     COLOR_RED(255, 0, 0), // red
     COLOR_ENTRY_NONE(255, 255, 255), // white
 
-    COLOR_BACKGROUND_LINKS(210, 210, 196), // gray
+    COLOR_BACKGROUND_LINKS_ZONE(210, 210, 196), // gray
     COLOR_UNSELECTED_METADATA_LINK(196, 196, 180), // light gray
     COLOR_LINK_HIGHLIGHTED(255, 255, 0), // white
     COLOR_LINK_CONSTRAINT(255, 150, 20), // yellow

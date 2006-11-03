@@ -51,6 +51,7 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.ScrollBar;
 import org.eclipse.swt.widgets.Shell;
+import org.talend.commons.ui.swt.drawing.background.BackgroundRefresher;
 import org.talend.commons.ui.ws.WindowSystem;
 import org.talend.commons.utils.performance.IPerformanceEvaluatorListener;
 import org.talend.commons.utils.performance.PerformanceEvaluator;
@@ -128,7 +129,7 @@ public class MapperUI {
 
     private Image oldImage;
 
-    private Color listBackground;
+    private Color bgColorLinksZone;
 
     private ScrollBar vBar1;
 
@@ -177,6 +178,8 @@ public class MapperUI {
 
     private OutputsZone outputsZone;
 
+    private MapperBackgroundRefresher backgroundRefresher;
+
     public MapperUI(Composite parent, MapperManager mapperManager) {
         super();
         this.mapperManager = mapperManager;
@@ -187,13 +190,14 @@ public class MapperUI {
     public void init(MapperModel mapperModel) {
         // long time1 = System.currentTimeMillis();
 
+        
         final UIManager uiManager = mapperManager.getUiManager();
         final ExternalMapperUiProperties uiProperties = uiManager.getUiProperties();
 
         addParentListeners(uiManager, uiProperties);
 
         final Display display = mapperUIParent.getDisplay();
-        listBackground = ColorProviderMapper.getColor(ColorInfo.COLOR_BACKGROUND_LINKS);
+        bgColorLinksZone = ColorProviderMapper.getColor(ColorInfo.COLOR_BACKGROUND_LINKS_ZONE);
 
         GridLayout parentLayout = new GridLayout(1, true);
         mapperUIParent.setLayout(parentLayout);
@@ -210,8 +214,9 @@ public class MapperUI {
         mainSashForm.setLayoutData(mainSashFormGridData);
 
         datasFlowViewSashForm = new SashForm(mainSashForm, SWT.SMOOTH | SWT.HORIZONTAL | SWT.BORDER);
-
         datasFlowViewSashForm.setBackgroundMode(SWT.INHERIT_FORCE);
+        
+        initBackgroundRefresher();
 
         if (WindowSystem.isGTK()) {
             datasFlowViewSashForm.setBackground(display.getSystemColor(SWT.COLOR_DARK_GRAY));
@@ -219,17 +224,17 @@ public class MapperUI {
 
         // dropTargetOperationListener.addControl(datasFlowViewSashForm);
 
-        datasFlowViewSashForm.addControlListener(new ControlListener() {
-
-            public void controlMoved(ControlEvent e) {
-            }
-
-            public void controlResized(ControlEvent e) {
-                createBgImages();
-                updateBackgroundTableConnections(true, false);
-            }
-
-        });
+//        datasFlowViewSashForm.addControlListener(new ControlListener() {
+//
+//            public void controlMoved(ControlEvent e) {
+//            }
+//
+//            public void controlResized(ControlEvent e) {
+//                createBgImages();
+//                updateBackground(true, false);
+//            }
+//
+//        });
 
         /* Create the tabs */
         tabFolderEditors = new TabFolderEditors(mainSashForm, SWT.BORDER, mapperManager);
@@ -254,13 +259,19 @@ public class MapperUI {
 
         new FooterComposite(this.mapperUIParent, SWT.NONE, mapperManager);
 
-        initTimeLimitForBackgroundRefresh();
-
         if (WindowSystem.isGTK()) {
             // resize especially for GTK
             resizeNotMinimizedTablesAtExpandedSize(display);
         }
         selectFirstInOutTablesView();
+    }
+
+    /**
+     * DOC amaumont Comment method "initBackgroundRefresher".
+     */
+    private void initBackgroundRefresher() {
+        this.backgroundRefresher = new MapperBackgroundRefresher(datasFlowViewSashForm);
+        this.backgroundRefresher.setBackgroundColor(bgColorLinksZone);
     }
 
     private void selectFirstInOutTablesView() {
@@ -310,7 +321,7 @@ public class MapperUI {
                 if (event.detail == SWT.NONE) {
                     mouseMoveScrollZoneHelper.mouseDownOnScroll = false;
                     mouseMoveScrollZoneHelper.scrolling = false;
-                    updateBackgroundTableConnections(false, true);
+                    updateBackground(false, true);
                 } else {
                     mouseMoveScrollZoneHelper.mouseDownOnScroll = true;
                     mouseMoveScrollZoneHelper.scrolling = true;
@@ -341,9 +352,9 @@ public class MapperUI {
                     public void run() {
 
                         if (mouseMoveScrollZoneHelper.mouseDownOnScroll && mouseMoveScrollZoneHelper.scrolling) {
-                            updateBackgroundTableConnections(false, false);
+                            updateBackground(false, false);
                         } else {
-                            updateBackgroundTableConnections(false, true);
+                            updateBackground(false, true);
                         }
                     }
 
@@ -359,9 +370,9 @@ public class MapperUI {
 
                     public void run() {
                         if (!isFinalExecution) {
-                            updateBackgroundTableConnections(true, false);
+                            updateBackground(true, false);
                         } else {
-                            updateBackgroundTableConnections(true, true);
+                            updateBackground(true, true);
                         }
                     }
 
@@ -441,7 +452,7 @@ public class MapperUI {
         mapperUIParent.addFocusListener(new FocusListener() {
 
             public void focusGained(FocusEvent e) {
-                updateBackgroundTableConnections(false, true);
+                updateBackground(false, true);
             }
 
             public void focusLost(FocusEvent e) {
@@ -664,69 +675,66 @@ public class MapperUI {
         if (threadToEvaluatePerformance != null) {
             threadToEvaluatePerformance.interrupt();
         }
-        releaseBgImages();
+        backgroundRefresher.releaseBgImages();
         ImageProviderMapper.releaseImages();
         ColorProviderMapper.releaseColors();
         FontProviderMapper.releaseFonts();
     }
 
-    protected void updateBackgroundTableConnections(boolean forceRecalculate, boolean antialias) {
+    protected void updateBackground(boolean forceRecalculate, boolean antialias) {
 
-        if (datasFlowViewSashForm.isDisposed()) {
-            return;
+        backgroundRefresher.setAntialias(antialias);
+        backgroundRefresher.setForceRecalculate(forceRecalculate);
+        backgroundRefresher.updateBackground();
+        
+    }
+
+    private int getBorder() {
+        return SHOW_BORDERS ? SWT.BORDER : SWT.NONE;
+    }
+
+    /**
+     * 
+     * DOC amaumont MapperUI class global comment. Detailled comment
+     * <br/>
+     *
+     * $Id$
+     *
+     */
+    public class MapperBackgroundRefresher extends BackgroundRefresher {
+
+        private boolean antialias;
+        private boolean forceRecalculate;
+
+        /**
+         * DOC amaumont MapperBackgroundRefresher constructor comment.
+         * @param commonParent
+         */
+        public MapperBackgroundRefresher(Composite commonParent) {
+            super(commonParent);
         }
 
-        oldImage = datasFlowViewSashForm.getBackgroundImage();
-        Image newImage = null;
-        if (oldImage == null || oldImage.isDisposed()) {
-            createBgImages();
-            newImage = bgImage1;
-        } else {
-            if (oldImage == bgImage1) {
-                newImage = bgImage2;
-            } else {
-                newImage = bgImage1;
-            }
-        }
-
-        if (newImage != null && !newImage.isDisposed()) {
-
-            GC gc = new GC(newImage);
-            // System.out.println(antialias ? "################ ANTIALIAS ACTIF ##############"
-            // : "---------- ANTIALIAS NON ACTIF ");
-            // gc.setAdvanced(true);
+        /* (non-Javadoc)
+         * @see org.talend.commons.ui.swt.drawing.link.BackgroundRefresher#drawBackground(org.eclipse.swt.graphics.GC)
+         */
+        @Override
+        public void drawBackground(GC gc) {
             gc.setLineWidth(2);
-            // gc.setInterpolation(SWT.HIGH);
-            // gc.setAntialias(SWT.ON);
             if (antialias && antialiasActivated && mapperManager.getCurrentNumberLinks() < 250) {
                 gc.setAntialias(antialias && antialiasActivated ? SWT.ON : SWT.OFF);
             } else {
                 gc.setAdvanced(false);
             }
-            // gc.setInterpolation(SWT.DEFAULT);
-            // gc.setLineJoin(SWT.JOIN_BEVEL);
 
-            // TODO utiliser une liste tri?e pour les liens
             List<IMapperLink> links = mapperManager.getLinks();
-
-            // System.out.println("forceRecalculate="+forceRecalculate);
-            // System.out.println("Antialias On ="+(antialias && antialiasActivated));
 
             if (firstTimeShowlinks) {
                 forceRecalculate = true;
                 firstTimeShowlinks = false;
             }
-            // long time1 = System.currentTimeMillis();
             int lstSize = links.size();
 
-            // long time2 = System.currentTimeMillis();
-            // IGraphicLink[] localLinksArray = links.toArray(linksArray);
-            // System.out.println("Array :" + (System.currentTimeMillis() - time1) + " ms");
-            // for (int i = 0; i < lstSize; i++) {
-            // IGraphicLink link = localLinksArray[i];
-//            AbstractLink.keyLinksCounter = 0;
-
-            Rectangle bounds = newImage.getBounds();
+            Rectangle bounds = datasFlowViewSashForm.getBounds();
             Rectangle boundsOfDrawing = new Rectangle(0, 0, 0, 0);
             int heightToolbarZone = inputsZone.getToolbar().getComposite().getSize().y;
             boundsOfDrawing.x = -OFFSET_VISIBLES_POINTS;
@@ -735,115 +743,46 @@ public class MapperUI {
             boundsOfDrawing.height = bounds.height + 2 * OFFSET_VISIBLES_POINTS - heightToolbarZone;
             for (int i = 0; i < lstSize; i++) {
                 IMapperLink link = links.get(i);
-                // System.out.println("index :" + i);
                 if (forceRecalculate) {
-                    // System.out.println("forceRecalculate");
                     link.calculate();
                 }
                 link.draw(gc, boundsOfDrawing);
             }
-            // System.out.println("Advanced:"+gc.getAdvanced());
-            gc.dispose();
-            // System.out.println("Refreshed background :" + (System.currentTimeMillis() - time1) + " ms");
+        } // public void drawBackground(GC gc) {
 
-            datasFlowViewSashForm.setBackgroundImage(newImage);
-
-            clearImage(oldImage);
-            oldImage = newImage;
+        
+        /**
+         * Getter for antialias.
+         * @return the antialias
+         */
+        public boolean isAntialias() {
+            return this.antialias;
         }
-    }
-
-    private void clearImage(final Image image) {
-        if (image != null && !image.isDisposed()) {
-            GC gc = new GC(image);
-            gc.setBackground(listBackground);
-            gc.fillRectangle(datasFlowViewSashForm.getClientArea());
-            gc.dispose();
+        
+        /**
+         * Sets the antialias.
+         * @param antialias the antialias to set
+         */
+        public void setAntialias(boolean antialias) {
+            this.antialias = antialias;
         }
-    }
-
-    private void createBgImages() {
-        Rectangle clientArea = datasFlowViewSashForm.getClientArea();
-        Rectangle imageArea = new Rectangle(0, 0, clientArea.width, clientArea.height);
-        if (imageArea.width > 0 && imageArea.height > 0) {
-            // long time2 = System.currentTimeMillis();
-            // System.out.println("Starting release et create new images");
-            releaseBgImages();
-            bgImage1 = new Image(mapperUIParent.getDisplay(), imageArea);
-            bgImage2 = new Image(mapperUIParent.getDisplay(), imageArea);
-            // System.out.println(imageArea);
-            clearImage(bgImage1);
-            clearImage(bgImage2);
-            // System.out.println("End release et create new images:" + (System.currentTimeMillis() - time2) + " ms");
+        
+        /**
+         * Getter for forceRecalculate.
+         * @return the forceRecalculate
+         */
+        public boolean isForceRecalculate() {
+            return this.forceRecalculate;
         }
-    }
-
-    private void releaseBgImages() {
-        if (bgImage1 != null) {
-            bgImage1.dispose();
+        
+        /**
+         * Sets the forceRecalculate.
+         * @param forceRecalculate the forceRecalculate to set
+         */
+        public void setForceRecalculate(boolean forceRecalculate) {
+            this.forceRecalculate = forceRecalculate;
         }
-        if (bgImage2 != null) {
-            bgImage2.dispose();
-        }
-    }
-
-    private int getBorder() {
-        return SHOW_BORDERS ? SWT.BORDER : SWT.NONE;
-    }
-
-    /**
-     * This method must be call one time by shell opened.
-     * 
-     */
-    private void launchEvaluatingPerformanceLoop() {
-        threadToEvaluatePerformance = new Thread() {
-
-            @Override
-            public void run() {
-                performanceEvaluator.evaluate(); // first evaluation is not representative
-                try {
-                    // to start evaluation after window loaded
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    return;
-                }
-                while (!mapperUIParent.isDisposed()) {
-                    performanceEvaluator.evaluate();
-                    try {
-                        // to start evaluation after window loaded
-                        Thread.sleep(TIME_BEFORE_REEVALUATE_PERFORMANCE * 1000);
-                    } catch (InterruptedException e) {
-                        break;
-                    }
-                }
-            }
-        };
-        threadToEvaluatePerformance.start();
-    }
-
-    private void initTimeLimitForBackgroundRefresh() {
-        (new Object() {
-
-            void init() {
-                performanceEvaluator.addListener(new IPerformanceEvaluatorListener() {
-
-                    public void handleEvent(PerformanceEvaluatorEvent event) {
-                        antialiasActivated = event.getIndicePerformance() < 310;
-                    }
-                });
-            }
-        }).init();
-
-        new AsynchronousThreading(50, new Runnable() {
-
-            public void run() {
-
-                launchEvaluatingPerformanceLoop();
-
-            }
-        }).start();
-
-    }
+    } // public class MapperBackgroundRefresher extends BackgroundRefresher {
 
     public Composite getVisualMapReferenceComposite() {
         return this.datasFlowViewSashForm;

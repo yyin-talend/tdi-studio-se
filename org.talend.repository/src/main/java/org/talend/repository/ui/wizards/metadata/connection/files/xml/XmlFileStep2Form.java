@@ -110,6 +110,8 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
 
     private MetadataSchema metadataSchema;
 
+    private SashForm xmlToSchemaSash;
+
     /**
      * Constructor to use by RCP Wizard.
      * 
@@ -143,6 +145,11 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
         targetSchemaEditor.setMetadataSchema(metadataSchema);
         tableEditorView.setTargetSchemaEditor(targetSchemaEditor);
         tableEditorView.getTableViewerCreator().layout();
+        
+        new XmlToSchemaLinker(xmlToSchemaSash, availableXmlTree, tableEditorView.getTableViewerCreator().getTable());
+        
+
+        
     }
 
     /**
@@ -160,11 +167,12 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
         mainComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
 
         // Splitter
-        SashForm sash = new SashForm(mainComposite, SWT.HORIZONTAL | SWT.SMOOTH);
-        sash.setLayoutData(new GridData(GridData.FILL_BOTH));
+        this.xmlToSchemaSash = new SashForm(mainComposite, SWT.HORIZONTAL | SWT.SMOOTH);
+        xmlToSchemaSash.setLayoutData(new GridData(GridData.FILL_BOTH));
+        xmlToSchemaSash.setBackgroundMode(SWT.INHERIT_FORCE);
 
-        addGroupXmlFileSettings(sash, 400, 110);
-        addGroupSchemaTarget(sash, 300, 110);
+        addGroupXmlFileSettings(xmlToSchemaSash, 400, 110);
+        addGroupSchemaTarget(xmlToSchemaSash, 300, 110);
 
         SashForm sash2 = new SashForm(mainComposite, SWT.HORIZONTAL | SWT.SMOOTH);
         sash2.setLayoutData(new GridData(GridData.FILL_BOTH));
