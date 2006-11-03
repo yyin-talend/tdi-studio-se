@@ -98,8 +98,8 @@ public class StyleLinkFactory {
     //
     public IStyleLink getStyleLink(IMapperLink link) {
         LinkState linkState = link.getState();
-        PointLinkDescriptor pointLinkDescriptorSource = link.getPointLinkDescriptorSource();
-        PointLinkDescriptor pointLinkDescriptorTarget = link.getPointLinkDescriptorTarget();
+        PointLinkDescriptor pointLinkDescriptorSource = link.getPointLinkDescriptor1();
+        PointLinkDescriptor pointLinkDescriptorTarget = link.getPointLinkDescriptor2();
         ITableEntry targetTableEntry = pointLinkDescriptorTarget.getTableEntry();
 
         boolean targetIsConstraint = false;

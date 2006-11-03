@@ -39,7 +39,6 @@ import org.talend.core.model.temp.ECodeLanguage;
 import org.talend.core.ui.metadata.editor.MetadataTableEditorView;
 import org.talend.designer.mapper.MapperMain;
 import org.talend.designer.mapper.managers.MapperManager;
-import org.talend.designer.mapper.ui.proposal.expression.ExpressionProposal;
 
 /**
  * DOC amaumont class global comment. Detailled comment <br/>
@@ -64,8 +63,6 @@ public class TabFolderEditors extends CTabFolder {
     public static final int INDEX_TAB_EXPRESSION_EDITOR = 1;
 
     private StyledTextHandler styledTextHandler;
-
-    private ExpressionProposal expressionProposal;
 
     public TabFolderEditors(Composite parent, int style, MapperManager mapperManager) {
         super(parent, style);
@@ -100,15 +97,6 @@ public class TabFolderEditors extends CTabFolder {
 
         this.styledTextHandler = new StyledTextHandler(styledText, mapperManager);
 
-        // styledText.setText("test\ntest1\ntest\ntest2\ntest3\ntest4\ntest5\ntest6\ntest7\ntest8\ntest9\ntest10\ntest11\ntest12\ntest13\n");
-        // metaDatasDescriptorView.pack();
-
-        // item = new CTabItem(tabFolder1, getBorder());
-        // item.setText("Map Code");
-        // TableEditor metaDatasDescriptorView2 = new TableEditor(tabFolder1);
-        // metaDatasDescriptorView2.addColumn(tableEditorColumn);
-        // item.setControl(metaDatasDescriptorView2);
-        //      
         tabFolderEditors.addListener(SWT.Selection, new Listener() {
 
             public void handleEvent(Event event) {

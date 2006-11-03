@@ -43,8 +43,6 @@ public class FooterComposite extends Composite {
 
     private MapperManager mapperManager;
 
-    private FooterComposite footerComposite;
-
     /**
      * DOC amaumont FooterComposite constructor comment.
      * 
@@ -55,7 +53,6 @@ public class FooterComposite extends Composite {
     public FooterComposite(Composite parent, int style, MapperManager mapperManager) {
         super(parent, style);
         this.mapperManager = mapperManager;
-        this.footerComposite = this;
         createComponents();
     }
 

@@ -36,9 +36,9 @@ public interface IMapperLink {
 
     public void calculate();
 
-    public PointLinkDescriptor getPointLinkDescriptorSource();
+    public PointLinkDescriptor getPointLinkDescriptor1();
 
-    public PointLinkDescriptor getPointLinkDescriptorTarget();
+    public PointLinkDescriptor getPointLinkDescriptor2();
 
     /**
      * DOC amaumont Comment method "setSate".

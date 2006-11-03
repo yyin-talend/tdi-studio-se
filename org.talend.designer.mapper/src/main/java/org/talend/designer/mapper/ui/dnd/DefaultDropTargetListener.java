@@ -37,7 +37,7 @@ import org.talend.designer.mapper.managers.UIManager;
  */
 public class DefaultDropTargetListener implements TransferDropTargetListener {
 
-    private MapperManager mapperManager;
+    protected MapperManager mapperManager;
 
     private Point lastCursorPosition;
 

@@ -58,7 +58,7 @@ public class ImageProviderMapper {
     }
 
     /**
-     * You can continue to use the provider after call this method
+     * You can continue to use the provider after call this method.
      */
     public static void releaseImages() {
         Collection<Image> images = imageCache.values();

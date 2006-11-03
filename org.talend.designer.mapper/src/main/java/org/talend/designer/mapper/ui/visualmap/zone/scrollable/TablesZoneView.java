@@ -41,12 +41,6 @@ public abstract class TablesZoneView extends Composite {
 
     private MapperManager mapperManager;
 
-    private int i;
-
-    private int j;
-
-    private int k;
-
     public TablesZoneView(Composite parent, int style, MapperManager mapperManager) {
         super(parent, style);
         this.mapperManager = mapperManager;

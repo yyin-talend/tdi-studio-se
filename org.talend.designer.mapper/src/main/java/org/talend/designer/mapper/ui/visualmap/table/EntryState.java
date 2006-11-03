@@ -35,7 +35,7 @@ public enum EntryState {
     HIGHLIGHT(ColorInfo.COLOR_ENTRY_HIGHLIGHTED),
     ERROR(ColorInfo.COLOR_ENTRY_ERROR),
     WARNING(ColorInfo.COLOR_ENTRY_WARNING),
-    NONE(ColorInfo.COLOR_ENTRY_NONE), ;
+    NONE(ColorInfo.COLOR_ENTRY_NONE);
 
     private ColorInfo colorInfo;
 

@@ -28,7 +28,9 @@ import org.eclipse.swt.graphics.Rectangle;
 import org.talend.commons.ui.swt.drawing.link.IDrawableLink;
 import org.talend.commons.ui.swt.drawing.link.IStyleLink;
 import org.talend.designer.mapper.managers.MapperManager;
+import org.talend.designer.mapper.managers.UIManager;
 import org.talend.designer.mapper.ui.MapperUI;
+import org.talend.designer.mapper.ui.visualmap.table.DataMapTableView;
 import org.talend.designer.mapper.ui.visualmap.zone.Zone;
 
 /**
@@ -37,38 +39,51 @@ import org.talend.designer.mapper.ui.visualmap.zone.Zone;
  * $Id$
  * 
  */
-public class Link extends AbstractLink {
+public class Link implements IMapperLink {
 
-    /**
-     * DOC amaumont Link constructor comment.
-     * 
-     * @param pointDescriptor1
-     * @param pointDescriptor2
-     * @param mapperManager
-     */
-    public Link(PointLinkDescriptor pointDescriptor1, PointLinkDescriptor pointDescriptor2, MapperManager mapperManager) {
-        super(pointDescriptor1, pointDescriptor2, mapperManager);
+    protected PointLinkDescriptor pointLinkDescriptor1;
+
+    protected PointLinkDescriptor pointLinkDescriptor2;
+
+    protected Point point1;
+
+    protected Point point2;
+
+    private LinkState linkState;
+
+    protected UIManager uiManager;
+
+    protected MapperManager mapperManager;
+
+    protected int widthTable1;
+
+    protected int widthTable2;
+
+    public Link(PointLinkDescriptor pointDescriptor1, PointLinkDescriptor pointDescriptor2,
+            MapperManager mapperManager) {
+        super();
+        this.pointLinkDescriptor1 = pointDescriptor1;
+        this.pointLinkDescriptor2 = pointDescriptor2;
+        this.mapperManager = mapperManager;
+        this.uiManager = mapperManager.getUiManager();
+        calculate();
+
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.designer.mapper.ui.visualmap.link.AbstractLink#calculate()
-     */
-    @Override
     public void calculate() {
-        // TODO Auto-generated method stub
-        super.calculate();
+        point1 = this.uiManager.getTableEntryPosition(pointLinkDescriptor1.getTableEntry(), true);
+        point2 = this.uiManager.getTableEntryPosition(pointLinkDescriptor2.getTableEntry(), true);
+        DataMapTableView viewTable1 = this.mapperManager.retrieveDataMapTableView(this.mapperManager
+                .retrieveTable(pointLinkDescriptor1.getTableEntry()));
+        DataMapTableView viewTable2 = this.mapperManager.retrieveDataMapTableView(this.mapperManager
+                .retrieveTable(pointLinkDescriptor2.getTableEntry()));
+        widthTable1 = viewTable1.getBounds().width + 2 * viewTable1.getBorderWidth();
+        widthTable2 = viewTable2.getBounds().width + 2 * viewTable2.getBorderWidth();
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.designer.mapper.ui.visualmap.link.AbstractLink#draw(org.eclipse.swt.graphics.GC, int, int)
-     */
-    @Override
+
     public void draw(GC gc, Rectangle boundsOfDrawing) {
-        StyleLinkFactory drawableLinkFactory = mapperManager.getUiManager().getDrawableLinkFactory();
+        StyleLinkFactory drawableLinkFactory = mapperManager.getUiManager().getStyleLinkFactory();
 
         IStyleLink styleLink = drawableLinkFactory.getStyleLink(this);
         IDrawableLink drawableLink = styleLink.getDrawableLink();
@@ -76,8 +91,8 @@ public class Link extends AbstractLink {
             throw new NullPointerException();
         }
 
-        Zone zone1 = pointDescriptor1.getZone();
-        Zone zone2 = pointDescriptor2.getZone();
+        Zone zone1 = pointLinkDescriptor1.getZone();
+        Zone zone2 = pointLinkDescriptor2.getZone();
 
         int yOffsetPoint1 = uiManager.getVerticalScrolledOffsetBar(zone1);
         int yOffsetPoint2 = uiManager.getVerticalScrolledOffsetBar(zone2);
@@ -113,59 +128,96 @@ public class Link extends AbstractLink {
         drawableLink.draw(gc);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.designer.mapper.ui.visualmap.link.AbstractLink#getPointLinkDescriptorSource()
+    
+    /**
+     * Getter for linkState.
+     * @return the linkState
      */
-    @Override
-    public PointLinkDescriptor getPointLinkDescriptorSource() {
-        // TODO Auto-generated method stub
-        return super.getPointLinkDescriptorSource();
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.designer.mapper.ui.visualmap.link.AbstractLink#getPointLinkDescriptorTarget()
-     */
-    @Override
-    public PointLinkDescriptor getPointLinkDescriptorTarget() {
-        // TODO Auto-generated method stub
-        return super.getPointLinkDescriptorTarget();
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.designer.mapper.ui.visualmap.link.AbstractLink#getState()
-     */
-    @Override
     public LinkState getState() {
-        // TODO Auto-generated method stub
-        return super.getState();
+        return this.linkState;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.designer.mapper.ui.visualmap.link.AbstractLink#setState(org.talend.designer.mapper.ui.visualmap.link.LinkState)
+    
+    /**
+     * Sets the linkState.
+     * @param state the linkState to set
      */
-    @Override
-    public void setState(LinkState linkState) {
-        // TODO Auto-generated method stub
-        super.setState(linkState);
+    public void setState(LinkState state) {
+        this.linkState = state;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.designer.mapper.ui.visualmap.link.AbstractLink#toString()
+    
+    /**
+     * Getter for point1.
+     * @return the point1
      */
-    @Override
-    public String toString() {
-        // TODO Auto-generated method stub
-        return super.toString();
+    public Point getPoint1() {
+        return this.point1;
     }
+
+    
+    /**
+     * Sets the point1.
+     * @param point1 the point1 to set
+     */
+    public void setPoint1(Point point1) {
+        this.point1 = point1;
+    }
+
+    
+    /**
+     * Getter for point2.
+     * @return the point2
+     */
+    public Point getPoint2() {
+        return this.point2;
+    }
+
+    
+    /**
+     * Sets the point2.
+     * @param point2 the point2 to set
+     */
+    public void setPoint2(Point point2) {
+        this.point2 = point2;
+    }
+
+    
+    /**
+     * Getter for pointDescriptor1.
+     * @return the pointDescriptor1
+     */
+    public PointLinkDescriptor getPointLinkDescriptor1() {
+        return this.pointLinkDescriptor1;
+    }
+
+    
+    /**
+     * Sets the pointDescriptor1.
+     * @param pointDescriptor1 the pointDescriptor1 to set
+     */
+    public void setPointLinkDescriptor1(PointLinkDescriptor pointDescriptor1) {
+        this.pointLinkDescriptor1 = pointDescriptor1;
+    }
+
+    
+    /**
+     * Getter for pointDescriptor2.
+     * @return the pointDescriptor2
+     */
+    public PointLinkDescriptor getPointLinkDescriptor2() {
+        return this.pointLinkDescriptor2;
+    }
+
+    
+    /**
+     * Sets the pointDescriptor2.
+     * @param pointDescriptor2 the pointDescriptor2 to set
+     */
+    public void setPointLinkDescriptor2(PointLinkDescriptor pointDescriptor2) {
+        this.pointLinkDescriptor2 = pointDescriptor2;
+    }
+
 
 }
+

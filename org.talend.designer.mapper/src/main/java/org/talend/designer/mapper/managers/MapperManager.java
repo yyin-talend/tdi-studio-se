@@ -75,8 +75,6 @@ public class MapperManager {
 
     public static final String MAPPER_MODEL_DATA = "MAPPER_MODEL_DATA";
 
-    private static final String EMPTY_STRING = "";
-
     private TableEntriesManager tableEntriesManager;
 
     private TableManager tableManager;
@@ -200,7 +198,7 @@ public class MapperManager {
      */
     public void addLink(IMapperLink link) {
         linkManager.addLink(link);
-        changeDependentSourcesAndTargetEntriesState(link.getPointLinkDescriptorTarget().getTableEntry(), link, false);
+        changeDependentSourcesAndTargetEntriesState(link.getPointLinkDescriptor2().getTableEntry(), link, false);
     }
 
     /**
@@ -225,9 +223,9 @@ public class MapperManager {
             boolean removedLink) {
 
         boolean sourceIsCauseOfChange = false;
-        if (currentLink.getPointLinkDescriptorSource().getTableEntry() == entryCauseOfChange) {
+        if (currentLink.getPointLinkDescriptor1().getTableEntry() == entryCauseOfChange) {
             sourceIsCauseOfChange = true;
-        } else if (currentLink.getPointLinkDescriptorTarget().getTableEntry() == entryCauseOfChange) {
+        } else if (currentLink.getPointLinkDescriptor2().getTableEntry() == entryCauseOfChange) {
             sourceIsCauseOfChange = false;
         } else {
             throw new IllegalArgumentException("The entryCauseOfChange must be the source or the target of the link");
@@ -236,13 +234,13 @@ public class MapperManager {
         if (sourceIsCauseOfChange) {
             Set<IMapperLink> dependentLinks = linkManager.getLinksFromSource(entryCauseOfChange);
             for (IMapperLink dependentLink : dependentLinks) {
-                changeDependentEntriesState(currentLink, dependentLink.getPointLinkDescriptorTarget().getTableEntry(),
+                changeDependentEntriesState(currentLink, dependentLink.getPointLinkDescriptor2().getTableEntry(),
                         removedLink);
             }
         } else {
             Set<IMapperLink> dependentLinks = linkManager.getLinksFromTarget(entryCauseOfChange);
             for (IMapperLink dependentLink : dependentLinks) {
-                changeDependentEntriesState(currentLink, dependentLink.getPointLinkDescriptorSource().getTableEntry(),
+                changeDependentEntriesState(currentLink, dependentLink.getPointLinkDescriptor1().getTableEntry(),
                         removedLink);
             }
         }
@@ -764,6 +762,14 @@ public class MapperManager {
         return LanguageProvider.getCurrentLanguage().checkExpressionSyntax(expression);
     }
 
+    /**
+     * @return
+     * @see org.talend.designer.mapper.managers.LinkManager#getCurrentNumberLinks()
+     */
+    public int getCurrentNumberLinks() {
+        return this.linkManager.getCurrentNumberLinks();
+    }
+
     // public Object getEmfParameterValue(String parameterName) {
     // List<? extends IElementParameter> elementParameters = mapperComponent.getElementParameters();
     // for (IElementParameter parameter : elementParameters) {
@@ -792,4 +798,6 @@ public class MapperManager {
     // return null;
     // }
 
+    
+    
 }

@@ -126,8 +126,6 @@ import org.talend.designer.mapper.ui.visualmap.zone.Zone;
  */
 public abstract class DataMapTableView extends Composite {
 
-    private static final String EMPTY_STRING = "";
-
     private Table tableForEntries;
 
     public static final int WIDTH_BUTTON = 20;
@@ -336,6 +334,24 @@ public abstract class DataMapTableView extends Composite {
 
         initTableConstraints();
 
+        createTableForColumns();
+
+        new DragNDrop(mapperManager, tableForEntries, true, true);
+
+        initColumns();
+
+        tableViewerCreatorForColumns.init(abstractDataMapTable.getColumnEntries());
+
+        Composite footerComposite = new Composite(this, SWT.NONE);
+        GridData footerGridData = new GridData(10, 2);
+        footerComposite.setLayoutData(footerGridData);
+
+    }
+
+    /**
+     * DOC amaumont Comment method "createTableForColumns".
+     */
+    private void createTableForColumns() {
         tableViewerCreatorForColumns = new TableViewerCreator(centerComposite);
         tableViewerCreatorForColumns.setHeaderVisible(true);
         tableViewerCreatorForColumns.setAllColumnsResizable(true);
@@ -480,17 +496,6 @@ public abstract class DataMapTableView extends Composite {
             }
 
         });
-
-        new DragNDrop(mapperManager, tableForEntries, true, true);
-
-        initColumns();
-
-        tableViewerCreatorForColumns.init(abstractDataMapTable.getColumnEntries());
-
-        Composite footerComposite = new Composite(this, SWT.NONE);
-        GridData footerGridData = new GridData(10, 2);
-        footerComposite.setLayoutData(footerGridData);
-
     }
 
     /**
@@ -501,7 +506,7 @@ public abstract class DataMapTableView extends Composite {
     private void initShowMessageErrorListener(final Table table) {
         showErrorMessageListener = new Listener() {
 
-            private String lastErrorMessage;
+//            private String lastErrorMessage;
 
             public void handleEvent(Event event) {
 
@@ -530,9 +535,10 @@ public abstract class DataMapTableView extends Composite {
                                     || tableToolTip != null && toolTip == null || toolTip != null
                                     && !toolTip.equals(tableToolTip))) {
                         setTableToolTipText(table, tableColumn, tableEntry, toolTip);
-                        lastErrorMessage = toolTip;
+//                        lastErrorMessage = toolTip;
                     }
                     break;
+                    default:
                 }
             }
 
@@ -621,6 +627,56 @@ public abstract class DataMapTableView extends Composite {
 
         // /////////////////////////////////////////////////////////////////
 
+        addManualTableResizeListeners(uiManager);
+        // /////////////////////////////////////////////////////////////////
+
+        // /////////////////////////////////////////////////////////////////
+        Listener onSelectDataMapTableViewListener = new Listener() {
+
+            public void handleEvent(Event event) {
+                switch (event.type) {
+                case SWT.MouseDown:
+                    onSelectDataMapTableView();
+                    break;
+                    default:
+                }
+
+            }
+        };
+
+        this.addListener(SWT.MouseDown, onSelectDataMapTableViewListener);
+        headerComposite.addListener(SWT.MouseDown, onSelectDataMapTableViewListener);
+        if (tableForConstraints != null) {
+            tableForConstraints.addListener(SWT.MouseDown, onSelectDataMapTableViewListener);
+        }
+        nameLabel.addListener(SWT.MouseDown, onSelectDataMapTableViewListener);
+        // /////////////////////////////////////////////////////////////////
+
+        // /////////////////////////////////////////////////////////////////
+        minimizeButton.addSelectionListener(new SelectionListener() {
+
+            public void widgetDefaultSelected(SelectionEvent e) {
+                // TODO Auto-generated method stub
+
+            }
+
+            public void widgetSelected(SelectionEvent e) {
+                minimizeTable(!abstractDataMapTable.isMinimized());
+            }
+
+        });
+
+        // /////////////////////////////////////////////////////////////////
+
+        initShowMessageErrorListener(tableForEntries);
+
+    }
+
+    /**
+     * DOC amaumont Comment method "addManualTableResizeListeners".
+     * @param uiManager
+     */
+    private void addManualTableResizeListeners(final UIManager uiManager) {
         this.addDisposeListener(new DisposeListener() {
 
             public void widgetDisposed(DisposeEvent e) {
@@ -723,6 +779,7 @@ public abstract class DataMapTableView extends Composite {
                 case SWT.MouseExit:
                     setDefaultCursor();
                     break;
+                    default:
                 }
 
             }
@@ -732,47 +789,6 @@ public abstract class DataMapTableView extends Composite {
         this.addListener(SWT.MouseMove, tableResizerListener);
         this.addListener(SWT.MouseDown, tableResizerListener);
         this.addListener(SWT.MouseUp, tableResizerListener);
-        // /////////////////////////////////////////////////////////////////
-
-        // /////////////////////////////////////////////////////////////////
-        Listener onSelectDataMapTableViewListener = new Listener() {
-
-            public void handleEvent(Event event) {
-                switch (event.type) {
-                case SWT.MouseDown:
-                    onSelectDataMapTableView();
-                    break;
-                }
-
-            }
-        };
-
-        this.addListener(SWT.MouseDown, onSelectDataMapTableViewListener);
-        headerComposite.addListener(SWT.MouseDown, onSelectDataMapTableViewListener);
-        if (tableForConstraints != null) {
-            tableForConstraints.addListener(SWT.MouseDown, onSelectDataMapTableViewListener);
-        }
-        nameLabel.addListener(SWT.MouseDown, onSelectDataMapTableViewListener);
-        // /////////////////////////////////////////////////////////////////
-
-        // /////////////////////////////////////////////////////////////////
-        minimizeButton.addSelectionListener(new SelectionListener() {
-
-            public void widgetDefaultSelected(SelectionEvent e) {
-                // TODO Auto-generated method stub
-
-            }
-
-            public void widgetSelected(SelectionEvent e) {
-                minimizeTable(!abstractDataMapTable.isMinimized());
-            }
-
-        });
-
-        // /////////////////////////////////////////////////////////////////
-
-        initShowMessageErrorListener(tableForEntries);
-
     }
 
     /**

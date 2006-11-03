@@ -58,9 +58,7 @@ public class LinkManager {
 
     private List<IMapperLink> links = new ArrayList<IMapperLink>();
 
-    public final boolean limitMaxLinks = false;
-
-    public static int currentNumberLinks = 0;
+    private int currentNumberLinks = 0;
 
     private Map<ITableEntry, Set<ITableEntry>> targetToSources = new HashMap<ITableEntry, Set<ITableEntry>>();
 
@@ -83,8 +81,8 @@ public class LinkManager {
         // System.out.println(currentNumberLinks + " links");
 
         links.add(link);
-        ITableEntry sourceITableEntry = link.getPointLinkDescriptorSource().getTableEntry();
-        ITableEntry targetITableEntry = link.getPointLinkDescriptorTarget().getTableEntry();
+        ITableEntry sourceITableEntry = link.getPointLinkDescriptor1().getTableEntry();
+        ITableEntry targetITableEntry = link.getPointLinkDescriptor2().getTableEntry();
         Set<ITableEntry> targetDataMapTableEntries = getSourcesCollection(targetITableEntry);
         targetDataMapTableEntries.add(sourceITableEntry);
         Set<IMapperLink> targetGraphicalLinks = getGraphicalLinksFromTarget(targetITableEntry);
@@ -161,8 +159,8 @@ public class LinkManager {
         currentNumberLinks--;
 
         links.remove(link);
-        ITableEntry sourceITableEntry = link.getPointLinkDescriptorSource().getTableEntry();
-        ITableEntry targetITableEntry = link.getPointLinkDescriptorTarget().getTableEntry();
+        ITableEntry sourceITableEntry = link.getPointLinkDescriptor1().getTableEntry();
+        ITableEntry targetITableEntry = link.getPointLinkDescriptor2().getTableEntry();
         Set<ITableEntry> targetDataMapTableEntries = getSourcesCollection(targetITableEntry);
         targetDataMapTableEntries.remove(sourceITableEntry);
         getGraphicalLinksFromSource(sourceITableEntry).remove(link);
@@ -201,5 +199,14 @@ public class LinkManager {
      */
     public void orderLinks() {
         Collections.sort(links, COMPARATOR);
+    }
+
+    
+    /**
+     * Getter for currentNumberLinks.
+     * @return the currentNumberLinks
+     */
+    public int getCurrentNumberLinks() {
+        return this.currentNumberLinks;
     }
 }

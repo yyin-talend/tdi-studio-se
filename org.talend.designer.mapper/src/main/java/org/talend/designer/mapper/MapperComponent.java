@@ -29,7 +29,6 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
@@ -60,13 +59,11 @@ import org.talend.designer.mapper.utils.problems.ProblemsAnalyser;
  */
 public class MapperComponent extends AbstractExternalNode {
 
-    public MapperMain mapperMain;
+    private MapperMain mapperMain;
 
     private List<IMetadataTable> metadataListOut;
 
     private ExternalMapperData externalData;
-
-    private static Logger log = Logger.getLogger(MapperComponent.class);
 
     /*
      * (non-Javadoc)
@@ -185,8 +182,8 @@ public class MapperComponent extends AbstractExternalNode {
      * 
      * @see org.talend.core.model.process.INode#setMetadataList(java.util.List)
      */
-    public void setMetadataList(List<IMetadataTable> metadataListOut) {
-        this.metadataListOut = metadataListOut;
+    public void setMetadataList(List<IMetadataTable> metadataTablesOut) {
+        this.metadataListOut = metadataTablesOut;
     }
 
     /*

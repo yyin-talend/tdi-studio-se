@@ -33,7 +33,7 @@ import org.talend.designer.mapper.model.table.VarsTable;
 public enum TableType {
     INPUT("in", 10),
     OUTPUT("out", 10),
-    VARS(VarsTable.PREFIX_VARS_TABLE_NAME, 1), ;
+    VARS(VarsTable.PREFIX_VARS_TABLE_NAME, 1);
 
     String baseTableName;
 

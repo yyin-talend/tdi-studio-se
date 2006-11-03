@@ -492,12 +492,12 @@ public class UIManager {
      * 
      * @param ok
      */
-    public void closeMapper(int mapperResponse) {
-        setMapperResponse(mapperResponse);
+    public void closeMapper(int response) {
+        setMapperResponse(response);
         Composite parent = mapperUI.getMapperUIParent();
         saveCurrentUIProperties();
 
-        if (mapperResponse == SWT.OK) {
+        if (response == SWT.OK) {
             createVisualMapImage();
         }
 
@@ -575,6 +575,7 @@ public class UIManager {
      * @param selectedMetadataTableEntries
      * @param isConstraintsTableSelected TODO
      */
+    @SuppressWarnings("unchecked")
     public void processSelectedMetadataTableEntries(DataMapTableView dataMapTableView,
             List<ITableEntry> selectedMetadataTableEntries, boolean isConstraintsTableSelected) {
 
@@ -609,14 +610,14 @@ public class UIManager {
                 && (!uiManager.isCtrlPressed() && !uiManager.isShiftPressed() || zoneHasChanged);
         if (resetHighlightObjectsForOtherTables) {
             for (IMapperLink link : mapperManager.getLinks()) {
-                if (!hashSelectedMetadataTableEntries.contains(link.getPointLinkDescriptorSource().getTableEntry())
-                        && !hashSelectedMetadataTableEntries.contains(link.getPointLinkDescriptorTarget()
+                if (!hashSelectedMetadataTableEntries.contains(link.getPointLinkDescriptor1().getTableEntry())
+                        && !hashSelectedMetadataTableEntries.contains(link.getPointLinkDescriptor2()
                                 .getTableEntry())) {
                     link.setState(LinkState.UNSELECTED);
-                    ITableEntry sourceITableEntry = link.getPointLinkDescriptorSource().getTableEntry();
+                    ITableEntry sourceITableEntry = link.getPointLinkDescriptor1().getTableEntry();
                     TableItem tableItem = mapperManager.retrieveTableItem(sourceITableEntry);
                     tableItem.setBackground(unselectedColor);
-                    ITableEntry targetITableEntry = link.getPointLinkDescriptorTarget().getTableEntry();
+                    ITableEntry targetITableEntry = link.getPointLinkDescriptor2().getTableEntry();
                     tableItem = mapperManager.retrieveTableItem(targetITableEntry);
                     tableItem.setBackground(unselectedColor);
                 }
@@ -662,7 +663,7 @@ public class UIManager {
                 linkState = LinkState.UNSELECTED;
             }
             for (IMapperLink link : linksFromSource) {
-                ITableEntry targetITableEntry = link.getPointLinkDescriptorTarget().getTableEntry();
+                ITableEntry targetITableEntry = link.getPointLinkDescriptor2().getTableEntry();
                 if (linkState == LinkState.SELECTED || !linksAlreadySelected.contains(link)
                         && linkState == LinkState.UNSELECTED) {
                     link.setState(linkState);
@@ -674,7 +675,7 @@ public class UIManager {
                 setEntryState(mapperManager, entryState, targetITableEntry);
             }
             for (IMapperLink link : linksFromTarget) {
-                ITableEntry sourceITableEntry = link.getPointLinkDescriptorSource().getTableEntry();
+                ITableEntry sourceITableEntry = link.getPointLinkDescriptor1().getTableEntry();
                 if (linkState == LinkState.SELECTED || !linksAlreadySelected.contains(link)
                         && linkState == LinkState.UNSELECTED) {
                     link.setState(linkState);
@@ -705,8 +706,8 @@ public class UIManager {
         getOutputMetaEditorView().getTableViewerCreator().getTable().deselectAll();
     }
 
-    public void setEntryState(MapperManager mapperManager, EntryState entryState, ITableEntry entry) {
-        TableItem tableItem = mapperManager.retrieveTableItem(entry);
+    public void setEntryState(MapperManager pMapperManager, EntryState entryState, ITableEntry entry) {
+        TableItem tableItem = pMapperManager.retrieveTableItem(entry);
         tableItem.setBackground(entryState.getColor());
     }
 
@@ -716,6 +717,7 @@ public class UIManager {
      * @param selection
      * @return
      */
+    @SuppressWarnings("unchecked")
     public List<ITableEntry> extractSelectedTableEntries(ISelection selection) {
         StructuredSelection currentSelection = (StructuredSelection) selection;
         return (List<ITableEntry>) currentSelection.toList();
@@ -804,6 +806,7 @@ public class UIManager {
     /**
      * DOC amaumont Comment method "processAllExpressions".
      */
+    @SuppressWarnings("unchecked")
     public void parseAllExpressions(DataMapTableView dataMapTableView) {
         List<IColumnEntry> columnsEntriesList = dataMapTableView.getDataMapTable().getColumnEntries();
         parseAllExpressions(columnsEntriesList);
@@ -870,8 +873,8 @@ public class UIManager {
         Set<IMapperLink> targets = mapperManager.getGraphicalLinksFromTarget(currentModifiedITableEntry);
         Set<IMapperLink> linksFromTarget = new HashSet<IMapperLink>(targets);
         for (IMapperLink link : linksFromTarget) {
-            if (sourcesForTargetToDelete.contains(link.getPointLinkDescriptorSource().getTableEntry())) {
-                mapperManager.removeLink(link, link.getPointLinkDescriptorTarget().getTableEntry());
+            if (sourcesForTargetToDelete.contains(link.getPointLinkDescriptor1().getTableEntry())) {
+                mapperManager.removeLink(link, link.getPointLinkDescriptor2().getTableEntry());
                 linkHasBeenRemoved = true;
             }
         }
@@ -1525,7 +1528,7 @@ public class UIManager {
      * 
      * @return the drawableLinkFactory
      */
-    public StyleLinkFactory getDrawableLinkFactory() {
+    public StyleLinkFactory getStyleLinkFactory() {
         return this.drawableLinkFactory;
     }
 

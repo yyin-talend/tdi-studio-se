@@ -32,22 +32,22 @@ import org.talend.designer.mapper.ui.visualmap.zone.Zone;
  */
 public class PointLinkDescriptor {
 
-    private ITableEntry dataMapTableEntry;
+    private ITableEntry tableEntry;
 
     private Zone zone;
 
     public PointLinkDescriptor(ITableEntry dataMapTableEntry, Zone zone) {
         super();
-        this.dataMapTableEntry = dataMapTableEntry;
+        this.tableEntry = dataMapTableEntry;
         this.zone = zone;
     }
 
     public ITableEntry getTableEntry() {
-        return this.dataMapTableEntry;
+        return this.tableEntry;
     }
 
-    public void setITableEntry(ITableEntry dataMapTableEntry) {
-        this.dataMapTableEntry = dataMapTableEntry;
+    public void setTableEntry(ITableEntry dataMapTableEntry) {
+        this.tableEntry = dataMapTableEntry;
     }
 
     public Zone getZone() {

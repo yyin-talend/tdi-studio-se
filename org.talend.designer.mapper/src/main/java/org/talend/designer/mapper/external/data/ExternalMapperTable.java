@@ -46,7 +46,7 @@ public class ExternalMapperTable implements Serializable {
     private boolean minimized;
 
     /**
-     * used only for outputs
+     * used only for outputs.
      */
     private boolean reject;
 

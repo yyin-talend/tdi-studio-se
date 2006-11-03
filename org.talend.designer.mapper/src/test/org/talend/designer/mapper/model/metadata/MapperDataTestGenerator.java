@@ -86,8 +86,6 @@ public class MapperDataTestGenerator {
 
     private int outputsCounter; // remove finally
 
-    private int varsCounter; // remove finally
-
     private boolean random;
 
     private ArrayList<IConnection> connectionList;
@@ -102,8 +100,6 @@ public class MapperDataTestGenerator {
         inputsCounter = 0; // remove finally
 
         outputsCounter = 0; // remove finally
-
-        varsCounter = 0; // remove finally
 
     }
 
@@ -368,9 +364,7 @@ public class MapperDataTestGenerator {
                                 + rand.nextInt(10) + "[test_var]" : "")
                         + (rand.nextInt(4) == 0 ? (rand.nextBoolean() ? " + " : " - ") + "$hash_var" + rand.nextInt(10)
                                 + "{test_var}" : "")
-                        + (rand.nextInt(4) == 0 ? (rand.nextBoolean() ? " + " : " - ") + "$var" + rand.nextInt(10) : "")
-
-                ;
+                        + (rand.nextInt(4) == 0 ? (rand.nextBoolean() ? " + " : " - ") + "$var" + rand.nextInt(10) : "");
             }
         }
         return expression;
@@ -1306,15 +1300,14 @@ public class MapperDataTestGenerator {
             // TODO Auto-generated method stub
         }
 
-        /*
-         * (non-Javadoc)
-         * 
+        /* (non-Javadoc)
          * @see org.talend.core.model.process.INode#isMultipleMethods()
          */
-        public boolean isMultipleMethods() {
+        public Boolean isMultipleMethods() {
             // TODO Auto-generated method stub
-            return false;
+            return null;
         }
+
 
     }
 

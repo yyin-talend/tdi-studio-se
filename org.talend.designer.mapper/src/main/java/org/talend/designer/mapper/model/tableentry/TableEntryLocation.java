@@ -69,32 +69,39 @@ public class TableEntryLocation {
 
     @Override
     public int hashCode() {
-        final int PRIME = 31;
+        final int prime = 31;
         int result = 1;
-        result = PRIME * result + ((this.columnName == null) ? 0 : this.columnName.hashCode());
-        result = PRIME * result + ((this.tableName == null) ? 0 : this.tableName.hashCode());
+        result = prime * result + ((this.columnName == null) ? 0 : this.columnName.hashCode());
+        result = prime * result + ((this.tableName == null) ? 0 : this.tableName.hashCode());
         return result;
     }
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (obj == null)
+        }
+        if (obj == null) {
             return false;
-        if (getClass() != obj.getClass())
+        }
+        if (getClass() != obj.getClass()) {
             return false;
+        }
         final TableEntryLocation other = (TableEntryLocation) obj;
         if (this.columnName == null) {
-            if (other.columnName != null)
+            if (other.columnName != null) {
                 return false;
-        } else if (!this.columnName.equals(other.columnName))
+            }
+        } else if (!this.columnName.equals(other.columnName)) {
             return false;
+        }
         if (this.tableName == null) {
-            if (other.tableName != null)
+            if (other.tableName != null) {
                 return false;
-        } else if (!this.tableName.equals(other.tableName))
+            }
+        } else if (!this.tableName.equals(other.tableName)) {
             return false;
+        }
         return true;
     }
 

@@ -74,7 +74,6 @@ import org.talend.designer.mapper.ui.font.FontProviderMapper;
 import org.talend.designer.mapper.ui.footer.FooterComposite;
 import org.talend.designer.mapper.ui.image.ImageProviderMapper;
 import org.talend.designer.mapper.ui.tabs.TabFolderEditors;
-import org.talend.designer.mapper.ui.visualmap.link.AbstractLink;
 import org.talend.designer.mapper.ui.visualmap.link.IMapperLink;
 import org.talend.designer.mapper.ui.visualmap.table.DataMapTableView;
 import org.talend.designer.mapper.ui.visualmap.table.InputDataMapTableView;
@@ -241,7 +240,7 @@ public class MapperUI {
 
         createOutputZoneWithTables(mapperModel, uiManager, display);
 
-        this.draggingInfosPopup = DraggingInfosPopup.getNewShell(this.mapperUIParent.getShell(), mapperManager);
+        this.draggingInfosPopup = DraggingInfosPopup.getNewShell(this.mapperUIParent.getShell());
 
         configureZoneScrollBars(display);
 
@@ -699,7 +698,7 @@ public class MapperUI {
             gc.setLineWidth(2);
             // gc.setInterpolation(SWT.HIGH);
             // gc.setAntialias(SWT.ON);
-            if (antialias && antialiasActivated && LinkManager.currentNumberLinks < 250) {
+            if (antialias && antialiasActivated && mapperManager.getCurrentNumberLinks() < 250) {
                 gc.setAntialias(antialias && antialiasActivated ? SWT.ON : SWT.OFF);
             } else {
                 gc.setAdvanced(false);
@@ -725,7 +724,7 @@ public class MapperUI {
             // System.out.println("Array :" + (System.currentTimeMillis() - time1) + " ms");
             // for (int i = 0; i < lstSize; i++) {
             // IGraphicLink link = localLinksArray[i];
-            AbstractLink.keyLinksCounter = 0;
+//            AbstractLink.keyLinksCounter = 0;
 
             Rectangle bounds = newImage.getBounds();
             Rectangle boundsOfDrawing = new Rectangle(0, 0, 0, 0);
@@ -780,10 +779,12 @@ public class MapperUI {
     }
 
     private void releaseBgImages() {
-        if (bgImage1 != null)
+        if (bgImage1 != null) {
             bgImage1.dispose();
-        if (bgImage2 != null)
+        }
+        if (bgImage2 != null) {
             bgImage2.dispose();
+        }
     }
 
     private int getBorder() {

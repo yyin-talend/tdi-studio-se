@@ -27,7 +27,6 @@ import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DropTarget;
 import org.eclipse.swt.dnd.DropTargetEvent;
 import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
@@ -38,7 +37,6 @@ import org.talend.designer.mapper.managers.MapperManager;
 import org.talend.designer.mapper.managers.UIManager;
 import org.talend.designer.mapper.model.table.InputTable;
 import org.talend.designer.mapper.model.table.OutputTable;
-import org.talend.designer.mapper.model.tableentry.ITableEntry;
 import org.talend.designer.mapper.ui.visualmap.table.DataMapTableView;
 import org.talend.designer.mapper.ui.visualmap.zone.Zone;
 
@@ -147,9 +145,9 @@ public class DropContextAnalyzer {
             isInputToInput = true;
             mapOneToOneAuthorized = false;
             List<InputTable> inputTables = mapperManager.getInputTables();
-            if (inputTables.indexOf(dataMapTableViewSource.getDataMapTable()) >= inputTables
-                    .indexOf(dataMapTableViewTarget.getDataMapTable())) {
-
+            int indexTableSource = inputTables.indexOf(dataMapTableViewSource.getDataMapTable());
+            int indexTableTarget = inputTables.indexOf(dataMapTableViewTarget.getDataMapTable());
+            if (indexTableSource >= indexTableTarget) {
                 /*
                  * INPUT => INPUT && index of table source >= index of table target
                  */
@@ -168,9 +166,9 @@ public class DropContextAnalyzer {
             isOutputToOutput = true;
             mapOneToOneAuthorized = true;
             List<OutputTable> outputTables = mapperManager.getOutputTables();
-            if (outputTables.indexOf(dataMapTableViewSource.getDataMapTable()) == outputTables
-                    .indexOf(dataMapTableViewTarget.getDataMapTable())) {
-
+            int indexSourceOutputTable = outputTables.indexOf(dataMapTableViewSource.getDataMapTable());
+            int indexTargetOutputTable = outputTables.indexOf(dataMapTableViewTarget.getDataMapTable());
+            if (indexSourceOutputTable == indexTargetOutputTable) {
                 /*
                  * INPUT => INPUT && index of table source >= index of table target
                  */
@@ -221,6 +219,7 @@ public class DropContextAnalyzer {
     /**
      * .
      */
+    @SuppressWarnings("unchecked")
     private void analyzeCursorOverExpressionCell() {
         Point pointCursor = currentTableTarget.toControl(event.x, event.y);
         DataMapTableView dataMapTableView = mapperManager.retrieveDataMapTableView(currentTableTarget);
@@ -319,11 +318,11 @@ public class DropContextAnalyzer {
         detail = dropOperation;
     }
 
-    private boolean targetTableIsConstraintsTable(DataMapTableView dataMapTableViewTarget) {
-        if (dataMapTableViewTarget.getZone() != Zone.OUTPUTS) {
+    private boolean targetTableIsConstraintsTable(DataMapTableView target) {
+        if (target.getZone() != Zone.OUTPUTS) {
             return false;
         }
-        return currentTableTarget == dataMapTableViewTarget.getTableViewerCreatorForConstraints().getTable();
+        return currentTableTarget == target.getTableViewerCreatorForConstraints().getTable();
     }
 
     public boolean targetTableIsConstraintsTable() {
@@ -333,39 +332,6 @@ public class DropContextAnalyzer {
     private TableItem getTableItemFromPosition(Point cursorPosition) {
         Point pointCursor = currentTableTarget.toControl(cursorPosition.x, cursorPosition.y);
         return currentTableTarget.getItem(pointCursor);
-    }
-
-    private ITableEntry getEntryFromPosition(Point cursorPosition) {
-        TableItem tableItemBehindCursor = getTableItemFromPosition(cursorPosition);
-        if (tableItemBehindCursor != null) {
-            return (ITableEntry) tableItemBehindCursor.getData();
-        } else {
-            return null;
-        }
-    }
-
-    private int getItemIndexWhereInsertFromPosition(Point cursorPosition) {
-        int startInsertAtThisIndex = 0;
-        Point pointCursor = currentTableTarget.toControl(cursorPosition.x, cursorPosition.y);
-        TableItem[] tableItems = currentTableTarget.getItems();
-        TableItem tableItemBehindCursor = getTableItemFromPosition(cursorPosition);
-        if (tableItemBehindCursor != null) {
-            for (int i = 0; i < tableItems.length; i++) {
-                if (tableItems[i] == tableItemBehindCursor) {
-                    Rectangle boundsItem = tableItemBehindCursor.getBounds();
-                    startInsertAtThisIndex = i;
-                    if (pointCursor.y > boundsItem.y + currentTableTarget.getItemHeight() / 2) {
-                        startInsertAtThisIndex = i + 1;
-                    }
-                    break;
-                }
-            }
-        } else if (pointCursor.y < currentTableTarget.getHeaderHeight()) {
-            startInsertAtThisIndex = 0;
-        } else {
-            startInsertAtThisIndex = tableItems.length;
-        }
-        return startInsertAtThisIndex;
     }
 
     private boolean dropVarsEntryIsValid(TableItem tableItemTarget) {

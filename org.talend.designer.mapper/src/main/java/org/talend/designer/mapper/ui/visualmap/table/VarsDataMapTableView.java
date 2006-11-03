@@ -25,7 +25,6 @@ import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Text;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumn;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator.CELL_EDITOR_STATE;
 import org.talend.commons.ui.swt.tableviewer.celleditor.DialogErrorForCellEditorListener;
@@ -45,8 +44,6 @@ import org.talend.designer.mapper.ui.visualmap.zone.Zone;
  * 
  */
 public class VarsDataMapTableView extends DataMapTableView {
-
-    private Text expressionEditorText;
 
     public VarsDataMapTableView(Composite parent, int style, AbstractDataMapTable abstractDataMapTable,
             MapperManager mapperManager) {

@@ -29,5 +29,5 @@ package org.talend.designer.mapper.ui.visualmap.link;
  */
 public enum LinkState {
     UNSELECTED,
-    SELECTED, ;
+    SELECTED;
 }

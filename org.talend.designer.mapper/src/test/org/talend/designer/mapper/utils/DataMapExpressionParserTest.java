@@ -111,7 +111,8 @@ public class DataMapExpressionParserTest {
 
     /**
      * Test method for
-     * {@link org.talend.designer.mapper.utils.DataMapExpressionParser#testreplaceLocationString(String, TableEntryLocation, TableEntryLocation)}.
+     * {@link org.talend.designer.mapper.utils.DataMapExpressionParser#testreplaceLocationString(String, 
+     * TableEntryLocation, TableEntryLocation)}.
      */
     @Test
     public void testreplaceLocationString() {

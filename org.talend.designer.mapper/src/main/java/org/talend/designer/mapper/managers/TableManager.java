@@ -68,6 +68,7 @@ public class TableManager {
      * @param view
      * @param tableData
      */
+    @SuppressWarnings("unchecked")
     void addTable(DataMapTableView view, AbstractDataMapTable tableData) {
 
         if (tableData instanceof AbstractInOutTable) {

@@ -33,7 +33,6 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.talend.commons.ui.ws.WindowSystem;
-import org.talend.designer.mapper.managers.MapperManager;
 
 /**
  * DOC amaumont class global comment. Detailled comment <br/>
@@ -53,18 +52,13 @@ public final class DraggingInfosPopup {
 
     private boolean mapOneToOne;
 
-    private MapperManager mapperManager;
-
     private Shell parent;
 
     private boolean outputToOutputMode;
 
     private boolean dropInvalid = true;
 
-    private boolean invalidKeyPressed;
-
-    private DraggingInfosPopup(Shell parent, MapperManager mapperManager) {
-        this.mapperManager = mapperManager;
+    private DraggingInfosPopup(Shell parent) {
         this.parent = parent;
         init(parent);
     }
@@ -95,8 +89,8 @@ public final class DraggingInfosPopup {
         }
 
         @Override
-        protected Control createDialogArea(Composite parent) {
-            mainComposite = new Composite(parent, SWT.NONE);
+        protected Control createDialogArea(Composite parentComposite) {
+            mainComposite = new Composite(parentComposite, SWT.NONE);
             RowLayout rowLayout = new RowLayout(SWT.VERTICAL);
             rowLayout.fill = true;
             rowLayout.pack = true;
@@ -272,10 +266,10 @@ public final class DraggingInfosPopup {
     /**
      * DOC amaumont Comment method "init".
      * 
-     * @param parent
+     * @param parentShell
      */
-    private void init(Shell parent) {
-        popup = new Popup(parent);
+    private void init(Shell parentShell) {
+        popup = new Popup(parentShell);
         popup.open();
         popup.setVisible(false);
         setDropInvalid(true, false);
@@ -283,8 +277,8 @@ public final class DraggingInfosPopup {
         setMapOneToOneMode(false, true);
     }
 
-    public static DraggingInfosPopup getNewShell(Shell parent, MapperManager mapperManager) {
-        return new DraggingInfosPopup(parent, mapperManager);
+    public static DraggingInfosPopup getNewShell(Shell parent) {
+        return new DraggingInfosPopup(parent);
     }
 
     /**
@@ -342,15 +336,15 @@ public final class DraggingInfosPopup {
      * 
      * if mapOneToOneAuthorized, mapOneToOne is forced to false
      * 
-     * @param mapOneToOne
+     * @param isMapOneToOne
      * @param mapOneToOneAuthorized
      */
-    public void setMapOneToOneMode(boolean mapOneToOne, boolean mapOneToOneAuthorized) {
+    public void setMapOneToOneMode(boolean isMapOneToOne, boolean mapOneToOneAuthorized) {
         String mode = null;
-        if (mapOneToOne && mapOneToOneAuthorized) {
+        if (isMapOneToOne && mapOneToOneAuthorized) {
             mode = " > Each source entry " + (this.outputToOutputMode ? "expression " : "")
                     + "to each target expression";
-            this.mapOneToOne = mapOneToOne;
+            this.mapOneToOne = isMapOneToOne;
         } else {
             mode = " > All source entries "
                     + (this.outputToOutputMode ? "expression " : "")
@@ -423,16 +417,16 @@ public final class DraggingInfosPopup {
         return this.mapOneToOne;
     }
 
-    public void setDropInvalid(boolean dropInvalid, boolean invalidKeyPressed) {
+    public void setDropInvalid(boolean isDropInvalid, boolean isInvalidKeyPressed) {
         String newText = "null";
-        if (dropInvalid) {
+        if (isDropInvalid) {
             if (WindowSystem.isGTK()) {
                 newText = "\n<< Drop invalid >>\n"
-                        + (invalidKeyPressed ? "Press both Shift and Ctrl keys to map one to one and overwrite" : "");
+                        + (isInvalidKeyPressed ? "Press both Shift and Ctrl keys to map one to one and overwrite" : "");
             }
         }
         if (WindowSystem.isGTK()) {
-            this.dropInvalid = dropInvalid;
+            this.dropInvalid = isDropInvalid;
         } else {
             this.dropInvalid = false;
         }

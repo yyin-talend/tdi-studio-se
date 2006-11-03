@@ -22,41 +22,23 @@
 package org.talend.designer.mapper.ui.dnd;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import org.eclipse.jface.util.TransferDragSourceListener;
-import org.eclipse.jface.util.TransferDropTargetListener;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DragSource;
 import org.eclipse.swt.dnd.DragSourceEvent;
 import org.eclipse.swt.dnd.DragSourceListener;
 import org.eclipse.swt.dnd.DropTarget;
-import org.eclipse.swt.dnd.DropTargetEvent;
 import org.eclipse.swt.dnd.DropTargetListener;
 import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
-import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
-import org.talend.commons.ui.ws.WindowSystem;
-import org.talend.core.model.action.IAction;
-import org.talend.core.model.metadata.IMetadataColumn;
-import org.talend.core.model.metadata.MetadataColumn;
-import org.talend.core.model.metadata.editor.MetadataEditorActionFactory;
-import org.talend.core.model.metadata.editor.MetadataEditorEvent;
-import org.talend.core.ui.metadata.editor.MetadataTableEditorView;
-import org.talend.designer.mapper.language.ILanguage;
-import org.talend.designer.mapper.language.LanguageProvider;
 import org.talend.designer.mapper.managers.MapperManager;
 import org.talend.designer.mapper.managers.UIManager;
 import org.talend.designer.mapper.model.tableentry.AbstractInOutTableEntry;
-import org.talend.designer.mapper.model.tableentry.IColumnEntry;
 import org.talend.designer.mapper.model.tableentry.ITableEntry;
-import org.talend.designer.mapper.model.tableentry.TableEntryLocation;
 import org.talend.designer.mapper.ui.visualmap.table.DataMapTableView;
-import org.talend.designer.mapper.ui.visualmap.zone.Zone;
-import org.talend.designer.mapper.ui.visualmap.zone.scrollable.TablesZoneView;
 
 /**
  * Used to manage drag and drop on tables of MetadataColumns and DataMapTableEntries.
@@ -77,10 +59,6 @@ public class DragNDrop {
     private MapperManager mapperManager;
 
     protected int dropDefaultOperation = DND.DROP_LINK;
-
-    private TransferDragSourceListener dragSourceListener;
-
-    private TransferDropTargetListener dropTargetListener;
 
     /**
      * Set source and target listeners.
@@ -105,8 +83,6 @@ public class DragNDrop {
         this.mapperManager = mapperManager;
         this.draggableTable = draggedTable;
 
-        initListeners();
-
         // DelegatingDragAdapter dragAdapter = new DelegatingDragAdapter();
         // dragAdapter.addDragSourceListener(dragSourceListener);
         //
@@ -120,685 +96,108 @@ public class DragNDrop {
             createDragSource(dragSourceListener);
         }
         if (canBeTargetOfDragging) {
-            createDropTarget(dropTargetListener);
+            CompleteDropTargetListener completeDropTargetListener = new CompleteDropTargetListener(mapperManager, draggedTable);
+            createDropTarget(completeDropTargetListener);
         }
 
     }
 
-    /**
-     * DOC amaumont Comment method "initListeners".
-     */
-    private void initListeners() {
-        this.dragSourceListener = new TransferDragSourceListener() {
+    TransferDragSourceListener dragSourceListener = new TransferDragSourceListener() {
 
-            public void dragFinished(DragSourceEvent event) {
-            }
+        public void dragFinished(DragSourceEvent event) {
+        }
 
-            public void dragSetData(DragSourceEvent event) {
-                // System.out.println("\n>>dragSetData");
-                // System.out.println(event);
-                // if (TableEntriesTransfer.getInstance().isSupportedType(event.dataType)) {
-                // }
-            }
+        public void dragSetData(DragSourceEvent event) {
+            // System.out.println("\n>>dragSetData");
+            // System.out.println(event);
+            // if (TableEntriesTransfer.getInstance().isSupportedType(event.dataType)) {
+            // }
+        }
 
-            public void dragStart(DragSourceEvent event) {
-                // System.out.println("\n>>dragStart");
-                // System.out.println(event);
-                TableItem[] items = draggableTable.getSelection();
-                if (items.length == 0) {
-                    event.doit = false;
-                } else {
-                    DataMapTableView dataMapTableViewSource = mapperManager.retrieveDataMapTableView(draggableTable);
+        public void dragStart(DragSourceEvent event) {
+//             System.out.println("\n>>dragStart");
+            // System.out.println(event);
+            TableItem[] items = draggableTable.getSelection();
+            if (items.length == 0) {
+                event.doit = false;
+            } else {
+                DataMapTableView dataMapTableViewSource = mapperManager.retrieveDataMapTableView(draggableTable);
 
-                    TableItem tableItemSource = draggableTable.getItem(new Point(event.x, event.y));
+                TableItem tableItemSource = draggableTable.getItem(new Point(event.x, event.y));
 
-                    if (dataMapTableViewSource != null) {
-                        DraggedData draggedData = new DraggedData();
+                if (dataMapTableViewSource != null) {
+                    DraggedData draggedData = new DraggedData();
 
-                        ArrayList<DataMapTableView> list = new ArrayList<DataMapTableView>(mapperManager
-                                .getVarsTablesView());
-                        list.addAll(mapperManager.getInputsTablesView());
-                        list.addAll(mapperManager.getOutputsTablesView());
+                    ArrayList<DataMapTableView> list = new ArrayList<DataMapTableView>(mapperManager
+                            .getVarsTablesView());
+                    list.addAll(mapperManager.getInputsTablesView());
+                    list.addAll(mapperManager.getOutputsTablesView());
 
-                        for (DataMapTableView dataMapTableView : list) {
-                            Table table = dataMapTableView.getTableViewerCreatorForColumns().getTable();
-                            TableItem[] tableItems = table.getSelection();
-                            for (int i = 0; i < tableItems.length; i++) {
-                                TableItem item = tableItems[i];
-                                ITableEntry dataMapTableEntry = (ITableEntry) item.getData();
-                                if (dataMapTableEntry instanceof AbstractInOutTableEntry) {
-                                    draggedData.addEntry(dataMapTableEntry,
-                                            ((AbstractInOutTableEntry) dataMapTableEntry).getMetadataColumn(),
-                                            dataMapTableView.getZone());
-                                } else {
-                                    draggedData.addEntry(dataMapTableEntry, null, dataMapTableView.getZone());
-                                }
-                            }
-                        }
-                        draggedData.setDataMapTableViewSource(dataMapTableViewSource);
-                        draggedData.setTableItemSource(tableItemSource);
-                        TableEntriesTransfer.getInstance().setDraggedData(draggedData);
-                        int countEntries = draggedData.getTransferableEntryList().size();
-                        UIManager uiManager = mapperManager.getUiManager();
-                        DraggingInfosPopup draggingInfosPopup = uiManager.getDraggingInfosPopup();
-                        draggingInfosPopup.setCountDraggingEntries(countEntries);
-                        draggingInfosPopup.setMapOneToOneMode(uiManager.isShiftPressed(), true);
-                        draggingInfosPopup.setOverwriteMode(uiManager.isCtrlPressed());
-                        draggingInfosPopup.setInsertionEntryContext(false);
-                        draggingInfosPopup.setExpressionContext(false);
-                        uiManager.setDragging(true);
-                    }
-
-                }
-            }
-
-            public Transfer getTransfer() {
-                return TableEntriesTransfer.getInstance();
-            }
-        };
-
-        this.dropTargetListener = new DefaultDropTargetListener(mapperManager) {
-
-            private boolean isIntersectAtPreviousDragOver;
-
-            private Point lastDragPosition;
-
-            public void dragEnter(DropTargetEvent event) {
-                super.dragEnter(event);
-                draggableTable.setFocus();
-            }
-
-            public void dragOver(DropTargetEvent event) {
-
-                super.dragOver(event);
-
-                // System.out.println("\n>>dragOver");
-
-                DraggedData draggedData = TableEntriesTransfer.getInstance().getDraggedData();
-                DropContextAnalyzer analyzer = analyzeDropTarget(event, draggedData);
-                UIManager uiManager = mapperManager.getUiManager();
-                DraggingInfosPopup draggingInfosPopup = uiManager.getDraggingInfosPopup();
-
-                fillEvent(event, analyzer);
-                InsertionIndicator insertionIndicator = retrieveInsertionIndicator();
-                if (analyzer.isDropValid()) {
-
-                    draggingInfosPopup.setOutputToOutputMode(analyzer.isOutputToOutput());
-
-                    if (analyzer.isInputToInput()) {
-                        draggingInfosPopup.setExpressionContext(true);
-                        draggingInfosPopup.setInsertionEntryContext(false);
-                    } else if (analyzer.isCursorOverExpressionCell()) {
-                        draggingInfosPopup.setExpressionContext(true);
-                    } else if (analyzer.targetTableIsConstraintsTable()) {
-                        draggingInfosPopup.setExpressionContext(true);
-                    } else {
-                        draggingInfosPopup.setExpressionContext(false);
-                    }
-
-                    draggingInfosPopup.setMapOneToOneMode(analyzer.isMapOneToOneMode(), analyzer
-                            .isMapOneToOneAuthorized());
-                    Integer itemIndexWhereInsertFromPosition = getItemIndexFromPosition(new Point(event.x, event.y));
-                    if (analyzer.isMapOneToOneMode() && analyzer.isMapOneToOneAuthorized()) {
-                        int size = draggedData.getTransferableEntryList().size();
-                        if (itemIndexWhereInsertFromPosition != null) {
-                            draggableTable.setSelection(itemIndexWhereInsertFromPosition,
-                                    itemIndexWhereInsertFromPosition + size - 1);
-                            if (!analyzer.targetTableIsConstraintsTable()
-                                    && itemIndexWhereInsertFromPosition + size - 1 >= draggableTable.getItemCount()) {
-                                insertionIndicator.updatePosition(draggableTable, draggableTable.getItemCount());
-                                insertionIndicator.setVisible(true);
-                                draggingInfosPopup.setInsertionEntryContext(true);
+                    for (DataMapTableView dataMapTableView : list) {
+                        Table table = dataMapTableView.getTableViewerCreatorForColumns().getTable();
+                        TableItem[] tableItems = table.getSelection();
+                        for (int i = 0; i < tableItems.length; i++) {
+                            TableItem item = tableItems[i];
+                            ITableEntry dataMapTableEntry = (ITableEntry) item.getData();
+                            if (dataMapTableEntry instanceof AbstractInOutTableEntry) {
+                                draggedData.addEntry(dataMapTableEntry, ((AbstractInOutTableEntry) dataMapTableEntry)
+                                        .getMetadataColumn(), dataMapTableView.getZone());
                             } else {
-                                insertionIndicator.setVisible(false);
-                                draggingInfosPopup.setInsertionEntryContext(false);
+                                draggedData.addEntry(dataMapTableEntry, null, dataMapTableView.getZone());
                             }
-                        } else {
-                            draggableTable.deselectAll();
-                            insertionIndicator.setVisible(false);
-                            draggingInfosPopup.setInsertionEntryContext(false);
                         }
-                    } else {
-                        if (!analyzer.isTableSourceAndTargetAreSame()) {
-                            draggableTable.deselectAll();
-                        }
-                        if (itemIndexWhereInsertFromPosition != null && !analyzer.isInsertionEntryMode()) {
-                            draggableTable.setSelection(itemIndexWhereInsertFromPosition);
-                        }
-                        if (!analyzer.targetTableIsConstraintsTable()) {
-                            updateInsertionIndicator(event);
-                            insertionIndicator.setVisible(analyzer.isInsertionEntryMode());
-                        }
-                        draggingInfosPopup.setInsertionEntryContext(analyzer.isInsertionEntryMode());
                     }
-                    draggingInfosPopup.setDropInvalid(false, false);
-                } else {
-                    draggingInfosPopup.setMapOneToOneMode(false, false);
-                    draggingInfosPopup.setExpressionContext(false);
+                    draggedData.setDataMapTableViewSource(dataMapTableViewSource);
+                    draggedData.setTableItemSource(tableItemSource);
+                    TableEntriesTransfer.getInstance().setDraggedData(draggedData);
+                    int countEntries = draggedData.getTransferableEntryList().size();
+                    UIManager uiManager = mapperManager.getUiManager();
+                    DraggingInfosPopup draggingInfosPopup = uiManager.getDraggingInfosPopup();
+                    draggingInfosPopup.setCountDraggingEntries(countEntries);
+                    draggingInfosPopup.setMapOneToOneMode(uiManager.isShiftPressed(), true);
+                    draggingInfosPopup.setOverwriteMode(uiManager.isCtrlPressed());
                     draggingInfosPopup.setInsertionEntryContext(false);
-                    draggingInfosPopup.setDropInvalid(true, analyzer.isInvalidKeyPressed());
-                }
-            }
-
-            private void configurePopupInfos(DropContextAnalyzer analyzer) {
-                UIManager uiManager = mapperManager.getUiManager();
-                DraggingInfosPopup draggingInfosPopup = uiManager.getDraggingInfosPopup();
-
-                if (analyzer.isDropValid()) {
-
-                    draggingInfosPopup.setOutputToOutputMode(analyzer.isOutputToOutput());
-
-                    if (uiManager.isCtrlPressed()) {
-                        draggingInfosPopup.setOverwriteMode(true);
-                    } else {
-                        draggingInfosPopup.setOverwriteMode(false);
-                    }
-
-                    if (uiManager.isShiftPressed() && analyzer.isMapOneToOneAuthorized()) {
-                        draggingInfosPopup.setMapOneToOneMode(true, true);
-                    } else {
-                        draggingInfosPopup.setMapOneToOneMode(false, analyzer.isMapOneToOneAuthorized());
-                    }
-
-                    if (analyzer.isInputToInput()) {
-                        draggingInfosPopup.setExpressionContext(true);
-                        draggingInfosPopup.setInsertionEntryContext(false);
-                    } else if (analyzer.isCursorOverExpressionCell()) {
-                        draggingInfosPopup.setExpressionContext(true);
-                        draggingInfosPopup.setInsertionEntryContext(analyzer.isInsertionEntryMode());
-                    } else if (analyzer.targetTableIsConstraintsTable()) {
-                        draggingInfosPopup.setExpressionContext(true);
-                        draggingInfosPopup.setInsertionEntryContext(false);
-                    } else {
-                        draggingInfosPopup.setExpressionContext(false);
-                        draggingInfosPopup.setInsertionEntryContext(true);
-                    }
-                    draggingInfosPopup.setDropInvalid(false, false);
-                } else {
                     draggingInfosPopup.setExpressionContext(false);
-                    draggingInfosPopup.setMapOneToOneMode(false, false);
-                    draggingInfosPopup.setInsertionEntryContext(false);
-                    draggingInfosPopup.setDropInvalid(true, analyzer.isInvalidKeyPressed());
-                }
-            }
-
-            private DropContextAnalyzer analyzeDropTarget(DropTargetEvent event, DraggedData draggedData) {
-                DropContextAnalyzer analyzer = new DropContextAnalyzer(draggedData, event, mapperManager);
-                return analyzer;
-            }
-
-            private void fillEvent(DropTargetEvent event, DropContextAnalyzer analyzer) {
-                event.feedback = analyzer.getFeedback();
-                event.detail = analyzer.getDetail();
-            }
-
-            /**
-             * 
-             * DOC amaumont Comment method "updateInsertionIndicator".
-             * 
-             * @param event
-             * @return true if droppable
-             */
-            private void updateInsertionIndicator(DropTargetEvent event) {
-                UIManager uiManager = mapperManager.getUiManager();
-                DraggingInfosPopup draggingInfosPopup = uiManager.getDraggingInfosPopup();
-
-                // ////////////////////////////////
-                // to resolve graphical bug between popupInfos and InsertionIndicator
-                InsertionIndicator insertionIndicator = retrieveInsertionIndicator();
-                Rectangle popupBounds = draggingInfosPopup.getBounds();
-                Point positionPopupFromMapperShellOrigin = draggingInfosPopup.getPositionFromMapperShellOrigin();
-                Rectangle boundsPopupFromMapperShellOrigin = new Rectangle(positionPopupFromMapperShellOrigin.x,
-                        positionPopupFromMapperShellOrigin.y, popupBounds.width, popupBounds.height);
-                boolean intersect = insertionIndicator.isLeftArrowMustBeRefreshed(boundsPopupFromMapperShellOrigin);
-
-                Point eventPosition = new Point(event.x, event.y);
-                int itemIndexTarget = getItemIndexWhereInsertFromPosition(eventPosition);
-                insertionIndicator.updatePosition(draggableTable, itemIndexTarget);
-
-                if (WindowSystem.isGTK()) {
-                    if (insertionIndicator.isRightArrowVisible() && !eventPosition.equals(lastDragPosition)) {
-                        insertionIndicator.setRightArrowVisible(false);
-                        insertionIndicator.setLefArrowVisible(false);
-                    } else {
-                        insertionIndicator.setRightArrowVisible(insertionIndicator.isVisible());
-                        insertionIndicator.setLefArrowVisible(insertionIndicator.isVisible());
-                    }
-
-                } else {
-                    if (isIntersectAtPreviousDragOver || intersect) {
-                        insertionIndicator.setLefArrowVisible(false);
-                        isIntersectAtPreviousDragOver = false;
-                    } else {
-                        insertionIndicator.setLefArrowVisible(insertionIndicator.isVisible());
-                    }
+                    uiManager.setDragging(true);
                 }
 
-                isIntersectAtPreviousDragOver = intersect;
-                lastDragPosition = eventPosition;
             }
+        }
 
-            private InsertionIndicator retrieveInsertionIndicator() {
-                DataMapTableView dataMapTableViewTarget = mapperManager.retrieveDataMapTableView(draggableTable);
-                TablesZoneView targetTablesZoneView = mapperManager.getUiManager().getTablesZoneView(
-                        dataMapTableViewTarget);
-                InsertionIndicator insertionIndicator = targetTablesZoneView.getInsertionIndicator();
-                return insertionIndicator;
-            }
-
-            public void dragLeave(DropTargetEvent event) {
-                // System.out.println("\n>>dragLeave");
-                // System.out.println(event);
-                super.dragLeave(event);
-
-                DraggedData draggedData = TableEntriesTransfer.getInstance().getDraggedData();
-                DropContextAnalyzer analyzer = analyzeDropTarget(event, draggedData);
-
-                UIManager uiManager = mapperManager.getUiManager();
-                if (!analyzer.isTableSourceAndTargetAreSame()) {
-                    draggableTable.deselectAll();
-                }
-                retrieveInsertionIndicator().setVisible(false);
-                DraggingInfosPopup draggingInfosPopup = uiManager.getDraggingInfosPopup();
-                draggingInfosPopup.setExpressionContext(false);
-                draggingInfosPopup.setInsertionEntryContext(false);
-                uiManager.setDragging(false);
-            }
-
-            public void dragOperationChanged(DropTargetEvent event) {
-                // System.out.println("\n>>dragOperationChanged");
-                // showInfos(event);
-                // super.dragOperationChanged(event);
-                DraggedData draggedData = TableEntriesTransfer.getInstance().getDraggedData();
-                detectPressedKeys(event);
-                DropContextAnalyzer analyzer = analyzeDropTarget(event, draggedData);
-
-                configurePopupInfos(analyzer);
-
-                UIManager uiManager = mapperManager.getUiManager();
-                DraggingInfosPopup draggingInfosPopup = uiManager.getDraggingInfosPopup();
-                draggingInfosPopup.updateVisibleLabels();
-
-                fillEvent(event, analyzer);
-                mapperManager.getUiManager().setCurrentDragDetail(event.detail);
-            }
-
-            private void showInfos(DropTargetEvent event) {
-                System.out.println(event);
-                System.out.println("event.feedback=" + event.feedback);
-                System.out.println("event.detail=" + event.detail);
-                System.out.println("event.operations=" + event.operations);
-
-                System.out.println("DND.DROP_DEFAULT=" + DND.DROP_DEFAULT);
-                System.out.println("DND.DROP_COPY=" + DND.DROP_COPY);
-                System.out.println("DND.DROP_MOVE=" + DND.DROP_MOVE);
-                System.out.println("DND.DROP_LINK=" + DND.DROP_LINK);
-                System.out.println("DND.DROP_TARGET_MOVE=" + DND.DROP_TARGET_MOVE);
-            }
-
-            public void drop(DropTargetEvent event) {
-
-                super.drop(event);
-
-                retrieveInsertionIndicator().setVisible(false);
-
-                UIManager uiManager = mapperManager.getUiManager();
-
-                DraggedData draggedData = TableEntriesTransfer.getInstance().getDraggedData();
-                DropContextAnalyzer analyzer = analyzeDropTarget(event, draggedData);
-
-                // System.out.println("\n>>drop");
-                // System.out.println(event);
-                Point cursorPosition = new Point(event.x, event.y);
-                int startInsertAtThisIndex = getItemIndexWhereInsertFromPosition(cursorPosition);
-                ILanguage currentLanguage = LanguageProvider.getCurrentLanguage();
-                DataMapTableView dataMapTableViewTarget = mapperManager.retrieveDataMapTableView(draggableTable);
-                Zone zoneTarget = dataMapTableViewTarget.getZone();
-
-                uiManager.selectDataMapTableView(dataMapTableViewTarget);
-                MetadataTableEditorView metadataEditorView = mapperManager.getUiManager().getMetadataEditorView(
-                        dataMapTableViewTarget.getZone());
-                List<TransferableEntry> transferableEntryList = draggedData.getTransferableEntryList();
-                int currentIndex = startInsertAtThisIndex;
-                uiManager.clearLastCreatedInOutColumnEntries();
-
-                draggableTable.deselectAll();
-
-                ITableEntry currentEntryTarget = getEntryFromPosition(cursorPosition);
-
-                ArrayList<String> columnsBeingAdded = new ArrayList<String>();
-                ArrayList<ITableEntry> sourceEntriesOfEntriesBeingAdded = new ArrayList<ITableEntry>();
-
-                boolean targetTableIsConstraintsTable = analyzer.targetTableIsConstraintsTable();
-                boolean atLeastOneEntryInserted = false;
-
-                boolean insertionEntryMode = analyzer.isInsertionEntryMode();
-                boolean mapEachSourceToNextTargets = analyzer.isMapOneToOneMode();
-
-                TableViewerCreator tableViewerCreatorTarget = null;
-                if (targetTableIsConstraintsTable) {
-                    tableViewerCreatorTarget = dataMapTableViewTarget.getTableViewerCreatorForConstraints();
-                } else {
-                    tableViewerCreatorTarget = dataMapTableViewTarget.getTableViewerCreatorForColumns();
-                }
-
-                MetadataEditorEvent metadataEditorEvent = new MetadataEditorEvent(MetadataEditorEvent.TYPE.ADD);
-                ITableEntry lastEntryTarget = null;
-                for (TransferableEntry transferableEntry : transferableEntryList) {
-                    ITableEntry tableEntrySource = transferableEntry.getTableEntrySource();
-                    IMetadataColumn metadataColumnDragged = transferableEntry.getMetadataColumn();
-                    Zone zoneSourceEntry = transferableEntry.getZoneSourceEntry();
-
-                    TableEntryLocation tableEntryLocationTarget = new TableEntryLocation(dataMapTableViewTarget
-                            .getDataMapTable().getName(), tableEntrySource.getName());
-
-                    if (zoneSourceEntry == Zone.INPUTS && zoneTarget == Zone.INPUTS
-                            && tableEntrySource.getParentName().equals(tableEntryLocationTarget.tableName)) {
-
-                        continue;
-
-                    } else if (currentEntryTarget != null && !insertionEntryMode) {
-
-                        boolean overwrite = (lastEntryTarget != currentEntryTarget && analyzer.isOverwriteExpression());
-                        modifyExistingExpression(currentLanguage, currentEntryTarget, tableEntrySource, overwrite,
-                                zoneSourceEntry);
-                        uiManager.parseExpression(currentEntryTarget.getExpression(), currentEntryTarget, false, true,
-                                true);
-
-                    } else {
-                        String columnName = transferableEntry.getTableEntrySource().getName();
-                        tableEntryLocationTarget = mapperManager.findUniqueLocation(tableEntryLocationTarget,
-                                columnsBeingAdded.toArray(new String[0]));
-                        columnName = tableEntryLocationTarget.columnName;
-                        if (currentEntryTarget == null && analyzer.isMapOneToOneMode()) {
-                            currentIndex = tableViewerCreatorTarget.getInputList().size();
-                        }
-                        if (zoneSourceEntry == Zone.INPUTS && zoneTarget == Zone.VARS || zoneSourceEntry == Zone.VARS
-                                && zoneTarget == Zone.VARS) {
-                            currentIndex = insertNewVarEntry(currentLanguage, dataMapTableViewTarget, currentIndex,
-                                    tableEntrySource, columnName);
-                            atLeastOneEntryInserted = true;
-
-                        } else if (zoneSourceEntry == Zone.VARS && zoneTarget == Zone.OUTPUTS) {
-                            insertNewOutputEntryFromVarEntry(sourceEntriesOfEntriesBeingAdded, metadataEditorEvent,
-                                    tableEntrySource, columnName);
-                            atLeastOneEntryInserted = true;
-
-                        } else if (zoneSourceEntry == Zone.INPUTS && zoneTarget != Zone.VARS) {
-                            insertNewInOutEntryFromInputEntry(sourceEntriesOfEntriesBeingAdded, metadataEditorEvent,
-                                    tableEntrySource, metadataColumnDragged, columnName);
-                            atLeastOneEntryInserted = true;
-
-                        } else if (zoneSourceEntry == Zone.OUTPUTS && zoneTarget == Zone.VARS) {
-                            // nothing
-                        } else if (zoneSourceEntry == Zone.OUTPUTS && zoneTarget == Zone.OUTPUTS) {
-
-                            insertOutpuEntryCopyToOtherOutput(sourceEntriesOfEntriesBeingAdded, metadataEditorEvent,
-                                    tableEntrySource, metadataColumnDragged, columnName);
-                            atLeastOneEntryInserted = true;
-
-                        } else {
-                            // throw new IllegalStateException("Drop case not found !");
-                        }
-                        columnsBeingAdded.add(columnName);
-                    }
-
-                    lastEntryTarget = currentEntryTarget;
-                    if (mapEachSourceToNextTargets && currentEntryTarget != null) {
-                        currentEntryTarget = getNextEntryTarget(currentEntryTarget, tableViewerCreatorTarget);
-                    }
-
-                } // for TransferableEntry transferableEntry : transferableEntryList
-
-                if (!atLeastOneEntryInserted) {
-                    tableViewerCreatorTarget.getTableViewer().refresh();
-                } else {
-                    if (metadataEditorView != null && !targetTableIsConstraintsTable) {
-                        metadataEditorEvent.indexStartInsert = currentIndex;
-                        IAction action = MetadataEditorActionFactory.getInstance().getAction(metadataEditorView,
-                                metadataEditorEvent);
-                        action.run(metadataEditorEvent);
-
-                        List<IColumnEntry> lastCreatedTableEntries = uiManager.getLastCreatedInOutColumnEntries();
-                        for (int i = 0; i < lastCreatedTableEntries.size(); i++) {
-                            ITableEntry tableEntrySource = sourceEntriesOfEntriesBeingAdded.get(i);
-                            ITableEntry dataMapTableEntry = lastCreatedTableEntries.get(i);
-                            Zone zoneSource = mapperManager.retrieveAbstractDataMapTableView(
-                                    tableEntrySource.getParent()).getZone();
-                            String location = null;
-                            if (zoneSource == Zone.OUTPUTS) {
-                                location = tableEntrySource.getExpression();
-                            } else {
-                                location = currentLanguage.getLocation(tableEntrySource.getParentName(),
-                                        tableEntrySource.getName());
-                            }
-
-                            dataMapTableEntry.setExpression(location + " ");
-                        }
-                    }
-
-                    tableViewerCreatorTarget.getTableViewer().refresh();
-
-                    List<ITableEntry> refreshedTableEntriesList = tableViewerCreatorTarget.getInputList();
-                    for (ITableEntry tableEntry : refreshedTableEntriesList) {
-                        uiManager.parseExpression(tableEntry.getExpression(), tableEntry, false, true, false);
-                    }
-                }
-                dataMapTableViewTarget.resizeAtExpandedSize();
-                dataMapTableViewTarget.unselectAllEntries();
-
-                uiManager.refreshBackground(true, false);
-                if (metadataEditorView != null && !targetTableIsConstraintsTable) {
-                    metadataEditorView.getTableViewerCreator().getTableViewer().refresh();
-                }
-
-                uiManager.setDragging(false);
-            }
-
-            private ITableEntry getNextEntryTarget(ITableEntry currentEntryTarget,
-                    TableViewerCreator tableViewerCreatorTarget) {
-                // mapperManager.get
-                // currentEntryTarget.getParent()
-                if (currentEntryTarget == null) {
-                    throw new IllegalArgumentException("currentEntryTarget should'nt be null");
-                }
-                List<ITableEntry> tableEntries = tableViewerCreatorTarget.getInputList();
-                int indexCurrentEntryTarget = tableEntries.indexOf(currentEntryTarget);
-                if (indexCurrentEntryTarget + 1 >= tableEntries.size()) {
-                    return null;
-                } else {
-                    return tableEntries.get(indexCurrentEntryTarget + 1);
-                }
-            }
-
-            private void insertNewInOutEntryFromInputEntry(ArrayList<ITableEntry> sources,
-                    MetadataEditorEvent metadataEditorEvent, ITableEntry tableEntrySource,
-                    IMetadataColumn metadataColumnDragged, String columnName) {
-                MetadataColumn metadataColumn = new MetadataColumn(metadataColumnDragged);
-                metadataColumn.setLabel(columnName);
-                metadataEditorEvent.entries.add(metadataColumn);
-                sources.add(tableEntrySource);
-            }
-
-            private void insertOutpuEntryCopyToOtherOutput(ArrayList<ITableEntry> sources,
-                    MetadataEditorEvent metadataEditorEvent, ITableEntry tableEntrySource,
-                    IMetadataColumn metadataColumnDragged, String columnName) {
-                MetadataColumn metadataColumn = new MetadataColumn(metadataColumnDragged);
-                metadataColumn.setLabel(columnName);
-                metadataEditorEvent.entries.add(metadataColumn);
-                sources.add(tableEntrySource);
-            }
-
-            private void insertNewOutputEntryFromVarEntry(ArrayList<ITableEntry> sources,
-                    MetadataEditorEvent metadataEditorEvent, ITableEntry tableEntrySource, String columnName) {
-                MetadataColumn metadataColumn = new MetadataColumn();
-                metadataColumn.setLabel(columnName);
-                metadataEditorEvent.entries.add(metadataColumn);
-                sources.add(tableEntrySource);
-            }
-
-            private int insertNewVarEntry(ILanguage currentLanguage, DataMapTableView dataMapTableViewTarget,
-                    int currentIndex, ITableEntry tableEntrySource, String columnName) {
-                ITableEntry dataMapTableEntry;
-                dataMapTableEntry = mapperManager.addNewColumnEntry(dataMapTableViewTarget, columnName, currentIndex++);
-                String location = currentLanguage.getLocation(tableEntrySource.getParentName(), tableEntrySource
-                        .getName());
-                dataMapTableEntry.setExpression(location + " ");
-                return currentIndex;
-            }
-
-            private void modifyExistingExpression(ILanguage currentLanguage, ITableEntry entryTarget,
-                    ITableEntry tableEntrySource, boolean overwriteExpression, Zone zoneSourceEntry) {
-                String expression = null;
-                if (zoneSourceEntry == Zone.OUTPUTS) {
-                    expression = tableEntrySource.getExpression();
-                } else {
-                    expression = currentLanguage.getLocation(tableEntrySource.getParentName(), tableEntrySource
-                            .getName());
-                }
-                if (expression == null) {
-                    return;
-                }
-                if (overwriteExpression) {
-                    entryTarget.setExpression(expression + "  ");
-                } else {
-                    String currentTargetExpression = entryTarget.getExpression();
-                    if (currentTargetExpression == null) {
-                        currentTargetExpression = "";
-                    }
-                    String space = "";
-                    boolean isEmpty = "".equals(currentTargetExpression.trim());
-                    if (currentTargetExpression.endsWith("  ")) {
-                        space = "";
-                    } else if (!isEmpty && currentTargetExpression.endsWith(" ")) {
-                        space = " ";
-                    } else if (!isEmpty) {
-                        space = "  ";
-                    }
-                    entryTarget.setExpression(currentTargetExpression + space + expression + " ");
-                }
-            }
-
-            public void dropAccept(DropTargetEvent event) {
-                // System.out.println("\n>>dropAccept");
-                // System.out.println(event);
-                super.dropAccept(event);
-
-            }
-
-        };
-    }
+        public Transfer getTransfer() {
+            return TableEntriesTransfer.getInstance();
+        }
+    };
 
     /**
      * 
      * DOC amaumont Comment method "createDragSource".
      * 
-     * @param dragSourceListener
+     * @param sourceListener
      */
-    private void createDragSource(DragSourceListener dragSourceListener) {
+    private void createDragSource(DragSourceListener sourceListener) {
         if (dragSource != null) {
             dragSource.dispose();
         }
         dragSource = new DragSource(draggableTable, DND.DROP_DEFAULT | DND.DROP_MOVE | DND.DROP_COPY | DND.DROP_LINK);
         dragSource.setTransfer(new Transfer[] { TableEntriesTransfer.getInstance() });
-        dragSource.addDragListener(dragSourceListener);
+        dragSource.addDragListener(sourceListener);
     }
 
     /**
      * 
      * create DropTarget.
      */
-    private void createDropTarget(DropTargetListener dropTargetListener) {
+    private void createDropTarget(DropTargetListener targetListener) {
 
         if (dropTarget != null) {
             dropTarget.dispose();
         }
         dropTarget = new DropTarget(draggableTable, DND.DROP_DEFAULT | DND.DROP_MOVE | DND.DROP_COPY | DND.DROP_LINK);
         dropTarget.setTransfer(new Transfer[] { TableEntriesTransfer.getInstance() });
-        dropTarget.addDropListener(dropTargetListener);
+        dropTarget.addDropListener(targetListener);
     }
 
-    /**
-     * 
-     * DOC amaumont Comment method "getItemIndexFromPosition".
-     * 
-     * @param cursorPosition
-     * @return
-     */
-    private Integer getItemIndexFromPosition(Point cursorPosition) {
-        TableItem[] tableItems = draggableTable.getItems();
-        TableItem tableItemBehindCursor = getTableItemFromPosition(cursorPosition);
-        if (tableItemBehindCursor != null) {
-            for (int i = 0; i < tableItems.length; i++) {
-                if (tableItems[i] == tableItemBehindCursor) {
-                    return i;
-                }
-            }
-        }
-        return null;
-    }
 
-    /**
-     * 
-     * DOC amaumont Comment method "getTableItemFromPosition".
-     * 
-     * @param cursorPosition
-     * @return
-     */
-    private TableItem getTableItemFromPosition(Point cursorPosition) {
-        Point pointCursor = draggableTable.toControl(cursorPosition.x, cursorPosition.y);
-        if (WindowSystem.isGTK()) {
-            pointCursor.y -= draggableTable.getHeaderHeight();
-        }
-        return draggableTable.getItem(pointCursor);
-    }
-
-    /**
-     * 
-     * DOC amaumont Comment method "getEntryFromPosition".
-     * 
-     * @param cursorPosition
-     * @return
-     */
-    private ITableEntry getEntryFromPosition(Point cursorPosition) {
-        TableItem tableItemBehindCursor = getTableItemFromPosition(cursorPosition);
-        if (tableItemBehindCursor != null) {
-            return (ITableEntry) tableItemBehindCursor.getData();
-        } else {
-            return null;
-        }
-    }
-
-    /**
-     * 
-     * DOC amaumont Comment method "getItemIndexWhereInsertFromPosition".
-     * 
-     * @param cursorPosition
-     * @return
-     */
-    private int getItemIndexWhereInsertFromPosition(Point cursorPosition) {
-        int startInsertAtThisIndex = 0;
-        Point pointCursor = draggableTable.toControl(cursorPosition.x, cursorPosition.y);
-        TableItem[] tableItems = draggableTable.getItems();
-        TableItem tableItemBehindCursor = getTableItemFromPosition(cursorPosition);
-        if (tableItemBehindCursor != null) {
-            for (int i = 0; i < tableItems.length; i++) {
-                if (tableItems[i] == tableItemBehindCursor) {
-                    Rectangle boundsItem = tableItemBehindCursor.getBounds();
-                    startInsertAtThisIndex = i;
-                    if (pointCursor.y > boundsItem.y + draggableTable.getItemHeight() / 2
-                            + (WindowSystem.isGTK() ? draggableTable.getHeaderHeight() : 0)) {
-                        startInsertAtThisIndex = i + 1;
-                    }
-                    break;
-                }
-            }
-        } else if (pointCursor.y < draggableTable.getHeaderHeight()) {
-            startInsertAtThisIndex = 0;
-        } else {
-            startInsertAtThisIndex = tableItems.length;
-        }
-        return startInsertAtThisIndex;
-    }
 
 }

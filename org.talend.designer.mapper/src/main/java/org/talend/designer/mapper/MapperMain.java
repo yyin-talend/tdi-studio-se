@@ -254,8 +254,7 @@ public class MapperMain {
     }
 
     public void loadInitialParamters() {
-        this.mapperManager.updateEmfParameters(EParameterName.PREVIEW.getName());// ,
-        // MapperManager.MAPPER_MODEL_DATA);
+        this.mapperManager.updateEmfParameters(EParameterName.PREVIEW.getName());
     }
 
 }

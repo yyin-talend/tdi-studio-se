@@ -189,14 +189,14 @@ public class InsertionIndicator {
      * Update position of the indicator at top of <code>itemIndexTarget</code> position of the
      * <code>draggableTable</code>.
      * 
-     * @param draggableTable
+     * @param currentTable
      * @param itemIndexTarget
      */
-    public void updatePosition(Table draggableTable, int itemIndexTarget) {
+    public void updatePosition(Table currentTable, int itemIndexTarget) {
 
         // System.out.println(itemIndexTarget);
 
-        this.draggableTable = draggableTable;
+        this.draggableTable = currentTable;
         removeTablePaintListener();
         if (tablePaintListener == null) {
 
@@ -213,33 +213,33 @@ public class InsertionIndicator {
         UIManager uiManager = mapperManager.getUiManager();
         TablesZoneView tablesZoneViewOutputs = uiManager.getTablesZoneViewOutputs();
         Display display = tablesZoneViewOutputs.getDisplay();
-        Point tablePositionRefZone = display.map(draggableTable, tablesZoneViewParent, new Point(0, 0));
+        Point tablePositionRefZone = display.map(currentTable, tablesZoneViewParent, new Point(0, 0));
 
         FormData formDataLeftArrow = (FormData) leftArrowDraggingIndicator.getLayoutData();
         FormData formDataRightArrow = (FormData) rightArrowDraggingIndicator.getLayoutData();
-        ScrollBar verticalBar = draggableTable.getVerticalBar();
-        int offsetVerticalBar = -verticalBar.getSelection() * draggableTable.getItemHeight();
+        ScrollBar verticalBar = currentTable.getVerticalBar();
+        int offsetVerticalBar = -verticalBar.getSelection() * currentTable.getItemHeight();
         int indicYPositionRefZone = 0;
         if (WindowSystem.isGTK()) {
             if (itemIndexTarget == 0) {
                 indicYPositionRefTable = 0 + offsetVerticalBar;
             } else {
-                indicYPositionRefTable = itemIndexTarget * (draggableTable.getItemHeight() + 2) + offsetVerticalBar;
+                indicYPositionRefTable = itemIndexTarget * (currentTable.getItemHeight() + 2) + offsetVerticalBar;
             }
             indicYPositionRefZone = indicYPositionRefTable + tablePositionRefZone.y + formLayout.marginTop
                     - HEIGHT_INDICATOR / 2;
-            indicYPositionRefZone -= draggableTable.getItemHeight() - 3;
+            indicYPositionRefZone -= currentTable.getItemHeight() - 3;
         } else {
             if (itemIndexTarget == 0) {
                 indicYPositionRefTable = 0 + offsetVerticalBar;
             } else {
-                indicYPositionRefTable = itemIndexTarget * draggableTable.getItemHeight() - 1 + offsetVerticalBar;
+                indicYPositionRefTable = itemIndexTarget * currentTable.getItemHeight() - 1 + offsetVerticalBar;
             }
             indicYPositionRefZone = indicYPositionRefTable + tablePositionRefZone.y + formLayout.marginTop
                     - HEIGHT_INDICATOR / 2;
         }
 
-        DataMapTableView dataMapTableView = mapperManager.retrieveDataMapTableView(draggableTable);
+        DataMapTableView dataMapTableView = mapperManager.retrieveDataMapTableView(currentTable);
         Rectangle boundsTableView = dataMapTableView.getBounds();
 
         int testValue = boundsTableView.y + boundsTableView.height - formLayout.marginTop - HEIGHT_INDICATOR / 2 - 5;
@@ -247,13 +247,13 @@ public class InsertionIndicator {
             indicYPositionRefZone = testValue;
         }
 
-        draggableTable.addListener(SWT.Paint, tablePaintListener);
+        currentTable.addListener(SWT.Paint, tablePaintListener);
         if (lastIndicYPositionRefZone != indicYPositionRefZone) {
             formDataLeftArrow.top.offset = indicYPositionRefZone;
             formDataRightArrow.top.offset = indicYPositionRefZone;
 
-            formDataRightArrow.left.offset = draggableTable.getSize().x + 2;
-            draggableTable.redraw();
+            formDataRightArrow.left.offset = currentTable.getSize().x + 2;
+            currentTable.redraw();
             tablesZoneViewParent.layout();
         }
         lastIndicYPositionRefZone = indicYPositionRefZone;
@@ -354,12 +354,12 @@ public class InsertionIndicator {
         return response;
     }
 
-    public void setLefArrowVisible(boolean visible) {
-        leftArrowDraggingIndicator.setVisible(visible);
+    public void setLefArrowVisible(boolean isVisible) {
+        leftArrowDraggingIndicator.setVisible(isVisible);
     }
 
-    public void setRightArrowVisible(boolean visible) {
-        rightArrowDraggingIndicator.setVisible(visible);
+    public void setRightArrowVisible(boolean isVisible) {
+        rightArrowDraggingIndicator.setVisible(isVisible);
     }
 
     public boolean isRightArrowVisible() {
