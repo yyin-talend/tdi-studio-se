@@ -35,6 +35,7 @@ import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.talend.commons.exception.SystemException;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
@@ -75,7 +76,7 @@ public class EmfComponent implements IComponent {
 
     private static final long serialVersionUID = 1L;
 
-    private boolean isLoaded = false;
+    private Boolean isLoaded = null;
 
     private COMPONENTType compType;
 
@@ -93,7 +94,7 @@ public class EmfComponent implements IComponent {
 
     private IMultipleComponentManager multipleComponentManager;
 
-    public EmfComponent(File file) {
+    public EmfComponent(File file) throws SystemException {
         this.file = file;
         load();
         codeLanguage = ((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY)).getProject()
@@ -117,32 +118,36 @@ public class EmfComponent implements IComponent {
     }
 
     @SuppressWarnings("unchecked")//$NON-NLS-1$
-    private void load() {
-        ResourceSet resourceSet = new ResourceSetImpl();
-        ComponentResourceFactoryImpl compFact;
-        compFact = new ComponentResourceFactoryImpl();
-        compFact.createResource(URI.createURI(file.toURI().toString()));
-        resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put(Resource.Factory.Registry.DEFAULT_EXTENSION,
-                compFact);
+    private void load() throws SystemException {
+        if (isLoaded == null) {
+            try {
+                ResourceSet resourceSet = new ResourceSetImpl();
+                ComponentResourceFactoryImpl compFact;
+                compFact = new ComponentResourceFactoryImpl();
+                URI createURI = URI.createURI(file.toURI().toString());
+                compFact.createResource(createURI);
+                resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put(
+                        Resource.Factory.Registry.DEFAULT_EXTENSION, compFact);
 
-        Resource res = resourceSet.getResource(URI.createURI(file.toURI().toString()), true);
+                Resource res = resourceSet.getResource(createURI, true);
 
-        DocumentRoot xmlDoc;
-        xmlDoc = (DocumentRoot) res.getContents().get(0);
+                DocumentRoot xmlDoc;
+                xmlDoc = (DocumentRoot) res.getContents().get(0);
 
-        compType = (COMPONENTType) xmlDoc.eContents().get(0);
+                compType = (COMPONENTType) xmlDoc.eContents().get(0);
 
-        loadMultipleComponentManagerFromTemplates();
+                loadMultipleComponentManagerFromTemplates();
 
-        isLoaded = true;
+                isLoaded = true;
+            } catch (Exception e) {
+                isLoaded = false;
+                throw new SystemException("Cannot load component " + file.getName(), e);
+            }
+        }
     }
 
     public List<ElementParameter> createParameters() {
         List<ElementParameter> listParam;
-
-        if (!isLoaded) {
-            load();
-        }
         listParam = new ArrayList<ElementParameter>();
         addMainParameters(listParam);
         addPropertyParameters(listParam);
@@ -158,9 +163,6 @@ public class EmfComponent implements IComponent {
         EList returnList;
         NodeReturn nodeRet;
 
-        if (!isLoaded) {
-            load();
-        }
         listReturn = new ArrayList<NodeReturn>();
         // ****************** add standard returns ******************
         nodeRet = new NodeReturn();
@@ -629,9 +631,6 @@ public class EmfComponent implements IComponent {
     }
 
     public String getFamily() {
-        if (!isLoaded) {
-            load();
-        }
         return getTranslatedValue(PROP_FAMILY);
     }
 
@@ -639,9 +638,6 @@ public class EmfComponent implements IComponent {
         // language is not used anymore for the moment.
 
         Boolean multiple = null;
-        if (!isLoaded) {
-            load();
-        }
         TEMPLATEType tempType;
         EList listTempType = compType.getCODEGENERATION().getTEMPLATES().getTEMPLATE();
 
@@ -655,9 +651,6 @@ public class EmfComponent implements IComponent {
     }
 
     public ImageDescriptor getImageDescriptor() {
-        if (!isLoaded) {
-            load();
-        }
         if (image == null) {
             URL url;
             try {
@@ -671,23 +664,14 @@ public class EmfComponent implements IComponent {
     }
 
     public String getName() {
-        if (!isLoaded) {
-            load();
-        }
         return getTranslatedValue(PROP_NAME);
     }
 
     public String getLongName() {
-        if (!isLoaded) {
-            load();
-        }
         return getTranslatedValue(PROP_LONG_NAME);
     }
 
     public boolean canStart() {
-        if (!isLoaded) {
-            load();
-        }
         return compType.getHEADER().isSTARTABLE();
     }
 
@@ -741,9 +725,6 @@ public class EmfComponent implements IComponent {
     }
 
     public boolean isSchemaAutoPropagated() {
-        if (!isLoaded) {
-            load();
-        }
         if (compType.getHEADER().isSetSCHEMAAUTOPROPAGATE()) {
             return compType.getHEADER().isSCHEMAAUTOPROPAGATE();
         } else {
@@ -752,9 +733,6 @@ public class EmfComponent implements IComponent {
     }
 
     public boolean isDataAutoPropagated() {
-        if (!isLoaded) {
-            load();
-        }
         if (compType.getHEADER().isSetDATAAUTOPROPAGATE()) {
             return compType.getHEADER().isDATAAUTOPROPAGATE();
         } else {
@@ -763,9 +741,6 @@ public class EmfComponent implements IComponent {
     }
 
     public boolean isCheckColumns() {
-        if (!isLoaded) {
-            load();
-        }
         if (compType.getHEADER().isSetCOLUMNCHECK()) {
             return compType.getHEADER().isCOLUMNCHECK();
         } else {
@@ -774,9 +749,6 @@ public class EmfComponent implements IComponent {
     }
 
     public String getVersion() {
-        if (!isLoaded) {
-            load();
-        }
         return String.valueOf(compType.getHEADER().getVERSION());
     }
 
@@ -802,9 +774,6 @@ public class EmfComponent implements IComponent {
     }
 
     public IMultipleComponentManager getMultipleComponentManager() {
-        if (!isLoaded) {
-            load();
-        }
         return this.multipleComponentManager;
     }
 
@@ -857,5 +826,17 @@ public class EmfComponent implements IComponent {
         }
 
         multipleComponentManager.validateItems();
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.components.IComponent#isLoaded()
+     */
+    public boolean isLoaded() {
+        if (isLoaded == null) {
+            return false;
+        }
+        return isLoaded;
     }
 }

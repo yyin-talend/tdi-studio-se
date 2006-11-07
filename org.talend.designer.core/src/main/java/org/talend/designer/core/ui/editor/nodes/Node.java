@@ -746,11 +746,11 @@ public class Node extends Element implements INode {
         return this.readOnly;
     }
 
-    public void setReadOnly() {
-        this.readOnly = true;
+    public void setReadOnly(boolean readOnly) {
+        this.readOnly = readOnly;
 
         for (IElementParameter param : this.getElementParameters()) {
-            param.setReadOnly(true);
+            param.setReadOnly(readOnly);
         }
     }
 

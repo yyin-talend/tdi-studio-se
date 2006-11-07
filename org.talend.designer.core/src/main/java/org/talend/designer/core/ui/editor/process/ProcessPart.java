@@ -50,6 +50,8 @@ import org.talend.designer.core.ui.editor.nodes.NodePart;
  */
 public class ProcessPart extends AbstractGraphicalEditPart implements PropertyChangeListener {
 
+    private FreeformLayer fig2;
+
     /*
      * (non-Javadoc)
      * 
@@ -94,14 +96,24 @@ public class ProcessPart extends AbstractGraphicalEditPart implements PropertyCh
         Figure figure = new FreeformLayer();
         figure.setLayoutManager(new FreeformLayout());
 
-        if (((Process) getModel()).isReadOnly()) {
-            Figure fig2 = new FreeformLayer();
-            fig2.setBackgroundColor(Process.READ_ONLY_COLOR);
-            fig2.setOpaque(true);
-            getLayer(TalendScalableFreeformRootEditPart.PROCESS_BACKGROUND_LAYER).add(fig2);
-        }
+        fig2 = new FreeformLayer();
+        getLayer(TalendScalableFreeformRootEditPart.PROCESS_BACKGROUND_LAYER).add(fig2);
+        ajustReadOnly();
 
         return figure;
+    }
+
+    /**
+     * DOC smallet Comment method "ajustReadOnly".
+     */
+    public void ajustReadOnly() {
+        if (((Process) getModel()).isReadOnly()) {
+            fig2.setBackgroundColor(Process.READ_ONLY_COLOR);
+            fig2.setOpaque(true);
+        } else {
+            fig2.setBackgroundColor(Process.READ_WRITE_COLOR);
+            fig2.setOpaque(true);
+        }
     }
 
     /*

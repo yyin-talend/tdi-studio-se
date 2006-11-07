@@ -112,6 +112,7 @@ import org.talend.designer.core.ui.editor.nodes.NodePart;
 import org.talend.designer.core.ui.editor.outline.NodeTreeEditPart;
 import org.talend.designer.core.ui.editor.outline.ProcessTreePartFactory;
 import org.talend.designer.core.ui.editor.process.Process;
+import org.talend.designer.core.ui.editor.process.ProcessPart;
 import org.talend.designer.core.ui.editor.process.ProcessTemplateTransferDropTargetListener;
 import org.talend.repository.model.ComponentsFactoryProvider;
 
@@ -155,6 +156,21 @@ public class TalendEditor extends GraphicalEditorWithFlyoutPalette implements IT
 
     public Property getProperty() {
         return this.property;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.gef.ui.parts.GraphicalEditor#setFocus()
+     */
+    @Override
+    public void setFocus() {
+        // When gain focus, check read-only to disable read-only mode if process has been restore while opened :
+        // 1. Enabled/disabled components :
+        process.checkReadOnly();
+        // 2. Set backgroung color :
+        ProcessPart rep = (ProcessPart) getViewer().getRootEditPart().getChildren().get(0);
+        rep.ajustReadOnly();
     }
 
     protected KeyHandler getCommonKeyHandler() {
@@ -236,8 +252,9 @@ public class TalendEditor extends GraphicalEditorWithFlyoutPalette implements IT
 
         viewer.setRootEditPart(root);
 
+        PartFactory partFactory = new PartFactory();
         // set the factory to use for creating EditParts for elements in the model
-        getGraphicalViewer().setEditPartFactory(new PartFactory());
+        getGraphicalViewer().setEditPartFactory(partFactory);
         getGraphicalViewer().setKeyHandler(new GraphicalViewerKeyHandler(getGraphicalViewer()).setParent(getCommonKeyHandler()));
 
         /** * Management of the context menu ** */

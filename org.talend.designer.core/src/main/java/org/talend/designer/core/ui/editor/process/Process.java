@@ -148,6 +148,8 @@ public class Process extends Element implements IProcess {
 
     public static final Color READ_ONLY_COLOR = new Color(null, new RGB(0xE7, 0xE7, 0xE7));
 
+    public static final Color READ_WRITE_COLOR = new Color(null, new RGB(255, 255, 255));
+
     private IContextManager contextManager;
 
     private ECodeLanguage processLanguage;
@@ -1046,18 +1048,33 @@ public class Process extends Element implements IProcess {
         return readOnly;
     }
 
+    public void checkReadOnly() {
+        IRepositoryFactory repFactory = RepositoryFactoryProvider.getInstance();
+        boolean isLocked = true;
+        boolean isDeleted = true;
+        try {
+            isLocked = repFactory.isLocked(property.getItem())
+                    && (repFactory.getLocker(this).equals(new User("stef@talend.com")));
+            isDeleted = repFactory.isDeleted(property.getItem());
+        } catch (PersistenceException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        this.setReadOnly(isLocked || isDeleted);
+    }
+
     @SuppressWarnings("unchecked")
-    public void setReadOnly() {
-        this.readOnly = true;
+    public void setReadOnly(boolean readOnly) {
+        this.readOnly = readOnly;
 
         for (IElementParameter param : this.getElementParameters()) {
-            param.setReadOnly(true);
+            param.setReadOnly(readOnly);
         }
 
         for (Node node : nodes) {
-            node.setReadOnly();
+            node.setReadOnly(readOnly);
             for (Connection connec : (List<Connection>) node.getOutgoingConnections()) {
-                connec.setReadOnly();
+                connec.setReadOnly(readOnly);
             }
         }
     }

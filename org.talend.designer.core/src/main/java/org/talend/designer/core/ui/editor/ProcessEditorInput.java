@@ -110,12 +110,15 @@ public class ProcessEditorInput extends RepositoryEditorInput {
      * @throws PersistenceException
      */
     private void checkReadOnly() throws PersistenceException {
-        IRepositoryFactory repFactory = RepositoryFactoryProvider.getInstance();
-        boolean isLocked = repFactory.isLocked(getProcessItem());
-        boolean isDeleted = repFactory.isDeleted(getProcessItem());
-        if (isLocked || isDeleted) {
-            loadedProcess.setReadOnly();
-        }
+        
+        loadedProcess.checkReadOnly();
+        
+//        IRepositoryFactory repFactory = RepositoryFactoryProvider.getInstance();
+//        boolean isLocked = repFactory.isLocked(getProcessItem());
+//        boolean isDeleted = repFactory.isDeleted(getProcessItem());
+////        if (isLocked || isDeleted) {
+//            loadedProcess.setReadOnly(isLocked || isDeleted);
+////        }
     }
 
     /**

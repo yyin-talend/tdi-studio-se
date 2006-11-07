@@ -84,28 +84,31 @@ public final class TalendEditorPaletteFactory {
         });
         for (int i = 0; i < componentList.size(); i++) {
             IComponent xmlComponent = componentList.get(i);
-            name = xmlComponent.getName();
-            family = xmlComponent.getFamily();
-            longName = xmlComponent.getLongName();
+            if (xmlComponent.isLoaded()) {
+                name = xmlComponent.getName();
+                family = xmlComponent.getFamily();
+                longName = xmlComponent.getLongName();
 
-            if (!family.equals(prevFamily)) {
-                if (!ht.containsKey(family)) {
-                    componentsDrawer = new PaletteDrawer(family);
-                    componentsDrawer.setInitialState(loadFamilyState(family));
-                    ht.put(family, componentsDrawer);
-                } else {
-                    componentsDrawer = ht.get(family);
+                if (!family.equals(prevFamily)) {
+                    if (!ht.containsKey(family)) {
+                        componentsDrawer = new PaletteDrawer(family);
+                        componentsDrawer.setInitialState(loadFamilyState(family));
+                        ht.put(family, componentsDrawer);
+                    } else {
+                        componentsDrawer = ht.get(family);
+                    }
+                    prevFamily = family;
                 }
-                prevFamily = family;
+                // TODO SML Manage here different images size in the palette
+                ImageDescriptor im = xmlComponent.getImageDescriptor();
+                ImageDescriptor imageSmall, imageLarge;
+                imageSmall = ImageDescriptor.createFromImageData(im.getImageData().scaledTo(16, 16));
+                imageLarge = ImageDescriptor.createFromImageData(im.getImageData().scaledTo(24, 24));
+                component = new CombinedTemplateCreationEntry(name, name, Node.class, new PaletteComponentFactory(xmlComponent),
+                        imageSmall, imageLarge);
+                component.setDescription(longName);
+                componentsDrawer.add(component);
             }
-            ImageDescriptor im = xmlComponent.getImageDescriptor();
-            ImageDescriptor imageSmall, imageLarge;
-            imageSmall = ImageDescriptor.createFromImageData(im.getImageData().scaledTo(16, 16));
-            imageLarge = ImageDescriptor.createFromImageData(im.getImageData().scaledTo(24, 24));
-            component = new CombinedTemplateCreationEntry(name, name, Node.class, new PaletteComponentFactory(xmlComponent),
-                    imageSmall, imageLarge);
-            component.setDescription(longName);
-            componentsDrawer.add(component);
         }
         Enumeration<String> keysEnum = ht.keys();
         List<String> keysList = Collections.list(keysEnum);

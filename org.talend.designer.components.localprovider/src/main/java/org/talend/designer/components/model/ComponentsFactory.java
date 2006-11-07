@@ -33,6 +33,8 @@ import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.osgi.framework.Bundle;
+import org.talend.commons.exception.ExceptionHandler;
+import org.talend.commons.exception.SystemException;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IComponentsFactory;
 import org.talend.designer.core.model.components.EmfComponent;
@@ -47,9 +49,6 @@ public class ComponentsFactory implements IComponentsFactory {
     private static List<IComponent> componentList = null;
 
     public ComponentsFactory() {
-        if (componentList == null) {
-            init();
-        }
     }
 
     public void init() {
@@ -58,7 +57,7 @@ public class ComponentsFactory implements IComponentsFactory {
         File[] childDirectories, childXmlFiles;
         componentList = new ArrayList<IComponent>();
         Bundle b = Platform.getBundle(IComponentsFactory.COMPONENTS_LOCATION);
-        
+
         URL url = null;
         try {
             url = FileLocator.toFileURL(FileLocator.find(b, new Path(IComponentsFactory.COMPONENTS_DIRECTORY), null));
@@ -88,20 +87,29 @@ public class ComponentsFactory implements IComponentsFactory {
                 childXmlFiles = childDirectories[i].listFiles(filter);
                 if (childXmlFiles != null) {
                     for (int j = 0; j < childXmlFiles.length; j++) {
-                        currentComp = new EmfComponent(childXmlFiles[j]);
-                        componentList.add(currentComp);
+                        try {
+                            currentComp = new EmfComponent(childXmlFiles[j]);
+                            componentList.add(currentComp);
+                        } catch (SystemException e) {
+                            ExceptionHandler.process(e);
+                        }
                     }
                 }
-
             }
         }
     }
 
     public int size() {
+        if (componentList == null) {
+            init();
+        }
         return componentList.size();
     }
 
     public IComponent get(final int i) {
+        if (componentList == null) {
+            init();
+        }
         return componentList.get(i);
     }
 
@@ -121,10 +129,15 @@ public class ComponentsFactory implements IComponentsFactory {
         return comp;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.core.model.components.IComponentsFactory#getComponents()
      */
     public List<IComponent> getComponents() {
-        return componentList; 
+        if (componentList == null) {
+            init();
+        }
+        return componentList;
     }
 }
