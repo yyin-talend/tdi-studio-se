@@ -101,7 +101,6 @@ public class DeleteTableAction extends AContextualAction {
                         factory.save(item);
                         refresh();
                     } catch (PersistenceException e) {
-                        // TODO Auto-generated catch block
                         e.printStackTrace();
                     }
                 }
@@ -154,7 +153,6 @@ public class DeleteTableAction extends AContextualAction {
                         isLocked = repFactory.isLocked(repObj);
                         isDeleted = DeletionHelper.isDeleted(repFactory, node);
                     } catch (PersistenceException e) {
-                        // TODO Auto-generated catch block
                         e.printStackTrace();
                     }
                     if (isLocked) {

@@ -33,8 +33,6 @@ import org.talend.core.model.repository.IRepositoryObject;
  * Node used to fill the repository view TreeViewer. Each node has a type defines in ENodeType enum. Object isn't stored
  * in the node but retrieve using the provider at each getObject call.<br/>
  * 
- * TODO SML In this version, objects are stored in the node. They wont.
- * 
  * $Id$
  * 
  */
@@ -154,7 +152,6 @@ public class RepositoryNode {
             try {
                 return factory.getLastVersion(this.id);
             } catch (PersistenceException e) {
-                // PTODO SML Auto-generated catch block
                 e.printStackTrace();
             }
         }

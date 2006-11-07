@@ -52,8 +52,6 @@ public class RepositoryFactoryProvider {
 
     /**
      * Returns a IRepositoryFactory based on the default context.
-     * 
-     * PTODO SML Propagate the context where it's needed
      */
     public static IRepositoryFactory getInstance() {
         return getInstance((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY));

@@ -134,16 +134,6 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
         this.repositoryContext = repositoryContext;
     }
 
-    // private KeyListener keyListener = new KeyAdapter() {
-    //
-    // public void keyPressed(KeyEvent e) {
-    // if (e.character == SWT.DEL) {
-    // new DeleteAction().run();
-    // }
-    // }
-    //
-    // };
-
     @Override
     public void createPartControl(Composite parent) {
         viewer = new TreeViewer(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
@@ -154,8 +144,6 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
         IViewSite viewSite = getViewSite();
         viewer.setInput(viewSite);
         getSite().setSelectionProvider(viewer);
-
-        // viewer.getControl().addKeyListener(keyListener);
 
         // This only tree listener aim is to change open/close icons on folders :
         viewer.addTreeListener(new ITreeViewerListener() {
@@ -264,7 +252,7 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
                 for (Object obj : ((StructuredSelection) selection).toArray()) {
                     RepositoryNode sourceNode = (RepositoryNode) obj;
 
-                    // PTODO SML As i don't know how to get event operation i test on MoveOperation
+                    // As i don't know how to get event operation i test on MoveOperation
                     event.doit = MoveObjectAction.getInstance().validateAction(sourceNode, null);
                 }
 

@@ -83,12 +83,6 @@ public class RepositoryDropAdapter extends PluginDropAdapter {
     public boolean validateDrop(Object target, int operation, TransferData transferType) {
         super.validateDrop(target, operation, transferType);
 
-        // if (operation == DND.DROP_DEFAULT || operation == DND.DROP_NONE) {
-        // // TODO SML Voir avec MHE ou TGU pourquoi je suis obligé de faire cela
-        // System.out.println("Op:" + operation);
-        // operation = DND.DROP_MOVE;
-        // }
-
         boolean isValid = true;
         for (Object obj : ((StructuredSelection) getViewer().getSelection()).toArray()) {
             RepositoryNode sourceNode = (RepositoryNode) obj;

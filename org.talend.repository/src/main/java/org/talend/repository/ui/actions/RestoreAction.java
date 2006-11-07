@@ -73,7 +73,6 @@ public class RestoreAction extends AContextualAction {
                     }
                     refresh();
                 } catch (Exception e) {
-                    // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
             }

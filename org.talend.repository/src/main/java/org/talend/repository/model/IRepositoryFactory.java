@@ -141,7 +141,6 @@ public interface IRepositoryFactory {
 
     public boolean isDeleted(IRepositoryObject obj) throws PersistenceException;
 
-    // TODO SML Garder le path dans tous les cas ?
     public String getOldPath(IRepositoryObject obj) throws PersistenceException;
 
     /**

@@ -29,7 +29,9 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.ui.IViewPart;
+import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.talend.commons.ui.swt.actions.ITreeContextualAction;
 import org.talend.core.model.metadata.IMetadataTable;
@@ -89,6 +91,7 @@ public class RepositoryDoubleClickAction extends Action {
             if (!(actionToRun == null)) {
                 actionToRun.init((TreeViewer) getViewPart().getViewer(), (IStructuredSelection) selection);
                 actionToRun.run();
+                showView();
             }
         }
     }
@@ -113,8 +116,25 @@ public class RepositoryDoubleClickAction extends Action {
     }
 
     protected IRepositoryView getViewPart() {
+        showView();
+
         IViewPart viewPart = (IViewPart) getActivePage().getActivePart();
         return (IRepositoryView) viewPart;
+    }
+
+    /**
+     * DOC smallet Comment method "showView".
+     */
+    private void showView() {
+        // Added to fix a newly appeared bug : ClassCastException on IViewPart
+        IWorkbench workbench = PlatformUI.getWorkbench();
+        IWorkbenchPage page = workbench.getActiveWorkbenchWindow().getActivePage();
+        try {
+            page.showView("org.talend.repository.views.repository");
+        } catch (PartInitException e) {
+            e.printStackTrace();
+        }
+        // ----------------
     }
 
     protected IWorkbenchPage getActivePage() {

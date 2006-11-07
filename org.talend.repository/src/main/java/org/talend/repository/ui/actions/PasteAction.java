@@ -67,7 +67,6 @@ public class PasteAction extends AContextualAction {
                                 .getString("PasteObjectAction.error.labelAlreadyExists"));
                     }
                 } catch (Exception e) {
-                    // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
             }

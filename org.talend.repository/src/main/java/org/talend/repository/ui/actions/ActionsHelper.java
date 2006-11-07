@@ -51,16 +51,15 @@ public class ActionsHelper {
 
         for (IConfigurationElement current : extension) {
             try {
-                ITreeContextualAction ouaha = (ITreeContextualAction) current.createExecutableExtension("class");
+                ITreeContextualAction currentAction = (ITreeContextualAction) current.createExecutableExtension("class");
                 try {
                     int level = Integer.parseInt(current.getAttribute("level"));
-                    ouaha.setLevel(level);
+                    currentAction.setLevel(level);
                 } catch (NumberFormatException e) {
-                    ouaha.setLevel(1000);
+                    currentAction.setLevel(1000);
                 }
-                toReturn.add(ouaha);
+                toReturn.add(currentAction);
             } catch (CoreException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
         }

@@ -196,7 +196,6 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
             convert(factory.getMetadataFileXml(), metadataFileXmlNode, ERepositoryObjectType.METADATA_FILE_XML, recBinNode);
 
         } catch (PersistenceException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
     }
@@ -244,7 +243,6 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
                 parent.getChildren().add(node);
             }
         } catch (PersistenceException e1) {
-            // TODO Auto-generated catch block
             e1.printStackTrace();
         }
 
