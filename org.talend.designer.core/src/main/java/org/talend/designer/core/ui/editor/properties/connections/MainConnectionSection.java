@@ -136,8 +136,8 @@ public class MainConnectionSection extends DynamicTabbedPropertySection {
         container.setBackground(new Color(null, 181, 220, 17));
         data = new FormData();
         data.left = new FormAttachment(0, ITabbedPropertyConstants.HSPACE);
-        // TODO SML Put 100 instead of 95 when parent composite bug is resolved
-        data.right = new FormAttachment(95, -ITabbedPropertyConstants.HSPACE);
+        // TODO SML Put 100 instead of 90 when parent composite bug is resolved
+        data.right = new FormAttachment(90, -ITabbedPropertyConstants.HSPACE);
         data.top = new FormAttachment(0, curRowSize + ITabbedPropertyConstants.VSPACE);
         container.setLayoutData(data);
 
