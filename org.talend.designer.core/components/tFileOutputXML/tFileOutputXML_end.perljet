@@ -1,26 +1,30 @@
 <%@ jet 
-	package="org.talend.designer.codegen.translators" 
-	imports="
-		org.talend.core.model.process.INode 
-		org.talend.core.model.metadata.IMetadataTable 
-		org.talend.designer.codegen.config.CodeGeneratorArgument
-		java.util.List
-	"
-	class="FileOutputXMLEnd"
+package="org.talend.designer.codegen.translators" 
+imports="
+    org.talend.core.model.process.INode 
+    org.talend.core.model.metadata.IMetadataTable 
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    java.util.List
+"
+class="FileOutputXMLEnd"
 %>
 
 <%
-	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
-	INode node = (INode)codeGenArgument.getArgument();
-	boolean stats = codeGenArgument.isStatistics();
-	
-	List<IMetadataTable> metadatas = node.getMetadataList();
-	if ((metadatas!=null)&&(metadatas.size()>0)) {
-		IMetadataTable metadata = metadatas.get(0);
-		if (metadata!=null) {
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+boolean stats = codeGenArgument.isStatistics();
+
+List<IMetadataTable> metadatas = node.getMetadataList();
+if ((metadatas!=null)&&(metadatas.size()>0)) {
+    IMetadataTable metadata = metadatas.get(0);
+    if (metadata!=null) {
+        String cid = metadata.getTableName();
 %>
 
-print {$output_FH_<%=metadata.getTableName() %>} '</array>', "\n";
+print {$output_FH_<%=cid %>} (
+    (map {'</'.$_.'>'} reverse @{ $desc_<%=cid %>{root_tags} }),
+    "\n",
+);
 
 close($output_FH_<%=metadata.getTableName() %>);
 
@@ -34,9 +38,6 @@ UpdateStat('<%=metadata.getTableName() %>', 0, 2);
 
 <%
         }
-%>
-
-<%
-		}
-	}
+    }
+}
 %>
