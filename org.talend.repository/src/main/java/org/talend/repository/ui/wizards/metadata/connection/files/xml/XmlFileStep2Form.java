@@ -629,7 +629,7 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
 //        SchemaTarget schemaTarget = ConnectionFactory.eINSTANCE.createSchemaTarget();
 //        schemaTarget.setXPathQuery("toto");
 //        schemaTarget.setTagName("titi");
-//        schemaTarget.setIsBoucle(false);
+//        schemaTarget.setBoucle(false);
 //        schemaTarget.setLimitBoucle(3);
 //        tableEditorView.getTargetSchemaEditor().add(schemaTarget, 0); // i
 //        metadataSchema.getSchemaTargets().add(0, schemaTarget);
