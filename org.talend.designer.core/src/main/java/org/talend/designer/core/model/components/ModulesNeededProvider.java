@@ -79,7 +79,7 @@ public class ModulesNeededProvider {
     private static List<ModuleNeeded> getModulesNeededForApplication() {
         List<ModuleNeeded> importNeedsList = new ArrayList<ModuleNeeded>();
 
-        importNeedsList.add(new ModuleNeeded(null, "tagada", "--", false));
+        // importNeedsList.add(new ModuleNeeded(null, "tagada", "--", false));
 
         return importNeedsList;
     }
