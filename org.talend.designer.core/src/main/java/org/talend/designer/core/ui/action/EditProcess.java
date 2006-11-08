@@ -111,7 +111,7 @@ public class EditProcess extends AContextualAction {
                 if (object.getType() != ERepositoryObjectType.PROCESS) {
                     canWork = false;
                 } else {
-                    IRepositoryFactory repFactory = RepositoryFactoryProvider.getInstance(getViewPart().getRepositoryContext());
+                    IRepositoryFactory repFactory = RepositoryFactoryProvider.getInstance();
 
                     try {
                         if (repFactory.isDeleted(object)) {

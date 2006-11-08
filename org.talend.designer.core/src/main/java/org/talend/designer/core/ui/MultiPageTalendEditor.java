@@ -179,9 +179,7 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
         super.dispose();
 
         // Unlock the process :
-        RepositoryContext repositoryContext = (RepositoryContext) org.talend.core.CorePlugin.getContext().getProperty(
-                org.talend.core.context.Context.REPOSITORY_CONTEXT_KEY);
-        IRepositoryFactory repFactory = RepositoryFactoryProvider.getInstance(repositoryContext);
+        IRepositoryFactory repFactory = RepositoryFactoryProvider.getInstance();
         try {
             getTalendEditor().getProperty().eAdapters().remove(dirtyListener);
             repFactory.unlock(getTalendEditor().getProcess());
@@ -242,9 +240,7 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
         getSite().getWorkbenchWindow().getSelectionService().addSelectionListener(this);
 
         // Lock the process :
-        RepositoryContext repositoryContext = (RepositoryContext) org.talend.core.CorePlugin.getContext().getProperty(
-                org.talend.core.context.Context.REPOSITORY_CONTEXT_KEY);
-        IRepositoryFactory repFactory = RepositoryFactoryProvider.getInstance(repositoryContext);
+        IRepositoryFactory repFactory = RepositoryFactoryProvider.getInstance();
         ProcessEditorInput processEditorInput = (ProcessEditorInput) editorInput;
         Process process = (processEditorInput).getLoadedProcess();
         if (!process.isReadOnly()) {

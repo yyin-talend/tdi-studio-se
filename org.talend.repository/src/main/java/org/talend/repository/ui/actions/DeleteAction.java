@@ -71,7 +71,7 @@ public class DeleteAction extends AContextualAction {
 
         boolean popUpLockedAlreadyOpen = false;
 
-        IRepositoryFactory factory = RepositoryFactoryProvider.getInstance(getViewPart().getRepositoryContext());
+        IRepositoryFactory factory = RepositoryFactoryProvider.getInstance();
 
         for (Object obj : ((IStructuredSelection) selection).toArray()) {
             if (obj instanceof RepositoryNode) {
@@ -150,7 +150,7 @@ public class DeleteAction extends AContextualAction {
                 case REPOSITORY_ELEMENT:
                     IRepositoryObject repObj = node.getObject();
 
-                    IRepositoryFactory repFactory = RepositoryFactoryProvider.getInstance(getViewPart().getRepositoryContext());
+                    IRepositoryFactory repFactory = RepositoryFactoryProvider.getInstance();
                     boolean isLocked = true;
                     boolean idDeleted = true;
                     try {

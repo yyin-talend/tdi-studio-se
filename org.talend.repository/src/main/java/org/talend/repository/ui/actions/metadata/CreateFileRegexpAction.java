@@ -98,7 +98,7 @@ public class CreateFileRegexpAction extends AbstractCreateAction {
             creation = true;
             break;
         case REPOSITORY_ELEMENT:
-            IRepositoryFactory factory = RepositoryFactoryProvider.getInstance(getViewPart().getRepositoryContext());
+            IRepositoryFactory factory = RepositoryFactoryProvider.getInstance();
             try {
                 if (factory.isDeleted(node.getObject())) {
                     this.setText(OPEN_LABEL);

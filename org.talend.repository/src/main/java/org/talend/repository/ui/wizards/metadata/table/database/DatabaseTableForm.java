@@ -430,9 +430,7 @@ public class DatabaseTableForm extends AbstractForm {
      */
     protected void addMetadataTable() {
         // Create a new metadata and Add it on the connection
-        IWorkbenchPage activePage = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-        IViewPart viewPart = (IViewPart) activePage.findView(RepositoryView.VIEW_ID);
-        IRepositoryFactory factory = RepositoryFactoryProvider.getInstance(((RepositoryView) viewPart).getRepositoryContext());
+        IRepositoryFactory factory = RepositoryFactoryProvider.getInstance();
         metadataTable = ConnectionFactory.eINSTANCE.createMetadataTable();
         getConnection().getTables().add(metadataTable);
         metadataTable.setId(factory.getNextId());

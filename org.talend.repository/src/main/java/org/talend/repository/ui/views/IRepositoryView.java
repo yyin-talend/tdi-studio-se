@@ -37,10 +37,6 @@ public interface IRepositoryView extends IViewPart {
 
     public StructuredViewer getViewer();
 
-    public RepositoryContext getRepositoryContext();
-
-    public void setRepositoryContext(RepositoryContext repositoryContext);
-
     public void refresh();
 
     public void refresh(Object object);

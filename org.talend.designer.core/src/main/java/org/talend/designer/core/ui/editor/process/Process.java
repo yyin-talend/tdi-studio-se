@@ -443,9 +443,7 @@ public class Process extends Element implements IProcess {
     }
 
     public static IMetadataTable getMetadataFromRepository(String metaRepositoryName) {
-        RepositoryContext repositoryContext = (RepositoryContext) org.talend.core.CorePlugin.getContext().getProperty(
-                org.talend.core.context.Context.REPOSITORY_CONTEXT_KEY);
-        IRepositoryFactory factory = RepositoryFactoryProvider.getInstance(repositoryContext);
+        IRepositoryFactory factory = RepositoryFactoryProvider.getInstance();
         List<ConnectionItem> metadataConnectionsItem = null;
         List<String> repositoryList = new ArrayList<String>();
         IMetadataTable metaToReturn = null;
@@ -851,9 +849,7 @@ public class Process extends Element implements IProcess {
         String propertyType = (String) node.getPropertyValue(EParameterName.PROPERTY_TYPE.getName());
         if (propertyType != null) {
             if (propertyType.equals(EmfComponent.REPOSITORY)) {
-                RepositoryContext repositoryContext = (RepositoryContext) CorePlugin.getContext().getProperty(
-                        org.talend.core.context.Context.REPOSITORY_CONTEXT_KEY);
-                IRepositoryFactory factory = RepositoryFactoryProvider.getInstance(repositoryContext);
+                IRepositoryFactory factory = RepositoryFactoryProvider.getInstance();
                 List<ConnectionItem> metadataConnectionsItem = null;
                 try {
                     metadataConnectionsItem = factory.getMetadataConnectionsItem();
@@ -1053,8 +1049,9 @@ public class Process extends Element implements IProcess {
         boolean isLocked = true;
         boolean isDeleted = true;
         try {
-            isLocked = repFactory.isLocked(property.getItem())
-                    && (repFactory.getLocker(this).equals(new User("stef@talend.com")));
+            User user = ((RepositoryContext) CorePlugin.getContext().getProperty(
+                    org.talend.core.context.Context.REPOSITORY_CONTEXT_KEY)).getUser();
+            isLocked = repFactory.isLocked(property.getItem()) && (!repFactory.getLocker(this).equals(user));
             isDeleted = repFactory.isDeleted(property.getItem());
         } catch (PersistenceException e) {
             // TODO Auto-generated catch block

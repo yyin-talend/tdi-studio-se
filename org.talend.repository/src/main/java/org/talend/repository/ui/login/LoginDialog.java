@@ -178,6 +178,7 @@ public class LoginDialog extends TitleAreaDialog {
             WizardDialog dialog = new WizardDialog(getShell(), newPrjWiz);
             dialog.setTitle(Messages.getString("LoginDialog.newProjectTitle")); //$NON-NLS-1$
             if (dialog.open() == WizardDialog.OK) {
+                // TODO SML ??
                 project = newPrjWiz.getRepositoryContext().getProject();
             } else {
                 project = null;

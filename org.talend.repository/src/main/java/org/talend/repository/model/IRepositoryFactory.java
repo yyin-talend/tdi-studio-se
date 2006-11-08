@@ -61,7 +61,7 @@ public interface IRepositoryFactory {
 
     public void createUser(Project project, RepositoryContext repositoryContext) throws PersistenceException;
     
-    public Project[] readProject(String server, String port, User user) throws PersistenceException;
+    public Project[] readProject() throws PersistenceException;
 
     public Folder createFolder(ERepositoryObjectType type, IPath path, String label) throws PersistenceException;
 

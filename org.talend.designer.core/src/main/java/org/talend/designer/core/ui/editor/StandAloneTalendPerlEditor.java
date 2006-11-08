@@ -49,9 +49,7 @@ public class StandAloneTalendPerlEditor extends PerlEditor {
     public void doSetInput(IEditorInput input) throws CoreException {
         super.doSetInput(input);
         // Lock the process :
-        RepositoryContext repositoryContext = (RepositoryContext) org.talend.core.CorePlugin.getContext().getProperty(
-                org.talend.core.context.Context.REPOSITORY_CONTEXT_KEY);
-        IRepositoryFactory repFactory = RepositoryFactoryProvider.getInstance(repositoryContext);
+        IRepositoryFactory repFactory = RepositoryFactoryProvider.getInstance();
         try {
             RepositoryEditorInput rEditorInput = (RepositoryEditorInput) input;
             item = (RoutineItem) rEditorInput.getItem();
@@ -66,9 +64,7 @@ public class StandAloneTalendPerlEditor extends PerlEditor {
     public void dispose() {
         super.dispose();
         // Unlock the process :
-        RepositoryContext repositoryContext = (RepositoryContext) org.talend.core.CorePlugin.getContext().getProperty(
-                org.talend.core.context.Context.REPOSITORY_CONTEXT_KEY);
-        IRepositoryFactory repFactory = RepositoryFactoryProvider.getInstance(repositoryContext);
+        IRepositoryFactory repFactory = RepositoryFactoryProvider.getInstance();
         try {
             item.getProperty().eAdapters().remove(dirtyListener);
             repFactory.unlock(item);

@@ -173,9 +173,7 @@ public class ProcessEditorInput extends RepositoryEditorInput {
 
             loadedProcess.setXmlStream(getFile().getContents());
 
-            RepositoryContext repositoryContext = (RepositoryContext) org.talend.core.CorePlugin.getContext().getProperty(
-                    org.talend.core.context.Context.REPOSITORY_CONTEXT_KEY);
-            IRepositoryFactory factory = RepositoryFactoryProvider.getInstance(repositoryContext);
+            IRepositoryFactory factory = RepositoryFactoryProvider.getInstance();
 
             if (path != null) {
                 // factory.createProcess(project, loadedProcess, path);

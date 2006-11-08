@@ -77,6 +77,7 @@ import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNode.ENodeType;
 import org.talend.repository.model.actions.MoveObjectAction;
 import org.talend.repository.ui.actions.ActionsHelper;
+import org.talend.repository.ui.actions.CompareAction;
 import org.talend.repository.ui.actions.RefreshAction;
 import org.talend.repository.ui.actions.RepositoryDoubleClickAction;
 
@@ -101,11 +102,11 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
 
     private Action refreshAction;
 
+    private Action compareAction;
+
     private Listener dragDetectListener;
 
     public static final String VIEW_ID = "org.talend.repository.views.repository";
-
-    RepositoryContext repositoryContext;
 
     public RepositoryView() {
         this((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY));
@@ -113,25 +114,6 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
 
     public RepositoryView(RepositoryContext repositoryContext) {
         super();
-        this.repositoryContext = repositoryContext;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.repository.ui.views.IRepositoryView#getFactory()
-     */
-    public RepositoryContext getRepositoryContext() {
-        return repositoryContext;
-    }
-
-    /**
-     * Sets the repositoryContext.
-     * 
-     * @param repositoryContext the repositoryContext to set
-     */
-    public void setRepositoryContext(RepositoryContext repositoryContext) {
-        this.repositoryContext = repositoryContext;
     }
 
     @Override
@@ -286,6 +268,8 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
 
     private void makeActions() {
         IHandlerService handlerService = (IHandlerService) getSite().getService(IHandlerService.class);
+
+        compareAction = new CompareAction();
 
         refreshAction = new RefreshAction(this);
         IHandler handler1 = new ActionHandler(refreshAction);

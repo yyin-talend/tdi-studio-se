@@ -97,7 +97,7 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
         RepositoryNode root = view.getRoot();
         List<RepositoryNode> nodes = root.getChildren();
 
-        IRepositoryFactory factory = RepositoryFactoryProvider.getInstance(view.getRepositoryContext());
+        IRepositoryFactory factory = RepositoryFactoryProvider.getInstance();
         try {
             // 0. Recycle bin
             RepositoryNode recBinNode = new RepositoryNode(null, root, ENodeType.STABLE_SYSTEM_FOLDER);

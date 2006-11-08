@@ -65,7 +65,7 @@ public class EmptyRecycleBinAction extends AContextualAction {
             return;
         }
 
-        IRepositoryFactory factory = RepositoryFactoryProvider.getInstance(getViewPart().getRepositoryContext());
+        IRepositoryFactory factory = RepositoryFactoryProvider.getInstance();
         for (RepositoryNode child : node.getChildren()) {
             IRepositoryObject objToDelete = child.getObject();
             try {

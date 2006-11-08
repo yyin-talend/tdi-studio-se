@@ -440,7 +440,7 @@ public class CreateTableAction extends AbstractCreateAction {
                 return;
             }
 
-            IRepositoryFactory factory = RepositoryFactoryProvider.getInstance(getViewPart().getRepositoryContext());
+            IRepositoryFactory factory = RepositoryFactoryProvider.getInstance();
             try {
                 if (factory.isDeleted(node.getObject())) {
                     return;

@@ -50,17 +50,62 @@ public class RepositoryFactoryProvider {
 
     private static Map<RepositoryContext, IRepositoryFactory> listSingleton = new HashMap<RepositoryContext, IRepositoryFactory>();
 
+    private static IRepositoryFactory localSingleton = null;
+
+    private static IRepositoryFactory remoteSingleton = null;
+
+    private static boolean init = false;
+
     /**
      * Returns a IRepositoryFactory based on the default context.
      */
     public static IRepositoryFactory getInstance() {
-        return getInstance((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY));
+        init();
+        RepositoryContext repositoryContext = (RepositoryContext) CorePlugin.getContext().getProperty(
+                Context.REPOSITORY_CONTEXT_KEY);
+        if (repositoryContext.getProject().isLocal()) {
+            return localSingleton;
+        } else {
+            return remoteSingleton;
+        }
+    }
+
+    public static IRepositoryFactory getInstance(RepositoryContext repositoryContext) {
+        init();
+        IRepositoryFactory toReturn = null;
+        if (repositoryContext.getType() == ERepositoryType.LOCAL) {
+            toReturn = localSingleton;
+        } else {
+            toReturn = remoteSingleton;
+        }
+        toReturn.setRepositoryContext(repositoryContext);
+        return toReturn;
+    }
+
+    private static void init() {
+        if (!init) {
+            List<IRepositoryFactory> factoriesFromProvider = ExtensionImplementationProviders
+                    .getInstance(ExtensionPointFactory.REPOSITORY_PROVIDER);
+
+            for (IRepositoryFactory repositoryFactory : factoriesFromProvider) {
+                ERepositoryType type = repositoryFactory.getType();
+                switch (type) {
+                case LOCAL:
+                    localSingleton = repositoryFactory;
+                    init = true;
+                    break;
+                case REMOTE:
+                    remoteSingleton = repositoryFactory;
+                    break;
+                }
+            }
+        }
     }
 
     /**
      * Returns a IRepositoryFactory based on the specified context.
      */
-    public static IRepositoryFactory getInstance(RepositoryContext repositoryContext) {
+    public static IRepositoryFactory oldgetInstance(RepositoryContext repositoryContext) {
         IRepositoryFactory toReturn = listSingleton.get(repositoryContext);
 
         if (toReturn == null) {

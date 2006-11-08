@@ -648,9 +648,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
         List<String> processNameList = new ArrayList<String>();
         List<String> processValueList = new ArrayList<String>();
         processMap = new HashMap<String, IRepositoryObject>();
-        RepositoryContext repositoryContext = (RepositoryContext) CorePlugin.getContext().getProperty(
-                Context.REPOSITORY_CONTEXT_KEY);
-        IRepositoryFactory factory = RepositoryFactoryProvider.getInstance(repositoryContext);
+        IRepositoryFactory factory = RepositoryFactoryProvider.getInstance();
         try {
             RootContainer<String, IRepositoryObject> processContainer = factory.getProcess();
             ContentList<String, IRepositoryObject> processAbsoluteMembers = processContainer.getAbsoluteMembers();
@@ -697,9 +695,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
     private void updateContextList() {
         List<String> contextNameList = new ArrayList<String>();
         List<String> contextValueList = new ArrayList<String>();
-        RepositoryContext repositoryContext = (RepositoryContext) CorePlugin.getContext().getProperty(
-                Context.REPOSITORY_CONTEXT_KEY);
-        IRepositoryFactory factory = RepositoryFactoryProvider.getInstance(repositoryContext);
+        IRepositoryFactory factory = RepositoryFactoryProvider.getInstance();
 
         String selectedProcess = null;
 
@@ -752,9 +748,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
     }
 
     private void updateRepositoryList() {
-        RepositoryContext repositoryContext = (RepositoryContext) CorePlugin.getContext().getProperty(
-                Context.REPOSITORY_CONTEXT_KEY);
-        IRepositoryFactory factory = RepositoryFactoryProvider.getInstance(repositoryContext);
+        IRepositoryFactory factory = RepositoryFactoryProvider.getInstance();
         List<ConnectionItem> metadataConnectionsItem = null;
         String[] repositoryTableNameList = new String[] {};
         String[] repositoryTableValueList = new String[] {};

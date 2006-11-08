@@ -57,7 +57,7 @@ public class CreateFilePositionalAction extends AbstractCreateAction {
     protected static final int WIZARD_HEIGHT = 475;
 
     private boolean creation = false;
-    
+
     /**
      * DOC cantoine CreateFilePositionalAction constructor comment.
      * 
@@ -73,8 +73,8 @@ public class CreateFilePositionalAction extends AbstractCreateAction {
 
     public void run() {
         ISelection selection = getSelection();
-        WizardDialog wizardDialog = new WizardDialog(new Shell(), new FilePositionalWizard(PlatformUI.getWorkbench(), creation, selection,
-                getExistingNames()));
+        WizardDialog wizardDialog = new WizardDialog(new Shell(), new FilePositionalWizard(PlatformUI.getWorkbench(), creation,
+                selection, getExistingNames()));
         wizardDialog.setPageSize(WIZARD_WIDTH, WIZARD_HEIGHT);
         wizardDialog.create();
         wizardDialog.open();
@@ -87,8 +87,9 @@ public class CreateFilePositionalAction extends AbstractCreateAction {
 
     protected void init(RepositoryNode node) {
         ERepositoryObjectType nodeType = (ERepositoryObjectType) node.getProperties(EProperties.CONTENT_TYPE);
-        if (!ERepositoryObjectType.METADATA_FILE_POSITIONAL.equals(nodeType))
+        if (!ERepositoryObjectType.METADATA_FILE_POSITIONAL.equals(nodeType)) {
             return;
+        }
 
         switch (node.getType()) {
         case SIMPLE_FOLDER:
@@ -98,7 +99,7 @@ public class CreateFilePositionalAction extends AbstractCreateAction {
             creation = true;
             break;
         case REPOSITORY_ELEMENT:
-            IRepositoryFactory factory = RepositoryFactoryProvider.getInstance(getViewPart().getRepositoryContext());
+            IRepositoryFactory factory = RepositoryFactoryProvider.getInstance();
             try {
                 if (factory.isDeleted(node.getObject())) {
                     this.setText(OPEN_LABEL);

@@ -430,12 +430,11 @@ public class LoginComposite extends Composite {
     private void populateProjectList() {
 
         RepositoryContext repositoryContext = getRepositoryContext();
-
         IRepositoryFactory repositoryFactory = RepositoryFactoryProvider.getInstance(repositoryContext);
 
         Project[] projects;
         try {
-            projects = repositoryFactory.readProject(getServer(), getPort(), getUser());
+            projects = repositoryFactory.readProject();
         } catch (PersistenceException e) {
             projects = new Project[0];
 

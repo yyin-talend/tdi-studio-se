@@ -254,8 +254,8 @@ public class RepositoryFactoryImpl implements IRepositoryFactory {
      * @see org.talend.core.model.repository.factories.IRepositoryFactory#readProject(java.lang.String,
      * java.lang.String, java.lang.String)
      */
-    public Project[] readProject(String server, String port, User user) throws PersistenceException {
-        return this.repositoryFactoryFromProvider.readProject(server, port, user);
+    public Project[] readProject() throws PersistenceException {
+        return this.repositoryFactoryFromProvider.readProject();
     }
 
     /**

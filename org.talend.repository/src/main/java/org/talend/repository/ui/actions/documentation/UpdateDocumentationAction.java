@@ -68,7 +68,7 @@ public class UpdateDocumentationAction extends AContextualAction {
     public void init(TreeViewer viewer, IStructuredSelection selection) {
         boolean canWork = !selection.isEmpty() && selection.size() == 1;
         if (canWork) {
-            IRepositoryFactory factory = RepositoryFactoryProvider.getInstance(getViewPart().getRepositoryContext());
+            IRepositoryFactory factory = RepositoryFactoryProvider.getInstance();
             RepositoryNode node = (RepositoryNode) selection.getFirstElement();
             try {
                 canWork = node.getType() == ENodeType.REPOSITORY_ELEMENT

@@ -62,7 +62,7 @@ public class RestoreAction extends AContextualAction {
                     RepositoryNode node = (RepositoryNode) obj;
                     ERepositoryObjectType nodeType = (ERepositoryObjectType) (node).getProperties(EProperties.CONTENT_TYPE);
                     if (ERepositoryObjectType.METADATA_CON_TABLE.equals(nodeType)) {
-                        IRepositoryFactory factory = RepositoryFactoryProvider.getInstance(getViewPart().getRepositoryContext());
+                        IRepositoryFactory factory = RepositoryFactoryProvider.getInstance();
                         ConnectionItem item = (ConnectionItem) node.getObject().getProperty().getItem();
                         MetadataTable metadataTable = ((MetadataTableRepositoryObject) node.getObject()).getTable();
                         TableHelper.setDeleted(metadataTable, false);

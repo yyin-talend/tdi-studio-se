@@ -166,9 +166,7 @@ public class BusinessDiagramEditor extends FileDiagramEditor implements IGotoMar
     public void dispose() {
         super.dispose();
         // Unlock the process :
-        RepositoryContext repositoryContext = (RepositoryContext) org.talend.core.CorePlugin.getContext().getProperty(
-                org.talend.core.context.Context.REPOSITORY_CONTEXT_KEY);
-        IRepositoryFactory repFactory = RepositoryFactoryProvider.getInstance(repositoryContext);
+        IRepositoryFactory repFactory = RepositoryFactoryProvider.getInstance();
         try {
             repFactory.unlock(repositoryEditorInput.getItem());
             repFactory.reload(repositoryEditorInput.getItem().getProperty()); 
@@ -184,9 +182,7 @@ public class BusinessDiagramEditor extends FileDiagramEditor implements IGotoMar
     public void init(final IEditorSite site, final IEditorInput editorInput) throws PartInitException {
         super.init(site, editorInput);
         // Lock the process :
-        RepositoryContext repositoryContext = (RepositoryContext) org.talend.core.CorePlugin.getContext().getProperty(
-                org.talend.core.context.Context.REPOSITORY_CONTEXT_KEY);
-        IRepositoryFactory repFactory = RepositoryFactoryProvider.getInstance(repositoryContext);
+        IRepositoryFactory repFactory = RepositoryFactoryProvider.getInstance();
         try {
             RepositoryEditorInput processEditorInput = (RepositoryEditorInput) editorInput;
             processEditorInput.getItem().getProperty().eAdapters().add(dirtyListener);

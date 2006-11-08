@@ -98,9 +98,7 @@ public class NewProcessWizard extends Wizard {
      */
     @Override
     public boolean performFinish() {
-        RepositoryContext repositoryContext = (RepositoryContext) org.talend.core.CorePlugin.getContext().getProperty(
-                org.talend.core.context.Context.REPOSITORY_CONTEXT_KEY);
-        IRepositoryFactory repositoryFactory = RepositoryFactoryProvider.getInstance(repositoryContext);
+        IRepositoryFactory repositoryFactory = RepositoryFactoryProvider.getInstance();
         try {
             property.setId(repositoryFactory.getNextId());
 

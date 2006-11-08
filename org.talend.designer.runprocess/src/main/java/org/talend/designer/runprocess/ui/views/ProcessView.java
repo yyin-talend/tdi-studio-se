@@ -38,6 +38,10 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.commands.ActionHandler;
 import org.eclipse.ui.contexts.IContextActivation;
 import org.eclipse.ui.contexts.IContextService;
@@ -240,6 +244,15 @@ public class ProcessView extends ViewPart {
 
         @Override
         public void run() {
+            IWorkbench workbench = PlatformUI.getWorkbench();
+            IWorkbenchPage page = workbench.getActiveWorkbenchWindow().getActivePage();
+            try {
+                page.showView("org.talend.designer.runprocess.ui.views.processview");
+            } catch (PartInitException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            
             if (processComposite2.hasProcess()) {
                 processComposite2.exec();
             }

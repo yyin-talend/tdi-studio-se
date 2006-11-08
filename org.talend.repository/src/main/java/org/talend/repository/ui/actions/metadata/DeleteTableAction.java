@@ -83,7 +83,7 @@ public class DeleteTableAction extends AContextualAction {
                         Connection connection = null;
                         ERepositoryObjectType parentNodeType = (ERepositoryObjectType) node.getParent().getProperties(
                                 EProperties.CONTENT_TYPE);
-                        IRepositoryFactory factory = RepositoryFactoryProvider.getInstance(getViewPart().getRepositoryContext());
+                        IRepositoryFactory factory = RepositoryFactoryProvider.getInstance();
                         ConnectionItem item = (ConnectionItem) node.getObject().getProperty().getItem();
                         connection = (Connection) (item).getConnection();
                         MetadataTable metadataTable = ((MetadataTableRepositoryObject) node.getObject()).getTable();
@@ -146,7 +146,7 @@ public class DeleteTableAction extends AContextualAction {
                         canWork = false;
                         break;
                     }
-                    IRepositoryFactory repFactory = RepositoryFactoryProvider.getInstance(getViewPart().getRepositoryContext());
+                    IRepositoryFactory repFactory = RepositoryFactoryProvider.getInstance();
                     boolean isLocked = false;
                     boolean isDeleted = false;
                     try {

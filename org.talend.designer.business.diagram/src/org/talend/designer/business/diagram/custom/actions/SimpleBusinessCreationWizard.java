@@ -71,9 +71,7 @@ public class SimpleBusinessCreationWizard extends RepositoryWizard {
     }
 
     public boolean performFinish() {
-        RepositoryContext repositoryContext = (RepositoryContext) CorePlugin.getContext().getProperty(
-                Context.REPOSITORY_CONTEXT_KEY);
-        IRepositoryFactory repositoryFactory = RepositoryFactoryProvider.getInstance(repositoryContext);
+        IRepositoryFactory repositoryFactory = RepositoryFactoryProvider.getInstance();
         String nextId = repositoryFactory.getNextId();
 
         property.setId(nextId);

@@ -399,10 +399,8 @@ public class SelectorTableForm extends AbstractForm {
             tableItem.setText(1, "" + metadataColumns.size());
             tableItem.setText(2, Messages.getString("SelectorTableForm.Success"));
 
-            IWorkbenchPage activePage = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-            IViewPart viewPart = (IViewPart) activePage.findView(RepositoryView.VIEW_ID);
             IRepositoryFactory factory = RepositoryFactoryProvider
-                    .getInstance(((RepositoryView) viewPart).getRepositoryContext());
+                    .getInstance();
 
             metadataTable = ConnectionFactory.eINSTANCE.createMetadataTable();
             initExistingNames();

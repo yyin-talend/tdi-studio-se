@@ -32,10 +32,8 @@ import org.talend.commons.utils.data.container.Content;
 import org.talend.commons.utils.data.container.ContentList;
 import org.talend.commons.utils.data.container.RootContainer;
 import org.talend.core.CorePlugin;
-import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.model.general.Project;
-import org.talend.core.model.general.User;
 import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IContextManager;
 import org.talend.core.model.properties.ProcessItem;
@@ -75,9 +73,10 @@ public class TalendJobManager {
     public TalendJobManager() {
 
         try {
-            repositoryContext = (RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY);
+            // repositoryContext = (RepositoryContext)
+            // CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY);
 
-            factory = RepositoryFactoryProvider.getInstance(repositoryContext);
+            factory = RepositoryFactoryProvider.getInstance();
 
             processContainer = factory.getProcess();
 
@@ -108,48 +107,46 @@ public class TalendJobManager {
      * 
      * @return an array of project names.
      */
-    public String[] getAllProjectNames() {
-        List<String> names = new ArrayList<String>();
-
-        for (Project project : this.getAllProjects()) {
-            names.add(project.getLabel());
-        }
-        return names.toArray(new String[names.size()]);
-    }
-
+    // public String[] getAllProjectNames() {
+    // List<String> names = new ArrayList<String>();
+    //
+    // for (Project project : this.getAllProjects()) {
+    // names.add(project.getLabel());
+    // }
+    // return names.toArray(new String[names.size()]);
+    // }
     /**
      * 
      * Gets all projects.
      * 
      * @return an ArrayList of Projects.
      */
-    public List<Project> getAllProjects() {
-        List<Project> list = new ArrayList<Project>();
-
-        Project[] projects = null;
-        try {
-            String server = checkString(repositoryContext.getServer());
-            String port = checkString(repositoryContext.getPort() + "");
-            // String user = checkString(repositoryContext.getUser().getName());
-            User user = repositoryContext.getUser();
-            // String password = checkString(repositoryContext.getPassword());
-
-            projects = factory.readProject(server, port, user);
-        } catch (PersistenceException e) {
-            SchedulerPlugin.log(e);
-        }
-
-        if (projects == null) {
-            return new ArrayList<Project>();
-        }
-
-        for (Project project : projects) {
-            list.add(project);
-        }
-
-        return list;
-    }
-
+    // public List<Project> getAllProjects() {
+    // List<Project> list = new ArrayList<Project>();
+    //
+    // Project[] projects = null;
+    // try {
+    // String server = checkString(repositoryContext.getServer());
+    // String port = checkString(repositoryContext.getPort() + "");
+    // // String user = checkString(repositoryContext.getUser().getName());
+    // User user = repositoryContext.getUser();
+    // // String password = checkString(repositoryContext.getPassword());
+    //
+    // projects = factory.readProject(server, port, user);
+    // } catch (PersistenceException e) {
+    // SchedulerPlugin.log(e);
+    // }
+    //
+    // if (projects == null) {
+    // return new ArrayList<Project>();
+    // }
+    //
+    // for (Project project : projects) {
+    // list.add(project);
+    // }
+    //
+    // return list;
+    // }
     /**
      * 
      * Gets the set of current project's job.
@@ -199,8 +196,7 @@ public class TalendJobManager {
                     // Process p = new Process();
                     // p.loadXmlFile((ProcessType) (processItem).getProcess());
 
-                    IContextManager c = ContextManager.getContextManagerFromXmlProcess((ProcessType) (processItem)
-                            .getProcess());
+                    IContextManager c = ContextManager.getContextManagerFromXmlProcess((ProcessType) (processItem).getProcess());
                     // p.getContextManager();
                     for (IContext context : c.getListContext()) {
                         if (contextNameList.contains(context.getName())) {
