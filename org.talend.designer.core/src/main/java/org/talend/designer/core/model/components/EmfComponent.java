@@ -617,7 +617,15 @@ public class EmfComponent implements IComponent {
                 if (!type.equals(EParameterFieldType.TABLE)) {
                     Object defaultValue;
                     if (items.getDEFAULT() != null) {
-                        defaultValue = new String(items.getDEFAULT());
+                    	boolean found = false;
+                    	String temp = items.getDEFAULT();
+                    	for (int i = 0; i < listItemsDisplayCodeValue.length & !found; i++) {
+                    		if (listItemsDisplayCodeValue[i].equals(items.getDEFAULT())) {
+                    			found = true;
+                    			temp = listItemsValue[i];
+                    		}
+						}
+                        defaultValue = new String(temp);
                     } else {
                         defaultValue = "";
                     }
