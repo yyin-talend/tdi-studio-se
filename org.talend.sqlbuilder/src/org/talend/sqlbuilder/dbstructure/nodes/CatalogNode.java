@@ -33,6 +33,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
+import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.ui.ImageProvider;
 import org.talend.sqlbuilder.SqlBuilderPlugin;
@@ -142,6 +143,8 @@ public class CatalogNode extends AbstractNode {
     public void loadChildren() {
         
         if (psessionNode.getInteractiveConnection() == null) {
+            TableFolderNode node = new TableFolderNode(this, "TABLE", psessionNode, new ITableInfo[0]);
+            addChildNode(node);
             return;
         }
         
@@ -150,10 +153,11 @@ public class CatalogNode extends AbstractNode {
         try {
 
             ITableInfo[] tables = null;
-            String[] tableTypes = psessionNode.getMetaData().getTableTypes();
+//            String[] tableTypes = psessionNode.getMetaData().getTableTypes();
+            String[] tableTypes = {"TABLE", "VIEW"};
             
             try {
-                tables = psessionNode.getMetaData().getTables(pname, null, "%", tableTypes);
+                tables = psessionNode.getMetaData().getTables(pname, getSchemaName(), "%", tableTypes);
             } catch (Throwable e) {
                 LOGGER.debug("Loading all tables at once is not supported");
             }
@@ -186,11 +190,29 @@ public class CatalogNode extends AbstractNode {
     @Override
     public String getLabelAtColumn(int columnIndex) {
         if (columnIndex == 0) {
-            return getLabelText();
+            if (getSchemaName() != null && !getSchemaName().trim().equals("")  
+                    && getLabelText() != null && !getLabelText().trim().equals("")) {
+                return getLabelText() + "." + getSchemaName();
+            } else {
+                return getLabelText();
+            }
         } else if (columnIndex == 1) {
-            return psessionNode.getAlias().getName();
+            return psessionNode.getRepositoryNode() == null? null : psessionNode.getRepositoryName();
         }
         return null;
+    }
+    
+    /**
+     * @return SchemaName.
+     */
+    public String getSchemaName() {
+        
+        DatabaseConnection databaseConnection = getSession().getDatabaseConnection();
+        if (databaseConnection == null) {
+            return null;
+        }
+        
+        return databaseConnection.getSchema();
     }
     
     /**

@@ -21,8 +21,12 @@
 // ============================================================================
 package org.talend.sqlbuilder.ui;
 
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IProgressMonitorWithBlocking;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.dialogs.ProgressIndicator;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
@@ -38,11 +42,12 @@ import org.eclipse.ui.actions.SelectionProviderAction;
 import org.talend.sqlbuilder.dbstructure.SessionTreeNodeUtils;
 import org.talend.sqlbuilder.dbstructure.nodes.ColumnNode;
 import org.talend.sqlbuilder.dbstructure.nodes.INode;
+import org.talend.sqlbuilder.util.ConnectionParameters;
 
 /**
  * This Dialog is used for building sql.
  * 
- * $Id: SQLBuilderDialog.java,v 1.29 2006/11/02 09:19:13 qianbing Exp $
+ * $Id: SQLBuilderDialog.java,v 1.35 2006/11/08 05:21:17 peiqin.hou Exp $
  * 
  */
 public class SQLBuilderDialog extends Dialog {
@@ -52,6 +57,94 @@ public class SQLBuilderDialog extends Dialog {
     private DBStructureComposite structureComposite;
 
     private SQLBuilderTabComposite editorComposite;
+    
+    //Added by Tang Fengneng
+    private ConnectionParameters connParameters;
+    //Ends
+
+    /**
+     * The progress indicator control.
+     */
+    protected ProgressIndicator progressIndicator;
+
+    /**
+     * The progress monitor.
+     */
+    private ProgressMonitor progressMonitor = new ProgressMonitor();
+
+    /**
+     * Internal progress monitor implementation.
+     */
+    private class ProgressMonitor implements IProgressMonitorWithBlocking {
+
+        private boolean fIsCanceled;
+
+        protected boolean forked = false;
+
+        protected boolean locked = false;
+
+        public void beginTask(String name, int totalWork) {
+            if (progressIndicator.isDisposed()) {
+                return;
+            }
+            if (totalWork == UNKNOWN) {
+                progressIndicator.beginAnimatedTask();
+            } else {
+                progressIndicator.beginTask(totalWork);
+            }
+        }
+
+        public void done() {
+            if (!progressIndicator.isDisposed()) {
+                progressIndicator.sendRemainingWork();
+                progressIndicator.done();
+            }
+        }
+
+        public void setTaskName(String name) {
+        }
+
+        public boolean isCanceled() {
+            return fIsCanceled;
+        }
+
+        public void setCanceled(boolean b) {
+            fIsCanceled = b;
+            if (locked) {
+                clearBlocked();
+            }
+        }
+
+        public void subTask(String name) {
+        }
+
+        public void worked(int work) {
+            internalWorked(work);
+        }
+
+        public void internalWorked(double work) {
+            if (!progressIndicator.isDisposed()) {
+                progressIndicator.worked(work);
+            }
+        }
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see org.eclipse.core.runtime.IProgressMonitorWithBlocking#clearBlocked()
+         */
+        public void clearBlocked() {
+        }
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see org.eclipse.core.runtime.IProgressMonitorWithBlocking#setBlocked(org.eclipse.core.runtime.IStatus)
+         */
+        public void setBlocked(IStatus reason) {
+            locked = true;
+        }
+    }
 
     /**
      * Create the dialog
@@ -82,6 +175,7 @@ public class SQLBuilderDialog extends Dialog {
      */
     protected Control createDialogArea(Composite parent) {
         Composite container = (Composite) super.createDialogArea(parent);
+        // container.setLayout(new GridLayout());
 
         final SashForm mainSashForm = new SashForm(container, SWT.NONE | SWT.VERTICAL);
         mainSashForm.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
@@ -102,6 +196,9 @@ public class SQLBuilderDialog extends Dialog {
         RefreshDetailCompositeAction refreshAction = new RefreshDetailCompositeAction(structureComposite
                 .getTreeViewer());
 
+        progressIndicator = new ProgressIndicator(container);
+        GridData gd = new GridData(GridData.FILL_HORIZONTAL);
+        progressIndicator.setLayoutData(gd);
         return container;
     }
 
@@ -198,4 +295,35 @@ public class SQLBuilderDialog extends Dialog {
         return super.close();
     }
 
+    /**
+     * Returns the progress monitor to use for operations run in this progress dialog.
+     * 
+     * @return the progress monitor
+     */
+    public IProgressMonitor getProgressMonitor() {
+        return progressMonitor;
+    }
+
+    
+    /**
+     * Added by Tang Fengneng
+     * Sets the connParameters.
+     * @param connParameters the connParameters to set
+     */
+    public void setConnParameters(ConnectionParameters connParameters) {
+        this.connParameters = connParameters;
+    }//Ends
+
+    public ConnectionParameters getConnParameters() {
+        ConnectionParameters connectionParameters = new ConnectionParameters();
+        connectionParameters.setDbName("test");
+        connectionParameters.setDbType("MySQL");
+        connectionParameters.setUserName("root");
+        connectionParameters.setPassword("root");
+        connectionParameters.setHost("127.0.0.1");
+        connectionParameters.setPort("3306");
+        return connectionParameters;
+    }
+    
+    
 }

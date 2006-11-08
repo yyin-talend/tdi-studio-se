@@ -38,7 +38,7 @@ import org.talend.sqlbuilder.util.QueryTokenizer;
  * DOC dev  class global comment. Detailled comment
  * <br/>
  *
- * $Id: SQLEditorProposalUtil.java,v 1.10 2006/11/03 10:19:46 qiang.zhang Exp $
+ * $Id: SQLEditorProposalUtil.java,v 1.17 2006/11/06 08:34:14 qiang.zhang Exp $
  *
  */
 public class SQLEditorProposalUtil {
@@ -48,15 +48,12 @@ public class SQLEditorProposalUtil {
     private List<IContentProposal> proposals;
     private List<String> allString;
     private String languageMode;
-    /**
-     * DOC dev SQLEditorProposalUtil constructor comment.
-     */
-    public SQLEditorProposalUtil() {
-        super();
-    }
+    private int position;
+    private String[] contents;
     
     public SQLEditorProposalUtil(SessionTreeNode session, String language) {
         super();
+        contents = new String[2];
         this.session = session;
         this.languageMode = language;
         allString = new ArrayList<String>();
@@ -70,16 +67,18 @@ public class SQLEditorProposalUtil {
     /**
      * DOC dev Comment method "getSQLEditorContentProposals".
      * @param content editor has input all String
-     * @param position edit position
+     * @param position edit current position
      * @return ContentProposal array.
      */
     public  IContentProposal[] getSQLEditorContentProposals(String content , int position) {
-
+        this.position = position;
+        contents[0] = content.substring(0, position);
+        contents[1] = content.substring(position);
         proposals = new ArrayList<IContentProposal>();
         List<String> queryStrings =  getAllSqlQuery(content);
         
         try {
-            String[] curSql = getCurrentSqlQuery(content, position);
+            String[] curSql = getCurrentSqlQuery(content);
             
             if (queryStrings.isEmpty() || (curSql[1].length() == 0 && curSql[0].length() == 0)) {
                 for (String string : allString) {                                
@@ -96,6 +95,7 @@ public class SQLEditorProposalUtil {
         IContentProposal[] res = new IContentProposal[proposals.size()];
         res = proposals.toArray(res);
         return res;
+        
     }
     
     /**
@@ -127,10 +127,9 @@ public class SQLEditorProposalUtil {
     /**
      * Get Current SQL Query.
      * @param content editor content.
-     * @param position edit position.
      * @return current SQL Query String
      */
-    private String[] getCurrentSqlQuery(String content, int position) {
+    private String[] getCurrentSqlQuery(String content) {
         String[] curSql = new String[2];
         String before = content.substring(0, position);
         String after = content.substring(position);
@@ -157,21 +156,13 @@ public class SQLEditorProposalUtil {
     }
         
 //    /**
-//     * DOC dev Comment method "createSimpleSQLEditorProposal".
+//     * DOC dev Comment method "createFullSQLEditorProposal".
 //     * @param tmp editor has input String
-//     * @param tablename need to proposal Table Name without Database Name.
+//     * @param tablename need to proposal Table QualifiedName.
 //     */
-//    private void createSimpleSQLEditorProposal(String tmp, String tablename) {
-//        proposals.add(new SQLEditorSimpleNameProposal(tmp, tablename));
+//    private void createFullSQLEditorProposal(String tmp, String tablename) {
+//        proposals.add(new SQLEditorFullNameProposal(tmp, tablename));
 //    }
-    /**
-     * DOC dev Comment method "createFullSQLEditorProposal".
-     * @param tmp editor has input String
-     * @param tablename need to proposal Table QualifiedName.
-     */
-    private void createFullSQLEditorProposal(String tmp, String tablename) {
-        proposals.add(new SQLEditorFullNameProposal(tmp, tablename));
-    }
     
     /**
      * DOC dev Comment method "createAllSQLEditorProposal".
@@ -179,7 +170,7 @@ public class SQLEditorProposalUtil {
      * @param string need to proposal String
      */
     private void createAllSQLEditorProposal(String tmp, String string) {
-        proposals.add(new SQLEditorAllProposal(tmp, string));
+        proposals.add(new SQLEditorAllProposal(tmp, string, position, contents));
     }
     
       
@@ -224,44 +215,19 @@ public class SQLEditorProposalUtil {
             } else {
                 hasInput = curSql[0];
             }
-//            int indexFrom = curSql[0].lastIndexOf("from");
-//            int indexSet = curSql[0].lastIndexOf("table");
-            
             if (allString != null && !allString.isEmpty()) {
-//                if (indexFrom != -1 || indexSet != -1) {
-//                    List<String> tableNames = SessionTreeNodeUtils.getTableNames(session);
-//                    int indexSpace = curSql[0].lastIndexOf(" ");
-//                    String tmp = curSql[0].substring(indexSpace + 1).toLowerCase().trim();
-//                    for (String tablename : tableNames) {
-//                        String tmp2 = tablename.toLowerCase().substring(tablename.indexOf(".") + 2);
-//                        if (tmp2.startsWith(tmp)) {
-//                            createSimpleSQLEditorProposal(tmp, tablename);
-//                            continue;
-//                        }
-//                        if (tablename.startsWith(tmp)) {
-//                            createFullSQLEditorProposal(tmp, tablename);
-//                            continue; 
-//                        }
-//                    }
-//                } else {
-                        for (String string : allString) {
-                            int index = string.indexOf(".");
-                            String tmp2 = "";
-                            if (index != -1) {
-                                tmp2 = string.substring(index + 2, string.length() - 1);
-                            } else {
-                                tmp2 = string;
-                            }
-                            if (string.toLowerCase().startsWith(hasInput.toLowerCase())) {
-                                createFullSQLEditorProposal(hasInput, string);
-                                continue;
-                            }
-                            if (tmp2.toLowerCase().startsWith(hasInput.toLowerCase())) {
-                                createAllSQLEditorProposal(hasInput, string);
-                                continue;
-                            }
-                        }
-//                }
+                for (String string : allString) {
+                    int index = string.indexOf(".");
+                    String tmp2 = "";
+                    if (index != -1) {
+                        tmp2 = string.substring(index + 2, string.length() - 1);
+                    } else {
+                        tmp2 = string;
+                    }
+                    if (tmp2.toLowerCase().startsWith(hasInput.toLowerCase())) {
+                        createAllSQLEditorProposal(hasInput, string);
+                    }
+                }
             }
         }
     }

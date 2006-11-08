@@ -163,6 +163,8 @@ import org.talend.repository.model.IRepositoryFactory;
 import org.talend.repository.model.RepositoryConstants;
 import org.talend.repository.model.RepositoryFactoryProvider;
 import org.talend.repository.utils.RepositoryPathProvider;
+import org.talend.sqlbuilder.ui.SQLBuilderDialog;
+import org.talend.sqlbuilder.util.ConnectionParameters;
 
 /**
  * Dynamic node's property section. This allow the tabbed property to be dynamic dependings on node's parameters. <br/>
@@ -236,6 +238,9 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
 
     private EditionControlHelper editionControlHelper;
 
+    // Added by Tang Fengneng(Soyatec) 10/30/2006
+    private static final String SQLEDITOR = "SQLEDITOR";
+    // Ends
     /**
      * Get the command stack of the Gef editor.
      * 
@@ -246,6 +251,22 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
         Object adapter = talendEditor.getAdapter(CommandStack.class);
         return (CommandStack) adapter;
     }
+    /**
+     * Modified by Tang Fengneng(Soyatec), 11/08/2006
+     * DOC dev Comment method "getValueFromRepositoryName".
+     * @param repositoryName
+     * @return String
+     */
+    private String getValueFromRepositoryName(String repositoryName) {
+        for (IElementParameter param : (List<IElementParameter>) elem.getElementParameters()) {
+            if (param.getRepositoryValue() != null) {
+                if (param.getRepositoryValue().equals(repositoryName)) {
+                    return (String) param.getValue();
+                }
+            }
+        }
+        return null;
+    }//Ends
 
     private SelectionListener listenerSelection = new SelectionListener() {
 
@@ -401,6 +422,71 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                 ChangeMetadataCommand cmd = new ChangeMetadataCommand(node, meta, metaCopy, null);
                 getCommandStack().execute(cmd);
             }
+            // Added by Tang Fengneng(Soyatec) 11/02/2006
+            if (info.equals(SQLEDITOR)) {
+
+                ConnectionParameters connParameters = new ConnectionParameters();
+                String repositoryType = (String) elem.getPropertyValue(EParameterName.PROPERTY_TYPE.getName());
+                String propertyName = (String) button.getData(PROPERTY);
+                String query = (String) elem.getPropertyValue(propertyName);
+                                
+                connParameters.setQuery(query);
+
+                if (repositoryType.equals(EmfComponent.BUILTIN)) {
+
+                    System.out.println("repository type is :" + EmfComponent.BUILTIN);
+                    
+                   String userName = getValueFromRepositoryName("USERNAME");
+         
+                    System.out.println("username:" + userName);
+                    connParameters.setUserName(userName);
+
+                    String password = (String) getValueFromRepositoryName("PASSWORD");
+                    System.out.println("password:" + password);
+
+                    String host = (String) getValueFromRepositoryName("SERVER_NAME");
+                    System.out.println("host:" + host);
+                    connParameters.setHost(host);
+
+                    String port = (String) getValueFromRepositoryName("PORT");
+                    System.out.println("port:" + port);
+                    connParameters.setPort(port);
+
+                    String dbName = getValueFromRepositoryName("SID");
+                    System.out.println("dbName:" + dbName);
+                    connParameters.setDbName(dbName);
+
+                    String type = getRepositoryItemFromRepositoryName("TYPE");
+                    System.out.println("database type:" + type);
+                    connParameters.setDbType(type);
+
+                }
+
+                else if (repositoryType.equals(EmfComponent.REPOSITORY)) {
+                    System.out.println("repository type is :" + EmfComponent.REPOSITORY);
+                    String repositoryName = "";
+                    for (IElementParameter param : (List<IElementParameter>) elem.getElementParameters()) {
+                        if (param.getName().equals(EParameterName.REPOSITORY_PROPERTY_TYPE.getName())) {
+                            String value = (String) param.getValue();
+                            String[] valuesList = (String[]) param.getListItemsValue(currentLanguage);
+                            String[] displayList = param.getListItemsDisplayName(currentLanguage);
+                            for (int i = 0; i < valuesList.length; i++) {
+                                if (valuesList[i].equals(value)) {
+                                    repositoryName = displayList[i];
+                                }
+                            }
+
+                        }
+                    }
+                    System.out.println("repository:" + repositoryName);
+                    connParameters.setRepositoryName(repositoryName);
+                }
+
+                SQLBuilderDialog dial = new SQLBuilderDialog(composite.getShell());
+                dial.setConnParameters(connParameters);
+
+               dial.open();
+            }// Ends
         }
 
         public void widgetSelected(final SelectionEvent e) {
@@ -1638,6 +1724,132 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
         return null;
     }
 
+    /**
+     * 
+     * Add a button for opening an sql builder dialog, by Tang Fengneng(Soyatec),11/03/2006
+     * 
+     * @param subComposite
+     * @param param
+     * @param numInRow
+     * @param nbInRow
+     * @param top
+     * @param lastControl
+     * @param language
+     * @return
+     */
+    private Control addSqlMemo(final Composite subComposite, final IElementParameter param, final int numInRow,
+            final int nbInRow, final int top, final Control lastControl, final String language) {
+
+        // Creates button ,added by tang fengneng(Soyatec) 11/02/2006
+        final Button openSQLEditorButton;
+        final DecoratedField dField1 = new DecoratedField(subComposite, SWT.PUSH, new IControlCreator() {
+
+            public Control createControl(Composite parent, int style) {
+                return new Button(parent, style);
+            }
+        });
+
+        Control buttonControl = dField1.getLayoutControl();
+        openSQLEditorButton = (Button) dField1.getControl();
+        //openSQLEditorButton.setSize(15, 15);
+        openSQLEditorButton.computeSize(SWT.DEFAULT, SWT.DEFAULT);
+        openSQLEditorButton.setImage(CorePlugin.getImageDescriptor(DOTS_BUTTON).createImage());
+        buttonControl.setBackground(subComposite.getBackground());
+        openSQLEditorButton.setEnabled(!param.isReadOnly());
+        openSQLEditorButton.setData(NAME, SQLEDITOR);
+        openSQLEditorButton.setData(PROPERTY, param.getName());
+
+        openSQLEditorButton.addSelectionListener(listenerSelection);
+
+        FormData data1 = new FormData();
+        data1.right = new FormAttachment(100, - ITabbedPropertyConstants.HSPACE);
+        data1.left = new FormAttachment(100, - (ITabbedPropertyConstants.HSPACE + STANDARD_BUTTON_WIDTH));
+        data1.top = new FormAttachment(0, top);
+
+        buttonControl.setLayoutData(data1);
+
+        int nbLines = param.getNbLines();
+
+        IControlCreator txtCtrl = new IControlCreator() {
+
+            public Control createControl(final Composite parent, final int style) {
+                ColorManager colorManager = new ColorManager(CorePlugin.getDefault().getPreferenceStore());
+                ColorStyledText colorText = new ColorStyledText(parent, style, colorManager, language);
+                Font font = new Font(parent.getDisplay(), "courier", 5, SWT.NONE);
+                colorText.setFont(font);
+                return colorText;
+            }
+        };
+        DecoratedField dField = null;
+        if (param.getNbLines() != 1) {
+            dField = new DecoratedField(subComposite, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL | SWT.H_SCROLL, txtCtrl);
+        } else {
+            dField = new DecoratedField(subComposite, SWT.BORDER, txtCtrl);
+        }
+        if (param.isRequired()) {
+            FieldDecoration decoration = FieldDecorationRegistry.getDefault().getFieldDecoration(
+                    FieldDecorationRegistry.DEC_REQUIRED);
+            dField.addFieldDecoration(decoration, SWT.RIGHT | SWT.TOP, false);
+        }
+        Control cLayout = dField.getLayoutControl();
+        ColorStyledText text = (ColorStyledText) dField.getControl();
+
+        editionControlHelper.register(param.getName(), text, true);
+
+        FormData d = (FormData) text.getLayoutData();
+        d.height = text.getLineHeight() * nbLines;
+        FormData data;
+        text.getParent().setSize(subComposite.getSize().x, text.getLineHeight() * nbLines);
+        cLayout.setBackground(subComposite.getBackground());
+        text.setEnabled(!param.isReadOnly());
+        if (elem instanceof Node) {
+            text.setToolTipText(VARIABLE_TOOLTIP + param.getVariableName());
+        }
+
+        CLabel labelLabel = getWidgetFactory().createCLabel(subComposite, param.getDisplayName());
+        data = new FormData();
+        if (lastControl != null) {
+            data.left = new FormAttachment(lastControl, 0);
+        } else {
+            data.left = new FormAttachment((((numInRow - 1) * MAX_PERCENT) / nbInRow), 0);
+        }
+        data.top = new FormAttachment(0, top);
+        labelLabel.setLayoutData(data);
+        if (numInRow != 1) {
+            labelLabel.setAlignment(SWT.RIGHT);
+        }
+        // *********************
+        data = new FormData();
+        int currentLabelWidth = STANDARD_LABEL_WIDTH;
+        GC gc = new GC(labelLabel);
+        Point labelSize = gc.stringExtent(param.getDisplayName());
+        gc.dispose();
+
+        if ((labelSize.x + ITabbedPropertyConstants.HSPACE) > currentLabelWidth) {
+            currentLabelWidth = labelSize.x + ITabbedPropertyConstants.HSPACE;
+        }
+
+        if (numInRow == 1) {
+            if (lastControl != null) {
+                data.left = new FormAttachment(lastControl, currentLabelWidth);
+            } else {
+                data.left = new FormAttachment(0, currentLabelWidth);
+            }
+
+        } else {
+            data.left = new FormAttachment(labelLabel, 0, SWT.RIGHT);
+        }
+        data.right = new FormAttachment(buttonControl, -5, SWT.LEFT);
+        data.top = new FormAttachment(0, top);
+        cLayout.setLayoutData(data);
+        // **********************
+        hashCurControls.put(param.getName(), text);
+
+        Point initialSize = dField.getLayoutControl().computeSize(SWT.DEFAULT, SWT.DEFAULT);
+        curRowSize = initialSize.y + ITabbedPropertyConstants.VSPACE;
+
+        return null;
+    }// Ends
     @SuppressWarnings("unchecked")
     private Control addTable(final Composite subComposite, final IElementParameter param, final int numInRow, final int nbInRow,
             final int top, final Control lastControl) {
@@ -2092,7 +2304,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                             lastControl = addMemo(composite, listParam.get(i), numInRow, nbInRow, heightSize, lastControl);
                             break;
                         case MEMO_SQL:
-                            lastControl = addLanguageMemo(composite, listParam.get(i), numInRow, nbInRow, heightSize,
+                            lastControl = addSqlMemo(composite, listParam.get(i), numInRow, nbInRow, heightSize,
                                     lastControl, "tsql");
                             break;
                         case MEMO_PERL:
@@ -2647,4 +2859,30 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
 
     }
 
+    // Added by Tang Fengneng
+    /**
+     * Detaild comments.
+     * 
+     * @param repositoryName String
+     * @return String
+     * 
+     */
+    private String getRepositoryItemFromRepositoryName(String repositoryName) {
+        for (IElementParameter param : (List<IElementParameter>) elem.getElementParameters()) {
+            if (param.getRepositoryValue()!=null) {
+                if (param.getRepositoryValue().equals(repositoryName)) {
+                    String value = (String) param.getValue();
+                    String[] valuesList = (String[]) param.getListItemsValue(currentLanguage);
+                    String[] repositoryItemList = param.getListRepositoryItems(currentLanguage);
+                    for (int i = 0; i < valuesList.length; i++) {
+                        if (valuesList[i].equals(value)) {
+                            return repositoryItemList[i];
+                        }
+                    }
+
+                }
+            }
+        }
+        return null;
+    }// Ends
 }

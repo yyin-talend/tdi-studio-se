@@ -39,7 +39,10 @@ import org.apache.commons.logging.LogFactory;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.swt.widgets.Table;
+import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
+import org.talend.core.model.properties.ConnectionItem;
 import org.talend.repository.model.RepositoryNode;
+import org.talend.repository.model.RepositoryNode.EProperties;
 import org.talend.sqlbuilder.IConstants;
 import org.talend.sqlbuilder.SqlBuilderPlugin;
 import org.talend.sqlbuilder.dbdetail.DetailTabManager;
@@ -142,6 +145,21 @@ public class SessionTreeNode implements ISessionTreeNode {
             
         }
             
+    }
+    
+    /**
+     * Get DatabaseConnection from repositoryNode.
+     * @return database connection.
+     */
+    public DatabaseConnection getDatabaseConnection() {
+        if (repositoryNode == null || repositoryNode.getObject() == null 
+                || repositoryNode.getObject().getProperty() == null || repositoryNode.getObject().getProperty().getItem() == null) {
+            return null;
+        }
+        DatabaseConnection connection = (DatabaseConnection) ((ConnectionItem) repositoryNode.getObject()
+                .getProperty().getItem()).getConnection();
+        
+        return connection;
     }
     
     /**
@@ -543,6 +561,13 @@ public class SessionTreeNode implements ISessionTreeNode {
             return "";
         }
     }
-
+    
+    public String getRepositoryName() {
+        if (repositoryNode == null) {
+            return toString();
+        } else {
+            return (String) repositoryNode.getProperties(EProperties.LABEL);
+        }
+    }
     
 }

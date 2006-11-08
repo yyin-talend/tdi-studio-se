@@ -33,7 +33,7 @@ import org.eclipse.jface.action.StatusLineManager;
 import org.eclipse.jface.action.ToolBarContributionItem;
 import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.bindings.keys.KeyStroke;
-import org.eclipse.jface.fieldassist.IContentProposal;
+import org.eclipse.jface.fieldassist.ContentProposalAdapter;
 import org.eclipse.jface.fieldassist.IContentProposalProvider;
 import org.eclipse.jface.fieldassist.IControlContentAdapter;
 import org.eclipse.jface.util.Assert;
@@ -46,6 +46,7 @@ import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.VerifyEvent;
 import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -55,11 +56,11 @@ import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Text;
 import org.talend.commons.ui.swt.colorstyledtext.ColorManager;
 import org.talend.commons.ui.swt.colorstyledtext.ColorStyledText;
-import org.talend.commons.ui.swt.proposal.ContentProposalAdapterExtended;
 import org.talend.commons.ui.swt.proposal.StyledTextContentAdapter;
 import org.talend.core.CorePlugin;
 import org.talend.sqlbuilder.IConstants;
 import org.talend.sqlbuilder.Messages;
+import org.talend.sqlbuilder.SqlBuilderPlugin;
 import org.talend.sqlbuilder.actions.AbstractEditorAction;
 import org.talend.sqlbuilder.actions.ClearTextAction;
 import org.talend.sqlbuilder.actions.ExecSQLAction;
@@ -68,14 +69,15 @@ import org.talend.sqlbuilder.actions.SQLEditorSessionSwitcher;
 import org.talend.sqlbuilder.actions.SaveFileAsAction;
 import org.talend.sqlbuilder.sessiontree.model.SessionTreeNode;
 import org.talend.sqlbuilder.ui.editor.ISQLEditor;
-import org.talend.sqlbuilder.ui.proposal.SQLEditorControlHelper;
-import org.talend.sqlbuilder.ui.proposal.SQLEditorProposalUtil;
+import org.talend.sqlbuilder.ui.proposal.SQLEditorProposalAdapter;
+import org.talend.sqlbuilder.ui.proposal.SQLEditorProposalProvider;
+import org.talend.sqlbuilder.ui.proposal.SQLEditorLabelProvider;
 import org.talend.sqlbuilder.util.UIUtils;
 
 /**
  * DOC dev class global comment. Detailled comment <br/>
  * 
- * $Id: SQLBuilderEditorComposite.java,v 1.39 2006/11/03 10:01:46 qiang.zhang Exp $
+ * $Id: SQLBuilderEditorComposite.java,v 1.48 2006/11/07 10:36:49 peiqin.hou Exp $
  * 
  */
 public class SQLBuilderEditorComposite extends Composite implements ISQLEditor {
@@ -98,7 +100,7 @@ public class SQLBuilderEditorComposite extends Composite implements ISQLEditor {
 
     private ToolBarManager sessionToolBarMgr;
 
-    public SessionTreeNode sessionTreeNode;
+    private SessionTreeNode sessionTreeNode;
 
     private boolean ifLimit = true;
 
@@ -135,14 +137,14 @@ public class SQLBuilderEditorComposite extends Composite implements ISQLEditor {
         createEditorArea(parent);
         createStatusArea(parent);
     }
-
+    final String language = "tsql";
     /**
      * 
      * DOC dev Comment method "createEditorArea".
      */
     private void createEditorArea(Composite parent) {
 
-        final String language = "tsql";
+        
         // create divider line
 
         Composite div1 = new Composite(parent, SWT.NONE);
@@ -161,7 +163,7 @@ public class SQLBuilderEditorComposite extends Composite implements ISQLEditor {
         gid.horizontalAlignment = gid.verticalAlignment = GridData.FILL;
 
         ColorManager colorManager = new ColorManager(CorePlugin.getDefault().getPreferenceStore());
-        colorText = new ColorStyledText(parent, SWT.BORDER | SWT.V_SCROLL|SWT.H_SCROLL, colorManager, language);
+        colorText = new ColorStyledText(parent, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL, colorManager, language);
         Font font = new Font(parent.getDisplay(), "courier", 10, SWT.NONE);
         colorText.setFont(font);
 
@@ -178,30 +180,35 @@ public class SQLBuilderEditorComposite extends Composite implements ISQLEditor {
                 }
             }
         });
-        try {
-            KeyStroke keyStroke = KeyStroke.getInstance("Ctrl+Space");
-            IControlContentAdapter controlContentAdapter = new StyledTextContentAdapter();
-            ContentProposalAdapterExtended contentProposalAdapter = new ContentProposalAdapterExtended(colorText, controlContentAdapter, 
-                   new  IContentProposalProvider() {
-
-                    /* (non-Javadoc)
-                     * @see org.eclipse.jface.fieldassist.IContentProposalProvider#getProposals(java.lang.String, int)
-                     */
-                    public IContentProposal[] getProposals(String contents, int position) {
-                        return new SQLEditorProposalUtil(sessionTreeNode, language).getSQLEditorContentProposals(contents, position);
-                    }
-                
-            }, keyStroke, null);
-            contentProposalAdapter.setPropagateKeys(true);
-            contentProposalAdapter.setFilterStyle(ContentProposalAdapterExtended.FILTER_CUMULATIVE);
-            contentProposalAdapter.setProposalAcceptanceStyle(ContentProposalAdapterExtended.PROPOSAL_INSERT);
-            SQLEditorControlHelper editionControlHelper =new SQLEditorControlHelper();
-            editionControlHelper.register(colorText, contentProposalAdapter);
-        }catch(Exception e){
-            e.printStackTrace();
-        }
         
     }
+
+    /**
+     * DOC dev Comment method "createEditorProposal".
+     */
+    private void createEditorProposal() {
+        try {
+            //create KeyStroke use Ctrl+Space 
+            KeyStroke keyStroke = KeyStroke.getInstance("Ctrl+Space");
+            IControlContentAdapter controlContentAdapter = 
+                new StyledTextContentAdapter();
+            IContentProposalProvider contentProposalProvider = 
+                new SQLEditorProposalProvider(sessionTreeNode, language);
+            
+            SQLEditorProposalAdapter contentProposalAdapter = 
+                new SQLEditorProposalAdapter(colorText, controlContentAdapter, 
+                    contentProposalProvider, keyStroke, new char[]{' '});
+            contentProposalAdapter.setPropagateKeys(true);
+            contentProposalAdapter.setFilterStyle(ContentProposalAdapter.FILTER_CUMULATIVE);
+            contentProposalAdapter.setProposalAcceptanceStyle(ContentProposalAdapter.PROPOSAL_REPLACE);
+            contentProposalAdapter.setLabelProvider(new SQLEditorLabelProvider());
+            contentProposalAdapter.setAutoActivationDelay(10);
+            contentProposalAdapter.setPopupSize(new Point(300, 200));
+        } catch (Exception e) {
+           SqlBuilderPlugin.log("Create SQL Editor Proposal Failure", e);
+        }
+    }
+     
 
     /**
      * 
@@ -394,7 +401,7 @@ public class SQLBuilderEditorComposite extends Composite implements ISQLEditor {
      * 
      */
     public void setSessionTreeNode(SessionTreeNode node) {
-        Assert.isNotNull(node,"this node can not be null");
+        Assert.isNotNull(node, "this node can not be null");
         this.sessionTreeNode = node;
         // Refresh TabItem's title
         String dbName = ((SQLAlias) node.getAlias()).getSchemaFilterExpression();
@@ -403,15 +410,15 @@ public class SQLBuilderEditorComposite extends Composite implements ISQLEditor {
         String title = dbName + "(" + repositoryName + ").sql";
         tabItem.setText(title);
         sessionSwitcher.refreshSelectedRepository();
-        
+        createEditorProposal();
     }
 
     
-    public String getRepositoryName(){
-        if(sessionTreeNode==null){
+    public String getRepositoryName() {
+        if (sessionTreeNode == null) {
             return "";
         }
-        String repositoryName = ((SQLAlias) sessionTreeNode.getAlias()).getName();
+        String repositoryName = sessionTreeNode.getRepositoryName();
         return repositoryName;
     }
     
@@ -458,6 +465,7 @@ public class SQLBuilderEditorComposite extends Composite implements ISQLEditor {
                 try {
                     writer.close();
                 } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
 

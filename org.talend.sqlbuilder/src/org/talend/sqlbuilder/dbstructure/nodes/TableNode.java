@@ -55,7 +55,7 @@ import org.talend.sqlbuilder.sessiontree.model.SessionTreeNode;
  * DOC dev  class global comment. Detailled comment
  * <br/>
  *
- * $Id: TableNode.java,v 1.18 2006/11/03 10:07:56 peiqin.hou Exp $
+ * $Id: TableNode.java,v 1.19 2006/11/06 05:01:51 peiqin.hou Exp $
  *
  */
 public class TableNode extends AbstractNode {
@@ -356,14 +356,14 @@ public class TableNode extends AbstractNode {
     }
     
     @Override
-    public String getLabelAtColumn(int columnIndex)
-    {
+    public String getLabelAtColumn(int columnIndex) {
         if (columnIndex == 0) {
-            if (ptableInfo.getSchemaName() != null) {
-                return ptableInfo.getSchemaName() + "." + getLabelText();
-            } else {
-                return getLabelText();
-            }
+//            if (ptableInfo.getSchemaName() != null) {
+//                return ptableInfo.getSchemaName() + "." + getLabelText();
+//            } else {
+//                return getLabelText();
+//            }
+            return getLabelText();
         } else if (columnIndex == 1) {
             return getRepositoryName();
         }

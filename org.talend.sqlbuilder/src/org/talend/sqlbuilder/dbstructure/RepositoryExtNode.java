@@ -29,7 +29,6 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
-import org.talend.core.model.metadata.builder.ConvertionHelper;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
@@ -39,19 +38,41 @@ import org.talend.repository.model.RepositoryNode.ENodeType;
 import org.talend.repository.model.RepositoryNode.EProperties;
 import org.talend.sqlbuilder.dbstructure.nodes.INode;
 import org.talend.sqlbuilder.sessiontree.model.SessionTreeNode;
+import org.talend.sqlbuilder.util.ConnectionParameters;
 import org.talend.sqlbuilder.util.ImageUtil;
 
 /**
  * Detailled comment for this class. <br/>
- * $Id: RepositoryExtNode.java,v 1.20 2006/11/03 10:40:12 peiqin.hou Exp $
+ * $Id: RepositoryExtNode.java,v 1.25 2006/11/08 05:21:17 peiqin.hou Exp $
  * @author Hou Peiqin (Soyatec)
  * 
  */
 public class RepositoryExtNode implements INode {
     private RepositoryNode repositoryNode;
+    private ConnectionParameters connectionParameters;
+    private INode[] currentNodes;
+    private boolean isShowAllConnections = false;
+    
     
     public RepositoryExtNode() {
     }
+    
+    
+    public boolean isShowAllConnections() {
+        return isShowAllConnections;
+    }
+
+
+    public void setShowAllConnections(boolean isShowAllConnections) {
+        this.isShowAllConnections = isShowAllConnections;
+    }
+
+
+
+    public void setConnectionParameters(ConnectionParameters connectionParameters) {
+        this.connectionParameters = connectionParameters;
+    }
+
 
     public RepositoryExtNode(RepositoryNode repositoryNode) {
         this.repositoryNode = repositoryNode;
@@ -81,6 +102,26 @@ public class RepositoryExtNode implements INode {
      * @return Child Nodes.
      */
     public INode[] getChildNodes() {
+        if(isShowAllConnections) {
+            List<INode> list = SessionTreeNodeUtils.getCachedAllNodes();
+            if(list.size() == 0) {
+                return getAllNodes();
+            } else {
+                return list.toArray(new INode[]{});
+            }
+        }
+        if(currentNodes != null) {
+            return currentNodes;
+        }
+        if (!connectionParameters.isRepository()) {
+            currentNodes = getBuildInNodes();
+        } else {
+            currentNodes = getRepositoryNodes();
+        }
+        return currentNodes;
+    }
+    
+    public INode[] getAllNodes() {
         List<RepositoryNode> repositoryNodes = repositoryNode.getChildren();
         List<INode> nodes = new ArrayList<INode>();
         for (int i = 0, size = repositoryNodes.size(); i < size; i++) {
@@ -99,20 +140,70 @@ public class RepositoryExtNode implements INode {
                 
                 //if the connection is a valid connection then add to CatalogNodes list.
                 if (databaseModel.getSession().getInteractiveConnection() != null) {
-                    SessionTreeNodeUtils.getCatelogNodes().add(databaseModel.getRoot().getChildNodes()[0]);
+                    SessionTreeNodeUtils.getCatalogNodes().add(databaseModel.getRoot().getChildNodes()[0]);
                 }
+                SessionTreeNodeUtils.getCachedAllNodes().add(databaseModel.getRoot().getChildNodes()[0]);
                     
             }
         }
+        return nodes.toArray(new INode[]{}); 
+    }
+    /**
+     * Get buildIn Nodes.
+     * @return INode[]
+     */
+    public INode[] getBuildInNodes() {
+        List<INode> nodes = new ArrayList<INode>();
+        SessionTreeNode sessionTreeNode = SessionTreeNodeUtils.getSessionTreeNode("", 
+                connectionParameters.getDbType(), connectionParameters.getURL(), connectionParameters.getUserName(), 
+                connectionParameters.getPassword(), connectionParameters.getDbName(), null);
         
-        INode[] iNodes = new INode[nodes.size()];
-        for (int i = 0, size = nodes.size(); i < size; i++) {
-            iNodes[i] = nodes.get(i);
+        DatabaseModel databaseModel = sessionTreeNode.getDbModel();
+        if (databaseModel != null && databaseModel.getRoot().getChildNodes().length != 0) {
+            nodes.add(databaseModel.getRoot().getChildNodes()[0]);
+            SessionTreeNodeUtils.getCatalogNodes().add(databaseModel.getRoot().getChildNodes()[0]);
         }
-        
-        return iNodes;
+        return nodes.toArray(new INode[]{});
     }
     
+    /**
+     * Get repositoryNodes.
+     * @return INode[]
+     */
+    public INode[] getRepositoryNodes() {
+        List<INode> nodes = new ArrayList<INode>();
+        RepositoryNode currentRepositoryNode = getRepositoryNodeByName(connectionParameters.getRepositoryName());
+        DatabaseModel databaseModel = ((DatabaseModel) convert2DatabaseModel(currentRepositoryNode));
+        if (databaseModel != null && databaseModel.getRoot().getChildNodes().length != 0) {
+            nodes.add(databaseModel.getRoot().getChildNodes()[0]);
+            SessionTreeNodeUtils.getCatalogNodes().add(databaseModel.getRoot().getChildNodes()[0]);
+        }
+        return nodes.toArray(new INode[]{});
+    }
+    
+    /**
+     * Get repositoryNode by repositoryName
+     * @param repositoryName repository name.
+     * @return RepositoryNode.
+     */
+    private RepositoryNode getRepositoryNodeByName(String repositoryName) {
+        List<RepositoryNode> repositoryNodes = repositoryNode.getChildren();
+        List<INode> nodes = new ArrayList<INode>();
+        for (int i = 0, size = repositoryNodes.size(); i < size; i++) {
+            RepositoryNode tempRepositoryNode = repositoryNodes.get(i);
+            if (tempRepositoryNode.getObject().getType() != ERepositoryObjectType.METADATA_CONNECTIONS 
+                    && !isEmptyFolder(tempRepositoryNode)) {
+                continue;
+            } else {
+                if(tempRepositoryNode.getProperties(EProperties.LABEL).equals(repositoryName)) {
+                    return tempRepositoryNode;
+                }
+            }
+        }
+        
+        return null;
+    }
+
     /**
      * Check if a repositoryNode is a empty folder.
      * 
@@ -152,8 +243,9 @@ public class RepositoryExtNode implements INode {
         DatabaseConnection connection = (DatabaseConnection) ((ConnectionItem) repositoryNode2.getObject()
                 .getProperty().getItem()).getConnection();
         
-        SessionTreeNode sessionTreeNode = SessionTreeNodeUtils.getSessionTreeNode(getRepositoryName(repositoryNode2)
-                , connection.getDatabaseType(), connection.getURL(), connection.getUsername(), connection.getPassword(), connection.getSID(), repositoryNode2);
+        SessionTreeNode sessionTreeNode = SessionTreeNodeUtils.getSessionTreeNode(getRepositoryName(repositoryNode2), 
+                connection.getDatabaseType(), connection.getURL(), connection.getUsername(), 
+                connection.getPassword(), connection.getSID(), repositoryNode2);
         return sessionTreeNode.getDbModel();
     }
     

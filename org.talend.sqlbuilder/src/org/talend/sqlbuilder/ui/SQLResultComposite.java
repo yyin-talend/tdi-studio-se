@@ -48,7 +48,7 @@ import org.talend.sqlbuilder.util.TextUtil;
 /**
  * DOC dev class global comment. Detailled comment <br/>
  * 
- * $Id: SQLResultComposite.java,v 1.17 2006/10/27 20:57:41 qiang.zhang Exp $
+ * $Id: SQLResultComposite.java,v 1.18 2006/11/06 09:18:06 qiang.zhang Exp $
  * 
  */
 public class SQLResultComposite extends Composite implements IResultDisplayer {
@@ -179,7 +179,7 @@ public class SQLResultComposite extends Composite implements IResultDisplayer {
                         tabItem.setData(null);
                         if (tabFolder != null && !tabFolder.isDisposed()) {
 
-                            if (tabFolder.getItemCount() == 1) {
+                            if (tabFolder.getItemCount() == 0) {
                                 // this is last tab..
                                 clearParent();
                                 setDefaultMessage();

@@ -21,14 +21,14 @@
 // ============================================================================
 package org.talend.sqlbuilder;
 
-import net.sourceforge.sqlexplorer.plugin.editors.SQLEditor;
+
 
 
 /**
  * Put Constants here
  * <br/>
  *
- * $Id: IConstants.java,v 1.3 2006/10/31 09:36:33 qianbing Exp $
+ * $Id: IConstants.java,v 1.5 2006/11/07 09:48:06 peiqin.hou Exp $
  *
  */
 public interface IConstants {
@@ -75,8 +75,6 @@ public interface IConstants {
      */
     String SQL_DEFAULT = "SQLEditor.DefaultColor";
 
-    String SQL_EDITOR_CLASS = SQLEditor.class.getName();
-
     /** The color key for SQL keywords in Java code. */
     String SQL_KEYWORD = "SQLEditor.KeywordColor";
 
@@ -99,4 +97,8 @@ public interface IConstants {
     String WARN_LIMIT = "SQLEditor.WarnLimit";
     
     String WORD_WRAP = "SQLEditor.AutoWrap";
+    
+    public static final String BUILTIN = "BUILT_IN"; //$NON-NLS-1$
+
+    public static final String REPOSITORY = "REPOSITORY"; //$NON-NLS-1$
 }

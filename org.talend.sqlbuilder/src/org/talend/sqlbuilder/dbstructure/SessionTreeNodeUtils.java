@@ -46,7 +46,7 @@ import org.talend.sqlbuilder.sessiontree.model.SessionTreeNode;
 import com.mysql.jdbc.Driver;
 
 /**
- * Detailled comment for this class. <br/> $Id: SessionTreeNodeUtils.java,v 1.19 2006/11/03 10:40:12 peiqin.hou Exp $
+ * Detailled comment for this class. <br/> $Id: SessionTreeNodeUtils.java,v 1.22 2006/11/08 05:21:17 peiqin.hou Exp $
  * 
  * @author Hou Peiqin (Soyatec)
  * 
@@ -55,18 +55,20 @@ public class SessionTreeNodeUtils {
 
     private static Set connections = new HashSet();
 
-    private static List<SessionTreeNode> sessionTreeNodes = new ArrayList<SessionTreeNode>();
+//    private static List<SessionTreeNode> sessionTreeNodes = new ArrayList<SessionTreeNode>();
     
-    private static List<INode> catelogNodes = new ArrayList<INode>();
+    private static List<INode> catalogNodes = new ArrayList<INode>();
     
     private static List<INode> tableNodes = new ArrayList<INode>();
+    
+    private static List<INode> cachedAllNodes = new ArrayList<INode>();
     
     /**
      * Get all CatelogNodes.
      * @return CatelogNodes List.
      */
-    public static List<INode> getCatelogNodes() {
-        return catelogNodes;
+    public static List<INode> getCatalogNodes() {
+        return catalogNodes;
     }
     
     /**
@@ -75,6 +77,15 @@ public class SessionTreeNodeUtils {
      */
     public static List<INode> getTableNodes() {
         return tableNodes;
+    }
+
+    
+    public static List<INode> getCachedAllNodes() {
+        return cachedAllNodes;
+    }
+
+    public static void setCachedAllNodes(List<INode> cachedAllNodes) {
+        SessionTreeNodeUtils.cachedAllNodes = cachedAllNodes;
     }
 
     /**
@@ -129,19 +140,19 @@ public class SessionTreeNodeUtils {
         
         return tableNames;
     }
-    /**
-     * @return SessionTreeNode list.
-     */
-    public static List<SessionTreeNode> getSessionTreeNodes() {
-        return sessionTreeNodes;
-    }
+//    /**
+//     * @return SessionTreeNode list.
+//     */
+//    public static List<SessionTreeNode> getSessionTreeNodes() {
+//        return sessionTreeNodes;
+//    }
     
     /**
      * dispose.
      */
     public static void dispose() {
-        sessionTreeNodes.clear();
-        catelogNodes.clear();
+        cachedAllNodes.clear();
+        catalogNodes.clear();
         tableNodes.clear();
         disposeConnections();
     }
@@ -151,8 +162,8 @@ public class SessionTreeNodeUtils {
      */
     public static List<String> getRepositoryNames() {
         List<String> repositoryNames = new ArrayList<String>();
-        for (SessionTreeNode sessionTreeNode : sessionTreeNodes) {
-            repositoryNames.add(sessionTreeNode.getAlias().getName());
+        for (INode catalogNode : catalogNodes) {
+            repositoryNames.add(catalogNode.getLabelAtColumn(1) == null ?catalogNode.getLabelAtColumn(0):catalogNode.getLabelAtColumn(1));
         }
         return repositoryNames;
     }
@@ -165,9 +176,9 @@ public class SessionTreeNodeUtils {
         if (repositoryName == null) {
             return null;
         }
-        for (SessionTreeNode sessionTreeNode : sessionTreeNodes) {
-            if (repositoryName.equals(sessionTreeNode.getAlias().getName())) {
-                return sessionTreeNode;
+        for (INode catalogNode : catalogNodes) {
+            if (repositoryName.equals(catalogNode.getLabelAtColumn(1))) {
+                return catalogNode.getSession();
             }
         }
         return null;
@@ -178,9 +189,9 @@ public class SessionTreeNodeUtils {
      * @param url Connection Url
      * @param userName DB username
      * @param password DB password
-     * @param databaseName TODO
+     * @param databaseName databaseName
      * @param repositoryNode RepositoryNode
-     * @param driverName TODO
+     * @param driverName driverName
      * @return SessionTreeNode SessionTreeNode.
      */
     public static SessionTreeNode getSessionTreeNode(String name, String dbType, String url, String userName,
@@ -201,7 +212,6 @@ public class SessionTreeNodeUtils {
             SqlBuilderPlugin.log(e.getMessage(), e);
             return null;
         }
-        sessionTreeNodes.add(session);
 
         return session;
     }
@@ -210,14 +220,14 @@ public class SessionTreeNodeUtils {
      * @param url Connection Url
      * @param userName DB username
      * @param password DB password
-     * @param databaseName TODO
+     * @param databaseName databaseName
      * @param name RepositoryName
      * @return ISQLAlias
      */
-    private static ISQLAlias createSQLAlias(String driverName, String url, String userName, String password, String databaseName) {
+    private static ISQLAlias createSQLAlias(String name, String url, String userName, String password, String databaseName) {
         SQLAlias alias = new SQLAlias(IdentifierFactory.getInstance().createIdentifier());
         try {
-            alias.setName(driverName);
+            alias.setName(databaseName);
             alias.setUrl(url);
             alias.setUserName(userName);
             alias.setPassword(password);
@@ -233,7 +243,7 @@ public class SessionTreeNodeUtils {
      * @param url Connection Url
      * @param userName DB username
      * @param password DB password
-     * @param driverName TODO
+     * @param driverName driverName
      * @return SQLConnection
      */
     private static SQLConnection createSQLConnection(String dbType, String url, String userName, String password) {

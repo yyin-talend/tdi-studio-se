@@ -21,12 +21,16 @@
 // ============================================================================
 package org.talend.sqlbuilder.ui;
 
+import java.lang.reflect.InvocationTargetException;
+
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.action.ToolBarManager;
+import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
@@ -35,6 +39,7 @@ import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Tree;
@@ -49,11 +54,15 @@ import org.talend.sqlbuilder.actions.MetadataRefreshAction;
 import org.talend.sqlbuilder.actions.OpenNewEditorAction;
 import org.talend.sqlbuilder.dbstructure.DBTreeLabelProvider;
 import org.talend.sqlbuilder.dbstructure.RepositoryExtNode;
+import org.talend.sqlbuilder.dbstructure.SessionTreeNodeUtils;
 import org.talend.sqlbuilder.dbstructure.nodes.CatalogNode;
+import org.talend.sqlbuilder.dbstructure.nodes.ColumnNode;
 import org.talend.sqlbuilder.dbstructure.nodes.INode;
+import org.talend.sqlbuilder.dbstructure.nodes.TableNode;
+import org.talend.sqlbuilder.util.UIUtils;
 
 /**
- * Detailled comment for this class. <br/> $Id: DBStructureComposite.java,v 1.26 2006/11/01 06:56:31 peiqin.hou Exp $
+ * Detailled comment for this class. <br/> $Id: DBStructureComposite.java,v 1.28 2006/11/08 05:21:17 peiqin.hou Exp $
  * 
  * @author Hou Peiqin (Soyatec)
  * 
@@ -70,9 +79,12 @@ public class DBStructureComposite extends Composite {
     private TreeViewer treeViewer;
     
     private Action openNewEditorAction;
-    private Action refreshAction;
     
-    private SQLBuilderDialog builderDialog; 
+    private SQLBuilderDialog builderDialog;
+    
+    private IProgressMonitor progressMonitor;
+    
+    private RepositoryExtNode repositoryExtNode;
     
     /**
      * Create the composite.
@@ -90,17 +102,29 @@ public class DBStructureComposite extends Composite {
         layout.verticalSpacing = 0;
         layout.horizontalSpacing = 0;
         setLayout(layout);
-        
-        createToolbar();
-        createDBTree();
         //
     }
-
+    
+    /**
+     * @return ProgressMonitor
+     */
+    public IProgressMonitor getProgressMonitor() {
+        return progressMonitor;
+    }
+    
+    /**
+     * @param progressMonitor ProgressMonitor.
+     */
+    public void setProgressMonitor(IProgressMonitor progressMonitor) {
+        this.progressMonitor = progressMonitor;
+    }
 
     public DBStructureComposite(SashForm sashFormStructureAndEditor, int none, SQLBuilderDialog dialog)
     {
         this(sashFormStructureAndEditor, none);
         this.builderDialog = dialog;
+        createToolbar();
+        createDBTree();
     }
 
     /**
@@ -129,7 +153,9 @@ public class DBStructureComposite extends Composite {
       
         tree.setHeaderVisible(true);
         
-        treeViewer.setInput(new RepositoryExtNode(repositoryView.getRoot().getChildren().get(METADATA_INDEX).getChildren().get(0)));
+        repositoryExtNode = new RepositoryExtNode(repositoryView.getRoot().getChildren().get(METADATA_INDEX).getChildren().get(0));
+        repositoryExtNode.setConnectionParameters(builderDialog.getConnParameters());
+        treeViewer.setInput(repositoryExtNode);
         addContextMenu();
         
     }
@@ -199,10 +225,7 @@ public class DBStructureComposite extends Composite {
                 manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
                 
                 //refresh
-                if (refreshAction == null) {
-                    refreshAction = new RefreshAction();
-                }
-                manager.add(refreshAction);
+                manager.add(new RefreshConnectionAction());
                 manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
                 
                 //metadata refresh
@@ -222,10 +245,8 @@ public class DBStructureComposite extends Composite {
         label.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING));
         ToolBarManager toolBarMgr = new ToolBarManager(SWT.FLAT);
         toolBarMgr.createControl(this);
-        if (refreshAction == null) {
-            refreshAction = new RefreshAction();
-        }
-        toolBarMgr.add(refreshAction);
+        toolBarMgr.add(new ListAllConnectionAction(SWT.TOGGLE));
+        toolBarMgr.add(new RefreshAllConnectionAction());
         toolBarMgr.update(true);
         toolBarMgr.getControl().setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_END));
     }
@@ -233,13 +254,90 @@ public class DBStructureComposite extends Composite {
     /**
      * RefreshAction.
      */
-    private class RefreshAction extends Action {
+    private class ListAllConnectionAction extends Action {
+
+        public ListAllConnectionAction(int style) {
+            super("", style);
+        }
+        /**
+         * run.
+         */
+        @Override
+        public void run() {
+            if(isChecked()) {
+                repositoryExtNode.setShowAllConnections(true);
+                SessionTreeNodeUtils.getCatalogNodes().clear();
+                SessionTreeNodeUtils.getCatalogNodes().addAll(SessionTreeNodeUtils.getCachedAllNodes());
+            } else {
+                repositoryExtNode.setShowAllConnections(false);
+                SessionTreeNodeUtils.getCatalogNodes().clear();
+            }
+            treeViewer.refresh();
+        }
+        
+        /**
+         * @return HoverImageDescriptor
+         */
+        @Override
+        public ImageDescriptor getHoverImageDescriptor() {
+            return ImageProvider.getImageDesc(EImage.ADD_ICON);
+        }
+        
+        /**
+         * @return ImageDescriptor
+         */
+        @Override
+        public ImageDescriptor getImageDescriptor() {
+            return ImageProvider.getImageDesc(EImage.ADD_ICON);
+        }
+        
+        /**
+         * @return Text.
+         */
+        @Override
+        public String getText() {
+            return "";
+        }
+        
+        /**
+         * @return ToolTipText.
+         */
+        @Override
+        public String getToolTipText() {
+            return "Show All Connections";
+        }
+        
+        
+    }
+    
+    /**
+     * RefreshAction.
+     */
+    private class RefreshAllConnectionAction extends Action {
         
         /**
          * run.
          */
         @Override
         public void run() {
+//            final IRunnableWithProgress r = new IRunnableWithProgress() {
+//                 public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
+//                     monitor.beginTask("Refresh Connections", -1);
+////                     for (int i = 0; i < 100; i++) {
+////                         monitor.worked(1);
+////                         try {
+////                             Thread.sleep(50);
+////                         } catch (Exception e) {
+////                         }
+////                     }
+//                     treeViewer.refresh();
+//                     monitor.done();
+//               }
+//             };
+//             
+//             UIUtils.runWithProgress(r, true, monitor, Display.getCurrent());
+            SessionTreeNodeUtils.getCachedAllNodes().clear();
+            SessionTreeNodeUtils.getCatalogNodes().clear();
             treeViewer.refresh();
         }
         
@@ -275,6 +373,65 @@ public class DBStructureComposite extends Composite {
             return "Refresh";
         }
         
+        
+    }
+    
+    /**
+     * RefreshAction.
+     */
+    private class RefreshConnectionAction extends Action {
+        
+        /**
+         * run.
+         */
+        @Override
+        public void run() {
+            IStructuredSelection selection = (IStructuredSelection) treeViewer.getSelection();
+            INode node = (INode) selection.getFirstElement();
+            if (node instanceof ColumnNode) {
+                node.getParent().getParent().getParent().refresh();
+                treeViewer.refresh(node.getParent().getParent().getParent());
+            } else if (node instanceof TableNode) {
+                node.getParent().getParent().refresh();
+                treeViewer.refresh(node.getParent().getParent());
+            } else if (node instanceof CatalogNode) {
+                node.refresh();
+                treeViewer.refresh(node);
+            }
+                
+        }
+        
+        /**
+         * @return HoverImageDescriptor
+         */
+        @Override
+        public ImageDescriptor getHoverImageDescriptor() {
+            return ImageProvider.getImageDesc(EImage.REFRESH_ICON);
+        }
+        
+        /**
+         * @return ImageDescriptor
+         */
+        @Override
+        public ImageDescriptor getImageDescriptor() {
+            return ImageProvider.getImageDesc(EImage.REFRESH_ICON);
+        }
+        
+        /**
+         * @return Text.
+         */
+        @Override
+        public String getText() {
+            return "Refresh";
+        }
+        
+        /**
+         * @return ToolTipText.
+         */
+        @Override
+        public String getToolTipText() {
+            return "Refresh";
+        }
         
     }
     /**

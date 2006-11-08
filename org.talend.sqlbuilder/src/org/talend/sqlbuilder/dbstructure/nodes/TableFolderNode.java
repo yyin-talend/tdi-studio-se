@@ -121,47 +121,10 @@ public class TableFolderNode extends AbstractFolderNode {
 
         try {
 
-            ITableInfo[] tables = null;
-
-            if (pallTables != null && pallTables.length != 0) {
-
-                // we have received all tables from parent node, use
-                // those for initial load only.
-
-                tables = (ITableInfo[]) pallTables.clone();
-                pallTables = null;
-
-            } else {
-
-                // reload only tables specific for this node.
-
-                String catalogName = null;
-                String schemaName = null;
-
-                // get catalog name
-                if (pparent instanceof CatalogNode) {
-                    catalogName = pparent.toString();
-                    if (!pparent.hasChildNodes()) {
-                        catalogName = null;
-                    }
-                }
-
-                // get schema name
-                if (pparent instanceof SchemaNode) {
-                    schemaName = pparent.toString();
-                }
-
-                // get all relevant tables
-                tables = psessionNode.getMetaData().getTables(catalogName, schemaName, "%", new String[] {porigName});
-
-            }
-
             // add child nodes for all relevant tables
-            for (int i = 0; i < tables.length; i++) {
-                if (tables[i].getType().equalsIgnoreCase(porigName)) {
-                    if (!isExcludedByFilter(tables[i].getSimpleName())) {
-                        addChildNode(new TableNode(this, tables[i].getSimpleName(), psessionNode, tables[i]));
-                    }
+            for (int i = 0; i < pallTables.length; i++) {
+                if (!isExcludedByFilter(pallTables[i].getSimpleName())) {
+                    addChildNode(new TableNode(this, pallTables[i].getSimpleName(), psessionNode, pallTables[i]));
                 }
             }
 
@@ -195,7 +158,9 @@ public class TableFolderNode extends AbstractFolderNode {
         for (RepositoryNode repositoryNode : repositoryNodes) {
             String repositoryName = repositoryNode.getProperties(EProperties.LABEL).toString();
             String tableSourceName = TableNode.getMetadataTable(repositoryNode).getSourceName();
-            tableSourceName = tableSourceName.replaceAll("_", "-");
+            if (tableSourceName != null) {
+                tableSourceName = tableSourceName.replaceAll("_", "-");
+            }
             if (!allNodes.keySet().contains(repositoryNode.getProperties(EProperties.LABEL)) 
                     && !allNodes.keySet().contains(tableSourceName)) {
                 allNodes.put(repositoryName, convert2TableNode(repositoryNode));
