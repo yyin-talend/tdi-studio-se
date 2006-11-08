@@ -84,6 +84,11 @@ public class ElementParameterTest {
         param.setListItemsDisplayCodeName(new String[] { "VALUE1", "VALUE2", "VALUE3", "VALUE4", "VALUE5", "VALUE5_6" });
         param.setListItemsValue(new String[] { "value1", "value2", "value3", "value4", "value5", "value5;value6" });
         listParams.add(param);
+        
+        param = new ElementParameter();
+        param.setName("VAR6");
+        param.setValue(new Boolean(true));
+        listParams.add(param);
 
         ElementParameter paramToTest = new ElementParameter();
         paramToTest.setName("VAR_TEST");
@@ -97,15 +102,15 @@ public class ElementParameterTest {
         Assert.assertTrue(testParam(
                 "(VAR4 == 'VALUE4') or ((VAR1 == 'VALUE1' and VAR2 == 'VALUE2') or VAR3 != 'VALUE3')", paramToTest,
                 listParams));
-        Assert.assertTrue(testParam("VAR1 == 'VALUE1' and VAR2 == 'VALUE2' and VAR3 != 'VALUE3' or VAR4 == 'VALUE4'",
-                paramToTest, listParams));
         Assert.assertTrue(testParam(
                 "((VAR1 == 'VALUE1' and VAR2 == 'VALUE2') and (VAR3 != 'VALUE3' or VAR4 == 'VALUE4'))", paramToTest,
                 listParams));
         Assert.assertFalse(testParam("VAR4 != 'VALUE4' and (VAR2 == 'VALUE2' or VAR1 == 'VALUE1')", paramToTest,
                 listParams));
 
-        Assert.assertTrue(testParam("VAR5 == 'VALUE5_6'", paramToTest, listParams));
+        Assert.assertTrue(testParam("(VAR5 == 'VALUE5_6') and (VAR6 == 'true')", paramToTest, listParams));
+        
+        Assert.assertTrue(testParam("VAR6 == 'true'", paramToTest, listParams));
     }
 
 }
