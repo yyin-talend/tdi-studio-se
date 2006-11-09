@@ -27,9 +27,13 @@
             id="Talend"
             name="Talend"/>
       <command
+         categoryId="talend"
+         id="showRunProcessView"
+         name="Show run process view"/>
+      <command
             categoryId="Talend"
-            id="runProcess"
-            name="Run"/>
+            id="showAndRunProcess"
+            name="Show and Run"/>
       <command
             categoryId="Talend"
             id="debugProcess"
@@ -42,8 +46,13 @@
    <extension
          point="org.eclipse.ui.bindings">
       <key
-            commandId="runProcess"
-            contextId="talend.runProcess"
+         commandId="showRunProcessView"
+         contextId="talend.global"
+         schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+         sequence="F4"/>
+      <key
+            commandId="showAndRunProcess"
+            contextId="talend.global"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
             sequence="F6"/>
       <key
@@ -56,6 +65,11 @@
             contextId="talend.runProcess"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
             sequence="F8"/>
+   </extension>
+   <extension
+         point="org.talend.rcp.global_actions">
+      <GlobalAction class="org.talend.designer.runprocess.ui.actions.RunProcessAction"/>
+      <GlobalAction class="org.talend.designer.runprocess.ui.actions.ShowRunProcessViewAction"/>
    </extension>
 
 </plugin>

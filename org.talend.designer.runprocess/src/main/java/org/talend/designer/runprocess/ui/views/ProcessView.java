@@ -74,6 +74,8 @@ public class ProcessView extends ViewPart {
 
     private ClearPerformanceAction clearPerfAction;
 
+    public RunAction runAction;
+
     /**
      * Constructs a new ProcessView.
      */
@@ -127,12 +129,12 @@ public class ProcessView extends ViewPart {
 
         IHandlerService handlerService = (IHandlerService) getSite().getService(IHandlerService.class);
 
-        Action runAction = new RunAction();
-        IHandler handler1 = new ActionHandler(runAction);
-        handlerService.activateHandler(runAction.getActionDefinitionId(), handler1);
+        runAction = new RunAction();
+        // IHandler handler2 = new ActionHandler(runAction);
+        // handlerService.activateHandler(runAction.getActionDefinitionId(), handler2);
 
         Action debugAction = new DebugAction();
-        handler1 = new ActionHandler(debugAction);
+        IHandler handler1 = new ActionHandler(debugAction);
         handlerService.activateHandler(debugAction.getActionDefinitionId(), handler1);
 
         Action killAction = new KillAction();
@@ -232,7 +234,7 @@ public class ProcessView extends ViewPart {
      * $Id$
      * 
      */
-    private class RunAction extends Action {
+    public class RunAction extends Action {
 
         /**
          * DOC smallet RunAction constructor comment.
@@ -252,7 +254,7 @@ public class ProcessView extends ViewPart {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             }
-            
+
             if (processComposite2.hasProcess()) {
                 processComposite2.exec();
             }

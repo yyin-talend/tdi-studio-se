@@ -209,6 +209,18 @@
       <category
             id="Talend"
             name="Talend"/>
+   <command
+         categoryId="talend"
+         id="showPropertiesView"
+         name="Show properties view"/>
+   <command
+         categoryId="talend"
+         id="showProblemsView"
+         name="Show problems view"/>
+   <command
+         categoryId="talend"
+         id="showModulesView"
+         name="Show modules view"/>
    </extension>
    <extension
          point="org.eclipse.ui.bindings">
@@ -217,5 +229,26 @@
             contextId="talend.modules"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
             sequence="F5"/>
+   <key
+         commandId="showPropertiesView"
+         contextId="talend.global"
+         schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+         sequence="F3"/>
+   <key
+         commandId="showProblemsView"
+         contextId="talend.global"
+         schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+         sequence="CTRL+F1"/>
+   <key
+         commandId="showModulesView"
+         contextId="talend.global"
+         schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+         sequence="CTRL+F2"/>
+   </extension>
+   <extension
+         point="org.talend.rcp.global_actions">
+      <GlobalAction class="org.talend.designer.core.ui.action.ShowPropertiesViewAction"/>
+      <GlobalAction class="org.talend.designer.core.ui.action.ShowProblemsViewAction"/>
+      <GlobalAction class="org.talend.designer.core.ui.action.ShowModulesViewAction"/>
    </extension>
 </plugin>
