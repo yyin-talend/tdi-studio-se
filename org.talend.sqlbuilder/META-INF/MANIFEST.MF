@@ -29,7 +29,5 @@ Export-Package: org.talend.sqlbuilder,
  org.talend.sqlbuilder.sqlcontrol,
  org.talend.sqlbuilder.sqleditor,
  org.talend.sqlbuilder.ui,
- org.talend.sqlbuilder.ui.actions,
  org.talend.sqlbuilder.ui.editor,
- org.talend.sqlbuilder.util,
- org.talend.sqlbuilder.utils
+ org.talend.sqlbuilder.util
