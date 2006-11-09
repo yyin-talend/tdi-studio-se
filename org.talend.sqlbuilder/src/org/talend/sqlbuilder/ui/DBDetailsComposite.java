@@ -29,7 +29,7 @@ import org.talend.sqlbuilder.Messages;
 import org.talend.sqlbuilder.dbdetail.DetailTabManager;
 import org.talend.sqlbuilder.dbstructure.nodes.INode;
 
-/**
+/*
  * Show the details informaiton of DB selected in the DB structure composite <br/>.
  * 
  * $Id: DBDetailsComposite.java,v 1.13 2006/11/01 06:56:31 peiqin.hou Exp $
