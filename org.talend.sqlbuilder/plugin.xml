@@ -1,20 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.2"?>
 <plugin>
- <extension
-         point="org.eclipse.ui.viewActions">
-      <viewContribution
-            id="org.talend.sqlbuilder.actions.contribute"
-            targetID="org.talend.repository.views.repository">
-         <action
-               class="org.talend.sqlbuilder.ui.actions.OpenSqlBuilderDialogAction"
-               icon="icons/configs.gif"
-               id="org.talend.sqlbuilder.ui.actions.OpenSqlBuilderDialogAction"
-               label="open"
-               style="push"
-               toolbarPath="additions"/>
-      </viewContribution>
-   </extension>
    
    
    <extension
@@ -39,7 +25,6 @@
          point="org.eclipse.ui.bindings">
       <key
             commandId="org.talend.sqlbuilder.actions.ExecSQLAction"
-            contextId="org.eclipse.ui.contexts.window"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
             sequence="CTRL+L">
       </key>
