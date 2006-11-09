@@ -25,11 +25,11 @@ import java.util.List;
 
 import org.eclipse.core.runtime.Status;
 import org.talend.commons.exception.PersistenceException;
-import org.talend.commons.utils.data.container.RootContainer;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.model.general.Project;
+import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.designer.codegen.CodeGeneratorActivator;
 import org.talend.repository.model.IRepositoryFactory;
@@ -58,10 +58,8 @@ public final class CodeGeneratorRoutine {
         Project project = repositoryContext.getProject();
 
         IRepositoryFactory repositoryFactory = RepositoryFactoryProvider.getInstance();
-        RootContainer<String, IRepositoryObject> container;
         try {
-            container = repositoryFactory.getRoutine();
-            List<IRepositoryObject> routines = container.getMembers();
+            List<IRepositoryObject> routines = repositoryFactory.getAll(ERepositoryObjectType.ROUTINES);
             for (IRepositoryObject routine : routines) {
                 routineName = project.getTechnicalLabel() + "__" + routine.getLabel();
             }
