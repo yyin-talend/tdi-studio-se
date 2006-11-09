@@ -85,6 +85,8 @@ public class XmlFileStep1Form extends AbstractXmlFileStepForm {
 
     private boolean readOnly;
 
+    private TreePopulator treePopulator;
+
     /**
      * Constructor to use by RCP Wizard.
      * 
@@ -106,28 +108,24 @@ public class XmlFileStep1Form extends AbstractXmlFileStepForm {
     @Override
     protected void initialize() {
 
+        this.treePopulator = new TreePopulator(availableXmlTree);
+        
         // PTODO CAN : add init of CheckBoxIsGuess and Determine the Initialize checkFileXsdorXml
         if (getConnection().getXsdFilePath() != null) {
             fileFieldXsd.setText(getConnection().getXsdFilePath().replace("\\\\", "\\"));
             // init the fileViewer
-            populateTree(fileFieldXsd);
+            this.treePopulator.populateTree(fileFieldXsd.getText(), treeNode);
+            checkFieldsValue();
         }
         if (getConnection().getXmlFilePath() != null) {
             fileFieldXml.setText(getConnection().getXmlFilePath().replace("\\\\", "\\"));
             // init the fileViewer
-            populateTree(fileFieldXml);
+            this.treePopulator.populateTree(fileFieldXml.getText(), treeNode);
+            checkFieldsValue();
         }
         if (getConnection().getMaskXPattern() != null) {
             fieldMaskXPattern.setText(getConnection().getMaskXPattern().replace("\\\\", "\\"));
         }
-    }
-
-    // expand the tree
-    private void setExpanded(TreeItem treeItem) {
-        if (treeItem.getParentItem() != null) {
-            setExpanded(treeItem.getParentItem());
-        }
-        treeItem.setExpanded(true);
     }
 
     /**
@@ -180,7 +178,7 @@ public class XmlFileStep1Form extends AbstractXmlFileStepForm {
         // PTODO CAN : the XmlTree
         availableXmlTree = new Tree(compositeFileViewer, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
         availableXmlTree.setLayoutData(gridData);
-        availableXmlTree.setToolTipText(Messages.getString("FileStep1.fileViewerTip1") + " " + MAXIMUM_ROWS_TO_PREVIEW
+        availableXmlTree.setToolTipText(Messages.getString("FileStep1.fileViewerTip1") + " " + TreePopulator.MAXIMUM_ROWS_TO_PREVIEW
                 + " " + Messages.getString("FileStep1.fileViewerTip2"));
 
         if (!isInWizard()) {
@@ -217,7 +215,8 @@ public class XmlFileStep1Form extends AbstractXmlFileStepForm {
 
             public void modifyText(final ModifyEvent e) {
                 getConnection().setXsdFilePath(fileFieldXsd.getText());
-                populateTree(fileFieldXsd);
+                treePopulator.populateTree(fileFieldXsd.getText(), treeNode);
+                checkFieldsValue();
             }
         });
 
@@ -226,88 +225,12 @@ public class XmlFileStep1Form extends AbstractXmlFileStepForm {
 
             public void modifyText(final ModifyEvent e) {
                 getConnection().setXmlFilePath(fileFieldXml.getText());
-                populateTree(fileFieldXml);
+                treePopulator.populateTree(fileFieldXml.getText(), treeNode);
+                checkFieldsValue();
             }
         });
 
         // PTODO CAN : determinate Event for checkBoxIsGuess and XmaskPattern
-    }
-
-    /**
-     * populate xml tree
-     * 
-     */
-    private void populateTree(LabelledFileField fileField) {
-        try {
-            availableXmlTree.removeAll();
-            if (fileField != null && fileField.getText() != null && fileField.getText().trim().length() > 0) {
-                int numberOfElement = MAXIMUM_ROWS_TO_PREVIEW;
-                treeNode = SchemaPopulationUtil.getSchemaTree(fileField.getText(), true, numberOfElement);
-                if (treeNode == null || treeNode.getChildren().length == 0) {
-                    OdaException ex = new OdaException(Messages.getString("dataset.error.populateXMLTree"));
-                    // // ExceptionHandler.showException(getShell(),
-                    // // Messages.getString("error.label"),
-                    // // ex.getMessage(),
-                    // // ex);
-                } else {
-                    Object[] childs = treeNode.getChildren();
-                    populateTreeItems(availableXmlTree, childs, 0);
-                }
-
-                // String queryText = XMLInformationHolder.getPropertyValue( Constants.CONST_PROP_RELATIONINFORMATION );
-                // String tableName = XMLRelationInfoUtil.getTableName( queryText );
-                //
-                // if ( tableName != null && tableName.trim( ).length( ) > 0 )
-                // {
-                // String selectedTreeItemText = XMLRelationInfoUtil.getXPathExpression( queryText,
-                // tableName );
-                // }
-                //                
-                // String selectedTreeItemText = XMLRelationInfoUtil.getXPathExpression( queryText,
-                // tableName );
-
-            }
-            checkFieldsValue();
-        } catch (Exception e) {
-            // ExceptionHandler.showException(getShell(),
-            // Messages.getString("error.label"),
-            // e.getMessage(),
-            // e);
-        }
-    }
-
-    /**
-     * populate tree items
-     * 
-     * @param tree
-     * @param node
-     */
-    private void populateTreeItems(Object tree, Object[] node, int level) {
-        level++;
-        if (level > 10) {
-            return;
-        } else {
-            for (int i = 0; i < node.length; i++) {
-                TreeItem treeItem;
-                if (tree instanceof Tree) {
-                    treeItem = new TreeItem((Tree) tree, 0);
-                } else {
-                    treeItem = new TreeItem((TreeItem) tree, 0);
-                }
-                ATreeNode treeNode = (ATreeNode) node[i];
-                treeItem.setData(treeNode);
-                int type = treeNode.getType();
-                if (type == ATreeNode.ATTRIBUTE_TYPE) {
-                    treeItem.setText("@" + treeNode.getValue().toString());
-                } else {
-                    treeItem.setText(treeNode.getValue().toString());
-                }
-                if (treeNode.getChildren() != null && treeNode.getChildren().length > 0) {
-                    populateTreeItems(treeItem, treeNode.getChildren(), level);
-                }
-                setExpanded(treeItem);
-            }
-        }
     }
 
     /**

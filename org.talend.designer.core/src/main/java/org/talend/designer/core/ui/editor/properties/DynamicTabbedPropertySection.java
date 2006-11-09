@@ -105,6 +105,7 @@ import org.talend.commons.utils.data.container.RootContainer;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
+import org.talend.core.language.perl.ICodeSyntaxChecker;
 import org.talend.core.model.components.IODataComponent;
 import org.talend.core.model.components.IODataComponentContainer;
 import org.talend.core.model.general.Version;
@@ -140,7 +141,6 @@ import org.talend.core.ui.metadata.dialog.MetadataDialog;
 import org.talend.core.ui.proposal.ProcessProposalProvider;
 import org.talend.core.ui.proposal.ProcessProposalUtils;
 import org.talend.designer.core.i18n.Messages;
-import org.talend.designer.core.language.perl.ICodeSyntaxChecker;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.model.components.ExternalUtilities;
@@ -160,7 +160,7 @@ import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.outline.NodeReturnsTreeEditPart;
 import org.talend.designer.core.ui.editor.outline.NodeTreeEditPart;
 import org.talend.designer.core.ui.editor.process.Process;
-import org.talend.designer.runprocess.language.perl.SyntaxCheckerFactory;
+import org.talend.designer.runprocess.language.SyntaxCheckerFactory;
 import org.talend.repository.model.IRepositoryFactory;
 import org.talend.repository.model.RepositoryConstants;
 import org.talend.repository.model.RepositoryFactoryProvider;
@@ -843,7 +843,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                     if (repositoryConnectionNameList.length > 0) {
                         elem
                                 .setPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE.getName(),
-                                        repositoryConnectionValueList[0]);
+                                repositoryConnectionValueList[0]);
                     }
                 }
             }

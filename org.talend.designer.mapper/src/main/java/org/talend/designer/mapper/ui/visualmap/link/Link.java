@@ -113,6 +113,8 @@ public class Link implements IMapperLink {
                 boundsOfDrawing.height);
         boundsOfSolidLine.y = boundsOfDrawing.y + MapperUI.OFFSET_VISIBLES_POINTS;
         boundsOfSolidLine.height = boundsOfDrawing.height - 2 * MapperUI.OFFSET_VISIBLES_POINTS;
+        
+        drawableLink.getStyle().apply(gc);
 
         if (!boundsOfSolidLine.contains(new Point(point1xForTraceLink, point1yOffset))
                 || !boundsOfSolidLine.contains(new Point(point2xForTraceLink, point2yOffset))) {
@@ -125,6 +127,7 @@ public class Link implements IMapperLink {
             // System.out.println("SWT.LINE_SOLID");
         }
 
+        
         drawableLink.draw(gc);
     }
 

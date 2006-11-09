@@ -73,8 +73,8 @@ public class TMapperMainPerljet {
             data = (ExternalMapperData) testGenerator.getExternalData();
         }
 
-        String CR = "\n";
-        String ONE_NOT_REJECT_CONSTRAINT_VALIDATED_VAR_NAME = "oneNotRejectConstraintValidated";
+        String cr = "\n";
+        String oneNotRejectConstraintValidatedVarName = "oneNotRejectConstraintValidated";
 
         List<ExternalMapperTable> inputTables = data.getInputTables();
         List<ExternalMapperTable> varsTables = data.getVarsTables();
@@ -97,9 +97,9 @@ public class TMapperMainPerljet {
         // /////////////////////////////////////////////////////////////////////////////////////////////////////
         // INPUTS : initialization of input arrays from expressions keys and hashes
         // 
-        sb.append(CR + gm.indent(indent));
-        sb.append(CR + gm.indent(indent) + "###############################");
-        sb.append(CR + gm.indent(indent) + "# Input tables ");
+        sb.append(cr + gm.indent(indent));
+        sb.append(cr + gm.indent(indent) + "###############################");
+        sb.append(cr + gm.indent(indent) + "# Input tables ");
 
         HashMap<String, ExternalMapperTable> hExternalInpuTables = new HashMap<String, ExternalMapperTable>();
         for (ExternalMapperTable inputTable : inputTables) {
@@ -142,7 +142,7 @@ public class TMapperMainPerljet {
                     }
                     String[] aKeysValues = keysValues.toArray(new String[0]);
                     if (aKeysValues.length > 0) {
-                        sb.append(CR + gm.indent(indent)
+                        sb.append(cr + gm.indent(indent)
                                 + gm.buildNewArrayDeclarationWithKeyValue(tableName, aKeysValues, indent));
                     }
 
@@ -150,7 +150,7 @@ public class TMapperMainPerljet {
             } // else if(connectionType == EConnectionType.FLOW_REF) {
         } // for (IConnection connection : connections) {
 
-        sb.append(CR + gm.indent(indent) + "###############################");
+        sb.append(cr + gm.indent(indent) + "###############################");
         // /////////////////////////////////////////////////////////////////////////////////////////////////////
         // /////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -158,16 +158,16 @@ public class TMapperMainPerljet {
         // /////////////////////////////////////////////////////////////////////////////////////////////////////
         // VARIABLES
         // 
-        sb.append(CR + gm.indent(indent));
-        sb.append(CR + gm.indent(indent) + "###############################");
-        sb.append(CR + gm.indent(indent) + "# Vars tables");
+        sb.append(cr + gm.indent(indent));
+        sb.append(cr + gm.indent(indent) + "###############################");
+        sb.append(cr + gm.indent(indent) + "# Vars tables");
         for (ExternalMapperTable varsTable : varsTables) {
             List<ExternalMapperTableEntry> varsTableEntries = varsTable.getMetadataTableEntries();
             if (varsTableEntries == null) {
                 continue;
             }
             if (varsTableEntries.size() > 0) {
-                sb.append(CR + gm.indent(indent) + gm.buildNewArrayDeclaration(varsTable.getName(), indent));
+                sb.append(cr + gm.indent(indent) + gm.buildNewArrayDeclaration(varsTable.getName(), indent));
             }
             String varsTableName = varsTable.getName();
             for (ExternalMapperTableEntry varsTableEntry : varsTableEntries) {
@@ -186,13 +186,13 @@ public class TMapperMainPerljet {
                 String varExpressionWithPrefixs = expressionParser.addTablePrefixToColumnName(varExpression,
                         entryLocations);
 
-                sb.append(CR + gm.indent(indent) + ""
+                sb.append(cr + gm.indent(indent) + ""
                         + gm.getGeneratedCodeTableColumnVariable(varsTableName, varsColumnName) + " = "
                         + varExpressionWithPrefixs + ";");
 
             }
         }
-        sb.append(CR + gm.indent(indent) + "###############################");
+        sb.append(cr + gm.indent(indent) + "###############################");
         // /////////////////////////////////////////////////////////////////////////////////////////////////////
         // /////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -200,8 +200,8 @@ public class TMapperMainPerljet {
         // /////////////////////////////////////////////////////////////////////////////////////////////////////
         // OUTPPUTS
         // 
-        sb.append(CR + gm.indent(indent));
-        sb.append(CR + gm.indent(indent) + "###############################");
+        sb.append(cr + gm.indent(indent));
+        sb.append(cr + gm.indent(indent) + "###############################");
 
         ArrayList<ExternalMapperTable> outputTablesSortedByReject = new ArrayList<ExternalMapperTable>(outputTables);
         // sorting outputs : not rejects first, rejects after
@@ -249,7 +249,7 @@ public class TMapperMainPerljet {
 
         if (allNotRejectTablesHaveConstraint && atLeastOneReject) {
             // write $oneNotRejectConstraintValidated = false;
-            sb.append(CR + gm.indent(indent) + "$" + ONE_NOT_REJECT_CONSTRAINT_VALIDATED_VAR_NAME + " = false;");
+            sb.append(cr + gm.indent(indent) + "$" + oneNotRejectConstraintValidatedVarName + " = false;");
         }
 
         // ///////////////////////////////////////////////////////////////////
@@ -274,21 +274,21 @@ public class TMapperMainPerljet {
             oneConstraintForNotRejectTable = !currentIsReject && hasConstraint;
 
             if (!currentIsReject && outputTableEntries.size() > 0) {
-                sb.append(CR + gm.indent(indent) + "# Output table: '" + outputTableName + "'");
+                sb.append(cr + gm.indent(indent) + "# Output table: '" + outputTableName + "'");
                 // write output array initialization with empty list
-                sb.append(CR + gm.indent(indent) + gm.buildNewArrayDeclaration(outputTableName, indent));
+                sb.append(cr + gm.indent(indent) + gm.buildNewArrayDeclaration(outputTableName, indent));
 
             } else if (rejectValueHasJustChanged) {
-                sb.append(CR + gm.indent(indent) + "###### START REJECTS ##### ");
+                sb.append(cr + gm.indent(indent) + "###### START REJECTS ##### ");
                 // write outputs arrays initialization with empty list for reject tables
                 for (int indexReject = indexCurrentTable; indexReject < lstSize; indexReject++) {
                     ExternalMapperTable outputRejectTable = (ExternalMapperTable) outputTablesSortedByReject
                             .get(indexReject);
                     List<ExternalMapperTableEntry> metadataTableEntries = outputRejectTable.getMetadataTableEntries();
                     if (metadataTableEntries != null && metadataTableEntries.size() > 0) {
-                        sb.append(CR + gm.indent(indent) + "# Output reject table: '" + outputRejectTable.getName()
+                        sb.append(cr + gm.indent(indent) + "# Output reject table: '" + outputRejectTable.getName()
                                 + "'");
-                        sb.append(CR + gm.indent(indent)
+                        sb.append(cr + gm.indent(indent)
                                 + gm.buildNewArrayDeclaration(outputRejectTable.getName(), indent));
                     }
                 }
@@ -298,7 +298,7 @@ public class TMapperMainPerljet {
             if (rejectValueHasJustChanged && atLeastOneReject) {
                 serialRejectCanBeWrite = allNotRejectTablesHaveConstraint;
                 if (currentIsReject && serialRejectCanBeWrite) {
-                    sb.append(CR + gm.indent(indent) + "if( ! $" + ONE_NOT_REJECT_CONSTRAINT_VALIDATED_VAR_NAME
+                    sb.append(cr + gm.indent(indent) + "if( ! $" + oneNotRejectConstraintValidatedVarName
                             + " ) {");
                     closeTestRejectConditionsBracket = true;
                     indent++;
@@ -311,13 +311,13 @@ public class TMapperMainPerljet {
                     || serialRejectCanBeWrite && currentIsReject) {
 
                 if (hasConstraint) {
-                    sb.append(CR + gm.indent(indent) + "# Constraint condition ");
-                    sb.append(CR + gm.indent(indent) + "if( ");
+                    sb.append(cr + gm.indent(indent) + "# Constraint condition ");
+                    sb.append(cr + gm.indent(indent) + "if( ");
                     sb.append(gm.buildConditions(constraints, expressionParser));
                     sb.append("  ) {");
                     indent++;
                     if (allNotRejectTablesHaveConstraint && !currentIsReject && atLeastOneReject) {
-                        sb.append(CR + gm.indent(indent) + "$" + ONE_NOT_REJECT_CONSTRAINT_VALIDATED_VAR_NAME
+                        sb.append(cr + gm.indent(indent) + "$" + oneNotRejectConstraintValidatedVarName
                                 + " = true;");
                     }
                 }
@@ -330,7 +330,7 @@ public class TMapperMainPerljet {
                         String outputExpressionToWrite = gm.prefixEntryLocationsForOutputExpression(outputExpression,
                                 expressionParser, new TableType[] { TableType.INPUT, TableType.VARS });
 
-                        sb.append(CR + gm.indent(indent)
+                        sb.append(cr + gm.indent(indent)
                                 + gm.getGeneratedCodeTableColumnVariable(outputTableName, outputColumnName) + " = "
                                 + outputExpressionToWrite + ";");
 
@@ -339,7 +339,7 @@ public class TMapperMainPerljet {
                 } // for entries
                 if (hasConstraint) {
                     indent--;
-                    sb.append(CR + gm.indent(indent) + "}");
+                    sb.append(cr + gm.indent(indent) + "}");
                 }
 
             }
@@ -348,9 +348,9 @@ public class TMapperMainPerljet {
         } // for output tables
         if (closeTestRejectConditionsBracket) {
             indent--;
-            sb.append(CR + gm.indent(indent) + "}");
+            sb.append(cr + gm.indent(indent) + "}");
         }
-        sb.append(CR + gm.indent(indent) + "###############################");
+        sb.append(cr + gm.indent(indent) + "###############################");
         // /////////////////////////////////////////////////////////////////////////////////////////////////////
         // /////////////////////////////////////////////////////////////////////////////////////////////////////
 

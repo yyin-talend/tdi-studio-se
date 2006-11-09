@@ -273,7 +273,7 @@ public class XmlFileStep3Form extends AbstractXmlFileStepForm {
         ProcessDescription processDescription = ShadowProcessHelper.getProcessDescription(getConnection());
 
         // adapt the limit to the extract sames rows of preview
-        processDescription.setLimitRows(MAXIMUM_ROWS_TO_PREVIEW);
+        processDescription.setLimitRows(TreePopulator.MAXIMUM_ROWS_TO_PREVIEW);
         return processDescription;
     }
 

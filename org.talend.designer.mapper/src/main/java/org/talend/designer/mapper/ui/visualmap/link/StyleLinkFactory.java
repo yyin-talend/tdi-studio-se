@@ -21,13 +21,15 @@
 // ============================================================================
 package org.talend.designer.mapper.ui.visualmap.link;
 
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.talend.commons.ui.swt.drawing.link.HorizontalBezierLink;
 import org.talend.commons.ui.swt.drawing.link.IDrawableLink;
 import org.talend.commons.ui.swt.drawing.link.IStyleLink;
+import org.talend.commons.ui.swt.drawing.link.StraightLinkWithHorizontalConnectors;
 import org.talend.commons.ui.swt.drawing.link.StyleLink;
-import org.talend.commons.ui.swt.drawing.link.TipEastArrow;
-import org.talend.commons.ui.swt.drawing.link.TipWestArrow;
+import org.talend.commons.ui.swt.drawing.link.ExtremityEastArrow;
+import org.talend.commons.ui.swt.drawing.link.ExtremityWestArrow;
 import org.talend.commons.ui.swt.drawing.link.VerticalRoundedCornerLink;
 import org.talend.designer.mapper.model.tableentry.ConstraintTableEntry;
 import org.talend.designer.mapper.model.tableentry.ITableEntry;
@@ -130,12 +132,13 @@ public class StyleLinkFactory {
 
     private IStyleLink getSelectedZoneToOtherZoneStyle(Color foregroundColor) {
         StyleLink style = new StyleLink();
+        setCommonsStyleProperties(style);
         style.setDrawableLink(getZoneToZoneLink(style));
-        TipEastArrow eastArrowSource = new TipEastArrow(style);
-        style.setTipPoint1(eastArrowSource);
-        TipEastArrow eastArrowTarget = new TipEastArrow(style);
+        ExtremityEastArrow eastArrowSource = new ExtremityEastArrow(style);
+        style.setExtremity1(eastArrowSource);
+        ExtremityEastArrow eastArrowTarget = new ExtremityEastArrow(style);
         eastArrowTarget.setXOffset(-eastArrowTarget.getSize().x - 1);
-        style.setTipPoint2(eastArrowTarget);
+        style.setExtremity2(eastArrowTarget);
         style.setForegroundColor(foregroundColor);
         return style;
     }
@@ -147,6 +150,7 @@ public class StyleLinkFactory {
      */
     private IStyleLink getUnselectedZoneToZoneStyle() {
         StyleLink style = new StyleLink();
+        setCommonsStyleProperties(style);
         style.setDrawableLink(getZoneToZoneLink(style));
         style.setForegroundColor(ColorProviderMapper.getColor(ColorInfo.COLOR_UNSELECTED_METADATA_LINK));
         return style;
@@ -159,6 +163,7 @@ public class StyleLinkFactory {
      */
     private IStyleLink getUnselectedSameZoneStyle() {
         StyleLink style = new StyleLink();
+        setCommonsStyleProperties(style);
         style.setDrawableLink(getSameZoneLink(style));
         style.setForegroundColor(ColorProviderMapper.getColor(ColorInfo.COLOR_UNSELECTED_METADATA_LINK));
         return style;
@@ -172,14 +177,27 @@ public class StyleLinkFactory {
      */
     private IStyleLink getSelectedSameZoneStyle() {
         StyleLink style = new StyleLink();
+        setCommonsStyleProperties(style);
         style.setDrawableLink(getSameZoneLink(style));
-        TipWestArrow westArrow = new TipWestArrow(style);
-        style.setTipPoint1(westArrow);
-        TipEastArrow eastArrowTarget = new TipEastArrow(style);
+        ExtremityWestArrow westArrow = new ExtremityWestArrow(style);
+        style.setExtremity1(westArrow);
+        ExtremityEastArrow eastArrowTarget = new ExtremityEastArrow(style);
         eastArrowTarget.setXOffset(-eastArrowTarget.getSize().x);
-        style.setTipPoint2(eastArrowTarget);
+        style.setExtremity2(eastArrowTarget);
         style.setForegroundColor(ColorProviderMapper.getColor(ColorInfo.COLOR_LINK_HIGHLIGHTED));
         return style;
+    }
+
+    /**
+     * DOC amaumont Comment method "setCommonsStyleProperties".
+     * @param style
+     */
+    private void setCommonsStyleProperties(StyleLink style) {
+        style.setLineWidth(2);
+        style.setLineCap(SWT.CAP_SQUARE);
+        style.setLineJoin(SWT.JOIN_ROUND);
+//        style.setLineStyle(SWT.LINE_DASH);
+//        style.setLineDash(SWT.JOIN_BEVEL);
     }
 
     /**
@@ -198,7 +216,8 @@ public class StyleLinkFactory {
      * @return
      */
     private IDrawableLink getZoneToZoneLink(StyleLink style) {
-        return new HorizontalBezierLink(style);
+//        return new HorizontalBezierLink(style);
+        return new StraightLinkWithHorizontalConnectors (style);
     }
 
 }

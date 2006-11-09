@@ -24,6 +24,7 @@ Require-Bundle: org.eclipse.ui,
 Eclipse-LazyStart: true
 Export-Package: org.talend.designer.runprocess,
  org.talend.designer.runprocess.data,
+ org.talend.designer.runprocess.language,
  org.talend.designer.runprocess.language.perl,
  org.talend.designer.runprocess.perl,
  org.talend.designer.runprocess.shadow,

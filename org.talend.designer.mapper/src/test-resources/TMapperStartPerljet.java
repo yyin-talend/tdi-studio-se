@@ -64,7 +64,7 @@ public class TMapperStartPerljet {
         List<ExternalMapperTable> varsTables = data.getVarsTables();
         List<ExternalMapperTable> outputTables = data.getOutputTables();
 
-        String CR = "\n";
+        String cr = "\n";
 
         int indent = 1;
 
@@ -88,11 +88,11 @@ public class TMapperStartPerljet {
                 continue;
             }
             String tableName = table.getName();
-            sb.append(CR);
+            sb.append(cr);
             int lstSize = tableEntries.size();
             for (int i = 0; i < lstSize; i++) {
                 ExternalMapperTableEntry tableEntry = (ExternalMapperTableEntry) tableEntries.get(i);
-                sb.append(CR + gm.indent(indent) + "use constant " + tableName + "__" + tableEntry.getName() + " => "
+                sb.append(cr + gm.indent(indent) + "use constant " + tableName + "__" + tableEntry.getName() + " => "
                         + i + ";");
             }
         }
@@ -101,15 +101,15 @@ public class TMapperStartPerljet {
         for (ExternalMapperTable table : outputTables) {
             List<ExternalMapperTableEntry> tableEntries = table.getMetadataTableEntries();
             String tableName = table.getName();
-            sb.append(CR + CR + gm.indent(indent) + "my @colnames_" + tableName + " = (");
+            sb.append(cr + cr + gm.indent(indent) + "my @colnames_" + tableName + " = (");
             int lstSize = tableEntries.size();
             indent++;
             for (int i = 0; i < lstSize; i++) {
                 ExternalMapperTableEntry tableEntry = (ExternalMapperTableEntry) tableEntries.get(i);
-                sb.append(CR + gm.indent(indent) + "'" + tableEntry.getName() + "',");
+                sb.append(cr + gm.indent(indent) + "'" + tableEntry.getName() + "',");
             }
             indent--;
-            sb.append(CR + gm.indent(indent) + ");");
+            sb.append(cr + gm.indent(indent) + ");");
         }
 
         // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////

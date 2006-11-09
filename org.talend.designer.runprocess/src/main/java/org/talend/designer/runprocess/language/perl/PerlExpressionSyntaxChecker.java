@@ -28,14 +28,18 @@ import java.io.IOException;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Level;
 import org.talend.commons.exception.ExceptionHandler;
+import org.talend.core.language.perl.ICodeSyntaxChecker;
 import org.talend.core.model.process.Problem;
 import org.talend.core.model.process.Problem.ProblemStatus;
-import org.talend.designer.core.language.perl.ICodeSyntaxChecker;
 import org.talend.designer.runprocess.Processor;
 import org.talend.designer.runprocess.ProcessorException;
 
 /**
- * DOC amaumont class global comment. Detailled comment <br/>
+ * Check syntax of Perl expressions.
+ * 
+ * A temporary file is created and loaded with expression, then the file is checked by the perl.exe command.
+ * 
+ * Returned errors by perl.exe are filtered and returned.
  * 
  * $Id$
  * 
@@ -78,6 +82,7 @@ public class PerlExpressionSyntaxChecker implements ICodeSyntaxChecker {
         if (tempFile == null || !tempFile.exists()) {
             try {
                 tempFile = File.createTempFile("perlSyntaxChecker", ".tmp");
+                tempFile.deleteOnExit();
                 return tempFile;
             } catch (IOException e) {
                 throw new RuntimeException(e);
@@ -93,6 +98,7 @@ public class PerlExpressionSyntaxChecker implements ICodeSyntaxChecker {
      * @see org.talend.designer.core.language.perl.CodeSyntaxChecker#checkSyntax(java.lang.String)
      */
     public Problem checkSyntax(String expression) {
+
         if (expression == null) {
             return null;
         }
@@ -101,16 +107,16 @@ public class PerlExpressionSyntaxChecker implements ICodeSyntaxChecker {
         StringBuffer err = new StringBuffer();
 
         int status = -1;
-//        // if expression contains a backslash, we must parse a File because parsing expression is not reliable
-//        if (false && expression.indexOf('\\') == -1) {
-//            TimeMeasure.start("expression");
-//            status = callPerlCommandWithExpression(expression, out, err);
-//            TimeMeasure.end("expression");
-//        } else {
-//            TimeMeasure.start("file");
-            status = callPerlCommandWithFile(expression, out, err);
-//            TimeMeasure.end("file");
-//        }
+        // // if expression contains a backslash, we must parse a File because parsing expression is not reliable
+        // if (false && expression.indexOf('\\') == -1) {
+        // TimeMeasure.start("expression");
+        // status = callPerlCommandWithExpression(expression, out, err);
+        // TimeMeasure.end("expression");
+        // } else {
+        // TimeMeasure.start("file");
+        status = callPerlCommandWithFile(expression, out, err);
+        // TimeMeasure.end("file");
+        // }
 
         String stdErr = null;
 
@@ -159,7 +165,8 @@ public class PerlExpressionSyntaxChecker implements ICodeSyntaxChecker {
      * @return
      */
     private String replaceStdErrStringForExpression(String stdErr) {
-        stdErr = StringUtils.replace(stdErr, STRING1_PREFIX + STRING1_EXPRESSION + STRING1_SUFFIX, STRING1_SUFFIX_PREFIX);
+        stdErr = StringUtils.replace(stdErr, STRING1_PREFIX + STRING1_EXPRESSION + STRING1_SUFFIX,
+                STRING1_SUFFIX_PREFIX);
         stdErr = StringUtils.replace(stdErr, STRING1_EXPRESSION + STRING2_SUFFIX, STRING2_REPLACED);
         return stdErr;
     }
@@ -189,9 +196,10 @@ public class PerlExpressionSyntaxChecker implements ICodeSyntaxChecker {
         }
 
         String expressionEscapedQuoted = "\"" + expressionEscaped + "\"";
-//        System.out.println(expressionEscapedQuoted);
+        // System.out.println(expressionEscapedQuoted);
         try {
-            status = Processor.exec(out, err, null, null, Level.TRACE, "-ce", expressionEscapedQuoted, -1, -1, new String[0]);
+            status = Processor.exec(out, err, null, null, Level.TRACE, "-ce", expressionEscapedQuoted, -1, -1,
+                    new String[0]);
         } catch (ProcessorException e) {
             ExceptionHandler.process(e);
         }
@@ -224,9 +232,10 @@ public class PerlExpressionSyntaxChecker implements ICodeSyntaxChecker {
             throw new RuntimeException("File is not writable");
         }
 
-//        System.out.println(expression);
+        // System.out.println(expression);
         try {
-            status = Processor.exec(out, err, null, null, Level.TRACE, "-c", file.getAbsolutePath(), -1, -1, new String[0]);
+            status = Processor.exec(out, err, null, null, Level.TRACE, "-c", file.getAbsolutePath(), -1, -1,
+                    new String[0]);
         } catch (ProcessorException e) {
             ExceptionHandler.process(e);
         }

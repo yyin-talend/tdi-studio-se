@@ -719,9 +719,9 @@ public class MapperUI {
          */
         @Override
         public void drawBackground(GC gc) {
-            gc.setLineWidth(2);
-            if (antialias && antialiasActivated && mapperManager.getCurrentNumberLinks() < 250) {
-                gc.setAntialias(antialias && antialiasActivated ? SWT.ON : SWT.OFF);
+
+            if (antialias && isAntialiasAllowed() && mapperManager.getCurrentNumberLinks() < 250) {
+                gc.setAntialias(antialias && isAntialiasAllowed() ? SWT.ON : SWT.OFF);
             } else {
                 gc.setAdvanced(false);
             }

@@ -45,6 +45,8 @@ public class VarsTable extends AbstractDataMapTable {
     private static final PatternCompiler COMPILER = new Perl5Compiler();
 
     public static final String PREFIX_VARS_TABLE_NAME = "Var";
+    
+    public static final String VALID_PATTERN_COLUMN_NAME = "^[a-zA-Z_][a-zA-Z_0-9]*$";
 
     public VarsTable(String name) {
         super(name);
@@ -135,7 +137,6 @@ public class VarsTable extends AbstractDataMapTable {
         if (columnName == null) {
             return "Error: Column name is null";
         }
-        String VALID_PATTERN_COLUMN_NAME = "^[a-zA-Z_][a-zA-Z_0-9]*$";
         Pattern validPatternColumnNameRegexp = null;
         if (validPatternColumnNameRegexp == null) {
             try {

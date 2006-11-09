@@ -19,10 +19,11 @@
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 // ============================================================================
-package org.talend.designer.runprocess.language.perl;
+package org.talend.designer.runprocess.language;
 
+import org.talend.core.language.perl.ICodeSyntaxChecker;
 import org.talend.core.model.temp.ECodeLanguage;
-import org.talend.designer.core.language.perl.ICodeSyntaxChecker;
+import org.talend.designer.runprocess.language.perl.PerlExpressionSyntaxChecker;
 
 
 /**
