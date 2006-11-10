@@ -485,7 +485,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                         }
                     }
                     
-                    //When no repository avaiable on "Repository" mode, open a MessageDialog for proposal.
+                    //When no repository avaiable on "Repository" mode, open a MessageDialog.
                     if(repositoryName==null || repositoryName.length()==0)
                     {
                         MessageDialog.openError(composite.getShell(), Messages.getString("NoRepositoryDialog.Title"),
