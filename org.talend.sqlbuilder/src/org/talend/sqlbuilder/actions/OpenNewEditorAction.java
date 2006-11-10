@@ -48,6 +48,13 @@ public class OpenNewEditorAction extends Action {
     
     private boolean isDefaultEditor;
 
+    /**
+     * OpenNewEditorAction constructor.
+     * @param selectionProvider
+     * @param editorComposite
+     * @param connParam
+     * @param isDefaultEditor
+     */
     public OpenNewEditorAction(ISelectionProvider selectionProvider, SQLBuilderTabComposite editorComposite,ConnectionParameters connParam, boolean isDefaultEditor) {
         this.editorComposite = editorComposite;
         this.selectionProvider = selectionProvider;
@@ -64,12 +71,18 @@ public class OpenNewEditorAction extends Action {
         editorComposite.openNewEditor(node,repositoryNames, connParam, isDefaultEditor);
     }
 
+    /**
+     * Gets SessionTreeNode object.
+     * 
+     * @param selection
+     * 
+     * @return
+     */
     private SessionTreeNode getSessionTreeNode(IStructuredSelection selection) {
         Object element = selection.getFirstElement();
         if (element == null || !(element instanceof AbstractNode)) {
             return null;
         }
-
         return ((AbstractNode) element).getSession();
     }
 }

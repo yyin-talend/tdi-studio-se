@@ -37,26 +37,41 @@ public class SaveFileAsAction extends AbstractEditorAction {
     private ImageDescriptor image = ImageUtil.getDescriptor("Images.SaveFileAsIcon");
 
 
+    /* (non-Javadoc)
+     * @see org.eclipse.jface.action.Action#getImageDescriptor()
+     */
     public ImageDescriptor getImageDescriptor() {
         return image;
     }
 
 
+    /* (non-Javadoc)
+     * @see org.talend.sqlbuilder.actions.AbstractEditorAction#getText()
+     */
     public String getText() {
         return Messages.getString("SQLEditor.Actions.SaveAs");
     }
 
 
+    /* (non-Javadoc)
+     * @see org.eclipse.jface.action.Action#isEnabled()
+     */
     public boolean isEnabled() {
         return true;
     }
 
 
+    /* (non-Javadoc)
+     * @see org.talend.sqlbuilder.actions.AbstractEditorAction#getToolTipText()
+     */
     public String getToolTipText() {
         return Messages.getString("SQLEditor.Actions.SaveAsToolTip"); //$NON-NLS-1$
     }
 
 
+    /* (non-Javadoc)
+     * @see org.talend.sqlbuilder.actions.AbstractEditorAction#run()
+     */
     public void run() {
         editor.doSaveAs();
     };

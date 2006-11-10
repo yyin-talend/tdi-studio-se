@@ -34,7 +34,7 @@ import org.talend.sqlbuilder.util.IConstants;
 import org.talend.sqlbuilder.util.ImageUtil;
 
 /**
- * This class is responsible for opening an existing file in current OS.
+ * This class is responsible for opening an existing file which in current OS.
  * <br/>
  *
  * @author ftang
@@ -45,18 +45,25 @@ public class OpenFileAction extends  AbstractEditorAction {
     private ImageDescriptor img = ImageUtil.getDescriptor("Images.OpenFileIcon");
 
 
+    /* (non-Javadoc)
+     * @see org.talend.sqlbuilder.actions.AbstractEditorAction#getText()
+     */
     public String getText() {
         return Messages.getString("Open_1"); //$NON-NLS-1$
     }
 
+    /* (non-Javadoc)
+     * @see org.eclipse.jface.action.Action#isEnabled()
+     */
     public boolean isEnabled() {
         return true;
     }
 
+    /* (non-Javadoc)
+     * @see org.talend.sqlbuilder.actions.AbstractEditorAction#run()
+     */
     public void run() {
 
-        //FileDialog dlg = new FileDialog(_editor.getSite().getShell(), SWT.OPEN | SWT.MULTI);
-        
        FileDialog dlg = new FileDialog(editor.getShell(), SWT.OPEN | SWT.MULTI);
 
         dlg.setFilterExtensions(new String[] {"*.sql;*.txt;*.*"});
@@ -121,17 +128,23 @@ public class OpenFileAction extends  AbstractEditorAction {
 
     }
     
-    
+    /* (non-Javadoc)
+     * @see org.talend.sqlbuilder.actions.AbstractEditorAction#getToolTipText()
+     */
     public String getToolTipText() {
         return Messages.getString("Open_2"); 
     }
 
-
+    /* (non-Javadoc)
+     * @see org.eclipse.jface.action.Action#getHoverImageDescriptor()
+     */
     public ImageDescriptor getHoverImageDescriptor() {
         return img;
     }
 
-
+    /* (non-Javadoc)
+     * @see org.eclipse.jface.action.Action#getImageDescriptor()
+     */
     public ImageDescriptor getImageDescriptor() {
         return img;
     };

@@ -37,16 +37,16 @@ public class ClearTextAction extends AbstractEditorAction {
 
     private ImageDescriptor img = ImageUtil.getDescriptor("Images.ClearTextIcon");
 
-
-    /**
-     * Sets text.
+    /* (non-Javadoc)
+     * @see org.talend.sqlbuilder.actions.AbstractEditorAction#getText()
      */
     public String getText() {
         return Messages.getString("Clear_1");
     }
 
-
-   //Sets the clear action starts.
+    /* (non-Javadoc)
+     * @see org.talend.sqlbuilder.actions.AbstractEditorAction#run()
+     */
     public void run() {
         editor.clearText();
     }
@@ -56,22 +56,22 @@ public class ClearTextAction extends AbstractEditorAction {
         return true;
     }
 
-   /**
-    * Gets  tool tip text.
-    */
+    /* (non-Javadoc)
+     * @see org.talend.sqlbuilder.actions.AbstractEditorAction#getToolTipText()
+     */
     public String getToolTipText() {
         return Messages.getString("Clear_2");
     }
 
-   /**
-    * Gets  hover image descriptor.
-    */
+    /* (non-Javadoc)
+     * @see org.eclipse.jface.action.Action#getHoverImageDescriptor()
+     */
     public ImageDescriptor getHoverImageDescriptor() {
         return img;
     }
-
-    /**
-     * Gets image descriptor.
+    
+    /* (non-Javadoc)
+     * @see org.eclipse.jface.action.Action#getImageDescriptor()
      */
     public ImageDescriptor getImageDescriptor() {
         return img;

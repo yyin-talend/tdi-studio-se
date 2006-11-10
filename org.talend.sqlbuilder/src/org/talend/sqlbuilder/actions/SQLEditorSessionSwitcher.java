@@ -48,7 +48,9 @@ public class SQLEditorSessionSwitcher extends ControlContribution {
     private Combo sessionCombo;
 
     /**
-     * @param editor SQLEditor to which this session switcher belongs
+     * SQLEditorSessionSwitcher constructor.
+     * 
+     * @param editor
      */
     public SQLEditorSessionSwitcher(ISQLEditor editor) {
 
@@ -57,6 +59,11 @@ public class SQLEditorSessionSwitcher extends ControlContribution {
         this.editor = editor;
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.jface.action.ControlContribution#createControl(org.eclipse.swt.widgets.Composite)
+     */
     protected Control createControl(Composite parent) {
 
         sessionCombo = new Combo(parent, SWT.READ_ONLY);
@@ -79,6 +86,9 @@ public class SQLEditorSessionSwitcher extends ControlContribution {
         return sessionCombo;
     }
 
+    /**
+     * Refreshes selected repository.
+     */
     public void refreshSelectedRepository() {
         sessionCombo.setText(editor.getRepositoryName());
     }
