@@ -29,7 +29,10 @@ import org.talend.sqlbuilder.dbstructure.nodes.INode;
 import org.talend.sqlbuilder.dbstructure.nodes.TableNode;
 
 /**
- * @author Davy Vanherbergen
+ * 
+ * Table information show in DB detail composite.
+ * 
+ * @author yzhang
  * 
  */
 public class TableInfoTab extends AbstractDataSetTab {

@@ -29,7 +29,10 @@ import org.talend.sqlbuilder.dbstructure.nodes.INode;
 import org.talend.sqlbuilder.dbstructure.nodes.TableNode;
 
 /**
- * @author Davy Vanherbergen
+ * 
+ *  The tab show in the db details for version information.
+ *  
+ * @author yzhang
  * 
  */
 public class VersionsTab extends AbstractDataSetTab {
