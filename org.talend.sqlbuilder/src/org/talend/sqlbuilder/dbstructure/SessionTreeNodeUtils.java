@@ -48,6 +48,7 @@ import org.talend.sqlbuilder.dbstructure.nodes.CatalogNode;
 import org.talend.sqlbuilder.dbstructure.nodes.INode;
 import org.talend.sqlbuilder.sessiontree.model.SessionTreeModel;
 import org.talend.sqlbuilder.sessiontree.model.SessionTreeNode;
+import org.talend.sqlbuilder.ui.RefreshTreeCommand;
 import org.talend.sqlbuilder.util.ConnectionParameters;
 
 /**
@@ -187,7 +188,8 @@ public class SessionTreeNodeUtils {
     public static List<String> getRepositoryNames() {
         List<String> repositoryNames = new ArrayList<String>();
         for (INode catalogNode : catalogNodes) {
-            repositoryNames.add(catalogNode.getLabelAtColumn(1) == null ?catalogNode.getLabelAtColumn(0):catalogNode.getLabelAtColumn(1));
+            repositoryNames.add(catalogNode.getLabelAtColumn(1) == null 
+                   ? catalogNode.getLabelAtColumn(0) : catalogNode.getLabelAtColumn(1));
         }
         return repositoryNames;
     }
@@ -319,7 +321,8 @@ public class SessionTreeNodeUtils {
                     continue;
                 }
                 nodes.add(databaseModel.getRoot().getChildNodes()[0]);
-                
+                RefreshTreeCommand.getInstance().setCurrentNodes(nodes.toArray(new INode[]{}));
+                RefreshTreeCommand.getInstance().execute();
                 //if the connection is a valid connection then add to CatalogNodes list.
                 if (databaseModel.getSession().getInteractiveConnection() != null) {
                     SessionTreeNodeUtils.getCatalogNodes().add(databaseModel.getRoot().getChildNodes()[0]);
@@ -414,6 +417,8 @@ public class SessionTreeNodeUtils {
         DatabaseModel databaseModel = sessionTreeNode.getDbModel();
         if (databaseModel != null && databaseModel.getRoot().getChildNodes().length != 0) {
             nodes.add(databaseModel.getRoot().getChildNodes()[0]);
+            RefreshTreeCommand.getInstance().setCurrentNodes(nodes.toArray(new INode[]{}));
+            RefreshTreeCommand.getInstance().execute();
             SessionTreeNodeUtils.getCatalogNodes().add(databaseModel.getRoot().getChildNodes()[0]);
         }
         return nodes.toArray(new INode[]{});
@@ -429,13 +434,15 @@ public class SessionTreeNodeUtils {
         DatabaseModel databaseModel = ((DatabaseModel) convert2DatabaseModel(currentRepositoryNode));
         if (databaseModel != null && databaseModel.getRoot().getChildNodes().length != 0) {
             nodes.add(databaseModel.getRoot().getChildNodes()[0]);
+            RefreshTreeCommand.getInstance().setCurrentNodes(nodes.toArray(new INode[]{}));
+            RefreshTreeCommand.getInstance().execute();
             SessionTreeNodeUtils.getCatalogNodes().add(databaseModel.getRoot().getChildNodes()[0]);
         }
         return nodes.toArray(new INode[]{});
     }
         
     /**
-     * Get repositoryNode by repositoryName
+     * Get repositoryNode by repositoryName.
      * @param repositoryName repository name.
      * @return RepositoryNode.
      */
@@ -448,7 +455,7 @@ public class SessionTreeNodeUtils {
                     && !isEmptyFolder(tempRepositoryNode)) {
                 continue;
             } else {
-                if(tempRepositoryNode.getProperties(EProperties.LABEL).equals(repositoryName)) {
+                if (tempRepositoryNode.getProperties(EProperties.LABEL).equals(repositoryName)) {
                     return tempRepositoryNode;
                 }
             }
@@ -457,10 +464,19 @@ public class SessionTreeNodeUtils {
         return null;
     }
     
-    public static INode[] getCurrentNodes(boolean isShowAllConnections, RepositoryNode rootRepositoryNode, ConnectionParameters connectionParameters) {
-        if(isShowAllConnections) {
+    /**
+     * Get the current nodes.
+     * @param isShowAllConnections isShowAllConnections
+     * @param rootRepositoryNode root repository
+     * @param connectionParameters connection parameters
+     * @return current nodes.
+     * @exception
+     */
+    public static INode[] getCurrentNodes(boolean isShowAllConnections, RepositoryNode rootRepositoryNode, 
+            ConnectionParameters connectionParameters) {
+        if (isShowAllConnections) {
             List<INode> list = SessionTreeNodeUtils.getCachedAllNodes();
-            if(list.size() == 0) {
+            if (list.size() == 0) {
                 INode[] rNodes = getAllNodes(rootRepositoryNode);
                 SessionTreeNodeUtils.setCachedAllNodes(rNodes);
                 return rNodes;
@@ -470,7 +486,7 @@ public class SessionTreeNodeUtils {
         }
         
         List<INode> cachedCurrentNodes = SessionTreeNodeUtils.getCachedCurrentNodes();
-        if(cachedCurrentNodes.size() != 0) {
+        if (cachedCurrentNodes.size() != 0) {
             return cachedCurrentNodes.toArray(new INode[]{});
         }
         INode[] rNodes = null;

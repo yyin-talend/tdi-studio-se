@@ -30,6 +30,7 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.action.ToolBarManager;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionProvider;
@@ -140,7 +141,8 @@ public class DBStructureComposite extends Composite {
 
     public void openNewEditor() {
         treeViewer.getTree().setSelection(treeViewer.getTree().getItem(0));
-        Action tempOpenNewEditorAction = new OpenNewEditorAction(treeViewer, builderDialog.getEditorComposite(), builderDialog.getConnParameters(), true);
+        Action tempOpenNewEditorAction = 
+            new OpenNewEditorAction(treeViewer, builderDialog.getEditorComposite(), builderDialog.getConnParameters(), true);
         tempOpenNewEditorAction.run();
     }
     
@@ -221,7 +223,7 @@ public class DBStructureComposite extends Composite {
                     if (generateSelectAction == null) {
                         generateSelectAction = new GenerateSelectSQLAction(null, builderDialog.getEditorComposite(), false);
                     }
-                    ((GenerateSelectSQLAction)generateSelectAction).setSelectedNodes((INode[]) selection
+                    ((GenerateSelectSQLAction) generateSelectAction).setSelectedNodes((INode[]) selection
                             .toList().toArray(new INode[] {}));
                     generateSelectAction.setText("Generate Select Statement");
                     generateSelectAction.setToolTipText("Generate Select Statement");
@@ -231,7 +233,8 @@ public class DBStructureComposite extends Composite {
                 // open editor
                 builderDialog.getConnParameters().setQuery("");
                 if (openNewEditorAction == null) {
-                    openNewEditorAction = new OpenNewEditorAction(treeViewer, builderDialog.getEditorComposite(), builderDialog.getConnParameters(), false);
+                    openNewEditorAction = 
+                        new OpenNewEditorAction(treeViewer, builderDialog.getEditorComposite(), builderDialog.getConnParameters(), false);
                 }
                 openNewEditorAction.setText("New Editor");
                 openNewEditorAction.setToolTipText("New Editor");
@@ -292,6 +295,11 @@ public class DBStructureComposite extends Composite {
 
         @Override
         public void run() {
+            if (isChecked()) {
+                if (!MessageDialog.openConfirm(getShell(), "Show All Connections", "It'll take a long time. Continue?")) {
+                    return;
+                }
+            }
             final IRunnableWithProgress r = new IRunnableWithProgress() {
 
                 public void run(final IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
@@ -307,11 +315,13 @@ public class DBStructureComposite extends Composite {
                         isShowAllConnections = false;
                         SessionTreeNodeUtils.getCatalogNodes().clear();
                     }
-                    final INode[] currentNodes = SessionTreeNodeUtils.getCurrentNodes(isShowAllConnections, rootRepositoryNode, builderDialog.getConnParameters());
+                    RefreshTreeCommand.getInstance().setTreeViewer(treeViewer);
+                    final INode[] currentNodes = 
+                        SessionTreeNodeUtils.getCurrentNodes(isShowAllConnections, rootRepositoryNode, builderDialog.getConnParameters());
                     Display.getDefault().asyncExec(new Runnable() {
                         public void run() {
                             if (treeViewer.getTree() != null && !treeViewer.getTree().isDisposed()) {
-                                ((RepositoryExtNode)treeViewer.getInput()).setChildNodes(currentNodes);
+                                ((RepositoryExtNode) treeViewer.getInput()).setChildNodes(currentNodes);
                                 treeViewer.refresh();
                             }
                         }
@@ -335,6 +345,9 @@ public class DBStructureComposite extends Composite {
         }
         @Override
         public void run() {
+            if (!MessageDialog.openConfirm(getShell(), "Refresh", "It'll take a long time. Continue?")) {
+                return;
+            }
             final IRunnableWithProgress r = new IRunnableWithProgress() {
 
                 public void run(final IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
@@ -343,12 +356,13 @@ public class DBStructureComposite extends Composite {
                     SessionTreeNodeUtils.getCachedAllNodes().clear();
                     SessionTreeNodeUtils.getCachedCurrentNodes().clear();
                     SessionTreeNodeUtils.getCatalogNodes().clear();
-                    final INode[] currentNodes = SessionTreeNodeUtils.getCurrentNodes(isShowAllConnections, rootRepositoryNode, builderDialog.getConnParameters()); 
+                    RefreshTreeCommand.getInstance().setTreeViewer(treeViewer);
+                    final INode[] currentNodes = 
+                        SessionTreeNodeUtils.getCurrentNodes(isShowAllConnections, rootRepositoryNode, builderDialog.getConnParameters());
                     Display.getDefault().asyncExec(new Runnable() {
-
                         public void run() {
                             if (treeViewer.getTree() != null && !treeViewer.getTree().isDisposed()) {
-                                ((RepositoryExtNode)treeViewer.getInput()).setChildNodes(currentNodes);
+                                ((RepositoryExtNode) treeViewer.getInput()).setChildNodes(currentNodes);
                                 treeViewer.refresh();
                             }
                         }
@@ -379,13 +393,13 @@ public class DBStructureComposite extends Composite {
         private void init() {
             ISelection selection = getSelectionProvider().getSelection();
             int i = 0;
-            INode[] nodes = (INode[]) ((IStructuredSelection)selection).toList().toArray(new INode[]{});
+            INode[] nodes = (INode[]) ((IStructuredSelection) selection).toList().toArray(new INode[]{});
             for (INode node : nodes) {
                 if (node instanceof CatalogNode) {
                     i++;
                 }
             }
-            if(i > 1) {
+            if (i > 1) {
                 this.setEnabled(false);
             } else {
                 this.setEnabled(true);
@@ -415,7 +429,7 @@ public class DBStructureComposite extends Composite {
                 private void doRefresh(final INode refreshNode) {
                     Display.getDefault().asyncExec(new Runnable() {
                         public void run() {
-                            if(treeViewer.getTree()!=null&&treeViewer.getTree().isDisposed()){
+                            if (treeViewer.getTree() != null && treeViewer.getTree().isDisposed()){
                                 treeViewer.refresh(refreshNode);
                             }
                         }
