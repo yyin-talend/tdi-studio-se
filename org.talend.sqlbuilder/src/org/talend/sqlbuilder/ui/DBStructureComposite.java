@@ -297,7 +297,8 @@ public class DBStructureComposite extends Composite {
         @Override
         public void run() {
             if (isChecked()) {
-                if (!MessageDialog.openConfirm(getShell(), "Show All Connections", "It'll take a long time. Continue?")) {
+                if (!MessageDialog.openConfirm(getShell(), "Show All Connections", "It will take a long time.  Continue?")) {
+                    setChecked(false);
                     return;
                 }
             }
