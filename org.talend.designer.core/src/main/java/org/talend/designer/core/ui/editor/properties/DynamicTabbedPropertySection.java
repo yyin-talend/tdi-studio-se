@@ -2944,7 +2944,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
             if (param.getRepositoryValue() != null) {
                 if (param.getRepositoryValue().equals(repositoryName)) {
                     String value = (String) param.getValue();
-                    String[] valuesList = (String[]) param.getListItemsValue();
+                    Object[] valuesList = (Object[]) param.getListItemsValue();
                     String[] originalList = param.getListItemsDisplayName();
                     for (int i = 0; i < valuesList.length; i++) {
                         if (valuesList[i].equals(value)) {
