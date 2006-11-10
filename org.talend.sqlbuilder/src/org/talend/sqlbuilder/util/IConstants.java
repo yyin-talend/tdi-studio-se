@@ -23,7 +23,7 @@ package org.talend.sqlbuilder.util;
 
 
 /**
- * This class is using for presenting constants.
+ * This class is using for representing constants.
  * <br/>
  *
  * @author ftang
@@ -40,5 +40,4 @@ public interface IConstants {
    String COMMENT_DELIMITER = "#"; 
    
    char LINE_DELIMITER = '\n';
-
 }
