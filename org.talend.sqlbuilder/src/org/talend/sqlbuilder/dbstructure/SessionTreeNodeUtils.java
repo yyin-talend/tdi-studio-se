@@ -257,8 +257,8 @@ public class SessionTreeNodeUtils {
             alias.setPassword(password);
             alias.setSchemaFilterExpression(databaseName);
             alias.setFolderFilterExpression("Tables,Views");
-        } catch (ValidationException e) {
-            SqlBuilderPlugin.log(e.getMessage(), e);
+        } catch (Exception e) {
+//            SqlBuilderPlugin.log(e.getMessage(), e);
         }
         return alias;
     }
@@ -280,8 +280,7 @@ public class SessionTreeNodeUtils {
 
             return sqlConnection;
         } catch (Exception e) {
-            // do nothing
-            // SqlBuilderPlugin.log(e.getMessage(), e);
+//             SqlBuilderPlugin.log(e.getMessage(), e);
         }
 
         return null;
