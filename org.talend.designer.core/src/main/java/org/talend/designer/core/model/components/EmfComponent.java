@@ -97,15 +97,8 @@ public class EmfComponent implements IComponent {
     public EmfComponent(File file) throws SystemException {
         this.file = file;
         load();
-        codeLanguage = ((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY))
-                .getProject().getLanguage();
-    }
-
-    public boolean isPropagateSchema() {
-        if (getName().equals("tFileOutputDelimited")) {
-            return true;
-        }
-        return false;
+        codeLanguage = ((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY)).getProject()
+                .getLanguage();
     }
 
     private String getTranslatedValue(final String nameValue) {
@@ -534,8 +527,7 @@ public class EmfComponent implements IComponent {
             param.setNotShowIf(xmlParam.getNOTSHOWIF());
             param.setRepositoryValue(xmlParam.getREPOSITORYVALUE());
 
-            if (!param.getField().equals(EParameterFieldType.TABLE)
-                    && !param.getField().equals(EParameterFieldType.CLOSED_LIST)) {
+            if (!param.getField().equals(EParameterFieldType.TABLE) && !param.getField().equals(EParameterFieldType.CLOSED_LIST)) {
                 List<DEFAULTType> listDefault = xmlParam.getDEFAULT();
                 for (DEFAULTType defaultType : listDefault) {
                     IElementParameterDefaultValue defaultValue = new ElementParameterDefaultValue();
@@ -579,8 +571,7 @@ public class EmfComponent implements IComponent {
         }
     }
 
-    public void addItemsPropertyParameters(String paramName, ITEMSType items, ElementParameter param,
-            EParameterFieldType type) {
+    public void addItemsPropertyParameters(String paramName, ITEMSType items, ElementParameter param, EParameterFieldType type) {
         ITEMType item;
 
         int nbItems = items.getITEM().size();
@@ -777,8 +768,7 @@ public class EmfComponent implements IComponent {
                     msg = Messages.getString("modules.required");
                 }
 
-                ModuleNeeded componentImportNeeds = new ModuleNeeded(this, importType.getMODULE(), msg, importType
-                        .isREQUIRED());
+                ModuleNeeded componentImportNeeds = new ModuleNeeded(this, importType.getMODULE(), msg, importType.isREQUIRED());
 
                 componentImportNeedsList.add(componentImportNeeds);
             }

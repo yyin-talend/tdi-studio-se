@@ -32,6 +32,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.ObjectUtils;
+import org.apache.log4j.Logger;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -1124,6 +1125,8 @@ public class Node extends Element implements INode {
         return getComponentName() + "/" + getLabel();
     }
 
+    private static Logger log = Logger.getLogger(Node.class);
+
     /*
      * (non-Javadoc)
      * 
@@ -1131,12 +1134,12 @@ public class Node extends Element implements INode {
      * java.lang.String)
      */
     public void metadataInputChanged(IODataComponent dataComponent, String connectionToApply) {
-        System.out.println("InputChanged : Node=" + this + ", IOData=[" + dataComponent + "] on " + connectionToApply);
+        log.trace("InputChanged : Node=" + this + ", IOData=[" + dataComponent + "] on " + connectionToApply);
         if (externalNode != null) {
             externalNode.metadataInputChanged(dataComponent, connectionToApply);
         } else {
             if (this.getComponent() instanceof EmfComponent) {
-                boolean prop = ((EmfComponent) this.getComponent()).isPropagateSchema();
+                boolean prop = ((EmfComponent) this.getComponent()).isSchemaAutoPropagated();
                 if (prop) {
                     ChangeMetadataCommand cmd = new ChangeMetadataCommand(this, null, null, dataComponent);
                     cmd.execute(true);
@@ -1146,7 +1149,7 @@ public class Node extends Element implements INode {
     }
 
     public void metadataOutputChanged(IODataComponent dataComponent, String connectionToApply) {
-        System.out.println("OutputChanged : Node=" + this + ", IOData=[" + dataComponent + "] on " + connectionToApply);
+        log.trace("OutputChanged : Node=" + this + ", IOData=[" + dataComponent + "] on " + connectionToApply);
         if (externalNode != null) {
             externalNode.metadataOutputChanged(dataComponent, connectionToApply);
         }
