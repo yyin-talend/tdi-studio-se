@@ -349,6 +349,9 @@ public class DataProcess {
                     }
                 }
                 if ((paramSource != null) && (paramTarget != null)) {
+                    paramTarget.setDefaultClosedListValue(paramSource.getDefaultClosedListValue());
+                    paramTarget.setListItemsDisplayCodeName(paramSource.getListItemsDisplayCodeName());
+                    paramTarget.setListItemsValue(paramSource.getListItemsValue());
                     paramTarget.setValue(paramSource.getValue());
                 }
             }

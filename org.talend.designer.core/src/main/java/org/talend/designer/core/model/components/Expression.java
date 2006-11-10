@@ -161,13 +161,13 @@ public final class Expression {
 					boolean found = false;
 					Object value = param.getValue();
 					if (value instanceof String) {
-						if (param.getListItemsValue(ECodeLanguage.PERL) instanceof String[]) {
-							String[] values = (String[]) param
-									.getListItemsValue(ECodeLanguage.PERL);
+						if (param.getListItemsValue() instanceof Object[]) {
+                            Object[] values = (Object[]) param
+									.getListItemsValue();
 							for (int i = 0; i < values.length && !found; i++) {
 								if (values[i].equals(param.getValue())) {
 									String variableCode = param
-											.getListItemsDisplayCodeName(ECodeLanguage.PERL)[i];
+											.getListItemsDisplayCodeName()[i];
 									if (variableCode.equals(variableValue)) {
 										found = true;
 									}

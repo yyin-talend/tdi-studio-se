@@ -22,15 +22,12 @@
 package org.talend.designer.core.model.components;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.IElementParameterDefaultValue;
-import org.talend.core.model.temp.ECodeLanguage;
 
 /**
  * Each parameter of the components are read and written in this class. <br/>
@@ -52,20 +49,26 @@ public class ElementParameter implements IElementParameter {
 
     private Object value;
 
-    // 5 maps used for the combo box element (CLOSED_LIST)
-    private Map<ECodeLanguage, String[]> mapItemsDisplayName = new HashMap<ECodeLanguage, String[]>();
+    // used for CLOSED_LIST / TABLE
+    String[] itemsDisplayName;
 
-    private Map<ECodeLanguage, String[]> mapItemsDisplayCodeName = new HashMap<ECodeLanguage, String[]>();
+    // used for CLOSED_LIST / TABLE
+    String[] itemsDisplayCodeName;
 
-    private Map<ECodeLanguage, String[]> mapItemsShowIf = new HashMap<ECodeLanguage, String[]>();
+    // used for CLOSED_LIST / TABLE
+    String[] itemsShowIf;
 
-    private Map<ECodeLanguage, String[]> mapItemsNotShowIf = new HashMap<ECodeLanguage, String[]>();
+    // used for CLOSED_LIST / TABLE
+    String[] itemsNotShowIf;
 
-    private Map<ECodeLanguage, Object[]> mapItemsValue = new HashMap<ECodeLanguage, Object[]>();
+    // used for CLOSED_LIST
+    Object[] itemsValue;
 
-    private Map<ECodeLanguage, String[]> mapRepositoryItems = new HashMap<ECodeLanguage, String[]>();
+    // used for CLOSED_LIST / TABLE
+    String[] itemsRepository;
 
-    private Map<ECodeLanguage, Object> mapItemValue = new HashMap<ECodeLanguage, Object>();
+    // used for CLOSED_LIST
+    Object defaultClosedListValue;
 
     private int nbLines = NB_LINES_DEFAULT, numRow = 0; // Default values
 
@@ -137,56 +140,6 @@ public class ElementParameter implements IElementParameter {
         value = o;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.designer.core.model.components.IDesignerElementParameter#setListItemsValue(java.lang.String[])
-     */
-    public void setListItemsDisplayName(final String[] list) {
-        for (ECodeLanguage language : ECodeLanguage.values()) {
-            mapItemsDisplayName.put(language, list);
-        }
-    }
-
-    public void setListItemsDisplayName(ECodeLanguage language, final String[] list) {
-        mapItemsDisplayName.put(language, list);
-    }
-
-    public void setListItemsDisplayCodeName(final String[] list) {
-        for (ECodeLanguage language : ECodeLanguage.values()) {
-            mapItemsDisplayCodeName.put(language, list);
-        }
-    }
-
-    public void setListItemsDisplayCodeName(ECodeLanguage language, final String[] list) {
-        mapItemsDisplayCodeName.put(language, list);
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.designer.core.model.components.IDesignerElementParameter#setListItemsID(java.lang.String[])
-     */
-    public void setListItemsValue(final Object[] list) {
-        for (ECodeLanguage language : ECodeLanguage.values()) {
-            mapItemsValue.put(language, list);
-        }
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.designer.core.model.components.IDesignerElementParameter#setListItemsID(java.lang.String[])
-     */
-    public void setListItemsValue(ECodeLanguage language, final Object[] list) {
-        mapItemsValue.put(language, list);
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.designer.core.model.components.IDesignerElementParameter#getName()
-     */
     public String getName() {
         return name;
     }
@@ -218,126 +171,117 @@ public class ElementParameter implements IElementParameter {
         return value;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.designer.core.model.components.IDesignerElementParameter#getListItemsValue()
-     */
-    public String[] getListItemsDisplayName(ECodeLanguage language) {
-        return mapItemsDisplayName.get(language);
+    public void setListItemsDisplayName(final String[] list) {
+        itemsDisplayName = list;
     }
 
-    public String[] getListItemsDisplayCodeName(ECodeLanguage language) {
-        return mapItemsDisplayCodeName.get(language);
+    public String[] getListItemsDisplayName() {
+        return itemsDisplayName;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.designer.core.model.components.IDesignerElementParameter#getListItemsID()
-     */
-    public Object[] getListItemsValue(ECodeLanguage language) {
-        return mapItemsValue.get(language);
+    public void setListItemsDisplayCodeName(final String[] list) {
+        itemsDisplayCodeName = list;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.designer.core.model.components.IDesignerElementParameter#getNbLines()
-     */
+    public String[] getListItemsDisplayCodeName() {
+        return itemsDisplayCodeName;
+    }
+
+    public void setListItemsValue(final Object[] list) {
+        itemsValue = list;
+    }
+    
+    public Object[] getListItemsValue() {
+        return itemsValue;
+    }
+    
+    public void setDefaultClosedListValue(Object o) {
+        defaultClosedListValue = o;
+    }
+
+    public Object getDefaultClosedListValue() {
+        return defaultClosedListValue;
+    }
+
+    public void setListRepositoryItems(final String[] list) {
+        itemsRepository = list;
+    }
+
+    public String[] getListRepositoryItems() {
+        return itemsRepository;
+    }
+
+    public void setListItemsShowIf(String[] list) {
+        itemsShowIf = list;
+    }
+    
+    public String[] getListItemsShowIf() {
+        return itemsShowIf;
+    }
+
+
+    public void setListItemsNotShowIf(String[] list) {
+        itemsNotShowIf = list;
+    }
+
+    public String[] getListItemsNotShowIf() {
+        return itemsNotShowIf;
+    }
+    
+    public int getIndexOfItemFromList(String item) {
+        int index = 0;
+        boolean found = false;
+        for (int i = 0; i < itemsDisplayCodeName.length && !found; i++) {
+            String string = itemsDisplayCodeName[i];
+            if (string.equals(item)) {
+                found = true;
+                index = i;
+            }
+        }
+        for (int i = 0; i < itemsValue.length && !found; i++) {
+            String string = (String) itemsValue[i];
+            if (string.equals(item)) {
+                found = true;
+                index = i;
+            }
+        }
+        return index;
+    }
+
     public int getNbLines() {
         return this.nbLines;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.designer.core.model.components.IDesignerElementParameter#setNbLines(int)
-     */
     public void setNbLines(final int nbLines) {
         this.nbLines = nbLines;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.designer.core.model.components.IDesignerElementParameter#getNumRow()
-     */
     public int getNumRow() {
         return this.numRow;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.designer.core.model.components.IDesignerElementParameter#setNumRow(int)
-     */
     public void setNumRow(final int numRow) {
         this.numRow = numRow;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.designer.core.model.components.IDesignerElementParameter#isReadOnly()
-     */
     public boolean isReadOnly() {
         return this.readOnly;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.designer.core.model.components.IDesignerElementParameter#setReadOnly(boolean)
-     */
     public void setReadOnly(final boolean readOnly) {
         this.readOnly = readOnly;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.designer.core.model.components.IDesignerElementParameter#isRequired()
-     */
     public boolean isRequired() {
         return this.required;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.designer.core.model.components.IDesignerElementParameter#setRequired(boolean)
-     */
     public void setRequired(final boolean required) {
         this.required = required;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.designer.core.model.components.IDesignerElementParameter#setShow(boolean)
-     */
     public void setShow(final boolean show) {
         this.show = show;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.core.model.process.IElementParameter#getValue(org.talend.core.model.temp.ECodeLanguage)
-     */
-    public Object getDefaultClosedListValue(ECodeLanguage language) {
-        return mapItemValue.get(language);
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.core.model.process.IElementParameter#setValue(org.talend.core.model.temp.ECodeLanguage,
-     * java.lang.Object)
-     */
-    public void setDefaultClosedListValue(ECodeLanguage language, Object o) {
-        mapItemValue.put(language, o);
     }
 
     public String getRepositoryValue() {
@@ -354,14 +298,6 @@ public class ElementParameter implements IElementParameter {
 
     public void setRepositoryValueUsed(boolean repositoryUsed) {
         this.repositoryValueUsed = repositoryUsed;
-    }
-
-    public String[] getListRepositoryItems(ECodeLanguage language) {
-        return mapRepositoryItems.get(language);
-    }
-
-    public void setListRepositoryItems(ECodeLanguage language, final String[] list) {
-        mapRepositoryItems.put(language, list);
     }
 
     public String getShowIf() {
@@ -408,60 +344,6 @@ public class ElementParameter implements IElementParameter {
             showParameter = show;
         }
         return showParameter;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.core.model.process.IElementParameter#getListItemsShowIf(org.talend.core.model.temp.ECodeLanguage)
-     */
-    public String[] getListItemsShowIf(ECodeLanguage language) {
-        return mapItemsShowIf.get(language);
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.core.model.process.IElementParameter#setListItemsShowIf(java.lang.String[])
-     */
-    public void setListItemsShowIf(String[] list) {
-        for (ECodeLanguage language : ECodeLanguage.values()) {
-            mapItemsShowIf.put(language, list);
-        }
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.core.model.process.IElementParameter#setListItemsShowIf(org.talend.core.model.temp.ECodeLanguage,
-     * java.lang.String[])
-     */
-    public void setListItemsShowIf(ECodeLanguage language, String[] list) {
-        mapItemsShowIf.put(language, list);
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.core.model.process.IElementParameter#getListItemsNotShowIf(org.talend.core.model.temp.ECodeLanguage)
-     */
-    public String[] getListItemsNotShowIf(ECodeLanguage language) {
-        return mapItemsNotShowIf.get(language);
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.core.model.process.IElementParameter#setListItemsNotShowIf(java.lang.String[])
-     */
-    public void setListItemsNotShowIf(String[] list) {
-        for (ECodeLanguage language : ECodeLanguage.values()) {
-            mapItemsNotShowIf.put(language, list);
-        }
-    }
-
-    public void setListItemsNotShowIf(ECodeLanguage language, String[] list) {
-        mapItemsNotShowIf.put(language, list);
     }
 
     public List<IElementParameterDefaultValue> getDefaultValues() {

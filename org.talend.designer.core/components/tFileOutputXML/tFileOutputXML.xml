@@ -30,7 +30,7 @@
       NUM_ROW="2"
       NB_LINES="3"
     >
-      <ITEMS CODE_LANGUAGE="perl">
+      <ITEMS>
         <ITEM NAME="TAG" />
       </ITEMS>
     </PARAMETER>

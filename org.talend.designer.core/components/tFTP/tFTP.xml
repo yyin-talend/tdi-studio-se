@@ -56,7 +56,7 @@ COMPATIBILITY="ALL"
     </PARAMETER>
 
     <PARAMETER NAME="ACTION" FIELD="CLOSED_LIST" NUM_ROW="5">
-      <ITEMS CODE_LANGUAGE="perl" DEFAULT="put">
+      <ITEMS DEFAULT="put">
         <ITEM NAME="PUT"    VALUE="put" />
         <ITEM NAME="GET"    VALUE="get" />
         <ITEM NAME="RENAME" VALUE="rename" />
@@ -65,7 +65,7 @@ COMPATIBILITY="ALL"
     </PARAMETER>
 
     <PARAMETER NAME="FILES" FIELD="TABLE" REQUIRED="false" NUM_ROW="6" NB_LINES="5">
-      <ITEMS CODE_LANGUAGE="perl">
+      <ITEMS>
         <ITEM NAME="FILEMASK" />
         <ITEM NAME="NEWNAME" SHOW_IF="ACTION=='RENAME'"/>
       </ITEMS>

@@ -30,11 +30,9 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.views.properties.PropertySheet;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
-import org.talend.core.context.RepositoryContext;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IElementParameter;
-import org.talend.core.model.temp.ECodeLanguage;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
@@ -111,10 +109,6 @@ public class PropertyChangeCommand extends Command {
 		oldValue = elem.getPropertyValue(propName);
 		elem.setPropertyValue(propName, newValue);
 
-		ECodeLanguage language = ((RepositoryContext) org.talend.core.CorePlugin
-				.getContext().getProperty(
-						org.talend.core.context.Context.REPOSITORY_CONTEXT_KEY))
-				.getProject().getLanguage();
 		if (currentParam.getField().equals(EParameterFieldType.CLOSED_LIST)
 				|| currentParam.getField().equals(EParameterFieldType.CHECK)) {
 			toUpdate = false;
@@ -136,11 +130,11 @@ public class PropertyChangeCommand extends Command {
 				}
 				if (currentParam.getField().equals(
 						EParameterFieldType.CLOSED_LIST)) {
-					if (param.getListItemsShowIf(language) != null) {
-						for (int j = 0; j < param.getListItemsShowIf(language).length
+					if (param.getListItemsShowIf() != null) {
+						for (int j = 0; j < param.getListItemsShowIf().length
 								&& !toUpdate; j++) {
-							showIf = param.getListItemsShowIf(language)[j];
-							notShowIf = param.getListItemsNotShowIf(language)[j];
+							showIf = param.getListItemsShowIf()[j];
+							notShowIf = param.getListItemsNotShowIf()[j];
 							if (showIf != null) {
 								if (showIf.contains(currentParam.getName())) {
 									toUpdate = true;

@@ -28,7 +28,6 @@ import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.IElementParameterDefaultValue;
-import org.talend.core.model.temp.ECodeLanguage;
 
 /**
  * Simple Text implementation of IElementParameter. <br/>
@@ -309,61 +308,14 @@ public class TextElementParameter implements IElementParameter {
      * 
      * @see org.talend.core.model.process.IElementParameter#getDefaultClosedListValue(org.talend.core.model.temp.ECodeLanguage)
      */
-    public Object getDefaultClosedListValue(ECodeLanguage language) {
+    public Object getDefaultClosedListValue() {
         return null;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.core.model.process.IElementParameter#getListItemsDisplayName(org.talend.core.model.temp.ECodeLanguage)
-     */
-    public String[] getListItemsDisplayName(ECodeLanguage language) {
-        return null;
+    public void setDefaultClosedListValue(Object o) {
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.core.model.process.IElementParameter#getListItemsValue(org.talend.core.model.temp.ECodeLanguage)
-     */
-    public Object[] getListItemsValue(ECodeLanguage language) {
-        return null;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.core.model.process.IElementParameter#setDefaultClosedListValue(org.talend.core.model.temp.ECodeLanguage,
-     * java.lang.Object)
-     */
-    public void setDefaultClosedListValue(ECodeLanguage language, Object o) {
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.core.model.process.IElementParameter#setListItemsDisplayName(org.talend.core.model.temp.ECodeLanguage,
-     * java.lang.String[])
-     */
-    public void setListItemsDisplayName(ECodeLanguage language, String[] list) {
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.core.model.process.IElementParameter#setListItemsValue(java.lang.Object[])
-     */
     public void setListItemsValue(Object[] list) {
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.core.model.process.IElementParameter#setListItemsValue(org.talend.core.model.temp.ECodeLanguage,
-     * java.lang.Object[])
-     */
-    public void setListItemsValue(ECodeLanguage language, Object[] list) {
     }
 
     /*
@@ -400,22 +352,11 @@ public class TextElementParameter implements IElementParameter {
     public void setRepositoryValueUsed(boolean repositoryUsed) {
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.core.model.process.IElementParameter#getRepositoryListItemsValue(org.talend.core.model.temp.ECodeLanguage)
-     */
-    public String[] getListRepositoryItems(ECodeLanguage language) {
+    public String[] getListRepositoryItems() {
         return null;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.core.model.process.IElementParameter#setRepositoryListItemsValue(org.talend.core.model.temp.ECodeLanguage,
-     * java.lang.String[])
-     */
-    public void setListRepositoryItems(ECodeLanguage language, String[] list) {
+    public void setListRepositoryItems(String[] list) {
     }
 
     /*
@@ -458,30 +399,18 @@ public class TextElementParameter implements IElementParameter {
     /* (non-Javadoc)
      * @see org.talend.core.model.process.IElementParameter#getListItemsDisplayCodeName(org.talend.core.model.temp.ECodeLanguage)
      */
-    public String[] getListItemsDisplayCodeName(ECodeLanguage language) {
+    public String[] getListItemsDisplayCodeName() {
         return null;
     }
 
-    /* (non-Javadoc)
-     * @see org.talend.core.model.process.IElementParameter#setListItemsDisplayCodeName(java.lang.String[])
-     */
     public void setListItemsDisplayCodeName(String[] list) {
     }
 
-    public void setListItemsDisplayCodeName(ECodeLanguage language, String[] list) {
-    }
-
-    /* (non-Javadoc)
-     * @see org.talend.core.model.process.IElementParameter#getListItemsNotShowIf(org.talend.core.model.temp.ECodeLanguage)
-     */
-    public String[] getListItemsNotShowIf(ECodeLanguage language) {
+    public String[] getListItemsNotShowIf() {
         return null;
     }
 
-    /* (non-Javadoc)
-     * @see org.talend.core.model.process.IElementParameter#getListItemsShowIf(org.talend.core.model.temp.ECodeLanguage)
-     */
-    public String[] getListItemsShowIf(ECodeLanguage language) {
+    public String[] getListItemsShowIf() {
         return null;
     }
 
@@ -498,19 +427,10 @@ public class TextElementParameter implements IElementParameter {
     public void setListItemsNotShowIf(String[] list) {
     }
 
-    public void setListItemsNotShowIf(ECodeLanguage language, String[] list) {
-    }
-
     /* (non-Javadoc)
      * @see org.talend.core.model.process.IElementParameter#setListItemsShowIf(java.lang.String[])
      */
     public void setListItemsShowIf(String[] list) {
-    }
-
-    /* (non-Javadoc)
-     * @see org.talend.core.model.process.IElementParameter#setListItemsShowIf(org.talend.core.model.temp.ECodeLanguage, java.lang.String[])
-     */
-    public void setListItemsShowIf(ECodeLanguage language, String[] list) {
     }
 
     /* (non-Javadoc)
@@ -530,5 +450,9 @@ public class TextElementParameter implements IElementParameter {
      * @see org.talend.core.model.process.IElementParameter#setValueToDefault(java.util.List)
      */
     public void setValueToDefault(List<? extends IElementParameter> listParam) {
+    }
+
+    public int getIndexOfItemFromList(String item) {
+        return 0;
     }
 }

@@ -30,15 +30,11 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.views.properties.PropertySheet;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
-import org.talend.core.CorePlugin;
-import org.talend.core.context.Context;
-import org.talend.core.context.RepositoryContext;
 import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.metadata.designerproperties.RepositoryToComponentProperty;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IElementParameter;
-import org.talend.core.model.temp.ECodeLanguage;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
@@ -103,13 +99,11 @@ public class ChangeValuesFromRepository extends Command {
                         if (param.getField().equals(EParameterFieldType.CLOSED_LIST)
                                 && param.getRepositoryValue().equals("TYPE")) {
                             boolean found = false;
-                            ECodeLanguage language = ((RepositoryContext) CorePlugin.getContext().getProperty(
-                                    Context.REPOSITORY_CONTEXT_KEY)).getProject().getLanguage();
-                            String[] list = param.getListRepositoryItems(language);
+                            String[] list = param.getListRepositoryItems();
                             for (int i = 0; (i < list.length) && (!found); i++) {
                                 if (objectValue.equals(list[i])) {
                                     found = true;
-                                    elem.setPropertyValue(param.getName(), param.getListItemsValue(language)[i]);
+                                    elem.setPropertyValue(param.getName(), param.getListItemsValue()[i]);
                                 }
                             }
                         } else {

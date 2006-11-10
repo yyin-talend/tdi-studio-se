@@ -19,7 +19,7 @@
    <PARAMETERS>
       <PARAMETER NAME="PROPERTY" FIELD="PROPERTY_TYPE" SHOW="true" NUM_ROW="1" REPOSITORY_VALUE="DATABASE" />
       <PARAMETER NAME="TYPE" FIELD="CLOSED_LIST" NUM_ROW="2" REPOSITORY_VALUE="TYPE">
-         <ITEMS CODE_LANGUAGE="perl" DEFAULT="mysql;mysql;MYSQL">
+         <ITEMS DEFAULT="mysql;mysql;MYSQL">
 <!-- in the value, we give "Perl dbtype; Perl driver; Talend dbtype". -->
 <!-- See org.talend.core/mappingMetadataTypes.xml for Talend dbtypes  -->
             <ITEM NAME="MYSQL"      VALUE="mysql;mysql;MYSQL"                REPOSITORY_ITEM="MYSQL"/>
@@ -54,7 +54,7 @@
       </PARAMETER>
 
       <PARAMETER NAME="ACTION" FIELD="CLOSED_LIST" NUM_ROW="6">
-         <ITEMS CODE_LANGUAGE="perl" DEFAULT="NONE">
+         <ITEMS DEFAULT="NONE">
             <ITEM NAME="NONE"              VALUE="NONE" />
             <ITEM NAME="DROP_CREATE_TABLE" VALUE="DROP_CREATE_TABLE" NOT_SHOW_IF="TYPE=='ODBC'"/>
             <ITEM NAME="CREATE_TABLE"      VALUE="CREATE_TABLE" NOT_SHOW_IF="TYPE=='ODBC'"/>

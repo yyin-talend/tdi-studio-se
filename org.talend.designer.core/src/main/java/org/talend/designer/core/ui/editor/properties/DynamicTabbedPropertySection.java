@@ -43,6 +43,8 @@ import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
 import org.eclipse.jface.fieldassist.IControlCreator;
 import org.eclipse.jface.fieldassist.TextControlCreator;
 import org.eclipse.jface.util.Assert;
+import org.eclipse.jface.viewers.CellEditor;
+import org.eclipse.jface.viewers.ComboBoxCellEditor;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.window.Window;
@@ -98,6 +100,7 @@ import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumn;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator.LAYOUT_MODE;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator.SHOW_SELECTION;
+import org.talend.commons.ui.swt.tableviewer.behavior.CellEditorValueAdapter;
 import org.talend.commons.ui.utils.ControlUtils;
 import org.talend.commons.ui.utils.TypedTextCommandExecutor;
 import org.talend.commons.utils.data.bean.IBeanPropertyAccessors;
@@ -105,7 +108,6 @@ import org.talend.commons.utils.data.container.Content;
 import org.talend.commons.utils.data.container.ContentList;
 import org.talend.commons.utils.data.container.RootContainer;
 import org.talend.core.CorePlugin;
-import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.language.perl.ICodeSyntaxChecker;
 import org.talend.core.model.components.IODataComponent;
@@ -239,8 +241,6 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
     private org.talend.core.model.metadata.builder.connection.Connection repositoryConnection;
 
     private String oldPropertyType;
-
-    private ECodeLanguage currentLanguage;
 
     private EditionControlHelper editionControlHelper;
 
@@ -474,8 +474,8 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                     for (IElementParameter param : (List<IElementParameter>) elem.getElementParameters()) {
                         if (param.getName().equals(EParameterName.REPOSITORY_PROPERTY_TYPE.getName())) {
                             String value = (String) param.getValue();
-                            String[] valuesList = (String[]) param.getListItemsValue(currentLanguage);
-                            String[] displayList = param.getListItemsDisplayName(currentLanguage);
+                            String[] valuesList = (String[]) param.getListItemsValue();
+                            String[] displayList = param.getListItemsDisplayName();
                             for (int i = 0; i < valuesList.length; i++) {
                                 if (valuesList[i].equals(value)) {
                                     repositoryName = displayList[i];
@@ -551,10 +551,10 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                                     for (int i = 0; i < elem.getElementParameters().size(); i++) {
                                         IElementParameter param = elem.getElementParameters().get(i);
                                         if (param.getName().equals(name)) {
-                                            for (int j = 0; j < param.getListItemsValue(currentLanguage).length; j++) {
-                                                if (((CCombo) ctrl).getText().equals(
-                                                        param.getListItemsDisplayName(currentLanguage)[j])) {
-                                                    value = (String) param.getListItemsValue(currentLanguage)[j];
+                                            for (int j = 0; j < param.getListItemsValue().length; j++) {
+                                                if (((CCombo) ctrl).getText()
+                                                        .equals(param.getListItemsDisplayName()[j])) {
+                                                    value = (String) param.getListItemsValue()[j];
                                                 }
                                             }
                                         }
@@ -1513,11 +1513,11 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
         Control cLayout = dField.getLayoutControl();
         combo = (CCombo) dField.getControl();
         FormData data;
-        String[] originalList = param.getListItemsDisplayName(currentLanguage);
+        String[] originalList = param.getListItemsDisplayName();
         List<String> stringToDisplay = new ArrayList<String>();
-        String[] itemsShowIf = param.getListItemsShowIf(currentLanguage);
+        String[] itemsShowIf = param.getListItemsShowIf();
         if (itemsShowIf != null) {
-            String[] itemsNotShowIf = param.getListItemsNotShowIf(currentLanguage);
+            String[] itemsNotShowIf = param.getListItemsNotShowIf();
             for (int i = 0; i < originalList.length; i++) {
                 if (param.isShow(itemsShowIf[i], itemsNotShowIf[i], elem.getElementParameters())) {
                     stringToDisplay.add(originalList[i]);
@@ -1884,10 +1884,11 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
         if (elem instanceof Node) {
             table.setToolTipText(VARIABLE_TOOLTIP + param.getVariableName());
         }
-        String[] titles = param.getListItemsDisplayName(currentLanguage);
-        final String[] items = (String[]) param.getListItemsValue(currentLanguage);
-        String[] itemsShowIf = (String[]) param.getListItemsShowIf(currentLanguage);
-        String[] itemsNotShowIf = (String[]) param.getListItemsNotShowIf(currentLanguage);
+        String[] titles = param.getListItemsDisplayName();
+        final String[] items = (String[]) param.getListItemsDisplayCodeName();
+        final Object[] itemsValue = (Object[]) param.getListItemsValue();
+        String[] itemsShowIf = (String[]) param.getListItemsShowIf();
+        String[] itemsNotShowIf = (String[]) param.getListItemsNotShowIf();
         // there's two lists of values, one that will be in the table
         // and the other will be stored as the current value in the property
         // there is two lists because of the undo / redo capabilities
@@ -1900,20 +1901,26 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                 column.setMinimumWidth(100);
                 column.setWeight(20);
                 final int curCol = i;
-                column.setBeanPropertyAccessors(new IBeanPropertyAccessors<Map<String, String>, String>() {
+                column.setBeanPropertyAccessors(new IBeanPropertyAccessors<Map<String, Object>, Object>() {
 
-                    public String get(Map<String, String> bean) {
-                        return bean.get(items[curCol]);
+                    public String get(Map<String, Object> bean) {
+                        Object o = bean.get(items[curCol]);
+                        if (o instanceof Integer) {
+                            IElementParameter tmpParam = (IElementParameter) itemsValue[curCol];
+                            String[] namesSet = tmpParam.getListItemsDisplayName();
+                            return namesSet[(Integer) o];
+                        }
+                        return (String) o;
                     }
 
-                    public void set(Map<String, String> bean, String value) {
-                        List<Map<String, String>> tableValues = new ArrayList<Map<String, String>>();
-                        List<Map<String, String>> paramValues = (List<Map<String, String>>) param.getValue();
+                    public void set(Map<String, Object> bean, Object value) {
+                        List<Map<String, Object>> tableValues = new ArrayList<Map<String, Object>>();
+                        List<Map<String, Object>> paramValues = (List<Map<String, Object>>) param.getValue();
                         int currentBeanIndex = table.getSelectionIndex();
                         for (int currentIndex = 0; currentIndex < paramValues.size(); currentIndex++) {
-                            Map<String, String> currentLine = paramValues.get(currentIndex);
+                            Map<String, Object> currentLine = paramValues.get(currentIndex);
 
-                            Map<String, String> newLine = new HashMap<String, String>();
+                            Map<String, Object> newLine = new HashMap<String, Object>();
                             for (int i = 0; i < items.length; i++) {
                                 newLine.put(items[i], currentLine.get(items[i]));
                             }
@@ -1928,13 +1935,45 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                         refresh();
                     }
                 });
-                TextCellEditorWithProposal textCellEditor = new TextCellEditorWithProposal(table, column);
-                textCellEditor.setContentProposalProvider(processProposalProvider);
-                column.setCellEditor(textCellEditor);
+                if (itemsValue[i] instanceof IElementParameter) {
+                    IElementParameter tmpParam = (IElementParameter) itemsValue[i];
+                    final String[] namesSet = tmpParam.getListItemsDisplayName();
+                    ComboBoxCellEditor cellEditor = new ComboBoxCellEditor(table, namesSet);
+                    ((CCombo) cellEditor.getControl()).setEditable(false);
+                    column.setCellEditor(cellEditor, new CellEditorValueAdapter() {
+
+                        public String getColumnText(CellEditor cellEditor, Object cellEditorValue) {
+                            return (String) cellEditorValue;
+                        }
+
+                        public Object getOriginalTypedValue(CellEditor cellEditor, Object cellEditorTypedValue) {
+                            if (cellEditorTypedValue instanceof Integer) {
+                                return cellEditorTypedValue;
+                            }
+                            return new Integer(0);
+                        };
+
+                        public Object getCellEditorTypedValue(CellEditor cellEditor, Object originalTypedValue) {
+                            boolean found = false;
+                            int nb = 0;
+                            for (int j = 0; j < namesSet.length && !found; j++) {
+                                if (namesSet[j].equals(originalTypedValue)) {
+                                    found = true;
+                                    nb = j;
+                                }
+                            }
+                            return new Integer(nb);
+                        };
+                    });
+                } else {
+                    TextCellEditorWithProposal textCellEditor = new TextCellEditorWithProposal(table, column);
+                    textCellEditor.setContentProposalProvider(processProposalProvider);
+                    column.setCellEditor(textCellEditor);
+                }
             }
         }
-        List<Map<String, String>> tableValues = new ArrayList<Map<String, String>>();
-        List<Map<String, String>> paramValues = (List<Map<String, String>>) param.getValue();
+        List<Map<String, Object>> tableValues = new ArrayList<Map<String, Object>>();
+        List<Map<String, Object>> paramValues = (List<Map<String, Object>>) param.getValue();
         copyTableValue(paramValues, tableValues, items);
         tableViewerCreator.init(tableValues);
 
@@ -1942,14 +1981,26 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
 
             @SuppressWarnings("unchecked")
             public void handleEvent(final Event event) {
-                List<Map<String, String>> tableValues = new ArrayList<Map<String, String>>();
-                List<Map<String, String>> paramValues = (List<Map<String, String>>) param.getValue();
+                List<Map<String, Object>> tableValues = new ArrayList<Map<String, Object>>();
+                List<Map<String, Object>> paramValues = (List<Map<String, Object>>) param.getValue();
                 copyTableValue(paramValues, tableValues, items);
-                Map<String, String> line = new HashMap<String, String>();
+                Map<String, Object> line = new HashMap<String, Object>();
 
-                line.put(items[0], new String("'newLine'"));
+                if (itemsValue[0] instanceof IElementParameter) {
+                    IElementParameter tmpParam = (IElementParameter) itemsValue[0];
+                    line.put(items[0], new Integer(tmpParam.getIndexOfItemFromList((String) tmpParam
+                            .getDefaultClosedListValue())));
+                } else {
+                    line.put(items[0], new String("'newLine'"));
+                }
                 for (int i = 1; i < items.length; i++) {
-                    line.put(items[i], new String());
+                    if (itemsValue[i] instanceof IElementParameter) {
+                        IElementParameter tmpParam = (IElementParameter) itemsValue[i];
+                        line.put(items[i], new Integer(tmpParam.getIndexOfItemFromList((String) tmpParam
+                                .getDefaultClosedListValue())));
+                    } else {
+                        line.put(items[i], new String(""));
+                    }
                 }
 
                 int index = table.getSelectionIndex();
@@ -1968,8 +2019,8 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
         final Listener removeLineListener = new Listener() {
 
             public void handleEvent(final Event event) {
-                List<Map<String, String>> tableValues = new ArrayList<Map<String, String>>();
-                List<Map<String, String>> paramValues = (List<Map<String, String>>) param.getValue();
+                List<Map<String, Object>> tableValues = new ArrayList<Map<String, Object>>();
+                List<Map<String, Object>> paramValues = (List<Map<String, Object>>) param.getValue();
                 copyTableValue(paramValues, tableValues, items);
                 int selectionIndex = table.getSelectionIndex();
                 if (selectionIndex >= 0) {
@@ -1988,12 +2039,12 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
         final Listener copyLineListener = new Listener() {
 
             public void handleEvent(final Event event) {
-                List<Map<String, String>> tableValues = new ArrayList<Map<String, String>>();
-                List<Map<String, String>> paramValues = (List<Map<String, String>>) param.getValue();
+                List<Map<String, Object>> tableValues = new ArrayList<Map<String, Object>>();
+                List<Map<String, Object>> paramValues = (List<Map<String, Object>>) param.getValue();
                 copyTableValue(paramValues, tableValues, items);
 
                 if (table.getSelectionIndex() >= 0) {
-                    Map<String, String> map = tableValues.get(table.getSelectionIndex());
+                    Map<String, Object> map = tableValues.get(table.getSelectionIndex());
                     if (map != null) {
                         copyToCliboard(map, items);
                     }
@@ -2004,8 +2055,8 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
 
             public void handleEvent(final Event event) {
                 if (clipboard != null) {
-                    List<Map<String, String>> tableValues = new ArrayList<Map<String, String>>();
-                    List<Map<String, String>> paramValues = (List<Map<String, String>>) param.getValue();
+                    List<Map<String, Object>> tableValues = new ArrayList<Map<String, Object>>();
+                    List<Map<String, Object>> paramValues = (List<Map<String, Object>>) param.getValue();
                     copyTableValue(paramValues, tableValues, items);
 
                     int index = table.getSelectionIndex();
@@ -2026,8 +2077,8 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
         final Listener upLineListener = new Listener() {
 
             public void handleEvent(final Event event) {
-                List<Map<String, String>> tableValues = new ArrayList<Map<String, String>>();
-                List<Map<String, String>> paramValues = (List<Map<String, String>>) param.getValue();
+                List<Map<String, Object>> tableValues = new ArrayList<Map<String, Object>>();
+                List<Map<String, Object>> paramValues = (List<Map<String, Object>>) param.getValue();
                 copyTableValue(paramValues, tableValues, items);
 
                 if (table.getSelectionIndex() > 0) {
@@ -2043,8 +2094,8 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
         final Listener downLineListener = new Listener() {
 
             public void handleEvent(final Event event) {
-                List<Map<String, String>> tableValues = new ArrayList<Map<String, String>>();
-                List<Map<String, String>> paramValues = (List<Map<String, String>>) param.getValue();
+                List<Map<String, Object>> tableValues = new ArrayList<Map<String, Object>>();
+                List<Map<String, Object>> paramValues = (List<Map<String, Object>>) param.getValue();
                 copyTableValue(paramValues, tableValues, items);
 
                 if (table.getSelectionIndex() < tableValues.size() - 1) {
@@ -2196,26 +2247,26 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
         return null;
     }
 
-    private void copyTableValue(final List<Map<String, String>> paramValues, final List<Map<String, String>> tableValues,
-            String[] items) {
-        for (Map<String, String> currentLine : paramValues) {
+    private void copyTableValue(final List<Map<String, Object>> paramValues,
+            final List<Map<String, Object>> tableValues, String[] items) {
+        for (Map<String, Object> currentLine : paramValues) {
             tableValues.add(copyLine(currentLine, items));
         }
     }
 
-    private Map<String, String> copyLine(Map<String, String> currentLine, String[] items) {
-        Map<String, String> newLine = new HashMap<String, String>();
+    private Map<String, Object> copyLine(Map<String, Object> currentLine, String[] items) {
+        Map<String, Object> newLine = new HashMap<String, Object>();
         for (int i = 0; i < items.length; i++) {
             newLine.put(items[i], currentLine.get(items[i]));
         }
         return newLine;
     }
 
-    private Map<String, String> clipboard;
+    private Map<String, Object> clipboard;
 
     private boolean checkErrorsWhenViewRefreshed;
 
-    private void copyToCliboard(Map<String, String> line, String[] items) {
+    private void copyToCliboard(Map<String, Object> line, String[] items) {
         clipboard = copyLine(line, items);
     }
 
@@ -2256,8 +2307,8 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
 
         oldProcessType = (String) elem.getPropertyValue(EParameterName.PROCESS_TYPE_PROCESS.getName());
         if (oldProcessType != null) {
-            String[] list = elem.getElementParameter(EParameterName.PROCESS_TYPE_PROCESS.getName()).getListItemsDisplayName(
-                    currentLanguage);
+            String[] list = elem.getElementParameter(EParameterName.PROCESS_TYPE_PROCESS.getName())
+                    .getListItemsDisplayName();
             if ((oldProcessType.equals("") || (list.length == 0))) {
                 updateProcessList();
                 updateContextList();
@@ -2460,11 +2511,11 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                     if (param.getField() == EParameterFieldType.CLOSED_LIST) {
                         CCombo c = (CCombo) object;
                         String value = new String(""); //$NON-NLS-1$
-                        int nbInList = 0, nbMax = param.getListItemsValue(currentLanguage).length;
+                        int nbInList = 0, nbMax = param.getListItemsValue().length;
                         String name = (String) elem.getPropertyValue(param.getName());
                         while (value.equals(new String("")) && nbInList < nbMax) { //$NON-NLS-1$
-                            if (name.equals(param.getListItemsValue(currentLanguage)[nbInList])) {
-                                value = param.getListItemsDisplayName(currentLanguage)[nbInList];
+                            if (name.equals(param.getListItemsValue()[nbInList])) {
+                                value = param.getListItemsDisplayName()[nbInList];
                             }
                             nbInList++;
                         }
@@ -2558,8 +2609,8 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
     public DynamicTabbedPropertySection(final EComponentCategory section) {
         super();
         this.section = section;
-        currentLanguage = ((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY)).getProject()
-                .getLanguage();
+        // currentLanguage = ((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY))
+        // .getProject().getLanguage();
 
         repositoryConnectionItemMap = new HashMap<String, ConnectionItem>();
 
@@ -2893,8 +2944,8 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
             if (param.getRepositoryValue() != null) {
                 if (param.getRepositoryValue().equals(repositoryName)) {
                     String value = (String) param.getValue();
-                    String[] valuesList = (String[]) param.getListItemsValue(currentLanguage);
-                    String[] originalList = param.getListItemsDisplayName(currentLanguage);
+                    String[] valuesList = (String[]) param.getListItemsValue();
+                    String[] originalList = param.getListItemsDisplayName();
                     for (int i = 0; i < valuesList.length; i++) {
                         if (valuesList[i].equals(value)) {
                             return originalList[i];

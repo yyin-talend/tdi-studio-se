@@ -48,7 +48,7 @@
       NUM_ROW="3"
       NB_LINES="3"
     >
-      <ITEMS CODE_LANGUAGE="perl">
+      <ITEMS>
         <ITEM NAME="COLNAME" />
         <ITEM NAME="SORT" />
         <ITEM NAME="ORDER" />

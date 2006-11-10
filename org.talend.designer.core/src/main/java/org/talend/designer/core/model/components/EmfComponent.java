@@ -97,8 +97,8 @@ public class EmfComponent implements IComponent {
     public EmfComponent(File file) throws SystemException {
         this.file = file;
         load();
-        codeLanguage = ((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY)).getProject()
-                .getLanguage();
+        codeLanguage = ((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY))
+                .getProject().getLanguage();
     }
 
     public boolean isPropagateSchema() {
@@ -511,7 +511,7 @@ public class EmfComponent implements IComponent {
                 param.setValue(new Boolean(false));
             } else {
                 if (type.equals(EParameterFieldType.TABLE)) {
-                    param.setValue(new ArrayList<Map<String, String>>());
+                    param.setValue(new ArrayList<Map<String, Object>>());
                 } else {
                     param.setValue("");
                 }
@@ -534,7 +534,8 @@ public class EmfComponent implements IComponent {
             param.setNotShowIf(xmlParam.getNOTSHOWIF());
             param.setRepositoryValue(xmlParam.getREPOSITORYVALUE());
 
-            if (!param.getField().equals(EParameterFieldType.TABLE) && !param.getField().equals(EParameterFieldType.CLOSED_LIST)) {
+            if (!param.getField().equals(EParameterFieldType.TABLE)
+                    && !param.getField().equals(EParameterFieldType.CLOSED_LIST)) {
                 List<DEFAULTType> listDefault = xmlParam.getDEFAULT();
                 for (DEFAULTType defaultType : listDefault) {
                     IElementParameterDefaultValue defaultValue = new ElementParameterDefaultValue();
@@ -545,7 +546,9 @@ public class EmfComponent implements IComponent {
                 }
             }
 
-            addItemsPropertyParameters(listParam, xmlParam, param, type);
+            if (xmlParam.getITEMS() != null) {
+                addItemsPropertyParameters(xmlParam.getNAME(), xmlParam.getITEMS(), param, type);
+            }
 
             param.setCategory(EComponentCategory.PROPERTY);
             listParam.add(param);
@@ -576,65 +579,66 @@ public class EmfComponent implements IComponent {
         }
     }
 
-    public void addItemsPropertyParameters(final List<ElementParameter> listParam, PARAMETERType xmlParam,
-            ElementParameter param, EParameterFieldType type) {
+    public void addItemsPropertyParameters(String paramName, ITEMSType items, ElementParameter param,
+            EParameterFieldType type) {
         ITEMType item;
 
-        if (xmlParam.getITEMS() != null) {
-            EList listItems = xmlParam.getITEMS();
-            for (int j = 0; j < listItems.size(); j++) {
-                ITEMSType items = (ITEMSType) listItems.get(0);
-                ECodeLanguage language = ECodeLanguage.getCodeLanguage(items.getCODELANGUAGE());
-
-                int nbItems = items.getITEM().size();
-                String[] listRepositoryItem = new String[nbItems];
-                String[] listItemsDisplayValue = new String[nbItems];
-                String[] listItemsDisplayCodeValue = new String[nbItems];
-                String[] listItemsValue = new String[nbItems];
-                String[] listItemsShowIf = new String[nbItems];
-                String[] listItemsNotShowIf = new String[nbItems];
-                for (int k = 0; k < nbItems; k++) {
-                    item = (ITEMType) items.getITEM().get(k);
-                    listItemsDisplayCodeValue[k] = item.getNAME();
-                    listItemsDisplayValue[k] = getTranslatedValue(xmlParam.getNAME() + "." + language.getName() + ".ITEM."
-                            + item.getNAME());
-                    if (!type.equals(EParameterFieldType.TABLE)) {
-                        listItemsValue[k] = item.getVALUE();
-                    } else {
-                        listItemsValue[k] = item.getNAME();
-                    }
-                    listRepositoryItem[k] = item.getREPOSITORYITEM();
-                    listItemsShowIf[k] = item.getSHOWIF();
-                    listItemsNotShowIf[k] = item.getNOTSHOWIF();
-                }
-
-                param.setListItemsDisplayName(language, listItemsDisplayValue);
-                param.setListItemsDisplayCodeName(language, listItemsDisplayCodeValue);
-                param.setListItemsValue(language, listItemsValue);
-                param.setListRepositoryItems(language, listRepositoryItem);
-                param.setListItemsShowIf(language, listItemsShowIf);
-                param.setListItemsNotShowIf(language, listItemsNotShowIf);
-                if (!type.equals(EParameterFieldType.TABLE)) {
-                    Object defaultValue;
-                    if (items.getDEFAULT() != null) {
-                    	boolean found = false;
-                    	String temp = items.getDEFAULT();
-                    	for (int i = 0; i < listItemsDisplayCodeValue.length & !found; i++) {
-                    		if (listItemsDisplayCodeValue[i].equals(items.getDEFAULT())) {
-                    			found = true;
-                    			temp = listItemsValue[i];
-                    		}
-						}
-                        defaultValue = new String(temp);
-                    } else {
-                        defaultValue = "";
-                    }
-                    param.setDefaultClosedListValue(language, defaultValue);
-                    if (language == codeLanguage) {
-                        param.setValue(defaultValue);
-                    }
+        int nbItems = items.getITEM().size();
+        String[] listRepositoryItem = new String[nbItems];
+        String[] listItemsDisplayValue = new String[nbItems];
+        String[] listItemsDisplayCodeValue = new String[nbItems];
+        Object[] listItemsValue = new Object[nbItems];
+        String[] listItemsShowIf = new String[nbItems];
+        String[] listItemsNotShowIf = new String[nbItems];
+        String[] listField = new String[nbItems];
+        for (int k = 0; k < nbItems; k++) {
+            item = (ITEMType) items.getITEM().get(k);
+            listItemsDisplayCodeValue[k] = item.getNAME();
+            listItemsDisplayValue[k] = getTranslatedValue(paramName + ".ITEM." + item.getNAME());
+            if (!type.equals(EParameterFieldType.TABLE)) {
+                listItemsValue[k] = item.getVALUE();
+            } else {
+                if (EParameterFieldType.CLOSED_LIST.getName().equals(item.getFIELD())) {
+                    ElementParameter newParam = new ElementParameter();
+                    newParam.setName(item.getNAME());
+                    newParam.setDisplayName("");
+                    newParam.setField(EParameterFieldType.CLOSED_LIST);
+                    addItemsPropertyParameters(paramName + ".ITEM." + item.getNAME(), item.getITEMS(), newParam,
+                            EParameterFieldType.CLOSED_LIST);
+                    listItemsValue[k] = newParam;
+                } else {
+                    listItemsValue[k] = item.getNAME();
                 }
             }
+            listField[k] = item.getFIELD();
+            listRepositoryItem[k] = item.getREPOSITORYITEM();
+            listItemsShowIf[k] = item.getSHOWIF();
+            listItemsNotShowIf[k] = item.getNOTSHOWIF();
+        }
+
+        param.setListItemsDisplayName(listItemsDisplayValue);
+        param.setListItemsDisplayCodeName(listItemsDisplayCodeValue);
+        param.setListItemsValue(listItemsValue);
+        param.setListRepositoryItems(listRepositoryItem);
+        param.setListItemsShowIf(listItemsShowIf);
+        param.setListItemsNotShowIf(listItemsNotShowIf);
+        if (!type.equals(EParameterFieldType.TABLE)) {
+            Object defaultValue;
+            if (items.getDEFAULT() != null) {
+                boolean found = false;
+                String temp = items.getDEFAULT();
+                for (int i = 0; i < listItemsDisplayCodeValue.length & !found; i++) {
+                    if (listItemsDisplayCodeValue[i].equals(items.getDEFAULT())) {
+                        found = true;
+                        temp = (String) listItemsValue[i];
+                    }
+                }
+                defaultValue = new String(temp);
+            } else {
+                defaultValue = "";
+            }
+            param.setDefaultClosedListValue(defaultValue);
+            param.setValue(defaultValue);
         }
     }
 
@@ -773,7 +777,8 @@ public class EmfComponent implements IComponent {
                     msg = Messages.getString("modules.required");
                 }
 
-                ModuleNeeded componentImportNeeds = new ModuleNeeded(this, importType.getMODULE(), msg, importType.isREQUIRED());
+                ModuleNeeded componentImportNeeds = new ModuleNeeded(this, importType.getMODULE(), msg, importType
+                        .isREQUIRED());
 
                 componentImportNeedsList.add(componentImportNeeds);
             }
