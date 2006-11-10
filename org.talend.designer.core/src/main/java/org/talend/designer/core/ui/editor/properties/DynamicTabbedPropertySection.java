@@ -36,6 +36,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.commands.CommandStack;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.fieldassist.DecoratedField;
 import org.eclipse.jface.fieldassist.FieldDecoration;
 import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
@@ -74,6 +75,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.DirectoryDialog;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Listener;
@@ -481,6 +483,14 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                             }
 
                         }
+                    }
+                    
+                    //When no repository avaiable on "Repository" mode, open a MessageDialog for proposal.
+                    if(repositoryName==null || repositoryName.length()==0)
+                    {
+                        MessageDialog.openError(composite.getShell(), Messages.getString("NoRepositoryDialog.Title"),
+                                Messages.getString("NoRepositoryDialog.Text"));
+                        return;
                     }
                     connParameters.setRepositoryName(repositoryName);
                 }
