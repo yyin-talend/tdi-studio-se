@@ -153,20 +153,21 @@ public class DBStructureComposite extends Composite {
         RepositoryView repositoryView = (RepositoryView) PlatformUI.getWorkbench().getActiveWorkbenchWindow()
                 .getActivePage().findView(RepositoryView.VIEW_ID);
 
-        treeViewer = new TreeViewer(this);
+        treeViewer = new TreeViewer(this, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL | SWT.FULL_SELECTION);
         //
         treeViewer.getControl().setLayoutData(new GridData(GridData.FILL, GridData.FILL, true, true, 2, 1));
         treeViewer.setUseHashlookup(true);
 
-        treeViewer.setContentProvider(new DBTreeLabelProvider());
-        treeViewer.setLabelProvider(new DBTreeLabelProvider());
+        DBTreeLabelProvider treeLabelProvider = new DBTreeLabelProvider();
+        treeViewer.setContentProvider(treeLabelProvider);
+        treeViewer.setLabelProvider(treeLabelProvider);
 
         Tree tree = treeViewer.getTree();
         TreeColumn database = new TreeColumn(tree, SWT.LEFT);
         database.setText("Databases");
         database.setWidth(COLUMN_DATABASE_WIDTH);
 
-        TreeColumn repository = new TreeColumn(tree, SWT.RIGHT_TO_LEFT);
+        TreeColumn repository = new TreeColumn(tree, SWT.LEFT);
         repository.setText("Repository");
         repository.setWidth(COLUMN_REPOSITORY_WIDTH);
 
