@@ -431,6 +431,7 @@ public class LoginComposite extends Composite {
 
         RepositoryContext repositoryContext = getRepositoryContext();
         IRepositoryFactory repositoryFactory = RepositoryFactoryProvider.getInstance(repositoryContext);
+        repositoryFactory.initialize();
 
         Project[] projects;
         try {

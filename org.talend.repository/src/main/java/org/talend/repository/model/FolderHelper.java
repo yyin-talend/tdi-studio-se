@@ -46,25 +46,17 @@ import org.talend.core.model.properties.Property;
  * $Id$
  * 
  */
-public class FolderHelper {
+public abstract class FolderHelper {
 
-    private Project project;
+    protected Project project;
 
     /**
      * DOC tguiu FolderHelper constructor comment.
      * 
      * @param project
      */
-    private FolderHelper(Project project) {
+    protected FolderHelper(Project project) {
         this.project = project;
-    }
-
-    public static FolderHelper createInstance(org.talend.core.model.general.Project project) {
-        return createInstance(project.getEmfProject());
-    }
-
-    public static FolderHelper createInstance(Project project) {
-        return new FolderHelper(project);
     }
 
     public void createSystemFolder(IPath path) {
@@ -90,7 +82,7 @@ public class FolderHelper {
             String segment = path.segment(i);
             FolderItem child = findChildFolder(folder, segment);
             if (child == null) {
-                child = createFolder(project.eResource(), segment, type);
+                child = doCreateFolder(segment, type);
                 if (folder == null) {
                     project.getFolders().add(child);
                 } else {
@@ -101,26 +93,7 @@ public class FolderHelper {
         }
     }
 
-    /**
-     * DOC tguiu Comment method "createFolder".
-     * 
-     * @param resource
-     * @param name
-     * @param type
-     * @return
-     */
-    private FolderItem createFolder(Resource resource, String name, FolderType type) {
-        FolderItem folder;
-        folder = PropertiesFactory.eINSTANCE.createFolderItem();
-        folder.setType(type);
-        Property property = PropertiesFactory.eINSTANCE.createProperty();
-        resource.getContents().add(property);
-        property.setId(EcoreUtil.generateUUID());
-        property.setLabel(name);
-        folder.setProperty(property);
-        resource.setModified(true);
-        return folder;
-    }
+    protected abstract FolderItem doCreateFolder(String name, FolderType type);
 
     public void deleteFolder(String completePath) {
         deleteFolder(new Path(completePath));
@@ -147,22 +120,10 @@ public class FolderHelper {
         } else {
             previousFolder.getChildren().remove(folder);
         }
-        project.eResource().setModified(true);
-        cleanResource(project.eResource(), folder);
+        removeFromResource(folder);
     }
 
-    /**
-     * DOC tguiu Comment method "cleanResource".
-     * 
-     * @param resource
-     * @param folder
-     */
-    private void cleanResource(Resource resource, FolderItem folder) {
-        resource.getContents().remove(folder.getProperty());
-        for (Object o : folder.getChildren()) {
-            cleanResource(resource, (FolderItem) o);
-        }
-    }
+    protected abstract void removeFromResource(FolderItem folder);
 
     private static FolderItem find(List folders, String name) {
         for (Iterator it = folders.iterator(); it.hasNext();) {
@@ -180,12 +141,6 @@ public class FolderHelper {
         return folders;
     }
 
-    /**
-     * DOC tguiu Comment method "list".
-     * 
-     * @param content
-     * @param folders2
-     */
     private void list(HashSet<IPath> collector, EList content, IPath currentPath) {
         for (Object o : content) {
             if (o instanceof FolderItem) {

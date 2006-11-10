@@ -54,6 +54,8 @@ public class RepositoryFactoryProvider {
 
     private static IRepositoryFactory remoteSingleton = null;
 
+    private static IRepositoryFactory databaseSingleton = null;
+
     private static boolean init = false;
 
     /**
@@ -63,11 +65,7 @@ public class RepositoryFactoryProvider {
         init();
         RepositoryContext repositoryContext = (RepositoryContext) CorePlugin.getContext().getProperty(
                 Context.REPOSITORY_CONTEXT_KEY);
-        if (repositoryContext.getProject().isLocal()) {
-            return localSingleton;
-        } else {
-            return remoteSingleton;
-        }
+        return getInstance(repositoryContext);
     }
 
     public static IRepositoryFactory getInstance(RepositoryContext repositoryContext) {
@@ -75,9 +73,11 @@ public class RepositoryFactoryProvider {
         IRepositoryFactory toReturn = null;
         if (repositoryContext.getType() == ERepositoryType.LOCAL) {
             toReturn = localSingleton;
-        } else {
+        } else if (repositoryContext.getType() == ERepositoryType.REMOTE) {
             toReturn = remoteSingleton;
-        }
+        } else if (repositoryContext.getType() == ERepositoryType.DATABASE) {
+            toReturn = databaseSingleton;
+        } 
         toReturn.setRepositoryContext(repositoryContext);
         return toReturn;
     }
@@ -96,6 +96,9 @@ public class RepositoryFactoryProvider {
                     break;
                 case REMOTE:
                     remoteSingleton = repositoryFactory;
+                    break;
+                case DATABASE:
+                    databaseSingleton = repositoryFactory;
                     break;
                 }
             }
