@@ -242,11 +242,10 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
 
     private EditionControlHelper editionControlHelper;
 
-    // Added by Tang Fengneng(Soyatec) 10/30/2006
+    // Added by ftang.
     private static final String SQLEDITOR = "SQLEDITOR";
 
     private ColorStyledText queryText;
-
     // Ends
 
     /**
@@ -261,10 +260,13 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
     }
 
     /**
-     * Modified by Tang Fengneng(Soyatec), 11/08/2006 DOC dev Comment method "getValueFromRepositoryName".
+     * Modified by ftang.
      * 
-     * @param repositoryName
-     * @return String
+     * Gets value base on repository name.
+     * 
+     * @param repositoryName a string representing repository name
+     * 
+     * @return  a string representing value
      */
     private String getValueFromRepositoryName(String repositoryName) {
         for (IElementParameter param : (List<IElementParameter>) elem.getElementParameters()) {
@@ -432,7 +434,8 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                 getCommandStack().execute(cmd);
             }
 
-            // Added by Tang Fengneng(Soyatec) 11/02/2006
+            // Added by ftang.
+            // Used for opening a sql builder dialog.
             if (info.equals(SQLEDITOR)) {
 
                 ConnectionParameters connParameters = new ConnectionParameters();
@@ -483,13 +486,13 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                 }
 
                 SQLBuilderDialog dial = new SQLBuilderDialog(composite.getShell());
+                connParameters.setQuery(queryText.getText());
                 dial.setConnParameters(connParameters);
 
                 if (Window.OK == dial.open()) {
                     String sql = connParameters.getQuery();
                     queryText.setText("'" + sql + "'");
                 }
-
             }// Ends
         }
 
@@ -1728,7 +1731,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
 
     /**
      * 
-     * Add a button for opening an sql builder dialog, by Tang Fengneng(Soyatec),11/03/2006
+     * Adds a button for opening an sql builder dialog, by ftang.
      * 
      * @param subComposite
      * @param param
@@ -1742,7 +1745,6 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
     private Control addSqlMemo(final Composite subComposite, final IElementParameter param, final int numInRow,
             final int nbInRow, final int top, final Control lastControl, final String language) {
 
-        // Creates button ,added by tang fengneng(Soyatec) 11/02/2006
         final Button openSQLEditorButton;
         final DecoratedField dField1 = new DecoratedField(subComposite, SWT.PUSH, new IControlCreator() {
 
@@ -1753,7 +1755,6 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
 
         Control buttonControl = dField1.getLayoutControl();
         openSQLEditorButton = (Button) dField1.getControl();
-        // openSQLEditorButton.setSize(15, 15);
         openSQLEditorButton.computeSize(SWT.DEFAULT, SWT.DEFAULT);
         openSQLEditorButton.setImage(CorePlugin.getImageDescriptor(DOTS_BUTTON).createImage());
         buttonControl.setBackground(subComposite.getBackground());
@@ -2306,10 +2307,13 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                         case MEMO:
                             lastControl = addMemo(composite, listParam.get(i), numInRow, nbInRow, heightSize, lastControl);
                             break;
+                            
+                        //Modified by ftang, used for opening a sql builder dialog.
                         case MEMO_SQL:
                             lastControl = addSqlMemo(composite, listParam.get(i), numInRow, nbInRow, heightSize, lastControl,
                                     "tsql");
                             break;
+                        //Ends.
 
                         case MEMO_PERL:
                             lastControl = addLanguageMemo(composite, listParam.get(i), numInRow, nbInRow, heightSize,
@@ -2863,12 +2867,15 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
 
     }
 
-    // Added by Tang Fengneng
     /**
-     * Detaild comments.
      * 
-     * @param repositoryName String
-     * @return String
+     * Added by ftang.
+     * 
+     * Gets repository item base on repository name.
+     * 
+     * @param repositoryName a string representing repository name
+     * 
+     * @return  a string representing repository item
      * 
      */
     private String getRepositoryItemFromRepositoryName(String repositoryName) {
