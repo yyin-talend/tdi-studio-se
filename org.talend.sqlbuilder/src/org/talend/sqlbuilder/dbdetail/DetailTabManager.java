@@ -55,7 +55,7 @@ import org.talend.sqlbuilder.sessiontree.model.SessionTreeNode;
  * 
  * <br/>
  *
- * $Id: DetailTabManager.java,v 1.10 2006/11/01 05:41:00 peiqin.hou Exp $
+ * @author yzhang
  *
  */
 public class DetailTabManager {
