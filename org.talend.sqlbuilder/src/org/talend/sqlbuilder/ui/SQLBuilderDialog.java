@@ -200,7 +200,7 @@ public class SQLBuilderDialog extends Dialog {
 
         createDatabaseStructure(sashFormStructureAndEditor);
         createSQLEditor(sashFormStructureAndEditor);
-        sashFormStructureAndEditor.setWeights(new int[] { 1, 3 });
+        sashFormStructureAndEditor.setWeights(new int[] { 3, 6 });
 
         structureComposite.openNewEditor();
 
