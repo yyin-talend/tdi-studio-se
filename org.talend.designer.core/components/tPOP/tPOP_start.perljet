@@ -1,0 +1,115 @@
+<%@ jet
+package="org.talend.designer.codegen.translators"
+imports="
+    org.talend.core.model.process.INode 
+    org.talend.core.model.process.ElementParameterParser
+    org.talend.core.model.metadata.IMetadataTable
+    org.talend.core.model.metadata.IMetadataColumn
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    java.util.List
+    java.util.Map
+"
+class="POPStart"
+%>
+
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+boolean stats = codeGenArgument.isStatistics();
+
+List<IMetadataTable> metadatas = node.getMetadataList();
+if ((metadatas!=null)&&(metadatas.size()>0)) {
+    IMetadataTable metadata = metadatas.get(0);
+    if (metadata!=null) {
+        String cid = metadata.getTableName();
+
+        String host = ElementParameterParser.getValue(node, "__HOST__");
+        String username = ElementParameterParser.getValue(node, "__USERNAME__");
+        String password = ElementParameterParser.getValue(node, "__PASSWORD__");
+        String outputDirectory = ElementParameterParser.getValue(node, "__OUTPUT_DIRECTORY__");
+        String filenamePattern = ElementParameterParser.getValue(node, "__FILENAME_PATTERN__");
+        String allEmails = ElementParameterParser.getValue(node, "__ALL_EMAILS__");
+
+        String maxEmails = ElementParameterParser.getValue(node, "__MAX_EMAILS__");
+        String deleteFromServer = ElementParameterParser.getValue(node, "__DELETE_FROM_SERVER__");
+%>
+
+use Net::POP3;
+use FileHandle;
+
+my %desc_<%=cid %> = (
+    output_directory => <%=outputDirectory %>,
+
+    host => <%=host %>,
+    username => <%=username %>,
+    password => <%=password %>,
+
+    delete_from_server => <%=deleteFromServer%>,
+
+<%
+        if (allEmails.equals("false")) {
+%>
+    max_emails => <%=maxEmails%>,
+<%
+        }
+%>
+);
+
+if (not -d <%=outputDirectory%>) {
+    mkdir <%=outputDirectory%>
+        or die 'Cannot create directory "'.<%=outputDirectory%>.'"';
+}
+
+if (not -w <%=outputDirectory%>) {
+    die 'Cannot write files in '.<%=outputDirectory%>;
+}
+
+{
+    my $pop = Net::POP3->new(
+        <%=host%>,
+    )
+        or die 'Cannot connect to POP server';
+
+    if ($pop->login(<%=username%>, <%=password%>) > 0) {
+        my $msgnums = $pop->list;
+<%
+        if (allEmails.equals("false")) {
+%>
+        my $msg_count = 0;
+<%
+        }
+%>
+
+        foreach my $msgnum (keys %$msgnums) {
+<%
+        if (allEmails.equals("false")) {
+%>
+            last if $msg_count++ >= <%=maxEmails%>;
+<%
+        }
+%>
+            my $msg = $pop->get($msgnum);
+
+            open(EMAIL, '>'.<%=outputDirectory%>.'/'.<%=filenamePattern %>);
+            print {EMAIL} @$msg;
+            close(EMAIL);
+
+            $_globals{<%=cid %>}{NB_EMAIL}++;
+
+<%
+        if (deleteFromServer.equals("true")) {
+%>
+            $pop->delete($msgnum);
+<%
+        }
+%>
+        }
+    }
+
+    $pop->quit;
+}
+
+<%
+    }
+}
+%>

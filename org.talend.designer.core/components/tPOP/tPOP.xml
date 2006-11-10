@@ -1,0 +1,117 @@
+<COMPONENT>
+  <HEADER
+    PLATEFORM="ALL"
+    SERIAL=""
+    VERSION="0.101"
+    STATUS="ALPHA"
+    ICON="tPOP.png"
+    COMPATIBILITY="ALL"
+    AUTHOR="Talend"
+    RELEASE_DATE="20050320A"
+    STARTABLE="true"
+    SCHEMA_AUTO_PROPAGATE="true"
+  >
+    <SIGNATURE></SIGNATURE>
+  </HEADER>
+
+  <DOCUMENTATION>
+    <URL/>
+  </DOCUMENTATION>
+
+  <CONNECTORS>
+    <CONNECTOR CTYPE="FLOW" MAX_INPUT="0" MAX_OUTPUT="0"/>
+    <CONNECTOR CTYPE="ITERATE" MAX_OUTPUT="0" MAX_INPUT="1"/>
+    <CONNECTOR CTYPE="BEFORE" MAX_INPUT="1"/>
+    <CONNECTOR CTYPE="AFTER" MAX_INPUT="1"/>
+    <CONNECTOR CTYPE="REFERENCE"/>
+    <CONNECTOR CTYPE="RUN_OK"/>
+    <CONNECTOR CTYPE="RUN_ERROR"/>
+    <CONNECTOR CTYPE="RUN_IF"/>
+  </CONNECTORS>
+
+  <PARAMETERS>
+
+    <PARAMETER
+      NAME="HOST"
+      FIELD="TEXT"
+      REQUIRED="true"
+      NUM_ROW="1"
+    >
+      <DEFAULT>'pop.example.com'</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER
+      NAME="USERNAME"
+      FIELD="TEXT"
+      REQUIRED="true"
+      NUM_ROW="1"
+    >
+      <DEFAULT>'username'</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER
+      NAME="PASSWORD"
+      FIELD="TEXT"
+      REQUIRED="true"
+      NUM_ROW="1"
+    >
+      <DEFAULT>'password'</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER
+      NAME="OUTPUT_DIRECTORY"
+      FIELD="DIRECTORY"
+      NUM_ROW="3"
+    >
+      <DEFAULT>'C:\temp'</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER
+      NAME="FILENAME_PATTERN"
+      FIELD="TEXT"
+      REQUIRED="true"
+      NUM_ROW="4"
+    >
+      <DEFAULT>getDate('CCYYMMDD').'-'.sprintf('%05u', ++$tPOP_counter).'.mail'</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER
+      NAME="ALL_EMAILS"
+      FIELD="CHECK"
+      REQUIRED="true"
+      NUM_ROW="5"
+    >
+      <DEFAULT>true</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER
+      NAME="MAX_EMAILS"
+      FIELD="TEXT"
+      REQUIRED="true"
+      NUM_ROW="5"
+      SHOW_IF="ALL_EMAILS == 'false'"
+    >
+      <DEFAULT>'10'</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER
+      NAME="DELETE_FROM_SERVER"
+      FIELD="CHECK"
+      REQUIRED="true"
+      NUM_ROW="6"
+    >
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER>
+
+  </PARAMETERS>
+
+  <CODEGENERATION>
+    <TEMPLATES>
+      <TEMPLATE MULTIPLE_METHODS="true"/>
+    </TEMPLATES>
+  </CODEGENERATION>
+
+  <RETURNS>
+    <RETURN NAME="NB_EMAIL" TYPE="INT" AVAILABILITY="AFTER"/>
+  </RETURNS>
+</COMPONENT>
