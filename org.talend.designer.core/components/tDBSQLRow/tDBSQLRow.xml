@@ -70,7 +70,7 @@
       <DEFAULT>''</DEFAULT>
     </PARAMETER>
 
-    <PARAMETER NAME="QUERY" FIELD="MEMO" NUM_ROW="6">
+    <PARAMETER NAME="QUERY" FIELD="MEMO_SQL" NUM_ROW="6">
       <DEFAULT>'select id, name from employee'</DEFAULT>
     </PARAMETER>
 
