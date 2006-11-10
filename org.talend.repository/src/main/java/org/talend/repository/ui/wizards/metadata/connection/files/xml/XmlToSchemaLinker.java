@@ -25,6 +25,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.eclipse.jface.fieldassist.IContentProposal;
+import org.eclipse.jface.fieldassist.IContentProposalListener;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
@@ -36,7 +38,11 @@ import org.talend.commons.ui.swt.drawing.link.LinkDescriptor;
 import org.talend.commons.ui.swt.drawing.link.StyleLink;
 import org.talend.commons.ui.swt.drawing.link.TableItemExtremityDescriptor;
 import org.talend.commons.ui.swt.drawing.link.TreeItemExtremityDescriptor;
+import org.talend.commons.ui.swt.proposal.ContentProposalAdapterExtended;
+import org.talend.commons.ui.swt.proposal.TextCellEditorWithProposal;
+import org.talend.commons.ui.swt.proposal.xpath.XPathProposalProvider;
 import org.talend.commons.utils.data.list.ListenableList;
+import org.talend.commons.utils.time.TimeMeasure;
 import org.talend.commons.xml.NodeRetriever;
 import org.talend.core.model.metadata.builder.connection.SchemaTarget;
 import org.talend.core.model.targetschema.editor.ITargetSchemaEditorListener;
@@ -79,6 +85,18 @@ public class XmlToSchemaLinker extends TreeToTableLinker {
         this.treePopulator = treePopulator;
         this.tableEditorView = tableEditorView;
         this.nodeRetriever = new NodeRetriever(treePopulator.getFilePath());
+        XPathProposalProvider proposalProvider = new XPathProposalProvider(this.nodeRetriever);
+        TextCellEditorWithProposal xPathCellEditor = tableEditorView.getXPathCellEditor();
+        xPathCellEditor.setContentProposalProvider(proposalProvider);
+//        xPathCellEditor.getContentProposalAdapter().setFilterStyle(ContentProposalAdapterExtended.FILTER_NONE);
+//        xPathCellEditor.getContentProposalAdapter().addContentProposalListener(new IContentProposalListener() {
+//
+//            public void proposalAccepted(IContentProposal proposal) {
+//                proposal.
+//            }
+//            
+//        });
+        
         init();
     }
 
@@ -191,7 +209,11 @@ public class XmlToSchemaLinker extends TreeToTableLinker {
      */
     private void createLinks(String xPathExpression, TableItem tableItemTarget) {
         Set<String> alreadyProcessedXPath = new HashSet<String>();
-        List<Node> nodeList = this.nodeRetriever.retrieveNodes(xPathExpression);
+        TimeMeasure.start(xPathExpression);
+        List<Node> nodeList = this.nodeRetriever.retrieveListOfNodes(xPathExpression);
+        TimeMeasure.end(xPathExpression);
+//        System.out.println("nodeList.size()="+nodeList.size());
+        
         if (nodeList != null) {
             for (Node node : nodeList) {
                 String absoluteXPathFromNode = NodeRetriever.getAbsoluteXPathFromNode(node);

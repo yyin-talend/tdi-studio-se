@@ -349,9 +349,8 @@ public class TreeToTableLinker extends BackgroundRefresher {
             Rectangle bounds = item.getBounds();
             maxWidth = Math.max(maxWidth, bounds.x + bounds.width);
             if (item.getExpanded()) {
-                return findXRightStartBezierLink(item.getItems(), maxWidth);
+            	maxWidth = findXRightStartBezierLink(item.getItems(), maxWidth);
             }
-            item.getBounds();
         }
         return maxWidth;
     }
