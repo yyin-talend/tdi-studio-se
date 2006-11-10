@@ -24,7 +24,7 @@ package org.talend.sqlbuilder.util;
 import org.talend.repository.ui.utils.DataStringConnection;
 
 /**
- * DOC dev class global comment. Detailled comment. <br/> Save user input connection parameters. $Id:
+ * This class is used for representing connection parameters. <br/>
  * 
  * @author ftang
  * 
@@ -51,6 +51,9 @@ public class ConnectionParameters {
 
     private String repositoryName;
 
+    /**
+     * ConnectionParameters constructor.
+     */
     public ConnectionParameters() {
 
     }
@@ -268,7 +271,10 @@ public class ConnectionParameters {
 
     }
 
-    @Override
+    /* 
+     * (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
     public String toString() {
         StringBuilder sb = new StringBuilder();
         String enter = "\n";

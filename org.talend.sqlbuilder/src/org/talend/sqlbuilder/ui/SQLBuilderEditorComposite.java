@@ -42,8 +42,6 @@ import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.custom.VerifyKeyListener;
 import org.eclipse.swt.events.ControlListener;
-import org.eclipse.swt.events.KeyAdapter;
-import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.VerifyEvent;
@@ -78,9 +76,9 @@ import org.talend.sqlbuilder.util.ConnectionParameters;
 import org.talend.sqlbuilder.util.UIUtils;
 
 /**
- * DOC dev class global comment. Detailled comment <br/>
+ * This class is responsible for creating editor composite.<br/>
  * 
- * $Id: SQLBuilderEditorComposite.java,v 1.51 2006/11/09 08:40:43 tangfn Exp $
+ * $Id: SQLBuilderEditorComposite.java,v 1.51 2006/11/09 08:40:43 ftang Exp $
  * 
  */
 public class SQLBuilderEditorComposite extends Composite implements ISQLEditor {
@@ -121,6 +119,13 @@ public class SQLBuilderEditorComposite extends Composite implements ISQLEditor {
 
     private final String language = "tsql";
 
+    /**
+     * SQLBuilderEditorComposite constructor.
+     * 
+     * @param parent
+     * @param tabItem
+     * @param style
+     */
     public SQLBuilderEditorComposite(Composite parent, CTabItem tabItem, int style) {
         super(parent, style);
         this.tabItem = tabItem;
@@ -128,8 +133,9 @@ public class SQLBuilderEditorComposite extends Composite implements ISQLEditor {
     }
 
     /**
+     * Initializes UI compoents.
      * 
-     * DOC dev Comment method "initialContent".
+     * @param parent
      */
     private void initialContent(Composite parent) {
 
@@ -148,13 +154,13 @@ public class SQLBuilderEditorComposite extends Composite implements ISQLEditor {
     }
 
     /**
+     * Creates UI for editor.
      * 
-     * DOC dev Comment method "createEditorArea".
+     * @param parent
      */
     private void createEditorArea(Composite parent) {
 
         // create divider line
-
         Composite div1 = new Composite(parent, SWT.NONE);
         GridData lgid = new GridData();
         lgid.grabExcessHorizontalSpace = true;
@@ -165,7 +171,6 @@ public class SQLBuilderEditorComposite extends Composite implements ISQLEditor {
         div1.setBackground(parent.getShell().getDisplay().getSystemColor(SWT.COLOR_WIDGET_NORMAL_SHADOW));
 
         // create text viewer
-
         GridData gid = new GridData();
         gid.grabExcessHorizontalSpace = gid.grabExcessVerticalSpace = true;
         gid.horizontalAlignment = gid.verticalAlignment = GridData.FILL;
@@ -191,7 +196,7 @@ public class SQLBuilderEditorComposite extends Composite implements ISQLEditor {
     }
 
     /**
-     * DOC dev Comment method "createEditorProposal".
+     * Creates proposal for editor.
      */
     private void createEditorProposal() {
         try {
@@ -214,8 +219,9 @@ public class SQLBuilderEditorComposite extends Composite implements ISQLEditor {
     }
 
     /**
+     * Creates UI for status bar.
      * 
-     * DOC dev Comment method "createStatusArea".
+     * @param parent
      */
     private void createStatusArea(Composite parent) {
 
@@ -338,11 +344,21 @@ public class SQLBuilderEditorComposite extends Composite implements ISQLEditor {
 
     }
 
+    /**
+     * Adds resize listener.
+     * 
+     * @param listener
+     */
     public void addResizeListener(ControlListener listener) {
 
         coolBar.addControlListener(listener);
     }
 
+    /**
+     * Adds default actions.
+     * 
+     * @param mgr
+     */
     private void addDefaultActions(ToolBarManager mgr) {
         mgr.removeAll();
 
@@ -380,28 +396,37 @@ public class SQLBuilderEditorComposite extends Composite implements ISQLEditor {
         });
     }
 
-    /**
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.sqlbuilder.ui.editor.ISQLEditor#getSessionTreeNode()
      */
     public SessionTreeNode getSessionTreeNode() {
         return this.sessionTreeNode;
     }
 
-    /**
+    /*
+     * (non-Javadoc)
      * 
+     * @see org.talend.sqlbuilder.ui.editor.ISQLEditor#getIfLimit()
      */
     public boolean getIfLimit() {
         return ifLimit;
     }
 
-    /**
+    /*
+     * (non-Javadoc)
      * 
+     * @see org.talend.sqlbuilder.ui.editor.ISQLEditor#getMaxResult()
      */
     public String getMaxResult() {
         return maxResultText.getText();
     }
 
-    /**
+    /*
+     * (non-Javadoc)
      * 
+     * @see org.talend.sqlbuilder.ui.editor.ISQLEditor#setSessionTreeNode(org.talend.sqlbuilder.sessiontree.model.SessionTreeNode)
      */
     public void setSessionTreeNode(SessionTreeNode node) {
         Assert.isNotNull(node, "this node can not be null");
@@ -416,6 +441,9 @@ public class SQLBuilderEditorComposite extends Composite implements ISQLEditor {
         createEditorProposal();
     }
 
+    /* (non-Javadoc)
+     * @see org.talend.sqlbuilder.ui.editor.ISQLEditor#getRepositoryName()
+     */
     public String getRepositoryName() {
         if (sessionTreeNode == null) {
             return "";
@@ -424,16 +452,17 @@ public class SQLBuilderEditorComposite extends Composite implements ISQLEditor {
         return repositoryName;
     }
 
+    
+    /* (non-Javadoc)
+     * @see org.talend.sqlbuilder.ui.editor.ISQLEditor#getSQLToBeExecuted()
+     */
     public String getSQLToBeExecuted() {
         return colorText.getText();
-        // return sqlTextViewer.getTextWidget().getText();
     }
 
-    /**
-     * 
-     * DOC dev Comment method "setEditorContent".
-     * 
-     * @param connParam
+    
+    /* (non-Javadoc)
+     * @see org.talend.sqlbuilder.ui.editor.ISQLEditor#setEditorContent(org.talend.sqlbuilder.util.ConnectionParameters)
      */
     public void setEditorContent(ConnectionParameters connParam) {
         this.connParam = connParam;
@@ -441,6 +470,9 @@ public class SQLBuilderEditorComposite extends Composite implements ISQLEditor {
 
     }
 
+    /* (non-Javadoc)
+     * @see org.talend.sqlbuilder.ui.editor.ISQLEditor#doSaveAs()
+     */
     public void doSaveAs() {
         FileDialog dialog = new FileDialog(this.getShell(), SWT.SAVE);
         dialog.setText(Messages.getString("SQLEditor.SaveAsDialog.Title"));
@@ -481,18 +513,27 @@ public class SQLBuilderEditorComposite extends Composite implements ISQLEditor {
         }
     }
 
+    
+    /* (non-Javadoc)
+     * @see org.talend.sqlbuilder.ui.editor.ISQLEditor#clearText()
+     */
     public void clearText() {
         this.colorText.setText("");
 
     }
 
+    /* (non-Javadoc)
+     * @see org.talend.sqlbuilder.ui.editor.ISQLEditor#setDefaultEditor(boolean)
+     */
     public void setDefaultEditor(boolean isDefaultEditor) {
         this.isDefaultEditor = isDefaultEditor;
 
     }
 
+    /* (non-Javadoc)
+     * @see org.talend.sqlbuilder.ui.editor.ISQLEditor#setEditorContent(java.lang.String)
+     */
     public void setEditorContent(String string) {
         this.colorText.setText(string);
     }
-
 }

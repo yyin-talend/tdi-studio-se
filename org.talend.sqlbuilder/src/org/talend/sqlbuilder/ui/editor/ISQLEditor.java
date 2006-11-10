@@ -25,51 +25,93 @@ import org.eclipse.swt.widgets.Shell;
 import org.talend.sqlbuilder.sessiontree.model.SessionTreeNode;
 import org.talend.sqlbuilder.util.ConnectionParameters;
 
-
 /**
- * DOC dev  class global comment. Detailled comment
- * <br/>
- *
+ * This interface is responsible for defining methods for SQLBuilderEditorComposite class.
+ * 
  * @author ftang
- *
+ * 
  */
 public interface ISQLEditor {
 
     /**
-     * DOC dev Comment method "getSessionTreeNode".
-     * @return
+     * Gets SessionTreeNode.
+     * 
+     * @return an instance of SessionTreeNode.
      */
-    
     SessionTreeNode getSessionTreeNode();
 
-    //void setMessage(String msg);
-
     /**
-     * DOC dev Comment method "getShell".
-     * @return
+     * Gets Shell.
+     * 
+     * @return an instance of Shell.
      */
     Shell getShell();
 
+    /**
+     * Checks if sql result length is limited.
+     */
     boolean getIfLimit();
+
+    /**
+     * Gets the allowed max result length .
+     * 
+     * @return
+     */
     String getMaxResult();
-   
+
+    /**
+     * Sets sessionTreeNode.
+     * 
+     * @param sessionTreeNode
+     */
     void setSessionTreeNode(SessionTreeNode sessionTreeNode);
 
-   // Object getEditorToolBar();
-
+    /**
+     * 
+     * Gets sql query.
+     * 
+     * @return
+     */
     String getSQLToBeExecuted();
-    
+
+    /**
+     * 
+     * Sets query text into editor.
+     */
     void setEditorContent(ConnectionParameters connParam);
 
+    /**
+     * Save current editor's text as a file.
+     */
     void doSaveAs();
 
+    /**
+     * Clear current editor's text.
+     */
     void clearText();
 
+    /**
+     * 
+     * Refresh actions availability on the toolbar.
+     */
     void refresh(boolean b);
 
+    /**
+     * Gets repository name.
+     * 
+     * @return a string
+     */
     String getRepositoryName();
-    
+
+    /**
+     * Sets the flag for indicating current editor whether is the default one.
+     * 
+     * @param isDefaultEditor
+     */
     void setDefaultEditor(boolean isDefaultEditor);
 
+    /**
+     * Sets the content of editor.
+     */
     void setEditorContent(String string);
 }
