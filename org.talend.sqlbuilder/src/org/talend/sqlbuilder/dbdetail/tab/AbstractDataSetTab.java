@@ -36,10 +36,12 @@ import org.talend.sqlbuilder.dataset.dataset.DataSetTable;
 
 
 /**
- * DOC dev  class global comment. Detailled comment
+ * Details Tab
+ *
  * <br/>
  *
  * $Id: AbstractDataSetTab.java,v 1.7 2006/11/01 01:24:10 yi.zhang Exp $
+ * @author yzhang
  *
  */
 public abstract class AbstractDataSetTab extends AbstractTab {
