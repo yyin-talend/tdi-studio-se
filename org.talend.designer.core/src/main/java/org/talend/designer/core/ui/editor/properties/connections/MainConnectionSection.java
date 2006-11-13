@@ -38,12 +38,14 @@ import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.editor.MetadataTableEditor;
 import org.talend.core.model.process.EComponentCategory;
+import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.ui.metadata.editor.MetadataTableEditorView;
 import org.talend.designer.core.ui.MultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.connections.ConnLabelEditPart;
+import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.connections.ConnectionPart;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.properties.DynamicTabbedPropertySection;
@@ -64,6 +66,8 @@ public class MainConnectionSection extends DynamicTabbedPropertySection {
 
     private boolean built = false;
 
+    private Connection connection;
+
     public MainConnectionSection() {
         super(EComponentCategory.MAIN);
     }
@@ -75,15 +79,17 @@ public class MainConnectionSection extends DynamicTabbedPropertySection {
      */
     @Override
     public void refresh() {
-        if (!built) {
-            addComponents();
-        }
-        IMetadataTable outputMetaTable = ((Node) elem).getMetadataList().get(0);
-        metadataTableEditor.setMetadataTable(outputMetaTable);
-        metadataTableEditorView.setMetadataTableEditor(metadataTableEditor);
-        metadataTableEditorView.getTableViewerCreator().getTableViewer().refresh();
+        if (hasSchemaToDisplay()) {
+            if (!built) {
+                addComponents();
+            }
+            IMetadataTable outputMetaTable = ((Node) elem).getMetadataList().get(0);
+            metadataTableEditor.setMetadataTable(outputMetaTable);
+            metadataTableEditorView.setMetadataTableEditor(metadataTableEditor);
+            metadataTableEditorView.getTableViewerCreator().getTableViewer().refresh();
 
-        composite.pack();
+            composite.pack();
+        }
     }
 
     /*
@@ -106,9 +112,11 @@ public class MainConnectionSection extends DynamicTabbedPropertySection {
 
         Object input = ((IStructuredSelection) selection).getFirstElement();
         if (input instanceof ConnectionPart) {
+            connection = (Connection) ((ConnectionPart) input).getModel();
             elem = (Element) ((ConnectionPart) input).getSource().getModel();
         }
         if (input instanceof ConnLabelEditPart) {
+            connection = (Connection) ((ConnectionPart) ((ConnLabelEditPart) input).getParent()).getModel();
             elem = (Element) ((ConnectionPart) ((ConnLabelEditPart) input).getParent()).getSource().getModel();
         }
     }
@@ -121,35 +129,41 @@ public class MainConnectionSection extends DynamicTabbedPropertySection {
 
     @Override
     public void addComponents() {
-        List<? extends IElementParameter> listParam = elem.getElementParameters();
+        if (hasSchemaToDisplay()) {
+            List<? extends IElementParameter> listParam = elem.getElementParameters();
 
-        for (IElementParameter cur : listParam) {
-            if (cur.getField() == EParameterFieldType.SCHEMA_TYPE) {
-                addSchemaType(parent, cur, 0, 0, 0, null);
+            for (IElementParameter cur : listParam) {
+                if (cur.getField() == EParameterFieldType.SCHEMA_TYPE) {
+                    addSchemaType(parent, cur, 0, 0, 0, null);
+                }
             }
+
+            FormData data = new FormData();
+
+            Composite container = new Composite(composite, SWT.BORDER);
+            container.setLayout(new FillLayout());
+            container.setBackground(new Color(null, 181, 220, 17));
+            data = new FormData();
+            data.left = new FormAttachment(0, ITabbedPropertyConstants.HSPACE);
+            // TODO SML Put 100 instead of 90 when parent composite bug is resolved
+            data.right = new FormAttachment(90, -ITabbedPropertyConstants.HSPACE);
+            data.top = new FormAttachment(0, curRowSize + ITabbedPropertyConstants.VSPACE);
+            container.setLayoutData(data);
+
+            IMetadataTable outputMetaTable = ((Node) elem).getMetadataList().get(0);
+            metadataTableEditor = new MetadataTableEditor(outputMetaTable, "Schema from " + outputMetaTable.getTableName()
+                    + " output ");
+            metadataTableEditorView = new MetadataTableEditorView(container, SWT.NONE, metadataTableEditor, false);
+            metadataTableEditorView.setReadOnly(true);
+
+            composite.pack();
+
+            built = true;
         }
+    }
 
-        FormData data = new FormData();
-
-        Composite container = new Composite(composite, SWT.BORDER);
-        container.setLayout(new FillLayout());
-        container.setBackground(new Color(null, 181, 220, 17));
-        data = new FormData();
-        data.left = new FormAttachment(0, ITabbedPropertyConstants.HSPACE);
-        // TODO SML Put 100 instead of 90 when parent composite bug is resolved
-        data.right = new FormAttachment(90, -ITabbedPropertyConstants.HSPACE);
-        data.top = new FormAttachment(0, curRowSize + ITabbedPropertyConstants.VSPACE);
-        container.setLayoutData(data);
-
-        IMetadataTable outputMetaTable = ((Node) elem).getMetadataList().get(0);
-        metadataTableEditor = new MetadataTableEditor(outputMetaTable, "Schema from " + outputMetaTable.getTableName()
-                + " output ");
-        metadataTableEditorView = new MetadataTableEditorView(container, SWT.NONE, metadataTableEditor, false);
-        metadataTableEditorView.setReadOnly(true);
-
-        composite.pack();
-
-        built = true;
+    private boolean hasSchemaToDisplay() {
+        return connection.getLineStyle() == EConnectionType.FLOW_MAIN || connection.getLineStyle() == EConnectionType.FLOW_REF;
     }
 
 }
