@@ -205,18 +205,21 @@ public class MapperComponent extends AbstractExternalNode {
         // }
         // }
 
-        Unmarshaller unmarshaller = new Unmarshaller(ExternalMapperData.class);
-        try {
-            externalData = (ExternalMapperData) unmarshaller.unmarshal(stringReader);
-        } catch (MarshalException e) {
-            ExceptionHandler.process(e);
-        } catch (ValidationException e) {
-            ExceptionHandler.process(e);
-        } finally {
-            if (stringReader != null) {
-                stringReader.close();
+        if(stringReader != null) {
+            Unmarshaller unmarshaller = new Unmarshaller(ExternalMapperData.class);
+            try {
+                externalData = (ExternalMapperData) unmarshaller.unmarshal(stringReader);
+            } catch (MarshalException e) {
+                ExceptionHandler.process(e);
+            } catch (ValidationException e) {
+                ExceptionHandler.process(e);
+            } finally {
+                if (stringReader != null) {
+                    stringReader.close();
+                }
             }
         }
+        
     }
 
     public void loadDataOut(final OutputStream out, Writer writer) throws IOException {
