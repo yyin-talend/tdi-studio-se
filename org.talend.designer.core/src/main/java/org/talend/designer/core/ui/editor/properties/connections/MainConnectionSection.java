@@ -88,7 +88,7 @@ public class MainConnectionSection extends DynamicTabbedPropertySection {
             metadataTableEditorView.setMetadataTableEditor(metadataTableEditor);
             metadataTableEditorView.getTableViewerCreator().getTableViewer().refresh();
 
-            composite.pack();
+//            composite.pack();
         }
     }
 
@@ -140,23 +140,25 @@ public class MainConnectionSection extends DynamicTabbedPropertySection {
 
             FormData data = new FormData();
 
-            Composite container = new Composite(composite, SWT.BORDER);
-            container.setLayout(new FillLayout());
-            container.setBackground(new Color(null, 181, 220, 17));
             data = new FormData();
             data.left = new FormAttachment(0, ITabbedPropertyConstants.HSPACE);
             // TODO SML Put 100 instead of 90 when parent composite bug is resolved
-            data.right = new FormAttachment(90, -ITabbedPropertyConstants.HSPACE);
+            data.right = new FormAttachment(100, -ITabbedPropertyConstants.HSPACE);
             data.top = new FormAttachment(0, curRowSize + ITabbedPropertyConstants.VSPACE);
-            container.setLayoutData(data);
+            data.width = 300; // to correct bug of table growing indefinitly
+//            container.setLayoutData(data);
 
             IMetadataTable outputMetaTable = ((Node) elem).getMetadataList().get(0);
             metadataTableEditor = new MetadataTableEditor(outputMetaTable, "Schema from " + outputMetaTable.getTableName()
                     + " output ");
-            metadataTableEditorView = new MetadataTableEditorView(container, SWT.NONE, metadataTableEditor, false);
+            metadataTableEditorView = new MetadataTableEditorView(parent, SWT.READ_ONLY, metadataTableEditor, false);
             metadataTableEditorView.setReadOnly(true);
 
-            composite.pack();
+            Composite compositeEditorView = metadataTableEditorView.getComposite();
+            compositeEditorView.setLayoutData(data);
+            
+//            compositeEditorView.layout();
+//            parent.getParent().layout();
 
             built = true;
         }

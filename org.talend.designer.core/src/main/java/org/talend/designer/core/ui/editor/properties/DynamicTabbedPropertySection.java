@@ -1293,7 +1293,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
             }
         }
 
-        CLabel labelLabel = getWidgetFactory().createCLabel(subComposite, "View Schema");
+        CLabel labelLabel = getWidgetFactory().createCLabel(subComposite, "Edit schema");
         data = new FormData();
         data.left = new FormAttachment(lastControl, 0);
         data.right = new FormAttachment(lastControl, labelLabel.computeSize(SWT.DEFAULT, SWT.DEFAULT).x
