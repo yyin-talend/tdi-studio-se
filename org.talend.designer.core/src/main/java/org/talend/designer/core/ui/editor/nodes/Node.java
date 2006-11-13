@@ -87,6 +87,8 @@ import org.talend.repository.model.ExternalNodesFactory;
  */
 public class Node extends Element implements INode {
 
+    private static Logger log = Logger.getLogger(Node.class);
+
     // true if this node is set as a start node.
     private boolean start;
 
@@ -1120,12 +1122,24 @@ public class Node extends Element implements INode {
         }
     }
 
+    public boolean canModifySchema() {
+        boolean canModifySchema = false;
+        List<? extends IElementParameter> listParam = this.getElementParameters();
+        for (int i = 0; i < listParam.size(); i++) {
+            IElementParameter param = listParam.get(i);
+            if (param.isShow(listParam)) {
+                if (param.getField().equals(EParameterFieldType.SCHEMA_TYPE)) {
+                    canModifySchema = true;
+                }
+            }
+        }
+        return canModifySchema;
+    }
+
     @Override
     public String toString() {
         return getComponentName() + "/" + getLabel();
     }
-
-    private static Logger log = Logger.getLogger(Node.class);
 
     /*
      * (non-Javadoc)

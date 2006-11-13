@@ -337,23 +337,6 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
                     Command cmd = new ExternalNodeChangeCommand(node, externalNode);
                     CommandStack cmdStack = (CommandStack) part.getAdapter(CommandStack.class);
                     cmdStack.execute(cmd);
-                } else {
-                    // if some connections has been created but canceled they will be removed
-
-                    // PTODO SML Remove block if no problems
-                    // for (IMetadataTable metaExternalTable : externalNode.getMetadataList()) {
-                    // String connectionName = metaExternalTable.getTableName();
-                    // boolean exist = false;
-                    // for (IMetadataTable metaNodeTable : node.getMetadataList()) {
-                    // if (metaNodeTable.getTableName().equals(connectionName)) {
-                    // exist = true;
-                    // }
-                    // }
-                    //
-                    // if (!exist) {
-                    // node.getProcess().removeUniqueConnectionName(connectionName);
-                    // }
-                    // }
                 }
             } else {
                 IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
