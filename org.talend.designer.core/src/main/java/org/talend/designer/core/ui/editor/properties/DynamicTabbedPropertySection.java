@@ -1683,7 +1683,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
         Control cLayout = dField.getLayoutControl();
         text = (ColorStyledText) dField.getControl();
 
-        editionControlHelper.register(param.getName(), text, true);
+       editionControlHelper.register(param.getName(), text, true);
 
         FormData d = (FormData) text.getLayoutData();
         d.height = text.getLineHeight() * nbLines;
@@ -1728,7 +1728,8 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
         } else {
             data.left = new FormAttachment(labelLabel, 0, SWT.RIGHT);
         }
-        data.right = new FormAttachment(labelLabel, 20, SWT.LEFT);
+        // Modif SML suite au champs perl qui ne s'affichent plus
+        // data.right = new FormAttachment(labelLabel, 20, SWT.LEFT);
         data.top = new FormAttachment(0, top);
         cLayout.setLayoutData(data);
         // **********************
