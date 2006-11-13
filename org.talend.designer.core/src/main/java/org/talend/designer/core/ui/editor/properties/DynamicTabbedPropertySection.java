@@ -439,8 +439,9 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
             // Added by ftang.
             // Used for opening a sql builder dialog.
             if (info.equals(SQLEDITOR)) {
-
                 ConnectionParameters connParameters = new ConnectionParameters();
+                String selectedComponentName =(String) elem.getPropertyValue(EParameterName.UNIQUE_NAME.getName());
+                connParameters.setSelectedComponentName(selectedComponentName);
                 String repositoryType = (String) elem.getPropertyValue(EParameterName.PROPERTY_TYPE.getName());
                 String propertyName = (String) button.getData(PROPERTY);
                 String query = (String) elem.getPropertyValue(propertyName);
@@ -481,7 +482,6 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                                     repositoryName = displayList[i];
                                 }
                             }
-
                         }
                     }
                     
