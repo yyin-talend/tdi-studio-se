@@ -50,6 +50,11 @@ StopThreadStat();
         }
 %>
 
+printf(
+    "===\nexecution time: %.1f seconds\n===\n",
+    tv_interval($_globals{start}, [gettimeofday])
+);
+
 # +-------------------------------------------------------------------------+
 # | [footer] stops here                                                     |
 # +-------------------------------------------------------------------------+ 

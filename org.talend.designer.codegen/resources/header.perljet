@@ -73,6 +73,9 @@ GetOptions(
 our %_context;
 our %_globals;
 
+use Time::HiRes qw(gettimeofday tv_interval);
+$_globals{start} = [gettimeofday];
+
 if (defined $opt{context}) {
     print(
         'tsInfo>  Running process with context: ',
