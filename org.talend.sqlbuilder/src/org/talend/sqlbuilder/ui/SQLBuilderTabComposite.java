@@ -128,9 +128,9 @@ public class SQLBuilderTabComposite extends Composite {
 		SQLBuilderEditorComposite builderEditorComposite = new SQLBuilderEditorComposite(
 				tabFolder, tabItem, SWT.NONE);
 
-		builderEditorComposite.setSessionTreeNode(node);
-		builderEditorComposite.setEditorContent(connParam);
-		builderEditorComposite.setDefaultEditor(isDefaultEditor);
+        builderEditorComposite.setEditorContent(connParam);
+        builderEditorComposite.setDefaultEditor(isDefaultEditor);
+        builderEditorComposite.setSessionTreeNode(node);		
 
 		builderEditorComposite.setLayoutData(new GridData(SWT.FILL, SWT.TOP,
 				true, false));
