@@ -23,7 +23,7 @@ package org.talend.designer.mapper.ui.visualmap.link;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
-import org.talend.commons.ui.swt.drawing.link.HorizontalBezierLink;
+import org.talend.commons.ui.swt.drawing.link.BezierHorizontalLink;
 import org.talend.commons.ui.swt.drawing.link.IDrawableLink;
 import org.talend.commons.ui.swt.drawing.link.IStyleLink;
 import org.talend.commons.ui.swt.drawing.link.StraightLinkWithHorizontalConnectors;
@@ -137,7 +137,7 @@ public class StyleLinkFactory {
         ExtremityEastArrow eastArrowSource = new ExtremityEastArrow(style);
         style.setExtremity1(eastArrowSource);
         ExtremityEastArrow eastArrowTarget = new ExtremityEastArrow(style);
-        eastArrowTarget.setXOffset(-eastArrowTarget.getSize().x - 1);
+        eastArrowTarget.setXOffset(-eastArrowTarget.getSize().x);
         style.setExtremity2(eastArrowTarget);
         style.setForegroundColor(foregroundColor);
         return style;
@@ -217,7 +217,7 @@ public class StyleLinkFactory {
      */
     private IDrawableLink getZoneToZoneLink(StyleLink style) {
 //        return new HorizontalBezierLink(style);
-        return new StraightLinkWithHorizontalConnectors (style);
+        return new BezierHorizontalLink (style);
     }
 
 }

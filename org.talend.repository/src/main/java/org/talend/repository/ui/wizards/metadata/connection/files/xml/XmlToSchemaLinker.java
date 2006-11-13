@@ -33,7 +33,7 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
-import org.talend.commons.ui.swt.drawing.link.HorizontalBezierLink;
+import org.talend.commons.ui.swt.drawing.link.BezierHorizontalLink;
 import org.talend.commons.ui.swt.drawing.link.LinkDescriptor;
 import org.talend.commons.ui.swt.drawing.link.StyleLink;
 import org.talend.commons.ui.swt.drawing.link.TableItemExtremityDescriptor;
@@ -107,7 +107,7 @@ public class XmlToSchemaLinker extends TreeToTableLinker {
      */
     private void init() {
         this.styleLink = new StyleLink();
-        this.styleLink.setDrawableLink(new HorizontalBezierLink(styleLink));
+        this.styleLink.setDrawableLink(new BezierHorizontalLink(styleLink));
         this.styleLink.setForegroundColor(tree.getDisplay().getSystemColor(SWT.COLOR_GRAY));
         this.styleLink.setLineWidth(2);
         initListeners();

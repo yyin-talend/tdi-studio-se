@@ -100,7 +100,7 @@ public class Link implements IMapperLink {
         boolean leftSidePosition = ((zone1 == Zone.INPUTS || zone1 == Zone.VARS) && zone1 == zone2);
 
         int point1xForTraceLink = point1.x + (leftSidePosition ? 0 : widthTable1 - 4);
-        int point2xForTraceLink = point2.x + (leftSidePosition ? 0 : 1);
+        int point2xForTraceLink = point2.x + (leftSidePosition ? 0 : 0);
 
         int point1yOffset = point1.y + yOffsetPoint1;
         int point2yOffset = point2.y + yOffsetPoint2;

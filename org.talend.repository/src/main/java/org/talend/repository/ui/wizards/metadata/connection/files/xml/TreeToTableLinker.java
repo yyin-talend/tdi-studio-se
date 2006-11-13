@@ -46,7 +46,7 @@ import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.swt.widgets.TreeItem;
 import org.talend.commons.ui.swt.drawing.background.BackgroundRefresher;
-import org.talend.commons.ui.swt.drawing.link.HorizontalBezierLink;
+import org.talend.commons.ui.swt.drawing.link.BezierHorizontalLink;
 import org.talend.commons.ui.swt.drawing.link.IDrawableLink;
 import org.talend.commons.ui.swt.drawing.link.IExtremityLink;
 import org.talend.commons.ui.swt.drawing.link.LinkDescriptor;
