@@ -159,7 +159,7 @@ public class ChangeMetadataCommand extends Command {
             currentOutputMetadata.setListColumns(newOutputMetadata.getListColumns());
 
             String type = (String) node.getPropertyValue(EParameterName.SCHEMA_TYPE.getName());
-            if (type.equals(EmfComponent.REPOSITORY)) {
+            if (type != null && type.equals(EmfComponent.REPOSITORY)) {
                 outputWasRepository = true;
                 node.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), EmfComponent.BUILTIN);
             }
