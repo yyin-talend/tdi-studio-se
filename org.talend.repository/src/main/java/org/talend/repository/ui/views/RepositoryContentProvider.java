@@ -33,6 +33,7 @@ import org.talend.core.model.metadata.MetadataTable;
 import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.metadata.builder.connection.DelimitedFileConnection;
+import org.talend.core.model.metadata.builder.connection.LdifFileConnection;
 import org.talend.core.model.metadata.builder.connection.PositionalFileConnection;
 import org.talend.core.model.metadata.builder.connection.RegexpFileConnection;
 import org.talend.core.model.metadata.builder.connection.TableHelper;
@@ -195,6 +196,15 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
 
             convert(factory.getMetadataFileXml(), metadataFileXmlNode, ERepositoryObjectType.METADATA_FILE_XML, recBinNode);
 
+            // 5.6. Metadata file ldif
+            RepositoryNode metadataFileLdifNode = new RepositoryNode(null, root, ENodeType.SYSTEM_FOLDER);
+            metadataFileLdifNode.setProperties(EProperties.LABEL, ERepositoryObjectType.METADATA_FILE_LDIF);
+            metadataFileLdifNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.METADATA_FILE_LDIF);
+            metadataNode.getChildren().add(metadataFileLdifNode);
+
+            convert(factory.getMetadataFileLdif(), metadataFileLdifNode, ERepositoryObjectType.METADATA_FILE_LDIF, recBinNode);
+
+            
         } catch (PersistenceException e) {
             e.printStackTrace();
         }
@@ -269,6 +279,11 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
         }
         if (type == ERepositoryObjectType.METADATA_FILE_XML) {
             XmlFileConnection metadataConnection = (XmlFileConnection) ((ConnectionItem) repositoryObject.getProperty().getItem())
+                    .getConnection();
+            createTables(recBinNode, node, repositoryObject, metadataConnection);
+        }
+        if (type == ERepositoryObjectType.METADATA_FILE_LDIF) {
+            LdifFileConnection metadataConnection = (LdifFileConnection) ((ConnectionItem) repositoryObject.getProperty().getItem())
                     .getConnection();
             createTables(recBinNode, node, repositoryObject, metadataConnection);
         }

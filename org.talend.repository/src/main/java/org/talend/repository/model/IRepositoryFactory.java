@@ -213,14 +213,13 @@ public interface IRepositoryFactory {
 
     public RootContainer<String, IRepositoryObject> getMetadataFileDelimited() throws PersistenceException;
 
-    // PTODO can : add pour faire fonctionner avec Positional
     public RootContainer<String, IRepositoryObject> getMetadataFilePositional() throws PersistenceException;
 
-    // PTODO can : add pour faire fonctionner avec Regexp
     public RootContainer<String, IRepositoryObject> getMetadataFileRegexp() throws PersistenceException;
 
-    // PTODO can : add pour faire fonctionner avec Xml
     public RootContainer<String, IRepositoryObject> getMetadataFileXml() throws PersistenceException;
+
+    public RootContainer<String, IRepositoryObject> getMetadataFileLdif() throws PersistenceException;
 
     /**
      * gather all the metadata connections (file / db / etc ...).
