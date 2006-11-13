@@ -21,6 +21,11 @@
 // ============================================================================
 package org.talend.designer.runprocess.shadow;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 /**
  * DOC chuger class global comment. Detailled comment <br/>
  * 
@@ -34,11 +39,30 @@ public class FileOutputXmlNode extends ShadowNode {
      */
     public FileOutputXmlNode(String filename, String encoding) {
         super("tFileOutputXML");
+        
+        List<Map<String, String>> toto = new ArrayList<Map<String, String>>();
+        HashMap<String, String>toto2 = new HashMap<String, String>();
+        //toto2.put("TAG", "");
+        //toto.add(toto2);
 
         TextElementParameter param1 = new TextElementParameter("FILENAME", filename);
         TextElementParameter param2 = new TextElementParameter("ENCODING", encoding);
+        ObjectElementParameter param3 = new ObjectElementParameter("ROOT_TAGS", toto);
+        TextElementParameter param4 = new TextElementParameter("ROW_TAG", "row");
+        TextElementParameter param5 = new TextElementParameter("COLNAME_AS_TAGNAME", "false");
+        TextElementParameter param6 = new TextElementParameter("FIELD_TAG", "field");
+        TextElementParameter param7 = new TextElementParameter("SPLIT", "false");
+        TextElementParameter param8 = new TextElementParameter("SPLIT_EVERY", "1000");
+        //TextElementParameter param9 = new TextElementParameter("SCHEMA", null);
         addParameter(param1);
         addParameter(param2);
+        addParameter(param3);
+        addParameter(param4);
+        addParameter(param5);
+        addParameter(param6);
+        addParameter(param7);
+        addParameter(param8);
+        //addParameter(param9);
     }
 
     /*
