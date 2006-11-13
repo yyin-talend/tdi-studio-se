@@ -26,11 +26,10 @@ import java.util.List;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
@@ -88,7 +87,7 @@ public class MainConnectionSection extends DynamicTabbedPropertySection {
             metadataTableEditorView.setMetadataTableEditor(metadataTableEditor);
             metadataTableEditorView.getTableViewerCreator().getTableViewer().refresh();
 
-//            composite.pack();
+            parent.layout();
         }
     }
 
@@ -119,6 +118,7 @@ public class MainConnectionSection extends DynamicTabbedPropertySection {
             connection = (Connection) ((ConnectionPart) ((ConnLabelEditPart) input).getParent()).getModel();
             elem = (Element) ((ConnectionPart) ((ConnLabelEditPart) input).getParent()).getSource().getModel();
         }
+        addComponents();
     }
 
     @Override
@@ -129,6 +129,13 @@ public class MainConnectionSection extends DynamicTabbedPropertySection {
 
     @Override
     public void addComponents() {
+        // Empty the composite before use (kinda refresh) :
+        Control[] ct = parent.getChildren();
+        for (int i = 0; i < ct.length; i++) {
+            System.out.println(ct[i]);
+            ct[i].dispose();
+        }
+
         if (hasSchemaToDisplay()) {
             List<? extends IElementParameter> listParam = elem.getElementParameters();
 
@@ -142,11 +149,9 @@ public class MainConnectionSection extends DynamicTabbedPropertySection {
 
             data = new FormData();
             data.left = new FormAttachment(0, ITabbedPropertyConstants.HSPACE);
-            // TODO SML Put 100 instead of 90 when parent composite bug is resolved
             data.right = new FormAttachment(100, -ITabbedPropertyConstants.HSPACE);
             data.top = new FormAttachment(0, curRowSize + ITabbedPropertyConstants.VSPACE);
             data.width = 300; // to correct bug of table growing indefinitly
-//            container.setLayoutData(data);
 
             IMetadataTable outputMetaTable = ((Node) elem).getMetadataList().get(0);
             metadataTableEditor = new MetadataTableEditor(outputMetaTable, "Schema from " + outputMetaTable.getTableName()
@@ -156,12 +161,11 @@ public class MainConnectionSection extends DynamicTabbedPropertySection {
 
             Composite compositeEditorView = metadataTableEditorView.getComposite();
             compositeEditorView.setLayoutData(data);
-            
-//            compositeEditorView.layout();
-//            parent.getParent().layout();
 
-            built = true;
+            parent.layout();
+            parent.getParent().layout();
         }
+        built = true;
     }
 
     private boolean hasSchemaToDisplay() {
