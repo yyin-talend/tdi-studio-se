@@ -431,17 +431,31 @@ public class SQLBuilderEditorComposite extends Composite implements ISQLEditor {
     public void setSessionTreeNode(SessionTreeNode node) {
         Assert.isNotNull(node, "this node can not be null");
         this.sessionTreeNode = node;
-        // Refresh TabItem's title
-        String dbName = ((SQLAlias) node.getAlias()).getSchemaFilterExpression();
-
-        String repositoryName = getRepositoryName();
-        String title = dbName + "(" + repositoryName + ").sql";
-        tabItem.setText(title);
+        this.setEditorTitle(this.sessionTreeNode);
         sessionSwitcher.refreshSelectedRepository();
         createEditorProposal();
     }
 
-    /* (non-Javadoc)
+    /**
+     * Sets tab title.
+     * 
+     * @param node
+     */
+    private void setEditorTitle(SessionTreeNode node) {
+        String dbName = ((SQLAlias) node.getAlias()).getSchemaFilterExpression();
+        String title = "";
+        String repositoryName = getRepositoryName();
+        String selectedComponentName = connParam.getSelectedComponentName();
+        if (this.isDefaultEditor && (selectedComponentName != null || selectedComponentName.length() != 0)) {
+            title = selectedComponentName + ".";
+        }
+        title = title + dbName + "(" + repositoryName + ").sql";
+        tabItem.setText(title);
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.sqlbuilder.ui.editor.ISQLEditor#getRepositoryName()
      */
     public String getRepositoryName() {
@@ -452,16 +466,18 @@ public class SQLBuilderEditorComposite extends Composite implements ISQLEditor {
         return repositoryName;
     }
 
-    
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.sqlbuilder.ui.editor.ISQLEditor#getSQLToBeExecuted()
      */
     public String getSQLToBeExecuted() {
         return colorText.getText();
     }
 
-    
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.sqlbuilder.ui.editor.ISQLEditor#setEditorContent(org.talend.sqlbuilder.util.ConnectionParameters)
      */
     public void setEditorContent(ConnectionParameters connParam) {
@@ -470,7 +486,9 @@ public class SQLBuilderEditorComposite extends Composite implements ISQLEditor {
 
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.sqlbuilder.ui.editor.ISQLEditor#doSaveAs()
      */
     public void doSaveAs() {
@@ -513,8 +531,9 @@ public class SQLBuilderEditorComposite extends Composite implements ISQLEditor {
         }
     }
 
-    
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.sqlbuilder.ui.editor.ISQLEditor#clearText()
      */
     public void clearText() {
@@ -522,7 +541,9 @@ public class SQLBuilderEditorComposite extends Composite implements ISQLEditor {
 
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.sqlbuilder.ui.editor.ISQLEditor#setDefaultEditor(boolean)
      */
     public void setDefaultEditor(boolean isDefaultEditor) {
@@ -530,7 +551,9 @@ public class SQLBuilderEditorComposite extends Composite implements ISQLEditor {
 
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.sqlbuilder.ui.editor.ISQLEditor#setEditorContent(java.lang.String)
      */
     public void setEditorContent(String string) {
