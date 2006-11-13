@@ -21,10 +21,16 @@
 // ============================================================================
 package org.talend.sqlbuilder.util;
 
+import java.lang.reflect.InvocationTargetException;
+import java.util.List;
+
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.operation.ModalContext;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
@@ -40,12 +46,13 @@ public class UIUtils {
 
     /**
      * Open a error dialog.
-     * @param msg String 
+     * 
+     * @param msg String
      * @param e Exception
      */
     public static void openErrorDialog(final String msg, final Exception e) {
 
-        SqlBuilderPlugin.log(msg,e);
+        SqlBuilderPlugin.log(msg, e);
         final Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
         Display.getDefault().asyncExec(new Runnable() {
 
@@ -54,7 +61,7 @@ public class UIUtils {
             }
         });
     }
-    
+
     /**
      * This implementation of IRunnableContext#run(boolean, boolean, IRunnableWithProgress) runs the given
      * <code>IRunnableWithProgress</code> using the progress monitor for this progress dialog and blocks until the
@@ -82,12 +89,43 @@ public class UIUtils {
      * runWithProgress(r);
      * </pre>
      */
-    public static void runWithProgress(IRunnableWithProgress operation, boolean fork,
-            IProgressMonitor monitor, Display display){
+    public static void runWithProgress(final IRunnableWithProgress operation, boolean fork, IProgressMonitor monitor,
+            Shell shell) {
+
+        Cursor cursor = new Cursor(Display.getDefault(), SWT.CURSOR_WAIT);
+
+        // Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
+
+        shell.setEnabled(false);
+        shell.setCursor(cursor);
+        IRunnableWithProgress progress = new IRunnableWithProgress() {
+            public void run(final IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
+                // monitor.beginTask("test task", scale * total);
+                // SubProgressMonitor sm = new SubProgressMonitor(monitor, 1 * scale);
+                Thread t = new Thread() {
+                    public void run() {
+                        try {
+                            operation.run(monitor);
+                        } catch (Exception e) {
+                        }
+                    }
+                };
+                t.start();
+                try {
+                    t.join();
+                } catch (Exception e) {
+                    // TODO: handle exception
+                }
+            }
+        };
+
         try {
-            ModalContext.run(operation, fork, monitor, display);
+            ModalContext.run(progress, fork, monitor, shell.getDisplay());
         } catch (Exception e) {
             SqlBuilderPlugin.log("something errors with the runnable process", e);
         }
+        cursor = new Cursor(Display.getDefault(), SWT.CURSOR_ARROW);
+        shell.setEnabled(true);
+        shell.setCursor(cursor);
     }
 }
