@@ -55,14 +55,24 @@ my %desc_<%=cid %> = (
 %>
 );
 
-if (not -d <%=outputDirectory%>) {
-    mkdir <%=outputDirectory%>
-        or die 'Cannot create directory "'.<%=outputDirectory%>.'"';
+if (not -d $desc_<%=cid%>{output_directory}) {
+    mkdir $desc_<%=cid%>{output_directory}
+        or die 'Cannot create directory "'.$desc_<%=cid%>{output_directory}.'"';
 }
 
-if (not -w <%=outputDirectory%>) {
-    die 'Cannot write files in '.<%=outputDirectory%>;
+if (not -w $desc_<%=cid%>{output_directory}) {
+    die 'Cannot write files in '.$desc_<%=cid%>{output_directory};
 }
+
+<%
+        if (stats) {
+%>
+UpdateStat('<%=cid %>', 0);
+<%
+        }
+%>
+
+my @files = ();
 
 {
     my $pop = Net::POP3->new(
@@ -90,16 +100,25 @@ if (not -w <%=outputDirectory%>) {
 %>
             my $msg = $pop->get($msgnum);
 
-            open(EMAIL, '>'.<%=outputDirectory%>.'/'.<%=filenamePattern %>);
+            my $mail_filename = <%=filenamePattern %>;
+
+            open(EMAIL, '>'.$desc_<%=cid%>{output_directory}.'/'.$mail_filename);
             print {EMAIL} @$msg;
             close(EMAIL);
 
             $_globals{<%=cid %>}{NB_EMAIL}++;
-
+            push @files, $mail_filename;
 <%
         if (deleteFromServer.equals("true")) {
 %>
             $pop->delete($msgnum);
+<%
+        }
+%>
+<%
+        if (stats) {
+%>
+            UpdateStat('<%=cid %>', 1);
 <%
         }
 %>
@@ -109,6 +128,17 @@ if (not -w <%=outputDirectory%>) {
     $pop->quit;
 }
 
+<%
+        if (stats) {
+%>
+UpdateStat('<%=cid %>', 0, 2);
+<%
+        }
+%>
+
+for my $filename (@files) {
+    $_globals{<%=cid %>}{CURRENT_FILE} = $filename;
+    $_globals{<%=cid %>}{CURRENT_FILEPATH} = $desc_<%=cid%>{output_directory}.'/'.$filename;
 <%
     }
 }
