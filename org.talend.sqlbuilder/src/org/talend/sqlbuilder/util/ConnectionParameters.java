@@ -51,6 +51,8 @@ public class ConnectionParameters {
 
     private String repositoryName;
 
+    private String selectedComponentName;
+
     /**
      * ConnectionParameters constructor.
      */
@@ -271,8 +273,9 @@ public class ConnectionParameters {
 
     }
 
-    /* 
+    /*
      * (non-Javadoc)
+     * 
      * @see java.lang.Object#toString()
      */
     public String toString() {
@@ -291,5 +294,24 @@ public class ConnectionParameters {
             sb.append("Repository name: " + this.getRepositoryName() + enter);
         }
         return sb.toString();
+    }
+
+    /**
+     * Sets selected component name.
+     * 
+     * @param selectedComponentName
+     */
+    public void setSelectedComponentName(String selectedComponentName) {
+        this.selectedComponentName = selectedComponentName;
+
+    }
+
+    /**
+     * Gets selected component name.
+     * 
+     * @return
+     */
+    public String getSelectedComponentName() {
+        return selectedComponentName != null ? selectedComponentName : "";
     }
 }
