@@ -51,12 +51,10 @@ public class RegleTest extends Composite {
             public void paintControl(PaintEvent e) {
                 GC gc = e.gc;
 
-                // PTODO cantoine : remplacer 500 par la Largeur totale
                 gc.drawLine(0, 20, 500, 20);
 
                 int unite = 0;
                 int uniteRAZ = 0;
-                // PTODO cantoine : remplacer 500 par la Largeur totale
                 for (int i = 0; i < 500; i++) {
                     if (i % 9 == 0) {
                         if (uniteRAZ == 5) {

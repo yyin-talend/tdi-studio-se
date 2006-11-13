@@ -61,6 +61,11 @@
             level="10"
             name="Metadata/Create file xml"/>
       <Action
+            class="org.talend.repository.ui.actions.metadata.CreateFileLdifAction"
+            id="org.talend.repository.actions.createfileldif"
+            level="10"
+            name="Metadata/Create file ldif"/>
+      <Action
             class="org.talend.repository.ui.actions.DeleteAction"
             id="org.talend.repository.actions.delete"
             level="40"
