@@ -32,6 +32,7 @@ import org.talend.commons.utils.data.container.Content;
 import org.talend.commons.utils.data.container.ContentList;
 import org.talend.commons.utils.data.container.RootContainer;
 import org.talend.core.CorePlugin;
+import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.model.general.Project;
 import org.talend.core.model.process.IContext;
@@ -73,8 +74,8 @@ public class TalendJobManager {
     public TalendJobManager() {
 
         try {
-            // repositoryContext = (RepositoryContext)
-            // CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY);
+            repositoryContext = (RepositoryContext)
+                CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY);
 
             factory = RepositoryFactoryProvider.getInstance();
 
