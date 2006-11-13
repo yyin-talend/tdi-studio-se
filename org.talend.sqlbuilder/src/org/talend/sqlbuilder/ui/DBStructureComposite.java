@@ -332,7 +332,7 @@ public class DBStructureComposite extends Composite {
                 }
             };
 
-            UIUtils.runWithProgress(r, true, getProgressMonitor(), getShell().getDisplay());
+            UIUtils.runWithProgress(r, true, getProgressMonitor(), getShell());
         }
     }
 
@@ -373,7 +373,7 @@ public class DBStructureComposite extends Composite {
                 }
             };
 
-            UIUtils.runWithProgress(r, true, getProgressMonitor(), getShell().getDisplay());
+            UIUtils.runWithProgress(r, true, getProgressMonitor(), getShell());
         }
     }
 
@@ -439,7 +439,7 @@ public class DBStructureComposite extends Composite {
                 }
             };
 
-            UIUtils.runWithProgress(r, true, getProgressMonitor(), getShell().getDisplay());
+            UIUtils.runWithProgress(r, true, getProgressMonitor(), getShell());
         }
     }
 
