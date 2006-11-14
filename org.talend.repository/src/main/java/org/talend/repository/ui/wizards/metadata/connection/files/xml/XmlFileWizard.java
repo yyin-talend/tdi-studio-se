@@ -168,7 +168,7 @@ public class XmlFileWizard extends RepositoryWizard implements INewWizard {
             xmlFileWizardPage3.setDescription(Messages.getString("FileWizardPage.descriptionCreateStep3"));
             addPage(xmlFileWizardPage3);
 
-            // PTODO CAN : comment setPageComplete(true);
+            // PTODO cantoine : comment setPageComplete(true);
             // xmlFileWizardPage1.setPageComplete(false);
             // xmlFileWizardPage2.setPageComplete(false);
             // xmlFileWizardPage3.setPageComplete(false);
@@ -196,7 +196,7 @@ public class XmlFileWizard extends RepositoryWizard implements INewWizard {
             addPage(xmlFileWizardPage2);
 
             xmlFileWizardPage1.setPageComplete(true);
-            // PTODO CAN : comment setPageComplete(true);
+            // PTODO cantoine : comment setPageComplete(true);
             // xmlFileWizardPage2.setPageComplete(isRepositoryObjectEditable());
             xmlFileWizardPage2.setPageComplete(true);
         }

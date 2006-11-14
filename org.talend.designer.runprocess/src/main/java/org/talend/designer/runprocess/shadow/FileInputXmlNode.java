@@ -33,7 +33,7 @@ public class FileInputXmlNode extends FileInputNode {
      * Constructs a new FileInputNode.
      */
     
-    //PTODO CAN : voir pour les données du XmlFile a placer en PARAM pour Description&ProcessShadow
+    //PTODO cantoine : voir pour les données du XmlFile a placer en PARAM pour Description&ProcessShadow
     public FileInputXmlNode(String filename, String rowSep, String regex, int limitRows, int headerRows,
             int footerRows, boolean removeEmptyRow) {
         super("tFileInputXml");

@@ -27,6 +27,7 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
 import org.talend.core.model.metadata.builder.connection.FileConnection;
+import org.talend.core.model.metadata.builder.connection.LdifFileConnection;
 import org.talend.core.model.metadata.builder.connection.XmlFileConnection;
 import org.talend.core.utils.XmlArray;
 import org.talend.repository.preview.IPreview;
@@ -84,8 +85,7 @@ public class ShadowProcessHelper {
     }
 
     /**
-     * Create a ProcessDescription and set it width the value of FileConnection. Particularity : field FieldSeparator,
-     * RowSeparator, EscapeChar and TextEnclosure are surround by double quote.
+     * Create a ProcessDescription and set it width the value of XmlFileConnection.
      * 
      * This method is usefull to adapt a processDescription before run the shadow process.
      * 
@@ -95,9 +95,26 @@ public class ShadowProcessHelper {
      */
     public static ProcessDescription getProcessDescription(final XmlFileConnection connection) {
         ProcessDescription processDescription = new ProcessDescription();
-        //PTODO voir les param envoyé pour le ProcessDescription
+        //PTODO cantoine voir les param envoyé pour le ProcessDescription
         return processDescription;
     }
+    
+    /**
+     * Create a ProcessDescription and set it width the value of LdifFileConnection. 
+     * 
+     * This method is usefull to adapt a processDescription before run the shadow process.
+     * 
+     * @param LdifFileConnection
+     * 
+     * @return ProcessDescription
+     */
+    public static ProcessDescription getProcessDescription(final LdifFileConnection connection) {
+        ProcessDescription processDescription = new ProcessDescription();
+        //PTODO cantoine voir les param envoyé pour le ProcessDescription
+        return processDescription;
+    }
+    
+    
     /**
      * parse a file describe by a fileConnection in XmlArray. Simple method to run the shadow process from the
      * fileConnection.

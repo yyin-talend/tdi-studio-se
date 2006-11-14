@@ -64,10 +64,12 @@ public class RepositoryNameSorter extends ViewerSorter {
                 return 7;
             case METADATA_FILE_XML:
                 return 8;
-            case DOCUMENTATION:
+            case METADATA_FILE_LDIF:
                 return 9;
-            case RECYCLE_BIN:
+            case DOCUMENTATION:
                 return 10;
+            case RECYCLE_BIN:
+                return 11;
             default:
                 return 99;
             }

@@ -26,6 +26,7 @@ import static org.talend.designer.runprocess.shadow.ShadowProcess.EShadowProcess
 import static org.talend.designer.runprocess.shadow.ShadowProcess.EShadowProcessType.FILE_POSITIONAL;
 import static org.talend.designer.runprocess.shadow.ShadowProcess.EShadowProcessType.FILE_REGEXP;
 import static org.talend.designer.runprocess.shadow.ShadowProcess.EShadowProcessType.FILE_XML;
+import static org.talend.designer.runprocess.shadow.ShadowProcess.EShadowProcessType.FILE_LDIF;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -65,7 +66,8 @@ public class ShadowProcess<T extends IProcessDescription> {
         FILE_POSITIONAL,
         FILE_CSV,
         FILE_REGEXP,
-        FILE_XML;
+        FILE_XML,
+        FILE_LDIF;
 
         private EShadowProcessType() {
 
@@ -128,6 +130,12 @@ public class ShadowProcess<T extends IProcessDescription> {
                     .getRowSeparator(), description.getPattern(), description.getLimitRows(), description
                     .getHeaderRow(), description.getFooterRow(), description.getRemoveEmptyRowsToSkip());
             ps = new FileinToXmlProcess<FileInputXmlNode>(inXmlNode, outNode);
+            break;
+        case FILE_LDIF:
+            FileInputLdifNode inLdifNode = new FileInputLdifNode("'" + inPath.toOSString() + "'", description
+                    .getRowSeparator(), description.getPattern(), description.getLimitRows(), description
+                    .getHeaderRow(), description.getFooterRow(), description.getRemoveEmptyRowsToSkip());
+            ps = new FileinToXmlProcess<FileInputLdifNode>(inLdifNode, outNode);
             break;
         default:
             break;

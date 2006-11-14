@@ -33,6 +33,7 @@ import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.builder.connection.ConnectionFactory;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.metadata.builder.connection.DelimitedFileConnection;
+import org.talend.core.model.metadata.builder.connection.LdifFileConnection;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.builder.connection.PositionalFileConnection;
 import org.talend.core.model.metadata.builder.connection.RegexpFileConnection;
@@ -40,6 +41,7 @@ import org.talend.core.model.metadata.builder.connection.TableHelper;
 import org.talend.core.model.metadata.builder.connection.XmlFileConnection;
 import org.talend.core.model.properties.DatabaseConnectionItem;
 import org.talend.core.model.properties.DelimitedFileConnectionItem;
+import org.talend.core.model.properties.LdifFileConnectionItem;
 import org.talend.core.model.properties.PositionalFileConnectionItem;
 import org.talend.core.model.properties.RegExFileConnectionItem;
 import org.talend.core.model.properties.XmlFileConnectionItem;
@@ -55,6 +57,7 @@ import org.talend.repository.model.RepositoryNode.ENodeType;
 import org.talend.repository.model.RepositoryNode.EProperties;
 import org.talend.repository.ui.wizards.metadata.table.database.DatabaseTableWizard;
 import org.talend.repository.ui.wizards.metadata.table.files.FileDelimitedTableWizard;
+import org.talend.repository.ui.wizards.metadata.table.files.FileLdifTableWizard;
 import org.talend.repository.ui.wizards.metadata.table.files.FilePositionalTableWizard;
 import org.talend.repository.ui.wizards.metadata.table.files.FileRegexpTableWizard;
 import org.talend.repository.ui.wizards.metadata.table.files.FileXmlTableWizard;
@@ -125,8 +128,11 @@ public class CreateTableAction extends AbstractCreateAction {
         } else if (ERepositoryObjectType.METADATA_FILE_XML.equals(nodeType)) {
             getViewPart().expand(metadataNode.getChildren().get(0), true);
             createFileXmlTableWizard(selection);
-        }
 
+        } else if (ERepositoryObjectType.METADATA_FILE_LDIF.equals(nodeType)) {
+            getViewPart().expand(metadataNode.getChildren().get(0), true);
+            createFileLdifTableWizard(selection);
+        }
     }
 
     /**
@@ -329,6 +335,56 @@ public class CreateTableAction extends AbstractCreateAction {
     }
 
     /**
+     * DOC cantoine Comment method "createFileLdifTableWizard".
+     * 
+     * @param selection
+     * @return
+     */
+    @SuppressWarnings("unchecked")
+    private void createFileLdifTableWizard(IStructuredSelection selection) {
+        Object obj = ((IStructuredSelection) selection).getFirstElement();
+        RepositoryNode node = (RepositoryNode) obj;
+        LdifFileConnection connection = null;
+        MetadataTable metadataTable = null;
+
+        boolean creation = false;
+        if (node.getType() == ENodeType.REPOSITORY_ELEMENT) {
+            ERepositoryObjectType nodeType = (ERepositoryObjectType) node.getProperties(EProperties.CONTENT_TYPE);
+            String tableLabel = (String) node.getProperties(EProperties.LABEL);
+
+            LdifFileConnectionItem item = null;
+            switch (nodeType) {
+            case METADATA_CON_TABLE:
+                item = (LdifFileConnectionItem) node.getParent().getObject().getProperty().getItem();
+                connection = (LdifFileConnection) item.getConnection();
+                metadataTable = TableHelper.findByLabel(connection, tableLabel);
+                creation = false;
+                break;
+            case METADATA_FILE_LDIF:
+                item = (LdifFileConnectionItem) node.getObject().getProperty().getItem();
+                connection = (LdifFileConnection) item.getConnection();
+                metadataTable = ConnectionFactory.eINSTANCE.createMetadataTable();
+                String nextId = RepositoryFactoryProvider.getInstance().getNextId();
+                metadataTable.setId(nextId);
+                metadataTable.setLabel(getStringIndexed(metadataTable.getLabel()));
+                connection.getTables().add(metadataTable);
+                creation = true;
+                break;
+            default:
+                return;
+            }
+
+            // set the repositoryObject, lock and set isRepositoryObjectEditable
+            FileLdifTableWizard fileLdifTableWizard = new FileLdifTableWizard(PlatformUI.getWorkbench(), creation,
+                    item, metadataTable);
+            fileLdifTableWizard.setRepositoryObject(node.getObject());
+
+            WizardDialog wizardDialog = new WizardDialog(new Shell(), fileLdifTableWizard);
+            handleWizard(node, wizardDialog);
+        }
+    }
+    
+    /**
      * DOC ocarbone Comment method "creataDatabaseTableWizard".
      * 
      * @param selection
@@ -456,7 +512,8 @@ public class CreateTableAction extends AbstractCreateAction {
                     || ERepositoryObjectType.METADATA_FILE_DELIMITED.equals(nodeType)
                     || ERepositoryObjectType.METADATA_FILE_POSITIONAL.equals(nodeType)
                     || ERepositoryObjectType.METADATA_FILE_REGEXP.equals(nodeType)
-                    || ERepositoryObjectType.METADATA_FILE_XML.equals(nodeType)) {
+                    || ERepositoryObjectType.METADATA_FILE_XML.equals(nodeType)
+                    || ERepositoryObjectType.METADATA_FILE_LDIF.equals(nodeType)) {
                 setText(CREATE_LABEL);
                 collectChildNames(node);
                 setEnabled(true);

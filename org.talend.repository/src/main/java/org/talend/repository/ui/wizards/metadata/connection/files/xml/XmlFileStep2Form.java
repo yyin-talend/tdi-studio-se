@@ -226,7 +226,7 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
 
         compositeFileViewer.setLayoutData(gridData);
 
-        // PTODO CAN : the XmlTree
+        // PTODO cantoine : the XmlTree
         availableXmlTree = new Tree(compositeFileViewer, SWT.MULTI);// | SWT.H_SCROLL | SWT.V_SCROLL);
         GridData gridData2 = new GridData(GridData.FILL_BOTH);
         // availableXmlTree.setBackground(availableXmlTree.getDisplay().getSystemColor(SWT.COLOR_GRAY));
@@ -577,7 +577,7 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
         }
     }
 
-    // PTODO CAN : logically call by runProcessShadow refresh....view to adapt it on this MetadataSchema TABLE.
+    // PTODO cantoine : logically call by runProcessShadow refresh....view to adapt it on this MetadataSchema TABLE.
     /**
      * DOC cantoine Comment method "refreshMetaDataSchema".
      */

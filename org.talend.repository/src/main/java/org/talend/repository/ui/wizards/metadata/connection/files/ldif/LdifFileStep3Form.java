@@ -49,6 +49,7 @@ import org.talend.commons.utils.data.list.ListenableListEvent;
 import org.talend.core.model.metadata.MetadataTalendType;
 import org.talend.core.model.metadata.builder.connection.ConnectionFactory;
 import org.talend.core.model.metadata.builder.connection.Escape;
+import org.talend.core.model.metadata.builder.connection.FileConnection;
 import org.talend.core.model.metadata.builder.connection.MetadataColumn;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.editor.MetadataEditor2;
@@ -267,74 +268,55 @@ public class LdifFileStep3Form extends AbstractLdifFileStepForm {
      * 
      * @return processDescription
      */
-//    private ProcessDescription getProcessDescription() {
+    private ProcessDescription getProcessDescription() {
 
-//        ProcessDescription processDescription = ShadowProcessHelper.getProcessDescription(getConnection());
-//
-//        // Adapt Header width firstRowIsCaption to preview the first line on caption or not
-//        if (getConnection().isFirstLineCaption()) {
-//            processDescription.setHeaderRow(getConnection().getHeaderValue() - 1);
-//        }
-//
-//        // adapt the limit to the extract sames rows of preview
-//        processDescription.setLimitRows(MAXIMUM_ROWS_TO_PREVIEW);
-//        if (getConnection().isUseLimit()) {
-//            Integer i = getConnection().getLimitValue();
-//            if (getConnection().isFirstLineCaption()) {
-//                i++;
-//            }
-//            if (i < MAXIMUM_ROWS_TO_PREVIEW) {
-//                processDescription.setLimitRows(i);
-//            }
-//        }
-//        return processDescription;
-//    }
+        ProcessDescription processDescription = ShadowProcessHelper.getProcessDescription(getConnection());
+
+        // adapt the limit to the extract sames rows of preview
+        processDescription.setLimitRows(MAXIMUM_ROWS_TO_PREVIEW);
+        if (getConnection().isUseLimit()) {
+            Integer i = getConnection().getLimitEntry();
+            if (i < MAXIMUM_ROWS_TO_PREVIEW) {
+                processDescription.setLimitRows(i);
+            }
+        }
+        return processDescription;
+    }
 
     /**
      * run a ShadowProcess to determined the Metadata.
      */
     protected void runShadowProcess() {
 
-//        // if no file, the process don't be executed
-//        if (getConnection().getFilePath() == null || getConnection().getFilePath().equals("")) {
-//            informationLabel.setText("   " + Messages.getString("FileStep3.filepathAlert")
-//                    + "                                                                              ");
-//            return;
-//        }
-//
-//        try {
-//            informationLabel.setText("   " + Messages.getString("FileStep3.guessProgress"));
-//
-//            // get the XmlArray width an adapt ProcessDescription
-//            if (Escape.CSV_LITERAL.equals(getConnection().getEscapeType())) {
-//                XmlArray xmlArray = ShadowProcessHelper.getXmlArray(getProcessDescription(), "FILE_CSV");
-//                if (xmlArray == null) {
-//                    informationLabel.setText("   " + Messages.getString("FileStep3.guessFailure"));
-//
-//                } else {
-//                    refreshMetaDataTable(xmlArray);
-//                }
-//
-//            } else {
-//                XmlArray xmlArray = ShadowProcessHelper.getXmlArray(getProcessDescription(), "FILE_LDIF");
-//                if (xmlArray == null) {
-//                    informationLabel.setText("   " + Messages.getString("FileStep3.guessFailure"));
-//
-//                } else {
-//                    refreshMetaDataTable(xmlArray);
-//                }
-//            }
-//
-//        } catch (CoreException e) {
-//            if (getParent().getChildren().length == 1) {
-//                new ErrorDialogWidthDetailArea(getShell(), PID, Messages.getString("FileStep3.guessFailureTip") + "\n"
-//                        + Messages.getString("FileStep3.guessFailureTip2"), e.getMessage());
-//            } else {
-//                new ErrorDialogWidthDetailArea(getShell(), PID, Messages.getString("FileStep3.guessFailureTip"), e.getMessage());
-//            }
-//            log.error(Messages.getString("FileStep3.guessFailure") + " " + e.getMessage());
-//        }
-//        checkFieldsValue();
+        // if no file, the process don't be executed
+        if (getConnection().getFilePath() == null || getConnection().getFilePath().equals("")) {
+            informationLabel.setText("   " + Messages.getString("FileStep3.filepathAlert")
+                    + "                                                                              ");
+            return;
+        }
+
+        try {
+            informationLabel.setText("   " + Messages.getString("FileStep3.guessProgress"));
+
+            // get the XmlArray width an adapt ProcessDescription
+            XmlArray xmlArray = ShadowProcessHelper.getXmlArray(getProcessDescription(), "FILE_LDIF");
+            if (xmlArray == null) {
+                informationLabel.setText("   " + Messages.getString("FileStep3.guessFailure"));
+
+            } else {
+                refreshMetaDataTable(xmlArray);
+            }
+            
+        } catch (CoreException e) {
+            if (getParent().getChildren().length == 1) {
+                new ErrorDialogWidthDetailArea(getShell(), PID, Messages.getString("FileStep3.guessFailureTip") + "\n"
+                        + Messages.getString("FileStep3.guessFailureTip2"), e.getMessage());
+            } else {
+                new ErrorDialogWidthDetailArea(getShell(), PID, Messages.getString("FileStep3.guessFailureTip"), e.getMessage());
+            }
+            log.error(Messages.getString("FileStep3.guessFailure") + " " + e.getMessage());
+        }
+        checkFieldsValue();
     }
 
     /**
@@ -360,9 +342,6 @@ public class LdifFileStep3Form extends AbstractLdifFileStepForm {
 
             // define the label to the metadata width the content of the first row
             int firstRowToExtractMetadata = 0;
-//            if (getConnection().isFirstLineCaption()) {
-//                firstRowToExtractMetadata = 1;
-//            }
 
             // the first rows is used to define the label of any metadata
             String[] label = new String[numberOfCol.intValue()];
@@ -510,11 +489,10 @@ public class LdifFileStep3Form extends AbstractLdifFileStepForm {
     public void setVisible(boolean visible) {
         super.setVisible(visible);
         if (super.isVisible()) {
-//            if (getConnection().getFilePath() != null && (!getConnection().getFilePath().equals(""))
-//                    && (tableEditorView.getMetadataEditor().getItemCount() <= 0)) {
-//                runShadowProcess();
-//            }
-
+            if (getConnection().getFilePath() != null && (!getConnection().getFilePath().equals(""))
+                    && (tableEditorView.getMetadataEditor().getItemCount() <= 0)) {
+                runShadowProcess();
+            }
             if (isReadOnly() != readOnly) {
                 adaptFormToReadOnly();
             }
