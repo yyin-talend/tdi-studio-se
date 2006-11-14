@@ -28,7 +28,6 @@ import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
-import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.utils.data.container.Container;
 import org.talend.core.model.general.Version;
@@ -43,15 +42,16 @@ import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.Folder;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.model.repository.RepositoryObject;
+import org.talend.core.ui.ImageProvider;
 import org.talend.repository.model.IRepositoryFactory;
 import org.talend.repository.model.RepositoryFactoryProvider;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNode.ENodeType;
 import org.talend.repository.model.RepositoryNode.EProperties;
 import org.talend.repository.ui.views.RepositoryContentProvider;
-import org.talend.repository.ui.views.RepositoryLabelProvider;
 import org.talend.repository.ui.views.RepositoryView;
 import org.talend.sqlbuilder.SqlBuilderPlugin;
+import org.talend.sqlbuilder.util.ImageUtil;
 
 /**
  * Detailled comment for this class. <br/>
@@ -62,22 +62,26 @@ import org.talend.sqlbuilder.SqlBuilderPlugin;
 public class DBTreeProvider extends LabelProvider implements ITableLabelProvider, ITreeContentProvider,
 ITableColorProvider
 {
-    private RepositoryNode root;
-    private RepositoryView repositoryView;
     private RepositoryContentProvider repositoryContentProvider;
-    private RepositoryLabelProvider repositoryLabelProvider;
     
     public DBTreeProvider(RepositoryView repositoryView)
     {
-        this.repositoryView = repositoryView;
         repositoryContentProvider = new RepositoryContentProvider(repositoryView);
-        repositoryLabelProvider = new RepositoryLabelProvider(repositoryView);
-        root = repositoryView.getRoot().getChildren().get(5).getChildren().get(0);
     }
     
     public Image getColumnImage(Object element, int columnIndex)
     {
-        return repositoryLabelProvider.getImage(element);
+        RepositoryNode node = (RepositoryNode) element;
+        switch ((RepositoryNodeType)node.getProperties(EProperties.CONTENT_TYPE)) {
+        case DATABASE:
+            return ImageProvider.getImage(ERepositoryObjectType.METADATA_CONNECTIONS);
+        case TABLE:
+            return ImageUtil.getImage("Images.TableNodeIcon");
+        case COLUMN:
+            return ImageUtil.getImage("Images.ColumnNodeIcon");
+        }
+        return null;
+        
     }
     
     public String getColumnText(Object element, int columnIndex)
@@ -155,17 +159,16 @@ ITableColorProvider
 
         for (Object obj : fromModel.getMembers()) {
             IRepositoryObject repositoryObject = (IRepositoryObject) obj;
-            addNode(parent, type, repositoryObject);
+            addNode(parent, repositoryObject);
         }
     }
     
-    private void addNode(RepositoryNode parent, ERepositoryObjectType type, 
-            IRepositoryObject repositoryObject) {
+    private void addNode(RepositoryNode parent, IRepositoryObject repositoryObject) {
         IRepositoryFactory factory = RepositoryFactoryProvider.getInstance();
 
         RepositoryNode node = new RepositoryNode(repositoryObject, parent, ENodeType.REPOSITORY_ELEMENT);
 
-        node.setProperties(EProperties.CONTENT_TYPE, type);
+        node.setProperties(EProperties.CONTENT_TYPE, RepositoryNodeType.DATABASE);
         node.setProperties(EProperties.LABEL, repositoryObject.getLabel());
         try {
             if (factory.isDeleted(repositoryObject)) {
@@ -177,11 +180,9 @@ ITableColorProvider
             e1.printStackTrace();
         }
 
-        if (type == ERepositoryObjectType.METADATA_CONNECTIONS) {
-            DatabaseConnection metadataConnection = (DatabaseConnection) ((ConnectionItem) repositoryObject.getProperty()
-                    .getItem()).getConnection();
-            createTables(node, repositoryObject, metadataConnection);
-        }
+        DatabaseConnection metadataConnection = (DatabaseConnection) ((ConnectionItem) repositoryObject.getProperty()
+                .getItem()).getConnection();
+        createTables(node, repositoryObject, metadataConnection);
 
     }
     
@@ -225,7 +226,7 @@ ITableColorProvider
         modelObj.setLabel(metadataColumn.getLabel());
         RepositoryNode columnNode = new RepositoryNode(modelObj, tableNode, ENodeType.REPOSITORY_ELEMENT);
         columnNode.setProperties(EProperties.LABEL, metadataColumn.getLabel());
-        columnNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.METADATA_CON_TABLE);
+        columnNode.setProperties(EProperties.CONTENT_TYPE, RepositoryNodeType.COLUMN);
         return columnNode;
     }
 
@@ -243,7 +244,7 @@ ITableColorProvider
         modelObj.setLabel(table.getLabel());
         RepositoryNode tableNode = new RepositoryNode(modelObj, node, ENodeType.REPOSITORY_ELEMENT);
         tableNode.setProperties(EProperties.LABEL, table.getLabel());
-        tableNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.METADATA_CON_TABLE);
+        tableNode.setProperties(EProperties.CONTENT_TYPE, RepositoryNodeType.TABLE);
         return tableNode;
     }
 
