@@ -157,7 +157,7 @@ public class CatalogNode extends AbstractNode {
             String[] tableTypes = {"TABLE", "VIEW"};
             
             try {
-                tables = psessionNode.getMetaData().getTables(pname, getSchemaName(), "%", tableTypes);
+                tables = psessionNode.getMetaData().getTables(null, getSchemaName(), "%", tableTypes);
             } catch (Throwable e) {
                 LOGGER.debug("Loading all tables at once is not supported");
             }
