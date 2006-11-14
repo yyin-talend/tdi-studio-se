@@ -30,19 +30,10 @@
 
   <PARAMETERS>
     <PARAMETER
-      NAME="PROPERTY"
-      FIELD="PROPERTY_TYPE"
-      SHOW="true"
-      NUM_ROW="1"
-      REPOSITORY_VALUE="DELIMITED"
-    />
-
-    <PARAMETER
       NAME="FILENAME"
       FIELD="FILE"
       NUM_ROW="2"
       REQUIRED="true"
-      REPOSITORY_VALUE="FILE_PATH"
     >
       <DEFAULT>'C:\talend_files\in.xls'</DEFAULT>
     </PARAMETER>
@@ -52,7 +43,6 @@
       FIELD="TEXT"
       NUM_ROW="3"
       REQUIRED="true"
-      REPOSITORY_VALUE="SHEETNAME"
     >
       <DEFAULT>'first sheet'</DEFAULT>
     </PARAMETER>
@@ -61,7 +51,6 @@
       NAME="HEADER"
       FIELD="TEXT"
       NUM_ROW="4"
-      REPOSITORY_VALUE="HEADER"
     >
       <DEFAULT>0</DEFAULT>
     </PARAMETER>
@@ -70,7 +59,6 @@
       NAME="FOOTER"
       FIELD="TEXT"
       NUM_ROW="4"
-      REPOSITORY_VALUE="FOOTER"
     >
       <DEFAULT>0</DEFAULT>
     </PARAMETER>
@@ -79,7 +67,6 @@
       NAME="LIMIT"
       FIELD="TEXT"
       NUM_ROW="4"
-      REPOSITORY_VALUE="LIMIT"
     >
       <DEFAULT />
     </PARAMETER>
@@ -88,7 +75,6 @@
       NAME="FIRST_COLUMN"
       FIELD="TEXT"
       NUM_ROW="5"
-      REPOSITORY_VALUE="FIRST_COLUMN"
     >
       <DEFAULT>'1'</DEFAULT>
     </PARAMETER>
@@ -97,7 +83,6 @@
       NAME="LAST_COLUMN"
       FIELD="TEXT"
       NUM_ROW="5"
-      REPOSITORY_VALUE="LAST_COLUMN"
     >
       <DEFAULT/>
     </PARAMETER>
@@ -114,7 +99,6 @@
       FIELD="TEXT"
       NUM_ROW="7"
       REQUIRED="true"
-      REPOSITORY_VALUE="ENCODING"
     >
       <DEFAULT>'ISO-8859-15'</DEFAULT>
     </PARAMETER>
