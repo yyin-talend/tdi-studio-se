@@ -52,11 +52,13 @@ import org.eclipse.ui.actions.SelectionProviderAction;
 import org.talend.core.ui.ImageProvider;
 import org.talend.core.ui.ImageProvider.EImage;
 import org.talend.repository.model.RepositoryNode;
+import org.talend.repository.model.RepositoryNode.ENodeType;
 import org.talend.repository.ui.views.RepositoryView;
 import org.talend.sqlbuilder.actions.GenerateSelectSQLAction;
 import org.talend.sqlbuilder.actions.MetadataRefreshAction;
 import org.talend.sqlbuilder.actions.OpenNewEditorAction;
 import org.talend.sqlbuilder.dbstructure.DBTreeLabelProvider;
+import org.talend.sqlbuilder.dbstructure.DBTreeProvider;
 import org.talend.sqlbuilder.dbstructure.RepositoryExtNode;
 import org.talend.sqlbuilder.dbstructure.SessionTreeNodeUtils;
 import org.talend.sqlbuilder.dbstructure.nodes.CatalogNode;
@@ -140,10 +142,10 @@ public class DBStructureComposite extends Composite {
     }
 
     public void openNewEditor() {
-        treeViewer.getTree().setSelection(treeViewer.getTree().getItem(0));
-        Action tempOpenNewEditorAction = 
-            new OpenNewEditorAction(treeViewer, builderDialog.getEditorComposite(), builderDialog.getConnParameters(), true);
-        tempOpenNewEditorAction.run();
+//        treeViewer.getTree().setSelection(treeViewer.getTree().getItem(0));
+//        Action tempOpenNewEditorAction = 
+//            new OpenNewEditorAction(treeViewer, builderDialog.getEditorComposite(), builderDialog.getConnParameters(), true);
+//        tempOpenNewEditorAction.run();
     }
     
     /**
@@ -158,7 +160,7 @@ public class DBStructureComposite extends Composite {
         treeViewer.getControl().setLayoutData(new GridData(GridData.FILL, GridData.FILL, true, true, 2, 1));
         treeViewer.setUseHashlookup(true);
 
-        DBTreeLabelProvider treeLabelProvider = new DBTreeLabelProvider();
+        DBTreeProvider treeLabelProvider = new DBTreeProvider(repositoryView);
         treeViewer.setContentProvider(treeLabelProvider);
         treeViewer.setLabelProvider(treeLabelProvider);
 
@@ -173,11 +175,11 @@ public class DBStructureComposite extends Composite {
 
         tree.setHeaderVisible(true);
 
-        rootRepositoryNode = repositoryView.getRoot().getChildren().get(METADATA_INDEX)
-                        .getChildren().get(0);
-        repositoryExtNode = new RepositoryExtNode(rootRepositoryNode);
-        repositoryExtNode.setConnectionParameters(builderDialog.getConnParameters());
-        treeViewer.setInput(repositoryExtNode);
+//        rootRepositoryNode = repositoryView.getRoot().getChildren().get(METADATA_INDEX)
+//                        .getChildren().get(0);
+//        repositoryExtNode = new RepositoryExtNode(rootRepositoryNode);
+//        repositoryExtNode.setConnectionParameters(builderDialog.getConnParameters());
+        treeViewer.setInput(new RepositoryNode(null, null, ENodeType.SYSTEM_FOLDER));
         addContextMenu();
 
     }
