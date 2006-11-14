@@ -78,7 +78,13 @@ public class MainConnectionSection extends DynamicTabbedPropertySection {
      */
     @Override
     public void refresh() {
-        if (hasSchemaToDisplay()) {
+        if (conIf()) {
+            addComponents();
+            super.refresh();
+            return;
+        }
+
+        if (conSchema()) {
             if (!built) {
                 addComponents();
             }
@@ -99,6 +105,7 @@ public class MainConnectionSection extends DynamicTabbedPropertySection {
      */
     @Override
     public void setInput(IWorkbenchPart workbenchPart, ISelection selection) {
+
         if (!(selection instanceof IStructuredSelection)) {
             return;
         }
@@ -112,10 +119,18 @@ public class MainConnectionSection extends DynamicTabbedPropertySection {
         Object input = ((IStructuredSelection) selection).getFirstElement();
         if (input instanceof ConnectionPart) {
             connection = (Connection) ((ConnectionPart) input).getModel();
+            if (conIf()) {
+                super.setInput(workbenchPart, selection);
+                return;
+            }
             elem = (Element) ((ConnectionPart) input).getSource().getModel();
         }
         if (input instanceof ConnLabelEditPart) {
             connection = (Connection) ((ConnectionPart) ((ConnLabelEditPart) input).getParent()).getModel();
+            if (conIf()) {
+                super.setInput(workbenchPart, selection);
+                return;
+            }
             elem = (Element) ((ConnectionPart) ((ConnLabelEditPart) input).getParent()).getSource().getModel();
         }
         addComponents();
@@ -129,14 +144,9 @@ public class MainConnectionSection extends DynamicTabbedPropertySection {
 
     @Override
     public void addComponents() {
-        // Empty the composite before use (kinda refresh) :
-        Control[] ct = parent.getChildren();
-        for (int i = 0; i < ct.length; i++) {
-            System.out.println(ct[i]);
-            ct[i].dispose();
-        }
+        if (conSchema()) {
+            disposeChildren();
 
-        if (hasSchemaToDisplay()) {
             List<? extends IElementParameter> listParam = elem.getElementParameters();
 
             for (IElementParameter cur : listParam) {
@@ -146,8 +156,6 @@ public class MainConnectionSection extends DynamicTabbedPropertySection {
             }
 
             FormData data = new FormData();
-
-            data = new FormData();
             data.left = new FormAttachment(0, ITabbedPropertyConstants.HSPACE);
             data.right = new FormAttachment(100, -ITabbedPropertyConstants.HSPACE);
             data.top = new FormAttachment(0, curRowSize + ITabbedPropertyConstants.VSPACE);
@@ -164,11 +172,27 @@ public class MainConnectionSection extends DynamicTabbedPropertySection {
 
             parent.layout();
             parent.getParent().layout();
+        } else if (conIf()) {
+            super.addComponents();
+        } else {
+            disposeChildren();
         }
         built = true;
     }
 
-    private boolean hasSchemaToDisplay() {
+    private void disposeChildren() {
+        // Empty the composite before use (kinda refresh) :
+        Control[] ct = parent.getChildren();
+        for (int i = 0; i < ct.length; i++) {
+            ct[i].dispose();
+        }
+    }
+
+    private boolean conIf() {
+        return connection.getLineStyle() == EConnectionType.RUN_IF;
+    }
+
+    private boolean conSchema() {
         return connection.getLineStyle() == EConnectionType.FLOW_MAIN || connection.getLineStyle() == EConnectionType.FLOW_REF;
     }
 
