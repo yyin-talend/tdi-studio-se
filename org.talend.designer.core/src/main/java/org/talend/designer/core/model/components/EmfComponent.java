@@ -574,7 +574,10 @@ public class EmfComponent implements IComponent {
     public void addItemsPropertyParameters(String paramName, ITEMSType items, ElementParameter param, EParameterFieldType type) {
         ITEMType item;
 
-        int nbItems = items.getITEM().size();
+        int nbItems = 0;
+        if (items != null) {
+            nbItems = items.getITEM().size();
+        }
         String[] listRepositoryItem = new String[nbItems];
         String[] listItemsDisplayValue = new String[nbItems];
         String[] listItemsDisplayCodeValue = new String[nbItems];
@@ -598,7 +601,17 @@ public class EmfComponent implements IComponent {
                             EParameterFieldType.CLOSED_LIST);
                     listItemsValue[k] = newParam;
                 } else {
-                    listItemsValue[k] = item.getNAME();
+                    if (EParameterFieldType.COLUMN_LIST.getName().equals(item.getFIELD())) {
+                        ElementParameter newParam = new ElementParameter();
+                        newParam.setName(item.getNAME());
+                        newParam.setDisplayName("");
+                        newParam.setField(EParameterFieldType.COLUMN_LIST);
+                        addItemsPropertyParameters(paramName + ".ITEM." + item.getNAME(), item.getITEMS(), newParam,
+                                EParameterFieldType.COLUMN_LIST);
+                        listItemsValue[k] = newParam;
+                    } else {
+                        listItemsValue[k] = item.getNAME();
+                    }
                 }
             }
             listField[k] = item.getFIELD();
@@ -614,19 +627,19 @@ public class EmfComponent implements IComponent {
         param.setListItemsShowIf(listItemsShowIf);
         param.setListItemsNotShowIf(listItemsNotShowIf);
         if (!type.equals(EParameterFieldType.TABLE)) {
-            Object defaultValue;
-            if (items.getDEFAULT() != null) {
-                boolean found = false;
-                String temp = items.getDEFAULT();
-                for (int i = 0; i < listItemsDisplayCodeValue.length & !found; i++) {
-                    if (listItemsDisplayCodeValue[i].equals(items.getDEFAULT())) {
-                        found = true;
-                        temp = (String) listItemsValue[i];
+            Object defaultValue = "";
+            if (items != null) {
+                if (items.getDEFAULT() != null) {
+                    boolean found = false;
+                    String temp = items.getDEFAULT();
+                    for (int i = 0; i < listItemsDisplayCodeValue.length & !found; i++) {
+                        if (listItemsDisplayCodeValue[i].equals(items.getDEFAULT())) {
+                            found = true;
+                            temp = (String) listItemsValue[i];
+                        }
                     }
+                    defaultValue = new String(temp);
                 }
-                defaultValue = new String(temp);
-            } else {
-                defaultValue = "";
             }
             param.setDefaultClosedListValue(defaultValue);
             param.setValue(defaultValue);

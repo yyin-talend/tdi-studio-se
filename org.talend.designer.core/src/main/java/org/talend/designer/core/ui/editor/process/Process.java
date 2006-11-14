@@ -455,7 +455,8 @@ public class Process extends Element implements IProcess {
         if (metadataConnectionsItem != null) {
             for (ConnectionItem connectionItem : metadataConnectionsItem) {
                 org.talend.core.model.metadata.builder.connection.Connection connection;
-                connection = (org.talend.core.model.metadata.builder.connection.Connection) connectionItem.getConnection();
+                connection = (org.talend.core.model.metadata.builder.connection.Connection) connectionItem
+                        .getConnection();
                 for (Object tableObj : connection.getTables()) {
                     MetadataTable table = (MetadataTable) tableObj;
                     String name = connectionItem.getProperty().getId() + " - " + table.getLabel();
@@ -493,7 +494,11 @@ public class Process extends Element implements IProcess {
                             String strValue;
                             if (o instanceof Integer) {
                                 IElementParameter tmpParam = (IElementParameter) param.getListItemsValue()[i];
-                                strValue = tmpParam.getListItemsDisplayCodeName()[(Integer) o];
+                                if (tmpParam.getListItemsDisplayCodeName().length > 0) {
+                                    strValue = tmpParam.getListItemsDisplayCodeName()[(Integer) o];
+                                } else {
+                                    strValue = "";
+                                }
                             } else {
                                 strValue = (String) o;
                             }
@@ -543,7 +548,8 @@ public class Process extends Element implements IProcess {
                                 }
                                 if (param.getListItemsValue()[nbValues] instanceof IElementParameter) {
                                     IElementParameter tmpParam = (IElementParameter) param.getListItemsValue()[nbValues];
-                                    Integer index = new Integer(tmpParam.getIndexOfItemFromList(elementValue.getValue()));
+                                    Integer index = new Integer(tmpParam
+                                            .getIndexOfItemFromList(elementValue.getValue()));
                                     lineValues.put(elementValue.getElementRef(), index);
                                 } else {
                                     lineValues.put(elementValue.getElementRef(), elementValue.getValue());
@@ -809,7 +815,8 @@ public class Process extends Element implements IProcess {
         boolean metadataInitialiazed = false;
         if (schemaType != null) {
             if (schemaType.equals(EmfComponent.REPOSITORY)) {
-                String metaRepositoryName = (String) nc.getPropertyValue(EParameterName.REPOSITORY_SCHEMA_TYPE.getName());
+                String metaRepositoryName = (String) nc.getPropertyValue(EParameterName.REPOSITORY_SCHEMA_TYPE
+                        .getName());
                 IMetadataTable repositoryMetadata = getMetadataFromRepository(metaRepositoryName);
                 if (repositoryMetadata != null) {
                     repositoryMetadata = repositoryMetadata.clone();
@@ -826,8 +833,8 @@ public class Process extends Element implements IProcess {
                         message += "\nDo you want to upgrade it from the repository?";
                         String[] buttons = { "Yes", "No" };
                         Shell shell = PlatformUI.getWorkbench().getDisplay().getActiveShell();
-                        MessageDialog messageDialog = new MessageDialog(shell, "Metadata modification detected", null, message,
-                                MessageDialog.QUESTION, buttons, 0);
+                        MessageDialog messageDialog = new MessageDialog(shell, "Metadata modification detected", null,
+                                message, MessageDialog.QUESTION, buttons, 0);
                         int value = messageDialog.open();
                         // set dirty state ?
                         if (value == 0) {
@@ -872,7 +879,8 @@ public class Process extends Element implements IProcess {
                 if (metadataConnectionsItem != null) {
                     for (ConnectionItem connectionItem : metadataConnectionsItem) {
                         String value = connectionItem.getProperty().getId() + "";
-                        if (value.equals((String) node.getPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE.getName()))) {
+                        if (value.equals((String) node.getPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE
+                                .getName()))) {
                             repositoryConnection = (org.talend.core.model.metadata.builder.connection.Connection) connectionItem
                                     .getConnection();
                         }
@@ -911,12 +919,13 @@ public class Process extends Element implements IProcess {
                         }
                     }
                     if (!sameValues) {
-                        String message = "The properties used in the component " + node.getUniqueName() + " has been modified.";
+                        String message = "The properties used in the component " + node.getUniqueName()
+                                + " has been modified.";
                         message += "\nDo you want to upgrade it from the repository?";
                         String[] buttons = { "Yes", "No" };
                         Shell shell = PlatformUI.getWorkbench().getDisplay().getActiveShell();
-                        MessageDialog messageDialog = new MessageDialog(shell, "Property modification detected", null, message,
-                                MessageDialog.QUESTION, buttons, 0);
+                        MessageDialog messageDialog = new MessageDialog(shell, "Property modification detected", null,
+                                message, MessageDialog.QUESTION, buttons, 0);
                         int value = messageDialog.open();
                         // set dirty state ?
                         if (value == 0) {
@@ -925,8 +934,8 @@ public class Process extends Element implements IProcess {
                                 String repositoryValue = param.getRepositoryValue();
                                 if (param.isShow(node.getElementParameters()) && (repositoryValue != null)
                                         && (!param.getName().equals(EParameterName.PROPERTY_TYPE.getName()))) {
-                                    Object objectValue = (Object) RepositoryToComponentProperty.getValue(repositoryConnection,
-                                            repositoryValue);
+                                    Object objectValue = (Object) RepositoryToComponentProperty.getValue(
+                                            repositoryConnection, repositoryValue);
                                     if (objectValue != null) {
                                         if (param.getField().equals(EParameterFieldType.CLOSED_LIST)
                                                 && param.getRepositoryValue().equals("TYPE")) {
@@ -935,7 +944,9 @@ public class Process extends Element implements IProcess {
                                             for (int i = 0; (i < list.length) && (!found); i++) {
                                                 if (objectValue.equals(list[i])) {
                                                     found = true;
-                                                    node.setPropertyValue(param.getName(), param.getListItemsValue()[i]);
+                                                    node
+                                                            .setPropertyValue(param.getName(), param
+                                                                    .getListItemsValue()[i]);
                                                 }
                                             }
                                         } else {
@@ -985,8 +996,8 @@ public class Process extends Element implements IProcess {
             source = (Node) nodesHashtable.get(cType.getSource());
             target = (Node) nodesHashtable.get(cType.getTarget());
             Integer lineStyleId = new Integer(cType.getLineStyle());
-            connec = new Connection(source, target, EConnectionType.getTypeFromId(lineStyleId), cType.getMetaname(), cType
-                    .getLabel());
+            connec = new Connection(source, target, EConnectionType.getTypeFromId(lineStyleId), cType.getMetaname(),
+                    cType.getLabel());
             if ((!source.isActivate()) || (!target.isActivate())) {
                 connec.setActivate(false);
             }
