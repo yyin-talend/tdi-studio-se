@@ -373,7 +373,8 @@ public class SessionTreeNodeUtils {
         
         SessionTreeNode sessionTreeNode = SessionTreeNodeUtils.getSessionTreeNode(getRepositoryName(repositoryNode2), 
                 connection.getDatabaseType(), connection.getURL(), connection.getUsername(), 
-                connection.getPassword(), connection.getSID(), repositoryNode2);
+                connection.getPassword(), connection.getSID().length() == 0 ? connection.getDatasourceName() : connection.getSID(), 
+                		repositoryNode2);
         return sessionTreeNode.getDbModel();
     }
     
