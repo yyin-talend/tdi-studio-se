@@ -134,6 +134,9 @@ public class ConnectionParameters {
      */
     public void setDbName(String dbName) {
         this.dbName = trimInvertedComma(dbName);
+        if (this.datasource == null || this.datasource.equals("")) {
+        		this.datasource = this.dbName;
+        }
     }
 
     /**
