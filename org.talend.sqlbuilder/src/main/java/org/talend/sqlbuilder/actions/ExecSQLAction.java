@@ -27,8 +27,10 @@ import java.util.List;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.widgets.Display;
+import org.talend.repository.model.RepositoryNode;
 import org.talend.sqlbuilder.Messages;
 import org.talend.sqlbuilder.SqlBuilderPlugin;
+import org.talend.sqlbuilder.dbstructure.SessionTreeNodeManager;
 import org.talend.sqlbuilder.sessiontree.model.SessionTreeNode;
 import org.talend.sqlbuilder.sqlcontrol.SQLExecution;
 import org.talend.sqlbuilder.ui.editor.ISQLEditor;
@@ -54,9 +56,9 @@ public class ExecSQLAction extends AbstractEditorAction {
      * 
      * @param resultViewer
      */
-    public ExecSQLAction(IResultDisplayer resultViewer,ISQLEditor editor) {
+    public ExecSQLAction(IResultDisplayer resultViewer, ISQLEditor editor) {
         this.resultViewer = resultViewer;
-        this.editor=editor;
+        this.editor = editor;
         setActionDefinitionId(ICommandIds.EXEC_SQL);
     }
 
@@ -74,13 +76,12 @@ public class ExecSQLAction extends AbstractEditorAction {
 
     public void run() {
 
-      
-        int maxresults =IConstants.WARN_RESEULTS;
+        int maxresults = IConstants.WARN_RESEULTS;
         try {
-            boolean isLimit=editor.getIfLimit();
-            
+            boolean isLimit = editor.getIfLimit();
+
             if (isLimit) {
-                String tmp =editor.getMaxResult();
+                String tmp = editor.getMaxResult();
                 if (tmp != null && tmp.trim().length() != 0) {
                     maxresults = Integer.parseInt(tmp);
                 }
@@ -92,11 +93,10 @@ public class ExecSQLAction extends AbstractEditorAction {
         try {
 
             if (maxresults < 0) {
-                Exception e= new Exception(Messages.getString("SQLEditor.LimitRows.Error"));
+                Exception e = new Exception(Messages.getString("SQLEditor.LimitRows.Error"));
                 UIUtils.openErrorDialog(Messages.getString("SQLEditor.Error.InvalidRowLimit.Title"), e);
                 return;
             }
-
 
             if (maxresults > IConstants.WARN_RESEULTS) {
 
@@ -105,9 +105,9 @@ public class ExecSQLAction extends AbstractEditorAction {
 
                     public void run() {
 
-                        boolean okToExecute = MessageDialog.openConfirm(Display.getDefault().getShells()[0],
-                                Messages.getString("SQLEditor.LimitRows.ConfirmNoLimit.Title"),
-                                Messages.getString("SQLEditor.LimitRows.ConfirmNoLimit.Message"));
+                        boolean okToExecute = MessageDialog.openConfirm(Display.getDefault().getShells()[0], Messages
+                                .getString("SQLEditor.LimitRows.ConfirmNoLimit.Title"), Messages
+                                .getString("SQLEditor.LimitRows.ConfirmNoLimit.Message"));
 
                         if (okToExecute) {
                             ExecSQLAction.this.run(largeResults);
@@ -116,7 +116,7 @@ public class ExecSQLAction extends AbstractEditorAction {
                 });
 
             } else {
-               run(maxresults);
+                run(maxresults);
             }
 
         } catch (final Exception e) {
@@ -124,14 +124,17 @@ public class ExecSQLAction extends AbstractEditorAction {
         }
     }
 
-    protected void run(int maxRows) {
+    /**
+     * SessionTreeNodeManager
+     */
+    SessionTreeNodeManager nodeManager = new SessionTreeNodeManager();
 
-        SessionTreeNode runNode = editor.getSessionTreeNode();
-        QueryTokenizer qt = new QueryTokenizer(getSQLToBeExecuted(), 
-                IConstants.QUERY_DELIMITER, 
-                IConstants.ALTERNATE_DELIMITER,
-                IConstants.COMMENT_DELIMITER);
-        
+    protected void run(int maxRows) {
+        RepositoryNode node = editor.getRepositoryNode();
+        SessionTreeNode runNode = nodeManager.getSessionTreeNode(node);
+        QueryTokenizer qt = new QueryTokenizer(getSQLToBeExecuted(), IConstants.QUERY_DELIMITER,
+                IConstants.ALTERNATE_DELIMITER, IConstants.COMMENT_DELIMITER);
+
         List<String> queryStrings = new ArrayList<String>();
         while (qt.hasQuery()) {
             String querySql = qt.nextQuery();
@@ -146,9 +149,9 @@ public class ExecSQLAction extends AbstractEditorAction {
             while (!queryStrings.isEmpty()) {
                 String querySql = (String) queryStrings.remove(0);
                 if (querySql != null) {
-                    SQLExecution sqlExe=new SQLExecution(querySql,maxRows,runNode);
+                    SQLExecution sqlExe = new SQLExecution(querySql, maxRows, runNode);
                     resultViewer.addSQLExecution(sqlExe);
-//                    editor.setSQLRunTime(sqlExe.getSQLResult().getExecutionTimeMillis());
+                    // editor.setSQLRunTime(sqlExe.getSQLResult().getExecutionTimeMillis());
                 }
             }
         } catch (Exception e) {
@@ -157,7 +160,7 @@ public class ExecSQLAction extends AbstractEditorAction {
     }
 
     String getSQLToBeExecuted() {
-        String sql= editor.getSQLToBeExecuted();
+        String sql = editor.getSQLToBeExecuted();
         return sql;
     }
 
