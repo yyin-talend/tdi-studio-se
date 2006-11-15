@@ -21,12 +21,15 @@
 // ============================================================================
 package org.talend.sqlbuilder.ui;
 
+import java.lang.reflect.InvocationTargetException;
+
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IProgressMonitorWithBlocking;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.ProgressIndicator;
+import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -50,6 +53,7 @@ import org.talend.sqlbuilder.dbstructure.SessionTreeNodeManager;
 import org.talend.sqlbuilder.dbstructure.SessionTreeNodeUtils;
 import org.talend.sqlbuilder.dbstructure.nodes.INode;
 import org.talend.sqlbuilder.util.ConnectionParameters;
+import org.talend.sqlbuilder.util.UIUtils;
 
 /**
  * This Dialog is used for building sql.
@@ -79,11 +83,12 @@ public class SQLBuilderDialog extends Dialog {
      * The progress monitor.
      */
     private ProgressMonitor progressMonitor = new ProgressMonitor();
-    
+
     /**
-     * SessionTreeNode Manager. 
+     * SessionTreeNode Manager.
      */
     SessionTreeNodeManager nodeManager = new SessionTreeNodeManager();
+
     /**
      * Internal progress monitor implementation.
      */
@@ -380,15 +385,31 @@ public class SQLBuilderDialog extends Dialog {
          * @see org.eclipse.ui.actions.SelectionProviderAction#selectionChanged(org.eclipse.jface.viewers.IStructuredSelection)
          */
         public void selectionChanged(final IStructuredSelection selection) {
+//            IRunnableWithProgress progress = new IRunnableWithProgress() {
+//
+//                public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
+//                    monitor.beginTask("", IProgressMonitor.UNKNOWN);
+//
+//                    monitor.done();
+//                }
+//            };
+
+            // UIUtils.runWithProgress(progress, true, getProgressMonitor(), getShell());
             BusyIndicator.showWhile(Display.getDefault(), new Runnable() {
 
                 public void run() {
                     INode node = null;
+                    String msg=null;
                     if (!selection.isEmpty()) {
+                        try {
                             RepositoryNode repositoryNode = (RepositoryNode) selection.getFirstElement();
                             node = nodeManager.convert2INode(repositoryNode);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            msg=e.getMessage();
+                        }
                     }
-                    dbDetailsComposite.setSelectedNode(node);
+                    dbDetailsComposite.setSelectedNode(node, "msg");
                 }
             });
         }
