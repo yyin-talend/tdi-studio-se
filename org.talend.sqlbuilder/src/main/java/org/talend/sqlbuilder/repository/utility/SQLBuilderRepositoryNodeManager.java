@@ -52,6 +52,8 @@ import org.talend.sqlbuilder.SqlBuilderPlugin;
 import org.talend.sqlbuilder.dbstructure.RepositoryNodeType;
 import org.talend.sqlbuilder.dbstructure.SessionTreeNodeManager;
 
+import sun.security.krb5.internal.crypto.f;
+
 /**
  * DOC dev  class global comment. Detailled comment
  * <br/>
@@ -93,14 +95,14 @@ public class SQLBuilderRepositoryNodeManager {
         			///Get MetadataColumn From EMF
         			List<MetadataColumn> columnsFromEMF = tableFromEMF.getColumns();
         			fixedColumns(columnsFromDB, columnsFromEMF);
-        			tableFromEMF.getColumns().clear();
-        			tableFromEMF.getColumns().addAll(columnsFromDB);
+//        			tableFromEMF.getColumns().clear();
+//        			tableFromEMF.getColumns().addAll(columnsFromDB);
 				}
         		
 			}
-        	tablesFromDB = fixedTables(tablesFromDB, tablesFromEMF);
-        	connection.getTables().clear();
-        	connection.getTables().addAll(tablesFromDB);
+        	fixedTables(tablesFromDB, tablesFromEMF);
+//        	connection.getTables().clear();
+//        	connection.getTables().addAll(tablesFromDB);
         } 
 		return oldNode;
 	}
@@ -110,10 +112,14 @@ public class SQLBuilderRepositoryNodeManager {
 	 * @param newNode
 	 * @return
 	 */
-	private DatabaseConnectionItem getItem(RepositoryNode newNode) {
+	private static DatabaseConnectionItem getItem(RepositoryNode newNode) {
 		IRepositoryObject repositoryObject = newNode.getObject();
         DatabaseConnectionItem item = (DatabaseConnectionItem) repositoryObject.getProperty().getItem();
 		return item;
+	}
+	
+	public static String getDatabaseNameByRepositoryNode(RepositoryNode node) {
+		return ((DatabaseConnection) getItem(node).getConnection()).getSID();		
 	}
 	
 	/**
@@ -195,31 +201,27 @@ public class SQLBuilderRepositoryNodeManager {
 	 * fixed Table .
 	 * @param metaFromDB MetadataTable from Database
 	 * @param metaFromEMF MetadataTable from Emf
-	 * @return MetadataTable List has set divergency flag
 	 */
-	private List<MetadataTable> fixedTables(List<MetadataTable> metaFromDB, 
+	private void fixedTables(List<MetadataTable> metaFromDB, 
 			List<MetadataTable> metaFromEMF) {
-		List<MetadataTable> newMetaFromDB = new ArrayList<MetadataTable>();
-		for (MetadataTable db : metaFromDB) {
+		
+		while (!metaFromDB.isEmpty()) {
 			boolean flag = true;
-				for (MetadataTable emf : metaFromEMF) {
-					if (emf.getSourceName().equals(db.getSourceName())) {
-						if (emf.getLabel().equals(db.getSourceName())) {
-							emf.setDivergency(false);
-						} else {
-							emf.setDivergency(true);
-						}
-						newMetaFromDB.add(emf);
-						flag = false;
-						break;
-					} 
-				}
-				
-				if (flag) {
-					newMetaFromDB.add(db);
-				}
+			MetadataTable db = metaFromDB.remove(0);
+			for (MetadataTable emf : metaFromEMF) {
+				if (db.getSourceName().equals(emf.getSourceName())) {
+					flag = false;
+					if (emf.getLabel().equals(db.getSourceName())) {
+						emf.setDivergency(false);
+					} else {
+						emf.setDivergency(true);
+					}
+				} 
+			}
+			if (flag) {
+				metaFromEMF.add(db);
+			}
 		}
-		return newMetaFromDB;
 	}
 	
 	/**
@@ -230,14 +232,17 @@ public class SQLBuilderRepositoryNodeManager {
 	private void fixedColumns(List<MetadataColumn> columnsFromDB, 
 			List<MetadataColumn> cloumnsFromEMF) {
 		while (!columnsFromDB.isEmpty()) {
+			boolean flag = true;
 			MetadataColumn db = columnsFromDB.remove(0);
 			for (MetadataColumn emf : cloumnsFromEMF) {
 				if (db.getOriginalField().equals(emf.getOriginalField())) {
+					flag = false;
 					emf.setDivergency(!isEquivalent(db, emf));
-					emf.setSourceType(db.getSourceType());
 				} 
 			}
-			cloumnsFromEMF.add(db);
+			if (flag) {
+				cloumnsFromEMF.add(db);
+			}
 		}
 	}
 	
