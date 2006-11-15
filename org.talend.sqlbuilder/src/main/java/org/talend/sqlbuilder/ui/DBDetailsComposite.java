@@ -48,41 +48,36 @@ public class DBDetailsComposite extends Composite {
         panel = new Composite(this, SWT.NONE);
 
         panel.setLayout(new FillLayout());
-        setSelectedNode(null);
+        setSelectedNode(null, null);
     }
-    
+
     /**
+     * DOC qianbing Comment method "setSelectedNode". Displays the message input,if inputs null,it will show default
+     * message.
+     * 
      * @param node INode
+     * @param message String
      */
-    public void setSelectedNode(INode node) {
-        try {
-            Composite parent = panel.getParent();
-            panel.dispose();
-            panel = new Composite(parent, SWT.NONE);
-            panel.setLayout(new FillLayout());
+    public void setSelectedNode(INode node, String message) {
+        Composite parent = panel.getParent();
+        panel.dispose();
+        panel = new Composite(parent, SWT.NONE);
+        panel.setLayout(new FillLayout());
 
-            if (node == null) {
-
+        if (node == null) {
+            Label label = new Label(panel, SWT.FILL);
+            if (message == null) {
                 // add default message
-                String message = Messages.getString("DatabaseDetailView.NoSelection");
-
-                Label label = new Label(panel, SWT.FILL);
-                label.setText(message);
-
-            } else {
-
-                // add tabs
-                DetailTabManager.createTabs(panel, node);
-
+                message = Messages.getString("DatabaseDetailView.NoSelection");
             }
-
-            panel.layout();
-            panel.getParent().layout();
-            panel.redraw();
-        } catch (Exception e) {
-            e.printStackTrace();
+            label.setText(message);
+        } else {
+            // add tabs
+            DetailTabManager.createTabs(panel, node);
         }
 
+        panel.layout();
+        panel.getParent().layout();
+        panel.redraw();
     }
-
 }
