@@ -32,6 +32,8 @@ public class FileInputLdifNode extends FileInputNode {
     /**
      * Constructs a new FileInputNode.
      */
+    
+    //PTODO cantoine : voir pour les données du LdifFile a placer en PARAM pour Description&ProcessShadow
     public FileInputLdifNode(String filename, String rowSep, String fieldSep, int limitRows, int headerRows,
             int footerRows, boolean removeEmptyRow) {
         super("tFileInputLdif");

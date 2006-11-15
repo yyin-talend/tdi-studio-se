@@ -21,8 +21,16 @@
 // ============================================================================
 package org.talend.repository.ui.wizards.metadata.connection.files.ldif;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
+
+import javax.naming.NamingEnumeration;
+import javax.naming.directory.Attributes;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.CoreException;
@@ -41,15 +49,16 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.TableColumn;
+import org.eclipse.swt.widgets.TableItem;
 import org.talend.commons.ui.swt.dialogs.ErrorDialogWidthDetailArea;
 import org.talend.commons.ui.swt.formtools.Form;
 import org.talend.commons.ui.swt.formtools.LabelledCheckboxCombo;
 import org.talend.commons.ui.swt.formtools.UtilsButton;
-import org.talend.core.model.metadata.builder.connection.FileConnection;
+import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
+import org.talend.commons.ui.swt.tableviewer.TableViewerCreator.LAYOUT_MODE;
 import org.talend.core.model.properties.ConnectionItem;
-import org.talend.core.model.targetschema.editor.TargetSchemaEditor2;
-import org.talend.core.ui.targetschema.editor.TargetSchemaTableEditorView2;
-import org.talend.core.ui.targetschema.editor.TargetSchemaToolbarEditorView2;
 import org.talend.core.utils.XmlArray;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.preview.ProcessDescription;
@@ -77,6 +86,12 @@ public class LdifFileStep2Form extends AbstractLdifFileStepForm {
 
     private Group previewGroup;
 
+    protected Table table;
+    
+    private Collection<TableItem> tableItems;
+    
+    private List<String> itemTableName;
+    
     private Button previewButton;
 
     private Label previewInformationLabel;
@@ -157,6 +172,116 @@ public class LdifFileStep2Form extends AbstractLdifFileStepForm {
 //    
 //    }
     
+    private void addGroupAttributes(final Composite mainComposite, final int width, final int height) {
+        // Group Schema Viewer
+        Group group = Form.createGroup(mainComposite, 1, "List Attributes of Ldif file", height);
+
+        ScrolledComposite scrolledCompositeFileViewer = new ScrolledComposite(group, SWT.H_SCROLL | SWT.V_SCROLL
+                | SWT.NONE);
+        scrolledCompositeFileViewer.setExpandHorizontal(true);
+        scrolledCompositeFileViewer.setExpandVertical(true);
+        GridData gridData1 = new GridData(GridData.FILL_BOTH);
+        scrolledCompositeFileViewer.setLayoutData(gridData1);
+        scrolledCompositeFileViewer.setLayout(new FillLayout());
+
+        // List Table
+        TableViewerCreator tableViewerCreator = new TableViewerCreator(scrolledCompositeFileViewer);
+        tableViewerCreator.setHeaderVisible(true);
+        tableViewerCreator.setAllColumnsResizable(true);
+        tableViewerCreator.setBorderVisible(true);
+        tableViewerCreator.setLinesVisible(true);
+        tableViewerCreator.setHorizontalScroll(false);
+        tableViewerCreator.setLayoutMode(LAYOUT_MODE.FILL_HORIZONTAL);
+        tableViewerCreator.setCheckboxInFirstColumn(true);
+        tableViewerCreator.setFirstColumnMasked(true);
+
+        table = tableViewerCreator.createTable();
+        table.setLayoutData(new GridData(GridData.FILL_BOTH));
+
+        TableColumn tableName = new TableColumn(table, SWT.CHECK);
+        tableName.setText("Attributes");
+        tableName.setWidth(300);
+
+        scrolledCompositeFileViewer.setContent(table);
+        scrolledCompositeFileViewer.setMinSize(table.computeSize(SWT.DEFAULT, SWT.DEFAULT));
+
+        
+    }
+
+    /**
+     * checkConnection.
+     * 
+     * @param displayMessageBox
+     */
+    protected void populateLdifAttributes() {
+
+        tableItems = new ArrayList<TableItem>();
+
+        if (table.getItemCount() > 0) {
+            table.removeAll();
+        }
+
+//        itemTableName = ExtractMetaDataFromDataBase.returnTablesFormConnection(iMetadataConnection);
+//        if (itemTableName.size() <= 0) {
+//        } else {
+//            // connection is done and tables exist
+//            if (itemTableName != null && !itemTableName.isEmpty()) {
+//                // fill the combo
+//                Iterator<String> iterate = itemTableName.iterator();
+//                while (iterate.hasNext()) {
+//                    String nameTable = iterate.next();
+//                    TableItem item = new TableItem(table, SWT.NONE);
+//                    item.setText(nameTable);
+//                }
+//            }
+//        }
+        
+        String filename = new String(getConnection().getFilePath());
+        Attributes entry = null;
+        BufferedReader bufReader = null;
+//        Collection<String> colAttributes = new ArrayList<String>();
+        
+        try {
+
+            bufReader = new BufferedReader(new FileReader(filename), 1024);
+            LDIFReader ldif = new LDIFReader(bufReader);
+            itemTableName = new ArrayList<String>();
+            itemTableName.add("dn");
+
+            int limit = 50;
+            while ((entry = ldif.getNext()) != null) {
+                if(limit >= 0){
+                    try {
+                        NamingEnumeration idsEnum = entry.getIDs();
+                        while (idsEnum.hasMore()) {
+                             String attributeId= (String)idsEnum.next();
+                             if(! itemTableName.contains(attributeId)){
+                                 itemTableName.add(attributeId);
+                             }
+                        }
+                    } catch(Exception e) {
+                        System.out.println("Pb entry read "+e);
+                    }
+                    limit--;
+                }else{
+                    break;
+                }
+            }
+            
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        if (itemTableName != null && !itemTableName.isEmpty()) {
+            // fill the combo
+            Iterator<String> iterate = itemTableName.iterator();
+            while (iterate.hasNext()) {
+                String nameTable = iterate.next();
+                TableItem item = new TableItem(table, SWT.NONE);
+                item.setText(nameTable);
+            }
+        }
+    }
+    
     /**
      * add field to Group Limit.
      * 
@@ -221,7 +346,7 @@ public class LdifFileStep2Form extends AbstractLdifFileStepForm {
 
         // compositeFileDelimitor Main Fields
         Composite mainComposite = Form.startNewGridLayout(this, 2);
-//        addGroupAttributes(mainComposite, 300, 85);
+        addGroupAttributes(mainComposite, 300, 85);
         addGroupLimit(mainComposite, 300, 85);
         addGroupFileViewer(this, 700, 210);
 
@@ -246,7 +371,6 @@ public class LdifFileStep2Form extends AbstractLdifFileStepForm {
      */
     private ProcessDescription getProcessDescription() {
 
-        //PTODO cantoine : view why it's not the same declaration that others Wizards.
         ProcessDescription processDescription = ShadowProcessHelper.getProcessDescription(getConnection());
 
         // Adapt Header width firstRowIsCaption to preview the first line on caption or not
@@ -454,6 +578,7 @@ public class LdifFileStep2Form extends AbstractLdifFileStepForm {
     public void setVisible(boolean visible) {
         super.setVisible(visible);
         if (super.isVisible()) {
+            populateLdifAttributes();
             // Refresh the preview width the adapted rowSeparator
             // If metadata exist, refreshMetadata
             if ((!"".equals(getConnection().getFilePath())) && (getConnection().getFilePath() != null)) {
