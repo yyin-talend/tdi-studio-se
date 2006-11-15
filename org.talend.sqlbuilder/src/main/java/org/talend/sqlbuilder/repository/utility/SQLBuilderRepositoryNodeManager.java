@@ -35,6 +35,7 @@ import org.talend.core.model.metadata.builder.connection.ConnectionFactory;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.metadata.builder.connection.MetadataColumn;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
+import org.talend.core.model.metadata.builder.connection.Query;
 import org.talend.core.model.metadata.builder.database.ExtractMetaDataFromDataBase;
 import org.talend.core.model.metadata.builder.database.ExtractMetaDataUtils;
 
@@ -63,11 +64,9 @@ public class SQLBuilderRepositoryNodeManager {
 	@SuppressWarnings("unchecked")
 	public RepositoryNode getRepositoryNodeFromDB(RepositoryNode oldNode) {
 		
-		RepositoryNode newNode = null;
-		IRepositoryObject repositoryObject = oldNode.getObject();
-        DatabaseConnectionItem item = (DatabaseConnectionItem) repositoryObject.getProperty().getItem();
+		RepositoryNode newNode = oldNode;
+		DatabaseConnectionItem item = getItem(newNode);
         DatabaseConnection connection = (DatabaseConnection) item.getConnection();
-//        connection.getQueries().add();
         IMetadataConnection iMetadataConnection = ConvertionHelper.convert(connection);
         boolean status = new ManagerConnection().check(iMetadataConnection);
         if (status) {
@@ -81,18 +80,29 @@ public class SQLBuilderRepositoryNodeManager {
         		List<MetadataColumn> columnsFromDB  = 
         			ExtractMetaDataFromDataBase.returnMetadataColumnsFormTable(iMetadataConnection, tableFromDB.getLabel());
         		for (MetadataTable tableFromEMF : tablesFromEMF) {
+        			///Get MetadataColumn From EMF
         			List<MetadataColumn> columnsFromEMF = tableFromEMF.getColumns();
-        			columnsFromDB = fixedColumnDivergency(columnsFromDB, columnsFromEMF);
+        			columnsFromDB = fixedColumns(columnsFromDB, columnsFromEMF);
 				}
         		tableFromDB.getColumns().clear();
         		tableFromDB.getColumns().addAll(columnsFromDB);
 			}
-        	tablesFromDB = fixedTableDivergency(tablesFromDB, tablesFromEMF);
+        	tablesFromDB = fixedTables(tablesFromDB, tablesFromEMF);
         	connection.getTables().clear();
         	connection.getTables().addAll(tablesFromDB);
-        	newNode = oldNode;
         }
 		return newNode;
+	}
+
+	/**
+	 * DOC dev Comment method "getItem".
+	 * @param newNode
+	 * @return
+	 */
+	private DatabaseConnectionItem getItem(RepositoryNode newNode) {
+		IRepositoryObject repositoryObject = newNode.getObject();
+        DatabaseConnectionItem item = (DatabaseConnectionItem) repositoryObject.getProperty().getItem();
+		return item;
 	}
 	
 	/**
@@ -109,14 +119,14 @@ public class SQLBuilderRepositoryNodeManager {
       
         List<MetadataTable> metadataTables = new ArrayList<MetadataTable>();
         try {
-            String[] tableTypes = { "TABLE" };
+            String[] tableTypes = { "TABLE", "VIEW"};
             ResultSet rsTables = null;
             rsTables = dbMetaData.getTables(null, ExtractMetaDataUtils.schema, null, tableTypes);
             while (rsTables.next()) {
                 MetadataTable medataTable = ConnectionFactory.eINSTANCE.createMetadataTable();
                 medataTable.setId(metadataTables.size() + 1 + ""); 
-                medataTable.setLabel(rsTables.getString("TABLE_NAME"));
-                medataTable.setSourceName(medataTable.getLabel());
+//                medataTable.setLabel(rsTables.getString("TABLE_NAME"));
+                medataTable.setSourceName(rsTables.getString("TABLE_NAME"));
                 medataTable.setComment(ExtractMetaDataUtils.getStringMetaDataInfo(rsTables, "REMARKS"));
                 metadataTables.add(medataTable);
             }
@@ -132,6 +142,15 @@ public class SQLBuilderRepositoryNodeManager {
         return metadataTables;
     }
 	
+	@SuppressWarnings("unchecked")
+	public void saveQuery(RepositoryNode repositoryNode, Query query) {
+		DatabaseConnectionItem item = getItem(repositoryNode);
+		((DatabaseConnection) item.getConnection()).getQueries().add(query);
+		saveMetaData(item);
+	}
+//	private List<MetadataColumn> getColumnsFromDBTable(IMetadataConnection iMetadataConnection, String tableLabel) {
+//		
+//	}
 	/**
 	 * save MetaData into EMF's xml files.
 	 * @param item need to be saved Item
@@ -147,23 +166,24 @@ public class SQLBuilderRepositoryNodeManager {
 	}
 	
 	/**
-	 * fixed Table Divergency flag.
+	 * fixed Table flag.
 	 * @param metaFromDB MetadataTable from Database
 	 * @param metaFromEMF MetadataTable from Emf
 	 * @return MetadataTable List has set divergency flag
 	 */
-	private List<MetadataTable> fixedTableDivergency(List<MetadataTable> metaFromDB, 
+	private List<MetadataTable> fixedTables(List<MetadataTable> metaFromDB, 
 			List<MetadataTable> metaFromEMF) {
 		List<MetadataTable> newMetaFromDB = new ArrayList<MetadataTable>();
 		for (MetadataTable db : metaFromDB) {
 				for (MetadataTable emf : metaFromEMF) {
 					if (emf.getSourceName().equals(db.getSourceName())) {
-						if (emf.getLabel().equals(db.getLabel())) {
-							db.setDivergency(false);
+						if (emf.getLabel().equals(db.getSourceName())) {
+							emf.setDivergency(false);
 						} else {
-							db.setDivergency(true);
+							emf.setDivergency(true);
 						}
-					}
+						newMetaFromDB.add(emf);
+					} 
 				}
 			newMetaFromDB.add(db);
 		}
@@ -176,26 +196,30 @@ public class SQLBuilderRepositoryNodeManager {
 	 * @param cloumnsFromEMF MetadataColumn from Emf
 	 * @return MetadataColumn List has set divergency flag
 	 */
-	private List<MetadataColumn> fixedColumnDivergency(List<MetadataColumn> columnsFromDB, 
+	private List<MetadataColumn> fixedColumns(List<MetadataColumn> columnsFromDB, 
 			List<MetadataColumn> cloumnsFromEMF) {
 		List<MetadataColumn> newMetaFromDB = new ArrayList<MetadataColumn>();
 		for (MetadataColumn db : columnsFromDB) {
+			boolean flag = true;
 			for (MetadataColumn emf : cloumnsFromEMF) {
 				if (db.getOriginalField().equals(emf.getOriginalField())) {
-					db.setDivergency(!isEquivalent(db, emf));
-				}
+					emf.setDivergency(!isEquivalent(db, emf));
+					newMetaFromDB.add(emf);
+					flag = false;
+				} 
 			}
-			newMetaFromDB.add(db);
+			if (flag) {
+				newMetaFromDB.add(db);
+			}
 		}
 		return newMetaFromDB;
 	}
 	
 	 /**
-     * Check if TableColumnInfo and MetadataColumnImpl are the same..
+     * Check if Two MetadataColumns are the same..
      * @param info MetadataColumn
      * @param column MetadataColumnImpl
      * @return isEquivalent.
-     * @exception
      */
     private boolean isEquivalent(MetadataColumn info, MetadataColumn column) {
         if (info.getLength() != column.getLength()) {
