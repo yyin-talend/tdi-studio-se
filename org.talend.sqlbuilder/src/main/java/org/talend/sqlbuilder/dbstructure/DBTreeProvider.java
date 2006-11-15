@@ -71,33 +71,25 @@ ITableColorProvider
     
     public Image getColumnImage(Object element, int columnIndex)
     {
-        RepositoryNode node = (RepositoryNode) element;
-        switch ((RepositoryNodeType)node.getProperties(EProperties.CONTENT_TYPE)) {
-        case DATABASE:
-            return ImageProvider.getImage(ERepositoryObjectType.METADATA_CONNECTIONS);
-        case TABLE:
-            return ImageUtil.getImage("Images.TableNodeIcon");
-        case COLUMN:
-            return ImageUtil.getImage("Images.ColumnNodeIcon");
+        if (columnIndex == 1) {
+            return null;
         }
-        return null;
-        
+        RepositoryNode node = (RepositoryNode) element;
+        return ImageUtil.getImage(node.getObject().getPurpose()); 
     }
     
     public String getColumnText(Object element, int columnIndex)
     {
         RepositoryNode node = (RepositoryNode) element;
-        if (node.getType() == ENodeType.REPOSITORY_ELEMENT) {
-            IRepositoryObject object = node.getObject();
-
-            StringBuffer string = new StringBuffer();
-            string.append(object.getLabel() );
-            return string.toString();
-        } else {
-            return node.getProperties(EProperties.LABEL).toString();
+        if (columnIndex == 0) {
+            return node.getObject().getStatusCode(); 
+        } else if (columnIndex == 1) {
+            return node.getObject().getLabel();
         }
+        
+        return null;
     }
-
+    
     public Object[] getChildren(Object parentElement)
     {
         return repositoryContentProvider.getChildren(parentElement);
@@ -127,11 +119,6 @@ ITableColorProvider
     {
         IRepositoryFactory factory = RepositoryFactoryProvider.getInstance();
         
-//        RepositoryNode metadataConNode = new RepositoryNode(null, root, ENodeType.SYSTEM_FOLDER);
-//        metadataConNode.setProperties(EProperties.LABEL, ERepositoryObjectType.METADATA_CONNECTIONS);
-//        metadataConNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.METADATA_CONNECTIONS);
-//        root.getChildren().add(metadataConNode);
-
         try
         {
             convert(factory.getMetadataConnection(), treeRoot, ERepositoryObjectType.METADATA_CONNECTIONS);
@@ -150,9 +137,12 @@ ITableColorProvider
         for (Object obj : fromModel.getSubContainer()) {
             Container container = (Container) obj;
             Folder oFolder = new Folder(container.getId(), container.getLabel());
+            oFolder.setPurpose("Images.closedFolder");
+            oFolder.setStatusCode(oFolder.getLabel());
+            oFolder.setLabel(null);
             RepositoryNode folder = new RepositoryNode(oFolder, parent, ENodeType.SIMPLE_FOLDER);
             folder.setProperties(EProperties.LABEL, container.getLabel());
-            folder.setProperties(EProperties.CONTENT_TYPE, type);// ERepositoryObjectType.FOLDER);
+            folder.setProperties(EProperties.CONTENT_TYPE, RepositoryNodeType.FOLDER);// ERepositoryObjectType.FOLDER);
             parent.getChildren().add(folder);
             convert(container, folder, type);
         }
@@ -165,9 +155,12 @@ ITableColorProvider
     
     private void addNode(RepositoryNode parent, IRepositoryObject repositoryObject) {
         IRepositoryFactory factory = RepositoryFactoryProvider.getInstance();
-
+        DatabaseConnection connection = (DatabaseConnection) ((ConnectionItem) repositoryObject
+                .getProperty().getItem()).getConnection();
+        repositoryObject.setStatusCode(connection.getSID());
+        repositoryObject.setPurpose("Images.ConnectionIcon");
         RepositoryNode node = new RepositoryNode(repositoryObject, parent, ENodeType.REPOSITORY_ELEMENT);
-
+        
         node.setProperties(EProperties.CONTENT_TYPE, RepositoryNodeType.DATABASE);
         node.setProperties(EProperties.LABEL, repositoryObject.getLabel());
         try {
@@ -224,6 +217,14 @@ ITableColorProvider
     {
         RepositoryObject modelObj = new MetadataColumnRepositoryObject(repObj, metadataColumn);
         modelObj.setLabel(metadataColumn.getLabel());
+        //statusCode use for source table name
+        modelObj.setStatusCode(metadataColumn.getOriginalField());
+        //purpose use for Image text.
+        if (metadataColumn.isDivergency()) {
+            modelObj.setPurpose("Images.RefreshIcon");
+        } else {
+            modelObj.setPurpose("Images.ColumnNodeIcon");
+        }
         RepositoryNode columnNode = new RepositoryNode(modelObj, tableNode, ENodeType.REPOSITORY_ELEMENT);
         columnNode.setProperties(EProperties.LABEL, metadataColumn.getLabel());
         columnNode.setProperties(EProperties.CONTENT_TYPE, RepositoryNodeType.COLUMN);
@@ -242,6 +243,10 @@ ITableColorProvider
             final org.talend.core.model.metadata.builder.connection.MetadataTable table) {
         org.talend.core.model.metadata.MetadataTable modelObj = new MetadataTableRepositoryObject(repObj, table);
         modelObj.setLabel(table.getLabel());
+        //statusCode use for source table name
+        modelObj.setStatusCode(table.getSourceName());
+        //purpose use for Image text.
+        modelObj.setPurpose("Images.TableNodeIcon");
         RepositoryNode tableNode = new RepositoryNode(modelObj, node, ENodeType.REPOSITORY_ELEMENT);
         tableNode.setProperties(EProperties.LABEL, table.getLabel());
         tableNode.setProperties(EProperties.CONTENT_TYPE, RepositoryNodeType.TABLE);

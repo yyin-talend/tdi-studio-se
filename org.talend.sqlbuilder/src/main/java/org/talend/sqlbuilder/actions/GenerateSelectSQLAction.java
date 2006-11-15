@@ -22,19 +22,20 @@
 package org.talend.sqlbuilder.actions;
 
 import java.util.Iterator;
-import java.util.List;
 
-import org.eclipse.jface.action.Action;
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.talend.sqlbuilder.Messages;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.ISelectionProvider;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.ui.actions.SelectionProviderAction;
+import org.talend.core.model.metadata.builder.connection.MetadataColumn;
+import org.talend.repository.model.RepositoryNode;
+import org.talend.repository.model.RepositoryNode.EProperties;
 import org.talend.sqlbuilder.SqlBuilderPlugin;
-import org.talend.sqlbuilder.dbstructure.SessionTreeNodeUtils;
-import org.talend.sqlbuilder.dbstructure.nodes.ColumnNode;
-import org.talend.sqlbuilder.dbstructure.nodes.INode;
-import org.talend.sqlbuilder.dbstructure.nodes.TableNode;
-import org.talend.sqlbuilder.sessiontree.model.SessionTreeNode;
+import org.talend.sqlbuilder.dbstructure.RepositoryNodeType;
+import org.talend.sqlbuilder.dbstructure.DBTreeProvider.MetadataTableRepositoryObject;
 import org.talend.sqlbuilder.ui.SQLBuilderTabComposite;
-import org.talend.sqlbuilder.util.ConnectionParameters;
 import org.talend.sqlbuilder.util.ImageUtil;
 
 /**
@@ -43,25 +44,43 @@ import org.talend.sqlbuilder.util.ImageUtil;
  * @author Hou Peiqin (Soyatec)
  * 
  */
-public class GenerateSelectSQLAction extends Action {
+public class GenerateSelectSQLAction extends SelectionProviderAction {
 
     private static final ImageDescriptor SQL_EDITOR_IMAGE = ImageUtil.getDescriptor("Images.SqlEditorIcon");
 
-    private INode[] selectedNodes;
+    private RepositoryNode[] selectedNodes;
 
     private SQLBuilderTabComposite editorComposite;
     private boolean isDefaultEditor;
 
-    public GenerateSelectSQLAction(INode[] selectedNodes, SQLBuilderTabComposite editorComposite, boolean isDefaultEditor) {
-        this.selectedNodes = selectedNodes;
+    @SuppressWarnings("unchecked")
+    public GenerateSelectSQLAction(ISelectionProvider provider, SQLBuilderTabComposite editorComposite, boolean isDefaultEditor) {
+        super(provider, "Generate Select Statement");
+        selectedNodes = (RepositoryNode[]) ((IStructuredSelection) provider.getSelection()).toList().toArray(new RepositoryNode[] {});
         this.editorComposite = editorComposite;
         this.isDefaultEditor = isDefaultEditor;
+        init();
     }
     
-    public void setSelectedNodes(INode[] selectedNodes) {
-        this.selectedNodes = selectedNodes;
+    @Override
+    public void selectionChanged(ISelection selection) {
+        init();
     }
-
+    
+    @SuppressWarnings("unchecked")
+    private void init() {
+        int i = 0;
+        for (RepositoryNode node : selectedNodes) {
+            if (node.getProperties(EProperties.CONTENT_TYPE) == RepositoryNodeType.DATABASE) {
+                i++;
+            }
+        }
+        if (i > 1) {
+            this.setEnabled(false);
+        } else {
+            this.setEnabled(true);
+        }
+    }
     /**
      * run.
      */
@@ -71,22 +90,23 @@ public class GenerateSelectSQLAction extends Action {
 
             String query = null;
 
-            if (selectedNodes[0] instanceof ColumnNode) {
+            RepositoryNodeType repositoryNodeType = (RepositoryNodeType)selectedNodes[0].getProperties(EProperties.CONTENT_TYPE);
+            
+            if (repositoryNodeType == RepositoryNodeType.COLUMN) {
                 query = createColumnSelect();
             }
-
-            if (selectedNodes[0] instanceof TableNode) {
+            if (repositoryNodeType == RepositoryNodeType.TABLE) {
                 query = createTableSelect();
             }
 
             if (query == null) {
                 return;
             }
-            List repositoryNames = SessionTreeNodeUtils.getRepositoryNames();
-            SessionTreeNode node = selectedNodes[0].getSession();
-            ConnectionParameters connParam = new ConnectionParameters();
-            connParam.setQuery(query);
-            editorComposite.openNewEditor(node, repositoryNames, connParam, isDefaultEditor);
+//            List repositoryNames = SessionTreeNodeUtils.getRepositoryNames();
+//            SessionTreeNode node = selectedNodes[0].getSession();
+//            ConnectionParameters connParam = new ConnectionParameters();
+//            connParam.setQuery(query);
+//            editorComposite.openNewEditor(node, repositoryNames, connParam, isDefaultEditor);
         } catch (Throwable e) {
             SqlBuilderPlugin.log("Could generate sql.", e);
         }
@@ -103,22 +123,17 @@ public class GenerateSelectSQLAction extends Action {
 
         for (int i = 0; i < selectedNodes.length; i++) {
 
-            INode node = selectedNodes[i];
+            RepositoryNode node = selectedNodes[i];
 
-            if (node instanceof ColumnNode && !((ColumnNode) node).isFromRepository()) {
-
-                ColumnNode column = (ColumnNode) node;
+            if ((RepositoryNodeType)selectedNodes[0].getProperties(EProperties.CONTENT_TYPE) == RepositoryNodeType.COLUMN) {
 
                 if (table.length() == 0) {
-                    table = column.getQualifiedParentTableName();
+                    table = node.getParent().getObject().getStatusCode();
                 }
 
-                if (column.getQualifiedParentTableName().equals(table)) {
-
-                    query.append(sep);
-                    query.append(column.getName());
-                    sep = ", ";
-                }
+                query.append(sep);
+                query.append(node.getObject().getLabel());
+                sep = ", ";
             }
         }
 
@@ -134,24 +149,24 @@ public class GenerateSelectSQLAction extends Action {
      */
     private String createTableSelect() {
 
-        TableNode node = (TableNode) selectedNodes[0];
+        RepositoryNode node = (RepositoryNode) selectedNodes[0];
 
         StringBuffer query = new StringBuffer("select ");
         String sep = "";
 
-        List columnNames = node.getColumnNames();
-        Iterator it = columnNames.iterator();
+        EList columns = ((MetadataTableRepositoryObject) node.getObject()).getTable().getColumns();
+        Iterator it = columns.iterator();
 
         while (it.hasNext()) {
 
             query.append(sep);
-            String column = (String) it.next();
+            String column = ((MetadataColumn) it.next()).getOriginalField();
             query.append(column);
             sep = ", ";
         }
 
         query.append(" from ");
-        query.append(node.getQualifiedName());
+        query.append(node.getObject().getStatusCode());
 
         return query.toString();
     }
@@ -166,38 +181,5 @@ public class GenerateSelectSQLAction extends Action {
 
         return SQL_EDITOR_IMAGE;
     }
-
-    /**
-     * Set the text for the menu entry.
-     * 
-     * @see org.eclipse.jface.action.IAction#getText()
-     * @return Text
-     */
-    public String getText() {
-
-        return Messages.getString("DatabaseStructureView.Actions.GenerateSelectSQL");
-    }
-
-    /**
-     * Action is always available.
-     * 
-     * @see net.sourceforge.sqlexplorer.dbstructure.actions.AbstractDBTreeContextAction#isAvailable()
-     * @return isAvailable
-     */
-    public boolean isAvailable() {
-
-        if (selectedNodes.length == 0) {
-            return false;
-        }
-
-        if (selectedNodes[0] instanceof ColumnNode) {
-            return true;
-        }
-
-        if (selectedNodes[0] instanceof TableNode) {
-            return true;
-        }
-
-        return false;
-    }
+    
 }

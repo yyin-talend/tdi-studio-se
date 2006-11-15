@@ -29,5 +29,5 @@ package org.talend.sqlbuilder.dbstructure;
  */
 public enum RepositoryNodeType
 {
-    DATABASE,TABLE,COLUMN;
+    FOLDER,DATABASE,TABLE,COLUMN;
 }
