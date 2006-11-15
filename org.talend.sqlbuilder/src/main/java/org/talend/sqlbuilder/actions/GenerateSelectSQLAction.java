@@ -49,14 +49,14 @@ public class GenerateSelectSQLAction extends SelectionProviderAction {
     private static final ImageDescriptor SQL_EDITOR_IMAGE = ImageUtil.getDescriptor("Images.SqlEditorIcon");
 
     private RepositoryNode[] selectedNodes;
-
+    private ISelectionProvider provider;
     private SQLBuilderTabComposite editorComposite;
     private boolean isDefaultEditor;
 
     @SuppressWarnings("unchecked")
     public GenerateSelectSQLAction(ISelectionProvider provider, SQLBuilderTabComposite editorComposite, boolean isDefaultEditor) {
         super(provider, "Generate Select Statement");
-        selectedNodes = (RepositoryNode[]) ((IStructuredSelection) provider.getSelection()).toList().toArray(new RepositoryNode[] {});
+        this.provider = provider;
         this.editorComposite = editorComposite;
         this.isDefaultEditor = isDefaultEditor;
         init();
@@ -68,14 +68,20 @@ public class GenerateSelectSQLAction extends SelectionProviderAction {
     }
     
     @SuppressWarnings("unchecked")
-    private void init() {
+    public void init() {
+        selectedNodes = (RepositoryNode[]) ((IStructuredSelection) provider.getSelection()).toList().toArray(new RepositoryNode[] {});
+        if (selectedNodes.length == 0) {
+            this.setEnabled(false);
+            return;
+        }
         int i = 0;
         for (RepositoryNode node : selectedNodes) {
-            if (node.getProperties(EProperties.CONTENT_TYPE) == RepositoryNodeType.DATABASE) {
+            if (node.getProperties(EProperties.CONTENT_TYPE) == RepositoryNodeType.FOLDER 
+                    || node.getProperties(EProperties.CONTENT_TYPE) == RepositoryNodeType.DATABASE) {
                 i++;
             }
         }
-        if (i > 1) {
+        if (i > 0) {
             this.setEnabled(false);
         } else {
             this.setEnabled(true);

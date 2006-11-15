@@ -409,7 +409,7 @@ public class SQLBuilderDialog extends Dialog {
                             msg=e.getMessage();
                         }
                     }
-                    dbDetailsComposite.setSelectedNode(node, "msg");
+//                    dbDetailsComposite.setSelectedNode(node, "msg");
                 }
             });
         }

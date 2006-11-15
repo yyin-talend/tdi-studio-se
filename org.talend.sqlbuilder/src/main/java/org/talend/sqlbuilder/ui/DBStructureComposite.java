@@ -206,6 +206,7 @@ public class DBStructureComposite extends Composite {
                 if (generateSelectAction == null) {
                     generateSelectAction = new GenerateSelectSQLAction(treeViewer, builderDialog.getEditorComposite(), false);
                 }
+                ((GenerateSelectSQLAction) generateSelectAction).init();
                 manager.add(generateSelectAction);
  
                 // open editor
@@ -225,6 +226,7 @@ public class DBStructureComposite extends Composite {
                 if (refreshConnectionAction == null) {
                     refreshConnectionAction = new RefreshConnectionAction(treeViewer, "Refresh");
                 }
+                ((RefreshConnectionAction) refreshConnectionAction).init();
                 manager.add(refreshConnectionAction);
                 manager.add(separator);
 
@@ -386,9 +388,9 @@ public class DBStructureComposite extends Composite {
             init();
         }
         @SuppressWarnings("unchecked")
-        private void init() {
+        public void init() {
             ISelection selection = getSelectionProvider().getSelection();
-            if (selection == null) {
+            if (selection.isEmpty()) {
                 this.setEnabled(false);
             } else {
                 this.setEnabled(true);

@@ -48,269 +48,384 @@ import org.talend.sqlbuilder.SqlBuilderPlugin;
 import org.talend.sqlbuilder.dbstructure.RepositoryNodeType;
 
 /**
- * DOC dev  class global comment. Detailled comment
- * <br/>
- *
- * $Id: talend-code-templates.xml 1 2006-09-29 17:06:40 +0000 (Fri, 29 Sep 2006) nrousseau $
- *
+ * DOC dev class global comment. Detailled comment <br/>
+ * 
+ * $Id: talend-code-templates.xml 1 2006-09-29 17:06:40 +0000 (Fri, 29 Sep 2006)
+ * nrousseau $
+ * 
  */
-public class SQLBuilderRepositoryNodeManager {
+public class SQLBuilderRepositoryNodeManager
+{
 
-	
-	
-	/**
-	 *  Get RepositoryNodeFromDB .
-	 * @param oldNode selected RepositoryNode
-	 * @return RepositoryNode from Database
-	 */
-	@SuppressWarnings("unchecked")
-	public RepositoryNode getRepositoryNodeFromDB(RepositoryNode oldNode) {
-		
-		DatabaseConnectionItem item = getItem(oldNode);
-        DatabaseConnection connection = (DatabaseConnection) item.getConnection();
-        IMetadataConnection iMetadataConnection = ConvertionHelper.convert(connection);
+    private static List<RepositoryNode> repositoryNodes = new ArrayList<RepositoryNode>();
+
+    public void addRepositoryNode(RepositoryNode node)
+    {
+        if (repositoryNodes.contains(node))
+        {
+            return;
+        }
+        repositoryNodes.add(node);
+    }
+
+    public RepositoryNode getRepositoryNodebyName(String name)
+    {
+        for (RepositoryNode node : repositoryNodes)
+        {
+            if(node.getObject().getLabel().equals(name)) {
+                return node;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Get RepositoryNodeFromDB .
+     * 
+     * @param oldNode
+     *            selected RepositoryNode
+     * @return RepositoryNode from Database
+     */
+    @SuppressWarnings("unchecked")
+    public RepositoryNode getRepositoryNodeFromDB(RepositoryNode oldNode)
+    {
+
+        DatabaseConnectionItem item = getItem(oldNode);
+        DatabaseConnection connection = (DatabaseConnection) item
+                .getConnection();
+        IMetadataConnection iMetadataConnection = ConvertionHelper
+                .convert(connection);
         boolean status = new ManagerConnection().check(iMetadataConnection);
         connection.setDivergency(!status);
-        if (status) {
-        	///Get TableNames From DB
-//        	List<String> tableNamesFromDB = ExtractMetaDataFromDataBase.returnTablesFormConnection(iMetadataConnection);
-        	
-        	///Get MetadataTable From DB
-        	List<MetadataTable> tablesFromDB = getTablesFromDB(iMetadataConnection);
-        	//Get MetadataTable From EMF(Old RepositoryNode)
-        	List<MetadataTable> tablesFromEMF = connection.getTables();
-        	
-        	for (MetadataTable tableFromDB : tablesFromDB) {
-        		///Get MetadataColumn from DB
-        		List<MetadataColumn> columnsFromDB  = 
-        			ExtractMetaDataFromDataBase.returnMetadataColumnsFormTable(iMetadataConnection, tableFromDB.getLabel());
-        		for (MetadataTable tableFromEMF : tablesFromEMF) {
-        			///Get MetadataColumn From EMF
-        			List<MetadataColumn> columnsFromEMF = tableFromEMF.getColumns();
-        			fixedColumns(columnsFromDB, columnsFromEMF);
-//        			tableFromEMF.getColumns().clear();
-//        			tableFromEMF.getColumns().addAll(columnsFromDB);
-				}
-        		
-			}
-        	fixedTables(tablesFromDB, tablesFromEMF);
-//        	connection.getTables().clear();
-//        	connection.getTables().addAll(tablesFromDB);
-        } 
-		return oldNode;
-	}
+        if (status)
+        {
+            // /Get TableNames From DB
+            // List<String> tableNamesFromDB =
+            // ExtractMetaDataFromDataBase.returnTablesFormConnection(iMetadataConnection);
 
-	/**
-	 * DOC dev Comment method "getItem".
-	 * @param newNode
-	 * @return
-	 */
-	private static DatabaseConnectionItem getItem(RepositoryNode newNode) {
-		IRepositoryObject repositoryObject = newNode.getObject();
-        DatabaseConnectionItem item = (DatabaseConnectionItem) repositoryObject.getProperty().getItem();
-		return item;
-	}
-	
-	public static String getDatabaseNameByRepositoryNode(RepositoryNode node) {
-		return ((DatabaseConnection) getItem(node).getConnection()).getSID();		
-	}
-	
-	/**
-	 * Get Tables From DataBase.
-	 * @param iMetadataConnection contain Connection's information
-	 * @return MetadataTable List from Database
-	 */
-	private List<MetadataTable> getTablesFromDB(IMetadataConnection iMetadataConnection) {
+            // /Get MetadataTable From DB
+            List<MetadataTable> tablesFromDB = getTablesFromDB(iMetadataConnection);
+            // Get MetadataTable From EMF(Old RepositoryNode)
+            List<MetadataTable> tablesFromEMF = connection.getTables();
 
-        ExtractMetaDataUtils.getConnection(iMetadataConnection.getDbType(), iMetadataConnection.getUrl(), iMetadataConnection
-                .getUsername(), iMetadataConnection.getPassword(), iMetadataConnection.getDatabase(), iMetadataConnection
-                .getSchema());
-        DatabaseMetaData dbMetaData = ExtractMetaDataUtils.getDatabaseMetaData(ExtractMetaDataUtils.conn);
-      
+            for (MetadataTable tableFromDB : tablesFromDB)
+            {
+                // /Get MetadataColumn from DB
+                List<MetadataColumn> columnsFromDB = ExtractMetaDataFromDataBase
+                        .returnMetadataColumnsFormTable(iMetadataConnection,
+                                tableFromDB.getLabel());
+                for (MetadataTable tableFromEMF : tablesFromEMF)
+                {
+                    // /Get MetadataColumn From EMF
+                    List<MetadataColumn> columnsFromEMF = tableFromEMF
+                            .getColumns();
+                    fixedColumns(columnsFromDB, columnsFromEMF);
+                    // tableFromEMF.getColumns().clear();
+                    // tableFromEMF.getColumns().addAll(columnsFromDB);
+                }
+
+            }
+            fixedTables(tablesFromDB, tablesFromEMF);
+            // connection.getTables().clear();
+            // connection.getTables().addAll(tablesFromDB);
+        }
+        return oldNode;
+    }
+
+    /**
+     * DOC dev Comment method "getItem".
+     * 
+     * @param newNode
+     * @return
+     */
+    private static DatabaseConnectionItem getItem(RepositoryNode newNode)
+    {
+        IRepositoryObject repositoryObject = newNode.getObject();
+        DatabaseConnectionItem item = (DatabaseConnectionItem) repositoryObject
+                .getProperty().getItem();
+        return item;
+    }
+
+    public static String getDatabaseNameByRepositoryNode(RepositoryNode node)
+    {
+        return ((DatabaseConnection) getItem(node).getConnection()).getSID();
+    }
+
+    /**
+     * Get Tables From DataBase.
+     * 
+     * @param iMetadataConnection
+     *            contain Connection's information
+     * @return MetadataTable List from Database
+     */
+    private List<MetadataTable> getTablesFromDB(
+            IMetadataConnection iMetadataConnection)
+    {
+
+        ExtractMetaDataUtils.getConnection(iMetadataConnection.getDbType(),
+                iMetadataConnection.getUrl(),
+                iMetadataConnection.getUsername(), iMetadataConnection
+                        .getPassword(), iMetadataConnection.getDatabase(),
+                iMetadataConnection.getSchema());
+        DatabaseMetaData dbMetaData = ExtractMetaDataUtils
+                .getDatabaseMetaData(ExtractMetaDataUtils.conn);
+
         List<MetadataTable> metadataTables = new ArrayList<MetadataTable>();
-        try {
-            String[] tableTypes = { "TABLE", "VIEW"};
+        try
+        {
+            String[] tableTypes =
+            { "TABLE", "VIEW" };
             ResultSet rsTables = null;
-            rsTables = dbMetaData.getTables(null, ExtractMetaDataUtils.schema, null, tableTypes);
-            while (rsTables.next()) {
-                MetadataTable medataTable = ConnectionFactory.eINSTANCE.createMetadataTable();
-                medataTable.setId(metadataTables.size() + 1 + ""); 
+            rsTables = dbMetaData.getTables(null, ExtractMetaDataUtils.schema,
+                    null, tableTypes);
+            while (rsTables.next())
+            {
+                MetadataTable medataTable = ConnectionFactory.eINSTANCE
+                        .createMetadataTable();
+                medataTable.setId(metadataTables.size() + 1 + "");
                 medataTable.setLabel(rsTables.getString("TABLE_NAME"));
                 medataTable.setSourceName(medataTable.getLabel());
-                medataTable.setComment(ExtractMetaDataUtils.getStringMetaDataInfo(rsTables, "REMARKS"));
+                medataTable.setComment(ExtractMetaDataUtils
+                        .getStringMetaDataInfo(rsTables, "REMARKS"));
                 metadataTables.add(medataTable);
             }
             rsTables.close();
             ExtractMetaDataUtils.closeConnection();
-        } catch (Exception e) {
-        	SqlBuilderPlugin.log("Connection Exception", e);
-        	throw new RuntimeException(e);
+        }
+        catch (Exception e)
+        {
+            SqlBuilderPlugin.log("Connection Exception", e);
+            throw new RuntimeException(e);
         }
         return metadataTables;
     }
-	
-	@SuppressWarnings("unchecked")
-	public List<String>  getALLQueryLabels(RepositoryNode repositoryNode) {
-		List<String> allQueries = new ArrayList<String>();
-		if (repositoryNode == null) {
-			return null;
-		}
-		DatabaseConnectionItem item = getItem(repositoryNode);
-		DatabaseConnection connection = (DatabaseConnection) item.getConnection();
-		List<QueriesConnection> qcs = connection.getQueries();
-		for (QueriesConnection connection2 : qcs) {
-			List<Query> qs = connection2.getQuery();
-			for (Query q1 : qs) {
-				allQueries.add(q1.getLabel());
-			}
-		}
-		return null;
-	}
-	@SuppressWarnings("unchecked")
-	public void saveQuery(RepositoryNode repositoryNode, Query query) {
-		DatabaseConnectionItem item = getItem(repositoryNode);
-		QueriesConnection qc = ConnectionFactory.eINSTANCE.createQueriesConnection();
-		DatabaseConnection connection = (DatabaseConnection) item.getConnection();
-		qc.setConnection(connection);
-		qc.getQuery().add(query);
-		connection.getQueries().add(qc);
-		saveMetaData(item);
-	}
-	/**
-	 * save MetaData into EMF's xml files.
-	 * @param item need to be saved Item
-	 */
-	public void saveMetaData(DatabaseConnectionItem item) {
-		
-		IRepositoryFactory factory = RepositoryFactoryProvider.getInstance();
-        try {
+
+    @SuppressWarnings("unchecked")
+    public List<String> getALLQueryLabels(RepositoryNode repositoryNode)
+    {
+        List<String> allQueries = new ArrayList<String>();
+        if (repositoryNode == null)
+        {
+            return null;
+        }
+        DatabaseConnectionItem item = getItem(repositoryNode);
+        DatabaseConnection connection = (DatabaseConnection) item
+                .getConnection();
+        List<QueriesConnection> qcs = connection.getQueries();
+        for (QueriesConnection connection2 : qcs)
+        {
+            List<Query> qs = connection2.getQuery();
+            for (Query q1 : qs)
+            {
+                allQueries.add(q1.getLabel());
+            }
+        }
+        return null;
+    }
+
+    @SuppressWarnings("unchecked")
+    public void saveQuery(RepositoryNode repositoryNode, Query query)
+    {
+        DatabaseConnectionItem item = getItem(repositoryNode);
+        QueriesConnection qc = ConnectionFactory.eINSTANCE
+                .createQueriesConnection();
+        DatabaseConnection connection = (DatabaseConnection) item
+                .getConnection();
+        qc.setConnection(connection);
+        qc.getQuery().add(query);
+        connection.getQueries().add(qc);
+        saveMetaData(item);
+    }
+
+    /**
+     * save MetaData into EMF's xml files.
+     * 
+     * @param item
+     *            need to be saved Item
+     */
+    public void saveMetaData(DatabaseConnectionItem item)
+    {
+
+        IRepositoryFactory factory = RepositoryFactoryProvider.getInstance();
+        try
+        {
             factory.save(item);
-        } catch (PersistenceException e) {
+        }
+        catch (PersistenceException e)
+        {
             SqlBuilderPlugin.log("Save MetaData Failure", e);
         }
-	}
-	
-	/**
-	 * fixed Table .
-	 * @param metaFromDB MetadataTable from Database
-	 * @param metaFromEMF MetadataTable from Emf
-	 */
-	private void fixedTables(List<MetadataTable> metaFromDB, 
-			List<MetadataTable> metaFromEMF) {
-		
-		while (!metaFromDB.isEmpty()) {
-			boolean flag = true;
-			MetadataTable db = metaFromDB.remove(0);
-			for (MetadataTable emf : metaFromEMF) {
-				if (db.getSourceName().equals(emf.getSourceName())) {
-					flag = false;
-					if (emf.getLabel().equals(db.getSourceName())) {
-						emf.setDivergency(false);
-					} else {
-						emf.setDivergency(true);
-					}
-				} 
-			}
-			if (flag) {
-				metaFromEMF.add(db);
-			}
-		}
-	}
-	
-	/**
-	 * fixed Column from EMF use Column From DataBase  .
-	 * @param columnsFromDB MetadataColumn from Database
-	 * @param cloumnsFromEMF MetadataColumn from Emf
-	 */
-	private void fixedColumns(List<MetadataColumn> columnsFromDB, 
-			List<MetadataColumn> cloumnsFromEMF) {
-		while (!columnsFromDB.isEmpty()) {
-			boolean flag = true;
-			MetadataColumn db = columnsFromDB.remove(0);
-			for (MetadataColumn emf : cloumnsFromEMF) {
-				if (db.getOriginalField().equals(emf.getOriginalField())) {
-					flag = false;
-					emf.setDivergency(!isEquivalent(db, emf));
-				} 
-			}
-			if (flag) {
-				cloumnsFromEMF.add(db);
-			}
-		}
-	}
-	
-	 /**
+    }
+
+    /**
+     * fixed Table .
+     * 
+     * @param metaFromDB
+     *            MetadataTable from Database
+     * @param metaFromEMF
+     *            MetadataTable from Emf
+     */
+    private void fixedTables(List<MetadataTable> metaFromDB,
+            List<MetadataTable> metaFromEMF)
+    {
+
+        while (!metaFromDB.isEmpty())
+        {
+            boolean flag = true;
+            MetadataTable db = metaFromDB.remove(0);
+            for (MetadataTable emf : metaFromEMF)
+            {
+                if (db.getSourceName().equals(emf.getSourceName()))
+                {
+                    flag = false;
+                    if (emf.getLabel().equals(db.getSourceName()))
+                    {
+                        emf.setDivergency(false);
+                    }
+                    else
+                    {
+                        emf.setDivergency(true);
+                    }
+                }
+            }
+            if (flag)
+            {
+                metaFromEMF.add(db);
+            }
+        }
+    }
+
+    /**
+     * fixed Column from EMF use Column From DataBase .
+     * 
+     * @param columnsFromDB
+     *            MetadataColumn from Database
+     * @param cloumnsFromEMF
+     *            MetadataColumn from Emf
+     */
+    private void fixedColumns(List<MetadataColumn> columnsFromDB,
+            List<MetadataColumn> cloumnsFromEMF)
+    {
+        while (!columnsFromDB.isEmpty())
+        {
+            boolean flag = true;
+            MetadataColumn db = columnsFromDB.remove(0);
+            for (MetadataColumn emf : cloumnsFromEMF)
+            {
+                if (db.getOriginalField().equals(emf.getOriginalField()))
+                {
+                    flag = false;
+                    emf.setDivergency(!isEquivalent(db, emf));
+                }
+            }
+            if (flag)
+            {
+                cloumnsFromEMF.add(db);
+            }
+        }
+    }
+
+    /**
      * Check if Two MetadataColumns are the same..
-     * @param info MetadataColumn
-     * @param column MetadataColumn
+     * 
+     * @param info
+     *            MetadataColumn
+     * @param column
+     *            MetadataColumn
      * @return isEquivalent.
      */
-    private boolean isEquivalent(MetadataColumn info, MetadataColumn column) {
+    private boolean isEquivalent(MetadataColumn info, MetadataColumn column)
+    {
 
-    	if (info.getLength() != column.getLength()) {
+        if (info.getLength() != column.getLength())
+        {
             return false;
         }
-        if (info.getDefaultValue() != null && !info.getDefaultValue().equals(column.getDefaultValue())) {
+        if (info.getDefaultValue() != null
+                && !info.getDefaultValue().equals(column.getDefaultValue()))
+        {
             return false;
         }
-        if (column.getDefaultValue() != null && column.getDefaultValue().length() != 0 
-                && !column.getDefaultValue().equals(info.getDefaultValue())) {
+        if (column.getDefaultValue() != null
+                && column.getDefaultValue().length() != 0
+                && !column.getDefaultValue().equals(info.getDefaultValue()))
+        {
             return false;
         }
-        if (info.isNullable() != column.isNullable()) {
+        if (info.isNullable() != column.isNullable())
+        {
             return false;
         }
-        if (info.isKey() != column.isKey()) {
+        if (info.isKey() != column.isKey())
+        {
             return false;
         }
-        if (info.getPrecision() != column.getPrecision()) {
+        if (info.getPrecision() != column.getPrecision())
+        {
             return false;
         }
-        if (info.getSourceType() != null && !info.getSourceType().equals(column.getSourceType())) {
+        if (info.getSourceType() != null
+                && !info.getSourceType().equals(column.getSourceType()))
+        {
             return false;
         }
-        if (info.getComment() != null && info.getComment().length() != 0 
-                && !info.getComment().equals(column.getComment())) {
+        if (info.getComment() != null && info.getComment().length() != 0
+                && !info.getComment().equals(column.getComment()))
+        {
             return false;
         }
-        if (column.getComment() != null && column.getComment().length() != 0 
-                && !column.getComment().equals(info.getComment())) {
+        if (column.getComment() != null && column.getComment().length() != 0
+                && !column.getComment().equals(info.getComment()))
+        {
             return false;
         }
-        
-        if (info.getTalendType() != null && !info.getTalendType().equals(column.getTalendType())) {
+
+        if (info.getTalendType() != null
+                && !info.getTalendType().equals(column.getTalendType()))
+        {
             return false;
         }
-        if (column.getTalendType() != null && !column.getTalendType().equals(info.getTalendType())) {
+        if (column.getTalendType() != null
+                && !column.getTalendType().equals(info.getTalendType()))
+        {
             return false;
         }
-        
+
         return true;
     }
 
     /**
-     * DOC qianbing Comment method "getRepositoryType". Gets the type of the RepositoryNode.
+     * DOC qianbing Comment method "getRepositoryType". Gets the type of the
+     * RepositoryNode.
      * 
-     * @param repositoryNode RepositoryNode
+     * @param repositoryNode
+     *            RepositoryNode
      * @return RepositoryNodeType
      * @see RepositoryNodeType
      */
-    private RepositoryNodeType getRepositoryType(RepositoryNode repositoryNode) {
-        return (RepositoryNodeType) repositoryNode.getProperties(EProperties.CONTENT_TYPE);
+    private RepositoryNodeType getRepositoryType(RepositoryNode repositoryNode)
+    {
+        return (RepositoryNodeType) repositoryNode
+                .getProperties(EProperties.CONTENT_TYPE);
     }
-    
+
     /**
      * be a RepositoryNode with database infomation.
      * 
-     * @param repositoryNode RepositoryNode
+     * @param repositoryNode
+     *            RepositoryNode
      * @return RepositoryNode
      */
-    public RepositoryNode getRoot(RepositoryNode repositoryNode) {
-        if (getRepositoryType(repositoryNode) == RepositoryNodeType.FOLDER) {
-            throw new RuntimeException("RepositoryNode with folder info should not call this.");
+    public RepositoryNode getRoot(RepositoryNode repositoryNode)
+    {
+        if (getRepositoryType(repositoryNode) == RepositoryNodeType.FOLDER)
+        {
+            throw new RuntimeException(
+                    "RepositoryNode with folder info should not call this.");
         }
 
-        if (getRepositoryType(repositoryNode) == RepositoryNodeType.DATABASE) {
+        if (getRepositoryType(repositoryNode) == RepositoryNodeType.DATABASE)
+        {
             return repositoryNode;
         }
         return getRoot(repositoryNode.getParent());

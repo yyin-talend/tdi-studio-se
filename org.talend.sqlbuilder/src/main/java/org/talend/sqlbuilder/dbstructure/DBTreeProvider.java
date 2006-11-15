@@ -26,8 +26,10 @@ import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.widgets.Display;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.utils.data.container.Container;
 import org.talend.core.model.general.Version;
@@ -51,6 +53,7 @@ import org.talend.repository.model.RepositoryNode.EProperties;
 import org.talend.repository.ui.views.RepositoryContentProvider;
 import org.talend.repository.ui.views.RepositoryView;
 import org.talend.sqlbuilder.SqlBuilderPlugin;
+import org.talend.sqlbuilder.repository.utility.SQLBuilderRepositoryNodeManager;
 import org.talend.sqlbuilder.util.ImageUtil;
 
 /**
@@ -62,6 +65,7 @@ import org.talend.sqlbuilder.util.ImageUtil;
 public class DBTreeProvider extends LabelProvider implements ITableLabelProvider, ITreeContentProvider,
 ITableColorProvider
 {
+    private SQLBuilderRepositoryNodeManager repositoryNodeManager = new SQLBuilderRepositoryNodeManager();
     private RepositoryContentProvider repositoryContentProvider;
     
     public DBTreeProvider(RepositoryView repositoryView)
@@ -168,6 +172,7 @@ ITableColorProvider
                 //ignore recycle node
             } else {
                 parent.getChildren().add(node);
+                repositoryNodeManager.addRepositoryNode(node);
             }
         } catch (PersistenceException e1) {
             e1.printStackTrace();
@@ -325,6 +330,30 @@ ITableColorProvider
 
     public Color getBackground(Object element, int columnIndex)
     {
+        RepositoryNode repositoryNode = (RepositoryNode)element;
+        if (repositoryNode.getProperties(EProperties.CONTENT_TYPE) == RepositoryNodeType.DATABASE) {
+            DatabaseConnection connection = (DatabaseConnection) ((ConnectionItem) repositoryNode.getObject()
+                    .getProperty().getItem()).getConnection();
+            if (connection.isDivergency()) {
+                return Display.getDefault().getSystemColor(SWT.COLOR_RED);
+            }
+        } else if (repositoryNode.getProperties(EProperties.CONTENT_TYPE) == RepositoryNodeType.TABLE) {
+            MetadataTableRepositoryObject tableRepositoryObject = (MetadataTableRepositoryObject) repositoryNode.getObject();
+            if (tableRepositoryObject.getTable().isDivergency()) {
+                return Display.getDefault().getSystemColor(SWT.COLOR_RED);
+            }
+            if (tableRepositoryObject.getTable() == null) {
+                return Display.getDefault().getSystemColor(SWT.COLOR_GRAY);
+            }
+        } else if (repositoryNode.getProperties(EProperties.CONTENT_TYPE) == RepositoryNodeType.COLUMN) {
+            MetadataColumnRepositoryObject columnRepositoryObject = (MetadataColumnRepositoryObject) repositoryNode.getObject();
+            if (columnRepositoryObject.getColumn().isDivergency()) {
+                return Display.getDefault().getSystemColor(SWT.COLOR_RED);
+            }
+            if (columnRepositoryObject.getColumn() == null) {
+                return Display.getDefault().getSystemColor(SWT.COLOR_GRAY);
+            }
+        }
         return null;
     }
 
