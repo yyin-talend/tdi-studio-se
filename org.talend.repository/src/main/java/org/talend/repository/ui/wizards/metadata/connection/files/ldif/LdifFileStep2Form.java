@@ -567,8 +567,34 @@ public class LdifFileStep2Form extends AbstractLdifFileStepForm {
                 }
             });
         }
-    }
+        
+        // Event checkBox action
+        table.addSelectionListener(new SelectionAdapter() {
 
+            public void widgetSelected(final SelectionEvent e) {
+                if (!table.getEnabled()) {
+                    table.setEnabled(true);
+                    if (e.detail == SWT.CHECK) {
+                        TableItem tableItem = (TableItem) e.item;
+                        boolean promptNeeded = tableItem.getChecked();
+                        if (promptNeeded) {
+                            tableItems.remove(tableItem);
+                            tableItems.add(tableItem);
+                            getConnection().getValue().add(tableItem.getText());
+                        } else {
+                            tableItems.remove(tableItem);
+                            getConnection().getValue().remove(tableItem.getText());
+                        }
+                    }
+                } else {
+                    table.setEnabled(false);
+                }
+            }
+        });
+        
+        
+    }
+   
     /*
      * (non-Javadoc)
      * 

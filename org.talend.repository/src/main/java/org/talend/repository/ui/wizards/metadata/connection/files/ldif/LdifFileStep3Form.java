@@ -371,7 +371,7 @@ public class LdifFileStep3Form extends AbstractLdifFileStepForm {
             for (int i = 0; i < numberOfCol.intValue(); i++) {
                 // define the first currentType and assimile it to globalType
                 String globalType = null;
-                int lengthValue = -1;
+                int lengthValue = 0;
                 int precisionValue = 0;
 
                 int current = firstRowToExtractMetadata;
@@ -388,7 +388,7 @@ public class LdifFileStep3Form extends AbstractLdifFileStepForm {
                 }
 
                 // for another lines
-                for (int f = (firstRowToExtractMetadata + 1); f < xmlRows.size(); f++) {
+                for (int f = firstRowToExtractMetadata; f < xmlRows.size(); f++) {
                     fields = xmlRows.get(f).getFields();
                     if (fields.size() > i) {
                         String value = fields.get(i).getValue();
@@ -396,7 +396,9 @@ public class LdifFileStep3Form extends AbstractLdifFileStepForm {
                             if (!DataTypeHelper.getTalendTypeOfValue(value).equals(globalType)) {
                                 globalType = DataTypeHelper.getCommonType(globalType, DataTypeHelper.getTalendTypeOfValue(value));
                             }
-                            lengthValue = value.length();
+                            if (lengthValue < value.length()) {
+                                lengthValue = value.length();                                
+                            }
                             int positionDecimal = 0;
                             if (value.indexOf(',') > -1) {
                                 positionDecimal = value.lastIndexOf(',');
