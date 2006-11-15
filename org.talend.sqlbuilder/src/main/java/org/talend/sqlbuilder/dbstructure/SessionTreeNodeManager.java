@@ -148,6 +148,10 @@ public class SessionTreeNodeManager {
      * @return RepositoryNode
      */
     private RepositoryNode getRoot(RepositoryNode repositoryNode) {
+        if (getRepositoryType(repositoryNode) == RepositoryNodeType.FOLDER) {
+            throw new RuntimeException("RepositoryNode with folder info should not call this.");
+        }
+
         if (getRepositoryType(repositoryNode) == RepositoryNodeType.DATABASE) {
             return repositoryNode;
         }
