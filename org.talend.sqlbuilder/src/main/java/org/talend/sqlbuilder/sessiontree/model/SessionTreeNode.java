@@ -136,14 +136,14 @@ public class SessionTreeNode implements ISessionTreeNode {
         this.password = password;
         this.repositoryNode = repositoryNode;
         
-        assistanceEnabled = SqlBuilderPlugin.getDefault().getPluginPreferences().getBoolean(IConstants.SQL_ASSIST);
-               
-        if (assistanceEnabled) {
-            // schedule job to load dictionary for this session
-            DictionaryLoader dictionaryLoader = new DictionaryLoader(this);
-            dictionaryLoader.schedule(DELAY_TIME);
-            
-        }
+//        assistanceEnabled = SqlBuilderPlugin.getDefault().getPluginPreferences().getBoolean(IConstants.SQL_ASSIST);
+//               
+//        if (assistanceEnabled) {
+//            // schedule job to load dictionary for this session
+//            DictionaryLoader dictionaryLoader = new DictionaryLoader(this);
+//            dictionaryLoader.schedule(DELAY_TIME);
+//            
+//        }
             
     }
     

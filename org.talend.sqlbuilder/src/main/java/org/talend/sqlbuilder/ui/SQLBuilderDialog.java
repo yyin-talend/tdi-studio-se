@@ -21,8 +21,6 @@
 // ============================================================================
 package org.talend.sqlbuilder.ui;
 
-import java.util.HashMap;
-
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IProgressMonitorWithBlocking;
 import org.eclipse.core.runtime.IStatus;
@@ -47,8 +45,9 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.actions.SelectionProviderAction;
+import org.talend.repository.model.RepositoryNode;
+import org.talend.sqlbuilder.dbstructure.SessionTreeNodeManager;
 import org.talend.sqlbuilder.dbstructure.SessionTreeNodeUtils;
-import org.talend.sqlbuilder.dbstructure.nodes.ColumnNode;
 import org.talend.sqlbuilder.dbstructure.nodes.INode;
 import org.talend.sqlbuilder.util.ConnectionParameters;
 
@@ -80,7 +79,11 @@ public class SQLBuilderDialog extends Dialog {
      * The progress monitor.
      */
     private ProgressMonitor progressMonitor = new ProgressMonitor();
-
+    
+    /**
+     * SessionTreeNode Manager. 
+     */
+    SessionTreeNodeManager nodeManager = new SessionTreeNodeManager();
     /**
      * Internal progress monitor implementation.
      */
@@ -297,45 +300,16 @@ public class SQLBuilderDialog extends Dialog {
         GridData data = new GridData(GridData.HORIZONTAL_ALIGN_END);
         int widthHint = convertHorizontalDLUsToPixels(IDialogConstants.BUTTON_WIDTH);
         Point minSize = button.computeSize(SWT.DEFAULT, SWT.DEFAULT, true);
-        data.widthHint =  Math.max(widthHint, minSize.x);
+        data.widthHint = Math.max(widthHint, minSize.x);
         button.setLayoutData(data);
         return button;
     }
 
     /**
-     * Return the initial size of the dialog
+     * Return the initial size of the dialog.
      */
     protected Point getInitialSize() {
         return new Point(800, 600);
-    }
-
-    /**
-     * RefreshDetailCompositeAction
-     */
-    public class RefreshDetailCompositeAction extends SelectionProviderAction {
-
-        /**
-         * 
-         */
-        public RefreshDetailCompositeAction(ISelectionProvider provider) {
-            super(provider, "Refresh DetailComposite");
-        }
-
-        public void selectionChanged(final IStructuredSelection selection) {
-            BusyIndicator.showWhile(Display.getDefault(), new Runnable() {
-
-                public void run() {
-                    INode selectedNode = null;
-                    if (selection != null && (selection.getFirstElement() instanceof INode)) {
-                        selectedNode = (INode) selection.getFirstElement();
-                        if (selectedNode instanceof ColumnNode) {
-                            selectedNode = selectedNode.getParent();
-                        }
-                    }
-                    dbDetailsComposite.setSelectedNode(selectedNode);
-                }
-            });
-        }
     }
 
     public SQLBuilderTabComposite getEditorComposite() {
@@ -345,6 +319,7 @@ public class SQLBuilderDialog extends Dialog {
     @Override
     public boolean close() {
         SessionTreeNodeUtils.dispose();
+        nodeManager.clear();
         return super.close();
     }
 
@@ -364,18 +339,58 @@ public class SQLBuilderDialog extends Dialog {
      */
     public void setConnParameters(ConnectionParameters connParameters) {
         this.connParameters = connParameters;
-    }// Ends
+    }
 
     public ConnectionParameters getConnParameters() {
         return connParameters;
     }
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.eclipse.jface.dialogs.Dialog#okPressed()
      */
     public void okPressed() {
-        String sql=editorComposite.getDefaultTabSql();
+        String sql = editorComposite.getDefaultTabSql();
         connParameters.setQuery(sql);
         super.okPressed();
+    }
+
+    /**
+     * DOC qianbing class global comment. Refreshes Detail Composite according to selection changing of the database
+     * structure viewer. <br/>
+     * 
+     * $Id: talend-code-templates.xml,v 1.3 2006/11/01 05:38:28 nicolas Exp $
+     * 
+     */
+    public class RefreshDetailCompositeAction extends SelectionProviderAction {
+
+        /**
+         * DOC qianbing RefreshDetailCompositeAction constructor comment.
+         * 
+         * @param provider
+         */
+        public RefreshDetailCompositeAction(ISelectionProvider provider) {
+            super(provider, "Refresh DetailComposite");
+        }
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see org.eclipse.ui.actions.SelectionProviderAction#selectionChanged(org.eclipse.jface.viewers.IStructuredSelection)
+         */
+        public void selectionChanged(final IStructuredSelection selection) {
+            BusyIndicator.showWhile(Display.getDefault(), new Runnable() {
+
+                public void run() {
+                    INode node = null;
+                    if (!selection.isEmpty()) {
+                            RepositoryNode repositoryNode = (RepositoryNode) selection.getFirstElement();
+                            node = nodeManager.convert2INode(repositoryNode);
+                    }
+                    dbDetailsComposite.setSelectedNode(node);
+                }
+            });
+        }
     }
 }

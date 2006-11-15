@@ -282,7 +282,7 @@ public class SessionTreeNodeUtils {
 
             return sqlConnection;
         } catch (Exception e) {
-//             SqlBuilderPlugin.log(e.getMessage(), e);
+             SqlBuilderPlugin.log(e.getMessage(), e);
         }
 
         return null;
