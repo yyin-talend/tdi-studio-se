@@ -35,6 +35,7 @@ import org.talend.sqlbuilder.dbstructure.nodes.CatalogNode;
 import org.talend.sqlbuilder.dbstructure.nodes.DatabaseNode;
 import org.talend.sqlbuilder.dbstructure.nodes.INode;
 import org.talend.sqlbuilder.dbstructure.nodes.TableNode;
+import org.talend.sqlbuilder.repository.utility.SQLBuilderRepositoryNodeManager;
 import org.talend.sqlbuilder.sessiontree.model.SessionTreeNode;
 
 /**
@@ -148,13 +149,7 @@ public class SessionTreeNodeManager {
      * @return RepositoryNode
      */
     private RepositoryNode getRoot(RepositoryNode repositoryNode) {
-        if (getRepositoryType(repositoryNode) == RepositoryNodeType.FOLDER) {
-            throw new RuntimeException("RepositoryNode with folder info should not call this.");
-        }
-
-        if (getRepositoryType(repositoryNode) == RepositoryNodeType.DATABASE) {
-            return repositoryNode;
-        }
-        return getRoot(repositoryNode.getParent());
+        return new SQLBuilderRepositoryNodeManager().getRepositoryNodeFromDB(repositoryNode);
     }
+    
 }

@@ -46,8 +46,11 @@ import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.repository.model.IRepositoryFactory;
 import org.talend.repository.model.RepositoryFactoryProvider;
 import org.talend.repository.model.RepositoryNode;
+import org.talend.repository.model.RepositoryNode.EProperties;
 import org.talend.repository.ui.utils.ManagerConnection;
 import org.talend.sqlbuilder.SqlBuilderPlugin;
+import org.talend.sqlbuilder.dbstructure.RepositoryNodeType;
+import org.talend.sqlbuilder.dbstructure.SessionTreeNodeManager;
 
 /**
  * DOC dev  class global comment. Detailled comment
@@ -68,12 +71,15 @@ public class SQLBuilderRepositoryNodeManager {
 	@SuppressWarnings("unchecked")
 	public RepositoryNode getRepositoryNodeFromDB(RepositoryNode oldNode) {
 		
-		RepositoryNode newNode = oldNode;
-		DatabaseConnectionItem item = getItem(newNode);
+		DatabaseConnectionItem item = getItem(oldNode);
         DatabaseConnection connection = (DatabaseConnection) item.getConnection();
         IMetadataConnection iMetadataConnection = ConvertionHelper.convert(connection);
         boolean status = new ManagerConnection().check(iMetadataConnection);
+        connection.setDivergency(!status);
         if (status) {
+        	///Get TableNames From DB
+//        	List<String> tableNamesFromDB = ExtractMetaDataFromDataBase.returnTablesFormConnection(iMetadataConnection);
+        	
         	///Get MetadataTable From DB
         	List<MetadataTable> tablesFromDB = getTablesFromDB(iMetadataConnection);
         	//Get MetadataTable From EMF(Old RepositoryNode)
@@ -86,16 +92,17 @@ public class SQLBuilderRepositoryNodeManager {
         		for (MetadataTable tableFromEMF : tablesFromEMF) {
         			///Get MetadataColumn From EMF
         			List<MetadataColumn> columnsFromEMF = tableFromEMF.getColumns();
-        			columnsFromDB = fixedColumns(columnsFromDB, columnsFromEMF);
+        			fixedColumns(columnsFromDB, columnsFromEMF);
+        			tableFromEMF.getColumns().clear();
+        			tableFromEMF.getColumns().addAll(columnsFromDB);
 				}
-        		tableFromDB.getColumns().clear();
-        		tableFromDB.getColumns().addAll(columnsFromDB);
+        		
 			}
         	tablesFromDB = fixedTables(tablesFromDB, tablesFromEMF);
         	connection.getTables().clear();
         	connection.getTables().addAll(tablesFromDB);
-        }
-		return newNode;
+        } 
+		return oldNode;
 	}
 
 	/**
@@ -180,7 +187,7 @@ public class SQLBuilderRepositoryNodeManager {
         try {
             factory.save(item);
         } catch (PersistenceException e) {
-            e.printStackTrace();
+            SqlBuilderPlugin.log("Save MetaData Failure", e);
         }
 	}
 	
@@ -219,25 +226,19 @@ public class SQLBuilderRepositoryNodeManager {
 	 * fixed Column from EMF use Column From DataBase  .
 	 * @param columnsFromDB MetadataColumn from Database
 	 * @param cloumnsFromEMF MetadataColumn from Emf
-	 * @return MetadataColumn List has set divergency flag
 	 */
-	private List<MetadataColumn> fixedColumns(List<MetadataColumn> columnsFromDB, 
+	private void fixedColumns(List<MetadataColumn> columnsFromDB, 
 			List<MetadataColumn> cloumnsFromEMF) {
-		List<MetadataColumn> newMetaFromDB = new ArrayList<MetadataColumn>();
-		for (MetadataColumn db : columnsFromDB) {
-			boolean flag = true;
+		while (!columnsFromDB.isEmpty()) {
+			MetadataColumn db = columnsFromDB.remove(0);
 			for (MetadataColumn emf : cloumnsFromEMF) {
 				if (db.getOriginalField().equals(emf.getOriginalField())) {
 					emf.setDivergency(!isEquivalent(db, emf));
-					newMetaFromDB.add(emf);
-					flag = false;
+					emf.setSourceType(db.getSourceType());
 				} 
 			}
-			if (flag) {
-				newMetaFromDB.add(db);
-			}
+			cloumnsFromEMF.add(db);
 		}
-		return newMetaFromDB;
 	}
 	
 	 /**
@@ -289,4 +290,31 @@ public class SQLBuilderRepositoryNodeManager {
         return true;
     }
 
+    /**
+     * DOC qianbing Comment method "getRepositoryType". Gets the type of the RepositoryNode.
+     * 
+     * @param repositoryNode RepositoryNode
+     * @return RepositoryNodeType
+     * @see RepositoryNodeType
+     */
+    private RepositoryNodeType getRepositoryType(RepositoryNode repositoryNode) {
+        return (RepositoryNodeType) repositoryNode.getProperties(EProperties.CONTENT_TYPE);
+    }
+    
+    /**
+     * be a RepositoryNode with database infomation.
+     * 
+     * @param repositoryNode RepositoryNode
+     * @return RepositoryNode
+     */
+    public RepositoryNode getRoot(RepositoryNode repositoryNode) {
+        if (getRepositoryType(repositoryNode) == RepositoryNodeType.FOLDER) {
+            throw new RuntimeException("RepositoryNode with folder info should not call this.");
+        }
+
+        if (getRepositoryType(repositoryNode) == RepositoryNodeType.DATABASE) {
+            return repositoryNode;
+        }
+        return getRoot(repositoryNode.getParent());
+    }
 }
