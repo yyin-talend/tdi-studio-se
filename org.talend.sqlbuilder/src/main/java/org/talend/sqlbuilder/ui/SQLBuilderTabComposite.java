@@ -31,6 +31,7 @@ import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.talend.repository.model.RepositoryNode;
 import org.talend.sqlbuilder.sessiontree.model.SessionTreeNode;
 import org.talend.sqlbuilder.util.ConnectionParameters;
 
@@ -42,120 +43,130 @@ import org.talend.sqlbuilder.util.ConnectionParameters;
  */
 public class SQLBuilderTabComposite extends Composite {
 
-	private CTabFolder tabFolder;
+    private CTabFolder tabFolder;
 
-	private List repositoryNames;
+    private List repositoryNames;
 
-	public SQLBuilderTabComposite(Composite parent, int style) {
-		super(parent, style);
-		this.setLayout(new FillLayout());
-	}
+    public SQLBuilderTabComposite(Composite parent, int style) {
+        super(parent, style);
+        this.setLayout(new FillLayout());
+    }
 
-	/**
-	 * Opens an new sql editor. 
-	 * 
-	 * @param node
-	 * @param repositoryNames
-	 * @param connParam
-	 * @param isDefaultEditor
-	 */
-	public void openNewEditor(SessionTreeNode node, List repositoryNames,
-			ConnectionParameters connParam, boolean isDefaultEditor) {
+    /**
+     * DOC dev Comment method "openNewEditor".
+     * 
+     * @param node
+     * @param repositoryNames
+     * @param connParam
+     * @param isDefaultEditor
+     * @depreted
+     */
+    public void openNewEditor(SessionTreeNode node, List repositoryNames, ConnectionParameters connParam,
+            boolean isDefaultEditor) {
 
-		Assert.isNotNull(node, "SessionTreeNode should not be null");
+    }
 
-		this.repositoryNames = repositoryNames;
-		createTabFolder();
-		try {
-			createTabItem(node, connParam, isDefaultEditor);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+    /**
+     * Opens an new sql editor.
+     * 
+     * @param node
+     * @param repositoryNames
+     * @param connParam
+     * @param isDefaultEditor
+     */
+    public void openNewEditor(RepositoryNode node, List repositoryNames, ConnectionParameters connParam,
+            boolean isDefaultEditor) {
 
-	}
+        Assert.isNotNull(node, "SessionTreeNode should not be null");
 
-	/**
-	 * 
-	 * Creates tab folder.
-	 * 
-	 */
-	private void createTabFolder() {
+        this.repositoryNames = repositoryNames;
+        createTabFolder();
+        try {
+            createTabItem(node, connParam, isDefaultEditor);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
-		if (tabFolder == null || tabFolder.isDisposed()) {
+    /**
+     * 
+     * Creates tab folder.
+     * 
+     */
+    private void createTabFolder() {
 
-			clearParent();
+        if (tabFolder == null || tabFolder.isDisposed()) {
 
-			// create tab folder for different sessions
-			tabFolder = new CTabFolder(this, SWT.NULL);
-			tabFolder.setToolTipText("SQL editor");
-			this.layout();
-			this.redraw();
-		}
-	}
+            clearParent();
 
-	/**
-	 * Dispose all parent Controls.
-	 * 
-	 */
-	private void clearParent() {
+            // create tab folder for different sessions
+            tabFolder = new CTabFolder(this, SWT.NULL);
+            tabFolder.setToolTipText("SQL editor");
+            this.layout();
+            this.redraw();
+        }
+    }
 
-		Control[] children = this.getChildren();
-		if (children != null) {
-			for (int i = 0; i < children.length; i++) {
-				children[i].dispose();
-			}
-		}
-	}
+    /**
+     * Dispose all parent Controls.
+     * 
+     */
+    private void clearParent() {
 
-	/**
-	 * Creates tab item.
-	 * 
-	 * @param node
-	 * @param connParam
-	 * @param isDefaultEditor
-	 */
-	private void createTabItem(SessionTreeNode node,
-			ConnectionParameters connParam, boolean isDefaultEditor) {
+        Control[] children = this.getChildren();
+        if (children != null) {
+            for (int i = 0; i < children.length; i++) {
+                children[i].dispose();
+            }
+        }
+    }
 
-		CTabItem tabItem = null;
-		if (isDefaultEditor) {
-			tabItem = new CTabItem(tabFolder, SWT.NONE);
-		} else {
-			// Do not allow user to close the default editor.
-			tabItem = new CTabItem(tabFolder, SWT.CLOSE);
-		}
+    /**
+     * Creates tab item.
+     * 
+     * @param node
+     * @param connParam
+     * @param isDefaultEditor
+     */
+    private void createTabItem(RepositoryNode node, ConnectionParameters connParam, boolean isDefaultEditor) {
 
-		SQLBuilderEditorComposite builderEditorComposite = new SQLBuilderEditorComposite(
-				tabFolder, tabItem, SWT.NONE);
+        CTabItem tabItem = null;
+        if (isDefaultEditor) {
+            tabItem = new CTabItem(tabFolder, SWT.NONE);
+        } else {
+            // Do not allow user to close the default editor.
+            tabItem = new CTabItem(tabFolder, SWT.CLOSE);
+        }
+
+        SQLBuilderEditorComposite builderEditorComposite = new SQLBuilderEditorComposite(tabFolder, tabItem, SWT.NONE);
 
         builderEditorComposite.setEditorContent(connParam);
         builderEditorComposite.setDefaultEditor(isDefaultEditor);
-        builderEditorComposite.setSessionTreeNode(node);		
+        builderEditorComposite.setRepositoryNode(node);
 
-		builderEditorComposite.setLayoutData(new GridData(SWT.FILL, SWT.TOP,
-				true, false));
+        builderEditorComposite.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false));
 
-		tabItem.setControl(builderEditorComposite);
+        tabItem.setControl(builderEditorComposite);
 
-		// set new tab as the active one.
-		tabFolder.setSelection(tabFolder.getItemCount() - 1);
+        // set new tab as the active one.
+        tabFolder.setSelection(tabFolder.getItemCount() - 1);
 
-		// refresh view
-		tabFolder.layout();
-		tabFolder.redraw();
-	}
+        // refresh view
+        tabFolder.layout();
+        tabFolder.redraw();
+    }
 
-	/**
-	 * 
-	 * Gets default tab page's text.
-	 * 
-	 * @return a string representing sql text.
-	 */
-	public String getDefaultTabSql() {
-		Control control = tabFolder.getChildren()[0];
-		System.out.println(control);
+    /**
+     * 
+     * Gets default tab page's text.
+     * 
+     * @return a string representing sql text.
+     */
+    public String getDefaultTabSql() {
+        Control control = tabFolder.getChildren()[0];
+        System.out.println(control);
 
-		SQLBuilderEditorComposite composite = (SQLBuilderEditorComposite) control;
-		return composite.getSQLToBeExecuted();
-	}
+        SQLBuilderEditorComposite composite = (SQLBuilderEditorComposite) control;
+        return composite.getSQLToBeExecuted();
+    }
 }

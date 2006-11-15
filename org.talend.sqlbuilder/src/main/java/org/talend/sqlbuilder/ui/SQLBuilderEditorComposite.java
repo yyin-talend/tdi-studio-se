@@ -25,6 +25,7 @@ package org.talend.sqlbuilder.ui;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
+import java.util.List;
 
 import net.sourceforge.sqlexplorer.SQLAlias;
 
@@ -37,6 +38,7 @@ import org.eclipse.jface.fieldassist.ContentProposalAdapter;
 import org.eclipse.jface.fieldassist.IContentProposalProvider;
 import org.eclipse.jface.fieldassist.IControlContentAdapter;
 import org.eclipse.jface.util.Assert;
+import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.custom.StyledText;
@@ -58,6 +60,9 @@ import org.talend.commons.ui.swt.colorstyledtext.ColorManager;
 import org.talend.commons.ui.swt.colorstyledtext.ColorStyledText;
 import org.talend.commons.ui.swt.proposal.StyledTextContentAdapter;
 import org.talend.core.CorePlugin;
+import org.talend.core.model.metadata.builder.connection.ConnectionFactory;
+import org.talend.core.model.metadata.builder.connection.Query;
+import org.talend.repository.model.RepositoryNode;
 import org.talend.sqlbuilder.IConstants;
 import org.talend.sqlbuilder.Messages;
 import org.talend.sqlbuilder.SqlBuilderPlugin;
@@ -67,6 +72,8 @@ import org.talend.sqlbuilder.actions.ExecSQLAction;
 import org.talend.sqlbuilder.actions.OpenFileAction;
 import org.talend.sqlbuilder.actions.SQLEditorSessionSwitcher;
 import org.talend.sqlbuilder.actions.SaveFileAsAction;
+import org.talend.sqlbuilder.actions.SaveSQLAction;
+import org.talend.sqlbuilder.repository.utility.SQLBuilderRepositoryNodeManager;
 import org.talend.sqlbuilder.sessiontree.model.SessionTreeNode;
 import org.talend.sqlbuilder.ui.editor.ISQLEditor;
 import org.talend.sqlbuilder.ui.proposal.SQLEditorLabelProvider;
@@ -95,14 +102,16 @@ public class SQLBuilderEditorComposite extends Composite implements ISQLEditor {
 
     private AbstractEditorAction openFileAction;
 
-    private AbstractEditorAction saveAsAction;
+    private AbstractEditorAction exportAction;
+
+    private AbstractEditorAction saveSQLAction;
 
     private SQLEditorSessionSwitcher sessionSwitcher;
 
     private ToolBarManager sessionToolBarMgr;
 
-    private SessionTreeNode sessionTreeNode;
-
+    private RepositoryNode repositoryNode;
+    
     private boolean ifLimit = true;
 
     public static final String[] SUPPORTED_FILETYPES = new String[] { "*.txt", "*.sql", "*.*" };
@@ -203,7 +212,7 @@ public class SQLBuilderEditorComposite extends Composite implements ISQLEditor {
             // create KeyStroke use Ctrl+Space
             KeyStroke keyStroke = KeyStroke.getInstance("Ctrl+Space");
             IControlContentAdapter controlContentAdapter = new StyledTextContentAdapter();
-            IContentProposalProvider contentProposalProvider = new SQLEditorProposalProvider(sessionTreeNode, language);
+            IContentProposalProvider contentProposalProvider = new SQLEditorProposalProvider(repositoryNode, language);
 
             SQLEditorProposalAdapter contentProposalAdapter = new SQLEditorProposalAdapter(colorText,
                     controlContentAdapter, contentProposalProvider, keyStroke, new char[] { ' ' });
@@ -318,8 +327,11 @@ public class SQLBuilderEditorComposite extends Composite implements ISQLEditor {
         openFileAction = new OpenFileAction();
         openFileAction.setEditor(this);
 
-        saveAsAction = new SaveFileAsAction();
-        saveAsAction.setEditor(this);
+        saveSQLAction = new SaveSQLAction();
+        saveSQLAction.setEditor(this);
+
+        exportAction = new SaveFileAsAction();
+        exportAction.setEditor(this);
 
         clearTextAction = new ClearTextAction();
         clearTextAction.setEditor(this);
@@ -367,7 +379,7 @@ public class SQLBuilderEditorComposite extends Composite implements ISQLEditor {
         execSQLAction.setEnabled(true);
         mgr.add(execSQLAction);
         mgr.add(openFileAction);
-        mgr.add(saveAsAction);
+        mgr.add(exportAction);
         mgr.add(clearTextAction);
     }
 
@@ -401,8 +413,8 @@ public class SQLBuilderEditorComposite extends Composite implements ISQLEditor {
      * 
      * @see org.talend.sqlbuilder.ui.editor.ISQLEditor#getSessionTreeNode()
      */
-    public SessionTreeNode getSessionTreeNode() {
-        return this.sessionTreeNode;
+    public RepositoryNode getRepositoryNode() {
+        return this.repositoryNode;
     }
 
     /*
@@ -428,10 +440,10 @@ public class SQLBuilderEditorComposite extends Composite implements ISQLEditor {
      * 
      * @see org.talend.sqlbuilder.ui.editor.ISQLEditor#setSessionTreeNode(org.talend.sqlbuilder.sessiontree.model.SessionTreeNode)
      */
-    public void setSessionTreeNode(SessionTreeNode node) {
+    public void setRepositoryNode(RepositoryNode node) {
         Assert.isNotNull(node, "this node can not be null");
-        this.sessionTreeNode = node;
-        this.setEditorTitle(this.sessionTreeNode);
+        this.repositoryNode = node;
+        this.setEditorTitle(this.repositoryNode);
         sessionSwitcher.refreshSelectedRepository();
         createEditorProposal();
     }
@@ -441,8 +453,8 @@ public class SQLBuilderEditorComposite extends Composite implements ISQLEditor {
      * 
      * @param node
      */
-    private void setEditorTitle(SessionTreeNode node) {
-        String dbName = ((SQLAlias) node.getAlias()).getSchemaFilterExpression();
+    private void setEditorTitle(RepositoryNode node) {
+        String dbName = SQLBuilderRepositoryNodeManager.getDatabaseNameByRepositoryNode(node);
         String title = "";
         String repositoryName = getRepositoryName();
         String selectedComponentName = connParam.getSelectedComponentName();
@@ -459,10 +471,10 @@ public class SQLBuilderEditorComposite extends Composite implements ISQLEditor {
      * @see org.talend.sqlbuilder.ui.editor.ISQLEditor#getRepositoryName()
      */
     public String getRepositoryName() {
-        if (sessionTreeNode == null) {
+        if (repositoryNode == null) {
             return "";
         }
-        String repositoryName = sessionTreeNode.getRepositoryName();
+        String repositoryName = repositoryNode.getObject().getLabel();
         return repositoryName;
     }
 
@@ -538,7 +550,6 @@ public class SQLBuilderEditorComposite extends Composite implements ISQLEditor {
      */
     public void clearText() {
         this.colorText.setText("");
-
     }
 
     /*
@@ -558,5 +569,34 @@ public class SQLBuilderEditorComposite extends Composite implements ISQLEditor {
      */
     public void setEditorContent(String string) {
         this.colorText.setText(string);
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.sqlbuilder.ui.editor.ISQLEditor#saveSQL()
+     */
+    public void doSaveSQL() {
+        // TODO Auto-generated method stub
+        SQLBuilderRepositoryNodeManager repositoryNodeManager = new SQLBuilderRepositoryNodeManager();
+       List<String> existingName=repositoryNodeManager.getALLQueryLabels(repositoryNode);
+       
+        SQLPropertyDialog saveSQLDialog = new SQLPropertyDialog(this.getShell(),existingName);
+        if (Window.OK == saveSQLDialog.open()) {
+//            Query queryObj = ConnectionFactory.eINSTANCE.createQuery();
+//            queryObj.setComment(saveSQLDialog.getComment());
+//            queryObj.setLabel(saveSQLDialog.getName());
+//            queryObj.setValue(colorText.getText());
+//            SQLBuilderRepositoryNodeManager repositoryNodeManager = new SQLBuilderRepositoryNodeManager();
+            // repositoryNodeManager.saveQuery(this.sessionTreeNode, queryObj);
+        }
+    }
+
+    /* (non-Javadoc)
+     * @see org.talend.sqlbuilder.ui.editor.ISQLEditor#getSessionTreeNode()
+     */
+    public SessionTreeNode getSessionTreeNode() {
+        // TODO Auto-generated method stub
+        return null;
     }
 }

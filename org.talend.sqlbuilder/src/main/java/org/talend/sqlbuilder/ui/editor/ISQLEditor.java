@@ -22,6 +22,7 @@
 package org.talend.sqlbuilder.ui.editor;
 
 import org.eclipse.swt.widgets.Shell;
+import org.talend.repository.model.RepositoryNode;
 import org.talend.sqlbuilder.sessiontree.model.SessionTreeNode;
 import org.talend.sqlbuilder.util.ConnectionParameters;
 
@@ -37,8 +38,16 @@ public interface ISQLEditor {
      * Gets SessionTreeNode.
      * 
      * @return an instance of SessionTreeNode.
+     * @deprecated
      */
     SessionTreeNode getSessionTreeNode();
+    
+    
+    /**
+     * DOC dev Comment method "getRepositoryNode".
+     * @return
+     */
+    RepositoryNode getRepositoryNode();
 
     /**
      * Gets Shell.
@@ -60,11 +69,11 @@ public interface ISQLEditor {
     String getMaxResult();
 
     /**
-     * Sets sessionTreeNode.
+     * Sets repositoryNode.
      * 
-     * @param sessionTreeNode
+     * @param repositoryNode
      */
-    void setSessionTreeNode(SessionTreeNode sessionTreeNode);
+    void setRepositoryNode(RepositoryNode repositoryNode);
 
     /**
      * 
@@ -114,4 +123,9 @@ public interface ISQLEditor {
      * Sets the content of editor.
      */
     void setEditorContent(String string);
+
+    /**
+     * Saves current editor's sql text into dbstructure composite.
+     */
+    void doSaveSQL();
 }

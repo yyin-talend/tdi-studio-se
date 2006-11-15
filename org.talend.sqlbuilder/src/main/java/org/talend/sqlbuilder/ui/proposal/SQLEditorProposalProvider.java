@@ -23,6 +23,7 @@ package org.talend.sqlbuilder.ui.proposal;
 
 import org.eclipse.jface.fieldassist.IContentProposal;
 import org.eclipse.jface.fieldassist.IContentProposalProvider;
+import org.talend.repository.model.RepositoryNode;
 import org.talend.sqlbuilder.sessiontree.model.SessionTreeNode;
 
 
@@ -37,14 +38,17 @@ public class SQLEditorProposalProvider implements IContentProposalProvider {
 
     private SessionTreeNode sessionTreeNode;
     private String language;
+    private RepositoryNode node;
     
     /**
      * DOC dev SQLEditorContentProposalProvider constructor comment.
      */
-    public SQLEditorProposalProvider(SessionTreeNode sessionTreeNode, String language) {
+    public SQLEditorProposalProvider(RepositoryNode node, String language) {
         this.language = language;
-        this.sessionTreeNode = sessionTreeNode;
+        this.node=node;
     }
+    
+    
     /**
      * Get IContentProposal[] will showed in PopupDialog.
      * @param contents colorText's all Content
@@ -52,6 +56,7 @@ public class SQLEditorProposalProvider implements IContentProposalProvider {
      * @return contentProposal[] 
      */
     public IContentProposal[] getProposals(String contents, int position) {
+        //TODO
         return new SQLEditorProposalUtil(sessionTreeNode, language).getSQLEditorContentProposals(contents, position);
     }
 }

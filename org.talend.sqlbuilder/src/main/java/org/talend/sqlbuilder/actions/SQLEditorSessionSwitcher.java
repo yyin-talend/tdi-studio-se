@@ -30,8 +30,10 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.talend.repository.model.RepositoryNode;
 import org.talend.sqlbuilder.Messages;
 import org.talend.sqlbuilder.dbstructure.SessionTreeNodeUtils;
+import org.talend.sqlbuilder.repository.utility.SQLBuilderRepositoryNodeManager;
 import org.talend.sqlbuilder.sessiontree.model.SessionTreeNode;
 import org.talend.sqlbuilder.ui.editor.ISQLEditor;
 
@@ -59,6 +61,8 @@ public class SQLEditorSessionSwitcher extends ControlContribution {
         this.editor = editor;
     }
 
+    SQLBuilderRepositoryNodeManager nodeManager=new SQLBuilderRepositoryNodeManager();
+    
     /*
      * (non-Javadoc)
      * 
@@ -76,8 +80,11 @@ public class SQLEditorSessionSwitcher extends ControlContribution {
 
             public void widgetSelected(SelectionEvent e) {
                 String repoName = sessionCombo.getText();
-                SessionTreeNode node = SessionTreeNodeUtils.getSessionTreeNode(repoName);
-                editor.setSessionTreeNode(node);
+                SessionTreeNodeUtils.getSessionTreeNode(repoName);
+
+                //TODO
+                RepositoryNode node = null;
+                editor.setRepositoryNode(node);
                 editor.refresh(true);
             }
 
