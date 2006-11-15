@@ -22,6 +22,7 @@
 package org.talend.sqlbuilder.ui;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.List;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.action.Action;
@@ -53,18 +54,17 @@ import org.talend.core.ui.ImageProvider;
 import org.talend.core.ui.ImageProvider.EImage;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNode.ENodeType;
+import org.talend.repository.model.RepositoryNode.EProperties;
 import org.talend.repository.ui.views.RepositoryView;
 import org.talend.sqlbuilder.actions.GenerateSelectSQLAction;
 import org.talend.sqlbuilder.actions.MetadataRefreshAction;
 import org.talend.sqlbuilder.actions.OpenNewEditorAction;
-import org.talend.sqlbuilder.dbstructure.DBTreeLabelProvider;
 import org.talend.sqlbuilder.dbstructure.DBTreeProvider;
 import org.talend.sqlbuilder.dbstructure.RepositoryExtNode;
+import org.talend.sqlbuilder.dbstructure.RepositoryNodeType;
 import org.talend.sqlbuilder.dbstructure.SessionTreeNodeUtils;
-import org.talend.sqlbuilder.dbstructure.nodes.CatalogNode;
-import org.talend.sqlbuilder.dbstructure.nodes.ColumnNode;
 import org.talend.sqlbuilder.dbstructure.nodes.INode;
-import org.talend.sqlbuilder.dbstructure.nodes.TableNode;
+import org.talend.sqlbuilder.repository.utility.SQLBuilderRepositoryNodeManager;
 import org.talend.sqlbuilder.util.UIUtils;
 
 /**
@@ -75,8 +75,6 @@ import org.talend.sqlbuilder.util.UIUtils;
  */
 
 public class DBStructureComposite extends Composite {
-
-    private static final int METADATA_INDEX = 5;
 
     private static final int COLUMN_REPOSITORY_WIDTH = 100;
 
@@ -101,6 +99,8 @@ public class DBStructureComposite extends Composite {
     private Action metadataRefreshAction;
     private Action generateSelectAction;
     private Separator separator = new Separator(IWorkbenchActionConstants.MB_ADDITIONS);
+    
+    private SQLBuilderRepositoryNodeManager repositoryNodeManager = new SQLBuilderRepositoryNodeManager();
     /**
      * Create the composite.
      * 
@@ -175,29 +175,12 @@ public class DBStructureComposite extends Composite {
 
         tree.setHeaderVisible(true);
 
-//        rootRepositoryNode = repositoryView.getRoot().getChildren().get(METADATA_INDEX)
-//                        .getChildren().get(0);
-//        repositoryExtNode = new RepositoryExtNode(rootRepositoryNode);
-//        repositoryExtNode.setConnectionParameters(builderDialog.getConnParameters());
         treeViewer.setInput(new RepositoryNode(null, null, ENodeType.SYSTEM_FOLDER));
         addContextMenu();
 
     }
 
-    /*
-     * private void doTest(RepositoryNode node) { node = node.getChildren().get(1).getChildren().get(0);
-     * DatabaseConnection connection = null; MetadataTable metadataTable = null; DatabaseConnectionItem item = null;
-     * String metadataTableLabel = (String) node.getProperties(EProperties.LABEL); item = (DatabaseConnectionItem)
-     * node.getParent().getObject().getProperty().getItem(); connection = (DatabaseConnection) item.getConnection();
-     * metadataTable = TableHelper.findByLabel(connection, metadataTableLabel);
-     * 
-     * MetadataColumnImpl column = (MetadataColumnImpl) metadataTable.getColumns().get(0);
-     * 
-     * System.out.println(column.getLabel()); System.out.println(column.getTalendType());
-     * System.out.println(column.getSourceType()); System.out.println(column.getLength());
-     * 
-     * System.out.println(); }
-     */
+
 
     /**
      * Add context menu.
@@ -219,20 +202,12 @@ public class DBStructureComposite extends Composite {
 
             @SuppressWarnings("unchecked")
             private void fillContextMenu(IMenuManager manager) {
-                // if the node instanceof CatalogNode then the Generate action will not display.
-                IStructuredSelection selection = (IStructuredSelection) treeViewer.getSelection();
-                INode element = (INode) selection.getFirstElement();
-                if (element != null && !(element instanceof CatalogNode)) {
-                    if (generateSelectAction == null) {
-                        generateSelectAction = new GenerateSelectSQLAction(null, builderDialog.getEditorComposite(), false);
-                    }
-                    ((GenerateSelectSQLAction) generateSelectAction).setSelectedNodes((INode[]) selection
-                            .toList().toArray(new INode[] {}));
-                    generateSelectAction.setText("Generate Select Statement");
-                    generateSelectAction.setToolTipText("Generate Select Statement");
-                    manager.add(generateSelectAction);
+                //GenerateSelectSQL
+                if (generateSelectAction == null) {
+                    generateSelectAction = new GenerateSelectSQLAction(treeViewer, builderDialog.getEditorComposite(), false);
                 }
-
+                manager.add(generateSelectAction);
+ 
                 // open editor
                 builderDialog.getConnParameters().setQuery("");
                 if (openNewEditorAction == null) {
@@ -357,28 +332,45 @@ public class DBStructureComposite extends Composite {
                 public void run(final IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
                     monitor.beginTask("Refresh Connections", -1);
 
-                    SessionTreeNodeUtils.getCachedAllNodes().clear();
-                    SessionTreeNodeUtils.getCachedCurrentNodes().clear();
-                    SessionTreeNodeUtils.getCatalogNodes().clear();
-                    RefreshTreeCommand.getInstance().setTreeViewer(treeViewer);
-                    final INode[] currentNodes = 
-                        SessionTreeNodeUtils.getCurrentNodes(isShowAllConnections, rootRepositoryNode, builderDialog.getConnParameters());
-                    Display.getDefault().asyncExec(new Runnable() {
-                        public void run() {
-                            if (treeViewer.getTree() != null && !treeViewer.getTree().isDisposed()) {
-                                ((RepositoryExtNode) treeViewer.getInput()).setChildNodes(currentNodes);
-                                treeViewer.refresh();
-                            }
-                        }
-                    });
+                    RepositoryNode root = (RepositoryNode) treeViewer.getInput();
+                    refreshChildren(root);
+                    
                     monitor.done();
                 }
+
             };
 
             UIUtils.runWithProgress(r, true, getProgressMonitor(), getShell());
         }
     }
-
+    
+    private void refreshChildren(RepositoryNode root) {
+        List<RepositoryNode> repositoryNodes = root.getChildren();
+        for (RepositoryNode node : repositoryNodes) {
+            if (node.getProperties(EProperties.CONTENT_TYPE) == RepositoryNodeType.FOLDER) {
+                refreshChildren(node);
+            } else {
+                doRefresh(repositoryNodeManager.getRepositoryNodeFromDB(node));
+            }
+        }
+    }
+    
+    /**
+     * Refresh RepositoryNode.
+     * @param
+     * @return
+     * @exception
+     */
+    private void doRefresh(final RepositoryNode refreshNode) {
+        Display.getDefault().asyncExec(new Runnable() {
+            public void run() {
+                if (treeViewer.getTree() != null && treeViewer.getTree().isDisposed()){
+                    treeViewer.refresh(refreshNode);
+                }
+            }
+        });
+    }
+    
     /**
      * RefreshAction.
      */
@@ -396,14 +388,7 @@ public class DBStructureComposite extends Composite {
         @SuppressWarnings("unchecked")
         private void init() {
             ISelection selection = getSelectionProvider().getSelection();
-            int i = 0;
-            INode[] nodes = (INode[]) ((IStructuredSelection) selection).toList().toArray(new INode[]{});
-            for (INode node : nodes) {
-                if (node instanceof CatalogNode) {
-                    i++;
-                }
-            }
-            if (i > 1) {
+            if (selection == null) {
                 this.setEnabled(false);
             } else {
                 this.setEnabled(true);
@@ -413,35 +398,37 @@ public class DBStructureComposite extends Composite {
         public void run() {
             final IStructuredSelection selection = (IStructuredSelection) treeViewer.getSelection();
             final IRunnableWithProgress r = new IRunnableWithProgress() {
+                @SuppressWarnings("unchecked")
                 public void run(final IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
                     monitor.beginTask("Refresh Connections", -1);
                    
-                    INode node = (INode) selection.getFirstElement();
-                    if (node instanceof ColumnNode) {
-                        node.getParent().getParent().getParent().refresh();
-                        doRefresh(node.getParent().getParent().getParent());
-                    } else if (node instanceof TableNode) {
-                        node.getParent().getParent().refresh();
-                        doRefresh(node.getParent().getParent());
-                    } else if (node instanceof CatalogNode) {
-                        node.refresh();
-                        doRefresh(node);
-                    }
-                
+                    RepositoryNode[] nodes = (RepositoryNode[]) selection.toList().toArray(new RepositoryNode[]{});
+                    nodes = retrieveFromDB(nodes);
                     monitor.done();
                 }
-                private void doRefresh(final INode refreshNode) {
-                    Display.getDefault().asyncExec(new Runnable() {
-                        public void run() {
-                            if (treeViewer.getTree() != null && treeViewer.getTree().isDisposed()){
-                                treeViewer.refresh(refreshNode);
-                            }
+                
+                private RepositoryNode[] retrieveFromDB(RepositoryNode[] nodes)
+                {
+                    for (RepositoryNode node : nodes) {
+                        if (node.getProperties(EProperties.CONTENT_TYPE) == RepositoryNodeType.FOLDER) {
+                            refreshChildren(node);
                         }
-                    });
+                        node = repositoryNodeManager.getRepositoryNodeFromDB(getConnectionNode(node));
+                        doRefresh(node);
+                    } 
+                    return null;
                 }
+
             };
 
             UIUtils.runWithProgress(r, true, getProgressMonitor(), getShell());
+        }
+        protected RepositoryNode getConnectionNode(RepositoryNode node)
+        {
+            if (node.getProperties(EProperties.CONTENT_TYPE) == RepositoryNodeType.DATABASE) {
+                return node;
+            }
+            return getConnectionNode(node.getParent());
         }
     }
 
