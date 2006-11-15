@@ -149,7 +149,7 @@ public class SessionTreeNodeManager {
      * @return RepositoryNode
      */
     private RepositoryNode getRoot(RepositoryNode repositoryNode) {
-        return new SQLBuilderRepositoryNodeManager().getRepositoryNodeFromDB(repositoryNode);
+        return new SQLBuilderRepositoryNodeManager().getRoot(repositoryNode);
     }
     
 }
