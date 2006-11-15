@@ -140,7 +140,7 @@ public class OpenNewEditorAction extends SelectionProviderAction
             }
         }
 
-        return null;
+        return repositoryNames;
     }
 
 }
