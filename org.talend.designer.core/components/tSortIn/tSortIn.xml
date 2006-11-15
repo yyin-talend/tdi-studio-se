@@ -36,7 +36,6 @@
       FIELD="TEXT"
       NUM_ROW="2"
       REQUIRED="true"
-      REPOSITORY_VALUE="ORIGIN"
     >
       <DEFAULT>array_tArray_1</DEFAULT>
     </PARAMETER>
@@ -49,9 +48,21 @@
       NB_LINES="3"
     >
       <ITEMS>
-        <ITEM NAME="COLNAME" />
-        <ITEM NAME="SORT" />
-        <ITEM NAME="ORDER" />
+        <ITEM NAME="COLNAME" FIELD="COLUMN_LIST"/>
+
+        <ITEM NAME="SORT" FIELD="CLOSED_LIST">
+          <ITEMS DEFAULT="NUM">
+            <ITEM NAME="NUM" VALUE="num"/>
+            <ITEM NAME="ALPHA" VALUE="alpha"/>
+          </ITEMS>
+        </ITEM>
+
+        <ITEM NAME="ORDER" FIELD="CLOSED_LIST">
+          <ITEMS DEFAULT="ASC">
+            <ITEM NAME="ASC" VALUE="asc"/>
+            <ITEM NAME="DESC" VALUE="desc"/>
+          </ITEMS>
+        </ITEM>
       </ITEMS>
     </PARAMETER>
 

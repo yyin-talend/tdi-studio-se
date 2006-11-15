@@ -48,15 +48,21 @@ my %desc_<%=cid %> = (
 );
 
 <%
-    if (stats) {
+        int column_number = 0;
+        for (IMetadataColumn column: metadata.getListColumns()) {
+%>
+use constant <%=origin %>__<%=column.getLabel() %> => <%=column_number%>;
+<%
+            column_number++;
+        }
+
+        if (stats) {
 %>
     UpdateStat('<%=cid %>', 0);
 <%
-    }
-%>
+        }
 
-<%
-StringBuffer sb = new StringBuffer();
+        StringBuffer sb = new StringBuffer();
 
 for(int i=0; i<criteria.size(); i++) {
     if (i>0) {
@@ -64,7 +70,7 @@ for(int i=0; i<criteria.size(); i++) {
     }
     Map<String, String> line = criteria.get(i);
     
-    String colname = line.get("COLNAME");
+    String colname = origin + "__" + line.get("COLNAME");
     String sort = line.get("SORT");
     String order = line.get("ORDER");
     boolean asc = (order.toLowerCase().equals("asc"));
