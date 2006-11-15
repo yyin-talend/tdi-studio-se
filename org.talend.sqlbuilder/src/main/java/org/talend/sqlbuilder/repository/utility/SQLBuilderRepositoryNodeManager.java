@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
+import org.eclipse.emf.common.util.EList;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.core.model.metadata.IMetadataConnection;
 import org.talend.core.model.metadata.builder.ConvertionHelper;
@@ -35,6 +36,7 @@ import org.talend.core.model.metadata.builder.connection.ConnectionFactory;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.metadata.builder.connection.MetadataColumn;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
+import org.talend.core.model.metadata.builder.connection.QueriesConnection;
 import org.talend.core.model.metadata.builder.connection.Query;
 import org.talend.core.model.metadata.builder.database.ExtractMetaDataFromDataBase;
 import org.talend.core.model.metadata.builder.database.ExtractMetaDataUtils;
@@ -45,6 +47,7 @@ import org.talend.repository.model.IRepositoryFactory;
 import org.talend.repository.model.RepositoryFactoryProvider;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.ui.utils.ManagerConnection;
+import org.talend.sqlbuilder.SqlBuilderPlugin;
 
 /**
  * DOC dev  class global comment. Detailled comment
@@ -55,6 +58,7 @@ import org.talend.repository.ui.utils.ManagerConnection;
  */
 public class SQLBuilderRepositoryNodeManager {
 
+	
 	
 	/**
 	 *  Get RepositoryNodeFromDB .
@@ -125,32 +129,47 @@ public class SQLBuilderRepositoryNodeManager {
             while (rsTables.next()) {
                 MetadataTable medataTable = ConnectionFactory.eINSTANCE.createMetadataTable();
                 medataTable.setId(metadataTables.size() + 1 + ""); 
-//                medataTable.setLabel(rsTables.getString("TABLE_NAME"));
-                medataTable.setSourceName(rsTables.getString("TABLE_NAME"));
+                medataTable.setLabel(rsTables.getString("TABLE_NAME"));
+                medataTable.setSourceName(medataTable.getLabel());
                 medataTable.setComment(ExtractMetaDataUtils.getStringMetaDataInfo(rsTables, "REMARKS"));
                 metadataTables.add(medataTable);
             }
             rsTables.close();
             ExtractMetaDataUtils.closeConnection();
-        } catch (SQLException e) {
-//            log.error(e.toString());
-            throw new RuntimeException(e);
         } catch (Exception e) {
-//            log.error(e.toString());
-            throw new RuntimeException(e);
+        	SqlBuilderPlugin.log("Connection Exception", e);
+        	throw new RuntimeException(e);
         }
         return metadataTables;
     }
 	
 	@SuppressWarnings("unchecked")
+	public List<String>  getALLQueryLabels(RepositoryNode repositoryNode) {
+		List<String> allQueries = new ArrayList<String>();
+		if (repositoryNode == null) {
+			return null;
+		}
+		DatabaseConnectionItem item = getItem(repositoryNode);
+		DatabaseConnection connection = (DatabaseConnection) item.getConnection();
+		List<QueriesConnection> qcs = connection.getQueries();
+		for (QueriesConnection connection2 : qcs) {
+			List<Query> qs = connection2.getQuery();
+			for (Query q1 : qs) {
+				allQueries.add(q1.getLabel());
+			}
+		}
+		return null;
+	}
+	@SuppressWarnings("unchecked")
 	public void saveQuery(RepositoryNode repositoryNode, Query query) {
 		DatabaseConnectionItem item = getItem(repositoryNode);
-		((DatabaseConnection) item.getConnection()).getQueries().add(query);
+		QueriesConnection qc = ConnectionFactory.eINSTANCE.createQueriesConnection();
+		DatabaseConnection connection = (DatabaseConnection) item.getConnection();
+		qc.setConnection(connection);
+		qc.getQuery().add(query);
+		connection.getQueries().add(qc);
 		saveMetaData(item);
 	}
-//	private List<MetadataColumn> getColumnsFromDBTable(IMetadataConnection iMetadataConnection, String tableLabel) {
-//		
-//	}
 	/**
 	 * save MetaData into EMF's xml files.
 	 * @param item need to be saved Item
@@ -166,7 +185,7 @@ public class SQLBuilderRepositoryNodeManager {
 	}
 	
 	/**
-	 * fixed Table flag.
+	 * fixed Table .
 	 * @param metaFromDB MetadataTable from Database
 	 * @param metaFromEMF MetadataTable from Emf
 	 * @return MetadataTable List has set divergency flag
@@ -175,6 +194,7 @@ public class SQLBuilderRepositoryNodeManager {
 			List<MetadataTable> metaFromEMF) {
 		List<MetadataTable> newMetaFromDB = new ArrayList<MetadataTable>();
 		for (MetadataTable db : metaFromDB) {
+			boolean flag = true;
 				for (MetadataTable emf : metaFromEMF) {
 					if (emf.getSourceName().equals(db.getSourceName())) {
 						if (emf.getLabel().equals(db.getSourceName())) {
@@ -183,15 +203,20 @@ public class SQLBuilderRepositoryNodeManager {
 							emf.setDivergency(true);
 						}
 						newMetaFromDB.add(emf);
+						flag = false;
+						break;
 					} 
 				}
-			newMetaFromDB.add(db);
+				
+				if (flag) {
+					newMetaFromDB.add(db);
+				}
 		}
 		return newMetaFromDB;
 	}
 	
 	/**
-	 * fixed Column Divergency flag.
+	 * fixed Column from EMF use Column From DataBase  .
 	 * @param columnsFromDB MetadataColumn from Database
 	 * @param cloumnsFromEMF MetadataColumn from Emf
 	 * @return MetadataColumn List has set divergency flag
@@ -218,11 +243,12 @@ public class SQLBuilderRepositoryNodeManager {
 	 /**
      * Check if Two MetadataColumns are the same..
      * @param info MetadataColumn
-     * @param column MetadataColumnImpl
+     * @param column MetadataColumn
      * @return isEquivalent.
      */
     private boolean isEquivalent(MetadataColumn info, MetadataColumn column) {
-        if (info.getLength() != column.getLength()) {
+
+    	if (info.getLength() != column.getLength()) {
             return false;
         }
         if (info.getDefaultValue() != null && !info.getDefaultValue().equals(column.getDefaultValue())) {
