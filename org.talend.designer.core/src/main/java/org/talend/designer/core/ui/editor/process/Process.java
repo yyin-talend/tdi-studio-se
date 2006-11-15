@@ -493,12 +493,7 @@ public class Process extends Element implements IProcess {
                             Object o = currentLine.get(param.getListItemsDisplayCodeName()[i]);
                             String strValue;
                             if (o instanceof Integer) {
-                                IElementParameter tmpParam = (IElementParameter) param.getListItemsValue()[i];
-                                if (tmpParam.getListItemsDisplayCodeName().length > 0) {
-                                    strValue = tmpParam.getListItemsDisplayCodeName()[(Integer) o];
-                                } else {
-                                    strValue = "";
-                                }
+                                strValue = String.valueOf(o);
                             } else {
                                 strValue = (String) o;
                             }
@@ -547,10 +542,7 @@ public class Process extends Element implements IProcess {
                                     tableValues.add(lineValues);
                                 }
                                 if (param.getListItemsValue()[nbValues] instanceof IElementParameter) {
-                                    IElementParameter tmpParam = (IElementParameter) param.getListItemsValue()[nbValues];
-                                    Integer index = new Integer(tmpParam
-                                            .getIndexOfItemFromList(elementValue.getValue()));
-                                    lineValues.put(elementValue.getElementRef(), index);
+                                    lineValues.put(elementValue.getElementRef(), new Integer(elementValue.getValue()));
                                 } else {
                                     lineValues.put(elementValue.getElementRef(), elementValue.getValue());
                                 }
