@@ -46,6 +46,7 @@ import org.talend.repository.model.RepositoryNode.EProperties;
 import org.talend.repository.ui.utils.ManagerConnection;
 import org.talend.sqlbuilder.SqlBuilderPlugin;
 import org.talend.sqlbuilder.dbstructure.RepositoryNodeType;
+import org.talend.sqlbuilder.util.ConnectionParameters;
 
 /**
  * DOC dev class global comment. Detailled comment <br/>
@@ -104,19 +105,31 @@ public class SQLBuilderRepositoryNodeManager {
                 for (MetadataTable tableFromEMF : tablesFromEMF) {
                     // /Get MetadataColumn From EMF
                     List<MetadataColumn> columnsFromEMF = tableFromEMF.getColumns();
-                    fixedColumns(columnsFromDB, columnsFromEMF);
+                    if (tableFromDB.getSourceName().equals(tableFromEMF.getSourceName())) {
+                    	fixedColumns(columnsFromDB, columnsFromEMF);
+                    }
                     // tableFromEMF.getColumns().clear();
                     // tableFromEMF.getColumns().addAll(columnsFromDB);
                 }
 
             }
-            fixedTables(tablesFromDB, tablesFromEMF);
+            fixedTables(tablesFromDB, tablesFromEMF, iMetadataConnection);
             // connection.getTables().clear();
             // connection.getTables().addAll(tablesFromDB);
         }
         return oldNode;
     }
 
+    public RepositoryNode getRepositoryNodeByBuildIn(ConnectionParameters parameters) {
+		DatabaseConnection connection = ConnectionFactory.eINSTANCE.createDatabaseConnection();
+		connection.setDatasourceName(parameters.getDatasource());
+		connection.setURL(parameters.getURL());
+		connection.setLabel(parameters.getDbName());
+		connection.setDriverClass(ExtractMetaDataUtils.getDriverClassByDbType(parameters.getDbType()));
+		connection.setSID(parameters.getDbName());
+		
+    	return null;
+	}
     /**
      * DOC dev Comment method "getItem".
      * 
@@ -218,7 +231,8 @@ public class SQLBuilderRepositoryNodeManager {
      * @param metaFromDB MetadataTable from Database
      * @param metaFromEMF MetadataTable from Emf
      */
-    private void fixedTables(List<MetadataTable> metaFromDB, List<MetadataTable> metaFromEMF) {
+    @SuppressWarnings("unchecked")
+	private void fixedTables(List<MetadataTable> metaFromDB, List<MetadataTable> metaFromEMF, IMetadataConnection iMetadataConnection) {
 
         while (!metaFromDB.isEmpty()) {
             boolean flag = true;
@@ -234,7 +248,18 @@ public class SQLBuilderRepositoryNodeManager {
                 }
             }
             if (flag) {
-                metaFromEMF.add(db);
+            	MetadataTable table = ConnectionFactory.eINSTANCE.createMetadataTable();
+            	table.setSourceName(db.getSourceName());
+            	table.setLabel("");
+            	 List<MetadataColumn> columns = ExtractMetaDataFromDataBase.returnMetadataColumnsFormTable(
+                         iMetadataConnection, db.getSourceName());
+            	for (MetadataColumn column : columns) {
+            		MetadataColumn column1 = ConnectionFactory.eINSTANCE.createMetadataColumn();
+            		column1.setOriginalField(column.getOriginalField());
+            		column1.setLabel("");
+            		table.getColumns().add(column1);
+				}
+                metaFromEMF.add(table);
             }
         }
     }
@@ -256,7 +281,10 @@ public class SQLBuilderRepositoryNodeManager {
                 }
             }
             if (flag) {
-                cloumnsFromEMF.add(db);
+            	MetadataColumn column = ConnectionFactory.eINSTANCE.createMetadataColumn();
+            	column.setOriginalField(db.getOriginalField());
+            	column.setLabel("");
+                cloumnsFromEMF.add(column);
             }
         }
     }
