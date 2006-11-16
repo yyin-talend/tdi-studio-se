@@ -30,7 +30,6 @@ import java.util.List;
 import java.util.Map;
 
 import net.sourceforge.squirrel_sql.fw.sql.ITableInfo;
-import net.sourceforge.squirrel_sql.fw.sql.SQLDatabaseMetaData;
 import net.sourceforge.squirrel_sql.fw.sql.TableColumnInfo;
 
 import org.eclipse.emf.common.util.EList;
@@ -49,14 +48,16 @@ import org.talend.core.model.properties.DatabaseConnectionItem;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNode.EProperties;
 import org.talend.sqlbuilder.SqlBuilderPlugin;
+import org.talend.sqlbuilder.dbstructure.RepositoryNodeType;
+import org.talend.sqlbuilder.dbstructure.DBTreeProvider.MetadataTableRepositoryObject;
+import org.talend.sqlbuilder.repository.utility.SQLBuilderRepositoryNodeManager;
 import org.talend.sqlbuilder.sessiontree.model.SessionTreeNode;
 
 /**
- * DOC dev  class global comment. Detailled comment
- * <br/>
- *
+ * DOC dev class global comment. Detailled comment <br/>
+ * 
  * $Id: TableNode.java,v 1.20 2006/11/09 01:21:53 qiang.zhang Exp $
- *
+ * 
  */
 public class TableNode extends AbstractNode {
 
@@ -77,12 +78,13 @@ public class TableNode extends AbstractNode {
     private List pfolderNames = new ArrayList();
 
     private RepositoryNode currentRepositoryNode;
-    
+
     private boolean isFromRepository;
-    
-    private static DatabaseConnection  connection;
-    
+
+    private static DatabaseConnection connection;
+
     private String sourceName;
+
     /**
      * Create new database table node.
      * 
@@ -98,14 +100,14 @@ public class TableNode extends AbstractNode {
         pname = name;
         pimageKey = "Images.TableNodeIcon";
     }
-    
+
     /**
      * @return the source name (table name in db)
      */
     public String getSourceName() {
         return sourceName;
     }
-    
+
     /**
      * @param sourceName sourceName.
      */
@@ -113,30 +115,29 @@ public class TableNode extends AbstractNode {
         this.sourceName = sourceName;
     }
 
-
-
     /**
      * @return isFromRepository.
      */
     public boolean isFromRepository() {
         return isFromRepository;
     }
-    
+
     /**
      * Set isFromRepository.
+     * 
      * @param isFromRepository2 isFromRepository.
      */
     public void setFromRepository(boolean isFromRepository2) {
         this.isFromRepository = isFromRepository2;
     }
-    
+
     /**
      * @return RepositoryNode.
      */
     public RepositoryNode getCurrentRepositoryNode() {
         return currentRepositoryNode;
     }
-    
+
     /**
      * @param currentRepositoryNode CurrentRepositoryNode.
      */
@@ -168,7 +169,6 @@ public class TableNode extends AbstractNode {
         return pcolumnNames;
     }
 
-
     /**
      * @return List of column names for this table.
      */
@@ -193,20 +193,19 @@ public class TableNode extends AbstractNode {
         return pforeignKeyNames;
     }
 
-
     /**
      * @return List of column names for this table.
      */
     @SuppressWarnings("unchecked")
     public List getPrimaryKeyNames() {
-        
+
         if (pprimaryKeyNames == null) {
 
             pprimaryKeyNames = new ArrayList();
             if (psessionNode.getInteractiveConnection() == null || ptableInfo == null) {
                 return pprimaryKeyNames;
             }
-            
+
             try {
                 ResultSet resultSet = psessionNode.getMetaData().getPrimaryKeys(ptableInfo);
                 while (resultSet.next()) {
@@ -222,19 +221,17 @@ public class TableNode extends AbstractNode {
         return pprimaryKeyNames;
     }
 
-
     /**
      * @return Qualified table name
      */
     public String getQualifiedName() {
-        
+
         if (ptableInfo == null) {
             return null;
         }
 
         return ptableInfo.getQualifiedName();
     }
-
 
     /**
      * @return // TODO fix this for sql completion?
@@ -244,7 +241,6 @@ public class TableNode extends AbstractNode {
         return getTableInfo().getQualifiedName();
     }
 
-
     /**
      * @return TableInfo for this node
      */
@@ -253,9 +249,9 @@ public class TableNode extends AbstractNode {
         return ptableInfo;
     }
 
-
     /**
      * Returns the table info type as the type for this node.
+     * 
      * @return Type.
      * @see org.talend.sqlbuilder.dbstructure.nodes.INode#getType()
      */
@@ -263,7 +259,6 @@ public class TableNode extends AbstractNode {
 
         return ptableInfo.getType();
     }
-
 
     /**
      * @return UniqueIdentifier.
@@ -273,7 +268,6 @@ public class TableNode extends AbstractNode {
         return getQualifiedName();
     }
 
-
     /**
      * @return isEndNode.
      */
@@ -281,7 +275,6 @@ public class TableNode extends AbstractNode {
 
         return false;
     }
-
 
     /**
      * @return true if this node is a synonym
@@ -291,7 +284,6 @@ public class TableNode extends AbstractNode {
         return ptableInfo.getType().equalsIgnoreCase("SYNONYM");
     }
 
-
     /**
      * @return true if this node is a table
      */
@@ -299,7 +291,6 @@ public class TableNode extends AbstractNode {
 
         return ptableInfo.getType().equalsIgnoreCase("TABLE");
     }
-
 
     /**
      * @return true if this node is a view
@@ -309,38 +300,36 @@ public class TableNode extends AbstractNode {
         return ptableInfo.getType().equalsIgnoreCase("VIEW");
     }
 
-
     /**
      * 
      * 
      * @see org.talend.sqlbuilder.dbstructure.nodes.AbstractNode#loadChildren()
      */
     public void loadChildren() {
-        
+
         if (ptableInfo == null) {
             return;
         }
 
-        try {            
-            // add column and index nodes if they don't exist yet. 
-            
-            ColumnFolderNode colNode = new ColumnFolderNode(this, ptableInfo);            
+        try {
+            // add column and index nodes if they don't exist yet.
+
+            ColumnFolderNode colNode = new ColumnFolderNode(this, ptableInfo);
             if (!pfolderNames.contains(colNode.getName())) {
                 addChildNode(colNode);
             }
-            
+
             IndexFolderNode indexNode = new IndexFolderNode(this, ptableInfo);
             if (!pfolderNames.contains(indexNode.getName())) {
                 addChildNode(indexNode);
             }
-            
-            
+
         } catch (Exception e) {
             SqlBuilderPlugin.log("Could not create child nodes for " + getName(), e);
         }
 
     }
-    
+
     /**
      * @return Label text.
      */
@@ -350,25 +339,26 @@ public class TableNode extends AbstractNode {
         if (labelText == null) {
             return null;
         }
-        
+
         return labelText.replaceAll("_", "-");
-        
+
     }
-    
+
     @Override
     public String getLabelAtColumn(int columnIndex) {
         if (columnIndex == 0) {
-//            if (ptableInfo.getSchemaName() != null) {
-//                return ptableInfo.getSchemaName() + "." + getLabelText();
-//            } else {
-//                return getLabelText();
-//            }
+            // if (ptableInfo.getSchemaName() != null) {
+            // return ptableInfo.getSchemaName() + "." + getLabelText();
+            // } else {
+            // return getLabelText();
+            // }
             return getLabelText();
         } else if (columnIndex == 1) {
             return getRepositoryName();
         }
         return null;
     }
+
     /**
      * @return ChildNodes.
      */
@@ -381,14 +371,14 @@ public class TableNode extends AbstractNode {
                 nodesInDB = node.getChildNodes();
             }
         }
-        
+
         if (currentRepositoryNode == null) {
             return nodesInDB;
         }
-        
+
         Map<String, INode> allNodes = new HashMap<String, INode>();
-        
-        //add db nodes.
+
+        // add db nodes.
         if (nodesInDB != null) {
             for (INode node : nodesInDB) {
                 allNodes.put(node.getLabelText(), node);
@@ -396,10 +386,11 @@ public class TableNode extends AbstractNode {
         }
 
         EList columns = TableNode.getColumns(currentRepositoryNode);
-        
+
         for (int i = 0, size = columns.size(); i < size; i++) {
             MetadataColumnImpl column = (MetadataColumnImpl) columns.get(i);
-            if (!allNodes.keySet().contains(column.getLabel()) && !allNodes.keySet().contains(column.getOriginalField())) {
+            if (!allNodes.keySet().contains(column.getLabel())
+                    && !allNodes.keySet().contains(column.getOriginalField())) {
                 allNodes.put(column.getLabel(), convert2ColumnNode(this, column));
             } else {
                 ColumnNode cNode = (ColumnNode) allNodes.get(column.getOriginalField());
@@ -408,22 +399,21 @@ public class TableNode extends AbstractNode {
                 cNode.setSourceName(column.getOriginalField());
             }
         }
-        
-        
-        return allNodes.values().toArray(new INode[]{});
+
+        return allNodes.values().toArray(new INode[] {});
     }
-    
+
     /**
      * Check if ColumnNode and Column are the same.
+     * 
      * @param node ColumnNode
      * @param column MetadataColumnImpl
      * @return isNodeSameToColumn
      * @exception
      */
-    private boolean isNodeSameToColumn(ColumnNode node, MetadataColumnImpl column)
-    {
+    private boolean isNodeSameToColumn(ColumnNode node, MetadataColumnImpl column) {
         SessionTreeNode sessionTreeNode = node.getSession();
-        
+
         TableColumnInfo[] tableColumnInfo = null;
         try {
             tableColumnInfo = sessionTreeNode.getMetaData().getColumnInfo(ptableInfo);
@@ -431,13 +421,13 @@ public class TableNode extends AbstractNode {
             SqlBuilderPlugin.log(e.getMessage(), e);
             return false;
         }
-        // Retrive metadataColumns  from Database 
+        // Retrive metadataColumns from Database
         IMetadataConnection iMetadataConnection = ConvertionHelper.convert(connection);
         List<MetadataColumn> metadataColumns = new ArrayList<MetadataColumn>();
-        metadataColumns = ExtractMetaDataFromDataBase
-        .returnMetadataColumnsFormTable(iMetadataConnection, getLabelText().replaceAll("-", "_"));
+        metadataColumns = ExtractMetaDataFromDataBase.returnMetadataColumnsFormTable(iMetadataConnection,
+                getLabelText().replaceAll("-", "_"));
         Iterator iterate = metadataColumns.iterator();
-        
+
         while (iterate.hasNext()) {
             MetadataColumn metadataColumn = (MetadataColumn) iterate.next();
             for (TableColumnInfo info : tableColumnInfo) {
@@ -449,29 +439,29 @@ public class TableNode extends AbstractNode {
                 }
             }
         }
-        
+
         return true;
     }
-    
+
     /**
      * Check if TableColumnInfo and MetadataColumnImpl are the same..
+     * 
      * @param info MetadataColumn
      * @param column MetadataColumnImpl
      * @return isEquivalent.
      * @exception
      */
-    private boolean isEquivalent(MetadataColumn info, MetadataColumnImpl column)
-    {
-//        if (!info.getLabel().equals(column.getLabel())) {
-//            return false;
-//        } 
+    private boolean isEquivalent(MetadataColumn info, MetadataColumnImpl column) {
+        // if (!info.getLabel().equals(column.getLabel())) {
+        // return false;
+        // }
         if (info.getLength() != column.getLength()) {
             return false;
         }
         if (info.getDefaultValue() != null && !info.getDefaultValue().equals(column.getDefaultValue())) {
             return false;
         }
-        if (column.getDefaultValue() != null && column.getDefaultValue().length() != 0 
+        if (column.getDefaultValue() != null && column.getDefaultValue().length() != 0
                 && !column.getDefaultValue().equals(info.getDefaultValue())) {
             return false;
         }
@@ -487,22 +477,22 @@ public class TableNode extends AbstractNode {
         if (info.getSourceType() != null && !info.getSourceType().equals(column.getSourceType())) {
             return false;
         }
-        if (info.getComment() != null && info.getComment().length() != 0 
+        if (info.getComment() != null && info.getComment().length() != 0
                 && !info.getComment().equals(column.getComment())) {
             return false;
         }
-        if (column.getComment() != null && column.getComment().length() != 0 
+        if (column.getComment() != null && column.getComment().length() != 0
                 && !column.getComment().equals(info.getComment())) {
             return false;
         }
-        
+
         if (info.getTalendType() != null && !info.getTalendType().equals(column.getTalendType())) {
             return false;
         }
         if (column.getTalendType() != null && !column.getTalendType().equals(info.getTalendType())) {
             return false;
         }
-        
+
         return true;
     }
 
@@ -512,8 +502,7 @@ public class TableNode extends AbstractNode {
      * @return INode.
      * @exception
      */
-    public static INode convert2ColumnNode(TableNode tableNode, MetadataColumnImpl column)
-    {
+    public static INode convert2ColumnNode(TableNode tableNode, MetadataColumnImpl column) {
         ColumnNode columnNode = null;
         try {
             columnNode = new ColumnNode(tableNode, "", tableNode.psessionNode, tableNode, true);
@@ -522,12 +511,13 @@ public class TableNode extends AbstractNode {
             SqlBuilderPlugin.log(e.getMessage(), e);
         }
         columnNode.setRepositoryName(column.getLabel());
-        
+
         return columnNode;
     }
-    
+
     /**
      * Get repository columns from table repositoryNode.
+     * 
      * @param repositoryNode -- table repositoryNode
      * @return columns
      * @exception
@@ -536,23 +526,24 @@ public class TableNode extends AbstractNode {
     public static EList getColumns(RepositoryNode repositoryNode) {
         return getMetadataTable(repositoryNode).getColumns();
     }
-    
+
     /**
      * Get repository table from table repositoryNode.
+     * 
      * @param repositoryNode -- table repositoryNode
      * @return columns
      * @exception
      */
     @SuppressWarnings("deprecation")
     public static MetadataTable getMetadataTable(RepositoryNode repositoryNode) {
-        String metadataTableLabel = (String) repositoryNode.getProperties(EProperties.LABEL);
-        DatabaseConnectionItem item = (DatabaseConnectionItem) repositoryNode.getParent().getObject().getProperty().getItem();
-        connection = (DatabaseConnection) item.getConnection();
-        MetadataTable metadataTable = TableHelper.findByLabel(connection, metadataTableLabel);
-        
-        return metadataTable;
+        RepositoryNodeType type = SQLBuilderRepositoryNodeManager.getRepositoryType(repositoryNode);
+        if (type != RepositoryNodeType.TABLE) {
+            throw new RuntimeException("Only Table will call this.");
+        }
+        MetadataTableRepositoryObject tableObject = (MetadataTableRepositoryObject) repositoryNode.getObject();
+        return tableObject.getTable();
     }
-    
+
     /**
      * @return Background.
      */
@@ -566,7 +557,7 @@ public class TableNode extends AbstractNode {
             return Display.getDefault().getSystemColor(SWT.COLOR_RED);
         }
     }
-    
+
     /**
      * @return Foreground.
      */
@@ -578,5 +569,5 @@ public class TableNode extends AbstractNode {
             return Display.getDefault().getSystemColor(SWT.COLOR_WHITE);
         }
     }
-    
+
 }
