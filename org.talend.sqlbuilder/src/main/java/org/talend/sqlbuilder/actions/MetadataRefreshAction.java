@@ -205,7 +205,7 @@ public class MetadataRefreshAction extends SelectionProviderAction {
 				columnNode.setSourceType(metadataColumn.getSourceType());
 				columnNode.setTalendType(metadataColumn.getTalendType());
 				columnNode.setDivergency(false);
-				columnNode.setSynchronised(true);
+				columnNode.setSynchronised(false);
 				// }
 				// }
 			}
