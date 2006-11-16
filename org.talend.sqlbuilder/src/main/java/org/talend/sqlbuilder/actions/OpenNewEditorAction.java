@@ -21,13 +21,11 @@
 // ============================================================================
 package org.talend.sqlbuilder.actions;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.ui.actions.SelectionProviderAction;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNode.EProperties;
@@ -108,6 +106,8 @@ public class OpenNewEditorAction extends SelectionProviderAction {
         RepositoryNode firstNode = (RepositoryNode) selection.getFirstElement();
         if (firstNode.getProperties(EProperties.CONTENT_TYPE) == RepositoryNodeType.FOLDER) {
            firstNode = new SQLBuilderRepositoryNodeManager().getRepositoryNodebyName(connParam.getRepositoryName());  
+        }else{
+            firstNode= SQLBuilderRepositoryNodeManager.getRoot(firstNode);
         }
         List repositoryNames = repositoryNodeManager.getALLReposotoryNodeNames();
         editorComposite.openNewEditor(firstNode, repositoryNames, connParam,
