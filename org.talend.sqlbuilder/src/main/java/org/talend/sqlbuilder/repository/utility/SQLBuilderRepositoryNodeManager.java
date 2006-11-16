@@ -27,6 +27,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.talend.commons.exception.PersistenceException;
+import org.talend.core.CorePlugin;
+import org.talend.core.context.Context;
+import org.talend.core.context.RepositoryContext;
+import org.talend.core.model.general.Version;
 import org.talend.core.model.metadata.IMetadataConnection;
 import org.talend.core.model.metadata.builder.ConvertionHelper;
 import org.talend.core.model.metadata.builder.connection.ConnectionFactory;
@@ -38,6 +42,8 @@ import org.talend.core.model.metadata.builder.connection.Query;
 import org.talend.core.model.metadata.builder.database.ExtractMetaDataFromDataBase;
 import org.talend.core.model.metadata.builder.database.ExtractMetaDataUtils;
 import org.talend.core.model.properties.DatabaseConnectionItem;
+import org.talend.core.model.properties.PropertiesFactory;
+import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.repository.model.IRepositoryFactory;
 import org.talend.repository.model.RepositoryFactoryProvider;
@@ -74,6 +80,19 @@ public class SQLBuilderRepositoryNodeManager {
         return null;
     }
 
+    @SuppressWarnings("unchecked")
+	public static List<String> getTableNamesByRepositoryNode(RepositoryNode node) {
+    	List<String> tableNames = new ArrayList<String>();
+    	DatabaseConnectionItem item = getItem(node);
+        DatabaseConnection connection = (DatabaseConnection) item.getConnection();
+    	List<MetadataTable> tablesFromEMF = connection.getTables();
+    	for (MetadataTable table : tablesFromEMF) {
+    		String tableName = table.getSourceName();
+    		tableName = "'" + connection.getSID() + "'.'" + tableName + "'";
+			tableNames.add(tableName);
+		}
+    	return tableNames;
+	}
     public List<String> getALLReposotoryNodeNames() {
 		List<String> names = new ArrayList<String>();
 		for (RepositoryNode node : repositoryNodes) {
@@ -122,7 +141,7 @@ public class SQLBuilderRepositoryNodeManager {
         return oldNode;
     }
 
-    public RepositoryNode getRepositoryNodeByBuildIn(RepositoryNode node,ConnectionParameters parameters) {
+    public RepositoryNode getRepositoryNodeByBuildIn(RepositoryNode node, ConnectionParameters parameters) {
 		DatabaseConnection connection = ConnectionFactory.eINSTANCE.createDatabaseConnection();
 		connection.setDatasourceName(parameters.getDatasource());
 		connection.setURL(parameters.getURL());
@@ -130,7 +149,22 @@ public class SQLBuilderRepositoryNodeManager {
 		connection.setDriverClass(ExtractMetaDataUtils.getDriverClassByDbType(parameters.getDbType()));
 		connection.setSID(parameters.getDbName());
 		
-    	return null;
+		DatabaseConnectionItem item = PropertiesFactory.eINSTANCE.createDatabaseConnectionItem();
+		
+		
+		Property connectionProperty = PropertiesFactory.eINSTANCE.createProperty();
+        connectionProperty
+                 .setAuthor(((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY))
+                         .getUser().getEmfUser());
+         connectionProperty.setVersion(new Version().toString());
+         connectionProperty.setStatusCode("");
+
+         item.setProperty(connectionProperty);
+         item.setConnection(connection);
+         
+         node.getObject().getProperty().setItem(item);
+         
+    	return node;
 	}
     /**
      * DOC dev Comment method "getItem".

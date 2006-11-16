@@ -28,7 +28,9 @@ import java.util.List;
 import org.eclipse.jface.fieldassist.IContentProposal;
 import org.talend.commons.ui.swt.colorstyledtext.jedit.Mode;
 import org.talend.commons.ui.swt.colorstyledtext.jedit.Modes;
+import org.talend.repository.model.RepositoryNode;
 import org.talend.sqlbuilder.dbstructure.SessionTreeNodeUtils;
+import org.talend.sqlbuilder.repository.utility.SQLBuilderRepositoryNodeManager;
 import org.talend.sqlbuilder.sessiontree.model.SessionTreeNode;
 import org.talend.sqlbuilder.util.IConstants;
 import org.talend.sqlbuilder.util.QueryTokenizer;
@@ -41,7 +43,7 @@ import org.talend.sqlbuilder.util.QueryTokenizer;
  */
 public class SQLEditorProposalUtil {
 
-    private SessionTreeNode session;
+    private RepositoryNode session;
 
     private List<IContentProposal> proposals;
 
@@ -53,7 +55,7 @@ public class SQLEditorProposalUtil {
 
     private String[] contents;
 
-    public SQLEditorProposalUtil(SessionTreeNode session, String language) {
+    public SQLEditorProposalUtil(RepositoryNode session, String language) {
         super();
         contents = new String[2];
         this.session = session;
@@ -192,7 +194,7 @@ public class SQLEditorProposalUtil {
      * DOC dev Comment method "getAllProposalString".
      */
     private void getAllProposalString() {
-        List<String> tablenames = SessionTreeNodeUtils.getTableNames(session);
+        List<String> tablenames = SQLBuilderRepositoryNodeManager.getTableNamesByRepositoryNode(session);
         String[] allTablename = new String[tablenames.size()];
         allTablename = (String[]) tablenames.toArray(allTablename);
         Arrays.sort(allTablename);

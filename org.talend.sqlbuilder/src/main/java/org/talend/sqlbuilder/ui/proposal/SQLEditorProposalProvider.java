@@ -36,7 +36,7 @@ import org.talend.sqlbuilder.sessiontree.model.SessionTreeNode;
  */
 public class SQLEditorProposalProvider implements IContentProposalProvider {
 
-    private SessionTreeNode sessionTreeNode;
+//    private SessionTreeNode sessionTreeNode;
     private String language;
     private RepositoryNode node;
     
@@ -45,7 +45,7 @@ public class SQLEditorProposalProvider implements IContentProposalProvider {
      */
     public SQLEditorProposalProvider(RepositoryNode node, String language) {
         this.language = language;
-        this.node=node;
+        this.node = node;
     }
     
     
@@ -57,6 +57,6 @@ public class SQLEditorProposalProvider implements IContentProposalProvider {
      */
     public IContentProposal[] getProposals(String contents, int position) {
         //TODO
-        return new SQLEditorProposalUtil(sessionTreeNode, language).getSQLEditorContentProposals(contents, position);
+        return new SQLEditorProposalUtil(node, language).getSQLEditorContentProposals(contents, position);
     }
 }
