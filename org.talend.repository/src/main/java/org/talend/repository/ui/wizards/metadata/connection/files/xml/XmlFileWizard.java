@@ -42,8 +42,6 @@ import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.ui.EImage;
-import org.talend.core.ui.ImageProvider;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IRepositoryFactory;
 import org.talend.repository.model.RepositoryFactoryProvider;
@@ -87,7 +85,7 @@ public class XmlFileWizard extends RepositoryWizard implements INewWizard {
         this.selection = selection;
         this.existingNames = existingNames;
         setNeedsProgressMonitor(true);
-        setDefaultPageImageDescriptor(ImageProvider.getImageDesc(EImage.METADATA_FILE_XML_WIZ));
+        // setDefaultPageImageDescriptor(ImageProvider.getImageDesc(EImage.METADATA_FILE_XML_WIZ));
 
         Object obj = ((IStructuredSelection) selection).getFirstElement();
         RepositoryNode node = (RepositoryNode) obj;
@@ -112,8 +110,9 @@ public class XmlFileWizard extends RepositoryWizard implements INewWizard {
             // connection.getTables().add(metadataSchema);
             connection.getTables().add(metadataTable);
             connectionProperty = PropertiesFactory.eINSTANCE.createProperty();
-            connectionProperty.setAuthor(((RepositoryContext) CorePlugin.getContext().getProperty(
-                    Context.REPOSITORY_CONTEXT_KEY)).getUser().getEmfUser());
+            connectionProperty
+                    .setAuthor(((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY))
+                            .getUser().getEmfUser());
             connectionProperty.setVersion(new Version().toString());
             connectionProperty.setStatusCode("");
 
@@ -123,8 +122,7 @@ public class XmlFileWizard extends RepositoryWizard implements INewWizard {
             break;
 
         case REPOSITORY_ELEMENT:
-            connection = (XmlFileConnection) ((ConnectionItem) node.getObject().getProperty().getItem())
-                    .getConnection();
+            connection = (XmlFileConnection) ((ConnectionItem) node.getObject().getProperty().getItem()).getConnection();
             connectionProperty = node.getObject().getProperty();
             connectionItem = (ConnectionItem) node.getObject().getProperty().getItem();
             // set the repositoryObject, lock and set isRepositoryObjectEditable
@@ -139,8 +137,8 @@ public class XmlFileWizard extends RepositoryWizard implements INewWizard {
      * Adding the page to the wizard.
      */
     public void addPages() {
-        xmlFileWizardPage0 = new Step0WizardPage(connectionProperty, pathToSave,
-                ERepositoryObjectType.METADATA_FILE_XML, !isRepositoryObjectEditable());
+        xmlFileWizardPage0 = new Step0WizardPage(connectionProperty, pathToSave, ERepositoryObjectType.METADATA_FILE_XML,
+                !isRepositoryObjectEditable());
         xmlFileWizardPage1 = new XmlFileWizardPage(1, connectionItem, isRepositoryObjectEditable(), existingNames);
         xmlFileWizardPage2 = new XmlFileWizardPage(2, connectionItem, isRepositoryObjectEditable(), existingNames);
 
@@ -229,8 +227,8 @@ public class XmlFileWizard extends RepositoryWizard implements INewWizard {
                 }
             } catch (PersistenceException e) {
                 String detailError = e.toString();
-                new ErrorDialogWidthDetailArea(getShell(), PID,
-                        Messages.getString("CommonWizard.persistenceException"), detailError);
+                new ErrorDialogWidthDetailArea(getShell(), PID, Messages.getString("CommonWizard.persistenceException"),
+                        detailError);
                 log.error(Messages.getString("CommonWizard.persistenceException") + "\n" + detailError);
                 return false;
             }
