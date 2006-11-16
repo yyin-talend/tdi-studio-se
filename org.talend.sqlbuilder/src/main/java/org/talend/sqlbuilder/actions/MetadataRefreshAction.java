@@ -46,6 +46,9 @@ import org.talend.core.ui.ImageProvider.EImage;
 import org.talend.repository.model.IRepositoryFactory;
 import org.talend.repository.model.RepositoryFactoryProvider;
 import org.talend.repository.model.RepositoryNode;
+import org.talend.repository.model.RepositoryNode.EProperties;
+import org.talend.sqlbuilder.dbstructure.DBTreeProvider;
+import org.talend.sqlbuilder.dbstructure.RepositoryNodeType;
 import org.talend.sqlbuilder.dbstructure.nodes.ColumnNode;
 import org.talend.sqlbuilder.dbstructure.nodes.TableNode;
 import org.talend.sqlbuilder.sessiontree.model.SessionTreeNode;
@@ -60,8 +63,8 @@ import org.talend.sqlbuilder.sessiontree.model.SessionTreeNode;
 public class MetadataRefreshAction  extends SelectionProviderAction {
     private ImageDescriptor img = ImageProvider.getImageDesc(EImage.REFRESH_ICON);
     private ISelectionProvider selectionProvider;
-    private List<ColumnNode> columnNodes;
-    
+    private List<MetadataColumn> columnNodes;
+    private RepositoryNode repositorynode;
     /**
      * DOC dev MetadataRefreshAction constructor comment.
      * @param selectionProvider
@@ -69,6 +72,7 @@ public class MetadataRefreshAction  extends SelectionProviderAction {
     public MetadataRefreshAction(ISelectionProvider selectionProvider) {
         super(selectionProvider, "");
         this.selectionProvider = selectionProvider;
+        columnNodes = new ArrayList<MetadataColumn>();
         init();
     }
 
@@ -86,10 +90,8 @@ public class MetadataRefreshAction  extends SelectionProviderAction {
      */
     @Override
     public void run() {
-        for (ColumnNode columnNode : columnNodes) {
-            TableNode tableNode = (TableNode) columnNode.getParent();
-            SessionTreeNode session = tableNode.getSession();
-            RepositoryNode repositorynode = session.getRepositoryNode();
+        for (MetadataColumn columnNode : columnNodes) {
+            MetadataTable tableNode = (MetadataTable) columnNode.getTable();
             if (repositorynode != null) {
                 IRepositoryObject repositoryObject = repositorynode.getObject();
                 DatabaseConnectionItem item = (DatabaseConnectionItem) repositoryObject.getProperty().getItem();
@@ -105,12 +107,13 @@ public class MetadataRefreshAction  extends SelectionProviderAction {
      * @param columnNode selected columnNode
      * @param item selected DatabaseConnectionItem
      */
-    private void saveMetadataColumn(TableNode tableNode, ColumnNode columnNode
+    private void saveMetadataColumn(MetadataTable tableNode, MetadataColumn columnNode
             , DatabaseConnectionItem item) {
         modifyMetadataColumn(tableNode, columnNode, item);
         saveMetaData(item);
-        columnNode.getParent().refresh();
-        ((TreeViewer) selectionProvider).refresh(columnNode.getParent());
+//        columnNode.getTable().ge;
+//        ((TreeViewer) selectionProvider).refresh(columnNode.getParent());
+        ((TreeViewer) selectionProvider).refresh(tableNode,true);
     }
     /**
      * 
@@ -119,48 +122,51 @@ public class MetadataRefreshAction  extends SelectionProviderAction {
      * @param columnNode selected columnNode
      * @param item selected DatabaseConnectionItem
      */
-    private void modifyMetadataColumn(TableNode tableNode, ColumnNode columnNode,
+    private void modifyMetadataColumn(MetadataTable tableNode, MetadataColumn columnNode,
             DatabaseConnectionItem item) {
         IMetadataConnection iMetadataConnection = ConvertionHelper.convert((DatabaseConnection) item.getConnection());
         List<MetadataColumn> metadataColumns = new ArrayList<MetadataColumn>();
         metadataColumns = ExtractMetaDataFromDataBase
-        .returnMetadataColumnsFormTable(iMetadataConnection, tableNode.getLabelText().replace("-", "_"));
+        .returnMetadataColumnsFormTable(iMetadataConnection, tableNode.getSourceName());
         Iterator iterate = metadataColumns.iterator();
         while (iterate.hasNext()) {
             MetadataColumn metadataColumn = (MetadataColumn) iterate.next();
-            if (metadataColumn.getLabel().equals(columnNode.getLabelText())) {
-                EList columns = getRepositoryMetadataColumns(tableNode, (DatabaseConnection) item.getConnection()); 
-                for (int i = 0, size = columns.size(); i < size; i++) {
-                    MetadataColumn column = (MetadataColumn) columns.get(i);
-                    if (column.getLabel().equals(columnNode.getLabelText())) {
-                        column.setComment(metadataColumn.getComment());
-                        column.setDefaultValue(metadataColumn.getDefaultValue());
-                        column.setKey(metadataColumn.isKey());
-                        column.setLength(metadataColumn.getLength());
-                        column.setNullable(metadataColumn.isNullable());
-                        column.setPrecision(metadataColumn.getPrecision());
-                        column.setSourceType(metadataColumn.getSourceType());
-                        column.setTalendType(metadataColumn.getTalendType());
-                        column.setDivergency(true);
-                    }
-                }
+            if (metadataColumn.getLabel().equals(columnNode.getOriginalField())) {
+//                EList columns = tableNode.getColumns(); 
+//                for (int i = 0, size = columns.size(); i < size; i++) {
+//                    MetadataColumn column = (MetadataColumn) columns.get(i);
+//                    if (column.getLabel().equals(columnNode.getOriginalField())) {
+            	if (columnNode.getLabel().equals("")) {
+            		columnNode.setLabel(columnNode.getOriginalField());
+            	}
+                columnNode.setComment(metadataColumn.getComment());
+                columnNode.setDefaultValue(metadataColumn.getDefaultValue());
+                columnNode.setKey(metadataColumn.isKey());
+                columnNode.setLength(metadataColumn.getLength());
+                columnNode.setNullable(metadataColumn.isNullable());
+                columnNode.setPrecision(metadataColumn.getPrecision());
+                columnNode.setSourceType(metadataColumn.getSourceType());
+                columnNode.setTalendType(metadataColumn.getTalendType());
+                columnNode.setDivergency(false);
+                columnNode.setSynchronised(true);
+//                    }
+//                }
             }
         }
-        
     }
     
-    /**
-     * DOC dev Comment method "getRepositoryMetadataColumns".
-     * @param tableNode
-     * @param connection
-     * @return
-     */
-    @SuppressWarnings({ "unchecked", "deprecation" })
-    private EList getRepositoryMetadataColumns(TableNode tableNode, DatabaseConnection connection){
-        String metadataTableLabel = (String) tableNode.getRepositoryName();
-        MetadataTable metadataTable =  TableHelper.findByLabel(connection, metadataTableLabel);
-        return metadataTable.getColumns();
-    }
+//    /**
+//     * DOC dev Comment method "getRepositoryMetadataColumns".
+//     * @param tableNode
+//     * @param connection
+//     * @return
+//     */
+//    @SuppressWarnings({ "unchecked", "deprecation" })
+//    private EList getRepositoryMetadataColumns(TableNode tableNode, DatabaseConnection connection){
+//        String metadataTableLabel = (String) tableNode.getRepositoryName();
+//        MetadataTable metadataTable =  TableHelper.findByLabel(connection, metadataTableLabel);
+//        return metadataTable.getColumns();
+//    }
     /**
      * DOC dev Comment method "saveMetaData".
      * @param item
@@ -211,15 +217,17 @@ public class MetadataRefreshAction  extends SelectionProviderAction {
     public void init() {
         
         IStructuredSelection selection = (IStructuredSelection) selectionProvider.getSelection();
-        columnNodes = new ArrayList<ColumnNode>();
+        
         boolean flag = true;
         for (Object object : selection.toList()) {
-            if (!(object instanceof ColumnNode)) {
-                this.setEnabled(false);
-                return  ;
+            if (!((RepositoryNode) object).getProperties(EProperties.CONTENT_TYPE).equals(RepositoryNodeType.COLUMN)) {
+            		this.setEnabled(false);
+                    return ;
             }
-            ColumnNode col = (ColumnNode) object;
-            if (!col.isSameToColumn()) {
+            MetadataColumn col = ((DBTreeProvider.MetadataColumnRepositoryObject) ((RepositoryNode) object).getObject()).getColumn();
+            if (col.isDivergency()) {
+            	this.setEnabled(true);
+            	repositorynode = (RepositoryNode) object;
                 flag = false;
                 columnNodes.add(col);
             }

@@ -122,7 +122,7 @@ public class SQLBuilderRepositoryNodeManager {
         return oldNode;
     }
 
-    public RepositoryNode getRepositoryNodeByBuildIn(ConnectionParameters parameters) {
+    public RepositoryNode getRepositoryNodeByBuildIn(RepositoryNode node,ConnectionParameters parameters) {
 		DatabaseConnection connection = ConnectionFactory.eINSTANCE.createDatabaseConnection();
 		connection.setDatasourceName(parameters.getDatasource());
 		connection.setURL(parameters.getURL());
