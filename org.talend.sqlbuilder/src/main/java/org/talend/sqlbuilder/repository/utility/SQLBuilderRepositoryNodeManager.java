@@ -42,6 +42,7 @@ import org.talend.core.model.metadata.builder.connection.Query;
 import org.talend.core.model.metadata.builder.database.ExtractMetaDataFromDataBase;
 import org.talend.core.model.metadata.builder.database.ExtractMetaDataUtils;
 import org.talend.core.model.properties.DatabaseConnectionItem;
+import org.talend.core.model.properties.ItemState;
 import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.IRepositoryObject;
@@ -149,17 +150,7 @@ public class SQLBuilderRepositoryNodeManager {
     
     @SuppressWarnings("unchecked")
 	public RepositoryNode getRepositoryNodeByBuildIn(RepositoryNode node, ConnectionParameters parameters) {
-		DatabaseConnection connection = ConnectionFactory.eINSTANCE.createDatabaseConnection();
-		connection.setDatabaseType(parameters.getDbType());
-		connection.setUsername(parameters.getUserName());
-		connection.setPort(parameters.getPort());
-		connection.setPassword(parameters.getPassword());
-		connection.setSID(parameters.getDbName());
-		connection.setLabel(parameters.getDbName());
-		connection.setDatasourceName(parameters.getDatasource());
-//		connection.setComment("");
-		connection.setURL(parameters.getURL());
-		connection.setDriverClass(ExtractMetaDataUtils.getDriverClassByDbType(parameters.getDbType()));
+		DatabaseConnection connection = createConnection(parameters);
 		IMetadataConnection iMetadataConnection = ConvertionHelper.convert(connection);
 		boolean status = new ManagerConnection().check(iMetadataConnection);
         connection.setDivergency(!status);
@@ -189,9 +180,34 @@ public class SQLBuilderRepositoryNodeManager {
          item.setProperty(connectionProperty);
          item.setConnection(connection);
          RepositoryObject object = new RepositoryObject(connectionProperty);
+         object.setLabel("");
+         ItemState state = PropertiesFactory.eINSTANCE.createItemState();
+         state.setDeleted(false);
+         item.setState(state);
 //         node.getObject().getProperty().setItem(item);
          RepositoryNode newNode = new RepositoryNode(object, node, ENodeType.SYSTEM_FOLDER);
+         
     	return newNode;
+	}
+
+	/**
+	 * DOC dev Comment method "getConnection".
+	 * @param parameters
+	 * @return
+	 */
+	private DatabaseConnection createConnection(ConnectionParameters parameters) {
+		DatabaseConnection connection = ConnectionFactory.eINSTANCE.createDatabaseConnection();
+		connection.setDatabaseType(parameters.getDbType());
+		connection.setUsername(parameters.getUserName());
+		connection.setPort(parameters.getPort());
+		connection.setPassword(parameters.getPassword());
+		connection.setSID(parameters.getDbName());
+		connection.setLabel(parameters.getDbName());
+		connection.setDatasourceName(parameters.getDatasource());
+//		connection.setComment("");
+		connection.setURL(parameters.getURL());
+		connection.setDriverClass(ExtractMetaDataUtils.getDriverClassByDbType(parameters.getDbType()));
+		return connection;
 	}
     /**
      * DOC dev Comment method "getItem".
@@ -302,7 +318,7 @@ public class SQLBuilderRepositoryNodeManager {
             for (MetadataTable emf : metaFromEMF) {
                 if (db.getSourceName().equals(emf.getSourceName())) {
                     flag = false;
-                    if (emf.getLabel().equals(db.getSourceName())) {
+                    if (emf.getLabel().equals(db.getSourceName().replaceAll("_", "-"))) {
                         emf.setDivergency(false);
                     } else {
                         emf.setDivergency(true);
