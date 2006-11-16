@@ -312,6 +312,18 @@ public class SQLBuilderRepositoryNodeManager {
     @SuppressWarnings("unchecked")
 	private void fixedTables(List<MetadataTable> metaFromDB, List<MetadataTable> metaFromEMF, IMetadataConnection iMetadataConnection) {
 
+    	for (MetadataTable emf : metaFromEMF) {
+        	boolean flag = true;
+			for (MetadataTable db : metaFromDB) {
+				if (db.getSourceName().equals(emf.getSourceName())) {
+					flag = false;
+					break;
+				}
+			}
+			if (flag) {
+				emf.setDivergency(true);
+			}
+		}
         while (!metaFromDB.isEmpty()) {
             boolean flag = true;
             MetadataTable db = metaFromDB.remove(0);
@@ -349,13 +361,28 @@ public class SQLBuilderRepositoryNodeManager {
      * @param cloumnsFromEMF MetadataColumn from Emf
      */
     private void fixedColumns(List<MetadataColumn> columnsFromDB, List<MetadataColumn> cloumnsFromEMF) {
-        while (!columnsFromDB.isEmpty()) {
+        for (MetadataColumn emf : cloumnsFromEMF) {
+        	boolean flag = true;
+			for (MetadataColumn db : columnsFromDB) {
+				 
+				if (db.getOriginalField().equals(emf.getOriginalField())) {
+					flag = false;
+					break;
+				}
+			}
+			if (flag) {
+				emf.setDivergency(true);
+			}
+		}
+    	while (!columnsFromDB.isEmpty()) {
             boolean flag = true;
             MetadataColumn db = columnsFromDB.remove(0);
             for (MetadataColumn emf : cloumnsFromEMF) {
                 if (db.getOriginalField().equals(emf.getOriginalField())) {
                     flag = false;
-                    emf.setDivergency(!isEquivalent(db, emf));
+                    boolean is = !isEquivalent(db, emf);
+                    emf.setDivergency(is);
+                    emf.setSynchronised(is);
                 }
             }
             if (flag) {
@@ -365,6 +392,7 @@ public class SQLBuilderRepositoryNodeManager {
                 cloumnsFromEMF.add(column);
             }
         }
+        
     }
 
     /**
