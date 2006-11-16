@@ -1,0 +1,111 @@
+<!-- $Id: tLDIFOut.xml 291 2006-11-01 07:34:12Z nrousseau $ -->
+<COMPONENT>
+  <HEADER
+    PLATEFORM="ALL"
+    SERIAL=""
+    VERSION="0.101"
+    STATUS="ALPHA"
+    ICON="tLDIFOut.png"
+    COMPATIBILITY="ALL"
+    AUTHOR="Talend"
+    RELEASE_DATE="20050320A"
+    STARTABLE="false"
+    SCHEMA_AUTO_PROPAGATE="true"
+  >
+    <SIGNATURE></SIGNATURE>
+  </HEADER>
+
+  <DOCUMENTATION>
+    <URL/>
+  </DOCUMENTATION>
+
+  <CONNECTORS>
+    <CONNECTOR CTYPE="FLOW" MAX_INPUT="1"/>
+    <CONNECTOR CTYPE="ITERATE" MAX_OUTPUT="0" MAX_INPUT="0"/>
+    <CONNECTOR CTYPE="BEFORE" MAX_INPUT="1"/>
+    <CONNECTOR CTYPE="AFTER" MAX_INPUT="1"/>
+    <CONNECTOR CTYPE="REFERENCE"/>
+    <CONNECTOR CTYPE="RUN_OK"/>
+    <CONNECTOR CTYPE="RUN_ERROR"/>
+    <CONNECTOR CTYPE="RUN_IF"/>
+  </CONNECTORS>
+
+  <PARAMETERS>
+
+    <PARAMETER
+      NAME="FILENAME"
+      FIELD="FILE"
+      NUM_ROW="2"
+      REQUIRED="true"
+    >
+      <DEFAULT>'C:\talend_files\out.ldif'</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER
+      NAME="WRAP"
+      FIELD="TEXT"
+      NUM_ROW="3"
+    >
+      <DEFAULT>78</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER
+      NAME="CHANGETYPE"
+      FIELD="CLOSED_LIST"
+      NUM_ROW="4"
+    >
+      <ITEMS DEFAULT="modify">
+        <ITEM NAME="ADD"    VALUE="add"    />
+        <ITEM NAME="MODIFY" VALUE="modify" />
+        <ITEM NAME="DELETE" VALUE="delete" />
+      </ITEMS>
+    </PARAMETER>
+
+    <PARAMETER
+      NAME="CHANGES"
+      FIELD="CLOSED_LIST"
+      NUM_ROW="4"
+      SHOW_IF="CHANGETYPE=='MODIFY'"
+    >
+      <ITEMS DEFAULT="add">
+        <ITEM NAME="ADD"     VALUE="add"     />
+        <ITEM NAME="REPLACE" VALUE="replace" />
+        <ITEM NAME="DELETE"  VALUE="delete"  />
+      </ITEMS>
+    </PARAMETER>
+
+    <PARAMETER
+      NAME="SCHEMA"
+      FIELD="SCHEMA_TYPE"
+      REQUIRED="true"
+      NUM_ROW="5"
+    >
+      <DEFAULT/> 
+    </PARAMETER>
+
+    <PARAMETER
+      NAME="ENCODING"
+      FIELD="TEXT"
+      NUM_ROW="6"
+      REQUIRED="true"
+    >
+      <DEFAULT>'ISO-8859-15'</DEFAULT>
+    </PARAMETER>
+
+  </PARAMETERS>
+
+  <CODEGENERATION>
+    <TEMPLATES>
+      <TEMPLATE MULTIPLE_METHODS="true"/>
+    </TEMPLATES>
+
+    <IMPORTS>
+      <IMPORT NAME="Net_LDAP_LDIF" MODULE="Net::LDAP::LDIF" REQUIRED="true" />
+    </IMPORTS>
+  </CODEGENERATION>
+
+  <RETURNS>
+    <RETURN NAME="NB_LINE" TYPE="INTEGER" AVAILABILITY="AFTER"/>
+  </RETURNS>
+
+</COMPONENT>

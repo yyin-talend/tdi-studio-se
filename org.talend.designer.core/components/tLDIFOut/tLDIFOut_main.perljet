@@ -1,0 +1,99 @@
+<%@ jet 
+package="org.talend.designer.codegen.translators" 
+imports="
+    org.talend.core.model.process.INode 
+    org.talend.core.model.process.ElementParameterParser
+    org.talend.core.model.metadata.IMetadataTable
+    org.talend.core.model.metadata.IMetadataColumn
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    java.util.List
+"
+class="LDIFOutMain"
+%>
+
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+boolean stats = codeGenArgument.isStatistics();
+
+List<IMetadataTable> metadatas = node.getMetadataList();
+if ((metadatas!=null)&&(metadatas.size()>0)) {
+    IMetadataTable metadata = metadatas.get(0);
+    if (metadata!=null) {
+        String cid = metadata.getTableName();
+        String changetype = ElementParameterParser.getValue(node, "__CHANGETYPE__");
+        String changes = ElementParameterParser.getValue(node, "__CHANGES__");
+%>
+
+if (@<%=cid %>) {
+    {
+        my $entry = Net::LDAP::Entry->new;
+
+        $entry->changetype($desc_<%=cid %>{changetype});
+
+        $entry->dn($<%=cid %>[<%=cid %>__dn]);
+
+<%
+        if (changetype.equals("delete")) {
+%>
+        $entry->delete();
+<%
+        }
+        else if (changetype.equals("add")) {
+%>
+        $entry->add(
+<%
+        }
+        else if (changetype.equals("modify")) {
+            if (changes.equals("add")) {
+%>
+        $entry->add(
+<%
+            }
+            else if (changes.equals("replace")) {
+%>
+        $entry->replace(
+<%
+            }
+            else if (changes.equals("delete")) {
+%>
+        $entry->delete(
+<%
+            }
+        }
+%>
+<%
+        if (!changetype.equals("delete")) {
+            for (IMetadataColumn column: metadata.getListColumns()) {
+                String colname = column.getLabel();
+
+                if (!colname.equals("dn")) {
+%>
+            <%=colname %> => ref $<%=cid %>[<%=cid %>__<%=colname %>] eq 'ARRAY' ? $<%=cid %>[<%=cid %>__<%=colname %>] : [$<%=cid %>[<%=cid %>__<%=colname %>]],
+<%
+                }
+            }
+%>
+        );
+<%
+        }
+%>
+
+        $ldif_<%=cid %>->write_entry($entry);
+    }
+
+    $nb_line_<%=cid %>++;
+
+<%
+        if (stats) {
+%>
+    UpdateStat('<%=cid %>', 1);
+<%
+        }
+%>
+}
+    
+<%
+    }
+}
+%>
