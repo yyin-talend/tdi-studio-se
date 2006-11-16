@@ -72,6 +72,6 @@ public class SaveSQLAction extends AbstractEditorAction {
      * @see org.talend.sqlbuilder.actions.AbstractEditorAction#run()
      */
     public void run() {
-       editor.doSaveSQL();
+       //editor.doSaveSQL();
     };
 }
