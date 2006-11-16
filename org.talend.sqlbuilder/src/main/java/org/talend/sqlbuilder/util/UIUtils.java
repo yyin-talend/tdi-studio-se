@@ -99,14 +99,17 @@ public class UIUtils {
         shell.setEnabled(false);
         shell.setCursor(cursor);
         IRunnableWithProgress progress = new IRunnableWithProgress() {
+
             public void run(final IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
                 // monitor.beginTask("test task", scale * total);
                 // SubProgressMonitor sm = new SubProgressMonitor(monitor, 1 * scale);
                 Thread t = new Thread() {
+
                     public void run() {
                         try {
                             operation.run(monitor);
                         } catch (Exception e) {
+                            SqlBuilderPlugin.log("error occurs", e);
                         }
                     }
                 };
