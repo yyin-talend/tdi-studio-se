@@ -31,7 +31,7 @@ public enum ImageInfo {
 
     MINIMIZE_ICON("/icons/collapse16.png"),
     RESTORE_ICON("/icons/uncollapse16.png"),
-    MAPPER_ICON("/icons/tMap32.ico"),
+    // MAPPER_ICON("/icons/tMap32.ico"),
     ADD_CONSTRAINT_ICON("/icons/add_constraint16.png"),
     REMOVE_CONSTRAINT_ICON("/icons/remove_constraint16.png"),
     CHECKED_ICON("/icons/checked.png"),

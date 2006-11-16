@@ -51,7 +51,7 @@ public interface IRepositoryFactory {
     public void setRepositoryContext(RepositoryContext repositoryContext);
 
     public void initialize();
-    
+
     public String getNextId();
 
     public Project createProject(String label, String description, ECodeLanguage language, User author)
@@ -60,7 +60,7 @@ public interface IRepositoryFactory {
     public boolean findUser(Project project, RepositoryContext repositoryContext) throws PersistenceException;
 
     public void createUser(Project project, RepositoryContext repositoryContext) throws PersistenceException;
-    
+
     public Project[] readProject() throws PersistenceException;
 
     public Folder createFolder(ERepositoryObjectType type, IPath path, String label) throws PersistenceException;
@@ -141,6 +141,8 @@ public interface IRepositoryFactory {
 
     public boolean isDeleted(IRepositoryObject obj) throws PersistenceException;
 
+    public boolean isDeleted(Item item) throws PersistenceException;
+
     public String getOldPath(IRepositoryObject obj) throws PersistenceException;
 
     /**
@@ -157,6 +159,8 @@ public interface IRepositoryFactory {
     public void moveObject(IRepositoryObject objToMove, IPath newPath) throws PersistenceException;
 
     public boolean isLocked(IRepositoryObject obj) throws PersistenceException;
+
+    public boolean isLocked(Item item) throws PersistenceException;
 
     public User getLocker(IRepositoryObject obj) throws PersistenceException;
 
@@ -189,10 +193,6 @@ public interface IRepositoryFactory {
     public void save(Property property) throws PersistenceException;
 
     public Item copy(Item item, IPath path) throws PersistenceException;
-
-    public boolean isLocked(Item item) throws PersistenceException;
-
-    public boolean isDeleted(Item item) throws PersistenceException;
 
     /**
      * DOC mhelleboid Comment method "cancel".

@@ -90,7 +90,7 @@ import org.talend.commons.ui.utils.TableUtils;
 import org.talend.commons.ui.ws.WindowSystem;
 import org.talend.commons.utils.threading.AsynchronousThreading;
 import org.talend.commons.utils.threading.ExecutionLimiter;
-import org.talend.core.ui.ImageProvider.EImage;
+import org.talend.core.ui.EImage;
 import org.talend.core.ui.proposal.ProcessProposalProvider;
 import org.talend.designer.mapper.MapperMain;
 import org.talend.designer.mapper.managers.MapperManager;
@@ -366,10 +366,10 @@ public abstract class DataMapTableView extends Composite {
         if (getDataMapTable() instanceof AbstractInOutTable) {
 
             if (imageKey == null) {
-                imageKey = org.talend.core.ui.ImageProvider.getImage(EImage.KEY16);
+                imageKey = org.talend.core.ui.ImageProvider.getImage(EImage.KEY_ICON);
             }
             if (imageEmpty == null) {
-                imageEmpty = org.talend.core.ui.ImageProvider.getImage(EImage.TRANSPARENT16x16);
+                imageEmpty = org.talend.core.ui.ImageProvider.getImage(EImage.EMPTY);
             }
         }
         tableViewerCreatorForColumns.setLabelProvider(new DefaultTableLabelProvider(tableViewerCreatorForColumns) {

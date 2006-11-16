@@ -24,11 +24,14 @@ package org.talend.designer.mapper;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
+import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IODataComponent;
 import org.talend.core.model.components.IODataComponentContainer;
 import org.talend.core.model.metadata.IMetadataTable;
@@ -102,8 +105,12 @@ public class MapperMain {
     public Shell createUI(Display display) {
         Shell shell = new Shell(display, SWT.APPLICATION_MODAL | SWT.BORDER | SWT.RESIZE | SWT.CLOSE | SWT.MIN
                 | SWT.MAX | SWT.TITLE);
+        IComponent component = connector.getComponent();
+        ImageDescriptor imageDescriptor = component.getImageDescriptor();
+        Image createImage = imageDescriptor.createImage();
         // Shell shell = new Shell(display);
-        shell.setImage(ImageProviderMapper.getImage(ImageInfo.MAPPER_ICON));
+//        shell.setImage(ImageProviderMapper.getImage(ImageInfo.MAPPER_ICON));
+        shell.setImage(createImage);
         shell.setText("Talend Open Studio - tMapper - " + connector.getUniqueName());
         ExternalMapperUiProperties uiProperties = mapperManager.getUiManager().getUiProperties();
         Rectangle boundsMapper = uiProperties.getBoundsMapper();

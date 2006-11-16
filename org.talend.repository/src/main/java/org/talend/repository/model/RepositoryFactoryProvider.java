@@ -62,14 +62,14 @@ public class RepositoryFactoryProvider {
      * Returns a IRepositoryFactory based on the default context.
      */
     public static IRepositoryFactory getInstance() {
-        init();
         RepositoryContext repositoryContext = (RepositoryContext) CorePlugin.getContext().getProperty(
                 Context.REPOSITORY_CONTEXT_KEY);
+        init(repositoryContext);
         return getInstance(repositoryContext);
     }
 
     public static IRepositoryFactory getInstance(RepositoryContext repositoryContext) {
-        init();
+        init(repositoryContext);
         IRepositoryFactory toReturn = null;
         if (repositoryContext.getType() == ERepositoryType.LOCAL) {
             toReturn = localSingleton;
@@ -82,7 +82,7 @@ public class RepositoryFactoryProvider {
         return toReturn;
     }
 
-    private static void init() {
+    private static void init(RepositoryContext repositoryContext) {
         if (!init) {
             List<IRepositoryFactory> factoriesFromProvider = ExtensionImplementationProviders
                     .getInstance(ExtensionPointFactory.REPOSITORY_PROVIDER);
@@ -91,14 +91,20 @@ public class RepositoryFactoryProvider {
                 ERepositoryType type = repositoryFactory.getType();
                 switch (type) {
                 case LOCAL:
-                    localSingleton = repositoryFactory;
+                    localSingleton = new RepositoryFactoryImpl(repositoryFactory);
+                    localSingleton.setRepositoryContext(repositoryContext);
+                    localSingleton.initialize();
                     init = true;
                     break;
                 case REMOTE:
-                    remoteSingleton = repositoryFactory;
+                    remoteSingleton = new RepositoryFactoryImpl(repositoryFactory);
+                    remoteSingleton.setRepositoryContext(repositoryContext);
+                    remoteSingleton.initialize();
                     break;
                 case DATABASE:
-                    databaseSingleton = repositoryFactory;
+                    databaseSingleton = new RepositoryFactoryImpl(repositoryFactory);
+                    databaseSingleton.setRepositoryContext(repositoryContext);
+                    databaseSingleton.initialize();
                     break;
                 }
             }

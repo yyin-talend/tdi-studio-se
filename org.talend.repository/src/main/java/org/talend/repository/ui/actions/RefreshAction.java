@@ -22,8 +22,8 @@
 package org.talend.repository.ui.actions;
 
 import org.eclipse.jface.action.Action;
+import org.talend.core.ui.EImage;
 import org.talend.core.ui.ImageProvider;
-import org.talend.core.ui.ImageProvider.EImage;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.ui.views.IRepositoryView;
 

@@ -56,6 +56,8 @@ import org.talend.commons.exception.MessageBoxExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.model.process.IProcess;
+import org.talend.core.ui.EImage;
+import org.talend.core.ui.ImageProvider;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.editor.ProcessEditorInput;
 import org.talend.designer.core.ui.editor.TalendEditor;
@@ -164,6 +166,7 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
      * Creates the pages of the multi-page editor.
      */
     protected void createPages() {
+        setTitleImage(ImageProvider.getImage(EImage.PROCESS_ICON));
         createPage0();
         createPage1();
     }

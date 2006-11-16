@@ -33,8 +33,8 @@ import org.talend.core.model.general.Version;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.Property;
+import org.talend.core.ui.EImage;
 import org.talend.core.ui.ImageProvider;
-import org.talend.core.ui.ImageProvider.EImage;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
 import org.talend.designer.core.model.utils.emf.talendfile.TalendFileFactory;
@@ -80,7 +80,7 @@ public class NewProcessWizard extends Wizard {
 
         processItem.setProperty(property);
 
-        setDefaultPageImageDescriptor(ImageProvider.getImageDesc(EImage.PROCESS_WIZ));
+    //    setDefaultPageImageDescriptor(ImageProvider.getImageDesc(EImage.PROCESS_WIZ));
     }
 
     /**

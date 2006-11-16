@@ -280,6 +280,10 @@ public abstract class ShadowNode implements INode {
         return null;
     }
 
+    public void setComponent(IComponent component) {
+
+    }
+
     /*
      * (non-Javadoc)
      * 

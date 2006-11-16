@@ -547,6 +547,7 @@ public class Node extends Element implements INode {
             externalNode.setUniqueName(getUniqueName());
             externalNode.setSubProcessStart(isSubProcessStart());
             externalNode.setProcess(getProcess());
+            externalNode.setComponent(getComponent());
         }
         return this.externalNode;
     }
@@ -1071,6 +1072,10 @@ public class Node extends Element implements INode {
 
     public IComponent getComponent() {
         return this.component;
+    }
+
+    public void setComponent(IComponent component) {
+        this.component = component;
     }
 
     /**

@@ -8,17 +8,17 @@
             class="org.talend.designer.core.ui.MultiPageTalendEditor"
             contributorClass="org.talend.designer.core.ui.MultiPageEditorContributor"
             extensions="tl2"
-            icon="icons/designer.ico"
+            icon="icons/empty.gif"
             id="org.talend.designer.core.ui.MultiPageTalendEditor"
             name="Designer">
       </editor>
       <editor
-            name="Epic Perl Editor"
-            icon="icons/epic.gif"
-            extensions="pl, ipl, pm, cgi, epl"
-            contributorClass="org.epic.perleditor.editors.PerlActionContributor"
             class="org.talend.designer.core.ui.editor.StandAloneTalendPerlEditor"
-            id="org.talend.designer.core.ui.editor.StandAloneTalendPerlEditor">
+            contributorClass="org.epic.perleditor.editors.PerlActionContributor"
+            extensions="pl, ipl, pm, cgi, epl"
+            icon="icons/epic.gif"
+            id="org.talend.designer.core.ui.editor.StandAloneTalendPerlEditor"
+            name="Epic Perl Editor">
       </editor> 
    </extension>
    <extension  point="org.eclipse.ui.startup">

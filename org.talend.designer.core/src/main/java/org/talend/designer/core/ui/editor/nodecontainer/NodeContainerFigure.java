@@ -33,6 +33,8 @@ import org.eclipse.draw2d.geometry.Rectangle;
 import org.talend.commons.utils.workbench.gef.SimpleHtmlFigure;
 import org.talend.core.CorePlugin;
 import org.talend.core.model.process.Problem.ProblemStatus;
+import org.talend.core.ui.EImage;
+import org.talend.core.ui.ImageProvider;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.nodes.NodeLabel;
 import org.talend.designer.core.ui.editor.nodes.NodePerformance;
@@ -73,15 +75,11 @@ public class NodeContainerFigure extends Figure {
 
     private static final String BREAKPOINT_IMAGE = "icons/breakpoint.png";
 
-    private static final String ERROR_IMAGE = "icons/error_tsk.gif";
-
-    private static final String WARNING_IMAGE = "icons/warn_tsk.gif";
-
     public NodeContainerFigure(NodeContainer nodeContainer) {
         this.nodeContainer = nodeContainer;
         this.setLayoutManager(new FreeformLayout());
-//        this.setOpaque(true);
-//        this.setBackgroundColor(new Color(null, new RGB(200, 100, 200)));
+        // this.setOpaque(true);
+        // this.setBackgroundColor(new Color(null, new RGB(200, 100, 200)));
 
         breakpointFigure = new ImageFigure();
         breakpointFigure.setImage(CorePlugin.getImageDescriptor(BREAKPOINT_IMAGE).createImage());
@@ -92,20 +90,18 @@ public class NodeContainerFigure extends Figure {
                 .getImageData().height);
 
         errorFigure = new ImageFigure();
-        errorFigure.setImage(CorePlugin.getImageDescriptor(ERROR_IMAGE).createImage());
+        errorFigure.setImage(ImageProvider.getImage(EImage.ERROR_SMALL));
         errorFigure.setVisible(false);
         errorFigure.setSize(errorFigure.getPreferredSize());
         this.add(errorFigure);
-        errorSize = new Dimension(errorFigure.getImage().getImageData().width,
-                errorFigure.getImage().getImageData().height);
+        errorSize = new Dimension(errorFigure.getImage().getImageData().width, errorFigure.getImage().getImageData().height);
 
         warningFigure = new ImageFigure();
-        warningFigure.setImage(CorePlugin.getImageDescriptor(WARNING_IMAGE).createImage());
+        warningFigure.setImage(ImageProvider.getImage(EImage.WARNING_SMALL));
         warningFigure.setVisible(false);
         warningFigure.setSize(warningFigure.getPreferredSize());
         this.add(warningFigure);
-        warningSize = new Dimension(warningFigure.getImage().getImageData().width, warningFigure.getImage()
-                .getImageData().height);
+        warningSize = new Dimension(warningFigure.getImage().getImageData().width, warningFigure.getImage().getImageData().height);
 
         htmlStatusHint = new SimpleHtmlFigure();
     }

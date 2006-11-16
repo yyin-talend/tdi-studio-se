@@ -41,9 +41,10 @@ import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
-import org.talend.core.CorePlugin;
 import org.talend.core.model.process.Problem;
 import org.talend.core.model.process.Problem.ProblemStatus;
+import org.talend.core.ui.EImage;
+import org.talend.core.ui.ImageProvider;
 import org.talend.designer.core.ui.MultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.nodes.NodePart;
@@ -69,19 +70,13 @@ public class ProblemsView extends ViewPart {
 
     private static final String WARNINGS_TEXT = "Warnings";
 
-    private static final String ERROR_IMAGE = "icons/error_tsk.gif";
-
-    private static final String WARNING_IMAGE = "icons/warn_tsk.gif";
-
-    private static final String HIERARCHICAL_IMAGE = "icons/hierarchicalLayout.gif";
-
     public ProblemsView() {
 
         warningsMap = new HashMap<Problem, TreeItem>();
         errorsMap = new HashMap<Problem, TreeItem>();
 
-        warningImage = CorePlugin.getImageDescriptor(WARNING_IMAGE).createImage();
-        errorImage = CorePlugin.getImageDescriptor(ERROR_IMAGE).createImage();
+        warningImage = ImageProvider.getImage(EImage.WARNING_SMALL);
+        errorImage = ImageProvider.getImage(EImage.ERROR_SMALL);
 
         setPartName("");
     }
@@ -133,9 +128,9 @@ public class ProblemsView extends ViewPart {
 
         warningItem = new TreeItem(tree, SWT.NONE);
         warningItem.setText(new String[] { WARNINGS_TEXT + " (0)", "" });
-        warningItem.setImage(CorePlugin.getImageDescriptor(HIERARCHICAL_IMAGE).createImage());
+        warningItem.setImage(ImageProvider.getImage(EImage.HIERARCHY_ICON));
         errorItem = new TreeItem(tree, SWT.NONE);
-        errorItem.setImage(CorePlugin.getImageDescriptor(HIERARCHICAL_IMAGE).createImage());
+        errorItem.setImage(ImageProvider.getImage(EImage.HIERARCHY_ICON));
         errorItem.setText(new String[] { ERRORS_TEXT + " (0)", "" });
 
         Problems.refreshView(this);
