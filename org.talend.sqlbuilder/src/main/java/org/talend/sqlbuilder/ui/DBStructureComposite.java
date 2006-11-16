@@ -37,6 +37,8 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.layout.GridData;
@@ -175,12 +177,48 @@ public class DBStructureComposite extends Composite {
 
         tree.setHeaderVisible(true);
 
+        treeViewer.addFilter(filter);
         treeViewer.setInput(new RepositoryNode(null, null, ENodeType.SYSTEM_FOLDER));
         addContextMenu();
 
     }
 
+    private ViewerFilter filter = new ViewerFilter() {
+        @Override
+        public boolean select(Viewer viewer, Object parentElement, Object element)
+        {
+            if (isShowAllConnections) {
+                return true;
+            }
+            RepositoryNode node = (RepositoryNode) element;
+            if (node.getProperties(EProperties.CONTENT_TYPE) == RepositoryNodeType.FOLDER) {
+                if (isExistChildWithRepositoryNodeName(node, builderDialog.getConnParameters().getRepositoryName())) {
+                    return true;
+                } 
+            } else if (node.getProperties(EProperties.CONTENT_TYPE) == RepositoryNodeType.DATABASE) {
+                if (node.getProperties(RepositoryNode.EProperties.LABEL).equals(builderDialog.getConnParameters().getRepositoryName())) {
+                    return true;
+                }
+            } else {
+                return true;
+            }
+            return false;
+        }
 
+        private boolean isExistChildWithRepositoryNodeName(RepositoryNode folderNode, String repositoryName) {
+            List<RepositoryNode> nodes = folderNode.getChildren();
+            for (RepositoryNode node : nodes) {
+                if (node.getProperties(EProperties.CONTENT_TYPE) == RepositoryNodeType.FOLDER) {
+                    return isExistChildWithRepositoryNodeName(node, repositoryName);
+                } else if (node.getProperties(EProperties.CONTENT_TYPE) == RepositoryNodeType.DATABASE) {
+                    if (node.getProperties(RepositoryNode.EProperties.LABEL).equals(repositoryName)) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        } 
+    };
 
     /**
      * Add context menu.
@@ -287,24 +325,15 @@ public class DBStructureComposite extends Composite {
                     monitor.beginTask("Refresh Connections", -1);
                     
                     if (isChecked()) {
-                        repositoryExtNode.setShowAllConnections(true);
                         isShowAllConnections = true;
-                        SessionTreeNodeUtils.getCatalogNodes().clear();
-                        SessionTreeNodeUtils.getCatalogNodes().addAll(SessionTreeNodeUtils.getCachedAllNodes());
                     } else {
-                        repositoryExtNode.setShowAllConnections(false);
                         isShowAllConnections = false;
-                        SessionTreeNodeUtils.getCatalogNodes().clear();
                     }
-                    RefreshTreeCommand.getInstance().setTreeViewer(treeViewer);
-                    final INode[] currentNodes = 
-                        SessionTreeNodeUtils.getCurrentNodes(isShowAllConnections, rootRepositoryNode, builderDialog.getConnParameters());
+
                     Display.getDefault().asyncExec(new Runnable() {
                         public void run() {
-                            if (treeViewer.getTree() != null && !treeViewer.getTree().isDisposed()) {
-                                ((RepositoryExtNode) treeViewer.getInput()).setChildNodes(currentNodes);
-                                treeViewer.refresh();
-                            }
+                            ((RepositoryNode) treeViewer.getInput()).getChildren().clear();
+                            treeViewer.refresh();
                         }
                     });
                     monitor.done();
@@ -366,7 +395,7 @@ public class DBStructureComposite extends Composite {
     private void doRefresh(final RepositoryNode refreshNode) {
         Display.getDefault().asyncExec(new Runnable() {
             public void run() {
-                if (treeViewer.getTree() != null && treeViewer.getTree().isDisposed()){
+                if (treeViewer.getTree() != null && treeViewer.getTree().isDisposed()) {
                     treeViewer.refresh(refreshNode);
                 }
             }
@@ -425,8 +454,7 @@ public class DBStructureComposite extends Composite {
 
             UIUtils.runWithProgress(r, true, getProgressMonitor(), getShell());
         }
-        protected RepositoryNode getConnectionNode(RepositoryNode node)
-        {
+        protected RepositoryNode getConnectionNode(RepositoryNode node) {
             if (node.getProperties(EProperties.CONTENT_TYPE) == RepositoryNodeType.DATABASE) {
                 return node;
             }

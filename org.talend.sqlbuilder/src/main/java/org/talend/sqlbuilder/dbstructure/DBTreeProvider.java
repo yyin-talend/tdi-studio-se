@@ -44,7 +44,6 @@ import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.Folder;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.model.repository.RepositoryObject;
-import org.talend.core.ui.ImageProvider;
 import org.talend.repository.model.IRepositoryFactory;
 import org.talend.repository.model.RepositoryFactoryProvider;
 import org.talend.repository.model.RepositoryNode;
@@ -63,18 +62,15 @@ import org.talend.sqlbuilder.util.ImageUtil;
  * 
  */
 public class DBTreeProvider extends LabelProvider implements ITableLabelProvider, ITreeContentProvider,
-ITableColorProvider
-{
+ITableColorProvider {
     private SQLBuilderRepositoryNodeManager repositoryNodeManager = new SQLBuilderRepositoryNodeManager();
     private RepositoryContentProvider repositoryContentProvider;
     
-    public DBTreeProvider(RepositoryView repositoryView)
-    {
+    public DBTreeProvider(RepositoryView repositoryView) {
         repositoryContentProvider = new RepositoryContentProvider(repositoryView);
     }
     
-    public Image getColumnImage(Object element, int columnIndex)
-    {
+    public Image getColumnImage(Object element, int columnIndex) {
         if (columnIndex == 1) {
             return null;
         }
@@ -82,8 +78,7 @@ ITableColorProvider
         return ImageUtil.getImage(node.getObject().getPurpose()); 
     }
     
-    public String getColumnText(Object element, int columnIndex)
-    {
+    public String getColumnText(Object element, int columnIndex) {
         RepositoryNode node = (RepositoryNode) element;
         if (columnIndex == 0) {
             return node.getObject().getStatusCode(); 
@@ -94,41 +89,33 @@ ITableColorProvider
         return null;
     }
     
-    public Object[] getChildren(Object parentElement)
-    {
+    public Object[] getChildren(Object parentElement) {
         return repositoryContentProvider.getChildren(parentElement);
     }
 
-    public Object getParent(Object element)
-    {
+    public Object getParent(Object element) {
         return repositoryContentProvider.getParent(element);
     }
 
-    public boolean hasChildren(Object element)
-    {
+    public boolean hasChildren(Object element) {
         return repositoryContentProvider.hasChildren(element);
     }
 
-    public Object[] getElements(Object inputElement)
-    {
+    public Object[] getElements(Object inputElement) {
         if (!(inputElement instanceof RepositoryNode)) {
             return null;
         }
-        RepositoryNode treeRoot = (RepositoryNode)inputElement;
+        RepositoryNode treeRoot = (RepositoryNode) inputElement;
         initialize(treeRoot);
         return treeRoot.getChildren().toArray();
     }
 
-    private void initialize(RepositoryNode treeRoot)
-    {
+    private void initialize(RepositoryNode treeRoot) {
         IRepositoryFactory factory = RepositoryFactoryProvider.getInstance();
         
-        try
-        {
+        try {
             convert(factory.getMetadataConnection(), treeRoot, ERepositoryObjectType.METADATA_CONNECTIONS);
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             SqlBuilderPlugin.log(e.getMessage(), e);
         }
     }
@@ -146,7 +133,8 @@ ITableColorProvider
             oFolder.setLabel(null);
             RepositoryNode folder = new RepositoryNode(oFolder, parent, ENodeType.SIMPLE_FOLDER);
             folder.setProperties(EProperties.LABEL, container.getLabel());
-            folder.setProperties(EProperties.CONTENT_TYPE, RepositoryNodeType.FOLDER);// ERepositoryObjectType.FOLDER);
+            //ERepositoryObjectType.FOLDER);
+            folder.setProperties(EProperties.CONTENT_TYPE, RepositoryNodeType.FOLDER);
             parent.getChildren().add(folder);
             convert(container, folder, type);
         }
@@ -195,7 +183,8 @@ ITableColorProvider
     private void createTables(RepositoryNode node, final IRepositoryObject repObj,
             Connection metadataConnection) {
         for (Object currentTable : metadataConnection.getTables()) {
-            org.talend.core.model.metadata.builder.connection.MetadataTable metadataTable = (org.talend.core.model.metadata.builder.connection.MetadataTable) currentTable;
+            org.talend.core.model.metadata.builder.connection.MetadataTable metadataTable 
+            = (org.talend.core.model.metadata.builder.connection.MetadataTable) currentTable;
             RepositoryNode tableNode = createMetatable(node, repObj, metadataTable);
             if (TableHelper.isDeleted(metadataTable)) {
                 //ignore recycle node
@@ -208,9 +197,8 @@ ITableColorProvider
         }
     }
 
-    private void createColumns(RepositoryNode tableNode, IRepositoryObject repObj, Object currentTable)
-    {
-        for (Object currentColumn : ((MetadataTable)currentTable).getColumns()) {
+    private void createColumns(RepositoryNode tableNode, IRepositoryObject repObj, Object currentTable) {
+        for (Object currentColumn : ((MetadataTable) currentTable).getColumns()) {
             MetadataColumn metadataColumn = (MetadataColumn) currentColumn;
             RepositoryNode columnNode = createMetacolumn(tableNode, repObj, metadataColumn);
 
@@ -218,8 +206,7 @@ ITableColorProvider
         }
     }
 
-    private RepositoryNode createMetacolumn(RepositoryNode tableNode, IRepositoryObject repObj, MetadataColumn metadataColumn)
-    {
+    private RepositoryNode createMetacolumn(RepositoryNode tableNode, IRepositoryObject repObj, MetadataColumn metadataColumn) {
         RepositoryObject modelObj = new MetadataColumnRepositoryObject(repObj, metadataColumn);
         modelObj.setLabel(metadataColumn.getLabel());
         //statusCode use for source table name
@@ -323,14 +310,12 @@ ITableColorProvider
         }
     }
     
-    public void inputChanged(Viewer viewer, Object oldInput, Object newInput)
-    {
+    public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
         
     }
 
-    public Color getBackground(Object element, int columnIndex)
-    {
-        RepositoryNode repositoryNode = (RepositoryNode)element;
+    public Color getBackground(Object element, int columnIndex) {
+        RepositoryNode repositoryNode = (RepositoryNode) element;
         if (repositoryNode.getProperties(EProperties.CONTENT_TYPE) == RepositoryNodeType.DATABASE) {
             DatabaseConnection connection = (DatabaseConnection) ((ConnectionItem) repositoryNode.getObject()
                     .getProperty().getItem()).getConnection();
@@ -357,8 +342,7 @@ ITableColorProvider
         return null;
     }
 
-    public Color getForeground(Object element, int columnIndex)
-    {
+    public Color getForeground(Object element, int columnIndex) {
         return null;
     }
 
