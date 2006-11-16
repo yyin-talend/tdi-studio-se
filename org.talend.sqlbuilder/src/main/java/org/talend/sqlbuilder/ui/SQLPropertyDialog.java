@@ -23,8 +23,9 @@ package org.talend.sqlbuilder.ui;
 
 import java.util.List;
 
-import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.dialogs.IMessageProvider;
+import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -45,13 +46,11 @@ import org.talend.sqlbuilder.Messages;
  * $Id: SaveSQLDialog.java,v 1.0 2006/11/15 05:38:28 ftang Exp $
  * 
  */
-public class SQLPropertyDialog extends Dialog {
+public class SQLPropertyDialog extends TitleAreaDialog {
 
     private Text commentText;
 
     private Text nameText;
-
-    private Label helpMessageLabel;
 
     private List<String> names;
 
@@ -82,32 +81,30 @@ public class SQLPropertyDialog extends Dialog {
      * @see org.eclipse.jface.dialogs.Dialog#createDialogArea(org.eclipse.swt.widgets.Composite)
      */
     protected Control createDialogArea(Composite parent) {
-        Composite container = (Composite) super.createDialogArea(parent);
+        Composite area = (Composite) super.createDialogArea(parent);
+        Composite container = new Composite(area, SWT.NONE);
         final GridLayout gridLayout = new GridLayout();
         gridLayout.numColumns = 2;
         container.setLayout(gridLayout);
+        container.setLayoutData(new GridData(GridData.FILL_BOTH));
 
-        helpMessageLabel = new Label(container, SWT.NONE);
-        helpMessageLabel.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
-        helpMessageLabel.setText(Messages.getString("SQLEditor.Actions.SaveSQL"));
+        this.setTitle(Messages.getString("SQLEditor.Actions.SaveSQL"));
+        this.setMessage(Messages.getString("SQLEditor.Actions.InputMessage"), IMessageProvider.INFORMATION);
 
         final Label nameLabel = new Label(container, SWT.NONE);
-        nameLabel.setLayoutData(new GridData());
         nameLabel.setText(Messages.getString("SQLEditor.SQLPropertyDialog.Name"));
 
         nameText = new Text(container, SWT.BORDER);
         nameText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 
         final Label commentLabel = new Label(container, SWT.NONE);
-        commentLabel.setLayoutData(new GridData());
         commentLabel.setText(Messages.getString("SQLEditor.SQLPropertyDialog.Comment"));
 
         commentText = new Text(container, SWT.BORDER);
         commentText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 
         this.addListener();
-
-        return container;
+        return area;
     }
 
     /*
@@ -116,7 +113,13 @@ public class SQLPropertyDialog extends Dialog {
      * @see org.eclipse.jface.dialogs.Dialog#okPressed()
      */
     protected void okPressed() {
-        // TODO Auto-generated method stub
+
+        if (query == null) {
+
+        } else {
+
+        }
+
         super.okPressed();
     }
 
@@ -126,7 +129,7 @@ public class SQLPropertyDialog extends Dialog {
      * @param parent
      */
     protected void createButtonsForButtonBar(Composite parent) {
-        createButton(parent, IDialogConstants.OK_ID, IDialogConstants.OK_LABEL, true);
+        createButton(parent, IDialogConstants.OK_ID, Messages.getString("SQLEditor.Actions.SaveMessage"), true);
         getButton(IDialogConstants.OK_ID).setEnabled(false);
         createButton(parent, IDialogConstants.CANCEL_ID, IDialogConstants.CANCEL_LABEL, false);
     }
@@ -134,8 +137,9 @@ public class SQLPropertyDialog extends Dialog {
     /**
      * Return the initial size of the dialog
      */
+    @Override
     protected Point getInitialSize() {
-        return new Point(435, 177);
+        return new Point(500, 242);
     }
 
     /**
@@ -163,6 +167,12 @@ public class SQLPropertyDialog extends Dialog {
     /**
      * Adds modify listener.
      */
+    /**
+     * DOC dev Comment method "addListener".
+     */
+    /**
+     * DOC dev Comment method "addListener".
+     */
     private void addListener() {
         nameText.addModifyListener(new ModifyListener() {
 
@@ -174,11 +184,12 @@ public class SQLPropertyDialog extends Dialog {
             public void modifyText(ModifyEvent e) {
                 String result = validate(nameText.getText());
                 if (result == null) {
-                    helpMessageLabel.setText("");
-                    getButton(IDialogConstants.OK_ID).setEnabled(true);
+                    SQLPropertyDialog.this.getButton(IDialogConstants.OK_ID).setEnabled(true);
+                    SQLPropertyDialog.this.setMessage(Messages.getString("SQLEditor.Actions.InputMessage"),
+                            IMessageProvider.INFORMATION);
                 } else {
-                    helpMessageLabel.setText(result);
-                    getButton(IDialogConstants.OK_ID).setEnabled(false);
+                    SQLPropertyDialog.this.setMessage(result, IMessageProvider.ERROR);
+                    SQLPropertyDialog.this.getButton(IDialogConstants.OK_ID).setEnabled(false);
                 }
             }
 
@@ -208,7 +219,8 @@ public class SQLPropertyDialog extends Dialog {
              */
             public void modifyText(ModifyEvent e) {
                 if (commentText.getText().length() == 0) {
-                    helpMessageLabel.setText(Messages.getString("SQLEditor.Actions.EmptyCommentMessage"));
+                    SQLPropertyDialog.this.setMessage(Messages.getString("SQLEditor.Actions.EmptyCommentMessage"),
+                            IMessageProvider.INFORMATION);
                 }
             }
         });
