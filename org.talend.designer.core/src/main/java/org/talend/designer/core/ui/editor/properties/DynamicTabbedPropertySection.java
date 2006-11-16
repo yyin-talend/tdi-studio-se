@@ -171,8 +171,6 @@ import org.talend.repository.utils.RepositoryPathProvider;
 import org.talend.sqlbuilder.ui.SQLBuilderDialog;
 import org.talend.sqlbuilder.util.ConnectionParameters;
 
-// import org.talend.sqlbuilder.ui.SQLBuilderDialog;
-
 /**
  * Dynamic node's property section. This allow the tabbed property to be dynamic dependings on node's parameters. <br/>
  * 
@@ -482,12 +480,14 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                 } else if (repositoryType.equals(EmfComponent.REPOSITORY)) {
                     String repositoryName = "";
                     for (IElementParameter param : (List<IElementParameter>) elem.getElementParameters()) {
+                      //  System.out.println(param.toString());
                         if (param.getName().equals(EParameterName.REPOSITORY_PROPERTY_TYPE.getName())) {
                             String value = (String) param.getValue();
                             String[] valuesList = (String[]) param.getListItemsValue();
                             String[] displayList = param.getListItemsDisplayName();
                             for (int i = 0; i < valuesList.length; i++) {
                                 if (valuesList[i].equals(value)) {
+                                    
                                     repositoryName = displayList[i];
                                 }
                             }
