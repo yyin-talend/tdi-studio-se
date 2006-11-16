@@ -670,7 +670,7 @@ public class EmfComponent implements IComponent {
         if (image == null) {
             URL url;
             try {
-                url = new URL(file.getParentFile().toURL() + compType.getHEADER().getICON());
+                url = new URL(file.getParentFile().toURL() + compType.getHEADER().getICON32());
                 image = ImageDescriptor.createFromURL(url);
             } catch (MalformedURLException e) {
                 e.printStackTrace();
