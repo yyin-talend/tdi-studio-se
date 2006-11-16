@@ -129,9 +129,22 @@ public class ExecSQLAction extends AbstractEditorAction {
      */
     SessionTreeNodeManager nodeManager = new SessionTreeNodeManager();
 
+    /**
+     * DOC qianbing Comment method "run". Processes the database operation.
+     * 
+     * @param maxRows
+     */
     protected void run(int maxRows) {
         RepositoryNode node = editor.getRepositoryNode();
-        SessionTreeNode runNode = nodeManager.getSessionTreeNode(node);
+        SessionTreeNode runNode = null;
+        try {
+            runNode = nodeManager.getSessionTreeNode(node);
+        } catch (Exception e) {
+            MessageDialog.openError(null, Messages.getString("AbstractSQLExecution.Executing.Error"), e.getMessage()); //$NON-NLS-1$
+            SqlBuilderPlugin.log("Gets SessionTreeNode failed", e);
+            return;
+        }
+
         QueryTokenizer qt = new QueryTokenizer(getSQLToBeExecuted(), IConstants.QUERY_DELIMITER,
                 IConstants.ALTERNATE_DELIMITER, IConstants.COMMENT_DELIMITER);
 

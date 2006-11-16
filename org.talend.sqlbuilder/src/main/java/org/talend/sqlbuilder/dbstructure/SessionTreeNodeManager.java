@@ -66,7 +66,7 @@ public class SessionTreeNodeManager {
      * @param repositoryNode RepositoryNode
      * @return SessionTreeNode
      */
-    public SessionTreeNode getSessionTreeNode(RepositoryNode repositoryNode) {
+    public SessionTreeNode getSessionTreeNode(RepositoryNode repositoryNode) throws Exception {
         // Gets the root RepositoryNode
         RepositoryNode root = getRoot(repositoryNode);
         // Gets the DatabaseConnection
@@ -92,7 +92,7 @@ public class SessionTreeNodeManager {
      * @param repositoryNode RepositoryNode
      * @return INode
      */
-    public INode convert2INode(RepositoryNode repositoryNode) {
+    public INode convert2INode(RepositoryNode repositoryNode) throws Exception {
         // Creates the SessionTreeNode.
         SessionTreeNode sessionTreeNode = getSessionTreeNode(repositoryNode);
         RepositoryNodeType nodeType = getRepositoryType(repositoryNode);
@@ -151,5 +151,5 @@ public class SessionTreeNodeManager {
     private RepositoryNode getRoot(RepositoryNode repositoryNode) {
         return SQLBuilderRepositoryNodeManager.getRoot(repositoryNode);
     }
-    
+
 }

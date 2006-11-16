@@ -58,56 +58,34 @@ public class SessionTreeNodeUtils {
 
     private static Set connections = new HashSet();
 
-//    private static List<SessionTreeNode> sessionTreeNodes = new ArrayList<SessionTreeNode>();
-    
+    // private static List<SessionTreeNode> sessionTreeNodes = new ArrayList<SessionTreeNode>();
+
     private static List<INode> catalogNodes = new ArrayList<INode>();
-    
+
     private static List<INode> tableNodes = new ArrayList<INode>();
-    
+
     private static List<INode> cachedAllNodes = new ArrayList<INode>();
-    
+
     private static List<INode> cachedCurrentNodes = new ArrayList<INode>();
+
     /**
      * Get all CatelogNodes.
+     * 
      * @return CatelogNodes List.
      */
     public static List<INode> getCatalogNodes() {
         return catalogNodes;
     }
-    
+
     /**
      * Get all TableNodes.
+     * 
      * @return TableNodes List.
      */
     public static List<INode> getTableNodes() {
         return tableNodes;
     }
 
-  
-   
-    /**
-     * Get Table names from SessionTreeNode.
-     * @param sessionTreeNode sessionTreeNode
-     * @return table names.
-     */
-    public static List<String> getTableNames(SessionTreeNode sessionTreeNode) {
-        List<String> tableNames = new ArrayList<String>();
-        DatabaseModel databaseModel = sessionTreeNode.getDbModel();
-        if (databaseModel == null || databaseModel.getRoot().getChildNodes().length == 0) {
-            return tableNames;
-        }
-        CatalogNode catalogNode = (CatalogNode) databaseModel.getRoot().getChildNodes()[0];
-        INode[] nodes = catalogNode.getChildNodes();
-        if (nodes == null) {
-            return tableNames;
-        }
-        for (INode node : nodes) {
-            tableNames.add(node.getQualifiedName());
-        }
-        
-        return tableNames;
-    }
-    
     /**
      * dispose.
      */
@@ -120,65 +98,26 @@ public class SessionTreeNodeUtils {
     }
 
     /**
-     * @return RepositoryName list.
-     */
-    public static List<String> getRepositoryNames() {
-        List<String> repositoryNames = new ArrayList<String>();
-        for (INode catalogNode : catalogNodes) {
-            repositoryNames.add(catalogNode.getLabelAtColumn(1) == null 
-                   ? catalogNode.getLabelAtColumn(0) : catalogNode.getLabelAtColumn(1));
-        }
-        return repositoryNames;
-    }
-    
-    /**
-     * @param repositoryName repositoryName
-     * @return SessionTreeNode
-     */
-    public static SessionTreeNode getSessionTreeNode(String repositoryName) {
-        if (repositoryName == null) {
-            return null;
-        }
-        for (INode catalogNode : catalogNodes) {
-            if (repositoryName.equals(catalogNode.getLabelAtColumn(1))) {
-                return catalogNode.getSession();
-            }
-        }
-        return null;
-    }
-    
-    /**
      * @param name RepositoryName
      * @param url Connection Url
      * @param userName DB username
      * @param password DB password
      * @param databaseName databaseName
      * @param repositoryNode RepositoryNode
-     * @param driverName driverName
+     * @param dbType dbType
      * @return SessionTreeNode SessionTreeNode.
      */
     public static SessionTreeNode getSessionTreeNode(String name, String dbType, String url, String userName,
-            String password, String databaseName, RepositoryNode repositoryNode) {
+            String password, String databaseName, RepositoryNode repositoryNode) throws Exception {
         SQLConnection connection = createSQLConnection(dbType, url, userName, password);
-        // if(connection == null)
-        // {
-        // return null;
-        // }
-
         ISQLAlias alias = createSQLAlias(name, url, userName, password, databaseName);
         SessionTreeModel stm = new SessionTreeModel();
         SessionTreeNode session;
-        try {
-            session = stm.createSessionTreeNode(new SQLConnection[] { connection, connection }, alias, null, "root",
-                    repositoryNode);
-        } catch (InterruptedException e) {
-            SqlBuilderPlugin.log(e.getMessage(), e);
-            return null;
-        }
-
+        session = stm.createSessionTreeNode(new SQLConnection[] { connection, connection }, alias, null, "root",
+                repositoryNode);
         return session;
     }
-    
+
     /**
      * @param url Connection Url
      * @param userName DB username
@@ -187,7 +126,8 @@ public class SessionTreeNodeUtils {
      * @param name RepositoryName
      * @return ISQLAlias
      */
-    private static ISQLAlias createSQLAlias(String name, String url, String userName, String password, String databaseName) {
+    private static ISQLAlias createSQLAlias(String name, String url, String userName, String password,
+            String databaseName) {
         SQLAlias alias = new SQLAlias(IdentifierFactory.getInstance().createIdentifier());
         try {
             alias.setName(databaseName);
@@ -197,47 +137,40 @@ public class SessionTreeNodeUtils {
             alias.setSchemaFilterExpression(databaseName);
             alias.setFolderFilterExpression("Tables,Views");
         } catch (Exception e) {
-//            SqlBuilderPlugin.log(e.getMessage(), e);
+             SqlBuilderPlugin.log(e.getMessage(), e);
         }
         return alias;
     }
 
     /**
-     * @param url Connection Url
-     * @param userName DB username
-     * @param password DB password
-     * @param driverName driverName
+     * DOC qianbing Comment method "createSQLConnection".
+     * @param dbType database Type
+     * @param url  url
+     * @param userName userName
+     * @param password password
      * @return SQLConnection
+     * @throws Exception  Exception
      */
-    private static SQLConnection createSQLConnection(String dbType, String url, String userName, String password) {
-        try {
-            Class.forName(ExtractMetaDataUtils.getDriverClassByDbType(dbType)).newInstance();
-
-            Connection connection = DriverManager.getConnection(url, userName, password);
-
-            SQLConnection sqlConnection = new SQLConnection(connection, null);
-
-            return sqlConnection;
-        } catch (Exception e) {
-             SqlBuilderPlugin.log(e.getMessage(), e);
-        }
-
-        return null;
+    private static SQLConnection createSQLConnection(String dbType, String url, String userName, String password)
+            throws Exception {
+        Class.forName(ExtractMetaDataUtils.getDriverClassByDbType(dbType)).newInstance();
+        Connection connection = DriverManager.getConnection(url, userName, password);
+        SQLConnection sqlConnection = new SQLConnection(connection, null);
+        return sqlConnection;
     }
 
     /**
      * disposeConnections.
      */
-    public static void disposeConnections() {
+    private static void disposeConnections() {
         SQLConnection connection = null;
         for (Iterator it = connections.iterator(); it.hasNext();) {
             connection = (SQLConnection) it.next();
             try {
                 connection.close();
             } catch (Exception e) {
-                e.printStackTrace();
+                SqlBuilderPlugin.log("close database connection", e);
             }
-
         }
         connections.clear();
     }
