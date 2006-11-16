@@ -35,9 +35,8 @@ import org.talend.sqlbuilder.util.ImageUtil;
  */
 public class SaveSQLAction extends AbstractEditorAction {
     
-    private ImageDescriptor image = ImageUtil.getDescriptor("Images.SaveSQLIcon");
-
-
+   private ImageDescriptor image = ImageUtil.getDescriptor("Images.SaveSQLIcon");
+   
     /* (non-Javadoc)
      * @see org.eclipse.jface.action.Action#getImageDescriptor()
      */
@@ -60,7 +59,6 @@ public class SaveSQLAction extends AbstractEditorAction {
     public boolean isEnabled() {
         return true;
     }
-
 
     /* (non-Javadoc)
      * @see org.talend.sqlbuilder.actions.AbstractEditorAction#getToolTipText()

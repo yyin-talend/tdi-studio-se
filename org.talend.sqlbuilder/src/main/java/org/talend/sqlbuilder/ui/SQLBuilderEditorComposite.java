@@ -329,7 +329,7 @@ public class SQLBuilderEditorComposite extends Composite implements ISQLEditor {
 
         saveSQLAction = new SaveSQLAction();
         saveSQLAction.setEditor(this);
-
+               
         exportAction = new SaveFileAsAction();
         exportAction.setEditor(this);
 
@@ -337,7 +337,7 @@ public class SQLBuilderEditorComposite extends Composite implements ISQLEditor {
         clearTextAction.setEditor(this);
 
         addDefaultActions(defaultToolBarMgr);
-
+               
         // initialize session actions
 
         sessionToolBarMgr = new ToolBarManager(SWT.NONE);
@@ -379,8 +379,10 @@ public class SQLBuilderEditorComposite extends Composite implements ISQLEditor {
         execSQLAction.setEnabled(true);
         mgr.add(execSQLAction);
         mgr.add(openFileAction);
+        mgr.add(saveSQLAction);
         mgr.add(exportAction);
         mgr.add(clearTextAction);
+        
     }
 
     /**
@@ -588,8 +590,10 @@ public class SQLBuilderEditorComposite extends Composite implements ISQLEditor {
 //            queryObj.setLabel(saveSQLDialog.getName());
 //            queryObj.setValue(colorText.getText());
 //            SQLBuilderRepositoryNodeManager repositoryNodeManager = new SQLBuilderRepositoryNodeManager();
-            // repositoryNodeManager.saveQuery(this.sessionTreeNode, queryObj);
+//             repositoryNodeManager.saveQuery(this.sessionTreeNode, queryObj);
         }
+        
+ 
     }
 
     /* (non-Javadoc)
@@ -598,5 +602,10 @@ public class SQLBuilderEditorComposite extends Composite implements ISQLEditor {
     public SessionTreeNode getSessionTreeNode() {
         // TODO Auto-generated method stub
         return null;
+    }
+
+    public void setRepositoryNode(SessionTreeNode node) {
+        // TODO Auto-generated method stub
+        
     }
 }

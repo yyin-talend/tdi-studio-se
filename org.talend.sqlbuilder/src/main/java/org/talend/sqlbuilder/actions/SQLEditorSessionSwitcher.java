@@ -61,8 +61,8 @@ public class SQLEditorSessionSwitcher extends ControlContribution {
         this.editor = editor;
     }
 
-    SQLBuilderRepositoryNodeManager nodeManager=new SQLBuilderRepositoryNodeManager();
-    
+    SQLBuilderRepositoryNodeManager nodeManager = new SQLBuilderRepositoryNodeManager();
+
     /*
      * (non-Javadoc)
      * 
@@ -81,13 +81,10 @@ public class SQLEditorSessionSwitcher extends ControlContribution {
             public void widgetSelected(SelectionEvent e) {
                 String repoName = sessionCombo.getText();
                 SessionTreeNodeUtils.getSessionTreeNode(repoName);
-
-                //TODO
-                RepositoryNode node = null;
+                RepositoryNode node = nodeManager.getRepositoryNodebyName(repoName);
                 editor.setRepositoryNode(node);
                 editor.refresh(true);
             }
-
         });
 
         return sessionCombo;

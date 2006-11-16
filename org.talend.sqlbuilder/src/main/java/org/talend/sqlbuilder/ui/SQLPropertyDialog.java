@@ -93,16 +93,14 @@ public class SQLPropertyDialog extends Dialog {
 
         final Label nameLabel = new Label(container, SWT.NONE);
         nameLabel.setLayoutData(new GridData());
-        nameLabel.setText("Name");
-        // nameLabel.setText(Messages.getString("SQLEditor.SaveSQLDialog.Name"));
+        nameLabel.setText(Messages.getString("SQLEditor.SQLPropertyDialog.Name"));
 
         nameText = new Text(container, SWT.BORDER);
         nameText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 
         final Label commentLabel = new Label(container, SWT.NONE);
         commentLabel.setLayoutData(new GridData());
-
-        // commentLabel.setText(Messages.getString("SQLEditor.SaveSQLDialog.Comment"));
+        commentLabel.setText(Messages.getString("SQLEditor.SQLPropertyDialog.Comment"));
 
         commentText = new Text(container, SWT.BORDER);
         commentText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
@@ -167,8 +165,10 @@ public class SQLPropertyDialog extends Dialog {
      */
     private void addListener() {
         nameText.addModifyListener(new ModifyListener() {
-           
-            /* (non-Javadoc)
+
+            /*
+             * (non-Javadoc)
+             * 
              * @see org.eclipse.swt.events.ModifyListener#modifyText(org.eclipse.swt.events.ModifyEvent)
              */
             public void modifyText(ModifyEvent e) {
@@ -184,6 +184,7 @@ public class SQLPropertyDialog extends Dialog {
 
             /**
              * Validates input text.
+             * 
              * @param text
              * @return a string
              */
@@ -199,8 +200,10 @@ public class SQLPropertyDialog extends Dialog {
         });
 
         commentText.addModifyListener(new ModifyListener() {
-            
-            /* (non-Javadoc)
+
+            /*
+             * (non-Javadoc)
+             * 
              * @see org.eclipse.swt.events.ModifyListener#modifyText(org.eclipse.swt.events.ModifyEvent)
              */
             public void modifyText(ModifyEvent e) {
