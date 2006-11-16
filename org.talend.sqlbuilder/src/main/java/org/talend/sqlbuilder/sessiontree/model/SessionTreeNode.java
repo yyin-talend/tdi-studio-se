@@ -22,7 +22,6 @@
 
 package org.talend.sqlbuilder.sessiontree.model;
 
-
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -59,8 +58,6 @@ import org.talend.sqlbuilder.sessiontree.model.utility.DictionaryLoader;
  */
 public class SessionTreeNode implements ISessionTreeNode {
 
-    private static final int DELAY_TIME = 500;
-
     private static final int CAPACITY = 10;
 
     private ISQLAlias alias;
@@ -70,12 +67,10 @@ public class SessionTreeNode implements ISessionTreeNode {
     private SQLConnection backgroundConnection;
 
     private SQLConnection interactiveConnection;
-    
+
     private boolean backgroundConnectionInUse = false;
 
     private List connectionNumberQueue = new ArrayList();
-
-    private long created;
 
     private Dictionary dictionary = new Dictionary();
 
@@ -86,31 +81,31 @@ public class SessionTreeNode implements ISessionTreeNode {
     private SQLDatabaseMetaData metaData = null;
 
     private SessionTreeModel model;
-    
+
     private int nextConnectionNumber = 0;
 
     private RootSessionTreeNode parent;
 
     private String password;
-    
+
     private DatabaseModel dbModel;
-       
+
     private ArrayList ls = new ArrayList(CAPACITY);
-    
+
     Table table;
-    
+
     private static final int COMMIT_REQUEST = -1;
-    
+
     private static final int ROLLBACK_REQUEST = -2;
-    
+
     private static final int CATALOG_CHANGE_REQUEST = -3;
-    
+
     private String newCatalog;
-    
+
     private RepositoryNode repositoryNode;
-    
+
     private static Log logger = LogFactory.getLog(SessionTreeNode.class);
-    
+
     /**
      * 
      * @param conn
@@ -121,11 +116,8 @@ public class SessionTreeNode implements ISessionTreeNode {
      * @param repositoryNode
      * @throws InterruptedException
      */
-    public SessionTreeNode(final SQLConnection[] conn, ISQLAlias alias, SessionTreeModel md, IProgressMonitor monitor, 
-            final String password, RepositoryNode repositoryNode)
-            throws InterruptedException {
-        
-        created = System.currentTimeMillis();
+    public SessionTreeNode(final SQLConnection[] conn, ISQLAlias alias, SessionTreeModel md, IProgressMonitor monitor,
+            final String password, RepositoryNode repositoryNode) {
         interactiveConnection = conn[0];
         backgroundConnection = conn[1];
         this.alias = alias;
@@ -135,33 +127,25 @@ public class SessionTreeNode implements ISessionTreeNode {
         parent.add(this);
         this.password = password;
         this.repositoryNode = repositoryNode;
-        
-//        assistanceEnabled = SqlBuilderPlugin.getDefault().getPluginPreferences().getBoolean(IConstants.SQL_ASSIST);
-//               
-//        if (assistanceEnabled) {
-//            // schedule job to load dictionary for this session
-//            DictionaryLoader dictionaryLoader = new DictionaryLoader(this);
-//            dictionaryLoader.schedule(DELAY_TIME);
-//            
-//        }
-            
     }
-    
+
     /**
      * Get DatabaseConnection from repositoryNode.
+     * 
      * @return database connection.
      */
     public DatabaseConnection getDatabaseConnection() {
-        if (repositoryNode == null || repositoryNode.getObject() == null 
-                || repositoryNode.getObject().getProperty() == null || repositoryNode.getObject().getProperty().getItem() == null) {
+        if (repositoryNode == null || repositoryNode.getObject() == null
+                || repositoryNode.getObject().getProperty() == null
+                || repositoryNode.getObject().getProperty().getItem() == null) {
             return null;
         }
-        DatabaseConnection connection = (DatabaseConnection) ((ConnectionItem) repositoryNode.getObject()
-                .getProperty().getItem()).getConnection();
-        
+        DatabaseConnection connection = (DatabaseConnection) ((ConnectionItem) repositoryNode.getObject().getProperty()
+                .getItem()).getConnection();
+
         return connection;
     }
-    
+
     /**
      * @return dbModel.
      */
@@ -171,11 +155,10 @@ public class SessionTreeNode implements ISessionTreeNode {
 
     /**
      * @param dbModel DatabaseModel.
-     */ 
+     */
     public void setDbModel(DatabaseModel dbModel) {
         this.dbModel = dbModel;
     }
-
 
     /**
      * @return RepositoryNode.
@@ -183,7 +166,7 @@ public class SessionTreeNode implements ISessionTreeNode {
     public RepositoryNode getRepositoryNode() {
         return repositoryNode;
     }
-    
+
     /**
      * @param n SessionTreeNode.
      */
@@ -191,26 +174,24 @@ public class SessionTreeNode implements ISessionTreeNode {
     public void add(ISessionTreeNode n) {
         ls.add(n);
     }
-    
-    
-    
+
     /**
-     * Returns an SQLConnection. This connection should only
-     * be used to execute statements in the UI thread.
+     * Returns an SQLConnection. This connection should only be used to execute statements in the UI thread.
+     * 
      * @return SQLConnection.
      */
     public SQLConnection getInteractiveConnection() {
-    
+
         return interactiveConnection;
     }
-    
+
     /**
      * @param listener ISessionTreeClosedListener
      */
     public void addListener(ISessionTreeClosedListener listener) {
         listeners.add(listener);
     }
-    
+
     /**
      * Close.
      */
@@ -218,7 +199,7 @@ public class SessionTreeNode implements ISessionTreeNode {
 
         // store dictionary
         dictionary.store();
-        
+
         // clear detail tab cache
         DetailTabManager.clearCacheForSession(this);
 
@@ -247,15 +228,14 @@ public class SessionTreeNode implements ISessionTreeNode {
         }
 
     }
-    
-   
+
     /**
      * Commit.
      */
     @SuppressWarnings("unchecked")
     public synchronized void commit() {
         try {
-            
+
             if (connectionNumberQueue.size() == 0 && !backgroundConnectionInUse) {
                 // nothing is happening, so we can commit immediately
                 backgroundConnection.commit();
@@ -264,7 +244,7 @@ public class SessionTreeNode implements ISessionTreeNode {
                 // request to the end of the queue.
                 connectionNumberQueue.add(new Integer(COMMIT_REQUEST));
             }
-            
+
         } catch (Throwable e) {
             SqlBuilderPlugin.log("Error committing ", e);
         }
@@ -313,21 +293,12 @@ public class SessionTreeNode implements ISessionTreeNode {
         return catalogNames;
     }
 
-
     /**
      * @see org.gnu.amaz.ISessionTreeNode#getChildren()
      * @return Children.
      */
     public Object[] getChildren() {
         return ls.toArray();
-    }
-
-
-    /**
-     * @return time this session was created
-     */
-    public long getCreated() {
-        return created;
     }
 
     /**
@@ -358,14 +329,13 @@ public class SessionTreeNode implements ISessionTreeNode {
         if (interactiveConnection == null) {
             return null;
         }
-        
+
         if (metaData == null) {
             metaData = interactiveConnection.getSQLMetaData();
         }
-        
+
         return metaData;
     }
-
 
     /**
      * @see org.gnu.amaz.ISessionTreeNode#getParent()
@@ -375,22 +345,21 @@ public class SessionTreeNode implements ISessionTreeNode {
         return parent;
     }
 
-
     /**
-     * Get the connection with queue number 'number'.  This method will
-     * return null until the queue number has been reached and the connection 
-     * is available.
+     * Get the connection with queue number 'number'. This method will return null until the queue number has been
+     * reached and the connection is available.
+     * 
      * @return SQLConnection.
      * @param number number.
      */
     public synchronized SQLConnection getQueuedConnection(Integer number) {
-        
+
         if (backgroundConnectionInUse || number == null) {
             return null;
         }
-        
+
         Integer currentNumber = (Integer) connectionNumberQueue.get(0);
-        
+
         if (currentNumber.intValue() == number.intValue()) {
             backgroundConnectionInUse = true;
             logger.debug("Connection " + number + " acquired.");
@@ -398,7 +367,7 @@ public class SessionTreeNode implements ISessionTreeNode {
         }
 
         return null;
-        
+
     }
 
     /**
@@ -406,14 +375,13 @@ public class SessionTreeNode implements ISessionTreeNode {
      */
     @SuppressWarnings("unchecked")
     public synchronized Integer getQueuedConnectionNumber() {
-        
+
         Integer number = new Integer(nextConnectionNumber);
         connectionNumberQueue.add(number);
         nextConnectionNumber++;
         return number;
-        
-    }
 
+    }
 
     /**
      * @return DatabaseNode.
@@ -435,24 +403,23 @@ public class SessionTreeNode implements ISessionTreeNode {
         return result;
     }
 
-
     /**
      * Release the currently active connection so we can move on to the next one.
+     * 
      * @param number number.
      */
     public synchronized void releaseQueuedConnection(Integer number) {
-        
+
         if (number == null) {
             return;
         }
-        
 
         if (connectionNumberQueue.indexOf(number) == 0) {
             // release current connection
             backgroundConnectionInUse = false;
             connectionNumberQueue.remove(0);
             logger.debug("Connection " + number + " released.");
-            
+
             // check for pending commit or rollback requests
 
             while (connectionNumberQueue.size() > 0) {
@@ -465,7 +432,7 @@ public class SessionTreeNode implements ISessionTreeNode {
                     } else if (nextNumber == ROLLBACK_REQUEST) {
                         logger.debug("Rolling back.");
                         connectionNumberQueue.remove(0);
-                        backgroundConnection.rollback();                        
+                        backgroundConnection.rollback();
                     } else if (nextNumber == CATALOG_CHANGE_REQUEST) {
                         logger.debug("Changing catalog.");
                         connectionNumberQueue.remove(0);
@@ -477,13 +444,13 @@ public class SessionTreeNode implements ISessionTreeNode {
                     logger.error("Couldn't perform commit/rollback or catalog change.", e);
                 }
             }
-            
+
         } else {
             // remove pending queue number
             connectionNumberQueue.remove(number);
             logger.debug("Connection request " + number + " removed from queue.");
         }
-     
+
     }
 
     /**
@@ -493,14 +460,13 @@ public class SessionTreeNode implements ISessionTreeNode {
         ls.remove(n);
     }
 
-    
     /**
      * rollback.
      */
     @SuppressWarnings("unchecked")
     public synchronized void rollback() {
         try {
-            
+
             if (connectionNumberQueue.size() == 0 && !backgroundConnectionInUse) {
                 // nothing is happening, so we can rollback immediately
                 backgroundConnection.rollback();
@@ -509,7 +475,7 @@ public class SessionTreeNode implements ISessionTreeNode {
                 // request to the end of the queue.
                 connectionNumberQueue.add(new Integer(ROLLBACK_REQUEST));
             }
-            
+
         } catch (Throwable e) {
             SqlBuilderPlugin.log("Error rollbacking ", e);
 
@@ -522,9 +488,9 @@ public class SessionTreeNode implements ISessionTreeNode {
      */
     @SuppressWarnings("unchecked")
     public synchronized void setCatalog(String cat) throws SQLException {
-        
+
         interactiveConnection.setCatalog(cat);
-        
+
         if (connectionNumberQueue.size() == 0 && !backgroundConnectionInUse) {
             // nothing is happening, so we can change immediately
             backgroundConnection.setCatalog(cat);
@@ -544,8 +510,6 @@ public class SessionTreeNode implements ISessionTreeNode {
         return getRoot().supportsCatalogs();
     }
 
-
-    
     /**
      * Returns connection alias name.
      * 
@@ -561,7 +525,7 @@ public class SessionTreeNode implements ISessionTreeNode {
             return "";
         }
     }
-    
+
     public String getRepositoryName() {
         if (repositoryNode == null) {
             return toString();
@@ -569,5 +533,5 @@ public class SessionTreeNode implements ISessionTreeNode {
             return (String) repositoryNode.getProperties(EProperties.LABEL);
         }
     }
-    
+
 }
