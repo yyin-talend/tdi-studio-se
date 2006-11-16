@@ -56,7 +56,20 @@ public class SQLEditorAllProposal implements IContentProposal {
             image = ImageUtil.getDescriptor("Images.TableIcon").createImage();
         }
         this.position += label.substring(hasString.length()).length();
+//        if (contents[0] != null && !contents[0].equals("")) {
+//        	int conIndex = contents[0].lastIndexOf(" ");
+//        	if (conIndex != -1 && index != -1) {
+//        		String contentString1 = contents[0].substring(0, conIndex);
+//                String contentString2 = contents[0].substring(conIndex);
+//                contentString2 = " " + label;
+//                contents[0] = contentString1 + contentString2;
+//        	}
+//        	
+//        }
+        hasString = label.substring(0, hasString.length());
+        contents[0] = contents[0].substring(0, contents[0].length() - hasString.length()) + hasString;
         content = contents[0];
+        
         content += label.substring(hasString.length());
         content += contents[1];
         description = allString;
