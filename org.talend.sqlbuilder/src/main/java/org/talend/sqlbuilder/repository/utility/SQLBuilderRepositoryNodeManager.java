@@ -86,9 +86,11 @@ public class SQLBuilderRepositoryNodeManager {
     	DatabaseConnectionItem item = getItem(node);
         DatabaseConnection connection = (DatabaseConnection) item.getConnection();
     	List<MetadataTable> tablesFromEMF = connection.getTables();
+    	boolean isOdbc = connection.getSID() == null || connection.getSID().length() == 0;
+    	String sid = isOdbc ? connection.getDatasourceName() : connection.getSID(); 
     	for (MetadataTable table : tablesFromEMF) {
     		String tableName = table.getSourceName();
-    		tableName = "'" + connection.getSID() + "'.'" + tableName + "'";
+    		tableName = "'" + sid + "'.'" + tableName + "'";
 			tableNames.add(tableName);
 		}
     	return tableNames;
@@ -179,7 +181,9 @@ public class SQLBuilderRepositoryNodeManager {
     }
 
     public static String getDatabaseNameByRepositoryNode(RepositoryNode node) {
-        return ((DatabaseConnection) getItem(node).getConnection()).getSID();
+    	DatabaseConnection connection = (DatabaseConnection) getItem(node);
+    	boolean isOdbc = connection.getSID() == null || connection.getSID().length() == 0;
+        return isOdbc ? connection.getDatasourceName() : connection.getSID(); 
     }
 
     /**
@@ -379,7 +383,7 @@ public class SQLBuilderRepositoryNodeManager {
      * @return RepositoryNodeType
      * @see RepositoryNodeType
      */
-    private static RepositoryNodeType getRepositoryType(RepositoryNode repositoryNode) {
+    public static RepositoryNodeType getRepositoryType(RepositoryNode repositoryNode) {
         return (RepositoryNodeType) repositoryNode.getProperties(EProperties.CONTENT_TYPE);
     }
 
