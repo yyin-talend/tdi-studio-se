@@ -25,7 +25,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.eclipse.emf.common.util.EList;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -37,7 +36,6 @@ import org.talend.core.model.metadata.builder.ConvertionHelper;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.metadata.builder.connection.MetadataColumn;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
-import org.talend.core.model.metadata.builder.connection.TableHelper;
 import org.talend.core.model.metadata.builder.database.ExtractMetaDataFromDataBase;
 import org.talend.core.model.properties.DatabaseConnectionItem;
 import org.talend.core.model.repository.IRepositoryObject;
@@ -49,9 +47,6 @@ import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNode.EProperties;
 import org.talend.sqlbuilder.dbstructure.DBTreeProvider;
 import org.talend.sqlbuilder.dbstructure.RepositoryNodeType;
-import org.talend.sqlbuilder.dbstructure.nodes.ColumnNode;
-import org.talend.sqlbuilder.dbstructure.nodes.TableNode;
-import org.talend.sqlbuilder.sessiontree.model.SessionTreeNode;
 
 /**
  * DOC dev  class global comment. Detailled comment
@@ -90,17 +85,49 @@ public class MetadataRefreshAction  extends SelectionProviderAction {
      */
     @Override
     public void run() {
+    	DatabaseConnectionItem item = null;
+    	if (repositorynode != null) {
+    		 item = getItem();
+    	}
+    	
         for (MetadataColumn columnNode : columnNodes) {
             MetadataTable tableNode = (MetadataTable) columnNode.getTable();
-            if (repositorynode != null) {
-                IRepositoryObject repositoryObject = repositorynode.getObject();
-                DatabaseConnectionItem item = (DatabaseConnectionItem) repositoryObject.getProperty().getItem();
+           
                 saveMetadataColumn(tableNode, columnNode, item);
-            }
-            
         }
         
     }
+
+	/**
+	 * DOC dev Comment method "getItem".
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	private DatabaseConnectionItem getItem() {
+		IRepositoryObject repositoryObject = repositorynode.getObject();
+		DatabaseConnectionItem item = (DatabaseConnectionItem) repositoryObject.getProperty().getItem();
+		DatabaseConnection connection = (DatabaseConnection) item.getConnection();
+		List<MetadataTable> tables = connection.getTables();
+		List<MetadataTable> newtables = new ArrayList<MetadataTable>();
+		
+		for (MetadataTable table : tables) {
+			List<MetadataColumn> columns = table.getColumns();
+			List<MetadataColumn> newcloumns = new ArrayList<MetadataColumn>();
+			for (MetadataColumn column : columns) {
+				if (!column.getLabel().equals("")) {
+					newcloumns.add(column);
+				}
+			}
+			table.getColumns().clear();
+			table.getColumns().addAll(newcloumns);
+			if (!table.getLabel().equals("")) {
+				newtables.add(table);
+			}
+		}
+		connection.getTables().clear();
+		connection.getTables().addAll(newtables);
+		return item;
+	}
     /**
      * DOC dev Comment method "saveMetadataColumn".
      * @param tableNode columNode's parent.
@@ -111,9 +138,12 @@ public class MetadataRefreshAction  extends SelectionProviderAction {
             , DatabaseConnectionItem item) {
         modifyMetadataColumn(tableNode, columnNode, item);
         saveMetaData(item);
-//        columnNode.getTable().ge;
+        
 //        ((TreeViewer) selectionProvider).refresh(columnNode.getParent());
-        ((TreeViewer) selectionProvider).refresh(tableNode,true);
+        
+        ((TreeViewer) selectionProvider).refresh(repositorynode, true);
+        ((TreeViewer) selectionProvider).refresh(tableNode, true);
+        ((TreeViewer) selectionProvider).refresh(columnNode, true);
     }
     /**
      * 
@@ -222,19 +252,33 @@ public class MetadataRefreshAction  extends SelectionProviderAction {
         for (Object object : selection.toList()) {
             if (!((RepositoryNode) object).getProperties(EProperties.CONTENT_TYPE).equals(RepositoryNodeType.COLUMN)) {
             		this.setEnabled(false);
-                    return ;
+                    return;
             }
+            
             MetadataColumn col = ((DBTreeProvider.MetadataColumnRepositoryObject) ((RepositoryNode) object).getObject()).getColumn();
+            if (col.getLabel().equals("")) {
+            	this.setEnabled(false);
+                return;
+            }
             if (col.isDivergency()) {
-            	this.setEnabled(true);
+            	
+            	if (repositorynode != null 
+            			&& !(repositorynode.getObject().getLabel()
+            					.equals(((RepositoryNode) object).getObject().getLabel()))) {
+            		this.setEnabled(false);
+                    return;
+            	}
+            		
             	repositorynode = (RepositoryNode) object;
-                flag = false;
+            	
+            	this.setEnabled(true);
+            	flag = false;
                 columnNodes.add(col);
             }
         }
         if (flag) {
             this.setEnabled(false);
-            return  ;
+            return;
         }
     }
 }
