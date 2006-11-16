@@ -60,7 +60,8 @@ public class OpenNewEditorAction extends SelectionProviderAction {
      * @param connParam
      * @param isDefaultEditor
      */
-    public OpenNewEditorAction(ISelectionProvider selectionProvider, SQLBuilderTabComposite editorComposite,
+    public OpenNewEditorAction(ISelectionProvider selectionProvider,
+            SQLBuilderTabComposite editorComposite,
             ConnectionParameters connParam, boolean isDefaultEditor) {
         super(selectionProvider, "New Editor");
         this.editorComposite = editorComposite;
@@ -72,15 +73,16 @@ public class OpenNewEditorAction extends SelectionProviderAction {
 
     @SuppressWarnings("unchecked")
     public void init() {
-        RepositoryNode[] selectedNodes = (RepositoryNode[]) ((IStructuredSelection) selectionProvider.getSelection())
-                .toList().toArray(new RepositoryNode[] {});
+        RepositoryNode[] selectedNodes = (RepositoryNode[]) ((IStructuredSelection) selectionProvider
+                .getSelection()).toList().toArray(new RepositoryNode[]{});
         if (selectedNodes.length == 0) {
             this.setEnabled(false);
             return;
         }
         int i = 0;
         for (RepositoryNode node : selectedNodes) {
-            if (node.getProperties(EProperties.CONTENT_TYPE) == RepositoryNodeType.FOLDER) {
+            if (node.getProperties(EProperties.CONTENT_TYPE) == RepositoryNodeType.FOLDER)
+            {
                 i++;
             }
         }
@@ -91,30 +93,29 @@ public class OpenNewEditorAction extends SelectionProviderAction {
         }
     }
 
-    /* (non-Javadoc)
-     * @see org.eclipse.ui.actions.SelectionProviderAction#selectionChanged(org.eclipse.jface.viewers.ISelection)
-     */
     @Override
     public void selectionChanged(ISelection selection) {
         init();
     }
 
-    /* (non-Javadoc)
-     * @see org.eclipse.jface.action.Action#run()
-     */
+
     @Override
     public void run() {
-        IStructuredSelection selection = (IStructuredSelection) selectionProvider.getSelection();
+        IStructuredSelection selection = (IStructuredSelection) selectionProvider
+                .getSelection();
         RepositoryNode firstNode = (RepositoryNode) selection.getFirstElement();
-        firstNode = SQLBuilderRepositoryNodeManager.getRoot(firstNode);
+        if (firstNode.getProperties(EProperties.CONTENT_TYPE) == RepositoryNodeType.FOLDER) {
+           firstNode = new SQLBuilderRepositoryNodeManager().getRepositoryNodebyName(connParam.getRepositoryName());  
+        }
+        firstNode = new SQLBuilderRepositoryNodeManager().getRoot(firstNode);
         TreeViewer treeViewer = (TreeViewer) selectionProvider;
         List repositoryNames = getRepositoryNames((RepositoryNode) treeViewer.getInput());
-        editorComposite.openNewEditor(firstNode, repositoryNames, connParam, isDefaultEditor);
+        editorComposite.openNewEditor(firstNode, repositoryNames, connParam,
+                isDefaultEditor);
     }
-
+    
     /**
      * Get all repository node names.
-     * 
      * @param
      * @return
      * @exception
