@@ -157,7 +157,7 @@ public class DBStructureComposite extends Composite {
         treeViewer.getControl().setLayoutData(new GridData(GridData.FILL, GridData.FILL, true, true, 2, 1));
         treeViewer.setUseHashlookup(true);
 
-        DBTreeProvider treeLabelProvider = new DBTreeProvider(repositoryView);
+        DBTreeProvider treeLabelProvider = new DBTreeProvider(repositoryView, builderDialog.getConnParameters());
         treeViewer.setContentProvider(treeLabelProvider);
         treeViewer.setLabelProvider(treeLabelProvider);
 

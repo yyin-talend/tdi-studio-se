@@ -53,6 +53,7 @@ import org.talend.repository.ui.views.RepositoryContentProvider;
 import org.talend.repository.ui.views.RepositoryView;
 import org.talend.sqlbuilder.SqlBuilderPlugin;
 import org.talend.sqlbuilder.repository.utility.SQLBuilderRepositoryNodeManager;
+import org.talend.sqlbuilder.util.ConnectionParameters;
 import org.talend.sqlbuilder.util.ImageUtil;
 
 /**
@@ -65,9 +66,13 @@ public class DBTreeProvider extends LabelProvider implements ITableLabelProvider
 ITableColorProvider {
     private SQLBuilderRepositoryNodeManager repositoryNodeManager = new SQLBuilderRepositoryNodeManager();
     private RepositoryContentProvider repositoryContentProvider;
+    private ConnectionParameters connectionParameters;
+    private RepositoryView repositoryView;
     
-    public DBTreeProvider(RepositoryView repositoryView) {
-        repositoryContentProvider = new RepositoryContentProvider(repositoryView);
+    public DBTreeProvider(RepositoryView repositoryView, ConnectionParameters connectionParameters) {
+        this.connectionParameters = connectionParameters;
+        this.repositoryContentProvider = new RepositoryContentProvider(repositoryView);
+        this.repositoryView = repositoryView;
     }
     
     public Image getColumnImage(Object element, int columnIndex) {
@@ -111,6 +116,12 @@ ITableColorProvider {
     }
 
     private void initialize(RepositoryNode treeRoot) {
+        if (!connectionParameters.isRepository()) {
+            RepositoryNode metadataNode = repositoryView.getRoot().getChildren().get(5);
+//            RepositoryNode dbConnectionNode = metadataNode.getChildren().get(0);
+//            treeRoot.
+            treeRoot = repositoryNodeManager.getRepositoryNodeByBuildIn(treeRoot, connectionParameters);
+        }
         IRepositoryFactory factory = RepositoryFactoryProvider.getInstance();
         
         try {
@@ -149,7 +160,8 @@ ITableColorProvider {
         IRepositoryFactory factory = RepositoryFactoryProvider.getInstance();
         DatabaseConnection connection = (DatabaseConnection) ((ConnectionItem) repositoryObject
                 .getProperty().getItem()).getConnection();
-        repositoryObject.setStatusCode(connection.getSID());
+        String sid = connection.getSID();
+        repositoryObject.setStatusCode((sid == null || sid.trim().equals("")) ? connection.getDatasourceName() : sid);
         repositoryObject.setPurpose("Images.ConnectionIcon");
         RepositoryNode node = new RepositoryNode(repositoryObject, parent, ENodeType.REPOSITORY_ELEMENT);
         
