@@ -74,6 +74,13 @@ public class SQLBuilderRepositoryNodeManager {
         return null;
     }
 
+    public List<String> getALLReposotoryNodeNames() {
+		List<String> names = new ArrayList<String>();
+		for (RepositoryNode node : repositoryNodes) {
+			names.add(node.getObject().getLabel());
+		}
+		return names;
+	}
     /**
      * Get RepositoryNodeFromDB .
      * 
@@ -108,14 +115,9 @@ public class SQLBuilderRepositoryNodeManager {
                     if (tableFromDB.getSourceName().equals(tableFromEMF.getSourceName())) {
                     	fixedColumns(columnsFromDB, columnsFromEMF);
                     }
-                    // tableFromEMF.getColumns().clear();
-                    // tableFromEMF.getColumns().addAll(columnsFromDB);
                 }
-
             }
             fixedTables(tablesFromDB, tablesFromEMF, iMetadataConnection);
-            // connection.getTables().clear();
-            // connection.getTables().addAll(tablesFromDB);
         }
         return oldNode;
     }
@@ -184,9 +186,6 @@ public class SQLBuilderRepositoryNodeManager {
     @SuppressWarnings("unchecked")
     public List<String> getALLQueryLabels(RepositoryNode repositoryNode) {
         List<String> allQueries = new ArrayList<String>();
-        if (repositoryNode == null) {
-            return null;
-        }
         DatabaseConnectionItem item = getItem(repositoryNode);
         DatabaseConnection connection = (DatabaseConnection) item.getConnection();
         List<QueriesConnection> qcs = connection.getQueries();
@@ -196,7 +195,7 @@ public class SQLBuilderRepositoryNodeManager {
                 allQueries.add(q1.getLabel());
             }
         }
-        return null;
+        return allQueries;
     }
 
     @SuppressWarnings("unchecked")
