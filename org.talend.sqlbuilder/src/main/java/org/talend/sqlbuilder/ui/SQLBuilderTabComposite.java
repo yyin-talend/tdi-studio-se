@@ -138,10 +138,8 @@ public class SQLBuilderTabComposite extends Composite {
             tabItem = new CTabItem(tabFolder, SWT.CLOSE);
         }
 
-        SQLBuilderEditorComposite builderEditorComposite = new SQLBuilderEditorComposite(tabFolder, tabItem, SWT.NONE);
-
+        SQLBuilderEditorComposite builderEditorComposite = new SQLBuilderEditorComposite(tabFolder, tabItem, isDefaultEditor,SWT.NONE);
         builderEditorComposite.setEditorContent(connParam);
-        builderEditorComposite.setDefaultEditor(isDefaultEditor);
         builderEditorComposite.setRepositoryNode(node);
 
         builderEditorComposite.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false));

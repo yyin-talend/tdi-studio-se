@@ -129,11 +129,13 @@ public class SQLBuilderEditorComposite extends Composite implements ISQLEditor {
      * 
      * @param parent
      * @param tabItem
+     * @param isDefaultEditor 
      * @param style
      */
-    public SQLBuilderEditorComposite(Composite parent, CTabItem tabItem, int style) {
+    public SQLBuilderEditorComposite(Composite parent, CTabItem tabItem, boolean isDefaultEditor, int style) {
         super(parent, style);
         this.tabItem = tabItem;
+        this.isDefaultEditor = isDefaultEditor;
         initialContent(this);
     }
 
@@ -538,16 +540,6 @@ public class SQLBuilderEditorComposite extends Composite implements ISQLEditor {
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.sqlbuilder.ui.editor.ISQLEditor#setDefaultEditor(boolean)
-     */
-    public void setDefaultEditor(boolean isDefaultEditor) {
-        this.isDefaultEditor = isDefaultEditor;
-
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
      * @see org.talend.sqlbuilder.ui.editor.ISQLEditor#setEditorContent(java.lang.String)
      */
     public void setEditorContent(String string) {
@@ -588,5 +580,9 @@ public class SQLBuilderEditorComposite extends Composite implements ISQLEditor {
     public void setRepositoryNode(SessionTreeNode node) {
         // TODO Auto-generated method stub
         
+    }
+
+    public boolean getDefaultEditor() {
+      return this.isDefaultEditor;        
     }
 }

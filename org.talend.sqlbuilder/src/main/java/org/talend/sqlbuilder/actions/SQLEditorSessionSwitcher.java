@@ -32,6 +32,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.sqlbuilder.Messages;
+import org.talend.sqlbuilder.dbstructure.SessionTreeNodeManager;
 import org.talend.sqlbuilder.dbstructure.SessionTreeNodeUtils;
 import org.talend.sqlbuilder.repository.utility.SQLBuilderRepositoryNodeManager;
 import org.talend.sqlbuilder.sessiontree.model.SessionTreeNode;
@@ -72,20 +73,23 @@ public class SQLEditorSessionSwitcher extends ControlContribution {
 
         sessionCombo = new Combo(parent, SWT.READ_ONLY);
         sessionCombo.setToolTipText(Messages.getString("SQLEditor.Actions.ChooseSession.ToolTip"));
-        List<String> sessionNames = SessionTreeNodeUtils.getRepositoryNames();
 
-        sessionCombo.setItems(sessionNames.toArray(new String[sessionNames.size()]));
+        List<String> repositoryNameList = nodeManager.getALLReposotoryNodeNames();
+        sessionCombo.setItems(repositoryNameList.toArray(new String[repositoryNameList.size()]));
 
-        sessionCombo.addSelectionListener(new SelectionAdapter() {
+        if (editor.getDefaultEditor()) {
+            sessionCombo.setEnabled(false);
+        } else {
+            sessionCombo.addSelectionListener(new SelectionAdapter() {
 
-            public void widgetSelected(SelectionEvent e) {
-                String repoName = sessionCombo.getText();
-                SessionTreeNodeUtils.getSessionTreeNode(repoName);
-                RepositoryNode node = nodeManager.getRepositoryNodebyName(repoName);
-                editor.setRepositoryNode(node);
-                editor.refresh(true);
-            }
-        });
+                public void widgetSelected(SelectionEvent e) {
+                    String repoName = sessionCombo.getText();
+                    RepositoryNode node = nodeManager.getRepositoryNodebyName(repoName);
+                    editor.setRepositoryNode(node);
+                    editor.refresh(true);
+                }
+            });
+        }
 
         return sessionCombo;
     }

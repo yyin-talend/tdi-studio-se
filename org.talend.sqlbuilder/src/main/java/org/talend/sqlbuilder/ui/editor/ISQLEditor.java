@@ -111,13 +111,11 @@ public interface ISQLEditor {
      * @return a string
      */
     String getRepositoryName();
-
+    
     /**
-     * Sets the flag for indicating current editor whether is the default one.
-     * 
-     * @param isDefaultEditor
+     * Gets the flag for indicating current editor whether is the default one.
      */
-    void setDefaultEditor(boolean isDefaultEditor);
+    boolean getDefaultEditor();
 
     /**
      * Sets the content of editor.
