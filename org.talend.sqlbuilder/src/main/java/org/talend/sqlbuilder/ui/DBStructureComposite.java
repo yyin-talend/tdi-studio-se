@@ -142,10 +142,10 @@ public class DBStructureComposite extends Composite {
     }
 
     public void openNewEditor() {
-//        treeViewer.getTree().setSelection(treeViewer.getTree().getItem(0));
-//        Action tempOpenNewEditorAction = 
-//            new OpenNewEditorAction(treeViewer, builderDialog.getEditorComposite(), builderDialog.getConnParameters(), true);
-//        tempOpenNewEditorAction.run();
+        treeViewer.getTree().setSelection(treeViewer.getTree().getItem(0));
+        Action tempOpenNewEditorAction = 
+            new OpenNewEditorAction(treeViewer, builderDialog.getEditorComposite(), builderDialog.getConnParameters(), true);
+        tempOpenNewEditorAction.run();
     }
     
     /**
