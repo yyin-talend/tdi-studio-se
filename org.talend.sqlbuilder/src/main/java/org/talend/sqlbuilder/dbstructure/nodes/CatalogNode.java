@@ -53,7 +53,6 @@ public class CatalogNode extends AbstractNode {
 
     private static final Log LOGGER = LogFactory.getLog(CatalogNode.class);
 
-
     /**
      * Create new database Catalog node.
      * 
@@ -69,7 +68,7 @@ public class CatalogNode extends AbstractNode {
 
         pimageKey = "Images.CatalogNodeIcon";
     }
-    
+
     /**
      * @return ChildNames.
      */
@@ -93,7 +92,6 @@ public class CatalogNode extends AbstractNode {
         return "catalog";
     }
 
-
     /**
      * @return UniqueIdentifier.
      */
@@ -101,7 +99,6 @@ public class CatalogNode extends AbstractNode {
 
         return getQualifiedName();
     }
-
 
     /**
      * Checks if a node name should be filtered.
@@ -135,54 +132,52 @@ public class CatalogNode extends AbstractNode {
 
     }
 
-
     /**
      * LoadChildren.
      */
     @SuppressWarnings("unchecked")
     public void loadChildren() {
-        
+
         if (psessionNode.getInteractiveConnection() == null) {
             TableFolderNode node = new TableFolderNode(this, "TABLE", psessionNode, new ITableInfo[0]);
             addChildNode(node);
             return;
         }
-        
+
         pchildNames = new ArrayList();
 
         try {
 
             ITableInfo[] tables = null;
-//            String[] tableTypes = psessionNode.getMetaData().getTableTypes();
-            String[] tableTypes = {"TABLE", "VIEW"};
-            
+            // String[] tableTypes = psessionNode.getMetaData().getTableTypes();
+            String[] tableTypes = { "TABLE", "VIEW" };
+
             try {
                 tables = psessionNode.getMetaData().getTables(null, getSchemaName(), "%", tableTypes);
             } catch (Throwable e) {
                 LOGGER.debug("Loading all tables at once is not supported");
             }
 
-//            for (int i = 0; i < tableTypes.length; ++i) {
-//            }
+            // for (int i = 0; i < tableTypes.length; ++i) {
+            // }
             TableFolderNode node = new TableFolderNode(this, "TABLE", psessionNode, tables);
             pchildNames.add(node.getLabelText());
             if (!isExcludedByFilter(node.getLabelText())) {
                 addChildNode(node);
             }
 
-
         } catch (Throwable e) {
             SqlBuilderPlugin.log("Could not load childnodes for " + pname, e);
         }
     }
-    
+
     /**
      * @return Image.
      */
     public Image getImage() {
         return ImageProvider.getImage(ERepositoryObjectType.METADATA_CONNECTIONS);
     }
-    
+
     /**
      * @return Column label.
      * @param columnIndex column index.
@@ -190,31 +185,34 @@ public class CatalogNode extends AbstractNode {
     @Override
     public String getLabelAtColumn(int columnIndex) {
         if (columnIndex == 0) {
-            if (getSchemaName() != null && !getSchemaName().trim().equals("")  
-                    && getLabelText() != null && !getLabelText().trim().equals("")) {
+            if (getSchemaName() != null && !getSchemaName().trim().equals("") && getLabelText() != null
+                    && !getLabelText().trim().equals("")) {
                 return getLabelText() + "." + getSchemaName();
             } else {
                 return getLabelText();
             }
         } else if (columnIndex == 1) {
-            return psessionNode.getRepositoryNode() == null? null : psessionNode.getRepositoryName();
+            return psessionNode.getRepositoryNode() == null ? null : psessionNode.getRepositoryName();
         }
         return null;
     }
-    
+
     /**
      * @return SchemaName.
      */
     public String getSchemaName() {
-        
+
         DatabaseConnection databaseConnection = getSession().getDatabaseConnection();
         if (databaseConnection == null) {
             return null;
         }
-        
-        return databaseConnection.getSchema();
+        String schema = databaseConnection.getSchema();
+        if (schema != null && schema.length() == 0) {
+            return null;
+        }
+        return schema;
     }
-    
+
     /**
      * @return Background color.
      */
@@ -226,7 +224,7 @@ public class CatalogNode extends AbstractNode {
             return super.getBackground();
         }
     }
-    
+
     /**
      * @return Foreground color.
      */
@@ -238,19 +236,18 @@ public class CatalogNode extends AbstractNode {
             return super.getBackground();
         }
     }
-    
+
     /**
      * @return ChildNodes.
      */
     @Override
     public INode[] getChildNodes() {
         INode[] nodes = super.getChildNodes();
-        
+
         if (nodes == null || nodes.length < 1) {
             return nodes;
         }
         return nodes[0].getChildNodes();
     }
-    
-    
+
 }

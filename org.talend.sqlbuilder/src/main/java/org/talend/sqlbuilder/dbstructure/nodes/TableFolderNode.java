@@ -133,48 +133,48 @@ public class TableFolderNode extends AbstractFolderNode {
         }
     }
 
-    /**
-     * @return ChildNodes.
-     */
-    @Override
-    public INode[] getChildNodes() {
-        INode[] nodesInDB = super.getChildNodes();
-        RepositoryNode root = psessionNode.getRepositoryNode();
-        if (root == null) {
-            return nodesInDB;
-        }
-        List<RepositoryNode> repositoryNodes = root.getChildren();
-        
-        Map<String, INode> allNodes = new HashMap<String, INode>();
-        
-        //add db nodes.
-        if (nodesInDB != null) {
-            for (INode node : nodesInDB) {
-                allNodes.put(node.getLabelText(), node);
-            }
-        }
-        
-//        Set<String> repositoryTableNames = new HashSet<String>();
-        for (RepositoryNode repositoryNode : repositoryNodes) {
-            String repositoryName = repositoryNode.getProperties(EProperties.LABEL).toString();
-            String tableSourceName = TableNode.getMetadataTable(repositoryNode).getSourceName();
-            if (tableSourceName != null) {
-                tableSourceName = tableSourceName.replaceAll("_", "-");
-            }
-            if (!allNodes.keySet().contains(repositoryNode.getProperties(EProperties.LABEL)) 
-                    && !allNodes.keySet().contains(tableSourceName)) {
-                allNodes.put(repositoryName, convert2TableNode(repositoryNode));
-            } else {
-                TableNode tNode = (TableNode) allNodes.get(tableSourceName);
-                tNode.setRepositoryName(repositoryName);
-                tNode.setCurrentRepositoryNode(repositoryNode);
-                tNode.setSourceName(tableSourceName);
-                SessionTreeNodeUtils.getTableNodes().add(tNode);
-            }
-        }
-        
-        return allNodes.values().toArray(new INode[]{});
-    }
+//    /**
+//     * @return ChildNodes.
+//     */
+//    @Override
+//    public INode[] getChildNodes() {
+//        INode[] nodesInDB = super.getChildNodes();
+//        RepositoryNode root = psessionNode.getRepositoryNode();
+//        if (root == null) {
+//            return nodesInDB;
+//        }
+//        List<RepositoryNode> repositoryNodes = root.getChildren();
+//        
+//        Map<String, INode> allNodes = new HashMap<String, INode>();
+//        
+//        //add db nodes.
+//        if (nodesInDB != null) {
+//            for (INode node : nodesInDB) {
+//                allNodes.put(node.getLabelText(), node);
+//            }
+//        }
+//        
+////        Set<String> repositoryTableNames = new HashSet<String>();
+//        for (RepositoryNode repositoryNode : repositoryNodes) {
+//            String repositoryName = repositoryNode.getProperties(EProperties.LABEL).toString();
+//            String tableSourceName = TableNode.getMetadataTable(repositoryNode).getSourceName();
+//            if (tableSourceName != null) {
+//                tableSourceName = tableSourceName.replaceAll("_", "-");
+//            }
+//            if (!allNodes.keySet().contains(repositoryNode.getProperties(EProperties.LABEL)) 
+//                    && !allNodes.keySet().contains(tableSourceName)) {
+//                allNodes.put(repositoryName, convert2TableNode(repositoryNode));
+//            } else {
+//                TableNode tNode = (TableNode) allNodes.get(tableSourceName);
+//                tNode.setRepositoryName(repositoryName);
+//                tNode.setCurrentRepositoryNode(repositoryNode);
+//                tNode.setSourceName(tableSourceName);
+//                SessionTreeNodeUtils.getTableNodes().add(tNode);
+//            }
+//        }
+//        
+//        return allNodes.values().toArray(new INode[]{});
+//    }
 
     /**
      * @param repositoryNode RepsitoryNode.
