@@ -47,69 +47,82 @@ import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNode.EProperties;
 import org.talend.sqlbuilder.dbstructure.DBTreeProvider;
 import org.talend.sqlbuilder.dbstructure.RepositoryNodeType;
+import org.talend.sqlbuilder.repository.utility.SQLBuilderRepositoryNodeManager;
 
 /**
- * DOC dev  class global comment. Detailled comment
- * <br/>
- *
+ * DOC dev class global comment. Detailled comment <br/>
+ * 
  * $Id: MetadataRefreshAction.java,v 1.22 2006/11/09 01:21:53 qiang.zhang Exp $
- *
+ * 
  */
-public class MetadataRefreshAction  extends SelectionProviderAction {
-    private ImageDescriptor img = ImageProvider.getImageDesc(EImage.REFRESH_ICON);
-    private ISelectionProvider selectionProvider;
-    private List<MetadataColumn> columnNodes;
-    private RepositoryNode repositorynode;
-    /**
-     * DOC dev MetadataRefreshAction constructor comment.
-     * @param selectionProvider
-     */
-    public MetadataRefreshAction(ISelectionProvider selectionProvider) {
-        super(selectionProvider, "");
-        this.selectionProvider = selectionProvider;
-        columnNodes = new ArrayList<MetadataColumn>();
-        init();
-    }
+public class MetadataRefreshAction extends SelectionProviderAction {
+	private ImageDescriptor img = ImageProvider
+			.getImageDesc(EImage.REFRESH_ICON);
 
-    /* (non-Javadoc)
-     * @see org.eclipse.ui.actions.SelectionProviderAction#selectionChanged(org.eclipse.jface.viewers.IStructuredSelection)
-     */
-    @Override
-    public void selectionChanged(IStructuredSelection selection) {
-        init();
-    }
+	private ISelectionProvider selectionProvider;
 
-    /* (non-Javadoc)
-     * @see org.eclipse.jface.action.Action#run()
-     * 
-     */
-    @Override
-    public void run() {
-    	DatabaseConnectionItem item = null;
-    	if (repositorynode != null) {
-    		 item = getItem();
-    	}
-    	
-        for (MetadataColumn columnNode : columnNodes) {
-            MetadataTable tableNode = (MetadataTable) columnNode.getTable();
-           
-                saveMetadataColumn(tableNode, columnNode, item);
-        }
-        
-    }
+	private List<MetadataColumn> columnNodes;
+
+	private List<RepositoryNode> repositorynodes;
+
+	/**
+	 * DOC dev MetadataRefreshAction constructor comment.
+	 * 
+	 * @param selectionProvider
+	 */
+	public MetadataRefreshAction(ISelectionProvider selectionProvider) {
+		super(selectionProvider, "");
+		this.selectionProvider = selectionProvider;
+		columnNodes = new ArrayList<MetadataColumn>();
+		repositorynodes = new ArrayList<RepositoryNode>();
+		init();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ui.actions.SelectionProviderAction#selectionChanged(org.eclipse.jface.viewers.IStructuredSelection)
+	 */
+	@Override
+	public void selectionChanged(IStructuredSelection selection) {
+		init();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.jface.action.Action#run()
+	 * 
+	 */
+	@Override
+	public void run() {
+		DatabaseConnectionItem item = null;
+		if (repositorynodes.get(0) != null) {
+			item = getItem(repositorynodes.get(0));
+		}
+
+		for (MetadataColumn columnNode : columnNodes) {
+			MetadataTable tableNode = (MetadataTable) columnNode.getTable();
+			saveMetadataColumn(tableNode, columnNode, item);
+		}
+
+	}
 
 	/**
 	 * DOC dev Comment method "getItem".
+	 * 
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	private DatabaseConnectionItem getItem() {
-		IRepositoryObject repositoryObject = repositorynode.getObject();
-		DatabaseConnectionItem item = (DatabaseConnectionItem) repositoryObject.getProperty().getItem();
-		DatabaseConnection connection = (DatabaseConnection) item.getConnection();
+	private DatabaseConnectionItem getItem(RepositoryNode node) {
+		IRepositoryObject repositoryObject = node.getObject();
+		DatabaseConnectionItem item = (DatabaseConnectionItem) repositoryObject
+				.getProperty().getItem();
+		DatabaseConnection connection = (DatabaseConnection) item
+				.getConnection();
 		List<MetadataTable> tables = connection.getTables();
 		List<MetadataTable> newtables = new ArrayList<MetadataTable>();
-		
+
 		for (MetadataTable table : tables) {
 			List<MetadataColumn> columns = table.getColumns();
 			List<MetadataColumn> newcloumns = new ArrayList<MetadataColumn>();
@@ -128,157 +141,188 @@ public class MetadataRefreshAction  extends SelectionProviderAction {
 		connection.getTables().addAll(newtables);
 		return item;
 	}
-    /**
-     * DOC dev Comment method "saveMetadataColumn".
-     * @param tableNode columNode's parent.
-     * @param columnNode selected columnNode
-     * @param item selected DatabaseConnectionItem
-     */
-    private void saveMetadataColumn(MetadataTable tableNode, MetadataColumn columnNode
-            , DatabaseConnectionItem item) {
-        modifyMetadataColumn(tableNode, columnNode, item);
-        saveMetaData(item);
-        
-//        ((TreeViewer) selectionProvider).refresh(columnNode.getParent());
-        
-        ((TreeViewer) selectionProvider).refresh(repositorynode, true);
-        ((TreeViewer) selectionProvider).refresh(tableNode, true);
-        ((TreeViewer) selectionProvider).refresh(columnNode, true);
-    }
-    /**
-     * 
-     * DOC dev Comment method "modifyMetadataColumn".
-     * @param tableNode columNode's parent.
-     * @param columnNode selected columnNode
-     * @param item selected DatabaseConnectionItem
-     */
-    private void modifyMetadataColumn(MetadataTable tableNode, MetadataColumn columnNode,
-            DatabaseConnectionItem item) {
-        IMetadataConnection iMetadataConnection = ConvertionHelper.convert((DatabaseConnection) item.getConnection());
-        List<MetadataColumn> metadataColumns = new ArrayList<MetadataColumn>();
-        metadataColumns = ExtractMetaDataFromDataBase
-        .returnMetadataColumnsFormTable(iMetadataConnection, tableNode.getSourceName());
-        Iterator iterate = metadataColumns.iterator();
-        while (iterate.hasNext()) {
-            MetadataColumn metadataColumn = (MetadataColumn) iterate.next();
-            if (metadataColumn.getLabel().equals(columnNode.getOriginalField())) {
-//                EList columns = tableNode.getColumns(); 
-//                for (int i = 0, size = columns.size(); i < size; i++) {
-//                    MetadataColumn column = (MetadataColumn) columns.get(i);
-//                    if (column.getLabel().equals(columnNode.getOriginalField())) {
-            	if (columnNode.getLabel().equals("")) {
-            		columnNode.setLabel(columnNode.getOriginalField());
-            	}
-                columnNode.setComment(metadataColumn.getComment());
-                columnNode.setDefaultValue(metadataColumn.getDefaultValue());
-                columnNode.setKey(metadataColumn.isKey());
-                columnNode.setLength(metadataColumn.getLength());
-                columnNode.setNullable(metadataColumn.isNullable());
-                columnNode.setPrecision(metadataColumn.getPrecision());
-                columnNode.setSourceType(metadataColumn.getSourceType());
-                columnNode.setTalendType(metadataColumn.getTalendType());
-                columnNode.setDivergency(false);
-                columnNode.setSynchronised(true);
-//                    }
-//                }
-            }
-        }
-    }
-    
-//    /**
-//     * DOC dev Comment method "getRepositoryMetadataColumns".
-//     * @param tableNode
-//     * @param connection
-//     * @return
-//     */
-//    @SuppressWarnings({ "unchecked", "deprecation" })
-//    private EList getRepositoryMetadataColumns(TableNode tableNode, DatabaseConnection connection){
-//        String metadataTableLabel = (String) tableNode.getRepositoryName();
-//        MetadataTable metadataTable =  TableHelper.findByLabel(connection, metadataTableLabel);
-//        return metadataTable.getColumns();
-//    }
-    /**
-     * DOC dev Comment method "saveMetaData".
-     * @param item
-     */
-    private void saveMetaData(DatabaseConnectionItem item) {
-        IRepositoryFactory factory = RepositoryFactoryProvider.getInstance();
-        try {
-            factory.save(item);
-        } catch (PersistenceException e) {
-            e.printStackTrace();
-        }
-    }
-    /* (non-Javadoc)
-     * @see org.eclipse.jface.action.Action#getImageDescriptor()
-     */
-    @Override
-    public ImageDescriptor getImageDescriptor() {
-        return img;
-    }
 
-    /* (non-Javadoc)
-     * @see org.eclipse.jface.action.Action#getHoverImageDescriptor()
-     */
-    @Override
-    public ImageDescriptor getHoverImageDescriptor() {
-        return img;
-    }
+	/**
+	 * DOC dev Comment method "saveMetadataColumn".
+	 * 
+	 * @param tableNode
+	 *            columNode's parent.
+	 * @param columnNode
+	 *            selected columnNode
+	 * @param item
+	 *            selected DatabaseConnectionItem
+	 */
+	private void saveMetadataColumn(MetadataTable tableNode,
+			MetadataColumn columnNode, DatabaseConnectionItem item) {
+		modifyMetadataColumn(tableNode, columnNode, item);
+		saveMetaData(item);
+		for (RepositoryNode repositorynode : repositorynodes) {
+			repositorynode.getObject().setPurpose("Images.ColumnNodeIcon");
+			((TreeViewer) selectionProvider).refresh(repositorynode, true);
+		}
+		
+//		((TreeViewer) selectionProvider).refresh(tableNode, true);
+//		((TreeViewer) selectionProvider).refresh(columnNode, true);
+	}
 
-    /* (non-Javadoc)
-     * @see org.eclipse.jface.action.Action#getText()
-     */
-    @Override
-    public String getText() {
-        return "Synchronize";
-    }
+	/**
+	 * 
+	 * DOC dev Comment method "modifyMetadataColumn".
+	 * 
+	 * @param tableNode
+	 *            columNode's parent.
+	 * @param columnNode
+	 *            selected columnNode
+	 * @param item
+	 *            selected DatabaseConnectionItem
+	 */
+	private void modifyMetadataColumn(MetadataTable tableNode,
+			MetadataColumn columnNode, DatabaseConnectionItem item) {
+		IMetadataConnection iMetadataConnection = ConvertionHelper
+				.convert((DatabaseConnection) item.getConnection());
+		List<MetadataColumn> metadataColumns = new ArrayList<MetadataColumn>();
+		metadataColumns = ExtractMetaDataFromDataBase
+				.returnMetadataColumnsFormTable(iMetadataConnection, tableNode
+						.getSourceName());
+		Iterator iterate = metadataColumns.iterator();
+		while (iterate.hasNext()) {
+			MetadataColumn metadataColumn = (MetadataColumn) iterate.next();
+			if (metadataColumn.getLabel().equals(columnNode.getOriginalField())) {
+				// EList columns = tableNode.getColumns();
+				// for (int i = 0, size = columns.size(); i < size; i++) {
+				// MetadataColumn column = (MetadataColumn) columns.get(i);
+				// if (column.getLabel().equals(columnNode.getOriginalField()))
+				// {
+				if (columnNode.getLabel().equals("")) {
+					columnNode.setLabel(columnNode.getOriginalField());
+				}
+				columnNode.setComment(metadataColumn.getComment());
+				columnNode.setDefaultValue(metadataColumn.getDefaultValue());
+				columnNode.setKey(metadataColumn.isKey());
+				columnNode.setLength(metadataColumn.getLength());
+				columnNode.setNullable(metadataColumn.isNullable());
+				columnNode.setPrecision(metadataColumn.getPrecision());
+				columnNode.setSourceType(metadataColumn.getSourceType());
+				columnNode.setTalendType(metadataColumn.getTalendType());
+				columnNode.setDivergency(false);
+				columnNode.setSynchronised(true);
+				// }
+				// }
+			}
+		}
+	}
 
-    /* (non-Javadoc)
-     * @see org.eclipse.jface.action.Action#getToolTipText()
-     */
-    @Override
-    public String getToolTipText() {
-        return "Synchronize";
-    }
+	// /**
+	// * DOC dev Comment method "getRepositoryMetadataColumns".
+	// * @param tableNode
+	// * @param connection
+	// * @return
+	// */
+	// @SuppressWarnings({ "unchecked", "deprecation" })
+	// private EList getRepositoryMetadataColumns(TableNode tableNode,
+	// DatabaseConnection connection){
+	// String metadataTableLabel = (String) tableNode.getRepositoryName();
+	// MetadataTable metadataTable = TableHelper.findByLabel(connection,
+	// metadataTableLabel);
+	// return metadataTable.getColumns();
+	// }
+	/**
+	 * DOC dev Comment method "saveMetaData".
+	 * 
+	 * @param item
+	 */
+	private void saveMetaData(DatabaseConnectionItem item) {
+		IRepositoryFactory factory = RepositoryFactoryProvider.getInstance();
+		try {
+			factory.save(item);
+		} catch (PersistenceException e) {
+			e.printStackTrace();
+		}
+	}
 
-    /**
-     * DOC dev Comment method "init".
-     */
-    public void init() {
-        
-        IStructuredSelection selection = (IStructuredSelection) selectionProvider.getSelection();
-        
-        boolean flag = true;
-        for (Object object : selection.toList()) {
-            if (!((RepositoryNode) object).getProperties(EProperties.CONTENT_TYPE).equals(RepositoryNodeType.COLUMN)) {
-            		this.setEnabled(false);
-                    return;
-            }
-            
-            MetadataColumn col = ((DBTreeProvider.MetadataColumnRepositoryObject) ((RepositoryNode) object).getObject()).getColumn();
-            if (col.getLabel().equals("")) {
-            	this.setEnabled(false);
-                return;
-            }
-            if (col.isDivergency()) {
-            	
-            	if (repositorynode != null 
-            			&& !(repositorynode.getObject().getLabel()
-            					.equals(((RepositoryNode) object).getObject().getLabel()))) {
-            		this.setEnabled(false);
-                    return;
-            	}
-            		
-            	repositorynode = (RepositoryNode) object;
-            	
-            	this.setEnabled(true);
-            	flag = false;
-                columnNodes.add(col);
-            }
-        }
-        if (flag) {
-            this.setEnabled(false);
-            return;
-        }
-    }
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.jface.action.Action#getImageDescriptor()
+	 */
+	@Override
+	public ImageDescriptor getImageDescriptor() {
+		return img;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.jface.action.Action#getHoverImageDescriptor()
+	 */
+	@Override
+	public ImageDescriptor getHoverImageDescriptor() {
+		return img;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.jface.action.Action#getText()
+	 */
+	@Override
+	public String getText() {
+		return "Synchronize";
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.jface.action.Action#getToolTipText()
+	 */
+	@Override
+	public String getToolTipText() {
+		return "Synchronize";
+	}
+
+	/**
+	 * DOC dev Comment method "init".
+	 */
+	public void init() {
+
+		IStructuredSelection selection = (IStructuredSelection) selectionProvider
+				.getSelection();
+
+		boolean flag = true;
+		for (Object object : selection.toList()) {
+			if (!((RepositoryNode) object).getProperties(
+					EProperties.CONTENT_TYPE).equals(RepositoryNodeType.COLUMN)) {
+				this.setEnabled(false);
+				return;
+			}
+
+			MetadataColumn col = ((DBTreeProvider.MetadataColumnRepositoryObject) ((RepositoryNode) object)
+					.getObject()).getColumn();
+			if (col.getLabel().equals("")) {
+				this.setEnabled(false);
+				return;
+			}
+			if (col.isDivergency()) {
+
+				//TODO 
+//				if (repositorynodes.get(0) != null
+//						&& !SQLBuilderRepositoryNodeManager.getRoot(repositorynodes.get(0))
+//							.equals(((RepositoryNode) object).getObject()
+//										.getLabel()))) {
+//					this.setEnabled(false);
+//					return;
+//				}
+
+				repositorynodes.add((RepositoryNode) object);
+
+				this.setEnabled(true);
+				flag = false;
+				columnNodes.add(col);
+			}
+		}
+		if (flag) {
+			this.setEnabled(false);
+			return;
+		}
+	}
 }
