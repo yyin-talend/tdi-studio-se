@@ -27,8 +27,6 @@ import java.io.File;
 import java.io.FileWriter;
 import java.util.List;
 
-import net.sourceforge.sqlexplorer.SQLAlias;
-
 import org.eclipse.jface.action.CoolBarManager;
 import org.eclipse.jface.action.StatusLineManager;
 import org.eclipse.jface.action.ToolBarContributionItem;
@@ -60,8 +58,6 @@ import org.talend.commons.ui.swt.colorstyledtext.ColorManager;
 import org.talend.commons.ui.swt.colorstyledtext.ColorStyledText;
 import org.talend.commons.ui.swt.proposal.StyledTextContentAdapter;
 import org.talend.core.CorePlugin;
-import org.talend.core.model.metadata.builder.connection.ConnectionFactory;
-import org.talend.core.model.metadata.builder.connection.Query;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.sqlbuilder.IConstants;
 import org.talend.sqlbuilder.Messages;
@@ -233,9 +229,7 @@ public class SQLBuilderEditorComposite extends Composite implements ISQLEditor {
      * @param parent
      */
     private void createStatusArea(Composite parent) {
-
         // create bottom status bar
-
         Composite statusBar = new Composite(parent, SWT.NULL);
 
         GridLayout statusBarLayout = new GridLayout();
@@ -257,7 +251,6 @@ public class SQLBuilderEditorComposite extends Composite implements ISQLEditor {
         statusBar.setLayoutData(statusBarGridData);
 
         // add status line manager
-
         StatusLineManager statusMgr = new StatusLineManager();
         statusMgr.createControl(statusBar);
 
@@ -269,7 +262,6 @@ public class SQLBuilderEditorComposite extends Composite implements ISQLEditor {
         statusMgr.getControl().setLayoutData(c1Grid);
 
         // add checkbox for limiting results
-
         GridData c2Grid = new GridData();
         c2Grid.horizontalAlignment = SWT.RIGHT;
         c2Grid.verticalAlignment = SWT.CENTER;
@@ -277,14 +269,12 @@ public class SQLBuilderEditorComposite extends Composite implements ISQLEditor {
         c2Grid.grabExcessVerticalSpace = false;
 
         final Button limitResults = new Button(statusBar, SWT.CHECK);
-        // this.limitResults = limitResults;
 
         limitResults.setText(Messages.getString("SQL_Limit_Rows_2"));
         limitResults.setSelection(true);
         limitResults.setLayoutData(c2Grid);
 
         // add input field for result limit
-
         GridData c3Grid = new GridData();
         c3Grid.horizontalAlignment = SWT.RIGHT;
         c3Grid.verticalAlignment = SWT.CENTER;
@@ -304,7 +294,6 @@ public class SQLBuilderEditorComposite extends Composite implements ISQLEditor {
                 ifLimit = limitResults.getSelection();
             }
         });
-
     }
 
     /**
@@ -339,13 +328,10 @@ public class SQLBuilderEditorComposite extends Composite implements ISQLEditor {
         addDefaultActions(defaultToolBarMgr);
                
         // initialize session actions
-
         sessionToolBarMgr = new ToolBarManager(SWT.NONE);
 
         sessionSwitcher = new SQLEditorSessionSwitcher(this);
         sessionToolBarMgr.add(sessionSwitcher);
-
-        // initialize catalog actions
 
         // add all toolbars to parent coolbar
         coolBar.setLocked(true);
@@ -353,7 +339,6 @@ public class SQLBuilderEditorComposite extends Composite implements ISQLEditor {
         coolBarMgr.add(new ToolBarContributionItem(sessionToolBarMgr));
 
         coolBarMgr.update(true);
-
     }
 
     /**
@@ -373,16 +358,12 @@ public class SQLBuilderEditorComposite extends Composite implements ISQLEditor {
      */
     private void addDefaultActions(ToolBarManager mgr) {
         mgr.removeAll();
-
-        execSQLAction.setEnabled(!execSQLAction.isDisabled());
-
         execSQLAction.setEnabled(true);
         mgr.add(execSQLAction);
         mgr.add(openFileAction);
         mgr.add(saveSQLAction);
         mgr.add(exportAction);
         mgr.add(clearTextAction);
-        
     }
 
     /**
