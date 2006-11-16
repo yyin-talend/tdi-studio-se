@@ -58,6 +58,7 @@ import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNode.ENodeType;
 import org.talend.repository.model.RepositoryNode.EProperties;
 import org.talend.repository.ui.views.RepositoryView;
+import org.talend.sqlbuilder.Messages;
 import org.talend.sqlbuilder.actions.GenerateSelectSQLAction;
 import org.talend.sqlbuilder.actions.MetadataRefreshAction;
 import org.talend.sqlbuilder.actions.OpenNewEditorAction;
@@ -163,11 +164,11 @@ public class DBStructureComposite extends Composite {
 
         Tree tree = treeViewer.getTree();
         TreeColumn database = new TreeColumn(tree, SWT.LEFT);
-        database.setText("Databases");
+        database.setText(Messages.getString("DBStructureComposite.Databases")); //$NON-NLS-1$
         database.setWidth(COLUMN_DATABASE_WIDTH);
 
         TreeColumn repository = new TreeColumn(tree, SWT.LEFT);
-        repository.setText("Repository");
+        repository.setText(Messages.getString("DBStructureComposite.Repository")); //$NON-NLS-1$
         repository.setWidth(COLUMN_REPOSITORY_WIDTH);
 
         tree.setHeaderVisible(true);
@@ -198,7 +199,7 @@ public class DBStructureComposite extends Composite {
                         return true;
                     } 
                 } else {
-                    if (node.getObject().getLabel().equals("")) {
+                    if (node.getObject().getLabel().equals("")) { //$NON-NLS-1$
                         return true;
                     } 
                 }
@@ -241,7 +242,7 @@ public class DBStructureComposite extends Composite {
                 fillContextMenu(manager);
             }
 
-            @SuppressWarnings("unchecked")
+            @SuppressWarnings("unchecked") //$NON-NLS-1$
             private void fillContextMenu(IMenuManager manager) {
                 //GenerateSelectSQL
                 if (generateSelectAction == null) {
@@ -251,13 +252,13 @@ public class DBStructureComposite extends Composite {
                 manager.add(generateSelectAction);
  
                 // open editor
-                builderDialog.getConnParameters().setQuery("");
+                builderDialog.getConnParameters().setQuery(""); //$NON-NLS-1$
                 if (openNewEditorAction == null) {
                     openNewEditorAction = 
                         new OpenNewEditorAction(treeViewer, builderDialog.getEditorComposite(), builderDialog.getConnParameters(), false);
                 }
-                openNewEditorAction.setText("New Editor");
-                openNewEditorAction.setToolTipText("New Editor");
+                openNewEditorAction.setText(Messages.getString("DBStructureComposite.NewEditor")); //$NON-NLS-1$
+                openNewEditorAction.setToolTipText(Messages.getString("DBStructureComposite.NewEditor"));
                 manager.add(openNewEditorAction);
 
                 // Separator
@@ -265,7 +266,8 @@ public class DBStructureComposite extends Composite {
                 
                 // refresh
                 if (refreshConnectionAction == null) {
-                    refreshConnectionAction = new RefreshConnectionAction(treeViewer, "Refresh");
+                    refreshConnectionAction = 
+                        new RefreshConnectionAction(treeViewer, Messages.getString("DBStructureComposite.Refresh")); 
                 }
                 ((RefreshConnectionAction) refreshConnectionAction).init();
                 manager.add(refreshConnectionAction);
@@ -287,7 +289,7 @@ public class DBStructureComposite extends Composite {
      */
     private void createToolbar() {
         Label label = new Label(this, SWT.NONE);
-        label.setText("  " + "Database Structure");
+        label.setText("  " + Messages.getString("DBStructureComposite.DatabaseStructure")); //$NON-NLS-1$ //$NON-NLS-2$
         label.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING));
         ToolBarManager toolBarMgr = new ToolBarManager(SWT.FLAT);
         toolBarMgr.createControl(this);
@@ -309,16 +311,16 @@ public class DBStructureComposite extends Composite {
     private class ListAllConnectionAction extends Action {
 
         public ListAllConnectionAction(int style) {
-            super("", style);
+            super("", style); //$NON-NLS-1$
             setImageDescriptor(ImageProvider.getImageDesc(EImage.ADD_ICON));
-            setToolTipText("Show All Connections");
+            setToolTipText(Messages.getString("DBStructureComposite.ShowAllConnections")); //$NON-NLS-1$
         }
 
         @Override
         public void run() {
             final IRunnableWithProgress r = new IRunnableWithProgress() {
                 public void run(final IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-                    monitor.beginTask("Refresh Connections", -1);
+                    monitor.beginTask(Messages.getString("DBStructureComposite.RefreshConnections"), -1); //$NON-NLS-1$
                     
                     if (isChecked()) {
                         isShowAllConnections = true;
@@ -348,19 +350,20 @@ public class DBStructureComposite extends Composite {
      */
     private class RefreshAllConnectionAction extends Action {
         public RefreshAllConnectionAction() {
-            super("");
+            super(""); //$NON-NLS-1$
             setImageDescriptor(ImageProvider.getImageDesc(EImage.REFRESH_ICON));
-            setToolTipText("Refresh");
+            setToolTipText(Messages.getString("DBStructureComposite.Refresh")); //$NON-NLS-1$
         }
         @Override
         public void run() {
-            if (!MessageDialog.openConfirm(getShell(), "Refresh", "It'll take a long time. Continue?")) {
+            if (!MessageDialog.openConfirm(getShell(), 
+                    Messages.getString("DBStructureComposite.Refresh"), Messages.getString("DBStructureComposite.TakeALongTime"))) { //$NON-NLS-2$
                 return;
             }
             final IRunnableWithProgress r = new IRunnableWithProgress() {
 
                 public void run(final IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-                    monitor.beginTask("Refresh Connections", -1);
+                    monitor.beginTask(Messages.getString("DBStructureComposite.RefreshConnections"), -1); //$NON-NLS-1$
                     
                     try {
                         RepositoryNode root = (RepositoryNode) treeViewer.getInput();
@@ -412,14 +415,14 @@ public class DBStructureComposite extends Composite {
         protected RefreshConnectionAction(ISelectionProvider provider, String text) {
             super(provider, text);
             setImageDescriptor(ImageProvider.getImageDesc(EImage.REFRESH_ICON));
-            setToolTipText("Refresh");
+            setToolTipText(Messages.getString("Refresh"));
             init();
         }
         @Override
         public void selectionChanged(ISelection selection) {
             init();
         }
-        @SuppressWarnings("unchecked")
+        @SuppressWarnings("unchecked") //$NON-NLS-1$
         public void init() {
             ISelection selection = getSelectionProvider().getSelection();
             if (selection.isEmpty()) {
@@ -434,7 +437,7 @@ public class DBStructureComposite extends Composite {
             final IRunnableWithProgress r = new IRunnableWithProgress() {
                 @SuppressWarnings("unchecked")
                 public void run(final IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-                    monitor.beginTask("Refresh Connections", -1);
+                    monitor.beginTask(Messages.getString("DBStructureComposite.RefreshConnections"), -1);
                     try {
                         RepositoryNode[] nodes = (RepositoryNode[]) selection.toList().toArray(new RepositoryNode[]{});
                         nodes = retrieveFromDB(nodes);

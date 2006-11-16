@@ -30,7 +30,9 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.actions.SelectionProviderAction;
+import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.metadata.builder.connection.MetadataColumn;
+import org.talend.core.model.properties.ConnectionItem;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNode.EProperties;
 import org.talend.sqlbuilder.SqlBuilderPlugin;
@@ -128,6 +130,7 @@ public class GenerateSelectSQLAction extends SelectionProviderAction {
     private String createColumnSelect() {
 
         StringBuffer query = new StringBuffer("select ");
+        String fix = getPrePostfix(selectedNodes[0]);
         String sep = "";
         String table = "";
 
@@ -145,7 +148,7 @@ public class GenerateSelectSQLAction extends SelectionProviderAction {
                 }
 
                 query.append(sep);
-                query.append(node.getObject().getLabel());
+                query.append(fix + node.getObject().getLabel() + fix);
                 sep = ", ";
             }
         }
@@ -163,7 +166,7 @@ public class GenerateSelectSQLAction extends SelectionProviderAction {
     private String createTableSelect() {
 
         RepositoryNode node = (RepositoryNode) selectedNodes[0];
-//        boolean isNeed
+        String fix = getPrePostfix(node);
         
         StringBuffer query = new StringBuffer("select ");
         String sep = "";
@@ -175,7 +178,7 @@ public class GenerateSelectSQLAction extends SelectionProviderAction {
 
             query.append(sep);
             String column = ((MetadataColumn) it.next()).getOriginalField();
-            query.append(column);
+            query.append(fix + column + fix);
             sep = ", ";
         }
 
@@ -183,6 +186,21 @@ public class GenerateSelectSQLAction extends SelectionProviderAction {
         query.append(node.getObject().getStatusCode());
 
         return query.toString();
+    }
+    
+    /**
+     * Get Prepostfix.
+     * @param node  the selected node
+     * @return PrePostfix
+     */
+    private String getPrePostfix(RepositoryNode node) {
+        RepositoryNode root = repositoryNodeManager.getRoot(node);
+        DatabaseConnection connection = (DatabaseConnection) ((ConnectionItem) root
+                .getObject().getProperty().getItem()).getConnection();
+        if (connection.getDatabaseType().equals("PostgreSQL")) {
+            return "\"";
+        }
+        return "";
     }
 
     /**
