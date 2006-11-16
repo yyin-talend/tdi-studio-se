@@ -131,6 +131,7 @@ public class GenerateSelectSQLAction extends SelectionProviderAction {
 
         StringBuffer query = new StringBuffer("select ");
         String fix = getPrePostfix(selectedNodes[0]);
+        String tablePrefix = getTablePrefix(selectedNodes[0]);
         String sep = "";
         String table = "";
 
@@ -154,7 +155,7 @@ public class GenerateSelectSQLAction extends SelectionProviderAction {
         }
 
         query.append(" from ");
-        query.append(table);
+        query.append(tablePrefix + table);
 
         return query.toString();
 
@@ -167,6 +168,7 @@ public class GenerateSelectSQLAction extends SelectionProviderAction {
 
         RepositoryNode node = (RepositoryNode) selectedNodes[0];
         String fix = getPrePostfix(node);
+        String tablePrefix = getTablePrefix(node);
         
         StringBuffer query = new StringBuffer("select ");
         String sep = "";
@@ -183,11 +185,22 @@ public class GenerateSelectSQLAction extends SelectionProviderAction {
         }
 
         query.append(" from ");
-        query.append(node.getObject().getStatusCode());
+        query.append(tablePrefix + node.getObject().getStatusCode());
 
         return query.toString();
     }
     
+    private String getTablePrefix(RepositoryNode node) {
+        RepositoryNode root = repositoryNodeManager.getRoot(node);
+        DatabaseConnection connection = (DatabaseConnection) ((ConnectionItem) root
+                .getObject().getProperty().getItem()).getConnection();
+        if (connection.getSchema() != null && !connection.getSchema().trim().equals("")) {
+            return connection.getSchema() + ".";
+        } else {
+            return "";
+        }
+    }
+
     /**
      * Get Prepostfix.
      * @param node  the selected node

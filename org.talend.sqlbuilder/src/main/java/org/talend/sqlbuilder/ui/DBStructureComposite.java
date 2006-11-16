@@ -440,6 +440,7 @@ public class DBStructureComposite extends Composite {
                     monitor.beginTask(Messages.getString("DBStructureComposite.RefreshConnections"), -1);
                     try {
                         RepositoryNode[] nodes = (RepositoryNode[]) selection.toList().toArray(new RepositoryNode[]{});
+                        ((DBTreeProvider) treeViewer.getContentProvider()).setRefresh(true);
                         nodes = retrieveFromDB(nodes);
                     } finally {
                         monitor.done();

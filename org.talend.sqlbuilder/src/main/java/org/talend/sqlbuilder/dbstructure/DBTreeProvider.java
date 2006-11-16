@@ -68,6 +68,7 @@ ITableColorProvider {
     private RepositoryContentProvider repositoryContentProvider;
     private ConnectionParameters connectionParameters;
     private RepositoryView repositoryView;
+    private boolean isRefresh;
     
     public DBTreeProvider(RepositoryView repositoryView, ConnectionParameters connectionParameters) {
         this.connectionParameters = connectionParameters;
@@ -75,6 +76,15 @@ ITableColorProvider {
         this.repositoryView = repositoryView;
     }
     
+    
+    public boolean isRefresh()  {
+        return isRefresh;
+    }
+
+    public void setRefresh(boolean isRefresh) {
+        this.isRefresh = isRefresh;
+    }
+
     public Image getColumnImage(Object element, int columnIndex) {
         if (columnIndex == 1) {
             return null;
@@ -94,8 +104,19 @@ ITableColorProvider {
         return null;
     }
     
+    @SuppressWarnings("static-access")
     public Object[] getChildren(Object parentElement) {
-        return repositoryContentProvider.getChildren(parentElement);
+        if (isRefresh) {
+            RepositoryNode repositoryNode = (RepositoryNode) parentElement;
+            RepositoryNode rootNode = repositoryNodeManager.getRoot(repositoryNode);
+            rootNode.getChildren().clear();
+            DatabaseConnection metadataConnection = (DatabaseConnection) ((ConnectionItem) repositoryNode.getObject().getProperty()
+                    .getItem()).getConnection();
+            createTables(rootNode, rootNode.getObject(), metadataConnection);
+            return repositoryNode.getChildren().toArray();
+        } else {
+            return ((RepositoryNode) parentElement).getChildren().toArray();
+        }
     }
 
     public Object getParent(Object element) {
@@ -159,7 +180,11 @@ ITableColorProvider {
                 .getProperty().getItem()).getConnection();
         String sid = connection.getSID();
         repositoryObject.setStatusCode((sid == null || sid.trim().equals("")) ? connection.getDatasourceName() : sid);
-        repositoryObject.setPurpose("Images.ConnectionIcon");
+//        if (connectionParameters.isRepository()) {
+            repositoryObject.setPurpose("Images.ConnectionIcon");
+//        } else {
+//            repositoryObject.setPurpose("Images.DatabaseIcon");
+//        }
         RepositoryNode node = new RepositoryNode(repositoryObject, parent, ENodeType.REPOSITORY_ELEMENT);
         
         node.setProperties(EProperties.CONTENT_TYPE, RepositoryNodeType.DATABASE);
@@ -221,7 +246,7 @@ ITableColorProvider {
         //statusCode use for source table name
         modelObj.setStatusCode(metadataColumn.getOriginalField());
         //purpose use for Image text.
-        if (metadataColumn.isDivergency()) {
+        if (metadataColumn.isSynchronised()) {
             modelObj.setPurpose("Images.RefreshIcon");
         } else {
             modelObj.setPurpose("Images.ColumnNodeIcon");
@@ -333,19 +358,19 @@ ITableColorProvider {
             }
         } else if (repositoryNode.getProperties(EProperties.CONTENT_TYPE) == RepositoryNodeType.TABLE) {
             MetadataTableRepositoryObject tableRepositoryObject = (MetadataTableRepositoryObject) repositoryNode.getObject();
+            if (tableRepositoryObject.getLabel() == null || tableRepositoryObject.getLabel().trim().equals("")) {
+                return Display.getDefault().getSystemColor(SWT.COLOR_GRAY);
+            }
             if (tableRepositoryObject.getTable().isDivergency()) {
                 return Display.getDefault().getSystemColor(SWT.COLOR_RED);
             }
-            if (tableRepositoryObject.getTable() == null) {
-                return Display.getDefault().getSystemColor(SWT.COLOR_GRAY);
-            }
         } else if (repositoryNode.getProperties(EProperties.CONTENT_TYPE) == RepositoryNodeType.COLUMN) {
             MetadataColumnRepositoryObject columnRepositoryObject = (MetadataColumnRepositoryObject) repositoryNode.getObject();
+            if (columnRepositoryObject.getLabel() == null || columnRepositoryObject.getLabel().trim().equals("")) {
+                return Display.getDefault().getSystemColor(SWT.COLOR_GRAY);
+            }
             if (columnRepositoryObject.getColumn().isDivergency()) {
                 return Display.getDefault().getSystemColor(SWT.COLOR_RED);
-            }
-            if (columnRepositoryObject.getColumn() == null) {
-                return Display.getDefault().getSystemColor(SWT.COLOR_GRAY);
             }
         }
         return null;
