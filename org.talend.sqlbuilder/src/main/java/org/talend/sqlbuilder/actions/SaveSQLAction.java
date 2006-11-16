@@ -73,6 +73,6 @@ public class SaveSQLAction extends AbstractEditorAction {
      */
     public void run() {
        //TODO should disable this code when release the 1.0.1 version
-        editor.doSaveSQL();
+//        editor.doSaveSQL();
     };
 }
