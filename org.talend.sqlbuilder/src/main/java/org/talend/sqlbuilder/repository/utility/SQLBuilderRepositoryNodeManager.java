@@ -45,9 +45,11 @@ import org.talend.core.model.properties.DatabaseConnectionItem;
 import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.core.model.repository.RepositoryObject;
 import org.talend.repository.model.IRepositoryFactory;
 import org.talend.repository.model.RepositoryFactoryProvider;
 import org.talend.repository.model.RepositoryNode;
+import org.talend.repository.model.RepositoryNode.ENodeType;
 import org.talend.repository.model.RepositoryNode.EProperties;
 import org.talend.repository.ui.utils.ManagerConnection;
 import org.talend.sqlbuilder.SqlBuilderPlugin;
@@ -143,17 +145,40 @@ public class SQLBuilderRepositoryNodeManager {
         return oldNode;
     }
 
-    public RepositoryNode getRepositoryNodeByBuildIn(RepositoryNode node, ConnectionParameters parameters) {
+    
+    
+    @SuppressWarnings("unchecked")
+	public RepositoryNode getRepositoryNodeByBuildIn(RepositoryNode node, ConnectionParameters parameters) {
 		DatabaseConnection connection = ConnectionFactory.eINSTANCE.createDatabaseConnection();
-		connection.setDatasourceName(parameters.getDatasource());
-		connection.setURL(parameters.getURL());
-		connection.setLabel(parameters.getDbName());
-		connection.setDriverClass(ExtractMetaDataUtils.getDriverClassByDbType(parameters.getDbType()));
+		connection.setDatabaseType(parameters.getDbType());
+		connection.setUsername(parameters.getUserName());
+		connection.setPort(parameters.getPort());
+		connection.setPassword(parameters.getPassword());
 		connection.setSID(parameters.getDbName());
-		
+		connection.setLabel(parameters.getDbName());
+		connection.setDatasourceName(parameters.getDatasource());
+//		connection.setComment("");
+		connection.setURL(parameters.getURL());
+		connection.setDriverClass(ExtractMetaDataUtils.getDriverClassByDbType(parameters.getDbType()));
+		IMetadataConnection iMetadataConnection = ConvertionHelper.convert(connection);
+		boolean status = new ManagerConnection().check(iMetadataConnection);
+        connection.setDivergency(!status);
+        connection.getTables().clear();
+        if (status) {
+        	List<MetadataTable> tablesFromDB = getTablesFromDB(iMetadataConnection);
+        	for (MetadataTable table : tablesFromDB) {
+        		List<MetadataColumn> columnsFromDB = ExtractMetaDataFromDataBase.returnMetadataColumnsFormTable(
+                        iMetadataConnection, table.getSourceName());
+        		table.getColumns().clear();
+        		for (MetadataColumn column : columnsFromDB) {
+        			column.setLabel("");
+        			table.getColumns().add(column);
+				}
+        		table.setLabel("");
+				connection.getTables().add(table);
+			}
+        }
 		DatabaseConnectionItem item = PropertiesFactory.eINSTANCE.createDatabaseConnectionItem();
-		
-		
 		Property connectionProperty = PropertiesFactory.eINSTANCE.createProperty();
         connectionProperty
                  .setAuthor(((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY))
@@ -163,10 +188,10 @@ public class SQLBuilderRepositoryNodeManager {
 
          item.setProperty(connectionProperty);
          item.setConnection(connection);
-         
-         node.getObject().getProperty().setItem(item);
-         
-    	return node;
+         RepositoryObject object = new RepositoryObject(connectionProperty);
+//         node.getObject().getProperty().setItem(item);
+         RepositoryNode newNode = new RepositoryNode(object, node, ENodeType.SYSTEM_FOLDER);
+    	return newNode;
 	}
     /**
      * DOC dev Comment method "getItem".
