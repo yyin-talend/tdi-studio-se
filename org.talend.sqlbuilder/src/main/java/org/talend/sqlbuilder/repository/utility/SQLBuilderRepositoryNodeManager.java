@@ -181,7 +181,7 @@ public class SQLBuilderRepositoryNodeManager {
     }
 
     public static String getDatabaseNameByRepositoryNode(RepositoryNode node) {
-    	DatabaseConnection connection = (DatabaseConnection) getItem(node);
+    	DatabaseConnection connection = (DatabaseConnection) getItem(node).getConnection();
     	boolean isOdbc = connection.getSID() == null || connection.getSID().length() == 0;
         return isOdbc ? connection.getDatasourceName() : connection.getSID(); 
     }
