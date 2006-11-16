@@ -22,14 +22,13 @@
 package org.talend.sqlbuilder.util;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.List;
 
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.operation.ModalContext;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.BusyIndicator;
 import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
@@ -89,17 +88,9 @@ public class UIUtils {
      * runWithProgress(r);
      * </pre>
      */
-    public static void runWithProgress(final IRunnableWithProgress operation, boolean fork, IProgressMonitor monitor,
-            Shell shell) {
-
-        Cursor cursor = new Cursor(Display.getDefault(), SWT.CURSOR_WAIT);
-
-        // Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
-
-        shell.setEnabled(false);
-        shell.setCursor(cursor);
-        IRunnableWithProgress progress = new IRunnableWithProgress() {
-
+    public static void runWithProgress(final IRunnableWithProgress operation, final boolean fork,
+            final IProgressMonitor monitor, final Shell shell) {
+        final IRunnableWithProgress progress = new IRunnableWithProgress() {
             public void run(final IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
                 // monitor.beginTask("test task", scale * total);
                 // SubProgressMonitor sm = new SubProgressMonitor(monitor, 1 * scale);
@@ -122,13 +113,16 @@ public class UIUtils {
             }
         };
 
-        try {
-            ModalContext.run(progress, fork, monitor, shell.getDisplay());
-        } catch (Exception e) {
-            SqlBuilderPlugin.log("something errors with the runnable process", e);
-        }
-        cursor = new Cursor(Display.getDefault(), SWT.CURSOR_ARROW);
-        shell.setEnabled(true);
-        shell.setCursor(cursor);
+        Runnable run = new Runnable() {
+            public void run() {
+                try {
+                    ModalContext.run(progress, fork, monitor, shell.getDisplay());
+                } catch (Exception e) {
+                    SqlBuilderPlugin.log("something errors with the runnable process", e);
+                }
+            }
+        };
+
+        BusyIndicator.showWhile(Display.getDefault(), run);
     }
 }
