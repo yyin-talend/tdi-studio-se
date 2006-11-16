@@ -62,10 +62,7 @@ import org.talend.sqlbuilder.actions.GenerateSelectSQLAction;
 import org.talend.sqlbuilder.actions.MetadataRefreshAction;
 import org.talend.sqlbuilder.actions.OpenNewEditorAction;
 import org.talend.sqlbuilder.dbstructure.DBTreeProvider;
-import org.talend.sqlbuilder.dbstructure.RepositoryExtNode;
 import org.talend.sqlbuilder.dbstructure.RepositoryNodeType;
-import org.talend.sqlbuilder.dbstructure.SessionTreeNodeUtils;
-import org.talend.sqlbuilder.dbstructure.nodes.INode;
 import org.talend.sqlbuilder.repository.utility.SQLBuilderRepositoryNodeManager;
 import org.talend.sqlbuilder.util.UIUtils;
 
@@ -88,8 +85,6 @@ public class DBStructureComposite extends Composite {
 
     private IProgressMonitor progressMonitor;
 
-    private RepositoryExtNode repositoryExtNode;
-    
     private RepositoryNode rootRepositoryNode;
     
     private boolean isShowAllConnections;
