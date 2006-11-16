@@ -117,10 +117,7 @@ ITableColorProvider {
 
     private void initialize(RepositoryNode treeRoot) {
         if (!connectionParameters.isRepository()) {
-            RepositoryNode metadataNode = repositoryView.getRoot().getChildren().get(5);
-//            RepositoryNode dbConnectionNode = metadataNode.getChildren().get(0);
-//            treeRoot.
-            treeRoot = repositoryNodeManager.getRepositoryNodeByBuildIn(treeRoot, connectionParameters);
+            addNode(treeRoot, repositoryNodeManager.getRepositoryNodeByBuildIn(treeRoot, connectionParameters).getObject());
         }
         IRepositoryFactory factory = RepositoryFactoryProvider.getInstance();
         

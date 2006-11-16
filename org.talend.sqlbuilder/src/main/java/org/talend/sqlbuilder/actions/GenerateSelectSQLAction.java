@@ -22,6 +22,7 @@
 package org.talend.sqlbuilder.actions;
 
 import java.util.Iterator;
+import java.util.List;
 
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -35,7 +36,9 @@ import org.talend.repository.model.RepositoryNode.EProperties;
 import org.talend.sqlbuilder.SqlBuilderPlugin;
 import org.talend.sqlbuilder.dbstructure.RepositoryNodeType;
 import org.talend.sqlbuilder.dbstructure.DBTreeProvider.MetadataTableRepositoryObject;
+import org.talend.sqlbuilder.repository.utility.SQLBuilderRepositoryNodeManager;
 import org.talend.sqlbuilder.ui.SQLBuilderTabComposite;
+import org.talend.sqlbuilder.util.ConnectionParameters;
 import org.talend.sqlbuilder.util.ImageUtil;
 
 /**
@@ -47,6 +50,7 @@ import org.talend.sqlbuilder.util.ImageUtil;
 public class GenerateSelectSQLAction extends SelectionProviderAction {
 
     private static final ImageDescriptor SQL_EDITOR_IMAGE = ImageUtil.getDescriptor("Images.SqlEditorIcon");
+    private SQLBuilderRepositoryNodeManager repositoryNodeManager = new SQLBuilderRepositoryNodeManager();
 
     private RepositoryNode[] selectedNodes;
     private ISelectionProvider provider;
@@ -90,13 +94,14 @@ public class GenerateSelectSQLAction extends SelectionProviderAction {
     /**
      * run.
      */
+    @SuppressWarnings("static-access")
     @Override
     public void run() {
         try {
 
             String query = null;
 
-            RepositoryNodeType repositoryNodeType = (RepositoryNodeType)selectedNodes[0].getProperties(EProperties.CONTENT_TYPE);
+            RepositoryNodeType repositoryNodeType = (RepositoryNodeType) selectedNodes[0].getProperties(EProperties.CONTENT_TYPE);
             
             if (repositoryNodeType == RepositoryNodeType.COLUMN) {
                 query = createColumnSelect();
@@ -108,11 +113,10 @@ public class GenerateSelectSQLAction extends SelectionProviderAction {
             if (query == null) {
                 return;
             }
-//            List repositoryNames = SessionTreeNodeUtils.getRepositoryNames();
-//            SessionTreeNode node = selectedNodes[0].getSession();
-//            ConnectionParameters connParam = new ConnectionParameters();
-//            connParam.setQuery(query);
-//            editorComposite.openNewEditor(node, repositoryNames, connParam, isDefaultEditor);
+            List repositoryNames = repositoryNodeManager.getALLReposotoryNodeNames();
+            ConnectionParameters connParam = new ConnectionParameters();
+            connParam.setQuery(query);
+            editorComposite.openNewEditor(repositoryNodeManager.getRoot(selectedNodes[0]) , repositoryNames, connParam, isDefaultEditor);
         } catch (Throwable e) {
             SqlBuilderPlugin.log("Could generate sql.", e);
         }
@@ -130,8 +134,11 @@ public class GenerateSelectSQLAction extends SelectionProviderAction {
         for (int i = 0; i < selectedNodes.length; i++) {
 
             RepositoryNode node = selectedNodes[i];
-
-            if ((RepositoryNodeType)selectedNodes[0].getProperties(EProperties.CONTENT_TYPE) == RepositoryNodeType.COLUMN) {
+            if (node.getParent() != selectedNodes[0].getParent()) {
+                continue;
+            }
+            
+            if ((RepositoryNodeType) selectedNodes[0].getProperties(EProperties.CONTENT_TYPE) == RepositoryNodeType.COLUMN) {
 
                 if (table.length() == 0) {
                     table = node.getParent().getObject().getStatusCode();
@@ -156,7 +163,8 @@ public class GenerateSelectSQLAction extends SelectionProviderAction {
     private String createTableSelect() {
 
         RepositoryNode node = (RepositoryNode) selectedNodes[0];
-
+//        boolean isNeed
+        
         StringBuffer query = new StringBuffer("select ");
         String sep = "";
 

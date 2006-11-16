@@ -185,14 +185,22 @@ public class DBStructureComposite extends Composite {
             if (isShowAllConnections) {
                 return true;
             }
+            
             RepositoryNode node = (RepositoryNode) element;
             if (node.getProperties(EProperties.CONTENT_TYPE) == RepositoryNodeType.FOLDER) {
                 if (isExistChildWithRepositoryNodeName(node, builderDialog.getConnParameters().getRepositoryName())) {
                     return true;
                 } 
             } else if (node.getProperties(EProperties.CONTENT_TYPE) == RepositoryNodeType.DATABASE) {
-                if (node.getProperties(RepositoryNode.EProperties.LABEL).equals(builderDialog.getConnParameters().getRepositoryName())) {
-                    return true;
+                if (builderDialog.getConnParameters().isRepository()) {
+                    if (node.getProperties(RepositoryNode.EProperties.LABEL)
+                            .equals(builderDialog.getConnParameters().getRepositoryName())) {
+                        return true;
+                    } 
+                } else {
+                    if (node.getObject().getLabel().equals("")) {
+                        return true;
+                    } 
                 }
             } else {
                 return true;
@@ -308,14 +316,7 @@ public class DBStructureComposite extends Composite {
 
         @Override
         public void run() {
-            if (isChecked()) {
-                if (!MessageDialog.openConfirm(getShell(), "Show All Connections", "It will take a long time.  Continue?")) {
-                    setChecked(false);
-                    return;
-                }
-            }
             final IRunnableWithProgress r = new IRunnableWithProgress() {
-
                 public void run(final IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
                     monitor.beginTask("Refresh Connections", -1);
                     
@@ -324,14 +325,17 @@ public class DBStructureComposite extends Composite {
                     } else {
                         isShowAllConnections = false;
                     }
-
-                    Display.getDefault().asyncExec(new Runnable() {
-                        public void run() {
-                            ((RepositoryNode) treeViewer.getInput()).getChildren().clear();
-                            treeViewer.refresh();
-                        }
-                    });
-                    monitor.done();
+                    
+                    try {
+                        Display.getDefault().asyncExec(new Runnable() {
+                            public void run() {
+                                ((RepositoryNode) treeViewer.getInput()).getChildren().clear();
+                                treeViewer.refresh();
+                            }
+                        });
+                    } finally {
+                        monitor.done();
+                    }
                 }
             };
 
@@ -357,11 +361,14 @@ public class DBStructureComposite extends Composite {
 
                 public void run(final IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
                     monitor.beginTask("Refresh Connections", -1);
-
-                    RepositoryNode root = (RepositoryNode) treeViewer.getInput();
-                    refreshChildren(root);
                     
-                    monitor.done();
+                    try {
+                        RepositoryNode root = (RepositoryNode) treeViewer.getInput();
+                        refreshChildren(root);
+                    } finally {
+                        monitor.done();
+                    }
+                    
                 }
 
             };
@@ -390,11 +397,12 @@ public class DBStructureComposite extends Composite {
     private void doRefresh(final RepositoryNode refreshNode) {
         Display.getDefault().asyncExec(new Runnable() {
             public void run() {
-                if (treeViewer.getTree() != null && treeViewer.getTree().isDisposed()) {
-                    treeViewer.refresh(refreshNode);
-                }
+                treeViewer.refresh(refreshNode, true);
+//                ((RepositoryNode) treeViewer.getInput()).getChildren().clear();
+//                treeViewer.setInput(treeViewer.getInput());
             }
         });
+        
     }
     
     /**
@@ -427,10 +435,12 @@ public class DBStructureComposite extends Composite {
                 @SuppressWarnings("unchecked")
                 public void run(final IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
                     monitor.beginTask("Refresh Connections", -1);
-                   
-                    RepositoryNode[] nodes = (RepositoryNode[]) selection.toList().toArray(new RepositoryNode[]{});
-                    nodes = retrieveFromDB(nodes);
-                    monitor.done();
+                    try {
+                        RepositoryNode[] nodes = (RepositoryNode[]) selection.toList().toArray(new RepositoryNode[]{});
+                        nodes = retrieveFromDB(nodes);
+                    } finally {
+                        monitor.done();
+                    }
                 }
                 
                 private RepositoryNode[] retrieveFromDB(RepositoryNode[] nodes)

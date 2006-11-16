@@ -51,6 +51,8 @@ public class OpenNewEditorAction extends SelectionProviderAction {
     private ConnectionParameters connParam;
 
     private boolean isDefaultEditor;
+    
+    private SQLBuilderRepositoryNodeManager repositoryNodeManager = new SQLBuilderRepositoryNodeManager();
 
     /**
      * OpenNewEditorAction constructor.
@@ -107,32 +109,10 @@ public class OpenNewEditorAction extends SelectionProviderAction {
         if (firstNode.getProperties(EProperties.CONTENT_TYPE) == RepositoryNodeType.FOLDER) {
            firstNode = new SQLBuilderRepositoryNodeManager().getRepositoryNodebyName(connParam.getRepositoryName());  
         }
-        firstNode = new SQLBuilderRepositoryNodeManager().getRoot(firstNode);
-        TreeViewer treeViewer = (TreeViewer) selectionProvider;
-        List repositoryNames = getRepositoryNames((RepositoryNode) treeViewer.getInput());
+        List repositoryNames = repositoryNodeManager.getALLReposotoryNodeNames();
         editorComposite.openNewEditor(firstNode, repositoryNames, connParam,
                 isDefaultEditor);
     }
     
-    /**
-     * Get all repository node names.
-     * @param
-     * @return
-     * @exception
-     */
-    @SuppressWarnings("unchecked")
-    private List getRepositoryNames(RepositoryNode repositoryNode) {
-        List<String> repositoryNames = new ArrayList<String>();
-        List<RepositoryNode> repositoryNodes = repositoryNode.getChildren();
-        for (RepositoryNode node : repositoryNodes) {
-            if (node.getProperties(EProperties.CONTENT_TYPE) == RepositoryNodeType.FOLDER) {
-                repositoryNames.addAll(getRepositoryNames(node));
-            } else {
-                repositoryNames.add(node.getObject().getLabel());
-            }
-        }
-
-        return repositoryNames;
-    }
 
 }
