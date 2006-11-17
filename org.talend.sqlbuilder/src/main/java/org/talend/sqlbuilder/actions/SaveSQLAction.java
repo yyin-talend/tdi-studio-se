@@ -28,64 +28,67 @@ import org.talend.sqlbuilder.Messages;
 import org.talend.sqlbuilder.dbstructure.SqlBuilderRepositoryObject;
 import org.talend.sqlbuilder.util.ImageUtil;
 
-
 /**
- * This class is used for saving current editor's sql text into dbstructure composite.
- * <br/>
- *
+ * This class is used for saving current editor's sql text into dbstructure composite. <br/>
+ * 
  * $Id: SaveSQLAction,v 1.0 2006/11/15 05:38:28 ftang Exp $
- *
+ * 
  */
 public class SaveSQLAction extends AbstractEditorAction {
-    
-   private ImageDescriptor image = ImageUtil.getDescriptor("Images.SaveSQLIcon");
-   private RepositoryNode repositoryNode;
-   
+
+    private ImageDescriptor image = ImageUtil.getDescriptor("Images.SaveSQLIcon");
+
+    private RepositoryNode repositoryNode;
+
     public SaveSQLAction(RepositoryNode repositoryNode) {
         this.repositoryNode = repositoryNode;
-}
+    }
 
-
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.eclipse.jface.action.Action#getImageDescriptor()
      */
     public ImageDescriptor getImageDescriptor() {
         return image;
     }
 
-
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.sqlbuilder.actions.AbstractEditorAction#getText()
      */
     public String getText() {
         return Messages.getString("SQLEditor.Actions.SaveSQL");
     }
 
-
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.eclipse.jface.action.Action#isEnabled()
      */
     public boolean isEnabled() {
-        if(((SqlBuilderRepositoryObject)repositoryNode.getObject()).isBuildIn())
-        {
-            return false;
-        }
-        return true;
+        SqlBuilderRepositoryObject o = (SqlBuilderRepositoryObject) repositoryNode.getObject();
+        boolean isBuildin = o.isBuildIn();
+        return isBuildin;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.sqlbuilder.actions.AbstractEditorAction#getToolTipText()
      */
     public String getToolTipText() {
         return Messages.getString("SQLEditor.Actions.SaveSQLToolTip"); //$NON-NLS-1$
     }
 
-
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.sqlbuilder.actions.AbstractEditorAction#run()
      */
     public void run() {
-       //TODO should disable this code when release the 1.0.1 version
-       editor.doSaveSQL();
+        // TODO should disable this code when release the 1.0.1 version
+        editor.doSaveSQL();
     };
 }
