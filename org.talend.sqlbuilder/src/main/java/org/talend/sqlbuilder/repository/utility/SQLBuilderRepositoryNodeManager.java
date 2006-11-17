@@ -82,6 +82,33 @@ public class SQLBuilderRepositoryNodeManager {
         }
         return null;
     }
+    
+    @SuppressWarnings("unchecked")
+	public static void  reductionALLRepositoryNode() {
+    	for (RepositoryNode node : repositoryNodes) {
+    		DatabaseConnection connection = (DatabaseConnection) getItem(node).getConnection();
+        	List<MetadataTable> tables = connection.getTables();
+    		List<MetadataTable> newtables = new ArrayList<MetadataTable>();
+
+    		for (MetadataTable table : tables) {
+    			List<MetadataColumn> columns = table.getColumns();
+    			List<MetadataColumn> newcloumns = new ArrayList<MetadataColumn>();
+    			for (MetadataColumn column : columns) {
+    				if (!column.getLabel().equals("")) {
+    					newcloumns.add(column);
+    				}
+    			}
+    			table.getColumns().clear();
+    			table.getColumns().addAll(newcloumns);
+    			if (!table.getLabel().equals("")) {
+    				newtables.add(table);
+    			}
+    		}
+    		connection.getTables().clear();
+    		connection.getTables().addAll(newtables);
+		}
+    	
+	}
 
     @SuppressWarnings("unchecked")
 	public static List<String> getTableNamesByRepositoryNode(RepositoryNode node) {
@@ -93,8 +120,10 @@ public class SQLBuilderRepositoryNodeManager {
     	String sid = isOdbc ? connection.getDatasourceName() : connection.getSID(); 
     	for (MetadataTable table : tablesFromEMF) {
     		String tableName = table.getSourceName();
-    		tableName = "'" + sid + "'.'" + tableName + "'";
-			tableNames.add(tableName);
+    		if (tableName != null && !"".equals(tableName)) {
+    		       tableName = "'" + sid + "'.'" + tableName + "'";
+    		       tableNames.add(tableName);
+    		}
 		}
     	return tableNames;
 	}
@@ -380,9 +409,11 @@ public class SQLBuilderRepositoryNodeManager {
             for (MetadataColumn emf : cloumnsFromEMF) {
                 if (db.getOriginalField().equals(emf.getOriginalField())) {
                     flag = false;
-                    boolean is = !isEquivalent(db, emf);
-                    emf.setDivergency(is);
-                    emf.setSynchronised(is);
+                    if (emf.getLabel().length() != 0) {
+                        boolean is = !isEquivalent(db, emf);
+                           emf.setDivergency(is);
+                           emf.setSynchronised(is);
+                     }
                 }
             }
             if (flag) {

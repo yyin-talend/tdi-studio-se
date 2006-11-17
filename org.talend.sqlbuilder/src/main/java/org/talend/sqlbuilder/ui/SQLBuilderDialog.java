@@ -52,6 +52,7 @@ import org.talend.repository.model.RepositoryNode;
 import org.talend.sqlbuilder.dbstructure.SessionTreeNodeManager;
 import org.talend.sqlbuilder.dbstructure.SessionTreeNodeUtils;
 import org.talend.sqlbuilder.dbstructure.nodes.INode;
+import org.talend.sqlbuilder.repository.utility.SQLBuilderRepositoryNodeManager;
 import org.talend.sqlbuilder.util.ConnectionParameters;
 import org.talend.sqlbuilder.util.UIUtils;
 
@@ -323,6 +324,7 @@ public class SQLBuilderDialog extends Dialog {
 
     @Override
     public boolean close() {
+    	SQLBuilderRepositoryNodeManager.reductionALLRepositoryNode();
         SessionTreeNodeUtils.dispose();
         nodeManager.clear();
         return super.close();
@@ -414,4 +416,5 @@ public class SQLBuilderDialog extends Dialog {
             });
         }
     }
+    
 }

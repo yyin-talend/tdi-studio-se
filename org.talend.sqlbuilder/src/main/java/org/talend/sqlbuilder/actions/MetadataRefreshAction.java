@@ -288,6 +288,8 @@ public class MetadataRefreshAction extends SelectionProviderAction {
 		IStructuredSelection selection = (IStructuredSelection) selectionProvider
 				.getSelection();
 
+		repositorynodes.clear();
+		columnNodes.clear();
 		boolean flag = true;
 		for (Object object : selection.toList()) {
 			if (!((RepositoryNode) object).getProperties(
