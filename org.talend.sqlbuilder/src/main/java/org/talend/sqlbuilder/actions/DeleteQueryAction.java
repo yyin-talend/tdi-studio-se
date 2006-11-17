@@ -47,7 +47,7 @@ public class DeleteQueryAction extends SelectionProviderAction {
      * DOC qianbing DeleteQueryAction constructor comment.
      */
     public DeleteQueryAction(ISelectionProvider provider) {
-        super(provider, Messages.getString("DBStructureComposite.Property"));
+        super(provider, Messages.getString("DBStructureComposite.Delete"));
     }
 
     @Override
