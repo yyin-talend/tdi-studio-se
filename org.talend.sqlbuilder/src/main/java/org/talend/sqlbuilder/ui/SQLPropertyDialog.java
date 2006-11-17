@@ -83,8 +83,10 @@ public class SQLPropertyDialog extends TitleAreaDialog {
      * @param query the query to set
      */
     public void setQuery(Query query) {
-        names.remove(query.getLabel());
         this.query = query;
+        if (query != null) {
+            names.remove(query.getLabel());
+        }
     }
 
     /*
@@ -132,10 +134,10 @@ public class SQLPropertyDialog extends TitleAreaDialog {
         }
         query.setComment(this.commentText.getText());
         query.setLabel(this.nameText.getText());
-        if(sql!=null){
+        if (sql != null) {
             query.setValue(sql);
         }
-        
+
         super.okPressed();
     }
 
