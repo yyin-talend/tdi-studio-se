@@ -23,8 +23,6 @@ package org.talend.sqlbuilder.ui.editor;
 
 import org.eclipse.swt.widgets.Shell;
 import org.talend.repository.model.RepositoryNode;
-import org.talend.sqlbuilder.sessiontree.model.SessionTreeNode;
-import org.talend.sqlbuilder.util.ConnectionParameters;
 
 /**
  * This interface is responsible for defining methods for SQLBuilderEditorComposite class.
@@ -33,21 +31,6 @@ import org.talend.sqlbuilder.util.ConnectionParameters;
  * 
  */
 public interface ISQLEditor {
-
-    /**
-     * Gets SessionTreeNode.
-     * 
-     * @return an instance of SessionTreeNode.
-     * @deprecated
-     */
-    SessionTreeNode getSessionTreeNode();
-    
-    
-    /**
-     * DOC dev Comment method "getRepositoryNode".
-     * @return
-     */
-    RepositoryNode getRepositoryNode();
 
     /**
      * Gets Shell.
@@ -69,11 +52,11 @@ public interface ISQLEditor {
     String getMaxResult();
 
     /**
-     * Sets repositoryNode.
+     * Gets repository node.
      * 
-     * @param repositoryNode
+     * @return an instance of RepositoryNode
      */
-    void setRepositoryNode(RepositoryNode repositoryNode);
+    RepositoryNode getRepositoryNode();
 
     /**
      * 
@@ -82,12 +65,6 @@ public interface ISQLEditor {
      * @return
      */
     String getSQLToBeExecuted();
-
-    /**
-     * 
-     * Sets query text into editor.
-     */
-    void setEditorContent(ConnectionParameters connParam);
 
     /**
      * Save current editor's text as a file.
@@ -111,7 +88,7 @@ public interface ISQLEditor {
      * @return a string
      */
     String getRepositoryName();
-    
+
     /**
      * Gets the flag for indicating current editor whether is the default one.
      */
@@ -126,4 +103,11 @@ public interface ISQLEditor {
      * Saves current editor's sql text into dbstructure composite.
      */
     void doSaveSQL();
+
+    /**
+     * Sets repository node.
+     * 
+     * @param node
+     */
+    void setRepositoryNode(RepositoryNode node);
 }
