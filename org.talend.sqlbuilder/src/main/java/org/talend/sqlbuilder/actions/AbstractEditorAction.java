@@ -61,10 +61,10 @@ public abstract class AbstractEditorAction extends Action {
         return this.editor;
     }
 
-    public boolean isDisabled() {
-
-        boolean active = editor.getSessionTreeNode() != null;
-        return !active;
-    }
+//    public boolean isDisabled() {
+//
+//        boolean active = editor.getSessionTreeNode() != null;
+//        return !active;
+//    }
     
 }
