@@ -21,11 +21,21 @@
 // ============================================================================
 package org.talend.sqlbuilder.actions;
 
+import java.util.List;
+
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.window.Window;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.actions.SelectionProviderAction;
+import org.talend.core.model.metadata.builder.connection.Query;
 import org.talend.repository.model.RepositoryNode;
+import org.talend.repository.model.RepositoryNode.EProperties;
 import org.talend.sqlbuilder.Messages;
+import org.talend.sqlbuilder.dbstructure.RepositoryNodeType;
+import org.talend.sqlbuilder.dbstructure.DBTreeProvider.QueryRepositoryObject;
+import org.talend.sqlbuilder.repository.utility.SQLBuilderRepositoryNodeManager;
+import org.talend.sqlbuilder.ui.SQLPropertyDialog;
 
 /**
  * DOC qianbing class global comment. Detailled comment <br/>
@@ -35,13 +45,15 @@ import org.talend.sqlbuilder.Messages;
  */
 public class ShowQueryPropertyAction extends SelectionProviderAction {
 
+    Shell shell;
+
     /**
      * DOC qianbing ShowQueryPropertyAction constructor comment.
      * 
      * @param provider
      * @param text
      */
-    public ShowQueryPropertyAction(ISelectionProvider provider) {
+    public ShowQueryPropertyAction(Shell shell, ISelectionProvider provider) {
         super(provider, Messages.getString("DBStructureComposite.Property"));
     }
 
@@ -52,15 +64,40 @@ public class ShowQueryPropertyAction extends SelectionProviderAction {
             enabled = false;
         } else {
             RepositoryNode node = (RepositoryNode) selection.getFirstElement();
-
+            RepositoryNodeType type = (RepositoryNodeType) node.getProperties(EProperties.CONTENT_TYPE);
+            if (type != RepositoryNodeType.QUERY) {
+                enabled = false;
+            }
         }
         setEnabled(enabled);
     }
 
-    
-    
+    // private Object getSelectionQuery(){
+    // RepositoryNode node = (RepositoryNode) selection.getFirstElement();
+    //        
+    // }
+
+    SQLBuilderRepositoryNodeManager repositoryNodeManager = new SQLBuilderRepositoryNodeManager();
+
     @Override
     public void run() {
-    }
 
+        RepositoryNode node = (RepositoryNode) getStructuredSelection().getFirstElement();
+
+        QueryRepositoryObject object = (QueryRepositoryObject) node.getObject();
+        Query query = object.getQuery();
+
+        // Finds the root
+        node = SQLBuilderRepositoryNodeManager.getRoot(node);
+
+        List<String> existingName = repositoryNodeManager.getALLQueryLabels(node);
+
+        SQLPropertyDialog saveSQLDialog = new SQLPropertyDialog(shell, existingName);
+        saveSQLDialog.setQuery(query);
+
+        if (Window.OK == saveSQLDialog.open()) {
+            query = saveSQLDialog.getQuery();
+            repositoryNodeManager.saveQuery(node, query);
+        }
+    }
 }

@@ -45,4 +45,6 @@ public interface ISQLBuilderDialog {
      */
     public void openEditor(RepositoryNode node, List<String> repositoryName, ConnectionParameters connParam,
             boolean isDefaultEditor);
+
+    public ConnectionParameters getConnParameters();
 }

@@ -21,9 +21,19 @@
 // ============================================================================
 package org.talend.sqlbuilder.actions;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.jface.viewers.ISelectionProvider;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.actions.SelectionProviderAction;
+import org.talend.core.model.metadata.builder.connection.Query;
+import org.talend.repository.model.RepositoryNode;
+import org.talend.repository.model.RepositoryNode.EProperties;
 import org.talend.sqlbuilder.Messages;
+import org.talend.sqlbuilder.dbstructure.RepositoryNodeType;
+import org.talend.sqlbuilder.dbstructure.DBTreeProvider.QueryRepositoryObject;
+import org.talend.sqlbuilder.repository.utility.SQLBuilderRepositoryNodeManager;
 
 /**
  * DOC qianbing class global comment. Detailled comment <br/>
@@ -41,9 +51,39 @@ public class DeleteQueryAction extends SelectionProviderAction {
     }
 
     @Override
-    public void run() {
-        // TODO Auto-generated method stub
-        super.run();
+    public void selectionChanged(IStructuredSelection selection) {
+        boolean enabled = true;
+        if (selection.size() != 1) {
+            enabled = false;
+        } else {
+            RepositoryNode node = (RepositoryNode) selection.getFirstElement();
+            RepositoryNodeType type = (RepositoryNodeType) node.getProperties(EProperties.CONTENT_TYPE);
+            if (type != RepositoryNodeType.QUERY) {
+                enabled = false;
+            }
+        }
+        setEnabled(enabled);
     }
 
+    SQLBuilderRepositoryNodeManager repositoryNodeManager = new SQLBuilderRepositoryNodeManager();
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.jface.action.Action#run()
+     */
+    @Override
+    public void run() {
+
+        RepositoryNode node = (RepositoryNode) getStructuredSelection().getFirstElement();
+
+        QueryRepositoryObject object = (QueryRepositoryObject) node.getObject();
+        Query query = object.getQuery();
+
+        // Finds the root
+        node = SQLBuilderRepositoryNodeManager.getRoot(node);
+        List<Query> queries = new ArrayList();
+        queries.add(query);
+        repositoryNodeManager.deleteQueries(node, queries);
+    }
 }

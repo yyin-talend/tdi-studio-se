@@ -258,7 +258,7 @@ public class DBStructureComposite extends Composite {
 
         openQueryAction = new OpenQueryAction(treeViewer, builderDialog, builderDialog.getConnParameters());
         deleteQueryAction = new DeleteQueryAction(treeViewer);
-        showQueryPropertyAction = new ShowQueryPropertyAction(treeViewer);
+        showQueryPropertyAction = new ShowQueryPropertyAction(this.getShell(),treeViewer);
 
     }
 

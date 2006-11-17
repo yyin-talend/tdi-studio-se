@@ -21,14 +21,21 @@
 // ============================================================================
 package org.talend.sqlbuilder.actions;
 
+import java.util.List;
+
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.window.Window;
 import org.eclipse.ui.actions.SelectionProviderAction;
+import org.talend.core.model.metadata.builder.connection.Query;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNode.EProperties;
 import org.talend.sqlbuilder.Messages;
 import org.talend.sqlbuilder.dbstructure.RepositoryNodeType;
+import org.talend.sqlbuilder.dbstructure.DBTreeProvider.QueryRepositoryObject;
+import org.talend.sqlbuilder.repository.utility.SQLBuilderRepositoryNodeManager;
 import org.talend.sqlbuilder.ui.ISQLBuilderDialog;
+import org.talend.sqlbuilder.ui.SQLPropertyDialog;
 import org.talend.sqlbuilder.util.ConnectionParameters;
 
 /**
@@ -51,18 +58,35 @@ public class OpenQueryAction extends OpenNewEditorAction {
         setToolTipText(Messages.getString("DBStructureComposite.OpenQuery"));//$NON-NLS-1$
     }
 
+    SQLBuilderRepositoryNodeManager repositoryNodeManager = new SQLBuilderRepositoryNodeManager();
+
     @Override
     public void run() {
+        RepositoryNode node = (RepositoryNode) getStructuredSelection().getFirstElement();
 
+        QueryRepositoryObject object = (QueryRepositoryObject) node.getObject();
+        Query query = object.getQuery();
+
+        // Finds the root
+        node = SQLBuilderRepositoryNodeManager.getRoot(node);
+        List<String> repositoryName = repositoryNodeManager.getALLReposotoryNodeNames();
+        dialog.getConnParameters().setQueryObject(query);
+        dialog.openEditor(node, repositoryName, dialog.getConnParameters(), false);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.sqlbuilder.actions.OpenNewEditorAction#selectionChanged(org.eclipse.jface.viewers.IStructuredSelection)
-     */
     @Override
     public void selectionChanged(IStructuredSelection selection) {
+        boolean enabled = true;
+        if (selection.size() != 1) {
+            enabled = false;
+        } else {
+            RepositoryNode node = (RepositoryNode) selection.getFirstElement();
+            RepositoryNodeType type = (RepositoryNodeType) node.getProperties(EProperties.CONTENT_TYPE);
+            if (type != RepositoryNodeType.QUERY) {
+                enabled = false;
+            }
+        }
+        setEnabled(enabled);
     }
 
 }
