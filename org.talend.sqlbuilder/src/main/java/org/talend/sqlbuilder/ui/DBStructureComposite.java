@@ -400,7 +400,6 @@ public class DBStructureComposite extends Composite {
 
                     try {
                         RepositoryNode root = (RepositoryNode) treeViewer.getInput();
-                        ((DBTreeProvider) treeViewer.getContentProvider()).setRefresh(true);
                         refreshChildren(root);
                     } finally {
                         monitor.done();
@@ -432,10 +431,11 @@ public class DBStructureComposite extends Composite {
      * @return
      * @exception
      */
-    private void doRefresh(final RepositoryNode refreshNode) {
+    public void doRefresh(final RepositoryNode refreshNode) {
         Display.getDefault().asyncExec(new Runnable() {
 
             public void run() {
+                ((DBTreeProvider) treeViewer.getContentProvider()).setRefresh(true);
                 treeViewer.refresh(refreshNode, true);
                 // ((RepositoryNode) treeViewer.getInput()).getChildren().clear();
                 // treeViewer.setInput(treeViewer.getInput());
@@ -481,7 +481,7 @@ public class DBStructureComposite extends Composite {
                     monitor.beginTask(Messages.getString("DBStructureComposite.RefreshConnections"), -1);
                     try {
                         RepositoryNode[] nodes = (RepositoryNode[]) selection.toList().toArray(new RepositoryNode[] {});
-                        ((DBTreeProvider) treeViewer.getContentProvider()).setRefresh(true);
+                        
                         nodes = retrieveFromDB(nodes);
                     } finally {
                         monitor.done();
