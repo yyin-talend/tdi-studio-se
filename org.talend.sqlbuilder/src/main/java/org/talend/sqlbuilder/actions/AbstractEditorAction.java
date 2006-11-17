@@ -60,11 +60,4 @@ public abstract class AbstractEditorAction extends Action {
     public ISQLEditor getEditor() {
         return this.editor;
     }
-
-//    public boolean isDisabled() {
-//
-//        boolean active = editor.getSessionTreeNode() != null;
-//        return !active;
-//    }
-    
 }
