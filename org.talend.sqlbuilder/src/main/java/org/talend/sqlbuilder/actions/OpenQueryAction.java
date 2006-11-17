@@ -51,9 +51,9 @@ public class OpenQueryAction extends OpenNewEditorAction {
     /**
      * DOC qianbing OpenQueryAction constructor comment.
      */
-    public OpenQueryAction(ISelectionProvider selectionProvider, ISQLBuilderDialog dialog,
-            ConnectionParameters connParam) {
-        super(selectionProvider, dialog, connParam, false);
+    public OpenQueryAction(ISelectionProvider selectionProvider, ISQLBuilderDialog d, ConnectionParameters connParam) {
+        super(selectionProvider, d, connParam, false);
+        this.dialog = d;
         setText(Messages.getString("DBStructureComposite.OpenQuery")); //$NON-NLS-1$
         setToolTipText(Messages.getString("DBStructureComposite.OpenQuery"));//$NON-NLS-1$
     }
@@ -70,6 +70,7 @@ public class OpenQueryAction extends OpenNewEditorAction {
         // Finds the root
         node = SQLBuilderRepositoryNodeManager.getRoot(node);
         List<String> repositoryName = repositoryNodeManager.getALLReposotoryNodeNames();
+
         dialog.getConnParameters().setQueryObject(query);
         dialog.openEditor(node, repositoryName, dialog.getConnParameters(), false);
     }
