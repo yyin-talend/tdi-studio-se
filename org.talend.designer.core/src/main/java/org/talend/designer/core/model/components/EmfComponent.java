@@ -35,6 +35,7 @@ import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.SystemException;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
@@ -50,6 +51,8 @@ import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IElement;
 import org.talend.core.model.process.IElementParameterDefaultValue;
 import org.talend.core.model.temp.ECodeLanguage;
+import org.talend.core.ui.EImage;
+import org.talend.core.ui.ImageProvider;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.utils.emf.component.COMPONENTType;
 import org.talend.designer.core.model.utils.emf.component.CONNECTORType;
@@ -81,7 +84,11 @@ public class EmfComponent implements IComponent {
 
     private COMPONENTType compType;
 
-    private ImageDescriptor image;
+    private ImageDescriptor image32;
+
+    private ImageDescriptor image24;
+
+    private ImageDescriptor image16;
 
     private ECodeLanguage codeLanguage;
 
@@ -98,8 +105,8 @@ public class EmfComponent implements IComponent {
     public EmfComponent(File file) throws SystemException {
         this.file = file;
         load();
-        codeLanguage = ((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY))
-                .getProject().getLanguage();
+        codeLanguage = ((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY)).getProject()
+                .getLanguage();
     }
 
     private String getTranslatedValue(final String nameValue) {
@@ -514,8 +521,7 @@ public class EmfComponent implements IComponent {
             param.setNotShowIf(xmlParam.getNOTSHOWIF());
             param.setRepositoryValue(xmlParam.getREPOSITORYVALUE());
 
-            if (!param.getField().equals(EParameterFieldType.TABLE)
-                    && !param.getField().equals(EParameterFieldType.CLOSED_LIST)) {
+            if (!param.getField().equals(EParameterFieldType.TABLE) && !param.getField().equals(EParameterFieldType.CLOSED_LIST)) {
                 List<DEFAULTType> listDefault = xmlParam.getDEFAULT();
                 for (DEFAULTType defaultType : listDefault) {
                     IElementParameterDefaultValue defaultValue = new ElementParameterDefaultValue();
@@ -559,8 +565,8 @@ public class EmfComponent implements IComponent {
         }
     }
 
-    public void addItemsPropertyParameters(String paramName, ITEMSType items, ElementParameter param,
-            EParameterFieldType type, IElement element) {
+    public void addItemsPropertyParameters(String paramName, ITEMSType items, ElementParameter param, EParameterFieldType type,
+            IElement element) {
         ITEMType item;
 
         int nbItems = 0;
@@ -592,8 +598,7 @@ public class EmfComponent implements IComponent {
                     listItemsValue[k] = newParam;
                 } else {
 
-                    if (currentField == EParameterFieldType.COLUMN_LIST
-                            || currentField == EParameterFieldType.PREV_COLUMN_LIST) {
+                    if (currentField == EParameterFieldType.COLUMN_LIST || currentField == EParameterFieldType.PREV_COLUMN_LIST) {
                         ElementParameter newParam = new ElementParameter(element);
                         newParam.setName(item.getNAME());
                         newParam.setDisplayName("");
@@ -658,17 +663,46 @@ public class EmfComponent implements IComponent {
         return multiple;
     }
 
-    public ImageDescriptor getImageDescriptor() {
-        if (image == null) {
-            URL url;
-            try {
-                url = new URL(file.getParentFile().toURL() + compType.getHEADER().getICON32());
-                image = ImageDescriptor.createFromURL(url);
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
+    private ImageDescriptor getImage(String name) {
+        URL url;
+        try {
+            url = new URL(file.getParentFile().toURL() + name);
+            return ImageDescriptor.createFromURL(url);
+        } catch (MalformedURLException e) {
+            ExceptionHandler.process(new SystemException("Cannot load component icon " + name, e));
+            return ImageProvider.getImageDesc(EImage.DEFAULT_IMAGE);
+        }
+    }
+
+    public ImageDescriptor getIcon32() {
+        if (image32 == null) {
+            image32 = getImage(compType.getHEADER().getICON32());
+        }
+        return image32;
+    }
+
+    public ImageDescriptor getIcon24() {
+        if (image24 == null) {
+            if (compType.getHEADER().getICON24() != null && compType.getHEADER().getICON24().length() > 0) {
+                image24 = getImage(compType.getHEADER().getICON24());
+            } else {
+                image24 = ImageDescriptor.createFromImageData(getIcon32().getImageData().scaledTo(24, 24));
             }
         }
-        return image;
+
+        return image24;
+    }
+
+    public ImageDescriptor getIcon16() {
+        if (image16 == null) {
+            if (compType.getHEADER().getICON16() != null && compType.getHEADER().getICON16().length() > 0) {
+                image16 = getImage(compType.getHEADER().getICON16());
+            } else {
+                image16 = ImageDescriptor.createFromImageData(getIcon32().getImageData().scaledTo(16, 16));
+            }
+        }
+
+        return image16;
     }
 
     public String getName() {
@@ -773,8 +807,7 @@ public class EmfComponent implements IComponent {
                     msg = Messages.getString("modules.required");
                 }
 
-                ModuleNeeded componentImportNeeds = new ModuleNeeded(this, importType.getMODULE(), msg, importType
-                        .isREQUIRED());
+                ModuleNeeded componentImportNeeds = new ModuleNeeded(this, importType.getMODULE(), msg, importType.isREQUIRED());
 
                 componentImportNeedsList.add(componentImportNeeds);
             }

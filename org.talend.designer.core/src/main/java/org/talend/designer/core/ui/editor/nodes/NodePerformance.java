@@ -167,8 +167,8 @@ public class NodePerformance extends Element {
         Point offset = this.getNodeContainer().getNodeLabel().getOffset();
         Point textOffset = new Point();
 
-        textOffset.y = this.getNodeContainer().getNode().getImageDescriptor().getImageData().height + 16;
-        textOffset.x = (this.getNodeContainer().getNode().getImageDescriptor().getImageData().width - size.width) / 2;
+        textOffset.y = this.getNodeContainer().getNode().getIcon32().getImageData().height + 16;
+        textOffset.x = (this.getNodeContainer().getNode().getIcon32().getImageData().width - size.width) / 2;
         loc.translate(textOffset.x + offset.x, textOffset.y + offset.y);
         return loc;
     }

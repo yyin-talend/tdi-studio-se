@@ -99,11 +99,10 @@ public final class TalendEditorPaletteFactory {
                     }
                     prevFamily = family;
                 }
-                // TODO SML Manage here different images size in the palette
-                ImageDescriptor im = xmlComponent.getImageDescriptor();
-                ImageDescriptor imageSmall, imageLarge;
-                imageSmall = ImageDescriptor.createFromImageData(im.getImageData().scaledTo(16, 16));
-                imageLarge = ImageDescriptor.createFromImageData(im.getImageData().scaledTo(24, 24));
+
+                ImageDescriptor imageSmall = xmlComponent.getIcon16();
+                ImageDescriptor imageLarge = xmlComponent.getIcon24();
+
                 component = new CombinedTemplateCreationEntry(name, name, Node.class, new PaletteComponentFactory(xmlComponent),
                         imageSmall, imageLarge);
                 component.setDescription(longName);

@@ -106,7 +106,7 @@ public class MapperMain {
         Shell shell = new Shell(display, SWT.APPLICATION_MODAL | SWT.BORDER | SWT.RESIZE | SWT.CLOSE | SWT.MIN
                 | SWT.MAX | SWT.TITLE);
         IComponent component = connector.getComponent();
-        ImageDescriptor imageDescriptor = component.getImageDescriptor();
+        ImageDescriptor imageDescriptor = component.getIcon32();
         Image createImage = imageDescriptor.createImage();
         // Shell shell = new Shell(display);
 //        shell.setImage(ImageProviderMapper.getImage(ImageInfo.MAPPER_ICON));

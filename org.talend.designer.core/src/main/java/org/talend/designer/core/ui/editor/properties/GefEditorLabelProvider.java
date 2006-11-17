@@ -105,7 +105,7 @@ public class GefEditorLabelProvider extends LabelProvider {
         if (lastNode != node) {
             lastNode = node;
         }
-        return node.getImageDescriptor().createImage();
+        return node.getIcon24().createImage();
     }
 
     /*

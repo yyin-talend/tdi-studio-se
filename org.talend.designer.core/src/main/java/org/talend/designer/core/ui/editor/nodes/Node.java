@@ -255,8 +255,12 @@ public class Node extends Element implements INode {
      * 
      * @return ImageDescriptor
      */
-    public ImageDescriptor getImageDescriptor() {
-        return component.getImageDescriptor();
+    public ImageDescriptor getIcon32() {
+        return component.getIcon32();
+    }
+
+    public ImageDescriptor getIcon24() {
+        return component.getIcon24();
     }
 
     /**

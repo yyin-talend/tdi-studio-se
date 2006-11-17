@@ -199,7 +199,7 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
             parentPart = parentPart.getParent();
         }
 
-        f = new NodeFigure(((Node) this.getModel()).getImageDescriptor());
+        f = new NodeFigure(((Node) this.getModel()).getIcon32());
 
         if (((INode) getModel()).isStart() && f != null) {
             f.setBackgroundColor(Node.START_COLOR);
