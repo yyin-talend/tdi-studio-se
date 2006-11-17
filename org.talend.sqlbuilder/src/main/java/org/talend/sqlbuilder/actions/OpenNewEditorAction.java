@@ -96,7 +96,7 @@ public class OpenNewEditorAction extends SelectionProviderAction {
     }
 
     @Override
-    public void selectionChanged(ISelection selection) {
+    public void selectionChanged(IStructuredSelection selection) {
         init();
     }
 

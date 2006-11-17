@@ -74,7 +74,7 @@ public class GenerateSelectSQLAction extends SelectionProviderAction {
     }
 
     @Override
-    public void selectionChanged(ISelection selection) {
+    public void selectionChanged(IStructuredSelection selection) {
         init();
     }
 

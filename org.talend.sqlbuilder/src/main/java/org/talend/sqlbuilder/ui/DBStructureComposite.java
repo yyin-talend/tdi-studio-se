@@ -62,6 +62,7 @@ import org.talend.sqlbuilder.Messages;
 import org.talend.sqlbuilder.actions.GenerateSelectSQLAction;
 import org.talend.sqlbuilder.actions.MetadataRefreshAction;
 import org.talend.sqlbuilder.actions.OpenNewEditorAction;
+import org.talend.sqlbuilder.actions.ShowQueryPropertyAction;
 import org.talend.sqlbuilder.dbstructure.DBTreeProvider;
 import org.talend.sqlbuilder.dbstructure.RepositoryNodeType;
 import org.talend.sqlbuilder.repository.utility.SQLBuilderRepositoryNodeManager;
@@ -232,6 +233,8 @@ public class DBStructureComposite extends Composite {
         }
     };
 
+    private ShowQueryPropertyAction showQueryPropertyAction;
+
     /**
      * DOC qianbing Comment method "makeActions". Makes actions
      */
@@ -245,6 +248,9 @@ public class DBStructureComposite extends Composite {
                 .getString("DBStructureComposite.Refresh"));
 
         metadataRefreshAction = new MetadataRefreshAction(treeViewer);
+
+        showQueryPropertyAction = new ShowQueryPropertyAction(treeViewer);
+
     }
 
     /**
@@ -268,12 +274,10 @@ public class DBStructureComposite extends Composite {
             @SuppressWarnings("unchecked")//$NON-NLS-1$
             private void fillContextMenu(IMenuManager manager) {
                 // GenerateSelectSQL
-                ((GenerateSelectSQLAction) generateSelectAction).init();
                 manager.add(generateSelectAction);
 
                 // open editor
                 builderDialog.getConnParameters().setQuery(""); //$NON-NLS-1$
-                ((OpenNewEditorAction)openNewEditorAction).init();
                 manager.add(openNewEditorAction);
 
                 // Separator
@@ -287,6 +291,8 @@ public class DBStructureComposite extends Composite {
 
                 // metadata refresh
                 manager.add(metadataRefreshAction);
+
+                manager.add(showQueryPropertyAction);
             }
         });
         Menu contextMenu = menuMgr.createContextMenu(treeViewer.getTree());
