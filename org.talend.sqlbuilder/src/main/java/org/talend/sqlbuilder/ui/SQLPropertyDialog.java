@@ -57,7 +57,16 @@ public class SQLPropertyDialog extends TitleAreaDialog {
 
     private Query query;
 
-    private String queryText;
+    private String sql;
+
+    /**
+     * Sets the sql.
+     * 
+     * @param sql the sql to set
+     */
+    public void setSql(String sql) {
+        this.sql = sql;
+    }
 
     /**
      * Getter for query.
@@ -119,10 +128,14 @@ public class SQLPropertyDialog extends TitleAreaDialog {
 
         if (query == null) {
             query = ConnectionFactory.eINSTANCE.createQuery();
+            query.setValue("");
         }
         query.setComment(this.commentText.getText());
         query.setLabel(this.nameText.getText());
-        query.setValue(this.queryText);
+        if(sql!=null){
+            query.setValue(sql);
+        }
+        
         super.okPressed();
     }
 
@@ -151,10 +164,9 @@ public class SQLPropertyDialog extends TitleAreaDialog {
      * @param shell
      * @param string
      */
-    protected SQLPropertyDialog(Shell shell, List<String> existentNames, String queryText) {
+    public SQLPropertyDialog(Shell shell, List<String> existentNames) {
         super(shell);
         this.names = existentNames;
-        this.queryText = queryText;
         setShellStyle(SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL | SWT.RESIZE | SWT.MIN | SWT.MAX);
     }
 

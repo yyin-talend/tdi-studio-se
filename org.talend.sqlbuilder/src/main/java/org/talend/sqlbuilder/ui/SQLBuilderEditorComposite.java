@@ -85,6 +85,12 @@ import org.talend.sqlbuilder.util.UIUtils;
  * $Id: SQLBuilderEditorComposite.java,v 1.51 2006/11/09 08:40:43 ftang Exp $
  * 
  */
+/**
+ * DOC dev class global comment. Detailled comment <br/>
+ * 
+ * $Id: talend-code-templates.xml,v 1.3 2006/11/01 05:38:28 nicolas Exp $
+ * 
+ */
 public class SQLBuilderEditorComposite extends Composite implements ISQLEditor {
 
     private AbstractEditorAction clearTextAction;
@@ -131,12 +137,17 @@ public class SQLBuilderEditorComposite extends Composite implements ISQLEditor {
      * @param parent
      * @param tabItem
      * @param isDefaultEditor
+     * @param node
+     * @param connParam2
      * @param style
      */
-    public SQLBuilderEditorComposite(Composite parent, CTabItem tabItem, boolean isDefaultEditor, int style) {
+    public SQLBuilderEditorComposite(Composite parent, CTabItem tabItem, boolean isDefaultEditor,
+            ConnectionParameters connParam, RepositoryNode node, int style) {
         super(parent, style);
         this.tabItem = tabItem;
         this.isDefaultEditor = isDefaultEditor;
+        this.connParam = connParam;
+        this.setRepositoryNode(node);
         initialContent(this);
     }
 
@@ -319,7 +330,7 @@ public class SQLBuilderEditorComposite extends Composite implements ISQLEditor {
         openFileAction = new OpenFileAction();
         openFileAction.setEditor(this);
 
-        saveSQLAction = new SaveSQLAction();
+        saveSQLAction = new SaveSQLAction(this.repositoryNode);
         saveSQLAction.setEditor(this);
 
         exportAction = new SaveFileAsAction();
@@ -424,7 +435,7 @@ public class SQLBuilderEditorComposite extends Composite implements ISQLEditor {
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.sqlbuilder.ui.editor.ISQLEditor#setSessionTreeNode(org.talend.sqlbuilder.sessiontree.model.SessionTreeNode)
+     * @see org.talend.sqlbuilder.ui.editor.ISQLEditor#setRepositoryNode(org.talend.repository.model.RepositoryNode)
      */
     public void setRepositoryNode(RepositoryNode node) {
         Assert.isNotNull(node, "this node can not be null");
@@ -556,7 +567,9 @@ public class SQLBuilderEditorComposite extends Composite implements ISQLEditor {
         // TODO Auto-generated method stub
         SQLBuilderRepositoryNodeManager repositoryNodeManager = new SQLBuilderRepositoryNodeManager();
         List<String> existingName = repositoryNodeManager.getALLQueryLabels(repositoryNode);
-        SQLPropertyDialog saveSQLDialog = new SQLPropertyDialog(this.getShell(), existingName,this.colorText.getText());
+        SQLPropertyDialog saveSQLDialog = new SQLPropertyDialog(this.getShell(), existingName);
+        saveSQLDialog.setSql(this.colorText.getText());
+        saveSQLDialog.setQuery(connParam.getQueryObject());
         if (Window.OK == saveSQLDialog.open()) {
             Query query = saveSQLDialog.getQuery();
             repositoryNodeManager.saveQuery(repositoryNode, query);
