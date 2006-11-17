@@ -239,6 +239,7 @@ ITableColorProvider {
             repositoryObject.setImage("Images.AppendToEditor");
             repositoryObject.setSourceName("Stored Queries");
             RepositoryNode queriesConnectionNode = new RepositoryNode(repositoryObject, node, ENodeType.REPOSITORY_ELEMENT);
+            queriesConnectionNode.setProperties(EProperties.CONTENT_TYPE, RepositoryNodeType.QUERIESCONNECTION);
             node.getChildren().add(queriesConnectionNode);
             createQuery(queriesConnectionNode, repObj, queriesConnection);
         }
@@ -251,6 +252,7 @@ ITableColorProvider {
         	repositoryObject.setImage("Images.SqlEditorIcon");
         	repositoryObject.setSourceName(query.getLabel());
         	RepositoryNode node = new RepositoryNode(repositoryObject, queriesConnectionNode, ENodeType.REPOSITORY_ELEMENT);
+        	node.setProperties(EProperties.CONTENT_TYPE, RepositoryNodeType.QUERY);
         	queriesConnectionNode.getChildren().add(node);
         }
     }
