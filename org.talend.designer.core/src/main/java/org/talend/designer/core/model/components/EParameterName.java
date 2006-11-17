@@ -65,7 +65,8 @@ public enum EParameterName {
     PROCESS_TYPE_PROCESS("Process"),
     PROCESS_TYPE_CONTEXT("Context"),
     PREVIEW("Preview"),
-    COLUMN_LIST("Column list");
+    COLUMN_LIST("Column list"),
+    PREV_COLUMN_LIST("Prev. Comp. Column list");
 
     private String displayName;
 

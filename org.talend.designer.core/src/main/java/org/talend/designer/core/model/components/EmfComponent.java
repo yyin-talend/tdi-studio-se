@@ -97,8 +97,8 @@ public class EmfComponent implements IComponent {
     public EmfComponent(File file) throws SystemException {
         this.file = file;
         load();
-        codeLanguage = ((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY)).getProject()
-                .getLanguage();
+        codeLanguage = ((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY))
+                .getProject().getLanguage();
     }
 
     private String getTranslatedValue(final String nameValue) {
@@ -527,7 +527,8 @@ public class EmfComponent implements IComponent {
             param.setNotShowIf(xmlParam.getNOTSHOWIF());
             param.setRepositoryValue(xmlParam.getREPOSITORYVALUE());
 
-            if (!param.getField().equals(EParameterFieldType.TABLE) && !param.getField().equals(EParameterFieldType.CLOSED_LIST)) {
+            if (!param.getField().equals(EParameterFieldType.TABLE)
+                    && !param.getField().equals(EParameterFieldType.CLOSED_LIST)) {
                 List<DEFAULTType> listDefault = xmlParam.getDEFAULT();
                 for (DEFAULTType defaultType : listDefault) {
                     IElementParameterDefaultValue defaultValue = new ElementParameterDefaultValue();
@@ -571,7 +572,8 @@ public class EmfComponent implements IComponent {
         }
     }
 
-    public void addItemsPropertyParameters(String paramName, ITEMSType items, ElementParameter param, EParameterFieldType type) {
+    public void addItemsPropertyParameters(String paramName, ITEMSType items, ElementParameter param,
+            EParameterFieldType type) {
         ITEMType item;
 
         int nbItems = 0;
@@ -592,22 +594,25 @@ public class EmfComponent implements IComponent {
             if (!type.equals(EParameterFieldType.TABLE)) {
                 listItemsValue[k] = item.getVALUE();
             } else {
-                if (EParameterFieldType.CLOSED_LIST.getName().equals(item.getFIELD())) {
+                EParameterFieldType currentField = EParameterFieldType.getFieldTypeByName(item.getFIELD());
+                if (EParameterFieldType.CLOSED_LIST == currentField) {
                     ElementParameter newParam = new ElementParameter();
                     newParam.setName(item.getNAME());
                     newParam.setDisplayName("");
-                    newParam.setField(EParameterFieldType.CLOSED_LIST);
+                    newParam.setField(currentField);
                     addItemsPropertyParameters(paramName + ".ITEM." + item.getNAME(), item.getITEMS(), newParam,
                             EParameterFieldType.CLOSED_LIST);
                     listItemsValue[k] = newParam;
                 } else {
-                    if (EParameterFieldType.COLUMN_LIST.getName().equals(item.getFIELD())) {
+
+                    if (currentField == EParameterFieldType.COLUMN_LIST
+                            || currentField == EParameterFieldType.PREV_COLUMN_LIST) {
                         ElementParameter newParam = new ElementParameter();
                         newParam.setName(item.getNAME());
                         newParam.setDisplayName("");
-                        newParam.setField(EParameterFieldType.COLUMN_LIST);
+                        newParam.setField(currentField);
                         addItemsPropertyParameters(paramName + ".ITEM." + item.getNAME(), item.getITEMS(), newParam,
-                                EParameterFieldType.COLUMN_LIST);
+                                currentField);
                         listItemsValue[k] = newParam;
                     } else {
                         listItemsValue[k] = item.getNAME();
@@ -781,7 +786,8 @@ public class EmfComponent implements IComponent {
                     msg = Messages.getString("modules.required");
                 }
 
-                ModuleNeeded componentImportNeeds = new ModuleNeeded(this, importType.getMODULE(), msg, importType.isREQUIRED());
+                ModuleNeeded componentImportNeeds = new ModuleNeeded(this, importType.getMODULE(), msg, importType
+                        .isREQUIRED());
 
                 componentImportNeedsList.add(componentImportNeeds);
             }

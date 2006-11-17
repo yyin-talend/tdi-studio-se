@@ -248,8 +248,6 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
     // Added by ftang.
     private static final String SQLEDITOR = "SQLEDITOR";
 
-    private ColorStyledText queryText;
-
     // Ends
 
     /**
@@ -455,8 +453,6 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                 String propertyName = (String) button.getData(PROPERTY);
                 String query = (String) elem.getPropertyValue(propertyName);
 
-                connParameters.setQuery(query);
-
                 if (repositoryType.equals(EmfComponent.BUILTIN)) {
 
                     String userName = getValueFromRepositoryName("USERNAME");
@@ -504,12 +500,14 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                 }
 
                 SQLBuilderDialog dial = new SQLBuilderDialog(composite.getShell());
-                connParameters.setQuery(queryText.getText());
+                connParameters.setQuery(query);
                 dial.setConnParameters(connParameters);
 
                 if (Window.OK == dial.open()) {
                     String sql = connParameters.getQuery();
-                    queryText.setText("'" + sql + "'");
+                    Command cmd = new PropertyChangeCommand(elem, propertyName,
+                            "'" + sql + "'");
+                    getCommandStack().execute(cmd);
                 }
             }// Ends
         }
@@ -679,22 +677,62 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
         return columnList;
     }
 
+    private List<String> getPrevColumnList() {
+        List<String> columnList = new ArrayList<String>();
+
+        if (elem instanceof Node) {
+            Node node = (Node) elem;
+            IConnection connection = null;
+            boolean found = false;
+            for (int i = 0; i < node.getIncomingConnections().size() && !found; i++) {
+                IConnection curConnec = node.getIncomingConnections().get(i);
+                if (curConnec.getLineStyle() == EConnectionType.FLOW_MAIN) {
+                    connection = curConnec;
+                    found = true;
+                }
+            }
+            if (connection != null) {
+                IMetadataTable table = connection.getMetadataTable();
+                for (IMetadataColumn column : table.getListColumns()) {
+                    columnList.add(column.getLabel());
+                }
+            }
+        }
+
+        return columnList;
+    }
+
     private void updateColumnList() {
         List<String> columnList = getColumnList();
+        List<String> prevColumnList = getPrevColumnList();
+
+        List<String> curColumnList = null;
 
         String[] columnNameList = (String[]) columnList.toArray(new String[0]);
+        String[] prevColumnNameList = (String[]) prevColumnList.toArray(new String[0]);
+
+        String[] curColumnNameList = null;
 
         for (int i = 0; i < elem.getElementParameters().size(); i++) {
             IElementParameter param = elem.getElementParameters().get(i);
             if (param.getField() == EParameterFieldType.COLUMN_LIST) {
-                param.setListItemsDisplayName(columnNameList);
-                param.setListItemsValue(columnNameList);
+                curColumnList = columnList;
+                curColumnNameList = columnNameList;
+            }
+            if (param.getField() == EParameterFieldType.PREV_COLUMN_LIST) {
+                curColumnList = prevColumnList;
+                curColumnNameList = prevColumnNameList;
+            }
+            if (param.getField() == EParameterFieldType.COLUMN_LIST
+                    || param.getField() == EParameterFieldType.PREV_COLUMN_LIST) {
+                param.setListItemsDisplayName(curColumnNameList);
+                param.setListItemsValue(curColumnNameList);
                 CCombo combo = (CCombo) hashCurControls.get(param.getName());
-                combo.setItems(columnNameList);
-                if (!columnList.contains(param.getValue())) {
-                    if (columnNameList.length > 0) {
-                        elem.setPropertyValue(param.getName(), columnNameList[0]);
-                        combo.setText(columnNameList[0]);
+                combo.setItems(curColumnNameList);
+                if (!curColumnList.contains(param.getValue())) {
+                    if (curColumnNameList.length > 0) {
+                        elem.setPropertyValue(param.getName(), curColumnNameList[0]);
+                        combo.setText(curColumnNameList[0]);
                     }
                 } else {
                     combo.setText((String) param.getValue());
@@ -708,11 +746,20 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                     if (itemsValue[j] instanceof IElementParameter) {
                         IElementParameter tmpParam = (IElementParameter) itemsValue[j];
                         if (tmpParam.getField() == EParameterFieldType.COLUMN_LIST) {
-                            tmpParam.setListItemsDisplayCodeName(columnNameList);
-                            tmpParam.setListItemsDisplayName(columnNameList);
-                            tmpParam.setListItemsValue(columnNameList);
-                            if (columnNameList.length > 0) {
-                                tmpParam.setDefaultClosedListValue(columnNameList[0]);
+                            curColumnList = columnList;
+                            curColumnNameList = columnNameList;
+                        }
+                        if (tmpParam.getField() == EParameterFieldType.PREV_COLUMN_LIST) {
+                            curColumnList = prevColumnList;
+                            curColumnNameList = prevColumnNameList;
+                        }
+                        if (tmpParam.getField() == EParameterFieldType.COLUMN_LIST
+                                || tmpParam.getField() == EParameterFieldType.PREV_COLUMN_LIST) {
+                            tmpParam.setListItemsDisplayCodeName(curColumnNameList);
+                            tmpParam.setListItemsDisplayName(curColumnNameList);
+                            tmpParam.setListItemsValue(curColumnNameList);
+                            if (curColumnNameList.length > 0) {
+                                tmpParam.setDefaultClosedListValue(curColumnNameList[0]);
                             } else {
                                 tmpParam.setDefaultClosedListValue("");
                             }
@@ -720,7 +767,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
 
                             CCombo combo = (CCombo) column.getCellEditor().getControl();
                             String[] oldItems = combo.getItems();
-                            combo.setItems(columnNameList);
+                            combo.setItems(curColumnNameList);
 
                             List<Map<String, Object>> paramValues = (List<Map<String, Object>>) param.getValue();
                             String[] items = param.getListItemsDisplayCodeName();
@@ -1683,7 +1730,11 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
             final int nbInRow, final int top, final Control lastControl) {
         CCombo combo;
 
-        param.setDisplayName(EParameterName.COLUMN_LIST.getDisplayName());
+        if (param.getField() == EParameterFieldType.COLUMN_LIST) {
+            param.setDisplayName(EParameterName.COLUMN_LIST.getDisplayName());
+        } else {
+            param.setDisplayName(EParameterName.PREV_COLUMN_LIST.getDisplayName());
+        }
 
         Button refreshBtn;
         refreshBtn = getWidgetFactory().createButton(subComposite, "", SWT.PUSH); //$NON-NLS-1$
@@ -1998,7 +2049,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
             dField.addFieldDecoration(decoration, SWT.RIGHT | SWT.TOP, false);
         }
         Control cLayout = dField.getLayoutControl();
-        queryText = (ColorStyledText) dField.getControl();
+        ColorStyledText queryText = (ColorStyledText) dField.getControl();
 
         editionControlHelper.register(param.getName(), queryText, true);
 
@@ -2087,16 +2138,30 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
 
         List<String> columnList = getColumnList();
         String[] columnArrayList = columnList.toArray(new String[0]);
+        List<String> prevColumnList = getPrevColumnList();
+        String[] prevColumnArrayList = prevColumnList.toArray(new String[0]);
+        
         for (int i = 0; i < itemsValue.length; i++) {
             if (itemsValue[i] instanceof IElementParameter) {
                 IElementParameter tmpParam = (IElementParameter) itemsValue[i];
-                if (tmpParam.getField().equals(EParameterFieldType.COLUMN_LIST)) {
+                if (tmpParam.getField() == EParameterFieldType.COLUMN_LIST) {
                     dynamicData = true;
                     tmpParam.setListItemsDisplayCodeName(columnArrayList);
                     tmpParam.setListItemsDisplayName(columnArrayList);
                     tmpParam.setListItemsValue(columnArrayList);
                     if (columnArrayList.length != 0) {
                         tmpParam.setDefaultClosedListValue(columnArrayList[0]);
+                    } else {
+                        tmpParam.setDefaultClosedListValue("");
+                    }
+                }
+                if (tmpParam.getField() == EParameterFieldType.PREV_COLUMN_LIST) {
+                    dynamicData = true;
+                    tmpParam.setListItemsDisplayCodeName(prevColumnArrayList);
+                    tmpParam.setListItemsDisplayName(prevColumnArrayList);
+                    tmpParam.setListItemsValue(prevColumnArrayList);
+                    if (prevColumnArrayList.length != 0) {
+                        tmpParam.setDefaultClosedListValue(prevColumnArrayList[0]);
                     } else {
                         tmpParam.setDefaultClosedListValue("");
                     }
@@ -2158,16 +2223,31 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                 column.setBeanPropertyAccessors(new IBeanPropertyAccessors<Map<String, Object>, Object>() {
 
                     public String get(Map<String, Object> bean) {
-                        Object o = bean.get(items[curCol]);
-                        if (o instanceof Integer) {
+                        Object value = bean.get(items[curCol]);
+                        if (value == null) {
+                            return "";
+                        }
+                        if (itemsValue[curCol] instanceof IElementParameter) {
                             IElementParameter tmpParam = (IElementParameter) itemsValue[curCol];
                             String[] namesSet = tmpParam.getListItemsDisplayName();
                             if (namesSet.length == 0) {
                                 return (String) tmpParam.getDefaultClosedListValue();
                             }
-                            return namesSet[(Integer) o];
+                            if (value instanceof String) {
+                                boolean found = false;
+                                int index = 0;
+                                Object[] items = ((IElementParameter) itemsValue[curCol]).getListItemsValue();
+                                for (int j = 0; j < items.length && !found; j++) {
+                                    if (items[j].equals(value)) {
+                                        found = true;
+                                        index = j;
+                                    }
+                                }
+                                value = new Integer(index);
+                            }
+                            return namesSet[(Integer) value];
                         }
-                        return (String) o;
+                        return (String) value;
                     }
 
                     public void set(Map<String, Object> bean, Object value) {
@@ -2194,18 +2274,13 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                 });
             }
         }
-        List<Map<String, Object>> tableValues = new ArrayList<Map<String, Object>>();
-        List<Map<String, Object>> paramValues = (List<Map<String, Object>>) param.getValue();
-        copyTableValue(paramValues, tableValues, items);
-        tableViewerCreator.init(tableValues);
+        tableViewerCreator.init(copyTableValue(param));
 
         final Listener addLineListener = new Listener() {
 
             @SuppressWarnings("unchecked")
             public void handleEvent(final Event event) {
-                List<Map<String, Object>> tableValues = new ArrayList<Map<String, Object>>();
-                List<Map<String, Object>> paramValues = (List<Map<String, Object>>) param.getValue();
-                copyTableValue(paramValues, tableValues, items);
+                List<Map<String, Object>> tableValues = copyTableValue(param);
                 Map<String, Object> line = new HashMap<String, Object>();
 
                 if (itemsValue[0] instanceof IElementParameter) {
@@ -2241,9 +2316,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
         final Listener removeLineListener = new Listener() {
 
             public void handleEvent(final Event event) {
-                List<Map<String, Object>> tableValues = new ArrayList<Map<String, Object>>();
-                List<Map<String, Object>> paramValues = (List<Map<String, Object>>) param.getValue();
-                copyTableValue(paramValues, tableValues, items);
+                List<Map<String, Object>> tableValues = copyTableValue(param);
                 int selectionIndex = table.getSelectionIndex();
                 if (selectionIndex >= 0) {
                     tableValues.remove(selectionIndex);
@@ -2261,14 +2334,11 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
         final Listener copyLineListener = new Listener() {
 
             public void handleEvent(final Event event) {
-                List<Map<String, Object>> tableValues = new ArrayList<Map<String, Object>>();
-                List<Map<String, Object>> paramValues = (List<Map<String, Object>>) param.getValue();
-                copyTableValue(paramValues, tableValues, items);
-
+                List<Map<String, Object>> tableValues = copyTableValue(param);
                 if (table.getSelectionIndex() >= 0) {
                     Map<String, Object> map = tableValues.get(table.getSelectionIndex());
                     if (map != null) {
-                        copyToCliboard(map, items);
+                        copyToCliboard(map, param);
                     }
                 }
             }
@@ -2277,9 +2347,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
 
             public void handleEvent(final Event event) {
                 if (clipboard != null) {
-                    List<Map<String, Object>> tableValues = new ArrayList<Map<String, Object>>();
-                    List<Map<String, Object>> paramValues = (List<Map<String, Object>>) param.getValue();
-                    copyTableValue(paramValues, tableValues, items);
+                    List<Map<String, Object>> tableValues = copyTableValue(param);
 
                     int index = table.getSelectionIndex();
                     if (index == -1) {
@@ -2299,9 +2367,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
         final Listener upLineListener = new Listener() {
 
             public void handleEvent(final Event event) {
-                List<Map<String, Object>> tableValues = new ArrayList<Map<String, Object>>();
-                List<Map<String, Object>> paramValues = (List<Map<String, Object>>) param.getValue();
-                copyTableValue(paramValues, tableValues, items);
+                List<Map<String, Object>> tableValues = copyTableValue(param);
 
                 if (table.getSelectionIndex() > 0) {
                     Collections.swap(tableValues, table.getSelectionIndex(), table.getSelectionIndex() - 1);
@@ -2316,9 +2382,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
         final Listener downLineListener = new Listener() {
 
             public void handleEvent(final Event event) {
-                List<Map<String, Object>> tableValues = new ArrayList<Map<String, Object>>();
-                List<Map<String, Object>> paramValues = (List<Map<String, Object>>) param.getValue();
-                copyTableValue(paramValues, tableValues, items);
+                List<Map<String, Object>> tableValues = copyTableValue(param);
 
                 if (table.getSelectionIndex() < tableValues.size() - 1) {
                     Collections.swap(tableValues, table.getSelectionIndex(), table.getSelectionIndex() + 1);
@@ -2333,27 +2397,6 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
         if (!param.isReadOnly()) {
             final Menu menuTable = new Menu(table);
             table.setMenu(menuTable);
-            // menuTable.addListener(SWT.Show, new Listener() {
-            //
-            // public void handleEvent(final Event event) {
-            // MenuItem[] menuItems = menuTable.getItems();
-            // for (int i = 0; i < menuItems.length; i++) {
-            // menuItems[i].dispose();
-            // }
-            // final TableItem[] tableItems = table.getSelection();
-            // MenuItem menuItem = new MenuItem(menuTable, SWT.PUSH);
-            // menuItem.setText("Add a new line");
-            //
-            // menuItem.addListener(SWT.Selection, addLineListener);
-            //
-            // if (tableItems.length == 1) {
-            // menuItem = new MenuItem(menuTable, SWT.PUSH);
-            // menuItem.setText("remove the selected line");
-            //
-            // menuItem.addListener(SWT.Selection, removeLineListener);
-            // }
-            // }
-            // });
             hashCurControls.put(param.getName(), tableViewerCreator);
         }
         CLabel labelLabel = getWidgetFactory().createCLabel(container, param.getDisplayName());
@@ -2485,17 +2528,37 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
         return null;
     }
 
-    private void copyTableValue(final List<Map<String, Object>> paramValues,
-            final List<Map<String, Object>> tableValues, String[] items) {
+    private List<Map<String, Object>> copyTableValue(final IElementParameter param) {
+        List<Map<String, Object>> paramValues = (List<Map<String, Object>>) param.getValue();
+        List<Map<String, Object>> tableValues = new ArrayList<Map<String, Object>>();
+
         for (Map<String, Object> currentLine : paramValues) {
-            tableValues.add(copyLine(currentLine, items));
+            tableValues.add(copyLine(currentLine, param));
         }
+        return tableValues;
     }
 
-    private Map<String, Object> copyLine(Map<String, Object> currentLine, String[] items) {
+    private Map<String, Object> copyLine(final Map<String, Object> currentLine, final IElementParameter param) {
         Map<String, Object> newLine = new HashMap<String, Object>();
+        String[] items = param.getListItemsDisplayCodeName();
         for (int i = 0; i < items.length; i++) {
-            newLine.put(items[i], currentLine.get(items[i]));
+            Object[] tmpObjects = param.getListItemsValue();
+            if (tmpObjects[i] instanceof IElementParameter) {
+                Object value = currentLine.get(items[i]);
+                if (value instanceof String) { // only when the job is just loaded
+                    boolean found = false;
+                    int index = 0;
+                    Object[] itemsValue = ((IElementParameter) tmpObjects[i]).getListItemsValue();
+                    for (int j = 0; j < itemsValue.length && !found; j++) {
+                        if (itemsValue[j].equals(value)) {
+                            found = true;
+                            index = j;
+                        }
+                    }
+                    value = new Integer(index);
+                }
+                newLine.put(items[i], value);
+            }
         }
         return newLine;
     }
@@ -2504,8 +2567,8 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
 
     private boolean checkErrorsWhenViewRefreshed;
 
-    private void copyToCliboard(Map<String, Object> line, String[] items) {
-        clipboard = copyLine(line, items);
+    private void copyToCliboard(Map<String, Object> line, final IElementParameter param) {
+        clipboard = copyLine(line, param);
     }
 
     /**
@@ -2612,6 +2675,10 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                                     lastControl);
                             break;
                         case COLUMN_LIST:
+                            lastControl = addColumnList(composite, listParam.get(i), numInRow, nbInRow, heightSize,
+                                    lastControl);
+                            break;
+                        case PREV_COLUMN_LIST:
                             lastControl = addColumnList(composite, listParam.get(i), numInRow, nbInRow, heightSize,
                                     lastControl);
                             break;
@@ -2764,7 +2831,8 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                         }
                     }
                     if (param.getField() == EParameterFieldType.CLOSED_LIST
-                            || param.getField() == EParameterFieldType.COLUMN_LIST) {
+                            || param.getField() == EParameterFieldType.COLUMN_LIST
+                            || param.getField() == EParameterFieldType.PREV_COLUMN_LIST) {
                         CCombo c = (CCombo) object;
                         String value = new String(""); //$NON-NLS-1$
                         int nbInList = 0, nbMax = param.getListItemsValue().length;

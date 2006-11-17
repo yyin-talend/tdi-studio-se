@@ -494,7 +494,11 @@ public class Process extends Element implements IProcess {
                             String strValue;
                             if (o instanceof Integer) {
                                 IElementParameter tmpParam = (IElementParameter) param.getListItemsValue()[i];
-                                strValue = (String) tmpParam.getListItemsValue()[(Integer) o];
+                                if (tmpParam.getListItemsValue().length == 0) {
+                                    strValue = "";
+                                } else {
+                                    strValue = (String) tmpParam.getListItemsValue()[(Integer) o];
+                                }
                             } else {
                                 strValue = (String) o;
                             }
@@ -534,18 +538,27 @@ public class Process extends Element implements IProcess {
                         if (param.getField().equals(EParameterFieldType.TABLE)) {
                             List<Map<String, Object>> tableValues = new ArrayList<Map<String, Object>>();
                             int nbValues = 0;
-                            final String[] titles = param.getListItemsDisplayName();
+                            String[] titles = param.getListItemsDisplayName();
+                            String[] codeList = param.getListItemsDisplayCodeName();
                             Map<String, Object> lineValues = null;
                             int nbValuesPerLine = titles.length;
                             for (ElementValueType elementValue : (List<ElementValueType>) pType.getElementValue()) {
-                                if (nbValues == 0) { // current nb values in the line
-                                    lineValues = new HashMap<String, Object>();
-                                    tableValues.add(lineValues);
+                                boolean found = false;
+                                for (int i = 0; i < codeList.length && !found; i++) {
+                                    if (codeList[i].equals(elementValue.getElementRef())) {
+                                        found = true;
+                                    }
                                 }
-                                lineValues.put(elementValue.getElementRef(), elementValue.getValue());
-                                nbValues++;
-                                if (nbValues == nbValuesPerLine) {
-                                    nbValues = 0;
+                                if (found) {
+                                    if (nbValues == 0) { // current nb values in the line
+                                        lineValues = new HashMap<String, Object>();
+                                        tableValues.add(lineValues);
+                                    }
+                                    lineValues.put(elementValue.getElementRef(), elementValue.getValue());
+                                    nbValues++;
+                                    if (nbValues == nbValuesPerLine) {
+                                        nbValues = 0;
+                                    }
                                 }
                             }
                             elemParam.setPropertyValue(pType.getName(), tableValues);
