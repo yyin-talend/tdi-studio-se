@@ -556,7 +556,7 @@ public class SQLBuilderEditorComposite extends Composite implements ISQLEditor {
         // TODO Auto-generated method stub
         SQLBuilderRepositoryNodeManager repositoryNodeManager = new SQLBuilderRepositoryNodeManager();
         List<String> existingName = repositoryNodeManager.getALLQueryLabels(repositoryNode);
-        SQLPropertyDialog saveSQLDialog = new SQLPropertyDialog(this.getShell(), existingName);
+        SQLPropertyDialog saveSQLDialog = new SQLPropertyDialog(this.getShell(), existingName,this.colorText.getText());
         if (Window.OK == saveSQLDialog.open()) {
             Query query = saveSQLDialog.getQuery();
             repositoryNodeManager.saveQuery(repositoryNode, query);

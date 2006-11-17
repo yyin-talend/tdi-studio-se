@@ -37,6 +37,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
+import org.talend.core.model.metadata.builder.connection.ConnectionFactory;
 import org.talend.core.model.metadata.builder.connection.Query;
 import org.talend.sqlbuilder.Messages;
 
@@ -55,6 +56,8 @@ public class SQLPropertyDialog extends TitleAreaDialog {
     private List<String> names;
 
     private Query query;
+
+    private String queryText;
 
     /**
      * Getter for query.
@@ -115,11 +118,11 @@ public class SQLPropertyDialog extends TitleAreaDialog {
     protected void okPressed() {
 
         if (query == null) {
-
-        } else {
-
+            query = ConnectionFactory.eINSTANCE.createQuery();
         }
-
+        query.setComment(this.commentText.getText());
+        query.setLabel(this.nameText.getText());
+        query.setValue(this.queryText);
         super.okPressed();
     }
 
@@ -146,10 +149,12 @@ public class SQLPropertyDialog extends TitleAreaDialog {
      * SaveSQLDialog constructor.
      * 
      * @param shell
+     * @param string
      */
-    protected SQLPropertyDialog(Shell shell, List<String> existentNames) {
+    protected SQLPropertyDialog(Shell shell, List<String> existentNames, String queryText) {
         super(shell);
         this.names = existentNames;
+        this.queryText = queryText;
         setShellStyle(SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL | SWT.RESIZE | SWT.MIN | SWT.MAX);
     }
 
