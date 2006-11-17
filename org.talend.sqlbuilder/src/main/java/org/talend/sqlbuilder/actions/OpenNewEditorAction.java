@@ -112,4 +112,15 @@ public class OpenNewEditorAction extends SelectionProviderAction {
         List<String> repositoryNames = repositoryNodeManager.getALLReposotoryNodeNames();
         dialog.openEditor(firstNode, repositoryNames, connParam, isDefaultEditor);
     }
+
+    
+    /**
+     * Getter for connParam.
+     * @return the connParam
+     */
+    public ConnectionParameters getConnParam() {
+        return connParam;
+    }
+    
+    
 }

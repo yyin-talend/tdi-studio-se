@@ -21,6 +21,9 @@
 // ============================================================================
 package org.talend.sqlbuilder.dbstructure;
 
+import java.util.Iterator;
+
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.jface.viewers.ITableColorProvider;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.ITreeContentProvider;
@@ -37,6 +40,7 @@ import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.metadata.builder.connection.MetadataColumn;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
+import org.talend.core.model.metadata.builder.connection.QueriesConnection;
 import org.talend.core.model.metadata.builder.connection.TableHelper;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.Property;
@@ -57,27 +61,31 @@ import org.talend.sqlbuilder.util.ConnectionParameters;
 import org.talend.sqlbuilder.util.ImageUtil;
 
 /**
- * Detailled comment for this class. <br/>
- * $Id:  DBTreeProvider.java Version 1.0 Nov 6, 2006 2:29:19 AM $
+ * Detailled comment for this class. <br/> $Id: DBTreeProvider.java Version 1.0 Nov 6, 2006 2:29:19 AM $
+ * 
  * @author Hou Peiqin
  * 
  */
 public class DBTreeProvider extends LabelProvider implements ITableLabelProvider, ITreeContentProvider,
-ITableColorProvider {
+        ITableColorProvider {
+
     private SQLBuilderRepositoryNodeManager repositoryNodeManager = new SQLBuilderRepositoryNodeManager();
+
     private RepositoryContentProvider repositoryContentProvider;
+
     private ConnectionParameters connectionParameters;
+
     private RepositoryView repositoryView;
+
     private boolean isRefresh;
-    
+
     public DBTreeProvider(RepositoryView repositoryView, ConnectionParameters connectionParameters) {
         this.connectionParameters = connectionParameters;
         this.repositoryContentProvider = new RepositoryContentProvider(repositoryView);
         this.repositoryView = repositoryView;
     }
-    
-    
-    public boolean isRefresh()  {
+
+    public boolean isRefresh() {
         return isRefresh;
     }
 
@@ -90,28 +98,28 @@ ITableColorProvider {
             return null;
         }
         RepositoryNode node = (RepositoryNode) element;
-        return ImageUtil.getImage(node.getObject().getPurpose()); 
+        return ImageUtil.getImage(node.getObject().getPurpose());
     }
-    
+
     public String getColumnText(Object element, int columnIndex) {
         RepositoryNode node = (RepositoryNode) element;
         if (columnIndex == 0) {
-            return node.getObject().getStatusCode(); 
+            return node.getObject().getStatusCode();
         } else if (columnIndex == 1) {
             return node.getObject().getLabel();
         }
-        
+
         return null;
     }
-    
+
     @SuppressWarnings("static-access")
     public Object[] getChildren(Object parentElement) {
         if (isRefresh) {
             RepositoryNode repositoryNode = (RepositoryNode) parentElement;
             RepositoryNode rootNode = repositoryNodeManager.getRoot(repositoryNode);
             rootNode.getChildren().clear();
-            DatabaseConnection metadataConnection = (DatabaseConnection) ((ConnectionItem) repositoryNode.getObject().getProperty()
-                    .getItem()).getConnection();
+            DatabaseConnection metadataConnection = (DatabaseConnection) ((ConnectionItem) repositoryNode.getObject()
+                    .getProperty().getItem()).getConnection();
             createTables(rootNode, rootNode.getObject(), metadataConnection);
             return repositoryNode.getChildren().toArray();
         } else {
@@ -138,17 +146,18 @@ ITableColorProvider {
 
     private void initialize(RepositoryNode treeRoot) {
         if (!connectionParameters.isRepository()) {
-            addNode(treeRoot, repositoryNodeManager.getRepositoryNodeByBuildIn(treeRoot, connectionParameters).getObject());
+            addNode(treeRoot, repositoryNodeManager.getRepositoryNodeByBuildIn(treeRoot, connectionParameters)
+                    .getObject());
         }
         IRepositoryFactory factory = RepositoryFactoryProvider.getInstance();
-        
+
         try {
             convert(factory.getMetadataConnection(), treeRoot, ERepositoryObjectType.METADATA_CONNECTIONS);
         } catch (Exception e) {
             SqlBuilderPlugin.log(e.getMessage(), e);
         }
     }
-    
+
     private void convert(Container fromModel, RepositoryNode parent, ERepositoryObjectType type) {
         if (fromModel.isEmpty()) {
             return;
@@ -162,7 +171,7 @@ ITableColorProvider {
             oFolder.setLabel(null);
             RepositoryNode folder = new RepositoryNode(oFolder, parent, ENodeType.SIMPLE_FOLDER);
             folder.setProperties(EProperties.LABEL, container.getLabel());
-            //ERepositoryObjectType.FOLDER);
+            // ERepositoryObjectType.FOLDER);
             folder.setProperties(EProperties.CONTENT_TYPE, RepositoryNodeType.FOLDER);
             parent.getChildren().add(folder);
             convert(container, folder, type);
@@ -173,39 +182,63 @@ ITableColorProvider {
             addNode(parent, repositoryObject);
         }
     }
-    
+
     private void addNode(RepositoryNode parent, IRepositoryObject repositoryObject) {
         IRepositoryFactory factory = RepositoryFactoryProvider.getInstance();
-        DatabaseConnection connection = (DatabaseConnection) ((ConnectionItem) repositoryObject
-                .getProperty().getItem()).getConnection();
+        DatabaseConnection connection = (DatabaseConnection) ((ConnectionItem) repositoryObject.getProperty().getItem())
+                .getConnection();
         String sid = connection.getSID();
         repositoryObject.setStatusCode((sid == null || sid.trim().equals("")) ? connection.getDatasourceName() : sid);
-//        if (connectionParameters.isRepository()) {
-            repositoryObject.setPurpose("Images.ConnectionIcon");
-//        } else {
-//            repositoryObject.setPurpose("Images.DatabaseIcon");
-//        }
+        // if (connectionParameters.isRepository()) {
+        repositoryObject.setPurpose("Images.ConnectionIcon");
+        // } else {
+        // repositoryObject.setPurpose("Images.DatabaseIcon");
+        // }
         RepositoryNode node = new RepositoryNode(repositoryObject, parent, ENodeType.REPOSITORY_ELEMENT);
-        
+
         node.setProperties(EProperties.CONTENT_TYPE, RepositoryNodeType.DATABASE);
         node.setProperties(EProperties.LABEL, repositoryObject.getLabel());
         try {
             if (factory.isDeleted(repositoryObject)) {
-                //ignore recycle node
+                // ignore recycle node
             } else {
                 parent.getChildren().add(node);
                 repositoryNodeManager.addRepositoryNode(node);
             }
-        } catch (PersistenceException e1) {
-            e1.printStackTrace();
+        } catch (PersistenceException e) {
+            SqlBuilderPlugin.log("persistence error occurs", e);
         }
 
         DatabaseConnection metadataConnection = (DatabaseConnection) ((ConnectionItem) repositoryObject.getProperty()
                 .getItem()).getConnection();
         createTables(node, repositoryObject, metadataConnection);
 
+        createQueries(node, repositoryObject, metadataConnection);
     }
-    
+
+    private void createQueries(RepositoryNode node, final IRepositoryObject repObj,
+            DatabaseConnection metadataConnection) {
+        EList queryConnections = metadataConnection.getQueries();
+
+        for (Iterator iter = queryConnections.iterator(); iter.hasNext();) {
+            QueriesConnection queriesConnection = (QueriesConnection) iter.next();
+            RepositoryNode queriesConnectionNode = createQueriesConnection(node, repObj, queriesConnection);
+            node.getChildren().add(queriesConnectionNode);
+
+            createQueries(queriesConnectionNode, repObj, queriesConnection);
+        }
+    }
+
+    private void createQueries(RepositoryNode queriesConnectionNode, IRepositoryObject repObj, QueriesConnection queriesConnection) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    private RepositoryNode createQueriesConnection(RepositoryNode node, IRepositoryObject repObj,
+            QueriesConnection queriesConnection) {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
     /**
      * DOC tguiu Comment method "createTables".
@@ -214,19 +247,17 @@ ITableColorProvider {
      * @param iMetadataConnection
      * @param metadataConnection
      */
-    private void createTables(RepositoryNode node, final IRepositoryObject repObj,
-            Connection metadataConnection) {
+    private void createTables(RepositoryNode node, final IRepositoryObject repObj, Connection metadataConnection) {
         for (Object currentTable : metadataConnection.getTables()) {
-            org.talend.core.model.metadata.builder.connection.MetadataTable metadataTable 
-            = (org.talend.core.model.metadata.builder.connection.MetadataTable) currentTable;
+            org.talend.core.model.metadata.builder.connection.MetadataTable metadataTable = (org.talend.core.model.metadata.builder.connection.MetadataTable) currentTable;
             RepositoryNode tableNode = createMetatable(node, repObj, metadataTable);
             if (TableHelper.isDeleted(metadataTable)) {
-                //ignore recycle node
+                // ignore recycle node
             } else {
                 node.getChildren().add(tableNode);
             }
-            
-            //create columns
+
+            // create columns
             createColumns(tableNode, repObj, currentTable);
         }
     }
@@ -240,12 +271,13 @@ ITableColorProvider {
         }
     }
 
-    private RepositoryNode createMetacolumn(RepositoryNode tableNode, IRepositoryObject repObj, MetadataColumn metadataColumn) {
+    private RepositoryNode createMetacolumn(RepositoryNode tableNode, IRepositoryObject repObj,
+            MetadataColumn metadataColumn) {
         RepositoryObject modelObj = new MetadataColumnRepositoryObject(repObj, metadataColumn);
         modelObj.setLabel(metadataColumn.getLabel());
-        //statusCode use for source table name
+        // statusCode use for source table name
         modelObj.setStatusCode(metadataColumn.getOriginalField());
-        //purpose use for Image text.
+        // purpose use for Image text.
         if (metadataColumn.isSynchronised()) {
             modelObj.setPurpose("Images.RefreshIcon");
         } else {
@@ -269,9 +301,9 @@ ITableColorProvider {
             final org.talend.core.model.metadata.builder.connection.MetadataTable table) {
         org.talend.core.model.metadata.MetadataTable modelObj = new MetadataTableRepositoryObject(repObj, table);
         modelObj.setLabel(table.getLabel());
-        //statusCode use for source table name
+        // statusCode use for source table name
         modelObj.setStatusCode(table.getSourceName());
-        //purpose use for Image text.
+        // purpose use for Image text.
         modelObj.setPurpose("Images.TableNodeIcon");
         RepositoryNode tableNode = new RepositoryNode(modelObj, node, ENodeType.REPOSITORY_ELEMENT);
         tableNode.setProperties(EProperties.LABEL, table.getLabel());
@@ -313,7 +345,7 @@ ITableColorProvider {
             return this.table;
         }
     }
-    
+
     /**
      */
     public static class MetadataColumnRepositoryObject extends RepositoryObject {
@@ -343,9 +375,9 @@ ITableColorProvider {
             return this.column;
         }
     }
-    
+
     public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-        
+
     }
 
     public Color getBackground(Object element, int columnIndex) {
@@ -357,7 +389,8 @@ ITableColorProvider {
                 return Display.getDefault().getSystemColor(SWT.COLOR_RED);
             }
         } else if (repositoryNode.getProperties(EProperties.CONTENT_TYPE) == RepositoryNodeType.TABLE) {
-            MetadataTableRepositoryObject tableRepositoryObject = (MetadataTableRepositoryObject) repositoryNode.getObject();
+            MetadataTableRepositoryObject tableRepositoryObject = (MetadataTableRepositoryObject) repositoryNode
+                    .getObject();
             if (tableRepositoryObject.getLabel() == null || tableRepositoryObject.getLabel().trim().equals("")) {
                 return Display.getDefault().getSystemColor(SWT.COLOR_GRAY);
             }
@@ -365,7 +398,8 @@ ITableColorProvider {
                 return Display.getDefault().getSystemColor(SWT.COLOR_RED);
             }
         } else if (repositoryNode.getProperties(EProperties.CONTENT_TYPE) == RepositoryNodeType.COLUMN) {
-            MetadataColumnRepositoryObject columnRepositoryObject = (MetadataColumnRepositoryObject) repositoryNode.getObject();
+            MetadataColumnRepositoryObject columnRepositoryObject = (MetadataColumnRepositoryObject) repositoryNode
+                    .getObject();
             if (columnRepositoryObject.getLabel() == null || columnRepositoryObject.getLabel().trim().equals("")) {
                 return Display.getDefault().getSystemColor(SWT.COLOR_GRAY);
             }
@@ -380,5 +414,4 @@ ITableColorProvider {
         return null;
     }
 
-    
 }

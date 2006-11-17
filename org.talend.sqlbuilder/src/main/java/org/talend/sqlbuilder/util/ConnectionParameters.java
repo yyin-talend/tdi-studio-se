@@ -21,6 +21,7 @@
 // ============================================================================
 package org.talend.sqlbuilder.util;
 
+import org.talend.core.model.metadata.builder.connection.Query;
 import org.talend.repository.ui.utils.DataStringConnection;
 
 /**
@@ -52,6 +53,26 @@ public class ConnectionParameters {
     private String repositoryName;
 
     private String selectedComponentName;
+    
+    private Query queryObject;
+
+    
+    /**
+     * Getter for queryObject.
+     * @return the queryObject
+     */
+    public Query getQueryObject() {
+        return queryObject;
+    }
+
+    
+    /**
+     * Sets the queryObject.
+     * @param queryObject the queryObject to set
+     */
+    public void setQueryObject(Query queryObject) {
+        this.queryObject = queryObject;
+    }
 
     /**
      * ConnectionParameters constructor.

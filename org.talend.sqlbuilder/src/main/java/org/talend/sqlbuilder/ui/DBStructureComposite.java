@@ -59,9 +59,11 @@ import org.talend.repository.model.RepositoryNode.ENodeType;
 import org.talend.repository.model.RepositoryNode.EProperties;
 import org.talend.repository.ui.views.RepositoryView;
 import org.talend.sqlbuilder.Messages;
+import org.talend.sqlbuilder.actions.DeleteQueryAction;
 import org.talend.sqlbuilder.actions.GenerateSelectSQLAction;
 import org.talend.sqlbuilder.actions.MetadataRefreshAction;
 import org.talend.sqlbuilder.actions.OpenNewEditorAction;
+import org.talend.sqlbuilder.actions.OpenQueryAction;
 import org.talend.sqlbuilder.actions.ShowQueryPropertyAction;
 import org.talend.sqlbuilder.dbstructure.DBTreeProvider;
 import org.talend.sqlbuilder.dbstructure.RepositoryNodeType;
@@ -102,6 +104,12 @@ public class DBStructureComposite extends Composite {
     private Action metadataRefreshAction;
 
     private Action generateSelectAction;
+
+    private ShowQueryPropertyAction showQueryPropertyAction;
+
+    private OpenQueryAction openQueryAction;
+
+    private DeleteQueryAction deleteQueryAction;
 
     private Separator separator = new Separator(IWorkbenchActionConstants.MB_ADDITIONS);
 
@@ -233,8 +241,6 @@ public class DBStructureComposite extends Composite {
         }
     };
 
-    private ShowQueryPropertyAction showQueryPropertyAction;
-
     /**
      * DOC qianbing Comment method "makeActions". Makes actions
      */
@@ -249,6 +255,8 @@ public class DBStructureComposite extends Composite {
 
         metadataRefreshAction = new MetadataRefreshAction(treeViewer);
 
+        openQueryAction = new OpenQueryAction(treeViewer, builderDialog, builderDialog.getConnParameters());
+        deleteQueryAction = new DeleteQueryAction(treeViewer);
         showQueryPropertyAction = new ShowQueryPropertyAction(treeViewer);
 
     }
@@ -291,7 +299,10 @@ public class DBStructureComposite extends Composite {
 
                 // metadata refresh
                 manager.add(metadataRefreshAction);
+                manager.add(separator);
 
+                manager.add(openQueryAction);
+                manager.add(deleteQueryAction);
                 manager.add(showQueryPropertyAction);
             }
         });

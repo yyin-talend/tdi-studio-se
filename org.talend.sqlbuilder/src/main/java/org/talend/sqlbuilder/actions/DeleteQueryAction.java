@@ -22,9 +22,7 @@
 package org.talend.sqlbuilder.actions;
 
 import org.eclipse.jface.viewers.ISelectionProvider;
-import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.actions.SelectionProviderAction;
-import org.talend.repository.model.RepositoryNode;
 import org.talend.sqlbuilder.Messages;
 
 /**
@@ -33,34 +31,19 @@ import org.talend.sqlbuilder.Messages;
  * $Id: talend-code-templates.xml,v 1.3 2006/11/01 05:38:28 nicolas Exp $
  * 
  */
-public class ShowQueryPropertyAction extends SelectionProviderAction {
+public class DeleteQueryAction extends SelectionProviderAction {
 
     /**
-     * DOC qianbing ShowQueryPropertyAction constructor comment.
-     * 
-     * @param provider
-     * @param text
+     * DOC qianbing DeleteQueryAction constructor comment.
      */
-    public ShowQueryPropertyAction(ISelectionProvider provider) {
+    public DeleteQueryAction(ISelectionProvider provider) {
         super(provider, Messages.getString("DBStructureComposite.Property"));
     }
 
     @Override
-    public void selectionChanged(IStructuredSelection selection) {
-        boolean enabled = true;
-        if (selection.size() != 1) {
-            enabled = false;
-        } else {
-            RepositoryNode node = (RepositoryNode) selection.getFirstElement();
-
-        }
-        setEnabled(enabled);
-    }
-
-    
-    
-    @Override
     public void run() {
+        // TODO Auto-generated method stub
+        super.run();
     }
 
 }
