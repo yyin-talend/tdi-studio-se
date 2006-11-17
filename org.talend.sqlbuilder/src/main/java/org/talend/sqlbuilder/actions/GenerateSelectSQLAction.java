@@ -46,44 +46,41 @@ import org.talend.sqlbuilder.util.ConnectionParameters;
 import org.talend.sqlbuilder.util.ImageUtil;
 
 /**
- * Detailled comment for this class. <br/> $Id: GenerateSelectSQLAction.java,v
- * 1.13 2006/11/09 07:24:13 tangfn Exp $
+ * Detailled comment for this class. <br/> $Id: GenerateSelectSQLAction.java,v 1.13 2006/11/09 07:24:13 tangfn Exp $
  * 
  * @author Hou Peiqin (Soyatec)
  * 
  */
 public class GenerateSelectSQLAction extends SelectionProviderAction {
 
-	private static final ImageDescriptor SQL_EDITOR_IMAGE = ImageUtil
-			.getDescriptor("Images.SqlEditorIcon");
+    private static final ImageDescriptor SQL_EDITOR_IMAGE = ImageUtil.getDescriptor("Images.SqlEditorIcon");
 
-	private SQLBuilderRepositoryNodeManager repositoryNodeManager = new SQLBuilderRepositoryNodeManager();
+    private SQLBuilderRepositoryNodeManager repositoryNodeManager = new SQLBuilderRepositoryNodeManager();
 
-	private RepositoryNode[] selectedNodes;
+    private RepositoryNode[] selectedNodes;
 
-	private ISelectionProvider provider;
+    private ISelectionProvider provider;
 
-	private ISQLBuilderDialog dialog;
+    private ISQLBuilderDialog dialog;
 
-	private boolean isDefaultEditor;
+    private boolean isDefaultEditor;
 
-	@SuppressWarnings("unchecked")
-	public GenerateSelectSQLAction(ISelectionProvider provider,
-			ISQLBuilderDialog dialog, boolean isDefaultEditor) {
-		super(provider, "Generate Select Statement");
-		this.provider = provider;
-		this.dialog = dialog;
-		this.isDefaultEditor = isDefaultEditor;
-		init();
-	}
+    @SuppressWarnings("unchecked")
+    public GenerateSelectSQLAction(ISelectionProvider provider, ISQLBuilderDialog dialog, boolean isDefaultEditor) {
+        super(provider, "Generate Select Statement");
+        this.provider = provider;
+        this.dialog = dialog;
+        this.isDefaultEditor = isDefaultEditor;
+        init();
+    }
 
-	@Override
-	public void selectionChanged(IStructuredSelection selection) {
-		init();
-	}
+    @Override
+    public void selectionChanged(IStructuredSelection selection) {
+        init();
+    }
 
-	@SuppressWarnings("unchecked")
-	public void init() {
+    @SuppressWarnings("unchecked")
+    public void init() {
 		selectedNodes = (RepositoryNode[]) ((IStructuredSelection) provider
 				.getSelection()).toList().toArray(new RepositoryNode[] {});
 		if (selectedNodes.length == 0) {
@@ -102,152 +99,151 @@ public class GenerateSelectSQLAction extends SelectionProviderAction {
 		}
 	}
 
-	/**
-	 * run.
-	 */
-	@SuppressWarnings("static-access")
-	@Override
-	public void run() {
-		try {
+    /**
+     * run.
+     */
+    @SuppressWarnings("static-access")
+    @Override
+    public void run() {
+        try {
 
-			String query = null;
+            String query = null;
 
-			RepositoryNodeType repositoryNodeType = (RepositoryNodeType) selectedNodes[0]
-					.getProperties(EProperties.CONTENT_TYPE);
+            RepositoryNodeType repositoryNodeType = (RepositoryNodeType) selectedNodes[0]
+                    .getProperties(EProperties.CONTENT_TYPE);
 
-			if (repositoryNodeType == RepositoryNodeType.COLUMN) {
-				query = createColumnSelect();
-			}
-			if (repositoryNodeType == RepositoryNodeType.TABLE) {
-				query = createTableSelect();
-			}
+            if (repositoryNodeType == RepositoryNodeType.COLUMN) {
+                query = createColumnSelect();
+            }
+            if (repositoryNodeType == RepositoryNodeType.TABLE) {
+                query = createTableSelect();
+            }
 
-			if (query == null) {
-				return;
-			}
-			List<String> repositoryNames = repositoryNodeManager
-					.getALLReposotoryNodeNames();
-			ConnectionParameters connParam = new ConnectionParameters();
-			connParam.setQuery(query);
+            if (query == null) {
+                return;
+            }
+            List<String> repositoryNames = repositoryNodeManager.getALLReposotoryNodeNames();
+            ConnectionParameters connParam = new ConnectionParameters();
+            connParam.setQuery(query);
 
-			dialog.openEditor(repositoryNodeManager.getRoot(selectedNodes[0]),
-					repositoryNames, connParam, isDefaultEditor);
-		} catch (Throwable e) {
-			SqlBuilderPlugin.log("Could generate sql.", e);
-		}
-	}
+            dialog.openEditor(repositoryNodeManager.getRoot(selectedNodes[0]), repositoryNames, connParam,
+                    isDefaultEditor);
+        } catch (Throwable e) {
+            SqlBuilderPlugin.log("Could generate sql.", e);
+        }
+    }
 
-	/**
-	 * @return query string for full table select
-	 */
-	private String createColumnSelect() {
+    /**
+     * @return query string for full table select
+     */
+    private String createColumnSelect() {
 
-		StringBuffer query = new StringBuffer("select ");
-		String fix = getPrePostfix(selectedNodes[0]);
-		String tablePrefix = getTablePrefix(selectedNodes[0]);
-		String sep = "";
-		String table = "";
+        StringBuffer query = new StringBuffer("select ");
+        String fix = getPrePostfix(selectedNodes[0]);
+        String tablePrefix = getTablePrefix(selectedNodes[0]);
+        String sep = "";
+        String table = "";
 
-		for (int i = 0; i < selectedNodes.length; i++) {
+        for (int i = 0; i < selectedNodes.length; i++) {
 
-			RepositoryNode node = selectedNodes[i];
-			if (node.getParent() != selectedNodes[0].getParent()) {
-				continue;
-			}
+            RepositoryNode node = selectedNodes[i];
+            if (node.getParent() != selectedNodes[0].getParent()) {
+                continue;
+            }
 
-			if ((RepositoryNodeType) selectedNodes[0]
-					.getProperties(EProperties.CONTENT_TYPE) == RepositoryNodeType.COLUMN) {
+            if ((RepositoryNodeType) selectedNodes[0].getProperties(EProperties.CONTENT_TYPE) == RepositoryNodeType.COLUMN) {
 
-				if (table.length() == 0) {
-					table = ((SqlBuilderRepositoryObject) node.getParent()
-							.getObject()).getSourceName();
-				}
+                if (table.length() == 0) {
+                    table = ((SqlBuilderRepositoryObject) node.getParent().getObject()).getSourceName();
+                }
 
-				query.append(sep);
-				query.append(fix
-						+ ((SqlBuilderRepositoryObject) node.getObject())
-								.getSourceName() + fix);
-				sep = ", ";
-			}
-		}
+                query.append(sep);
+                query.append(fix + ((SqlBuilderRepositoryObject) node.getObject()).getSourceName() + fix);
+                sep = ", ";
+            }
+        }
 
-		query.append(" from ");
-		query.append(tablePrefix + table);
+        query.append(" from ");
+        if (fix != null && !fix.trim().equals("")) {
+        	query.append(fix + tablePrefix + fix + "." + fix + table + fix);
+        } else {
+        	query.append(tablePrefix + "." + table);
+        }
+        
 
-		return query.toString();
+        return query.toString();
 
-	}
+    }
 
-	/**
-	 * @return query string for full table select
-	 */
-	private String createTableSelect() {
+    /**
+     * @return query string for full table select
+     */
+    private String createTableSelect() {
 
-		RepositoryNode node = (RepositoryNode) selectedNodes[0];
-		String fix = getPrePostfix(node);
-		String tablePrefix = getTablePrefix(node);
+        RepositoryNode node = (RepositoryNode) selectedNodes[0];
+        String fix = getPrePostfix(node);
+        String tablePrefix = getTablePrefix(node);
 
-		StringBuffer query = new StringBuffer("select ");
-		String sep = "";
+        StringBuffer query = new StringBuffer("select ");
+        String sep = "";
 
-		EList columns = ((MetadataTableRepositoryObject) node.getObject())
-				.getTable().getColumns();
-		Iterator it = columns.iterator();
+        EList columns = ((MetadataTableRepositoryObject) node.getObject()).getTable().getColumns();
+        Iterator it = columns.iterator();
 
-		while (it.hasNext()) {
+        while (it.hasNext()) {
 
-			query.append(sep);
-			String column = ((MetadataColumn) it.next()).getOriginalField();
-			query.append(fix + column + fix);
-			sep = ", ";
-		}
+            query.append(sep);
+            String column = ((MetadataColumn) it.next()).getOriginalField();
+            query.append(fix + column + fix);
+            sep = ", ";
+        }
 
-		query.append(" from ");
-		query.append(tablePrefix
-				+ ((SqlBuilderRepositoryObject) node.getObject())
-						.getSourceName());
+        query.append(" from ");
+        if (fix != null && !fix.trim().equals("")) {
+        	query.append(fix + tablePrefix  + fix + "." + fix + ((SqlBuilderRepositoryObject) node.getObject()).getSourceName() + fix);
+        } else {
+        	query.append(tablePrefix  + "." + ((SqlBuilderRepositoryObject) node.getObject()).getSourceName());
+        }
 
-		return query.toString();
-	}
+        return query.toString();
+    }
 
-	private String getTablePrefix(RepositoryNode node) {
-		RepositoryNode root = repositoryNodeManager.getRoot(node);
-		DatabaseConnection connection = (DatabaseConnection) ((ConnectionItem) root
-				.getObject().getProperty().getItem()).getConnection();
-		if (connection.getSchema() != null
-				&& !connection.getSchema().trim().equals("")) {
-			return connection.getSchema() + ".";
-		} else {
-			return "";
-		}
-	}
+    private String getTablePrefix(RepositoryNode node) {
+        RepositoryNode root = repositoryNodeManager.getRoot(node);
+        DatabaseConnection connection = (DatabaseConnection) ((ConnectionItem) root.getObject().getProperty().getItem())
+                .getConnection();
+        if (connection.getSchema() != null && !connection.getSchema().trim().equals("")) {
+            return connection.getSchema();
+        } else {
+            return "";
+        }
+    }
 
-	/**
-	 * Get Prepostfix.
-	 * 
-	 * @param node
-	 *            the selected node
-	 * @return PrePostfix
-	 */
-	private String getPrePostfix(RepositoryNode node) {
-		RepositoryNode root = repositoryNodeManager.getRoot(node);
-		DatabaseConnection connection = (DatabaseConnection) ((ConnectionItem) root
-				.getObject().getProperty().getItem()).getConnection();
-		if (connection.getDatabaseType().equals("PostgreSQL")) {
-			return "\"";
-		}
-		return "";
-	}
+    /**
+     * Get Prepostfix.
+     * 
+     * @param node the selected node
+     * @return PrePostfix
+     */
+    private String getPrePostfix(RepositoryNode node) {
+        RepositoryNode root = repositoryNodeManager.getRoot(node);
+        DatabaseConnection connection = (DatabaseConnection) ((ConnectionItem) root.getObject().getProperty().getItem())
+                .getConnection();
+        if (connection.getDatabaseType().equals("PostgreSQL")) {
+            return "\"";
+        }
+        return "";
+    }
 
-	/**
-	 * Custom image for generate SQL action.
-	 * 
-	 * @see org.eclipse.jface.action.IAction#getImageDescriptor()
-	 * @return ImageDescriptor
-	 */
-	public ImageDescriptor getImageDescriptor() {
+    /**
+     * Custom image for generate SQL action.
+     * 
+     * @see org.eclipse.jface.action.IAction#getImageDescriptor()
+     * @return ImageDescriptor
+     */
+    public ImageDescriptor getImageDescriptor() {
 
-		return SQL_EDITOR_IMAGE;
-	}
+        return SQL_EDITOR_IMAGE;
+    }
 
 }
