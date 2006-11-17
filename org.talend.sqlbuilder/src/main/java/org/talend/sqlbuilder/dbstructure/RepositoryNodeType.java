@@ -22,12 +22,16 @@
 package org.talend.sqlbuilder.dbstructure;
 
 /**
- * Detailled comment for this class. <br/>
- * $Id:  RepositoryNodeType.java Version 1.0 Nov 6, 2006 6:19:45 AM $
- * @author XXXXXXXX (Soyatec)
+ * Detailled comment for this class. <br/> $Id: RepositoryNodeType.java Version 1.0 Nov 6, 2006 6:19:45 AM $
+ * 
+ * @author phou
  * 
  */
-public enum RepositoryNodeType
-{
-    FOLDER,DATABASE,TABLE,COLUMN;
+public enum RepositoryNodeType {
+    FOLDER,
+    DATABASE,
+    TABLE,
+    COLUMN,
+    QUERIESCONNECTION,
+    QUERY;
 }
