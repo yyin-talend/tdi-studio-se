@@ -22,6 +22,7 @@
 package org.talend.sqlbuilder.ui;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.List;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IProgressMonitorWithBlocking;
@@ -62,7 +63,7 @@ import org.talend.sqlbuilder.util.UIUtils;
  * $Id: SQLBuilderDialog.java,v 1.44 2006/11/09 08:44:09 tangfn Exp $
  * 
  */
-public class SQLBuilderDialog extends Dialog {
+public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog {
 
     private DBDetailsComposite dbDetailsComposite;
 
@@ -219,6 +220,17 @@ public class SQLBuilderDialog extends Dialog {
         return container;
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.sqlbuilder.ui.ISQLBuilderDialog#openEditor(org.talend.repository.model.RepositoryNode,
+     * java.util.List, org.talend.sqlbuilder.util.ConnectionParameters, boolean)
+     */
+    public void openEditor(RepositoryNode node, List<String> repositoryName, ConnectionParameters connParam,
+            boolean isDefaultEditor) {
+        editorComposite.openNewEditor(node, repositoryName, connParam, isDefaultEditor);
+    }
+
     /**
      * Creates the sql detail composite.
      * 
@@ -324,7 +336,7 @@ public class SQLBuilderDialog extends Dialog {
 
     @Override
     public boolean close() {
-    	SQLBuilderRepositoryNodeManager.reductionALLRepositoryNode();
+        SQLBuilderRepositoryNodeManager.reductionALLRepositoryNode();
         SessionTreeNodeUtils.dispose();
         nodeManager.clear();
         return super.close();
@@ -387,28 +399,28 @@ public class SQLBuilderDialog extends Dialog {
          * @see org.eclipse.ui.actions.SelectionProviderAction#selectionChanged(org.eclipse.jface.viewers.IStructuredSelection)
          */
         public void selectionChanged(final IStructuredSelection selection) {
-//            IRunnableWithProgress progress = new IRunnableWithProgress() {
-//
-//                public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-//                    monitor.beginTask("", IProgressMonitor.UNKNOWN);
-//
-//                    monitor.done();
-//                }
-//            };
+            // IRunnableWithProgress progress = new IRunnableWithProgress() {
+            //
+            // public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
+            // monitor.beginTask("", IProgressMonitor.UNKNOWN);
+            //
+            // monitor.done();
+            // }
+            // };
 
             // UIUtils.runWithProgress(progress, true, getProgressMonitor(), getShell());
             BusyIndicator.showWhile(Display.getDefault(), new Runnable() {
 
                 public void run() {
                     INode node = null;
-                    String msg=null;
+                    String msg = null;
                     if (!selection.isEmpty()) {
                         try {
                             RepositoryNode repositoryNode = (RepositoryNode) selection.getFirstElement();
                             node = nodeManager.convert2INode(repositoryNode);
                         } catch (Exception e) {
                             e.printStackTrace();
-                            msg=e.getMessage();
+                            msg = e.getMessage();
                         }
                     }
                     dbDetailsComposite.setSelectedNode(node, msg);
@@ -416,5 +428,5 @@ public class SQLBuilderDialog extends Dialog {
             });
         }
     }
-    
+
 }

@@ -45,7 +45,7 @@ public class SQLBuilderTabComposite extends Composite {
 
     private CTabFolder tabFolder;
 
-    private List repositoryNames;
+    private List<String> repositoryNames;
 
     public SQLBuilderTabComposite(Composite parent, int style) {
         super(parent, style);
@@ -53,33 +53,18 @@ public class SQLBuilderTabComposite extends Composite {
     }
 
     /**
-     * DOC dev Comment method "openNewEditor".
-     * 
-     * @param node
-     * @param repositoryNames
-     * @param connParam
-     * @param isDefaultEditor
-     * @depreted
-     */
-    public void openNewEditor(SessionTreeNode node, List repositoryNames, ConnectionParameters connParam,
-            boolean isDefaultEditor) {
-
-    }
-
-    /**
      * Opens an new sql editor.
      * 
-     * @param node
-     * @param repositoryNames
-     * @param connParam
-     * @param isDefaultEditor
+     * @param node RepositoryNode with the DatabaseConnection
+     * @param repositoryNames all the repositories' name
+     * @param connParam ConnectionParameters
+     * @param isDefaultEditor whether is the DefaultEditor
      */
-    public void openNewEditor(RepositoryNode node, List repositoryNames, ConnectionParameters connParam,
+    public void openNewEditor(RepositoryNode node, List<String> repositories, ConnectionParameters connParam,
             boolean isDefaultEditor) {
 
         Assert.isNotNull(node, "SessionTreeNode should not be null");
-
-        this.repositoryNames = repositoryNames;
+        this.repositoryNames = repositories;
         createTabFolder();
         try {
             createTabItem(node, connParam, isDefaultEditor);
@@ -138,7 +123,8 @@ public class SQLBuilderTabComposite extends Composite {
             tabItem = new CTabItem(tabFolder, SWT.CLOSE);
         }
 
-        SQLBuilderEditorComposite builderEditorComposite = new SQLBuilderEditorComposite(tabFolder, tabItem, isDefaultEditor,SWT.NONE);
+        SQLBuilderEditorComposite builderEditorComposite = new SQLBuilderEditorComposite(tabFolder, tabItem,
+                isDefaultEditor, SWT.NONE);
         builderEditorComposite.setEditorContent(connParam);
         builderEditorComposite.setRepositoryNode(node);
 

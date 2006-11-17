@@ -29,8 +29,10 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.actions.SelectionProviderAction;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNode.EProperties;
+import org.talend.sqlbuilder.Messages;
 import org.talend.sqlbuilder.dbstructure.RepositoryNodeType;
 import org.talend.sqlbuilder.repository.utility.SQLBuilderRepositoryNodeManager;
+import org.talend.sqlbuilder.ui.ISQLBuilderDialog;
 import org.talend.sqlbuilder.ui.SQLBuilderTabComposite;
 import org.talend.sqlbuilder.util.ConnectionParameters;
 
@@ -42,14 +44,14 @@ import org.talend.sqlbuilder.util.ConnectionParameters;
  */
 public class OpenNewEditorAction extends SelectionProviderAction {
 
-    private SQLBuilderTabComposite editorComposite;
+    private ISQLBuilderDialog dialog;
 
     private ISelectionProvider selectionProvider;
 
     private ConnectionParameters connParam;
 
     private boolean isDefaultEditor;
-    
+
     private SQLBuilderRepositoryNodeManager repositoryNodeManager = new SQLBuilderRepositoryNodeManager();
 
     /**
@@ -60,11 +62,12 @@ public class OpenNewEditorAction extends SelectionProviderAction {
      * @param connParam
      * @param isDefaultEditor
      */
-    public OpenNewEditorAction(ISelectionProvider selectionProvider,
-            SQLBuilderTabComposite editorComposite,
+    public OpenNewEditorAction(ISelectionProvider selectionProvider, ISQLBuilderDialog dialog,
             ConnectionParameters connParam, boolean isDefaultEditor) {
         super(selectionProvider, "New Editor");
-        this.editorComposite = editorComposite;
+        setText(Messages.getString("DBStructureComposite.NewEditor")); //$NON-NLS-1$
+        setToolTipText(Messages.getString("DBStructureComposite.NewEditor"));
+        this.dialog = dialog;
         this.selectionProvider = selectionProvider;
         this.connParam = connParam;
         this.isDefaultEditor = isDefaultEditor;
@@ -73,16 +76,15 @@ public class OpenNewEditorAction extends SelectionProviderAction {
 
     @SuppressWarnings("unchecked")
     public void init() {
-        RepositoryNode[] selectedNodes = (RepositoryNode[]) ((IStructuredSelection) selectionProvider
-                .getSelection()).toList().toArray(new RepositoryNode[]{});
+        RepositoryNode[] selectedNodes = (RepositoryNode[]) ((IStructuredSelection) selectionProvider.getSelection())
+                .toList().toArray(new RepositoryNode[] {});
         if (selectedNodes.length == 0) {
             this.setEnabled(false);
             return;
         }
         int i = 0;
         for (RepositoryNode node : selectedNodes) {
-            if (node.getProperties(EProperties.CONTENT_TYPE) == RepositoryNodeType.FOLDER)
-            {
+            if (node.getProperties(EProperties.CONTENT_TYPE) == RepositoryNodeType.FOLDER) {
                 i++;
             }
         }
@@ -98,21 +100,16 @@ public class OpenNewEditorAction extends SelectionProviderAction {
         init();
     }
 
-
     @Override
     public void run() {
-        IStructuredSelection selection = (IStructuredSelection) selectionProvider
-                .getSelection();
+        IStructuredSelection selection = (IStructuredSelection) selectionProvider.getSelection();
         RepositoryNode firstNode = (RepositoryNode) selection.getFirstElement();
         if (firstNode.getProperties(EProperties.CONTENT_TYPE) == RepositoryNodeType.FOLDER) {
-           firstNode = new SQLBuilderRepositoryNodeManager().getRepositoryNodebyName(connParam.getRepositoryName());  
-        }else{
-            firstNode= SQLBuilderRepositoryNodeManager.getRoot(firstNode);
+            firstNode = new SQLBuilderRepositoryNodeManager().getRepositoryNodebyName(connParam.getRepositoryName());
+        } else {
+            firstNode = SQLBuilderRepositoryNodeManager.getRoot(firstNode);
         }
-        List repositoryNames = repositoryNodeManager.getALLReposotoryNodeNames();
-        editorComposite.openNewEditor(firstNode, repositoryNames, connParam,
-                isDefaultEditor);
+        List<String> repositoryNames = repositoryNodeManager.getALLReposotoryNodeNames();
+        dialog.openEditor(firstNode, repositoryNames, connParam, isDefaultEditor);
     }
-    
-
 }
