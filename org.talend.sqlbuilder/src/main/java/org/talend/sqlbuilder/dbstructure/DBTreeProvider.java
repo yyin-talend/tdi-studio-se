@@ -204,7 +204,7 @@ ITableColorProvider {
         } else {
         	connectionRepositoryObject.setImage("Images.DatabaseIcon");
         }
-        if (connection.isDivergency() && !isBuildIn) {
+        if (connection.isDivergency()) {
             connectionRepositoryObject.setColor("COLOR_RED");
         }
         connectionRepositoryObject.setBuildIn(isBuildIn);
