@@ -22,8 +22,10 @@
 package org.talend.sqlbuilder.dbstructure;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.jface.viewers.ITableColorProvider;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.ITreeContentProvider;
@@ -35,11 +37,12 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.utils.data.container.Container;
-import org.talend.core.model.general.Version;
 import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.metadata.builder.connection.MetadataColumn;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
+import org.talend.core.model.metadata.builder.connection.QueriesConnection;
+import org.talend.core.model.metadata.builder.connection.Query;
 import org.talend.core.model.metadata.builder.connection.TableHelper;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.Property;
@@ -104,7 +107,7 @@ ITableColorProvider {
         if (columnIndex == 0) {
             return ((SqlBuilderRepositoryObject) node.getObject()).getSourceName(); 
         } else if (columnIndex == 1) {
-            return node.getObject().getLabel();
+            return ((SqlBuilderRepositoryObject) node.getObject()).getRepositoryName();
         }
         
         return null;
@@ -187,6 +190,11 @@ ITableColorProvider {
                 .getProperty().getItem()).getConnection();
         String sid = connection.getSID();
         MetadataConnectionRepositoryObject  connectionRepositoryObject = new MetadataConnectionRepositoryObject(repositoryObject);
+        if (isBuildIn) {
+        	connectionRepositoryObject.setRepositoryName("Built-In");
+        } else {
+        	connectionRepositoryObject.setRepositoryName(repositoryObject.getLabel());
+        }
         connectionRepositoryObject.setSourceName((sid == null || sid.trim().equals("")) ? connection.getDatasourceName() : sid);
         if (!isBuildIn) {
         connectionRepositoryObject.setImage("Images.ConnectionIcon");
@@ -216,8 +224,36 @@ ITableColorProvider {
                 .getItem()).getConnection();
         createTables(node, repositoryObject, metadataConnection, isBuildIn);
 
+        createQueries(node, repositoryObject, metadataConnection, isBuildIn);
     }
     
+
+    private void createQueries(RepositoryNode node, final IRepositoryObject repObj,
+            DatabaseConnection metadataConnection, boolean isBuildIn) {
+        EList queryConnections = metadataConnection.getQueries();
+        
+        for (Iterator iter = queryConnections.iterator(); iter.hasNext();) {
+            QueriesConnection queriesConnection = (QueriesConnection) iter.next();
+            SqlBuilderRepositoryObject repositoryObject = new SqlBuilderRepositoryObject(repObj.getProperty()); 
+            repositoryObject.setImage("Images.AppendToEditor");
+            repositoryObject.setSourceName("Stored Queries");
+            RepositoryNode queriesConnectionNode = new RepositoryNode(repositoryObject, node, ENodeType.REPOSITORY_ELEMENT);
+            node.getChildren().add(queriesConnectionNode);
+            createQuery(queriesConnectionNode, repObj, queriesConnection);
+        }
+    }
+
+    private void createQuery(RepositoryNode queriesConnectionNode, IRepositoryObject repObj, QueriesConnection queriesConnection) {
+        for (Iterator iter = queriesConnection.getQuery().iterator(); iter.hasNext();) {
+        	Query query = (Query) iter.next();
+        	SqlBuilderRepositoryObject repositoryObject = new SqlBuilderRepositoryObject(repObj.getProperty());
+        	repositoryObject.setImage("Images.SqlEditorIcon");
+        	repositoryObject.setSourceName(query.getLabel());
+        	RepositoryNode node = new RepositoryNode(repositoryObject, queriesConnectionNode, ENodeType.REPOSITORY_ELEMENT);
+        	queriesConnectionNode.getChildren().add(node);
+        }
+    }
+
 
     /**
      * DOC tguiu Comment method "createTables".
@@ -255,7 +291,7 @@ ITableColorProvider {
     private RepositoryNode createMetacolumn(RepositoryNode tableNode, IRepositoryObject repObj, 
     		MetadataColumn metadataColumn, boolean isBuildIn) {
     	MetadataColumnRepositoryObject modelObj = new MetadataColumnRepositoryObject(repObj, metadataColumn);
-        modelObj.setLabel(metadataColumn.getLabel());
+        modelObj.setRepositoryName(metadataColumn.getLabel());
         //statusCode use for source table name
         modelObj.setSourceName(metadataColumn.getOriginalField());
         //purpose use for Image text.
@@ -265,7 +301,7 @@ ITableColorProvider {
             modelObj.setImage("Images.ColumnNodeIcon");
         }
         //description use for color.
-        if (modelObj.getLabel() == null || modelObj.getLabel().trim().equals("")) {
+        if (modelObj.getRepositoryName() == null || modelObj.getRepositoryName().trim().equals("")) {
         	modelObj.setColor("COLOR_GRAY");
         }
         if (modelObj.getColumn().isDivergency() && !isBuildIn) {
@@ -290,13 +326,13 @@ ITableColorProvider {
     private RepositoryNode createMetatable(RepositoryNode node, IRepositoryObject repObj,
             final org.talend.core.model.metadata.builder.connection.MetadataTable table, boolean isBuildIn) {
     	MetadataTableRepositoryObject modelObj = new MetadataTableRepositoryObject(repObj, table);
-        modelObj.setLabel(table.getLabel());
+        modelObj.setRepositoryName(table.getLabel());
         //statusCode use for source table name
         modelObj.setSourceName(table.getSourceName());
         //purpose use for Image text.
         modelObj.setImage("Images.TableNodeIcon");
         //description use for color.
-        if (modelObj.getLabel() == null || modelObj.getLabel().trim().equals("")) {
+        if (modelObj.getRepositoryName() == null || modelObj.getRepositoryName().trim().equals("")) {
         	modelObj.setColor("COLOR_GRAY");
         }
         if (modelObj.getTable().isDivergency() && !isBuildIn) {
@@ -347,11 +383,6 @@ ITableColorProvider {
         public Property getProperty() {
             return repObj.getProperty();
         }
-
-        public String getLabel() {
-            return table.getLabel();
-        }
-
         public org.talend.core.model.metadata.builder.connection.MetadataTable getTable() {
             return this.table;
         }
@@ -371,15 +402,9 @@ ITableColorProvider {
             this.repObj = repObj;
             this.column = column;
         }
-
         public Property getProperty() {
             return repObj.getProperty();
         }
-
-        public String getLabel() {
-            return column.getLabel();
-        }
-
         public MetadataColumn getColumn() {
             return this.column;
         }

@@ -29,6 +29,7 @@ import org.talend.core.model.repository.RepositoryObject;
  *
  */
 public class SqlBuilderRepositoryObject extends RepositoryObject {
+	private String repositoryName;
 	private String sourceName;
 	private String image;
 	private String color;
@@ -37,6 +38,12 @@ public class SqlBuilderRepositoryObject extends RepositoryObject {
 		super(property);
 	}
 	
+	public String getRepositoryName() {
+		return repositoryName;
+	}
+	public void setRepositoryName(String repositoryName) {
+		this.repositoryName = repositoryName;
+	}
 	public String getColor() {
 		return color;
 	}

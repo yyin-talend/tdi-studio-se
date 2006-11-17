@@ -399,6 +399,7 @@ public class DBStructureComposite extends Composite {
 
                     try {
                         RepositoryNode root = (RepositoryNode) treeViewer.getInput();
+                        ((DBTreeProvider) treeViewer.getContentProvider()).setRefresh(true);
                         refreshChildren(root);
                     } finally {
                         monitor.done();
