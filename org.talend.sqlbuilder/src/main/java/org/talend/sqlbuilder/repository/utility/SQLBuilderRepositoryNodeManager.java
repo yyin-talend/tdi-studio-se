@@ -67,11 +67,12 @@ import org.talend.sqlbuilder.util.ConnectionParameters;
  */
 public class SQLBuilderRepositoryNodeManager {
 
-	///
+	// /store all DatabaseConnection's RepositoryNode.
 	private static List<RepositoryNode> repositoryNodes = new ArrayList<RepositoryNode>();
 
 	/**
 	 * DOC dev Comment method "addRepositoryNode".
+	 * 
 	 * @param node
 	 */
 	public void addRepositoryNode(RepositoryNode node) {
@@ -83,6 +84,7 @@ public class SQLBuilderRepositoryNodeManager {
 
 	/**
 	 * DOC dev Comment method "getRepositoryNodebyName".
+	 * 
 	 * @param name
 	 * @return
 	 */
@@ -127,9 +129,12 @@ public class SQLBuilderRepositoryNodeManager {
 	}
 
 	/**
-	 * DOC dev Comment method "getTableNamesByRepositoryNode".
+	 * method "getTableNamesByRepositoryNode" get All Table Names in current
+	 * RepositoryNode's DatabaseConnectionItem.
+	 * 
 	 * @param node
-	 * @return
+	 *            current RepositoryNode
+	 * @return List :all Table Names.
 	 */
 	@SuppressWarnings("unchecked")
 	public static List<String> getTableNamesByRepositoryNode(RepositoryNode node) {
@@ -153,8 +158,10 @@ public class SQLBuilderRepositoryNodeManager {
 	}
 
 	/**
-	 * DOC dev Comment method "getALLReposotoryNodeNames".
-	 * @return
+	 * method "getALLReposotoryNodeNames" get all DatabaseConnection's
+	 * RepositoryNode Names.
+	 * 
+	 * @return List : all DatabaseConnection's RepositoryNode Names
 	 */
 	public List<String> getALLReposotoryNodeNames() {
 		List<String> names = new ArrayList<String>();
@@ -165,7 +172,8 @@ public class SQLBuilderRepositoryNodeManager {
 	}
 
 	/**
-	 * DOC dev Comment method "getRepositoryNodeFromDB".
+	 * method "getRepositoryNodeFromDB".
+	 * 
 	 * @param oldNode
 	 * @return
 	 */
@@ -191,7 +199,8 @@ public class SQLBuilderRepositoryNodeManager {
 
 			for (MetadataTable tableFromDB : tablesFromDB) {
 				// /Get MetadataColumn from DB
-				List<MetadataColumn> columnsFromDB = getColumnsFromDB(iMetadataConnection, tableFromDB);
+				List<MetadataColumn> columnsFromDB = getColumnsFromDB(
+						iMetadataConnection, tableFromDB);
 				for (MetadataTable tableFromEMF : tablesFromEMF) {
 					// /Get MetadataColumn From EMF
 					List<MetadataColumn> columnsFromEMF = tableFromEMF
@@ -207,9 +216,9 @@ public class SQLBuilderRepositoryNodeManager {
 		return oldNode;
 	}
 
-	
 	/**
 	 * DOC dev Comment method "getRepositoryNodeByBuildIn".
+	 * 
 	 * @param node
 	 * @param parameters
 	 * @return
@@ -226,7 +235,8 @@ public class SQLBuilderRepositoryNodeManager {
 		if (status) {
 			List<MetadataTable> tablesFromDB = getTablesFromDB(iMetadataConnection);
 			for (MetadataTable table : tablesFromDB) {
-				List<MetadataColumn> columnsFromDB = getColumnsFromDB(iMetadataConnection, table);
+				List<MetadataColumn> columnsFromDB = getColumnsFromDB(
+						iMetadataConnection, table);
 				table.getColumns().clear();
 				for (MetadataColumn column : columnsFromDB) {
 					column.setLabel("");
@@ -262,33 +272,37 @@ public class SQLBuilderRepositoryNodeManager {
 
 	/**
 	 * DOC dev Comment method "getColumnsFromDB".
+	 * 
 	 * @param iMetadataConnection
 	 * @param table
 	 * @return
 	 */
-	private List<MetadataColumn> getColumnsFromDB(IMetadataConnection iMetadataConnection, MetadataTable table) {
-		 List<MetadataColumn> metadataColumns = new ArrayList<MetadataColumn>();
+	private List<MetadataColumn> getColumnsFromDB(
+			IMetadataConnection iMetadataConnection, MetadataTable table) {
+		List<MetadataColumn> metadataColumns = new ArrayList<MetadataColumn>();
 
-	        try {
-	            DatabaseMetaData dbMetaData = getDatabaseMetaData(iMetadataConnection);
+		try {
+			DatabaseMetaData dbMetaData = getDatabaseMetaData(iMetadataConnection);
 
-	            IMetadataTable metaTable1 = new org.talend.core.model.metadata.MetadataTable();
-	            metaTable1.setLabel(table.getLabel());
-	            metaTable1.setTableName(table.getSourceName());
-	            metadataColumns = ExtractMetaDataFromDataBase.extractMetadataColumnsFormTable(dbMetaData, metaTable1,
-	                    iMetadataConnection.getDbType());
-	            ExtractMetaDataUtils.closeConnection();
-	        } catch (Exception e) {
-	            throw new RuntimeException(e);
-	        }
+			IMetadataTable metaTable1 = new org.talend.core.model.metadata.MetadataTable();
+			metaTable1.setLabel(table.getLabel());
+			metaTable1.setTableName(table.getSourceName());
+			metadataColumns = ExtractMetaDataFromDataBase
+					.extractMetadataColumnsFormTable(dbMetaData, metaTable1,
+							iMetadataConnection.getDbType());
+			ExtractMetaDataUtils.closeConnection();
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
 
-	        return metadataColumns;
+		return metadataColumns;
 	}
 
-	
 	/**
 	 * DOC dev Comment method "createConnection".
-	 * @param parameters inputed when use Built-In .
+	 * 
+	 * @param parameters
+	 *            inputed when use Built-In .
 	 * @return DatabaseConnection : connetion .
 	 */
 	private DatabaseConnection createConnection(ConnectionParameters parameters) {
@@ -310,7 +324,9 @@ public class SQLBuilderRepositoryNodeManager {
 
 	/**
 	 * method "getItem" get DatabaseConnectionItem by current RepositoryNode .
-	 * @param newNode current RepositoryNode
+	 * 
+	 * @param newNode
+	 *            current RepositoryNode
 	 * @return DatabaseConnectionItem : item current node.
 	 */
 	private static DatabaseConnectionItem getItem(RepositoryNode newNode) {
@@ -321,9 +337,11 @@ public class SQLBuilderRepositoryNodeManager {
 	}
 
 	/**
-	 * method "getDatabaseNameByRepositoryNode" get databaseName  .
-	 * @param node current RepositoryNode
-	 * @return String :databaseName 
+	 * method "getDatabaseNameByRepositoryNode" get databaseName .
+	 * 
+	 * @param node
+	 *            current RepositoryNode
+	 * @return String :databaseName
 	 */
 	public static String getDatabaseNameByRepositoryNode(RepositoryNode node) {
 		DatabaseConnection connection = (DatabaseConnection) getItem(node)
@@ -335,7 +353,9 @@ public class SQLBuilderRepositoryNodeManager {
 
 	/**
 	 * method "getTablesFromDB" get all tables from DataBase.
-	 * @param iMetadataConnection contains connection 
+	 * 
+	 * @param iMetadataConnection
+	 *            contains connection
 	 * @return all Tables from Database.
 	 */
 	private List<MetadataTable> getTablesFromDB(
@@ -370,10 +390,13 @@ public class SQLBuilderRepositoryNodeManager {
 
 	/**
 	 * method "getDatabaseMetaData" get databaseMetaData.
-	 * @param iMetadataConnection contains connection 
+	 * 
+	 * @param iMetadataConnection
+	 *            contains connection
 	 * @return dbMetaData DatabaseMetaData .
 	 */
-	private DatabaseMetaData getDatabaseMetaData(IMetadataConnection iMetadataConnection) {
+	private DatabaseMetaData getDatabaseMetaData(
+			IMetadataConnection iMetadataConnection) {
 		ExtractMetaDataUtils.getConnection(iMetadataConnection.getDbType(),
 				iMetadataConnection.getUrl(),
 				iMetadataConnection.getUsername(), iMetadataConnection
@@ -386,7 +409,9 @@ public class SQLBuilderRepositoryNodeManager {
 
 	/**
 	 * DOC dev Comment method "getALLQueryLabels".
-	 * @param repositoryNode current RepositoryNode.
+	 * 
+	 * @param repositoryNode
+	 *            current RepositoryNode.
 	 * @return all QueryLabels in Emf.
 	 */
 	@SuppressWarnings("unchecked")
@@ -400,7 +425,7 @@ public class SQLBuilderRepositoryNodeManager {
 			QueriesConnection connection2 = qcs.get(0);
 			List<Query> qs = connection2.getQuery();
 			for (Query q1 : qs) {
-					allQueries.add(q1.getLabel());
+				allQueries.add(q1.getLabel());
 			}
 		}
 		return allQueries;
@@ -408,8 +433,11 @@ public class SQLBuilderRepositoryNodeManager {
 
 	/**
 	 * method "saveQuery" use save inputed Query to EMF's xml File.
-	 * @param repositoryNode current RepositoryNode
-	 * @param query need to save Query
+	 * 
+	 * @param repositoryNode
+	 *            current RepositoryNode
+	 * @param query
+	 *            need to save Query
 	 */
 	@SuppressWarnings("unchecked")
 	public void saveQuery(RepositoryNode repositoryNode, Query query) {
@@ -420,7 +448,7 @@ public class SQLBuilderRepositoryNodeManager {
 			List<QueriesConnection> list = connection.getQueries();
 			if (list.isEmpty()) {
 				QueriesConnection qc = ConnectionFactory.eINSTANCE
-				.createQueriesConnection();
+						.createQueriesConnection();
 				qc.setConnection(connection);
 				qc.getQuery().add(query);
 				connection.getQueries().add(qc);
@@ -429,22 +457,31 @@ public class SQLBuilderRepositoryNodeManager {
 				List<String> queryNames = getALLQueryLabels(repositoryNode);
 				if (!queryNames.contains(query.getLabel())) {
 					connection2.getQuery().add(query);
-				} 
+				}
 			}
 		}
 		saveMetaData(item);
 	}
 
+	/**
+	 * method "deleteQueries" use delete Queries.
+	 * 
+	 * @param repositoryNode
+	 *            databaseConnection's RepositoryNode
+	 * @param queries
+	 *            need to deleted Queries
+	 */
 	@SuppressWarnings("unchecked")
 	public void deleteQueries(RepositoryNode repositoryNode, List<Query> queries) {
 		DatabaseConnectionItem item = getItem(repositoryNode);
-		DatabaseConnection connection = (DatabaseConnection) item.getConnection();
+		DatabaseConnection connection = (DatabaseConnection) item
+				.getConnection();
 		List<QueriesConnection> list = connection.getQueries();
 		if (!list.isEmpty()) {
 			QueriesConnection connection2 = list.get(0);
 			List<Query> qs = connection2.getQuery();
 			List<Query> qs2 = new ArrayList<Query>();
-			qs.clear();
+			qs2.clear();
 			for (Query query : qs) {
 				boolean flag = true;
 				for (Query q : queries) {
@@ -461,7 +498,7 @@ public class SQLBuilderRepositoryNodeManager {
 		}
 		saveMetaData(item);
 	}
-	
+
 	/**
 	 * save MetaData into EMF's xml files.
 	 * 
@@ -485,6 +522,8 @@ public class SQLBuilderRepositoryNodeManager {
 	 *            MetadataTable from Database
 	 * @param metaFromEMF
 	 *            MetadataTable from Emf
+	 * @param iMetadataConnection
+	 *            contain Connection.
 	 */
 	@SuppressWarnings("unchecked")
 	private void fixedTables(List<MetadataTable> metaFromDB,
@@ -513,9 +552,10 @@ public class SQLBuilderRepositoryNodeManager {
 			for (MetadataTable emf : metaFromEMF) {
 				if (db.getSourceName().equals(emf.getSourceName())) {
 					flag = false;
-					if (emf.getLabel().equals("") || emf.getLabel().equals(
-							db.getSourceName().replaceAll("_", "-"))) {
-						
+					if (emf.getLabel().equals("")
+							|| emf.getLabel().equals(
+									db.getSourceName().replaceAll("_", "-"))) {
+
 						emf.setDivergency(false);
 					} else {
 						emf.setDivergency(true);
@@ -527,7 +567,8 @@ public class SQLBuilderRepositoryNodeManager {
 						.createMetadataTable();
 				table.setSourceName(db.getSourceName());
 				table.setLabel("");
-				List<MetadataColumn> columns = getColumnsFromDB(iMetadataConnection, db);
+				List<MetadataColumn> columns = getColumnsFromDB(
+						iMetadataConnection, db);
 				for (MetadataColumn column : columns) {
 					MetadataColumn column1 = ConnectionFactory.eINSTANCE
 							.createMetadataColumn();
