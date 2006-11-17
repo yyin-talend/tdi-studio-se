@@ -247,12 +247,12 @@ public class UIManager {
                     public void handleEvent(ListenableListEvent event) {
 
                         DataMapTableView view = mapperManager.retrieveAbstractDataMapTableView(abstractDataMapTable);
-                        if (event.getType() == TYPE.ADDED) {
+                        if (event.type == TYPE.ADDED) {
                             metadataEditorTableViewer.refresh();
-                            List<IMetadataColumn> metadataColumns = (List<IMetadataColumn>) event.getAddedObjects();
+                            List<IMetadataColumn> metadataColumns = (List<IMetadataColumn>) event.addedObjects;
 
                             lastCreatedInOutColumnEntries.clear();
-                            int index = event.getIndex();
+                            int index = event.index;
                             for (IMetadataColumn metadataColumn : metadataColumns) {
                                 lastCreatedInOutColumnEntries.add(mapperManager.addNewColumnEntry(dataMapTableView,
                                         metadataColumn, index++));
@@ -260,12 +260,12 @@ public class UIManager {
                             refreshBackground(false, false);
                             dataMapTableView.changeSize(view.getPreferredSize(true, false, false), true, true);
                             dataMapTableViewer.refresh();
-                            dataMapTVCreator.getSelectionHelper().setSelection(event.getIndex());
+                            dataMapTVCreator.getSelectionHelper().setSelection(event.index);
                         }
 
-                        if (event.getType() == TYPE.REMOVED) {
+                        if (event.type == TYPE.REMOVED) {
                             metadataEditorTableViewer.refresh();
-                            List<IMetadataColumn> metadataColumns = (List<IMetadataColumn>) event.getRemovedObjects();
+                            List<IMetadataColumn> metadataColumns = (List<IMetadataColumn>) event.removedObjects;
                             for (IMetadataColumn metadataColumn : metadataColumns) {
                                 ITableEntry metadataTableEntry = mapperManager
                                         .retrieveTableEntry(new TableEntryLocation(abstractDataMapTable.getName(),
@@ -279,9 +279,9 @@ public class UIManager {
                             refreshBackground(true, false);
                         }
 
-                        if (event.getType() == TYPE.SWAPED) {
-                            List<Integer> listIndexDestination = event.getIndexDestination();
-                            abstractDataMapTable.swapColumnEntries(event.getIndexOrigin(), listIndexDestination);
+                        if (event.type == TYPE.SWAPED) {
+                            List<Integer> listIndexTarget = event.indicesTarget;
+                            abstractDataMapTable.swapColumnEntries(event.indicesOrigin, listIndexTarget);
                             dataMapTableViewer.refresh();
                             refreshBackground(true, false);
                         }

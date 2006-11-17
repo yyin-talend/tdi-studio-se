@@ -30,6 +30,7 @@ import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
+import org.talend.commons.ui.utils.TableUtils;
 import org.talend.commons.ui.ws.WindowSystem;
 import org.talend.core.model.action.IAction;
 import org.talend.core.model.metadata.IMetadataColumn;
@@ -221,7 +222,8 @@ public class CompleteDropTargetListener extends DefaultDropTargetListener {
         boolean intersect = insertionIndicator.isLeftArrowMustBeRefreshed(boundsPopupFromMapperShellOrigin);
 
         Point eventPosition = new Point(event.x, event.y);
-        int itemIndexTarget = getItemIndexWhereInsertFromPosition(eventPosition);
+//        int itemIndexTarget = getItemIndexWhereInsertFromPosition(eventPosition);
+        int itemIndexTarget = TableUtils.getItemIndexWhereInsertFromPosition(draggableTable, eventPosition);
         insertionIndicator.updatePosition(draggableTable, itemIndexTarget);
 
         if (WindowSystem.isGTK()) {
@@ -317,7 +319,8 @@ public class CompleteDropTargetListener extends DefaultDropTargetListener {
         // System.out.println("\n>>drop");
         // System.out.println(event);
         Point cursorPosition = new Point(event.x, event.y);
-        int startInsertAtThisIndex = getItemIndexWhereInsertFromPosition(cursorPosition);
+//        int startInsertAtThisIndex = getItemIndexWhereInsertFromPosition(cursorPosition);
+        int startInsertAtThisIndex = TableUtils.getItemIndexWhereInsertFromPosition(draggableTable, cursorPosition);
         ILanguage currentLanguage = LanguageProvider.getCurrentLanguage();
         DataMapTableView dataMapTableViewTarget = mapperManager.retrieveDataMapTableView(draggableTable);
         Zone zoneTarget = dataMapTableViewTarget.getZone();

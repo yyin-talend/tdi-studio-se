@@ -26,6 +26,8 @@ import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.collections.BidiMap;
+import org.apache.commons.collections.bidimap.DualHashBidiMap;
 import org.eclipse.datatools.connectivity.oda.OdaException;
 import org.eclipse.datatools.enablement.oda.xml.util.ui.ATreeNode;
 import org.eclipse.datatools.enablement.oda.xml.util.ui.SchemaPopulationUtil;
@@ -46,7 +48,7 @@ public class TreePopulator {
 
     private Tree availableXmlTree;
 
-    private Map<String, TreeItem> xPathToTreeItem = new HashMap<String, TreeItem>();
+    private BidiMap xPathToTreeItem = new DualHashBidiMap();
 
     private String filePath;
 
@@ -68,7 +70,7 @@ public class TreePopulator {
      * 
      */
     public void populateTree(String filePath, ATreeNode treeNode) {
-        availableXmlTree.clearAll(true);
+//        availableXmlTree.clearAll(true);
         availableXmlTree.removeAll();
         xPathToTreeItem.clear();
         if (filePath != null && !filePath.equals("")) {
@@ -139,10 +141,14 @@ public class TreePopulator {
         treeItem.setExpanded(true);
     }
 
-    public TreeItem getTreeItemFromAbsoluteXPath(String absoluteXPath) {
-        return xPathToTreeItem.get(absoluteXPath);
+    public TreeItem getTreeItem(String absoluteXPath) {
+        return (TreeItem) xPathToTreeItem.get(absoluteXPath);
     }
 
+    public String getAbsoluteXPath(TreeItem treeItem) {
+        return (String) xPathToTreeItem.getKey(treeItem);
+    }
+    
     
     /**
      * Getter for filePath.

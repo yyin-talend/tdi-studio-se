@@ -21,12 +21,11 @@
 // ============================================================================
 package org.talend.repository.ui.wizards.metadata.connection.files.xml;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.eclipse.jface.fieldassist.IContentProposal;
-import org.eclipse.jface.fieldassist.IContentProposalListener;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
@@ -38,20 +37,21 @@ import org.talend.commons.ui.swt.drawing.link.LinkDescriptor;
 import org.talend.commons.ui.swt.drawing.link.StyleLink;
 import org.talend.commons.ui.swt.drawing.link.TableItemExtremityDescriptor;
 import org.talend.commons.ui.swt.drawing.link.TreeItemExtremityDescriptor;
-import org.talend.commons.ui.swt.proposal.ContentProposalAdapterExtended;
+import org.talend.commons.ui.swt.linking.TreeToTableLinker;
 import org.talend.commons.ui.swt.proposal.TextCellEditorWithProposal;
 import org.talend.commons.ui.swt.proposal.xpath.XPathProposalProvider;
-import org.talend.commons.utils.data.list.ListenableList;
+import org.talend.commons.ui.swt.tableviewer.IModifiedBeanListener;
+import org.talend.commons.ui.swt.tableviewer.ModifiedBeanEvent;
+import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
+import org.talend.commons.ui.utils.TableUtils;
+import org.talend.commons.utils.data.list.IListenableListListener;
+import org.talend.commons.utils.data.list.ListenableListEvent;
 import org.talend.commons.utils.time.TimeMeasure;
 import org.talend.commons.xml.NodeRetriever;
 import org.talend.core.model.metadata.builder.connection.SchemaTarget;
-import org.talend.core.model.targetschema.editor.ITargetSchemaEditorListener;
-import org.talend.core.model.targetschema.editor.TargetSchemaEditor2;
-import org.talend.core.model.targetschema.editor.TargetSchemaEditorEvent;
-import org.talend.core.model.targetschema.editor.TargetSchemaEditorEvent.TYPE;
-import org.talend.core.ui.targetschema.editor.TargetSchemaTableEditorView2;
+import org.talend.core.model.targetschema.editor.XPathNodeSchemaModel;
+import org.talend.repository.ui.wizards.metadata.connection.files.xml.dnd.XmlToSchemaDragAndDropHandler;
 import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 /**
  * DOC amaumont class global comment. Detailled comment <br/>
@@ -65,11 +65,9 @@ public class XmlToSchemaLinker extends TreeToTableLinker {
 
     private TreePopulator treePopulator;
 
-    private TargetSchemaTableEditorView2 tableEditorView;
+    private XPathNodeSchemaEditorView tableEditorView;
 
     private NodeRetriever nodeRetriever;
-
-    private ITargetSchemaEditorListener targetSchemaEditorListener;
 
     /**
      * DOC amaumont XmlToMetadataTableLinker constructor comment.
@@ -79,8 +77,7 @@ public class XmlToSchemaLinker extends TreeToTableLinker {
      * @param tree
      * @param table
      */
-    public XmlToSchemaLinker(Composite commonParent, Tree tree, TargetSchemaTableEditorView2 tableEditorView,
-            TreePopulator treePopulator) {
+    public XmlToSchemaLinker(Composite commonParent, Tree tree, XPathNodeSchemaEditorView tableEditorView, TreePopulator treePopulator) {
         super(commonParent, tree, tableEditorView.getTableViewerCreator().getTable());
         this.treePopulator = treePopulator;
         this.tableEditorView = tableEditorView;
@@ -88,16 +85,11 @@ public class XmlToSchemaLinker extends TreeToTableLinker {
         XPathProposalProvider proposalProvider = new XPathProposalProvider(this.nodeRetriever);
         TextCellEditorWithProposal xPathCellEditor = tableEditorView.getXPathCellEditor();
         xPathCellEditor.setContentProposalProvider(proposalProvider);
-//        xPathCellEditor.getContentProposalAdapter().setFilterStyle(ContentProposalAdapterExtended.FILTER_NONE);
-//        xPathCellEditor.getContentProposalAdapter().addContentProposalListener(new IContentProposalListener() {
-//
-//            public void proposalAccepted(IContentProposal proposal) {
-//                proposal.
-//            }
-//            
-//        });
-        
         init();
+    }
+
+    public String getAbsoluteXPath(TreeItem treeItem) {
+        return treePopulator.getAbsoluteXPath(treeItem);
     }
 
     /**
@@ -112,7 +104,7 @@ public class XmlToSchemaLinker extends TreeToTableLinker {
         this.styleLink.setLineWidth(2);
         initListeners();
         createLinks();
-        
+
     }
 
     /**
@@ -120,7 +112,7 @@ public class XmlToSchemaLinker extends TreeToTableLinker {
      */
     private void createLinks() {
         TableItem[] tableItems = table.getItems();
-        ListenableList<SchemaTarget> schemaTargetList = tableEditorView.getTargetSchemaEditor().getSchemaTargetList();
+        List<SchemaTarget> schemaTargetList = tableEditorView.getXpathNodeSchemaModel().getBeansList();
         for (int i = 0; i < tableItems.length; i++) {
             TableItem tableItem = tableItems[i];
             SchemaTarget schemaTarget = schemaTargetList.get(i);
@@ -135,18 +127,120 @@ public class XmlToSchemaLinker extends TreeToTableLinker {
      */
     private void initListeners() {
 
-        TargetSchemaEditor2 targetSchemaEditor = this.tableEditorView.getTargetSchemaEditor();
+        XPathNodeSchemaModel schemaModel = this.tableEditorView.getXpathNodeSchemaModel();
 
-        if (targetSchemaEditorListener == null) {
-            targetSchemaEditorListener = new ITargetSchemaEditorListener() {
+        schemaModel.addModifiedBeanListenerListener(new IModifiedBeanListener<SchemaTarget>() {
 
-                public void handleEvent(TargetSchemaEditorEvent event) {
-                    handleTargetEditorEvent(event);
+            public void handleEvent(ModifiedBeanEvent<SchemaTarget> event) {
+                handleModifiedBeanEvent(event);
+            }
+
+            private void handleModifiedBeanEvent(ModifiedBeanEvent<SchemaTarget> event) {
+                if (event.column == tableEditorView.getXPathColumn()) {
+                    onXPathValueChanged((String) event.previousValue, (String) event.newValue, event.index);
                 }
 
-            };
-            targetSchemaEditor.addListener(targetSchemaEditorListener);
+            }
+
+        });
+
+        schemaModel.addBeforeOperationListListener(-50, new IListenableListListener() {
+
+            public void handleEvent(ListenableListEvent event) {
+                handleListenableListBeforeTableViewerRefreshedEvent(event);
+            }
+
+        });
+
+        schemaModel.addAfterOperationListListener(new IListenableListListener() {
+
+            public void handleEvent(ListenableListEvent event) {
+                handleListenableListAfterTableViewerRefreshedEvent(event);
+            }
+
+        });
+
+        // if (targetSchemaEditorListener == null) {
+        // targetSchemaEditorListener = new ITargetSchemaEditorListener() {
+        //
+        // public void handleEvent(TargetSchemaEditorEvent event) {
+        // handleTargetEditorEvent(event);
+        // }
+        //
+        // };
+        // schemaModel.addListener(targetSchemaEditorListener);
+        // }
+        //        
+        // tableEditorView.getTargetSchemaEditor().addModifiedListListener(new IListenableListListener() {
+        //
+        // @SuppressWarnings("unchecked")
+        // public void handleEvent(ListenableListEvent event) {
+        // handleListenableListEvent(event);
+        // }
+        // });
+
+        new XmlToSchemaDragAndDropHandler(this);
+    }
+
+    /**
+     * DOC amaumont Comment method "handleListenableListEvent".
+     * 
+     * @param event
+     */
+    private void handleListenableListBeforeTableViewerRefreshedEvent(ListenableListEvent<SchemaTarget> event) {
+        TableViewerCreator<SchemaTarget> tableViewerCreator = tableEditorView.getTableViewerCreator();
+        if (event.type == ListenableListEvent.TYPE.REMOVED) {
+            Collection<SchemaTarget> removedObjects = event.removedObjects;
+            for (SchemaTarget target : removedObjects) {
+                TableItem tableItem = TableUtils.getTableItem(tableViewerCreator.getTable(), target);
+                removeLinksFrom(tableItem);
+            }
+            updateBackground();
         }
+        // tableViewerCreator.getTableViewer().refresh(); // force refresh
+    }
+
+    public void handleListenableListAfterTableViewerRefreshedEvent(ListenableListEvent event) {
+        TableViewerCreator<SchemaTarget> tableViewerCreator = tableEditorView.getTableViewerCreator();
+        if (event.type == ListenableListEvent.TYPE.ADDED) {
+            Collection<SchemaTarget> addedObjects = event.addedObjects;
+            List<SchemaTarget> inputList = tableViewerCreator.getInputList();
+            for (SchemaTarget target : addedObjects) {
+                int index = inputList.indexOf(target);
+                TableItem tableItem = tableViewerCreator.getTable().getItem(index);
+                createLinks(target.getXPathQuery(), tableItem);
+            }
+            updateBackground();
+        } else if (event.type == ListenableListEvent.TYPE.SWAPED) {
+            Table table = tableViewerCreator.getTable();
+            List<Integer> indicesTarget = event.indicesOrigin;
+            List<Integer> indicesOrigin = event.indicesTarget;
+            int lstSize = indicesOrigin.size();
+            for (int i = 0; i < lstSize; i++) {
+                Integer indiceTarget = indicesTarget.get(i);
+                Integer indiceOrigin = indicesOrigin.get(i);
+                TableItemExtremityDescriptor tableItemExtremityDescriptorOrigin = new TableItemExtremityDescriptor(table
+                        .getItem(indiceOrigin));
+                TableItemExtremityDescriptor tableItemExtremityDescriptorTarget = new TableItemExtremityDescriptor(table
+                        .getItem(indiceTarget));
+                linksManager.swapExtremitiesForRelativeLinks(tableItemExtremityDescriptorOrigin, tableItemExtremityDescriptorTarget);
+            }
+            updateBackground();
+        }
+    }
+
+    /**
+     * DOC amaumont Comment method "removeLinkFrom".
+     * 
+     * @param tableItem
+     */
+    private void removeLinksFrom(TableItem tableItem) {
+        TableItemExtremityDescriptor itemExtremityDescriptor = new TableItemExtremityDescriptor(tableItem);
+        Set<LinkDescriptor<TreeItem, TableItem>> linksFromExtremity2 = linksManager.getLinksFromExtremity2(itemExtremityDescriptor);
+        for (LinkDescriptor<TreeItem, TableItem> link : linksFromExtremity2) {
+            linksManager.removeLink(link);
+        }
+
     }
 
     /**
@@ -156,8 +250,8 @@ public class XmlToSchemaLinker extends TreeToTableLinker {
      * @param tableItem
      */
     public void addLink(TreeItem treeItem, TableItem tableItem) {
-        LinkDescriptor<TreeItem, TableItem> link = new LinkDescriptor<TreeItem, TableItem>(
-                new TreeItemExtremityDescriptor(treeItem), new TableItemExtremityDescriptor(tableItem));
+        LinkDescriptor<TreeItem, TableItem> link = new LinkDescriptor<TreeItem, TableItem>(new TreeItemExtremityDescriptor(treeItem),
+                new TableItemExtremityDescriptor(tableItem));
 
         link.setDrawableLink(this.styleLink.getDrawableLink());
         linksManager.addLink(link);
@@ -171,32 +265,15 @@ public class XmlToSchemaLinker extends TreeToTableLinker {
     }
 
     /**
-     * DOC amaumont Comment method "handleTargetEditorEvent".
-     * 
-     * @param event
-     */
-    private void handleTargetEditorEvent(TargetSchemaEditorEvent event) {
-        if (event.type == TYPE.XPATH_VALUE_CHANGED) {
-            onXPathValueChanged((String) event.previousValue, (String) event.newValue, event.entriesIndices[0]);
-        }
-    }
-
-    /**
      * DOC amaumont Comment method "onXPathValueChanged".
      * 
      * @param previousValue
      * @param newValue
-     * @param i
+     * @param itemIndex
      */
     private void onXPathValueChanged(String previousValue, String newValue, int itemIndex) {
         TableItem tableItem = table.getItem(itemIndex);
-        TableItemExtremityDescriptor itemExtremityDescriptor = new TableItemExtremityDescriptor(tableItem);
-        Set<LinkDescriptor<TreeItem, TableItem>> linksFromExtremity2 = linksManager
-                .getLinksFromExtremity2(itemExtremityDescriptor);
-        for (LinkDescriptor<TreeItem, TableItem> link : linksFromExtremity2) {
-            linksManager.removeLink(link);
-        }
-
+        removeLinksFrom(tableItem);
         createLinks(newValue, tableItem);
         updateBackground();
 
@@ -204,6 +281,7 @@ public class XmlToSchemaLinker extends TreeToTableLinker {
 
     /**
      * DOC amaumont Comment method "addLinks".
+     * 
      * @param xPathExpression
      * @param tableItemTarget
      */
@@ -212,14 +290,13 @@ public class XmlToSchemaLinker extends TreeToTableLinker {
         TimeMeasure.start(xPathExpression);
         List<Node> nodeList = this.nodeRetriever.retrieveListOfNodes(xPathExpression);
         TimeMeasure.end(xPathExpression);
-//        System.out.println("nodeList.size()="+nodeList.size());
-        
+        // System.out.println("nodeList.size()="+nodeList.size());
+
         if (nodeList != null) {
             for (Node node : nodeList) {
                 String absoluteXPathFromNode = NodeRetriever.getAbsoluteXPathFromNode(node);
                 if (!alreadyProcessedXPath.contains(absoluteXPathFromNode)) {
-                    TreeItem treeItemFromAbsoluteXPath = treePopulator
-                            .getTreeItemFromAbsoluteXPath(absoluteXPathFromNode);
+                    TreeItem treeItemFromAbsoluteXPath = treePopulator.getTreeItem(absoluteXPathFromNode);
                     if (treeItemFromAbsoluteXPath != null) {
                         addLink(treeItemFromAbsoluteXPath, tableItemTarget);
                         alreadyProcessedXPath.add(absoluteXPathFromNode);
@@ -227,6 +304,24 @@ public class XmlToSchemaLinker extends TreeToTableLinker {
                 }
             }
         }
+    }
+
+    public void addTargetEntry(String absoluteXPathValue, int indexPosition) {
+
+        XPathNodeSchemaModel xpathNodeSchemaModel = tableEditorView.getXpathNodeSchemaModel();
+        SchemaTarget schemaTarget = xpathNodeSchemaModel.createNewSchemaTarget();
+        schemaTarget.setXPathQuery(absoluteXPathValue);
+        xpathNodeSchemaModel.add(schemaTarget);
+
+    }
+
+    /**
+     * Getter for tableEditorView.
+     * 
+     * @return the tableEditorView
+     */
+    public XPathNodeSchemaEditorView getTableEditorView() {
+        return this.tableEditorView;
     }
 
 }

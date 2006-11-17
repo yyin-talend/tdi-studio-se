@@ -36,11 +36,7 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.datatools.connectivity.oda.OdaException;
-import org.eclipse.datatools.enablement.oda.xml.ui.wizards.Constants;
-import org.eclipse.datatools.enablement.oda.xml.ui.wizards.XMLInformationHolder;
 import org.eclipse.datatools.enablement.oda.xml.util.ui.ATreeNode;
-import org.eclipse.datatools.enablement.oda.xml.util.ui.SchemaPopulationUtil;
 import org.eclipse.datatools.enablement.oda.xml.util.ui.XPathPopulationUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
@@ -53,39 +49,28 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Table;
-import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
-import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.ui.swt.dialogs.ErrorDialogWidthDetailArea;
 import org.talend.commons.ui.swt.formtools.Form;
 import org.talend.commons.ui.swt.formtools.LabelledCheckboxCombo;
 import org.talend.commons.ui.swt.formtools.UtilsButton;
 import org.talend.commons.utils.data.list.IListenableListListener;
-import org.talend.commons.utils.data.list.ListenableList;
 import org.talend.commons.utils.data.list.ListenableListEvent;
 import org.talend.commons.utils.encoding.CharsetToolkit;
 import org.talend.core.model.metadata.builder.connection.ConnectionFactory;
 import org.talend.core.model.metadata.builder.connection.MetadataSchema;
-import org.talend.core.model.metadata.builder.connection.SchemaTarget;
 import org.talend.core.model.properties.ConnectionItem;
-import org.talend.core.model.targetschema.editor.TargetSchemaEditor2;
-import org.talend.core.ui.targetschema.editor.TargetSchemaTableEditorView2;
-import org.talend.core.ui.targetschema.editor.TargetSchemaToolbarEditorView2;
+import org.talend.core.model.targetschema.editor.XPathNodeSchemaModel;
+import org.talend.core.ui.extended.AbstractExtendedTableToolbarView;
+import org.talend.core.ui.extended.button.AddPushButtonForExtendedTable;
 import org.talend.core.utils.XmlArray;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.preview.ProcessDescription;
 import org.talend.repository.ui.swt.preview.ShadowProcessPreview;
 import org.talend.repository.ui.swt.utils.AbstractXmlFileStepForm;
 import org.talend.repository.ui.utils.ShadowProcessHelper;
-
-import com.sun.org.apache.xerces.internal.impl.xpath.XPath;
-import com.sun.org.apache.xerces.internal.impl.xpath.XPathException;
-import com.sun.org.apache.xerces.internal.impl.xs.identity.XPathMatcher;
-import com.sun.org.apache.xpath.internal.XPathAPI;
-import com.sun.org.apache.xpath.internal.compiler.XPathParser;
 
 /**
  * @author ocarbone
@@ -103,9 +88,9 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
 
     private ATreeNode treeNode;
 
-    private TargetSchemaEditor2 targetSchemaEditor;
+    private XPathNodeSchemaModel schemaModel;
 
-    private TargetSchemaTableEditorView2 tableEditorView;
+    private XPathNodeSchemaEditorView tableEditorView;
 
     private Button previewButton;
 
@@ -161,8 +146,7 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
         }
 
         getConnection().getSchema().add(metadataSchema);
-        targetSchemaEditor.setMetadataSchema(metadataSchema);
-        tableEditorView.setTargetSchemaEditor(targetSchemaEditor);
+        schemaModel.setMetadataSchema(metadataSchema);
         tableEditorView.getTableViewerCreator().layout();
 
     }
@@ -226,7 +210,7 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
 
         compositeFileViewer.setLayoutData(gridData);
 
-        // PTODO cantoine : the XmlTree
+        // PTODO CAN : the XmlTree
         availableXmlTree = new Tree(compositeFileViewer, SWT.MULTI);// | SWT.H_SCROLL | SWT.V_SCROLL);
         GridData gridData2 = new GridData(GridData.FILL_BOTH);
         // availableXmlTree.setBackground(availableXmlTree.getDisplay().getSystemColor(SWT.COLOR_GRAY));
@@ -239,7 +223,7 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
 
     private void addGroupSchemaTarget(final Composite mainComposite, final int width, final int height) {
         // Group Schema Viewer
-        Group group = Form.createGroup(mainComposite, 1, Messages.getString("XmlFileStep1.groupSchemaTarget"), height);
+        final Group group = Form.createGroup(mainComposite, 1, Messages.getString("XmlFileStep1.groupSchemaTarget"), height);
 
         ScrolledComposite scrolledCompositeFileViewer = new ScrolledComposite(group, SWT.H_SCROLL | SWT.V_SCROLL
                 | SWT.NONE);
@@ -251,14 +235,28 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
         scrolledCompositeFileViewer.setLayoutData(gridData1);
         scrolledCompositeFileViewer.setLayout(new FillLayout());
 
-        targetSchemaEditor = new TargetSchemaEditor2(Messages.getString("FileStep3.metadataDescription"));
-        tableEditorView = new TargetSchemaTableEditorView2(scrolledCompositeFileViewer, SWT.NONE, targetSchemaEditor);
+        schemaModel = new XPathNodeSchemaModel(Messages.getString("FileStep3.metadataDescription"));
+        tableEditorView = new XPathNodeSchemaEditorView(schemaModel, scrolledCompositeFileViewer, SWT.NONE);
         scrolledCompositeFileViewer.setContent(tableEditorView.getTableViewerCreator().getTable());
         scrolledCompositeFileViewer.setSize(width, height);
 
         // Composite toolbar = new Composite(group, SWT.BORDER);
-        TargetSchemaToolbarEditorView2 targetSchemaToolbarEditorView2 = new TargetSchemaToolbarEditorView2(group,
-                SWT.NONE, tableEditorView);
+        AbstractExtendedTableToolbarView toolbar = new AbstractExtendedTableToolbarView(group,
+                SWT.NONE, tableEditorView) {
+
+                    @Override
+                    protected AddPushButtonForExtendedTable createAddPushButton() {
+                        return new AddPushButtonForExtendedTable(group, tableEditorView) {
+
+                            @Override
+                            protected Object getObjectToAdd() {
+                                return schemaModel.createNewSchemaTarget();
+                            }
+                            
+                        };
+                    }
+            
+        };
 
     }
 
@@ -393,10 +391,12 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
      */
     protected void addFieldsListeners() {
         // add listener to tableMetadata (listen the event of the toolbars)
-        tableEditorView.getTargetSchemaEditor().addModifiedListListener(new IListenableListListener() {
+        tableEditorView.getExtendedTableModel().addAfterOperationListListener(new IListenableListListener() {
 
             public void handleEvent(ListenableListEvent event) {
-                checkFieldsValue();
+                if(false) {
+                    checkFieldsValue();
+                }
             }
         });
 
@@ -577,7 +577,7 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
         }
     }
 
-    // PTODO cantoine : logically call by runProcessShadow refresh....view to adapt it on this MetadataSchema TABLE.
+    // PTODO CAN : logically call by runProcessShadow refresh....view to adapt it on this MetadataSchema TABLE.
     /**
      * DOC cantoine Comment method "refreshMetaDataSchema".
      */
@@ -608,6 +608,7 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
         if (super.isVisible()) {
             this.treePopulator.populateTree(getConnection().getXmlFilePath(), treeNode);
             this.linker = new XmlToSchemaLinker(xmlToSchemaSash, availableXmlTree, tableEditorView, this.treePopulator);
+            tableEditorView.setLinker(this.linker);
             checkFilePathAndManageIt();
             // refreshMetaDataSchema();
             // Refresh the preview width the adapted rowSeparator

@@ -522,6 +522,8 @@ public abstract class DataMapTableView extends Composite {
                         return;
                     }
                     TableItem tableItem = TableUtils.getTableItem(table, cursorPositionFromTableOrigin);
+//                    TableItem tableItem = TableUtils.getTableItemFromPosition(table, new Point(event.x, event.y));
+
                     if (tableItem == null) {
                         setTableToolTipText(table, tableColumn, null, null);
                         return;
