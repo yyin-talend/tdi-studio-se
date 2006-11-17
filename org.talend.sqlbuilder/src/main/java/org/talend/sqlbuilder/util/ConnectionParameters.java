@@ -53,25 +53,28 @@ public class ConnectionParameters {
     private String repositoryName;
 
     private String selectedComponentName;
-    
+
     private Query queryObject;
 
-    
     /**
      * Getter for queryObject.
+     * 
      * @return the queryObject
      */
     public Query getQueryObject() {
         return queryObject;
     }
 
-    
     /**
      * Sets the queryObject.
+     * 
      * @param queryObject the queryObject to set
      */
     public void setQueryObject(Query queryObject) {
         this.queryObject = queryObject;
+        if (queryObject != null && queryObject.getValue() != null) {
+            query = queryObject.getValue();
+        }
     }
 
     /**
@@ -156,7 +159,7 @@ public class ConnectionParameters {
     public void setDbName(String dbName) {
         this.dbName = trimInvertedComma(dbName);
         if (this.datasource == null || this.datasource.equals("")) {
-        		this.datasource = this.dbName;
+            this.datasource = this.dbName;
         }
     }
 
