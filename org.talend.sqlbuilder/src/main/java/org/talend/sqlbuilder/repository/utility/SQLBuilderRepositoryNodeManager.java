@@ -207,6 +207,7 @@ public class SQLBuilderRepositoryNodeManager {
 		return oldNode;
 	}
 
+	
 	/**
 	 * DOC dev Comment method "getRepositoryNodeByBuildIn".
 	 * @param node
@@ -434,6 +435,32 @@ public class SQLBuilderRepositoryNodeManager {
 		saveMetaData(item);
 	}
 
+	@SuppressWarnings("unchecked")
+	public void deleteQueries(RepositoryNode repositoryNode, List<Query> queries) {
+		DatabaseConnectionItem item = getItem(repositoryNode);
+		DatabaseConnection connection = (DatabaseConnection) item.getConnection();
+		List<QueriesConnection> list = connection.getQueries();
+		if (!list.isEmpty()) {
+			QueriesConnection connection2 = list.get(0);
+			List<Query> qs = connection2.getQuery();
+			List<Query> qs2 = new ArrayList<Query>();
+			qs.clear();
+			for (Query query : qs) {
+				boolean flag = true;
+				for (Query q : queries) {
+					if (query.getLabel().equals(q.getLabel())) {
+						flag = false;
+					}
+				}
+				if (flag) {
+					qs2.add(query);
+				}
+			}
+			connection2.getQuery().clear();
+			connection2.getQuery().addAll(qs2);
+		}
+	}
+	
 	/**
 	 * save MetaData into EMF's xml files.
 	 * 
