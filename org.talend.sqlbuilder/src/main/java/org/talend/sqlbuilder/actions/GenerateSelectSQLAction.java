@@ -37,6 +37,7 @@ import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNode.EProperties;
 import org.talend.sqlbuilder.SqlBuilderPlugin;
 import org.talend.sqlbuilder.dbstructure.RepositoryNodeType;
+import org.talend.sqlbuilder.dbstructure.SqlBuilderRepositoryObject;
 import org.talend.sqlbuilder.dbstructure.DBTreeProvider.MetadataTableRepositoryObject;
 import org.talend.sqlbuilder.repository.utility.SQLBuilderRepositoryNodeManager;
 import org.talend.sqlbuilder.ui.ISQLBuilderDialog;
@@ -155,11 +156,11 @@ public class GenerateSelectSQLAction extends SelectionProviderAction {
             if ((RepositoryNodeType) selectedNodes[0].getProperties(EProperties.CONTENT_TYPE) == RepositoryNodeType.COLUMN) {
 
                 if (table.length() == 0) {
-                    table = node.getParent().getObject().getStatusCode();
+                    table = ((SqlBuilderRepositoryObject) node.getParent().getObject()).getSourceName();
                 }
 
                 query.append(sep);
-                query.append(fix + node.getObject().getLabel() + fix);
+                query.append(fix + ((SqlBuilderRepositoryObject) node.getObject()).getSourceName() + fix);
                 sep = ", ";
             }
         }
@@ -195,7 +196,7 @@ public class GenerateSelectSQLAction extends SelectionProviderAction {
         }
 
         query.append(" from ");
-        query.append(tablePrefix + node.getObject().getStatusCode());
+        query.append(tablePrefix + ((SqlBuilderRepositoryObject) node.getObject()).getSourceName());
 
         return query.toString();
     }

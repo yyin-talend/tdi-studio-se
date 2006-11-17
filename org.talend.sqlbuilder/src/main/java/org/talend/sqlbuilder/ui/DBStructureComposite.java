@@ -217,7 +217,7 @@ public class DBStructureComposite extends Composite {
                         return true;
                     }
                 } else {
-                    if (node.getObject().getLabel().equals("")) { //$NON-NLS-1$
+                    if (node.getProperties(EProperties.LABEL) == null || node.getProperties(EProperties.LABEL).equals("")) { //$NON-NLS-1$
                         return true;
                     }
                 }

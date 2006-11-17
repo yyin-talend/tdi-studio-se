@@ -166,10 +166,11 @@ ITableColorProvider {
 
         for (Object obj : fromModel.getSubContainer()) {
             Container container = (Container) obj;
-            Folder oFolder = new Folder(container.getId(), container.getLabel());
-            oFolder.setPurpose("Images.closedFolder");
-            oFolder.setStatusCode(oFolder.getLabel());
-            oFolder.setLabel(null);
+            Folder folderRepositoryObject = new Folder(container.getId(), container.getLabel());
+            FolderRepositoryObject oFolder = new FolderRepositoryObject(folderRepositoryObject);
+            oFolder.setImage("Images.closedFolder");
+            oFolder.setSourceName(oFolder.getLabel());
+            oFolder.setRepositoryName(null);
             RepositoryNode folder = new RepositoryNode(oFolder, parent, ENodeType.SIMPLE_FOLDER);
             folder.setProperties(EProperties.LABEL, container.getLabel());
             //ERepositoryObjectType.FOLDER);
@@ -395,6 +396,30 @@ ITableColorProvider {
         }
         public Query getQuery() {
             return this.query;
+        }
+    }
+    /**
+     */
+    public static class FolderRepositoryObject extends SqlBuilderRepositoryObject {
+    	
+    	private IRepositoryObject repObj;
+    	
+        public FolderRepositoryObject(IRepositoryObject repObj) {
+        	super(null);
+        	this.repObj = repObj;
+        }
+
+        public Property getProperty() {
+            return repObj.getProperty();
+        }
+        
+        @Override
+        public String getId() {
+        	return repObj.getId();
+        }
+        @Override
+        public String getLabel() {
+        	return repObj.getLabel();
         }
     }
     
