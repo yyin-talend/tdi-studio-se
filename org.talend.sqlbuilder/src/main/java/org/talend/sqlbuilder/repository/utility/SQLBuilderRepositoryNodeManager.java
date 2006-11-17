@@ -485,8 +485,9 @@ public class SQLBuilderRepositoryNodeManager {
 			for (MetadataTable emf : metaFromEMF) {
 				if (db.getSourceName().equals(emf.getSourceName())) {
 					flag = false;
-					if (emf.getLabel().equals(
+					if (emf.getLabel().equals("") || emf.getLabel().equals(
 							db.getSourceName().replaceAll("_", "-"))) {
+						
 						emf.setDivergency(false);
 					} else {
 						emf.setDivergency(true);
@@ -498,9 +499,7 @@ public class SQLBuilderRepositoryNodeManager {
 						.createMetadataTable();
 				table.setSourceName(db.getSourceName());
 				table.setLabel("");
-				List<MetadataColumn> columns = ExtractMetaDataFromDataBase
-						.returnMetadataColumnsFormTable(iMetadataConnection, db
-								.getSourceName());
+				List<MetadataColumn> columns = getColumnsFromDB(iMetadataConnection, db);
 				for (MetadataColumn column : columns) {
 					MetadataColumn column1 = ConnectionFactory.eINSTANCE
 							.createMetadataColumn();
