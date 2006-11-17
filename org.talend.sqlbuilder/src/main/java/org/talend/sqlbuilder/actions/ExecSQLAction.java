@@ -40,7 +40,7 @@ import org.talend.sqlbuilder.util.QueryTokenizer;
 import org.talend.sqlbuilder.util.UIUtils;
 
 /**
- * DOC dev class global comment. Detailled comment <br/>
+ * This class is used for executing sql query. <br/>
  * 
  * $Id: ExecSQLAction.java,v 1.21 2006/11/03 03:19:05 qiang.zhang Exp $
  * 
@@ -62,72 +62,77 @@ public class ExecSQLAction extends AbstractEditorAction {
         setActionDefinitionId(ICommandIds.EXEC_SQL);
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.jface.action.Action#getImageDescriptor()
+     */
     public ImageDescriptor getImageDescriptor() {
         return img;
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.sqlbuilder.actions.AbstractEditorAction#getText()
+     */
     public String getText() {
         return Messages.getString("SQLEditor.Actions.Execute");
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.sqlbuilder.actions.AbstractEditorAction#getToolTipText()
+     */
     public String getToolTipText() {
         return Messages.getString("SQLEditor.Actions.Execute.ToolTip");
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.sqlbuilder.actions.AbstractEditorAction#run()
+     */
     public void run() {
-
         int maxresults = IConstants.WARN_RESEULTS;
+        Exception exception;
         try {
             boolean isLimit = editor.getIfLimit();
-
             if (isLimit) {
                 String tmp = editor.getMaxResult();
                 if (tmp != null && tmp.trim().length() != 0) {
                     maxresults = Integer.parseInt(tmp);
                 }
+                if (maxresults < 0) {
+                    exception = new Exception(Messages.getString("SQLEditor.LimitRows.Error"));
+                }
             }
         } catch (final Exception e) {
-            UIUtils.openErrorDialog("Invalid Row Limit", e);
+            UIUtils.openErrorDialog(Messages.getString("SQLEditor.Error.InvalidRowLimit.Title"), e);
             return;
         }
         try {
-
-            if (maxresults < 0) {
-                Exception e = new Exception(Messages.getString("SQLEditor.LimitRows.Error"));
-                UIUtils.openErrorDialog(Messages.getString("SQLEditor.Error.InvalidRowLimit.Title"), e);
-                return;
-            }
-
             if (maxresults > IConstants.WARN_RESEULTS) {
-
                 final int largeResults = maxresults;
                 Display.getDefault().asyncExec(new Runnable() {
 
                     public void run() {
-
                         boolean okToExecute = MessageDialog.openConfirm(Display.getDefault().getShells()[0], Messages
                                 .getString("SQLEditor.LimitRows.ConfirmNoLimit.Title"), Messages
                                 .getString("SQLEditor.LimitRows.ConfirmNoLimit.Message"));
-
                         if (okToExecute) {
                             ExecSQLAction.this.run(largeResults);
                         }
                     }
                 });
-
             } else {
                 run(maxresults);
             }
-
         } catch (final Exception e) {
             UIUtils.openErrorDialog(Messages.getString("SQLResultsView.Error.Title"), e);
         }
     }
-
-    /**
-     * SessionTreeNodeManager
-     */
-    SessionTreeNodeManager nodeManager = new SessionTreeNodeManager();
 
     /**
      * DOC qianbing Comment method "run". Processes the database operation.
@@ -136,6 +141,7 @@ public class ExecSQLAction extends AbstractEditorAction {
      */
     protected void run(int maxRows) {
         RepositoryNode node = editor.getRepositoryNode();
+        SessionTreeNodeManager nodeManager = new SessionTreeNodeManager();
         SessionTreeNode runNode = null;
         try {
             runNode = nodeManager.getSessionTreeNode(node);
@@ -157,7 +163,6 @@ public class ExecSQLAction extends AbstractEditorAction {
             }
         }
         try {
-
             // Diaplay data in sqlResult Composites
             while (!queryStrings.isEmpty()) {
                 String querySql = (String) queryStrings.remove(0);
@@ -172,7 +177,12 @@ public class ExecSQLAction extends AbstractEditorAction {
         }
     }
 
-    String getSQLToBeExecuted() {
+    /**
+     * Gets sql for executing.
+     * 
+     * @return string
+     */
+    public String getSQLToBeExecuted() {
         String sql = editor.getSQLToBeExecuted();
         return sql;
     }
