@@ -206,6 +206,8 @@ public class SQLBuilderEditorComposite extends Composite implements ISQLEditor {
 
         GridData gd = new GridData(GridData.FILL_BOTH);
         colorText.setLayoutData(gd);
+        
+        colorText.setText(this.colorText.getText());
 
         colorText.addVerifyKeyListener(new VerifyKeyListener() {
 
