@@ -64,7 +64,8 @@ public class MetadataRefreshAction extends SelectionProviderAction {
 	private List<MetadataColumn> columnNodes;
 
 	private List<RepositoryNode> repositorynodes;
-
+	private SQLBuilderRepositoryNodeManager repositoryNodeManager = new SQLBuilderRepositoryNodeManager();
+	
 	/**
 	 * DOC dev MetadataRefreshAction constructor comment.
 	 * 
@@ -152,13 +153,14 @@ public class MetadataRefreshAction extends SelectionProviderAction {
 	 * @param item
 	 *            selected DatabaseConnectionItem
 	 */
+	@SuppressWarnings("static-access")
 	private void saveMetadataColumn(MetadataTable tableNode,
 			MetadataColumn columnNode, DatabaseConnectionItem item) {
 		modifyMetadataColumn(tableNode, columnNode, item);
 		saveMetaData(item);
 		for (RepositoryNode repositorynode : repositorynodes) {
-			repositorynode.getObject().setPurpose("Images.ColumnNodeIcon");
-			((TreeViewer) selectionProvider).refresh(repositorynode, true);
+			((DBTreeProvider) ((TreeViewer) selectionProvider).getContentProvider()).setRefresh(true);
+			((TreeViewer) selectionProvider).refresh(repositoryNodeManager.getRoot(repositorynode), true);
 		}
 		
 //		((TreeViewer) selectionProvider).refresh(tableNode, true);

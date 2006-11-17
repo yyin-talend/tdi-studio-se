@@ -459,6 +459,7 @@ public class SQLBuilderRepositoryNodeManager {
 			connection2.getQuery().clear();
 			connection2.getQuery().addAll(qs2);
 		}
+		saveMetaData(item);
 	}
 	
 	/**
