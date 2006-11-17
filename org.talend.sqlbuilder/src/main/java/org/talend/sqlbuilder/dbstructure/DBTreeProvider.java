@@ -234,7 +234,8 @@ ITableColorProvider {
         
         for (Iterator iter = queryConnections.iterator(); iter.hasNext();) {
             QueriesConnection queriesConnection = (QueriesConnection) iter.next();
-            SqlBuilderRepositoryObject repositoryObject = new SqlBuilderRepositoryObject(repObj.getProperty()); 
+            QueriesConnectionRepositoryObject repositoryObject 
+            	= new QueriesConnectionRepositoryObject(repObj, queriesConnection); 
             repositoryObject.setImage("Images.AppendToEditor");
             repositoryObject.setSourceName("Stored Queries");
             RepositoryNode queriesConnectionNode = new RepositoryNode(repositoryObject, node, ENodeType.REPOSITORY_ELEMENT);
@@ -246,7 +247,7 @@ ITableColorProvider {
     private void createQuery(RepositoryNode queriesConnectionNode, IRepositoryObject repObj, QueriesConnection queriesConnection) {
         for (Iterator iter = queriesConnection.getQuery().iterator(); iter.hasNext();) {
         	Query query = (Query) iter.next();
-        	SqlBuilderRepositoryObject repositoryObject = new SqlBuilderRepositoryObject(repObj.getProperty());
+        	QueryRepositoryObject repositoryObject = new QueryRepositoryObject(repObj, query);
         	repositoryObject.setImage("Images.SqlEditorIcon");
         	repositoryObject.setSourceName(query.getLabel());
         	RepositoryNode node = new RepositoryNode(repositoryObject, queriesConnectionNode, ENodeType.REPOSITORY_ELEMENT);
@@ -301,11 +302,11 @@ ITableColorProvider {
             modelObj.setImage("Images.ColumnNodeIcon");
         }
         //description use for color.
-        if (modelObj.getRepositoryName() == null || modelObj.getRepositoryName().trim().equals("")) {
-        	modelObj.setColor("COLOR_GRAY");
-        }
         if (modelObj.getColumn().isDivergency() && !isBuildIn) {
         	modelObj.setColor("COLOR_RED");
+        }
+        if (modelObj.getRepositoryName() == null || modelObj.getRepositoryName().trim().equals("")) {
+        	modelObj.setColor("COLOR_GRAY");
         }
         modelObj.setBuildIn(isBuildIn);
         
@@ -332,11 +333,11 @@ ITableColorProvider {
         //purpose use for Image text.
         modelObj.setImage("Images.TableNodeIcon");
         //description use for color.
-        if (modelObj.getRepositoryName() == null || modelObj.getRepositoryName().trim().equals("")) {
-        	modelObj.setColor("COLOR_GRAY");
-        }
         if (modelObj.getTable().isDivergency() && !isBuildIn) {
         	modelObj.setColor("COLOR_RED");
+        }
+        if (modelObj.getRepositoryName() == null || modelObj.getRepositoryName().trim().equals("")) {
+        	modelObj.setColor("COLOR_GRAY");
         }
         modelObj.setBuildIn(isBuildIn);
         
@@ -348,13 +349,15 @@ ITableColorProvider {
     
     /**
      */
-    public static class MetadataConnectionRepositoryObject extends SqlBuilderRepositoryObject {
+    public static class QueriesConnectionRepositoryObject extends SqlBuilderRepositoryObject {
 
         private IRepositoryObject repObj;
+        private QueriesConnection queriesConnection;
 
-        public MetadataConnectionRepositoryObject(IRepositoryObject repObj) {
+        public QueriesConnectionRepositoryObject(IRepositoryObject repObj, QueriesConnection queriesConnection) {
         	super(repObj.getProperty());
             this.repObj = repObj;
+            this.queriesConnection = queriesConnection;
         }
 
         public Property getProperty() {
@@ -364,7 +367,52 @@ ITableColorProvider {
         public String getLabel() {
             return repObj.getLabel();
         }
+        
+        public QueriesConnection getQueriesConnection() {
+        	return this.queriesConnection;
+        }
     }
+    
+    /**
+     */
+    public static class QueryRepositoryObject extends SqlBuilderRepositoryObject {
+
+        private IRepositoryObject repObj;
+
+        private Query query;
+
+        public QueryRepositoryObject(IRepositoryObject repObj,
+                Query query) {
+        	super(repObj.getProperty());
+        	this.repObj = repObj;
+            this.query = query;
+        }
+
+        public Property getProperty() {
+            return repObj.getProperty();
+        }
+        public Query getQuery() {
+            return this.query;
+        }
+    }
+    
+    /**
+     */
+    public static class MetadataConnectionRepositoryObject extends SqlBuilderRepositoryObject {
+
+        private IRepositoryObject repObj;
+
+
+        public MetadataConnectionRepositoryObject(IRepositoryObject repObj) {
+        	super(repObj.getProperty());
+        	this.repObj = repObj;
+        }
+
+        public Property getProperty() {
+            return repObj.getProperty();
+        }
+    }
+    
     /**
      */
     public static class MetadataTableRepositoryObject extends SqlBuilderRepositoryObject {
