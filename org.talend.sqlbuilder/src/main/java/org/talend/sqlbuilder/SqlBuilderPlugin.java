@@ -75,6 +75,5 @@ public class SqlBuilderPlugin extends AbstractUIPlugin {
     public static void log(String msg, Throwable e) {
         IStatus status = new Status(IStatus.ERROR, PLUGIN_ID, IStatus.ERROR, msg, e);
         getDefault().getLog().log(status);
-        e.printStackTrace();
     }
 }
