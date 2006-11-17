@@ -306,7 +306,7 @@ public class MetadataRefreshAction extends SelectionProviderAction {
 				this.setEnabled(false);
 				return;
 			}
-			if (col.isDivergency()) {
+			if (col.isSynchronised()) {
 
 				//TODO 
 //				if (repositorynodes.get(0) != null
