@@ -1,33 +1,34 @@
 <%@ jet 
-	package="org.talend.designer.codegen.translators" 
-	imports="
-		org.talend.core.model.process.INode 
-		org.talend.core.model.process.ElementParameterParser
-		org.talend.core.model.process.IConnection
-		org.talend.core.model.metadata.IMetadataTable
-		org.talend.core.model.metadata.IMetadataColumn
-		org.talend.designer.codegen.config.CodeGeneratorArgument
-		java.util.List
-	"
-	class="PerlRowStart"
+package="org.talend.designer.codegen.translators" 
+imports="
+    org.talend.core.model.process.INode 
+    org.talend.core.model.process.ElementParameterParser
+    org.talend.core.model.process.IConnection
+    org.talend.core.model.metadata.IMetadataTable
+    org.talend.core.model.metadata.IMetadataColumn
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    java.util.List
+"
+class="PerlRowStart"
 %>
 
 <%
-	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
-	INode node = (INode)codeGenArgument.getArgument();
-	boolean stats = codeGenArgument.isStatistics();
-	
-	List<IMetadataTable> metadatas = node.getMetadataList();
-	if ((metadatas!=null)&&(metadatas.size()>0)) {
-		IMetadataTable metadata = metadatas.get(0);
-		if (metadata!=null) {
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+boolean stats = codeGenArgument.isStatistics();
+
+List<IMetadataTable> metadatas = node.getMetadataList();
+if ((metadatas!=null)&&(metadatas.size()>0)) {
+    IMetadataTable metadata = metadatas.get(0);
+    if (metadata!=null) {
+        String cid = metadata.getTableName();
 %>
 
-my %desc_<%=metadata.getTableName() %> = (
+my %desc_<%=cid%> = (
     schema        => [
-    <%
-		for (IMetadataColumn column: metadata.getListColumns()) {
-    %>
+<%
+        for (IMetadataColumn column: metadata.getListColumns()) {
+%>
     	{
             name    => '<%=column.getLabel() %>',
             key     => <%=column.isKey() %>,
@@ -36,61 +37,36 @@ my %desc_<%=metadata.getTableName() %> = (
             null    => <%=column.isNullable() %>,
             default => '<%=column.getDefault() %>',
             comment => '<%=column.getComment() %>',
-		},
-	<%
-		}
-    %>
-    ]
+        },
+<%
+        }
+%>
+    ],
 );
 
 <%
-    int i = 0;
-    for (IMetadataColumn column: metadata.getListColumns()) {
+        int i = 0;
+        for (IMetadataColumn column: metadata.getListColumns()) {
 %>
 use constant <%=metadata.getTableName() %>__<%=column.getLabel() %> => <%= i %>;
 <%
-    i++;
+            i++;
+        }
+
+        List<? extends IConnection> inConns = node.getIncomingConnections();
+
+        if (inConns != null && !inConns.isEmpty()) {
+            IMetadataTable inMetadata = inConns.get(0).getMetadataTable();
+            String prevComponentName = inMetadata.getTableName();
+
+            int j = 0;
+            for (IMetadataColumn column: inMetadata.getListColumns()) {
+%>
+use constant <%=prevComponentName%>__<%=column.getLabel() %> => <%=j%>;
+<%
+                j++;
+            }
+        }
+    }
 }
-%>
-
-<%
-		}
-	}
-
-    List<? extends IConnection> incomingConnections = node.getIncomingConnections();
-    if (incomingConnections != null && !incomingConnections.isEmpty()) {
-        IMetadataTable metadata =incomingConnections.get(0).getMetadataTable();
-        %>
-
-my %desc_<%=metadata.getTableName() %> = (
-    inputschema        => [
-    <%
-		for (IMetadataColumn column: metadata.getListColumns()) {
-    %>
-    	{
-            name    => '<%=column.getLabel() %>',
-            key     => <%=column.isKey() %>,
-            type    => '<%=column.getType() %>',
-            len     => <%=column.getLength() %>,
-            null    => <%=column.isNullable() %>,
-            default => '<%=column.getDefault() %>',
-            comment => '<%=column.getComment() %>',
-		},
-	<%
-		}
-    %>
-    ]
-);
-
-<%
-    int j = 0;
-    for (IMetadataColumn column: metadata.getListColumns()) {
-%>
-use constant <%=metadata.getTableName() %>__<%=column.getLabel() %> => <%= j %>;
-<%
-    j++;
-    }
-%>
-<%
-    }
 %>

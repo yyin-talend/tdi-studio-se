@@ -38,10 +38,13 @@
     </PARAMETER>
 
     <PARAMETER NAME="CODE" FIELD="MEMO_PERL" NUM_ROW="2" NB_LINES="10">
-      <DEFAULT># available fields: see schema
-# $row[Field1]
-# $row[Field2]
-# ...
+      <DEFAULT># code sample:
+#
+# # multiply by 2 the row identifier
+# $output_row[id] = $input_row[id] * 2;
+#
+# # lowercase the name
+# $output_row[name] = lc $input_row[name];
 
 </DEFAULT>
     </PARAMETER>

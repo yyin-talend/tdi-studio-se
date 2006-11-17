@@ -1,57 +1,117 @@
 <%@ jet
-	package="org.talend.designer.codegen.translators" 
-	imports="
-		org.talend.core.model.process.INode 
-		org.talend.core.model.metadata.IMetadataTable 
-                org.talend.core.model.metadata.IMetadataColumn
-                org.talend.core.model.process.ElementParameterParser
-		org.talend.designer.codegen.config.CodeGeneratorArgument
-                org.talend.commons.utils.generation.LocationUtils
-                org.talend.commons.utils.generation.EntryLocation
-		java.util.List
-	"
-	class="PerlRowMain"
+package="org.talend.designer.codegen.translators" 
+imports="
+    org.talend.core.model.process.INode 
+    org.talend.core.model.metadata.IMetadataTable 
+    org.talend.core.model.process.IConnection
+    org.talend.core.model.metadata.IMetadataColumn
+    org.talend.core.model.process.EConnectionType
+    org.talend.core.model.process.ElementParameterParser
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    org.talend.commons.utils.generation.LocationUtils
+    org.talend.commons.utils.generation.EntryLocation
+    java.util.List
+"
+class="PerlRowMain"
 %>
 
 <%
-	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
-	INode node = (INode)codeGenArgument.getArgument();
-	boolean stats = codeGenArgument.isStatistics();
-	
-	LocationUtils locationUtils = new LocationUtils();
-	
-	List<IMetadataTable> metadatas = node.getMetadataList();
-	if ((metadatas!=null)&&(metadatas.size()>0)) {
-		IMetadataTable metadata = metadatas.get(0);
-		if (metadata!=null) {
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+boolean stats = codeGenArgument.isStatistics();
 
-                  String code = ElementParameterParser.getValue(node, "__CODE__");
+LocationUtils locationUtils = new LocationUtils();
 
-			String tableName = metadata.getTableName();
-			List<IMetadataColumn> columns = metadata.getListColumns();
-			EntryLocation[] locations = new EntryLocation[columns.size()];
-			int indexCol = 0;
-			for(IMetadataColumn column : columns) {
-				locations[indexCol] = new EntryLocation(tableName, column.getLabel());
-				indexCol++;
-			}
+List<IMetadataTable> metadatas = node.getMetadataList();
+if ((metadatas!=null)&&(metadatas.size()>0)) {
+    IMetadataTable metadata = metadatas.get(0);
+    if (metadata!=null) {
+        String code = ElementParameterParser.getValue(node, "__CODE__");
 
-                        String newCode = code.replaceAll("\\$row\\[", "\\$"+ tableName +"[");
- 			newCode = locationUtils.replaceColumnNameToConstantName(newCode, locations);
+        // replace $output_row[field1] by $tPerlRow_1[tPerlRow_1__field1]
+        String tableName = metadata.getTableName();
+        List<IMetadataColumn> columns = metadata.getListColumns();
+        EntryLocation[] locations = new EntryLocation[columns.size()];
+        int indexCol = 0;
+        
+        for(IMetadataColumn column : columns) {
+            locations[indexCol] = new EntryLocation(
+                tableName,
+                column.getLabel()
+            );
+            indexCol++;
+        }
+        
+        code = code.replaceAll(
+            "\\$output_row\\[",
+            "\\$"+ tableName +"["
+        );
+        
+        code = locationUtils.replaceColumnNameToConstantName(
+            code,
+            locations
+        );
+
+        // replace $input_row[field1] by $tRowGen_1[tRowGen_1__field1]
+        List< ? extends IConnection> inConns = node.getIncomingConnections();
+        IMetadataTable inMetadata = null;
+
+        for (IConnection conn : inConns) { // connection list
+            if (conn.getLineStyle().equals(EConnectionType.FLOW_MAIN)) {
+                inMetadata = conn.getMetadataTable();
+                break; // ends connection list
+            }
+        }
+
+        String prevComponentName = inMetadata.getTableName();
+        
+        columns = inMetadata.getListColumns();
+        locations = new EntryLocation[columns.size()];
+        indexCol = 0;
+
+        for(IMetadataColumn column : columns) {
+            locations[indexCol] = new EntryLocation(
+                prevComponentName,
+                column.getLabel()
+            );
+            indexCol++;
+        }
+        
+        code = code.replaceAll(
+            "\\$input_row\\[",
+            "\\$"+ prevComponentName +"["
+        );
+        
+        code = locationUtils.replaceColumnNameToConstantName(
+            code,
+            locations
+        );
+
+        // replace @input_row with @tRowGen_1
+        code = code.replaceAll(
+            "@input_row",
+            "@" + prevComponentName
+        );
+
+        // replace @output_row with @tPerlRow_1
+        code = code.replaceAll(
+            "@output_row",
+            "@" + tableName
+        );
+
 %>
-
 if (@<%= tableName %>) {
-    <%= newCode %>
+    <%=code%>
 <%
-    if (stats) {
+        if (stats) {
 %>
     UpdateStat('<%=metadata.getTableName() %>', 1);
 <%
-    }
+        }
 %>
 }
     
 <%
-		}
-	}
+    }
+}
 %>
