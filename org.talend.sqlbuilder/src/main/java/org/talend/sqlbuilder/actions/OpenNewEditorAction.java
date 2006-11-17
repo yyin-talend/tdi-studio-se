@@ -105,7 +105,7 @@ public class OpenNewEditorAction extends SelectionProviderAction {
         IStructuredSelection selection = (IStructuredSelection) selectionProvider.getSelection();
         RepositoryNode firstNode = (RepositoryNode) selection.getFirstElement();
         if (firstNode.getProperties(EProperties.CONTENT_TYPE) == RepositoryNodeType.FOLDER) {
-            firstNode = new SQLBuilderRepositoryNodeManager().getRepositoryNodebyName(connParam.getRepositoryName());
+            firstNode = repositoryNodeManager.getRepositoryNodebyName(connParam.getRepositoryName());
         } else {
             firstNode = SQLBuilderRepositoryNodeManager.getRoot(firstNode);
         }
