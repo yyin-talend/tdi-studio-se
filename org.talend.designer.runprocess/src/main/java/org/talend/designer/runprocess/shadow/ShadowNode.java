@@ -297,4 +297,12 @@ public abstract class ShadowNode implements INode {
     public void metadataOutputChanged(IODataComponent dataComponent, String connectionToApply) {
         // Nothing to do as it's shadow node
     }
+    
+    public boolean isReadOnly() {
+        return false;
+    }
+    
+    public void setReadOnly(boolean readOnly) {
+    }
+
 }

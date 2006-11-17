@@ -40,6 +40,7 @@ public class ShadowConnection implements IConnection {
     private INode source;
 
     private INode target;
+    
 
     /**
      * Constructs a new ShadowConnection.
@@ -131,5 +132,15 @@ public class ShadowConnection implements IConnection {
      * @see org.talend.core.model.process.IConnection#setTraceData(java.lang.String)
      */
     public void setTraceData(String traceData) {
+    }
+
+    public boolean isReadOnly() {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    public void setReadOnly(boolean readOnly) {
+        // TODO Auto-generated method stub
+        
     }
 }

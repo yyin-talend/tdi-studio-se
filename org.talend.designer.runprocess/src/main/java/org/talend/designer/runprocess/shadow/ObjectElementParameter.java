@@ -26,6 +26,7 @@ import java.util.List;
 import org.talend.core.model.metadata.EMetadataType;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.EParameterFieldType;
+import org.talend.core.model.process.IElement;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.IElementParameterDefaultValue;
 
@@ -454,5 +455,12 @@ public class ObjectElementParameter implements IElementParameter {
 
     public int getIndexOfItemFromList(String item) {
         return 0;
+    }
+
+    public IElement getParent() {
+        return null;
+    }
+
+    public void setParent(IElement element) {
     }
 }

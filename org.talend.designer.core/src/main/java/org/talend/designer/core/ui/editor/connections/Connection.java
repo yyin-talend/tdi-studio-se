@@ -87,7 +87,7 @@ public class Connection extends Element implements IConnection {
         setName(linkName);
         reconnect(source, target);
         if (lineStyle.equals(EConnectionType.RUN_IF)) {
-            IElementParameter param = new ElementParameter();
+            IElementParameter param = new ElementParameter(this);
             param.setField(EParameterFieldType.MEMO_PERL);
             param.setCategory(EComponentCategory.MAIN);
             param.setValue("");
@@ -347,9 +347,5 @@ public class Connection extends Element implements IConnection {
 
     public void setReadOnly(boolean readOnly) {
         this.readOnly = readOnly;
-
-        for (IElementParameter param : this.getElementParameters()) {
-            param.setReadOnly(readOnly);
-        }
     }
 }

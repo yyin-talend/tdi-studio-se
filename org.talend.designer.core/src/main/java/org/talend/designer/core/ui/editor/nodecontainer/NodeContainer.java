@@ -87,4 +87,11 @@ public class NodeContainer extends Element {
     public NodePerformance getNodePerformance() {
         return this.nodePerformance;
     }
+
+    public boolean isReadOnly() {
+        return node.getProcess().isReadOnly();
+    }
+
+    public void setReadOnly(boolean readOnly) {
+    }
 }

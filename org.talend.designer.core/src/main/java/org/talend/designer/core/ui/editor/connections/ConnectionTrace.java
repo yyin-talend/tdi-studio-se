@@ -114,4 +114,11 @@ public class ConnectionTrace extends Element {
     public IElementParameter getElementParameter(String name) {
         return connection.getElementParameter(name);
     }
+
+    public boolean isReadOnly() {
+        return connection.isReadOnly();
+    }
+
+    public void setReadOnly(boolean readOnly) {
+    }
 }

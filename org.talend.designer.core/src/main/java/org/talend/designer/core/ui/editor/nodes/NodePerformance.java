@@ -172,4 +172,11 @@ public class NodePerformance extends Element {
         loc.translate(textOffset.x + offset.x, textOffset.y + offset.y);
         return loc;
     }
+
+    public boolean isReadOnly() {
+        return nodeContainer.isReadOnly();
+    }
+
+    public void setReadOnly(boolean readOnly) {
+    }
 }

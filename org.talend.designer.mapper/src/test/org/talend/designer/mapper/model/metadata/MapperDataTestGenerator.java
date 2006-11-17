@@ -1103,6 +1103,16 @@ public class MapperDataTestGenerator {
 
         }
 
+        public boolean isReadOnly() {
+            // TODO Auto-generated method stub
+            return false;
+        }
+
+        public void setReadOnly(boolean readOnly) {
+            // TODO Auto-generated method stub
+            
+        }
+
     };
 
     /**
@@ -1315,6 +1325,16 @@ public class MapperDataTestGenerator {
         public void setComponent(IComponent component) {
             // TODO Auto-generated method stub
 
+        }
+
+        public boolean isReadOnly() {
+            // TODO Auto-generated method stub
+            return false;
+        }
+
+        public void setReadOnly(boolean readOnly) {
+            // TODO Auto-generated method stub
+            
         }
 
     }

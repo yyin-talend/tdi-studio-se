@@ -26,6 +26,7 @@ import java.util.List;
 
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.EParameterFieldType;
+import org.talend.core.model.process.IElement;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.IElementParameterDefaultValue;
 
@@ -48,6 +49,8 @@ public class ElementParameter implements IElementParameter {
     private boolean show = true, required = false, readOnly = false;
 
     private Object value;
+
+    private IElement parent;
 
     // used for CLOSED_LIST / TABLE
     String[] itemsDisplayName;
@@ -81,6 +84,10 @@ public class ElementParameter implements IElementParameter {
     private String notShowIf = null;
 
     private List<IElementParameterDefaultValue> defaultValues = new ArrayList<IElementParameterDefaultValue>();
+
+    public ElementParameter(final IElement parent) {
+        this.parent = parent;
+    }
 
     /*
      * (non-Javadoc)
@@ -190,11 +197,11 @@ public class ElementParameter implements IElementParameter {
     public void setListItemsValue(final Object[] list) {
         itemsValue = list;
     }
-    
+
     public Object[] getListItemsValue() {
         return itemsValue;
     }
-    
+
     public void setDefaultClosedListValue(Object o) {
         defaultClosedListValue = o;
     }
@@ -214,11 +221,10 @@ public class ElementParameter implements IElementParameter {
     public void setListItemsShowIf(String[] list) {
         itemsShowIf = list;
     }
-    
+
     public String[] getListItemsShowIf() {
         return itemsShowIf;
     }
-
 
     public void setListItemsNotShowIf(String[] list) {
         itemsNotShowIf = list;
@@ -227,7 +233,7 @@ public class ElementParameter implements IElementParameter {
     public String[] getListItemsNotShowIf() {
         return itemsNotShowIf;
     }
-    
+
     public int getIndexOfItemFromList(String item) {
         int index = 0;
         boolean found = false;
@@ -265,6 +271,9 @@ public class ElementParameter implements IElementParameter {
     }
 
     public boolean isReadOnly() {
+        if (parent != null) {
+            return (this.readOnly || parent.isReadOnly());
+        }
         return this.readOnly;
     }
 
@@ -371,5 +380,13 @@ public class ElementParameter implements IElementParameter {
                 setValue(defaultValue.getDefaultValue());
             }
         }
+    }
+
+    public IElement getParent() {
+        return parent;
+    }
+
+    public void setParent(IElement element) {
+        parent = element;
     }
 }

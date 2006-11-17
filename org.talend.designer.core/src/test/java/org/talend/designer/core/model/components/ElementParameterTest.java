@@ -50,47 +50,47 @@ public class ElementParameterTest {
      */
     public static void main(String[] args) {
         List<IElementParameter> listParams = new ArrayList<IElementParameter>();
-        ElementParameter param = new ElementParameter();
+        ElementParameter param = new ElementParameter(null);
         param.setName("VAR1");
         param.setValue("value1");
         param.setListItemsDisplayCodeName(new String[] { "VALUE1", "VALUE2", "VALUE3", "VALUE4", "VALUE5", "VALUE5_6" });
         param.setListItemsValue(new String[] { "value1", "value2", "value3", "value4", "value5", "value5;value6" });
         listParams.add(param);
 
-        param = new ElementParameter();
+        param = new ElementParameter(null);
         param.setName("VAR2");
         param.setValue("value2");
         param.setListItemsDisplayCodeName(new String[] { "VALUE1", "VALUE2", "VALUE3", "VALUE4", "VALUE5", "VALUE5_6" });
         param.setListItemsValue(new String[] { "value1", "value2", "value3", "value4", "value5", "value5;value6" });
         listParams.add(param);
 
-        param = new ElementParameter();
+        param = new ElementParameter(null);
         param.setName("VAR3");
         param.setValue("value3");
         param.setListItemsDisplayCodeName(new String[] { "VALUE1", "VALUE2", "VALUE3", "VALUE4", "VALUE5", "VALUE5_6" });
         param.setListItemsValue(new String[] { "value1", "value2", "value3", "value4", "value5", "value5;value6" });
         listParams.add(param);
 
-        param = new ElementParameter();
+        param = new ElementParameter(null);
         param.setName("VAR4");
         param.setValue("value4");
         param.setListItemsDisplayCodeName(new String[] { "VALUE1", "VALUE2", "VALUE3", "VALUE4", "VALUE5", "VALUE5_6" });
         param.setListItemsValue(new String[] { "value1", "value2", "value3", "value4", "value5", "value5;value6" });
         listParams.add(param);
 
-        param = new ElementParameter();
+        param = new ElementParameter(null);
         param.setName("VAR5");
         param.setValue("value5;value6");
         param.setListItemsDisplayCodeName(new String[] { "VALUE1", "VALUE2", "VALUE3", "VALUE4", "VALUE5", "VALUE5_6" });
         param.setListItemsValue(new String[] { "value1", "value2", "value3", "value4", "value5", "value5;value6" });
         listParams.add(param);
         
-        param = new ElementParameter();
+        param = new ElementParameter(null);
         param.setName("VAR6");
         param.setValue(new Boolean(true));
         listParams.add(param);
 
-        ElementParameter paramToTest = new ElementParameter();
+        ElementParameter paramToTest = new ElementParameter(null);
         paramToTest.setName("VAR_TEST");
 
         Assert.assertTrue(testParam(

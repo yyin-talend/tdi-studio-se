@@ -219,7 +219,7 @@ public class Process extends Element implements IProcess {
     private void createProcessParameters() {
         ElementParameter param;
 
-        param = new ElementParameter();
+        param = new ElementParameter(this);
         param.setName(EParameterName.NAME.getName());
         param.setCategory(EComponentCategory.MAIN);
         param.setField(EParameterFieldType.TEXT);
@@ -229,7 +229,7 @@ public class Process extends Element implements IProcess {
         param.setRequired(true);
         addElementParameter(param);
 
-        param = new ElementParameter();
+        param = new ElementParameter(this);
         param.setName(EParameterName.AUTHOR.getName());
         param.setCategory(EComponentCategory.MAIN);
         param.setField(EParameterFieldType.TEXT);
@@ -240,7 +240,7 @@ public class Process extends Element implements IProcess {
         param.setReadOnly(true);
         addElementParameter(param);
 
-        param = new ElementParameter();
+        param = new ElementParameter(this);
         param.setName(EParameterName.VERSION.getName());
         param.setCategory(EComponentCategory.MAIN);
         param.setField(EParameterFieldType.VERSION);
@@ -249,7 +249,7 @@ public class Process extends Element implements IProcess {
         param.setValue(new Version());
         addElementParameter(param);
 
-        param = new ElementParameter();
+        param = new ElementParameter(this);
         param.setName(EParameterName.STATUS.getName());
         param.setCategory(EComponentCategory.MAIN);
         param.setField(EParameterFieldType.TEXT);
@@ -258,7 +258,7 @@ public class Process extends Element implements IProcess {
         param.setValue(new String());
         addElementParameter(param);
 
-        param = new ElementParameter();
+        param = new ElementParameter(this);
         param.setName(EParameterName.PURPOSE.getName());
         param.setCategory(EComponentCategory.MAIN);
         param.setField(EParameterFieldType.TEXT);
@@ -267,7 +267,7 @@ public class Process extends Element implements IProcess {
         param.setValue(new String());
         addElementParameter(param);
 
-        param = new ElementParameter();
+        param = new ElementParameter(this);
         param.setName(EParameterName.DESCRIPTION.getName());
         param.setCategory(EComponentCategory.MAIN);
         param.setField(EParameterFieldType.MEMO);
@@ -277,7 +277,7 @@ public class Process extends Element implements IProcess {
         param.setValue(new String());
         addElementParameter(param);
 
-        param = new ElementParameter();
+        param = new ElementParameter(this);
         param.setName(EParameterName.LEVEL_LOG_TO_FILE.getName());
         param.setCategory(EComponentCategory.LOGS);
         param.setField(EParameterFieldType.CLOSED_LIST);
@@ -292,7 +292,7 @@ public class Process extends Element implements IProcess {
         param.setNumRow(1);
         addElementParameter(param);
 
-        param = new ElementParameter();
+        param = new ElementParameter(this);
         param.setName(EParameterName.LOG_TO_FILE.getName());
         param.setCategory(EComponentCategory.LOGS);
         param.setField(EParameterFieldType.CHECK);
@@ -301,7 +301,7 @@ public class Process extends Element implements IProcess {
         param.setValue(new Boolean(false));
         addElementParameter(param);
 
-        param = new ElementParameter();
+        param = new ElementParameter(this);
         param.setName(EParameterName.LOG_FILENAME.getName());
         param.setCategory(EComponentCategory.LOGS);
         param.setField(EParameterFieldType.FILE);
@@ -310,7 +310,7 @@ public class Process extends Element implements IProcess {
         param.setValue(new String());
         addElementParameter(param);
 
-        param = new ElementParameter();
+        param = new ElementParameter(this);
         param.setName(EParameterName.LEVEL_LOG_TO_DB.getName());
         param.setCategory(EComponentCategory.LOGS);
         param.setField(EParameterFieldType.CLOSED_LIST);
@@ -321,7 +321,7 @@ public class Process extends Element implements IProcess {
         param.setNumRow(2);
         addElementParameter(param);
 
-        param = new ElementParameter();
+        param = new ElementParameter(this);
         param.setName(EParameterName.LOG_TO_DB.getName());
         param.setCategory(EComponentCategory.LOGS);
         param.setField(EParameterFieldType.CHECK);
@@ -330,7 +330,7 @@ public class Process extends Element implements IProcess {
         param.setValue(new Boolean(false));
         addElementParameter(param);
 
-        param = new ElementParameter();
+        param = new ElementParameter(this);
         param.setName(EParameterName.LEVEL_LOG_TO_STDOUT.getName());
         param.setCategory(EComponentCategory.LOGS);
         param.setField(EParameterFieldType.CLOSED_LIST);
@@ -341,7 +341,7 @@ public class Process extends Element implements IProcess {
         param.setNumRow(3);
         addElementParameter(param);
 
-        param = new ElementParameter();
+        param = new ElementParameter(this);
         param.setName(EParameterName.LOG_TO_STDOUT.getName());
         param.setCategory(EComponentCategory.LOGS);
         param.setField(EParameterFieldType.CHECK);
@@ -1083,10 +1083,6 @@ public class Process extends Element implements IProcess {
     @SuppressWarnings("unchecked")
     public void setReadOnly(boolean readOnly) {
         this.readOnly = readOnly;
-
-        for (IElementParameter param : this.getElementParameters()) {
-            param.setReadOnly(readOnly);
-        }
 
         for (Node node : nodes) {
             node.setReadOnly(readOnly);

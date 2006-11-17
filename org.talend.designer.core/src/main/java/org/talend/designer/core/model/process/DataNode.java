@@ -45,7 +45,7 @@ import org.talend.core.model.temp.ECodeLanguage;
 public class DataNode extends AbstractNode {
 
     public DataNode(IComponent component, String uniqueName) {
-        setElementParameters(component.createParameters());
+        setElementParameters(component.createElementParameters(this));
         setComponentName(component.getName());
         setPluginFullName(component.getPluginFullName());
         List<IMetadataTable> metaList = new ArrayList<IMetadataTable>();

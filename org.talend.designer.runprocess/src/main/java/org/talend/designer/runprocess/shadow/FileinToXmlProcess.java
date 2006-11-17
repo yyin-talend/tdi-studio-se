@@ -425,4 +425,14 @@ public class FileinToXmlProcess<K extends FileInputNode> extends RepositoryObjec
             return false;
         }
     }
+
+    public boolean isReadOnly() {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    public void setReadOnly(boolean readOnly) {
+        // TODO Auto-generated method stub
+        
+    }
 }

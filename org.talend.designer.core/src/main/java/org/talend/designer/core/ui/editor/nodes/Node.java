@@ -185,7 +185,7 @@ public class Node extends Element implements INode {
         showHint = store.getBoolean(TalendDesignerPrefConstants.DEFAULT_HINT_USED);
 
         nodeLabel = new NodeLabel(label, this);
-        setElementParameters(component.createParameters());
+        setElementParameters(component.createElementParameters(this));
         listReturn = this.component.createReturns();
         listConnector = this.component.createConnectors();
         metadataList = new ArrayList<IMetadataTable>();
@@ -752,10 +752,6 @@ public class Node extends Element implements INode {
 
     public void setReadOnly(boolean readOnly) {
         this.readOnly = readOnly;
-
-        for (IElementParameter param : this.getElementParameters()) {
-            param.setReadOnly(readOnly);
-        }
     }
 
     /*

@@ -162,4 +162,11 @@ public class ConnectionLabel extends Element {
     public IElementParameter getElementParameter(String name) {
         return parent.getElementParameter(name);
     }
+
+    public boolean isReadOnly() {
+        return parent.isReadOnly();
+    }
+
+    public void setReadOnly(boolean readOnly) {
+    }
 }

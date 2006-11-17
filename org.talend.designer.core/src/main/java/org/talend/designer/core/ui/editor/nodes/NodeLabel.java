@@ -238,4 +238,11 @@ public class NodeLabel extends Element {
     public void setLabelSize(Dimension labelSize) {
         this.labelSize = labelSize;
     }
+
+    public boolean isReadOnly() {
+        return node.isReadOnly();
+    }
+
+    public void setReadOnly(boolean readOnly) {
+    }
 }
