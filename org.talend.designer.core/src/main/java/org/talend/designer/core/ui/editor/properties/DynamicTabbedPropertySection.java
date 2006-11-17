@@ -2542,9 +2542,9 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
         Map<String, Object> newLine = new HashMap<String, Object>();
         String[] items = param.getListItemsDisplayCodeName();
         for (int i = 0; i < items.length; i++) {
+            Object value = currentLine.get(items[i]);
             Object[] tmpObjects = param.getListItemsValue();
             if (tmpObjects[i] instanceof IElementParameter) {
-                Object value = currentLine.get(items[i]);
                 if (value instanceof String) { // only when the job is just loaded
                     boolean found = false;
                     int index = 0;
@@ -2557,8 +2557,8 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                     }
                     value = new Integer(index);
                 }
-                newLine.put(items[i], value);
             }
+            newLine.put(items[i], value);
         }
         return newLine;
     }
