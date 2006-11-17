@@ -22,7 +22,10 @@
 package org.talend.sqlbuilder.actions;
 
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.repository.model.RepositoryNode;
 import org.talend.sqlbuilder.Messages;
+import org.talend.sqlbuilder.dbstructure.SqlBuilderRepositoryObject;
 import org.talend.sqlbuilder.util.ImageUtil;
 
 
@@ -36,7 +39,13 @@ import org.talend.sqlbuilder.util.ImageUtil;
 public class SaveSQLAction extends AbstractEditorAction {
     
    private ImageDescriptor image = ImageUtil.getDescriptor("Images.SaveSQLIcon");
+   private RepositoryNode repositoryNode;
    
+    public SaveSQLAction(RepositoryNode repositoryNode) {
+        this.repositoryNode = repositoryNode;
+}
+
+
     /* (non-Javadoc)
      * @see org.eclipse.jface.action.Action#getImageDescriptor()
      */
@@ -57,6 +66,10 @@ public class SaveSQLAction extends AbstractEditorAction {
      * @see org.eclipse.jface.action.Action#isEnabled()
      */
     public boolean isEnabled() {
+        if(((SqlBuilderRepositoryObject)repositoryNode.getObject()).isBuildIn())
+        {
+            return false;
+        }
         return true;
     }
 
