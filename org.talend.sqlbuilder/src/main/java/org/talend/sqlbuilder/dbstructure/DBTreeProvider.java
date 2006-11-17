@@ -121,8 +121,10 @@ ITableColorProvider {
             rootNode.getChildren().clear();
             DatabaseConnection metadataConnection = (DatabaseConnection) ((ConnectionItem) repositoryNode.getObject().getProperty()
                     .getItem()).getConnection();
-            createTables(rootNode, rootNode.getObject(), metadataConnection, 
-            		((SqlBuilderRepositoryObject) rootNode.getObject()).isBuildIn());
+            boolean isBuildIn = ((SqlBuilderRepositoryObject) rootNode.getObject()).isBuildIn();
+			createTables(rootNode, rootNode.getObject(), metadataConnection, 
+            		isBuildIn);
+            createQueries(rootNode, rootNode.getObject(), metadataConnection, isBuildIn);
             return repositoryNode.getChildren().toArray();
         } else {
             return ((RepositoryNode) parentElement).getChildren().toArray();
