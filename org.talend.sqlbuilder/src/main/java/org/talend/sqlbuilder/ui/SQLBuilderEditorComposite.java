@@ -147,8 +147,8 @@ public class SQLBuilderEditorComposite extends Composite implements ISQLEditor {
         this.tabItem = tabItem;
         this.isDefaultEditor = isDefaultEditor;
         this.connParam = connParam;
-        this.setRepositoryNode(node);
         initialContent(this);
+        this.setRepositoryNode(node);
     }
 
     /**

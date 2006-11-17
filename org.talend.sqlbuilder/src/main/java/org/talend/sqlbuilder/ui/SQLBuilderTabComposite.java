@@ -32,7 +32,6 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.talend.repository.model.RepositoryNode;
-import org.talend.sqlbuilder.sessiontree.model.SessionTreeNode;
 import org.talend.sqlbuilder.util.ConnectionParameters;
 
 /**
@@ -124,9 +123,9 @@ public class SQLBuilderTabComposite extends Composite {
         }
 
         SQLBuilderEditorComposite builderEditorComposite = new SQLBuilderEditorComposite(tabFolder, tabItem,
-                isDefaultEditor, SWT.NONE);
-        builderEditorComposite.setEditorContent(connParam);
-        builderEditorComposite.setRepositoryNode(node);
+                isDefaultEditor, connParam, node, SWT.NONE);
+      // builderEditorComposite.setEditorContent(connParam);
+        //builderEditorComposite.setRepositoryNode(node);
 
         builderEditorComposite.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false));
 
