@@ -35,6 +35,7 @@ import org.talend.sqlbuilder.Messages;
 import org.talend.sqlbuilder.dbstructure.RepositoryNodeType;
 import org.talend.sqlbuilder.dbstructure.DBTreeProvider.QueryRepositoryObject;
 import org.talend.sqlbuilder.repository.utility.SQLBuilderRepositoryNodeManager;
+import org.talend.sqlbuilder.ui.ISQLBuilderDialog;
 import org.talend.sqlbuilder.ui.SQLPropertyDialog;
 
 /**
@@ -45,7 +46,7 @@ import org.talend.sqlbuilder.ui.SQLPropertyDialog;
  */
 public class ShowQueryPropertyAction extends SelectionProviderAction {
 
-    Shell shell;
+    ISQLBuilderDialog dialog;
 
     /**
      * DOC qianbing ShowQueryPropertyAction constructor comment.
@@ -53,8 +54,9 @@ public class ShowQueryPropertyAction extends SelectionProviderAction {
      * @param provider
      * @param text
      */
-    public ShowQueryPropertyAction(Shell shell, ISelectionProvider provider) {
+    public ShowQueryPropertyAction(ISelectionProvider provider, ISQLBuilderDialog d) {
         super(provider, Messages.getString("DBStructureComposite.Property"));
+        dialog = d;
     }
 
     @Override
@@ -92,12 +94,13 @@ public class ShowQueryPropertyAction extends SelectionProviderAction {
 
         List<String> existingName = repositoryNodeManager.getALLQueryLabels(node);
 
-        SQLPropertyDialog saveSQLDialog = new SQLPropertyDialog(shell, existingName);
+        SQLPropertyDialog saveSQLDialog = new SQLPropertyDialog(dialog.getShell(), existingName);
         saveSQLDialog.setQuery(query);
 
         if (Window.OK == saveSQLDialog.open()) {
             query = saveSQLDialog.getQuery();
             repositoryNodeManager.saveQuery(node, query);
+            dialog.refreshNode(node);
         }
     }
 }

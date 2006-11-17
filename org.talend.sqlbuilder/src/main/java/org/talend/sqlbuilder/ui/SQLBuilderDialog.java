@@ -257,7 +257,7 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog {
      */
     private void createSQLEditor(SashForm sashFormStructureAndEditor) {
 
-        editorComposite = new SQLBuilderTabComposite(sashFormStructureAndEditor, SWT.BORDER);
+        editorComposite = new SQLBuilderTabComposite(sashFormStructureAndEditor, SWT.BORDER,this);
     }
 
     /**
@@ -373,6 +373,15 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog {
         String sql = editorComposite.getDefaultTabSql();
         connParameters.setQuery(sql);
         super.okPressed();
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.sqlbuilder.ui.ISQLBuilderDialog#refreshNode(org.talend.repository.model.RepositoryNode)
+     */
+    public void refreshNode(RepositoryNode node) {
+        structureComposite.doRefresh(node);
     }
 
     /**

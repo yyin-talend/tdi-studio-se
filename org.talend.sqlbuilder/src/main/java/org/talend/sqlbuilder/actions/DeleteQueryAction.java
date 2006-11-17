@@ -34,6 +34,7 @@ import org.talend.sqlbuilder.Messages;
 import org.talend.sqlbuilder.dbstructure.RepositoryNodeType;
 import org.talend.sqlbuilder.dbstructure.DBTreeProvider.QueryRepositoryObject;
 import org.talend.sqlbuilder.repository.utility.SQLBuilderRepositoryNodeManager;
+import org.talend.sqlbuilder.ui.ISQLBuilderDialog;
 
 /**
  * DOC qianbing class global comment. Detailled comment <br/>
@@ -43,11 +44,14 @@ import org.talend.sqlbuilder.repository.utility.SQLBuilderRepositoryNodeManager;
  */
 public class DeleteQueryAction extends SelectionProviderAction {
 
+    ISQLBuilderDialog dialog;
+
     /**
      * DOC qianbing DeleteQueryAction constructor comment.
      */
-    public DeleteQueryAction(ISelectionProvider provider) {
-        super(provider, Messages.getString("DBStructureComposite.Delete"));
+    public DeleteQueryAction(ISelectionProvider provider, ISQLBuilderDialog d) {
+        super(provider, Messages.getString("DBStructureComposite.DeleteQuery"));
+        dialog = d;
     }
 
     @Override
@@ -85,5 +89,7 @@ public class DeleteQueryAction extends SelectionProviderAction {
         List<Query> queries = new ArrayList();
         queries.add(query);
         repositoryNodeManager.deleteQueries(node, queries);
+
+        dialog.refreshNode(node);
     }
 }

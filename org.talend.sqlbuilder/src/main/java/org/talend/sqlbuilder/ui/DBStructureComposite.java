@@ -217,7 +217,8 @@ public class DBStructureComposite extends Composite {
                         return true;
                     }
                 } else {
-                    if (node.getProperties(EProperties.LABEL) == null || node.getProperties(EProperties.LABEL).equals("")) { //$NON-NLS-1$
+                    if (node.getProperties(EProperties.LABEL) == null
+                            || node.getProperties(EProperties.LABEL).equals("")) { //$NON-NLS-1$
                         return true;
                     }
                 }
@@ -257,9 +258,8 @@ public class DBStructureComposite extends Composite {
         metadataRefreshAction = new MetadataRefreshAction(treeViewer);
 
         openQueryAction = new OpenQueryAction(treeViewer, builderDialog, builderDialog.getConnParameters());
-        deleteQueryAction = new DeleteQueryAction(treeViewer);
-        showQueryPropertyAction = new ShowQueryPropertyAction(this.getShell(),treeViewer);
-
+        deleteQueryAction = new DeleteQueryAction(treeViewer, builderDialog);
+        showQueryPropertyAction = new ShowQueryPropertyAction(treeViewer, builderDialog);
     }
 
     /**
@@ -481,7 +481,7 @@ public class DBStructureComposite extends Composite {
                     monitor.beginTask(Messages.getString("DBStructureComposite.RefreshConnections"), -1);
                     try {
                         RepositoryNode[] nodes = (RepositoryNode[]) selection.toList().toArray(new RepositoryNode[] {});
-                        
+
                         nodes = retrieveFromDB(nodes);
                     } finally {
                         monitor.done();

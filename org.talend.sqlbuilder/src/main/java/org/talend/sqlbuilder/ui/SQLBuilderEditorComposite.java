@@ -131,6 +131,8 @@ public class SQLBuilderEditorComposite extends Composite implements ISQLEditor {
 
     private final String language = "tsql";
 
+    private ISQLBuilderDialog dialog;
+
     /**
      * SQLBuilderEditorComposite constructor.
      * 
@@ -138,16 +140,18 @@ public class SQLBuilderEditorComposite extends Composite implements ISQLEditor {
      * @param tabItem
      * @param isDefaultEditor
      * @param node
+     * @param dialog
      * @param connParam2
      * @param style
      */
     public SQLBuilderEditorComposite(Composite parent, CTabItem tabItem, boolean isDefaultEditor,
-            ConnectionParameters connParam, RepositoryNode node, int style) {
-        super(parent, style);
+            ConnectionParameters connParam, RepositoryNode node, ISQLBuilderDialog d) {
+        super(parent, SWT.NONE);
+        dialog = d;
         this.tabItem = tabItem;
         this.isDefaultEditor = isDefaultEditor;
         this.connParam = connParam;
-        repositoryNode=node;
+        repositoryNode = node;
         initialContent(this);
         this.setRepositoryNode(node);
     }
@@ -574,6 +578,7 @@ public class SQLBuilderEditorComposite extends Composite implements ISQLEditor {
         if (Window.OK == saveSQLDialog.open()) {
             Query query = saveSQLDialog.getQuery();
             repositoryNodeManager.saveQuery(repositoryNode, query);
+            dialog.refreshNode(repositoryNode);
         }
     }
 

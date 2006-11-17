@@ -23,6 +23,8 @@ package org.talend.sqlbuilder.ui;
 
 import java.util.List;
 
+import net.sourceforge.squirrel_sql.fw.sql.ISQLDriver;
+
 import org.eclipse.jface.util.Assert;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
@@ -46,8 +48,11 @@ public class SQLBuilderTabComposite extends Composite {
 
     private List<String> repositoryNames;
 
-    public SQLBuilderTabComposite(Composite parent, int style) {
+    private ISQLBuilderDialog dialog;
+
+    public SQLBuilderTabComposite(Composite parent, int style, ISQLBuilderDialog d) {
         super(parent, style);
+        this.dialog = d;
         this.setLayout(new FillLayout());
     }
 
@@ -123,9 +128,9 @@ public class SQLBuilderTabComposite extends Composite {
         }
 
         SQLBuilderEditorComposite builderEditorComposite = new SQLBuilderEditorComposite(tabFolder, tabItem,
-                isDefaultEditor, connParam, node, SWT.NONE);
-      // builderEditorComposite.setEditorContent(connParam);
-        //builderEditorComposite.setRepositoryNode(node);
+                isDefaultEditor, connParam, node, dialog);
+        // builderEditorComposite.setEditorContent(connParam);
+        // builderEditorComposite.setRepositoryNode(node);
 
         builderEditorComposite.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false));
 
