@@ -350,6 +350,10 @@ public class SQLBuilderRepositoryNodeManager {
 				}
 			}
 			if (flag) {
+				List<MetadataColumn> columns = emf.getColumns();
+				for (MetadataColumn column : columns) {
+					column.setDivergency(true);
+				}
 				emf.setDivergency(true);
 			}
 		}
