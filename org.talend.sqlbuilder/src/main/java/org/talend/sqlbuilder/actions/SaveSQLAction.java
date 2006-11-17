@@ -40,8 +40,11 @@ public class SaveSQLAction extends AbstractEditorAction {
 
     private RepositoryNode repositoryNode;
 
-    public SaveSQLAction(RepositoryNode repositoryNode) {
-        this.repositoryNode = repositoryNode;
+    public SaveSQLAction(RepositoryNode repositoryNodeInput) {
+        this.repositoryNode = repositoryNodeInput;
+        SqlBuilderRepositoryObject o = (SqlBuilderRepositoryObject) repositoryNode.getObject();
+        boolean isBuildin = o.isBuildIn();
+        setEnabled(!isBuildin);
     }
 
     /*
@@ -60,17 +63,6 @@ public class SaveSQLAction extends AbstractEditorAction {
      */
     public String getText() {
         return Messages.getString("SQLEditor.Actions.SaveSQL");
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.eclipse.jface.action.Action#isEnabled()
-     */
-    public boolean isEnabled() {
-        SqlBuilderRepositoryObject o = (SqlBuilderRepositoryObject) repositoryNode.getObject();
-        boolean isBuildin = o.isBuildIn();
-        return isBuildin;
     }
 
     /*
