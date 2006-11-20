@@ -5,7 +5,7 @@
        SERIAL=""
       VERSION="0.101"
        STATUS="ALPHA"
-         ICON="tRunJob32.ico"
+       ICON32="tRunJob32.ico"
 COMPATIBILITY="ALL"
        AUTHOR="Talend"
  RELEASE_DATE="20050320A"

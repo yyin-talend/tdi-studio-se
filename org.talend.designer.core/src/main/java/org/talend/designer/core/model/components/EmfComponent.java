@@ -686,7 +686,8 @@ public class EmfComponent implements IComponent {
             if (compType.getHEADER().getICON24() != null && compType.getHEADER().getICON24().length() > 0) {
                 image24 = getImage(compType.getHEADER().getICON24());
             } else {
-                image24 = ImageDescriptor.createFromImageData(getIcon32().getImageData().scaledTo(24, 24));
+                image24 = getIcon32(); // Temporary while 24 pix components icons aren't available
+                // image24 = ImageDescriptor.createFromImageData(getIcon32().getImageData().scaledTo(24, 24));
             }
         }
 
@@ -783,12 +784,12 @@ public class EmfComponent implements IComponent {
     }
 
     public boolean isCheckColumns() {
-        return isSchemaAutoPropagated();        
-//        if (compType.getHEADER().isSetCOLUMNCHECK()) {
-//            return compType.getHEADER().isCOLUMNCHECK();
-//        } else {
-//            return true;
-//        }
+        return isSchemaAutoPropagated();
+        // if (compType.getHEADER().isSetCOLUMNCHECK()) {
+        // return compType.getHEADER().isCOLUMNCHECK();
+        // } else {
+        // return true;
+        // }
     }
 
     public String getVersion() {
