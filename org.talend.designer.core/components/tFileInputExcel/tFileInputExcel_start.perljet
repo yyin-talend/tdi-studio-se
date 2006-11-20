@@ -127,7 +127,7 @@ for ($first_row_<%=cid%> .. $last_row_<%=cid%>) {
          $current_column <= $last_column_<%=cid%>;
          $current_column++) {
         my $current_cell = $worksheet_<%=cid%>->{Cells}[$current_row][$current_column];
-        push(@line_<%=cid%>, $current_cell->Value) if($current_cell);
+        push(@line_<%=cid%>, $current_cell ? $current_cell->Value : undef);
     }
     $current_row++;
 
