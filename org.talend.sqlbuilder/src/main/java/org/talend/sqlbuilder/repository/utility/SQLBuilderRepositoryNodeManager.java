@@ -24,8 +24,10 @@ package org.talend.sqlbuilder.repository.utility;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.talend.commons.exception.PersistenceException;
 import org.talend.core.CorePlugin;
@@ -148,8 +150,8 @@ public class SQLBuilderRepositoryNodeManager {
 	 * @return List :all Table Names.
 	 */
 	@SuppressWarnings("unchecked")
-	public static List<String> getTableNamesByRepositoryNode(RepositoryNode node) {
-		List<String> tableNames = new ArrayList<String>();
+	public static Map<String, List<String>> getAllNamesByRepositoryNode(RepositoryNode node) {
+		Map<String, List<String>> allNames = new HashMap<String, List<String>>();
 		DatabaseConnectionItem item = getItem(node);
 		DatabaseConnection connection = (DatabaseConnection) item
 				.getConnection();
@@ -161,11 +163,21 @@ public class SQLBuilderRepositoryNodeManager {
 		for (MetadataTable table : tablesFromEMF) {
 			String tableName = table.getSourceName();
 			if (tableName != null && !"".equals(tableName)) {
+				List<String> columnNames = new ArrayList<String>();
 				tableName = "'" + sid + "'.'" + tableName + "'";
-				tableNames.add(tableName);
+				List<MetadataColumn> columns = table.getColumns();
+				for (MetadataColumn column : columns) {
+					String columnName = column.getOriginalField();
+					if (columnName != null && !"".equals(columnName)) {
+						columnName = tableName + ".'" + columnName + "'";
+						columnNames.add(columnName);
+					}
+				}
+				
+				allNames.put(tableName, columnNames);
 			}
 		}
-		return tableNames;
+		return allNames;
 	}
 
 	/**
@@ -552,8 +564,10 @@ public class SQLBuilderRepositoryNodeManager {
 			if (flag) {
 				List<MetadataColumn> columns = emf.getColumns();
 				for (MetadataColumn column : columns) {
+					column.setOriginalField("");
 					column.setDivergency(true);
 				}
+				emf.setSourceName("");
 				emf.setDivergency(true);
 			}
 		}
@@ -612,6 +626,7 @@ public class SQLBuilderRepositoryNodeManager {
 				}
 			}
 			if (flag) {
+				emf.setOriginalField("");
 				emf.setDivergency(true);
 			}
 		}
