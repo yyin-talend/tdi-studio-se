@@ -21,6 +21,7 @@
 		if (metadata!=null) {
 %>
 
+if (@<%=metadata.getTableName() %>) {
 push(
     @lines_<%=metadata.getTableName() %>,
     [ @<%=metadata.getTableName() %>[0 .. $nb_fields_<%=metadata.getTableName() %> - 1] ]
@@ -48,6 +49,7 @@ if ($nb_lines_current >= $desc_<%=metadata.getTableName() %>{packet_size}) {
 
     $nb_line_<%=metadata.getTableName() %> += $nb_lines_current;
     @lines_<%=metadata.getTableName() %> = ();
+}
 }
 
 <%
