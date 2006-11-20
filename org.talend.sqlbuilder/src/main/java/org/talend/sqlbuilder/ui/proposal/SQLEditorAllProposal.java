@@ -48,32 +48,44 @@ public class SQLEditorAllProposal implements IContentProposal {
      */
     public SQLEditorAllProposal(String hasString, String allString, int position, String[] contents) {
         super();
-        label = allString.replaceAll("'", "");
+        hasString = initHasString(hasString, allString);
+        this.position = position + label.substring(hasString.length()).length();
+        hasString = label.substring(0, hasString.length());
+        contents[0] = contents[0].substring(0, contents[0].length() - hasString.length()) + hasString;
+        content = contents[0];
+        content += label.substring(hasString.length());
+        content += contents[1];
+        description = allString;
+    }
+
+	/**
+	 * DOC dev Comment method "initHasString".
+	 * @param hasString
+	 * @param allString
+	 * @return
+	 */
+	private String initHasString(String hasString, String allString) {
+		label = allString.replaceAll("'", "");
         int index = label.indexOf(".");
         int index2 = label.lastIndexOf(".");
-        String qualityName = label;
+        String qualityName = "";
         if (index > -1) {
         	qualityName = label.substring(index + 1, label.length());
         	if (index == index2) {
-        		label = label.substring(index + 1, label.length());
+        		label = qualityName;
                 image = ImageUtil.getDescriptor("Images.TableIcon").createImage();
         	} else {
+        		int index3 = qualityName.indexOf(".");
+        		if (!"".equals(hasString) && qualityName.startsWith(hasString)) {
+        			hasString = hasString.substring(index3 + 1);
+        		}
         		label = label.substring(index2 + 1, label.length());
         		image = ImageUtil.getDescriptor("Images.ColumnIcon").createImage();
         	}
             
         }
-        
-        this.position = position + qualityName.substring(hasString.length()).length();
-        hasString = qualityName.substring(0, hasString.length());
-        contents[0] = contents[0].substring(0, contents[0].length() - hasString.length()) + hasString;
-        content = contents[0];
-        content += qualityName.substring(hasString.length());
-        content += contents[1];
-        
-        description = allString;
-        
-    }
+		return hasString;
+	}
 
     /**
      * Getter for image.

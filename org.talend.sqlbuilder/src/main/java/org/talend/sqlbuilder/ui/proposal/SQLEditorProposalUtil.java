@@ -23,7 +23,6 @@ package org.talend.sqlbuilder.ui.proposal;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -91,7 +90,7 @@ public class SQLEditorProposalUtil {
 
             if (queryStrings.isEmpty() || (curSql[1].length() == 0 && curSql[0].length() == 0)) {
                 for (String string : allString) {
-                    createAllSQLEditorProposal("", string);
+                	 proposals.add(new SQLEditorAllProposal("", string, position, contents));
                 }
             } else {
                 while (!queryStrings.isEmpty()) {
@@ -174,15 +173,15 @@ public class SQLEditorProposalUtil {
     // proposals.add(new SQLEditorFullNameProposal(tmp, tablename));
     // }
 
-    /**
-     * DOC dev Comment method "createAllSQLEditorProposal".
-     * 
-     * @param tmp editor has input String
-     * @param string need to proposal String
-     */
-    private void createAllSQLEditorProposal(String tmp, String string) {
-        proposals.add(new SQLEditorAllProposal(tmp, string, position, contents));
-    }
+//    /**
+//     * DOC dev Comment method "createAllSQLEditorProposal".
+//     * 
+//     * @param tmp editor has input String
+//     * @param string need to proposal String
+//     */
+//    private void createAllSQLEditorProposal(String tmp, String string) {
+//        proposals.add(new SQLEditorAllProposal(tmp, string, position, contents));
+//    }
 
     /**
      * DOC dev Comment method "getAllKeywords".
@@ -238,7 +237,7 @@ public class SQLEditorProposalUtil {
             int seqIndex = curSql[0].lastIndexOf(" ");
             int dotIndex = curSql[0].lastIndexOf(".");
             List<String> list = new ArrayList<String>();
-            if (seqIndex > -1 && dotIndex > seqIndex) {
+            if (seqIndex > -1 && dotIndex > seqIndex + 1) {
             	String tableName = curSql[0].substring(seqIndex, dotIndex);
         		List<String> columns = getColumnsByTableName(tableName);
         		list.addAll(columns);
@@ -256,7 +255,7 @@ public class SQLEditorProposalUtil {
     }
 
 	/**
-	 * DOC dev Comment method "createPropsa".
+	 * DOC dev Comment method "createProposal".
 	 * @param hasInput
 	 * @param list
 	 */
@@ -266,15 +265,17 @@ public class SQLEditorProposalUtil {
 		        int index = string.indexOf(".");
 		        int index2 = string.lastIndexOf(".");
 		        String tmp2 = "";
+		        String column = ""; 
 		        if (index > -1) {
 		            tmp2 = string.substring(index + 2, string.length() - 1).replaceAll("'", "");
 		            if (index2 > index) {
-		            	tmp2 = string.substring(index2 + 2, string.length() - 1).replaceAll("'", "");
+		            	column = string.substring(index2 + 2, string.length() - 1).replaceAll("'", "");
 		            }
 		        } else {
 		            tmp2 = string;
 		        }
-		        if (tmp2.toLowerCase().startsWith(hasInput.toLowerCase())) {
+		        if (tmp2.toLowerCase().startsWith(hasInput.toLowerCase()) 
+		        		|| column.toLowerCase().startsWith(hasInput.toLowerCase())) {
 		        	proposals.add(new SQLEditorAllProposal(hasInput, string, position, contents));
 		        }
 		    }

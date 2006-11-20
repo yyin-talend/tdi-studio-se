@@ -233,7 +233,7 @@ public class SQLBuilderEditorComposite extends Composite implements ISQLEditor {
             IContentProposalProvider contentProposalProvider = new SQLEditorProposalProvider(repositoryNode, language);
 
             SQLEditorProposalAdapter contentProposalAdapter = new SQLEditorProposalAdapter(colorText,
-                    controlContentAdapter, contentProposalProvider, keyStroke, new char[] { ' ' });
+                    controlContentAdapter, contentProposalProvider, keyStroke, new char[] { ' ', '.' });
             contentProposalAdapter.setPropagateKeys(true);
             contentProposalAdapter.setFilterStyle(ContentProposalAdapter.FILTER_CUMULATIVE);
             contentProposalAdapter.setProposalAcceptanceStyle(ContentProposalAdapter.PROPOSAL_REPLACE);
