@@ -25,7 +25,6 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
@@ -36,29 +35,32 @@ import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
-import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 import org.talend.commons.ui.swt.dialogs.ErrorDialogWidthDetailArea;
+import org.talend.commons.ui.swt.extended.macrotable.AbstractExtendedTableViewer;
+import org.talend.commons.ui.swt.extended.macrotable.ExtendedTableModel;
 import org.talend.commons.ui.swt.formtools.Form;
 import org.talend.commons.ui.swt.formtools.LabelledCheckboxCombo;
 import org.talend.commons.ui.swt.formtools.UtilsButton;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
+import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumn;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator.LAYOUT_MODE;
+import org.talend.commons.utils.data.bean.IBeanPropertyAccessors;
 import org.talend.core.model.properties.ConnectionItem;
+import org.talend.core.ui.extended.ExtendedTableToolbarView;
 import org.talend.core.utils.XmlArray;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.preview.ProcessDescription;
@@ -85,10 +87,6 @@ public class LdifFileStep2Form extends AbstractLdifFileStepForm {
     private LabelledCheckboxCombo rowsToSkipLimitCheckboxCombo;
 
     private Group previewGroup;
-
-    protected Table table;
-    
-    private Collection<TableItem> tableItems;
     
     private List<String> itemTableName;
     
@@ -105,6 +103,10 @@ public class LdifFileStep2Form extends AbstractLdifFileStepForm {
     private UtilsButton cancelButton;
 
     private boolean readOnly;
+
+    private ExtendedTableModel<String> attributeModel;
+
+    private AbstractExtendedTableViewer<String> tableEditorView;
 
     /**
      * Constructor to use by RCP Wizard.
@@ -139,70 +141,70 @@ public class LdifFileStep2Form extends AbstractLdifFileStepForm {
         rowsToSkipLimitCheckboxCombo.setReadOnly(isReadOnly());
     }
 
-    /**
-     * add field to Group Limit.
-     * 
-     * @param mainComposite
-     * @param form
-     * @param width
-     * @param height
-     */
-//    private void addGroupAttributes(final Composite mainComposite, final int width, final int height) {
-//        // Group Schema Viewer
-//        Group group = Form.createGroup(mainComposite, 1, Messages.getString("XmlFileStep1.groupSchemaTarget"), height);
-//
-//        ScrolledComposite scrolledCompositeFileViewer = new ScrolledComposite(group, SWT.H_SCROLL | SWT.V_SCROLL
-//                | SWT.NONE);
-//        scrolledCompositeFileViewer.setExpandHorizontal(true);
-//        scrolledCompositeFileViewer.setExpandVertical(true);
-//        GridData gridData1 = new GridData(GridData.FILL_BOTH);
-//        // gridData1.widthHint = width;
-//        // gridData1.heightHint = height;
-//        scrolledCompositeFileViewer.setLayoutData(gridData1);
-//        scrolledCompositeFileViewer.setLayout(new FillLayout());
-//
-//        TargetSchemaEditor2 targetSchemaEditor = new TargetSchemaEditor2(Messages.getString("FileStep3.metadataDescription"));
-//        TargetSchemaTableEditorView2 tableEditorView = new TargetSchemaTableEditorView2(scrolledCompositeFileViewer, SWT.NONE, targetSchemaEditor);
-//        scrolledCompositeFileViewer.setContent(tableEditorView.getTableViewerCreator().getTable());
-//        scrolledCompositeFileViewer.setSize(width, height);
-//
-//        // Composite toolbar = new Composite(group, SWT.BORDER);
-//        TargetSchemaToolbarEditorView2 targetSchemaToolbarEditorView2 = new TargetSchemaToolbarEditorView2(group,
-//                SWT.NONE, tableEditorView);
-//    
-//    }
-    
     private void addGroupAttributes(final Composite mainComposite, final int width, final int height) {
         // Group Schema Viewer
         Group group = Form.createGroup(mainComposite, 1, "List Attributes of Ldif file", height);
 
-        ScrolledComposite scrolledCompositeFileViewer = new ScrolledComposite(group, SWT.H_SCROLL | SWT.V_SCROLL
-                | SWT.NONE);
-        scrolledCompositeFileViewer.setExpandHorizontal(true);
-        scrolledCompositeFileViewer.setExpandVertical(true);
-        GridData gridData1 = new GridData(GridData.FILL_BOTH);
-        scrolledCompositeFileViewer.setLayoutData(gridData1);
-        scrolledCompositeFileViewer.setLayout(new FillLayout());
+        attributeModel = new ExtendedTableModel<String>();
+        attributeModel.registerDataList(itemTableName);
+        tableEditorView = new AbstractExtendedTableViewer<String>(attributeModel, group, SWT.NONE) {
 
-        // List Table
-        TableViewerCreator tableViewerCreator = new TableViewerCreator(scrolledCompositeFileViewer);
-        tableViewerCreator.setAllColumnsResizable(true);
-        tableViewerCreator.setBorderVisible(true);
-        tableViewerCreator.setLayoutMode(LAYOUT_MODE.FILL_HORIZONTAL);
-        tableViewerCreator.setCheckboxInFirstColumn(true);
-        tableViewerCreator.setFirstColumnMasked(true);
+            /* (non-Javadoc)
+             * @see org.talend.commons.ui.swt.extended.macrotable.AbstractExtendedTableViewer#createTable(org.eclipse.swt.widgets.Composite, int)
+             */
+            @Override
+            protected TableViewerCreator<String> createTable(Composite parentComposite, int styleChild) {
+                TableViewerCreator<String> newTableViewerCreator = new TableViewerCreator<String>(parentComposite);
+                newTableViewerCreator.setLayout(new RowLayout(SWT.HORIZONTAL));
 
-        table = tableViewerCreator.createTable();
-        table.setLayoutData(new GridData(GridData.FILL_BOTH));
+                newTableViewerCreator.setAllColumnsResizable(true);
+                newTableViewerCreator.setBorderVisible(true);
+                newTableViewerCreator.setLayoutMode(LAYOUT_MODE.CONTINUOUS);
+                newTableViewerCreator.setFirstColumnMasked(false);
+                newTableViewerCreator.setCheckboxInFirstColumn(true);
+                newTableViewerCreator.setFirstVisibleColumnIsSelection(false);
 
-        TableColumn tableName = new TableColumn(table, SWT.CHECK);
-        tableName.setText("Attributes");
-        tableName.setWidth(300);
+                final Table table = newTableViewerCreator.createTable(styleChild);
+                
+                table.setLayoutData(new GridData(GridData.FILL_BOTH));
 
-        scrolledCompositeFileViewer.setContent(table);
-        scrolledCompositeFileViewer.setMinSize(table.computeSize(SWT.DEFAULT, SWT.DEFAULT));
+                return newTableViewerCreator;
+            }
 
-        
+
+            @Override
+            protected void createColumns(TableViewerCreator<String> tableViewerCreator, Table table) {
+                TableViewerCreatorColumn column = new TableViewerCreatorColumn(tableViewerCreator);
+                column.setBeanPropertyAccessors(new IBeanPropertyAccessors<String, String>() {
+
+                    public String get(String bean) {
+                        return bean.toString();
+                    }
+
+                    public void set(String bean, String value) {
+                    }
+
+                });
+                column.setTitle("Attributes");
+                column.setWeight(100);
+
+            }
+            
+        };
+
+        new ExtendedTableToolbarView(group, SWT.NONE, tableEditorView) {
+
+            /* (non-Javadoc)
+             * @see org.talend.core.ui.extended.ExtendedTableToolbarView#createComponents(org.eclipse.swt.widgets.Composite)
+             */
+            @Override
+            protected void createComponents(Composite parent) {
+                moveUpButton = createMoveUpPushButton();
+                moveDownButton = createMoveDownPushButton();
+            }
+            
+        };
+
     }
 
     /**
@@ -212,31 +214,11 @@ public class LdifFileStep2Form extends AbstractLdifFileStepForm {
      */
     protected void populateLdifAttributes() {
 
-        tableItems = new ArrayList<TableItem>();
-
-        if (table.getItemCount() > 0) {
-            table.removeAll();
-        }
-
-//        itemTableName = ExtractMetaDataFromDataBase.returnTablesFormConnection(iMetadataConnection);
-//        if (itemTableName.size() <= 0) {
-//        } else {
-//            // connection is done and tables exist
-//            if (itemTableName != null && !itemTableName.isEmpty()) {
-//                // fill the combo
-//                Iterator<String> iterate = itemTableName.iterator();
-//                while (iterate.hasNext()) {
-//                    String nameTable = iterate.next();
-//                    TableItem item = new TableItem(table, SWT.NONE);
-//                    item.setText(nameTable);
-//                }
-//            }
-//        }
+        itemTableName = new ArrayList<String>();
         
         String filename = new String(getConnection().getFilePath());
         Attributes entry = null;
         BufferedReader bufReader = null;
-//        Collection<String> colAttributes = new ArrayList<String>();
         
         try {
 
@@ -267,15 +249,6 @@ public class LdifFileStep2Form extends AbstractLdifFileStepForm {
             
         } catch (IOException e) {
             e.printStackTrace();
-        }
-        if (itemTableName != null && !itemTableName.isEmpty()) {
-            // fill the combo
-            Iterator<String> iterate = itemTableName.iterator();
-            while (iterate.hasNext()) {
-                String nameTable = iterate.next();
-                TableItem item = new TableItem(table, SWT.NONE);
-                item.setText(nameTable);
-            }
         }
     }
     
@@ -566,6 +539,7 @@ public class LdifFileStep2Form extends AbstractLdifFileStepForm {
         }
         
         // Event checkBox action
+        final Table table = tableEditorView.getTableViewerCreator().getTable();
         table.addSelectionListener(new SelectionAdapter() {
 
             public void widgetSelected(final SelectionEvent e) {
@@ -575,11 +549,8 @@ public class LdifFileStep2Form extends AbstractLdifFileStepForm {
                         TableItem tableItem = (TableItem) e.item;
                         boolean promptNeeded = tableItem.getChecked();
                         if (promptNeeded) {
-                            tableItems.remove(tableItem);
-                            tableItems.add(tableItem);
                             getConnection().getValue().add(tableItem.getText());
                         } else {
-                            tableItems.remove(tableItem);
                             getConnection().getValue().remove(tableItem.getText());
                         }
                     }
@@ -602,6 +573,7 @@ public class LdifFileStep2Form extends AbstractLdifFileStepForm {
         super.setVisible(visible);
         if (super.isVisible()) {
             populateLdifAttributes();
+            attributeModel.registerDataList(itemTableName);
             // Refresh the preview width the adapted rowSeparator
             // If metadata exist, refreshMetadata
             if ((!"".equals(getConnection().getFilePath())) && (getConnection().getFilePath() != null)) {

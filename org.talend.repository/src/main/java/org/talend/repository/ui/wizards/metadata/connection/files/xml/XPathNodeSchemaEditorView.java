@@ -43,7 +43,7 @@ import org.talend.commons.utils.data.list.ListenableListEvent;
 import org.talend.commons.utils.data.list.ListenableListEvent.TYPE;
 import org.talend.core.model.metadata.builder.connection.SchemaTarget;
 import org.talend.core.model.targetschema.editor.XPathNodeSchemaModel;
-import org.talend.core.ui.extended.AbstractExtendedTableToolbarView;
+import org.talend.core.ui.extended.ExtendedTableToolbarView;
 
 /**
  * DOC amaumont class global comment. Detailled comment <br/> TGU same purpose as TargetSchemaTableEditorView but uses
@@ -64,7 +64,7 @@ public class XPathNodeSchemaEditorView extends AbstractExtendedTableViewer<Schem
 
     private boolean executeSelectionEvent = true;
 
-    private AbstractExtendedTableToolbarView targetSchemaToolbarEditorView2;
+    private ExtendedTableToolbarView targetSchemaToolbarEditorView2;
 
     public static final String ID_COLUMN_NAME = "ID_COLUMN_NAME";
 
@@ -159,6 +159,7 @@ public class XPathNodeSchemaEditorView extends AbstractExtendedTableViewer<Schem
 
         // //////////////////////////////////////////////////////////////////////////////////////
 
+        // column for mouse selection
         TableViewerCreatorColumn column = new TableViewerCreatorColumn(tableViewerCreator);
         column.setTitle("");
         column.setDefaultInternalValue("");

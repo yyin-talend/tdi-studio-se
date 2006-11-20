@@ -62,7 +62,7 @@ import org.talend.core.model.metadata.builder.connection.ConnectionFactory;
 import org.talend.core.model.metadata.builder.connection.MetadataSchema;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.targetschema.editor.XPathNodeSchemaModel;
-import org.talend.core.ui.extended.AbstractExtendedTableToolbarView;
+import org.talend.core.ui.extended.ExtendedTableToolbarView;
 import org.talend.core.ui.extended.button.AddPushButtonForExtendedTable;
 import org.talend.core.utils.XmlArray;
 import org.talend.repository.i18n.Messages;
@@ -215,7 +215,7 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
         schemaModel = new XPathNodeSchemaModel(Messages.getString("FileStep3.metadataDescription"));
         tableEditorView = new XPathNodeSchemaEditorView(schemaModel, group, SWT.NONE);
 
-        new AbstractExtendedTableToolbarView(group, SWT.NONE, tableEditorView) {
+        new ExtendedTableToolbarView(group, SWT.NONE, tableEditorView) {
 
             @Override
             protected AddPushButtonForExtendedTable createAddPushButton() {
