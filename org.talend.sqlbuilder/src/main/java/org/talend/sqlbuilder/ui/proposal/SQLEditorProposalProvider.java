@@ -24,7 +24,6 @@ package org.talend.sqlbuilder.ui.proposal;
 import org.eclipse.jface.fieldassist.IContentProposal;
 import org.eclipse.jface.fieldassist.IContentProposalProvider;
 import org.talend.repository.model.RepositoryNode;
-import org.talend.sqlbuilder.sessiontree.model.SessionTreeNode;
 
 
 /**

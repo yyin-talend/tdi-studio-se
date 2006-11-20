@@ -48,30 +48,29 @@ public class SQLEditorAllProposal implements IContentProposal {
      */
     public SQLEditorAllProposal(String hasString, String allString, int position, String[] contents) {
         super();
-        this.position = position;
-        label = allString;
-        int index = allString.indexOf(".");
-        if (index != -1) {
-            label = allString.substring(index + 2, allString.length() - 1);
-            image = ImageUtil.getDescriptor("Images.TableIcon").createImage();
+        label = allString.replaceAll("'", "");
+        int index = label.indexOf(".");
+        int index2 = label.lastIndexOf(".");
+        String qualityName = label;
+        if (index > -1) {
+        	qualityName = label.substring(index + 1, label.length());
+        	if (index == index2) {
+        		label = label.substring(index + 1, label.length());
+                image = ImageUtil.getDescriptor("Images.TableIcon").createImage();
+        	} else {
+        		label = label.substring(index2 + 1, label.length());
+        		image = ImageUtil.getDescriptor("Images.ColumnIcon").createImage();
+        	}
+            
         }
-        this.position += label.substring(hasString.length()).length();
-//        if (contents[0] != null && !contents[0].equals("")) {
-//        	int conIndex = contents[0].lastIndexOf(" ");
-//        	if (conIndex != -1 && index != -1) {
-//        		String contentString1 = contents[0].substring(0, conIndex);
-//                String contentString2 = contents[0].substring(conIndex);
-//                contentString2 = " " + label;
-//                contents[0] = contentString1 + contentString2;
-//        	}
-//        	
-//        }
-        hasString = label.substring(0, hasString.length());
+        
+        this.position = position + qualityName.substring(hasString.length()).length();
+        hasString = qualityName.substring(0, hasString.length());
         contents[0] = contents[0].substring(0, contents[0].length() - hasString.length()) + hasString;
         content = contents[0];
-        
-        content += label.substring(hasString.length());
+        content += qualityName.substring(hasString.length());
         content += contents[1];
+        
         description = allString;
         
     }

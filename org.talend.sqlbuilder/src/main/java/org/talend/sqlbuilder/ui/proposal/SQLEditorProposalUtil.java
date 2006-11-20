@@ -23,15 +23,18 @@ package org.talend.sqlbuilder.ui.proposal;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.eclipse.jface.fieldassist.IContentProposal;
 import org.talend.commons.ui.swt.colorstyledtext.jedit.Mode;
 import org.talend.commons.ui.swt.colorstyledtext.jedit.Modes;
 import org.talend.repository.model.RepositoryNode;
-import org.talend.sqlbuilder.dbstructure.SessionTreeNodeUtils;
+import org.talend.sqlbuilder.SqlBuilderPlugin;
 import org.talend.sqlbuilder.repository.utility.SQLBuilderRepositoryNodeManager;
-import org.talend.sqlbuilder.sessiontree.model.SessionTreeNode;
 import org.talend.sqlbuilder.util.IConstants;
 import org.talend.sqlbuilder.util.QueryTokenizer;
 
@@ -55,6 +58,8 @@ public class SQLEditorProposalUtil {
 
     private String[] contents;
 
+    private Map<String, List<String>> tableAndColumns;
+    
     public SQLEditorProposalUtil(RepositoryNode session, String language) {
         super();
         contents = new String[2];
@@ -94,7 +99,7 @@ public class SQLEditorProposalUtil {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            SqlBuilderPlugin.log("Create Proposal Failure: ", e);
         }
         IContentProposal[] res = new IContentProposal[proposals.size()];
         res = proposals.toArray(res);
@@ -194,11 +199,23 @@ public class SQLEditorProposalUtil {
      * DOC dev Comment method "getAllProposalString".
      */
     private void getAllProposalString() {
-        List<String> tablenames = SQLBuilderRepositoryNodeManager.getTableNamesByRepositoryNode(session);
-        String[] allTablename = new String[tablenames.size()];
-        allTablename = (String[]) tablenames.toArray(allTablename);
-        Arrays.sort(allTablename);
-        for (String tablename : allTablename) {
+    	tableAndColumns = SQLBuilderRepositoryNodeManager.getAllNamesByRepositoryNode(session);
+    	
+        Set<String> alltablenames = tableAndColumns.keySet();
+        List<String> tcs = new ArrayList<String>();
+        for (String tableName : alltablenames) {
+        	List<String> columns = tableAndColumns.get(tableName);
+        	for (String string : columns) {
+				tcs.add(string);
+			}
+        	tcs.add(tableName);
+		}
+        
+        String[] allTablesAndColumns = new String[tcs.size()];
+        allTablesAndColumns = (String[]) tcs.toArray(allTablesAndColumns);
+        Arrays.sort(allTablesAndColumns);
+        
+        for (String tablename : allTablesAndColumns) {
             allString.add(tablename);
         }
         String[] allKeywords = getAllKeywords();
@@ -219,25 +236,63 @@ public class SQLEditorProposalUtil {
         if ((curSql[0] + curSql[1]).startsWith(querySql)) {
             String hasInput = "";
             int seqIndex = curSql[0].lastIndexOf(" ");
-            if (seqIndex != -1) {
-                hasInput = curSql[0].substring(seqIndex + 1);
+            int dotIndex = curSql[0].lastIndexOf(".");
+            List<String> list = new ArrayList<String>();
+            if (seqIndex > -1 && dotIndex > seqIndex) {
+            	String tableName = curSql[0].substring(seqIndex, dotIndex);
+        		List<String> columns = getColumnsByTableName(tableName);
+        		list.addAll(columns);
             } else {
-                hasInput = curSql[0];
+            	list.addAll(allString);
             }
-            if (allString != null && !allString.isEmpty()) {
-                for (String string : allString) {
-                    int index = string.indexOf(".");
-                    String tmp2 = "";
-                    if (index != -1) {
-                        tmp2 = string.substring(index + 2, string.length() - 1);
-                    } else {
-                        tmp2 = string;
-                    }
-                    if (tmp2.toLowerCase().startsWith(hasInput.toLowerCase())) {
-                        createAllSQLEditorProposal(hasInput, string);
-                    }
-                }
+            if (seqIndex > -1) {
+            	hasInput = curSql[0].substring(seqIndex + 1);
+            } else {
+            	hasInput = curSql[0];
             }
+            
+            createProposal(hasInput, list);
         }
     }
+
+	/**
+	 * DOC dev Comment method "createPropsa".
+	 * @param hasInput
+	 * @param list
+	 */
+	private void createProposal(String hasInput, List<String> list) {
+		if (list != null) {
+		    for (String string : list) {
+		        int index = string.indexOf(".");
+		        int index2 = string.lastIndexOf(".");
+		        String tmp2 = "";
+		        if (index > -1) {
+		            tmp2 = string.substring(index + 2, string.length() - 1).replaceAll("'", "");
+		            if (index2 > index) {
+		            	tmp2 = string.substring(index2 + 2, string.length() - 1).replaceAll("'", "");
+		            }
+		        } else {
+		            tmp2 = string;
+		        }
+		        if (tmp2.toLowerCase().startsWith(hasInput.toLowerCase())) {
+		        	proposals.add(new SQLEditorAllProposal(hasInput, string, position, contents));
+		        }
+		    }
+		}
+	}
+
+	/**
+	 * DOC dev Comment method "getColumnsByTableName".
+	 * @param tableName
+	 * @return
+	 */
+	private List<String> getColumnsByTableName(String tableName) {
+		Set<String> alltablenames = tableAndColumns.keySet();
+		Map<String, String> tables = new HashMap<String, String>();
+		for (String string : alltablenames) {
+			tables.put(string.substring(string.indexOf(".") + 2, string.length() - 1), string);
+		}
+		List<String> columns = tableAndColumns.get(tables.get(tableName.trim()));
+		return columns;
+	}
 }
