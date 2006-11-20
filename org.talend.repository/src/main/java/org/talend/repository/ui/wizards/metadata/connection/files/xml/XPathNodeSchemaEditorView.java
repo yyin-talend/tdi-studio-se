@@ -28,7 +28,6 @@ import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
 import org.talend.commons.ui.swt.extended.macrotable.AbstractExtendedTableViewer;
 import org.talend.commons.ui.swt.proposal.TextCellEditorWithProposal;
@@ -54,15 +53,7 @@ import org.talend.core.ui.extended.ExtendedTableToolbarView;
  */
 public class XPathNodeSchemaEditorView extends AbstractExtendedTableViewer<SchemaTarget> {
 
-    private Label nameLabel;
-
     private TableViewerCreator<SchemaTarget> tableViewerCreator;
-
-    private Composite composite;
-
-    private XPathNodeSchemaModel targetSchemaTableEditor;
-
-    private boolean executeSelectionEvent = true;
 
     private ExtendedTableToolbarView targetSchemaToolbarEditorView2;
 
@@ -109,18 +100,9 @@ public class XPathNodeSchemaEditorView extends AbstractExtendedTableViewer<Schem
     }
 
     
-    
-/* (non-Javadoc)
-     * @see org.talend.commons.ui.swt.extended.macrotable.AbstractExtendedTableViewer#createTable(org.eclipse.swt.widgets.Composite, int)
-     */
-    @Override
-    protected TableViewerCreator<SchemaTarget> createTable(Composite parentComposite, int styleChild) {
-        TableViewerCreator<SchemaTarget> newTableViewerCreator = super.createTable(parentComposite, styleChild);
-
-        return newTableViewerCreator;
-    }
-
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.commons.ui.swt.extended.macrotable.AbstractExtendedTableViewer#handleListenableListEvent(org.talend.commons.utils.data.list.ListenableListEvent)
      */
     @Override
@@ -129,6 +111,15 @@ public class XPathNodeSchemaEditorView extends AbstractExtendedTableViewer<Schem
         if (event.type == TYPE.REMOVED) {
             linker.updateBackground();
         }
+    }
+    
+    /* (non-Javadoc)
+     * @see org.talend.commons.ui.swt.extended.macrotable.AbstractExtendedTableViewer#setTableViewerCreatorOptions(org.talend.commons.ui.swt.tableviewer.TableViewerCreator)
+     */
+    @Override
+    protected void setTableViewerCreatorOptions(TableViewerCreator<SchemaTarget> newTableViewerCreator) {
+        super.setTableViewerCreatorOptions(newTableViewerCreator);
+        newTableViewerCreator.setFirstVisibleColumnIsSelection(true);
     }
 
     /*
@@ -190,7 +181,7 @@ public class XPathNodeSchemaEditorView extends AbstractExtendedTableViewer<Schem
                 if (state == CELL_EDITOR_STATE.EDITING) {
                     linker.onXPathValueChanged(previousValue, newValue, itemIndex);
                 }
-                
+
             }
 
             @Override
@@ -279,9 +270,9 @@ public class XPathNodeSchemaEditorView extends AbstractExtendedTableViewer<Schem
         return (XPathNodeSchemaModel) extendedControl;
     }
 
-    
     /**
      * Getter for xPathColumn.
+     * 
      * @return the xPathColumn
      */
     public TableViewerCreatorColumn getXPathColumn() {
@@ -290,11 +281,11 @@ public class XPathNodeSchemaEditorView extends AbstractExtendedTableViewer<Schem
 
     /**
      * DOC amaumont Comment method "setLinker".
+     * 
      * @param linker
      */
     public void setLinker(XmlToSchemaLinker linker) {
         this.linker = linker;
     }
 
-    
 }

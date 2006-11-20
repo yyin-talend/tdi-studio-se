@@ -78,8 +78,8 @@ public class LdifFileStep2Form extends AbstractLdifFileStepForm {
 
     private static final String EMPTY_VALUE = Messages.getString("FileStep2.empty");
 
-    private static final String[] STRING_NUMBERS_DATA = { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13",
-            "14", "15", "16", "17", "18", "19", "20" };
+    private static final String[] STRING_NUMBERS_DATA = { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15",
+            "16", "17", "18", "19", "20" };
 
     /**
      * Fields use to preview.
@@ -87,9 +87,9 @@ public class LdifFileStep2Form extends AbstractLdifFileStepForm {
     private LabelledCheckboxCombo rowsToSkipLimitCheckboxCombo;
 
     private Group previewGroup;
-    
+
     private List<String> itemTableName;
-    
+
     private Button previewButton;
 
     private Label previewInformationLabel;
@@ -149,28 +149,17 @@ public class LdifFileStep2Form extends AbstractLdifFileStepForm {
         attributeModel.registerDataList(itemTableName);
         tableEditorView = new AbstractExtendedTableViewer<String>(attributeModel, group, SWT.NONE) {
 
-            /* (non-Javadoc)
-             * @see org.talend.commons.ui.swt.extended.macrotable.AbstractExtendedTableViewer#createTable(org.eclipse.swt.widgets.Composite, int)
+            /*
+             * (non-Javadoc)
+             * 
+             * @see org.talend.commons.ui.swt.extended.macrotable.AbstractExtendedTableViewer#setTableViewerCreatorOptions(org.talend.commons.ui.swt.tableviewer.TableViewerCreator)
              */
             @Override
-            protected TableViewerCreator<String> createTable(Composite parentComposite, int styleChild) {
-                TableViewerCreator<String> newTableViewerCreator = new TableViewerCreator<String>(parentComposite);
-                newTableViewerCreator.setLayout(new RowLayout(SWT.HORIZONTAL));
-
-                newTableViewerCreator.setAllColumnsResizable(true);
-                newTableViewerCreator.setBorderVisible(true);
-                newTableViewerCreator.setLayoutMode(LAYOUT_MODE.CONTINUOUS);
+            protected void setTableViewerCreatorOptions(TableViewerCreator<String> newTableViewerCreator) {
+                super.setTableViewerCreatorOptions(newTableViewerCreator);
                 newTableViewerCreator.setFirstColumnMasked(false);
                 newTableViewerCreator.setCheckboxInFirstColumn(true);
-                newTableViewerCreator.setFirstVisibleColumnIsSelection(false);
-
-                final Table table = newTableViewerCreator.createTable(styleChild);
-                
-                table.setLayoutData(new GridData(GridData.FILL_BOTH));
-
-                return newTableViewerCreator;
             }
-
 
             @Override
             protected void createColumns(TableViewerCreator<String> tableViewerCreator, Table table) {
@@ -189,12 +178,14 @@ public class LdifFileStep2Form extends AbstractLdifFileStepForm {
                 column.setWeight(100);
 
             }
-            
+
         };
 
         new ExtendedTableToolbarView(group, SWT.NONE, tableEditorView) {
 
-            /* (non-Javadoc)
+            /*
+             * (non-Javadoc)
+             * 
              * @see org.talend.core.ui.extended.ExtendedTableToolbarView#createComponents(org.eclipse.swt.widgets.Composite)
              */
             @Override
@@ -202,7 +193,7 @@ public class LdifFileStep2Form extends AbstractLdifFileStepForm {
                 moveUpButton = createMoveUpPushButton();
                 moveDownButton = createMoveDownPushButton();
             }
-            
+
         };
 
     }
@@ -215,11 +206,11 @@ public class LdifFileStep2Form extends AbstractLdifFileStepForm {
     protected void populateLdifAttributes() {
 
         itemTableName = new ArrayList<String>();
-        
+
         String filename = new String(getConnection().getFilePath());
         Attributes entry = null;
         BufferedReader bufReader = null;
-        
+
         try {
 
             bufReader = new BufferedReader(new FileReader(filename), 1024);
@@ -229,29 +220,29 @@ public class LdifFileStep2Form extends AbstractLdifFileStepForm {
 
             int limit = 50;
             while ((entry = ldif.getNext()) != null) {
-                if(limit >= 0){
+                if (limit >= 0) {
                     try {
                         NamingEnumeration idsEnum = entry.getIDs();
                         while (idsEnum.hasMore()) {
-                             String attributeId= (String)idsEnum.next();
-                             if(! itemTableName.contains(attributeId)){
-                                 itemTableName.add(attributeId);
-                             }
+                            String attributeId = (String) idsEnum.next();
+                            if (!itemTableName.contains(attributeId)) {
+                                itemTableName.add(attributeId);
+                            }
                         }
-                    } catch(Exception e) {
-                        System.out.println("Pb entry read "+e);
+                    } catch (Exception e) {
+                        System.out.println("Pb entry read " + e);
                     }
                     limit--;
-                }else{
+                } else {
                     break;
                 }
             }
-            
+
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
-    
+
     /**
      * add field to Group Limit.
      * 
@@ -288,8 +279,7 @@ public class LdifFileStep2Form extends AbstractLdifFileStepForm {
     private void addGroupFileViewer(final Composite parent, final int width, int height) {
         // composite Delimited File Preview
         previewGroup = Form.createGroup(parent, 1, Messages.getString("FileStep2.groupPreview"), height);
-        Composite compositeDelimitedFilePreviewButton = Form.startNewDimensionnedGridLayout(previewGroup, 4, width,
-                HEIGHT_BUTTON_PIXEL);
+        Composite compositeDelimitedFilePreviewButton = Form.startNewDimensionnedGridLayout(previewGroup, 4, width, HEIGHT_BUTTON_PIXEL);
         height = height - HEIGHT_BUTTON_PIXEL - 15;
 
         // Delimited File Preview Info
@@ -402,7 +392,6 @@ public class LdifFileStep2Form extends AbstractLdifFileStepForm {
                 previewInformationLabel.setText("");
             }
 
-        
         } catch (CoreException e) {
             previewInformationLabel.setText("   " + Messages.getString("FileStep2.previewFailure"));
             new ErrorDialogWidthDetailArea(getShell(), PID, Messages.getString("FileStep2.previewFailure"), e.getMessage());
@@ -496,8 +485,7 @@ public class LdifFileStep2Form extends AbstractLdifFileStepForm {
             // if the checkbox is checked, check Numeric value
             if (labelledCheckboxCombo.getCheckbox().getSelection()) {
                 if (labelledCheckboxCombo.getText() == "") {
-                    updateStatus(IStatus.ERROR, labelledCheckboxCombo.getLabelText()
-                            + Messages.getString("FileStep2.mustBePrecised"));
+                    updateStatus(IStatus.ERROR, labelledCheckboxCombo.getLabelText() + Messages.getString("FileStep2.mustBePrecised"));
                     return false;
                 }
             }
@@ -537,7 +525,7 @@ public class LdifFileStep2Form extends AbstractLdifFileStepForm {
                 }
             });
         }
-        
+
         // Event checkBox action
         final Table table = tableEditorView.getTableViewerCreator().getTable();
         table.addSelectionListener(new SelectionAdapter() {
@@ -559,10 +547,9 @@ public class LdifFileStep2Form extends AbstractLdifFileStepForm {
                 }
             }
         });
-        
-        
+
     }
-   
+
     /*
      * (non-Javadoc)
      * 
@@ -577,7 +564,7 @@ public class LdifFileStep2Form extends AbstractLdifFileStepForm {
             // Refresh the preview width the adapted rowSeparator
             // If metadata exist, refreshMetadata
             if ((!"".equals(getConnection().getFilePath())) && (getConnection().getFilePath() != null)) {
-//                refreshPreview();
+                // refreshPreview();
             }
             if (isReadOnly() != readOnly) {
                 adaptFormToReadOnly();
