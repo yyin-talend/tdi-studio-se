@@ -24,6 +24,7 @@ package org.talend.sqlbuilder.repository.utility;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.talend.commons.exception.PersistenceException;
@@ -56,6 +57,7 @@ import org.talend.repository.model.RepositoryNode.EProperties;
 import org.talend.repository.ui.utils.ManagerConnection;
 import org.talend.sqlbuilder.SqlBuilderPlugin;
 import org.talend.sqlbuilder.dbstructure.RepositoryNodeType;
+import org.talend.sqlbuilder.dbstructure.SqlBuilderRepositoryObject;
 import org.talend.sqlbuilder.util.ConnectionParameters;
 
 /**
@@ -90,11 +92,20 @@ public class SQLBuilderRepositoryNodeManager {
 	 */
 	public RepositoryNode getRepositoryNodebyName(String name) {
 		for (RepositoryNode node : repositoryNodes) {
-			if (node.getObject().getLabel().equals(name)) {
+			if (((SqlBuilderRepositoryObject) node.getObject()).getRepositoryName().equals(name)) {
 				return node;
 			}
 		}
 		return null;
+	}
+	
+	public void removeRepositoryNodeExceptNodeByName(String repositoryNodeName) {
+		for (Iterator it = repositoryNodes.iterator(); it.hasNext();) {
+			RepositoryNode node = (RepositoryNode) it.next();
+			if (!((SqlBuilderRepositoryObject) node.getObject()).getRepositoryName().equals(repositoryNodeName)) {
+				it.remove();
+			}
+		}
 	}
 
 	/**
@@ -125,7 +136,7 @@ public class SQLBuilderRepositoryNodeManager {
 			connection.getTables().clear();
 			connection.getTables().addAll(newtables);
 		}
-
+		repositoryNodes.clear();
 	}
 
 	/**
@@ -166,7 +177,7 @@ public class SQLBuilderRepositoryNodeManager {
 	public List<String> getALLReposotoryNodeNames() {
 		List<String> names = new ArrayList<String>();
 		for (RepositoryNode node : repositoryNodes) {
-			names.add(node.getObject().getLabel());
+			names.add(((SqlBuilderRepositoryObject) node.getObject()).getRepositoryName());
 		}
 		return names;
 	}

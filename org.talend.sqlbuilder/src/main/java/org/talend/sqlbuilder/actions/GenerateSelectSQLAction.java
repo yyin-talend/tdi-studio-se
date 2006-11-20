@@ -167,7 +167,12 @@ public class GenerateSelectSQLAction extends SelectionProviderAction {
         if (fix != null && !fix.trim().equals("")) {
         	query.append(fix + tablePrefix + fix + "." + fix + table + fix);
         } else {
-        	query.append(tablePrefix + "." + table);
+        	if (tablePrefix.equals("")) {
+        		query.append(table);	
+        	} else {
+        		query.append(tablePrefix + "." + table);
+        	}
+        	
         }
         
 
@@ -202,7 +207,11 @@ public class GenerateSelectSQLAction extends SelectionProviderAction {
         if (fix != null && !fix.trim().equals("")) {
         	query.append(fix + tablePrefix  + fix + "." + fix + ((SqlBuilderRepositoryObject) node.getObject()).getSourceName() + fix);
         } else {
-        	query.append(tablePrefix  + "." + ((SqlBuilderRepositoryObject) node.getObject()).getSourceName());
+        	if (tablePrefix.equals("")) {
+        		query.append(((SqlBuilderRepositoryObject) node.getObject()).getSourceName());
+        	} else {
+        		query.append(tablePrefix  + "." + ((SqlBuilderRepositoryObject) node.getObject()).getSourceName());
+        	}
         }
 
         return query.toString();

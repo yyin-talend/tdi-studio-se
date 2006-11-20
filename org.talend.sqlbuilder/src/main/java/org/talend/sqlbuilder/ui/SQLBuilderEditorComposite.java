@@ -70,6 +70,7 @@ import org.talend.sqlbuilder.actions.OpenFileAction;
 import org.talend.sqlbuilder.actions.SQLEditorSessionSwitcher;
 import org.talend.sqlbuilder.actions.SaveFileAsAction;
 import org.talend.sqlbuilder.actions.SaveSQLAction;
+import org.talend.sqlbuilder.dbstructure.SqlBuilderRepositoryObject;
 import org.talend.sqlbuilder.repository.utility.SQLBuilderRepositoryNodeManager;
 import org.talend.sqlbuilder.sessiontree.model.SessionTreeNode;
 import org.talend.sqlbuilder.ui.editor.ISQLEditor;
@@ -478,7 +479,7 @@ public class SQLBuilderEditorComposite extends Composite implements ISQLEditor {
         if (repositoryNode == null) {
             return "";
         }
-        String repositoryName = repositoryNode.getObject().getLabel();
+        String repositoryName = ((SqlBuilderRepositoryObject) repositoryNode.getObject()).getRepositoryName();
         return repositoryName;
     }
 

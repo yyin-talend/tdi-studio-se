@@ -68,6 +68,7 @@ import org.talend.sqlbuilder.actions.ShowQueryPropertyAction;
 import org.talend.sqlbuilder.dbstructure.DBTreeProvider;
 import org.talend.sqlbuilder.dbstructure.RepositoryNodeType;
 import org.talend.sqlbuilder.repository.utility.SQLBuilderRepositoryNodeManager;
+import org.talend.sqlbuilder.util.ConnectionParameters;
 import org.talend.sqlbuilder.util.UIUtils;
 
 /**
@@ -203,8 +204,10 @@ public class DBStructureComposite extends Composite {
         public boolean select(Viewer viewer, Object parentElement, Object element) {
             if (isShowAllConnections) {
                 return true;
+            } else {
+            	removeOtherRepositoryNodeFromCache(builderDialog.getConnParameters());
             }
-
+            
             RepositoryNode node = (RepositoryNode) element;
             if (node.getProperties(EProperties.CONTENT_TYPE) == RepositoryNodeType.FOLDER) {
                 if (isExistChildWithRepositoryNodeName(node, builderDialog.getConnParameters().getRepositoryName())) {
@@ -228,7 +231,15 @@ public class DBStructureComposite extends Composite {
             return false;
         }
 
-        private boolean isExistChildWithRepositoryNodeName(RepositoryNode folderNode, String repositoryName) {
+		private void removeOtherRepositoryNodeFromCache(ConnectionParameters connectionParameters) {
+			if (connectionParameters.isRepository()) {
+				repositoryNodeManager.removeRepositoryNodeExceptNodeByName(connectionParameters.getRepositoryName());
+			} else {
+				repositoryNodeManager.removeRepositoryNodeExceptNodeByName("Built-In");
+			}
+		}
+
+		private boolean isExistChildWithRepositoryNodeName(RepositoryNode folderNode, String repositoryName) {
             List<RepositoryNode> nodes = folderNode.getChildren();
             for (RepositoryNode node : nodes) {
                 if (node.getProperties(EProperties.CONTENT_TYPE) == RepositoryNodeType.FOLDER) {
