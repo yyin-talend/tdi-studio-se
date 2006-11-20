@@ -45,8 +45,7 @@ public class OutputDataMapTableView extends DataMapTableView {
 
     protected ExpressionProposal proposal;
 
-    public OutputDataMapTableView(Composite parent, int style, AbstractDataMapTable abstractDataMapTable,
-            MapperManager mapperManager) {
+    public OutputDataMapTableView(Composite parent, int style, AbstractDataMapTable abstractDataMapTable, MapperManager mapperManager) {
         super(parent, style, abstractDataMapTable, mapperManager);
     }
 
@@ -114,8 +113,7 @@ public class OutputDataMapTableView extends DataMapTableView {
         });
         column.setModifiable(true);
         column.setDefaultInternalValue("");
-        createExpressionCellEditor(tableViewerCreatorForConstraints, column, new Zone[] { Zone.INPUTS, Zone.VARS },
-                true);
+        createExpressionCellEditor(tableViewerCreatorForConstraints, column, new Zone[] { Zone.INPUTS, Zone.VARS }, true);
         column.setWeight(100);
 
         List<ConstraintTableEntry> entries = ((OutputTable) getDataMapTable()).getConstraintEntries();

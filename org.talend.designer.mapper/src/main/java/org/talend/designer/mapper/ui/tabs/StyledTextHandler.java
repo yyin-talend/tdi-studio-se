@@ -231,8 +231,7 @@ public class StyledTextHandler {
         Color whiteColor = this.styledText.getDisplay().getSystemColor(SWT.COLOR_WHITE);
         this.styledText.setLineBackground(0, lineCount, whiteColor);
         this.styledText.redraw();
-        this.styledText.setLineBackground(countCR, 1, ColorProviderMapper
-                .getColor(ColorInfo.COLOR_HIGHLIGHTED_TEXT_ROW));
+        this.styledText.setLineBackground(countCR, 1, ColorProviderMapper.getColor(ColorInfo.COLOR_HIGHLIGHTED_TEXT_ROW));
         return countCR;
     }
 

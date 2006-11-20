@@ -201,9 +201,9 @@ public class LinkManager {
         Collections.sort(links, COMPARATOR);
     }
 
-    
     /**
      * Getter for currentNumberLinks.
+     * 
      * @return the currentNumberLinks
      */
     public int getCurrentNumberLinks() {

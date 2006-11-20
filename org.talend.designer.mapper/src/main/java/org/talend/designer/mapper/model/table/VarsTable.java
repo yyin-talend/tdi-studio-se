@@ -45,7 +45,7 @@ public class VarsTable extends AbstractDataMapTable {
     private static final PatternCompiler COMPILER = new Perl5Compiler();
 
     public static final String PREFIX_VARS_TABLE_NAME = "Var";
-    
+
     public static final String VALID_PATTERN_COLUMN_NAME = "^[a-zA-Z_][a-zA-Z_0-9]*$";
 
     public VarsTable(String name) {
@@ -62,8 +62,8 @@ public class VarsTable extends AbstractDataMapTable {
             List<ExternalMapperTableEntry> metadataTableEntries = externalMapperTable.getMetadataTableEntries();
             if (metadataTableEntries != null) {
                 for (ExternalMapperTableEntry externalMapperTableEntry : metadataTableEntries) {
-                    IColumnEntry dataMapTableEntry = new VarTableEntry(this, externalMapperTableEntry.getName(),
-                            externalMapperTableEntry.getExpression());
+                    IColumnEntry dataMapTableEntry = new VarTableEntry(this, externalMapperTableEntry.getName(), externalMapperTableEntry
+                            .getExpression());
                     addColumnEntry(dataMapTableEntry);
                 }
             }

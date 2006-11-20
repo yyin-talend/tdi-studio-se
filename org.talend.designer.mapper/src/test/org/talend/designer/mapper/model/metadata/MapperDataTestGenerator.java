@@ -251,8 +251,7 @@ public class MapperDataTestGenerator {
 
         externalData.setInputTables(generateExternalTables(TableType.INPUT, new TableType[] { TableType.INPUT }, 5, 5));
         externalData.setVarsTables(generateExternalTables(TableType.VARS, new TableType[] { TableType.INPUT }, 20));
-        externalData.setOutputTables(generateExternalTables(TableType.OUTPUT,
-                new TableType[] { TableType.INPUT, TableType.VARS }, 20));
+        externalData.setOutputTables(generateExternalTables(TableType.OUTPUT, new TableType[] { TableType.INPUT, TableType.VARS }, 20));
 
         return externalData;
     }
@@ -261,8 +260,8 @@ public class MapperDataTestGenerator {
         return generateExternalTables(tableType, tableTypes, nExpressionsMax, null);
     }
 
-    private List<ExternalMapperTable> generateExternalTables(TableType tableType, TableType[] tableTypes,
-            int nFieldsMaxInExpression, Integer nExpressionsMax) {
+    private List<ExternalMapperTable> generateExternalTables(TableType tableType, TableType[] tableTypes, int nFieldsMaxInExpression,
+            Integer nExpressionsMax) {
         List<ExternalMapperTable> tables = new ArrayList<ExternalMapperTable>();
         if (this.useConnectionsToGenerateExternalTables && tableType == TableType.INPUT) {
 
@@ -282,8 +281,8 @@ public class MapperDataTestGenerator {
                     mapperTableEntry.setName(column.getLabel());
                     if (!fixedData && rand.nextBoolean()) {
                         if (nExpressionsMax == null || nExpressions <= nExpressionsMax) {
-                            mapperTableEntry.setExpression(generateExpression(tableTypes, N_FIELDS, rand
-                                    .nextInt(nFieldsMaxInExpression), nExpressions));
+                            mapperTableEntry.setExpression(generateExpression(tableTypes, N_FIELDS, rand.nextInt(nFieldsMaxInExpression),
+                                    nExpressions));
                             nExpressions++;
                         }
                     }
@@ -316,8 +315,7 @@ public class MapperDataTestGenerator {
                         baseColumnName = COLUMN_NAME;
                     }
                     mapperTableEntry.setName(baseColumnName + j);
-                    mapperTableEntry.setExpression(generateExpression(tableTypes, N_FIELDS, rand.nextInt(nFieldsMaxInExpression),
-                            j));
+                    mapperTableEntry.setExpression(generateExpression(tableTypes, N_FIELDS, rand.nextInt(nFieldsMaxInExpression), j));
                     tableEntries.add(mapperTableEntry);
                 }
 
@@ -346,8 +344,7 @@ public class MapperDataTestGenerator {
                 // for (int iField = 0; iField < tables2.length; iField++) {
                 for (int i = 0; i < tables2.length; i++) {
                     TableType tableType = tables2[i];
-                    expression += gen.getTableColumnVariable(tableType.getBaseTableName() + (iTable + 1), COLUMN_NAME
-                            + (currentIndex));
+                    expression += gen.getTableColumnVariable(tableType.getBaseTableName() + (iTable + 1), COLUMN_NAME + (currentIndex));
                 }
                 // }
             }
@@ -360,10 +357,9 @@ public class MapperDataTestGenerator {
                                 + (tableType != TableType.VARS ? (rand.nextInt(tableType.getNTables()) + 1) : ""), FIELDS[rand
                                 .nextInt(FIELDS.length)]
                                 + (rand.nextInt(nFields) + 1))
-                        + (rand.nextInt(4) == 0 ? (rand.nextBoolean() ? " + " : " - ") + "$array_var" + rand.nextInt(10)
-                                + "[test_var]" : "")
-                        + (rand.nextInt(4) == 0 ? (rand.nextBoolean() ? " + " : " - ") + "$hash_var" + rand.nextInt(10)
-                                + "{test_var}" : "")
+                        + (rand.nextInt(4) == 0 ? (rand.nextBoolean() ? " + " : " - ") + "$array_var" + rand.nextInt(10) + "[test_var]"
+                                : "")
+                        + (rand.nextInt(4) == 0 ? (rand.nextBoolean() ? " + " : " - ") + "$hash_var" + rand.nextInt(10) + "{test_var}" : "")
                         + (rand.nextInt(4) == 0 ? (rand.nextBoolean() ? " + " : " - ") + "$var" + rand.nextInt(10) : "");
             }
         }
@@ -453,8 +449,7 @@ public class MapperDataTestGenerator {
 
         mapperTableEntry = new ExternalMapperTableEntry();
         mapperTableEntry.setName("id_page");
-        mapperTableEntry.setExpression(gen.getTableColumnVariable("page", "id_page") + " . "
-                + gen.getTableColumnVariable("book", "name"));
+        mapperTableEntry.setExpression(gen.getTableColumnVariable("page", "id_page") + " . " + gen.getTableColumnVariable("book", "name"));
         tableEntries.add(mapperTableEntry);
 
         mapperTable.setMetadataTableEntries(tableEntries);
@@ -1110,7 +1105,7 @@ public class MapperDataTestGenerator {
 
         public void setReadOnly(boolean readOnly) {
             // TODO Auto-generated method stub
-            
+
         }
 
     };
@@ -1334,7 +1329,7 @@ public class MapperDataTestGenerator {
 
         public void setReadOnly(boolean readOnly) {
             // TODO Auto-generated method stub
-            
+
         }
 
     }

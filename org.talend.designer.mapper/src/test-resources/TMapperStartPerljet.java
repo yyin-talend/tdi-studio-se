@@ -54,8 +54,7 @@ public class TMapperStartPerljet {
             data = (ExternalMapperData) node.getExternalData();
         } else {
             org.talend.designer.mapper.MapperMain.setStandAloneMode(true);
-            MapperDataTestGenerator testGenerator = new MapperDataTestGenerator(LanguageProvider.getCurrentLanguage(),
-                    false);
+            MapperDataTestGenerator testGenerator = new MapperDataTestGenerator(LanguageProvider.getCurrentLanguage(), false);
             connections = testGenerator.getConnectionList();
             data = (ExternalMapperData) testGenerator.getExternalData();
         }
@@ -92,8 +91,7 @@ public class TMapperStartPerljet {
             int lstSize = tableEntries.size();
             for (int i = 0; i < lstSize; i++) {
                 ExternalMapperTableEntry tableEntry = (ExternalMapperTableEntry) tableEntries.get(i);
-                sb.append(cr + gm.indent(indent) + "use constant " + tableName + "__" + tableEntry.getName() + " => "
-                        + i + ";");
+                sb.append(cr + gm.indent(indent) + "use constant " + tableName + "__" + tableEntry.getName() + " => " + i + ";");
             }
         }
 

@@ -57,8 +57,8 @@ public class PerlLanguage extends AbstractLanguage {
 
     private static final String SUFFIX_FIELD_NAME_REGEXP = DOUBLE_ESCAPE + SUFFIX_FIELD_NAME;
 
-    private static final String LOCATION_PATTERN = PREFIX_TABLE_NAME_REGEXP + "\\s*(\\w+)\\s*"
-            + PREFIX_FIELD_NAME_REGEXP + "\\s*(\\w+)\\s*" + SUFFIX_FIELD_NAME_REGEXP;
+    private static final String LOCATION_PATTERN = PREFIX_TABLE_NAME_REGEXP + "\\s*(\\w+)\\s*" + PREFIX_FIELD_NAME_REGEXP
+            + "\\s*(\\w+)\\s*" + SUFFIX_FIELD_NAME_REGEXP;
 
     /**
      * {0} and {1} must be replaced respectively by the table name and the column name.
@@ -70,8 +70,7 @@ public class PerlLanguage extends AbstractLanguage {
      * {0} and {1} must be replaced respectively by the table name and the column name.
      */
     private static final String SUBST_PATTERN_FOR_REPLACE_LOCATION = PREFIX_TABLE_NAME_REGEXP + "(\\s*){0}(\\s*)"
-            + SUFFIX_TABLE_NAME_REGEXP + "(\\s*)" + PREFIX_FIELD_NAME_REGEXP + "(\\s*){1}(\\s*)"
-            + SUFFIX_FIELD_NAME_REGEXP;
+            + SUFFIX_TABLE_NAME_REGEXP + "(\\s*)" + PREFIX_FIELD_NAME_REGEXP + "(\\s*){1}(\\s*)" + SUFFIX_FIELD_NAME_REGEXP;
 
     /**
      * {0} and {1} must be replaced respectively by the table name and the column name.
@@ -81,14 +80,13 @@ public class PerlLanguage extends AbstractLanguage {
     /**
      * {0} and {1} must be replaced respectively by the table name and the column name.
      */
-    private static final String TEMPLATE_TABLE_COLUMN_VARIABLE = TEMPLATE_TABLE_VARIABLE + PREFIX_FIELD_NAME + "{1}"
-            + SUFFIX_FIELD_NAME;
+    private static final String TEMPLATE_TABLE_COLUMN_VARIABLE = TEMPLATE_TABLE_VARIABLE + PREFIX_FIELD_NAME + "{1}" + SUFFIX_FIELD_NAME;
 
     /**
      * {0} and {1} must be replaced respectively by the table name and the column name.
      */
-    private static final String TEMPLATE_GENERATED_CODE_TABLE_COLUMN_VARIABLE = PREFIX_TABLE_NAME + "{0}"
-            + PREFIX_FIELD_NAME + "{0}__{1}" + SUFFIX_FIELD_NAME;
+    private static final String TEMPLATE_GENERATED_CODE_TABLE_COLUMN_VARIABLE = PREFIX_TABLE_NAME + "{0}" + PREFIX_FIELD_NAME + "{0}__{1}"
+            + SUFFIX_FIELD_NAME;
 
     /**
      * {0} and {1} must be replaced respectively by the table name and the column name.

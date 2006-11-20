@@ -97,13 +97,12 @@ public class GenerationManager {
     }
 
     public String getTableColumnVariable(String tableName, String columnName) {
-        return StringHelper.replacePrms(this.language.getTemplateTableColumnVariable(), new Object[] { tableName,
-                columnName });
+        return StringHelper.replacePrms(this.language.getTemplateTableColumnVariable(), new Object[] { tableName, columnName });
     }
 
     public String getGeneratedCodeTableColumnVariable(String tableName, String columnName) {
-        return StringHelper.replacePrms(this.language.getTemplateGeneratedCodeTableColumnVariable(), new Object[] {
-                tableName, columnName });
+        return StringHelper
+                .replacePrms(this.language.getTemplateGeneratedCodeTableColumnVariable(), new Object[] { tableName, columnName });
     }
 
     public String getTableColumnVariable(TableEntryLocation location) {
@@ -129,8 +128,8 @@ public class GenerationManager {
      * @param expressionParser
      * @return
      */
-    public String prefixEntryLocationsForOutputExpression(String outputExpression,
-            DataMapExpressionParser expressionParser, TableType[] possibleSources) {
+    public String prefixEntryLocationsForOutputExpression(String outputExpression, DataMapExpressionParser expressionParser,
+            TableType[] possibleSources) {
         TableEntryLocation[] entryLocations = expressionParser.parseTableEntryLocations(outputExpression);
         ArrayList<TableEntryLocation> listCoupleForAddTablePrefix = new ArrayList<TableEntryLocation>();
         boolean possibleSourceInputs = false;
@@ -146,15 +145,14 @@ public class GenerationManager {
         }
 
         for (TableEntryLocation location : entryLocations) {
-            if (possibleSourceInputs && isInputTable(location.tableName) || possibleSourceVars
-                    && isVarsTable(location.tableName)) {
+            if (possibleSourceInputs && isInputTable(location.tableName) || possibleSourceVars && isVarsTable(location.tableName)) {
                 listCoupleForAddTablePrefix.add(location);
             }
         }
         String outputExpressionToWrite = outputExpression;
         if (listCoupleForAddTablePrefix.size() > 0) {
-            outputExpressionToWrite = expressionParser.addTablePrefixToColumnName(outputExpression,
-                    listCoupleForAddTablePrefix.toArray(new TableEntryLocation[0]));
+            outputExpressionToWrite = expressionParser.addTablePrefixToColumnName(outputExpression, listCoupleForAddTablePrefix
+                    .toArray(new TableEntryLocation[0]));
 
         }
         return outputExpressionToWrite;
@@ -169,8 +167,7 @@ public class GenerationManager {
      * @param expressionParser
      * @return
      */
-    public String buildConditions(List<ExternalMapperTableEntry> constraintTableEntries,
-            DataMapExpressionParser expressionParser) {
+    public String buildConditions(List<ExternalMapperTableEntry> constraintTableEntries, DataMapExpressionParser expressionParser) {
         int lstSize = constraintTableEntries.size();
         StringBuilder stringBuilder = new StringBuilder();
         String and = null;
@@ -183,8 +180,8 @@ public class GenerationManager {
             if (and != null && constraintExpression.trim().length() > 0) {
                 stringBuilder.append(and);
             }
-            String constraintExpressionToWrite = prefixEntryLocationsForOutputExpression(constraintExpression,
-                    expressionParser, new TableType[] { TableType.INPUT, TableType.VARS });
+            String constraintExpressionToWrite = prefixEntryLocationsForOutputExpression(constraintExpression, expressionParser,
+                    new TableType[] { TableType.INPUT, TableType.VARS });
             stringBuilder.append(constraintExpressionToWrite);
             if (and == null) {
                 and = language.getAndCondition();

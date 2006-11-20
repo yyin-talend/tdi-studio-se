@@ -159,8 +159,7 @@ public final class DraggingInfosPopup {
                 setVisible(isVisible);
                 // System.out.println("Adjust setVisible");
             } else {
-                mapperShell.redraw(boundsToRedraw.x, boundsToRedraw.y, boundsToRedraw.width, boundsToRedraw.height,
-                        false);
+                mapperShell.redraw(boundsToRedraw.x, boundsToRedraw.y, boundsToRedraw.width, boundsToRedraw.height, false);
                 // System.out.println("Adjust redraw");
             }
         }
@@ -248,8 +247,8 @@ public final class DraggingInfosPopup {
             return mainComposite.computeSize(SWT.DEFAULT, SWT.DEFAULT);
         }
 
-        public void setLabelsVisible(boolean boolLabelWriteMode, boolean boolLabelMappingMode,
-                boolean boolLabelInsertionEntryMode, boolean boolDropInvalid) {
+        public void setLabelsVisible(boolean boolLabelWriteMode, boolean boolLabelMappingMode, boolean boolLabelInsertionEntryMode,
+                boolean boolDropInvalid) {
             // System.out.println("setLabelsVisible");
             ((RowData) labelWriteMode.getLayoutData()).exclude = !boolLabelWriteMode;
             ((RowData) labelMappingMode.getLayoutData()).exclude = !boolLabelMappingMode;
@@ -342,8 +341,7 @@ public final class DraggingInfosPopup {
     public void setMapOneToOneMode(boolean isMapOneToOne, boolean mapOneToOneAuthorized) {
         String mode = null;
         if (isMapOneToOne && mapOneToOneAuthorized) {
-            mode = " > Each source entry " + (this.outputToOutputMode ? "expression " : "")
-                    + "to each target expression";
+            mode = " > Each source entry " + (this.outputToOutputMode ? "expression " : "") + "to each target expression";
             this.mapOneToOne = isMapOneToOne;
         } else {
             mode = " > All source entries "

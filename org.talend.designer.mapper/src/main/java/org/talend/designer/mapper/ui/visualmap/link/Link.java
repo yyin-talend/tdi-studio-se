@@ -59,8 +59,7 @@ public class Link implements IMapperLink {
 
     protected int widthTable2;
 
-    public Link(PointLinkDescriptor pointDescriptor1, PointLinkDescriptor pointDescriptor2,
-            MapperManager mapperManager) {
+    public Link(PointLinkDescriptor pointDescriptor1, PointLinkDescriptor pointDescriptor2, MapperManager mapperManager) {
         super();
         this.pointLinkDescriptor1 = pointDescriptor1;
         this.pointLinkDescriptor2 = pointDescriptor2;
@@ -73,14 +72,13 @@ public class Link implements IMapperLink {
     public void calculate() {
         point1 = this.uiManager.getTableEntryPosition(pointLinkDescriptor1.getTableEntry(), true);
         point2 = this.uiManager.getTableEntryPosition(pointLinkDescriptor2.getTableEntry(), true);
-        DataMapTableView viewTable1 = this.mapperManager.retrieveDataMapTableView(this.mapperManager
-                .retrieveTable(pointLinkDescriptor1.getTableEntry()));
-        DataMapTableView viewTable2 = this.mapperManager.retrieveDataMapTableView(this.mapperManager
-                .retrieveTable(pointLinkDescriptor2.getTableEntry()));
+        DataMapTableView viewTable1 = this.mapperManager.retrieveDataMapTableView(this.mapperManager.retrieveTable(pointLinkDescriptor1
+                .getTableEntry()));
+        DataMapTableView viewTable2 = this.mapperManager.retrieveDataMapTableView(this.mapperManager.retrieveTable(pointLinkDescriptor2
+                .getTableEntry()));
         widthTable1 = viewTable1.getBounds().width + 2 * viewTable1.getBorderWidth();
         widthTable2 = viewTable2.getBounds().width + 2 * viewTable2.getBorderWidth();
     }
-
 
     public void draw(GC gc, Rectangle boundsOfDrawing) {
         StyleLinkFactory drawableLinkFactory = mapperManager.getUiManager().getStyleLinkFactory();
@@ -109,11 +107,10 @@ public class Link implements IMapperLink {
         drawableLink.setPoint2(new Point(point2xForTraceLink, point2yOffset));
         drawableLink.setBoundsOfCalculate(boundsOfDrawing);
 
-        Rectangle boundsOfSolidLine = new Rectangle(boundsOfDrawing.x, boundsOfDrawing.y, boundsOfDrawing.width,
-                boundsOfDrawing.height);
+        Rectangle boundsOfSolidLine = new Rectangle(boundsOfDrawing.x, boundsOfDrawing.y, boundsOfDrawing.width, boundsOfDrawing.height);
         boundsOfSolidLine.y = boundsOfDrawing.y + MapperUI.OFFSET_VISIBLES_POINTS;
         boundsOfSolidLine.height = boundsOfDrawing.height - 2 * MapperUI.OFFSET_VISIBLES_POINTS;
-        
+
         drawableLink.getStyle().apply(gc);
 
         if (!boundsOfSolidLine.contains(new Point(point1xForTraceLink, point1yOffset))
@@ -127,100 +124,97 @@ public class Link implements IMapperLink {
             // System.out.println("SWT.LINE_SOLID");
         }
 
-        
         drawableLink.draw(gc);
     }
 
-    
     /**
      * Getter for linkState.
+     * 
      * @return the linkState
      */
     public LinkState getState() {
         return this.linkState;
     }
 
-    
     /**
      * Sets the linkState.
+     * 
      * @param state the linkState to set
      */
     public void setState(LinkState state) {
         this.linkState = state;
     }
 
-    
     /**
      * Getter for point1.
+     * 
      * @return the point1
      */
     public Point getPoint1() {
         return this.point1;
     }
 
-    
     /**
      * Sets the point1.
+     * 
      * @param point1 the point1 to set
      */
     public void setPoint1(Point point1) {
         this.point1 = point1;
     }
 
-    
     /**
      * Getter for point2.
+     * 
      * @return the point2
      */
     public Point getPoint2() {
         return this.point2;
     }
 
-    
     /**
      * Sets the point2.
+     * 
      * @param point2 the point2 to set
      */
     public void setPoint2(Point point2) {
         this.point2 = point2;
     }
 
-    
     /**
      * Getter for pointDescriptor1.
+     * 
      * @return the pointDescriptor1
      */
     public PointLinkDescriptor getPointLinkDescriptor1() {
         return this.pointLinkDescriptor1;
     }
 
-    
     /**
      * Sets the pointDescriptor1.
+     * 
      * @param pointDescriptor1 the pointDescriptor1 to set
      */
     public void setPointLinkDescriptor1(PointLinkDescriptor pointDescriptor1) {
         this.pointLinkDescriptor1 = pointDescriptor1;
     }
 
-    
     /**
      * Getter for pointDescriptor2.
+     * 
      * @return the pointDescriptor2
      */
     public PointLinkDescriptor getPointLinkDescriptor2() {
         return this.pointLinkDescriptor2;
     }
 
-    
     /**
      * Sets the pointDescriptor2.
+     * 
      * @param pointDescriptor2 the pointDescriptor2 to set
      */
     public void setPointLinkDescriptor2(PointLinkDescriptor pointDescriptor2) {
         this.pointLinkDescriptor2 = pointDescriptor2;
     }
 
-
 }
-

@@ -77,8 +77,7 @@ public class DragNDrop {
      * @param canBeSourceOfDragging
      * @param canBeTargetOfDragging
      */
-    public DragNDrop(MapperManager mapperManager, Table draggedTable, boolean canBeSourceOfDragging,
-            boolean canBeTargetOfDragging) {
+    public DragNDrop(MapperManager mapperManager, Table draggedTable, boolean canBeSourceOfDragging, boolean canBeTargetOfDragging) {
         super();
         this.mapperManager = mapperManager;
         this.draggableTable = draggedTable;
@@ -115,7 +114,7 @@ public class DragNDrop {
         }
 
         public void dragStart(DragSourceEvent event) {
-//             System.out.println("\n>>dragStart");
+            // System.out.println("\n>>dragStart");
             // System.out.println(event);
             TableItem[] items = draggableTable.getSelection();
             if (items.length == 0) {
@@ -128,8 +127,7 @@ public class DragNDrop {
                 if (dataMapTableViewSource != null) {
                     DraggedData draggedData = new DraggedData();
 
-                    ArrayList<DataMapTableView> list = new ArrayList<DataMapTableView>(mapperManager
-                            .getVarsTablesView());
+                    ArrayList<DataMapTableView> list = new ArrayList<DataMapTableView>(mapperManager.getVarsTablesView());
                     list.addAll(mapperManager.getInputsTablesView());
                     list.addAll(mapperManager.getOutputsTablesView());
 
@@ -140,8 +138,8 @@ public class DragNDrop {
                             TableItem item = tableItems[i];
                             ITableEntry dataMapTableEntry = (ITableEntry) item.getData();
                             if (dataMapTableEntry instanceof AbstractInOutTableEntry) {
-                                draggedData.addEntry(dataMapTableEntry, ((AbstractInOutTableEntry) dataMapTableEntry)
-                                        .getMetadataColumn(), dataMapTableView.getZone());
+                                draggedData.addEntry(dataMapTableEntry, ((AbstractInOutTableEntry) dataMapTableEntry).getMetadataColumn(),
+                                        dataMapTableView.getZone());
                             } else {
                                 draggedData.addEntry(dataMapTableEntry, null, dataMapTableView.getZone());
                             }
@@ -197,7 +195,5 @@ public class DragNDrop {
         dropTarget.setTransfer(new Transfer[] { TableEntriesTransfer.getInstance() });
         dropTarget.addDropListener(targetListener);
     }
-
-
 
 }

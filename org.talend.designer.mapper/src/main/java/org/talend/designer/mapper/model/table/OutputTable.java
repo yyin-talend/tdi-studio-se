@@ -52,8 +52,7 @@ public class OutputTable extends AbstractInOutTable {
     private void initFromExternalData(ExternalMapperTable externalMapperTable) {
         if (externalMapperTable != null) {
             this.reject = externalMapperTable.isReject();
-            List<ExternalMapperTableEntry> externalConstraintTableEntries = externalMapperTable
-                    .getConstraintTableEntries();
+            List<ExternalMapperTableEntry> externalConstraintTableEntries = externalMapperTable.getConstraintTableEntries();
             if (externalConstraintTableEntries != null) {
                 for (ExternalMapperTableEntry entry : externalConstraintTableEntries) {
                     addConstraintEntry(new ConstraintTableEntry(this, entry.getName(), entry.getExpression()));

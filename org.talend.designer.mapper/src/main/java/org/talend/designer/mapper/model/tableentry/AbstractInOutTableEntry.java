@@ -34,8 +34,7 @@ public class AbstractInOutTableEntry extends TableEntry implements IColumnEntry 
 
     private IMetadataColumn metadataColumn;
 
-    public AbstractInOutTableEntry(AbstractDataMapTable abstractDataMapTable, IMetadataColumn metadataColumn,
-            String expression) {
+    public AbstractInOutTableEntry(AbstractDataMapTable abstractDataMapTable, IMetadataColumn metadataColumn, String expression) {
         super(abstractDataMapTable, expression);
         this.metadataColumn = metadataColumn;
     }
