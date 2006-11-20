@@ -7,7 +7,7 @@
 		org.talend.designer.codegen.config.CodeGeneratorArgument
 		java.util.List
 	"
-	class="RunProcessStart"
+	class="RunJobStart"
 %>
 
 <%

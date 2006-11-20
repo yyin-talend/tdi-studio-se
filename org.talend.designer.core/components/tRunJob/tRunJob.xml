@@ -5,7 +5,7 @@
        SERIAL=""
       VERSION="0.101"
        STATUS="ALPHA"
-         ICON32="tRunProcess.png"
+         ICON="tRunJob32.ico"
 COMPATIBILITY="ALL"
        AUTHOR="Talend"
  RELEASE_DATE="20050320A"
@@ -45,7 +45,8 @@ COMPATIBILITY="ALL"
 
    <CODEGENERATION>
      <TEMPLATES>
-       <TEMPLATE MULTIPLE_METHODS="true"/>
+       <TEMPLATE NAME="perl" MULTIPLE_METHODS="true"/>
+       <TEMPLATE NAME="java" MULTIPLE_METHODS="true"/>
      </TEMPLATES>
    </CODEGENERATION>
 
