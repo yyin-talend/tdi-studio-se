@@ -1,11 +1,11 @@
-<!-- $Id: tLDIFOut.xml 291 2006-11-01 07:34:12Z nrousseau $ -->
+<!-- $Id: tFileOutputLDIF.xml 291 2006-11-01 07:34:12Z nrousseau $ -->
 <COMPONENT>
   <HEADER
     PLATEFORM="ALL"
     SERIAL=""
     VERSION="0.101"
     STATUS="ALPHA"
-    ICON32="tLDIFOut.png"
+    ICON32="tFileOutputLDIF.png"
     COMPATIBILITY="ALL"
     AUTHOR="Talend"
     RELEASE_DATE="20050320A"
