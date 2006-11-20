@@ -87,6 +87,9 @@ public class GefEditorLabelProvider extends LabelProvider {
             if (object instanceof NodeReturnsTreeEditPart) {
                 node = lastNode;
             } else {
+                if (object instanceof ProcessPart) {
+                    return ImageProvider.getImage(EImage.PROCESS_ICON);
+                }
                 if (object instanceof ConnectionPart) {
                     return ImageProvider.getImage(EImage.RIGHT_ICON);
                 }
@@ -132,7 +135,7 @@ public class GefEditorLabelProvider extends LabelProvider {
                 return process.getName();
             } else if (object instanceof ProcessPart) {
                 Process process = (Process) ((ProcessPart) object).getModel();
-                return process.getName();
+                return process.getLabel();
             } else if (object instanceof ProcessTreeEditPart) {
                 Process process = (Process) ((ProcessTreeEditPart) object).getModel();
                 return process.getName();
