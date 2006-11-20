@@ -577,12 +577,8 @@ public class SQLBuilderRepositoryNodeManager {
 			for (MetadataTable emf : metaFromEMF) {
 				if (db.getSourceName().equals(emf.getSourceName())) {
 					flag = false;
-					if (emf.getLabel().equals("")
-							|| emf.getLabel().equals(
+					if (!emf.getLabel().equals("")	&& !emf.getLabel().equals(
 									db.getSourceName().replaceAll("_", "-"))) {
-
-						emf.setDivergency(false);
-					} else {
 						emf.setDivergency(true);
 					}
 				}
@@ -628,6 +624,7 @@ public class SQLBuilderRepositoryNodeManager {
 			if (flag) {
 				emf.setOriginalField("");
 				emf.setDivergency(true);
+				emf.getTable().setDivergency(true);
 			}
 		}
 		while (!columnsFromDB.isEmpty()) {
@@ -640,6 +637,9 @@ public class SQLBuilderRepositoryNodeManager {
 						boolean is = !isEquivalent(db, emf);
 						emf.setDivergency(is);
 						emf.setSynchronised(is);
+						if (is) {
+							emf.getTable().setDivergency(is);
+						}
 					}
 				}
 			}
