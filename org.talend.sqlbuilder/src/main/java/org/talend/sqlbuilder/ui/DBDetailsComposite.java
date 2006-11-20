@@ -65,7 +65,7 @@ public class DBDetailsComposite extends Composite {
         panel.setLayout(new FillLayout());
 
         if (node == null) {
-            Label label = new Label(panel, SWT.FILL);
+            Label label = new Label(panel, SWT.FILL|SWT.WRAP);
             if (message == null) {
                 // add default message
                 message = Messages.getString("DatabaseDetailView.NoSelection");
