@@ -172,7 +172,7 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog {
      */
     public SQLBuilderDialog(Shell parentShell) {
         super(parentShell);
-        setShellStyle(SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL | SWT.RESIZE | SWT.RESIZE | SWT.MIN | SWT.MAX);
+        setShellStyle(SWT.DIALOG_TRIM |SWT.RESIZE | SWT.RESIZE | SWT.MIN | SWT.MAX);
 
     }
 
@@ -257,7 +257,7 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog {
      */
     private void createSQLEditor(SashForm sashFormStructureAndEditor) {
 
-        editorComposite = new SQLBuilderTabComposite(sashFormStructureAndEditor, SWT.BORDER,this);
+        editorComposite = new SQLBuilderTabComposite(sashFormStructureAndEditor, SWT.BORDER, this);
     }
 
     /**
