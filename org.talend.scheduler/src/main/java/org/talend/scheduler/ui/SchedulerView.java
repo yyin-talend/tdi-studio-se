@@ -61,7 +61,7 @@ import org.eclipse.ui.actions.SelectionProviderAction;
 import org.eclipse.ui.part.ViewPart;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator.LINE_SELECTION;
-import org.talend.commons.ui.swt.tableviewer.TableViewerCreator.SHOW_SELECTION;
+import org.talend.commons.ui.swt.tableviewer.TableViewerCreator.SHOW_ROW_SELECTION;
 import org.talend.core.ui.EImage;
 import org.talend.core.ui.ImageProvider;
 import org.talend.scheduler.SchedulerPlugin;
@@ -124,14 +124,6 @@ public class SchedulerView extends ViewPart {
      */
     public void createPartControl(Composite parent) {
         tableViewerCreator = new TableViewerCreator(parent);
-        tableViewerCreator.setLineSelection(LINE_SELECTION.MULTI);
-        tableViewerCreator.setShowSelection(SHOW_SELECTION.FULL);
-        tableViewerCreator.setHorizontalScroll(true);
-        tableViewerCreator.setVerticalScroll(true);
-        tableViewerCreator.setHeaderVisible(true);
-        tableViewerCreator.setLinesVisible(true);
-        tableViewerCreator.setHorizontalScroll(true);
-        tableViewerCreator.setVerticalScroll(true);
 
         initialTable(tableViewerCreator.createTable());
         tableViewerCreator.init();

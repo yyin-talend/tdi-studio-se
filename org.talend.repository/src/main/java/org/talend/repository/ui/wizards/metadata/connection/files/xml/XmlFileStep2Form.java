@@ -172,7 +172,7 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
 
         addGroupXmlFileSettings(xmlToSchemaSash, 400, 110);
         addGroupSchemaTarget(xmlToSchemaSash, 300, 110);
-        xmlToSchemaSash.setWeights(new int[] { 50, 50 });
+        xmlToSchemaSash.setWeights(new int[] { 40, 60 });
 
         SashForm sash2 = new SashForm(mainComposite, SWT.HORIZONTAL | SWT.SMOOTH);
         sash2.setLayoutData(new GridData(GridData.FILL_BOTH));
@@ -230,8 +230,6 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
         scrolledCompositeFileViewer.setExpandHorizontal(true);
         scrolledCompositeFileViewer.setExpandVertical(true);
         GridData gridData1 = new GridData(GridData.FILL_BOTH);
-        // gridData1.widthHint = width;
-        // gridData1.heightHint = height;
         scrolledCompositeFileViewer.setLayoutData(gridData1);
         scrolledCompositeFileViewer.setLayout(new FillLayout());
 
@@ -240,13 +238,11 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
         scrolledCompositeFileViewer.setContent(tableEditorView.getTableViewerCreator().getTable());
         scrolledCompositeFileViewer.setSize(width, height);
 
-        // Composite toolbar = new Composite(group, SWT.BORDER);
-        AbstractExtendedTableToolbarView toolbar = new AbstractExtendedTableToolbarView(group,
-                SWT.NONE, tableEditorView) {
+        new AbstractExtendedTableToolbarView(group, SWT.NONE, tableEditorView) {
 
                     @Override
                     protected AddPushButtonForExtendedTable createAddPushButton() {
-                        return new AddPushButtonForExtendedTable(group, tableEditorView) {
+                        return new AddPushButtonForExtendedTable(this.toolbar, tableEditorView) {
 
                             @Override
                             protected Object getObjectToAdd() {

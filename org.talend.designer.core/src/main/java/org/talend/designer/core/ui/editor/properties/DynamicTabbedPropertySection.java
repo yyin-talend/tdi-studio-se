@@ -98,7 +98,7 @@ import org.talend.commons.ui.swt.proposal.TextCellEditorWithProposal;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumn;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator.LAYOUT_MODE;
-import org.talend.commons.ui.swt.tableviewer.TableViewerCreator.SHOW_SELECTION;
+import org.talend.commons.ui.swt.tableviewer.TableViewerCreator.SHOW_ROW_SELECTION;
 import org.talend.commons.ui.swt.tableviewer.behavior.CellEditorValueAdapter;
 import org.talend.commons.ui.utils.ControlUtils;
 import org.talend.commons.ui.utils.TypedTextCommandExecutor;
@@ -2116,11 +2116,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
         Composite container = subComposite;// new Composite(subComposite, SWT.NONE);
 
         final TableViewerCreator tableViewerCreator = new TableViewerCreator(container);
-        tableViewerCreator.setHeaderVisible(true);
         tableViewerCreator.setBorderVisible(true);
-        tableViewerCreator.setLinesVisible(true);
-        tableViewerCreator.setShowSelection(SHOW_SELECTION.FULL);
-        tableViewerCreator.setVerticalScroll(true);
         tableViewerCreator.setCheckboxInFirstColumn(false);
         tableViewerCreator.setAllColumnsResizable(true);
         tableViewerCreator.setLayoutMode(LAYOUT_MODE.DEFAULT);

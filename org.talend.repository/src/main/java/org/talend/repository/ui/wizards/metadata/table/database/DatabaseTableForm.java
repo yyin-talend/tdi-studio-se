@@ -356,7 +356,6 @@ public class DatabaseTableForm extends AbstractForm {
         tableViewerCreator.setAllColumnsResizable(false);
         tableViewerCreator.setBorderVisible(false);
         tableViewerCreator.setLinesVisible(false);
-        tableViewerCreator.setHorizontalScroll(false);
         tableViewerCreator.setLayoutMode(LAYOUT_MODE.NONE);
         tableViewerCreator.setCheckboxInFirstColumn(false);
         tableViewerCreator.setFirstColumnMasked(false);

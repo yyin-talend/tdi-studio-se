@@ -186,11 +186,8 @@ public class LdifFileStep2Form extends AbstractLdifFileStepForm {
 
         // List Table
         TableViewerCreator tableViewerCreator = new TableViewerCreator(scrolledCompositeFileViewer);
-        tableViewerCreator.setHeaderVisible(true);
         tableViewerCreator.setAllColumnsResizable(true);
         tableViewerCreator.setBorderVisible(true);
-        tableViewerCreator.setLinesVisible(true);
-        tableViewerCreator.setHorizontalScroll(false);
         tableViewerCreator.setLayoutMode(LAYOUT_MODE.FILL_HORIZONTAL);
         tableViewerCreator.setCheckboxInFirstColumn(true);
         tableViewerCreator.setFirstColumnMasked(true);

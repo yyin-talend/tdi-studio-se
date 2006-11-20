@@ -41,7 +41,7 @@ import org.eclipse.ui.part.ViewPart;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumn;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator.LAYOUT_MODE;
-import org.talend.commons.ui.swt.tableviewer.TableViewerCreator.SHOW_SELECTION;
+import org.talend.commons.ui.swt.tableviewer.TableViewerCreator.SHOW_ROW_SELECTION;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator.SORT;
 import org.talend.commons.utils.data.bean.IBeanPropertyAccessors;
 import org.talend.designer.core.model.components.ModuleNeeded;
@@ -95,11 +95,6 @@ public class ModulesView extends ViewPart {
         rightPartComposite.setLayout(new FillLayout());
 
         tableViewerCreator = new TableViewerCreator(rightPartComposite);
-        tableViewerCreator.setHeaderVisible(true);
-        tableViewerCreator.setBorderVisible(true);
-        tableViewerCreator.setLinesVisible(true);
-        tableViewerCreator.setShowSelection(SHOW_SELECTION.FULL);
-        tableViewerCreator.setVerticalScroll(true);
         tableViewerCreator.setCheckboxInFirstColumn(false);
         tableViewerCreator.setAllColumnsResizable(true);
         tableViewerCreator.setLayoutMode(LAYOUT_MODE.FILL_HORIZONTAL);

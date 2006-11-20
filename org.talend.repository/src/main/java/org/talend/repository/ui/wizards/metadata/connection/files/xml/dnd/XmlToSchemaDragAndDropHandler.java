@@ -21,6 +21,7 @@
 // ============================================================================
 package org.talend.repository.ui.wizards.metadata.connection.files.xml.dnd;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.jface.util.TransferDragSourceListener;
@@ -38,15 +39,14 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 import org.talend.commons.ui.utils.TableUtils;
+import org.talend.core.model.metadata.builder.connection.SchemaTarget;
 import org.talend.repository.ui.wizards.metadata.connection.files.xml.XmlToSchemaLinker;
 
-
 /**
- * DOC amaumont  class global comment. Detailled comment
- * <br/>
- *
+ * DOC amaumont class global comment. Detailled comment <br/>
+ * 
  * $Id$
- *
+ * 
  */
 public class XmlToSchemaDragAndDropHandler {
 
@@ -62,9 +62,9 @@ public class XmlToSchemaDragAndDropHandler {
 
     private Table table;
 
-
     /**
      * DOC amaumont TreeToTableDragAndDropHandler constructor comment.
+     * 
      * @param linker
      */
     public XmlToSchemaDragAndDropHandler(XmlToSchemaLinker linker) {
@@ -113,14 +113,12 @@ public class XmlToSchemaDragAndDropHandler {
         dropTarget.addDropListener(targetListener);
     }
 
-
     /**
      * 
-     * DOC amaumont XmlToSchemaDragAndDropHandler class global comment. Detailled comment
-     * <br/>
-     *
+     * DOC amaumont XmlToSchemaDragAndDropHandler class global comment. Detailled comment <br/>
+     * 
      * $Id$
-     *
+     * 
      */
     class TreeDragSourceListener implements TransferDragSourceListener {
 
@@ -128,25 +126,25 @@ public class XmlToSchemaDragAndDropHandler {
         }
 
         public void dragSetData(DragSourceEvent event) {
-             System.out.println("\n>>dragSetData");
+            System.out.println("\n>>dragSetData");
             // System.out.println(event);
             // if (TableEntriesTransfer.getInstance().isSupportedType(event.dataType)) {
             // }
         }
 
         public void dragStart(DragSourceEvent event) {
-             System.out.println("\n>>dragStart");
+            System.out.println("\n>>dragStart");
             // System.out.println(event);
             TreeItem[] items = tree.getSelection();
             if (items.length == 0) {
                 event.doit = false;
             } else {
-                    XmlToSchemaDraggedData draggedData = new XmlToSchemaDraggedData();
-                    for (TreeItem treeItem : items) {
-                        String absoluteXPath = linker.getAbsoluteXPath(treeItem);
-                        draggedData.add(new TransferableXPathEntry(absoluteXPath));
-                    }
-                    XPathTransfer.getInstance().setDraggedData(draggedData);
+                XmlToSchemaDraggedData draggedData = new XmlToSchemaDraggedData();
+                for (TreeItem treeItem : items) {
+                    String absoluteXPath = linker.getAbsoluteXPath(treeItem);
+                    draggedData.add(new TransferableXPathEntry(absoluteXPath));
+                }
+                XPathTransfer.getInstance().setDraggedData(draggedData);
 
             }
         }
@@ -158,11 +156,10 @@ public class XmlToSchemaDragAndDropHandler {
 
     /**
      * 
-     * DOC amaumont XmlToSchemaDragAndDropHandler class global comment. Detailled comment
-     * <br/>
-     *
+     * DOC amaumont XmlToSchemaDragAndDropHandler class global comment. Detailled comment <br/>
+     * 
      * $Id$
-     *
+     * 
      */
     public class TableDropTargetListener implements TransferDropTargetListener {
 
@@ -172,7 +169,8 @@ public class XmlToSchemaDragAndDropHandler {
 
         /**
          * DOC amaumont Comment method "dragEnterExecute".
-         * @param event 
+         * 
+         * @param event
          */
         private void dragEnterExecute(DropTargetEvent event) {
             table.setFocus();
@@ -184,37 +182,36 @@ public class XmlToSchemaDragAndDropHandler {
         }
 
         public void dragLeave(DropTargetEvent event) {
-             System.out.println("\n>>dragLeave");
-             System.out.println(event);
+            System.out.println("\n>>dragLeave");
+            System.out.println(event);
         }
 
         public void dragOperationChanged(DropTargetEvent event) {
-             System.out.println("\n>>dragOperationChanged");
-//             showInfos(event);
+            System.out.println("\n>>dragOperationChanged");
+            // showInfos(event);
             XmlToSchemaDraggedData draggedData = XPathTransfer.getInstance().getDraggedData();
-            
-            
 
         }
 
         public void dropAccept(DropTargetEvent event) {
-             System.out.println("\n>>dropAccept");
-             System.out.println(event);
-             XmlToSchemaDraggedData draggedData = XPathTransfer.getInstance().getDraggedData();
+            System.out.println("\n>>dropAccept");
+            System.out.println(event);
+            XmlToSchemaDraggedData draggedData = XPathTransfer.getInstance().getDraggedData();
 
-             
-             
         }
 
-
-        /* (non-Javadoc)
+        /*
+         * (non-Javadoc)
+         * 
          * @see org.eclipse.jface.util.TransferDropTargetListener#getTransfer()
          */
         public Transfer getTransfer() {
             return null;
         }
 
-        /* (non-Javadoc)
+        /*
+         * (non-Javadoc)
+         * 
          * @see org.eclipse.jface.util.TransferDropTargetListener#isEnabled(org.eclipse.swt.dnd.DropTargetEvent)
          */
         public boolean isEnabled(DropTargetEvent event) {
@@ -222,23 +219,28 @@ public class XmlToSchemaDragAndDropHandler {
             return false;
         }
 
-        /* (non-Javadoc)
+        /*
+         * (non-Javadoc)
+         * 
          * @see org.eclipse.swt.dnd.DropTargetListener#drop(org.eclipse.swt.dnd.DropTargetEvent)
          */
         public void drop(DropTargetEvent event) {
-             System.out.println("\n>>drop");
-             XmlToSchemaDraggedData draggedData = XPathTransfer.getInstance().getDraggedData();
+            System.out.println("\n>>drop");
+            XmlToSchemaDraggedData draggedData = XPathTransfer.getInstance().getDraggedData();
 
-             List<TransferableXPathEntry> transferableEntryList = draggedData.getTransferableEntryList();
-             int startInsertAtThisIndex = TableUtils.getItemIndexWhereInsertFromPosition(table, new Point(event.x, event.y));
-             
-             for (TransferableXPathEntry entry : transferableEntryList) {
-                 linker.addTargetEntry(entry.getAbsoluteXPath(), startInsertAtThisIndex++);
+            List<TransferableXPathEntry> transferableEntryList = draggedData.getTransferableEntryList();
+            int startInsertAtThisIndex = TableUtils.getItemIndexWhereInsertFromPosition(table, new Point(event.x, event.y));
+
+            List<SchemaTarget> list = new ArrayList<SchemaTarget>(transferableEntryList.size());
+            for (TransferableXPathEntry entry : transferableEntryList) {
+
+                SchemaTarget newTargetEntry = linker.getNewTargetEntry(entry.getAbsoluteXPath());
+                list.add(newTargetEntry);
             }
+            linker.getTableEditorView().getXpathNodeSchemaModel().addAll(startInsertAtThisIndex, list);
 
         }
 
     }
-
 
 }

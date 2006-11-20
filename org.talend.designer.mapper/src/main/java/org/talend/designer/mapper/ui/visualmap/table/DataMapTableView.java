@@ -80,7 +80,7 @@ import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumn;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator.LAYOUT_MODE;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator.LINE_SELECTION;
-import org.talend.commons.ui.swt.tableviewer.TableViewerCreator.SHOW_SELECTION;
+import org.talend.commons.ui.swt.tableviewer.TableViewerCreator.SHOW_ROW_SELECTION;
 import org.talend.commons.ui.swt.tableviewer.behavior.CellEditorValueAdapter;
 import org.talend.commons.ui.swt.tableviewer.behavior.DefaultTableLabelProvider;
 import org.talend.commons.ui.swt.tableviewer.behavior.ITableCellValueModifiedListener;
@@ -353,14 +353,10 @@ public abstract class DataMapTableView extends Composite {
      */
     private void createTableForColumns() {
         tableViewerCreatorForColumns = new TableViewerCreator(centerComposite);
-        tableViewerCreatorForColumns.setHeaderVisible(true);
         tableViewerCreatorForColumns.setAllColumnsResizable(true);
         tableViewerCreatorForColumns.setBorderVisible(false);
-        tableViewerCreatorForColumns.setLinesVisible(true);
-        tableViewerCreatorForColumns.setShowSelection(SHOW_SELECTION.FULL);
-        tableViewerCreatorForColumns.setLineSelection(LINE_SELECTION.MULTI);
         tableViewerCreatorForColumns.setLayoutMode(LAYOUT_MODE.FILL_HORIZONTAL);
-        tableViewerCreatorForColumns.setUseCustomColoring(this.getDataMapTable() instanceof AbstractInOutTable);
+        tableViewerCreatorForColumns.setUseCustomItemColoring(this.getDataMapTable() instanceof AbstractInOutTable);
         tableViewerCreatorForColumns.setFirstColumnMasked(true);
 
         if (getDataMapTable() instanceof AbstractInOutTable) {
@@ -889,12 +885,8 @@ public abstract class DataMapTableView extends Composite {
 
     protected void createTableConstraints() {
         tableViewerCreatorForConstraints = new TableViewerCreator(centerComposite);
-        tableViewerCreatorForConstraints.setHeaderVisible(true);
         tableViewerCreatorForConstraints.setAllColumnsResizable(true);
         tableViewerCreatorForConstraints.setBorderVisible(false);
-        tableViewerCreatorForConstraints.setLinesVisible(true);
-        tableViewerCreatorForConstraints.setShowSelection(SHOW_SELECTION.FULL);
-        tableViewerCreatorForConstraints.setLineSelection(LINE_SELECTION.MULTI);
         tableViewerCreatorForConstraints.setLayoutMode(LAYOUT_MODE.FILL_HORIZONTAL);
         // tableViewerCreatorForConstraints.setAdjustWidthValue(ADJUST_WIDTH_VALUE);
         tableViewerCreatorForConstraints.setFirstColumnMasked(true);

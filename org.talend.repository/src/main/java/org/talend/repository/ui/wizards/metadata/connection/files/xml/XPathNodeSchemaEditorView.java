@@ -26,7 +26,9 @@ import javax.xml.xpath.XPathFactory;
 
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ComboBoxCellEditor;
+import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
@@ -35,12 +37,16 @@ import org.talend.commons.ui.swt.proposal.TextCellEditorWithProposal;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumn;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator.CELL_EDITOR_STATE;
+import org.talend.commons.ui.swt.tableviewer.TableViewerCreator.LAYOUT_MODE;
 import org.talend.commons.ui.swt.tableviewer.behavior.CellEditorValueAdapter;
 import org.talend.commons.ui.swt.tableviewer.celleditor.DialogErrorForCellEditorListener;
+import org.talend.commons.ui.swt.tableviewer.tableeditor.CheckboxTableEditorContent;
 import org.talend.commons.utils.data.bean.IBeanPropertyAccessors;
 import org.talend.commons.utils.data.list.ListenableListEvent;
 import org.talend.commons.utils.data.list.ListenableListEvent.TYPE;
+import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.builder.connection.SchemaTarget;
+import org.talend.core.model.metadata.editor.MetadataEditorEvent;
 import org.talend.core.model.targetschema.editor.XPathNodeSchemaModel;
 import org.talend.core.ui.extended.AbstractExtendedTableToolbarView;
 
@@ -75,6 +81,8 @@ public class XPathNodeSchemaEditorView extends AbstractExtendedTableViewer<Schem
 
     private XmlToSchemaLinker linker;
 
+    private IBeanPropertyAccessors<SchemaTarget, Boolean> keyAccesor;
+
     public XPathNodeSchemaEditorView(XPathNodeSchemaModel model, Composite parent, int styleChild) {
         this(model, parent, styleChild, false);
     }
@@ -108,6 +116,16 @@ public class XPathNodeSchemaEditorView extends AbstractExtendedTableViewer<Schem
     
     
 /* (non-Javadoc)
+     * @see org.talend.commons.ui.swt.extended.macrotable.AbstractExtendedTableViewer#createTable(org.eclipse.swt.widgets.Composite, int)
+     */
+    @Override
+    protected TableViewerCreator<SchemaTarget> createTable(Composite parentComposite, int styleChild) {
+        TableViewerCreator<SchemaTarget> newTableViewerCreator = super.createTable(parentComposite, styleChild);
+
+        return newTableViewerCreator;
+    }
+
+    /* (non-Javadoc)
      * @see org.talend.commons.ui.swt.extended.macrotable.AbstractExtendedTableViewer#handleListenableListEvent(org.talend.commons.utils.data.list.ListenableListEvent)
      */
     @Override
@@ -243,17 +261,11 @@ public class XPathNodeSchemaEditorView extends AbstractExtendedTableViewer<Schem
         xPathCellEditor.addListener(new DialogErrorForCellEditorListener(xPathCellEditor, column) {
 
             @Override
-            public void newValidValueApplied(String previousValue, String newValue, CELL_EDITOR_STATE state) {
-//                Object currentModifiedObject = tableViewerCreator.getModifiedObjectInfo().getCurrentModifiedBean();
-//                ArrayList modifiedObjectList = new ArrayList(1);
-//                modifiedObjectList.add(currentModifiedObject);
-//                TargetSchemaEditorEvent event = new TargetSchemaEditorEvent(TargetSchemaEditorEvent.TYPE.XPATH_VALUE_CHANGED);
-//                event.entries = modifiedObjectList;
-//                event.entriesIndices = new int[] { tableViewerCreator.getModifiedObjectInfo().getCurrentModifiedIndex() };
-//                event.previousValue = previousValue;
-//                event.newValue = newValue;
-//                event.state = state;
-//                // targetSchemaTableEditor.fireEvent(event);
+            public void newValidValueTyped(int itemIndex, String previousValue, String newValue, CELL_EDITOR_STATE state) {
+                if (state == CELL_EDITOR_STATE.EDITING) {
+                    linker.onXPathValueChanged(previousValue, newValue, itemIndex);
+                }
+                
             }
 
             @Override
@@ -270,74 +282,71 @@ public class XPathNodeSchemaEditorView extends AbstractExtendedTableViewer<Schem
 
         });
         column.setModifiable(true);
-        column.setWeight(10);
+        column.setWeight(30);
         column.setMinimumWidth(50);
         column.setDefaultInternalValue("");
         // //////////////////////////////////////////////////////////////////////////////////////
 
-//        // //////////////////////////////////////////////////////////////////////////////////////
-//        // Tag Name
-//        column = new TableViewerCreatorColumn(tableViewerCreator);
-//        column.setTitle("Tag Name");
-//        column.setBeanPropertyAccessors(new IBeanPropertyAccessors<SchemaTarget, String>() {
-//
-//            public String get(SchemaTarget bean) {
-//                return bean.getTagName();
-//            }
-//
-//            public void set(SchemaTarget bean, String value) {
-//                bean.setTagName(value);
-//            }
-//
-//        });
-//        column.setModifiable(true);
-//        column.setWeight(10);
-//        column.setMinimumWidth(50);
-//        column.setCellEditor(new TextCellEditor(table));
-//
-//        // //////////////////////////////////////////////////////////////////////////////////////
-//        // Loop
-//        column = new TableViewerCreatorColumn(tableViewerCreator);
-//        column.setTitle("Loop");
-//        column.setBeanPropertyAccessors(new IBeanPropertyAccessors<SchemaTarget, String>() {
-//
-//            public String get(SchemaTarget bean) {
-//                return "" + bean.isBoucle();
-//            }
-//
-//            public void set(SchemaTarget bean, String value) {
-//                bean.setBoucle(false);
-//            }
-//
-//        });
-//        column.setModifiable(true);
-//        column.setWidth(50);
-//        column.setDisplayedValue("");
-//        // column.setTableEditorContent(new CheckboxTableEditorContent());
-//        // column.setCellEditor(new TextCellEditor(table), booleanValueAdapter);
-//        String[] bool = { "false", "true" };
-//        ComboBoxCellEditor comboTypeCellEditor = new ComboBoxCellEditor(table, bool);
-//        ((CCombo) comboTypeCellEditor.getControl()).setEditable(false);
-//        column.setCellEditor(comboTypeCellEditor, comboValueAdapter);
-//
-//        // //////////////////////////////////////////////////////////////////////////////////////
-//        // Loop limit
-//        column = new TableViewerCreatorColumn(tableViewerCreator);
-//        column.setTitle("Loop limit");
-//        column.setBeanPropertyAccessors(new IBeanPropertyAccessors<SchemaTarget, Integer>() {
-//
-//            public Integer get(SchemaTarget bean) {
-//                return bean.getLimitBoucle();
-//            }
-//
-//            public void set(SchemaTarget bean, Integer value) {
-//                bean.setLimitBoucle(value.intValue());
-//            }
-//
-//        });
-//        column.setModifiable(true);
-//        column.setWidth(30);
-//        column.setCellEditor(new TextCellEditor(table), intValueAdapter);
+        // //////////////////////////////////////////////////////////////////////////////////////
+        // Tag Name
+        column = new TableViewerCreatorColumn(tableViewerCreator);
+        column.setTitle("Tag Name");
+        column.setBeanPropertyAccessors(new IBeanPropertyAccessors<SchemaTarget, String>() {
+
+            public String get(SchemaTarget bean) {
+                return bean.getTagName();
+            }
+
+            public void set(SchemaTarget bean, String value) {
+                bean.setTagName(value);
+            }
+
+        });
+        column.setModifiable(true);
+        column.setWeight(10);
+        column.setMinimumWidth(50);
+        column.setCellEditor(new TextCellEditor(table));
+        column.setDefaultInternalValue("");
+
+        // //////////////////////////////////////////////////////////////////////////////////////
+        // Loop
+        column = new TableViewerCreatorColumn(tableViewerCreator);
+        column.setTitle("Loop");
+        this.keyAccesor = new IBeanPropertyAccessors<SchemaTarget, Boolean>() {
+
+            public Boolean get(SchemaTarget bean) {
+                return new Boolean(bean.isBoucle());
+            }
+
+            public void set(SchemaTarget bean, Boolean value) {
+                bean.setBoucle(value);
+            }
+
+        };
+        column.setBeanPropertyAccessors(this.keyAccesor);
+        column.setDisplayedValue("");
+        column.setWidth(38);
+        CheckboxTableEditorContent checkboxTableEditorContent = new CheckboxTableEditorContent();
+        column.setTableEditorContent(checkboxTableEditorContent);
+
+        // //////////////////////////////////////////////////////////////////////////////////////
+        // Loop limit
+        column = new TableViewerCreatorColumn(tableViewerCreator);
+        column.setTitle("Loop limit");
+        column.setBeanPropertyAccessors(new IBeanPropertyAccessors<SchemaTarget, Integer>() {
+
+            public Integer get(SchemaTarget bean) {
+                return bean.getLimitBoucle();
+            }
+
+            public void set(SchemaTarget bean, Integer value) {
+                bean.setLimitBoucle(value.intValue());
+            }
+
+        });
+        column.setModifiable(true);
+        column.setWidth(59);
+        column.setCellEditor(new TextCellEditor(table), intValueAdapter);
 
     }
 

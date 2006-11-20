@@ -1510,7 +1510,7 @@ public class UIManager {
         List<DataMapTableView> tablesView = mapperManager.getOutputsTablesView();
         tablesView.addAll(mapperManager.getInputsTablesView());
         for (DataMapTableView view : tablesView) {
-            view.getTableViewerCreatorForColumns().setUseCustomColoring(false);
+            view.getTableViewerCreatorForColumns().setUseCustomItemColoring(false);
         }
 
     }
@@ -1519,7 +1519,7 @@ public class UIManager {
         List<DataMapTableView> tablesView = mapperManager.getOutputsTablesView();
         tablesView.addAll(mapperManager.getInputsTablesView());
         for (DataMapTableView view : tablesView) {
-            view.getTableViewerCreatorForColumns().setUseCustomColoring(false);
+            view.getTableViewerCreatorForColumns().setUseCustomItemColoring(false);
         }
     }
 

@@ -64,7 +64,7 @@ import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumn;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator.LAYOUT_MODE;
-import org.talend.commons.ui.swt.tableviewer.TableViewerCreator.SHOW_SELECTION;
+import org.talend.commons.ui.swt.tableviewer.TableViewerCreator.SHOW_ROW_SELECTION;
 import org.talend.commons.ui.swt.tableviewer.behavior.CellEditorValueAdapter;
 import org.talend.commons.ui.swt.tableviewer.tableeditor.TableEditorManager;
 import org.talend.commons.utils.data.bean.IBeanPropertyAccessors;
@@ -582,11 +582,7 @@ public class ContextProcessSection extends AbstractPropertySection {
 
         final TableViewerCreator tableViewerCreator = new TableViewerCreator(contextComposite);
         tableViewerCreatorMap.put(context, tableViewerCreator);
-        tableViewerCreator.setHeaderVisible(true);
         tableViewerCreator.setBorderVisible(true);
-        tableViewerCreator.setLinesVisible(true);
-        tableViewerCreator.setShowSelection(SHOW_SELECTION.FULL);
-        tableViewerCreator.setVerticalScroll(true);
         tableViewerCreator.setCheckboxInFirstColumn(true);
         tableViewerCreator.setAllColumnsResizable(true);
         tableViewerCreator.setAllColumnsSortable(true);

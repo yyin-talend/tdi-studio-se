@@ -33,9 +33,9 @@ import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 import org.talend.commons.ui.swt.drawing.link.BezierHorizontalLink;
+import org.talend.commons.ui.swt.drawing.link.IExtremityLink;
 import org.talend.commons.ui.swt.drawing.link.LinkDescriptor;
 import org.talend.commons.ui.swt.drawing.link.StyleLink;
-import org.talend.commons.ui.swt.drawing.link.TableItemExtremityDescriptor;
 import org.talend.commons.ui.swt.drawing.link.TreeItemExtremityDescriptor;
 import org.talend.commons.ui.swt.linking.TreeToTableLinker;
 import org.talend.commons.ui.swt.proposal.TextCellEditorWithProposal;
@@ -59,7 +59,7 @@ import org.w3c.dom.Node;
  * $Id$
  * 
  */
-public class XmlToSchemaLinker extends TreeToTableLinker {
+public class XmlToSchemaLinker extends TreeToTableLinker<Object, SchemaTarget> {
 
     private StyleLink styleLink;
 
@@ -160,25 +160,6 @@ public class XmlToSchemaLinker extends TreeToTableLinker {
 
         });
 
-        // if (targetSchemaEditorListener == null) {
-        // targetSchemaEditorListener = new ITargetSchemaEditorListener() {
-        //
-        // public void handleEvent(TargetSchemaEditorEvent event) {
-        // handleTargetEditorEvent(event);
-        // }
-        //
-        // };
-        // schemaModel.addListener(targetSchemaEditorListener);
-        // }
-        //        
-        // tableEditorView.getTargetSchemaEditor().addModifiedListListener(new IListenableListListener() {
-        //
-        // @SuppressWarnings("unchecked")
-        // public void handleEvent(ListenableListEvent event) {
-        // handleListenableListEvent(event);
-        // }
-        // });
-
         new XmlToSchemaDragAndDropHandler(this);
     }
 
@@ -193,54 +174,38 @@ public class XmlToSchemaLinker extends TreeToTableLinker {
             Collection<SchemaTarget> removedObjects = event.removedObjects;
             for (SchemaTarget target : removedObjects) {
                 TableItem tableItem = TableUtils.getTableItem(tableViewerCreator.getTable(), target);
-                removeLinksFrom(tableItem);
+                linksManager.removeLink(tableItem);
             }
             updateBackground();
         }
         // tableViewerCreator.getTableViewer().refresh(); // force refresh
     }
 
-    public void handleListenableListAfterTableViewerRefreshedEvent(ListenableListEvent event) {
+    public void handleListenableListAfterTableViewerRefreshedEvent(ListenableListEvent<SchemaTarget> event) {
         TableViewerCreator<SchemaTarget> tableViewerCreator = tableEditorView.getTableViewerCreator();
         if (event.type == ListenableListEvent.TYPE.ADDED) {
-            Collection<SchemaTarget> addedObjects = event.addedObjects;
-            List<SchemaTarget> inputList = tableViewerCreator.getInputList();
-            for (SchemaTarget target : addedObjects) {
-                int index = inputList.indexOf(target);
-                TableItem tableItem = tableViewerCreator.getTable().getItem(index);
-                createLinks(target.getXPathQuery(), tableItem);
+            Table table = tableViewerCreator.getTable();
+            TableItem[] tableItems = table.getItems();
+            for (int i = 0; i < tableItems.length; i++) {
+                TableItem tableItem = tableItems[i];
+                SchemaTarget schemaTarget = (SchemaTarget) tableItem.getData();
+                boolean changeApplied = linksManager.setNewGraphicalItemToExtremity2(schemaTarget, tableItem);
+                if (!changeApplied) {
+                    createLinks(schemaTarget.getXPathQuery(), tableItem);
+                }
             }
             updateBackground();
         } else if (event.type == ListenableListEvent.TYPE.SWAPED) {
             Table table = tableViewerCreator.getTable();
-            List<Integer> indicesTarget = event.indicesOrigin;
-            List<Integer> indicesOrigin = event.indicesTarget;
-            int lstSize = indicesOrigin.size();
-            for (int i = 0; i < lstSize; i++) {
-                Integer indiceTarget = indicesTarget.get(i);
-                Integer indiceOrigin = indicesOrigin.get(i);
-                TableItemExtremityDescriptor tableItemExtremityDescriptorOrigin = new TableItemExtremityDescriptor(table
-                        .getItem(indiceOrigin));
-                TableItemExtremityDescriptor tableItemExtremityDescriptorTarget = new TableItemExtremityDescriptor(table
-                        .getItem(indiceTarget));
-                linksManager.swapExtremitiesForRelativeLinks(tableItemExtremityDescriptorOrigin, tableItemExtremityDescriptorTarget);
+
+            TableItem[] tableItems = table.getItems();
+            for (int i = 0; i < tableItems.length; i++) {
+                TableItem tableItem = tableItems[i];
+                SchemaTarget schemaTarget = (SchemaTarget) tableItem.getData();
+                linksManager.setNewGraphicalItemToExtremity2(schemaTarget, tableItem);
             }
             updateBackground();
         }
-    }
-
-    /**
-     * DOC amaumont Comment method "removeLinkFrom".
-     * 
-     * @param tableItem
-     */
-    private void removeLinksFrom(TableItem tableItem) {
-        TableItemExtremityDescriptor itemExtremityDescriptor = new TableItemExtremityDescriptor(tableItem);
-        Set<LinkDescriptor<TreeItem, TableItem>> linksFromExtremity2 = linksManager.getLinksFromExtremity2(itemExtremityDescriptor);
-        for (LinkDescriptor<TreeItem, TableItem> link : linksFromExtremity2) {
-            linksManager.removeLink(link);
-        }
-
     }
 
     /**
@@ -250,8 +215,8 @@ public class XmlToSchemaLinker extends TreeToTableLinker {
      * @param tableItem
      */
     public void addLink(TreeItem treeItem, TableItem tableItem) {
-        LinkDescriptor<TreeItem, TableItem> link = new LinkDescriptor<TreeItem, TableItem>(new TreeItemExtremityDescriptor(treeItem),
-                new TableItemExtremityDescriptor(tableItem));
+        LinkDescriptor<TreeItem, Object, TableItem, SchemaTarget> link = new LinkDescriptor<TreeItem, Object, TableItem, SchemaTarget>(
+                new TreeItemExtremityDescriptor(treeItem), new TableItemExtremityDescriptor(tableItem, (SchemaTarget) tableItem.getData()));
 
         link.setDrawableLink(this.styleLink.getDrawableLink());
         linksManager.addLink(link);
@@ -271,9 +236,9 @@ public class XmlToSchemaLinker extends TreeToTableLinker {
      * @param newValue
      * @param itemIndex
      */
-    private void onXPathValueChanged(String previousValue, String newValue, int itemIndex) {
+    public void onXPathValueChanged(String previousValue, String newValue, int itemIndex) {
         TableItem tableItem = table.getItem(itemIndex);
-        removeLinksFrom(tableItem);
+        linksManager.removeLink(tableItem);
         createLinks(newValue, tableItem);
         updateBackground();
 
@@ -287,9 +252,9 @@ public class XmlToSchemaLinker extends TreeToTableLinker {
      */
     private void createLinks(String xPathExpression, TableItem tableItemTarget) {
         Set<String> alreadyProcessedXPath = new HashSet<String>();
-        TimeMeasure.start(xPathExpression);
+//        TimeMeasure.start(xPathExpression);
         List<Node> nodeList = this.nodeRetriever.retrieveListOfNodes(xPathExpression);
-        TimeMeasure.end(xPathExpression);
+//        TimeMeasure.end(xPathExpression);
         // System.out.println("nodeList.size()="+nodeList.size());
 
         if (nodeList != null) {
@@ -306,13 +271,13 @@ public class XmlToSchemaLinker extends TreeToTableLinker {
         }
     }
 
-    public void addTargetEntry(String absoluteXPathValue, int indexPosition) {
+    public SchemaTarget getNewTargetEntry(String absoluteXPathValue) {
 
         XPathNodeSchemaModel xpathNodeSchemaModel = tableEditorView.getXpathNodeSchemaModel();
         SchemaTarget schemaTarget = xpathNodeSchemaModel.createNewSchemaTarget();
         schemaTarget.setXPathQuery(absoluteXPathValue);
-        xpathNodeSchemaModel.add(schemaTarget);
 
+        return schemaTarget;
     }
 
     /**
