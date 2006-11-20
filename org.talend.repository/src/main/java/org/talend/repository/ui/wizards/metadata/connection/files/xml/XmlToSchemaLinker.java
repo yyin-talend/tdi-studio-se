@@ -27,6 +27,10 @@ import java.util.List;
 import java.util.Set;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.GC;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.graphics.Region;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
@@ -179,6 +183,28 @@ public class XmlToSchemaLinker extends TreeToTableLinker<Object, SchemaTarget> {
             updateBackground();
         }
         // tableViewerCreator.getTableViewer().refresh(); // force refresh
+    }
+    
+    /* (non-Javadoc)
+     * @see org.talend.commons.ui.swt.linking.TreeToTableLinker#drawBackground(org.eclipse.swt.graphics.GC)
+     */
+    @Override
+    public void drawBackground(GC gc) {
+        Rectangle clipBounds = tree.getBounds();
+        
+        Rectangle tableBounds = table.getDisplay().map(table, commonParent, table.getBounds());
+//        System.out.println(tableBounds);
+        int offset = 20;
+
+        clipBounds.width = tableBounds.x;
+        clipBounds.height += offset - 4;
+        clipBounds.x = 0;
+        clipBounds.y = offset;
+        
+        gc.setClipping(clipBounds);
+        
+        super.drawBackground(gc);
+        gc.setClipping((Rectangle) null);
     }
 
     public void handleListenableListAfterTableViewerRefreshedEvent(ListenableListEvent<SchemaTarget> event) {

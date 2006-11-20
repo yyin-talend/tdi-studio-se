@@ -49,6 +49,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.ScrollBar;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
@@ -202,20 +203,8 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
 
         // Group Schema Viewer
         Group group = Form.createGroup(mainComposite, 1, Messages.getString("XmlFileStep1.sourceSchema"), height);
-        Composite compositeFileViewer = Form.startNewDimensionnedGridLayout(group, 1, width, height);
-
-        GridData gridData = new GridData(GridData.FILL_BOTH);
-        // gridData.minimumWidth = width;
-        // gridData.minimumHeight = height;
-
-        compositeFileViewer.setLayoutData(gridData);
-
-        // PTODO CAN : the XmlTree
-        availableXmlTree = new Tree(compositeFileViewer, SWT.MULTI);// | SWT.H_SCROLL | SWT.V_SCROLL);
+        availableXmlTree = new Tree(group, SWT.MULTI | SWT.BORDER);
         GridData gridData2 = new GridData(GridData.FILL_BOTH);
-        // availableXmlTree.setBackground(availableXmlTree.getDisplay().getSystemColor(SWT.COLOR_GRAY));
-        // GridData gridData2 = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING, GridData.VERTICAL_ALIGN_BEGINNING,
-        // true, true);
         availableXmlTree.setLayoutData(gridData2);
         availableXmlTree.setToolTipText(Messages.getString("FileStep1.fileViewerTip1") + " " + TreePopulator.MAXIMUM_ROWS_TO_PREVIEW
                 + " " + Messages.getString("FileStep1.fileViewerTip2"));
@@ -225,18 +214,8 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
         // Group Schema Viewer
         final Group group = Form.createGroup(mainComposite, 1, Messages.getString("XmlFileStep1.groupSchemaTarget"), height);
 
-        ScrolledComposite scrolledCompositeFileViewer = new ScrolledComposite(group, SWT.H_SCROLL | SWT.V_SCROLL
-                | SWT.NONE);
-        scrolledCompositeFileViewer.setExpandHorizontal(true);
-        scrolledCompositeFileViewer.setExpandVertical(true);
-        GridData gridData1 = new GridData(GridData.FILL_BOTH);
-        scrolledCompositeFileViewer.setLayoutData(gridData1);
-        scrolledCompositeFileViewer.setLayout(new FillLayout());
-
         schemaModel = new XPathNodeSchemaModel(Messages.getString("FileStep3.metadataDescription"));
-        tableEditorView = new XPathNodeSchemaEditorView(schemaModel, scrolledCompositeFileViewer, SWT.NONE);
-        scrolledCompositeFileViewer.setContent(tableEditorView.getTableViewerCreator().getTable());
-        scrolledCompositeFileViewer.setSize(width, height);
+        tableEditorView = new XPathNodeSchemaEditorView(schemaModel, group, SWT.NONE);
 
         new AbstractExtendedTableToolbarView(group, SWT.NONE, tableEditorView) {
 
@@ -508,15 +487,6 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
         }
     }
 
-
-    // expand the tree
-    private void setExpanded(TreeItem treeItem) {
-        if (treeItem.getParentItem() != null) {
-            setExpanded(treeItem.getParentItem());
-        }
-        treeItem.setExpanded(true);
-    }
-
     /**
      * checkFileFieldsValue active fileViewer if file exist.
      */
@@ -603,10 +573,13 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
         super.setVisible(visible);
         if (super.isVisible()) {
             this.treePopulator.populateTree(getConnection().getXmlFilePath(), treeNode);
+            ScrollBar verticalBar = availableXmlTree.getVerticalBar();
+            if (verticalBar != null) {
+                verticalBar.setSelection(0);
+            }
             this.linker = new XmlToSchemaLinker(xmlToSchemaSash, availableXmlTree, tableEditorView, this.treePopulator);
             tableEditorView.setLinker(this.linker);
             checkFilePathAndManageIt();
-            // refreshMetaDataSchema();
             // Refresh the preview width the adapted rowSeparator
             // If metadata exist, refreshMetadata
             if (getConnection().getXsdFilePath() != null && !getConnection().getXsdFilePath().equals("")
@@ -619,30 +592,4 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
         }
     }
 
-    /**
-     * Warning: recursive calls on this method.
-     * 
-     * @param items
-     */
-    private void createLinks(TreeItem[] items, int currentTableIndex) {
-//        System.out.println("UUUUUUUUUUUUUUUUUU"+XMLInformationHolder.getPropertyValue(Constants.CONST_PROP_RELATIONINFORMATION));;
-//        for (int i = 0; i < items.length; i++) {
-//            TreeItem treeItem = items[i];
-//            TreeItem[] nextItems = treeItem.getItems();
-//            Table table = tableEditorView.getTableViewerCreator().getTable();
-//            TableItem[] tableItems = table.getItems();
-//            int size = tableItems.length;
-//            if (nextItems.length == 0 && currentTableIndex <= size - 1 && currentTableIndex >= 0) {
-//                TableItem tableItem = tableItems[currentTableIndex];
-//                linker.addLink(treeItem, tableItem);
-//                System.out.println(currentTableIndex);
-//                currentTableIndex--;
-//            } else {
-//                createLinks(nextItems, currentTableIndex);
-//            }
-//        }
-//      linker.releaseBgImages();
-        linker.updateBackground();
-
-    }
 }

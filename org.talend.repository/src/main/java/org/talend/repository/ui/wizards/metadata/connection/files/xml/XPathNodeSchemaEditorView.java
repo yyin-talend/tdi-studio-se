@@ -25,10 +25,8 @@ import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathFactory;
 
 import org.eclipse.jface.viewers.CellEditor;
-import org.eclipse.jface.viewers.ComboBoxCellEditor;
 import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
@@ -37,16 +35,13 @@ import org.talend.commons.ui.swt.proposal.TextCellEditorWithProposal;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumn;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator.CELL_EDITOR_STATE;
-import org.talend.commons.ui.swt.tableviewer.TableViewerCreator.LAYOUT_MODE;
 import org.talend.commons.ui.swt.tableviewer.behavior.CellEditorValueAdapter;
 import org.talend.commons.ui.swt.tableviewer.celleditor.DialogErrorForCellEditorListener;
 import org.talend.commons.ui.swt.tableviewer.tableeditor.CheckboxTableEditorContent;
 import org.talend.commons.utils.data.bean.IBeanPropertyAccessors;
 import org.talend.commons.utils.data.list.ListenableListEvent;
 import org.talend.commons.utils.data.list.ListenableListEvent.TYPE;
-import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.builder.connection.SchemaTarget;
-import org.talend.core.model.metadata.editor.MetadataEditorEvent;
 import org.talend.core.model.targetschema.editor.XPathNodeSchemaModel;
 import org.talend.core.ui.extended.AbstractExtendedTableToolbarView;
 
@@ -134,39 +129,8 @@ public class XPathNodeSchemaEditorView extends AbstractExtendedTableViewer<Schem
         if (event.type == TYPE.REMOVED) {
             linker.updateBackground();
         }
-//        if(linker != null) {
-//            linker.handleListenableListAfterTableViewerRefreshedEvent(event);
-//        }
     }
 
-    //    /**
-//     * DOC amaumont Comment method "createEntry".
-//     * 
-//     * @param selectedIndices selected indices in Table
-//     */
-//    public SchemaTarget createEntry(int[] selectedIndices) {
-//        XPathNodeSchemaModel model = getXpathNodeSchemaModel();
-//        SchemaTarget schemaTarget = null;
-//        if (model != null) {
-//            getTableViewerCreator().getTable().setFocus();
-//            TargetSchemaEditorEvent targetSchemaEditorEvent = new TargetSchemaEditorEvent();
-//            targetSchemaEditorEvent.type = TargetSchemaEditorEvent.TYPE.ADD;
-//            schemaTarget = ConnectionFactory.eINSTANCE.createSchemaTarget();
-//            targetSchemaEditorEvent.entries.add(schemaTarget);
-//            targetSchemaEditorEvent.entriesIndices = selectedIndices;
-//            IAction action = TargetSchemaEditorActionFactory2.getInstance().getAction(this, targetSchemaEditorEvent);
-//            action.run(targetSchemaEditorEvent);
-//        }
-//        return schemaTarget;
-//    }
-//
-//    /**
-//     * DOC amaumont Comment method "createEntry".
-//     */
-//    public SchemaTarget createEntry(int indexWhereInsert) {
-//        return createEntry(new int[] { indexWhereInsert });
-//    }
-//
     /*
      * (non-Javadoc)
      * 
@@ -190,46 +154,6 @@ public class XPathNodeSchemaEditorView extends AbstractExtendedTableViewer<Schem
                     return String.valueOf(value);
                 }
                 return "";
-            }
-        };
-
-        // boolean ValueAdapter
-        CellEditorValueAdapter booleanValueAdapter = new CellEditorValueAdapter() {
-
-            public Object getOriginalTypedValue(final CellEditor cellEditor, Object value) {
-                return (value == new Integer(1));
-            }
-
-            public Object getCellEditorTypedValue(final CellEditor cellEditor, Object value) {
-                if (value == new Boolean(true)) {
-                    return 1;
-                } else {
-                    return 0;
-                }
-            }
-        };
-
-        // comboValueAdapter
-        CellEditorValueAdapter comboValueAdapter = new CellEditorValueAdapter() {
-
-            public Object getOriginalTypedValue(final CellEditor cellEditor, Object value) {
-                String[] items = ((ComboBoxCellEditor) cellEditor).getItems();
-                int i = new Integer(value.toString());
-                if (i >= 0) {
-                    return items[i];
-                } else {
-                    return "";
-                }
-            }
-
-            public Object getCellEditorTypedValue(final CellEditor cellEditor, Object value) {
-                String[] items = ((ComboBoxCellEditor) cellEditor).getItems();
-                for (int i = 0; i < items.length; i++) {
-                    if (items[i] == value) {
-                        return i;
-                    }
-                }
-                return -1;
             }
         };
 
