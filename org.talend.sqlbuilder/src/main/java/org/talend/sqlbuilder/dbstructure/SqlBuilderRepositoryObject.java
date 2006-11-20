@@ -68,5 +68,9 @@ public class SqlBuilderRepositoryObject extends RepositoryObject {
 	public void setBuildIn(boolean isBuildIn) {
 		this.isBuildIn = isBuildIn;
 	}
+	@Override
+	public String getLabel() {
+		return repositoryName;
+	}
 	
 }
