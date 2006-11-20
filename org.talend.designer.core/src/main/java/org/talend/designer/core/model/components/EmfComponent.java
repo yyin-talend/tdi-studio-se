@@ -783,11 +783,12 @@ public class EmfComponent implements IComponent {
     }
 
     public boolean isCheckColumns() {
-        if (compType.getHEADER().isSetCOLUMNCHECK()) {
-            return compType.getHEADER().isCOLUMNCHECK();
-        } else {
-            return true;
-        }
+        return isSchemaAutoPropagated();        
+//        if (compType.getHEADER().isSetCOLUMNCHECK()) {
+//            return compType.getHEADER().isCOLUMNCHECK();
+//        } else {
+//            return true;
+//        }
     }
 
     public String getVersion() {

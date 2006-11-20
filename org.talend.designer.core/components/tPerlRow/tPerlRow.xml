@@ -12,7 +12,6 @@
     STARTABLE="false"
     SCHEMA_AUTO_PROPAGATE="false"
     DATA_AUTO_PROPAGATE="false"
-    COLUMN_CHECK="false"
   >
     <SIGNATURE></SIGNATURE>
   </HEADER>
