@@ -54,8 +54,7 @@ public class XmlFileWizardPage extends WizardPage {
      * @param isRepositoryObjectEditable
      * @param existingNames
      */
-    public XmlFileWizardPage(int step, ConnectionItem connectionItem, boolean isRepositoryObjectEditable,
-            String[] existingNames) {
+    public XmlFileWizardPage(int step, ConnectionItem connectionItem, boolean isRepositoryObjectEditable, String[] existingNames) {
         super("wizardPage");
         this.step = step;
         this.connectionItem = connectionItem;
@@ -75,8 +74,7 @@ public class XmlFileWizardPage extends WizardPage {
         } else if (step == 2) {
             currentComposite = new XmlFileStep2Form(parent, connectionItem);
         } else if (step == 3) {
-            MetadataTable metadataTable = (MetadataTable) ((XmlFileConnection) connectionItem.getConnection())
-                    .getTables().get(0);
+            MetadataTable metadataTable = (MetadataTable) ((XmlFileConnection) connectionItem.getConnection()).getTables().get(0);
             currentComposite = new XmlFileStep3Form(parent, connectionItem, metadataTable, TableHelper.getTableNames(
                     ((XmlFileConnection) connectionItem.getConnection()), metadataTable.getLabel()));
         }

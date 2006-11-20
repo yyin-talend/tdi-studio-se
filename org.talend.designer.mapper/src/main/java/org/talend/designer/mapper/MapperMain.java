@@ -49,8 +49,6 @@ import org.talend.designer.mapper.model.metadata.MapperDataTestGenerator;
 import org.talend.designer.mapper.model.table.InputTable;
 import org.talend.designer.mapper.model.table.OutputTable;
 import org.talend.designer.mapper.ui.MapperUI;
-import org.talend.designer.mapper.ui.image.ImageInfo;
-import org.talend.designer.mapper.ui.image.ImageProviderMapper;
 
 /**
  * DOC amaumont class global comment. Detailled comment <br/>

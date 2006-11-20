@@ -40,10 +40,8 @@ import org.eclipse.datatools.enablement.oda.xml.util.ui.ATreeNode;
 import org.eclipse.datatools.enablement.oda.xml.util.ui.XPathPopulationUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
-import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
@@ -135,7 +133,7 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
     protected void initialize() {
 
         this.treePopulator = new TreePopulator(availableXmlTree);
-        
+
         checkFieldsValue();
 
         if (metadataSchema == null) {
@@ -185,8 +183,8 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
             // Bottom Button
             Composite compositeBottomButton = Form.startNewGridLayout(this, 2, false, SWT.CENTER, SWT.CENTER);
             // Button Cancel
-            cancelButton = new UtilsButton(compositeBottomButton, Messages.getString("CommonWizard.cancel"),
-                    WIDTH_BUTTON_PIXEL, HEIGHT_BUTTON_PIXEL);
+            cancelButton = new UtilsButton(compositeBottomButton, Messages.getString("CommonWizard.cancel"), WIDTH_BUTTON_PIXEL,
+                    HEIGHT_BUTTON_PIXEL);
         }
         addUtilsButtonListeners();
     }
@@ -206,8 +204,8 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
         availableXmlTree = new Tree(group, SWT.MULTI | SWT.BORDER);
         GridData gridData2 = new GridData(GridData.FILL_BOTH);
         availableXmlTree.setLayoutData(gridData2);
-        availableXmlTree.setToolTipText(Messages.getString("FileStep1.fileViewerTip1") + " " + TreePopulator.MAXIMUM_ROWS_TO_PREVIEW
-                + " " + Messages.getString("FileStep1.fileViewerTip2"));
+        availableXmlTree.setToolTipText(Messages.getString("FileStep1.fileViewerTip1") + " " + TreePopulator.MAXIMUM_ROWS_TO_PREVIEW + " "
+                + Messages.getString("FileStep1.fileViewerTip2"));
     }
 
     private void addGroupSchemaTarget(final Composite mainComposite, final int width, final int height) {
@@ -219,18 +217,18 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
 
         new AbstractExtendedTableToolbarView(group, SWT.NONE, tableEditorView) {
 
-                    @Override
-                    protected AddPushButtonForExtendedTable createAddPushButton() {
-                        return new AddPushButtonForExtendedTable(this.toolbar, tableEditorView) {
+            @Override
+            protected AddPushButtonForExtendedTable createAddPushButton() {
+                return new AddPushButtonForExtendedTable(this.toolbar, tableEditorView) {
 
-                            @Override
-                            protected Object getObjectToAdd() {
-                                return schemaModel.createNewSchemaTarget();
-                            }
-                            
-                        };
+                    @Override
+                    protected Object getObjectToAdd() {
+                        return schemaModel.createNewSchemaTarget();
                     }
-            
+
+                };
+            }
+
         };
 
     }
@@ -246,8 +244,7 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
     private void addGroupFileViewer(final Composite parent, final int width, int height) {
         // composite Delimited File Preview
         Group previewGroup = Form.createGroup(parent, 1, Messages.getString("FileStep2.groupPreview"), height);
-        Composite compositeDelimitedFilePreviewButton = Form.startNewDimensionnedGridLayout(previewGroup, 4, width,
-                HEIGHT_BUTTON_PIXEL);
+        Composite compositeDelimitedFilePreviewButton = Form.startNewDimensionnedGridLayout(previewGroup, 4, width, HEIGHT_BUTTON_PIXEL);
         height = height - HEIGHT_BUTTON_PIXEL - 15;
 
         // Preview Button
@@ -355,8 +352,7 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
             }
         } catch (CoreException e) {
             previewInformationLabel.setText("   " + Messages.getString("FileStep2.previewFailure"));
-            new ErrorDialogWidthDetailArea(getShell(), PID, Messages.getString("FileStep2.previewFailure"), e
-                    .getMessage());
+            new ErrorDialogWidthDetailArea(getShell(), PID, Messages.getString("FileStep2.previewFailure"), e.getMessage());
             log.error(Messages.getString("FileStep2.previewFailure") + " " + e.getMessage());
         }
     }
@@ -369,7 +365,7 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
         tableEditorView.getExtendedTableModel().addAfterOperationListListener(new IListenableListListener() {
 
             public void handleEvent(ListenableListEvent event) {
-                if(false) {
+                if (false) {
                     checkFieldsValue();
                 }
             }
@@ -385,8 +381,7 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
             public void widgetSelected(SelectionEvent e) {
                 List xpathList = getSelectedXPath(availableXmlTree.getSelection()[0]);
                 if (xpathList != null) {
-                    System.out.println("Node : " + availableXmlTree.getSelection()[0].getText() + " Xpath : "
-                            + xpathList.get(0));
+                    System.out.println("Node : " + availableXmlTree.getSelection()[0].getText() + " Xpath : " + xpathList.get(0));
                 }
             }
         });
@@ -443,8 +438,7 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
             // if the checkbox is checked, check Numeric value
             if (labelledCheckboxCombo.getCheckbox().getSelection()) {
                 if (labelledCheckboxCombo.getText() == "") {
-                    updateStatus(IStatus.ERROR, labelledCheckboxCombo.getLabelText()
-                            + Messages.getString("FileStep2.mustBePrecised"));
+                    updateStatus(IStatus.ERROR, labelledCheckboxCombo.getLabelText() + Messages.getString("FileStep2.mustBePrecised"));
                     return false;
                 }
             }
@@ -508,8 +502,8 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
                 String str;
                 int numberLine = 0;
                 // read the file width the limit : MAXIMUM_ROWS_TO_PREVIEW
-                BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(getConnection()
-                        .getXmlFilePath()), guessedCharset.displayName()));
+                BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(getConnection().getXmlFilePath()),
+                        guessedCharset.displayName()));
                 while (((str = in.readLine()) != null) && (numberLine <= TreePopulator.MAXIMUM_ROWS_TO_PREVIEW)) {
                     numberLine++;
                     previewRows = previewRows + str + "\n";
@@ -521,8 +515,7 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
                 filePathIsDone = true;
 
             } catch (Exception e) {
-                String msgError = Messages.getString("FileStep1.filepath") + " \""
-                        + fileXmlText.getText().replace("\\\\", "\\") + "\"\n";
+                String msgError = Messages.getString("FileStep1.filepath") + " \"" + fileXmlText.getText().replace("\\\\", "\\") + "\"\n";
                 if (e instanceof FileNotFoundException) {
                     msgError = msgError + Messages.getString("FileStep1.fileNotFoundException");
                 } else if (e instanceof EOFException) {
@@ -543,26 +536,6 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
         }
     }
 
-    // PTODO CAN : logically call by runProcessShadow refresh....view to adapt it on this MetadataSchema TABLE.
-    /**
-     * DOC cantoine Comment method "refreshMetaDataSchema".
-     */
-    // public void refreshMetaDataSchema() {
-    //
-    // MetadataSchema metadataSchema = ConnectionFactory.eINSTANCE.createMetadataSchema();
-    // // define the schemaTarget to field i
-    // SchemaTarget schemaTarget = ConnectionFactory.eINSTANCE.createSchemaTarget();
-    // schemaTarget.setXPathQuery("toto");
-    // schemaTarget.setTagName("titi");
-//        schemaTarget.setBoucle(false);
-    // schemaTarget.setLimitBoucle(3);
-    // tableEditorView.getTargetSchemaEditor().add(schemaTarget, 0); // i
-    // metadataSchema.getSchemaTargets().add(0, schemaTarget);
-    // getConnection().getSchema().add(0, metadataSchema);
-    //
-    // checkFieldsValue();
-    // tableEditorView.getTableViewerCreator().layout();
-    // }
     /*
      * (non-Javadoc)
      * 

@@ -23,8 +23,6 @@ package org.talend.repository.ui.wizards.metadata.connection.files.xml;
 
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.apache.commons.collections.BidiMap;
 import org.apache.commons.collections.bidimap.DualHashBidiMap;
@@ -70,7 +68,7 @@ public class TreePopulator {
      * 
      */
     public void populateTree(String filePath, ATreeNode treeNode) {
-//        availableXmlTree.clearAll(true);
+        // availableXmlTree.clearAll(true);
         availableXmlTree.removeAll();
         xPathToTreeItem.clear();
         if (filePath != null && !filePath.equals("")) {
@@ -148,15 +146,14 @@ public class TreePopulator {
     public String getAbsoluteXPath(TreeItem treeItem) {
         return (String) xPathToTreeItem.getKey(treeItem);
     }
-    
-    
+
     /**
      * Getter for filePath.
+     * 
      * @return the filePath
      */
     public String getFilePath() {
         return this.filePath;
     }
-    
-    
+
 }

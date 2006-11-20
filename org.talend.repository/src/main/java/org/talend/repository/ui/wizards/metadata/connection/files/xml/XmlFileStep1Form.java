@@ -23,9 +23,7 @@ package org.talend.repository.ui.wizards.metadata.connection.files.xml;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.datatools.connectivity.oda.OdaException;
 import org.eclipse.datatools.enablement.oda.xml.util.ui.ATreeNode;
-import org.eclipse.datatools.enablement.oda.xml.util.ui.SchemaPopulationUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -37,7 +35,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Tree;
-import org.eclipse.swt.widgets.TreeItem;
 import org.talend.commons.ui.swt.formtools.Form;
 import org.talend.commons.ui.swt.formtools.LabelledFileField;
 import org.talend.commons.ui.swt.formtools.LabelledText;
@@ -109,7 +106,7 @@ public class XmlFileStep1Form extends AbstractXmlFileStepForm {
     protected void initialize() {
 
         this.treePopulator = new TreePopulator(availableXmlTree);
-        
+
         // PTODO cantoine : add init of CheckBoxIsGuess and Determine the Initialize checkFileXsdorXml
         if (getConnection().getXsdFilePath() != null) {
             fileFieldXsd.setText(getConnection().getXsdFilePath().replace("\\\\", "\\"));
@@ -148,8 +145,7 @@ public class XmlFileStep1Form extends AbstractXmlFileStepForm {
 
         // file Field XSD
         String[] xsdExtensions = { "*.xsd", "*.*", "*" };
-        fileFieldXsd = new LabelledFileField(compositeFileLocation, Messages.getString("XmlFileStep1.filepathXsd"),
-                xsdExtensions);
+        fileFieldXsd = new LabelledFileField(compositeFileLocation, Messages.getString("XmlFileStep1.filepathXsd"), xsdExtensions);
 
         // checkBox IsGuess
         checkBoxIsGuess = new Button(compositeFileLocation, SWT.CHECK);
@@ -161,8 +157,7 @@ public class XmlFileStep1Form extends AbstractXmlFileStepForm {
 
         // file Field XML
         String[] xmlExtensions = { "*.xml", "*.*", "*" };
-        fileFieldXml = new LabelledFileField(compositeFileLocation, Messages.getString("XmlFileStep1.filepathXml"),
-                xmlExtensions);
+        fileFieldXml = new LabelledFileField(compositeFileLocation, Messages.getString("XmlFileStep1.filepathXml"), xmlExtensions);
 
         // field XmaskPattern
         fieldMaskXPattern = new LabelledText(compositeFileLocation, Messages.getString("XmlFileStep1.maskXPattern"));
@@ -178,16 +173,16 @@ public class XmlFileStep1Form extends AbstractXmlFileStepForm {
         // PTODO cantoine : the XmlTree
         availableXmlTree = new Tree(compositeFileViewer, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
         availableXmlTree.setLayoutData(gridData);
-        availableXmlTree.setToolTipText(Messages.getString("FileStep1.fileViewerTip1") + " " + TreePopulator.MAXIMUM_ROWS_TO_PREVIEW
-                + " " + Messages.getString("FileStep1.fileViewerTip2"));
+        availableXmlTree.setToolTipText(Messages.getString("FileStep1.fileViewerTip1") + " " + TreePopulator.MAXIMUM_ROWS_TO_PREVIEW + " "
+                + Messages.getString("FileStep1.fileViewerTip2"));
 
         if (!isInWizard()) {
             // Composite BottomButton
             Composite compositeBottomButton = Form.startNewGridLayout(this, 2, false, SWT.CENTER, SWT.CENTER);
 
             // Button Cancel
-            cancelButton = new UtilsButton(compositeBottomButton, Messages.getString("CommonWizard.cancel"),
-                    WIDTH_BUTTON_PIXEL, HEIGHT_BUTTON_PIXEL);
+            cancelButton = new UtilsButton(compositeBottomButton, Messages.getString("CommonWizard.cancel"), WIDTH_BUTTON_PIXEL,
+                    HEIGHT_BUTTON_PIXEL);
         }
         addUtilsButtonListeners();
     }

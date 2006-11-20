@@ -28,16 +28,13 @@ import java.util.Set;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.GC;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.graphics.Region;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 import org.talend.commons.ui.swt.drawing.link.BezierHorizontalLink;
-import org.talend.commons.ui.swt.drawing.link.IExtremityLink;
 import org.talend.commons.ui.swt.drawing.link.LinkDescriptor;
 import org.talend.commons.ui.swt.drawing.link.StyleLink;
 import org.talend.commons.ui.swt.drawing.link.TreeItemExtremityDescriptor;
@@ -50,7 +47,6 @@ import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
 import org.talend.commons.ui.utils.TableUtils;
 import org.talend.commons.utils.data.list.IListenableListListener;
 import org.talend.commons.utils.data.list.ListenableListEvent;
-import org.talend.commons.utils.time.TimeMeasure;
 import org.talend.commons.xml.NodeRetriever;
 import org.talend.core.model.metadata.builder.connection.SchemaTarget;
 import org.talend.core.model.targetschema.editor.XPathNodeSchemaModel;
@@ -184,25 +180,27 @@ public class XmlToSchemaLinker extends TreeToTableLinker<Object, SchemaTarget> {
         }
         // tableViewerCreator.getTableViewer().refresh(); // force refresh
     }
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.commons.ui.swt.linking.TreeToTableLinker#drawBackground(org.eclipse.swt.graphics.GC)
      */
     @Override
     public void drawBackground(GC gc) {
         Rectangle clipBounds = tree.getBounds();
-        
+
         Rectangle tableBounds = table.getDisplay().map(table, commonParent, table.getBounds());
-//        System.out.println(tableBounds);
+        // System.out.println(tableBounds);
         int offset = 20;
 
         clipBounds.width = tableBounds.x;
         clipBounds.height += offset - 4;
         clipBounds.x = 0;
         clipBounds.y = offset;
-        
+
         gc.setClipping(clipBounds);
-        
+
         super.drawBackground(gc);
         gc.setClipping((Rectangle) null);
     }
@@ -278,9 +276,9 @@ public class XmlToSchemaLinker extends TreeToTableLinker<Object, SchemaTarget> {
      */
     private void createLinks(String xPathExpression, TableItem tableItemTarget) {
         Set<String> alreadyProcessedXPath = new HashSet<String>();
-//        TimeMeasure.start(xPathExpression);
+        // TimeMeasure.start(xPathExpression);
         List<Node> nodeList = this.nodeRetriever.retrieveListOfNodes(xPathExpression);
-//        TimeMeasure.end(xPathExpression);
+        // TimeMeasure.end(xPathExpression);
         // System.out.println("nodeList.size()="+nodeList.size());
 
         if (nodeList != null) {

@@ -110,9 +110,8 @@ public class XmlFileWizard extends RepositoryWizard implements INewWizard {
             // connection.getTables().add(metadataSchema);
             connection.getTables().add(metadataTable);
             connectionProperty = PropertiesFactory.eINSTANCE.createProperty();
-            connectionProperty
-                    .setAuthor(((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY))
-                            .getUser().getEmfUser());
+            connectionProperty.setAuthor(((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY))
+                    .getUser().getEmfUser());
             connectionProperty.setVersion(new Version().toString());
             connectionProperty.setStatusCode("");
 
@@ -145,24 +144,24 @@ public class XmlFileWizard extends RepositoryWizard implements INewWizard {
         if (creation) {
             setWindowTitle(Messages.getString("XmlFileWizard.windowTitleCreate"));
 
-            xmlFileWizardPage0.setTitle(Messages.getString("FileWizardPage.titleCreate") + " 1 "
-                    + Messages.getString("FileWizardPage.of") + " 4");
+            xmlFileWizardPage0.setTitle(Messages.getString("FileWizardPage.titleCreate") + " 1 " + Messages.getString("FileWizardPage.of")
+                    + " 4");
             xmlFileWizardPage0.setDescription(Messages.getString("FileWizardPage.descriptionCreateStep0"));
             addPage(xmlFileWizardPage0);
 
-            xmlFileWizardPage1.setTitle(Messages.getString("FileWizardPage.titleCreate") + " 2 "
-                    + Messages.getString("FileWizardPage.of") + " 4");
+            xmlFileWizardPage1.setTitle(Messages.getString("FileWizardPage.titleCreate") + " 2 " + Messages.getString("FileWizardPage.of")
+                    + " 4");
             xmlFileWizardPage1.setDescription(Messages.getString("FileWizardPage.descriptionCreateStep1"));
             addPage(xmlFileWizardPage1);
 
-            xmlFileWizardPage2.setTitle(Messages.getString("FileWizardPage.titleCreate") + " 3 "
-                    + Messages.getString("FileWizardPage.of") + " 4");
+            xmlFileWizardPage2.setTitle(Messages.getString("FileWizardPage.titleCreate") + " 3 " + Messages.getString("FileWizardPage.of")
+                    + " 4");
             xmlFileWizardPage2.setDescription(Messages.getString("FileWizardPage.descriptionCreateStep2"));
             addPage(xmlFileWizardPage2);
 
             xmlFileWizardPage3 = new XmlFileWizardPage(3, connectionItem, isRepositoryObjectEditable(), null);
-            xmlFileWizardPage3.setTitle(Messages.getString("FileWizardPage.titleCreate") + " 4 "
-                    + Messages.getString("FileWizardPage.of") + " 4");
+            xmlFileWizardPage3.setTitle(Messages.getString("FileWizardPage.titleCreate") + " 4 " + Messages.getString("FileWizardPage.of")
+                    + " 4");
             xmlFileWizardPage3.setDescription(Messages.getString("FileWizardPage.descriptionCreateStep3"));
             addPage(xmlFileWizardPage3);
 
@@ -178,18 +177,18 @@ public class XmlFileWizard extends RepositoryWizard implements INewWizard {
         } else {
             setWindowTitle(Messages.getString("XmlFileWizard.windowTitleUpdate"));
 
-            xmlFileWizardPage0.setTitle(Messages.getString("FileWizardPage.titleUpdate") + " 1 "
-                    + Messages.getString("FileWizardPage.of") + " 3");
+            xmlFileWizardPage0.setTitle(Messages.getString("FileWizardPage.titleUpdate") + " 1 " + Messages.getString("FileWizardPage.of")
+                    + " 3");
             xmlFileWizardPage0.setDescription(Messages.getString("FileWizardPage.descriptionUpdateStep0"));
             addPage(xmlFileWizardPage0);
 
-            xmlFileWizardPage1.setTitle(Messages.getString("FileWizardPage.titleUpdate") + " 2 "
-                    + Messages.getString("FileWizardPage.of") + " 3");
+            xmlFileWizardPage1.setTitle(Messages.getString("FileWizardPage.titleUpdate") + " 2 " + Messages.getString("FileWizardPage.of")
+                    + " 3");
             xmlFileWizardPage1.setDescription(Messages.getString("FileWizardPage.descriptionUpdateStep1"));
             addPage(xmlFileWizardPage1);
 
-            xmlFileWizardPage2.setTitle(Messages.getString("FileWizardPage.titleUpdate") + " 3 "
-                    + Messages.getString("FileWizardPage.of") + " 3");
+            xmlFileWizardPage2.setTitle(Messages.getString("FileWizardPage.titleUpdate") + " 3 " + Messages.getString("FileWizardPage.of")
+                    + " 3");
             xmlFileWizardPage2.setDescription(Messages.getString("FileWizardPage.descriptionUpdateStep2"));
             addPage(xmlFileWizardPage2);
 
@@ -227,8 +226,7 @@ public class XmlFileWizard extends RepositoryWizard implements INewWizard {
                 }
             } catch (PersistenceException e) {
                 String detailError = e.toString();
-                new ErrorDialogWidthDetailArea(getShell(), PID, Messages.getString("CommonWizard.persistenceException"),
-                        detailError);
+                new ErrorDialogWidthDetailArea(getShell(), PID, Messages.getString("CommonWizard.persistenceException"), detailError);
                 log.error(Messages.getString("CommonWizard.persistenceException") + "\n" + detailError);
                 return false;
             }
