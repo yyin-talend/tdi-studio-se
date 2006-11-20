@@ -178,6 +178,7 @@ public class MetadataRefreshAction extends SelectionProviderAction {
 	 * @param item
 	 *            selected DatabaseConnectionItem
 	 */
+	@SuppressWarnings("unchecked")
 	private void modifyMetadataColumn(MetadataTable tableNode,
 			MetadataColumn columnNode, DatabaseConnectionItem item) {
 		IMetadataConnection iMetadataConnection = ConvertionHelper
@@ -190,11 +191,6 @@ public class MetadataRefreshAction extends SelectionProviderAction {
 		while (iterate.hasNext()) {
 			MetadataColumn metadataColumn = (MetadataColumn) iterate.next();
 			if (metadataColumn.getLabel().equals(columnNode.getOriginalField())) {
-				// EList columns = tableNode.getColumns();
-				// for (int i = 0, size = columns.size(); i < size; i++) {
-				// MetadataColumn column = (MetadataColumn) columns.get(i);
-				// if (column.getLabel().equals(columnNode.getOriginalField()))
-				// {
 				if (columnNode.getLabel().equals("")) {
 					columnNode.setLabel(columnNode.getOriginalField());
 				}
@@ -208,10 +204,16 @@ public class MetadataRefreshAction extends SelectionProviderAction {
 				columnNode.setTalendType(metadataColumn.getTalendType());
 				columnNode.setDivergency(false);
 				columnNode.setSynchronised(false);
-				// }
-				// }
 			}
 		}
+		List<MetadataColumn> columns = tableNode.getColumns();
+		boolean flag = false;
+		for (MetadataColumn column : columns) {
+			if (column.isDivergency()) {
+				flag = true;
+			}
+		}
+		tableNode.setDivergency(flag);
 	}
 
 	// /**
