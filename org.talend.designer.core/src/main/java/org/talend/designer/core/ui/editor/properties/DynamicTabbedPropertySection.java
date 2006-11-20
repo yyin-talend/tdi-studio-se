@@ -33,6 +33,7 @@ import java.util.Set;
 import org.apache.commons.collections.BidiMap;
 import org.apache.commons.collections.bidimap.DualHashBidiMap;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.commands.CommandStack;
@@ -77,6 +78,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.DirectoryDialog;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Listener;
@@ -93,6 +95,7 @@ import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.swt.colorstyledtext.ColorManager;
 import org.talend.commons.ui.swt.colorstyledtext.ColorStyledText;
+import org.talend.commons.ui.swt.dialogs.ErrorDialogWidthDetailArea;
 import org.talend.commons.ui.swt.proposal.ContentProposalAdapterExtended;
 import org.talend.commons.ui.swt.proposal.TextCellEditorWithProposal;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
@@ -113,6 +116,7 @@ import org.talend.core.model.components.IODataComponent;
 import org.talend.core.model.components.IODataComponentContainer;
 import org.talend.core.model.general.Version;
 import org.talend.core.model.metadata.IMetadataColumn;
+import org.talend.core.model.metadata.IMetadataConnection;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataTable;
 import org.talend.core.model.metadata.builder.ConvertionHelper;
@@ -167,7 +171,10 @@ import org.talend.designer.runprocess.language.SyntaxCheckerFactory;
 import org.talend.repository.model.IRepositoryFactory;
 import org.talend.repository.model.RepositoryConstants;
 import org.talend.repository.model.RepositoryFactoryProvider;
+import org.talend.repository.ui.utils.ManagerConnection;
 import org.talend.repository.utils.RepositoryPathProvider;
+import org.talend.sqlbuilder.SqlBuilderPlugin;
+import org.talend.sqlbuilder.repository.utility.SQLBuilderRepositoryNodeManager;
 import org.talend.sqlbuilder.ui.SQLBuilderDialog;
 import org.talend.sqlbuilder.util.ConnectionParameters;
 
@@ -452,7 +459,8 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                 String repositoryType = (String) elem.getPropertyValue(EParameterName.PROPERTY_TYPE.getName());
                 String propertyName = (String) button.getData(PROPERTY);
                 String query = (String) elem.getPropertyValue(propertyName);
-
+                boolean status = true;
+                ManagerConnection managerConnection = new ManagerConnection();
                 if (repositoryType.equals(EmfComponent.BUILTIN)) {
 
                     String userName = getValueFromRepositoryName("USERNAME");
@@ -473,6 +481,12 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
 
                     String type = getRepositoryItemFromRepositoryName("TYPE");
                     connParameters.setDbType(type);
+                    SQLBuilderRepositoryNodeManager manager = new SQLBuilderRepositoryNodeManager();
+                    DatabaseConnection connection2 = manager.createConnection(connParameters);
+                    IMetadataConnection iMetadataConnection = ConvertionHelper
+    				.convert(connection2);
+                    status = managerConnection.check(iMetadataConnection);
+                    
                 } else if (repositoryType.equals(EmfComponent.REPOSITORY)) {
                     String repositoryName = "";
                     for (IElementParameter param : (List<IElementParameter>) elem.getElementParameters()) {
@@ -498,17 +512,24 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                     }
                     connParameters.setRepositoryName(repositoryName);
                 }
-
-                SQLBuilderDialog dial = new SQLBuilderDialog(composite.getShell());
-                connParameters.setQuery(query);
-                dial.setConnParameters(connParameters);
-
-                if (Window.OK == dial.open()) {
-                    String sql = connParameters.getQuery();
-                    Command cmd = new PropertyChangeCommand(elem, propertyName,
-                            "'" + sql + "'");
-                    getCommandStack().execute(cmd);
+                
+                if (status) {
+                	SQLBuilderDialog dial = new SQLBuilderDialog(composite.getShell());
+                    connParameters.setQuery(query);
+                    dial.setConnParameters(connParameters);
+                    if (Window.OK == dial.open()) {
+                        String sql = connParameters.getQuery();
+                        Command cmd = new PropertyChangeCommand(elem, propertyName,
+                                "'" + sql + "'");
+                        getCommandStack().execute(cmd);
+                    }
+                } else {
+                	String pid = SqlBuilderPlugin.PLUGIN_ID;
+                	String mainMsg = Messages.getString("DatabaseForm.checkFailure") + " "
+                    + Messages.getString("DatabaseForm.checkFailureTip");
+                	new ErrorDialogWidthDetailArea(composite.getShell(), pid, mainMsg, managerConnection.getMessageException());
                 }
+                
             }// Ends
         }
 

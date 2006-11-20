@@ -236,6 +236,7 @@ public class SQLBuilderRepositoryNodeManager {
 			}
 			fixedTables(tablesFromDB, tablesFromEMF, iMetadataConnection);
 		}
+		
 		return oldNode;
 	}
 
@@ -328,7 +329,7 @@ public class SQLBuilderRepositoryNodeManager {
 	 *            inputed when use Built-In .
 	 * @return DatabaseConnection : connetion .
 	 */
-	private DatabaseConnection createConnection(ConnectionParameters parameters) {
+	public DatabaseConnection createConnection(ConnectionParameters parameters) {
 		DatabaseConnection connection = ConnectionFactory.eINSTANCE
 				.createDatabaseConnection();
 		connection.setDatabaseType(parameters.getDbType());
@@ -569,6 +570,7 @@ public class SQLBuilderRepositoryNodeManager {
 				}
 				emf.setSourceName("");
 				emf.setDivergency(true);
+				emf.getConnection().setDivergency(true);
 			}
 		}
 		while (!metaFromDB.isEmpty()) {
@@ -580,6 +582,7 @@ public class SQLBuilderRepositoryNodeManager {
 					if (!emf.getLabel().equals("")	&& !emf.getLabel().equals(
 									db.getSourceName().replaceAll("_", "-"))) {
 						emf.setDivergency(true);
+						emf.getConnection().setDivergency(true);
 					}
 				}
 			}
@@ -625,6 +628,7 @@ public class SQLBuilderRepositoryNodeManager {
 				emf.setOriginalField("");
 				emf.setDivergency(true);
 				emf.getTable().setDivergency(true);
+				emf.getTable().getConnection().setDivergency(true);
 			}
 		}
 		while (!columnsFromDB.isEmpty()) {
@@ -638,7 +642,8 @@ public class SQLBuilderRepositoryNodeManager {
 						emf.setDivergency(is);
 						emf.setSynchronised(is);
 						if (is) {
-							emf.getTable().setDivergency(is);
+							emf.getTable().setDivergency(true);
+							emf.getTable().getConnection().setDivergency(true);
 						}
 					}
 				}
