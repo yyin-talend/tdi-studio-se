@@ -28,7 +28,7 @@ import org.talend.scheduler.SchedulerPlugin;
 /**
  * Detailled comment for this class. <br/> $Id$
  * 
- * @author Hou Peiqin (Soyatec)
+ * @author phou
  * 
  */
 public class ExceptionHandler {

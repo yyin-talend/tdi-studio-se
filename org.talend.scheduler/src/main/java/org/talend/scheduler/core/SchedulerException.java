@@ -24,7 +24,7 @@ package org.talend.scheduler.core;
 /**
  * Detailled comment for this class. <br/> $Id$
  * 
- * @author Hou Peiqin (Soyatec)
+ * @author phou
  * 
  */
 public class SchedulerException extends Exception {
