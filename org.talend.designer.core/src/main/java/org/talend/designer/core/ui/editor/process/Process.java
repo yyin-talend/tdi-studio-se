@@ -55,6 +55,7 @@ import org.eclipse.ui.PlatformUI;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.RepositoryContext;
+import org.talend.core.model.components.IComponent;
 import org.talend.core.model.general.User;
 import org.talend.core.model.general.Version;
 import org.talend.core.model.metadata.EMetadataType;
@@ -771,6 +772,8 @@ public class Process extends Element implements IProcess {
         process.setLogs(lType);
     }
 
+    private List<String> uploadedNodeNames = null;
+
     private void loadNodes(ProcessType process, Hashtable<String, Node> nodesHashtable) {
         EList nodeList;
         NodeType nType;
@@ -778,12 +781,16 @@ public class Process extends Element implements IProcess {
         Node nc;
 
         EList listParamType;
-
+        uploadedNodeNames = new ArrayList<String>();
         for (int i = 0; i < nodeList.size(); i++) {
             nType = (NodeType) nodeList.get(i);
             listParamType = nType.getElementParameter();
-
-            nc = new Node(ComponentsFactoryProvider.getInstance().get(nType.getComponentName()), this);
+            IComponent component = ComponentsFactoryProvider.getInstance().get(nType.getComponentName());
+            if (component == null) {
+                uploadedNodeNames.add(nType.getComponentName());
+                continue;
+            }
+            nc = new Node(component, this);
             nc.setLocation(new Point(nType.getPosX(), nType.getPosY()));
             Point offset = new Point(nType.getOffsetLabelX(), nType.getOffsetLabelY());
             nc.getNodeLabel().setOffset(offset);
@@ -798,6 +805,31 @@ public class Process extends Element implements IProcess {
             addNodeContainer(new NodeContainer(nc));
             nodesHashtable.put(nc.getUniqueName(), nc);
         }
+    }
+
+    /**
+     * Checks if there are unloaded nodes.If there are some nodes unloaded, throws PersistenceException.
+     * 
+     * @throws PersistenceException PersistenceException
+     */
+    public void checkLoadNodes() throws PersistenceException {
+        if (uploadedNodeNames == null || uploadedNodeNames.isEmpty()) {
+            return;
+        }
+        StringBuilder sb = new StringBuilder();
+        if (uploadedNodeNames.size() == 1) {
+            sb.append(Messages.getString("Process.component.notloaded"));
+            sb.append(" ").append(uploadedNodeNames.get(0));
+        } else {
+            sb.append(Messages.getString("Process.components.notloaded"));
+
+            for (String name : uploadedNodeNames) {
+                sb.append(" ").append(name).append(",");
+            }
+            sb.deleteCharAt(sb.length() - 1);
+        }
+        PersistenceException ex = new PersistenceException(sb.toString());
+        throw ex;
     }
 
     private void checkNodeSchemaFromRepository(Node nc, NodeType nType) {

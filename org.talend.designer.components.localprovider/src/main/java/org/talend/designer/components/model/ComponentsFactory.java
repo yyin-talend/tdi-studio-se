@@ -126,7 +126,7 @@ public class ComponentsFactory implements IComponentsFactory {
                 }
             }
         }
-        return comp;
+        return null;
     }
 
     /*

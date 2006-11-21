@@ -140,6 +140,7 @@ public class ProcessEditorInput extends RepositoryEditorInput {
 
     private void loadProcess() throws PersistenceException {
         loadedProcess.loadXmlFile((ProcessType) getProcessItem().getProcess());
+        loadedProcess.checkLoadNodes();
     }
 
     /**

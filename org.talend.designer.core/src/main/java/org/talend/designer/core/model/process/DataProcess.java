@@ -187,7 +187,7 @@ public class DataProcess {
 
         // adds all connections between these nodes
         addAllMultipleComponentConnections(itemsMap, multipleComponentManager, graphicalNode, dataNode, previousNode);
-        
+
         return dataNode;
     }
 
@@ -284,6 +284,9 @@ public class DataProcess {
         for (IMultipleComponentItem curItem : itemList) {
             String uniqueName = graphicalNode.getUniqueName() + "_" + curItem.getName();
             IComponent component = ComponentsFactoryProvider.getInstance().get(curItem.getComponent());
+            if (component == null) {
+                continue;
+            }
             DataNode curNode = new DataNode(component, uniqueName);
             curNode.setActivate(graphicalNode.isActivate());
             IMetadataTable newMetadata = graphicalNode.getMetadataList().get(0).clone();
@@ -393,6 +396,9 @@ public class DataProcess {
                 // (to replace by a Node maybe that will take the informations of an IComponent)
                 String uniqueName = HASH_COMPONENT_NAME + "_" + connection.getName();
                 IComponent component = ComponentsFactoryProvider.getInstance().get(HASH_COMPONENT_NAME);
+                if (component == null) {
+                    continue;
+                }
                 DataNode hashNode = new DataNode(component, uniqueName);
                 hashNode.setActivate(connection.isActivate());
                 hashNode.setStart(false);
