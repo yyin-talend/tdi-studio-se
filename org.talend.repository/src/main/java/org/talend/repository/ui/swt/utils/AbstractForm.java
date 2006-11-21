@@ -212,12 +212,12 @@ public abstract class AbstractForm extends Composite {
      * 
      * @param String
      */
-    protected void updateStatus(final int status, final String string) {
-        this.status = string;
+    protected void updateStatus(final int status, final String statusLabelText) {
+        this.status = statusLabelText;
         if (!isInWizard) {
-            if (string != null) {
+            if (statusLabelText != null) {
                 statusLabel.setBackground(getDisplay().getSystemColor(SWT.COLOR_WHITE));
-                statusLabel.setText(string);
+                statusLabel.setText(statusLabelText);
             } else {
                 statusLabel.setBackground(getDisplay().getSystemColor(SWT.COLOR_WIDGET_BACKGROUND));
                 statusLabel.setText("");
