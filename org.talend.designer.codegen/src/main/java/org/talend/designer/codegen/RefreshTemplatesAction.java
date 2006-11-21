@@ -24,22 +24,27 @@ package org.talend.designer.codegen;
 import org.eclipse.jface.action.Action;
 import org.talend.designer.codegen.model.CodeGeneratorEmittersPoolFactory;
 
-
 /**
- * DOC mhirt  class global comment. Detailled comment
- * <br/>
- *
+ * DOC mhirt class global comment. Detailled comment <br/>
+ * 
  * $Id$
- *
+ * 
  */
 public class RefreshTemplatesAction extends Action {
 
-    /* (non-Javadoc)
+    public RefreshTemplatesAction() {
+        super();
+        this.setActionDefinitionId("refreshTemplates");
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.eclipse.jface.action.Action#run()
      */
     @Override
     public void run() {
         CodeGeneratorEmittersPoolFactory.initialize();
     }
-    
+
 }
