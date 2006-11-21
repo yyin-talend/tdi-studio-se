@@ -40,14 +40,11 @@ public class FileOutputXmlNode extends ShadowNode {
     public FileOutputXmlNode(String filename, String encoding) {
         super("tFileOutputXML");
         
-        List<Map<String, String>> toto = new ArrayList<Map<String, String>>();
-        HashMap<String, String>toto2 = new HashMap<String, String>();
-        //toto2.put("TAG", "");
-        //toto.add(toto2);
+        List<Map<String, String>> rootTags = new ArrayList<Map<String, String>>();
 
         TextElementParameter param1 = new TextElementParameter("FILENAME", filename);
         TextElementParameter param2 = new TextElementParameter("ENCODING", encoding);
-        ObjectElementParameter param3 = new ObjectElementParameter("ROOT_TAGS", toto);
+        ObjectElementParameter param3 = new ObjectElementParameter("ROOT_TAGS", rootTags);
         TextElementParameter param4 = new TextElementParameter("ROW_TAG", "row");
         TextElementParameter param5 = new TextElementParameter("COLNAME_AS_TAGNAME", "false");
         TextElementParameter param6 = new TextElementParameter("FIELD_TAG", "field");
