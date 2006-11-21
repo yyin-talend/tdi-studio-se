@@ -40,6 +40,8 @@ import org.eclipse.datatools.enablement.oda.xml.util.ui.ATreeNode;
 import org.eclipse.datatools.enablement.oda.xml.util.ui.XPathPopulationUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
@@ -543,13 +545,21 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
     public void setVisible(boolean visible) {
         super.setVisible(visible);
         if (super.isVisible()) {
+            if (this.linker != null) {
+                this.linker.removeAllLinks();
+            }
             this.treePopulator.populateTree(getConnection().getXmlFilePath(), treeNode);
             ScrollBar verticalBar = availableXmlTree.getVerticalBar();
             if (verticalBar != null) {
                 verticalBar.setSelection(0);
             }
-            this.linker = new XmlToSchemaLinker(xmlToSchemaSash, availableXmlTree, tableEditorView, this.treePopulator);
-            tableEditorView.setLinker(this.linker);
+
+            if (this.linker == null) {
+                this.linker = new XmlToSchemaLinker(xmlToSchemaSash, availableXmlTree, tableEditorView, this.treePopulator);
+                tableEditorView.setLinker(this.linker);
+            } else {
+                this.linker.createLinks();
+            }
             checkFilePathAndManageIt();
             // Refresh the preview width the adapted rowSeparator
             // If metadata exist, refreshMetadata

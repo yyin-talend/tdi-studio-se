@@ -110,7 +110,7 @@ public class XmlToSchemaLinker extends TreeToTableLinker<Object, SchemaTarget> {
     /**
      * DOC amaumont Comment method "createLinks".
      */
-    private void createLinks() {
+    public void createLinks() {
         TableItem[] tableItems = table.getItems();
         List<SchemaTarget> schemaTargetList = tableEditorView.getXpathNodeSchemaModel().getBeansList();
         for (int i = 0; i < tableItems.length; i++) {

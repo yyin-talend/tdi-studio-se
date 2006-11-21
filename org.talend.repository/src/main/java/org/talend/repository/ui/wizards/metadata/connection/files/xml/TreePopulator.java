@@ -29,6 +29,8 @@ import org.apache.commons.collections.bidimap.DualHashBidiMap;
 import org.eclipse.datatools.connectivity.oda.OdaException;
 import org.eclipse.datatools.enablement.oda.xml.util.ui.ATreeNode;
 import org.eclipse.datatools.enablement.oda.xml.util.ui.SchemaPopulationUtil;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 import org.talend.commons.exception.ExceptionHandler;
@@ -68,8 +70,7 @@ public class TreePopulator {
      * 
      */
     public void populateTree(String filePath, ATreeNode treeNode) {
-        // availableXmlTree.clearAll(true);
-        availableXmlTree.removeAll();
+            availableXmlTree.removeAll();
         xPathToTreeItem.clear();
         if (filePath != null && !filePath.equals("")) {
             int numberOfElement = MAXIMUM_ROWS_TO_PREVIEW;
@@ -111,6 +112,7 @@ public class TreePopulator {
                 } else {
                     treeItem = new TreeItem((TreeItem) tree, 0);
                 }
+                
                 ATreeNode treeNode = (ATreeNode) node[i];
                 treeItem.setData(treeNode);
                 int type = treeNode.getType();
