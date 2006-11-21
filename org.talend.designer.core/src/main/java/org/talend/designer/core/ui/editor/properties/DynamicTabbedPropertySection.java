@@ -525,8 +525,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                     }
                 } else {
                 	String pid = SqlBuilderPlugin.PLUGIN_ID;
-                	String mainMsg = Messages.getString("DatabaseForm.checkFailure") + " "
-                    + Messages.getString("DatabaseForm.checkFailureTip");
+                	String mainMsg = Messages.getString("ConnectionError.Message");
                 	new ErrorDialogWidthDetailArea(composite.getShell(), pid, mainMsg, managerConnection.getMessageException());
                 }
                 
