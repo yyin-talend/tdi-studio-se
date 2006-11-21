@@ -44,6 +44,7 @@ import org.talend.core.model.components.IComponentsFactory;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.editor.nodes.Node;
+import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
 
 /**
  * This class creates the palette in the Gef Editor. <br/>
@@ -82,8 +83,16 @@ public final class TalendEditorPaletteFactory {
             }
 
         });
+        IPreferenceStore preferenceStore = DesignerPlugin.getDefault().getPreferenceStore();
+        boolean displayTechnical = preferenceStore.getBoolean(TalendDesignerPrefConstants.DEFAULT_DISPLAY);
+
         for (int i = 0; i < componentList.size(); i++) {
             IComponent xmlComponent = componentList.get(i);
+
+            if (!displayTechnical && !xmlComponent.isDisplay()) {
+                continue;
+            }
+
             if (xmlComponent.isLoaded()) {
                 name = xmlComponent.getName();
                 family = xmlComponent.getFamily();
@@ -103,8 +112,8 @@ public final class TalendEditorPaletteFactory {
                 ImageDescriptor imageSmall = xmlComponent.getIcon16();
                 ImageDescriptor imageLarge = xmlComponent.getIcon24();
 
-                component = new CombinedTemplateCreationEntry(name, name, Node.class, new PaletteComponentFactory(xmlComponent),
-                        imageSmall, imageLarge);
+                component = new CombinedTemplateCreationEntry(name, name, Node.class, new PaletteComponentFactory(
+                        xmlComponent), imageSmall, imageLarge);
                 component.setDescription(longName);
                 componentsDrawer.add(component);
             }

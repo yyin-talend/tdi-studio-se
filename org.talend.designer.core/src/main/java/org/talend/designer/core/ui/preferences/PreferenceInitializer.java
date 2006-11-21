@@ -46,6 +46,7 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
         store.setDefault(TalendDesignerPrefConstants.DEFAULT_LABEL, "__UNIQUE_NAME__"); //$NON-NLS-1$
         store.setDefault(TalendDesignerPrefConstants.DEFAULT_HINT, "__UNIQUE_NAME__"); //$NON-NLS-1$
         store.setDefault(TalendDesignerPrefConstants.DEFAULT_HINT_USED, false);
+        store.setDefault(TalendDesignerPrefConstants.DEFAULT_DISPLAY, false);
         store.setDefault(TalendEditorPaletteFactory.PALETTE_STATE, FlyoutPaletteComposite.STATE_PINNED_OPEN);
     }
 

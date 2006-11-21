@@ -105,8 +105,8 @@ public class EmfComponent implements IComponent {
     public EmfComponent(File file) throws SystemException {
         this.file = file;
         load();
-        codeLanguage = ((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY)).getProject()
-                .getLanguage();
+        codeLanguage = ((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY))
+                .getProject().getLanguage();
     }
 
     private String getTranslatedValue(final String nameValue) {
@@ -521,7 +521,8 @@ public class EmfComponent implements IComponent {
             param.setNotShowIf(xmlParam.getNOTSHOWIF());
             param.setRepositoryValue(xmlParam.getREPOSITORYVALUE());
 
-            if (!param.getField().equals(EParameterFieldType.TABLE) && !param.getField().equals(EParameterFieldType.CLOSED_LIST)) {
+            if (!param.getField().equals(EParameterFieldType.TABLE)
+                    && !param.getField().equals(EParameterFieldType.CLOSED_LIST)) {
                 List<DEFAULTType> listDefault = xmlParam.getDEFAULT();
                 for (DEFAULTType defaultType : listDefault) {
                     IElementParameterDefaultValue defaultValue = new ElementParameterDefaultValue();
@@ -565,8 +566,8 @@ public class EmfComponent implements IComponent {
         }
     }
 
-    public void addItemsPropertyParameters(String paramName, ITEMSType items, ElementParameter param, EParameterFieldType type,
-            IElement element) {
+    public void addItemsPropertyParameters(String paramName, ITEMSType items, ElementParameter param,
+            EParameterFieldType type, IElement element) {
         ITEMType item;
 
         int nbItems = 0;
@@ -598,7 +599,8 @@ public class EmfComponent implements IComponent {
                     listItemsValue[k] = newParam;
                 } else {
 
-                    if (currentField == EParameterFieldType.COLUMN_LIST || currentField == EParameterFieldType.PREV_COLUMN_LIST) {
+                    if (currentField == EParameterFieldType.COLUMN_LIST
+                            || currentField == EParameterFieldType.PREV_COLUMN_LIST) {
                         ElementParameter newParam = new ElementParameter(element);
                         newParam.setName(item.getNAME());
                         newParam.setDisplayName("");
@@ -792,6 +794,10 @@ public class EmfComponent implements IComponent {
         // }
     }
 
+    public boolean isDisplay() {
+        return compType.getHEADER().isDISPLAY();
+    }
+
     public String getVersion() {
         return String.valueOf(compType.getHEADER().getVERSION());
     }
@@ -809,7 +815,8 @@ public class EmfComponent implements IComponent {
                     msg = Messages.getString("modules.required");
                 }
 
-                ModuleNeeded componentImportNeeds = new ModuleNeeded(this, importType.getMODULE(), msg, importType.isREQUIRED());
+                ModuleNeeded componentImportNeeds = new ModuleNeeded(this, importType.getMODULE(), msg, importType
+                        .isREQUIRED());
 
                 componentImportNeedsList.add(componentImportNeeds);
             }

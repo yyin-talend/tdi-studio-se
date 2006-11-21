@@ -11,6 +11,7 @@
     RELEASE_DATE="20050320A"
     STARTABLE="true"
     SCHEMA_AUTO_PROPAGATE="false"
+    DISPLAY="false"
   >
     <SIGNATURE/>
   </HEADER>

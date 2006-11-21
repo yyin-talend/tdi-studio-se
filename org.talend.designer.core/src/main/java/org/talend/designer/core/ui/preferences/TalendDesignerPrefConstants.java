@@ -37,4 +37,7 @@ public class TalendDesignerPrefConstants {
 
     /** Default label used for the components. */
     public static final String DEFAULT_HINT_USED = "hintUsed";
+    
+    /** Default label used for the components. */
+    public static final String DEFAULT_DISPLAY = "displayTechnicalComponents";
 }

@@ -44,6 +44,12 @@ public class DesignerPreferencePage extends FieldEditorPreferencePage implements
         setPreferenceStore(DesignerPlugin.getDefault().getPreferenceStore());
     }
 
+    @Override
+    protected void performApply() {
+        // TODO Auto-generated method stub
+        super.performApply();
+    }
+
     /**
      * Creates the field editors. Field editors are abstractions of the common GUI blocks needed to manipulate various
      * types of preferences. Each field editor knows how to save and restore itself.
@@ -52,6 +58,7 @@ public class DesignerPreferencePage extends FieldEditorPreferencePage implements
         StringFieldEditor labelField;
         StringFieldEditor hintField;
         BooleanFieldEditor showHint;
+        BooleanFieldEditor displayComponent;
 
         labelField = new StringFieldEditor(TalendDesignerPrefConstants.DEFAULT_LABEL, "Components default label",
                 getFieldEditorParent());
@@ -59,9 +66,18 @@ public class DesignerPreferencePage extends FieldEditorPreferencePage implements
                 getFieldEditorParent());
         showHint = new BooleanFieldEditor(TalendDesignerPrefConstants.DEFAULT_HINT_USED, "Components hint showed",
                 getFieldEditorParent());
+        displayComponent = new BooleanFieldEditor(TalendDesignerPrefConstants.DEFAULT_DISPLAY,
+                "Display hidden components(need restart)", getFieldEditorParent());
+
+        System.out.println(DesignerPlugin.getDefault().getPreferenceStore().getBoolean(
+                TalendDesignerPrefConstants.DEFAULT_HINT_USED));
+        System.out.println(DesignerPlugin.getDefault().getPreferenceStore().getBoolean(
+                TalendDesignerPrefConstants.DEFAULT_DISPLAY));
+
         addField(labelField);
         addField(hintField);
         addField(showHint);
+        addField(displayComponent);
     }
 
     public void init(IWorkbench workbench) {
