@@ -21,8 +21,13 @@
 // ============================================================================
 package org.talend.sqlbuilder.util;
 
+import org.talend.core.model.metadata.IMetadataConnection;
+import org.talend.core.model.metadata.builder.ConvertionHelper;
+import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.metadata.builder.connection.Query;
+import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.ui.utils.DataStringConnection;
+import org.talend.sqlbuilder.repository.utility.SQLBuilderRepositoryNodeManager;
 
 /**
  * This class is used for representing connection parameters. <br/>
@@ -56,6 +61,16 @@ public class ConnectionParameters {
 
     private Query queryObject;
 
+    private RepositoryNode repositoryNodeBuiltIn;
+    
+    private String connectionComment;
+    /**
+	 * Getter for connectionComment.
+	 * @return the connectionComment
+	 */
+	public String getConnectionComment() {
+		return this.connectionComment;
+	}
     /**
      * Getter for queryObject.
      * 
@@ -341,4 +356,25 @@ public class ConnectionParameters {
     public String getSelectedComponentName() {
         return selectedComponentName != null ? selectedComponentName : "";
     }
+
+	/**
+	 * Getter for repositoryNodeBuiltIn.
+	 * @return the repositoryNodeBuiltIn
+	 */
+	public RepositoryNode getRepositoryNodeBuiltIn() {
+		return this.repositoryNodeBuiltIn;
+	}
+
+	/**
+	 * Sets the repositoryNodeBuiltIn.
+	 * @param repositoryNodeBuiltIn the repositoryNodeBuiltIn to set
+	 * @return boolean if connection is successful.
+	 */
+	public boolean setRepositoryNodeBuiltIn(RepositoryNode repositoryNodeBuiltIn) {
+		this.repositoryNodeBuiltIn = repositoryNodeBuiltIn;
+		DatabaseConnection databaseConnection = (DatabaseConnection) SQLBuilderRepositoryNodeManager.getItem(
+				repositoryNodeBuiltIn).getConnection();
+		this.connectionComment = databaseConnection.getComment();
+		return !(databaseConnection.isDivergency());
+	}
 }

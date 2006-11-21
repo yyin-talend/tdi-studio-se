@@ -58,8 +58,11 @@ import org.talend.repository.model.RepositoryNode.ENodeType;
 import org.talend.repository.model.RepositoryNode.EProperties;
 import org.talend.repository.ui.utils.ManagerConnection;
 import org.talend.sqlbuilder.SqlBuilderPlugin;
+import org.talend.sqlbuilder.dbstructure.DBTreeProvider;
 import org.talend.sqlbuilder.dbstructure.RepositoryNodeType;
 import org.talend.sqlbuilder.dbstructure.SqlBuilderRepositoryObject;
+import org.talend.sqlbuilder.dbstructure.DBTreeProvider.MetadataColumnRepositoryObject;
+import org.talend.sqlbuilder.dbstructure.DBTreeProvider.MetadataTableRepositoryObject;
 import org.talend.sqlbuilder.util.ConnectionParameters;
 
 /**
@@ -75,6 +78,22 @@ public class SQLBuilderRepositoryNodeManager {
 	private static List<RepositoryNode> repositoryNodes = new ArrayList<RepositoryNode>();
 
 	private static Map<String, String> labelsAndNames = new HashMap<String, String>();
+	
+	public boolean isChangeElementColor(RepositoryNode node) {
+		boolean flag = false;
+		Object type = node.getProperties(EProperties.CONTENT_TYPE);
+		if (type.equals(RepositoryNodeType.DATABASE)) {
+			return true;
+		}
+			
+		if (type.equals(RepositoryNodeType.TABLE)) {
+			MetadataTableRepositoryObject object = (MetadataTableRepositoryObject) node.getObject();
+			MetadataTable table = object.getTable();
+			flag = table.getSourceName().equals(table.getLabel());
+			flag = flag && table.isDivergency();
+		}
+		return flag;
+	}
 	/**
 	 * DOC dev Comment method "addRepositoryNode".
 	 * 
@@ -280,7 +299,9 @@ public class SQLBuilderRepositoryNodeManager {
 		DatabaseConnection connection = createConnection(parameters);
 		IMetadataConnection iMetadataConnection = ConvertionHelper
 				.convert(connection);
-		boolean status = new ManagerConnection().check(iMetadataConnection);
+		
+		ManagerConnection managerConnection = new ManagerConnection();
+		boolean status = managerConnection.check(iMetadataConnection);
 		connection.setDivergency(!status);
 		connection.getTables().clear();
 		if (status) {
@@ -296,6 +317,8 @@ public class SQLBuilderRepositoryNodeManager {
 				table.setLabel("");
 				connection.getTables().add(table);
 			}
+		} else {
+			connection.setComment(managerConnection.getMessageException());
 		}
 		DatabaseConnectionItem item = PropertiesFactory.eINSTANCE
 				.createDatabaseConnectionItem();
@@ -315,6 +338,9 @@ public class SQLBuilderRepositoryNodeManager {
 		state.setDeleted(false);
 		item.setState(state);
 		// node.getObject().getProperty().setItem(item);
+		if (node == null) {
+			node = new RepositoryNode(null, null, ENodeType.SYSTEM_FOLDER);
+		}
 		RepositoryNode newNode = new RepositoryNode(object, node,
 				ENodeType.SYSTEM_FOLDER);
 
@@ -380,7 +406,7 @@ public class SQLBuilderRepositoryNodeManager {
 	 *            current RepositoryNode
 	 * @return DatabaseConnectionItem : item current node.
 	 */
-	private static DatabaseConnectionItem getItem(RepositoryNode newNode) {
+	public static DatabaseConnectionItem getItem(RepositoryNode newNode) {
 		IRepositoryObject repositoryObject = newNode.getObject();
 		DatabaseConnectionItem item = (DatabaseConnectionItem) repositoryObject
 				.getProperty().getItem();
