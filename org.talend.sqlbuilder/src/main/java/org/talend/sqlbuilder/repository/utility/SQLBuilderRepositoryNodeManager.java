@@ -74,6 +74,7 @@ public class SQLBuilderRepositoryNodeManager {
 	// /store all DatabaseConnection's RepositoryNode.
 	private static List<RepositoryNode> repositoryNodes = new ArrayList<RepositoryNode>();
 
+	private static Map<String, String> labelsAndNames = new HashMap<String, String>();
 	/**
 	 * DOC dev Comment method "addRepositoryNode".
 	 * 
@@ -126,19 +127,30 @@ public class SQLBuilderRepositoryNodeManager {
 				List<MetadataColumn> newcloumns = new ArrayList<MetadataColumn>();
 				for (MetadataColumn column : columns) {
 					if (!column.getLabel().equals("")) {
+						if (column.getOriginalField().equals(" ")) {
+							column.setOriginalField(labelsAndNames.get("Columns: " + column.getLabel()));
+						}
+						column.setDivergency(false);
+						column.setSynchronised(false);
 						newcloumns.add(column);
 					}
 				}
 				table.getColumns().clear();
 				table.getColumns().addAll(newcloumns);
 				if (!table.getLabel().equals("")) {
+					if (table.getSourceName().equals(" ")) {
+						table.setSourceName(labelsAndNames.get("Tables: " + table.getLabel()));
+					}
+					table.setDivergency(false);
 					newtables.add(table);
 				}
 			}
 			connection.getTables().clear();
 			connection.getTables().addAll(newtables);
-		}
+			connection.setDivergency(false);
+			}
 		repositoryNodes.clear();
+		labelsAndNames.clear();
 	}
 
 	/**
@@ -235,6 +247,21 @@ public class SQLBuilderRepositoryNodeManager {
 				}
 			}
 			fixedTables(tablesFromDB, tablesFromEMF, iMetadataConnection);
+		} else {
+			List<MetadataTable> tablesFromEMF = connection.getTables();
+			for (MetadataTable tableFromEMF : tablesFromEMF) {
+				List<MetadataColumn> columnsFromEMF = tableFromEMF
+				.getColumns();
+				for (MetadataColumn column : columnsFromEMF) {
+					labelsAndNames.put("Columns: " + column.getLabel(), column.getOriginalField());
+					column.setOriginalField(" ");
+					column.setDivergency(true);
+					column.setSynchronised(false);
+				}
+				labelsAndNames.put("Tables: " + tableFromEMF.getLabel(), tableFromEMF.getSourceName());
+				tableFromEMF.setSourceName(" ");
+				tableFromEMF.setDivergency(true);
+			}
 		}
 		
 		return oldNode;
