@@ -21,7 +21,6 @@
 // ============================================================================
 package org.talend.sqlbuilder.ui;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -30,7 +29,6 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.ProgressIndicator;
-import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -55,7 +53,6 @@ import org.talend.sqlbuilder.dbstructure.SessionTreeNodeUtils;
 import org.talend.sqlbuilder.dbstructure.nodes.INode;
 import org.talend.sqlbuilder.repository.utility.SQLBuilderRepositoryNodeManager;
 import org.talend.sqlbuilder.util.ConnectionParameters;
-import org.talend.sqlbuilder.util.UIUtils;
 
 /**
  * This Dialog is used for building sql.
@@ -171,8 +168,8 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog {
      * @param parentShell
      */
     public SQLBuilderDialog(Shell parentShell) {
-        super(parentShell);
-        setShellStyle(SWT.DIALOG_TRIM |SWT.RESIZE | SWT.RESIZE | SWT.MIN | SWT.MAX);
+        super(new Shell());
+        setShellStyle(SWT.DIALOG_TRIM | SWT.RESIZE | SWT.RESIZE | SWT.MIN | SWT.MAX);
 
     }
 
