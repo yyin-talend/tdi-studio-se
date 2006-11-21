@@ -22,9 +22,6 @@
 package org.talend.designer.codegen.startup;
 
 import org.eclipse.ui.IStartup;
-import org.talend.core.CorePlugin;
-import org.talend.core.context.Context;
-import org.talend.core.context.RepositoryContext;
 import org.talend.designer.codegen.model.CodeGeneratorEmittersPoolFactory;
 
 /**
@@ -41,9 +38,7 @@ public class CodeGeneratorStartup implements IStartup {
      * @see org.eclipse.ui.IStartup#earlyStartup()
      */
     public void earlyStartup() {
-        RepositoryContext repositoryContext = (RepositoryContext) CorePlugin.getContext().getProperty(
-                Context.REPOSITORY_CONTEXT_KEY);
-        CodeGeneratorEmittersPoolFactory.initialize(repositoryContext.getProject().getLanguage());
+        CodeGeneratorEmittersPoolFactory.initialize();
     }
 
 }

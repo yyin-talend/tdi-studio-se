@@ -81,34 +81,36 @@ public final class CodeGeneratorEmittersPoolFactory {
     }
 
     /**
-     * initialization of the poll.
+     * initialization of the pool.
      */
-    public static void initialize(ECodeLanguage codeLanguage) {
-        if (emitterPool == null) {
-            List<JetBean> jetBeans = new ArrayList<JetBean>();
+    public static void initialize() {
+        RepositoryContext repositoryContext = (RepositoryContext) CorePlugin.getContext().getProperty(
+                Context.REPOSITORY_CONTEXT_KEY);
+        ECodeLanguage codeLanguage = repositoryContext.getProject().getLanguage();
+        
+        List<JetBean> jetBeans = new ArrayList<JetBean>();
 
-            CodeGeneratorInternalTemplatesFactory templatesFactory = CodeGeneratorInternalTemplatesFactoryProvider
-                    .getInstance();
-            templatesFactory.init();
-            List<TemplateUtil> templates = templatesFactory.getTemplates();
-            for (TemplateUtil template : templates) {
-                JetBean jetBean = initializeUtilTemplate(template, codeLanguage);
-                jetBeans.add(jetBean);
-            }
-
-            IComponentsFactory componentsFactory = ComponentsFactoryProvider.getInstance();
-
-            componentsFactory.init();
-            List<IComponent> components = componentsFactory.getComponents();
-            if (components != null) {
-                ECodePart codePart = ECodePart.MAIN;
-                for (IComponent component : components) {
-                    initComponent(codeLanguage, jetBeans, codePart, component);
-                }
-            }
-            initializeEmittersPool(jetBeans);
-            initialized = true;
+        CodeGeneratorInternalTemplatesFactory templatesFactory = CodeGeneratorInternalTemplatesFactoryProvider
+                .getInstance();
+        templatesFactory.init();
+        List<TemplateUtil> templates = templatesFactory.getTemplates();
+        for (TemplateUtil template : templates) {
+            JetBean jetBean = initializeUtilTemplate(template, codeLanguage);
+            jetBeans.add(jetBean);
         }
+
+        IComponentsFactory componentsFactory = ComponentsFactoryProvider.getInstance();
+
+        componentsFactory.init();
+        List<IComponent> components = componentsFactory.getComponents();
+        if (components != null) {
+            ECodePart codePart = ECodePart.MAIN;
+            for (IComponent component : components) {
+                initComponent(codeLanguage, jetBeans, codePart, component);
+            }
+        }
+        initializeEmittersPool(jetBeans);
+        initialized = true;
     }
 
     /**
@@ -339,9 +341,7 @@ public final class CodeGeneratorEmittersPoolFactory {
      */
     public static HashMap<JetBean, JETEmitter> getEmitterPool() {
         if (emitterPool == null) {
-            RepositoryContext repositoryContext = (RepositoryContext) CorePlugin.getContext().getProperty(
-                    Context.REPOSITORY_CONTEXT_KEY);
-            initialize(repositoryContext.getProject().getLanguage());
+            initialize();
         }
         return emitterPool;
     }
