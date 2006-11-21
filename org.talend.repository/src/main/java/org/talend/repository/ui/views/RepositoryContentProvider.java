@@ -28,7 +28,6 @@ import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.utils.data.container.Container;
-import org.talend.core.model.general.Version;
 import org.talend.core.model.metadata.MetadataTable;
 import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
@@ -345,7 +344,7 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
             return repObj.getProperty();
         }
 
-        public Version getVersion() {
+        public String getVersion() {
             return repObj.getVersion();
         }
 

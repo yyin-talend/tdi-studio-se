@@ -34,7 +34,7 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 import org.talend.core.model.general.User;
-import org.talend.core.model.general.Version;
+import org.talend.core.model.general.VersionUtils;
 
 /**
  * DOC mhelleboid class global comment. Detailled comment <br/>
@@ -130,22 +130,20 @@ public class VersionAuthorSection extends AbstractSection {
     @Override
     public void refresh() {
         authorText.setText(getAuthor().getEmfUser() != null ? getAuthor().getLogin() : "");
-        versionText.setText(getVersion() != null ? getVersion().toString() : "");
+        versionText.setText(getVersion());
     }
 
     private void versionMajorUp() {
         Shell shell = getPart().getSite().getShell();
-        Version version = new Version(versionText.getText());
-        version.upMajor();
-        versionText.setText(version.toString());
+        String newVersion = VersionUtils.upMajor(versionText.getText());
+        versionText.setText(newVersion);
         beforeSave();
     }
 
     private void versionMinorUp() {
         Shell shell = getPart().getSite().getShell();
-        Version version = new Version(versionText.getText());
-        version.upMinor();
-        versionText.setText(version.toString());
+        String newVersion = VersionUtils.upMajor(versionText.getText());
+        versionText.setText(newVersion);
         beforeSave();
     }
 
@@ -153,14 +151,14 @@ public class VersionAuthorSection extends AbstractSection {
         return getObject().getAuthor();
     }
 
-    protected Version getVersion() {
+    protected String getVersion() {
         return getObject().getVersion();
     }
 
     @Override
     protected void beforeSave() {
-        Version version = new Version(versionText.getText());
-        if (!version.equals(getObject().getVersion())) {
+        String version = versionText.getText();
+        if (VersionUtils.compareTo(version, getObject().getVersion()) != 0) {
             getObject().setVersion(version);
         }
     }

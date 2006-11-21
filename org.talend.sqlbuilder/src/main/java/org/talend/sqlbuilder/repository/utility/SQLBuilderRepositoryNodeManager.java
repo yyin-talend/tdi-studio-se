@@ -33,7 +33,7 @@ import org.talend.commons.exception.PersistenceException;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
-import org.talend.core.model.general.Version;
+import org.talend.core.model.general.VersionUtils;
 import org.talend.core.model.metadata.IMetadataConnection;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.builder.ConvertionHelper;
@@ -58,10 +58,8 @@ import org.talend.repository.model.RepositoryNode.ENodeType;
 import org.talend.repository.model.RepositoryNode.EProperties;
 import org.talend.repository.ui.utils.ManagerConnection;
 import org.talend.sqlbuilder.SqlBuilderPlugin;
-import org.talend.sqlbuilder.dbstructure.DBTreeProvider;
 import org.talend.sqlbuilder.dbstructure.RepositoryNodeType;
 import org.talend.sqlbuilder.dbstructure.SqlBuilderRepositoryObject;
-import org.talend.sqlbuilder.dbstructure.DBTreeProvider.MetadataColumnRepositoryObject;
 import org.talend.sqlbuilder.dbstructure.DBTreeProvider.MetadataTableRepositoryObject;
 import org.talend.sqlbuilder.util.ConnectionParameters;
 
@@ -327,7 +325,7 @@ public class SQLBuilderRepositoryNodeManager {
 		connectionProperty.setAuthor(((RepositoryContext) CorePlugin
 				.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY))
 				.getUser().getEmfUser());
-		connectionProperty.setVersion(new Version().toString());
+		connectionProperty.setVersion(VersionUtils.DEFAULT_VERSION);
 		connectionProperty.setStatusCode("");
 
 		item.setProperty(connectionProperty);

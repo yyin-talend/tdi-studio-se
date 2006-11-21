@@ -43,7 +43,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
-import org.talend.core.model.general.Version;
+import org.talend.core.model.general.VersionUtils;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.repository.RepositoryPlugin;
@@ -297,10 +297,10 @@ public abstract class PropertiesWizardPage extends WizardPage {
 
             @Override
             public void widgetSelected(SelectionEvent e) {
-                Version version = new Version(property.getVersion());
-                version.upMajor();
-                versionText.setText(version.toString());
-                property.setVersion(version.toString());
+                String version = property.getVersion();
+                version = VersionUtils.upMajor(version);
+                versionText.setText(version);
+                property.setVersion(version);
             }
         });
 
@@ -308,10 +308,10 @@ public abstract class PropertiesWizardPage extends WizardPage {
 
             @Override
             public void widgetSelected(SelectionEvent e) {
-                Version version = new Version(property.getVersion());
-                version.upMinor();
-                versionText.setText(version.toString());
-                property.setVersion(version.toString());
+                String version = property.getVersion();
+                version = VersionUtils.upMinor(version);
+                versionText.setText(version);
+                property.setVersion(version);
             }
         });
 

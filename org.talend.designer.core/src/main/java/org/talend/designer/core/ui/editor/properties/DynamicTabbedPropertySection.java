@@ -112,9 +112,7 @@ import org.talend.core.context.RepositoryContext;
 import org.talend.core.language.perl.ICodeSyntaxChecker;
 import org.talend.core.model.components.IODataComponent;
 import org.talend.core.model.components.IODataComponentContainer;
-import org.talend.core.model.general.Version;
 import org.talend.core.model.metadata.IMetadataColumn;
-import org.talend.core.model.metadata.IMetadataConnection;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataTable;
 import org.talend.core.model.metadata.builder.ConvertionHelper;
@@ -170,9 +168,7 @@ import org.talend.designer.runprocess.language.SyntaxCheckerFactory;
 import org.talend.repository.model.IRepositoryFactory;
 import org.talend.repository.model.RepositoryConstants;
 import org.talend.repository.model.RepositoryFactoryProvider;
-import org.talend.repository.ui.utils.ManagerConnection;
 import org.talend.repository.utils.RepositoryPathProvider;
-import org.talend.sqlbuilder.SqlBuilderPlugin;
 import org.talend.sqlbuilder.repository.utility.SQLBuilderRepositoryNodeManager;
 import org.talend.sqlbuilder.ui.SQLBuilderDialog;
 import org.talend.sqlbuilder.util.ConnectionParameters;
@@ -338,36 +334,37 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                 }
 
             }
-            if (info.equals(VER_MAJ)) {
-                MessageBox mb = new MessageBox(composite.getShell(), SWT.OK | SWT.CANCEL | SWT.ICON_QUESTION);
-                mb.setText(Messages.getString("DynamicTabbedPropertySection.6")); //$NON-NLS-1$
-                mb.setMessage(Messages.getString("DynamicTabbedPropertySection.7")); //$NON-NLS-1$
-                int ret = mb.open();
-
-                if (ret == SWT.OK) {
-                    Version version = (Version) elem.getPropertyValue(EParameterFieldType.VERSION.getName());
-                    Version newVersion = new Version(version.getMajor(), version.getMinor());
-                    newVersion.upMajor();
-                    Command cmd = new PropertyChangeCommand(elem, EParameterFieldType.VERSION.getName(),
-                            (Object) newVersion);
-                    getCommandStack().execute(cmd);
-                }
-            }
-            if (info.equals(VER_MIN)) {
-                MessageBox mb = new MessageBox(composite.getShell(), SWT.OK | SWT.CANCEL | SWT.ICON_QUESTION);
-                mb.setText(Messages.getString("DynamicTabbedPropertySection.8")); //$NON-NLS-1$
-                mb.setMessage(Messages.getString("DynamicTabbedPropertySection.9")); //$NON-NLS-1$
-                int ret = mb.open();
-
-                if (ret == SWT.OK) {
-                    Version version = (Version) elem.getPropertyValue(EParameterFieldType.VERSION.getName());
-                    Version newVersion = new Version(version.getMajor(), version.getMinor());
-                    newVersion.upMinor();
-                    Command cmd = new PropertyChangeCommand(elem, EParameterFieldType.VERSION.getName(),
-                            (Object) newVersion);
-                    getCommandStack().execute(cmd);
-                }
-            }
+            // TODO SML Still in use ??
+//            if (info.equals(VER_MAJ)) {
+//                MessageBox mb = new MessageBox(composite.getShell(), SWT.OK | SWT.CANCEL | SWT.ICON_QUESTION);
+//                mb.setText(Messages.getString("DynamicTabbedPropertySection.6")); //$NON-NLS-1$
+//                mb.setMessage(Messages.getString("DynamicTabbedPropertySection.7")); //$NON-NLS-1$
+//                int ret = mb.open();
+//
+//                if (ret == SWT.OK) {
+//                    Version version = (Version) elem.getPropertyValue(EParameterFieldType.VERSION.getName());
+//                    Version newVersion = new Version(version.getMajor(), version.getMinor());
+//                    newVersion.upMajor();
+//                    Command cmd = new PropertyChangeCommand(elem, EParameterFieldType.VERSION.getName(),
+//                            (Object) newVersion);
+//                    getCommandStack().execute(cmd);
+//                }
+//            }
+//            if (info.equals(VER_MIN)) {
+//                MessageBox mb = new MessageBox(composite.getShell(), SWT.OK | SWT.CANCEL | SWT.ICON_QUESTION);
+//                mb.setText(Messages.getString("DynamicTabbedPropertySection.8")); //$NON-NLS-1$
+//                mb.setMessage(Messages.getString("DynamicTabbedPropertySection.9")); //$NON-NLS-1$
+//                int ret = mb.open();
+//
+//                if (ret == SWT.OK) {
+//                    Version version = (Version) elem.getPropertyValue(EParameterFieldType.VERSION.getName());
+//                    Version newVersion = new Version(version.getMajor(), version.getMinor());
+//                    newVersion.upMinor();
+//                    Command cmd = new PropertyChangeCommand(elem, EParameterFieldType.VERSION.getName(),
+//                            (Object) newVersion);
+//                    getCommandStack().execute(cmd);
+//                }
+//            }
             if (info.equals(SCHEMA)) {
                 Node node = (Node) elem;
                 IMetadataTable inputMetadata = null, inputMetaCopy = null;
@@ -2828,7 +2825,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                     }
                     if (param.getField() == EParameterFieldType.VERSION) {
                         Text t = (Text) object;
-                        t.setText(((Version) elem.getPropertyValue(param.getName())).toString());
+                        t.setText((String) elem.getPropertyValue(param.getName()));
                     }
                     if ((param.getField() == EParameterFieldType.MEMO_SQL)
                             || (param.getField() == EParameterFieldType.MEMO_PERL)) {

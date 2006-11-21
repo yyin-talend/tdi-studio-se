@@ -34,7 +34,7 @@ import org.talend.commons.ui.swt.dialogs.ErrorDialogWidthDetailArea;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
-import org.talend.core.model.general.Version;
+import org.talend.core.model.general.VersionUtils;
 import org.talend.core.model.metadata.builder.connection.ConnectionFactory;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.properties.ConnectionItem;
@@ -101,7 +101,7 @@ public class DatabaseWizard extends RepositoryWizard implements INewWizard {
             connectionProperty
                     .setAuthor(((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY))
                             .getUser().getEmfUser());
-            connectionProperty.setVersion(new Version().toString());
+            connectionProperty.setVersion(VersionUtils.DEFAULT_VERSION);
             connectionProperty.setStatusCode("");
 
             connectionItem = PropertiesFactory.eINSTANCE.createDatabaseConnectionItem();

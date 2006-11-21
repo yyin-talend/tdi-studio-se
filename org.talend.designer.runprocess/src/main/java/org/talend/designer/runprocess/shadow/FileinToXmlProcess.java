@@ -27,7 +27,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.talend.core.model.general.User;
-import org.talend.core.model.general.Version;
+import org.talend.core.model.general.VersionUtils;
 import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IContextListener;
 import org.talend.core.model.process.IContextManager;
@@ -128,8 +128,8 @@ public class FileinToXmlProcess<K extends FileInputNode> extends RepositoryObjec
      * 
      * @see org.talend.core.model.repository.IRepositoryProcess#getVersion()
      */
-    public Version getVersion() {
-        return new Version();
+    public String getVersion() {
+        return VersionUtils.DEFAULT_VERSION;
     }
 
     /*
@@ -173,7 +173,7 @@ public class FileinToXmlProcess<K extends FileInputNode> extends RepositoryObjec
      * 
      * @see org.talend.core.model.repository.IRepositoryProcess#setVersion(org.talend.core.model.version.Version)
      */
-    public void setVersion(Version version) {
+    public void setVersion(String version) {
         // Read only
     }
 

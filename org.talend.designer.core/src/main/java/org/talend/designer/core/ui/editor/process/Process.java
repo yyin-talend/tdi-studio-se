@@ -57,7 +57,6 @@ import org.talend.core.CorePlugin;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.general.User;
-import org.talend.core.model.general.Version;
 import org.talend.core.model.metadata.EMetadataType;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.builder.ConvertionHelper;
@@ -247,7 +246,7 @@ public class Process extends Element implements IProcess {
         param.setField(EParameterFieldType.VERSION);
         param.setDisplayName(EParameterName.VERSION.getDisplayName());
         param.setNumRow(2);
-        param.setValue(new Version());
+        param.setValue(new String());
         addElementParameter(param);
 
         param = new ElementParameter(this);
@@ -551,7 +550,8 @@ public class Process extends Element implements IProcess {
                                     }
                                 }
                                 if (found) {
-                                    if (nbValues == 0) { // current nb values in the line
+                                    if (nbValues == 0) { // current nb values
+                                        // in the line
                                         lineValues = new HashMap<String, Object>();
                                         tableValues.add(lineValues);
                                     }
@@ -594,12 +594,18 @@ public class Process extends Element implements IProcess {
         ProcessType process = fileFact.createProcessType();
         xmlDoc.setProcess(process);
 
-        // process.setName((String) getPropertyValue(EParameterName.NAME.getName()));
-        // process.setAuthor((String) getPropertyValue(EParameterName.AUTHOR.getName()));
-        // process.setStatus((String) getPropertyValue(EParameterName.STATUS.getName()));
-        // process.setVersion(((Version) getPropertyValue(EParameterName.VERSION.getName())).toString());
-        // process.setPurpose((String) getPropertyValue(EParameterName.PURPOSE.getName()));
-        // process.setDescription((String) getPropertyValue(EParameterName.DESCRIPTION.getName()));
+        // process.setName((String)
+        // getPropertyValue(EParameterName.NAME.getName()));
+        // process.setAuthor((String)
+        // getPropertyValue(EParameterName.AUTHOR.getName()));
+        // process.setStatus((String)
+        // getPropertyValue(EParameterName.STATUS.getName()));
+        // process.setVersion(((Version)
+        // getPropertyValue(EParameterName.VERSION.getName())).toString());
+        // process.setPurpose((String)
+        // getPropertyValue(EParameterName.PURPOSE.getName()));
+        // process.setDescription((String)
+        // getPropertyValue(EParameterName.DESCRIPTION.getName()));
         LogsType lType = fileFact.createLogsType();
         LogToFileType lFileType = fileFact.createLogToFileType();
         lFileType.setFilename((String) getPropertyValue(EParameterName.LOG_FILENAME.getName()));
@@ -750,11 +756,16 @@ public class Process extends Element implements IProcess {
 
     private void loadProcessProperties(ProcessType process) {
         // setPropertyValue(EParameterName.NAME.getName(), process.getName());
-        // setPropertyValue(EParameterName.AUTHOR.getName(), process.getAuthor());
-        // setPropertyValue(EParameterName.STATUS.getName(), process.getStatus());
-        // setPropertyValue(EParameterName.VERSION.getName(), new Version(process.getVersion()));
-        // setPropertyValue(EParameterName.PURPOSE.getName(), process.getPurpose());
-        // setPropertyValue(EParameterName.DESCRIPTION.getName(), process.getDescription());
+        // setPropertyValue(EParameterName.AUTHOR.getName(),
+        // process.getAuthor());
+        // setPropertyValue(EParameterName.STATUS.getName(),
+        // process.getStatus());
+        // setPropertyValue(EParameterName.VERSION.getName(), new
+        // Version(process.getVersion()));
+        // setPropertyValue(EParameterName.PURPOSE.getName(),
+        // process.getPurpose());
+        // setPropertyValue(EParameterName.DESCRIPTION.getName(),
+        // process.getDescription());
         LogsType lType = process.getLogs();
         LogToFileType lFileType = lType.getLogToFile();
         setPropertyValue(EParameterName.LOG_FILENAME.getName(), lFileType.getFilename());
@@ -857,7 +868,8 @@ public class Process extends Element implements IProcess {
                     repositoryMetadata.setTableName(uniqueName);
 
                     // get the first (and unique) metadata on the component
-                    // as it's not possible to have more than one metadata with a schema_type
+                    // as it's not possible to have more than one metadata with
+                    // a schema_type
                     mType = (MetadataType) listMetaType.get(0);
                     factory.setMetadataType(mType);
                     metadataTable = factory.getMetadataTable();
@@ -1010,7 +1022,8 @@ public class Process extends Element implements IProcess {
                         }
                     }
                 } else {
-                    // if the repository connection doesn't exists then set built-in
+                    // if the repository connection doesn't exists then set
+                    // built-in
                     node.setPropertyValue(EParameterName.PROPERTY_TYPE.getName(), EmfComponent.BUILTIN);
                 }
             }
@@ -1183,8 +1196,8 @@ public class Process extends Element implements IProcess {
      * 
      * @see org.talend.core.model.process.IRepositoryProcess#getVersion()
      */
-    public Version getVersion() {
-        return new Version(getProperty().getVersion());
+    public String getVersion() {
+        return getProperty().getVersion();
     }
 
     /*
@@ -1228,8 +1241,8 @@ public class Process extends Element implements IProcess {
      * 
      * @see org.talend.core.model.process.IRepositoryProcess#setVersion(int)
      */
-    public void setVersion(Version version) {
-        getProperty().setVersion(version.toString());
+    public void setVersion(String version) {
+        getProperty().setVersion(version);
     }
 
     // private InputStream content;
@@ -1388,7 +1401,8 @@ public class Process extends Element implements IProcess {
     private void setActivate(Node node, boolean active, Node activateNode) {
         Node mainSubProcess = node.getSubProcessStartNode(false);
 
-        // if the selected node is the start node, then everything will be desacticated
+        // if the selected node is the start node, then everything will be
+        // desacticated
         if (activateNode.isStart()) {
             for (Connection connec : (List<Connection>) node.getIncomingConnections()) {
                 if (connec.getSource().isActivate() != active) {
@@ -1430,7 +1444,8 @@ public class Process extends Element implements IProcess {
     }
 
     public void setActivate(Node node, boolean active) {
-        // desactive first the process to avoid to check the process during the activation / desactivation
+        // desactive first the process to avoid to check the process during the
+        // activation / desactivation
         setActivate(false);
         setActivate(node, active, node);
         // now that everything is set, reactivate the process
@@ -1509,7 +1524,8 @@ public class Process extends Element implements IProcess {
                         IMetadataTable metaTarget = targetNode.getMetadataList().get(0);
                         IMetadataTable metaClone = metaSource.clone();
 
-                        // if the next component can modify the schema, then the columns
+                        // if the next component can modify the schema, then the
+                        // columns
                         // will be propagated only if there's no columns.
                         if (force || targetNode.canModifySchema()) {
                             if (metaTarget.getListColumns().size() == 0) {

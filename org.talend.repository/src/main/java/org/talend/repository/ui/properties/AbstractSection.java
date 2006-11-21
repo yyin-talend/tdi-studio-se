@@ -42,7 +42,6 @@ import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.model.general.User;
-import org.talend.core.model.general.Version;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
@@ -127,11 +126,11 @@ public abstract class AbstractSection extends AbstractPropertySection {
     protected IRepositoryObject getObject() {
         return repositoryObject;
     }
-    
+
     protected RepositoryNode getNode() {
         return repositoryNode;
     }
-    
+
     protected ERepositoryObjectType getType() {
         return repositoryObject.getType();
     }
@@ -173,7 +172,7 @@ public abstract class AbstractSection extends AbstractPropertySection {
             repositoryObject = new EmptyRepositoryObject();
             enableControls(false);
             showControls(false);
-            return ;
+            return;
         }
         manageLock();
         ERepositoryObjectType type = repositoryObject.getType();
@@ -224,7 +223,7 @@ public abstract class AbstractSection extends AbstractPropertySection {
         for (AbstractSection section : REGISTERED_SECTIONS)
             section.showControl(visible);
     }
-    
+
     private static void enableControls(boolean locked) {
         for (AbstractSection section : REGISTERED_SECTIONS)
             section.enableControl(locked);
@@ -236,6 +235,7 @@ public abstract class AbstractSection extends AbstractPropertySection {
      * @param b
      */
     protected abstract void showControl(boolean visible);
+
     protected abstract void enableControl(boolean locked);
 
     protected abstract void beforeSave();
@@ -370,9 +370,9 @@ public abstract class AbstractSection extends AbstractPropertySection {
          * 
          * @see org.talend.core.model.repository.IRepositoryObject#getVersion()
          */
-        public Version getVersion() {
+        public String getVersion() {
             // TODO Auto-generated method stub
-            return new Version(0, 0);
+            return "";
         }
 
         /*
@@ -460,7 +460,7 @@ public abstract class AbstractSection extends AbstractPropertySection {
          * 
          * @see org.talend.core.model.repository.IRepositoryObject#setVersion(org.talend.core.model.general.Version)
          */
-        public void setVersion(Version version) {
+        public void setVersion(String version) {
             // TODO Auto-generated method stub
 
         }

@@ -30,7 +30,7 @@ import org.talend.commons.exception.PersistenceException;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
-import org.talend.core.model.general.Version;
+import org.talend.core.model.general.VersionUtils;
 import org.talend.core.model.properties.ByteArray;
 import org.talend.core.model.properties.DocumentationItem;
 import org.talend.core.model.properties.PropertiesFactory;
@@ -79,7 +79,7 @@ public class DocumentationCreateWizard extends RepositoryWizard implements IDocu
         property = PropertiesFactory.eINSTANCE.createProperty();
         property.setAuthor(((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY)).getUser()
                 .getEmfUser());
-        property.setVersion(new Version().toString());
+        property.setVersion(VersionUtils.DEFAULT_VERSION);
         property.setStatusCode("");
 
         documentationItem = PropertiesFactory.eINSTANCE.createDocumentationItem();

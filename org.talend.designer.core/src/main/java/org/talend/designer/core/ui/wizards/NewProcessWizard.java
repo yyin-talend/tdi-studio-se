@@ -29,12 +29,10 @@ import org.talend.commons.exception.PersistenceException;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
-import org.talend.core.model.general.Version;
+import org.talend.core.model.general.VersionUtils;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.Property;
-import org.talend.core.ui.EImage;
-import org.talend.core.ui.ImageProvider;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
 import org.talend.designer.core.model.utils.emf.talendfile.TalendFileFactory;
@@ -73,7 +71,7 @@ public class NewProcessWizard extends Wizard {
         this.property = PropertiesFactory.eINSTANCE.createProperty();
         this.property.setAuthor(((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY))
                 .getUser().getEmfUser());
-        this.property.setVersion(new Version().toString());
+        this.property.setVersion(VersionUtils.DEFAULT_VERSION);
         this.property.setStatusCode("");
 
         processItem = PropertiesFactory.eINSTANCE.createProcessItem();
