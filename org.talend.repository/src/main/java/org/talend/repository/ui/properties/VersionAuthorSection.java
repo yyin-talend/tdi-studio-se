@@ -130,19 +130,17 @@ public class VersionAuthorSection extends AbstractSection {
     @Override
     public void refresh() {
         authorText.setText(getAuthor().getEmfUser() != null ? getAuthor().getLogin() : "");
-        versionText.setText(getVersion());
+        versionText.setText(getVersion() == null ? "" : getVersion());
     }
 
     private void versionMajorUp() {
-        Shell shell = getPart().getSite().getShell();
         String newVersion = VersionUtils.upMajor(versionText.getText());
         versionText.setText(newVersion);
         beforeSave();
     }
 
     private void versionMinorUp() {
-        Shell shell = getPart().getSite().getShell();
-        String newVersion = VersionUtils.upMajor(versionText.getText());
+        String newVersion = VersionUtils.upMinor(versionText.getText());
         versionText.setText(newVersion);
         beforeSave();
     }
@@ -158,8 +156,11 @@ public class VersionAuthorSection extends AbstractSection {
     @Override
     protected void beforeSave() {
         String version = versionText.getText();
-        if (VersionUtils.compareTo(version, getObject().getVersion()) != 0) {
-            getObject().setVersion(version);
+        String version2 = getObject().getVersion();
+        if (version != null && version2 != null) {
+            if (VersionUtils.compareTo(version, version2) != 0) {
+                getObject().setVersion(version);
+            }
         }
     }
 

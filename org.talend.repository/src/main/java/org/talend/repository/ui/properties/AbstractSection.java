@@ -184,17 +184,17 @@ public abstract class AbstractSection extends AbstractPropertySection {
      */
     protected void manageLock() {
         boolean enableControl = false;
-        try {
+//        try {
 
-            User locker = getRepositoryFactory().getLocker(getObject());
+            User locker =null;// getRepositoryFactory().getLocker(getObject());
             if (locker != null) {
                 RepositoryContext repositoryContext = ((RepositoryContext) CorePlugin.getContext().getProperty(
                         Context.REPOSITORY_CONTEXT_KEY));
                 enableControl = locker.equals(repositoryContext.getUser());
             }
-        } catch (PersistenceException ea) {
-            ea.printStackTrace();
-        }
+//        } catch (PersistenceException ea) {
+//            ea.printStackTrace();
+//        }
         enableControls(enableControl);
     }
 
