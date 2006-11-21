@@ -132,9 +132,7 @@ public class ShadowProcess<T extends IProcessDescription> {
             ps = new FileinToXmlProcess<FileInputXmlNode>(inXmlNode, outNode);
             break;
         case FILE_LDIF:
-            FileInputLdifNode inLdifNode = new FileInputLdifNode("'" + inPath.toOSString() + "'", description
-                    .getRowSeparator(), description.getPattern(), description.getLimitRows(), description
-                    .getHeaderRow(), description.getFooterRow(), description.getRemoveEmptyRowsToSkip());
+            FileInputLdifNode inLdifNode = new FileInputLdifNode("'" + inPath.toOSString() + "'", description.getSchema());
             ps = new FileinToXmlProcess<FileInputLdifNode>(inLdifNode, outNode);
             break;
         default:

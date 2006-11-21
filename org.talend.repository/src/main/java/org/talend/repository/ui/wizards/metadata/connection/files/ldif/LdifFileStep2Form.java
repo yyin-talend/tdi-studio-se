@@ -138,7 +138,7 @@ public class LdifFileStep2Form extends AbstractLdifFileStepForm {
      */
     protected void adaptFormToReadOnly() {
         readOnly = isReadOnly();
-        rowsToSkipLimitCheckboxCombo.setReadOnly(isReadOnly());
+//        rowsToSkipLimitCheckboxCombo.setReadOnly(isReadOnly());
     }
 
     private void addGroupAttributes(final Composite mainComposite, final int width, final int height) {
@@ -218,9 +218,10 @@ public class LdifFileStep2Form extends AbstractLdifFileStepForm {
             itemTableName = new ArrayList<String>();
             itemTableName.add("dn");
 
-            int limit = 50;
+            //PTODO cantoine : if we would add a LIMIT of ENTRY read, implement this limit by report with Limit Entry
+//            int limit = 50;
             while ((entry = ldif.getNext()) != null) {
-                if (limit >= 0) {
+//                if (limit >= 0) {
                     try {
                         NamingEnumeration idsEnum = entry.getIDs();
                         while (idsEnum.hasMore()) {
@@ -232,10 +233,10 @@ public class LdifFileStep2Form extends AbstractLdifFileStepForm {
                     } catch (Exception e) {
                         System.out.println("Pb entry read " + e);
                     }
-                    limit--;
-                } else {
-                    break;
-                }
+//                    limit--;
+//                } else {
+//                    break;
+//                }
             }
 
         } catch (IOException e) {
@@ -251,22 +252,22 @@ public class LdifFileStep2Form extends AbstractLdifFileStepForm {
      * @param width
      * @param height
      */
-    private void addGroupLimit(final Composite mainComposite, final int width, final int height) {
-        // Composite Limited rows
-        Group group = Form.createGroup(mainComposite, 1, Messages.getString("FileStep2.groupLimitOfRows"), height);
-        Composite compositeLimit = Form.startNewDimensionnedGridLayout(group, 3, width, height);
-
-        // Information Limit
-        Label info = new Label(compositeLimit, SWT.NONE);
-        GridData gridData = new GridData();
-        gridData.horizontalSpan = 3;
-        info.setLayoutData(gridData);
-        info.setText(Messages.getString("FileStep2.groupLimitOfRowsTip"));
-
-        // Limit
-        rowsToSkipLimitCheckboxCombo = new LabelledCheckboxCombo(compositeLimit, Messages.getString("FileStep2.limit"), Messages
-                .getString("FileStep2.limitTip"), STRING_NUMBERS_DATA, 1, true, SWT.NONE);
-    }
+//    private void addGroupLimit(final Composite mainComposite, final int width, final int height) {
+//        // Composite Limited rows
+//        Group group = Form.createGroup(mainComposite, 1, Messages.getString("FileStep2.groupLimitOfRows"), height);
+//        Composite compositeLimit = Form.startNewDimensionnedGridLayout(group, 3, width, height);
+//
+//        // Information Limit
+//        Label info = new Label(compositeLimit, SWT.NONE);
+//        GridData gridData = new GridData();
+//        gridData.horizontalSpan = 3;
+//        info.setLayoutData(gridData);
+//        info.setText(Messages.getString("FileStep2.groupLimitOfRowsTip"));
+//
+//        // Limit
+//        rowsToSkipLimitCheckboxCombo = new LabelledCheckboxCombo(compositeLimit, Messages.getString("FileStep2.limit"), Messages
+//                .getString("FileStep2.limitTip"), STRING_NUMBERS_DATA, 1, true, SWT.NONE);
+//    }
 
     /**
      * add Field to Group File Viewer.
@@ -307,7 +308,7 @@ public class LdifFileStep2Form extends AbstractLdifFileStepForm {
         // compositeFileDelimitor Main Fields
         Composite mainComposite = Form.startNewGridLayout(this, 2);
         addGroupAttributes(mainComposite, 300, 85);
-        addGroupLimit(mainComposite, 300, 85);
+//        addGroupLimit(mainComposite, 300, 85);
         addGroupFileViewer(this, 700, 210);
 
         if (!isInWizard()) {
@@ -335,16 +336,15 @@ public class LdifFileStep2Form extends AbstractLdifFileStepForm {
 
         // Adapt Header width firstRowIsCaption to preview the first line on caption or not
         Integer i = 0;
-        processDescription.setHeaderRow(i);
-
+//        processDescription.setHeaderRow(i);
         // adapt the limit to the preview
-        processDescription.setLimitRows(MAXIMUM_ROWS_TO_PREVIEW);
-        if (rowsToSkipLimitCheckboxCombo.isInteger()) {
-            i = new Integer(rowsToSkipLimitCheckboxCombo.getText());
-            if (i < MAXIMUM_ROWS_TO_PREVIEW) {
-                processDescription.setLimitRows(i);
-            }
-        }
+//        processDescription.setLimitRows(MAXIMUM_ROWS_TO_PREVIEW);
+//        if (rowsToSkipLimitCheckboxCombo.isInteger()) {
+//            i = new Integer(rowsToSkipLimitCheckboxCombo.getText());
+//            if (i < MAXIMUM_ROWS_TO_PREVIEW) {
+//                processDescription.setLimitRows(i);
+//            }
+//        }
 
         return processDescription;
     }
@@ -403,7 +403,7 @@ public class LdifFileStep2Form extends AbstractLdifFileStepForm {
      * Main Fields addControls.
      */
     protected void addFieldsListeners() {
-        addFieldsListenersGroupsRowToSkipAndLimit();
+//        addFieldsListenersGroupsRowToSkipAndLimit();
     }
 
     /**
@@ -474,22 +474,22 @@ public class LdifFileStep2Form extends AbstractLdifFileStepForm {
         previewButton.setEnabled(false);
 
         // Labelled Checkbox Combo (Row to Skip and Limit)
-        ArrayList<LabelledCheckboxCombo> labelledCheckboxCombo2Control = new ArrayList<LabelledCheckboxCombo>();
-        labelledCheckboxCombo2Control.add(rowsToSkipLimitCheckboxCombo);
-
-        Iterator<LabelledCheckboxCombo> iCheckboxCombo;
-        LabelledCheckboxCombo labelledCheckboxCombo;
-
-        for (iCheckboxCombo = labelledCheckboxCombo2Control.iterator(); iCheckboxCombo.hasNext();) {
-            labelledCheckboxCombo = iCheckboxCombo.next();
-            // if the checkbox is checked, check Numeric value
-            if (labelledCheckboxCombo.getCheckbox().getSelection()) {
-                if (labelledCheckboxCombo.getText() == "") {
-                    updateStatus(IStatus.ERROR, labelledCheckboxCombo.getLabelText() + Messages.getString("FileStep2.mustBePrecised"));
-                    return false;
-                }
-            }
-        }
+//        ArrayList<LabelledCheckboxCombo> labelledCheckboxCombo2Control = new ArrayList<LabelledCheckboxCombo>();
+//        labelledCheckboxCombo2Control.add(rowsToSkipLimitCheckboxCombo);
+//
+//        Iterator<LabelledCheckboxCombo> iCheckboxCombo;
+//        LabelledCheckboxCombo labelledCheckboxCombo;
+//
+//        for (iCheckboxCombo = labelledCheckboxCombo2Control.iterator(); iCheckboxCombo.hasNext();) {
+//            labelledCheckboxCombo = iCheckboxCombo.next();
+//            // if the checkbox is checked, check Numeric value
+//            if (labelledCheckboxCombo.getCheckbox().getSelection()) {
+//                if (labelledCheckboxCombo.getText() == "") {
+//                    updateStatus(IStatus.ERROR, labelledCheckboxCombo.getLabelText() + Messages.getString("FileStep2.mustBePrecised"));
+//                    return false;
+//                }
+//            }
+//        }
         previewInformationLabel.setText("");
         previewButton.setEnabled(true);
         updateStatus(IStatus.OK, null);
@@ -545,6 +545,7 @@ public class LdifFileStep2Form extends AbstractLdifFileStepForm {
                 } else {
                     table.setEnabled(false);
                 }
+                checkFieldsValue();
             }
         });
 

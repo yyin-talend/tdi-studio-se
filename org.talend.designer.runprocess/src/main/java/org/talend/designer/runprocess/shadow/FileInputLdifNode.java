@@ -21,6 +21,10 @@
 // ============================================================================
 package org.talend.designer.runprocess.shadow;
 
+import java.util.List;
+
+import org.talend.core.model.metadata.IMetadataTable;
+
 /**
  * DOC chuger class global comment. Detailled comment <br/>
  * 
@@ -29,19 +33,18 @@ package org.talend.designer.runprocess.shadow;
  */
 public class FileInputLdifNode extends FileInputNode {
 
+    private List<IMetadataTable> metadatas = null;
+
     /**
      * Constructs a new FileInputNode.
      */
-    
-    //PTODO cantoine : voir pour les données du LdifFile a placer en PARAM pour Description&ProcessShadow
-    public FileInputLdifNode(String filename, String rowSep, String fieldSep, int limitRows, int headerRows,
-            int footerRows, boolean removeEmptyRow) {
-        super("tFileInputLdif");
 
-        String[] paramNames = new String[] { "FILENAME", "ROWSEPARATOR", "FIELDSEPARATOR", "LIMIT", "HEADER", "FOOTER",
-                "REMOVE_EMPTY_ROW" };
-        String[] paramValues = new String[] { filename, rowSep, fieldSep, Integer.toString(limitRows),
-                Integer.toString(headerRows), Integer.toString(footerRows), Boolean.toString(removeEmptyRow) };
+    // PTODO cantoine : voir pour les données du LdifFile a placer en PARAM pour Description&ProcessShadow
+    public FileInputLdifNode(String filename, List<IMetadataTable> metadatas) {
+        super("tFileInputLDIF");
+
+        String[] paramNames = new String[] { "FILENAME" };
+        String[] paramValues = new String[] { filename };
 
         for (int i = 0; i < paramNames.length; i++) {
             if (paramValues[i] != null) {
@@ -49,5 +52,26 @@ public class FileInputLdifNode extends FileInputNode {
                 addParameter(param);
             }
         }
+        setMetadataList(metadatas);
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.runprocess.shadow.ShadowNode#getMetadataList()
+     */
+    @Override
+    public List<IMetadataTable> getMetadataList() {
+        return metadatas;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.runprocess.shadow.ShadowNode#setMetadataList(java.util.List)
+     */
+    @Override
+    public void setMetadataList(List<IMetadataTable> metadataList) {
+        this.metadatas = metadataList;
     }
 }

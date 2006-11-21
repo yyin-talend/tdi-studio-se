@@ -88,10 +88,10 @@ public class LdifFileWizardPage extends WizardPage {
             public void checkPerformed(final AbstractForm source) {
 
                 if (source.isStatusOnError()) {
-                    LdifFileWizardPage.this.setPageComplete(true);
+                    LdifFileWizardPage.this.setPageComplete(false);
                     setErrorMessage(source.getStatus());
                 } else {
-                    LdifFileWizardPage.this.setPageComplete(true);
+                    LdifFileWizardPage.this.setPageComplete(isRepositoryObjectEditable);
                     setErrorMessage(null);
                     setMessage(source.getStatus());
                 }

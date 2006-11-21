@@ -21,11 +21,19 @@
 // ============================================================================
 package org.talend.repository.ui.utils;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
+import org.talend.core.model.metadata.IMetadataColumn;
+import org.talend.core.model.metadata.IMetadataTable;
+import org.talend.core.model.metadata.MetadataColumn;
+import org.talend.core.model.metadata.MetadataTable;
 import org.talend.core.model.metadata.builder.connection.FileConnection;
 import org.talend.core.model.metadata.builder.connection.LdifFileConnection;
 import org.talend.core.model.metadata.builder.connection.XmlFileConnection;
@@ -111,6 +119,32 @@ public class ShadowProcessHelper {
     public static ProcessDescription getProcessDescription(final LdifFileConnection connection) {
         ProcessDescription processDescription = new ProcessDescription();
         //PTODO cantoine voir les param envoyé pour le ProcessDescription
+        processDescription.setFilepath(connection.getFilePath());
+        List<IMetadataTable> tableSchema = new ArrayList<IMetadataTable>();
+        
+        IMetadataTable table = new MetadataTable();
+        
+        List<IMetadataColumn> schema = new ArrayList<IMetadataColumn>();
+        
+        if(connection.getValue() != null && !connection.getValue().isEmpty()){
+            Iterator<String> iterate = connection.getValue().iterator();
+            while(iterate.hasNext()){
+                
+                IMetadataColumn iMetadataColumn =  new MetadataColumn();
+                iMetadataColumn.setLabel(iterate.next());
+                iMetadataColumn.setKey(false);
+                iMetadataColumn.setLength(0);
+                iMetadataColumn.setNullable(false);
+                iMetadataColumn.setType("String");
+                iMetadataColumn.setTalendType("String");
+                
+                schema.add(iMetadataColumn);
+            }
+        }
+        table.setTableName("TOTO");
+        table.setListColumns(schema);
+        tableSchema.add(table);
+        processDescription.setSchema(tableSchema);
         return processDescription;
     }
     

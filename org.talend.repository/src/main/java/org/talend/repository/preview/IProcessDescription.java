@@ -21,6 +21,10 @@
 // ============================================================================
 package org.talend.repository.preview;
 
+import java.util.List;
+
+import org.talend.core.model.metadata.IMetadataTable;
+
 /**
  * Description of a Process.
  * 
@@ -60,6 +64,8 @@ public abstract class IProcessDescription {
     private boolean removeEmptyRow;
 
     private String encoding;
+    
+    private List<IMetadataTable> schema;
     
     /**
      * Getter for escapeCharacter.
@@ -275,5 +281,24 @@ public abstract class IProcessDescription {
      */
     public void setEncoding(String encoding) {
         this.encoding = encoding;
-    }    
+    }
+
+    
+    /**
+     * Getter for schema.
+     * @return the schema
+     */
+    public List<IMetadataTable> getSchema() {
+        return this.schema;
+    }
+
+    
+    /**
+     * Sets the schema.
+     * @param schema the schema to set
+     */
+    public void setSchema(List<IMetadataTable> schema) {
+        this.schema = schema;
+    }
+
 }

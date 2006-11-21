@@ -167,14 +167,9 @@ public class LdifFileWizard extends RepositoryWizard implements INewWizard {
             addPage(ldifFileWizardPage3);
 
             // ldifFileWizardPage0.setPageComplete(false);
-//            ldifFileWizardPage1.setPageComplete(false);
-//            ldifFileWizardPage2.setPageComplete(false);
-//            ldifFileWizardPage3.setPageComplete(false);
-
-            ldifFileWizardPage1.setPageComplete(true);
-            ldifFileWizardPage2.setPageComplete(true);
-            ldifFileWizardPage3.setPageComplete(true);
-
+            ldifFileWizardPage1.setPageComplete(false);
+            ldifFileWizardPage2.setPageComplete(false);
+            ldifFileWizardPage3.setPageComplete(false);
             
         } else {
             setWindowTitle(Messages.getString("LdifFileWizard.windowTitleUpdate"));
@@ -195,8 +190,7 @@ public class LdifFileWizard extends RepositoryWizard implements INewWizard {
             addPage(ldifFileWizardPage2);
 
             ldifFileWizardPage1.setPageComplete(true);
-//            ldifFileWizardPage2.setPageComplete(isRepositoryObjectEditable());
-            ldifFileWizardPage2.setPageComplete(true);
+            ldifFileWizardPage2.setPageComplete(isRepositoryObjectEditable());
         }
     }
 
@@ -213,7 +207,7 @@ public class LdifFileWizard extends RepositoryWizard implements INewWizard {
             formIsPerformed = ldifFileWizardPage3.isPageComplete();
         }
 
-        if (true) {
+        if (formIsPerformed) {
             closeLockStrategy();
 
             IRepositoryFactory factory = RepositoryFactoryProvider.getInstance();
