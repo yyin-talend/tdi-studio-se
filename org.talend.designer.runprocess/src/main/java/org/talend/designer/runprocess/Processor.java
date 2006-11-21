@@ -58,6 +58,10 @@ public class Processor {
     public static final int NO_STATISTICS = -1;
 
     public static final int NO_TRACES = -1;
+    
+    public static final int  WATCH_LIMITED = -1;
+    
+    public static final int WATCH_ALLOWED = 1;
 
     private static final String CTX_ARG = "--context="; //$NON-NLS-1$
 
@@ -85,12 +89,13 @@ public class Processor {
      * @param context The context to be used.
      * @param statisticsPort TCP port used to get statistics from the process, <code>NO_STATISTICS</code> if none.
      * @param tracePort TCP port used to get trace from the process, <code>NO_TRACE</code> if none.
+     * @param swatchPort 
      * @return The running process.
      * @throws ProcessorException Process failed.
      */
-    public Process run(final IContext context, int statisticsPort, int tracePort) throws ProcessorException {
+    public Process run(final IContext context, int statisticsPort, int tracePort, int swatchPort) throws ProcessorException {
         PerlProcessor plProcessor = new PerlProcessor(process, true);
-        plProcessor.generateCode(context, statisticsPort != NO_STATISTICS, tracePort != NO_TRACES, true);
+        plProcessor.generateCode(context, statisticsPort != NO_STATISTICS, tracePort != NO_TRACES, swatchPort != WATCH_LIMITED, true);
 
         String perlLib;
         try {
@@ -115,7 +120,7 @@ public class Processor {
      */
     public ILaunchConfiguration debug(final IContext context) throws ProcessorException {
         PerlProcessor plProcessor = new PerlProcessor(process, true);
-        plProcessor.generateCode(context, false, false, true);
+        plProcessor.generateCode(context, false, false, false, true);
 
         // Create LaunchConfiguration
         ILaunchManager launchManager = DebugPlugin.getDefault().getLaunchManager();

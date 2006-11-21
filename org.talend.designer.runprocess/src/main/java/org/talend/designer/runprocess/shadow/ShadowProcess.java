@@ -167,9 +167,9 @@ public class ShadowProcess<T extends IProcessDescription> {
             if (previousFile.exists()) {
                 previousFile.delete();
             }
-
+            
             Process ps = processor.run(process.getContextManager().getDefaultContext(), Processor.NO_STATISTICS,
-                    Processor.NO_TRACES);
+                    Processor.NO_TRACES,Processor.WATCH_ALLOWED);
             ProcessStreamTrashReader.readAndForget(ps);
 
             if (!outPath.toFile().exists()) {

@@ -279,7 +279,7 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
             PerlProcessor plProcessor = new PerlProcessor(process, false);
 
             try {
-                plProcessor.generateCode(process.getContextManager().getDefaultContext(), false, false, true);
+                plProcessor.generateCode(process.getContextManager().getDefaultContext(), false, false, true, true);
             } catch (ProcessorException pe) {
                 MessageBoxExceptionHandler.process(pe);
                 // ErrorDialog.openError(getSite().getShell(), Messages.getString("MultiPageTalendEditor.3"),

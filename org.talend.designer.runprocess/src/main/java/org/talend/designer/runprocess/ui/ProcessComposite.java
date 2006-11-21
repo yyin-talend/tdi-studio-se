@@ -76,6 +76,8 @@ public class ProcessComposite extends Composite {
     private static final int PERF_PORT = 3334;
     
     private static final int TRACE_PORT = 4334;
+    
+    private static final int SWATCH_PORT = 4335;
 
     private static final int H_WEIGHT = 5;
 
@@ -93,6 +95,9 @@ public class ProcessComposite extends Composite {
     
     /** Trace monitoring activated. */
     private boolean monitorTrace;
+    
+    /** Watch allowed.*/
+    private boolean watchAllowed;
 
     /** Context composite. */
     private ProcessContextComposite contextComposite;
@@ -386,7 +391,8 @@ public class ProcessComposite extends Composite {
                                 }
                                 int port = monitorPerf ? PERF_PORT : Processor.NO_STATISTICS;
                                 int portTrace = monitorTrace ? TRACE_PORT : Processor.NO_TRACES;
-                                ps = processor.run(contextComposite.getSelectedContext(), port, portTrace);
+                                int watchPort = watchAllowed? SWATCH_PORT : Processor.WATCH_LIMITED;
+                                ps = processor.run(contextComposite.getSelectedContext(), port, portTrace,watchPort);
                                 psMonitor = new ProcessMonitor(ps);
                                 new Thread(psMonitor).start();
 

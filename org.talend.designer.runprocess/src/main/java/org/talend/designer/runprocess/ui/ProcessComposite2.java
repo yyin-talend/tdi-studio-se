@@ -101,6 +101,9 @@ public class ProcessComposite2 extends Composite {
     // private Button clearLogBtn;
     private Button clearBeforeExec;
 
+    /** Show time button. */
+    private Button watchBtn;
+
     /** Exec button. */
     private Button execBtn;
 
@@ -165,8 +168,8 @@ public class ProcessComposite2 extends Composite {
         debugBtn = new Button(execHeader, SWT.PUSH);
         debugBtn.setText("Debug");
         debugBtn.setToolTipText("Launch job in debug mode");
-        debugBtn.setImage(RunProcessPlugin.imageDescriptorFromPlugin(RunProcessPlugin.PLUGIN_ID, "icons/process_debug.gif")
-                .createImage());
+        debugBtn.setImage(RunProcessPlugin.imageDescriptorFromPlugin(RunProcessPlugin.PLUGIN_ID,
+                "icons/process_debug.gif").createImage());
         FormData formData = new FormData();
         formData.top = new FormAttachment(0, 15);
         formData.left = new FormAttachment(0);
@@ -188,8 +191,8 @@ public class ProcessComposite2 extends Composite {
         killBtn = new Button(execHeader, SWT.PUSH);
         killBtn.setText(Messages.getString("ProcessComposite.kill")); //$NON-NLS-1$
         killBtn.setToolTipText(Messages.getString("ProcessComposite.killHint")); //$NON-NLS-1$
-        killBtn.setImage(RunProcessPlugin
-                .imageDescriptorFromPlugin(RunProcessPlugin.PLUGIN_ID, "icons/process_kill.gif").createImage()); //$NON-NLS-1$
+        killBtn.setImage(RunProcessPlugin.imageDescriptorFromPlugin(RunProcessPlugin.PLUGIN_ID,
+                "icons/process_kill.gif").createImage()); //$NON-NLS-1$
         setButtonLayoutData(killBtn);
         killBtn.setEnabled(false);
         formData = new FormData();
@@ -211,6 +214,22 @@ public class ProcessComposite2 extends Composite {
         formData.top = new FormAttachment(execBtn, 0, SWT.BOTTOM);
         formData.left = new FormAttachment(execBtn, 0, SWT.LEFT);
         clearBeforeExec.setLayoutData(formData);
+
+        // Added by ftang
+        watchBtn = new Button(execHeader, SWT.CHECK);
+        watchBtn.setText("Watch"); //$NON-NLS-1$
+        watchBtn.setToolTipText("Show the time of running this job"); //$NON-NLS-1$
+        watchBtn.setEnabled(false);
+        watchBtn.setSelection(true);
+        data = new GridData();
+        data.horizontalSpan = 2;
+        data.horizontalAlignment = SWT.END;
+        watchBtn.setLayoutData(data);
+        formData = new FormData();
+        formData.top = new FormAttachment(killBtn, 0, SWT.BOTTOM);
+        formData.left = new FormAttachment(clearBeforeExec, 0, SWT.RIGHT);
+        watchBtn.setLayoutData(formData);
+        // Ends
 
         Group statisticsComposite = new Group(execHeader, SWT.NONE);
         statisticsComposite.setText("Stats && Traces");
@@ -328,6 +347,15 @@ public class ProcessComposite2 extends Composite {
                 debug();
             }
         });
+
+        watchBtn.addSelectionListener(new SelectionAdapter() {
+
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                processContext.setWatchAllowed(watchBtn.getSelection());
+            }
+
+        });
     }
 
     /*
@@ -368,6 +396,7 @@ public class ProcessComposite2 extends Composite {
 
         perfBtn.setSelection(processContext != null && processContext.isMonitorPerf());
         traceBtn.setSelection(processContext != null && processContext.isMonitorTrace());
+        watchBtn.setSelection(processContext != null && processContext.isWatchAllowed());
         setRunnable(processContext != null && !processContext.isRunning());
         killBtn.setEnabled(processContext != null && processContext.isRunning());
         // clearLogBtn.setEnabled(processContext != null);
@@ -383,6 +412,7 @@ public class ProcessComposite2 extends Composite {
         debugBtn.setEnabled(runnable);
         contextComposite.setEnabled(runnable);
         clearBeforeExec.setEnabled(runnable);
+        watchBtn.setEnabled(runnable);
     }
 
     private void appendToConsole(final ProcessMessage message) {
@@ -441,6 +471,9 @@ public class ProcessComposite2 extends Composite {
         if (clearBeforeExec.getSelection()) {
             processContext.clearMessages();
         }
+        if (watchBtn.getSelection()) {
+            processContext.switchTime();
+        }
         processContext.setSelectedContext(contextComposite.getSelectedContext());
         processContext.exec(getShell());
     }
@@ -468,15 +501,16 @@ public class ProcessComposite2 extends Composite {
                             // DebugInNewWindowListener());
                             DebugUITools.launch(config, ILaunchManager.DEBUG_MODE);
                         } else {
-                            MessageDialog.openInformation(getShell(), Messages.getString("ProcessDebugDialog.errorTitle"),
-                                    Messages.getString("ProcessDebugDialog.errortext")); //$NON-NLS-1$ //$NON-NLS-2$
+                            MessageDialog.openInformation(getShell(), Messages
+                                    .getString("ProcessDebugDialog.errorTitle"), Messages
+                                    .getString("ProcessDebugDialog.errortext")); //$NON-NLS-1$ //$NON-NLS-2$
                         }
                     } catch (ProcessorException e) {
                         IStatus status = new Status(IStatus.ERROR, RunProcessPlugin.PLUGIN_ID, IStatus.OK,
                                 "Debug launch failed.", e); //$NON-NLS-1$
                         RunProcessPlugin.getDefault().getLog().log(status);
-                        MessageDialog.openError(getShell(), Messages.getString("ProcessDebugDialog.errorTitle"), Messages
-                                .getString("ProcessDebugDialog.errorText")); //$NON-NLS-1$ //$NON-NLS-2$
+                        MessageDialog.openError(getShell(), Messages.getString("ProcessDebugDialog.errorTitle"),
+                                Messages.getString("ProcessDebugDialog.errorText")); //$NON-NLS-1$ //$NON-NLS-2$
                     } finally {
                         monitor.done();
                     }
@@ -485,8 +519,8 @@ public class ProcessComposite2 extends Composite {
 
             IProgressService progressService = PlatformUI.getWorkbench().getProgressService();
             try {
-                progressService.runInUI(PlatformUI.getWorkbench().getProgressService(), worker, ResourcesPlugin.getWorkspace()
-                        .getRoot());
+                progressService.runInUI(PlatformUI.getWorkbench().getProgressService(), worker, ResourcesPlugin
+                        .getWorkspace().getRoot());
             } catch (InvocationTargetException e) {
                 e.printStackTrace();
             } catch (InterruptedException e) {

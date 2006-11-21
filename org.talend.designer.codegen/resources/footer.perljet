@@ -12,6 +12,7 @@
 	List<INode> rootNodes = (List<INode>)codeGenArgument.getArgument();
 	boolean stats = codeGenArgument.isStatistics();
 	boolean trace = codeGenArgument.isTrace();
+    boolean watch = codeGenArgument.isWatchAllowed();
 %>
 
 # +-------------------------------------------------------------------------+
@@ -49,11 +50,16 @@ StopThreadStat();
 <%
         }
 %>
-
+<%
+         if (watch) {
+%>
 printf(
-    "===\nexecution time: %.1f seconds\n===\n",
+     "===\nexecution time: %.1f seconds\n===\n",
     tv_interval($_globals{start}, [gettimeofday])
 );
+<%
+       }
+%>
 
 # +-------------------------------------------------------------------------+
 # | [footer] stops here                                                     |

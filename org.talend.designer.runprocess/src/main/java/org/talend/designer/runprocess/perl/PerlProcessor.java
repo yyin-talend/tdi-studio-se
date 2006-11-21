@@ -120,8 +120,8 @@ public class PerlProcessor {
         contextPath = new Path(filePrefix
                 + "_" + escapeFilename(context.getName()) + Messages.getString("Processor.perlExt")); //$NON-NLS-1$ //$NON-NLS-2$
     }
-
-    public void generateCode(IContext context, boolean statistics, boolean trace, boolean perlProperties)
+    
+    public void generateCode(IContext context, boolean statistics, boolean trace,  boolean watchAllowed, boolean perlProperties)
             throws ProcessorException {
         initPaths(context);
         try {
@@ -136,10 +136,10 @@ public class PerlProcessor {
                 String perlLib = getPerlLib();
                 String currentPerlProject = project.getTechnicalLabel();
                 String perlContext = getPerlContext();
-                codeGen = new CodeGenerator(process, statistics, trace, perlInterpreter, perlLib, perlContext,
+                codeGen = new CodeGenerator(process, statistics, trace, watchAllowed,perlInterpreter, perlLib, perlContext,
                         currentPerlProject);
             } else {
-                codeGen = new CodeGenerator(process, statistics, trace);
+                codeGen = new CodeGenerator(process, statistics, trace, watchAllowed);
             }
 
             String processCode = "";
