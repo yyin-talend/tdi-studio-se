@@ -365,9 +365,7 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
         tableEditorView.getExtendedTableModel().addAfterOperationListListener(new IListenableListListener() {
 
             public void handleEvent(ListenableListEvent event) {
-                if (false) {
-                    checkFieldsValue();
-                }
+                checkFieldsValue();
             }
         });
 
