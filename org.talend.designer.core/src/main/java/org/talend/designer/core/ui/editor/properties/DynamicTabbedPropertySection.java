@@ -170,8 +170,6 @@ import org.talend.repository.model.IRepositoryFactory;
 import org.talend.repository.model.RepositoryConstants;
 import org.talend.repository.model.RepositoryFactoryProvider;
 import org.talend.repository.utils.RepositoryPathProvider;
-import org.talend.sqlbuilder.repository.utility.SQLBuilderRepositoryNodeManager;
-import org.talend.sqlbuilder.ui.OpenDialogJob;
 import org.talend.sqlbuilder.ui.SQLBuilderDialog;
 import org.talend.sqlbuilder.util.ConnectionParameters;
 
@@ -478,7 +476,9 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
 
                     String type = getRepositoryItemFromRepositoryName("TYPE");
                     connParameters.setDbType(type);
-                    OpenDialogJob openDialogJob = new OpenDialogJob(connParameters);
+                    connParameters.setQuery(query);
+                    OpenDialogJob openDialogJob = new OpenDialogJob(connParameters,
+                    		composite, elem, propertyName, getCommandStack());
                     
                     IWorkbenchSiteProgressService siteps = (IWorkbenchSiteProgressService) part.getSite().getAdapter(
                             IWorkbenchSiteProgressService.class);
@@ -528,26 +528,26 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                     }
                 }
                 
-                if (connParameters.isStatus()) {
-                	Shell parentShell = new Shell(composite.getShell().getDisplay());
-                	
-                	SQLBuilderDialog dial = new SQLBuilderDialog(parentShell);
-                    connParameters.setQuery(query);
-                    dial.setConnParameters(connParameters);
-                    if (Window.OK == dial.open()) {
-                    	if (!composite.isDisposed()) {
-                    		  String sql = connParameters.getQuery();
-                              Command cmd = new PropertyChangeCommand(elem, propertyName,
-                                      "'" + sql + "'");
-                              getCommandStack().execute(cmd);
-                    	}
-                    }
-                } else {
-                	//connection failure
-                	String pid = DesignerPlugin.ID;
-                	String mainMsg = Messages.getString("ConnectionError.Message");
-                	new ErrorDialogWidthDetailArea(composite.getShell(), pid, mainMsg, connParameters.getConnectionComment());
-                }
+//                if (connParameters.isStatus()) {
+//                	Shell parentShell = new Shell(composite.getShell().getDisplay());
+//                	
+//                	SQLBuilderDialog dial = new SQLBuilderDialog(parentShell);
+//                    connParameters.setQuery(query);
+//                    dial.setConnParameters(connParameters);
+//                    if (Window.OK == dial.open()) {
+//                    	if (!composite.isDisposed()) {
+//                    		  String sql = connParameters.getQuery();
+//                              Command cmd = new PropertyChangeCommand(elem, propertyName,
+//                                      "'" + sql + "'");
+//                              getCommandStack().execute(cmd);
+//                    	}
+//                    }
+//                } else {
+//                	//connection failure
+//                	String pid = DesignerPlugin.ID;
+//                	String mainMsg = Messages.getString("ConnectionError.Message");
+//                	new ErrorDialogWidthDetailArea(composite.getShell(), pid, mainMsg, connParameters.getConnectionComment());
+//                }
                 
             }// Ends
         }
