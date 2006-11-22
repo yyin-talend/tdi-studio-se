@@ -226,7 +226,7 @@ public class FileStep2Form extends AbstractPositionalFileStepForm {
      * @param width
      * @param height
      */
-    private void addGroupDelimitedFileSettings(final Composite mainComposite, final int width, final int height) {
+    private void addGroupFileSettings(final Composite mainComposite, final int width, final int height) {
         Group group = Form.createGroup(mainComposite, 2, Messages.getString("FileStep2.groupDelimitedFileSettings"), height);
         Composite compositeFileDelimitor = Form.startNewDimensionnedGridLayout(group, 4, width, height);
 
@@ -345,31 +345,31 @@ public class FileStep2Form extends AbstractPositionalFileStepForm {
     private void addGroupFileViewer(final Composite parent, final int width, int height) {
         // composite File Preview
         previewGroup = Form.createGroup(parent, 1, Messages.getString("FileStep2.groupPreview"), height);
-        Composite compositeDelimitedFilePreviewButton = Form.startNewDimensionnedGridLayout(previewGroup, 4, width,
+        Composite compositeFilePreviewButton = Form.startNewDimensionnedGridLayout(previewGroup, 4, width,
                 HEIGHT_BUTTON_PIXEL);
         height = height - HEIGHT_BUTTON_PIXEL - 15;
 
         // File Preview Info
-        firstRowIsCaptionCheckbox = new Button(compositeDelimitedFilePreviewButton, SWT.CHECK);
+        firstRowIsCaptionCheckbox = new Button(compositeFilePreviewButton, SWT.CHECK);
         firstRowIsCaptionCheckbox.setText(Messages.getString("FileStep2.firstRowsIsCaption"));
         firstRowIsCaptionCheckbox.setAlignment(SWT.LEFT);
 
-        previewButton = new Button(compositeDelimitedFilePreviewButton, SWT.NONE);
+        previewButton = new Button(compositeFilePreviewButton, SWT.NONE);
         previewButton.setText(Messages.getString("FileStep2.refreshPreview"));
         previewButton.setSize(WIDTH_BUTTON_PIXEL, HEIGHT_BUTTON_PIXEL);
 
         // simple space
-        new Label(compositeDelimitedFilePreviewButton, SWT.NONE);
+        new Label(compositeFilePreviewButton, SWT.NONE);
         // Information Label
-        previewInformationLabel = new Label(compositeDelimitedFilePreviewButton, SWT.NONE);
+        previewInformationLabel = new Label(compositeFilePreviewButton, SWT.NONE);
         previewInformationLabel
                 .setText("                                                                                                                        ");
         previewInformationLabel.setForeground(getDisplay().getSystemColor(SWT.COLOR_BLUE));
 
-        Composite compositeDelimitedFilePreview = Form.startNewDimensionnedGridLayout(previewGroup, 1, width, height);
+        Composite compositeFilePreview = Form.startNewDimensionnedGridLayout(previewGroup, 1, width, height);
 
         // File Preview
-        fileManager = new ShadowProcessPreview(compositeDelimitedFilePreview, null, width, height - 10);
+        fileManager = new ShadowProcessPreview(compositeFilePreview, null, width, height - 10);
         fileManager.newTablePreview();
     }
 
@@ -378,7 +378,7 @@ public class FileStep2Form extends AbstractPositionalFileStepForm {
         // compositeFileDelimitor Main Fields
         Composite mainComposite = Form.startNewGridLayout(this, 2);
 
-        addGroupDelimitedFileSettings(mainComposite, 400, 110);
+        addGroupFileSettings(mainComposite, 400, 110);
         addGroupRowsToSkip(mainComposite, 300, 110);
         addGroupEscapeChar(mainComposite, 400, 85);
         addGroupLimit(mainComposite, 300, 85);
@@ -486,7 +486,7 @@ public class FileStep2Form extends AbstractPositionalFileStepForm {
      * Main Fields addControls.
      */
     protected void addFieldsListeners() {
-        addFieldsListenersGroupDelimitedFileSettings();
+        addFieldsListenersGroupFileSettings();
         addFieldsListenersGroupsRowToSkipAndLimit();
         addFieldsListenersGroupEscapeChar();
         addFieldsListenersGroupFileViewer();
@@ -699,9 +699,9 @@ public class FileStep2Form extends AbstractPositionalFileStepForm {
     }
 
     /**
-     * add Controls of Group Delimited File Settings.
+     * add Controls of Group File File Settings.
      */
-    private void addFieldsListenersGroupDelimitedFileSettings() {
+    private void addFieldsListenersGroupFileSettings() {
         // Event encodingCombo
         encodingCombo.addModifyListener(new ModifyListener() {
 
@@ -918,7 +918,7 @@ public class FileStep2Form extends AbstractPositionalFileStepForm {
             // Adapt the UI rowSeparator to the file format
             rowSeparatorManager();
 
-            // Fields to the Group Delimited File Settings
+            // Fields to the Group File Settings
             if (getConnection().getEncoding() != null && !getConnection().getEncoding().equals("")) {
                 encodingCombo.setText(getConnection().getEncoding());
             } else {

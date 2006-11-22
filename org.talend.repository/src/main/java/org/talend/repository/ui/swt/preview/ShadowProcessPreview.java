@@ -35,6 +35,7 @@ import org.talend.core.utils.XmlArray;
 import org.talend.core.utils.XmlField;
 import org.talend.core.utils.XmlRow;
 import org.talend.repository.i18n.Messages;
+import org.talend.repository.preview.ProcessDescription;
 
 /**
  * Create SWT Table to show the content of a file. <br/>
@@ -162,6 +163,65 @@ public class ShadowProcessPreview {
                 }
             } else {
                 title[i] = Messages.getString("DelimitedFilePreview.column") + " " + i;
+            }
+        }
+        this.header = title;
+
+        // clear all the item
+        table.clearAll();
+
+        // refresh the Header and the Item of the table
+        refreshPreviewHeader(title);
+        refreshPreviewItem(xmlRows, firstRowIsLabel);
+
+        refreshPreviewHeader(title);
+
+        // resize all the columns but not the table
+        for (int i = 0; i < table.getColumnCount(); i++) {
+            table.getColumn(i).pack();
+        }
+
+        // scroll to show the first col and first row
+        table.showItem(table.getItem(0));
+        table.showColumn(table.getColumn(0));
+
+    }
+    
+    /**
+     * refresh TablePreview width the first rows of the file.
+     * 
+     * @param xmlArray
+     * @param firstRowIsLabel
+     */
+    public void refreshTablePreview(final XmlArray xmlArray, final boolean firstRowIsLabel, ProcessDescription processDescription) {
+        List<XmlRow> xmlRows = xmlArray.getRows();
+
+        // init the title columns
+
+        XmlRow firstRow = xmlRows.get(0);
+
+        List<XmlField> firstRowFields = firstRow.getFields();
+
+        Integer numbersOfColumns = getRightFirstRow(xmlRows);
+
+        String[] title = new String[numbersOfColumns];
+        for (int i = 0; i < numbersOfColumns; i++) {
+            if (firstRowIsLabel) {
+                if (numbersOfColumns <= firstRowFields.size()) {
+                    if (firstRowFields.get(i).getValue() != null && !("").equals(firstRowFields.get(i).getValue())) {
+                        title[i] = firstRowFields.get(i).getValue();
+                    } else {
+                        title[i] = Messages.getString("DelimitedFilePreview.column") + " " + i;
+                    }
+                } else {
+                    if (i < firstRowFields.size()) {
+                        title[i] = firstRowFields.get(i).getValue();
+                    } else {
+                        title[i] = Messages.getString("DelimitedFilePreview.column") + " " + i;
+                    }
+                }
+            } else {
+                title[i] = ""+processDescription.getSchema().get(0).getListColumns().get(i);
             }
         }
         this.header = title;

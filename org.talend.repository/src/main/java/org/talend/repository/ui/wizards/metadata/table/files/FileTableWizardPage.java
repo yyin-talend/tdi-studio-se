@@ -26,6 +26,7 @@ import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.widgets.Composite;
 import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.metadata.builder.connection.DelimitedFileConnection;
+import org.talend.core.model.metadata.builder.connection.LdifFileConnection;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.builder.connection.PositionalFileConnection;
 import org.talend.core.model.metadata.builder.connection.RegexpFileConnection;
@@ -35,6 +36,7 @@ import org.talend.core.model.metadata.builder.connection.util.ConnectionSwitch;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.repository.ui.swt.utils.AbstractForm;
 import org.talend.repository.ui.wizards.metadata.connection.files.delimited.DelimitedFileStep3Form;
+import org.talend.repository.ui.wizards.metadata.connection.files.ldif.LdifFileStep3Form;
 import org.talend.repository.ui.wizards.metadata.connection.files.positional.FileStep3Form;
 import org.talend.repository.ui.wizards.metadata.connection.files.regexp.RegexpFileStep3Form;
 import org.talend.repository.ui.wizards.metadata.connection.files.xml.XmlFileStep3Form;
@@ -126,7 +128,16 @@ public class FileTableWizardPage extends WizardPage {
                 return xmlFileStep3Form;
             }
 
-        }.doSwitch(connection);
+            @Override
+            public Object caseLdifFileConnection(final LdifFileConnection object) {
+                LdifFileStep3Form ldifFileStep3Form = new LdifFileStep3Form(parent, connectionItem, metadataTable,
+                        TableHelper.getTableNames(object, metadataTable.getLabel()));
+                ldifFileStep3Form.setReadOnly(!isRepositoryObjectEditable);
+                ldifFileStep3Form.setListener(listener);
+                return ldifFileStep3Form;
+            }
+            
+        } .doSwitch(connection);
         setControl(theForm);
     }
 }

@@ -161,7 +161,7 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
 
     protected void addFields() {
 
-        // compositeFileDelimitor Main Fields
+        // compositeFile Main Fields
         // Composite mainComposite = Form.startNewGridLayout(this, 1);
         SashForm mainComposite = new SashForm(this, SWT.VERTICAL | SWT.SMOOTH);
         mainComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
@@ -192,7 +192,7 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
     }
 
     /**
-     * add Field to Group Delimited File Settings.
+     * add Field to Group Xml File Settings.
      * 
      * @param mainComposite
      * @param form
@@ -244,28 +244,28 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
      * @param height
      */
     private void addGroupFileViewer(final Composite parent, final int width, int height) {
-        // composite Delimited File Preview
+        // composite Xml File Preview
         Group previewGroup = Form.createGroup(parent, 1, Messages.getString("FileStep2.groupPreview"), height);
-        Composite compositeDelimitedFilePreviewButton = Form.startNewDimensionnedGridLayout(previewGroup, 4, width, HEIGHT_BUTTON_PIXEL);
+        Composite compositeXmlFilePreviewButton = Form.startNewDimensionnedGridLayout(previewGroup, 4, width, HEIGHT_BUTTON_PIXEL);
         height = height - HEIGHT_BUTTON_PIXEL - 15;
 
         // Preview Button
-        previewButton = new Button(compositeDelimitedFilePreviewButton, SWT.NONE);
+        previewButton = new Button(compositeXmlFilePreviewButton, SWT.NONE);
         previewButton.setText(Messages.getString("FileStep2.refreshPreview"));
         previewButton.setSize(WIDTH_BUTTON_PIXEL, HEIGHT_BUTTON_PIXEL);
 
         // simple space
-        new Label(compositeDelimitedFilePreviewButton, SWT.NONE);
+        new Label(compositeXmlFilePreviewButton, SWT.NONE);
         // Information Label
-        previewInformationLabel = new Label(compositeDelimitedFilePreviewButton, SWT.NONE);
+        previewInformationLabel = new Label(compositeXmlFilePreviewButton, SWT.NONE);
         previewInformationLabel
                 .setText("                                                                                                                        ");
         previewInformationLabel.setForeground(getDisplay().getSystemColor(SWT.COLOR_BLUE));
 
-        Composite compositeDelimitedFilePreview = Form.startNewDimensionnedGridLayout(previewGroup, 1, width, height);
+        Composite compositeXmlFilePreview = Form.startNewDimensionnedGridLayout(previewGroup, 1, width, height);
 
-        // Delimited File Preview
-        xmlFilePreview = new ShadowProcessPreview(compositeDelimitedFilePreview, null, width, height - 10);
+        // Xml File Preview
+        xmlFilePreview = new ShadowProcessPreview(compositeXmlFilePreview, null, width, height - 10);
         xmlFilePreview.newTablePreview();
     }
 

@@ -118,16 +118,26 @@ public class ShadowProcessHelper {
      */
     public static ProcessDescription getProcessDescription(final LdifFileConnection connection) {
         ProcessDescription processDescription = new ProcessDescription();
-        //PTODO cantoine voir les param envoyé pour le ProcessDescription
         processDescription.setFilepath(connection.getFilePath());
         List<IMetadataTable> tableSchema = new ArrayList<IMetadataTable>();
         
         IMetadataTable table = new MetadataTable();
         
         List<IMetadataColumn> schema = new ArrayList<IMetadataColumn>();
+
+        IMetadataColumn iMetadataDn =  new MetadataColumn();
+        iMetadataDn.setLabel("dn");
+        iMetadataDn.setKey(false);
+        iMetadataDn.setLength(0);
+        iMetadataDn.setNullable(false);
+        iMetadataDn.setType("String");
+        iMetadataDn.setTalendType("String");
+        
+        schema.add(iMetadataDn);
         
         if(connection.getValue() != null && !connection.getValue().isEmpty()){
             Iterator<String> iterate = connection.getValue().iterator();
+            
             while(iterate.hasNext()){
                 
                 IMetadataColumn iMetadataColumn =  new MetadataColumn();
@@ -141,7 +151,7 @@ public class ShadowProcessHelper {
                 schema.add(iMetadataColumn);
             }
         }
-        table.setTableName("TOTO");
+        table.setTableName("ldif");
         table.setListColumns(schema);
         tableSchema.add(table);
         processDescription.setSchema(tableSchema);

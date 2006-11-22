@@ -304,7 +304,7 @@ public class LdifFileStep3Form extends AbstractLdifFileStepForm {
                 informationLabel.setText("   " + Messages.getString("FileStep3.guessFailure"));
 
             } else {
-                refreshMetaDataTable(xmlArray);
+                refreshMetaDataTable(xmlArray, getProcessDescription());
             }
             
         } catch (CoreException e) {
@@ -324,7 +324,7 @@ public class LdifFileStep3Form extends AbstractLdifFileStepForm {
      * 
      * @param xmlArray
      */
-    public void refreshMetaDataTable(final XmlArray xmlArray) {
+    public void refreshMetaDataTable(final XmlArray xmlArray, ProcessDescription processDescription) {
         informationLabel.setText("   " + Messages.getString("FileStep3.guessIsDone"));
 
         // clear all items
@@ -347,24 +347,8 @@ public class LdifFileStep3Form extends AbstractLdifFileStepForm {
             String[] label = new String[numberOfCol.intValue()];
             for (int i = 0; i < numberOfCol; i++) {
                 label[i] = Messages.getString("FileStep3.column") + i;
-                if (firstRowToExtractMetadata == 1) {
-                    // String value = fields.get(i).getValue();
-                    // if (!value.equals("")) {
-                    // label[i] = value;
-                    // }
-                    if (numberOfCol <= fields.size()) {
-                        if (fields.get(i).getValue() != null && !("").equals(fields.get(i).getValue())) {
-                            label[i] = fields.get(i).getValue();
-                        } else {
-                            label[i] = Messages.getString("FileStep3.column") + " " + i;
-                        }
-                    } else {
-                        if (i < fields.size()) {
-                            label[i] = fields.get(i).getValue();
-                        } else {
-                            label[i] = Messages.getString("FileStep3.column") + " " + i;
-                        }
-                    }
+                if (firstRowToExtractMetadata == 0) {
+                    label[i] = ""+processDescription.getSchema().get(0).getListColumns().get(i);
                 }
             }
 

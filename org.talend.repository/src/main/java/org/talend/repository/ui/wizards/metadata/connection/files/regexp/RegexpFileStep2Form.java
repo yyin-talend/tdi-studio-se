@@ -139,7 +139,7 @@ public class RegexpFileStep2Form extends AbstractRegexpFileStepForm {
      */
     protected void initialize() {
 
-        // Fields to the Group Delimited File Settings
+        // Fields to the Group Regex File Settings
         if (getConnection().getEncoding() != null && !getConnection().getEncoding().equals("")) {
             encodingCombo.setText(getConnection().getEncoding());
         } else {
@@ -204,14 +204,14 @@ public class RegexpFileStep2Form extends AbstractRegexpFileStepForm {
     }
 
     /**
-     * add Field to Group Delimited File Settings.
+     * add Field to Group Regex File Settings.
      * 
      * @param mainComposite
      * @param form
      * @param width
      * @param height
      */
-    private void addGroupDelimitedFileSettings(final Composite mainComposite, final int width, final int height) {
+    private void addGroupRegexFileSettings(final Composite mainComposite, final int width, final int height) {
         Group group = Form.createGroup(mainComposite, 2, Messages.getString("FileStep2.groupDelimitedFileSettings"), height);
         Composite compositeFileDelimitor = Form.startNewDimensionnedGridLayout(group, 4, width, height);
 
@@ -329,33 +329,33 @@ public class RegexpFileStep2Form extends AbstractRegexpFileStepForm {
      * @param height
      */
     private void addGroupFileViewer(final Composite parent, final int width, int height) {
-        // composite Delimited File Preview
+        // composite Regex File Preview
         previewGroup = Form.createGroup(parent, 1, Messages.getString("FileStep2.groupPreview"), height);
-        Composite compositeDelimitedFilePreviewButton = Form.startNewDimensionnedGridLayout(previewGroup, 4, width,
+        Composite compositeRegexFilePreviewButton = Form.startNewDimensionnedGridLayout(previewGroup, 4, width,
                 HEIGHT_BUTTON_PIXEL);
         height = height - HEIGHT_BUTTON_PIXEL - 15;
 
-        // Delimited File Preview Info
-        firstRowIsCaptionCheckbox = new Button(compositeDelimitedFilePreviewButton, SWT.CHECK);
+        // Regex File Preview Info
+        firstRowIsCaptionCheckbox = new Button(compositeRegexFilePreviewButton, SWT.CHECK);
         firstRowIsCaptionCheckbox.setText(Messages.getString("FileStep2.firstRowsIsCaption"));
         firstRowIsCaptionCheckbox.setAlignment(SWT.LEFT);
 
-        previewButton = new Button(compositeDelimitedFilePreviewButton, SWT.NONE);
+        previewButton = new Button(compositeRegexFilePreviewButton, SWT.NONE);
         previewButton.setText(Messages.getString("FileStep2.refreshPreview"));
         previewButton.setSize(WIDTH_BUTTON_PIXEL, HEIGHT_BUTTON_PIXEL);
 
         // simple space
-        new Label(compositeDelimitedFilePreviewButton, SWT.NONE);
+        new Label(compositeRegexFilePreviewButton, SWT.NONE);
         // Information Label
-        previewInformationLabel = new Label(compositeDelimitedFilePreviewButton, SWT.NONE);
+        previewInformationLabel = new Label(compositeRegexFilePreviewButton, SWT.NONE);
         previewInformationLabel
                 .setText("                                                                                                                        ");
         previewInformationLabel.setForeground(getDisplay().getSystemColor(SWT.COLOR_BLUE));
 
-        Composite compositeDelimitedFilePreview = Form.startNewDimensionnedGridLayout(previewGroup, 1, width, height);
+        Composite compositeRegexFilePreview = Form.startNewDimensionnedGridLayout(previewGroup, 1, width, height);
 
-        // Delimited File Preview
-        regexpFilePreview = new ShadowProcessPreview(compositeDelimitedFilePreview, null, width, height - 10);
+        // Regex File Preview
+        regexpFilePreview = new ShadowProcessPreview(compositeRegexFilePreview, null, width, height - 10);
         regexpFilePreview.newTablePreview();
     }
 
@@ -364,7 +364,7 @@ public class RegexpFileStep2Form extends AbstractRegexpFileStepForm {
         // compositeFileDelimitor Main Fields
         Composite mainComposite = Form.startNewGridLayout(this, 2);
 
-        addGroupDelimitedFileSettings(mainComposite, 400, 110);
+        addGroupRegexFileSettings(mainComposite, 400, 110);
         addGroupRowsToSkip(mainComposite, 300, 110);
         addGroupRegex(mainComposite, 400, 85);
         addGroupLimit(mainComposite, 300, 85);
@@ -469,7 +469,7 @@ public class RegexpFileStep2Form extends AbstractRegexpFileStepForm {
      * Main Fields addControls.
      */
     protected void addFieldsListeners() {
-        addFieldsListenersGroupDelimitedFileSettings();
+        addFieldsListenersGroupRegexFileSettings();
         addFieldsListenersGroupsRowToSkipAndLimit();
         addFieldsListenersGroupsRegex();
         addFieldsListenersGroupsFileViewer();
@@ -663,9 +663,9 @@ public class RegexpFileStep2Form extends AbstractRegexpFileStepForm {
     }
 
     /**
-     * add Controls of Group Delimited File Settings.
+     * add Controls of Group Regex File Settings.
      */
-    private void addFieldsListenersGroupDelimitedFileSettings() {
+    private void addFieldsListenersGroupRegexFileSettings() {
         // Event encodingCombo
         encodingCombo.addModifyListener(new ModifyListener() {
 
@@ -866,7 +866,7 @@ public class RegexpFileStep2Form extends AbstractRegexpFileStepForm {
             // Adapt the UI rowSeparator to the file format
             rowSeparatorManager();
 
-            // Fields to the Group Delimited File Settings
+            // Fields to the Group Regex File Settings
             if (getConnection().getEncoding() != null && !getConnection().getEncoding().equals("")) {
                 encodingCombo.setText(getConnection().getEncoding());
             } else {
