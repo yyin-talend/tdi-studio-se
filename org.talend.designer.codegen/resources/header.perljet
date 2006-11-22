@@ -67,7 +67,7 @@ use Getopt::Long;
 my %opt = ();
 GetOptions(
     \%opt,
-    qw/context=s stat_port=i trace_port=i/
+    qw/context=s stat_port=i trace_port=i watch/
 );
 
 our %_context;
@@ -75,8 +75,10 @@ our %_globals;
 
 $_globals{job_name} = '<%=codeGenArgument.getJobName() %>';
 
-use Time::HiRes qw(gettimeofday tv_interval);
-$_globals{start} = [gettimeofday];
+if (defined $opt{watch}) {
+    use Time::HiRes qw(gettimeofday tv_interval);
+    $_globals{start} = [gettimeofday];
+}
 
 if (defined $opt{context}) {
     print(
