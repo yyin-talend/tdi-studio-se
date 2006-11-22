@@ -19,7 +19,7 @@
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 // ============================================================================
-package org.talend.repository.model.factoriesImpl;
+package org.talend.repository.model;
 
 import java.util.Date;
 import java.util.List;
@@ -41,8 +41,6 @@ import org.talend.core.model.repository.ERepositoryType;
 import org.talend.core.model.repository.Folder;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.model.temp.ECodeLanguage;
-import org.talend.repository.model.IRepositoryFactory;
-import org.talend.repository.model.RepositoryConstants;
 
 /**
  * Repository factory use by client. Based on implementation provide by extension point system. This class contains all
@@ -51,15 +49,15 @@ import org.talend.repository.model.RepositoryConstants;
  * $Id$
  * 
  */
-public class RepositoryFactoryImpl implements IRepositoryFactory {
+public class ProxyRepositoryFactory implements IRepositoryFactory {
 
-    private static Logger log = Logger.getLogger(RepositoryFactoryImpl.class);
+    private static Logger log = Logger.getLogger(ProxyRepositoryFactory.class);
 
     private IRepositoryFactory repositoryFactoryFromProvider;
 
     private RepositoryContext repositoryContext;
 
-    public RepositoryFactoryImpl(IRepositoryFactory repositoryFactoryFromProvider) {
+    public ProxyRepositoryFactory(IRepositoryFactory repositoryFactoryFromProvider) {
         this.repositoryFactoryFromProvider = repositoryFactoryFromProvider;
     }
 

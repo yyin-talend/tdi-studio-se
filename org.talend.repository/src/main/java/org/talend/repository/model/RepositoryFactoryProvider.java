@@ -35,7 +35,6 @@ import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.model.repository.ERepositoryType;
 import org.talend.repository.model.extensions.ExtensionPointFactory;
-import org.talend.repository.model.factoriesImpl.RepositoryFactoryImpl;
 
 /**
  * Provides, using extension points, implementation of many factories.
@@ -91,18 +90,18 @@ public class RepositoryFactoryProvider {
                 ERepositoryType type = repositoryFactory.getType();
                 switch (type) {
                 case LOCAL:
-                    localSingleton = new RepositoryFactoryImpl(repositoryFactory);
+                    localSingleton = new ProxyRepositoryFactory(repositoryFactory);
                     localSingleton.setRepositoryContext(repositoryContext);
                     localSingleton.initialize();
                     init = true;
                     break;
                 case REMOTE:
-                    remoteSingleton = new RepositoryFactoryImpl(repositoryFactory);
+                    remoteSingleton = new ProxyRepositoryFactory(repositoryFactory);
                     remoteSingleton.setRepositoryContext(repositoryContext);
                     remoteSingleton.initialize();
                     break;
                 case DATABASE:
-                    databaseSingleton = new RepositoryFactoryImpl(repositoryFactory);
+                    databaseSingleton = new ProxyRepositoryFactory(repositoryFactory);
                     databaseSingleton.setRepositoryContext(repositoryContext);
                     databaseSingleton.initialize();
                     break;
@@ -127,7 +126,7 @@ public class RepositoryFactoryProvider {
                     ERepositoryType type = repositoryFactory.getType();
                     ERepositoryType type2 = repositoryContext.getType();
                     if (type == type2) {
-                        toReturn = new RepositoryFactoryImpl(repositoryFactory);
+                        toReturn = new ProxyRepositoryFactory(repositoryFactory);
                         toReturn.setRepositoryContext(repositoryContext);
                         toReturn.initialize();
                         listSingleton.put(repositoryContext, toReturn);
