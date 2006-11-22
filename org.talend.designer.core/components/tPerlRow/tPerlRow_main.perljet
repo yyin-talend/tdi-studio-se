@@ -100,7 +100,10 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         );
 
 %>
-if (@<%= tableName %>) {
+
+my @<%=tableName%> = ();
+
+if (@<%=prevComponentName%>) {
     <%=code%>
 <%
         if (stats) {
