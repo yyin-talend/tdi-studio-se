@@ -26,8 +26,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.talend.commons.utils.VersionUtils;
 import org.talend.core.model.general.User;
-import org.talend.core.model.general.VersionUtils;
 import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IContextListener;
 import org.talend.core.model.process.IContextManager;

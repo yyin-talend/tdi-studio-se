@@ -33,8 +33,8 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
+import org.talend.commons.utils.VersionUtils;
 import org.talend.core.model.general.User;
-import org.talend.core.model.general.VersionUtils;
 
 /**
  * DOC mhelleboid class global comment. Detailled comment <br/>

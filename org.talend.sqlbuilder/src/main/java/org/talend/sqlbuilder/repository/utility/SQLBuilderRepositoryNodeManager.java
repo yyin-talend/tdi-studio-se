@@ -30,10 +30,10 @@ import java.util.List;
 import java.util.Map;
 
 import org.talend.commons.exception.PersistenceException;
+import org.talend.commons.utils.VersionUtils;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
-import org.talend.core.model.general.VersionUtils;
 import org.talend.core.model.metadata.IMetadataConnection;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.builder.ConvertionHelper;
