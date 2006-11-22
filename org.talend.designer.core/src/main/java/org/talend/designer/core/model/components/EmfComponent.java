@@ -794,8 +794,8 @@ public class EmfComponent implements IComponent {
         // }
     }
 
-    public boolean isDisplay() {
-        return compType.getHEADER().isDISPLAY();
+    public boolean isVisible() {
+        return compType.getHEADER().isVISIBLE();
     }
 
     public String getVersion() {

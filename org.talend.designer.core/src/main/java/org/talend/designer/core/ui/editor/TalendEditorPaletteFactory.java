@@ -89,7 +89,7 @@ public final class TalendEditorPaletteFactory {
         for (int i = 0; i < componentList.size(); i++) {
             IComponent xmlComponent = componentList.get(i);
 
-            if (!displayTechnical && !xmlComponent.isDisplay()) {
+            if (!displayTechnical && !xmlComponent.isVisible()) {
                 continue;
             }
 
