@@ -568,7 +568,8 @@ public class LdifFileStep2Form extends AbstractLdifFileStepForm {
             
             // Refresh the preview width the adapted rowSeparator
             // If metadata exist, refreshMetadata
-            if ((!"".equals(getConnection().getFilePath())) && (getConnection().getFilePath() != null)) {
+            if (getConnection().getFilePath() != null && !("").equals(getConnection().getFilePath())
+                    && getConnection().getValue() != null && !getConnection().getValue().isEmpty()) {
                  refreshPreview();
             }
             if (getConnection().getValue() != null && !getConnection().getValue().isEmpty()) {
