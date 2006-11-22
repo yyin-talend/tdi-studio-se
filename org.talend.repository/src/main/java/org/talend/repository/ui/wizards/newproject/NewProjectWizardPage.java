@@ -39,7 +39,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.core.model.general.Project;
-import org.talend.core.model.general.User;
+import org.talend.core.model.properties.User;
 import org.talend.core.model.temp.ECodeLanguage;
 import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.i18n.Messages;

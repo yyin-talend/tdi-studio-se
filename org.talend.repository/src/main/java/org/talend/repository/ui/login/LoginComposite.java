@@ -52,7 +52,8 @@ import org.talend.commons.exception.PersistenceException;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.model.general.Project;
-import org.talend.core.model.general.User;
+import org.talend.core.model.properties.PropertiesFactory;
+import org.talend.core.model.properties.User;
 import org.talend.core.model.repository.ERepositoryType;
 import org.talend.core.prefs.PreferenceManipulator;
 import org.talend.core.ui.EImage;
@@ -503,7 +504,10 @@ public class LoginComposite extends Composite {
     }
 
     public User getUser() {
-        return new User(userCombo.getText(), passwordText.getText());
+        User toReturn = PropertiesFactory.eINSTANCE.createUser();
+        toReturn.setLogin(userCombo.getText());
+        toReturn.setPassword(passwordText.getText());
+        return toReturn;
     }
 
     public Project getProject() {

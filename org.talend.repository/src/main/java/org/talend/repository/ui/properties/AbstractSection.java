@@ -41,8 +41,8 @@ import org.talend.commons.exception.PersistenceException;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
-import org.talend.core.model.general.User;
 import org.talend.core.model.properties.Property;
+import org.talend.core.model.properties.User;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.repository.model.IRepositoryFactory;
@@ -272,7 +272,7 @@ public abstract class AbstractSection extends AbstractPropertySection {
          */
         public User getAuthor() {
             // TODO Auto-generated method stub
-            return new User("");
+            return null;
         }
 
         /*

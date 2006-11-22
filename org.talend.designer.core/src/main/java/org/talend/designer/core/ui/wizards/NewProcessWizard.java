@@ -70,7 +70,7 @@ public class NewProcessWizard extends Wizard {
 
         this.property = PropertiesFactory.eINSTANCE.createProperty();
         this.property.setAuthor(((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY))
-                .getUser().getEmfUser());
+                .getUser());
         this.property.setVersion(VersionUtils.DEFAULT_VERSION);
         this.property.setStatusCode("");
 

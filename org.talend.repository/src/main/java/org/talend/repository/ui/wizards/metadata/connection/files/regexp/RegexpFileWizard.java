@@ -112,7 +112,7 @@ public class RegexpFileWizard extends RepositoryWizard implements INewWizard {
             connectionProperty = PropertiesFactory.eINSTANCE.createProperty();
             connectionProperty
                     .setAuthor(((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY))
-                            .getUser().getEmfUser());
+                            .getUser());
             connectionProperty.setVersion(VersionUtils.DEFAULT_VERSION);
             connectionProperty.setStatusCode("");
 

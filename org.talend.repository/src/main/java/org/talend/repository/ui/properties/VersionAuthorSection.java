@@ -29,12 +29,11 @@ import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 import org.talend.commons.utils.VersionUtils;
-import org.talend.core.model.general.User;
+import org.talend.core.model.properties.User;
 
 /**
  * DOC mhelleboid class global comment. Detailled comment <br/>
@@ -129,7 +128,7 @@ public class VersionAuthorSection extends AbstractSection {
      */
     @Override
     public void refresh() {
-        authorText.setText(getAuthor().getEmfUser() != null ? getAuthor().getLogin() : "");
+        authorText.setText(getAuthor() != null ? getAuthor().getLogin() : "");
         versionText.setText(getVersion() == null ? "" : getVersion());
     }
 

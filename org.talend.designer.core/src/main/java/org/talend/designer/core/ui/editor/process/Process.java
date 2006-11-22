@@ -53,10 +53,8 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PlatformUI;
 import org.talend.commons.exception.PersistenceException;
-import org.talend.core.CorePlugin;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.model.components.IComponent;
-import org.talend.core.model.general.User;
 import org.talend.core.model.metadata.EMetadataType;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.builder.ConvertionHelper;
@@ -76,6 +74,7 @@ import org.talend.core.model.process.INodeConnector;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.Property;
+import org.talend.core.model.properties.User;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.temp.ECodeLanguage;
 import org.talend.designer.core.i18n.Messages;
@@ -1108,9 +1107,9 @@ public class Process extends Element implements IProcess {
         boolean isLocked = true;
         boolean isDeleted = true;
         try {
-            User user = ((RepositoryContext) CorePlugin.getContext().getProperty(
-                    org.talend.core.context.Context.REPOSITORY_CONTEXT_KEY)).getUser();
-            isLocked = repFactory.isLocked(property.getItem()) && (!repFactory.getLocker(this).equals(user));
+//            User user = ((RepositoryContext) CorePlugin.getContext().getProperty(
+//                    org.talend.core.context.Context.REPOSITORY_CONTEXT_KEY)).getUser();
+            isLocked = false;//repFactory.isLocked(property.getItem()) && (!repFactory.getLocker(this).equals(user));
             isDeleted = repFactory.isDeleted(property.getItem());
         } catch (PersistenceException e) {
             // TODO Auto-generated catch block
@@ -1155,7 +1154,7 @@ public class Process extends Element implements IProcess {
      * @see org.talend.core.model.process.IRepositoryProcess#getAuthor()
      */
     public User getAuthor() {
-        return new User(getProperty().getAuthor());
+        return getProperty().getAuthor();
     }
 
     /*
@@ -1200,7 +1199,7 @@ public class Process extends Element implements IProcess {
      * @see org.talend.core.model.process.IRepositoryProcess#setAuthor(org.talend.core.model.temp.User)
      */
     public void setAuthor(User author) {
-        getProperty().setAuthor(author.getEmfUser());
+        getProperty().setAuthor(author);
     }
 
     /*

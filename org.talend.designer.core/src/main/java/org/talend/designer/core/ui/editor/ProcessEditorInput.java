@@ -40,7 +40,6 @@ import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.model.general.Project;
-import org.talend.core.model.general.User;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
 import org.talend.designer.core.ui.editor.process.Process;
@@ -130,7 +129,7 @@ public class ProcessEditorInput extends RepositoryEditorInput {
         loadedProcess.setId(getProcessItem().getProperty().getId());
         loadedProcess.setLabel(getProcessItem().getProperty().getLabel());
         loadedProcess.setVersion(getProcessItem().getProperty().getVersion());
-        loadedProcess.setAuthor(new User(getProcessItem().getProperty().getAuthor()));
+        loadedProcess.setAuthor(getProcessItem().getProperty().getAuthor());
         loadedProcess.setStatusCode(getProcessItem().getProperty().getStatusCode());
         if (loadedProcess.getStatusCode() == null) {
             loadedProcess.setStatusCode("");

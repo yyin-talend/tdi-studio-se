@@ -27,7 +27,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.talend.commons.utils.VersionUtils;
-import org.talend.core.model.general.User;
 import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IContextListener;
 import org.talend.core.model.process.IContextManager;
@@ -36,6 +35,7 @@ import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.properties.Status;
+import org.talend.core.model.properties.User;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.RepositoryObject;
 
@@ -93,7 +93,7 @@ public class FileinToXmlProcess<K extends FileInputNode> extends RepositoryObjec
      * @see org.talend.core.model.repository.IRepositoryProcess#getAuthor()
      */
     public User getAuthor() {
-        return new User("Talend");
+        return null;
     }
 
     /*
