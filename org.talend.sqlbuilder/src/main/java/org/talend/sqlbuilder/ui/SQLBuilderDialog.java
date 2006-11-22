@@ -21,6 +21,7 @@
 // ============================================================================
 package org.talend.sqlbuilder.ui;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -29,11 +30,11 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.ProgressIndicator;
+import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.BusyIndicator;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -53,6 +54,7 @@ import org.talend.sqlbuilder.dbstructure.SessionTreeNodeUtils;
 import org.talend.sqlbuilder.dbstructure.nodes.INode;
 import org.talend.sqlbuilder.repository.utility.SQLBuilderRepositoryNodeManager;
 import org.talend.sqlbuilder.util.ConnectionParameters;
+import org.talend.sqlbuilder.util.UIUtils;
 
 /**
  * This Dialog is used for building sql.
@@ -405,33 +407,37 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog {
          * @see org.eclipse.ui.actions.SelectionProviderAction#selectionChanged(org.eclipse.jface.viewers.IStructuredSelection)
          */
         public void selectionChanged(final IStructuredSelection selection) {
-            // IRunnableWithProgress progress = new IRunnableWithProgress() {
-            //
-            // public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-            // monitor.beginTask("", IProgressMonitor.UNKNOWN);
-            //
-            // monitor.done();
-            // }
-            // };
+             IRunnableWithProgress progress = new IRunnableWithProgress() {
+            
+             public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
+	             monitor.beginTask("", IProgressMonitor.UNKNOWN);
 
-            // UIUtils.runWithProgress(progress, true, getProgressMonitor(), getShell());
-            BusyIndicator.showWhile(Display.getDefault(), new Runnable() {
+	             try {
+	            	 INode node = null;
+	        		 String msg = null;
+	        		 if (!selection.isEmpty()) {
+	        			 try {
+	        				 final RepositoryNode repositoryNode = (RepositoryNode) selection.getFirstElement();
+	        				 node = nodeManager.convert2INode(repositoryNode);
+	        			 } catch (Exception e) {
+	        				 e.printStackTrace();
+	        				 msg = e.getMessage();
+	        			 }
+	        			 final INode argNode = node;
+	        			 final String argMsg = msg;
+	        			 Display.getDefault().asyncExec(new Runnable() {
+	        				 public void run() {
+	        					 dbDetailsComposite.setSelectedNode(argNode, argMsg);
+	        				 }
+	        			 });
+	        		 }
+	             } finally {
+	            	 monitor.done();
+	             }
+             } };
 
-                public void run() {
-                    INode node = null;
-                    String msg = null;
-                    if (!selection.isEmpty()) {
-                        try {
-                            RepositoryNode repositoryNode = (RepositoryNode) selection.getFirstElement();
-                            node = nodeManager.convert2INode(repositoryNode);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                            msg = e.getMessage();
-                        }
-                    }
-                    dbDetailsComposite.setSelectedNode(node, msg);
-                }
-            });
+             UIUtils.runWithProgress(progress, true, getProgressMonitor(), getShell());
+        	
         }
     }
 

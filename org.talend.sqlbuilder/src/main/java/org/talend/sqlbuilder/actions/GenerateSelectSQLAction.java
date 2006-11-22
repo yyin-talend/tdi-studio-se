@@ -48,7 +48,7 @@ import org.talend.sqlbuilder.util.ImageUtil;
 /**
  * Detailled comment for this class. <br/> $Id: GenerateSelectSQLAction.java,v 1.13 2006/11/09 07:24:13 tangfn Exp $
  * 
- * @author Hou Peiqin (Soyatec)
+ * @author phou
  * 
  */
 public class GenerateSelectSQLAction extends SelectionProviderAction {

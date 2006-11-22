@@ -64,7 +64,16 @@ public class ConnectionParameters {
     private RepositoryNode repositoryNodeBuiltIn;
     
     private String connectionComment;
-    /**
+    
+    private boolean status = true;
+    
+    public boolean isStatus() {
+		return status;
+	}
+	public void setStatus(boolean status) {
+		this.status = status;
+	}
+	/**
 	 * Getter for connectionComment.
 	 * @return the connectionComment
 	 */
@@ -370,11 +379,11 @@ public class ConnectionParameters {
 	 * @param repositoryNodeBuiltIn the repositoryNodeBuiltIn to set
 	 * @return boolean if connection is successful.
 	 */
-	public boolean setRepositoryNodeBuiltIn(RepositoryNode repositoryNodeBuiltIn) {
+	public void setRepositoryNodeBuiltIn(RepositoryNode repositoryNodeBuiltIn) {
 		this.repositoryNodeBuiltIn = repositoryNodeBuiltIn;
 		DatabaseConnection databaseConnection = (DatabaseConnection) SQLBuilderRepositoryNodeManager.getItem(
 				repositoryNodeBuiltIn).getConnection();
 		this.connectionComment = databaseConnection.getComment();
-		return !(databaseConnection.isDivergency());
+		status = !(databaseConnection.isDivergency());
 	}
 }

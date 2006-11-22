@@ -36,11 +36,14 @@ import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.ITreeViewerListener;
+import org.eclipse.jface.viewers.TreeExpansionEvent;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -67,6 +70,7 @@ import org.talend.sqlbuilder.actions.OpenQueryAction;
 import org.talend.sqlbuilder.actions.ShowQueryPropertyAction;
 import org.talend.sqlbuilder.dbstructure.DBTreeProvider;
 import org.talend.sqlbuilder.dbstructure.RepositoryNodeType;
+import org.talend.sqlbuilder.dbstructure.SqlBuilderRepositoryObject;
 import org.talend.sqlbuilder.repository.utility.SQLBuilderRepositoryNodeManager;
 import org.talend.sqlbuilder.util.ConnectionParameters;
 import org.talend.sqlbuilder.util.UIUtils;
@@ -74,7 +78,7 @@ import org.talend.sqlbuilder.util.UIUtils;
 /**
  * Detailled comment for this class. <br/> $Id: DBStructureComposite.java,v 1.40 2006/11/09 07:29:18 peiqin.hou Exp $
  * 
- * @author Hou Peiqin (Soyatec)
+ * @author phou
  * 
  */
 
@@ -115,6 +119,8 @@ public class DBStructureComposite extends Composite {
     private Separator separator = new Separator(IWorkbenchActionConstants.MB_ADDITIONS);
 
     private SQLBuilderRepositoryNodeManager repositoryNodeManager = new SQLBuilderRepositoryNodeManager();
+    
+    private final static Color RED_COLOR = Display.getDefault().getSystemColor(SWT.COLOR_RED);
 
     /**
      * Create the composite.
@@ -194,6 +200,31 @@ public class DBStructureComposite extends Composite {
 
         treeViewer.addFilter(filter);
         treeViewer.setInput(new RepositoryNode(null, null, ENodeType.SYSTEM_FOLDER));
+        
+        treeViewer.addTreeListener(new ITreeViewerListener() {
+			public void treeCollapsed(TreeExpansionEvent event) {
+//				doSetColorOrNot(event);
+			}
+			private void doSetColorOrNot(TreeExpansionEvent event) {
+				RepositoryNode clickedRepositoryNode = (RepositoryNode) event.getElement();
+				if (repositoryNodeManager.isChangeElementColor(clickedRepositoryNode)) {
+					setOppositeColor(clickedRepositoryNode);
+					treeViewer.refresh(clickedRepositoryNode, true);
+				}
+			}
+			public void treeExpanded(TreeExpansionEvent event) {
+//				doSetColorOrNot(event);
+			}
+			private void setOppositeColor(RepositoryNode clickedRepositoryNode) {
+				SqlBuilderRepositoryObject repositoryObject = (SqlBuilderRepositoryObject) clickedRepositoryNode.getObject();
+				if (repositoryObject.getColor() == null) {
+					repositoryObject.setColor(DBTreeProvider.COLOR_RED);
+				} else {
+					repositoryObject.setColor(null);
+				}
+			}
+        	
+        });
         addContextMenu();
 
     }
