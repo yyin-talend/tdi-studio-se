@@ -129,22 +129,13 @@ ITableColorProvider {
         if (isRefresh) {
             RepositoryNode repositoryNode = (RepositoryNode) parentElement;
             RepositoryNode rootNode = repositoryNodeManager.getRoot(repositoryNode);
-//            boolean isBuildIn = ((SqlBuilderRepositoryObject) rootNode.getObject()).isBuildIn();
-//            rootNode.getChildren().clear();
-//            DatabaseConnection metadataConnection = (DatabaseConnection) ((ConnectionItem) repositoryNode.getObject().getProperty()
-//                    .getItem()).getConnection();
-//			createTables(rootNode, rootNode.getObject(), metadataConnection, 
-//            		isBuildIn);
-//            createQueries(rootNode, rootNode.getObject(), metadataConnection, isBuildIn);
-//            return repositoryNode.getChildren().toArray();
-            
             RepositoryNode treeRoot = (RepositoryNode) rootNode.getParent();
             treeRoot.getChildren().clear();
             allRepositoryNodes.clear();
+            repositoryNodeManager.removeAllRepositoryNodes();
             initialize(treeRoot);
             isRefresh = false;
             return allRepositoryNodes.get(repositoryNode.getObject().getLabel()).getChildren().toArray();
-            
         } else {
             return ((RepositoryNode) parentElement).getChildren().toArray();
         }
@@ -547,13 +538,6 @@ ITableColorProvider {
 
     public Color getBackground(Object element, int columnIndex) {
         RepositoryNode repositoryNode = (RepositoryNode) element;
-//        if (repositoryNode.getProperties(EProperties.CONTENT_TYPE) == RepositoryNodeType.DATABASE) {
-//        	DatabaseConnection connection 
-//        	= (DatabaseConnection) ((ConnectionItem) repositoryNode.getObject().getProperty().getItem()).getConnection();
-//        	if (connection.isDivergency()) {
-//        		return colors.get(COLOR_RED);
-//        	}
-//        }
         return colors.get(((SqlBuilderRepositoryObject) repositoryNode.getObject()).getColor());
     }
 

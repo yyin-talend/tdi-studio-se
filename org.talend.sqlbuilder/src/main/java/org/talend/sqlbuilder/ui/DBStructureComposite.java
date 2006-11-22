@@ -205,15 +205,16 @@ public class DBStructureComposite extends Composite {
 			public void treeCollapsed(TreeExpansionEvent event) {
 //				doSetColorOrNot(event);
 			}
+			public void treeExpanded(TreeExpansionEvent event) {
+//				doSetColorOrNot(event);
+			}
+
 			private void doSetColorOrNot(TreeExpansionEvent event) {
 				RepositoryNode clickedRepositoryNode = (RepositoryNode) event.getElement();
 				if (repositoryNodeManager.isChangeElementColor(clickedRepositoryNode)) {
 					setOppositeColor(clickedRepositoryNode);
-					treeViewer.refresh(clickedRepositoryNode, true);
+					treeViewer.update(clickedRepositoryNode, null);
 				}
-			}
-			public void treeExpanded(TreeExpansionEvent event) {
-//				doSetColorOrNot(event);
 			}
 			private void setOppositeColor(RepositoryNode clickedRepositoryNode) {
 				SqlBuilderRepositoryObject repositoryObject = (SqlBuilderRepositoryObject) clickedRepositoryNode.getObject();
@@ -479,13 +480,33 @@ public class DBStructureComposite extends Composite {
             public void run() {
                 ((DBTreeProvider) treeViewer.getContentProvider()).setRefresh(true);
                 treeViewer.refresh(refreshNode, true);
-                // ((RepositoryNode) treeViewer.getInput()).getChildren().clear();
-                // treeViewer.setInput(treeViewer.getInput());
+                treeViewer.update(repositoryNodeManager.getRepositoryNodebyName(refreshNode.getObject().getLabel()), null);
+//                setColor(refreshNode);
             }
+
         });
 
     }
-
+    
+    /**
+     * Set the repositoryNode color.
+     * @param refreshNode
+     */
+    private void setColor(RepositoryNode refreshNode) {
+    	if (!treeViewer.isExpandable(refreshNode)) {
+    		if (repositoryNodeManager.isChangeElementColor(refreshNode)) {
+    			SqlBuilderRepositoryObject repositoryObject = (SqlBuilderRepositoryObject) refreshNode.getObject();
+    			repositoryObject.setColor(DBTreeProvider.COLOR_RED);
+    			treeViewer.update(refreshNode, null);
+    		}
+    	}
+    	
+    	List<RepositoryNode> nodes = refreshNode.getChildren();
+    	for (RepositoryNode node : nodes) {
+			setColor(node);
+		}
+    }
+    
     /**
      * RefreshAction.
      */

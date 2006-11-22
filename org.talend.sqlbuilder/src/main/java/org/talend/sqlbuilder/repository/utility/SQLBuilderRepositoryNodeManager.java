@@ -77,20 +77,24 @@ public class SQLBuilderRepositoryNodeManager {
 
 	private static Map<String, String> labelsAndNames = new HashMap<String, String>();
 	
-	
 	public boolean isChangeElementColor(RepositoryNode node) {
 		boolean flag = false;
 		Object type = node.getProperties(EProperties.CONTENT_TYPE);
 		if (type.equals(RepositoryNodeType.DATABASE)) {
-			return getItem(node).getConnection().isDivergency();
+			return true;
 		}
+			
 		if (type.equals(RepositoryNodeType.TABLE)) {
 			MetadataTableRepositoryObject object = (MetadataTableRepositoryObject) node.getObject();
 			MetadataTable table = object.getTable();
-			flag = table.getSourceName().equals(table.getLabel().replaceAll("-", "_"));
+			flag = table.getSourceName().equals(table.getLabel());
 			flag = flag && table.isDivergency();
 		}
 		return flag;
+	}
+	
+	public void removeAllRepositoryNodes() {
+		repositoryNodes.clear();
 	}
 	/**
 	 * DOC dev Comment method "addRepositoryNode".
@@ -357,13 +361,13 @@ public class SQLBuilderRepositoryNodeManager {
 		List<MetadataColumn> metadataColumns = new ArrayList<MetadataColumn>();
 
 		try {
-			DatabaseMetaData dbM = getDatabaseMetaData(iMetadataConnection);
+			DatabaseMetaData dbMetaData = getDatabaseMetaData(iMetadataConnection);
 
 			IMetadataTable metaTable1 = new org.talend.core.model.metadata.MetadataTable();
 			metaTable1.setLabel(table.getLabel());
 			metaTable1.setTableName(table.getSourceName());
 			metadataColumns = ExtractMetaDataFromDataBase
-					.extractMetadataColumnsFormTable(dbM, metaTable1,
+					.extractMetadataColumnsFormTable(dbMetaData, metaTable1,
 							iMetadataConnection.getDbType());
 			ExtractMetaDataUtils.closeConnection();
 		} catch (Exception e) {
@@ -436,13 +440,13 @@ public class SQLBuilderRepositoryNodeManager {
 	private List<MetadataTable> getTablesFromDB(
 			IMetadataConnection iMetadataConnection) {
 
-		DatabaseMetaData dbM = getDatabaseMetaData(iMetadataConnection);
+		DatabaseMetaData dbMetaData = getDatabaseMetaData(iMetadataConnection);
 
 		List<MetadataTable> metadataTables = new ArrayList<MetadataTable>();
 		try {
 			String[] tableTypes = { "TABLE", "VIEW" };
 			ResultSet rsTables = null;
-			rsTables = dbM.getTables(null, ExtractMetaDataUtils.schema,
+			rsTables = dbMetaData.getTables(null, ExtractMetaDataUtils.schema,
 					null, tableTypes);
 			while (rsTables.next()) {
 				MetadataTable medataTable = ConnectionFactory.eINSTANCE
