@@ -830,14 +830,8 @@ public class Process extends Element implements IProcess {
         StringBuilder sb = new StringBuilder();
         if (uploadedNodeNames.size() == 1) {
             sb.append(Messages.getString("Process.component.notloaded"));
-            sb.append(" ").append(uploadedNodeNames.get(0));
         } else {
             sb.append(Messages.getString("Process.components.notloaded"));
-
-            for (String name : uploadedNodeNames) {
-                sb.append(" ").append(name).append(",");
-            }
-            sb.deleteCharAt(sb.length() - 1);
         }
         PersistenceException ex = new PersistenceException(sb.toString());
         throw ex;
