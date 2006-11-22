@@ -74,11 +74,12 @@ public class RunProcessContext {
 
     public static final String PROP_MESSAGE_CLEAR = "RunProcessContext.Message.Cleared"; //$NON-NLS-1$
 
-   //Added by ftang
+    // Added by ftang
     private static final String PROR_SWITCH_TIME = "RunProcesscontext.Message.Watch"; //$NON-NLS-1$
-    
+
     private boolean watchAllowed;
-    //Ends
+
+    // Ends
 
     /** Change property listeners. */
     private transient PropertyChangeSupport pcsDelegate;
@@ -109,7 +110,7 @@ public class RunProcessContext {
 
     /** Monitor of the running process. */
     private PerformanceMonitor perfMonitor;
-    
+
     /** Monitor for Traces of the running process. */
     private TraceMonitor traceMonitor;
 
@@ -173,7 +174,7 @@ public class RunProcessContext {
 
     // Added by ftang
     public void switchTime() {
-        //TODO should do something here.
+        // TODO should do something here.
         firePropertyChange(PROR_SWITCH_TIME, "true", "false");
     }
 
@@ -292,7 +293,8 @@ public class RunProcessContext {
                                     traceMonitor = new TraceMonitor();
                                     new Thread(traceMonitor).start();
                                 }
-                                ps = processor.run(getSelectedContext(), getStatisticsPort(), getTracesPort(), getWatchPort());
+                                ps = processor.run(getSelectedContext(), getStatisticsPort(), getTracesPort(),
+                                        getWatchPort());
                                 psMonitor = new ProcessMonitor(ps);
                                 new Thread(psMonitor).start();
                             } catch (ProcessorException e) {
@@ -396,14 +398,12 @@ public class RunProcessContext {
                 : Processor.NO_TRACES;
         return port;
     }
-    
-    private int getWatchPort(){
+
+    private int getWatchPort() {
         int port = watchAllowed ? RunProcessPlugin.getDefault().getRunProcessContextManager().getPortForWatch(this)
                 : Processor.WATCH_LIMITED;
         return port;
     }
-    
-    
 
     /**
      * Process activity monitor. <br/>
@@ -710,21 +710,24 @@ public class RunProcessContext {
         }
     }
 
-    
     /**
      * Getter for watchAllowed.
+     * 
      * @return the watchAllowed
      */
     public boolean isWatchAllowed() {
-        return watchAllowed;
+        return this.watchAllowed;
     }
 
-    
     /**
      * Sets the watchAllowed.
+     * 
      * @param watchAllowed the watchAllowed to set
      */
     public void setWatchAllowed(boolean watchAllowed) {
-        this.watchAllowed = watchAllowed;
+        if (this.watchAllowed != watchAllowed) {
+            this.watchAllowed = watchAllowed;
+            firePropertyChange(PROR_SWITCH_TIME, Boolean.valueOf(!watchAllowed), Boolean.valueOf(watchAllowed));
+        }
     }
 }
