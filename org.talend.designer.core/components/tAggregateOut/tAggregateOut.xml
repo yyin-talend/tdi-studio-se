@@ -11,6 +11,7 @@
     STARTABLE="false"
     SCHEMA_AUTO_PROPAGATE="false"
     DATA_AUTO_PROPAGATE="false"
+    VISIBLE="false"
   >
     <SIGNATURE></SIGNATURE>
   </HEADER>
