@@ -6,7 +6,6 @@
 		org.talend.core.model.process.IConnection 
 		org.talend.core.model.metadata.IMetadataTable 
 		org.talend.core.model.process.EConnectionType 
-		org.talend.core.model.process.IExternalNode
                 org.talend.core.model.process.ElementParameterParser
 		org.talend.designer.codegen.config.CodeGeneratorArgument
 		java.util.List
@@ -37,8 +36,8 @@ $_globals{<%=node.getUniqueName() %>}{OK} = false;
 <%
 	}
 
-	if (!(node instanceof IExternalNode)) {
-		if (codePart.equals(ECodePart.MAIN)) {
+    if (codePart.equals(ECodePart.MAIN)) {
+	    if (node.getComponent().isDataAutoPropagated()) {
 			List<IMetadataTable> metadatas = node.getMetadataList();
 			if ((metadatas!=null)&&(metadatas.size()>0)) {
 				IMetadataTable metadata = metadatas.get(0);

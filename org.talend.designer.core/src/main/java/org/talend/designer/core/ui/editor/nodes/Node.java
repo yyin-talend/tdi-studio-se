@@ -995,7 +995,7 @@ public class Node extends Element implements INode {
         }
 
         // test if the columns can be checked or not
-        if (component.isCheckColumns()) {
+        if (component.isSchemaAutoPropagated()) {
             IMetadataTable inputMeta = null, outputMeta = metadataList.get(0);
             for (Connection connection : inputs) {
                 if (connection.isActivate() && connection.getLineStyle().equals(EConnectionType.FLOW_MAIN)) {
