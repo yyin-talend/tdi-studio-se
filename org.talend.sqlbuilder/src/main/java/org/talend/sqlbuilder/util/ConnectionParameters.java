@@ -67,12 +67,33 @@ public class ConnectionParameters {
     
     private boolean status = true;
     
-    public boolean isStatus() {
-		return status;
+    /**
+	 * Sets the connectionComment.
+	 * @param connectionComment the connectionComment to set
+	 */
+	public void setConnectionComment(String connectionComment) {
+		this.connectionComment = connectionComment;
 	}
+	
+	
+	/**
+	 * Getter for status.
+	 * @return the status
+	 */
+	public boolean isStatus() {
+		return this.status;
+	}
+
+
+	/**
+	 * Sets the status.
+	 * @param status the status to set
+	 */
 	public void setStatus(boolean status) {
 		this.status = status;
 	}
+
+
 	/**
 	 * Getter for connectionComment.
 	 * @return the connectionComment
@@ -381,9 +402,11 @@ public class ConnectionParameters {
 	 */
 	public void setRepositoryNodeBuiltIn(RepositoryNode repositoryNodeBuiltIn) {
 		this.repositoryNodeBuiltIn = repositoryNodeBuiltIn;
-		DatabaseConnection databaseConnection = (DatabaseConnection) SQLBuilderRepositoryNodeManager.getItem(
-				repositoryNodeBuiltIn).getConnection();
-		this.connectionComment = databaseConnection.getComment();
-		status = !(databaseConnection.isDivergency());
+		if (repositoryNodeBuiltIn != null) {
+			DatabaseConnection databaseConnection = (DatabaseConnection) SQLBuilderRepositoryNodeManager.getItem(
+					repositoryNodeBuiltIn).getConnection();
+			this.connectionComment = databaseConnection.getComment();
+			status = !(databaseConnection.isDivergency());
+		}
 	}
 }

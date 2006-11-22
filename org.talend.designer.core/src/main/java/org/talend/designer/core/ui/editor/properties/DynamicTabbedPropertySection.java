@@ -87,6 +87,7 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.progress.IWorkbenchSiteProgressService;
 import org.eclipse.ui.views.properties.tabbed.AbstractPropertySection;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
@@ -170,6 +171,7 @@ import org.talend.repository.model.RepositoryConstants;
 import org.talend.repository.model.RepositoryFactoryProvider;
 import org.talend.repository.utils.RepositoryPathProvider;
 import org.talend.sqlbuilder.repository.utility.SQLBuilderRepositoryNodeManager;
+import org.talend.sqlbuilder.ui.OpenDialogJob;
 import org.talend.sqlbuilder.ui.SQLBuilderDialog;
 import org.talend.sqlbuilder.util.ConnectionParameters;
 
@@ -455,7 +457,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                 String repositoryType = (String) elem.getPropertyValue(EParameterName.PROPERTY_TYPE.getName());
                 String propertyName = (String) button.getData(PROPERTY);
                 String query = (String) elem.getPropertyValue(propertyName);
-                boolean status = true;
+//                boolean status = true;
                 if (repositoryType.equals(EmfComponent.BUILTIN)) {
 
                     String userName = getValueFromRepositoryName("USERNAME");
@@ -476,9 +478,16 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
 
                     String type = getRepositoryItemFromRepositoryName("TYPE");
                     connParameters.setDbType(type);
-                    SQLBuilderRepositoryNodeManager manager = new SQLBuilderRepositoryNodeManager();
-                    status = connParameters.setRepositoryNodeBuiltIn(
-                    		manager.getRepositoryNodeByBuildIn(null, connParameters));
+                    OpenDialogJob openDialogJob = new OpenDialogJob(connParameters);
+                    
+                    IWorkbenchSiteProgressService siteps = (IWorkbenchSiteProgressService) part.getSite().getAdapter(
+                            IWorkbenchSiteProgressService.class);
+                    siteps.showInDialog(composite.getShell(), openDialogJob);
+                    openDialogJob.schedule();
+//                    SQLBuilderRepositoryNodeManager manager = new SQLBuilderRepositoryNodeManager();
+
+                   //                    connParameters.setRepositoryNodeBuiltIn(
+                    //                    		manager.getRepositoryNodeByBuildIn(null, connParameters));
                 } else if (repositoryType.equals(EmfComponent.REPOSITORY)) {
                     String repositoryName = "";
                     for (IElementParameter param : (List<IElementParameter>) elem.getElementParameters()) {
@@ -503,9 +512,23 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                         return;
                     }
                     connParameters.setRepositoryName(repositoryName);
+                    
+                    Shell parentShell = new Shell(composite.getShell().getDisplay());
+                	
+                	SQLBuilderDialog dial = new SQLBuilderDialog(parentShell);
+                    connParameters.setQuery(query);
+                    dial.setConnParameters(connParameters);
+                    if (Window.OK == dial.open()) {
+                    	if (!composite.isDisposed()) {
+                    		  String sql = connParameters.getQuery();
+                              Command cmd = new PropertyChangeCommand(elem, propertyName,
+                                      "'" + sql + "'");
+                              getCommandStack().execute(cmd);
+                    	}
+                    }
                 }
                 
-                if (status) {
+                if (connParameters.isStatus()) {
                 	Shell parentShell = new Shell(composite.getShell().getDisplay());
                 	
                 	SQLBuilderDialog dial = new SQLBuilderDialog(parentShell);

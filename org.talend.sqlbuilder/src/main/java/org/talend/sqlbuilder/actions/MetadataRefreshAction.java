@@ -22,8 +22,10 @@
 package org.talend.sqlbuilder.actions;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ISelectionProvider;
@@ -65,6 +67,8 @@ public class MetadataRefreshAction extends SelectionProviderAction {
 
 	private List<RepositoryNode> repositorynodes;
 	private SQLBuilderRepositoryNodeManager repositoryNodeManager = new SQLBuilderRepositoryNodeManager();
+	
+	private Map<MetadataTable, List<MetadataColumn>> oldMetaData = new HashMap<MetadataTable, List<MetadataColumn>>();
 	
 	/**
 	 * DOC dev MetadataRefreshAction constructor comment.
@@ -119,15 +123,24 @@ public class MetadataRefreshAction extends SelectionProviderAction {
 		IRepositoryObject repositoryObject = node.getObject();
 		DatabaseConnectionItem item = (DatabaseConnectionItem) repositoryObject
 				.getProperty().getItem();
-		DatabaseConnection connection = (DatabaseConnection) item
-				.getConnection();
+		return item;
+	}
+
+	/**
+	 * DOC dev Comment method "reductionConnection".
+	 * @param connection
+	 */
+	@SuppressWarnings("unchecked")
+	private void reductionConnection(DatabaseConnection connection) {
 		List<MetadataTable> tables = connection.getTables();
 		List<MetadataTable> newtables = new ArrayList<MetadataTable>();
-
+		oldMetaData.clear();
 		for (MetadataTable table : tables) {
 			List<MetadataColumn> columns = table.getColumns();
 			List<MetadataColumn> newcloumns = new ArrayList<MetadataColumn>();
+			List<MetadataColumn> oldcloumns = new ArrayList<MetadataColumn>();
 			for (MetadataColumn column : columns) {
+				oldcloumns.add(column);
 				if (!column.getLabel().equals("")) {
 					newcloumns.add(column);
 				}
@@ -137,10 +150,10 @@ public class MetadataRefreshAction extends SelectionProviderAction {
 			if (!table.getLabel().equals("")) {
 				newtables.add(table);
 			}
+			oldMetaData.put(table, oldcloumns);
 		}
 		connection.getTables().clear();
 		connection.getTables().addAll(newtables);
-		return item;
 	}
 
 	/**
@@ -153,11 +166,20 @@ public class MetadataRefreshAction extends SelectionProviderAction {
 	 * @param item
 	 *            selected DatabaseConnectionItem
 	 */
-	@SuppressWarnings("static-access")
+	@SuppressWarnings({ "static-access", "unchecked" })
 	private void saveMetadataColumn(MetadataTable tableNode,
 			MetadataColumn columnNode, DatabaseConnectionItem item) {
-		modifyMetadataColumn(tableNode, columnNode, item);
+		DatabaseConnection connection = (DatabaseConnection) item
+		.getConnection();
+		modifyMetadataColumn(tableNode, columnNode, connection);
 		saveMetaData(item);
+		connection.getTables().clear();
+		for (MetadataTable table : oldMetaData.keySet()) {
+			table.getColumns().clear();
+			table.getColumns().addAll(oldMetaData.get(table));
+			connection.getTables().add(table);
+		}
+		
 		for (RepositoryNode repositorynode : repositorynodes) {
 			((DBTreeProvider) ((TreeViewer) selectionProvider).getContentProvider()).setRefresh(true);
 			((TreeViewer) selectionProvider).refresh(repositoryNodeManager.getRoot(repositorynode), true);
@@ -175,14 +197,14 @@ public class MetadataRefreshAction extends SelectionProviderAction {
 	 *            columNode's parent.
 	 * @param columnNode
 	 *            selected columnNode
-	 * @param item
-	 *            selected DatabaseConnectionItem
+	 * @param connection
+	 *            selected DatabaseConnection
 	 */
 	@SuppressWarnings("unchecked")
 	private void modifyMetadataColumn(MetadataTable tableNode,
-			MetadataColumn columnNode, DatabaseConnectionItem item) {
+			MetadataColumn columnNode, DatabaseConnection connection) {
 		IMetadataConnection iMetadataConnection = ConvertionHelper
-				.convert((DatabaseConnection) item.getConnection());
+				.convert(connection);
 		List<MetadataColumn> metadataColumns = new ArrayList<MetadataColumn>();
 		metadataColumns = ExtractMetaDataFromDataBase
 				.returnMetadataColumnsFormTable(iMetadataConnection, tableNode
@@ -214,22 +236,17 @@ public class MetadataRefreshAction extends SelectionProviderAction {
 			}
 		}
 		tableNode.setDivergency(flag);
+		flag = false;
+		List<MetadataTable> tables = connection.getTables();
+		for (MetadataTable table : tables) {
+			if (table.isDivergency()) {
+				flag = true;
+			}
+		}
+		connection.setDivergency(flag);
+		reductionConnection(connection);
 	}
 
-	// /**
-	// * DOC dev Comment method "getRepositoryMetadataColumns".
-	// * @param tableNode
-	// * @param connection
-	// * @return
-	// */
-	// @SuppressWarnings({ "unchecked", "deprecation" })
-	// private EList getRepositoryMetadataColumns(TableNode tableNode,
-	// DatabaseConnection connection){
-	// String metadataTableLabel = (String) tableNode.getRepositoryName();
-	// MetadataTable metadataTable = TableHelper.findByLabel(connection,
-	// metadataTableLabel);
-	// return metadataTable.getColumns();
-	// }
 	/**
 	 * DOC dev Comment method "saveMetaData".
 	 * 
