@@ -26,6 +26,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.talend.core.model.components.IComponent;
+import org.talend.core.model.components.IComponentsFactory;
 import org.talend.core.model.components.IODataComponent;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataTable;
@@ -38,6 +39,7 @@ import org.talend.core.model.process.IProcess;
 import org.talend.core.model.temp.ECodePart;
 import org.talend.designer.codegen.CodeGenerator;
 import org.talend.designer.codegen.exception.CodeGeneratorException;
+import org.talend.repository.model.ComponentsFactoryProvider;
 
 /**
  * DOC chuger class global comment. Detailled comment <br/>
@@ -48,6 +50,8 @@ import org.talend.designer.codegen.exception.CodeGeneratorException;
 public abstract class ShadowNode implements INode {
 
     private String componentName;
+    
+    private IComponent component;
 
     private IConnection inCnx;
 
@@ -65,6 +69,9 @@ public abstract class ShadowNode implements INode {
 
         this.componentName = componentName;
         parameters = new ArrayList<IElementParameter>();
+        
+        IComponentsFactory compFac = ComponentsFactoryProvider.getInstance();
+        setComponent(compFac.get(componentName));
     }
 
     /*
@@ -276,14 +283,6 @@ public abstract class ShadowNode implements INode {
     public void setProcess(IProcess process) {
     }
 
-    public IComponent getComponent() {
-        return null;
-    }
-
-    public void setComponent(IComponent component) {
-
-    }
-
     /*
      * (non-Javadoc)
      * 
@@ -304,5 +303,21 @@ public abstract class ShadowNode implements INode {
     
     public void setReadOnly(boolean readOnly) {
     }
+
+    /* (non-Javadoc)
+     * @see org.talend.core.model.process.INode#getComponent()
+     */
+    public IComponent getComponent() {
+        return component;
+    }
+
+    /* (non-Javadoc)
+     * @see org.talend.core.model.process.INode#setComponent(org.talend.core.model.components.IComponent)
+     */
+    public void setComponent(IComponent component) {
+        this.component = component;
+        
+    }
+    
 
 }
