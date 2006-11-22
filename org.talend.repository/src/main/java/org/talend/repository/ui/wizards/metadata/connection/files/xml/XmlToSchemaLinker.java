@@ -27,6 +27,12 @@ import java.util.List;
 import java.util.Set;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
+import org.eclipse.swt.events.PaintEvent;
+import org.eclipse.swt.events.PaintListener;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Composite;
@@ -35,6 +41,8 @@ import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 import org.talend.commons.ui.swt.drawing.link.BezierHorizontalLink;
+import org.talend.commons.ui.swt.drawing.link.ExtremityEastArrow;
+import org.talend.commons.ui.swt.drawing.link.IExtremityDrawableLink;
 import org.talend.commons.ui.swt.drawing.link.LinkDescriptor;
 import org.talend.commons.ui.swt.drawing.link.StyleLink;
 import org.talend.commons.ui.swt.drawing.link.TreeItemExtremityDescriptor;
@@ -44,6 +52,9 @@ import org.talend.commons.ui.swt.proposal.xpath.XPathProposalProvider;
 import org.talend.commons.ui.swt.tableviewer.IModifiedBeanListener;
 import org.talend.commons.ui.swt.tableviewer.ModifiedBeanEvent;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
+import org.talend.commons.ui.swt.tableviewer.selection.ILineSelectionListener;
+import org.talend.commons.ui.swt.tableviewer.selection.LineSelectionEvent;
+import org.talend.commons.ui.swt.tableviewer.selection.SelectionHelper;
 import org.talend.commons.ui.utils.TableUtils;
 import org.talend.commons.utils.data.list.IListenableListListener;
 import org.talend.commons.utils.data.list.ListenableListEvent;
@@ -60,8 +71,6 @@ import org.w3c.dom.Node;
  * 
  */
 public class XmlToSchemaLinker extends TreeToTableLinker<Object, SchemaTarget> {
-
-    private StyleLink styleLink;
 
     private TreePopulator treePopulator;
 
@@ -98,10 +107,28 @@ public class XmlToSchemaLinker extends TreeToTableLinker<Object, SchemaTarget> {
      * @param tree
      */
     private void init() {
-        this.styleLink = new StyleLink();
-        this.styleLink.setDrawableLink(new BezierHorizontalLink(styleLink));
-        this.styleLink.setForegroundColor(tree.getDisplay().getSystemColor(SWT.COLOR_GRAY));
-        this.styleLink.setLineWidth(2);
+
+        // commonParent.addDisposeListener(new DisposeListener() {
+        // public void widgetDisposed(DisposeEvent e) {
+        //        
+        // commonParent.removeDisposeListener(this);
+        // }
+        // });
+
+        StyleLink unselectedStyleLink = new StyleLink();
+        unselectedStyleLink.setDrawableLink(new BezierHorizontalLink(unselectedStyleLink));
+        unselectedStyleLink.setForegroundColor(tree.getDisplay().getSystemColor(SWT.COLOR_GRAY));
+        unselectedStyleLink.setLineWidth(2);
+        setUnselectedStyleLink(unselectedStyleLink);
+
+        StyleLink selectedStyleLink = new StyleLink();
+        selectedStyleLink.setDrawableLink(new BezierHorizontalLink(selectedStyleLink));
+        selectedStyleLink.setForegroundColor(tree.getDisplay().getSystemColor(SWT.COLOR_BLUE));
+        selectedStyleLink.setLineWidth(2);
+        selectedStyleLink.setExtremity2(new ExtremityEastArrow(selectedStyleLink, -ExtremityEastArrow.WIDTH_ARROW - table.getBorderWidth(),
+                0));
+        setSelectedStyleLink(selectedStyleLink);
+
         initListeners();
         createLinks();
 
@@ -160,6 +187,17 @@ public class XmlToSchemaLinker extends TreeToTableLinker<Object, SchemaTarget> {
 
         });
 
+        SelectionHelper selectionHelper = this.tableEditorView.getTableViewerCreator().getSelectionHelper();
+        final ILineSelectionListener afterLineSelectionListener = new ILineSelectionListener() {
+
+            public void handle(LineSelectionEvent e) {
+//                if (e.selectionByMethod) {
+                    updateLinksAndTreeItemsHighlightState();
+//                }
+            }
+        };
+        selectionHelper.addAfterSelectionListener(afterLineSelectionListener);
+
         new XmlToSchemaDragAndDropHandler(this);
     }
 
@@ -178,9 +216,9 @@ public class XmlToSchemaLinker extends TreeToTableLinker<Object, SchemaTarget> {
             }
             updateBackground();
         }
-        // tableViewerCreator.getTableViewer().refresh(); // force refresh
     }
 
+    
     /*
      * (non-Javadoc)
      * 
@@ -242,7 +280,7 @@ public class XmlToSchemaLinker extends TreeToTableLinker<Object, SchemaTarget> {
         LinkDescriptor<TreeItem, Object, TableItem, SchemaTarget> link = new LinkDescriptor<TreeItem, Object, TableItem, SchemaTarget>(
                 new TreeItemExtremityDescriptor(treeItem), new TableItemExtremityDescriptor(tableItem, (SchemaTarget) tableItem.getData()));
 
-        link.setDrawableLink(this.styleLink.getDrawableLink());
+        link.setStyleLink(getUnselectedStyleLink());
         linksManager.addLink(link);
     }
 

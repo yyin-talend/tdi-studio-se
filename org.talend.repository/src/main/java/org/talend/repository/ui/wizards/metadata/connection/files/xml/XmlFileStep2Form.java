@@ -45,6 +45,7 @@ import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
@@ -114,6 +115,8 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
     private XmlToSchemaLinker linker;
 
     private TreePopulator treePopulator;
+
+    private Composite compositeBg;
 
     /**
      * Constructor to use by RCP Wizard.
@@ -204,6 +207,7 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
         // Group Schema Viewer
         Group group = Form.createGroup(mainComposite, 1, Messages.getString("XmlFileStep1.sourceSchema"), height);
         availableXmlTree = new Tree(group, SWT.MULTI | SWT.BORDER);
+//        availableXmlTree.setVisible(false);
         GridData gridData2 = new GridData(GridData.FILL_BOTH);
         availableXmlTree.setLayoutData(gridData2);
         availableXmlTree.setToolTipText(Messages.getString("FileStep1.fileViewerTip1") + " " + TreePopulator.MAXIMUM_ROWS_TO_PREVIEW + " "
@@ -371,20 +375,20 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
             }
         });
 
-        availableXmlTree.addSelectionListener(new SelectionAdapter() {
-
-            /*
-             * (non-Javadoc)
-             * 
-             * @see org.eclipse.swt.events.SelectionAdapter#widgetSelected(org.eclipse.swt.events.SelectionEvent)
-             */
-            public void widgetSelected(SelectionEvent e) {
-                List xpathList = getSelectedXPath(availableXmlTree.getSelection()[0]);
-                if (xpathList != null) {
-                    System.out.println("Node : " + availableXmlTree.getSelection()[0].getText() + " Xpath : " + xpathList.get(0));
-                }
-            }
-        });
+//        availableXmlTree.addSelectionListener(new SelectionAdapter() {
+//
+//            /*
+//             * (non-Javadoc)
+//             * 
+//             * @see org.eclipse.swt.events.SelectionAdapter#widgetSelected(org.eclipse.swt.events.SelectionEvent)
+//             */
+//            public void widgetSelected(SelectionEvent e) {
+//                List xpathList = getSelectedXPath(availableXmlTree.getSelection()[0]);
+//                if (xpathList != null) {
+//                    System.out.println("Node : " + availableXmlTree.getSelection()[0].getText() + " Xpath : " + xpathList.get(0));
+//                }
+//            }
+//        });
     }
 
     /**
@@ -555,7 +559,7 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
             }
 
             if (this.linker == null) {
-                this.linker = new XmlToSchemaLinker(xmlToSchemaSash, availableXmlTree, tableEditorView, this.treePopulator);
+                this.linker = new XmlToSchemaLinker(this.xmlToSchemaSash, availableXmlTree, tableEditorView, this.treePopulator);
                 tableEditorView.setLinker(this.linker);
             } else {
                 this.linker.createLinks();

@@ -40,6 +40,7 @@ import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 import org.talend.commons.ui.utils.TableUtils;
 import org.talend.core.model.metadata.builder.connection.SchemaTarget;
+import org.talend.repository.ui.wizards.metadata.connection.files.xml.XPathNodeSchemaEditorView;
 import org.talend.repository.ui.wizards.metadata.connection.files.xml.XmlToSchemaLinker;
 
 /**
@@ -237,8 +238,11 @@ public class XmlToSchemaDragAndDropHandler {
                 SchemaTarget newTargetEntry = linker.getNewTargetEntry(entry.getAbsoluteXPath());
                 list.add(newTargetEntry);
             }
-            linker.getTableEditorView().getXpathNodeSchemaModel().addAll(startInsertAtThisIndex, list);
-
+            XPathNodeSchemaEditorView tableEditorView = linker.getTableEditorView();
+            linker.getTable().deselectAll();
+            linker.getTree().deselectAll();
+            linker.updateLinksAndTreeItemsHighlightState();
+            tableEditorView.getXpathNodeSchemaModel().addAll(startInsertAtThisIndex, list);
         }
 
     }
