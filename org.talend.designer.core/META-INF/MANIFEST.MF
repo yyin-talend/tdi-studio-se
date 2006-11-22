@@ -22,7 +22,8 @@ Require-Bundle: org.eclipse.core.expressions,
  org.talend.libraries,
  org.talend.repository,
  org.talend.sqlbuilder,
- org.talend.rcp
+ org.talend.rcp,
+ org.eclipse.update.scheduler
 Eclipse-LazyStart: true
 Plugin-Class: org.talend.designer.core.DesignerPlugin
 Export-Package: org.talend.designer.core.model.components,
