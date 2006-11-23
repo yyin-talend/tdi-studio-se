@@ -53,6 +53,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PlatformUI;
 import org.talend.commons.exception.PersistenceException;
+import org.talend.commons.exception.SystemException;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.metadata.EMetadataType;
@@ -737,7 +738,14 @@ public class Process extends Element implements IProcess {
         Hashtable<String, Node> nodesHashtable = new Hashtable<String, Node>();
 
         loadProcessProperties(process);
-        loadNodes(process, nodesHashtable);
+
+        try {
+            loadNodes(process, nodesHashtable);
+        } catch (PersistenceException e) {
+            // there are some components unloaded.
+            return;
+        }
+
         loadConnections(process, nodesHashtable);
         loadContexts(process);
         initExternalComponents();
@@ -784,7 +792,7 @@ public class Process extends Element implements IProcess {
 
     private List<String> uploadedNodeNames = null;
 
-    private void loadNodes(ProcessType process, Hashtable<String, Node> nodesHashtable) {
+    private void loadNodes(ProcessType process, Hashtable<String, Node> nodesHashtable) throws PersistenceException {
         EList nodeList;
         NodeType nType;
         nodeList = process.getNode();
@@ -814,6 +822,10 @@ public class Process extends Element implements IProcess {
 
             addNodeContainer(new NodeContainer(nc));
             nodesHashtable.put(nc.getUniqueName(), nc);
+        }
+
+        if (!uploadedNodeNames.isEmpty()) {
+            throw new PersistenceException("There are soem components unloaded");
         }
     }
 
@@ -1107,9 +1119,10 @@ public class Process extends Element implements IProcess {
         boolean isLocked = true;
         boolean isDeleted = true;
         try {
-//            User user = ((RepositoryContext) CorePlugin.getContext().getProperty(
-//                    org.talend.core.context.Context.REPOSITORY_CONTEXT_KEY)).getUser();
-            isLocked = false;//repFactory.isLocked(property.getItem()) && (!repFactory.getLocker(this).equals(user));
+            // User user = ((RepositoryContext) CorePlugin.getContext().getProperty(
+            // org.talend.core.context.Context.REPOSITORY_CONTEXT_KEY)).getUser();
+            isLocked = false;// repFactory.isLocked(property.getItem()) &&
+                                // (!repFactory.getLocker(this).equals(user));
             isDeleted = repFactory.isDeleted(property.getItem());
         } catch (PersistenceException e) {
             // TODO Auto-generated catch block
