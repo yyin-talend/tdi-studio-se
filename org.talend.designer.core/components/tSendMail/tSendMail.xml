@@ -56,11 +56,24 @@ COMPATIBILITY="ALL"
       </ITEMS>
     </PARAMETER>
 
-    <PARAMETER NAME="SMTP_HOST" FIELD="TEXT" REQUIRED="true" NUM_ROW="7">
+    <PARAMETER
+      NAME="HEADERS"
+      FIELD="TABLE"
+      REQUIRED="false"
+      NUM_ROW="7"
+      NB_LINES="3"
+    >
+      <ITEMS>
+        <ITEM NAME="KEY" />
+        <ITEM NAME="VALUE" />
+      </ITEMS>
+    </PARAMETER>
+
+    <PARAMETER NAME="SMTP_HOST" FIELD="TEXT" REQUIRED="true" NUM_ROW="8">
       <DEFAULT>'smtp.provider.com'</DEFAULT>
     </PARAMETER>
 
-    <PARAMETER NAME="SMTP_PORT" FIELD="TEXT" REQUIRED="true" NUM_ROW="7">
+    <PARAMETER NAME="SMTP_PORT" FIELD="TEXT" REQUIRED="true" NUM_ROW="8">
       <DEFAULT>25</DEFAULT>
     </PARAMETER>
   </PARAMETERS>

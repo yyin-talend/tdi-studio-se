@@ -31,6 +31,12 @@ String cc          = ElementParameterParser.getValue(node, "__CC__");
 String subject     = ElementParameterParser.getValue(node, "__SUBJECT__");
 String message     = ElementParameterParser.getValue(node, "__MESSAGE__");
 List<Map<String, String>> tableValues = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__ATTACHMENTS__");
+
+List<Map<String, String>> headers =
+    (List<Map<String,String>>)ElementParameterParser.getObjectValue(
+        node,
+        "__HEADERS__"
+    );
 %>
 
 my $smtp_server = sprintf(
@@ -56,7 +62,24 @@ $smtp->data();
 $smtp->datasend("To: ".     <%= to %>.      "\n");
 $smtp->datasend("Cc: ".     <%= cc %>.      "\n");
 $smtp->datasend("From: ".   <%= from %>.    "\n");
-$smtp->datasend("Subject: ".<%= subject %>. "\n\n");
+$smtp->datasend("Subject: ".<%= subject %>. "\n");
+
+<%
+for (int i = 0; i < headers.size(); i++) {
+    Map<String, String> header = headers.get(i);
+%>
+$smtp->datasend(
+    sprintf(
+        "%s: %s\n",
+        <%=header.get("KEY")%>,
+        <%=header.get("VALUE")%>
+    )
+);
+<%
+}
+%>
+
+$smtp->datasend("\n");
 $smtp->datasend(<%=message%>.               "\n");
 $smtp->dataend();
 $smtp->quit;
@@ -77,6 +100,15 @@ my $msg = MIME::Lite->new(
     Subject => <%= subject %>,
     Data    => <%=message %>,
 );
+
+<%
+for (int i = 0; i < headers.size(); i++) {
+    Map<String, String> header = headers.get(i);
+%>
+$msg->add(<%=header.get("KEY")%>, <%=header.get("VALUE")%>);
+<%
+}
+%>
 
 my @attachments = (
 <%
