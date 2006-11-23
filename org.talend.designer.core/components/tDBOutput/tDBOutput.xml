@@ -23,7 +23,7 @@
 <!-- in the value, we give "Perl dbtype; Perl driver; Talend dbtype". -->
 <!-- See org.talend.core/mappingMetadataTypes.xml for Talend dbtypes  -->
             <ITEM NAME="MYSQL"      VALUE="mysql;mysql;MYSQL"                REPOSITORY_ITEM="MYSQL"/>
-            <ITEM NAME="PGSQL"      VALUE="postgresql;Pg;POSTGRESQL"         REPOSITORY_ITEM="PGSQL"/>
+            <ITEM NAME="PGSQL"      VALUE="postgresql;Pg;POSTGRESQL"         REPOSITORY_ITEM="POSTGRESQL"/>
             <ITEM NAME="ORACLE"     VALUE="oracle;oracle;Oracle Oci"         REPOSITORY_ITEM="ORACLE"/>
             <ITEM NAME="ODBC"       VALUE="undef;odbc;MICROSOFT SQL SERVER"  REPOSITORY_ITEM="ODBC"/>
             <ITEM NAME="MSSQL_ODBC" VALUE="mssql;odbc;MICROSOFT SQL SERVER"  REPOSITORY_ITEM="ODBC_JDBC"/>

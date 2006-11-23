@@ -35,7 +35,7 @@
     <PARAMETER NAME="TYPE" FIELD="CLOSED_LIST" NUM_ROW="2" REPOSITORY_VALUE="TYPE">
       <ITEMS DEFAULT="mysql;mysql">
         <ITEM NAME="MYSQL"      VALUE="mysql;mysql" REPOSITORY_ITEM="MYSQL"/>
-        <ITEM NAME="PGSQL"      VALUE="postgresql;Pg" REPOSITORY_ITEM="PGSQL"/>
+        <ITEM NAME="PGSQL"      VALUE="postgresql;Pg" REPOSITORY_ITEM="POSTGRESQL"/>
         <ITEM NAME="ORACLE"     VALUE="oracle;oracle" REPOSITORY_ITEM="ORACLE"/>
         <ITEM NAME="ODBC"       VALUE="undef;odbc" REPOSITORY_ITEM="ODBC"/>
         <ITEM NAME="MSSQL_ODBC" VALUE="mssql;odbc" REPOSITORY_ITEM="ODBC_JDBC"/>
