@@ -352,17 +352,23 @@ public class TMapperMainPerljet {
                     sb.append(cr + gm.indent(indent) + "# Filter condition ");
                     sb.append(cr + gm.indent(indent) + "if( ");
 
-                    String or = "";
-                    if (currentIsReject) {
-                        sb.append("$" + rejected);
-                        or = " || ";
-                    }
-                    if (currentIsRejectInnerJoin) {
-                        sb.append(or + "$" + rejectedInnerJoin);
-                        or = " || ";
+                    String rejectedTests = null;
+                    if (allNotRejectTablesHaveFilter && atLeastOneReject && currentIsReject && currentIsRejectInnerJoin) {
+                        rejectedTests = "( $" + rejected + " || $" + rejectedInnerJoin + ")";
+                    } else if (allNotRejectTablesHaveFilter && atLeastOneReject && currentIsReject) {
+                        rejectedTests = "$" + rejected;
+                    } else if (currentIsRejectInnerJoin) {
+                        rejectedTests = "$" + rejectedInnerJoin;
                     }
                     if (hasFilters) {
-                        sb.append(or + gm.buildConditions(filters, expressionParser));
+                        String filtersConditions = gm.buildConditions(filters, expressionParser);
+                        if (rejectedTests == null) {
+                            sb.append(filtersConditions);
+                        } else {
+                            sb.append(rejectedTests + " && (" + filtersConditions + ")");
+                        }
+                    } else {
+                        sb.append(rejectedTests);
                     }
                     sb.append(" ) {");
                     indent++;
