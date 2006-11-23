@@ -57,15 +57,11 @@ import org.talend.designer.core.ui.editor.properties.DynamicTabbedPropertySectio
  */
 public class MainConnectionSection extends DynamicTabbedPropertySection {
 
-    private Composite parent;
+//    private Composite parent;
 
     private MetadataTableEditorView metadataTableEditorView;
 
     private MetadataTableEditor metadataTableEditor;
-
-    private boolean built = false;
-
-    private Connection connection;
 
     public MainConnectionSection() {
         super(EComponentCategory.MAIN);
@@ -79,67 +75,19 @@ public class MainConnectionSection extends DynamicTabbedPropertySection {
     @Override
     public void refresh() {
         if (conIf()) {
-            addComponents();
             super.refresh();
             return;
         }
 
         if (conSchema()) {
-            if (!built) {
-                addComponents();
-            }
-            IMetadataTable outputMetaTable = ((Node) elem).getMetadataList().get(0);
+            IMetadataTable outputMetaTable = ((Connection) elem).getMetadataTable();
             metadataTableEditor.setMetadataTable(outputMetaTable);
             metadataTableEditorView.setMetadataTableEditor(metadataTableEditor);
             metadataTableEditorView.getTableViewerCreator().getTableViewer().refresh();
 
-            parent.layout();
+            composite.layout();
+            composite.getParent().layout();
         }
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.designer.core.ui.editor.properties.DynamicTabbedPropertySection#setInput(org.eclipse.ui.IWorkbenchPart,
-     * org.eclipse.jface.viewers.ISelection)
-     */
-    @Override
-    public void setInput(IWorkbenchPart workbenchPart, ISelection selection) {
-
-        if (!(selection instanceof IStructuredSelection)) {
-            return;
-        }
-
-        if (workbenchPart instanceof MultiPageTalendEditor) {
-            part = (MultiPageTalendEditor) workbenchPart;
-        } else {
-            part = (MultiPageTalendEditor) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
-        }
-
-        Object input = ((IStructuredSelection) selection).getFirstElement();
-        if (input instanceof ConnectionPart) {
-            connection = (Connection) ((ConnectionPart) input).getModel();
-            if (conIf()) {
-                super.setInput(workbenchPart, selection);
-                return;
-            }
-            elem = (Element) ((ConnectionPart) input).getSource().getModel();
-        }
-        if (input instanceof ConnLabelEditPart) {
-            connection = (Connection) ((ConnectionPart) ((ConnLabelEditPart) input).getParent()).getModel();
-            if (conIf()) {
-                super.setInput(workbenchPart, selection);
-                return;
-            }
-            elem = (Element) ((ConnectionPart) ((ConnLabelEditPart) input).getParent()).getSource().getModel();
-        }
-        addComponents();
-    }
-
-    @Override
-    public void createControls(Composite parent, TabbedPropertySheetPage aTabbedPropertySheetPage) {
-        super.createControls(parent, aTabbedPropertySheetPage);
-        this.parent = parent;
     }
 
     @Override
@@ -151,48 +99,49 @@ public class MainConnectionSection extends DynamicTabbedPropertySection {
 
             for (IElementParameter cur : listParam) {
                 if (cur.getField() == EParameterFieldType.SCHEMA_TYPE) {
-                    addSchemaType(parent, cur, 0, 0, 0, null);
+                    addSchemaType(composite, cur, 0, 0, 0, null);
                 }
             }
 
             FormData data = new FormData();
             data.left = new FormAttachment(0, ITabbedPropertyConstants.HSPACE);
             data.right = new FormAttachment(100, -ITabbedPropertyConstants.HSPACE);
-            data.top = new FormAttachment(0, curRowSize + ITabbedPropertyConstants.VSPACE);
+            data.top = new FormAttachment(0, ITabbedPropertyConstants.VSPACE);
             data.width = 300; // to correct bug of table growing indefinitly
 
-            IMetadataTable outputMetaTable = ((Node) elem).getMetadataList().get(0);
+            IMetadataTable outputMetaTable = ((Connection) elem).getMetadataTable();
             metadataTableEditor = new MetadataTableEditor(outputMetaTable, "Schema from " + outputMetaTable.getTableName()
                     + " output ");
-            metadataTableEditorView = new MetadataTableEditorView(parent, SWT.READ_ONLY, metadataTableEditor, false);
+            metadataTableEditorView = new MetadataTableEditorView(composite, SWT.READ_ONLY, metadataTableEditor, false);
             metadataTableEditorView.setReadOnly(true);
 
             Composite compositeEditorView = metadataTableEditorView.getComposite();
             compositeEditorView.setLayoutData(data);
 
-            parent.layout();
-            parent.getParent().layout();
+            composite.layout();
+            composite.getParent().layout();
         } else if (conIf()) {
             super.addComponents();
         } else {
             disposeChildren();
         }
-        built = true;
     }
 
     private void disposeChildren() {
         // Empty the composite before use (kinda refresh) :
-        Control[] ct = parent.getChildren();
+        Control[] ct = composite.getChildren();
         for (int i = 0; i < ct.length; i++) {
             ct[i].dispose();
         }
     }
 
     private boolean conIf() {
+        Connection connection = (Connection) elem;
         return connection.getLineStyle() == EConnectionType.RUN_IF;
     }
 
     private boolean conSchema() {
+        Connection connection = (Connection) elem;
         return connection.getLineStyle() == EConnectionType.FLOW_MAIN || connection.getLineStyle() == EConnectionType.FLOW_REF;
     }
 

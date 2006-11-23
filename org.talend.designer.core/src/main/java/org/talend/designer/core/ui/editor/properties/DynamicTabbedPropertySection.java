@@ -95,6 +95,7 @@ import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.swt.colorstyledtext.ColorManager;
 import org.talend.commons.ui.swt.colorstyledtext.ColorStyledText;
+import org.talend.commons.ui.swt.dialogs.ErrorDialogWidthDetailArea;
 import org.talend.commons.ui.swt.proposal.ContentProposalAdapterExtended;
 import org.talend.commons.ui.swt.proposal.TextCellEditorWithProposal;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
@@ -143,6 +144,7 @@ import org.talend.core.ui.ImageProvider;
 import org.talend.core.ui.metadata.dialog.MetadataDialog;
 import org.talend.core.ui.proposal.ProcessProposalProvider;
 import org.talend.core.ui.proposal.ProcessProposalUtils;
+import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
@@ -158,8 +160,10 @@ import org.talend.designer.core.ui.editor.cmd.ExternalNodeChangeCommand;
 import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
 import org.talend.designer.core.ui.editor.cmd.SchemaPropertyChangeCommand;
 import org.talend.designer.core.ui.editor.connections.Connection;
+import org.talend.designer.core.ui.editor.connections.ConnectionLabel;
 import org.talend.designer.core.ui.editor.nodecontainer.NodeContainerPart;
 import org.talend.designer.core.ui.editor.nodes.Node;
+import org.talend.designer.core.ui.editor.nodes.NodeLabel;
 import org.talend.designer.core.ui.editor.outline.NodeReturnsTreeEditPart;
 import org.talend.designer.core.ui.editor.outline.NodeTreeEditPart;
 import org.talend.designer.core.ui.editor.process.Process;
@@ -1910,7 +1914,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
         text.getParent().setSize(subComposite.getSize().x, text.getLineHeight() * nbLines);
         cLayout.setBackground(subComposite.getBackground());
         text.setEnabled(!param.isReadOnly());
-        Font font = new Font(subComposite.getDisplay(), "courier", 8, SWT.NONE);
+        Font font = new Font(subComposite.getDisplay(), "courier", 5, SWT.NONE);
         text.setFont(font);
         if (elem instanceof Node) {
             text.setToolTipText(VARIABLE_TOOLTIP + param.getVariableName());
@@ -1971,7 +1975,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
             public Control createControl(final Composite parent, final int style) {
                 ColorManager colorManager = new ColorManager(CorePlugin.getDefault().getPreferenceStore());
                 ColorStyledText colorText = new ColorStyledText(parent, style, colorManager, language);
-                Font font = new Font(parent.getDisplay(), "courier", 8, SWT.NONE);
+                Font font = new Font(parent.getDisplay(), "courier", 5, SWT.NONE);
                 colorText.setFont(font);
                 return colorText;
             }
@@ -2095,7 +2099,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
             public Control createControl(final Composite parent, final int style) {
                 ColorManager colorManager = new ColorManager(CorePlugin.getDefault().getPreferenceStore());
                 ColorStyledText colorText = new ColorStyledText(parent, style, colorManager, language);
-                Font font = new Font(parent.getDisplay(), "courier", 8, SWT.NONE);
+                Font font = new Font(parent.getDisplay(), "courier", 5, SWT.NONE);
                 colorText.setFont(font);
                 return colorText;
             }
@@ -2955,11 +2959,19 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
         }
     }
 
+    private ISelection lastSelection;
     @Override
     public void setInput(final IWorkbenchPart workbenchPart, final ISelection selection) {
         if (!(selection instanceof IStructuredSelection)) {
             return;
         }
+        if (lastSelection != null) { // added to correct a bug of the TabbedProperties
+            if (lastSelection.equals(selection)) {
+                return;
+            }
+        }
+        lastSelection = selection;
+
         if (workbenchPart instanceof MultiPageTalendEditor) {
             part = (MultiPageTalendEditor) workbenchPart;
         } else {
@@ -2979,6 +2991,13 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
             Assert.isTrue(input instanceof EditPart);
             EditPart editPart = (EditPart) input;
             elem = (Element) editPart.getModel();
+        }
+        if (elem instanceof NodeLabel) {
+            elem = ((NodeLabel) elem).getNode();
+        }
+        
+        if (elem instanceof ConnectionLabel) {
+            elem = ((ConnectionLabel) elem).getConnection();
         }
 
         if (currentComponent == null) {
