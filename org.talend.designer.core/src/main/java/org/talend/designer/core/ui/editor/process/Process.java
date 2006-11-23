@@ -537,11 +537,8 @@ public class Process extends Element implements IProcess {
                     } else {
                         if (param.getField().equals(EParameterFieldType.TABLE)) {
                             List<Map<String, Object>> tableValues = new ArrayList<Map<String, Object>>();
-                            int nbValues = 0;
-                            String[] titles = param.getListItemsDisplayName();
                             String[] codeList = param.getListItemsDisplayCodeName();
                             Map<String, Object> lineValues = null;
-                            int nbValuesPerLine = titles.length;
                             for (ElementValueType elementValue : (List<ElementValueType>) pType.getElementValue()) {
                                 boolean found = false;
                                 for (int i = 0; i < codeList.length && !found; i++) {
@@ -550,16 +547,11 @@ public class Process extends Element implements IProcess {
                                     }
                                 }
                                 if (found) {
-                                    if (nbValues == 0) { // current nb values
-                                        // in the line
+                                    if ((lineValues == null) || (lineValues.get(elementValue.getElementRef()) != null)) {
                                         lineValues = new HashMap<String, Object>();
                                         tableValues.add(lineValues);
                                     }
                                     lineValues.put(elementValue.getElementRef(), elementValue.getValue());
-                                    nbValues++;
-                                    if (nbValues == nbValuesPerLine) {
-                                        nbValues = 0;
-                                    }
                                 }
                             }
                             elemParam.setPropertyValue(pType.getName(), tableValues);

@@ -53,25 +53,27 @@ public class ElementParameter implements IElementParameter {
     private IElement parent;
 
     // used for CLOSED_LIST / TABLE
-    String[] itemsDisplayName;
+    private String[] itemsDisplayName;
 
     // used for CLOSED_LIST / TABLE
-    String[] itemsDisplayCodeName;
+    private String[] itemsDisplayCodeName;
 
     // used for CLOSED_LIST / TABLE
-    String[] itemsShowIf;
+    private String[] itemsShowIf;
 
     // used for CLOSED_LIST / TABLE
-    String[] itemsNotShowIf;
+    private String[] itemsNotShowIf;
 
     // used for CLOSED_LIST
-    Object[] itemsValue;
+    private Object[] itemsValue;
 
     // used for CLOSED_LIST / TABLE
-    String[] itemsRepository;
+    private String[] itemsRepository;
 
     // used for CLOSED_LIST
-    Object defaultClosedListValue;
+    private Object defaultClosedListValue;
+    
+    private boolean basedOnSchema = false;
 
     private int nbLines = NB_LINES_DEFAULT, numRow = 0; // Default values
 
@@ -388,5 +390,13 @@ public class ElementParameter implements IElementParameter {
 
     public void setParent(IElement element) {
         parent = element;
+    }
+    
+    public boolean isBasedOnSchema() {
+        return basedOnSchema;
+    }
+    
+    public void setBasedOnSchema(boolean basedOnSchema) {
+        this.basedOnSchema = basedOnSchema;
     }
 }

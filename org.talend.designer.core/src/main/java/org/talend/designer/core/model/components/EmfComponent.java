@@ -571,8 +571,15 @@ public class EmfComponent implements IComponent {
 
         int nbItems = 0;
         if (items != null) {
+            if (items.isSetBASEDONSCHEMA()) {
+                param.setBasedOnSchema(items.isBASEDONSCHEMA());
+            }
             nbItems = items.getITEM().size();
+            if (param.isBasedOnSchema()) {
+                nbItems++;
+            }
         }
+
         String[] listRepositoryItem = new String[nbItems];
         String[] listItemsDisplayValue = new String[nbItems];
         String[] listItemsDisplayCodeValue = new String[nbItems];
@@ -580,8 +587,24 @@ public class EmfComponent implements IComponent {
         String[] listItemsShowIf = new String[nbItems];
         String[] listItemsNotShowIf = new String[nbItems];
         String[] listField = new String[nbItems];
+
         for (int k = 0; k < nbItems; k++) {
-            item = (ITEMType) items.getITEM().get(k);
+            int currentItem = k;
+            if (param.isBasedOnSchema()) {
+                if (k == 0) {
+                    listItemsDisplayCodeValue[k] = "SCHEMA_COLUMN";
+                    listItemsDisplayValue[k] = "Column";
+                    listItemsValue[k] = "";
+                    listField[k] = "";
+                    listRepositoryItem[k] = "";
+                    listItemsShowIf[k] = null;
+                    listItemsNotShowIf[k] = null;
+                    continue;
+                } else {
+                    currentItem = k - 1;
+                }
+            }
+            item = (ITEMType) items.getITEM().get(currentItem);
             listItemsDisplayCodeValue[k] = item.getNAME();
             listItemsDisplayValue[k] = getTranslatedValue(paramName + ".ITEM." + item.getNAME());
             if (!type.equals(EParameterFieldType.TABLE)) {

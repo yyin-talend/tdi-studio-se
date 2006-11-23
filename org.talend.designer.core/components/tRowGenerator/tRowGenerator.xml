@@ -39,7 +39,7 @@
     </PARAMETER>
 
     <PARAMETER NAME="VALUES" FIELD="TABLE" REQUIRED="true" NUM_ROW="3" NB_LINES="5">
-      <ITEMS>
+      <ITEMS BASED_ON_SCHEMA="true">
         <ITEM NAME="ARRAY" />
       </ITEMS>
     </PARAMETER>

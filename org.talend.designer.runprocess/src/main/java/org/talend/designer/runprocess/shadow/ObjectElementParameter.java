@@ -463,4 +463,14 @@ public class ObjectElementParameter implements IElementParameter {
 
     public void setParent(IElement element) {
     }
+
+    public boolean isBasedOnSchema() {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    public void setBasedOnSchema(boolean basedOnSchema) {
+        // TODO Auto-generated method stub
+        
+    }
 }
