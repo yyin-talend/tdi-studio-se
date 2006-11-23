@@ -409,6 +409,8 @@ public class MapperDataTestGenerator {
         mapperTable = new ExternalMapperTable();
         mapperTable.setName("page");
 
+        mapperTable.setInnerJoin(true);
+        
         tableEntries = new ArrayList<ExternalMapperTableEntry>();
 
         mapperTableEntry = new ExternalMapperTableEntry();
@@ -434,6 +436,7 @@ public class MapperDataTestGenerator {
 
         mapperTable = new ExternalMapperTable();
         mapperTable.setName("userInput");
+        mapperTable.setInnerJoin(true);
 
         tableEntries = new ArrayList<ExternalMapperTableEntry>();
 
@@ -573,7 +576,7 @@ public class MapperDataTestGenerator {
         // CONSTRAINTS newBook
 
         mapperTableEntry = new ExternalMapperTableEntry();
-        mapperTableEntry.setExpression(" ");
+        mapperTableEntry.setExpression(" test == 3 ");
         tableEntries.add(mapperTableEntry);
 
         // mapperTableEntry = new ExternalMapperTableEntry();
@@ -606,6 +609,7 @@ public class MapperDataTestGenerator {
         mapperTable = new ExternalMapperTable();
         mapperTable.setName("newPageRejected");
         mapperTable.setReject(true);
+        mapperTable.setRejectInnerJoin(true);
 
         tableEntries = new ArrayList<ExternalMapperTableEntry>();
 
@@ -633,12 +637,12 @@ public class MapperDataTestGenerator {
         tableEntries = new ArrayList<ExternalMapperTableEntry>();
 
         mapperTableEntry = new ExternalMapperTableEntry();
-        mapperTableEntry.setExpression(gen.getTableColumnVariable("page", "newId") + " == 1");
-        tableEntries.add(mapperTableEntry);
+//        mapperTableEntry.setExpression(gen.getTableColumnVariable("page", "newId") + " == 1");
+//        tableEntries.add(mapperTableEntry);
 
         mapperTable.setConstraintTableEntries(tableEntries);
 
-        // tables.add(mapperTable);
+         tables.add(mapperTable);
 
         // #########################################################################
         // #########################################################################
@@ -646,6 +650,7 @@ public class MapperDataTestGenerator {
         mapperTable = new ExternalMapperTable();
         mapperTable.setName("newPageRejected2");
         mapperTable.setReject(true);
+        mapperTable.setRejectInnerJoin(true);
 
         tableEntries = new ArrayList<ExternalMapperTableEntry>();
 
@@ -814,19 +819,18 @@ public class MapperDataTestGenerator {
 
         metadataColumn = new MetadataColumnTest();
         metadataColumn.setLabel("id");
-        metadataColumn.setKey(true);
         metadataColumn.setType(EMetadataType.INTEGER.toString());
         metadatColumns.add(metadataColumn);
 
         metadataColumn = new MetadataColumnTest();
         metadataColumn.setLabel("id_book");
-        metadataColumn.setKey(false);
+        metadataColumn.setKey(true);
         metadataColumn.setType(EMetadataType.INTEGER.toString());
         metadatColumns.add(metadataColumn);
 
         metadataColumn = new MetadataColumnTest();
         metadataColumn.setLabel("content");
-        metadataColumn.setKey(false);
+        metadataColumn.setKey(true);
         metadataColumn.setType(EMetadataType.STRING.toString());
         metadatColumns.add(metadataColumn);
 
@@ -847,19 +851,18 @@ public class MapperDataTestGenerator {
 
         metadataColumn = new MetadataColumnTest();
         metadataColumn.setLabel("id");
-        metadataColumn.setKey(true);
         metadataColumn.setType(EMetadataType.INTEGER.toString());
         metadatColumns.add(metadataColumn);
 
         metadataColumn = new MetadataColumnTest();
         metadataColumn.setLabel("id_book");
-        metadataColumn.setKey(false);
+        metadataColumn.setKey(true);
         metadataColumn.setType(EMetadataType.INTEGER.toString());
         metadatColumns.add(metadataColumn);
 
         metadataColumn = new MetadataColumnTest();
         metadataColumn.setLabel("id_page_different");
-        metadataColumn.setKey(false);
+        metadataColumn.setKey(true);
         metadataColumn.setType(EMetadataType.STRING.toString());
         metadatColumns.add(metadataColumn);
 

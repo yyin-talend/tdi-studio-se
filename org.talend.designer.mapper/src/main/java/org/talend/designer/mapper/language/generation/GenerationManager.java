@@ -222,7 +222,7 @@ public class GenerationManager {
      * @param ExternalMapperTable
      * @return
      */
-    public boolean checkConstraintsAreEmpty(ExternalMapperTable outputTable) {
+    public boolean checkFiltersAreEmpty(ExternalMapperTable outputTable) {
         List<ExternalMapperTableEntry> constraints = outputTable.getConstraintTableEntries();
         int lstSize = constraints.size();
         boolean oneConstraintIsNotEmpty = false;

@@ -43,6 +43,8 @@ public class OutputTable extends AbstractInOutTable {
     protected List<ConstraintTableEntry> constraintTableEntries = new ArrayList<ConstraintTableEntry>(0);
 
     private boolean reject;
+    
+    private boolean rejectInnerJoin;
 
     public OutputTable(IMetadataTable metadataTable, ExternalMapperTable externalMapperTable, String name) {
         super(metadataTable, externalMapperTable, name);
@@ -52,6 +54,7 @@ public class OutputTable extends AbstractInOutTable {
     private void initFromExternalData(ExternalMapperTable externalMapperTable) {
         if (externalMapperTable != null) {
             this.reject = externalMapperTable.isReject();
+            this.rejectInnerJoin = externalMapperTable.isRejectInnerJoin();
             List<ExternalMapperTableEntry> externalConstraintTableEntries = externalMapperTable.getConstraintTableEntries();
             if (externalConstraintTableEntries != null) {
                 for (ExternalMapperTableEntry entry : externalConstraintTableEntries) {
@@ -90,4 +93,22 @@ public class OutputTable extends AbstractInOutTable {
         return this.constraintTableEntries;
     }
 
+    /**
+     * Getter for rejectInnerJoin.
+     * @return the rejectInnerJoin
+     */
+    public boolean isRejectInnerJoin() {
+        return this.rejectInnerJoin;
+    }
+
+    /**
+     * Sets the rejectInnerJoin.
+     * @param rejectInnerJoin the rejectInnerJoin to set
+     */
+    public void setRejectInnerJoin(boolean rejectInnerJoin) {
+        this.rejectInnerJoin = rejectInnerJoin;
+    }
+
+    
+    
 }

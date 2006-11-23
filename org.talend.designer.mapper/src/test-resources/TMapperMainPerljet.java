@@ -73,7 +73,8 @@ public class TMapperMainPerljet {
         }
 
         String cr = "\n";
-        String oneNotRejectConstraintValidatedVarName = "oneNotRejectConstraintValidated";
+        String rejected = "rejected";
+        String rejectedInnerJoin = "rejectedInnerJoin";
 
         List<ExternalMapperTable> inputTables = data.getInputTables();
         List<ExternalMapperTable> varsTables = data.getVarsTables();
@@ -105,6 +106,8 @@ public class TMapperMainPerljet {
             hExternalInpuTables.put(inputTable.getName(), inputTable);
         }
 
+        ArrayList<ExternalMapperTable> inputTablesWithInnerJoin = new ArrayList<ExternalMapperTable>();
+
         HashMap<String, ExternalMapperTableEntry> hExternalInputTableEntries = new HashMap<String, ExternalMapperTableEntry>();
         for (IConnection connection : connections) {
             EConnectionType connectionType = connection.getLineStyle();
@@ -116,6 +119,9 @@ public class TMapperMainPerljet {
                 String tableName = connection.getName();
                 ExternalMapperTable externalTable = hExternalInpuTables.get(tableName);
                 if (externalTable != null) {
+                    if (externalTable.isInnerJoin()) {
+                        inputTablesWithInnerJoin.add(externalTable);
+                    }
                     hExternalInputTableEntries.clear();
                     List<ExternalMapperTableEntry> metadataTableEntries = externalTable.getMetadataTableEntries();
                     if (metadataTableEntries == null) {
@@ -194,18 +200,26 @@ public class TMapperMainPerljet {
 
         // /////////////////////////////////////////////////////////////////////////////////////////////////////
         // /////////////////////////////////////////////////////////////////////////////////////////////////////
-        // OUTPPUTS
+        // OUTPUTS
         // 
         sb.append(cr + gm.indent(indent));
         sb.append(cr + gm.indent(indent) + "###############################");
+        sb.append(cr + gm.indent(indent) + "# Output tables");
 
         ArrayList<ExternalMapperTable> outputTablesSortedByReject = new ArrayList<ExternalMapperTable>(outputTables);
-        // sorting outputs : not rejects first, rejects after
+        // sorting outputs : rejects tables after not rejects table
         Collections.sort(outputTablesSortedByReject, new Comparator<ExternalMapperTable>() {
 
             public int compare(ExternalMapperTable o1, ExternalMapperTable o2) {
                 if (o1.isReject() != o2.isReject()) {
                     if (o1.isReject()) {
+                        return 1;
+                    } else {
+                        return -1;
+                    }
+                }
+                if (o1.isRejectInnerJoin() != o2.isRejectInnerJoin()) {
+                    if (o1.isRejectInnerJoin()) {
                         return 1;
                     } else {
                         return -1;
@@ -217,34 +231,74 @@ public class TMapperMainPerljet {
         });
 
         boolean lastValueReject = false;
-        boolean oneConstraintForNotRejectTable = false;
+        boolean oneFilterForNotRejectTable = false;
         boolean serialRejectCanBeWrite = false;
-        boolean allNotRejectTablesHaveConstraint = true;
+        boolean allNotRejectTablesHaveFilter = true;
         boolean atLeastOneReject = false;
+        boolean atLeastOneRejectInnerJoin = false;
         boolean closeTestRejectConditionsBracket = false;
+        boolean closeTestInnerJoinConditionsBracket = false;
 
         int lstSize = outputTablesSortedByReject.size();
         // ///////////////////////////////////////////////////////////////////
-        // init of allNotRejectTablesHaveConstraint and atLeastOneReject
+        // init of allNotRejectTablesHaveFilter and atLeastOneReject
         for (int i = 0; i < lstSize; i++) {
             ExternalMapperTable outputTable = (ExternalMapperTable) outputTablesSortedByReject.get(i);
             List<ExternalMapperTableEntry> columnsEntries = outputTable.getMetadataTableEntries();
-            List<ExternalMapperTableEntry> constraints = outputTable.getConstraintTableEntries();
-            boolean hasConstraint = constraints != null && constraints.size() > 0 && !gm.checkConstraintsAreEmpty(outputTable);
+            List<ExternalMapperTableEntry> filters = outputTable.getConstraintTableEntries();
+            boolean hasFilter = filters != null && filters.size() > 0 && !gm.checkFiltersAreEmpty(outputTable);
             if (columnsEntries != null && columnsEntries.size() > 0) {
-                if (!hasConstraint && !outputTable.isReject()) {
-                    allNotRejectTablesHaveConstraint = false;
+                if (!hasFilter && !(outputTable.isReject() || outputTable.isRejectInnerJoin())) {
+                    allNotRejectTablesHaveFilter = false;
                 }
-                if (outputTable.isReject()) {
+                if (outputTable.isReject() || outputTable.isRejectInnerJoin()) {
                     atLeastOneReject = true;
                 }
+            }
+            if (outputTable.isRejectInnerJoin()) {
+                atLeastOneRejectInnerJoin = true;
             }
         }
         // ///////////////////////////////////////////////////////////////////
 
-        if (allNotRejectTablesHaveConstraint && atLeastOneReject) {
-            // write $oneNotRejectConstraintValidated = false;
-            sb.append(cr + gm.indent(indent) + "$" + oneNotRejectConstraintValidatedVarName + " = false;");
+        if (allNotRejectTablesHaveFilter && atLeastOneReject) {
+            // write $oneNotRejectFilterValidated = false;
+            sb.append(cr + gm.indent(indent) + "$" + rejected + " = true;");
+        }
+        if (atLeastOneRejectInnerJoin) {
+            // write $oneNotRejectFilterValidated = false;
+            sb.append(cr + gm.indent(indent) + "$" + rejectedInnerJoin + " = true;");
+        }
+
+        // write outputs arrays initialization with empty list for NOT reject tables
+        for (int indexReject = 0; indexReject < lstSize; indexReject++) {
+            ExternalMapperTable outputNormalTable = (ExternalMapperTable) outputTablesSortedByReject.get(indexReject);
+            if (outputNormalTable.isReject() || outputNormalTable.isRejectInnerJoin()) {
+                break;
+            }
+            List<ExternalMapperTableEntry> metadataTableEntries = outputNormalTable.getMetadataTableEntries();
+            if (metadataTableEntries != null && metadataTableEntries.size() > 0) {
+                sb.append(cr + gm.indent(indent) + "# Output table: '" + outputNormalTable.getName() + "'");
+                sb.append(cr + gm.indent(indent) + gm.buildNewArrayDeclaration(outputNormalTable.getName(), indent));
+            }
+        }
+
+        // write conditions for inner join reject
+        if (inputTablesWithInnerJoin.size() > 0) {
+            sb.append(cr + gm.indent(indent) + "if(");
+            String and = null;
+            for (ExternalMapperTable inputTable : inputTablesWithInnerJoin) {
+                if (and == null) {
+                    and = "";
+                } else {
+                    and = " &&";
+                }
+                sb.append(and + " scalar( @" + inputTable.getName() + ")");
+            }
+            sb.append(" ) {");
+            closeTestInnerJoinConditionsBracket = true;
+            indent++;
+            sb.append(cr + gm.indent(indent) + "$" + rejectedInnerJoin + " = false;");
         }
 
         // ///////////////////////////////////////////////////////////////////
@@ -257,90 +311,92 @@ public class TMapperMainPerljet {
             }
             String outputTableName = outputTable.getName();
 
-            List<ExternalMapperTableEntry> constraints = outputTable.getConstraintTableEntries();
+            List<ExternalMapperTableEntry> filters = outputTable.getConstraintTableEntries();
 
             boolean currentIsReject = outputTable.isReject();
+            boolean currentIsRejectInnerJoin = outputTable.isRejectInnerJoin();
 
-            boolean hasConstraint = constraints != null && constraints.size() > 0 && !gm.checkConstraintsAreEmpty(outputTable);
+            boolean hasFilters = filters != null && filters.size() > 0 && !gm.checkFiltersAreEmpty(outputTable);
 
-            boolean rejectValueHasJustChanged = lastValueReject != currentIsReject;
+            boolean rejectValueHasJustChanged = lastValueReject != (currentIsReject || currentIsRejectInnerJoin);
 
-            oneConstraintForNotRejectTable = !currentIsReject && hasConstraint;
+            oneFilterForNotRejectTable = !(currentIsReject || currentIsRejectInnerJoin) && hasFilters;
 
-            if (!currentIsReject && outputTableEntries.size() > 0) {
-                sb.append(cr + gm.indent(indent) + "# Output table: '" + outputTableName + "'");
-                // write output array initialization with empty list
-                sb.append(cr + gm.indent(indent) + gm.buildNewArrayDeclaration(outputTableName, indent));
+            if (rejectValueHasJustChanged) {
 
-            } else if (rejectValueHasJustChanged) {
+                if (closeTestInnerJoinConditionsBracket) {
+                    indent--;
+                    sb.append(cr + gm.indent(indent) + "}");
+                }
+
                 sb.append(cr + gm.indent(indent) + "###### START REJECTS ##### ");
                 // write outputs arrays initialization with empty list for reject tables
                 for (int indexReject = indexCurrentTable; indexReject < lstSize; indexReject++) {
                     ExternalMapperTable outputRejectTable = (ExternalMapperTable) outputTablesSortedByReject.get(indexReject);
                     List<ExternalMapperTableEntry> metadataTableEntries = outputRejectTable.getMetadataTableEntries();
-                    if (metadataTableEntries != null && metadataTableEntries.size() > 0) {
+                    List<ExternalMapperTableEntry> filtersForReject = outputRejectTable.getConstraintTableEntries();
+                    boolean hasFIlterForReject = filtersForReject != null && filtersForReject.size() > 0
+                            && !gm.checkFiltersAreEmpty(outputRejectTable);
+                    if (metadataTableEntries != null && metadataTableEntries.size() > 0 && hasFIlterForReject
+                            && outputRejectTable.isReject() && hasFilters || outputRejectTable.isRejectInnerJoin()) {
                         sb.append(cr + gm.indent(indent) + "# Output reject table: '" + outputRejectTable.getName() + "'");
                         sb.append(cr + gm.indent(indent) + gm.buildNewArrayDeclaration(outputRejectTable.getName(), indent));
                     }
                 }
             }
 
-            // write condition of rejects code execution
-            if (rejectValueHasJustChanged && atLeastOneReject) {
-                serialRejectCanBeWrite = allNotRejectTablesHaveConstraint;
-                if (currentIsReject && serialRejectCanBeWrite) {
-                    sb.append(cr + gm.indent(indent) + "if( ! $" + oneNotRejectConstraintValidatedVarName + " ) {");
-                    closeTestRejectConditionsBracket = true;
-                    indent++;
-                }
+            // write conditions of filters and code to execute
+            if (!currentIsReject || rejectValueHasJustChanged && oneFilterForNotRejectTable || currentIsReject || currentIsRejectInnerJoin) {
 
-            }
-
-            // write condition of constraints and code to execute
-            if (!currentIsReject || rejectValueHasJustChanged && oneConstraintForNotRejectTable || serialRejectCanBeWrite
-                    && currentIsReject) {
-
-                if (hasConstraint) {
-                    sb.append(cr + gm.indent(indent) + "# Constraint condition ");
+                if (hasFilters || currentIsReject || currentIsRejectInnerJoin) {
+                    sb.append(cr + gm.indent(indent) + "# Filter condition ");
                     sb.append(cr + gm.indent(indent) + "if( ");
-                    sb.append(gm.buildConditions(constraints, expressionParser));
-                    sb.append("  ) {");
+
+                    String or = "";
+                    if (currentIsReject) {
+                        sb.append("$" + rejected);
+                        or = " || ";
+                    }
+                    if (currentIsRejectInnerJoin) {
+                        sb.append(or + "$" + rejectedInnerJoin);
+                        or = " || ";
+                    }
+                    if (hasFilters) {
+                        sb.append(or + gm.buildConditions(filters, expressionParser));
+                    }
+                    sb.append(" ) {");
                     indent++;
-                    if (allNotRejectTablesHaveConstraint && !currentIsReject && atLeastOneReject) {
-                        sb.append(cr + gm.indent(indent) + "$" + oneNotRejectConstraintValidatedVarName + " = true;");
+                    if (allNotRejectTablesHaveFilter && !(currentIsReject || currentIsRejectInnerJoin) && atLeastOneReject) {
+                        sb.append(cr + gm.indent(indent) + "$" + rejected + " = false;");
                     }
                 }
 
-                for (ExternalMapperTableEntry outputTableEntry : outputTableEntries) {
-                    String outputColumnName = outputTableEntry.getName();
-                    String outputExpression = outputTableEntry.getExpression();
-                    if (outputExpression != null && outputExpression.trim().length() != 0) {
+                if (!currentIsReject && !currentIsRejectInnerJoin || currentIsReject || currentIsRejectInnerJoin) {
+                    for (ExternalMapperTableEntry outputTableEntry : outputTableEntries) {
+                        String outputColumnName = outputTableEntry.getName();
+                        String outputExpression = outputTableEntry.getExpression();
+                        if (outputExpression != null && outputExpression.trim().length() != 0) {
 
-                        String outputExpressionToWrite = gm.prefixEntryLocationsForOutputExpression(outputExpression, expressionParser,
-                                new TableType[] { TableType.INPUT, TableType.VARS });
+                            String outputExpressionToWrite = gm.prefixEntryLocationsForOutputExpression(outputExpression, expressionParser,
+                                    new TableType[] { TableType.INPUT, TableType.VARS });
 
-                        sb.append(cr + gm.indent(indent) + gm.getGeneratedCodeTableColumnVariable(outputTableName, outputColumnName)
-                                + " = " + outputExpressionToWrite + ";");
+                            sb.append(cr + gm.indent(indent) + gm.getGeneratedCodeTableColumnVariable(outputTableName, outputColumnName)
+                                    + " = " + outputExpressionToWrite + ";");
 
-                    }
+                        }
 
-                } // for entries
-                if (hasConstraint) {
+                    } // for entries
+                }
+                if (hasFilters || currentIsReject || currentIsRejectInnerJoin) {
                     indent--;
                     sb.append(cr + gm.indent(indent) + "}");
                 }
 
             }
-
-            lastValueReject = outputTable.isReject();
+            lastValueReject = currentIsReject || currentIsRejectInnerJoin;
         } // for output tables
-        if (closeTestRejectConditionsBracket) {
-            indent--;
-            sb.append(cr + gm.indent(indent) + "}");
-        }
+
         sb.append(cr + gm.indent(indent) + "###############################");
-        // /////////////////////////////////////////////////////////////////////////////////////////////////////
-        // /////////////////////////////////////////////////////////////////////////////////////////////////////
 
         // end of code to copy in template
         // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////

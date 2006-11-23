@@ -126,10 +126,6 @@ public abstract class DataMapTableView extends Composite {
 
     private Table tableForEntries;
 
-    public static final int WIDTH_BUTTON = 20;
-
-    public static final int HEIGHT_BUTTON = 20;
-
     protected final DataMapTableView dataMapTableView;
 
     private final ResizeHelper resizeHelper = new ResizeHelper();
@@ -138,7 +134,7 @@ public abstract class DataMapTableView extends Composite {
 
     protected TableViewerCreator tableViewerCreatorForColumns;
 
-    private AbstractDataMapTable abstractDataMapTable;
+    protected AbstractDataMapTable abstractDataMapTable;
 
     private Composite headerComposite;
 
@@ -158,7 +154,7 @@ public abstract class DataMapTableView extends Composite {
 
     private GridData tableForConstraintsGridData;
 
-    private ToolBar toolBarActions;
+    protected ToolBar toolBarActions;
 
     private ExpressionProposalProvider expressionProposalProvider;
 
@@ -198,7 +194,7 @@ public abstract class DataMapTableView extends Composite {
 
     protected static final int ADJUST_WIDTH_VALUE = 0;
 
-    private static final int HEADER_HEIGHT = 22;
+    private static final int HEADER_HEIGHT = 23;
 
     public static final String ID_NAME_COLUMN = "ID_NAME_COLUMN";
 
@@ -992,20 +988,34 @@ public abstract class DataMapTableView extends Composite {
         removeConstraintButton.setImage(ImageProviderMapper.getImage(ImageInfo.REMOVE_CONSTRAINT_ICON));
         removeConstraintButton.setToolTipText("Remove selected constraints");
 
-        final ToolItem rejectConstraintCheck = new ToolItem(toolBarActions, SWT.CHECK);
-        rejectConstraintCheck.setToolTipText("Active/unactive reject");
+        final ToolItem rejectFilterCheck = new ToolItem(toolBarActions, SWT.CHECK);
+        rejectFilterCheck.setToolTipText("Active/unactive reject");
         boolean isReject = ((OutputTable) abstractDataMapTable).isReject();
         Image image = ImageProviderMapper.getImage(isReject ? ImageInfo.CHECKED_ICON : ImageInfo.UNCHECKED_ICON);
         if (WindowSystem.isGTK()) {
-            rejectConstraintCheck.setImage(image);
-            rejectConstraintCheck.setHotImage(image);
+            rejectFilterCheck.setImage(image);
+            rejectFilterCheck.setHotImage(image);
         } else {
-            rejectConstraintCheck.setImage(ImageProviderMapper.getImage(ImageInfo.UNCHECKED_ICON));
-            rejectConstraintCheck.setHotImage(image);
+            rejectFilterCheck.setImage(ImageProviderMapper.getImage(ImageInfo.UNCHECKED_ICON));
+            rejectFilterCheck.setHotImage(image);
         }
-        rejectConstraintCheck.setSelection(isReject);
-        rejectConstraintCheck.setText("Reject");
+        rejectFilterCheck.setSelection(isReject);
+        rejectFilterCheck.setText("Reject");
 
+        final ToolItem rejectInnerJoinFilterCheck = new ToolItem(toolBarActions, SWT.CHECK);
+        rejectInnerJoinFilterCheck.setToolTipText("Active/unactive reject lookup inner join");
+        boolean isRejectInnerJoin = ((OutputTable) abstractDataMapTable).isRejectInnerJoin();
+        image = ImageProviderMapper.getImage(isRejectInnerJoin ? ImageInfo.CHECKED_ICON : ImageInfo.UNCHECKED_ICON);
+        if (WindowSystem.isGTK()) {
+            rejectInnerJoinFilterCheck.setImage(image);
+            rejectInnerJoinFilterCheck.setHotImage(image);
+        } else {
+            rejectInnerJoinFilterCheck.setImage(ImageProviderMapper.getImage(ImageInfo.UNCHECKED_ICON));
+            rejectInnerJoinFilterCheck.setHotImage(image);
+        }
+        rejectInnerJoinFilterCheck.setSelection(isRejectInnerJoin);
+        rejectInnerJoinFilterCheck.setText("Reject2");
+        
         // /////////////////////////////////////////////////////////////////
         if (addConstraintButton != null) {
 
@@ -1071,16 +1081,16 @@ public abstract class DataMapTableView extends Composite {
         // /////////////////////////////////////////////////////////////////
 
         // /////////////////////////////////////////////////////////////////
-        if (rejectConstraintCheck != null) {
+        if (rejectFilterCheck != null) {
 
-            rejectConstraintCheck.addSelectionListener(new SelectionListener() {
+            rejectFilterCheck.addSelectionListener(new SelectionListener() {
 
                 public void widgetDefaultSelected(SelectionEvent e) {
                 }
 
                 public void widgetSelected(SelectionEvent e) {
                     Image image = null;
-                    if (rejectConstraintCheck.getSelection()) {
+                    if (rejectFilterCheck.getSelection()) {
                         ((OutputTable) abstractDataMapTable).setReject(true);
                         image = ImageProviderMapper.getImage(ImageInfo.CHECKED_ICON);
                     } else {
@@ -1088,10 +1098,10 @@ public abstract class DataMapTableView extends Composite {
                         image = ImageProviderMapper.getImage(ImageInfo.UNCHECKED_ICON);
                     }
                     if (WindowSystem.isGTK()) {
-                        rejectConstraintCheck.setImage(image);
-                        rejectConstraintCheck.setHotImage(image);
+                        rejectFilterCheck.setImage(image);
+                        rejectFilterCheck.setHotImage(image);
                     } else {
-                        rejectConstraintCheck.setHotImage(image);
+                        rejectFilterCheck.setHotImage(image);
                     }
                 }
 
@@ -1099,6 +1109,35 @@ public abstract class DataMapTableView extends Composite {
 
         }
 
+        // /////////////////////////////////////////////////////////////////
+        if (rejectInnerJoinFilterCheck != null) {
+            
+            rejectInnerJoinFilterCheck.addSelectionListener(new SelectionListener() {
+                
+                public void widgetDefaultSelected(SelectionEvent e) {
+                }
+                
+                public void widgetSelected(SelectionEvent e) {
+                    Image image = null;
+                    if (rejectInnerJoinFilterCheck.getSelection()) {
+                        ((OutputTable) abstractDataMapTable).setRejectInnerJoin(true);
+                        image = ImageProviderMapper.getImage(ImageInfo.CHECKED_ICON);
+                    } else {
+                        ((OutputTable) abstractDataMapTable).setRejectInnerJoin(false);
+                        image = ImageProviderMapper.getImage(ImageInfo.UNCHECKED_ICON);
+                    }
+                    if (WindowSystem.isGTK()) {
+                        rejectInnerJoinFilterCheck.setImage(image);
+                        rejectInnerJoinFilterCheck.setHotImage(image);
+                    } else {
+                        rejectInnerJoinFilterCheck.setHotImage(image);
+                    }
+                }
+                
+            });
+            
+        }
+        
         // /////////////////////////////////////////////////////////////////
 
     }

@@ -226,6 +226,7 @@ public class ExternalDataConverter {
      * @param externalMapperTable
      */
     private void fillExternalTable(InputTable table, ExternalMapperTable externalMapperTable) {
+        externalMapperTable.setInnerJoin(table.isInnerJoin());
         fillExternalTableWithCommonsData(table, externalMapperTable);
         inputTables.add(externalMapperTable);
     }
@@ -250,6 +251,7 @@ public class ExternalDataConverter {
     private void fillExternalTable(OutputTable table, ExternalMapperTable externalMapperTable) {
         fillExternalTableWithCommonsData(table, externalMapperTable);
         externalMapperTable.setReject(table.isReject());
+        externalMapperTable.setRejectInnerJoin(table.isRejectInnerJoin());
         ArrayList<ExternalMapperTableEntry> constraintTableEntries = new ArrayList<ExternalMapperTableEntry>();
         for (ConstraintTableEntry constraintTableEntry : table.getConstraintEntries()) {
             ExternalMapperTableEntry externalMapperTableEntry = new ExternalMapperTableEntry();

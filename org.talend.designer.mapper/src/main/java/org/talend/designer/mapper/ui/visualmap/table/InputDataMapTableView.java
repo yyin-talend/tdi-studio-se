@@ -21,12 +21,21 @@
 // ============================================================================
 package org.talend.designer.mapper.ui.visualmap.table;
 
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.ToolItem;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumn;
+import org.talend.commons.ui.ws.WindowSystem;
 import org.talend.commons.utils.data.bean.IBeanPropertyAccessors;
 import org.talend.designer.mapper.managers.MapperManager;
 import org.talend.designer.mapper.model.table.InputTable;
+import org.talend.designer.mapper.model.table.OutputTable;
 import org.talend.designer.mapper.model.tableentry.InputColumnTableEntry;
+import org.talend.designer.mapper.ui.image.ImageInfo;
+import org.talend.designer.mapper.ui.image.ImageProviderMapper;
 import org.talend.designer.mapper.ui.visualmap.zone.Zone;
 
 /**
@@ -101,7 +110,47 @@ public class InputDataMapTableView extends DataMapTableView {
      */
     @Override
     protected void addConstraintsActionsComponents() {
-        // nothing
+        if (!getInputTable().isMainConnection()) {
+
+            final ToolItem rejectConstraintCheck = new ToolItem(toolBarActions, SWT.CHECK);
+            rejectConstraintCheck.setToolTipText("Reject main row if this lookup row doesn't exist");
+            boolean isInnerJoin = getInputTable().isInnerJoin();
+            Image image = ImageProviderMapper.getImage(isInnerJoin ? ImageInfo.CHECKED_ICON : ImageInfo.UNCHECKED_ICON);
+            if (WindowSystem.isGTK()) {
+                rejectConstraintCheck.setImage(image);
+                rejectConstraintCheck.setHotImage(image);
+            } else {
+                rejectConstraintCheck.setImage(ImageProviderMapper.getImage(ImageInfo.UNCHECKED_ICON));
+                rejectConstraintCheck.setHotImage(image);
+            }
+            rejectConstraintCheck.setSelection(isInnerJoin);
+            rejectConstraintCheck.setText("Inner join");
+
+            rejectConstraintCheck.addSelectionListener(new SelectionListener() {
+
+                public void widgetDefaultSelected(SelectionEvent e) {
+                }
+
+                public void widgetSelected(SelectionEvent e) {
+                    Image image = null;
+                    if (rejectConstraintCheck.getSelection()) {
+                        getInputTable().setInnerJoin(true);
+                        image = ImageProviderMapper.getImage(ImageInfo.CHECKED_ICON);
+                    } else {
+                        getInputTable().setInnerJoin(false);
+                        image = ImageProviderMapper.getImage(ImageInfo.UNCHECKED_ICON);
+                    }
+                    if (WindowSystem.isGTK()) {
+                        rejectConstraintCheck.setImage(image);
+                        rejectConstraintCheck.setHotImage(image);
+                    } else {
+                        rejectConstraintCheck.setHotImage(image);
+                    }
+                }
+
+            });
+        }
+
     }
 
     /*
@@ -117,7 +166,7 @@ public class InputDataMapTableView extends DataMapTableView {
 
     @Override
     protected boolean hasConstraintsActions() {
-        return false;
+        return true;
     }
 
     @Override
@@ -133,6 +182,10 @@ public class InputDataMapTableView extends DataMapTableView {
     @Override
     public Zone getZone() {
         return Zone.INPUTS;
+    }
+
+    public InputTable getInputTable() {
+        return (InputTable) abstractDataMapTable;
     }
 
 }
