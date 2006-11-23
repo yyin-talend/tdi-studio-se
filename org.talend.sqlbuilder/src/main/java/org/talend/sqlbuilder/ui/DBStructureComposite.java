@@ -298,7 +298,7 @@ public class DBStructureComposite extends Composite {
         refreshConnectionAction = new RefreshConnectionAction(treeViewer, Messages
                 .getString("DBStructureComposite.Refresh"));
 
-        metadataRefreshAction = new MetadataRefreshAction(treeViewer);
+        metadataRefreshAction = new MetadataRefreshAction(treeViewer, builderDialog);
 
         openQueryAction = new OpenQueryAction(treeViewer, builderDialog, builderDialog.getConnParameters());
         deleteQueryAction = new DeleteQueryAction(treeViewer, builderDialog);
@@ -474,14 +474,15 @@ public class DBStructureComposite extends Composite {
      * @return
      * @exception
      */
-    public void doRefresh(final RepositoryNode refreshNode) {
+	public void doRefresh(final RepositoryNode refreshNode) {
+    	final RepositoryNode rootNode = SQLBuilderRepositoryNodeManager.getRoot(refreshNode);
         Display.getDefault().asyncExec(new Runnable() {
 
             public void run() {
                 ((DBTreeProvider) treeViewer.getContentProvider()).setRefresh(true);
-                treeViewer.refresh(refreshNode, true);
-                treeViewer.update(repositoryNodeManager.getRepositoryNodebyName(refreshNode.getObject().getLabel()), null);
-//                setColor(refreshNode);
+                treeViewer.refresh(rootNode, true);
+                ((DBTreeProvider) treeViewer.getLabelProvider()).refreshRootNode(rootNode);
+                treeViewer.update(rootNode, null);
             }
 
         });

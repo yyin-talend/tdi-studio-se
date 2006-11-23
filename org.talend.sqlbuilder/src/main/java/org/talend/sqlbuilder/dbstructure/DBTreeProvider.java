@@ -127,20 +127,46 @@ ITableColorProvider {
     @SuppressWarnings("static-access")
     public Object[] getChildren(Object parentElement) {
         if (isRefresh) {
+//            RepositoryNode repositoryNode = (RepositoryNode) parentElement;
+//            RepositoryNode rootNode = repositoryNodeManager.getRoot(repositoryNode);
+//            RepositoryNode treeRoot = (RepositoryNode) rootNode.getParent();
+//            treeRoot.getChildren().clear();
+//            allRepositoryNodes.clear();
+//            repositoryNodeManager.removeAllRepositoryNodes();
+//            initialize(treeRoot);
+//            isRefresh = false;
+//            return allRepositoryNodes.get(repositoryNode.getObject().getLabel()).getChildren().toArray();
+        	
             RepositoryNode repositoryNode = (RepositoryNode) parentElement;
             RepositoryNode rootNode = repositoryNodeManager.getRoot(repositoryNode);
-            RepositoryNode treeRoot = (RepositoryNode) rootNode.getParent();
-            treeRoot.getChildren().clear();
-            allRepositoryNodes.clear();
-            repositoryNodeManager.removeAllRepositoryNodes();
-            initialize(treeRoot);
+            rootNode.getChildren().clear();
+            DatabaseConnection metadataConnection = (DatabaseConnection) ((ConnectionItem) repositoryNode.getObject().getProperty()
+                    .getItem()).getConnection();
+            boolean isBuildIn = ((SqlBuilderRepositoryObject) rootNode.getObject()).isBuildIn();
+			createTables(rootNode, rootNode.getObject(), metadataConnection, 
+            		isBuildIn);
+            createQueries(rootNode, rootNode.getObject(), metadataConnection, isBuildIn);
             isRefresh = false;
-            return allRepositoryNodes.get(repositoryNode.getObject().getLabel()).getChildren().toArray();
+            return repositoryNode.getChildren().toArray();
+        	
+        	
+        	
         } else {
             return ((RepositoryNode) parentElement).getChildren().toArray();
         }
     }
-
+    
+    public void refreshRootNode(RepositoryNode rootNode) {
+        IRepositoryFactory factory = RepositoryFactoryProvider.getInstance();
+        DatabaseConnection connection = (DatabaseConnection) ((ConnectionItem) rootNode.getObject()
+                .getProperty().getItem()).getConnection();
+        if (connection.isDivergency()) {
+        	((SqlBuilderRepositoryObject) rootNode.getObject()).setColor(COLOR_RED);
+        } else {
+        	((SqlBuilderRepositoryObject) rootNode.getObject()).setColor(null);
+        }
+    }
+    
 	private RepositoryObject getOriginalRepositoryObjectByName(String repositoryNodeName) {
     	Container fromModel = null;
 		try {

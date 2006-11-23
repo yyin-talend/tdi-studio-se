@@ -50,6 +50,7 @@ import org.talend.repository.model.RepositoryNode.EProperties;
 import org.talend.sqlbuilder.dbstructure.DBTreeProvider;
 import org.talend.sqlbuilder.dbstructure.RepositoryNodeType;
 import org.talend.sqlbuilder.repository.utility.SQLBuilderRepositoryNodeManager;
+import org.talend.sqlbuilder.ui.ISQLBuilderDialog;
 
 /**
  * DOC dev class global comment. Detailled comment <br/>
@@ -70,16 +71,19 @@ public class MetadataRefreshAction extends SelectionProviderAction {
 	
 	private Map<MetadataTable, List<MetadataColumn>> oldMetaData = new HashMap<MetadataTable, List<MetadataColumn>>();
 	
+	private ISQLBuilderDialog dialog;
+	
 	/**
 	 * DOC dev MetadataRefreshAction constructor comment.
 	 * 
 	 * @param selectionProvider
 	 */
-	public MetadataRefreshAction(ISelectionProvider selectionProvider) {
+	public MetadataRefreshAction(ISelectionProvider selectionProvider, ISQLBuilderDialog d) {
 		super(selectionProvider, "");
 		this.selectionProvider = selectionProvider;
 		columnNodes = new ArrayList<MetadataColumn>();
 		repositorynodes = new ArrayList<RepositoryNode>();
+		this.dialog = d;
 		init();
 	}
 
@@ -181,8 +185,9 @@ public class MetadataRefreshAction extends SelectionProviderAction {
 		}
 		
 		for (RepositoryNode repositorynode : repositorynodes) {
-			((DBTreeProvider) ((TreeViewer) selectionProvider).getContentProvider()).setRefresh(true);
-			((TreeViewer) selectionProvider).refresh(repositoryNodeManager.getRoot(repositorynode), true);
+//			((DBTreeProvider) ((TreeViewer) selectionProvider).getContentProvider()).setRefresh(true);
+//			((TreeViewer) selectionProvider).refresh(repositoryNodeManager.getRoot(repositorynode), true);
+			dialog.refreshNode(repositorynode);
 		}
 		
 //		((TreeViewer) selectionProvider).refresh(tableNode, true);
@@ -327,14 +332,12 @@ public class MetadataRefreshAction extends SelectionProviderAction {
 			}
 			if (col.isSynchronised()) {
 
-				//TODO 
-//				if (repositorynodes.get(0) != null
-//						&& !SQLBuilderRepositoryNodeManager.getRoot(repositorynodes.get(0))
-//							.equals(((RepositoryNode) object).getObject()
-//										.getLabel()))) {
-//					this.setEnabled(false);
-//					return;
-//				}
+				if (!repositorynodes.isEmpty() && repositorynodes.get(0) != null
+						&& !SQLBuilderRepositoryNodeManager.getRoot(repositorynodes.get(0))
+							.equals(SQLBuilderRepositoryNodeManager.getRoot(((RepositoryNode) object)))) {
+					this.setEnabled(false);
+					return;
+				}
 
 				repositorynodes.add((RepositoryNode) object);
 
