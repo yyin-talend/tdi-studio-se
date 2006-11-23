@@ -183,8 +183,9 @@ public class ShadowProcessPreview {
 
         // scroll to show the first col and first row
         table.showItem(table.getItem(0));
-        table.showColumn(table.getColumn(0));
-
+        if (table.getColumns()!= null && table.getColumns().length > 0) {
+            table.showColumn(table.getColumn(0));    
+        }
     }
     
     /**
@@ -242,8 +243,9 @@ public class ShadowProcessPreview {
 
         // scroll to show the first col and first row
         table.showItem(table.getItem(0));
-        table.showColumn(table.getColumn(0));
-
+        if (table.getColumns()!= null && table.getColumns().length > 0) {
+            table.showColumn(table.getColumn(0));
+        }
     }
 
     // CALCULATE THE NULBER OF COLUMNS IN THE PREVIEW
