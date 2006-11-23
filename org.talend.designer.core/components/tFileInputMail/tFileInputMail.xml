@@ -44,6 +44,18 @@
       REQUIRED="true"
       NUM_ROW="2"
     />
+
+    <PARAMETER
+      NAME="MAIL_PARTS"
+      FIELD="TABLE"
+      REQUIRED="true"
+      NUM_ROW="3"
+      NB_LINES="5"
+    >
+      <ITEMS BASED_ON_SCHEMA="true">
+        <ITEM NAME="MAIL_PART" />
+      </ITEMS>
+    </PARAMETER>
   </PARAMETERS>
 
   <CODEGENERATION>
