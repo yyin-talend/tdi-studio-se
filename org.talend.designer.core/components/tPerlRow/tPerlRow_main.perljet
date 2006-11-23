@@ -11,6 +11,7 @@ imports="
     org.talend.commons.utils.generation.LocationUtils
     org.talend.commons.utils.generation.EntryLocation
     java.util.List
+    java.util.ArrayList
 "
 class="PerlRowMain"
 %>
@@ -28,54 +29,47 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     if (metadata!=null) {
         String code = ElementParameterParser.getValue(node, "__CODE__");
 
+        List<EntryLocation> locations = new ArrayList<EntryLocation>();
+
         // replace $output_row[field1] by $tPerlRow_1[tPerlRow_1__field1]
         String tableName = metadata.getTableName();
+
         List<IMetadataColumn> columns = metadata.getListColumns();
-        EntryLocation[] locations = new EntryLocation[columns.size()];
-        int indexCol = 0;
-        
         for(IMetadataColumn column : columns) {
-            locations[indexCol] = new EntryLocation(
-                tableName,
-                column.getLabel()
+            locations.add(
+                new EntryLocation(
+                    tableName,
+                    column.getLabel()
+                )
             );
-            indexCol++;
         }
         
+        // we give a default value to prevComponentName so that no error
+        // occur when the user tries to generated Perl code while no input
+        // component was linked to our tPerlRow.
+        String prevComponentName = new String("prev_component_name");
+
+        List< ? extends IConnection> inConns = node.getIncomingConnections();
+        if (inConns != null && !inConns.isEmpty()) {
+            IMetadataTable inMetadata = inConns.get(0).getMetadataTable();
+            prevComponentName = inMetadata.getTableName();
+
+            columns = inMetadata.getListColumns();
+            for(IMetadataColumn column : columns) {
+                locations.add(
+                    new EntryLocation(
+                        prevComponentName,
+                        column.getLabel()
+                    )
+                );
+            }
+        }
+
+        // Here comes the substitutions!
         code = code.replaceAll(
             "\\$output_row\\[",
             "\\$"+ tableName +"["
         );
-        
-        code = locationUtils.replaceColumnNameToConstantName(
-            code,
-            locations
-        );
-
-        // replace $input_row[field1] by $tRowGen_1[tRowGen_1__field1]
-        List< ? extends IConnection> inConns = node.getIncomingConnections();
-        IMetadataTable inMetadata = null;
-
-        for (IConnection conn : inConns) { // connection list
-            if (conn.getLineStyle().equals(EConnectionType.FLOW_MAIN)) {
-                inMetadata = conn.getMetadataTable();
-                break; // ends connection list
-            }
-        }
-
-        String prevComponentName = inMetadata.getTableName();
-        
-        columns = inMetadata.getListColumns();
-        locations = new EntryLocation[columns.size()];
-        indexCol = 0;
-
-        for(IMetadataColumn column : columns) {
-            locations[indexCol] = new EntryLocation(
-                prevComponentName,
-                column.getLabel()
-            );
-            indexCol++;
-        }
         
         code = code.replaceAll(
             "\\$input_row\\[",
@@ -84,16 +78,16 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         
         code = locationUtils.replaceColumnNameToConstantName(
             code,
-            locations
+            (EntryLocation[])locations.toArray(new EntryLocation[0])
         );
 
-        // replace @input_row with @tRowGen_1
+        // In case the user would make some tricky Perl things, he can use
+        // the arrays as a whole.
         code = code.replaceAll(
             "@input_row",
             "@" + prevComponentName
         );
 
-        // replace @output_row with @tPerlRow_1
         code = code.replaceAll(
             "@output_row",
             "@" + tableName
