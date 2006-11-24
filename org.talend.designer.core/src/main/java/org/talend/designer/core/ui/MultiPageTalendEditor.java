@@ -54,7 +54,6 @@ import org.eclipse.ui.part.MultiPageEditorPart;
 import org.epic.perleditor.PerlEditorPlugin;
 import org.talend.commons.exception.MessageBoxExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
-import org.talend.core.context.RepositoryContext;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.ui.EImage;
 import org.talend.core.ui.ImageProvider;
@@ -279,7 +278,9 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
             PerlProcessor plProcessor = new PerlProcessor(process, false);
 
             try {
-                plProcessor.generateCode(process.getContextManager().getDefaultContext(), false, false, true, true);
+//                plProcessor.generateCode(process.getContextManager().getDefaultContext(), false, false, true, true);//Old
+            	plProcessor.generateCode(process.getContextManager().getDefaultContext(), false, false, true);
+                
             } catch (ProcessorException pe) {
                 MessageBoxExceptionHandler.process(pe);
                 // ErrorDialog.openError(getSite().getShell(), Messages.getString("MultiPageTalendEditor.3"),

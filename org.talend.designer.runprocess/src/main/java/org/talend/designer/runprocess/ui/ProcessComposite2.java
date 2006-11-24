@@ -535,7 +535,7 @@ public class ProcessComposite2 extends Composite {
             appendToConsole((ProcessMessage) evt.getNewValue());
         } else if (RunProcessContext.PROP_MESSAGE_CLEAR.equals(propName)) {
             getDisplay().asyncExec(new Runnable() {
-
+            
                 public void run() {
                     consoleText.setText(""); //$NON-NLS-1$
                 }
@@ -555,5 +555,4 @@ public class ProcessComposite2 extends Composite {
             });
         }
     }
-
 }

@@ -64,8 +64,6 @@ public class CodeGenerator {
 
     private boolean trace;
     
-    private boolean watchAllowed;
-
     private String interpreterPath;
 
     private String libPath;
@@ -95,13 +93,12 @@ public class CodeGenerator {
      * @param language
      */
     @SuppressWarnings("unchecked")
-    public CodeGenerator(IProcess process, boolean statistics, boolean trace, boolean watchAllowed, String... options) {
+    	public CodeGenerator(IProcess process, boolean statistics, boolean trace, String... options) {
         if (process == null) {
             throw new NullPointerException();
         } else {
             this.process = process;
             this.statistics = statistics;
-            this.watchAllowed = watchAllowed;
             this.trace = trace;
             this.jobName = process.getLabel();
             this.contextName = process.getContextManager().getDefaultContext().getName();
@@ -251,8 +248,6 @@ public class CodeGenerator {
         codeGenArgument.setCodePart(part);
         codeGenArgument.setStatistics(statistics);
         codeGenArgument.setTrace(trace);
-        codeGenArgument.setWatchAllowed(watchAllowed);
-        //TODO should change some thing for watch allowed flag.
         codeGenArgument.setInterpreterPath(interpreterPath);
         codeGenArgument.setLibPath(libPath);
         codeGenArgument.setRuntimeFilePath(runtimeFilePath);
@@ -386,8 +381,6 @@ public class CodeGenerator {
         argument.setCodePart(part);
         argument.setStatistics(statistics);
         argument.setTrace(trace);
-        argument.setWatchAllowed(watchAllowed);
-        //TODO change something for watch allowed flag.
         argument.setInterpreterPath(interpreterPath);
         argument.setLibPath(libPath);
         argument.setRuntimeFilePath(runtimeFilePath);

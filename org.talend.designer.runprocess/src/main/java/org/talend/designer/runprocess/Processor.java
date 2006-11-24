@@ -89,13 +89,15 @@ public class Processor {
      * @param context The context to be used.
      * @param statisticsPort TCP port used to get statistics from the process, <code>NO_STATISTICS</code> if none.
      * @param tracePort TCP port used to get trace from the process, <code>NO_TRACE</code> if none.
-     * @param swatchPort 
+     * @param watchPort 
      * @return The running process.
      * @throws ProcessorException Process failed.
      */
-    public Process run(final IContext context, int statisticsPort, int tracePort, int swatchPort) throws ProcessorException {
+//    public Process run(final IContext context, int statisticsPort, int tracePort, int swatchPort) throws ProcessorException { //Old
+    public Process run(final IContext context, int statisticsPort, int tracePort, String watchParam) throws ProcessorException {
         PerlProcessor plProcessor = new PerlProcessor(process, true);
-        plProcessor.generateCode(context, statisticsPort != NO_STATISTICS, tracePort != NO_TRACES, swatchPort != WATCH_LIMITED, true);
+//        plProcessor.generateCode(context, statisticsPort != NO_STATISTICS, tracePort != NO_TRACES, swatchPort != WATCH_LIMITED, true);
+        plProcessor.generateCode(context, statisticsPort != NO_STATISTICS, tracePort != NO_TRACES, true);
 
         String perlLib;
         try {
@@ -107,8 +109,12 @@ public class Processor {
         IPath absCodePath = plProcessor.getPerlProject().getLocation().append(plProcessor.getCodePath());
         IPath absContextPath = plProcessor.getPerlProject().getLocation().append(plProcessor.getContextPath());
         String perlLibCtxOption = "-I" + absContextPath.removeLastSegments(1).toOSString(); //$NON-NLS-1$     
-
-        return exec(absCodePath, absContextPath, Level.INFO, perlLibOption, perlLibCtxOption, statisticsPort, tracePort);
+        
+        if(watchParam == null)
+        {
+        	return exec(absCodePath, absContextPath, Level.INFO, perlLibOption, perlLibCtxOption, statisticsPort, tracePort);
+        }
+        return exec(absCodePath, absContextPath, Level.INFO, perlLibOption, perlLibCtxOption, statisticsPort, tracePort, watchParam);
     }
 
     /**
@@ -120,7 +126,8 @@ public class Processor {
      */
     public ILaunchConfiguration debug(final IContext context) throws ProcessorException {
         PerlProcessor plProcessor = new PerlProcessor(process, true);
-        plProcessor.generateCode(context, false, false, false, true);
+//        plProcessor.generateCode(context, false, false, false, true);
+        plProcessor.generateCode(context, false, false, true);
 
         // Create LaunchConfiguration
         ILaunchManager launchManager = DebugPlugin.getDefault().getLaunchManager();

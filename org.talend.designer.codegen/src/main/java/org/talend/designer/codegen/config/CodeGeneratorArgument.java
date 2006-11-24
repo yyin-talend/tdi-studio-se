@@ -37,8 +37,6 @@ public class CodeGeneratorArgument {
 
     private boolean trace;
     
-    private boolean watchAllowed;
-
     String interpreterPath;
 
     String libPath;
@@ -178,22 +176,4 @@ public class CodeGeneratorArgument {
     public void setJobName(String jobName) {
         this.jobName = jobName;
     }
-
-    
-    /**
-     * Getter for watchAllowed.
-     * @return the watchAllowed
-     */
-    public boolean isWatchAllowed() {
-        return watchAllowed;
-    }
-
-    
-    /**
-     * Sets the watchAllowed.
-     * @param watchAllowed the watchAllowed to set
-     */
-    public void setWatchAllowed(boolean watchAllowed) {
-        this.watchAllowed = watchAllowed;
-    }   
 }
