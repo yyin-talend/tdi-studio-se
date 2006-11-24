@@ -88,7 +88,8 @@ public class DescriptionSection extends AbstractSection {
     @Override
     protected void beforeSave() {
         String text = descriptionText.getText();
-        if (!text.equals(getObject().getDescription()))
+        if (!text.equals(getObject().getDescription())) {
             getObject().setDescription(text);
+        }
     }
 }

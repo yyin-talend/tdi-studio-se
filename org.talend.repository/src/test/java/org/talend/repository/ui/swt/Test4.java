@@ -54,10 +54,11 @@ public class Test4 {
         
         shell.pack();
         shell.open();
-        while (!shell.isDisposed())
-            if (!display.readAndDispatch())
+        while (!shell.isDisposed()) {
+            if (!display.readAndDispatch()) {
                 display.sleep();
-
+            }
+        }
         display.dispose();
     }
 }

@@ -87,9 +87,9 @@ public class CreateFileRegexpAction extends AbstractCreateAction {
 
     protected void init(RepositoryNode node) {
         ERepositoryObjectType nodeType = (ERepositoryObjectType) node.getProperties(EProperties.CONTENT_TYPE);
-        if (!ERepositoryObjectType.METADATA_FILE_REGEXP.equals(nodeType))
+        if (!ERepositoryObjectType.METADATA_FILE_REGEXP.equals(nodeType)) {
             return;
-
+        }
         switch (node.getType()) {
         case SIMPLE_FOLDER:
         case SYSTEM_FOLDER:

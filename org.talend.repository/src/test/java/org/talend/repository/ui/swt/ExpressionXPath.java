@@ -80,17 +80,13 @@ public class ExpressionXPath {
     
     
     
-    }
-    catch(IOException e) {
+    } catch (IOException e) {
       e.printStackTrace();
-    }
-    catch (ParserConfigurationException e) {
+    } catch (ParserConfigurationException e) {
       e.printStackTrace();
-    }
-    catch (SAXException e) {
+    } catch (SAXException e) {
       e.printStackTrace();
-    }
-    catch (XPathExpressionException e) {
+    } catch (XPathExpressionException e) {
       e.printStackTrace();
     }
   }
@@ -98,10 +94,12 @@ public class ExpressionXPath {
     String nom = noeud.getNodeName();
     String valeur = noeud.getNodeValue();
     short type = noeud.getNodeType();
-    if (type == Node.ELEMENT_NODE)
+    if (type == Node.ELEMENT_NODE) {
       valeur = noeud.getTextContent();
-    if (type == Node.ATTRIBUTE_NODE)
+    }
+    if (type == Node.ATTRIBUTE_NODE) {
         valeur = noeud.getTextContent();
+    }
 
     System.out.println(nom + " (" + type + ") = '" + valeur + "'");
   }

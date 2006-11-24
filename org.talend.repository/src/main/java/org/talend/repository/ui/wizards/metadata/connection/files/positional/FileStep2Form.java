@@ -434,7 +434,7 @@ public class FileStep2Form extends AbstractPositionalFileStepForm {
     }
 
     /**
-     * clear the table preview
+     * clear the table preview.
      */
     void clearPreview() {
         fileManager.clearTablePreview();

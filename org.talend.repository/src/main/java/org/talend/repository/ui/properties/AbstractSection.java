@@ -88,8 +88,9 @@ public abstract class AbstractSection extends AbstractPropertySection {
         private void handleEvent(String id, boolean enable) {
             IRepositoryObject object = getObject();
             if (object != null) {
-                if (object.getId().equals(id))
+                if (object.getId().equals(id)) {
                     enableControl(enable);
+                }
             }
         }
 
@@ -154,8 +155,9 @@ public abstract class AbstractSection extends AbstractPropertySection {
     }
 
     protected static void performRefresh() {
-        for (AbstractSection section : REGISTERED_SECTIONS)
+        for (AbstractSection section : REGISTERED_SECTIONS) {
             section.refresh();
+        }
     }
 
     @Override
@@ -186,7 +188,7 @@ public abstract class AbstractSection extends AbstractPropertySection {
         boolean enableControl = false;
 //        try {
 
-            User locker =null;// getRepositoryFactory().getLocker(getObject());
+            User locker = null; // getRepositoryFactory().getLocker(getObject());
             if (locker != null) {
                 RepositoryContext repositoryContext = ((RepositoryContext) CorePlugin.getContext().getProperty(
                         Context.REPOSITORY_CONTEXT_KEY));
@@ -220,13 +222,15 @@ public abstract class AbstractSection extends AbstractPropertySection {
      * @param locked
      */
     private static void showControls(boolean visible) {
-        for (AbstractSection section : REGISTERED_SECTIONS)
+        for (AbstractSection section : REGISTERED_SECTIONS) {
             section.showControl(visible);
+        }
     }
 
     private static void enableControls(boolean locked) {
-        for (AbstractSection section : REGISTERED_SECTIONS)
+        for (AbstractSection section : REGISTERED_SECTIONS) {
             section.enableControl(locked);
+        }
     }
 
     /**

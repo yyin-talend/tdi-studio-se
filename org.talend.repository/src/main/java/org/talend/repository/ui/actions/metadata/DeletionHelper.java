@@ -51,8 +51,9 @@ public class DeletionHelper {
         RepositoryNode parent = node.getParent();
         ERepositoryObjectType nodeType = (ERepositoryObjectType) parent.getProperties(EProperties.CONTENT_TYPE);
         Connection connection = (Connection) ((ConnectionItem) parent.getObject().getProperty().getItem()).getConnection();
-        if (connection == null)
+        if (connection == null) {
             return true;
+        }
         MetadataTable table = ((MetadataTableRepositoryObject) node.getObject()).getTable();
         return TableHelper.isDeleted(table);
     }

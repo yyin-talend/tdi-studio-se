@@ -85,8 +85,9 @@ public class StatusHelper {
                 break;
             }
         }        
-        if (status == null)
+        if (status == null) {
             status = new ArrayList<Status>();
+        }
         toMaps(status);
         return status;
     }

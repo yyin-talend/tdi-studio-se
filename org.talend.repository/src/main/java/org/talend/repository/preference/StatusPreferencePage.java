@@ -58,7 +58,7 @@ public class StatusPreferencePage extends FieldEditorPreferencePage implements I
 
     @Override
     protected IPreferenceStore doGetPreferenceStore() {
-        RepositoryPreferenceStore preferenceStore = new RepositoryPreferenceStore( RepositoryFactoryProvider.getInstance());
+        RepositoryPreferenceStore preferenceStore = new RepositoryPreferenceStore(RepositoryFactoryProvider.getInstance());
         try {
             preferenceStore.load();
         } catch (PersistenceException e) {
@@ -76,6 +76,7 @@ public class StatusPreferencePage extends FieldEditorPreferencePage implements I
         addField(new StatusEditor(Status.DOCUMENTATION_STATUS, "Documentation status", getFieldEditorParent()));
     }
 
+    @Override
     protected void initialize() {
         try {
             super.initialize();
@@ -89,10 +90,11 @@ public class StatusPreferencePage extends FieldEditorPreferencePage implements I
 
     @Override
     protected void checkState() {
-        if (getErrorMessage() == null)
+        if (getErrorMessage() == null) {
             super.checkState();
-        else
+        } else {
             setValid(false);
+        }
     }
 
     public void init(IWorkbench workbench) {

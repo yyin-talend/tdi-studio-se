@@ -485,7 +485,7 @@ public class DelimitedFileStep2Form extends AbstractDelimitedFileStepForm {
     }
 
     /**
-     * clear the table preview
+     * clear the table preview.
      */
     void clearPreview() {
         delimitedFilePreview.clearTablePreview();

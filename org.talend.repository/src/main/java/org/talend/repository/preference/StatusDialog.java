@@ -74,6 +74,7 @@ public class StatusDialog extends Dialog {
         label = initialLabel == null ? "" : initialLabel;
     }
 
+    @Override
     protected void buttonPressed(int buttonId) {
         if (buttonId == IDialogConstants.OK_ID) {
             code = codeText.getText();
@@ -85,14 +86,17 @@ public class StatusDialog extends Dialog {
         super.buttonPressed(buttonId);
     }
 
+    @Override
     protected void configureShell(Shell shell) {
         super.configureShell(shell);
-        if (creation)
+        if (creation) {
             shell.setText("Create new status");
-        else
+        } else {
             shell.setText("Edit status");
+        }
     }
 
+    @Override
     protected void createButtonsForButtonBar(Composite parent) {
         // create OK and Cancel buttons by default
         okButton = createButton(parent, IDialogConstants.OK_ID, IDialogConstants.OK_LABEL, true);
@@ -103,11 +107,12 @@ public class StatusDialog extends Dialog {
             codeText.setText(code);
             codeText.selectAll();
         }
-        if (label != null)
+        if (label != null) {
             labelText.setText(label);
-        if (creation)
+        }
+        if (creation) {
             codeText.setFocus();
-        else {
+        } else {
             codeText.setEnabled(false);
             labelText.setFocus();
         }
@@ -116,6 +121,7 @@ public class StatusDialog extends Dialog {
     /*
      * (non-Javadoc) Method declared on Dialog.
      */
+    @Override
     protected Control createDialogArea(Composite parent) {
         // create composite
         Composite composite = (Composite) super.createDialogArea(parent);
@@ -180,12 +186,13 @@ public class StatusDialog extends Dialog {
 
     protected void validateInput() {
         String errorMessage = null;
-        if (creation && codeText.getText().length() != 3)
+        if (creation && codeText.getText().length() != 3) {
             errorMessage = "Code must have 3 letters.";
-        else if (creation && existingCodes.contains(codeText.getText()))
+        } else if (creation && existingCodes.contains(codeText.getText())) {
             errorMessage = "This code is already used";
-        else if (labelText.getText().equals(""))
+        } else if (labelText.getText().equals("")) {
             errorMessage = "Label cannot be empty.";
+        }
         setErrorMessage(errorMessage);
     }
 

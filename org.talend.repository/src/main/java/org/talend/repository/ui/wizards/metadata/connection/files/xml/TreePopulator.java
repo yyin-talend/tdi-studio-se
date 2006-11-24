@@ -66,7 +66,7 @@ public class TreePopulator {
     }
 
     /**
-     * populate xml tree
+     * populate xml tree.
      * 
      */
     public void populateTree(String filePath, ATreeNode treeNode) {
@@ -95,7 +95,7 @@ public class TreePopulator {
     }
 
     /**
-     * populate tree items
+     * populate tree items.
      * 
      * @param tree
      * @param node

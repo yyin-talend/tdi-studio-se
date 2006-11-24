@@ -494,7 +494,7 @@ public class FilePositionalViewer extends Composite {
     }
 
     /**
-     * topMarker
+     * topMarker.
      * 
      * 
      */
@@ -585,7 +585,7 @@ public class FilePositionalViewer extends Composite {
                         resizeHelper.startDrag(convertToParentOrigin(composite.text, new Point(event.x, event.y)));
                         break;
                     case SWT.MouseUp:
-                        if (eventPoint.y <= -5) {// && eventPoint.y >= -20
+                        if (eventPoint.y <= -5) { // && eventPoint.y >= -20
                             for (PositionMarkerEditor position : GraphicRule.listPositionMarker) {
                                 if (posX == position.getPosX()) {
                                     GraphicRule.erasePositionMarker(position, position.getPosX(), -10);

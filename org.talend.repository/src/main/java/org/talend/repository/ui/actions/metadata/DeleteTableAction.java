@@ -69,6 +69,7 @@ public class DeleteTableAction extends AContextualAction {
         this.setImageDescriptor(ImageProvider.getImageDesc(EImage.DELETE_ICON));
     }
 
+    @Override
     public void run() {
         ISelection selection = getSelection();
 
@@ -85,7 +86,7 @@ public class DeleteTableAction extends AContextualAction {
                                 EProperties.CONTENT_TYPE);
                         IRepositoryFactory factory = RepositoryFactoryProvider.getInstance();
                         ConnectionItem item = (ConnectionItem) node.getObject().getProperty().getItem();
-                        connection = (Connection) (item).getConnection();
+                        connection = (item).getConnection();
                         MetadataTable metadataTable = ((MetadataTableRepositoryObject) node.getObject()).getTable();
                         if (TableHelper.isDeleted(metadataTable)) {
                             if (confirm == null) {
@@ -94,10 +95,12 @@ public class DeleteTableAction extends AContextualAction {
                                         + Messages.getString("DeleteAction.dialog.message2");
                                 confirm = (MessageDialog.openQuestion(new Shell(), title, message));
                             }
-                            if (confirm)
+                            if (confirm) {
                                 connection.getTables().remove(metadataTable);
-                        } else
+                            }
+                        } else {
                             TableHelper.setDeleted(metadataTable, true);
+                        }
                         factory.save(item);
                         refresh();
                     } catch (PersistenceException e) {
@@ -106,7 +109,7 @@ public class DeleteTableAction extends AContextualAction {
                 }
             }
         }
-        IViewPart viewPart = (IViewPart) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView(
+        IViewPart viewPart = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView(
                 RepositoryView.VIEW_ID);
         IRepositoryView repositoryView = (IRepositoryView) viewPart;
 
@@ -129,7 +132,7 @@ public class DeleteTableAction extends AContextualAction {
     public void init(TreeViewer viewer, IStructuredSelection selection) {
         boolean canWork = !selection.isEmpty();
         setText(null);
-        for (Object o : ((IStructuredSelection) selection).toArray()) {
+        for (Object o : (selection).toArray()) {
             if (canWork) {
                 RepositoryNode node = (RepositoryNode) o;
                 switch (node.getType()) {

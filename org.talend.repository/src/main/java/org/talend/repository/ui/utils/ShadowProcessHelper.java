@@ -135,10 +135,10 @@ public class ShadowProcessHelper {
         
         schema.add(iMetadataDn);
         
-        if(connection.getValue() != null && !connection.getValue().isEmpty()){
+        if (connection.getValue() != null && !connection.getValue().isEmpty()) {
             Iterator<String> iterate = connection.getValue().iterator();
             
-            while(iterate.hasNext()){
+            while (iterate.hasNext()) {
                 
                 IMetadataColumn iMetadataColumn =  new MetadataColumn();
                 iMetadataColumn.setLabel(iterate.next());

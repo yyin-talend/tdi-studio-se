@@ -40,13 +40,15 @@ public class LocalLockHelper {
     }
 
     public static void fireLockEvent(String id) {
-        for (Listerner listener : LISTENER)
+        for (Listerner listener : LISTENER) {
             listener.lockAdded(id);
+        }
     }
 
     public static void fireUnlockEvent(String id) {
-        for (Listerner listener : LISTENER)
+        for (Listerner listener : LISTENER) {
             listener.lockRemoved(id);
+        }
     }
 
     /**

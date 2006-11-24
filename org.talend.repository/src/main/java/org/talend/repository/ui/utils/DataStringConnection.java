@@ -124,8 +124,9 @@ public class DataStringConnection {
     public String getString(final int dbTypeItemIndex, final String host, final String login, final String password,
             final String port, final String sid, final String filename, final String datasource) {
         String s = getStringConnectionTemplate();
-        if (s == null)
+        if (s == null) {
             return "";
+        }
         s = getStringReplace(s, "<login>", login);
         s = getStringReplace(s, "<password>", password);
         s = getStringReplace(s, "<host>", host);

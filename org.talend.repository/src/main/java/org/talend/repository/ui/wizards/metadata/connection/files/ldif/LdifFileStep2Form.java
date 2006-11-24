@@ -198,7 +198,7 @@ public class LdifFileStep2Form extends AbstractLdifFileStepForm {
      * populateLdifAttributes. method to populate the Table of Attributes to read the Ldif file
      * 
      */
-    protected void populateLdifAttributes() throws IOException, Exception{
+    protected void populateLdifAttributes() throws IOException, Exception {
 
         itemTableName = new ArrayList<String>();
 
@@ -234,8 +234,8 @@ public class LdifFileStep2Form extends AbstractLdifFileStepForm {
             TableItem tableItem = tableItems[j];
             for (int i = 0; i < attribute.size(); i++) {
                 String attributeName = attribute.get(i);
-                if(attributeName != null && !("").equals(attributeName)){
-                    if(tableItem.getText().equals(attributeName)){
+                if (attributeName != null && !("").equals(attributeName)) {
+                    if (tableItem.getText().equals(attributeName)) {
                         tableItem.setChecked(true);
                         break;
                     }
@@ -337,7 +337,7 @@ public class LdifFileStep2Form extends AbstractLdifFileStepForm {
     }
 
     /**
-     * clear the table preview
+     * clear the table preview.
      */
     void clearPreview() {
         ldifFilePreview.clearTablePreview();
@@ -549,7 +549,7 @@ public class LdifFileStep2Form extends AbstractLdifFileStepForm {
             
             try {
                 populateLdifAttributes();
-            } catch(Exception e) {
+            } catch (Exception e) {
                 new ErrorDialogWidthDetailArea(getShell(), PID, Messages.getString("LdifFileStep2.previewFailure"), e.getMessage());
                 log.error(Messages.getString("LdifFileStep2.previewFailure") + " " + e.getMessage());
                 updateStatus(IStatus.ERROR, Messages.getString("LdifFileStep2.previewFailure"));

@@ -20,72 +20,100 @@
 //
 // ============================================================================
 package org.talend.repository.ui.wizards.metadata.connection.files.ldif;
-import java.io.*;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import javax.naming.directory.*;
+
+import javax.naming.directory.Attribute;
+import javax.naming.directory.Attributes;
+import javax.naming.directory.BasicAttribute;
+import javax.naming.directory.BasicAttributes;
 
 /**
  * @author cantoine
  * 
  */
 public class LDIFReader {
-	private String lastDN = null;
-	private BufferedReader reader = null;
 
-    public LDIFReader(BufferedReader r){
+    private String lastDN = null;
+
+    private BufferedReader reader = null;
+
+    public LDIFReader(BufferedReader r) {
         reader = r;
     }
 
-    private void add(Attributes entry, String attribute, String value, int type) throws IOException{
+    /**
+     * add.
+     * 
+     * @param entry
+     * @param attribute
+     * @param value
+     * @param type
+     * @throws IOException
+     */
+    private void add(Attributes entry, String attribute, String value, int type) throws IOException {
         Attribute vals = entry.get(attribute);
-        if(vals == null)
+        if (vals == null) {
             vals = new BasicAttribute(attribute);
-//        if(type == 2)
-//            vals.add(new String(Base64.decode(value.getBytes())));
-        else
-        if(type == 1)
+        } else if (type == 1) {
             vals.add(value);
-        else
-        if(type == 3)
-        {
+        } else if (type == 3) {
             URL url = null;
-            try
-            {
+            try {
                 url = new URL(value);
-            }
-            catch(MalformedURLException ex)
-            {
+            } catch (MalformedURLException ex) {
                 throw new IOException(String.valueOf(ex) + ": Cannot construct url " + value);
             }
-            if(!url.getProtocol().equalsIgnoreCase("file"))
+            if (!url.getProtocol().equalsIgnoreCase("file")) {
                 throw new IOException("Protocol not supported: " + url.getProtocol());
+            }
             File file = new File(url.getFile());
-            byte b[] = new byte[(int)file.length()];
+            byte[] b = new byte[(int) file.length()];
             FileInputStream fi = new FileInputStream(file);
             fi.read(b);
             vals.add(b);
-        } else
-        {
+        } else {
             throw new IOException("Unknown type.");
         }
         entry.put(vals);
     }
 
-    public String getDN(){
+    /**
+     * @author cantoine
+     * @return Dn
+     * 
+     */
+    public String getDN() {
         return lastDN;
     }
 
-    private String getDN(StringBuffer dn, int type) throws IOException{
-        if(dn == null)
+    /**
+     * @author cantoine
+     * @param dn
+     * @param type
+     * @throws IOException
+     * @return Dn
+     */
+    private String getDN(StringBuffer dn, int type) throws IOException {
+        if (dn == null) {
             return null;
+        }
         String rdn = dn.toString();
-//        if(type == 2)
-//            rdn = new String(Base64.decode(rdn.getBytes()), "UTF8");
+        // if(type == 2)
+        // rdn = new String(Base64.decode(rdn.getBytes()), "UTF8");
         return rdn;
     }
 
-    public Attributes getNext() throws IOException{
+    /**
+     * @author cantoine
+     * 
+     */
+    public Attributes getNext() throws IOException {
         int type = 1;
         boolean encoded = false;
         Attributes entry = null;
@@ -97,75 +125,68 @@ public class LDIFReader {
         String attribute;
         String sDN;
         lastDN = line = attribute = sDN = null;
-        while((line = reader.readLine()) != null) 
-        {
+        while ((line = reader.readLine()) != null) {
             int len = line.length();
             linenr++;
-            if(len <= 0 || line.charAt(0) != '#')
-                if(len > 0 && line.charAt(0) == ' ')
-                {
-                    if(value == null)
-                    {
+            if (len <= 0 || line.charAt(0) != '#') {
+                if (len > 0 && line.charAt(0) == ' ') {
+                    if (value == null) {
                         lastDN = null;
                     }
                     value.append(line.substring(1));
-                } else
-                if(len == 0)
-                {
-                    if(attribute != null && value != null)
-                    {
-                        if(entry == null)
+                } else if (len == 0) {
+                    if (attribute != null && value != null) {
+                        if (entry == null) {
                             entry = new BasicAttributes(true);
+                        }
                         add(entry, attribute, value.toString(), type);
                         attribute = null;
                         value = null;
                     }
-                    if(dn != null && lastDN == null)
+                    if (dn != null && lastDN == null) {
                         lastDN = getDN(dn, type);
-                    if(entry != null)
+                    }
+                    if (entry != null) {
                         return entry;
-                } else
-                {
+                    }
+                } else {
                     int pos = line.indexOf(":");
-                    if(pos == -1)
-                    {
+                    if (pos == -1) {
                         lastDN = null;
                     }
-                    if(dn != null && lastDN == null)
+                    if (dn != null && lastDN == null) {
                         lastDN = getDN(dn, type);
-                    if(attribute != null && value != null)
-                    {
-                        if(entry == null)
+                    }
+                    if (attribute != null && value != null) {
+                        if (entry == null) {
                             entry = new BasicAttributes(true);
+                        }
                         add(entry, attribute, value.toString(), type);
                     }
                     int to = pos;
                     int from = pos + 1;
-                    if(line.charAt(from) == ':')
-                    {
+                    if (line.charAt(from) == ':') {
                         type = 2;
                         from++;
-                    } else
-                    if(line.charAt(from) == '<')
-                    {
+                    } else if (line.charAt(from) == '<') {
                         type = 3;
                         from++;
-                    } else
-                    {
+                    } else {
                         type = 1;
                     }
-                    if(line.charAt(from) == ' ')
+                    if (line.charAt(from) == ' ') {
                         from++;
+                    }
                     attribute = line.substring(0, to);
                     value = new StringBuffer(line.substring(from));
-                    if(dn == null)
-                    {
+                    if (dn == null) {
                         dn = value;
                         attribute = null;
                     }
                 }
+            }
         }
         return entry;
     }
-
+    
 }

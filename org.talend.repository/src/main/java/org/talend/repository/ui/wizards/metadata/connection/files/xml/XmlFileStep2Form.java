@@ -116,8 +116,6 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
 
     private TreePopulator treePopulator;
 
-    private Composite compositeBg;
-
     /**
      * Constructor to use by RCP Wizard.
      * 
@@ -316,7 +314,7 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
     }
 
     /**
-     * clear the table preview
+     * clear the table preview.
      */
     void clearPreview() {
         xmlFilePreview.clearTablePreview();
@@ -392,7 +390,7 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
     }
 
     /**
-     * get the standby XPath expression
+     * get the standby XPath expression.
      * 
      * @return
      */

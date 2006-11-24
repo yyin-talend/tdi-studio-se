@@ -348,7 +348,7 @@ public class LdifFileStep3Form extends AbstractLdifFileStepForm {
             for (int i = 0; i < numberOfCol; i++) {
                 label[i] = Messages.getString("FileStep3.column") + i;
                 if (firstRowToExtractMetadata == 0) {
-                    label[i] = ""+processDescription.getSchema().get(0).getListColumns().get(i);
+                    label[i] = "" + processDescription.getSchema().get(0).getListColumns().get(i);
                 }
             }
 

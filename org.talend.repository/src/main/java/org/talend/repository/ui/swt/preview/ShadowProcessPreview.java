@@ -183,7 +183,7 @@ public class ShadowProcessPreview {
 
         // scroll to show the first col and first row
         table.showItem(table.getItem(0));
-        if (table.getColumns()!= null && table.getColumns().length > 0) {
+        if (table.getColumns() != null && table.getColumns().length > 0) {
             table.showColumn(table.getColumn(0));    
         }
     }
@@ -222,7 +222,7 @@ public class ShadowProcessPreview {
                     }
                 }
             } else {
-                title[i] = ""+processDescription.getSchema().get(0).getListColumns().get(i);
+                title[i] = "" + processDescription.getSchema().get(0).getListColumns().get(i);
             }
         }
         this.header = title;
@@ -243,7 +243,7 @@ public class ShadowProcessPreview {
 
         // scroll to show the first col and first row
         table.showItem(table.getItem(0));
-        if (table.getColumns()!= null && table.getColumns().length > 0) {
+        if (table.getColumns() != null && table.getColumns().length > 0) {
             table.showColumn(table.getColumn(0));
         }
     }

@@ -28,6 +28,7 @@ import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
@@ -56,6 +57,7 @@ public class StatusEditor extends TableEditor {
         super(name, labelText, parent);
     }
 
+    @Override
     protected Table createTable(Composite parent) {
         Table contextTable = new Table(parent, SWT.BORDER | SWT.SINGLE);
         contextTable.setLinesVisible(true);
@@ -97,10 +99,12 @@ public class StatusEditor extends TableEditor {
 
             public String getColumnText(Object element, int columnIndex) {
                 String value = ((String) element);
-                if (columnIndex == 0)
+                if (columnIndex == 0) {
                     return StatusHelper.getCode(value);
-                if (columnIndex == 1)
+                }
+                if (columnIndex == 1) {
                     return StatusHelper.getLabel(value);
+                }
                 throw new IllegalStateException();
             }
 
@@ -129,7 +133,7 @@ public class StatusEditor extends TableEditor {
     protected String getNewInputObject() {
         Shell shell = RepositoryPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getShell();
         StatusDialog dialog = new StatusDialog(shell, computeCodeList());
-        if (dialog.open() == StatusDialog.OK) {
+        if (dialog.open() == Window.OK) {
             return StatusHelper.getString(dialog.getCode(), dialog.getLabel());
         }
         return null;
@@ -139,7 +143,7 @@ public class StatusEditor extends TableEditor {
     protected String getExistingInputObject(String obj) {
         Shell shell = RepositoryPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getShell();
         StatusDialog dialog = new StatusDialog(shell, computeCodeList(), StatusHelper.getCode(obj), StatusHelper.getLabel(obj));
-        if (dialog.open() == StatusDialog.OK) {
+        if (dialog.open() == Window.OK) {
             return StatusHelper.getString(dialog.getCode(), dialog.getLabel());
         }
         return null;

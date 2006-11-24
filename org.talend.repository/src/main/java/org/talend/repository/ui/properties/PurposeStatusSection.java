@@ -132,8 +132,9 @@ public class PurposeStatusSection extends AbstractSection {
 
     protected String getStatus() {
         String statusCode = getObject().getStatusCode();
-        if (statusCode == null || "".equals(statusCode))
+        if (statusCode == null || "".equals(statusCode)) {
             return "";
+        }
         return statusHelper.getStatusLabel(statusCode);
     }
 

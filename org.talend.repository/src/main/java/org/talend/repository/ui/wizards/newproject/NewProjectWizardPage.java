@@ -146,7 +146,7 @@ public class NewProjectWizardPage extends WizardPage {
     Project[] projects;
 
     private boolean isProjectNameAlreadyUsed(String newProjectName) {
-        IRepositoryFactory repositoryFactory = RepositoryFactoryProvider.getInstance(((NewProjectWizard)getWizard()).getRepositoryContext());
+        IRepositoryFactory repositoryFactory = RepositoryFactoryProvider.getInstance(((NewProjectWizard) getWizard()).getRepositoryContext());
         if (projects == null) {
             try {
                 projects = repositoryFactory.readProject();

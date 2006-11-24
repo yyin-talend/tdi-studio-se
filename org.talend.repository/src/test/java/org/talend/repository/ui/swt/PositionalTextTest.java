@@ -35,17 +35,14 @@ import org.eclipse.swt.events.MouseMoveListener;
 import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.graphics.Cursor;
-import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
-import org.talend.core.model.metadata.builder.connection.FileConnection;
 import org.talend.repository.ui.swt.filepositionalviewer.ResizeHelper;
 
 /**
@@ -74,10 +71,6 @@ public class PositionalTextTest extends Composite {
     private static TreeMap<Integer, Integer> positionBarre;
 
     private boolean erase = false;
-
-    final private ResizeHelper resizeHelper = new ResizeHelper();
-
-    private FileConnection connection;
 
     public PositionalTextTest(Composite parent, int style) {
         super(parent, style);
@@ -129,8 +122,8 @@ public class PositionalTextTest extends Composite {
     }
 
     protected void setText(String s) {
-        Font font = new Font(this.getDisplay().getCurrent(), "Courier", 12, SWT.NORMAL);
-        this.text.setFont(font);
+//        Font font = new Font(this.getDisplay().getCurrent(), "Courier", 12, SWT.NORMAL);
+//        this.text.setFont(font);
         this.text.setText(s);
     }
 
@@ -139,7 +132,6 @@ public class PositionalTextTest extends Composite {
         if (s != null && !s.equals("")) {
             fieldSeparatorValue = s;
             String[] drawLine = s.split(",");
-            int old = 0;
             int oldToPrint = 0;
             for (int i = 0; i < drawLine.length; i++) {
                 // int line = (new Integer(drawLine[i]).intValue())+old;
@@ -220,7 +212,6 @@ public class PositionalTextTest extends Composite {
         int posX = (posXpix * largeurFont) + decalScreen;
 
         int initialXpix = (initialPosX - decalScreen) / largeurFont;
-        int initialX = (initialXpix * largeurFont) + decalScreen;
 
         for (VerticalMarkerEditor marker : listVerticalMarker) {
             if (vm != marker) {
@@ -237,8 +228,9 @@ public class PositionalTextTest extends Composite {
         vm.setPosX(posX);
         vm.moveAbove(text);
 
-        if (posXpix >= 0)
+        if (posXpix >= 0) {
             positionBarre.put(posX, posXpix);
+        }
         fieldSeparatorValue = calculateRegExp(positionBarre);
         System.out.println("Field Value " + fieldSeparatorValue);
 
@@ -250,9 +242,6 @@ public class PositionalTextTest extends Composite {
 
         int posXpix = (futurPosX - decalScreen) / largeurFont;
         int posX = (posXpix * largeurFont) + decalScreen;
-
-        int initialXpix = (initialPosX - decalScreen) / largeurFont;
-        int initialX = (initialXpix * largeurFont) + decalScreen;
 
         for (OvalMarkerEditor oval : listOvalMarkerEditor) {
             if (om != oval) {
@@ -317,7 +306,7 @@ public class PositionalTextTest extends Composite {
     // }
 
     /**
-     * VerticalMarker
+     * VerticalMarker.
      * 
      * 
      */
@@ -325,7 +314,7 @@ public class PositionalTextTest extends Composite {
 
         int posX;
 
-        final private ResizeHelper resizeHelper = new ResizeHelper();
+        private final ResizeHelper resizeHelper = new ResizeHelper();
 
         public VerticalMarkerEditor(Composite parent, int style) {
             super(parent, style);
@@ -334,7 +323,6 @@ public class PositionalTextTest extends Composite {
 
                 public void paintControl(PaintEvent e) {
                     GC gc = e.gc;
-                    Rectangle rec = ((Canvas) e.widget).getBounds();
                     // STYLE HAUT GRIS, RESTE NOIR
                     // gc.drawLine(0, 0, 0, 15);
                     // gc.drawLine(1, 0, 1, 15);
@@ -367,12 +355,10 @@ public class PositionalTextTest extends Composite {
 
                     Point eventPoint = new Point(event.x, event.y);
 
-                    GridData gridData;
                     switch (event.type) {
                     case SWT.MouseMove:
                         if (resizeHelper.isDragging()) {
                             Point newPoint = new Point(posX + eventPoint.x, eventPoint.y);
-                            Point dragPoint = resizeHelper.getLastDragPoint();
                             for (OvalMarkerEditor oval : listOvalMarkerEditor) {
                                 if (posX == oval.getPosX()) {
                                     composite.translateOvalMarker(oval, (oval.posX * largeurFont) + decalScreen, newPoint.x);
@@ -451,7 +437,7 @@ public class PositionalTextTest extends Composite {
     }
 
     /**
-     * OvalMarker
+     * OvalMarker.
      * 
      * 
      */
@@ -501,14 +487,11 @@ public class PositionalTextTest extends Composite {
 
                     Point eventPoint = new Point(event.x, event.y);
 
-                    GridData gridData;
                     switch (event.type) {
                     case SWT.MouseMove:
                         if (resizeHelper.isDragging()) {
                             Point newPoint = new Point(posX + eventPoint.x, eventPoint.y); // convertToParentOrigin(composite,
                             // )
-                            Point dragPoint = resizeHelper.getLastDragPoint();
-
                             for (VerticalMarkerEditor marker : listVerticalMarker) {
                                 if (posX == marker.getPosX()) {
                                     if (!composite.translateVerticalMarker(marker, (marker.posX * largeurFont) + decalScreen,
@@ -592,18 +575,5 @@ public class PositionalTextTest extends Composite {
             Rectangle bounds = child.getBounds();
             return new Point(bounds.x + point.x, bounds.y + point.y);
         }
-    }
-
-    /**
-     * DOC ocarbone Comment method "setConnection".
-     * 
-     * @param connection
-     */
-    public void setConnection(FileConnection connection) {
-        this.connection = connection;
-    }
-
-    private void refreshConnection() {
-        connection.setFieldSeparatorValue(getFieldSeparatorValue());
     }
 }

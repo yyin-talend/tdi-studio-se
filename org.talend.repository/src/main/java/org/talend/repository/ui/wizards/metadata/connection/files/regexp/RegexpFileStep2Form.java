@@ -419,7 +419,7 @@ public class RegexpFileStep2Form extends AbstractRegexpFileStepForm {
     }
 
     /**
-     * clear the table preview
+     * clear the table preview.
      */
     void clearPreview() {
         regexpFilePreview.clearTablePreview();

@@ -72,17 +72,20 @@ public class RepositoryPreferenceStore implements IPersistentPreferenceStore {
     }
 
     public void setValue(String name, String value) {
-        if (Status.TECHNICAL_STATUS.equals(name))
+        if (Status.TECHNICAL_STATUS.equals(name)) {
             techStatusList = value;
-        else if (Status.DOCUMENTATION_STATUS.equals(name))
+        } else if (Status.DOCUMENTATION_STATUS.equals(name)) {
             docStatusList = value;
+        }
     }
 
     public String getString(String name) {
-        if (Status.TECHNICAL_STATUS.equals(name))
+        if (Status.TECHNICAL_STATUS.equals(name)) {
             return techStatusList;
-        if (Status.DOCUMENTATION_STATUS.equals(name))
+        }
+        if (Status.DOCUMENTATION_STATUS.equals(name)) {
             return docStatusList;
+        }
         return null;
     }
 
@@ -121,10 +124,11 @@ public class RepositoryPreferenceStore implements IPersistentPreferenceStore {
     }
 
     public String getDefaultString(String name) {
-        if (Status.TECHNICAL_STATUS.equals(name))
+        if (Status.TECHNICAL_STATUS.equals(name)) {
             return defaultTechnicalStatusList;
-        else if (Status.DOCUMENTATION_STATUS.equals(name))
+        } else if (Status.DOCUMENTATION_STATUS.equals(name)) {
             return defaultDocumentationStatusList;
+        }
         return null;
     }
 
@@ -172,20 +176,22 @@ public class RepositoryPreferenceStore implements IPersistentPreferenceStore {
     }
 
     public void setDefault(String name, String value) {
-        if (Status.TECHNICAL_STATUS.equals(name))
+        if (Status.TECHNICAL_STATUS.equals(name)) {
             defaultTechnicalStatusList = value;
-        else if (Status.DOCUMENTATION_STATUS.equals(name))
+        } else if (Status.DOCUMENTATION_STATUS.equals(name)) {
             defaultDocumentationStatusList = value;
+        }
     }
 
     public void setDefault(String name, boolean value) {
     }
 
     public void setToDefault(String name) {
-        if (Status.TECHNICAL_STATUS.equals(name))
+        if (Status.TECHNICAL_STATUS.equals(name)) {
             techStatusList = defaultTechnicalStatusList;
-        else if (Status.DOCUMENTATION_STATUS.equals(name))
+        } else if (Status.DOCUMENTATION_STATUS.equals(name)) {
             docStatusList = defaultDocumentationStatusList;
+        }
     }
 
     public void setValue(String name, double value) {

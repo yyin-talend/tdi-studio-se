@@ -263,8 +263,9 @@ public class RegisterWizardPage extends WizardPage {
 				try {
 					String portValue = httpProxyPortText.getText();
 					int num = 80;
-					if (portValue != null && portValue.trim().length() > 0)
+					if (portValue != null && portValue.trim().length() > 0) {
 						num = Integer.valueOf(portValue).intValue();
+                    }
 					if (0 <= num && num <= 0xFFFF) {
 						// port is valid
 						updatePageStatus();
