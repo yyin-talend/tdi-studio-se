@@ -22,6 +22,7 @@
 package org.talend.designer.mapper.ui.visualmap.link;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
@@ -112,6 +113,8 @@ public class Link implements IMapperLink {
         boundsOfSolidLine.height = boundsOfDrawing.height - 2 * MapperUI.OFFSET_VISIBLES_POINTS;
 
         drawableLink.getStyle().apply(gc);
+        
+//        gc.setForeground(new Color(gc.getDevice(), 255, 190, 150));
 
         if (!boundsOfSolidLine.contains(new Point(point1xForTraceLink, point1yOffset))
                 || !boundsOfSolidLine.contains(new Point(point2xForTraceLink, point2yOffset))) {

@@ -123,84 +123,6 @@ public class VarsDataMapTableView extends DataMapTableView {
 
         });
 
-        // cellEditor.addListener(new ICellEditorListener() {
-        //
-        // Text text = (Text) cellEditor.getControl();
-        //
-        // String lastValidValue = null;
-        //
-        // public void applyEditorValue() {
-        // ModifiedObjectInfo<ITableEntry> modifiedObjectInfo = tableViewerCreatorForColumns.getModifiedObjectInfo();
-        // // System.out.println("------- applyEditorValue=" + text.getText());
-        // Object bean = modifiedObjectInfo.getCurrentModifiedBean() != null ?
-        // modifiedObjectInfo.getCurrentModifiedBean()
-        // : modifiedObjectInfo.getPreviousModifiedBean();
-        // fireEventIfValidColumnName(text.getText(), true, bean, true);
-        // lastValidValue = null;
-        // }
-        //
-        // public void cancelEditor() {
-        // ModifiedObjectInfo<ITableEntry> modifiedObjectInfo = tableViewerCreatorForColumns.getModifiedObjectInfo();
-        // String originalName = (String) modifiedObjectInfo.getOriginalPropertyBeanValue();
-        // text.setText(originalName);
-        // fireEventIfValidColumnName(originalName, false, modifiedObjectInfo.getCurrentModifiedBean(), false);
-        // lastValidValue = null;
-        // }
-        //
-        // public void editorValueChanged(boolean oldValidState, boolean newValidState) {
-        // ModifiedObjectInfo<ITableEntry> modifiedObjectInfo = tableViewerCreatorForColumns.getModifiedObjectInfo();
-        // if (!newValidState) {
-        // // MessageDialog.openError(composite.getShell(), "Error", cellEditor.getErrorMessage());
-        // } else {
-        // }
-        // String newValue = text.getText();
-        // fireEventIfValidColumnName(newValue, false, modifiedObjectInfo.getCurrentModifiedBean(), false);
-        // }
-        //
-        // private void fireEventIfValidColumnName(final String newValue, boolean showAlertIfError, final Object
-        // currentModifiedBean,
-        // boolean applied) {
-        // final ModifiedObjectInfo<ITableEntry> modifiedObjectInfo =
-        // tableViewerCreatorForColumns.getModifiedObjectInfo();
-        // String originalValue = (String) modifiedObjectInfo.getOriginalPropertyBeanValue();
-        // lastValidValue = lastValidValue != null ? lastValidValue : originalValue;
-        //
-        // int beanPosition = tableViewerCreatorForColumns.getInputList().indexOf(currentModifiedBean);
-        // final String errorMessage = ((VarsTable) getDataMapTable()).validateColumnName(newValue, beanPosition);
-        // // System.out.println(errorMessage);
-        // if (errorMessage == null) {
-        // if (applied) {
-        // mapperManager.getUiManager().processColumnNameChanged(originalValue, newValue, dataMapTableView,
-        // (ITableEntry) currentModifiedBean);
-        // }
-        // text.setBackground(text.getDisplay().getSystemColor(SWT.COLOR_WHITE));
-        // lastValidValue = newValue;
-        // } else {
-        // text.setBackground(text.getDisplay().getSystemColor(SWT.COLOR_RED));
-        // if (showAlertIfError) {
-        // final Point selection = text.getSelection();
-        // text.setText(lastValidValue);
-        //
-        // new AsynchronousThreading(50, true, text.getDisplay(), new Runnable() {
-        //
-        // public void run() {
-        //
-        // MessageDialog.openError(dataMapTableView.getShell(), "Error", errorMessage);
-        // // System.out.println("setText:" + newValue);
-        // final int columnPosition = tableViewerCreatorForColumns.getColumns().indexOf(nameColumn);
-        // tableViewerCreatorForColumns.getTableViewer().editElement(currentModifiedBean, columnPosition);
-        // text.setText(newValue);
-        // text.setSelection(selection.x, selection.y);
-        //
-        // }
-        // }).start();
-        //
-        // }
-        // }
-        // }
-        //
-        // });
-
         column.setCellEditor(cellEditor);
 
     }
@@ -218,30 +140,11 @@ public class VarsDataMapTableView extends DataMapTableView {
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.designer.mapper.ui.visualmap.table.DataMapTableView#addConstraintsActionsButtons()
-     */
-    @Override
-    protected void addConstraintsActionsComponents() {
-        // createConstraintActionButtons();
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
      * @see org.talend.designer.mapper.ui.visualmap.table.DataMapTableView#addEntriesActionsComponents()
      */
     @Override
-    protected void addEntriesActionsComponents() {
-        super.createEntriesActionButtons();
-    }
-
-    @Override
-    protected boolean hasConstraintsActions() {
-        return false;
-    }
-
-    @Override
-    protected boolean hasEntriesActions() {
+    protected boolean addToolItems() {
+        super.createToolItems();
         return true;
     }
 
@@ -259,6 +162,14 @@ public class VarsDataMapTableView extends DataMapTableView {
     public void unselectAllColumnEntries() {
         super.unselectAllColumnEntries();
         removeEntryItem.setEnabled(false);
+    }
+
+    /* (non-Javadoc)
+     * @see org.talend.designer.mapper.ui.visualmap.table.DataMapTableView#toolbarNeededToBeRightStyle()
+     */
+    @Override
+    public boolean toolbarNeededToBeRightStyle() {
+        return false;
     }
 
 }

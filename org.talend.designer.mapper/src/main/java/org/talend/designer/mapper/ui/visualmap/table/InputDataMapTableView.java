@@ -106,15 +106,16 @@ public class InputDataMapTableView extends DataMapTableView {
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.designer.mapper.ui.visualmap.table.DataMapTableView#addConstraintsActionsButtons()
+     * @see org.talend.designer.mapper.ui.visualmap.table.DataMapTableView#addEntriesActionsComponents()
      */
     @Override
-    protected void addConstraintsActionsComponents() {
+    protected boolean addToolItems() {
         if (!getInputTable().isMainConnection()) {
 
             final ToolItem rejectConstraintCheck = new ToolItem(toolBarActions, SWT.CHECK);
             rejectConstraintCheck.setToolTipText("Reject main row if this lookup row doesn't exist");
             boolean isInnerJoin = getInputTable().isInnerJoin();
+//            Image image = ImageProviderMapper.getImage(isInnerJoin ? ImageInfo.CHECKED_ICON : ImageInfo.UNCHECKED_ICON);
             Image image = ImageProviderMapper.getImage(isInnerJoin ? ImageInfo.CHECKED_ICON : ImageInfo.UNCHECKED_ICON);
             if (WindowSystem.isGTK()) {
                 rejectConstraintCheck.setImage(image);
@@ -149,28 +150,8 @@ public class InputDataMapTableView extends DataMapTableView {
                 }
 
             });
+            return true;
         }
-
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.designer.mapper.ui.visualmap.table.DataMapTableView#addEntriesActionsComponents()
-     */
-    @Override
-    protected void addEntriesActionsComponents() {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    protected boolean hasConstraintsActions() {
-        return true;
-    }
-
-    @Override
-    protected boolean hasEntriesActions() {
         return false;
     }
 
@@ -186,6 +167,14 @@ public class InputDataMapTableView extends DataMapTableView {
 
     public InputTable getInputTable() {
         return (InputTable) abstractDataMapTable;
+    }
+
+    /* (non-Javadoc)
+     * @see org.talend.designer.mapper.ui.visualmap.table.DataMapTableView#toolbarNeededToBeRightStyle()
+     */
+    @Override
+    public boolean toolbarNeededToBeRightStyle() {
+        return !getInputTable().isMainConnection();
     }
 
 }

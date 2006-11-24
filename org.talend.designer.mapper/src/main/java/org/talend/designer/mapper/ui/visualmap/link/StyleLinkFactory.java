@@ -47,7 +47,7 @@ public class StyleLinkFactory {
 
     private IStyleLink selectedZoneToZoneStyle;
 
-    private IStyleLink selectedConstraintStyle;
+    private IStyleLink selectedFilterStyle;
 
     private IStyleLink selectedSameZoneStyle;
 
@@ -69,9 +69,9 @@ public class StyleLinkFactory {
     private void init() {
 
         selectedZoneToZoneStyle = getSelectedZoneToOtherZoneStyle(ColorProviderMapper
-                .getColor(ColorInfo.COLOR_LINK_HIGHLIGHTED));
-        selectedConstraintStyle = getSelectedZoneToOtherZoneStyle(ColorProviderMapper
-                .getColor(ColorInfo.COLOR_LINK_CONSTRAINT));
+                .getColor(ColorInfo.COLOR_SELECTED_ZONE_TO_ZONE_LINK));
+        selectedFilterStyle = getSelectedZoneToOtherZoneStyle(ColorProviderMapper
+                .getColor(ColorInfo.COLOR_SELECTED_FILTER_LINK));
         selectedSameZoneStyle = getSelectedSameZoneStyle();
         unselectedSameZoneStyle = getUnselectedSameZoneStyle();
         unselectedZoneToZoneStyle = getUnselectedZoneToZoneStyle();
@@ -112,7 +112,7 @@ public class StyleLinkFactory {
         if (pointLinkDescriptorSource.getZone() != pointLinkDescriptorTarget.getZone()) {
             if (linkState == LinkState.SELECTED) {
                 if (targetIsConstraint) {
-                    style = selectedConstraintStyle;
+                    style = selectedFilterStyle;
                 } else {
                     style = selectedZoneToZoneStyle;
                 }
@@ -151,7 +151,7 @@ public class StyleLinkFactory {
         StyleLink style = new StyleLink();
         setCommonsStyleProperties(style);
         style.setDrawableLink(getZoneToZoneLink(style));
-        style.setForegroundColor(ColorProviderMapper.getColor(ColorInfo.COLOR_UNSELECTED_METADATA_LINK));
+        style.setForegroundColor(ColorProviderMapper.getColor(ColorInfo.COLOR_UNSELECTED_ZONE_TO_ZONE_LINK));
         return style;
     }
 
@@ -164,7 +164,7 @@ public class StyleLinkFactory {
         StyleLink style = new StyleLink();
         setCommonsStyleProperties(style);
         style.setDrawableLink(getSameZoneLink(style));
-        style.setForegroundColor(ColorProviderMapper.getColor(ColorInfo.COLOR_UNSELECTED_METADATA_LINK));
+        style.setForegroundColor(ColorProviderMapper.getColor(ColorInfo.COLOR_UNSELECTED_LOOKUP_LINKS));
         return style;
     }
 
@@ -183,7 +183,7 @@ public class StyleLinkFactory {
         ExtremityEastArrow eastArrowTarget = new ExtremityEastArrow(style);
         eastArrowTarget.setXOffset(-eastArrowTarget.getSize().x);
         style.setExtremity2(eastArrowTarget);
-        style.setForegroundColor(ColorProviderMapper.getColor(ColorInfo.COLOR_LINK_HIGHLIGHTED));
+        style.setForegroundColor(ColorProviderMapper.getColor(ColorInfo.COLOR_SELECTED_LOOKUP_LINKS));
         return style;
     }
 

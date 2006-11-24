@@ -23,15 +23,47 @@ package org.talend.designer.mapper.ui.visualmap.table;
 
 import java.util.List;
 
+import org.eclipse.jface.viewers.CellEditor;
+import org.eclipse.jface.viewers.CheckboxCellEditor;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.TableEditor;
+import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.events.MouseListener;
+import org.eclipse.swt.events.MouseMoveListener;
+import org.eclipse.swt.events.MouseTrackListener;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.ToolBar;
+import org.eclipse.swt.widgets.ToolItem;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumn;
+import org.talend.commons.ui.swt.tableviewer.behavior.CellEditorValueAdapter;
+import org.talend.commons.ui.swt.tableviewer.behavior.IColumnImageProvider;
+import org.talend.commons.ui.swt.tableviewer.behavior.ITableCellValueModifiedListener;
+import org.talend.commons.ui.swt.tableviewer.behavior.TableCellValueModifiedEvent;
+import org.talend.commons.ui.swt.tableviewer.tableeditor.ButtonPushImageTableEditorContent;
+import org.talend.commons.ui.swt.tableviewer.tableeditor.TableEditorContent;
 import org.talend.commons.ui.ws.WindowSystem;
 import org.talend.commons.utils.data.bean.IBeanPropertyAccessors;
+import org.talend.core.ui.EImage;
+import org.talend.core.ui.ImageProvider;
 import org.talend.designer.mapper.managers.MapperManager;
 import org.talend.designer.mapper.model.table.AbstractDataMapTable;
 import org.talend.designer.mapper.model.table.OutputTable;
 import org.talend.designer.mapper.model.tableentry.ConstraintTableEntry;
+import org.talend.designer.mapper.model.tableentry.ITableEntry;
 import org.talend.designer.mapper.model.tableentry.OutputColumnTableEntry;
+import org.talend.designer.mapper.ui.image.ImageInfo;
+import org.talend.designer.mapper.ui.image.ImageProviderMapper;
 import org.talend.designer.mapper.ui.proposal.expression.ExpressionProposal;
 import org.talend.designer.mapper.ui.visualmap.zone.Zone;
 
@@ -114,7 +146,41 @@ public class OutputDataMapTableView extends DataMapTableView {
         column.setModifiable(true);
         column.setDefaultInternalValue("");
         createExpressionCellEditor(tableViewerCreatorForConstraints, column, new Zone[] { Zone.INPUTS, Zone.VARS }, true);
-        column.setWeight(100);
+        column.setWeight(99);
+        column.setMoveable(false);
+        column.setResizable(false);
+
+        // Column with remove button
+        column = new TableViewerCreatorColumn(tableViewerCreatorForConstraints);
+        column.setTitle("");
+        column.setDefaultDisplayedValue("");
+        column.setWidth(16);
+        column.setMoveable(false);
+        column.setResizable(false);
+        ButtonPushImageTableEditorContent buttonImage = new ButtonPushImageTableEditorContent() {
+
+            /* (non-Javadoc)
+             * @see org.talend.commons.ui.swt.tableviewer.tableeditor.ButtonImageTableEditorContent#selectionEvent(org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumn, java.lang.Object)
+             */
+            @Override
+            protected void selectionEvent(TableViewerCreatorColumn column, Object bean) {
+                mapperManager.removeTableEntry((ITableEntry) bean);
+                tableViewerCreatorForConstraints.getTableViewer().refresh();
+                List list = tableViewerCreatorForConstraints.getInputList();
+                updateGridDataHeightForTableConstraints();
+                if (list != null && list.size() == 0) {
+                    showTableConstraints(false);
+                } else {
+                    showTableConstraints(true);
+                }
+                
+            }
+            
+        };
+        buttonImage.setImage(ImageProvider.getImage(EImage.MINUS_ICON));
+        column.setTableEditorContent(buttonImage);
+        
+        
 
         List<ConstraintTableEntry> entries = ((OutputTable) getDataMapTable()).getConstraintEntries();
 
@@ -132,33 +198,14 @@ public class OutputDataMapTableView extends DataMapTableView {
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.designer.mapper.ui.visualmap.table.DataMapTableView#addConstraintsActionsButtons()
-     */
-    @Override
-    protected void addConstraintsActionsComponents() {
-        createConstraintActionButtons();
-
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
      * @see org.talend.designer.mapper.ui.visualmap.table.DataMapTableView#addEntriesActionsComponents()
      */
     @Override
-    protected void addEntriesActionsComponents() {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    protected boolean hasConstraintsActions() {
+    protected boolean addToolItems() {
+        createFiltersToolItems();
+//        addToolItemSeparator();
+//        createToolItems();
         return true;
-    }
-
-    @Override
-    protected boolean hasEntriesActions() {
-        return false;
     }
 
     /*
@@ -174,6 +221,14 @@ public class OutputDataMapTableView extends DataMapTableView {
     @Override
     public void unselectAllConstraintEntries() {
         tableViewerCreatorForConstraints.getSelectionHelper().deselectAll();
+    }
+
+    /* (non-Javadoc)
+     * @see org.talend.designer.mapper.ui.visualmap.table.DataMapTableView#toolbarNeededToBeRightStyle()
+     */
+    @Override
+    public boolean toolbarNeededToBeRightStyle() {
+        return false;
     }
 
 }

@@ -35,7 +35,11 @@ public enum ImageInfo {
     ADD_CONSTRAINT_ICON("/icons/add_constraint16.png"),
     REMOVE_CONSTRAINT_ICON("/icons/remove_constraint16.png"),
     CHECKED_ICON("/icons/checked.png"),
-    UNCHECKED_ICON("/icons/unchecked.png");
+    UNCHECKED_ICON("/icons/unchecked.png"),
+    ADD_FILTER_ICON("/icons/add_filter.png"),
+    REJECT_FILTER_ICON("/icons/reject_filter.png"),
+    REJECT_LOOKUP_ICON("/icons/reject_lookup.png"),
+    ;
 
     private String path;
 

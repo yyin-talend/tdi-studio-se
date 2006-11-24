@@ -345,7 +345,7 @@ public class TMapperMainPerljet {
                 }
             }
 
-            // write conditions of filters and code to execute
+            // write filters conditions and code to execute
             if (!currentIsReject || rejectValueHasJustChanged && oneFilterForNotRejectTable || currentIsReject || currentIsRejectInnerJoin) {
 
                 if (hasFilters || currentIsReject || currentIsRejectInnerJoin) {
