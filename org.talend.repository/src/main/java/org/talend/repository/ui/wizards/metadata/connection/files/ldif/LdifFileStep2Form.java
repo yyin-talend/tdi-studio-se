@@ -198,7 +198,7 @@ public class LdifFileStep2Form extends AbstractLdifFileStepForm {
      * populateLdifAttributes. method to populate the Table of Attributes to read the Ldif file
      * 
      */
-    protected void populateLdifAttributes() {
+    protected void populateLdifAttributes() throws IOException, Exception{
 
         itemTableName = new ArrayList<String>();
 
@@ -206,36 +206,19 @@ public class LdifFileStep2Form extends AbstractLdifFileStepForm {
         Attributes entry = null;
         BufferedReader bufReader = null;
 
-        try {
+        bufReader = new BufferedReader(new FileReader(filename), 1024);
+        LDIFReader ldif = new LDIFReader(bufReader);
+        itemTableName = new ArrayList<String>();
 
-            bufReader = new BufferedReader(new FileReader(filename), 1024);
-            LDIFReader ldif = new LDIFReader(bufReader);
-            itemTableName = new ArrayList<String>();
-//            itemTableName.add("dn");
-
-            //PTODO cantoine : if we would add a LIMIT of ENTRY read, implement this limit by report with Limit Entry
-//            int limit = 50;
-            while ((entry = ldif.getNext()) != null) {
-//                if (limit >= 0) {
-                    try {
-                        NamingEnumeration idsEnum = entry.getIDs();
-                        while (idsEnum.hasMore()) {
-                            String attributeId = (String) idsEnum.next();
-                            if (!itemTableName.contains(attributeId)) {
-                                itemTableName.add(attributeId);
-                            }
-                        }
-                    } catch (Exception e) {
-                        System.out.println("Pb entry read " + e);
-                    }
-//                    limit--;
-//                } else {
-//                    break;
-//                }
+        //EVOLUTION cantoine : if we would add a LIMIT of ENTRY read, implement this limit by report with Limit Entry
+        while ((entry = ldif.getNext()) != null) {
+            NamingEnumeration idsEnum = entry.getIDs();
+            while (idsEnum.hasMore()) {
+                String attributeId = (String) idsEnum.next();
+                if (!itemTableName.contains(attributeId)) {
+                    itemTableName.add(attributeId);
+                }
             }
-
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 
@@ -563,7 +546,14 @@ public class LdifFileStep2Form extends AbstractLdifFileStepForm {
     public void setVisible(boolean visible) {
         super.setVisible(visible);
         if (super.isVisible()) {
-            populateLdifAttributes();
+            
+            try {
+                populateLdifAttributes();
+            } catch(Exception e) {
+                new ErrorDialogWidthDetailArea(getShell(), PID, Messages.getString("LdifFileStep2.previewFailure"), e.getMessage());
+                log.error(Messages.getString("LdifFileStep2.previewFailure") + " " + e.getMessage());
+                updateStatus(IStatus.ERROR, Messages.getString("LdifFileStep2.previewFailure"));
+            }
             attributeModel.registerDataList(itemTableName);
             
             // Refresh the preview width the adapted rowSeparator

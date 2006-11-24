@@ -107,7 +107,6 @@ public class LDIFReader {
                     if(value == null)
                     {
                         lastDN = null;
-                        throw new IOException("Parse Error (line " + linenr + "): Value continued without an attribute.");
                     }
                     value.append(line.substring(1));
                 } else
@@ -131,7 +130,6 @@ public class LDIFReader {
                     if(pos == -1)
                     {
                         lastDN = null;
-                        throw new IOException("Parse Error (line " + linenr + "): Cannot parse input line.");
                     }
                     if(dn != null && lastDN == null)
                         lastDN = getDN(dn, type);
