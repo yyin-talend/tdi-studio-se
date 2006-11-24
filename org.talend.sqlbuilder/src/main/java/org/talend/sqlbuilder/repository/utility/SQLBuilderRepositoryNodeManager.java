@@ -81,7 +81,7 @@ public class SQLBuilderRepositoryNodeManager {
 		boolean flag = false;
 		Object type = node.getProperties(EProperties.CONTENT_TYPE);
 		if (type.equals(RepositoryNodeType.DATABASE)) {
-			return true;
+			return getItem(node).getConnection().isDivergency();
 		}
 			
 		if (type.equals(RepositoryNodeType.TABLE)) {
@@ -320,7 +320,7 @@ public class SQLBuilderRepositoryNodeManager {
 				connection.getTables().add(table);
 			}
 		} else {
-			connection.setComment(managerConnection.getMessageException());
+			parameters.setConnectionComment(managerConnection.getMessageException());
 		}
 		DatabaseConnectionItem item = PropertiesFactory.eINSTANCE
 				.createDatabaseConnectionItem();
@@ -696,6 +696,8 @@ public class SQLBuilderRepositoryNodeManager {
 						emf.setDivergency(is);
 						emf.setSynchronised(is);
 						if (is) {
+							emf.getTable().setSynchronised(true);
+							emf.getTable().getConnection().setSynchronised(true);
 							emf.getTable().setDivergency(true);
 							emf.getTable().getConnection().setDivergency(true);
 						}

@@ -21,6 +21,8 @@
 // ============================================================================
 package org.talend.sqlbuilder.util;
 
+import java.util.Hashtable;
+
 import org.talend.core.model.metadata.IMetadataConnection;
 import org.talend.core.model.metadata.builder.ConvertionHelper;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
@@ -37,6 +39,7 @@ import org.talend.sqlbuilder.repository.utility.SQLBuilderRepositoryNodeManager;
  */
 public class ConnectionParameters {
 
+	
     private String query;
 
     private String port;
@@ -66,6 +69,20 @@ public class ConnectionParameters {
     private String connectionComment;
     
     private boolean status = true;
+    
+    private static Hashtable<String, String> hashTable = new Hashtable<String, String>();
+    
+    static {
+    	try {
+            hashTable.put("MySQL", "MySQL");
+            hashTable.put("PostgreSQL", "PostgreSQL");
+            hashTable.put("Oracle", "Oracle with SID");
+            hashTable.put("Generic ODBC", "Generic ODBC");
+            hashTable.put("Microsoft SQL (Odbc driver)", "Microsoft SQL Server (Odbc driver)");
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
     
     /**
 	 * Sets the connectionComment.
@@ -180,7 +197,7 @@ public class ConnectionParameters {
      * @param dbType the dbType to set
      */
     public void setDbType(String dbType) {
-        this.dbType = trimInvertedComma(dbType);
+        this.dbType = trimInvertedComma(hashTable.get(dbType));
     }
 
     public boolean isRepository() {
@@ -398,14 +415,12 @@ public class ConnectionParameters {
 	/**
 	 * Sets the repositoryNodeBuiltIn.
 	 * @param repositoryNodeBuiltIn the repositoryNodeBuiltIn to set
-	 * @return boolean if connection is successful.
 	 */
 	public void setRepositoryNodeBuiltIn(RepositoryNode repositoryNodeBuiltIn) {
 		this.repositoryNodeBuiltIn = repositoryNodeBuiltIn;
 		if (repositoryNodeBuiltIn != null) {
 			DatabaseConnection databaseConnection = (DatabaseConnection) SQLBuilderRepositoryNodeManager.getItem(
 					repositoryNodeBuiltIn).getConnection();
-			this.connectionComment = databaseConnection.getComment();
 			status = !(databaseConnection.isDivergency());
 		}
 	}

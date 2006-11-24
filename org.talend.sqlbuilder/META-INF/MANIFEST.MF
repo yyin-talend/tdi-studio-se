@@ -31,5 +31,6 @@ Export-Package: org.talend.sqlbuilder,
  org.talend.sqlbuilder.sqleditor,
  org.talend.sqlbuilder.ui,
  org.talend.sqlbuilder.ui.editor,
+ org.talend.sqlbuilder.ui.progress,
  org.talend.sqlbuilder.ui.proposal,
  org.talend.sqlbuilder.util
