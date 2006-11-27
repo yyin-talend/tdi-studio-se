@@ -28,7 +28,6 @@ import java.sql.Statement;
 import java.util.HashMap;
 import java.util.Random;
 
-import net.sourceforge.sqlexplorer.Messages;
 import net.sourceforge.sqlexplorer.sqlpanel.SQLResult;
 
 import org.eclipse.jface.viewers.ColumnWeightData;
@@ -51,11 +50,10 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
+import org.talend.sqlbuilder.Messages;
 import org.talend.sqlbuilder.SqlBuilderPlugin;
-import org.talend.sqlbuilder.actions.IResultDisplayer;
 import org.talend.sqlbuilder.sessiontree.model.SessionTreeNode;
 import org.talend.sqlbuilder.sqlcontrol.AbstractSQLExecution;
-import org.talend.sqlbuilder.ui.editor.ISQLEditor;
 
 /**
  * DOC dev  class global comment. Detailled comment
@@ -64,7 +62,7 @@ import org.talend.sqlbuilder.ui.editor.ISQLEditor;
  * $Id: talend-code-templates.xml 1 2006-09-29 17:06:40 +0000 (Fri, 29 Sep 2006) nrousseau $
  *
  */
-public class ExplainPlanExecution extends AbstractSQLExecution {
+public class OracleExplainPlanExecution extends AbstractSQLExecution {
 
 	 /**
 	 * DOC dev ExplainPlanExecution class global comment. Detailled comment
@@ -109,11 +107,10 @@ public class ExplainPlanExecution extends AbstractSQLExecution {
 
     protected Statement stmt;
     
-    private IResultDisplayer resultsView;
 	/**
 	 * DOC dev ExplainPlanExecution constructor comment.
 	 */
-	public ExplainPlanExecution(String sqlString,
+	public OracleExplainPlanExecution(String sqlString,
             SessionTreeNode sessionTreeNode) {
 	       this.sqlStatement = sqlString;
 	       session = sessionTreeNode;

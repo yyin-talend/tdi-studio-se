@@ -2,6 +2,16 @@
 <?eclipse version="3.2"?>
 <plugin>
    
+   <extension
+         id="EditorActions"
+         point="org.talend.sqlbuilder.editorAction">
+      <action
+            class="org.talend.sqlbuilder.actions.explain.OracleExplainPlanAction"
+            database-product-name="Oracle*"
+            icon="icons/explain.gif"
+            id="org.talend.sqlbuilder.actions.oracle.explainplan"
+            name="Explain Plan"/>
+   </extension>
    
    <extension
          point="org.eclipse.core.runtime.preferences">
@@ -29,4 +39,5 @@
             sequence="CTRL+L">
       </key>
    </extension>
+   <extension-point id="editorAction" name="SQL Editor Action" schema="schema/editorAction.exsd"/>
 </plugin>

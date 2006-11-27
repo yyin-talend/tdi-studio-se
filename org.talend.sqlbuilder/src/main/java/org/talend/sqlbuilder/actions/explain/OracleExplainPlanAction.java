@@ -28,17 +28,19 @@ import java.util.List;
 
 import net.sourceforge.squirrel_sql.fw.sql.SQLConnection;
 
+import org.eclipse.core.runtime.Preferences;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.talend.repository.model.RepositoryNode;
+import org.talend.sqlbuilder.IConstants;
 import org.talend.sqlbuilder.Messages;
 import org.talend.sqlbuilder.SqlBuilderPlugin;
 import org.talend.sqlbuilder.actions.AbstractEditorAction;
 import org.talend.sqlbuilder.actions.IResultDisplayer;
 import org.talend.sqlbuilder.dbstructure.SessionTreeNodeManager;
 import org.talend.sqlbuilder.sessiontree.model.SessionTreeNode;
-import org.talend.sqlbuilder.sqlcontrol.SQLExecution;
 import org.talend.sqlbuilder.ui.editor.ISQLEditor;
-import org.talend.sqlbuilder.util.IConstants;
+import org.talend.sqlbuilder.util.ImageUtil;
 import org.talend.sqlbuilder.util.QueryTokenizer;
 
 
@@ -50,8 +52,10 @@ import org.talend.sqlbuilder.util.QueryTokenizer;
  * $Id: talend-code-templates.xml 1 2006-09-29 17:06:40 +0000 (Fri, 29 Sep 2006) nrousseau $
  *
  */
-public class ExplainPlanAction extends AbstractEditorAction {
+public class OracleExplainPlanAction extends AbstractEditorAction {
 
+	private ImageDescriptor img = ImageUtil.getDescriptor("Images.Explain");
+	
 	static String createPlanTableScript = "CREATE TABLE PLAN_TABLE ("
         + "  STATEMENT_ID                    VARCHAR2(30)," + " TIMESTAMP                       DATE,"
         + "  REMARKS                         VARCHAR2(80)," + "  OPERATION                       VARCHAR2(30),"
@@ -72,10 +76,11 @@ public class ExplainPlanAction extends AbstractEditorAction {
 	/**
 	 * DOC dev ExplainPlanAction constructor comment.
 	 */
-	public ExplainPlanAction(IResultDisplayer resultDisplayer, ISQLEditor editor) {
+	public OracleExplainPlanAction(IResultDisplayer resultDisplayer, ISQLEditor editor) {
 		super();
 		this.editor = editor;
 		this.resultDisplayer = resultDisplayer;
+		this.setImageDescriptor(img);
 	}
 
 	/* (non-Javadoc)
@@ -96,6 +101,7 @@ public class ExplainPlanAction extends AbstractEditorAction {
 		RepositoryNode node = editor.getRepositoryNode();
         SessionTreeNodeManager nodeManager = new SessionTreeNodeManager();
         SessionTreeNode runNode = null;
+        
         try {
             runNode = nodeManager.getSessionTreeNode(node);
         } catch (Exception e) {
@@ -103,8 +109,14 @@ public class ExplainPlanAction extends AbstractEditorAction {
             SqlBuilderPlugin.log("Gets SessionTreeNode failed", e);
             return;
         }
-        QueryTokenizer qt = new QueryTokenizer(getSQLToBeExecuted(), IConstants.QUERY_DELIMITER,
-                IConstants.ALTERNATE_DELIMITER, IConstants.COMMENT_DELIMITER);
+        Preferences prefs = SqlBuilderPlugin.getDefault().getPluginPreferences();
+
+        String queryDelimiter = prefs.getString(IConstants.QUERY_DELIMITER);
+        String alternateDelimiter = prefs.getString(IConstants.ALTERNATE_DELIMITER);
+        String commentDelimiter = prefs.getString(IConstants.COMMENT_DELIMITER);
+        
+        QueryTokenizer qt = new QueryTokenizer(getSQLToBeExecuted(), queryDelimiter,
+        		alternateDelimiter, commentDelimiter);
         List queryStrings = new ArrayList();
         while (qt.hasQuery()) {
             final String querySql = qt.nextQuery();
@@ -168,7 +180,7 @@ public class ExplainPlanAction extends AbstractEditorAction {
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            SqlBuilderPlugin.log("Create Explain Failure: ", e);
         }
 
         // execute explain plan for all statements
@@ -179,7 +191,7 @@ public class ExplainPlanAction extends AbstractEditorAction {
                 String querySql = (String) queryStrings.remove(0);
 
                 if (querySql != null) {
-                    resultDisplayer.addSQLExecution(new ExplainPlanExecution(querySql, runNode));
+                    resultDisplayer.addSQLExecution(new OracleExplainPlanExecution(querySql, runNode));
                 }
             }
 

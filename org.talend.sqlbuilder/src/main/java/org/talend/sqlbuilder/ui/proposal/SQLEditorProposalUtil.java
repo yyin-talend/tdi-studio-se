@@ -28,13 +28,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.eclipse.core.runtime.Preferences;
 import org.eclipse.jface.fieldassist.IContentProposal;
 import org.talend.commons.ui.swt.colorstyledtext.jedit.Mode;
 import org.talend.commons.ui.swt.colorstyledtext.jedit.Modes;
 import org.talend.repository.model.RepositoryNode;
+import org.talend.sqlbuilder.IConstants;
 import org.talend.sqlbuilder.SqlBuilderPlugin;
 import org.talend.sqlbuilder.repository.utility.SQLBuilderRepositoryNodeManager;
-import org.talend.sqlbuilder.util.IConstants;
 import org.talend.sqlbuilder.util.QueryTokenizer;
 
 /**
@@ -116,8 +117,14 @@ public class SQLEditorProposalUtil {
      * @return list of all SQL Query.
      */
     private List<String> getAllSqlQuery(String content) {
-        QueryTokenizer qt = new QueryTokenizer(content, IConstants.QUERY_DELIMITER, IConstants.ALTERNATE_DELIMITER,
-                IConstants.COMMENT_DELIMITER);
+    	Preferences prefs = SqlBuilderPlugin.getDefault().getPluginPreferences();
+
+        String queryDelimiter = prefs.getString(IConstants.QUERY_DELIMITER);
+        String alternateDelimiter = prefs.getString(IConstants.ALTERNATE_DELIMITER);
+        String commentDelimiter = prefs.getString(IConstants.COMMENT_DELIMITER);
+        
+        QueryTokenizer qt = new QueryTokenizer(content, queryDelimiter, alternateDelimiter,
+        		commentDelimiter);
         List<String> queryStringsTmp = new ArrayList<String>();
         while (qt.hasQuery()) {
             String querySql = qt.nextQuery();

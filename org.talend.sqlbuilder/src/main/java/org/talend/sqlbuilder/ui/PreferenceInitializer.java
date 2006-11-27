@@ -21,10 +21,9 @@
 // ============================================================================
 package org.talend.sqlbuilder.ui;
 
-import net.sourceforge.sqlexplorer.IConstants;
-
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.talend.sqlbuilder.IConstants;
 import org.talend.sqlbuilder.SqlBuilderPlugin;
 
 /**
@@ -34,16 +33,21 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 	public void initializeDefaultPreferences() {
 		IPreferenceStore store = SqlBuilderPlugin.getDefault()
 				.getPreferenceStore();
-        
-        
-        
+
 		// for PassPolicy Preference
-		store.setDefault(IConstants.CLIP_EXPORT_SEPARATOR,
-				"|");
-        store.setDefault(IConstants.DATASETRESULT_DATE_FORMAT,
-                "yyyy-MM-dd");
-        store.setDefault(IConstants.DATASETRESULT_FORMAT_DATES,
-                true);
-        store.setDefault(IConstants.SQL_ASSIST, false);
+		store.setDefault(IConstants.CLIP_EXPORT_SEPARATOR, "|");
+		store.setDefault(IConstants.DATASETRESULT_DATE_FORMAT, "yyyy-MM-dd");
+		store.setDefault(IConstants.DATASETRESULT_FORMAT_DATES, true);
+		store.setDefault(IConstants.SQL_ASSIST, false);
+
+		store.setDefault(IConstants.LINE_DELIMITER, "\n");
+
+		store.setDefault(IConstants.COMMENT_DELIMITER, "#");
+
+		store.setDefault(IConstants.ALTERNATE_DELIMITER, "");
+		
+		store.setDefault(IConstants.QUERY_DELIMITER, ";");
+
+		store.setDefault(IConstants.WARN_RESEULTS, 5000);
 	}
 }

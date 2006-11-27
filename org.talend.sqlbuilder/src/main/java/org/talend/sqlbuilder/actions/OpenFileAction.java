@@ -25,12 +25,13 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 
+import org.eclipse.core.runtime.Preferences;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.FileDialog;
+import org.talend.sqlbuilder.IConstants;
 import org.talend.sqlbuilder.Messages;
 import org.talend.sqlbuilder.SqlBuilderPlugin;
-import org.talend.sqlbuilder.util.IConstants;
 import org.talend.sqlbuilder.util.ImageUtil;
 
 /**
@@ -91,7 +92,9 @@ public class OpenFileAction extends  AbstractEditorAction {
 
             StringBuffer all = new StringBuffer();
             String str = null;
-            char delimiter = IConstants.LINE_DELIMITER;
+            Preferences prefs = SqlBuilderPlugin.getDefault().getPluginPreferences();
+            
+            char delimiter = prefs.getString(IConstants.LINE_DELIMITER).charAt(0);
 
             for (int i = 0; i < files.length; i++) {
 

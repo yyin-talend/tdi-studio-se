@@ -101,4 +101,26 @@ public interface IConstants {
     public static final String BUILTIN = "BUILT_IN"; //$NON-NLS-1$
 
     public static final String REPOSITORY = "REPOSITORY"; //$NON-NLS-1$
+    
+    
+    
+    String QUERY_DELIMITER = "SQLEditor.QueryDelimiter";
+    
+    String ALTERNATE_DELIMITER = "SQLEditor.QueryDelimiter";
+    
+    String COMMENT_DELIMITER = "SQLEditor.CommentDelimiter";
+    
+    String LINE_DELIMITER = "SQLEditor.LineDelimiter";
+    
+    String WARN_RESEULTS = "SQLEditor.WarnResults";
+    
+//    String QUERY_DELIMITER = ";";
+           
+//    String ALTERNATE_DELIMITER = "";
+           
+//    String COMMENT_DELIMITER = "#"; 
+    
+//    char LINE_DELIMITER = '\n';
+    
+//    int WARN_RESEULTS = 5000;
 }

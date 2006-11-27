@@ -70,6 +70,7 @@ import org.talend.sqlbuilder.actions.OpenFileAction;
 import org.talend.sqlbuilder.actions.SQLEditorSessionSwitcher;
 import org.talend.sqlbuilder.actions.SaveFileAsAction;
 import org.talend.sqlbuilder.actions.SaveSQLAction;
+import org.talend.sqlbuilder.actions.explain.OracleExplainPlanAction;
 import org.talend.sqlbuilder.dbstructure.SqlBuilderRepositoryObject;
 import org.talend.sqlbuilder.repository.utility.SQLBuilderRepositoryNodeManager;
 import org.talend.sqlbuilder.sessiontree.model.SessionTreeNode;
@@ -109,6 +110,8 @@ public class SQLBuilderEditorComposite extends Composite implements ISQLEditor {
     private AbstractEditorAction exportAction;
 
     private AbstractEditorAction saveSQLAction;
+    
+    private AbstractEditorAction explainAction;
 
     private SQLEditorSessionSwitcher sessionSwitcher;
 
@@ -347,6 +350,12 @@ public class SQLBuilderEditorComposite extends Composite implements ISQLEditor {
         clearTextAction = new ClearTextAction();
         clearTextAction.setEditor(this);
 
+        if (SQLBuilderRepositoryNodeManager.getDbTypeFromRepositoryNode(repositoryNode).startsWith(
+        		"Oracle")) {
+        	   explainAction = new OracleExplainPlanAction(SQLResultComposite.instance, this);
+        }
+     
+        
         addDefaultActions(defaultToolBarMgr);
 
         // initialize session actions
@@ -386,6 +395,9 @@ public class SQLBuilderEditorComposite extends Composite implements ISQLEditor {
         mgr.add(saveSQLAction);
         mgr.add(exportAction);
         mgr.add(clearTextAction);
+        if (explainAction != null) {
+        	mgr.add(explainAction);
+        }
     }
 
     /**

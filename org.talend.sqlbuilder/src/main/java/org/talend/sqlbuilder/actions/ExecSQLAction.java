@@ -24,17 +24,20 @@ package org.talend.sqlbuilder.actions;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.sourceforge.sqlexplorer.plugin.SQLExplorerPlugin;
+
+import org.eclipse.core.runtime.Preferences;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.widgets.Display;
 import org.talend.repository.model.RepositoryNode;
+import org.talend.sqlbuilder.IConstants;
 import org.talend.sqlbuilder.Messages;
 import org.talend.sqlbuilder.SqlBuilderPlugin;
 import org.talend.sqlbuilder.dbstructure.SessionTreeNodeManager;
 import org.talend.sqlbuilder.sessiontree.model.SessionTreeNode;
 import org.talend.sqlbuilder.sqlcontrol.SQLExecution;
 import org.talend.sqlbuilder.ui.editor.ISQLEditor;
-import org.talend.sqlbuilder.util.IConstants;
 import org.talend.sqlbuilder.util.ImageUtil;
 import org.talend.sqlbuilder.util.QueryTokenizer;
 import org.talend.sqlbuilder.util.UIUtils;
@@ -51,6 +54,12 @@ public class ExecSQLAction extends AbstractEditorAction {
 
     private IResultDisplayer resultViewer = null;
 
+    private Preferences prefs = SqlBuilderPlugin.getDefault().getPluginPreferences();
+
+    private int max = Integer.parseInt(prefs.getString(IConstants.WARN_RESEULTS));
+    private String queryDelimiter = prefs.getString(IConstants.QUERY_DELIMITER);
+    private String alternateDelimiter = prefs.getString(IConstants.ALTERNATE_DELIMITER);
+    private String commentDelimiter = prefs.getString(IConstants.COMMENT_DELIMITER);
     /**
      * ExecSQLAction constructor.
      * 
@@ -95,8 +104,7 @@ public class ExecSQLAction extends AbstractEditorAction {
      * @see org.talend.sqlbuilder.actions.AbstractEditorAction#run()
      */
     public void run() {
-        int maxresults = IConstants.WARN_RESEULTS;
-        Exception exception;
+        int maxresults = max;
         try {
             boolean isLimit = editor.getIfLimit();
             if (isLimit) {
@@ -105,7 +113,7 @@ public class ExecSQLAction extends AbstractEditorAction {
                     maxresults = Integer.parseInt(tmp);
                 }
                 if (maxresults < 0) {
-                    exception = new Exception(Messages.getString("SQLEditor.LimitRows.Error"));
+                    new Exception(Messages.getString("SQLEditor.LimitRows.Error"));
                 }
             }
         } catch (final Exception e) {
@@ -113,7 +121,7 @@ public class ExecSQLAction extends AbstractEditorAction {
             return;
         }
         try {
-            if (maxresults > IConstants.WARN_RESEULTS) {
+            if (maxresults > max) {
                 final int largeResults = maxresults;
                 Display.getDefault().asyncExec(new Runnable() {
 
@@ -150,9 +158,9 @@ public class ExecSQLAction extends AbstractEditorAction {
             SqlBuilderPlugin.log("Gets SessionTreeNode failed", e);
             return;
         }
-
-        QueryTokenizer qt = new QueryTokenizer(getSQLToBeExecuted(), IConstants.QUERY_DELIMITER,
-                IConstants.ALTERNATE_DELIMITER, IConstants.COMMENT_DELIMITER);
+        
+        QueryTokenizer qt = new QueryTokenizer(getSQLToBeExecuted(), queryDelimiter,
+        		alternateDelimiter, commentDelimiter);
 
         List<String> queryStrings = new ArrayList<String>();
         while (qt.hasQuery()) {
