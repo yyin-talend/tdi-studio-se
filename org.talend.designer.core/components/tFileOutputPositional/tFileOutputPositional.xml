@@ -40,16 +40,56 @@
       <DEFAULT>'C:\talend_files\out.csv'</DEFAULT>
     </PARAMETER>
 
-<!--
     <PARAMETER
-      NAME="PADDING_CHAR"
-      FIELD="TEXT"
+      NAME="SCHEMA"
+      FIELD="SCHEMA_TYPE"
       REQUIRED="true"
       NUM_ROW="2"
     >
-      <DEFAULT>' '</DEFAULT>
+      <DEFAULT/> 
     </PARAMETER>
--->
+
+    <PARAMETER
+      NAME="FORMATS"
+      FIELD="TABLE"
+      REQUIRED="true"
+      NUM_ROW="3"
+      NB_LINES="5"
+    >
+      <ITEMS BASED_ON_SCHEMA="true">
+
+        <ITEM NAME="SIZE" />
+
+        <ITEM NAME="PADDING_CHAR" />
+
+        <ITEM NAME="ALIGN" FIELD="CLOSED_LIST">
+          <ITEMS DEFAULT="LEFT">
+            <ITEM NAME="LEFT"   VALUE="'L'"/>
+            <ITEM NAME="CENTER" VALUE="'C'"/>
+            <ITEM NAME="RIGHT"  VALUE="'R'"/>
+          </ITEMS>
+        </ITEM>
+
+        <ITEM NAME="KEEP" FIELD="CLOSED_LIST">
+          <ITEMS DEFAULT="ALL">
+            <ITEM NAME="ALL"    VALUE="'A'"/>
+            <ITEM NAME="LEFT"   VALUE="'L'"/>
+            <ITEM NAME="MIDDLE" VALUE="'M'"/>
+            <ITEM NAME="RIGHT"  VALUE="'R'"/>
+          </ITEMS>
+        </ITEM>
+
+      </ITEMS>
+    </PARAMETER>
+
+    <PARAMETER
+      NAME="APPEND"
+      FIELD="CHECK"
+      REQUIRED="true"
+      NUM_ROW="4"
+    >
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER>
 
     <PARAMETER
       NAME="ENCODING"
@@ -60,15 +100,6 @@
       <DEFAULT>'ISO-8859-15'</DEFAULT>
     </PARAMETER>
     
-    <PARAMETER
-      NAME="SCHEMA"
-      FIELD="SCHEMA_TYPE"
-      REQUIRED="true"
-      NUM_ROW="6"
-    >
-      <DEFAULT/> 
-    </PARAMETER>
-
   </PARAMETERS>
 
   <CODEGENERATION>
