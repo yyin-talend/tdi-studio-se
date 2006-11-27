@@ -157,8 +157,12 @@ public class GenerateSelectSQLAction extends SelectionProviderAction {
                     table = ((SqlBuilderRepositoryObject) node.getParent().getObject()).getSourceName();
                 }
 
+                String column = ((SqlBuilderRepositoryObject) node.getObject()).getSourceName();
+                if (column == null || column.trim().equals("")) {
+                	continue;
+                }
                 query.append(sep);
-                query.append(fix + ((SqlBuilderRepositoryObject) node.getObject()).getSourceName() + fix);
+				query.append(fix + column + fix);
                 sep = ", ";
             }
         }
@@ -197,8 +201,11 @@ public class GenerateSelectSQLAction extends SelectionProviderAction {
 
         while (it.hasNext()) {
 
-            query.append(sep);
             String column = ((MetadataColumn) it.next()).getOriginalField();
+            if (column == null || column.trim().equals("")) {
+            	continue;
+            }
+            query.append(sep);
             query.append(fix + column + fix);
             sep = ", ";
         }
