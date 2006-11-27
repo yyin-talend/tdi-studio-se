@@ -375,16 +375,16 @@ public class UIManager {
             outputsSelectionChangedListener = metadataEditorViewerSelectionChangedListener;
         }
         // metadataTVCreator.addSelectionChangedListener(metadataEditorViewerSelectionChangedListener);
-        metadataTVCreator.getSelectionHelper().addBeforeSelectionListener(metadataEditorViewerSelectionChangedListener);
+        metadataTVCreator.getSelectionHelper().addAfterSelectionListener(metadataEditorViewerSelectionChangedListener);
 
         if (this.commonMetadataDisposeListener == null) {
             this.commonMetadataDisposeListener = new DisposeListener() {
 
                 public void widgetDisposed(DisposeEvent e) {
                     getMetadataEditorView(Zone.INPUTS).getTableViewerCreator().getSelectionHelper()
-                            .removeBeforeSelectionListener(inputsSelectionChangedListener);
+                            .removeAfterSelectionListener(inputsSelectionChangedListener);
                     getMetadataEditorView(Zone.OUTPUTS).getTableViewerCreator().getSelectionHelper()
-                            .removeBeforeSelectionListener(outputsSelectionChangedListener);
+                            .removeAfterSelectionListener(outputsSelectionChangedListener);
                 }
             };
             metadataTVCreator.getTable().addDisposeListener(this.commonMetadataDisposeListener);

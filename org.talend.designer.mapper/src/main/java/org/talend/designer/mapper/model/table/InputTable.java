@@ -53,7 +53,9 @@ public class InputTable extends AbstractInOutTable {
     public InputTable(IOConnection connection, ExternalMapperTable externalMapperTable, String name) {
         super(connection.getTable(), externalMapperTable, name);
         this.connection = connection;
-        this.innerJoin = externalMapperTable.isInnerJoin();
+        if (externalMapperTable != null) {
+            this.innerJoin = externalMapperTable.isInnerJoin();
+        }
     }
 
     /*
@@ -75,23 +77,22 @@ public class InputTable extends AbstractInOutTable {
         return EConnectionType.FLOW_MAIN == connection.getConnectionType();
     }
 
-    
     /**
      * Getter for innerJoin.
+     * 
      * @return the innerJoin
      */
     public boolean isInnerJoin() {
         return this.innerJoin;
     }
 
-    
     /**
      * Sets the innerJoin.
+     * 
      * @param innerJoin the innerJoin to set
      */
     public void setInnerJoin(boolean innerJoin) {
         this.innerJoin = innerJoin;
     }
 
-    
 }
