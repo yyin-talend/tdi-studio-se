@@ -34,6 +34,11 @@ public class SqlBuilderRepositoryObject extends RepositoryObject {
 	private String image;
 	private String color;
 	private boolean isBuildIn;
+	private String diffColor;
+	private String diffImage;
+	private boolean isDiffDevergency;
+	private boolean isDiffSynchronised;
+	
 	public SqlBuilderRepositoryObject(Property property) {
 		super(property);
 	}
@@ -71,6 +76,38 @@ public class SqlBuilderRepositoryObject extends RepositoryObject {
 	@Override
 	public String getLabel() {
 		return repositoryName;
+	}
+
+	public String getDiffColor() {
+		return diffColor;
+	}
+
+	public void setDiffColor(String diffColor) {
+		this.diffColor = diffColor;
+	}
+
+	public String getDiffImage() {
+		return diffImage;
+	}
+
+	public void setDiffImage(String diffImage) {
+		this.diffImage = diffImage;
+	}
+
+	public boolean isDiffDevergency() {
+		return isDiffDevergency;
+	}
+
+	public void setDiffDevergency(boolean isDiffDevergency) {
+		this.isDiffDevergency = isDiffDevergency;
+	}
+
+	public boolean isDiffSynchronised() {
+		return isDiffSynchronised;
+	}
+
+	public void setDiffSynchronised(boolean isDiffSynchronised) {
+		this.isDiffSynchronised = isDiffSynchronised;
 	}
 	
 }
