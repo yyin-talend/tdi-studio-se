@@ -70,6 +70,7 @@ import org.talend.sqlbuilder.actions.OpenFileAction;
 import org.talend.sqlbuilder.actions.SQLEditorSessionSwitcher;
 import org.talend.sqlbuilder.actions.SaveFileAsAction;
 import org.talend.sqlbuilder.actions.SaveSQLAction;
+import org.talend.sqlbuilder.actions.explain.DB2ExplainPlanAction;
 import org.talend.sqlbuilder.actions.explain.OracleExplainPlanAction;
 import org.talend.sqlbuilder.dbstructure.SqlBuilderRepositoryObject;
 import org.talend.sqlbuilder.repository.utility.SQLBuilderRepositoryNodeManager;
@@ -353,6 +354,9 @@ public class SQLBuilderEditorComposite extends Composite implements ISQLEditor {
         if (SQLBuilderRepositoryNodeManager.getDbTypeFromRepositoryNode(repositoryNode).startsWith(
         		"Oracle")) {
         	   explainAction = new OracleExplainPlanAction(SQLResultComposite.instance, this);
+        } else if (SQLBuilderRepositoryNodeManager.getDbTypeFromRepositoryNode(repositoryNode).startsWith(
+		"IBM DB2")) {
+        		explainAction = new DB2ExplainPlanAction(SQLResultComposite.instance, this);
         }
      
         

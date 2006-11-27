@@ -10,7 +10,13 @@
             database-product-name="Oracle*"
             icon="icons/explain.gif"
             id="org.talend.sqlbuilder.actions.oracle.explainplan"
-            name="Explain Plan"/>
+            name="Explain Plan (Oracle)"/>
+      <action
+            class="org.talend.sqlbuilder.actions.explain.DB2ExplainPlanAction"
+            database-product-name="IBM DB2"
+            icon="icons/explain.gif"
+            id="org.talend.sqlbuilder.actions.db2.explainplan"
+            name="Explain Plan (DB2)"/>
    </extension>
    
    <extension

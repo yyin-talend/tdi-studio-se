@@ -103,8 +103,8 @@ public class SQLEditorAllProposal implements IContentProposal {
         		int index3 = qualityName.indexOf(".");
         		String newHasString = hasString.replaceAll("\"", "");
         		String newQualityName = qualityName.replaceAll("\"", "");
-        		if (!"".equals(hasString) && qualityName.startsWith(hasString)
-        				|| newQualityName.startsWith(newHasString)) {
+        		if (!"".equals(hasString) && (qualityName.toLowerCase().startsWith(hasString.toLowerCase())
+        				|| newQualityName.toLowerCase().startsWith(newHasString.toLowerCase()))) {
         			hasString = hasString.substring(index3 + 1);
         		}
         		label = label.substring(index2 + 1, label.length());
