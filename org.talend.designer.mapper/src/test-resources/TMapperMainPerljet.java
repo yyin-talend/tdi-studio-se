@@ -232,11 +232,9 @@ public class TMapperMainPerljet {
 
         boolean lastValueReject = false;
         boolean oneFilterForNotRejectTable = false;
-        boolean serialRejectCanBeWrite = false;
         boolean allNotRejectTablesHaveFilter = true;
         boolean atLeastOneReject = false;
         boolean atLeastOneRejectInnerJoin = false;
-        boolean closeTestRejectConditionsBracket = false;
         boolean closeTestInnerJoinConditionsBracket = false;
 
         int lstSize = outputTablesSortedByReject.size();
@@ -346,7 +344,12 @@ public class TMapperMainPerljet {
             }
 
             // write filters conditions and code to execute
-            if (!currentIsReject || rejectValueHasJustChanged && oneFilterForNotRejectTable || currentIsReject || currentIsRejectInnerJoin) {
+            if (
+                    !currentIsReject 
+                    || rejectValueHasJustChanged && oneFilterForNotRejectTable
+                    || currentIsReject 
+                    || currentIsRejectInnerJoin
+            ) {
 
                 if (hasFilters || currentIsReject || currentIsRejectInnerJoin) {
                     sb.append(cr + gm.indent(indent) + "# Filter condition ");
@@ -354,7 +357,10 @@ public class TMapperMainPerljet {
 
                     String rejectedTests = null;
                     if (allNotRejectTablesHaveFilter && atLeastOneReject && currentIsReject && currentIsRejectInnerJoin) {
-                        rejectedTests = "( $" + rejected + " || $" + rejectedInnerJoin + ")";
+                        rejectedTests = "$" + rejected + " || $" + rejectedInnerJoin;
+                        if (hasFilters) {
+                            rejectedTests = "(" + rejectedTests + ")";
+                        }
                     } else if (allNotRejectTablesHaveFilter && atLeastOneReject && currentIsReject) {
                         rejectedTests = "$" + rejected;
                     } else if (currentIsRejectInnerJoin) {
