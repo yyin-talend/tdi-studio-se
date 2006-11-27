@@ -84,6 +84,8 @@ import org.talend.commons.ui.swt.tableviewer.behavior.DefaultTableLabelProvider;
 import org.talend.commons.ui.swt.tableviewer.behavior.ITableCellValueModifiedListener;
 import org.talend.commons.ui.swt.tableviewer.behavior.TableCellValueModifiedEvent;
 import org.talend.commons.ui.swt.tableviewer.data.ModifiedObjectInfo;
+import org.talend.commons.ui.swt.tableviewer.selection.ILineSelectionListener;
+import org.talend.commons.ui.swt.tableviewer.selection.LineSelectionEvent;
 import org.talend.commons.ui.utils.TableUtils;
 import org.talend.commons.ui.ws.WindowSystem;
 import org.talend.commons.utils.threading.AsynchronousThreading;
@@ -175,6 +177,8 @@ public abstract class DataMapTableView extends Composite {
     private ExpressionColorProvider expressionColorProvider;
 
     private Listener showErrorMessageListener;
+
+    protected boolean forceExecuteSelectionEvent;
 
     private static Image imageKey;
 
@@ -469,11 +473,23 @@ public abstract class DataMapTableView extends Composite {
 
         });
 
+        tableViewerCreatorForColumns.getSelectionHelper().addAfterSelectionListener(new ILineSelectionListener() {
+
+            public void handle(LineSelectionEvent e) {
+                if (forceExecuteSelectionEvent) {
+                    forceExecuteSelectionEvent = false;
+                    onSelectedEntries(tableViewerForEntries.getSelection(), tableViewerForEntries.getTable().getSelectionIndices());
+                }
+            }
+
+        });
         tableForEntries.addListener(SWT.KeyDown, new Listener() {
 
             public void handleEvent(Event event) {
                 if (event.character == '\u0001') { // CTRL + A
-                    tableForEntries.selectAll();
+                    forceExecuteSelectionEvent = true;
+                    tableViewerCreatorForColumns.getSelectionHelper().selectAll();
+                    forceExecuteSelectionEvent = false;
                 }
                 processEnterKeyDown(tableViewerCreatorForColumns, event);
             }
