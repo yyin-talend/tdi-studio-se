@@ -70,9 +70,15 @@ public class MoveObjectAction {
             return false;
         }
 
+        IPath targetPath = RepositoryNodeUtilities.getPath(targetNode);
+        IPath sourcePath = RepositoryNodeUtilities.getPath(sourceNode);
         if (sourceNode.getType() == ENodeType.REPOSITORY_ELEMENT) {
             IRepositoryObject objectToCopy = sourceNode.getObject();
 
+            if (!ResourceUtils.isCorrectDestination(sourcePath, targetPath, false)) {
+                return false;
+            }
+            
             switch (targetNode.getType()) {
             case SYSTEM_FOLDER:
             case SIMPLE_FOLDER:
@@ -84,8 +90,6 @@ public class MoveObjectAction {
                 return false;
             }
         } else if (sourceNode.getType() == ENodeType.SIMPLE_FOLDER) {
-            IPath targetPath = RepositoryNodeUtilities.getPath(targetNode);
-            IPath sourcePath = RepositoryNodeUtilities.getPath(sourceNode);
             
             if (targetNode.getType() != ENodeType.SIMPLE_FOLDER && targetNode.getType() != ENodeType.SYSTEM_FOLDER) {
                 return false;
