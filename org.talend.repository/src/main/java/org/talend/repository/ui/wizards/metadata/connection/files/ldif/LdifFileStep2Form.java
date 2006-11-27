@@ -58,7 +58,6 @@ import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumn;
 import org.talend.commons.utils.data.bean.IBeanPropertyAccessors;
 import org.talend.core.model.properties.ConnectionItem;
-import org.talend.core.ui.extended.ExtendedTableToolbarView;
 import org.talend.core.utils.XmlArray;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.preview.ProcessDescription;
@@ -137,6 +136,10 @@ public class LdifFileStep2Form extends AbstractLdifFileStepForm {
 //        rowsToSkipLimitCheckboxCombo.setReadOnly(isReadOnly());
     }
 
+    /**
+     * 
+     * addGroupAttributes.
+     */
     private void addGroupAttributes(final Composite mainComposite, final int width, final int height) {
         // Group Schema Viewer
         Group group = Form.createGroup(mainComposite, 1, "List Attributes of Ldif file", height);

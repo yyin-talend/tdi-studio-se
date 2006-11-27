@@ -34,7 +34,7 @@ import javax.naming.directory.BasicAttribute;
 import javax.naming.directory.BasicAttributes;
 
 /**
- * @author cantoine
+ * @author cantoine.
  * 
  */
 public class LDIFReader {
@@ -190,3 +190,4 @@ public class LDIFReader {
     }
     
 }
+
