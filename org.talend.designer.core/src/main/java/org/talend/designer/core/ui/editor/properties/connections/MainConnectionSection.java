@@ -108,7 +108,7 @@ public class MainConnectionSection extends DynamicTabbedPropertySection {
             Composite compositeEditorView = metadataTableEditorView.getComposite();
             compositeEditorView.setLayoutData(data);
 
-            composite.layout();
+//            composite.layout();
             composite.getParent().layout();
         } else if (conIf()) {
             super.addComponents();
