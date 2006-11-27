@@ -816,7 +816,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                                 Object o = currentLine.get(items[j]);
                                 if (o instanceof Integer) {
                                     Integer nb = (Integer) o;
-                                    if (nb >= oldItems.length) {
+                                    if ((nb >= oldItems.length) || (nb == -1)) {
                                         nb = new Integer(tmpParam.getIndexOfItemFromList((String) tmpParam
                                                 .getDefaultClosedListValue()));
                                         currentLine.put(items[j], nb);
