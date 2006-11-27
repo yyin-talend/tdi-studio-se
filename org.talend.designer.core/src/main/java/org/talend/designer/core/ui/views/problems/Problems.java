@@ -28,9 +28,11 @@ import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
 import org.talend.commons.utils.data.container.MapList;
+import org.talend.commons.utils.time.TimeMeasure;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IElement;
 import org.talend.core.model.process.Problem;
+import org.talend.core.model.process.Problem.ProblemAction;
 import org.talend.core.model.process.Problem.ProblemStatus;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.process.Process;
@@ -50,7 +52,17 @@ public class Problems {
     private static String newTitle = "";
 
     public static void clearAll() {
-        problems.clear();
+        for (List<Problem> problemList : problems.values()) {
+            for (Problem problem : problemList) {
+                problem.setAction(ProblemAction.DELETED);
+            }
+        }
+    }
+
+    public static void clearAll(Element element) {
+        for (ProblemStatus status : ProblemStatus.values()) {
+            remove(status, element);
+        }
     }
 
     public static void add(ProblemStatus status, Element element, String description) {
@@ -59,18 +71,37 @@ public class Problems {
     }
 
     public static void add(Problem problem) {
-        problems.put(problem.getStatus(), problem);
+        Problem oldProblem = null;
+        boolean found = false;
+        // check if the problem already exists
+        for (int i = 0; i < problems.get(problem.getStatus()).size() && !found; i++) {
+            Problem currentProblem = problems.get(problem.getStatus()).get(i);
+            if (problem.getElement().equals(currentProblem.getElement())) {
+                if (problem.getDescription().equals(currentProblem.getDescription())) {
+                    // problem already exists
+                    oldProblem = currentProblem;
+                    found = true;
+                }
+            }
+        }
+        if (!found) {
+            problems.put(problem.getStatus(), problem);
+            problem.setAction(ProblemAction.ADDED);
+        } else {
+            oldProblem.setAction(ProblemAction.NONE);
+        }
     }
 
     public static void remove(ProblemStatus status, Element element) {
-        List<Problem> problemsToRemove = new ArrayList<Problem>();
+        // List<Problem> problemsToRemove = new ArrayList<Problem>();
 
         for (Problem problem : problems.get(status)) {
             if (problem.getElement().equals(element)) {
-                problemsToRemove.add(problem);
+                // problemsToRemove.add(problem);
+                problem.setAction(ProblemAction.DELETED);
             }
         }
-        problems.removeAll(status, problemsToRemove);
+        // problems.removeAll(status, problemsToRemove);
     }
 
     public static List<String> getStatusList(ProblemStatus status, Element element) {
@@ -105,84 +136,67 @@ public class Problems {
             currentTitle = newTitle;
         }
 
-        List<Problem> currentProblemList = problemsView.getProblemList(ProblemStatus.WARNING);
-        for (Problem problem : currentProblemList) {
-            // clear all old warning status for nodes
-            IElement elem = problem.getElement();
-            if (elem instanceof Node) {
-                ((Node) elem).removeStatus(Process.WARNING_STATUS);
-            }
+        List<Problem> warningsToRemove = new ArrayList<Problem>();
+        List<Problem> errorsToRemove = new ArrayList<Problem>();
 
-            // if the new list doesn't contain this warning, then remove it
-            boolean contain = false;
-            for (Problem newWarning : problems.get(ProblemStatus.WARNING)) {
-                if (problem.getElement().equals(newWarning.getElement())
-                        && problem.getDescription().equals(newWarning.getDescription())) {
-                    contain = true;
+        for (List<Problem> problemList : problems.values()) {
+            for (Problem problem : problemList) {
+                switch (problem.getAction()) {
+                case DELETED:
+                    IElement elem = problem.getElement();
+                    if (elem instanceof Node) {
+                        switch (problem.getStatus()) {
+                        case WARNING:
+                            ((Node) elem).removeStatus(Process.WARNING_STATUS);
+                            break;
+                        case ERROR:
+                            ((Node) elem).removeStatus(Process.ERROR_STATUS);
+                            break;
+                        default:
+                        }
+                    }
+                    break;
+                default:
                 }
-            }
-            if (!contain) {
-                problemsView.removeProblem(ProblemStatus.WARNING, problem);
-            }
-        }
-        for (Problem problem : problems.get(ProblemStatus.WARNING)) {
-            // if the current list doesn't contain this warning, then add it
-            boolean contain = false;
-            for (Problem currentWarning : currentProblemList) {
-                if (problem.getElement().equals(currentWarning.getElement())
-                        && problem.getDescription().equals(currentWarning.getDescription())) {
-                    contain = true;
-                }
-            }
-            if (!contain) {
-                problemsView.addProblem(ProblemStatus.WARNING, problem);
-            }
-
-            // add all warning status on nodes
-            IElement elem = problem.getElement();
-            if (elem instanceof Node) {
-                ((Node) elem).addStatus(Process.WARNING_STATUS);
             }
         }
 
-        currentProblemList = problemsView.getProblemList(ProblemStatus.ERROR);
-        for (Problem problem : currentProblemList) {
-            // clear all old error status for nodes
-            IElement elem = problem.getElement();
-            if (elem instanceof Node) {
-                ((Node) elem).removeStatus(Process.ERROR_STATUS);
-            }
-
-            // if the new list doesn't contain this error, then remove it
-            boolean contain = false;
-            for (Problem newError : problems.get(ProblemStatus.ERROR)) {
-                if (problem.getElement().equals(newError.getElement())
-                        && problem.getDescription().equals(newError.getDescription())) {
-                    contain = true;
+        for (List<Problem> problemList : problems.values()) {
+            for (Problem problem : problemList) {
+                switch (problem.getAction()) {
+                case ADDED:
+                    problemsView.addProblem(problem.getStatus(), problem);
+                    problem.setAction(ProblemAction.NONE);
+                    IElement elem = problem.getElement();
+                    if (elem instanceof Node) {
+                        switch (problem.getStatus()) {
+                        case WARNING:
+                            ((Node) elem).addStatus(Process.WARNING_STATUS);
+                            break;
+                        case ERROR:
+                            ((Node) elem).addStatus(Process.ERROR_STATUS);
+                            break;
+                        default:
+                        }
+                    }
+                    break;
+                case DELETED:
+                    problemsView.removeProblem(problem.getStatus(), problem);
+                    switch (problem.getStatus()) {
+                    case WARNING:
+                        warningsToRemove.add(problem);
+                        break;
+                    case ERROR:
+                        errorsToRemove.add(problem);
+                        break;
+                    default:
+                    }
+                    break;
+                default:
                 }
             }
-            if (!contain) {
-                problemsView.removeProblem(ProblemStatus.ERROR, problem);
-            }
         }
-        for (Problem problem : problems.get(ProblemStatus.ERROR)) {
-            // if the current list doesn't contain this error, then add it
-            boolean contain = false;
-            for (Problem currentError : currentProblemList) {
-                if (problem.getElement().equals(currentError.getElement())
-                        && problem.getDescription().equals(currentError.getDescription())) {
-                    contain = true;
-                }
-            }
-            if (!contain) {
-                problemsView.addProblem(ProblemStatus.ERROR, problem);
-            }
-
-            // add old error status on nodes
-            IElement elem = problem.getElement();
-            if (elem instanceof Node) {
-                ((Node) elem).addStatus(Process.ERROR_STATUS);
-            }
-        }
+        problems.removeAll(ProblemStatus.ERROR, errorsToRemove);
+        problems.removeAll(ProblemStatus.WARNING, warningsToRemove);
     }
 }

@@ -251,6 +251,6 @@ public class NodeLabelEditPart extends AbstractGraphicalEditPart implements Prop
 
     @Override
     public boolean isSelectable() {
-        return !((NodeLabel) getModel()).getNode().isReadOnly();
+        return (!((NodeLabel) getModel()).getNode().isReadOnly()) || (this.getViewer().getSelection().isEmpty());
     }
 }

@@ -46,6 +46,9 @@ public class TalendTabbedPropertySheetPage extends TabbedPropertySheetPage {
     public void selectionChanged(IWorkbenchPart part, ISelection selection) {
         if (selection instanceof StructuredSelection) {
             StructuredSelection structSel = (StructuredSelection) selection;
+            if (structSel.size() != 1) {
+                return;
+            }
             if (structSel.getFirstElement() instanceof EditPart) {
                 super.selectionChanged(part, selection);
             }

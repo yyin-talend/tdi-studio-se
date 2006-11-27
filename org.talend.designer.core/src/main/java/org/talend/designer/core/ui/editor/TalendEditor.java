@@ -105,6 +105,7 @@ import org.talend.core.model.components.IComponentsFactory;
 import org.talend.core.model.properties.Property;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.model.components.EParameterName;
+import org.talend.designer.core.ui.action.GEFDeleteAction;
 import org.talend.designer.core.ui.action.NodesCopyAction;
 import org.talend.designer.core.ui.action.NodesPasteAction;
 import org.talend.designer.core.ui.editor.nodes.Node;
@@ -249,6 +250,10 @@ public class TalendEditor extends GraphicalEditorWithFlyoutPalette implements IT
         IAction pasteAction = new NodesPasteAction(this);
         getActionRegistry().registerAction(pasteAction);
         getSelectionActions().add(pasteAction.getId());
+        
+        IAction deleteAction = new GEFDeleteAction(this);
+        getActionRegistry().registerAction(deleteAction);
+        getSelectionActions().add(deleteAction.getId());
 
         viewer.setRootEditPart(root);
 

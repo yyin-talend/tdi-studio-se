@@ -21,12 +21,14 @@
 // ============================================================================
 package org.talend.designer.core.ui.editor.nodes;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.gef.Request;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.editpolicies.ComponentEditPolicy;
 import org.eclipse.gef.requests.GroupRequest;
 import org.talend.designer.core.ui.editor.cmd.DeleteNodeContainerCommand;
-import org.talend.designer.core.ui.editor.nodecontainer.NodeContainer;
 import org.talend.designer.core.ui.editor.process.Process;
 
 /**
@@ -59,8 +61,14 @@ public class NodeEditPolicy extends ComponentEditPolicy {
         if (((Node) getHost().getModel()).isReadOnly()) {
             return null;
         }
-        DeleteNodeContainerCommand deleteCommand = new DeleteNodeContainerCommand((Process) parent,
-                (NodeContainer) ((Node) getHost().getModel()).getNodeContainer());
+        List<Node> nodeList = new ArrayList<Node>();
+        for (int i = 0; i < request.getEditParts().size(); i++) {
+            if (request.getEditParts().get(i) instanceof NodePart) {
+                nodeList.add(((Node) ((NodePart) request.getEditParts().get(i)).getModel()));
+            }
+        }
+
+        DeleteNodeContainerCommand deleteCommand = new DeleteNodeContainerCommand((Process) parent, nodeList);
         return deleteCommand;
     }
 }

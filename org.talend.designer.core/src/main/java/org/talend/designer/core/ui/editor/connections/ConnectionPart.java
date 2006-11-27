@@ -101,7 +101,13 @@ public class ConnectionPart extends AbstractConnectionEditPart implements Proper
                 if (((Connection) getModel()).isReadOnly()) {
                     return null;
                 }
-                return new ConnectionDeleteCommand((Connection) getModel());
+                List<Connection> connectionList = new ArrayList<Connection>();
+                for (int i = 0; i < request.getEditParts().size(); i++) {
+                    if (request.getEditParts().get(i) instanceof ConnectionPart) {
+                        connectionList.add(((Connection) ((ConnectionPart) request.getEditParts().get(i)).getModel()));
+                    }
+                }
+                return new ConnectionDeleteCommand(connectionList);
             }
         });
     }

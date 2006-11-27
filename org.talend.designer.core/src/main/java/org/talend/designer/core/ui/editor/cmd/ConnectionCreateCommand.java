@@ -154,6 +154,7 @@ public class ConnectionCreateCommand extends Command {
         if (newMetadata != null) {
             source.getMetadataList().add(newMetadata);
         }
+        ((Process) source.getProcess()).checkStartNodes();
         ((Process) source.getProcess()).checkProcess();
     }
 
@@ -167,6 +168,7 @@ public class ConnectionCreateCommand extends Command {
         if (newMetadata != null) {
             source.getMetadataList().remove(newMetadata);
         }
+        ((Process) source.getProcess()).checkStartNodes();
         ((Process) source.getProcess()).checkProcess();
     }
 

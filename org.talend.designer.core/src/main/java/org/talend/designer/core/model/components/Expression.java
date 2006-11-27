@@ -24,7 +24,6 @@ package org.talend.designer.core.model.components;
 import java.util.List;
 
 import org.talend.core.model.process.IElementParameter;
-import org.talend.core.model.temp.ECodeLanguage;
 
 /**
  * This class will test an expression in the element parameters. <br>

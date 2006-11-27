@@ -30,7 +30,6 @@ import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.epic.perleditor.editors.PerlEditor;
 import org.talend.commons.exception.PersistenceException;
-import org.talend.core.context.RepositoryContext;
 import org.talend.core.model.properties.ByteArray;
 import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.RoutineItem;

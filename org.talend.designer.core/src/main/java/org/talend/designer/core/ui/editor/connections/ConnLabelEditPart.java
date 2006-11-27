@@ -23,6 +23,8 @@ package org.talend.designer.core.ui.editor.connections;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.Label;
@@ -115,7 +117,14 @@ public class ConnLabelEditPart extends AbstractGraphicalEditPart implements Prop
                 if (((Connection) getHost().getParent().getModel()).isReadOnly()) {
                     return null;
                 }
-                return new ConnectionDeleteCommand(((ConnectionLabel) this.getHost().getModel()).getConnection());
+                List<Connection> connectionList = new ArrayList<Connection>();
+                for (int i = 0; i < request.getEditParts().size(); i++) {
+                    if (request.getEditParts().get(i) instanceof ConnLabelEditPart) {
+                        connectionList.add(((ConnectionLabel) ((ConnLabelEditPart) request.getEditParts().get(i))
+                                .getModel()).getConnection());
+                    }
+                }
+                return new ConnectionDeleteCommand(connectionList);
             }
         });
     }

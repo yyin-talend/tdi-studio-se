@@ -770,6 +770,9 @@ public class Node extends Element implements INode {
     }
 
     public void addStatus(int status) {
+        if ((this.currentStatus & status) != 0) {
+            return;
+        }
         this.currentStatus = this.currentStatus | status;
         firePropertyChange(UPDATE_STATUS, null, new Integer(this.currentStatus));
     }
@@ -1054,6 +1057,12 @@ public class Node extends Element implements INode {
                 }
             }
         }
+    }
+    
+    public void checkAndRefreshNode() {
+        Problems.clearAll(this);
+        checkNode();
+        Problems.refreshView();
     }
 
     public void checkNode() {

@@ -30,6 +30,7 @@ import org.talend.designer.core.ui.editor.TalendEditor;
 import org.talend.designer.core.ui.editor.nodecontainer.NodeContainer;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.process.Process;
+import org.talend.designer.core.ui.views.problems.Problems;
 
 /**
  * Command that create a new node. <br/>
@@ -84,12 +85,17 @@ public class CreateNodeContainerCommand extends Command {
             this.nodeContainer.getNode().setLocation(this.location);
         }
         this.process.addNodeContainer(this.nodeContainer);
-        process.checkProcess();
+//        process.checkProcess();
+        process.checkStartNodes();
+        nodeContainer.getNode().checkAndRefreshNode();
     }
 
     public void undo() {
         this.process.removeNodeContainer(this.nodeContainer);
-        process.checkProcess();
+//        process.checkProcess();
+        process.checkStartNodes();
+        Problems.clearAll(nodeContainer.getNode());
+        Problems.refreshView();
     }
 
     public void redo() {

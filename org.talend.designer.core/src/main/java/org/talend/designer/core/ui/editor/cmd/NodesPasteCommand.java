@@ -237,6 +237,7 @@ public class NodesPasteCommand extends Command {
                 }
             }
         }
+        process.checkStartNodes();
         process.checkProcess();
     }
 
@@ -265,6 +266,7 @@ public class NodesPasteCommand extends Command {
             viewer.appendSelection(editPart);
         }
 
+        process.checkStartNodes();
         process.checkProcess();
     }
 }

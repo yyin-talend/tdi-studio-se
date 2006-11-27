@@ -68,6 +68,7 @@ public class ChangeConnectionStatusCommand extends Command {
             }
             connection.setLineStyle(EConnectionType.FLOW_MAIN);
         }
+        ((Process) connection.getSource().getProcess()).checkStartNodes();
         ((Process) connection.getSource().getProcess()).checkProcess();
     }
 
@@ -80,6 +81,7 @@ public class ChangeConnectionStatusCommand extends Command {
         } else {
             connection.setLineStyle(EConnectionType.FLOW_MAIN);
         }
+        ((Process) connection.getSource().getProcess()).checkStartNodes();
         ((Process) connection.getSource().getProcess()).checkProcess();
     }
 

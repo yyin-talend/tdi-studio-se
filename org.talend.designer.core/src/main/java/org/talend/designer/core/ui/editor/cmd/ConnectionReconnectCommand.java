@@ -293,6 +293,7 @@ public class ConnectionReconnectCommand extends Command {
             } else {
                 connection.setMetaName(newSource.getUniqueName());
             }
+            ((Process) newSource.getProcess()).checkStartNodes();
             ((Process) newSource.getProcess()).checkProcess();
         } else if (newTarget != null) {
             connection.reconnect(oldSource, newTarget);
@@ -301,6 +302,7 @@ public class ConnectionReconnectCommand extends Command {
             connector.setCurLinkNbInput(connector.getCurLinkNbInput() - 1);
             connector = newTarget.getConnectorFromType(newConnectionType);
             connector.setCurLinkNbInput(connector.getCurLinkNbInput() + 1);
+            ((Process) oldSource.getProcess()).checkStartNodes();
             ((Process) oldSource.getProcess()).checkProcess();
         } else {
             throw new IllegalStateException("Should not happen"); //$NON-NLS-1$
@@ -376,6 +378,7 @@ public class ConnectionReconnectCommand extends Command {
             connector = newTarget.getConnectorFromType(newConnectionType);
             connector.setCurLinkNbInput(connector.getCurLinkNbInput() - 1);
         }
+        ((Process) newSource.getProcess()).checkStartNodes();
         ((Process) oldSource.getProcess()).checkProcess();
     }
 

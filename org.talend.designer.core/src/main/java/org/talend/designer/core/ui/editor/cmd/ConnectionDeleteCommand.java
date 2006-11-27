@@ -21,6 +21,8 @@
 // ============================================================================
 package org.talend.designer.core.ui.editor.cmd;
 
+import java.util.List;
+
 import org.eclipse.gef.commands.Command;
 import org.talend.core.model.process.INodeConnector;
 import org.talend.designer.core.i18n.Messages;
@@ -36,43 +38,49 @@ import org.talend.designer.core.ui.editor.process.Process;
  */
 public class ConnectionDeleteCommand extends Command {
 
-    private Connection connection;
+    private List<Connection> connectionList;
 
     /**
      * Initialisation of the command that will delete the given connection.
      * 
      * @param connection connection to delete
      */
-    public ConnectionDeleteCommand(Connection connection) {
+    public ConnectionDeleteCommand(List<Connection> connectionList) {
         setLabel(Messages.getString("ConnectionDeleteCommand.0")); //$NON-NLS-1$
-        this.connection = connection;
+        this.connectionList = connectionList;
     }
 
     public void execute() {
-        connection.disconnect();
-        Node prevNode = connection.getSource();
-        INodeConnector nodeConnectorSource, nodeConnectorTarget;
-        nodeConnectorSource = prevNode.getConnectorFromType(connection.getLineStyle());
-        nodeConnectorSource.setCurLinkNbOutput(nodeConnectorSource.getCurLinkNbOutput() - 1);
+        Process process = (Process) connectionList.get(0).getSource().getProcess();
+        for (Connection connection : connectionList) {
+            connection.disconnect();
+            Node prevNode = connection.getSource();
+            INodeConnector nodeConnectorSource, nodeConnectorTarget;
+            nodeConnectorSource = prevNode.getConnectorFromType(connection.getLineStyle());
+            nodeConnectorSource.setCurLinkNbOutput(nodeConnectorSource.getCurLinkNbOutput() - 1);
 
-        Node nextNode = connection.getTarget();
-        nodeConnectorTarget = nextNode.getConnectorFromType(connection.getLineStyle());
-        nodeConnectorTarget.setCurLinkNbInput(nodeConnectorTarget.getCurLinkNbInput() - 1);
-
-        ((Process) prevNode.getProcess()).checkProcess();
+            Node nextNode = connection.getTarget();
+            nodeConnectorTarget = nextNode.getConnectorFromType(connection.getLineStyle());
+            nodeConnectorTarget.setCurLinkNbInput(nodeConnectorTarget.getCurLinkNbInput() - 1);
+        }
+        process.checkStartNodes();
+        process.checkProcess();
     }
 
     public void undo() {
-        connection.reconnect();
-        Node prevNode = (Node) connection.getSource();
-        INodeConnector nodeConnectorSource, nodeConnectorTarget;
-        nodeConnectorSource = prevNode.getConnectorFromType(connection.getLineStyle());
-        nodeConnectorSource.setCurLinkNbOutput(nodeConnectorSource.getCurLinkNbOutput() + 1);
+        Process process = (Process) connectionList.get(0).getSource().getProcess();
+        for (Connection connection : connectionList) {
+            connection.reconnect();
+            Node prevNode = (Node) connection.getSource();
+            INodeConnector nodeConnectorSource, nodeConnectorTarget;
+            nodeConnectorSource = prevNode.getConnectorFromType(connection.getLineStyle());
+            nodeConnectorSource.setCurLinkNbOutput(nodeConnectorSource.getCurLinkNbOutput() + 1);
 
-        Node nextNode = (Node) connection.getTarget();
-        nodeConnectorTarget = nextNode.getConnectorFromType(connection.getLineStyle());
-        nodeConnectorTarget.setCurLinkNbInput(nodeConnectorTarget.getCurLinkNbInput() + 1);
-
-        ((Process) prevNode.getProcess()).checkProcess();
+            Node nextNode = (Node) connection.getTarget();
+            nodeConnectorTarget = nextNode.getConnectorFromType(connection.getLineStyle());
+            nodeConnectorTarget.setCurLinkNbInput(nodeConnectorTarget.getCurLinkNbInput() + 1);
+        }
+        process.checkStartNodes();
+        process.checkProcess();
     }
 }

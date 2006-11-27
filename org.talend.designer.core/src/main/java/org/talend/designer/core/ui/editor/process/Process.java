@@ -53,7 +53,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PlatformUI;
 import org.talend.commons.exception.PersistenceException;
-import org.talend.commons.exception.SystemException;
+import org.talend.commons.utils.time.TimeMeasure;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.metadata.EMetadataType;
@@ -742,6 +742,7 @@ public class Process extends Element implements IProcess {
         loadContexts(process);
         initExternalComponents();
         setActivate(true);
+        checkStartNodes();
         checkProcess();
     }
 
@@ -817,7 +818,7 @@ public class Process extends Element implements IProcess {
         }
 
         if (!uploadedNodeNames.isEmpty()) {
-            throw new PersistenceException("There are soem components unloaded");
+            throw new PersistenceException("There are some components unloaded");
         }
     }
 
@@ -1285,7 +1286,7 @@ public class Process extends Element implements IProcess {
         return activate;
     }
 
-    private void setActivate(boolean activate) {
+    public void setActivate(boolean activate) {
         this.activate = activate;
     }
 
@@ -1453,7 +1454,7 @@ public class Process extends Element implements IProcess {
     /**
      * Check all active nodes and set start if necessary.
      */
-    private void checkStartNodes() {
+    public void checkStartNodes() {
         // check
 
         for (Node node : nodes) {
@@ -1550,13 +1551,20 @@ public class Process extends Element implements IProcess {
         }
     }
 
+    /**
+     * DOC nrousseau Comment method "checkProcess".
+     */
     public void checkProcess() {
         checkProcess(true);
     }
+    
 
+    /**
+     * DOC nrousseau Comment method "checkProcess".
+     * @param propagate
+     */
     public void checkProcess(boolean propagate) {
         if (isActivate()) {
-            checkStartNodes();
             // if (propagate)
             propagateDatas(propagate);
             checkProblems();

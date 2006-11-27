@@ -41,7 +41,6 @@ import org.eclipse.ui.part.ViewPart;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumn;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator.LAYOUT_MODE;
-import org.talend.commons.ui.swt.tableviewer.TableViewerCreator.SHOW_ROW_SELECTION;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator.SORT;
 import org.talend.commons.utils.data.bean.IBeanPropertyAccessors;
 import org.talend.designer.core.model.components.ModuleNeeded;

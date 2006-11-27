@@ -190,7 +190,7 @@ public class ExternalNodeChangeCommand extends Command {
             nodeConnectorTarget = nextNode.getConnectorFromType(connection.getLineStyle());
             nodeConnectorTarget.setCurLinkNbInput(nodeConnectorTarget.getCurLinkNbInput() - 1);
         }
-        ((Process) node.getProcess()).checkProcess();
+        node.checkAndRefreshNode();
         refreshSectionsPropertyView();
     }
 
@@ -209,7 +209,7 @@ public class ExternalNodeChangeCommand extends Command {
             nodeConnectorTarget = nextNode.getConnectorFromType(connection.getLineStyle());
             nodeConnectorTarget.setCurLinkNbInput(nodeConnectorTarget.getCurLinkNbInput() + 1);
         }
-        ((Process) node.getProcess()).checkProcess();
+        node.checkAndRefreshNode();
         refreshSectionsPropertyView();
     }
 }

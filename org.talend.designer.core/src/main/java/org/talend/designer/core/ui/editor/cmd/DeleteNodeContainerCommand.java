@@ -34,7 +34,7 @@ import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.process.Process;
 
 /**
- * Delete a given node on the diagram. <br/>
+ * Delete a list of nodes in the process. <br/>
  * 
  * $Id$
  * 
@@ -43,87 +43,107 @@ public class DeleteNodeContainerCommand extends Command {
 
     private Process process;
 
-    private NodeContainer nodeContainer;
+    private List<Node> nodeList;
 
-    List<Connection> inputList;
-
-    List<Connection> outputList;
-
-    /**
-     * Delete the node on the diagram.
-     * 
-     * @param diagram
-     * @param node
-     */
-    @SuppressWarnings("unchecked")
-    public DeleteNodeContainerCommand(Process process, NodeContainer nodeContainer) {
+    public DeleteNodeContainerCommand(Process process, List<Node> nodeList) {
         this.process = process;
-        this.nodeContainer = nodeContainer;
+        this.nodeList = nodeList;
         setLabel(Messages.getString("DeleteNodeCommand.0")); //$NON-NLS-1$
-        Node node = nodeContainer.getNode();
-        inputList = (List<Connection>) node.getIncomingConnections();
-        outputList = (List<Connection>) node.getOutgoingConnections();
     }
 
+    @SuppressWarnings("unchecked")
     public void execute() {
-        this.process.removeNodeContainer(nodeContainer);
-        boolean builtIn = nodeContainer.getNode().getConnectorFromType(EConnectionType.FLOW_MAIN).isBuiltIn();
-        for (Connection connection : inputList) {
-            Node prevNode = (Node) connection.getSource();
-            INodeConnector nodeConnector = prevNode.getConnectorFromType(connection.getLineStyle());
-            nodeConnector.setCurLinkNbOutput(nodeConnector.getCurLinkNbOutput() - 1);
-            connection.getSource().removeOutput(connection);
-            connection.getSource().getProcess().removeUniqueConnectionName(connection.getName());
-        }
-        for (Connection connection : outputList) {
-            Node nextNode = (Node) connection.getTarget();
-            INodeConnector nodeConnector = nextNode.getConnectorFromType(connection.getLineStyle());
-            nodeConnector.setCurLinkNbInput(nodeConnector.getCurLinkNbInput() - 1);
-            connection.getTarget().removeInput(connection);
-            if (!builtIn) {
-                connection.getSource().getProcess().removeUniqueConnectionName(connection.getName());
+        process.setActivate(false);
+
+        for (Node node : nodeList) {
+            NodeContainer nodeContainer = node.getNodeContainer();
+
+            this.process.removeNodeContainer(nodeContainer);
+            List<Connection> inputList = (List<Connection>) node.getIncomingConnections();
+            List<Connection> outputList = (List<Connection>) node.getOutgoingConnections();
+            boolean builtIn = node.getConnectorFromType(EConnectionType.FLOW_MAIN).isBuiltIn();
+            for (Connection connection : inputList) {
+                Node prevNode = (Node) connection.getSource();
+                if (!nodeList.contains(prevNode)) {
+                    INodeConnector nodeConnector = prevNode.getConnectorFromType(connection.getLineStyle());
+                    nodeConnector.setCurLinkNbOutput(nodeConnector.getCurLinkNbOutput() - 1);
+                    prevNode.removeOutput(connection);
+                    process.removeUniqueConnectionName(connection.getName());
+                }
+            }
+            for (Connection connection : outputList) {
+                Node nextNode = (Node) connection.getTarget();
+                if (!nodeList.contains(nextNode)) {
+                    INodeConnector nodeConnector = nextNode.getConnectorFromType(connection.getLineStyle());
+                    nodeConnector.setCurLinkNbInput(nodeConnector.getCurLinkNbInput() - 1);
+                    nextNode.removeInput(connection);
+                }
+                if (!builtIn) {
+                    process.removeUniqueConnectionName(connection.getName());
+                }
+            }
+            if (builtIn) {
+                for (IMetadataTable meta : node.getMetadataList()) {
+                    String metaName = meta.getTableName();
+                    process.removeUniqueConnectionName(metaName);
+                }
             }
         }
-        if (builtIn) {
-            for (IMetadataTable meta : nodeContainer.getNode().getMetadataList()) {
-                String metaName = meta.getTableName();
-                process.removeUniqueConnectionName(metaName);
-            }
-        }
+
+        process.setActivate(true);
+        process.checkStartNodes();
         process.checkProcess();
     }
 
+    @SuppressWarnings("unchecked")
     public void undo() {
-        this.process.addUniqueNodeName(nodeContainer.getNode().getUniqueName());
-        this.process.addNodeContainer(nodeContainer);
-        boolean builtIn = nodeContainer.getNode().getConnectorFromType(EConnectionType.FLOW_MAIN).isBuiltIn();
-        for (Connection connection : inputList) {
-            Node prevNode = (Node) connection.getSource();
-            prevNode.addOutput(connection);
-            INodeConnector nodeConnector = prevNode.getConnectorFromType(connection.getLineStyle());
-            nodeConnector.setCurLinkNbOutput(nodeConnector.getCurLinkNbOutput() + 1);
-            connection.reconnect();
-            if (connection.getLineStyle().equals(EConnectionType.FLOW_MAIN)
-                    || connection.getLineStyle().equals(EConnectionType.FLOW_REF)) {
-                connection.getSource().getProcess().addUniqueConnectionName(connection.getName());
+        process.setActivate(false);
+        for (Node node : nodeList) {
+            NodeContainer nodeContainer = node.getNodeContainer();
+            this.process.addUniqueNodeName(node.getUniqueName());
+            this.process.addNodeContainer(nodeContainer);
+
+            List<Connection> inputList = (List<Connection>) node.getIncomingConnections();
+            List<Connection> outputList = (List<Connection>) node.getOutgoingConnections();
+            boolean builtIn = node.getConnectorFromType(EConnectionType.FLOW_MAIN).isBuiltIn();
+            for (Connection connection : inputList) {
+                Node prevNode = (Node) connection.getSource();
+                if (!nodeList.contains(prevNode)) {
+                    prevNode.addOutput(connection);
+                    INodeConnector nodeConnector = prevNode.getConnectorFromType(connection.getLineStyle());
+                    nodeConnector.setCurLinkNbOutput(nodeConnector.getCurLinkNbOutput() + 1);
+                    connection.reconnect();
+                    if (connection.getLineStyle().equals(EConnectionType.FLOW_MAIN)
+                            || connection.getLineStyle().equals(EConnectionType.FLOW_REF)) {
+                        process.addUniqueConnectionName(connection.getName());
+                    }
+                }
+            }
+            for (Connection connection : outputList) {
+                Node nextNode = (Node) connection.getTarget();
+                if (!nodeList.contains(nextNode)) {
+                    nextNode.addInput(connection);
+                    INodeConnector nodeConnector = nextNode.getConnectorFromType(connection.getLineStyle());
+                    nodeConnector.setCurLinkNbInput(nodeConnector.getCurLinkNbInput() + 1);
+                    connection.reconnect();
+                }
+                if (!builtIn) {
+                    if (connection.getLineStyle().equals(EConnectionType.FLOW_MAIN)
+                            || connection.getLineStyle().equals(EConnectionType.FLOW_REF)) {
+                        process.addUniqueConnectionName(connection.getName());
+                    }
+                }
+            }
+            if (builtIn) {
+                for (IMetadataTable meta : node.getMetadataList()) {
+                    String metaName = meta.getTableName();
+                    process.addUniqueConnectionName(metaName);
+                }
             }
         }
-        for (Connection connection : outputList) {
-            Node nextNode = (Node) connection.getTarget();
-            nextNode.addInput(connection);
-            INodeConnector nodeConnector = nextNode.getConnectorFromType(connection.getLineStyle());
-            nodeConnector.setCurLinkNbInput(nodeConnector.getCurLinkNbInput() + 1);
-            connection.reconnect();
-            if (!builtIn) {
-                connection.getSource().getProcess().addUniqueConnectionName(connection.getName());
-            }
-        }
-        if (builtIn) {
-            for (IMetadataTable meta : nodeContainer.getNode().getMetadataList()) {
-                String metaName = meta.getTableName();
-                process.addUniqueConnectionName(metaName);
-            }
-        }
+
+        process.setActivate(true);
+        process.checkStartNodes();
         process.checkProcess();
     }
 
