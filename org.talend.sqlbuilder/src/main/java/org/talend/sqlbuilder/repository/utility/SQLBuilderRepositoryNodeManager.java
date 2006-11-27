@@ -93,6 +93,45 @@ public class SQLBuilderRepositoryNodeManager {
 		return flag;
 	}
 	
+	@SuppressWarnings("unchecked")
+	public boolean[] isDiff(RepositoryNode node) {
+		boolean isDiffDivergency = false;
+		boolean isDiffSyschronize = false;
+		Object type = node.getProperties(EProperties.CONTENT_TYPE);
+		if (type.equals(RepositoryNodeType.DATABASE)) {
+			DatabaseConnection connection = (DatabaseConnection) getItem(node).getConnection();
+			List<MetadataTable> tables = connection.getTables();
+			for (MetadataTable table : tables) {
+				List<MetadataColumn> columns = table.getColumns();
+				for (MetadataColumn column : columns) {
+					if (column.isDivergency()) {
+						isDiffDivergency = true;
+					}
+					if (column.isSynchronised()) {
+						isDiffSyschronize = true;
+					}
+				}
+				if (table.isDivergency()) {
+					isDiffDivergency = true;
+				}
+			}
+		} else if (type.equals(RepositoryNodeType.TABLE)) {
+			MetadataTableRepositoryObject object = (MetadataTableRepositoryObject) node.getObject();
+			MetadataTable table = object.getTable();
+			List<MetadataColumn> columns = table.getColumns();
+			for (MetadataColumn column : columns) {
+				if (column.isDivergency()) {
+					isDiffDivergency = true;
+				}
+				if (column.isSynchronised()) {
+					isDiffSyschronize = true;
+				}
+			}
+		}
+		
+		return new boolean[]{isDiffDivergency, isDiffSyschronize};
+	}
+	
 	public void removeAllRepositoryNodes() {
 		repositoryNodes.clear();
 	}
@@ -639,7 +678,7 @@ public class SQLBuilderRepositoryNodeManager {
 				}
 				emf.setSourceName("");
 				emf.setDivergency(true);
-				emf.getConnection().setDivergency(true);
+//				emf.getConnection().setDivergency(true);
 			}
 		}
 		while (!metaFromDB.isEmpty()) {
@@ -651,7 +690,7 @@ public class SQLBuilderRepositoryNodeManager {
 					if (!emf.getLabel().equals("")	&& !emf.getLabel().equals(
 									db.getSourceName().replaceAll("_", "-"))) {
 						emf.setDivergency(true);
-						emf.getConnection().setDivergency(true);
+//						emf.getConnection().setDivergency(true);
 					}
 				}
 			}
@@ -696,8 +735,8 @@ public class SQLBuilderRepositoryNodeManager {
 			if (flag) {
 				emf.setOriginalField("");
 				emf.setDivergency(true);
-				emf.getTable().setDivergency(true);
-				emf.getTable().getConnection().setDivergency(true);
+//				emf.getTable().setDivergency(true);
+//				emf.getTable().getConnection().setDivergency(true);
 			}
 		}
 		while (!columnsFromDB.isEmpty()) {
@@ -710,12 +749,12 @@ public class SQLBuilderRepositoryNodeManager {
 						boolean is = !isEquivalent(db, emf);
 						emf.setDivergency(is);
 						emf.setSynchronised(is);
-						if (is) {
-							emf.getTable().setSynchronised(true);
-							emf.getTable().getConnection().setSynchronised(true);
-							emf.getTable().setDivergency(true);
-							emf.getTable().getConnection().setDivergency(true);
-						}
+//						if (is) {
+//							emf.getTable().setSynchronised(true);
+//							emf.getTable().getConnection().setSynchronised(true);
+//							emf.getTable().setDivergency(true);
+//							emf.getTable().getConnection().setDivergency(true);
+//						}
 					}
 				}
 			}
