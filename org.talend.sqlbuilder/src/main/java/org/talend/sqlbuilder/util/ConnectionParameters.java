@@ -70,6 +70,8 @@ public class ConnectionParameters {
     
     private boolean status = true;
     
+    private String schema;
+    
     private static Hashtable<String, String> hashTable = new Hashtable<String, String>();
     
     static {
@@ -93,6 +95,27 @@ public class ConnectionParameters {
 	}
 	
 	
+	
+	/**
+	 * Getter for schema.
+	 * @return the schema
+	 */
+	public String getSchema() {
+		return this.schema;
+	}
+
+
+
+	/**
+	 * Sets the schema.
+	 * @param schema the schema to set
+	 */
+	public void setSchema(String schema) {
+		this.schema = schema;
+	}
+
+
+
 	/**
 	 * Getter for status.
 	 * @return the status

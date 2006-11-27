@@ -1,0 +1,252 @@
+// ============================================================================
+//
+// Talend Community Edition
+//
+// Copyright (C) 2006 Talend - www.talend.com
+//
+// This library is free software; you can redistribute it and/or
+// modify it under the terms of the GNU Lesser General Public
+// License as published by the Free Software Foundation; either
+// version 2.1 of the License, or (at your option) any later version.
+//
+// This library is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+// Lesser General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program; if not, write to the Free Software
+// Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+//
+// ============================================================================
+package org.talend.sqlbuilder.actions.explain;
+import java.util.ArrayList;
+/**
+ * DOC dev  class global comment. Detailled comment
+ * <br/>
+ *
+ * $Id: talend-code-templates.xml 1 2006-09-29 17:06:40 +0000 (Fri, 29 Sep 2006) nrousseau $
+ *
+ */
+public class ExplainNode {
+
+    int cardinality, cost;
+
+    int id, parentId;
+
+    ArrayList ls = new ArrayList();
+
+    String objectType, operation, options, objectOwner, objectName, optimizer;
+
+    ExplainNode parent;
+
+
+    public ExplainNode(ExplainNode parent) {
+
+        this.parent = parent;
+    }
+
+
+    @SuppressWarnings("unchecked")
+	public void add(ExplainNode nd) {
+
+        ls.add(nd);
+    }
+
+
+    /**
+     * @return
+     */
+    public int getCardinality() {
+
+        return cardinality;
+    }
+
+
+    @SuppressWarnings("unchecked")
+	public ExplainNode[] getChildren() {
+
+        return (ExplainNode[]) ls.toArray(new ExplainNode[ls.size()]);
+    }
+
+
+    /**
+     * @return
+     */
+    public int getCost() {
+
+        return cost;
+    }
+
+
+    /**
+     * @return
+     */
+    public String getOperation() {
+
+        return operation;
+    }
+
+
+    /**
+     * @return
+     */
+    public String getOptimizer() {
+
+        return optimizer;
+    }
+
+
+    /**
+     * @return
+     */
+    public String getOptions() {
+
+        return options;
+    }
+
+
+    public ExplainNode getParent() {
+
+        return parent;
+    }
+
+
+    /**
+     * @param i
+     */
+    public void setCardinality(int i) {
+
+        cardinality = i;
+    }
+
+
+    /**
+     * @param i
+     */
+    public void setCost(int i) {
+
+        cost = i;
+    }
+
+
+    /**
+     * @param i
+     */
+    public void setId(int i) {
+
+        id = i;
+    }
+
+
+    /**
+     * @param string
+     */
+    public void setOperation(String string) {
+
+        operation = string;
+    }
+
+
+    /**
+     * @param string
+     */
+    public void setOptimizer(String string) {
+
+        optimizer = string;
+    }
+
+
+    /**
+     * @param string
+     */
+    public void setOptions(String string) {
+
+        options = string;
+    }
+
+
+    public String toString() {
+
+        StringBuffer sb = new StringBuffer(50);
+        if (objectType != null) {
+            sb.append(objectType).append(" ");
+        }
+        if (operation != null) {
+            sb.append(operation).append(" ");
+        }
+        if (options != null) {
+            sb.append(options).append(" ");
+        }
+        if (objectOwner != null && objectName != null)
+            sb.append(objectOwner + "." + objectName).append(" ");
+        if (optimizer != null) {
+            sb.append("[" + optimizer + "]");
+        }
+        return sb.toString();
+    }
+
+
+	/**
+	 * Getter for objectName.
+	 * @return the objectName
+	 */
+	public String getObjectName() {
+		return this.objectName;
+	}
+
+
+	/**
+	 * Sets the objectName.
+	 * @param objectName the objectName to set
+	 */
+	public void setObjectName(String objectName) {
+		this.objectName = objectName;
+	}
+
+
+	/**
+	 * Getter for objectOwner.
+	 * @return the objectOwner
+	 */
+	public String getObjectOwner() {
+		return this.objectOwner;
+	}
+
+
+	/**
+	 * Sets the objectOwner.
+	 * @param objectOwner the objectOwner to set
+	 */
+	public void setObjectOwner(String objectOwner) {
+		this.objectOwner = objectOwner;
+	}
+
+
+	/**
+	 * Getter for objectType.
+	 * @return the objectType
+	 */
+	public String getObjectType() {
+		return this.objectType;
+	}
+
+
+	/**
+	 * Sets the objectType.
+	 * @param objectType the objectType to set
+	 */
+	public void setObjectType(String objectType) {
+		this.objectType = objectType;
+	}
+
+
+	/**
+	 * Getter for id.
+	 * @return the id
+	 */
+	public int getId() {
+		return this.id;
+	}
+
+}

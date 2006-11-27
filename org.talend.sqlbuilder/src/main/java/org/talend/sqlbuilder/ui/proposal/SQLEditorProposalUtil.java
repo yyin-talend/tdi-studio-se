@@ -59,6 +59,8 @@ public class SQLEditorProposalUtil {
 
     private Map<String, List<String>> tableAndColumns;
     
+    private String dbType;
+    
     public SQLEditorProposalUtil(RepositoryNode session, String language) {
         super();
         contents = new String[2];
@@ -68,6 +70,7 @@ public class SQLEditorProposalUtil {
         if (allString != null && !allString.isEmpty()) {
             allString.clear();
         }
+        dbType = SQLBuilderRepositoryNodeManager.getDbTypeFromRepositoryNode(session);
         getAllProposalString();
     }
 
@@ -90,7 +93,7 @@ public class SQLEditorProposalUtil {
 
             if (queryStrings.isEmpty() || (curSql[1].length() == 0 && curSql[0].length() == 0)) {
                 for (String string : allString) {
-                	 proposals.add(new SQLEditorAllProposal("", string, position, contents));
+                	 proposals.add(createAllProposal("", string));
                 }
             } else {
                 while (!queryStrings.isEmpty()) {
@@ -261,25 +264,46 @@ public class SQLEditorProposalUtil {
 	 */
 	private void createProposal(String hasInput, List<String> list) {
 		if (list != null) {
+			String newHasInput = hasInput.replaceAll("\"", "");
 		    for (String string : list) {
 		        int index = string.indexOf(".");
 		        int index2 = string.lastIndexOf(".");
 		        String tmp2 = "";
 		        String column = ""; 
 		        if (index > -1) {
-		            tmp2 = string.substring(index + 2, string.length() - 1).replaceAll("'", "");
+//		        	if (dbType.equals("PostgreSQL")) {
+//		        		 tmp2 = string.substring(index + 1, string.length());
+//		        	} else {
+		        		 tmp2 = string.substring(index + 2, string.length() - 1).replaceAll("\"", "");
+//		        	}
 		            if (index2 > index) {
-		            	column = string.substring(index2 + 2, string.length() - 1).replaceAll("'", "");
+//		            	if (dbType.equals("PostgreSQL")) {
+//		            		column = string.substring(index2 + 1, string.length());
+//		            	} else {
+		            		column = string.substring(index2 + 2, string.length() - 1).replaceAll("\"", "");
+//		            	}
 		            }
 		        } else {
 		            tmp2 = string;
 		        }
-		        if (tmp2.toLowerCase().startsWith(hasInput.toLowerCase()) 
-		        		|| column.toLowerCase().startsWith(hasInput.toLowerCase())) {
-		        	proposals.add(new SQLEditorAllProposal(hasInput, string, position, contents));
+		        if (tmp2.toLowerCase().startsWith(newHasInput.toLowerCase()) 
+		        		|| column.toLowerCase().startsWith(newHasInput.toLowerCase())) {
+		        	
+		        	proposals.add(createAllProposal(hasInput, string));
 		        }
 		    }
 		}
+	}
+
+	/**
+	 * DOC dev Comment method "createAllProposal".
+	 * @param hasInput
+	 * @param string
+	 * @return
+	 */
+	private SQLEditorAllProposal createAllProposal(String hasInput, String string) {
+		SQLEditorAllProposal p = new SQLEditorAllProposal(hasInput, string, position, contents, dbType);
+		return p;
 	}
 
 	/**
@@ -293,7 +317,7 @@ public class SQLEditorProposalUtil {
 		for (String string : alltablenames) {
 			tables.put(string.substring(string.indexOf(".") + 2, string.length() - 1), string);
 		}
-		List<String> columns = tableAndColumns.get(tables.get(tableName.trim()));
+		List<String> columns = tableAndColumns.get(tables.get(tableName.replaceAll("\"", "").trim()));
 		return columns;
 	}
 }

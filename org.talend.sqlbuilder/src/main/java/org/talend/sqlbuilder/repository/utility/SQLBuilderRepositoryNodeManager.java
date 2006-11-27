@@ -163,12 +163,14 @@ public class SQLBuilderRepositoryNodeManager {
 						table.setSourceName(labelsAndNames.get("Tables: " + table.getLabel()));
 					}
 					table.setDivergency(false);
+					table.setSynchronised(false);
 					newtables.add(table);
 				}
 			}
 			connection.getTables().clear();
 			connection.getTables().addAll(newtables);
 			connection.setDivergency(false);
+			connection.setSynchronised(false);
 			}
 		repositoryNodes.clear();
 		labelsAndNames.clear();
@@ -185,7 +187,7 @@ public class SQLBuilderRepositoryNodeManager {
 	@SuppressWarnings("unchecked")
 	public static Map<String, List<String>> getAllNamesByRepositoryNode(RepositoryNode node) {
 		Map<String, List<String>> allNames = new HashMap<String, List<String>>();
-		DatabaseConnectionItem item = getItem(node);
+		DatabaseConnectionItem item = getItem(getRoot(node));
 		DatabaseConnection connection = (DatabaseConnection) item
 				.getConnection();
 		List<MetadataTable> tablesFromEMF = connection.getTables();
@@ -197,12 +199,12 @@ public class SQLBuilderRepositoryNodeManager {
 			String tableName = table.getSourceName();
 			if (tableName != null && !"".equals(tableName)) {
 				List<String> columnNames = new ArrayList<String>();
-				tableName = "'" + sid + "'.'" + tableName + "'";
+				tableName = "\"" + sid + "\".\"" + tableName + "\"";
 				List<MetadataColumn> columns = table.getColumns();
 				for (MetadataColumn column : columns) {
 					String columnName = column.getOriginalField();
 					if (columnName != null && !"".equals(columnName)) {
-						columnName = tableName + ".'" + columnName + "'";
+						columnName = tableName + ".\"" + columnName + "\"";
 						columnNames.add(columnName);
 					}
 				}
@@ -393,6 +395,9 @@ public class SQLBuilderRepositoryNodeManager {
 		connection.setSID(parameters.getDbName());
 		connection.setLabel(parameters.getDbName());
 		connection.setDatasourceName(parameters.getDatasource());
+		if (parameters.getSchema() == null && parameters.getDbType().equals("PostgreSQL")) {
+			connection.setSchema("public");
+		}
 		// connection.setComment("");
 		connection.setURL(parameters.getURL());
 		connection.setDriverClass(ExtractMetaDataUtils
@@ -400,6 +405,16 @@ public class SQLBuilderRepositoryNodeManager {
 		return connection;
 	}
 
+	/**
+	 * DOC dev Comment method "getDbTypeFromRepositoryNode".
+	 * @param node
+	 * @return
+	 */
+	public static String getDbTypeFromRepositoryNode(RepositoryNode node) {
+		DatabaseConnection connection = (DatabaseConnection) getItem(getRoot(node)).getConnection();
+		return connection.getDatabaseType();
+	}
+	
 	/**
 	 * method "getItem" get DatabaseConnectionItem by current RepositoryNode .
 	 * 

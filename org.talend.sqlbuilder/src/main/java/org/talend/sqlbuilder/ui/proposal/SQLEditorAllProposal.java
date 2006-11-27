@@ -46,17 +46,38 @@ public class SQLEditorAllProposal implements IContentProposal {
      * @param position Cursor current positioon
      * @param contents text edited all content
      */
-    public SQLEditorAllProposal(String hasString, String allString, int position, String[] contents) {
+    public SQLEditorAllProposal(String hasString, String allString, int position, String[] contents , String dbType) {
         super();
-        hasString = initHasString(hasString, allString);
-        this.position = position + label.substring(hasString.length()).length();
+        hasString = initHasString(hasString, allString, dbType);
+        if (!dbType.equals("PostgreSQL")) {
+        	label = label.replaceAll("\"", "");
+        }
         hasString = label.substring(0, hasString.length());
+        label = label.replaceAll("\"", "");
+        String tmp = initLabel(dbType, allString);
         contents[0] = contents[0].substring(0, contents[0].length() - hasString.length()) + hasString;
         content = contents[0];
-        content += label.substring(hasString.length());
+        content += tmp.substring(hasString.length());
         content += contents[1];
         description = allString;
+        this.position = position + tmp.substring(hasString.length()).length();
     }
+
+	/**
+	 * DOC dev Comment method "initLabel".
+	 * @param dbType
+	 * @return
+	 */
+	private String initLabel(String dbType, String allString) {
+		String tmp = label;
+		int index = allString.indexOf(".");
+        if (index > -1 && dbType.equals("PostgreSQL")) {
+        	tmp = "\"" + label + "\"";
+        } else {
+        	tmp = label;
+        }
+		return tmp;
+	}
 
 	/**
 	 * DOC dev Comment method "initHasString".
@@ -64,19 +85,26 @@ public class SQLEditorAllProposal implements IContentProposal {
 	 * @param allString
 	 * @return
 	 */
-	private String initHasString(String hasString, String allString) {
-		label = allString.replaceAll("'", "");
+	private String initHasString(String hasString, String allString, String dbType) {
+		label = allString;
         int index = label.indexOf(".");
         int index2 = label.lastIndexOf(".");
         String qualityName = "";
         if (index > -1) {
         	qualityName = label.substring(index + 1, label.length());
+        	if (!dbType.equals("PostgreSQL")) {
+        		qualityName = qualityName.replaceAll("\"", "");
+        	}
+        	
         	if (index == index2) {
         		label = qualityName;
                 image = ImageUtil.getDescriptor("Images.TableIcon").createImage();
         	} else {
         		int index3 = qualityName.indexOf(".");
-        		if (!"".equals(hasString) && qualityName.startsWith(hasString)) {
+        		String newHasString = hasString.replaceAll("\"", "");
+        		String newQualityName = qualityName.replaceAll("\"", "");
+        		if (!"".equals(hasString) && qualityName.startsWith(hasString)
+        				|| newQualityName.startsWith(newHasString)) {
         			hasString = hasString.substring(index3 + 1);
         		}
         		label = label.substring(index2 + 1, label.length());
