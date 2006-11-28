@@ -53,6 +53,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.progress.IProgressService;
@@ -271,7 +272,7 @@ public class ProcessComposite2 extends Composite {
         consoleText.setLayoutData(data);
         Font font = new Font(parent.getDisplay(), "courier", 8, SWT.NONE);
         consoleText.setFont(font);
-
+        
         execScroll.setMinSize(execContent.computeSize(SWT.DEFAULT, SWT.DEFAULT));
         sash.setWeights(new int[] { 2, H_WEIGHT });
 
@@ -279,7 +280,6 @@ public class ProcessComposite2 extends Composite {
 
             public void propertyChange(PropertyChangeEvent evt) {
                 runProcessContextChanged(evt);
-
             }
         };
 
@@ -535,7 +535,6 @@ public class ProcessComposite2 extends Composite {
             appendToConsole((ProcessMessage) evt.getNewValue());
         } else if (RunProcessContext.PROP_MESSAGE_CLEAR.equals(propName)) {
             getDisplay().asyncExec(new Runnable() {
-            
                 public void run() {
                     consoleText.setText(""); //$NON-NLS-1$
                 }
@@ -555,4 +554,9 @@ public class ProcessComposite2 extends Composite {
             });
         }
     }
+
+    public Display getDisplay() {
+        return Display.getDefault();
+    }
+
 }
