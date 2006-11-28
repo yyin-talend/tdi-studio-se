@@ -224,7 +224,7 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
 
         for (Object obj : fromModel.getSubContainer()) {
             Container container = (Container) obj;
-            Folder oFolder = new Folder(container.getId(), container.getLabel());
+            Folder oFolder = new Folder((Property) container.getProperty());
             RepositoryNode folder = new RepositoryNode(oFolder, parent, ENodeType.SIMPLE_FOLDER);
             folder.setProperties(EProperties.LABEL, container.getLabel());
             folder.setProperties(EProperties.CONTENT_TYPE, type); // ERepositoryObjectType.FOLDER);
