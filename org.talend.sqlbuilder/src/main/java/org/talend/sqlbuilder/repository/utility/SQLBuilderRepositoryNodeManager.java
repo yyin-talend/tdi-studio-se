@@ -28,6 +28,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.utils.VersionUtils;
@@ -76,30 +77,45 @@ public class SQLBuilderRepositoryNodeManager {
 	private static List<RepositoryNode> repositoryNodes = new ArrayList<RepositoryNode>();
 
 	private static Map<String, String> labelsAndNames = new HashMap<String, String>();
-	
+
+	/**
+	 * DOC dev Comment method "isChangeElementColor".
+	 * 
+	 * @param node
+	 * @return
+	 */
 	public boolean isChangeElementColor(RepositoryNode node) {
 		boolean flag = false;
 		Object type = node.getProperties(EProperties.CONTENT_TYPE);
 		if (type.equals(RepositoryNodeType.DATABASE)) {
 			return getItem(node).getConnection().isDivergency();
 		}
-			
+
 		if (type.equals(RepositoryNodeType.TABLE)) {
-			MetadataTableRepositoryObject object = (MetadataTableRepositoryObject) node.getObject();
+			MetadataTableRepositoryObject object = (MetadataTableRepositoryObject) node
+					.getObject();
 			MetadataTable table = object.getTable();
 			flag = table.getSourceName().equals(table.getLabel());
 			flag = flag && table.isDivergency();
 		}
 		return flag;
 	}
-	
+
+	/**
+	 * DOC dev Comment method "isDiff".
+	 * 
+	 * @param node
+	 * @return
+	 */
 	@SuppressWarnings("unchecked")
 	public boolean[] isDiff(RepositoryNode node) {
 		boolean isDiffDivergency = false;
 		boolean isDiffSyschronize = false;
+		boolean isDiffGray = false;
 		Object type = node.getProperties(EProperties.CONTENT_TYPE);
 		if (type.equals(RepositoryNodeType.DATABASE)) {
-			DatabaseConnection connection = (DatabaseConnection) getItem(node).getConnection();
+			DatabaseConnection connection = (DatabaseConnection) getItem(node)
+					.getConnection();
 			List<MetadataTable> tables = connection.getTables();
 			for (MetadataTable table : tables) {
 				List<MetadataColumn> columns = table.getColumns();
@@ -110,13 +126,21 @@ public class SQLBuilderRepositoryNodeManager {
 					if (column.isSynchronised()) {
 						isDiffSyschronize = true;
 					}
+					if (column.getLabel() == null
+							|| "".equals(column.getLabel())) {
+						isDiffGray = true;
+					}
 				}
 				if (table.isDivergency()) {
 					isDiffDivergency = true;
 				}
+				if (table.getLabel() == null || "".equals(table.getLabel())) {
+					isDiffGray = true;
+				}
 			}
 		} else if (type.equals(RepositoryNodeType.TABLE)) {
-			MetadataTableRepositoryObject object = (MetadataTableRepositoryObject) node.getObject();
+			MetadataTableRepositoryObject object = (MetadataTableRepositoryObject) node
+					.getObject();
 			MetadataTable table = object.getTable();
 			List<MetadataColumn> columns = table.getColumns();
 			for (MetadataColumn column : columns) {
@@ -126,15 +150,22 @@ public class SQLBuilderRepositoryNodeManager {
 				if (column.isSynchronised()) {
 					isDiffSyschronize = true;
 				}
+				if (column.getLabel() == null || "".equals(column.getLabel())) {
+					isDiffGray = true;
+				}
 			}
 		}
-		
-		return new boolean[]{isDiffDivergency, isDiffSyschronize};
+
+		return new boolean[] { isDiffGray, isDiffDivergency, isDiffSyschronize };
 	}
-	
+
+	/**
+	 * DOC dev Comment method "removeAllRepositoryNodes".
+	 */
 	public void removeAllRepositoryNodes() {
 		repositoryNodes.clear();
 	}
+
 	/**
 	 * DOC dev Comment method "addRepositoryNode".
 	 * 
@@ -155,17 +186,24 @@ public class SQLBuilderRepositoryNodeManager {
 	 */
 	public RepositoryNode getRepositoryNodebyName(String name) {
 		for (RepositoryNode node : repositoryNodes) {
-			if (((SqlBuilderRepositoryObject) node.getObject()).getRepositoryName().equals(name)) {
+			if (((SqlBuilderRepositoryObject) node.getObject())
+					.getRepositoryName().equals(name)) {
 				return node;
 			}
 		}
 		return null;
 	}
-	
+
+	/**
+	 * DOC dev Comment method "removeRepositoryNodeExceptNodeByName".
+	 * 
+	 * @param repositoryNodeName
+	 */
 	public void removeRepositoryNodeExceptNodeByName(String repositoryNodeName) {
 		for (Iterator it = repositoryNodes.iterator(); it.hasNext();) {
 			RepositoryNode node = (RepositoryNode) it.next();
-			if (!((SqlBuilderRepositoryObject) node.getObject()).getRepositoryName().equals(repositoryNodeName)) {
+			if (!((SqlBuilderRepositoryObject) node.getObject())
+					.getRepositoryName().equals(repositoryNodeName)) {
 				it.remove();
 			}
 		}
@@ -188,7 +226,8 @@ public class SQLBuilderRepositoryNodeManager {
 				for (MetadataColumn column : columns) {
 					if (!column.getLabel().equals("")) {
 						if (column.getOriginalField().equals(" ")) {
-							column.setOriginalField(labelsAndNames.get("Columns: " + column.getLabel()));
+							column.setOriginalField(labelsAndNames
+									.get("Columns: " + column.getLabel()));
 						}
 						column.setDivergency(false);
 						column.setSynchronised(false);
@@ -199,7 +238,8 @@ public class SQLBuilderRepositoryNodeManager {
 				table.getColumns().addAll(newcloumns);
 				if (!table.getLabel().equals("")) {
 					if (table.getSourceName().equals(" ")) {
-						table.setSourceName(labelsAndNames.get("Tables: " + table.getLabel()));
+						table.setSourceName(labelsAndNames.get("Tables: "
+								+ table.getLabel()));
 					}
 					table.setDivergency(false);
 					table.setSynchronised(false);
@@ -210,7 +250,7 @@ public class SQLBuilderRepositoryNodeManager {
 			connection.getTables().addAll(newtables);
 			connection.setDivergency(false);
 			connection.setSynchronised(false);
-			}
+		}
 		repositoryNodes.clear();
 		labelsAndNames.clear();
 	}
@@ -224,7 +264,8 @@ public class SQLBuilderRepositoryNodeManager {
 	 * @return List :all Table Names.
 	 */
 	@SuppressWarnings("unchecked")
-	public static Map<String, List<String>> getAllNamesByRepositoryNode(RepositoryNode node) {
+	public static Map<String, List<String>> getAllNamesByRepositoryNode(
+			RepositoryNode node) {
 		Map<String, List<String>> allNames = new HashMap<String, List<String>>();
 		DatabaseConnectionItem item = getItem(getRoot(node));
 		DatabaseConnection connection = (DatabaseConnection) item
@@ -247,7 +288,7 @@ public class SQLBuilderRepositoryNodeManager {
 						columnNames.add(columnName);
 					}
 				}
-				
+
 				allNames.put(tableName, columnNames);
 			}
 		}
@@ -263,7 +304,8 @@ public class SQLBuilderRepositoryNodeManager {
 	public List<String> getALLReposotoryNodeNames() {
 		List<String> names = new ArrayList<String>();
 		for (RepositoryNode node : repositoryNodes) {
-			names.add(((SqlBuilderRepositoryObject) node.getObject()).getRepositoryName());
+			names.add(((SqlBuilderRepositoryObject) node.getObject())
+					.getRepositoryName());
 		}
 		return names;
 	}
@@ -277,11 +319,140 @@ public class SQLBuilderRepositoryNodeManager {
 	@SuppressWarnings("unchecked")
 	public RepositoryNode getRepositoryNodeFromDB(RepositoryNode oldNode) {
 
+		@SuppressWarnings("unused")
+		RepositoryNode newNode = cloneRepositoryNode(oldNode);
+		
 		DatabaseConnectionItem item = getItem(oldNode);
 		DatabaseConnection connection = (DatabaseConnection) item
 				.getConnection();
 		IMetadataConnection iMetadataConnection = ConvertionHelper
 				.convert(connection);
+		
+		 modifyOldRepositoryNode(connection, iMetadataConnection);
+		return oldNode;
+	}
+
+	private RepositoryNode cloneRepositoryNode(RepositoryNode oldNode) {
+		
+		DatabaseConnectionItem oldItem = getItem(oldNode);
+		
+		DatabaseConnection oldConnection = (DatabaseConnection) oldItem.getConnection();
+		DatabaseConnection connection =	cloneNewConnection(oldConnection);
+		
+		DatabaseConnectionItem item = PropertiesFactory.eINSTANCE
+				.createDatabaseConnectionItem();
+		
+		Property oldPerProperty = oldItem.getProperty();
+		Property connectionProperty = createNewProperty(oldPerProperty);
+		item.setProperty(connectionProperty);
+		item.setConnection(connection);
+		
+		ItemState oldState = oldItem.getState();
+		
+		ItemState state = cloneNewItemState(oldState);
+		item.setState(state);
+		
+		RepositoryObject object = new RepositoryObject(connectionProperty);
+		
+		RepositoryNode newNode = new RepositoryNode(object, oldNode.getParent(),
+				ENodeType.SYSTEM_FOLDER);
+		
+		return newNode;
+	}
+
+	/**
+	 * DOC dev Comment method "cloneNewItemState".
+	 * @param oldState
+	 * @return
+	 */
+	private ItemState cloneNewItemState(ItemState oldState) {
+		ItemState state = PropertiesFactory.eINSTANCE.createItemState();
+		state.setCommitDate(oldState.getCommitDate());
+		state.setDeleted(oldState.isDeleted());
+		state.setLockDate(oldState.getLockDate());
+		state.setLocked(oldState.isLocked());
+		state.setLocker(oldState.getLocker());
+		state.setPath(oldState.getPath());
+		
+		return state;
+	}
+
+	/**
+	 * DOC dev Comment method "createNewProperty".
+	 * @param oldPerProperty
+	 * @return
+	 */
+	private Property createNewProperty(Property oldPerProperty) {
+		Property connectionProperty = PropertiesFactory.eINSTANCE
+				.createProperty();
+		connectionProperty.setAuthor(oldPerProperty.getAuthor());
+		connectionProperty.setCreationDate(oldPerProperty.getCreationDate());
+		connectionProperty.setDescription(oldPerProperty.getDescription());
+		connectionProperty.setId(oldPerProperty.getId());
+		connectionProperty.setLabel(oldPerProperty.getLabel());
+		connectionProperty.setModificationDate(oldPerProperty.getModificationDate());
+		connectionProperty.setPurpose(oldPerProperty.getPurpose());
+		connectionProperty.setStatusCode(oldPerProperty.getStatusCode());
+		connectionProperty.setVersion(oldPerProperty.getVersion());
+		
+		return connectionProperty;
+	}
+
+	/**
+	 * DOC dev Comment method "cloneNewConnection".
+	 * @param connection
+	 * @param oldConnection
+	 */
+	@SuppressWarnings("unchecked")
+	private DatabaseConnection cloneNewConnection(DatabaseConnection oldConnection) {
+		DatabaseConnection connection = ConnectionFactory.eINSTANCE
+		.createDatabaseConnection();
+		
+		connection.setComment(oldConnection.getComment());
+		connection.setDatabaseType(oldConnection.getDatabaseType());
+		connection.setDatasourceName(oldConnection.getDatasourceName());
+		connection.setDriverClass(oldConnection.getDriverClass());
+		connection.setFileFieldName(oldConnection.getFileFieldName());
+		connection.setId(oldConnection.getId());
+		
+		connection.setLabel(oldConnection.getLabel());
+		connection.setNullChar(oldConnection.getNullChar());
+		connection.setPassword(oldConnection.getPassword());
+		connection.setPort(oldConnection.getPort());
+		connection.setReadOnly(oldConnection.isReadOnly());
+		connection.setSchema(oldConnection.getSchema());
+		
+		connection.setServerName(oldConnection.getServerName());
+		connection.setSID(oldConnection.getSID());
+		connection.setSqlSynthax(oldConnection.getSqlSynthax());
+		connection.setStringQuote(oldConnection.getStringQuote());
+		connection.setSynchronised(oldConnection.isSynchronised());
+		connection.setDivergency(oldConnection.isDivergency());
+		
+		connection.setURL(oldConnection.getURL());
+		connection.setUsername(oldConnection.getUsername());
+		connection.setVersion(oldConnection.getVersion());
+		
+		HashMap properties = oldConnection.getProperties();
+		HashMap news = new HashMap();
+		Set oldSet = properties.keySet();
+		for (Object object : oldSet) {
+			news.put(object, properties.get(object));
+		}
+		connection.getProperties().putAll(news);
+		
+		return connection;
+	}
+
+	/**
+	 * DOC dev Comment method "modifyOldRepositoryNode".
+	 * 
+	 * @param connection
+	 * @param iMetadataConnection
+	 */
+	@SuppressWarnings({ "unchecked" })
+	private void modifyOldRepositoryNode(DatabaseConnection connection,
+			IMetadataConnection iMetadataConnection) {
 		boolean status = new ManagerConnection().check(iMetadataConnection);
 		connection.setDivergency(!status);
 		if (status) {
@@ -312,21 +483,20 @@ public class SQLBuilderRepositoryNodeManager {
 		} else {
 			List<MetadataTable> tablesFromEMF = connection.getTables();
 			for (MetadataTable tableFromEMF : tablesFromEMF) {
-				List<MetadataColumn> columnsFromEMF = tableFromEMF
-				.getColumns();
+				List<MetadataColumn> columnsFromEMF = tableFromEMF.getColumns();
 				for (MetadataColumn column : columnsFromEMF) {
-					labelsAndNames.put("Columns: " + column.getLabel(), column.getOriginalField());
+					labelsAndNames.put("Columns: " + column.getLabel(), column
+							.getOriginalField());
 					column.setOriginalField(" ");
 					column.setDivergency(true);
 					column.setSynchronised(false);
 				}
-				labelsAndNames.put("Tables: " + tableFromEMF.getLabel(), tableFromEMF.getSourceName());
+				labelsAndNames.put("Tables: " + tableFromEMF.getLabel(),
+						tableFromEMF.getSourceName());
 				tableFromEMF.setSourceName(" ");
 				tableFromEMF.setDivergency(true);
 			}
 		}
-		
-		return oldNode;
 	}
 
 	/**
@@ -342,7 +512,26 @@ public class SQLBuilderRepositoryNodeManager {
 		DatabaseConnection connection = createConnection(parameters);
 		IMetadataConnection iMetadataConnection = ConvertionHelper
 				.convert(connection);
-		
+
+		RepositoryNode newNode = createNewRepositoryNode(node, parameters,
+				connection, iMetadataConnection);
+
+		return newNode;
+	}
+
+	/**
+	 * DOC dev Comment method "createNewRepositoryNode".
+	 * 
+	 * @param node
+	 * @param parameters
+	 * @param connection
+	 * @param iMetadataConnection
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	private RepositoryNode createNewRepositoryNode(RepositoryNode node,
+			ConnectionParameters parameters, DatabaseConnection connection,
+			IMetadataConnection iMetadataConnection) {
 		ManagerConnection managerConnection = new ManagerConnection();
 		boolean status = managerConnection.check(iMetadataConnection);
 		connection.setDivergency(!status);
@@ -361,14 +550,18 @@ public class SQLBuilderRepositoryNodeManager {
 				connection.getTables().add(table);
 			}
 		} else {
-			parameters.setConnectionComment(managerConnection.getMessageException());
+			if (parameters != null) {
+				parameters.setConnectionComment(managerConnection
+						.getMessageException());
+			}
 		}
 		DatabaseConnectionItem item = PropertiesFactory.eINSTANCE
 				.createDatabaseConnectionItem();
 		Property connectionProperty = PropertiesFactory.eINSTANCE
 				.createProperty();
-		connectionProperty.setAuthor(((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY))
-                .getUser());
+		connectionProperty.setAuthor(((RepositoryContext) CorePlugin
+				.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY))
+				.getUser());
 		connectionProperty.setVersion(VersionUtils.DEFAULT_VERSION);
 		connectionProperty.setStatusCode("");
 
@@ -385,7 +578,6 @@ public class SQLBuilderRepositoryNodeManager {
 		}
 		RepositoryNode newNode = new RepositoryNode(object, node,
 				ENodeType.SYSTEM_FOLDER);
-
 		return newNode;
 	}
 
@@ -434,7 +626,8 @@ public class SQLBuilderRepositoryNodeManager {
 		connection.setSID(parameters.getDbName());
 		connection.setLabel(parameters.getDbName());
 		connection.setDatasourceName(parameters.getDatasource());
-		if (parameters.getSchema() == null && parameters.getDbType().equals("PostgreSQL")) {
+		if (parameters.getSchema() == null
+				&& parameters.getDbType().equals("PostgreSQL")) {
 			connection.setSchema("public");
 		}
 		// connection.setComment("");
@@ -446,14 +639,16 @@ public class SQLBuilderRepositoryNodeManager {
 
 	/**
 	 * DOC dev Comment method "getDbTypeFromRepositoryNode".
+	 * 
 	 * @param node
 	 * @return
 	 */
 	public static String getDbTypeFromRepositoryNode(RepositoryNode node) {
-		DatabaseConnection connection = (DatabaseConnection) getItem(getRoot(node)).getConnection();
+		DatabaseConnection connection = (DatabaseConnection) getItem(
+				getRoot(node)).getConnection();
 		return connection.getDatabaseType();
 	}
-	
+
 	/**
 	 * method "getItem" get DatabaseConnectionItem by current RepositoryNode .
 	 * 
@@ -678,7 +873,7 @@ public class SQLBuilderRepositoryNodeManager {
 				}
 				emf.setSourceName("");
 				emf.setDivergency(true);
-//				emf.getConnection().setDivergency(true);
+				// emf.getConnection().setDivergency(true);
 			}
 		}
 		while (!metaFromDB.isEmpty()) {
@@ -687,10 +882,11 @@ public class SQLBuilderRepositoryNodeManager {
 			for (MetadataTable emf : metaFromEMF) {
 				if (db.getSourceName().equals(emf.getSourceName())) {
 					flag = false;
-					if (!emf.getLabel().equals("")	&& !emf.getLabel().equals(
+					if (!emf.getLabel().equals("")
+							&& !emf.getLabel().equals(
 									db.getSourceName().replaceAll("_", "-"))) {
 						emf.setDivergency(true);
-//						emf.getConnection().setDivergency(true);
+						// emf.getConnection().setDivergency(true);
 					}
 				}
 			}
@@ -735,8 +931,8 @@ public class SQLBuilderRepositoryNodeManager {
 			if (flag) {
 				emf.setOriginalField("");
 				emf.setDivergency(true);
-//				emf.getTable().setDivergency(true);
-//				emf.getTable().getConnection().setDivergency(true);
+				// emf.getTable().setDivergency(true);
+				// emf.getTable().getConnection().setDivergency(true);
 			}
 		}
 		while (!columnsFromDB.isEmpty()) {
@@ -749,12 +945,12 @@ public class SQLBuilderRepositoryNodeManager {
 						boolean is = !isEquivalent(db, emf);
 						emf.setDivergency(is);
 						emf.setSynchronised(is);
-//						if (is) {
-//							emf.getTable().setSynchronised(true);
-//							emf.getTable().getConnection().setSynchronised(true);
-//							emf.getTable().setDivergency(true);
-//							emf.getTable().getConnection().setDivergency(true);
-//						}
+						// if (is) {
+						// emf.getTable().setSynchronised(true);
+						// emf.getTable().getConnection().setSynchronised(true);
+						// emf.getTable().setDivergency(true);
+						// emf.getTable().getConnection().setDivergency(true);
+						// }
 					}
 				}
 			}
