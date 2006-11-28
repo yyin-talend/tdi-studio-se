@@ -209,7 +209,7 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog {
 
         createDatabaseStructure(sashFormStructureAndEditor);
         createSQLEditor(sashFormStructureAndEditor);
-        sashFormStructureAndEditor.setWeights(new int[] { 3, 6 });
+        sashFormStructureAndEditor.setWeights(new int[] { 4, 6 });
 
         structureComposite.openNewEditor();
 

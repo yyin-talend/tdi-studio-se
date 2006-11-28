@@ -80,6 +80,8 @@ ITableColorProvider {
 	private static final String IMAGES_TABLE_NODE_ICON = "Images.TableNodeIcon";
 	private static final String IMAGES_COLUMN_NODE_ICON = "Images.ColumnNodeIcon";
 	private static final String IMAGES_REFRESH_ICON = "Images.RefreshIcon";
+	private static final String IMAGES_RED_ICON = "Images.RedIcon";
+	private static final String IMAGES_GRAY_ICON = "Images.GrayIcon";
 	public static final String COLOR_GRAY = "COLOR_GRAY";
 	public static final String COLOR_RED = "COLOR_RED";
 	private SQLBuilderRepositoryNodeManager repositoryNodeManager = new SQLBuilderRepositoryNodeManager();
@@ -106,11 +108,17 @@ ITableColorProvider {
     }
 
     public Image getColumnImage(Object element, int columnIndex) {
-        if (columnIndex == 1) {
+    	RepositoryNode node = (RepositoryNode) element;
+        SqlBuilderRepositoryObject repositoryObject = (SqlBuilderRepositoryObject) node.getObject();
+		if (columnIndex == 1) {
             return null;
+        } else if (columnIndex == 2) {
+        	if ((repositoryObject).getDiffImage() == null) {
+        		return null;
+        	}
+        	return ImageUtil.getImage((repositoryObject).getDiffImage());
         }
-        RepositoryNode node = (RepositoryNode) element;
-        return ImageUtil.getImage(((SqlBuilderRepositoryObject) node.getObject()).getImage()); 
+        return ImageUtil.getImage((repositoryObject).getImage()); 
     }
     
     public String getColumnText(Object element, int columnIndex) {
@@ -127,18 +135,9 @@ ITableColorProvider {
     @SuppressWarnings("static-access")
     public Object[] getChildren(Object parentElement) {
         if (isRefresh) {
-//            RepositoryNode repositoryNode = (RepositoryNode) parentElement;
-//            RepositoryNode rootNode = repositoryNodeManager.getRoot(repositoryNode);
-//            RepositoryNode treeRoot = (RepositoryNode) rootNode.getParent();
-//            treeRoot.getChildren().clear();
-//            allRepositoryNodes.clear();
-//            repositoryNodeManager.removeAllRepositoryNodes();
-//            initialize(treeRoot);
-//            isRefresh = false;
-//            return allRepositoryNodes.get(repositoryNode.getObject().getLabel()).getChildren().toArray();
-        	
             RepositoryNode repositoryNode = (RepositoryNode) parentElement;
             RepositoryNode rootNode = repositoryNodeManager.getRoot(repositoryNode);
+            refreshRootNode(rootNode);
             rootNode.getChildren().clear();
             DatabaseConnection metadataConnection = (DatabaseConnection) ((ConnectionItem) repositoryNode.getObject().getProperty()
                     .getItem()).getConnection();
@@ -149,41 +148,25 @@ ITableColorProvider {
             isRefresh = false;
             return repositoryNode.getChildren().toArray();
         	
-        	
-        	
         } else {
             return ((RepositoryNode) parentElement).getChildren().toArray();
         }
     }
     
     public void refreshRootNode(RepositoryNode rootNode) {
-        IRepositoryFactory factory = RepositoryFactoryProvider.getInstance();
-        DatabaseConnection connection = (DatabaseConnection) ((ConnectionItem) rootNode.getObject()
-                .getProperty().getItem()).getConnection();
-        if (connection.isDivergency()) {
-        	((SqlBuilderRepositoryObject) rootNode.getObject()).setColor(COLOR_RED);
-        } else {
-        	((SqlBuilderRepositoryObject) rootNode.getObject()).setColor(null);
+    	SqlBuilderRepositoryObject repositoryObject = (SqlBuilderRepositoryObject) rootNode.getObject();
+        boolean[] isDiffs = repositoryNodeManager.isDiff(rootNode);
+        if (isDiffs[0]) {
+        	repositoryObject.setDiffImage(IMAGES_GRAY_ICON);
+        }
+        if (isDiffs[1]) {
+        	repositoryObject.setDiffImage(IMAGES_RED_ICON);
+        }
+        if (isDiffs[2]) {
+        	repositoryObject.setDiffImage(IMAGES_REFRESH_ICON);
         }
     }
     
-	private RepositoryObject getOriginalRepositoryObjectByName(String repositoryNodeName) {
-    	Container fromModel = null;
-		try {
-			fromModel = RepositoryFactoryProvider.getInstance().getMetadataConnection();
-		} catch (PersistenceException e) {
-			e.printStackTrace();
-		}
-        for (Object obj : fromModel.getMembers()) {
-            RepositoryObject repositoryObject = (RepositoryObject) obj;
-            if (repositoryObject.getLabel().equals(repositoryNodeName)) {
-            	return repositoryObject;
-            }
-        }
-		return null;
-	}
-
-
 	public Object getParent(Object element) {
         return repositoryContentProvider.getParent(element);
     }
@@ -266,14 +249,22 @@ ITableColorProvider {
         } else {
         	connectionRepositoryObject.setImage(IMAGES_DATABASE_ICON);
         }
-        if (connection.isDivergency()) {
-            connectionRepositoryObject.setColor(COLOR_RED);
-        }
         connectionRepositoryObject.setBuildIn(isBuildIn);
         
         RepositoryNode node = new RepositoryNode(connectionRepositoryObject, parent, ENodeType.REPOSITORY_ELEMENT);
         node.setProperties(EProperties.CONTENT_TYPE, RepositoryNodeType.DATABASE);
         node.setProperties(EProperties.LABEL, repositoryObject.getLabel());
+        boolean[] isDiffs = repositoryNodeManager.isDiff(node);
+        if (isDiffs[0]) {
+        	connectionRepositoryObject.setDiffImage(IMAGES_GRAY_ICON);
+        }
+        if (isDiffs[1]) {
+        	connectionRepositoryObject.setDiffImage(IMAGES_RED_ICON);
+        }
+        if (isDiffs[2]) {
+        	connectionRepositoryObject.setDiffImage(IMAGES_REFRESH_ICON);
+        }
+        
         try {
             if (factory.isDeleted(repositoryObject)) {
                 //ignore recycle node
@@ -385,7 +376,7 @@ ITableColorProvider {
         	modelObj.setColor(COLOR_GRAY);
         }
         modelObj.setBuildIn(isBuildIn);
-        
+
         RepositoryNode columnNode = new RepositoryNode(modelObj, tableNode, ENodeType.REPOSITORY_ELEMENT);
         columnNode.setProperties(EProperties.LABEL, metadataColumn.getLabel());
         columnNode.setProperties(EProperties.CONTENT_TYPE, RepositoryNodeType.COLUMN);
@@ -409,7 +400,7 @@ ITableColorProvider {
         //purpose use for Image text.
         modelObj.setImage(IMAGES_TABLE_NODE_ICON);
         //description use for color.
-        if (modelObj.getTable().isDivergency() && !isBuildIn) {
+        if (modelObj.getTable().isDivergency() && !isBuildIn && !modelObj.getTable().isSynchronised()) {
         	modelObj.setColor(COLOR_RED);
         }
         if (modelObj.getRepositoryName() == null || modelObj.getRepositoryName().trim().equals("")) {
@@ -420,6 +411,19 @@ ITableColorProvider {
         RepositoryNode tableNode = new RepositoryNode(modelObj, node, ENodeType.REPOSITORY_ELEMENT);
         tableNode.setProperties(EProperties.LABEL, table.getLabel());
         tableNode.setProperties(EProperties.CONTENT_TYPE, RepositoryNodeType.TABLE);
+        
+        boolean[] isDiffs = repositoryNodeManager.isDiff(tableNode);
+        if (isDiffs[0]) {
+        	modelObj.setDiffImage(IMAGES_GRAY_ICON);
+        }
+        if (isDiffs[1]) {
+        	modelObj.setDiffImage(IMAGES_RED_ICON);
+        }
+        if (isDiffs[2]) {
+        	modelObj.setDiffImage(IMAGES_REFRESH_ICON);
+        }
+
+        
         return tableNode;
     }
     
@@ -563,13 +567,18 @@ ITableColorProvider {
     }
 
     public Color getBackground(Object element, int columnIndex) {
-        RepositoryNode repositoryNode = (RepositoryNode) element;
-        return colors.get(((SqlBuilderRepositoryObject) repositoryNode.getObject()).getColor());
+    	RepositoryNode repositoryNode = (RepositoryNode) element;
+    	SqlBuilderRepositoryObject repositoryObject = (SqlBuilderRepositoryObject) repositoryNode.getObject();
+    	if (columnIndex == 2 ) {
+    		return null;
+    	} else {
+			return colors.get((repositoryObject).getColor());
+    	}
+    	        
     }
 
     public Color getForeground(Object element, int columnIndex) {
         return null;
     }
-
     
 }

@@ -86,7 +86,7 @@ public class DBStructureComposite extends Composite {
 
     private static final int COLUMN_REPOSITORY_WIDTH = 100;
 
-    private static final int COLUMN_DATABASE_WIDTH = 150;
+    private static final int COLUMN_DATABASE_WIDTH = 170;
 
     private TreeViewer treeViewer;
 
@@ -196,6 +196,11 @@ public class DBStructureComposite extends Composite {
         repository.setText(Messages.getString("DBStructureComposite.Repository")); //$NON-NLS-1$
         repository.setWidth(COLUMN_REPOSITORY_WIDTH);
 
+        TreeColumn diff = new TreeColumn(tree, SWT.LEFT);
+        diff.setText("Diff"); //$NON-NLS-1$
+        diff.setWidth(30);
+
+        
         tree.setHeaderVisible(true);
 
         treeViewer.addFilter(filter);
@@ -481,7 +486,7 @@ public class DBStructureComposite extends Composite {
             public void run() {
                 ((DBTreeProvider) treeViewer.getContentProvider()).setRefresh(true);
                 treeViewer.refresh(rootNode, true);
-                ((DBTreeProvider) treeViewer.getLabelProvider()).refreshRootNode(rootNode);
+//                ((DBTreeProvider) treeViewer.getLabelProvider()).refreshRootNode(rootNode);
                 treeViewer.update(rootNode, null);
             }
 
