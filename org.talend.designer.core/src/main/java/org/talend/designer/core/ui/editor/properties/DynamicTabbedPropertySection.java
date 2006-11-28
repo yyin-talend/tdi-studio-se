@@ -477,9 +477,9 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                     String type = getRepositoryItemFromRepositoryName("TYPE");
                     connParameters.setDbType(type);
                     connParameters.setQuery(query);
-                    OpenSQLBuilderDialogJob openDialogJob = new OpenSQLBuilderDialogJob(connParameters,
-                    		composite, elem, propertyName, getCommandStack());
-                    
+                    OpenSQLBuilderDialogJob openDialogJob = new OpenSQLBuilderDialogJob(connParameters, composite,
+                            elem, propertyName, getCommandStack());
+
                     IWorkbenchSiteProgressService siteps = (IWorkbenchSiteProgressService) part.getSite().getAdapter(
                             IWorkbenchSiteProgressService.class);
                     siteps.showInDialog(composite.getShell(), openDialogJob);
@@ -498,7 +498,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                             String[] displayList = param.getListItemsDisplayName();
                             for (int i = 0; i < valuesList.length; i++) {
                                 if (valuesList[i].equals(value)) {
-                                    
+
                                     repositoryName = displayList[i];
                                 }
                             }
@@ -526,28 +526,29 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                         }
                     }
                 }
-                
-//                if (connParameters.isStatus()) {
-//                	Shell parentShell = new Shell(composite.getShell().getDisplay());
-//                	
-//                	SQLBuilderDialog dial = new SQLBuilderDialog(parentShell);
-//                    connParameters.setQuery(query);
-//                    dial.setConnParameters(connParameters);
-//                    if (Window.OK == dial.open()) {
-//                    	if (!composite.isDisposed()) {
-//                    		  String sql = connParameters.getQuery();
-//                              Command cmd = new PropertyChangeCommand(elem, propertyName,
-//                                      "'" + sql + "'");
-//                              getCommandStack().execute(cmd);
-//                    	}
-//                    }
-//                } else {
-//                	//connection failure
-//                	String pid = DesignerPlugin.ID;
-//                	String mainMsg = Messages.getString("ConnectionError.Message");
-//                	new ErrorDialogWidthDetailArea(composite.getShell(), pid, mainMsg, connParameters.getConnectionComment());
-//                }
-                
+
+                // if (connParameters.isStatus()) {
+                // Shell parentShell = new Shell(composite.getShell().getDisplay());
+                //                	
+                // SQLBuilderDialog dial = new SQLBuilderDialog(parentShell);
+                // connParameters.setQuery(query);
+                // dial.setConnParameters(connParameters);
+                // if (Window.OK == dial.open()) {
+                // if (!composite.isDisposed()) {
+                // String sql = connParameters.getQuery();
+                // Command cmd = new PropertyChangeCommand(elem, propertyName,
+                // "'" + sql + "'");
+                // getCommandStack().execute(cmd);
+                // }
+                // }
+                // } else {
+                // //connection failure
+                // String pid = DesignerPlugin.ID;
+                // String mainMsg = Messages.getString("ConnectionError.Message");
+                // new ErrorDialogWidthDetailArea(composite.getShell(), pid, mainMsg,
+                // connParameters.getConnectionComment());
+                // }
+
             }// Ends
         }
 
@@ -2343,7 +2344,8 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                 });
             }
         }
-        tableViewerCreator.init(copyTableValue(param));
+        param.setValue(copyTableValue(param));
+        tableViewerCreator.init((List) param.getValue());
 
         final Listener addLineListener = new Listener() {
 
@@ -2591,13 +2593,16 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
         List<Map<String, Object>> paramValues = (List<Map<String, Object>>) param.getValue();
         List<Map<String, Object>> tableValues = new ArrayList<Map<String, Object>>();
 
+        int numLine = 0;
         for (Map<String, Object> currentLine : paramValues) {
-            tableValues.add(copyLine(currentLine, param));
+            tableValues.add(copyLine(currentLine, param, numLine));
+            numLine++;
         }
         return tableValues;
     }
 
-    private Map<String, Object> copyLine(final Map<String, Object> currentLine, final IElementParameter param) {
+    private Map<String, Object> copyLine(final Map<String, Object> currentLine, final IElementParameter param,
+            final int numLine) {
         Map<String, Object> newLine = new HashMap<String, Object>();
         String[] items = param.getListItemsDisplayCodeName();
         for (int i = 0; i < items.length; i++) {
@@ -2615,6 +2620,10 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                         }
                     }
                     value = new Integer(index);
+                }
+            } else {
+                if (i == 0 && param.isBasedOnSchema() && value == null && numLine >= 0) {
+                    value = getColumnList().get(numLine);
                 }
             }
             newLine.put(items[i], value);
@@ -2651,7 +2660,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
     private boolean checkErrorsWhenViewRefreshed;
 
     private void copyToCliboard(Map<String, Object> line, final IElementParameter param) {
-        clipboard = copyLine(line, param);
+        clipboard = copyLine(line, param, -1);
     }
 
     /**
@@ -2936,7 +2945,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                     }
                     if (param.getField() == EParameterFieldType.TABLE) {
                         TableViewerCreator tableViewerCreator = (TableViewerCreator) object;
-                        tableViewerCreator.init((List) elem.getPropertyValue(param.getName()));
+                        tableViewerCreator.init((List) param.getValue());
                         // tableViewerCreator.getTableViewer().refresh();
                     }
                 }
@@ -2958,6 +2967,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
     }
 
     private ISelection lastSelection;
+
     @Override
     public void setInput(final IWorkbenchPart workbenchPart, final ISelection selection) {
         if (!(selection instanceof IStructuredSelection)) {
@@ -2993,7 +3003,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
         if (elem instanceof NodeLabel) {
             elem = ((NodeLabel) elem).getNode();
         }
-        
+
         if (elem instanceof ConnectionLabel) {
             elem = ((ConnectionLabel) elem).getConnection();
         }
