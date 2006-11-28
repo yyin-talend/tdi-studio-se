@@ -118,10 +118,18 @@ public class ComponentsFactory implements IComponentsFactory {
         if (componentList == null) {
             init();
         }
+        
+        // modified to make the old tRunProcess compatible
+        // this test must be removed once the migration tool will be finished.
+        String loadedName = name;
+        if (name.equals("tRunProcess")) {
+            loadedName = "tRunJob";
+        }
+        
         for (int i = 0; i < componentList.size(); i++) {
             comp = componentList.get(i);
             if (comp != null) {
-                if (comp.getName().equals(name)) {
+                if (comp.getName().equals(loadedName)) {
                     return comp;
                 }
             }
