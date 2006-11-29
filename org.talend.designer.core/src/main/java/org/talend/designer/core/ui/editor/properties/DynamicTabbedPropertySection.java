@@ -168,7 +168,7 @@ import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.runprocess.language.SyntaxCheckerFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryConstants;
-import org.talend.repository.model.RepositoryStatus;
+import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.utils.RepositoryPathProvider;
 import org.talend.sqlbuilder.ui.SQLBuilderDialog;
 import org.talend.sqlbuilder.util.ConnectionParameters;
@@ -872,7 +872,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
 
             for (Content<String, IRepositoryObject> object : processAbsoluteMembers.values()) {
                 IRepositoryObject process = (IRepositoryObject) object.getContent();
-                if (factory.getStatus(process) != RepositoryStatus.DELETED) {
+                if (factory.getStatus(process) != ERepositoryStatus.DELETED) {
                     String path = object.getParent().getPath().toString();
                     String name;
                     if (path.equals("")) {

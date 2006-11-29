@@ -43,7 +43,6 @@ import org.talend.core.model.properties.Property;
 import org.talend.core.model.properties.Status;
 import org.talend.core.model.properties.User;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.model.repository.ERepositoryType;
 import org.talend.core.model.repository.Folder;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.model.temp.ECodeLanguage;
@@ -435,15 +434,6 @@ public class ProxyRepositoryFactory {
         return this.repositoryFactoryFromProvider.getAll(type);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.repository.model.IRepositoryFactory#getType()
-     */
-    public ERepositoryType getType() {
-        return this.repositoryFactoryFromProvider.getType();
-    }
-
     /**
      * @return
      * @see org.talend.repository.model.IRepositoryFactory#getDocumentationStatus()
@@ -522,7 +512,7 @@ public class ProxyRepositoryFactory {
      * @see org.talend.repository.model.IRepositoryFactory#unlock(org.talend.core.model.properties.Item)
      */
     public void unlock(Item obj) throws PersistenceException {
-        if (getStatus(obj) == RepositoryStatus.LOCK_BY_USER) {
+        if (getStatus(obj) == ERepositoryStatus.LOCK_BY_USER) {
             Date commitDate = obj.getState().getCommitDate();
             Date modificationDate = obj.getProperty().getModificationDate();
             if (modificationDate == null || commitDate == null || modificationDate.before(commitDate)) {
@@ -533,7 +523,7 @@ public class ProxyRepositoryFactory {
     }
 
     public void commit(Item obj) throws PersistenceException {
-        if (getStatus(obj) == RepositoryStatus.LOCK_BY_USER) {
+        if (getStatus(obj) == ERepositoryStatus.LOCK_BY_USER) {
             this.repositoryFactoryFromProvider.commit(obj);
             this.repositoryFactoryFromProvider.unlock(obj);
             log.debug("Unlock [" + obj + "] by \"" + getRepositoryContext().getUser() + "\".");
@@ -557,17 +547,17 @@ public class ProxyRepositoryFactory {
      * 
      * @see org.talend.repository.model.IRepositoryFactory#getStatus(org.talend.core.model.properties.Item)
      */
-    public RepositoryStatus getStatus(IRepositoryObject obj) {
+    public ERepositoryStatus getStatus(IRepositoryObject obj) {
         if (obj instanceof MetadataTableRepositoryObject) {
             MetadataTableRepositoryObject metadataTableRepositoryObject = (MetadataTableRepositoryObject) obj;
             if (TableHelper.isDeleted(metadataTableRepositoryObject.getTable())) {
-                return RepositoryStatus.DELETED;
+                return ERepositoryStatus.DELETED;
             }
         }
         return getStatus(getItem(obj));
     }
 
-    public RepositoryStatus getStatus(Item item) {
+    public ERepositoryStatus getStatus(Item item) {
         return this.repositoryFactoryFromProvider.getStatus(item);
     }
 
@@ -577,7 +567,7 @@ public class ProxyRepositoryFactory {
      * @see org.talend.repository.model.IRepositoryFactory#getStatusAndLockIfPossible(org.talend.core.model.properties.Item)
      */
     public boolean isEditableAndLockIfPossible(Item item) {
-        RepositoryStatus status = getStatus(item);
+        ERepositoryStatus status = getStatus(item);
         if (status.isPotentiallyEditable()) {
             try {
                 lock(item);
@@ -605,7 +595,7 @@ public class ProxyRepositoryFactory {
      * @see org.talend.repository.model.IRepositoryFactory#isPotentiallyEditable(org.talend.core.model.properties.Item)
      */
     public boolean isPotentiallyEditable(Item item) {
-        RepositoryStatus status = getStatus(item);
+        ERepositoryStatus status = getStatus(item);
         return status.isPotentiallyEditable();
     }
 

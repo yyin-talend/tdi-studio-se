@@ -37,7 +37,7 @@ import org.talend.core.ui.EImage;
 import org.talend.core.ui.ImageProvider;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
-import org.talend.repository.model.RepositoryStatus;
+import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.RepositoryNode.ENodeType;
 import org.talend.repository.model.RepositoryNode.EProperties;
 
@@ -77,7 +77,7 @@ public class RepositoryLabelProvider extends LabelProvider implements IColorProv
 
             ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
             try {
-                if (factory.getStatus(object) == RepositoryStatus.DELETED) {
+                if (factory.getStatus(object) == ERepositoryStatus.DELETED) {
                     string.append(" (" + factory.getOldPath(object) + ")");
                 }
             } catch (PersistenceException e) {

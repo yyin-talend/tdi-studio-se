@@ -22,24 +22,11 @@
 package org.talend.repository.model;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.SortedSet;
-import java.util.TreeSet;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
-import org.talend.commons.exception.ExceptionHandler;
-import org.talend.commons.exception.IllegalPluginConfigurationException;
-import org.talend.commons.ui.swt.actions.ITreeContextualAction;
 import org.talend.commons.utils.workbench.extensions.ExtensionImplementationProviders;
-import org.talend.commons.utils.workbench.extensions.ExtensionPointImpl;
-import org.talend.commons.utils.workbench.extensions.ISimpleExtensionPoint;
-import org.talend.core.CorePlugin;
-import org.talend.core.context.Context;
-import org.talend.core.context.RepositoryContext;
-import org.talend.core.model.repository.ERepositoryType;
 import org.talend.repository.model.extensions.ExtensionPointFactory;
 
 /**

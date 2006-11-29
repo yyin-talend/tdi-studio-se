@@ -27,7 +27,7 @@ package org.talend.repository.model;
  * $Id$
  * 
  */
-public enum RepositoryStatus {
+public enum ERepositoryStatus {
     NEW(false, true),
     LOCK_BY_USER(true, false),
     LOCK_BY_OTHER(false, false),
@@ -40,7 +40,7 @@ public enum RepositoryStatus {
 
     private boolean potentiallyEditable;
 
-    RepositoryStatus(boolean editable, boolean potentiallyEditable) {
+    ERepositoryStatus(boolean editable, boolean potentiallyEditable) {
         this.editable = editable;
         this.potentiallyEditable = potentiallyEditable;
     }

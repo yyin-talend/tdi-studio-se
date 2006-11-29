@@ -44,7 +44,7 @@ import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
 import org.talend.designer.runprocess.ProcessorException;
 import org.talend.designer.runprocess.perl.PerlUtils;
 import org.talend.repository.model.ProxyRepositoryFactory;
-import org.talend.repository.model.RepositoryStatus;
+import org.talend.repository.model.ERepositoryStatus;
 import org.talend.scheduler.SchedulerPlugin;
 
 /**
@@ -159,7 +159,7 @@ public class TalendJobManager {
 
         for (Content<String, IRepositoryObject> object : processAbsoluteMembers.values()) {
             IRepositoryObject process = (IRepositoryObject) object.getContent();
-            if (factory.getStatus(process) != RepositoryStatus.DELETED) {
+            if (factory.getStatus(process) != ERepositoryStatus.DELETED) {
                 String path = object.getParent().getPath().toString();
                 String name;
                 if (path.equals("")) {

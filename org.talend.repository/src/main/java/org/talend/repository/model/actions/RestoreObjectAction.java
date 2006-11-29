@@ -24,7 +24,7 @@ package org.talend.repository.model.actions;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
-import org.talend.repository.model.RepositoryStatus;
+import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.RepositoryNode.ENodeType;
 
 /**
@@ -50,7 +50,7 @@ public class RestoreObjectAction {
         if (sourceNode.getType() == ENodeType.REPOSITORY_ELEMENT) {
             IRepositoryObject objectToRestore = sourceNode.getObject();
             ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
-            return factory.getStatus(objectToRestore) == RepositoryStatus.DELETED;
+            return factory.getStatus(objectToRestore) == ERepositoryStatus.DELETED;
         } else {
             return false;
         }

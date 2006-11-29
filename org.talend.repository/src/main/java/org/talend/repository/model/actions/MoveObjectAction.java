@@ -32,7 +32,7 @@ import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNodeUtilities;
-import org.talend.repository.model.RepositoryStatus;
+import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.RepositoryNode.ENodeType;
 import org.talend.repository.model.RepositoryNode.EProperties;
 
@@ -143,7 +143,7 @@ public class MoveObjectAction {
                 // Move in the recycle bin :
                 factory.deleteObjectLogical(objectToMove);
             } else {
-                if (factory.getStatus(objectToMove) == RepositoryStatus.DELETED) {
+                if (factory.getStatus(objectToMove) == ERepositoryStatus.DELETED) {
                     // Restore :
                     factory.restoreObject(objectToMove, targetPath);
                 } else {

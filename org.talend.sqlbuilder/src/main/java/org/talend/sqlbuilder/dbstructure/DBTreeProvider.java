@@ -51,7 +51,7 @@ import org.talend.core.model.repository.Folder;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
-import org.talend.repository.model.RepositoryStatus;
+import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.RepositoryNode.ENodeType;
 import org.talend.repository.model.RepositoryNode.EProperties;
 import org.talend.repository.ui.views.RepositoryContentProvider;
@@ -262,7 +262,7 @@ ITableColorProvider {
             connectionRepositoryObject.setDiffImage(IMAGES_REFRESH_ICON);
         }
 
-        if (factory.getStatus(repositoryObject) == RepositoryStatus.DELETED) {
+        if (factory.getStatus(repositoryObject) == ERepositoryStatus.DELETED) {
             // ignore recycle node
         } else {
             if (index == null) {

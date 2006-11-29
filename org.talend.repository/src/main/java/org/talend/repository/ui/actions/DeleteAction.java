@@ -37,7 +37,7 @@ import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNodeUtilities;
-import org.talend.repository.model.RepositoryStatus;
+import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.RepositoryNode.ENodeType;
 import org.talend.repository.model.RepositoryNode.EProperties;
 
@@ -79,8 +79,8 @@ public class DeleteAction extends AContextualAction {
                     if (node.getType() == ENodeType.REPOSITORY_ELEMENT) {
                         IRepositoryObject objToDelete = node.getObject();
 //                      TODO SML Temporary code
-                        if (factory.getStatus(objToDelete) != RepositoryStatus.LOCK_BY_OTHER) {
-                            if (factory.getStatus(objToDelete) == RepositoryStatus.DELETED) {
+                        if (factory.getStatus(objToDelete) != ERepositoryStatus.LOCK_BY_OTHER) {
+                            if (factory.getStatus(objToDelete) == ERepositoryStatus.DELETED) {
                                 if (confirm == null) {
                                     String title = Messages.getString("DeleteAction.dialog.title");
                                     String message = Messages.getString("DeleteAction.dialog.message1") + "\n"
@@ -150,7 +150,7 @@ public class DeleteAction extends AContextualAction {
                     ProxyRepositoryFactory repFactory = ProxyRepositoryFactory.getInstance();
                     
                     boolean isPotentiallyEditable = repFactory.isPotentiallyEditable(repObj);
-                    boolean idDeleted = repFactory.getStatus(repObj) == RepositoryStatus.DELETED;
+                    boolean idDeleted = repFactory.getStatus(repObj) == ERepositoryStatus.DELETED;
                     
                     if (idDeleted) {
                         ERepositoryObjectType nodeType = (ERepositoryObjectType) node.getProperties(EProperties.CONTENT_TYPE);

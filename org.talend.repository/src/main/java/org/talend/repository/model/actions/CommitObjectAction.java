@@ -26,7 +26,7 @@ import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
-import org.talend.repository.model.RepositoryStatus;
+import org.talend.repository.model.ERepositoryStatus;
 
 /**
  * DOC smallet class global comment. Detailled comment <br/>
@@ -55,7 +55,7 @@ public class CommitObjectAction {
                 return false;
             }
             ProxyRepositoryFactory proxyRepositoryFactory = ProxyRepositoryFactory.getInstance();
-            return (proxyRepositoryFactory.getStatus(repositoryObject) == RepositoryStatus.LOCK_BY_USER);
+            return (proxyRepositoryFactory.getStatus(repositoryObject) == ERepositoryStatus.LOCK_BY_USER);
         default:
             return false;
         }

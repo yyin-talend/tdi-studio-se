@@ -30,7 +30,7 @@ import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNodeUtilities;
-import org.talend.repository.model.RepositoryStatus;
+import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.RepositoryNode.ENodeType;
 import org.talend.repository.model.RepositoryNode.EProperties;
 
@@ -64,7 +64,7 @@ public class CopyObjectAction {
         ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
         try {
             objectToCopy = factory.getLastVersion(objectToCopy.getId());
-            if (objectToCopy == null || factory.getStatus(objectToCopy) == RepositoryStatus.DELETED) {
+            if (objectToCopy == null || factory.getStatus(objectToCopy) == ERepositoryStatus.DELETED) {
                 return false;
             }
         } catch (PersistenceException e) {

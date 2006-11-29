@@ -33,7 +33,6 @@ import org.talend.core.model.properties.Property;
 import org.talend.core.model.properties.Status;
 import org.talend.core.model.properties.User;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.model.repository.ERepositoryType;
 import org.talend.core.model.repository.Folder;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.model.temp.ECodeLanguage;
@@ -45,8 +44,6 @@ import org.talend.core.model.temp.ECodeLanguage;
  * 
  */
 public interface IRepositoryFactory {
-
-    public ERepositoryType getType();
 
     public String getName();
 
@@ -167,7 +164,7 @@ public interface IRepositoryFactory {
     // TODO SML This method should not be in this interface but only in the remote/synchronizer => later
     public void commit(Item obj);
 
-    public RepositoryStatus getStatus(Item item);
+    public ERepositoryStatus getStatus(Item item);
 
     List<Status> getTechnicalStatus() throws PersistenceException;
 
