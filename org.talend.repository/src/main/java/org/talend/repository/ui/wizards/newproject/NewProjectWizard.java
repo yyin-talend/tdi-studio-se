@@ -24,14 +24,15 @@ package org.talend.repository.ui.wizards.newproject;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.wizard.Wizard;
 import org.talend.commons.exception.PersistenceException;
+import org.talend.core.CorePlugin;
+import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.model.general.Project;
 import org.talend.core.model.temp.ECodeLanguage;
 import org.talend.core.ui.EImage;
 import org.talend.core.ui.ImageProvider;
 import org.talend.repository.i18n.Messages;
-import org.talend.repository.model.IRepositoryFactory;
-import org.talend.repository.model.RepositoryFactoryProvider;
+import org.talend.repository.model.ProxyRepositoryFactory;
 
 /**
  * Wizard for the creation of a new project. <br/>
@@ -41,10 +42,10 @@ import org.talend.repository.model.RepositoryFactoryProvider;
  */
 public class NewProjectWizard extends Wizard {
 
-    private RepositoryContext repositoryContext;
-
     /** Main page. */
     private NewProjectWizardPage mainPage;
+
+    private Project project;
 
     /**
      * Constructs a new NewProjectWizard.
@@ -54,9 +55,8 @@ public class NewProjectWizard extends Wizard {
      * @param password
      * @param port2
      */
-    public NewProjectWizard(RepositoryContext repositoryContext) {
+    public NewProjectWizard() {
         super();
-        this.repositoryContext = repositoryContext;
         setDefaultPageImageDescriptor(ImageProvider.getImageDesc(EImage.PROJECT_WIZ));
     }
 
@@ -65,7 +65,7 @@ public class NewProjectWizard extends Wizard {
      */
     @Override
     public void addPages() {
-        mainPage = new NewProjectWizardPage(repositoryContext.getUser());
+        mainPage = new NewProjectWizardPage();
         addPage(mainPage);
         setWindowTitle(Messages.getString("NewProjectWizard.windowTitle"));
     }
@@ -75,26 +75,27 @@ public class NewProjectWizard extends Wizard {
      */
     @Override
     public boolean performFinish() {
-        IRepositoryFactory repositoryFactory = RepositoryFactoryProvider.getInstance(repositoryContext);
+        ProxyRepositoryFactory repositoryFactory = ProxyRepositoryFactory.getInstance();
+        Context ctx = CorePlugin.getContext();
+        RepositoryContext repositoryContext = (RepositoryContext) ctx.getProperty(Context.REPOSITORY_CONTEXT_KEY);
         try {
-            Project project = repositoryFactory.createProject(mainPage.getName(), mainPage.getDescription(), ECodeLanguage
+            project = repositoryFactory.createProject(mainPage.getName(), mainPage.getDescription(), ECodeLanguage
                     .getCodeLanguage(mainPage.getLanguage()), repositoryContext.getUser());
-            repositoryContext.setProject(project);
+            return true;
         } catch (PersistenceException e) {
             MessageDialog.openError(getShell(), Messages.getString("NewProjectWizard.failureTitle"), Messages
                     .getString("NewProjectWizard.failureText")); //$NON-NLS-1$ //$NON-NLS-2$
+            return false;
         }
-
-        return repositoryContext.getProject() != null;
     }
 
     /**
-     * Getter for repositoryContext.
+     * Getter for project.
      * 
-     * @return the repositoryContext
+     * @return the project
      */
-    public RepositoryContext getRepositoryContext() {
-        return this.repositoryContext;
+    public Project getProject() {
+        return this.project;
     }
 
 }

@@ -42,12 +42,12 @@ public class RepositoryPreferenceStore implements IPersistentPreferenceStore {
 
     private String initialDocStatusList, docStatusList, defaultDocumentationStatusList;
 
-    private final IRepositoryFactory factory;
+    private final ProxyRepositoryFactory factory;
 
     /**
      * DOC tguiu RepositoryPreferenceStore constructor comment.
      */
-    public RepositoryPreferenceStore(IRepositoryFactory factory) {
+    public RepositoryPreferenceStore(ProxyRepositoryFactory factory) {
         super();
         this.factory = factory;
     }

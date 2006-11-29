@@ -28,6 +28,7 @@ import java.util.List;
 import org.eclipse.jface.util.Assert;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.widgets.Composite;
@@ -37,17 +38,12 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.views.properties.tabbed.AbstractPropertySection;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
-import org.talend.commons.exception.PersistenceException;
-import org.talend.core.CorePlugin;
-import org.talend.core.context.Context;
-import org.talend.core.context.RepositoryContext;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.properties.User;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
-import org.talend.repository.model.IRepositoryFactory;
 import org.talend.repository.model.LocalLockHelper;
-import org.talend.repository.model.RepositoryFactoryProvider;
+import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.LocalLockHelper.Listerner;
 
@@ -63,6 +59,8 @@ public abstract class AbstractSection extends AbstractPropertySection {
 
     private IRepositoryObject repositoryObject;
 
+    private RepositoryNode repositoryNode;
+
     private FocusListener listener = new FocusListener() {
 
         public void focusLost(FocusEvent e) {
@@ -70,6 +68,7 @@ public abstract class AbstractSection extends AbstractPropertySection {
         }
 
         public void focusGained(FocusEvent e) {
+            manageLock();
         }
     };
 
@@ -101,8 +100,6 @@ public abstract class AbstractSection extends AbstractPropertySection {
         }
     };
 
-    private RepositoryNode repositoryNode;
-
     /**
      * DOC tguiu AbstractSection constructor comment.
      */
@@ -121,7 +118,7 @@ public abstract class AbstractSection extends AbstractPropertySection {
     @Override
     public void createControls(Composite parent, TabbedPropertySheetPage aTabbedPropertySheetPage) {
         super.createControls(parent, aTabbedPropertySheetPage);
-        LocalLockHelper.addListener(lockListerner);
+        // LocalLockHelper.addListener(lockListerner);
     }
 
     protected IRepositoryObject getObject() {
@@ -185,35 +182,12 @@ public abstract class AbstractSection extends AbstractPropertySection {
      * DOC tguiu Comment method "manageLock".
      */
     protected void manageLock() {
-        boolean enableControl = false;
-//        try {
-
-            User locker = null; // getRepositoryFactory().getLocker(getObject());
-            if (locker != null) {
-                RepositoryContext repositoryContext = ((RepositoryContext) CorePlugin.getContext().getProperty(
-                        Context.REPOSITORY_CONTEXT_KEY));
-                enableControl = locker.equals(repositoryContext.getUser());
-            }
-//        } catch (PersistenceException ea) {
-//            ea.printStackTrace();
-//        }
+        boolean enableControl = ProxyRepositoryFactory.getInstance().getStatus(repositoryObject).isEditable();
         enableControls(enableControl);
     }
 
     protected final IWorkbenchPage getActivePage() {
         return PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-    }
-
-    /**
-     * DOC tguiu Comment method "lock".
-     */
-    protected void lock() {
-        try {
-            getRepositoryFactory().lock(getObject());
-        } catch (PersistenceException e1) {
-            e1.printStackTrace();
-        }
-        manageLock();
     }
 
     /**
@@ -227,9 +201,9 @@ public abstract class AbstractSection extends AbstractPropertySection {
         }
     }
 
-    private static void enableControls(boolean locked) {
+    private static void enableControls(boolean enable) {
         for (AbstractSection section : REGISTERED_SECTIONS) {
-            section.enableControl(locked);
+            section.enableControl(enable);
         }
     }
 
@@ -240,7 +214,7 @@ public abstract class AbstractSection extends AbstractPropertySection {
      */
     protected abstract void showControl(boolean visible);
 
-    protected abstract void enableControl(boolean locked);
+    protected abstract void enableControl(boolean enable);
 
     protected abstract void beforeSave();
 
@@ -256,8 +230,8 @@ public abstract class AbstractSection extends AbstractPropertySection {
      * 
      * @return
      */
-    protected IRepositoryFactory getRepositoryFactory() {
-        return RepositoryFactoryProvider.getInstance();
+    protected ProxyRepositoryFactory getRepositoryFactory() {
+        return ProxyRepositoryFactory.getInstance();
     }
 
     /**

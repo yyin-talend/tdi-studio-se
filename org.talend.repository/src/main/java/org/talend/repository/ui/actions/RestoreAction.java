@@ -31,8 +31,7 @@ import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.ui.EImage;
 import org.talend.core.ui.ImageProvider;
 import org.talend.repository.i18n.Messages;
-import org.talend.repository.model.IRepositoryFactory;
-import org.talend.repository.model.RepositoryFactoryProvider;
+import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNode.EProperties;
 import org.talend.repository.model.actions.RestoreObjectAction;
@@ -62,7 +61,7 @@ public class RestoreAction extends AContextualAction {
                     RepositoryNode node = (RepositoryNode) obj;
                     ERepositoryObjectType nodeType = (ERepositoryObjectType) (node).getProperties(EProperties.CONTENT_TYPE);
                     if (ERepositoryObjectType.METADATA_CON_TABLE.equals(nodeType)) {
-                        IRepositoryFactory factory = RepositoryFactoryProvider.getInstance();
+                        ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
                         ConnectionItem item = (ConnectionItem) node.getObject().getProperty().getItem();
                         MetadataTable metadataTable = ((MetadataTableRepositoryObject) node.getObject()).getTable();
                         TableHelper.setDeleted(metadataTable, false);

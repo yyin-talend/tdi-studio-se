@@ -26,14 +26,12 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
-import org.talend.commons.exception.PersistenceException;
 import org.talend.core.model.properties.XmlFileConnectionItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.ui.EImage;
 import org.talend.core.ui.ImageProvider;
 import org.talend.repository.i18n.Messages;
-import org.talend.repository.model.IRepositoryFactory;
-import org.talend.repository.model.RepositoryFactoryProvider;
+import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNode.EProperties;
 import org.talend.repository.ui.wizards.metadata.connection.files.xml.XmlFileWizard;
@@ -91,6 +89,7 @@ public class CreateFileXmlAction extends AbstractCreateAction {
         if (!ERepositoryObjectType.METADATA_FILE_XML.equals(nodeType)) {
             return;
         }
+
         switch (node.getType()) {
         case SIMPLE_FOLDER:
         case SYSTEM_FOLDER:
@@ -99,17 +98,12 @@ public class CreateFileXmlAction extends AbstractCreateAction {
             creation = true;
             break;
         case REPOSITORY_ELEMENT:
-            IRepositoryFactory factory = RepositoryFactoryProvider.getInstance();
-            try {
-                if (factory.isDeleted(node.getObject())) {
-                    this.setText(OPEN_LABEL);
-                } else {
-                    this.setText(EDIT_LABEL);
-                    collectSiblingNames(node);
-                }
-            } catch (PersistenceException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+            ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+            if (factory.isPotentiallyEditable(node.getObject())) {
+                this.setText(EDIT_LABEL);
+                collectSiblingNames(node);
+            } else {
+                this.setText(OPEN_LABEL);
             }
             collectSiblingNames(node);
             creation = false;

@@ -32,7 +32,7 @@ import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.PropertiesPackage;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.properties.Status;
-import org.talend.repository.model.IRepositoryFactory;
+import org.talend.repository.model.ProxyRepositoryFactory;
 
 /**
  * DOC smallet class global comment. Detailled comment <br/>
@@ -46,9 +46,9 @@ public class StatusHelper {
 
     private Map<String, String> label2code;
 
-    private IRepositoryFactory repositoryFactory;
+    private ProxyRepositoryFactory repositoryFactory;
 
-    public StatusHelper(IRepositoryFactory repositoryFactory) {
+    public StatusHelper(ProxyRepositoryFactory repositoryFactory) {
         super();
         this.repositoryFactory = repositoryFactory;
     }

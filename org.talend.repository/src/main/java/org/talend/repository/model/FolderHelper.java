@@ -34,6 +34,7 @@ import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.talend.core.model.properties.FolderItem;
 import org.talend.core.model.properties.FolderType;
 import org.talend.core.model.properties.Item;
+import org.talend.core.model.properties.ItemState;
 import org.talend.core.model.properties.Project;
 import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.Property;
@@ -63,9 +64,9 @@ public abstract class FolderHelper {
         doCreateFolder(path, FolderType.SYSTEM_FOLDER_LITERAL);
     }
 
-    public String createFolder(String path) {
+    public FolderItem createFolder(String path) {
         createFolder(new Path(path));
-        return getFolder(path).getProperty().getId();
+        return getFolder(path);
     }
 
     public void createFolder(IPath path) {
@@ -206,4 +207,14 @@ public abstract class FolderHelper {
         }
         return null;
     }
+    
+    
+    public void createItemState(FolderItem folder) {
+        ItemState itemState = PropertiesFactory.eINSTANCE.createItemState();
+        folder.setState(itemState);
+        doCreateItemState(folder);
+    }
+
+    public abstract void doCreateItemState(FolderItem folder);
+    
 }

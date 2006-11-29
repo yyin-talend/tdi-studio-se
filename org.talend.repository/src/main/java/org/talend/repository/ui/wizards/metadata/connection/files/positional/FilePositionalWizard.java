@@ -45,8 +45,7 @@ import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.ui.EImage;
 import org.talend.core.ui.ImageProvider;
 import org.talend.repository.i18n.Messages;
-import org.talend.repository.model.IRepositoryFactory;
-import org.talend.repository.model.RepositoryFactoryProvider;
+import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNodeUtilities;
 import org.talend.repository.ui.wizards.RepositoryWizard;
@@ -108,7 +107,7 @@ public class FilePositionalWizard extends RepositoryWizard implements INewWizard
         case SYSTEM_FOLDER:
             connection = ConnectionFactory.eINSTANCE.createPositionalFileConnection();
             MetadataTable metadataTable = ConnectionFactory.eINSTANCE.createMetadataTable();
-            IRepositoryFactory factory = RepositoryFactoryProvider.getInstance();
+            ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
             metadataTable.setId(factory.getNextId());
             connection.getTables().add(metadataTable);
             connectionProperty = PropertiesFactory.eINSTANCE.createProperty();
@@ -208,8 +207,7 @@ public class FilePositionalWizard extends RepositoryWizard implements INewWizard
         }
 
         if (formIsPerformed) {
-            closeLockStrategy();
-            IRepositoryFactory factory = RepositoryFactoryProvider.getInstance();
+            ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
             try {
                 if (creation) {
                     String nextId = factory.getNextId();
@@ -217,6 +215,7 @@ public class FilePositionalWizard extends RepositoryWizard implements INewWizard
                     factory.create(connectionItem, pathToSave);
                 } else {
                     factory.save(connectionItem);
+                    closeLockStrategy();
                 }
             } catch (PersistenceException e) {
                 String detailError = e.toString();

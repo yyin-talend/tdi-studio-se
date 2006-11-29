@@ -39,13 +39,11 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.core.model.general.Project;
-import org.talend.core.model.properties.User;
 import org.talend.core.model.temp.ECodeLanguage;
 import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.i18n.Messages;
-import org.talend.repository.model.IRepositoryFactory;
+import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryConstants;
-import org.talend.repository.model.RepositoryFactoryProvider;
 
 /**
  * Page for new project details. <br/>
@@ -73,8 +71,6 @@ public class NewProjectWizardPage extends WizardPage {
 
     private IStatus languageStatus;
 
-    private User author;
-
     /**
      * Constructs a new NewProjectWizardPage.
      * 
@@ -82,13 +78,11 @@ public class NewProjectWizardPage extends WizardPage {
      * @param password
      * @param author
      */
-    public NewProjectWizardPage(User author) {
+    public NewProjectWizardPage() {
         super("WizardPage"); //$NON-NLS-1$
 
         setTitle(Messages.getString("NewProjectWizardPage.title")); //$NON-NLS-1$
         setDescription(Messages.getString("NewProjectWizardPage.description")); //$NON-NLS-1$
-
-        this.author = author;
 
         nameStatus = createOkStatus();
         descriptionStatus = createOkStatus();
@@ -146,7 +140,7 @@ public class NewProjectWizardPage extends WizardPage {
     Project[] projects;
 
     private boolean isProjectNameAlreadyUsed(String newProjectName) {
-        IRepositoryFactory repositoryFactory = RepositoryFactoryProvider.getInstance(((NewProjectWizard) getWizard()).getRepositoryContext());
+        ProxyRepositoryFactory repositoryFactory = ProxyRepositoryFactory.getInstance();
         if (projects == null) {
             try {
                 projects = repositoryFactory.readProject();
@@ -268,8 +262,7 @@ public class NewProjectWizardPage extends WizardPage {
     }
 
     public String getLanguage() {
-        return languageCombo.getSelectionIndex() != -1 ? languageCombo.getItem(languageCombo.getSelectionIndex())
-                : null;
+        return languageCombo.getSelectionIndex() != -1 ? languageCombo.getItem(languageCombo.getSelectionIndex()) : null;
     }
 
     private static IStatus createOkStatus() {

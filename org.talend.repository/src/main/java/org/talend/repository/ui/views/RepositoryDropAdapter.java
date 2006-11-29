@@ -26,7 +26,9 @@ import org.eclipse.jface.viewers.StructuredViewer;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.TransferData;
 import org.eclipse.ui.part.PluginDropAdapter;
+import org.talend.commons.exception.BusinessException;
 import org.talend.commons.exception.ExceptionHandler;
+import org.talend.commons.exception.MessageBoxExceptionHandler;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.actions.CopyObjectAction;
 import org.talend.repository.model.actions.MoveObjectAction;
@@ -67,6 +69,8 @@ public class RepositoryDropAdapter extends PluginDropAdapter {
                 default:
                     // Nothing to do
                 }
+            } catch (BusinessException e) {
+                MessageBoxExceptionHandler.process(e);
             } catch (Exception e) {
                 ExceptionHandler.process(e);
             }

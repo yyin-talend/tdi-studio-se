@@ -27,10 +27,16 @@ import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.swt.widgets.Shell;
+import org.talend.commons.exception.BusinessException;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.utils.data.container.RootContainer;
+import org.talend.core.CorePlugin;
+import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.model.general.Project;
+import org.talend.core.model.metadata.builder.connection.TableHelper;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.Property;
@@ -41,6 +47,7 @@ import org.talend.core.model.repository.ERepositoryType;
 import org.talend.core.model.repository.Folder;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.model.temp.ECodeLanguage;
+import org.talend.repository.ui.views.RepositoryContentProvider.MetadataTableRepositoryObject;
 
 /**
  * Repository factory use by client. Based on implementation provide by extension point system. This class contains all
@@ -49,21 +56,49 @@ import org.talend.core.model.temp.ECodeLanguage;
  * $Id$
  * 
  */
-public class ProxyRepositoryFactory implements IRepositoryFactory {
+public class ProxyRepositoryFactory {
 
     private static Logger log = Logger.getLogger(ProxyRepositoryFactory.class);
 
     private IRepositoryFactory repositoryFactoryFromProvider;
 
-    private RepositoryContext repositoryContext;
+    private static ProxyRepositoryFactory singleton = null;
 
-    public ProxyRepositoryFactory(IRepositoryFactory repositoryFactoryFromProvider) {
-        this.repositoryFactoryFromProvider = repositoryFactoryFromProvider;
+    /**
+     * DOC smallet ProxyRepositoryFactory constructor comment.
+     */
+    public ProxyRepositoryFactory() {
+        // TODO Auto-generated constructor stub
     }
 
-    public void setRepositoryContext(RepositoryContext repositoryContext) {
-        this.repositoryFactoryFromProvider.setRepositoryContext(repositoryContext);
-        this.repositoryContext = repositoryContext;
+    public static ProxyRepositoryFactory getInstance() {
+        if (singleton == null) {
+            singleton = new ProxyRepositoryFactory();
+        }
+        return singleton;
+    }
+
+    public RepositoryContext getRepositoryContext() {
+        Context ctx = CorePlugin.getContext();
+        return (RepositoryContext) ctx.getProperty(Context.REPOSITORY_CONTEXT_KEY);
+    }
+
+    /**
+     * Getter for repositoryFactoryFromProvider.
+     * 
+     * @return the repositoryFactoryFromProvider
+     */
+    public IRepositoryFactory getRepositoryFactoryFromProvider() {
+        return this.repositoryFactoryFromProvider;
+    }
+
+    /**
+     * Sets the repositoryFactoryFromProvider.
+     * 
+     * @param repositoryFactoryFromProvider the repositoryFactoryFromProvider to set
+     */
+    public void setRepositoryFactoryFromProvider(IRepositoryFactory repositoryFactoryFromProvider) {
+        this.repositoryFactoryFromProvider = repositoryFactoryFromProvider;
     }
 
     private void checkFileName(String fileName, String pattern) {
@@ -219,7 +254,7 @@ public class ProxyRepositoryFactory implements IRepositoryFactory {
      */
     public String getNextId() {
         String nextId = this.repositoryFactoryFromProvider.getNextId();
-        log.trace("New ID generated on project [" + repositoryContext.getProject() + "] = " + nextId);
+        log.trace("New ID generated on project [" + getRepositoryContext().getProject() + "] = " + nextId);
         return nextId;
     }
 
@@ -277,35 +312,19 @@ public class ProxyRepositoryFactory implements IRepositoryFactory {
      */
     public void deleteObjectLogical(IRepositoryObject objToDelete) throws PersistenceException {
         this.repositoryFactoryFromProvider.deleteObjectLogical(objToDelete);
-        log.debug("Logical deletion [" + objToDelete + "] by " + repositoryContext.getUser() + ".");
+        log.debug("Logical deletion [" + objToDelete + "] by " + getRepositoryContext().getUser() + ".");
     }
 
     public void deleteObjectPhysical(IRepositoryObject objToDelete) throws PersistenceException {
         this.repositoryFactoryFromProvider.deleteObjectPhysical(objToDelete);
-        log.info("Physical deletion [" + objToDelete + "] by " + repositoryContext.getUser() + ".");
+        log.info("Physical deletion [" + objToDelete + "] by " + getRepositoryContext().getUser() + ".");
     }
 
     public void restoreObject(IRepositoryObject objToRestore, IPath path) throws PersistenceException {
         this.repositoryFactoryFromProvider.restoreObject(objToRestore, path);
-        log.debug("Restoration [" + objToRestore + "] by " + repositoryContext.getUser() + " to \"/" + path + "\".");
+        log.debug("Restoration [" + objToRestore + "] by " + getRepositoryContext().getUser() + " to \"/" + path + "\".");
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.repository.model.IRepositoryFactory#isDeleted(org.talend.core.model.general.Project,
-     * org.talend.core.model.repository.IRepositoryObject)
-     */
-    public boolean isDeleted(IRepositoryObject obj) throws PersistenceException {
-        return this.repositoryFactoryFromProvider.isDeleted(obj);
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.repository.model.IRepositoryFactory#getOldPath(org.talend.core.model.general.Project,
-     * org.talend.core.model.repository.IRepositoryObject)
-     */
     public String getOldPath(IRepositoryObject obj) throws PersistenceException {
         return this.repositoryFactoryFromProvider.getOldPath(obj);
     }
@@ -316,10 +335,19 @@ public class ProxyRepositoryFactory implements IRepositoryFactory {
      * @see org.talend.repository.model.IRepositoryFactory#moveObject(org.talend.core.model.general.Project,
      * org.talend.core.model.repository.IRepositoryObject)
      */
-    public void moveObject(IRepositoryObject objToMove, IPath path) throws PersistenceException {
+    public void moveObject(IRepositoryObject objToMove, IPath path) throws PersistenceException, BusinessException {
+        checkDisponibilite(objToMove);
         checkFileNameAndPath(objToMove.getProperty().getItem(), RepositoryConstants.FILE_PATTERN, path, false);
         this.repositoryFactoryFromProvider.moveObject(objToMove, path);
         log.debug("Move [" + objToMove + "] to \"" + path + "\".");
+    }
+
+    // TODO SML Renommer et finir la méthode et la plugger dans toutes les méthodes
+    private void checkDisponibilite(IRepositoryObject objToMove) throws BusinessException {
+        if (!isEditableAndLockIfPossible(objToMove)) {
+            MessageDialog.openError(new Shell(), "No way", "dégage");
+            throw new BusinessException("Item non modifiable par vous !!");
+        }
     }
 
     /**
@@ -361,60 +389,20 @@ public class ProxyRepositoryFactory implements IRepositoryFactory {
     public RootContainer<String, IRepositoryObject> getMetadataFileLdif() throws PersistenceException {
         return this.repositoryFactoryFromProvider.getMetadataFileLdif();
     }
-    
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.repository.model.IRepositoryFactory#getLockDate(org.talend.core.model.general.Project,
-     * org.talend.core.model.repository.IRepositoryObject)
-     */
-    public Date getLockDate(IRepositoryObject obj) throws PersistenceException {
-        return this.repositoryFactoryFromProvider.getLockDate(obj);
-    }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.repository.model.IRepositoryFactory#getLocker(org.talend.core.model.general.Project,
-     * org.talend.core.model.repository.IRepositoryObject)
-     */
-    public User getLocker(IRepositoryObject obj) throws PersistenceException {
-        return this.repositoryFactoryFromProvider.getLocker(obj);
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.repository.model.IRepositoryFactory#isLocked(org.talend.core.model.general.Project,
-     * org.talend.core.model.repository.IRepositoryObject)
-     */
-    public boolean isLocked(IRepositoryObject obj) throws PersistenceException {
-        return this.repositoryFactoryFromProvider.isLocked(obj);
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.repository.model.IRepositoryFactory#lock(org.talend.core.model.general.Project,
-     * org.talend.core.model.repository.IRepositoryObject)
-     */
     public void lock(IRepositoryObject obj) throws PersistenceException {
-        if (!isLocked(obj)) {
-            this.repositoryFactoryFromProvider.lock(obj);
-            log.debug("Lock [" + obj + "] by \"" + repositoryContext.getUser() + "\".");
-        }
+        lock(getItem(obj));
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.repository.model.IRepositoryFactory#unlock(org.talend.core.model.general.Project,
-     * org.talend.core.model.repository.IRepositoryObject)
+    /**
+     * @param item
+     * @throws PersistenceException
+     * @see org.talend.repository.model.IRepositoryFactory#lock(org.talend.core.model.properties.Item)
      */
-    public void unlock(IRepositoryObject obj) throws PersistenceException {
-        if (isLocked(obj)) {
-            this.repositoryFactoryFromProvider.unlock(obj);
-            log.debug("Unlock [" + obj + "] by \"" + repositoryContext.getUser() + "\".");
+    public void lock(Item item) throws PersistenceException {
+        if (getStatus(item).isPotentiallyEditable()) {
+            this.repositoryFactoryFromProvider.lock(item);
+            log.debug("Lock [" + item + "] by \"" + getRepositoryContext().getUser() + "\".");
         }
     }
 
@@ -513,28 +501,18 @@ public class ProxyRepositoryFactory implements IRepositoryFactory {
         return this.repositoryFactoryFromProvider.copy(item, path);
     }
 
-    public boolean isDeleted(Item item) throws PersistenceException {
-        return this.repositoryFactoryFromProvider.isDeleted(item);
-    }
-
-    public boolean isLocked(Item item) throws PersistenceException {
-        return this.repositoryFactoryFromProvider.isLocked(item);
-    }
-
     public void reload(Property property) {
         this.repositoryFactoryFromProvider.reload(property);
     }
 
-    /**
-     * @param item
-     * @throws PersistenceException
-     * @see org.talend.repository.model.IRepositoryFactory#lock(org.talend.core.model.properties.Item)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.repository.model.IRepositoryFactory#unlock(org.talend.core.model.general.Project,
+     * org.talend.core.model.repository.IRepositoryObject)
      */
-    public void lock(Item item) throws PersistenceException {
-        if (!isLocked(item)) {
-            this.repositoryFactoryFromProvider.lock(item);
-            log.debug("Lock [" + item + "] by \"" + repositoryContext.getUser() + "\".");
-        }
+    public void unlock(IRepositoryObject obj) throws PersistenceException {
+        unlock(getItem(obj));
     }
 
     /**
@@ -543,21 +521,109 @@ public class ProxyRepositoryFactory implements IRepositoryFactory {
      * @see org.talend.repository.model.IRepositoryFactory#unlock(org.talend.core.model.properties.Item)
      */
     public void unlock(Item obj) throws PersistenceException {
-        if (isLocked(obj)) {
-            this.repositoryFactoryFromProvider.unlock(obj);
-            log.debug("Unlock [" + obj + "] by \"" + repositoryContext.getUser() + "\".");
+        if (getStatus(obj) == RepositoryStatus.LOCK_BY_USER) {
+            Date commitDate = obj.getState().getCommitDate();
+            Date modificationDate = obj.getProperty().getModificationDate();
+            if (modificationDate == null || commitDate == null || modificationDate.before(commitDate)) {
+                this.repositoryFactoryFromProvider.unlock(obj);
+                log.debug("Unlock [" + obj + "] by \"" + getRepositoryContext().getUser() + "\".");
+            }
         }
     }
 
-    public boolean findUser(Project project, RepositoryContext repositoryContext) throws PersistenceException {
-        return this.repositoryFactoryFromProvider.findUser(project, repositoryContext);
+    public void commit(Item obj) throws PersistenceException {
+        if (getStatus(obj) == RepositoryStatus.LOCK_BY_USER) {
+            this.repositoryFactoryFromProvider.commit(obj);
+            this.repositoryFactoryFromProvider.unlock(obj);
+            log.debug("Unlock [" + obj + "] by \"" + getRepositoryContext().getUser() + "\".");
+        }
     }
 
-    public void createUser(Project project, RepositoryContext repositoryContext) throws PersistenceException {
-        this.repositoryFactoryFromProvider.createUser(project, repositoryContext);
+    public boolean findUser(Project project) throws PersistenceException {
+        return this.repositoryFactoryFromProvider.findUser(project);
+    }
+
+    public void createUser(Project project) throws PersistenceException {
+        this.repositoryFactoryFromProvider.createUser(project);
     }
 
     public void initialize() {
         this.repositoryFactoryFromProvider.initialize();
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.repository.model.IRepositoryFactory#getStatus(org.talend.core.model.properties.Item)
+     */
+    public RepositoryStatus getStatus(IRepositoryObject obj) {
+        if (obj instanceof MetadataTableRepositoryObject) {
+            MetadataTableRepositoryObject metadataTableRepositoryObject = (MetadataTableRepositoryObject) obj;
+            if (TableHelper.isDeleted(metadataTableRepositoryObject.getTable())) {
+                return RepositoryStatus.DELETED;
+            }
+        }
+        return getStatus(getItem(obj));
+    }
+
+    public RepositoryStatus getStatus(Item item) {
+        return this.repositoryFactoryFromProvider.getStatus(item);
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.repository.model.IRepositoryFactory#getStatusAndLockIfPossible(org.talend.core.model.properties.Item)
+     */
+    public boolean isEditableAndLockIfPossible(Item item) {
+        RepositoryStatus status = getStatus(item);
+        if (status.isPotentiallyEditable()) {
+            try {
+                lock(item);
+            } catch (PersistenceException e) {
+                e.printStackTrace();
+            }
+            status = getStatus(item);
+        }
+
+        return status.isEditable();
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.repository.model.IRepositoryFactory#isEditable(org.talend.core.model.repository.IRepositoryObject)
+     */
+    public boolean isEditableAndLockIfPossible(IRepositoryObject obj) {
+        return isEditableAndLockIfPossible(getItem(obj));
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.repository.model.IRepositoryFactory#isPotentiallyEditable(org.talend.core.model.properties.Item)
+     */
+    public boolean isPotentiallyEditable(Item item) {
+        RepositoryStatus status = getStatus(item);
+        return status.isPotentiallyEditable();
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.repository.model.IRepositoryFactory#isPotentiallyEditable(org.talend.core.model.repository.IRepositoryObject)
+     */
+    public boolean isPotentiallyEditable(IRepositoryObject obj) {
+        return isPotentiallyEditable(getItem(obj));
+    }
+
+    private Item getItem(IRepositoryObject obj) {
+        Item item;
+        if (obj instanceof MetadataTableRepositoryObject) {
+            item = ((MetadataTableRepositoryObject) obj).getProperty().getItem();
+        } else {
+            item = obj.getProperty().getItem();
+        }
+        return item;
     }
 }

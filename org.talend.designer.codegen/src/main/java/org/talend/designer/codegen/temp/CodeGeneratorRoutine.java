@@ -32,8 +32,7 @@ import org.talend.core.model.general.Project;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.designer.codegen.CodeGeneratorActivator;
-import org.talend.repository.model.IRepositoryFactory;
-import org.talend.repository.model.RepositoryFactoryProvider;
+import org.talend.repository.model.ProxyRepositoryFactory;
 
 /**
  * Build RoutineName for PerlHeader.
@@ -57,7 +56,7 @@ public final class CodeGeneratorRoutine {
                 Context.REPOSITORY_CONTEXT_KEY);
         Project project = repositoryContext.getProject();
 
-        IRepositoryFactory repositoryFactory = RepositoryFactoryProvider.getInstance();
+        ProxyRepositoryFactory repositoryFactory = ProxyRepositoryFactory.getInstance();
         try {
             List<IRepositoryObject> routines = repositoryFactory.getAll(ERepositoryObjectType.ROUTINES);
             for (IRepositoryObject routine : routines) {

@@ -50,9 +50,6 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
-import org.eclipse.ui.IViewPart;
-import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.PlatformUI;
 import org.talend.commons.ui.swt.dialogs.ErrorDialogWidthDetailArea;
 import org.talend.commons.ui.swt.formtools.Form;
 import org.talend.commons.ui.swt.formtools.LabelledCombo;
@@ -76,12 +73,10 @@ import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.ui.metadata.editor.MetadataTableEditorView2;
 import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.i18n.Messages;
-import org.talend.repository.model.IRepositoryFactory;
+import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryConstants;
-import org.talend.repository.model.RepositoryFactoryProvider;
 import org.talend.repository.ui.swt.utils.AbstractForm;
 import org.talend.repository.ui.utils.ManagerConnection;
-import org.talend.repository.ui.views.RepositoryView;
 
 /**
  * @author ocarbone
@@ -429,7 +424,7 @@ public class DatabaseTableForm extends AbstractForm {
      */
     protected void addMetadataTable() {
         // Create a new metadata and Add it on the connection
-        IRepositoryFactory factory = RepositoryFactoryProvider.getInstance();
+        ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
         metadataTable = ConnectionFactory.eINSTANCE.createMetadataTable();
         getConnection().getTables().add(metadataTable);
         metadataTable.setId(factory.getNextId());

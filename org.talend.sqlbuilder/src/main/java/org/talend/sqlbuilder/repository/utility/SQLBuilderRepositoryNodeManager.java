@@ -52,8 +52,7 @@ import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.model.repository.RepositoryObject;
-import org.talend.repository.model.IRepositoryFactory;
-import org.talend.repository.model.RepositoryFactoryProvider;
+import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNode.ENodeType;
 import org.talend.repository.model.RepositoryNode.EProperties;
@@ -834,7 +833,7 @@ public class SQLBuilderRepositoryNodeManager {
 	 */
 	public void saveMetaData(DatabaseConnectionItem item) {
 
-		IRepositoryFactory factory = RepositoryFactoryProvider.getInstance();
+        ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
 		try {
 			factory.save(item);
 		} catch (PersistenceException e) {

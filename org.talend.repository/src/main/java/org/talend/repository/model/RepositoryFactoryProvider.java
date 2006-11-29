@@ -21,15 +21,21 @@
 // ============================================================================
 package org.talend.repository.model;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IConfigurationElement;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.IllegalPluginConfigurationException;
+import org.talend.commons.ui.swt.actions.ITreeContextualAction;
 import org.talend.commons.utils.workbench.extensions.ExtensionImplementationProviders;
+import org.talend.commons.utils.workbench.extensions.ExtensionPointImpl;
+import org.talend.commons.utils.workbench.extensions.ISimpleExtensionPoint;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
@@ -47,8 +53,6 @@ import org.talend.repository.model.extensions.ExtensionPointFactory;
  */
 public class RepositoryFactoryProvider {
 
-    private static Map<RepositoryContext, IRepositoryFactory> listSingleton = new HashMap<RepositoryContext, IRepositoryFactory>();
-
     private static IRepositoryFactory localSingleton = null;
 
     private static IRepositoryFactory remoteSingleton = null;
@@ -57,101 +61,76 @@ public class RepositoryFactoryProvider {
 
     private static boolean init = false;
 
-    /**
-     * Returns a IRepositoryFactory based on the default context.
-     */
-    public static IRepositoryFactory getInstance() {
-        RepositoryContext repositoryContext = (RepositoryContext) CorePlugin.getContext().getProperty(
-                Context.REPOSITORY_CONTEXT_KEY);
-        init(repositoryContext);
-        return getInstance(repositoryContext);
-    }
+    // /**
+    // * Returns a IRepositoryFactory based on the default context.
+    // */
+    // public static IRepositoryFactory getInstance() {
+    // RepositoryContext repositoryContext = (RepositoryContext) CorePlugin.getContext().getProperty(
+    // Context.REPOSITORY_CONTEXT_KEY);
+    // init(repositoryContext);
+    // return getInstance(repositoryContext);
+    // }
 
-    public static IRepositoryFactory getInstance(RepositoryContext repositoryContext) {
-        init(repositoryContext);
-        IRepositoryFactory toReturn = null;
-        if (repositoryContext.getType() == ERepositoryType.LOCAL) {
-            toReturn = localSingleton;
-        } else if (repositoryContext.getType() == ERepositoryType.REMOTE) {
-            toReturn = remoteSingleton;
-        } else if (repositoryContext.getType() == ERepositoryType.DATABASE) {
-            toReturn = databaseSingleton;
-        } 
-        toReturn.setRepositoryContext(repositoryContext);
-        return toReturn;
-    }
+    // public static IRepositoryFactory getInstance(RepositoryContext repositoryContext) {
+    // init(repositoryContext);
+    // IRepositoryFactory toReturn = null;
+    // if (repositoryContext.getType() == ERepositoryType.LOCAL) {
+    // toReturn = localSingleton;
+    // } else if (repositoryContext.getType() == ERepositoryType.REMOTE) {
+    // toReturn = remoteSingleton;
+    // } else if (repositoryContext.getType() == ERepositoryType.DATABASE) {
+    // toReturn = databaseSingleton;
+    // }
+    // toReturn.setRepositoryContext(repositoryContext);
+    // return toReturn;
+    // }
 
-    private static void init(RepositoryContext repositoryContext) {
-        if (!init) {
-            List<IRepositoryFactory> factoriesFromProvider = ExtensionImplementationProviders
-                    .getInstance(ExtensionPointFactory.REPOSITORY_PROVIDER);
+    // private static void init(RepositoryContext repositoryContext) {
+    // if (!init) {
+    // List<IRepositoryFactory> factoriesFromProvider = ExtensionImplementationProviders
+    // .getInstance(ExtensionPointFactory.REPOSITORY_PROVIDER);
+    //
+    // for (IRepositoryFactory repositoryFactory : factoriesFromProvider) {
+    // ERepositoryType type = repositoryFactory.getType();
+    // switch (type) {
+    // case LOCAL:
+    // localSingleton = new ProxyRepositoryFactory(repositoryFactory);
+    // localSingleton.setRepositoryContext(repositoryContext);
+    // localSingleton.initialize();
+    // init = true;
+    // break;
+    // case REMOTE:
+    // remoteSingleton = new ProxyRepositoryFactory(repositoryFactory);
+    // remoteSingleton.setRepositoryContext(repositoryContext);
+    // remoteSingleton.initialize();
+    // break;
+    // case DATABASE:
+    // databaseSingleton = new ProxyRepositoryFactory(repositoryFactory);
+    // databaseSingleton.setRepositoryContext(repositoryContext);
+    // databaseSingleton.initialize();
+    // break;
+    // }
+    // }
+    // }
+    // }
 
-            for (IRepositoryFactory repositoryFactory : factoriesFromProvider) {
-                ERepositoryType type = repositoryFactory.getType();
-                switch (type) {
-                case LOCAL:
-                    localSingleton = new ProxyRepositoryFactory(repositoryFactory);
-                    localSingleton.setRepositoryContext(repositoryContext);
-                    localSingleton.initialize();
-                    init = true;
-                    break;
-                case REMOTE:
-                    remoteSingleton = new ProxyRepositoryFactory(repositoryFactory);
-                    remoteSingleton.setRepositoryContext(repositoryContext);
-                    remoteSingleton.initialize();
-                    break;
-                case DATABASE:
-                    databaseSingleton = new ProxyRepositoryFactory(repositoryFactory);
-                    databaseSingleton.setRepositoryContext(repositoryContext);
-                    databaseSingleton.initialize();
-                    break;
-                }
-            }
-        }
-    }
+    public static List<IRepositoryFactory> getAvailableRepositories() {
+        List<IRepositoryFactory> toReturn = new ArrayList<IRepositoryFactory>();
+        List<IConfigurationElement> extension = ExtensionImplementationProviders
+                .getInstanceV2(ExtensionPointFactory.REPOSITORY_PROVIDER);
 
-    /**
-     * Returns a IRepositoryFactory based on the specified context.
-     */
-    public static IRepositoryFactory oldgetInstance(RepositoryContext repositoryContext) {
-        IRepositoryFactory toReturn = listSingleton.get(repositoryContext);
-
-        if (toReturn == null) {
+        for (IConfigurationElement current : extension) {
             try {
-                List<IRepositoryFactory> factoriesFromProvider = ExtensionImplementationProviders
-                        .getInstance(ExtensionPointFactory.REPOSITORY_PROVIDER);
-
-                // if (repositoryContext.getType() != null) {
-                for (IRepositoryFactory repositoryFactory : factoriesFromProvider) {
-                    ERepositoryType type = repositoryFactory.getType();
-                    ERepositoryType type2 = repositoryContext.getType();
-                    if (type == type2) {
-                        toReturn = new ProxyRepositoryFactory(repositoryFactory);
-                        toReturn.setRepositoryContext(repositoryContext);
-                        toReturn.initialize();
-                        listSingleton.put(repositoryContext, toReturn);
-                        break;
-                    }
-                }
-                // } else {
-                // toReturn = new RepositoryFactoryImpl(factoriesFromProvider.get(0));
-                // }
-            } catch (IllegalPluginConfigurationException e) {
-                ExceptionHandler.process(e);
+                IRepositoryFactory currentAction = (IRepositoryFactory) current.createExecutableExtension("class");
+                String attribute = current.getAttribute("name");
+                currentAction.setName(attribute);
+                currentAction.setAuthenticationNeeded(new Boolean(current.getAttribute("authenticationNeeded")));
+                toReturn.add(currentAction);
+            } catch (CoreException e) {
+                e.printStackTrace();
             }
         }
+
         return toReturn;
-    }
-
-    public static String[] getAvailableRepositories() {
-        SortedSet<String> availableRepositories = new TreeSet<String>();
-
-        List<IRepositoryFactory> factoriesFromProvider = ExtensionImplementationProviders
-                .getInstance(ExtensionPointFactory.REPOSITORY_PROVIDER);
-
-        for (IRepositoryFactory factory : factoriesFromProvider) {
-            availableRepositories.add(factory.getType().getLabel());
-        }
-        return availableRepositories.toArray(new String[] {});
     }
 }

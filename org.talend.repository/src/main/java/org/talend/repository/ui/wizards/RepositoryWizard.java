@@ -34,8 +34,7 @@ import org.talend.commons.ui.swt.dialogs.ErrorDialogWidthDetailArea;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.i18n.Messages;
-import org.talend.repository.model.IRepositoryFactory;
-import org.talend.repository.model.RepositoryFactoryProvider;
+import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.ui.views.IRepositoryView;
 
@@ -106,14 +105,13 @@ public abstract class RepositoryWizard extends Wizard {
     public void setWorkbench(IWorkbench workbench) {
         this.workbench = workbench;
     }
-
+    
     /**
      * DOC ocarbone Comment method "performCancel". Unlock the IRepositoryObject before the close of the wizard.
      * 
      * @param IRepositoryObject
      */
     public boolean performCancel() {
-        // The lock strategy is useless when the repositoryObject isn't created
         closeLockStrategy();
         reload();
         return true;
@@ -124,29 +122,8 @@ public abstract class RepositoryWizard extends Wizard {
      */
     private void reload() {
         if (repositoryObject != null) {
-            IRepositoryFactory factory = RepositoryFactoryProvider.getInstance();
+            ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
             factory.reload(repositoryObject.getProperty());
-        }
-    }
-
-    /**
-     * DOC ocarbone Comment method "performCancel". Unlock the IRepositoryObject before the close of the wizard.
-     * 
-     * @param IRepositoryObject
-     */
-    public void closeLockStrategy() {
-        // The lock strategy is useless when the repositoryObject isn't created
-        if (repositoryObject != null) {
-            IRepositoryFactory factory = RepositoryFactoryProvider.getInstance();
-            try {
-                factory.unlock(repositoryObject);
-
-            } catch (PersistenceException e) {
-                String detailError = e.toString();
-                new ErrorDialogWidthDetailArea(getShell(), PID, Messages.getString("CommonWizard.persistenceException"),
-                        detailError);
-                log.error(Messages.getString("CommonWizard.persistenceException") + "\n" + detailError);
-            }
         }
     }
 
@@ -177,22 +154,8 @@ public abstract class RepositoryWizard extends Wizard {
      */
     private void calculateRepositoryObjectEditable() {
         if (repositoryObject != null) {
-            boolean isLock;
-            boolean isDeleted;
-            IRepositoryFactory factory = RepositoryFactoryProvider.getInstance();
-            // Check if the metadata is locked
-            try {
-                isLock = factory.isLocked(repositoryObject);
-                isDeleted = factory.isDeleted(repositoryObject);
-                // Define if the repositoryObject is ReadOnly
-                repositoryObjectEditable = (!isLock && !isDeleted);
-            } catch (PersistenceException e1) {
-                String detailError = e1.toString();
-                new ErrorDialogWidthDetailArea(getShell(), PID, Messages.getString("CommonWizard.persistenceException"),
-                        detailError);
-                log.error(Messages.getString("CommonWizard.persistenceException") + "\n" + detailError);
-                repositoryObjectEditable = false;
-            }
+            ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+            repositoryObjectEditable = factory.isEditableAndLockIfPossible(repositoryObject);
         }
     }
 
@@ -203,19 +166,31 @@ public abstract class RepositoryWizard extends Wizard {
     public void initLockStrategy() {
         // The lock strategy is useless when the repositoryObject isn't yet created
         if (repositoryObject != null) {
-            IRepositoryFactory factory = RepositoryFactoryProvider.getInstance();
+            ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
             try {
-                boolean deleted = factory.isDeleted(repositoryObject);
-                if (deleted) {
-                    return;
-                }
-                boolean isLock = factory.isLocked(repositoryObject);
-                // if needed, lock the repositoryObject
-                if (!isLock) {
-                    factory.lock(repositoryObject);
-                }
+                factory.lock(repositoryObject);
             } catch (PersistenceException e1) {
                 String detailError = e1.toString();
+                new ErrorDialogWidthDetailArea(getShell(), PID, Messages.getString("CommonWizard.persistenceException"),
+                        detailError);
+                log.error(Messages.getString("CommonWizard.persistenceException") + "\n" + detailError);
+            }
+        }
+    }
+
+    /**
+     * DOC ocarbone Comment method "performCancel". Unlock the IRepositoryObject before the close of the wizard.
+     * 
+     * @param IRepositoryObject
+     */
+    public void closeLockStrategy() {
+        // The lock strategy is useless when the repositoryObject isn't created
+        if (repositoryObject != null) {
+            ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+            try {
+                factory.unlock(repositoryObject);
+            } catch (PersistenceException e) {
+                String detailError = e.toString();
                 new ErrorDialogWidthDetailArea(getShell(), PID, Messages.getString("CommonWizard.persistenceException"),
                         detailError);
                 log.error(Messages.getString("CommonWizard.persistenceException") + "\n" + detailError);

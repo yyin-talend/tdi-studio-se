@@ -43,8 +43,7 @@ import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.repository.i18n.Messages;
-import org.talend.repository.model.IRepositoryFactory;
-import org.talend.repository.model.RepositoryFactoryProvider;
+import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNodeUtilities;
 import org.talend.repository.ui.wizards.RepositoryWizard;
@@ -105,7 +104,7 @@ public class XmlFileWizard extends RepositoryWizard implements INewWizard {
             connection = ConnectionFactory.eINSTANCE.createXmlFileConnection();
             // MetadataSchema metadataSchema = ConnectionFactory.eINSTANCE.createMetadataSchema();
             MetadataTable metadataTable = ConnectionFactory.eINSTANCE.createMetadataTable();
-            IRepositoryFactory factory = RepositoryFactoryProvider.getInstance();
+            ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
             metadataTable.setId(factory.getNextId());
             // connection.getTables().add(metadataSchema);
             connection.getTables().add(metadataTable);
@@ -214,9 +213,7 @@ public class XmlFileWizard extends RepositoryWizard implements INewWizard {
         }
 
         if (formIsPerformed) {
-            closeLockStrategy();
-
-            IRepositoryFactory factory = RepositoryFactoryProvider.getInstance();
+            ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
             try {
                 if (creation) {
                     String nextId = factory.getNextId();
@@ -224,6 +221,7 @@ public class XmlFileWizard extends RepositoryWizard implements INewWizard {
                     factory.create(connectionItem, pathToSave);
                 } else {
                     factory.save(connectionItem);
+                    closeLockStrategy();
                 }
             } catch (PersistenceException e) {
                 String detailError = e.toString();

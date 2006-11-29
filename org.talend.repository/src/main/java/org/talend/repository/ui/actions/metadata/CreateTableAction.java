@@ -27,8 +27,6 @@ import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
-import org.talend.commons.exception.PersistenceException;
-import org.talend.commons.ui.swt.dialogs.ErrorDialogWidthDetailArea;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.builder.connection.ConnectionFactory;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
@@ -50,9 +48,9 @@ import org.talend.core.ui.EImage;
 import org.talend.core.ui.ImageProvider;
 import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.i18n.Messages;
-import org.talend.repository.model.IRepositoryFactory;
-import org.talend.repository.model.RepositoryFactoryProvider;
+import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
+import org.talend.repository.model.RepositoryStatus;
 import org.talend.repository.model.RepositoryNode.ENodeType;
 import org.talend.repository.model.RepositoryNode.EProperties;
 import org.talend.repository.ui.wizards.metadata.table.database.DatabaseTableWizard;
@@ -169,7 +167,7 @@ public class CreateTableAction extends AbstractCreateAction {
                 // existingNames)
                 // PTODO OCA : use IndiceHelper on multiple tableRefect
                 metadataTable.setLabel(getStringIndexed(metadataTable.getLabel()));
-                String nextId = RepositoryFactoryProvider.getInstance().getNextId();
+                String nextId = ProxyRepositoryFactory.getInstance().getNextId();
                 metadataTable.setId(nextId);
                 connection.getTables().add(metadataTable);
                 creation = true;
@@ -216,7 +214,7 @@ public class CreateTableAction extends AbstractCreateAction {
                 item = (RegExFileConnectionItem) node.getObject().getProperty().getItem();
                 connection = (RegexpFileConnection) item.getConnection();
                 metadataTable = ConnectionFactory.eINSTANCE.createMetadataTable();
-                String nextId = RepositoryFactoryProvider.getInstance().getNextId();
+                String nextId = ProxyRepositoryFactory.getInstance().getNextId();
                 metadataTable.setId(nextId);
                 metadataTable.setLabel(getStringIndexed(metadataTable.getLabel()));
                 connection.getTables().add(metadataTable);
@@ -265,7 +263,7 @@ public class CreateTableAction extends AbstractCreateAction {
                 item = (XmlFileConnectionItem) node.getObject().getProperty().getItem();
                 connection = (XmlFileConnection) item.getConnection();
                 metadataTable = ConnectionFactory.eINSTANCE.createMetadataTable();
-                String nextId = RepositoryFactoryProvider.getInstance().getNextId();
+                String nextId = ProxyRepositoryFactory.getInstance().getNextId();
                 metadataTable.setId(nextId);
                 metadataTable.setLabel(getStringIndexed(metadataTable.getLabel()));
                 connection.getTables().add(metadataTable);
@@ -314,7 +312,7 @@ public class CreateTableAction extends AbstractCreateAction {
                 item = (DelimitedFileConnectionItem) node.getObject().getProperty().getItem();
                 connection = (DelimitedFileConnection) item.getConnection();
                 metadataTable = ConnectionFactory.eINSTANCE.createMetadataTable();
-                String nextId = RepositoryFactoryProvider.getInstance().getNextId();
+                String nextId = ProxyRepositoryFactory.getInstance().getNextId();
                 metadataTable.setId(nextId);
                 metadataTable.setLabel(getStringIndexed(metadataTable.getLabel()));
                 connection.getTables().add(metadataTable);
@@ -364,7 +362,7 @@ public class CreateTableAction extends AbstractCreateAction {
                 item = (LdifFileConnectionItem) node.getObject().getProperty().getItem();
                 connection = (LdifFileConnection) item.getConnection();
                 metadataTable = ConnectionFactory.eINSTANCE.createMetadataTable();
-                String nextId = RepositoryFactoryProvider.getInstance().getNextId();
+                String nextId = ProxyRepositoryFactory.getInstance().getNextId();
                 metadataTable.setId(nextId);
                 metadataTable.setLabel(getStringIndexed(metadataTable.getLabel()));
                 connection.getTables().add(metadataTable);
@@ -496,16 +494,9 @@ public class CreateTableAction extends AbstractCreateAction {
                 return;
             }
 
-            IRepositoryFactory factory = RepositoryFactoryProvider.getInstance();
-            try {
-                if (factory.isDeleted(node.getObject())) {
-                    return;
-                }
-            } catch (PersistenceException e) {
-                String detailError = e.toString();
-                new ErrorDialogWidthDetailArea(new Shell(), PID, Messages.getString("CommonWizard.persistenceException"),
-                        detailError);
-                log.error(Messages.getString("CommonWizard.persistenceException") + "\n" + detailError);
+            ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+            if (factory.getStatus(node.getObject()) == RepositoryStatus.DELETED) {
+                return;
             }
 
             if (ERepositoryObjectType.METADATA_CONNECTIONS.equals(nodeType)

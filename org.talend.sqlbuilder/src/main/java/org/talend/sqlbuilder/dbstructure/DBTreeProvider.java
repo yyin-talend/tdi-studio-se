@@ -23,7 +23,6 @@ package org.talend.sqlbuilder.dbstructure;
 
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
 import org.eclipse.emf.common.util.EList;
@@ -50,15 +49,13 @@ import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.Folder;
 import org.talend.core.model.repository.IRepositoryObject;
-import org.talend.core.model.repository.RepositoryObject;
-import org.talend.repository.model.IRepositoryFactory;
-import org.talend.repository.model.RepositoryFactoryProvider;
+import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
+import org.talend.repository.model.RepositoryStatus;
 import org.talend.repository.model.RepositoryNode.ENodeType;
 import org.talend.repository.model.RepositoryNode.EProperties;
 import org.talend.repository.ui.views.RepositoryContentProvider;
 import org.talend.repository.ui.views.RepositoryView;
-import org.talend.sqlbuilder.SqlBuilderPlugin;
 import org.talend.sqlbuilder.repository.utility.SQLBuilderRepositoryNodeManager;
 import org.talend.sqlbuilder.util.ConnectionParameters;
 import org.talend.sqlbuilder.util.ImageUtil;
@@ -196,7 +193,7 @@ ITableColorProvider {
      * @return MetadataConnection
      */
     private Container getMetadataConnection() {
-    	IRepositoryFactory factory = RepositoryFactoryProvider.getInstance();
+        ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
     	Container container = null;
 		try {
 			container = factory.getMetadataConnection();
@@ -233,7 +230,7 @@ ITableColorProvider {
     }
     
     private void addNode(RepositoryNode parent, IRepositoryObject repositoryObject, boolean isBuildIn, Integer index) {
-        IRepositoryFactory factory = RepositoryFactoryProvider.getInstance();
+        ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
         DatabaseConnection connection = (DatabaseConnection) ((ConnectionItem) repositoryObject
                 .getProperty().getItem()).getConnection();
         String sid = connection.getSID();
@@ -262,27 +259,23 @@ ITableColorProvider {
         	connectionRepositoryObject.setDiffImage(IMAGES_RED_ICON);
         }
         if (isDiffs[2]) {
-        	connectionRepositoryObject.setDiffImage(IMAGES_REFRESH_ICON);
-        }
-        
-        try {
-            if (factory.isDeleted(repositoryObject)) {
-                //ignore recycle node
-            } else {
-            	if (index == null) {
-            		parent.getChildren().add(node);
-            	} else {
-            		parent.getChildren().add(index.intValue(), node);
-            	}
-            	allRepositoryNodes.put(node.getObject().getLabel(), node);
-                repositoryNodeManager.addRepositoryNode(node);
-            }
-        } catch (PersistenceException e1) {
-            e1.printStackTrace();
+            connectionRepositoryObject.setDiffImage(IMAGES_REFRESH_ICON);
         }
 
-        DatabaseConnection metadataConnection = (DatabaseConnection) ((ConnectionItem) repositoryObject.getProperty()
-                .getItem()).getConnection();
+        if (factory.getStatus(repositoryObject) == RepositoryStatus.DELETED) {
+            // ignore recycle node
+        } else {
+            if (index == null) {
+                parent.getChildren().add(node);
+            } else {
+                parent.getChildren().add(index.intValue(), node);
+            }
+            allRepositoryNodes.put(node.getObject().getLabel(), node);
+            repositoryNodeManager.addRepositoryNode(node);
+        }
+
+        DatabaseConnection metadataConnection = (DatabaseConnection) ((ConnectionItem) repositoryObject.getProperty().getItem())
+                .getConnection();
         createTables(node, repositoryObject, metadataConnection, isBuildIn);
 
         createQueries(node, repositoryObject, metadataConnection, isBuildIn);

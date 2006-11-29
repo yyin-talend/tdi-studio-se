@@ -107,13 +107,18 @@
       <Action
             class="org.talend.repository.ui.actions.CopyAction"
             id="org.talend.repository.actions.copy"
-            level="41"
+            level="50"
             name="Copy"/>
       <Action
             class="org.talend.repository.ui.actions.PasteAction"
             id="org.talend.repository.actions.paste"
-            level="42"
+            level="55"
             name="Paste"/>
+      <Action
+            class="org.talend.repository.ui.actions.CommitAction"
+            id="org.talend.repository.Action1"
+            level="45"
+            name="Commit"/>
    </extension>
    <extension
          point="org.eclipse.ui.views.properties.tabbed.propertyContributor">

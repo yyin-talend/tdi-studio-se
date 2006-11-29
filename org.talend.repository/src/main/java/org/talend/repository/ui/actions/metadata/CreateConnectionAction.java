@@ -28,10 +28,7 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
-import org.talend.commons.exception.PersistenceException;
-import org.talend.commons.ui.swt.dialogs.ErrorDialogWidthDetailArea;
 import org.talend.core.model.metadata.builder.connection.ConnectionFactory;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.properties.ConnectionItem;
@@ -41,8 +38,7 @@ import org.talend.core.ui.EImage;
 import org.talend.core.ui.ImageProvider;
 import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.i18n.Messages;
-import org.talend.repository.model.IRepositoryFactory;
-import org.talend.repository.model.RepositoryFactoryProvider;
+import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNodeUtilities;
 import org.talend.repository.model.RepositoryNode.EProperties;
@@ -150,19 +146,12 @@ public class CreateConnectionAction extends AbstractCreateAction {
             collectChildNames(node);
             break;
         case REPOSITORY_ELEMENT:
-            IRepositoryFactory factory = RepositoryFactoryProvider.getInstance();
-            try {
-                if (factory.isDeleted(node.getObject())) {
-                    this.setText(OPEN_LABEL);
-                } else {
-                    this.setText(EDIT_LABEL);
-                    collectSiblingNames(node);
-                }
-            } catch (PersistenceException e) {
-                String detailError = e.toString();
-                new ErrorDialogWidthDetailArea(new Shell(), RepositoryPlugin.PLUGIN_ID, Messages
-                        .getString("CommonWizard.persistenceException"), detailError);
-                log.error(Messages.getString("CommonWizard.persistenceException") + "\n" + detailError);
+            ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+            if (factory.isPotentiallyEditable(node.getObject())) {
+                this.setText(EDIT_LABEL);
+                collectSiblingNames(node);
+            } else {
+                this.setText(OPEN_LABEL);
             }
             break;
         default:

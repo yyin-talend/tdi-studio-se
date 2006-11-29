@@ -36,8 +36,7 @@ import org.talend.core.ui.EImage;
 import org.talend.core.ui.ImageProvider;
 import org.talend.designer.core.ui.MultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.ProcessEditorInput;
-import org.talend.repository.model.IRepositoryFactory;
-import org.talend.repository.model.RepositoryFactoryProvider;
+import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.ui.actions.AContextualAction;
 
@@ -111,17 +110,11 @@ public class EditProcess extends AContextualAction {
                 if (object.getType() != ERepositoryObjectType.PROCESS) {
                     canWork = false;
                 } else {
-                    IRepositoryFactory repFactory = RepositoryFactoryProvider.getInstance();
-
-                    try {
-                        if (repFactory.isDeleted(object)) {
-                            this.setText(OPEN_LABEL);
-                        } else {
-                            this.setText(EDIT_LABEL);
-                        }
-                    } catch (PersistenceException e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
+                    ProxyRepositoryFactory repFactory = ProxyRepositoryFactory.getInstance();
+                    if (repFactory.isPotentiallyEditable(node.getObject())) {
+                        this.setText(EDIT_LABEL);
+                    } else {
+                        this.setText(OPEN_LABEL);
                     }
                 }
                 break;

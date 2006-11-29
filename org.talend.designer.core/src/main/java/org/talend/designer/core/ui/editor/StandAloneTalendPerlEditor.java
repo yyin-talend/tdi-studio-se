@@ -34,8 +34,7 @@ import org.talend.core.model.properties.ByteArray;
 import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.RoutineItem;
 import org.talend.repository.editor.RepositoryEditorInput;
-import org.talend.repository.model.IRepositoryFactory;
-import org.talend.repository.model.RepositoryFactoryProvider;
+import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.ui.views.IRepositoryView;
 import org.talend.repository.ui.views.RepositoryView;
 
@@ -48,7 +47,7 @@ public class StandAloneTalendPerlEditor extends PerlEditor {
     public void doSetInput(IEditorInput input) throws CoreException {
         super.doSetInput(input);
         // Lock the process :
-        IRepositoryFactory repFactory = RepositoryFactoryProvider.getInstance();
+        ProxyRepositoryFactory repFactory = ProxyRepositoryFactory.getInstance();
         try {
             RepositoryEditorInput rEditorInput = (RepositoryEditorInput) input;
             item = (RoutineItem) rEditorInput.getItem();
@@ -63,7 +62,7 @@ public class StandAloneTalendPerlEditor extends PerlEditor {
     public void dispose() {
         super.dispose();
         // Unlock the process :
-        IRepositoryFactory repFactory = RepositoryFactoryProvider.getInstance();
+        ProxyRepositoryFactory repFactory = ProxyRepositoryFactory.getInstance();
         try {
             item.getProperty().eAdapters().remove(dirtyListener);
             repFactory.unlock(item);
@@ -95,7 +94,7 @@ public class StandAloneTalendPerlEditor extends PerlEditor {
             ByteArray byteArray = PropertiesFactory.eINSTANCE.createByteArray();
             byteArray.setInnerContentFromFile(((RepositoryEditorInput) getEditorInput()).getFile());
             item.setContent(byteArray);
-            RepositoryFactoryProvider.getInstance().save(item);
+            ProxyRepositoryFactory.getInstance().save(item);
         } catch (Exception e) {
             e.printStackTrace();
         }

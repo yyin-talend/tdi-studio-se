@@ -32,8 +32,7 @@ import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.ui.EImage;
 import org.talend.core.ui.ImageProvider;
 import org.talend.repository.i18n.Messages;
-import org.talend.repository.model.IRepositoryFactory;
-import org.talend.repository.model.RepositoryFactoryProvider;
+import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNode.EProperties;
 import org.talend.repository.ui.views.RepositoryContentProvider.MetadataTableRepositoryObject;
@@ -65,7 +64,7 @@ public class EmptyRecycleBinAction extends AContextualAction {
             return;
         }
 
-        IRepositoryFactory factory = RepositoryFactoryProvider.getInstance();
+        ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
         for (RepositoryNode child : node.getChildren()) {
             IRepositoryObject objToDelete = child.getObject();
             try {

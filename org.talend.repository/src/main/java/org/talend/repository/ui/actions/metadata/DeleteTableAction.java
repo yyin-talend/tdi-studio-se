@@ -38,9 +38,9 @@ import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.ui.EImage;
 import org.talend.core.ui.ImageProvider;
 import org.talend.repository.i18n.Messages;
-import org.talend.repository.model.IRepositoryFactory;
-import org.talend.repository.model.RepositoryFactoryProvider;
+import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
+import org.talend.repository.model.RepositoryStatus;
 import org.talend.repository.model.RepositoryNode.ENodeType;
 import org.talend.repository.model.RepositoryNode.EProperties;
 import org.talend.repository.ui.actions.AContextualAction;
@@ -84,7 +84,7 @@ public class DeleteTableAction extends AContextualAction {
                         Connection connection = null;
                         ERepositoryObjectType parentNodeType = (ERepositoryObjectType) node.getParent().getProperties(
                                 EProperties.CONTENT_TYPE);
-                        IRepositoryFactory factory = RepositoryFactoryProvider.getInstance();
+                        ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
                         ConnectionItem item = (ConnectionItem) node.getObject().getProperty().getItem();
                         connection = (item).getConnection();
                         MetadataTable metadataTable = ((MetadataTableRepositoryObject) node.getObject()).getTable();
@@ -149,12 +149,12 @@ public class DeleteTableAction extends AContextualAction {
                         canWork = false;
                         break;
                     }
-                    IRepositoryFactory repFactory = RepositoryFactoryProvider.getInstance();
+                    ProxyRepositoryFactory repFactory = ProxyRepositoryFactory.getInstance();
                     boolean isLocked = false;
                     boolean isDeleted = false;
                     try {
-                        isLocked = repFactory.isLocked(repObj);
-                        isDeleted = DeletionHelper.isDeleted(repFactory, node);
+                        isLocked = !repFactory.isPotentiallyEditable(repObj);
+                        isDeleted = DeletionHelper.isDeleted(node);
                     } catch (PersistenceException e) {
                         e.printStackTrace();
                     }

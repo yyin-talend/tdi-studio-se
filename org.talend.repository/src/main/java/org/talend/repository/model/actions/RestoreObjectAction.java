@@ -21,12 +21,10 @@
 // ============================================================================
 package org.talend.repository.model.actions;
 
-import org.talend.commons.exception.ExceptionHandler;
-import org.talend.commons.exception.PersistenceException;
 import org.talend.core.model.repository.IRepositoryObject;
-import org.talend.repository.model.IRepositoryFactory;
-import org.talend.repository.model.RepositoryFactoryProvider;
+import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
+import org.talend.repository.model.RepositoryStatus;
 import org.talend.repository.model.RepositoryNode.ENodeType;
 
 /**
@@ -50,14 +48,9 @@ public class RestoreObjectAction {
         }
 
         if (sourceNode.getType() == ENodeType.REPOSITORY_ELEMENT) {
-            IRepositoryObject objectToCopy = sourceNode.getObject();
-            IRepositoryFactory factory = RepositoryFactoryProvider.getInstance();
-            try {
-                return factory.isDeleted(objectToCopy);
-            } catch (PersistenceException e) {
-                ExceptionHandler.process(e);
-                return false;
-            }
+            IRepositoryObject objectToRestore = sourceNode.getObject();
+            ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+            return factory.getStatus(objectToRestore) == RepositoryStatus.DELETED;
         } else {
             return false;
         }

@@ -32,7 +32,7 @@ import org.talend.commons.ui.swt.dialogs.ErrorDialogWidthDetailArea;
 import org.talend.core.model.properties.Status;
 import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.i18n.Messages;
-import org.talend.repository.model.RepositoryFactoryProvider;
+import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryPreferenceStore;
 
 /**
@@ -58,7 +58,7 @@ public class StatusPreferencePage extends FieldEditorPreferencePage implements I
 
     @Override
     protected IPreferenceStore doGetPreferenceStore() {
-        RepositoryPreferenceStore preferenceStore = new RepositoryPreferenceStore(RepositoryFactoryProvider.getInstance());
+        RepositoryPreferenceStore preferenceStore = new RepositoryPreferenceStore( ProxyRepositoryFactory.getInstance());
         try {
             preferenceStore.load();
         } catch (PersistenceException e) {

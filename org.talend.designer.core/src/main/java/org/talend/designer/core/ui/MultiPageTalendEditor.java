@@ -69,8 +69,7 @@ import org.talend.designer.core.ui.editor.outline.NodeTreeEditPart;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.runprocess.ProcessorException;
 import org.talend.designer.runprocess.perl.PerlProcessor;
-import org.talend.repository.model.IRepositoryFactory;
-import org.talend.repository.model.RepositoryFactoryProvider;
+import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.ui.views.IRepositoryView;
 import org.talend.repository.ui.views.RepositoryView;
 
@@ -181,21 +180,20 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
         super.dispose();
 
         // Unlock the process :
-        IRepositoryFactory repFactory = RepositoryFactoryProvider.getInstance();
+        ProxyRepositoryFactory repFactory = ProxyRepositoryFactory.getInstance();
         try {
             getTalendEditor().getProperty().eAdapters().remove(dirtyListener);
             repFactory.unlock(getTalendEditor().getProcess());
             repFactory.reload(getTalendEditor().getProperty());
-
         } catch (PersistenceException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
+
         IRepositoryView viewPart = (IRepositoryView) getSite().getPage().findView(RepositoryView.VIEW_ID);
         if (viewPart != null) {
             viewPart.refresh();
         }
-
     }
 
     /**
@@ -242,7 +240,7 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
         getSite().getWorkbenchWindow().getSelectionService().addSelectionListener(this);
 
         // Lock the process :
-        IRepositoryFactory repFactory = RepositoryFactoryProvider.getInstance();
+        ProxyRepositoryFactory repFactory = ProxyRepositoryFactory.getInstance();
         ProcessEditorInput processEditorInput = (ProcessEditorInput) editorInput;
         Process process = (processEditorInput).getLoadedProcess();
         if (!process.isReadOnly()) {

@@ -27,10 +27,10 @@ import org.talend.commons.exception.PersistenceException;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
-import org.talend.repository.model.IRepositoryFactory;
-import org.talend.repository.model.RepositoryFactoryProvider;
+import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNodeUtilities;
+import org.talend.repository.model.RepositoryStatus;
 import org.talend.repository.model.RepositoryNode.ENodeType;
 import org.talend.repository.model.RepositoryNode.EProperties;
 
@@ -61,10 +61,10 @@ public class CopyObjectAction {
         IRepositoryObject objectToCopy = sourceNode.getObject();
 
         // Cannot move logically deleted objects :
-        IRepositoryFactory factory = RepositoryFactoryProvider.getInstance();
+        ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
         try {
             objectToCopy = factory.getLastVersion(objectToCopy.getId());
-            if (objectToCopy == null || factory.isDeleted(objectToCopy)) {
+            if (objectToCopy == null || factory.getStatus(objectToCopy) == RepositoryStatus.DELETED) {
                 return false;
             }
         } catch (PersistenceException e) {
@@ -92,7 +92,7 @@ public class CopyObjectAction {
         }
 
         IPath targetPath = RepositoryNodeUtilities.getPath(targetNode);
-        IRepositoryFactory factory = RepositoryFactoryProvider.getInstance();
+        ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
 
         if (sourceNode.getType().equals(ENodeType.REPOSITORY_ELEMENT)) {
             // Source is an repository element :

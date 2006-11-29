@@ -27,7 +27,6 @@ import java.util.List;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.utils.data.container.Content;
 import org.talend.commons.utils.data.container.ContentList;
 import org.talend.commons.utils.data.container.RootContainer;
@@ -44,8 +43,8 @@ import org.talend.designer.core.model.context.ContextManager;
 import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
 import org.talend.designer.runprocess.ProcessorException;
 import org.talend.designer.runprocess.perl.PerlUtils;
-import org.talend.repository.model.IRepositoryFactory;
-import org.talend.repository.model.RepositoryFactoryProvider;
+import org.talend.repository.model.ProxyRepositoryFactory;
+import org.talend.repository.model.RepositoryStatus;
 import org.talend.scheduler.SchedulerPlugin;
 
 /**
@@ -59,7 +58,7 @@ public class TalendJobManager {
 
     private RepositoryContext repositoryContext;
 
-    private IRepositoryFactory factory;
+    private ProxyRepositoryFactory factory;
 
     // private RootContainer<Integer, IRepositoryObject> processContainer;
     private RootContainer<String, IRepositoryObject> processContainer;
@@ -77,7 +76,7 @@ public class TalendJobManager {
             repositoryContext = (RepositoryContext)
                 CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY);
 
-            factory = RepositoryFactoryProvider.getInstance();
+            factory = ProxyRepositoryFactory.getInstance();
 
             processContainer = factory.getProcess();
 
@@ -158,23 +157,19 @@ public class TalendJobManager {
     public List<String> getCurrentProjectJobs() {
         List<String> processNameList = new ArrayList<String>();
 
-        try {
-            for (Content<String, IRepositoryObject> object : processAbsoluteMembers.values()) {
-                IRepositoryObject process = (IRepositoryObject) object.getContent();
-                if (!factory.isDeleted(process)) {
-                    String path = object.getParent().getPath().toString();
-                    String name;
-                    if (path.equals("")) {
-                        name = IPath.SEPARATOR + process.getLabel();
-                    } else {
-                        name = IPath.SEPARATOR + path + IPath.SEPARATOR + process.getLabel();
-                    }
-
-                    processNameList.add(name);
+        for (Content<String, IRepositoryObject> object : processAbsoluteMembers.values()) {
+            IRepositoryObject process = (IRepositoryObject) object.getContent();
+            if (factory.getStatus(process) != RepositoryStatus.DELETED) {
+                String path = object.getParent().getPath().toString();
+                String name;
+                if (path.equals("")) {
+                    name = IPath.SEPARATOR + process.getLabel();
+                } else {
+                    name = IPath.SEPARATOR + path + IPath.SEPARATOR + process.getLabel();
                 }
+
+                processNameList.add(name);
             }
-        } catch (PersistenceException e) {
-            SchedulerPlugin.log(e);
         }
         return processNameList;
     }

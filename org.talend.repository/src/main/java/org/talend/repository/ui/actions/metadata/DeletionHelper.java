@@ -27,7 +27,6 @@ import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.builder.connection.TableHelper;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.repository.model.IRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNode.EProperties;
 import org.talend.repository.ui.views.RepositoryContentProvider.MetadataTableRepositoryObject;
@@ -47,7 +46,7 @@ public class DeletionHelper {
      * @return
      * @throws PersistenceException
      */
-    public static boolean isDeleted(IRepositoryFactory factory, RepositoryNode node) throws PersistenceException {
+    public static boolean isDeleted(RepositoryNode node) throws PersistenceException {
         RepositoryNode parent = node.getParent();
         ERepositoryObjectType nodeType = (ERepositoryObjectType) parent.getProperties(EProperties.CONTENT_TYPE);
         Connection connection = (Connection) ((ConnectionItem) parent.getObject().getProperty().getItem()).getConnection();

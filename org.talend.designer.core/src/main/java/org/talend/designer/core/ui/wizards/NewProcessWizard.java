@@ -36,8 +36,7 @@ import org.talend.core.model.properties.Property;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
 import org.talend.designer.core.model.utils.emf.talendfile.TalendFileFactory;
-import org.talend.repository.model.IRepositoryFactory;
-import org.talend.repository.model.RepositoryFactoryProvider;
+import org.talend.repository.model.ProxyRepositoryFactory;
 
 /**
  * Wizard for the creation of a new project. <br/>
@@ -96,7 +95,7 @@ public class NewProcessWizard extends Wizard {
      */
     @Override
     public boolean performFinish() {
-        IRepositoryFactory repositoryFactory = RepositoryFactoryProvider.getInstance();
+        ProxyRepositoryFactory repositoryFactory = ProxyRepositoryFactory.getInstance();
         try {
             property.setId(repositoryFactory.getNextId());
 

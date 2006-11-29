@@ -65,8 +65,7 @@ import org.talend.designer.codegen.exception.CodeGeneratorException;
 import org.talend.designer.runprocess.ProcessorException;
 import org.talend.designer.runprocess.RunProcessPlugin;
 import org.talend.designer.runprocess.i18n.Messages;
-import org.talend.repository.model.IRepositoryFactory;
-import org.talend.repository.model.RepositoryFactoryProvider;
+import org.talend.repository.model.ProxyRepositoryFactory;
 
 /**
  * DOC chuger class global comment. Detailled comment <br/>
@@ -387,7 +386,7 @@ public class PerlProcessor {
     private void retrieveRoutines(Project project) throws CoreException, PersistenceException {
         IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
 
-        IRepositoryFactory repositoryFactory = RepositoryFactoryProvider.getInstance();
+        ProxyRepositoryFactory repositoryFactory = ProxyRepositoryFactory.getInstance();
         // RootContainer<Integer, IRoutine> container = repositoryFactory.getRoutine();
         // List<IRoutine> routines = container.getMembers();
 

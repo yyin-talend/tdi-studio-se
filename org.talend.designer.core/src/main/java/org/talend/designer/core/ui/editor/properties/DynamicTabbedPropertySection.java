@@ -166,9 +166,9 @@ import org.talend.designer.core.ui.editor.outline.NodeReturnsTreeEditPart;
 import org.talend.designer.core.ui.editor.outline.NodeTreeEditPart;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.runprocess.language.SyntaxCheckerFactory;
-import org.talend.repository.model.IRepositoryFactory;
+import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryConstants;
-import org.talend.repository.model.RepositoryFactoryProvider;
+import org.talend.repository.model.RepositoryStatus;
 import org.talend.repository.utils.RepositoryPathProvider;
 import org.talend.sqlbuilder.ui.SQLBuilderDialog;
 import org.talend.sqlbuilder.util.ConnectionParameters;
@@ -865,14 +865,14 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
         List<String> processNameList = new ArrayList<String>();
         List<String> processValueList = new ArrayList<String>();
         processMap = new HashMap<String, IRepositoryObject>();
-        IRepositoryFactory factory = RepositoryFactoryProvider.getInstance();
+        ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
         try {
             RootContainer<String, IRepositoryObject> processContainer = factory.getProcess();
             ContentList<String, IRepositoryObject> processAbsoluteMembers = processContainer.getAbsoluteMembers();
 
             for (Content<String, IRepositoryObject> object : processAbsoluteMembers.values()) {
                 IRepositoryObject process = (IRepositoryObject) object.getContent();
-                if (!factory.isDeleted(process)) {
+                if (factory.getStatus(process) != RepositoryStatus.DELETED) {
                     String path = object.getParent().getPath().toString();
                     String name;
                     if (path.equals("")) {
@@ -912,7 +912,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
     private void updateContextList() {
         List<String> contextNameList = new ArrayList<String>();
         List<String> contextValueList = new ArrayList<String>();
-        IRepositoryFactory factory = RepositoryFactoryProvider.getInstance();
+        ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
 
         String selectedProcess = null;
 
@@ -963,7 +963,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
     }
 
     private void updateRepositoryList() {
-        IRepositoryFactory factory = RepositoryFactoryProvider.getInstance();
+        ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
         List<ConnectionItem> metadataConnectionsItem = null;
         String[] repositoryTableNameList = new String[] {};
         String[] repositoryTableValueList = new String[] {};

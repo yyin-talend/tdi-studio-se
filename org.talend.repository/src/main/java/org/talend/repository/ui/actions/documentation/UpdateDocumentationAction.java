@@ -28,12 +28,10 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
-import org.talend.commons.exception.PersistenceException;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.ui.EImage;
 import org.talend.core.ui.ImageProvider;
-import org.talend.repository.model.IRepositoryFactory;
-import org.talend.repository.model.RepositoryFactoryProvider;
+import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNodeUtilities;
 import org.talend.repository.model.RepositoryNode.ENodeType;
@@ -68,16 +66,11 @@ public class UpdateDocumentationAction extends AContextualAction {
     public void init(TreeViewer viewer, IStructuredSelection selection) {
         boolean canWork = !selection.isEmpty() && selection.size() == 1;
         if (canWork) {
-            IRepositoryFactory factory = RepositoryFactoryProvider.getInstance();
+            ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
             RepositoryNode node = (RepositoryNode) selection.getFirstElement();
-            try {
-                canWork = node.getType() == ENodeType.REPOSITORY_ELEMENT
-                        && node.getObject().getType() == ERepositoryObjectType.DOCUMENTATION
-                        && !factory.isDeleted(node.getObject());
-            } catch (PersistenceException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
+            canWork = node.getType() == ENodeType.REPOSITORY_ELEMENT
+                    && node.getObject().getType() == ERepositoryObjectType.DOCUMENTATION
+                    && factory.isPotentiallyEditable(node.getObject());
         }
         setEnabled(canWork);
     }

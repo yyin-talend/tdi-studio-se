@@ -29,10 +29,10 @@ import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.utils.workbench.resources.ResourceUtils;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
-import org.talend.repository.model.IRepositoryFactory;
-import org.talend.repository.model.RepositoryFactoryProvider;
+import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNodeUtilities;
+import org.talend.repository.model.RepositoryStatus;
 import org.talend.repository.model.RepositoryNode.ENodeType;
 import org.talend.repository.model.RepositoryNode.EProperties;
 
@@ -90,7 +90,6 @@ public class MoveObjectAction {
                 return false;
             }
         } else if (sourceNode.getType() == ENodeType.SIMPLE_FOLDER) {
-            
             if (targetNode.getType() != ENodeType.SIMPLE_FOLDER && targetNode.getType() != ENodeType.SYSTEM_FOLDER) {
                 return false;
             }
@@ -104,7 +103,7 @@ public class MoveObjectAction {
                 return false;
             }
 
-            IRepositoryFactory factory = RepositoryFactoryProvider.getInstance();
+            ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
             try {
                 if (!factory.isPathValid(sourceType, targetPath, sourcePath.lastSegment())) {
                     return false;
@@ -134,7 +133,7 @@ public class MoveObjectAction {
         IPath targetPath = (targetNode == null ? new Path("") : RepositoryNodeUtilities.getPath(targetNode));
         IPath sourcePath = RepositoryNodeUtilities.getPath(sourceNode);
 
-        IRepositoryFactory factory = RepositoryFactoryProvider.getInstance();
+        ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
 
         if (sourceNode.getType().equals(ENodeType.REPOSITORY_ELEMENT)) {
             // Source is an repository element :
@@ -142,11 +141,9 @@ public class MoveObjectAction {
 
             if (ERepositoryObjectType.RECYCLE_BIN.equals(targetType)) {
                 // Move in the recycle bin :
-                if (!factory.isLocked(objectToMove)) {
-                    factory.deleteObjectLogical(objectToMove);
-                }
+                factory.deleteObjectLogical(objectToMove);
             } else {
-                if (factory.isDeleted(objectToMove)) {
+                if (factory.getStatus(objectToMove) == RepositoryStatus.DELETED) {
                     // Restore :
                     factory.restoreObject(objectToMove, targetPath);
                 } else {

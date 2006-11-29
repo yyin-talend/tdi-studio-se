@@ -36,8 +36,7 @@ import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.Property;
 import org.talend.core.ui.EImage;
 import org.talend.core.ui.ImageProvider;
-import org.talend.repository.model.IRepositoryFactory;
-import org.talend.repository.model.RepositoryFactoryProvider;
+import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.ui.wizards.RepositoryWizard;
 
 public class SimpleBusinessCreationWizard extends RepositoryWizard {
@@ -70,7 +69,7 @@ public class SimpleBusinessCreationWizard extends RepositoryWizard {
     }
 
     public boolean performFinish() {
-        IRepositoryFactory repositoryFactory = RepositoryFactoryProvider.getInstance();
+        ProxyRepositoryFactory repositoryFactory = ProxyRepositoryFactory.getInstance();
         String nextId = repositoryFactory.getNextId();
 
         property.setId(nextId);

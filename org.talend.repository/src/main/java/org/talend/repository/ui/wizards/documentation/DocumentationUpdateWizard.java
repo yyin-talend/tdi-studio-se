@@ -32,8 +32,7 @@ import org.talend.core.model.properties.DocumentationItem;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.ui.EImage;
 import org.talend.core.ui.ImageProvider;
-import org.talend.repository.model.IRepositoryFactory;
-import org.talend.repository.model.RepositoryFactoryProvider;
+import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.ui.wizards.RepositoryWizard;
 
 /**
@@ -64,6 +63,7 @@ public class DocumentationUpdateWizard extends RepositoryWizard implements IDocu
         setWindowTitle("Update Documentation");
         setDefaultPageImageDescriptor(ImageProvider.getImageDesc(EImage.DOCUMENTATION_WIZ));
         setNeedsProgressMonitor(false);
+        initLockStrategy();
     }
 
     /*
@@ -88,7 +88,7 @@ public class DocumentationUpdateWizard extends RepositoryWizard implements IDocu
     public boolean performFinish() {
         boolean updated = false;
         InputStream stream = null;
-        IRepositoryFactory repositoryFactory = RepositoryFactoryProvider.getInstance();
+        ProxyRepositoryFactory repositoryFactory = ProxyRepositoryFactory.getInstance();
         try {
             if (getDocFilePath() != null && getDocFilePath().segmentCount() != 0) {
                 documentationItem.getContent().setInnerContentFromFile(getDocFilePath().toFile());
@@ -97,6 +97,7 @@ public class DocumentationUpdateWizard extends RepositoryWizard implements IDocu
             }
 
             repositoryFactory.save(documentationItem);
+            closeLockStrategy();
             updated = true;
         } catch (PersistenceException e) {
             MessageBoxExceptionHandler.process(e);

@@ -32,6 +32,9 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
+import org.talend.core.model.properties.Item;
+import org.talend.core.model.properties.ItemState;
+import org.talend.core.model.properties.Property;
 
 /**
  * DOC mhelleboid class global comment. Detailled comment <br/>
@@ -41,22 +44,24 @@ import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
  */
 public class DateSection extends AbstractSection {
 
-    private Text creationText;
+    private Text creationDate;
 
-    private Text modificationText;
+    private Text modificationDate;
+
+    private Text commitDate;
 
     private static final SimpleDateFormat FORMATTER = new SimpleDateFormat();
 
     @Override
     protected void enableControl(boolean enable) {
-//        creationText.setEditable(enable);
-//        modificationText.setEditable(enable);
-    }
-    @Override
-    protected void showControl(boolean visible) {
-        creationText.getParent().setVisible(visible);
+        // creationText.setEditable(enable);
+        // modificationText.setEditable(enable);
     }
 
+    @Override
+    protected void showControl(boolean visible) {
+        creationDate.getParent().setVisible(visible);
+    }
 
     @Override
     public void createControls(Composite parent, TabbedPropertySheetPage aTabbedPropertySheetPage) {
@@ -65,41 +70,57 @@ public class DateSection extends AbstractSection {
         Composite composite = getWidgetFactory().createFlatFormComposite(parent);
         FormData data;
 
-        creationText = getWidgetFactory().createText(composite, ""); //$NON-NLS-1$
+        creationDate = getWidgetFactory().createText(composite, ""); //$NON-NLS-1$
         data = new FormData();
         data.left = new FormAttachment(0, STANDARD_LABEL_WIDTH);
-        data.right = new FormAttachment(50, 0);
+        data.right = new FormAttachment(33, 0);
         data.top = new FormAttachment(0, ITabbedPropertyConstants.VSPACE);
-        creationText.setLayoutData(data);
-        creationText.setEditable(false);
+        creationDate.setLayoutData(data);
+        creationDate.setEditable(false);
 
-        CLabel purposeLabel = getWidgetFactory().createCLabel(composite, "Creation");
+        CLabel creationLabel = getWidgetFactory().createCLabel(composite, "Creation");
         data = new FormData();
         data.left = new FormAttachment(0, 0);
-        data.right = new FormAttachment(creationText, -ITabbedPropertyConstants.HSPACE);
-        data.top = new FormAttachment(creationText, 0, SWT.CENTER);
-        purposeLabel.setLayoutData(data);
+        data.right = new FormAttachment(creationDate, -ITabbedPropertyConstants.HSPACE);
+        data.top = new FormAttachment(creationDate, 0, SWT.CENTER);
+        creationLabel.setLayoutData(data);
 
-        modificationText = getWidgetFactory().createText(composite, ""); //$NON-NLS-1$
+        modificationDate = getWidgetFactory().createText(composite, ""); //$NON-NLS-1$
         data = new FormData();
-        data.left = new FormAttachment(creationText, STANDARD_LABEL_WIDTH + 15);
+        data.left = new FormAttachment(creationDate, STANDARD_LABEL_WIDTH + 15);
+        data.right = new FormAttachment(66, 0);
+        data.top = new FormAttachment(0, ITabbedPropertyConstants.VSPACE);
+        modificationDate.setLayoutData(data);
+        modificationDate.setEditable(false);
+
+        CLabel modificationLabel = getWidgetFactory().createCLabel(composite, "Modification");
+        data = new FormData();
+        data.left = new FormAttachment(creationDate, ITabbedPropertyConstants.HSPACE * 3);
+        data.right = new FormAttachment(modificationDate, -ITabbedPropertyConstants.HSPACE);
+        data.top = new FormAttachment(modificationDate, 0, SWT.CENTER);
+        modificationLabel.setLayoutData(data);
+
+        commitDate = getWidgetFactory().createText(composite, ""); //$NON-NLS-1$
+        data = new FormData();
+        data.left = new FormAttachment(modificationDate, STANDARD_LABEL_WIDTH + 15);
         data.right = new FormAttachment(100, 0);
         data.top = new FormAttachment(0, ITabbedPropertyConstants.VSPACE);
-        modificationText.setLayoutData(data);
-        modificationText.setEditable(false);
+        commitDate.setLayoutData(data);
+        commitDate.setEditable(false);
 
-        CLabel statusLabel = getWidgetFactory().createCLabel(composite, "Modification");
+        CLabel commitLabel = getWidgetFactory().createCLabel(composite, "Commit");
         data = new FormData();
-        data.left = new FormAttachment(creationText, ITabbedPropertyConstants.HSPACE * 3);
-        data.right = new FormAttachment(modificationText, -ITabbedPropertyConstants.HSPACE);
-        data.top = new FormAttachment(modificationText, 0, SWT.CENTER);
-        statusLabel.setLayoutData(data);
+        data.left = new FormAttachment(modificationDate, ITabbedPropertyConstants.HSPACE * 3);
+        data.right = new FormAttachment(commitDate, -ITabbedPropertyConstants.HSPACE);
+        data.top = new FormAttachment(commitDate, 0, SWT.CENTER);
+        commitLabel.setLayoutData(data);
     }
 
     @Override
     public void refresh() {
-        creationText.setText(getCreationDate() != null ? FORMATTER.format(getCreationDate()) : "");
-        modificationText.setText(getModificationDate() != null ? FORMATTER.format(getModificationDate()) : "");
+        creationDate.setText(getCreationDate() != null ? FORMATTER.format(getCreationDate()) : "");
+        modificationDate.setText(getModificationDate() != null ? FORMATTER.format(getModificationDate()) : "");
+        commitDate.setText(getCommitDate() != null ? FORMATTER.format(getCommitDate()) : "");
     }
 
     protected Date getCreationDate() {
@@ -108,6 +129,18 @@ public class DateSection extends AbstractSection {
 
     protected Date getModificationDate() {
         return getObject().getModificationDate();
+    }
+
+    protected Date getCommitDate() {
+        Property property = getObject().getProperty();
+        if (property == null) {
+            return null;
+        }
+
+        Item item = property.getItem();
+        ItemState state = item.getState();
+        
+        return state.getCommitDate();
     }
 
     protected void beforeSave() {

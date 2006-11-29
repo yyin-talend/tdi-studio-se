@@ -42,9 +42,9 @@ import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.Folder;
 import org.talend.core.model.repository.IRepositoryObject;
-import org.talend.repository.model.IRepositoryFactory;
-import org.talend.repository.model.RepositoryFactoryProvider;
+import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
+import org.talend.repository.model.RepositoryStatus;
 import org.talend.repository.model.RepositoryNode.ENodeType;
 import org.talend.repository.model.RepositoryNode.EProperties;
 
@@ -97,7 +97,7 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
         RepositoryNode root = view.getRoot();
         List<RepositoryNode> nodes = root.getChildren();
 
-        IRepositoryFactory factory = RepositoryFactoryProvider.getInstance();
+        ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
         try {
             // 0. Recycle bin
             RepositoryNode recBinNode = new RepositoryNode(null, root, ENodeType.STABLE_SYSTEM_FOLDER);
@@ -240,20 +240,16 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
 
     private void addNode(RepositoryNode parent, ERepositoryObjectType type, RepositoryNode recBinNode,
             IRepositoryObject repositoryObject) {
-        IRepositoryFactory factory = RepositoryFactoryProvider.getInstance();
+        ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
 
         RepositoryNode node = new RepositoryNode(repositoryObject, parent, ENodeType.REPOSITORY_ELEMENT);
 
         node.setProperties(EProperties.CONTENT_TYPE, type);
         node.setProperties(EProperties.LABEL, repositoryObject.getLabel());
-        try {
-            if (factory.isDeleted(repositoryObject)) {
-                recBinNode.getChildren().add(node);
-            } else {
-                parent.getChildren().add(node);
-            }
-        } catch (PersistenceException e1) {
-            e1.printStackTrace();
+        if (factory.getStatus(repositoryObject) == RepositoryStatus.DELETED) {
+            recBinNode.getChildren().add(node);
+        } else {
+            parent.getChildren().add(node);
         }
 
         if (type == ERepositoryObjectType.METADATA_CONNECTIONS) {

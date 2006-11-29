@@ -109,8 +109,7 @@ import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.nodes.Node.Data;
 import org.talend.designer.core.ui.views.problems.Problems;
 import org.talend.repository.model.ComponentsFactoryProvider;
-import org.talend.repository.model.IRepositoryFactory;
-import org.talend.repository.model.RepositoryFactoryProvider;
+import org.talend.repository.model.ProxyRepositoryFactory;
 
 /**
  * The diagram will contain all elements (nodes, connections) The xml that describes the diagram will be saved from the
@@ -443,7 +442,7 @@ public class Process extends Element implements IProcess {
     }
 
     public static IMetadataTable getMetadataFromRepository(String metaRepositoryName) {
-        IRepositoryFactory factory = RepositoryFactoryProvider.getInstance();
+        ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
         List<ConnectionItem> metadataConnectionsItem = null;
         List<String> repositoryList = new ArrayList<String>();
         IMetadataTable metaToReturn = null;
@@ -912,7 +911,7 @@ public class Process extends Element implements IProcess {
         String propertyType = (String) node.getPropertyValue(EParameterName.PROPERTY_TYPE.getName());
         if (propertyType != null) {
             if (propertyType.equals(EmfComponent.REPOSITORY)) {
-                IRepositoryFactory factory = RepositoryFactoryProvider.getInstance();
+                ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
                 List<ConnectionItem> metadataConnectionsItem = null;
                 try {
                     metadataConnectionsItem = factory.getMetadataConnectionsItem();
@@ -1108,20 +1107,9 @@ public class Process extends Element implements IProcess {
     }
 
     public void checkReadOnly() {
-        IRepositoryFactory repFactory = RepositoryFactoryProvider.getInstance();
-        boolean isLocked = true;
-        boolean isDeleted = true;
-        try {
-            // User user = ((RepositoryContext) CorePlugin.getContext().getProperty(
-            // org.talend.core.context.Context.REPOSITORY_CONTEXT_KEY)).getUser();
-            isLocked = false;// repFactory.isLocked(property.getItem()) &&
-                                // (!repFactory.getLocker(this).equals(user));
-            isDeleted = repFactory.isDeleted(property.getItem());
-        } catch (PersistenceException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        this.setReadOnly(isLocked || isDeleted);
+        ProxyRepositoryFactory repFactory = ProxyRepositoryFactory.getInstance();
+        boolean readOnlyLocal = !repFactory.isEditableAndLockIfPossible(property.getItem());
+        this.setReadOnly(readOnlyLocal);
     }
 
     @SuppressWarnings("unchecked")

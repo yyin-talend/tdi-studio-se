@@ -37,8 +37,7 @@ import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.Property;
 import org.talend.core.ui.EImage;
 import org.talend.core.ui.ImageProvider;
-import org.talend.repository.model.IRepositoryFactory;
-import org.talend.repository.model.RepositoryFactoryProvider;
+import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.ui.wizards.RepositoryWizard;
 
 /**
@@ -108,7 +107,7 @@ public class DocumentationCreateWizard extends RepositoryWizard implements IDocu
     @Override
     public boolean performFinish() {
         boolean created = false;
-        IRepositoryFactory repositoryFactory = RepositoryFactoryProvider.getInstance();
+        ProxyRepositoryFactory repositoryFactory = ProxyRepositoryFactory.getInstance();
 
         try {
             property.setId(repositoryFactory.getNextId());

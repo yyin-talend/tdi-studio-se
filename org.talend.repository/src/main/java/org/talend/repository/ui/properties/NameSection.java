@@ -59,11 +59,13 @@ public class NameSection extends AbstractSection {
 
     private CLabel statusText;
 
+    private Composite composite;
+
     @Override
     public void createControls(Composite parent, TabbedPropertySheetPage aTabbedPropertySheetPage) {
         super.createControls(parent, aTabbedPropertySheetPage);
 
-        Composite composite = getWidgetFactory().createFlatFormComposite(parent);
+        composite = getWidgetFactory().createFlatFormComposite(parent);
         FormData data;
 
         nameText = getWidgetFactory().createText(composite, ""); //$NON-NLS-1$
@@ -170,11 +172,15 @@ public class NameSection extends AbstractSection {
     }
 
     @Override
-    protected void enableControl(boolean locked) {
+    protected void enableControl(boolean enable) {
         if (getType() == ERepositoryObjectType.FOLDER) {
             nameText.setEditable(true);
         } else {
-            nameText.setEditable(locked);
+            nameText.setEditable(enable);
+            if (enable)
+                composite.setBackground(composite.getDisplay().getSystemColor(SWT.COLOR_BLUE));
+            else
+                composite.setBackground(composite.getDisplay().getSystemColor(SWT.COLOR_RED));
         }
     }
 

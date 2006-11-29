@@ -47,9 +47,8 @@ import org.talend.commons.utils.VersionUtils;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.repository.RepositoryPlugin;
-import org.talend.repository.model.IRepositoryFactory;
+import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryConstants;
-import org.talend.repository.model.RepositoryFactoryProvider;
 import org.talend.repository.ui.properties.PurposeStatusSection;
 import org.talend.repository.ui.properties.StatusHelper;
 
@@ -102,7 +101,7 @@ public abstract class PropertiesWizardPage extends WizardPage {
 
     private boolean readOnly;
 
-    private StatusHelper statusHelper = new StatusHelper(RepositoryFactoryProvider.getInstance());
+    private StatusHelper statusHelper = new StatusHelper(ProxyRepositoryFactory.getInstance());
 
     protected PropertiesWizardPage(String pageName, Property property, IPath destinationPath) {
         this(pageName, property, destinationPath, false);
@@ -391,7 +390,7 @@ public abstract class PropertiesWizardPage extends WizardPage {
     }
 
     public boolean isValid(String itemName) {
-        IRepositoryFactory repositoryFactory = RepositoryFactoryProvider.getInstance();
+        ProxyRepositoryFactory repositoryFactory = ProxyRepositoryFactory.getInstance();
         try {
             return repositoryFactory.isNameAvailable(property.getItem(), itemName);
         } catch (PersistenceException e) {

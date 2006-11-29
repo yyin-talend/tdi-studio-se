@@ -21,13 +21,11 @@
 // ============================================================================
 package org.talend.repository.model;
 
-import java.util.Date;
 import java.util.List;
 
 import org.eclipse.core.runtime.IPath;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.utils.data.container.RootContainer;
-import org.talend.core.context.RepositoryContext;
 import org.talend.core.model.general.Project;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.Item;
@@ -48,7 +46,15 @@ import org.talend.core.model.temp.ECodeLanguage;
  */
 public interface IRepositoryFactory {
 
-    public void setRepositoryContext(RepositoryContext repositoryContext);
+    public ERepositoryType getType();
+
+    public String getName();
+
+    public void setName(String name);
+
+    public boolean isAuthenticationNeeded();
+
+    public void setAuthenticationNeeded(boolean aBnthenticationNeeded);
 
     public void initialize();
 
@@ -57,9 +63,9 @@ public interface IRepositoryFactory {
     public Project createProject(String label, String description, ECodeLanguage language, User author)
             throws PersistenceException;
 
-    public boolean findUser(Project project, RepositoryContext repositoryContext) throws PersistenceException;
+    public boolean findUser(Project project) throws PersistenceException;
 
-    public void createUser(Project project, RepositoryContext repositoryContext) throws PersistenceException;
+    public void createUser(Project project) throws PersistenceException;
 
     public Project[] readProject() throws PersistenceException;
 
@@ -139,10 +145,6 @@ public interface IRepositoryFactory {
      */
     public void deleteObjectPhysical(IRepositoryObject objToDelete) throws PersistenceException;
 
-    public boolean isDeleted(IRepositoryObject obj) throws PersistenceException;
-
-    public boolean isDeleted(Item item) throws PersistenceException;
-
     public String getOldPath(IRepositoryObject obj) throws PersistenceException;
 
     /**
@@ -158,23 +160,14 @@ public interface IRepositoryFactory {
 
     public void moveObject(IRepositoryObject objToMove, IPath newPath) throws PersistenceException;
 
-    public boolean isLocked(IRepositoryObject obj) throws PersistenceException;
-
-    public boolean isLocked(Item item) throws PersistenceException;
-
-    public User getLocker(IRepositoryObject obj) throws PersistenceException;
-
-    public Date getLockDate(IRepositoryObject obj) throws PersistenceException;
-
-    public void lock(IRepositoryObject obj) throws PersistenceException;
-
     public void lock(Item item) throws PersistenceException;
-
-    public void unlock(IRepositoryObject obj) throws PersistenceException;
 
     public void unlock(Item obj) throws PersistenceException;
 
-    public ERepositoryType getType();
+    // TODO SML This method should not be in this interface but only in the remote/synchronizer => later
+    public void commit(Item obj);
+
+    public RepositoryStatus getStatus(Item item);
 
     List<Status> getTechnicalStatus() throws PersistenceException;
 

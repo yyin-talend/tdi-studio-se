@@ -19,7 +19,6 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.ide.IGotoMarker;
 import org.eclipse.ui.views.properties.IPropertySheetPage;
 import org.talend.commons.exception.PersistenceException;
-import org.talend.core.context.RepositoryContext;
 import org.talend.core.model.properties.BusinessProcessItem;
 import org.talend.core.model.properties.Item;
 import org.talend.designer.business.diagram.custom.actions.DiagramResourceManager;
@@ -27,8 +26,7 @@ import org.talend.designer.business.diagram.custom.dnd.BusinessDiagramDropTarget
 import org.talend.designer.business.diagram.custom.properties.BusinessPropertiesBrowserPage;
 import org.talend.designer.business.model.business.diagram.edit.parts.BusinessEditPartFactory;
 import org.talend.repository.editor.RepositoryEditorInput;
-import org.talend.repository.model.IRepositoryFactory;
-import org.talend.repository.model.RepositoryFactoryProvider;
+import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.ui.views.IRepositoryView;
 import org.talend.repository.ui.views.RepositoryView;
 
@@ -129,7 +127,7 @@ public class BusinessDiagramEditor extends FileDiagramEditor implements IGotoMar
             diagramResourceManager.updateFromResource(businessProcessItem, repositoryEditorInput.getFile());
 
             try {
-                RepositoryFactoryProvider.getInstance().save(businessProcessItem);
+                ProxyRepositoryFactory.getInstance().save(businessProcessItem);
             } catch (PersistenceException e) {
                 e.printStackTrace();
             }
@@ -137,23 +135,16 @@ public class BusinessDiagramEditor extends FileDiagramEditor implements IGotoMar
             firePropertyChange(IEditorPart.PROP_DIRTY);
             IRepositoryView viewPart = (IRepositoryView) getSite().getPage().findView(RepositoryView.VIEW_ID);
             viewPart.refresh();
-            
+
         }
     }
 
     public boolean isEditable() {
         if (repositoryEditorInput != null) {
             Item item = repositoryEditorInput.getItem();
-            IRepositoryFactory repositoryFactory = RepositoryFactoryProvider.getInstance();
-            boolean locked = false;
-            boolean deleted = false;
-            try {
-                locked = repositoryFactory.isLocked(item);
-                deleted = repositoryFactory.isDeleted(item);
-            } catch (PersistenceException e) {
-                e.printStackTrace();
-            }
-            return !deleted;
+            ProxyRepositoryFactory repositoryFactory = ProxyRepositoryFactory.getInstance();
+
+            return repositoryFactory.isEditableAndLockIfPossible(item);
         }
         return super.isEditable();
     }
@@ -166,11 +157,10 @@ public class BusinessDiagramEditor extends FileDiagramEditor implements IGotoMar
     public void dispose() {
         super.dispose();
         // Unlock the process :
-        IRepositoryFactory repFactory = RepositoryFactoryProvider.getInstance();
+        ProxyRepositoryFactory repFactory = ProxyRepositoryFactory.getInstance();
         try {
             repFactory.unlock(repositoryEditorInput.getItem());
-            repFactory.reload(repositoryEditorInput.getItem().getProperty()); 
-            
+            repFactory.reload(repositoryEditorInput.getItem().getProperty());
         } catch (PersistenceException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -178,36 +168,23 @@ public class BusinessDiagramEditor extends FileDiagramEditor implements IGotoMar
         IRepositoryView viewPart = (IRepositoryView) getSite().getPage().findView(RepositoryView.VIEW_ID);
         viewPart.refresh();
     }
-    
+
     public void init(final IEditorSite site, final IEditorInput editorInput) throws PartInitException {
         super.init(site, editorInput);
-        // Lock the process :
-        IRepositoryFactory repFactory = RepositoryFactoryProvider.getInstance();
-        try {
-            RepositoryEditorInput processEditorInput = (RepositoryEditorInput) editorInput;
-            processEditorInput.getItem().getProperty().eAdapters().add(dirtyListener);
-            boolean deleted = repFactory.isDeleted(processEditorInput.getItem());
-            if (!deleted)
-                repFactory.lock(processEditorInput.getItem());
-        } catch (PersistenceException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        
+        RepositoryEditorInput processEditorInput = (RepositoryEditorInput) editorInput;
+        processEditorInput.getItem().getProperty().eAdapters().add(dirtyListener);
     }
+
     private boolean propertyIsDirty;
 
     private AdapterImpl dirtyListener = new AdapterImpl() {
-        
 
         public void notifyChanged(Notification notification) {
-            if (notification.getEventType() != Notification.REMOVING_ADAPTER)
-            {
+            if (notification.getEventType() != Notification.REMOVING_ADAPTER) {
                 propertyIsDirty = true;
                 firePropertyChange(IEditorPart.PROP_DIRTY);
             }
         }
     };
-
 
 }

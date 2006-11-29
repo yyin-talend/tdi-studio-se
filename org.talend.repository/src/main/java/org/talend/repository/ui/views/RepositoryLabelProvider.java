@@ -35,9 +35,9 @@ import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.ui.EImage;
 import org.talend.core.ui.ImageProvider;
-import org.talend.repository.model.IRepositoryFactory;
-import org.talend.repository.model.RepositoryFactoryProvider;
+import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
+import org.talend.repository.model.RepositoryStatus;
 import org.talend.repository.model.RepositoryNode.ENodeType;
 import org.talend.repository.model.RepositoryNode.EProperties;
 
@@ -75,14 +75,16 @@ public class RepositoryLabelProvider extends LabelProvider implements IColorProv
                 string.append(object.getLabel() + " " + object.getVersion());
             }
 
-            IRepositoryFactory factory = RepositoryFactoryProvider.getInstance();
+            ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
             try {
-                if (factory.isDeleted(object)) {
+                if (factory.getStatus(object) == RepositoryStatus.DELETED) {
                     string.append(" (" + factory.getOldPath(object) + ")");
                 }
             } catch (PersistenceException e) {
                 ExceptionHandler.process(e);
             }
+
+            string.append(" [" + factory.getStatus(object.getProperty().getItem()) + "]");
 
             return string.toString();
         } else if (node.getType() == ENodeType.SIMPLE_FOLDER) {

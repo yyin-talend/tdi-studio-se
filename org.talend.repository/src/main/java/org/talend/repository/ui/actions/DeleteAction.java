@@ -27,7 +27,6 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.widgets.Shell;
-import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.MessageBoxExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.core.model.repository.ERepositoryObjectType;
@@ -35,10 +34,10 @@ import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.ui.EImage;
 import org.talend.core.ui.ImageProvider;
 import org.talend.repository.i18n.Messages;
-import org.talend.repository.model.IRepositoryFactory;
-import org.talend.repository.model.RepositoryFactoryProvider;
+import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNodeUtilities;
+import org.talend.repository.model.RepositoryStatus;
 import org.talend.repository.model.RepositoryNode.ENodeType;
 import org.talend.repository.model.RepositoryNode.EProperties;
 
@@ -71,7 +70,7 @@ public class DeleteAction extends AContextualAction {
 
         boolean popUpLockedAlreadyOpen = false;
 
-        IRepositoryFactory factory = RepositoryFactoryProvider.getInstance();
+        ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
 
         for (Object obj : ((IStructuredSelection) selection).toArray()) {
             if (obj instanceof RepositoryNode) {
@@ -79,15 +78,14 @@ public class DeleteAction extends AContextualAction {
                 try {
                     if (node.getType() == ENodeType.REPOSITORY_ELEMENT) {
                         IRepositoryObject objToDelete = node.getObject();
-
-                        if (!factory.isLocked(objToDelete)) {
-                            if (factory.isDeleted(objToDelete)) {
+//                      TODO SML Temporary code
+                        if (factory.getStatus(objToDelete) != RepositoryStatus.LOCK_BY_OTHER) {
+                            if (factory.getStatus(objToDelete) == RepositoryStatus.DELETED) {
                                 if (confirm == null) {
                                     String title = Messages.getString("DeleteAction.dialog.title");
                                     String message = Messages.getString("DeleteAction.dialog.message1") + "\n"
                                             + Messages.getString("DeleteAction.dialog.message2");
                                     confirm = (MessageDialog.openQuestion(new Shell(), title, message));
-
                                 }
                                 if (confirm) {
                                     factory.deleteObjectPhysical(objToDelete);
@@ -149,16 +147,11 @@ public class DeleteAction extends AContextualAction {
                     break;
                 case REPOSITORY_ELEMENT:
                     IRepositoryObject repObj = node.getObject();
-
-                    IRepositoryFactory repFactory = RepositoryFactoryProvider.getInstance();
-                    boolean isLocked = true;
-                    boolean idDeleted = true;
-                    try {
-                        isLocked = repFactory.isLocked(repObj);
-                        idDeleted = repFactory.isDeleted(repObj);
-                    } catch (PersistenceException e) {
-                        ExceptionHandler.process(e);
-                    }
+                    ProxyRepositoryFactory repFactory = ProxyRepositoryFactory.getInstance();
+                    
+                    boolean isPotentiallyEditable = repFactory.isPotentiallyEditable(repObj);
+                    boolean idDeleted = repFactory.getStatus(repObj) == RepositoryStatus.DELETED;
+                    
                     if (idDeleted) {
                         ERepositoryObjectType nodeType = (ERepositoryObjectType) node.getProperties(EProperties.CONTENT_TYPE);
                         if (ERepositoryObjectType.METADATA_CON_TABLE.equals(nodeType)) {
@@ -170,7 +163,7 @@ public class DeleteAction extends AContextualAction {
                             this.setText(DELETE_FOREVER_TITLE);
                             this.setToolTipText(DELETE_FOREVER_TOOLTIP);
 
-                            if (isLocked) {
+                            if (!isPotentiallyEditable) {
                                 visible = true;
                                 enabled = false;
                             }
@@ -188,7 +181,7 @@ public class DeleteAction extends AContextualAction {
                                 this.setText(DELETE_LOGICAL_TITLE);
                                 this.setToolTipText(DELETE_LOGICAL_TOOLTIP);
 
-                                if (isLocked) {
+                                if (!isPotentiallyEditable) {
                                     visible = true;
                                     enabled = false;
                                 }

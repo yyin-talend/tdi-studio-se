@@ -30,8 +30,7 @@ import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.ui.EImage;
 import org.talend.core.ui.ImageProvider;
 import org.talend.repository.i18n.Messages;
-import org.talend.repository.model.IRepositoryFactory;
-import org.talend.repository.model.RepositoryFactoryProvider;
+import org.talend.repository.model.ProxyRepositoryFactory;
 
 /**
  * Wizard for the creation of a new project. <br/>
@@ -77,7 +76,7 @@ public class NewFolderWizard extends Wizard {
      */
     @Override
     public boolean performFinish() {
-        IRepositoryFactory repositoryFactory = RepositoryFactoryProvider.getInstance();
+        ProxyRepositoryFactory repositoryFactory = ProxyRepositoryFactory.getInstance();
         try {
             repositoryFactory.createFolder(type, path, mainPage.getName());
             return true;
@@ -90,7 +89,7 @@ public class NewFolderWizard extends Wizard {
     }
 
     public boolean isValid(String folderName) {
-        IRepositoryFactory repositoryFactory = RepositoryFactoryProvider.getInstance();
+        ProxyRepositoryFactory repositoryFactory = ProxyRepositoryFactory.getInstance();
         try {
             return repositoryFactory.isPathValid(type, path, folderName);
         } catch (PersistenceException e) {

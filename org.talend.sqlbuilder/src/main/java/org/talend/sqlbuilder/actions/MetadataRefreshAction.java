@@ -44,6 +44,7 @@ import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.ui.EImage;
 import org.talend.core.ui.ImageProvider;
 import org.talend.repository.model.IRepositoryFactory;
+import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryFactoryProvider;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNode.EProperties;
@@ -258,7 +259,7 @@ public class MetadataRefreshAction extends SelectionProviderAction {
 	 * @param item
 	 */
 	private void saveMetaData(DatabaseConnectionItem item) {
-		IRepositoryFactory factory = RepositoryFactoryProvider.getInstance();
+        ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
 		try {
 			factory.save(item);
 		} catch (PersistenceException e) {

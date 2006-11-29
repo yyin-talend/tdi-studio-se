@@ -31,8 +31,7 @@ import org.talend.commons.ui.swt.dialogs.ErrorDialogWidthDetailArea;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.repository.i18n.Messages;
-import org.talend.repository.model.IRepositoryFactory;
-import org.talend.repository.model.RepositoryFactoryProvider;
+import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.ui.wizards.RepositoryWizard;
 
 /**
@@ -135,7 +134,7 @@ public class DatabaseTableWizard extends RepositoryWizard implements INewWizard 
      * execute saveMetaData() on TableForm.
      */
     private void saveMetaData() {
-        IRepositoryFactory factory = RepositoryFactoryProvider.getInstance();
+        ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
         try {
             factory.save(repositoryObject.getProperty().getItem());
         } catch (PersistenceException e) {
