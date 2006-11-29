@@ -5,4 +5,23 @@
          point="org.eclipse.ui.startup">
       <startup class="org.talend.designer.codegen.startup.CodeGeneratorStartup"/>
    </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            categoryId="Talend"
+            id="refreshTemplates"
+            name="Refresh templates"/>
+   </extension>
+   <extension
+         point="org.eclipse.ui.bindings">
+      <key
+            commandId="refreshTemplates"
+            contextId="talend.global"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="CTRL+SHIFT+F3"/>
+   </extension>
+   <extension
+         point="org.talend.rcp.global_actions">
+      <GlobalAction class="org.talend.designer.codegen.RefreshTemplatesAction"/>
+   </extension>
 </plugin>

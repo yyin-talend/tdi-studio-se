@@ -15,7 +15,8 @@ Require-Bundle: org.talend.core,
  org.talend.commons,
  org.eclipse.ui,
  org.talend.repository,
- org.talend.libraries
+ org.talend.libraries,
+ org.talend.rcp
 Eclipse-LazyStart: true
 Export-Package: org.talend.designer.codegen,
  org.talend.designer.codegen.config,
