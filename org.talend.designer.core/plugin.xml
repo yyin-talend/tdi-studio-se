@@ -238,7 +238,7 @@
          commandId="showProblemsView"
          contextId="talend.global"
          schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
-         sequence="CTRL+F1"/>
+         sequence="CTRL+F3"/>
    <key
          commandId="showModulesView"
          contextId="talend.global"
