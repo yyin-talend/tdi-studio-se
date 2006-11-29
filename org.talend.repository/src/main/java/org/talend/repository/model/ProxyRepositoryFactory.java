@@ -340,6 +340,7 @@ public class ProxyRepositoryFactory {
         checkFileNameAndPath(objToMove.getProperty().getItem(), RepositoryConstants.FILE_PATTERN, path, false);
         this.repositoryFactoryFromProvider.moveObject(objToMove, path);
         log.debug("Move [" + objToMove + "] to \"" + path + "\".");
+        unlock(getItem(objToMove));
     }
 
     // TODO SML Renommer et finir la méthode et la plugger dans toutes les méthodes
