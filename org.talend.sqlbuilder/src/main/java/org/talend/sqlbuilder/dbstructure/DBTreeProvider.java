@@ -506,7 +506,6 @@ ITableColorProvider {
 
         private IRepositoryObject repObj;
 
-
         public MetadataConnectionRepositoryObject(IRepositoryObject repObj) {
         	super(repObj.getProperty());
         	this.repObj = repObj;
@@ -514,6 +513,13 @@ ITableColorProvider {
 
         public Property getProperty() {
             return repObj.getProperty();
+        }
+        
+        public DatabaseConnection getConnection() {
+        	DatabaseConnection metadataConnection = (DatabaseConnection) ((ConnectionItem) repObj.getProperty()
+                    .getItem()).getConnection();
+        	
+        	return metadataConnection;
         }
     }
     
