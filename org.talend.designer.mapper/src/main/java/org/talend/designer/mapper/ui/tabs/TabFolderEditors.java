@@ -87,9 +87,9 @@ public class TabFolderEditors extends CTabFolder {
         inOutMetaEditorContainer.setLayout(new RowLayout(SWT.HORIZONTAL));
         item.setControl(inOutMetaEditorContainer);
 
-        inputMetaEditor = new MetadataTableEditorView(inOutMetaEditorContainer, SWT.BORDER, true);
+        inputMetaEditor = new MetadataTableEditorView(inOutMetaEditorContainer, SWT.BORDER);
         inputMetaEditor.initGraphicComponents();
-        outputMetaEditor = new MetadataTableEditorView(inOutMetaEditorContainer, SWT.BORDER, true);
+        outputMetaEditor = new MetadataTableEditorView(inOutMetaEditorContainer, SWT.BORDER);
         outputMetaEditor.initGraphicComponents();
 
         item = new CTabItem(tabFolderEditors, SWT.BORDER);

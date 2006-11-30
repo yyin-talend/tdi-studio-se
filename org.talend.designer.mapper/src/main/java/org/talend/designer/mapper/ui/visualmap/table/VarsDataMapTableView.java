@@ -106,12 +106,12 @@ public class VarsDataMapTableView extends DataMapTableView {
         cellEditor.addListener(new DialogErrorForCellEditorListener(cellEditor, column) {
 
             @Override
-            public void newValidValueTyped(int itemIndex, String previousValue, String newValue, CELL_EDITOR_STATE state) {
+            public void newValidValueTyped(int itemIndex, Object previousValue, Object newValue, CELL_EDITOR_STATE state) {
                 if (state == CELL_EDITOR_STATE.APPLYING) {
                     ModifiedObjectInfo modifiedObjectInfo = tableViewerCreatorForColumns.getModifiedObjectInfo();
                     String originalValue = (String) modifiedObjectInfo.getOriginalPropertyBeanValue();
                     Object currentModifiedBean = modifiedObjectInfo.getCurrentModifiedBean();
-                    mapperManager.getUiManager().processColumnNameChanged(originalValue, newValue, dataMapTableView,
+                    mapperManager.getUiManager().processColumnNameChanged(originalValue.toString(), newValue.toString(), dataMapTableView,
                             (ITableEntry) currentModifiedBean);
                 }
             }
