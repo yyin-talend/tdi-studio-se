@@ -276,9 +276,10 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
             PerlProcessor plProcessor = new PerlProcessor(process, false);
 
             try {
-//                plProcessor.generateCode(process.getContextManager().getDefaultContext(), false, false, true, true);//Old
-            	plProcessor.generateCode(process.getContextManager().getDefaultContext(), false, false, true);
-                
+                // plProcessor.generateCode(process.getContextManager().getDefaultContext(), false, false, true,
+                // true);//Old
+                plProcessor.generateCode(process.getContextManager().getDefaultContext(), false, false, true);
+
             } catch (ProcessorException pe) {
                 MessageBoxExceptionHandler.process(pe);
                 // ErrorDialog.openError(getSite().getShell(), Messages.getString("MultiPageTalendEditor.3"),
@@ -290,6 +291,14 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
 
             perlEditor.revalidateSyntax();
         }
+    }
+
+    public void showDesignerPage() {
+        setActivePage(0);
+    }
+
+    public void showCodePage() {
+        setActivePage(1);
     }
 
     /**
@@ -376,8 +385,8 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
                 public void run() {
                     IWorkbenchPage[] pages = getSite().getWorkbenchWindow().getPages();
                     for (int i = 0; i < pages.length; i++) {
-                        if (((FileEditorInput) designerEditor.getEditorInput()).getFile().getProject().equals(
-                                event.getResource())) {
+                        if (((FileEditorInput) designerEditor.getEditorInput()).getFile().getProject()
+                                .equals(event.getResource())) {
                             IEditorPart editorPart = pages[i].findEditor(designerEditor.getEditorInput());
                             pages[i].closeEditor(editorPart, true);
                         }

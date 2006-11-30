@@ -166,6 +166,7 @@ public class TalendEditor extends GraphicalEditorWithFlyoutPalette implements IT
      */
     @Override
     public void setFocus() {
+        super.setFocus();
         // When gain focus, check read-only to disable read-only mode if process has been restore while opened :
         // 1. Enabled/disabled components :
         process.checkReadOnly();

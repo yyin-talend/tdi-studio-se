@@ -221,6 +221,14 @@
          categoryId="talend"
          id="showModulesView"
          name="Show modules view"/>
+   <command
+         categoryId="talend"
+         id="showEditorCodePage"
+         name="Show editor code page"/>
+   <command
+         categoryId="talend"
+         id="showEditorDesignerPage"
+         name="Show designer code page"/>
    </extension>
    <extension
          point="org.eclipse.ui.bindings">
@@ -233,7 +241,7 @@
          commandId="showPropertiesView"
          contextId="talend.global"
          schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
-         sequence="F3"/>
+         sequence="F2"/>
    <key
          commandId="showProblemsView"
          contextId="talend.global"
@@ -244,11 +252,23 @@
          contextId="talend.global"
          schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
          sequence="CTRL+F2"/>
+   <key
+         commandId="showEditorCodePage"
+         contextId="talend.global"
+         schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+         sequence="CTRL+G"/>
+   <key
+         commandId="showEditorDesignerPage"
+         contextId="talend.global"
+         schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+         sequence="CTRL+H"/>
    </extension>
    <extension
          point="org.talend.rcp.global_actions">
       <GlobalAction class="org.talend.designer.core.ui.action.ShowPropertiesViewAction"/>
       <GlobalAction class="org.talend.designer.core.ui.action.ShowProblemsViewAction"/>
       <GlobalAction class="org.talend.designer.core.ui.action.ShowModulesViewAction"/>
+      <GlobalAction class="org.talend.designer.core.ui.action.ShowEditorPageAction"/>
+      <GlobalAction class="org.talend.designer.core.ui.action.ShowDesignerPageAction"/>
    </extension>
 </plugin>
