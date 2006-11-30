@@ -88,9 +88,7 @@ public class TabFolderEditors extends CTabFolder {
         item.setControl(inOutMetaEditorContainer);
 
         inputMetaEditor = new MetadataTableEditorView(inOutMetaEditorContainer, SWT.BORDER);
-        inputMetaEditor.initGraphicComponents();
         outputMetaEditor = new MetadataTableEditorView(inOutMetaEditorContainer, SWT.BORDER);
-        outputMetaEditor.initGraphicComponents();
 
         item = new CTabItem(tabFolderEditors, SWT.BORDER);
         item.setText("Expression editor");
