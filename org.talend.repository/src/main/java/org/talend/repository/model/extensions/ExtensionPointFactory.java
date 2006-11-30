@@ -35,9 +35,6 @@ public class ExtensionPointFactory {
     public static final ISimpleExtensionPoint COMPONENTS_PROVIDER = new ExtensionPointImpl(
             "org.talend.repository.components_provider", "ComponentsFactory", 1, 1);
 
-    public static final ISimpleExtensionPoint REPOSITORY_PROVIDER = new ExtensionPointImpl(
-            "org.talend.repository.repository_provider", "RepositoryFactory", 1, -1);
-
     public static final ISimpleExtensionPoint EXTERNAL_COMPONENT = new ExtensionPointImpl(
             "org.talend.repository.external_component", "ExternalComponent", 1, 1);
 
