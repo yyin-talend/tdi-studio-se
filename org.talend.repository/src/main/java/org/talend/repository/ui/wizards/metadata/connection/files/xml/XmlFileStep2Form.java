@@ -65,7 +65,7 @@ import org.talend.core.model.metadata.builder.connection.ConnectionFactory;
 import org.talend.core.model.metadata.builder.connection.MetadataSchema;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.targetschema.editor.XPathNodeSchemaModel;
-import org.talend.core.ui.extended.ExtendedTableToolbarView;
+import org.talend.core.ui.extended.ExtendedToolbarView;
 import org.talend.core.ui.extended.button.AddPushButtonForExtendedTable;
 import org.talend.core.utils.XmlArray;
 import org.talend.repository.i18n.Messages;
@@ -217,13 +217,13 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
         final Group group = Form.createGroup(mainComposite, 1, Messages.getString("XmlFileStep1.groupSchemaTarget"), height);
 
         schemaModel = new XPathNodeSchemaModel(Messages.getString("FileStep3.metadataDescription"));
-        tableEditorView = new XPathNodeSchemaEditorView(schemaModel, group, SWT.NONE);
+        tableEditorView = new XPathNodeSchemaEditorView(schemaModel, group);
 
-        new ExtendedTableToolbarView(group, SWT.NONE, tableEditorView) {
+        new ExtendedToolbarView(group, SWT.NONE, tableEditorView.getExtendedTableViewer()) {
 
             @Override
             protected AddPushButtonForExtendedTable createAddPushButton() {
-                return new AddPushButtonForExtendedTable(this.toolbar, tableEditorView) {
+                return new AddPushButtonForExtendedTable(this.toolbar, tableEditorView.getExtendedTableViewer()) {
 
                     @Override
                     protected Object getObjectToAdd() {

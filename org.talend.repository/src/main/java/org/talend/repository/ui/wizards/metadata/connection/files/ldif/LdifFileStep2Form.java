@@ -146,7 +146,7 @@ public class LdifFileStep2Form extends AbstractLdifFileStepForm {
 
         attributeModel = new ExtendedTableModel<String>();
         attributeModel.registerDataList(itemTableName);
-        tableEditorView = new AbstractExtendedTableViewer<String>(attributeModel, group, SWT.NONE) {
+        tableEditorView = new AbstractExtendedTableViewer<String>(attributeModel, group) {
 
             /*
              * (non-Javadoc)

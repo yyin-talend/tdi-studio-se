@@ -29,7 +29,7 @@ import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
-import org.talend.commons.ui.swt.extended.macrotable.AbstractExtendedTableViewer;
+import org.talend.commons.ui.swt.advanced.dataeditor.AbstractDataTableEditorView;
 import org.talend.commons.ui.swt.proposal.TextCellEditorWithProposal;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumn;
@@ -42,7 +42,7 @@ import org.talend.commons.utils.data.list.ListenableListEvent;
 import org.talend.commons.utils.data.list.ListenableListEvent.TYPE;
 import org.talend.core.model.metadata.builder.connection.SchemaTarget;
 import org.talend.core.model.targetschema.editor.XPathNodeSchemaModel;
-import org.talend.core.ui.extended.ExtendedTableToolbarView;
+import org.talend.core.ui.extended.ExtendedToolbarView;
 
 /**
  * DOC amaumont class global comment. Detailled comment <br/> TGU same purpose as TargetSchemaTableEditorView but uses
@@ -51,11 +51,11 @@ import org.talend.core.ui.extended.ExtendedTableToolbarView;
  * $Id$
  * 
  */
-public class XPathNodeSchemaEditorView extends AbstractExtendedTableViewer<SchemaTarget> {
+public class XPathNodeSchemaEditorView extends AbstractDataTableEditorView<SchemaTarget> {
 
     private TableViewerCreator<SchemaTarget> tableViewerCreator;
 
-    private ExtendedTableToolbarView targetSchemaToolbarEditorView2;
+    private ExtendedToolbarView targetSchemaToolbarEditorView2;
 
     public static final String ID_COLUMN_NAME = "ID_COLUMN_NAME";
 
@@ -73,6 +73,10 @@ public class XPathNodeSchemaEditorView extends AbstractExtendedTableViewer<Schem
         this(model, parent, styleChild, false);
     }
 
+    public XPathNodeSchemaEditorView(XPathNodeSchemaModel model, Composite parent) {
+        this(model, parent, SWT.NONE, false);
+    }
+    
     /**
      * TargetSchemaTableEditorView2 constructor comment.
      * 
@@ -81,13 +85,8 @@ public class XPathNodeSchemaEditorView extends AbstractExtendedTableViewer<Schem
      * @param showDbTypeColumn
      */
     public XPathNodeSchemaEditorView(XPathNodeSchemaModel model, Composite parent, int styleChild, boolean showDbTypeColumn) {
-        super(model, parent, styleChild);
+        super(parent, styleChild, model);
         this.showDbTypeColumn = showDbTypeColumn;
-    }
-
-    public void setReadOnly(boolean b) {
-        targetSchemaToolbarEditorView2.setReadOnly(b);
-        this.tableViewerCreator.getTable().setEnabled(!b);
     }
 
     /**
@@ -267,7 +266,7 @@ public class XPathNodeSchemaEditorView extends AbstractExtendedTableViewer<Schem
     }
 
     public XPathNodeSchemaModel getXpathNodeSchemaModel() {
-        return (XPathNodeSchemaModel) extendedControl;
+        return (XPathNodeSchemaModel) getExtendedTableModel();
     }
 
     /**

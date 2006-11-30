@@ -156,7 +156,7 @@ public class XmlToSchemaLinker extends TreeToTableLinker<Object, SchemaTarget> {
 
         XPathNodeSchemaModel schemaModel = this.tableEditorView.getXpathNodeSchemaModel();
 
-        schemaModel.addModifiedBeanListenerListener(new IModifiedBeanListener<SchemaTarget>() {
+        schemaModel.addModifiedBeanListener(new IModifiedBeanListener<SchemaTarget>() {
 
             public void handleEvent(ModifiedBeanEvent<SchemaTarget> event) {
                 handleModifiedBeanEvent(event);
