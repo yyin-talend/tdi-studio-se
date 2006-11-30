@@ -28,12 +28,19 @@ use FileHandle;
 use List::Util qw/min/;
 use talend::filesOp;
 
-my %desc_<%=metadata.getTableName() %> = (
+my %desc_<%=cid %> = (
     filename      => <%=ElementParameterParser.getValue(node, "__FILENAME__") %>,
     row_separator => <%=ElementParameterParser.getValue(node, "__ROWSEPARATOR__") %>,
     header        => <%=ElementParameterParser.getValue(node, "__HEADER__") %>,
     footer        => <% String myFooter = ElementParameterParser.getValue(node, "__FOOTER__"); if (myFooter.equals("")) myFooter = null; %><%=myFooter%>,
     limit         => <% String myLimit = ElementParameterParser.getValue(node, "__LIMIT__"); if (myLimit.equals("")) myLimit = null; %><%=myLimit%>,
+<%
+    if (ElementParameterParser.getValue(node, "__RANDOM__").equals("true")) {
+%>
+    nb_random     => <%=ElementParameterParser.getValue(node, "__NB_RANDOM__")%>,
+<%
+    }
+%>
     schema        => [
     <%
 		for (IMetadataColumn column: metadata.getListColumns()) {
@@ -53,21 +60,21 @@ my %desc_<%=metadata.getTableName() %> = (
     ]
 );
 
-use constant INPUT_FIELD_SEPARATOR_<%=metadata.getTableName() %> => <%=ElementParameterParser.getValue(node, "__FIELDSEPARATOR__") %>;
-$/ = $desc_<%=metadata.getTableName() %>{row_separator};
-my $nb_fields_<%=metadata.getTableName() %> = scalar @{ $desc_<%=metadata.getTableName() %>{schema} };
+use constant INPUT_FIELD_SEPARATOR_<%=cid %> => <%=ElementParameterParser.getValue(node, "__FIELDSEPARATOR__") %>;
+$/ = $desc_<%=cid %>{row_separator};
+my $nb_fields_<%=cid %> = scalar @{ $desc_<%=cid %>{schema} };
 
 <%
     if (stats) {
 %>
-    UpdateStat('<%=metadata.getTableName() %>', 0);
+    UpdateStat('<%=cid %>', 0);
 <%
     }
 %>
 
-my $input_FH_<%=metadata.getTableName() %> = new FileHandle;
-open($input_FH_<%=metadata.getTableName() %>, '<', $desc_<%=metadata.getTableName() %>{filename})
-    or die 'cannot open file "' . $desc_<%=metadata.getTableName() %>{filename} . '"';
+my $input_FH_<%=cid %> = new FileHandle;
+open($input_FH_<%=cid %>, '<', $desc_<%=cid %>{filename})
+    or die 'cannot open file "' . $desc_<%=cid %>{filename} . '"';
 
 <%
   if ((!ElementParameterParser.getValue(node, "__HEADER__").equals(""))
@@ -76,9 +83,9 @@ open($input_FH_<%=metadata.getTableName() %>, '<', $desc_<%=metadata.getTableNam
 %>
 
 # move to the first useful line
-if ($desc_<%=metadata.getTableName() %>{header} > 0) {
-    for (1..$desc_<%=metadata.getTableName() %>{header}) {
-        my $useless_line_<%=metadata.getTableName() %> = <$input_FH_<%=metadata.getTableName() %>>;
+if ($desc_<%=cid %>{header} > 0) {
+    for (1..$desc_<%=cid %>{header}) {
+        my $useless_line_<%=cid %> = <$input_FH_<%=cid %>>;
     }
 }
 
@@ -86,20 +93,21 @@ if ($desc_<%=metadata.getTableName() %>{header} > 0) {
   }
 %>
 
-$nb_line_<%=metadata.getTableName() %> = 0;
+$nb_line_<%=cid %> = 0;
 
 <%
   if (((!ElementParameterParser.getValue(node, "__FOOTER__").equals(""))
         && (!ElementParameterParser.getValue(node, "__FOOTER__").equals("0")))
-      || (!ElementParameterParser.getValue(node, "__LIMIT__").equals("")))
+      || (!ElementParameterParser.getValue(node, "__LIMIT__").equals(""))
+      || (ElementParameterParser.getValue(node, "__RANDOM__").equals("true")))
   {
 %>
 
 # as we have a limit and/or a footer, we need to know the number of rows in
 # the input file
-my $total_line_<%=metadata.getTableName() %> = tFileRowCount(
-    filename => $desc_<%=metadata.getTableName() %>{filename},
-    rowseparator => $desc_<%=metadata.getTableName() %>{row_separator},
+my $total_line_<%=cid %> = tFileRowCount(
+    filename => $desc_<%=cid %>{filename},
+    rowseparator => $desc_<%=cid %>{row_separator},
     buffersize => 4096,
 );
 
@@ -110,15 +118,32 @@ my ($first_row_<%=cid%>, $last_row_<%=cid%>) = getFirstAndLastRowNumber(
     total   => $total_line_<%=cid%>,
 );
 
-for ($first_row_<%=metadata.getTableName() %> .. $last_row_<%=metadata.getTableName() %>) {
-    my $_<%=metadata.getTableName() %> = <$input_FH_<%=metadata.getTableName() %>>;
+<%
+  if (ElementParameterParser.getValue(node, "__RANDOM__").equals("true")) {
+%>
+use List::Util qw/shuffle/;
+
+my $nb_lines_<%=cid%> = $last_row_<%=cid%> - $first_row_<%=cid%>;
+
+my %random_line_number_<%=cid%> =
+    map {$_ => 1}
+    sort {$a <=> $b}
+    (shuffle 1..$nb_lines_<%=cid%>)[1..$desc_<%=cid %>{nb_random}];
+
+print join("\n", sort {$a <=> $b} keys %random_line_number_<%=cid%>), "\n\n";
+<%
+  }
+%>
+
+for ($first_row_<%=cid %> .. $last_row_<%=cid %>) {
+    my $_<%=cid %> = <$input_FH_<%=cid %>>;
 <%
   }
   else
   {
 %>
 
-while (my $_<%=metadata.getTableName() %> = <$input_FH_<%=metadata.getTableName() %>>) {
+while (my $_<%=cid %> = <$input_FH_<%=cid %>>) {
 
 <%
   }
@@ -127,31 +152,39 @@ while (my $_<%=metadata.getTableName() %> = <$input_FH_<%=metadata.getTableName(
 <%
     if (stats) {
 %>
-    UpdateStat('<%=metadata.getTableName() %>', 1);
+    UpdateStat('<%=cid %>', 1);
 <%
     }
 %>
 
-    chomp $_<%=metadata.getTableName() %>;
+    chomp $_<%=cid %>;
 
 <%
     if (ElementParameterParser.getValue(node, "__REMOVE_EMPTY_ROW__").equals("true")) {
 %>
-    next if ($_<%=metadata.getTableName() %> eq '');
+    next if ($_<%=cid %> eq '');
 <%
     }
 %>
 
     # increase number of line really splitted
-    $nb_line_<%=metadata.getTableName() %>++;
+    $nb_line_<%=cid %>++;
 
-    my @<%=metadata.getTableName() %> = (
+<%
+  if (ElementParameterParser.getValue(node, "__RANDOM__").equals("true")) {
+%>
+    next if (not defined $random_line_number_<%=cid%>{$nb_line_<%=cid %>});
+
+<%
+  }
+%>
+    my @<%=cid %> = (
         split(
-            INPUT_FIELD_SEPARATOR_<%=metadata.getTableName() %>,
-            $_<%=metadata.getTableName() %>
-            <% if (metadata.getListColumns().size()>0) { %>,$nb_fields_<%=metadata.getTableName() %> + 1<% } %>
+            INPUT_FIELD_SEPARATOR_<%=cid %>,
+            $_<%=cid %>
+            <% if (metadata.getListColumns().size()>0) { %>,$nb_fields_<%=cid %> + 1<% } %>
         )
-    )<% if (metadata.getListColumns().size()>0) { %>[0 .. $nb_fields_<%=metadata.getTableName() %> - 1]<% } %>;
+    )<% if (metadata.getListColumns().size()>0) { %>[0 .. $nb_fields_<%=cid %> - 1]<% } %>;
 
 <%
 		}
