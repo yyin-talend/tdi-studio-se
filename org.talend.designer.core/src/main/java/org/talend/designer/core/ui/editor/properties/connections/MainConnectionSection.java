@@ -75,7 +75,6 @@ public class MainConnectionSection extends DynamicTabbedPropertySection {
             metadataTableEditorView.setMetadataTableEditor(metadataTableEditor);
             metadataTableEditorView.getTableViewerCreator().getTableViewer().refresh();
 
-            composite.layout();
             composite.getParent().layout();
         }
     }
@@ -85,7 +84,7 @@ public class MainConnectionSection extends DynamicTabbedPropertySection {
         if (conSchema()) {
             disposeChildren();
 
-            List<? extends IElementParameter> listParam = elem.getElementParameters();
+            List<? extends IElementParameter> listParam = ((Connection)elem).getSource().getElementParameters();
 
             for (IElementParameter cur : listParam) {
                 if (cur.getField() == EParameterFieldType.SCHEMA_TYPE) {
@@ -96,7 +95,7 @@ public class MainConnectionSection extends DynamicTabbedPropertySection {
             FormData data = new FormData();
             data.left = new FormAttachment(0, ITabbedPropertyConstants.HSPACE);
             data.right = new FormAttachment(100, -ITabbedPropertyConstants.HSPACE);
-            data.top = new FormAttachment(0, ITabbedPropertyConstants.VSPACE);
+            data.top = new FormAttachment(0, curRowSize + ITabbedPropertyConstants.VSPACE);
             data.width = 300; // to correct bug of table growing indefinitly
 
             IMetadataTable outputMetaTable = ((Connection) elem).getMetadataTable();
@@ -108,7 +107,6 @@ public class MainConnectionSection extends DynamicTabbedPropertySection {
             Composite compositeEditorView = metadataTableEditorView.getComposite();
             compositeEditorView.setLayoutData(data);
 
-//            composite.layout();
             composite.getParent().layout();
         } else if (conIf()) {
             super.addComponents();

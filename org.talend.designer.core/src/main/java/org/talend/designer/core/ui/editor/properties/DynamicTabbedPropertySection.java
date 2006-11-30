@@ -366,7 +366,12 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
             // }
             // }
             if (info.equals(SCHEMA)) {
-                Node node = (Node) elem;
+                Node node;
+                if (elem instanceof Node) {
+                 node = (Node) elem;
+                } else { // else instanceof Connection
+                    node = ((Connection) elem).getSource();   
+                }
                 IMetadataTable inputMetadata = null, inputMetaCopy = null;
                 Connection inputConec = null;
                 IODataComponentContainer inAndOut = new IODataComponentContainer();
