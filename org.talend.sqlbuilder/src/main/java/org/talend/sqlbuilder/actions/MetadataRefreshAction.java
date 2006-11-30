@@ -22,15 +22,12 @@
 package org.talend.sqlbuilder.actions;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.ui.actions.SelectionProviderAction;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.core.model.metadata.IMetadataConnection;
@@ -43,9 +40,7 @@ import org.talend.core.model.properties.DatabaseConnectionItem;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.ui.EImage;
 import org.talend.core.ui.ImageProvider;
-import org.talend.repository.model.IRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
-import org.talend.repository.model.RepositoryFactoryProvider;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNode.EProperties;
 import org.talend.sqlbuilder.dbstructure.DBTreeProvider;
@@ -68,9 +63,6 @@ public class MetadataRefreshAction extends SelectionProviderAction {
 	private List<MetadataColumn> columnNodes;
 
 	private List<RepositoryNode> repositorynodes;
-	private SQLBuilderRepositoryNodeManager repositoryNodeManager = new SQLBuilderRepositoryNodeManager();
-	
-	private Map<MetadataTable, List<MetadataColumn>> oldMetaData = new HashMap<MetadataTable, List<MetadataColumn>>();
 	
 	private ISQLBuilderDialog dialog;
 	
@@ -137,28 +129,7 @@ public class MetadataRefreshAction extends SelectionProviderAction {
 	 */
 	@SuppressWarnings("unchecked")
 	private void reductionConnection(DatabaseConnection connection) {
-		List<MetadataTable> tables = connection.getTables();
-		List<MetadataTable> newtables = new ArrayList<MetadataTable>();
-		oldMetaData.clear();
-		for (MetadataTable table : tables) {
-			List<MetadataColumn> columns = table.getColumns();
-			List<MetadataColumn> newcloumns = new ArrayList<MetadataColumn>();
-			List<MetadataColumn> oldcloumns = new ArrayList<MetadataColumn>();
-			for (MetadataColumn column : columns) {
-				oldcloumns.add(column);
-				if (!column.getLabel().equals("")) {
-					newcloumns.add(column);
-				}
-			}
-			table.getColumns().clear();
-			table.getColumns().addAll(newcloumns);
-			if (!table.getLabel().equals("")) {
-				newtables.add(table);
-			}
-			oldMetaData.put(table, oldcloumns);
-		}
-		connection.getTables().clear();
-		connection.getTables().addAll(newtables);
+		SQLBuilderRepositoryNodeManager.reductionOneConnection(connection);
 	}
 
 	/**
@@ -178,21 +149,10 @@ public class MetadataRefreshAction extends SelectionProviderAction {
 		.getConnection();
 		modifyMetadataColumn(tableNode, columnNode, connection);
 		saveMetaData(item);
-		connection.getTables().clear();
-		for (MetadataTable table : oldMetaData.keySet()) {
-			table.getColumns().clear();
-			table.getColumns().addAll(oldMetaData.get(table));
-			connection.getTables().add(table);
-		}
-		
+		SQLBuilderRepositoryNodeManager.increaseOneConnection(connection);
 		for (RepositoryNode repositorynode : repositorynodes) {
-//			((DBTreeProvider) ((TreeViewer) selectionProvider).getContentProvider()).setRefresh(true);
-//			((TreeViewer) selectionProvider).refresh(repositoryNodeManager.getRoot(repositorynode), true);
 			dialog.refreshNode(repositorynode);
 		}
-		
-//		((TreeViewer) selectionProvider).refresh(tableNode, true);
-//		((TreeViewer) selectionProvider).refresh(columnNode, true);
 	}
 
 	/**
@@ -232,24 +192,25 @@ public class MetadataRefreshAction extends SelectionProviderAction {
 				columnNode.setTalendType(metadataColumn.getTalendType());
 				columnNode.setDivergency(false);
 				columnNode.setSynchronised(false);
+				break;
 			}
 		}
-		List<MetadataColumn> columns = tableNode.getColumns();
-		boolean flag = false;
-		for (MetadataColumn column : columns) {
-			if (column.isDivergency()) {
-				flag = true;
-			}
-		}
-		tableNode.setDivergency(flag);
-		flag = false;
-		List<MetadataTable> tables = connection.getTables();
-		for (MetadataTable table : tables) {
-			if (table.isDivergency()) {
-				flag = true;
-			}
-		}
-		connection.setDivergency(flag);
+//		List<MetadataColumn> columns = tableNode.getColumns();
+//		boolean flag = false;
+//		for (MetadataColumn column : columns) {
+//			if (column.isDivergency()) {
+//				flag = true;
+//			}
+//		}
+//		tableNode.setDivergency(flag);
+//		flag = false;
+//		List<MetadataTable> tables = connection.getTables();
+//		for (MetadataTable table : tables) {
+//			if (table.isDivergency()) {
+//				flag = true;
+//			}
+//		}
+//		connection.setDivergency(flag);
 		reductionConnection(connection);
 	}
 

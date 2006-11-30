@@ -23,8 +23,6 @@ package org.talend.sqlbuilder.ui;
 
 import java.util.List;
 
-import net.sourceforge.squirrel_sql.fw.sql.ISQLDriver;
-
 import org.eclipse.jface.util.Assert;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
@@ -152,9 +150,17 @@ public class SQLBuilderTabComposite extends Composite {
      */
     public String getDefaultTabSql() {
         Control control = tabFolder.getChildren()[0];
-        System.out.println(control);
-
         SQLBuilderEditorComposite composite = (SQLBuilderEditorComposite) control;
         return composite.getSQLToBeExecuted();
+    }
+    
+    /**
+     * method "getCurrentTabSql" : Get Cuurent Tab page (Used tab) 's Text.
+     * @return a string representing sql text.
+     */
+    public String getCurrentTabSql() {
+    	Control control = tabFolder.getSelection().getControl();
+   		SQLBuilderEditorComposite composite = (SQLBuilderEditorComposite) control;
+    	return composite.getSQLToBeExecuted();
     }
 }

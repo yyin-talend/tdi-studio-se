@@ -22,6 +22,7 @@
 package org.talend.sqlbuilder.actions;
 
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.talend.core.model.metadata.builder.connection.Query;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.sqlbuilder.Messages;
@@ -40,7 +41,10 @@ public class SaveSQLAction extends AbstractEditorAction {
 
     private RepositoryNode repositoryNode;
 
-    public SaveSQLAction(RepositoryNode repositoryNodeInput) {
+    private Query query;
+    
+    public SaveSQLAction(RepositoryNode repositoryNodeInput, Query query) {
+    	this.query = query;
         this.repositoryNode = repositoryNodeInput;
         SqlBuilderRepositoryObject o = (SqlBuilderRepositoryObject) repositoryNode.getObject();
         boolean isBuildin = o.isBuildIn();
@@ -81,6 +85,6 @@ public class SaveSQLAction extends AbstractEditorAction {
      */
     public void run() {
         // TODO should disable this code when release the 1.0.1 version
-        editor.doSaveSQL();
+        editor.doSaveSQL(query);
     };
 }

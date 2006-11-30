@@ -22,6 +22,7 @@
 package org.talend.sqlbuilder.ui.editor;
 
 import org.eclipse.swt.widgets.Shell;
+import org.talend.core.model.metadata.builder.connection.Query;
 import org.talend.repository.model.RepositoryNode;
 
 /**
@@ -102,7 +103,7 @@ public interface ISQLEditor {
     /**
      * Saves current editor's sql text into dbstructure composite.
      */
-    void doSaveSQL();
+    void doSaveSQL(Query query2);
 
     /**
      * Sets repository node.

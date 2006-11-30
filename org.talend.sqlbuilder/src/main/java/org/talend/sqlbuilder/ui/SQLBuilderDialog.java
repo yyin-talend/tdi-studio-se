@@ -38,6 +38,9 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.ShellAdapter;
+import org.eclipse.swt.events.ShellEvent;
+import org.eclipse.swt.events.ShellListener;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -335,6 +338,7 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog {
 
     @Override
     public boolean close() {
+    	SQLBuilderRepositoryNodeManager.isDialogClosed = true;
         SQLBuilderRepositoryNodeManager.reductionALLRepositoryNode();
         SessionTreeNodeUtils.dispose();
         nodeManager.clear();
@@ -369,7 +373,10 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog {
      * @see org.eclipse.jface.dialogs.Dialog#okPressed()
      */
     public void okPressed() {
-        String sql = editorComposite.getDefaultTabSql();
+    	String sql = ""; 
+//      sql = editorComposite.getDefaultTabSql();
+        sql = editorComposite.getCurrentTabSql();
+        
         connParameters.setQuery(sql);
         super.okPressed();
     }
@@ -440,5 +447,67 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog {
         	
         }
     }
+    
+    /* (non-Javadoc)
+     * @see org.eclipse.jface.window.Window#getShellListener()
+     */
+    @Override
+    protected ShellListener getShellListener() {
+    	ShellListener shellListener = new ShellAdapter() {
 
+//    		int i = 0;
+			/* (non-Javadoc)
+			 * @see org.eclipse.swt.events.ShellAdapter#shellActivated(org.eclipse.swt.events.ShellEvent)
+			 */
+			@Override
+			public void shellActivated(ShellEvent e) {
+////				System.out.println("shellActivated " + i);
+//				SQLBuilderRepositoryNodeManager.reductionALLRepositoryNode();
+////				SQLBuilderRepositoryNodeManager.increaseALLRepositoryNode();
+				super.shellActivated(e);
+			}
+
+			/* (non-Javadoc)
+			 * @see org.eclipse.swt.events.ShellAdapter#shellClosed(org.eclipse.swt.events.ShellEvent)
+			 */
+			@Override
+			public void shellClosed(ShellEvent e) {
+				e.doit = false; // don't close now
+				if (canHandleShellCloseEvent()) {
+					handleShellCloseEvent();
+				}
+			}
+
+			/* (non-Javadoc)
+			 * @see org.eclipse.swt.events.ShellAdapter#shellDeactivated(org.eclipse.swt.events.ShellEvent)
+			 */
+			@Override
+			public void shellDeactivated(ShellEvent e) {
+////				System.out.println("shellDeactivated " + i);
+////				SQLBuilderRepositoryNodeManager.reductionALLRepositoryNode();
+//				SQLBuilderRepositoryNodeManager.increaseALLRepositoryNode();
+				super.shellDeactivated(e);
+			}
+
+			/* (non-Javadoc)
+			 * @see org.eclipse.swt.events.ShellAdapter#shellDeiconified(org.eclipse.swt.events.ShellEvent)
+			 */
+			@Override
+			public void shellDeiconified(ShellEvent e) {
+//				System.out.println("shellDeiconified");
+				super.shellDeiconified(e);
+			}
+
+			/* (non-Javadoc)
+			 * @see org.eclipse.swt.events.ShellAdapter#shellIconified(org.eclipse.swt.events.ShellEvent)
+			 */
+			@Override
+			public void shellIconified(ShellEvent e) {
+//				System.out.println("shellIconified");
+				super.shellIconified(e);
+			}
+    		
+    	};
+    	return shellListener;
+    }
 }
