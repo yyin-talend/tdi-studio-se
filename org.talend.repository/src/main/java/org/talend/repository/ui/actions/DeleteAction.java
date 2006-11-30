@@ -34,10 +34,10 @@ import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.ui.EImage;
 import org.talend.core.ui.ImageProvider;
 import org.talend.repository.i18n.Messages;
+import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNodeUtilities;
-import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.RepositoryNode.ENodeType;
 import org.talend.repository.model.RepositoryNode.EProperties;
 
@@ -65,11 +65,7 @@ public class DeleteAction extends AContextualAction {
 
     public void run() {
         ISelection selection = getSelection();
-
         Boolean confirm = null;
-
-        boolean popUpLockedAlreadyOpen = false;
-
         ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
 
         for (Object obj : ((IStructuredSelection) selection).toArray()) {
@@ -78,29 +74,18 @@ public class DeleteAction extends AContextualAction {
                 try {
                     if (node.getType() == ENodeType.REPOSITORY_ELEMENT) {
                         IRepositoryObject objToDelete = node.getObject();
-//                      TODO SML Temporary code
-                        if (factory.getStatus(objToDelete) != ERepositoryStatus.LOCK_BY_OTHER) {
-                            if (factory.getStatus(objToDelete) == ERepositoryStatus.DELETED) {
-                                if (confirm == null) {
-                                    String title = Messages.getString("DeleteAction.dialog.title");
-                                    String message = Messages.getString("DeleteAction.dialog.message1") + "\n"
-                                            + Messages.getString("DeleteAction.dialog.message2");
-                                    confirm = (MessageDialog.openQuestion(new Shell(), title, message));
-                                }
-                                if (confirm) {
-                                    factory.deleteObjectPhysical(objToDelete);
-                                }
-                            } else {
-                                factory.deleteObjectLogical(objToDelete);
+                        if (factory.getStatus(objToDelete) == ERepositoryStatus.DELETED) {
+                            if (confirm == null) {
+                                String title = Messages.getString("DeleteAction.dialog.title");
+                                String message = Messages.getString("DeleteAction.dialog.message1") + "\n"
+                                        + Messages.getString("DeleteAction.dialog.message2");
+                                confirm = (MessageDialog.openQuestion(new Shell(), title, message));
+                            }
+                            if (confirm) {
+                                factory.deleteObjectPhysical(objToDelete);
                             }
                         } else {
-                            if (!popUpLockedAlreadyOpen) {
-                                popUpLockedAlreadyOpen = true;
-                                String title = Messages.getString("DeleteAction.error.title");
-                                String msg = Messages.getString("DeleteAction.error.lockedObject.message");
-
-                                MessageDialog.openWarning(new Shell(), title, msg);
-                            }
+                            factory.deleteObjectLogical(objToDelete);
                         }
                     } else if (node.getType() == ENodeType.SIMPLE_FOLDER) {
                         if (!node.hasChildren()) {
@@ -148,10 +133,10 @@ public class DeleteAction extends AContextualAction {
                 case REPOSITORY_ELEMENT:
                     IRepositoryObject repObj = node.getObject();
                     ProxyRepositoryFactory repFactory = ProxyRepositoryFactory.getInstance();
-                    
+
                     boolean isPotentiallyEditable = repFactory.isPotentiallyEditable(repObj);
                     boolean idDeleted = repFactory.getStatus(repObj) == ERepositoryStatus.DELETED;
-                    
+
                     if (idDeleted) {
                         ERepositoryObjectType nodeType = (ERepositoryObjectType) node.getProperties(EProperties.CONTENT_TYPE);
                         if (ERepositoryObjectType.METADATA_CON_TABLE.equals(nodeType)) {
@@ -163,10 +148,10 @@ public class DeleteAction extends AContextualAction {
                             this.setText(DELETE_FOREVER_TITLE);
                             this.setToolTipText(DELETE_FOREVER_TOOLTIP);
 
-                            if (!isPotentiallyEditable) {
-                                visible = true;
-                                enabled = false;
-                            }
+                            // if (!isPotentiallyEditable) {
+                            // visible = true;
+                            // enabled = false;
+                            // }
                         } else {
                             visible = false;
                         }
