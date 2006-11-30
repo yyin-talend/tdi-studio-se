@@ -176,9 +176,9 @@ public class XPathNodeSchemaEditorView extends AbstractDataTableEditorView<Schem
         xPathCellEditor.addListener(new DialogErrorForCellEditorListener(xPathCellEditor, column) {
 
             @Override
-            public void newValidValueTyped(int itemIndex, String previousValue, String newValue, CELL_EDITOR_STATE state) {
+            public void newValidValueTyped(int itemIndex, Object previousValue, Object newValue, CELL_EDITOR_STATE state) {
                 if (state == CELL_EDITOR_STATE.EDITING) {
-                    linker.onXPathValueChanged(previousValue, newValue, itemIndex);
+                    linker.onXPathValueChanged(previousValue.toString(), newValue.toString(), itemIndex);
                 }
 
             }
