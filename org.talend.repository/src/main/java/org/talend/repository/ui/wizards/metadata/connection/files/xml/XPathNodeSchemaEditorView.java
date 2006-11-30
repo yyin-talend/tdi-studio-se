@@ -30,6 +30,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
 import org.talend.commons.ui.swt.advanced.dataeditor.AbstractDataTableEditorView;
+import org.talend.commons.ui.swt.advanced.dataeditor.AbstractExtendedToolbar;
 import org.talend.commons.ui.swt.proposal.TextCellEditorWithProposal;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumn;
@@ -43,6 +44,7 @@ import org.talend.commons.utils.data.list.ListenableListEvent.TYPE;
 import org.talend.core.model.metadata.builder.connection.SchemaTarget;
 import org.talend.core.model.targetschema.editor.XPathNodeSchemaModel;
 import org.talend.core.ui.extended.ExtendedToolbarView;
+import org.talend.core.ui.extended.button.AddPushButtonForExtendedTable;
 
 /**
  * DOC amaumont class global comment. Detailled comment <br/> TGU same purpose as TargetSchemaTableEditorView but uses
@@ -287,4 +289,29 @@ public class XPathNodeSchemaEditorView extends AbstractDataTableEditorView<Schem
         this.linker = linker;
     }
 
+    /* (non-Javadoc)
+     * @see org.talend.commons.ui.swt.advanced.dataeditor.AbstractDataTableEditorView#initToolBar()
+     */
+    @Override
+    protected AbstractExtendedToolbar initToolBar() {
+        return new ExtendedToolbarView(getMainComposite(), SWT.NONE, getExtendedTableViewer()) {
+
+            @Override
+            protected AddPushButtonForExtendedTable createAddPushButton() {
+                return new AddPushButtonForExtendedTable(this.toolbar, getExtendedTableViewer()) {
+
+                    @Override
+                    protected Object getObjectToAdd() {
+                        return getXpathNodeSchemaModel().createNewSchemaTarget();
+                    }
+
+                };
+            }
+
+        };
+
+    }
+
+    
+    
 }

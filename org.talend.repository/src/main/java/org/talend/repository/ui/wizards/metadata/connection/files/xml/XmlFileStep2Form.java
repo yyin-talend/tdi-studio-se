@@ -216,22 +216,8 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
         schemaModel = new XPathNodeSchemaModel(Messages.getString("FileStep3.metadataDescription"));
         tableEditorView = new XPathNodeSchemaEditorView(schemaModel, group);
 
-        new ExtendedToolbarView(group, SWT.NONE, tableEditorView.getExtendedTableViewer()) {
-
-            @Override
-            protected AddPushButtonForExtendedTable createAddPushButton() {
-                return new AddPushButtonForExtendedTable(this.toolbar, tableEditorView.getExtendedTableViewer()) {
-
-                    @Override
-                    protected Object getObjectToAdd() {
-                        return schemaModel.createNewSchemaTarget();
-                    }
-
-                };
-            }
-
-        };
-
+        tableEditorView.getMainComposite().setLayoutData(new GridData(GridData.FILL_BOTH));
+        
     }
 
     /**
