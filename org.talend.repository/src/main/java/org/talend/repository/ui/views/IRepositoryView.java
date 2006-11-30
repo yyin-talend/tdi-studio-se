@@ -23,7 +23,6 @@ package org.talend.repository.ui.views;
 
 import org.eclipse.jface.viewers.StructuredViewer;
 import org.eclipse.ui.IViewPart;
-import org.talend.core.context.RepositoryContext;
 import org.talend.repository.model.RepositoryNode;
 
 /**

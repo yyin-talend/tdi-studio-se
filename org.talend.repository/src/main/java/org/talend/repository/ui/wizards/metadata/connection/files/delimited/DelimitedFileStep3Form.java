@@ -51,9 +51,9 @@ import org.talend.core.model.metadata.builder.connection.ConnectionFactory;
 import org.talend.core.model.metadata.builder.connection.Escape;
 import org.talend.core.model.metadata.builder.connection.MetadataColumn;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
-import org.talend.core.model.metadata.editor.MetadataEditor2;
+import org.talend.core.model.metadata.editor.MetadataEmfTableEditor;
 import org.talend.core.model.properties.ConnectionItem;
-import org.talend.core.ui.metadata.editor.MetadataTableEditorView2;
+import org.talend.core.ui.metadata.editor.MetadataEmfTableEditorView;
 import org.talend.core.utils.XmlArray;
 import org.talend.core.utils.XmlField;
 import org.talend.core.utils.XmlRow;
@@ -77,9 +77,9 @@ public class DelimitedFileStep3Form extends AbstractDelimitedFileStepForm {
 
     private UtilsButton guessButton;
 
-    private MetadataEditor2 metadataEditor;
+    private MetadataEmfTableEditor metadataEditor;
 
-    private MetadataTableEditorView2 tableEditorView;
+    private MetadataEmfTableEditorView tableEditorView;
 
     private Label informationLabel;
 
@@ -159,8 +159,8 @@ public class DelimitedFileStep3Form extends AbstractDelimitedFileStepForm {
         // Composite MetadataTableEditorView
         Composite compositeTable = Form.startNewDimensionnedGridLayout(compositeMetaData, 1, WIDTH_GRIDDATA_PIXEL, 200);
         compositeTable.setLayout(new FillLayout());
-        metadataEditor = new MetadataEditor2(Messages.getString("FileStep3.metadataDescription"));
-        tableEditorView = new MetadataTableEditorView2(compositeTable, SWT.NONE, false);
+        metadataEditor = new MetadataEmfTableEditor(Messages.getString("FileStep3.metadataDescription"));
+        tableEditorView = new MetadataEmfTableEditorView(compositeTable, SWT.NONE, false);
 
         if (!isInWizard()) {
             // Bottom Button
@@ -204,7 +204,7 @@ public class DelimitedFileStep3Form extends AbstractDelimitedFileStepForm {
         });
 
         // add listener to tableMetadata (listen the event of the toolbars)
-        tableEditorView.getMetadataEditor().addModifiedListListener(new IListenableListListener() {
+        tableEditorView.getMetadataEditor().addAfterOperationListListener(new IListenableListListener() {
 
             public void handleEvent(ListenableListEvent event) {
                 checkFieldsValue();
@@ -223,7 +223,7 @@ public class DelimitedFileStep3Form extends AbstractDelimitedFileStepForm {
         guessButton.addSelectionListener(new SelectionAdapter() {
 
             public void widgetSelected(final SelectionEvent e) {
-                if (tableEditorView.getMetadataEditor().getItemCount() > 0) {
+                if (tableEditorView.getMetadataEditor().getBeanCount() > 0) {
 
                     if (!guessButton.getEnabled()) {
                         guessButton.setEnabled(true);
@@ -444,7 +444,7 @@ public class DelimitedFileStep3Form extends AbstractDelimitedFileStepForm {
                     metadataColumn.setPrecision(0);
                 }
                 // Check the label and add it to the table
-                metadataColumn.setLabel(tableEditorView.getMetadataEditor().getValidateColumnName(label[i], i));
+                metadataColumn.setLabel(tableEditorView.getMetadataEditor().getNextGeneratedColumnName(label[i]));
                 tableEditorView.getMetadataEditor().add(metadataColumn, i);
             }
         }
@@ -492,7 +492,7 @@ public class DelimitedFileStep3Form extends AbstractDelimitedFileStepForm {
             return false;
         }
 
-        if (tableEditorView.getMetadataEditor().getItemCount() > 0) {
+        if (tableEditorView.getMetadataEditor().getBeanCount() > 0) {
             updateStatus(IStatus.OK, null);
             return true;
         }
@@ -513,7 +513,7 @@ public class DelimitedFileStep3Form extends AbstractDelimitedFileStepForm {
         super.setVisible(visible);
         if (super.isVisible()) {
             if (getConnection().getFilePath() != null && (!getConnection().getFilePath().equals(""))
-                    && (tableEditorView.getMetadataEditor().getItemCount() <= 0)) {
+                    && (tableEditorView.getMetadataEditor().getBeanCount() <= 0)) {
                 runShadowProcess();
             }
 

@@ -24,9 +24,9 @@ package org.talend.repository.model.actions;
 import org.talend.commons.exception.SystemException;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
-import org.talend.repository.model.ERepositoryStatus;
 
 /**
  * DOC smallet class global comment. Detailled comment <br/>

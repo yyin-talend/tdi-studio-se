@@ -55,7 +55,7 @@ import org.talend.core.model.metadata.builder.connection.MetadataColumn;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.builder.connection.TableHelper;
 import org.talend.core.model.metadata.builder.database.ExtractMetaDataFromDataBase;
-import org.talend.core.model.metadata.editor.MetadataEditor2;
+import org.talend.core.model.metadata.editor.MetadataEmfTableEditor;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.ProxyRepositoryFactory;
@@ -84,7 +84,7 @@ public class SelectorTableForm extends AbstractForm {
 
     private MetadataTable metadataTable;
 
-    private MetadataEditor2 metadataEditor;
+    private MetadataEmfTableEditor metadataEditor;
 
     private UtilsButton selectAllTablesButton;
 
@@ -219,7 +219,7 @@ public class SelectorTableForm extends AbstractForm {
         checkConnectionButton = new UtilsButton(compositeRetreiveSchemaButton, Messages
                 .getString("DatabaseTableForm.checkConnection"), WIDTH_BUTTON_PIXEL, HEIGHT_BUTTON_PIXEL);
 
-        metadataEditor = new MetadataEditor2(Messages.getString("DatabaseTableForm.metadataDescription"));
+        metadataEditor = new MetadataEmfTableEditor(Messages.getString("DatabaseTableForm.metadataDescription"));
         addUtilsButtonListeners();
     }
 

@@ -68,9 +68,9 @@ import org.talend.core.model.metadata.builder.connection.MetadataColumn;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.builder.connection.TableHelper;
 import org.talend.core.model.metadata.builder.database.ExtractMetaDataFromDataBase;
-import org.talend.core.model.metadata.editor.MetadataEditor2;
+import org.talend.core.model.metadata.editor.MetadataEmfTableEditor;
 import org.talend.core.model.properties.ConnectionItem;
-import org.talend.core.ui.metadata.editor.MetadataTableEditorView2;
+import org.talend.core.ui.metadata.editor.MetadataEmfTableEditorView;
 import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.ProxyRepositoryFactory;
@@ -106,9 +106,9 @@ public class DatabaseTableForm extends AbstractForm {
 
     private MetadataTable metadataTable;
 
-    private MetadataEditor2 metadataEditor;
+    private MetadataEmfTableEditor metadataEditor;
 
-    private MetadataTableEditorView2 tableEditorView;
+    private MetadataEmfTableEditorView tableEditorView;
 
     /**
      * Buttons.
@@ -247,7 +247,7 @@ public class DatabaseTableForm extends AbstractForm {
         tableEditorView.getTableViewerCreator().layout();
 
         // add listener to tableMetadata (listen the event of the toolbars)
-        metadataEditor.addModifiedListListener(new IListenableListListener() {
+        metadataEditor.addAfterOperationListListener(new IListenableListListener() {
 
             public void handleEvent(ListenableListEvent event) {
                 checkFieldsValue();
@@ -319,9 +319,9 @@ public class DatabaseTableForm extends AbstractForm {
         Composite compositeTable = Form.startNewDimensionnedGridLayout(compositeMetaData, 1, rightCompositeWidth,
                 tableCompositeHeight);
         compositeTable.setLayout(new FillLayout());
-        metadataEditor = new MetadataEditor2(Messages.getString("DatabaseTableForm.metadataDescription"));
-        tableEditorView = new MetadataTableEditorView2(compositeTable, SWT.NONE, true);
-        tableEditorView.setDefaultLabel(Messages.getString("DatabaseTableForm.metadataDefaultNewLabel"));
+        metadataEditor = new MetadataEmfTableEditor(Messages.getString("DatabaseTableForm.metadataDescription"));
+        tableEditorView = new MetadataEmfTableEditorView(compositeTable, SWT.NONE, true);
+        metadataEditor.setDefaultLabel(Messages.getString("DatabaseTableForm.metadataDefaultNewLabel"));
         addUtilsButtonListeners();
     }
 
@@ -629,7 +629,7 @@ public class DatabaseTableForm extends AbstractForm {
         if (tableCombo.getItemCount() > 0) {
             if (tableCombo.getSelectionIndex() < 0) {
                 tableSettingsInfoLabel.setText(Messages.getString("DatabaseTableForm.retreiveButtonAlert"));
-            } else if (tableEditorView.getMetadataEditor().getItemCount() <= 0) {
+            } else if (tableEditorView.getMetadataEditor().getBeanCount() <= 0) {
                 tableSettingsInfoLabel.setText(Messages.getString("DatabaseTableForm.retreiveButtonTip"));
             } else {
                 tableSettingsInfoLabel.setText(Messages.getString("DatabaseTableForm.retreiveButtonUse"));
@@ -654,7 +654,7 @@ public class DatabaseTableForm extends AbstractForm {
                     managerConnection.getMessageException());
         } else {
             boolean doit = true;
-            if (tableEditorView.getMetadataEditor().getItemCount() > 0) {
+            if (tableEditorView.getMetadataEditor().getBeanCount() > 0) {
                 doit = MessageDialog.openConfirm(getShell(), Messages.getString("DatabaseTableForm.retreiveButtonConfirmation"),
                         Messages.getString("DatabaseTableForm.retreiveButtonConfirmationMessage"));
             }
@@ -668,17 +668,15 @@ public class DatabaseTableForm extends AbstractForm {
 
                 List<MetadataColumn> metadataColumnsValid = new ArrayList<MetadataColumn>();
                 Iterator iterate = metadataColumns.iterator();
-                int i = 0;
                 while (iterate.hasNext()) {
                     MetadataColumn metadataColumn = (MetadataColumn) iterate.next();
 
                     String columnLabel = metadataColumn.getLabel();
                     // Check the label and add it to the table
-                    metadataColumn.setLabel(tableEditorView.getMetadataEditor().getValidateColumnName(columnLabel, i));
+                    metadataColumn.setLabel(tableEditorView.getMetadataEditor().getNextGeneratedColumnName(columnLabel));
                     metadataColumnsValid.add(metadataColumn);
-                    i++;
                 }
-                tableEditorView.getMetadataEditor().addAll(metadataColumnsValid, null);
+                tableEditorView.getMetadataEditor().addAll(metadataColumnsValid);
             }
         }
 
