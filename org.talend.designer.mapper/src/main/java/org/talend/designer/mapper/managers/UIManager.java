@@ -53,6 +53,8 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.ToolItem;
 import org.talend.commons.exception.ExceptionHandler;
+import org.talend.commons.ui.swt.tableviewer.IModifiedBeanListener;
+import org.talend.commons.ui.swt.tableviewer.ModifiedBeanEvent;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator.CELL_EDITOR_STATE;
 import org.talend.commons.ui.swt.tableviewer.selection.ILineSelectionListener;
@@ -202,17 +204,15 @@ public class UIManager {
                 currentMetadataTableEditor = new MetadataTableEditor(abstractDataMapTable.getMetadataTable(),
                         abstractDataMapTable.getName());
 
-                currentMetadataTableEditor.addListener(new IMetadataEditorListener() {
+                currentMetadataTableEditor.setModifiedBeanListenable(metadataTableEditorView.getTableViewerCreator());
+                
+                currentMetadataTableEditor.addModifiedBeanListener(new IModifiedBeanListener<IMetadataColumn>() {
 
-                    public void handleEvent(final MetadataEditorEvent event) {
-                        if (event.type == MetadataEditorEvent.TYPE.METADATA_NAME_VALUE_CHANGED
-                                && event.state == CELL_EDITOR_STATE.APPLYING
+                    public void handleEvent(ModifiedBeanEvent<IMetadataColumn> event) {
+                        if (MetadataTableEditorView.ID_COLUMN_NAME.equals(event.column.getId())
+// TODO AXEL                               && event.state == CELL_EDITOR_STATE.APPLYING
                                 && !event.previousValue.equals(event.newValue)) {
-                            List modifiedObjects = event.entries;
-                            IMetadataColumn modifiedObject = null;
-                            if (modifiedObjects != null && modifiedObjects.size() > 0) {
-                                modifiedObject = (IMetadataColumn) modifiedObjects.get(0);
-                            }
+                            IMetadataColumn modifiedObject = (IMetadataColumn) event.bean;
                             if (modifiedObject != null) {
                                 TableEntryLocation tableEntryLocation = new TableEntryLocation(dataMapTableView
                                         .getDataMapTable().getName(), (String) event.previousValue);
@@ -222,11 +222,8 @@ public class UIManager {
                                         dataMapTableView, dataMapTableEntry);
                             }
                             dataMapTableViewer.refresh();
-                        } else if (event.type == MetadataEditorEvent.TYPE.METADATA_KEY_VALUE_CHANGED) {
-                            for (int indice : event.entriesIndices) {
-                                ITableEntry entry = abstractDataMapTable.getColumnEntries().get(indice);
-                                dataMapTableViewer.refresh(entry, true);
-                            }
+                        } else if (MetadataTableEditorView.ID_COLUMN_KEY.equals(event.column.getId())) {
+                            dataMapTableViewer.refresh(true);
                         }
                     }
 
@@ -241,7 +238,7 @@ public class UIManager {
                         metadataTableEditor);
 
                 // init actions listeners for list which contains metadata
-                metadataTableEditor.addModifiedListListener(new IListenableListListener() {
+                metadataTableEditor.addAfterOperationListListener(new IListenableListListener() {
 
                     @SuppressWarnings("unchecked")
                     public void handleEvent(ListenableListEvent event) {
