@@ -67,7 +67,18 @@ my %desc_<%=cid %> = (
                         );
     %>
     	{
+<%
+if (perlDbtype.equals("postgresql")) {
+%>
+            name    => '"<%=column.getLabel() %>"',
+<%
+}
+else {
+%>
             name    => '<%=column.getLabel() %>',
+<%
+}
+%>
             key     => <%=column.isKey() %>,
             type    => '<%=column.getTalendType() %>',
             dbtype  => '<%=columnDbtype %>', # <%= talendDbtype %>
@@ -141,11 +152,11 @@ set names "UTF8"
 if ($create) {
     my $schema = '%';
 
-    if ($desc_tDBOutput_1{driver} eq 'oracle') {
-        $schema = uc $desc_tDBOutput_1{dbuser};
+    if ($desc_<%=cid %>{driver} eq 'oracle') {
+        $schema = uc $desc_<%=cid %>{dbuser};
     }
 
-    my $tabsth = $dbh_tDBOutput_1->table_info('%', $schema);
+    my $tabsth = $dbh_<%=cid %>->table_info('%', $schema);
     my @tables = ();
 
     while (my($qual, $owner, $table, $type) = $tabsth->fetchrow_array()) {
@@ -186,7 +197,7 @@ DROP TABLE '.$desc_<%=cid %>{dbtable}.'
         $sth_<%=cid %> = $dbh_<%=cid %>->prepare(
             $query
         );
-        
+
         $sth_<%=cid %>->execute()
             or die "can't create table";
     }
