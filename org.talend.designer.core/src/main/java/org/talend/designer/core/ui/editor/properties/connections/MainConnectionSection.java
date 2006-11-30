@@ -102,7 +102,6 @@ public class MainConnectionSection extends DynamicTabbedPropertySection {
             metadataTableEditor = new MetadataTableEditor(outputMetaTable, "Schema from " + outputMetaTable.getTableName()
                     + " output ");
             metadataTableEditorView = new MetadataTableEditorView(composite, SWT.NONE, metadataTableEditor, true, false);
-            metadataTableEditorView.setReadOnly(true);
 
             Composite compositeEditorView = metadataTableEditorView.getMainComposite();
             compositeEditorView.setLayoutData(data);
