@@ -25,6 +25,9 @@ UpdateStat('<%=metadata.getTableName() %>', 0, 2);
 
 <%
                         }
+%>
+$_globals{<%=metadata.getTableName() %>}{NB_LINE} = $nb_line_<%=metadata.getTableName() %>;
+<%
 		}
 	}
 %>

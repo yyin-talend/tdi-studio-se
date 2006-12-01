@@ -99,6 +99,9 @@ my @<%=tableName%> = ();
 
 if (@<%=prevComponentName%>) {
     <%=code%>
+
+    $nb_line_<%=metadata.getTableName() %>++;
+
 <%
         if (stats) {
 %>

@@ -67,6 +67,10 @@ use constant <%=prevComponentName%>__<%=column.getLabel() %> => <%=j%>;
                 j++;
             }
         }
+<%
+
+my $nb_line_<%=cid%> = 0;
+%>
     }
 }
 %>
