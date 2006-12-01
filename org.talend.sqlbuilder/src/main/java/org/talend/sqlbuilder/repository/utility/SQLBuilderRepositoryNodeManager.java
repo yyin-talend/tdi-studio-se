@@ -24,10 +24,14 @@ package org.talend.sqlbuilder.repository.utility;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.utils.VersionUtils;
@@ -340,7 +344,9 @@ public class SQLBuilderRepositoryNodeManager {
 					.get(connection);
 			if (oldtableColumns != null) {
 				connection.getTables().clear();
-				for (MetadataTable table : oldtableColumns.keySet()) {
+				Set<MetadataTable> set = oldtableColumns.keySet();
+				List<MetadataTable> sortTables = sortMetaTables(set);
+				for (MetadataTable table : sortTables) {
 					List<MetadataColumn> columns = oldtableColumns.get(table);
 					List<MetadataColumn> newcolumns = new ArrayList<MetadataColumn>();
 
@@ -354,6 +360,73 @@ public class SQLBuilderRepositoryNodeManager {
 			}
 
 		}
+	}
+
+	/**
+	 * DOC dev Comment method "sortMetaTables".
+	 * @param set
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	private static List<MetadataTable> sortMetaTables(Collection<MetadataTable> set) {
+		List<MetadataTable> sysTables = new ArrayList<MetadataTable>();
+		List<MetadataTable> divTables = new ArrayList<MetadataTable>();
+		List<MetadataTable> grayTables = new ArrayList<MetadataTable>();
+		List<MetadataTable> norTables = new ArrayList<MetadataTable>();
+		List<MetadataTable> sortTables = new  ArrayList<MetadataTable>();
+		for (MetadataTable object : set) {
+			boolean isNormal = true;
+			if (object.isDivergency()) {
+				divTables.add(object);
+				isNormal = false;
+				continue;
+			}
+			
+			if (object.getLabel() == null || "".equals(object.getLabel())) {
+				grayTables.add(object);
+				isNormal = false;
+				continue;
+			}
+			List<MetadataColumn> columns = object.getColumns();
+			for (MetadataColumn column : columns) {
+				if (column.isSynchronised()) {
+					sysTables.add(object);
+					isNormal = false;
+					break;
+				}
+				if (column.isDivergency()) {
+					divTables.add(object);
+					isNormal = false;
+					break;
+				}
+			}
+			if (isNormal) {
+				norTables.add(object);
+			}
+		}
+		MetadataTable[]  norTablesArray = new MetadataTable[norTables.size()];
+		norTablesArray = norTables.toArray(norTablesArray);
+		
+		MetadataTable[]  sysTablesArray = new MetadataTable[sysTables.size()];
+		sysTablesArray = sysTables.toArray(sysTablesArray);
+		
+		MetadataTable[]  divTablesArray = new MetadataTable[divTables.size()];
+		divTablesArray = divTables.toArray(divTablesArray);
+		
+		MetadataTable[]  grayTablesArray = new MetadataTable[grayTables.size()];
+		grayTablesArray = grayTables.toArray(grayTablesArray);
+		
+		Arrays.sort(norTablesArray, new TableComp());
+		Arrays.sort(sysTablesArray, new TableComp());
+		Arrays.sort(divTablesArray, new TableComp());
+		Arrays.sort(grayTablesArray, new TableComp());
+		sortTables.addAll(Arrays.asList(norTablesArray));
+		sortTables.addAll(Arrays.asList(sysTablesArray));
+		sortTables.addAll(Arrays.asList(divTablesArray));
+		sortTables.addAll(Arrays.asList(grayTablesArray));
+		
+		return sortTables;
+		
 	}
 
 	/**
@@ -668,6 +741,7 @@ public class SQLBuilderRepositoryNodeManager {
 				}
 			}
 			fixedTables(tablesFromDB, tablesFromEMF, iMetadataConnection);
+			tablesFromEMF = sortMetaTables(tablesFromEMF);
 		} else {
 			List<MetadataTable> tablesFromEMF = connection.getTables();
 			for (MetadataTable tableFromEMF : tablesFromEMF) {
@@ -1251,4 +1325,26 @@ public class SQLBuilderRepositoryNodeManager {
 		}
 		return getRoot(repositoryNode.getParent());
 	}
+}
+
+/**
+ * DOC dev  class global comment. Detailled comment
+ * <br/>
+ *
+ * $Id: talend-code-templates.xml 1 2006-09-29 17:06:40 +0000 (Fri, 29 Sep 2006) nrousseau $
+ *
+ */
+class TableComp implements Comparator<MetadataTable> {
+
+	/* (non-Javadoc)
+	 * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
+	 */
+	public int compare(MetadataTable o1, MetadataTable o2) {
+		if (o1.getSourceName() == null || "".equals(o1.getSourceName())) {
+			return -1;
+		} else {
+			return o1.getSourceName().compareTo(o2.getSourceName());
+		}
+	}
+	
 }

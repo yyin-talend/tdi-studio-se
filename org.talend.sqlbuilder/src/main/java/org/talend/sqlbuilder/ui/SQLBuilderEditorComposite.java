@@ -649,4 +649,12 @@ public class SQLBuilderEditorComposite extends Composite implements ISQLEditor {
 	public boolean getDefaultEditor() {
 		return this.isDefaultEditor;
 	}
+	
+	/**
+	 * Getter for connParam.
+	 * @return the connParam
+	 */
+	public ConnectionParameters getConnParam() {
+		return this.connParam;
+	}
 }
