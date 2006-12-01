@@ -372,9 +372,9 @@ public class EmfComponent implements IComponent {
 
         boolean tStatCatcherAvailable = ComponentsFactoryProvider.getInstance().get(TSTATCATCHER_NAME) != null;
         param = new ElementParameter(element);
-        param.setName(EParameterName.TSTATCATCHER_STATISTICS.getName());
+        param.setName(EParameterName.TSTATCATCHER_STATS.getName());
         param.setValue(new Boolean(false));
-        param.setDisplayName(EParameterName.TSTATCATCHER_STATISTICS.getDisplayName());
+        param.setDisplayName(EParameterName.TSTATCATCHER_STATS.getDisplayName());
         param.setField(EParameterFieldType.CHECK);
         param.setCategory(EComponentCategory.MAIN);
         param.setNumRow(6);

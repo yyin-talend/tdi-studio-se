@@ -67,7 +67,7 @@ public enum EParameterName {
     PREVIEW("Preview"),
     COLUMN_LIST("Column list"),
     PREV_COLUMN_LIST("Prev. Comp. Column list"),
-    TSTATCATCHER_STATISTICS("tStatCatcher Statistics");
+    TSTATCATCHER_STATS("tStatCatcher Statistics");
 
     private String displayName;
 
