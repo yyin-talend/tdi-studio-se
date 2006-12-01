@@ -486,7 +486,7 @@ public class DBStructureComposite extends Composite {
             public void run() {
                 ((DBTreeProvider) treeViewer.getContentProvider()).setRefresh(true);
                 treeViewer.refresh(rootNode, true);
-//                ((DBTreeProvider) treeViewer.getLabelProvider()).refreshRootNode(rootNode);
+                ((DBTreeProvider) treeViewer.getLabelProvider()).refreshRootNode(rootNode);
                 treeViewer.update(rootNode, null);
             }
 

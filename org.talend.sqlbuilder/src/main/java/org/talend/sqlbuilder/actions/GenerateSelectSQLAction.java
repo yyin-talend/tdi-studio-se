@@ -169,9 +169,13 @@ public class GenerateSelectSQLAction extends SelectionProviderAction {
 
         query.append(" from ");
         if (fix != null && !fix.trim().equals("")) {
-        	query.append(fix + tablePrefix + fix + "." + fix + table + fix);
+        	if (tablePrefix == null || tablePrefix.equals("")) {
+        		query.append(fix + table + fix);
+        	} else {
+        		query.append(fix + tablePrefix + fix + "." + fix + table + fix);
+        	}
         } else {
-        	if (tablePrefix.equals("")) {
+        	if (tablePrefix == null || tablePrefix.equals("")) {
         		query.append(table);	
         	} else {
         		query.append(tablePrefix + "." + table);
@@ -212,9 +216,13 @@ public class GenerateSelectSQLAction extends SelectionProviderAction {
 
         query.append(" from ");
         if (fix != null && !fix.trim().equals("")) {
-        	query.append(fix + tablePrefix  + fix + "." + fix + ((SqlBuilderRepositoryObject) node.getObject()).getSourceName() + fix);
+        	if (tablePrefix == null || tablePrefix.equals("")) {
+        		query.append(fix + ((SqlBuilderRepositoryObject) node.getObject()).getSourceName() + fix);
+        	} else {
+        		query.append(fix + tablePrefix  + fix + "." + fix + ((SqlBuilderRepositoryObject) node.getObject()).getSourceName() + fix);
+        	}
         } else {
-        	if (tablePrefix.equals("")) {
+        	if (tablePrefix == null || tablePrefix.equals("")) {
         		query.append(((SqlBuilderRepositoryObject) node.getObject()).getSourceName());
         	} else {
         		query.append(tablePrefix  + "." + ((SqlBuilderRepositoryObject) node.getObject()).getSourceName());
