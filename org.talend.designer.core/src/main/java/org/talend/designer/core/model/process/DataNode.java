@@ -32,8 +32,6 @@ import org.talend.core.model.components.IODataComponent;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataTable;
 import org.talend.core.model.process.AbstractNode;
-import org.talend.core.model.process.EConnectionType;
-import org.talend.core.model.process.IConnection;
 import org.talend.core.model.temp.ECodeLanguage;
 
 /**
@@ -81,52 +79,4 @@ public class DataNode extends AbstractNode {
 
     }
 
-    /**
-     * Will return the first item of the subprocess. If "withCondition" is true, if there is links from type RunIf /
-     * RunAfter / RunBefore, it will return the first element found. If "withCondition" is false, it will return the
-     * first element with no active link from type Main/Ref/Iterate.<br>
-     * <i><b>Note:</b></i> This function doesn't work if the node has several start points (will return a random
-     * start node).
-     * 
-     * @param withCondition
-     * @return Start Node found.
-     */
-    public DataNode getSubProcessStartNode(boolean withConditions) {
-        if (!withConditions) {
-            if ((getCurrentActiveLinksNbInput(EConnectionType.FLOW_MAIN) == 0)
-                    && (getCurrentActiveLinksNbInput(EConnectionType.FLOW_REF) == 0)
-                    && (getCurrentActiveLinksNbInput(EConnectionType.ITERATE) == 0)) {
-                return this;
-            }
-        } else {
-            int nb = 0;
-            for (IConnection connection : getIncomingConnections()) {
-                if (connection.isActivate()) {
-                    nb++;
-                }
-            }
-            if (nb == 0) {
-                return this;
-            }
-        }
-        DataConnection connec;
-
-        for (int j = 0; j < getIncomingConnections().size(); j++) {
-            connec = (DataConnection) getIncomingConnections().get(j);
-            if (!connec.getLineStyle().equals(EConnectionType.FLOW_REF)) {
-                return ((DataNode) connec.getSource()).getSubProcessStartNode(withConditions);
-            }
-        }
-        return null;
-    }
-
-    private int getCurrentActiveLinksNbInput(EConnectionType type) {
-        int nb = 0;
-        for (IConnection connection : getIncomingConnections()) {
-            if (connection.isActivate() && connection.getLineStyle().equals(type)) {
-                nb++;
-            }
-        }
-        return nb;
-    }
-}
+ }
