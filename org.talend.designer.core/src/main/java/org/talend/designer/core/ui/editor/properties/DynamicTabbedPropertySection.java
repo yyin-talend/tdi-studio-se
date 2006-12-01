@@ -1918,7 +1918,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
         text.getParent().setSize(subComposite.getSize().x, text.getLineHeight() * nbLines);
         cLayout.setBackground(subComposite.getBackground());
         text.setEnabled(!param.isReadOnly());
-        Font font = new Font(subComposite.getDisplay(), "courier", 5, SWT.NONE);
+        Font font = new Font(subComposite.getDisplay(), "courier", 8, SWT.NONE);
         text.setFont(font);
         if (elem instanceof Node) {
             text.setToolTipText(VARIABLE_TOOLTIP + param.getVariableName());
@@ -1979,7 +1979,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
             public Control createControl(final Composite parent, final int style) {
                 ColorManager colorManager = new ColorManager(CorePlugin.getDefault().getPreferenceStore());
                 ColorStyledText colorText = new ColorStyledText(parent, style, colorManager, language);
-                Font font = new Font(parent.getDisplay(), "courier", 5, SWT.NONE);
+                Font font = new Font(parent.getDisplay(), "courier", 8, SWT.NONE);
                 colorText.setFont(font);
                 return colorText;
             }
@@ -2103,7 +2103,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
             public Control createControl(final Composite parent, final int style) {
                 ColorManager colorManager = new ColorManager(CorePlugin.getDefault().getPreferenceStore());
                 ColorStyledText colorText = new ColorStyledText(parent, style, colorManager, language);
-                Font font = new Font(parent.getDisplay(), "courier", 5, SWT.NONE);
+                Font font = new Font(parent.getDisplay(), "courier", 8, SWT.NONE);
                 colorText.setFont(font);
                 return colorText;
             }
