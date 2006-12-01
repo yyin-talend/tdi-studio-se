@@ -5,7 +5,6 @@ imports="
     org.talend.core.model.metadata.IMetadataTable 
     org.talend.core.model.process.ElementParameterParser
     org.talend.core.model.process.IConnection
-    org.talend.core.model.process.EConnectionType
     org.talend.designer.codegen.config.CodeGeneratorArgument
     java.util.List
     java.util.Map
@@ -24,26 +23,34 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     if (metadata!=null) {
         String cid = metadata.getTableName();
 
-        List<Map<String, String>> operations = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__OPERATIONS__");
-        List<Map<String, String>> groupbys = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__GROUPBYS__");
-        String destination = ElementParameterParser.getValue(node, "__DESTINATION__");
+        List<Map<String, String>> operations =
+            (List<Map<String,String>>)ElementParameterParser.getObjectValue(
+                node,
+                "__OPERATIONS__"
+            );
 
-        List< ? extends IConnection> inConns = node.getIncomingConnections();
+        List<Map<String, String>> groupbys =
+            (List<Map<String,String>>)ElementParameterParser.getObjectValue(
+                node,
+                "__GROUPBYS__"
+            );
+
+        String destination = ElementParameterParser.getValue(
+            node,
+            "__DESTINATION__"
+        );
 
         // We need the name of the input connection and the name of the
         // previous component
-        String inputRowName = null;
-        String prevComponentName = null;
+        String inputRowName = new String("input_row");
+        String prevComponentName = new String("prev_component_name");
 
-        for (IConnection conn : inConns) { // connection list
-            if (conn.getLineStyle().equals(EConnectionType.FLOW_MAIN)) {
-                inputRowName = conn.getName();
+        List< ? extends IConnection> inConns = node.getIncomingConnections();
+        if (inConns != null && !inConns.isEmpty()) {
+            IConnection inConn = inConns.get(0);
 
-                IMetadataTable inMetadata = conn.getMetadataTable();
-                prevComponentName = inMetadata.getTableName();
-
-                break; // ends connection list
-            }
+            inputRowName = inConn.getName();
+            prevComponentName = inConn.getMetadataTable().getTableName();
         }
 
         StringBuffer hashKey = new StringBuffer();
