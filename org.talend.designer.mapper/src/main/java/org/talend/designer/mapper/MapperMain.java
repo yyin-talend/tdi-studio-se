@@ -109,7 +109,7 @@ public class MapperMain {
         // Shell shell = new Shell(display);
 //        shell.setImage(ImageProviderMapper.getImage(ImageInfo.MAPPER_ICON));
         shell.setImage(createImage);
-        shell.setText("Talend Open Studio - tMapper - " + connector.getUniqueName());
+        shell.setText("Talend Open Studio - tMap - " + connector.getUniqueName());
         ExternalMapperUiProperties uiProperties = mapperManager.getUiManager().getUiProperties();
         Rectangle boundsMapper = uiProperties.getBoundsMapper();
         if (uiProperties.isShellMaximized()) {
