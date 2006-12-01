@@ -86,7 +86,7 @@ import org.talend.commons.ui.utils.TableUtils;
 import org.talend.commons.ui.ws.WindowSystem;
 import org.talend.commons.utils.threading.AsynchronousThreading;
 import org.talend.commons.utils.threading.ExecutionLimiter;
-import org.talend.core.ui.EImage;
+import org.talend.core.ui.images.EImage;
 import org.talend.core.ui.proposal.ProcessProposalProvider;
 import org.talend.designer.mapper.MapperMain;
 import org.talend.designer.mapper.managers.MapperManager;
@@ -351,10 +351,10 @@ public abstract class DataMapTableView extends Composite {
         if (getDataMapTable() instanceof AbstractInOutTable) {
 
             if (imageKey == null) {
-                imageKey = org.talend.core.ui.ImageProvider.getImage(EImage.KEY_ICON);
+                imageKey = org.talend.core.ui.images.ImageProvider.getImage(EImage.KEY_ICON);
             }
             if (imageEmpty == null) {
-                imageEmpty = org.talend.core.ui.ImageProvider.getImage(EImage.EMPTY);
+                imageEmpty = org.talend.core.ui.images.ImageProvider.getImage(EImage.EMPTY);
             }
         }
         tableViewerCreatorForColumns.setLabelProvider(new DefaultTableLabelProvider(tableViewerCreatorForColumns) {
@@ -1223,12 +1223,12 @@ public abstract class DataMapTableView extends Composite {
         ToolItem addEntryItem = new ToolItem(toolBarActions, SWT.PUSH);
 
         addEntryItem.setToolTipText("Add variable");
-        addEntryItem.setImage(org.talend.core.ui.ImageProvider.getImage(org.talend.core.ui.ImageProvider.getImageDesc(EImage.ADD_ICON)));
+        addEntryItem.setImage(org.talend.core.ui.images.ImageProvider.getImage(org.talend.core.ui.images.ImageProvider.getImageDesc(EImage.ADD_ICON)));
 
         removeEntryItem = new ToolItem(toolBarActions, SWT.PUSH);
         removeEntryItem.setEnabled(false);
-        removeEntryItem.setImage(org.talend.core.ui.ImageProvider
-                .getImage(org.talend.core.ui.ImageProvider.getImageDesc(EImage.MINUS_ICON)));
+        removeEntryItem.setImage(org.talend.core.ui.images.ImageProvider
+                .getImage(org.talend.core.ui.images.ImageProvider.getImageDesc(EImage.MINUS_ICON)));
         removeEntryItem.setToolTipText("Remove selected variable(s)");
 
         // /////////////////////////////////////////////////////////////////

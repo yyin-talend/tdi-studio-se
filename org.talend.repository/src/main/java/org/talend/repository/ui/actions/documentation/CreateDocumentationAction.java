@@ -29,7 +29,7 @@ import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.ui.ImageProvider;
+import org.talend.core.ui.images.ImageProvider;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNodeUtilities;
 import org.talend.repository.model.RepositoryNode.ENodeType;

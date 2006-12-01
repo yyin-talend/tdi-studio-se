@@ -27,8 +27,8 @@ import org.eclipse.jface.wizard.Wizard;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.ui.EImage;
-import org.talend.core.ui.ImageProvider;
+import org.talend.core.ui.images.EImage;
+import org.talend.core.ui.images.ImageProvider;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.ProxyRepositoryFactory;
 

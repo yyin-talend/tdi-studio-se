@@ -23,8 +23,8 @@ package org.talend.designer.core.ui.views.modules;
 
 import org.eclipse.swt.graphics.Image;
 import org.talend.commons.ui.swt.tableviewer.behavior.IColumnImageProvider;
-import org.talend.core.ui.EImage;
-import org.talend.core.ui.ImageProvider;
+import org.talend.core.ui.images.EImage;
+import org.talend.core.ui.images.ImageProvider;
 import org.talend.designer.core.model.components.ModuleNeeded;
 
 /**

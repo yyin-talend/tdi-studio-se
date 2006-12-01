@@ -34,8 +34,8 @@ import org.talend.core.context.RepositoryContext;
 import org.talend.core.model.properties.BusinessProcessItem;
 import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.Property;
-import org.talend.core.ui.EImage;
-import org.talend.core.ui.ImageProvider;
+import org.talend.core.ui.images.EImage;
+import org.talend.core.ui.images.ImageProvider;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.ui.wizards.RepositoryWizard;
 

@@ -29,8 +29,8 @@ import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.model.general.Project;
 import org.talend.core.model.temp.ECodeLanguage;
-import org.talend.core.ui.EImage;
-import org.talend.core.ui.ImageProvider;
+import org.talend.core.ui.images.EImage;
+import org.talend.core.ui.images.ImageProvider;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.ProxyRepositoryFactory;
 

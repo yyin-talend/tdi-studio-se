@@ -26,8 +26,8 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.SystemException;
-import org.talend.core.ui.EImage;
-import org.talend.core.ui.ImageProvider;
+import org.talend.core.ui.images.EImage;
+import org.talend.core.ui.images.ImageProvider;
 import org.talend.repository.model.actions.CommitObjectAction;
 
 /**

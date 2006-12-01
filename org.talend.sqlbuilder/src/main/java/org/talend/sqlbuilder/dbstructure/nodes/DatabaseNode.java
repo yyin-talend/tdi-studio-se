@@ -30,7 +30,7 @@ import net.sourceforge.squirrel_sql.fw.sql.SQLDatabaseMetaData;
 
 import org.eclipse.swt.graphics.Image;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.ui.ImageProvider;
+import org.talend.core.ui.images.ImageProvider;
 import org.talend.sqlbuilder.Messages;
 import org.talend.sqlbuilder.SqlBuilderPlugin;
 import org.talend.sqlbuilder.sessiontree.model.SessionTreeNode;

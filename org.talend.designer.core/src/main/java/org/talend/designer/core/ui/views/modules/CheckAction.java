@@ -22,8 +22,8 @@
 package org.talend.designer.core.ui.views.modules;
 
 import org.eclipse.jface.action.Action;
-import org.talend.core.ui.EImage;
-import org.talend.core.ui.ImageProvider;
+import org.talend.core.ui.images.EImage;
+import org.talend.core.ui.images.ImageProvider;
 
 /**
  * DOC smallet class global comment. Detailled comment <br/>
