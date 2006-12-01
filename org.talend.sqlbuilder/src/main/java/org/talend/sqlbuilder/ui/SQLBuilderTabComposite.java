@@ -98,6 +98,7 @@ public class SQLBuilderTabComposite extends Composite {
 
 			// create tab folder for different sessions
 			tabFolder = new CTabFolder(this, SWT.NULL | SWT.BORDER);
+			tabFolder.setSimple(false);
 			tabFolder.setToolTipText("SQL editor");
 			this.layout();
 			this.redraw();
