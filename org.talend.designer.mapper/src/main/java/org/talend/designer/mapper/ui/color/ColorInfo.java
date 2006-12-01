@@ -45,12 +45,12 @@ public enum ColorInfo {
     COLOR_SELECTED_ZONE_TO_ZONE_LINK(255, 255, 0), // yellow
     COLOR_UNSELECTED_ZONE_TO_ZONE_LINK(196, 196, 180), // light gray
     
-    COLOR_SELECTED_LOOKUP_LINKS(0, 0, 255), // blue
-    COLOR_UNSELECTED_LOOKUP_LINKS(210, 210, 255), // light blue
+    COLOR_SELECTED_LOOKUP_LINKS(160, 40, 210), // violet
+    COLOR_UNSELECTED_LOOKUP_LINKS(200, 186, 225), // pastel violet
     
     COLOR_SELECTED_FILTER_LINK(255, 150, 20), // orange
 //    COLOR_UNSELECTED_FILTER_LINK(255, 190, 150), // light orange
-    COLOR_UNSELECTED_FILTER_LINK(196, 196, 180), // light gray
+    COLOR_UNSELECTED_FILTER_LINK(255, 200, 70), // light gray
     
     COLOR_HIGHLIGHTED_TEXT_ROW(240, 240, 240), // light gray
 

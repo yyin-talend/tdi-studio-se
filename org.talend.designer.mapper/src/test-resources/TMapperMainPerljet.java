@@ -153,6 +153,7 @@ public class TMapperMainPerljet {
                 } // if(externalTable != null) {
             } // else if(connectionType == EConnectionType.FLOW_REF) {
         } // for (IConnection connection : connections) {
+        boolean atLeastOneInputTableWithInnerJoin = !inputTablesWithInnerJoin.isEmpty();
 
         sb.append(cr + gm.indent(indent) + "###############################");
         // /////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -263,7 +264,7 @@ public class TMapperMainPerljet {
             // write $oneNotRejectFilterValidated = false;
             sb.append(cr + gm.indent(indent) + "$" + rejected + " = true;");
         }
-        if (atLeastOneRejectInnerJoin) {
+        if (atLeastOneInputTableWithInnerJoin && atLeastOneRejectInnerJoin) {
             // write $oneNotRejectFilterValidated = false;
             sb.append(cr + gm.indent(indent) + "$" + rejectedInnerJoin + " = true;");
         }
@@ -325,6 +326,7 @@ public class TMapperMainPerljet {
                 if (closeTestInnerJoinConditionsBracket) {
                     indent--;
                     sb.append(cr + gm.indent(indent) + "}");
+                    closeTestInnerJoinConditionsBracket = false;
                 }
 
                 sb.append(cr + gm.indent(indent) + "###### START REJECTS ##### ");
@@ -344,26 +346,24 @@ public class TMapperMainPerljet {
             }
 
             // write filters conditions and code to execute
-            if (
-                    !currentIsReject 
-                    || rejectValueHasJustChanged && oneFilterForNotRejectTable
-                    || currentIsReject 
-                    || currentIsRejectInnerJoin
-            ) {
+            if (!currentIsReject || rejectValueHasJustChanged && oneFilterForNotRejectTable || currentIsReject || currentIsRejectInnerJoin
+                    && atLeastOneInputTableWithInnerJoin) {
 
-                if (hasFilters || currentIsReject || currentIsRejectInnerJoin) {
+                boolean closeFilterOrRejectBracket = false;
+                if (hasFilters || currentIsReject || currentIsRejectInnerJoin && atLeastOneInputTableWithInnerJoin) {
                     sb.append(cr + gm.indent(indent) + "# Filter condition ");
                     sb.append(cr + gm.indent(indent) + "if( ");
 
                     String rejectedTests = null;
-                    if (allNotRejectTablesHaveFilter && atLeastOneReject && currentIsReject && currentIsRejectInnerJoin) {
+                    if (allNotRejectTablesHaveFilter && atLeastOneReject && currentIsReject && currentIsRejectInnerJoin
+                            && atLeastOneInputTableWithInnerJoin) {
                         rejectedTests = "$" + rejected + " || $" + rejectedInnerJoin;
                         if (hasFilters) {
                             rejectedTests = "(" + rejectedTests + ")";
                         }
                     } else if (allNotRejectTablesHaveFilter && atLeastOneReject && currentIsReject) {
                         rejectedTests = "$" + rejected;
-                    } else if (currentIsRejectInnerJoin) {
+                    } else if (currentIsRejectInnerJoin && atLeastOneInputTableWithInnerJoin) {
                         rejectedTests = "$" + rejectedInnerJoin;
                     }
                     if (hasFilters) {
@@ -378,12 +378,14 @@ public class TMapperMainPerljet {
                     }
                     sb.append(" ) {");
                     indent++;
+                    closeFilterOrRejectBracket = true;
                     if (allNotRejectTablesHaveFilter && !(currentIsReject || currentIsRejectInnerJoin) && atLeastOneReject) {
                         sb.append(cr + gm.indent(indent) + "$" + rejected + " = false;");
                     }
                 }
 
-                if (!currentIsReject && !currentIsRejectInnerJoin || currentIsReject || currentIsRejectInnerJoin) {
+                if (!currentIsReject && !currentIsRejectInnerJoin || currentIsReject || currentIsRejectInnerJoin
+                        && atLeastOneInputTableWithInnerJoin) {
                     for (ExternalMapperTableEntry outputTableEntry : outputTableEntries) {
                         String outputColumnName = outputTableEntry.getName();
                         String outputExpression = outputTableEntry.getExpression();
@@ -399,13 +401,21 @@ public class TMapperMainPerljet {
 
                     } // for entries
                 }
-                if (hasFilters || currentIsReject || currentIsRejectInnerJoin) {
+                if (closeFilterOrRejectBracket) {
                     indent--;
                     sb.append(cr + gm.indent(indent) + "}");
                 }
 
             }
             lastValueReject = currentIsReject || currentIsRejectInnerJoin;
+
+            boolean isLastTable = indexCurrentTable == lstSize - 1;
+            if (closeTestInnerJoinConditionsBracket && isLastTable) {
+                indent--;
+                sb.append(cr + gm.indent(indent) + "}");
+                closeTestInnerJoinConditionsBracket = false;
+            }
+
         } // for output tables
 
         sb.append(cr + gm.indent(indent) + "###############################");

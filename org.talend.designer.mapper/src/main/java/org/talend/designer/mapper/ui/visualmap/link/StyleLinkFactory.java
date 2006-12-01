@@ -48,6 +48,7 @@ public class StyleLinkFactory {
     private IStyleLink selectedZoneToZoneStyle;
 
     private IStyleLink selectedFilterStyle;
+    private IStyleLink unselectedFilterStyle;
 
     private IStyleLink selectedSameZoneStyle;
 
@@ -70,8 +71,8 @@ public class StyleLinkFactory {
 
         selectedZoneToZoneStyle = getSelectedZoneToOtherZoneStyle(ColorProviderMapper
                 .getColor(ColorInfo.COLOR_SELECTED_ZONE_TO_ZONE_LINK));
-        selectedFilterStyle = getSelectedZoneToOtherZoneStyle(ColorProviderMapper
-                .getColor(ColorInfo.COLOR_SELECTED_FILTER_LINK));
+        selectedFilterStyle = getSelectedFilterStyle();
+        unselectedFilterStyle = getUnselectedFilterStyle();
         selectedSameZoneStyle = getSelectedSameZoneStyle();
         unselectedSameZoneStyle = getUnselectedSameZoneStyle();
         unselectedZoneToZoneStyle = getUnselectedZoneToZoneStyle();
@@ -117,7 +118,11 @@ public class StyleLinkFactory {
                     style = selectedZoneToZoneStyle;
                 }
             } else if (linkState == LinkState.UNSELECTED) {
-                style = unselectedZoneToZoneStyle;
+                if (targetIsConstraint) {
+                    style = unselectedFilterStyle;
+                } else {
+                    style = unselectedZoneToZoneStyle;
+                }
             }
         } else if (pointLinkDescriptorSource.getZone() == pointLinkDescriptorTarget.getZone()) {
             if (linkState == LinkState.SELECTED) {
@@ -128,6 +133,41 @@ public class StyleLinkFactory {
         }
         return style;
     }
+
+    /**
+     * DOC amaumont Comment method "getSelectedFilterStyle".
+     * @return
+     */
+    private IStyleLink getSelectedFilterStyle() {
+        StyleLink style = new StyleLink();
+        setCommonsStyleProperties(style);
+        style.setDrawableLink(getZoneToZoneLink(style));
+        ExtremityEastArrow eastArrowSource = new ExtremityEastArrow(style);
+        style.setExtremity1(eastArrowSource);
+        ExtremityEastArrow eastArrowTarget = new ExtremityEastArrow(style);
+        eastArrowTarget.setXOffset(-eastArrowTarget.getSize().x);
+        style.setExtremity2(eastArrowTarget);
+        style.setForegroundColor(ColorProviderMapper.getColor(ColorInfo.COLOR_SELECTED_FILTER_LINK));
+        return style;
+    }
+
+    /**
+     * DOC amaumont Comment method "getSelectedFilterStyle".
+     * @return
+     */
+    private IStyleLink getUnselectedFilterStyle() {
+        StyleLink style = new StyleLink();
+        setCommonsStyleProperties(style);
+        style.setDrawableLink(getZoneToZoneLink(style));
+//        ExtremityEastArrow eastArrowSource = new ExtremityEastArrow(style);
+//        style.setExtremity1(eastArrowSource);
+//        ExtremityEastArrow eastArrowTarget = new ExtremityEastArrow(style);
+//        eastArrowTarget.setXOffset(-eastArrowTarget.getSize().x);
+//        style.setExtremity2(eastArrowTarget);
+        style.setForegroundColor(ColorProviderMapper.getColor(ColorInfo.COLOR_UNSELECTED_FILTER_LINK));
+        return style;
+    }
+    
 
     private IStyleLink getSelectedZoneToOtherZoneStyle(Color foregroundColor) {
         StyleLink style = new StyleLink();
@@ -164,6 +204,11 @@ public class StyleLinkFactory {
         StyleLink style = new StyleLink();
         setCommonsStyleProperties(style);
         style.setDrawableLink(getSameZoneLink(style));
+        ExtremityWestArrow westArrow = new ExtremityWestArrow(style);
+        style.setExtremity1(westArrow);
+        ExtremityEastArrow eastArrowTarget = new ExtremityEastArrow(style);
+        eastArrowTarget.setXOffset(-eastArrowTarget.getSize().x);
+        style.setExtremity2(eastArrowTarget);
         style.setForegroundColor(ColorProviderMapper.getColor(ColorInfo.COLOR_UNSELECTED_LOOKUP_LINKS));
         return style;
     }

@@ -66,6 +66,23 @@ public class MapperDataTestGenerator {
     // private ILanguage language;
     private GenerationManager gen;
 
+    /**
+     * 
+     * DOC amaumont MapperDataTestGenerator class global comment. Detailled comment <br/>
+     * 
+     * $Id$
+     * 
+     */
+    enum TEST {
+        ONE_INNER_JOIN_AND_NOT_ANY_REJECT_AND_ONE_OUT_TABLE_WITHOUT_FILTER,
+        ONE_INNER_JOIN_AND_ONLY_ONE_INNER_JOIN_REJECT_AND_ONE_OUT_TABLE_WITHOUT_FILTER,
+        NO_INNER_JOIN_AND_ONLY_ONE_INNER_JOIN_REJECT_AND_ONE_OUT_TABLE_WITHOUT_FILTER,
+        ONE_INNER_JOIN_AND_A_TABLE_WITH_REJECT_AND_INNER_JOIN_REJECT_AND_ONE_OUT_TABLE_WITHOUT_FILTER,
+        NO_INNER_JOIN_AND_ONE_REJECT_AND_ONE_INNER_JOIN_REJECT_AND_ONE_OUT_TABLE_WITHOUT_FILTER,
+    };
+
+    TEST currentTest = TEST.NO_INNER_JOIN_AND_ONE_REJECT_AND_ONE_INNER_JOIN_REJECT_AND_ONE_OUT_TABLE_WITHOUT_FILTER;
+
     public MapperDataTestGenerator(ILanguage language, boolean random) {
         super();
 
@@ -409,8 +426,16 @@ public class MapperDataTestGenerator {
         mapperTable = new ExternalMapperTable();
         mapperTable.setName("page");
 
-        mapperTable.setInnerJoin(true);
-        
+        if (currentTest == TEST.ONE_INNER_JOIN_AND_NOT_ANY_REJECT_AND_ONE_OUT_TABLE_WITHOUT_FILTER
+                || currentTest == TEST.ONE_INNER_JOIN_AND_ONLY_ONE_INNER_JOIN_REJECT_AND_ONE_OUT_TABLE_WITHOUT_FILTER
+                || currentTest == TEST.NO_INNER_JOIN_AND_ONLY_ONE_INNER_JOIN_REJECT_AND_ONE_OUT_TABLE_WITHOUT_FILTER
+                || currentTest == TEST.NO_INNER_JOIN_AND_ONE_REJECT_AND_ONE_INNER_JOIN_REJECT_AND_ONE_OUT_TABLE_WITHOUT_FILTER
+        ) {
+            mapperTable.setInnerJoin(false);
+        } else {
+            mapperTable.setInnerJoin(false);
+        }
+
         tableEntries = new ArrayList<ExternalMapperTableEntry>();
 
         mapperTableEntry = new ExternalMapperTableEntry();
@@ -436,7 +461,16 @@ public class MapperDataTestGenerator {
 
         mapperTable = new ExternalMapperTable();
         mapperTable.setName("userInput");
-        mapperTable.setInnerJoin(true);
+
+        if (currentTest == TEST.ONE_INNER_JOIN_AND_NOT_ANY_REJECT_AND_ONE_OUT_TABLE_WITHOUT_FILTER
+                || currentTest == TEST.ONE_INNER_JOIN_AND_ONLY_ONE_INNER_JOIN_REJECT_AND_ONE_OUT_TABLE_WITHOUT_FILTER) {
+            mapperTable.setInnerJoin(true);
+        } else if (currentTest == TEST.NO_INNER_JOIN_AND_ONLY_ONE_INNER_JOIN_REJECT_AND_ONE_OUT_TABLE_WITHOUT_FILTER
+                || currentTest == TEST.NO_INNER_JOIN_AND_ONE_REJECT_AND_ONE_INNER_JOIN_REJECT_AND_ONE_OUT_TABLE_WITHOUT_FILTER) {
+            mapperTable.setInnerJoin(false);
+        } else {
+            mapperTable.setInnerJoin(false);
+        }
 
         tableEntries = new ArrayList<ExternalMapperTableEntry>();
 
@@ -608,8 +642,20 @@ public class MapperDataTestGenerator {
 
         mapperTable = new ExternalMapperTable();
         mapperTable.setName("newPageRejected");
-        mapperTable.setReject(true);
-        mapperTable.setRejectInnerJoin(true);
+
+        if (currentTest == TEST.ONE_INNER_JOIN_AND_NOT_ANY_REJECT_AND_ONE_OUT_TABLE_WITHOUT_FILTER
+                || currentTest == TEST.ONE_INNER_JOIN_AND_ONLY_ONE_INNER_JOIN_REJECT_AND_ONE_OUT_TABLE_WITHOUT_FILTER
+                || currentTest == TEST.NO_INNER_JOIN_AND_ONLY_ONE_INNER_JOIN_REJECT_AND_ONE_OUT_TABLE_WITHOUT_FILTER
+                || currentTest == TEST.ONE_INNER_JOIN_AND_A_TABLE_WITH_REJECT_AND_INNER_JOIN_REJECT_AND_ONE_OUT_TABLE_WITHOUT_FILTER) {
+            mapperTable.setReject(false);
+            mapperTable.setRejectInnerJoin(false);
+        } else if (currentTest == TEST.NO_INNER_JOIN_AND_ONE_REJECT_AND_ONE_INNER_JOIN_REJECT_AND_ONE_OUT_TABLE_WITHOUT_FILTER) {
+            mapperTable.setReject(true);
+            mapperTable.setRejectInnerJoin(true);
+        } else {
+            mapperTable.setReject(true);
+            mapperTable.setRejectInnerJoin(true);
+        }
 
         tableEntries = new ArrayList<ExternalMapperTableEntry>();
 
@@ -632,25 +678,46 @@ public class MapperDataTestGenerator {
 
         // #########################################################################
 
-        // CONSTRAINTS
+        // FILTERS
 
         tableEntries = new ArrayList<ExternalMapperTableEntry>();
 
         mapperTableEntry = new ExternalMapperTableEntry();
-//        mapperTableEntry.setExpression(gen.getTableColumnVariable("page", "newId") + " == 1");
-//        tableEntries.add(mapperTableEntry);
+        if (currentTest == TEST.ONE_INNER_JOIN_AND_NOT_ANY_REJECT_AND_ONE_OUT_TABLE_WITHOUT_FILTER
+                || currentTest == TEST.ONE_INNER_JOIN_AND_ONLY_ONE_INNER_JOIN_REJECT_AND_ONE_OUT_TABLE_WITHOUT_FILTER
+                || currentTest == TEST.NO_INNER_JOIN_AND_ONLY_ONE_INNER_JOIN_REJECT_AND_ONE_OUT_TABLE_WITHOUT_FILTER
+                || currentTest == TEST.ONE_INNER_JOIN_AND_A_TABLE_WITH_REJECT_AND_INNER_JOIN_REJECT_AND_ONE_OUT_TABLE_WITHOUT_FILTER
+                || currentTest == TEST.NO_INNER_JOIN_AND_ONE_REJECT_AND_ONE_INNER_JOIN_REJECT_AND_ONE_OUT_TABLE_WITHOUT_FILTER) {
+            //
+        } else {
+            mapperTableEntry.setExpression(gen.getTableColumnVariable("page", "newId") + " == 1");
+            tableEntries.add(mapperTableEntry);
+        }
 
         mapperTable.setConstraintTableEntries(tableEntries);
 
-         tables.add(mapperTable);
+        tables.add(mapperTable);
 
         // #########################################################################
         // #########################################################################
 
         mapperTable = new ExternalMapperTable();
         mapperTable.setName("newPageRejected2");
-        mapperTable.setReject(true);
-        mapperTable.setRejectInnerJoin(true);
+
+        if (currentTest == TEST.ONE_INNER_JOIN_AND_NOT_ANY_REJECT_AND_ONE_OUT_TABLE_WITHOUT_FILTER) {
+            mapperTable.setReject(false);
+            mapperTable.setRejectInnerJoin(false);
+        } else if (currentTest == TEST.ONE_INNER_JOIN_AND_ONLY_ONE_INNER_JOIN_REJECT_AND_ONE_OUT_TABLE_WITHOUT_FILTER
+                || currentTest == TEST.NO_INNER_JOIN_AND_ONLY_ONE_INNER_JOIN_REJECT_AND_ONE_OUT_TABLE_WITHOUT_FILTER) {
+            mapperTable.setReject(false);
+            mapperTable.setRejectInnerJoin(true);
+        } else if (currentTest == TEST.ONE_INNER_JOIN_AND_A_TABLE_WITH_REJECT_AND_INNER_JOIN_REJECT_AND_ONE_OUT_TABLE_WITHOUT_FILTER) {
+            mapperTable.setReject(true);
+            mapperTable.setRejectInnerJoin(true);
+        } else {
+            mapperTable.setReject(true);
+            mapperTable.setRejectInnerJoin(true);
+        }
 
         tableEntries = new ArrayList<ExternalMapperTableEntry>();
 
