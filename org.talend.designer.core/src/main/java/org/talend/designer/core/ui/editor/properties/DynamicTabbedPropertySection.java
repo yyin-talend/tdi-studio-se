@@ -3013,7 +3013,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
             elem = ((ConnectionLabel) elem).getConnection();
         }
 
-        if (currentComponent == null) {
+        if (currentComponent == null || elem instanceof Connection) {
             addComponents();
         } else {
             if (!currentComponent.equals(elem.getElementName())) {

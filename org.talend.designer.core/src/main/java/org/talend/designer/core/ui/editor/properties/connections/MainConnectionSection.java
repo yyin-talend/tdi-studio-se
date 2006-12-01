@@ -47,8 +47,6 @@ import org.talend.designer.core.ui.editor.properties.DynamicTabbedPropertySectio
  */
 public class MainConnectionSection extends DynamicTabbedPropertySection {
 
-//    private Composite parent;
-
     private MetadataTableEditorView metadataTableEditorView;
 
     private MetadataTableEditor metadataTableEditor;
@@ -84,7 +82,9 @@ public class MainConnectionSection extends DynamicTabbedPropertySection {
         if (conSchema()) {
             disposeChildren();
 
-            List<? extends IElementParameter> listParam = ((Connection)elem).getSource().getElementParameters();
+            curRowSize = 0;
+
+            List<? extends IElementParameter> listParam = ((Connection) elem).getSource().getElementParameters();
 
             for (IElementParameter cur : listParam) {
                 if (cur.getField() == EParameterFieldType.SCHEMA_TYPE) {
@@ -99,14 +99,15 @@ public class MainConnectionSection extends DynamicTabbedPropertySection {
             data.width = 300; // to correct bug of table growing indefinitly
 
             IMetadataTable outputMetaTable = ((Connection) elem).getMetadataTable();
-            metadataTableEditor = new MetadataTableEditor(outputMetaTable, "Schema from " + outputMetaTable.getTableName()
-                    + " output ");
+            metadataTableEditor = new MetadataTableEditor(outputMetaTable, "Schema from "
+                    + ((Connection) elem).getSource().getElementName() + " output ");
             metadataTableEditorView = new MetadataTableEditorView(composite, SWT.NONE, metadataTableEditor, true, false);
 
             Composite compositeEditorView = metadataTableEditorView.getMainComposite();
             compositeEditorView.setLayoutData(data);
 
             composite.getParent().layout();
+            composite.layout();
         } else if (conIf()) {
             super.addComponents();
         } else {
@@ -129,7 +130,8 @@ public class MainConnectionSection extends DynamicTabbedPropertySection {
 
     private boolean conSchema() {
         Connection connection = (Connection) elem;
-        return connection.getLineStyle() == EConnectionType.FLOW_MAIN || connection.getLineStyle() == EConnectionType.FLOW_REF;
+        return connection.getLineStyle() == EConnectionType.FLOW_MAIN
+                || connection.getLineStyle() == EConnectionType.FLOW_REF;
     }
 
 }
