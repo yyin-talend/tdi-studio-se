@@ -10,7 +10,9 @@
             primary="true"/>
     <toc
             file="developer_guide.xml"
-            primary="true"/>         
+            primary="true"/>   
+    <toc
+            file="perlfunc.xml"/>         
          
    </extension>
    
