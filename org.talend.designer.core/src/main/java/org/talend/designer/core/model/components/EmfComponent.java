@@ -68,6 +68,7 @@ import org.talend.designer.core.model.utils.emf.component.TEMPLATEPARAMType;
 import org.talend.designer.core.model.utils.emf.component.TEMPLATESType;
 import org.talend.designer.core.model.utils.emf.component.TEMPLATEType;
 import org.talend.designer.core.model.utils.emf.component.util.ComponentResourceFactoryImpl;
+import org.talend.repository.model.ComponentsFactoryProvider;
 
 /**
  * 
@@ -100,13 +101,15 @@ public class EmfComponent implements IComponent {
 
     private static final String TEXT_REPOSITORY = "Repository";
 
+    private static final String TSTATCATCHER_NAME = "tStatCatcher";
+
     private IMultipleComponentManager multipleComponentManager;
 
     public EmfComponent(File file) throws SystemException {
         this.file = file;
         load();
-        codeLanguage = ((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY)).getProject()
-                .getLanguage();
+        codeLanguage = ((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY))
+                .getProject().getLanguage();
     }
 
     private String getTranslatedValue(final String nameValue) {
@@ -262,7 +265,7 @@ public class EmfComponent implements IComponent {
         listParam.add(param);
     }
 
-    public void addMainParameters(final List<ElementParameter> listParam, IElement element) {
+    private void addMainParameters(final List<ElementParameter> listParam, IElement element) {
         ElementParameter param;
 
         param = new ElementParameter(element);
@@ -367,6 +370,19 @@ public class EmfComponent implements IComponent {
         param.setShow(true);
         listParam.add(param);
 
+        boolean tStatCatcherAvailable = ComponentsFactoryProvider.getInstance().get(TSTATCATCHER_NAME) != null;
+        param = new ElementParameter(element);
+        param.setName(EParameterName.TSTATCATCHER_STATISTICS.getName());
+        param.setValue(new Boolean(false));
+        param.setDisplayName(EParameterName.TSTATCATCHER_STATISTICS.getDisplayName());
+        param.setField(EParameterFieldType.CHECK);
+        param.setCategory(EComponentCategory.MAIN);
+        param.setNumRow(6);
+        param.setReadOnly(false);
+        param.setRequired(false);
+        param.setShow(tStatCatcherAvailable && compType.getHEADER().isTSTATCATCHERSTATS());
+        listParam.add(param);
+
         param = new ElementParameter(element);
         param.setName(EParameterName.HELP.getName());
         param.setValue(getTranslatedValue(PROP_HELP));
@@ -393,7 +409,7 @@ public class EmfComponent implements IComponent {
     }
 
     @SuppressWarnings("unchecked")
-    public void addPropertyParameters(final List<ElementParameter> listParam, IElement element) {
+    private void addPropertyParameters(final List<ElementParameter> listParam, IElement element) {
         EList listXmlParam;
         PARAMETERType xmlParam;
         ElementParameter param;
@@ -521,7 +537,8 @@ public class EmfComponent implements IComponent {
             param.setNotShowIf(xmlParam.getNOTSHOWIF());
             param.setRepositoryValue(xmlParam.getREPOSITORYVALUE());
 
-            if (!param.getField().equals(EParameterFieldType.TABLE) && !param.getField().equals(EParameterFieldType.CLOSED_LIST)) {
+            if (!param.getField().equals(EParameterFieldType.TABLE)
+                    && !param.getField().equals(EParameterFieldType.CLOSED_LIST)) {
                 List<DEFAULTType> listDefault = xmlParam.getDEFAULT();
                 for (DEFAULTType defaultType : listDefault) {
                     IElementParameterDefaultValue defaultValue = new ElementParameterDefaultValue();
@@ -565,8 +582,8 @@ public class EmfComponent implements IComponent {
         }
     }
 
-    public void addItemsPropertyParameters(String paramName, ITEMSType items, ElementParameter param, EParameterFieldType type,
-            IElement element) {
+    public void addItemsPropertyParameters(String paramName, ITEMSType items, ElementParameter param,
+            EParameterFieldType type, IElement element) {
         ITEMType item;
 
         int nbItems = 0;
@@ -621,7 +638,8 @@ public class EmfComponent implements IComponent {
                     listItemsValue[k] = newParam;
                 } else {
 
-                    if (currentField == EParameterFieldType.COLUMN_LIST || currentField == EParameterFieldType.PREV_COLUMN_LIST) {
+                    if (currentField == EParameterFieldType.COLUMN_LIST
+                            || currentField == EParameterFieldType.PREV_COLUMN_LIST) {
                         ElementParameter newParam = new ElementParameter(element);
                         newParam.setName(item.getNAME());
                         newParam.setDisplayName("");
@@ -819,7 +837,8 @@ public class EmfComponent implements IComponent {
                     msg = Messages.getString("modules.required");
                 }
 
-                ModuleNeeded componentImportNeeds = new ModuleNeeded(this, importType.getMODULE(), msg, importType.isREQUIRED());
+                ModuleNeeded componentImportNeeds = new ModuleNeeded(this, importType.getMODULE(), msg, importType
+                        .isREQUIRED());
 
                 componentImportNeedsList.add(componentImportNeeds);
             }
