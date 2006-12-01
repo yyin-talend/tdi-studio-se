@@ -56,21 +56,22 @@ use constant <%=metadata.getTableName() %>__<%=column.getLabel() %> => <%= i %>;
         List<? extends IConnection> inConns = node.getIncomingConnections();
 
         if (inConns != null && !inConns.isEmpty()) {
-            IMetadataTable inMetadata = inConns.get(0).getMetadataTable();
-            String prevComponentName = inMetadata.getTableName();
+            IConnection inConn = inConns.get(0);
+            IMetadataTable inMetadata = inConn.getMetadataTable();
+            String inputRowName = inConn.getName();
 
             int j = 0;
             for (IMetadataColumn column: inMetadata.getListColumns()) {
 %>
-use constant <%=prevComponentName%>__<%=column.getLabel() %> => <%=j%>;
+use constant <%=inputRowName%>__<%=column.getLabel() %> => <%=j%>;
 <%
                 j++;
             }
         }
-<%
+%>
 
 my $nb_line_<%=cid%> = 0;
-%>
+<%
     }
 }
 %>

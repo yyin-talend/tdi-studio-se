@@ -47,18 +47,20 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         // we give a default value to prevComponentName so that no error
         // occur when the user tries to generated Perl code while no input
         // component was linked to our tPerlRow.
+        String inputRowName = new String("input_row");
         String prevComponentName = new String("prev_component_name");
 
         List< ? extends IConnection> inConns = node.getIncomingConnections();
         if (inConns != null && !inConns.isEmpty()) {
-            IMetadataTable inMetadata = inConns.get(0).getMetadataTable();
-            prevComponentName = inMetadata.getTableName();
+            IConnection inConn = inConns.get(0);
+            IMetadataTable inMetadata = inConn.getMetadataTable();
+            inputRowName = inConn.getName();
 
             columns = inMetadata.getListColumns();
             for(IMetadataColumn column : columns) {
                 locations.add(
                     new EntryLocation(
-                        prevComponentName,
+                        inputRowName,
                         column.getLabel()
                     )
                 );
@@ -73,7 +75,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         
         code = code.replaceAll(
             "\\$input_row\\[",
-            "\\$"+ prevComponentName +"["
+            "\\$"+ inputRowName +"["
         );
         
         code = locationUtils.replaceColumnNameToConstantName(
@@ -85,7 +87,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         // the arrays as a whole.
         code = code.replaceAll(
             "@input_row",
-            "@" + prevComponentName
+            "@" + inputRowName
         );
 
         code = code.replaceAll(
@@ -97,7 +99,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 
 my @<%=tableName%> = ();
 
-if (@<%=prevComponentName%>) {
+if (@<%=inputRowName%>) {
     <%=code%>
 
     $nb_line_<%=metadata.getTableName() %>++;
