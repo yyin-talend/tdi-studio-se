@@ -124,7 +124,9 @@ public class RepositoryLabelProvider extends LabelProvider implements IColorProv
                 DocumentationItem item = (DocumentationItem) node.getObject().getProperty().getItem();
                 return ImageProvider.getImage(item.getExtension());
             }
-            return ImageProvider.getImage(node.getObject().getType());
+            ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+            ERepositoryStatus repositoryStatus = factory.getStatus(node.getObject());
+            return BusinessImageProvider.getImage(node.getObject().getType(), repositoryStatus);
         }
     }
 
