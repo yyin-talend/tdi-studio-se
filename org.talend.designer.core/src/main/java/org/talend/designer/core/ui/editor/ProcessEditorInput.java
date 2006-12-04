@@ -68,8 +68,8 @@ public class ProcessEditorInput extends RepositoryEditorInput {
 
     public ProcessEditorInput(ProcessItem processItem, boolean load) throws PersistenceException {
         super(initFile(processItem.getProperty().getId()), processItem);
-        init();
-        // initFile();
+        
+        loadedProcess = new Process(getProcessItem().getProperty());
         if (load) {
             loadProcess();
         } else {
@@ -116,23 +116,6 @@ public class ProcessEditorInput extends RepositoryEditorInput {
 ////        if (isLocked || isDeleted) {
 //            loadedProcess.setReadOnly(isLocked || isDeleted);
 ////        }
-    }
-
-    /**
-     * DOC mhelleboid Comment method "init".
-     * 
-     * @param processItem
-     */
-    private void init() {
-        loadedProcess = new Process(getProcessItem().getProperty());
-        loadedProcess.setId(getProcessItem().getProperty().getId());
-        loadedProcess.setLabel(getProcessItem().getProperty().getLabel());
-        loadedProcess.setVersion(getProcessItem().getProperty().getVersion());
-        loadedProcess.setAuthor(getProcessItem().getProperty().getAuthor());
-        loadedProcess.setStatusCode(getProcessItem().getProperty().getStatusCode());
-        if (loadedProcess.getStatusCode() == null) {
-            loadedProcess.setStatusCode("");
-        }
     }
 
     private void loadProcess() throws PersistenceException {

@@ -32,8 +32,8 @@ import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IContextListener;
 import org.talend.core.model.process.IContextManager;
 import org.talend.core.model.process.IContextParameter;
+import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.temp.ECodeLanguage;
-import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
 import org.talend.designer.core.ui.editor.process.Process;
 
 /**
@@ -146,9 +146,9 @@ public class ContextManager implements IContextManager {
      * @param processType
      * @return
      */
-    public static IContextManager getContextManagerFromXmlProcess(ProcessType processType) {
-        Process process = new Process();
-        process.loadXmlFile(processType);
+    public static IContextManager getContextManagerFromXmlProcess(ProcessItem processItem) {
+        Process process = new Process(processItem.getProperty());
+        process.loadXmlFile(processItem.getProcess());
         IContextManager contextManager = process.getContextManager();
 
         return contextManager;

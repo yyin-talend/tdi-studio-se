@@ -74,6 +74,7 @@ import org.talend.core.model.process.INode;
 import org.talend.core.model.process.INodeConnector;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.properties.ConnectionItem;
+import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.properties.User;
 import org.talend.core.model.repository.ERepositoryObjectType;
@@ -161,6 +162,8 @@ public class Process extends Element implements IProcess {
 
     private Property property;
 
+    private boolean initDone = false;
+
     public Process() {
         // PTODO NRO save the language in the process and load/test it.
 
@@ -174,6 +177,21 @@ public class Process extends Element implements IProcess {
     public Process(Property property) {
         this();
         this.property = property;
+        init();
+    }
+
+    private void init() {
+        if (!initDone) {
+            setId(property.getId());
+            setLabel(property.getLabel());
+            setVersion(property.getVersion());
+            setAuthor(property.getAuthor());
+            setStatusCode(property.getStatusCode());
+            if (getStatusCode() == null) {
+                setStatusCode("");
+            }
+            initDone = true;
+        }
     }
 
     /*
@@ -574,6 +592,7 @@ public class Process extends Element implements IProcess {
     public ProcessType saveXmlFile(final IFile file) throws IOException {
         String fileName;
 
+        init();
         fileName = file.getLocationURI().toString();
         URI uri = URI.createURI(fileName);
         Resource res = new TalendFileResourceImpl(uri);
@@ -726,6 +745,7 @@ public class Process extends Element implements IProcess {
      * @param process
      */
     public void loadXmlFile(ProcessType process) {
+        init();
         Hashtable<String, Node> nodesHashtable = new Hashtable<String, Node>();
 
         loadProcessProperties(process);
@@ -1545,10 +1565,10 @@ public class Process extends Element implements IProcess {
     public void checkProcess() {
         checkProcess(true);
     }
-    
 
     /**
      * DOC nrousseau Comment method "checkProcess".
+     * 
      * @param propagate
      */
     public void checkProcess(boolean propagate) {

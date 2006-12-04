@@ -937,7 +937,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                     if (process.getProperty().getItem() instanceof ProcessItem) {
                         ProcessItem processItem = (ProcessItem) process.getProperty().getItem();
                         IContextManager contextManager = ContextManager
-                                .getContextManagerFromXmlProcess((ProcessType) processItem.getProcess());
+                                .getContextManagerFromXmlProcess(processItem);
                         for (IContext context : contextManager.getListContext()) {
                             contextNameList.add(context.getName());
                             contextValueList.add("'" + context.getName() + "'");
