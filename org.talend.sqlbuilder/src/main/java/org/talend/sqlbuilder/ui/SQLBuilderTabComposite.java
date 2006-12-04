@@ -128,24 +128,32 @@ public class SQLBuilderTabComposite extends Composite {
 	 */
 	private void createTabItem(RepositoryNode node,
 			ConnectionParameters connParam, boolean isDefaultEditor) {
-		if (node != null
-				&& (RepositoryNodeType) node
-						.getProperties(EProperties.CONTENT_TYPE) == RepositoryNodeType.QUERY) {
-			Query query = ((QueryRepositoryObject) node.getObject()).getQuery();
+		if (node != null) {
 			CTabItem[] tabItems = tabFolder.getItems();
 			for (int i = 0; i < tabItems.length; i++) {
 				SQLBuilderEditorComposite editorComposite = (SQLBuilderEditorComposite) tabItems[i]
-						.getControl();
+				                                                                                 .getControl();
 				Query query2 = editorComposite.getConnParam().getQueryObject();
-				if (query2 != null
-						&& query.getComment().equals(query2.getComment())
-						&& query.getLabel().equals(query2.getLabel())
-						&& query.getValue().equals(query2.getValue())) {
-					tabFolder.setSelection(i);
-					return;
+				if ((RepositoryNodeType) node
+						.getProperties(EProperties.CONTENT_TYPE) == RepositoryNodeType.QUERY) {
+					Query query = ((QueryRepositoryObject) node.getObject()).getQuery();
+					
+					if (query2 != null
+							&& query.getComment().equals(query2.getComment())
+							&& query.getLabel().equals(query2.getLabel())
+							&& query.getValue().equals(query2.getValue())) {
+						tabFolder.setSelection(i);
+						return;
+					}
+					connParam.setQueryObject(query);
+				} else {
+					String queryString = connParam.getQuery();
+					if (editorComposite.getConnParam().getQuery().equals(queryString)) {
+						tabFolder.setSelection(i);
+						return;
+					}
 				}
 			}
-			connParam.setQueryObject(query);
 		}
 		CTabItem tabItem = null;
 		if (isDefaultEditor) {

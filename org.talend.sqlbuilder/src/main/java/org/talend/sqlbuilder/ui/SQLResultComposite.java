@@ -25,6 +25,8 @@ package org.talend.sqlbuilder.ui;
 import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.BusyIndicator;
+import org.eclipse.swt.custom.CTabFolder;
+import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.graphics.Point;
@@ -35,8 +37,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.TabFolder;
-import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Text;
 import org.talend.sqlbuilder.Messages;
 import org.talend.sqlbuilder.actions.CloseSQLResultTabAction;
@@ -57,7 +57,7 @@ public class SQLResultComposite extends Composite implements IResultDisplayer {
 
     private int lastTabNumber = 0;
 
-    private TabFolder tabFolder;
+    private CTabFolder tabFolder;
 
     
     private AbstractSQLExecution sqlExecution;
@@ -109,7 +109,8 @@ public class SQLResultComposite extends Composite implements IResultDisplayer {
             clearParent();
 
             // create tab folder for different sessions
-            tabFolder = new TabFolder(this, SWT.NULL);
+            tabFolder = new CTabFolder(this, SWT.NULL);
+            tabFolder.setSimple(false);
             tabFolder.setToolTipText(Messages.getString("SQLResultComposite.SQLResults.ToolTip")); //$NON-NLS-1$
             GridData gd = new GridData(GridData.FILL_BOTH);
             tabFolder.setLayoutData(gd);
@@ -144,8 +145,8 @@ public class SQLResultComposite extends Composite implements IResultDisplayer {
      */
     private void createTabItem() throws Exception {
         lastTabNumber = lastTabNumber + 1;
-        final TabItem tabItem = new TabItem(tabFolder, SWT.NULL);
-        String labelText = "" + lastTabNumber; //$NON-NLS-1$
+        final CTabItem tabItem = new CTabItem(tabFolder, SWT.NULL);
+        String labelText = "Result: " + lastTabNumber; //$NON-NLS-1$
         tabItem.setText(labelText);
         tabItem.setData("tabLabel", labelText); //$NON-NLS-1$
         tabItem.setToolTipText(TextUtil.getWrappedText(sqlExecution.getSqlStatement()));
@@ -173,7 +174,7 @@ public class SQLResultComposite extends Composite implements IResultDisplayer {
             public void widgetDisposed(final DisposeEvent e) {
                 BusyIndicator.showWhile(Display.getCurrent(), new Runnable() {
                     public void run() {
-                        TabItem tabItem = (TabItem) e.getSource();
+                        CTabItem tabItem = (CTabItem) e.getSource();
                         AbstractSQLExecution sqlExe = (AbstractSQLExecution) tabItem.getData();
                         sqlExe.stop();
                         tabItem.setData(null);
@@ -229,7 +230,7 @@ public class SQLResultComposite extends Composite implements IResultDisplayer {
      * @param parent a TabItem 's Control
      * @param tabItem a TabItem
      */
-    private void createHeaderComposite(Composite parent, TabItem tabItem) {
+    private void createHeaderComposite(Composite parent, CTabItem tabItem) {
         //add sql statement, first create temp label to calculate correct size
         
         
@@ -294,10 +295,10 @@ public class SQLResultComposite extends Composite implements IResultDisplayer {
     /**
      * 
      * DOC dev Comment method "createDetailComposite".
-     * @param parent a TabItem 's Control
-     * @param tabItem a TabItem
+     * @param parent a CTabItem 's Control
+     * @param tabItem a CTabItem
      */
-    private void createDetailComposite(Composite parent, TabItem tabItem) {
+    private void createDetailComposite(Composite parent, CTabItem tabItem) {
         // add sql execute result TableView composite to show progress bar and results
         Composite detailComposite = new Composite(parent, SWT.FILL);
         detailComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));

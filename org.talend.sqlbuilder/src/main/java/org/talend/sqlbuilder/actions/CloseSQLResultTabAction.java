@@ -28,6 +28,7 @@ import org.talend.sqlbuilder.util.URLUtil;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.custom.BusyIndicator;
+import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.TabItem;
 import org.talend.sqlbuilder.Messages;
@@ -47,7 +48,7 @@ public class CloseSQLResultTabAction extends Action {
     /**
      * Holds a reference to the TableItem we should close
      */
-    private TabItem tabItem;
+    private CTabItem tabItem;
     
     /**
      * Default Constructor
@@ -61,7 +62,7 @@ public class CloseSQLResultTabAction extends Action {
      * Constructor
      * @param tabItem
      */
-    public CloseSQLResultTabAction(TabItem tabItem) {
+    public CloseSQLResultTabAction(CTabItem tabItem) {
         super();
         this.tabItem = tabItem;
     }

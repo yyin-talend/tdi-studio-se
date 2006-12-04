@@ -78,7 +78,7 @@ public class SQLBuilderRepositoryNodeManager {
 	// /store all DatabaseConnection's RepositoryNode.
 	private static List<RepositoryNode> repositoryNodes = new ArrayList<RepositoryNode>();
 
-	// store all label name of tables and columns
+	// store all label name of connections's tables and columns
 	private static Map<String, String> labelsAndNames = new HashMap<String, String>();
 
 	private static Map<DatabaseConnection, Map<MetadataTable, List<MetadataColumn>>> oldMetaData = new HashMap<DatabaseConnection, Map<MetadataTable, List<MetadataColumn>>>();
@@ -86,7 +86,8 @@ public class SQLBuilderRepositoryNodeManager {
 	public static boolean isDialogClosed = false;
 
 	private static boolean isFirst = true;
-
+	
+	private static String currentNodeLabel = "";
 	/**
 	 * Getter for oldMetaData.
 	 * 
@@ -235,6 +236,7 @@ public class SQLBuilderRepositoryNodeManager {
 		isFirst = false;
 		for (RepositoryNode node : repositoryNodes) {
 			reductionOneRepositoryNode(node);
+			
 		}
 		if (isDialogClosed) {
 			repositoryNodes.clear();
@@ -252,6 +254,7 @@ public class SQLBuilderRepositoryNodeManager {
 	public static void reductionOneRepositoryNode(RepositoryNode node) {
 		DatabaseConnection connection = (DatabaseConnection) getItem(node)
 				.getConnection();
+		currentNodeLabel = node.getObject().getLabel();
 		reductionOneConnection(connection);
 	}
 
@@ -266,15 +269,17 @@ public class SQLBuilderRepositoryNodeManager {
 		Map<MetadataTable, List<MetadataColumn>> oldtableColumns = new HashMap<MetadataTable, List<MetadataColumn>>();
 		List<MetadataTable> tables = connection.getTables();
 		List<MetadataTable> newtables = new ArrayList<MetadataTable>();
+		String connectionLabel = "Connections: " + currentNodeLabel;
 		for (MetadataTable table : tables) {
+			String connAndTableLabel = connectionLabel + "Tables: " + table.getLabel();
 			List<MetadataColumn> oldcloumns = table.getColumns();
 			List<MetadataColumn> newcloumns = new ArrayList<MetadataColumn>();
 			List<MetadataColumn> oldCloumns = new ArrayList<MetadataColumn>();
 			for (MetadataColumn column : oldcloumns) {
 				oldCloumns.add(column);
 				if (!column.getLabel().equals("")) {
-					if (column.getOriginalField().equals(" ")) {
-						column.setOriginalField(labelsAndNames.get("Columns: "
+					if (column.getOriginalField() != null && column.getOriginalField().equals(" ")) {
+						column.setOriginalField(labelsAndNames.get(connAndTableLabel + "Columns: "
 								+ column.getLabel()));
 					}
 					if (isDialogClosed) {
@@ -287,9 +292,8 @@ public class SQLBuilderRepositoryNodeManager {
 			table.getColumns().clear();
 			table.getColumns().addAll(newcloumns);
 			if (!table.getLabel().equals("")) {
-				if (table.getSourceName().equals(" ")) {
-					table.setSourceName(labelsAndNames.get("Tables: "
-							+ table.getLabel()));
+				if (table.getSourceName() != null && table.getSourceName().equals(" ")) {
+					table.setSourceName(labelsAndNames.get(connAndTableLabel));
 				}
 				if (isDialogClosed) {
 					table.setDivergency(false);
@@ -306,6 +310,7 @@ public class SQLBuilderRepositoryNodeManager {
 			connection.setDivergency(false);
 			connection.setSynchronised(false);
 		}
+//		labelsAndNames.clear();
 	}
 
 	/**
@@ -319,6 +324,7 @@ public class SQLBuilderRepositoryNodeManager {
 				}
 			}
 		}
+		
 	}
 
 	/**
@@ -339,13 +345,13 @@ public class SQLBuilderRepositoryNodeManager {
 	 */
 	@SuppressWarnings("unchecked")
 	public static void increaseOneConnection(DatabaseConnection connection) {
-		if (oldMetaData != null) {
+		if (oldMetaData != null && !oldMetaData.isEmpty()) {
 			Map<MetadataTable, List<MetadataColumn>> oldtableColumns = oldMetaData
 					.get(connection);
 			if (oldtableColumns != null) {
 				connection.getTables().clear();
 				Set<MetadataTable> set = oldtableColumns.keySet();
-				List<MetadataTable> sortTables = sortMetaTables(set);
+				List<MetadataTable> sortTables = sortTableColumn(set);
 				for (MetadataTable table : sortTables) {
 					List<MetadataColumn> columns = oldtableColumns.get(table);
 					List<MetadataColumn> newcolumns = new ArrayList<MetadataColumn>();
@@ -358,76 +364,133 @@ public class SQLBuilderRepositoryNodeManager {
 					connection.getTables().add(table);
 				}
 			}
-
 		}
+		oldMetaData.clear();
 	}
 
 	/**
-	 * DOC dev Comment method "sortMetaTables".
+	 * DOC dev Comment method "sortTableColumn".
 	 * @param set
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	private static List<MetadataTable> sortMetaTables(Collection<MetadataTable> set) {
-		List<MetadataTable> sysTables = new ArrayList<MetadataTable>();
-		List<MetadataTable> divTables = new ArrayList<MetadataTable>();
-		List<MetadataTable> grayTables = new ArrayList<MetadataTable>();
-		List<MetadataTable> norTables = new ArrayList<MetadataTable>();
-		List<MetadataTable> sortTables = new  ArrayList<MetadataTable>();
-		for (MetadataTable object : set) {
-			boolean isNormal = true;
-			if (object.isDivergency()) {
-				divTables.add(object);
-				isNormal = false;
-				continue;
-			}
-			
-			if (object.getLabel() == null || "".equals(object.getLabel())) {
-				grayTables.add(object);
-				isNormal = false;
-				continue;
-			}
-			List<MetadataColumn> columns = object.getColumns();
-			for (MetadataColumn column : columns) {
-				if (column.isSynchronised()) {
-					sysTables.add(object);
-					isNormal = false;
-					break;
-				}
-				if (column.isDivergency()) {
-					divTables.add(object);
-					isNormal = false;
-					break;
-				}
-			}
-			if (isNormal) {
-				norTables.add(object);
-			}
-		}
-		MetadataTable[]  norTablesArray = new MetadataTable[norTables.size()];
-		norTablesArray = norTables.toArray(norTablesArray);
-		
-		MetadataTable[]  sysTablesArray = new MetadataTable[sysTables.size()];
-		sysTablesArray = sysTables.toArray(sysTablesArray);
-		
-		MetadataTable[]  divTablesArray = new MetadataTable[divTables.size()];
-		divTablesArray = divTables.toArray(divTablesArray);
-		
-		MetadataTable[]  grayTablesArray = new MetadataTable[grayTables.size()];
-		grayTablesArray = grayTables.toArray(grayTablesArray);
-		
-		Arrays.sort(norTablesArray, new TableComp());
-		Arrays.sort(sysTablesArray, new TableComp());
-		Arrays.sort(divTablesArray, new TableComp());
-		Arrays.sort(grayTablesArray, new TableComp());
-		sortTables.addAll(Arrays.asList(norTablesArray));
-		sortTables.addAll(Arrays.asList(sysTablesArray));
-		sortTables.addAll(Arrays.asList(divTablesArray));
-		sortTables.addAll(Arrays.asList(grayTablesArray));
-		
-		return sortTables;
-		
-	}
+	private static List<MetadataTable> sortTableColumn(Collection<MetadataTable> set) {
+        List<MetadataTable> sysTables = new ArrayList<MetadataTable>();
+        List<MetadataTable> divTables = new ArrayList<MetadataTable>();
+        List<MetadataTable> grayTables = new ArrayList<MetadataTable>();
+        List<MetadataTable> norTables = new ArrayList<MetadataTable>();
+        List<MetadataTable> sortTables = new ArrayList<MetadataTable>();
+        for (MetadataTable object : set) {
+            boolean isTableNormal = true;
+            if (object.isDivergency()) {
+                divTables.add(object);
+                isTableNormal = false;
+                continue;
+            }
+            if (object.getLabel() == null || "".equals(object.getLabel())) {
+                grayTables.add(object);
+                isTableNormal = false;
+                continue;
+            }
+            List<MetadataColumn> columns = sortColumn(object.getColumns());
+            object.getColumns().clear();
+            object.getColumns().addAll(columns);
+            for (MetadataColumn column : columns) {
+                if (column.isSynchronised()) {
+                    sysTables.add(object);
+                    isTableNormal = false;
+                    break;
+                }
+                if (column.isDivergency()) {
+                    divTables.add(object);
+                    isTableNormal = false;
+                    break;
+                }
+                if (column.getLabel() == null || "".equals(column.getLabel())) {
+                    grayTables.add(object);
+                    isTableNormal = false;
+                    break;
+                }
+            }
+            if (isTableNormal) {
+                norTables.add(object);
+            }
+        }
+        MetadataTable[] norTablesArray = new MetadataTable[norTables.size()];
+        norTablesArray = norTables.toArray(norTablesArray);
+        MetadataTable[] sysTablesArray = new MetadataTable[sysTables.size()];
+        sysTablesArray = sysTables.toArray(sysTablesArray);
+        MetadataTable[] divTablesArray = new MetadataTable[divTables.size()];
+        divTablesArray = divTables.toArray(divTablesArray);
+        MetadataTable[] grayTablesArray = new MetadataTable[grayTables.size()];
+        grayTablesArray = grayTables.toArray(grayTablesArray);
+        MetadataTableComparator metadataTableComparator = new MetadataTableComparator();
+        Arrays.sort(norTablesArray, metadataTableComparator);
+        Arrays.sort(sysTablesArray, metadataTableComparator);
+        Arrays.sort(divTablesArray, metadataTableComparator);
+        Arrays.sort(grayTablesArray, metadataTableComparator);
+        for (MetadataTable table : norTablesArray) {
+            sortTables.add(table);
+        }
+        for (MetadataTable table : sysTablesArray) {
+            sortTables.add(table);
+        }
+        for (MetadataTable table : divTablesArray) {
+            sortTables.add(table);
+        }
+        for (MetadataTable table : grayTablesArray) {
+            sortTables.add(table);
+        }
+        return sortTables;
+    }
+    private static List<MetadataColumn> sortColumn(Collection<MetadataColumn> columns) {
+        List<MetadataColumn> sortColumns = new ArrayList<MetadataColumn>();
+        List<MetadataColumn> sysColumns = new ArrayList<MetadataColumn>();
+        List<MetadataColumn> grayColumns = new ArrayList<MetadataColumn>();
+        List<MetadataColumn> divColumns = new ArrayList<MetadataColumn>();
+        List<MetadataColumn> norColumns = new ArrayList<MetadataColumn>();
+        for (MetadataColumn column : columns) {
+            if (column.isSynchronised()) {
+               sysColumns.add(column);
+               continue;
+            }
+            if (column.isDivergency()) {
+                divColumns.add(column);
+                continue;
+            }
+            if (column.getLabel() == null || "".equals(column.getLabel())) {
+                grayColumns.add(column);
+                continue;
+            }
+            norColumns.add(column);
+        }
+        MetadataColumn[] norColumnsArray = new MetadataColumn[norColumns.size()];
+        norColumnsArray = norColumns.toArray(norColumnsArray);
+        MetadataColumn[] sysColumnsArray = new MetadataColumn[sysColumns.size()];
+        sysColumnsArray = sysColumns.toArray(sysColumnsArray);
+        MetadataColumn[] divColumnsArray = new MetadataColumn[divColumns.size()];
+        divColumnsArray = divColumns.toArray(divColumnsArray);
+        MetadataColumn[] grayColumnsArray = new MetadataColumn[grayColumns.size()];
+        grayColumnsArray = grayColumns.toArray(grayColumnsArray);
+        MetadataColumnComparator metadataColumnComparator = new MetadataColumnComparator();
+        Arrays.sort(norColumnsArray, metadataColumnComparator);
+        Arrays.sort(sysColumnsArray, metadataColumnComparator);
+        Arrays.sort(divColumnsArray, metadataColumnComparator);
+        Arrays.sort(grayColumnsArray, metadataColumnComparator);
+        for (MetadataColumn column : norColumnsArray) {
+            sortColumns.add(column);
+        }
+        for (MetadataColumn column : sysColumnsArray) {
+            sortColumns.add(column);
+        }
+        for (MetadataColumn column : divColumnsArray) {
+            sortColumns.add(column);
+        }
+        for (MetadataColumn column : grayColumnsArray) {
+            sortColumns.add(column);
+        }
+        return sortColumns;
+    }
 
 	/**
 	 * method "getTableNamesByRepositoryNode" get All Table Names in current
@@ -492,7 +555,8 @@ public class SQLBuilderRepositoryNodeManager {
 	 */
 	@SuppressWarnings("unchecked")
 	public RepositoryNode getRepositoryNodeFromDB(RepositoryNode oldNode) {
-		DatabaseConnectionItem item = getItem(oldNode);
+		currentNodeLabel = oldNode.getObject().getLabel();
+		DatabaseConnectionItem item = getItem(getRoot(oldNode));
 
 		@SuppressWarnings("unused")
 		DatabaseConnectionItem newItem = cloneDataBaseConnectionItem(oldNode,
@@ -725,35 +789,40 @@ public class SQLBuilderRepositoryNodeManager {
 			List<MetadataTable> tablesFromDB = getTablesFromDB(iMetadataConnection);
 			// Get MetadataTable From EMF(Old RepositoryNode)
 			List<MetadataTable> tablesFromEMF = connection.getTables();
-
+			String connectionLabel = "Connections: " + currentNodeLabel;
 			for (MetadataTable tableFromDB : tablesFromDB) {
 				// /Get MetadataColumn from DB
 				List<MetadataColumn> columnsFromDB = getColumnsFromDB(
 						iMetadataConnection, tableFromDB);
 				for (MetadataTable tableFromEMF : tablesFromEMF) {
 					// /Get MetadataColumn From EMF
+					String connAndTableLabel = connectionLabel + "Tables: " + tableFromEMF.getLabel();
 					List<MetadataColumn> columnsFromEMF = tableFromEMF
 							.getColumns();
 					if (tableFromDB.getSourceName().equals(
 							tableFromEMF.getSourceName())) {
-						fixedColumns(columnsFromDB, columnsFromEMF);
+						fixedColumns(columnsFromDB, columnsFromEMF, connAndTableLabel);
 					}
 				}
 			}
-			fixedTables(tablesFromDB, tablesFromEMF, iMetadataConnection);
-			tablesFromEMF = sortMetaTables(tablesFromEMF);
+			fixedTables(tablesFromDB, tablesFromEMF, iMetadataConnection, connectionLabel);
+			tablesFromEMF = sortTableColumn(tablesFromEMF);
+            connection.getTables().clear();
+            connection.getTables().addAll(tablesFromEMF);
 		} else {
 			List<MetadataTable> tablesFromEMF = connection.getTables();
+			String connectionLabel = "Connections: " + currentNodeLabel;
 			for (MetadataTable tableFromEMF : tablesFromEMF) {
 				List<MetadataColumn> columnsFromEMF = tableFromEMF.getColumns();
+				String connAndTableLabel = connectionLabel + "Tables: " + tableFromEMF.getLabel();
 				for (MetadataColumn column : columnsFromEMF) {
-					labelsAndNames.put("Columns: " + column.getLabel(), column
+					labelsAndNames.put(connAndTableLabel + "Columns: " + column.getLabel(), column
 							.getOriginalField());
 					column.setOriginalField(" ");
 					column.setDivergency(true);
 					column.setSynchronised(false);
 				}
-				labelsAndNames.put("Tables: " + tableFromEMF.getLabel(),
+				labelsAndNames.put(connAndTableLabel,
 						tableFromEMF.getSourceName());
 				tableFromEMF.setSourceName(" ");
 				tableFromEMF.setDivergency(true);
@@ -1125,8 +1194,7 @@ public class SQLBuilderRepositoryNodeManager {
 	@SuppressWarnings("unchecked")
 	private void fixedTables(List<MetadataTable> metaFromDB,
 			List<MetadataTable> metaFromEMF,
-			IMetadataConnection iMetadataConnection) {
-
+			IMetadataConnection iMetadataConnection, String connectionLabel) {
 		for (MetadataTable emf : metaFromEMF) {
 			boolean flag = true;
 			for (MetadataTable db : metaFromDB) {
@@ -1136,13 +1204,18 @@ public class SQLBuilderRepositoryNodeManager {
 				}
 			}
 			if (flag) {
+				String connAndTableLabel = connectionLabel + "Tables: " + emf.getLabel();
 				List<MetadataColumn> columns = emf.getColumns();
 				for (MetadataColumn column : columns) {
-					column.setOriginalField("");
+					labelsAndNames.put(connAndTableLabel + "Columns: " + emf.getLabel(), column.getOriginalField());
+					column.setOriginalField(" ");
 					column.setDivergency(true);
+					column.setSynchronised(false);
 				}
-				emf.setSourceName("");
+				labelsAndNames.put(connAndTableLabel, emf.getSourceName());
+				emf.setSourceName(" ");
 				emf.setDivergency(true);
+				emf.setSynchronised(false);
 				// emf.getConnection().setDivergency(true);
 			}
 		}
@@ -1188,7 +1261,7 @@ public class SQLBuilderRepositoryNodeManager {
 	 *            MetadataColumn from Emf
 	 */
 	private void fixedColumns(List<MetadataColumn> columnsFromDB,
-			List<MetadataColumn> cloumnsFromEMF) {
+			List<MetadataColumn> cloumnsFromEMF, String connAndTableLabel) {
 		for (MetadataColumn emf : cloumnsFromEMF) {
 			boolean flag = true;
 			for (MetadataColumn db : columnsFromDB) {
@@ -1199,8 +1272,10 @@ public class SQLBuilderRepositoryNodeManager {
 				}
 			}
 			if (flag) {
-				emf.setOriginalField("");
+				labelsAndNames.put(connAndTableLabel + "Columns: " + emf.getLabel(), emf.getOriginalField());
+				emf.setOriginalField(" ");
 				emf.setDivergency(true);
+				emf.setSynchronised(false);
 				// emf.getTable().setDivergency(true);
 				// emf.getTable().getConnection().setDivergency(true);
 			}
@@ -1334,17 +1409,34 @@ public class SQLBuilderRepositoryNodeManager {
  * $Id: talend-code-templates.xml 1 2006-09-29 17:06:40 +0000 (Fri, 29 Sep 2006) nrousseau $
  *
  */
-class TableComp implements Comparator<MetadataTable> {
+class MetadataTableComparator implements Comparator<MetadataTable> {
 
 	/* (non-Javadoc)
 	 * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
 	 */
 	public int compare(MetadataTable o1, MetadataTable o2) {
-		if (o1.getSourceName() == null || "".equals(o1.getSourceName())) {
-			return -1;
+		if (o1.getSourceName() == null || "".equals(o1.getSourceName()) || " ".equals(o1.getSourceName())) {
+			return 1;
 		} else {
 			return o1.getSourceName().compareTo(o2.getSourceName());
 		}
 	}
-	
 }
+
+/**
+ * DOC dev  class global comment. Detailled comment
+ * <br/>
+ *
+ * $Id: talend-code-templates.xml 1 2006-09-29 17:06:40 +0000 (Fri, 29 Sep 2006) nrousseau $
+ *
+ */
+class MetadataColumnComparator implements Comparator<MetadataColumn> {
+    public int compare(MetadataColumn o1, MetadataColumn o2) {
+        if (o1.getOriginalField() == null || "".equals(o1.getOriginalField()) || " ".equals(o1.getOriginalField())) {
+            return 1;
+        } else {
+            return o1.getOriginalField().compareTo(o2.getOriginalField());
+        }
+    }
+}
+

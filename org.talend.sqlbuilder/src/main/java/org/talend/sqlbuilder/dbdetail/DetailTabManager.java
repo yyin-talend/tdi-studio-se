@@ -29,13 +29,13 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.CTabFolder;
+import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.TabFolder;
-import org.eclipse.swt.widgets.TabItem;
 import org.talend.sqlbuilder.Messages;
 import org.talend.sqlbuilder.dbdetail.tab.ColumnInfoTab;
 import org.talend.sqlbuilder.dbdetail.tab.ConnectionInfoTab;
@@ -122,13 +122,13 @@ public class DetailTabManager {
         }
 
         // create tabs
-        TabFolder tabFolder = new TabFolder(composite, SWT.NULL);
-
+        CTabFolder tabFolder = new CTabFolder(composite, SWT.NULL);
+        tabFolder.setSimple(false);
         // only init tabs when the tab becomes active
         tabFolder.addSelectionListener(new SelectionAdapter() {
             public void widgetSelected(SelectionEvent e) {
 
-                TabItem tabItem = (TabItem) e.item;
+                CTabItem tabItem = (CTabItem) e.item;
                 IDetailTab tab = (IDetailTab) tabItem.getData();
                 if (tab != null) {
 
@@ -156,7 +156,7 @@ public class DetailTabManager {
             IDetailTab detailTab = (IDetailTab) it.next();
 
             // create tab
-            TabItem tabItem = new TabItem(tabFolder, SWT.NULL);
+            CTabItem tabItem = new CTabItem(tabFolder, SWT.NULL);
             tabItem.setText(detailTab.getLabelText());
             tabItem.setToolTipText(detailTab.getLabelToolTipText());
 
@@ -179,7 +179,7 @@ public class DetailTabManager {
             tabIndex = 0;
         }
 
-        TabItem tabItem = tabFolder.getItem(tabIndex);
+        CTabItem tabItem = tabFolder.getItem(tabIndex);
         if (tabItem != null) {
             Composite detailComposite = new Composite(tabItem.getParent(), SWT.FILL);
             tabItem.setControl(detailComposite);
@@ -188,7 +188,9 @@ public class DetailTabManager {
             tab.fillComposite(detailComposite);
             detailComposite.layout();
         }
-
+        if (tabFolder.getChildren().length > 0) {
+        	tabFolder.setSelection(0);
+        }
         tabFolder.layout();
 
     }

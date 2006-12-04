@@ -29,6 +29,7 @@ import net.sourceforge.squirrel_sql.fw.sql.SQLConnection;
 
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -119,7 +120,7 @@ public abstract class AbstractSQLExecution {
 
     private Group group;
 
-    protected TabItem parentTab;
+    protected CTabItem parentTab;
 
     private String progressMessage;
 
@@ -228,7 +229,7 @@ public abstract class AbstractSQLExecution {
     }
 
 
-    public final void setParentTab(TabItem parentTab) {
+    public final void setParentTab(CTabItem parentTab) {
 
         this.parentTab = parentTab;
     }

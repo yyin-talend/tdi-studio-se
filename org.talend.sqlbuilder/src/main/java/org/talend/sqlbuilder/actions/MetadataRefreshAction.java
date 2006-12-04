@@ -124,15 +124,6 @@ public class MetadataRefreshAction extends SelectionProviderAction {
 	}
 
 	/**
-	 * DOC dev Comment method "reductionConnection".
-	 * @param connection
-	 */
-	@SuppressWarnings("unchecked")
-	private void reductionConnection(DatabaseConnection connection) {
-		SQLBuilderRepositoryNodeManager.reductionOneConnection(connection);
-	}
-
-	/**
 	 * DOC dev Comment method "saveMetadataColumn".
 	 * 
 	 * @param tableNode
@@ -149,7 +140,7 @@ public class MetadataRefreshAction extends SelectionProviderAction {
 		.getConnection();
 		modifyMetadataColumn(tableNode, columnNode, connection);
 		saveMetaData(item);
-		SQLBuilderRepositoryNodeManager.increaseOneConnection(connection);
+		SQLBuilderRepositoryNodeManager.increaseOneRepositoryNode(repositorynodes.get(0));
 		for (RepositoryNode repositorynode : repositorynodes) {
 			dialog.refreshNode(repositorynode);
 		}
@@ -211,7 +202,7 @@ public class MetadataRefreshAction extends SelectionProviderAction {
 //			}
 //		}
 //		connection.setDivergency(flag);
-		reductionConnection(connection);
+		SQLBuilderRepositoryNodeManager.reductionOneRepositoryNode(repositorynodes.get(0));
 	}
 
 	/**
