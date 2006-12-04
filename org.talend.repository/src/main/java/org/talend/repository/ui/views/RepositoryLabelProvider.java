@@ -56,8 +56,6 @@ public class RepositoryLabelProvider extends LabelProvider implements IColorProv
 
     private IRepositoryView view;
 
-    private static final boolean DEBUG = false;
-
     public RepositoryLabelProvider(IRepositoryView view) {
         super();
         this.view = view;
@@ -69,11 +67,7 @@ public class RepositoryLabelProvider extends LabelProvider implements IColorProv
             IRepositoryObject object = node.getObject();
 
             StringBuffer string = new StringBuffer();
-            if (DEBUG) {
-                string.append(object.getLabel() + " [id:" + object.getId() + "-v" + object.getVersion() + "]");
-            } else {
-                string.append(object.getLabel() + " " + object.getVersion());
-            }
+            string.append(object.getLabel() + " " + object.getVersion());
 
             ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
             try {
@@ -88,13 +82,7 @@ public class RepositoryLabelProvider extends LabelProvider implements IColorProv
 
             return string.toString();
         } else if (node.getType() == ENodeType.SIMPLE_FOLDER) {
-            IRepositoryObject object = node.getObject();
             StringBuffer string = new StringBuffer(node.getProperties(EProperties.LABEL).toString());
-
-            if (DEBUG) {
-                string.append(" [id:" + object.getId() + "]");
-            }
-
             return string.toString();
         } else {
             return node.getProperties(EProperties.LABEL).toString();
