@@ -153,15 +153,12 @@ public class PurposeStatusSection extends AbstractSection {
 
     @Override
     protected void enableControl(boolean enable) {
-        purposeText.setEditable(enable);
-        statusText.setEditable(enable);
+        purposeText.setEnabled(enable);
         statusText.setEnabled(enable);
-        // nameText.setEditable(enable);
     }
 
     @Override
     protected void showControl(boolean visible) {
         purposeText.getParent().setVisible(visible);
     }
-
 }

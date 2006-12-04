@@ -34,6 +34,8 @@ import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 import org.talend.commons.utils.VersionUtils;
 import org.talend.core.model.properties.User;
+import org.talend.repository.model.RepositoryNode;
+import org.talend.repository.model.RepositoryNode.ENodeType;
 
 /**
  * DOC mhelleboid class global comment. Detailled comment <br/>
@@ -65,7 +67,7 @@ public class VersionAuthorSection extends AbstractSection {
         FormData data;
 
         authorText = getWidgetFactory().createText(composite, ""); //$NON-NLS-1$
-        authorText.setEditable(false);
+        authorText.setEnabled(false);
         data = new FormData();
         data.left = new FormAttachment(0, STANDARD_LABEL_WIDTH);
         data.right = new FormAttachment(70, 0);
@@ -106,7 +108,7 @@ public class VersionAuthorSection extends AbstractSection {
         });
 
         versionText = getWidgetFactory().createText(composite, ""); //$NON-NLS-1$
-        versionText.setEditable(false);
+        versionText.setEnabled(false);
         data = new FormData();
         data.left = new FormAttachment(authorText, STANDARD_LABEL_WIDTH);
         data.right = new FormAttachment(btnUp, -2);
@@ -174,4 +176,11 @@ public class VersionAuthorSection extends AbstractSection {
         authorText.getParent().setVisible(visible);
     }
 
+    public boolean select(Object object) {
+        if (object instanceof RepositoryNode) {
+            RepositoryNode node = (RepositoryNode) object;
+            return node.getType() != ENodeType.SIMPLE_FOLDER;
+        }
+        return false;
+    }
 }

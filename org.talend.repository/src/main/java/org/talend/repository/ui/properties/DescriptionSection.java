@@ -29,6 +29,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
+import org.talend.repository.model.RepositoryNode;
+import org.talend.repository.model.RepositoryNode.ENodeType;
 
 /**
  * DOC mhelleboid class global comment. Detailled comment <br/>
@@ -44,13 +46,13 @@ public class DescriptionSection extends AbstractSection {
 
     @Override
     protected void enableControl(boolean enable) {
-        descriptionText.setEditable(enable);
+        descriptionText.setEnabled(enable);
     }
+
     @Override
     protected void showControl(boolean visible) {
         descriptionText.getParent().setVisible(visible);
     }
-
 
     @Override
     public void createControls(Composite parent, TabbedPropertySheetPage aTabbedPropertySheetPage) {

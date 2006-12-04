@@ -173,11 +173,8 @@ public class NameSection extends AbstractSection {
 
     @Override
     protected void enableControl(boolean enable) {
-        if (getType() == ERepositoryObjectType.FOLDER) {
-            nameText.setEditable(true);
-        } else {
-            nameText.setEditable(enable);
-        }
+//        nameText.setEditable(enable);
+        nameText.setEnabled(enable);
     }
 
     @Override

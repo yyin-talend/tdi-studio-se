@@ -143,28 +143,28 @@
          <propertySection
                class="org.talend.repository.ui.properties.DateSection"
                enablesFor="1"
-               filter="org.talend.repository.ui.properties.SectionFilter"
+               filter="org.talend.repository.ui.properties.ExcludeFolderSectionFilter"
                id="repository.datesection"
                tab="repository.maintab">
          </propertySection>
          <propertySection
                class="org.talend.repository.ui.properties.DescriptionSection"
                enablesFor="1"
-               filter="org.talend.repository.ui.properties.SectionFilter"
+               filter="org.talend.repository.ui.properties.ExcludeFolderSectionFilter"
                id="repository.description"
                tab="repository.maintab">
          </propertySection>
          <propertySection
                class="org.talend.repository.ui.properties.PurposeStatusSection"
                enablesFor="1"
-               filter="org.talend.repository.ui.properties.SectionFilter"
+               filter="org.talend.repository.ui.properties.ExcludeFolderSectionFilter"
                id="repository.purposestatussection"
                tab="repository.maintab">
          </propertySection>
          <propertySection
                class="org.talend.repository.ui.properties.VersionAuthorSection"
                enablesFor="1"
-               filter="org.talend.repository.ui.properties.SectionFilter"
+               filter="org.talend.repository.ui.properties.ExcludeFolderSectionFilter"
                id="repository.versionauthorsection"
                tab="repository.maintab">
          </propertySection>

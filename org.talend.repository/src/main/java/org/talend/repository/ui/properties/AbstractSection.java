@@ -117,7 +117,6 @@ public abstract class AbstractSection extends AbstractPropertySection {
     @Override
     public void createControls(Composite parent, TabbedPropertySheetPage aTabbedPropertySheetPage) {
         super.createControls(parent, aTabbedPropertySheetPage);
-        // LocalLockHelper.addListener(lockListerner);
     }
 
     protected IRepositoryObject getObject() {
@@ -248,7 +247,6 @@ public abstract class AbstractSection extends AbstractPropertySection {
          * @see org.talend.core.model.repository.IRepositoryObject#getAuthor()
          */
         public User getAuthor() {
-            // TODO Auto-generated method stub
             return null;
         }
 
@@ -258,7 +256,6 @@ public abstract class AbstractSection extends AbstractPropertySection {
          * @see org.talend.core.model.repository.IRepositoryObject#getCreationDate()
          */
         public Date getCreationDate() {
-            // TODO Auto-generated method stub
             return null;
         }
 
@@ -268,7 +265,6 @@ public abstract class AbstractSection extends AbstractPropertySection {
          * @see org.talend.core.model.repository.IRepositoryObject#getDescription()
          */
         public String getDescription() {
-            // TODO Auto-generated method stub
             return "";
         }
 
@@ -278,7 +274,6 @@ public abstract class AbstractSection extends AbstractPropertySection {
          * @see org.talend.core.model.repository.IRepositoryObject#getId()
          */
         public String getId() {
-            // TODO Auto-generated method stub
             return "";
         }
 
@@ -288,7 +283,6 @@ public abstract class AbstractSection extends AbstractPropertySection {
          * @see org.talend.core.model.repository.IRepositoryObject#getLabel()
          */
         public String getLabel() {
-            // TODO Auto-generated method stub
             return "";
         }
 
@@ -298,7 +292,6 @@ public abstract class AbstractSection extends AbstractPropertySection {
          * @see org.talend.core.model.repository.IRepositoryObject#getModificationDate()
          */
         public Date getModificationDate() {
-            // TODO Auto-generated method stub
             return null;
         }
 
@@ -308,7 +301,6 @@ public abstract class AbstractSection extends AbstractPropertySection {
          * @see org.talend.core.model.repository.IRepositoryObject#getProperty()
          */
         public Property getProperty() {
-            // TODO Auto-generated method stub
             return null;
         }
 
@@ -318,7 +310,6 @@ public abstract class AbstractSection extends AbstractPropertySection {
          * @see org.talend.core.model.repository.IRepositoryObject#getPurpose()
          */
         public String getPurpose() {
-            // TODO Auto-generated method stub
             return "";
         }
 
@@ -328,7 +319,6 @@ public abstract class AbstractSection extends AbstractPropertySection {
          * @see org.talend.core.model.repository.IRepositoryObject#getStatusCode()
          */
         public String getStatusCode() {
-            // TODO Auto-generated method stub
             return "";
         }
 
@@ -338,7 +328,6 @@ public abstract class AbstractSection extends AbstractPropertySection {
          * @see org.talend.core.model.repository.IRepositoryObject#getType()
          */
         public ERepositoryObjectType getType() {
-            // TODO Auto-generated method stub
             return null;
         }
 
@@ -348,7 +337,6 @@ public abstract class AbstractSection extends AbstractPropertySection {
          * @see org.talend.core.model.repository.IRepositoryObject#getVersion()
          */
         public String getVersion() {
-            // TODO Auto-generated method stub
             return "";
         }
 
@@ -358,8 +346,6 @@ public abstract class AbstractSection extends AbstractPropertySection {
          * @see org.talend.core.model.repository.IRepositoryObject#setAuthor(org.talend.core.model.general.User)
          */
         public void setAuthor(User author) {
-            // TODO Auto-generated method stub
-
         }
 
         /*
@@ -368,8 +354,6 @@ public abstract class AbstractSection extends AbstractPropertySection {
          * @see org.talend.core.model.repository.IRepositoryObject#setCreationDate(java.util.Date)
          */
         public void setCreationDate(Date value) {
-            // TODO Auto-generated method stub
-
         }
 
         /*
@@ -378,8 +362,6 @@ public abstract class AbstractSection extends AbstractPropertySection {
          * @see org.talend.core.model.repository.IRepositoryObject#setDescription(java.lang.String)
          */
         public void setDescription(String value) {
-            // TODO Auto-generated method stub
-
         }
 
         /*
@@ -388,8 +370,6 @@ public abstract class AbstractSection extends AbstractPropertySection {
          * @see org.talend.core.model.repository.IRepositoryObject#setId(int)
          */
         public void setId(String id) {
-            // TODO Auto-generated method stub
-
         }
 
         /*
@@ -398,8 +378,6 @@ public abstract class AbstractSection extends AbstractPropertySection {
          * @see org.talend.core.model.repository.IRepositoryObject#setLabel(java.lang.String)
          */
         public void setLabel(String label) {
-            // TODO Auto-generated method stub
-
         }
 
         /*
@@ -408,8 +386,6 @@ public abstract class AbstractSection extends AbstractPropertySection {
          * @see org.talend.core.model.repository.IRepositoryObject#setModificationDate(java.util.Date)
          */
         public void setModificationDate(Date value) {
-            // TODO Auto-generated method stub
-
         }
 
         /*
@@ -418,8 +394,6 @@ public abstract class AbstractSection extends AbstractPropertySection {
          * @see org.talend.core.model.repository.IRepositoryObject#setPurpose(java.lang.String)
          */
         public void setPurpose(String value) {
-            // TODO Auto-generated method stub
-
         }
 
         /*
@@ -428,8 +402,6 @@ public abstract class AbstractSection extends AbstractPropertySection {
          * @see org.talend.core.model.repository.IRepositoryObject#setStatusCode(java.lang.String)
          */
         public void setStatusCode(String statusCode) {
-            // TODO Auto-generated method stub
-
         }
 
         /*
@@ -438,8 +410,6 @@ public abstract class AbstractSection extends AbstractPropertySection {
          * @see org.talend.core.model.repository.IRepositoryObject#setVersion(org.talend.core.model.general.Version)
          */
         public void setVersion(String version) {
-            // TODO Auto-generated method stub
-
         }
 
     }

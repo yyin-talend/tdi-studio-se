@@ -54,8 +54,6 @@ public class DateSection extends AbstractSection {
 
     @Override
     protected void enableControl(boolean enable) {
-        // creationText.setEditable(enable);
-        // modificationText.setEditable(enable);
     }
 
     @Override
@@ -76,7 +74,7 @@ public class DateSection extends AbstractSection {
         data.right = new FormAttachment(33, 0);
         data.top = new FormAttachment(0, ITabbedPropertyConstants.VSPACE);
         creationDate.setLayoutData(data);
-        creationDate.setEditable(false);
+        creationDate.setEnabled(false);
 
         CLabel creationLabel = getWidgetFactory().createCLabel(composite, "Creation");
         data = new FormData();
@@ -91,7 +89,7 @@ public class DateSection extends AbstractSection {
         data.right = new FormAttachment(66, 0);
         data.top = new FormAttachment(0, ITabbedPropertyConstants.VSPACE);
         modificationDate.setLayoutData(data);
-        modificationDate.setEditable(false);
+        modificationDate.setEnabled(false);
 
         CLabel modificationLabel = getWidgetFactory().createCLabel(composite, "Modification");
         data = new FormData();
@@ -106,7 +104,7 @@ public class DateSection extends AbstractSection {
         data.right = new FormAttachment(100, 0);
         data.top = new FormAttachment(0, ITabbedPropertyConstants.VSPACE);
         commitDate.setLayoutData(data);
-        commitDate.setEditable(false);
+        commitDate.setEnabled(false);
 
         CLabel commitLabel = getWidgetFactory().createCLabel(composite, "Commit");
         data = new FormData();
@@ -139,10 +137,11 @@ public class DateSection extends AbstractSection {
 
         Item item = property.getItem();
         ItemState state = item.getState();
-        
+
         return state.getCommitDate();
     }
 
     protected void beforeSave() {
     }
+
 }

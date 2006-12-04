@@ -548,6 +548,11 @@ public class ProxyRepositoryFactory {
      * @see org.talend.repository.model.IRepositoryFactory#getStatus(org.talend.core.model.properties.Item)
      */
     public ERepositoryStatus getStatus(IRepositoryObject obj) {
+        if (obj instanceof Folder) {
+        // PTODO SML temporary implementation
+            return ERepositoryStatus.LOCK_BY_USER;
+        }
+        
         if (obj instanceof MetadataTableRepositoryObject) {
             MetadataTableRepositoryObject metadataTableRepositoryObject = (MetadataTableRepositoryObject) obj;
             if (TableHelper.isDeleted(metadataTableRepositoryObject.getTable())) {

@@ -34,7 +34,7 @@ public class SectionFilter implements IFilter {
 
     public boolean select(Object object) {
         if (object instanceof RepositoryNode) {
-                return true;
+            return true;
         }
         return false;
     }
