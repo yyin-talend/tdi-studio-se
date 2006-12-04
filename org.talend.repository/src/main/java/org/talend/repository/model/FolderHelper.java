@@ -204,8 +204,26 @@ public abstract class FolderHelper {
         }
         return null;
     }
-    
-    
+
+    /**
+     * Returns <code>true</code> if a folder at the same level of <code>folder</code> with a different id and wich
+     * label is <code>label</code> exists.
+     * 
+     * @param folder
+     * @param label
+     * @return
+     */
+    public boolean pathExists(FolderItem folder, String label) {
+        for (Object child : ((FolderItem) folder.eContainer()).getChildren()) {
+            FolderItem folderChild = (FolderItem) child;
+            if (!folderChild.getProperty().getId().equals(folder.getProperty().getId())
+                    && folderChild.getProperty().getLabel().equals(label)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public void createItemState(FolderItem folder) {
         ItemState itemState = PropertiesFactory.eINSTANCE.createItemState();
         folder.setState(itemState);
@@ -213,5 +231,5 @@ public abstract class FolderHelper {
     }
 
     public abstract void doCreateItemState(FolderItem folder);
-    
+
 }

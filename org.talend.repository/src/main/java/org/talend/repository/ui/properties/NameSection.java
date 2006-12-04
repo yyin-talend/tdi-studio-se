@@ -57,7 +57,7 @@ public class NameSection extends AbstractSection {
 
     private Text nameText;
 
-    private CLabel statusText;
+    private CLabel errorLabel;
 
     private Composite composite;
 
@@ -80,10 +80,10 @@ public class NameSection extends AbstractSection {
             public void modifyText(ModifyEvent e) {
                 IStatus status = evaluateTextField();
                 if (status.getSeverity() == IStatus.ERROR) {
-                    statusText.setText(status.getMessage());
-                    statusText.setVisible(true);
+                    errorLabel.setText(status.getMessage());
+                    errorLabel.setVisible(true);
                 } else {
-                    statusText.setVisible(false);
+                    errorLabel.setVisible(false);
                 }
             }
         });
@@ -95,26 +95,27 @@ public class NameSection extends AbstractSection {
         data.top = new FormAttachment(nameText, 0, SWT.CENTER);
         labelLabel.setLayoutData(data);
 
-        statusText = getWidgetFactory().createCLabel(composite, "");
+        errorLabel = getWidgetFactory().createCLabel(composite, "");
         data = new FormData();
         data.left = new FormAttachment(nameText, ITabbedPropertyConstants.HSPACE * 3);
         data.right = new FormAttachment(100, 0);
         data.top = new FormAttachment(nameText, 0, SWT.CENTER);
-        statusText.setLayoutData(data);
-        statusText.setImage(ImageProvider.getImage(EImage.ERROR_ICON));
-        statusText.setVisible(false);
+        errorLabel.setLayoutData(data);
+        errorLabel.setImage(ImageProvider.getImage(EImage.ERROR_ICON));
+        errorLabel.setVisible(false);
     }
 
     protected IStatus evaluateTextField() {
-        if (getObject().getType() == null || getObject().getType() == ERepositoryObjectType.FOLDER) {
+        if (getObject().getType() == null) {
             return createOkStatus();
         }
 
-        if (nameText.getText().length() == 0) {
+        String text = nameText.getText();
+        if (text.length() == 0) {
             return createStatus(IStatus.ERROR, "Name is empty.");
-        } else if (!Pattern.matches(RepositoryConstants.FILE_PATTERN, nameText.getText())) {
+        } else if (!Pattern.matches(RepositoryConstants.FILE_PATTERN, text)) {
             return createStatus(IStatus.ERROR, "Name contains incorrect characters.");
-        } else if (!isValid(nameText.getText())) {
+        } else if (!isValid(text)) {
             return createStatus(IStatus.ERROR, "Item with the same name already exists.");
         } else {
             return createOkStatus();
@@ -164,7 +165,6 @@ public class NameSection extends AbstractSection {
                         e.printStackTrace();
                         return;
                     }
-
                 }
                 getObject().setLabel(text);
             }
@@ -177,10 +177,6 @@ public class NameSection extends AbstractSection {
             nameText.setEditable(true);
         } else {
             nameText.setEditable(enable);
-            if (enable)
-                composite.setBackground(composite.getDisplay().getSystemColor(SWT.COLOR_BLUE));
-            else
-                composite.setBackground(composite.getDisplay().getSystemColor(SWT.COLOR_RED));
         }
     }
 
