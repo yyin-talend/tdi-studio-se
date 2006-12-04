@@ -345,7 +345,6 @@ public class ProxyRepositoryFactory {
     // TODO SML Renommer et finir la méthode et la plugger dans toutes les méthodes
     private void checkDisponibilite(IRepositoryObject objToMove) throws BusinessException {
         if (!isEditableAndLockIfPossible(objToMove)) {
-            MessageDialog.openError(new Shell(), "No way", "dégage");
             throw new BusinessException("Item non modifiable par vous !!");
         }
     }
