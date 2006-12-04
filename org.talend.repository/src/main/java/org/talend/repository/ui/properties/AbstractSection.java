@@ -41,10 +41,8 @@ import org.talend.core.model.properties.Property;
 import org.talend.core.model.properties.User;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
-import org.talend.repository.model.LocalLockHelper;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
-import org.talend.repository.model.LocalLockHelper.Listerner;
 
 /**
  * DOC mhelleboid class global comment. Detailled comment <br/>
@@ -68,34 +66,6 @@ public abstract class AbstractSection extends AbstractPropertySection {
 
         public void focusGained(FocusEvent e) {
             manageLock();
-        }
-    };
-
-    private Listerner lockListerner = new Listerner() {
-
-        @Override
-        public void lockAdded(String id) {
-            handleEvent(id, true);
-        }
-
-        /**
-         * DOC tguiu Comment method "handleEvent".
-         * 
-         * @param id
-         */
-        private void handleEvent(String id, boolean enable) {
-            IRepositoryObject object = getObject();
-            if (object != null) {
-                if (object.getId().equals(id)) {
-                    enableControl(enable);
-                }
-            }
-        }
-
-        @Override
-        public void lockRemoved(String id) {
-            performRefresh();
-            handleEvent(id, false);
         }
     };
 
@@ -220,7 +190,6 @@ public abstract class AbstractSection extends AbstractPropertySection {
     public void dispose() {
         super.dispose();
         REGISTERED_SECTIONS.remove(this);
-        LocalLockHelper.removeListener(lockListerner);
     }
 
     /**
