@@ -24,6 +24,7 @@ package org.talend.designer.mapper.ui.visualmap.table;
 import java.util.List;
 
 import org.eclipse.swt.widgets.Composite;
+import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumn;
 import org.talend.commons.ui.swt.tableviewer.tableeditor.ButtonPushImageTableEditorContent;
 import org.talend.commons.ui.ws.WindowSystem;
@@ -54,7 +55,7 @@ public class OutputDataMapTableView extends DataMapTableView {
     }
 
     @Override
-    public void initColumns() {
+    public void initColumns(final TableViewerCreator tableViewerCreatorForColumns) {
         TableViewerCreatorColumn column = new TableViewerCreatorColumn(tableViewerCreatorForColumns);
         column.setTitle("Expression");
         column.setId(DataMapTableView.ID_EXPRESSION_COLUMN);
@@ -98,7 +99,7 @@ public class OutputDataMapTableView extends DataMapTableView {
      * @see org.talend.designer.mapper.ui.visualmap.table.DataMapTableView#initTableConstraints()
      */
     @Override
-    protected void initTableConstraints() {
+    protected void initTableFilters() {
         super.createTableConstraints();
 
         TableViewerCreatorColumn column = new TableViewerCreatorColumn(tableViewerCreatorForConstraints);

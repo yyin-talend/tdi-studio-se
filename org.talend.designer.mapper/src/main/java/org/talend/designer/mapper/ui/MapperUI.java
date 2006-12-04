@@ -24,6 +24,7 @@ package org.talend.designer.mapper.ui;
 import java.util.Collection;
 import java.util.List;
 
+import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.custom.ScrolledComposite;
@@ -51,6 +52,7 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.ScrollBar;
 import org.eclipse.swt.widgets.Shell;
+import org.talend.commons.ui.command.CommandStackForComposite;
 import org.talend.commons.ui.swt.drawing.background.BackgroundRefresher;
 import org.talend.commons.ui.ws.WindowSystem;
 import org.talend.commons.utils.performance.PerformanceEvaluator;
@@ -176,6 +178,8 @@ public class MapperUI {
 
     private MapperBackgroundRefresher backgroundRefresher;
 
+    private CommandStackForComposite commandStack;
+
     public MapperUI(Composite parent, MapperManager mapperManager) {
         super();
         this.mapperManager = mapperManager;
@@ -186,6 +190,7 @@ public class MapperUI {
     public void init(MapperModel mapperModel) {
         // long time1 = System.currentTimeMillis();
 
+        this.commandStack = new CommandStackForComposite(this.mapperUIParent);
         
         final UIManager uiManager = mapperManager.getUiManager();
         final ExternalMapperUiProperties uiProperties = uiManager.getUiProperties();
@@ -602,7 +607,7 @@ public class MapperUI {
             dataMapTableView.setLayoutData(formData);
             previousControl = dataMapTableView;
             dataMapTableView.minimizeTable(abstractDataMapTable.isMinimized());
-            dataMapTableView.registerStyledExpressionEditor(getTabFolderEditors().getStyledTextHandler());
+//            dataMapTableView.registerStyledExpressionEditor(getTabFolderEditors().getStyledTextHandler());
             // dataMapTableView.fillMinimumSize(false);
         }
 
@@ -878,4 +883,15 @@ public class MapperUI {
         return this.outputsZone;
     }
 
+    
+    /**
+     * Getter for commandStack.
+     * @return the commandStack
+     */
+    public CommandStack getCommandStack() {
+        return this.commandStack;
+    }
+
+    
+    
 }

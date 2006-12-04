@@ -339,9 +339,10 @@ public class MapperManager {
      * 
      * @param currentModifiedTableEntry
      * @param newColumnName
+     * @param newColumnName2 
      */
-    public void changeColumnName(ITableEntry dataMapTableEntry, String newColumnName) {
-        tableEntriesManager.renameEntryName(dataMapTableEntry, newColumnName);
+    public void changeColumnName(ITableEntry dataMapTableEntry, String previousColumnName, String newColumnName) {
+        tableEntriesManager.renameEntryName(dataMapTableEntry, previousColumnName, newColumnName);
     }
 
     public void removeTableEntry(ITableEntry dataMapTableEntry) {

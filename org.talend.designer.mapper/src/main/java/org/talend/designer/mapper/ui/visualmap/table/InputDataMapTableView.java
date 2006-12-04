@@ -27,6 +27,7 @@ import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.ToolItem;
+import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumn;
 import org.talend.commons.ui.ws.WindowSystem;
 import org.talend.commons.utils.data.bean.IBeanPropertyAccessors;
@@ -50,7 +51,7 @@ public class InputDataMapTableView extends DataMapTableView {
     }
 
     @Override
-    public void initColumns() {
+    public void initColumns(TableViewerCreator tableViewerCreatorForColumns) {
         boolean isMainConnection = ((InputTable) getDataMapTable()).isMainConnection();
         TableViewerCreatorColumn column = null;
         if (!isMainConnection) {
@@ -98,7 +99,7 @@ public class InputDataMapTableView extends DataMapTableView {
      * @see org.talend.designer.mapper.ui.visualmap.table.DataMapTableView#initTableConstraints()
      */
     @Override
-    protected void initTableConstraints() {
+    protected void initTableFilters() {
         // nothing
     }
 

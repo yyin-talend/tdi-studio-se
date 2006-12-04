@@ -25,6 +25,7 @@ import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.widgets.Composite;
+import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumn;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator.CELL_EDITOR_STATE;
 import org.talend.commons.ui.swt.tableviewer.celleditor.DialogErrorForCellEditorListener;
@@ -66,7 +67,7 @@ public class VarsDataMapTableView extends DataMapTableView {
     }
 
     @Override
-    public void initColumns() {
+    public void initColumns(final TableViewerCreator tableViewerCreatorForColumns) {
         TableViewerCreatorColumn column = new TableViewerCreatorColumn(tableViewerCreatorForColumns);
         column.setTitle("Expression");
         column.setId(DataMapTableView.ID_EXPRESSION_COLUMN);
@@ -111,7 +112,7 @@ public class VarsDataMapTableView extends DataMapTableView {
                     ModifiedObjectInfo modifiedObjectInfo = tableViewerCreatorForColumns.getModifiedObjectInfo();
                     String originalValue = (String) modifiedObjectInfo.getOriginalPropertyBeanValue();
                     Object currentModifiedBean = modifiedObjectInfo.getCurrentModifiedBean();
-                    mapperManager.getUiManager().processColumnNameChanged(originalValue.toString(), newValue.toString(), dataMapTableView,
+                    mapperManager.getUiManager().processColumnNameChanged(originalValue.toString(), newValue.toString(), VarsDataMapTableView.this,
                             (ITableEntry) currentModifiedBean);
                 }
             }
@@ -133,7 +134,7 @@ public class VarsDataMapTableView extends DataMapTableView {
      * @see org.talend.designer.mapper.ui.visualmap.table.DataMapTableView#initTableConstraints()
      */
     @Override
-    protected void initTableConstraints() {
+    protected void initTableFilters() {
         // no table constraint
     }
 

@@ -102,6 +102,16 @@ public class PropertiesTableEditorView<B> extends AbstractDataTableEditorView<B>
         return new PropertiesTableToolbarEditorView(getMainComposite(), SWT.NONE, this.getExtendedTableViewer());
     }
 
+    
+    
+    /* (non-Javadoc)
+     * @see org.talend.commons.ui.swt.advanced.dataeditor.AbstractDataTableEditorView#setTableViewerCreatorOptions(org.talend.commons.ui.swt.tableviewer.TableViewerCreator)
+     */
+    @Override
+    protected void setTableViewerCreatorOptions(TableViewerCreator<B> newTableViewerCreator) {
+        super.setTableViewerCreatorOptions(newTableViewerCreator);
+    }
+
     /*
      * (non-Javadoc)
      * 

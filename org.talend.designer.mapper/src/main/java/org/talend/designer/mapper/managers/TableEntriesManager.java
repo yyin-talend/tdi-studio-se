@@ -204,9 +204,11 @@ public class TableEntriesManager {
      * 
      * @param dataMapTableEntry
      * @param newColumnName
+     * @param newColumnName 
      */
-    public void renameEntryName(ITableEntry dataMapTableEntry, String newColumnName) {
-        TableEntryLocation tableEntryLocationKey = TableEntriesManager.buildLocation(dataMapTableEntry);
+    public void renameEntryName(ITableEntry dataMapTableEntry, String previousColumnName, String newColumnName) {
+        TableEntryLocation tableEntryLocationKey = new TableEntryLocation(dataMapTableEntry.getParentName(), previousColumnName);
+//            TableEntriesManager.buildLocation(dataMapTableEntry);
         ITableEntry entry = tableEntries.get(tableEntryLocationKey);
         if (entry != dataMapTableEntry) {
             throw new IllegalStateException("tableEntries are not the same !");

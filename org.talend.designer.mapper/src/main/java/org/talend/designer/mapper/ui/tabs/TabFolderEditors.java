@@ -21,6 +21,7 @@
 // ============================================================================
 package org.talend.designer.mapper.ui.tabs;
 
+import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
@@ -87,8 +88,13 @@ public class TabFolderEditors extends CTabFolder {
         inOutMetaEditorContainer.setLayout(new RowLayout(SWT.HORIZONTAL));
         item.setControl(inOutMetaEditorContainer);
 
+        CommandStack commandStack = mapperManager.getUiManager().getCommandStack();
+        
         inputMetaEditor = new MetadataTableEditorView(inOutMetaEditorContainer, SWT.BORDER);
+        inputMetaEditor.getExtendedTableViewer().setCommandStack(commandStack);
+        
         outputMetaEditor = new MetadataTableEditorView(inOutMetaEditorContainer, SWT.BORDER);
+        outputMetaEditor.getExtendedTableViewer().setCommandStack(commandStack);
 
         item = new CTabItem(tabFolderEditors, SWT.BORDER);
         item.setText("Expression editor");

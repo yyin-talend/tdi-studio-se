@@ -2162,8 +2162,8 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
     private Control addTable(final Composite parentComposite, final IElementParameter param, final int numInRow, final int nbInRow,
             final int top, final Control lastControlPrm) {
 
-//        Composite container = parentComposite;// new Composite(subComposite, SWT.NONE);
-//
+        final Composite container = parentComposite;// new Composite(subComposite, SWT.NONE);
+
 //        PropertiesTableEditorModel<Map<String, Object>> tableEditorModel = new PropertiesTableEditorModel<Map<String, Object>>();
 //        tableEditorModel.setData(elem, param, part.getTalendEditor().getProcess(), getColumnList(), getPrevColumnList());
 //
@@ -2177,8 +2177,10 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
 //        List<Map<String, Object>> values = copyTableValue(param);
 //        tableEditorModel.registerDataList(values);
 //
-//        FormData formData = new FormData();
+//        FormData formData = new FormData(300, 150);
 //
+//        
+//        
 //        // formData.left = new FormAttachment(lastControlPrm);
 //        // formData.right = new FormAttachment((numInRow * MAX_PERCENT) / nbInRow, 0);
 //        // formData.right = new FormAttachment(lastControlPrm);
@@ -2198,9 +2200,8 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
 //
 //        final Control lastControl = mainComposite;
 
-        final Control lastControl = lastControlPrm;
-        final Composite container = parentComposite;
         if (true) {
+            final Control lastControl = lastControlPrm;
             boolean dynamicData = false;
 
             final TableViewerCreator tableViewerCreator = new TableViewerCreator(container);
