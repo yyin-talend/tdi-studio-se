@@ -1,31 +1,59 @@
 <%@ jet 
-	package="org.talend.designer.codegen.translators" 
-	imports="
-		org.talend.core.model.process.INode 
-		org.talend.core.model.metadata.IMetadataTable 
-		org.talend.designer.codegen.config.CodeGeneratorArgument
-		java.util.List
-	"
-	class="UniqRowMain"
+package="org.talend.designer.codegen.translators" 
+imports="
+    org.talend.core.model.process.INode 
+    org.talend.core.model.metadata.IMetadataTable 
+    org.talend.core.model.metadata.IMetadataColumn
+    org.talend.core.model.process.ElementParameterParser
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    java.util.List
+"
+class="UniqRowMain"
 %>
 
 <%
-	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
-	INode node = (INode)codeGenArgument.getArgument();
-	boolean stats = codeGenArgument.isStatistics();			
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+boolean stats = codeGenArgument.isStatistics();			
 
-	List<IMetadataTable> metadatas = node.getMetadataList();
-	if ((metadatas!=null)&&(metadatas.size()>0)) {
-		IMetadataTable metadata = metadatas.get(0);
-		if (metadata!=null) {
-                  String cid = metadata.getTableName();
+List<IMetadataTable> metadatas = node.getMetadataList();
+if ((metadatas!=null)&&(metadatas.size()>0)) {
+    IMetadataTable metadata = metadatas.get(0);
+    if (metadata!=null) {
+        String cid = metadata.getTableName();
+
+        String caseSensitive = ElementParameterParser.getValue(
+            node,
+            "__CASE_SENSITIVE__"
+        );
+
+        StringBuffer hashKey = new StringBuffer();
+        int column_num = 0;
+
+        for (IMetadataColumn column: metadata.getListColumns()) {
+            if (column.isKey()) {
+              hashKey.append("{ ");
+              
+              if (caseSensitive.equals("false")) {
+                  hashKey.append("lc ");
+              }
+              
+              hashKey.append("$");
+              hashKey.append(cid);
+              hashKey.append("[");
+              hashKey.append(column_num);
+              hashKey.append("] }");
+            }
+
+            column_num++;
+        }
 %>
 
 $nb_line_input_<%=cid %>++;
-next if (eval '++$uniq_keys_<%=cid %>->'.$keys_string_<%=cid %>.' > 1');
+next if (++$<%=cid%><%=hashKey%> > 1);
 $nb_line_output_<%=cid %>++;
     
 <%
-		}
-	}
+    }
+}
 %>

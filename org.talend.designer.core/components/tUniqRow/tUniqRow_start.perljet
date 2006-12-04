@@ -1,32 +1,39 @@
 <%@ jet 
-	package="org.talend.designer.codegen.translators" 
-	imports="
-		org.talend.core.model.process.INode 
-		org.talend.core.model.metadata.IMetadataTable
-        org.talend.core.model.metadata.IMetadataColumn
-        org.talend.designer.codegen.config.CodeGeneratorArgument
-		java.util.List
-	"
-	class="UniqRowStart"
+package="org.talend.designer.codegen.translators" 
+imports="
+    org.talend.core.model.process.INode 
+    org.talend.core.model.metadata.IMetadataTable
+    org.talend.core.model.metadata.IMetadataColumn
+    org.talend.core.model.process.ElementParameterParser
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    java.util.List
+"
+class="UniqRowStart"
 %>
 
 <%
-	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
-	INode node = (INode)codeGenArgument.getArgument();
-	boolean stats = codeGenArgument.isStatistics();
-	
-	List<IMetadataTable> metadatas = node.getMetadataList();
-	if ((metadatas!=null)&&(metadatas.size()>0)) {
-		IMetadataTable metadata = metadatas.get(0);
-		if (metadata!=null) {
-                  String cid = metadata.getTableName();
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+boolean stats = codeGenArgument.isStatistics();
+
+List<IMetadataTable> metadatas = node.getMetadataList();
+if ((metadatas!=null)&&(metadatas.size()>0)) {
+    IMetadataTable metadata = metadatas.get(0);
+    if (metadata!=null) {
+        String cid = metadata.getTableName();
+
+        String caseSensitive = ElementParameterParser.getValue(
+            node,
+            "__CASE_SENSITIVE__"
+        );
 %>
 
 my %desc_<%=cid %> = (
+    case_sensitive => <%=caseSensitive%>,
     schema        => [
-    <%
-                for (IMetadataColumn column: metadata.getListColumns()) {
-    %>
+<%
+        for (IMetadataColumn column: metadata.getListColumns()) {
+%>
         {
             name    => '<%=column.getLabel() %>',
             key     => <%=column.isKey() %>,
@@ -35,37 +42,18 @@ my %desc_<%=cid %> = (
             null    => <%=column.isNullable() %>,
             default => '<%=column.getDefault() %>',
             comment => '<%=column.getComment() %>',
-                },
-        <%
-                }
-    %>
-    ]
+        },
+<%
+        }
+%>
+    ],
 );
-
-my $nb_fields_<%=cid %> = scalar @{ $desc_<%=cid %>{schema} };
 
 our %<%=cid %> = ();
-
-my @key_positions_<%=cid %> = ();
-my $column_number = 0;
-foreach my $column_href (@{$desc_<%=cid %>{schema} }) {
-    if ($column_href->{key}) {
-        push @key_pos_<%=cid %>, $column_number;
-    }
-    $column_number++;
-}
-
-my $uniq_keys_<%=cid %> = {};
-
-my $keys_string_<%=cid %> = join(
-    '',
-    map {'{ $<%=cid %>['.$_.'] }'} @key_pos_<%=cid %>
-);
-
 my $nb_line_input_<%=cid %> = 0;
 my $nb_line_output_<%=cid %> = 0;
 
 <%
-		}
-	}
+    }
+}
 %>

@@ -33,6 +33,15 @@
     <PARAMETER NAME="SCHEMA" FIELD="SCHEMA_TYPE" REQUIRED="true" NUM_ROW="1">
       <DEFAULT/> 
     </PARAMETER>
+
+    <PARAMETER
+      NAME="CASE_SENSITIVE"
+      FIELD="CHECK"
+      REQUIRED="true"
+      NUM_ROW="2"
+    >
+      <DEFAULT>true</DEFAULT>
+    </PARAMETER>
   </PARAMETERS>
 
   <CODEGENERATION>
