@@ -33,6 +33,8 @@ import org.eclipse.ui.PartInitException;
 import org.talend.commons.exception.MessageBoxExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.core.model.repository.Folder;
+import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.ui.images.EImage;
 import org.talend.core.ui.images.ImageProvider;
 import org.talend.designer.core.ui.MultiPageTalendEditor;
@@ -70,16 +72,7 @@ public class CreateProcess extends AContextualAction {
         Object obj = ((IStructuredSelection) selection).getFirstElement();
         RepositoryNode node = (RepositoryNode) obj;
 
-        IPath path = null;
-
-        switch (node.getType()) {
-        case SIMPLE_FOLDER:
-        case SYSTEM_FOLDER:
-            path = RepositoryNodeUtilities.getPath(node);
-            break;
-        default:
-            return;
-        }
+        IPath path = RepositoryNodeUtilities.getPath(node);
 
         NewProcessWizard processWizard = new NewProcessWizard(path);
         WizardDialog dlg = new WizardDialog(Display.getCurrent().getActiveShell(), processWizard);
