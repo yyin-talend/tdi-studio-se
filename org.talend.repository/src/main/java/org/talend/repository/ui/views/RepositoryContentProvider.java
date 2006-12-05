@@ -120,9 +120,7 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
             nodes.add(processNode);
 
             convert(factory.getProcess(), processNode, ERepositoryObjectType.PROCESS, recBinNode);
-            // convert(factory.getAll(project, ERepositoryObjectType.PROCESS), processNode,
-            // ERepositoryObjectType.PROCESS,
-            // recBinNode);
+//            convert(factory.getProcess2(), processNode, ERepositoryObjectType.PROCESS, recBinNode);
 
             // 3. Routines
             RepositoryNode routineNode = new RepositoryNode(null, root, ENodeType.SYSTEM_FOLDER);
@@ -187,14 +185,15 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
             convert(factory.getMetadataFileRegexp(), metadataFileRegexpNode, ERepositoryObjectType.METADATA_FILE_REGEXP,
                     recBinNode);
 
-//            PTODO cantoine : uncomment the following lines to activate FilXml wizard in repository
+            // PTODO cantoine : uncomment the following lines to activate FilXml wizard in repository
             // 5.5. Metadata file xml
-//            RepositoryNode metadataFileXmlNode = new RepositoryNode(null, root, ENodeType.SYSTEM_FOLDER);
-//            metadataFileXmlNode.setProperties(EProperties.LABEL, ERepositoryObjectType.METADATA_FILE_XML);
-//            metadataFileXmlNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.METADATA_FILE_XML);
-//            metadataNode.getChildren().add(metadataFileXmlNode);
-//
-//            convert(factory.getMetadataFileXml(), metadataFileXmlNode, ERepositoryObjectType.METADATA_FILE_XML, recBinNode);
+            // RepositoryNode metadataFileXmlNode = new RepositoryNode(null, root, ENodeType.SYSTEM_FOLDER);
+            // metadataFileXmlNode.setProperties(EProperties.LABEL, ERepositoryObjectType.METADATA_FILE_XML);
+            // metadataFileXmlNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.METADATA_FILE_XML);
+            // metadataNode.getChildren().add(metadataFileXmlNode);
+            //
+            // convert(factory.getMetadataFileXml(), metadataFileXmlNode, ERepositoryObjectType.METADATA_FILE_XML,
+            // recBinNode);
 
             // 5.6. Metadata file ldif
             RepositoryNode metadataFileLdifNode = new RepositoryNode(null, root, ENodeType.SYSTEM_FOLDER);
@@ -204,7 +203,6 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
 
             convert(factory.getMetadataFileLdif(), metadataFileLdifNode, ERepositoryObjectType.METADATA_FILE_LDIF, recBinNode);
 
-            
         } catch (PersistenceException e) {
             e.printStackTrace();
         }
@@ -224,7 +222,7 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
 
         for (Object obj : fromModel.getSubContainer()) {
             Container container = (Container) obj;
-            Folder oFolder = new Folder((Property) container.getProperty());
+            Folder oFolder = new Folder((Property) container.getProperty(), type);
             RepositoryNode folder = new RepositoryNode(oFolder, parent, ENodeType.SIMPLE_FOLDER);
             folder.setProperties(EProperties.LABEL, container.getLabel());
             folder.setProperties(EProperties.CONTENT_TYPE, type); // ERepositoryObjectType.FOLDER);
@@ -279,8 +277,8 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
             createTables(recBinNode, node, repositoryObject, metadataConnection);
         }
         if (type == ERepositoryObjectType.METADATA_FILE_LDIF) {
-            LdifFileConnection metadataConnection = (LdifFileConnection) ((ConnectionItem) repositoryObject.getProperty().getItem())
-                    .getConnection();
+            LdifFileConnection metadataConnection = (LdifFileConnection) ((ConnectionItem) repositoryObject.getProperty()
+                    .getItem()).getConnection();
             createTables(recBinNode, node, repositoryObject, metadataConnection);
         }
     }

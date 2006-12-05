@@ -381,5 +381,13 @@ public abstract class AbstractSection extends AbstractPropertySection {
         public void setVersion(String version) {
         }
 
+        /* (non-Javadoc)
+         * @see org.talend.core.model.repository.IRepositoryObject#getChildren()
+         */
+        public List<IRepositoryObject> getChildren() {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
     }
 }

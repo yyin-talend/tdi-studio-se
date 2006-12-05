@@ -34,7 +34,9 @@ public enum ERepositoryStatus {
     DEFAULT(false, true),
     NOT_UP_TO_DATE(false, false),
     DELETED(false, false),
-    READ_ONLY(false, false);
+    READ_ONLY(false, false),
+    // PTODO SML [FOLDERS++] Only to manage folders: temporary code
+    EDITABLE(true, false);
 
     private boolean editable;
 

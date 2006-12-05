@@ -27,6 +27,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.talend.commons.exception.PersistenceException;
+import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.core.model.repository.Folder;
 import org.talend.core.model.repository.IRepositoryObject;
 
 /**
@@ -116,7 +118,22 @@ public class RepositoryNode {
      * @return the children
      */
     public List<RepositoryNode> getChildren() {
-        return this.children;
+        if (true) {
+            // FIXME SML Remove when MHE attach item to folders
+            return children;
+        }
+        if (type == ENodeType.STABLE_SYSTEM_FOLDER || type == ENodeType.SYSTEM_FOLDER) {
+            return children;
+        }
+
+        List<RepositoryNode> toReturn = new ArrayList<RepositoryNode>();
+
+        for (IRepositoryObject currentChild : getObject().getChildren()) {
+            RepositoryNode repositoryNode = new RepositoryNode(currentChild, this, ENodeType.REPOSITORY_ELEMENT);
+            toReturn.add(repositoryNode);
+        }
+
+        return toReturn;
     }
 
     public boolean hasChildren() {
@@ -173,7 +190,28 @@ public class RepositoryNode {
      * @return the type
      */
     public ENodeType getType() {
-        return this.type;
+        if (type == ENodeType.REPOSITORY_ELEMENT && getObject().getType() == ERepositoryObjectType.FOLDER) {
+            return ENodeType.SIMPLE_FOLDER;
+        }
+        return type;
+    }
+
+    public ERepositoryObjectType getObjectType() {
+        if (getObject() != null) {
+            return getObject().getType();
+        }
+        return null;
+    }
+
+    public ERepositoryObjectType getContentType() {
+        if (getObject() != null) {
+            if (getObject() instanceof Folder) {
+                return ((Folder) getObject()).getContentType();
+            } else {
+                return null;
+            }
+        }
+        return (ERepositoryObjectType) getProperties(EProperties.CONTENT_TYPE);
     }
 
     /**
@@ -189,6 +227,7 @@ public class RepositoryNode {
         properties.put(key, value);
     }
 
+    // TODO SML Remove theses props
     public Object getProperties(EProperties key) {
         return properties.get(key);
     }

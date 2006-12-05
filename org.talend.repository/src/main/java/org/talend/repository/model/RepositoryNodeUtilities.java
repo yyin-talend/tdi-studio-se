@@ -24,7 +24,6 @@ package org.talend.repository.model;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.talend.repository.model.RepositoryNode.ENodeType;
-import org.talend.repository.model.RepositoryNode.EProperties;
 
 /**
  * Utility class to manage RepositoryNode.<br/>
@@ -39,16 +38,9 @@ public class RepositoryNodeUtilities {
             return new Path("");
         }
         if (node.getType() == ENodeType.SIMPLE_FOLDER) {
-            return getPath(node.getParent()).append((String) node.getProperties(EProperties.LABEL));
+            String label = node.getObject().getProperty().getLabel();
+            return getPath(node.getParent()).append(label);
         } else {
-//            IRepositoryFactory factory = RepositoryFactoryProvider.getInstance();
-//            try {
-//                if (factory.isDeleted(node.getObject().getProperty().getItem())) {
-//                    return new Path("bin");
-//                }
-//            } catch (PersistenceException e) {
-//                e.printStackTrace();
-//            }
             return getPath(node.getParent());
         }
     }

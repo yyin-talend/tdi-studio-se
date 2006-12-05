@@ -44,7 +44,6 @@ import org.talend.core.ui.images.ImageProvider;
 import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.model.RepositoryConstants;
 import org.talend.repository.model.RepositoryNodeUtilities;
-import org.talend.repository.model.RepositoryNode.EProperties;
 import org.talend.repository.ui.views.RepositoryView;
 
 /**
@@ -157,7 +156,7 @@ public class NameSection extends AbstractSection {
                 if (getType() == ERepositoryObjectType.FOLDER) {
                     IPath path = RepositoryNodeUtilities.getPath(getNode());
                     try {
-                        ERepositoryObjectType type = (ERepositoryObjectType) getNode().getProperties(EProperties.CONTENT_TYPE);
+                        ERepositoryObjectType type = (ERepositoryObjectType) getNode().getContentType();
                         getRepositoryFactory().renameFolder(type, path, text);
                         RepositoryView view = (RepositoryView) getActivePage().findView(RepositoryView.VIEW_ID);
                         view.refresh();

@@ -36,7 +36,11 @@ public class ExcludeFolderSectionFilter implements IFilter {
     public boolean select(Object object) {
         if (object instanceof RepositoryNode) {
             RepositoryNode node = (RepositoryNode) object;
-            return node.getType() != ENodeType.SIMPLE_FOLDER;
+            if (node.getType() == ENodeType.STABLE_SYSTEM_FOLDER || node.getType() == ENodeType.SYSTEM_FOLDER
+                    || node.getType() == ENodeType.SIMPLE_FOLDER) {
+                return false;
+            }
+            return true;
         }
         return false;
     }

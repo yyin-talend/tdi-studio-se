@@ -38,6 +38,7 @@ import org.talend.core.context.RepositoryContext;
 import org.talend.core.model.general.Project;
 import org.talend.core.model.metadata.builder.connection.TableHelper;
 import org.talend.core.model.properties.ConnectionItem;
+import org.talend.core.model.properties.FolderItem;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.properties.Status;
@@ -547,11 +548,6 @@ public class ProxyRepositoryFactory {
      * @see org.talend.repository.model.IRepositoryFactory#getStatus(org.talend.core.model.properties.Item)
      */
     public ERepositoryStatus getStatus(IRepositoryObject obj) {
-        if (obj instanceof Folder) {
-        // PTODO SML temporary implementation
-            return ERepositoryStatus.LOCK_BY_USER;
-        }
-        
         if (obj instanceof MetadataTableRepositoryObject) {
             MetadataTableRepositoryObject metadataTableRepositoryObject = (MetadataTableRepositoryObject) obj;
             if (TableHelper.isDeleted(metadataTableRepositoryObject.getTable())) {
@@ -562,6 +558,11 @@ public class ProxyRepositoryFactory {
     }
 
     public ERepositoryStatus getStatus(Item item) {
+        // PTODO SML [FOLDERS] temp code
+        if (item instanceof FolderItem) {
+            return ERepositoryStatus.EDITABLE;
+        }
+
         return this.repositoryFactoryFromProvider.getStatus(item);
     }
 
