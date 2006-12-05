@@ -190,7 +190,7 @@ public class MapperUI {
     public void init(MapperModel mapperModel) {
         // long time1 = System.currentTimeMillis();
 
-        this.commandStack = new CommandStackForComposite(this.mapperUIParent);
+//        this.commandStack = new CommandStackForComposite(this.mapperUIParent);
         
         final UIManager uiManager = mapperManager.getUiManager();
         final ExternalMapperUiProperties uiProperties = uiManager.getUiProperties();
