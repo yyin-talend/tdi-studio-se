@@ -45,15 +45,19 @@ import org.talend.core.model.components.IComponentsFactory;
 import org.talend.core.model.components.IMultipleComponentItem;
 import org.talend.core.model.components.IMultipleComponentManager;
 import org.talend.core.model.metadata.EMetadataType;
+import org.talend.core.model.metadata.IMetadataColumn;
+import org.talend.core.model.metadata.IMetadataTable;
+import org.talend.core.model.metadata.MetadataColumn;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.EParameterFieldType;
-import org.talend.core.model.process.IElement;
 import org.talend.core.model.process.IElementParameterDefaultValue;
+import org.talend.core.model.process.INode;
 import org.talend.core.model.temp.ECodeLanguage;
 import org.talend.core.ui.images.EImage;
 import org.talend.core.ui.images.ImageProvider;
 import org.talend.designer.core.i18n.Messages;
+import org.talend.designer.core.model.utils.emf.component.COLUMNType;
 import org.talend.designer.core.model.utils.emf.component.COMPONENTType;
 import org.talend.designer.core.model.utils.emf.component.CONNECTORType;
 import org.talend.designer.core.model.utils.emf.component.DEFAULTType;
@@ -150,14 +154,14 @@ public class EmfComponent implements IComponent {
         }
     }
 
-    public List<ElementParameter> createElementParameters(IElement element) {
+    public List<ElementParameter> createElementParameters(INode node) {
         List<ElementParameter> listParam;
         listParam = new ArrayList<ElementParameter>();
-        addMainParameters(listParam, element);
-        addPropertyParameters(listParam, element);
+        addMainParameters(listParam, node);
+        addPropertyParameters(listParam, node);
         initializePropertyParameters(listParam);
-        addViewParameters(listParam, element);
-        addDocParameters(listParam, element);
+        addViewParameters(listParam, node);
+        addDocParameters(listParam, node);
         return listParam;
     }
 
@@ -210,10 +214,10 @@ public class EmfComponent implements IComponent {
         return listReturn;
     }
 
-    private void addDocParameters(final List<ElementParameter> listParam, IElement element) {
+    private void addDocParameters(final List<ElementParameter> listParam, INode node) {
         ElementParameter param;
 
-        param = new ElementParameter(element);
+        param = new ElementParameter(node);
         param.setName(EParameterName.COMMENT.getName());
         param.setValue(""); //$NON-NLS-1$
         param.setDisplayName(EParameterName.COMMENT.getDisplayName());
@@ -227,10 +231,10 @@ public class EmfComponent implements IComponent {
         listParam.add(param);
     }
 
-    private void addViewParameters(final List<ElementParameter> listParam, IElement element) {
+    private void addViewParameters(final List<ElementParameter> listParam, INode node) {
         ElementParameter param;
 
-        param = new ElementParameter(element);
+        param = new ElementParameter(node);
         param.setName(EParameterName.LABEL.getName());
         param.setDisplayName(EParameterName.LABEL.getDisplayName());
         param.setField(EParameterFieldType.TEXT);
@@ -241,7 +245,7 @@ public class EmfComponent implements IComponent {
         param.setShow(true);
         listParam.add(param);
 
-        param = new ElementParameter(element);
+        param = new ElementParameter(node);
         param.setName(EParameterName.HINT.getName());
         param.setDisplayName(EParameterName.HINT.getDisplayName());
         param.setField(EParameterFieldType.TEXT);
@@ -252,7 +256,7 @@ public class EmfComponent implements IComponent {
         param.setShow(true);
         listParam.add(param);
 
-        param = new ElementParameter(element);
+        param = new ElementParameter(node);
         param.setName(EParameterName.SHOW_HINT.getName());
         param.setValue(new Boolean(false));
         param.setDisplayName(EParameterName.SHOW_HINT.getDisplayName());
@@ -265,10 +269,10 @@ public class EmfComponent implements IComponent {
         listParam.add(param);
     }
 
-    private void addMainParameters(final List<ElementParameter> listParam, IElement element) {
+    private void addMainParameters(final List<ElementParameter> listParam, INode node) {
         ElementParameter param;
 
-        param = new ElementParameter(element);
+        param = new ElementParameter(node);
         param.setName(EParameterName.UNIQUE_NAME.getName());
         param.setValue("");
         param.setDisplayName(EParameterName.UNIQUE_NAME.getDisplayName());
@@ -279,7 +283,7 @@ public class EmfComponent implements IComponent {
         param.setShow(true);
         listParam.add(param);
 
-        param = new ElementParameter(element);
+        param = new ElementParameter(node);
         param.setName(EParameterName.COMPONENT_NAME.getName());
         param.setValue(getTranslatedValue(PROP_NAME));
         param.setDisplayName(EParameterName.COMPONENT_NAME.getDisplayName());
@@ -290,7 +294,7 @@ public class EmfComponent implements IComponent {
         param.setShow(false);
         listParam.add(param);
 
-        param = new ElementParameter(element);
+        param = new ElementParameter(node);
         param.setName(EParameterName.VERSION.getName());
         param.setValue(compType.getHEADER().getVERSION() + " (" + compType.getHEADER().getSTATUS() + ")"); //$NON-NLS-1$ //$NON-NLS-2$
         param.setDisplayName(EParameterName.VERSION.getDisplayName());
@@ -302,7 +306,7 @@ public class EmfComponent implements IComponent {
         param.setShow(true);
         listParam.add(param);
 
-        param = new ElementParameter(element);
+        param = new ElementParameter(node);
         param.setName(EParameterName.FAMILY.getName());
         param.setValue(getFamily());
         param.setDisplayName(EParameterName.FAMILY.getDisplayName());
@@ -315,7 +319,7 @@ public class EmfComponent implements IComponent {
 
         listParam.add(param);
 
-        param = new ElementParameter(element);
+        param = new ElementParameter(node);
         param.setName(EParameterName.LOG.getName());
         param.setValue(""); //$NON-NLS-1$
         param.setDisplayName(EParameterName.LOG.getDisplayName());
@@ -333,7 +337,7 @@ public class EmfComponent implements IComponent {
         listParam.add(param);
 
         if (canStart()) {
-            param = new ElementParameter(element);
+            param = new ElementParameter(node);
             param.setName(EParameterName.START.getName());
             param.setValue(new Boolean(false));
             param.setDisplayName(EParameterName.START.getDisplayName());
@@ -346,7 +350,7 @@ public class EmfComponent implements IComponent {
             listParam.add(param);
         }
 
-        param = new ElementParameter(element);
+        param = new ElementParameter(node);
         param.setName(EParameterName.STARTABLE.getName());
         param.setValue(new Boolean(canStart()));
         param.setDisplayName(EParameterName.STARTABLE.getDisplayName());
@@ -358,7 +362,7 @@ public class EmfComponent implements IComponent {
         param.setShow(false);
         listParam.add(param);
 
-        param = new ElementParameter(element);
+        param = new ElementParameter(node);
         param.setName(EParameterName.ACTIVATE.getName());
         param.setValue(new Boolean(true));
         param.setDisplayName(EParameterName.ACTIVATE.getDisplayName());
@@ -371,7 +375,7 @@ public class EmfComponent implements IComponent {
         listParam.add(param);
 
         boolean tStatCatcherAvailable = ComponentsFactoryProvider.getInstance().get(TSTATCATCHER_NAME) != null;
-        param = new ElementParameter(element);
+        param = new ElementParameter(node);
         param.setName(EParameterName.TSTATCATCHER_STATS.getName());
         param.setValue(new Boolean(false));
         param.setDisplayName(EParameterName.TSTATCATCHER_STATS.getDisplayName());
@@ -383,7 +387,7 @@ public class EmfComponent implements IComponent {
         param.setShow(tStatCatcherAvailable && compType.getHEADER().isTSTATCATCHERSTATS());
         listParam.add(param);
 
-        param = new ElementParameter(element);
+        param = new ElementParameter(node);
         param.setName(EParameterName.HELP.getName());
         param.setValue(getTranslatedValue(PROP_HELP));
         param.setDisplayName(EParameterName.HELP.getDisplayName());
@@ -395,7 +399,7 @@ public class EmfComponent implements IComponent {
         param.setShow(false);
         listParam.add(param);
 
-        param = new ElementParameter(element);
+        param = new ElementParameter(node);
         param.setName(EParameterName.UPDATE_COMPONENTS.getName());
         param.setValue(new Boolean(false));
         param.setDisplayName(EParameterName.UPDATE_COMPONENTS.getDisplayName());
@@ -409,7 +413,7 @@ public class EmfComponent implements IComponent {
     }
 
     @SuppressWarnings("unchecked")
-    private void addPropertyParameters(final List<ElementParameter> listParam, IElement element) {
+    private void addPropertyParameters(final List<ElementParameter> listParam, INode node) {
         EList listXmlParam;
         PARAMETERType xmlParam;
         ElementParameter param;
@@ -419,7 +423,7 @@ public class EmfComponent implements IComponent {
             xmlParam = (PARAMETERType) listXmlParam.get(i);
             EParameterFieldType type = EParameterFieldType.getFieldTypeByName(xmlParam.getFIELD());
             if (type == EParameterFieldType.PROPERTY_TYPE) {
-                ElementParameter newParam = new ElementParameter(element);
+                ElementParameter newParam = new ElementParameter(node);
                 newParam.setCategory(EComponentCategory.PROPERTY);
                 newParam.setName(EParameterName.PROPERTY_TYPE.getName());
                 newParam.setDisplayName(EParameterName.PROPERTY_TYPE.getDisplayName());
@@ -434,7 +438,7 @@ public class EmfComponent implements IComponent {
                 }
                 listParam.add(newParam);
 
-                newParam = new ElementParameter(element);
+                newParam = new ElementParameter(node);
                 newParam.setCategory(EComponentCategory.PROPERTY);
                 newParam.setName(EParameterName.REPOSITORY_PROPERTY_TYPE.getName());
                 newParam.setDisplayName(EParameterName.REPOSITORY_PROPERTY_TYPE.getDisplayName());
@@ -448,7 +452,7 @@ public class EmfComponent implements IComponent {
                 listParam.add(newParam);
             }
             if (type == EParameterFieldType.SCHEMA_TYPE) {
-                ElementParameter newParam = new ElementParameter(element);
+                ElementParameter newParam = new ElementParameter(node);
                 newParam.setCategory(EComponentCategory.PROPERTY);
                 newParam.setName(EParameterName.SCHEMA_TYPE.getName());
                 newParam.setDisplayName(EParameterName.SCHEMA_TYPE.getDisplayName());
@@ -462,7 +466,7 @@ public class EmfComponent implements IComponent {
                 }
                 listParam.add(newParam);
 
-                newParam = new ElementParameter(element);
+                newParam = new ElementParameter(node);
                 newParam.setCategory(EComponentCategory.PROPERTY);
                 newParam.setName(EParameterName.REPOSITORY_SCHEMA_TYPE.getName());
                 newParam.setDisplayName(EParameterName.REPOSITORY_SCHEMA_TYPE.getDisplayName());
@@ -476,7 +480,7 @@ public class EmfComponent implements IComponent {
                 listParam.add(newParam);
             }
             if (type == EParameterFieldType.PROCESS_TYPE) {
-                ElementParameter newParam = new ElementParameter(element);
+                ElementParameter newParam = new ElementParameter(node);
                 newParam.setCategory(EComponentCategory.PROPERTY);
                 newParam.setName(EParameterName.PROCESS_TYPE_PROCESS.getName());
                 newParam.setDisplayName(EParameterName.PROCESS_TYPE_PROCESS.getDisplayName());
@@ -491,7 +495,7 @@ public class EmfComponent implements IComponent {
                 newParam.setRequired(true);
                 listParam.add(newParam);
 
-                newParam = new ElementParameter(element);
+                newParam = new ElementParameter(node);
                 newParam.setCategory(EComponentCategory.PROPERTY);
                 newParam.setName(EParameterName.PROCESS_TYPE_CONTEXT.getName());
                 newParam.setDisplayName(EParameterName.PROCESS_TYPE_CONTEXT.getDisplayName());
@@ -506,7 +510,7 @@ public class EmfComponent implements IComponent {
                 newParam.setRequired(true);
                 listParam.add(newParam);
             }
-            param = new ElementParameter(element);
+            param = new ElementParameter(node);
             param.setName(xmlParam.getNAME());
             param.setDisplayName(getTranslatedValue(xmlParam.getNAME() + "." + PROP_NAME));
             param.setField(type);
@@ -516,7 +520,13 @@ public class EmfComponent implements IComponent {
                 if (type.equals(EParameterFieldType.TABLE)) {
                     param.setValue(new ArrayList<Map<String, Object>>());
                 } else {
-                    param.setValue("");
+                    if (type == EParameterFieldType.SCHEMA_TYPE) {
+                        IMetadataTable defaultTable = node.getMetadataList().get(0);
+                        initializeTableFromXml(defaultTable, xmlParam);
+                        param.setValue(defaultTable);
+                    } else {
+                        param.setValue("");
+                    }
                 }
             }
             param.setNumRow(xmlParam.getNUMROW());
@@ -550,12 +560,36 @@ public class EmfComponent implements IComponent {
             }
 
             if (xmlParam.getITEMS() != null) {
-                addItemsPropertyParameters(xmlParam.getNAME(), xmlParam.getITEMS(), param, type, element);
+                addItemsPropertyParameters(xmlParam.getNAME(), xmlParam.getITEMS(), param, type, node);
             }
 
             param.setCategory(EComponentCategory.PROPERTY);
             listParam.add(param);
         }
+    }
+
+    private void initializeTableFromXml(IMetadataTable defaultTable, PARAMETERType xmlParam) {
+        if (xmlParam.getTABLE() == null) {
+            return;
+        }
+        EList xmlColumnList = xmlParam.getTABLE().getCOLUMN();
+        COLUMNType xmlColumn;
+        List<IMetadataColumn> talendColumnList = new ArrayList<IMetadataColumn>();
+        IMetadataColumn talendColumn;
+
+        for (int i = 0; i < xmlColumnList.size(); i++) {
+            xmlColumn = (COLUMNType) xmlColumnList.get(i);
+            talendColumn = new MetadataColumn();
+            talendColumn.setLabel(xmlColumn.getNAME());
+            talendColumn.setTalendType(xmlColumn.getTYPE());
+            talendColumn.setPrecision(new Integer(xmlColumn.getPRECISION()));
+            talendColumn.setLength(new Integer(xmlColumn.getLENGTH()));
+            talendColumn.setNullable(xmlColumn.isNULLABLE());
+            talendColumn.setKey(xmlColumn.isKEY());
+            talendColumnList.add(talendColumn);
+        }
+
+        defaultTable.setListColumns(talendColumnList);
     }
 
     /**
@@ -583,7 +617,7 @@ public class EmfComponent implements IComponent {
     }
 
     public void addItemsPropertyParameters(String paramName, ITEMSType items, ElementParameter param,
-            EParameterFieldType type, IElement element) {
+            EParameterFieldType type, INode node) {
         ITEMType item;
 
         int nbItems = 0;
@@ -629,23 +663,23 @@ public class EmfComponent implements IComponent {
             } else {
                 EParameterFieldType currentField = EParameterFieldType.getFieldTypeByName(item.getFIELD());
                 if (EParameterFieldType.CLOSED_LIST == currentField) {
-                    ElementParameter newParam = new ElementParameter(element);
+                    ElementParameter newParam = new ElementParameter(node);
                     newParam.setName(item.getNAME());
                     newParam.setDisplayName("");
                     newParam.setField(currentField);
                     addItemsPropertyParameters(paramName + ".ITEM." + item.getNAME(), item.getITEMS(), newParam,
-                            EParameterFieldType.CLOSED_LIST, element);
+                            EParameterFieldType.CLOSED_LIST, node);
                     listItemsValue[k] = newParam;
                 } else {
 
                     if (currentField == EParameterFieldType.COLUMN_LIST
                             || currentField == EParameterFieldType.PREV_COLUMN_LIST) {
-                        ElementParameter newParam = new ElementParameter(element);
+                        ElementParameter newParam = new ElementParameter(node);
                         newParam.setName(item.getNAME());
                         newParam.setDisplayName("");
                         newParam.setField(currentField);
                         addItemsPropertyParameters(paramName + ".ITEM." + item.getNAME(), item.getITEMS(), newParam,
-                                currentField, element);
+                                currentField, node);
                         listItemsValue[k] = newParam;
                     } else {
                         listItemsValue[k] = item.getNAME();

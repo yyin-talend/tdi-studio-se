@@ -42,8 +42,19 @@ COMPATIBILITY="ALL"
 <!--   `perl_error_message` varchar(255) default NULL, -->
 <!--   `perl_error_code` varchar(255) default NULL -->
 <!-- ); -->
-    <PARAMETER NAME="SCHEMA" FIELD="SCHEMA_TYPE" REQUIRED="true" NUM_ROW="1">
-      <DEFAULT/> 
+    <PARAMETER NAME="SCHEMA" FIELD="SCHEMA_TYPE" REQUIRED="true" NUM_ROW="1" READONLY="true">
+      <TABLE>
+        <COLUMN NAME="moment" TYPE="String" LENGTH="10"/>
+        <COLUMN NAME="pid" TYPE="int" LENGTH="10"/>
+        <COLUMN NAME="job" TYPE="String" LENGTH="50"/>
+        <COLUMN NAME="context" TYPE="String" LENGTH="50"/>
+        <COLUMN NAME="priority" TYPE="int" LENGTH="3"/>
+        <COLUMN NAME="origin" TYPE="String" LENGTH="5"/>
+        <COLUMN NAME="message" TYPE="String" LENGTH="255"/>
+        <COLUMN NAME="code" TYPE="String" LENGTH="255"/>
+        <COLUMN NAME="perl_error_message" TYPE="String" LENGTH="255"/>
+        <COLUMN NAME="perl_error_code" TYPE="String" LENGTH="255"/>
+      </TABLE>
     </PARAMETER>
 
     <PARAMETER NAME="CATCH_PERL_DIE" FIELD="CHECK" REQUIRED="true" NUM_ROW="2" REPOSITORY_VALUE="CATCH_PERL_DIE">

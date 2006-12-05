@@ -185,19 +185,21 @@ public class Node extends Element implements INode {
         showHint = store.getBoolean(TalendDesignerPrefConstants.DEFAULT_HINT_USED);
 
         nodeLabel = new NodeLabel(label, this);
-        setElementParameters(component.createElementParameters(this));
-        listReturn = this.component.createReturns();
+
         listConnector = this.component.createConnectors();
         metadataList = new ArrayList<IMetadataTable>();
+        IMetadataTable meta = new MetadataTable();
+        if (!getConnectorFromType(EConnectionType.FLOW_MAIN).isBuiltIn()) {
+            metadataList.add(meta);
+        }
+
+        setElementParameters(component.createElementParameters(this));
+        listReturn = this.component.createReturns();
         generateUniqueName();
+        meta.setTableName(getUniqueName());
         setPropertyValue(EParameterName.LABEL.getName(), labelToParse);
         setPropertyValue(EParameterName.HINT.getName(), hintToParse);
         setPropertyValue(EParameterName.SHOW_HINT.getName(), new Boolean(showHint));
-        if (!getConnectorFromType(EConnectionType.FLOW_MAIN).isBuiltIn()) {
-            IMetadataTable meta = new MetadataTable();
-            meta.setTableName(getUniqueName());
-            metadataList.add(meta);
-        }
         pluginFullName = newComponent.getPluginFullName();
         if (pluginFullName != IComponentsFactory.COMPONENTS_LOCATION) {
             externalNode = ExternalNodesFactory.getInstance(pluginFullName);
@@ -640,8 +642,8 @@ public class Node extends Element implements INode {
                 connec = (Connection) getIncomingConnections().get(j);
                 if (connec.isActivate()
                         && ((connec.getLineStyle().equals(EConnectionType.FLOW_MAIN)
-                                || connec.getLineStyle().equals(EConnectionType.FLOW_REF) || connec.getLineStyle().equals(
-                                EConnectionType.ITERATE)))) {
+                                || connec.getLineStyle().equals(EConnectionType.FLOW_REF) || connec.getLineStyle()
+                                .equals(EConnectionType.ITERATE)))) {
                     return false;
                 }
             }
@@ -706,8 +708,8 @@ public class Node extends Element implements INode {
      * @see org.talend.core.model.process.INode#isMultipleMethods(org.talend.core.model.temp.ECodeLanguage)
      */
     public Boolean isMultipleMethods() {
-        ECodeLanguage currentLanguage = ((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY))
-                .getProject().getLanguage();
+        ECodeLanguage currentLanguage = ((RepositoryContext) CorePlugin.getContext().getProperty(
+                Context.REPOSITORY_CONTEXT_KEY)).getProject().getLanguage();
         return component.isMultipleMethods(currentLanguage);
     }
 
@@ -798,7 +800,8 @@ public class Node extends Element implements INode {
                 case TABLE:
                     List<Map<String, String>> tableValues = (List<Map<String, String>>) param.getValue();
                     if (tableValues.size() == 0) {
-                        String errorMessage = "Parameter (" + param.getDisplayName() + ") must have at least one value.";
+                        String errorMessage = "Parameter (" + param.getDisplayName()
+                                + ") must have at least one value.";
                         Problems.add(ProblemStatus.ERROR, this, errorMessage);
                     }
                     break;
@@ -852,7 +855,8 @@ public class Node extends Element implements INode {
             return null;
         }
         if (componentImportNeeds.getStatus() == ModuleNeeded.NOT_INSTALLED && componentImportNeeds.isRequired()) {
-            return new Problem(this, "Module " + componentImportNeeds.getModuleName() + " required", ProblemStatus.ERROR);
+            return new Problem(this, "Module " + componentImportNeeds.getModuleName() + " required",
+                    ProblemStatus.ERROR);
         }
 
         return null;
@@ -1058,7 +1062,7 @@ public class Node extends Element implements INode {
             }
         }
     }
-    
+
     public void checkAndRefreshNode() {
         Problems.clearAll(this);
         checkNode();

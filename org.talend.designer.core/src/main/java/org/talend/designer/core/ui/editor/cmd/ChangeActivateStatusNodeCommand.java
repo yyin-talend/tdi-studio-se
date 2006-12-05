@@ -70,6 +70,7 @@ public class ChangeActivateStatusNodeCommand extends Command {
     public void execute() {
         Process process = (Process) node.getProcess();
         process.setActivate(node, value);
+        process.checkStartNodes();
         process.checkProcess();
         refreshPropertyView();
     }
@@ -77,6 +78,7 @@ public class ChangeActivateStatusNodeCommand extends Command {
     public void undo() {
         Process process = (Process) node.getProcess();
         process.setActivate(node, !value);
+        process.checkStartNodes();
         process.checkProcess();
         refreshPropertyView();
     }
