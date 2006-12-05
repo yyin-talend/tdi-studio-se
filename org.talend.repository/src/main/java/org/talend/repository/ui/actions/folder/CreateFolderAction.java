@@ -67,19 +67,9 @@ public class CreateFolderAction extends AContextualAction {
         ERepositoryObjectType objectType = null;
         IPath path = null;
 
-        switch (node.getType()) {
-        case SIMPLE_FOLDER:
-        case SYSTEM_FOLDER:
-            path = RepositoryNodeUtilities.getPath(node);
-            objectType = (ERepositoryObjectType) node.getProperties(EProperties.CONTENT_TYPE);
-            break;
-        default:
-            return;
-        }
+        path = RepositoryNodeUtilities.getPath(node);
+        objectType = (ERepositoryObjectType) node.getProperties(EProperties.CONTENT_TYPE);
 
-        // InputDialog dialog = new InputDialog(new Shell(), Messages.getString("CreateFolderAction.dialog.title"),
-        // Messages
-        // .getString("CreateFolderAction.dialog.message"), "", null); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         if (objectType != null) {
             NewFolderWizard processWizard = new NewFolderWizard(path, objectType);
             Shell activeShell = Display.getCurrent().getActiveShell();
