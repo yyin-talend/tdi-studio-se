@@ -107,8 +107,10 @@ public class Problems {
         List<String> statusList = new ArrayList<String>();
 
         for (Problem problem : problems.get(status)) {
-            if (problem.getElement().equals(element)) {
-                statusList.add(problem.getDescription());
+            if (problem.getAction() != ProblemAction.DELETED) {
+                if (problem.getElement().equals(element)) {
+                    statusList.add(problem.getDescription());
+                }
             }
         }
         return statusList;
