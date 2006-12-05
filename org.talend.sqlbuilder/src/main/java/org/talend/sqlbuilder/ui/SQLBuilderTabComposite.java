@@ -132,23 +132,22 @@ public class SQLBuilderTabComposite extends Composite {
 			CTabItem[] tabItems = tabFolder.getItems();
 			for (int i = 0; i < tabItems.length; i++) {
 				SQLBuilderEditorComposite editorComposite = (SQLBuilderEditorComposite) tabItems[i]
-				                                                                                 .getControl();
+						.getControl();
 				Query query2 = editorComposite.getConnParam().getQueryObject();
 				if ((RepositoryNodeType) node
 						.getProperties(EProperties.CONTENT_TYPE) == RepositoryNodeType.QUERY) {
-					Query query = ((QueryRepositoryObject) node.getObject()).getQuery();
-					
+					Query query = ((QueryRepositoryObject) node.getObject())
+							.getQuery();
 					if (query2 != null
-							&& query.getComment().equals(query2.getComment())
-							&& query.getLabel().equals(query2.getLabel())
-							&& query.getValue().equals(query2.getValue())) {
+							&& query.getLabel().equals(query2.getLabel())) {
 						tabFolder.setSelection(i);
 						return;
 					}
 					connParam.setQueryObject(query);
 				} else {
 					String queryString = connParam.getQuery();
-					if (editorComposite.getConnParam().getQuery().equals(queryString)) {
+					if (editorComposite.getConnParam().getQuery().equals(
+							queryString)) {
 						tabFolder.setSelection(i);
 						return;
 					}

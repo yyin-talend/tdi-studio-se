@@ -106,11 +106,11 @@ public class OpenNewEditorAction extends SelectionProviderAction {
         RepositoryNode firstNode = (RepositoryNode) selection.getFirstElement();
         if (firstNode.getProperties(EProperties.CONTENT_TYPE) == RepositoryNodeType.FOLDER) {
             firstNode = repositoryNodeManager.getRepositoryNodebyName(connParam.getRepositoryName());
-        } else {
-            firstNode = SQLBuilderRepositoryNodeManager.getRoot(firstNode);
-        }
+        } 
         List<String> repositoryNames = repositoryNodeManager.getALLReposotoryNodeNames();
-        dialog.openEditor(firstNode, repositoryNames, connParam, isDefaultEditor);
+        ConnectionParameters connectionParameters = new ConnectionParameters();
+        connectionParameters.setQuery(connParam.getQuery());
+        dialog.openEditor(firstNode, repositoryNames, connectionParameters, isDefaultEditor);
     }
 
     

@@ -560,16 +560,18 @@ public class SQLBuilderRepositoryNodeManager {
 	 */
 	@SuppressWarnings("unchecked")
 	public RepositoryNode getRepositoryNodeFromDB(RepositoryNode oldNode) {
-		currentNodeLabel = oldNode.getObject().getLabel();
-		DatabaseConnectionItem item = getItem(getRoot(oldNode));
+		if (!isReduction) {
+			currentNodeLabel = oldNode.getObject().getLabel();
+			DatabaseConnectionItem item = getItem(getRoot(oldNode));
 
-		DatabaseConnection connection = (DatabaseConnection) item
-				.getConnection();
-		IMetadataConnection iMetadataConnection = ConvertionHelper
-				.convert(connection);
-		// oldNode.getObject().getProperty().setItem(newItem);
-		modifyOldRepositoryNode(connection, iMetadataConnection);
+			DatabaseConnection connection = (DatabaseConnection) item
+					.getConnection();
+			IMetadataConnection iMetadataConnection = ConvertionHelper
+					.convert(connection);
+			// oldNode.getObject().getProperty().setItem(newItem);
+			modifyOldRepositoryNode(connection, iMetadataConnection);
 
+		}
 		return oldNode;
 	}
 
@@ -1241,4 +1243,3 @@ class MetadataColumnComparator implements Comparator<MetadataColumn> {
         }
     }
 }
-

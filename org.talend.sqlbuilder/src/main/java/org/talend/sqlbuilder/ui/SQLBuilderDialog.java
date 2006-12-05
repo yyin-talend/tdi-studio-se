@@ -463,6 +463,7 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog {
 			public void shellActivated(ShellEvent e) {
 //				System.out.println("shellActivated " + i);
 //				SQLBuilderRepositoryNodeManager.reductionALLRepositoryNode();
+				SQLBuilderRepositoryNodeManager.isReduction = false;
 				SQLBuilderRepositoryNodeManager.increaseALLRepositoryNode();
 				super.shellActivated(e);
 			}
