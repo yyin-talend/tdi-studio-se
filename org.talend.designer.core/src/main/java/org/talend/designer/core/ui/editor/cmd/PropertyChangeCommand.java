@@ -107,19 +107,22 @@ public class PropertyChangeCommand extends Command {
         if (currentParam.getField().equals(EParameterFieldType.CLOSED_LIST)
                 || currentParam.getField().equals(EParameterFieldType.CHECK)) {
             toUpdate = false;
-            for (int i = 0; i < elem.getElementParameters().size() && !toUpdate; i++) {
+            for (int i = 0; i < elem.getElementParameters().size(); i++) {
                 IElementParameter param = elem.getElementParameters().get(i);
 
                 String showIf = param.getShowIf();
                 String notShowIf = param.getNotShowIf();
+                boolean contains = false;
                 if (showIf != null) {
                     if (showIf.contains(currentParam.getName())) {
                         toUpdate = true;
+                        contains = true;
                     }
                 } else {
                     if (notShowIf != null) {
                         if (notShowIf.contains(currentParam.getName())) {
                             toUpdate = true;
+                            contains = true;
                         }
                     }
                 }
@@ -131,11 +134,13 @@ public class PropertyChangeCommand extends Command {
                             if (showIf != null) {
                                 if (showIf.contains(currentParam.getName())) {
                                     toUpdate = true;
+                                    contains = true;
                                 }
                             } else {
                                 if (notShowIf != null) {
                                     if (notShowIf.contains(currentParam.getName())) {
                                         toUpdate = true;
+                                        contains = true;
                                     }
                                 }
                             }
@@ -143,7 +148,7 @@ public class PropertyChangeCommand extends Command {
                     }
                 }
 
-                if (param.getDefaultValues().size() > 0) {
+                if (param.getDefaultValues().size() > 0 && contains) {
                     oldElementValues.put(param, param.getValue());
                     param.setValueToDefault(elem.getElementParameters());
                 }
