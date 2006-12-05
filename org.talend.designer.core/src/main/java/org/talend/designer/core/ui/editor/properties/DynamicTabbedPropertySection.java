@@ -2700,9 +2700,9 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
             } else {
                 showSchemaRepositoryList(false);
             }
-            if (elem instanceof Node) {
-                ((Process) ((Node) elem).getProcess()).checkProcess();
-            }
+//            if (elem instanceof Node) {
+//                ((Process) ((Node) elem).getProcess()).checkProcess();
+//            }
         }
 
         oldPropertyType = (String) elem.getPropertyValue(EParameterName.PROPERTY_TYPE.getName());
@@ -2713,9 +2713,9 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
             } else {
                 showPropertyRepositoryList(false);
             }
-            if (elem instanceof Node) {
-                ((Process) ((Node) elem).getProcess()).checkProcess();
-            }
+//            if (elem instanceof Node) {
+//                ((Process) ((Node) elem).getProcess()).checkProcess();
+//            }
         }
 
         oldProcessType = (String) elem.getPropertyValue(EParameterName.PROCESS_TYPE_PROCESS.getName());
