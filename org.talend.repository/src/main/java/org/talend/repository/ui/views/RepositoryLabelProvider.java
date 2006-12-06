@@ -82,7 +82,10 @@ public class RepositoryLabelProvider extends LabelProvider implements IColorProv
                 ExceptionHandler.process(e);
             }
 
-            string.append(" [" + factory.getStatus(object.getProperty().getItem()) + "]");
+            // PTODO SML [FOLDERS++] temp code
+            if (object.getType() != ERepositoryObjectType.FOLDER) {
+                string.append(" [" + factory.getStatus(object.getProperty().getItem()) + "]");
+            }
 
             return string.toString();
         } else {
@@ -106,8 +109,8 @@ public class RepositoryLabelProvider extends LabelProvider implements IColorProv
                 return ImageProvider.getImage(contentType);
             }
         case SIMPLE_FOLDER:
-             EImage image = (view.getExpandedState(obj) ? EImage.FOLDER_OPEN_ICON : EImage.FOLDER_CLOSE_ICON);
-             return ImageProvider.getImageDesc(image).createImage();
+            EImage image = (view.getExpandedState(obj) ? EImage.FOLDER_OPEN_ICON : EImage.FOLDER_CLOSE_ICON);
+            return ImageProvider.getImageDesc(image).createImage();
         default:
             if (node.getObject().getType() == ERepositoryObjectType.DOCUMENTATION) {
                 DocumentationItem item = (DocumentationItem) node.getObject().getProperty().getItem();
