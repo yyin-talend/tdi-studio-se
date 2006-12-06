@@ -219,9 +219,10 @@ public class HoursMinutesGroup extends Group implements IWidgetEnableListener {
         }
         final Label pmLabel = new Label(this, SWT.NONE);
         pmLabel.setText(Messages.getString("HoursMinutesGroup.pmLabelText")); //$NON-NLS-1$
-        for (; i < 24; i++)
+        for (; i < 24; i++) {
             createButton(String.valueOf(i), String.valueOf(i), new HoursButtonListener(), hoursButtons);
-
+        }
+        
         new Label(this, SWT.NONE);
         new Label(this, SWT.NONE);
         new Label(this, SWT.NONE);

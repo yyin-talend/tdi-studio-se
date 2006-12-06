@@ -110,11 +110,11 @@ public class Processor {
         IPath absContextPath = plProcessor.getPerlProject().getLocation().append(plProcessor.getContextPath());
         String perlLibCtxOption = "-I" + absContextPath.removeLastSegments(1).toOSString(); //$NON-NLS-1$     
         
-        if(watchParam == null)
-        {
-        	return exec(absCodePath, absContextPath, Level.INFO, perlLibOption, perlLibCtxOption, statisticsPort, tracePort);
+        if (watchParam == null) {
+            return exec(absCodePath, absContextPath, Level.INFO, perlLibOption, perlLibCtxOption, statisticsPort, tracePort);
         }
-        return exec(absCodePath, absContextPath, Level.INFO, perlLibOption, perlLibCtxOption, statisticsPort, tracePort, watchParam);
+        return exec(absCodePath, absContextPath, Level.INFO, perlLibOption, perlLibCtxOption, statisticsPort, tracePort,
+                watchParam);
     }
 
     /**
