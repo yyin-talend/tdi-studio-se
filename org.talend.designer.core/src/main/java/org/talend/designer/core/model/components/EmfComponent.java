@@ -521,9 +521,11 @@ public class EmfComponent implements IComponent {
                     param.setValue(new ArrayList<Map<String, Object>>());
                 } else {
                     if (type == EParameterFieldType.SCHEMA_TYPE) {
-                        IMetadataTable defaultTable = node.getMetadataList().get(0);
-                        initializeTableFromXml(defaultTable, xmlParam);
-                        param.setValue(defaultTable);
+                        if (node.getMetadataList().size() > 0) {
+                            IMetadataTable defaultTable = node.getMetadataList().get(0);
+                            initializeTableFromXml(defaultTable, xmlParam);
+                            param.setValue(defaultTable);
+                        }
                     } else {
                         param.setValue("");
                     }
