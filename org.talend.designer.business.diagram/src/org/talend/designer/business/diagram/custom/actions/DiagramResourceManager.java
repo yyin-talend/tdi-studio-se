@@ -96,10 +96,11 @@ public class DiagramResourceManager {
     public void updateResource(BusinessProcessItem businessProcessItem, IFile file) {
         Resource resource = createResource(file);
 
-        EcoreUtil.resolveAll(businessProcessItem.eResource());
+//don't seems to be usefull
+//        EcoreUtil.resolveAll(businessProcessItem.eResource());
 
         resource.getContents().clear();
-        resource.getContents().add(businessProcessItem.getSemantic());
+        resource.getContents().add(EcoreUtil.copy(businessProcessItem.getSemantic()));
         resource.getContents().add(businessProcessItem.getNotation());
 
         try {
