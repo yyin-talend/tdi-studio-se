@@ -23,20 +23,36 @@ package org.talend.designer.mapper.ui.visualmap.table;
 
 import java.util.List;
 
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Table;
+import org.talend.commons.ui.swt.extended.table.AbstractExtendedTableViewer;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumn;
+import org.talend.commons.ui.swt.tableviewer.TableViewerCreator.LAYOUT_MODE;
+import org.talend.commons.ui.swt.tableviewer.behavior.DefaultTableLabelProvider;
+import org.talend.commons.ui.swt.tableviewer.behavior.ITableCellValueModifiedListener;
+import org.talend.commons.ui.swt.tableviewer.behavior.TableCellValueModifiedEvent;
 import org.talend.commons.ui.swt.tableviewer.tableeditor.ButtonPushImageTableEditorContent;
 import org.talend.commons.ui.ws.WindowSystem;
 import org.talend.commons.utils.data.bean.IBeanPropertyAccessors;
 import org.talend.core.ui.images.EImage;
 import org.talend.core.ui.images.ImageProvider;
 import org.talend.designer.mapper.managers.MapperManager;
+import org.talend.designer.mapper.managers.UIManager;
 import org.talend.designer.mapper.model.table.AbstractDataMapTable;
 import org.talend.designer.mapper.model.table.OutputTable;
-import org.talend.designer.mapper.model.tableentry.ConstraintTableEntry;
+import org.talend.designer.mapper.model.tableentry.FilterTableEntry;
 import org.talend.designer.mapper.model.tableentry.ITableEntry;
 import org.talend.designer.mapper.model.tableentry.OutputColumnTableEntry;
+import org.talend.designer.mapper.ui.dnd.DragNDrop;
 import org.talend.designer.mapper.ui.proposal.expression.ExpressionProposal;
 import org.talend.designer.mapper.ui.visualmap.zone.Zone;
 
@@ -55,7 +71,7 @@ public class OutputDataMapTableView extends DataMapTableView {
     }
 
     @Override
-    public void initColumns(final TableViewerCreator tableViewerCreatorForColumns) {
+    public void initColumnsOfTableColumns(final TableViewerCreator tableViewerCreatorForColumns) {
         TableViewerCreatorColumn column = new TableViewerCreatorColumn(tableViewerCreatorForColumns);
         column.setTitle("Expression");
         column.setId(DataMapTableView.ID_EXPRESSION_COLUMN);
@@ -100,71 +116,18 @@ public class OutputDataMapTableView extends DataMapTableView {
      */
     @Override
     protected void initTableFilters() {
-        super.createTableConstraints();
+        createFiltersTable();
 
-        TableViewerCreatorColumn column = new TableViewerCreatorColumn(tableViewerCreatorForConstraints);
-        column.setTitle("Constraint conditions (AND)");
-        column.setId(DataMapTableView.ID_EXPRESSION_COLUMN);
-        column.setBeanPropertyAccessors(new IBeanPropertyAccessors<ConstraintTableEntry, String>() {
-
-            public String get(ConstraintTableEntry bean) {
-                return bean.getExpression();
-            }
-
-            public void set(ConstraintTableEntry bean, String value) {
-                bean.setExpression(value);
-            }
-
-        });
-        column.setModifiable(true);
-        column.setDefaultInternalValue("");
-        createExpressionCellEditor(tableViewerCreatorForConstraints, column, new Zone[] { Zone.INPUTS, Zone.VARS }, true);
-        column.setWeight(99);
-        column.setMoveable(false);
-        column.setResizable(false);
-
-        // Column with remove button
-        column = new TableViewerCreatorColumn(tableViewerCreatorForConstraints);
-        column.setTitle("");
-        column.setDefaultDisplayedValue("");
-        column.setWidth(16);
-        column.setMoveable(false);
-        column.setResizable(false);
-        ButtonPushImageTableEditorContent buttonImage = new ButtonPushImageTableEditorContent() {
-
-            /* (non-Javadoc)
-             * @see org.talend.commons.ui.swt.tableviewer.tableeditor.ButtonImageTableEditorContent#selectionEvent(org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumn, java.lang.Object)
-             */
-            @Override
-            protected void selectionEvent(TableViewerCreatorColumn column, Object bean) {
-                mapperManager.removeTableEntry((ITableEntry) bean);
-                tableViewerCreatorForConstraints.getTableViewer().refresh();
-                List list = tableViewerCreatorForConstraints.getInputList();
-                updateGridDataHeightForTableConstraints();
-                if (list != null && list.size() == 0) {
-                    showTableConstraints(false);
-                } else {
-                    showTableConstraints(true);
-                }
-                
-            }
-            
-        };
-        buttonImage.setImage(ImageProvider.getImage(EImage.MINUS_ICON));
-        column.setTableEditorContent(buttonImage);
-        
-        
-
-        List<ConstraintTableEntry> entries = ((OutputTable) getDataMapTable()).getConstraintEntries();
+        List<FilterTableEntry> entries = ((OutputTable) getDataMapTable()).getFilterEntries();
 
         // correct partially layout problem with GTK when cell editor value is applied
-        tableViewerCreatorForConstraints.setAdjustWidthValue(WindowSystem.isGTK() ? -20 : ADJUST_WIDTH_VALUE);
+        tableViewerCreatorForFilters.setAdjustWidthValue(WindowSystem.isGTK() ? -20 : ADJUST_WIDTH_VALUE);
 
-        tableViewerCreatorForConstraints.init(entries);
+        tableViewerCreatorForFilters.init(entries);
         updateGridDataHeightForTableConstraints();
 
         if (WindowSystem.isGTK()) {
-            tableViewerCreatorForConstraints.layout();
+            tableViewerCreatorForFilters.layout();
         }
     }
 
@@ -180,7 +143,152 @@ public class OutputDataMapTableView extends DataMapTableView {
 //        createToolItems();
         return true;
     }
+    
+    protected void createFiltersTable() {
 
+        this.extendedTableViewerForFilters = new AbstractExtendedTableViewer<FilterTableEntry>(((OutputTable)abstractDataMapTable)
+                .getTableFiltersEntriesModel(), centerComposite) {
+
+            @Override
+            protected void createColumns(TableViewerCreator<FilterTableEntry> tableViewerCreator, Table table) {
+                createFiltersColumns(tableViewerCreator);
+            }
+
+            /*
+             * (non-Javadoc)
+             * 
+             * @see org.talend.commons.ui.swt.extended.macrotable.AbstractExtendedTableViewer#setTableViewerCreatorOptions(org.talend.commons.ui.swt.tableviewer.TableViewerCreator)
+             */
+            @Override
+            protected void setTableViewerCreatorOptions(TableViewerCreator<FilterTableEntry> newTableViewerCreator) {
+                super.setTableViewerCreatorOptions(newTableViewerCreator);
+                newTableViewerCreator.setAllColumnsResizable(true);
+                newTableViewerCreator.setBorderVisible(false);
+                newTableViewerCreator.setLayoutMode(LAYOUT_MODE.FILL_HORIZONTAL);
+                // tableViewerCreatorForColumns.setUseCustomItemColoring(this.getDataMapTable() instanceof
+                // AbstractInOutTable);
+                newTableViewerCreator.setFirstColumnMasked(true);
+
+            }
+            
+            
+        };
+        tableViewerCreatorForFilters = this.extendedTableViewerForFilters.getTableViewerCreator();
+        this.extendedTableViewerForFilters.setCommandStack(mapperManager.getCommandStack());
+
+        tableForConstraints = tableViewerCreatorForFilters.getTable();
+        tableForConstraintsGridData = new GridData(GridData.FILL_HORIZONTAL);
+        tableForConstraints.setLayoutData(tableForConstraintsGridData);
+
+        boolean tableConstraintsVisible = false;
+        if (abstractDataMapTable instanceof OutputTable) {
+            tableConstraintsVisible = ((OutputTable) abstractDataMapTable).getFilterEntries().size() > 0;
+        }
+
+        tableForConstraintsGridData.exclude = !tableConstraintsVisible;
+        tableForConstraints.setVisible(tableConstraintsVisible);
+
+        new DragNDrop(mapperManager, tableForConstraints, false, true);
+
+        tableViewerCreatorForFilters.addCellValueModifiedListener(new ITableCellValueModifiedListener() {
+
+            public void cellValueModified(TableCellValueModifiedEvent e) {
+                unselectAllEntriesIfErrorDetected(e);
+            }
+        });
+
+        final TableViewer tableViewer = tableViewerCreatorForFilters.getTableViewer();
+
+        tableViewer.addSelectionChangedListener(new ISelectionChangedListener() {
+
+            public void selectionChanged(SelectionChangedEvent event) {
+                selectThisDataMapTableView();
+                UIManager uiManager = mapperManager.getUiManager();
+                uiManager.processSelectedMetadataTableEntries(OutputDataMapTableView.this, uiManager.extractSelectedTableEntries(tableViewer
+                        .getSelection()), true);
+            }
+
+        });
+
+        tableForConstraints.addListener(SWT.KeyDown, new Listener() {
+
+            public void handleEvent(Event event) {
+                processEnterKeyDown(tableViewerCreatorForFilters, event);
+            }
+
+        });
+
+        tableViewerCreatorForFilters.setLabelProvider(new DefaultTableLabelProvider(tableViewerCreatorForFilters) {
+
+            @Override
+            public Color getBackground(Object element, int columnIndex) {
+                return getBackgroundCellColor(tableViewerCreator, element, columnIndex);
+            }
+
+            @Override
+            public Color getForeground(Object element, int columnIndex) {
+                return getForegroundCellColor(tableViewerCreator, element, columnIndex);
+            }
+
+        });
+
+        initShowMessageErrorListener(tableForConstraints);
+    }
+
+    public void createFiltersColumns(final TableViewerCreator<FilterTableEntry> tableViewerCreatorForFilters) {
+        TableViewerCreatorColumn column = new TableViewerCreatorColumn(tableViewerCreatorForFilters);
+        column.setTitle("Constraint conditions (AND)");
+        column.setId(DataMapTableView.ID_EXPRESSION_COLUMN);
+        column.setBeanPropertyAccessors(new IBeanPropertyAccessors<FilterTableEntry, String>() {
+
+            public String get(FilterTableEntry bean) {
+                return bean.getExpression();
+            }
+
+            public void set(FilterTableEntry bean, String value) {
+                bean.setExpression(value);
+            }
+
+        });
+        column.setModifiable(true);
+        column.setDefaultInternalValue("");
+        createExpressionCellEditor(tableViewerCreatorForFilters, column, new Zone[] { Zone.INPUTS, Zone.VARS }, true);
+        column.setWeight(99);
+        column.setMoveable(false);
+        column.setResizable(false);
+
+        // Column with remove button
+        column = new TableViewerCreatorColumn(tableViewerCreatorForFilters);
+        column.setTitle("");
+        column.setDefaultDisplayedValue("");
+        column.setWidth(16);
+        column.setMoveable(false);
+        column.setResizable(false);
+        ButtonPushImageTableEditorContent buttonImage = new ButtonPushImageTableEditorContent() {
+
+            /* (non-Javadoc)
+             * @see org.talend.commons.ui.swt.tableviewer.tableeditor.ButtonImageTableEditorContent#selectionEvent(org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumn, java.lang.Object)
+             */
+            @Override
+            protected void selectionEvent(TableViewerCreatorColumn column, Object bean) {
+                mapperManager.removeTableEntry((ITableEntry) bean);
+                tableViewerCreatorForFilters.getTableViewer().refresh();
+                List list = tableViewerCreatorForFilters.getInputList();
+                updateGridDataHeightForTableConstraints();
+                if (list != null && list.size() == 0) {
+                    showTableConstraints(false);
+                } else {
+                    showTableConstraints(true);
+                }
+                
+            }
+            
+        };
+        buttonImage.setImage(ImageProvider.getImage(EImage.MINUS_ICON));
+        column.setTableEditorContent(buttonImage);
+
+    }
+    
     /*
      * (non-Javadoc)
      * 
@@ -193,7 +301,7 @@ public class OutputDataMapTableView extends DataMapTableView {
 
     @Override
     public void unselectAllConstraintEntries() {
-        tableViewerCreatorForConstraints.getSelectionHelper().deselectAll();
+        tableViewerCreatorForFilters.getSelectionHelper().deselectAll();
     }
 
     /* (non-Javadoc)

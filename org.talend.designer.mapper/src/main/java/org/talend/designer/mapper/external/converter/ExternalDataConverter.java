@@ -41,7 +41,7 @@ import org.talend.designer.mapper.model.table.AbstractDataMapTable;
 import org.talend.designer.mapper.model.table.InputTable;
 import org.talend.designer.mapper.model.table.OutputTable;
 import org.talend.designer.mapper.model.table.VarsTable;
-import org.talend.designer.mapper.model.tableentry.ConstraintTableEntry;
+import org.talend.designer.mapper.model.tableentry.FilterTableEntry;
 import org.talend.designer.mapper.model.tableentry.ITableEntry;
 
 /**
@@ -253,7 +253,7 @@ public class ExternalDataConverter {
         externalMapperTable.setReject(table.isReject());
         externalMapperTable.setRejectInnerJoin(table.isRejectInnerJoin());
         ArrayList<ExternalMapperTableEntry> constraintTableEntries = new ArrayList<ExternalMapperTableEntry>();
-        for (ConstraintTableEntry constraintTableEntry : table.getConstraintEntries()) {
+        for (FilterTableEntry constraintTableEntry : table.getFilterEntries()) {
             ExternalMapperTableEntry externalMapperTableEntry = new ExternalMapperTableEntry();
             externalMapperTableEntry.setExpression(constraintTableEntry.getExpression());
             externalMapperTableEntry.setName(constraintTableEntry.getName());

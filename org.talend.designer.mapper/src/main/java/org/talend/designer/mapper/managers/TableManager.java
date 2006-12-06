@@ -77,8 +77,8 @@ public class TableManager {
         }
         getMatchedList(tableData).add(tableData);
         swtTableToView.put(view.getTableViewerCreatorForColumns().getTable(), view);
-        if (view.getTableViewerCreatorForConstraints() != null) {
-            swtTableToView.put(view.getTableViewerCreatorForConstraints().getTable(), view);
+        if (view.getTableViewerCreatorForFilters() != null) {
+            swtTableToView.put(view.getTableViewerCreatorForFilters().getTable(), view);
         }
         abstractDataMapTableToView.put(tableData, view);
     }
@@ -124,8 +124,8 @@ public class TableManager {
         getMatchedList(data).remove(data);
         DataMapTableView view = abstractDataMapTableToView.remove(data);
         swtTableToView.remove(view.getTableViewerCreatorForColumns().getTable());
-        if (view.getTableViewerCreatorForConstraints() != null) {
-            swtTableToView.remove(view.getTableViewerCreatorForConstraints().getTable());
+        if (view.getTableViewerCreatorForFilters() != null) {
+            swtTableToView.remove(view.getTableViewerCreatorForFilters().getTable());
         }
         return view;
     }

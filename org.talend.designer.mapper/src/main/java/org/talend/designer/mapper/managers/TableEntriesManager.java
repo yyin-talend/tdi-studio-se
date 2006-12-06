@@ -28,9 +28,10 @@ import java.util.Map;
 
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
+import org.talend.commons.ui.swt.extended.table.IExtendedControlEventType;
 import org.talend.designer.mapper.model.table.AbstractDataMapTable;
 import org.talend.designer.mapper.model.table.OutputTable;
-import org.talend.designer.mapper.model.tableentry.ConstraintTableEntry;
+import org.talend.designer.mapper.model.tableentry.FilterTableEntry;
 import org.talend.designer.mapper.model.tableentry.IColumnEntry;
 import org.talend.designer.mapper.model.tableentry.ITableEntry;
 import org.talend.designer.mapper.model.tableentry.TableEntryLocation;
@@ -53,6 +54,21 @@ public class TableEntriesManager {
 
     static final int HEIGHT_REACTION = 2;
 
+    /**
+     * 
+     * Event type.
+     * <br/>
+     *
+     * $Id$
+     *
+     */
+    public enum EVENT_TYPE implements IExtendedControlEventType {
+        REMOVE_ALL,
+        REMOVE,
+        ADD,
+        ADD_ALL,
+    };
+    
     TableEntriesManager(MapperManager mapperManager) {
         super();
         this.tableEntries = new HashMap<TableEntryLocation, ITableEntry>();
@@ -66,6 +82,10 @@ public class TableEntriesManager {
             remove(dataMapTableEntry);
         }
 
+//        TableEntriesManagerEvent event = new TableEntriesManagerEvent(EVENT_TYPE.REMOVE_ALL);
+//        event.entries = new ArrayList<ITableEntry>(dataMapTableEntriesGroup);
+//        fireEvent(event);
+        
     }
 
     /**
@@ -77,21 +97,14 @@ public class TableEntriesManager {
         for (ITableEntry dataMapTableEntry : dataMapTableEntriesGroup) {
             add(dataMapTableEntry);
         }
+        
+//        TableEntriesManagerEvent event = new TableEntriesManagerEvent(EVENT_TYPE.ADD_ALL);
+//        event.entries = new ArrayList<ITableEntry>(dataMapTableEntriesGroup);
+//        fireEvent(event);
     }
 
     void addTableEntry(ITableEntry dataMapTableEntry) {
-        if (dataMapTableEntry == null) {
-            throw new IllegalArgumentException("dataMapTableEntry can't be null.");
-        }
-        AbstractDataMapTable dataMapTable = dataMapTableEntry.getParent();
-        if (dataMapTableEntry instanceof IColumnEntry) {
-            dataMapTable.addColumnEntry((IColumnEntry) dataMapTableEntry);
-        } else if (dataMapTableEntry instanceof ConstraintTableEntry) {
-            ((OutputTable) dataMapTable).addConstraintEntry((ConstraintTableEntry) dataMapTableEntry);
-        } else {
-            throw new IllegalArgumentException("Type '" + dataMapTableEntry.getClass() + "' is not a valid type");
-        }
-        add(dataMapTableEntry);
+        addTableEntry(dataMapTableEntry, null);
     }
 
     /**
@@ -100,19 +113,30 @@ public class TableEntriesManager {
      * @param dataMapTableEntry
      * @param index
      */
-    void addTableEntry(ITableEntry dataMapTableEntry, Integer index) {
+    public void addTableEntry(ITableEntry dataMapTableEntry, Integer index) {
         if (dataMapTableEntry == null) {
             throw new IllegalArgumentException("dataMapTableEntry can't be null.");
         }
+        add(dataMapTableEntry);
         AbstractDataMapTable dataMapTable = dataMapTableEntry.getParent();
         if (dataMapTableEntry instanceof IColumnEntry) {
-            dataMapTable.addColumnEntry((IColumnEntry) dataMapTableEntry, index);
-        } else if (dataMapTableEntry instanceof ConstraintTableEntry) {
-            ((OutputTable) dataMapTable).addConstraintEntry((ConstraintTableEntry) dataMapTableEntry, index);
+            if (index == null) {
+                dataMapTable.addColumnEntry((IColumnEntry) dataMapTableEntry);
+            } else {
+                dataMapTable.addColumnEntry((IColumnEntry) dataMapTableEntry, index);
+            }
+        } else if (dataMapTableEntry instanceof FilterTableEntry) {
+            if (index == null) {
+                ((OutputTable) dataMapTable).addFilterEntry((FilterTableEntry) dataMapTableEntry);
+            } else {
+                ((OutputTable) dataMapTable).addFilterEntry((FilterTableEntry) dataMapTableEntry, index);
+            }
         } else {
             throw new IllegalArgumentException("Type '" + dataMapTableEntry.getClass() + "' is not a valid type");
         }
-        add(dataMapTableEntry);
+//        TableEntriesManagerEvent event = new TableEntriesManagerEvent(EVENT_TYPE.ADD);
+//        event.entry = dataMapTableEntry;
+//        fireEvent(event);
     }
 
     /**
@@ -122,10 +146,9 @@ public class TableEntriesManager {
      */
     private void add(ITableEntry dataMapTableEntry) {
         tableEntries.put(TableEntryLocation.getNewInstance(dataMapTableEntry), dataMapTableEntry);
-        mapperManager.getUiManager().parseExpression(dataMapTableEntry.getExpression(), dataMapTableEntry, false, false, false);
     }
 
-    void remove(ITableEntry dataMapTableEntry) {
+    public void remove(ITableEntry dataMapTableEntry) {
         if (dataMapTableEntry != null) {
             mapperManager.removeLinksOf(dataMapTableEntry);
             tableEntries.remove(TableEntriesManager.buildLocation(dataMapTableEntry));
@@ -133,9 +156,9 @@ public class TableEntriesManager {
             AbstractDataMapTable dataMapTable = dataMapTableEntry.getParent();
             if (dataMapTableEntry instanceof IColumnEntry) {
                 dataMapTableEntry.getParent().removeColumnEntry((IColumnEntry) dataMapTableEntry);
-            } else if (dataMapTableEntry instanceof ConstraintTableEntry) {
+            } else if (dataMapTableEntry instanceof FilterTableEntry) {
                 if (dataMapTable instanceof OutputTable) {
-                    ((OutputTable) dataMapTable).removeConstraintEntry((ConstraintTableEntry) dataMapTableEntry);
+                    ((OutputTable) dataMapTable).removeConstraintEntry((FilterTableEntry) dataMapTableEntry);
                 }
             } else {
                 throw new IllegalArgumentException("Type '" + dataMapTableEntry.getClass() + "' is not a valid type");
@@ -173,8 +196,8 @@ public class TableEntriesManager {
         TableItem[] tableItems = new TableItem[0];
         if (dataMapTableEntry instanceof IColumnEntry) {
             tableItems = dataMapTableView.getTableViewerCreatorForColumns().getTable().getItems();
-        } else if (dataMapTableEntry instanceof ConstraintTableEntry) {
-            tableItems = dataMapTableView.getTableViewerCreatorForConstraints().getTable().getItems();
+        } else if (dataMapTableEntry instanceof FilterTableEntry) {
+            tableItems = dataMapTableView.getTableViewerCreatorForFilters().getTable().getItems();
         } else {
             throw new IllegalArgumentException("case not found");
         }
@@ -204,11 +227,11 @@ public class TableEntriesManager {
      * 
      * @param dataMapTableEntry
      * @param newColumnName
-     * @param newColumnName 
+     * @param newColumnName
      */
     public void renameEntryName(ITableEntry dataMapTableEntry, String previousColumnName, String newColumnName) {
         TableEntryLocation tableEntryLocationKey = new TableEntryLocation(dataMapTableEntry.getParentName(), previousColumnName);
-//            TableEntriesManager.buildLocation(dataMapTableEntry);
+        // TableEntriesManager.buildLocation(dataMapTableEntry);
         ITableEntry entry = tableEntries.get(tableEntryLocationKey);
         if (entry != dataMapTableEntry) {
             throw new IllegalStateException("tableEntries are not the same !");
@@ -223,4 +246,26 @@ public class TableEntriesManager {
         return new TableEntryLocation(dataMapTableEntry.getParentName(), dataMapTableEntry.getName());
     }
 
+    /**
+     * 
+     * Event for TableEntriesManager.
+     * <br/>
+     *
+     * $Id$
+     *
+     */
+//    public class TableEntriesManagerEvent extends ExtendedModelEvent {
+//
+//        /**
+//         * DOC amaumont TableEntriesManagerEvent constructor comment.
+//         * @param type
+//         */
+//        public TableEntriesManagerEvent(IExtendedControlEventType type) {
+//            super(type);
+//        }
+//
+//        public ITableEntry entry;
+//        public List<ITableEntry> entries;
+//        
+//    }
 }

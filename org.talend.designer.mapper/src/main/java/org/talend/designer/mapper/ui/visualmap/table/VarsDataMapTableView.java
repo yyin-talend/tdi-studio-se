@@ -67,7 +67,7 @@ public class VarsDataMapTableView extends DataMapTableView {
     }
 
     @Override
-    public void initColumns(final TableViewerCreator tableViewerCreatorForColumns) {
+    public void initColumnsOfTableColumns(final TableViewerCreator tableViewerCreatorForColumns) {
         TableViewerCreatorColumn column = new TableViewerCreatorColumn(tableViewerCreatorForColumns);
         column.setTitle("Expression");
         column.setId(DataMapTableView.ID_EXPRESSION_COLUMN);

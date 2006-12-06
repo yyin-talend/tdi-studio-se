@@ -24,6 +24,7 @@ package org.talend.designer.mapper.model.table;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.talend.commons.ui.swt.extended.table.ExtendedTableModel;
 import org.talend.designer.mapper.external.data.ExternalMapperTable;
 import org.talend.designer.mapper.model.tableentry.IColumnEntry;
 
@@ -41,6 +42,8 @@ public abstract class AbstractDataMapTable {
 
     private String name;
 
+    private ExtendedTableModel<IColumnEntry> tableColumnsEntriesModel;
+
     /**
      * DOC amaumont DataMapTable constructor comment.
      * 
@@ -55,6 +58,9 @@ public abstract class AbstractDataMapTable {
             throw new IllegalArgumentException("Name's AbstractDataMapTable can't be null");
         }
         initFromExternalData(persistentTable);
+        this.tableColumnsEntriesModel = new ExtendedTableModel<IColumnEntry>(name + " : model for Columns", dataMapTableEntries);
+        
+        
     }
 
     /**
@@ -80,19 +86,19 @@ public abstract class AbstractDataMapTable {
      * @return a <code>List</code> of entries.
      */
     public List<IColumnEntry> getColumnEntries() {
-        return this.dataMapTableEntries;
+        return this.tableColumnsEntriesModel.getBeansList();
     }
 
     public void removeColumnEntry(IColumnEntry dataMapTableEntry) {
-        this.dataMapTableEntries.remove(dataMapTableEntry);
+        this.tableColumnsEntriesModel.remove(dataMapTableEntry);
     }
 
     public void addColumnEntry(IColumnEntry dataMapTableEntry) {
-        this.dataMapTableEntries.add(dataMapTableEntry);
+        this.tableColumnsEntriesModel.add(dataMapTableEntry);
     }
 
     public void addColumnEntry(IColumnEntry dataMapTableEntry, int index) {
-        this.dataMapTableEntries.add(index, dataMapTableEntry);
+        this.tableColumnsEntriesModel.add(dataMapTableEntry, index);
     }
 
     public String getName() {
@@ -108,31 +114,23 @@ public abstract class AbstractDataMapTable {
     }
 
     /**
-     * DOC amaumont Comment method "swapEntries".
-     * 
-     * @param integer2
-     * @param integer
+     * Getter for columnsEntriesModel.
+     * @return the columnsEntriesModel
      */
-    public void swapColumnEntries(List<Integer> indexOrigin, List<Integer> indexDestination) {
-        int lstSize = indexOrigin.size();
-        for (int i = 0; i < lstSize; i++) {
-            swapColumnEntries(indexOrigin.get(i), indexDestination.get(i));
-        }
+    public ExtendedTableModel<IColumnEntry> getTableColumnsEntriesModel() {
+        return this.tableColumnsEntriesModel;
     }
+
 
     /**
-     * DOC amaumont Comment method "swapEntries".
-     * 
-     * @param integer2
-     * @param integer
+     * DOC amaumont Comment method "swapElements".
+     * @param indicesOrigin
+     * @param listIndexTarget
      */
-    private void swapColumnEntries(int index1, int index2) {
-        if (index1 == index2) {
-            return;
-        }
-        IColumnEntry temp = dataMapTableEntries.get(index1);
-        dataMapTableEntries.set(index1, dataMapTableEntries.get(index2));
-        dataMapTableEntries.set(index2, temp);
+    public void swapColumnElements(List indicesOrigin, List<Integer> listIndexTarget) {
+        this.tableColumnsEntriesModel.swapElements(listIndexTarget, listIndexTarget);
     }
 
+
+    
 }

@@ -30,7 +30,7 @@ import org.talend.commons.ui.swt.drawing.link.IDrawableLink;
 import org.talend.commons.ui.swt.drawing.link.IStyleLink;
 import org.talend.commons.ui.swt.drawing.link.StyleLink;
 import org.talend.commons.ui.swt.drawing.link.VerticalRoundedCornerLink;
-import org.talend.designer.mapper.model.tableentry.ConstraintTableEntry;
+import org.talend.designer.mapper.model.tableentry.FilterTableEntry;
 import org.talend.designer.mapper.model.tableentry.ITableEntry;
 import org.talend.designer.mapper.ui.color.ColorInfo;
 import org.talend.designer.mapper.ui.color.ColorProviderMapper;
@@ -105,7 +105,7 @@ public class StyleLinkFactory {
         ITableEntry targetTableEntry = pointLinkDescriptorTarget.getTableEntry();
 
         boolean targetIsConstraint = false;
-        if (targetTableEntry instanceof ConstraintTableEntry) {
+        if (targetTableEntry instanceof FilterTableEntry) {
             targetIsConstraint = true;
         }
 

@@ -55,7 +55,6 @@ import org.eclipse.swt.widgets.Shell;
 import org.talend.commons.ui.command.CommandStackForComposite;
 import org.talend.commons.ui.swt.drawing.background.BackgroundRefresher;
 import org.talend.commons.ui.ws.WindowSystem;
-import org.talend.commons.utils.performance.PerformanceEvaluator;
 import org.talend.commons.utils.threading.AsynchronousThreading;
 import org.talend.commons.utils.threading.ExecutionLimiter;
 import org.talend.designer.mapper.external.data.ExternalMapperUiProperties;
@@ -168,8 +167,6 @@ public class MapperUI {
 
     private MapperBackgroundRefresher backgroundRefresher;
 
-    private CommandStackForComposite commandStack;
-
     public MapperUI(Composite parent, MapperManager mapperManager) {
         super();
         this.mapperManager = mapperManager;
@@ -180,7 +177,8 @@ public class MapperUI {
     public void init(MapperModel mapperModel) {
         // long time1 = System.currentTimeMillis();
 
-//        this.commandStack = new CommandStackForComposite(this.mapperUIParent);
+        CommandStack commandStack = new CommandStackForComposite(this.mapperUIParent);
+        mapperManager.setCommandStack(commandStack);
         
         final UIManager uiManager = mapperManager.getUiManager();
         final ExternalMapperUiProperties uiProperties = uiManager.getUiProperties();
@@ -236,6 +234,8 @@ public class MapperUI {
 
         createOutputZoneWithTables(mapperModel, uiManager, display);
 
+        uiManager.parseAllExpressionsForAllTables();
+        
         this.draggingInfosPopup = DraggingInfosPopup.getNewShell(this.mapperUIParent.getShell());
 
         configureZoneScrollBars(display);
@@ -255,9 +255,9 @@ public class MapperUI {
         	new AsynchronousThreading(1000, false, display, new Runnable() {
 
 				public void run() {
-					resizeNotMinimizedTablesAtExpandedSize(display);
+            resizeNotMinimizedTablesAtExpandedSize(display);
 					mapperUIParent.getShell().layout();
-				}
+        }
         		
         	}).start();
         }
@@ -879,16 +879,6 @@ public class MapperUI {
     public OutputsZone getOutputsZone() {
         return this.outputsZone;
     }
-
-    
-    /**
-     * Getter for commandStack.
-     * @return the commandStack
-     */
-    public CommandStack getCommandStack() {
-        return this.commandStack;
-    }
-
     
     
 }

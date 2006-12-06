@@ -320,7 +320,7 @@ public class DropContextAnalyzer {
         if (target.getZone() != Zone.OUTPUTS) {
             return false;
         }
-        return currentTableTarget == target.getTableViewerCreatorForConstraints().getTable();
+        return currentTableTarget == target.getTableViewerCreatorForFilters().getTable();
     }
 
     public boolean targetTableIsConstraintsTable() {

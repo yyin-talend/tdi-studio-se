@@ -88,7 +88,7 @@ public class TabFolderEditors extends CTabFolder {
         inOutMetaEditorContainer.setLayout(new RowLayout(SWT.HORIZONTAL));
         item.setControl(inOutMetaEditorContainer);
 
-        CommandStack commandStack = mapperManager.getUiManager().getCommandStack();
+        CommandStack commandStack = mapperManager.getCommandStack();
         
         inputMetaEditor = new MetadataTableEditorView(inOutMetaEditorContainer, SWT.BORDER);
         inputMetaEditor.getExtendedTableViewer().setCommandStack(commandStack);

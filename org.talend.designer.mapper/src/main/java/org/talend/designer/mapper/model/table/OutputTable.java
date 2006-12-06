@@ -24,12 +24,13 @@ package org.talend.designer.mapper.model.table;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.talend.commons.ui.swt.extended.table.ExtendedTableModel;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.designer.mapper.external.data.ExternalMapperTable;
 import org.talend.designer.mapper.external.data.ExternalMapperTableEntry;
 import org.talend.designer.mapper.model.tableentry.AbstractInOutTableEntry;
-import org.talend.designer.mapper.model.tableentry.ConstraintTableEntry;
+import org.talend.designer.mapper.model.tableentry.FilterTableEntry;
 import org.talend.designer.mapper.model.tableentry.OutputColumnTableEntry;
 
 /**
@@ -40,14 +41,17 @@ import org.talend.designer.mapper.model.tableentry.OutputColumnTableEntry;
  */
 public class OutputTable extends AbstractInOutTable {
 
-    protected List<ConstraintTableEntry> constraintTableEntries = new ArrayList<ConstraintTableEntry>(0);
+    protected List<FilterTableEntry> filterTableEntries = new ArrayList<FilterTableEntry>(0);
 
     private boolean reject;
     
     private boolean rejectInnerJoin;
 
+    private ExtendedTableModel<FilterTableEntry> tableFiltersEntriesModel;
+
     public OutputTable(IMetadataTable metadataTable, ExternalMapperTable externalMapperTable, String name) {
         super(metadataTable, externalMapperTable, name);
+        this.tableFiltersEntriesModel = new ExtendedTableModel<FilterTableEntry>(name + " : model for Filters", filterTableEntries);
         initFromExternalData(externalMapperTable);
     }
 
@@ -58,7 +62,7 @@ public class OutputTable extends AbstractInOutTable {
             List<ExternalMapperTableEntry> externalConstraintTableEntries = externalMapperTable.getConstraintTableEntries();
             if (externalConstraintTableEntries != null) {
                 for (ExternalMapperTableEntry entry : externalConstraintTableEntries) {
-                    addConstraintEntry(new ConstraintTableEntry(this, entry.getName(), entry.getExpression()));
+                    addFilterEntry(new FilterTableEntry(this, entry.getName(), entry.getExpression()));
                 }
             }
         }
@@ -77,20 +81,20 @@ public class OutputTable extends AbstractInOutTable {
         this.reject = reject;
     }
 
-    public void addConstraintEntry(ConstraintTableEntry constraintTableEntry) {
-        this.constraintTableEntries.add(constraintTableEntry);
+    public void addFilterEntry(FilterTableEntry constraintTableEntry) {
+        this.tableFiltersEntriesModel.add(constraintTableEntry);
     }
 
-    public void addConstraintEntry(ConstraintTableEntry constraintTableEntry, Integer index) {
-        this.constraintTableEntries.add(index, constraintTableEntry);
+    public void addFilterEntry(FilterTableEntry constraintTableEntry, Integer index) {
+        this.tableFiltersEntriesModel.add(constraintTableEntry, index);
     }
 
-    public void removeConstraintEntry(ConstraintTableEntry constraintTableEntry) {
-        this.constraintTableEntries.remove(constraintTableEntry);
+    public void removeConstraintEntry(FilterTableEntry constraintTableEntry) {
+        this.tableFiltersEntriesModel.remove(constraintTableEntry);
     }
 
-    public List<ConstraintTableEntry> getConstraintEntries() {
-        return this.constraintTableEntries;
+    public List<FilterTableEntry> getFilterEntries() {
+        return this.tableFiltersEntriesModel.getBeansList();
     }
 
     /**
@@ -107,6 +111,15 @@ public class OutputTable extends AbstractInOutTable {
      */
     public void setRejectInnerJoin(boolean rejectInnerJoin) {
         this.rejectInnerJoin = rejectInnerJoin;
+    }
+
+    
+    /**
+     * Getter for tableFiltersEntriesModel.
+     * @return the tableFiltersEntriesModel
+     */
+    public ExtendedTableModel<FilterTableEntry> getTableFiltersEntriesModel() {
+        return this.tableFiltersEntriesModel;
     }
 
     

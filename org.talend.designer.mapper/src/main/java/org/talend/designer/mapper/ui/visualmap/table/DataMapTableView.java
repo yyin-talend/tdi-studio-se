@@ -21,8 +21,6 @@
 // ============================================================================
 package org.talend.designer.mapper.ui.visualmap.table;
 
-import java.util.List;
-
 import org.eclipse.jface.fieldassist.IContentProposalProvider;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ICellEditorListener;
@@ -52,10 +50,7 @@ import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.graphics.ImageData;
-import org.eclipse.swt.graphics.PaletteData;
 import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.GridData;
@@ -72,11 +67,11 @@ import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
-import org.talend.commons.ui.swt.advanced.dataeditor.AbstractDataTableEditorView;
 import org.talend.commons.ui.swt.extended.table.AbstractExtendedTableViewer;
-import org.talend.commons.ui.swt.extended.table.ExtendedTableModel;
 import org.talend.commons.ui.swt.proposal.ContentProposalAdapterExtended;
 import org.talend.commons.ui.swt.proposal.TextCellEditorWithProposal;
+import org.talend.commons.ui.swt.tableviewer.IModifiedBeanListener;
+import org.talend.commons.ui.swt.tableviewer.ModifiedBeanEvent;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumn;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator.LAYOUT_MODE;
@@ -89,6 +84,7 @@ import org.talend.commons.ui.swt.tableviewer.selection.ILineSelectionListener;
 import org.talend.commons.ui.swt.tableviewer.selection.LineSelectionEvent;
 import org.talend.commons.ui.utils.TableUtils;
 import org.talend.commons.ui.ws.WindowSystem;
+import org.talend.commons.utils.data.list.IListenableListListener;
 import org.talend.commons.utils.data.list.ListenableListEvent;
 import org.talend.commons.utils.threading.AsynchronousThreading;
 import org.talend.commons.utils.threading.ExecutionLimiter;
@@ -102,7 +98,7 @@ import org.talend.designer.mapper.model.table.AbstractInOutTable;
 import org.talend.designer.mapper.model.table.OutputTable;
 import org.talend.designer.mapper.model.table.VarsTable;
 import org.talend.designer.mapper.model.tableentry.AbstractInOutTableEntry;
-import org.talend.designer.mapper.model.tableentry.ConstraintTableEntry;
+import org.talend.designer.mapper.model.tableentry.FilterTableEntry;
 import org.talend.designer.mapper.model.tableentry.IColumnEntry;
 import org.talend.designer.mapper.model.tableentry.ITableEntry;
 import org.talend.designer.mapper.ui.color.ColorInfo;
@@ -148,13 +144,11 @@ public abstract class DataMapTableView extends Composite {
 
     protected Layout parentLayout;
 
-    protected TableViewerCreator tableViewerCreatorForConstraints;
+    protected TableViewerCreator tableViewerCreatorForFilters;
 
     protected Table tableForConstraints;
 
     private boolean executeSelectionEvent = true;
-
-    private GridData tableForConstraintsGridData;
 
     protected ToolBar toolBarActions;
 
@@ -162,7 +156,7 @@ public abstract class DataMapTableView extends Composite {
 
     protected Point expressionEditorTextSelectionBeforeFocusLost;
 
-    private Composite centerComposite;
+    protected Composite centerComposite;
 
     private Text columnExpressionTextEditor;
 
@@ -180,7 +174,9 @@ public abstract class DataMapTableView extends Composite {
 
     protected boolean forceExecuteSelectionEvent;
 
-    private AbstractExtendedTableViewer<ITableEntry> extendedTableViewerForColumns;
+    private AbstractExtendedTableViewer<IColumnEntry> extendedTableViewerForColumns;
+
+    protected AbstractExtendedTableViewer<FilterTableEntry> extendedTableViewerForFilters;
 
     private static Image imageKey;
 
@@ -207,6 +203,9 @@ public abstract class DataMapTableView extends Composite {
     public static final String ID_EXPRESSION_COLUMN = "ID_EXPRESSION_COLUMN";
 
     public static final String COLUMN_NAME = "Column";
+
+    protected GridData tableForConstraintsGridData;
+
 
     /**
      * 
@@ -325,15 +324,6 @@ public abstract class DataMapTableView extends Composite {
 
         new DragNDrop(mapperManager, tableForEntries, true, true);
 
-//        initColumns(this.extendedTableViewerForColumns.getTableViewerCreator());
-
-        ExtendedTableModel<ITableEntry> modelColumns = new ExtendedTableModel<ITableEntry>(abstractDataMapTable.getName());
-        modelColumns.registerDataList((List)abstractDataMapTable.getColumnEntries());
-        
-        this.extendedTableViewerForColumns.setExtendedControlModel(modelColumns);
-        
-//        tableViewerCreatorForColumns.init(abstractDataMapTable.getColumnEntries());
-
         Composite footerComposite = new Composite(this, SWT.NONE);
         GridData footerGridData = new GridData(10, 2);
         footerComposite.setLayoutData(footerGridData);
@@ -353,11 +343,12 @@ public abstract class DataMapTableView extends Composite {
      * DOC amaumont Comment method "createTableForColumns".
      */
     private void createTableForColumns() {
-        this.extendedTableViewerForColumns = new AbstractExtendedTableViewer<ITableEntry>(centerComposite) {
+        this.extendedTableViewerForColumns = new AbstractExtendedTableViewer<IColumnEntry>(abstractDataMapTable
+                .getTableColumnsEntriesModel(), centerComposite) {
 
             @Override
-            protected void createColumns(TableViewerCreator<ITableEntry> tableViewerCreator, Table table) {
-                initColumns(tableViewerCreator);
+            protected void createColumns(TableViewerCreator<IColumnEntry> tableViewerCreator, Table table) {
+                initColumnsOfTableColumns(tableViewerCreator);
             }
 
             /*
@@ -366,77 +357,73 @@ public abstract class DataMapTableView extends Composite {
              * @see org.talend.commons.ui.swt.extended.macrotable.AbstractExtendedTableViewer#setTableViewerCreatorOptions(org.talend.commons.ui.swt.tableviewer.TableViewerCreator)
              */
             @Override
-            protected void setTableViewerCreatorOptions(TableViewerCreator<ITableEntry> newTableViewerCreator) {
+            protected void setTableViewerCreatorOptions(final TableViewerCreator<IColumnEntry> newTableViewerCreator) {
                 super.setTableViewerCreatorOptions(newTableViewerCreator);
                 newTableViewerCreator.setAllColumnsResizable(true);
                 newTableViewerCreator.setBorderVisible(false);
                 newTableViewerCreator.setLayoutMode(LAYOUT_MODE.FILL_HORIZONTAL);
-//                tableViewerCreatorForColumns.setUseCustomItemColoring(this.getDataMapTable() instanceof AbstractInOutTable);
+                // tableViewerCreatorForColumns.setUseCustomItemColoring(this.getDataMapTable() instanceof
+                // AbstractInOutTable);
                 newTableViewerCreator.setFirstColumnMasked(true);
                 
-            }
-
-        };
-        tableViewerCreatorForColumns = this.extendedTableViewerForColumns.getTableViewerCreator();
-        this.extendedTableViewerForColumns.setCommandStack(mapperManager.getUiManager().getCommandStack());
-        
-        
-//        tableViewerCreatorForColumns = new TableViewerCreator(centerComposite);
-//        tableViewerCreatorForColumns.setAllColumnsResizable(true);
-//        tableViewerCreatorForColumns.setBorderVisible(false);
-//        tableViewerCreatorForColumns.setLayoutMode(LAYOUT_MODE.FILL_HORIZONTAL);
-////        tableViewerCreatorForColumns.setUseCustomItemColoring(this.getDataMapTable() instanceof AbstractInOutTable);
-//        tableViewerCreatorForColumns.setFirstColumnMasked(true);
-
-        if (getDataMapTable() instanceof AbstractInOutTable) {
-
-            if (imageKey == null) {
-                imageKey = org.talend.core.ui.images.ImageProvider.getImage(EImage.KEY_ICON);
-            }
-            if (imageEmpty == null) {
-                imageEmpty = org.talend.core.ui.images.ImageProvider.getImage(EImage.EMPTY);
-            }
-        }
-        tableViewerCreatorForColumns.setLabelProvider(new DefaultTableLabelProvider(tableViewerCreatorForColumns) {
-
-            @Override
-            public Color getBackground(Object element, int columnIndex) {
-                return getBackgroundCellColor(tableViewerCreator, element, columnIndex);
-            }
-
-            @Override
-            public Color getForeground(Object element, int columnIndex) {
-                return getForegroundCellColor(tableViewerCreator, element, columnIndex);
-            }
-
-            @Override
-            public Image getColumnImage(Object element, int columnIndex) {
-                return getColumnImageExecute(element, columnIndex);
-            }
-
-            /**
-             * DOC amaumont Comment method "getColumnImageExecute".
-             * 
-             * @param element
-             * @param columnIndex
-             * @return
-             */
-            private Image getColumnImageExecute(Object element, int columnIndex) {
                 if (getDataMapTable() instanceof AbstractInOutTable) {
-                    AbstractInOutTableEntry entry = (AbstractInOutTableEntry) element;
-                    TableViewerCreatorColumn column = (TableViewerCreatorColumn) tableViewerCreatorForColumns.getColumns().get(columnIndex);
-                    if (column.getId().equals(ID_NAME_COLUMN)) {
-                        if (entry.getMetadataColumn().isKey()) {
-                            return imageKey;
-                        } else {
-                            return imageEmpty;
-                        }
+
+                    if (imageKey == null) {
+                        imageKey = org.talend.core.ui.images.ImageProvider.getImage(EImage.KEY_ICON);
+                    }
+                    if (imageEmpty == null) {
+                        imageEmpty = org.talend.core.ui.images.ImageProvider.getImage(EImage.EMPTY);
                     }
                 }
-                return null;
-            }
+                newTableViewerCreator.setLabelProvider(new DefaultTableLabelProvider(newTableViewerCreator) {
 
-        });
+                    @Override
+                    public Color getBackground(Object element, int columnIndex) {
+                        return getBackgroundCellColor(newTableViewerCreator, element, columnIndex);
+                    }
+
+                    @Override
+                    public Color getForeground(Object element, int columnIndex) {
+                        return getForegroundCellColor(newTableViewerCreator, element, columnIndex);
+                    }
+
+                    @Override
+                    public Image getColumnImage(Object element, int columnIndex) {
+                        return getColumnImageExecute(element, columnIndex);
+                    }
+
+                    /**
+                     * DOC amaumont Comment method "getColumnImageExecute".
+                     * 
+                     * @param element
+                     * @param columnIndex
+                     * @return
+                     */
+                    private Image getColumnImageExecute(Object element, int columnIndex) {
+                        if (getDataMapTable() instanceof AbstractInOutTable) {
+                            AbstractInOutTableEntry entry = (AbstractInOutTableEntry) element;
+                            TableViewerCreatorColumn column = (TableViewerCreatorColumn) newTableViewerCreator.getColumns().get(columnIndex);
+                            if (column.getId().equals(ID_NAME_COLUMN)) {
+                                if (entry.getMetadataColumn().isKey()) {
+                                    return imageKey;
+                                } else {
+                                    return imageEmpty;
+                                }
+                            }
+                        }
+                        return null;
+                    }
+
+                });
+
+
+            }
+            
+            
+        };
+        tableViewerCreatorForColumns = this.extendedTableViewerForColumns.getTableViewerCreator();
+        this.extendedTableViewerForColumns.setCommandStack(mapperManager.getCommandStack());
+
 
         tableForEntries = tableViewerCreatorForColumns.getTable();
 
@@ -492,6 +479,50 @@ public abstract class DataMapTableView extends Composite {
             }
 
         });
+
+        abstractDataMapTable.getTableColumnsEntriesModel().addAfterOperationListListener(new IListenableListListener<IColumnEntry>() {
+
+            public void handleEvent(ListenableListEvent<IColumnEntry> event) {
+
+//                if (event.type == ListenableListEvent.TYPE.ADDED) {
+//                    // mapperManager.getUiManager().parseAllExpressions(tableViewerForEntries)
+//                    Collection<IColumnEntry> addedObjects = event.addedObjects;
+//                    for (IColumnEntry entry : addedObjects) {
+//                        mapperManager.getUiManager().parseExpression(entry.getExpression(), entry, false, false, false);
+//                    }
+//                }
+
+            }
+
+        });
+
+        abstractDataMapTable.getTableColumnsEntriesModel().addModifiedBeanListener(new IModifiedBeanListener<IColumnEntry>() {
+
+            public void handleEvent(ModifiedBeanEvent<IColumnEntry> event) {
+
+                TableViewerCreator tableViewerCreator = tableViewerCreatorForColumns;
+                ITableEntry tableEntry = event.bean;
+
+                parseExpression(event, tableViewerCreator, tableEntry);
+            }
+
+        });
+
+        if (abstractDataMapTable instanceof OutputTable) {
+            OutputTable outputTable = (OutputTable) abstractDataMapTable;
+            outputTable.getTableFiltersEntriesModel().addModifiedBeanListener(new IModifiedBeanListener<FilterTableEntry>() {
+
+                public void handleEvent(ModifiedBeanEvent<FilterTableEntry> event) {
+
+                    TableViewerCreator tableViewerCreator = tableViewerCreatorForFilters;
+                    ITableEntry tableEntry = event.bean;
+
+                    parseExpression(event, tableViewerCreator, tableEntry);
+                }
+
+            });
+        }
+
     }
 
     /**
@@ -499,7 +530,7 @@ public abstract class DataMapTableView extends Composite {
      * 
      * @param table
      */
-    private void initShowMessageErrorListener(final Table table) {
+    protected void initShowMessageErrorListener(final Table table) {
         showErrorMessageListener = new Listener() {
 
             public void handleEvent(Event event) {
@@ -772,7 +803,7 @@ public abstract class DataMapTableView extends Composite {
             tableForConstraintsGridData.exclude = true;
             tableForConstraints.setVisible(false);
         }
-        tableViewerCreatorForConstraints.getTableViewer().refresh();
+        tableViewerCreatorForFilters.getTableViewer().refresh();
         resizeAtExpandedSize();
     }
 
@@ -786,14 +817,14 @@ public abstract class DataMapTableView extends Composite {
     /**
      * DOC amaumont Comment method "initClumns".
      */
-    public abstract void initColumns(TableViewerCreator tableViewerCreator);
+    public abstract void initColumnsOfTableColumns(TableViewerCreator tableViewerCreator);
 
     public TableViewerCreator getTableViewerCreatorForColumns() {
         return this.tableViewerCreatorForColumns;
     }
 
-    public TableViewerCreator getTableViewerCreatorForConstraints() {
-        return this.tableViewerCreatorForConstraints;
+    public TableViewerCreator getTableViewerCreatorForFilters() {
+        return this.tableViewerCreatorForFilters;
     }
 
     public Point convertToParentOrigin(Composite child, Point point) {
@@ -854,80 +885,6 @@ public abstract class DataMapTableView extends Composite {
         // dataMapTableView.layout(true, true);
     }
 
-    protected void createTableConstraints() {
-        tableViewerCreatorForConstraints = new TableViewerCreator(centerComposite);
-        tableViewerCreatorForConstraints.setAllColumnsResizable(false);
-        tableViewerCreatorForConstraints.setBorderVisible(false);
-        tableViewerCreatorForConstraints.setLayoutMode(LAYOUT_MODE.FILL_HORIZONTAL);
-        // tableViewerCreatorForConstraints.setAdjustWidthValue(ADJUST_WIDTH_VALUE);
-        tableViewerCreatorForConstraints.setFirstColumnMasked(true);
-
-        tableForConstraints = tableViewerCreatorForConstraints.createTable();
-        tableForConstraintsGridData = new GridData(GridData.FILL_HORIZONTAL);
-        tableForConstraints.setLayoutData(tableForConstraintsGridData);
-
-        boolean tableConstraintsVisible = false;
-        if (abstractDataMapTable instanceof OutputTable) {
-            tableConstraintsVisible = ((OutputTable) abstractDataMapTable).getConstraintEntries().size() > 0;
-        }
-
-        tableForConstraintsGridData.exclude = !tableConstraintsVisible;
-        tableForConstraints.setVisible(tableConstraintsVisible);
-
-        new DragNDrop(mapperManager, tableForConstraints, false, true);
-
-        tableViewerCreatorForConstraints.addCellValueModifiedListener(new ITableCellValueModifiedListener() {
-
-            public void cellValueModified(TableCellValueModifiedEvent e) {
-                unselectAllEntriesIfErrorDetected(e);
-            }
-        });
-
-        final TableViewer tableViewer = tableViewerCreatorForConstraints.getTableViewer();
-        // tableViewer.addOpenListener(new IOpenListener() {
-        //
-        // public void open(OpenEvent event) {
-        // // System.out.println("OpenEvent");
-        //
-        // }
-        //
-        // });
-
-        tableViewer.addSelectionChangedListener(new ISelectionChangedListener() {
-
-            public void selectionChanged(SelectionChangedEvent event) {
-                selectThisDataMapTableView();
-                UIManager uiManager = mapperManager.getUiManager();
-                uiManager.processSelectedMetadataTableEntries(DataMapTableView.this, uiManager.extractSelectedTableEntries(tableViewer
-                        .getSelection()), true);
-            }
-
-        });
-
-        tableForConstraints.addListener(SWT.KeyDown, new Listener() {
-
-            public void handleEvent(Event event) {
-                processEnterKeyDown(tableViewerCreatorForConstraints, event);
-            }
-
-        });
-
-        tableViewerCreatorForConstraints.setLabelProvider(new DefaultTableLabelProvider(tableViewerCreatorForConstraints) {
-
-            @Override
-            public Color getBackground(Object element, int columnIndex) {
-                return getBackgroundCellColor(tableViewerCreator, element, columnIndex);
-            }
-
-            @Override
-            public Color getForeground(Object element, int columnIndex) {
-                return getForegroundCellColor(tableViewerCreator, element, columnIndex);
-            }
-
-        });
-
-        initShowMessageErrorListener(tableForConstraints);
-    }
 
     public void onSelectedEntries(ISelection selection, int[] selectionIndices) {
         if (executeSelectionEvent) {
@@ -969,20 +926,20 @@ public abstract class DataMapTableView extends Composite {
 
                 public void widgetSelected(SelectionEvent e) {
 
-                    Table tableConstraints = tableViewerCreatorForConstraints.getTable();
+                    Table tableConstraints = tableViewerCreatorForFilters.getTable();
                     int index = tableConstraints.getItemCount();
-                    int[] selection = tableViewerCreatorForConstraints.getTable().getSelectionIndices();
+                    int[] selection = tableViewerCreatorForFilters.getTable().getSelectionIndices();
                     if (selection.length > 0) {
                         index = selection[selection.length - 1] + 1;
                     }
-                    mapperManager.addNewConstraintEntry(DataMapTableView.this, "newFilter" + ++constraintCounter, index);
+                    mapperManager.addNewFilterEntry(DataMapTableView.this, "newFilter" + ++constraintCounter, index);
                     updateGridDataHeightForTableConstraints();
                     DataMapTableView.this.changeSize(DataMapTableView.this.getPreferredSize(false, true, true), true, true);
-                    tableViewerCreatorForConstraints.getTableViewer().refresh();
+                    tableViewerCreatorForFilters.getTableViewer().refresh();
                     mapperManager.getUiManager().refreshBackground(true, false);
                     showTableConstraints(true);
                     changeMinimizeState(false);
-                    tableViewerCreatorForConstraints.layout();
+                    tableViewerCreatorForFilters.layout();
                 }
 
             });
@@ -1213,12 +1170,13 @@ public abstract class DataMapTableView extends Composite {
         ToolItem addEntryItem = new ToolItem(toolBarActions, SWT.PUSH);
 
         addEntryItem.setToolTipText("Add variable");
-        addEntryItem.setImage(org.talend.core.ui.images.ImageProvider.getImage(org.talend.core.ui.images.ImageProvider.getImageDesc(EImage.ADD_ICON)));
+        addEntryItem.setImage(org.talend.core.ui.images.ImageProvider.getImage(org.talend.core.ui.images.ImageProvider
+                .getImageDesc(EImage.ADD_ICON)));
 
         removeEntryItem = new ToolItem(toolBarActions, SWT.PUSH);
         removeEntryItem.setEnabled(false);
-        removeEntryItem.setImage(org.talend.core.ui.images.ImageProvider
-                .getImage(org.talend.core.ui.images.ImageProvider.getImageDesc(EImage.MINUS_ICON)));
+        removeEntryItem.setImage(org.talend.core.ui.images.ImageProvider.getImage(org.talend.core.ui.images.ImageProvider
+                .getImageDesc(EImage.MINUS_ICON)));
         removeEntryItem.setToolTipText("Remove selected variable(s)");
 
         // /////////////////////////////////////////////////////////////////
@@ -1242,7 +1200,7 @@ public abstract class DataMapTableView extends Composite {
                     } else {
                         throw new UnsupportedOperationException("Can't create new column, case not found");
                     }
-                    mapperManager.addNewColumnEntry(DataMapTableView.this, varName, indexInsert);
+                    mapperManager.addNewVarEntry(DataMapTableView.this, varName, indexInsert);
                     DataMapTableView.this.changeSize(DataMapTableView.this.getPreferredSize(true, true, false), true, true);
                     changeMinimizeState(false);
                     tableViewerCreatorForColumns.getTableViewer().refresh();
@@ -1339,7 +1297,7 @@ public abstract class DataMapTableView extends Composite {
         int heightOffset = 0;
         int tableEntryItemHeight = tableViewerCreatorForColumns.getTable().getItemHeight();
         heightOffset += newTableEntryWillBeAdded ? tableEntryItemHeight : 0;
-        heightOffset += newConstraintEntryWillBeAdded ? tableViewerCreatorForConstraints.getTable().getItemHeight() : 0;
+        heightOffset += newConstraintEntryWillBeAdded ? tableViewerCreatorForFilters.getTable().getItemHeight() : 0;
 
         int newHeight = this.computeSize(SWT.DEFAULT, SWT.DEFAULT).y - tableEntryItemHeight + heightOffset;
         if (WindowSystem.isGTK()) {
@@ -1362,7 +1320,7 @@ public abstract class DataMapTableView extends Composite {
             attachCellExpressionToStyledTextEditor(tableViewerCreatorForColumns, columnExpressionTextEditor, styledTextHandler);
         }
         if (constraintExpressionTextEditor != null) {
-            attachCellExpressionToStyledTextEditor(tableViewerCreatorForConstraints, constraintExpressionTextEditor, styledTextHandler);
+            attachCellExpressionToStyledTextEditor(tableViewerCreatorForFilters, constraintExpressionTextEditor, styledTextHandler);
         }
     }
 
@@ -1714,7 +1672,7 @@ public abstract class DataMapTableView extends Composite {
     public void updateGridDataHeightForTableConstraints() {
 
         int moreSpace = WindowSystem.isGTK() ? tableForConstraints.getItemHeight() : 0;
-        tableForConstraintsGridData.heightHint = ((OutputTable) abstractDataMapTable).getConstraintEntries().size()
+        tableForConstraintsGridData.heightHint = ((OutputTable) abstractDataMapTable).getFilterEntries().size()
                 * tableForConstraints.getItemHeight() + tableForConstraints.getItemHeight() / 2 + moreSpace;
     }
 
@@ -1757,7 +1715,7 @@ public abstract class DataMapTableView extends Composite {
     /**
      * DOC amaumont Comment method "selectThisDataMapTableView".
      */
-    private void selectThisDataMapTableView() {
+    protected void selectThisDataMapTableView() {
         UIManager uiManager = mapperManager.getUiManager();
         if (uiManager.getCurrentSelectedInputTableView() != DataMapTableView.this
                 && uiManager.getCurrentSelectedOutputTableView() != DataMapTableView.this) {
@@ -1820,7 +1778,7 @@ public abstract class DataMapTableView extends Composite {
      * @param columnIndex
      * @return
      */
-    private Color getBackgroundCellColor(TableViewerCreator tableViewerCreator, Object element, int columnIndex) {
+    protected Color getBackgroundCellColor(TableViewerCreator tableViewerCreator, Object element, int columnIndex) {
         ITableEntry entry = (ITableEntry) element;
         TableViewerCreatorColumn column = (TableViewerCreatorColumn) tableViewerCreator.getColumns().get(columnIndex);
         if (column.getId().equals(ID_EXPRESSION_COLUMN)) {
@@ -1836,7 +1794,7 @@ public abstract class DataMapTableView extends Composite {
      * @param columnIndex
      * @return
      */
-    private Color getForegroundCellColor(TableViewerCreator tableViewerCreator, Object element, int columnIndex) {
+    protected Color getForegroundCellColor(TableViewerCreator tableViewerCreator, Object element, int columnIndex) {
         ITableEntry entry = (ITableEntry) element;
         TableViewerCreatorColumn column = (TableViewerCreatorColumn) tableViewerCreator.getColumns().get(columnIndex);
         if (column.getId().equals(ID_EXPRESSION_COLUMN)) {
@@ -1850,14 +1808,14 @@ public abstract class DataMapTableView extends Composite {
      * 
      * @param e
      */
-    private void unselectAllEntriesIfErrorDetected(TableCellValueModifiedEvent e) {
+    protected void unselectAllEntriesIfErrorDetected(TableCellValueModifiedEvent e) {
         if (e.column.getId().equals(ID_EXPRESSION_COLUMN)) {
             ITableEntry currentEntry = (ITableEntry) e.bean;
             TableViewer tableViewer = null;
             if (currentEntry instanceof IColumnEntry) {
                 tableViewer = DataMapTableView.this.getTableViewerCreatorForColumns().getTableViewer();
-            } else if (currentEntry instanceof ConstraintTableEntry) {
-                tableViewer = DataMapTableView.this.getTableViewerCreatorForConstraints().getTableViewer();
+            } else if (currentEntry instanceof FilterTableEntry) {
+                tableViewer = DataMapTableView.this.getTableViewerCreatorForFilters().getTableViewer();
             }
             if (currentEntry.getProblem() != null) {
                 tableViewer.getTable().deselectAll();
@@ -1871,7 +1829,7 @@ public abstract class DataMapTableView extends Composite {
      * @param tableViewer
      * @param event
      */
-    private void processEnterKeyDown(final TableViewerCreator tableViewerCreator, Event event) {
+    protected void processEnterKeyDown(final TableViewerCreator tableViewerCreator, Event event) {
         if (event.character == '\r') {
             Object element = null;
             if (tableViewerCreator.getTable().getSelectionCount() == 1) {
@@ -1886,5 +1844,19 @@ public abstract class DataMapTableView extends Composite {
     }
 
     public abstract boolean toolbarNeededToBeRightStyle();
+
+    /**
+     * DOC amaumont Comment method "parseExpression".
+     * 
+     * @param event
+     * @param tableViewerCreator
+     * @param tableEntry
+     */
+    private void parseExpression(ModifiedBeanEvent event, TableViewerCreator tableViewerCreator, ITableEntry tableEntry) {
+        if (event.column == tableViewerCreator.getColumn(DataMapTableView.ID_EXPRESSION_COLUMN)) {
+            mapperManager.getUiManager().parseExpression(tableEntry.getExpression(), tableEntry, false, false, false);
+            mapperManager.getUiManager().refreshBackground(false, false);
+        }
+    }
 
 }

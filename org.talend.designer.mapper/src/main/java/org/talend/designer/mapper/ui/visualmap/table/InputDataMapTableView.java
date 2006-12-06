@@ -51,7 +51,7 @@ public class InputDataMapTableView extends DataMapTableView {
     }
 
     @Override
-    public void initColumns(TableViewerCreator tableViewerCreatorForColumns) {
+    public void initColumnsOfTableColumns(TableViewerCreator tableViewerCreatorForColumns) {
         boolean isMainConnection = ((InputTable) getDataMapTable()).isMainConnection();
         TableViewerCreatorColumn column = null;
         if (!isMainConnection) {

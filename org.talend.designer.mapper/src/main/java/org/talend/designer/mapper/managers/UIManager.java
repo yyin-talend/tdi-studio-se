@@ -24,12 +24,10 @@ package org.talend.designer.mapper.managers;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang.ArrayUtils;
-import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.jface.dialogs.IInputValidator;
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -56,7 +54,6 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.ToolItem;
 import org.talend.commons.exception.ExceptionHandler;
-import org.talend.commons.ui.command.CommandStackForComposite;
 import org.talend.commons.ui.swt.tableviewer.IModifiedBeanListener;
 import org.talend.commons.ui.swt.tableviewer.ModifiedBeanEvent;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
@@ -80,7 +77,7 @@ import org.talend.designer.mapper.model.table.AbstractDataMapTable;
 import org.talend.designer.mapper.model.table.AbstractInOutTable;
 import org.talend.designer.mapper.model.table.OutputTable;
 import org.talend.designer.mapper.model.tableentry.AbstractInOutTableEntry;
-import org.talend.designer.mapper.model.tableentry.ConstraintTableEntry;
+import org.talend.designer.mapper.model.tableentry.FilterTableEntry;
 import org.talend.designer.mapper.model.tableentry.IColumnEntry;
 import org.talend.designer.mapper.model.tableentry.ITableEntry;
 import org.talend.designer.mapper.model.tableentry.InputColumnTableEntry;
@@ -296,7 +293,7 @@ public class UIManager {
 
                         if (event.type == TYPE.SWAPED) {
                             List<Integer> listIndexTarget = event.indicesTarget;
-                            abstractDataMapTable.swapColumnEntries(event.indicesOrigin, listIndexTarget);
+                            abstractDataMapTable.swapColumnElements(event.indicesOrigin, listIndexTarget);
                             dataMapTableViewer.refresh();
                             refreshBackground(true, false);
                         }
@@ -594,8 +591,8 @@ public class UIManager {
         TableViewerCreator<ITableEntry> currentTableViewer = null;
 
         if (selectedMetadataTableEntries.size() > 0) {
-            if (selectedMetadataTableEntries.get(0) instanceof ConstraintTableEntry) {
-                currentTableViewer = dataMapTableView.getTableViewerCreatorForConstraints();
+            if (selectedMetadataTableEntries.get(0) instanceof FilterTableEntry) {
+                currentTableViewer = dataMapTableView.getTableViewerCreatorForFilters();
             } else if (selectedMetadataTableEntries.get(0) instanceof ITableEntry) {
                 currentTableViewer = dataMapTableView.getTableViewerCreatorForColumns();
             } else {
@@ -811,11 +808,25 @@ public class UIManager {
      * DOC amaumont Comment method "processAllExpressions".
      */
     @SuppressWarnings("unchecked")
+    public void parseAllExpressionsForAllTables() {
+        List<DataMapTableView> tablesView = tableManager.getInputsTablesView();
+        tablesView.addAll(tableManager.getVarsTablesView());
+        tablesView.addAll(tableManager.getOutputsTablesView());
+        for (DataMapTableView view : tablesView) {
+            parseAllExpressions(view);
+        }
+    }
+
+
+    /**
+     * DOC amaumont Comment method "processAllExpressions".
+     */
+    @SuppressWarnings("unchecked")
     public void parseAllExpressions(DataMapTableView dataMapTableView) {
         List<IColumnEntry> columnsEntriesList = dataMapTableView.getDataMapTable().getColumnEntries();
         parseAllExpressions(columnsEntriesList);
         if (dataMapTableView.getZone() == Zone.OUTPUTS) {
-            List<ITableEntry> constraintEntriesList = dataMapTableView.getTableViewerCreatorForConstraints().getInputList();
+            List<ITableEntry> constraintEntriesList = dataMapTableView.getTableViewerCreatorForFilters().getInputList();
             parseAllExpressions(constraintEntriesList);
         }
     }
@@ -1015,8 +1026,8 @@ public class UIManager {
                 }
             }
             if (dataMapTable instanceof OutputTable) {
-                List<ConstraintTableEntry> constraintEntries = ((OutputTable) dataMapTable).getConstraintEntries();
-                for (ConstraintTableEntry entry : constraintEntries) {
+                List<FilterTableEntry> constraintEntries = ((OutputTable) dataMapTable).getFilterEntries();
+                for (FilterTableEntry entry : constraintEntries) {
                     if (parseExpression(entry.getExpression(), entry, true, true, false).isAtLeastOneLinkRemoved()) {
                         atLeastOneLinkHasBeenRemoved = true;
                     }
@@ -1517,14 +1528,6 @@ public class UIManager {
      */
     public StyleLinkFactory getStyleLinkFactory() {
         return this.drawableLinkFactory;
-    }
-
-    /**
-     * @return
-     * @see org.talend.designer.mapper.ui.MapperUI#getCommandStack()
-     */
-    public CommandStack getCommandStack() {
-        return this.mapperUI.getCommandStack();
     }
 
 }

@@ -29,9 +29,9 @@ import org.talend.designer.mapper.model.table.AbstractDataMapTable;
  * $Id$
  * 
  */
-public class ConstraintTableEntry extends TableEntry {
+public class FilterTableEntry extends TableEntry {
 
-    public ConstraintTableEntry(AbstractDataMapTable abstractDataMapTable, String name, String expression) {
+    public FilterTableEntry(AbstractDataMapTable abstractDataMapTable, String name, String expression) {
         super(abstractDataMapTable, name, expression);
     }
 

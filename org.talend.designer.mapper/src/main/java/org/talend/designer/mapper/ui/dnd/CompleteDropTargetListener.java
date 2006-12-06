@@ -32,7 +32,6 @@ import org.eclipse.swt.widgets.TableItem;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
 import org.talend.commons.ui.utils.TableUtils;
 import org.talend.commons.ui.ws.WindowSystem;
-import org.talend.core.model.action.IAction;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.MetadataColumn;
 import org.talend.core.ui.metadata.editor.MetadataTableEditorView;
@@ -43,6 +42,7 @@ import org.talend.designer.mapper.managers.UIManager;
 import org.talend.designer.mapper.model.tableentry.IColumnEntry;
 import org.talend.designer.mapper.model.tableentry.ITableEntry;
 import org.talend.designer.mapper.model.tableentry.TableEntryLocation;
+import org.talend.designer.mapper.ui.commands.MapperDropCommand;
 import org.talend.designer.mapper.ui.visualmap.table.DataMapTableView;
 import org.talend.designer.mapper.ui.visualmap.zone.Zone;
 import org.talend.designer.mapper.ui.visualmap.zone.scrollable.TablesZoneView;
@@ -344,12 +344,14 @@ public class CompleteDropTargetListener extends DefaultDropTargetListener {
 
         TableViewerCreator tableViewerCreatorTarget = null;
         if (targetTableIsConstraintsTable) {
-            tableViewerCreatorTarget = dataMapTableViewTarget.getTableViewerCreatorForConstraints();
+            tableViewerCreatorTarget = dataMapTableViewTarget.getTableViewerCreatorForFilters();
         } else {
             tableViewerCreatorTarget = dataMapTableViewTarget.getTableViewerCreatorForColumns();
         }
 
-//        MetadataEditorEvent metadataEditorEvent = new MetadataEditorEvent(MetadataEditorEvent.TYPE.ADD);
+        MapperDropCommand dropCommand = new MapperDropCommand();
+        
+        // MetadataEditorEvent metadataEditorEvent = new MetadataEditorEvent(MetadataEditorEvent.TYPE.ADD);
         ITableEntry lastEntryTarget = null;
         for (TransferableEntry transferableEntry : transferableEntryList) {
             ITableEntry tableEntrySource = transferableEntry.getTableEntrySource();
@@ -383,29 +385,24 @@ public class CompleteDropTargetListener extends DefaultDropTargetListener {
                     atLeastOneEntryInserted = true;
 
                 } else if (zoneSourceEntry == Zone.VARS && zoneTarget == Zone.OUTPUTS) {
-                    insertNewOutputEntryFromVarEntry(sourceEntriesOfEntriesBeingAdded,
-                            metadataColumnsBeingAdded,
-//                            metadataEditorEvent, 
+                    insertNewOutputEntryFromVarEntry(sourceEntriesOfEntriesBeingAdded, metadataColumnsBeingAdded,
+                    // metadataEditorEvent,
                             tableEntrySource, columnName);
                     atLeastOneEntryInserted = true;
 
                 } else if (zoneSourceEntry == Zone.INPUTS && zoneTarget != Zone.VARS) {
-                    insertNewInOutEntryFromInputEntry(sourceEntriesOfEntriesBeingAdded, 
-                            metadataColumnsBeingAdded,
-//                            metadataEditorEvent, 
-                            tableEntrySource,
-                            metadataColumnDragged, columnName);
+                    insertNewInOutEntryFromInputEntry(sourceEntriesOfEntriesBeingAdded, metadataColumnsBeingAdded,
+                    // metadataEditorEvent,
+                            tableEntrySource, metadataColumnDragged, columnName);
                     atLeastOneEntryInserted = true;
 
                 } else if (zoneSourceEntry == Zone.OUTPUTS && zoneTarget == Zone.VARS) {
                     // nothing
                 } else if (zoneSourceEntry == Zone.OUTPUTS && zoneTarget == Zone.OUTPUTS) {
 
-                    insertOutpuEntryCopyToOtherOutput(sourceEntriesOfEntriesBeingAdded, 
-                            metadataColumnsBeingAdded,
-//                            metadataEditorEvent, 
-                            tableEntrySource,
-                            metadataColumnDragged, columnName);
+                    insertOutpuEntryCopyToOtherOutput(sourceEntriesOfEntriesBeingAdded, metadataColumnsBeingAdded,
+                    // metadataEditorEvent,
+                            tableEntrySource, metadataColumnDragged, columnName);
                     atLeastOneEntryInserted = true;
 
                 } else {
@@ -426,9 +423,8 @@ public class CompleteDropTargetListener extends DefaultDropTargetListener {
         } else {
             updateExpressionsOfInsertedEntries(currentLanguage, metadataEditorView, currentIndex, sourceEntriesOfEntriesBeingAdded,
                     targetTableIsConstraintsTable, tableViewerCreatorTarget
-//                    , metadataEditorEvent
-                    , metadataColumnsBeingAdded
-                    );
+                    // , metadataEditorEvent
+                    , metadataColumnsBeingAdded);
         }
         dataMapTableViewTarget.resizeAtExpandedSize();
         dataMapTableViewTarget.unselectAllEntries();
@@ -451,29 +447,31 @@ public class CompleteDropTargetListener extends DefaultDropTargetListener {
      * @param sourceEntriesOfEntriesBeingAdded
      * @param targetTableIsConstraintsTable
      * @param tableViewerCreatorTarget
-     * @param metadataColumnsBeingAdded 
+     * @param metadataColumnsBeingAdded
      * @param metadataEditorEvent
      */
     @SuppressWarnings("unchecked")
     private void updateExpressionsOfInsertedEntries(ILanguage currentLanguage, MetadataTableEditorView metadataEditorView,
             int currentIndex, ArrayList<ITableEntry> sourceEntriesOfEntriesBeingAdded, boolean targetTableIsConstraintsTable,
             TableViewerCreator tableViewerCreatorTarget, ArrayList<IMetadataColumn> metadataColumnsBeingAdded
-//            , MetadataEditorEvent metadataEditorEvent
-            ) {
+    // , MetadataEditorEvent metadataEditorEvent
+    ) {
         UIManager uiManager = mapperManager.getUiManager();
 
         if (metadataEditorView != null && !targetTableIsConstraintsTable) {
             metadataEditorView.getMetadataTableEditor().addAll(currentIndex, metadataColumnsBeingAdded);
-            
-//            metadataEditorEvent.indexStartInsert = currentIndex;
-//            IAction action = MetadataEditorActionFactory.getInstance().getAction(metadataEditorView, metadataEditorEvent);
-//            action.run(metadataEditorEvent);
+
+            // metadataEditorEvent.indexStartInsert = currentIndex;
+            // IAction action = MetadataEditorActionFactory.getInstance().getAction(metadataEditorView,
+            // metadataEditorEvent);
+            // action.run(metadataEditorEvent);
 
             List<IColumnEntry> lastCreatedTableEntries = uiManager.getLastCreatedInOutColumnEntries();
             for (int i = 0; i < lastCreatedTableEntries.size(); i++) {
                 ITableEntry tableEntrySource = sourceEntriesOfEntriesBeingAdded.get(i);
                 ITableEntry dataMapTableEntry = lastCreatedTableEntries.get(i);
-                Zone zoneSource = mapperManager.retrieveAbstractDataMapTableView(tableEntrySource.getParent()).getZone();
+                DataMapTableView dataMapTableView = mapperManager.retrieveAbstractDataMapTableView(tableEntrySource.getParent());
+                Zone zoneSource = dataMapTableView.getZone();
                 String location = null;
                 if (zoneSource == Zone.OUTPUTS) {
                     location = tableEntrySource.getExpression();
@@ -511,43 +509,40 @@ public class CompleteDropTargetListener extends DefaultDropTargetListener {
         }
     }
 
-    private void insertNewInOutEntryFromInputEntry(ArrayList<ITableEntry> sources, 
-            ArrayList<IMetadataColumn> metadataColumnsBeingAdded, 
-//            MetadataEditorEvent metadataEditorEvent,
+    private void insertNewInOutEntryFromInputEntry(ArrayList<ITableEntry> sources, ArrayList<IMetadataColumn> metadataColumnsBeingAdded,
+    // MetadataEditorEvent metadataEditorEvent,
             ITableEntry tableEntrySource, IMetadataColumn metadataColumnDragged, String columnName) {
         MetadataColumn metadataColumn = new MetadataColumn(metadataColumnDragged);
         metadataColumn.setLabel(columnName);
         metadataColumnsBeingAdded.add(metadataColumn);
-//        metadataEditorEvent.entries.add(metadataColumn);
+        // metadataEditorEvent.entries.add(metadataColumn);
         sources.add(tableEntrySource);
     }
 
-    private void insertOutpuEntryCopyToOtherOutput(ArrayList<ITableEntry> sources, 
-            ArrayList<IMetadataColumn> metadataColumnsBeingAdded, 
-//            MetadataEditorEvent metadataEditorEvent,
+    private void insertOutpuEntryCopyToOtherOutput(ArrayList<ITableEntry> sources, ArrayList<IMetadataColumn> metadataColumnsBeingAdded,
+    // MetadataEditorEvent metadataEditorEvent,
             ITableEntry tableEntrySource, IMetadataColumn metadataColumnDragged, String columnName) {
         MetadataColumn metadataColumn = new MetadataColumn(metadataColumnDragged);
         metadataColumn.setLabel(columnName);
         metadataColumnsBeingAdded.add(metadataColumn);
-//        metadataEditorEvent.entries.add(metadataColumn);
+        // metadataEditorEvent.entries.add(metadataColumn);
         sources.add(tableEntrySource);
     }
 
-    private void insertNewOutputEntryFromVarEntry(ArrayList<ITableEntry> sources, 
-ArrayList<IMetadataColumn> metadataColumnsBeingAdded, 
-//            MetadataEditorEvent metadataEditorEvent,
+    private void insertNewOutputEntryFromVarEntry(ArrayList<ITableEntry> sources, ArrayList<IMetadataColumn> metadataColumnsBeingAdded,
+    // MetadataEditorEvent metadataEditorEvent,
             ITableEntry tableEntrySource, String columnName) {
         MetadataColumn metadataColumn = new MetadataColumn();
         metadataColumn.setLabel(columnName);
         metadataColumnsBeingAdded.add(metadataColumn);
-//        metadataEditorEvent.entries.add(metadataColumn);
+        // metadataEditorEvent.entries.add(metadataColumn);
         sources.add(tableEntrySource);
     }
 
     private int insertNewVarEntry(ILanguage currentLanguage, DataMapTableView dataMapTableViewTarget, int currentIndex,
             ITableEntry tableEntrySource, String columnName) {
         ITableEntry dataMapTableEntry;
-        dataMapTableEntry = mapperManager.addNewColumnEntry(dataMapTableViewTarget, columnName, currentIndex++);
+        dataMapTableEntry = mapperManager.addNewVarEntry(dataMapTableViewTarget, columnName, currentIndex++);
         String location = currentLanguage.getLocation(tableEntrySource.getParentName(), tableEntrySource.getName());
         dataMapTableEntry.setExpression(location + " ");
         return currentIndex;
@@ -564,8 +559,10 @@ ArrayList<IMetadataColumn> metadataColumnsBeingAdded,
         if (expression == null) {
             return;
         }
+        String expressionToWrite = null;
         if (overwriteExpression) {
-            entryTarget.setExpression(expression + "  ");
+//            entryTarget.setExpression(expression + "  ");
+            expressionToWrite = expression + "  ";
         } else {
             String currentTargetExpression = entryTarget.getExpression();
             if (currentTargetExpression == null) {
@@ -580,8 +577,22 @@ ArrayList<IMetadataColumn> metadataColumnsBeingAdded,
             } else if (!isEmpty) {
                 space = "  ";
             }
-            entryTarget.setExpression(currentTargetExpression + space + expression + " ");
+//            entryTarget.setExpression(currentTargetExpression + space + expression + " ");
+            expressionToWrite = currentTargetExpression + space + expression + " ";
         }
+        entryTarget.setExpression(expressionToWrite);
+        
+//        DataMapTableView dataMapTableView = mapperManager.retrieveAbstractDataMapTableView(tableEntrySource.getParent());
+//        TableViewerCreator<ITableEntry> tableViewerCreator = null;
+//        if (entryTarget instanceof IColumnEntry) {
+//            tableViewerCreator = dataMapTableView.getTableViewerCreatorForColumns();
+//        } else {
+//            tableViewerCreator = dataMapTableView.getTableViewerCreatorForFilters();
+//        }
+//
+//        TableViewerCreatorColumn column = tableViewerCreator.getColumn(DataMapTableView.ID_EXPRESSION_COLUMN);
+//        tableViewerCreator.setBeanValue(column, entryTarget, expressionToWrite, true);
+
     }
 
     public void dropAccept(DropTargetEvent event) {

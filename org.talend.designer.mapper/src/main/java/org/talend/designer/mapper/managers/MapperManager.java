@@ -26,6 +26,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.eclipse.gef.commands.Command;
+import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
@@ -47,13 +49,14 @@ import org.talend.designer.mapper.model.table.AbstractDataMapTable;
 import org.talend.designer.mapper.model.table.InputTable;
 import org.talend.designer.mapper.model.table.OutputTable;
 import org.talend.designer.mapper.model.table.VarsTable;
-import org.talend.designer.mapper.model.tableentry.ConstraintTableEntry;
+import org.talend.designer.mapper.model.tableentry.FilterTableEntry;
 import org.talend.designer.mapper.model.tableentry.IColumnEntry;
 import org.talend.designer.mapper.model.tableentry.ITableEntry;
 import org.talend.designer.mapper.model.tableentry.InputColumnTableEntry;
 import org.talend.designer.mapper.model.tableentry.OutputColumnTableEntry;
 import org.talend.designer.mapper.model.tableentry.TableEntryLocation;
 import org.talend.designer.mapper.model.tableentry.VarTableEntry;
+import org.talend.designer.mapper.ui.commands.AddVarEntryCommand;
 import org.talend.designer.mapper.ui.visualmap.TableEntryProperties;
 import org.talend.designer.mapper.ui.visualmap.link.IMapperLink;
 import org.talend.designer.mapper.ui.visualmap.link.LinkState;
@@ -85,6 +88,8 @@ public class MapperManager {
 
     private MapperComponent mapperComponent;
 
+    private CommandStack commandStack;
+
     public MapperManager(MapperComponent mapperComponent) {
         super();
         tableEntriesManager = new TableEntriesManager(this);
@@ -98,7 +103,7 @@ public class MapperManager {
         tableManager.addTable(view, data);
         tableEntriesManager.addAll(data.getColumnEntries());
         if (data instanceof OutputTable) {
-            tableEntriesManager.addAll(((OutputTable) data).getConstraintEntries());
+            tableEntriesManager.addAll(((OutputTable) data).getFilterEntries());
         }
     }
 
@@ -113,7 +118,7 @@ public class MapperManager {
         List<IColumnEntry> dataMapTableEntries = dataTable.getColumnEntries();
         tableEntriesManager.removeAll(dataMapTableEntries);
         if (dataTable instanceof OutputTable) {
-            List<ConstraintTableEntry> constraintEntries = ((OutputTable) dataTable).getConstraintEntries();
+            List<FilterTableEntry> constraintEntries = ((OutputTable) dataTable).getFilterEntries();
             tableEntriesManager.removeAll(constraintEntries);
         }
         tableManager.removeTable(view);
@@ -129,7 +134,7 @@ public class MapperManager {
         List<IColumnEntry> dataMapTableEntries = dataTable.getColumnEntries();
         tableEntriesManager.removeAll(dataMapTableEntries);
         if (dataTable instanceof OutputTable) {
-            List<ConstraintTableEntry> constraintEntries = ((OutputTable) dataTable).getConstraintEntries();
+            List<FilterTableEntry> constraintEntries = ((OutputTable) dataTable).getFilterEntries();
             tableEntriesManager.removeAll(constraintEntries);
         }
         tableManager.removeTable(dataTable);
@@ -339,7 +344,7 @@ public class MapperManager {
      * 
      * @param currentModifiedTableEntry
      * @param newColumnName
-     * @param newColumnName2 
+     * @param newColumnName2
      */
     public void changeColumnName(ITableEntry dataMapTableEntry, String previousColumnName, String newColumnName) {
         tableEntriesManager.renameEntryName(dataMapTableEntry, previousColumnName, newColumnName);
@@ -409,15 +414,18 @@ public class MapperManager {
      * @param metadataColumn, can be null if added in VarsTable
      * @param index
      */
-    public IColumnEntry addNewColumnEntry(DataMapTableView dataMapTableView, String name, Integer index) {
+    public VarTableEntry addNewVarEntry(DataMapTableView dataMapTableView, String name, Integer index) {
         AbstractDataMapTable abstractDataMapTable = dataMapTableView.getDataMapTable();
-        IColumnEntry dataMapTableEntry = null;
+        VarTableEntry dataMapTableEntry = null;
         if (dataMapTableView.getZone() == Zone.VARS) {
             dataMapTableEntry = new VarTableEntry(abstractDataMapTable, name);
         } else {
             throw new IllegalArgumentException("Use other signature method to add entry");
         }
-        tableEntriesManager.addTableEntry(dataMapTableEntry, index);
+        
+        AddVarEntryCommand varEntryCommand = new AddVarEntryCommand(tableEntriesManager, dataMapTableEntry, index);
+        executeCommand(varEntryCommand);
+
         return dataMapTableEntry;
     }
 
@@ -432,9 +440,9 @@ public class MapperManager {
         metadataTableEditor.add(metadataColumn, index);
     }
 
-    public ConstraintTableEntry addNewConstraintEntry(DataMapTableView dataMapTableView, String name, Integer index) {
+    public FilterTableEntry addNewFilterEntry(DataMapTableView dataMapTableView, String name, Integer index) {
         AbstractDataMapTable abstractDataMapTable = dataMapTableView.getDataMapTable();
-        ConstraintTableEntry constraintEntry = new ConstraintTableEntry(abstractDataMapTable, name, null);
+        FilterTableEntry constraintEntry = new FilterTableEntry(abstractDataMapTable, name, null);
         tableEntriesManager.addTableEntry(constraintEntry, index);
         return constraintEntry;
     }
@@ -568,8 +576,8 @@ public class MapperManager {
         TableViewer tableViewer = null;
         if (currentEntry instanceof IColumnEntry) {
             tableViewer = dataMapTableView.getTableViewerCreatorForColumns().getTableViewer();
-        } else if (currentEntry instanceof ConstraintTableEntry) {
-            tableViewer = dataMapTableView.getTableViewerCreatorForConstraints().getTableViewer();
+        } else if (currentEntry instanceof FilterTableEntry) {
+            tableViewer = dataMapTableView.getTableViewerCreatorForFilters().getTableViewer();
         }
         if (currentEntry.getProblem() != null) {
             tableViewer.getTable().deselectAll();
@@ -610,7 +618,7 @@ public class MapperManager {
                 return true;
             }
         } else if (entryTarget instanceof VarTableEntry || entryTarget instanceof OutputColumnTableEntry
-                || entryTarget instanceof ConstraintTableEntry) {
+                || entryTarget instanceof FilterTableEntry) {
             if (entrySource instanceof InputColumnTableEntry || entrySource instanceof VarTableEntry) {
                 return true;
             }
@@ -694,8 +702,8 @@ public class MapperManager {
                 replaceLocation(previousLocation, newLocation, dataMapExpressionParser, table, entry);
             }
             if (table instanceof OutputTable) {
-                List<ConstraintTableEntry> constraintEntries = ((OutputTable) table).getConstraintEntries();
-                for (ConstraintTableEntry entry : constraintEntries) {
+                List<FilterTableEntry> constraintEntries = ((OutputTable) table).getFilterEntries();
+                for (FilterTableEntry entry : constraintEntries) {
                     replaceLocation(previousLocation, newLocation, dataMapExpressionParser, table, entry);
                 }
             }
@@ -734,8 +742,8 @@ public class MapperManager {
             TableViewerCreator tableViewerCreator = null;
             if (entry instanceof IColumnEntry) {
                 tableViewerCreator = dataMapTableView.getTableViewerCreatorForColumns();
-            } else if (entry instanceof ConstraintTableEntry) {
-                tableViewerCreator = dataMapTableView.getTableViewerCreatorForConstraints();
+            } else if (entry instanceof FilterTableEntry) {
+                tableViewerCreator = dataMapTableView.getTableViewerCreatorForFilters();
             }
             tableViewerCreator.getTableViewer().refresh(entry);
             uiManager.parseExpression(currentExpression, entry, false, true, false);
@@ -759,6 +767,31 @@ public class MapperManager {
      */
     public int getCurrentNumberLinks() {
         return this.linkManager.getCurrentNumberLinks();
+    }
+
+    /**
+     * @return
+     * @see org.talend.designer.mapper.ui.MapperUI#getCommandStack()
+     */
+    public CommandStack getCommandStack() {
+        return this.commandStack;
+    }
+
+    /**
+     * Sets the commandStack.
+     * 
+     * @param commandStack the commandStack to set
+     */
+    public void setCommandStack(CommandStack commandStack) {
+        this.commandStack = commandStack;
+    }
+
+    public void executeCommand(Command command) {
+        if (this.commandStack != null) {
+            this.commandStack.execute(command);
+        } else {
+            command.execute();
+        }
     }
 
     // public Object getEmfParameterValue(String parameterName) {
