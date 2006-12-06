@@ -38,6 +38,7 @@ import org.talend.commons.exception.MessageBoxExceptionHandler;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IComponentsFactory;
+import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.runprocess.IRunProcessService;
 import org.talend.designer.runprocess.ProcessorException;
 import org.talend.repository.model.ComponentsFactoryProvider;
@@ -52,9 +53,9 @@ public class ModulesNeededProvider {
 
     private static List<ModuleNeeded> componentImportNeedsList;
 
-    private static final Bundle PERL_MODULE_PLUGIN = Platform.getBundle("org.talend.designer.codegen.perlmodule");
+    private static final Bundle PERL_MODULE_PLUGIN = Platform.getBundle(DesignerPlugin.ID);
 
-    private static final String CHECK_PERL_MODULE_RELATIVE_PATH = "perl/talend/check_modules.pl";
+    private static final String CHECK_PERL_MODULE_RELATIVE_PATH = "perl/check_modules.pl";
 
     private static final String MODULE_PARAM_KEY = "--module=";
 
@@ -138,7 +139,7 @@ public class ModulesNeededProvider {
 
             IRunProcessService service = GlobalServiceRegister.getRunProcessService();
             service.exec(out, err, new Path(checkPerlModuleAbsolutePath), null, Level.DEBUG, "", "", -1, -1, params);
-            
+
             analyzeResponse(out, componentsByModules);
 
             if (err.length() > 0) {
