@@ -77,6 +77,7 @@ import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNode.ENodeType;
 import org.talend.repository.model.actions.MoveObjectAction;
 import org.talend.repository.ui.actions.ActionsHelper;
+import org.talend.repository.ui.actions.ImportAction;
 import org.talend.repository.ui.actions.RefreshAction;
 import org.talend.repository.ui.actions.RepositoryDoubleClickAction;
 
@@ -101,7 +102,7 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
 
     private Action refreshAction;
 
-    // private Action compareAction;
+    private Action importAction;
 
     private Listener dragDetectListener;
 
@@ -268,7 +269,7 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
     private void makeActions() {
         IHandlerService handlerService = (IHandlerService) getSite().getService(IHandlerService.class);
 
-        // compareAction = new CompareAction();
+        importAction = new ImportAction();
 
         refreshAction = new RefreshAction(this);
         IHandler handler1 = new ActionHandler(refreshAction);
@@ -332,7 +333,7 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
 
     private void fillLocalToolBar(IToolBarManager manager) {
         manager.add(refreshAction);
-        // manager.add(compareAction);
+        manager.add(importAction);
     }
 
     @Override
