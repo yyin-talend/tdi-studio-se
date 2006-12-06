@@ -50,4 +50,13 @@ public class CodeGeneratorService implements ICodeGeneratorService {
         return new CodeGenerator(process, statistics, trace, options);
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.codegen.ICodeGeneratorService#getRoutineSynchronizer()
+     */
+    public IRoutineSynchronizer createRoutineSynchronizer() {
+        return new RoutineSynchronizer();
+    }
+
 }

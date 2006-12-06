@@ -21,25 +21,18 @@
 // ============================================================================
 package org.talend.designer.core.ui.action;
 
-import java.io.IOException;
-
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.ui.PartInitException;
 import org.talend.commons.exception.MessageBoxExceptionHandler;
-import org.talend.core.CorePlugin;
+import org.talend.commons.exception.SystemException;
 import org.talend.core.GlobalServiceRegister;
-import org.talend.core.context.Context;
-import org.talend.core.context.RepositoryContext;
-import org.talend.core.model.general.Project;
 import org.talend.core.model.properties.RoutineItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.ui.images.EImage;
 import org.talend.core.ui.images.ImageProvider;
-import org.talend.designer.runprocess.IRunProcessService;
+import org.talend.designer.codegen.ICodeGeneratorService;
 import org.talend.repository.editor.RepositoryEditorInput;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNode.ENodeType;
@@ -52,8 +45,6 @@ import org.talend.repository.ui.actions.AContextualAction;
  * 
  */
 public class EditRoutinesAction extends AContextualAction {
-
-    // private Map<IFile, RoutineItem> routinesByFiles;
 
     public EditRoutinesAction() {
         super();
@@ -89,24 +80,14 @@ public class EditRoutinesAction extends AContextualAction {
         RoutineItem routineItem = (RoutineItem) node.getObject().getProperty().getItem();
 
         try {
-            // Copy the routines stream to a temporary file
-            IRunProcessService service = GlobalServiceRegister.getRunProcessService();
-            IProject perlProject = service.getProject();
-            Project project = ((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY))
-                    .getProject();
-            IFile file = perlProject.getFile(project.getTechnicalLabel() + "__" + routineItem.getProperty().getLabel()
-                    + service.getRoutineFilenameExt());
-            routineItem.getContent().setInnerContentToFile(file.getLocation().toFile());
-            // routinesByFiles.put(file, routineItem);
+            ICodeGeneratorService service = GlobalServiceRegister.getCodeGeneratorService();
+            IFile file = service.createRoutineSynchronizer().syncRoutine(routineItem);
             RepositoryEditorInput input = new RepositoryEditorInput(file, routineItem);
 
             getActivePage().openEditor(input, "org.talend.designer.core.ui.editor.StandAloneTalendPerlEditor");
-
         } catch (PartInitException e) {
             MessageBoxExceptionHandler.process(e);
-        } catch (CoreException e) {
-            MessageBoxExceptionHandler.process(e);
-        } catch (IOException e) {
+        } catch (SystemException e) {
             MessageBoxExceptionHandler.process(e);
         }
     }

@@ -34,8 +34,6 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IWorkspaceRoot;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionRegistry;
@@ -48,7 +46,6 @@ import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.IBreakpointManager;
 import org.eclipse.debug.core.model.IBreakpoint;
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.exception.SystemException;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
@@ -58,9 +55,6 @@ import org.talend.core.model.general.Project;
 import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
-import org.talend.core.model.properties.RoutineItem;
-import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.designer.codegen.ICodeGenerator;
 import org.talend.designer.codegen.ICodeGeneratorService;
@@ -68,7 +62,6 @@ import org.talend.designer.runprocess.IPerlProcessor;
 import org.talend.designer.runprocess.ProcessorException;
 import org.talend.designer.runprocess.RunProcessPlugin;
 import org.talend.designer.runprocess.i18n.Messages;
-import org.talend.repository.model.ProxyRepositoryFactory;
 
 /**
  * DOC chuger class global comment. Detailled comment <br/>
@@ -119,8 +112,7 @@ public class PerlProcessor implements IPerlProcessor {
         filePrefix += Messages.getString("Processor.fileSuffix"); //$NON-NLS-1$
         filePrefix += filenameFromLabel ? escapeFilename(process.getLabel()) : process.getId();
         codePath = new Path(filePrefix + Messages.getString("Processor.perlExt")); //$NON-NLS-1$
-        contextPath = new Path(filePrefix
-                + "_" + escapeFilename(context.getName()) + Messages.getString("Processor.perlExt")); //$NON-NLS-1$ //$NON-NLS-2$
+        contextPath = new Path(filePrefix + "_" + escapeFilename(context.getName()) + Messages.getString("Processor.perlExt")); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     public void generateCode(IContext context, boolean statistics, boolean trace, boolean perlProperties)
@@ -130,18 +122,18 @@ public class PerlProcessor implements IPerlProcessor {
             RepositoryContext repositoryContext = (RepositoryContext) CorePlugin.getContext().getProperty(
                     Context.REPOSITORY_CONTEXT_KEY);
             Project project = repositoryContext.getProject();
-            retrieveRoutines(project);
 
             ICodeGenerator codeGen;
             ICodeGeneratorService service = GlobalServiceRegister.getCodeGeneratorService();
+            service.createRoutineSynchronizer().syncAllRoutines();
             if (perlProperties) {
                 String perlInterpreter = getPerlInterpreter();
                 String perlLib = getPerlLib();
                 String currentPerlProject = project.getTechnicalLabel();
                 String perlContext = getPerlContext();
 
-                codeGen = service.createCodeGenerator(process, statistics, trace, perlInterpreter, perlLib,
-                        perlContext, currentPerlProject);
+                codeGen = service.createCodeGenerator(process, statistics, trace, perlInterpreter, perlLib, perlContext,
+                        currentPerlProject);
 
             } else {
                 codeGen = service.createCodeGenerator(process, statistics, trace);
@@ -185,11 +177,11 @@ public class PerlProcessor implements IPerlProcessor {
                 contextFile.setContents(contextStream, true, false, null);
             }
 
-            retrieveRoutines(project);
+            service.createRoutineSynchronizer().syncAllRoutines();
         } catch (CoreException e1) {
             throw new ProcessorException(Messages.getString("Processor.tempFailed"), e1); //$NON-NLS-1$
-        } catch (PersistenceException pe) {
-            throw new ProcessorException(Messages.getString("Processor.tempFailed"), pe); //$NON-NLS-1$
+        } catch (SystemException e) {
+            throw new ProcessorException(Messages.getString("Processor.tempFailed"), e); //$NON-NLS-1$
         }
     }
 
@@ -357,8 +349,7 @@ public class PerlProcessor implements IPerlProcessor {
         codeFile.deleteMarkers(perlBrekPointMarker, true, IResource.DEPTH_ZERO);
 
         IExtensionRegistry registry = Platform.getExtensionRegistry();
-        IConfigurationElement[] configElems = registry
-                .getConfigurationElementsFor("org.eclipse.debug.core.breakpoints");
+        IConfigurationElement[] configElems = registry.getConfigurationElementsFor("org.eclipse.debug.core.breakpoints");
         IConfigurationElement perlBreakConfigElem = null;
         for (IConfigurationElement elem : configElems) {
             if (elem.getAttribute("id").equals("perlLineBreakpoint")) {
@@ -389,24 +380,4 @@ public class PerlProcessor implements IPerlProcessor {
         }
     }
 
-    private void retrieveRoutines(Project project) throws CoreException, PersistenceException {
-        IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
-
-        ProxyRepositoryFactory repositoryFactory = ProxyRepositoryFactory.getInstance();
-        // RootContainer<Integer, IRoutine> container = repositoryFactory.getRoutine();
-        // List<IRoutine> routines = container.getMembers();
-
-        List<IRepositoryObject> routines = repositoryFactory.getAll(ERepositoryObjectType.ROUTINES);
-
-        for (IRepositoryObject routine : routines) {
-            IFile routineFile = root.getFile(perlProject.getFullPath().append(
-                    project.getTechnicalLabel() + "__" + routine.getLabel() + ".pm"));
-            RoutineItem routineItem = (RoutineItem) routine.getProperty().getItem();
-            try {
-                routineItem.getContent().setInnerContentToFile(routineFile.getLocation().toFile());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
 }
