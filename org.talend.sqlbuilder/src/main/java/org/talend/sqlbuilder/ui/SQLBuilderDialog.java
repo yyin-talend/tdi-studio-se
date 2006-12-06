@@ -461,10 +461,11 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog {
 			 */
 			@Override
 			public void shellActivated(ShellEvent e) {
-//				System.out.println("shellActivated " + i);
+//				System.out.println("shellActivated " + 1);
 //				SQLBuilderRepositoryNodeManager.reductionALLRepositoryNode();
 				SQLBuilderRepositoryNodeManager.isReduction = false;
 				SQLBuilderRepositoryNodeManager.increaseALLRepositoryNode();
+				SQLBuilderRepositoryNodeManager.isIncrease = true;
 				super.shellActivated(e);
 			}
 
@@ -484,7 +485,9 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog {
 			 */
 			@Override
 			public void shellDeactivated(ShellEvent e) {
-//				System.out.println("shellDeactivated " + i);
+//				System.out.println("shellDeactivated " + 1);
+//				System.out.println("isIncrease: " + SQLBuilderRepositoryNodeManager.isIncrease);
+				SQLBuilderRepositoryNodeManager.isIncrease = false;
 				SQLBuilderRepositoryNodeManager.reductionALLRepositoryNode();
 //				SQLBuilderRepositoryNodeManager.increaseALLRepositoryNode();
 				super.shellDeactivated(e);

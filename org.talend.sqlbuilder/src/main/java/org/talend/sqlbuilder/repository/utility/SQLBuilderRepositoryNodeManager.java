@@ -87,6 +87,8 @@ public class SQLBuilderRepositoryNodeManager {
 
 	public static boolean isReduction = false;
 	
+	public static boolean isIncrease = false;
+	
 	private static boolean isFirst = true;
 	
 	private static String currentNodeLabel = "";
@@ -315,14 +317,13 @@ public class SQLBuilderRepositoryNodeManager {
 			connection.setDivergency(false);
 			connection.setSynchronised(false);
 		}
-//		labelsAndNames.clear();
 	}
 
 	/**
 	 * DOC dev Comment method "increaseALLRepositoryNode".
 	 */
 	public static void increaseALLRepositoryNode() {
-		if (!isFirst) {
+		if (!isFirst && !isIncrease) {
 			if (repositoryNodes != null) {
 				for (RepositoryNode node : repositoryNodes) {
 					increaseOneRepositoryNode(node);
@@ -360,7 +361,6 @@ public class SQLBuilderRepositoryNodeManager {
 				for (MetadataTable table : sortTables) {
 					List<MetadataColumn> columns = oldtableColumns.get(table);
 					List<MetadataColumn> newcolumns = new ArrayList<MetadataColumn>();
-
 					for (MetadataColumn column : columns) {
 						newcolumns.add(column);
 					}
@@ -448,6 +448,11 @@ public class SQLBuilderRepositoryNodeManager {
         }
         return sortTables;
     }
+    /**
+     * DOC dev Comment method "sortColumn".
+     * @param columns
+     * @return
+     */
     private static List<MetadataColumn> sortColumn(Collection<MetadataColumn> columns) {
         List<MetadataColumn> sortColumns = new ArrayList<MetadataColumn>();
         List<MetadataColumn> sysColumns = new ArrayList<MetadataColumn>();
@@ -568,7 +573,6 @@ public class SQLBuilderRepositoryNodeManager {
 					.getConnection();
 			IMetadataConnection iMetadataConnection = ConvertionHelper
 					.convert(connection);
-			// oldNode.getObject().getProperty().setItem(newItem);
 			modifyOldRepositoryNode(connection, iMetadataConnection);
 
 		}
@@ -762,7 +766,6 @@ public class SQLBuilderRepositoryNodeManager {
 				&& parameters.getDbType().equals("PostgreSQL")) {
 			connection.setSchema("public");
 		}
-		// connection.setComment("");
 		connection.setURL(parameters.getURL());
 		connection.setDriverClass(ExtractMetaDataUtils
 				.getDriverClassByDbType(parameters.getDbType()));
@@ -892,7 +895,6 @@ public class SQLBuilderRepositoryNodeManager {
 
 	/**
 	 * method "saveQuery" use save inputed Query to EMF's xml File.
-	 * 
 	 * @param repositoryNode
 	 *            current RepositoryNode
 	 * @param query
@@ -933,7 +935,6 @@ public class SQLBuilderRepositoryNodeManager {
 
 	/**
 	 * method "deleteQueries" use delete Queries.
-	 * 
 	 * @param repositoryNode
 	 *            databaseConnection's RepositoryNode
 	 * @param queries
@@ -969,7 +970,6 @@ public class SQLBuilderRepositoryNodeManager {
 
 	/**
 	 * save MetaData into EMF's xml files.
-	 * 
 	 * @param item
 	 *            need to be saved Item
 	 */
@@ -985,7 +985,6 @@ public class SQLBuilderRepositoryNodeManager {
 
 	/**
 	 * fixed Table .
-	 * 
 	 * @param metaFromDB
 	 *            MetadataTable from Database
 	 * @param metaFromEMF
@@ -1018,7 +1017,6 @@ public class SQLBuilderRepositoryNodeManager {
 				emf.setSourceName(" ");
 				emf.setDivergency(true);
 				emf.setSynchronised(false);
-				// emf.getConnection().setDivergency(true);
 			}
 		}
 		while (!metaFromDB.isEmpty()) {
@@ -1031,7 +1029,6 @@ public class SQLBuilderRepositoryNodeManager {
 							&& !emf.getLabel().equals(
 									db.getSourceName().replaceAll("_", "-"))) {
 						emf.setDivergency(true);
-						// emf.getConnection().setDivergency(true);
 					}
 				}
 			}
@@ -1056,7 +1053,6 @@ public class SQLBuilderRepositoryNodeManager {
 
 	/**
 	 * fixed Column from EMF use Column From DataBase .
-	 * 
 	 * @param columnsFromDB
 	 *            MetadataColumn from Database
 	 * @param cloumnsFromEMF
@@ -1078,8 +1074,6 @@ public class SQLBuilderRepositoryNodeManager {
 				emf.setOriginalField(" ");
 				emf.setDivergency(true);
 				emf.setSynchronised(false);
-				// emf.getTable().setDivergency(true);
-				// emf.getTable().getConnection().setDivergency(true);
 			}
 		}
 		while (!columnsFromDB.isEmpty()) {
@@ -1092,12 +1086,6 @@ public class SQLBuilderRepositoryNodeManager {
 						boolean is = !isEquivalent(db, emf);
 						emf.setDivergency(is);
 						emf.setSynchronised(is);
-						// if (is) {
-						// emf.getTable().setSynchronised(true);
-						// emf.getTable().getConnection().setSynchronised(true);
-						// emf.getTable().setDivergency(true);
-						// emf.getTable().getConnection().setDivergency(true);
-						// }
 					}
 				}
 			}
@@ -1114,7 +1102,6 @@ public class SQLBuilderRepositoryNodeManager {
 
 	/**
 	 * Check if Two MetadataColumns are the same..
-	 * 
 	 * @param info
 	 *            MetadataColumn
 	 * @param column
@@ -1170,9 +1157,7 @@ public class SQLBuilderRepositoryNodeManager {
 	}
 
 	/**
-	 * DOC qianbing Comment method "getRepositoryType". Gets the type of the
 	 * RepositoryNode.
-	 * 
 	 * @param repositoryNode
 	 *            RepositoryNode
 	 * @return RepositoryNodeType
