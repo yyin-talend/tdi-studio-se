@@ -31,6 +31,7 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.ui.PartInitException;
 import org.talend.commons.exception.MessageBoxExceptionHandler;
 import org.talend.core.CorePlugin;
+import org.talend.core.GlobalServiceRegister;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.model.general.Project;
@@ -38,7 +39,7 @@ import org.talend.core.model.properties.RoutineItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.ui.images.EImage;
 import org.talend.core.ui.images.ImageProvider;
-import org.talend.designer.runprocess.perl.PerlUtils;
+import org.talend.designer.runprocess.IRunProcessService;
 import org.talend.repository.editor.RepositoryEditorInput;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNode.ENodeType;
@@ -89,11 +90,12 @@ public class EditRoutinesAction extends AContextualAction {
 
         try {
             // Copy the routines stream to a temporary file
-            IProject perlProject = PerlUtils.getProject();
+            IRunProcessService service = GlobalServiceRegister.getRunProcessService();
+            IProject perlProject = service.getProject();
             Project project = ((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY))
                     .getProject();
             IFile file = perlProject.getFile(project.getTechnicalLabel() + "__" + routineItem.getProperty().getLabel()
-                    + PerlUtils.ROUTINE_FILENAME_EXT);
+                    + service.getRoutineFilenameExt());
             routineItem.getContent().setInnerContentToFile(file.getLocation().toFile());
             // routinesByFiles.put(file, routineItem);
             RepositoryEditorInput input = new RepositoryEditorInput(file, routineItem);

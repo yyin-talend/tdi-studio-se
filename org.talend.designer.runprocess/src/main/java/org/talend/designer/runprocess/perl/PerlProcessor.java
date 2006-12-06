@@ -49,7 +49,9 @@ import org.eclipse.debug.core.IBreakpointManager;
 import org.eclipse.debug.core.model.IBreakpoint;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.talend.commons.exception.PersistenceException;
+import org.talend.commons.exception.SystemException;
 import org.talend.core.CorePlugin;
+import org.talend.core.GlobalServiceRegister;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.model.general.Project;
@@ -60,8 +62,9 @@ import org.talend.core.model.properties.RoutineItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.prefs.ITalendCorePrefConstants;
-import org.talend.designer.codegen.CodeGenerator;
-import org.talend.designer.codegen.exception.CodeGeneratorException;
+import org.talend.designer.codegen.ICodeGenerator;
+import org.talend.designer.codegen.ICodeGeneratorService;
+import org.talend.designer.runprocess.IPerlProcessor;
 import org.talend.designer.runprocess.ProcessorException;
 import org.talend.designer.runprocess.RunProcessPlugin;
 import org.talend.designer.runprocess.i18n.Messages;
@@ -73,7 +76,7 @@ import org.talend.repository.model.ProxyRepositoryFactory;
  * $Id$
  * 
  */
-public class PerlProcessor {
+public class PerlProcessor implements IPerlProcessor {
 
     /** Process to be turned in PERL code. */
     private IProcess process;
@@ -119,7 +122,7 @@ public class PerlProcessor {
         contextPath = new Path(filePrefix
                 + "_" + escapeFilename(context.getName()) + Messages.getString("Processor.perlExt")); //$NON-NLS-1$ //$NON-NLS-2$
     }
-    
+
     public void generateCode(IContext context, boolean statistics, boolean trace, boolean perlProperties)
             throws ProcessorException {
         initPaths(context);
@@ -129,16 +132,19 @@ public class PerlProcessor {
             Project project = repositoryContext.getProject();
             retrieveRoutines(project);
 
-            CodeGenerator codeGen;
+            ICodeGenerator codeGen;
+            ICodeGeneratorService service = GlobalServiceRegister.getCodeGeneratorService();
             if (perlProperties) {
                 String perlInterpreter = getPerlInterpreter();
                 String perlLib = getPerlLib();
                 String currentPerlProject = project.getTechnicalLabel();
                 String perlContext = getPerlContext();
-                codeGen = new CodeGenerator(process, statistics, trace, perlInterpreter, perlLib, perlContext,currentPerlProject);
-                
+
+                codeGen = service.createCodeGenerator(process, statistics, trace, perlInterpreter, perlLib,
+                        perlContext, currentPerlProject);
+
             } else {
-            	codeGen = new CodeGenerator(process, statistics, trace);
+                codeGen = service.createCodeGenerator(process, statistics, trace);
             }
 
             String processCode = "";
@@ -146,7 +152,7 @@ public class PerlProcessor {
             try {
                 processCode = codeGen.generateProcessCode();
                 processContext = codeGen.generateContextCode(context);
-            } catch (CodeGeneratorException e) {
+            } catch (SystemException e) {
                 throw new ProcessorException(Messages.getString("Processor.generationFailed"), e); //$NON-NLS-1$
             }
 

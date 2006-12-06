@@ -33,17 +33,19 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.part.ViewPart;
+import org.talend.commons.exception.SystemException;
 import org.talend.commons.ui.swt.colorstyledtext.ColorManager;
 import org.talend.commons.ui.swt.colorstyledtext.ColorStyledText;
 import org.talend.core.CorePlugin;
+import org.talend.core.GlobalServiceRegister;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.model.process.IExternalNode;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.temp.ECodeLanguage;
 import org.talend.core.model.temp.ECodePart;
-import org.talend.designer.codegen.CodeGenerator;
-import org.talend.designer.codegen.exception.CodeGeneratorException;
+import org.talend.designer.codegen.ICodeGenerator;
+import org.talend.designer.codegen.ICodeGeneratorService;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.nodes.NodeLabel;
 import org.talend.designer.core.ui.editor.nodes.NodeLabelEditPart;
@@ -60,7 +62,7 @@ public class CodeView extends ViewPart implements ISelectionListener {
 
     private ColorStyledText text;
 
-    private CodeGenerator codeGenerator = null;
+    private ICodeGenerator codeGenerator = null;
 
     private boolean mainOnly = true;
 
@@ -169,14 +171,15 @@ public class CodeView extends ViewPart implements ISelectionListener {
         if (node != null) {
             String generatedCode;
             if (codeGenerator == null) {
-                codeGenerator = new CodeGenerator();
+                ICodeGeneratorService service= GlobalServiceRegister.getCodeGeneratorService();
+                codeGenerator = service.createCodeGenerator();
             }
             if (mainOnly) {
                 viewMainAction.setChecked(true);
                 viewAllAction.setChecked(false);
                 try {
                     generatedCode = codeGenerator.generateComponentCode(node, ECodePart.MAIN);
-                } catch (CodeGeneratorException e) {
+                } catch (SystemException e) {
                     throw new RuntimeException(e);
                 }
             } else {
@@ -186,7 +189,7 @@ public class CodeView extends ViewPart implements ISelectionListener {
                     generatedCode = codeGenerator.generateComponentCode(node, ECodePart.START);
                     generatedCode += codeGenerator.generateComponentCode(node, ECodePart.MAIN);
                     generatedCode += codeGenerator.generateComponentCode(node, ECodePart.END);
-                } catch (CodeGeneratorException e) {
+                } catch (SystemException e) {
                     throw new RuntimeException(e);
                 }
             }

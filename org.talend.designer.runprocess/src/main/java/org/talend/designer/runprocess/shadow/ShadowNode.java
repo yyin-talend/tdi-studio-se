@@ -25,6 +25,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.talend.commons.exception.SystemException;
+import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IComponentsFactory;
 import org.talend.core.model.components.IODataComponent;
@@ -37,8 +39,7 @@ import org.talend.core.model.process.INode;
 import org.talend.core.model.process.INodeReturn;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.temp.ECodePart;
-import org.talend.designer.codegen.CodeGenerator;
-import org.talend.designer.codegen.exception.CodeGeneratorException;
+import org.talend.designer.codegen.ICodeGeneratorService;
 import org.talend.repository.model.ComponentsFactoryProvider;
 
 /**
@@ -50,7 +51,7 @@ import org.talend.repository.model.ComponentsFactoryProvider;
 public abstract class ShadowNode implements INode {
 
     private String componentName;
-    
+
     private IComponent component;
 
     private IConnection inCnx;
@@ -69,7 +70,7 @@ public abstract class ShadowNode implements INode {
 
         this.componentName = componentName;
         parameters = new ArrayList<IElementParameter>();
-        
+
         IComponentsFactory compFac = ComponentsFactoryProvider.getInstance();
         setComponent(compFac.get(componentName));
     }
@@ -114,8 +115,9 @@ public abstract class ShadowNode implements INode {
     public String getGeneratedCode() {
         String generatedCode;
         try {
-            generatedCode = new CodeGenerator().generateComponentCode(this, ECodePart.MAIN);
-        } catch (CodeGeneratorException e) {
+            ICodeGeneratorService service = GlobalServiceRegister.getCodeGeneratorService();
+            generatedCode = service.createCodeGenerator().generateComponentCode(this, ECodePart.MAIN);
+        } catch (SystemException e) {
             generatedCode = null;
         }
         return generatedCode;
@@ -127,7 +129,8 @@ public abstract class ShadowNode implements INode {
      * @see org.talend.core.model.process.INode#getIncomingConnections()
      */
     public List<? extends IConnection> getIncomingConnections() {
-        return (List<? extends IConnection>) Arrays.asList(inCnx != null ? new IConnection[] { inCnx } : new IConnection[0]);
+        return (List<? extends IConnection>) Arrays.asList(inCnx != null ? new IConnection[] { inCnx }
+                : new IConnection[0]);
     }
 
     /*
@@ -147,7 +150,8 @@ public abstract class ShadowNode implements INode {
      * @see org.talend.core.model.process.INode#getOutgoingConnections()
      */
     public List<? extends IConnection> getOutgoingConnections() {
-        return (List<? extends IConnection>) Arrays.asList(outCnx != null ? new IConnection[] { outCnx } : new IConnection[0]);
+        return (List<? extends IConnection>) Arrays.asList(outCnx != null ? new IConnection[] { outCnx }
+                : new IConnection[0]);
     }
 
     /*
@@ -296,28 +300,31 @@ public abstract class ShadowNode implements INode {
     public void metadataOutputChanged(IODataComponent dataComponent, String connectionToApply) {
         // Nothing to do as it's shadow node
     }
-    
+
     public boolean isReadOnly() {
         return false;
     }
-    
+
     public void setReadOnly(boolean readOnly) {
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.core.model.process.INode#getComponent()
      */
     public IComponent getComponent() {
         return component;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.core.model.process.INode#setComponent(org.talend.core.model.components.IComponent)
      */
     public void setComponent(IComponent component) {
         this.component = component;
-        
+
     }
-    
 
 }

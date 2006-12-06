@@ -33,6 +33,7 @@ import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IActionBars;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.commands.ActionHandler;
 import org.eclipse.ui.contexts.IContextActivation;
 import org.eclipse.ui.contexts.IContextService;
@@ -45,7 +46,6 @@ import org.talend.commons.ui.swt.tableviewer.TableViewerCreator.SORT;
 import org.talend.commons.utils.data.bean.IBeanPropertyAccessors;
 import org.talend.designer.core.model.components.ModuleNeeded;
 import org.talend.designer.core.model.components.ModulesNeededProvider;
-import org.talend.designer.runprocess.RunProcessPlugin;
 
 /**
  * DOC nrousseau class global comment. Detailled comment <br/>
@@ -204,7 +204,7 @@ public class ModulesView extends ViewPart {
 
             public void focusGained(FocusEvent e) {
                 log.trace("Modules gain focus");
-                IContextService contextService = (IContextService) RunProcessPlugin.getDefault().getWorkbench().getAdapter(
+                IContextService contextService = (IContextService) PlatformUI.getWorkbench().getAdapter(
                         IContextService.class);
                 ca = contextService.activateContext("talend.modules");
             }
@@ -212,7 +212,7 @@ public class ModulesView extends ViewPart {
             public void focusLost(FocusEvent e) {
                 log.trace("Modules lost focus");
                 if (ca != null) {
-                    IContextService contextService = (IContextService) RunProcessPlugin.getDefault().getWorkbench().getAdapter(
+                    IContextService contextService = (IContextService) PlatformUI.getWorkbench().getAdapter(
                             IContextService.class);
                     contextService.deactivateContext(ca);
                 }

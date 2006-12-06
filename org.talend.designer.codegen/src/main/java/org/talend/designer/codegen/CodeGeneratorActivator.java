@@ -22,6 +22,8 @@
 package org.talend.designer.codegen;
 
 import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.osgi.framework.BundleContext;
+import org.talend.core.GlobalServiceRegister;
 
 /**
  * Activator for Code Generator.
@@ -46,5 +48,11 @@ public class CodeGeneratorActivator extends AbstractUIPlugin {
 
     public static CodeGeneratorActivator getDefault() {
         return plugin;
+    }
+
+    @Override
+    public void start(BundleContext context) throws Exception {
+        super.start(context);
+        GlobalServiceRegister.registerCodeGeneratorService(new CodeGeneratorService());
     }
 }

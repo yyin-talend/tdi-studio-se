@@ -54,6 +54,7 @@ import org.eclipse.ui.part.MultiPageEditorPart;
 import org.epic.perleditor.PerlEditorPlugin;
 import org.talend.commons.exception.MessageBoxExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
+import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.ui.images.EImage;
 import org.talend.core.ui.images.ImageProvider;
@@ -67,8 +68,9 @@ import org.talend.designer.core.ui.editor.nodes.NodeLabelEditPart;
 import org.talend.designer.core.ui.editor.nodes.NodePart;
 import org.talend.designer.core.ui.editor.outline.NodeTreeEditPart;
 import org.talend.designer.core.ui.editor.process.Process;
+import org.talend.designer.runprocess.IPerlProcessor;
+import org.talend.designer.runprocess.IRunProcessService;
 import org.talend.designer.runprocess.ProcessorException;
-import org.talend.designer.runprocess.perl.PerlProcessor;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.ui.views.IRepositoryView;
 import org.talend.repository.ui.views.RepositoryView;
@@ -131,7 +133,8 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
     void createPage1() {
         perlEditor = new TalendPerlEditor();
         IProcess process = designerEditor.getProcess();
-        PerlProcessor plProcessor = new PerlProcessor(process, false);
+        IRunProcessService service = GlobalServiceRegister.getRunProcessService();
+        IPerlProcessor plProcessor = service.createPerlProcessor(process, false);
         try {
             plProcessor.initPaths(process.getContextManager().getDefaultContext());
             IFile codeFile = ResourcesPlugin.getWorkspace().getRoot().getFile(
@@ -273,7 +276,9 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
         setName();
         if (newPageIndex == 1) {
             IProcess process = designerEditor.getProcess();
-            PerlProcessor plProcessor = new PerlProcessor(process, false);
+
+            IRunProcessService service = GlobalServiceRegister.getRunProcessService();
+            IPerlProcessor plProcessor = service.createPerlProcessor(process, false);
 
             try {
                 // plProcessor.generateCode(process.getContextManager().getDefaultContext(), false, false, true,
@@ -320,7 +325,7 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
      * 
      * @param plProcessor
      */
-    private void moveCursorToSelectedComponent(PerlProcessor plProcessor) {
+    private void moveCursorToSelectedComponent(IPerlProcessor plProcessor) {
         String nodeName = getSelectedNode();
 
         if (nodeName.compareTo("") != 0) {
@@ -385,8 +390,8 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
                 public void run() {
                     IWorkbenchPage[] pages = getSite().getWorkbenchWindow().getPages();
                     for (int i = 0; i < pages.length; i++) {
-                        if (((FileEditorInput) designerEditor.getEditorInput()).getFile().getProject()
-                                .equals(event.getResource())) {
+                        if (((FileEditorInput) designerEditor.getEditorInput()).getFile().getProject().equals(
+                                event.getResource())) {
                             IEditorPart editorPart = pages[i].findEditor(designerEditor.getEditorInput());
                             pages[i].closeEditor(editorPart, true);
                         }

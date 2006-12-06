@@ -35,9 +35,10 @@ import org.eclipse.core.runtime.Platform;
 import org.osgi.framework.Bundle;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.MessageBoxExceptionHandler;
+import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IComponentsFactory;
-import org.talend.designer.runprocess.Processor;
+import org.talend.designer.runprocess.IRunProcessService;
 import org.talend.designer.runprocess.ProcessorException;
 import org.talend.repository.model.ComponentsFactoryProvider;
 
@@ -135,8 +136,9 @@ public class ModulesNeededProvider {
             StringBuffer out = new StringBuffer();
             StringBuffer err = new StringBuffer();
 
-            Processor.exec(out, err, new Path(checkPerlModuleAbsolutePath), null, Level.DEBUG, "", "", -1, -1, params);
-
+            IRunProcessService service = GlobalServiceRegister.getRunProcessService();
+            service.exec(out, err, new Path(checkPerlModuleAbsolutePath), null, Level.DEBUG, "", "", -1, -1, params);
+            
             analyzeResponse(out, componentsByModules);
 
             if (err.length() > 0) {

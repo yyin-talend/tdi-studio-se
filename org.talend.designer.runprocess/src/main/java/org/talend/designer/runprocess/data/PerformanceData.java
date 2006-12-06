@@ -21,28 +21,18 @@
 // ============================================================================
 package org.talend.designer.runprocess.data;
 
+import org.talend.designer.runprocess.IPerformanceData;
+
 /**
  * Describes process performance data. <br/>
  * 
  * $Id$
  * 
  */
-public final class PerformanceData {
+public final class PerformanceData implements IPerformanceData {
 
     /** Field separator. */
     private static final String FIELD_SEP = "|"; //$NON-NLS-1$
-
-    /** Action : Performance report. */
-    public static final String ACTION_PERF = "perf"; //$NON-NLS-1$
-
-    /** Action : process stoped. */
-    public static final String ACTION_STOP = "stop"; //$NON-NLS-1$
-
-    /** Action : process started. */
-    public static final String ACTION_START = "start"; //$NON-NLS-1$
-    
-    /** Action : clear performance stats. */
-    public static final String ACTION_CLEAR = "clear"; //$NON-NLS-1$
 
     /** Data string to be parsed. */
     private String data;

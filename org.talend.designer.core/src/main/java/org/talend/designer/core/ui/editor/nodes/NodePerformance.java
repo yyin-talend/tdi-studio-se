@@ -27,10 +27,12 @@ import java.util.Locale;
 
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
+import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.designer.core.ui.editor.nodecontainer.NodeContainer;
-import org.talend.designer.runprocess.data.PerformanceData;
+import org.talend.designer.runprocess.IPerformanceData;
+import org.talend.designer.runprocess.IRunProcessService;
 
 /**
  * Element for the performance, linked to a NodeContainer. <br/>
@@ -61,9 +63,10 @@ public class NodePerformance extends Element {
     private String htmlFromPerformance(String data) {
         StringBuffer html = new StringBuffer();
 
-        PerformanceData perf = new PerformanceData(data);
+        IRunProcessService service = GlobalServiceRegister.getRunProcessService();
+        IPerformanceData perf = service.createPerformanceData(data);
 
-        if (PerformanceData.ACTION_PERF.equals(perf.getAction())) {
+        if (IPerformanceData.ACTION_PERF.equals(perf.getAction())) {
             final String perfPattern = "<font color=''#4477BB''>" + "{0, number,#} rows - {1,number,#.##}s<br>"
                     + "<b>{2,number,#.##} rows/s</b>" + "</font>";
             long lineCount = perf.getLineCount();
@@ -72,10 +75,10 @@ public class NodePerformance extends Element {
             MessageFormat mf = new MessageFormat(perfPattern, Locale.US);
             html.append(mf.format(new Object[] { new Long(lineCount), new Double((double) processingTime / 1000d),
                     new Double(avg) }));
-        } else if (PerformanceData.ACTION_START.equals(perf.getAction())) {
+        } else if (IPerformanceData.ACTION_START.equals(perf.getAction())) {
             final String perfPattern = "<font color='#AA3322'>" + "<i>Starting</i>" + "</font>";
             html.append(perfPattern);
-        } else if (PerformanceData.ACTION_STOP.equals(perf.getAction())) {
+        } else if (IPerformanceData.ACTION_STOP.equals(perf.getAction())) {
             final String perfPattern = "<font color=''#229922''>" + "{0, number,#} rows in {1,number,#.##}s<br>"
                     + "<i>{2,number,#.##} rows/s</i>" + "</font>";
             long lineCount = perf.getLineCount();

@@ -56,7 +56,7 @@ import org.talend.designer.codegen.proxy.JetProxy;
  * $Id$
  * 
  */
-public class CodeGenerator {
+public class CodeGenerator implements ICodeGenerator{
 
     private IProcess process;
 

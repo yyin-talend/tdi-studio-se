@@ -108,6 +108,7 @@ import org.talend.commons.utils.data.container.Content;
 import org.talend.commons.utils.data.container.ContentList;
 import org.talend.commons.utils.data.container.RootContainer;
 import org.talend.core.CorePlugin;
+import org.talend.core.GlobalServiceRegister;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.language.perl.ICodeSyntaxChecker;
 import org.talend.core.model.components.IODataComponent;
@@ -148,7 +149,6 @@ import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.model.components.ExternalUtilities;
 import org.talend.designer.core.model.context.ContextManager;
-import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
 import org.talend.designer.core.ui.MultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.TalendEditor;
 import org.talend.designer.core.ui.editor.cmd.ChangeActivateStatusNodeCommand;
@@ -165,9 +165,7 @@ import org.talend.designer.core.ui.editor.nodes.NodeLabel;
 import org.talend.designer.core.ui.editor.outline.NodeReturnsTreeEditPart;
 import org.talend.designer.core.ui.editor.outline.NodeTreeEditPart;
 import org.talend.designer.core.ui.editor.process.Process;
-import org.talend.designer.core.ui.editor.properties.macrowidgets.tableeditor.PropertiesTableEditorModel;
-import org.talend.designer.core.ui.editor.properties.macrowidgets.tableeditor.PropertiesTableEditorView;
-import org.talend.designer.runprocess.language.SyntaxCheckerFactory;
+import org.talend.designer.runprocess.IRunProcessService;
 import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryConstants;
@@ -3354,7 +3352,9 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
 
             final ECodeLanguage language = ((RepositoryContext) org.talend.core.CorePlugin.getContext().getProperty(
                     org.talend.core.context.Context.REPOSITORY_CONTEXT_KEY)).getProject().getLanguage();
-            final ICodeSyntaxChecker syntaxChecker = SyntaxCheckerFactory.getInstance().getSyntaxChecker(language);
+            
+            IRunProcessService service = GlobalServiceRegister.getRunProcessService();
+            final ICodeSyntaxChecker syntaxChecker = service.getSyntaxChecker(language);
 
             final String valueFinal = ControlUtils.getText(control);
 
