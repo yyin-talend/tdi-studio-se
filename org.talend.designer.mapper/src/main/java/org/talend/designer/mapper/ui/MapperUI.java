@@ -56,6 +56,7 @@ import org.talend.commons.ui.command.CommandStackForComposite;
 import org.talend.commons.ui.swt.drawing.background.BackgroundRefresher;
 import org.talend.commons.ui.ws.WindowSystem;
 import org.talend.commons.utils.performance.PerformanceEvaluator;
+import org.talend.commons.utils.threading.AsynchronousThreading;
 import org.talend.commons.utils.threading.ExecutionLimiter;
 import org.talend.designer.mapper.external.data.ExternalMapperUiProperties;
 import org.talend.designer.mapper.managers.MapperManager;
@@ -98,11 +99,6 @@ public class MapperUI {
      */
     public static final int DEFAULT_TIME_BEFORE_NEW_BG_REFRESH = 5;
 
-    /**
-     * in seconds.
-     */
-    private static final int TIME_BEFORE_REEVALUATE_PERFORMANCE = 30;
-
     private SashForm datasFlowViewSashForm;
 
     private InputTablesZoneView inputTablesZoneView;
@@ -125,8 +121,6 @@ public class MapperUI {
 
     protected Image bgImage2;
 
-    private Image oldImage;
-
     private Color bgColorLinksZone;
 
     private ScrollBar vBar1;
@@ -138,8 +132,6 @@ public class MapperUI {
     private ExecutionLimiter backgroundRefreshLimiter;
 
     private ExecutionLimiter backgroundRefreshLimiterForceRecalculate;
-
-    private final PerformanceEvaluator performanceEvaluator = new PerformanceEvaluator();
 
     private int backgroundRefreshTimeForScrolling = DEFAULT_TIME_BEFORE_NEW_BG_REFRESH;
 
@@ -165,8 +157,6 @@ public class MapperUI {
     private static final int INCREMENT_VERTICAL_SCROLLBAR_ZONE = 100;
 
     public static final int OFFSET_VISIBLES_POINTS = 15;
-
-    private boolean antialiasActivated;
 
     private DropTargetOperationListener dropTargetOperationListener;
 
@@ -262,7 +252,14 @@ public class MapperUI {
 
         if (WindowSystem.isGTK()) {
             // resize especially for GTK
-            resizeNotMinimizedTablesAtExpandedSize(display);
+        	new AsynchronousThreading(1000, false, display, new Runnable() {
+
+				public void run() {
+					resizeNotMinimizedTablesAtExpandedSize(display);
+					mapperUIParent.getShell().layout();
+				}
+        		
+        	}).start();
         }
         selectFirstInOutTablesView();
     }

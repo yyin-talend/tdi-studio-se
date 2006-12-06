@@ -285,16 +285,18 @@ public abstract class DataMapTableView extends Composite {
         minimizeButton = new ToolItem(toolBarActions, SWT.PUSH);
 
         Point sizeToolBar = toolBarActions.computeSize(SWT.DEFAULT, SWT.DEFAULT);
-        GridData gridData = new GridData(GridData.HORIZONTAL_ALIGN_END);
+        GridData gridData = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
         if (toolbarNeededToBeRightStyle() && WindowSystem.isWIN32()) {
             gridData.widthHint = sizeToolBar.x;
             // to correct invalid margin when SWT.RIGHT style set in ToolBar
             gridData.widthHint -= 48;
             // gridData.widthHint -= 34;
         }
-        if (WindowSystem.isGTK()) {
-            gridData.widthHint += 20;
-            gridData.heightHint = 24;
+        if (
+//        		toolbarNeededToBeRightStyle() && 
+        		WindowSystem.isGTK()) {
+//            gridData.widthHint += 5;
+            gridData.heightHint = 26;
         }
         toolBarActions.setLayoutData(gridData);
 
@@ -763,6 +765,9 @@ public abstract class DataMapTableView extends Composite {
         if (visible) {
             tableForConstraintsGridData.exclude = false;
             tableForConstraints.setVisible(true);
+            if(WindowSystem.isGTK()) {
+            	updateGridDataHeightForTableConstraints();
+            }
         } else {
             tableForConstraintsGridData.exclude = true;
             tableForConstraints.setVisible(false);
@@ -1708,7 +1713,7 @@ public abstract class DataMapTableView extends Composite {
      */
     public void updateGridDataHeightForTableConstraints() {
 
-        int moreSpace = WindowSystem.isGTK() ? tableForConstraints.getItemHeight() / 3 : 0;
+        int moreSpace = WindowSystem.isGTK() ? tableForConstraints.getItemHeight() : 0;
         tableForConstraintsGridData.heightHint = ((OutputTable) abstractDataMapTable).getConstraintEntries().size()
                 * tableForConstraints.getItemHeight() + tableForConstraints.getItemHeight() / 2 + moreSpace;
     }
