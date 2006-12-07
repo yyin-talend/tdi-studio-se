@@ -35,7 +35,9 @@
       FIELD="SCHEMA_TYPE"
       REQUIRED="true"
       NUM_ROW="1"
-    />
+    >
+      <DEFAULT/>
+    </PARAMETER>
 
     <PARAMETER
       NAME="FILENAME"
