@@ -23,6 +23,7 @@ package org.talend.repository.ui.login;
 
 import java.util.regex.Pattern;
 
+import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ArrayContentProvider;
@@ -521,6 +522,7 @@ public class LoginComposite extends Composite {
 
     public User getUser() {
         User toReturn = PropertiesFactory.eINSTANCE.createUser();
+        toReturn.setId(1);
         toReturn.setLogin(userCombo.getText());
         toReturn.setPassword(passwordText.getText());
         return toReturn;
