@@ -21,6 +21,9 @@
 // ============================================================================
 package org.talend.designer.core.ui.editor.cmd;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.gef.commands.Command;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Shell;
@@ -32,9 +35,12 @@ import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 import org.talend.core.model.components.IODataComponent;
 import org.talend.core.model.components.IODataComponentContainer;
 import org.talend.core.model.metadata.IMetadataTable;
+import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.IConnection;
+import org.talend.core.model.process.INode;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
+import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.process.Process;
 
@@ -48,11 +54,11 @@ public class ChangeMetadataCommand extends Command {
 
     private Node node, inputNode;
 
-    private IMetadataTable currentOutputMetadata, newOutputMetadata;
+    private IMetadataTable currentOutputMetadata, newOutputMetadata, oldOutputMetadata;
 
     private boolean outputWasRepository = false, inputWasRepository = false;
 
-    private IMetadataTable currentInputMetadata, newInputMetadata;
+    private IMetadataTable currentInputMetadata, newInputMetadata, oldInputMetadata;
 
     private IODataComponentContainer dataContainer;
 
@@ -60,39 +66,73 @@ public class ChangeMetadataCommand extends Command {
 
     private Boolean propagate;
 
-    public ChangeMetadataCommand(Node node, Node inputNode, IMetadataTable currentInputMetadata, IMetadataTable newInputMetadata,
-            IMetadataTable currentOutputMetadata, IMetadataTable newOutputMetadata, IODataComponentContainer dataContainer) {
+    private List<ChangeMetadataCommand> propagatedChange = new ArrayList<ChangeMetadataCommand>();
+
+    private boolean internal = false;
+    
+    private boolean repositoryMode = false;
+
+    public ChangeMetadataCommand(Node node, Node inputNode, IMetadataTable currentInputMetadata,
+            IMetadataTable newInputMetadata, IMetadataTable currentOutputMetadata, IMetadataTable newOutputMetadata) {
         this.node = node;
         this.inputNode = inputNode;
         this.currentInputMetadata = currentInputMetadata;
+        if (currentInputMetadata != null) {
+            oldInputMetadata = currentInputMetadata.clone();
+        } else {
+            oldInputMetadata = null;
+        }
         this.newInputMetadata = newInputMetadata;
         this.currentOutputMetadata = currentOutputMetadata;
+        if (currentOutputMetadata == null) {
+            currentOutputMetadata = node.getMetadataList().get(0);
+        }
+        oldOutputMetadata = currentOutputMetadata.clone();
         this.newOutputMetadata = newOutputMetadata;
-        this.dataContainer = dataContainer;
+        initializeContainer();
         setLabel("Change Metadata values");
     }
 
-    public ChangeMetadataCommand(Node node, IMetadataTable currentOutputMetadata, IMetadataTable newOutputMetadata,
-            IODataComponent dataComponent) {
+    public ChangeMetadataCommand(Node node, IMetadataTable currentOutputMetadata, IMetadataTable newOutputMetadata) {
         this.node = node;
         this.inputNode = null;
         this.currentInputMetadata = null;
         this.newInputMetadata = null;
-        this.currentOutputMetadata = currentOutputMetadata;
-        this.newOutputMetadata = newOutputMetadata;
-        if (dataComponent != null) {
-            this.newOutputMetadata = dataComponent.getTable();
-            this.dataComponent = dataComponent;
+        oldInputMetadata = null;
+        if (currentOutputMetadata == null) {
+            currentOutputMetadata = node.getMetadataList().get(0);
         }
+        this.currentOutputMetadata = currentOutputMetadata;
+        oldOutputMetadata = currentOutputMetadata.clone();
+        this.newOutputMetadata = newOutputMetadata;
+        initializeContainer();
         setLabel("Change Metadata values");
     }
+    
+    protected void setRepositoryMode(boolean repositoryMode) {
+        this.repositoryMode = repositoryMode;
+    }
 
-    private void refreshPropertyView() {
-        IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-        IViewPart view = page.findView("org.eclipse.ui.views.PropertySheet");
-        PropertySheet sheet = (PropertySheet) view;
-        TabbedPropertySheetPage tabbedPropertySheetPage = (TabbedPropertySheetPage) sheet.getCurrentPage();
-        tabbedPropertySheetPage.refresh();
+    private void initializeContainer() {
+        dataContainer = new IODataComponentContainer();
+        for (Connection connec : (List<Connection>) node.getIncomingConnections()) {
+            if (connec.isActivate() && connec.getLineStyle().equals(EConnectionType.FLOW_MAIN)) {
+                IODataComponent input = new IODataComponent(connec);
+                dataContainer.getInputs().add(input);
+            }
+        }
+        for (Connection connec : (List<Connection>) node.getOutgoingConnections()) {
+            if (connec.isActivate()
+                    && (connec.getLineStyle().equals(EConnectionType.FLOW_MAIN) || connec.getLineStyle().equals(
+                            EConnectionType.FLOW_REF))) {
+                IODataComponent dataComponent = new IODataComponent(connec, newOutputMetadata);
+                dataContainer.getOuputs().add(dataComponent);
+            }
+        }
+    }
+
+    private void setInternal(boolean internal) {
+        this.internal = internal;
     }
 
     private boolean getPropagate(Boolean returnIfNull) {
@@ -111,11 +151,13 @@ public class ChangeMetadataCommand extends Command {
 
     public void execute(Boolean propagateP) {
         this.propagate = propagateP;
+        if (currentOutputMetadata == null) {
+            currentOutputMetadata = node.getMetadataList().get(0);
+        }
         execute();
     }
 
-    @Override
-    public void execute() {
+    private void propagateDatas(boolean isExecute) {
         // Propagate :
         if (dataContainer != null && (!dataContainer.getInputs().isEmpty() || !dataContainer.getOuputs().isEmpty())) {
             for (IODataComponent currentIO : dataContainer.getInputs()) {
@@ -128,7 +170,23 @@ public class ChangeMetadataCommand extends Command {
             for (IODataComponent currentIO : dataContainer.getOuputs()) {
                 if (currentIO.hasChanged()) {
                     if (getPropagate()) {
-                        currentIO.getTarget().metadataInputChanged(currentIO, currentIO.getName());
+                        INode targetNode = currentIO.getTarget();
+                        targetNode.metadataInputChanged(currentIO, currentIO.getName());
+                        if (isExecute) {
+                            if (targetNode instanceof Node) {
+                                if (!((Node) targetNode).isExternalNode()
+                                        && ((Node) targetNode).getComponent().isSchemaAutoPropagated()) {
+                                    ChangeMetadataCommand cmd = new ChangeMetadataCommand((Node) targetNode, null,
+                                            newOutputMetadata);
+                                    cmd.setInternal(true);
+                                    cmd.execute(true);
+                                    propagatedChange.add(cmd);
+                                }
+                            }
+                            currentIO.setTable(oldOutputMetadata);
+                        } else {
+                            currentIO.setTable(newOutputMetadata);
+                        }
                     }
                 }
             }
@@ -138,52 +196,64 @@ public class ChangeMetadataCommand extends Command {
             }
         }
         // End propagate
+    }
+
+    @Override
+    public void execute() {
+        propagatedChange.clear();
+
+        propagateDatas(true);
 
         if (currentInputMetadata != null) {
-            // inputNode.getMetadataList().remove(currentInputMetadata);
-            // inputNode.getMetadataList().add(newInputMetadata);
-            currentInputMetadata.setListColumns(newInputMetadata.getListColumns());
-            String type = (String) inputNode.getPropertyValue(EParameterName.SCHEMA_TYPE.getName());
-            if (type != null) {
-                if (type.equals(EmfComponent.REPOSITORY)) {
-                    inputWasRepository = true;
-                    inputNode.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), EmfComponent.BUILTIN);
+            if (!currentInputMetadata.sameMetadataAs(newInputMetadata)) {
+                currentInputMetadata.setListColumns(newInputMetadata.getListColumns());
+                String type = (String) inputNode.getPropertyValue(EParameterName.SCHEMA_TYPE.getName());
+                if (type != null) {
+                    if (type.equals(EmfComponent.REPOSITORY)) {
+                        inputWasRepository = true;
+                        inputNode.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), EmfComponent.BUILTIN);
+                    }
                 }
             }
         }
 
-        if (currentOutputMetadata == null) {
-            currentOutputMetadata = node.getMetadataList().get(0);
-        }
         if (!currentOutputMetadata.sameMetadataAs(newOutputMetadata)) {
             currentOutputMetadata.setListColumns(newOutputMetadata.getListColumns());
 
             String type = (String) node.getPropertyValue(EParameterName.SCHEMA_TYPE.getName());
-            if (type != null && type.equals(EmfComponent.REPOSITORY)) {
+            if (type != null && type.equals(EmfComponent.REPOSITORY) && !repositoryMode) {
                 outputWasRepository = true;
                 node.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), EmfComponent.BUILTIN);
             }
         }
-
-        refreshPropertyView();
-        ((Process) node.getProcess()).checkProcess(getPropagate(true));
+        if (!internal) {
+            ((Process) node.getProcess()).checkProcess();
+        }
     }
 
     @Override
     public void undo() {
+        propagateDatas(false);
+
         if (currentInputMetadata != null) {
-            inputNode.getMetadataList().remove(newInputMetadata);
-            inputNode.getMetadataList().add(currentInputMetadata);
-            if (inputWasRepository) {
-                inputNode.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), EmfComponent.REPOSITORY);
+            if (!currentInputMetadata.sameMetadataAs(oldInputMetadata)) {
+                currentInputMetadata.setListColumns(oldInputMetadata.getListColumns());
+                if (inputWasRepository) {
+                    inputNode.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), EmfComponent.REPOSITORY);
+                }
             }
         }
-        node.getMetadataList().remove(newOutputMetadata);
-        node.getMetadataList().add(currentOutputMetadata);
+        if (!currentOutputMetadata.sameMetadataAs(oldOutputMetadata)) {
+            currentOutputMetadata.setListColumns(oldOutputMetadata.getListColumns());
+        }
         if (outputWasRepository) {
             node.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), EmfComponent.REPOSITORY);
         }
-        refreshPropertyView();
-        ((Process) node.getProcess()).checkProcess();
+        for (ChangeMetadataCommand cmd : propagatedChange) {
+            cmd.undo();
+        }
+        if (!internal) {
+            ((Process) node.getProcess()).checkProcess();
+        }
     }
 }

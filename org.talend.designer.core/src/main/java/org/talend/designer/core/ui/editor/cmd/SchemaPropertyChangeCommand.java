@@ -23,12 +23,13 @@ package org.talend.designer.core.ui.editor.cmd;
 
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.designer.core.ui.editor.nodes.Node;
+import org.talend.designer.core.ui.editor.process.Process;
 
 /**
  * Command that will change the schema in the property. <br/>
  * 
  * $Id$
- * 
+ * @deprecated
  */
 public class SchemaPropertyChangeCommand extends PropertyChangeCommand {
 
@@ -52,6 +53,7 @@ public class SchemaPropertyChangeCommand extends PropertyChangeCommand {
         nodeMetadataTable.setListColumns(repositoryMetadataTable.getListColumns());
         nodeMetadataTable.setDescription(repositoryMetadataTable.getDescription());
         super.execute();
+        ((Process) node.getProcess()).checkProcess();
     }
 
     @Override
@@ -59,5 +61,6 @@ public class SchemaPropertyChangeCommand extends PropertyChangeCommand {
         nodeMetadataTable.setListColumns(oldNodeMetadataTable.getListColumns());
         nodeMetadataTable.setDescription(oldNodeMetadataTable.getDescription());
         super.undo();
+        ((Process) node.getProcess()).checkProcess();
     }
 }

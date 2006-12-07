@@ -32,6 +32,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.ObjectUtils;
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -411,6 +412,11 @@ public class Node extends Element implements INode {
      */
     public void addInput(final Connection connection) {
         this.inputs.add(connection);
+        if (!isExternalNode() && component.isSchemaAutoPropagated()) {
+            if ((metadataList.get(0).getListColumns().size() == 0) || (outputs.size() == 0)) {
+                metadataList.get(0).setListColumns(connection.getMetadataTable().clone().getListColumns());
+            }
+        }
         fireStructureChange(INPUTS, connection);
     }
 
@@ -1169,14 +1175,6 @@ public class Node extends Element implements INode {
         log.trace("InputChanged : Node=" + this + ", IOData=[" + dataComponent + "] on " + connectionToApply);
         if (externalNode != null) {
             externalNode.metadataInputChanged(dataComponent, connectionToApply);
-        } else {
-            if (this.getComponent() instanceof EmfComponent) {
-                boolean prop = ((EmfComponent) this.getComponent()).isSchemaAutoPropagated();
-                if (prop) {
-                    ChangeMetadataCommand cmd = new ChangeMetadataCommand(this, null, null, dataComponent);
-                    cmd.execute(true);
-                }
-            }
         }
     }
 

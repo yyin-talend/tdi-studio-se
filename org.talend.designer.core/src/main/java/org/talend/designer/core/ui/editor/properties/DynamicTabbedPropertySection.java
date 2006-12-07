@@ -156,6 +156,7 @@ import org.talend.designer.core.ui.editor.cmd.ChangeMetadataCommand;
 import org.talend.designer.core.ui.editor.cmd.ChangeValuesFromRepository;
 import org.talend.designer.core.ui.editor.cmd.ExternalNodeChangeCommand;
 import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
+import org.talend.designer.core.ui.editor.cmd.RepositoryChangeMetadataCommand;
 import org.talend.designer.core.ui.editor.cmd.SchemaPropertyChangeCommand;
 import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.connections.ConnectionLabel;
@@ -374,17 +375,12 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                 }
                 IMetadataTable inputMetadata = null, inputMetaCopy = null;
                 Connection inputConec = null;
-                IODataComponentContainer inAndOut = new IODataComponentContainer();
-                IODataComponent input = null;
                 boolean inputReadOnly = false, outputReadOnly = false;
                 for (Connection connec : (List<Connection>) node.getIncomingConnections()) {
                     if (connec.isActivate() && connec.getLineStyle().equals(EConnectionType.FLOW_MAIN)) {
                         inputMetadata = connec.getMetadataTable();
-                        // inputMetaCopy = inputMetadata.clone();
+                        inputMetaCopy = inputMetadata.clone();
                         inputConec = connec;
-
-                        input = new IODataComponent(connec);
-                        inputMetaCopy = input.getTable();
                         if (connec.getSource().isReadOnly()) {
                             inputReadOnly = true;
                         } else {
@@ -399,10 +395,6 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
 
                     }
                 }
-                if (input != null) {
-                    inAndOut.getInputs().add(input);
-                }
-
                 String propertyName = (String) button.getData(PROPERTY);
                 IElementParameter param = node.getElementParameter(propertyName);
                 if (param.isReadOnly() || node.isReadOnly()) {
@@ -410,15 +402,6 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                 }
                 IMetadataTable originaleOutputTable = (IMetadataTable) node.getMetadataList().get(0);
                 IMetadataTable outputMetaCopy = originaleOutputTable.clone();
-
-                for (Connection connec : (List<Connection>) node.getOutgoingConnections()) {
-                    if (connec.isActivate()
-                            && (connec.getLineStyle().equals(EConnectionType.FLOW_MAIN) || connec.getLineStyle()
-                                    .equals(EConnectionType.FLOW_REF))) {
-                        IODataComponent dataComponent = new IODataComponent(connec, outputMetaCopy);
-                        inAndOut.getOuputs().add(dataComponent);
-                    }
-                }
 
                 MetadataDialog metaDialog;
                 if (inputMetadata != null) {
@@ -452,7 +435,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                             inputNode = inputConec.getSource();
                         }
                         ChangeMetadataCommand cmd = new ChangeMetadataCommand(node, inputNode, inputMetadata,
-                                inputMetaCopy, originaleOutputTable, outputMetaCopy, inAndOut);
+                                inputMetaCopy, originaleOutputTable, outputMetaCopy);
                         getCommandStack().execute(cmd);
                         updateColumnList();
                         refresh();
@@ -469,7 +452,13 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                 IMetadataTable metaCopy = meta.clone();
                 metaCopy.setListColumns(new ArrayList<IMetadataColumn>());
 
-                ChangeMetadataCommand cmd = new ChangeMetadataCommand(node, meta, metaCopy, null);
+                for (Connection connec : (List<Connection>) node.getIncomingConnections()) {
+                    if (connec.isActivate() && connec.getLineStyle().equals(EConnectionType.FLOW_MAIN)) {
+                        metaCopy = connec.getMetadataTable().clone();
+                    }
+                }
+
+                ChangeMetadataCommand cmd = new ChangeMetadataCommand(node, meta, metaCopy);
                 getCommandStack().execute(cmd);
                 updateColumnList();
             }
@@ -642,7 +631,9 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                                             } else {
                                                 repositoryMetadata = new MetadataTable();
                                             }
-                                            Command cmd = new SchemaPropertyChangeCommand((Node) elem, name, value,
+                                            // Command cmd = new SchemaPropertyChangeCommand((Node) elem, name, value,
+                                            // repositoryMetadata);
+                                            Command cmd = new RepositoryChangeMetadataCommand((Node) elem, name, value,
                                                     repositoryMetadata);
                                             getCommandStack().execute(cmd);
                                         }
@@ -693,7 +684,9 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                                             } else {
                                                 repositoryMetadata = new MetadataTable();
                                             }
-                                            Command cmd = new SchemaPropertyChangeCommand((Node) elem, name, value,
+                                            // Command cmd = new SchemaPropertyChangeCommand((Node) elem, name, value,
+                                            // repositoryMetadata);
+                                            Command cmd = new RepositoryChangeMetadataCommand((Node) elem, name, value,
                                                     repositoryMetadata);
                                             getCommandStack().execute(cmd);
                                             updateColumnList();
@@ -3352,7 +3345,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
 
             final ECodeLanguage language = ((RepositoryContext) org.talend.core.CorePlugin.getContext().getProperty(
                     org.talend.core.context.Context.REPOSITORY_CONTEXT_KEY)).getProject().getLanguage();
-            
+
             IRunProcessService service = GlobalServiceRegister.getRunProcessService();
             final ICodeSyntaxChecker syntaxChecker = service.getSyntaxChecker(language);
 

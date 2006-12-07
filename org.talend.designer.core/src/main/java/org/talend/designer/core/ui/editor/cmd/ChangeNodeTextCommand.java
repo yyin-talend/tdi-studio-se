@@ -73,8 +73,6 @@ public class ChangeNodeTextCommand extends Command {
         oldName = (String) nodeLabel.getPropertyValue(EParameterName.LABEL.getName());
         nodeLabel.setLabelText(newName);
         nodeLabel.setPropertyValue(EParameterName.LABEL.getName(), newName);
-        // labelName = (String) nodeLabel.getPropertyValue(EParameterName.LABEL.getName());
-        // nodeLabel.setPropertyValue(EParameterName.LABEL.getName(), Node.DEFAULT_LABEL);
         refreshPropertyView();
     }
 
@@ -85,7 +83,6 @@ public class ChangeNodeTextCommand extends Command {
     public void undo() {
         nodeLabel.setLabelText(oldName);
         nodeLabel.setPropertyValue(EParameterName.LABEL.getName(), oldName);
-        nodeLabel.setPropertyValue(EParameterName.LABEL.getName(), newName);
         refreshPropertyView();
     }
 }
