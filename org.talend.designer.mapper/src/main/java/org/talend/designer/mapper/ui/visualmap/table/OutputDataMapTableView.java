@@ -33,6 +33,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Table;
+import org.talend.commons.ui.swt.advanced.dataeditor.commands.ExtendedTableAddCommand;
+import org.talend.commons.ui.swt.advanced.dataeditor.commands.ExtendedTableRemoveCommand;
 import org.talend.commons.ui.swt.extended.table.AbstractExtendedTableViewer;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumn;
@@ -139,14 +141,14 @@ public class OutputDataMapTableView extends DataMapTableView {
     @Override
     protected boolean addToolItems() {
         createFiltersToolItems();
-//        addToolItemSeparator();
-//        createToolItems();
+        // addToolItemSeparator();
+        // createToolItems();
         return true;
     }
-    
+
     protected void createFiltersTable() {
 
-        this.extendedTableViewerForFilters = new AbstractExtendedTableViewer<FilterTableEntry>(((OutputTable)abstractDataMapTable)
+        this.extendedTableViewerForFilters = new AbstractExtendedTableViewer<FilterTableEntry>(((OutputTable) abstractDataMapTable)
                 .getTableFiltersEntriesModel(), centerComposite) {
 
             @Override
@@ -170,8 +172,7 @@ public class OutputDataMapTableView extends DataMapTableView {
                 newTableViewerCreator.setFirstColumnMasked(true);
 
             }
-            
-            
+
         };
         tableViewerCreatorForFilters = this.extendedTableViewerForFilters.getTableViewerCreator();
         this.extendedTableViewerForFilters.setCommandStack(mapperManager.getCommandStack());
@@ -204,8 +205,8 @@ public class OutputDataMapTableView extends DataMapTableView {
             public void selectionChanged(SelectionChangedEvent event) {
                 selectThisDataMapTableView();
                 UIManager uiManager = mapperManager.getUiManager();
-                uiManager.processSelectedMetadataTableEntries(OutputDataMapTableView.this, uiManager.extractSelectedTableEntries(tableViewer
-                        .getSelection()), true);
+                uiManager.processSelectedMetadataTableEntries(OutputDataMapTableView.this, uiManager
+                        .extractSelectedTableEntries(tableViewer.getSelection()), true);
             }
 
         });
@@ -266,13 +267,19 @@ public class OutputDataMapTableView extends DataMapTableView {
         column.setResizable(false);
         ButtonPushImageTableEditorContent buttonImage = new ButtonPushImageTableEditorContent() {
 
-            /* (non-Javadoc)
-             * @see org.talend.commons.ui.swt.tableviewer.tableeditor.ButtonImageTableEditorContent#selectionEvent(org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumn, java.lang.Object)
+            /*
+             * (non-Javadoc)
+             * 
+             * @see org.talend.commons.ui.swt.tableviewer.tableeditor.ButtonImageTableEditorContent#selectionEvent(org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumn,
+             * java.lang.Object)
              */
             @Override
             protected void selectionEvent(TableViewerCreatorColumn column, Object bean) {
-                mapperManager.removeTableEntry((ITableEntry) bean);
-                tableViewerCreatorForFilters.getTableViewer().refresh();
+                ExtendedTableRemoveCommand removeCommand = new ExtendedTableRemoveCommand(extendedTableViewerForFilters
+                        .getExtendedTableModel(), bean);
+                mapperManager.executeCommand(removeCommand);
+                // mapperManager.removeTableEntry((ITableEntry) bean);
+                // tableViewerCreatorForFilters.getTableViewer().refresh();
                 List list = tableViewerCreatorForFilters.getInputList();
                 updateGridDataHeightForTableConstraints();
                 if (list != null && list.size() == 0) {
@@ -280,15 +287,15 @@ public class OutputDataMapTableView extends DataMapTableView {
                 } else {
                     showTableConstraints(true);
                 }
-                
+
             }
-            
+
         };
         buttonImage.setImage(ImageProvider.getImage(EImage.MINUS_ICON));
         column.setTableEditorContent(buttonImage);
 
     }
-    
+
     /*
      * (non-Javadoc)
      * 
@@ -304,7 +311,9 @@ public class OutputDataMapTableView extends DataMapTableView {
         tableViewerCreatorForFilters.getSelectionHelper().deselectAll();
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.designer.mapper.ui.visualmap.table.DataMapTableView#toolbarNeededToBeRightStyle()
      */
     @Override

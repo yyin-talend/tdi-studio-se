@@ -127,8 +127,8 @@ public abstract class AbstractDataMapTable {
      * @param indicesOrigin
      * @param listIndexTarget
      */
-    public void swapColumnElements(List indicesOrigin, List<Integer> listIndexTarget) {
-        this.tableColumnsEntriesModel.swapElements(listIndexTarget, listIndexTarget);
+    public void swapColumnElements(List<Integer> indicesOrigin, List<Integer> listIndexTarget) {
+        this.tableColumnsEntriesModel.swapElements(indicesOrigin, listIndexTarget);
     }
 
 

@@ -510,6 +510,15 @@ public abstract class DataMapTableView extends Composite {
 
         if (abstractDataMapTable instanceof OutputTable) {
             OutputTable outputTable = (OutputTable) abstractDataMapTable;
+            outputTable.getTableFiltersEntriesModel().addAfterOperationListListener(new IListenableListListener<FilterTableEntry>() {
+
+                public void handleEvent(ListenableListEvent<FilterTableEntry> event) {
+                    
+                    resizeAtExpandedSize();
+                    
+                }
+
+            });
             outputTable.getTableFiltersEntriesModel().addModifiedBeanListener(new IModifiedBeanListener<FilterTableEntry>() {
 
                 public void handleEvent(ModifiedBeanEvent<FilterTableEntry> event) {
@@ -811,7 +820,7 @@ public abstract class DataMapTableView extends Composite {
      * DOC amaumont Comment method "onSelectDataMapTableView".
      */
     protected void onSelectDataMapTableView() {
-        mapperManager.getUiManager().selectDataMapTableView(this);
+        mapperManager.getUiManager().selectDataMapTableView(this, true);
     }
 
     /**
@@ -1296,7 +1305,7 @@ public abstract class DataMapTableView extends Composite {
     public Point getPreferredSize(boolean newTableEntryWillBeAdded, boolean expandedSize, boolean newConstraintEntryWillBeAdded) {
         int heightOffset = 0;
         int tableEntryItemHeight = tableViewerCreatorForColumns.getTable().getItemHeight();
-        heightOffset += newTableEntryWillBeAdded ? tableEntryItemHeight : 0;
+//        heightOffset += newTableEntryWillBeAdded ? tableEntryItemHeight : 0;
         heightOffset += newConstraintEntryWillBeAdded ? tableViewerCreatorForFilters.getTable().getItemHeight() : 0;
 
         int newHeight = this.computeSize(SWT.DEFAULT, SWT.DEFAULT).y - tableEntryItemHeight + heightOffset;
@@ -1720,7 +1729,7 @@ public abstract class DataMapTableView extends Composite {
         if (uiManager.getCurrentSelectedInputTableView() != DataMapTableView.this
                 && uiManager.getCurrentSelectedOutputTableView() != DataMapTableView.this) {
 
-            uiManager.selectDataMapTableView(DataMapTableView.this);
+            uiManager.selectDataMapTableView(DataMapTableView.this, true);
         }
     }
 

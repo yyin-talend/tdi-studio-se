@@ -177,8 +177,8 @@ public class MapperUI {
     public void init(MapperModel mapperModel) {
         // long time1 = System.currentTimeMillis();
 
-        CommandStack commandStack = new CommandStackForComposite(this.mapperUIParent);
-        mapperManager.setCommandStack(commandStack);
+//        CommandStack commandStack = new CommandStackForComposite(this.mapperUIParent);
+//        mapperManager.setCommandStack(commandStack);
         
         final UIManager uiManager = mapperManager.getUiManager();
         final ExternalMapperUiProperties uiProperties = uiManager.getUiProperties();
@@ -276,12 +276,12 @@ public class MapperUI {
         List<DataMapTableView> inputsTablesView = mapperManager.getInputsTablesView();
         UIManager uiManager = mapperManager.getUiManager();
         if (inputsTablesView.size() > 0) {
-            uiManager.selectDataMapTableView(inputsTablesView.get(0));
+            uiManager.selectDataMapTableView(inputsTablesView.get(0), true);
         }
 
         List<DataMapTableView> outputsTablesView = mapperManager.getOutputsTablesView();
         if (outputsTablesView.size() > 0) {
-            uiManager.selectDataMapTableView(outputsTablesView.get(0));
+            uiManager.selectDataMapTableView(outputsTablesView.get(0), true);
         }
     }
 

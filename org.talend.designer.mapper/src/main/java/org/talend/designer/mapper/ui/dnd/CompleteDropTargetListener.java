@@ -322,7 +322,7 @@ public class CompleteDropTargetListener extends DefaultDropTargetListener {
         DataMapTableView dataMapTableViewTarget = mapperManager.retrieveDataMapTableView(draggableTable);
         Zone zoneTarget = dataMapTableViewTarget.getZone();
 
-        uiManager.selectDataMapTableView(dataMapTableViewTarget);
+        uiManager.selectDataMapTableView(dataMapTableViewTarget, true);
         MetadataTableEditorView metadataEditorView = mapperManager.getUiManager().getMetadataEditorView(dataMapTableViewTarget.getZone());
         List<TransferableEntry> transferableEntryList = draggedData.getTransferableEntryList();
         int currentIndex = startInsertAtThisIndex;
