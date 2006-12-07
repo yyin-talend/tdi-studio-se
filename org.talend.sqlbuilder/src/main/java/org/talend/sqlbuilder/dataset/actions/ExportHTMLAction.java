@@ -70,7 +70,7 @@ public class ExportHTMLAction extends AbstractDataSetTableContextAction {
 
 
     /**
-     * Copy all table data to clipboard
+     * Copy all table data to clipboard.
      * @see org.eclipse.jface.action.IAction#run()
      */
     public void run() {
@@ -102,7 +102,8 @@ public class ExportHTMLAction extends AbstractDataSetTableContextAction {
                     StringBuffer buffer = new StringBuffer("");
                     
                     // get preferences
-                    boolean includeColumnNames = SqlBuilderPlugin.getDefault().getPreferenceStore().getBoolean(IConstants.CLIP_EXPORT_COLUMNS);
+                    boolean includeColumnNames = SqlBuilderPlugin.getDefault().getPreferenceStore().getBoolean(
+                            IConstants.CLIP_EXPORT_COLUMNS);
                                        
                     TableItem[] items = ptable.getItems();                    
                     DataSet dataSet = (DataSet) ptable.getData();
@@ -139,7 +140,7 @@ public class ExportHTMLAction extends AbstractDataSetTableContextAction {
                         writer.newLine();
                     }
 
-                    DataSet set = (DataSet)ptable.getData();
+                    DataSet set = (DataSet) ptable.getData();
                     
                     // export column data
                     int columnCount = ptable.getColumnCount();
@@ -179,7 +180,8 @@ public class ExportHTMLAction extends AbstractDataSetTableContextAction {
                     ptable.getShell().getDisplay().asyncExec(new Runnable() {
 
                         public void run() {
-                            MessageDialog.openError(ptable.getShell(), Messages.getString("SQLResultsView.Error.Export.Title"), e.getMessage());
+                            MessageDialog.openError(ptable.getShell(), Messages.getString("SQLResultsView.Error.Export.Title"), e
+                                    .getMessage());
                             SqlBuilderPlugin.log(Messages.getString("SQLResultsView.Error.Export.Title"), e);
                         }
                     });

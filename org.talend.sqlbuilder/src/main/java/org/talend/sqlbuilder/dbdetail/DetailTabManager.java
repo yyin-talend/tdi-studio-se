@@ -114,7 +114,7 @@ public class DetailTabManager {
         if (tabs == null || tabs.size() == 0) {
             // no detail found..
 
-            Label label = new Label(composite, SWT.FILL|SWT.WRAP);
+            Label label = new Label(composite, SWT.FILL | SWT.WRAP);
             label.setText(Messages.getString("DatabaseDetailView.Tab.Unavailable") + " " + node.getLabelText());
             //label.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false));
 

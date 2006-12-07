@@ -91,7 +91,7 @@ public class CopyCellAction extends AbstractDataSetTableContextAction {
 
 
     /**
-     * Only show action if something is selected
+     * Only show action if something is selected.
      * @see net.sourceforge.sqlexplorer.dataset.actions.AbstractDataSetTableContextAction#isAvailable()
      */
     public boolean isAvailable() {

@@ -27,7 +27,7 @@ import org.talend.sqlbuilder.dbstructure.nodes.INode;
 
 
 /**
- * Interface for all the Tabs used in the DB details composite
+ * Interface for all the Tabs used in the DB details composite.
  * <br/>
  *
  * $Id: IDetailTab.java,v 1.3 2006/10/31 10:09:05 qianbing Exp $
@@ -67,7 +67,7 @@ public interface IDetailTab {
     
     
     /**
-     * Refresh tab
+     * Refresh tab.
      */
     public void refresh();
 }

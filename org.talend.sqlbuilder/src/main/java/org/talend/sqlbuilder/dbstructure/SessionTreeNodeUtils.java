@@ -34,16 +34,9 @@ import net.sourceforge.sqlexplorer.SQLAlias;
 import net.sourceforge.squirrel_sql.fw.sql.ISQLAlias;
 import net.sourceforge.squirrel_sql.fw.sql.SQLConnection;
 
-import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.metadata.builder.database.ExtractMetaDataUtils;
-import org.talend.core.model.properties.ConnectionItem;
-import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.repository.model.RepositoryNode;
-import org.talend.repository.model.RepositoryNode.ENodeType;
-import org.talend.repository.model.RepositoryNode.EProperties;
 import org.talend.sqlbuilder.SqlBuilderPlugin;
-import org.talend.sqlbuilder.dbstructure.nodes.CatalogNode;
 import org.talend.sqlbuilder.dbstructure.nodes.INode;
 import org.talend.sqlbuilder.sessiontree.model.SessionTreeModel;
 import org.talend.sqlbuilder.sessiontree.model.SessionTreeNode;

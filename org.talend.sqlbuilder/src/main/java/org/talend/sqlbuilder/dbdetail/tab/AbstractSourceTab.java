@@ -34,7 +34,7 @@ import org.talend.sqlbuilder.Messages;
 
 /**
  * 
- * AbstractDataSetTab 
+ * AbstractDataSetTab. 
  * 
  * @author yzhang
  *

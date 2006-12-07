@@ -156,12 +156,14 @@ public class DB2ExplainPlanAction extends AbstractEditorAction {
                     try {
                         st.close();
                     } catch (Throwable e1) {
+                        SqlBuilderPlugin.log("Statement Close Failure: ", e1);
                     }
                     return;
                 }
                 try {
                     st.close();
                 } catch (Throwable e) {
+                    SqlBuilderPlugin.log("Statement Close Failure: ", e);
                 }
             }
 

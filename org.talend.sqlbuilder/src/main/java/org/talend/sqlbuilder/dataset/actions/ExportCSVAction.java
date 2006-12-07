@@ -56,7 +56,7 @@ public class ExportCSVAction extends AbstractDataSetTableContextAction {
     }
 
     /**
-     * Provide image for action
+     * Provide image for action.
      */
     public ImageDescriptor getImageDescriptor() {
         return IMAGE;
@@ -98,7 +98,8 @@ public class ExportCSVAction extends AbstractDataSetTableContextAction {
                     
                     // get column header and separator preferences
                     String columnSeparator = SqlBuilderPlugin.getDefault().getPreferenceStore().getString(IConstants.CLIP_EXPORT_SEPARATOR);
-                    boolean includeColumnNames = SqlBuilderPlugin.getDefault().getPreferenceStore().getBoolean(IConstants.CLIP_EXPORT_COLUMNS);
+                    boolean includeColumnNames = SqlBuilderPlugin.getDefault().getPreferenceStore().getBoolean(
+                            IConstants.CLIP_EXPORT_COLUMNS);
                                        
                     // check if there is somethign in our table
                     TableItem[] items = ptable.getItems();                    
@@ -141,7 +142,8 @@ public class ExportCSVAction extends AbstractDataSetTableContextAction {
                     ptable.getShell().getDisplay().asyncExec(new Runnable() {
 
                         public void run() {
-                            MessageDialog.openError(ptable.getShell(), Messages.getString("SQLResultsView.Error.Export.Title"), e.getMessage());
+                            MessageDialog.openError(ptable.getShell(), Messages.getString("SQLResultsView.Error.Export.Title"), e
+                                    .getMessage());
                         }
                     });
                 }

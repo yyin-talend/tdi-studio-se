@@ -52,7 +52,7 @@ public class DataSetTableActionGroup extends ActionGroup {
     private CopyTableAction pcopyTableAction;
     
     /**
-     * Construct a new action group for a given Table
+     * Construct a new action group for a given Table.
      * 
      * @param table Table that displays the context menu
      * @param cursor TableCursor that displays the context menu
@@ -92,7 +92,8 @@ public class DataSetTableActionGroup extends ActionGroup {
                     if (group == null || !group.equalsIgnoreCase("export")) {
                     
                         // check if the action thinks it is suitable..
-                        AbstractDataSetTableContextAction action = (AbstractDataSetTableContextAction) ces[j].createExecutableExtension("class");
+                        AbstractDataSetTableContextAction action = (AbstractDataSetTableContextAction) ces[j]
+                                .createExecutableExtension("class");
                         action.setTable(ptable);
                         action.setTableCursor(pcursor);
                         if (action.isAvailable()) {
@@ -126,7 +127,8 @@ public class DataSetTableActionGroup extends ActionGroup {
                     if (group != null && group.equalsIgnoreCase("export")) {
                     
                         // check if the action thinks it is suitable..
-                        AbstractDataSetTableContextAction action = (AbstractDataSetTableContextAction) ces[j].createExecutableExtension("class");
+                        AbstractDataSetTableContextAction action = (AbstractDataSetTableContextAction) ces[j]
+                                .createExecutableExtension("class");
                         action.setTable(ptable);
                         action.setTableCursor(pcursor);
                         if (action.isAvailable()) {

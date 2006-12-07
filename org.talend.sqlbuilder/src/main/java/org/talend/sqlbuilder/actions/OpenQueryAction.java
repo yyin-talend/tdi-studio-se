@@ -25,17 +25,12 @@ import java.util.List;
 
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.window.Window;
-import org.eclipse.ui.actions.SelectionProviderAction;
-import org.talend.core.model.metadata.builder.connection.Query;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNode.EProperties;
 import org.talend.sqlbuilder.Messages;
 import org.talend.sqlbuilder.dbstructure.RepositoryNodeType;
-import org.talend.sqlbuilder.dbstructure.DBTreeProvider.QueryRepositoryObject;
 import org.talend.sqlbuilder.repository.utility.SQLBuilderRepositoryNodeManager;
 import org.talend.sqlbuilder.ui.ISQLBuilderDialog;
-import org.talend.sqlbuilder.ui.SQLPropertyDialog;
 import org.talend.sqlbuilder.util.ConnectionParameters;
 
 /**
@@ -55,7 +50,7 @@ public class OpenQueryAction extends OpenNewEditorAction {
         super(selectionProvider, d, connParam, false);
         this.dialog = d;
         setText(Messages.getString("DBStructureComposite.OpenQuery")); //$NON-NLS-1$
-        setToolTipText(Messages.getString("DBStructureComposite.OpenQuery"));//$NON-NLS-1$
+        setToolTipText(Messages.getString("DBStructureComposite.OpenQuery")); //$NON-NLS-1$
     }
 
     SQLBuilderRepositoryNodeManager repositoryNodeManager = new SQLBuilderRepositoryNodeManager();

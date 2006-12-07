@@ -47,21 +47,18 @@ public class PrimaryKeysTab extends AbstractDataSetTab {
         if (node == null) {
             return null;
         }
-        if(node.getSession() == null)
-        {
+        if (node.getSession() == null) {
             return null;
         }
-        
+
         if (node instanceof TableNode) {
             TableNode tableNode = (TableNode) node;
-            if(tableNode.getTableInfo() == null)
-            {
+            if (tableNode.getTableInfo() == null) {
                 return null;
             }
-            
-            ResultSet resultSet = node.getSession().getMetaData().getPrimaryKeys(tableNode.getTableInfo());   
-            DataSet dataSet = new DataSet(null, resultSet, new int[] {4,5,6});
-            
+
+            ResultSet resultSet = node.getSession().getMetaData().getPrimaryKeys(tableNode.getTableInfo());
+            DataSet dataSet = new DataSet(null, resultSet, new int[] { 4, 5, 6 });
             resultSet.close();
             return dataSet;
         }

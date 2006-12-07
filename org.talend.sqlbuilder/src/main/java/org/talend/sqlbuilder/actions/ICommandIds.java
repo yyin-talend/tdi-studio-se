@@ -31,4 +31,10 @@ package org.talend.sqlbuilder.actions;
 public interface ICommandIds {
 
     public static final String EXEC_SQL = "org.talend.sqlbuilder.actions.ExecSQLAction";
+    
+    
+    /**
+     * DOC dev Comment method "unUse".
+     */
+    public void unUse();
 }

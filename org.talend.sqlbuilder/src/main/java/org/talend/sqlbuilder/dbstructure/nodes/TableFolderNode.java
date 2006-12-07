@@ -21,21 +21,9 @@
 // ============================================================================
 package org.talend.sqlbuilder.dbstructure.nodes;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import net.sourceforge.squirrel_sql.fw.sql.ITableInfo;
-
-import org.eclipse.emf.common.util.EList;
-import org.talend.core.model.metadata.builder.connection.impl.MetadataColumnImpl;
-import org.talend.repository.model.RepositoryNode;
-import org.talend.repository.model.RepositoryNode.EProperties;
 import org.talend.sqlbuilder.Messages;
 import org.talend.sqlbuilder.SqlBuilderPlugin;
-import org.talend.sqlbuilder.dbstructure.SessionTreeNodeUtils;
 import org.talend.sqlbuilder.sessiontree.model.SessionTreeNode;
 
 /**
@@ -175,25 +163,6 @@ public class TableFolderNode extends AbstractFolderNode {
 //        
 //        return allNodes.values().toArray(new INode[]{});
 //    }
-
-    /**
-     * @param repositoryNode RepsitoryNode.
-     * @return INode.
-     */
-    private INode convert2TableNode(RepositoryNode repositoryNode) {
-        TableNode tableNode = new TableNode(this, "", psessionNode, null);
-        tableNode.setRepositoryName(repositoryNode.getProperties(EProperties.LABEL).toString());
-        tableNode.setCurrentRepositoryNode(repositoryNode);
-        tableNode.setFromRepository(true);
-        
-        EList columns = TableNode.getColumns(repositoryNode);
-        for (int i = 0, size = columns.size(); i < size; i++) {
-            MetadataColumnImpl column = (MetadataColumnImpl) columns.get(i);
-            tableNode.addChildNode(TableNode.convert2ColumnNode(tableNode, column));
-        }
-        
-        return tableNode;
-    }
 
     
 }

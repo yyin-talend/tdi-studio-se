@@ -131,7 +131,7 @@ public class DataSet {
 
 
     /**
-     * Get the column index for a given column name
+     * Get the column index for a given column name.
      * 
      * @param name
      * @return index of column whose name matches or 0 if none found

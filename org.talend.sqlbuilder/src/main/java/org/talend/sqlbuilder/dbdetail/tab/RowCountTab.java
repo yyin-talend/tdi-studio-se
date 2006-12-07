@@ -46,8 +46,7 @@ public class RowCountTab extends AbstractDataSetTab {
         if (node == null) {
             return null;
         }
-        if(node.getSession() == null)
-        {
+        if (node.getSession() == null) {
             return null;
         }
         if (node instanceof TableNode) {

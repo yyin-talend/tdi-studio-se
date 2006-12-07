@@ -178,8 +178,9 @@ public class ExplainNode {
         if (options != null) {
             sb.append(options).append(" ");
         }
-        if (objectOwner != null && objectName != null)
+        if (objectOwner != null && objectName != null) {
             sb.append(objectOwner + "." + objectName).append(" ");
+        }
         if (optimizer != null) {
             sb.append("[" + optimizer + "]");
         }

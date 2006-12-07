@@ -82,22 +82,23 @@ public class DB2ExplainPlanExecution extends AbstractSQLExecution {
         public String getColumnText(Object element, int columnIndex) {
 
             ExplainNode en = (ExplainNode) element;
-            if (columnIndex == 0)
+            if (columnIndex == 0) {
                 return en.toString();
+            }
             if (columnIndex == 1) {
                 int cost = en.getCost();
-                if (cost != -1)
+                if (cost != -1) {
                     return "" + cost;
-                else
+                } else {
                     return "";
-            }
-
-            else if (columnIndex == 2) {
+                }
+            } else if (columnIndex == 2) {
                 int card = en.getCardinality();
-                if (card != -1)
+                if (card != -1) {
                     return "" + card;
-                else
+                } else {
                     return "";
+                }
             }
             return "";
         }
@@ -221,22 +222,24 @@ public class DB2ExplainPlanExecution extends AbstractSQLExecution {
 
                             switch (e.keyCode) {
 
-                                case SWT.F5:
-                                    
-                                    // refresh SQL Results
-                                    try {
-                                        Object o = parent.getData("parenttab");
-                                        if (o != null) {
-                                            AbstractSQLExecution sqlExec = (AbstractSQLExecution) ((TabItem)o).getData();
-                                            if (sqlExec != null) {
-                                                sqlExec.startExecution();
-                                            }
-                                        }
-                                    } catch (Exception e1) {
-                                        SqlBuilderPlugin.log("Error refreshing", e1);
-                                    }
+                            case SWT.F5:
 
-                                    break;
+                                // refresh SQL Results
+                                try {
+                                    Object o = parent.getData("parenttab");
+                                    if (o != null) {
+                                        AbstractSQLExecution sqlExec = (AbstractSQLExecution) ((TabItem) o).getData();
+                                        if (sqlExec != null) {
+                                            sqlExec.startExecution();
+                                        }
+                                    }
+                                } catch (Exception e1) {
+                                    SqlBuilderPlugin.log("Error refreshing", e1);
+                                }
+
+                                break;
+                            default:
+                                return;
 
                             }
 

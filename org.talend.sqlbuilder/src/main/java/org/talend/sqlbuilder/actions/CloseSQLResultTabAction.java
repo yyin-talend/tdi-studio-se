@@ -30,7 +30,6 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.custom.BusyIndicator;
 import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.TabItem;
 import org.talend.sqlbuilder.Messages;
 import org.talend.sqlbuilder.SqlBuilderPlugin;
 
@@ -46,20 +45,20 @@ import org.talend.sqlbuilder.SqlBuilderPlugin;
 public class CloseSQLResultTabAction extends Action {
     private ImageDescriptor img = getDescriptor(Messages.getString("Images.CloseIcon"));
     /**
-     * Holds a reference to the TableItem we should close
+     * Holds a reference to the TableItem we should close.
      */
     private CTabItem tabItem;
     
     /**
-     * Default Constructor
+     * Default Constructor.
      *
      */
-    public CloseSQLResultTabAction(){
+    public CloseSQLResultTabAction() {
         super();
     }
     
     /**
-     * Constructor
+     * Constructor.
      * @param tabItem
      */
     public CloseSQLResultTabAction(CTabItem tabItem) {

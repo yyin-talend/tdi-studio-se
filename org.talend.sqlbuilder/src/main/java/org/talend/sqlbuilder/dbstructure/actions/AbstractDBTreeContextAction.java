@@ -51,7 +51,7 @@ public abstract class AbstractDBTreeContextAction extends Action {
     }
 
     /**
-     * Store treeViewer for use in the actions
+     * Store treeViewer for use in the actions.
      * 
      * @param treeViewer
      */
@@ -60,7 +60,7 @@ public abstract class AbstractDBTreeContextAction extends Action {
     }
 
     /**
-     * Store view for use in actions
+     * Store view for use in actions.
      */
     public void setView(DatabaseStructureView view) {
         this.view = view;

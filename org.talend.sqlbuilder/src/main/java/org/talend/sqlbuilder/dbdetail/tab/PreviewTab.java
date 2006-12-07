@@ -50,14 +50,12 @@ public class PreviewTab extends AbstractDataSetTab {
         if (node == null) {
             return null;
         }
-        if(node.getSession() == null)
-        {
+        if (node.getSession() == null) {
             return null;
         }
         if (node instanceof TableNode) {
             TableNode tableNode = (TableNode) node;
-            if(tableNode.getTableInfo() == null)
-            {
+            if (tableNode.getTableInfo() == null) {
                 return null;
             }
             int maxResults = SqlBuilderPlugin.getDefault().getPluginPreferences().getInt(IConstants.PRE_ROW_COUNT);

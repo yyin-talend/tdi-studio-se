@@ -67,7 +67,7 @@ public class ExportXLSAction extends AbstractDataSetTableContextAction {
     }
 
     /**
-     * Copy all table data to clipboard
+     * Copy all table data to clipboard.
      * 
      * @see org.eclipse.jface.action.IAction#run()
      */

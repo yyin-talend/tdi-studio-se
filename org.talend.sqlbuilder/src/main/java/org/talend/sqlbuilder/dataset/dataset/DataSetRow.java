@@ -32,7 +32,7 @@ public class DataSetRow {
     private Object[] pvalues;
 
     /**
-     * Create new DataSetRow with columnCount values
+     * Create new DataSetRow with columnCount values.
      * 
      * @param columnCount number of columns
      */
@@ -42,7 +42,7 @@ public class DataSetRow {
 
 
     /**
-     * Create initialized dataSetRow
+     * Create initialized dataSetRow.
      * 
      * @param values
      */
@@ -67,7 +67,7 @@ public class DataSetRow {
     
 
     /**
-     * Set the value for a given column
+     * Set the value for a given column.
      * 
      * @param column first column is 0
      * @param value

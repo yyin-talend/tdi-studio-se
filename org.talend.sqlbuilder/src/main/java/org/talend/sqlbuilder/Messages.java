@@ -25,21 +25,16 @@ import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
 /**
- * This class manages the string bundle
+ * This class manages the string bundle.
  */
-public class Messages
-{
-    private static ResourceBundle resourceBundle = ResourceBundle
-            .getBundle("messages");
+public class Messages {
 
-    public static String getString(String key)
-    {
-        try
-        {
+    private static ResourceBundle resourceBundle = ResourceBundle.getBundle("messages");
+
+    public static String getString(String key) {
+        try {
             return resourceBundle.getString(key);
-        }
-        catch (MissingResourceException e)
-        {
+        } catch (MissingResourceException e) {
             return '!' + key + '!';
         }
     }

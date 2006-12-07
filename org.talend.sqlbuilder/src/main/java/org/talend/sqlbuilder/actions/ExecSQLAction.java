@@ -23,9 +23,6 @@ package org.talend.sqlbuilder.actions;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import net.sourceforge.sqlexplorer.plugin.SQLExplorerPlugin;
-
 import org.eclipse.core.runtime.Preferences;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;

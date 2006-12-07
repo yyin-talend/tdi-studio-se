@@ -22,8 +22,6 @@
 package org.talend.sqlbuilder.actions;
 
 import java.util.List;
-
-import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.actions.SelectionProviderAction;
@@ -33,7 +31,6 @@ import org.talend.sqlbuilder.Messages;
 import org.talend.sqlbuilder.dbstructure.RepositoryNodeType;
 import org.talend.sqlbuilder.repository.utility.SQLBuilderRepositoryNodeManager;
 import org.talend.sqlbuilder.ui.ISQLBuilderDialog;
-import org.talend.sqlbuilder.ui.SQLBuilderTabComposite;
 import org.talend.sqlbuilder.util.ConnectionParameters;
 
 /**

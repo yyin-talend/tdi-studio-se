@@ -86,7 +86,7 @@ public class DeleteQueryAction extends SelectionProviderAction {
 
         // Finds the root
         node = SQLBuilderRepositoryNodeManager.getRoot(node);
-        List<Query> queries = new ArrayList();
+        List<Query> queries = new ArrayList<Query>();
         queries.add(query);
         repositoryNodeManager.deleteQueries(node, queries);
 

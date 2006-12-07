@@ -25,7 +25,7 @@ package org.talend.sqlbuilder;
 
 
 /**
- * Put Constants here
+ * Put Constants here.
  * <br/>
  *
  * $Id: IConstants.java,v 1.5 2006/11/07 09:48:06 peiqin.hou Exp $
@@ -65,7 +65,7 @@ public interface IConstants {
 
     String SQL_ASSIST = "SQLEditor.Assist";
 
-    /** The color key for database tables column names */
+    /** The color key for database tables column names. */
     String SQL_COLUMS = "SQLEditor.ColumnsColor";
     String SQL_COMMENT_DELIMITER = "SQLEditor.CommentDelimiter";
 
@@ -89,7 +89,7 @@ public interface IConstants {
     /** The color key for string and character literals in Java code. */
     String SQL_STRING = "SQLEditor.StringColor";
 
-    /** The color key for database tables names */
+    /** The color key for database tables names. */
     String SQL_TABLE = "SQLEditor.TableColor";
 
     String WARN_IF_LARGE_LIMIT = "SQLEditor.WarnIfLargeLimit";
@@ -113,6 +113,11 @@ public interface IConstants {
     String LINE_DELIMITER = "SQLEditor.LineDelimiter";
     
     String WARN_RESEULTS = "SQLEditor.WarnResults";
+    
+    /**
+     * DOC dev Comment method "unUse".
+     */
+    public void unUse();
     
 //    String QUERY_DELIMITER = ";";
            

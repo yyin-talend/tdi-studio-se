@@ -64,7 +64,7 @@ public class CopyTableAction extends AbstractDataSetTableContextAction {
 
 
     /**
-     * Copy all table data to clipboard
+     * Copy all table data to clipboard.
      * @see org.eclipse.jface.action.IAction#run()
      */
     public void run() {
@@ -83,7 +83,8 @@ public class CopyTableAction extends AbstractDataSetTableContextAction {
                     // get preferences
                     String lineSeparator = System.getProperty("line.separator");
                     String columnSeparator = SqlBuilderPlugin.getDefault().getPreferenceStore().getString(IConstants.CLIP_EXPORT_SEPARATOR);
-                    boolean includeColumnNames = SqlBuilderPlugin.getDefault().getPreferenceStore().getBoolean(IConstants.CLIP_EXPORT_COLUMNS);
+                    boolean includeColumnNames = SqlBuilderPlugin.getDefault().getPreferenceStore().getBoolean(
+                            IConstants.CLIP_EXPORT_COLUMNS);
                     
                     
                     TableItem[] items = ptable.getItems();                    

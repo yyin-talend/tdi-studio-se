@@ -52,7 +52,7 @@ import org.talend.sqlbuilder.SqlBuilderPlugin;
 import org.talend.sqlbuilder.dbdetail.IDetailTab;
 
 /**
- * Provides keyboard features for DataSetTable:
+ * Provides keyboard features for DataSetTable.
  * <ul>
  * <li>F5: refresh table</li>
  * <li>CTRL-C: copy active cell</li>
@@ -85,7 +85,7 @@ public class DataSetTableKeyListener implements KeyListener {
 
    
     /**
-     * Create new keylistener
+     * Create new keylistener.
      * 
      * @param parent
      * @param table
@@ -115,33 +115,34 @@ public class DataSetTableKeyListener implements KeyListener {
 
         switch (e.character) {
 
-            case CTRL_C:
-                // copy cell content to clipboard
+        case CTRL_C:
+            // copy cell content to clipboard
 
-                try {
+            try {
 
-                    Clipboard clipBoard = new Clipboard(Display.getCurrent());
-                    TextTransfer textTransfer = TextTransfer.getInstance();
+                Clipboard clipBoard = new Clipboard(Display.getCurrent());
+                TextTransfer textTransfer = TextTransfer.getInstance();
 
-                    TableItem[] items = ptable.getSelection();
-                    
-                    if (items == null || items.length == 0) {
-                        return;
-                    }
-                               
-                    int columnIndex = pcursor.getColumn();      
-                    clipBoard.setContents(new Object[] {items[0].getText(columnIndex)}, new Transfer[] {textTransfer});
+                TableItem[] items = ptable.getSelection();
 
-
-                } catch (Exception ex) {
-                    SqlBuilderPlugin.log("Error exporting cell to clipboard ", ex);
+                if (items == null || items.length == 0) {
+                    return;
                 }
-                break;
 
-            case CTRL_F:
-                // column name typeahead
-                createPopup();
-                break;
+                int columnIndex = pcursor.getColumn();
+                clipBoard.setContents(new Object[] { items[0].getText(columnIndex) }, new Transfer[] { textTransfer });
+
+            } catch (Exception ex) {
+                SqlBuilderPlugin.log("Error exporting cell to clipboard ", ex);
+            }
+            break;
+
+        case CTRL_F:
+            // column name typeahead
+            createPopup();
+            break;
+        default:
+            return;
 
         }
 
@@ -157,31 +158,33 @@ public class DataSetTableKeyListener implements KeyListener {
 
         switch (e.keyCode) {
 
-            case SWT.F5:
-                // refresh tab
-                if (ptab != null) {
-                    ptab.refresh();
-                }
-                disposePopup();
-                
-                // refresh SQL Results
-                try {
-                    Object o = pparent.getData("parenttab");
-                    if (o != null) {
-                        SQLExecution sqlExec = (SQLExecution) ((TabItem)o).getData();
-                        if (sqlExec != null) {
-                            sqlExec.startExecution();
-                        }
+        case SWT.F5:
+            // refresh tab
+            if (ptab != null) {
+                ptab.refresh();
+            }
+            disposePopup();
+
+            // refresh SQL Results
+            try {
+                Object o = pparent.getData("parenttab");
+                if (o != null) {
+                    SQLExecution sqlExec = (SQLExecution) ((TabItem) o).getData();
+                    if (sqlExec != null) {
+                        sqlExec.startExecution();
                     }
-                } catch (Exception e1) {
-                    SqlBuilderPlugin.log("Error refreshing", e1);
                 }
+            } catch (Exception e1) {
+                SqlBuilderPlugin.log("Error refreshing", e1);
+            }
 
-                break;
+            break;
 
-            case SWT.ESC:
-                disposePopup();
-                break;
+        case SWT.ESC:
+            disposePopup();
+            break;
+        default:
+            return;
 
         }
 
@@ -189,7 +192,7 @@ public class DataSetTableKeyListener implements KeyListener {
 
 
     /**
-     * Display column finder popup
+     * Display column finder popup.
      */
 
     private void createPopup() {
@@ -285,7 +288,7 @@ public class DataSetTableKeyListener implements KeyListener {
 
 
     /**
-     * Close column finder popup;
+     * Close column finder popup.
      */
     private void disposePopup() {
 

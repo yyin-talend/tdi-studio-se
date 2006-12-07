@@ -27,7 +27,7 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
 /**
- * The activator class controls the plug-in life cycle
+ * The activator class controls the plug-in life cycle.
  */
 public class SqlBuilderPlugin extends AbstractUIPlugin {
 
@@ -38,7 +38,7 @@ public class SqlBuilderPlugin extends AbstractUIPlugin {
     private static SqlBuilderPlugin plugin;
 
     /**
-     * The constructor
+     * The constructor.
      */
     public SqlBuilderPlugin() {
         plugin = this;
@@ -64,7 +64,7 @@ public class SqlBuilderPlugin extends AbstractUIPlugin {
     }
 
     /**
-     * Returns the shared instance
+     * Returns the shared instance.
      * 
      * @return the shared instance
      */

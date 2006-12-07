@@ -47,19 +47,17 @@ public class IndexesTab extends AbstractDataSetTab {
         if (node == null) {
             return null;
         }
-        if(node.getSession() == null)
-        {
+        if (node.getSession() == null) {
             return null;
         }
         if (node instanceof TableNode) {
             TableNode tableNode = (TableNode) node;
-            if(tableNode.getTableInfo() == null)
-            {
+            if (tableNode.getTableInfo() == null) {
                 return null;
             }
-            ResultSet resultSet = node.getSession().getMetaData().getIndexInfo(tableNode.getTableInfo());   
-            DataSet dataSet = new DataSet(null, resultSet, new int[] {4,5,6,7,8,9,10,11,12,13});
-            
+            ResultSet resultSet = node.getSession().getMetaData().getIndexInfo(tableNode.getTableInfo());
+            DataSet dataSet = new DataSet(null, resultSet, new int[] { 4, 5, 6, 7, 8, 9, 10, 11, 12, 13 });
+
             resultSet.close();
             return dataSet;
         }

@@ -23,7 +23,6 @@ package org.talend.sqlbuilder.actions;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.talend.core.model.metadata.builder.connection.Query;
-import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.sqlbuilder.Messages;
 import org.talend.sqlbuilder.dbstructure.SqlBuilderRepositoryObject;

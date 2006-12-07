@@ -190,8 +190,9 @@ public class OracleExplainPlanExecution extends AbstractSQLExecution {
 
 	                        public boolean hasChildren(Object element) {
 
-	                            if (((ExplainNode) element).getChildren().length > 0)
+	                            if (((ExplainNode) element).getChildren().length > 0) {
 	                                return true;
+                                }
 	                            return false;
 	                        }
 
@@ -212,34 +213,36 @@ public class OracleExplainPlanExecution extends AbstractSQLExecution {
 	                    }
 
 	                    final Composite parent = composite;
-	                    table.addKeyListener(new KeyAdapter() {
+                    table.addKeyListener(new KeyAdapter() {
 
-	                        public void keyReleased(KeyEvent e) {
+                        public void keyReleased(KeyEvent e) {
 
-	                            switch (e.keyCode) {
+                            switch (e.keyCode) {
 
-	                                case SWT.F5:
+                            case SWT.F5:
 
-	                                    // refresh SQL Results
-	                                    try {
-	                                        Object o = parent.getData("parenttab");
-	                                        if (o != null) {
-	                                            AbstractSQLExecution sqlExec = (AbstractSQLExecution) ((TabItem) o).getData();
-	                                            if (sqlExec != null) {
-	                                                sqlExec.startExecution();
-	                                            }
-	                                        }
-	                                    } catch (Exception e1) {
-	                                        SqlBuilderPlugin.log("Error refreshing", e1);
-	                                    }
+                                // refresh SQL Results
+                                try {
+                                    Object o = parent.getData("parenttab");
+                                    if (o != null) {
+                                        AbstractSQLExecution sqlExec = (AbstractSQLExecution) ((TabItem) o).getData();
+                                        if (sqlExec != null) {
+                                            sqlExec.startExecution();
+                                        }
+                                    }
+                                } catch (Exception e1) {
+                                    SqlBuilderPlugin.log("Error refreshing", e1);
+                                }
 
-	                                    break;
+                                break;
+                            default:
+                                return;
 
-	                            }
+                            }
 
-	                        }
+                        }
 
-	                    });
+                    });
 
 	                } catch (Exception e) {
 

@@ -36,7 +36,7 @@ import org.talend.sqlbuilder.dataset.dataset.DataSetTable;
 
 
 /**
- * Details Tab
+ * Details Tab.
  *
  * <br/>
  *

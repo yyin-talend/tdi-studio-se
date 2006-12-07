@@ -268,4 +268,4 @@ public class DatabaseModel implements INode {
     public Color getForeground() {
         return Display.getDefault().getSystemColor(SWT.COLOR_BLACK);
     }
-};
+}

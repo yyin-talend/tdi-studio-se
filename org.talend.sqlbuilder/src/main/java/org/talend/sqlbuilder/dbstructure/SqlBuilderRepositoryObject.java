@@ -70,8 +70,8 @@ public class SqlBuilderRepositoryObject extends RepositoryObject {
 	public boolean isBuildIn() {
 		return isBuildIn;
 	}
-	public void setBuildIn(boolean isBuildIn) {
-		this.isBuildIn = isBuildIn;
+	public void setBuildIn(boolean buildInValue) {
+		this.isBuildIn = buildInValue;
 	}
 	@Override
 	public String getLabel() {
@@ -98,16 +98,16 @@ public class SqlBuilderRepositoryObject extends RepositoryObject {
 		return isDiffDevergency;
 	}
 
-	public void setDiffDevergency(boolean isDiffDevergency) {
-		this.isDiffDevergency = isDiffDevergency;
+	public void setDiffDevergency(boolean judgeDiffDevergency) {
+		this.isDiffDevergency = judgeDiffDevergency;
 	}
 
 	public boolean isDiffSynchronised() {
 		return isDiffSynchronised;
 	}
 
-	public void setDiffSynchronised(boolean isDiffSynchronised) {
-		this.isDiffSynchronised = isDiffSynchronised;
+	public void setDiffSynchronised(boolean judgeDiffSynchronised) {
+		this.isDiffSynchronised = judgeDiffSynchronised;
 	}
 	
 }

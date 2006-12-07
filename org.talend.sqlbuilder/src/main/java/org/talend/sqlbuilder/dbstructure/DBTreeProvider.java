@@ -100,8 +100,8 @@ ITableColorProvider {
         return isRefresh;
     }
 
-    public void setRefresh(boolean isRefresh) {
-        this.isRefresh = isRefresh;
+    public void setRefresh(boolean refreshValue) {
+        this.isRefresh = refreshValue;
     }
 
     public Image getColumnImage(Object element, int columnIndex) {
@@ -568,11 +568,11 @@ ITableColorProvider {
     public Color getBackground(Object element, int columnIndex) {
     	RepositoryNode repositoryNode = (RepositoryNode) element;
     	SqlBuilderRepositoryObject repositoryObject = (SqlBuilderRepositoryObject) repositoryNode.getObject();
-    	if (columnIndex == 2 ) {
-    		return null;
-    	} else {
-			return colors.get((repositoryObject).getColor());
-    	}
+    	if (columnIndex == 2) {
+            return null;
+        } else {
+            return colors.get((repositoryObject).getColor());
+        }
     	        
     }
 

@@ -26,7 +26,7 @@ import org.eclipse.jface.viewers.Viewer;
 
 
 /**
- * Table Content Provider for DataSet
+ * Table Content Provider for DataSet.
  * 
  * @author Davy Vanherbergen
  *

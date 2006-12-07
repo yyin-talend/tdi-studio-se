@@ -170,12 +170,14 @@ public class OracleExplainPlanAction extends AbstractEditorAction {
                     try {
                         st.close();
                     } catch (Throwable e1) {
+                        SqlBuilderPlugin.log("Error in statement close", e1);
                     }
                     return;
                 }
                 try {
                     st.close();
                 } catch (Throwable e) {
+                    SqlBuilderPlugin.log("Error in statement close", e);
                 }
             }
 
