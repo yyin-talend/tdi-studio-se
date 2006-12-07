@@ -28,7 +28,7 @@ import org.talend.designer.runprocess.ProcessorException;
 import org.talend.designer.runprocess.RunProcessPlugin;
 import org.talend.designer.runprocess.shadow.ShadowProcess.EShadowProcessType;
 import org.talend.repository.preview.IPreview;
-import org.talend.repository.preview.ProcessDescription;
+import org.talend.repository.preview.IProcessDescription;
 
 /**
  * Previewer for a file delimited input. <br/>
@@ -51,7 +51,7 @@ public class ShadowFilePreview implements IPreview {
      *      preview(org.talend.repository.preview.filedelimited.ProcessDescription)
      */
     @SuppressWarnings("unchecked")
-    public XmlArray preview(ProcessDescription description, String type) throws CoreException {
+    public XmlArray preview(IProcessDescription description, String type) throws CoreException {
         XmlArray res = null;
         
         EShadowProcessType typeShadow = EShadowProcessType.valueOf(type);

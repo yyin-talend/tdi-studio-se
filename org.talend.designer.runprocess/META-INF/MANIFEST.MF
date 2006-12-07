@@ -12,14 +12,12 @@ Require-Bundle: org.eclipse.ui,
  org.talend.commons,
  org.eclipse.emf.codegen,
  org.junit,
- org.talend.repository,
  org.eclipse.core.resources,
  org.eclipse.debug.core,
  org.eclipse.debug.ui,
  org.epic.debug,
  org.eclipse.emf.ecore,
- org.talend.libraries,
- org.talend.rcp
+ org.talend.libraries
 Eclipse-LazyStart: true
 Export-Package: org.talend.designer.runprocess,
  org.talend.designer.runprocess.data,

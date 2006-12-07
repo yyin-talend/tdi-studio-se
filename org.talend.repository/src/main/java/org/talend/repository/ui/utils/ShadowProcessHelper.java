@@ -103,7 +103,7 @@ public class ShadowProcessHelper {
      */
     public static ProcessDescription getProcessDescription(final XmlFileConnection connection) {
         ProcessDescription processDescription = new ProcessDescription();
-        //PTODO cantoine voir les param envoyé pour le ProcessDescription
+        //PTODO cantoine voir les param envoyï¿½ pour le ProcessDescription
         return processDescription;
     }
     
@@ -184,7 +184,7 @@ public class ShadowProcessHelper {
         IExtensionRegistry registry = Platform.getExtensionRegistry();
 
         // use the org.talend.repository.filepreview_provider
-        IConfigurationElement[] configurationElements = registry.getConfigurationElementsFor("org.talend.repository.filepreview_provider");
+        IConfigurationElement[] configurationElements = registry.getConfigurationElementsFor("org.talend.core.filepreview_provider");
 
         if (configurationElements.length > 0) {
             IPreview iPreview = (IPreview) configurationElements[0].createExecutableExtension("class");

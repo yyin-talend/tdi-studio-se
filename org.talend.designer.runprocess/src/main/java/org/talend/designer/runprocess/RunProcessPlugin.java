@@ -24,6 +24,7 @@ package org.talend.designer.runprocess;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 import org.talend.core.GlobalServiceRegister;
+import org.talend.repository.model.IRepositoryService;
 
 /**
  * The activator class controls the plug-in life cycle.
@@ -83,6 +84,10 @@ public class RunProcessPlugin extends AbstractUIPlugin {
      */
     public RunProcessContextManager getRunProcessContextManager() {
         return this.runProcessContextManager;
+    }
+
+    public IRepositoryService getRepositoryService() {
+        return GlobalServiceRegister.getRepositoryService();
     }
 
 }

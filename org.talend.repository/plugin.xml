@@ -5,7 +5,7 @@
    <extension-point id="components_provider" name="Components provider" schema="schema/components_provider.exsd"/>
    <extension-point id="external_component" name="External component" schema="schema/external_component.exsd"/>
    <extension-point id="actions" name="Repository actions" schema="schema/repository_actions.exsd"/>
-   <extension-point id="filepreview_provider" name="File Preview Provider" schema="schema/filepreview_provider.exsd"/>
+   
    <extension
          point="org.eclipse.ui.views">
       <view

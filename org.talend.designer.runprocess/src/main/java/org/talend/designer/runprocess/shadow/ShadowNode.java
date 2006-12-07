@@ -40,7 +40,7 @@ import org.talend.core.model.process.INodeReturn;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.temp.ECodePart;
 import org.talend.designer.codegen.ICodeGeneratorService;
-import org.talend.repository.model.ComponentsFactoryProvider;
+import org.talend.designer.runprocess.RunProcessPlugin;
 
 /**
  * DOC chuger class global comment. Detailled comment <br/>
@@ -71,7 +71,7 @@ public abstract class ShadowNode implements INode {
         this.componentName = componentName;
         parameters = new ArrayList<IElementParameter>();
 
-        IComponentsFactory compFac = ComponentsFactoryProvider.getInstance();
+        IComponentsFactory compFac = RunProcessPlugin.getDefault().getRepositoryService().getComponentsFactory();
         setComponent(compFac.get(componentName));
     }
 

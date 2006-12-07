@@ -27,7 +27,7 @@ package org.talend.repository.preview;
  * $Id$
  * 
  */
-public class ProcessDescription extends IProcessDescription {
+public class ProcessDescription extends AbstractProcessDescription {
 
     /**
      * Constructs a new ProcessDescription.
