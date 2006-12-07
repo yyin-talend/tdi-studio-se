@@ -58,9 +58,9 @@
     >
       <ITEMS BASED_ON_SCHEMA="true">
 
-        <ITEM NAME="SIZE" />
+        <ITEM NAME="SIZE" VALUE="10" />
 
-        <ITEM NAME="PADDING_CHAR" />
+        <ITEM NAME="PADDING_CHAR" VALUE="' '" />
 
         <ITEM NAME="ALIGN" FIELD="CLOSED_LIST">
           <ITEMS DEFAULT="LEFT">
