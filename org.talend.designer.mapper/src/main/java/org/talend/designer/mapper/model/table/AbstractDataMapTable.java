@@ -59,8 +59,7 @@ public abstract class AbstractDataMapTable {
         }
         initFromExternalData(persistentTable);
         this.tableColumnsEntriesModel = new ExtendedTableModel<IColumnEntry>(name + " : model for Columns", dataMapTableEntries);
-        
-        
+
     }
 
     /**
@@ -115,15 +114,16 @@ public abstract class AbstractDataMapTable {
 
     /**
      * Getter for columnsEntriesModel.
+     * 
      * @return the columnsEntriesModel
      */
     public ExtendedTableModel<IColumnEntry> getTableColumnsEntriesModel() {
         return this.tableColumnsEntriesModel;
     }
 
-
     /**
      * DOC amaumont Comment method "swapElements".
+     * 
      * @param indicesOrigin
      * @param listIndexTarget
      */
@@ -131,6 +131,4 @@ public abstract class AbstractDataMapTable {
         this.tableColumnsEntriesModel.swapElements(indicesOrigin, listIndexTarget);
     }
 
-
-    
 }

@@ -222,7 +222,6 @@ public class UIManager {
 
                 final MetadataTableEditorView metadataTableEditorViewFinal = metadataTableEditorView;
                 final TableViewerCreator metadataTVCreator = metadataTableEditorViewFinal.getTableViewerCreator();
-                final TableViewer metadataEditorTableViewer = metadataTVCreator.getTableViewer();
                 final MetadataTableEditor metadataTableEditor = currentMetadataTableEditor;
 
                 modifySelectionChangedListener(currentZone, metadataTableEditorViewFinal, metadataTVCreator, metadataTableEditor,
@@ -365,7 +364,7 @@ public class UIManager {
                         final ITableEntry dataMapTableEntry = mapperManager.retrieveTableEntry(tableEntryLocation);
                         processColumnNameChanged((String) event.previousValue, (String) event.newValue, dataMapTableView, dataMapTableEntry);
                     }
-//                    dataMapTableViewer.refresh(event.bean, true);
+                    // dataMapTableViewer.refresh(event.bean, true);
                     dataMapTableViewer.refresh(true);
                 } else if (MetadataTableEditorView.ID_COLUMN_KEY.equals(event.column.getId())) {
                     dataMapTableViewer.refresh(true);
@@ -415,7 +414,7 @@ public class UIManager {
         // metadataTVCreator.addSelectionChangedListener(metadataEditorViewerSelectionChangedListener);
         metadataTVCreator.getSelectionHelper().addAfterSelectionListener(metadataEditorViewerSelectionChangedListener);
         metadataTableEditor.addModifiedBeanListener(modifiedBeanListener);
-        
+
         if (this.commonMetadataDisposeListener == null) {
             this.commonMetadataDisposeListener = new DisposeListener() {
 

@@ -23,17 +23,17 @@ package org.talend.designer.mapper.ui.commands;
 
 import org.eclipse.gef.commands.Command;
 
-
 /**
- * DOC amaumont  class global comment. Detailled comment
- * <br/>
- *
+ * DOC amaumont class global comment. Detailled comment <br/>
+ * 
  * $Id$
- *
+ * 
  */
 public class MapperDropCommand extends Command {
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.eclipse.gef.commands.Command#canExecute()
      */
     @Override
@@ -42,7 +42,9 @@ public class MapperDropCommand extends Command {
         return super.canExecute();
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.eclipse.gef.commands.Command#canUndo()
      */
     @Override
@@ -51,7 +53,9 @@ public class MapperDropCommand extends Command {
         return super.canUndo();
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.eclipse.gef.commands.Command#execute()
      */
     @Override
@@ -60,7 +64,9 @@ public class MapperDropCommand extends Command {
         super.execute();
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.eclipse.gef.commands.Command#redo()
      */
     @Override
@@ -69,7 +75,9 @@ public class MapperDropCommand extends Command {
         super.redo();
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.eclipse.gef.commands.Command#undo()
      */
     @Override
@@ -78,6 +86,4 @@ public class MapperDropCommand extends Command {
         super.undo();
     }
 
-    
-    
 }

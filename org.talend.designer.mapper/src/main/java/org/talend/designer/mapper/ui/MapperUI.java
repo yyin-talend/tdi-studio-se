@@ -24,7 +24,6 @@ package org.talend.designer.mapper.ui;
 import java.util.Collection;
 import java.util.List;
 
-import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.custom.ScrolledComposite;
@@ -52,7 +51,6 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.ScrollBar;
 import org.eclipse.swt.widgets.Shell;
-import org.talend.commons.ui.command.CommandStackForComposite;
 import org.talend.commons.ui.swt.drawing.background.BackgroundRefresher;
 import org.talend.commons.ui.ws.WindowSystem;
 import org.talend.commons.utils.threading.AsynchronousThreading;
@@ -177,9 +175,9 @@ public class MapperUI {
     public void init(MapperModel mapperModel) {
         // long time1 = System.currentTimeMillis();
 
-//        CommandStack commandStack = new CommandStackForComposite(this.mapperUIParent);
-//        mapperManager.setCommandStack(commandStack);
-        
+        // CommandStack commandStack = new CommandStackForComposite(this.mapperUIParent);
+        // mapperManager.setCommandStack(commandStack);
+
         final UIManager uiManager = mapperManager.getUiManager();
         final ExternalMapperUiProperties uiProperties = uiManager.getUiProperties();
 
@@ -204,7 +202,7 @@ public class MapperUI {
 
         datasFlowViewSashForm = new SashForm(mainSashForm, SWT.SMOOTH | SWT.HORIZONTAL | SWT.BORDER);
         datasFlowViewSashForm.setBackgroundMode(SWT.INHERIT_FORCE);
-        
+
         initBackgroundRefresher();
 
         if (WindowSystem.isGTK()) {
@@ -213,17 +211,17 @@ public class MapperUI {
 
         // dropTargetOperationListener.addControl(datasFlowViewSashForm);
 
-//        datasFlowViewSashForm.addControlListener(new ControlListener() {
-//
-//            public void controlMoved(ControlEvent e) {
-//            }
-//
-//            public void controlResized(ControlEvent e) {
-//                createBgImages();
-//                updateBackground(true, false);
-//            }
-//
-//        });
+        // datasFlowViewSashForm.addControlListener(new ControlListener() {
+        //
+        // public void controlMoved(ControlEvent e) {
+        // }
+        //
+        // public void controlResized(ControlEvent e) {
+        // createBgImages();
+        // updateBackground(true, false);
+        // }
+        //
+        // });
 
         /* Create the tabs */
         tabFolderEditors = new TabFolderEditors(mainSashForm, SWT.BORDER, mapperManager);
@@ -235,7 +233,7 @@ public class MapperUI {
         createOutputZoneWithTables(mapperModel, uiManager, display);
 
         uiManager.parseAllExpressionsForAllTables();
-        
+
         this.draggingInfosPopup = DraggingInfosPopup.getNewShell(this.mapperUIParent.getShell());
 
         configureZoneScrollBars(display);
@@ -252,14 +250,14 @@ public class MapperUI {
 
         if (WindowSystem.isGTK()) {
             // resize especially for GTK
-        	new AsynchronousThreading(1000, false, display, new Runnable() {
+            new AsynchronousThreading(1000, false, display, new Runnable() {
 
-				public void run() {
-            resizeNotMinimizedTablesAtExpandedSize(display);
-					mapperUIParent.getShell().layout();
-        }
-        		
-        	}).start();
+                public void run() {
+                    resizeNotMinimizedTablesAtExpandedSize(display);
+                    mapperUIParent.getShell().layout();
+                }
+
+            }).start();
         }
         selectFirstInOutTablesView();
     }
@@ -519,8 +517,7 @@ public class MapperUI {
         }
         for (InputTable inputTable : tables) {
 
-            InputDataMapTableView dataMapTableView = new InputDataMapTableView(inputTablesZoneView, SWT.BORDER,
-                    inputTable, mapperManager);
+            InputDataMapTableView dataMapTableView = new InputDataMapTableView(inputTablesZoneView, SWT.BORDER, inputTable, mapperManager);
             FormData formData = new FormData();
             formData.left = new FormAttachment(0, 0);
             formData.right = new FormAttachment(100, 0);
@@ -594,8 +591,7 @@ public class MapperUI {
         previousControl = null;
         for (AbstractDataMapTable abstractDataMapTable : mapperModel.getVarsDataMapTables()) {
 
-            DataMapTableView dataMapTableView = new VarsDataMapTableView(varsTableZoneView, SWT.BORDER,
-                    abstractDataMapTable, mapperManager);
+            DataMapTableView dataMapTableView = new VarsDataMapTableView(varsTableZoneView, SWT.BORDER, abstractDataMapTable, mapperManager);
 
             FormData formData = new FormData();
             formData.left = new FormAttachment(0, 0);
@@ -604,7 +600,7 @@ public class MapperUI {
             dataMapTableView.setLayoutData(formData);
             previousControl = dataMapTableView;
             dataMapTableView.minimizeTable(abstractDataMapTable.isMinimized());
-//            dataMapTableView.registerStyledExpressionEditor(getTabFolderEditors().getStyledTextHandler());
+            // dataMapTableView.registerStyledExpressionEditor(getTabFolderEditors().getStyledTextHandler());
             // dataMapTableView.fillMinimumSize(false);
         }
 
@@ -658,8 +654,8 @@ public class MapperUI {
 
         for (AbstractDataMapTable abstractDataMapTable : tables) {
 
-            OutputDataMapTableView dataMapTableView = uiManager.createNewOutputTableView(previousControl,
-                    abstractDataMapTable, outputTablesZoneView);
+            OutputDataMapTableView dataMapTableView = uiManager.createNewOutputTableView(previousControl, abstractDataMapTable,
+                    outputTablesZoneView);
             previousControl = dataMapTableView;
         }
         outputTablesZoneView.setSize(outputTablesZoneView.computeSize(SWT.DEFAULT, SWT.DEFAULT));
@@ -684,7 +680,7 @@ public class MapperUI {
         backgroundRefresher.setAntialias(antialias);
         backgroundRefresher.setForceRecalculate(forceRecalculate);
         backgroundRefresher.updateBackground();
-        
+
     }
 
     private int getBorder() {
@@ -693,26 +689,29 @@ public class MapperUI {
 
     /**
      * 
-     * DOC amaumont MapperUI class global comment. Detailled comment
-     * <br/>
-     *
+     * DOC amaumont MapperUI class global comment. Detailled comment <br/>
+     * 
      * $Id$
-     *
+     * 
      */
     public class MapperBackgroundRefresher extends BackgroundRefresher {
 
         private boolean antialias;
+
         private boolean forceRecalculate;
 
         /**
          * DOC amaumont MapperBackgroundRefresher constructor comment.
+         * 
          * @param commonParent
          */
         public MapperBackgroundRefresher(Composite commonParent) {
             super(commonParent);
         }
 
-        /* (non-Javadoc)
+        /*
+         * (non-Javadoc)
+         * 
          * @see org.talend.commons.ui.swt.drawing.link.BackgroundRefresher#drawBackground(org.eclipse.swt.graphics.GC)
          */
         @Override
@@ -748,33 +747,36 @@ public class MapperUI {
             }
         } // public void drawBackground(GC gc) {
 
-        
         /**
          * Getter for antialias.
+         * 
          * @return the antialias
          */
         public boolean isAntialias() {
             return this.antialias;
         }
-        
+
         /**
          * Sets the antialias.
+         * 
          * @param antialias the antialias to set
          */
         public void setAntialias(boolean antialias) {
             this.antialias = antialias;
         }
-        
+
         /**
          * Getter for forceRecalculate.
+         * 
          * @return the forceRecalculate
          */
         public boolean isForceRecalculate() {
             return this.forceRecalculate;
         }
-        
+
         /**
          * Sets the forceRecalculate.
+         * 
          * @param forceRecalculate the forceRecalculate to set
          */
         public void setForceRecalculate(boolean forceRecalculate) {
@@ -879,6 +881,5 @@ public class MapperUI {
     public OutputsZone getOutputsZone() {
         return this.outputsZone;
     }
-    
-    
+
 }

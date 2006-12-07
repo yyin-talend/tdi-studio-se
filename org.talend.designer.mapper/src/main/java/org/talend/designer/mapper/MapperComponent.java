@@ -162,8 +162,8 @@ public class MapperComponent extends AbstractExternalNode {
      */
     public String getGeneratedCode() {
         try {
-            ICodeGeneratorService service= GlobalServiceRegister.getCodeGeneratorService();
-            
+            ICodeGeneratorService service = GlobalServiceRegister.getCodeGeneratorService();
+
             return service.createCodeGenerator().generateComponentCode(this, ECodePart.MAIN);
         } catch (SystemException e) {
             ExceptionHandler.process(e);

@@ -42,7 +42,6 @@ import org.talend.designer.mapper.managers.UIManager;
 import org.talend.designer.mapper.model.tableentry.IColumnEntry;
 import org.talend.designer.mapper.model.tableentry.ITableEntry;
 import org.talend.designer.mapper.model.tableentry.TableEntryLocation;
-import org.talend.designer.mapper.ui.commands.MapperDropCommand;
 import org.talend.designer.mapper.ui.visualmap.table.DataMapTableView;
 import org.talend.designer.mapper.ui.visualmap.zone.Zone;
 import org.talend.designer.mapper.ui.visualmap.zone.scrollable.TablesZoneView;
@@ -349,8 +348,8 @@ public class CompleteDropTargetListener extends DefaultDropTargetListener {
             tableViewerCreatorTarget = dataMapTableViewTarget.getTableViewerCreatorForColumns();
         }
 
-        MapperDropCommand dropCommand = new MapperDropCommand();
-        
+//        MapperDropCommand dropCommand = new MapperDropCommand();
+
         // MetadataEditorEvent metadataEditorEvent = new MetadataEditorEvent(MetadataEditorEvent.TYPE.ADD);
         ITableEntry lastEntryTarget = null;
         for (TransferableEntry transferableEntry : transferableEntryList) {
@@ -561,7 +560,7 @@ public class CompleteDropTargetListener extends DefaultDropTargetListener {
         }
         String expressionToWrite = null;
         if (overwriteExpression) {
-//            entryTarget.setExpression(expression + "  ");
+            // entryTarget.setExpression(expression + " ");
             expressionToWrite = expression + "  ";
         } else {
             String currentTargetExpression = entryTarget.getExpression();
@@ -577,21 +576,22 @@ public class CompleteDropTargetListener extends DefaultDropTargetListener {
             } else if (!isEmpty) {
                 space = "  ";
             }
-//            entryTarget.setExpression(currentTargetExpression + space + expression + " ");
+            // entryTarget.setExpression(currentTargetExpression + space + expression + " ");
             expressionToWrite = currentTargetExpression + space + expression + " ";
         }
         entryTarget.setExpression(expressionToWrite);
-        
-//        DataMapTableView dataMapTableView = mapperManager.retrieveAbstractDataMapTableView(tableEntrySource.getParent());
-//        TableViewerCreator<ITableEntry> tableViewerCreator = null;
-//        if (entryTarget instanceof IColumnEntry) {
-//            tableViewerCreator = dataMapTableView.getTableViewerCreatorForColumns();
-//        } else {
-//            tableViewerCreator = dataMapTableView.getTableViewerCreatorForFilters();
-//        }
-//
-//        TableViewerCreatorColumn column = tableViewerCreator.getColumn(DataMapTableView.ID_EXPRESSION_COLUMN);
-//        tableViewerCreator.setBeanValue(column, entryTarget, expressionToWrite, true);
+
+        // DataMapTableView dataMapTableView =
+        // mapperManager.retrieveAbstractDataMapTableView(tableEntrySource.getParent());
+        // TableViewerCreator<ITableEntry> tableViewerCreator = null;
+        // if (entryTarget instanceof IColumnEntry) {
+        // tableViewerCreator = dataMapTableView.getTableViewerCreatorForColumns();
+        // } else {
+        // tableViewerCreator = dataMapTableView.getTableViewerCreatorForFilters();
+        // }
+        //
+        // TableViewerCreatorColumn column = tableViewerCreator.getColumn(DataMapTableView.ID_EXPRESSION_COLUMN);
+        // tableViewerCreator.setBeanValue(column, entryTarget, expressionToWrite, true);
 
     }
 
@@ -651,38 +651,6 @@ public class CompleteDropTargetListener extends DefaultDropTargetListener {
         } else {
             return null;
         }
-    }
-
-    /**
-     * 
-     * DOC amaumont Comment method "getItemIndexWhereInsertFromPosition".
-     * 
-     * @param cursorPosition
-     * @return
-     */
-    private int getItemIndexWhereInsertFromPosition(Point cursorPosition) {
-        int startInsertAtThisIndex = 0;
-        Point pointCursor = draggableTable.toControl(cursorPosition.x, cursorPosition.y);
-        TableItem[] tableItems = draggableTable.getItems();
-        TableItem tableItemBehindCursor = getTableItemFromPosition(cursorPosition);
-        if (tableItemBehindCursor != null) {
-            for (int i = 0; i < tableItems.length; i++) {
-                if (tableItems[i] == tableItemBehindCursor) {
-                    Rectangle boundsItem = tableItemBehindCursor.getBounds();
-                    startInsertAtThisIndex = i;
-                    if (pointCursor.y > boundsItem.y + draggableTable.getItemHeight() / 2
-                            + (WindowSystem.isGTK() ? draggableTable.getHeaderHeight() : 0)) {
-                        startInsertAtThisIndex = i + 1;
-                    }
-                    break;
-                }
-            }
-        } else if (pointCursor.y < draggableTable.getHeaderHeight()) {
-            startInsertAtThisIndex = 0;
-        } else {
-            startInsertAtThisIndex = tableItems.length;
-        }
-        return startInsertAtThisIndex;
     }
 
 }

@@ -54,13 +54,12 @@ public class ExternalMapperTable implements Serializable {
      * Used only for outputs.
      */
     private boolean rejectInnerJoin;
-    
+
     /**
-     * Used only for lookup inputs.
-     * Reject main row if this lookup row doesn't exist.
+     * Used only for lookup inputs. Reject main row if this lookup row doesn't exist.
      */
     private boolean innerJoin;
-    
+
     public String getName() {
         return this.name;
     }
@@ -115,6 +114,7 @@ public class ExternalMapperTable implements Serializable {
 
     /**
      * Getter for rejectInnerJoin.
+     * 
      * @return the rejectInnerJoin
      */
     public boolean isRejectInnerJoin() {
@@ -123,6 +123,7 @@ public class ExternalMapperTable implements Serializable {
 
     /**
      * Sets the rejectInnerJoin.
+     * 
      * @param rejectInnerJoin the rejectInnerJoin to set
      */
     public void setRejectInnerJoin(boolean rejectInnerJoin) {
@@ -131,21 +132,20 @@ public class ExternalMapperTable implements Serializable {
 
     /**
      * Getter for innerJoin.
+     * 
      * @return the innerJoin
      */
     public boolean isInnerJoin() {
         return this.innerJoin;
     }
 
-    
     /**
      * Sets the innerJoin.
+     * 
      * @param innerJoin the innerJoin to set
      */
     public void setInnerJoin(boolean innerJoin) {
         this.innerJoin = innerJoin;
     }
 
-    
-    
 }

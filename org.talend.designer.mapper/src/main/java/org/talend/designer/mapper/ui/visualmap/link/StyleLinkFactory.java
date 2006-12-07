@@ -48,6 +48,7 @@ public class StyleLinkFactory {
     private IStyleLink selectedZoneToZoneStyle;
 
     private IStyleLink selectedFilterStyle;
+
     private IStyleLink unselectedFilterStyle;
 
     private IStyleLink selectedSameZoneStyle;
@@ -69,8 +70,7 @@ public class StyleLinkFactory {
      */
     private void init() {
 
-        selectedZoneToZoneStyle = getSelectedZoneToOtherZoneStyle(ColorProviderMapper
-                .getColor(ColorInfo.COLOR_SELECTED_ZONE_TO_ZONE_LINK));
+        selectedZoneToZoneStyle = getSelectedZoneToOtherZoneStyle(ColorProviderMapper.getColor(ColorInfo.COLOR_SELECTED_ZONE_TO_ZONE_LINK));
         selectedFilterStyle = getSelectedFilterStyle();
         unselectedFilterStyle = getUnselectedFilterStyle();
         selectedSameZoneStyle = getSelectedSameZoneStyle();
@@ -136,6 +136,7 @@ public class StyleLinkFactory {
 
     /**
      * DOC amaumont Comment method "getSelectedFilterStyle".
+     * 
      * @return
      */
     private IStyleLink getSelectedFilterStyle() {
@@ -153,21 +154,21 @@ public class StyleLinkFactory {
 
     /**
      * DOC amaumont Comment method "getSelectedFilterStyle".
+     * 
      * @return
      */
     private IStyleLink getUnselectedFilterStyle() {
         StyleLink style = new StyleLink();
         setCommonsStyleProperties(style);
         style.setDrawableLink(getZoneToZoneLink(style));
-//        ExtremityEastArrow eastArrowSource = new ExtremityEastArrow(style);
-//        style.setExtremity1(eastArrowSource);
-//        ExtremityEastArrow eastArrowTarget = new ExtremityEastArrow(style);
-//        eastArrowTarget.setXOffset(-eastArrowTarget.getSize().x);
-//        style.setExtremity2(eastArrowTarget);
+        // ExtremityEastArrow eastArrowSource = new ExtremityEastArrow(style);
+        // style.setExtremity1(eastArrowSource);
+        // ExtremityEastArrow eastArrowTarget = new ExtremityEastArrow(style);
+        // eastArrowTarget.setXOffset(-eastArrowTarget.getSize().x);
+        // style.setExtremity2(eastArrowTarget);
         style.setForegroundColor(ColorProviderMapper.getColor(ColorInfo.COLOR_UNSELECTED_FILTER_LINK));
         return style;
     }
-    
 
     private IStyleLink getSelectedZoneToOtherZoneStyle(Color foregroundColor) {
         StyleLink style = new StyleLink();
@@ -234,14 +235,15 @@ public class StyleLinkFactory {
 
     /**
      * DOC amaumont Comment method "setCommonsStyleProperties".
+     * 
      * @param style
      */
     private void setCommonsStyleProperties(StyleLink style) {
         style.setLineWidth(2);
         style.setLineCap(SWT.CAP_SQUARE);
         style.setLineJoin(SWT.JOIN_ROUND);
-//        style.setLineStyle(SWT.LINE_DASH);
-//        style.setLineDash(SWT.JOIN_BEVEL);
+        // style.setLineStyle(SWT.LINE_DASH);
+        // style.setLineDash(SWT.JOIN_BEVEL);
     }
 
     /**
@@ -260,8 +262,8 @@ public class StyleLinkFactory {
      * @return
      */
     private IDrawableLink getZoneToZoneLink(StyleLink style) {
-//        return new HorizontalBezierLink(style);
-        return new BezierHorizontalLink (style);
+        // return new HorizontalBezierLink(style);
+        return new BezierHorizontalLink(style);
     }
 
 }

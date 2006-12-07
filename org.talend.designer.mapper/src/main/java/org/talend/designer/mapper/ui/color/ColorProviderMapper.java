@@ -51,7 +51,7 @@ public class ColorProviderMapper {
     public static Color getColor(Display display, int swtColor) {
         return display.getSystemColor(swtColor);
     }
-    
+
     /**
      * DOC amaumont Comment method "release".
      */

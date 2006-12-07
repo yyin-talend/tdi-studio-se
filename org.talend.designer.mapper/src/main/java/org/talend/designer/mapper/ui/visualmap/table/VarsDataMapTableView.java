@@ -46,8 +46,7 @@ import org.talend.designer.mapper.ui.visualmap.zone.Zone;
  */
 public class VarsDataMapTableView extends DataMapTableView {
 
-    public VarsDataMapTableView(Composite parent, int style, AbstractDataMapTable abstractDataMapTable,
-            MapperManager mapperManager) {
+    public VarsDataMapTableView(Composite parent, int style, AbstractDataMapTable abstractDataMapTable, MapperManager mapperManager) {
         super(parent, style, abstractDataMapTable, mapperManager);
     }
 
@@ -112,8 +111,8 @@ public class VarsDataMapTableView extends DataMapTableView {
                     ModifiedObjectInfo modifiedObjectInfo = tableViewerCreatorForColumns.getModifiedObjectInfo();
                     String originalValue = (String) modifiedObjectInfo.getOriginalPropertyBeanValue();
                     Object currentModifiedBean = modifiedObjectInfo.getCurrentModifiedBean();
-                    mapperManager.getUiManager().processColumnNameChanged(originalValue.toString(), newValue.toString(), VarsDataMapTableView.this,
-                            (ITableEntry) currentModifiedBean);
+                    mapperManager.getUiManager().processColumnNameChanged(originalValue.toString(), newValue.toString(),
+                            VarsDataMapTableView.this, (ITableEntry) currentModifiedBean);
                 }
             }
 
@@ -165,7 +164,9 @@ public class VarsDataMapTableView extends DataMapTableView {
         removeEntryItem.setEnabled(false);
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.designer.mapper.ui.visualmap.table.DataMapTableView#toolbarNeededToBeRightStyle()
      */
     @Override

@@ -38,8 +38,7 @@ public enum ImageInfo {
     UNCHECKED_ICON("/icons/unchecked.png"),
     ADD_FILTER_ICON("/icons/addfilter.png"),
     REJECT_FILTER_ICON("/icons/rejectfilter.png"),
-    REJECT_LOOKUP_ICON("/icons/rejectlookup.png"),
-    ;
+    REJECT_LOOKUP_ICON("/icons/rejectlookup.png");
 
     private String path;
 

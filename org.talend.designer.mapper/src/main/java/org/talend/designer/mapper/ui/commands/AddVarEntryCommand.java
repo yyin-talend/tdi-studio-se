@@ -25,25 +25,24 @@ import org.eclipse.gef.commands.Command;
 import org.talend.designer.mapper.managers.TableEntriesManager;
 import org.talend.designer.mapper.model.tableentry.VarTableEntry;
 
-
 /**
- * DOC amaumont  class global comment. Detailled comment
- * <br/>
- *
+ * DOC amaumont class global comment. Detailled comment <br/>
+ * 
  * $Id$
- *
+ * 
  */
 public class AddVarEntryCommand extends Command {
 
-    
-    
     private VarTableEntry varTableEntry;
+
     private TableEntriesManager tableEntriesManager;
+
     private Integer index;
 
     /**
      * DOC amaumont AddTableEntryCommand constructor comment.
-     * @param tableEntriesManager 
+     * 
+     * @param tableEntriesManager
      */
     public AddVarEntryCommand(TableEntriesManager tableEntriesManager, VarTableEntry tableEntry, Integer index) {
         super();
@@ -54,24 +53,28 @@ public class AddVarEntryCommand extends Command {
 
     /**
      * DOC amaumont AddTableEntryCommand constructor comment.
+     * 
      * @param label
      */
     public AddVarEntryCommand(String label) {
         super(label);
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.eclipse.gef.commands.Command#execute()
      */
     @Override
     public void execute() {
-        
+
         tableEntriesManager.addTableEntry(varTableEntry, index);
 
-        
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.eclipse.gef.commands.Command#canExecute()
      */
     @Override
@@ -79,7 +82,9 @@ public class AddVarEntryCommand extends Command {
         return true;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.eclipse.gef.commands.Command#canUndo()
      */
     @Override
@@ -87,7 +92,9 @@ public class AddVarEntryCommand extends Command {
         return true;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.eclipse.gef.commands.Command#redo()
      */
     @Override
@@ -95,7 +102,9 @@ public class AddVarEntryCommand extends Command {
         execute();
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.eclipse.gef.commands.Command#undo()
      */
     @Override
@@ -103,7 +112,4 @@ public class AddVarEntryCommand extends Command {
         tableEntriesManager.remove(varTableEntry);
     }
 
-    
-    
-    
 }

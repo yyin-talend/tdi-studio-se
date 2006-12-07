@@ -56,11 +56,10 @@ public class TableEntriesManager {
 
     /**
      * 
-     * Event type.
-     * <br/>
-     *
+     * Event type. <br/>
+     * 
      * $Id$
-     *
+     * 
      */
     public enum EVENT_TYPE implements IExtendedControlEventType {
         REMOVE_ALL,
@@ -68,7 +67,7 @@ public class TableEntriesManager {
         ADD,
         ADD_ALL,
     };
-    
+
     TableEntriesManager(MapperManager mapperManager) {
         super();
         this.tableEntries = new HashMap<TableEntryLocation, ITableEntry>();
@@ -82,10 +81,10 @@ public class TableEntriesManager {
             remove(dataMapTableEntry);
         }
 
-//        TableEntriesManagerEvent event = new TableEntriesManagerEvent(EVENT_TYPE.REMOVE_ALL);
-//        event.entries = new ArrayList<ITableEntry>(dataMapTableEntriesGroup);
-//        fireEvent(event);
-        
+        // TableEntriesManagerEvent event = new TableEntriesManagerEvent(EVENT_TYPE.REMOVE_ALL);
+        // event.entries = new ArrayList<ITableEntry>(dataMapTableEntriesGroup);
+        // fireEvent(event);
+
     }
 
     /**
@@ -97,10 +96,10 @@ public class TableEntriesManager {
         for (ITableEntry dataMapTableEntry : dataMapTableEntriesGroup) {
             add(dataMapTableEntry);
         }
-        
-//        TableEntriesManagerEvent event = new TableEntriesManagerEvent(EVENT_TYPE.ADD_ALL);
-//        event.entries = new ArrayList<ITableEntry>(dataMapTableEntriesGroup);
-//        fireEvent(event);
+
+        // TableEntriesManagerEvent event = new TableEntriesManagerEvent(EVENT_TYPE.ADD_ALL);
+        // event.entries = new ArrayList<ITableEntry>(dataMapTableEntriesGroup);
+        // fireEvent(event);
     }
 
     void addTableEntry(ITableEntry dataMapTableEntry) {
@@ -134,9 +133,9 @@ public class TableEntriesManager {
         } else {
             throw new IllegalArgumentException("Type '" + dataMapTableEntry.getClass() + "' is not a valid type");
         }
-//        TableEntriesManagerEvent event = new TableEntriesManagerEvent(EVENT_TYPE.ADD);
-//        event.entry = dataMapTableEntry;
-//        fireEvent(event);
+        // TableEntriesManagerEvent event = new TableEntriesManagerEvent(EVENT_TYPE.ADD);
+        // event.entry = dataMapTableEntry;
+        // fireEvent(event);
     }
 
     /**
@@ -248,24 +247,23 @@ public class TableEntriesManager {
 
     /**
      * 
-     * Event for TableEntriesManager.
-     * <br/>
-     *
+     * Event for TableEntriesManager. <br/>
+     * 
      * $Id$
-     *
+     * 
      */
-//    public class TableEntriesManagerEvent extends ExtendedModelEvent {
-//
-//        /**
-//         * DOC amaumont TableEntriesManagerEvent constructor comment.
-//         * @param type
-//         */
-//        public TableEntriesManagerEvent(IExtendedControlEventType type) {
-//            super(type);
-//        }
-//
-//        public ITableEntry entry;
-//        public List<ITableEntry> entries;
-//        
-//    }
+    // public class TableEntriesManagerEvent extends ExtendedModelEvent {
+    //
+    // /**
+    // * DOC amaumont TableEntriesManagerEvent constructor comment.
+    // * @param type
+    // */
+    // public TableEntriesManagerEvent(IExtendedControlEventType type) {
+    // super(type);
+    // }
+    //
+    // public ITableEntry entry;
+    // public List<ITableEntry> entries;
+    //        
+    // }
 }

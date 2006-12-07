@@ -23,7 +23,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.talend.core.model.process.AbstractExternalNode;
-import org.talend.core.model.process.IConnection;
 import org.talend.designer.mapper.external.data.ExternalMapperData;
 import org.talend.designer.mapper.external.data.ExternalMapperTable;
 import org.talend.designer.mapper.external.data.ExternalMapperTableEntry;
@@ -47,15 +46,15 @@ public class TMapperStartPerljet {
 
         // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        List<IConnection> connections;
+//        List<IConnection> connections;
         ExternalMapperData data;
         if (node != null) {
-            connections = (List<IConnection>) node.getIncomingConnections();
+//            connections = (List<IConnection>) node.getIncomingConnections();
             data = (ExternalMapperData) node.getExternalData();
         } else {
             org.talend.designer.mapper.MapperMain.setStandAloneMode(true);
             MapperDataTestGenerator testGenerator = new MapperDataTestGenerator(LanguageProvider.getCurrentLanguage(), false);
-            connections = testGenerator.getConnectionList();
+//            connections = testGenerator.getConnectionList();
             data = (ExternalMapperData) testGenerator.getExternalData();
         }
 

@@ -37,10 +37,10 @@ public enum FontInfo {
 
     private FontData[] fontDatas;
 
-    private FontInfo(String name) {
-        fontDatas = getSystemFontDatas();
-        fontDatas[0].setName(name);
-    }
+//    private FontInfo(String name) {
+//        fontDatas = getSystemFontDatas();
+//        fontDatas[0].setName(name);
+//    }
 
     /**
      * DOC amaumont Comment method "getSystemFontDatas".
@@ -51,34 +51,34 @@ public enum FontInfo {
         return Display.getCurrent().getSystemFont().getFontData();
     }
 
-    private FontInfo(Integer height) {
-        fontDatas = getSystemFontDatas();
-        fontDatas[0].setHeight(height);
-    }
+//    private FontInfo(Integer height) {
+//        fontDatas = getSystemFontDatas();
+//        fontDatas[0].setHeight(height);
+//    }
 
     private FontInfo(int style) {
         fontDatas = getSystemFontDatas();
         fontDatas[0].setStyle(style);
     }
 
-    private FontInfo(String name, int style) {
-        this(name);
-        fontDatas[0].setStyle(style);
-    }
-
-    private FontInfo(int height, String name) {
-        this(name);
-        fontDatas[0].setHeight(height);
-    }
-
-    private FontInfo(Integer height, int style) {
-        this(style);
-        fontDatas[0].setHeight(height);
-    }
-
-    private FontInfo(FontData fontData) {
-        fontDatas = new FontData[] { fontData };
-    }
+//    private FontInfo(String name, int style) {
+//        this(name);
+//        fontDatas[0].setStyle(style);
+//    }
+//
+//    private FontInfo(int height, String name) {
+//        this(name);
+//        fontDatas[0].setHeight(height);
+//    }
+//
+//    private FontInfo(Integer height, int style) {
+//        this(style);
+//        fontDatas[0].setHeight(height);
+//    }
+//
+//    private FontInfo(FontData fontData) {
+//        fontDatas = new FontData[] { fontData };
+//    }
 
     public FontData[] getFontDatas() {
         return this.fontDatas;

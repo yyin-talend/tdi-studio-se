@@ -41,7 +41,7 @@ import org.talend.designer.mapper.utils.DataMapExpressionParser;
  */
 public class GenerationManager {
 
-    private List<ExternalMapperTable> inputTables;
+//    private List<ExternalMapperTable> inputTables;
 
     private Map<String, ExternalMapperTable> nameToInputTable;
 
@@ -60,7 +60,7 @@ public class GenerationManager {
      * @param inputTables
      */
     public void setInputTables(List<ExternalMapperTable> inputTables) {
-        this.inputTables = inputTables;
+//        this.inputTables = inputTables;
         nameToInputTable = new HashMap<String, ExternalMapperTable>(inputTables.size());
         for (ExternalMapperTable table : inputTables) {
             nameToInputTable.put(table.getName(), table);
@@ -73,7 +73,7 @@ public class GenerationManager {
      * @param varsTables
      */
     public void setVarsTables(List<ExternalMapperTable> varsTables) {
-        this.inputTables = varsTables;
+//        this.inputTables = varsTables;
         nameToVarsTable = new HashMap<String, ExternalMapperTable>(varsTables.size());
         for (ExternalMapperTable table : varsTables) {
             nameToVarsTable.put(table.getName(), table);

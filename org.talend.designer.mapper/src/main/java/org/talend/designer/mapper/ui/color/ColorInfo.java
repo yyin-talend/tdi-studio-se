@@ -40,18 +40,18 @@ public enum ColorInfo {
     COLOR_ENTRY_NONE(255, 255, 255), // white
 
     COLOR_BACKGROUND_LINKS_ZONE(210, 210, 196), // gray
-    
-//    COLOR_UNSELECTED_ZONE_TO_ZONE_LINK(235, 235, 0), // light yellow
+
+    // COLOR_UNSELECTED_ZONE_TO_ZONE_LINK(235, 235, 0), // light yellow
     COLOR_SELECTED_ZONE_TO_ZONE_LINK(255, 255, 0), // yellow
     COLOR_UNSELECTED_ZONE_TO_ZONE_LINK(196, 196, 180), // light gray
-    
+
     COLOR_SELECTED_LOOKUP_LINKS(160, 40, 210), // violet
     COLOR_UNSELECTED_LOOKUP_LINKS(200, 186, 225), // pastel violet
-    
+
     COLOR_SELECTED_FILTER_LINK(255, 150, 20), // orange
-//    COLOR_UNSELECTED_FILTER_LINK(255, 190, 150), // light orange
+    // COLOR_UNSELECTED_FILTER_LINK(255, 190, 150), // light orange
     COLOR_UNSELECTED_FILTER_LINK(255, 200, 70), // light gray
-    
+
     COLOR_HIGHLIGHTED_TEXT_ROW(240, 240, 240), // light gray
 
     COLOR_BACKGROUND_ERROR_EXPRESSION_CELL(255, 0, 0), // red
@@ -74,9 +74,9 @@ public enum ColorInfo {
         this.blue = blue;
     }
 
-    private ColorInfo(int systemColor) {
-        this.systemColor = systemColor;
-    }
+//    private ColorInfo(int systemColor) {
+//        this.systemColor = systemColor;
+//    }
 
     public int getBlue() {
         return this.blue;

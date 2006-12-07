@@ -50,6 +50,7 @@ import org.talend.designer.mapper.utils.DataMapExpressionParser;
  */
 public class TMapperMainPerljet {
 
+    @SuppressWarnings("unchecked")
     public static void main(String[] args) {
         IExternalNode argument = null;
 

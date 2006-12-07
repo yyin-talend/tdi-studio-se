@@ -117,7 +117,7 @@ public class DataMapExpressionParserTest {
     public void testreplaceLocationString() {
         ILanguage language = new PerlLanguage();
         DataMapExpressionParser expressionParser = new DataMapExpressionParser(language);
-        GenerationManager gen = new GenerationManager(language);
+//        GenerationManager gen = new GenerationManager(language);
 
         String result = expressionParser.replaceLocation(" $ book [ id_book ] ", new TableEntryLocation("book", "id_book"),
                 new TableEntryLocation("book", "id_book_changed"));

@@ -422,7 +422,7 @@ public class MapperManager {
         } else {
             throw new IllegalArgumentException("Use other signature method to add entry");
         }
-        
+
         AddVarEntryCommand varEntryCommand = new AddVarEntryCommand(tableEntriesManager, dataMapTableEntry, index);
         executeCommand(varEntryCommand);
 
