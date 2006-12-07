@@ -341,6 +341,9 @@ public class LoginComposite extends Composite {
      */
     protected boolean isAuthenticationNeeded() {
         IRepositoryFactory repository = getRepository();
+        if (repository == null) {
+            return false;
+        }
         return !repository.isAuthenticationNeeded();
     }
 
