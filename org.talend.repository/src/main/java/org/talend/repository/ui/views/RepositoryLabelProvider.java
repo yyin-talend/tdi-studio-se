@@ -63,6 +63,7 @@ public class RepositoryLabelProvider extends LabelProvider implements IColorProv
 
     public String getText(Object obj) {
         RepositoryNode node = (RepositoryNode) obj;
+
         if (node.getType() == ENodeType.REPOSITORY_ELEMENT || node.getType() == ENodeType.SIMPLE_FOLDER) {
             IRepositoryObject object = node.getObject();
 
@@ -89,28 +90,21 @@ public class RepositoryLabelProvider extends LabelProvider implements IColorProv
 
             return string.toString();
         } else {
-            return node.getProperties(EProperties.LABEL).toString();
+            return node.getLabel();
         }
     }
 
     public Image getImage(Object obj) {
         RepositoryNode node = (RepositoryNode) obj;
+
         switch (node.getType()) {
         case STABLE_SYSTEM_FOLDER:
         case SYSTEM_FOLDER:
-            ERepositoryObjectType contentType = (ERepositoryObjectType) node.getProperties(EProperties.CONTENT_TYPE);
-            if (contentType.equals(ERepositoryObjectType.RECYCLE_BIN)) {
-                if (node.hasChildren()) {
-                    return ImageProvider.getImage(EImage.RECYCLE_BIN_FULL_ICON);
-                } else {
-                    return ImageProvider.getImage(EImage.RECYCLE_BIN_EMPTY_ICON);
-                }
-            } else {
-                return ImageProvider.getImage(contentType);
-            }
+            return ImageProvider.getImage(node.getIcon());
         case SIMPLE_FOLDER:
+            // FIXME SML Move in repository node
             EImage image = (view.getExpandedState(obj) ? EImage.FOLDER_OPEN_ICON : EImage.FOLDER_CLOSE_ICON);
-            return ImageProvider.getImageDesc(image).createImage();
+            return ImageProvider.getImage(image);
         default:
             if (node.getObject().getType() == ERepositoryObjectType.DOCUMENTATION) {
                 DocumentationItem item = (DocumentationItem) node.getObject().getProperty().getItem();

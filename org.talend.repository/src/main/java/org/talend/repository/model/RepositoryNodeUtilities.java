@@ -34,6 +34,10 @@ import org.talend.repository.model.RepositoryNode.ENodeType;
 public class RepositoryNodeUtilities {
 
     public static IPath getPath(RepositoryNode node) {
+        if (node instanceof BinRepositoryNode) {
+            // FIXME SML
+            return new Path("Bin");
+        }
         if (node.getType() == ENodeType.STABLE_SYSTEM_FOLDER || node.getType() == ENodeType.SYSTEM_FOLDER) {
             return new Path("");
         }

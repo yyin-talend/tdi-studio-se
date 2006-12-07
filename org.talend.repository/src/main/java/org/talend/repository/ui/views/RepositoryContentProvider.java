@@ -42,9 +42,13 @@ import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.Folder;
 import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.core.ui.images.EImage;
+import org.talend.core.ui.images.ImageProvider;
+import org.talend.repository.model.BinRepositoryNode;
 import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
+import org.talend.repository.model.StableRepositoryNode;
 import org.talend.repository.model.RepositoryNode.ENodeType;
 import org.talend.repository.model.RepositoryNode.EProperties;
 
@@ -100,9 +104,9 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
         ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
         try {
             // 0. Recycle bin
-            RepositoryNode recBinNode = new RepositoryNode(null, root, ENodeType.STABLE_SYSTEM_FOLDER);
-            recBinNode.setProperties(EProperties.LABEL, ERepositoryObjectType.RECYCLE_BIN);
-            recBinNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.RECYCLE_BIN);
+            RepositoryNode recBinNode = new BinRepositoryNode(root);
+//            recBinNode.setProperties(EProperties.LABEL, ERepositoryObjectType.RECYCLE_BIN);
+//            recBinNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.RECYCLE_BIN);
             nodes.add(recBinNode);
 
             // 1. Business process
@@ -120,19 +124,21 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
             nodes.add(processNode);
 
             convert(factory.getProcess(), processNode, ERepositoryObjectType.PROCESS, recBinNode);
-//            convert(factory.getProcess2(), processNode, ERepositoryObjectType.PROCESS, recBinNode);
+            // convert(factory.getProcess2(), processNode, ERepositoryObjectType.PROCESS, recBinNode);
 
             // 3. Routines
+            RepositoryNode codeNode = new StableRepositoryNode(root, "Code", EImage.ROUTINE_ICON, 2);
+            nodes.add(codeNode);
+
             RepositoryNode routineNode = new RepositoryNode(null, root, ENodeType.SYSTEM_FOLDER);
             routineNode.setProperties(EProperties.LABEL, ERepositoryObjectType.ROUTINES);
             routineNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.ROUTINES);
-            nodes.add(routineNode);
+            codeNode.getChildren().add(routineNode);
             // 3.1. Snippets
-            // PTODO SML this is a temp inplementation of snippets
-            RepositoryNode snippetsNode = new RepositoryNode(null, routineNode, ENodeType.STABLE_SYSTEM_FOLDER);
+            RepositoryNode snippetsNode = new RepositoryNode(null, codeNode, ENodeType.STABLE_SYSTEM_FOLDER);
             snippetsNode.setProperties(EProperties.LABEL, ERepositoryObjectType.SNIPPETS);
             snippetsNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.SNIPPETS);
-            routineNode.getChildren().add(snippetsNode);
+            codeNode.getChildren().add(snippetsNode);
 
             convert(factory.getRoutine(), routineNode, ERepositoryObjectType.ROUTINES, recBinNode);
 
@@ -246,6 +252,7 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
         node.setProperties(EProperties.LABEL, repositoryObject.getLabel());
         if (factory.getStatus(repositoryObject) == ERepositoryStatus.DELETED) {
             recBinNode.getChildren().add(node);
+            node.setParent(recBinNode);
         } else {
             parent.getChildren().add(node);
         }

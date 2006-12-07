@@ -27,14 +27,13 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.widgets.Shell;
 import org.talend.core.model.metadata.builder.connection.Connection;
-import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.ui.images.EImage;
 import org.talend.core.ui.images.ImageProvider;
 import org.talend.repository.i18n.Messages;
+import org.talend.repository.model.BinRepositoryNode;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
-import org.talend.repository.model.RepositoryNode.EProperties;
 import org.talend.repository.ui.views.RepositoryContentProvider.MetadataTableRepositoryObject;
 
 /**
@@ -97,8 +96,7 @@ public class EmptyRecycleBinAction extends AContextualAction {
             RepositoryNode node = (RepositoryNode) o;
             switch (node.getType()) {
             case STABLE_SYSTEM_FOLDER:
-                ERepositoryObjectType type = (ERepositoryObjectType) node.getProperties(EProperties.CONTENT_TYPE);
-                if (type != ERepositoryObjectType.RECYCLE_BIN || !node.hasChildren()) {
+                if (!(node instanceof BinRepositoryNode) || !node.hasChildren()) {
                     canWork = false;
                 }
                 break;

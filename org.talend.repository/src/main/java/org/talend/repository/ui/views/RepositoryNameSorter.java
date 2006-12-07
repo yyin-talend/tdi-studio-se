@@ -24,6 +24,7 @@ package org.talend.repository.ui.views;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.repository.model.RepositoryNode;
+import org.talend.repository.model.StableRepositoryNode;
 import org.talend.repository.model.RepositoryNode.ENodeType;
 import org.talend.repository.model.RepositoryNode.EProperties;
 
@@ -43,6 +44,11 @@ public class RepositoryNameSorter extends ViewerSorter {
     @Override
     public int category(Object element) {
         RepositoryNode node = (RepositoryNode) element;
+
+        if (node instanceof StableRepositoryNode) {
+            return ((StableRepositoryNode) node).getOrder();
+        }
+
         if (node.getType() == ENodeType.STABLE_SYSTEM_FOLDER || node.getType() == ENodeType.SYSTEM_FOLDER) {
             ERepositoryObjectType contentType = (ERepositoryObjectType) node.getProperties(EProperties.CONTENT_TYPE);
             switch (contentType) {
@@ -68,8 +74,6 @@ public class RepositoryNameSorter extends ViewerSorter {
                 return 9;
             case DOCUMENTATION:
                 return 10;
-            case RECYCLE_BIN:
-                return 11;
             default:
                 return 99;
             }

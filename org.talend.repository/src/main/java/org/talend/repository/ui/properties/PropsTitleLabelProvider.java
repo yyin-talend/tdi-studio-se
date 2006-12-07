@@ -38,25 +38,13 @@ public class PropsTitleLabelProvider extends LabelProvider {
     @Override
     public String getText(Object element) {
         RepositoryNode repositoryNode = getRepositoryNode(element);
-        switch (repositoryNode.getType()) {
-        case REPOSITORY_ELEMENT:
-        case SIMPLE_FOLDER:
-            return repositoryNode.getObjectType().toString();
-        default:
-            return repositoryNode.getContentType().toString();
-        }
+        return repositoryNode.getLabel();
     }
 
     @Override
     public Image getImage(Object element) {
         RepositoryNode repositoryNode = getRepositoryNode(element);
-        switch (repositoryNode.getType()) {
-        case REPOSITORY_ELEMENT:
-        case SIMPLE_FOLDER:
-            return ImageProvider.getImage(repositoryNode.getObjectType());
-        default:
-            return ImageProvider.getImage(repositoryNode.getContentType());
-        }
+        return ImageProvider.getImage(repositoryNode.getIcon());
     }
 
     private RepositoryNode getRepositoryNode(Object element) {

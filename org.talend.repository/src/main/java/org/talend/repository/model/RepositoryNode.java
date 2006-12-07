@@ -30,6 +30,8 @@ import org.talend.commons.exception.PersistenceException;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.Folder;
 import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.core.ui.images.IImage;
+import org.talend.core.ui.images.ImageProvider;
 
 /**
  * Node used to fill the repository view TreeViewer. Each node has a type defines in ENodeType enum. Object isn't stored
@@ -185,6 +187,15 @@ public class RepositoryNode {
     }
 
     /**
+     * Sets the parent.
+     * 
+     * @param parent the parent to set
+     */
+    public void setParent(RepositoryNode parent) {
+        this.parent = parent;
+    }
+
+    /**
      * Getter for type.
      * 
      * @return the type
@@ -221,6 +232,26 @@ public class RepositoryNode {
      */
     public void setType(ENodeType type) {
         this.type = type;
+    }
+
+    public String getLabel() {
+        switch (getType()) {
+        case REPOSITORY_ELEMENT:
+        case SIMPLE_FOLDER:
+            return getObjectType().toString();
+        default:
+            return getContentType().toString();
+        }
+    }
+
+    public IImage getIcon() {
+        switch (getType()) {
+        case REPOSITORY_ELEMENT:
+        case SIMPLE_FOLDER:
+            return ImageProvider.getIcon(getObjectType());
+        default:
+            return ImageProvider.getIcon(getContentType());
+        }
     }
 
     public void setProperties(EProperties key, Object value) {

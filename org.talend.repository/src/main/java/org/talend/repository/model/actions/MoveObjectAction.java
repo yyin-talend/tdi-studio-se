@@ -29,6 +29,7 @@ import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.utils.workbench.resources.ResourceUtils;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.repository.model.BinRepositoryNode;
 import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
@@ -78,14 +79,13 @@ public class MoveObjectAction {
             if (!ResourceUtils.isCorrectDestination(sourcePath, targetPath, false)) {
                 return false;
             }
-            
+
             switch (targetNode.getType()) {
             case SYSTEM_FOLDER:
             case SIMPLE_FOLDER:
                 return ((ERepositoryObjectType) targetNode.getProperties(EProperties.CONTENT_TYPE)) == objectToCopy.getType();
             case STABLE_SYSTEM_FOLDER:
-                ERepositoryObjectType targetType = (ERepositoryObjectType) targetNode.getProperties(EProperties.CONTENT_TYPE);
-                return targetType.equals(ERepositoryObjectType.RECYCLE_BIN);
+                return targetNode instanceof BinRepositoryNode;
             default:
                 return false;
             }
@@ -125,11 +125,6 @@ public class MoveObjectAction {
             return;
         }
 
-        ERepositoryObjectType targetType = null;
-        if (targetNode != null) {
-            targetType = (ERepositoryObjectType) targetNode.getProperties(EProperties.CONTENT_TYPE);
-        }
-
         IPath targetPath = (targetNode == null ? new Path("") : RepositoryNodeUtilities.getPath(targetNode));
         IPath sourcePath = RepositoryNodeUtilities.getPath(sourceNode);
 
@@ -139,7 +134,7 @@ public class MoveObjectAction {
             // Source is an repository element :
             IRepositoryObject objectToMove = sourceNode.getObject();
 
-            if (ERepositoryObjectType.RECYCLE_BIN.equals(targetType)) {
+            if (targetNode instanceof BinRepositoryNode) {
                 // Move in the recycle bin :
                 factory.deleteObjectLogical(objectToMove);
             } else {
