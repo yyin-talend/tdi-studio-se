@@ -1519,61 +1519,13 @@ public class Process extends Element implements IProcess {
         return refLink;
     }
 
-    public void propagate(Node node, boolean force) {
-        for (IConnection connec : node.getOutgoingConnections()) {
-            Node targetNode = (Node) connec.getTarget();
-            if (connec.getLineStyle().equals(EConnectionType.FLOW_MAIN)) {
-                if (targetNode.getComponent().isSchemaAutoPropagated()) {
-                    // if the component is external, don't propagate ?
-                    if (targetNode.getExternalNode() == null) {
-                        IMetadataTable metaSource = connec.getMetadataTable();
-                        IMetadataTable metaTarget = targetNode.getMetadataList().get(0);
-                        IMetadataTable metaClone = metaSource.clone();
-
-                        // if the next component can modify the schema, then the
-                        // columns
-                        // will be propagated only if there's no columns.
-                        if (force || targetNode.canModifySchema()) {
-                            if (metaTarget.getListColumns().size() == 0) {
-                                metaTarget.setListColumns(metaClone.getListColumns());
-                            }
-                        } else {
-                            metaTarget.setListColumns(metaClone.getListColumns());
-                        }
-                    }
-                }
-                propagate(targetNode, force);
-            }
-            if (connec.getLineStyle().equals(EConnectionType.ITERATE)) {
-                propagate(targetNode, force);
-            }
-        }
-    }
-
-    public void propagateDatas(boolean force) {
-        for (Node node : nodes) {
-            if (node.isSubProcessStart()) {
-                propagate(node, force);
-            }
-        }
-    }
-
-    /**
-     * DOC nrousseau Comment method "checkProcess".
-     */
-    public void checkProcess() {
-        checkProcess(true);
-    }
-
     /**
      * DOC nrousseau Comment method "checkProcess".
      * 
      * @param propagate
      */
-    public void checkProcess(boolean propagate) {
+    public void checkProcess() {
         if (isActivate()) {
-            // if (propagate)
-            propagateDatas(propagate);
             checkProblems();
         }
     }

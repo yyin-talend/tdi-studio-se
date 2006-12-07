@@ -72,7 +72,7 @@ public class ElementParameter implements IElementParameter {
 
     // used for CLOSED_LIST
     private Object defaultClosedListValue;
-    
+
     private boolean basedOnSchema = false;
 
     private int nbLines = NB_LINES_DEFAULT, numRow = 0; // Default values
@@ -391,12 +391,17 @@ public class ElementParameter implements IElementParameter {
     public void setParent(IElement element) {
         parent = element;
     }
-    
+
     public boolean isBasedOnSchema() {
         return basedOnSchema;
     }
-    
+
     public void setBasedOnSchema(boolean basedOnSchema) {
         this.basedOnSchema = basedOnSchema;
+    }
+
+    @Override
+    public String toString() {
+        return name + ": " + value.toString();
     }
 }
