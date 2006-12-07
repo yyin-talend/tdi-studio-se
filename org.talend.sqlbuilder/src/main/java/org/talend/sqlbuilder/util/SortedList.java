@@ -33,6 +33,7 @@ import java.util.Iterator;
  * $Id: SortedList.java,v 1.2 2006/10/26 21:42:08 qiang.zhang Exp $
  *
  */
+@SuppressWarnings("unchecked")
 public class SortedList extends AbstractList {
 
     protected int psize;
@@ -78,8 +79,9 @@ public class SortedList extends AbstractList {
      */
     public boolean add(Object o) {
         int index = indexOfIntern(o);
-        if (index < 0)
-            index = -(index + 1);
+        if (index < 0) {
+        	index = -(index + 1);
+        }
         try {
             if (index != psize) {
                 System.arraycopy(pdata, index, pdata, index + 1, psize - index);
@@ -126,12 +128,13 @@ public class SortedList extends AbstractList {
             int mid = (low + high) >> 1;
             Object midVal = pdata[mid];
             int cmp = pcomp.compare(midVal, o);
-            if (cmp < 0)
-                low = mid + 1;
-            else if (cmp > 0)
-                high = mid - 1;
-            else
-                return mid; // key found
+            if (cmp < 0) {
+            	low = mid + 1;
+            } else if (cmp > 0) {
+            	high = mid - 1;
+            } else {
+            	return mid; // key found
+            }
         }
         return -(low + 1);
     }
@@ -149,8 +152,9 @@ public class SortedList extends AbstractList {
      * @see java.util.List#remove(int)
      */
     public Object remove(int index) {
-        if (index >= psize || index < 0)
-            throw new ArrayIndexOutOfBoundsException("index greater then size or below zero for remove " + index); 
+        if (index >= psize || index < 0) {
+        	throw new ArrayIndexOutOfBoundsException("index greater then size or below zero for remove " + index); 
+        }
 
         Object data = pdata[index];
 
@@ -165,8 +169,9 @@ public class SortedList extends AbstractList {
      */
     public boolean remove(Object o) {
         int index = indexOfIntern(o);
-        if (index >= 0)
-            remove(index);
+        if (index >= 0) {
+        	remove(index);
+         }
         return index >= 0;
     }
 

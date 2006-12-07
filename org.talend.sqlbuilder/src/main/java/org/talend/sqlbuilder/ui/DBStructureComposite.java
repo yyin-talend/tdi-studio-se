@@ -43,7 +43,6 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
-import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -70,7 +69,6 @@ import org.talend.sqlbuilder.actions.OpenQueryAction;
 import org.talend.sqlbuilder.actions.ShowQueryPropertyAction;
 import org.talend.sqlbuilder.dbstructure.DBTreeProvider;
 import org.talend.sqlbuilder.dbstructure.RepositoryNodeType;
-import org.talend.sqlbuilder.dbstructure.SqlBuilderRepositoryObject;
 import org.talend.sqlbuilder.repository.utility.SQLBuilderRepositoryNodeManager;
 import org.talend.sqlbuilder.util.ConnectionParameters;
 import org.talend.sqlbuilder.util.UIUtils;
@@ -93,8 +91,6 @@ public class DBStructureComposite extends Composite {
     private SQLBuilderDialog builderDialog;
 
     private IProgressMonitor progressMonitor;
-
-    private RepositoryNode rootRepositoryNode;
 
     private boolean isShowAllConnections;
 
@@ -120,8 +116,6 @@ public class DBStructureComposite extends Composite {
 
     private SQLBuilderRepositoryNodeManager repositoryNodeManager = new SQLBuilderRepositoryNodeManager();
     
-    private final static Color RED_COLOR = Display.getDefault().getSystemColor(SWT.COLOR_RED);
-
     /**
      * Create the composite.
      * 
@@ -212,22 +206,6 @@ public class DBStructureComposite extends Composite {
 			}
 			public void treeExpanded(TreeExpansionEvent event) {
 //				doSetColorOrNot(event);
-			}
-
-			private void doSetColorOrNot(TreeExpansionEvent event) {
-				RepositoryNode clickedRepositoryNode = (RepositoryNode) event.getElement();
-				if (repositoryNodeManager.isChangeElementColor(clickedRepositoryNode)) {
-					setOppositeColor(clickedRepositoryNode);
-					treeViewer.update(clickedRepositoryNode, null);
-				}
-			}
-			private void setOppositeColor(RepositoryNode clickedRepositoryNode) {
-				SqlBuilderRepositoryObject repositoryObject = (SqlBuilderRepositoryObject) clickedRepositoryNode.getObject();
-				if (repositoryObject.getColor() == null) {
-					repositoryObject.setColor(DBTreeProvider.COLOR_RED);
-				} else {
-					repositoryObject.setColor(null);
-				}
 			}
         	
         });
@@ -438,7 +416,8 @@ public class DBStructureComposite extends Composite {
             if (!MessageDialog
                     .openConfirm(
                             getShell(),
-                            Messages.getString("DBStructureComposite.Refresh"), Messages.getString("DBStructureComposite.TakeALongTime"))) { //$NON-NLS-2$
+                            Messages.getString("DBStructureComposite.Refresh"),
+                            Messages.getString("DBStructureComposite.TakeALongTime"))) { //$NON-NLS-2$
                 return;
             }
             final IRunnableWithProgress r = new IRunnableWithProgress() {
@@ -492,25 +471,6 @@ public class DBStructureComposite extends Composite {
 
         });
 
-    }
-    
-    /**
-     * Set the repositoryNode color.
-     * @param refreshNode
-     */
-    private void setColor(RepositoryNode refreshNode) {
-    	if (!treeViewer.isExpandable(refreshNode)) {
-    		if (repositoryNodeManager.isChangeElementColor(refreshNode)) {
-    			SqlBuilderRepositoryObject repositoryObject = (SqlBuilderRepositoryObject) refreshNode.getObject();
-    			repositoryObject.setColor(DBTreeProvider.COLOR_RED);
-    			treeViewer.update(refreshNode, null);
-    		}
-    	}
-    	
-    	List<RepositoryNode> nodes = refreshNode.getChildren();
-    	for (RepositoryNode node : nodes) {
-			setColor(node);
-		}
     }
     
     /**

@@ -45,7 +45,7 @@ import org.talend.sqlbuilder.Messages;
  * This class is used for creating a dialog for saving current editor's sql texts. <br/>
  * 
  * $Id: SaveSQLDialog.java,v 1.0 2006/11/15 05:38:28 ftang Exp $
- * 
+ * @author ftang
  */
 public class SQLPropertyDialog extends TitleAreaDialog {
 
@@ -153,7 +153,7 @@ public class SQLPropertyDialog extends TitleAreaDialog {
     }
 
     /**
-     * Return the initial size of the dialog
+     * Return the initial size of the dialog.
      */
     @Override
     protected Point getInitialSize() {

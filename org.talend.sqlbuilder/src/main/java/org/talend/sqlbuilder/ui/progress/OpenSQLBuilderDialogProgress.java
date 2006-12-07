@@ -37,7 +37,7 @@ import org.talend.sqlbuilder.util.ConnectionParameters;
  * <br/>
  *
  * $Id: talend-code-templates.xml 1 2006-09-29 17:06:40 +0000 (Fri, 29 Sep 2006) nrousseau $
- *
+ * @author qiang.zhang
  */
 public class OpenSQLBuilderDialogProgress implements IRunnableWithProgress {
 

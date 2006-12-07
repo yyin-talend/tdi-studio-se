@@ -42,7 +42,7 @@ import org.talend.sqlbuilder.util.QueryTokenizer;
  * DOC dev class global comment. Detailled comment <br/>
  * 
  * $Id: SQLEditorProposalUtil.java,v 1.19 2006/11/08 10:03:04 qiang.zhang Exp $
- * 
+ * @author qiang.zhang
  */
 public class SQLEditorProposalUtil {
 
@@ -86,10 +86,10 @@ public class SQLEditorProposalUtil {
 	 * @return ContentProposal array.
 	 */
 	public IContentProposal[] getSQLEditorContentProposals(String content,
-			int position) {
-		this.position = position;
-		contents[0] = content.substring(0, position);
-		contents[1] = content.substring(position);
+			int positionInt) {
+		this.position = positionInt;
+		contents[0] = content.substring(0, positionInt);
+		contents[1] = content.substring(positionInt);
 		proposals = new ArrayList<IContentProposal>();
 		List<String> queryStrings = getAllSqlQuery(content);
 

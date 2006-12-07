@@ -21,7 +21,6 @@
 // ============================================================================
 package org.talend.sqlbuilder.util;
 
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
 
@@ -49,7 +48,8 @@ public class ImageUtil {
      * image it will be disposed of.
      * 
      */
-    public static void disposeImage(String propertyName) {
+    @SuppressWarnings("unchecked")
+	public static void disposeImage(String propertyName) {
 
         try {
 
@@ -113,18 +113,6 @@ public class ImageUtil {
 
     }
 
-    private static URL newURL(String url)
-    {
-        try
-        {
-          return new URL(url);
-        }
-        catch (MalformedURLException e)
-        {
-          throw new RuntimeException("Malformed URL " + url, e);
-        }
-    }
-
     /**
      * Get an image object from cache or create one if it doesn't exist yet.
      * Everytime an object is retrieved, it should be disposed of using the
@@ -132,7 +120,8 @@ public class ImageUtil {
      * 
      * @param propertyName
      */
-    public static Image getImage(String propertyName) {
+    @SuppressWarnings("unchecked")
+	public static Image getImage(String propertyName) {
 
         Image image = (Image) pimages.get(propertyName);
 

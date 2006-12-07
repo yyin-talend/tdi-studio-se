@@ -49,8 +49,6 @@ public class SQLBuilderTabComposite extends Composite {
 
 	private CTabFolder tabFolder;
 
-	private List<String> repositoryNames;
-
 	private ISQLBuilderDialog dialog;
 
 	public SQLBuilderTabComposite(Composite parent, int style,
@@ -76,7 +74,6 @@ public class SQLBuilderTabComposite extends Composite {
 			ConnectionParameters connParam, boolean isDefaultEditor) {
 
 		Assert.isNotNull(node, "SessionTreeNode should not be null");
-		this.repositoryNames = repositories;
 		createTabFolder();
 		try {
 			createTabItem(node, connParam, isDefaultEditor);

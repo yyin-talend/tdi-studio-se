@@ -27,9 +27,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.operation.ModalContext;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.BusyIndicator;
-import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
@@ -43,6 +41,11 @@ import org.talend.sqlbuilder.SqlBuilderPlugin;
  */
 public class UIUtils {
 
+	/**
+	 * DOC dev UIUtils constructor comment.
+	 */
+	public UIUtils() {
+	}
     /**
      * Open a error dialog.
      * 
@@ -87,6 +90,13 @@ public class UIUtils {
      * };
      * runWithProgress(r);
      * </pre>
+     */
+    /**
+     * DOC dev Comment method "runWithProgress".
+     * @param operation
+     * @param fork
+     * @param monitor
+     * @param shell
      */
     public static void runWithProgress(final IRunnableWithProgress operation, final boolean fork,
             final IProgressMonitor monitor, final Shell shell) {

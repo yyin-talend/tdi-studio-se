@@ -168,7 +168,7 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog {
     }
 
     /**
-     * Create the dialog
+     * Create the dialog.
      * 
      * @param parentShell
      */
@@ -190,7 +190,7 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog {
     }
 
     /**
-     * Create contents of the dialog
+     * Create contents of the dialog.
      * 
      * @param parent
      */
@@ -216,7 +216,8 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog {
 
         structureComposite.openNewEditor();
 
-        RefreshDetailCompositeAction refreshAction = new RefreshDetailCompositeAction(structureComposite
+//        RefreshDetailCompositeAction refreshAction = 
+        new RefreshDetailCompositeAction(structureComposite
                 .getTreeViewer());
 
         return container;
@@ -248,7 +249,8 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog {
      * @param sashFormResultAndDetail
      */
     private void createResult(SashForm sashFormResultAndDetail) {
-        SQLResultComposite resultView = new SQLResultComposite(sashFormResultAndDetail, SWT.BORDER);
+//        SQLResultComposite resultView = 
+        	new SQLResultComposite(sashFormResultAndDetail, SWT.BORDER);
 
     }
 
@@ -273,7 +275,7 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog {
     }
 
     /**
-     * Create contents of the button bar
+     * Create contents of the button bar.
      * 
      * @param parent
      */

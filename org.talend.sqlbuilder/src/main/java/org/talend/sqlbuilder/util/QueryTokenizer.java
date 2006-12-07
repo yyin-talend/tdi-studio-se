@@ -30,7 +30,7 @@ import java.util.StringTokenizer;
  * This is used for splitting the input text in the editor into
  * multiple executable sql statements.
  * 
- * @author Davy Vanherbergen
+ * @author qzhang
  */
 public class QueryTokenizer {
 

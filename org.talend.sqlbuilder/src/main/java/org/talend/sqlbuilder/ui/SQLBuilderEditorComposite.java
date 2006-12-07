@@ -204,9 +204,11 @@ public class SQLBuilderEditorComposite extends Composite implements ISQLEditor {
 
 		// create text viewer
 		GridData gid = new GridData();
-		gid.grabExcessHorizontalSpace = gid.grabExcessVerticalSpace = true;
-		gid.horizontalAlignment = gid.verticalAlignment = GridData.FILL;
-
+		gid.grabExcessHorizontalSpace = true;
+		gid.grabExcessVerticalSpace = true;
+		gid.horizontalAlignment = GridData.FILL;
+		gid.verticalAlignment = GridData.FILL;
+		
 		ColorManager colorManager = new ColorManager(CorePlugin.getDefault()
 				.getPreferenceStore());
 		colorText = new ColorStyledText(parent, SWT.BORDER | SWT.V_SCROLL
@@ -348,7 +350,7 @@ public class SQLBuilderEditorComposite extends Composite implements ISQLEditor {
 		// initialize default actions
 		defaultToolBarMgr = new ToolBarManager(SWT.NONE);
 
-		execSQLAction = new ExecSQLAction(SQLResultComposite.instance, this);
+		execSQLAction = new ExecSQLAction(SQLResultComposite.getInstance(), this);
 
 		openFileAction = new OpenFileAction();
 		openFileAction.setEditor(this);
@@ -366,11 +368,11 @@ public class SQLBuilderEditorComposite extends Composite implements ISQLEditor {
 		if (SQLBuilderRepositoryNodeManager.getDbTypeFromRepositoryNode(
 				repositoryNode).startsWith("Oracle")) {
 			explainAction = new OracleExplainPlanAction(
-					SQLResultComposite.instance, this);
+					SQLResultComposite.getInstance(), this);
 		} else if (SQLBuilderRepositoryNodeManager.getDbTypeFromRepositoryNode(
 				repositoryNode).startsWith("IBM DB2")) {
 			explainAction = new DB2ExplainPlanAction(
-					SQLResultComposite.instance, this);
+					SQLResultComposite.getInstance(), this);
 		}
 
 		addDefaultActions(defaultToolBarMgr);
@@ -533,9 +535,9 @@ public class SQLBuilderEditorComposite extends Composite implements ISQLEditor {
 	 * 
 	 * @see org.talend.sqlbuilder.ui.editor.ISQLEditor#setEditorContent(org.talend.sqlbuilder.util.ConnectionParameters)
 	 */
-	public void setEditorContent(ConnectionParameters connParam) {
-		this.connParam = connParam;
-		this.colorText.setText(connParam.getQuery());
+	public void setEditorContent(ConnectionParameters connectionParameters) {
+		this.connParam = connectionParameters;
+		this.colorText.setText(connectionParameters.getQuery());
 
 	}
 
@@ -545,13 +547,13 @@ public class SQLBuilderEditorComposite extends Composite implements ISQLEditor {
 	 * @see org.talend.sqlbuilder.ui.editor.ISQLEditor#doSaveAs()
 	 */
 	public void doSaveAs() {
-		FileDialog dialog = new FileDialog(this.getShell(), SWT.SAVE);
-		dialog.setText(Messages.getString("SQLEditor.SaveAsDialog.Title"));
-		dialog.setFilterExtensions(SUPPORTED_FILETYPES);
-		dialog.setFilterNames(SUPPORTED_FILETYPES);
-		dialog.setFileName(tabItem.getText());
+		FileDialog fileDialog = new FileDialog(this.getShell(), SWT.SAVE);
+		fileDialog.setText(Messages.getString("SQLEditor.SaveAsDialog.Title"));
+		fileDialog.setFilterExtensions(SUPPORTED_FILETYPES);
+		fileDialog.setFilterNames(SUPPORTED_FILETYPES);
+		fileDialog.setFileName(tabItem.getText());
 
-		String path = dialog.open();
+		String path = fileDialog.open();
 		if (path == null) {
 			return;
 		}
@@ -637,12 +639,10 @@ public class SQLBuilderEditorComposite extends Composite implements ISQLEditor {
 	 * @see org.talend.sqlbuilder.ui.editor.ISQLEditor#getSessionTreeNode()
 	 */
 	public SessionTreeNode getSessionTreeNode() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	public void setRepositoryNode(SessionTreeNode node) {
-		// TODO Auto-generated method stub
 
 	}
 

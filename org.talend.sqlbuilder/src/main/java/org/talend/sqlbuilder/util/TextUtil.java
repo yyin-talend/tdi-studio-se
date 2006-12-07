@@ -25,7 +25,7 @@ package org.talend.sqlbuilder.util;
 /**
  * Text handling utility.
  * 
- * @author Davy Vanherbergen
+ * @author qzhang
  */
 public class TextUtil {
 

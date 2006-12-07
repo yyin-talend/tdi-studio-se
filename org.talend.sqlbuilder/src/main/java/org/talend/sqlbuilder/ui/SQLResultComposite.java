@@ -49,11 +49,11 @@ import org.talend.sqlbuilder.util.TextUtil;
  * DOC dev class global comment. Detailled comment <br/>
  * 
  * $Id: SQLResultComposite.java,v 1.18 2006/11/06 09:18:06 qiang.zhang Exp $
- * 
+ * @author qiang.zhang
  */
 public class SQLResultComposite extends Composite implements IResultDisplayer {
 
-    public static IResultDisplayer instance;
+    private static IResultDisplayer instance;
 
     private int lastTabNumber = 0;
 
@@ -97,6 +97,13 @@ public class SQLResultComposite extends Composite implements IResultDisplayer {
         createTabItem();
     }
 
+    /**
+	 * Getter for instance.
+	 * @return the instance
+	 */
+	public static IResultDisplayer getInstance() {
+		return instance;
+	}
     /**
      * 
      * DOC dev Comment method "createTabFolder".
@@ -234,7 +241,6 @@ public class SQLResultComposite extends Composite implements IResultDisplayer {
         //add sql statement, first create temp label to calculate correct size
         
         
-        int labelHeight = 60;
         int labelStyle = SWT.WRAP | SWT.MULTI;
 
         Text tmpLabel = new Text(parent, labelStyle);
@@ -243,10 +249,7 @@ public class SQLResultComposite extends Composite implements IResultDisplayer {
         int parentWidth = this.getClientArea().width;
         Point idealSize = tmpLabel.computeSize(parentWidth - 30, SWT.DEFAULT);
 
-        if (idealSize.y <= 60) {
-            // we don't need a scroll bar. minimize
-            labelHeight = idealSize.y;
-        } else {
+        if (idealSize.y > 60) {
             // we need a scroll bar
             labelStyle = SWT.WRAP | SWT.MULTI | SWT.V_SCROLL;
         }

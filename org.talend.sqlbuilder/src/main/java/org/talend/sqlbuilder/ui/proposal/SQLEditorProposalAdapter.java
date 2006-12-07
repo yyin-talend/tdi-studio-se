@@ -85,7 +85,7 @@ import org.talend.sqlbuilder.SqlBuilderPlugin;
  * This class is not intended to be subclassed.
  * 
  * @since 3.2
- * @author amaumont for modified class
+ * @author qiang.zhang for modified class
  */
 public class SQLEditorProposalAdapter {
 
@@ -112,7 +112,7 @@ public class SQLEditorProposalAdapter {
     /**
      * get filter text, filter text is updated when user type characters during proposal is opened.
      * 
-     * @author amaumont
+     * @author qiang.zhang
      * @return current filterText typed by user.
      */
     public String getCurrentFilterText() {
@@ -120,6 +120,170 @@ public class SQLEditorProposalAdapter {
     }
 
     /**
+	 * DOC dev  class global comment. Detailled comment
+	 * <br/>
+	 *
+	 * $Id: talend-code-templates.xml 1 2006-09-29 17:06:40 +0000 (Fri, 29 Sep 2006) nrousseau $
+	 *
+	 */
+	private final class ControlListener2 implements Listener {
+		public void handleEvent(Event e) {
+		    if (!isEnabled) {
+		        return;
+		    }
+		
+		    switch (e.type) {
+		    case SWT.Traverse:
+		    case SWT.KeyDown:
+		    case SWT.KeyUp:
+		        if (DEBUG) {
+		            StringBuffer sb;
+		            if (e.type == SWT.Traverse) {
+		                sb = new StringBuffer("Traverse"); //$NON-NLS-1$
+		            } else {
+		                sb = new StringBuffer("KeyDown"); //$NON-NLS-1$
+		            }
+		            sb.append(" received by adapter"); //$NON-NLS-1$
+		            dump(sb.toString(), e);
+		        }
+		        if (popup != null) {
+		            popup.getTargetControlListener().handleEvent(e);
+		            if (DEBUG) {
+		                StringBuffer sb;
+		                if (e.type == SWT.Traverse) {
+		                    sb = new StringBuffer("Traverse"); //$NON-NLS-1$
+		                } else {
+		                    sb = new StringBuffer("KeyDown"); //$NON-NLS-1$
+		                }
+		                sb.append(" after being handled by popup"); //$NON-NLS-1$
+		                dump(sb.toString(), e);
+		            }
+		
+		            return;
+		        }
+		        if (e.type == SWT.Traverse) {
+		            return;
+		        }
+		        if (e.type == SWT.KeyDown) {
+		            if (triggerKeyStroke != null) {
+		                if ((triggerKeyStroke.getModifierKeys() == KeyStroke.NO_KEY && triggerKeyStroke.getNaturalKey() == e.character)
+		                        ||
+		                        (triggerKeyStroke.getNaturalKey() == e.keyCode 
+		                        		&& ((triggerKeyStroke.getModifierKeys() & e.stateMask) == triggerKeyStroke
+		                                .getModifierKeys()))) {
+		                    e.doit = false;
+		                    openProposalPopup();
+		                    return;
+		                }
+		            }
+		            /*
+		             * The triggering keystroke was not invoked. Check for autoactivation characters.
+		             */
+		            if (e.character != 0) {
+		                boolean autoActivated = false;
+		                // Auto-activation characters were specified. Check
+		                // them.
+		                if (autoActivateString != null) {
+		                    if (autoActivateString.indexOf(e.character) >= 0) {
+		                        autoActivated = true;
+		                    }
+		                    // Auto-activation characters were not specified. If
+		                    // there was no key stroke specified, assume
+		                    // activation for alphanumeric characters.
+		                } else if (triggerKeyStroke == null && Character.isLetterOrDigit(e.character)) {
+		                    autoActivated = true;
+		                }
+		                /*
+		                 * When autoactivating, we check the autoactivation delay.
+		                 */
+		                if (autoActivated) {
+		                    autoActivatedProposal(e);
+		
+		                } else {
+		                    // No autoactivation occurred, so record the key down
+		                    // as a means to interrupt any autoactivation that is
+		                    // pending.
+		                    receivedKeyDown = true;
+		                }
+		            }
+		        }
+		        break;
+		
+		    default:
+		        break;
+		    }
+		}
+
+		/**
+		 * DOC dev Comment method "autoActivatedProposal".
+		 * @param e
+		 */
+		private void autoActivatedProposal(Event e) {
+			e.doit = propagateKeys;
+		
+			if (autoActivationDelay > 0) {
+			    Runnable runnable = new Runnable() {
+		
+			        public void run() {
+			            receivedKeyDown = false;
+			            try {
+			                Thread.sleep(autoActivationDelay);
+			            } catch (InterruptedException e) {
+			            	SqlBuilderPlugin.log(e.getMessage(), e);
+			            }
+			            if (!isValid() || receivedKeyDown) {
+			                return;
+			            }
+			            getControl().getDisplay().syncExec(new Runnable() {
+		
+			                public void run() {
+			                    openProposalPopup();
+			                }
+			            });
+			        }
+			    };
+			    Thread t = new Thread(runnable);
+			    t.start();
+			} else {
+			    // Since we do not sleep, we must open the popup
+			    // in an async exec. This is necessary because
+			    // the cursor position and other important info
+			    // changes as a result of this event occurring.
+			    getControl().getDisplay().asyncExec(new Runnable() {
+		
+			        public void run() {
+			            if (isValid()) {
+			                openProposalPopup();
+			            }
+			        }
+			    });
+			}
+		}
+
+		/**
+		 * Dump the given events to "standard" output.
+		 * 
+		 * @param who who is dumping the event
+		 * @param e the event
+		 */
+		private void dump(String who, Event e) {
+		    StringBuffer sb = new StringBuffer("--- [ContentProposalAdapter]\n"); //$NON-NLS-1$
+		    sb.append(who);
+		    sb.append(" - e: keyCode=" + e.keyCode + hex(e.keyCode)); //$NON-NLS-1$
+		    sb.append("; character=" + e.character + hex(e.character)); //$NON-NLS-1$
+		    sb.append("; stateMask=" + e.stateMask + hex(e.stateMask)); //$NON-NLS-1$
+		    sb.append("; doit=" + e.doit); //$NON-NLS-1$
+		    sb.append("; detail=" + e.detail + hex(e.detail)); //$NON-NLS-1$
+		    sb.append("; widget=" + e.widget); //$NON-NLS-1$
+		    System.out.println(sb);
+		}
+
+		private String hex(int i) {
+		    return "[0x" + Integer.toHexString(i) + ']'; //$NON-NLS-1$
+		}
+	}
+
+	/**
      * The lightweight popup used to show content proposals for a text field. If additional information exists for a
      * proposal, then selecting that proposal will result in the information being displayed in a secondary popup.
      */
@@ -294,41 +458,24 @@ public class SQLEditorProposalAdapter {
             private int lastCursorPosition;
 
             // Key events from the control
+            /* (non-Javadoc)
+             * @see org.eclipse.swt.widgets.Listener#handleEvent(org.eclipse.swt.widgets.Event)
+             */
             public void handleEvent(Event e) {
-//                System.out.println(e);
-//                System.out.println(EventUtil.getEventName(e.type));
                 if (!isValid()) {
                     return;
                 }
-
                 char key = e.character;
-
-                // Traverse events are handled depending on whether the
-                // event has a character.
                 if (e.type == SWT.Traverse) {
-                    // If the traverse event contains a legitimate character,
-                    // then we must set doit false so that the widget will
-                    // receive the key event. We return immediately so that
-                    // the character is handled only in the key event.
-                    // See https://bugs.eclipse.org/bugs/show_bug.cgi?id=132101
                     if (key != 0) {
                         e.doit = false;
                         return;
                     }
-                    // Traversal does not contain a character. Set doit true
-                    // to indicate TRAVERSE_NONE will occur and that no key
-                    // event will be triggered. We will check for navigation
-                    // keys below.
                     e.detail = SWT.TRAVERSE_NONE;
                     e.doit = true;
                 } else {
-                    // Default is to only propagate when configured that way.
-                    // Some keys will always set doit to false anyway.
                     e.doit = propagateKeys;
                 }
-
-                // No character. Check for navigation keys.
-
                 if (key == 0 || e.keyCode == SWT.BS) {
                     int newSelection = proposalTable.getSelectionIndex();
                     int visibleRows = (proposalTable.getSize().y / proposalTable.getItemHeight()) - 1;
@@ -339,19 +486,12 @@ public class SQLEditorProposalAdapter {
                             if (newSelection < 0) {
                                 newSelection = proposalTable.getItemCount() - 1;
                             }
-                            // Not typical - usually we get this as a Traverse and
-                            // therefore it never propagates. Added for consistency.
-                            // don't propagate to control
                             if (e.type == SWT.KeyDown) {
                                 e.doit = false;
                             }
                         }
-
                         break;
-
                     case SWT.ARROW_DOWN:
-                        // Not typical - usually we get this as a Traverse and
-                        // therefore it never propagates. Added for consistency.
                         if (e.type != SWT.KeyUp) {
                             newSelection += 1;
                             if (newSelection > proposalTable.getItemCount() - 1) {
@@ -362,92 +502,50 @@ public class SQLEditorProposalAdapter {
                                 e.doit = false;
                             }
                         }
-
                         break;
-
                     case SWT.PAGE_DOWN:
                         if (e.type != SWT.KeyUp) {
                             newSelection += visibleRows;
                             if (newSelection >= proposalTable.getItemCount()) {
                                 newSelection = proposalTable.getItemCount() - 1;
                             }
-                            // don't propagate to control
                             if (e.type == SWT.KeyDown) {
                                 e.doit = false;
                             }
-
                         }
                         break;
-
                     case SWT.PAGE_UP:
                         if (e.type != SWT.KeyUp) {
                             newSelection -= visibleRows;
                             if (newSelection < 0) {
                                 newSelection = 0;
                             }
-                            // don't propagate to control
                             if (e.type == SWT.KeyDown) {
-
                                 e.doit = false;
                             }
                         }
                         break;
-
                     case SWT.HOME:
                         if (e.type != SWT.KeyUp) {
                             newSelection = 0;
-                            // don't propagate to control
                             if (e.type == SWT.KeyDown) {
                                 e.doit = false;
                             }
                         }
                         break;
-
                     case SWT.END:
                         if (e.type != SWT.KeyUp) {
                             newSelection = proposalTable.getItemCount() - 1;
-                            // don't propagate to control
                             if (e.type == SWT.KeyDown) {
                                 e.doit = false;
                             }
                         }
                         break;
-
-                    // If received as a Traverse, these should propagate
-                    // to the control as keydown. If received as a keydown,
-                    // proposals should be recomputed since the cursor
-                    // position has changed.
                     case SWT.ARROW_LEFT:
                     case SWT.ARROW_RIGHT:
                     case SWT.BS:
-                        if (e.type == SWT.Traverse) {
-                            e.doit = false;
-                        } else {// if (e.type != SWT.KeyUp){
-                            e.doit = true;
-                            String contents = getControlContentAdapter().getControlContents(getControl());
-                            int cursorPosition = getControlContentAdapter().getCursorPosition(getControl());
-                            // If there are no contents, changes in cursor position
-                            // have no effect. Note also that we do not affect the filter
-                            // text on ARROW_LEFT as we would with BS.
-                            if (contents.length() > 0) {
-                                updateIntialFilterText();
-//                                 System.out.println("update proposal :" + filterText +" .equals(" + previousFilterText);
-//                                 System.out.println("cursorPosition :" + cursorPosition +" .equals(" + lastCursorPosition);
-                                // );
-                                if (cursorPosition == lastCursorPosition 
-                                        || !filterText.equals(previousFilterText) && previousFilterText != null) {
-//                                     System.out.println("update proposal!!!");
-                                    asyncRecomputeProposals(filterText);
-                                    previousFilterText = filterText;
-                                }
-                            }
-                            lastCursorPosition = cursorPosition;
-                        }
+                        keySWTBS(e);
                         break;
-
-                    // Any unknown keycodes will cause the popup to close.
-                    // Modifier keys are explicitly checked and ignored because
-                    // they are not complete yet (no character).
                     default:
                         if (e.type != SWT.KeyUp && e.keyCode != SWT.CAPS_LOCK && e.keyCode != SWT.MOD1 && e.keyCode != SWT.MOD2
                                 && e.keyCode != SWT.MOD3 && e.keyCode != SWT.MOD4) {
@@ -455,19 +553,12 @@ public class SQLEditorProposalAdapter {
                         }
                         return;
                     }
-
-                    // If any of these navigation events caused a new selection,
-                    // then handle that now and return.
                     if (newSelection >= 0) {
                         selectProposal(newSelection);
                     }
                     return;
                 }
-
                 if (e.type != SWT.KeyUp) {
-                    // key != 0
-                    // Check for special keys involved in cancelling, accepting, or
-                    // filtering the proposals.
                     switch (key) {
                     case SWT.ESC:
                         e.doit = false;
@@ -483,55 +574,61 @@ public class SQLEditorProposalAdapter {
                         }
                         authorizedClose();
                         break;
-
                     case SWT.TAB:
                         e.doit = false;
                         getShell().setFocus();
                         return;
-
                     case SWT.BS:
-                        // Backspace should back out of any stored filter text
                         if (filterStyle != FILTER_NONE) {
-                            // We have no filter to back out of, so do nothing
                             if (filterText.length() == 0) {
                                 return;
                             }
-                            // There is filter to back out of
                             filterText = filterText.substring(0, filterText.length() - 1);
                             asyncRecomputeProposals(filterText);
                             return;
                         }
-                        // There is no filtering provided by us, but some
-                        // clients provide their own filtering based on content.
-                        // Recompute the proposals if the cursor position
-                        // will change (is not at 0).
                         int pos = getControlContentAdapter().getCursorPosition(getControl());
-                        // We rely on the fact that the contents and pos do not yet
-                        // reflect the result of the BS. If the contents were already empty, then BS should not cause
-                        // a recompute.
                         if (pos > 0) {
                             asyncRecomputeProposals(filterText);
                         }
                         break;
 
                     default:
-                        // If the key is a defined unicode character, and not one of
-                        // the special cases processed above, update the filter text
-                        // and filter the proposals.
                         if (Character.isDefined(key)) {
                             if (filterStyle == FILTER_CUMULATIVE) {
                                 filterText = filterText + String.valueOf(key);
                             } else if (filterStyle == FILTER_CHARACTER) {
                                 filterText = String.valueOf(key);
                             }
-                            // System.out.println("default: " + filterText);
-                            // Recompute proposals after processing this event.
                             asyncRecomputeProposals(filterText);
                         }
                         break;
                     }
                 }
             }
+
+			/**
+			 * DOC dev Comment method "keySWTBS".
+			 * @param e
+			 */
+			private void keySWTBS(Event e) {
+				if (e.type == SWT.Traverse) {
+				    e.doit = false;
+				} else {
+				    e.doit = true;
+				    String contents = getControlContentAdapter().getControlContents(getControl());
+				    int cursorPosition = getControlContentAdapter().getCursorPosition(getControl());
+				    if (contents.length() > 0) {
+				        updateIntialFilterText();
+				        if (cursorPosition == lastCursorPosition 
+				                || !filterText.equals(previousFilterText) && previousFilterText != null) {
+				            asyncRecomputeProposals(filterText);
+				            previousFilterText = filterText;
+				        }
+				    }
+				    lastCursorPosition = cursorPosition;
+				}
+			}
         }
 
         /**
@@ -711,9 +808,9 @@ public class SQLEditorProposalAdapter {
         /*
          * Set the colors of the popup. The contents have already been created.
          */
-        private void changeDefaultColors(Control control) {
-            applyForegroundColor(getShell().getDisplay().getSystemColor(SWT.COLOR_LIST_FOREGROUND), control);
-            applyBackgroundColor(getShell().getDisplay().getSystemColor(SWT.COLOR_LIST_BACKGROUND), control);
+        private void changeDefaultColors(Control curcontrol) {
+            applyForegroundColor(getShell().getDisplay().getSystemColor(SWT.COLOR_LIST_FOREGROUND), curcontrol);
+            applyBackgroundColor(getShell().getDisplay().getSystemColor(SWT.COLOR_LIST_BACKGROUND), curcontrol);
         }
 
         /*
@@ -1016,11 +1113,11 @@ public class SQLEditorProposalAdapter {
                 position = getControlContentAdapter().getCursorPosition(getControl());
             }
             String contents = getControlContentAdapter().getControlContents(getControl());
-            IContentProposal[] proposals = proposalProvider.getProposals(contents, position);
+            IContentProposal[] contentProposals = proposalProvider.getProposals(contents, position);
             if (filterStyle != FILTER_NONE) {
-                return filterProposals(proposals, filterString);
+                return filterProposals(contentProposals, filterString);
             }
-            return proposals;
+            return contentProposals;
         }
 
         /*
@@ -1041,6 +1138,7 @@ public class SQLEditorProposalAdapter {
                         try {
                             Thread.sleep(POPUP_DELAY);
                         } catch (InterruptedException e) {
+                        	SqlBuilderPlugin.log(e.getMessage(), e);
                         }
                         if (!isValid()) {
                             return;
@@ -1092,40 +1190,45 @@ public class SQLEditorProposalAdapter {
             proposalAccepted(proposal);
         }
 
-        /*
+        /**
          * Request the proposals from the proposal provider, and recompute any caches. Repopulate the popup if it is
          * open.
          */
-        private void recomputeProposals(String filterText) {
+        private void recomputeProposals(String filterString) {
 //            System.out.println("Recompute :"+ filterText);
-            setProposals(getProposals(filterText));
+            setProposals(getProposals(filterString));
         }
 
-        /*
+        /**
          * In an async block, request the proposals. This is used when clients are in the middle of processing an event
          * that affects the widget content. By using an async, we ensure that the widget content is up to date with the
          * event.
          */
-        private void asyncRecomputeProposals(final String filterText) {
+        private void asyncRecomputeProposals(final String filterString) {
             if (isValid()) {
                 control.getDisplay().asyncExec(new Runnable() {
 
                     public void run() {
                         recordCursorPosition();
-                        recomputeProposals(filterText);
+                        recomputeProposals(filterString);
                     }
                 });
             } else {
-                recomputeProposals(filterText);
+                recomputeProposals(filterString);
             }
         }
 
-        /*
+        /**
          * Filter the provided list of content proposals according to the filter text.
+         * @param proposals
+         * @param filterString
+         * @return
          */
-        private IContentProposal[] filterProposals(IContentProposal[] proposals, String filterString) {
+        @SuppressWarnings("unchecked")
+		private IContentProposal[] filterProposals(
+				IContentProposal[] contentProposals, String filterString) {
             if (filterString.length() == 0) {
-                return proposals;
+                return contentProposals;
             }
 
 //            System.out.println("\nfilterString="+filterString);
@@ -1134,21 +1237,23 @@ public class SQLEditorProposalAdapter {
             ArrayList list = new ArrayList();
             boolean continueSearching = true;
             String currentFilter = EMPTY;
-            for (int indexStartFilter = 0; list.size() == 0 && continueSearching && indexStartFilter < filterString.length(); indexStartFilter++) {
+            for (int indexStartFilter = 0; list.size() == 0 
+            	&& continueSearching 
+            	&& indexStartFilter < filterString.length(); indexStartFilter++) {
                 currentFilter = filterString.substring(indexStartFilter);
 //                System.out.println("currentFilter="+currentFilter);
-                for (int i = 0; i < proposals.length; i++) {
-                    String string = getString(proposals[i]);
+                for (int i = 0; i < contentProposals.length; i++) {
+                    String string = getString(contentProposals[i]);
                     if (string.length() >= currentFilter.length()
                             && string.substring(0, currentFilter.length()).equalsIgnoreCase(currentFilter)) {
-                        list.add(proposals[i]);
+                        list.add(contentProposals[i]);
                     }
                 }
             }
             if (list.size() == 0) {
                 list = new ArrayList();
-                for (int i = 0; i < proposals.length; i++) {
-                    list.add(proposals[i]);
+                for (int i = 0; i < contentProposals.length; i++) {
+                    list.add(contentProposals[i]);
                 }
                 filterText = EMPTY;
             } else {
@@ -1160,6 +1265,10 @@ public class SQLEditorProposalAdapter {
             return (IContentProposal[]) list.toArray(new IContentProposal[list.size()]);
         }
 
+        /**
+         * DOC dev Comment method "getTargetControlListener".
+         * @return
+         */
         Listener getTargetControlListener() {
             if (targetControlListener == null) {
                 targetControlListener = new TargetControlListener();
@@ -1416,8 +1525,8 @@ public class SQLEditorProposalAdapter {
      * 
      * @param proposalProvider the {@link IContentProposalProvider} used to show proposals
      */
-    public void setContentProposalProvider(IContentProposalProvider proposalProvider) {
-        this.proposalProvider = proposalProvider;
+    public void setContentProposalProvider(IContentProposalProvider contentProposalProvider) {
+        this.proposalProvider = contentProposalProvider;
     }
 
     /**
@@ -1587,7 +1696,7 @@ public class SQLEditorProposalAdapter {
     }
 
     /**
-     * Add the specified listener to the list of content proposal listeners that are notified when content proposals are
+     * <p>Add the specified listener to the list of content proposal listeners that are notified when content proposals are
      * chosen.
      * </p>
      * 
@@ -1601,10 +1710,12 @@ public class SQLEditorProposalAdapter {
         proposalListeners.add(listener);
     }
 
-    /*
+    /**
+     *
      * Add our listener to the control. Debug information to be left in until this support is stable on all platforms.
+     *@param currControl
      */
-    private void addControlListener(Control control) {
+    private void addControlListener(Control currControl) {
         if (DEBUG) {
             System.out.println("ContentProposalListener#installControlListener()"); //$NON-NLS-1$
         }
@@ -1612,173 +1723,10 @@ public class SQLEditorProposalAdapter {
         if (controlListener != null) {
             return;
         }
-        controlListener = new Listener() {
-
-            public void handleEvent(Event e) {
-                if (!isEnabled) {
-                    return;
-                }
-
-                switch (e.type) {
-                case SWT.Traverse:
-                case SWT.KeyDown:
-
-                    // needed because in Text widget, cursor position is changed between keydown and keyup events in Text widget,
-                    // so when keyup, popup.getTargetControlListener().handleEvent(e) is effectivly called
-                case SWT.KeyUp:
-                    if (DEBUG) {
-                        StringBuffer sb;
-                        if (e.type == SWT.Traverse) {
-                            sb = new StringBuffer("Traverse"); //$NON-NLS-1$
-                        } else {
-                            sb = new StringBuffer("KeyDown"); //$NON-NLS-1$
-                        }
-                        sb.append(" received by adapter"); //$NON-NLS-1$
-                        dump(sb.toString(), e);
-                    }
-                    // If the popup is open, it gets first shot at the
-                    // keystroke and should set the doit flags appropriately.
-                    if (popup != null) {
-                        popup.getTargetControlListener().handleEvent(e);
-                        if (DEBUG) {
-                            StringBuffer sb;
-                            if (e.type == SWT.Traverse) {
-                                sb = new StringBuffer("Traverse"); //$NON-NLS-1$
-                            } else {
-                                sb = new StringBuffer("KeyDown"); //$NON-NLS-1$
-                            }
-                            sb.append(" after being handled by popup"); //$NON-NLS-1$
-                            dump(sb.toString(), e);
-                        }
-
-                        return;
-                    }
-
-                    // We were only listening to traverse events for the popup
-                    if (e.type == SWT.Traverse) {
-                        return;
-                    }
-
-                    if (e.type == SWT.KeyDown) {
-
-                        // The popup is not open. We are looking at keydown events
-                        // for a trigger to open the popup.
-                        if (triggerKeyStroke != null) {
-                            // Either there are no modifiers for the trigger and we
-                            // check the character field...
-                            if ((triggerKeyStroke.getModifierKeys() == KeyStroke.NO_KEY && triggerKeyStroke.getNaturalKey() == e.character)
-                                    ||
-                                    // ...or there are modifiers, in which case the
-                                    // keycode and state must match
-                                    (triggerKeyStroke.getNaturalKey() == e.keyCode && ((triggerKeyStroke.getModifierKeys() & e.stateMask) == triggerKeyStroke
-                                            .getModifierKeys()))) {
-                                // We never propagate the keystroke for an explicit
-                                // keystroke invocation of the popup
-                                e.doit = false;
-                                openProposalPopup();
-                                return;
-                            }
-                        }
-                        /*
-                         * The triggering keystroke was not invoked. Check for autoactivation characters.
-                         */
-                        if (e.character != 0) {
-                            boolean autoActivated = false;
-                            // Auto-activation characters were specified. Check
-                            // them.
-                            if (autoActivateString != null) {
-                                if (autoActivateString.indexOf(e.character) >= 0) {
-                                    autoActivated = true;
-                                }
-                                // Auto-activation characters were not specified. If
-                                // there was no key stroke specified, assume
-                                // activation for alphanumeric characters.
-                            } else if (triggerKeyStroke == null && Character.isLetterOrDigit(e.character)) {
-                                autoActivated = true;
-                            }
-                            /*
-                             * When autoactivating, we check the autoactivation delay.
-                             */
-                            if (autoActivated) {
-                                e.doit = propagateKeys;
-
-                                if (autoActivationDelay > 0) {
-                                    Runnable runnable = new Runnable() {
-
-                                        public void run() {
-                                            receivedKeyDown = false;
-                                            try {
-                                                Thread.sleep(autoActivationDelay);
-                                            } catch (InterruptedException e) {
-                                            }
-                                            if (!isValid() || receivedKeyDown) {
-                                                return;
-                                            }
-                                            getControl().getDisplay().syncExec(new Runnable() {
-
-                                                public void run() {
-                                                    openProposalPopup();
-                                                }
-                                            });
-                                        }
-                                    };
-                                    Thread t = new Thread(runnable);
-                                    t.start();
-                                } else {
-                                    // Since we do not sleep, we must open the popup
-                                    // in an async exec. This is necessary because
-                                    // the cursor position and other important info
-                                    // changes as a result of this event occurring.
-                                    getControl().getDisplay().asyncExec(new Runnable() {
-
-                                        public void run() {
-                                            if (isValid()) {
-                                                openProposalPopup();
-                                            }
-                                        }
-                                    });
-                                }
-
-                            } else {
-                                // No autoactivation occurred, so record the key down
-                                // as a means to interrupt any autoactivation that is
-                                // pending.
-                                receivedKeyDown = true;
-                            }
-                        }
-                    }
-                    break;
-
-                default:
-                    break;
-                }
-            }
-
-            /**
-             * Dump the given events to "standard" output.
-             * 
-             * @param who who is dumping the event
-             * @param e the event
-             */
-            private void dump(String who, Event e) {
-                StringBuffer sb = new StringBuffer("--- [ContentProposalAdapter]\n"); //$NON-NLS-1$
-                sb.append(who);
-                sb.append(" - e: keyCode=" + e.keyCode + hex(e.keyCode)); //$NON-NLS-1$
-                sb.append("; character=" + e.character + hex(e.character)); //$NON-NLS-1$
-                sb.append("; stateMask=" + e.stateMask + hex(e.stateMask)); //$NON-NLS-1$
-                sb.append("; doit=" + e.doit); //$NON-NLS-1$
-                sb.append("; detail=" + e.detail + hex(e.detail)); //$NON-NLS-1$
-                sb.append("; widget=" + e.widget); //$NON-NLS-1$
-                System.out.println(sb);
-            }
-
-            private String hex(int i) {
-                return "[0x" + Integer.toHexString(i) + ']'; //$NON-NLS-1$
-            }
-        };
-        control.addListener(SWT.KeyDown, controlListener);
-        control.addListener(SWT.KeyUp, controlListener);
-        control.addListener(SWT.Traverse, controlListener);
+        controlListener = new ControlListener2();
+        currControl.addListener(SWT.KeyDown, controlListener);
+        currControl.addListener(SWT.KeyUp, controlListener);
+        currControl.addListener(SWT.Traverse, controlListener);
 
         if (DEBUG) {
             System.out.println("ContentProposalAdapter#installControlListener() - installed"); //$NON-NLS-1$
@@ -1819,7 +1767,7 @@ public class SQLEditorProposalAdapter {
             }
         }
         if (controlContentAdapter instanceof IControlContentAdapterExtended) {
-            ((IControlContentAdapterExtended)controlContentAdapter).setUsedFilterValue(filterText);
+            ((IControlContentAdapterExtended) controlContentAdapter).setUsedFilterValue(filterText);
         }
         switch (proposalAcceptanceStyle) {
         case (PROPOSAL_REPLACE):
