@@ -93,6 +93,7 @@ import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
+import org.talend.commons.exception.SystemException;
 import org.talend.commons.ui.swt.colorstyledtext.ColorManager;
 import org.talend.commons.ui.swt.colorstyledtext.ColorStyledText;
 import org.talend.commons.ui.swt.proposal.ContentProposalAdapterExtended;
@@ -2191,13 +2192,13 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
         curRowSize = initialSize.y + ITabbedPropertyConstants.VSPACE;
 
         return null;
-    }// Ends
+    } // Ends
 
     @SuppressWarnings("unchecked")
     private Control addTable(final Composite parentComposite, final IElementParameter param, final int numInRow,
             final int nbInRow, final int top, final Control lastControlPrm) {
 
-        final Composite container = parentComposite;// new Composite(subComposite, SWT.NONE);
+        final Composite container = parentComposite; // new Composite(subComposite, SWT.NONE);
 
         // PropertiesTableEditorModel<Map<String, Object>> tableEditorModel = new PropertiesTableEditorModel<Map<String,
         // Object>>();
@@ -2308,9 +2309,11 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                     column.setMinimumWidth(100);
                     column.setWeight(20);
 
-                    if (itemsValue[i] instanceof IElementParameter) {
-                        IElementParameter tmpParam = (IElementParameter) itemsValue[i];
-
+                    IElementParameter tmpParam = (IElementParameter) itemsValue[i];
+                    switch (tmpParam.getField()) {
+                    case CLOSED_LIST:
+                    case COLUMN_LIST:
+                    case PREV_COLUMN_LIST:
                         ComboBoxCellEditor cellEditor = new ComboBoxCellEditor(table, tmpParam
                                 .getListItemsDisplayName());
                         ((CCombo) cellEditor.getControl()).setEditable(false);
@@ -2342,7 +2345,10 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                                 return new Integer(nb);
                             };
                         });
-                    } else {
+                        break;
+                    case CHECK:
+                        break;
+                    default: // TEXT
                         TextCellEditorWithProposal textCellEditor = new TextCellEditorWithProposal(table, column);
                         textCellEditor.setContentProposalProvider(processProposalProvider);
                         if ((i == 0) && (param.isBasedOnSchema())) {
@@ -2361,23 +2367,30 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                             }
                             if (itemsValue[curCol] instanceof IElementParameter) {
                                 IElementParameter tmpParam = (IElementParameter) itemsValue[curCol];
-                                String[] namesSet = tmpParam.getListItemsDisplayName();
-                                if (namesSet.length == 0) {
-                                    return (String) tmpParam.getDefaultClosedListValue();
-                                }
-                                if (value instanceof String) {
-                                    boolean found = false;
-                                    int index = 0;
-                                    Object[] items = ((IElementParameter) itemsValue[curCol]).getListItemsValue();
-                                    for (int j = 0; j < items.length && !found; j++) {
-                                        if (items[j].equals(value)) {
-                                            found = true;
-                                            index = j;
-                                        }
+                                switch (tmpParam.getField()) {
+                                case CLOSED_LIST:
+                                case COLUMN_LIST:
+                                case PREV_COLUMN_LIST:
+                                    String[] namesSet = tmpParam.getListItemsDisplayName();
+                                    if (namesSet.length == 0) {
+                                        return (String) tmpParam.getDefaultClosedListValue();
                                     }
-                                    value = new Integer(index);
+                                    if (value instanceof String) {
+                                        boolean found = false;
+                                        int index = 0;
+                                        Object[] items = ((IElementParameter) itemsValue[curCol]).getListItemsValue();
+                                        for (int j = 0; j < items.length && !found; j++) {
+                                            if (items[j].equals(value)) {
+                                                found = true;
+                                                index = j;
+                                            }
+                                        }
+                                        value = new Integer(index);
+                                    }
+                                    return namesSet[(Integer) value];
+                                default: // TEXT
+                                    return (String) value;
                                 }
-                                return namesSet[(Integer) value];
                             }
                             return (String) value;
                         }
@@ -2673,21 +2686,28 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
             Object value = currentLine.get(items[i]);
             Object[] tmpObjects = param.getListItemsValue();
             if (tmpObjects[i] instanceof IElementParameter) {
-                if (value instanceof String) { // only when the job is just loaded
-                    boolean found = false;
-                    int index = 0;
-                    Object[] itemsValue = ((IElementParameter) tmpObjects[i]).getListItemsValue();
-                    for (int j = 0; j < itemsValue.length && !found; j++) {
-                        if (itemsValue[j].equals(value)) {
-                            found = true;
-                            index = j;
+                IElementParameter tmpParam = (IElementParameter) tmpObjects[i];
+                switch (tmpParam.getField()) {
+                case CLOSED_LIST:
+                case COLUMN_LIST:
+                case PREV_COLUMN_LIST:
+                    if (value instanceof String) { // only when the job is just loaded
+                        boolean found = false;
+                        int index = 0;
+                        Object[] itemsValue = ((IElementParameter) tmpObjects[i]).getListItemsValue();
+                        for (int j = 0; j < itemsValue.length && !found; j++) {
+                            if (itemsValue[j].equals(value)) {
+                                found = true;
+                                index = j;
+                            }
                         }
+                        value = new Integer(index);
                     }
-                    value = new Integer(index);
-                }
-            } else {
-                if (i == 0 && param.isBasedOnSchema() && value == null && numLine >= 0) {
-                    value = getColumnList().get(numLine);
+                    break;
+                default:
+                    if (i == 0 && param.isBasedOnSchema() && value == null && numLine >= 0) {
+                        value = getColumnList().get(numLine);
+                    }
                 }
             }
             newLine.put(items[i], value);
@@ -2699,21 +2719,35 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
         Map<String, Object> line = new HashMap<String, Object>();
         String[] items = (String[]) param.getListItemsDisplayCodeName();
         Object[] itemsValue = (Object[]) param.getListItemsValue();
+        IElementParameter tmpParam;
 
-        if (itemsValue[0] instanceof IElementParameter) {
-            IElementParameter tmpParam = (IElementParameter) itemsValue[0];
+        tmpParam = (IElementParameter) itemsValue[0];
+        switch (tmpParam.getField()) {
+        case CLOSED_LIST:
+        case COLUMN_LIST:
+        case PREV_COLUMN_LIST:
             line.put(items[0], new Integer(tmpParam.getIndexOfItemFromList((String) tmpParam
                     .getDefaultClosedListValue())));
-        } else {
-            line.put(items[0], new String("'newLine'"));
+            break;
+        default: // TEXT
+            if ((tmpParam.getValue() == null) || (tmpParam.getValue().equals(""))) {
+                line.put(items[0], new String("'newLine'"));
+            } else {
+                line.put(items[0], tmpParam.getValue());
+            }
         }
+
         for (int i = 1; i < items.length; i++) {
-            if (itemsValue[i] instanceof IElementParameter) {
-                IElementParameter tmpParam = (IElementParameter) itemsValue[i];
+            tmpParam = (IElementParameter) itemsValue[i];
+            switch (tmpParam.getField()) {
+            case CLOSED_LIST:
+            case COLUMN_LIST:
+            case PREV_COLUMN_LIST:
                 line.put(items[i], new Integer(tmpParam.getIndexOfItemFromList((String) tmpParam
                         .getDefaultClosedListValue())));
-            } else {
-                line.put(items[i], new String(""));
+                break;
+            default: // TEXT
+                line.put(items[i], tmpParam.getValue());
             }
         }
         return line;

@@ -621,6 +621,7 @@ public class EmfComponent implements IComponent {
     public void addItemsPropertyParameters(String paramName, ITEMSType items, ElementParameter param,
             EParameterFieldType type, INode node) {
         ITEMType item;
+        ElementParameter newParam;
 
         int nbItems = 0;
         if (items != null) {
@@ -647,11 +648,16 @@ public class EmfComponent implements IComponent {
                 if (k == 0) {
                     listItemsDisplayCodeValue[k] = "SCHEMA_COLUMN";
                     listItemsDisplayValue[k] = "Column";
-                    listItemsValue[k] = "";
                     listField[k] = "";
                     listRepositoryItem[k] = "";
                     listItemsShowIf[k] = null;
                     listItemsNotShowIf[k] = null;
+                    newParam = new ElementParameter(node);
+                    newParam.setName("SCHEMA_COLUMN");
+                    newParam.setDisplayName("");
+                    newParam.setField(EParameterFieldType.TEXT);
+                    newParam.setValue("");
+                    listItemsValue[k] = newParam;
                     continue;
                 } else {
                     currentItem = k - 1;
@@ -660,33 +666,29 @@ public class EmfComponent implements IComponent {
             item = (ITEMType) items.getITEM().get(currentItem);
             listItemsDisplayCodeValue[k] = item.getNAME();
             listItemsDisplayValue[k] = getTranslatedValue(paramName + ".ITEM." + item.getNAME());
-            if (!type.equals(EParameterFieldType.TABLE)) {
+            if (type != EParameterFieldType.TABLE) {
                 listItemsValue[k] = item.getVALUE();
             } else {
                 EParameterFieldType currentField = EParameterFieldType.getFieldTypeByName(item.getFIELD());
-                if (EParameterFieldType.CLOSED_LIST == currentField) {
-                    ElementParameter newParam = new ElementParameter(node);
-                    newParam.setName(item.getNAME());
-                    newParam.setDisplayName("");
-                    newParam.setField(currentField);
+                newParam = new ElementParameter(node);
+                newParam.setName(item.getNAME());
+                newParam.setDisplayName("");
+                newParam.setField(currentField);
+                switch (currentField) {
+                case CLOSED_LIST:
+                case COLUMN_LIST:
+                case PREV_COLUMN_LIST:
                     addItemsPropertyParameters(paramName + ".ITEM." + item.getNAME(), item.getITEMS(), newParam,
-                            EParameterFieldType.CLOSED_LIST, node);
-                    listItemsValue[k] = newParam;
-                } else {
-
-                    if (currentField == EParameterFieldType.COLUMN_LIST
-                            || currentField == EParameterFieldType.PREV_COLUMN_LIST) {
-                        ElementParameter newParam = new ElementParameter(node);
-                        newParam.setName(item.getNAME());
-                        newParam.setDisplayName("");
-                        newParam.setField(currentField);
-                        addItemsPropertyParameters(paramName + ".ITEM." + item.getNAME(), item.getITEMS(), newParam,
-                                currentField, node);
-                        listItemsValue[k] = newParam;
-                    } else {
-                        listItemsValue[k] = item.getNAME();
-                    }
+                            currentField, node);
+                    break;
+                case CHECK:
+                    newParam.setValue(new Boolean(item.getVALUE()));
+                    break;
+                default: // TEXT by default
+                    newParam.setField(EParameterFieldType.TEXT);
+                    newParam.setValue(item.getVALUE());
                 }
+                listItemsValue[k] = newParam;
             }
             listField[k] = item.getFIELD();
             listRepositoryItem[k] = item.getREPOSITORYITEM();
@@ -700,7 +702,7 @@ public class EmfComponent implements IComponent {
         param.setListRepositoryItems(listRepositoryItem);
         param.setListItemsShowIf(listItemsShowIf);
         param.setListItemsNotShowIf(listItemsNotShowIf);
-        if (!type.equals(EParameterFieldType.TABLE)) {
+        if (type != EParameterFieldType.TABLE) {
             Object defaultValue = "";
             if (items != null) {
                 if (items.getDEFAULT() != null) {
