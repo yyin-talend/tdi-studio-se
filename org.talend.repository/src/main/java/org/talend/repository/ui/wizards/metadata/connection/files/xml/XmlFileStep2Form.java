@@ -51,6 +51,7 @@ import org.eclipse.swt.widgets.ScrollBar;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
+import org.talend.commons.ui.command.CommandStackForComposite;
 import org.talend.commons.ui.swt.dialogs.ErrorDialogWidthDetailArea;
 import org.talend.commons.ui.swt.formtools.Form;
 import org.talend.commons.ui.swt.formtools.LabelledCheckboxCombo;
@@ -62,8 +63,6 @@ import org.talend.core.model.metadata.builder.connection.ConnectionFactory;
 import org.talend.core.model.metadata.builder.connection.MetadataSchema;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.targetschema.editor.XPathNodeSchemaModel;
-import org.talend.core.ui.extended.ExtendedToolbarView;
-import org.talend.core.ui.extended.button.AddPushButtonForExtendedTable;
 import org.talend.core.utils.XmlArray;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.preview.ProcessDescription;
@@ -202,7 +201,7 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
         // Group Schema Viewer
         Group group = Form.createGroup(mainComposite, 1, Messages.getString("XmlFileStep1.sourceSchema"), height);
         availableXmlTree = new Tree(group, SWT.MULTI | SWT.BORDER);
-//        availableXmlTree.setVisible(false);
+        // availableXmlTree.setVisible(false);
         GridData gridData2 = new GridData(GridData.FILL_BOTH);
         availableXmlTree.setLayoutData(gridData2);
         availableXmlTree.setToolTipText(Messages.getString("FileStep1.fileViewerTip1") + " " + TreePopulator.MAXIMUM_ROWS_TO_PREVIEW + " "
@@ -215,9 +214,10 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
 
         schemaModel = new XPathNodeSchemaModel(Messages.getString("FileStep3.metadataDescription"));
         tableEditorView = new XPathNodeSchemaEditorView(schemaModel, group);
+        tableEditorView.getExtendedTableViewer().setCommandStack(new CommandStackForComposite(group));
 
         tableEditorView.getMainComposite().setLayoutData(new GridData(GridData.FILL_BOTH));
-        
+
     }
 
     /**
@@ -356,20 +356,21 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
             }
         });
 
-//        availableXmlTree.addSelectionListener(new SelectionAdapter() {
-//
-//            /*
-//             * (non-Javadoc)
-//             * 
-//             * @see org.eclipse.swt.events.SelectionAdapter#widgetSelected(org.eclipse.swt.events.SelectionEvent)
-//             */
-//            public void widgetSelected(SelectionEvent e) {
-//                List xpathList = getSelectedXPath(availableXmlTree.getSelection()[0]);
-//                if (xpathList != null) {
-//                    System.out.println("Node : " + availableXmlTree.getSelection()[0].getText() + " Xpath : " + xpathList.get(0));
-//                }
-//            }
-//        });
+        // availableXmlTree.addSelectionListener(new SelectionAdapter() {
+        //
+        // /*
+        // * (non-Javadoc)
+        // *
+        // * @see org.eclipse.swt.events.SelectionAdapter#widgetSelected(org.eclipse.swt.events.SelectionEvent)
+        // */
+        // public void widgetSelected(SelectionEvent e) {
+        // List xpathList = getSelectedXPath(availableXmlTree.getSelection()[0]);
+        // if (xpathList != null) {
+        // System.out.println("Node : " + availableXmlTree.getSelection()[0].getText() + " Xpath : " +
+        // xpathList.get(0));
+        // }
+        // }
+        // });
     }
 
     /**

@@ -21,68 +21,45 @@
 // ============================================================================
 package org.talend.repository.ui.wizards.metadata.connection.files.xml;
 
-import org.eclipse.swt.widgets.TableItem;
 import org.talend.commons.ui.swt.drawing.link.IExtremityLink;
 import org.talend.core.model.metadata.builder.connection.SchemaTarget;
 
-
 /**
- * DOC amaumont  class global comment. Detailled comment
- * <br/>
- *
+ * DOC amaumont class global comment. Detailled comment <br/>
+ * 
  * $Id$
- *
+ * 
  */
-public class TableItemExtremityDescriptor implements IExtremityLink<TableItem, SchemaTarget> {
+public class SchemaTargetExtremityDescriptor implements IExtremityLink<SchemaTarget> {
 
-    private TableItem tableItem;
-    
     private SchemaTarget schemaTarget;
-    
+
     /**
      * DOC amaumont TableItemExtremityDescriptor constructor comment.
+     * 
      * @param tableItem
      */
-    public TableItemExtremityDescriptor(TableItem tableItem, SchemaTarget schemaTarget) {
+    public SchemaTargetExtremityDescriptor(SchemaTarget schemaTarget) {
         super();
-        this.tableItem = tableItem;
         this.schemaTarget = schemaTarget;
     }
 
-
-    /* (non-Javadoc)
-     * @see org.talend.commons.ui.swt.drawing.link.IExtremityLink#getAssociatedItem()
-     */
-    public TableItem getGraphicalItem() {
-        return this.tableItem;
-    }
-
-    
-
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.commons.ui.swt.drawing.link.IExtremityLink#getDataItem()
      */
     public SchemaTarget getDataItem() {
         return this.schemaTarget;
     }
 
-
-    
-    
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.commons.ui.swt.drawing.link.IExtremityLink#setDataItem(java.lang.Object)
      */
     public void setDataItem(SchemaTarget dataItem) {
         this.schemaTarget = dataItem;
     }
 
-
-    /* (non-Javadoc)
-     * @see org.talend.commons.ui.swt.drawing.link.IExtremityLink#setGraphicalItem(java.lang.Object)
-     */
-    public void setGraphicalItem(TableItem graphicalItem) {
-        this.tableItem = graphicalItem;
-    }
-
-    
 }

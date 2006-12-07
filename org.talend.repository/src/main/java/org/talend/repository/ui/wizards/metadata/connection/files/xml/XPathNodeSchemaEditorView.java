@@ -55,13 +55,7 @@ import org.talend.core.ui.extended.button.AddPushButtonForExtendedTable;
  */
 public class XPathNodeSchemaEditorView extends AbstractDataTableEditorView<SchemaTarget> {
 
-    private TableViewerCreator<SchemaTarget> tableViewerCreator;
-
-    private ExtendedToolbarView targetSchemaToolbarEditorView2;
-
     public static final String ID_COLUMN_NAME = "ID_COLUMN_NAME";
-
-    private boolean showDbTypeColumn = false;
 
     private TextCellEditorWithProposal xPathCellEditor;
 
@@ -78,7 +72,7 @@ public class XPathNodeSchemaEditorView extends AbstractDataTableEditorView<Schem
     public XPathNodeSchemaEditorView(XPathNodeSchemaModel model, Composite parent) {
         this(model, parent, SWT.NONE, false);
     }
-    
+
     /**
      * TargetSchemaTableEditorView2 constructor comment.
      * 
@@ -88,7 +82,6 @@ public class XPathNodeSchemaEditorView extends AbstractDataTableEditorView<Schem
      */
     public XPathNodeSchemaEditorView(XPathNodeSchemaModel model, Composite parent, int styleChild, boolean showDbTypeColumn) {
         super(parent, styleChild, model);
-        this.showDbTypeColumn = showDbTypeColumn;
     }
 
     /**
@@ -100,21 +93,32 @@ public class XPathNodeSchemaEditorView extends AbstractDataTableEditorView<Schem
         return this.xPathCellEditor;
     }
 
-    
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.commons.ui.swt.advanced.dataeditor.AbstractDataTableEditorView#handleBeforeListenableListOperationEvent(org.talend.commons.utils.data.list.ListenableListEvent)
+     */
+    @Override
+    protected void handleBeforeListenableListOperationEvent(ListenableListEvent<SchemaTarget> event) {
+        super.handleBeforeListenableListOperationEvent(event);
+    }
+
     /*
      * (non-Javadoc)
      * 
      * @see org.talend.commons.ui.swt.extended.macrotable.AbstractExtendedTableViewer#handleListenableListEvent(org.talend.commons.utils.data.list.ListenableListEvent)
      */
     @Override
-    protected void handleAfterListenableListOperationEvent(ListenableListEvent event) {
+    protected void handleAfterListenableListOperationEvent(ListenableListEvent<SchemaTarget> event) {
         super.handleAfterListenableListOperationEvent(event);
         if (event.type == TYPE.REMOVED) {
             linker.updateBackground();
         }
     }
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.commons.ui.swt.extended.macrotable.AbstractExtendedTableViewer#setTableViewerCreatorOptions(org.talend.commons.ui.swt.tableviewer.TableViewerCreator)
      */
     @Override
@@ -289,7 +293,9 @@ public class XPathNodeSchemaEditorView extends AbstractDataTableEditorView<Schem
         this.linker = linker;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.commons.ui.swt.advanced.dataeditor.AbstractDataTableEditorView#initToolBar()
      */
     @Override
@@ -312,6 +318,4 @@ public class XPathNodeSchemaEditorView extends AbstractDataTableEditorView<Schem
 
     }
 
-    
-    
 }
