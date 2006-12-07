@@ -81,19 +81,20 @@ public class SQLBuilderRepositoryNodeManager {
 	// store all label name of connections's tables and columns
 	private static Map<String, String> labelsAndNames = new HashMap<String, String>();
 
-	private static Map<DatabaseConnection, Map<MetadataTable, List<MetadataColumn>>> oldMetaData = new HashMap<DatabaseConnection, Map<MetadataTable, List<MetadataColumn>>>();
+	private static Map<DatabaseConnection, Map<MetadataTable, List<MetadataColumn>>> oldMetaData = 
+		new HashMap<DatabaseConnection, Map<MetadataTable, List<MetadataColumn>>>();
 
-	public static boolean isDialogClosed = false;
+	private static boolean isDialogClosed = false;
 
-	public static boolean isReduction = false;
+	private static boolean isReduction = false;
 	
-	public static boolean isIncrease = false;
+	private static boolean isIncrease = false;
 	
 	private static boolean isFirst = true;
 	
 	private static String currentNodeLabel = "";
 	
-	
+//	public static boolean isAction = false;
 	/**
 	 * Getter for oldMetaData.
 	 * 
@@ -239,17 +240,20 @@ public class SQLBuilderRepositoryNodeManager {
 	 */
 	@SuppressWarnings("unchecked")
 	public static void reductionALLRepositoryNode() {
+//		System.out.println("In reduction All Repository: isAction " + isAction+", isIncrease "+isIncrease);
 		isFirst = false;
-		for (RepositoryNode node : repositoryNodes) {
-			reductionOneRepositoryNode(node);
-			
-		}
-		if (isDialogClosed) {
-			repositoryNodes.clear();
-			labelsAndNames.clear();
-			oldMetaData.clear();
-		}
-		isDialogClosed = false;
+//		if (!isAction) {
+			for (RepositoryNode node : repositoryNodes) {
+				reductionOneRepositoryNode(node);
+				
+			}
+			if (isDialogClosed) {
+				repositoryNodes.clear();
+				labelsAndNames.clear();
+				oldMetaData.clear();
+			}
+			isDialogClosed = false;
+//		}
 	}
 
 	/**
@@ -323,6 +327,7 @@ public class SQLBuilderRepositoryNodeManager {
 	 * DOC dev Comment method "increaseALLRepositoryNode".
 	 */
 	public static void increaseALLRepositoryNode() {
+//		System.out.println("In Increase All Repository: isAction " + isAction+", isIncrease "+isIncrease);
 		if (!isFirst && !isIncrease) {
 			if (repositoryNodes != null) {
 				for (RepositoryNode node : repositoryNodes) {
@@ -1187,6 +1192,55 @@ public class SQLBuilderRepositoryNodeManager {
 		}
 		return getRoot(repositoryNode.getParent());
 	}
+
+	/**
+	 * Getter for isDialogClosed.
+	 * @return the isDialogClosed
+	 */
+	public static boolean isDialogClosed() {
+		return isDialogClosed;
+	}
+
+	/**
+	 * Sets the isDialogClosed.
+	 * @param isDialogClosed the isDialogClosed to set
+	 */
+	public static void setDialogClosed(boolean isDialogClosed2) {
+		SQLBuilderRepositoryNodeManager.isDialogClosed = isDialogClosed2;
+	}
+
+	/**
+	 * Getter for isIncrease.
+	 * @return the isIncrease
+	 */
+	public static boolean isIncrease() {
+		return isIncrease;
+	}
+
+	/**
+	 * Sets the isIncrease.
+	 * @param isIncrease the isIncrease to set
+	 */
+	public static void setIncrease(boolean isIncrease2) {
+		SQLBuilderRepositoryNodeManager.isIncrease = isIncrease2;
+	}
+
+	/**
+	 * Getter for isReduction.
+	 * @return the isReduction
+	 */
+	public static boolean isReduction() {
+		return isReduction;
+	}
+
+	/**
+	 * Sets the isReduction.
+	 * @param isReduction the isReduction to set
+	 */
+	public static void setReduction(boolean isReduction2) {
+		SQLBuilderRepositoryNodeManager.isReduction = isReduction2;
+	}
+	
 }
 
 /**

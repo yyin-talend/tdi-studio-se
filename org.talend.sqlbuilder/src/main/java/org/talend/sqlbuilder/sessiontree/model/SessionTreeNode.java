@@ -42,15 +42,12 @@ import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNode.EProperties;
-import org.talend.sqlbuilder.IConstants;
 import org.talend.sqlbuilder.SqlBuilderPlugin;
 import org.talend.sqlbuilder.dbdetail.DetailTabManager;
 import org.talend.sqlbuilder.dbstructure.DatabaseModel;
 import org.talend.sqlbuilder.dbstructure.nodes.DatabaseNode;
 import org.talend.sqlbuilder.dbstructure.nodes.INode;
 import org.talend.sqlbuilder.sessiontree.model.utility.Dictionary;
-import org.talend.sqlbuilder.sessiontree.model.utility.DictionaryLoader;
-
 /**
  * The SessionTreeNode represents one active database session.
  * 

@@ -140,7 +140,7 @@ public class MetadataRefreshAction extends SelectionProviderAction {
 		.getConnection();
 		modifyMetadataColumn(tableNode, columnNode, connection);
 		saveMetaData(item);
-		if (!SQLBuilderRepositoryNodeManager.isReduction) {
+		if (!SQLBuilderRepositoryNodeManager.isReduction()) {
 			SQLBuilderRepositoryNodeManager.increaseOneRepositoryNode(repositorynodes.get(0));
 		}
 		for (RepositoryNode repositorynode : repositorynodes) {
@@ -204,7 +204,7 @@ public class MetadataRefreshAction extends SelectionProviderAction {
 //			}
 //		}
 //		connection.setDivergency(flag);
-		if (!SQLBuilderRepositoryNodeManager.isReduction) {
+		if (!SQLBuilderRepositoryNodeManager.isReduction()) {
 			SQLBuilderRepositoryNodeManager.reductionOneRepositoryNode(repositorynodes.get(0));
 		}
 	}

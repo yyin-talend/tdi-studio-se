@@ -126,7 +126,7 @@ public class GenerateSelectSQLAction extends SelectionProviderAction {
 	public void run() {
 		try {
 			SQLBuilderRepositoryNodeManager.increaseALLRepositoryNode();
-			SQLBuilderRepositoryNodeManager.isIncrease = true;
+			SQLBuilderRepositoryNodeManager.setIncrease(true);
 			String query = null;
 
 			RepositoryNodeType repositoryNodeType = (RepositoryNodeType) selectedNodes[0]

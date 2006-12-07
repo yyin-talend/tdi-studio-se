@@ -66,7 +66,7 @@ public class SQLExecution extends AbstractSQLExecution {
 
 
     /**
-     * Display SQL Results in result pane
+     * Display SQL Results in result pane.
      */
     protected void displayResults() {
 
@@ -185,32 +185,16 @@ public class SQLExecution extends AbstractSQLExecution {
                     composite.getDisplay().asyncExec(new Runnable() {
 
                         public void run() {
-
-                            String message = Messages.getString("SQLEditor.TotalTime.Prefix") + " "
-                                    + (int) (endTime - startTime) + " "
-                                    + Messages.getString("SQLEditor.TotalTime.Postfix");
-//                            if (_editor != null) {
-//                                _editor.setMessage(message);
-//                            }
                         }
                     });
                 }
 
             } else {
 
-                final long endTime = System.currentTimeMillis();
-                final int updateCount = stmt.getUpdateCount();
-
                 // update text on editor
                 composite.getDisplay().asyncExec(new Runnable() {
 
                     public void run() {
-
-                        String message = "" + updateCount + " " + Messages.getString("SQLEditor.Update.Prefix") + " "
-                                + (int) (endTime - startTime) + " " + Messages.getString("SQLEditor.Update.Postfix");
-//                        if (_editor != null) {
-//                            _editor.setMessage(message);
-//                        }
 
                         // close tab
                         parentTab.dispose();
@@ -256,8 +240,7 @@ public class SQLExecution extends AbstractSQLExecution {
 
     }
     
-    public SQLResult getSQLResult(){
+    public SQLResult getSQLResult() {
         return this.sqlResult;
     }
-
 }

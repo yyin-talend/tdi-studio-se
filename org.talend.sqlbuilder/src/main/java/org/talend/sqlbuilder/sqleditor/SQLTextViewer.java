@@ -22,25 +22,6 @@
 
 package org.talend.sqlbuilder.sqleditor;
 
-/*
- * Copyright (C) 2002-2004 Andrea Mazzolini
- * andreamazzolini@users.sourceforge.net
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- */
-
 
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferenceConverter;
@@ -75,7 +56,10 @@ import org.talend.sqlbuilder.IConstants;
 import org.talend.sqlbuilder.sessiontree.model.utility.Dictionary;
 
 /**
- * SQLTextViewer
+ * SQLTextViewer.
+ * <br/>
+ *
+ * $Id: talend-code-templates.xml 1 2006-09-29 17:06:40 +0000 (Fri, 29 Sep 2006) nrousseau $
  *
  */
 public class SQLTextViewer extends SourceViewer {
@@ -90,7 +74,7 @@ public class SQLTextViewer extends SourceViewer {
 
     IContentAssistant contentAssistant;
 
-    public Dictionary dictionary;
+    private Dictionary dictionary;
 
     SQLSourceViewerConfiguration configuration;
 
@@ -149,9 +133,9 @@ public class SQLTextViewer extends SourceViewer {
 
         }
 
-        if (fPresentationReconciler != null)
+        if (fPresentationReconciler != null) {
             fPresentationReconciler.install(this);
-
+        }
         partitioner = configuration.getDocumentPartitioner();
         parent.addDisposeListener(new DisposeListener() {
 
@@ -169,10 +153,9 @@ public class SQLTextViewer extends SourceViewer {
         });
         fInformationPresenter = configuration.getInformationPresenter(this);
 
-        if (fInformationPresenter != null)
-            fInformationPresenter.install(this);
-
-
+        if (fInformationPresenter != null) {
+        	fInformationPresenter.install(this);
+        }
         this.setAnnotationHover(new IAnnotationHover() {
 
             public String getHoverInfo(ISourceViewer sourceViewer, int lineNumber) {
@@ -245,7 +228,7 @@ public class SQLTextViewer extends SourceViewer {
     }
     
     /**
-     * PreferenceListener
+     * PreferenceListener.
      *
      */
     private class PreferenceListener implements IPropertyChangeListener {
@@ -274,8 +257,9 @@ public class SQLTextViewer extends SourceViewer {
 
     public void showAssistance() {
 
-        if (dictionary != null)
-            contentAssistant.showPossibleCompletions();
+        if (dictionary != null) {
+        	contentAssistant.showPossibleCompletions();
+        }
     }
 
 
@@ -287,8 +271,9 @@ public class SQLTextViewer extends SourceViewer {
      */
     public void setDocument(IDocument document, IAnnotationModel annotationModel) {
         setDocument(document);
-        if (annotationModel != null && document != null)
-            annotationModel.connect(document);
+        if (annotationModel != null && document != null) {
+        	annotationModel.connect(document);
+        }
     }
 
 
@@ -298,4 +283,22 @@ public class SQLTextViewer extends SourceViewer {
     public void clearText() {
         getTextWidget().setText("");
     }
+
+
+	/**
+	 * Getter for dictionary.
+	 * @return the dictionary
+	 */
+	public Dictionary getDictionary() {
+		return this.dictionary;
+	}
+
+
+	/**
+	 * Sets the dictionary.
+	 * @param dictionary the dictionary to set
+	 */
+	public void setDictionary(Dictionary dictionary) {
+		this.dictionary = dictionary;
+	}
 }

@@ -38,11 +38,10 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.ProgressBar;
-import org.eclipse.swt.widgets.TabItem;
 
 
 /**
- * DOC dev  class global comment. Detailled comment
+ * Abstract Class : Execute SQL Statement.
  * <br/>
  *
  * $Id: AbstractSQLExecution.java,v 1.13 2006/10/27 17:40:40 qiang.zhang Exp $
@@ -256,7 +255,7 @@ public abstract class AbstractSQLExecution {
 
 
     /**
-     * Start exection
+     * Start exection.
      */
     public final void startExecution() {
 
@@ -297,5 +296,4 @@ public abstract class AbstractSQLExecution {
         }
 
     }
-
 }

@@ -22,26 +22,6 @@
 
 package org.talend.sqlbuilder.sqleditor;
 
-/*
- * Copyright (C) 2002-2004 Andrea Mazzolini
- * andreamazzolini@users.sourceforge.net
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- */
-
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -58,13 +38,15 @@ import org.eclipse.jface.text.rules.Token;
 import org.eclipse.jface.text.rules.WordRule;
 
 /**
- * SQLPartitionScanner
+ * SQLPartitionScanner.
+ * <br/>
+ *
+ * $Id: talend-code-templates.xml 1 2006-09-29 17:06:40 +0000 (Fri, 29 Sep 2006) nrousseau $
  *
  */
 public class SQLPartitionScanner extends RuleBasedPartitionScanner {
 
-	//private final static String SKIP= "__skip"; //$NON-NLS-1$
-
+	// private final static String SKIP= "__skip"; //$NON-NLS-1$
 
 	/**
 	 * Detector for empty comments.
@@ -79,26 +61,31 @@ public class SQLPartitionScanner extends RuleBasedPartitionScanner {
 			return (c == '*' || c == '/');
 		}
 	};
-		/**
-		 * EmptyCommentRule
-		 */
-		static class EmptyCommentRule extends WordRule implements IPredicateRule {
-		
+
+	/**
+	 * EmptyCommentRule.
+	 */
+	static class EmptyCommentRule extends WordRule implements IPredicateRule {
+
 		private IToken fSuccessToken;
+
 		/**
 		 * Constructor for EmptyCommentRule.
+		 * 
 		 * @param defaultToken
 		 */
 		public EmptyCommentRule(IToken successToken) {
 			super(new EmptyCommentDetector());
-			fSuccessToken= successToken;
+			fSuccessToken = successToken;
 			addWord("/**/", fSuccessToken); //$NON-NLS-1$
 		}
-		
+
 		/*
 		 * @see IPredicateRule#evaluate(ICharacterScanner, boolean)
 		 */
-		public IToken evaluate(org.eclipse.jface.text.rules.ICharacterScanner scanner, boolean resume) {
+		public IToken evaluate(
+				org.eclipse.jface.text.rules.ICharacterScanner scanner,
+				boolean resume) {
 			return evaluate(scanner);
 		}
 
@@ -110,35 +97,34 @@ public class SQLPartitionScanner extends RuleBasedPartitionScanner {
 		}
 	};
 
-
-
 	/**
 	 * Creates the partitioner and sets up the appropriate rules.
 	 */
+	@SuppressWarnings("unchecked")
 	public SQLPartitionScanner() {
 		super();
 
-		//IToken skip= new Token(SKIP);
-		IToken string= new Token(IConstants.SQL_STRING);
-		IToken multiLineComment= new Token(IConstants.SQL_MULTILINE_COMMENT);
-		IToken singleLineComment= new Token(IConstants.SQL_SINGLE_LINE_COMMENT);
+		// IToken skip= new Token(SKIP);
+		IToken string = new Token(IConstants.SQL_STRING);
+		IToken multiLineComment = new Token(IConstants.SQL_MULTILINE_COMMENT);
+		IToken singleLineComment = new Token(IConstants.SQL_SINGLE_LINE_COMMENT);
 
-		List rules= new ArrayList();
+		List rules = new ArrayList();
 
 		// Add rule for single line comments.
 		rules.add(new EndOfLineRule("--", singleLineComment)); //$NON-NLS-1$
 
-		// Add rule for strings.		
+		// Add rule for strings.
 		rules.add(new SingleLineRule("'", "'", string)); //$NON-NLS-2$ //$NON-NLS-1$
-		
+
 		// Add special case word rule.
-		EmptyCommentRule wordRule= new EmptyCommentRule(multiLineComment);
+		EmptyCommentRule wordRule = new EmptyCommentRule(multiLineComment);
 		rules.add(wordRule);
 
 		// Add rules for multi-line comments and javadoc.
 		rules.add(new MultiLineRule("/*", "*/", multiLineComment)); //$NON-NLS-1$ //$NON-NLS-2$
 
-		IPredicateRule[] result= new IPredicateRule[rules.size()];
+		IPredicateRule[] result = new IPredicateRule[rules.size()];
 		rules.toArray(result);
 		setPredicateRules(result);
 

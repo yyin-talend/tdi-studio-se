@@ -23,10 +23,11 @@ package org.talend.sqlbuilder.sqlcontrol;
 
 import org.talend.sqlbuilder.dataset.dataset.DataSet;
 
-
-
-
 /**
+ * Store SQL Result.
+ * <br/>
+ *
+ * $Id: talend-code-templates.xml 1 2006-09-29 17:06:40 +0000 (Fri, 29 Sep 2006) nrousseau $
  *
  */
 public class SQLResult {
@@ -91,12 +92,4 @@ public class SQLResult {
     public void setSqlStatement(String sqlStatement) {
         this.sqlStatement = sqlStatement;
     }
-
-
-    
-    
-
-
-    
-    
 }
