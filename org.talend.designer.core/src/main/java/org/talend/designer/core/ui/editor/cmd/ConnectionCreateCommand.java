@@ -145,15 +145,15 @@ public class ConnectionCreateCommand extends Command {
     }
 
     public void execute() {
+        if (newMetadata != null) {
+            source.getMetadataList().add(newMetadata);
+        }
         this.connection = new Connection(source, target, lineStyle, metaName, connectionName);
         INodeConnector nodeConnectorSource, nodeConnectorTarget;
         nodeConnectorSource = source.getConnectorFromType(lineStyle);
         nodeConnectorSource.setCurLinkNbOutput(nodeConnectorSource.getCurLinkNbOutput() + 1);
         nodeConnectorTarget = target.getConnectorFromType(lineStyle);
         nodeConnectorTarget.setCurLinkNbInput(nodeConnectorTarget.getCurLinkNbInput() + 1);
-        if (newMetadata != null) {
-            source.getMetadataList().add(newMetadata);
-        }
         ((Process) source.getProcess()).checkStartNodes();
         ((Process) source.getProcess()).checkProcess();
     }
