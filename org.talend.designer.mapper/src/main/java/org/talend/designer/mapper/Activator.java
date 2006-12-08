@@ -24,6 +24,7 @@ package org.talend.designer.mapper;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 import org.talend.core.GlobalServiceRegister;
+import org.talend.core.IService;
 import org.talend.designer.codegen.ICodeGeneratorService;
 import org.talend.designer.runprocess.IRunProcessService;
 
@@ -72,21 +73,25 @@ public class Activator extends AbstractUIPlugin {
     public static Activator getDefault() {
         return plugin;
     }
-    
+
     /**
-     * DOC get a implement of  RunProcessService.
+     * DOC get a implement of RunProcessService.
+     * 
      * @return
      */
     public IRunProcessService getRunProcessService() {
-        return GlobalServiceRegister.getRunProcessService();
+        IService service = GlobalServiceRegister.getDefault().getService(IRunProcessService.class);
+        return (IRunProcessService) service;
     }
-    
+
     /**
-     * DOC get a implement of  CodeGeneratorService.
-     * @return a implement of  CodeGeneratorService
+     * DOC get a implement of CodeGeneratorService.
+     * 
+     * @return a implement of CodeGeneratorService
      */
     public ICodeGeneratorService getCodeGeneratorService() {
-        return GlobalServiceRegister.getCodeGeneratorService();
+        IService service = GlobalServiceRegister.getDefault().getService(ICodeGeneratorService.class);
+        return (ICodeGeneratorService) service;
     }
 
 }

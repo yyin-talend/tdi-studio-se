@@ -23,8 +23,9 @@ package org.talend.repository;
 
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
-import org.talend.core.context.Context;
 import org.talend.core.GlobalServiceRegister;
+import org.talend.core.context.Context;
+import org.talend.repository.model.IRepositoryService;
 
 /**
  * DOC smallet class global comment. Detailled comment <br/>
@@ -55,7 +56,7 @@ public class RepositoryPlugin extends AbstractUIPlugin {
      */
     public void start(BundleContext context) throws Exception {
         super.start(context);
-        GlobalServiceRegister.registerRepositoryService(new RepositoryService());
+        GlobalServiceRegister.getDefault().registerService(IRepositoryService.class,new RepositoryService());
     }
 
     /*

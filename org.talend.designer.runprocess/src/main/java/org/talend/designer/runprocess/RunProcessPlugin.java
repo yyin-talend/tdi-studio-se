@@ -24,6 +24,7 @@ package org.talend.designer.runprocess;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 import org.talend.core.GlobalServiceRegister;
+import org.talend.core.IService;
 import org.talend.designer.codegen.ICodeGeneratorService;
 import org.talend.repository.model.IRepositoryService;
 
@@ -56,7 +57,7 @@ public class RunProcessPlugin extends AbstractUIPlugin {
     public void start(BundleContext context) throws Exception {
         super.start(context);
         runProcessContextManager = new RunProcessContextManager();
-        GlobalServiceRegister.registerRunProcessService(new RunProcessService());
+        GlobalServiceRegister.getDefault().registerService(IRunProcessService.class, new RunProcessService());
     }
 
     /*
@@ -88,15 +89,18 @@ public class RunProcessPlugin extends AbstractUIPlugin {
     }
 
     public IRepositoryService getRepositoryService() {
-        return GlobalServiceRegister.getRepositoryService();
+        IService service = GlobalServiceRegister.getDefault().getService(IRepositoryService.class);
+        return (IRepositoryService) service;
     }
-    
+
     /**
-     * DOC get a implement of  CodeGeneratorService.
-     * @return a implement of  CodeGeneratorService
+     * DOC get a implement of CodeGeneratorService.
+     * 
+     * @return a implement of CodeGeneratorService
      */
     public ICodeGeneratorService getCodeGeneratorService() {
-        return GlobalServiceRegister.getCodeGeneratorService();
+        IService service = GlobalServiceRegister.getDefault().getService(ICodeGeneratorService.class);
+        return (ICodeGeneratorService) service;
     }
 
 }

@@ -29,6 +29,7 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 import org.talend.commons.ui.swt.colorstyledtext.jedit.Modes;
 import org.talend.core.GlobalServiceRegister;
+import org.talend.core.IService;
 import org.talend.designer.codegen.ICodeGeneratorService;
 import org.talend.designer.core.ui.ActiveProcessTracker;
 import org.talend.designer.runprocess.IRunProcessService;
@@ -93,7 +94,8 @@ public class DesignerPlugin extends AbstractUIPlugin {
      * @return a implement of  RunProcessService
      */
     public IRunProcessService getRunProcessService() {
-        return GlobalServiceRegister.getRunProcessService();
+        IService service = GlobalServiceRegister.getDefault().getService(IRunProcessService.class);
+        return (IRunProcessService) service;
     }
 
     /**
@@ -101,7 +103,8 @@ public class DesignerPlugin extends AbstractUIPlugin {
      * @return a implement of  CodeGeneratorService
      */
     public ICodeGeneratorService getCodeGeneratorService() {
-        return GlobalServiceRegister.getCodeGeneratorService();
+        IService service = GlobalServiceRegister.getDefault().getService(ICodeGeneratorService.class);
+        return (ICodeGeneratorService) service;
     }
     
     /**
