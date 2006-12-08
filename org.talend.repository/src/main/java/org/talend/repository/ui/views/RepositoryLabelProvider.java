@@ -85,9 +85,9 @@ public class RepositoryLabelProvider extends LabelProvider implements IColorProv
             }
 
             // PTODO SML [FOLDERS++] temp code
-            if (object.getType() != ERepositoryObjectType.FOLDER) {
-                string.append(" [" + factory.getStatus(object.getProperty().getItem()) + "]");
-            }
+            // if (object.getType() != ERepositoryObjectType.FOLDER) {
+            // string.append(" [" + factory.getStatus(object.getProperty().getItem()) + "]");
+            // }
 
             return string.toString();
         } else {
@@ -113,7 +113,9 @@ public class RepositoryLabelProvider extends LabelProvider implements IColorProv
             }
             IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
             ERepositoryStatus repositoryStatus = factory.getStatus(node.getObject());
-            return BusinessImageProvider.getImage(node.getObject().getType(), repositoryStatus);
+
+            return ImageProvider.getImage(node.getObject().getType());
+            // return BusinessImageProvider.getImage(node.getObject().getType(), repositoryStatus);
         }
     }
 
