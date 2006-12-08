@@ -130,7 +130,6 @@ my %random_line_number_<%=cid%> =
     sort {$a <=> $b}
     (shuffle 1..$nb_lines_<%=cid%>)[1..$desc_<%=cid %>{nb_random}];
 
-print join("\n", sort {$a <=> $b} keys %random_line_number_<%=cid%>), "\n\n";
 <%
   }
 %>
