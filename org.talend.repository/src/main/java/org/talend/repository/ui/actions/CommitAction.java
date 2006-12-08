@@ -72,7 +72,8 @@ public class CommitAction extends AContextualAction {
                 canWork = commitObjectAction.validateAction(o);
             }
         }
-        setEnabled(canWork);
+        setEnabled(false);
+        // setEnabled(canWork);
     }
 
 }
