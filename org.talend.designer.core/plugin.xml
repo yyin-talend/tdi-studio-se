@@ -264,7 +264,7 @@
          sequence="CTRL+H"/>
    </extension>
    <extension
-         point="org.talend.rcp.global_actions">
+         point="org.talend.core.global_actions">
       <GlobalAction class="org.talend.designer.core.ui.action.ShowPropertiesViewAction"/>
       <GlobalAction class="org.talend.designer.core.ui.action.ShowProblemsViewAction"/>
       <GlobalAction class="org.talend.designer.core.ui.action.ShowModulesViewAction"/>
