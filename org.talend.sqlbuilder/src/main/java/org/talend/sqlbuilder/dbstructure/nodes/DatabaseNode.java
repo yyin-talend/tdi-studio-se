@@ -26,15 +26,12 @@ import java.util.Iterator;
 import java.util.List;
 
 import net.sourceforge.sqlexplorer.SQLAlias;
-import net.sourceforge.squirrel_sql.fw.sql.SQLDatabaseMetaData;
 
 import org.eclipse.swt.graphics.Image;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.ui.images.ImageProvider;
-import org.talend.sqlbuilder.Messages;
 import org.talend.sqlbuilder.SqlBuilderPlugin;
 import org.talend.sqlbuilder.sessiontree.model.SessionTreeNode;
-import org.talend.sqlbuilder.util.TextUtil;
 
 /**
  * Root node for a database. ChildNodes can be filtered based on expressions in
@@ -49,8 +46,6 @@ public class DatabaseNode extends AbstractNode {
     private List pchildNames = new ArrayList();
 
     private String pdatabaseProductName = "";
-
-    private String[] pfilterExpressions;
 
     private boolean psupportsCatalogs = false;
 
@@ -158,37 +153,6 @@ public class DatabaseNode extends AbstractNode {
 
 
     /**
-     * Checks if a node name should be filtered.
-     * 
-     * @param name to check for filtering
-     * @return true if the name should be filtered
-     */
-    private boolean isExcludedByFilter(String name) {
-
-        if (pfilterExpressions == null || pfilterExpressions.length == 0) {
-            // no active filter
-            return false;
-        }
-
-        for (int i = 0; i < pfilterExpressions.length; i++) {
-
-            String regex = pfilterExpressions[i].trim();
-            regex = TextUtil.replaceChar(regex, '?', ".");
-            regex = TextUtil.replaceChar(regex, '*', ".*");
-
-            if (regex.length() != 0 && name.matches(regex)) {
-                // we have a match, exclude node..
-                return false;
-            }
-        }
-
-        // no match found
-        return true;
-
-    }
-
-
-    /**
      * Loads childnodes, filtered to a subset of schemas/databases depending on
      * whether a comma separated list of regular expression filters has been
      * set.
@@ -203,15 +167,6 @@ public class DatabaseNode extends AbstractNode {
         
         pchildNames = new ArrayList();
 
-        String metaFilterExpression = palias.getSchemaFilterExpression();
-        if (metaFilterExpression != null && metaFilterExpression.trim().length() != 0) {
-            pfilterExpressions = metaFilterExpression.split(",");
-        } else {
-            pfilterExpressions = null;
-        }
-        
-        SQLDatabaseMetaData metadata = psessionNode.getMetaData();
-        
         try {
 
 //            if (metadata.supportsCatalogs()) {

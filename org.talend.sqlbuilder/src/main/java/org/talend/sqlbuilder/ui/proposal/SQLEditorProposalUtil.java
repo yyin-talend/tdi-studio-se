@@ -265,7 +265,9 @@ public class SQLEditorProposalUtil {
 			if (seqIndex > -1 && dotIndex > seqIndex + 1) {
 				String tableName = curSql[0].substring(seqIndex, dotIndex);
 				List<String> columns = getColumnsByTableName(tableName);
-				list.addAll(columns);
+				if (columns != null) {
+					list.addAll(columns);
+				}
 			} else {
 				list.addAll(allString);
 			}

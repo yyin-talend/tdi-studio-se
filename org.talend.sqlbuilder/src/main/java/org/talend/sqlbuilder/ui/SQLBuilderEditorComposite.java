@@ -365,16 +365,6 @@ public class SQLBuilderEditorComposite extends Composite implements ISQLEditor {
 		clearTextAction = new ClearTextAction();
 		clearTextAction.setEditor(this);
 
-		if (SQLBuilderRepositoryNodeManager.getDbTypeFromRepositoryNode(
-				repositoryNode).startsWith("Oracle")) {
-			explainAction = new OracleExplainPlanAction(
-					SQLResultComposite.getInstance(), this);
-		} else if (SQLBuilderRepositoryNodeManager.getDbTypeFromRepositoryNode(
-				repositoryNode).startsWith("IBM DB2")) {
-			explainAction = new DB2ExplainPlanAction(
-					SQLResultComposite.getInstance(), this);
-		}
-
 		addDefaultActions(defaultToolBarMgr);
 
 		// initialize session actions
@@ -389,6 +379,23 @@ public class SQLBuilderEditorComposite extends Composite implements ISQLEditor {
 		coolBarMgr.add(new ToolBarContributionItem(sessionToolBarMgr));
 
 		coolBarMgr.update(true);
+	}
+
+	/**
+	 * DOC dev Comment method "setExplainPlanAction".
+	 */
+	public AbstractEditorAction addExplainPlanAction(RepositoryNode node) {
+		
+		if (SQLBuilderRepositoryNodeManager.getDbTypeFromRepositoryNode(
+				node).startsWith("Oracle")) {
+			return new OracleExplainPlanAction(
+					SQLResultComposite.getInstance(), this);
+		} else if (SQLBuilderRepositoryNodeManager.getDbTypeFromRepositoryNode(
+				node).startsWith("IBM DB2")) {
+			return new DB2ExplainPlanAction(
+					SQLResultComposite.getInstance(), this);
+		}
+		return null;
 	}
 
 	/**
@@ -414,6 +421,7 @@ public class SQLBuilderEditorComposite extends Composite implements ISQLEditor {
 		mgr.add(saveSQLAction);
 		mgr.add(exportAction);
 		mgr.add(clearTextAction);
+		explainAction = addExplainPlanAction(repositoryNode);
 		if (explainAction != null) {
 			mgr.add(explainAction);
 		}
