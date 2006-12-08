@@ -121,6 +121,8 @@ public class VersionAuthorSection extends AbstractSection {
         data.right = new FormAttachment(versionText, -ITabbedPropertyConstants.HSPACE);
         data.top = new FormAttachment(versionText, 0, SWT.CENTER);
         versionLabel.setLayoutData(data);
+        
+        addFocusListenerToChildren(composite);
     }
 
     /*

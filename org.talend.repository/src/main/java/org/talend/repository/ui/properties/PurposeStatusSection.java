@@ -95,6 +95,8 @@ public class PurposeStatusSection extends AbstractSection {
         data.right = new FormAttachment(statusText, -ITabbedPropertyConstants.HSPACE);
         data.top = new FormAttachment(statusText, 0, SWT.CENTER);
         statusLabel.setLayoutData(data);
+        
+        addFocusListenerToChildren(composite);
     }
 
     @Override

@@ -29,8 +29,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
-import org.talend.repository.model.RepositoryNode;
-import org.talend.repository.model.RepositoryNode.ENodeType;
 
 /**
  * DOC mhelleboid class global comment. Detailled comment <br/>
@@ -57,7 +55,6 @@ public class DescriptionSection extends AbstractSection {
     @Override
     public void createControls(Composite parent, TabbedPropertySheetPage aTabbedPropertySheetPage) {
         super.createControls(parent, aTabbedPropertySheetPage);
-
         Composite composite = getWidgetFactory().createFlatFormComposite(parent);
         FormData data;
 
@@ -76,6 +73,8 @@ public class DescriptionSection extends AbstractSection {
         data.right = new FormAttachment(descriptionText, -ITabbedPropertyConstants.HSPACE);
         data.top = new FormAttachment(descriptionText, 0, SWT.TOP);
         labelLabel.setLayoutData(data);
+
+        addFocusListenerToChildren(composite);
     }
 
     @Override

@@ -112,6 +112,8 @@ public class DateSection extends AbstractSection {
         data.right = new FormAttachment(commitDate, -ITabbedPropertyConstants.HSPACE);
         data.top = new FormAttachment(commitDate, 0, SWT.CENTER);
         commitLabel.setLayoutData(data);
+        
+        addFocusListenerToChildren(composite);
     }
 
     @Override

@@ -111,6 +111,15 @@ public abstract class AbstractSection extends AbstractPropertySection {
         control.addFocusListener(listener);
     }
 
+    protected void addFocusListenerToChildren(Control control) {
+        addFocusListener(control);
+        if (control instanceof Composite) {
+            for (Control child : ((Composite) control).getChildren()) {
+                addFocusListenerToChildren(child);
+            }
+        }
+    }
+
     protected void performSave() {
         for (AbstractSection section : REGISTERED_SECTIONS) {
             section.beforeSave();
@@ -382,7 +391,9 @@ public abstract class AbstractSection extends AbstractPropertySection {
         public void setVersion(String version) {
         }
 
-        /* (non-Javadoc)
+        /*
+         * (non-Javadoc)
+         * 
          * @see org.talend.core.model.repository.IRepositoryObject#getChildren()
          */
         public List<IRepositoryObject> getChildren() {

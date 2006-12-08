@@ -102,6 +102,8 @@ public class NameSection extends AbstractSection {
         errorLabel.setLayoutData(data);
         errorLabel.setImage(ImageProvider.getImage(EImage.ERROR_ICON));
         errorLabel.setVisible(false);
+        
+        addFocusListenerToChildren(composite);
     }
 
     protected IStatus evaluateTextField() {
