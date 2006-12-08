@@ -23,6 +23,9 @@ package org.talend.designer.mapper;
 
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
+import org.talend.core.GlobalServiceRegister;
+import org.talend.designer.codegen.ICodeGeneratorService;
+import org.talend.designer.runprocess.IRunProcessService;
 
 /**
  * The activator class controls the plug-in life cycle.
@@ -68,6 +71,22 @@ public class Activator extends AbstractUIPlugin {
      */
     public static Activator getDefault() {
         return plugin;
+    }
+    
+    /**
+     * DOC get a implement of  RunProcessService.
+     * @return
+     */
+    public IRunProcessService getRunProcessService() {
+        return GlobalServiceRegister.getRunProcessService();
+    }
+    
+    /**
+     * DOC get a implement of  CodeGeneratorService.
+     * @return a implement of  CodeGeneratorService
+     */
+    public ICodeGeneratorService getCodeGeneratorService() {
+        return GlobalServiceRegister.getCodeGeneratorService();
     }
 
 }

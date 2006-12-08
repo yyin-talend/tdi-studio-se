@@ -93,7 +93,6 @@ import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
-import org.talend.commons.exception.SystemException;
 import org.talend.commons.ui.swt.colorstyledtext.ColorManager;
 import org.talend.commons.ui.swt.colorstyledtext.ColorStyledText;
 import org.talend.commons.ui.swt.proposal.ContentProposalAdapterExtended;
@@ -109,11 +108,8 @@ import org.talend.commons.utils.data.container.Content;
 import org.talend.commons.utils.data.container.ContentList;
 import org.talend.commons.utils.data.container.RootContainer;
 import org.talend.core.CorePlugin;
-import org.talend.core.GlobalServiceRegister;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.language.perl.ICodeSyntaxChecker;
-import org.talend.core.model.components.IODataComponent;
-import org.talend.core.model.components.IODataComponentContainer;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataTable;
@@ -145,6 +141,7 @@ import org.talend.core.ui.images.ImageProvider;
 import org.talend.core.ui.metadata.dialog.MetadataDialog;
 import org.talend.core.ui.proposal.ProcessProposalProvider;
 import org.talend.core.ui.proposal.ProcessProposalUtils;
+import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
@@ -158,7 +155,6 @@ import org.talend.designer.core.ui.editor.cmd.ChangeValuesFromRepository;
 import org.talend.designer.core.ui.editor.cmd.ExternalNodeChangeCommand;
 import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
 import org.talend.designer.core.ui.editor.cmd.RepositoryChangeMetadataCommand;
-import org.talend.designer.core.ui.editor.cmd.SchemaPropertyChangeCommand;
 import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.connections.ConnectionLabel;
 import org.talend.designer.core.ui.editor.nodecontainer.NodeContainerPart;
@@ -3380,7 +3376,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
             final ECodeLanguage language = ((RepositoryContext) org.talend.core.CorePlugin.getContext().getProperty(
                     org.talend.core.context.Context.REPOSITORY_CONTEXT_KEY)).getProject().getLanguage();
 
-            IRunProcessService service = GlobalServiceRegister.getRunProcessService();
+            IRunProcessService service = DesignerPlugin.getDefault().getRunProcessService();
             final ICodeSyntaxChecker syntaxChecker = service.getSyntaxChecker(language);
 
             final String valueFinal = ControlUtils.getText(control);

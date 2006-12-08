@@ -33,6 +33,7 @@ import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.ui.images.EImage;
 import org.talend.core.ui.images.ImageProvider;
 import org.talend.designer.codegen.ICodeGeneratorService;
+import org.talend.designer.core.DesignerPlugin;
 import org.talend.repository.editor.RepositoryEditorInput;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNode.ENodeType;
@@ -80,7 +81,7 @@ public class EditRoutinesAction extends AContextualAction {
         RoutineItem routineItem = (RoutineItem) node.getObject().getProperty().getItem();
 
         try {
-            ICodeGeneratorService service = GlobalServiceRegister.getCodeGeneratorService();
+            ICodeGeneratorService service = DesignerPlugin.getDefault().getCodeGeneratorService();
             IFile file = service.createRoutineSynchronizer().syncRoutine(routineItem);
             RepositoryEditorInput input = new RepositoryEditorInput(file, routineItem);
 

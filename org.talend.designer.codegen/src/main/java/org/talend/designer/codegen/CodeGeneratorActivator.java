@@ -24,6 +24,7 @@ package org.talend.designer.codegen;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 import org.talend.core.GlobalServiceRegister;
+import org.talend.designer.runprocess.IRunProcessService;
 
 /**
  * Activator for Code Generator.
@@ -54,5 +55,13 @@ public class CodeGeneratorActivator extends AbstractUIPlugin {
     public void start(BundleContext context) throws Exception {
         super.start(context);
         GlobalServiceRegister.registerCodeGeneratorService(new CodeGeneratorService());
+    }
+    
+    /**
+     * DOC get a implement of  RunProcessService.
+     * @return
+     */
+    public IRunProcessService getRunProcessService() {
+        return GlobalServiceRegister.getRunProcessService();
     }
 }

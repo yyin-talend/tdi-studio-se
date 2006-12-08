@@ -26,7 +26,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.talend.commons.exception.SystemException;
-import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IComponentsFactory;
 import org.talend.core.model.components.IODataComponent;
@@ -115,7 +114,7 @@ public abstract class ShadowNode implements INode {
     public String getGeneratedCode() {
         String generatedCode;
         try {
-            ICodeGeneratorService service = GlobalServiceRegister.getCodeGeneratorService();
+            ICodeGeneratorService service = RunProcessPlugin.getDefault().getCodeGeneratorService();
             generatedCode = service.createCodeGenerator().generateComponentCode(this, ECodePart.MAIN);
         } catch (SystemException e) {
             generatedCode = null;

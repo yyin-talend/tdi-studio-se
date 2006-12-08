@@ -48,7 +48,6 @@ import org.eclipse.debug.core.model.IBreakpoint;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.talend.commons.exception.SystemException;
 import org.talend.core.CorePlugin;
-import org.talend.core.GlobalServiceRegister;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.model.general.Project;
@@ -124,7 +123,7 @@ public class PerlProcessor implements IPerlProcessor {
             Project project = repositoryContext.getProject();
 
             ICodeGenerator codeGen;
-            ICodeGeneratorService service = GlobalServiceRegister.getCodeGeneratorService();
+            ICodeGeneratorService service = RunProcessPlugin.getDefault().getCodeGeneratorService();
             service.createRoutineSynchronizer().syncAllRoutines();
             if (perlProperties) {
                 String perlInterpreter = getPerlInterpreter();

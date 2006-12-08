@@ -66,7 +66,7 @@ public class RoutineSynchronizer implements IRoutineSynchronizer {
 
     public IFile syncRoutine(RoutineItem routineItem) throws SystemException {
         try {
-            IRunProcessService service = GlobalServiceRegister.getRunProcessService();
+            IRunProcessService service = CodeGeneratorActivator.getDefault().getRunProcessService();
             IProject perlProject;
             perlProject = service.getProject();
             Project project = ((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY))

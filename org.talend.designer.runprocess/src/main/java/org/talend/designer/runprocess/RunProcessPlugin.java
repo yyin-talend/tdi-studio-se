@@ -24,6 +24,7 @@ package org.talend.designer.runprocess;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 import org.talend.core.GlobalServiceRegister;
+import org.talend.designer.codegen.ICodeGeneratorService;
 import org.talend.repository.model.IRepositoryService;
 
 /**
@@ -88,6 +89,14 @@ public class RunProcessPlugin extends AbstractUIPlugin {
 
     public IRepositoryService getRepositoryService() {
         return GlobalServiceRegister.getRepositoryService();
+    }
+    
+    /**
+     * DOC get a implement of  CodeGeneratorService.
+     * @return a implement of  CodeGeneratorService
+     */
+    public ICodeGeneratorService getCodeGeneratorService() {
+        return GlobalServiceRegister.getCodeGeneratorService();
     }
 
 }

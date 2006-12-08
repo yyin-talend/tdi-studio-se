@@ -28,13 +28,23 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 import org.talend.commons.ui.swt.colorstyledtext.jedit.Modes;
+import org.talend.core.GlobalServiceRegister;
+import org.talend.designer.codegen.ICodeGeneratorService;
 import org.talend.designer.core.ui.ActiveProcessTracker;
+import org.talend.designer.runprocess.IRunProcessService;
 
 /**
  * The designer plugin class to be used in the desktop. <br/>
  * 
  * $Id$
  * 
+ */
+/**
+ * DOC dev  class global comment. Detailled comment
+ * <br/>
+ *
+ * $Id$
+ *
  */
 public class DesignerPlugin extends AbstractUIPlugin {
 
@@ -79,6 +89,22 @@ public class DesignerPlugin extends AbstractUIPlugin {
     }
 
     /**
+     * DOC get a implement of  RunProcessService.
+     * @return a implement of  RunProcessService
+     */
+    public IRunProcessService getRunProcessService() {
+        return GlobalServiceRegister.getRunProcessService();
+    }
+
+    /**
+     * DOC get a implement of  CodeGeneratorService.
+     * @return a implement of  CodeGeneratorService
+     */
+    public ICodeGeneratorService getCodeGeneratorService() {
+        return GlobalServiceRegister.getCodeGeneratorService();
+    }
+    
+    /**
      * Returns an image descriptor for the image file at the given plug-in relative path.
      * 
      * @param path the path
@@ -87,4 +113,5 @@ public class DesignerPlugin extends AbstractUIPlugin {
     public static ImageDescriptor getImageDescriptor(final String path) {
         return AbstractUIPlugin.imageDescriptorFromPlugin("org.talend.designer.core", path);
     }
+
 }

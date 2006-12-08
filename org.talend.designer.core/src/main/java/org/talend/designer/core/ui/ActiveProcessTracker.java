@@ -25,6 +25,7 @@ import org.eclipse.ui.IPartListener;
 import org.eclipse.ui.IWorkbenchPart;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.process.IProcess;
+import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.views.problems.Problems;
 import org.talend.designer.runprocess.IRunProcessService;
@@ -51,7 +52,7 @@ public class ActiveProcessTracker implements IPartListener {
             IProcess process = mpte.getTalendEditor().getProcess();
             currentProcess = process;
             
-            IRunProcessService service = GlobalServiceRegister.getRunProcessService();
+            IRunProcessService service = DesignerPlugin.getDefault().getRunProcessService();
             service.setActiveProcess(process);
 
             Problems.setTitle("Job " + process.getProperty().getLabel());
@@ -78,7 +79,7 @@ public class ActiveProcessTracker implements IPartListener {
             MultiPageTalendEditor mpte = (MultiPageTalendEditor) part;
             IProcess process = mpte.getTalendEditor().getProcess();
             
-            IRunProcessService service = GlobalServiceRegister.getRunProcessService();
+            IRunProcessService service = DesignerPlugin.getDefault().getRunProcessService();
             service.removeProcess(process);
 
             if (currentProcess == process) {

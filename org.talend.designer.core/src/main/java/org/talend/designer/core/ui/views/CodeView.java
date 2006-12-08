@@ -46,6 +46,7 @@ import org.talend.core.model.temp.ECodeLanguage;
 import org.talend.core.model.temp.ECodePart;
 import org.talend.designer.codegen.ICodeGenerator;
 import org.talend.designer.codegen.ICodeGeneratorService;
+import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.nodes.NodeLabel;
 import org.talend.designer.core.ui.editor.nodes.NodeLabelEditPart;
@@ -171,7 +172,7 @@ public class CodeView extends ViewPart implements ISelectionListener {
         if (node != null) {
             String generatedCode;
             if (codeGenerator == null) {
-                ICodeGeneratorService service= GlobalServiceRegister.getCodeGeneratorService();
+                ICodeGeneratorService service = DesignerPlugin.getDefault().getCodeGeneratorService();
                 codeGenerator = service.createCodeGenerator();
             }
             if (mainOnly) {

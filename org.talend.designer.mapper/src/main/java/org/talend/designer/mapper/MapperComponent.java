@@ -38,7 +38,6 @@ import org.exolab.castor.xml.Unmarshaller;
 import org.exolab.castor.xml.ValidationException;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.SystemException;
-import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.process.AbstractExternalNode;
 import org.talend.core.model.process.Problem;
@@ -162,7 +161,7 @@ public class MapperComponent extends AbstractExternalNode {
      */
     public String getGeneratedCode() {
         try {
-            ICodeGeneratorService service = GlobalServiceRegister.getCodeGeneratorService();
+            ICodeGeneratorService service = Activator.getDefault().getCodeGeneratorService();
 
             return service.createCodeGenerator().generateComponentCode(this, ECodePart.MAIN);
         } catch (SystemException e) {

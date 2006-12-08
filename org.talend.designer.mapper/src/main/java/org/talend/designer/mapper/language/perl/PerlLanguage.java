@@ -21,10 +21,10 @@
 // ============================================================================
 package org.talend.designer.mapper.language.perl;
 
-import org.talend.core.GlobalServiceRegister;
 import org.talend.core.language.perl.ICodeSyntaxChecker;
 import org.talend.core.model.process.Problem;
 import org.talend.core.model.temp.ECodeLanguage;
+import org.talend.designer.mapper.Activator;
 import org.talend.designer.mapper.language.AbstractLanguage;
 import org.talend.designer.runprocess.IRunProcessService;
 
@@ -101,7 +101,7 @@ public class PerlLanguage extends AbstractLanguage {
      */
     public PerlLanguage() {
         super();
-        IRunProcessService service = GlobalServiceRegister.getRunProcessService();
+        IRunProcessService service = Activator.getDefault().getRunProcessService();
 
         this.syntaxChecker = service.getSyntaxChecker(ECodeLanguage.PERL);
     }

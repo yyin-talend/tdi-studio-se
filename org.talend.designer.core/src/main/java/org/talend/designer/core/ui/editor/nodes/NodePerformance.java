@@ -30,6 +30,7 @@ import org.eclipse.draw2d.geometry.Point;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IElementParameter;
+import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.ui.editor.nodecontainer.NodeContainer;
 import org.talend.designer.runprocess.IPerformanceData;
 import org.talend.designer.runprocess.IRunProcessService;
@@ -63,7 +64,7 @@ public class NodePerformance extends Element {
     private String htmlFromPerformance(String data) {
         StringBuffer html = new StringBuffer();
 
-        IRunProcessService service = GlobalServiceRegister.getRunProcessService();
+        IRunProcessService service = DesignerPlugin.getDefault().getRunProcessService();
         IPerformanceData perf = service.createPerformanceData(data);
 
         if (IPerformanceData.ACTION_PERF.equals(perf.getAction())) {

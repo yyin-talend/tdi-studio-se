@@ -58,6 +58,7 @@ import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.ui.images.EImage;
 import org.talend.core.ui.images.ImageProvider;
+import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.editor.ProcessEditorInput;
 import org.talend.designer.core.ui.editor.TalendEditor;
@@ -133,7 +134,7 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
     void createPage1() {
         perlEditor = new TalendPerlEditor();
         IProcess process = designerEditor.getProcess();
-        IRunProcessService service = GlobalServiceRegister.getRunProcessService();
+        IRunProcessService service = DesignerPlugin.getDefault().getRunProcessService();;
         IPerlProcessor plProcessor = service.createPerlProcessor(process, false);
         try {
             plProcessor.initPaths(process.getContextManager().getDefaultContext());
@@ -277,7 +278,7 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
         if (newPageIndex == 1) {
             IProcess process = designerEditor.getProcess();
 
-            IRunProcessService service = GlobalServiceRegister.getRunProcessService();
+            IRunProcessService service = DesignerPlugin.getDefault().getRunProcessService();
             IPerlProcessor plProcessor = service.createPerlProcessor(process, false);
 
             try {
