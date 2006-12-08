@@ -29,6 +29,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Shell;
 import org.talend.core.model.components.IODataComponent;
 import org.talend.core.model.components.IODataComponentContainer;
+import org.talend.core.model.components.IODataComponent.ColumnNameChanged;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.IConnection;
@@ -112,7 +113,8 @@ public class ChangeMetadataCommand extends Command {
         dataContainer = new IODataComponentContainer();
         for (Connection connec : (List<Connection>) node.getIncomingConnections()) {
             if (connec.isActivate() && connec.getLineStyle().equals(EConnectionType.FLOW_MAIN)) {
-                IODataComponent input = new IODataComponent(connec);
+                IODataComponent input;
+                input = new IODataComponent(connec, newInputMetadata);
                 dataContainer.getInputs().add(input);
             }
         }
@@ -174,13 +176,22 @@ public class ChangeMetadataCommand extends Command {
                                         && ((Node) targetNode).getComponent().isSchemaAutoPropagated()) {
                                     ChangeMetadataCommand cmd = new ChangeMetadataCommand((Node) targetNode, null,
                                             newOutputMetadata);
+                                    if (dataContainer.getOuputs().size() > 0) {
+                                        List<ColumnNameChanged> columnNameChanged = dataContainer.getOuputs().get(0)
+                                                .getColumnNameChanged();
+                                        for (IODataComponent dataComp : cmd.dataContainer.getOuputs()) {
+                                            dataComp.setColumnNameChanged(columnNameChanged);
+                                        }
+                                    }
                                     cmd.execute(true);
                                     propagatedChange.add(cmd);
                                 }
                             }
                             currentIO.setTable(oldOutputMetadata);
+                            currentIO.setColumnNameChanged(null);
                         } else {
                             currentIO.setTable(newOutputMetadata);
+                            currentIO.setColumnNameChanged(null);
                         }
                     }
                 }
