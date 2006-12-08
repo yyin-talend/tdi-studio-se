@@ -2,7 +2,7 @@
 <?eclipse version="3.2"?>
 <plugin>
    <extension
-         point="org.talend.repository.components_provider"> 
+         point="org.talend.core.components_provider"> 
       <ComponentsFactory class="org.talend.designer.components.model.ComponentsFactory"/>
    </extension>
 

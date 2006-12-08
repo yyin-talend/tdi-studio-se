@@ -426,7 +426,7 @@
    </extension>
    
    <extension
-         point="org.talend.repository.actions">
+         point="org.talend.core.actions">
       <Action
             class="org.talend.designer.business.diagram.custom.actions.CreateDiagramAction"
             id="org.talend.designer.business.diagram.custom.Action1"

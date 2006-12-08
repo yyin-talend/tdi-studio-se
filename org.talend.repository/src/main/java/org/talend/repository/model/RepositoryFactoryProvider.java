@@ -42,7 +42,7 @@ import org.talend.commons.utils.workbench.extensions.ISimpleExtensionPoint;
 public class RepositoryFactoryProvider {
 
     public static final ISimpleExtensionPoint REPOSITORY_PROVIDER = new ExtensionPointImpl(
-            "org.talend.repository.repository_provider", "RepositoryFactory", 1, -1);
+            "org.talend.core.repository_provider", "RepositoryFactory", 1, -1);
 
     public static List<IRepositoryFactory> getAvailableRepositories() {
         List<IRepositoryFactory> toReturn = new ArrayList<IRepositoryFactory>();

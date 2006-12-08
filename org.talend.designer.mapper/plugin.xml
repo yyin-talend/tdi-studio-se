@@ -3,7 +3,7 @@
 <plugin>
 
    <extension
-         point="org.talend.repository.external_component">
+         point="org.talend.core.external_component">
       <ExternalComponent class="org.talend.designer.mapper.MapperComponent"/>
    </extension>
 

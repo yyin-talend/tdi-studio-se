@@ -46,7 +46,7 @@ public class ActionsHelper {
     @SuppressWarnings("unchecked")
     public static List<ITreeContextualAction> getActions() {
         List<ITreeContextualAction> toReturn = new ArrayList<ITreeContextualAction>();
-        ISimpleExtensionPoint actionExtensionPoint = new ExtensionPointImpl("org.talend.repository.actions", "Action", -1, -1);
+        ISimpleExtensionPoint actionExtensionPoint = new ExtensionPointImpl("org.talend.core.actions", "Action", -1, -1);
         List<IConfigurationElement> extension = ExtensionImplementationProviders.getInstanceV2(actionExtensionPoint);
 
         for (IConfigurationElement current : extension) {

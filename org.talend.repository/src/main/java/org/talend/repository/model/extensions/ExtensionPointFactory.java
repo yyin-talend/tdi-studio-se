@@ -33,11 +33,11 @@ import org.talend.commons.utils.workbench.extensions.ISimpleExtensionPoint;
 public class ExtensionPointFactory {
 
     public static final ISimpleExtensionPoint COMPONENTS_PROVIDER = new ExtensionPointImpl(
-            "org.talend.repository.components_provider", "ComponentsFactory", 1, 1);
+            "org.talend.core.components_provider", "ComponentsFactory", 1, 1);
 
     public static final ISimpleExtensionPoint EXTERNAL_COMPONENT = new ExtensionPointImpl(
-            "org.talend.repository.external_component", "ExternalComponent", 1, 1);
+            "org.talend.core.external_component", "ExternalComponent", 1, 1);
 
-    public static final ISimpleExtensionPoint ACTIONS_GROUPS = new ExtensionPointImpl("org.talend.repository.actions", "Group",
+    public static final ISimpleExtensionPoint ACTIONS_GROUPS = new ExtensionPointImpl("org.talend.core.actions", "Group",
             -1, -1);
 }

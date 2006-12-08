@@ -176,7 +176,7 @@
                         name="Modules"/>
    </extension>
    <extension
-         point="org.talend.repository.actions">
+         point="org.talend.core.actions">
       <Action
             class="org.talend.designer.core.ui.action.EditProcess"
             id="org.talend.designer.core.actions.editprocess"

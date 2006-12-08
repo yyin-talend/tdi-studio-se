@@ -27,6 +27,7 @@ import org.talend.core.GlobalServiceRegister;
 import org.talend.core.IService;
 import org.talend.designer.codegen.ICodeGeneratorService;
 import org.talend.designer.runprocess.IRunProcessService;
+import org.talend.repository.model.IRepositoryService;
 
 /**
  * The activator class controls the plug-in life cycle.
@@ -92,6 +93,16 @@ public class Activator extends AbstractUIPlugin {
     public ICodeGeneratorService getCodeGeneratorService() {
         IService service = GlobalServiceRegister.getDefault().getService(ICodeGeneratorService.class);
         return (ICodeGeneratorService) service;
+    }
+    
+    /**
+     * DOC get a implement of CodeGeneratorService.
+     * 
+     * @return a implement of CodeGeneratorService
+     */
+    public IRepositoryService getRepositoryService() {
+        IService service = GlobalServiceRegister.getDefault().getService(IRepositoryService.class);
+        return (IRepositoryService) service;
     }
 
 }

@@ -1,11 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.2"?>
 <plugin>
-   <extension-point id="repository_provider" name="Repository provider" schema="schema/repository_provider.exsd"/>
-   <extension-point id="components_provider" name="Components provider" schema="schema/components_provider.exsd"/>
-   <extension-point id="external_component" name="External component" schema="schema/external_component.exsd"/>
-   <extension-point id="actions" name="Repository actions" schema="schema/repository_actions.exsd"/>
-   
    <extension
          point="org.eclipse.ui.views">
       <view
@@ -19,7 +14,7 @@
    <extension
          id="rep.actions"
          name="Actions"
-         point="org.talend.repository.actions">
+         point="org.talend.core.actions">
       <Action
             class="org.talend.repository.ui.actions.folder.CreateFolderAction"
             id="org.talend.repository.actions.createfolder"

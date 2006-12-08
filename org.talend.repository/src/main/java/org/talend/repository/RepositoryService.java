@@ -21,9 +21,12 @@
 // ============================================================================
 package org.talend.repository;
 
+import org.eclipse.core.runtime.IPath;
 import org.talend.core.model.components.IComponentsFactory;
 import org.talend.repository.model.ComponentsFactoryProvider;
 import org.talend.repository.model.IRepositoryService;
+import org.talend.repository.model.RepositoryConstants;
+import org.talend.repository.utils.RepositoryPathProvider;
 
 /**
  * DOC qian class global comment. Detailled comment <br/>
@@ -32,16 +35,19 @@ import org.talend.repository.model.IRepositoryService;
  * 
  */
 /**
- * DOC qian  class global comment. Implementation for IRepositoryService.
- * <br/>
- *
+ * DOC qian class global comment. Implementation for IRepositoryService. <br/>
+ * 
  * $Id: talend-code-templates.xml 1 2006-09-29 17:06:40 +0000 (星期五, 29 九月 2006) nrousseau $
- *
+ * 
  */
 public class RepositoryService implements IRepositoryService {
 
     public IComponentsFactory getComponentsFactory() {
         return ComponentsFactoryProvider.getInstance();
+    }
+
+    public IPath getPathFileName(String folderName, String fileName){
+        return RepositoryPathProvider.getPathFileName(folderName, fileName);
     }
 
 }
