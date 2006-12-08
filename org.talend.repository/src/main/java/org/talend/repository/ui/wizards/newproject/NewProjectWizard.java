@@ -32,6 +32,7 @@ import org.talend.core.model.temp.ECodeLanguage;
 import org.talend.core.ui.images.EImage;
 import org.talend.core.ui.images.ImageProvider;
 import org.talend.repository.i18n.Messages;
+import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
 
 /**
@@ -75,7 +76,7 @@ public class NewProjectWizard extends Wizard {
      */
     @Override
     public boolean performFinish() {
-        ProxyRepositoryFactory repositoryFactory = ProxyRepositoryFactory.getInstance();
+        IProxyRepositoryFactory repositoryFactory = ProxyRepositoryFactory.getInstance();
         Context ctx = CorePlugin.getContext();
         RepositoryContext repositoryContext = (RepositoryContext) ctx.getProperty(Context.REPOSITORY_CONTEXT_KEY);
         try {

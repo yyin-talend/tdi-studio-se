@@ -45,6 +45,7 @@ import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.ui.images.EImage;
 import org.talend.core.ui.images.ImageProvider;
 import org.talend.repository.i18n.Messages;
+import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNodeUtilities;
@@ -105,7 +106,7 @@ public class RegexpFileWizard extends RepositoryWizard implements INewWizard {
         case SYSTEM_FOLDER:
             connection = ConnectionFactory.eINSTANCE.createRegexpFileConnection();
             MetadataTable metadataTable = ConnectionFactory.eINSTANCE.createMetadataTable();
-            ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+            IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
             metadataTable.setId(factory.getNextId());
             connection.getTables().add(metadataTable);
             connectionProperty = PropertiesFactory.eINSTANCE.createProperty();
@@ -206,7 +207,7 @@ public class RegexpFileWizard extends RepositoryWizard implements INewWizard {
         }
 
         if (formIsPerformed) {
-            ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+            IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
             try {
                 if (creation) {
                     String nextId = factory.getNextId();

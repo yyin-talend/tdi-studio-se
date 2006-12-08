@@ -167,7 +167,7 @@ public class RepositoryNode {
      */
     public IRepositoryObject getObject() {
         if (this.object == null) {
-            ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+            IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
             try {
                 return factory.getLastVersion(this.id);
             } catch (PersistenceException e) {

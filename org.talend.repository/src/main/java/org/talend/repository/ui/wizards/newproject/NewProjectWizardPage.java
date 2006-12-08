@@ -42,6 +42,7 @@ import org.talend.core.model.general.Project;
 import org.talend.core.model.temp.ECodeLanguage;
 import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.i18n.Messages;
+import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryConstants;
 
@@ -140,7 +141,7 @@ public class NewProjectWizardPage extends WizardPage {
     Project[] projects;
 
     private boolean isProjectNameAlreadyUsed(String newProjectName) {
-        ProxyRepositoryFactory repositoryFactory = ProxyRepositoryFactory.getInstance();
+        IProxyRepositoryFactory repositoryFactory = ProxyRepositoryFactory.getInstance();
         if (projects == null) {
             try {
                 projects = repositoryFactory.readProject();

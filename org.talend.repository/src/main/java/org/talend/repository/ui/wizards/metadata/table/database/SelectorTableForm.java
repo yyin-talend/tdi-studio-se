@@ -58,6 +58,7 @@ import org.talend.core.model.metadata.builder.database.ExtractMetaDataFromDataBa
 import org.talend.core.model.metadata.editor.MetadataEmfTableEditor;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.repository.i18n.Messages;
+import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.ui.swt.utils.AbstractForm;
 import org.talend.repository.ui.utils.ManagerConnection;
@@ -391,7 +392,7 @@ public class SelectorTableForm extends AbstractForm {
             tableItem.setText(1, "" + metadataColumns.size());
             tableItem.setText(2, Messages.getString("SelectorTableForm.Success"));
 
-            ProxyRepositoryFactory factory = ProxyRepositoryFactory
+            IProxyRepositoryFactory factory = ProxyRepositoryFactory
                     .getInstance();
 
             metadataTable = ConnectionFactory.eINSTANCE.createMetadataTable();

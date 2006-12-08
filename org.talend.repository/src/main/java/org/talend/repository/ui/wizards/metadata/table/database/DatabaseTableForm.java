@@ -73,6 +73,7 @@ import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.ui.metadata.editor.MetadataEmfTableEditorView;
 import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.i18n.Messages;
+import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryConstants;
 import org.talend.repository.ui.swt.utils.AbstractForm;
@@ -424,7 +425,7 @@ public class DatabaseTableForm extends AbstractForm {
      */
     protected void addMetadataTable() {
         // Create a new metadata and Add it on the connection
-        ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+        IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
         metadataTable = ConnectionFactory.eINSTANCE.createMetadataTable();
         getConnection().getTables().add(metadataTable);
         metadataTable.setId(factory.getNextId());

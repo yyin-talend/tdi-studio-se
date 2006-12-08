@@ -49,6 +49,7 @@ import org.talend.core.ui.images.ImageProvider;
 import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.ERepositoryStatus;
+import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNode.ENodeType;
@@ -494,7 +495,7 @@ public class CreateTableAction extends AbstractCreateAction {
                 return;
             }
 
-            ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+            IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
             if (factory.getStatus(node.getObject()) == ERepositoryStatus.DELETED) {
                 return;
             }

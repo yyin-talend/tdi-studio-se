@@ -72,6 +72,7 @@ import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.runprocess.IPerlProcessor;
 import org.talend.designer.runprocess.IRunProcessService;
 import org.talend.designer.runprocess.ProcessorException;
+import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.ui.views.IRepositoryView;
 import org.talend.repository.ui.views.RepositoryView;
@@ -184,7 +185,7 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
         super.dispose();
 
         // Unlock the process :
-        ProxyRepositoryFactory repFactory = ProxyRepositoryFactory.getInstance();
+        IProxyRepositoryFactory repFactory = ProxyRepositoryFactory.getInstance();
         try {
             getTalendEditor().getProperty().eAdapters().remove(dirtyListener);
             repFactory.unlock(getTalendEditor().getProcess());
@@ -244,7 +245,7 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
         getSite().getWorkbenchWindow().getSelectionService().addSelectionListener(this);
 
         // Lock the process :
-        ProxyRepositoryFactory repFactory = ProxyRepositoryFactory.getInstance();
+        IProxyRepositoryFactory repFactory = ProxyRepositoryFactory.getInstance();
         ProcessEditorInput processEditorInput = (ProcessEditorInput) editorInput;
         Process process = (processEditorInput).getLoadedProcess();
         if (!process.isReadOnly()) {

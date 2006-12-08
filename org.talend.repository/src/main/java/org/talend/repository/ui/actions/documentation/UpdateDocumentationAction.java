@@ -31,6 +31,7 @@ import org.eclipse.ui.PlatformUI;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.ui.images.EImage;
 import org.talend.core.ui.images.ImageProvider;
+import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNodeUtilities;
@@ -66,7 +67,7 @@ public class UpdateDocumentationAction extends AContextualAction {
     public void init(TreeViewer viewer, IStructuredSelection selection) {
         boolean canWork = !selection.isEmpty() && selection.size() == 1;
         if (canWork) {
-            ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+            IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
             RepositoryNode node = (RepositoryNode) selection.getFirstElement();
             canWork = node.getType() == ENodeType.REPOSITORY_ELEMENT
                     && node.getObject().getType() == ERepositoryObjectType.DOCUMENTATION

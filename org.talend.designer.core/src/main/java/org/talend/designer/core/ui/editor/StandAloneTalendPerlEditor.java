@@ -34,6 +34,7 @@ import org.talend.core.model.properties.ByteArray;
 import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.RoutineItem;
 import org.talend.repository.editor.RepositoryEditorInput;
+import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.ui.views.IRepositoryView;
 import org.talend.repository.ui.views.RepositoryView;
@@ -47,7 +48,7 @@ public class StandAloneTalendPerlEditor extends PerlEditor {
     public void doSetInput(IEditorInput input) throws CoreException {
         super.doSetInput(input);
         // Lock the process :
-        ProxyRepositoryFactory repFactory = ProxyRepositoryFactory.getInstance();
+        IProxyRepositoryFactory repFactory = ProxyRepositoryFactory.getInstance();
         try {
             RepositoryEditorInput rEditorInput = (RepositoryEditorInput) input;
             item = (RoutineItem) rEditorInput.getItem();
@@ -62,7 +63,7 @@ public class StandAloneTalendPerlEditor extends PerlEditor {
     public void dispose() {
         super.dispose();
         // Unlock the process :
-        ProxyRepositoryFactory repFactory = ProxyRepositoryFactory.getInstance();
+        IProxyRepositoryFactory repFactory = ProxyRepositoryFactory.getInstance();
         try {
             item.getProperty().eAdapters().remove(dirtyListener);
             repFactory.unlock(item);

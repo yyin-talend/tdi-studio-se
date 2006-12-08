@@ -31,6 +31,7 @@ import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.ui.images.EImage;
 import org.talend.core.ui.images.ImageProvider;
 import org.talend.repository.i18n.Messages;
+import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNode.EProperties;
@@ -98,7 +99,7 @@ public class CreateFileXmlAction extends AbstractCreateAction {
             creation = true;
             break;
         case REPOSITORY_ELEMENT:
-            ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+            IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
             if (factory.isPotentiallyEditable(node.getObject())) {
                 this.setText(EDIT_LABEL);
                 collectSiblingNames(node);

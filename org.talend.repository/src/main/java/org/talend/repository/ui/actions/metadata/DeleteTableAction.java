@@ -38,6 +38,7 @@ import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.ui.images.EImage;
 import org.talend.core.ui.images.ImageProvider;
 import org.talend.repository.i18n.Messages;
+import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNode.ENodeType;
@@ -83,7 +84,7 @@ public class DeleteTableAction extends AContextualAction {
                         Connection connection = null;
                         ERepositoryObjectType parentNodeType = (ERepositoryObjectType) node.getParent().getProperties(
                                 EProperties.CONTENT_TYPE);
-                        ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+                        IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
                         ConnectionItem item = (ConnectionItem) node.getObject().getProperty().getItem();
                         connection = (item).getConnection();
                         MetadataTable metadataTable = ((MetadataTableRepositoryObject) node.getObject()).getTable();
@@ -148,7 +149,7 @@ public class DeleteTableAction extends AContextualAction {
                         canWork = false;
                         break;
                     }
-                    ProxyRepositoryFactory repFactory = ProxyRepositoryFactory.getInstance();
+                    IProxyRepositoryFactory repFactory = ProxyRepositoryFactory.getInstance();
                     boolean isLocked = false;
                     boolean isDeleted = false;
                     try {

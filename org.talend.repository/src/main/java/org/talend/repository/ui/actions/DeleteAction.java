@@ -35,6 +35,7 @@ import org.talend.core.ui.images.EImage;
 import org.talend.core.ui.images.ImageProvider;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.ERepositoryStatus;
+import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNodeUtilities;
@@ -66,7 +67,7 @@ public class DeleteAction extends AContextualAction {
     public void run() {
         ISelection selection = getSelection();
         Boolean confirm = null;
-        ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+        IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
 
         for (Object obj : ((IStructuredSelection) selection).toArray()) {
             if (obj instanceof RepositoryNode) {
@@ -132,7 +133,7 @@ public class DeleteAction extends AContextualAction {
                     break;
                 case REPOSITORY_ELEMENT:
                     IRepositoryObject repObj = node.getObject();
-                    ProxyRepositoryFactory repFactory = ProxyRepositoryFactory.getInstance();
+                    IProxyRepositoryFactory repFactory = ProxyRepositoryFactory.getInstance();
 
                     boolean isPotentiallyEditable = repFactory.isPotentiallyEditable(repObj);
                     boolean idDeleted = repFactory.getStatus(repObj) == ERepositoryStatus.DELETED;

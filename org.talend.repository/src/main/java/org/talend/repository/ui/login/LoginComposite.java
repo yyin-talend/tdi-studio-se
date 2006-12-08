@@ -62,6 +62,7 @@ import org.talend.core.ui.images.EImage;
 import org.talend.core.ui.images.ImageProvider;
 import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.i18n.Messages;
+import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.IRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryConstants;
@@ -408,7 +409,7 @@ public class LoginComposite extends Composite {
 
             @Override
             public void widgetSelected(SelectionEvent e) {
-                ProxyRepositoryFactory repositoryFactory = ProxyRepositoryFactory.getInstance();
+                IProxyRepositoryFactory repositoryFactory = ProxyRepositoryFactory.getInstance();
 
                 if (validateFields()) {
                     MessageDialog.openInformation(getShell(), Messages.getString("LoginComposite.remoteRepositoryCheck"),

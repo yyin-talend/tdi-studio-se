@@ -26,6 +26,7 @@ import org.talend.designer.business.diagram.custom.dnd.BusinessDiagramDropTarget
 import org.talend.designer.business.diagram.custom.properties.BusinessPropertiesBrowserPage;
 import org.talend.designer.business.model.business.diagram.edit.parts.BusinessEditPartFactory;
 import org.talend.repository.editor.RepositoryEditorInput;
+import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.ui.views.IRepositoryView;
 import org.talend.repository.ui.views.RepositoryView;
@@ -142,7 +143,7 @@ public class BusinessDiagramEditor extends FileDiagramEditor implements IGotoMar
     public boolean isEditable() {
         if (repositoryEditorInput != null) {
             Item item = repositoryEditorInput.getItem();
-            ProxyRepositoryFactory repositoryFactory = ProxyRepositoryFactory.getInstance();
+            IProxyRepositoryFactory repositoryFactory = ProxyRepositoryFactory.getInstance();
 
             return repositoryFactory.isEditableAndLockIfPossible(item);
         }
@@ -157,7 +158,7 @@ public class BusinessDiagramEditor extends FileDiagramEditor implements IGotoMar
     public void dispose() {
         super.dispose();
         // Unlock the process :
-        ProxyRepositoryFactory repFactory = ProxyRepositoryFactory.getInstance();
+        IProxyRepositoryFactory repFactory = ProxyRepositoryFactory.getInstance();
         try {
             repFactory.unlock(repositoryEditorInput.getItem());
             repFactory.reload(repositoryEditorInput.getItem().getProperty());

@@ -110,6 +110,7 @@ import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.nodes.Node.Data;
 import org.talend.designer.core.ui.views.problems.Problems;
 import org.talend.repository.model.ComponentsFactoryProvider;
+import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
 
 /**
@@ -460,7 +461,7 @@ public class Process extends Element implements IProcess {
     }
 
     public static IMetadataTable getMetadataFromRepository(String metaRepositoryName) {
-        ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+        IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
         List<ConnectionItem> metadataConnectionsItem = null;
         List<String> repositoryList = new ArrayList<String>();
         IMetadataTable metaToReturn = null;
@@ -934,7 +935,7 @@ public class Process extends Element implements IProcess {
         String propertyType = (String) node.getPropertyValue(EParameterName.PROPERTY_TYPE.getName());
         if (propertyType != null) {
             if (propertyType.equals(EmfComponent.REPOSITORY)) {
-                ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+                IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
                 List<ConnectionItem> metadataConnectionsItem = null;
                 try {
                     metadataConnectionsItem = factory.getMetadataConnectionsItem();
@@ -1130,7 +1131,7 @@ public class Process extends Element implements IProcess {
     }
 
     public void checkReadOnly() {
-        ProxyRepositoryFactory repFactory = ProxyRepositoryFactory.getInstance();
+        IProxyRepositoryFactory repFactory = ProxyRepositoryFactory.getInstance();
         boolean readOnlyLocal = !repFactory.isEditableAndLockIfPossible(property.getItem());
         this.setReadOnly(readOnlyLocal);
     }

@@ -32,7 +32,7 @@ import org.talend.core.model.general.Project;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.designer.codegen.CodeGeneratorActivator;
-import org.talend.repository.model.ProxyRepositoryFactory;
+import org.talend.repository.model.IProxyRepositoryFactory;
 
 /**
  * Build RoutineName for PerlHeader.
@@ -56,14 +56,16 @@ public final class CodeGeneratorRoutine {
                 Context.REPOSITORY_CONTEXT_KEY);
         Project project = repositoryContext.getProject();
 
-        ProxyRepositoryFactory repositoryFactory = ProxyRepositoryFactory.getInstance();
+        IProxyRepositoryFactory repositoryFactory = CodeGeneratorActivator.getDefault().getRepositoryService()
+                .getProxyRepositoryFactory();
         try {
             List<IRepositoryObject> routines = repositoryFactory.getAll(ERepositoryObjectType.ROUTINES);
             for (IRepositoryObject routine : routines) {
                 routineName = project.getTechnicalLabel() + "__" + routine.getLabel();
             }
         } catch (PersistenceException e) {
-            Status status = new Status(Status.ERROR, CodeGeneratorActivator.PLUGIN_ID, Status.WARNING, e.getMessage(), e);
+            Status status = new Status(Status.ERROR, CodeGeneratorActivator.PLUGIN_ID, Status.WARNING, e.getMessage(),
+                    e);
             CodeGeneratorActivator.getDefault().getLog().log(status);
             routineName = "1";
         }

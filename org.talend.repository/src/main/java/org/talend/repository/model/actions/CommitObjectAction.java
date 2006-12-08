@@ -25,6 +25,7 @@ import org.talend.commons.exception.SystemException;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.repository.model.ERepositoryStatus;
+import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 
@@ -54,7 +55,7 @@ public class CommitObjectAction {
             if (repositoryObject.getType() == ERepositoryObjectType.METADATA_CON_TABLE) {
                 return false;
             }
-            ProxyRepositoryFactory proxyRepositoryFactory = ProxyRepositoryFactory.getInstance();
+            IProxyRepositoryFactory proxyRepositoryFactory = ProxyRepositoryFactory.getInstance();
             return (proxyRepositoryFactory.getStatus(repositoryObject) == ERepositoryStatus.LOCK_BY_USER);
         default:
             return false;
@@ -64,7 +65,7 @@ public class CommitObjectAction {
     public void execute(Object object) throws SystemException {
         if (object instanceof RepositoryNode) {
             RepositoryNode sourceNode = (RepositoryNode) object;
-            ProxyRepositoryFactory proxyRepositoryFactory = ProxyRepositoryFactory.getInstance();
+            IProxyRepositoryFactory proxyRepositoryFactory = ProxyRepositoryFactory.getInstance();
             proxyRepositoryFactory.commit(sourceNode.getObject().getProperty().getItem());
         }
     }

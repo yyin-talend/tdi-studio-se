@@ -47,6 +47,7 @@ import org.talend.commons.utils.VersionUtils;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.repository.RepositoryPlugin;
+import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryConstants;
 import org.talend.repository.ui.properties.PurposeStatusSection;
@@ -390,7 +391,7 @@ public abstract class PropertiesWizardPage extends WizardPage {
     }
 
     public boolean isValid(String itemName) {
-        ProxyRepositoryFactory repositoryFactory = ProxyRepositoryFactory.getInstance();
+        IProxyRepositoryFactory repositoryFactory = ProxyRepositoryFactory.getInstance();
         try {
             return repositoryFactory.isNameAvailable(property.getItem(), itemName);
         } catch (PersistenceException e) {

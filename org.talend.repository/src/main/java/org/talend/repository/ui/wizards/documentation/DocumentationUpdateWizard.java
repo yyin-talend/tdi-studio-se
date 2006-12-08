@@ -32,6 +32,7 @@ import org.talend.core.model.properties.DocumentationItem;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.ui.images.EImage;
 import org.talend.core.ui.images.ImageProvider;
+import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.ui.wizards.RepositoryWizard;
 
@@ -88,7 +89,7 @@ public class DocumentationUpdateWizard extends RepositoryWizard implements IDocu
     public boolean performFinish() {
         boolean updated = false;
         InputStream stream = null;
-        ProxyRepositoryFactory repositoryFactory = ProxyRepositoryFactory.getInstance();
+        IProxyRepositoryFactory repositoryFactory = ProxyRepositoryFactory.getInstance();
         try {
             if (getDocFilePath() != null && getDocFilePath().segmentCount() != 0) {
                 documentationItem.getContent().setInnerContentFromFile(getDocFilePath().toFile());

@@ -31,6 +31,7 @@ import org.talend.commons.ui.swt.dialogs.ErrorDialogWidthDetailArea;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.repository.i18n.Messages;
+import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.ui.wizards.RepositoryWizard;
 
@@ -98,7 +99,7 @@ public class FilePositionalTableWizard extends RepositoryWizard implements INewW
             return false;
         }
 
-        ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+        IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
         try {
             factory.save(repositoryObject.getProperty().getItem());
             closeLockStrategy();

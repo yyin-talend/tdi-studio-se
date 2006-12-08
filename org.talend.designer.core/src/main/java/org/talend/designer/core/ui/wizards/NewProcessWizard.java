@@ -36,6 +36,7 @@ import org.talend.core.model.properties.Property;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
 import org.talend.designer.core.model.utils.emf.talendfile.TalendFileFactory;
+import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
 
 /**
@@ -95,7 +96,7 @@ public class NewProcessWizard extends Wizard {
      */
     @Override
     public boolean performFinish() {
-        ProxyRepositoryFactory repositoryFactory = ProxyRepositoryFactory.getInstance();
+        IProxyRepositoryFactory repositoryFactory = ProxyRepositoryFactory.getInstance();
         try {
             property.setId(repositoryFactory.getNextId());
 

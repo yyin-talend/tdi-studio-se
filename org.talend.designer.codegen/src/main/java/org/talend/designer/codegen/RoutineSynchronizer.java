@@ -30,7 +30,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.exception.SystemException;
 import org.talend.core.CorePlugin;
-import org.talend.core.GlobalServiceRegister;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.model.general.Project;
@@ -38,7 +37,7 @@ import org.talend.core.model.properties.RoutineItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.designer.runprocess.IRunProcessService;
-import org.talend.repository.model.ProxyRepositoryFactory;
+import org.talend.repository.model.IProxyRepositoryFactory;
 
 /**
  * DOC smallet class global comment. Detailled comment <br/>
@@ -49,7 +48,8 @@ import org.talend.repository.model.ProxyRepositoryFactory;
 public class RoutineSynchronizer implements IRoutineSynchronizer {
 
     public void syncAllRoutines() throws SystemException {
-        ProxyRepositoryFactory repositoryFactory = ProxyRepositoryFactory.getInstance();
+        IProxyRepositoryFactory repositoryFactory = CodeGeneratorActivator.getDefault().getRepositoryService()
+                .getProxyRepositoryFactory();
 
         List<IRepositoryObject> routines;
         try {

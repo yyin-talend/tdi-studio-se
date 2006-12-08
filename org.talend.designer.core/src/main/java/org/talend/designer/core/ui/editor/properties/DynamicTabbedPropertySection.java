@@ -165,6 +165,7 @@ import org.talend.designer.core.ui.editor.outline.NodeTreeEditPart;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.runprocess.IRunProcessService;
 import org.talend.repository.model.ERepositoryStatus;
+import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryConstants;
 import org.talend.repository.utils.RepositoryPathProvider;
@@ -883,7 +884,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
         List<String> processNameList = new ArrayList<String>();
         List<String> processValueList = new ArrayList<String>();
         processMap = new HashMap<String, IRepositoryObject>();
-        ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+        IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
         try {
             RootContainer<String, IRepositoryObject> processContainer = factory.getProcess();
             ContentList<String, IRepositoryObject> processAbsoluteMembers = processContainer.getAbsoluteMembers();
@@ -930,7 +931,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
     private void updateContextList() {
         List<String> contextNameList = new ArrayList<String>();
         List<String> contextValueList = new ArrayList<String>();
-        ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+        IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
 
         String selectedProcess = null;
 
@@ -980,7 +981,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
     }
 
     private void updateRepositoryList() {
-        ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+        IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
         List<ConnectionItem> metadataConnectionsItem = null;
         String[] repositoryTableNameList = new String[] {};
         String[] repositoryTableValueList = new String[] {};

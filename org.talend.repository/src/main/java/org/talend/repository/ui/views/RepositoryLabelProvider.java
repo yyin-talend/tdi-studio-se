@@ -36,6 +36,7 @@ import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.ui.images.EImage;
 import org.talend.core.ui.images.ImageProvider;
 import org.talend.repository.model.ERepositoryStatus;
+import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNode.ENodeType;
@@ -74,7 +75,7 @@ public class RepositoryLabelProvider extends LabelProvider implements IColorProv
                 string.append(" " + object.getVersion());
             }
 
-            ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+            IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
             try {
                 if (factory.getStatus(object) == ERepositoryStatus.DELETED) {
                     string.append(" (" + factory.getOldPath(object) + ")");
@@ -110,7 +111,7 @@ public class RepositoryLabelProvider extends LabelProvider implements IColorProv
                 DocumentationItem item = (DocumentationItem) node.getObject().getProperty().getItem();
                 return ImageProvider.getImage(item.getExtension());
             }
-            ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+            IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
             ERepositoryStatus repositoryStatus = factory.getStatus(node.getObject());
             return BusinessImageProvider.getImage(node.getObject().getType(), repositoryStatus);
         }

@@ -31,6 +31,7 @@ import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.repository.model.BinRepositoryNode;
 import org.talend.repository.model.ERepositoryStatus;
+import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNodeUtilities;
@@ -103,7 +104,7 @@ public class MoveObjectAction {
                 return false;
             }
 
-            ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+            IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
             try {
                 if (!factory.isPathValid(sourceType, targetPath, sourcePath.lastSegment())) {
                     return false;
@@ -128,7 +129,7 @@ public class MoveObjectAction {
         IPath targetPath = (targetNode == null ? new Path("") : RepositoryNodeUtilities.getPath(targetNode));
         IPath sourcePath = RepositoryNodeUtilities.getPath(sourceNode);
 
-        ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+        IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
 
         if (sourceNode.getType().equals(ENodeType.REPOSITORY_ELEMENT)) {
             // Source is an repository element :

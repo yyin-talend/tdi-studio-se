@@ -34,6 +34,7 @@ import org.talend.commons.ui.swt.dialogs.ErrorDialogWidthDetailArea;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.i18n.Messages;
+import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.ui.views.IRepositoryView;
@@ -122,7 +123,7 @@ public abstract class RepositoryWizard extends Wizard {
      */
     private void reload() {
         if (repositoryObject != null) {
-            ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+            IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
             factory.reload(repositoryObject.getProperty());
         }
     }
@@ -154,7 +155,7 @@ public abstract class RepositoryWizard extends Wizard {
      */
     private void calculateRepositoryObjectEditable() {
         if (repositoryObject != null) {
-            ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+            IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
             repositoryObjectEditable = factory.isEditableAndLockIfPossible(repositoryObject);
         }
     }
@@ -166,7 +167,7 @@ public abstract class RepositoryWizard extends Wizard {
     public void initLockStrategy() {
         // The lock strategy is useless when the repositoryObject isn't yet created
         if (repositoryObject != null) {
-            ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+            IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
             try {
                 factory.lock(repositoryObject);
             } catch (PersistenceException e1) {
@@ -186,7 +187,7 @@ public abstract class RepositoryWizard extends Wizard {
     public void closeLockStrategy() {
         // The lock strategy is useless when the repositoryObject isn't created
         if (repositoryObject != null) {
-            ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+            IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
             try {
                 factory.unlock(repositoryObject);
             } catch (PersistenceException e) {

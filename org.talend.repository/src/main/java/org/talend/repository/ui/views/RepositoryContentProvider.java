@@ -46,6 +46,7 @@ import org.talend.core.ui.images.EImage;
 import org.talend.core.ui.images.ImageProvider;
 import org.talend.repository.model.BinRepositoryNode;
 import org.talend.repository.model.ERepositoryStatus;
+import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.StableRepositoryNode;
@@ -101,7 +102,7 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
         RepositoryNode root = view.getRoot();
         List<RepositoryNode> nodes = root.getChildren();
 
-        ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+        IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
         try {
             // 0. Recycle bin
             RepositoryNode recBinNode = new BinRepositoryNode(root);
@@ -244,7 +245,7 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
 
     private void addNode(RepositoryNode parent, ERepositoryObjectType type, RepositoryNode recBinNode,
             IRepositoryObject repositoryObject) {
-        ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+        IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
 
         RepositoryNode node = new RepositoryNode(repositoryObject, parent, ENodeType.REPOSITORY_ELEMENT);
 

@@ -24,8 +24,9 @@ package org.talend.repository;
 import org.eclipse.core.runtime.IPath;
 import org.talend.core.model.components.IComponentsFactory;
 import org.talend.repository.model.ComponentsFactoryProvider;
+import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.IRepositoryService;
-import org.talend.repository.model.RepositoryConstants;
+import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.utils.RepositoryPathProvider;
 
 /**
@@ -46,8 +47,12 @@ public class RepositoryService implements IRepositoryService {
         return ComponentsFactoryProvider.getInstance();
     }
 
-    public IPath getPathFileName(String folderName, String fileName){
+    public IPath getPathFileName(String folderName, String fileName) {
         return RepositoryPathProvider.getPathFileName(folderName, fileName);
+    }
+
+    public IProxyRepositoryFactory getProxyRepositoryFactory() {
+        return ProxyRepositoryFactory.getInstance();
     }
 
 }

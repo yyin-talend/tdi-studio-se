@@ -26,6 +26,7 @@ import org.osgi.framework.BundleContext;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.IService;
 import org.talend.designer.runprocess.IRunProcessService;
+import org.talend.repository.model.IRepositoryService;
 
 /**
  * Activator for Code Generator.
@@ -67,4 +68,15 @@ public class CodeGeneratorActivator extends AbstractUIPlugin {
         IService service = GlobalServiceRegister.getDefault().getService(IRunProcessService.class);
         return (IRunProcessService) service;
     }
+
+    /**
+     * DOC qian Gets the RepositoryService.
+     * 
+     * @return IRepositoryService
+     */
+    public IRepositoryService getRepositoryService() {
+        IService service = GlobalServiceRegister.getDefault().getService(IRepositoryService.class);
+        return (IRepositoryService) service;
+    }
+
 }

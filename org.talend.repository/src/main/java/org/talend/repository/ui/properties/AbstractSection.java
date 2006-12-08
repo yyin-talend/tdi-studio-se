@@ -41,6 +41,7 @@ import org.talend.core.model.properties.Property;
 import org.talend.core.model.properties.User;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 
@@ -197,7 +198,7 @@ public abstract class AbstractSection extends AbstractPropertySection {
      * 
      * @return
      */
-    protected ProxyRepositoryFactory getRepositoryFactory() {
+    protected IProxyRepositoryFactory getRepositoryFactory() {
         return ProxyRepositoryFactory.getInstance();
     }
 
