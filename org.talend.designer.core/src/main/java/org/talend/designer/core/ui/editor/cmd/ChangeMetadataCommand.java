@@ -27,11 +27,6 @@ import java.util.List;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.IViewPart;
-import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.views.properties.PropertySheet;
-import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 import org.talend.core.model.components.IODataComponent;
 import org.talend.core.model.components.IODataComponentContainer;
 import org.talend.core.model.metadata.IMetadataTable;
@@ -125,8 +120,8 @@ public class ChangeMetadataCommand extends Command {
             if (connec.isActivate()
                     && (connec.getLineStyle().equals(EConnectionType.FLOW_MAIN) || connec.getLineStyle().equals(
                             EConnectionType.FLOW_REF))) {
-                IODataComponent dataComponent = new IODataComponent(connec, newOutputMetadata);
-                dataContainer.getOuputs().add(dataComponent);
+                IODataComponent output = new IODataComponent(connec, newOutputMetadata);
+                dataContainer.getOuputs().add(output);
             }
         }
     }

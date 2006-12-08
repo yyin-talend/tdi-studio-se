@@ -70,6 +70,8 @@ public class ExternalNodeChangeCommand extends Command {
 
     List<Connection> connectionsToDelete;
 
+    private List<ChangeMetadataCommand> metadataChanges = new ArrayList<ChangeMetadataCommand>();
+
     private IODataComponentContainer inAndOut;
 
     private Boolean propagate;
@@ -108,12 +110,14 @@ public class ExternalNodeChangeCommand extends Command {
                             EParameterName.REPOSITORY_SCHEMA_TYPE.getName());
                     IMetadataTable repositoryMetadata = Process.getMetadataFromRepository(metaRepositoryName);
                     if (repositoryMetadata == null) {
-                        connection.getSource().setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), EmfComponent.BUILTIN);
+                        connection.getSource().setPropertyValue(EParameterName.SCHEMA_TYPE.getName(),
+                                EmfComponent.BUILTIN);
                     } else {
                         repositoryMetadata = repositoryMetadata.clone();
                         repositoryMetadata.setTableName(connection.getSource().getUniqueName());
                         if (!repositoryMetadata.sameMetadataAs(connection.getMetadataTable())) {
-                            connection.getSource().setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), EmfComponent.BUILTIN);
+                            connection.getSource().setPropertyValue(EParameterName.SCHEMA_TYPE.getName(),
+                                    EmfComponent.BUILTIN);
                         }
                     }
                 }
@@ -153,12 +157,11 @@ public class ExternalNodeChangeCommand extends Command {
             String schemaType = (String) connection.getSource().getPropertyValue(EParameterName.SCHEMA_TYPE.getName());
             if (schemaType != null) {
                 IMetadataTable repositoryMetadata = inAndOut.getTable(connection);
-
-                // repositoryMetadata = repositoryMetadata.clone();
                 repositoryMetadata.setTableName(connection.getSource().getUniqueName());
                 if (!repositoryMetadata.sameMetadataAs(connection.getMetadataTable())) {
                     if (schemaType.equals(EmfComponent.REPOSITORY)) {
-                        connection.getSource().setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), EmfComponent.BUILTIN);
+                        connection.getSource().setPropertyValue(EParameterName.SCHEMA_TYPE.getName(),
+                                EmfComponent.BUILTIN);
                     }
 
                     connection.getSource().getMetadataTable(connection.getMetaName()).setListColumns(
@@ -168,11 +171,15 @@ public class ExternalNodeChangeCommand extends Command {
                 }
             }
         }
+        metadataChanges.clear();
         for (IConnection connection : node.getOutgoingConnections()) {
             IODataComponent dataComponent = inAndOut.getDataComponent(connection);
             if (!connection.getMetadataTable().sameMetadataAs(dataComponent.getTable())) {
                 if (getPropagate()) {
-                    connection.getTarget().metadataInputChanged(dataComponent, connection.getName());
+                    ChangeMetadataCommand cmd = new ChangeMetadataCommand((Node) connection.getSource(), connection
+                            .getMetadataTable(), dataComponent.getTable());
+                    cmd.execute(true);
+                    metadataChanges.add(cmd);
                 }
             }
         }
@@ -208,6 +215,9 @@ public class ExternalNodeChangeCommand extends Command {
             Node nextNode = (Node) connection.getTarget();
             nodeConnectorTarget = nextNode.getConnectorFromType(connection.getLineStyle());
             nodeConnectorTarget.setCurLinkNbInput(nodeConnectorTarget.getCurLinkNbInput() + 1);
+        }
+        for (ChangeMetadataCommand cmd : metadataChanges) {
+            cmd.undo();
         }
         node.checkAndRefreshNode();
         refreshSectionsPropertyView();
