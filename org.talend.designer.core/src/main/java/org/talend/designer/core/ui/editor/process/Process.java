@@ -529,7 +529,9 @@ public class Process extends Element implements IProcess {
                         if (value instanceof Boolean) {
                             pType.setValue((String) ((Boolean) value).toString());
                         } else {
-                            pType.setValue((String) value);
+                            if (value instanceof String) {
+                                pType.setValue((String) value);
+                            }
                         }
                     }
                 }
