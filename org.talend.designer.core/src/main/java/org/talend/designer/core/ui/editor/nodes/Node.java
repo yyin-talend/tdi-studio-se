@@ -410,7 +410,8 @@ public class Node extends Element implements INode {
     public void addInput(final Connection connection) {
         this.inputs.add(connection);
         if (!isExternalNode() && component.isSchemaAutoPropagated()
-                && (connection.getLineStyle() == EConnectionType.FLOW_MAIN)) {
+                && (connection.getLineStyle() == EConnectionType.FLOW_MAIN)
+                && ((Process) getProcess()).isActivate()) {
             if ((metadataList.get(0).getListColumns().size() == 0) || (outputs.size() == 0)) {
                 metadataList.get(0).setListColumns(connection.getMetadataTable().clone().getListColumns());
             }

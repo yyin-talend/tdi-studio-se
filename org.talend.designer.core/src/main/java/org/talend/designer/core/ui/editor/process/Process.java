@@ -53,6 +53,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PlatformUI;
 import org.talend.commons.exception.PersistenceException;
+import org.talend.commons.utils.time.TimeMeasure;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.metadata.EMetadataType;
@@ -749,6 +750,7 @@ public class Process extends Element implements IProcess {
         init();
         Hashtable<String, Node> nodesHashtable = new Hashtable<String, Node>();
 
+        setActivate(false);
         loadProcessProperties(process);
 
         try {
@@ -763,7 +765,7 @@ public class Process extends Element implements IProcess {
         initExternalComponents();
         setActivate(true);
         checkStartNodes();
-        checkProcess();
+//        checkProcess();
     }
 
     private void initExternalComponents() {

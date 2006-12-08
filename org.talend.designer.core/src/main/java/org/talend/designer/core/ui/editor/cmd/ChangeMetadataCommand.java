@@ -64,7 +64,7 @@ public class ChangeMetadataCommand extends Command {
     private List<ChangeMetadataCommand> propagatedChange = new ArrayList<ChangeMetadataCommand>();
 
     private boolean internal = false;
-    
+
     private boolean repositoryMode = false;
 
     public ChangeMetadataCommand(Node node, Node inputNode, IMetadataTable currentInputMetadata,
@@ -103,7 +103,7 @@ public class ChangeMetadataCommand extends Command {
         initializeContainer();
         setLabel("Change Metadata values");
     }
-    
+
     protected void setRepositoryMode(boolean repositoryMode) {
         this.repositoryMode = repositoryMode;
     }
@@ -149,6 +149,7 @@ public class ChangeMetadataCommand extends Command {
         if (currentOutputMetadata == null) {
             currentOutputMetadata = node.getMetadataList().get(0);
         }
+        setInternal(true);
         execute();
     }
 
@@ -173,7 +174,6 @@ public class ChangeMetadataCommand extends Command {
                                         && ((Node) targetNode).getComponent().isSchemaAutoPropagated()) {
                                     ChangeMetadataCommand cmd = new ChangeMetadataCommand((Node) targetNode, null,
                                             newOutputMetadata);
-                                    cmd.setInternal(true);
                                     cmd.execute(true);
                                     propagatedChange.add(cmd);
                                 }
