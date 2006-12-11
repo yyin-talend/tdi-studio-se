@@ -35,14 +35,20 @@ import org.talend.core.ui.images.ImageProvider;
  * $Id: RefreshAction.java 824 2006-12-01 15:49:55 +0000 (ven., 01 déc. 2006) smallet $
  * 
  */
-public class ImportAction extends Action {
+public final class ImportProjectsAction extends Action {
 
-    /**
-     * 
-     */
     private static final String IMPORT_PROJECTS = "Import projects";
 
-    public ImportAction() {
+    private static ImportProjectsAction singleton;
+
+    public static ImportProjectsAction getInstance() {
+        if (singleton == null) {
+            singleton = new ImportProjectsAction();
+        }
+        return singleton;
+    }
+
+    private ImportProjectsAction() {
         super();
         this.setText(IMPORT_PROJECTS);
         this.setToolTipText(IMPORT_PROJECTS);

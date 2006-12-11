@@ -23,7 +23,6 @@ package org.talend.repository.ui.login;
 
 import java.util.regex.Pattern;
 
-import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ArrayContentProvider;
@@ -110,6 +109,8 @@ public class LoginComposite extends Composite {
     private Button checkBtn;
 
     public static final Project NEW_PROJECT = new Project(Messages.getString("LoginComposite.newProject"));
+
+    public static final Project IMPORT_PROJECTS = new Project("<Import projects>");
 
     /**
      * Constructs a new LoginComposite.
@@ -450,7 +451,7 @@ public class LoginComposite extends Composite {
         ctx.putProperty(Context.REPOSITORY_CONTEXT_KEY, getRepositoryContext());
     }
 
-    private void populateProjectList() {
+    protected void populateProjectList() {
         ProxyRepositoryFactory repositoryFactory = ProxyRepositoryFactory.getInstance();
         repositoryFactory.setRepositoryFactoryFromProvider(getRepository());
         repositoryFactory.initialize();
@@ -465,9 +466,10 @@ public class LoginComposite extends Composite {
                     + Messages.getString("LoginComposite.refreshFailure2"));
         }
         if (isAuthenticationNeeded()) {
-            Project[] prjs = new Project[projects.length + 1];
+            Project[] prjs = new Project[projects.length + 2];
             System.arraycopy(projects, 0, prjs, 0, projects.length);
-            prjs[prjs.length - 1] = NEW_PROJECT;
+            prjs[prjs.length - 2] = NEW_PROJECT;
+            prjs[prjs.length - 1] = IMPORT_PROJECTS;
             projects = prjs;
         }
         projectViewer.setInput(projects);

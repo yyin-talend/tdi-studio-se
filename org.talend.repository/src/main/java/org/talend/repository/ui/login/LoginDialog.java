@@ -49,6 +49,7 @@ import org.talend.repository.license.LicenseManagement;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.registeruser.RegisterManagement;
+import org.talend.repository.ui.actions.ImportProjectsAction;
 import org.talend.repository.ui.wizards.license.LicenseWizard;
 import org.talend.repository.ui.wizards.license.LicenseWizardDialog;
 import org.talend.repository.ui.wizards.newproject.NewProjectWizard;
@@ -175,6 +176,10 @@ public class LoginDialog extends TitleAreaDialog {
             }
 
             logged = project != null;
+        } else if (project == LoginComposite.IMPORT_PROJECTS) {
+            ImportProjectsAction.getInstance().run();
+            loginComposite.populateProjectList();
+            logged = false;
         } else {
             // check if user already exists retrieve it else create it
             IProxyRepositoryFactory repositoryFactory = ProxyRepositoryFactory.getInstance();

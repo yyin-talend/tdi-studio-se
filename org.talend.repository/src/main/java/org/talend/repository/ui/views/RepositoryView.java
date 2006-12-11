@@ -77,7 +77,7 @@ import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNode.ENodeType;
 import org.talend.repository.model.actions.MoveObjectAction;
 import org.talend.repository.ui.actions.ActionsHelper;
-import org.talend.repository.ui.actions.ImportAction;
+import org.talend.repository.ui.actions.ImportProjectsAction;
 import org.talend.repository.ui.actions.RefreshAction;
 import org.talend.repository.ui.actions.RepositoryDoubleClickAction;
 
@@ -267,7 +267,7 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
     private void makeActions() {
         IHandlerService handlerService = (IHandlerService) getSite().getService(IHandlerService.class);
 
-        importAction = new ImportAction();
+        importAction = ImportProjectsAction.getInstance();
 
         refreshAction = new RefreshAction(this);
         IHandler handler1 = new ActionHandler(refreshAction);
