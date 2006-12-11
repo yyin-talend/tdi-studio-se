@@ -148,18 +148,12 @@ public class DeleteAction extends AContextualAction {
                         if (getText() == null || DELETE_FOREVER_TITLE.equals(getText())) {
                             this.setText(DELETE_FOREVER_TITLE);
                             this.setToolTipText(DELETE_FOREVER_TOOLTIP);
-
-                            // if (!isPotentiallyEditable) {
-                            // visible = true;
-                            // enabled = false;
-                            // }
                         } else {
                             visible = false;
                         }
                     } else {
                         switch (repObj.getType()) {
                         case METADATA_CON_TABLE:
-                        case ROUTINES:
                             visible = false;
                             break;
                         default:

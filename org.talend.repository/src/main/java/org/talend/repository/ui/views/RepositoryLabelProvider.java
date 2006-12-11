@@ -40,7 +40,6 @@ import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNode.ENodeType;
-import org.talend.repository.model.RepositoryNode.EProperties;
 
 /**
  * Label provider for the repository view. <code>DEBUG</code> boolean field specify if details (such as objects ids)
@@ -111,8 +110,8 @@ public class RepositoryLabelProvider extends LabelProvider implements IColorProv
                 DocumentationItem item = (DocumentationItem) node.getObject().getProperty().getItem();
                 return ImageProvider.getImage(item.getExtension());
             }
-            IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
-            ERepositoryStatus repositoryStatus = factory.getStatus(node.getObject());
+            // IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+            // ERepositoryStatus repositoryStatus = factory.getStatus(node.getObject());
 
             return ImageProvider.getImage(node.getObject().getType());
             // return BusinessImageProvider.getImage(node.getObject().getType(), repositoryStatus);
@@ -127,7 +126,7 @@ public class RepositoryLabelProvider extends LabelProvider implements IColorProv
         RepositoryNode node = (RepositoryNode) element;
         switch (node.getType()) {
         case STABLE_SYSTEM_FOLDER:
-            if (((ERepositoryObjectType) node.getProperties(EProperties.LABEL)) == ERepositoryObjectType.SNIPPETS) {
+            if (node.getLabel().equals(ERepositoryObjectType.SNIPPETS.toString())) {
                 return INACTIVE_REPOSITORY_ENTRY;
             }
         case SYSTEM_FOLDER:
@@ -141,7 +140,7 @@ public class RepositoryLabelProvider extends LabelProvider implements IColorProv
         RepositoryNode node = (RepositoryNode) element;
         switch (node.getType()) {
         case STABLE_SYSTEM_FOLDER:
-            if (((ERepositoryObjectType) node.getProperties(EProperties.LABEL)) == ERepositoryObjectType.SNIPPETS) {
+            if (node.getLabel().equals(ERepositoryObjectType.SNIPPETS.toString())) {
                 return JFaceResources.getFontRegistry().defaultFont();
             }
         case SYSTEM_FOLDER:

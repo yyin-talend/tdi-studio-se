@@ -99,11 +99,6 @@ public class CreateFolderAction extends AContextualAction {
             case STABLE_SYSTEM_FOLDER:
                 canWork = false;
                 break;
-            case SYSTEM_FOLDER:
-                if (contentType == ERepositoryObjectType.ROUTINES) {
-                    canWork = false;
-                }
-                break;
             default:
                 // Nothing to do
             }

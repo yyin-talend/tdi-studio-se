@@ -21,9 +21,10 @@
 // ============================================================================
 package org.talend.designer.codegen.temp;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.core.runtime.Status;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
@@ -49,8 +50,8 @@ public final class CodeGeneratorRoutine {
     }
 
     // PTODO MHE
-    public static String getRoutineName() {
-        String routineName = "";
+    public static List<String> getRoutineName() {
+        List<String> toReturn = new ArrayList<String>();
 
         RepositoryContext repositoryContext = (RepositoryContext) CorePlugin.getContext().getProperty(
                 Context.REPOSITORY_CONTEXT_KEY);
@@ -61,14 +62,12 @@ public final class CodeGeneratorRoutine {
         try {
             List<IRepositoryObject> routines = repositoryFactory.getAll(ERepositoryObjectType.ROUTINES);
             for (IRepositoryObject routine : routines) {
-                routineName = project.getTechnicalLabel() + "__" + routine.getLabel();
+                toReturn.add(project.getTechnicalLabel() + "__" + routine.getLabel());
             }
         } catch (PersistenceException e) {
-            Status status = new Status(Status.ERROR, CodeGeneratorActivator.PLUGIN_ID, Status.WARNING, e.getMessage(),
-                    e);
-            CodeGeneratorActivator.getDefault().getLog().log(status);
-            routineName = "1";
+            ExceptionHandler.process(e);
+            return toReturn;
         }
-        return routineName;
+        return toReturn;
     }
 }

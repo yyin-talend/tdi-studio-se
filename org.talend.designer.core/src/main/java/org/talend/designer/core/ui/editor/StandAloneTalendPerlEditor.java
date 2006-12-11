@@ -40,10 +40,27 @@ import org.talend.repository.model.IRepositoryService;
 import org.talend.repository.ui.views.IRepositoryView;
 
 /**
- * Stand alone Perl editor <br/>
+ * Stand alone Perl editor.<br/>
  * 
  */
 public class StandAloneTalendPerlEditor extends PerlEditor {
+
+    /**
+     * DOC smallet Comment method "getRepositoryFactory".
+     */
+    private IProxyRepositoryFactory getRepositoryFactory() {
+        return DesignerPlugin.getDefault().getRepositoryService().getProxyRepositoryFactory();
+    }
+
+    @Override
+    public boolean isSaveAsAllowed() {
+        return getRepositoryFactory().getStatus(item).isEditable();
+    }
+
+    @Override
+    public boolean isEditable() {
+        return getRepositoryFactory().getStatus(item).isEditable();
+    }
 
     public void doSetInput(IEditorInput input) throws CoreException {
         super.doSetInput(input);

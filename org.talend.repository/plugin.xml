@@ -114,6 +114,16 @@
             id="org.talend.repository.Action1"
             level="45"
             name="Commit"/>
+      <Action
+            class="org.talend.repository.ui.actions.routines.EditRoutineAction"
+            id="org.talend.repositorys.actions.editroutine"
+            level="10"
+            name="Edit routine"/>
+      <Action
+            class="org.talend.repository.ui.actions.routines.CreateRoutineAction"
+            id="org.talend.repositorys.actions.createroutine"
+            level="10"
+            name="Create routine"/>
    </extension>
    <extension
          point="org.eclipse.ui.views.properties.tabbed.propertyContributor">

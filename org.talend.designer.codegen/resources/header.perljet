@@ -91,7 +91,10 @@ if (defined $opt{context}) {
     require $opt{context};
 }
 
-use <%=CodeGeneratorRoutine.getRoutineName() %>;
+<%for (String routine : CodeGeneratorRoutine.getRoutineName()) {%>
+use <%=routine%>;
+<%}%>
+
 
 <% // Constants for RUN IF OK links %>
 use constant true   => 1;

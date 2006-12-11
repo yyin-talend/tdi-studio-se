@@ -21,7 +21,6 @@
 // ============================================================================
 package org.talend.repository.ui.login;
 
-import org.apache.log4j.Logger;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -38,11 +37,10 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 import org.talend.commons.exception.BusinessException;
+import org.talend.commons.exception.MessageBoxExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.swt.dialogs.ErrorDialogWidthDetailArea;
 import org.talend.core.CorePlugin;
-import org.talend.core.context.Context;
-import org.talend.core.context.RepositoryContext;
 import org.talend.core.model.general.Project;
 import org.talend.core.prefs.PreferenceManipulator;
 import org.talend.repository.RepositoryPlugin;
@@ -63,8 +61,6 @@ import org.talend.repository.ui.wizards.register.RegisterWizard;
  * 
  */
 public class LoginDialog extends TitleAreaDialog {
-
-    private static Logger log = Logger.getLogger(LoginDialog.class);
 
     /** The login composite. */
     private LoginComposite loginComposite;
@@ -167,9 +163,6 @@ public class LoginDialog extends TitleAreaDialog {
 
         Project project = loginComposite.getProject();
 
-        Context ctx = CorePlugin.getContext();
-        RepositoryContext repositoryContext = (RepositoryContext) ctx.getProperty(Context.REPOSITORY_CONTEXT_KEY);
-
         if (project == LoginComposite.NEW_PROJECT) {
             // Create a new project
             NewProjectWizard newPrjWiz = new NewProjectWizard();
@@ -213,11 +206,13 @@ public class LoginDialog extends TitleAreaDialog {
             }
             prefManipulator.addUser(loginComposite.getUser().getLogin());
 
-            repositoryContext.setProject(project);
+            try {
+                ProxyRepositoryFactory.getInstance().logOnProject(project);
+            } catch (PersistenceException e) {
+                MessageBoxExceptionHandler.process(e);
+            }
 
             super.okPressed();
-
-            log.info(repositoryContext.getUser() + " logged on " + repositoryContext.getProject());
         }
     }
 

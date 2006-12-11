@@ -19,25 +19,19 @@
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 // ============================================================================
-package org.talend.designer.core.ui.action;
+package org.talend.repository.ui.actions.routines;
 
-import org.eclipse.core.resources.IFile;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.ui.PartInitException;
 import org.talend.commons.exception.MessageBoxExceptionHandler;
 import org.talend.commons.exception.SystemException;
-import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.properties.RoutineItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.ui.images.EImage;
 import org.talend.core.ui.images.ImageProvider;
-import org.talend.designer.codegen.ICodeGeneratorService;
-import org.talend.designer.core.DesignerPlugin;
-import org.talend.repository.editor.RepositoryEditorInput;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNode.ENodeType;
-import org.talend.repository.ui.actions.AContextualAction;
 
 /**
  * Action that will edit routines.
@@ -45,13 +39,13 @@ import org.talend.repository.ui.actions.AContextualAction;
  * $Id$
  * 
  */
-public class EditRoutinesAction extends AContextualAction {
+public class EditRoutineAction extends AbstractRoutineAction {
 
-    public EditRoutinesAction() {
+    public EditRoutineAction() {
         super();
 
-        setText("Edit routines");
-        setToolTipText("Edit routines");
+        setText("Edit routine");
+        setToolTipText("Edit routine");
         setImageDescriptor(ImageProvider.getImageDesc(EImage.ROUTINE_ICON));
     }
 
@@ -81,11 +75,7 @@ public class EditRoutinesAction extends AContextualAction {
         RoutineItem routineItem = (RoutineItem) node.getObject().getProperty().getItem();
 
         try {
-            ICodeGeneratorService service = DesignerPlugin.getDefault().getCodeGeneratorService();
-            IFile file = service.createRoutineSynchronizer().syncRoutine(routineItem);
-            RepositoryEditorInput input = new RepositoryEditorInput(file, routineItem);
-
-            getActivePage().openEditor(input, "org.talend.designer.core.ui.editor.StandAloneTalendPerlEditor");
+            openRoutineEditor(routineItem);
         } catch (PartInitException e) {
             MessageBoxExceptionHandler.process(e);
         } catch (SystemException e) {

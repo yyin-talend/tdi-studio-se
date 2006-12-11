@@ -36,7 +36,7 @@ public class RepositoryNodeUtilities {
     public static IPath getPath(RepositoryNode node) {
         if (node instanceof BinRepositoryNode) {
             // FIXME SML
-            return new Path("Bin");
+            return new Path("bin");
         }
         if (node.getType() == ENodeType.STABLE_SYSTEM_FOLDER || node.getType() == ENodeType.SYSTEM_FOLDER) {
             return new Path("");

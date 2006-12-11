@@ -43,11 +43,11 @@ import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.Folder;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.ui.images.EImage;
-import org.talend.core.ui.images.ImageProvider;
 import org.talend.repository.model.BinRepositoryNode;
 import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
+import org.talend.repository.model.RepositoryConstants;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.StableRepositoryNode;
 import org.talend.repository.model.RepositoryNode.ENodeType;
@@ -106,8 +106,6 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
         try {
             // 0. Recycle bin
             RepositoryNode recBinNode = new BinRepositoryNode(root);
-//            recBinNode.setProperties(EProperties.LABEL, ERepositoryObjectType.RECYCLE_BIN);
-//            recBinNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.RECYCLE_BIN);
             nodes.add(recBinNode);
 
             // 1. Business process
@@ -125,7 +123,7 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
             nodes.add(processNode);
 
             convert(factory.getProcess(), processNode, ERepositoryObjectType.PROCESS, recBinNode);
-//            convert(factory.getProcess2(), processNode, ERepositoryObjectType.PROCESS, recBinNode);
+            // convert(factory.getProcess2(), processNode, ERepositoryObjectType.PROCESS, recBinNode);
 
             // 3. Routines
             RepositoryNode codeNode = new StableRepositoryNode(root, "Code", EImage.ROUTINE_ICON, 2);
@@ -194,13 +192,12 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
 
             // PTODO cantoine : uncomment the following lines to activate FilXml wizard in repository
             // 5.5. Metadata file xml
-             RepositoryNode metadataFileXmlNode = new RepositoryNode(null, root, ENodeType.SYSTEM_FOLDER);
-             metadataFileXmlNode.setProperties(EProperties.LABEL, ERepositoryObjectType.METADATA_FILE_XML);
-             metadataFileXmlNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.METADATA_FILE_XML);
-             metadataNode.getChildren().add(metadataFileXmlNode);
-            
-             convert(factory.getMetadataFileXml(), metadataFileXmlNode, ERepositoryObjectType.METADATA_FILE_XML,
-             recBinNode);
+            RepositoryNode metadataFileXmlNode = new RepositoryNode(null, root, ENodeType.SYSTEM_FOLDER);
+            metadataFileXmlNode.setProperties(EProperties.LABEL, ERepositoryObjectType.METADATA_FILE_XML);
+            metadataFileXmlNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.METADATA_FILE_XML);
+            metadataNode.getChildren().add(metadataFileXmlNode);
+
+            convert(factory.getMetadataFileXml(), metadataFileXmlNode, ERepositoryObjectType.METADATA_FILE_XML, recBinNode);
 
             // 5.6. Metadata file ldif
             RepositoryNode metadataFileLdifNode = new RepositoryNode(null, root, ENodeType.SYSTEM_FOLDER);
@@ -230,7 +227,13 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
         for (Object obj : fromModel.getSubContainer()) {
             Container container = (Container) obj;
             Folder oFolder = new Folder((Property) container.getProperty(), type);
-            RepositoryNode folder = new RepositoryNode(oFolder, parent, ENodeType.SIMPLE_FOLDER);
+
+            RepositoryNode folder;
+            if (container.getLabel().equals(RepositoryConstants.SYSTEM_DIRECTORY)) {
+                folder = new StableRepositoryNode(parent, container.getLabel(), EImage.ROUTINE_ICON, 0);
+            } else {
+                folder = new RepositoryNode(oFolder, parent, ENodeType.SIMPLE_FOLDER);
+            }
             folder.setProperties(EProperties.LABEL, container.getLabel());
             folder.setProperties(EProperties.CONTENT_TYPE, type); // ERepositoryObjectType.FOLDER);
             parent.getChildren().add(folder);

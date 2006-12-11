@@ -526,6 +526,17 @@ public class ProxyRepositoryFactory implements IProxyRepositoryFactory {
         this.repositoryFactoryFromProvider.initialize();
     }
 
+    /**
+     * @param project
+     * @throws PersistenceException
+     * @see org.talend.repository.model.IRepositoryFactory#logOnProject(org.talend.core.model.general.Project)
+     */
+    public void logOnProject(Project project) throws PersistenceException {
+        getRepositoryContext().setProject(project);
+        this.repositoryFactoryFromProvider.logOnProject(project);
+        log.info(getRepositoryContext().getUser() + " logged on " + getRepositoryContext().getProject());
+    }
+
     /*
      * (non-Javadoc)
      * 

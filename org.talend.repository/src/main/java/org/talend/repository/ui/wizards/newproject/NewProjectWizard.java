@@ -23,6 +23,7 @@ package org.talend.repository.ui.wizards.newproject;
 
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.wizard.Wizard;
+import org.talend.commons.exception.MessageBoxExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
@@ -86,6 +87,7 @@ public class NewProjectWizard extends Wizard {
         } catch (PersistenceException e) {
             MessageDialog.openError(getShell(), Messages.getString("NewProjectWizard.failureTitle"), Messages
                     .getString("NewProjectWizard.failureText")); //$NON-NLS-1$ //$NON-NLS-2$
+            MessageBoxExceptionHandler.process(e);
             return false;
         }
     }

@@ -55,6 +55,8 @@ public interface IRepositoryFactory {
 
     public void initialize();
 
+    public void logOnProject(Project project) throws PersistenceException;
+
     public String getNextId();
 
     public Project createProject(String label, String description, ECodeLanguage language, User author)

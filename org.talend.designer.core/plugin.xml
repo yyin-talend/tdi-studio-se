@@ -187,11 +187,6 @@
             id="org.talend.designer.core.actions.createprocess"
             level="10"
             name="Create process"/>
-      <Action
-            class="org.talend.designer.core.ui.action.EditRoutinesAction"
-            id="org.talend.designer.core.actions.editroutines"
-            level="10"
-            name="Edit routines"/>
    </extension>
    <extension
          point="org.eclipse.ui.contexts">

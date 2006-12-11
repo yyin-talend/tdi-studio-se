@@ -33,6 +33,8 @@ import org.talend.core.context.RepositoryContext;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.Property;
+import org.talend.core.ui.images.EImage;
+import org.talend.core.ui.images.ImageProvider;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
@@ -69,8 +71,8 @@ public class NewProcessWizard extends Wizard {
         this.path = path;
 
         this.property = PropertiesFactory.eINSTANCE.createProperty();
-        this.property.setAuthor(((RepositoryContext) CorePlugin.getContext()
-                .getProperty(Context.REPOSITORY_CONTEXT_KEY)).getUser());
+        this.property.setAuthor(((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY))
+                .getUser());
         this.property.setVersion(VersionUtils.DEFAULT_VERSION);
         this.property.setStatusCode("");
 
@@ -78,7 +80,7 @@ public class NewProcessWizard extends Wizard {
 
         processItem.setProperty(property);
 
-        // setDefaultPageImageDescriptor(ImageProvider.getImageDesc(EImage.PROCESS_WIZ));
+        setDefaultPageImageDescriptor(ImageProvider.getImageDesc(EImage.PROCESS_WIZ));
     }
 
     /**
@@ -96,7 +98,8 @@ public class NewProcessWizard extends Wizard {
      */
     @Override
     public boolean performFinish() {
-        IProxyRepositoryFactory repositoryFactory = DesignerPlugin.getDefault().getProxyRepositoryFactory();
+        IProxyRepositoryFactory repositoryFactory = DesignerPlugin.getDefault().getRepositoryService()
+                .getProxyRepositoryFactory();
         try {
             property.setId(repositoryFactory.getNextId());
 
