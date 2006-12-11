@@ -64,7 +64,8 @@ import org.talend.core.model.metadata.builder.connection.MetadataSchema;
 import org.talend.core.model.metadata.builder.connection.SchemaTarget;
 import org.talend.core.model.metadata.builder.connection.XmlXPathLoopDescriptor;
 import org.talend.core.model.properties.ConnectionItem;
-import org.talend.core.model.targetschema.editor.XmlExtractorSchemaModel;
+import org.talend.core.model.targetschema.editor.XmlExtractorFieldModel;
+import org.talend.core.model.targetschema.editor.XmlExtractorLoopModel;
 import org.talend.core.utils.XmlArray;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.preview.ProcessDescription;
@@ -88,7 +89,7 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
 
     private ATreeNode treeNode;
 
-    private XmlExtractorSchemaModel fieldsModel;
+    private XmlExtractorFieldModel fieldsModel;
 
     private ExtractionLoopWithXPathEditorView loopTableEditorView;
 
@@ -116,7 +117,7 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
 
     private TreePopulator treePopulator;
 
-    private XmlExtractorSchemaModel loopModel;
+    private XmlExtractorLoopModel loopModel;
 
     /**
      * Constructor to use by RCP Wizard.
@@ -222,7 +223,7 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
 
         CommandStackForComposite commandStack = new CommandStackForComposite(group);
         
-        loopModel = new XmlExtractorSchemaModel("Xpath loop expression");
+        loopModel = new XmlExtractorLoopModel("Xpath loop expression");
 
         loopTableEditorView = new ExtractionLoopWithXPathEditorView(loopModel, group);
         loopTableEditorView.getExtendedTableViewer().setCommandStack(commandStack);
@@ -231,7 +232,7 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
         loopTableEditorView.getMainComposite().setLayoutData(data2);
 
 //        Messages.getString("FileStep3.metadataDescription")
-        fieldsModel = new XmlExtractorSchemaModel("Fields to extract");
+        fieldsModel = new XmlExtractorFieldModel("Fields to extract");
         fieldsTableEditorView = new ExtractionFieldsWithXPathEditorView(fieldsModel, group);
         fieldsTableEditorView.getExtendedTableViewer().setCommandStack(commandStack);
         fieldsTableEditorView.getMainComposite().setLayoutData(new GridData(GridData.FILL_BOTH));

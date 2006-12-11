@@ -42,7 +42,7 @@ import org.talend.commons.utils.data.bean.IBeanPropertyAccessors;
 import org.talend.commons.utils.data.list.ListenableListEvent;
 import org.talend.commons.utils.data.list.ListenableListEvent.TYPE;
 import org.talend.core.model.metadata.builder.connection.SchemaTarget;
-import org.talend.core.model.targetschema.editor.XmlExtractorSchemaModel;
+import org.talend.core.model.targetschema.editor.XmlExtractorFieldModel;
 import org.talend.core.ui.extended.ExtendedToolbarView;
 import org.talend.core.ui.extended.button.AddPushButtonForExtendedTable;
 
@@ -63,11 +63,11 @@ public class ExtractionFieldsWithXPathEditorView extends AbstractDataTableEditor
 
     private XmlToXPathLinker linker;
 
-    public ExtractionFieldsWithXPathEditorView(XmlExtractorSchemaModel model, Composite parent, int styleChild) {
+    public ExtractionFieldsWithXPathEditorView(XmlExtractorFieldModel model, Composite parent, int styleChild) {
         this(model, parent, styleChild, false);
     }
 
-    public ExtractionFieldsWithXPathEditorView(XmlExtractorSchemaModel model, Composite parent) {
+    public ExtractionFieldsWithXPathEditorView(XmlExtractorFieldModel model, Composite parent) {
         this(model, parent, SWT.NONE, false);
     }
 
@@ -78,7 +78,7 @@ public class ExtractionFieldsWithXPathEditorView extends AbstractDataTableEditor
      * @param styleChild
      * @param showDbTypeColumn
      */
-    public ExtractionFieldsWithXPathEditorView(XmlExtractorSchemaModel model, Composite parent, int styleChild, boolean showDbTypeColumn) {
+    public ExtractionFieldsWithXPathEditorView(XmlExtractorFieldModel model, Composite parent, int styleChild, boolean showDbTypeColumn) {
         super(parent, styleChild, model);
     }
 
@@ -231,8 +231,8 @@ public class ExtractionFieldsWithXPathEditorView extends AbstractDataTableEditor
 
     }
 
-    public XmlExtractorSchemaModel getXpathNodeSchemaModel() {
-        return (XmlExtractorSchemaModel) getExtendedTableModel();
+    public XmlExtractorFieldModel getModel() {
+        return (XmlExtractorFieldModel) getExtendedTableModel();
     }
 
     /**
@@ -268,7 +268,7 @@ public class ExtractionFieldsWithXPathEditorView extends AbstractDataTableEditor
 
                     @Override
                     protected Object getObjectToAdd() {
-                        return getXpathNodeSchemaModel().createNewSchemaTarget();
+                        return getModel().createNewSchemaTarget();
                     }
 
                 };

@@ -247,7 +247,7 @@ public class XmlToSchemaDragAndDropHandler {
             List<SchemaTarget> list = new ArrayList<SchemaTarget>(transferableEntryList.size());
             for (TransferableXPathEntry entry : transferableEntryList) {
 
-                SchemaTarget newTargetEntry = linker.getNewTargetEntry(entry.getAbsoluteXPath());
+                SchemaTarget newTargetEntry = linker.getNewSchemaTargetEntry(entry.getAbsoluteXPath());
                 list.add(newTargetEntry);
             }
             ExtractionFieldsWithXPathEditorView tableEditorView = linker.getFieldsTableEditorView();
@@ -257,7 +257,7 @@ public class XmlToSchemaDragAndDropHandler {
             
             linker.getTree().deselectAll();
             linker.updateLinksStyleAndControlsSelection((Table)event.widget);
-            tableEditorView.getXpathNodeSchemaModel().addAll(startInsertAtThisIndex, list);
+            tableEditorView.getModel().addAll(startInsertAtThisIndex, list);
         }
 
     }

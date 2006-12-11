@@ -38,9 +38,10 @@ import org.talend.commons.ui.swt.tableviewer.behavior.CellEditorValueAdapter;
 import org.talend.commons.ui.swt.tableviewer.celleditor.DialogErrorForCellEditorListener;
 import org.talend.commons.utils.data.bean.IBeanPropertyAccessors;
 import org.talend.commons.utils.data.list.ListenableListEvent;
-import org.talend.core.model.metadata.builder.connection.SchemaTarget;
 import org.talend.core.model.metadata.builder.connection.XmlXPathLoopDescriptor;
-import org.talend.core.model.targetschema.editor.XmlExtractorSchemaModel;
+import org.talend.core.model.metadata.builder.connection.XmlXPathLoopDescriptor;
+import org.talend.core.model.targetschema.editor.XmlExtractorLoopModel;
+import org.talend.core.model.targetschema.editor.XmlExtractorLoopModel;
 
 /**
  * DOC amaumont class global comment. Detailled comment <br/> TGU same purpose as TargetSchemaTableEditorView but uses
@@ -49,7 +50,7 @@ import org.talend.core.model.targetschema.editor.XmlExtractorSchemaModel;
  * $Id: XPathNodeSchemaEditorView.java 904 2006-12-07 17:24:05Z amaumont $
  * 
  */
-public class ExtractionLoopWithXPathEditorView extends AbstractDataTableEditorView<SchemaTarget> {
+public class ExtractionLoopWithXPathEditorView extends AbstractDataTableEditorView<XmlXPathLoopDescriptor> {
 
     public static final String ID_COLUMN_NAME = "ID_COLUMN_NAME";
 
@@ -59,11 +60,11 @@ public class ExtractionLoopWithXPathEditorView extends AbstractDataTableEditorVi
 
     private XmlToXPathLinker linker;
 
-    public ExtractionLoopWithXPathEditorView(XmlExtractorSchemaModel model, Composite parent, int styleChild) {
+    public ExtractionLoopWithXPathEditorView(XmlExtractorLoopModel model, Composite parent, int styleChild) {
         this(model, parent, styleChild, false);
     }
 
-    public ExtractionLoopWithXPathEditorView(XmlExtractorSchemaModel model, Composite parent) {
+    public ExtractionLoopWithXPathEditorView(XmlExtractorLoopModel model, Composite parent) {
         this(model, parent, SWT.NONE, false);
     }
 
@@ -74,7 +75,7 @@ public class ExtractionLoopWithXPathEditorView extends AbstractDataTableEditorVi
      * @param styleChild
      * @param showDbTypeColumn
      */
-    public ExtractionLoopWithXPathEditorView(XmlExtractorSchemaModel model, Composite parent, int styleChild, boolean showDbTypeColumn) {
+    public ExtractionLoopWithXPathEditorView(XmlExtractorLoopModel model, Composite parent, int styleChild, boolean showDbTypeColumn) {
         super(parent, styleChild, model);
     }
 
@@ -93,7 +94,7 @@ public class ExtractionLoopWithXPathEditorView extends AbstractDataTableEditorVi
      * @see org.talend.commons.ui.swt.advanced.dataeditor.AbstractDataTableEditorView#handleBeforeListenableListOperationEvent(org.talend.commons.utils.data.list.ListenableListEvent)
      */
     @Override
-    protected void handleBeforeListenableListOperationEvent(ListenableListEvent<SchemaTarget> event) {
+    protected void handleBeforeListenableListOperationEvent(ListenableListEvent<XmlXPathLoopDescriptor> event) {
         super.handleBeforeListenableListOperationEvent(event);
     }
 
@@ -103,7 +104,7 @@ public class ExtractionLoopWithXPathEditorView extends AbstractDataTableEditorVi
      * @see org.talend.commons.ui.swt.extended.macrotable.AbstractExtendedTableViewer#handleListenableListEvent(org.talend.commons.utils.data.list.ListenableListEvent)
      */
     @Override
-    protected void handleAfterListenableListOperationEvent(ListenableListEvent<SchemaTarget> event) {
+    protected void handleAfterListenableListOperationEvent(ListenableListEvent<XmlXPathLoopDescriptor> event) {
         super.handleAfterListenableListOperationEvent(event);
     }
 
@@ -113,7 +114,7 @@ public class ExtractionLoopWithXPathEditorView extends AbstractDataTableEditorVi
      * @see org.talend.commons.ui.swt.extended.macrotable.AbstractExtendedTableViewer#setTableViewerCreatorOptions(org.talend.commons.ui.swt.tableviewer.TableViewerCreator)
      */
     @Override
-    protected void setTableViewerCreatorOptions(TableViewerCreator<SchemaTarget> newTableViewerCreator) {
+    protected void setTableViewerCreatorOptions(TableViewerCreator<XmlXPathLoopDescriptor> newTableViewerCreator) {
         super.setTableViewerCreatorOptions(newTableViewerCreator);
         newTableViewerCreator.setFirstVisibleColumnIsSelection(true);
     }
@@ -125,7 +126,7 @@ public class ExtractionLoopWithXPathEditorView extends AbstractDataTableEditorVi
      * org.eclipse.swt.widgets.Table)
      */
     @Override
-    protected void createColumns(TableViewerCreator<SchemaTarget> tableViewerCreator, final Table table) {
+    protected void createColumns(TableViewerCreator<XmlXPathLoopDescriptor> tableViewerCreator, final Table table) {
         CellEditorValueAdapter intValueAdapter = new CellEditorValueAdapter() {
 
             public Object getOriginalTypedValue(final CellEditor cellEditor, Object value) {
@@ -220,8 +221,8 @@ public class ExtractionLoopWithXPathEditorView extends AbstractDataTableEditorVi
 
     }
 
-    public XmlExtractorSchemaModel getXpathNodeSchemaModel() {
-        return (XmlExtractorSchemaModel) getExtendedTableModel();
+    public XmlExtractorLoopModel getModel() {
+        return (XmlExtractorLoopModel) getExtendedTableModel();
     }
 
     /**

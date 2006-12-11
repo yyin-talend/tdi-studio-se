@@ -23,7 +23,6 @@ package org.talend.repository.ui.wizards.metadata.connection.files.xml;
 
 import org.eclipse.swt.widgets.Table;
 import org.talend.commons.ui.swt.drawing.link.IExtremityLink;
-import org.talend.core.model.metadata.builder.connection.SchemaTarget;
 
 /**
  * DOC amaumont class global comment. Detailled comment <br/>
@@ -31,9 +30,9 @@ import org.talend.core.model.metadata.builder.connection.SchemaTarget;
  * $Id$
  * 
  */
-public class SchemaTargetExtremityDescriptor implements IExtremityLink<Table, SchemaTarget> {
+public class SchemaTargetExtremityDescriptor implements IExtremityLink<Table, Object> {
 
-    private SchemaTarget schemaTarget;
+    private Object schemaTarget;
     private Table table;
 
     
@@ -43,7 +42,7 @@ public class SchemaTargetExtremityDescriptor implements IExtremityLink<Table, Sc
      * 
      * @param tableItem
      */
-    public SchemaTargetExtremityDescriptor(Table graphicalObject, SchemaTarget schemaTarget) {
+    public SchemaTargetExtremityDescriptor(Table graphicalObject, Object schemaTarget) {
         super();
         this.schemaTarget = schemaTarget;
         this.table = graphicalObject;
@@ -54,7 +53,7 @@ public class SchemaTargetExtremityDescriptor implements IExtremityLink<Table, Sc
      * 
      * @see org.talend.commons.ui.swt.drawing.link.IExtremityLink#getDataItem()
      */
-    public SchemaTarget getDataItem() {
+    public Object getDataItem() {
         return this.schemaTarget;
     }
 
@@ -63,7 +62,7 @@ public class SchemaTargetExtremityDescriptor implements IExtremityLink<Table, Sc
      * 
      * @see org.talend.commons.ui.swt.drawing.link.IExtremityLink#setDataItem(java.lang.Object)
      */
-    public void setDataItem(SchemaTarget dataItem) {
+    public void setDataItem(Object dataItem) {
         this.schemaTarget = dataItem;
     }
 
