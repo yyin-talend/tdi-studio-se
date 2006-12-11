@@ -57,7 +57,6 @@ public class RunProcessPlugin extends AbstractUIPlugin {
     public void start(BundleContext context) throws Exception {
         super.start(context);
         runProcessContextManager = new RunProcessContextManager();
-        GlobalServiceRegister.getDefault().registerService(IRunProcessService.class, new RunProcessService());
     }
 
     /*

@@ -24,4 +24,10 @@
          point="org.talend.core.global_actions">
       <GlobalAction class="org.talend.designer.codegen.RefreshTemplatesAction"/>
    </extension>
+   
+   <extension
+         point="org.talend.core.service">
+      <Service class="org.talend.designer.codegen.CodeGeneratorService"/>
+   </extension>
+   
 </plugin>

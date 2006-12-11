@@ -56,7 +56,6 @@ public class RepositoryPlugin extends AbstractUIPlugin {
      */
     public void start(BundleContext context) throws Exception {
         super.start(context);
-        GlobalServiceRegister.getDefault().registerService(IRepositoryService.class,new RepositoryService());
     }
 
     /*

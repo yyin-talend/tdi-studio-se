@@ -72,4 +72,9 @@
       <GlobalAction class="org.talend.designer.runprocess.ui.actions.ShowRunProcessViewAction"/>
    </extension>
 
+	<extension
+         point="org.talend.core.service">
+      <Service class="org.talend.designer.runprocess.RunProcessService"/>
+   </extension>
+
 </plugin>

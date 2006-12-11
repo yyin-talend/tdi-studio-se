@@ -56,7 +56,6 @@ public class CodeGeneratorActivator extends AbstractUIPlugin {
     @Override
     public void start(BundleContext context) throws Exception {
         super.start(context);
-        GlobalServiceRegister.getDefault().registerService(ICodeGeneratorService.class, new CodeGeneratorService());
     }
 
     /**

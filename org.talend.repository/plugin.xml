@@ -241,5 +241,9 @@
             name="Repository view"
             parentId="org.eclipse.ui.contexts.window"/>
    </extension>
+   <extension
+         point="org.talend.core.service">
+      <Service class="org.talend.repository.RepositoryService"/>
+   </extension>
 
 </plugin>
