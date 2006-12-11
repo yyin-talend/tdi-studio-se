@@ -37,7 +37,7 @@ public class FileInputXmlNode extends FileInputNode {
     // Be careful super("tFileInputXml");
     public FileInputXmlNode(String filename, String rowSep, String regex, int limitRows, int headerRows,
             int footerRows, boolean removeEmptyRow) {
-        super("tFileInputXml");
+        super("tFileInputXML");
 
         String[] paramNames = new String[] { "FILENAME", "ROWSEPARATOR", "REGEX", "LIMIT", "HEADER", "FOOTER",
                 "REMOVE_EMPTY_ROW" };
