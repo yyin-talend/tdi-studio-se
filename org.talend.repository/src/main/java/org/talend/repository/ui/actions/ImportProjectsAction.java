@@ -26,8 +26,8 @@ import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.wizards.datatransfer.ExternalProjectImportWizard;
-import org.talend.core.ui.images.EImage;
 import org.talend.core.ui.images.ImageProvider;
+import org.talend.repository.ui.ERepositoryImages;
 
 /**
  * Action used to refresh a repository view.<br/>
@@ -52,7 +52,7 @@ public final class ImportProjectsAction extends Action {
         super();
         this.setText(IMPORT_PROJECTS);
         this.setToolTipText(IMPORT_PROJECTS);
-        this.setImageDescriptor(ImageProvider.getImageDesc(EImage.IMPORT_ICON));
+        this.setImageDescriptor(ImageProvider.getImageDesc(ERepositoryImages.IMPORT_PROJECTS_ACTION));
     }
 
     public void run() {
