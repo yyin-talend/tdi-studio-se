@@ -166,7 +166,7 @@ public class ExtractionFieldsWithXPathEditorView extends AbstractDataTableEditor
 
         column = new TableViewerCreatorColumn(tableViewerCreator);
         xPathColumn = column;
-        column.setTitle("XPath expression");
+        column.setTitle("Relative XPath expression from loop");
         column.setBeanPropertyAccessors(new IBeanPropertyAccessors<SchemaTarget, String>() {
 
             public String get(SchemaTarget bean) {
@@ -228,25 +228,6 @@ public class ExtractionFieldsWithXPathEditorView extends AbstractDataTableEditor
         column.setMinimumWidth(50);
         column.setCellEditor(new TextCellEditor(table));
         column.setDefaultInternalValue("");
-
-        // //////////////////////////////////////////////////////////////////////////////////////
-        // Loop limit
-        column = new TableViewerCreatorColumn(tableViewerCreator);
-        column.setTitle("Loop limit");
-        column.setBeanPropertyAccessors(new IBeanPropertyAccessors<SchemaTarget, Integer>() {
-
-            public Integer get(SchemaTarget bean) {
-                return bean.getLimitBoucle();
-            }
-
-            public void set(SchemaTarget bean, Integer value) {
-                bean.setLimitBoucle(value.intValue());
-            }
-
-        });
-        column.setModifiable(true);
-        column.setWidth(59);
-        column.setCellEditor(new TextCellEditor(table), intValueAdapter);
 
     }
 

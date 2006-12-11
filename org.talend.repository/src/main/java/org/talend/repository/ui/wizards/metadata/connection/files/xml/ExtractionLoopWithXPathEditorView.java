@@ -161,7 +161,7 @@ public class ExtractionLoopWithXPathEditorView extends AbstractDataTableEditorVi
 
         column = new TableViewerCreatorColumn(tableViewerCreator);
         xPathColumn = column;
-        column.setTitle("XPath expression");
+        column.setTitle("Absolute XPath expression");
         column.setBeanPropertyAccessors(new IBeanPropertyAccessors<SchemaTarget, String>() {
 
             public String get(SchemaTarget bean) {
