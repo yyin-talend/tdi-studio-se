@@ -170,11 +170,11 @@ public class ExtractionFieldsWithXPathEditorView extends AbstractDataTableEditor
         column.setBeanPropertyAccessors(new IBeanPropertyAccessors<SchemaTarget, String>() {
 
             public String get(SchemaTarget bean) {
-                return bean.getXPathQuery();
+                return bean.getRelativeXPathQuery();
             }
 
             public void set(SchemaTarget bean, String value) {
-                bean.setXPathQuery(value);
+                bean.setRelativeXPathQuery(value);
             }
         });
         xPathCellEditor = new TextCellEditorWithProposal(tableViewerCreator.getTable(), SWT.NONE, column);

@@ -62,6 +62,7 @@ import org.talend.commons.utils.encoding.CharsetToolkit;
 import org.talend.core.model.metadata.builder.connection.ConnectionFactory;
 import org.talend.core.model.metadata.builder.connection.MetadataSchema;
 import org.talend.core.model.metadata.builder.connection.SchemaTarget;
+import org.talend.core.model.metadata.builder.connection.XmlXPathLoopDescriptor;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.targetschema.editor.XmlExtractorSchemaModel;
 import org.talend.core.utils.XmlArray;
@@ -107,7 +108,7 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
 
     private boolean readOnly;
 
-    private MetadataSchema metadataSchema;
+    private XmlXPathLoopDescriptor xmlXPathLoopDescriptor;
 
     private SashForm xmlToSchemaSash;
 
@@ -140,18 +141,18 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
 
         checkFieldsValue();
 
-        loopModel.setMetadataSchema(null);
+        loopModel.setXmlXPathLoopDescriptor(null);
         
-        if (metadataSchema == null) {
+        if (xmlXPathLoopDescriptor == null) {
             if (getConnection().getSchema() != null && !getConnection().getSchema().isEmpty()) {
-                metadataSchema = (MetadataSchema) getConnection().getSchema().get(0);
+                xmlXPathLoopDescriptor = (XmlXPathLoopDescriptor) getConnection().getSchema().get(0);
             } else {
-                metadataSchema = ConnectionFactory.eINSTANCE.createMetadataSchema();
+                xmlXPathLoopDescriptor = ConnectionFactory.eINSTANCE.createXmlXPathLoopDescriptor();
             }
         }
 
-        getConnection().getSchema().add(metadataSchema);
-        fieldsModel.setMetadataSchema(metadataSchema);
+        getConnection().getSchema().add(xmlXPathLoopDescriptor);
+        fieldsModel.setXmlXPathLoopDescriptor(xmlXPathLoopDescriptor);
         fieldsTableEditorView.getTableViewerCreator().layout();
 
     }

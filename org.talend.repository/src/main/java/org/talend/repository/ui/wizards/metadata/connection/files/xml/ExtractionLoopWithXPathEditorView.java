@@ -30,21 +30,17 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
 import org.talend.commons.ui.swt.advanced.dataeditor.AbstractDataTableEditorView;
-import org.talend.commons.ui.swt.advanced.dataeditor.AbstractExtendedToolbar;
 import org.talend.commons.ui.swt.proposal.TextCellEditorWithProposal;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumn;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator.CELL_EDITOR_STATE;
 import org.talend.commons.ui.swt.tableviewer.behavior.CellEditorValueAdapter;
 import org.talend.commons.ui.swt.tableviewer.celleditor.DialogErrorForCellEditorListener;
-import org.talend.commons.ui.swt.tableviewer.tableeditor.CheckboxTableEditorContent;
 import org.talend.commons.utils.data.bean.IBeanPropertyAccessors;
 import org.talend.commons.utils.data.list.ListenableListEvent;
-import org.talend.commons.utils.data.list.ListenableListEvent.TYPE;
 import org.talend.core.model.metadata.builder.connection.SchemaTarget;
+import org.talend.core.model.metadata.builder.connection.XmlXPathLoopDescriptor;
 import org.talend.core.model.targetschema.editor.XmlExtractorSchemaModel;
-import org.talend.core.ui.extended.ExtendedToolbarView;
-import org.talend.core.ui.extended.button.AddPushButtonForExtendedTable;
 
 /**
  * DOC amaumont class global comment. Detailled comment <br/> TGU same purpose as TargetSchemaTableEditorView but uses
@@ -162,14 +158,14 @@ public class ExtractionLoopWithXPathEditorView extends AbstractDataTableEditorVi
         column = new TableViewerCreatorColumn(tableViewerCreator);
         xPathColumn = column;
         column.setTitle("Absolute XPath expression");
-        column.setBeanPropertyAccessors(new IBeanPropertyAccessors<SchemaTarget, String>() {
+        column.setBeanPropertyAccessors(new IBeanPropertyAccessors<XmlXPathLoopDescriptor, String>() {
 
-            public String get(SchemaTarget bean) {
-                return bean.getXPathQuery();
+            public String get(XmlXPathLoopDescriptor bean) {
+                return bean.getAbsoluteXPathQuery();
             }
 
-            public void set(SchemaTarget bean, String value) {
-                bean.setXPathQuery(value);
+            public void set(XmlXPathLoopDescriptor bean, String value) {
+                bean.setAbsoluteXPathQuery(value);
             }
         });
         xPathCellEditor = new TextCellEditorWithProposal(tableViewerCreator.getTable(), SWT.NONE, column);
@@ -207,13 +203,13 @@ public class ExtractionLoopWithXPathEditorView extends AbstractDataTableEditorVi
         // Loop limit
         column = new TableViewerCreatorColumn(tableViewerCreator);
         column.setTitle("Loop limit");
-        column.setBeanPropertyAccessors(new IBeanPropertyAccessors<SchemaTarget, Integer>() {
+        column.setBeanPropertyAccessors(new IBeanPropertyAccessors<XmlXPathLoopDescriptor, Integer>() {
 
-            public Integer get(SchemaTarget bean) {
+            public Integer get(XmlXPathLoopDescriptor bean) {
                 return bean.getLimitBoucle();
             }
 
-            public void set(SchemaTarget bean, Integer value) {
+            public void set(XmlXPathLoopDescriptor bean, Integer value) {
                 bean.setLimitBoucle(value.intValue());
             }
 
