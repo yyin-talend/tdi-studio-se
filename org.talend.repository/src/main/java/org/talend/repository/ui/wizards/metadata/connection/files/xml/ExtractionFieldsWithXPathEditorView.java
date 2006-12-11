@@ -45,6 +45,7 @@ import org.talend.core.model.metadata.builder.connection.SchemaTarget;
 import org.talend.core.model.targetschema.editor.XmlExtractorFieldModel;
 import org.talend.core.ui.extended.ExtendedToolbarView;
 import org.talend.core.ui.extended.button.AddPushButtonForExtendedTable;
+import org.talend.core.ui.extended.button.CopyPushButton;
 
 /**
  * DOC amaumont class global comment. Detailled comment <br/> TGU same purpose as TargetSchemaTableEditorView but uses
@@ -274,6 +275,17 @@ public class ExtractionFieldsWithXPathEditorView extends AbstractDataTableEditor
                 };
             }
 
+            /* (non-Javadoc)
+             * @see org.talend.core.ui.extended.ExtendedToolbarView#createCopyPushButton()
+             */
+            @Override
+            protected CopyPushButton createCopyPushButton() {
+                return null;
+            }
+
+            
+            
+            
         };
 
     }

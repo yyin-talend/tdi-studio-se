@@ -165,7 +165,7 @@ public class XmlToXPathLinker extends TreeToTablesLinker<Object, Object> {
             TableItem tableItem = tableItems[i];
             XmlXPathLoopDescriptor xpathLoopDescriptor = xpathLoopDescriptorList.get(i);
             String xPathQuery = xpathLoopDescriptor.getAbsoluteXPathQuery();
-            createFieldLinks(xPathQuery, tableItem);
+            createLoopLinks(xPathQuery, tableItem);
         }
 
         tableItems = fieldsTableEditorView.getTableViewerCreator().getTable().getItems();
@@ -303,9 +303,9 @@ public class XmlToXPathLinker extends TreeToTablesLinker<Object, Object> {
                 linksManager.removeLinksFromDataItem2(target);
             }
         }
-        
+
     }
-    
+
     public void handleListenableListAfterTableViewerRefreshedEvent(ListenableListEvent<SchemaTarget> event) {
         if (event.type == ListenableListEvent.TYPE.ADDED) {
             // event.indicesTarget;
@@ -323,24 +323,47 @@ public class XmlToXPathLinker extends TreeToTablesLinker<Object, Object> {
         } else if (event.type == TYPE.REMOVED) {
             getBackgroundRefresher().refreshBackground();
         }
-        
+
     }
-    
+
     /**
      * DOC amaumont Comment method "addLink".
      * 
+     * @param treeItem
+     * @param dataItem1
      * @param table
-     * @param object
+     * @param dataItem2
+     */
+    public void addLoopLink(TreeItem treeItem, Object dataItem1, Table table, XmlXPathLoopDescriptor dataItem2) {
+        addLink(treeItem, dataItem1, table, dataItem2);
+    }
+
+    /**
+     * DOC amaumont Comment method "addLink".
      * 
      * @param treeItem
-     * @param tableItem
+     * @param dataItem1
+     * @param table
+     * @param dataItem2
      */
-    public void addFieldLink(TreeItem treeItem, Object dataItem1, Table table, SchemaTarget dataItem2) {
+    private void addLink(TreeItem treeItem, Object dataItem1, Table table, Object dataItem2) {
         LinkDescriptor<TreeItem, Object, Table, Object> link = new LinkDescriptor<TreeItem, Object, Table, Object>(
-                new TreeExtremityDescriptor(treeItem, dataItem1), new SchemaTargetExtremityDescriptor(table, dataItem2));
+                new TreeExtremityDescriptor(treeItem, dataItem1), new ExtremityLink<Table, Object>(table, dataItem2));
 
         link.setStyleLink(getUnselectedStyleLink());
         getLinksManager().addLink(link);
+    }
+
+    /**
+     * DOC amaumont Comment method "addLink".
+     * 
+     * @param treeItem
+     * @param dataItem1
+     * @param table
+     * @param dataItem2
+     */
+    public void addFieldLink(TreeItem treeItem, Object dataItem1, Table table, SchemaTarget dataItem2) {
+        addLink(treeItem, dataItem1, table, dataItem2);
     }
 
     /**
@@ -365,10 +388,52 @@ public class XmlToXPathLinker extends TreeToTablesLinker<Object, Object> {
      */
     public void onXPathValueChanged(Table table, String previousValue, String newValue, int itemIndex) {
         TableItem tableItem = table.getItem(itemIndex);
-        linksManager.removeLinksFromDataItem2((SchemaTarget) tableItem.getData());
-        createFieldLinks(newValue, tableItem);
+        linksManager.removeLinksFromDataItem2(tableItem.getData());
+        if (isLoopTable(table)) {
+            createLoopLinks(newValue, tableItem);
+        } else {
+            createFieldLinks(newValue, tableItem);
+        }
         getBackgroundRefresher().refreshBackground();
 
+    }
+
+    /**
+     * DOC amaumont Comment method "isLoopTable".
+     * 
+     * @param table
+     * @return
+     */
+    private boolean isLoopTable(Table table) {
+        return loopTableEditorView.getTableViewerCreator().getTable() == table;
+    }
+
+    /**
+     * DOC amaumont Comment method "createLoopLinks".
+     * 
+     * @param pathQuery
+     * @param tableItem
+     */
+    private void createLoopLinks(String xPathExpression, TableItem tableItemTarget) {
+        Set<String> alreadyProcessedXPath = new HashSet<String>();
+        // TimeMeasure.start(xPathExpression);
+        List<Node> nodeList = this.nodeRetriever.retrieveListOfNodes(xPathExpression);
+        // TimeMeasure.end(xPathExpression);
+        // System.out.println("nodeList.size()="+nodeList.size());
+
+        if (nodeList != null) {
+            for (Node node : nodeList) {
+                String absoluteXPathFromNode = NodeRetriever.getAbsoluteXPathFromNode(node);
+                if (!alreadyProcessedXPath.contains(absoluteXPathFromNode)) {
+                    TreeItem treeItemFromAbsoluteXPath = treePopulator.getTreeItem(absoluteXPathFromNode);
+                    if (treeItemFromAbsoluteXPath != null) {
+                        addLoopLink(treeItemFromAbsoluteXPath, (Object) treeItemFromAbsoluteXPath.getData(), tableItemTarget.getParent(),
+                                (XmlXPathLoopDescriptor) tableItemTarget.getData());
+                        alreadyProcessedXPath.add(absoluteXPathFromNode);
+                    }
+                }
+            }
+        }
     }
 
     /**
@@ -445,7 +510,7 @@ public class XmlToXPathLinker extends TreeToTablesLinker<Object, Object> {
             for (Table table : getTables()) {
                 if (table != currentControl) {
                     table.deselectAll();
-                    if (fieldsTableEditorView.getTableViewerCreator().getTable() == table) {
+                    if (isFieldsTable(table)) {
                         fieldsTableEditorView.getExtendedToolbar().updateEnabledStateOfButtons();
                     }
                 }
@@ -480,22 +545,30 @@ public class XmlToXPathLinker extends TreeToTablesLinker<Object, Object> {
                 otherExtremity = link.getExtremity2();
             }
             boolean currentItemIsSelected = selectedItems.contains(extremity.getDataItem());
-            if (currentItemIsSelected) {
-                if (isTable && currentControl == loopTableEditorView.getTableViewerCreator().getTable()) {
-                    styleLink = getSelectedLoopStyleLink();
-                } else if (!isTable && otherExtremity.getGraphicalObject() == loopTableEditorView.getTableViewerCreator().getTable()) {
-                    styleLink = getSelectedLoopStyleLink();
-                } else {
-                    styleLink = getSelectedStyleLink();
-                }
 
-                if (isTable) {
-                    itemsToSelect.add(TableUtils.getTableItem((Table) currentControl, otherExtremity.getDataItem()));
-                } else {
-                    // itemsToSelect.add(otherExtremity.getGraphicalObject());
-                }
+            if (extremity.getGraphicalObject() == loopTableEditorView.getTableViewerCreator().getTable()
+                    || otherExtremity.getGraphicalObject() == loopTableEditorView.getTableViewerCreator().getTable()) {
+                styleLink = getSelectedLoopStyleLink();
             } else {
-                styleLink = getUnselectedStyleLink();
+
+                if (currentItemIsSelected) {
+                    // if (isTable && currentControl == loopTableEditorView.getTableViewerCreator().getTable()) {
+                    // styleLink = getSelectedLoopStyleLink();
+                    // } else
+                    if (!isTable && otherExtremity.getGraphicalObject() == loopTableEditorView.getTableViewerCreator().getTable()) {
+                        styleLink = getSelectedLoopStyleLink();
+                    } else {
+                        styleLink = getSelectedStyleLink();
+                    }
+
+                    if (isTable) {
+                        itemsToSelect.add(TableUtils.getTableItem((Table) currentControl, otherExtremity.getDataItem()));
+                    } else {
+                        // itemsToSelect.add(otherExtremity.getGraphicalObject());
+                    }
+                } else {
+                    styleLink = getUnselectedStyleLink();
+                }
             }
             if (styleLink == null) {
                 styleLink = getDefaultStyleLink();
@@ -510,6 +583,16 @@ public class XmlToXPathLinker extends TreeToTablesLinker<Object, Object> {
         }
         getLinksManager().sortLinks(getSelectedLinksComparator());
         getBackgroundRefresher().refreshBackground();
+    }
+
+    /**
+     * DOC amaumont Comment method "isFieldsTable".
+     * 
+     * @param table
+     * @return
+     */
+    private boolean isFieldsTable(Table table) {
+        return fieldsTableEditorView.getTableViewerCreator().getTable() == table;
     }
 
     public StyleLink getSelectedLoopStyleLink() {

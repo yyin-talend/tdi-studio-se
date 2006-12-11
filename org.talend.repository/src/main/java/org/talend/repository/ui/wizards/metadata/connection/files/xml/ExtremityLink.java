@@ -21,7 +21,6 @@
 // ============================================================================
 package org.talend.repository.ui.wizards.metadata.connection.files.xml;
 
-import org.eclipse.swt.widgets.Table;
 import org.talend.commons.ui.swt.drawing.link.IExtremityLink;
 
 /**
@@ -29,11 +28,14 @@ import org.talend.commons.ui.swt.drawing.link.IExtremityLink;
  * 
  * $Id$
  * 
+ * @param <G>
+ * @param <D>
+ * 
  */
-public class SchemaTargetExtremityDescriptor implements IExtremityLink<Table, Object> {
+public class ExtremityLink<G, D> implements IExtremityLink<G, D> {
 
-    private Object schemaTarget;
-    private Table table;
+    private D dataItem;
+    private G graphicalObject;
 
     
     
@@ -42,10 +44,10 @@ public class SchemaTargetExtremityDescriptor implements IExtremityLink<Table, Ob
      * 
      * @param tableItem
      */
-    public SchemaTargetExtremityDescriptor(Table graphicalObject, Object schemaTarget) {
+    public ExtremityLink(G graphicalObject, D dataItem) {
         super();
-        this.schemaTarget = schemaTarget;
-        this.table = graphicalObject;
+        this.dataItem = dataItem;
+        this.graphicalObject = graphicalObject;
     }
 
     /*
@@ -53,8 +55,8 @@ public class SchemaTargetExtremityDescriptor implements IExtremityLink<Table, Ob
      * 
      * @see org.talend.commons.ui.swt.drawing.link.IExtremityLink#getDataItem()
      */
-    public Object getDataItem() {
-        return this.schemaTarget;
+    public D getDataItem() {
+        return this.dataItem;
     }
 
     /*
@@ -62,22 +64,22 @@ public class SchemaTargetExtremityDescriptor implements IExtremityLink<Table, Ob
      * 
      * @see org.talend.commons.ui.swt.drawing.link.IExtremityLink#setDataItem(java.lang.Object)
      */
-    public void setDataItem(Object dataItem) {
-        this.schemaTarget = dataItem;
+    public void setDataItem(D dataItem) {
+        this.dataItem = dataItem;
     }
 
     /* (non-Javadoc)
      * @see org.talend.commons.ui.swt.drawing.link.IExtremityLink#getGraphicalItem()
      */
-    public Table getGraphicalObject() {
-        return table;
+    public G getGraphicalObject() {
+        return graphicalObject;
     }
 
     /* (non-Javadoc)
      * @see org.talend.commons.ui.swt.drawing.link.IExtremityLink#setGraphicalItem(java.lang.Object)
      */
-    public void setGraphicalObject(Table graphicalObject) {
-        this.table = graphicalObject;
+    public void setGraphicalObject(G graphicalObject) {
+        this.graphicalObject = graphicalObject;
     }
 
     

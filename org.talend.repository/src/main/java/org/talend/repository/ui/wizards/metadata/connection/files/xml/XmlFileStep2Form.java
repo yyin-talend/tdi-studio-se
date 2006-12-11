@@ -60,8 +60,6 @@ import org.talend.commons.utils.data.list.IListenableListListener;
 import org.talend.commons.utils.data.list.ListenableListEvent;
 import org.talend.commons.utils.encoding.CharsetToolkit;
 import org.talend.core.model.metadata.builder.connection.ConnectionFactory;
-import org.talend.core.model.metadata.builder.connection.MetadataSchema;
-import org.talend.core.model.metadata.builder.connection.SchemaTarget;
 import org.talend.core.model.metadata.builder.connection.XmlXPathLoopDescriptor;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.targetschema.editor.XmlExtractorFieldModel;
@@ -109,8 +107,6 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
 
     private boolean readOnly;
 
-    private XmlXPathLoopDescriptor xmlXPathLoopDescriptor;
-
     private SashForm xmlToSchemaSash;
 
     private XmlToXPathLinker linker;
@@ -118,6 +114,8 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
     private TreePopulator treePopulator;
 
     private XmlExtractorLoopModel loopModel;
+
+    private XmlXPathLoopDescriptor xmlXPathLoopDescriptor;
 
     /**
      * Constructor to use by RCP Wizard.
@@ -142,18 +140,17 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
 
         checkFieldsValue();
 
-        loopModel.setXmlXPathLoopDescriptor(null);
-        
         if (xmlXPathLoopDescriptor == null) {
             if (getConnection().getSchema() != null && !getConnection().getSchema().isEmpty()) {
                 xmlXPathLoopDescriptor = (XmlXPathLoopDescriptor) getConnection().getSchema().get(0);
             } else {
                 xmlXPathLoopDescriptor = ConnectionFactory.eINSTANCE.createXmlXPathLoopDescriptor();
+                getConnection().getSchema().add(xmlXPathLoopDescriptor);
             }
         }
+        loopModel.setXmlXPathLoopDescriptor(xmlXPathLoopDescriptor);
 
-        getConnection().getSchema().add(xmlXPathLoopDescriptor);
-        fieldsModel.setXmlXPathLoopDescriptor(xmlXPathLoopDescriptor);
+        fieldsModel.setXmlXPathLoopDescriptor(xmlXPathLoopDescriptor.getSchemaTargets());
         fieldsTableEditorView.getTableViewerCreator().layout();
 
     }
@@ -222,7 +219,7 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
         final Group group = Form.createGroup(mainComposite, 1, Messages.getString("XmlFileStep1.groupSchemaTarget"), height);
 
         CommandStackForComposite commandStack = new CommandStackForComposite(group);
-        
+
         loopModel = new XmlExtractorLoopModel("Xpath loop expression");
 
         loopTableEditorView = new ExtractionLoopWithXPathEditorView(loopModel, group);
@@ -231,7 +228,7 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
         data2.minimumHeight = 70;
         loopTableEditorView.getMainComposite().setLayoutData(data2);
 
-//        Messages.getString("FileStep3.metadataDescription")
+        // Messages.getString("FileStep3.metadataDescription")
         fieldsModel = new XmlExtractorFieldModel("Fields to extract");
         fieldsTableEditorView = new ExtractionFieldsWithXPathEditorView(fieldsModel, group);
         fieldsTableEditorView.getExtendedTableViewer().setCommandStack(commandStack);
