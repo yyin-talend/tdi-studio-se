@@ -33,6 +33,8 @@ import org.talend.core.IService;
 import org.talend.designer.codegen.ICodeGeneratorService;
 import org.talend.designer.core.ui.ActiveProcessTracker;
 import org.talend.designer.runprocess.IRunProcessService;
+import org.talend.repository.model.IProxyRepositoryFactory;
+import org.talend.repository.model.IRepositoryService;
 
 /**
  * The designer plugin class to be used in the desktop. <br/>
@@ -41,11 +43,10 @@ import org.talend.designer.runprocess.IRunProcessService;
  * 
  */
 /**
- * DOC dev  class global comment. Detailled comment
- * <br/>
- *
+ * DOC dev class global comment. Detailled comment <br/>
+ * 
  * $Id$
- *
+ * 
  */
 public class DesignerPlugin extends AbstractUIPlugin {
 
@@ -90,8 +91,9 @@ public class DesignerPlugin extends AbstractUIPlugin {
     }
 
     /**
-     * DOC get a implement of  RunProcessService.
-     * @return a implement of  RunProcessService
+     * DOC get a implement of RunProcessService.
+     * 
+     * @return a implement of RunProcessService
      */
     public IRunProcessService getRunProcessService() {
         IService service = GlobalServiceRegister.getDefault().getService(IRunProcessService.class);
@@ -99,14 +101,30 @@ public class DesignerPlugin extends AbstractUIPlugin {
     }
 
     /**
-     * DOC get a implement of  CodeGeneratorService.
-     * @return a implement of  CodeGeneratorService
+     * DOC get a implement of CodeGeneratorService.
+     * 
+     * @return a implement of CodeGeneratorService
      */
     public ICodeGeneratorService getCodeGeneratorService() {
         IService service = GlobalServiceRegister.getDefault().getService(ICodeGeneratorService.class);
         return (ICodeGeneratorService) service;
     }
-    
+
+    /**
+     * DOC get a implement of IRepositoryService.
+     * 
+     * @return a implement of IRepositoryService
+     */
+    public IRepositoryService getRepositoryService() {
+        IService service = GlobalServiceRegister.getDefault().getService(IRepositoryService.class);
+        return (IRepositoryService) service;
+    }
+
+    public IProxyRepositoryFactory getProxyRepositoryFactory() {
+        IRepositoryService service = getRepositoryService();
+        return service.getProxyRepositoryFactory();
+    }
+
     /**
      * Returns an image descriptor for the image file at the given plug-in relative path.
      * 

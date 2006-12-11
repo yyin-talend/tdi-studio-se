@@ -33,11 +33,11 @@ import org.talend.commons.exception.PersistenceException;
 import org.talend.core.model.properties.ByteArray;
 import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.RoutineItem;
+import org.talend.designer.core.DesignerPlugin;
 import org.talend.repository.editor.RepositoryEditorInput;
 import org.talend.repository.model.IProxyRepositoryFactory;
-import org.talend.repository.model.ProxyRepositoryFactory;
+import org.talend.repository.model.IRepositoryService;
 import org.talend.repository.ui.views.IRepositoryView;
-import org.talend.repository.ui.views.RepositoryView;
 
 /**
  * Stand alone Perl editor <br/>
@@ -48,7 +48,8 @@ public class StandAloneTalendPerlEditor extends PerlEditor {
     public void doSetInput(IEditorInput input) throws CoreException {
         super.doSetInput(input);
         // Lock the process :
-        IProxyRepositoryFactory repFactory = ProxyRepositoryFactory.getInstance();
+        IRepositoryService service = DesignerPlugin.getDefault().getRepositoryService();
+        IProxyRepositoryFactory repFactory = service.getProxyRepositoryFactory();
         try {
             RepositoryEditorInput rEditorInput = (RepositoryEditorInput) input;
             item = (RoutineItem) rEditorInput.getItem();
@@ -63,7 +64,8 @@ public class StandAloneTalendPerlEditor extends PerlEditor {
     public void dispose() {
         super.dispose();
         // Unlock the process :
-        IProxyRepositoryFactory repFactory = ProxyRepositoryFactory.getInstance();
+        IRepositoryService service = DesignerPlugin.getDefault().getRepositoryService();
+        IProxyRepositoryFactory repFactory = service.getProxyRepositoryFactory();
         try {
             item.getProperty().eAdapters().remove(dirtyListener);
             repFactory.unlock(item);
@@ -72,7 +74,7 @@ public class StandAloneTalendPerlEditor extends PerlEditor {
         } catch (PersistenceException e) {
             e.printStackTrace();
         }
-        IRepositoryView viewPart = (IRepositoryView) getSite().getPage().findView(RepositoryView.VIEW_ID);
+        IRepositoryView viewPart = (IRepositoryView) getSite().getPage().findView(IRepositoryView.VIEW_ID);
         viewPart.refresh();
         // viewPart1.refresh();
     }
@@ -95,14 +97,16 @@ public class StandAloneTalendPerlEditor extends PerlEditor {
             ByteArray byteArray = PropertiesFactory.eINSTANCE.createByteArray();
             byteArray.setInnerContentFromFile(((RepositoryEditorInput) getEditorInput()).getFile());
             item.setContent(byteArray);
-            ProxyRepositoryFactory.getInstance().save(item);
+            IRepositoryService service = DesignerPlugin.getDefault().getRepositoryService();
+            IProxyRepositoryFactory repFactory = service.getProxyRepositoryFactory();
+            repFactory.save(item);
         } catch (Exception e) {
             e.printStackTrace();
         }
         propertyIsDirty = false;
         adapters.add(dirtyListener);
         firePropertyChange(IEditorPart.PROP_DIRTY);
-        IRepositoryView viewPart = (IRepositoryView) getSite().getPage().findView(RepositoryView.VIEW_ID);
+        IRepositoryView viewPart = (IRepositoryView) getSite().getPage().findView(IRepositoryView.VIEW_ID);
         viewPart.refresh();
     }
 

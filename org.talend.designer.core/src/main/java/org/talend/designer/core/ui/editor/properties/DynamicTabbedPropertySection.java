@@ -166,9 +166,8 @@ import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.runprocess.IRunProcessService;
 import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
-import org.talend.repository.model.ProxyRepositoryFactory;
+import org.talend.repository.model.IRepositoryService;
 import org.talend.repository.model.RepositoryConstants;
-import org.talend.repository.utils.RepositoryPathProvider;
 import org.talend.sqlbuilder.ui.SQLBuilderDialog;
 import org.talend.sqlbuilder.util.ConnectionParameters;
 
@@ -884,7 +883,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
         List<String> processNameList = new ArrayList<String>();
         List<String> processValueList = new ArrayList<String>();
         processMap = new HashMap<String, IRepositoryObject>();
-        IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+        IProxyRepositoryFactory factory = DesignerPlugin.getDefault().getProxyRepositoryFactory();
         try {
             RootContainer<String, IRepositoryObject> processContainer = factory.getProcess();
             ContentList<String, IRepositoryObject> processAbsoluteMembers = processContainer.getAbsoluteMembers();
@@ -931,7 +930,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
     private void updateContextList() {
         List<String> contextNameList = new ArrayList<String>();
         List<String> contextValueList = new ArrayList<String>();
-        IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+        IProxyRepositoryFactory factory = DesignerPlugin.getDefault().getProxyRepositoryFactory();
 
         String selectedProcess = null;
 
@@ -981,7 +980,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
     }
 
     private void updateRepositoryList() {
-        IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+        IProxyRepositoryFactory factory = DesignerPlugin.getDefault().getProxyRepositoryFactory();
         List<ConnectionItem> metadataConnectionsItem = null;
         String[] repositoryTableNameList = new String[] {};
         String[] repositoryTableValueList = new String[] {};
@@ -1597,7 +1596,9 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
             final int nbInRow, final int top, final Control lastControl) {
 
         String fileName = (String) param.getValue();
-        String filePath = RepositoryPathProvider.getPathFileName(RepositoryConstants.IMG_DIRECTORY, fileName)
+        
+        IRepositoryService service= DesignerPlugin.getDefault().getRepositoryService();
+        String filePath = service.getPathFileName(RepositoryConstants.IMG_DIRECTORY, fileName)
                 .toPortableString();
 
         if (filePath != null) {

@@ -53,7 +53,6 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PlatformUI;
 import org.talend.commons.exception.PersistenceException;
-import org.talend.commons.utils.time.TimeMeasure;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.metadata.EMetadataType;
@@ -79,6 +78,7 @@ import org.talend.core.model.properties.User;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.model.temp.ECodeLanguage;
+import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.ElementParameter;
@@ -111,7 +111,6 @@ import org.talend.designer.core.ui.editor.nodes.Node.Data;
 import org.talend.designer.core.ui.views.problems.Problems;
 import org.talend.repository.model.ComponentsFactoryProvider;
 import org.talend.repository.model.IProxyRepositoryFactory;
-import org.talend.repository.model.ProxyRepositoryFactory;
 
 /**
  * The diagram will contain all elements (nodes, connections) The xml that describes the diagram will be saved from the
@@ -461,7 +460,7 @@ public class Process extends Element implements IProcess {
     }
 
     public static IMetadataTable getMetadataFromRepository(String metaRepositoryName) {
-        IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+        IProxyRepositoryFactory factory = DesignerPlugin.getDefault().getProxyRepositoryFactory();
         List<ConnectionItem> metadataConnectionsItem = null;
         List<String> repositoryList = new ArrayList<String>();
         IMetadataTable metaToReturn = null;
@@ -935,7 +934,7 @@ public class Process extends Element implements IProcess {
         String propertyType = (String) node.getPropertyValue(EParameterName.PROPERTY_TYPE.getName());
         if (propertyType != null) {
             if (propertyType.equals(EmfComponent.REPOSITORY)) {
-                IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+                IProxyRepositoryFactory factory = DesignerPlugin.getDefault().getProxyRepositoryFactory();
                 List<ConnectionItem> metadataConnectionsItem = null;
                 try {
                     metadataConnectionsItem = factory.getMetadataConnectionsItem();
@@ -1131,7 +1130,7 @@ public class Process extends Element implements IProcess {
     }
 
     public void checkReadOnly() {
-        IProxyRepositoryFactory repFactory = ProxyRepositoryFactory.getInstance();
+        IProxyRepositoryFactory repFactory = DesignerPlugin.getDefault().getProxyRepositoryFactory();
         boolean readOnlyLocal = !repFactory.isEditableAndLockIfPossible(property.getItem());
         this.setReadOnly(readOnlyLocal);
     }

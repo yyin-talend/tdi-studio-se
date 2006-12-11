@@ -41,11 +41,12 @@ import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.model.general.Project;
 import org.talend.core.model.properties.ProcessItem;
+import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.repository.editor.RepositoryEditorInput;
 import org.talend.repository.model.IProxyRepositoryFactory;
-import org.talend.repository.model.ProxyRepositoryFactory;
+import org.talend.repository.model.IRepositoryService;
 import org.talend.repository.model.RepositoryConstants;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.ResourceModelUtils;
@@ -155,7 +156,8 @@ public class ProcessEditorInput extends RepositoryEditorInput {
 
             loadedProcess.setXmlStream(getFile().getContents());
 
-            IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+            IRepositoryService service=DesignerPlugin.getDefault().getRepositoryService();
+            IProxyRepositoryFactory factory = service.getProxyRepositoryFactory();
 
             if (path != null) {
                 // factory.createProcess(project, loadedProcess, path);

@@ -106,8 +106,6 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
 
     private Listener dragDetectListener;
 
-    public static final String VIEW_ID = "org.talend.repository.views.repository";
-
     public RepositoryView() {
         this((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY));
     }

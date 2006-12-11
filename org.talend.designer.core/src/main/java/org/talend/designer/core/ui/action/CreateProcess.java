@@ -33,15 +33,14 @@ import org.eclipse.ui.PartInitException;
 import org.talend.commons.exception.MessageBoxExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.model.repository.Folder;
-import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.ui.images.EImage;
 import org.talend.core.ui.images.ImageProvider;
+import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.ui.MultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.ProcessEditorInput;
 import org.talend.designer.core.ui.wizards.NewProcessWizard;
+import org.talend.repository.model.IRepositoryService;
 import org.talend.repository.model.RepositoryNode;
-import org.talend.repository.model.RepositoryNodeUtilities;
 import org.talend.repository.model.RepositoryNode.EProperties;
 import org.talend.repository.ui.actions.AContextualAction;
 
@@ -72,7 +71,8 @@ public class CreateProcess extends AContextualAction {
         Object obj = ((IStructuredSelection) selection).getFirstElement();
         RepositoryNode node = (RepositoryNode) obj;
 
-        IPath path = RepositoryNodeUtilities.getPath(node);
+        IRepositoryService service=DesignerPlugin.getDefault().getRepositoryService();
+        IPath path = service.getRepositoryPath(node);
 
         NewProcessWizard processWizard = new NewProcessWizard(path);
         WizardDialog dlg = new WizardDialog(Display.getCurrent().getActiveShell(), processWizard);

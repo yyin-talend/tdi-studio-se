@@ -54,7 +54,6 @@ import org.eclipse.ui.part.MultiPageEditorPart;
 import org.epic.perleditor.PerlEditorPlugin;
 import org.talend.commons.exception.MessageBoxExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
-import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.ui.images.EImage;
 import org.talend.core.ui.images.ImageProvider;
@@ -73,9 +72,8 @@ import org.talend.designer.runprocess.IPerlProcessor;
 import org.talend.designer.runprocess.IRunProcessService;
 import org.talend.designer.runprocess.ProcessorException;
 import org.talend.repository.model.IProxyRepositoryFactory;
-import org.talend.repository.model.ProxyRepositoryFactory;
+import org.talend.repository.model.IRepositoryService;
 import org.talend.repository.ui.views.IRepositoryView;
-import org.talend.repository.ui.views.RepositoryView;
 
 /**
  * This class is the main editor, the differents pages in it are: <br/><b>1)</b> {@link TalendEditor} <br/><b>2)</b>
@@ -185,7 +183,8 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
         super.dispose();
 
         // Unlock the process :
-        IProxyRepositoryFactory repFactory = ProxyRepositoryFactory.getInstance();
+        IRepositoryService service=DesignerPlugin.getDefault().getRepositoryService();
+        IProxyRepositoryFactory repFactory = service.getProxyRepositoryFactory();
         try {
             getTalendEditor().getProperty().eAdapters().remove(dirtyListener);
             repFactory.unlock(getTalendEditor().getProcess());
@@ -195,7 +194,7 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
             e.printStackTrace();
         }
 
-        IRepositoryView viewPart = (IRepositoryView) getSite().getPage().findView(RepositoryView.VIEW_ID);
+        IRepositoryView viewPart = (IRepositoryView) getSite().getPage().findView(IRepositoryView.VIEW_ID);
         if (viewPart != null) {
             viewPart.refresh();
         }
@@ -245,7 +244,8 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
         getSite().getWorkbenchWindow().getSelectionService().addSelectionListener(this);
 
         // Lock the process :
-        IProxyRepositoryFactory repFactory = ProxyRepositoryFactory.getInstance();
+        IRepositoryService service=DesignerPlugin.getDefault().getRepositoryService();
+        IProxyRepositoryFactory repFactory = service.getProxyRepositoryFactory();
         ProcessEditorInput processEditorInput = (ProcessEditorInput) editorInput;
         Process process = (processEditorInput).getLoadedProcess();
         if (!process.isReadOnly()) {

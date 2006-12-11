@@ -27,6 +27,8 @@ import org.talend.repository.model.ComponentsFactoryProvider;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.IRepositoryService;
 import org.talend.repository.model.ProxyRepositoryFactory;
+import org.talend.repository.model.RepositoryNode;
+import org.talend.repository.model.RepositoryNodeUtilities;
 import org.talend.repository.utils.RepositoryPathProvider;
 
 /**
@@ -53,6 +55,10 @@ public class RepositoryService implements IRepositoryService {
 
     public IProxyRepositoryFactory getProxyRepositoryFactory() {
         return ProxyRepositoryFactory.getInstance();
+    }
+    
+    public IPath getRepositoryPath(RepositoryNode node){
+        return RepositoryNodeUtilities.getPath(node);
     }
 
 }
