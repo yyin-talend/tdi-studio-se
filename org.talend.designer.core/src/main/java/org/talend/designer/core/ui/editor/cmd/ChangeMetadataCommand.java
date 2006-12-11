@@ -160,20 +160,24 @@ public class ChangeMetadataCommand extends Command {
         if (dataContainer != null && (!dataContainer.getInputs().isEmpty() || !dataContainer.getOuputs().isEmpty())) {
             for (IODataComponent currentIO : dataContainer.getInputs()) {
                 if (currentIO.hasChanged()) {
-                    if (getPropagate()) {
-                        currentIO.getSource().metadataOutputChanged(currentIO, currentIO.getName());
+                    currentIO.getSource().metadataOutputChanged(currentIO, currentIO.getName());
+                    if (isExecute) {
+                        currentIO.setTable(oldInputMetadata);
+                        currentIO.setColumnNameChanged(null);
+                    } else {
+                        currentIO.setTable(newInputMetadata);
+                        currentIO.setColumnNameChanged(null);
                     }
                 }
             }
             for (IODataComponent currentIO : dataContainer.getOuputs()) {
                 if (currentIO.hasChanged()) {
-                    if (getPropagate()) {
-                        INode targetNode = currentIO.getTarget();
-                        targetNode.metadataInputChanged(currentIO, currentIO.getName());
-                        if (isExecute) {
-                            if (targetNode instanceof Node) {
-                                if (!((Node) targetNode).isExternalNode()
-                                        && ((Node) targetNode).getComponent().isSchemaAutoPropagated()) {
+                    INode targetNode = currentIO.getTarget();
+                    targetNode.metadataInputChanged(currentIO, currentIO.getName());
+                    if (isExecute) {
+                        if (targetNode instanceof Node) {
+                            if (!((Node) targetNode).isExternalNode() && getPropagate()) {
+                                if (((Node) targetNode).getComponent().isSchemaAutoPropagated()) {
                                     ChangeMetadataCommand cmd = new ChangeMetadataCommand((Node) targetNode, null,
                                             newOutputMetadata);
                                     if (dataContainer.getOuputs().size() > 0) {
@@ -187,15 +191,32 @@ public class ChangeMetadataCommand extends Command {
                                     propagatedChange.add(cmd);
                                 }
                             }
-                            currentIO.setTable(oldOutputMetadata);
-                            currentIO.setColumnNameChanged(null);
-                        } else {
-                            currentIO.setTable(newOutputMetadata);
-                            currentIO.setColumnNameChanged(null);
                         }
+                        currentIO.setTable(oldOutputMetadata);
+                        currentIO.setColumnNameChanged(null);
+                    } else {
+                        if (targetNode instanceof Node) {
+                            if (!((Node) targetNode).isExternalNode() && getPropagate()) {
+                                if (((Node) targetNode).getComponent().isSchemaAutoPropagated()) {
+                                    if (dataContainer.getOuputs().size() > 0) {
+                                        List<ColumnNameChanged> columnNameChanged = dataContainer.getOuputs().get(0)
+                                                .getColumnNameChanged();
+                                        for (ChangeMetadataCommand cmd : propagatedChange) {
+                                            for (IODataComponent dataComp : cmd.dataContainer.getOuputs()) {
+                                                dataComp.setColumnNameChanged(columnNameChanged);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        currentIO.setTable(newOutputMetadata);
+                        currentIO.setColumnNameChanged(null);
                     }
                 }
             }
+
         } else if (dataComponent != null) {
             for (IConnection outgoingConnection : node.getOutgoingConnections()) {
                 outgoingConnection.getTarget().metadataInputChanged(dataComponent, outgoingConnection.getName());
