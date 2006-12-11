@@ -358,7 +358,7 @@ public abstract class DataMapTableView extends Composite {
             @Override
             protected void setTableViewerCreatorOptions(final TableViewerCreator<IColumnEntry> newTableViewerCreator) {
                 super.setTableViewerCreatorOptions(newTableViewerCreator);
-                newTableViewerCreator.setAllColumnsResizable(true);
+                newTableViewerCreator.setColumnsResizableByDefault(true);
                 newTableViewerCreator.setBorderVisible(false);
                 newTableViewerCreator.setLayoutMode(LAYOUT_MODE.FILL_HORIZONTAL);
                 // tableViewerCreatorForColumns.setUseCustomItemColoring(this.getDataMapTable() instanceof
@@ -901,7 +901,7 @@ public abstract class DataMapTableView extends Composite {
     public void onSelectedEntries(ISelection selection, int[] selectionIndices) {
         if (executeSelectionEvent) {
             UIManager uiManager = mapperManager.getUiManager();
-            uiManager.processSelectedMetadataTableEntries(DataMapTableView.this, uiManager.extractSelectedTableEntries(selection), false);
+            uiManager.processSelectedDataMapEntries(DataMapTableView.this, uiManager.extractSelectedTableEntries(selection), false);
             uiManager.selectLinkedMetadataEditorEntries(this, selectionIndices);
         }
     }

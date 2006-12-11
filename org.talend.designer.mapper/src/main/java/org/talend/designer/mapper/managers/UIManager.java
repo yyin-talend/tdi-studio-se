@@ -296,11 +296,12 @@ public class UIManager {
                     }
 
                 });
-                metadataTableEditorView.getTableViewerCreator().getSelectionHelper().setActiveFireSelectionChanged(false);
+//                metadataTableEditorView.getTableViewerCreator().getSelectionHelper().setActiveFireSelectionChanged(false);
                 metadataTableEditorView.setMetadataTableEditor(metadataTableEditor);
-                metadataTableEditorView.getTableViewerCreator().getSelectionHelper().setActiveFireSelectionChanged(true);
-                metadataTableEditorView.getTableViewerCreator().getTable()
-                        .setSelection(dataMapTableViewer.getTable().getSelectionIndices());
+                dataMapTVCreator.getSelectionHelper().setActiveFireSelectionChanged(false);
+                metadataTableEditorView. getTableViewerCreator().getSelectionHelper().setSelection(dataMapTableViewer.getTable().getSelectionIndices());
+                dataMapTVCreator.getSelectionHelper().setActiveFireSelectionChanged(true);
+//                metadataTableEditorView.getTableViewerCreator().getSelectionHelper().setActiveFireSelectionChanged(true);
 
                 // disable highlight for other DataMapTableView and highlight selected DataMapTableView
                 for (AbstractDataMapTable table : tables) {
@@ -376,7 +377,7 @@ public class UIManager {
         ILineSelectionListener metadataEditorViewerSelectionChangedListener = new ILineSelectionListener() {
 
             public void handle(LineSelectionEvent e) {
-                System.out.println("LineSelectionEvent");
+                // System.out.println("LineSelectionEvent");
                 if (metadataTableEditorViewFinal.getExtendedTableViewer().isExecuteSelectionEvent()) {
                     mapperManager.getUiManager().selectLinkedTableEntries(metadataTableEditor.getMetadataTable(),
                             metadataTVCreator.getTable().getSelectionIndices());
@@ -428,10 +429,16 @@ public class UIManager {
                                 outputsSelectionChangedListener);
                     }
                     if (inputModifiedBeanListener != null) {
-                        getMetadataEditorView(Zone.INPUTS).getMetadataTableEditor().removeModifiedBeanListener(inputModifiedBeanListener);
+                        MetadataTableEditor metadataTableEditor = getMetadataEditorView(Zone.INPUTS).getMetadataTableEditor();
+                        if (metadataTableEditor != null) {
+                            metadataTableEditor.removeModifiedBeanListener(inputModifiedBeanListener);
+                        }
                     }
                     if (outputModifiedBeanListener != null) {
-                        getMetadataEditorView(Zone.OUTPUTS).getMetadataTableEditor().removeModifiedBeanListener(outputModifiedBeanListener);
+                        MetadataTableEditor metadataTableEditor = getMetadataEditorView(Zone.OUTPUTS).getMetadataTableEditor();
+                        if (metadataTableEditor != null) {
+                            metadataTableEditor.removeModifiedBeanListener(outputModifiedBeanListener);
+                        }
                     }
                 }
             };
@@ -591,10 +598,14 @@ public class UIManager {
     public void selectLinkedTableEntries(IMetadataTable metadataTable, int[] selectionIndices) {
         DataMapTableView dataMapTableView = tableManager.getView(metadataTable);
 
+//        view.getTableViewerCreatorForColumns().getSelectionHelper().setActiveFireSelectionChanged(false);
+//        metadataTableEditorView.getExtendedTableViewer().getTableViewerCreator().getSelectionHelper().setSelection(selectionIndices);
+//        view.getTableViewerCreatorForColumns().getSelectionHelper().setActiveFireSelectionChanged(true);
         dataMapTableView.setTableSelection(selectionIndices);
+
         List<ITableEntry> list = extractSelectedTableEntries(dataMapTableView.getTableViewerCreatorForColumns().getTableViewer()
                 .getSelection());
-        processSelectedMetadataTableEntries(dataMapTableView, list, false);
+        processSelectedDataMapEntries(dataMapTableView, list, false);
     }
 
     /**
@@ -612,7 +623,9 @@ public class UIManager {
             metadataTableEditorView = getOutputMetaEditorView();
         }
         if (metadataTableEditorView != null) {
-            metadataTableEditorView.getExtendedTableViewer().setTableSelection(selectionIndices, false);
+            view.getTableViewerCreatorForColumns().getSelectionHelper().setActiveFireSelectionChanged(false);
+            metadataTableEditorView.getExtendedTableViewer().getTableViewerCreator().getSelectionHelper().setSelection(selectionIndices);
+            view.getTableViewerCreatorForColumns().getSelectionHelper().setActiveFireSelectionChanged(true);
         }
     }
 
@@ -624,7 +637,7 @@ public class UIManager {
      * @param isConstraintsTableSelected TODO
      */
     @SuppressWarnings("unchecked")
-    public void processSelectedMetadataTableEntries(DataMapTableView dataMapTableView, List<ITableEntry> selectedMetadataTableEntries,
+    public void processSelectedDataMapEntries(DataMapTableView dataMapTableView, List<ITableEntry> selectedMetadataTableEntries,
             boolean isConstraintsTableSelected) {
 
         UIManager uiManager = mapperManager.getUiManager();

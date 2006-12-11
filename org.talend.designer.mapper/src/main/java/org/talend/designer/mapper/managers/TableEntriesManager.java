@@ -157,7 +157,7 @@ public class TableEntriesManager {
                 dataMapTableEntry.getParent().removeColumnEntry((IColumnEntry) dataMapTableEntry);
             } else if (dataMapTableEntry instanceof FilterTableEntry) {
                 if (dataMapTable instanceof OutputTable) {
-                    ((OutputTable) dataMapTable).removeConstraintEntry((FilterTableEntry) dataMapTableEntry);
+                    ((OutputTable) dataMapTable).removeFilterEntry((FilterTableEntry) dataMapTableEntry);
                 }
             } else {
                 throw new IllegalArgumentException("Type '" + dataMapTableEntry.getClass() + "' is not a valid type");

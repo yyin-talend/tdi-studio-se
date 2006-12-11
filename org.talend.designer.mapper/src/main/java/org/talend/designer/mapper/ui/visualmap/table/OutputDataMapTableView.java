@@ -51,6 +51,7 @@ import org.talend.designer.mapper.managers.UIManager;
 import org.talend.designer.mapper.model.table.AbstractDataMapTable;
 import org.talend.designer.mapper.model.table.OutputTable;
 import org.talend.designer.mapper.model.tableentry.FilterTableEntry;
+import org.talend.designer.mapper.model.tableentry.ITableEntry;
 import org.talend.designer.mapper.model.tableentry.OutputColumnTableEntry;
 import org.talend.designer.mapper.ui.dnd.DragNDrop;
 import org.talend.designer.mapper.ui.proposal.expression.ExpressionProposal;
@@ -162,7 +163,7 @@ public class OutputDataMapTableView extends DataMapTableView {
             @Override
             protected void setTableViewerCreatorOptions(TableViewerCreator<FilterTableEntry> newTableViewerCreator) {
                 super.setTableViewerCreatorOptions(newTableViewerCreator);
-                newTableViewerCreator.setAllColumnsResizable(true);
+                newTableViewerCreator.setColumnsResizableByDefault(false);
                 newTableViewerCreator.setBorderVisible(false);
                 newTableViewerCreator.setLayoutMode(LAYOUT_MODE.FILL_HORIZONTAL);
                 // tableViewerCreatorForColumns.setUseCustomItemColoring(this.getDataMapTable() instanceof
@@ -203,7 +204,7 @@ public class OutputDataMapTableView extends DataMapTableView {
             public void selectionChanged(SelectionChangedEvent event) {
                 selectThisDataMapTableView();
                 UIManager uiManager = mapperManager.getUiManager();
-                uiManager.processSelectedMetadataTableEntries(OutputDataMapTableView.this, uiManager
+                uiManager.processSelectedDataMapEntries(OutputDataMapTableView.this, uiManager
                         .extractSelectedTableEntries(tableViewer.getSelection()), true);
             }
 
@@ -236,7 +237,7 @@ public class OutputDataMapTableView extends DataMapTableView {
 
     public void createFiltersColumns(final TableViewerCreator<FilterTableEntry> tableViewerCreatorForFilters) {
         TableViewerCreatorColumn column = new TableViewerCreatorColumn(tableViewerCreatorForFilters);
-        column.setTitle("Constraint conditions (AND)");
+        column.setTitle("Filters conditions (AND)");
         column.setId(DataMapTableView.ID_EXPRESSION_COLUMN);
         column.setBeanPropertyAccessors(new IBeanPropertyAccessors<FilterTableEntry, String>() {
 
@@ -275,9 +276,9 @@ public class OutputDataMapTableView extends DataMapTableView {
             protected void selectionEvent(TableViewerCreatorColumn column, Object bean) {
                 ExtendedTableRemoveCommand removeCommand = new ExtendedTableRemoveCommand(extendedTableViewerForFilters
                         .getExtendedTableModel(), bean);
+                mapperManager.removeTableEntry((ITableEntry) bean);
                 mapperManager.executeCommand(removeCommand);
-                // mapperManager.removeTableEntry((ITableEntry) bean);
-                // tableViewerCreatorForFilters.getTableViewer().refresh();
+                tableViewerCreatorForFilters.getTableViewer().refresh();
                 List list = tableViewerCreatorForFilters.getInputList();
                 updateGridDataHeightForTableConstraints();
                 if (list != null && list.size() == 0) {

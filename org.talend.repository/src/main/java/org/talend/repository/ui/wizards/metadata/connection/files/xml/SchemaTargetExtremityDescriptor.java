@@ -21,6 +21,7 @@
 // ============================================================================
 package org.talend.repository.ui.wizards.metadata.connection.files.xml;
 
+import org.eclipse.swt.widgets.Table;
 import org.talend.commons.ui.swt.drawing.link.IExtremityLink;
 import org.talend.core.model.metadata.builder.connection.SchemaTarget;
 
@@ -30,18 +31,22 @@ import org.talend.core.model.metadata.builder.connection.SchemaTarget;
  * $Id$
  * 
  */
-public class SchemaTargetExtremityDescriptor implements IExtremityLink<SchemaTarget> {
+public class SchemaTargetExtremityDescriptor implements IExtremityLink<Table, SchemaTarget> {
 
     private SchemaTarget schemaTarget;
+    private Table table;
 
+    
+    
     /**
      * DOC amaumont TableItemExtremityDescriptor constructor comment.
      * 
      * @param tableItem
      */
-    public SchemaTargetExtremityDescriptor(SchemaTarget schemaTarget) {
+    public SchemaTargetExtremityDescriptor(Table graphicalObject, SchemaTarget schemaTarget) {
         super();
         this.schemaTarget = schemaTarget;
+        this.table = graphicalObject;
     }
 
     /*
@@ -62,4 +67,20 @@ public class SchemaTargetExtremityDescriptor implements IExtremityLink<SchemaTar
         this.schemaTarget = dataItem;
     }
 
+    /* (non-Javadoc)
+     * @see org.talend.commons.ui.swt.drawing.link.IExtremityLink#getGraphicalItem()
+     */
+    public Table getGraphicalObject() {
+        return table;
+    }
+
+    /* (non-Javadoc)
+     * @see org.talend.commons.ui.swt.drawing.link.IExtremityLink#setGraphicalItem(java.lang.Object)
+     */
+    public void setGraphicalObject(Table graphicalObject) {
+        this.table = graphicalObject;
+    }
+
+    
+    
 }

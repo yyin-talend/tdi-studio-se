@@ -52,6 +52,8 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.ScrollBar;
 import org.eclipse.swt.widgets.Shell;
 import org.talend.commons.ui.swt.drawing.background.BackgroundRefresher;
+import org.talend.commons.ui.swt.drawing.background.IBgDrawableComposite;
+import org.talend.commons.ui.swt.linking.BgDrawableComposite;
 import org.talend.commons.ui.ws.WindowSystem;
 import org.talend.commons.utils.threading.AsynchronousThreading;
 import org.talend.commons.utils.threading.ExecutionLimiter;
@@ -163,7 +165,9 @@ public class MapperUI {
 
     private OutputsZone outputsZone;
 
-    private MapperBackgroundRefresher backgroundRefresher;
+    private MapperBgDrawableComposite bgDrawableComposite;
+
+    private BackgroundRefresher backgroundRefresher;
 
     public MapperUI(Composite parent, MapperManager mapperManager) {
         super();
@@ -203,7 +207,7 @@ public class MapperUI {
         datasFlowViewSashForm = new SashForm(mainSashForm, SWT.SMOOTH | SWT.HORIZONTAL | SWT.BORDER);
         datasFlowViewSashForm.setBackgroundMode(SWT.INHERIT_FORCE);
 
-        initBackgroundRefresher();
+        initBackgroundComponents();
 
         if (WindowSystem.isGTK()) {
             datasFlowViewSashForm.setBackground(display.getSystemColor(SWT.COLOR_DARK_GRAY));
@@ -265,8 +269,9 @@ public class MapperUI {
     /**
      * DOC amaumont Comment method "initBackgroundRefresher".
      */
-    private void initBackgroundRefresher() {
-        this.backgroundRefresher = new MapperBackgroundRefresher(datasFlowViewSashForm);
+    private void initBackgroundComponents() {
+        this.bgDrawableComposite = new MapperBgDrawableComposite(datasFlowViewSashForm);
+        this.backgroundRefresher = new BackgroundRefresher(this.bgDrawableComposite);
         this.backgroundRefresher.setBackgroundColor(bgColorLinksZone);
     }
 
@@ -677,9 +682,9 @@ public class MapperUI {
 
     protected void updateBackground(boolean forceRecalculate, boolean antialias) {
 
-        backgroundRefresher.setAntialias(antialias);
-        backgroundRefresher.setForceRecalculate(forceRecalculate);
-        backgroundRefresher.updateBackground();
+        bgDrawableComposite.setAntialias(antialias);
+        bgDrawableComposite.setForceRecalculate(forceRecalculate);
+        backgroundRefresher.refreshBackground();
 
     }
 
@@ -694,7 +699,7 @@ public class MapperUI {
      * $Id$
      * 
      */
-    public class MapperBackgroundRefresher extends BackgroundRefresher {
+    public class MapperBgDrawableComposite extends BgDrawableComposite {
 
         private boolean antialias;
 
@@ -705,7 +710,7 @@ public class MapperUI {
          * 
          * @param commonParent
          */
-        public MapperBackgroundRefresher(Composite commonParent) {
+        public MapperBgDrawableComposite(Composite commonParent) {
             super(commonParent);
         }
 
@@ -717,8 +722,8 @@ public class MapperUI {
         @Override
         public void drawBackground(GC gc) {
 
-            if (antialias && isAntialiasAllowed() && mapperManager.getCurrentNumberLinks() < 250) {
-                gc.setAntialias(antialias && isAntialiasAllowed() ? SWT.ON : SWT.OFF);
+            if (antialias && backgroundRefresher.isAntialiasAllowed() && mapperManager.getCurrentNumberLinks() < 250) {
+                gc.setAntialias(antialias && backgroundRefresher.isAntialiasAllowed() ? SWT.ON : SWT.OFF);
             } else {
                 gc.setAdvanced(false);
             }

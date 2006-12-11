@@ -95,7 +95,7 @@ public class ModulesView extends ViewPart {
 
         tableViewerCreator = new TableViewerCreator(rightPartComposite);
         tableViewerCreator.setCheckboxInFirstColumn(false);
-        tableViewerCreator.setAllColumnsResizable(true);
+        tableViewerCreator.setColumnsResizableByDefault(true);
         tableViewerCreator.setLayoutMode(LAYOUT_MODE.FILL_HORIZONTAL);
         tableViewerCreator.createTable();
 

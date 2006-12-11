@@ -42,7 +42,7 @@ import org.talend.commons.utils.data.bean.IBeanPropertyAccessors;
 import org.talend.commons.utils.data.list.ListenableListEvent;
 import org.talend.commons.utils.data.list.ListenableListEvent.TYPE;
 import org.talend.core.model.metadata.builder.connection.SchemaTarget;
-import org.talend.core.model.targetschema.editor.XPathNodeSchemaModel;
+import org.talend.core.model.targetschema.editor.XmlExtractorSchemaModel;
 import org.talend.core.ui.extended.ExtendedToolbarView;
 import org.talend.core.ui.extended.button.AddPushButtonForExtendedTable;
 
@@ -53,7 +53,7 @@ import org.talend.core.ui.extended.button.AddPushButtonForExtendedTable;
  * $Id$
  * 
  */
-public class XPathNodeSchemaEditorView extends AbstractDataTableEditorView<SchemaTarget> {
+public class ExtractionFieldsWithXPathEditorView extends AbstractDataTableEditorView<SchemaTarget> {
 
     public static final String ID_COLUMN_NAME = "ID_COLUMN_NAME";
 
@@ -61,15 +61,13 @@ public class XPathNodeSchemaEditorView extends AbstractDataTableEditorView<Schem
 
     private TableViewerCreatorColumn xPathColumn;
 
-    private XmlToSchemaLinker linker;
+    private XmlToXPathLinker linker;
 
-    private IBeanPropertyAccessors<SchemaTarget, Boolean> keyAccesor;
-
-    public XPathNodeSchemaEditorView(XPathNodeSchemaModel model, Composite parent, int styleChild) {
+    public ExtractionFieldsWithXPathEditorView(XmlExtractorSchemaModel model, Composite parent, int styleChild) {
         this(model, parent, styleChild, false);
     }
 
-    public XPathNodeSchemaEditorView(XPathNodeSchemaModel model, Composite parent) {
+    public ExtractionFieldsWithXPathEditorView(XmlExtractorSchemaModel model, Composite parent) {
         this(model, parent, SWT.NONE, false);
     }
 
@@ -80,7 +78,7 @@ public class XPathNodeSchemaEditorView extends AbstractDataTableEditorView<Schem
      * @param styleChild
      * @param showDbTypeColumn
      */
-    public XPathNodeSchemaEditorView(XPathNodeSchemaModel model, Composite parent, int styleChild, boolean showDbTypeColumn) {
+    public ExtractionFieldsWithXPathEditorView(XmlExtractorSchemaModel model, Composite parent, int styleChild, boolean showDbTypeColumn) {
         super(parent, styleChild, model);
     }
 
@@ -111,9 +109,11 @@ public class XPathNodeSchemaEditorView extends AbstractDataTableEditorView<Schem
     @Override
     protected void handleAfterListenableListOperationEvent(ListenableListEvent<SchemaTarget> event) {
         super.handleAfterListenableListOperationEvent(event);
-        if (event.type == TYPE.REMOVED) {
-            linker.updateBackground();
+        // if (event.type == TYPE.REMOVED) {
+        if (linker != null) {
+            linker.getBackgroundRefresher().refreshBackground();
         }
+        // }
     }
 
     /*
@@ -134,7 +134,7 @@ public class XPathNodeSchemaEditorView extends AbstractDataTableEditorView<Schem
      * org.eclipse.swt.widgets.Table)
      */
     @Override
-    protected void createColumns(TableViewerCreator<SchemaTarget> tableViewerCreator, Table table) {
+    protected void createColumns(TableViewerCreator<SchemaTarget> tableViewerCreator, final Table table) {
         CellEditorValueAdapter intValueAdapter = new CellEditorValueAdapter() {
 
             public Object getOriginalTypedValue(final CellEditor cellEditor, Object value) {
@@ -184,7 +184,7 @@ public class XPathNodeSchemaEditorView extends AbstractDataTableEditorView<Schem
             @Override
             public void newValidValueTyped(int itemIndex, Object previousValue, Object newValue, CELL_EDITOR_STATE state) {
                 if (state == CELL_EDITOR_STATE.EDITING) {
-                    linker.onXPathValueChanged(previousValue.toString(), newValue.toString(), itemIndex);
+                    linker.onXPathValueChanged(table, previousValue.toString(), newValue.toString(), itemIndex);
                 }
 
             }
@@ -230,27 +230,6 @@ public class XPathNodeSchemaEditorView extends AbstractDataTableEditorView<Schem
         column.setDefaultInternalValue("");
 
         // //////////////////////////////////////////////////////////////////////////////////////
-        // Loop
-        column = new TableViewerCreatorColumn(tableViewerCreator);
-        column.setTitle("Loop");
-        this.keyAccesor = new IBeanPropertyAccessors<SchemaTarget, Boolean>() {
-
-            public Boolean get(SchemaTarget bean) {
-                return new Boolean(bean.isBoucle());
-            }
-
-            public void set(SchemaTarget bean, Boolean value) {
-                bean.setBoucle(value);
-            }
-
-        };
-        column.setBeanPropertyAccessors(this.keyAccesor);
-        column.setDisplayedValue("");
-        column.setWidth(38);
-        CheckboxTableEditorContent checkboxTableEditorContent = new CheckboxTableEditorContent();
-        column.setTableEditorContent(checkboxTableEditorContent);
-
-        // //////////////////////////////////////////////////////////////////////////////////////
         // Loop limit
         column = new TableViewerCreatorColumn(tableViewerCreator);
         column.setTitle("Loop limit");
@@ -271,8 +250,8 @@ public class XPathNodeSchemaEditorView extends AbstractDataTableEditorView<Schem
 
     }
 
-    public XPathNodeSchemaModel getXpathNodeSchemaModel() {
-        return (XPathNodeSchemaModel) getExtendedTableModel();
+    public XmlExtractorSchemaModel getXpathNodeSchemaModel() {
+        return (XmlExtractorSchemaModel) getExtendedTableModel();
     }
 
     /**
@@ -289,7 +268,7 @@ public class XPathNodeSchemaEditorView extends AbstractDataTableEditorView<Schem
      * 
      * @param linker
      */
-    public void setLinker(XmlToSchemaLinker linker) {
+    public void setLinker(XmlToXPathLinker linker) {
         this.linker = linker;
     }
 

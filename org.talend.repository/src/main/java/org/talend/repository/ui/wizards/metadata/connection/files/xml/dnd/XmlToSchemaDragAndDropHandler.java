@@ -40,8 +40,8 @@ import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 import org.talend.commons.ui.utils.TableUtils;
 import org.talend.core.model.metadata.builder.connection.SchemaTarget;
-import org.talend.repository.ui.wizards.metadata.connection.files.xml.XPathNodeSchemaEditorView;
-import org.talend.repository.ui.wizards.metadata.connection.files.xml.XmlToSchemaLinker;
+import org.talend.repository.ui.wizards.metadata.connection.files.xml.ExtractionFieldsWithXPathEditorView;
+import org.talend.repository.ui.wizards.metadata.connection.files.xml.XmlToXPathLinker;
 
 /**
  * DOC amaumont class global comment. Detailled comment <br/>
@@ -51,27 +51,31 @@ import org.talend.repository.ui.wizards.metadata.connection.files.xml.XmlToSchem
  */
 public class XmlToSchemaDragAndDropHandler {
 
-    private XmlToSchemaLinker linker;
+    private XmlToXPathLinker linker;
 
     private DragSource dragSource;
 
-    private DropTarget dropTarget;
+    private DropTarget fieldsDropTarget;
 
     protected int dropDefaultOperation = DND.DROP_LINK;
 
     private Tree tree;
 
-    private Table table;
+    private Table fieldsTable;
+    private Table loopTable;
+
+    private DropTarget loopDropTarget;
 
     /**
      * DOC amaumont TreeToTableDragAndDropHandler constructor comment.
      * 
      * @param linker
      */
-    public XmlToSchemaDragAndDropHandler(XmlToSchemaLinker linker) {
+    public XmlToSchemaDragAndDropHandler(XmlToXPathLinker linker) {
         this.linker = linker;
         tree = linker.getTree();
-        table = linker.getTable();
+        loopTable = linker.getLoopTableEditorView().getTableViewerCreator().getTable();
+        fieldsTable = linker.getFieldsTableEditorView().getTableViewerCreator().getTable();
         init();
     }
 
@@ -105,13 +109,21 @@ public class XmlToSchemaDragAndDropHandler {
      */
     private void createDropTarget() {
 
-        if (dropTarget != null) {
-            dropTarget.dispose();
+        if (loopDropTarget != null) {
+            loopDropTarget.dispose();
         }
-        dropTarget = new DropTarget(table, DND.DROP_DEFAULT | DND.DROP_MOVE | DND.DROP_COPY | DND.DROP_LINK);
-        dropTarget.setTransfer(new Transfer[] { XPathTransfer.getInstance() });
+        loopDropTarget = new DropTarget(loopTable, DND.DROP_DEFAULT | DND.DROP_MOVE | DND.DROP_COPY | DND.DROP_LINK);
+        loopDropTarget.setTransfer(new Transfer[] { XPathTransfer.getInstance() });
         DropTargetListener targetListener = new TableDropTargetListener();
-        dropTarget.addDropListener(targetListener);
+        loopDropTarget.addDropListener(targetListener);
+
+        if (fieldsDropTarget != null) {
+            fieldsDropTarget.dispose();
+        }
+        fieldsDropTarget = new DropTarget(fieldsTable, DND.DROP_DEFAULT | DND.DROP_MOVE | DND.DROP_COPY | DND.DROP_LINK);
+        fieldsDropTarget.setTransfer(new Transfer[] { XPathTransfer.getInstance() });
+        targetListener = new TableDropTargetListener();
+        fieldsDropTarget.addDropListener(targetListener);
     }
 
     /**
@@ -174,7 +186,7 @@ public class XmlToSchemaDragAndDropHandler {
          * @param event
          */
         private void dragEnterExecute(DropTargetEvent event) {
-            table.setFocus();
+            fieldsTable.setFocus();
         }
 
         public void dragOver(DropTargetEvent event) {
@@ -230,7 +242,7 @@ public class XmlToSchemaDragAndDropHandler {
             XmlToSchemaDraggedData draggedData = XPathTransfer.getInstance().getDraggedData();
 
             List<TransferableXPathEntry> transferableEntryList = draggedData.getTransferableEntryList();
-            int startInsertAtThisIndex = TableUtils.getItemIndexWhereInsertFromPosition(table, new Point(event.x, event.y));
+            int startInsertAtThisIndex = TableUtils.getItemIndexWhereInsertFromPosition(fieldsTable, new Point(event.x, event.y));
 
             List<SchemaTarget> list = new ArrayList<SchemaTarget>(transferableEntryList.size());
             for (TransferableXPathEntry entry : transferableEntryList) {
@@ -238,10 +250,13 @@ public class XmlToSchemaDragAndDropHandler {
                 SchemaTarget newTargetEntry = linker.getNewTargetEntry(entry.getAbsoluteXPath());
                 list.add(newTargetEntry);
             }
-            XPathNodeSchemaEditorView tableEditorView = linker.getTableEditorView();
-            linker.getTable().deselectAll();
+            ExtractionFieldsWithXPathEditorView tableEditorView = linker.getFieldsTableEditorView();
+            
+            loopTable.deselectAll();
+            fieldsTable.deselectAll();
+            
             linker.getTree().deselectAll();
-            linker.updateLinksAndTreeItemsHighlightState();
+            linker.updateLinksStyleAndControlsSelection((Table)event.widget);
             tableEditorView.getXpathNodeSchemaModel().addAll(startInsertAtThisIndex, list);
         }
 

@@ -349,7 +349,7 @@ public class DatabaseTableForm extends AbstractForm {
 
         tableViewerCreator = new TableViewerCreator(scrolledCompositeFileViewer);
         tableViewerCreator.setHeaderVisible(false);
-        tableViewerCreator.setAllColumnsResizable(false);
+        tableViewerCreator.setColumnsResizableByDefault(false);
         tableViewerCreator.setBorderVisible(false);
         tableViewerCreator.setLinesVisible(false);
         tableViewerCreator.setLayoutMode(LAYOUT_MODE.NONE);

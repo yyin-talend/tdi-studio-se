@@ -175,7 +175,7 @@ public class SelectorTableForm extends AbstractForm {
 
         // List Table
         TableViewerCreator tableViewerCreator = new TableViewerCreator(scrolledCompositeFileViewer);
-        tableViewerCreator.setAllColumnsResizable(true);
+        tableViewerCreator.setColumnsResizableByDefault(true);
         tableViewerCreator.setBorderVisible(true);
         tableViewerCreator.setLayoutMode(LAYOUT_MODE.FILL_HORIZONTAL);
         tableViewerCreator.setCheckboxInFirstColumn(true);

@@ -583,8 +583,8 @@ public class ContextProcessSection extends AbstractPropertySection {
         tableViewerCreatorMap.put(context, tableViewerCreator);
         tableViewerCreator.setBorderVisible(true);
         tableViewerCreator.setCheckboxInFirstColumn(true);
-        tableViewerCreator.setAllColumnsResizable(true);
-        tableViewerCreator.setAllColumnsSortable(true);
+        tableViewerCreator.setColumnsResizableByDefault(true);
+        tableViewerCreator.setColumnsSortableByDefault(true);
         tableViewerCreator.setLayoutMode(LAYOUT_MODE.FILL_HORIZONTAL);
 
         final Table table = tableViewerCreator.createTable();

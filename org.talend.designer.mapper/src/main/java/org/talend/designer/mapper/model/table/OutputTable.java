@@ -89,7 +89,7 @@ public class OutputTable extends AbstractInOutTable {
         this.tableFiltersEntriesModel.add(constraintTableEntry, index);
     }
 
-    public void removeConstraintEntry(FilterTableEntry constraintTableEntry) {
+    public void removeFilterEntry(FilterTableEntry constraintTableEntry) {
         this.tableFiltersEntriesModel.remove(constraintTableEntry);
     }
 

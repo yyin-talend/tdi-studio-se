@@ -2244,7 +2244,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
             final TableViewerCreator tableViewerCreator = new TableViewerCreator(container);
             tableViewerCreator.setBorderVisible(true);
             tableViewerCreator.setCheckboxInFirstColumn(false);
-            tableViewerCreator.setAllColumnsResizable(true);
+            tableViewerCreator.setColumnsResizableByDefault(true);
             tableViewerCreator.setLayoutMode(LAYOUT_MODE.DEFAULT);
             final Table table = tableViewerCreator.createTable();
             table.setEnabled(!param.isReadOnly());

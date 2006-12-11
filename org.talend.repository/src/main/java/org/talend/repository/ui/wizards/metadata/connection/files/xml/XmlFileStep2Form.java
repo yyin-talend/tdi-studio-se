@@ -61,8 +61,9 @@ import org.talend.commons.utils.data.list.ListenableListEvent;
 import org.talend.commons.utils.encoding.CharsetToolkit;
 import org.talend.core.model.metadata.builder.connection.ConnectionFactory;
 import org.talend.core.model.metadata.builder.connection.MetadataSchema;
+import org.talend.core.model.metadata.builder.connection.SchemaTarget;
 import org.talend.core.model.properties.ConnectionItem;
-import org.talend.core.model.targetschema.editor.XPathNodeSchemaModel;
+import org.talend.core.model.targetschema.editor.XmlExtractorSchemaModel;
 import org.talend.core.utils.XmlArray;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.preview.ProcessDescription;
@@ -86,9 +87,11 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
 
     private ATreeNode treeNode;
 
-    private XPathNodeSchemaModel schemaModel;
+    private XmlExtractorSchemaModel fieldsModel;
 
-    private XPathNodeSchemaEditorView tableEditorView;
+    private ExtractionLoopWithXPathEditorView loopTableEditorView;
+
+    private ExtractionFieldsWithXPathEditorView fieldsTableEditorView;
 
     private Button previewButton;
 
@@ -108,9 +111,11 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
 
     private SashForm xmlToSchemaSash;
 
-    private XmlToSchemaLinker linker;
+    private XmlToXPathLinker linker;
 
     private TreePopulator treePopulator;
+
+    private XmlExtractorSchemaModel loopModel;
 
     /**
      * Constructor to use by RCP Wizard.
@@ -135,6 +140,8 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
 
         checkFieldsValue();
 
+        loopModel.setMetadataSchema(null);
+        
         if (metadataSchema == null) {
             if (getConnection().getSchema() != null && !getConnection().getSchema().isEmpty()) {
                 metadataSchema = (MetadataSchema) getConnection().getSchema().get(0);
@@ -144,8 +151,8 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
         }
 
         getConnection().getSchema().add(metadataSchema);
-        schemaModel.setMetadataSchema(metadataSchema);
-        tableEditorView.getTableViewerCreator().layout();
+        fieldsModel.setMetadataSchema(metadataSchema);
+        fieldsTableEditorView.getTableViewerCreator().layout();
 
     }
 
@@ -212,11 +219,21 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
         // Group Schema Viewer
         final Group group = Form.createGroup(mainComposite, 1, Messages.getString("XmlFileStep1.groupSchemaTarget"), height);
 
-        schemaModel = new XPathNodeSchemaModel(Messages.getString("FileStep3.metadataDescription"));
-        tableEditorView = new XPathNodeSchemaEditorView(schemaModel, group);
-        tableEditorView.getExtendedTableViewer().setCommandStack(new CommandStackForComposite(group));
+        CommandStackForComposite commandStack = new CommandStackForComposite(group);
+        
+        loopModel = new XmlExtractorSchemaModel("Xpath loop expression");
 
-        tableEditorView.getMainComposite().setLayoutData(new GridData(GridData.FILL_BOTH));
+        loopTableEditorView = new ExtractionLoopWithXPathEditorView(loopModel, group);
+        loopTableEditorView.getExtendedTableViewer().setCommandStack(commandStack);
+        GridData data2 = new GridData(GridData.FILL_BOTH);
+        data2.minimumHeight = 70;
+        loopTableEditorView.getMainComposite().setLayoutData(data2);
+
+//        Messages.getString("FileStep3.metadataDescription")
+        fieldsModel = new XmlExtractorSchemaModel("Fields to extract");
+        fieldsTableEditorView = new ExtractionFieldsWithXPathEditorView(fieldsModel, group);
+        fieldsTableEditorView.getExtendedTableViewer().setCommandStack(commandStack);
+        fieldsTableEditorView.getMainComposite().setLayoutData(new GridData(GridData.FILL_BOTH));
 
     }
 
@@ -349,7 +366,7 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
      */
     protected void addFieldsListeners() {
         // add listener to tableMetadata (listen the event of the toolbars)
-        tableEditorView.getExtendedTableModel().addAfterOperationListListener(new IListenableListListener() {
+        fieldsTableEditorView.getExtendedTableModel().addAfterOperationListListener(new IListenableListListener() {
 
             public void handleEvent(ListenableListEvent event) {
                 checkFieldsValue();
@@ -541,8 +558,10 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
             }
 
             if (this.linker == null) {
-                this.linker = new XmlToSchemaLinker(this.xmlToSchemaSash, availableXmlTree, tableEditorView, this.treePopulator);
-                tableEditorView.setLinker(this.linker);
+                this.linker = new XmlToXPathLinker(this.xmlToSchemaSash);
+                this.linker.init(availableXmlTree, loopTableEditorView, fieldsTableEditorView, treePopulator);
+                loopTableEditorView.setLinker(this.linker);
+                fieldsTableEditorView.setLinker(this.linker);
             } else {
                 this.linker.createLinks();
             }
