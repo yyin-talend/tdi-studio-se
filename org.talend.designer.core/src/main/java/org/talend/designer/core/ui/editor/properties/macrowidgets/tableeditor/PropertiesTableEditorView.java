@@ -248,7 +248,7 @@ public class PropertiesTableEditorView<B> extends AbstractDataTableEditorView<B>
     }
 
     public PropertiesTableToolbarEditorView getToolBar() {
-        return (PropertiesTableToolbarEditorView) getAbstractExtendedToolbar();
+        return (PropertiesTableToolbarEditorView) getExtendedToolbar();
     }
 
     public PropertiesTableEditorModel getModel() {
