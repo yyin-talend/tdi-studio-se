@@ -24,14 +24,33 @@ package org.talend.repository.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.utils.data.container.Container;
 import org.talend.commons.utils.data.container.RootContainer;
+import org.talend.commons.utils.workbench.resources.ResourceUtils;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
+import org.talend.core.model.general.Project;
+import org.talend.core.model.properties.BusinessProcessItem;
+import org.talend.core.model.properties.CSVFileConnectionItem;
 import org.talend.core.model.properties.ConnectionItem;
+import org.talend.core.model.properties.DatabaseConnectionItem;
+import org.talend.core.model.properties.DelimitedFileConnectionItem;
+import org.talend.core.model.properties.DocumentationItem;
+import org.talend.core.model.properties.FolderItem;
+import org.talend.core.model.properties.Item;
+import org.talend.core.model.properties.LdifFileConnectionItem;
+import org.talend.core.model.properties.PositionalFileConnectionItem;
+import org.talend.core.model.properties.ProcessItem;
+import org.talend.core.model.properties.RegExFileConnectionItem;
+import org.talend.core.model.properties.RoutineItem;
+import org.talend.core.model.properties.XmlFileConnectionItem;
+import org.talend.core.model.properties.util.PropertiesSwitch;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
 
@@ -129,7 +148,7 @@ public abstract class AbstractRepositoryFactory implements IRepositoryFactory {
 
         return result;
     }
-    
+
     public RootContainer<String, IRepositoryObject> getDocumentation() throws PersistenceException {
         return getObjectFromFolder(ERepositoryObjectType.DOCUMENTATION, true);
     }
@@ -170,14 +189,134 @@ public abstract class AbstractRepositoryFactory implements IRepositoryFactory {
         return getObjectFromFolder(ERepositoryObjectType.METADATA_FILE_LDIF, true);
     }
 
-    
-    protected abstract <K, T> RootContainer<K, T> getObjectFromFolder(ERepositoryObjectType type, boolean onlyLastVersion)
-    throws PersistenceException;
+    /**
+     * DOC smallet Comment method "convert".
+     * 
+     * @param toReturn
+     * @param serializableAllVersion
+     */
+    protected List<IRepositoryObject> convert(List<IRepositoryObject> serializableAllVersion) {
+        List<IRepositoryObject> toReturn = new ArrayList<IRepositoryObject>();
+        for (IRepositoryObject current : serializableAllVersion) {
+            toReturn.add(current);
+        }
+        return toReturn;
+    }
 
-    protected abstract <K, T> void addFolderMembers(ERepositoryObjectType type, Container<K, T> toReturn, Object objectFolder,
+    protected List<IRepositoryObject> getSerializable(Project project, String id, boolean allVersion)
+            throws PersistenceException {
+        IProject fsProject = ResourceModelUtils.getProject(project);
+
+        List<IRepositoryObject> toReturn = new ArrayList<IRepositoryObject>();
+
+        ERepositoryObjectType[] repositoryObjectTypeList = new ERepositoryObjectType[] {
+                ERepositoryObjectType.BUSINESS_PROCESS, ERepositoryObjectType.DOCUMENTATION,
+                ERepositoryObjectType.METADATA_CONNECTIONS, ERepositoryObjectType.METADATA_FILE_DELIMITED,
+                ERepositoryObjectType.METADATA_FILE_POSITIONAL, ERepositoryObjectType.METADATA_FILE_REGEXP,
+                ERepositoryObjectType.METADATA_FILE_XML, ERepositoryObjectType.METADATA_FILE_LDIF,
+                ERepositoryObjectType.PROCESS, ERepositoryObjectType.ROUTINES };
+        for (ERepositoryObjectType repositoryObjectType : repositoryObjectTypeList) {
+            IFolder folder = ResourceUtils.getFolder(fsProject, ERepositoryObjectType
+                    .getFolderName(repositoryObjectType), true);
+            toReturn.addAll(getSerializableFromFolder(folder, id, repositoryObjectType, allVersion, true));
+        }
+        return toReturn;
+    }
+
+    public List<IRepositoryObject> getAllVersion(String id) throws PersistenceException {
+        List<IRepositoryObject> serializableAllVersion = getSerializable(getRepositoryContext().getProject(), id, true);
+        return convert(serializableAllVersion);
+    }
+
+    public boolean isNameAvailable(Item item, String name) throws PersistenceException {
+        if (name == null) {
+            name = item.getProperty().getLabel();
+        }
+
+        if (item instanceof FolderItem) {
+            FolderHelper folderHelper = getFolderHelper(getRepositoryContext().getProject().getEmfProject());
+            return !folderHelper.pathExists((FolderItem) item, name);
+        }
+
+        ERepositoryObjectType type = getItemType(item);
+
+        if (type == ERepositoryObjectType.METADATA_CON_TABLE) {
+            return false;
+        }
+        List<IRepositoryObject> list = getAll(type);
+
+        for (IRepositoryObject current : list) {
+            if (name.equals(current.getProperty().getLabel()) && item.getProperty().getId() != current.getProperty().getId()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    ERepositoryObjectType getItemType(Item item) {
+        return (ERepositoryObjectType) new PropertiesSwitch() {
+
+            public Object caseDocumentationItem(DocumentationItem object) {
+                return ERepositoryObjectType.DOCUMENTATION;
+            }
+
+            public Object caseRoutineItem(RoutineItem object) {
+                return ERepositoryObjectType.ROUTINES;
+            }
+
+            public Object caseProcessItem(ProcessItem object) {
+                return ERepositoryObjectType.PROCESS;
+            }
+
+            public Object caseBusinessProcessItem(BusinessProcessItem object) {
+                return ERepositoryObjectType.BUSINESS_PROCESS;
+            }
+
+            public Object caseCSVFileConnectionItem(CSVFileConnectionItem object) {
+                throw new IllegalStateException("not implemented");
+            }
+
+            public Object caseDatabaseConnectionItem(DatabaseConnectionItem object) {
+                return ERepositoryObjectType.METADATA_CONNECTIONS;
+            }
+
+            public Object caseDelimitedFileConnectionItem(DelimitedFileConnectionItem object) {
+                return ERepositoryObjectType.METADATA_FILE_DELIMITED;
+            }
+
+            public Object casePositionalFileConnectionItem(PositionalFileConnectionItem object) {
+                return ERepositoryObjectType.METADATA_FILE_POSITIONAL;
+            }
+
+            public Object caseRegExFileConnectionItem(RegExFileConnectionItem object) {
+                return ERepositoryObjectType.METADATA_FILE_REGEXP;
+            }
+
+            public Object caseXmlFileConnectionItem(XmlFileConnectionItem object) {
+                return ERepositoryObjectType.METADATA_FILE_XML;
+            }
+
+            public Object caseLdifFileConnectionItem(LdifFileConnectionItem object) {
+                return ERepositoryObjectType.METADATA_FILE_LDIF;
+            }
+
+            public Object defaultCase(EObject object) {
+                throw new IllegalStateException();
+            }
+        }.doSwitch(item);
+    }
+
+
+    
+    protected abstract List<IRepositoryObject> getSerializableFromFolder(Object folder, String id,
+            ERepositoryObjectType type, boolean allVersion, boolean searchInChildren) throws PersistenceException;
+
+    protected abstract <K, T> RootContainer<K, T> getObjectFromFolder(ERepositoryObjectType type,
             boolean onlyLastVersion) throws PersistenceException;
 
-    protected abstract FolderHelper getFolderHelper(org.talend.core.model.properties.Project emfProject);
+    protected abstract <K, T> void addFolderMembers(ERepositoryObjectType type, Container<K, T> toReturn,
+            Object objectFolder, boolean onlyLastVersion) throws PersistenceException;
 
+    protected abstract FolderHelper getFolderHelper(org.talend.core.model.properties.Project emfProject);
 
 }
