@@ -138,7 +138,7 @@ public class ModulesNeededProvider {
             StringBuffer err = new StringBuffer();
 
             IRunProcessService service = DesignerPlugin.getDefault().getRunProcessService();
-            service.exec(out, err, new Path(checkPerlModuleAbsolutePath), null, Level.DEBUG, "", "", -1, -1, params);
+            service.exec(out, err, new Path(checkPerlModuleAbsolutePath), null, Level.DEBUG, "", "", "", -1, -1, params);
 
             analyzeResponse(out, componentsByModules);
 

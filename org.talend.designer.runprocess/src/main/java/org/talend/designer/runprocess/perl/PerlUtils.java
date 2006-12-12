@@ -170,4 +170,19 @@ public final class PerlUtils {
                     "Perl Module include failure.", ioe));
         }
     }
+
+    public static IPath getPerlModuleDirectoryPath() throws CoreException {
+        Bundle perlLibBundle = Platform.getBundle("org.talend.designer.core");
+        try {
+            if (!(perlLibBundle == null)) {
+                URL entry = perlLibBundle.getEntry("components");
+                URL url = FileLocator.resolve(entry);
+                return new Path(url.getFile());
+            }
+        } catch (IOException e) {
+        }
+
+        throw new CoreException(new Status(Status.ERROR, RunProcessPlugin.PLUGIN_ID, Status.OK, "Designer Core Plugin not found.",
+                null));
+    }
 }

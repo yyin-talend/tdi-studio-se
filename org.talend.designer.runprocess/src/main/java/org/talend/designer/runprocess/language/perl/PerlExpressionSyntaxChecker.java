@@ -198,7 +198,7 @@ public class PerlExpressionSyntaxChecker implements ICodeSyntaxChecker {
         String expressionEscapedQuoted = "\"" + expressionEscaped + "\"";
         // System.out.println(expressionEscapedQuoted);
         try {
-            status = Processor.exec(out, err, null, null, Level.TRACE, "-ce", expressionEscapedQuoted, -1, -1,
+            status = Processor.exec(out, err, null, null, Level.TRACE, "-ce", expressionEscapedQuoted, "",-1, -1,
                     new String[0]);
         } catch (ProcessorException e) {
             ExceptionHandler.process(e);
@@ -234,7 +234,7 @@ public class PerlExpressionSyntaxChecker implements ICodeSyntaxChecker {
 
         // System.out.println(expression);
         try {
-            status = Processor.exec(out, err, null, null, Level.TRACE, "-c", file.getAbsolutePath(), -1, -1,
+            status = Processor.exec(out, err, null, null, Level.TRACE, "-c", file.getAbsolutePath(),"", -1, -1,
                     new String[0]);
         } catch (ProcessorException e) {
             ExceptionHandler.process(e);

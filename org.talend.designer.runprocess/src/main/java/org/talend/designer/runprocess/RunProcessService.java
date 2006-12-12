@@ -76,10 +76,10 @@ public class RunProcessService implements IRunProcessService {
      * java.lang.String, int, int, java.lang.String)
      */
     public int exec(StringBuffer out, StringBuffer err, IPath absCodePath, IPath absContextPath, Level level,
-            String perlInterpreterLibOption, String perlInterpreterLibCtxOption, int statOption, int traceOption,
+            String perlInterpreterLibOption, String perlInterpreterLibCtxOption, String perlModuleDirectoryOption, int statOption, int traceOption,
             String... codeOptions) throws ProcessorException {
         return Processor.exec(out, err, absCodePath, absContextPath, level, perlInterpreterLibOption,
-                perlInterpreterLibCtxOption, statOption, traceOption, codeOptions);
+                perlInterpreterLibCtxOption, perlModuleDirectoryOption, statOption, traceOption, codeOptions);
 
     }
 

@@ -58,9 +58,9 @@ public class Processor {
     public static final int NO_STATISTICS = -1;
 
     public static final int NO_TRACES = -1;
-    
-    public static final int  WATCH_LIMITED = -1;
-    
+
+    public static final int WATCH_LIMITED = -1;
+
     public static final int WATCH_ALLOWED = 1;
 
     private static final String CTX_ARG = "--context="; //$NON-NLS-1$
@@ -89,14 +89,17 @@ public class Processor {
      * @param context The context to be used.
      * @param statisticsPort TCP port used to get statistics from the process, <code>NO_STATISTICS</code> if none.
      * @param tracePort TCP port used to get trace from the process, <code>NO_TRACE</code> if none.
-     * @param watchPort 
+     * @param watchPort
      * @return The running process.
      * @throws ProcessorException Process failed.
      */
-//    public Process run(final IContext context, int statisticsPort, int tracePort, int swatchPort) throws ProcessorException { //Old
-    public Process run(final IContext context, int statisticsPort, int tracePort, String watchParam) throws ProcessorException {
+    // public Process run(final IContext context, int statisticsPort, int tracePort, int swatchPort) throws
+    // ProcessorException { //Old
+    public Process run(final IContext context, int statisticsPort, int tracePort, String watchParam)
+            throws ProcessorException {
         PerlProcessor plProcessor = new PerlProcessor(process, true);
-//        plProcessor.generateCode(context, statisticsPort != NO_STATISTICS, tracePort != NO_TRACES, swatchPort != WATCH_LIMITED, true);
+        // plProcessor.generateCode(context, statisticsPort != NO_STATISTICS, tracePort != NO_TRACES, swatchPort !=
+        // WATCH_LIMITED, true);
         plProcessor.generateCode(context, statisticsPort != NO_STATISTICS, tracePort != NO_TRACES, true);
 
         String perlLib;
@@ -108,13 +111,22 @@ public class Processor {
         String perlLibOption = perlLib != null && perlLib.length() > 0 ? "-I" + perlLib : ""; //$NON-NLS-1$ //$NON-NLS-2$
         IPath absCodePath = plProcessor.getPerlProject().getLocation().append(plProcessor.getCodePath());
         IPath absContextPath = plProcessor.getPerlProject().getLocation().append(plProcessor.getContextPath());
-        String perlLibCtxOption = "-I" + absContextPath.removeLastSegments(1).toOSString(); //$NON-NLS-1$     
-        
-        if (watchParam == null) {
-            return exec(absCodePath, absContextPath, Level.INFO, perlLibOption, perlLibCtxOption, statisticsPort, tracePort);
+        String perlLibCtxOption = "-I" + absContextPath.removeLastSegments(1).toOSString(); //$NON-NLS-1$
+        // Added by ftang
+        String perlModuleDirectoryOption;
+        try {
+            perlModuleDirectoryOption = "-I" + PerlUtils.getPerlModuleDirectoryPath().toOSString();
+        } catch (CoreException e) {
+            throw new ProcessorException(Messages.getString("Processor.perlModuleDirectoryNotFound")); //$NON-NLS-1$
         }
-        return exec(absCodePath, absContextPath, Level.INFO, perlLibOption, perlLibCtxOption, statisticsPort, tracePort,
-                watchParam);
+        // Ends
+
+        if (watchParam == null) {
+            return exec(absCodePath, absContextPath, Level.INFO, perlLibOption, perlLibCtxOption,
+                    perlModuleDirectoryOption, statisticsPort, tracePort);
+        }
+        return exec(absCodePath, absContextPath, Level.INFO, perlLibOption, perlLibCtxOption,
+                perlModuleDirectoryOption, statisticsPort, tracePort, watchParam);
     }
 
     /**
@@ -126,7 +138,7 @@ public class Processor {
      */
     public ILaunchConfiguration debug(final IContext context) throws ProcessorException {
         PerlProcessor plProcessor = new PerlProcessor(process, true);
-//        plProcessor.generateCode(context, false, false, false, true);
+        // plProcessor.generateCode(context, false, false, false, true);
         plProcessor.generateCode(context, false, false, true);
 
         // Create LaunchConfiguration
@@ -169,10 +181,11 @@ public class Processor {
      * @throws ProcessorException
      */
     public static Process exec(IPath absCodePath, IPath absContextPath, Level level, String perlInterpreterLibOption,
-            String perlInterpreterLibCtxOption, int statOption, int traceOption, String... codeOptions) throws ProcessorException {
+            String perlInterpreterLibCtxOption, String perlModuleDirectoryOption, int statOption, int traceOption,
+            String... codeOptions) throws ProcessorException {
 
-        String[] cmd = getCommandLine(absCodePath, absContextPath, perlInterpreterLibOption, perlInterpreterLibCtxOption,
-                statOption, traceOption, codeOptions);
+        String[] cmd = getCommandLine(absCodePath, absContextPath, perlInterpreterLibOption,
+                perlInterpreterLibCtxOption, perlModuleDirectoryOption, statOption, traceOption, codeOptions);
 
         logCommandLine(cmd, level);
         try {
@@ -183,11 +196,11 @@ public class Processor {
     }
 
     public static int exec(StringBuffer out, StringBuffer err, IPath absCodePath, IPath absContextPath, Level level,
-            String perlInterpreterLibOption, String perlInterpreterLibCtxOption, int statOption, int traceOption,
-            String... codeOptions) throws ProcessorException {
+            String perlInterpreterLibOption, String perlInterpreterLibCtxOption, String perlModuleDirectoryOption,
+            int statOption, int traceOption, String... codeOptions) throws ProcessorException {
 
-        String[] cmd = getCommandLine(absCodePath, absContextPath, perlInterpreterLibOption, perlInterpreterLibCtxOption,
-                statOption, traceOption, codeOptions);
+        String[] cmd = getCommandLine(absCodePath, absContextPath, perlInterpreterLibOption,
+                perlInterpreterLibCtxOption, perlModuleDirectoryOption, statOption, traceOption, codeOptions);
 
         logCommandLine(cmd, level);
         try {
@@ -254,7 +267,8 @@ public class Processor {
      * @throws ProcessorException
      */
     public static String[] getCommandLine(IPath absCodePath, IPath absContextPath, String perlInterpreterLibOption,
-            String perlInterpreterLibCtxOption, int statOption, int traceOption, String... codeOptions) throws ProcessorException {
+            String perlInterpreterLibCtxOption, String perlModuleDirectoryOption, int statOption, int traceOption,
+            String... codeOptions) throws ProcessorException {
         assert (absCodePath != null);
 
         IPreferenceStore prefStore = CorePlugin.getDefault().getPreferenceStore();
@@ -271,6 +285,11 @@ public class Processor {
         if (perlInterpreterLibCtxOption != null && perlInterpreterLibCtxOption.length() > 0) {
             cmd = (String[]) ArrayUtils.add(cmd, perlInterpreterLibCtxOption);
         }
+        // Added by ftang.
+        if (perlModuleDirectoryOption != null && perlModuleDirectoryOption.length() > 0) {
+            cmd = (String[]) ArrayUtils.add(cmd, perlModuleDirectoryOption);
+        }
+        // Ends.
         if (absCodePath != null) {
             cmd = (String[]) ArrayUtils.add(cmd, absCodePath.toOSString());
         }
