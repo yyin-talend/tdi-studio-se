@@ -56,19 +56,15 @@ public class ExternalNodeChangeCommand extends Command {
 
     private Node node;
 
-    Object oldExternalData;
+    private Object oldExternalData;
 
-    String oldGeneratedCode;
+    private List<IMetadataTable> oldMetaDataList;
 
-    List<IMetadataTable> oldMetaDataList;
+    private Object newExternalData;
 
-    Object newExternalData;
+    private List<IMetadataTable> newMetaDataList;
 
-    String newGeneratedCode;
-
-    List<IMetadataTable> newMetaDataList;
-
-    List<Connection> connectionsToDelete;
+    private List<Connection> connectionsToDelete;
 
     private List<ChangeMetadataCommand> metadataChanges = new ArrayList<ChangeMetadataCommand>();
 

@@ -337,6 +337,8 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
                     Command cmd = new ExternalNodeChangeCommand(node, externalNode);
                     CommandStack cmdStack = (CommandStack) part.getAdapter(CommandStack.class);
                     cmdStack.execute(cmd);
+                } else {
+                    externalNode.setExternalData(node.getExternalData());
                 }
             } else {
                 IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();

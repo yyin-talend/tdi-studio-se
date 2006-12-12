@@ -113,17 +113,29 @@ public class ChangeMetadataCommand extends Command {
         dataContainer = new IODataComponentContainer();
         for (Connection connec : (List<Connection>) node.getIncomingConnections()) {
             if (connec.isActivate() && connec.getLineStyle().equals(EConnectionType.FLOW_MAIN)) {
-                IODataComponent input;
-                input = new IODataComponent(connec, newInputMetadata);
-                dataContainer.getInputs().add(input);
+                IODataComponent input = null;
+                if (newInputMetadata == null) {
+                    input = new IODataComponent(connec);
+                } else {
+                    if (connec.getMetaName().equals(newInputMetadata.getTableName())) {
+                        input = new IODataComponent(connec, newInputMetadata);
+                    }
+                }
+                if (input != null) {
+                    dataContainer.getInputs().add(input);
+                }
+
             }
         }
         for (Connection connec : (List<Connection>) node.getOutgoingConnections()) {
             if (connec.isActivate()
                     && (connec.getLineStyle().equals(EConnectionType.FLOW_MAIN) || connec.getLineStyle().equals(
                             EConnectionType.FLOW_REF))) {
-                IODataComponent output = new IODataComponent(connec, newOutputMetadata);
-                dataContainer.getOuputs().add(output);
+                if ((!connec.getSource().getConnectorFromType(EConnectionType.FLOW_MAIN).isBuiltIn())
+                        || (connec.getMetaName().equals(newOutputMetadata.getTableName()))) {
+                    IODataComponent output = new IODataComponent(connec, newOutputMetadata);
+                    dataContainer.getOuputs().add(output);
+                }
             }
         }
     }
@@ -159,8 +171,9 @@ public class ChangeMetadataCommand extends Command {
         // Propagate :
         if (dataContainer != null && (!dataContainer.getInputs().isEmpty() || !dataContainer.getOuputs().isEmpty())) {
             for (IODataComponent currentIO : dataContainer.getInputs()) {
+                INode sourceNode = currentIO.getSource();
                 if (currentIO.hasChanged()) {
-                    currentIO.getSource().metadataOutputChanged(currentIO, currentIO.getName());
+                    sourceNode.metadataOutputChanged(currentIO, currentIO.getName());
                     if (isExecute) {
                         currentIO.setTable(oldInputMetadata);
                         currentIO.setColumnNameChanged(null);

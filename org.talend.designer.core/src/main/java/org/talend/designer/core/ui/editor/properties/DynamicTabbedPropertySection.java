@@ -301,6 +301,8 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                     if (externalNode.open(composite.getDisplay()) == SWT.OK) {
                         Command cmd = new ExternalNodeChangeCommand(node, externalNode);
                         getCommandStack().execute(cmd);
+                    } else {
+                        externalNode.setExternalData(node.getExternalData());
                     }
                 }
             }

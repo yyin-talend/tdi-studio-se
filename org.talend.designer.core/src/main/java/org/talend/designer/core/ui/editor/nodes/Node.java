@@ -545,7 +545,7 @@ public class Node extends Element implements INode {
             externalNode.setActivate(isActivate());
             externalNode.setStart(isStart());
             externalNode.setComponentName(getComponentName());
-            externalNode.setExternalData(getExternalData());
+//            externalNode.setExternalData(getExternalData());
             List<IMetadataTable> copyOfMetadataList = new ArrayList<IMetadataTable>();
             for (IMetadataTable metaTable : metadataList) {
                 copyOfMetadataList.add(metaTable.clone());
