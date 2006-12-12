@@ -22,7 +22,9 @@
 package org.talend.designer.core.ui.views.problems;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchPage;
@@ -30,6 +32,7 @@ import org.eclipse.ui.PlatformUI;
 import org.talend.commons.utils.data.container.MapList;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IElement;
+import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.Problem;
 import org.talend.core.model.process.Problem.ProblemAction;
 import org.talend.core.model.process.Problem.ProblemStatus;
@@ -44,14 +47,20 @@ import org.talend.designer.core.ui.editor.process.Process;
  */
 public class Problems {
 
-    private static MapList<ProblemStatus, Problem> problems = new MapList<ProblemStatus, Problem>();
+    private static MapList<ProblemStatus, Problem> defaultProblems = new MapList<ProblemStatus, Problem>();
+
+    private static MapList<ProblemStatus, Problem> currentProblems = getDefaultProblems();
+
+    private static Map<String, MapList<ProblemStatus, Problem>> problemsMap = new HashMap<String, MapList<ProblemStatus, Problem>>();
+
+    private static IProcess currentProcess = null;
 
     private static String currentTitle = "";
 
     private static String newTitle = "";
 
     public static void clearAll() {
-        for (List<Problem> problemList : problems.values()) {
+        for (List<Problem> problemList : currentProblems.values()) {
             for (Problem problem : problemList) {
                 problem.setAction(ProblemAction.DELETED);
             }
@@ -64,6 +73,15 @@ public class Problems {
         }
     }
 
+    private static MapList<ProblemStatus, Problem> getProblemsByProcessId(String processId) {
+        MapList<ProblemStatus, Problem> curProblems = problemsMap.get(processId);
+        if (curProblems == null) {
+            curProblems = new MapList<ProblemStatus, Problem>();
+            problemsMap.put(processId, curProblems);
+        }
+        return curProblems;
+    }
+
     public static void add(ProblemStatus status, Element element, String description) {
         Problem problem = new Problem(element, description, status);
         add(problem);
@@ -73,8 +91,8 @@ public class Problems {
         Problem oldProblem = null;
         boolean found = false;
         // check if the problem already exists
-        for (int i = 0; i < problems.get(problem.getStatus()).size() && !found; i++) {
-            Problem currentProblem = problems.get(problem.getStatus()).get(i);
+        for (int i = 0; i < currentProblems.get(problem.getStatus()).size() && !found; i++) {
+            Problem currentProblem = currentProblems.get(problem.getStatus()).get(i);
             if (problem.getElement().equals(currentProblem.getElement())) {
                 if (problem.getDescription().equals(currentProblem.getDescription())) {
                     // problem already exists
@@ -84,7 +102,7 @@ public class Problems {
             }
         }
         if (!found) {
-            problems.put(problem.getStatus(), problem);
+            currentProblems.put(problem.getStatus(), problem);
             problem.setAction(ProblemAction.ADDED);
         } else {
             oldProblem.setAction(ProblemAction.NONE);
@@ -94,7 +112,7 @@ public class Problems {
     public static void remove(ProblemStatus status, Element element) {
         // List<Problem> problemsToRemove = new ArrayList<Problem>();
 
-        for (Problem problem : problems.get(status)) {
+        for (Problem problem : currentProblems.get(status)) {
             if (problem.getElement().equals(element)) {
                 // problemsToRemove.add(problem);
                 problem.setAction(ProblemAction.DELETED);
@@ -106,7 +124,7 @@ public class Problems {
     public static List<String> getStatusList(ProblemStatus status, Element element) {
         List<String> statusList = new ArrayList<String>();
 
-        for (Problem problem : problems.get(status)) {
+        for (Problem problem : currentProblems.get(status)) {
             if (problem.getAction() != ProblemAction.DELETED) {
                 if (problem.getElement().equals(element)) {
                     statusList.add(problem.getDescription());
@@ -116,8 +134,76 @@ public class Problems {
         return statusList;
     }
 
+    /**
+     * DOC set the current process value,according the current process id to initial the current problems.
+     * 
+     * @param process
+     */
+    public static void setCurrentProcess(IProcess process) {
+        currentProcess = process;
+        initCurrentProblems();
+
+    }
+
+    /**
+     * DOC check the problems the corresponding of current process .
+     */
+    private static void initCurrentProblems() {
+        currentProblems = getProblemsByProcessId(currentProcess.getId());
+        if (currentProblems.size() == 0) {
+            ((Process) currentProcess).checkProcess();
+        }
+    }
+    
+    public static void recheckCurrentProblems(ProblemsView view) {
+        if (currentProcess == null || problemsMap.size() == 0) {
+            return;
+        }
+        currentProblems = getProblemsByProcessId(currentProcess.getId());
+        currentProblems.clear();
+        ((Process) currentProcess).checkProcess();
+        view.setProblems(currentProblems);
+    }
+
+    private static MapList<ProblemStatus, Problem> getDefaultProblems() {
+        defaultProblems.clear();
+        return defaultProblems;
+    }
+
+    public static MapList<ProblemStatus, Problem> getCurrentProblems() {
+        return currentProblems == null ? getDefaultProblems() : currentProblems;
+    }
+
+    /**
+     * DOC remove problems by process id.
+     */
+    public static void removeProblemsByProcessId(String processId) {
+        problemsMap.remove(processId);
+        if (problemsMap.size() == 0) {
+            currentProblems = getDefaultProblems();
+            switchToCurProblemView();
+        }
+    }
+
     public static void setTitle(String title) {
         newTitle = title;
+    }
+
+    /**
+     * DOC switch to the current problem view.
+     */
+    public static void switchToCurProblemView() {
+        IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+        IViewPart view = page.findView("org.talend.designer.core.ui.views.ProblemsView");
+        ProblemsView problemsView = (ProblemsView) view;
+        if (problemsView == null) {
+            return;
+        }
+        if (!newTitle.equals(currentTitle)) {
+            problemsView.setPartName(newTitle);
+            currentTitle = newTitle;
+        }
+        problemsView.setProblems(getCurrentProblems());
     }
 
     public static void refreshView() {
@@ -128,19 +214,17 @@ public class Problems {
     }
 
     public static void refreshView(ProblemsView problemsView) {
-        if (problemsView == null) {
-            return;
-        }
-
-        if (!newTitle.equals(currentTitle)) {
-            problemsView.setPartName(newTitle);
-            currentTitle = newTitle;
+        if (problemsView != null) {
+            if (!newTitle.equals(currentTitle)) {
+                problemsView.setPartName(newTitle);
+                currentTitle = newTitle;
+            }
         }
 
         List<Problem> warningsToRemove = new ArrayList<Problem>();
         List<Problem> errorsToRemove = new ArrayList<Problem>();
 
-        for (List<Problem> problemList : problems.values()) {
+        for (List<Problem> problemList : currentProblems.values()) {
             for (Problem problem : problemList) {
                 switch (problem.getAction()) {
                 case DELETED:
@@ -162,12 +246,14 @@ public class Problems {
             }
         }
 
-        for (List<Problem> problemList : problems.values()) {
+        for (List<Problem> problemList : currentProblems.values()) {
             for (Problem problem : problemList) {
                 switch (problem.getAction()) {
                 case ADDED:
-                    problemsView.addProblem(problem.getStatus(), problem);
-                    problem.setAction(ProblemAction.NONE);
+                    if (problemsView != null) {
+                        problemsView.addProblem(problem.getStatus(), problem);
+                        problem.setAction(ProblemAction.NONE);
+                    }
                     IElement elem = problem.getElement();
                     if (elem instanceof Node) {
                         switch (problem.getStatus()) {
@@ -182,22 +268,26 @@ public class Problems {
                     }
                     break;
                 case DELETED:
-                    problemsView.removeProblem(problem.getStatus(), problem);
-                    switch (problem.getStatus()) {
-                    case WARNING:
-                        warningsToRemove.add(problem);
-                        break;
-                    case ERROR:
-                        errorsToRemove.add(problem);
-                        break;
-                    default:
+                    if (problemsView != null) {
+                        problemsView.removeProblem(problem.getStatus(), problem);
                     }
+                        switch (problem.getStatus()) {
+                        case WARNING:
+                            warningsToRemove.add(problem);
+                            break;
+                        case ERROR:
+                            errorsToRemove.add(problem);
+                            break;
+                        default:
+                        }
                     break;
                 default:
                 }
             }
         }
-        problems.removeAll(ProblemStatus.ERROR, errorsToRemove);
-        problems.removeAll(ProblemStatus.WARNING, warningsToRemove);
+        if (problemsView != null) {
+            currentProblems.removeAll(ProblemStatus.ERROR, errorsToRemove);
+            currentProblems.removeAll(ProblemStatus.WARNING, warningsToRemove);
+        }
     }
 }

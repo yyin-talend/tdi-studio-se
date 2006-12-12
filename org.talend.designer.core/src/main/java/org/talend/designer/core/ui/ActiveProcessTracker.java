@@ -63,13 +63,14 @@ public class ActiveProcessTracker implements IPartListener {
             mpte.setName();
             IProcess process = mpte.getTalendEditor().getProcess();
             currentProcess = process;
+            
+            Problems.setCurrentProcess(currentProcess);
 
             IRunProcessService service = DesignerPlugin.getDefault().getRunProcessService();
             service.setActiveProcess(process);
 
             Problems.setTitle("Job " + process.getProperty().getLabel());
-            ((Process) process).checkProcess();
-            Problems.refreshView();
+            Problems.switchToCurProblemView();
         }
     }
 
@@ -82,6 +83,7 @@ public class ActiveProcessTracker implements IPartListener {
         if (MultiPageTalendEditor.ID.equals(part.getSite().getId())) {
             MultiPageTalendEditor mpte = (MultiPageTalendEditor) part;
             IProcess process = mpte.getTalendEditor().getProcess();
+            Problems.removeProblemsByProcessId(process.getId());
 
             IRunProcessService service = DesignerPlugin.getDefault().getRunProcessService();
             service.removeProcess(process);
@@ -89,7 +91,6 @@ public class ActiveProcessTracker implements IPartListener {
             if (currentProcess == process) {
                 Problems.setTitle("");
                 Problems.clearAll();
-                Problems.refreshView();
             }
         }
     }

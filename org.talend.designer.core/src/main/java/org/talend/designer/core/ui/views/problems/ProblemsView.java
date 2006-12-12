@@ -23,6 +23,7 @@ package org.talend.designer.core.ui.views.problems;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -41,6 +42,7 @@ import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
+import org.talend.commons.utils.data.container.MapList;
 import org.talend.core.model.process.Problem;
 import org.talend.core.model.process.Problem.ProblemStatus;
 import org.talend.core.ui.images.EImage;
@@ -133,7 +135,7 @@ public class ProblemsView extends ViewPart {
         errorItem.setImage(ImageProvider.getImage(EImage.HIERARCHY_ICON));
         errorItem.setText(new String[] { ERRORS_TEXT + " (0)", "" });
 
-        Problems.refreshView(this);
+        Problems.recheckCurrentProblems(this);
     }
 
     @SuppressWarnings("unchecked")
@@ -171,6 +173,25 @@ public class ProblemsView extends ViewPart {
         }
         warningsMap.clear();
         warningItem.setText(new String[] { WARNINGS_TEXT + " (0)", "" });
+    }
+    
+    
+    /**
+     * DOC retset problemsTree with the new problems.
+     * @param problems the new problems
+     */
+    public void setProblems(MapList<ProblemStatus, Problem> problems) {
+        clearAll();
+        ProblemStatus status;
+        List<Problem> problemList;
+        Iterator it = problems.keySet().iterator();
+        while (it.hasNext()) {
+            status = (ProblemStatus) it.next();
+            problemList = problems.get(status);
+            for (Problem problem : problemList) {
+                addProblem(status, problem);
+            }
+        }
     }
 
     public void addProblem(ProblemStatus status, Problem problem) {
