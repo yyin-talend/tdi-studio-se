@@ -25,7 +25,6 @@ import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchWizard;
@@ -49,6 +48,7 @@ import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNodeUtilities;
+import org.talend.repository.ui.wizards.PropertiesWizardPage;
 import org.talend.repository.ui.wizards.RepositoryWizard;
 import org.talend.repository.ui.wizards.metadata.connection.Step0WizardPage;
 
@@ -60,7 +60,7 @@ public class RegexpFileWizard extends RepositoryWizard implements INewWizard {
 
     private static Logger log = Logger.getLogger(RegexpFileWizard.class);
 
-    private WizardPage regexpFileWizardPage0;
+    private PropertiesWizardPage regexpFileWizardPage0;
 
     private RegexpFileWizardPage regexpFileWizardPage1;
 
@@ -138,7 +138,7 @@ public class RegexpFileWizard extends RepositoryWizard implements INewWizard {
      */
     public void addPages() {
         regexpFileWizardPage0 = new Step0WizardPage(connectionProperty, pathToSave, ERepositoryObjectType.METADATA_FILE_REGEXP,
-                !isRepositoryObjectEditable());
+                !isRepositoryObjectEditable(), creation);
         regexpFileWizardPage1 = new RegexpFileWizardPage(1, connectionItem, isRepositoryObjectEditable(), existingNames);
         regexpFileWizardPage2 = new RegexpFileWizardPage(2, connectionItem, isRepositoryObjectEditable(), existingNames);
 
@@ -212,7 +212,7 @@ public class RegexpFileWizard extends RepositoryWizard implements INewWizard {
                 if (creation) {
                     String nextId = factory.getNextId();
                     connectionProperty.setId(nextId);
-                    factory.create(connectionItem, pathToSave);
+                    factory.create(connectionItem, regexpFileWizardPage0.getDestinationPath());
                 } else {
                     factory.save(connectionItem);
                     closeLockStrategy();

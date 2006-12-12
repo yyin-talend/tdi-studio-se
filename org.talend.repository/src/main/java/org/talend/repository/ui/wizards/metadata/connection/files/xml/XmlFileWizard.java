@@ -25,7 +25,6 @@ import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchWizard;
@@ -47,6 +46,7 @@ import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNodeUtilities;
+import org.talend.repository.ui.wizards.PropertiesWizardPage;
 import org.talend.repository.ui.wizards.RepositoryWizard;
 import org.talend.repository.ui.wizards.metadata.connection.Step0WizardPage;
 
@@ -58,7 +58,7 @@ public class XmlFileWizard extends RepositoryWizard implements INewWizard {
 
     private static Logger log = Logger.getLogger(XmlFileWizard.class);
 
-    private WizardPage xmlFileWizardPage0;
+    private PropertiesWizardPage xmlFileWizardPage0;
 
     private XmlFileWizardPage xmlFileWizardPage1;
 
@@ -138,7 +138,7 @@ public class XmlFileWizard extends RepositoryWizard implements INewWizard {
      */
     public void addPages() {
         xmlFileWizardPage0 = new Step0WizardPage(connectionProperty, pathToSave, ERepositoryObjectType.METADATA_FILE_XML,
-                !isRepositoryObjectEditable());
+                !isRepositoryObjectEditable(), creation);
         xmlFileWizardPage1 = new XmlFileWizardPage(1, connectionItem, isRepositoryObjectEditable(), existingNames);
         xmlFileWizardPage2 = new XmlFileWizardPage(2, connectionItem, isRepositoryObjectEditable(), existingNames);
 
@@ -219,7 +219,7 @@ public class XmlFileWizard extends RepositoryWizard implements INewWizard {
                 if (creation) {
                     String nextId = factory.getNextId();
                     connectionProperty.setId(nextId);
-                    factory.create(connectionItem, pathToSave);
+                    factory.create(connectionItem, xmlFileWizardPage0.getDestinationPath());
                 } else {
                     factory.save(connectionItem);
                     closeLockStrategy();

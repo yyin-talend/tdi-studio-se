@@ -123,7 +123,7 @@ public class DocumentationCreateWizard extends RepositoryWizard implements IDocu
             // PTODO MHE
             // doc.setOriginalDocPath(getDocFilePath());
 
-            repositoryFactory.create(documentationItem, pathToSave);
+            repositoryFactory.create(documentationItem, mainPage.getDestinationPath());
 
             created = true;
         } catch (PersistenceException e) {

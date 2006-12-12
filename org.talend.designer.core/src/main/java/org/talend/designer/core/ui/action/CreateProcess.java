@@ -71,7 +71,7 @@ public class CreateProcess extends AContextualAction {
         Object obj = ((IStructuredSelection) selection).getFirstElement();
         RepositoryNode node = (RepositoryNode) obj;
 
-        IRepositoryService service=DesignerPlugin.getDefault().getRepositoryService();
+        IRepositoryService service = DesignerPlugin.getDefault().getRepositoryService();
         IPath path = service.getRepositoryPath(node);
 
         NewProcessWizard processWizard = new NewProcessWizard(path);

@@ -119,12 +119,7 @@ public class NewRoutineWizard extends Wizard {
         IProxyRepositoryFactory repositoryFactory = ProxyRepositoryFactory.getInstance();
         try {
             property.setId(repositoryFactory.getNextId());
-
-            // ProcessType process = TalendFileFactory.eINSTANCE.createProcessType();
-            //
-            // routineItem.setProcess(process);
-
-            repositoryFactory.create(routineItem, path);
+            repositoryFactory.create(routineItem, mainPage.getDestinationPath());
         } catch (PersistenceException e) {
             MessageDialog.openError(getShell(), Messages.getString("NewProcessWizard.failureTitle"), Messages
                     .getString("NewProcessWizard.failureText")); //$NON-NLS-1$ //$NON-NLS-2$

@@ -107,7 +107,7 @@ public class NewProcessWizard extends Wizard {
 
             processItem.setProcess(process);
 
-            repositoryFactory.create(processItem, path);
+            repositoryFactory.create(processItem, mainPage.getDestinationPath());
         } catch (PersistenceException e) {
             MessageDialog.openError(getShell(), Messages.getString("NewProcessWizard.failureTitle"), Messages
                     .getString("NewProcessWizard.failureText")); //$NON-NLS-1$ //$NON-NLS-2$

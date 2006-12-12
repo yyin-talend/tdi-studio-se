@@ -22,7 +22,6 @@
 package org.talend.repository.ui.actions.documentation;
 
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.wizard.WizardDialog;
@@ -99,7 +98,7 @@ public class UpdateDocumentationAction extends AContextualAction {
         if (node.getType() == ENodeType.SIMPLE_FOLDER || node.getType() == ENodeType.SYSTEM_FOLDER) {
             path = RepositoryNodeUtilities.getPath(node);
         } else {
-            path = new Path("");
+            path = RepositoryNodeUtilities.getPath(node);
         }
         return path;
     }

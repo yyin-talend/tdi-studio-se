@@ -39,8 +39,9 @@ public class Step0WizardPage extends PropertiesWizardPage {
 
     private ERepositoryObjectType type;
 
-    public Step0WizardPage(Property property, IPath destinationPath, ERepositoryObjectType type, boolean readOnly) {
-        super("WizardPage", property, destinationPath, readOnly);
+    public Step0WizardPage(Property property, IPath destinationPath, ERepositoryObjectType type, boolean readOnly,
+            boolean editPath) {
+        super("WizardPage", property, destinationPath, readOnly, editPath);
         this.type = type;
 
         setTitle("title");

@@ -48,6 +48,8 @@ public class SimpleBusinessCreationWizard extends RepositoryWizard {
 
     private BusinessProcessItem businessProcessItem;
 
+    private SimpleBusinessCreationWizardPage mainPage;
+
     public SimpleBusinessCreationWizard(IWorkbench workbench, IPath destinationPath) {
 
         super(workbench, true);
@@ -66,7 +68,8 @@ public class SimpleBusinessCreationWizard extends RepositoryWizard {
     }
 
     public void addPages() {
-        addPage(new SimpleBusinessCreationWizardPage(property, destinationPath));
+        mainPage = new SimpleBusinessCreationWizardPage(property, destinationPath);
+        addPage(mainPage);
     }
 
     public boolean performFinish() {
@@ -81,7 +84,7 @@ public class SimpleBusinessCreationWizard extends RepositoryWizard {
         diagramResourceManager.updateFromResource(businessProcessItem, file);
 
         try {
-            repositoryFactory.create(businessProcessItem, destinationPath);
+            repositoryFactory.create(businessProcessItem, mainPage.getDestinationPath());
         } catch (PersistenceException e1) {
             throw new IllegalStateException(e1);
         }

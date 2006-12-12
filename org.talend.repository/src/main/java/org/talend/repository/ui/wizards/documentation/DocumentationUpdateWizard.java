@@ -77,6 +77,7 @@ public class DocumentationUpdateWizard extends RepositoryWizard implements IDocu
         mainPage = new DocumentationPage(documentationItem.getProperty(), pathToSave);
         mainPage.setDescription("Update the Documentation");
         mainPage.setUpdate(true);
+        mainPage.setEditPath(false);
         addPage(mainPage);
     }
 
