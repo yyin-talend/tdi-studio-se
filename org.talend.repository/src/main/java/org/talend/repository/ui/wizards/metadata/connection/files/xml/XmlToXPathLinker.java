@@ -22,8 +22,10 @@
 package org.talend.repository.ui.wizards.metadata.connection.files.xml;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.swt.SWT;
@@ -35,7 +37,6 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
-import org.talend.commons.ui.swt.drawing.background.IBackgroundRefresher;
 import org.talend.commons.ui.swt.drawing.link.BezierHorizontalLink;
 import org.talend.commons.ui.swt.drawing.link.ExtremityEastArrow;
 import org.talend.commons.ui.swt.drawing.link.IExtremityLink;
@@ -43,6 +44,9 @@ import org.talend.commons.ui.swt.drawing.link.IStyleLink;
 import org.talend.commons.ui.swt.drawing.link.LinkDescriptor;
 import org.talend.commons.ui.swt.drawing.link.StyleLink;
 import org.talend.commons.ui.swt.drawing.link.TreeExtremityDescriptor;
+import org.talend.commons.ui.swt.extended.table.ExtendedControlEvent;
+import org.talend.commons.ui.swt.extended.table.IExtendedControlListener;
+import org.talend.commons.ui.swt.extended.table.AbstractExtendedControlViewer.EVENT_TYPE;
 import org.talend.commons.ui.swt.linking.TreeToTablesLinker;
 import org.talend.commons.ui.swt.proposal.TextCellEditorWithProposal;
 import org.talend.commons.ui.swt.proposal.xpath.XPathProposalProvider;
@@ -81,6 +85,8 @@ public class XmlToXPathLinker extends TreeToTablesLinker<Object, Object> {
 
     private StyleLink selectedLoopStyleLink;
 
+    private Map<String, List<Node>> loopXpathToNodesCache = new HashMap<String, List<Node>>();
+
     /**
      * DOC amaumont XmlToMetadataTableLinker constructor comment.
      * 
@@ -101,12 +107,11 @@ public class XmlToXPathLinker extends TreeToTablesLinker<Object, Object> {
         this.treePopulator = treePopulator;
         this.loopTableEditorView = loopTableEditorView;
         this.fieldsTableEditorView = fieldsTableEditorView;
-        this.nodeRetriever = new NodeRetriever(treePopulator.getFilePath());
-        XPathProposalProvider proposalProvider = new XPathProposalProvider(this.nodeRetriever);
+        this.nodeRetriever = new NodeRetriever(treePopulator.getFilePath(), getCurrentLoopXPath());
         TextCellEditorWithProposal xPathCellEditor = loopTableEditorView.getXPathCellEditor();
-        xPathCellEditor.setContentProposalProvider(proposalProvider);
+        xPathCellEditor.setContentProposalProvider(new XPathProposalProvider(this.nodeRetriever, false));
         xPathCellEditor = fieldsTableEditorView.getXPathCellEditor();
-        xPathCellEditor.setContentProposalProvider(proposalProvider);
+        xPathCellEditor.setContentProposalProvider(new XPathProposalProvider(this.nodeRetriever, true));
         init();
     }
 
@@ -132,6 +137,7 @@ public class XmlToXPathLinker extends TreeToTablesLinker<Object, Object> {
         unselectedStyleLink.setDrawableLink(new BezierHorizontalLink(unselectedStyleLink));
         unselectedStyleLink.setForegroundColor(getBgDrawableComposite().getDisplay().getSystemColor(SWT.COLOR_GRAY));
         unselectedStyleLink.setLineWidth(2);
+        unselectedStyleLink.setExtremity2(new ExtremityEastArrow(unselectedStyleLink, -ExtremityEastArrow.WIDTH_ARROW - 2, 0));
         setUnselectedStyleLink(unselectedStyleLink);
 
         StyleLink selectedStyleLink = new StyleLink();
@@ -159,7 +165,7 @@ public class XmlToXPathLinker extends TreeToTablesLinker<Object, Object> {
      * DOC amaumont Comment method "createLinks".
      */
     public void createLinks() {
-        TableItem[] tableItems = loopTableEditorView.getTableViewerCreator().getTable().getItems();
+        TableItem[] tableItems = loopTableEditorView.getTable().getItems();
         List<XmlXPathLoopDescriptor> xpathLoopDescriptorList = loopTableEditorView.getModel().getBeansList();
         for (int i = 0; i < tableItems.length; i++) {
             TableItem tableItem = tableItems[i];
@@ -168,13 +174,13 @@ public class XmlToXPathLinker extends TreeToTablesLinker<Object, Object> {
             createLoopLinks(xPathQuery, tableItem);
         }
 
-        tableItems = fieldsTableEditorView.getTableViewerCreator().getTable().getItems();
+        tableItems = fieldsTableEditorView.getTable().getItems();
         List<SchemaTarget> schemaTargetList = fieldsTableEditorView.getModel().getBeansList();
         for (int i = 0; i < tableItems.length; i++) {
             TableItem tableItem = tableItems[i];
             SchemaTarget schemaTarget = schemaTargetList.get(i);
-            String xPathQuery = schemaTarget.getRelativeXPathQuery();
-            createFieldLinks(xPathQuery, tableItem);
+            String relativeXpathQuery = schemaTarget.getRelativeXPathQuery();
+            createFieldLinks(relativeXpathQuery, tableItem);
         }
         getBackgroundRefresher().refreshBackground();
     }
@@ -196,9 +202,20 @@ public class XmlToXPathLinker extends TreeToTablesLinker<Object, Object> {
 
             private void handleModifiedBeanEvent(ModifiedBeanEvent<XmlXPathLoopDescriptor> event) {
                 if (event.column == loopTableEditorView.getXPathColumn()) {
-                    onXPathValueChanged(loopTable, (String) event.previousValue, (String) event.newValue, event.index);
+                    onXPathValueChanged(loopTable, (String) event.newValue, event.index);
+                    parseAllFieldsXPathExpressions();
                 }
 
+            }
+
+        });
+
+        this.loopTableEditorView.getExtendedTableViewer().addListener(new IExtendedControlListener() {
+
+            public void handleEvent(ExtendedControlEvent event) {
+                if (event.getType() == EVENT_TYPE.MODEL_CHANGED) {
+                    nodeRetriever.setCurrentLoopXPath(getCurrentLoopXPath());
+                }
             }
 
         });
@@ -220,7 +237,7 @@ public class XmlToXPathLinker extends TreeToTablesLinker<Object, Object> {
 
         XmlExtractorFieldModel schemaModel = this.fieldsTableEditorView.getModel();
 
-        final Table fieldsTable = this.fieldsTableEditorView.getTableViewerCreator().getTable();
+        final Table fieldsTable = this.fieldsTableEditorView.getTable();
 
         schemaModel.addModifiedBeanListener(new IModifiedBeanListener<SchemaTarget>() {
 
@@ -230,7 +247,7 @@ public class XmlToXPathLinker extends TreeToTablesLinker<Object, Object> {
 
             private void handleModifiedBeanEvent(ModifiedBeanEvent<SchemaTarget> event) {
                 if (event.column == fieldsTableEditorView.getXPathColumn()) {
-                    onXPathValueChanged(fieldsTable, (String) event.previousValue, (String) event.newValue, event.index);
+                    onXPathValueChanged(fieldsTable, (String) event.newValue, event.index);
                 }
 
             }
@@ -311,7 +328,7 @@ public class XmlToXPathLinker extends TreeToTablesLinker<Object, Object> {
             // event.indicesTarget;
             Collection<SchemaTarget> addedObjects = event.addedObjects;
             for (SchemaTarget schemaTarget : addedObjects) {
-                TableItem tableItem = TableUtils.getTableItem(fieldsTableEditorView.getTableViewerCreator().getTable(), schemaTarget);
+                TableItem tableItem = TableUtils.getTableItem(fieldsTableEditorView.getTable(), schemaTarget);
                 if (tableItem == null) {
                     throw new IllegalStateException("tableItem shouldn't be null");
                 }
@@ -335,7 +352,8 @@ public class XmlToXPathLinker extends TreeToTablesLinker<Object, Object> {
      * @param dataItem2
      */
     public void addLoopLink(TreeItem treeItem, Object dataItem1, Table table, XmlXPathLoopDescriptor dataItem2) {
-        addLink(treeItem, dataItem1, table, dataItem2);
+        LinkDescriptor<TreeItem, Object, Table, Object> link = addLink(treeItem, dataItem1, table, dataItem2);
+        link.setStyleLink(getSelectedLoopStyleLink());
     }
 
     /**
@@ -346,12 +364,13 @@ public class XmlToXPathLinker extends TreeToTablesLinker<Object, Object> {
      * @param table
      * @param dataItem2
      */
-    private void addLink(TreeItem treeItem, Object dataItem1, Table table, Object dataItem2) {
+    private LinkDescriptor<TreeItem, Object, Table, Object> addLink(TreeItem treeItem, Object dataItem1, Table table, Object dataItem2) {
         LinkDescriptor<TreeItem, Object, Table, Object> link = new LinkDescriptor<TreeItem, Object, Table, Object>(
                 new TreeExtremityDescriptor(treeItem, dataItem1), new ExtremityLink<Table, Object>(table, dataItem2));
 
         link.setStyleLink(getUnselectedStyleLink());
         getLinksManager().addLink(link);
+        return link;
     }
 
     /**
@@ -363,7 +382,8 @@ public class XmlToXPathLinker extends TreeToTablesLinker<Object, Object> {
      * @param dataItem2
      */
     public void addFieldLink(TreeItem treeItem, Object dataItem1, Table table, SchemaTarget dataItem2) {
-        addLink(treeItem, dataItem1, table, dataItem2);
+        LinkDescriptor<TreeItem, Object, Table, Object> link = addLink(treeItem, dataItem1, table, dataItem2);
+//        link.setStyleLink(getSelectedStyleLink());
     }
 
     /**
@@ -381,12 +401,13 @@ public class XmlToXPathLinker extends TreeToTablesLinker<Object, Object> {
      * DOC amaumont Comment method "onXPathValueChanged".
      * 
      * @param table
-     * 
-     * @param previousValue
      * @param newValue
      * @param itemIndex
      */
-    public void onXPathValueChanged(Table table, String previousValue, String newValue, int itemIndex) {
+    public void onXPathValueChanged(Table table, String newValue, int itemIndex) {
+        if (isLoopTable(table)) {
+            nodeRetriever.setCurrentLoopXPath(newValue);
+        }
         TableItem tableItem = table.getItem(itemIndex);
         linksManager.removeLinksFromDataItem2(tableItem.getData());
         if (isLoopTable(table)) {
@@ -439,20 +460,30 @@ public class XmlToXPathLinker extends TreeToTablesLinker<Object, Object> {
     /**
      * DOC amaumont Comment method "addLinks".
      * 
-     * @param xPathExpression
+     * @param relativeXpath
      * @param tableItemTarget
      */
-    private void createFieldLinks(String xPathExpression, TableItem tableItemTarget) {
+    private void createFieldLinks(String relativeXpath, TableItem tableItemTarget) {
+
         Set<String> alreadyProcessedXPath = new HashSet<String>();
         // TimeMeasure.start(xPathExpression);
-        List<Node> nodeList = this.nodeRetriever.retrieveListOfNodes(xPathExpression);
+        String currentLoopXPath = getCurrentLoopXPath();
+
+        // List<Node> nodeList = loopXpathToNodesCache.get(currentLoopXPath);
+        // if (loopNodeList == null) {
+        List<Node> nodeList = this.nodeRetriever.retrieveListOfNodes(currentLoopXPath + "/" + relativeXpath);
+        // }
         // TimeMeasure.end(xPathExpression);
         // System.out.println("nodeList.size()="+nodeList.size());
 
         if (nodeList != null) {
+            // List<Node> loopNodeListCache = new ArrayList<Node>();
             for (Node node : nodeList) {
                 String absoluteXPathFromNode = NodeRetriever.getAbsoluteXPathFromNode(node);
                 if (!alreadyProcessedXPath.contains(absoluteXPathFromNode)) {
+                    // loopNodeListCache.add(node);
+                    // this.nodeRetriever.retrieveListOfNodes(relativeXpath, node);
+
                     TreeItem treeItemFromAbsoluteXPath = treePopulator.getTreeItem(absoluteXPathFromNode);
                     if (treeItemFromAbsoluteXPath != null) {
                         addFieldLink(treeItemFromAbsoluteXPath, (Object) treeItemFromAbsoluteXPath.getData(), tableItemTarget.getParent(),
@@ -461,6 +492,7 @@ public class XmlToXPathLinker extends TreeToTablesLinker<Object, Object> {
                     }
                 }
             }
+            // loopXpathToNodesCache.put(currentLoopXPath, nodeList);
         }
     }
 
@@ -548,19 +580,20 @@ public class XmlToXPathLinker extends TreeToTablesLinker<Object, Object> {
 
             if (extremity.getGraphicalObject() == loopTableEditorView.getTableViewerCreator().getTable()
                     || otherExtremity.getGraphicalObject() == loopTableEditorView.getTableViewerCreator().getTable()) {
-                styleLink = getSelectedLoopStyleLink();
+                 styleLink = getSelectedLoopStyleLink();
             } else {
 
                 if (currentItemIsSelected) {
                     // if (isTable && currentControl == loopTableEditorView.getTableViewerCreator().getTable()) {
                     // styleLink = getSelectedLoopStyleLink();
                     // } else
-                    if (!isTable && otherExtremity.getGraphicalObject() == loopTableEditorView.getTableViewerCreator().getTable()) {
-                        styleLink = getSelectedLoopStyleLink();
-                    } else {
-                        styleLink = getSelectedStyleLink();
-                    }
+                    // if (!isTable && otherExtremity.getGraphicalObject() ==
+                    // loopTableEditorView.getTableViewerCreator().getTable()) {
+                    // styleLink = getSelectedLoopStyleLink();
+                    // } else {
+                    // }
 
+                    styleLink = getSelectedStyleLink();
                     if (isTable) {
                         itemsToSelect.add(TableUtils.getTableItem((Table) currentControl, otherExtremity.getDataItem()));
                     } else {
@@ -605,6 +638,24 @@ public class XmlToXPathLinker extends TreeToTablesLinker<Object, Object> {
             this.selectedLoopStyleLink = styleLink;
         }
         return this.selectedLoopStyleLink;
+    }
+
+    public String getCurrentLoopXPath() {
+        return loopTableEditorView.getExtendedTableModel().getBeansList().get(0).getAbsoluteXPathQuery();
+    }
+    
+    
+    public void parseAllFieldsXPathExpressions() {
+        
+        List<SchemaTarget> beansList = fieldsTableEditorView.getExtendedTableModel().getBeansList();
+        
+        int lstSize = beansList.size();
+        for (int i = 0; i < lstSize; i++) {
+            SchemaTarget schemaTarget = beansList.get(i);
+            onXPathValueChanged(fieldsTableEditorView.getTable(), schemaTarget.getRelativeXPathQuery(), i);
+        }
+        
+        
     }
 
 }

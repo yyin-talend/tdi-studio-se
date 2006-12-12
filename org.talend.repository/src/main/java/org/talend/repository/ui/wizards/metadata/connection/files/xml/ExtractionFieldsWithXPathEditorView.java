@@ -167,7 +167,7 @@ public class ExtractionFieldsWithXPathEditorView extends AbstractDataTableEditor
 
         column = new TableViewerCreatorColumn(tableViewerCreator);
         xPathColumn = column;
-        column.setTitle("Relative XPath expression from loop");
+        column.setTitle("Relative XPath expression from XPath loop expression");
         column.setBeanPropertyAccessors(new IBeanPropertyAccessors<SchemaTarget, String>() {
 
             public String get(SchemaTarget bean) {
@@ -185,7 +185,7 @@ public class ExtractionFieldsWithXPathEditorView extends AbstractDataTableEditor
             @Override
             public void newValidValueTyped(int itemIndex, Object previousValue, Object newValue, CELL_EDITOR_STATE state) {
                 if (state == CELL_EDITOR_STATE.EDITING) {
-                    linker.onXPathValueChanged(table, previousValue.toString(), newValue.toString(), itemIndex);
+                    linker.onXPathValueChanged(table, newValue.toString(), itemIndex);
                 }
 
             }

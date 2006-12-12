@@ -755,11 +755,11 @@ public class UIManager {
     }
 
     private void unselectAllInputMetaDataEntries() {
-        getInputMetaEditorView().getTableViewerCreator().getTable().deselectAll();
+        getInputMetaEditorView().getTable().deselectAll();
     }
 
     private void unselectAllOutputMetaDataEntries() {
-        getOutputMetaEditorView().getTableViewerCreator().getTable().deselectAll();
+        getOutputMetaEditorView().getTable().deselectAll();
     }
 
     public void setEntryState(MapperManager pMapperManager, EntryState entryState, ITableEntry entry) {

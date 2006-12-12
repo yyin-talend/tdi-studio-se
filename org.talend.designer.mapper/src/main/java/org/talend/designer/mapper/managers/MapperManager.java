@@ -513,7 +513,7 @@ public class MapperManager {
      */
     public boolean isTableOfInputMetadataEditor(Table table) {
         MetadataTableEditorView inputEditorView = uiManager.getInputMetaEditorView();
-        Table tableEditorView = inputEditorView.getTableViewerCreator().getTable();
+        Table tableEditorView = inputEditorView.getTable();
         return tableEditorView == table;
     }
 
@@ -525,7 +525,7 @@ public class MapperManager {
      */
     public boolean isTableOfOutputMetadataEditor(Table table) {
         MetadataTableEditorView outputEditorView = uiManager.getOutputMetaEditorView();
-        Table tableEditorView = outputEditorView.getTableViewerCreator().getTable();
+        Table tableEditorView = outputEditorView.getTable();
         return tableEditorView == table;
     }
 
