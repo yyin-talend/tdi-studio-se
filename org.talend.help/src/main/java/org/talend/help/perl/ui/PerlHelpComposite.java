@@ -136,7 +136,6 @@ public class PerlHelpComposite extends Composite {
 
     private static void openError(Exception e1) {
         Display workbenchDisplay = PlatformUI.getWorkbench().getDisplay();
-        e1.printStackTrace();
         ErrorDialog.openError(workbenchDisplay.getActiveShell(), "Error occured", e1.getMessage(), null);
     }
 
