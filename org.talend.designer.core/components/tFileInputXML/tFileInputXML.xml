@@ -69,6 +69,15 @@
     </PARAMETER>
 
     <PARAMETER
+      NAME="LIMIT"
+      FIELD="TEXT"
+      NUM_ROW="5"
+      REQUIRED="false"
+    >
+      <DEFAULT></DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER
       NAME="ENCODING"
       FIELD="TEXT"
       NUM_ROW="6"

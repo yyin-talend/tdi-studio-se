@@ -38,11 +38,21 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
             node,
             "__FILENAME__"
         );
+
+        String limit = ElementParameterParser.getValue(
+            node,
+            "__LIMIT__"
+        );
+
+        if (limit.equals("")) {
+            limit = "undef";
+        }
 %>
 
 my %desc_<%=cid %> = (
     filename      => <%=filename%>,
     loop_query    => <%=loopQuery%>,
+    limit         => <%=limit%>,
     schema        => [
 <%
         for (IMetadataColumn column: metadata.getListColumns()) {
@@ -89,6 +99,15 @@ my $nb_line_<%=cid%> = 0;
 
 foreach my $line_<%=cid%> ($root_<%=cid%>->findnodes(<%=loopQuery%>)) {
     $nb_line_<%=cid%>++;
+
+<%
+        if (!limit.equals("undef")) {
+%>
+    last if $nb_line_<%=cid%> > $desc_<%=cid%>{limit};
+<%
+        }
+%>
+
 <%
         if (stats) {
 %>
