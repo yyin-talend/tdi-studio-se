@@ -224,8 +224,8 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
 
         loopTableEditorView = new ExtractionLoopWithXPathEditorView(loopModel, group);
         loopTableEditorView.getExtendedTableViewer().setCommandStack(commandStack);
-        GridData data2 = new GridData(GridData.FILL_BOTH);
-        data2.minimumHeight = 70;
+        GridData data2 = new GridData(GridData.FILL_HORIZONTAL);
+        data2.heightHint = 70;
         loopTableEditorView.getMainComposite().setLayoutData(data2);
 
         // Messages.getString("FileStep3.metadataDescription")

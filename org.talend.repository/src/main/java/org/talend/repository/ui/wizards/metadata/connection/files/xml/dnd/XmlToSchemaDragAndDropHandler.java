@@ -24,6 +24,7 @@ package org.talend.repository.ui.wizards.metadata.connection.files.xml.dnd;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.datatools.enablement.oda.xml.util.ui.XPathPopulationUtil;
 import org.eclipse.jface.util.TransferDragSourceListener;
 import org.eclipse.jface.util.TransferDropTargetListener;
 import org.eclipse.swt.dnd.DND;
@@ -35,12 +36,19 @@ import org.eclipse.swt.dnd.DropTargetEvent;
 import org.eclipse.swt.dnd.DropTargetListener;
 import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
+import org.talend.commons.ui.swt.advanced.dataeditor.commands.ExtendedTableAddCommand;
+import org.talend.commons.ui.swt.extended.table.ExtendedTableModel;
+import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumn;
 import org.talend.commons.ui.utils.TableUtils;
 import org.talend.core.model.metadata.builder.connection.SchemaTarget;
+import org.talend.core.model.metadata.builder.connection.XmlXPathLoopDescriptor;
+import org.talend.core.model.targetschema.editor.XmlExtractorFieldModel;
 import org.talend.repository.ui.wizards.metadata.connection.files.xml.ExtractionFieldsWithXPathEditorView;
+import org.talend.repository.ui.wizards.metadata.connection.files.xml.ExtractionLoopWithXPathEditorView;
 import org.talend.repository.ui.wizards.metadata.connection.files.xml.XmlToXPathLinker;
 
 /**
@@ -62,6 +70,7 @@ public class XmlToSchemaDragAndDropHandler {
     private Tree tree;
 
     private Table fieldsTable;
+
     private Table loopTable;
 
     private DropTarget loopDropTarget;
@@ -239,27 +248,78 @@ public class XmlToSchemaDragAndDropHandler {
          */
         public void drop(DropTargetEvent event) {
             System.out.println("\n>>drop");
+            DropTarget dropTarget = (DropTarget) event.getSource();
+            Control control = dropTarget.getControl();
+
             XmlToSchemaDraggedData draggedData = XPathTransfer.getInstance().getDraggedData();
 
             List<TransferableXPathEntry> transferableEntryList = draggedData.getTransferableEntryList();
-            int startInsertAtThisIndex = TableUtils.getItemIndexWhereInsertFromPosition(fieldsTable, new Point(event.x, event.y));
 
-            List<SchemaTarget> list = new ArrayList<SchemaTarget>(transferableEntryList.size());
-            for (TransferableXPathEntry entry : transferableEntryList) {
+            ExtractionLoopWithXPathEditorView loopTableEditorView = linker.getLoopTableEditorView();
+            ExtendedTableModel<XmlXPathLoopDescriptor> extendedTableModel = loopTableEditorView.getExtendedTableModel();
+            XmlXPathLoopDescriptor pathLoopDescriptor = extendedTableModel.getBeansList().get(0);
 
-                SchemaTarget newTargetEntry = linker.getNewSchemaTargetEntry(entry.getAbsoluteXPath());
-                list.add(newTargetEntry);
+            if (linker.isLoopTable((Table) control)) {
+
+                if (transferableEntryList.size() > 0) {
+
+                    String absoluteXPath = transferableEntryList.get(0).getAbsoluteXPath();
+
+                    TableViewerCreatorColumn xpathColumn = linker.getLoopTableEditorView().getXPathColumn();
+                    loopTableEditorView.getTableViewerCreator().setBeanValue(xpathColumn, pathLoopDescriptor, absoluteXPath, true);
+                }
+
+            } else {
+
+                ExtractionFieldsWithXPathEditorView tableEditorView = linker.getFieldsTableEditorView();
+                Integer startInsertAtThisIndex = TableUtils.getItemIndexWhereInsertFromPosition(fieldsTable, new Point(event.x, event.y));
+                List<SchemaTarget> list = new ArrayList<SchemaTarget>(transferableEntryList.size());
+                for (TransferableXPathEntry entry : transferableEntryList) {
+
+                    ArrayList<String> loopXpathNodes = linker.getLoopXpathNodes();
+                    if (loopXpathNodes.size() > 0) {
+                        String loopPath = loopXpathNodes.get(0);
+                        String relativeXPath = XPathPopulationUtil.populateColumnPath(loopPath, entry.getAbsoluteXPath());
+
+                        if (relativeXPath.startsWith("/")) {
+                            relativeXPath = relativeXPath.substring(1);
+                        }
+                        if (relativeXPath.endsWith("../")) {
+                            relativeXPath = relativeXPath.substring(0, relativeXPath.length() - 1);
+                        }
+                        if (relativeXPath.equals("")) {
+                            relativeXPath = ".";
+                        }
+
+                        SchemaTarget newTargetEntry = linker.getNewSchemaTargetEntry(relativeXPath);
+                        list.add(newTargetEntry);
+                    }
+                }
+
+                tableEditorView.getTableViewerCreator().getTableViewer().refresh();
+
+                loopTable.deselectAll();
+                fieldsTable.deselectAll();
+
+                linker.getTree().deselectAll();
+
+                if (list.size() > 0) {
+                    ExtendedTableAddCommand addCommand = new ExtendedTableAddCommand(tableEditorView.getModel(), list,
+                            startInsertAtThisIndex);
+
+                    tableEditorView.getExtendedTableViewer().executeCommand(addCommand);
+                }
+
             }
-            ExtractionFieldsWithXPathEditorView tableEditorView = linker.getFieldsTableEditorView();
-            
-            loopTable.deselectAll();
-            fieldsTable.deselectAll();
-            
-            linker.getTree().deselectAll();
-            linker.updateLinksStyleAndControlsSelection((Table)event.widget);
-            tableEditorView.getModel().addAll(startInsertAtThisIndex, list);
+            linker.updateLinksStyleAndControlsSelection(control);
         }
 
     }
 
+    public static void main(String[] args) {
+        String relativePath = XPathPopulationUtil.populateColumnPath("/doc/members/member/returns", "/doc/members");
+        System.out.println(relativePath);
+        relativePath = XPathPopulationUtil.populateColumnPath("/doc/members/member/returns/see/@cref", "/doc/members/member/summary/@name");
+        System.out.println(relativePath);
+    }
 }
