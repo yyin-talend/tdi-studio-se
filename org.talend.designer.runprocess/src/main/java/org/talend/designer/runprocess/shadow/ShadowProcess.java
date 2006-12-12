@@ -126,9 +126,8 @@ public class ShadowProcess<T extends IProcessDescription> {
             ps = new FileinToXmlProcess<FileInputRegExpNode>(inRegExpNode, outNode);
             break;
         case FILE_XML:
-            FileInputXmlNode inXmlNode = new FileInputXmlNode("'" + inPath.toOSString() + "'", description
-                    .getRowSeparator(), description.getPattern(), description.getLimitRows(), description
-                    .getHeaderRow(), description.getFooterRow(), description.getRemoveEmptyRowsToSkip());
+//PTODO cantoine voir a passer la liste des Params pour le runShadow
+            FileInputXmlNode inXmlNode = new FileInputXmlNode("'" + inPath.toOSString() + "'", description.getLoopQuery(), description.getMapping());
             ps = new FileinToXmlProcess<FileInputXmlNode>(inXmlNode, outNode);
             break;
         case FILE_LDIF:

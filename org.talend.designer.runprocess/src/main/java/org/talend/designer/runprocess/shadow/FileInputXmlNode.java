@@ -21,6 +21,12 @@
 // ============================================================================
 package org.talend.designer.runprocess.shadow;
 
+import java.util.List;
+import java.util.Map;
+
+import org.talend.core.model.metadata.IMetadataTable;
+import org.talend.core.model.process.ElementParameterParser;
+
 /**
  * DOC cantoine class global comment. Detailled comment <br/>
  * 
@@ -29,26 +35,56 @@ package org.talend.designer.runprocess.shadow;
  */
 public class FileInputXmlNode extends FileInputNode {
 
+    private List<Map<String, String>> mapping = null;
+    
     /**
      * Constructs a new FileInputNode.
      */
     
     //PTODO cantoine : view for the XmlFile to send PARAMETERS for ProcessDescription&ProcessShadow
     // Be careful super("tFileInputXml");
-    public FileInputXmlNode(String filename, String rowSep, String regex, int limitRows, int headerRows,
-            int footerRows, boolean removeEmptyRow) {
+    public FileInputXmlNode(String filename, String loopQuery, List<Map<String, String>> mapping) {
         super("tFileInputXML");
-
-        String[] paramNames = new String[] { "FILENAME", "ROWSEPARATOR", "REGEX", "LIMIT", "HEADER", "FOOTER",
-                "REMOVE_EMPTY_ROW" };
-        String[] paramValues = new String[] { filename, rowSep, regex, Integer.toString(limitRows),
-                Integer.toString(headerRows), Integer.toString(footerRows), Boolean.toString(removeEmptyRow) };
+        String[] paramNames = new String[] { "FILENAME", "LOOP_QUERY", "MAPPING"};
+        Object[] paramValues = new Object[] { filename, loopQuery, mapping };
 
         for (int i = 0; i < paramNames.length; i++) {
             if (paramValues[i] != null) {
-                TextElementParameter param = new TextElementParameter(paramNames[i], paramValues[i]);
+                ObjectElementParameter param = new ObjectElementParameter(paramNames[i], paramValues[i]);
                 addParameter(param);
             }
         }
+        
+//        setMappingList(mapping);
+        
+//        Object test = ElementParameterParser.getObjectValue(this, "__MAPPING__");
+        
+//        List<Map<String, String>> mapping2 =
+//            (List<Map<String,String>>)ElementParameterParser.getObjectValue(
+//                this,
+//                "__MAPPING__"
+//            );
+        
     }
+    
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.runprocess.shadow.ShadowNode#getMappingList()
+     */
+    @Override
+    public List<Map<String, String>> getMappingList() {
+        return mapping;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.runprocess.shadow.ShadowNode#setMappingList(java.util.List)
+     */
+    @Override
+    public void setMappingList(List<Map<String, String>> mapping) {
+        this.mapping = mapping;
+    }
+    
 }

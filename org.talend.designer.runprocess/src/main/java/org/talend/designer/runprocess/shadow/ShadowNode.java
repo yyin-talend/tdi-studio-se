@@ -24,6 +24,7 @@ package org.talend.designer.runprocess.shadow;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import org.talend.commons.exception.SystemException;
 import org.talend.core.model.components.IComponent;
@@ -146,6 +147,16 @@ public abstract class ShadowNode implements INode {
     /*
      * (non-Javadoc)
      * 
+     * @see org.talend.core.model.process.INode#getMappingList()
+     */
+    public List<Map<String, String>> getMappingList() {
+        //PTODO cantoine : implement.
+        return null;
+    }
+    
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.core.model.process.INode#getOutgoingConnections()
      */
     public List<? extends IConnection> getOutgoingConnections() {
@@ -253,7 +264,15 @@ public abstract class ShadowNode implements INode {
         // TODO Auto-generated method stub
 
     }
-
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.process.INode#setMappingList(java.util.List)
+     */
+    public void setMappingList(List<Map<String, String>> mapping) {
+        // TODO Auto-generated method stub
+    }
+    
     public Boolean isMultipleMethods() {
         return new Boolean(true);
     }
