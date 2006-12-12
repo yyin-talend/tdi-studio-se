@@ -24,7 +24,6 @@
 
 use File::Basename;
 use talend::filesOp;
-use talend::misc;
 
 my @files = getFileList(
         directory      => <%=ElementParameterParser.getValue(node, "__DIRECTORY__") %>,

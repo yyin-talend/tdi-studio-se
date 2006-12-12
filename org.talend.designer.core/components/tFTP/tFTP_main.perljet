@@ -32,7 +32,6 @@ List<Map<String, String>> files = (List<Map<String,String>>)ElementParameterPars
 // component id
 String cid = metadata.getTableName();
 %>
-use talend::misc;
 
 # keep all "my" variables local to the block, thus we can use several
 # tFTP components in the same process

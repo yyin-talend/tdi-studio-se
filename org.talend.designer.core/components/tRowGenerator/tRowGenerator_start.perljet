@@ -26,8 +26,6 @@
                     List<Map<String, String>> tableValues = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__VALUES__");
 %>
 
-use talend::misc;
-
 my %desc_<%=cid %> = (
     nb_rows       => <%=ElementParameterParser.getValue(node, "__NB_ROWS__") %>,
     schema        => [
