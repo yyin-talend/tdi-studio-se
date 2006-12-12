@@ -22,6 +22,7 @@
 package org.talend.repository.preview;
 
 import java.util.List;
+import java.util.Map;
 
 import org.talend.core.model.metadata.IMetadataTable;
 
@@ -66,6 +67,10 @@ public abstract class AbstractProcessDescription implements IProcessDescription{
     private String encoding;
     
     private List<IMetadataTable> schema;
+    
+    private String loopQuery;
+    
+    private List<Map<String, String> > mapping;
     
     /**
      * Getter for escapeCharacter.
@@ -301,4 +306,39 @@ public abstract class AbstractProcessDescription implements IProcessDescription{
         this.schema = schema;
     }
 
+    /**
+     * Getter for loopQuery.
+     * 
+     * @return the loopQuery
+     */
+    public String getLoopQuery() {
+        return this.loopQuery;
+    }
+
+    /**
+     * Sets the loopQuery.
+     * 
+     * @param loopQuery the loopQuery to set
+     */
+    public void setLoopQuery(String loopQuery) {
+        this.loopQuery = loopQuery;
+    }
+    
+    /**
+     * Getter for mapping.
+     * 
+     * @return the mapping
+     */
+    public List<Map<String, String>> getMapping() {
+        return this.mapping;
+    }
+
+    /**
+     * Sets the mapping.
+     * 
+     * @param mapping the mapping to set
+     */
+    public void setMapping(List<Map<String, String>> mapping) {
+        this.mapping = mapping;
+    }
 }

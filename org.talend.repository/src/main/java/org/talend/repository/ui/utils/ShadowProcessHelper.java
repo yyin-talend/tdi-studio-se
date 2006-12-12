@@ -22,8 +22,10 @@
 package org.talend.repository.ui.utils;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.CoreException;
@@ -36,7 +38,9 @@ import org.talend.core.model.metadata.MetadataColumn;
 import org.talend.core.model.metadata.MetadataTable;
 import org.talend.core.model.metadata.builder.connection.FileConnection;
 import org.talend.core.model.metadata.builder.connection.LdifFileConnection;
+import org.talend.core.model.metadata.builder.connection.SchemaTarget;
 import org.talend.core.model.metadata.builder.connection.XmlFileConnection;
+import org.talend.core.model.metadata.builder.connection.XmlXPathLoopDescriptor;
 import org.talend.core.utils.XmlArray;
 import org.talend.repository.preview.IPreview;
 import org.talend.repository.preview.ProcessDescription;
@@ -75,13 +79,14 @@ public class ShadowProcessHelper {
         processDescription.setFooterRow(connection.getFooterValue());
         processDescription.setLimitRows(connection.getLimitValue());
 
-        if (connection.getEscapeChar() != null && !connection.getEscapeChar().equals("") && !connection.getEscapeChar().equals("Empty")) {
+        if (connection.getEscapeChar() != null && !connection.getEscapeChar().equals("")
+                && !connection.getEscapeChar().equals("Empty")) {
             processDescription.setEscapeCharacter("'" + connection.getEscapeChar() + "'");
         } else {
             processDescription.setEscapeCharacter("''");
         }
-        if (connection.getTextEnclosure() != null
-                && !connection.getTextEnclosure().equals("") && !connection.getTextEnclosure().equals("Empty")) {
+        if (connection.getTextEnclosure() != null && !connection.getTextEnclosure().equals("")
+                && !connection.getTextEnclosure().equals("Empty")) {
             processDescription.setTextEnclosure("'" + connection.getTextEnclosure() + "'");
         } else {
             processDescription.setTextEnclosure("''");
@@ -103,12 +108,30 @@ public class ShadowProcessHelper {
      */
     public static ProcessDescription getProcessDescription(final XmlFileConnection connection) {
         ProcessDescription processDescription = new ProcessDescription();
-        //PTODO cantoine voir les param envoy� pour le ProcessDescription
+        processDescription.setFilepath(connection.getXmlFilePath());
+        processDescription.setLoopQuery("'"+((XmlXPathLoopDescriptor) connection.getSchema().get(0))
+                .getAbsoluteXPathQuery()+"'");
+
+        List<Map<String, String>> mapping = new ArrayList<Map<String, String>>();
+
+        List<SchemaTarget> schemaTargets = ((XmlXPathLoopDescriptor) connection.getSchema().get(0)).getSchemaTargets();
+
+        if (schemaTargets != null && !schemaTargets.isEmpty()) {
+            Iterator<SchemaTarget> iterate = schemaTargets.iterator();
+            while (iterate.hasNext()) {
+                SchemaTarget schemaTarget = iterate.next();
+                Map<String, String> lineMapping = new HashMap<String, String>();
+                lineMapping.put("QUERY", "'"+schemaTarget.getRelativeXPathQuery()+"'");
+                mapping.add(lineMapping);
+            }
+        }
+        processDescription.setMapping(mapping);
+
         return processDescription;
     }
-    
+
     /**
-     * Create a ProcessDescription and set it width the value of LdifFileConnection. 
+     * Create a ProcessDescription and set it width the value of LdifFileConnection.
      * 
      * This method is usefull to adapt a processDescription before run the shadow process.
      * 
@@ -120,34 +143,34 @@ public class ShadowProcessHelper {
         ProcessDescription processDescription = new ProcessDescription();
         processDescription.setFilepath(connection.getFilePath());
         List<IMetadataTable> tableSchema = new ArrayList<IMetadataTable>();
-        
+
         IMetadataTable table = new MetadataTable();
-        
+
         List<IMetadataColumn> schema = new ArrayList<IMetadataColumn>();
 
-        IMetadataColumn iMetadataDn =  new MetadataColumn();
+        IMetadataColumn iMetadataDn = new MetadataColumn();
         iMetadataDn.setLabel("dn");
         iMetadataDn.setKey(false);
         iMetadataDn.setLength(0);
         iMetadataDn.setNullable(false);
         iMetadataDn.setType("String");
         iMetadataDn.setTalendType("String");
-        
+
         schema.add(iMetadataDn);
-        
+
         if (connection.getValue() != null && !connection.getValue().isEmpty()) {
             Iterator<String> iterate = connection.getValue().iterator();
-            
+
             while (iterate.hasNext()) {
-                
-                IMetadataColumn iMetadataColumn =  new MetadataColumn();
+
+                IMetadataColumn iMetadataColumn = new MetadataColumn();
                 iMetadataColumn.setLabel(iterate.next());
                 iMetadataColumn.setKey(false);
                 iMetadataColumn.setLength(0);
                 iMetadataColumn.setNullable(false);
                 iMetadataColumn.setType("String");
                 iMetadataColumn.setTalendType("String");
-                
+
                 schema.add(iMetadataColumn);
             }
         }
@@ -157,8 +180,7 @@ public class ShadowProcessHelper {
         processDescription.setSchema(tableSchema);
         return processDescription;
     }
-    
-    
+
     /**
      * parse a file describe by a fileConnection in XmlArray. Simple method to run the shadow process from the
      * fileConnection.
@@ -184,7 +206,8 @@ public class ShadowProcessHelper {
         IExtensionRegistry registry = Platform.getExtensionRegistry();
 
         // use the org.talend.repository.filepreview_provider
-        IConfigurationElement[] configurationElements = registry.getConfigurationElementsFor("org.talend.core.filepreview_provider");
+        IConfigurationElement[] configurationElements = registry
+                .getConfigurationElementsFor("org.talend.core.filepreview_provider");
 
         if (configurationElements.length > 0) {
             IPreview iPreview = (IPreview) configurationElements[0].createExecutableExtension("class");
