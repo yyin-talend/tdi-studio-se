@@ -21,9 +21,19 @@
 // ============================================================================
 package org.talend.repository.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.eclipse.emf.ecore.util.EcoreUtil;
+import org.talend.commons.exception.PersistenceException;
+import org.talend.commons.utils.data.container.Container;
+import org.talend.commons.utils.data.container.RootContainer;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
+import org.talend.core.model.properties.ConnectionItem;
+import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.core.model.repository.IRepositoryObject;
 
 /**
  * DOC smallet class global comment. Detailled comment <br/>
@@ -82,5 +92,92 @@ public abstract class AbstractRepositoryFactory implements IRepositoryFactory {
     public String toString() {
         return getName();
     }
+
+    /**
+     * Generates the next id for serializable. If no serializable returns 0.
+     * 
+     * @param project the project to scan
+     * 
+     * @return the next id for the project
+     * @throws PersistenceException
+     * @throws PersistenceException if processes cannot be retrieved
+     */
+    public String getNextId() {
+        return EcoreUtil.generateUUID();
+    }
+
+    private void collect(RootContainer<String, IRepositoryObject> rootContainer, List<ConnectionItem> result)
+            throws PersistenceException {
+        for (IRepositoryObject repositoryObject : rootContainer.getAbsoluteMembers().objects()) {
+            ConnectionItem connectionItem = (ConnectionItem) repositoryObject.getProperty().getItem();
+            if (getStatus(connectionItem) != ERepositoryStatus.DELETED) {
+                result.add(connectionItem);
+            }
+        }
+    }
+
+    // gather all the metadata connections (file / db / etc ...)
+    public List<ConnectionItem> getMetadataConnectionsItem() throws PersistenceException {
+        List<ConnectionItem> result = new ArrayList<ConnectionItem>();
+
+        collect(getMetadataFileDelimited(), result);
+        collect(getMetadataFilePositional(), result);
+        collect(getMetadataFileRegexp(), result);
+        collect(getMetadataFileXml(), result);
+        collect(getMetadataFileLdif(), result);
+        collect(getMetadataConnection(), result);
+
+        return result;
+    }
+    
+    public RootContainer<String, IRepositoryObject> getDocumentation() throws PersistenceException {
+        return getObjectFromFolder(ERepositoryObjectType.DOCUMENTATION, true);
+    }
+
+    public RootContainer<String, IRepositoryObject> getMetadataConnection() throws PersistenceException {
+        return getObjectFromFolder(ERepositoryObjectType.METADATA_CONNECTIONS, true);
+    }
+
+    public RootContainer<String, IRepositoryObject> getMetadataFileDelimited() throws PersistenceException {
+        return getObjectFromFolder(ERepositoryObjectType.METADATA_FILE_DELIMITED, true);
+    }
+
+    public RootContainer<String, IRepositoryObject> getMetadataFilePositional() throws PersistenceException {
+        return getObjectFromFolder(ERepositoryObjectType.METADATA_FILE_POSITIONAL, true);
+    }
+
+    public RootContainer<String, IRepositoryObject> getProcess() throws PersistenceException {
+        return getObjectFromFolder(ERepositoryObjectType.PROCESS, true);
+    }
+
+    public RootContainer<String, IRepositoryObject> getRoutine() throws PersistenceException {
+        return getObjectFromFolder(ERepositoryObjectType.ROUTINES, true);
+    }
+
+    public RootContainer<String, IRepositoryObject> getBusinessProcess() throws PersistenceException {
+        return getObjectFromFolder(ERepositoryObjectType.BUSINESS_PROCESS, true);
+    }
+
+    public RootContainer<String, IRepositoryObject> getMetadataFileRegexp() throws PersistenceException {
+        return getObjectFromFolder(ERepositoryObjectType.METADATA_FILE_REGEXP, true);
+    }
+
+    public RootContainer<String, IRepositoryObject> getMetadataFileXml() throws PersistenceException {
+        return getObjectFromFolder(ERepositoryObjectType.METADATA_FILE_XML, true);
+    }
+
+    public RootContainer<String, IRepositoryObject> getMetadataFileLdif() throws PersistenceException {
+        return getObjectFromFolder(ERepositoryObjectType.METADATA_FILE_LDIF, true);
+    }
+
+    
+    protected abstract <K, T> RootContainer<K, T> getObjectFromFolder(ERepositoryObjectType type, boolean onlyLastVersion)
+    throws PersistenceException;
+
+    protected abstract <K, T> void addFolderMembers(ERepositoryObjectType type, Container<K, T> toReturn, Object objectFolder,
+            boolean onlyLastVersion) throws PersistenceException;
+
+    protected abstract FolderHelper getFolderHelper(org.talend.core.model.properties.Project emfProject);
+
 
 }
