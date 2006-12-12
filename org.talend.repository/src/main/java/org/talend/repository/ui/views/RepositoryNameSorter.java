@@ -78,9 +78,9 @@ public class RepositoryNameSorter extends ViewerSorter {
                 return 99;
             }
         } else if (node.getType() == ENodeType.SIMPLE_FOLDER) {
-            return 0;
-        } else {
             return 1;
+        } else {
+            return 2;
         }
 
     }
