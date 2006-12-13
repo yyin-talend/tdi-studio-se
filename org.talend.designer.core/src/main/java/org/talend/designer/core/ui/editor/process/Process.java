@@ -508,7 +508,7 @@ public class Process extends Element implements IProcess {
                             ElementValueType elementValue = fileFact.createElementValueType();
                             elementValue.setElementRef(param.getListItemsDisplayCodeName()[i]);
                             Object o = currentLine.get(param.getListItemsDisplayCodeName()[i]);
-                            String strValue;
+                            String strValue = "";
                             if (o instanceof Integer) {
                                 IElementParameter tmpParam = (IElementParameter) param.getListItemsValue()[i];
                                 if (tmpParam.getListItemsValue().length == 0) {
@@ -517,7 +517,13 @@ public class Process extends Element implements IProcess {
                                     strValue = (String) tmpParam.getListItemsValue()[(Integer) o];
                                 }
                             } else {
-                                strValue = (String) o;
+                                if (o instanceof String) {
+                                    strValue = (String) o;
+                                } else {
+                                    if (o instanceof Boolean) {
+                                        strValue = (String) ((Boolean) o).toString();
+                                    }
+                                }
                             }
                             elementValue.setValue(strValue);
                             pType.getElementValue().add(elementValue);
@@ -765,7 +771,7 @@ public class Process extends Element implements IProcess {
         initExternalComponents();
         setActivate(true);
         checkStartNodes();
-//        checkProcess();
+        // checkProcess();
     }
 
     private void initExternalComponents() {

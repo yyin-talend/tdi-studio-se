@@ -44,6 +44,7 @@ import org.eclipse.jface.fieldassist.IControlCreator;
 import org.eclipse.jface.fieldassist.TextControlCreator;
 import org.eclipse.jface.util.Assert;
 import org.eclipse.jface.viewers.CellEditor;
+import org.eclipse.jface.viewers.CheckboxCellEditor;
 import org.eclipse.jface.viewers.ComboBoxCellEditor;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -101,6 +102,7 @@ import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumn;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator.LAYOUT_MODE;
 import org.talend.commons.ui.swt.tableviewer.behavior.CellEditorValueAdapter;
+import org.talend.commons.ui.swt.tableviewer.tableeditor.CheckboxTableEditorContent;
 import org.talend.commons.ui.utils.ControlUtils;
 import org.talend.commons.ui.utils.TypedTextCommandExecutor;
 import org.talend.commons.utils.data.bean.IBeanPropertyAccessors;
@@ -1598,10 +1600,9 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
             final int nbInRow, final int top, final Control lastControl) {
 
         String fileName = (String) param.getValue();
-        
-        IRepositoryService service= DesignerPlugin.getDefault().getRepositoryService();
-        String filePath = service.getPathFileName(RepositoryConstants.IMG_DIRECTORY, fileName)
-                .toPortableString();
+
+        IRepositoryService service = DesignerPlugin.getDefault().getRepositoryService();
+        String filePath = service.getPathFileName(RepositoryConstants.IMG_DIRECTORY, fileName).toPortableString();
 
         if (filePath != null) {
             File fileOrFolder = new java.io.File(filePath);
@@ -2347,6 +2348,8 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                         });
                         break;
                     case CHECK:
+                        column.setTableEditorContent(new CheckboxTableEditorContent(false));
+                        column.setDisplayedValue("");
                         break;
                     default: // TEXT
                         TextCellEditorWithProposal textCellEditor = new TextCellEditorWithProposal(table, column);
@@ -2360,7 +2363,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                     final int curCol = i;
                     column.setBeanPropertyAccessors(new IBeanPropertyAccessors<Map<String, Object>, Object>() {
 
-                        public String get(Map<String, Object> bean) {
+                        public Object get(Map<String, Object> bean) {
                             Object value = bean.get(items[curCol]);
                             if (value == null) {
                                 return "";
@@ -2388,6 +2391,11 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                                         value = new Integer(index);
                                     }
                                     return namesSet[(Integer) value];
+                                case CHECK:
+                                    if (value instanceof String) {
+                                        return new Boolean((String) value);
+                                    }
+                                    return value;
                                 default: // TEXT
                                     return (String) value;
                                 }
@@ -2398,7 +2406,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                         public void set(Map<String, Object> bean, Object value) {
                             List<Map<String, Object>> tableValues = new ArrayList<Map<String, Object>>();
                             List<Map<String, Object>> paramValues = (List<Map<String, Object>>) param.getValue();
-                            int currentBeanIndex = table.getSelectionIndex();
+                            int currentBeanIndex = paramValues.indexOf(bean);
                             for (int currentIndex = 0; currentIndex < paramValues.size(); currentIndex++) {
                                 Map<String, Object> currentLine = paramValues.get(currentIndex);
 
@@ -2414,7 +2422,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                             }
                             Command cmd = new PropertyChangeCommand(elem, param.getName(), tableValues);
                             getCommandStack().execute(cmd);
-                            refresh();
+//                            refresh();
                         }
                     });
                 }
@@ -2439,7 +2447,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                     }
                     Command cmd = new PropertyChangeCommand(elem, param.getName(), tableValues);
                     getCommandStack().execute(cmd);
-                    refresh();
+//                    refresh();
                     table.setSelection(index);
                 }
             };
@@ -2452,7 +2460,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                         tableValues.remove(selectionIndex);
                         Command cmd = new PropertyChangeCommand(elem, param.getName(), tableValues);
                         getCommandStack().execute(cmd);
-                        refresh();
+//                        refresh();
                         if (selectionIndex >= tableValues.size()) {
                             selectionIndex--;
                         }
@@ -2489,7 +2497,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
 
                         Command cmd = new PropertyChangeCommand(elem, param.getName(), tableValues);
                         getCommandStack().execute(cmd);
-                        refresh();
+//                        refresh();
                         table.setSelection(index);
                     }
                 }
@@ -2504,7 +2512,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
 
                         Command cmd = new PropertyChangeCommand(elem, param.getName(), tableValues);
                         getCommandStack().execute(cmd);
-                        refresh();
+//                        refresh();
                     }
                 }
             };
@@ -2519,7 +2527,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
 
                         Command cmd = new PropertyChangeCommand(elem, param.getName(), tableValues);
                         getCommandStack().execute(cmd);
-                        refresh();
+//                        refresh();
                     }
                 }
             };
@@ -2704,6 +2712,11 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                         value = new Integer(index);
                     }
                     break;
+                case CHECK:
+                    if (value instanceof String) {
+                        value = new Boolean((String) value);
+                    }
+                    break;
                 default:
                     if (i == 0 && param.isBasedOnSchema() && value == null && numLine >= 0) {
                         value = getColumnList().get(numLine);
@@ -2729,6 +2742,9 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
             line.put(items[0], new Integer(tmpParam.getIndexOfItemFromList((String) tmpParam
                     .getDefaultClosedListValue())));
             break;
+        case CHECK:
+            line.put(items[0], tmpParam.getValue());
+            break;
         default: // TEXT
             if ((tmpParam.getValue() == null) || (tmpParam.getValue().equals(""))) {
                 line.put(items[0], new String("'newLine'"));
@@ -2746,7 +2762,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                 line.put(items[i], new Integer(tmpParam.getIndexOfItemFromList((String) tmpParam
                         .getDefaultClosedListValue())));
                 break;
-            default: // TEXT
+            default: // TEXT or CHECK (means String or Boolean)
                 line.put(items[i], tmpParam.getValue());
             }
         }
@@ -2778,9 +2794,6 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
             } else {
                 showSchemaRepositoryList(false);
             }
-            // if (elem instanceof Node) {
-            // ((Process) ((Node) elem).getProcess()).checkProcess();
-            // }
         }
 
         oldPropertyType = (String) elem.getPropertyValue(EParameterName.PROPERTY_TYPE.getName());
@@ -2791,9 +2804,6 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
             } else {
                 showPropertyRepositoryList(false);
             }
-            // if (elem instanceof Node) {
-            // ((Process) ((Node) elem).getProcess()).checkProcess();
-            // }
         }
 
         oldProcessType = (String) elem.getPropertyValue(EParameterName.PROCESS_TYPE_PROCESS.getName());
@@ -2807,7 +2817,6 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
         }
 
         Control lastControl = null;
-
         if (currentComponent != null) {
             Control[] ct = composite.getChildren();
             for (int i = 0; i < ct.length; i++) {
@@ -3043,8 +3052,10 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                     }
                     if (param.getField() == EParameterFieldType.TABLE) {
                         TableViewerCreator tableViewerCreator = (TableViewerCreator) object;
-                        tableViewerCreator.init((List) param.getValue());
-                        // tableViewerCreator.getTableViewer().refresh();
+                        if (!tableViewerCreator.getInputList().equals(param.getValue())) {
+                            tableViewerCreator.init((List) param.getValue());                            
+                        }
+//                        tableViewerCreator.getTableViewer().refresh();
                     }
                 }
             }
