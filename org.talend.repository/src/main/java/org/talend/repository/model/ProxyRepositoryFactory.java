@@ -484,7 +484,7 @@ public class ProxyRepositoryFactory implements IProxyRepositoryFactory {
 
     private void addChildren(List<String> target, FolderItem source, String type, String path) {
         if (source.getType() == FolderType.FOLDER_LITERAL) {
-            // FIXME MHE Related to bug 364
+            // FIXME mhelleboid Related to bug 364
             if (source.getProperty().getLabel().equals(".settings")) {
                 return;
             }
