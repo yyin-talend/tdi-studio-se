@@ -57,6 +57,7 @@ import org.talend.sqlbuilder.dbstructure.SessionTreeNodeUtils;
 import org.talend.sqlbuilder.dbstructure.nodes.INode;
 import org.talend.sqlbuilder.repository.utility.SQLBuilderRepositoryNodeManager;
 import org.talend.sqlbuilder.util.ConnectionParameters;
+import org.talend.sqlbuilder.util.ImageUtil;
 import org.talend.sqlbuilder.util.UIUtils;
 
 /**
@@ -173,9 +174,9 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog {
      * @param parentShell
      */
     public SQLBuilderDialog(Shell parentShell) {
-        super(new Shell());
+        super(parentShell);
         setShellStyle(SWT.DIALOG_TRIM | SWT.RESIZE | SWT.RESIZE | SWT.MIN | SWT.MAX);
-
+        parentShell.setImage(ImageUtil.getImage("Images.title"));
     }
 
     /*
@@ -187,6 +188,7 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog {
         super.configureShell(shell);
         // Set the title bar text
         shell.setText("SQL Builder"); //$NON-NLS-1$
+        
     }
 
     /**
