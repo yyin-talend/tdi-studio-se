@@ -50,6 +50,8 @@ public class DateSection extends AbstractSection {
 
     private Text commitDate;
 
+    private CLabel commitLabel;
+
     private static final SimpleDateFormat FORMATTER = new SimpleDateFormat();
 
     @Override
@@ -98,22 +100,20 @@ public class DateSection extends AbstractSection {
         data.top = new FormAttachment(modificationDate, 0, SWT.CENTER);
         modificationLabel.setLayoutData(data);
 
-        if (getCommitDate() != null) {
-            commitDate = getWidgetFactory().createText(composite, ""); //$NON-NLS-1$
-            data = new FormData();
-            data.left = new FormAttachment(modificationDate, STANDARD_LABEL_WIDTH + 15);
-            data.right = new FormAttachment(100, 0);
-            data.top = new FormAttachment(0, ITabbedPropertyConstants.VSPACE);
-            commitDate.setLayoutData(data);
-            commitDate.setEnabled(false);
+        commitDate = getWidgetFactory().createText(composite, ""); //$NON-NLS-1$
+        data = new FormData();
+        data.left = new FormAttachment(modificationDate, STANDARD_LABEL_WIDTH + 15);
+        data.right = new FormAttachment(100, 0);
+        data.top = new FormAttachment(0, ITabbedPropertyConstants.VSPACE);
+        commitDate.setLayoutData(data);
+        commitDate.setEnabled(false);
 
-            CLabel commitLabel = getWidgetFactory().createCLabel(composite, "Commit");
-            data = new FormData();
-            data.left = new FormAttachment(modificationDate, ITabbedPropertyConstants.HSPACE * 3);
-            data.right = new FormAttachment(commitDate, -ITabbedPropertyConstants.HSPACE);
-            data.top = new FormAttachment(commitDate, 0, SWT.CENTER);
-            commitLabel.setLayoutData(data);
-        }
+         commitLabel = getWidgetFactory().createCLabel(composite, "Commit");
+        data = new FormData();
+        data.left = new FormAttachment(modificationDate, ITabbedPropertyConstants.HSPACE * 3);
+        data.right = new FormAttachment(commitDate, -ITabbedPropertyConstants.HSPACE);
+        data.top = new FormAttachment(commitDate, 0, SWT.CENTER);
+        commitLabel.setLayoutData(data);
 
         addFocusListenerToChildren(composite);
     }
@@ -123,6 +123,9 @@ public class DateSection extends AbstractSection {
         creationDate.setText(getCreationDate() != null ? FORMATTER.format(getCreationDate()) : "");
         modificationDate.setText(getModificationDate() != null ? FORMATTER.format(getModificationDate()) : "");
         commitDate.setText(getCommitDate() != null ? FORMATTER.format(getCommitDate()) : "");
+        
+        commitLabel.setVisible(getCommitDate() != null);
+        commitDate.setVisible(getCommitDate() != null);
     }
 
     protected Date getCreationDate() {
