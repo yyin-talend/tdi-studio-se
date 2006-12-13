@@ -179,7 +179,7 @@ public class LdifFileStep2Form extends AbstractLdifFileStepForm {
             }
 
         };
-//PTODO cantoine : uncomment this block for activate the ToolBar MoveUp and MoveDown Lines
+// uncomment this block for activate the ToolBar MoveUp and MoveDown Lines
 //        new ExtendedTableToolbarView(group, SWT.NONE, tableEditorView) {
 //
 //            /*
@@ -403,7 +403,6 @@ public class LdifFileStep2Form extends AbstractLdifFileStepForm {
      * @param text
      */
     protected void setCharFlag(Label label, String string) {
-        // PTODO OCA : when is utils in the Flag ?
         label.setText(string);
     }
 

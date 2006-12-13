@@ -107,7 +107,7 @@ public class XmlFileStep1Form extends AbstractXmlFileStepForm {
 
         this.treePopulator = new TreePopulator(availableXmlTree);
 
-        // PTODO cantoine : add init of CheckBoxIsGuess and Determine the Initialize checkFileXsdorXml
+        //add init of CheckBoxIsGuess and Determine the Initialize checkFileXsdorXml
 //        if (getConnection().getXsdFilePath() != null) {
 //            fileFieldXsd.setText(getConnection().getXsdFilePath().replace("\\\\", "\\"));
 //            // init the fileViewer
@@ -174,7 +174,6 @@ public class XmlFileStep1Form extends AbstractXmlFileStepForm {
         gridData.minimumWidth = WIDTH_GRIDDATA_PIXEL;
 //        gridData.minimumHeight = 150;
 
-        // PTODO cantoine : the XmlTree
         availableXmlTree = new Tree(compositeFileViewer, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
         availableXmlTree.setLayoutData(gridData);
         availableXmlTree.setToolTipText(Messages.getString("FileStep1.fileViewerTip1") + " " + TreePopulator.MAXIMUM_ROWS_TO_PREVIEW + " "
@@ -228,8 +227,6 @@ public class XmlFileStep1Form extends AbstractXmlFileStepForm {
                 checkFieldsValue();
             }
         });
-
-        // PTODO cantoine : determinate Event for checkBoxIsGuess and XmaskPattern
     }
 
     /**

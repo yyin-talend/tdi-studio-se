@@ -190,7 +190,6 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
             convert(factory.getMetadataFileRegexp(), metadataFileRegexpNode, ERepositoryObjectType.METADATA_FILE_REGEXP,
                     recBinNode);
 
-            // PTODO cantoine : uncomment the following lines to activate FilXml wizard in repository
             // 5.5. Metadata file xml
             RepositoryNode metadataFileXmlNode = new RepositoryNode(null, root, ENodeType.SYSTEM_FOLDER);
             metadataFileXmlNode.setProperties(EProperties.LABEL, ERepositoryObjectType.METADATA_FILE_XML);

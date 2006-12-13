@@ -86,14 +86,10 @@ public class XmlFileWizardPage extends WizardPage {
             public void checkPerformed(final AbstractForm source) {
 
                 if (source.isStatusOnError()) {
-                    // PTODO cantoine : comment setPageComplete(true);
-                    // XmlFileWizardPage.this.setPageComplete(false);
-                    XmlFileWizardPage.this.setPageComplete(true);
+                    XmlFileWizardPage.this.setPageComplete(false);
                     setErrorMessage(source.getStatus());
                 } else {
-                    // PTODO cantoine : comment setPageComplete(true);
-                    // XmlFileWizardPage.this.setPageComplete(isRepositoryObjectEditable);
-                    XmlFileWizardPage.this.setPageComplete(true);
+                    XmlFileWizardPage.this.setPageComplete(isRepositoryObjectEditable);
                     setErrorMessage(null);
                     setMessage(source.getStatus());
                 }

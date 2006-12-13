@@ -265,11 +265,7 @@ public class XmlFileStep3Form extends AbstractXmlFileStepForm {
      * @return processDescription
      */
     private ProcessDescription getProcessDescription() {
-
         ProcessDescription processDescription = ShadowProcessHelper.getProcessDescription(getConnection());
-
-        // adapt the limit to the extract sames rows of preview
-        processDescription.setLimitRows(TreePopulator.MAXIMUM_ROWS_TO_PREVIEW);
         return processDescription;
     }
 
@@ -279,8 +275,8 @@ public class XmlFileStep3Form extends AbstractXmlFileStepForm {
     protected void runShadowProcess() {
 
         // if no file, the process don't be executed
-        if (getConnection().getXsdFilePath() != null && !getConnection().getXsdFilePath().equals("")
-                && getConnection().getXmlFilePath() != null && !getConnection().getXmlFilePath().equals("")) {
+        //getConnection().getXsdFilePath() != null && !getConnection().getXsdFilePath().equals("") &&
+        if (getConnection().getXmlFilePath() == null || getConnection().getXmlFilePath().equals("")) {
             informationLabel.setText("   " + Messages.getString("FileStep3.filepathAlert")
                     + "                                                                              ");
             return;
@@ -445,8 +441,8 @@ public class XmlFileStep3Form extends AbstractXmlFileStepForm {
     public void setVisible(boolean visible) {
         super.setVisible(visible);
         if (super.isVisible()) {
-            if (getConnection().getXsdFilePath() != null && !getConnection().getXsdFilePath().equals("")
-                    && getConnection().getXmlFilePath() != null && !getConnection().getXmlFilePath().equals("")
+            //getConnection().getXsdFilePath() != null && !getConnection().getXsdFilePath().equals("") && 
+            if (getConnection().getXmlFilePath() != null && !getConnection().getXmlFilePath().equals("")
                     && tableEditorView.getMetadataEditor().getBeanCount() <= 0) {
                 runShadowProcess();
             }

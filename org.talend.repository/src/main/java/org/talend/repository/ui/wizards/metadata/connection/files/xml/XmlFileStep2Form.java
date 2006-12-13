@@ -304,11 +304,7 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
      * @return processDescription
      */
     private ProcessDescription getProcessDescription() {
-
         ProcessDescription processDescription = ShadowProcessHelper.getProcessDescription(getConnection());
-
-        // adapt the limit to the preview
-//        processDescription.setLimitRows(TreePopulator.MAXIMUM_ROWS_TO_PREVIEW);
         return processDescription;
     }
 
@@ -325,9 +321,9 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
     void refreshPreview() {
         clearPreview();
 
+        //getConnection().getXsdFilePath() == null || getConnection().getXsdFilePath().equals("") && 
         // if no file, the process don't be executed
-        if (getConnection().getXsdFilePath() != null && !getConnection().getXsdFilePath().equals("")
-                && getConnection().getXmlFilePath() != null && !getConnection().getXmlFilePath().equals("")) {
+        if (getConnection().getXmlFilePath() == null || getConnection().getXmlFilePath().equals("")) {
             previewInformationLabel.setText("   " + Messages.getString("FileStep2.filePathIncomplete"));
             return;
         }
@@ -567,8 +563,8 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
             checkFilePathAndManageIt();
             // Refresh the preview width the adapted rowSeparator
             // If metadata exist, refreshMetadata
-            if (getConnection().getXsdFilePath() != null && !getConnection().getXsdFilePath().equals("")
-                    && getConnection().getXmlFilePath() != null && !getConnection().getXmlFilePath().equals("")) {
+            //getConnection().getXsdFilePath() != null && !getConnection().getXsdFilePath().equals("") && 
+            if (getConnection().getXmlFilePath() != null && !getConnection().getXmlFilePath().equals("")) {
                 refreshPreview();
             }
             // if (isReadOnly() != readOnly) {
