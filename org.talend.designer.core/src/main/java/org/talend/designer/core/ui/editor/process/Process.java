@@ -1550,6 +1550,23 @@ public class Process extends Element implements IProcess {
         }
         Problems.refreshView();
     }
+    
+    /**
+     * 
+     * DOC check the problems of node.compare with the checkProblems(),this
+     * method can't refresh problems view
+     */
+    public void checkNodeProblems() {
+        if (isActivate()) {
+            Problems.clearAll();
+
+            for (Node node : nodes) {
+                if (node.isActivate()) {
+                    node.checkNode();
+                }
+            }
+        }
+    }
 
     public String toString() {
         return "Process:" + getLabel();

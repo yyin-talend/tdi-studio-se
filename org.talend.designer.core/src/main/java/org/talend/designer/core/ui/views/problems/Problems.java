@@ -161,7 +161,7 @@ public class Problems {
         }
         currentProblems = getProblemsByProcessId(currentProcess.getId());
         currentProblems.clear();
-        ((Process) currentProcess).checkProcess();
+        ((Process) currentProcess).checkNodeProblems();
         view.setProblems(currentProblems);
     }
 
