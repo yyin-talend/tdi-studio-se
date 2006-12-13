@@ -334,10 +334,10 @@ public class TMapperMainPerljet {
                 // write outputs arrays initialization with empty list for reject tables
                 for (int indexReject = indexCurrentTable; indexReject < lstSize; indexReject++) {
                     ExternalMapperTable outputRejectTable = (ExternalMapperTable) outputTablesSortedByReject.get(indexReject);
-                    List<ExternalMapperTableEntry> metadataTableEntries = outputRejectTable.getMetadataTableEntries();
-                    List<ExternalMapperTableEntry> filtersForReject = outputRejectTable.getConstraintTableEntries();
-                    boolean hasFilterForReject = filtersForReject != null && filtersForReject.size() > 0
-                            && !gm.checkFiltersAreEmpty(outputRejectTable);
+//                    List<ExternalMapperTableEntry> metadataTableEntries = outputRejectTable.getMetadataTableEntries();
+//                    List<ExternalMapperTableEntry> filtersForReject = outputRejectTable.getConstraintTableEntries();
+//                    boolean hasFilterForReject = filtersForReject != null && filtersForReject.size() > 0
+//                            && !gm.checkFiltersAreEmpty(outputRejectTable);
                     if (outputRejectTable.isReject() || outputRejectTable.isRejectInnerJoin()) {
                         // if (metadataTableEntries != null && metadataTableEntries.size() > 0 && hasFilterForReject
                         // && outputRejectTable.isReject() && hasFilters || outputRejectTable.isRejectInnerJoin()) {
@@ -348,7 +348,7 @@ public class TMapperMainPerljet {
             }
 
             // write filters conditions and code to execute
-            if (!currentIsReject || rejectValueHasJustChanged && oneFilterForNotRejectTable || currentIsReject
+            if (!currentIsReject && !currentIsRejectInnerJoin || rejectValueHasJustChanged && oneFilterForNotRejectTable || currentIsReject
                     && allNotRejectTablesHaveFilter || currentIsRejectInnerJoin
                     && atLeastOneInputTableWithInnerJoin) {
 

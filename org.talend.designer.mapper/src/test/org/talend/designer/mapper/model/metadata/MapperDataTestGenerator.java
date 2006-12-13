@@ -78,13 +78,14 @@ public class MapperDataTestGenerator {
         ONE_INNER_JOIN_AND_ONLY_ONE_INNER_JOIN_REJECT_AND_ONE_OUT_TABLE_WITHOUT_FILTER,
         NO_INNER_JOIN_AND_ONLY_ONE_INNER_JOIN_REJECT_AND_ONE_OUT_TABLE_WITHOUT_FILTER,
         ONE_INNER_JOIN_AND_A_TABLE_WITH_REJECT_AND_INNER_JOIN_REJECT_AND_ONE_OUT_TABLE_WITHOUT_FILTER,
-        NO_INNER_JOIN_AND_ONE_REJECT_AND_ONE_INNER_JOIN_REJECT_AND_REJECT_TABLE_WITHOUT_FILTER,
+        NO_INNER_JOIN_AND_ONE_INNER_JOIN_REJECT_AND_2_REJECT_TABLE_WITHOUT_FILTER,
         NO_INNER_JOIN_AND_A_TABLE_WITH_FILTER_AND_A_TABLE_WITH_REJECT,
-        ONE_INNER_JOIN_AND_A_TABLE_WITH_FILTER_AND_A_TABLE_WITH_REJECT,
+        ONE_INNER_JOIN_AND_2_TABLES_WITH_FILTER_AND_OTHER_TABLE_WITH_REJECT_AND_REJECT_INNER_JOIN,
         ONE_INNER_JOIN_AND_A_TABLE_WITH_FILTER_AND_A_TABLE_WITH_REJECT_AND_A_TABLE_WITH_REJECT_INNER_JOIN,
+        MAIN_CONNECTION_WITH_INNER_JOIN_AND_A_TABLE_WITH_FILTER_AND_A_TABLE_WITH_REJECT_AND_A_TABLE_WITH_REJECT_INNER_JOIN,
     };
 
-    TEST currentTest = TEST.NO_INNER_JOIN_AND_ONE_REJECT_AND_ONE_INNER_JOIN_REJECT_AND_REJECT_TABLE_WITHOUT_FILTER;
+    TEST currentTest = TEST.MAIN_CONNECTION_WITH_INNER_JOIN_AND_A_TABLE_WITH_FILTER_AND_A_TABLE_WITH_REJECT_AND_A_TABLE_WITH_REJECT_INNER_JOIN;
 
     public MapperDataTestGenerator(ILanguage language, boolean random) {
         super();
@@ -398,6 +399,14 @@ public class MapperDataTestGenerator {
 
         ExternalMapperTable mapperTable = new ExternalMapperTable();
 
+        if (
+                currentTest == TEST.MAIN_CONNECTION_WITH_INNER_JOIN_AND_A_TABLE_WITH_FILTER_AND_A_TABLE_WITH_REJECT_AND_A_TABLE_WITH_REJECT_INNER_JOIN
+        ) {
+            mapperTable.setInnerJoin(true);
+        } else {
+            mapperTable.setInnerJoin(false);
+        }
+
         mapperTable.setName("book");
 
         // ///////////////////////////////////////////
@@ -432,8 +441,9 @@ public class MapperDataTestGenerator {
         if (currentTest == TEST.ONE_INNER_JOIN_AND_NOT_ANY_REJECT_AND_ONE_OUT_TABLE_WITHOUT_FILTER
                 || currentTest == TEST.ONE_INNER_JOIN_AND_ONLY_ONE_INNER_JOIN_REJECT_AND_ONE_OUT_TABLE_WITHOUT_FILTER
                 || currentTest == TEST.NO_INNER_JOIN_AND_ONLY_ONE_INNER_JOIN_REJECT_AND_ONE_OUT_TABLE_WITHOUT_FILTER
-                || currentTest == TEST.NO_INNER_JOIN_AND_ONE_REJECT_AND_ONE_INNER_JOIN_REJECT_AND_REJECT_TABLE_WITHOUT_FILTER
+                || currentTest == TEST.NO_INNER_JOIN_AND_ONE_INNER_JOIN_REJECT_AND_2_REJECT_TABLE_WITHOUT_FILTER
                 || currentTest == TEST.ONE_INNER_JOIN_AND_A_TABLE_WITH_REJECT_AND_INNER_JOIN_REJECT_AND_ONE_OUT_TABLE_WITHOUT_FILTER
+                || currentTest == TEST.MAIN_CONNECTION_WITH_INNER_JOIN_AND_A_TABLE_WITH_FILTER_AND_A_TABLE_WITH_REJECT_AND_A_TABLE_WITH_REJECT_INNER_JOIN
         ) {
             mapperTable.setInnerJoin(false);
         } else {
@@ -468,13 +478,15 @@ public class MapperDataTestGenerator {
 
         if (currentTest == TEST.ONE_INNER_JOIN_AND_NOT_ANY_REJECT_AND_ONE_OUT_TABLE_WITHOUT_FILTER
                 || currentTest == TEST.ONE_INNER_JOIN_AND_ONLY_ONE_INNER_JOIN_REJECT_AND_ONE_OUT_TABLE_WITHOUT_FILTER
-                || currentTest == TEST.ONE_INNER_JOIN_AND_A_TABLE_WITH_FILTER_AND_A_TABLE_WITH_REJECT
+                || currentTest == TEST.ONE_INNER_JOIN_AND_2_TABLES_WITH_FILTER_AND_OTHER_TABLE_WITH_REJECT_AND_REJECT_INNER_JOIN
                 || currentTest == TEST.ONE_INNER_JOIN_AND_A_TABLE_WITH_FILTER_AND_A_TABLE_WITH_REJECT_AND_A_TABLE_WITH_REJECT_INNER_JOIN
                 || currentTest == TEST.ONE_INNER_JOIN_AND_A_TABLE_WITH_REJECT_AND_INNER_JOIN_REJECT_AND_ONE_OUT_TABLE_WITHOUT_FILTER
         ) {
             mapperTable.setInnerJoin(true);
         } else if (currentTest == TEST.NO_INNER_JOIN_AND_ONLY_ONE_INNER_JOIN_REJECT_AND_ONE_OUT_TABLE_WITHOUT_FILTER
-                || currentTest == TEST.NO_INNER_JOIN_AND_ONE_REJECT_AND_ONE_INNER_JOIN_REJECT_AND_REJECT_TABLE_WITHOUT_FILTER) {
+                || currentTest == TEST.NO_INNER_JOIN_AND_ONE_INNER_JOIN_REJECT_AND_2_REJECT_TABLE_WITHOUT_FILTER
+                || currentTest == TEST.MAIN_CONNECTION_WITH_INNER_JOIN_AND_A_TABLE_WITH_FILTER_AND_A_TABLE_WITH_REJECT_AND_A_TABLE_WITH_REJECT_INNER_JOIN
+        ) {
             mapperTable.setInnerJoin(false);
         } else {
             mapperTable.setInnerJoin(false);
@@ -666,8 +678,11 @@ public class MapperDataTestGenerator {
         ) {
             mapperTable.setReject(false);
             mapperTable.setRejectInnerJoin(false);
-        } else if (currentTest == TEST.NO_INNER_JOIN_AND_ONE_REJECT_AND_ONE_INNER_JOIN_REJECT_AND_REJECT_TABLE_WITHOUT_FILTER) {
+        } else if (currentTest == TEST.NO_INNER_JOIN_AND_ONE_INNER_JOIN_REJECT_AND_2_REJECT_TABLE_WITHOUT_FILTER) {
             mapperTable.setReject(true);
+            mapperTable.setRejectInnerJoin(true);
+        } else if (currentTest == TEST.MAIN_CONNECTION_WITH_INNER_JOIN_AND_A_TABLE_WITH_FILTER_AND_A_TABLE_WITH_REJECT_AND_A_TABLE_WITH_REJECT_INNER_JOIN) {
+            mapperTable.setReject(false);
             mapperTable.setRejectInnerJoin(true);
         } else if (currentTest == TEST.ONE_INNER_JOIN_AND_A_TABLE_WITH_FILTER_AND_A_TABLE_WITH_REJECT_AND_A_TABLE_WITH_REJECT_INNER_JOIN) {
             mapperTable.setReject(true);
@@ -714,7 +729,7 @@ public class MapperDataTestGenerator {
                 || currentTest == TEST.ONE_INNER_JOIN_AND_ONLY_ONE_INNER_JOIN_REJECT_AND_ONE_OUT_TABLE_WITHOUT_FILTER
                 || currentTest == TEST.NO_INNER_JOIN_AND_ONLY_ONE_INNER_JOIN_REJECT_AND_ONE_OUT_TABLE_WITHOUT_FILTER
                 || currentTest == TEST.ONE_INNER_JOIN_AND_A_TABLE_WITH_REJECT_AND_INNER_JOIN_REJECT_AND_ONE_OUT_TABLE_WITHOUT_FILTER
-                || currentTest == TEST.NO_INNER_JOIN_AND_ONE_REJECT_AND_ONE_INNER_JOIN_REJECT_AND_REJECT_TABLE_WITHOUT_FILTER
+                || currentTest == TEST.NO_INNER_JOIN_AND_ONE_INNER_JOIN_REJECT_AND_2_REJECT_TABLE_WITHOUT_FILTER
                 || currentTest == TEST.NO_INNER_JOIN_AND_A_TABLE_WITH_FILTER_AND_A_TABLE_WITH_REJECT
         ) {
         } else {
@@ -741,9 +756,15 @@ public class MapperDataTestGenerator {
         ) {
             mapperTable.setReject(false);
             mapperTable.setRejectInnerJoin(true);
-        } else if (currentTest == TEST.ONE_INNER_JOIN_AND_A_TABLE_WITH_REJECT_AND_INNER_JOIN_REJECT_AND_ONE_OUT_TABLE_WITHOUT_FILTER) {
-            mapperTable.setReject(true);
+        } else if (
+                currentTest == TEST.ONE_INNER_JOIN_AND_A_TABLE_WITH_REJECT_AND_INNER_JOIN_REJECT_AND_ONE_OUT_TABLE_WITHOUT_FILTER
+                || currentTest == TEST.MAIN_CONNECTION_WITH_INNER_JOIN_AND_A_TABLE_WITH_FILTER_AND_A_TABLE_WITH_REJECT_AND_A_TABLE_WITH_REJECT_INNER_JOIN
+        ) {
+            mapperTable.setReject(false);
             mapperTable.setRejectInnerJoin(true);
+        } else if (currentTest == TEST.NO_INNER_JOIN_AND_ONE_INNER_JOIN_REJECT_AND_2_REJECT_TABLE_WITHOUT_FILTER) {
+            mapperTable.setReject(true);
+            mapperTable.setRejectInnerJoin(false);
         } else {
             mapperTable.setReject(true);
             mapperTable.setRejectInnerJoin(true);
@@ -770,7 +791,7 @@ public class MapperDataTestGenerator {
 
         if(
                 currentTest == TEST.NO_INNER_JOIN_AND_A_TABLE_WITH_FILTER_AND_A_TABLE_WITH_REJECT
-                || currentTest == TEST.ONE_INNER_JOIN_AND_A_TABLE_WITH_FILTER_AND_A_TABLE_WITH_REJECT
+                || currentTest == TEST.ONE_INNER_JOIN_AND_2_TABLES_WITH_FILTER_AND_OTHER_TABLE_WITH_REJECT_AND_REJECT_INNER_JOIN
                 
         ) {
             
