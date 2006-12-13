@@ -234,7 +234,6 @@ public class ConnectionReconnectCommand extends Command {
      */
     public void execute() {
         if (newSource != null) {
-            connection.reconnect(newSource, oldTarget);
             INodeConnector connector = oldSource.getConnectorFromType(oldConnectionType);
             connector.setCurLinkNbOutput(connector.getCurLinkNbOutput() - 1);
             connector = newSource.getConnectorFromType(oldConnectionType);
@@ -293,15 +292,16 @@ public class ConnectionReconnectCommand extends Command {
             } else {
                 connection.setMetaName(newSource.getUniqueName());
             }
+            connection.reconnect(newSource, oldTarget);
             ((Process) newSource.getProcess()).checkStartNodes();
             ((Process) newSource.getProcess()).checkProcess();
         } else if (newTarget != null) {
-            connection.reconnect(oldSource, newTarget);
             connection.setLineStyle(newConnectionType);
             INodeConnector connector = oldTarget.getConnectorFromType(oldConnectionType);
             connector.setCurLinkNbInput(connector.getCurLinkNbInput() - 1);
             connector = newTarget.getConnectorFromType(newConnectionType);
             connector.setCurLinkNbInput(connector.getCurLinkNbInput() + 1);
+            connection.reconnect(oldSource, newTarget);
             ((Process) oldSource.getProcess()).checkStartNodes();
             ((Process) oldSource.getProcess()).checkProcess();
         } else {
@@ -314,7 +314,6 @@ public class ConnectionReconnectCommand extends Command {
         if ((oldSource.getExternalNode() != null) && (oldSource.getExternalNode() != null)) {
             oldSource.getProcess().removeUniqueConnectionName(oldMetadataTable.getTableName());
         }*/
-        connection.reconnect(oldSource, oldTarget);
         connection.setLineStyle(oldConnectionType);
         if (newSource != null) {
             INodeConnector connector = oldSource.getConnectorFromType(oldConnectionType);
@@ -378,6 +377,7 @@ public class ConnectionReconnectCommand extends Command {
             connector = newTarget.getConnectorFromType(newConnectionType);
             connector.setCurLinkNbInput(connector.getCurLinkNbInput() - 1);
         }
+        connection.reconnect(oldSource, oldTarget);
         ((Process) newSource.getProcess()).checkStartNodes();
         ((Process) oldSource.getProcess()).checkProcess();
     }
