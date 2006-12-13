@@ -251,7 +251,7 @@ public class TMapperMainPerljet {
                 if (!hasFilter && !(outputTable.isReject() || outputTable.isRejectInnerJoin())) {
                     allNotRejectTablesHaveFilter = false;
                 }
-                if (outputTable.isReject() || outputTable.isRejectInnerJoin()) {
+                if (outputTable.isReject()) {
                     atLeastOneReject = true;
                 }
             }
@@ -298,7 +298,9 @@ public class TMapperMainPerljet {
             sb.append(" ) {");
             closeTestInnerJoinConditionsBracket = true;
             indent++;
-            sb.append(cr + gm.indent(indent) + "$" + rejectedInnerJoin + " = false;");
+            if(atLeastOneInputTableWithInnerJoin && atLeastOneRejectInnerJoin) {
+                sb.append(cr + gm.indent(indent) + "$" + rejectedInnerJoin + " = false;");
+            }
         }
 
         // ///////////////////////////////////////////////////////////////////
@@ -327,6 +329,13 @@ public class TMapperMainPerljet {
                 if (closeTestInnerJoinConditionsBracket) {
                     indent--;
                     sb.append(cr + gm.indent(indent) + "}");
+                    if(atLeastOneReject) {
+                        sb.append(" else {");
+                        indent++;
+                        sb.append(cr + gm.indent(indent) + "$" + rejected + " = false;");
+                        indent--;
+                        sb.append(cr + gm.indent(indent) + "}");
+                    }
                     closeTestInnerJoinConditionsBracket = false;
                 }
 
