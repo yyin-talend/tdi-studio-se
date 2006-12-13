@@ -24,7 +24,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         String cid = metadata.getTableName();
 
         List<Map<String, String>> mapping =
-            (List<Map<String,String>>)ElementParameterParser.getObjectValue(
+            (List<Map<String,String>>)ElementParameterParser.getObjectValueXML(
                 node,
                 "__MAPPING__"
             );
