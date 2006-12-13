@@ -53,6 +53,7 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.osgi.framework.Bundle;
 import org.talend.designer.runprocess.RunProcessPlugin;
+import org.talend.designer.runprocess.i18n.Messages;
 import org.w3c.dom.Document;
 
 /**
@@ -130,8 +131,8 @@ public final class PerlUtils {
         } catch (IOException e) {
         }
 
-        throw new CoreException(new Status(Status.ERROR, RunProcessPlugin.PLUGIN_ID, Status.OK, "Perl Module Plugin not found.",
-                null));
+        throw new CoreException(new Status(Status.ERROR, RunProcessPlugin.PLUGIN_ID, Status.OK,
+                "Perl Module Plugin not found.", null));
     }
 
     private static void writePerlIncludes(IProject prj, String[] includeEntries) throws CoreException {
@@ -171,18 +172,24 @@ public final class PerlUtils {
         }
     }
 
+    /**
+     * DOC ftang Comment method "getPerlModuleDirectoryPath".
+     * 
+     * @return
+     * @throws CoreException
+     */
     public static IPath getPerlModuleDirectoryPath() throws CoreException {
-        Bundle perlLibBundle = Platform.getBundle("org.talend.designer.core");
+        Bundle perlLibBundle = Platform.getBundle(Messages.getString("Designer.corePlugin"));
         try {
             if (!(perlLibBundle == null)) {
-                URL entry = perlLibBundle.getEntry("components");
+                URL entry = perlLibBundle.getEntry(Messages.getString("Components.folderName"));
                 URL url = FileLocator.resolve(entry);
                 return new Path(url.getFile());
             }
         } catch (IOException e) {
         }
 
-        throw new CoreException(new Status(Status.ERROR, RunProcessPlugin.PLUGIN_ID, Status.OK, "Designer Core Plugin not found.",
-                null));
+        throw new CoreException(new Status(Status.ERROR, RunProcessPlugin.PLUGIN_ID, Status.OK, Messages
+                .getString("Processor.desiginerCorePluginNotFound"), null));
     }
 }
