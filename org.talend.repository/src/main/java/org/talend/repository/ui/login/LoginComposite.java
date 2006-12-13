@@ -266,9 +266,9 @@ public class LoginComposite extends Composite {
         newProjectButton.setLayoutData(formData);
 
         importProjectsButton = toolkit.createButton(bottomButtons, null, SWT.PUSH);
-        importProjectsButton.setText("Import projects");
-        importProjectsButton.setToolTipText("Import existing Talend projects");
-        importProjectsButton.setImage(ImageProvider.getImage(ERepositoryImages.IMPORT_PROJECTS_ACTION));
+        importProjectsButton.setText(ImportProjectsAction.ACTION_TITLE);
+        importProjectsButton.setToolTipText(ImportProjectsAction.ACTION_TOOLTIP);
+        importProjectsButton.setImage(ImageProvider.getImage(ImportProjectsAction.getInstance().getImageDescriptor()));
         formData = new FormData();
         formData.left = new FormAttachment(newProjectButton, 10);
         importProjectsButton.setLayoutData(formData);

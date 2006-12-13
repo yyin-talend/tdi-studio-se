@@ -37,7 +37,8 @@ import org.talend.repository.ui.ERepositoryImages;
  */
 public final class ImportProjectsAction extends Action {
 
-    private static final String IMPORT_PROJECTS = "Import projects";
+    public static final String ACTION_TITLE = "Import projects";
+    public static final String ACTION_TOOLTIP = "Import existing Talend projects";
 
     private static ImportProjectsAction singleton;
 
@@ -50,8 +51,8 @@ public final class ImportProjectsAction extends Action {
 
     private ImportProjectsAction() {
         super();
-        this.setText(IMPORT_PROJECTS);
-        this.setToolTipText(IMPORT_PROJECTS);
+        this.setText(ACTION_TITLE);
+        this.setToolTipText(ACTION_TOOLTIP);
         this.setImageDescriptor(ImageProvider.getImageDesc(ERepositoryImages.IMPORT_PROJECTS_ACTION));
     }
 
@@ -59,7 +60,7 @@ public final class ImportProjectsAction extends Action {
         ExternalProjectImportWizard processWizard = new ExternalProjectImportWizard();
         Shell activeShell = Display.getCurrent().getActiveShell();
         WizardDialog dialog = new WizardDialog(activeShell, processWizard);
-        processWizard.setWindowTitle(IMPORT_PROJECTS);
+        processWizard.setWindowTitle(ACTION_TITLE);
         dialog.create();
         dialog.open();
     }
