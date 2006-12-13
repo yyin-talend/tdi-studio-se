@@ -31,7 +31,8 @@ import org.talend.repository.RepositoryPlugin;
  * 
  */
 public enum ERepositoryImages implements IImage {
-    IMPORT_PROJECTS_ACTION("/icons/import_projects_action.gif");
+    IMPORT_PROJECTS_ACTION("/icons/import_projects_action.gif"),
+    NEW_PROJECT_ACTION("/icons/newProject.png");
 
     private String path;
 

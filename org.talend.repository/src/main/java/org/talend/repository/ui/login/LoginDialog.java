@@ -49,10 +49,8 @@ import org.talend.repository.license.LicenseManagement;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.registeruser.RegisterManagement;
-import org.talend.repository.ui.actions.ImportProjectsAction;
 import org.talend.repository.ui.wizards.license.LicenseWizard;
 import org.talend.repository.ui.wizards.license.LicenseWizardDialog;
-import org.talend.repository.ui.wizards.newproject.NewProjectWizard;
 import org.talend.repository.ui.wizards.register.RegisterWizard;
 
 /**
@@ -164,61 +162,52 @@ public class LoginDialog extends TitleAreaDialog {
 
         Project project = loginComposite.getProject();
 
-        if (project == LoginComposite.NEW_PROJECT) {
-            // Create a new project
-            NewProjectWizard newPrjWiz = new NewProjectWizard();
-            WizardDialog dialog = new WizardDialog(getShell(), newPrjWiz);
-            dialog.setTitle(Messages.getString("LoginDialog.newProjectTitle")); //$NON-NLS-1$
-            if (dialog.open() == WizardDialog.OK) {
-                project = newPrjWiz.getProject();
-            } else {
-                project = null;
+        // check if user already exists retrieve it else create it
+        IProxyRepositoryFactory repositoryFactory = ProxyRepositoryFactory.getInstance();
+        try {
+            boolean found = repositoryFactory.findUser(project);
+            if (!found && loginComposite.isAuthenticationNeeded()) {
+                repositoryFactory.createUser(project);
             }
-
-            logged = project != null;
-        } else if (project == LoginComposite.IMPORT_PROJECTS) {
-            ImportProjectsAction.getInstance().run();
-            loginComposite.populateProjectList();
+        } catch (PersistenceException e) {
             logged = false;
-        } else {
-            // check if user already exists retrieve it else create it
-            IProxyRepositoryFactory repositoryFactory = ProxyRepositoryFactory.getInstance();
-            try {
-                boolean found = repositoryFactory.findUser(project);
-                if (!found && loginComposite.isAuthenticationNeeded()) {
-                    repositoryFactory.createUser(project);
-                }
-            } catch (PersistenceException e) {
-                logged = false;
-                e.printStackTrace();
-            }
+            e.printStackTrace();
         }
 
         if (logged) {
-            // Save last used parameters
-            PreferenceManipulator prefManipulator = new PreferenceManipulator(CorePlugin.getDefault().getPreferenceStore());
-            prefManipulator.setLastServer(loginComposite.getServer());
-            prefManipulator.setLastContext(loginComposite.getContext());
-            prefManipulator.setLastPort(loginComposite.getPort());
-            prefManipulator.setLastRepository(loginComposite.getRepository().getClass().getName());
-            prefManipulator.setLastProject(project.getLabel());
-            prefManipulator.setLastUser(loginComposite.getUser().getLogin());
-
-            if (loginComposite.getRepository().isAuthenticationNeeded()) {
-                prefManipulator.addServer(loginComposite.getServer());
-                prefManipulator.addContext(loginComposite.getContext());
-                prefManipulator.addPort(loginComposite.getPort());
-            }
-            prefManipulator.addUser(loginComposite.getUser().getLogin());
-
-            try {
-                ProxyRepositoryFactory.getInstance().logOnProject(project);
-            } catch (PersistenceException e) {
-                MessageBoxExceptionHandler.process(e);
-            }
-
-            super.okPressed();
+            logIn(project);
         }
+    }
+
+    /**
+     * DOC smallet Comment method "logIn".
+     * 
+     * @param project
+     */
+    protected void logIn(Project project) {
+        // Save last used parameters
+        PreferenceManipulator prefManipulator = new PreferenceManipulator(CorePlugin.getDefault().getPreferenceStore());
+        prefManipulator.setLastServer(loginComposite.getServer());
+        prefManipulator.setLastContext(loginComposite.getContext());
+        prefManipulator.setLastPort(loginComposite.getPort());
+        prefManipulator.setLastRepository(loginComposite.getRepository().getClass().getName());
+        prefManipulator.setLastProject(project.getLabel());
+        prefManipulator.setLastUser(loginComposite.getUser().getLogin());
+
+        if (loginComposite.getRepository().isAuthenticationNeeded()) {
+            prefManipulator.addServer(loginComposite.getServer());
+            prefManipulator.addContext(loginComposite.getContext());
+            prefManipulator.addPort(loginComposite.getPort());
+        }
+        prefManipulator.addUser(loginComposite.getUser().getLogin());
+
+        try {
+            ProxyRepositoryFactory.getInstance().logOnProject(project);
+        } catch (PersistenceException e) {
+            MessageBoxExceptionHandler.process(e);
+        }
+
+        super.okPressed();
     }
 
     public void updateButtons() {

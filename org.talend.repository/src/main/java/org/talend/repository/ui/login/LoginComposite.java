@@ -32,6 +32,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -39,6 +40,9 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.layout.FormAttachment;
+import org.eclipse.swt.layout.FormData;
+import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -66,6 +70,9 @@ import org.talend.repository.model.IRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryConstants;
 import org.talend.repository.model.RepositoryFactoryProvider;
+import org.talend.repository.ui.ERepositoryImages;
+import org.talend.repository.ui.actions.ImportProjectsAction;
+import org.talend.repository.ui.wizards.newproject.NewProjectWizard;
 
 /**
  * Composite login.<br/>
@@ -107,6 +114,10 @@ public class LoginComposite extends Composite {
     private Button fillProjectsBtn;
 
     private Button checkBtn;
+
+    private Button newProjectButton;
+
+    private Button importProjectsButton;
 
     public static final Project NEW_PROJECT = new Project(Messages.getString("LoginComposite.newProject"));
 
@@ -239,6 +250,28 @@ public class LoginComposite extends Composite {
 
         // Blank
         // toolkit.createLabel(formBody, null);
+
+        Composite bottomButtons = toolkit.createComposite(formBody);
+        GridData fillGrid2 = new GridData(GridData.FILL_HORIZONTAL);
+        fillGrid2.horizontalSpan = 9;
+        bottomButtons.setLayoutData(fillGrid2);
+        bottomButtons.setLayout(new FormLayout());
+
+        newProjectButton = toolkit.createButton(bottomButtons, null, SWT.PUSH);
+        newProjectButton.setText(Messages.getString("LoginComposite.newProject"));
+        newProjectButton.setToolTipText("Create a new project");
+        newProjectButton.setImage(ImageProvider.getImage(ERepositoryImages.NEW_PROJECT_ACTION));
+        FormData formData = new FormData();
+        formData.right = new FormAttachment(50);
+        newProjectButton.setLayoutData(formData);
+
+        importProjectsButton = toolkit.createButton(bottomButtons, null, SWT.PUSH);
+        importProjectsButton.setText("Import projects");
+        importProjectsButton.setToolTipText("Import existing Talend projects");
+        importProjectsButton.setImage(ImageProvider.getImage(ERepositoryImages.IMPORT_PROJECTS_ACTION));
+        formData = new FormData();
+        formData.left = new FormAttachment(newProjectButton, 10);
+        importProjectsButton.setLayoutData(formData);
 
         fillContents();
         addListeners();
@@ -418,6 +451,31 @@ public class LoginComposite extends Composite {
                 }
             }
         });
+
+        newProjectButton.addSelectionListener(new SelectionAdapter() {
+
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                Project project = null;
+                NewProjectWizard newPrjWiz = new NewProjectWizard();
+                WizardDialog newProjectDialog = new WizardDialog(getShell(), newPrjWiz);
+                newProjectDialog.setTitle(Messages.getString("LoginDialog.newProjectTitle")); //$NON-NLS-1$
+                if (newProjectDialog.open() == WizardDialog.OK) {
+                    project = newPrjWiz.getProject();
+                    populateProjectList();
+                    selectProject(project);
+                }
+            }
+        });
+
+        importProjectsButton.addSelectionListener(new SelectionAdapter() {
+
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                ImportProjectsAction.getInstance().run();
+                populateProjectList();
+            }
+        });
     }
 
     /**
@@ -466,15 +524,25 @@ public class LoginComposite extends Composite {
                     + Messages.getString("LoginComposite.refreshFailure2"));
         }
         if (isAuthenticationNeeded()) {
-            Project[] prjs = new Project[projects.length + 2];
+            Project[] prjs = new Project[projects.length];
             System.arraycopy(projects, 0, prjs, 0, projects.length);
-            prjs[prjs.length - 2] = NEW_PROJECT;
-            prjs[prjs.length - 1] = IMPORT_PROJECTS;
             projects = prjs;
         }
         projectViewer.setInput(projects);
 
         // Try to select the last recently used project
+        selectLastUsedProject();
+
+        projectViewer.getControl().setEnabled(true);
+    }
+
+    /**
+     * DOC smallet Comment method "selectLastUsedProject".
+     * 
+     * @param projects
+     */
+    private void selectLastUsedProject() {
+        Project[] projects = (Project[]) projectViewer.getInput();
         PreferenceManipulator prefManipulator = new PreferenceManipulator(CorePlugin.getDefault().getPreferenceStore());
         String lastProject = prefManipulator.getLastProject();
         if (lastProject != null) {
@@ -490,11 +558,18 @@ public class LoginComposite extends Composite {
             }
 
             if (goodProject != null) {
-                projectViewer.setSelection(new StructuredSelection(new Object[] { goodProject }));
+                selectProject(goodProject);
             }
         }
+    }
 
-        projectViewer.getControl().setEnabled(true);
+    /**
+     * DOC smallet Comment method "selectProject".
+     * 
+     * @param goodProject
+     */
+    private void selectProject(Project goodProject) {
+        projectViewer.setSelection(new StructuredSelection(new Object[] { goodProject }));
     }
 
     public IRepositoryFactory getRepository() {
