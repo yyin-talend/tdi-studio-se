@@ -22,6 +22,7 @@
 package org.talend.repository.ui.actions;
 
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
@@ -38,7 +39,10 @@ import org.talend.repository.ui.ERepositoryImages;
 public final class ImportProjectsAction extends Action {
 
     private static final String ACTION_TITLE = "Import projects";
+
     private static final String ACTION_TOOLTIP = "Import existing Talend projects";
+
+    private static final String STORE_COPY_PROJECT = "WizardProjectsImportPage.STORE_COPY_PROJECT_ID";
 
     private static ImportProjectsAction singleton;
 
@@ -58,10 +62,18 @@ public final class ImportProjectsAction extends Action {
 
     public void run() {
         ExternalProjectImportWizard processWizard = new ExternalProjectImportWizard();
+
+        // Set the "Copy projects into workspace" value default as true:
+        IDialogSettings dialogSettings = processWizard.getDialogSettings();
+        if (dialogSettings.get(STORE_COPY_PROJECT) == null) {
+            dialogSettings.put(STORE_COPY_PROJECT, true);
+        }
+
         Shell activeShell = Display.getCurrent().getActiveShell();
         WizardDialog dialog = new WizardDialog(activeShell, processWizard);
         processWizard.setWindowTitle(ACTION_TITLE);
         dialog.create();
+
         dialog.open();
     }
 }
