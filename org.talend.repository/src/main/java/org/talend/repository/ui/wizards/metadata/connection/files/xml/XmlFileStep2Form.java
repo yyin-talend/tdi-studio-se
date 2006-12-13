@@ -564,7 +564,9 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
             // Refresh the preview width the adapted rowSeparator
             // If metadata exist, refreshMetadata
             //getConnection().getXsdFilePath() != null && !getConnection().getXsdFilePath().equals("") && 
-            if (getConnection().getXmlFilePath() != null && !getConnection().getXmlFilePath().equals("")) {
+            if (getConnection().getXmlFilePath() != null && !getConnection().getXmlFilePath().equals("") 
+                    && getConnection().getSchema() != null && !getConnection().getSchema().isEmpty() 
+                        && ((XmlXPathLoopDescriptor) getConnection().getSchema().get(0)).getSchemaTargets() != null && !((XmlXPathLoopDescriptor) getConnection().getSchema().get(0)).getSchemaTargets().isEmpty()) {
                 refreshPreview();
             }
             // if (isReadOnly() != readOnly) {
