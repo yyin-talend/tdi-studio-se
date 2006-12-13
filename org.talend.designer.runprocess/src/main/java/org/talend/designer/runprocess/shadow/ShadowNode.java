@@ -150,7 +150,6 @@ public abstract class ShadowNode implements INode {
      * @see org.talend.core.model.process.INode#getMappingList()
      */
     public List<Map<String, String>> getMappingList() {
-        //PTODO cantoine : implement.
         return null;
     }
     

@@ -24,9 +24,6 @@ package org.talend.designer.runprocess.shadow;
 import java.util.List;
 import java.util.Map;
 
-import org.talend.core.model.metadata.IMetadataTable;
-import org.talend.core.model.process.ElementParameterParser;
-
 /**
  * DOC cantoine class global comment. Detailled comment <br/>
  * 
@@ -40,9 +37,6 @@ public class FileInputXmlNode extends FileInputNode {
     /**
      * Constructs a new FileInputNode.
      */
-    
-    //PTODO cantoine : view for the XmlFile to send PARAMETERS for ProcessDescription&ProcessShadow
-    // Be careful super("tFileInputXml");
     public FileInputXmlNode(String filename, String loopQuery, List<Map<String, String>> mapping) {
         super("tFileInputXML");
         String[] paramNames = new String[] { "FILENAME", "LOOP_QUERY", "MAPPING"};
@@ -54,17 +48,6 @@ public class FileInputXmlNode extends FileInputNode {
                 addParameter(param);
             }
         }
-        
-//        setMappingList(mapping);
-        
-//        Object test = ElementParameterParser.getObjectValue(this, "__MAPPING__");
-        
-//        List<Map<String, String>> mapping2 =
-//            (List<Map<String,String>>)ElementParameterParser.getObjectValue(
-//                this,
-//                "__MAPPING__"
-//            );
-        
     }
     
     /*
