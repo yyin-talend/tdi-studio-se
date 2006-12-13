@@ -266,9 +266,10 @@ public class LoginComposite extends Composite {
         newProjectButton.setLayoutData(formData);
 
         importProjectsButton = toolkit.createButton(bottomButtons, null, SWT.PUSH);
-        importProjectsButton.setText(ImportProjectsAction.ACTION_TITLE);
-        importProjectsButton.setToolTipText(ImportProjectsAction.ACTION_TOOLTIP);
-        importProjectsButton.setImage(ImageProvider.getImage(ImportProjectsAction.getInstance().getImageDescriptor()));
+        ImportProjectsAction ipa = ImportProjectsAction.getInstance();
+        importProjectsButton.setText(ipa.getText());
+        importProjectsButton.setToolTipText(ipa.getToolTipText());
+        importProjectsButton.setImage(ImageProvider.getImage(ipa.getImageDescriptor()));
         formData = new FormData();
         formData.left = new FormAttachment(newProjectButton, 10);
         importProjectsButton.setLayoutData(formData);

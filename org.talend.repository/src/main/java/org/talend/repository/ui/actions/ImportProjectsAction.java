@@ -37,8 +37,8 @@ import org.talend.repository.ui.ERepositoryImages;
  */
 public final class ImportProjectsAction extends Action {
 
-    public static final String ACTION_TITLE = "Import projects";
-    public static final String ACTION_TOOLTIP = "Import existing Talend projects";
+    private static final String ACTION_TITLE = "Import projects";
+    private static final String ACTION_TOOLTIP = "Import existing Talend projects";
 
     private static ImportProjectsAction singleton;
 
