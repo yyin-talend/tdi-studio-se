@@ -101,9 +101,13 @@ public class PerlLanguage extends AbstractLanguage {
      */
     public PerlLanguage() {
         super();
-        IRunProcessService service = Activator.getDefault().getRunProcessService();
 
-        this.syntaxChecker = service.getSyntaxChecker(ECodeLanguage.PERL);
+        Activator activator = Activator.getDefault();
+        if (activator != null) {
+            IRunProcessService service = activator.getRunProcessService();
+            this.syntaxChecker = service.getSyntaxChecker(ECodeLanguage.PERL);
+        }
+
     }
 
     /*

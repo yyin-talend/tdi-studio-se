@@ -336,10 +336,11 @@ public class TMapperMainPerljet {
                     ExternalMapperTable outputRejectTable = (ExternalMapperTable) outputTablesSortedByReject.get(indexReject);
                     List<ExternalMapperTableEntry> metadataTableEntries = outputRejectTable.getMetadataTableEntries();
                     List<ExternalMapperTableEntry> filtersForReject = outputRejectTable.getConstraintTableEntries();
-                    boolean hasFIlterForReject = filtersForReject != null && filtersForReject.size() > 0
+                    boolean hasFilterForReject = filtersForReject != null && filtersForReject.size() > 0
                             && !gm.checkFiltersAreEmpty(outputRejectTable);
-                    if (metadataTableEntries != null && metadataTableEntries.size() > 0 && hasFIlterForReject
-                            && outputRejectTable.isReject() && hasFilters || outputRejectTable.isRejectInnerJoin()) {
+                    if (outputRejectTable.isReject() || outputRejectTable.isRejectInnerJoin()) {
+                        // if (metadataTableEntries != null && metadataTableEntries.size() > 0 && hasFilterForReject
+                        // && outputRejectTable.isReject() && hasFilters || outputRejectTable.isRejectInnerJoin()) {
                         sb.append(cr + gm.indent(indent) + "# Output reject table: '" + outputRejectTable.getName() + "'");
                         sb.append(cr + gm.indent(indent) + gm.buildNewArrayDeclaration(outputRejectTable.getName(), indent));
                     }
@@ -347,7 +348,8 @@ public class TMapperMainPerljet {
             }
 
             // write filters conditions and code to execute
-            if (!currentIsReject || rejectValueHasJustChanged && oneFilterForNotRejectTable || currentIsReject || currentIsRejectInnerJoin
+            if (!currentIsReject || rejectValueHasJustChanged && oneFilterForNotRejectTable || currentIsReject
+                    && allNotRejectTablesHaveFilter || currentIsRejectInnerJoin
                     && atLeastOneInputTableWithInnerJoin) {
 
                 boolean closeFilterOrRejectBracket = false;
