@@ -26,6 +26,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URL;
+import java.util.ArrayList;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -52,6 +53,8 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.osgi.framework.Bundle;
+import org.talend.core.model.components.IComponent;
+import org.talend.core.model.components.IComponentsFactory;
 import org.talend.designer.runprocess.RunProcessPlugin;
 import org.talend.designer.runprocess.i18n.Messages;
 import org.w3c.dom.Document;
@@ -179,17 +182,14 @@ public final class PerlUtils {
      * @throws CoreException
      */
     public static IPath getPerlModuleDirectoryPath() throws CoreException {
-        Bundle perlLibBundle = Platform.getBundle(Messages.getString("Designer.corePlugin"));
+        Bundle b = Platform.getBundle(IComponentsFactory.COMPONENTS_LOCATION);
+        URL url = null;
         try {
-            if (!(perlLibBundle == null)) {
-                URL entry = perlLibBundle.getEntry(Messages.getString("Components.folderName"));
-                URL url = FileLocator.resolve(entry);
-                return new Path(url.getFile());
-            }
+            url = FileLocator.toFileURL(FileLocator.find(b, new Path(IComponentsFactory.COMPONENTS_DIRECTORY), null));
+            return new Path(url.getFile());
         } catch (IOException e) {
+            throw new CoreException(new Status(Status.ERROR, RunProcessPlugin.PLUGIN_ID, Status.OK, Messages
+                    .getString("Processor.desiginerCorePluginNotFound"), null));
         }
-
-        throw new CoreException(new Status(Status.ERROR, RunProcessPlugin.PLUGIN_ID, Status.OK, Messages
-                .getString("Processor.desiginerCorePluginNotFound"), null));
     }
 }
