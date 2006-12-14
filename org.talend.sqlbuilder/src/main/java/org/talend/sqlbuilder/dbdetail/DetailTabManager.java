@@ -188,7 +188,7 @@ public class DetailTabManager {
             tab.fillComposite(detailComposite);
             detailComposite.layout();
         }
-        if (tabFolder.getChildren().length > 0) {
+        if (tabFolder.getChildren().length > 0 && tabFolder.getSelection() == null) {
         	tabFolder.setSelection(0);
         }
         tabFolder.layout();
