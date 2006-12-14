@@ -252,6 +252,7 @@ public class LoginComposite extends Composite {
         // toolkit.createLabel(formBody, null);
 
         Composite bottomButtons = toolkit.createComposite(formBody);
+        // bottomButtons.setBackground(new Color(null,255,0,0));
         GridData fillGrid2 = new GridData(GridData.FILL_HORIZONTAL);
         fillGrid2.horizontalSpan = 9;
         bottomButtons.setLayoutData(fillGrid2);
@@ -262,7 +263,7 @@ public class LoginComposite extends Composite {
         newProjectButton.setToolTipText("Create a new project");
         newProjectButton.setImage(ImageProvider.getImage(ERepositoryImages.NEW_PROJECT_ACTION));
         FormData formData = new FormData();
-        formData.right = new FormAttachment(50);
+        formData.left = new FormAttachment(0);
         newProjectButton.setLayoutData(formData);
 
         importProjectsButton = toolkit.createButton(bottomButtons, null, SWT.PUSH);
@@ -271,7 +272,7 @@ public class LoginComposite extends Composite {
         importProjectsButton.setToolTipText(ipa.getToolTipText());
         importProjectsButton.setImage(ImageProvider.getImage(ipa.getImageDescriptor()));
         formData = new FormData();
-        formData.left = new FormAttachment(newProjectButton, 10);
+        formData.left = new FormAttachment(newProjectButton, 5);
         importProjectsButton.setLayoutData(formData);
 
         fillContents();
