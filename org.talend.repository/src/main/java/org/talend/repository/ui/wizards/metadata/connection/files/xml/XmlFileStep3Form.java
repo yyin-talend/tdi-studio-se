@@ -50,6 +50,8 @@ import org.talend.core.model.metadata.MetadataTalendType;
 import org.talend.core.model.metadata.builder.connection.ConnectionFactory;
 import org.talend.core.model.metadata.builder.connection.MetadataColumn;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
+import org.talend.core.model.metadata.builder.connection.SchemaTarget;
+import org.talend.core.model.metadata.builder.connection.XmlXPathLoopDescriptor;
 import org.talend.core.model.metadata.editor.MetadataEmfTableEditor;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.ui.metadata.editor.MetadataEmfTableEditorView;
@@ -290,7 +292,7 @@ public class XmlFileStep3Form extends AbstractXmlFileStepForm {
                 informationLabel.setText("   " + Messages.getString("FileStep3.guessFailure"));
 
             } else {
-                refreshMetaDataTable(xmlArray);
+                refreshMetaDataTable(xmlArray, ((XmlXPathLoopDescriptor) getConnection().getSchema().get(0)).getSchemaTargets());
             }
 
         } catch (CoreException e) {
@@ -310,7 +312,7 @@ public class XmlFileStep3Form extends AbstractXmlFileStepForm {
      * 
      * @param xmlArray
      */
-    public void refreshMetaDataTable(final XmlArray xmlArray) {
+    public void refreshMetaDataTable(final XmlArray xmlArray, List<SchemaTarget> schemaTarget) {
         informationLabel.setText("   " + Messages.getString("FileStep3.guessIsDone"));
 
         // clear all items
@@ -331,12 +333,19 @@ public class XmlFileStep3Form extends AbstractXmlFileStepForm {
             String[] label = new String[numberOfCol];
             for (int i = 0; i < numberOfCol; i++) {
                 label[i] = Messages.getString("FileStep3.column") + i;
-                if (firstRowToExtractMetadata == 1) {
-                    String value = fields.get(i).getValue();
-                    if (!value.equals("")) {
-                        label[i] = value;
+
+                if (firstRowToExtractMetadata == 0) {
+                    if(schemaTarget.get(i).getTagName()!=null && !schemaTarget.get(i).getTagName().equals("")){
+                        label[i] = "" + schemaTarget.get(i).getTagName();    
                     }
                 }
+                
+//                if (firstRowToExtractMetadata == 1) {
+//                    String value = fields.get(i).getValue();
+//                    if (!value.equals("")) {
+//                        label[i] = value;
+//                    }
+//                }
             }
 
             for (int i = 0; i < numberOfCol; i++) {

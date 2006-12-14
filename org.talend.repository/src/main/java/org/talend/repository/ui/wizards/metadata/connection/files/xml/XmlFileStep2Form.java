@@ -34,6 +34,11 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.apache.oro.text.regex.MalformedPatternException;
+import org.apache.oro.text.regex.MatchResult;
+import org.apache.oro.text.regex.Pattern;
+import org.apache.oro.text.regex.Perl5Compiler;
+import org.apache.oro.text.regex.Perl5Matcher;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.datatools.enablement.oda.xml.util.ui.ATreeNode;
@@ -60,6 +65,7 @@ import org.talend.commons.utils.data.list.IListenableListListener;
 import org.talend.commons.utils.data.list.ListenableListEvent;
 import org.talend.commons.utils.encoding.CharsetToolkit;
 import org.talend.core.model.metadata.builder.connection.ConnectionFactory;
+import org.talend.core.model.metadata.builder.connection.SchemaTarget;
 import org.talend.core.model.metadata.builder.connection.XmlXPathLoopDescriptor;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.targetschema.editor.XmlExtractorFieldModel;
@@ -116,6 +122,8 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
     private XmlExtractorLoopModel loopModel;
 
     private XmlXPathLoopDescriptor xmlXPathLoopDescriptor;
+    
+    private String encoding;
 
     /**
      * Constructor to use by RCP Wizard.
@@ -346,7 +354,8 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
                 previewInformationLabel.setText("   " + Messages.getString("FileStep2.previewIsDone"));
 
                 // refresh TablePreview on this step
-                xmlFilePreview.refreshTablePreview(xmlArray, false);
+                xmlFilePreview.refreshTablePreview(xmlArray, false, ((XmlXPathLoopDescriptor) getConnection().getSchema().get(0)).getSchemaTargets());
+                
                 previewInformationLabel.setText("");
             }
         } catch (CoreException e) {
@@ -498,12 +507,27 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
                 Charset guessedCharset = CharsetToolkit.guessEncoding(file, 4096);
 
                 String str;
-                int numberLine = 0;
-                // read the file width the limit : MAXIMUM_ROWS_TO_PREVIEW
                 BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(getConnection().getXmlFilePath()),
                         guessedCharset.displayName()));
-                while (((str = in.readLine()) != null) && (numberLine <= TreePopulator.MAXIMUM_ROWS_TO_PREVIEW)) {
-                    numberLine++;
+                while ((str = in.readLine()) != null) {
+                    if(str.contains("encoding")){
+                        String regex = "^<\\?xml\\s*version=\\\"[^\\\"]*\\\"\\s*encoding=\\\"([^\\\"]*)\\\"\\?>$";
+                        
+                        Perl5Compiler compiler = new Perl5Compiler();
+                        Perl5Matcher matcher = new Perl5Matcher();
+                        Pattern pattern = null;
+                        try {
+                            pattern = compiler.compile(regex);
+                            if (matcher.contains(str, pattern)) {
+                                MatchResult matchResult = matcher.getMatch();
+                                if (matchResult != null) {
+                                    encoding = matchResult.group(1);
+                                }
+                            }
+                        } catch (MalformedPatternException e) {
+                  
+                        }
+                    }
                     previewRows = previewRows + str + "\n";
                 }
                 in.close();
@@ -532,6 +556,7 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
 
             checkFieldsValue();
         }
+        getConnection().setEncoding(encoding);
     }
 
     /*

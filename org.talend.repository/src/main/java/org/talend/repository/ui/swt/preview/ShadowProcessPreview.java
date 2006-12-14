@@ -30,6 +30,7 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 import org.talend.core.CorePlugin;
+import org.talend.core.model.metadata.builder.connection.SchemaTarget;
 import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.core.utils.XmlArray;
 import org.talend.core.utils.XmlField;
@@ -248,6 +249,71 @@ public class ShadowProcessPreview {
         }
     }
 
+    /**
+     * refresh TablePreview width the first rows of the file.
+     * 
+     * @param xmlArray
+     * @param firstRowIsLabel
+     */
+    public void refreshTablePreview(final XmlArray xmlArray, final boolean firstRowIsLabel, List<SchemaTarget> schemaTarget) {
+        List<XmlRow> xmlRows = xmlArray.getRows();
+
+        // init the title columns
+
+        XmlRow firstRow = xmlRows.get(0);
+
+        List<XmlField> firstRowFields = firstRow.getFields();
+
+        Integer numbersOfColumns = getRightFirstRow(xmlRows);
+
+        String[] title = new String[numbersOfColumns];
+        for (int i = 0; i < numbersOfColumns; i++) {
+            if (firstRowIsLabel) {
+                if (numbersOfColumns <= firstRowFields.size()) {
+                    if (firstRowFields.get(i).getValue() != null && !("").equals(firstRowFields.get(i).getValue())) {
+                        title[i] = firstRowFields.get(i).getValue();
+                    } else {
+                        title[i] = Messages.getString("DelimitedFilePreview.column") + " " + i;
+                    }
+                } else {
+                    if (i < firstRowFields.size()) {
+                        title[i] = firstRowFields.get(i).getValue();
+                    } else {
+                        title[i] = Messages.getString("DelimitedFilePreview.column") + " " + i;
+                    }
+                }
+            } else {
+                if(schemaTarget.get(i).getTagName()!=null && !schemaTarget.get(i).getTagName().equals("")){
+                    title[i] = "" + schemaTarget.get(i).getTagName();    
+                }else{
+                    title[i] = Messages.getString("DelimitedFilePreview.column") + " " + i;
+                }
+            }
+        }
+        this.header = title;
+
+        // clear all the item
+        table.clearAll();
+
+        // refresh the Header and the Item of the table
+        refreshPreviewHeader(title);
+        refreshPreviewItem(xmlRows, firstRowIsLabel);
+
+        refreshPreviewHeader(title);
+
+        // resize all the columns but not the table
+        for (int i = 0; i < table.getColumnCount(); i++) {
+            table.getColumn(i).pack();
+        }
+
+        // scroll to show the first col and first row
+        table.showItem(table.getItem(0));
+        if (table.getColumns() != null && table.getColumns().length > 0) {
+            table.showColumn(table.getColumn(0));
+        }
+    }
+
+    
     // CALCULATE THE NULBER OF COLUMNS IN THE PREVIEW
     public Integer getRightFirstRow(List<XmlRow> xmlRows) {
 

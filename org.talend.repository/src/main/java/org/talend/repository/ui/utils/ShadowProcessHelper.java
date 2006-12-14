@@ -109,8 +109,7 @@ public class ShadowProcessHelper {
     public static ProcessDescription getProcessDescription(final XmlFileConnection connection) {
         ProcessDescription processDescription = new ProcessDescription();
         processDescription.setFilepath(connection.getXmlFilePath());
-        processDescription.setLoopQuery("'"+((XmlXPathLoopDescriptor) connection.getSchema().get(0))
-                .getAbsoluteXPathQuery()+"'");
+        processDescription.setLoopQuery("'" + ((XmlXPathLoopDescriptor) connection.getSchema().get(0)).getAbsoluteXPathQuery() + "'");
 
         List<Map<String, String>> mapping = new ArrayList<Map<String, String>>();
 
@@ -121,11 +120,16 @@ public class ShadowProcessHelper {
             while (iterate.hasNext()) {
                 SchemaTarget schemaTarget = iterate.next();
                 Map<String, String> lineMapping = new HashMap<String, String>();
-                lineMapping.put("QUERY", "'"+schemaTarget.getRelativeXPathQuery()+"'");
+                lineMapping.put("QUERY", "'" + schemaTarget.getRelativeXPathQuery() + "'");
                 mapping.add(lineMapping);
             }
         }
         processDescription.setMapping(mapping);
+        if (connection.getEncoding() != null && !("").equals(connection.getEncoding())) {
+            processDescription.setEncoding("'" + connection.getEncoding() + "'");
+        } else {
+            processDescription.setEncoding("'UTF-8'");
+        }
 
         return processDescription;
     }
