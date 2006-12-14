@@ -105,6 +105,16 @@
     >
       <DEFAULT>''</DEFAULT>
     </PARAMETER>
+
+    <PARAMETER 
+      NAME="SCHEMA_DB"
+      FIELD="TEXT"
+      NUM_ROW="3"
+      REPOSITORY_VALUE="SCHEMA" 
+      NOT_SHOW_IF="(TYPE=='MSSQL_ODBC') or (TYPE=='ODBC') or (TYPE=='MYSQL')"
+    >
+      <DEFAULT>''</DEFAULT>
+    </PARAMETER>
     
     <PARAMETER
       NAME="USER"
@@ -123,7 +133,7 @@
     >
       <DEFAULT>''</DEFAULT>
     </PARAMETER>
-
+    
     <PARAMETER
       NAME="SCHEMA"
       FIELD="SCHEMA_TYPE"
