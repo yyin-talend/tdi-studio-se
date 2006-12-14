@@ -126,7 +126,8 @@ public class ShadowProcess<T extends IProcessDescription> {
             ps = new FileinToXmlProcess<FileInputRegExpNode>(inRegExpNode, outNode);
             break;
         case FILE_XML:
-            FileInputXmlNode inXmlNode = new FileInputXmlNode("'" + inPath.toOSString() + "'", description.getLoopQuery(), description.getMapping());
+            FileInputXmlNode inXmlNode = new FileInputXmlNode("'" + inPath.toOSString() + "'", description.getLoopQuery(), 
+                    description.getMapping());
             ps = new FileinToXmlProcess<FileInputXmlNode>(inXmlNode, outNode);
             break;
         case FILE_LDIF:
@@ -168,7 +169,7 @@ public class ShadowProcess<T extends IProcessDescription> {
 //                    Processor.NO_TRACES,Processor.WATCH_ALLOWED);//Old
             
             Process ps = processor.run(process.getContextManager().getDefaultContext(), Processor.NO_STATISTICS,
-                    Processor.NO_TRACES,null);
+                    Processor.NO_TRACES, null);
             ProcessStreamTrashReader.readAndForget(ps);
 
             if (!outPath.toFile().exists()) {
