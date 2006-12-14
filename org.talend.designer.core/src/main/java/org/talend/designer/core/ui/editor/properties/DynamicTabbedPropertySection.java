@@ -495,6 +495,8 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                     String type = getRepositoryItemFromRepositoryName("TYPE");
                     connParameters.setDbType(type);
                     connParameters.setQuery(query);
+                    String schema = getValueFromRepositoryName("SCHEMA");
+                    connParameters.setSchema(schema);
                     OpenSQLBuilderDialogJob openDialogJob = new OpenSQLBuilderDialogJob(connParameters, composite,
                             elem, propertyName, getCommandStack());
 

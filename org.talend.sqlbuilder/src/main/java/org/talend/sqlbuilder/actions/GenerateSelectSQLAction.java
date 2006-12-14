@@ -21,6 +21,7 @@
 // ============================================================================
 package org.talend.sqlbuilder.actions;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -57,7 +58,7 @@ public class GenerateSelectSQLAction extends SelectionProviderAction {
 
 	private SQLBuilderRepositoryNodeManager repositoryNodeManager = new SQLBuilderRepositoryNodeManager();
 
-	private RepositoryNode[] selectedNodes;
+	private List<RepositoryNode> selectedNodes;
 
 	private ISelectionProvider provider;
 
@@ -72,6 +73,7 @@ public class GenerateSelectSQLAction extends SelectionProviderAction {
 		this.provider = provider;
 		this.dialog = dialog;
 		this.isDefaultEditor = isDefaultEditor;
+		selectedNodes = new ArrayList<RepositoryNode>();
 		init();
 	}
 
@@ -83,25 +85,24 @@ public class GenerateSelectSQLAction extends SelectionProviderAction {
 	@SuppressWarnings("unchecked")
 	public void init() {
 
+		selectedNodes.clear();
 		IStructuredSelection structuredSelection = (IStructuredSelection) provider
 				.getSelection();
-		selectedNodes = new RepositoryNode[structuredSelection.toList().size()];
 		for (int i = 0; i < structuredSelection.toList().size(); i++) {
 			RepositoryNode repositoryNode = (RepositoryNode) structuredSelection
 					.toList().get(i);
 			RepositoryNode rootNode = SQLBuilderRepositoryNodeManager
 					.getRoot(repositoryNode);
-			if (selectedNodes.length > 0
-					&& selectedNodes[0] != null
+			if (!selectedNodes.isEmpty()
+					&& selectedNodes.get(0) != null
 					&& !rootNode.equals(SQLBuilderRepositoryNodeManager
-							.getRoot(selectedNodes[0]))) {
+							.getRoot(selectedNodes.get(0)))) {
 				setEnabled(false);
 				return;
-
 			}
-			selectedNodes[i] = repositoryNode;
+			selectedNodes.add(repositoryNode);
 		}
-		if (selectedNodes.length == 0) {
+		if (selectedNodes.isEmpty()) {
 			this.setEnabled(false);
 			return;
 		}
@@ -127,7 +128,7 @@ public class GenerateSelectSQLAction extends SelectionProviderAction {
 			SQLBuilderRepositoryNodeManager.setIncrease(true);
 			String query = null;
 
-			RepositoryNodeType repositoryNodeType = (RepositoryNodeType) selectedNodes[0]
+			RepositoryNodeType repositoryNodeType = (RepositoryNodeType) selectedNodes.get(0)
 					.getProperties(EProperties.CONTENT_TYPE);
 			if (repositoryNodeType == RepositoryNodeType.COLUMN) {
 				query = createColumnSelect();
@@ -145,7 +146,7 @@ public class GenerateSelectSQLAction extends SelectionProviderAction {
 			connParam.setQuery(query);
 
 			dialog.openEditor(SQLBuilderRepositoryNodeManager
-					.getRoot(selectedNodes[0]), repositoryNames, connParam,
+					.getRoot(selectedNodes.get(0)), repositoryNames, connParam,
 					isDefaultEditor);
 		} catch (Throwable e) {
 			SqlBuilderPlugin.log("Could generate sql.", e);
@@ -158,19 +159,19 @@ public class GenerateSelectSQLAction extends SelectionProviderAction {
 	private String createColumnSelect() {
 
 		StringBuffer query = new StringBuffer("select ");
-		String fix = getPrePostfix(selectedNodes[0]);
-		String tablePrefix = getTablePrefix(selectedNodes[0]);
+		String fix = getPrePostfix(selectedNodes.get(0));
+		String tablePrefix = getTablePrefix(selectedNodes.get(0));
 		String sep = "";
 		String table = "";
 
-		for (int i = 0; i < selectedNodes.length; i++) {
+		for (int i = 0; i < selectedNodes.size(); i++) {
 
-			RepositoryNode node = selectedNodes[i];
-			if (node.getParent() != selectedNodes[0].getParent()) {
+			RepositoryNode node = selectedNodes.get(i);
+			if (node.getParent() != selectedNodes.get(0).getParent()) {
 				continue;
 			}
 
-			if ((RepositoryNodeType) selectedNodes[0]
+			if ((RepositoryNodeType) selectedNodes.get(0)
 					.getProperties(EProperties.CONTENT_TYPE) == RepositoryNodeType.COLUMN) {
 
 				if (table.length() == 0) {
@@ -214,7 +215,7 @@ public class GenerateSelectSQLAction extends SelectionProviderAction {
 	 */
 	private String createTableSelect() {
 
-		RepositoryNode node = (RepositoryNode) selectedNodes[0];
+		RepositoryNode node = (RepositoryNode) selectedNodes.get(0);
 		String fix = getPrePostfix(node);
 		String tablePrefix = getTablePrefix(node);
 

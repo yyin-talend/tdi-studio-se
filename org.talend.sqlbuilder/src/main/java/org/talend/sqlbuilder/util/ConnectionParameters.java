@@ -443,6 +443,8 @@ public class ConnectionParameters {
 			DatabaseConnection databaseConnection = (DatabaseConnection) SQLBuilderRepositoryNodeManager.getItem(
 					repositoryNodeBuiltIn).getConnection();
 			status = !(databaseConnection.isDivergency());
-		}
+		} else {
+		    status = false;
+        }
 	}
 }

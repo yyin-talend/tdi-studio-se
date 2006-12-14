@@ -651,6 +651,10 @@ public class SQLBuilderRepositoryNodeManager {
 	@SuppressWarnings("unchecked")
 	public RepositoryNode getRepositoryNodeByBuildIn(RepositoryNode node,
 			ConnectionParameters parameters) {
+        if (parameters.getSchema().equals("\'\'")) {
+            parameters.setConnectionComment("Please Input Schema !");
+            return null;
+        }
 		DatabaseConnection connection = createConnection(parameters);
 		IMetadataConnection iMetadataConnection = ConvertionHelper
 				.convert(connection);
@@ -767,9 +771,8 @@ public class SQLBuilderRepositoryNodeManager {
 		connection.setSID(parameters.getDbName());
 		connection.setLabel(parameters.getDbName());
 		connection.setDatasourceName(parameters.getDatasource());
-		if (parameters.getSchema() == null
-				&& parameters.getDbType().equals("PostgreSQL")) {
-			connection.setSchema("public");
+		if (parameters.getSchema() != null) {
+             connection.setSchema(parameters.getSchema().replaceAll("\'", ""));
 		}
 		connection.setURL(parameters.getURL());
 		connection.setDriverClass(ExtractMetaDataUtils

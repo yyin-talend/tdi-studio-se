@@ -72,6 +72,10 @@ public class OpenSQLBuilderDialogProgress implements IRunnableWithProgress {
                     connectionParameters.setConnectionComment(null);
                     break;
                 }
+                if (connectionParameters.getConnectionComment() != null
+                        && connectionParameters.getRepositoryNodeBuiltIn() == null) {
+                    break;
+                }
                 if (connectionParameters.getRepositoryNodeBuiltIn() != null) {
                 	break;
                 }
