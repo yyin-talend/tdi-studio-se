@@ -160,14 +160,12 @@ public class LoginDialog extends TitleAreaDialog {
     protected void okPressed() {
         boolean logged = true;
 
-        Project project = loginComposite.getProject();
-
         // check if user already exists retrieve it else create it
         IProxyRepositoryFactory repositoryFactory = ProxyRepositoryFactory.getInstance();
         try {
-            boolean found = repositoryFactory.findUser(project);
+            boolean found = repositoryFactory.doesLoggedUserExist();
             if (!found && loginComposite.isAuthenticationNeeded()) {
-                repositoryFactory.createUser(project);
+                repositoryFactory.createUser();
             }
         } catch (PersistenceException e) {
             logged = false;
@@ -175,7 +173,7 @@ public class LoginDialog extends TitleAreaDialog {
         }
 
         if (logged) {
-            logIn(project);
+            logIn(loginComposite.getProject());
         }
     }
 

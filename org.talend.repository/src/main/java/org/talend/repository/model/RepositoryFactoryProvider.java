@@ -41,25 +41,28 @@ import org.talend.commons.utils.workbench.extensions.ISimpleExtensionPoint;
  */
 public class RepositoryFactoryProvider {
 
-    public static final ISimpleExtensionPoint REPOSITORY_PROVIDER = new ExtensionPointImpl(
-            "org.talend.core.repository_provider", "RepositoryFactory", 1, -1);
+    private static List<IRepositoryFactory> list = null;
+
+    public static final ISimpleExtensionPoint REPOSITORY_PROVIDER = new ExtensionPointImpl("org.talend.core.repository_provider",
+            "RepositoryFactory", 1, -1);
 
     public static List<IRepositoryFactory> getAvailableRepositories() {
-        List<IRepositoryFactory> toReturn = new ArrayList<IRepositoryFactory>();
-        List<IConfigurationElement> extension = ExtensionImplementationProviders.getInstanceV2(REPOSITORY_PROVIDER);
+        if (list == null) {
+            list = new ArrayList<IRepositoryFactory>();
+            List<IConfigurationElement> extension = ExtensionImplementationProviders.getInstanceV2(REPOSITORY_PROVIDER);
 
-        for (IConfigurationElement current : extension) {
-            try {
-                IRepositoryFactory currentAction = (IRepositoryFactory) current.createExecutableExtension("class");
-                String attribute = current.getAttribute("name");
-                currentAction.setName(attribute);
-                currentAction.setAuthenticationNeeded(new Boolean(current.getAttribute("authenticationNeeded")));
-                toReturn.add(currentAction);
-            } catch (CoreException e) {
-                e.printStackTrace();
+            for (IConfigurationElement current : extension) {
+                try {
+                    IRepositoryFactory currentAction = (IRepositoryFactory) current.createExecutableExtension("class");
+                    String attribute = current.getAttribute("name");
+                    currentAction.setName(attribute);
+                    currentAction.setAuthenticationNeeded(new Boolean(current.getAttribute("authenticationNeeded")));
+                    list.add(currentAction);
+                } catch (CoreException e) {
+                    e.printStackTrace();
+                }
             }
         }
-
-        return toReturn;
+        return list;
     }
 }

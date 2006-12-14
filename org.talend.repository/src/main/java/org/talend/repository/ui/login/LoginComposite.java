@@ -438,6 +438,7 @@ public class LoginComposite extends Composite {
 
             public void selectionChanged(SelectionChangedEvent event) {
                 dialog.updateButtons();
+                setRepositoryContextInContext();
             }
         });
 
@@ -503,6 +504,7 @@ public class LoginComposite extends Composite {
         String context = getContext();
         User user = getUser();
         RepositoryContext repositoryContext = new RepositoryContext(server, portAsNumber, context, user);
+        repositoryContext.setProject(getProject());
         return repositoryContext;
     }
 
@@ -572,6 +574,7 @@ public class LoginComposite extends Composite {
      */
     private void selectProject(Project goodProject) {
         projectViewer.setSelection(new StructuredSelection(new Object[] { goodProject }));
+        setRepositoryContextInContext();
     }
 
     public IRepositoryFactory getRepository() {

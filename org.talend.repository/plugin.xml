@@ -110,11 +110,6 @@
             level="55"
             name="Paste"/>
       <Action
-            class="org.talend.repository.ui.actions.CommitAction"
-            id="org.talend.repository.Action1"
-            level="45"
-            name="Commit"/>
-      <Action
             class="org.talend.repository.ui.actions.routines.EditRoutineAction"
             id="org.talend.repositorys.actions.editroutine"
             level="10"

@@ -32,9 +32,6 @@ import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.utils.data.container.Container;
 import org.talend.commons.utils.data.container.RootContainer;
 import org.talend.commons.utils.workbench.resources.ResourceUtils;
-import org.talend.core.CorePlugin;
-import org.talend.core.context.Context;
-import org.talend.core.context.RepositoryContext;
 import org.talend.core.model.general.Project;
 import org.talend.core.model.properties.BusinessProcessItem;
 import org.talend.core.model.properties.CSVFileConnectionItem;
@@ -60,57 +57,7 @@ import org.talend.core.model.repository.IRepositoryObject;
  * $Id$
  * 
  */
-public abstract class AbstractEMFRepositoryFactory implements IRepositoryFactory {
-
-    private String name;
-
-    private boolean authenticationNeeded;
-
-    /**
-     * Getter for authenticationNeeded.
-     * 
-     * @return the authenticationNeeded
-     */
-    public boolean isAuthenticationNeeded() {
-        return this.authenticationNeeded;
-    }
-
-    /**
-     * Sets the authenticationNeeded.
-     * 
-     * @param authenticationNeeded the authenticationNeeded to set
-     */
-    public void setAuthenticationNeeded(boolean authenticationNeeded) {
-        this.authenticationNeeded = authenticationNeeded;
-    }
-
-    /**
-     * Getter for name.
-     * 
-     * @return the name
-     */
-    public String getName() {
-        return this.name;
-    }
-
-    /**
-     * Sets the name.
-     * 
-     * @param name the name to set
-     */
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public RepositoryContext getRepositoryContext() {
-        Context ctx = CorePlugin.getContext();
-        return (RepositoryContext) ctx.getProperty(Context.REPOSITORY_CONTEXT_KEY);
-    }
-
-    @Override
-    public String toString() {
-        return getName();
-    }
+public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFactory implements IRepositoryFactory {
 
     /**
      * Generates the next id for serializable. If no serializable returns 0.
@@ -203,21 +150,18 @@ public abstract class AbstractEMFRepositoryFactory implements IRepositoryFactory
         return toReturn;
     }
 
-    protected List<IRepositoryObject> getSerializable(Project project, String id, boolean allVersion)
-            throws PersistenceException {
+    protected List<IRepositoryObject> getSerializable(Project project, String id, boolean allVersion) throws PersistenceException {
         IProject fsProject = ResourceModelUtils.getProject(project);
 
         List<IRepositoryObject> toReturn = new ArrayList<IRepositoryObject>();
 
-        ERepositoryObjectType[] repositoryObjectTypeList = new ERepositoryObjectType[] {
-                ERepositoryObjectType.BUSINESS_PROCESS, ERepositoryObjectType.DOCUMENTATION,
-                ERepositoryObjectType.METADATA_CONNECTIONS, ERepositoryObjectType.METADATA_FILE_DELIMITED,
-                ERepositoryObjectType.METADATA_FILE_POSITIONAL, ERepositoryObjectType.METADATA_FILE_REGEXP,
-                ERepositoryObjectType.METADATA_FILE_XML, ERepositoryObjectType.METADATA_FILE_LDIF,
-                ERepositoryObjectType.PROCESS, ERepositoryObjectType.ROUTINES };
+        ERepositoryObjectType[] repositoryObjectTypeList = new ERepositoryObjectType[] { ERepositoryObjectType.BUSINESS_PROCESS,
+                ERepositoryObjectType.DOCUMENTATION, ERepositoryObjectType.METADATA_CONNECTIONS,
+                ERepositoryObjectType.METADATA_FILE_DELIMITED, ERepositoryObjectType.METADATA_FILE_POSITIONAL,
+                ERepositoryObjectType.METADATA_FILE_REGEXP, ERepositoryObjectType.METADATA_FILE_XML,
+                ERepositoryObjectType.METADATA_FILE_LDIF, ERepositoryObjectType.PROCESS, ERepositoryObjectType.ROUTINES };
         for (ERepositoryObjectType repositoryObjectType : repositoryObjectTypeList) {
-            IFolder folder = ResourceUtils.getFolder(fsProject, ERepositoryObjectType
-                    .getFolderName(repositoryObjectType), true);
+            IFolder folder = ResourceUtils.getFolder(fsProject, ERepositoryObjectType.getFolderName(repositoryObjectType), true);
             toReturn.addAll(getSerializableFromFolder(folder, id, repositoryObjectType, allVersion, true));
         }
         return toReturn;
@@ -306,16 +250,14 @@ public abstract class AbstractEMFRepositoryFactory implements IRepositoryFactory
         }.doSwitch(item);
     }
 
+    protected abstract List<IRepositoryObject> getSerializableFromFolder(Object folder, String id, ERepositoryObjectType type,
+            boolean allVersion, boolean searchInChildren) throws PersistenceException;
 
-    
-    protected abstract List<IRepositoryObject> getSerializableFromFolder(Object folder, String id,
-            ERepositoryObjectType type, boolean allVersion, boolean searchInChildren) throws PersistenceException;
+    protected abstract <K, T> RootContainer<K, T> getObjectFromFolder(ERepositoryObjectType type, boolean onlyLastVersion)
+            throws PersistenceException;
 
-    protected abstract <K, T> RootContainer<K, T> getObjectFromFolder(ERepositoryObjectType type,
+    protected abstract <K, T> void addFolderMembers(ERepositoryObjectType type, Container<K, T> toReturn, Object objectFolder,
             boolean onlyLastVersion) throws PersistenceException;
-
-    protected abstract <K, T> void addFolderMembers(ERepositoryObjectType type, Container<K, T> toReturn,
-            Object objectFolder, boolean onlyLastVersion) throws PersistenceException;
 
     protected abstract FolderHelper getFolderHelper(org.talend.core.model.properties.Project emfProject);
 

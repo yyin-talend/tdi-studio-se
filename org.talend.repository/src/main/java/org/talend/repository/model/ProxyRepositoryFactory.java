@@ -646,23 +646,10 @@ public class ProxyRepositoryFactory implements IProxyRepositoryFactory {
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.repository.model.IProxyRepositoryFactory#commit(org.talend.core.model.properties.Item)
-     */
-    public void commit(Item obj) throws PersistenceException {
-        if (getStatus(obj) == ERepositoryStatus.LOCK_BY_USER) {
-            this.repositoryFactoryFromProvider.commit(obj);
-            this.repositoryFactoryFromProvider.unlock(obj);
-            log.debug("Unlock [" + obj + "] by \"" + getRepositoryContext().getUser() + "\".");
-        }
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
      * @see org.talend.repository.model.IProxyRepositoryFactory#findUser(org.talend.core.model.general.Project)
      */
-    public boolean findUser(Project project) throws PersistenceException {
-        return this.repositoryFactoryFromProvider.findUser(project);
+    public boolean doesLoggedUserExist() throws PersistenceException {
+        return this.repositoryFactoryFromProvider.doesLoggedUserExist();
     }
 
     /*
@@ -670,8 +657,8 @@ public class ProxyRepositoryFactory implements IProxyRepositoryFactory {
      * 
      * @see org.talend.repository.model.IProxyRepositoryFactory#createUser(org.talend.core.model.general.Project)
      */
-    public void createUser(Project project) throws PersistenceException {
-        this.repositoryFactoryFromProvider.createUser(project);
+    public void createUser() throws PersistenceException {
+        this.repositoryFactoryFromProvider.createUser();
     }
 
     /*

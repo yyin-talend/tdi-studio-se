@@ -62,9 +62,9 @@ public interface IRepositoryFactory {
     public Project createProject(String label, String description, ECodeLanguage language, User author)
             throws PersistenceException;
 
-    public boolean findUser(Project project) throws PersistenceException;
+    public boolean doesLoggedUserExist() throws PersistenceException;
 
-    public void createUser(Project project) throws PersistenceException;
+    public void createUser() throws PersistenceException;
 
     public Project[] readProject() throws PersistenceException;
 
@@ -162,9 +162,6 @@ public interface IRepositoryFactory {
     public void lock(Item item) throws PersistenceException;
 
     public void unlock(Item obj) throws PersistenceException;
-
-    // TODO SML This method should not be in this interface but only in the remote/synchronizer => later
-    public void commit(Item obj);
 
     public ERepositoryStatus getStatus(Item item);
 
