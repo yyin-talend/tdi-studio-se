@@ -137,6 +137,9 @@ public class SQLBuilderTabComposite extends Composite {
 							.getQuery();
 					if (query2 != null
 							&& query.getLabel().equals(query2.getLabel())) {
+                        if ("".equals(editorComposite.getEditorContent())) {
+                            editorComposite.setEditorContent(query.getValue());
+                        }
 						tabFolder.setSelection(i);
 						return;
 					}
@@ -145,6 +148,9 @@ public class SQLBuilderTabComposite extends Composite {
 					String queryString = connParam.getQuery();
 					if (editorComposite.getConnParam().getQuery().equals(
 							queryString)) {
+                        if ("".equals(editorComposite.getEditorContent())) {
+                            editorComposite.setEditorContent(queryString);
+                        }
 						tabFolder.setSelection(i);
 						return;
 					}

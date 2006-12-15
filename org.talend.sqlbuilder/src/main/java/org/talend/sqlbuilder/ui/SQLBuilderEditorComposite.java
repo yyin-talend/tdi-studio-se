@@ -613,6 +613,9 @@ public class SQLBuilderEditorComposite extends Composite implements ISQLEditor {
 		this.colorText.setText(string);
 	}
 
+    public String getEditorContent() {
+        return colorText.getText();
+    }
 	/*
 	 * (non-Javadoc)
 	 * 

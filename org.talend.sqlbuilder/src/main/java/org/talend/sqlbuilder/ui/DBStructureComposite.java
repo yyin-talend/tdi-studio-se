@@ -522,8 +522,8 @@ public class DBStructureComposite extends Composite {
                         if (node.getProperties(EProperties.CONTENT_TYPE) == RepositoryNodeType.FOLDER) {
                             refreshChildren(node);
                         }
-                        node = repositoryNodeManager.getRepositoryNodeFromDB(getConnectionNode(node));
-                        doRefresh(node);
+                        node = repositoryNodeManager.getRepositoryNodeFromDB(node);
+                        doRefresh(getConnectionNode(node));
                     }
                     return null;
                 }
