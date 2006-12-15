@@ -192,14 +192,16 @@ public class ExtractionFieldsWithXPathEditorView extends AbstractDataTableEditor
 
             @Override
             public String validateValue(String newValue, int beanPosition) {
-                XPathFactory xpf = XPathFactory.newInstance();
-                XPath xpath = xpf.newXPath();
-                try {
-                    xpath.compile(newValue);
-                } catch (Exception e) {
-                    return e.getMessage();
+                String currentLoopXPath = linker.getCurrentLoopXPath();
+                String value = null;
+                if (newValue.trim().length() == 0) {
+                    return null;
+                } else if (newValue.trim().startsWith("/")) {
+                    value = newValue;
+                } else {
+                    value = currentLoopXPath + "/" + newValue;
                 }
-                return null;
+                return linker.validateXPathExpression(value);
             }
 
         });
@@ -275,7 +277,9 @@ public class ExtractionFieldsWithXPathEditorView extends AbstractDataTableEditor
                 };
             }
 
-            /* (non-Javadoc)
+            /*
+             * (non-Javadoc)
+             * 
              * @see org.talend.core.ui.extended.ExtendedToolbarView#createCopyPushButton()
              */
             @Override
@@ -283,9 +287,6 @@ public class ExtractionFieldsWithXPathEditorView extends AbstractDataTableEditor
                 return null;
             }
 
-            
-            
-            
         };
 
     }

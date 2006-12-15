@@ -176,19 +176,11 @@ public class ExtractionLoopWithXPathEditorView extends AbstractDataTableEditorVi
                 if (state == CELL_EDITOR_STATE.EDITING) {
                     linker.onXPathValueChanged(table, newValue.toString(), itemIndex);
                 }
-
             }
 
             @Override
             public String validateValue(String newValue, int beanPosition) {
-                XPathFactory xpf = XPathFactory.newInstance();
-                XPath xpath = xpf.newXPath();
-                try {
-                    xpath.compile(newValue);
-                } catch (Exception e) {
-                    return e.getMessage();
-                }
-                return null;
+                return linker.validateXPathExpression(newValue);
             }
 
         });

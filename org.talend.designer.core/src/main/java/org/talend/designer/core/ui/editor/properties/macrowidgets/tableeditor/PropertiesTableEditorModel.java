@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.talend.commons.ui.swt.extended.table.ExtendedTableModel;
+import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.designer.core.ui.editor.process.Process;
@@ -53,6 +54,8 @@ public class PropertiesTableEditorModel<B> extends ExtendedTableModel<B> {
 
     private String[] prevColumnArrayList;
 
+    private boolean dynamicData;
+
     /**
      * DOC amaumont PropertiesTableEditorModel constructor comment.
      */
@@ -74,33 +77,107 @@ public class PropertiesTableEditorModel<B> extends ExtendedTableModel<B> {
         columnArrayList = columnList.toArray(new String[0]);
         prevColumnArrayList = prevColumnList.toArray(new String[0]);
 
-        // registerDataList(this.metadataTable.getListColumns());
+        Object[] itemsValue = getItemsValue();
+
+        if (elemParameter.isBasedOnSchema()) {
+            dynamicData = true;
+        }
+
+        for (int i = 0; i < itemsValue.length; i++) {
+            if (itemsValue[i] instanceof IElementParameter) {
+                IElementParameter tmpParam = (IElementParameter) itemsValue[i];
+                if (tmpParam.getField() == EParameterFieldType.COLUMN_LIST) {
+                    dynamicData = true;
+                    tmpParam.setListItemsDisplayCodeName(columnArrayList);
+                    tmpParam.setListItemsDisplayName(columnArrayList);
+                    tmpParam.setListItemsValue(columnArrayList);
+                    if (columnArrayList.length != 0) {
+                        tmpParam.setDefaultClosedListValue(columnArrayList[0]);
+                    } else {
+                        tmpParam.setDefaultClosedListValue("");
+                    }
+                }
+                if (tmpParam.getField() == EParameterFieldType.PREV_COLUMN_LIST) {
+                    dynamicData = true;
+                    tmpParam.setListItemsDisplayCodeName(prevColumnArrayList);
+                    tmpParam.setListItemsDisplayName(prevColumnArrayList);
+                    tmpParam.setListItemsValue(prevColumnArrayList);
+                    if (prevColumnArrayList.length != 0) {
+                        tmpParam.setDefaultClosedListValue(prevColumnArrayList[0]);
+                    } else {
+                        tmpParam.setDefaultClosedListValue("");
+                    }
+                }
+            }
+        }
+
+        registerDataList((List<B>) elemParameter.getValue());
     }
 
     public String getTitleName() {
         return super.getName();
     }
 
-    public Map<String, Object> createNewEntry() {
+    public B createNewEntry() {
+        IElementParameter param = elemParameter;
         Map<String, Object> line = new HashMap<String, Object>();
-        String[] items = (String[]) elemParameter.getListItemsDisplayCodeName();
-        Object[] itemsValue = (Object[]) elemParameter.getListItemsValue();
+        String[] items = (String[]) param.getListItemsDisplayCodeName();
+        Object[] itemsValue = (Object[]) param.getListItemsValue();
+        IElementParameter tmpParam;
 
-        if (itemsValue[0] instanceof IElementParameter) {
-            IElementParameter tmpParam = (IElementParameter) itemsValue[0];
+        tmpParam = (IElementParameter) itemsValue[0];
+        switch (tmpParam.getField()) {
+        case CLOSED_LIST:
+        case COLUMN_LIST:
+        case PREV_COLUMN_LIST:
             line.put(items[0], new Integer(tmpParam.getIndexOfItemFromList((String) tmpParam.getDefaultClosedListValue())));
-        } else {
-            line.put(items[0], new String("'newLine'"));
-        }
-        for (int i = 1; i < items.length; i++) {
-            if (itemsValue[i] instanceof IElementParameter) {
-                IElementParameter tmpParam = (IElementParameter) itemsValue[i];
-                line.put(items[i], new Integer(tmpParam.getIndexOfItemFromList((String) tmpParam.getDefaultClosedListValue())));
+            break;
+        case CHECK:
+            line.put(items[0], tmpParam.getValue());
+            break;
+        default: // TEXT
+            if ((tmpParam.getValue() == null) || (tmpParam.getValue().equals(""))) {
+                line.put(items[0], new String("'newLine'"));
             } else {
-                line.put(items[i], new String(""));
+                line.put(items[0], tmpParam.getValue());
             }
         }
-        return line;
+
+        for (int i = 1; i < items.length; i++) {
+            tmpParam = (IElementParameter) itemsValue[i];
+            switch (tmpParam.getField()) {
+            case CLOSED_LIST:
+            case COLUMN_LIST:
+            case PREV_COLUMN_LIST:
+                line.put(items[i], new Integer(tmpParam.getIndexOfItemFromList((String) tmpParam.getDefaultClosedListValue())));
+                break;
+            default: // TEXT or CHECK (means String or Boolean)
+                line.put(items[i], tmpParam.getValue());
+            }
+        }
+
+        // Map<String, Object> line = new HashMap<String, Object>();
+        // String[] items = (String[]) elemParameter.getListItemsDisplayCodeName();
+        // Object[] itemsValue = (Object[]) elemParameter.getListItemsValue();
+        //
+        // if (itemsValue[0] instanceof IElementParameter) {
+        // IElementParameter tmpParam = (IElementParameter) itemsValue[0];
+        // line.put(items[0], new Integer(tmpParam.getIndexOfItemFromList((String)
+        // tmpParam.getDefaultClosedListValue())));
+        // } else {
+        // line.put(items[0], new String("'newLine'"));
+        // }
+        // for (int i = 1; i < items.length; i++) {
+        // if (itemsValue[i] instanceof IElementParameter) {
+        // IElementParameter tmpParam = (IElementParameter) itemsValue[i];
+        // line.put(items[i], new Integer(tmpParam.getIndexOfItemFromList((String)
+        // tmpParam.getDefaultClosedListValue())));
+        // } else {
+        // line.put(items[i], new String(""));
+        // }
+        // }
+        // return new ElemParamValueWrapper(line);
+        return (B) line;
     }
 
     /**
@@ -127,7 +204,7 @@ public class PropertiesTableEditorModel<B> extends ExtendedTableModel<B> {
      * @return the dynamicData
      */
     public boolean isDynamicData() {
-        return elemParameter.isBasedOnSchema();
+        return dynamicData;
     }
 
     /**

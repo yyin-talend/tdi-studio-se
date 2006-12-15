@@ -274,8 +274,8 @@ public class OutputDataMapTableView extends DataMapTableView {
              */
             @Override
             protected void selectionEvent(TableViewerCreatorColumn column, Object bean) {
-                ExtendedTableRemoveCommand removeCommand = new ExtendedTableRemoveCommand(extendedTableViewerForFilters
-                        .getExtendedTableModel(), bean);
+                ExtendedTableRemoveCommand removeCommand = new ExtendedTableRemoveCommand(bean, extendedTableViewerForFilters
+                        .getExtendedTableModel());
                 mapperManager.removeTableEntry((ITableEntry) bean);
                 mapperManager.executeCommand(removeCommand);
                 tableViewerCreatorForFilters.getTableViewer().refresh();

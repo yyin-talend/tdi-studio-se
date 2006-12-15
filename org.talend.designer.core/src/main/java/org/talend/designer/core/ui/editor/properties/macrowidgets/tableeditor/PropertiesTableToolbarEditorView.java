@@ -22,9 +22,11 @@
 package org.talend.designer.core.ui.editor.properties.macrowidgets.tableeditor;
 
 import java.io.File;
+import java.util.List;
 
 import org.eclipse.gef.commands.Command;
 import org.eclipse.swt.widgets.Composite;
+import org.talend.commons.ui.swt.advanced.dataeditor.control.ExtendedPushButton;
 import org.talend.commons.ui.swt.extended.table.AbstractExtendedTableViewer;
 import org.talend.commons.ui.swt.extended.table.ExtendedTableModel;
 import org.talend.core.ui.extended.ExtendedToolbarView;
@@ -53,6 +55,20 @@ public class PropertiesTableToolbarEditorView extends ExtendedToolbarView {
     public PropertiesTableToolbarEditorView(Composite parent, int style, AbstractExtendedTableViewer extendedTableViewer) {
         super(parent, style, extendedTableViewer);
     }
+
+    
+    
+    /* (non-Javadoc)
+     * @see org.talend.core.ui.extended.ExtendedToolbarView#createComponents(org.eclipse.swt.widgets.Composite)
+     */
+    @Override
+    protected void createComponents(Composite parent) {
+        super.createComponents(parent);
+        
+    }
+
+
+
 
     /*
      * (non-Javadoc)

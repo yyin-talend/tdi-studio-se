@@ -21,9 +21,6 @@
 // ============================================================================
 package org.talend.designer.core.ui.editor.properties.macrowidgets.tableeditor;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.eclipse.jface.viewers.CellEditor;
@@ -38,7 +35,9 @@ import org.talend.commons.ui.swt.advanced.dataeditor.AbstractExtendedToolbar;
 import org.talend.commons.ui.swt.proposal.TextCellEditorWithProposal;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumn;
+import org.talend.commons.ui.swt.tableviewer.TableViewerCreator.LAYOUT_MODE;
 import org.talend.commons.ui.swt.tableviewer.behavior.CellEditorValueAdapter;
+import org.talend.commons.ui.swt.tableviewer.tableeditor.CheckboxTableEditorContent;
 import org.talend.commons.utils.data.bean.IBeanPropertyAccessors;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IElementParameter;
@@ -69,13 +68,14 @@ public class PropertiesTableEditorView<B> extends AbstractDataTableEditorView<B>
      * 
      * @param parentComposite
      * @param mainCompositeStyle
-     * @param extendedTableModel
      * @param readOnly
      * @param toolbarVisible
+     * @param labelVisible TODO
+     * @param extendedTableModel
      */
-    public PropertiesTableEditorView(Composite parentComposite, int mainCompositeStyle,
-            PropertiesTableEditorModel model, boolean readOnly, boolean toolbarVisible) {
-        super(parentComposite, mainCompositeStyle, model, readOnly, toolbarVisible);
+    public PropertiesTableEditorView(Composite parentComposite, int mainCompositeStyle, PropertiesTableEditorModel model, boolean readOnly,
+            boolean toolbarVisible, boolean labelVisible) {
+        super(parentComposite, mainCompositeStyle, model, readOnly, toolbarVisible, labelVisible);
     }
 
     /**
@@ -102,14 +102,15 @@ public class PropertiesTableEditorView<B> extends AbstractDataTableEditorView<B>
         return new PropertiesTableToolbarEditorView(getMainComposite(), SWT.NONE, this.getExtendedTableViewer());
     }
 
-    
-    
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.commons.ui.swt.advanced.dataeditor.AbstractDataTableEditorView#setTableViewerCreatorOptions(org.talend.commons.ui.swt.tableviewer.TableViewerCreator)
      */
     @Override
     protected void setTableViewerCreatorOptions(TableViewerCreator<B> newTableViewerCreator) {
         super.setTableViewerCreatorOptions(newTableViewerCreator);
+        newTableViewerCreator.setLayoutMode(LAYOUT_MODE.DEFAULT);
     }
 
     /*
@@ -132,21 +133,18 @@ public class PropertiesTableEditorView<B> extends AbstractDataTableEditorView<B>
         final Element elem = model.getElement();
         final IElementParameter param = model.getElemParameter();
         for (int i = 0; i < titles.length; i++) {
-            if (param.isShow(
-                    model.getItemsShowIf()[i], 
-                    model.getItemsNotShowIf()[i], 
-                    model.getElement().getElementParameters()
-                )
-            ) {
+            if (param.isShow(model.getItemsShowIf()[i], model.getItemsNotShowIf()[i], model.getElement().getElementParameters())) {
                 TableViewerCreatorColumn column = new TableViewerCreatorColumn(tableViewerCreator);
                 column.setTitle(titles[i]);
                 column.setModifiable(true);
                 column.setMinimumWidth(100);
                 column.setWeight(20);
 
-                if (itemsValue[i] instanceof IElementParameter) {
-                    IElementParameter tmpParam = (IElementParameter) itemsValue[i];
-
+                IElementParameter tmpParam = (IElementParameter) itemsValue[i];
+                switch (tmpParam.getField()) {
+                case CLOSED_LIST:
+                case COLUMN_LIST:
+                case PREV_COLUMN_LIST:
                     ComboBoxCellEditor cellEditor = new ComboBoxCellEditor(table, tmpParam.getListItemsDisplayName());
                     ((CCombo) cellEditor.getControl()).setEditable(false);
                     column.setCellEditor(cellEditor, new CellEditorValueAdapter() {
@@ -177,7 +175,12 @@ public class PropertiesTableEditorView<B> extends AbstractDataTableEditorView<B>
                             return new Integer(nb);
                         };
                     });
-                } else {
+                    break;
+                case CHECK:
+                    column.setTableEditorContent(new CheckboxTableEditorContent(false));
+                    column.setDisplayedValue("");
+                    break;
+                default: // TEXT
                     TextCellEditorWithProposal textCellEditor = new TextCellEditorWithProposal(table, column);
                     textCellEditor.setContentProposalProvider(processProposalProvider);
                     if ((i == 0) && (param.isBasedOnSchema())) {
@@ -187,64 +190,188 @@ public class PropertiesTableEditorView<B> extends AbstractDataTableEditorView<B>
                     column.setCellEditor(textCellEditor);
                 }
                 final int curCol = i;
-                column.setBeanPropertyAccessors(new IBeanPropertyAccessors<Map<String, Object>, Object>() {
+                column.setBeanPropertyAccessors(new IBeanPropertyAccessors<B, Object>() {
 
-                    public String get(Map<String, Object> bean) {
-                        Object value = bean.get(items[curCol]);
+                    public Object get(B bean) {
+                        Object value = ((Map<String, Object>) bean).get(items[curCol]);
                         if (value == null) {
                             return "";
                         }
                         if (itemsValue[curCol] instanceof IElementParameter) {
                             IElementParameter tmpParam = (IElementParameter) itemsValue[curCol];
-                            String[] namesSet = tmpParam.getListItemsDisplayName();
-                            if (namesSet.length == 0) {
-                                return (String) tmpParam.getDefaultClosedListValue();
-                            }
-                            if (value instanceof String) {
-                                boolean found = false;
-                                int index = 0;
-                                Object[] items = ((IElementParameter) itemsValue[curCol]).getListItemsValue();
-                                for (int j = 0; j < items.length && !found; j++) {
-                                    if (items[j].equals(value)) {
-                                        found = true;
-                                        index = j;
-                                    }
+                            switch (tmpParam.getField()) {
+                            case CLOSED_LIST:
+                            case COLUMN_LIST:
+                            case PREV_COLUMN_LIST:
+                                String[] namesSet = tmpParam.getListItemsDisplayName();
+                                if (namesSet.length == 0) {
+                                    return (String) tmpParam.getDefaultClosedListValue();
                                 }
-                                value = new Integer(index);
+                                if (value instanceof String) {
+                                    boolean found = false;
+                                    int index = 0;
+                                    Object[] items = ((IElementParameter) itemsValue[curCol]).getListItemsValue();
+                                    for (int j = 0; j < items.length && !found; j++) {
+                                        if (items[j].equals(value)) {
+                                            found = true;
+                                            index = j;
+                                        }
+                                    }
+                                    value = new Integer(index);
+                                }
+                                if (value != null && ((Integer) value) >= 0) {
+                                    return namesSet[(Integer) value];
+                                }
+                                return null;
+                            case CHECK:
+                                if (value instanceof String) {
+                                    return new Boolean((String) value);
+                                }
+                                return value;
+                            default: // TEXT
+                                return (String) value;
                             }
-                            return namesSet[(Integer) value];
                         }
                         return (String) value;
                     }
 
-                    public void set(Map<String, Object> bean, Object value) {
-                        List<Map<String, Object>> tableValues = new ArrayList<Map<String, Object>>();
-                        List<Map<String, Object>> paramValues = (List<Map<String, Object>>) param.getValue();
-                        int currentBeanIndex = table.getSelectionIndex();
-                        for (int currentIndex = 0; currentIndex < paramValues.size(); currentIndex++) {
-                            Map<String, Object> currentLine = paramValues.get(currentIndex);
-
-                            Map<String, Object> newLine = new HashMap<String, Object>();
-                            for (int i = 0; i < items.length; i++) {
-                                newLine.put(items[i], currentLine.get(items[i]));
-                            }
-
-                            if (currentIndex == currentBeanIndex) {
-                                newLine.put(items[curCol], value);
-                            }
-                            tableValues.add(newLine);
-                        }
-//                        Command cmd = new PropertyChangeCommand(elem, param.getName(), tableValues);
-//                        
-//                        CommandStack commandStack = (CommandStack) getExtendedTableViewer().getCommandStackAdapter().getCommandStack();
-//                        commandStack.execute(cmd);
-//                        tableViewerCreator.getTableViewer().refresh();
+                    public void set(B bean, Object value) {
+                        ((Map<String, Object>) bean).put(items[curCol], value);
+                        // List<Map<String, Object>> tableValues = new ArrayList<Map<String, Object>>();
+                        // List<Map<String, Object>> paramValues = (List<Map<String, Object>>) param.getValue();
+                        // int currentBeanIndex = paramValues.indexOf(bean);
+                        // for (int currentIndex = 0; currentIndex < paramValues.size(); currentIndex++) {
+                        // Map<String, Object> currentLine = paramValues.get(currentIndex);
+                        //
+                        // Map<String, Object> newLine = new HashMap<String, Object>();
+                        // for (int i = 0; i < items.length; i++) {
+                        // newLine.put(items[i], currentLine.get(items[i]));
+                        // }
+                        //
+                        // if (currentIndex == currentBeanIndex) {
+                        // newLine.put(items[curCol], value);
+                        // }
+                        // tableValues.add(newLine);
+                        // }
+                        // Command cmd = new PropertyChangeCommand(elem, param.getName(), tableValues);
+                        // getCommandStack().execute(cmd);
+                        // refresh();
                     }
                 });
             }
         }
-
-    
+        // for (int i = 0; i < titles.length; i++) {
+        // if (param.isShow(
+        // model.getItemsShowIf()[i],
+        // model.getItemsNotShowIf()[i],
+        // model.getElement().getElementParameters()
+        // )
+        // ) {
+        // TableViewerCreatorColumn column = new TableViewerCreatorColumn(tableViewerCreator);
+        // column.setTitle(titles[i]);
+        // column.setModifiable(true);
+        // column.setMinimumWidth(100);
+        // column.setWeight(20);
+        //
+        // if (itemsValue[i] instanceof IElementParameter) {
+        // IElementParameter tmpParam = (IElementParameter) itemsValue[i];
+        //
+        // ComboBoxCellEditor cellEditor = new ComboBoxCellEditor(table, tmpParam.getListItemsDisplayName());
+        // ((CCombo) cellEditor.getControl()).setEditable(false);
+        // column.setCellEditor(cellEditor, new CellEditorValueAdapter() {
+        //
+        // public String getColumnText(CellEditor cellEditor, Object cellEditorValue) {
+        // return (String) cellEditorValue;
+        // }
+        //
+        // public Object getOriginalTypedValue(CellEditor cellEditor, Object cellEditorTypedValue) {
+        // if (cellEditorTypedValue instanceof Integer) {
+        // return cellEditorTypedValue;
+        // }
+        // return new Integer(0);
+        // };
+        //
+        // public Object getCellEditorTypedValue(CellEditor cellEditor, Object originalTypedValue) {
+        // boolean found = false;
+        // int nb = 0;
+        //
+        // String[] namesSet = ((CCombo) cellEditor.getControl()).getItems();
+        //
+        // for (int j = 0; j < namesSet.length && !found; j++) {
+        // if (namesSet[j].equals(originalTypedValue)) {
+        // found = true;
+        // nb = j;
+        // }
+        // }
+        // return new Integer(nb);
+        // };
+        // });
+        // } else {
+        // TextCellEditorWithProposal textCellEditor = new TextCellEditorWithProposal(table, column);
+        // textCellEditor.setContentProposalProvider(processProposalProvider);
+        // if ((i == 0) && (param.isBasedOnSchema())) {
+        // Text text = (Text) textCellEditor.getControl();
+        // text.setEditable(false);
+        // }
+        // column.setCellEditor(textCellEditor);
+        // }
+        // final int curCol = i;
+        // column.setBeanPropertyAccessors(new IBeanPropertyAccessors<ElemParamValueWrapper, Object>() {
+        //
+        // public String get(ElemParamValueWrapper bean) {
+        // Object value = bean.getValue().get(items[curCol]);
+        // if (value == null) {
+        // return "";
+        // }
+        // if (itemsValue[curCol] instanceof IElementParameter) {
+        // IElementParameter tmpParam = (IElementParameter) itemsValue[curCol];
+        // String[] namesSet = tmpParam.getListItemsDisplayName();
+        // if (namesSet.length == 0) {
+        // return (String) tmpParam.getDefaultClosedListValue();
+        // }
+        // if (value instanceof String) {
+        // boolean found = false;
+        // int index = 0;
+        // Object[] items = ((IElementParameter) itemsValue[curCol]).getListItemsValue();
+        // for (int j = 0; j < items.length && !found; j++) {
+        // if (items[j].equals(value)) {
+        // found = true;
+        // index = j;
+        // }
+        // }
+        // value = new Integer(index);
+        // }
+        // return namesSet[(Integer) value];
+        // }
+        // return (String) value;
+        // }
+        //
+        // public void set(ElemParamValueWrapper bean, Object value) {
+        // List<Map<String, Object>> tableValues = new ArrayList<Map<String, Object>>();
+        // List<Map<String, Object>> paramValues = (List<Map<String, Object>>) param.getValue();
+        // int currentBeanIndex = table.getSelectionIndex();
+        // for (int currentIndex = 0; currentIndex < paramValues.size(); currentIndex++) {
+        // Map<String, Object> currentLine = paramValues.get(currentIndex);
+        //
+        // Map<String, Object> newLine = new HashMap<String, Object>();
+        // for (int i = 0; i < items.length; i++) {
+        // newLine.put(items[i], currentLine.get(items[i]));
+        // }
+        //
+        // if (currentIndex == currentBeanIndex) {
+        // newLine.put(items[curCol], value);
+        // }
+        // tableValues.add(newLine);
+        // }
+        // // Command cmd = new PropertyChangeCommand(elem, param.getName(), tableValues);
+        // //
+        // // CommandStack commandStack = (CommandStack)
+        // getExtendedTableViewer().getCommandStackAdapter().getCommandStack();
+        // // commandStack.execute(cmd);
+        // // tableViewerCreator.getTableViewer().refresh();
+        // }
+        // });
+        // }
     }
 
     public PropertiesTableToolbarEditorView getToolBar() {
@@ -254,8 +381,5 @@ public class PropertiesTableEditorView<B> extends AbstractDataTableEditorView<B>
     public PropertiesTableEditorModel getModel() {
         return (PropertiesTableEditorModel) getExtendedTableModel();
     }
-    
-    
 
-    
 }

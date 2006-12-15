@@ -27,6 +27,7 @@ import java.util.List;
 import org.eclipse.datatools.enablement.oda.xml.util.ui.XPathPopulationUtil;
 import org.eclipse.jface.util.TransferDragSourceListener;
 import org.eclipse.jface.util.TransferDropTargetListener;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DragSource;
 import org.eclipse.swt.dnd.DragSourceEvent;
@@ -35,8 +36,10 @@ import org.eclipse.swt.dnd.DropTarget;
 import org.eclipse.swt.dnd.DropTargetEvent;
 import org.eclipse.swt.dnd.DropTargetListener;
 import org.eclipse.swt.dnd.Transfer;
+import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
@@ -266,7 +269,11 @@ public class XmlToSchemaDragAndDropHandler {
                     String absoluteXPath = transferableEntryList.get(0).getAbsoluteXPath();
 
                     TableViewerCreatorColumn xpathColumn = linker.getLoopTableEditorView().getXPathColumn();
+                    Display display = linker.getTree().getDisplay();
+                    Cursor cursor = new Cursor(display, SWT.CURSOR_WAIT);
+                    linker.getTree().getShell().setCursor(cursor);
                     loopTableEditorView.getTableViewerCreator().setBeanValue(xpathColumn, pathLoopDescriptor, absoluteXPath, true);
+                    linker.getTree().getShell().setCursor(null);
                 }
 
             } else {

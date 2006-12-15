@@ -23,11 +23,16 @@ package org.talend.repository.ui.wizards.metadata.connection.files.xml;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.GC;
@@ -38,6 +43,7 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.ui.swt.drawing.link.BezierHorizontalLink;
 import org.talend.commons.ui.swt.drawing.link.ExtremityEastArrow;
 import org.talend.commons.ui.swt.drawing.link.IExtremityLink;
@@ -86,9 +92,9 @@ public class XmlToXPathLinker extends TreeToTablesLinker<Object, Object> {
 
     private StyleLink selectedLoopStyleLink;
 
-    private Map<String, List<Node>> loopXpathToNodesCache = new HashMap<String, List<Node>>();
-
     private ArrayList<String> loopXpathNodes = new ArrayList<String>(0);
+
+    private Comparator<LinkDescriptor<TreeItem, Object, Table, Object>> drawingLinksComparator;
 
     /**
      * DOC amaumont XmlToMetadataTableLinker constructor comment.
@@ -373,6 +379,7 @@ public class XmlToXPathLinker extends TreeToTablesLinker<Object, Object> {
 
         link.setStyleLink(getUnselectedStyleLink());
         getLinksManager().addLink(link);
+        updateLinksStyleAndControlsSelection(table);
         return link;
     }
 
@@ -440,11 +447,13 @@ public class XmlToXPathLinker extends TreeToTablesLinker<Object, Object> {
      */
     private void createLoopLinks(String xPathExpression, TableItem tableItemTarget) {
         Set<String> alreadyProcessedXPath = new HashSet<String>();
-        // TimeMeasure.start(xPathExpression);
-        List<Node> nodeList = this.nodeRetriever.retrieveListOfNodes(xPathExpression);
-        // TimeMeasure.end(xPathExpression);
-        // System.out.println("nodeList.size()="+nodeList.size());
+        List<Node> nodeList = null;
 
+        try {
+            nodeList = this.nodeRetriever.retrieveListOfNodes(xPathExpression);
+        } catch (XPathExpressionException e) {
+            ExceptionHandler.process(e);
+        }
         if (nodeList != null) {
             loopXpathNodes = new ArrayList<String>();
             for (Node node : nodeList) {
@@ -471,11 +480,7 @@ public class XmlToXPathLinker extends TreeToTablesLinker<Object, Object> {
     private void createFieldLinks(String relativeXpath, TableItem tableItemTarget) {
 
         Set<String> alreadyProcessedXPath = new HashSet<String>();
-        // TimeMeasure.start(xPathExpression);
         String currentLoopXPath = getCurrentLoopXPath();
-
-        // List<Node> nodeList = loopXpathToNodesCache.get(currentLoopXPath);
-        // if (loopNodeList == null) {
 
         String expression = null;
 
@@ -489,19 +494,17 @@ public class XmlToXPathLinker extends TreeToTablesLinker<Object, Object> {
             expression = currentLoopXPath + "/" + relativeXpath;
         }
 
-        List<Node> nodeList = this.nodeRetriever.retrieveListOfNodes(expression);
-        // }
-        // TimeMeasure.end(xPathExpression);
-        // System.out.println("nodeList.size()="+nodeList.size());
+        List<Node> nodeList = null;
+        try {
+            nodeList = this.nodeRetriever.retrieveListOfNodes(expression);
+        } catch (XPathExpressionException e) {
+            ExceptionHandler.process(e);
+        }
 
         if (nodeList != null) {
-            // List<Node> loopNodeListCache = new ArrayList<Node>();
             for (Node node : nodeList) {
                 String absoluteXPathFromNode = NodeRetriever.getAbsoluteXPathFromNode(node);
                 if (!alreadyProcessedXPath.contains(absoluteXPathFromNode)) {
-                    // loopNodeListCache.add(node);
-                    // this.nodeRetriever.retrieveListOfNodes(relativeXpath, node);
-
                     TreeItem treeItemFromAbsoluteXPath = treePopulator.getTreeItem(absoluteXPathFromNode);
                     if (treeItemFromAbsoluteXPath != null) {
                         addFieldLink(treeItemFromAbsoluteXPath, (Object) treeItemFromAbsoluteXPath.getData(), tableItemTarget.getParent(),
@@ -510,7 +513,6 @@ public class XmlToXPathLinker extends TreeToTablesLinker<Object, Object> {
                     }
                 }
             }
-            // loopXpathToNodesCache.put(currentLoopXPath, nodeList);
         }
     }
 
@@ -544,19 +546,19 @@ public class XmlToXPathLinker extends TreeToTablesLinker<Object, Object> {
     @SuppressWarnings("unchecked")
     public void updateLinksStyleAndControlsSelection(Control currentControl) {
 
-        boolean isTable = false;
+        boolean selectedControlIsTable = false;
         if (currentControl instanceof Table) {
-            isTable = true;
+            selectedControlIsTable = true;
         } else if (currentControl instanceof Tree) {
-            isTable = false;
+            selectedControlIsTable = false;
         } else {
             throw new IllegalArgumentException("This type of currentControl is unsupported");
         }
 
         HashSet selectedItems = new HashSet();
-        HashSet itemsToSelect = new HashSet();
+        Map itemsToSelect = new HashMap();
 
-        if (isTable) {
+        if (selectedControlIsTable) {
             for (Table table : getTables()) {
                 if (table != currentControl) {
                     table.deselectAll();
@@ -587,7 +589,7 @@ public class XmlToXPathLinker extends TreeToTablesLinker<Object, Object> {
             IStyleLink styleLink = null;
             IExtremityLink extremity = null;
             IExtremityLink otherExtremity = null;
-            if (isTable) {
+            if (selectedControlIsTable) {
                 extremity = link.getExtremity2();
                 otherExtremity = link.getExtremity1();
             } else {
@@ -602,20 +604,22 @@ public class XmlToXPathLinker extends TreeToTablesLinker<Object, Object> {
             } else {
 
                 if (currentItemIsSelected) {
-                    // if (isTable && currentControl == loopTableEditorView.getTableViewerCreator().getTable()) {
-                    // styleLink = getSelectedLoopStyleLink();
-                    // } else
-                    // if (!isTable && otherExtremity.getGraphicalObject() ==
-                    // loopTableEditorView.getTableViewerCreator().getTable()) {
-                    // styleLink = getSelectedLoopStyleLink();
-                    // } else {
-                    // }
-
                     styleLink = getSelectedStyleLink();
-                    if (isTable) {
-                        itemsToSelect.add(TableUtils.getTableItem((Table) currentControl, otherExtremity.getDataItem()));
+                    if (selectedControlIsTable) {
+                        
+                        itemsToSelect.put((TreeItem) otherExtremity.getGraphicalObject(), null);
+                        
                     } else {
-                        // itemsToSelect.add(otherExtremity.getGraphicalObject());
+
+                        Table currentTable = (Table) otherExtremity.getGraphicalObject();
+                        List<TableItem> tableItemsToSelect = (List<TableItem>) itemsToSelect.get(currentTable);
+
+                        if (tableItemsToSelect == null) {
+                            tableItemsToSelect = new ArrayList<TableItem>();
+                            itemsToSelect.put(currentTable, tableItemsToSelect);
+                        }
+                        TableItem tableItem = TableUtils.getTableItem(currentTable, otherExtremity.getDataItem());
+                        tableItemsToSelect.add(tableItem);
                     }
                 } else {
                     styleLink = getUnselectedStyleLink();
@@ -627,12 +631,24 @@ public class XmlToXPathLinker extends TreeToTablesLinker<Object, Object> {
             link.setStyleLink(styleLink);
 
         }
-        if (isTable) {
-            ((Tree) getTree()).setSelection((TreeItem[]) itemsToSelect.toArray(new TreeItem[0]));
+        if (selectedControlIsTable) {
+            ((Tree) getTree()).setSelection((TreeItem[]) itemsToSelect.keySet().toArray(new TreeItem[0]));
         } else {
-            // ((Table) currentControl).setSelection((TableItem[]) itemsToSelect.toArray(new TableItem[0]));
+            Set<Table> set = itemsToSelect.keySet();
+            if (set.size() > 0) {
+                for (Table table : set) {
+                    ArrayList<TableItem> tableItemsToSelect = (ArrayList<TableItem>) itemsToSelect.get(table);
+                    table.deselectAll();
+                    TableItem[] tableItems = (TableItem[]) tableItemsToSelect.toArray(new TableItem[0]);
+                    table.setSelection(tableItems);
+                }
+            } else {
+                loopTableEditorView.getTable().deselectAll();
+                fieldsTableEditorView.getTable().deselectAll();
+            }
+            fieldsTableEditorView.getExtendedToolbar().updateEnabledStateOfButtons();
         }
-        getLinksManager().sortLinks(getSelectedLinksComparator());
+        getLinksManager().sortLinks(getDrawingLinksComparator());
         getBackgroundRefresher().refreshBackground();
     }
 
@@ -681,6 +697,57 @@ public class XmlToXPathLinker extends TreeToTablesLinker<Object, Object> {
      */
     public ArrayList<String> getLoopXpathNodes() {
         return this.loopXpathNodes;
+    }
+
+    /**
+     * DOC amaumont Comment method "validateXPathExpression".
+     * 
+     * @param newValue
+     * @return null if expression is valid, else return the error message.
+     */
+    public String validateXPathExpression(String xpathExpression) {
+        XPathFactory xpf = XPathFactory.newInstance();
+        XPath xpath = xpf.newXPath();
+        try {
+            xpath.compile(xpathExpression);
+        } catch (Exception e) {
+            return "The current XPath expression is invalid";
+        }
+        return null;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.commons.ui.swt.linking.TreeToTablesLinker#getDrawingLinksComparator()
+     */
+    @Override
+    protected Comparator<LinkDescriptor<TreeItem, Object, Table, Object>> getDrawingLinksComparator() {
+        if (this.drawingLinksComparator == null) {
+            this.drawingLinksComparator = new Comparator<LinkDescriptor<TreeItem, Object, Table, Object>>() {
+
+                public int compare(LinkDescriptor<TreeItem, Object, Table, Object> link1,
+                        LinkDescriptor<TreeItem, Object, Table, Object> link2) {
+                    IStyleLink link1StyleLink = link1.getStyleLink();
+                    IStyleLink link2StyleLink = link2.getStyleLink();
+                    if (link1StyleLink == link2StyleLink) {
+                        return 0;
+                    }
+                    if (link1StyleLink == getSelectedLoopStyleLink()) {
+                        return 1;
+                    }
+                    if (link2StyleLink == getSelectedLoopStyleLink()) {
+                        return -1;
+                    }
+                    if (link1StyleLink == getUnselectedStyleLink()) {
+                        return -1;
+                    }
+                    return 1;
+                }
+
+            };
+        }
+        return this.drawingLinksComparator;
     }
 
 }
