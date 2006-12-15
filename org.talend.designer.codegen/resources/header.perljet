@@ -61,7 +61,7 @@ my $_licence = <<'END_OF_LICENCE';
 
 END_OF_LICENCE
 
-print $_licence;
+# print $_licence;
 
 use Getopt::Long;
 my %opt = ();
@@ -81,12 +81,12 @@ if (defined $opt{watch}) {
 }
 
 if (defined $opt{context}) {
-    print(
-        'tsInfo>  Running process with context: ',
-        $opt{context},
-        ' (./tUser/parameters_', $opt{context}, '.pl)',
-        "\n\n"
-    );
+#     print(
+#         'tsInfo>  Running process with context: ',
+#         $opt{context},
+#         ' (./tUser/parameters_', $opt{context}, '.pl)',
+#         "\n\n"
+#     );
 
     require $opt{context};
 }
