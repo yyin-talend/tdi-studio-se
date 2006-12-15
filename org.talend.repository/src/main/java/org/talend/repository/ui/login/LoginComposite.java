@@ -21,6 +21,7 @@
 // ============================================================================
 package org.talend.repository.ui.login;
 
+import java.util.List;
 import java.util.regex.Pattern;
 
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -53,7 +54,6 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.Form;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.talend.commons.exception.PersistenceException;
-import org.talend.commons.ui.swt.formtools.ListCombo;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
@@ -93,7 +93,7 @@ public class LoginComposite extends Composite {
 
     private LoginDialog dialog;
 
-    private ListCombo repositoryCombo;
+    private ComboViewer repositoryCombo;
 
     private Combo serverCombo;
 
@@ -156,11 +156,14 @@ public class LoginComposite extends Composite {
         // Line 1
         // Repository
         toolkit.createLabel(formBody, Messages.getString("LoginComposite.repository"));
-        repositoryCombo = new ListCombo(formBody, SWT.BORDER);
+        repositoryCombo = new ComboViewer(formBody, SWT.BORDER | SWT.READ_ONLY);
         toolkit.adapt(repositoryCombo.getCombo());
+        repositoryCombo.setContentProvider(new ArrayContentProvider());
+        repositoryCombo.setLabelProvider(new RepositoryFactoryLabelProvider());
+
         GridData repositoryGrid = new GridData(GridData.FILL_HORIZONTAL);
         repositoryGrid.horizontalSpan = 7;
-        repositoryCombo.setLayoutData(repositoryGrid);
+        repositoryCombo.getControl().setLayoutData(repositoryGrid);
 
         // Blank
         toolkit.createLabel(formBody, null);
@@ -297,26 +300,27 @@ public class LoginComposite extends Composite {
     private void fillContents() {
         PreferenceManipulator prefManipulator = new PreferenceManipulator(CorePlugin.getDefault().getPreferenceStore());
 
-        repositoryCombo.setItems(RepositoryFactoryProvider.getAvailableRepositories());
+        List<IRepositoryFactory> availableRepositories = RepositoryFactoryProvider.getAvailableRepositories();
+        repositoryCombo.setInput(availableRepositories);
 
         // Check number of repository available.
-        if (repositoryCombo.getItemCount() == 1) {
+        if (availableRepositories.size() == 1) {
             // disable combo box and select it automatically
-            repositoryCombo.select(0);
-            repositoryCombo.setEnabled(false);
-            repositoryCombo.setBackground(GREY_COLOR);
+            repositoryCombo.setSelection(new StructuredSelection(new Object[] { availableRepositories.get(0) }));
+            repositoryCombo.getControl().setEnabled(false);
+            repositoryCombo.getControl().setBackground(GREY_COLOR);
         } else {
             // select last repository used
             String className = prefManipulator.getLastRepository();
             boolean selected = false;
-            for (IRepositoryFactory curent : RepositoryFactoryProvider.getAvailableRepositories()) {
+            for (IRepositoryFactory curent : availableRepositories) {
                 if (curent.getClass().getName().equals(className)) {
                     selectLast(curent.toString(), repositoryCombo.getCombo());
                     selected = true;
                 }
             }
             if (!selected) {
-                repositoryCombo.select(0);
+                repositoryCombo.setSelection(new StructuredSelection(new Object[] { availableRepositories.get(0) }));
             }
         }
         ProxyRepositoryFactory.getInstance().setRepositoryFactoryFromProvider(getRepository());
@@ -343,7 +347,7 @@ public class LoginComposite extends Composite {
 
         selectLast(prefManipulator.getLastUser(), userCombo);
 
-        if (isAuthenticationNeeded()) {
+        if (!isAuthenticationNeeded()) {
             unpopulateRemoteLoginElements();
         }
 
@@ -381,7 +385,7 @@ public class LoginComposite extends Composite {
         if (repository == null) {
             return false;
         }
-        return !repository.isAuthenticationNeeded();
+        return repository.isAuthenticationNeeded();
     }
 
     private void addListeners() {
@@ -389,7 +393,6 @@ public class LoginComposite extends Composite {
 
             public void modifyText(ModifyEvent e) {
                 unpopulateProjectList();
-
                 dialog.updateButtons();
             }
         };
@@ -397,25 +400,17 @@ public class LoginComposite extends Composite {
         ModifyListener modifyListenerServerCombo = new ModifyListener() {
 
             public void modifyText(ModifyEvent e) {
-                ProxyRepositoryFactory.getInstance().setRepositoryFactoryFromProvider(getRepository());
-
-                setRepositoryContextInContext();
-
-                unpopulateProjectList();
-
-                validateFields();
-
-                if (isAuthenticationNeeded()) {
-                    unpopulateRemoteLoginElements();
-                } else {
-                    populateRemoteLoginElements();
-                }
-                dialog.updateButtons();
+                updateServerFields();
             }
 
         };
 
-        repositoryCombo.addModifyListener(modifyListenerServerCombo);
+        repositoryCombo.addSelectionChangedListener(new ISelectionChangedListener() {
+
+            public void selectionChanged(SelectionChangedEvent event) {
+                updateServerFields();
+            }
+        });
         serverCombo.addModifyListener(modifyListenerServerCombo);
         portCombo.addModifyListener(modifyListenerServerCombo);
         contextCombo.addModifyListener(modifyListenerServerCombo);
@@ -437,6 +432,8 @@ public class LoginComposite extends Composite {
         projectViewer.addSelectionChangedListener(new ISelectionChangedListener() {
 
             public void selectionChanged(SelectionChangedEvent event) {
+                PreferenceManipulator prefManipulator = new PreferenceManipulator(CorePlugin.getDefault().getPreferenceStore());
+                prefManipulator.setLastProject(getProject().getLabel());
                 dialog.updateButtons();
                 setRepositoryContextInContext();
             }
@@ -479,6 +476,25 @@ public class LoginComposite extends Composite {
                 populateProjectList();
             }
         });
+    }
+
+    /**
+     * DOC smallet Comment method "updateServerFields".
+     */
+    private void updateServerFields() {
+        ProxyRepositoryFactory.getInstance().setRepositoryFactoryFromProvider(getRepository());
+
+        setRepositoryContextInContext();
+
+        validateFields();
+
+        if (isAuthenticationNeeded()) {
+            unpopulateProjectList();
+            populateRemoteLoginElements();
+        } else {
+            unpopulateRemoteLoginElements();
+        }
+        dialog.updateButtons();
     }
 
     /**
@@ -527,11 +543,6 @@ public class LoginComposite extends Composite {
             dialog.setErrorMessage(Messages.getString("LoginComposite.refreshFailure1") + e.getMessage()
                     + Messages.getString("LoginComposite.refreshFailure2"));
         }
-        if (isAuthenticationNeeded()) {
-            Project[] prjs = new Project[projects.length];
-            System.arraycopy(projects, 0, prjs, 0, projects.length);
-            projects = prjs;
-        }
         projectViewer.setInput(projects);
 
         // Try to select the last recently used project
@@ -578,7 +589,10 @@ public class LoginComposite extends Composite {
     }
 
     public IRepositoryFactory getRepository() {
-        return (IRepositoryFactory) repositoryCombo.getSelectedItem();
+        IRepositoryFactory repositoryFactory = null;
+        IStructuredSelection sel = (IStructuredSelection) repositoryCombo.getSelection();
+        repositoryFactory = (IRepositoryFactory) sel.getFirstElement();
+        return repositoryFactory;
     }
 
     public String getServer() {
@@ -646,6 +660,24 @@ public class LoginComposite extends Composite {
     }
 
     /**
+     * DOC smallet LoginComposite class global comment. Detailled comment <br/>
+     * 
+     * $Id$
+     * 
+     */
+    private class RepositoryFactoryLabelProvider extends LabelProvider {
+
+        /**
+         * @see org.eclipse.jface.viewers.LabelProvider#getText(java.lang.Object)
+         */
+        @Override
+        public String getText(Object element) {
+            IRepositoryFactory prj = (IRepositoryFactory) element;
+            return prj.getName();
+        }
+    }
+
+    /**
      * clear login values.
      */
     private void unpopulateRemoteLoginElements() {
@@ -688,7 +720,7 @@ public class LoginComposite extends Composite {
     private boolean validateFields() {
         String errorMsg = null;
         boolean valid = true;
-        boolean serverIsLocal = isAuthenticationNeeded();
+        boolean serverIsLocal = !isAuthenticationNeeded();
         if (valid && !serverIsLocal && getServer().length() == 0) {
             valid = false;
             errorMsg = Messages.getString("LoginComposite.serverEmpty");
@@ -716,7 +748,7 @@ public class LoginComposite extends Composite {
             checkBtn.setEnabled(false);
         } else {
             dialog.setErrorMessage(null);
-            if (!isAuthenticationNeeded()) {
+            if (isAuthenticationNeeded()) {
                 checkBtn.setEnabled(true);
             }
         }

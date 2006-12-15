@@ -164,7 +164,7 @@ public class LoginDialog extends TitleAreaDialog {
         IProxyRepositoryFactory repositoryFactory = ProxyRepositoryFactory.getInstance();
         try {
             boolean found = repositoryFactory.doesLoggedUserExist();
-            if (!found && loginComposite.isAuthenticationNeeded()) {
+            if (!found && !loginComposite.isAuthenticationNeeded()) {
                 repositoryFactory.createUser();
             }
         } catch (PersistenceException e) {
