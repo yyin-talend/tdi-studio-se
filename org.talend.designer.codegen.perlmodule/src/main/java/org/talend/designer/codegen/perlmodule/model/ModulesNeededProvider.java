@@ -19,7 +19,7 @@
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 // ============================================================================
-package org.talend.designer.core.model.components;
+package org.talend.designer.codegen.perlmodule.model;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -31,14 +31,15 @@ import org.apache.commons.lang.ArrayUtils;
 import org.apache.log4j.Level;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.Platform;
-import org.osgi.framework.Bundle;
+import org.talend.commons.exception.BusinessException;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.MessageBoxExceptionHandler;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IComponentsFactory;
-import org.talend.designer.core.DesignerPlugin;
+import org.talend.designer.codegen.perlmodule.ModuleNeeded;
+import org.talend.designer.codegen.perlmodule.PerlModuleService;
+import org.talend.designer.codegen.perlmodule.ModuleNeeded.ModuleStatus;
 import org.talend.designer.runprocess.IRunProcessService;
 import org.talend.designer.runprocess.ProcessorException;
 import org.talend.repository.model.ComponentsFactoryProvider;
@@ -52,8 +53,6 @@ import org.talend.repository.model.ComponentsFactoryProvider;
 public class ModulesNeededProvider {
 
     private static List<ModuleNeeded> componentImportNeedsList;
-
-    private static final Bundle PERL_MODULE_PLUGIN = Platform.getBundle(DesignerPlugin.ID);
 
     private static final String CHECK_PERL_MODULE_RELATIVE_PATH = "perl/check_modules.pl";
 
@@ -70,10 +69,7 @@ public class ModulesNeededProvider {
         IComponentsFactory compFac = ComponentsFactoryProvider.getInstance();
         List<IComponent> componentList = compFac.getComponents();
         for (IComponent component : componentList) {
-            if (component instanceof EmfComponent) {
-                EmfComponent emfComponent = (EmfComponent) component;
-                importNeedsList.addAll(emfComponent.getModulesNeeded());
-            }
+            importNeedsList.addAll(component.getModulesNeeded());
         }
         return importNeedsList;
     }
@@ -107,6 +103,15 @@ public class ModulesNeededProvider {
         return toReturn;
     }
 
+    public static ModuleStatus getModuleStatus(String moduleName) throws BusinessException {
+        for (ModuleNeeded current : getModulesNeeded()) {
+            if (current.getModuleName().equals(moduleName)) {
+                return current.getStatus();
+            }
+        }
+        throw new BusinessException("Module " + moduleName + " not found");
+    }
+
     public static void check() {
         // This map contains perl module name as keys and list of object using it as values :
         Map<String, List<ModuleNeeded>> componentsByModules = new HashMap<String, List<ModuleNeeded>>();
@@ -127,17 +132,18 @@ public class ModulesNeededProvider {
             listForThisModule.add(current);
 
             // Set the status to unknow as after treatment, modules not in perl response are unknown
-            current.setStatus(ModuleNeeded.UNKNOWN);
+            current.setStatus(ModuleStatus.UNKNOWN);
         }
 
         try {
             String checkPerlModuleAbsolutePath = FileLocator.toFileURL(
-                    PERL_MODULE_PLUGIN.getEntry(CHECK_PERL_MODULE_RELATIVE_PATH)).getPath();
+                    PerlModuleService.PERL_MODULE_PLUGIN.getEntry(CHECK_PERL_MODULE_RELATIVE_PATH)).getPath();
 
             StringBuffer out = new StringBuffer();
             StringBuffer err = new StringBuffer();
 
-            IRunProcessService service = DesignerPlugin.getDefault().getRunProcessService();
+            IRunProcessService service = (IRunProcessService) GlobalServiceRegister.getDefault().getService(
+                    IRunProcessService.class);
             service.exec(out, err, new Path(checkPerlModuleAbsolutePath), null, Level.DEBUG, "", "", "", -1, -1, params);
 
             analyzeResponse(out, componentsByModules);
@@ -171,11 +177,11 @@ public class ModulesNeededProvider {
 
                 if (componentsToTreat != null) {
                     // Define status regarding the perl response :
-                    int status = ModuleNeeded.UNKNOWN;
+                    ModuleStatus status = ModuleStatus.UNKNOWN;
                     if (elts[1].startsWith(RESULT_KEY_OK)) {
-                        status = ModuleNeeded.INSTALLED;
+                        status = ModuleStatus.INSTALLED;
                     } else if (elts[1].startsWith(RESULT_KEY_KO)) {
-                        status = ModuleNeeded.NOT_INSTALLED;
+                        status = ModuleStatus.NOT_INSTALLED;
                     }
 
                     // Step on objects using this module and set their status :

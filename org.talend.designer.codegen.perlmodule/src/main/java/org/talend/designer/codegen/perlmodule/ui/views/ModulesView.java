@@ -19,7 +19,7 @@
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 // ============================================================================
-package org.talend.designer.core.ui.views.modules;
+package org.talend.designer.codegen.perlmodule.ui.views;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.commands.IHandler;
@@ -44,8 +44,9 @@ import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumn;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator.LAYOUT_MODE;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator.SORT;
 import org.talend.commons.utils.data.bean.IBeanPropertyAccessors;
-import org.talend.designer.core.model.components.ModuleNeeded;
-import org.talend.designer.core.model.components.ModulesNeededProvider;
+import org.talend.designer.codegen.perlmodule.ModuleNeeded;
+import org.talend.designer.codegen.perlmodule.model.ModulesNeededProvider;
+import org.talend.designer.codegen.perlmodule.ui.actions.CheckModulesAction;
 
 /**
  * DOC nrousseau class global comment. Detailled comment <br/>
@@ -57,13 +58,11 @@ public class ModulesView extends ViewPart {
 
     private static Logger log = Logger.getLogger(ModulesView.class);
 
-    public static final String VIEW_ID = "";
-
     protected static final String ID_STATUS = "status";
 
     private static TableViewerCreator tableViewerCreator;
 
-    private CheckAction checkAction;
+    private CheckModulesAction checkAction;
 
     public ModulesView() {
     }
@@ -109,10 +108,10 @@ public class ModulesView extends ViewPart {
             public String get(ModuleNeeded bean) {
                 String str = null;
                 switch (bean.getStatus()) {
-                case ModuleNeeded.INSTALLED:
+                case INSTALLED:
                     str = "Installed";
                     break;
-                case ModuleNeeded.NOT_INSTALLED:
+                case NOT_INSTALLED:
                     str = "Not installed";
                     break;
                 default:
@@ -204,16 +203,15 @@ public class ModulesView extends ViewPart {
 
             public void focusGained(FocusEvent e) {
                 log.trace("Modules gain focus");
-                IContextService contextService = (IContextService) PlatformUI.getWorkbench().getAdapter(
-                        IContextService.class);
+                IContextService contextService = (IContextService) PlatformUI.getWorkbench().getAdapter(IContextService.class);
                 ca = contextService.activateContext("talend.modules");
             }
 
             public void focusLost(FocusEvent e) {
                 log.trace("Modules lost focus");
                 if (ca != null) {
-                    IContextService contextService = (IContextService) PlatformUI.getWorkbench().getAdapter(
-                            IContextService.class);
+                    IContextService contextService = (IContextService) PlatformUI.getWorkbench()
+                            .getAdapter(IContextService.class);
                     contextService.deactivateContext(ca);
                 }
             }
@@ -227,7 +225,7 @@ public class ModulesView extends ViewPart {
     private IContextActivation ca;
 
     private void makeActions() {
-        checkAction = new CheckAction(this);
+        checkAction = new CheckModulesAction(this);
 
         IHandlerService handlerService = (IHandlerService) getSite().getService(IHandlerService.class);
 

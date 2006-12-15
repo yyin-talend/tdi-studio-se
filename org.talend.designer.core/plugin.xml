@@ -168,12 +168,6 @@
                         icon="icons/problems_view.gif"
                         id="org.talend.designer.core.ui.views.ProblemsView"
                         name="Problems"/>
-                  <view
-                        category="org.talend.core.root"
-                        class="org.talend.designer.core.ui.views.modules.ModulesView"
-                        icon="icons/modules_view.gif"
-                        id="org.talend.designer.core.ui.views.ModulesView"
-                        name="Modules"/>
    </extension>
    <extension
          point="org.talend.core.actions">
@@ -197,10 +191,6 @@
    </extension>
    <extension
          point="org.eclipse.ui.commands">
-      <command
-            categoryId="Talend"
-            id="refresh"
-            name="Refresh"/>
       <category
             id="Talend"
             name="Talend"/>
@@ -214,10 +204,6 @@
          name="Show problems view"/>
    <command
          categoryId="talend"
-         id="showModulesView"
-         name="Show modules view"/>
-   <command
-         categoryId="talend"
          id="showEditorCodePage"
          name="Show editor code page"/>
    <command
@@ -227,11 +213,7 @@
    </extension>
    <extension
          point="org.eclipse.ui.bindings">
-      <key
-            commandId="refresh"
-            contextId="talend.modules"
-            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
-            sequence="F5"/>
+
    <key
          commandId="showPropertiesView"
          contextId="talend.global"
@@ -242,11 +224,6 @@
          contextId="talend.global"
          schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
          sequence="CTRL+F3"/>
-   <key
-         commandId="showModulesView"
-         contextId="talend.global"
-         schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
-         sequence="CTRL+F2"/>
    <key
          commandId="showEditorCodePage"
          contextId="talend.global"
@@ -262,7 +239,6 @@
          point="org.talend.core.global_actions">
       <GlobalAction class="org.talend.designer.core.ui.action.ShowPropertiesViewAction"/>
       <GlobalAction class="org.talend.designer.core.ui.action.ShowProblemsViewAction"/>
-      <GlobalAction class="org.talend.designer.core.ui.action.ShowModulesViewAction"/>
       <GlobalAction class="org.talend.designer.core.ui.action.ShowEditorPageAction"/>
       <GlobalAction class="org.talend.designer.core.ui.action.ShowDesignerPageAction"/>
    </extension>

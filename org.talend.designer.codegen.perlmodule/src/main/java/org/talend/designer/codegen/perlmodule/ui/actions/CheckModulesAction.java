@@ -19,13 +19,12 @@
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 // ============================================================================
-package org.talend.designer.core.ui.views.modules;
+package org.talend.designer.codegen.perlmodule.ui.actions;
 
-import org.eclipse.swt.graphics.Image;
-import org.talend.commons.ui.swt.tableviewer.behavior.IColumnImageProvider;
+import org.eclipse.jface.action.Action;
 import org.talend.core.ui.images.EImage;
 import org.talend.core.ui.images.ImageProvider;
-import org.talend.designer.core.model.components.ModuleNeeded;
+import org.talend.designer.codegen.perlmodule.ui.views.ModulesView;
 
 /**
  * DOC smallet class global comment. Detailled comment <br/>
@@ -33,22 +32,27 @@ import org.talend.designer.core.model.components.ModuleNeeded;
  * $Id$
  * 
  */
-public class StatusImageProvider implements IColumnImageProvider {
+public class CheckModulesAction extends Action {
 
-    public Image getImage(Object bean) {
-        ModuleNeeded componentImportNeeds = (ModuleNeeded) bean;
-        switch (componentImportNeeds.getStatus()) {
-        case ModuleNeeded.INSTALLED:
-            return ImageProvider.getImage(EImage.MODULE_INSTALLED_ICON);
-        case ModuleNeeded.NOT_INSTALLED:
-            if (componentImportNeeds.isRequired()) {
-                return ImageProvider.getImage(EImage.MODULE_ERROR_ICON);
-            } else {
-                return ImageProvider.getImage(EImage.MODULE_WARNING_ICON);
-            }
-        default:
-            return ImageProvider.getImage(EImage.MODULE_UNKNOWN_ICON);
-        }
+    private ModulesView view;
+
+    public CheckModulesAction(ModulesView view) {
+        super();
+        setText("Refresh");
+        setToolTipText("Refresh");
+        setImageDescriptor(ImageProvider.getImageDesc(EImage.REFRESH_ICON));
+        this.view = view;
+        this.setActionDefinitionId("refreshModules");
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.jface.action.Action#run()
+     */
+    @Override
+    public void run() {
+        view.refresh();
     }
 
 }

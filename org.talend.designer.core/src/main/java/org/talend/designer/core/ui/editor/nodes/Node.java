@@ -42,6 +42,7 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PlatformUI;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.CorePlugin;
+import org.talend.core.GlobalServiceRegister;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.model.components.IComponent;
@@ -64,10 +65,11 @@ import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.Problem;
 import org.talend.core.model.process.Problem.ProblemStatus;
 import org.talend.core.model.temp.ECodeLanguage;
+import org.talend.designer.codegen.perlmodule.IPerlModuleService;
+import org.talend.designer.codegen.perlmodule.ModuleNeeded;
+import org.talend.designer.codegen.perlmodule.ModuleNeeded.ModuleStatus;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.model.components.EParameterName;
-import org.talend.designer.core.model.components.ModuleNeeded;
-import org.talend.designer.core.model.components.ModulesNeededProvider;
 import org.talend.designer.core.ui.MultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.connections.EDesignerConnection;
@@ -409,8 +411,7 @@ public class Node extends Element implements INode {
      */
     public void addInput(final Connection connection) {
         this.inputs.add(connection);
-        if (!isExternalNode() && component.isSchemaAutoPropagated()
-                && (connection.getLineStyle() == EConnectionType.FLOW_MAIN)
+        if (!isExternalNode() && component.isSchemaAutoPropagated() && (connection.getLineStyle() == EConnectionType.FLOW_MAIN)
                 && ((Process) getProcess()).isActivate()) {
             if ((metadataList.get(0).getListColumns().size() == 0) || (outputs.size() == 0)) {
                 metadataList.get(0).setListColumns(connection.getMetadataTable().clone().getListColumns());
@@ -545,7 +546,7 @@ public class Node extends Element implements INode {
             externalNode.setActivate(isActivate());
             externalNode.setStart(isStart());
             externalNode.setComponentName(getComponentName());
-//            externalNode.setExternalData(getExternalData());
+            // externalNode.setExternalData(getExternalData());
             List<IMetadataTable> copyOfMetadataList = new ArrayList<IMetadataTable>();
             for (IMetadataTable metaTable : metadataList) {
                 copyOfMetadataList.add(metaTable.clone());
@@ -647,8 +648,8 @@ public class Node extends Element implements INode {
                 connec = (Connection) getIncomingConnections().get(j);
                 if (connec.isActivate()
                         && ((connec.getLineStyle().equals(EConnectionType.FLOW_MAIN)
-                                || connec.getLineStyle().equals(EConnectionType.FLOW_REF) || connec.getLineStyle()
-                                .equals(EConnectionType.ITERATE)))) {
+                                || connec.getLineStyle().equals(EConnectionType.FLOW_REF) || connec.getLineStyle().equals(
+                                EConnectionType.ITERATE)))) {
                     return false;
                 }
             }
@@ -713,8 +714,8 @@ public class Node extends Element implements INode {
      * @see org.talend.core.model.process.INode#isMultipleMethods(org.talend.core.model.temp.ECodeLanguage)
      */
     public Boolean isMultipleMethods() {
-        ECodeLanguage currentLanguage = ((RepositoryContext) CorePlugin.getContext().getProperty(
-                Context.REPOSITORY_CONTEXT_KEY)).getProject().getLanguage();
+        ECodeLanguage currentLanguage = ((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY))
+                .getProject().getLanguage();
         return component.isMultipleMethods(currentLanguage);
     }
 
@@ -805,8 +806,7 @@ public class Node extends Element implements INode {
                 case TABLE:
                     List<Map<String, String>> tableValues = (List<Map<String, String>>) param.getValue();
                     if (tableValues.size() == 0) {
-                        String errorMessage = "Parameter (" + param.getDisplayName()
-                                + ") must have at least one value.";
+                        String errorMessage = "Parameter (" + param.getDisplayName() + ") must have at least one value.";
                         Problems.add(ProblemStatus.ERROR, this, errorMessage);
                     }
                     break;
@@ -846,7 +846,10 @@ public class Node extends Element implements INode {
     }
 
     private void checkModules() {
-        List<ModuleNeeded> list = ModulesNeededProvider.getModulesNeeded(getComponentName());
+        // List<ModuleNeeded> list = ModulesNeededProvider.getModulesNeeded(getComponentName());
+        IPerlModuleService perlModuleService = (IPerlModuleService) GlobalServiceRegister.getDefault().getService(
+                IPerlModuleService.class);
+        List<ModuleNeeded> list = perlModuleService.getModulesNeeded(getComponentName());
         for (ModuleNeeded current : list) {
             Problem problem = getProblem(current);
             if (problem != null) {
@@ -856,12 +859,11 @@ public class Node extends Element implements INode {
     }
 
     private Problem getProblem(ModuleNeeded componentImportNeeds) {
-        if (componentImportNeeds.getStatus() == ModuleNeeded.INSTALLED) {
+        if (componentImportNeeds.getStatus() == ModuleStatus.INSTALLED) {
             return null;
         }
-        if (componentImportNeeds.getStatus() == ModuleNeeded.NOT_INSTALLED && componentImportNeeds.isRequired()) {
-            return new Problem(this, "Module " + componentImportNeeds.getModuleName() + " required",
-                    ProblemStatus.ERROR);
+        if (componentImportNeeds.getStatus() == ModuleStatus.NOT_INSTALLED && componentImportNeeds.isRequired()) {
+            return new Problem(this, "Module " + componentImportNeeds.getModuleName() + " required", ProblemStatus.ERROR);
         }
 
         return null;

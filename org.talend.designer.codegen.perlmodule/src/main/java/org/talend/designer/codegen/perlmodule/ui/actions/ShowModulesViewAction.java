@@ -19,11 +19,9 @@
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 // ============================================================================
-package org.talend.designer.core.ui.views.modules;
+package org.talend.designer.codegen.perlmodule.ui.actions;
 
-import org.eclipse.jface.action.Action;
-import org.talend.core.ui.images.EImage;
-import org.talend.core.ui.images.ImageProvider;
+import org.talend.commons.ui.swt.actions.AbstractShowViewAction;
 
 /**
  * DOC smallet class global comment. Detailled comment <br/>
@@ -31,27 +29,16 @@ import org.talend.core.ui.images.ImageProvider;
  * $Id$
  * 
  */
-public class CheckAction extends Action {
+public class ShowModulesViewAction extends AbstractShowViewAction {
 
-    private ModulesView view;
-
-    public CheckAction(ModulesView view) {
-        super();
-        setText("Refresh");
-        setToolTipText("Refresh");
-        setImageDescriptor(ImageProvider.getImageDesc(EImage.REFRESH_ICON));
-        this.view = view;
-        this.setActionDefinitionId("refresh");
+    @Override
+    public String getDefinitionId() {
+        return "showModulesView";
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.eclipse.jface.action.Action#run()
-     */
     @Override
-    public void run() {
-        view.refresh();
+    public String getViewId() {
+        return "org.talend.designer.codegen.perlmodule.ModulesView";
     }
 
 }

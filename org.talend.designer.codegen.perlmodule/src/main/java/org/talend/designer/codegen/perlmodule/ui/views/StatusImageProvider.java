@@ -19,9 +19,13 @@
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 // ============================================================================
-package org.talend.designer.core.ui.action;
+package org.talend.designer.codegen.perlmodule.ui.views;
 
-import org.talend.commons.ui.swt.actions.AbstractShowViewAction;
+import org.eclipse.swt.graphics.Image;
+import org.talend.commons.ui.swt.tableviewer.behavior.IColumnImageProvider;
+import org.talend.core.ui.images.EImage;
+import org.talend.core.ui.images.ImageProvider;
+import org.talend.designer.codegen.perlmodule.ModuleNeeded;
 
 /**
  * DOC smallet class global comment. Detailled comment <br/>
@@ -29,16 +33,22 @@ import org.talend.commons.ui.swt.actions.AbstractShowViewAction;
  * $Id$
  * 
  */
-public class ShowModulesViewAction extends AbstractShowViewAction {
+public class StatusImageProvider implements IColumnImageProvider {
 
-    @Override
-    public String getDefinitionId() {
-        return "showModulesView";
-    }
-
-    @Override
-    public String getViewId() {
-        return "org.talend.designer.core.ui.views.ModulesView";
+    public Image getImage(Object bean) {
+        ModuleNeeded componentImportNeeds = (ModuleNeeded) bean;
+        switch (componentImportNeeds.getStatus()) {
+        case INSTALLED:
+            return ImageProvider.getImage(EImage.MODULE_INSTALLED_ICON);
+        case NOT_INSTALLED:
+            if (componentImportNeeds.isRequired()) {
+                return ImageProvider.getImage(EImage.MODULE_ERROR_ICON);
+            } else {
+                return ImageProvider.getImage(EImage.MODULE_WARNING_ICON);
+            }
+        default:
+            return ImageProvider.getImage(EImage.MODULE_UNKNOWN_ICON);
+        }
     }
 
 }

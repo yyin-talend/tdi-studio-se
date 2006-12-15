@@ -56,6 +56,7 @@ import org.talend.core.model.process.INode;
 import org.talend.core.model.temp.ECodeLanguage;
 import org.talend.core.ui.images.EImage;
 import org.talend.core.ui.images.ImageProvider;
+import org.talend.designer.codegen.perlmodule.ModuleNeeded;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.utils.emf.component.COLUMNType;
 import org.talend.designer.core.model.utils.emf.component.COMPONENTType;
