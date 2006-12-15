@@ -492,12 +492,19 @@ public class DBStructureComposite extends Composite {
 
         @SuppressWarnings("unchecked")//$NON-NLS-1$
         public void init() {
-            ISelection selection = getSelectionProvider().getSelection();
+            IStructuredSelection selection = (IStructuredSelection) getSelectionProvider()
+            .getSelection();
             if (selection.isEmpty()) {
                 this.setEnabled(false);
-            } else {
-                this.setEnabled(true);
+                return;
             }
+            boolean flag = false;
+            for (Object object : selection.toList()) {
+                if (!"".equals(((RepositoryNode) object).getObject().getLabel())) {
+                    flag = true;
+                }
+            }
+            this.setEnabled(flag);
         }
 
         @Override
@@ -521,6 +528,9 @@ public class DBStructureComposite extends Composite {
                     for (RepositoryNode node : nodes) {
                         if (node.getProperties(EProperties.CONTENT_TYPE) == RepositoryNodeType.FOLDER) {
                             refreshChildren(node);
+                        }
+                        if ("".equals(node.getObject().getLabel())) {
+                            continue;
                         }
                         node = repositoryNodeManager.getRepositoryNodeFromDB(node);
                         doRefresh(getConnectionNode(node));
