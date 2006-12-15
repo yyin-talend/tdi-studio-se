@@ -291,8 +291,12 @@ public class XmlFileStep1Form extends AbstractXmlFileStepForm {
                 } catch (Exception ex){
                     
                 }
-                getConnection().setEncoding(encoding);
-                encodingCombo.setText(encoding);
+                getConnection().setEncoding(encoding);    
+                if(encoding!=null && !("").equals(encoding)){
+                    encodingCombo.setText(encoding);
+                }else{
+                    encodingCombo.setText("UTF-8");
+                }
                 treePopulator.populateTree(fileFieldXml.getText(), treeNode);
                 checkFieldsValue();
             }

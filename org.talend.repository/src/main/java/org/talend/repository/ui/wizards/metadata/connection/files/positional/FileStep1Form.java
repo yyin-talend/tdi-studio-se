@@ -463,7 +463,9 @@ public class FileStep1Form extends AbstractPositionalFileStepForm {
         } else {
             filePositionalViewer.setText("\n" + Messages.getString("FileStep1.fileViewerProgress"));
 
-            String previewRows = "";
+            StringBuffer previewRows = new StringBuffer("");
+            BufferedReader in = null;
+
             try {
 
                 File file = new File(fileField.getText());
@@ -473,20 +475,18 @@ public class FileStep1Form extends AbstractPositionalFileStepForm {
                 String str;
                 int numberLine = 0;
                 // read the file
-                BufferedReader in = 
+                in = 
                     new BufferedReader(
                         new InputStreamReader(new FileInputStream(fileField.getText()),
                                 guessedCharset.displayName()));
                 while (((str = in.readLine()) != null) && (numberLine <= MAXIMUM_ROWS_TO_PREVIEW)) {
                     numberLine++;
-                    previewRows = previewRows + str + "\n";
+                    // replace Tabulation by a CaretChar
+                    previewRows.append(str.replaceAll("\t", "\u25A1") + "\n");
                 }
-                in.close();
 
-                // replace Tabulation by a CaretChar
-                previewRows = previewRows.replaceAll("\t", "\u25A1");
                 // show lines
-                filePositionalViewer.setText("\n" + previewRows);
+                filePositionalViewer.setText(new String(previewRows));
                 filePathIsDone = true;
                 if (isNewFile) {
                     fieldSeparatorText.setText("*");
@@ -510,6 +510,13 @@ public class FileStep1Form extends AbstractPositionalFileStepForm {
                 filePositionalViewer.setText("\n" + msgError);
                 updateStatus(IStatus.ERROR, msgError);
                 log.error(msgError + " " + e.getMessage());
+            } finally {
+                String msgError = Messages.getString("FileStep1.filepath") + " \"" + fileField.getText().replace("\\\\", "\\") + "\"\n";
+                try {
+                    in.close();
+                } catch (IOException e) {
+                    msgError = msgError + Messages.getString("FileStep1.fileLocked");
+                }
             }
 
             // resize the composite text

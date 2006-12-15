@@ -244,6 +244,7 @@ public class DelimitedFileStep1Form extends AbstractDelimitedFileStepForm {
 
     /**
      * checkFileFieldsValue active fileViewer if file exist.
+     * @throws IOException 
      */
     private void checkFilePathAndManageIt() {
         updateStatus(IStatus.OK, null);
@@ -254,7 +255,9 @@ public class DelimitedFileStep1Form extends AbstractDelimitedFileStepForm {
         } else {
             fileViewerText.setText(Messages.getString("FileStep1.fileViewerProgress"));
 
-            String previewRows = "";
+            StringBuffer previewRows = new StringBuffer("");
+            BufferedReader in = null;
+
             try {
 
                 File file = new File(fileField.getText());
@@ -264,19 +267,17 @@ public class DelimitedFileStep1Form extends AbstractDelimitedFileStepForm {
                 String str;
                 int numberLine = 0;
                 // read the file width the limit : MAXIMUM_ROWS_TO_PREVIEW
-                BufferedReader in = 
+                in = 
                     new BufferedReader(
                         new InputStreamReader(new FileInputStream(fileField.getText()),
                                 guessedCharset.displayName()));
 
                 while (((str = in.readLine()) != null) && (numberLine <= MAXIMUM_ROWS_TO_PREVIEW)) {
                     numberLine++;
-                    previewRows = previewRows + str + "\n";
+                    previewRows.append(str + "\n");
                 }
-                in.close();
-                
                 // show lines
-                fileViewerText.setText(previewRows);
+                fileViewerText.setText(new String(previewRows));
                 filePathIsDone = true;
             } catch (Exception e) {
                 String msgError = Messages.getString("FileStep1.filepath") + " \"" + fileField.getText().replace("\\\\", "\\")
@@ -295,8 +296,14 @@ public class DelimitedFileStep1Form extends AbstractDelimitedFileStepForm {
                     updateStatus(IStatus.ERROR, msgError);
                 }
                 log.error(msgError + " " + e.getMessage());
+            } finally {
+                String msgError = Messages.getString("FileStep1.filepath") + " \"" + fileViewerText.getText().replace("\\\\", "\\") + "\"\n";
+                try {
+                    in.close();
+                } catch (IOException e) {
+                    msgError = msgError + Messages.getString("FileStep1.fileLocked");
+                }
             }
-
             checkFieldsValue();
         }
     }

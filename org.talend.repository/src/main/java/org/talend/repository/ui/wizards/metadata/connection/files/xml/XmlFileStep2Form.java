@@ -467,6 +467,7 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
 
     /**
      * checkFileFieldsValue active fileViewer if file exist.
+     * @throws IOException 
      */
     private void checkFilePathAndManageIt() {
         updateStatus(IStatus.OK, null);
@@ -477,22 +478,23 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
         } else {
             fileXmlText.setText(Messages.getString("FileStep1.fileViewerProgress"));
 
-            String previewRows = "";
+            StringBuffer previewRows = new StringBuffer("");
+            BufferedReader in = null;
+            
             try {
 
                 File file = new File(getConnection().getXmlFilePath());
                 Charset guessedCharset = CharsetToolkit.guessEncoding(file, 4096);
 
                 String str;
-                BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(getConnection().getXmlFilePath()),
+                in = new BufferedReader(new InputStreamReader(new FileInputStream(getConnection().getXmlFilePath()),
                         guessedCharset.displayName()));
                 while ((str = in.readLine()) != null) {
-                    previewRows = previewRows + str + "\n";
+                    previewRows.append(str + "\n");
                 }
-                in.close();
-
+                
                 // show lines
-                fileXmlText.setText(previewRows);
+                fileXmlText.setText(new String(previewRows));
                 filePathIsDone = true;
 
             } catch (Exception e) {
@@ -511,8 +513,14 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
                     updateStatus(IStatus.ERROR, msgError);
                 }
                 log.error(msgError + " " + e.getMessage());
+            } finally {
+                String msgError = Messages.getString("FileStep1.filepath") + " \"" + fileXmlText.getText().replace("\\\\", "\\") + "\"\n";
+                try {
+                    in.close();
+                } catch (IOException e) {
+                    msgError = msgError + Messages.getString("FileStep1.fileLocked");
+                }
             }
-
             checkFieldsValue();
         }
     }
@@ -553,5 +561,4 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
             }
         }
     }
-
 }

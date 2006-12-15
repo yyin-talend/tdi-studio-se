@@ -260,7 +260,9 @@ public class RegexpFileStep1Form extends AbstractRegexpFileStepForm {
         } else {
             fileViewerText.setText(Messages.getString("FileStep1.fileViewerProgress"));
 
-            String previewRows = "";
+            StringBuffer previewRows = new StringBuffer("");
+            BufferedReader in = null;
+            
             try {
                 
                 File file = new File(fileField.getText());
@@ -270,18 +272,17 @@ public class RegexpFileStep1Form extends AbstractRegexpFileStepForm {
                 String str;
                 int numberLine = 0;
                 // read the file width the limit : MAXIMUM_ROWS_TO_PREVIEW
-                BufferedReader in = 
+                in = 
                     new BufferedReader(
                         new InputStreamReader(new FileInputStream(fileField.getText()),
                                 guessedCharset.displayName()));
                 while (((str = in.readLine()) != null) && (numberLine <= MAXIMUM_ROWS_TO_PREVIEW)) {
                     numberLine++;
-                    previewRows = previewRows + str + "\n";
+                    previewRows.append(str + "\n");
                 }
-                in.close();
 
                 // show lines
-                fileViewerText.setText(previewRows);
+                fileViewerText.setText(new String(previewRows));
                 filePathIsDone = true;
             } catch (Exception e) {
                 String msgError = Messages.getString("FileStep1.filepath") + " \"" + fileField.getText().replace("\\\\", "\\")
@@ -300,8 +301,14 @@ public class RegexpFileStep1Form extends AbstractRegexpFileStepForm {
                     updateStatus(IStatus.ERROR, msgError);
                 }
                 log.error(msgError + " " + e.getMessage());
+            } finally {
+                String msgError = Messages.getString("FileStep1.filepath") + " \"" + fileViewerText.getText().replace("\\\\", "\\") + "\"\n";
+                try {
+                    in.close();
+                } catch (IOException e) {
+                    msgError = msgError + Messages.getString("FileStep1.fileLocked");
+                }
             }
-
             checkFieldsValue();
         }
     }
