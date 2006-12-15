@@ -252,12 +252,12 @@ public class LoginComposite extends Composite {
         fillProjectsBtn.setLayoutData(fillGrid);
 
         // Blank
-        // toolkit.createLabel(formBody, null);
+        toolkit.createLabel(formBody, null);
 
         Composite bottomButtons = toolkit.createComposite(formBody);
         // bottomButtons.setBackground(new Color(null,255,0,0));
         GridData fillGrid2 = new GridData(GridData.FILL_HORIZONTAL);
-        fillGrid2.horizontalSpan = 9;
+        fillGrid2.horizontalSpan = 8;
         bottomButtons.setLayoutData(fillGrid2);
         bottomButtons.setLayout(new FormLayout());
 
