@@ -21,7 +21,18 @@
 // ============================================================================
 package org.talend.repository.ui.wizards.metadata.connection.files.xml;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.Charset;
+
 import org.apache.log4j.Logger;
+import org.apache.oro.text.regex.MalformedPatternException;
+import org.apache.oro.text.regex.MatchResult;
+import org.apache.oro.text.regex.Pattern;
+import org.apache.oro.text.regex.Perl5Compiler;
+import org.apache.oro.text.regex.Perl5Matcher;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.datatools.enablement.oda.xml.util.ui.ATreeNode;
 import org.eclipse.swt.SWT;
@@ -36,9 +47,12 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Tree;
 import org.talend.commons.ui.swt.formtools.Form;
+import org.talend.commons.ui.swt.formtools.LabelledCombo;
 import org.talend.commons.ui.swt.formtools.LabelledFileField;
 import org.talend.commons.ui.swt.formtools.LabelledText;
 import org.talend.commons.ui.swt.formtools.UtilsButton;
+import org.talend.commons.utils.encoding.CharsetToolkit;
+import org.talend.core.model.metadata.EMetadataEncoding;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.ui.swt.utils.AbstractXmlFileStepForm;
@@ -83,6 +97,10 @@ public class XmlFileStep1Form extends AbstractXmlFileStepForm {
     private boolean readOnly;
 
     private TreePopulator treePopulator;
+    
+    private LabelledCombo encodingCombo;
+
+    private String encoding;
 
     /**
      * Constructor to use by RCP Wizard.
@@ -120,6 +138,15 @@ public class XmlFileStep1Form extends AbstractXmlFileStepForm {
             this.treePopulator.populateTree(fileFieldXml.getText(), treeNode);
             checkFieldsValue();
         }
+        
+        // Fields to the Group Delimited File Settings
+        if (getConnection().getEncoding() != null && !getConnection().getEncoding().equals("")) {
+            encodingCombo.setText(getConnection().getEncoding());
+        } else {
+            encodingCombo.select(0);
+        }
+        encodingCombo.clearSelection();
+        
 //        if (getConnection().getMaskXPattern() != null) {
 //            fieldMaskXPattern.setText(getConnection().getMaskXPattern().replace("\\\\", "\\"));
 //        }
@@ -140,8 +167,8 @@ public class XmlFileStep1Form extends AbstractXmlFileStepForm {
 
     protected void addFields() {
         // Group File Location
-        Group group = Form.createGroup(this, 1, Messages.getString("FileStep2.groupDelimitedFileSettings"), 50);
-        Composite compositeFileLocation = Form.startNewDimensionnedGridLayout(group, 3, WIDTH_GRIDDATA_PIXEL, 50);
+        Group group = Form.createGroup(this, 1, Messages.getString("FileStep2.groupDelimitedFileSettings"), 100);
+        Composite compositeFileLocation = Form.startNewDimensionnedGridLayout(group, 3, WIDTH_GRIDDATA_PIXEL, 100);
 
         GridData gridDataFileLocation = new GridData(GridData.FILL_HORIZONTAL);
         gridDataFileLocation.minimumWidth = WIDTH_GRIDDATA_PIXEL;
@@ -162,6 +189,15 @@ public class XmlFileStep1Form extends AbstractXmlFileStepForm {
         // file Field XML
         String[] xmlExtensions = { "*.xml", "*.*", "*" };
         fileFieldXml = new LabelledFileField(compositeFileLocation, Messages.getString("XmlFileStep1.filepathXml"), xmlExtensions);
+
+        EMetadataEncoding[] values = EMetadataEncoding.values();
+        String[] encodingData = new String[values.length];
+        for (int j = 0; j < values.length; j++) {
+            encodingData[j] = values[j].getName();
+        }
+        
+        encodingCombo = new LabelledCombo(compositeFileLocation, Messages.getString("FileStep2.encoding"), Messages
+                .getString("FileStep2.encodingTip"), encodingData, 1, true, SWT.NONE);
 
         // field XmaskPattern
 //        fieldMaskXPattern = new LabelledText(compositeFileLocation, Messages.getString("XmlFileStep1.maskXPattern"));
@@ -223,10 +259,54 @@ public class XmlFileStep1Form extends AbstractXmlFileStepForm {
 
             public void modifyText(final ModifyEvent e) {
                 getConnection().setXmlFilePath(fileFieldXml.getText());
+                
+                try {
+                    File file = new File(getConnection().getXmlFilePath());
+                    Charset guessedCharset = CharsetToolkit.guessEncoding(file, 4096);
+    
+                    String str;
+                    BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(getConnection().getXmlFilePath()),
+                            guessedCharset.displayName()));
+                    while ((str = in.readLine()) != null) {
+                        if(str.contains("encoding")){
+                            String regex = "^<\\?xml\\s*version=\\\"[^\\\"]*\\\"\\s*encoding=\\\"([^\\\"]*)\\\"\\?>$";
+                            
+                            Perl5Compiler compiler = new Perl5Compiler();
+                            Perl5Matcher matcher = new Perl5Matcher();
+                            Pattern pattern = null;
+                            try {
+                                pattern = compiler.compile(regex);
+                                if (matcher.contains(str, pattern)) {
+                                    MatchResult matchResult = matcher.getMatch();
+                                    if (matchResult != null) {
+                                        encoding = matchResult.group(1);
+                                    }
+                                }
+                            } catch (MalformedPatternException malE) {
+                      
+                            }
+                        }
+                    }
+                    in.close();
+                } catch (Exception ex){
+                    
+                }
+                getConnection().setEncoding(encoding);
+                encodingCombo.setText(encoding);
                 treePopulator.populateTree(fileFieldXml.getText(), treeNode);
                 checkFieldsValue();
             }
         });
+        
+        // Event encodingCombo
+        encodingCombo.addModifyListener(new ModifyListener() {
+
+            public void modifyText(final ModifyEvent e) {
+                getConnection().setEncoding(encodingCombo.getText());
+                checkFieldsValue();
+            }
+        });
+
     }
 
     /**
@@ -254,6 +334,14 @@ public class XmlFileStep1Form extends AbstractXmlFileStepForm {
         super.setVisible(visible);
         if (isReadOnly() != readOnly) {
             adaptFormToReadOnly();
+        }
+        if (super.isVisible()) {
+            // Fields to the Group Delimited File Settings
+            if (getConnection().getEncoding() != null && !getConnection().getEncoding().equals("")) {
+                encodingCombo.setText(getConnection().getEncoding());
+            } else {
+                encodingCombo.select(0);
+            }
         }
     }
 }

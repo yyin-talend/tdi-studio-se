@@ -123,8 +123,6 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
 
     private XmlXPathLoopDescriptor xmlXPathLoopDescriptor;
     
-    private String encoding;
-
     /**
      * Constructor to use by RCP Wizard.
      * 
@@ -329,7 +327,6 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
     void refreshPreview() {
         clearPreview();
 
-        //getConnection().getXsdFilePath() == null || getConnection().getXsdFilePath().equals("") && 
         // if no file, the process don't be executed
         if (getConnection().getXmlFilePath() == null || getConnection().getXmlFilePath().equals("")) {
             previewInformationLabel.setText("   " + Messages.getString("FileStep2.filePathIncomplete"));
@@ -376,22 +373,6 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
                 checkFieldsValue();
             }
         });
-
-        // availableXmlTree.addSelectionListener(new SelectionAdapter() {
-        //
-        // /*
-        // * (non-Javadoc)
-        // *
-        // * @see org.eclipse.swt.events.SelectionAdapter#widgetSelected(org.eclipse.swt.events.SelectionEvent)
-        // */
-        // public void widgetSelected(SelectionEvent e) {
-        // List xpathList = getSelectedXPath(availableXmlTree.getSelection()[0]);
-        // if (xpathList != null) {
-        // System.out.println("Node : " + availableXmlTree.getSelection()[0].getText() + " Xpath : " +
-        // xpathList.get(0));
-        // }
-        // }
-        // });
     }
 
     /**
@@ -404,11 +385,7 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
         String rootPath = "";
         if (selected.getData() instanceof ATreeNode) {
             ATreeNode node = (ATreeNode) selected.getData();
-            // if (node.getType() == ATreeNode.ATTRIBUTE_TYPE) {
-            // return null;
-            // } else {
             rootPath = "/" + selected.getText();
-            // }
         }
 
         while (selected.getParentItem() != null) {
@@ -510,24 +487,6 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
                 BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(getConnection().getXmlFilePath()),
                         guessedCharset.displayName()));
                 while ((str = in.readLine()) != null) {
-                    if(str.contains("encoding")){
-                        String regex = "^<\\?xml\\s*version=\\\"[^\\\"]*\\\"\\s*encoding=\\\"([^\\\"]*)\\\"\\?>$";
-                        
-                        Perl5Compiler compiler = new Perl5Compiler();
-                        Perl5Matcher matcher = new Perl5Matcher();
-                        Pattern pattern = null;
-                        try {
-                            pattern = compiler.compile(regex);
-                            if (matcher.contains(str, pattern)) {
-                                MatchResult matchResult = matcher.getMatch();
-                                if (matchResult != null) {
-                                    encoding = matchResult.group(1);
-                                }
-                            }
-                        } catch (MalformedPatternException e) {
-                  
-                        }
-                    }
                     previewRows = previewRows + str + "\n";
                 }
                 in.close();
@@ -556,7 +515,6 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
 
             checkFieldsValue();
         }
-        getConnection().setEncoding(encoding);
     }
 
     /*
@@ -588,15 +546,11 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
             checkFilePathAndManageIt();
             // Refresh the preview width the adapted rowSeparator
             // If metadata exist, refreshMetadata
-            //getConnection().getXsdFilePath() != null && !getConnection().getXsdFilePath().equals("") && 
             if (getConnection().getXmlFilePath() != null && !getConnection().getXmlFilePath().equals("") 
                     && getConnection().getSchema() != null && !getConnection().getSchema().isEmpty() 
                         && ((XmlXPathLoopDescriptor) getConnection().getSchema().get(0)).getSchemaTargets() != null && !((XmlXPathLoopDescriptor) getConnection().getSchema().get(0)).getSchemaTargets().isEmpty()) {
                 refreshPreview();
             }
-            // if (isReadOnly() != readOnly) {
-            // adaptFormToReadOnly();
-            // }
         }
     }
 
