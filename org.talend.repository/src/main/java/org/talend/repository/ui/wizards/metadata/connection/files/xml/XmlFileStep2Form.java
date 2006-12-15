@@ -543,15 +543,15 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
                 verticalBar.setSelection(0);
             }
 
-//            if (this.linker == null) {
-//                this.linker = new XmlToXPathLinker(this.xmlToSchemaSash);
-//                this.linker.init(availableXmlTree, loopTableEditorView, fieldsTableEditorView, treePopulator);
-//                loopTableEditorView.setLinker(this.linker);
-//                fieldsTableEditorView.setLinker(this.linker);
-//            } else {
-//                this.linker.createLinks();
-//            }
-//            checkFilePathAndManageIt();
+            if (this.linker == null) {
+                this.linker = new XmlToXPathLinker(this.xmlToSchemaSash);
+                this.linker.init(availableXmlTree, loopTableEditorView, fieldsTableEditorView, treePopulator);
+                loopTableEditorView.setLinker(this.linker);
+                fieldsTableEditorView.setLinker(this.linker);
+            } else {
+                this.linker.createLinks();
+            }
+            checkFilePathAndManageIt();
             // Refresh the preview width the adapted rowSeparator
             // If metadata exist, refreshMetadata
             if (getConnection().getXmlFilePath() != null && !getConnection().getXmlFilePath().equals("") 
