@@ -30,8 +30,15 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         StringBuffer hashKey = new StringBuffer();
         int column_num = 0;
 
+        boolean hasKeys = false;
         for (IMetadataColumn column: metadata.getListColumns()) {
             if (column.isKey()) {
+                hasKeys = true;
+            }
+        }
+
+        for (IMetadataColumn column: metadata.getListColumns()) {
+            if ((column.isKey()) || (!hasKeys)) {
               hashKey.append("{ ");
               
               if (caseSensitive.equals("false")) {
