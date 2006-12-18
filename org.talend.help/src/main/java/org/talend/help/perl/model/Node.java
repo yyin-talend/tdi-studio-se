@@ -36,6 +36,8 @@ public class Node {
 
     private Node parent;
 
+    private boolean searchMatchFlag = false;
+
     private List<Node> children = new ArrayList<Node>();
 
     private Map<EProperty, String> properties = new HashMap<EProperty, String>();
@@ -97,6 +99,38 @@ public class Node {
 
     public String toString() {
         return "[Node] " + type.getElementName();
+    }
+
+    /**
+     * Sets the searchMatcher.
+     * 
+     * @param searchMatcher the searchMatcher to set
+     */
+    public void setSearchMatchFlag(boolean searchMatcher) {
+        this.searchMatchFlag = searchMatcher;
+        setParentMatchFlag(this, searchMatcher);
+    }
+   
+    private void setParentMatchFlag(Node childNode, boolean flag) {
+        if (childNode.hasParent()) {
+            Node tempNode = childNode.parent;
+            if (!(tempNode.isSearchMatchFlag() == flag)) {
+                tempNode.setSearchMatchFlag(flag);
+            } else {
+                return;
+            }
+        } else {
+            return;
+        }
+    }
+
+    /**
+     * Getter for searchMatcher.
+     * 
+     * @return the searchMatcher
+     */
+    public boolean isSearchMatchFlag() {
+        return searchMatchFlag;
     }
 
 }
