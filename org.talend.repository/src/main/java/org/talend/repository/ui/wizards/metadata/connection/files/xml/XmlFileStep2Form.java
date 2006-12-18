@@ -34,11 +34,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-import org.apache.oro.text.regex.MalformedPatternException;
-import org.apache.oro.text.regex.MatchResult;
-import org.apache.oro.text.regex.Pattern;
-import org.apache.oro.text.regex.Perl5Compiler;
-import org.apache.oro.text.regex.Perl5Matcher;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.datatools.enablement.oda.xml.util.ui.ATreeNode;
@@ -65,7 +60,6 @@ import org.talend.commons.utils.data.list.IListenableListListener;
 import org.talend.commons.utils.data.list.ListenableListEvent;
 import org.talend.commons.utils.encoding.CharsetToolkit;
 import org.talend.core.model.metadata.builder.connection.ConnectionFactory;
-import org.talend.core.model.metadata.builder.connection.SchemaTarget;
 import org.talend.core.model.metadata.builder.connection.XmlXPathLoopDescriptor;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.targetschema.editor.XmlExtractorFieldModel;
@@ -122,7 +116,7 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
     private XmlExtractorLoopModel loopModel;
 
     private XmlXPathLoopDescriptor xmlXPathLoopDescriptor;
-    
+
     /**
      * Constructor to use by RCP Wizard.
      * 
@@ -194,8 +188,8 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
             // Bottom Button
             Composite compositeBottomButton = Form.startNewGridLayout(this, 2, false, SWT.CENTER, SWT.CENTER);
             // Button Cancel
-            cancelButton = new UtilsButton(compositeBottomButton, Messages.getString("CommonWizard.cancel"), WIDTH_BUTTON_PIXEL,
-                    HEIGHT_BUTTON_PIXEL);
+            cancelButton = new UtilsButton(compositeBottomButton, Messages.getString("CommonWizard.cancel"),
+                    WIDTH_BUTTON_PIXEL, HEIGHT_BUTTON_PIXEL);
         }
         addUtilsButtonListeners();
     }
@@ -216,13 +210,14 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
         // availableXmlTree.setVisible(false);
         GridData gridData2 = new GridData(GridData.FILL_BOTH);
         availableXmlTree.setLayoutData(gridData2);
-        availableXmlTree.setToolTipText(Messages.getString("FileStep1.fileViewerTip1") + " " + TreePopulator.MAXIMUM_ROWS_TO_PREVIEW + " "
-                + Messages.getString("FileStep1.fileViewerTip2"));
+        availableXmlTree.setToolTipText(Messages.getString("FileStep1.fileViewerTip1") + " "
+                + TreePopulator.MAXIMUM_ROWS_TO_PREVIEW + " " + Messages.getString("FileStep1.fileViewerTip2"));
     }
 
     private void addGroupSchemaTarget(final Composite mainComposite, final int width, final int height) {
         // Group Schema Viewer
-        final Group group = Form.createGroup(mainComposite, 1, Messages.getString("XmlFileStep1.groupSchemaTarget"), height);
+        final Group group = Form.createGroup(mainComposite, 1, Messages.getString("XmlFileStep1.groupSchemaTarget"),
+                height);
 
         CommandStackForComposite commandStack = new CommandStackForComposite(group);
 
@@ -253,7 +248,8 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
     private void addGroupFileViewer(final Composite parent, final int width, int height) {
         // composite Xml File Preview
         Group previewGroup = Form.createGroup(parent, 1, Messages.getString("FileStep2.groupPreview"), height);
-        Composite compositeXmlFilePreviewButton = Form.startNewDimensionnedGridLayout(previewGroup, 4, width, HEIGHT_BUTTON_PIXEL);
+        Composite compositeXmlFilePreviewButton = Form.startNewDimensionnedGridLayout(previewGroup, 4, width,
+                HEIGHT_BUTTON_PIXEL);
         height = height - HEIGHT_BUTTON_PIXEL - 15;
 
         // Preview Button
@@ -294,8 +290,8 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
         gridData.minimumWidth = width;
         gridData.minimumHeight = HEIGHT_BUTTON_PIXEL;
         fileXmlText.setLayoutData(gridData);
-        fileXmlText.setToolTipText(Messages.getString("FileStep1.fileViewerTip1") + " " + TreePopulator.MAXIMUM_ROWS_TO_PREVIEW + " "
-                + Messages.getString("FileStep1.fileViewerTip2"));
+        fileXmlText.setToolTipText(Messages.getString("FileStep1.fileViewerTip1") + " "
+                + TreePopulator.MAXIMUM_ROWS_TO_PREVIEW + " " + Messages.getString("FileStep1.fileViewerTip2"));
         fileXmlText.setEditable(false);
         fileXmlText.setText(Messages.getString("FileStep1.fileViewerAlert"));
     }
@@ -351,13 +347,15 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
                 previewInformationLabel.setText("   " + Messages.getString("FileStep2.previewIsDone"));
 
                 // refresh TablePreview on this step
-                xmlFilePreview.refreshTablePreview(xmlArray, false, ((XmlXPathLoopDescriptor) getConnection().getSchema().get(0)).getSchemaTargets());
-                
+                xmlFilePreview.refreshTablePreview(xmlArray, false, ((XmlXPathLoopDescriptor) getConnection()
+                        .getSchema().get(0)).getSchemaTargets());
+
                 previewInformationLabel.setText("");
             }
         } catch (CoreException e) {
             previewInformationLabel.setText("   " + Messages.getString("FileStep2.previewFailure"));
-            new ErrorDialogWidthDetailArea(getShell(), PID, Messages.getString("FileStep2.previewFailure"), e.getMessage());
+            new ErrorDialogWidthDetailArea(getShell(), PID, Messages.getString("FileStep2.previewFailure"), e
+                    .getMessage());
             log.error(Messages.getString("FileStep2.previewFailure") + " " + e.getMessage());
         }
     }
@@ -422,7 +420,8 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
             // if the checkbox is checked, check Numeric value
             if (labelledCheckboxCombo.getCheckbox().getSelection()) {
                 if (labelledCheckboxCombo.getText() == "") {
-                    updateStatus(IStatus.ERROR, labelledCheckboxCombo.getLabelText() + Messages.getString("FileStep2.mustBePrecised"));
+                    updateStatus(IStatus.ERROR, labelledCheckboxCombo.getLabelText()
+                            + Messages.getString("FileStep2.mustBePrecised"));
                     return false;
                 }
             }
@@ -467,20 +466,21 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
 
     /**
      * checkFileFieldsValue active fileViewer if file exist.
-     * @throws IOException 
+     * 
+     * @throws IOException
      */
     private void checkFilePathAndManageIt() {
         updateStatus(IStatus.OK, null);
         filePathIsDone = false;
         if (getConnection().getXmlFilePath() == "") {
-            fileXmlText.setText(Messages.getString("FileStep1.fileViewerTip1") + " " + TreePopulator.MAXIMUM_ROWS_TO_PREVIEW + " "
-                    + Messages.getString("FileStep1.fileViewerTip2"));
+            fileXmlText.setText(Messages.getString("FileStep1.fileViewerTip1") + " "
+                    + TreePopulator.MAXIMUM_ROWS_TO_PREVIEW + " " + Messages.getString("FileStep1.fileViewerTip2"));
         } else {
             fileXmlText.setText(Messages.getString("FileStep1.fileViewerProgress"));
 
             StringBuffer previewRows = new StringBuffer("");
             BufferedReader in = null;
-            
+
             try {
 
                 File file = new File(getConnection().getXmlFilePath());
@@ -492,13 +492,14 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
                 while ((str = in.readLine()) != null) {
                     previewRows.append(str + "\n");
                 }
-                
+
                 // show lines
                 fileXmlText.setText(new String(previewRows));
                 filePathIsDone = true;
 
             } catch (Exception e) {
-                String msgError = Messages.getString("FileStep1.filepath") + " \"" + fileXmlText.getText().replace("\\\\", "\\") + "\"\n";
+                String msgError = Messages.getString("FileStep1.filepath") + " \""
+                        + fileXmlText.getText().replace("\\\\", "\\") + "\"\n";
                 if (e instanceof FileNotFoundException) {
                     msgError = msgError + Messages.getString("FileStep1.fileNotFoundException");
                 } else if (e instanceof EOFException) {
@@ -514,7 +515,8 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
                 }
                 log.error(msgError + " " + e.getMessage());
             } finally {
-                String msgError = Messages.getString("FileStep1.filepath") + " \"" + fileXmlText.getText().replace("\\\\", "\\") + "\"\n";
+                String msgError = Messages.getString("FileStep1.filepath") + " \""
+                        + fileXmlText.getText().replace("\\\\", "\\") + "\"\n";
                 try {
                     in.close();
                 } catch (IOException e) {
@@ -554,9 +556,10 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
             checkFilePathAndManageIt();
             // Refresh the preview width the adapted rowSeparator
             // If metadata exist, refreshMetadata
-            if (getConnection().getXmlFilePath() != null && !getConnection().getXmlFilePath().equals("") 
-                    && getConnection().getSchema() != null && !getConnection().getSchema().isEmpty() 
-                        && ((XmlXPathLoopDescriptor) getConnection().getSchema().get(0)).getSchemaTargets() != null && !((XmlXPathLoopDescriptor) getConnection().getSchema().get(0)).getSchemaTargets().isEmpty()) {
+            if (getConnection().getXmlFilePath() != null && !getConnection().getXmlFilePath().equals("")
+                    && getConnection().getSchema() != null && !getConnection().getSchema().isEmpty()
+                    && ((XmlXPathLoopDescriptor) getConnection().getSchema().get(0)).getSchemaTargets() != null
+                    && !((XmlXPathLoopDescriptor) getConnection().getSchema().get(0)).getSchemaTargets().isEmpty()) {
                 refreshPreview();
             }
         }

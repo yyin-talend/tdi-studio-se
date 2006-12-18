@@ -46,14 +46,19 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Tree;
+import org.talend.commons.exception.BusinessException;
+import org.talend.commons.ui.swt.dialogs.ErrorDialogWidthDetailArea;
 import org.talend.commons.ui.swt.formtools.Form;
 import org.talend.commons.ui.swt.formtools.LabelledCombo;
 import org.talend.commons.ui.swt.formtools.LabelledFileField;
 import org.talend.commons.ui.swt.formtools.LabelledText;
 import org.talend.commons.ui.swt.formtools.UtilsButton;
 import org.talend.commons.utils.encoding.CharsetToolkit;
+import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.metadata.EMetadataEncoding;
 import org.talend.core.model.properties.ConnectionItem;
+import org.talend.designer.codegen.perlmodule.IPerlModuleService;
+import org.talend.designer.codegen.perlmodule.ModuleNeeded.ModuleStatus;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.ui.swt.utils.AbstractXmlFileStepForm;
 
@@ -97,7 +102,7 @@ public class XmlFileStep1Form extends AbstractXmlFileStepForm {
     private boolean readOnly;
 
     private TreePopulator treePopulator;
-    
+
     private LabelledCombo encodingCombo;
 
     private String encoding;
@@ -125,20 +130,20 @@ public class XmlFileStep1Form extends AbstractXmlFileStepForm {
 
         this.treePopulator = new TreePopulator(availableXmlTree);
 
-        //add init of CheckBoxIsGuess and Determine the Initialize checkFileXsdorXml
-//        if (getConnection().getXsdFilePath() != null) {
-//            fileFieldXsd.setText(getConnection().getXsdFilePath().replace("\\\\", "\\"));
-//            // init the fileViewer
-//            this.treePopulator.populateTree(fileFieldXsd.getText(), treeNode);
-//            checkFieldsValue();
-//        }
+        // add init of CheckBoxIsGuess and Determine the Initialize checkFileXsdorXml
+        // if (getConnection().getXsdFilePath() != null) {
+        // fileFieldXsd.setText(getConnection().getXsdFilePath().replace("\\\\", "\\"));
+        // // init the fileViewer
+        // this.treePopulator.populateTree(fileFieldXsd.getText(), treeNode);
+        // checkFieldsValue();
+        // }
         if (getConnection().getXmlFilePath() != null) {
             fileFieldXml.setText(getConnection().getXmlFilePath().replace("\\\\", "\\"));
             // init the fileViewer
             this.treePopulator.populateTree(fileFieldXml.getText(), treeNode);
             checkFieldsValue();
         }
-        
+
         // Fields to the Group Delimited File Settings
         if (getConnection().getEncoding() != null && !getConnection().getEncoding().equals("")) {
             encodingCombo.setText(getConnection().getEncoding());
@@ -146,10 +151,10 @@ public class XmlFileStep1Form extends AbstractXmlFileStepForm {
             encodingCombo.select(0);
         }
         encodingCombo.clearSelection();
-        
-//        if (getConnection().getMaskXPattern() != null) {
-//            fieldMaskXPattern.setText(getConnection().getMaskXPattern().replace("\\\\", "\\"));
-//        }
+
+        // if (getConnection().getMaskXPattern() != null) {
+        // fieldMaskXPattern.setText(getConnection().getMaskXPattern().replace("\\\\", "\\"));
+        // }
     }
 
     /**
@@ -158,14 +163,15 @@ public class XmlFileStep1Form extends AbstractXmlFileStepForm {
      */
     protected void adaptFormToReadOnly() {
         readOnly = isReadOnly();
-//        fileFieldXsd.setReadOnly(isReadOnly());
+        // fileFieldXsd.setReadOnly(isReadOnly());
         fileFieldXml.setReadOnly(isReadOnly());
-//        fieldMaskXPattern.setReadOnly(isReadOnly());
+        // fieldMaskXPattern.setReadOnly(isReadOnly());
         // checkBoxIsGuess.setReadOnly(isReadOnly());
         updateStatus(IStatus.OK, "");
     }
 
     protected void addFields() {
+
         // Group File Location
         Group group = Form.createGroup(this, 1, Messages.getString("FileStep2.groupDelimitedFileSettings"), 100);
         Composite compositeFileLocation = Form.startNewDimensionnedGridLayout(group, 3, WIDTH_GRIDDATA_PIXEL, 100);
@@ -176,31 +182,33 @@ public class XmlFileStep1Form extends AbstractXmlFileStepForm {
 
         // file Field XSD
         String[] xsdExtensions = { "*.xsd", "*.*", "*" };
-//        fileFieldXsd = new LabelledFileField(compositeFileLocation, Messages.getString("XmlFileStep1.filepathXsd"), xsdExtensions);
+        // fileFieldXsd = new LabelledFileField(compositeFileLocation, Messages.getString("XmlFileStep1.filepathXsd"),
+        // xsdExtensions);
 
         // checkBox IsGuess
-//        checkBoxIsGuess = new Button(compositeFileLocation, SWT.CHECK);
-//        labelIsGuess = new Label(compositeFileLocation, SWT.LEFT);
-//        GridData gridDataLabel = new GridData();
-//        gridDataLabel.horizontalSpan = 2;
-//        labelIsGuess.setLayoutData(gridDataLabel);
-//        labelIsGuess.setText(Messages.getString("XmlFileStep1.checkBoxIsGuess"));
+        // checkBoxIsGuess = new Button(compositeFileLocation, SWT.CHECK);
+        // labelIsGuess = new Label(compositeFileLocation, SWT.LEFT);
+        // GridData gridDataLabel = new GridData();
+        // gridDataLabel.horizontalSpan = 2;
+        // labelIsGuess.setLayoutData(gridDataLabel);
+        // labelIsGuess.setText(Messages.getString("XmlFileStep1.checkBoxIsGuess"));
 
         // file Field XML
         String[] xmlExtensions = { "*.xml", "*.*", "*" };
-        fileFieldXml = new LabelledFileField(compositeFileLocation, Messages.getString("XmlFileStep1.filepathXml"), xmlExtensions);
+        fileFieldXml = new LabelledFileField(compositeFileLocation, Messages.getString("XmlFileStep1.filepathXml"),
+                xmlExtensions);
 
         EMetadataEncoding[] values = EMetadataEncoding.values();
         String[] encodingData = new String[values.length];
         for (int j = 0; j < values.length; j++) {
             encodingData[j] = values[j].getName();
         }
-        
+
         encodingCombo = new LabelledCombo(compositeFileLocation, Messages.getString("FileStep2.encoding"), Messages
                 .getString("FileStep2.encodingTip"), encodingData, 1, true, SWT.NONE);
 
         // field XmaskPattern
-//        fieldMaskXPattern = new LabelledText(compositeFileLocation, Messages.getString("XmlFileStep1.maskXPattern"));
+        // fieldMaskXPattern = new LabelledText(compositeFileLocation, Messages.getString("XmlFileStep1.maskXPattern"));
 
         // Group Schema Viewer
         group = Form.createGroup(this, 1, Messages.getString("XmlFileStep1.groupFileViewer"), 220);
@@ -208,20 +216,20 @@ public class XmlFileStep1Form extends AbstractXmlFileStepForm {
 
         GridData gridData = new GridData(GridData.FILL_BOTH);
         gridData.minimumWidth = WIDTH_GRIDDATA_PIXEL;
-//        gridData.minimumHeight = 150;
+        // gridData.minimumHeight = 150;
 
         availableXmlTree = new Tree(compositeFileViewer, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
         availableXmlTree.setLayoutData(gridData);
-        availableXmlTree.setToolTipText(Messages.getString("FileStep1.fileViewerTip1") + " " + TreePopulator.MAXIMUM_ROWS_TO_PREVIEW + " "
-                + Messages.getString("FileStep1.fileViewerTip2"));
+        availableXmlTree.setToolTipText(Messages.getString("FileStep1.fileViewerTip1") + " "
+                + TreePopulator.MAXIMUM_ROWS_TO_PREVIEW + " " + Messages.getString("FileStep1.fileViewerTip2"));
 
         if (!isInWizard()) {
             // Composite BottomButton
             Composite compositeBottomButton = Form.startNewGridLayout(this, 2, false, SWT.CENTER, SWT.CENTER);
 
             // Button Cancel
-            cancelButton = new UtilsButton(compositeBottomButton, Messages.getString("CommonWizard.cancel"), WIDTH_BUTTON_PIXEL,
-                    HEIGHT_BUTTON_PIXEL);
+            cancelButton = new UtilsButton(compositeBottomButton, Messages.getString("CommonWizard.cancel"),
+                    WIDTH_BUTTON_PIXEL, HEIGHT_BUTTON_PIXEL);
         }
         addUtilsButtonListeners();
     }
@@ -245,32 +253,32 @@ public class XmlFileStep1Form extends AbstractXmlFileStepForm {
     protected void addFieldsListeners() {
 
         // fileFieldXsd : Event modifyText
-//        fileFieldXsd.addModifyListener(new ModifyListener() {
-//
-//            public void modifyText(final ModifyEvent e) {
-//                getConnection().setXsdFilePath(fileFieldXsd.getText());
-//                treePopulator.populateTree(fileFieldXsd.getText(), treeNode);
-//                checkFieldsValue();
-//            }
-//        });
+        // fileFieldXsd.addModifyListener(new ModifyListener() {
+        //
+        // public void modifyText(final ModifyEvent e) {
+        // getConnection().setXsdFilePath(fileFieldXsd.getText());
+        // treePopulator.populateTree(fileFieldXsd.getText(), treeNode);
+        // checkFieldsValue();
+        // }
+        // });
 
         // fileFieldXml : Event modifyText
         fileFieldXml.addModifyListener(new ModifyListener() {
 
             public void modifyText(final ModifyEvent e) {
                 getConnection().setXmlFilePath(fileFieldXml.getText());
-                
+
                 try {
                     File file = new File(getConnection().getXmlFilePath());
                     Charset guessedCharset = CharsetToolkit.guessEncoding(file, 4096);
-    
+
                     String str;
-                    BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(getConnection().getXmlFilePath()),
-                            guessedCharset.displayName()));
+                    BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(getConnection()
+                            .getXmlFilePath()), guessedCharset.displayName()));
                     while ((str = in.readLine()) != null) {
-                        if(str.contains("encoding")){
+                        if (str.contains("encoding")) {
                             String regex = "^<\\?xml\\s*version=\\\"[^\\\"]*\\\"\\s*encoding=\\\"([^\\\"]*)\\\"\\?>$";
-                            
+
                             Perl5Compiler compiler = new Perl5Compiler();
                             Perl5Matcher matcher = new Perl5Matcher();
                             Pattern pattern = null;
@@ -283,25 +291,25 @@ public class XmlFileStep1Form extends AbstractXmlFileStepForm {
                                     }
                                 }
                             } catch (MalformedPatternException malE) {
-                      
+
                             }
                         }
                     }
                     in.close();
-                } catch (Exception ex){
-                    
+                } catch (Exception ex) {
+
                 }
-                getConnection().setEncoding(encoding);    
-                if(encoding!=null && !("").equals(encoding)){
+                getConnection().setEncoding(encoding);
+                if (encoding != null && !("").equals(encoding)) {
                     encodingCombo.setText(encoding);
-                }else{
+                } else {
                     encodingCombo.setText("UTF-8");
                 }
                 treePopulator.populateTree(fileFieldXml.getText(), treeNode);
                 checkFieldsValue();
             }
         });
-        
+
         // Event encodingCombo
         encodingCombo.addModifyListener(new ModifyListener() {
 
@@ -345,6 +353,23 @@ public class XmlFileStep1Form extends AbstractXmlFileStepForm {
                 encodingCombo.setText(getConnection().getEncoding());
             } else {
                 encodingCombo.select(0);
+            }
+
+            // PTODO cantoine : make internationalisation for Perl Module not Installed, detail Message URL of PPM
+            // module ??
+            IPerlModuleService perlModuleService = (IPerlModuleService) GlobalServiceRegister.getDefault().getService(
+                    IPerlModuleService.class);
+            try {
+                ModuleStatus status = perlModuleService.getModuleStatus("XML::LibXML");
+                if (!("INSTALLED").equals(status.name())) {
+                    new ErrorDialogWidthDetailArea(getShell(), PID, Messages.getString("FileStep.moduleFailure")+" XML::Lib "+Messages.getString("FileStep.moduleFailureEnd"),
+                            Messages.getString("FileStep.moduleDetailMessage"));
+                    log.error(Messages.getString("FileStep.moduleFailure")+" XML::Lib "+Messages.getString("FileStep.moduleFailureEnd"));
+                }
+            } catch (BusinessException e) {
+                new ErrorDialogWidthDetailArea(getShell(), PID, Messages.getString("FileStep.moduleFailure")+" XML::Lib "+Messages.getString("FileStep.moduleFailureEnd"), e
+                        .getMessage());
+                log.error(Messages.getString("FileStep.moduleFailure")+" XML::Lib "+Messages.getString("FileStep.moduleFailureEnd"));
             }
         }
     }
