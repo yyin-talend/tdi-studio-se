@@ -1087,6 +1087,7 @@ public class UIManager {
             }
         }
         mapperManager.getUiManager().refreshBackground(false, false);
+        dataMapTableView.getTableViewerCreatorForColumns().getTableViewer().refresh(currentModifiedITableEntry);
 
         if (atLeastOneLinkHasBeenRemoved) {
             new AsynchronousThreading(20, false, dataMapTableView.getDisplay(), new Runnable() {

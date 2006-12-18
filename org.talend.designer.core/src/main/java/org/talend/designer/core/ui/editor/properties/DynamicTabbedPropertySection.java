@@ -2921,9 +2921,9 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                             lastControl = addVersion(composite, listParam.get(i), numInRow, nbInRow, heightSize, lastControl);
                             break;
                         case TABLE:
-                             lastControl = addTable(composite, listParam.get(i), numInRow, nbInRow, heightSize,
-                             lastControl);
-//                            lastControl = addTable2(composite, listParam.get(i), numInRow, nbInRow, heightSize, lastControl);
+//                             lastControl = addTable(composite, listParam.get(i), numInRow, nbInRow, heightSize,
+//                             lastControl);
+                            lastControl = addTable2(composite, listParam.get(i), numInRow, nbInRow, heightSize, lastControl);
                             break;
                         case IMAGE:
                             lastControl = addImage(composite, listParam.get(i), numInRow, nbInRow, heightSize, lastControl);

@@ -21,17 +21,30 @@
 // ============================================================================
 package org.talend.designer.mapper.ui.visualmap.table;
 
+import java.util.List;
+
 import org.eclipse.jface.viewers.TextCellEditor;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.TableItem;
+import org.eclipse.swt.widgets.ToolItem;
+import org.talend.commons.ui.swt.advanced.dataeditor.commands.ExtendedTableMoveCommand;
+import org.talend.commons.ui.swt.extended.table.AbstractExtendedTableViewer;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumn;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator.CELL_EDITOR_STATE;
 import org.talend.commons.ui.swt.tableviewer.celleditor.DialogErrorForCellEditorListener;
 import org.talend.commons.ui.swt.tableviewer.data.ModifiedObjectInfo;
 import org.talend.commons.utils.data.bean.IBeanPropertyAccessors;
+import org.talend.commons.utils.data.list.IListenableListListener;
+import org.talend.commons.utils.data.list.ListenableListEvent;
+import org.talend.core.ui.images.EImage;
+import org.talend.core.ui.images.ImageProvider;
 import org.talend.designer.mapper.managers.MapperManager;
+import org.talend.designer.mapper.managers.UIManager;
 import org.talend.designer.mapper.model.table.AbstractDataMapTable;
 import org.talend.designer.mapper.model.table.VarsTable;
 import org.talend.designer.mapper.model.tableentry.ITableEntry;
@@ -46,6 +59,12 @@ import org.talend.designer.mapper.ui.visualmap.zone.Zone;
  */
 public class VarsDataMapTableView extends DataMapTableView {
 
+    protected ToolItem removeEntryItem;
+
+    protected ToolItem moveUpEntryItem;
+
+    protected ToolItem moveDownEntryItem;
+
     public VarsDataMapTableView(Composite parent, int style, AbstractDataMapTable abstractDataMapTable, MapperManager mapperManager) {
         super(parent, style, abstractDataMapTable, mapperManager);
     }
@@ -59,10 +78,32 @@ public class VarsDataMapTableView extends DataMapTableView {
             }
 
             public void widgetSelected(SelectionEvent e) {
-                removeEntryItem.setEnabled(tableViewerCreatorForColumns.getTable().getSelectionCount() > 0);
+                boolean atLeastOneItemIsSelected = tableViewerCreatorForColumns.getTable().getSelectionCount() > 0;
+                removeEntryItem.setEnabled(atLeastOneItemIsSelected);
+                moveUpEntryItem.setEnabled(atLeastOneItemIsSelected);
+                moveDownEntryItem.setEnabled(atLeastOneItemIsSelected);
             }
 
         });
+
+        getExtendedTableViewerForColumns().getExtendedTableModel().addAfterOperationListListener(new IListenableListListener() {
+
+            public void handleEvent(ListenableListEvent event) {
+                if (event.type == ListenableListEvent.TYPE.SWAPED) {
+                    DataMapTableView varsDataMapTableView = mapperManager.retrieveDataMapTableView(getExtendedTableViewerForColumns()
+                            .getTable());
+                    UIManager uiManager = mapperManager.getUiManager();
+                    uiManager.parseAllExpressions(varsDataMapTableView);
+                    uiManager.refreshBackground(true, false);
+                    List<ITableEntry> list = uiManager.extractSelectedTableEntries(varsDataMapTableView.getTableViewerCreatorForColumns()
+                            .getTableViewer().getSelection());
+
+                    uiManager.processSelectedDataMapEntries(varsDataMapTableView, list, false);
+                }
+            }
+
+        });
+
     }
 
     @Override
@@ -144,7 +185,7 @@ public class VarsDataMapTableView extends DataMapTableView {
      */
     @Override
     protected boolean addToolItems() {
-        super.createToolItems();
+        createToolItems();
         return true;
     }
 
@@ -161,7 +202,11 @@ public class VarsDataMapTableView extends DataMapTableView {
     @Override
     public void unselectAllColumnEntries() {
         super.unselectAllColumnEntries();
-        removeEntryItem.setEnabled(false);
+        if (removeEntryItem != null) {
+            removeEntryItem.setEnabled(false);
+            moveUpEntryItem.setEnabled(false);
+            moveDownEntryItem.setEnabled(false);
+        }
     }
 
     /*
@@ -172,6 +217,121 @@ public class VarsDataMapTableView extends DataMapTableView {
     @Override
     public boolean toolbarNeededToBeRightStyle() {
         return false;
+    }
+
+    protected void createToolItems() {
+
+        // /////////////////////////////////////////////////////////////////
+        ToolItem addEntryItem = new ToolItem(toolBarActions, SWT.PUSH);
+        addEntryItem.setToolTipText("Add variable");
+        addEntryItem.setImage(org.talend.core.ui.images.ImageProvider.getImage(org.talend.core.ui.images.ImageProvider
+                .getImageDesc(EImage.ADD_ICON)));
+
+        addEntryItem.addSelectionListener(new SelectionListener() {
+
+            public void widgetDefaultSelected(SelectionEvent e) {
+            }
+
+            public void widgetSelected(SelectionEvent e) {
+                Table table = getExtendedTableViewerForColumns().getTable();
+
+                int[] indices = table.getSelectionIndices();
+                int indexInsert = table.getItemCount();
+                if (indices.length > 0) {
+                    indexInsert = indices[indices.length - 1] + 1;
+                }
+                AbstractDataMapTable dataMapTable = VarsDataMapTableView.this.getDataMapTable();
+                String varName = null;
+                if (dataMapTable instanceof VarsTable) {
+                    varName = ((VarsTable) dataMapTable).findUniqueColumnName("var");
+                } else {
+                    throw new UnsupportedOperationException("Can't create new column, case not found");
+                }
+                mapperManager.addNewVarEntry(VarsDataMapTableView.this, varName, indexInsert);
+                VarsDataMapTableView.this.changeSize(VarsDataMapTableView.this.getPreferredSize(true, true, false), true, true);
+                changeMinimizeState(false);
+                tableViewerCreatorForColumns.getTableViewer().refresh();
+                mapperManager.getUiManager().refreshBackground(true, false);
+                table.setSelection(indexInsert);
+                removeEntryItem.setEnabled(true);
+            }
+
+        });
+        // /////////////////////////////////////////////////////////////////
+
+        // /////////////////////////////////////////////////////////////////
+        removeEntryItem = new ToolItem(toolBarActions, SWT.PUSH);
+        removeEntryItem.setEnabled(false);
+        removeEntryItem.setImage(org.talend.core.ui.images.ImageProvider.getImage(org.talend.core.ui.images.ImageProvider
+                .getImageDesc(EImage.MINUS_ICON)));
+        removeEntryItem.setToolTipText("Remove selected variable(s)");
+
+        removeEntryItem.addSelectionListener(new SelectionListener() {
+
+            public void widgetDefaultSelected(SelectionEvent e) {
+            }
+
+            public void widgetSelected(SelectionEvent e) {
+                TableItem[] tableItems = tableViewerCreatorForColumns.getTable().getSelection();
+                for (int i = 0; i < tableItems.length; i++) {
+                    TableItem item = tableItems[i];
+                    mapperManager.removeTableEntry((ITableEntry) item.getData());
+                }
+                if (tableItems.length > 0) {
+                    tableViewerCreatorForColumns.getTableViewer().refresh();
+                    mapperManager.getUiManager().refreshBackground(true, false);
+                    resizeAtExpandedSize();
+                }
+                removeEntryItem.setEnabled(false);
+            }
+
+        });
+        // /////////////////////////////////////////////////////////////////
+
+        // /////////////////////////////////////////////////////////////////
+        moveUpEntryItem = new ToolItem(toolBarActions, SWT.PUSH);
+        moveUpEntryItem.setEnabled(false);
+        moveUpEntryItem.setImage(ImageProvider.getImage(EImage.UP_ICON));
+        moveUpEntryItem.setToolTipText("Move up selected variable(s)");
+
+        moveUpEntryItem.addSelectionListener(new SelectionListener() {
+
+            public void widgetDefaultSelected(SelectionEvent e) {
+            }
+
+            public void widgetSelected(SelectionEvent e) {
+
+                AbstractExtendedTableViewer viewer = (AbstractExtendedTableViewer) getExtendedTableViewerForColumns();
+                ExtendedTableMoveCommand moveCommand = new ExtendedTableMoveCommand(viewer.getExtendedTableModel(), true, viewer
+                        .getTableViewerCreator().getTable().getSelectionIndices());
+                viewer.executeCommand(moveCommand);
+            }
+
+        });
+        // /////////////////////////////////////////////////////////////////
+
+        // /////////////////////////////////////////////////////////////////
+        moveDownEntryItem = new ToolItem(toolBarActions, SWT.PUSH);
+        moveDownEntryItem.setEnabled(false);
+        moveDownEntryItem.setImage(ImageProvider.getImage(EImage.DOWN_ICON));
+        moveDownEntryItem.setToolTipText("Move down selected variable(s)");
+
+        moveDownEntryItem.addSelectionListener(new SelectionListener() {
+
+            public void widgetDefaultSelected(SelectionEvent e) {
+            }
+
+            public void widgetSelected(SelectionEvent e) {
+
+                AbstractExtendedTableViewer viewer = (AbstractExtendedTableViewer) getExtendedTableViewerForColumns();
+                ExtendedTableMoveCommand moveCommand = new ExtendedTableMoveCommand(viewer.getExtendedTableModel(), false, viewer
+                        .getTableViewerCreator().getTable().getSelectionIndices());
+                viewer.executeCommand(moveCommand);
+            }
+
+        });
+        // /////////////////////////////////////////////////////////////////
+
     }
 
 }

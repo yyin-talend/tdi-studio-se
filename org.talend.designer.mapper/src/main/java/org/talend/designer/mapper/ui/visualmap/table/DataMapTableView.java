@@ -67,6 +67,7 @@ import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
+import org.talend.commons.ui.swt.advanced.dataeditor.commands.ExtendedTableMoveCommand;
 import org.talend.commons.ui.swt.extended.table.AbstractExtendedTableViewer;
 import org.talend.commons.ui.swt.proposal.ContentProposalAdapterExtended;
 import org.talend.commons.ui.swt.proposal.TextCellEditorWithProposal;
@@ -89,6 +90,7 @@ import org.talend.commons.utils.data.list.ListenableListEvent;
 import org.talend.commons.utils.threading.AsynchronousThreading;
 import org.talend.commons.utils.threading.ExecutionLimiter;
 import org.talend.core.ui.images.EImage;
+import org.talend.core.ui.images.ImageProvider;
 import org.talend.core.ui.proposal.ProcessProposalProvider;
 import org.talend.designer.mapper.MapperMain;
 import org.talend.designer.mapper.managers.MapperManager;
@@ -162,7 +164,6 @@ public abstract class DataMapTableView extends Composite {
 
     private Text constraintExpressionTextEditor;
 
-    protected ToolItem removeEntryItem;
 
     protected boolean dragDetected;
 
@@ -485,21 +486,22 @@ public abstract class DataMapTableView extends Composite {
 
         });
 
-//        abstractDataMapTable.getTableColumnsEntriesModel().addAfterOperationListListener(new IListenableListListener<IColumnEntry>() {
-//
-//            public void handleEvent(ListenableListEvent<IColumnEntry> event) {
-//
-//                // if (event.type == ListenableListEvent.TYPE.ADDED) {
-//                // // mapperManager.getUiManager().parseAllExpressions(tableViewerForEntries)
-//                // Collection<IColumnEntry> addedObjects = event.addedObjects;
-//                // for (IColumnEntry entry : addedObjects) {
-//                // mapperManager.getUiManager().parseExpression(entry.getExpression(), entry, false, false, false);
-//                // }
-//                // }
-//
-//            }
-//
-//        });
+        // abstractDataMapTable.getTableColumnsEntriesModel().addAfterOperationListListener(new
+        // IListenableListListener<IColumnEntry>() {
+        //
+        // public void handleEvent(ListenableListEvent<IColumnEntry> event) {
+        //
+        // // if (event.type == ListenableListEvent.TYPE.ADDED) {
+        // // // mapperManager.getUiManager().parseAllExpressions(tableViewerForEntries)
+        // // Collection<IColumnEntry> addedObjects = event.addedObjects;
+        // // for (IColumnEntry entry : addedObjects) {
+        // // mapperManager.getUiManager().parseExpression(entry.getExpression(), entry, false, false, false);
+        // // }
+        // // }
+        //
+        // }
+        //
+        // });
 
         abstractDataMapTable.getTableColumnsEntriesModel().addModifiedBeanListener(new IModifiedBeanListener<IColumnEntry>() {
 
@@ -1179,79 +1181,6 @@ public abstract class DataMapTableView extends Composite {
 
     protected void createToolItems() {
 
-        ToolItem addEntryItem = new ToolItem(toolBarActions, SWT.PUSH);
-
-        addEntryItem.setToolTipText("Add variable");
-        addEntryItem.setImage(org.talend.core.ui.images.ImageProvider.getImage(org.talend.core.ui.images.ImageProvider
-                .getImageDesc(EImage.ADD_ICON)));
-
-        removeEntryItem = new ToolItem(toolBarActions, SWT.PUSH);
-        removeEntryItem.setEnabled(false);
-        removeEntryItem.setImage(org.talend.core.ui.images.ImageProvider.getImage(org.talend.core.ui.images.ImageProvider
-                .getImageDesc(EImage.MINUS_ICON)));
-        removeEntryItem.setToolTipText("Remove selected variable(s)");
-
-        // /////////////////////////////////////////////////////////////////
-        if (addEntryItem != null) {
-
-            addEntryItem.addSelectionListener(new SelectionListener() {
-
-                public void widgetDefaultSelected(SelectionEvent e) {
-                }
-
-                public void widgetSelected(SelectionEvent e) {
-                    int[] indices = tableForEntries.getSelectionIndices();
-                    int indexInsert = tableForEntries.getItemCount();
-                    if (indices.length > 0) {
-                        indexInsert = indices[indices.length - 1] + 1;
-                    }
-                    AbstractDataMapTable dataMapTable = DataMapTableView.this.getDataMapTable();
-                    String varName = null;
-                    if (dataMapTable instanceof VarsTable) {
-                        varName = ((VarsTable) dataMapTable).findUniqueColumnName("var");
-                    } else {
-                        throw new UnsupportedOperationException("Can't create new column, case not found");
-                    }
-                    mapperManager.addNewVarEntry(DataMapTableView.this, varName, indexInsert);
-                    DataMapTableView.this.changeSize(DataMapTableView.this.getPreferredSize(true, true, false), true, true);
-                    changeMinimizeState(false);
-                    tableViewerCreatorForColumns.getTableViewer().refresh();
-                    mapperManager.getUiManager().refreshBackground(true, false);
-                    tableForEntries.setSelection(indexInsert);
-                    removeEntryItem.setEnabled(true);
-                }
-
-            });
-        }
-        // /////////////////////////////////////////////////////////////////
-
-        // /////////////////////////////////////////////////////////////////
-        if (removeEntryItem != null) {
-
-            removeEntryItem.addSelectionListener(new SelectionListener() {
-
-                public void widgetDefaultSelected(SelectionEvent e) {
-                }
-
-                public void widgetSelected(SelectionEvent e) {
-                    TableItem[] tableItems = tableViewerCreatorForColumns.getTable().getSelection();
-                    for (int i = 0; i < tableItems.length; i++) {
-                        TableItem item = tableItems[i];
-                        mapperManager.removeTableEntry((ITableEntry) item.getData());
-                    }
-                    if (tableItems.length > 0) {
-                        tableViewerCreatorForColumns.getTableViewer().refresh();
-                        mapperManager.getUiManager().refreshBackground(true, false);
-                        DataMapTableView.this.resizeAtExpandedSize();
-                    }
-                    removeEntryItem.setEnabled(false);
-                }
-
-            });
-        }
-
-        // /////////////////////////////////////////////////////////////////
-
     }
 
     public void minimizeTable(boolean minimize) {
@@ -1869,6 +1798,24 @@ public abstract class DataMapTableView extends Composite {
             mapperManager.getUiManager().parseExpression(tableEntry.getExpression(), tableEntry, false, false, false);
             mapperManager.getUiManager().refreshBackground(false, false);
         }
+    }
+
+    /**
+     * Getter for extendedTableViewerForColumns.
+     * 
+     * @return the extendedTableViewerForColumns
+     */
+    public AbstractExtendedTableViewer<IColumnEntry> getExtendedTableViewerForColumns() {
+        return this.extendedTableViewerForColumns;
+    }
+
+    /**
+     * Getter for extendedTableViewerForFilters.
+     * 
+     * @return the extendedTableViewerForFilters
+     */
+    public AbstractExtendedTableViewer<FilterTableEntry> getExtendedTableViewerForFilters() {
+        return this.extendedTableViewerForFilters;
     }
 
 }

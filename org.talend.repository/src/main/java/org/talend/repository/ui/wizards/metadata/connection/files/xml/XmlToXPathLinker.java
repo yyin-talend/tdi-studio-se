@@ -56,7 +56,6 @@ import org.talend.commons.ui.swt.extended.table.IExtendedControlListener;
 import org.talend.commons.ui.swt.extended.table.AbstractExtendedControlViewer.EVENT_TYPE;
 import org.talend.commons.ui.swt.linking.TreeToTablesLinker;
 import org.talend.commons.ui.swt.proposal.TextCellEditorWithProposal;
-import org.talend.commons.ui.swt.proposal.xpath.XPathProposalProvider;
 import org.talend.commons.ui.swt.tableviewer.IModifiedBeanListener;
 import org.talend.commons.ui.swt.tableviewer.ModifiedBeanEvent;
 import org.talend.commons.ui.swt.tableviewer.selection.ILineSelectionListener;
@@ -66,6 +65,7 @@ import org.talend.commons.ui.utils.TableUtils;
 import org.talend.commons.utils.data.list.IListenableListListener;
 import org.talend.commons.utils.data.list.ListenableListEvent;
 import org.talend.commons.utils.data.list.ListenableListEvent.TYPE;
+import org.talend.commons.utils.time.TimeMeasure;
 import org.talend.commons.xml.NodeRetriever;
 import org.talend.core.model.metadata.builder.connection.SchemaTarget;
 import org.talend.core.model.metadata.builder.connection.XmlXPathLoopDescriptor;
@@ -96,6 +96,10 @@ public class XmlToXPathLinker extends TreeToTablesLinker<Object, Object> {
 
     private Comparator<LinkDescriptor<TreeItem, Object, Table, Object>> drawingLinksComparator;
 
+    private ArrayList<Node> uniqueLoopNodes = new ArrayList<Node>();
+
+    private ArrayList<Node> allLoopNodes = new ArrayList<Node>();
+
     /**
      * DOC amaumont XmlToMetadataTableLinker constructor comment.
      * 
@@ -118,9 +122,9 @@ public class XmlToXPathLinker extends TreeToTablesLinker<Object, Object> {
         this.fieldsTableEditorView = fieldsTableEditorView;
         this.nodeRetriever = new NodeRetriever(treePopulator.getFilePath(), getCurrentLoopXPath());
         TextCellEditorWithProposal xPathCellEditor = loopTableEditorView.getXPathCellEditor();
-        xPathCellEditor.setContentProposalProvider(new XPathProposalProvider(this.nodeRetriever, false));
+        xPathCellEditor.setContentProposalProvider(new XPathProposalProvider(this, false));
         xPathCellEditor = fieldsTableEditorView.getXPathCellEditor();
-        xPathCellEditor.setContentProposalProvider(new XPathProposalProvider(this.nodeRetriever, true));
+        xPathCellEditor.setContentProposalProvider(new XPathProposalProvider(this, true));
         init();
     }
 
@@ -180,7 +184,9 @@ public class XmlToXPathLinker extends TreeToTablesLinker<Object, Object> {
             TableItem tableItem = tableItems[i];
             XmlXPathLoopDescriptor xpathLoopDescriptor = xpathLoopDescriptorList.get(i);
             String xPathQuery = xpathLoopDescriptor.getAbsoluteXPathQuery();
-            createLoopLinks(xPathQuery, tableItem);
+            if (xPathQuery != null) {
+                createLoopLinks(xPathQuery, tableItem);
+            }
         }
 
         tableItems = fieldsTableEditorView.getTable().getItems();
@@ -454,14 +460,18 @@ public class XmlToXPathLinker extends TreeToTablesLinker<Object, Object> {
         } catch (XPathExpressionException e) {
             ExceptionHandler.process(e);
         }
+        loopXpathNodes = new ArrayList<String>();
+        uniqueLoopNodes = new ArrayList<Node>();
+        allLoopNodes = new ArrayList<Node>();
         if (nodeList != null) {
-            loopXpathNodes = new ArrayList<String>();
             for (Node node : nodeList) {
+                allLoopNodes.add(node);
                 String absoluteXPathFromNode = NodeRetriever.getAbsoluteXPathFromNode(node);
                 if (!alreadyProcessedXPath.contains(absoluteXPathFromNode)) {
                     TreeItem treeItemFromAbsoluteXPath = treePopulator.getTreeItem(absoluteXPathFromNode);
                     if (treeItemFromAbsoluteXPath != null) {
                         loopXpathNodes.add(absoluteXPathFromNode);
+                        uniqueLoopNodes.add(node);
                         addLoopLink(treeItemFromAbsoluteXPath, (Object) treeItemFromAbsoluteXPath.getData(), tableItemTarget.getParent(),
                                 (XmlXPathLoopDescriptor) tableItemTarget.getData());
                         alreadyProcessedXPath.add(absoluteXPathFromNode);
@@ -476,40 +486,128 @@ public class XmlToXPathLinker extends TreeToTablesLinker<Object, Object> {
      * 
      * @param relativeXpath
      * @param tableItemTarget
+     * @throws XPathExpressionException
      */
-    private void createFieldLinks(String relativeXpath, TableItem tableItemTarget) {
+    private void createFieldLinks(final String relativeXpathPrm, final TableItem tableItemTarget) {
 
-        Set<String> alreadyProcessedXPath = new HashSet<String>();
+        int nodesLoopMax = 50;
+
+        String relativeXpath = relativeXpathPrm;
+
         String currentLoopXPath = getCurrentLoopXPath();
 
-        String expression = null;
-
-        if (relativeXpath == null) {
-            relativeXpath = "";
+        if (currentLoopXPath == null || currentLoopXPath.trim().length() == 0) {
+            return;
         }
 
-        if (relativeXpath.trim().startsWith("/")) {
-            expression = relativeXpath;
+        if (true) {
+
+            if (relativeXpath == null || relativeXpath.trim().length() == 0) {
+                return;
+            }
+
+            Set<String> alreadyProcessedXPath = new HashSet<String>();
+
+            int lstSize = allLoopNodes.size();
+
+            int loopNumber = lstSize;
+
+            if (lstSize > nodesLoopMax) {
+                loopNumber = nodesLoopMax;
+            }
+
+            System.out.println("lstSize=" + lstSize);
+            for (int i = 0; i < loopNumber; i++) {
+                System.out.println("main node index : " + i);
+                Node loopNode = allLoopNodes.get(i);
+
+                Node relativeNode = null;
+                try {
+                    TimeMeasure.start("relative");
+                    relativeNode = this.nodeRetriever.retrieveNodeFromNode(relativeXpath, loopNode);
+                    // if (false) {
+                    // break;
+                    // }
+                } catch (XPathExpressionException e) {
+                    continue;
+                } finally {
+                    TimeMeasure.end("relative");
+                }
+                if (relativeNode != null) {
+                    String absoluteXPathFromNode = NodeRetriever.getAbsoluteXPathFromNode(relativeNode);
+                    if (!alreadyProcessedXPath.contains(absoluteXPathFromNode)) {
+                        TreeItem treeItemFromAbsoluteXPath = treePopulator.getTreeItem(absoluteXPathFromNode);
+                        if (treeItemFromAbsoluteXPath != null) {
+                            addFieldLink(treeItemFromAbsoluteXPath, (Object) treeItemFromAbsoluteXPath.getData(), tableItemTarget
+                                    .getParent(), (SchemaTarget) tableItemTarget.getData());
+                            alreadyProcessedXPath.add(absoluteXPathFromNode);
+                        }
+                    }
+                }
+
+                // NodeList relativeNodes = null;
+                // try {
+                // TimeMeasure.start("relative");
+                // relativeNodes = this.nodeRetriever.retrieveNodeListFromNode(relativeXpath, loopNode);
+                // if (false) {
+                // break;
+                // }
+                // } catch (XPathExpressionException e) {
+                // continue;
+                // } finally {
+                // TimeMeasure.end("relative");
+                // }
+                // int lstSizeRelativeNodes = relativeNodes.getLength();
+                // System.out.println("lstSizeRelativeNodes=" + lstSizeRelativeNodes);
+                // for (int j = 0; j < lstSizeRelativeNodes; j++) {
+                //
+                // Node relativeNode = relativeNodes.item(j);
+                // String absoluteXPathFromNode = NodeRetriever.getAbsoluteXPathFromNode(relativeNode);
+                // if (!alreadyProcessedXPath.contains(absoluteXPathFromNode)) {
+                // TreeItem treeItemFromAbsoluteXPath = treePopulator.getTreeItem(absoluteXPathFromNode);
+                // if (treeItemFromAbsoluteXPath != null) {
+                // addFieldLink(treeItemFromAbsoluteXPath, (Object) treeItemFromAbsoluteXPath.getData(), tableItemTarget
+                // .getParent(), (SchemaTarget) tableItemTarget.getData());
+                // alreadyProcessedXPath.add(absoluteXPathFromNode);
+                // }
+                // }
+                // }
+
+            }
+
         } else {
-            expression = currentLoopXPath + "/" + relativeXpath;
-        }
 
-        List<Node> nodeList = null;
-        try {
-            nodeList = this.nodeRetriever.retrieveListOfNodes(expression);
-        } catch (XPathExpressionException e) {
-            ExceptionHandler.process(e);
-        }
+            Set<String> alreadyProcessedXPath = new HashSet<String>();
 
-        if (nodeList != null) {
-            for (Node node : nodeList) {
-                String absoluteXPathFromNode = NodeRetriever.getAbsoluteXPathFromNode(node);
-                if (!alreadyProcessedXPath.contains(absoluteXPathFromNode)) {
-                    TreeItem treeItemFromAbsoluteXPath = treePopulator.getTreeItem(absoluteXPathFromNode);
-                    if (treeItemFromAbsoluteXPath != null) {
-                        addFieldLink(treeItemFromAbsoluteXPath, (Object) treeItemFromAbsoluteXPath.getData(), tableItemTarget.getParent(),
-                                (SchemaTarget) tableItemTarget.getData());
-                        alreadyProcessedXPath.add(absoluteXPathFromNode);
+            String expression = null;
+
+            if (relativeXpath == null) {
+                relativeXpath = "";
+            }
+
+            if (relativeXpath.trim().startsWith("/")) {
+                expression = relativeXpath;
+            } else {
+                expression = currentLoopXPath + "/" + relativeXpath;
+            }
+
+            List<Node> nodeList = null;
+            try {
+                nodeList = this.nodeRetriever.retrieveListOfNodes(expression);
+            } catch (XPathExpressionException e) {
+                ExceptionHandler.process(e);
+            }
+
+            if (nodeList != null) {
+                for (Node node : nodeList) {
+                    String absoluteXPathFromNode = NodeRetriever.getAbsoluteXPathFromNode(node);
+                    if (!alreadyProcessedXPath.contains(absoluteXPathFromNode)) {
+                        TreeItem treeItemFromAbsoluteXPath = treePopulator.getTreeItem(absoluteXPathFromNode);
+                        if (treeItemFromAbsoluteXPath != null) {
+                            addFieldLink(treeItemFromAbsoluteXPath, (Object) treeItemFromAbsoluteXPath.getData(), tableItemTarget
+                                    .getParent(), (SchemaTarget) tableItemTarget.getData());
+                            alreadyProcessedXPath.add(absoluteXPathFromNode);
+                        }
                     }
                 }
             }
@@ -606,9 +704,9 @@ public class XmlToXPathLinker extends TreeToTablesLinker<Object, Object> {
                 if (currentItemIsSelected) {
                     styleLink = getSelectedStyleLink();
                     if (selectedControlIsTable) {
-                        
+
                         itemsToSelect.put((TreeItem) otherExtremity.getGraphicalObject(), null);
-                        
+
                     } else {
 
                         Table currentTable = (Table) otherExtremity.getGraphicalObject();
@@ -748,6 +846,33 @@ public class XmlToXPathLinker extends TreeToTablesLinker<Object, Object> {
             };
         }
         return this.drawingLinksComparator;
+    }
+
+    /**
+     * Getter for allLoopNodes.
+     * 
+     * @return the allLoopNodes
+     */
+    public ArrayList<Node> getAllLoopNodes() {
+        return this.allLoopNodes;
+    }
+
+    /**
+     * Getter for uniqueLoopNodes.
+     * 
+     * @return the uniqueLoopNodes
+     */
+    public ArrayList<Node> getUniqueLoopNodes() {
+        return this.uniqueLoopNodes;
+    }
+
+    /**
+     * Getter for nodeRetriever.
+     * 
+     * @return the nodeRetriever
+     */
+    public NodeRetriever getNodeRetriever() {
+        return this.nodeRetriever;
     }
 
 }

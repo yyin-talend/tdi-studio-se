@@ -116,7 +116,7 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
     private XmlExtractorLoopModel loopModel;
 
     private XmlXPathLoopDescriptor xmlXPathLoopDescriptor;
-
+    
     /**
      * Constructor to use by RCP Wizard.
      * 
@@ -349,7 +349,7 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
                 // refresh TablePreview on this step
                 xmlFilePreview.refreshTablePreview(xmlArray, false, ((XmlXPathLoopDescriptor) getConnection()
                         .getSchema().get(0)).getSchemaTargets());
-
+                
                 previewInformationLabel.setText("");
             }
         } catch (CoreException e) {
@@ -521,7 +521,7 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
                     in.close();
                 } catch (IOException e) {
                     msgError = msgError + Messages.getString("FileStep1.fileLocked");
-                }
+            }
             }
             checkFieldsValue();
         }
@@ -556,12 +556,13 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
             checkFilePathAndManageIt();
             // Refresh the preview width the adapted rowSeparator
             // If metadata exist, refreshMetadata
-            if (getConnection().getXmlFilePath() != null && !getConnection().getXmlFilePath().equals("")
-                    && getConnection().getSchema() != null && !getConnection().getSchema().isEmpty()
+            if (getConnection().getXmlFilePath() != null && !getConnection().getXmlFilePath().equals("") 
+                    && getConnection().getSchema() != null && !getConnection().getSchema().isEmpty() 
                     && ((XmlXPathLoopDescriptor) getConnection().getSchema().get(0)).getSchemaTargets() != null
                     && !((XmlXPathLoopDescriptor) getConnection().getSchema().get(0)).getSchemaTargets().isEmpty()) {
                 refreshPreview();
             }
         }
     }
+
 }
