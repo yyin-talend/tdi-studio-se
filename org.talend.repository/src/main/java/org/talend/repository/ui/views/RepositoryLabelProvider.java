@@ -66,7 +66,9 @@ public class RepositoryLabelProvider extends LabelProvider implements IColorProv
 
         if (node.getType() == ENodeType.REPOSITORY_ELEMENT || node.getType() == ENodeType.SIMPLE_FOLDER) {
             IRepositoryObject object = node.getObject();
-
+            if (object == null) {
+                return node.getLabel();
+            }
             StringBuffer string = new StringBuffer();
             string.append(object.getLabel());
             // PTODO SML [FOLDERS++] temp code
@@ -87,7 +89,6 @@ public class RepositoryLabelProvider extends LabelProvider implements IColorProv
             // if (object.getType() != ERepositoryObjectType.FOLDER) {
             // string.append(" [" + factory.getStatus(object.getProperty().getItem()) + "]");
             // }
-
             return string.toString();
         } else {
             return node.getLabel();
@@ -106,6 +107,9 @@ public class RepositoryLabelProvider extends LabelProvider implements IColorProv
             EImage image = (view.getExpandedState(obj) ? EImage.FOLDER_OPEN_ICON : EImage.FOLDER_CLOSE_ICON);
             return ImageProvider.getImage(image);
         default:
+            if (node.getObject() == null) {
+                return ImageProvider.getImage(node.getIcon());
+            }
             if (node.getObject().getType() == ERepositoryObjectType.DOCUMENTATION) {
                 DocumentationItem item = (DocumentationItem) node.getObject().getProperty().getItem();
                 return ImageProvider.getImage(item.getExtension());

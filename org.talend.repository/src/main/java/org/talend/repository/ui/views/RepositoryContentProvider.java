@@ -23,6 +23,7 @@ package org.talend.repository.ui.views;
 
 import java.util.List;
 
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
@@ -34,6 +35,8 @@ import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.metadata.builder.connection.DelimitedFileConnection;
 import org.talend.core.model.metadata.builder.connection.LdifFileConnection;
 import org.talend.core.model.metadata.builder.connection.PositionalFileConnection;
+import org.talend.core.model.metadata.builder.connection.QueriesConnection;
+import org.talend.core.model.metadata.builder.connection.Query;
 import org.talend.core.model.metadata.builder.connection.RegexpFileConnection;
 import org.talend.core.model.metadata.builder.connection.TableHelper;
 import org.talend.core.model.metadata.builder.connection.XmlFileConnection;
@@ -47,6 +50,7 @@ import org.talend.repository.model.BinRepositoryNode;
 import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
+import org.talend.repository.model.QueryEMFRepositoryNode;
 import org.talend.repository.model.RepositoryConstants;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.StableRepositoryNode;
@@ -301,16 +305,40 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
      * @param iMetadataConnection
      * @param metadataConnection
      */
+    private void createTables(RepositoryNode recBinNode, RepositoryNode node, final IRepositoryObject repObj, EList list) {
+        for (Object currentTable : list) {
+            if (currentTable instanceof org.talend.core.model.metadata.builder.connection.MetadataTable) {
+                org.talend.core.model.metadata.builder.connection.MetadataTable metadataTable = (org.talend.core.model.metadata.builder.connection.MetadataTable) currentTable;
+                RepositoryNode tableNode = createMetatableNode(node, repObj, metadataTable);
+                if (TableHelper.isDeleted(metadataTable)) {
+                    recBinNode.getChildren().add(tableNode);
+                } else {
+                    node.getChildren().add(tableNode);
+                }
+            } else if (currentTable instanceof Query) {
+                node.getChildren().add(createQueryNode(node, (Query) currentTable));
+            }
+        }
+    }
+
     private void createTables(RepositoryNode recBinNode, RepositoryNode node, final IRepositoryObject repObj,
             Connection metadataConnection) {
-        for (Object currentTable : metadataConnection.getTables()) {
-            org.talend.core.model.metadata.builder.connection.MetadataTable metadataTable = (org.talend.core.model.metadata.builder.connection.MetadataTable) currentTable;
-            RepositoryNode tableNode = createMetatable(node, repObj, metadataTable);
-            if (TableHelper.isDeleted(metadataTable)) {
-                recBinNode.getChildren().add(tableNode);
-            } else {
-                node.getChildren().add(tableNode);
+        if (metadataConnection instanceof DatabaseConnection) {
+            // 1.Tables:
+            RepositoryNode tablesNode = new StableRepositoryNode(node, "Schemas", EImage.FOLDER_CLOSE_ICON, 1);
+            node.getChildren().add(tablesNode);
+            createTables(recBinNode, tablesNode, repObj, metadataConnection.getTables());
+
+            // 2.Queries:
+            RepositoryNode queriesNode = new StableRepositoryNode(node, "Queries", EImage.FOLDER_CLOSE_ICON, 2);
+            node.getChildren().add(queriesNode);
+            EList queries = ((DatabaseConnection) metadataConnection).getQueries();
+            if (queries.size() > 0) {
+                QueriesConnection queriesConnection = ((QueriesConnection) queries.get(0));
+                createTables(recBinNode, queriesNode, repObj, queriesConnection.getQuery());
             }
+        } else {
+            createTables(recBinNode, node, repObj, metadataConnection.getTables());
         }
     }
 
@@ -322,13 +350,18 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
      * @param table
      * @return
      */
-    private RepositoryNode createMetatable(RepositoryNode node, IRepositoryObject repObj,
+    private RepositoryNode createMetatableNode(RepositoryNode node, IRepositoryObject repObj,
             final org.talend.core.model.metadata.builder.connection.MetadataTable table) {
         MetadataTable modelObj = new MetadataTableRepositoryObject(repObj, table);
         modelObj.setLabel(table.getLabel());
         RepositoryNode tableNode = new RepositoryNode(modelObj, node, ENodeType.REPOSITORY_ELEMENT);
         tableNode.setProperties(EProperties.LABEL, table.getLabel());
         tableNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.METADATA_CON_TABLE);
+        return tableNode;
+    }
+
+    private RepositoryNode createQueryNode(RepositoryNode node, Query query) {
+        RepositoryNode tableNode = new QueryEMFRepositoryNode(query, node);
         return tableNode;
     }
 

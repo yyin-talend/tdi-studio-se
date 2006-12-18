@@ -100,11 +100,12 @@ public class RepositoryDoubleClickAction extends Action {
         for (ITreeContextualAction current : contextualsActions) {
 
             ERepositoryObjectType nodeType = (ERepositoryObjectType) obj.getProperties(EProperties.CONTENT_TYPE);
-            if (nodeType.equals(ERepositoryObjectType.METADATA_CON_TABLE)) {
+            if (nodeType != null && nodeType.equals(ERepositoryObjectType.METADATA_CON_TABLE)) {
                 if (current.getClassForDoubleClick().equals(IMetadataTable.class)) {
                     return current;
                 }
-            } else if (current.getClassForDoubleClick().isInstance(obj.getObject().getProperty().getItem())) {
+            } else if (obj.getObject() != null
+                    && current.getClassForDoubleClick().isInstance(obj.getObject().getProperty().getItem())) {
                 return current;
             }
         }
