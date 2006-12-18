@@ -446,7 +446,23 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
             public void widgetSelected(final SelectionEvent e) {
                 if (!previewButton.getText().equals(Messages.getString("FileStep2.wait"))) {
                     previewButton.setText(Messages.getString("FileStep2.wait"));
-                    refreshPreview();
+                    if (getConnection().getXmlFilePath() != null && !getConnection().getXmlFilePath().equals("") 
+                            && getConnection().getSchema() != null && !getConnection().getSchema().isEmpty() 
+                            && ((XmlXPathLoopDescriptor) getConnection().getSchema().get(0)).getAbsoluteXPathQuery()!=null
+                            && !("").equals(((XmlXPathLoopDescriptor) getConnection().getSchema().get(0)).getAbsoluteXPathQuery())
+                            && ((XmlXPathLoopDescriptor) getConnection().getSchema().get(0)).getSchemaTargets() != null
+                            && !((XmlXPathLoopDescriptor) getConnection().getSchema().get(0)).getSchemaTargets().isEmpty()) {
+                        refreshPreview();
+                    } else {
+                        previewButton.setText(Messages.getString("FileStep2.refreshPreview"));
+                        if (! previewButton.getEnabled()) {
+                            new ErrorDialogWidthDetailArea(getShell(), PID, Messages.getString("FileStep2.noresult"), Messages.getString("FileStep2.noresultDetailMessage"));
+                            log.error(Messages.getString("FileStep2.noresult"));
+                            previewButton.setEnabled(true);
+                        } else {
+                            previewButton.setEnabled(false);
+                        }
+                    }
                 } else {
                     previewButton.setText(Messages.getString("FileStep2.refreshPreview"));
                 }
@@ -558,6 +574,7 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
             // If metadata exist, refreshMetadata
             if (getConnection().getXmlFilePath() != null && !getConnection().getXmlFilePath().equals("") 
                     && getConnection().getSchema() != null && !getConnection().getSchema().isEmpty() 
+                    && ((XmlXPathLoopDescriptor) getConnection().getSchema().get(0)).getAbsoluteXPathQuery()!=null
                     && ((XmlXPathLoopDescriptor) getConnection().getSchema().get(0)).getSchemaTargets() != null
                     && !((XmlXPathLoopDescriptor) getConnection().getSchema().get(0)).getSchemaTargets().isEmpty()) {
                 refreshPreview();
