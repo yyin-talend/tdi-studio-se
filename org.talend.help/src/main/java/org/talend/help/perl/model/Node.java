@@ -34,17 +34,57 @@ public class Node {
 
     private final EType type;
 
+    private Node parent;
+
     private List<Node> children = new ArrayList<Node>();
 
     private Map<EProperty, String> properties = new HashMap<EProperty, String>();
 
-    public Node(final EType type) {
+    public Node(final EType type, Node parent) {
         super();
         this.type = type;
+        this.parent = parent;
+        if (hasParent()) {
+            parent.getChildren().add(this);
+        }
+    }
+
+    public Node getParent() {
+        return parent;
     }
 
     public List<Node> getChildren() {
         return children;
+    }
+
+    public Node getNextSibling() {
+        Node node = null;
+        if (hasParent()) {
+            int index = parent.getChildren().indexOf(this);
+            node = (++index) >= parent.getChildren().size() ? this : parent.getChildren().get(index);
+            return node;
+        } else {
+            return this;
+        }
+    }
+
+    public Node getPreSibling() {
+        Node node = null;
+        if (hasParent()) {
+            int index = parent.getChildren().indexOf(this);
+            node = (--index) >= parent.getChildren().size() ? this : parent.getChildren().get(index);
+            return node;
+        } else {
+            return this;
+        }
+    }
+
+    public boolean hasParent() {
+        return parent == null ? false : true;
+    }
+
+    public boolean hasChildren() {
+        return children.size() == 0 ? false : true;
     }
 
     public Map<EProperty, String> getProperties() {

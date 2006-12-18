@@ -91,12 +91,11 @@ public class IndexParser extends DefaultHandler {
         super.startElement(uri, localName, qName, attributes);
         EType type = EType.find(qName);
         if (type != null) {
-            Node node = new Node(type);
             if (root == null) {
-                root = node;
-                current.push(node);
+                root = new Node(type, null);
+                current.push(root);
             } else {
-                current.peek().getChildren().add(node);
+                Node node = new Node(type, current.peek());
                 current.push(node);
                 String value = attributes.getValue("name");
                 if (value != null) {

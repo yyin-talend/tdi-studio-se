@@ -35,11 +35,17 @@ import org.talend.help.Activator;
  * 
  */
 public class DocParser {
+    
+    private static DocParser docParse = new DocParser();
 
     private static final String PATH = "guide/perl/perlfunc.html";
 
     public static final String FILE = "/home/wiu/work/talend/workspace-talend-svn/org.talend.help/" + PATH;
 
+    public static DocParser getInstance() {
+        return docParse;
+    }
+    
     public String getDoc(String anchor) throws IOException {
         InputStream stream = FileLocator.openStream(Activator.getDefault().getBundle(), new Path(PATH), false);
         try {
