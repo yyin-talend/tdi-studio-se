@@ -297,6 +297,7 @@ public class DataProcess {
             List<IConnection> incomingConnections = new ArrayList<IConnection>();
             curNode.setIncomingConnections(incomingConnections);
             curNode.setOutgoingConnections(outgoingConnections);
+            curNode.setProcess(graphicalNode.getProcess());
             dataNodeList.add(curNode);
             itemsMap.put(curItem, curNode);
         }
