@@ -1550,11 +1550,10 @@ public class Process extends Element implements IProcess {
         }
         Problems.refreshView();
     }
-    
+
     /**
      * 
-     * DOC check the problems of node.compare with the checkProblems(),this
-     * method can't refresh problems view
+     * DOC check the problems of node.compare with the checkProblems(),this method can't refresh problems view
      */
     public void checkNodeProblems() {
         if (isActivate()) {
@@ -1626,5 +1625,22 @@ public class Process extends Element implements IProcess {
     public List<IRepositoryObject> getChildren() {
         // TODO Auto-generated method stub
         return null;
+    }
+
+    /**
+     * Return all Nodes of Component type componentName.
+     * 
+     * @param componentName the component name
+     * @return all the activated matching nodes in the process
+     */
+    public List<? extends INode> getNodesOfType(String componentName) {
+        List<Node> matchingNodes = new ArrayList<Node>();
+        for (Node node : nodes) {
+            if ((node.isActivate()) && (node.getComponentName() != null)
+                    && (node.getComponentName().compareTo(componentName)) == 0) {
+                matchingNodes.add(node);
+            }
+        }
+        return matchingNodes;
     }
 }
