@@ -438,6 +438,25 @@ public class FileinToXmlProcess<K extends FileInputNode> extends RepositoryObjec
 
     public void setReadOnly(boolean readOnly) {
         // TODO Auto-generated method stub
-        
+
+    }
+
+    /**
+     * Return all Nodes of Component type componentName.
+     * 
+     * @param componentName the component name
+     * @return all the activated matching nodes in the process
+     */
+    public List<? extends INode> getNodesOfType(String componentName) {
+        List<ShadowNode> matchingNodes = new ArrayList<ShadowNode>();
+        if ((inNode != null) && (inNode.getComponentName() != null)
+                && (inNode.getComponentName().compareTo(componentName) == 0)) {
+            matchingNodes.add(inNode);
+        }
+        if ((outNode != null) && (outNode.getComponentName() != null)
+                && (outNode.getComponentName().compareTo(componentName) == 0)) {
+            matchingNodes.add(outNode);
+        }
+        return matchingNodes;
     }
 }
