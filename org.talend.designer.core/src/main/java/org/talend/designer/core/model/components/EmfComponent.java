@@ -378,14 +378,14 @@ public class EmfComponent implements IComponent {
         boolean tStatCatcherAvailable = ComponentsFactoryProvider.getInstance().get(TSTATCATCHER_NAME) != null;
         param = new ElementParameter(node);
         param.setName(EParameterName.TSTATCATCHER_STATS.getName());
-        param.setValue(new Boolean(false));
+        param.setValue(new Boolean(compType.getHEADER().isTSTATCATCHERSTATS()));
         param.setDisplayName(EParameterName.TSTATCATCHER_STATS.getDisplayName());
         param.setField(EParameterFieldType.CHECK);
         param.setCategory(EComponentCategory.MAIN);
         param.setNumRow(6);
         param.setReadOnly(false);
         param.setRequired(false);
-        param.setShow(tStatCatcherAvailable && compType.getHEADER().isTSTATCATCHERSTATS());
+        param.setShow(tStatCatcherAvailable);
         listParam.add(param);
 
         param = new ElementParameter(node);
@@ -429,6 +429,7 @@ public class EmfComponent implements IComponent {
                 newParam.setName(EParameterName.PROPERTY_TYPE.getName());
                 newParam.setDisplayName(EParameterName.PROPERTY_TYPE.getDisplayName());
                 newParam.setListItemsDisplayName(new String[] { TEXT_BUILTIN, TEXT_REPOSITORY });
+                newParam.setListItemsDisplayCodeName(new String[] { BUILTIN, REPOSITORY });
                 newParam.setListItemsValue(new String[] { BUILTIN, REPOSITORY });
                 newParam.setValue(BUILTIN);
                 newParam.setNumRow(xmlParam.getNUMROW());
@@ -458,6 +459,7 @@ public class EmfComponent implements IComponent {
                 newParam.setName(EParameterName.SCHEMA_TYPE.getName());
                 newParam.setDisplayName(EParameterName.SCHEMA_TYPE.getDisplayName());
                 newParam.setListItemsDisplayName(new String[] { TEXT_BUILTIN, TEXT_REPOSITORY });
+                newParam.setListItemsDisplayCodeName(new String[] { BUILTIN, REPOSITORY });
                 newParam.setListItemsValue(new String[] { BUILTIN, REPOSITORY });
                 newParam.setValue(BUILTIN);
                 newParam.setNumRow(xmlParam.getNUMROW());
@@ -465,6 +467,8 @@ public class EmfComponent implements IComponent {
                 if (xmlParam.isSetSHOW()) {
                     newParam.setShow(xmlParam.isSHOW());
                 }
+                newParam.setShowIf(xmlParam.getSHOWIF());
+                newParam.setNotShowIf(xmlParam.getNOTSHOWIF());
                 listParam.add(newParam);
 
                 newParam = new ElementParameter(node);
@@ -478,6 +482,8 @@ public class EmfComponent implements IComponent {
                 newParam.setValue("");
                 newParam.setShow(false);
                 newParam.setRequired(true);
+                newParam.setShowIf(xmlParam.getSHOWIF());
+                newParam.setNotShowIf(xmlParam.getNOTSHOWIF());
                 listParam.add(newParam);
             }
             if (type == EParameterFieldType.PROCESS_TYPE) {
@@ -515,23 +521,6 @@ public class EmfComponent implements IComponent {
             param.setName(xmlParam.getNAME());
             param.setDisplayName(getTranslatedValue(xmlParam.getNAME() + "." + PROP_NAME));
             param.setField(type);
-            if (type.equals(EParameterFieldType.CHECK)) {
-                param.setValue(new Boolean(false));
-            } else {
-                if (type.equals(EParameterFieldType.TABLE)) {
-                    param.setValue(new ArrayList<Map<String, Object>>());
-                } else {
-                    if (type == EParameterFieldType.SCHEMA_TYPE) {
-                        if (node.getMetadataList().size() > 0) {
-                            IMetadataTable defaultTable = node.getMetadataList().get(0);
-                            initializeTableFromXml(defaultTable, xmlParam);
-                            param.setValue(defaultTable);
-                        }
-                    } else {
-                        param.setValue("");
-                    }
-                }
-            }
             param.setNumRow(xmlParam.getNUMROW());
             if (xmlParam.isSetREADONLY()) {
                 param.setReadOnly(xmlParam.isREADONLY());
@@ -549,6 +538,24 @@ public class EmfComponent implements IComponent {
             param.setShowIf(xmlParam.getSHOWIF());
             param.setNotShowIf(xmlParam.getNOTSHOWIF());
             param.setRepositoryValue(xmlParam.getREPOSITORYVALUE());
+
+            switch (type) {
+            case CHECK:
+                param.setValue(new Boolean(false));
+                break;
+            case TABLE:
+                param.setValue(new ArrayList<Map<String, Object>>());
+                break;
+            case SCHEMA_TYPE:
+                if (node.getMetadataList().size() > 0) {
+                    IMetadataTable defaultTable = node.getMetadataList().get(0);
+                    initializeTableFromXml(defaultTable, xmlParam);
+                    param.setValue(defaultTable);
+                }
+                break;
+            default:
+                param.setValue("");
+            }
 
             if (!param.getField().equals(EParameterFieldType.TABLE)
                     && !param.getField().equals(EParameterFieldType.CLOSED_LIST)) {
