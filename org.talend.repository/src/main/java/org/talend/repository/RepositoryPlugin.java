@@ -25,6 +25,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.context.Context;
 import org.talend.designer.codegen.perlmodule.IPerlModuleService;
@@ -59,12 +60,6 @@ public class RepositoryPlugin extends AbstractUIPlugin {
      */
     public void start(BundleContext context) throws Exception {
         super.start(context);
-        // GlobalServiceRegister.getDefault().registerService(IRepositoryService.class, new RepositoryService());
-
-        // FIXME SML temp code to start perlmodule plugin
-        // Remove perlmodule runtimes
-        // Remove repositoryplugin dependencies
-        // PerlModuleActivator.getDefault();
     }
 
     /*
@@ -91,6 +86,7 @@ public class RepositoryPlugin extends AbstractUIPlugin {
     }
 
     public static void log(String msg, Throwable e) {
+        // FIXME BQUIAN use ExceptionHandler.process(e);
         IStatus status = new Status(IStatus.ERROR, PLUGIN_ID, IStatus.ERROR, msg, e);
         getDefault().getLog().log(status);
     }
