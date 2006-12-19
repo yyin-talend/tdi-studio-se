@@ -9,7 +9,10 @@
 %>
 <%
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
-	List<INode> rootNodes = (List<INode>)codeGenArgument.getArgument();
+    Vector v = (Vector) codeGenArgument.getArgument();
+    IProcess process = (IProcess)v.get(0);
+    List<INode> rootNodes = (List<INode>)v.get(1);
+
 	boolean stats = codeGenArgument.isStatistics();
 	boolean trace = codeGenArgument.isTrace();
 %>

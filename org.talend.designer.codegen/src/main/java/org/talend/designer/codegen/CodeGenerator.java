@@ -56,24 +56,24 @@ import org.talend.designer.codegen.proxy.JetProxy;
  * $Id$
  * 
  */
-public class CodeGenerator implements ICodeGenerator{
+public class CodeGenerator implements ICodeGenerator {
 
     private IProcess process;
 
     private boolean statistics;
 
     private boolean trace;
-    
+
     private String interpreterPath;
 
     private String libPath;
 
     private String runtimeFilePath;
-    
+
     private String currentProjectName;
-    
+
     private String jobName;
-    
+
     private String contextName;
 
     private ECodeLanguage language;
@@ -93,7 +93,7 @@ public class CodeGenerator implements ICodeGenerator{
      * @param language
      */
     @SuppressWarnings("unchecked")
-    	public CodeGenerator(IProcess process, boolean statistics, boolean trace, String... options) {
+    public CodeGenerator(IProcess process, boolean statistics, boolean trace, String... options) {
         if (process == null) {
             throw new NullPointerException();
         } else {
@@ -102,7 +102,7 @@ public class CodeGenerator implements ICodeGenerator{
             this.trace = trace;
             this.jobName = process.getLabel();
             this.contextName = process.getContextManager().getDefaultContext().getName();
-            
+
             if ((options != null) && (options.length == 4)) {
                 this.interpreterPath = options[0];
                 this.libPath = options[1];
@@ -132,8 +132,8 @@ public class CodeGenerator implements ICodeGenerator{
     /**
      * Generate the code for the process given to the constructor.
      * 
-     * @return
-     * @throws CodeGeneratorException
+     * @return the generated code
+     * @throws CodeGeneratorException if an error occurs during Code Generation
      */
     @SuppressWarnings("unchecked")
     public String generateProcessCode() throws CodeGeneratorException {
@@ -158,11 +158,11 @@ public class CodeGenerator implements ICodeGenerator{
         } else {
             if ((processTree.getSubTrees() != null) && (processTree.getSubTrees().size() > 0)) {
 
-                Vector v = new Vector(2);
-                v.add(process);
-                v.add((String) CodeGeneratorActivator.getDefault().getBundle().getHeaders().get(
+                Vector headerArgument = new Vector(2);
+                headerArgument.add(process);
+                headerArgument.add((String) CodeGeneratorActivator.getDefault().getBundle().getHeaders().get(
                         org.osgi.framework.Constants.BUNDLE_VERSION));
-                componentsCode.append(generateTypedComponentCode(EInternalTemplate.HEADER, v));
+                componentsCode.append(generateTypedComponentCode(EInternalTemplate.HEADER, headerArgument));
                 for (NodesSubTree subTree : processTree.getSubTrees()) {
                     componentsCode.append(generateTypedComponentCode(EInternalTemplate.SUBPROCESS_HEADER, subTree));
                     componentsCode.append(generateComponentsCode(subTree, subTree.getRootNode(), ECodePart.START));
@@ -171,7 +171,10 @@ public class CodeGenerator implements ICodeGenerator{
                     componentsCode.append(generateComponentsCode(subTree, subTree.getRootNode(), ECodePart.END));
                     componentsCode.append(generateTypedComponentCode(EInternalTemplate.SUBPROCESS_FOOTER, subTree));
                 }
-                componentsCode.append(generateTypedComponentCode(EInternalTemplate.FOOTER, processTree.getRootNodes()));
+                Vector footerArgument = new Vector(2);
+                footerArgument.add(process);
+                footerArgument.add(processTree.getRootNodes());
+                componentsCode.append(generateTypedComponentCode(EInternalTemplate.FOOTER, footerArgument));
                 componentsCode
                         .append(generateTypedComponentCode(EInternalTemplate.PROCESSINFO, componentsCode.length()));
             }
@@ -182,6 +185,9 @@ public class CodeGenerator implements ICodeGenerator{
 
     /**
      * Parse Process, and generate Code for Context Variables.
+     * @param designerContext the context to generate code from
+     * @return the generated code
+     * @throws CodeGeneratorException if an error occurs during Code Generation
      */
     public String generateContextCode(IContext designerContext) throws CodeGeneratorException {
         if (process != null) {
@@ -220,11 +226,10 @@ public class CodeGenerator implements ICodeGenerator{
     /**
      * Generate Code for a given Component.
      * 
-     * @param type
-     * @param argument
-     * @return
-     * @throws CoreException
-     * @throws JETException
+     * @param type the internal component template
+     * @param argument the bean 
+     * @return the generated code
+     * @throws CodeGeneratorException if an error occurs during Code Generation
      */
     private StringBuffer generateTypedComponentCode(EInternalTemplate type, Object argument)
             throws CodeGeneratorException {
@@ -234,12 +239,11 @@ public class CodeGenerator implements ICodeGenerator{
     /**
      * Generate Code Part for a given Component.
      * 
-     * @param type
-     * @param argument
-     * @param part
-     * @return
-     * @throws CoreException
-     * @throws JETException
+     * @param type the internal component template
+     * @param argument the bean 
+     * @param part part of code to generate
+     * @return the genrated code
+     * @throws CodeGeneratorException if an error occurs during Code Generation
      */
     private StringBuffer generateTypedComponentCode(EInternalTemplate type, Object argument, ECodePart part)
             throws CodeGeneratorException {
@@ -277,13 +281,11 @@ public class CodeGenerator implements ICodeGenerator{
 
     /**
      * Generate Code Parts for a Sub Process .
-     * 
-     * @param config
-     * @param processTree
-     * @param node
-     * @return
-     * @throws JETException
-     * @throws CoreException
+     * @param subProcess the suprocess
+     * @param node the subprocess root
+     * @param part the part of code to generate
+     * @return the generated code
+     * @throws CodeGeneratorException if an error occurs during Code Generation
      */
     private StringBuffer generateComponentsCode(NodesSubTree subProcess, INode node, ECodePart part)
             throws CodeGeneratorException {
@@ -327,8 +329,8 @@ public class CodeGenerator implements ICodeGenerator{
     /**
      * Return Type of Node to correctly sort the encapsulated code.
      * 
-     * @param node
-     * @return
+     * @param node the node to check
+     * @return true if the node is an iterate node
      */
     private boolean isIterateNode(INode node) {
         if (node != null) {
@@ -346,13 +348,11 @@ public class CodeGenerator implements ICodeGenerator{
     /**
      * Generate this tree Code.
      * 
-     * @param processTree
-     * @param node
-     * @param part
-     * @param codeComponent
-     * @return
-     * @throws JETException
-     * @throws CoreException
+     * @param subProcess the tree
+     * @param node the tree root
+     * @param part the part of code to generate
+     * @return the generated code
+     * @throws CodeGeneratorException if an error occurs during Code Generation
      */
     private StringBuffer generatesTreeCode(NodesSubTree subProcess, INode node, ECodePart part)
             throws CodeGeneratorException {
@@ -369,11 +369,10 @@ public class CodeGenerator implements ICodeGenerator{
     /**
      * Generate Part Code for a given Component.
      * 
-     * @param config
-     * @param node
-     * @return
-     * @throws JETException
-     * @throws CoreException
+     * @param node the component
+     * @param part the component's part
+     * @return the generated code
+     * @throws CodeGeneratorException if an error occurs during Code Generation
      */
     public String generateComponentCode(INode node, ECodePart part) throws CodeGeneratorException {
         CodeGeneratorArgument argument = new CodeGeneratorArgument();
@@ -393,7 +392,6 @@ public class CodeGenerator implements ICodeGenerator{
         StringBuffer content = new StringBuffer();
         try {
             content = content.append(generateTypedComponentCode(EInternalTemplate.PART_HEADER, node, part));
-
             jetBean.setTemplateRelativeUri(IComponentsFactory.COMPONENTS_DIRECTORY + TemplateUtil.DIR_SEP
                     + node.getComponentName() + TemplateUtil.DIR_SEP + node.getComponentName() + "_" + part
                     + TemplateUtil.EXT_SEP + language.getExtension() + TemplateUtil.TEMPLATE_EXT);
@@ -417,8 +415,8 @@ public class CodeGenerator implements ICodeGenerator{
     /**
      * Initialize Jet Bean to pass to the Jet Generator.
      * 
-     * @param node
-     * @return
+     * @param argument the node to convert
+     * @return the initialized JetBean
      */
     private JetBean initializeJetBean(Object argument) {
         JetBean jetBean = new JetBean();
