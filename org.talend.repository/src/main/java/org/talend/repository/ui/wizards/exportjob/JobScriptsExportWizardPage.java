@@ -47,6 +47,7 @@ import org.eclipse.ui.internal.wizards.datatransfer.DataTransferMessages;
 import org.eclipse.ui.internal.wizards.datatransfer.WizardFileSystemResourceExportPage1;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.RepositoryNode;
 
 /**
@@ -124,7 +125,7 @@ public class JobScriptsExportWizardPage extends WizardFileSystemResourceExportPa
     public JobScriptsExportWizardPage(IStructuredSelection selection) {
         this("jobscriptsExportPage1", selection); //$NON-NLS-1$
         setTitle(DataTransferMessages.ArchiveExport_exportTitle);
-        setDescription("Export job scripts to an archive file on the local file system.");
+        setDescription(Messages.getString("JobScriptsExportWizardPage.dialogDesc")); //$NON-NLS-1$
     }
 
     /**
@@ -198,7 +199,7 @@ public class JobScriptsExportWizardPage extends WizardFileSystemResourceExportPa
     protected void createOptions(Composite optionsGroup, Font font) {
         // create directory structure radios
         shellLauncherButton = new Button(optionsGroup, SWT.CHECK | SWT.LEFT);
-        shellLauncherButton.setText("Shell launcher");
+        shellLauncherButton.setText(Messages.getString("JobScriptsExportWizardPage.launcher")); //$NON-NLS-1$
         shellLauncherButton.setSelection(true);
         shellLauncherButton.setFont(font);
 
@@ -207,17 +208,17 @@ public class JobScriptsExportWizardPage extends WizardFileSystemResourceExportPa
 
         // create directory structure radios
         systemRoutineButton = new Button(optionsGroup, SWT.CHECK | SWT.LEFT);
-        systemRoutineButton.setText("System Routines");
+        systemRoutineButton.setText(Messages.getString("JobScriptsExportWizardPage.sysRoutines")); //$NON-NLS-1$
         systemRoutineButton.setSelection(true);
         systemRoutineButton.setFont(font);
 
         userRoutineButton = new Button(optionsGroup, SWT.CHECK | SWT.LEFT);
-        userRoutineButton.setText("User Routines");
+        userRoutineButton.setText(Messages.getString("JobScriptsExportWizardPage.userRoutines")); //$NON-NLS-1$
         userRoutineButton.setSelection(true);
         userRoutineButton.setFont(font);
 
         modelButton = new Button(optionsGroup, SWT.CHECK | SWT.LEFT);
-        modelButton.setText("Required talend Perl modules");
+        modelButton.setText(Messages.getString("JobScriptsExportWizardPage.required")); //$NON-NLS-1$
         modelButton.setSelection(true);
         modelButton.setFont(font);
         GridData gd = new GridData(GridData.FILL_HORIZONTAL);
@@ -225,7 +226,7 @@ public class JobScriptsExportWizardPage extends WizardFileSystemResourceExportPa
         modelButton.setLayoutData(gd);
 
         jobButton = new Button(optionsGroup, SWT.CHECK | SWT.LEFT);
-        jobButton.setText("Job Perl scripts");
+        jobButton.setText(Messages.getString("JobScriptsExportWizardPage.job")); //$NON-NLS-1$
         jobButton.setSelection(true);
         jobButton.setFont(font);
         gd = new GridData(GridData.FILL_HORIZONTAL);
@@ -233,7 +234,7 @@ public class JobScriptsExportWizardPage extends WizardFileSystemResourceExportPa
         jobButton.setLayoutData(gd);
 
         contextButton = new Button(optionsGroup, SWT.CHECK | SWT.LEFT);
-        contextButton.setText("Context perl scripts");
+        contextButton.setText(Messages.getString("JobScriptsExportWizardPage.contex")); //$NON-NLS-1$
         contextButton.setSelection(true);
         contextButton.setFont(font);
 
