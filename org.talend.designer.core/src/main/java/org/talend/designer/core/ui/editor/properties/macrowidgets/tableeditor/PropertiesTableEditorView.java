@@ -238,141 +238,10 @@ public class PropertiesTableEditorView<B> extends AbstractDataTableEditorView<B>
 
                     public void set(B bean, Object value) {
                         ((Map<String, Object>) bean).put(items[curCol], value);
-                        // List<Map<String, Object>> tableValues = new ArrayList<Map<String, Object>>();
-                        // List<Map<String, Object>> paramValues = (List<Map<String, Object>>) param.getValue();
-                        // int currentBeanIndex = paramValues.indexOf(bean);
-                        // for (int currentIndex = 0; currentIndex < paramValues.size(); currentIndex++) {
-                        // Map<String, Object> currentLine = paramValues.get(currentIndex);
-                        //
-                        // Map<String, Object> newLine = new HashMap<String, Object>();
-                        // for (int i = 0; i < items.length; i++) {
-                        // newLine.put(items[i], currentLine.get(items[i]));
-                        // }
-                        //
-                        // if (currentIndex == currentBeanIndex) {
-                        // newLine.put(items[curCol], value);
-                        // }
-                        // tableValues.add(newLine);
-                        // }
-                        // Command cmd = new PropertyChangeCommand(elem, param.getName(), tableValues);
-                        // getCommandStack().execute(cmd);
-                        // refresh();
                     }
                 });
             }
         }
-        // for (int i = 0; i < titles.length; i++) {
-        // if (param.isShow(
-        // model.getItemsShowIf()[i],
-        // model.getItemsNotShowIf()[i],
-        // model.getElement().getElementParameters()
-        // )
-        // ) {
-        // TableViewerCreatorColumn column = new TableViewerCreatorColumn(tableViewerCreator);
-        // column.setTitle(titles[i]);
-        // column.setModifiable(true);
-        // column.setMinimumWidth(100);
-        // column.setWeight(20);
-        //
-        // if (itemsValue[i] instanceof IElementParameter) {
-        // IElementParameter tmpParam = (IElementParameter) itemsValue[i];
-        //
-        // ComboBoxCellEditor cellEditor = new ComboBoxCellEditor(table, tmpParam.getListItemsDisplayName());
-        // ((CCombo) cellEditor.getControl()).setEditable(false);
-        // column.setCellEditor(cellEditor, new CellEditorValueAdapter() {
-        //
-        // public String getColumnText(CellEditor cellEditor, Object cellEditorValue) {
-        // return (String) cellEditorValue;
-        // }
-        //
-        // public Object getOriginalTypedValue(CellEditor cellEditor, Object cellEditorTypedValue) {
-        // if (cellEditorTypedValue instanceof Integer) {
-        // return cellEditorTypedValue;
-        // }
-        // return new Integer(0);
-        // };
-        //
-        // public Object getCellEditorTypedValue(CellEditor cellEditor, Object originalTypedValue) {
-        // boolean found = false;
-        // int nb = 0;
-        //
-        // String[] namesSet = ((CCombo) cellEditor.getControl()).getItems();
-        //
-        // for (int j = 0; j < namesSet.length && !found; j++) {
-        // if (namesSet[j].equals(originalTypedValue)) {
-        // found = true;
-        // nb = j;
-        // }
-        // }
-        // return new Integer(nb);
-        // };
-        // });
-        // } else {
-        // TextCellEditorWithProposal textCellEditor = new TextCellEditorWithProposal(table, column);
-        // textCellEditor.setContentProposalProvider(processProposalProvider);
-        // if ((i == 0) && (param.isBasedOnSchema())) {
-        // Text text = (Text) textCellEditor.getControl();
-        // text.setEditable(false);
-        // }
-        // column.setCellEditor(textCellEditor);
-        // }
-        // final int curCol = i;
-        // column.setBeanPropertyAccessors(new IBeanPropertyAccessors<ElemParamValueWrapper, Object>() {
-        //
-        // public String get(ElemParamValueWrapper bean) {
-        // Object value = bean.getValue().get(items[curCol]);
-        // if (value == null) {
-        // return "";
-        // }
-        // if (itemsValue[curCol] instanceof IElementParameter) {
-        // IElementParameter tmpParam = (IElementParameter) itemsValue[curCol];
-        // String[] namesSet = tmpParam.getListItemsDisplayName();
-        // if (namesSet.length == 0) {
-        // return (String) tmpParam.getDefaultClosedListValue();
-        // }
-        // if (value instanceof String) {
-        // boolean found = false;
-        // int index = 0;
-        // Object[] items = ((IElementParameter) itemsValue[curCol]).getListItemsValue();
-        // for (int j = 0; j < items.length && !found; j++) {
-        // if (items[j].equals(value)) {
-        // found = true;
-        // index = j;
-        // }
-        // }
-        // value = new Integer(index);
-        // }
-        // return namesSet[(Integer) value];
-        // }
-        // return (String) value;
-        // }
-        //
-        // public void set(ElemParamValueWrapper bean, Object value) {
-        // List<Map<String, Object>> tableValues = new ArrayList<Map<String, Object>>();
-        // List<Map<String, Object>> paramValues = (List<Map<String, Object>>) param.getValue();
-        // int currentBeanIndex = table.getSelectionIndex();
-        // for (int currentIndex = 0; currentIndex < paramValues.size(); currentIndex++) {
-        // Map<String, Object> currentLine = paramValues.get(currentIndex);
-        //
-        // Map<String, Object> newLine = new HashMap<String, Object>();
-        // for (int i = 0; i < items.length; i++) {
-        // newLine.put(items[i], currentLine.get(items[i]));
-        // }
-        //
-        // if (currentIndex == currentBeanIndex) {
-        // newLine.put(items[curCol], value);
-        // }
-        // tableValues.add(newLine);
-        // }
-        // // Command cmd = new PropertyChangeCommand(elem, param.getName(), tableValues);
-        // //
-        // // CommandStack commandStack = (CommandStack)
-        // getExtendedTableViewer().getCommandStackAdapter().getCommandStack();
-        // // commandStack.execute(cmd);
-        // // tableViewerCreator.getTableViewer().refresh();
-        // }
-        // });
-        // }
     }
 
     public PropertiesTableToolbarEditorView getToolBar() {
@@ -383,16 +252,5 @@ public class PropertiesTableEditorView<B> extends AbstractDataTableEditorView<B>
         return (PropertiesTableEditorModel) getExtendedTableModel();
     }
 
-    /* (non-Javadoc)
-     * @see org.talend.commons.ui.swt.advanced.dataeditor.AbstractDataTableEditorView#addListeners()
-     */
-    @Override
-    protected void addListeners() {
-        super.addListeners();
-        
-
-    }
-
-    
     
 }
