@@ -119,6 +119,12 @@
             id="org.talend.repositorys.actions.createroutine"
             level="10"
             name="Create routine"/>
+       
+       <Action
+            class="org.talend.repository.ui.actions.ExportJobScriptAction"
+            id="org.talend.repository.ui.actions.exportjobscript"
+            level="99"
+            name="Export job scripts"/>     
    </extension>
    <extension
          point="org.eclipse.ui.views.properties.tabbed.propertyContributor">
@@ -249,6 +255,27 @@
    <extension
          point="org.talend.core.service">
       <Service class="org.talend.repository.RepositoryService"/>
+   </extension>
+   
+   <extension
+         point="org.eclipse.ui.exportWizards">
+      <category
+            name="Talend"
+            id="org.talend.repository.exportWizards">
+      </category>
+      <wizard
+            name="Job Scripts"
+            icon="icons/full/etool16/exportzip_wiz.gif"
+            category="org.talend.repository.exportWizards"            
+            class="org.talend.repository.ui.wizards.exportjob.JobScriptsExportWizard"
+            id="org.talend.repository.ui.wizards.JobScriptsExportWizard">
+         <description>
+            Export job scripts to an archive file on the local file system.
+         </description>
+         <selection
+               class="org.eclipse.core.resources.IResource">
+         </selection>
+      </wizard>
    </extension>
 
 </plugin>

@@ -21,6 +21,8 @@
 // ============================================================================
 package org.talend.designer.core;
 
+import java.util.Date;
+
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.IPartService;
 import org.eclipse.ui.IWorkbenchWindow;
@@ -79,6 +81,9 @@ public class DesignerPlugin extends AbstractUIPlugin {
             IPartService partService = activeWorkbenchWindow.getPartService();
             partService.addPartListener(new ActiveProcessTracker());
         }
+
+        System.out.println("designer core start over" + new Date());
+
     }
 
     public void stop(final BundleContext context) throws Exception {

@@ -242,4 +242,8 @@
       <GlobalAction class="org.talend.designer.core.ui.action.ShowEditorPageAction"/>
       <GlobalAction class="org.talend.designer.core.ui.action.ShowDesignerPageAction"/>
    </extension>
+   <extension
+         point="org.talend.core.service">
+      <Service class="org.talend.designer.core.DesignerCoreService"/>
+   </extension>
 </plugin>

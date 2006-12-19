@@ -57,6 +57,8 @@ import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.IWorkbenchActionConstants;
+import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.actions.ExportResourcesAction;
 import org.eclipse.ui.commands.ActionHandler;
 import org.eclipse.ui.contexts.IContextActivation;
 import org.eclipse.ui.contexts.IContextService;
@@ -77,6 +79,7 @@ import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNode.ENodeType;
 import org.talend.repository.model.actions.MoveObjectAction;
 import org.talend.repository.ui.actions.ActionsHelper;
+import org.talend.repository.ui.actions.ExportJobScriptAction;
 import org.talend.repository.ui.actions.ImportProjectsAction;
 import org.talend.repository.ui.actions.RefreshAction;
 import org.talend.repository.ui.actions.RepositoryDoubleClickAction;
@@ -103,6 +106,8 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
     private Action refreshAction;
 
     private Action importAction;
+
+    private Action exportJobscriptAction;
 
     private Listener dragDetectListener;
 
@@ -162,16 +167,16 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
 
             public void focusGained(FocusEvent e) {
                 log.trace("Repository gain focus");
-                IContextService contextService = (IContextService) RepositoryPlugin.getDefault().getWorkbench().getAdapter(
-                        IContextService.class);
+                IContextService contextService = (IContextService) RepositoryPlugin.getDefault().getWorkbench()
+                        .getAdapter(IContextService.class);
                 ca = contextService.activateContext("talend.repository");
             }
 
             public void focusLost(FocusEvent e) {
                 log.trace("Repository lost focus");
                 if (ca != null) {
-                    IContextService contextService = (IContextService) RepositoryPlugin.getDefault().getWorkbench().getAdapter(
-                            IContextService.class);
+                    IContextService contextService = (IContextService) RepositoryPlugin.getDefault().getWorkbench()
+                            .getAdapter(IContextService.class);
                     contextService.deactivateContext(ca);
                 }
             }
@@ -268,6 +273,8 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
         IHandlerService handlerService = (IHandlerService) getSite().getService(IHandlerService.class);
 
         importAction = ImportProjectsAction.getInstance();
+
+        exportJobscriptAction = new ExportJobScriptAction();
 
         refreshAction = new RefreshAction(this);
         IHandler handler1 = new ActionHandler(refreshAction);

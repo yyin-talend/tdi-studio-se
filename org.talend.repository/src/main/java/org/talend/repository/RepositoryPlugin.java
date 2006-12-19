@@ -21,9 +21,14 @@
 // ============================================================================
 package org.talend.repository;
 
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
+import org.talend.core.GlobalServiceRegister;
 import org.talend.core.context.Context;
+import org.talend.designer.codegen.perlmodule.IPerlModuleService;
+import org.talend.designer.core.IDesignerCoreService;
 
 /**
  * DOC smallet class global comment. Detailled comment <br/>
@@ -54,12 +59,12 @@ public class RepositoryPlugin extends AbstractUIPlugin {
      */
     public void start(BundleContext context) throws Exception {
         super.start(context);
-       // GlobalServiceRegister.getDefault().registerService(IRepositoryService.class, new RepositoryService());
+        // GlobalServiceRegister.getDefault().registerService(IRepositoryService.class, new RepositoryService());
 
         // FIXME SML temp code to start perlmodule plugin
         // Remove perlmodule runtimes
         // Remove repositoryplugin dependencies
-        //PerlModuleActivator.getDefault();
+        // PerlModuleActivator.getDefault();
     }
 
     /*
@@ -83,6 +88,19 @@ public class RepositoryPlugin extends AbstractUIPlugin {
      */
     public Context getContext() {
         return this.userContext;
+    }
+
+    public static void log(String msg, Throwable e) {
+        IStatus status = new Status(IStatus.ERROR, PLUGIN_ID, IStatus.ERROR, msg, e);
+        getDefault().getLog().log(status);
+    }
+
+    public IPerlModuleService getPerlModuleService() {
+        return (IPerlModuleService) GlobalServiceRegister.getDefault().getService(IPerlModuleService.class);
+    }
+
+    public IDesignerCoreService getDesignerCoreService() {
+        return (IDesignerCoreService) GlobalServiceRegister.getDefault().getService(IDesignerCoreService.class);
     }
 
 }
