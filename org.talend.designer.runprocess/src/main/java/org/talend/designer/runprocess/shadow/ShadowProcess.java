@@ -127,7 +127,7 @@ public class ShadowProcess<T extends IProcessDescription> {
             break;
         case FILE_XML:
             FileInputXmlNode inXmlNode = new FileInputXmlNode("'" + inPath.toOSString() + "'", description.getLoopQuery(), 
-                    description.getMapping());
+                    description.getMapping(), description.getLoopLimit());
             ps = new FileinToXmlProcess<FileInputXmlNode>(inXmlNode, outNode);
             break;
         case FILE_LDIF:
