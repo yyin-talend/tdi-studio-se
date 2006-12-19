@@ -341,11 +341,6 @@ public class JobScriptsExportWizardPage extends WizardFileSystemResourceExportPa
         List<URL> resourcesToExport = null;// getWhiteCheckedResources();
         resourcesToExport = getExportResources();
 
-        for (Iterator iter = resourcesToExport.iterator(); iter.hasNext();) {
-            URL url = (URL) iter.next();
-            System.out.println(url);
-        }
-
         if (!ensureTargetIsValid()) {
             return false;
         }
