@@ -43,6 +43,7 @@ import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
@@ -248,27 +249,29 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
     private void addGroupFileViewer(final Composite parent, final int width, int height) {
         // composite Xml File Preview
         Group previewGroup = Form.createGroup(parent, 1, Messages.getString("FileStep2.groupPreview"), height);
-        Composite compositeXmlFilePreviewButton = Form.startNewDimensionnedGridLayout(previewGroup, 4, width,
-                HEIGHT_BUTTON_PIXEL);
-        height = height - HEIGHT_BUTTON_PIXEL - 15;
+//        Composite compositeXmlFilePreviewButton = Form.startNewDimensionnedGridLayout(previewGroup, 4, width,
+//                HEIGHT_BUTTON_PIXEL);
+//        height = height - HEIGHT_BUTTON_PIXEL - 15;
 
+        previewGroup.setLayout(new GridLayout());
+        
         // Preview Button
-        previewButton = new Button(compositeXmlFilePreviewButton, SWT.NONE);
+        previewButton = new Button(previewGroup, SWT.NONE);
         previewButton.setText(Messages.getString("FileStep2.refreshPreview"));
         previewButton.setSize(WIDTH_BUTTON_PIXEL, HEIGHT_BUTTON_PIXEL);
 
         // simple space
-        new Label(compositeXmlFilePreviewButton, SWT.NONE);
+//        new Label(previewGroup, SWT.NONE);
         // Information Label
-        previewInformationLabel = new Label(compositeXmlFilePreviewButton, SWT.NONE);
-        previewInformationLabel
-                .setText("                                                                                                                        ");
+        previewInformationLabel = new Label(previewGroup, SWT.NONE);
+//        previewInformationLabel
+//                .setText("                                                                                                                        ");
         previewInformationLabel.setForeground(getDisplay().getSystemColor(SWT.COLOR_BLUE));
 
-        Composite compositeXmlFilePreview = Form.startNewDimensionnedGridLayout(previewGroup, 1, width, height);
+//        Composite compositeXmlFilePreview = Form.startNewDimensionnedGridLayout(previewGroup, 1, width, height);
 
         // Xml File Preview
-        xmlFilePreview = new ShadowProcessPreview(compositeXmlFilePreview, null, width, height - 10);
+        xmlFilePreview = new ShadowProcessPreview(previewGroup, null, width, height - 10);
         xmlFilePreview.newTablePreview();
     }
 
@@ -452,17 +455,17 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
                             && !("").equals(((XmlXPathLoopDescriptor) getConnection().getSchema().get(0)).getAbsoluteXPathQuery())
                             && ((XmlXPathLoopDescriptor) getConnection().getSchema().get(0)).getSchemaTargets() != null
                             && !((XmlXPathLoopDescriptor) getConnection().getSchema().get(0)).getSchemaTargets().isEmpty()) {
-                        refreshPreview();
-                    } else {
-                        previewButton.setText(Messages.getString("FileStep2.refreshPreview"));
+                    refreshPreview();
+                } else {
+                    previewButton.setText(Messages.getString("FileStep2.refreshPreview"));
                         if (! previewButton.getEnabled()) {
                             new ErrorDialogWidthDetailArea(getShell(), PID, Messages.getString("FileStep2.noresult"), Messages.getString("FileStep2.noresultDetailMessage"));
                             log.error(Messages.getString("FileStep2.noresult"));
                             previewButton.setEnabled(true);
                         } else {
                             previewButton.setEnabled(false);
-                        }
-                    }
+                }
+            }
                 } else {
                     previewButton.setText(Messages.getString("FileStep2.refreshPreview"));
                 }

@@ -87,14 +87,14 @@ public class ShadowProcessPreview {
         table = new Table(composite, SWT.BORDER);
         table.setHeaderVisible(true);
         table.setLinesVisible(true);
-        table.setSize(filePreviewWidth, filePreviewHeight);
+//        table.setSize(filePreviewWidth, filePreviewHeight);
 
         // force the dimension width a gridData
         GridData gridData = new GridData(GridData.FILL_BOTH);
-        gridData.minimumWidth = filePreviewWidth;
-        gridData.minimumHeight = filePreviewHeight;
-        gridData.heightHint = filePreviewHeight;
-        gridData.widthHint = filePreviewWidth;
+//        gridData.minimumWidth = filePreviewWidth;
+//        gridData.minimumHeight = filePreviewHeight;
+//        gridData.heightHint = filePreviewHeight;
+//        gridData.widthHint = filePreviewWidth;
         table.setLayoutData(gridData);
     }
 

@@ -167,7 +167,7 @@ public class ExtractionFieldsWithXPathEditorView extends AbstractDataTableEditor
 
         column = new TableViewerCreatorColumn(tableViewerCreator);
         xPathColumn = column;
-        column.setTitle("Relative XPath expression from XPath loop expression");
+        column.setTitle("Relative or absolute XPath expression");
         column.setBeanPropertyAccessors(new IBeanPropertyAccessors<SchemaTarget, String>() {
 
             public String get(SchemaTarget bean) {
