@@ -127,7 +127,7 @@ public class XPathProposalProvider implements IContentProposalProvider {
         // createXPathExpression(beforeCursorExp)
         // ;
         // System.out.println("#############################");
-        System.out.println("currentExpr='" + currentExpr + "'");
+//        System.out.println("currentExpr='" + currentExpr + "'");
         // System.out.println("beforeCursorExp='"+beforeCursorExp+"'");
         // System.out.println("currentWord='"+currentWord+"'");
         // System.out.println("1");
@@ -185,7 +185,7 @@ public class XPathProposalProvider implements IContentProposalProvider {
         } else {
             int allNodesLoopSize = allLoopNodes.size();
 
-            System.out.println("nodeLoop size list : " + allNodesLoopSize);
+//            System.out.println("nodeLoop size list : " + allNodesLoopSize);
 
             currentNodeNumber += allNodesLoopSize;
 
@@ -206,7 +206,7 @@ public class XPathProposalProvider implements IContentProposalProvider {
                 for (int i = 0; i < nodeLoopNumberOfLoop; i++) {
                     Node nodeLoop = allLoopNodes.get(i);
 
-                    System.out.println("nodeLoop : " + i);
+//                    System.out.println("nodeLoop : " + i);
 
                     NodeList nodeList = null;
 
@@ -245,7 +245,7 @@ public class XPathProposalProvider implements IContentProposalProvider {
                             }
 
                             for (int j = 0; j < nodeFieldNumberOfLoop; ++j) {
-                                System.out.println("nodeField : " + j);
+//                                System.out.println("nodeField : " + j);
                                 Node node = nodeList.item(j);
                                 String nodeName = node.getNodeName();
                                 String absoluteXPathFromNode = NodeRetriever.getAbsoluteXPathFromNode(node);
