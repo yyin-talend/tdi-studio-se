@@ -64,6 +64,7 @@ END_OF_LICENCE
 # print $_licence;
 
 use Getopt::Long;
+use Time::HiRes qw/gettimeofday tv_interval/;
 my %opt = ();
 GetOptions(
     \%opt,
@@ -74,12 +75,18 @@ our %_context;
 our %_globals;
 
 $_globals{job_name} = '<%=codeGenArgument.getJobName() %>';
+$_globals{start} = [gettimeofday];
 
-if (defined $opt{watch}) {
-    use Time::HiRes qw(gettimeofday tv_interval);
-    $_globals{start} = [gettimeofday];
-}
+<%
+    if (process.getNodesOfType("tStatCatcher").size() > 0) {
+%>
+tStatCatcher_1_subprocess(
+    message => 'begin',
+);
 
+<%
+    }
+%>
 if (defined $opt{context}) {
 #     print(
 #         'tsInfo>  Running process with context: ',

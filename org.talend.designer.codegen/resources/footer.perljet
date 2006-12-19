@@ -1,11 +1,11 @@
 <%@ jet 
 	package="org.talend.designer.codegen.translators" 
 	imports="
-                org.talend.core.model.process.IProcess
-                org.talend.core.model.process.INode
-                org.talend.designer.codegen.config.CodeGeneratorArgument
-                java.util.Vector
-                java.util.List
+		org.talend.core.model.process.IProcess
+		org.talend.core.model.process.INode 
+		org.talend.designer.codegen.config.CodeGeneratorArgument
+		java.util.Vector
+		java.util.List
 	" 
 	class="Footer" 
 %>
@@ -55,10 +55,38 @@ StopThreadStat();
         }
 %>
 
+$_globals{stop} = [gettimeofday];
+
+$_globals{duration} = sprintf(
+    '%.1f', 
+    tv_interval(
+        $_globals{start},
+        $_globals{stop}
+    )
+);
+
+<%
+        if (process.getNodesOfType("tStatCatcher").size() > 0) {
+%>
+tStatCatcher_1_subprocess(
+    message => 'end',
+);
+
+tStatCatcher_1_subprocess(
+    message => sprintf(
+        '%s seconds',
+        $_globals{duration}
+    ),
+);
+
+<%
+        }
+%>
+
 if (defined $opt{watch}) {
     printf(
-        "===\nexecution time: %.1f seconds\n===\n",
-        tv_interval($_globals{start}, [gettimeofday])
+        "===\nexecution time: %s seconds\n===\n",
+        $_globals{duration}
     );
 }
 

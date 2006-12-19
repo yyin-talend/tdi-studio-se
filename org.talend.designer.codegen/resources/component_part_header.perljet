@@ -33,6 +33,26 @@ $current_component="<%=node.getUniqueName() %>";
 =cut
 
 $_globals{<%=node.getUniqueName() %>}{OK} = false;
+
+<%
+  String statCatcher = ElementParameterParser.getValue(
+    node,
+    "__TSTATCATCHER_STATS__"
+  );
+
+  if ((node.getProcess().getNodesOfType("tStatCatcher").size() > 0) 
+      && (statCatcher.equals("true"))) {
+%>
+tStatCatcher_1_subprocess(
+    message => 'begin',
+    origin  => '<%=node.getUniqueName() %>',
+);
+
+$_globals{<%=node.getUniqueName() %>}{start} = [gettimeofday];
+<%
+  }
+%>
+
 <%
 	}
 
