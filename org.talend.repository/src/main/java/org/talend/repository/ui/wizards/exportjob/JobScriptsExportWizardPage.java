@@ -76,6 +76,8 @@ public class JobScriptsExportWizardPage extends WizardFileSystemResourceExportPa
 
     private JobScriptsManager manager;
 
+    private Text laucherText;
+
     // dialog store id constants
     private final static String STORE_SHELL_LAUNCHER_ID = "JobScriptsExportWizardPage.STORE_SHELL_LAUNCHER_ID"; //$NON-NLS-1$
 
@@ -174,7 +176,7 @@ public class JobScriptsExportWizardPage extends WizardFileSystemResourceExportPa
      */
     protected void createOptionsGroupButtons(Group optionsGroup) {
         Font font = optionsGroup.getFont();
-        optionsGroup.setLayout(new GridLayout(2, true));
+        optionsGroup.setLayout(new GridLayout(1, true));
 
         Composite left = new Composite(optionsGroup, SWT.NONE);
         left.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, true, false));
@@ -182,16 +184,9 @@ public class JobScriptsExportWizardPage extends WizardFileSystemResourceExportPa
 
         createOptions(left, font);
 
-        Composite right = new Composite(optionsGroup, SWT.NONE);
-        right.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, true, false));
-        right.setLayout(new GridLayout(1, true));
-
-        // createDirectoryStructureOptions(right, font);
-        //
-        // // initial setup
-        // createDirectoryStructureButton.setSelection(true);
-        // createSelectionOnlyButton.setSelection(false);
-        // compressContentsCheckbox.setSelection(true);
+        // Composite right = new Composite(optionsGroup, SWT.NONE);
+        // right.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, true, false));
+        // right.setLayout(new GridLayout(1, true));
     }
 
     /**
@@ -207,8 +202,8 @@ public class JobScriptsExportWizardPage extends WizardFileSystemResourceExportPa
         shellLauncherButton.setSelection(true);
         shellLauncherButton.setFont(font);
 
-        Text laucherText = new Text(optionsGroup, SWT.BORDER);
-        laucherText.setText("C:\\perl\\bin\\perl.exe");
+        laucherText = new Text(optionsGroup, SWT.BORDER);
+        laucherText.setEditable(false);
 
         // create directory structure radios
         systemRoutineButton = new Button(optionsGroup, SWT.CHECK | SWT.LEFT);
@@ -482,6 +477,9 @@ public class JobScriptsExportWizardPage extends WizardFileSystemResourceExportPa
             jobButton.setSelection(settings.getBoolean(STORE_JOB_ID));
             contextButton.setSelection(settings.getBoolean(STORE_CONTEXT_ID));
         }
+
+        laucherText.setText(manager.getPerlLauncher());
+
         List<String> contextNames = manager.getJobContexts(process[0]);
 
         contextCombo.setItems(contextNames.toArray(new String[contextNames.size()]));
@@ -498,13 +496,5 @@ public class JobScriptsExportWizardPage extends WizardFileSystemResourceExportPa
      */
     protected String destinationEmptyMessage() {
         return DataTransferMessages.ArchiveExport_destinationEmpty;
-    }
-
-    /**
-     * Answer a boolean indicating whether the receivers destination specification widgets currently all contain valid
-     * values.
-     */
-    protected boolean validateDestinationGroup() {
-        return super.validateDestinationGroup();
     }
 }

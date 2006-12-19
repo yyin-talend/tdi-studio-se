@@ -95,9 +95,7 @@ public class JobScriptsManager {
     private List<URL> getLauncher(boolean needLauncher) {
         List<URL> list = new ArrayList<URL>();
         if (needLauncher) {
-            String perlIntepreter = CorePlugin.getDefault().getPreferenceStore().getString(
-                    ITalendCorePrefConstants.PERL_INTERPRETER);
-
+            String perlIntepreter = getPerlLauncher();
             File perlIntepreterFile = new File(perlIntepreter);
             if (perlIntepreterFile.exists() && perlIntepreterFile.isFile()) {
                 try {
@@ -108,6 +106,17 @@ public class JobScriptsManager {
             }
         }
         return list;
+    }
+
+    /**
+     * DOC qian Gets the perl launcher location.
+     * 
+     * @return
+     */
+    public String getPerlLauncher() {
+        String perlIntepreter = CorePlugin.getDefault().getPreferenceStore().getString(
+                ITalendCorePrefConstants.PERL_INTERPRETER);
+        return perlIntepreter;
     }
 
     /**
