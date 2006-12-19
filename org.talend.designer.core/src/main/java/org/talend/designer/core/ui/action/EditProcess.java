@@ -108,8 +108,7 @@ public class EditProcess extends AContextualAction {
             RepositoryNode node = (RepositoryNode) o;
             switch (node.getType()) {
             case REPOSITORY_ELEMENT:
-                IRepositoryObject object = node.getObject();
-                if (object.getType() != ERepositoryObjectType.PROCESS) {
+                if (node.getObjectType() != ERepositoryObjectType.PROCESS) {
                     canWork = false;
                 } else {
                     IRepositoryService service = DesignerPlugin.getDefault().getRepositoryService();
