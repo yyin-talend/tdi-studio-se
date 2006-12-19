@@ -46,4 +46,12 @@
       </key>
    </extension>
    <extension-point id="editorAction" name="SQL Editor Action" schema="schema/editorAction.exsd"/>
+   <extension
+         point="org.talend.core.actions">
+      <Action
+            class="org.talend.sqlbuilder.actions.EditQueriesAction"
+            id="org.talend.sqlbuilder.EditQueries"
+            level="12"
+            name="Edit queries"/>
+   </extension>
 </plugin>

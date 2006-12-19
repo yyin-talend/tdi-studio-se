@@ -35,8 +35,6 @@ import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.metadata.builder.connection.DelimitedFileConnection;
 import org.talend.core.model.metadata.builder.connection.LdifFileConnection;
 import org.talend.core.model.metadata.builder.connection.PositionalFileConnection;
-import org.talend.core.model.metadata.builder.connection.QueriesConnection;
-import org.talend.core.model.metadata.builder.connection.Query;
 import org.talend.core.model.metadata.builder.connection.RegexpFileConnection;
 import org.talend.core.model.metadata.builder.connection.TableHelper;
 import org.talend.core.model.metadata.builder.connection.XmlFileConnection;
@@ -50,7 +48,6 @@ import org.talend.repository.model.BinRepositoryNode;
 import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
-import org.talend.repository.model.QueryEMFRepositoryNode;
 import org.talend.repository.model.RepositoryConstants;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.StableRepositoryNode;
@@ -315,8 +312,8 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
                 } else {
                     node.getChildren().add(tableNode);
                 }
-            } else if (currentTable instanceof Query) {
-                node.getChildren().add(createQueryNode(node, (Query) currentTable));
+                // } else if (currentTable instanceof Query) {
+                // node.getChildren().add(createQueryNode(node, (Query) currentTable));
             }
         }
     }
@@ -325,18 +322,19 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
             Connection metadataConnection) {
         if (metadataConnection instanceof DatabaseConnection) {
             // 1.Tables:
-            RepositoryNode tablesNode = new StableRepositoryNode(node, "Schemas", EImage.FOLDER_CLOSE_ICON, 1);
-            node.getChildren().add(tablesNode);
-            createTables(recBinNode, tablesNode, repObj, metadataConnection.getTables());
+            // RepositoryNode tablesNode = new StableRepositoryNode(node, "Schemas", EImage.FOLDER_CLOSE_ICON, 1);
+            // node.getChildren().add(tablesNode);
+            // createTables(recBinNode, tablesNode, repObj, metadataConnection.getTables());
+            createTables(recBinNode, node, repObj, metadataConnection.getTables());
 
             // 2.Queries:
-            RepositoryNode queriesNode = new StableRepositoryNode(node, "Queries", EImage.FOLDER_CLOSE_ICON, 2);
-            node.getChildren().add(queriesNode);
-            EList queries = ((DatabaseConnection) metadataConnection).getQueries();
-            if (queries.size() > 0) {
-                QueriesConnection queriesConnection = ((QueriesConnection) queries.get(0));
-                createTables(recBinNode, queriesNode, repObj, queriesConnection.getQuery());
-            }
+            // RepositoryNode queriesNode = new StableRepositoryNode(node, "Queries", EImage.FOLDER_CLOSE_ICON, 2);
+            // node.getChildren().add(queriesNode);
+            // EList queries = ((DatabaseConnection) metadataConnection).getQueries();
+            // if (queries.size() > 0) {
+            // QueriesConnection queriesConnection = ((QueriesConnection) queries.get(0));
+            // createTables(recBinNode, queriesNode, repObj, queriesConnection.getQuery());
+            // }
         } else {
             createTables(recBinNode, node, repObj, metadataConnection.getTables());
         }
@@ -357,11 +355,6 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
         RepositoryNode tableNode = new RepositoryNode(modelObj, node, ENodeType.REPOSITORY_ELEMENT);
         tableNode.setProperties(EProperties.LABEL, table.getLabel());
         tableNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.METADATA_CON_TABLE);
-        return tableNode;
-    }
-
-    private RepositoryNode createQueryNode(RepositoryNode node, Query query) {
-        RepositoryNode tableNode = new QueryEMFRepositoryNode(query, node);
         return tableNode;
     }
 
