@@ -1,9 +1,11 @@
 <%@ jet 
 	package="org.talend.designer.codegen.translators" 
 	imports="
-		org.talend.core.model.process.INode 
-		org.talend.designer.codegen.config.CodeGeneratorArgument
-		java.util.List
+                org.talend.core.model.process.IProcess
+                org.talend.core.model.process.INode
+                org.talend.designer.codegen.config.CodeGeneratorArgument
+                java.util.Vector
+                java.util.List
 	" 
 	class="Footer" 
 %>
