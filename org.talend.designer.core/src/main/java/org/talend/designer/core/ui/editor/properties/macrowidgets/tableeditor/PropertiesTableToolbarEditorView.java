@@ -21,23 +21,20 @@
 // ============================================================================
 package org.talend.designer.core.ui.editor.properties.macrowidgets.tableeditor;
 
-import java.io.File;
-import java.util.List;
+import java.util.Map;
 
 import org.eclipse.gef.commands.Command;
 import org.eclipse.swt.widgets.Composite;
-import org.talend.commons.ui.swt.advanced.dataeditor.control.ExtendedPushButton;
 import org.talend.commons.ui.swt.extended.table.AbstractExtendedTableViewer;
 import org.talend.commons.ui.swt.extended.table.ExtendedTableModel;
 import org.talend.core.ui.extended.ExtendedToolbarView;
 import org.talend.core.ui.extended.button.AddPushButton;
 import org.talend.core.ui.extended.button.AddPushButtonForExtendedTable;
 import org.talend.core.ui.extended.button.ExportPushButton;
-import org.talend.core.ui.extended.button.ExportPushButtonForExtendedTable;
 import org.talend.core.ui.extended.button.ImportPushButton;
-import org.talend.core.ui.extended.button.ImportPushButtonForExtendedTable;
 import org.talend.core.ui.extended.button.PastePushButton;
 import org.talend.core.ui.extended.button.PastePushButtonForExtendedTable;
+import org.talend.designer.core.ui.editor.cmd.PropertyTablePasteCommand;
 
 /**
  * $Id$
@@ -100,8 +97,7 @@ public class PropertiesTableToolbarEditorView extends ExtendedToolbarView {
 
             @Override
             protected Command getCommandToExecute(ExtendedTableModel extendedTableModel, Integer indexWhereInsert) {
-                // return new MetadataPasteCommand(extendedTableModel, indexWhereInsert);
-                return null;
+                 return new PropertyTablePasteCommand<Map<String,Object>>(extendedTableModel, indexWhereInsert);
             }
 
         };
@@ -114,15 +110,16 @@ public class PropertiesTableToolbarEditorView extends ExtendedToolbarView {
      */
     @Override
     protected ExportPushButton createExportPushButton() {
-        return new ExportPushButtonForExtendedTable(toolbar, extendedTableViewer) {
-
-            @Override
-            protected Command getCommandToExecute(ExtendedTableModel extendedTableModel, File file) {
-                // return new MetadataExportXmlCommand((MetadataTableEditor) extendedTableModel, file);
-                return null;
-            }
-
-        };
+//        return new ExportPushButtonForExtendedTable(toolbar, extendedTableViewer) {
+//
+//            @Override
+//            protected Command getCommandToExecute(ExtendedTableModel extendedTableModel, File file) {
+//                // return new MetadataExportXmlCommand((MetadataTableEditor) extendedTableModel, file);
+//                return null;
+//            }
+//
+//        };
+        return null;
     }
 
     /*
@@ -132,15 +129,16 @@ public class PropertiesTableToolbarEditorView extends ExtendedToolbarView {
      */
     @Override
     public ImportPushButton createImportPushButton() {
-        return new ImportPushButtonForExtendedTable(toolbar, extendedTableViewer) {
-
-            @Override
-            protected Command getCommandToExecute(ExtendedTableModel extendedTableModel, File file) {
-                // return new MetadataImportXmlCommand(extendedTableModel, file);
-                return null;
-            }
-
-        };
+//        return new ImportPushButtonForExtendedTable(toolbar, extendedTableViewer) {
+//
+//            @Override
+//            protected Command getCommandToExecute(ExtendedTableModel extendedTableModel, File file) {
+//                // return new MetadataImportXmlCommand(extendedTableModel, file);
+//                return null;
+//            }
+//
+//        };
+        return null;
     }
 
 }

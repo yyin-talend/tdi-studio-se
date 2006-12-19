@@ -2199,7 +2199,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
         tableEditorModel.setData(elem, param, part.getTalendEditor().getProcess(), getColumnList(), getPrevColumnList());
 
         PropertiesTableEditorView<Map<String, Object>> tableEditorView = new PropertiesTableEditorView<Map<String, Object>>(
-                parentComposite, SWT.NONE, tableEditorModel, false, true, false);
+                parentComposite, SWT.NONE, tableEditorModel, param.isReadOnly(), !param.isBasedOnSchema(), false);
         // PropertiesTableEditorView tableEditorView = new PropertiesTableEditorView(parentComposite, SWT.NONE);
         tableEditorView.getExtendedTableViewer().setCommandStack(getCommandStack());
 
@@ -2235,14 +2235,16 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
         if ((labelSize2.x + ITabbedPropertyConstants.HSPACE) > currentLabelWidth2) {
             currentLabelWidth2 = labelSize2.x + ITabbedPropertyConstants.HSPACE;
         }
+        
+        int tableHorizontalOffset = -5;
         if (numInRow == 1) {
             if (lastControlPrm != null) {
-                data2.left = new FormAttachment(lastControlPrm, currentLabelWidth2);
+                data2.left = new FormAttachment(lastControlPrm, currentLabelWidth2 + tableHorizontalOffset);
             } else {
-                data2.left = new FormAttachment(0, currentLabelWidth2);
+                data2.left = new FormAttachment(0, currentLabelWidth2 + tableHorizontalOffset);
             }
         } else {
-            data2.left = new FormAttachment(labelLabel2, 0, SWT.RIGHT);
+            data2.left = new FormAttachment(labelLabel2, 0 + tableHorizontalOffset, SWT.RIGHT);
         }
         data2.right = new FormAttachment((numInRow * MAX_PERCENT) / nbInRow, 0);
         data2.top = new FormAttachment(0, top);

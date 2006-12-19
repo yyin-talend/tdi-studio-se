@@ -382,4 +382,16 @@ public class PropertiesTableEditorView<B> extends AbstractDataTableEditorView<B>
         return (PropertiesTableEditorModel) getExtendedTableModel();
     }
 
+    /* (non-Javadoc)
+     * @see org.talend.commons.ui.swt.advanced.dataeditor.AbstractDataTableEditorView#addListeners()
+     */
+    @Override
+    protected void addListeners() {
+        super.addListeners();
+        
+
+    }
+
+    
+    
 }
