@@ -520,14 +520,14 @@ public class XmlToXPathLinker extends TreeToTablesLinker<Object, Object> {
             limitLoopExceeded = true;
         }
 
-        System.out.println("lstSize=" + lstSize);
+//        System.out.println("lstSize=" + lstSize);
         for (int i = 0; i < loopNumber; i++) {
-            System.out.println("main node index : " + i);
+//            System.out.println("main node index : " + i);
             Node loopNode = allLoopNodes.get(i);
 
             NodeList relativeNodeList = null;
             try {
-                TimeMeasure.start("relative");
+//                TimeMeasure.start("relative");
                 relativeNodeList = this.nodeRetriever.retrieveNodeListFromNode(relativeXpath, loopNode);
                 // if (false) {
                 // break;
@@ -535,7 +535,7 @@ public class XmlToXPathLinker extends TreeToTablesLinker<Object, Object> {
             } catch (XPathExpressionException e) {
                 continue;
             } finally {
-                TimeMeasure.end("relative");
+//                TimeMeasure.end("relative");
             }
 
             int length = relativeNodeList.getLength();
@@ -620,7 +620,7 @@ public class XmlToXPathLinker extends TreeToTablesLinker<Object, Object> {
             if (nodeList != null) {
                 int length = nodeList.getLength();
                 for (int i = 0; i < length; i++) {
-                    System.out.println("main node index : " + i);
+//                    System.out.println("main node index : " + i);
                     Node loopNode = nodeList.item(i);
                     String absoluteXPathFromNode = NodeRetriever.getAbsoluteXPathFromNode(loopNode);
                     if (!alreadyProcessedXPath.contains(absoluteXPathFromNode)) {
