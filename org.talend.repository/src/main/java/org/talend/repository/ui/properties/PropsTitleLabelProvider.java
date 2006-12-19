@@ -24,7 +24,7 @@ package org.talend.repository.ui.properties;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
-import org.talend.core.ui.images.ImageProvider;
+import org.talend.commons.ui.image.ImageProvider;
 import org.talend.repository.model.RepositoryNode;
 
 /**

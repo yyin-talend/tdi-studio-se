@@ -26,10 +26,10 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.ui.PartInitException;
 import org.talend.commons.exception.MessageBoxExceptionHandler;
 import org.talend.commons.exception.SystemException;
+import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.model.properties.RoutineItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.ui.images.EImage;
-import org.talend.core.ui.images.ImageProvider;
+import org.talend.core.ui.images.ECoreImage;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNode.ENodeType;
 
@@ -46,7 +46,7 @@ public class EditRoutineAction extends AbstractRoutineAction {
 
         setText("Edit routine");
         setToolTipText("Edit routine");
-        setImageDescriptor(ImageProvider.getImageDesc(EImage.ROUTINE_ICON));
+        setImageDescriptor(ImageProvider.getImageDesc(ECoreImage.ROUTINE_ICON));
     }
 
     /*

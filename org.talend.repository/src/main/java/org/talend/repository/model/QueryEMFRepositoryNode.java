@@ -19,10 +19,12 @@
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 // ============================================================================
-package org.talend.repository.ui;
+package org.talend.repository.model;
 
 import org.talend.commons.ui.image.IImage;
-import org.talend.repository.RepositoryPlugin;
+import org.talend.core.model.metadata.builder.connection.Query;
+import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.core.ui.images.ECoreImage;
 
 /**
  * DOC smallet class global comment. Detailled comment <br/>
@@ -30,32 +32,37 @@ import org.talend.repository.RepositoryPlugin;
  * $Id: talend.epf 1 2006-09-29 17:06:40 +0000 (ven., 29 sept. 2006) nrousseau $
  * 
  */
-public enum ERepositoryImages implements IImage {
-    IMPORT_PROJECTS_ACTION("/icons/import_projects_action.gif"),
-    NEW_PROJECT_ACTION("/icons/newProject.png");
+public class QueryEMFRepositoryNode extends RepositoryNode {
 
-    private String path;
-
-    ERepositoryImages(String path) {
-        this.path = path;
-    }
+    private Query query;
 
     /**
-     * Getter for path.
+     * DOC smallet EMFObjectRepositoryNode constructor comment.
      * 
-     * @return the path
+     * @param object
+     * @param parent
+     * @param type
      */
-    public String getPath() {
-        return this.path;
+    public QueryEMFRepositoryNode(Query query, RepositoryNode parent) {
+        super(null, parent, ENodeType.REPOSITORY_ELEMENT);
+        this.query = query;
     }
 
-    /**
-     * Getter for clazz.
-     * 
-     * @return the clazz
-     */
-    public Class getLocation() {
-        return RepositoryPlugin.class;
+    public IImage getIcon() {
+        return ECoreImage.METADATA_QUERY_ICON;
     }
 
+    @Override
+    public String getLabel() {
+        return query.getLabel();
+    }
+
+    @Override
+    public ENodeType getType() {
+        return type;
+    }
+
+    public ERepositoryObjectType getObjectType() {
+       return ERepositoryObjectType.METADATA_CON_QUERY;
+    }
 }

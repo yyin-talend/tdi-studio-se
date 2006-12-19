@@ -32,6 +32,7 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.program.Program;
 import org.talend.commons.exception.MessageBoxExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
+import org.talend.commons.ui.image.ImageProvider;
 import org.talend.commons.utils.workbench.resources.ResourceUtils;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
@@ -39,8 +40,7 @@ import org.talend.core.context.RepositoryContext;
 import org.talend.core.model.general.Project;
 import org.talend.core.model.properties.DocumentationItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.ui.images.EImage;
-import org.talend.core.ui.images.ImageProvider;
+import org.talend.core.ui.images.ECoreImage;
 import org.talend.repository.model.RepositoryConstants;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.ResourceModelUtils;
@@ -63,7 +63,7 @@ public class OpenDocumentationAction extends AContextualAction {
 
         setText("Open documentation");
         setToolTipText("Open documentation");
-        setImageDescriptor(ImageProvider.getImageDesc(EImage.DOCUMENTATION_ICON));
+        setImageDescriptor(ImageProvider.getImageDesc(ECoreImage.DOCUMENTATION_ICON));
     }
 
     /*

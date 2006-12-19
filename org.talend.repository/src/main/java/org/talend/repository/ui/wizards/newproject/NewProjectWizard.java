@@ -25,13 +25,13 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.wizard.Wizard;
 import org.talend.commons.exception.MessageBoxExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
+import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.model.general.Project;
 import org.talend.core.model.temp.ECodeLanguage;
-import org.talend.core.ui.images.EImage;
-import org.talend.core.ui.images.ImageProvider;
+import org.talend.core.ui.images.ECoreImage;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
@@ -59,7 +59,7 @@ public class NewProjectWizard extends Wizard {
      */
     public NewProjectWizard() {
         super();
-        setDefaultPageImageDescriptor(ImageProvider.getImageDesc(EImage.PROJECT_WIZ));
+        setDefaultPageImageDescriptor(ImageProvider.getImageDesc(ECoreImage.PROJECT_WIZ));
     }
 
     /**

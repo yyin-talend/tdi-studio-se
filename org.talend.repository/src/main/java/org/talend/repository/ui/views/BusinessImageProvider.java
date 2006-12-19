@@ -23,9 +23,10 @@ package org.talend.repository.ui.views;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.Image;
+import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.ui.images.EImage;
-import org.talend.core.ui.images.ImageProvider;
+import org.talend.core.ui.images.CoreImageProvider;
+import org.talend.core.ui.images.ECoreImage;
 import org.talend.core.ui.images.OverlayImage;
 import org.talend.core.ui.images.OverlayImage.EPosition;
 import org.talend.repository.model.ERepositoryStatus;
@@ -43,17 +44,17 @@ public class BusinessImageProvider {
         EPosition position;
         switch (status) {
         case NEW:
-            img = ImageProvider.getImageDesc(EImage.NEW_OVERLAY);
+            img = ImageProvider.getImageDesc(ECoreImage.NEW_OVERLAY);
             position = EPosition.TOP_RIGHT;
             break;
         case LOCK_BY_USER:
-            img = ImageProvider.getImageDesc(EImage.LOCKED_USER_OVERLAY);
+            img = ImageProvider.getImageDesc(ECoreImage.LOCKED_USER_OVERLAY);
             position = EPosition.BOTTOM_LEFT;
             break;
         default:
-            return ImageProvider.getImage(type);
+            return CoreImageProvider.getImage(type);
         }
-        OverlayImage overlayImage = new OverlayImage(ImageProvider.getImage(type), img, position);
+        OverlayImage overlayImage = new OverlayImage(CoreImageProvider.getImage(type), img, position);
         return overlayImage.createImage();
     }
 }

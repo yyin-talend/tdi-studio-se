@@ -27,6 +27,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.ui.IWorkbench;
 import org.talend.commons.exception.MessageBoxExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
+import org.talend.commons.ui.image.ImageProvider;
 import org.talend.commons.utils.VersionUtils;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
@@ -35,8 +36,7 @@ import org.talend.core.model.properties.ByteArray;
 import org.talend.core.model.properties.DocumentationItem;
 import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.Property;
-import org.talend.core.ui.images.EImage;
-import org.talend.core.ui.images.ImageProvider;
+import org.talend.core.ui.images.ECoreImage;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.ui.wizards.RepositoryWizard;
@@ -73,7 +73,7 @@ public class DocumentationCreateWizard extends RepositoryWizard implements IDocu
         pathToSave = destinationPath;
 
         setWindowTitle("New Documentation");
-        setDefaultPageImageDescriptor(ImageProvider.getImageDesc(EImage.DOCUMENTATION_WIZ));
+        setDefaultPageImageDescriptor(ImageProvider.getImageDesc(ECoreImage.DOCUMENTATION_WIZ));
         setNeedsProgressMonitor(true);
 
         property = PropertiesFactory.eINSTANCE.createProperty();

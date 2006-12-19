@@ -26,7 +26,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.ToolItem;
-import org.talend.core.ui.images.EImage;
+import org.talend.commons.ui.image.EImage;
 import org.talend.designer.mapper.managers.MapperManager;
 import org.talend.designer.mapper.ui.visualmap.zone.Zone;
 
@@ -71,12 +71,12 @@ public class ToolbarOutputZone extends ToolbarZone {
 
         addOutputItem = new ToolItem(getToolBarActions(), SWT.PUSH);
         addOutputItem.setToolTipText("Add output table");
-        addOutputItem.setImage(org.talend.core.ui.images.ImageProvider.getImage(org.talend.core.ui.images.ImageProvider
+        addOutputItem.setImage(org.talend.commons.ui.image.ImageProvider.getImage(org.talend.commons.ui.image.ImageProvider
                 .getImageDesc(EImage.ADD_ICON)));
 
         removeOutputItem = new ToolItem(getToolBarActions(), SWT.PUSH);
         removeOutputItem.setEnabled(false);
-        removeOutputItem.setImage(org.talend.core.ui.images.ImageProvider.getImage(org.talend.core.ui.images.ImageProvider
+        removeOutputItem.setImage(org.talend.commons.ui.image.ImageProvider.getImage(org.talend.commons.ui.image.ImageProvider
                 .getImageDesc(EImage.MINUS_ICON)));
         removeOutputItem.setToolTipText("Remove selected output table");
 

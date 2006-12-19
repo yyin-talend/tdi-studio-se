@@ -26,12 +26,12 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
+import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.model.properties.BusinessProcessItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.model.repository.RepositoryObject;
-import org.talend.core.ui.images.EImage;
-import org.talend.core.ui.images.ImageProvider;
+import org.talend.core.ui.images.ECoreImage;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNode.EProperties;
 import org.talend.repository.ui.actions.AContextualAction;
@@ -46,7 +46,7 @@ public class OpenDiagramAction extends AContextualAction {
 
     public OpenDiagramAction() {
         super();
-        setImageDescriptor(ImageProvider.getImageDesc(EImage.BUSINESS_PROCESS_ICON));
+        setImageDescriptor(ImageProvider.getImageDesc(ECoreImage.BUSINESS_PROCESS_ICON));
         setText("Edit Business Model");
     }
 

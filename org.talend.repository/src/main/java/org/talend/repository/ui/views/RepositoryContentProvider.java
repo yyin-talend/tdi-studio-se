@@ -43,7 +43,7 @@ import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.Folder;
 import org.talend.core.model.repository.IRepositoryObject;
-import org.talend.core.ui.images.EImage;
+import org.talend.core.ui.images.ECoreImage;
 import org.talend.repository.model.BinRepositoryNode;
 import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
@@ -127,7 +127,7 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
             // convert(factory.getProcess2(), processNode, ERepositoryObjectType.PROCESS, recBinNode);
 
             // 3. Routines
-            RepositoryNode codeNode = new StableRepositoryNode(root, "Code", EImage.ROUTINE_ICON, 2);
+            RepositoryNode codeNode = new StableRepositoryNode(root, "Code", ECoreImage.ROUTINE_ICON, 2);
             nodes.add(codeNode);
 
             RepositoryNode routineNode = new RepositoryNode(null, root, ENodeType.SYSTEM_FOLDER);
@@ -231,7 +231,7 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
             RepositoryNode folder;
             if (container.getLabel().equals(RepositoryConstants.SYSTEM_DIRECTORY)) {
                 // FIXME SML remove "System" hardcoded
-                folder = new StableRepositoryNode(parent, "System", EImage.ROUTINE_ICON, 0);
+                folder = new StableRepositoryNode(parent, "System", ECoreImage.ROUTINE_ICON, 0);
             } else {
                 folder = new RepositoryNode(oFolder, parent, ENodeType.SIMPLE_FOLDER);
             }
@@ -322,13 +322,13 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
             Connection metadataConnection) {
         if (metadataConnection instanceof DatabaseConnection) {
             // 1.Tables:
-            // RepositoryNode tablesNode = new StableRepositoryNode(node, "Schemas", EImage.FOLDER_CLOSE_ICON, 1);
+            // RepositoryNode tablesNode = new StableRepositoryNode(node, "Schemas", ECoreImage.FOLDER_CLOSE_ICON, 1);
             // node.getChildren().add(tablesNode);
             // createTables(recBinNode, tablesNode, repObj, metadataConnection.getTables());
             createTables(recBinNode, node, repObj, metadataConnection.getTables());
 
             // 2.Queries:
-            // RepositoryNode queriesNode = new StableRepositoryNode(node, "Queries", EImage.FOLDER_CLOSE_ICON, 2);
+            // RepositoryNode queriesNode = new StableRepositoryNode(node, "Queries", ECoreImage.FOLDER_CLOSE_ICON, 2);
             // node.getChildren().add(queriesNode);
             // EList queries = ((DatabaseConnection) metadataConnection).getQueries();
             // if (queries.size() > 0) {

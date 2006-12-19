@@ -54,9 +54,9 @@ import org.eclipse.ui.part.MultiPageEditorPart;
 import org.epic.perleditor.PerlEditorPlugin;
 import org.talend.commons.exception.MessageBoxExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
+import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.model.process.IProcess;
-import org.talend.core.ui.images.EImage;
-import org.talend.core.ui.images.ImageProvider;
+import org.talend.core.ui.images.ECoreImage;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.editor.ProcessEditorInput;
@@ -167,7 +167,7 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
      * Creates the pages of the multi-page editor.
      */
     protected void createPages() {
-        setTitleImage(ImageProvider.getImage(EImage.PROCESS_ICON));
+        setTitleImage(ImageProvider.getImage(ECoreImage.PROCESS_ICON));
         createPage0();
         createPage1();
     }

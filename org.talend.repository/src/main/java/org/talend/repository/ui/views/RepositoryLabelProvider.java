@@ -30,11 +30,12 @@ import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
+import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.model.properties.DocumentationItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
-import org.talend.core.ui.images.EImage;
-import org.talend.core.ui.images.ImageProvider;
+import org.talend.core.ui.images.CoreImageProvider;
+import org.talend.core.ui.images.ECoreImage;
 import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
@@ -104,7 +105,7 @@ public class RepositoryLabelProvider extends LabelProvider implements IColorProv
             return ImageProvider.getImage(node.getIcon());
         case SIMPLE_FOLDER:
             // FIXME SML Move in repository node
-            EImage image = (view.getExpandedState(obj) ? EImage.FOLDER_OPEN_ICON : EImage.FOLDER_CLOSE_ICON);
+            ECoreImage image = (view.getExpandedState(obj) ? ECoreImage.FOLDER_OPEN_ICON : ECoreImage.FOLDER_CLOSE_ICON);
             return ImageProvider.getImage(image);
         default:
             if (node.getObject() == null) {
@@ -112,12 +113,12 @@ public class RepositoryLabelProvider extends LabelProvider implements IColorProv
             }
             if (node.getObject().getType() == ERepositoryObjectType.DOCUMENTATION) {
                 DocumentationItem item = (DocumentationItem) node.getObject().getProperty().getItem();
-                return ImageProvider.getImage(item.getExtension());
+                return CoreImageProvider.getImage(item.getExtension());
             }
             // IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
             // ERepositoryStatus repositoryStatus = factory.getStatus(node.getObject());
 
-            return ImageProvider.getImage(node.getObject().getType());
+            return CoreImageProvider.getImage(node.getObject().getType());
             // return BusinessImageProvider.getImage(node.getObject().getType(), repositoryStatus);
         }
     }

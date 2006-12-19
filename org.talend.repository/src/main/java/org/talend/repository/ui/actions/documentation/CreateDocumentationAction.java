@@ -29,7 +29,7 @@ import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.ui.images.ImageProvider;
+import org.talend.core.ui.images.CoreImageProvider;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNodeUtilities;
 import org.talend.repository.model.RepositoryNode.ENodeType;
@@ -53,7 +53,7 @@ public class CreateDocumentationAction extends AContextualAction {
 
         setText("Create documentation");
         setToolTipText("Create a new documentation item");
-        setImageDescriptor(ImageProvider.getImageDesc(ERepositoryObjectType.DOCUMENTATION));
+        setImageDescriptor(CoreImageProvider.getImageDesc(ERepositoryObjectType.DOCUMENTATION));
     }
 
     /*

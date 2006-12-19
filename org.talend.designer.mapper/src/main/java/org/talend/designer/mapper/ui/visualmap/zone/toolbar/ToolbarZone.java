@@ -28,7 +28,7 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
-import org.talend.core.ui.images.EImage;
+import org.talend.commons.ui.image.EImage;
 import org.talend.designer.mapper.managers.MapperManager;
 import org.talend.designer.mapper.managers.UIManager;
 import org.talend.designer.mapper.ui.image.ImageInfo;
@@ -81,12 +81,12 @@ public abstract class ToolbarZone {
         upTableButton = new ToolItem(toolBarActions, SWT.PUSH);
         upTableButton.setEnabled(false);
         upTableButton.setToolTipText("Move up input table");
-        upTableButton.setImage(org.talend.core.ui.images.ImageProvider.getImage(org.talend.core.ui.images.ImageProvider
+        upTableButton.setImage(org.talend.commons.ui.image.ImageProvider.getImage(org.talend.commons.ui.image.ImageProvider
                 .getImageDesc(EImage.UP_ICON)));
 
         downTableButton = new ToolItem(toolBarActions, SWT.PUSH);
         downTableButton.setEnabled(false);
-        downTableButton.setImage(org.talend.core.ui.images.ImageProvider.getImage(org.talend.core.ui.images.ImageProvider
+        downTableButton.setImage(org.talend.commons.ui.image.ImageProvider.getImage(org.talend.commons.ui.image.ImageProvider
                 .getImageDesc(EImage.DOWN_ICON)));
         downTableButton.setToolTipText("Move down input table");
 

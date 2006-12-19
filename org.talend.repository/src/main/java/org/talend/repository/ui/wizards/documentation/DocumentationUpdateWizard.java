@@ -28,10 +28,10 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.ui.IWorkbench;
 import org.talend.commons.exception.MessageBoxExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
+import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.model.properties.DocumentationItem;
 import org.talend.core.model.repository.IRepositoryObject;
-import org.talend.core.ui.images.EImage;
-import org.talend.core.ui.images.ImageProvider;
+import org.talend.core.ui.images.ECoreImage;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.ui.wizards.RepositoryWizard;
@@ -62,7 +62,7 @@ public class DocumentationUpdateWizard extends RepositoryWizard implements IDocu
         this.repositoryObject = object;
 
         setWindowTitle("Update Documentation");
-        setDefaultPageImageDescriptor(ImageProvider.getImageDesc(EImage.DOCUMENTATION_WIZ));
+        setDefaultPageImageDescriptor(ImageProvider.getImageDesc(ECoreImage.DOCUMENTATION_WIZ));
         setNeedsProgressMonitor(false);
         initLockStrategy();
     }

@@ -26,10 +26,10 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
+import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.model.properties.RegExFileConnectionItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.ui.images.EImage;
-import org.talend.core.ui.images.ImageProvider;
+import org.talend.core.ui.images.ECoreImage;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
@@ -67,7 +67,7 @@ public class CreateFileRegexpAction extends AbstractCreateAction {
 
         this.setText(CREATE_LABEL);
         this.setToolTipText(CREATE_LABEL);
-        this.setImageDescriptor(ImageProvider.getImageDesc(EImage.METADATA_FILE_REGEXP_ICON));
+        this.setImageDescriptor(ImageProvider.getImageDesc(ECoreImage.METADATA_FILE_REGEXP_ICON));
     }
 
     public void run() {

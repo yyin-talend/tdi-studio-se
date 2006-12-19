@@ -27,7 +27,7 @@ import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.wizards.datatransfer.ExternalProjectImportWizard;
-import org.talend.core.ui.images.ImageProvider;
+import org.talend.commons.ui.image.ImageProvider;
 import org.talend.repository.ui.ERepositoryImages;
 
 /**

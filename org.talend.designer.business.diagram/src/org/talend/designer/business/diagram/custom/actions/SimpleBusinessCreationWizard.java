@@ -27,6 +27,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.ui.IWorkbench;
 import org.talend.commons.exception.PersistenceException;
+import org.talend.commons.ui.image.ImageProvider;
 import org.talend.commons.utils.VersionUtils;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
@@ -34,8 +35,7 @@ import org.talend.core.context.RepositoryContext;
 import org.talend.core.model.properties.BusinessProcessItem;
 import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.Property;
-import org.talend.core.ui.images.EImage;
-import org.talend.core.ui.images.ImageProvider;
+import org.talend.core.ui.images.ECoreImage;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.ui.wizards.RepositoryWizard;
@@ -64,7 +64,7 @@ public class SimpleBusinessCreationWizard extends RepositoryWizard {
         businessProcessItem.setProperty(property);
 
         setWindowTitle("New Business Model");
-        setDefaultPageImageDescriptor(ImageProvider.getImageDesc(EImage.BUSINESS_PROCESS_WIZ));
+        setDefaultPageImageDescriptor(ImageProvider.getImageDesc(ECoreImage.BUSINESS_PROCESS_WIZ));
     }
 
     public void addPages() {

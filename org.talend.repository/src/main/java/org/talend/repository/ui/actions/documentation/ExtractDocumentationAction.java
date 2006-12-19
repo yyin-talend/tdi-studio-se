@@ -30,10 +30,10 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.FileDialog;
 import org.talend.commons.exception.MessageBoxExceptionHandler;
+import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.model.properties.DocumentationItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.ui.images.EImage;
-import org.talend.core.ui.images.ImageProvider;
+import org.talend.core.ui.images.ECoreImage;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNode.ENodeType;
 import org.talend.repository.ui.actions.AContextualAction;
@@ -54,7 +54,7 @@ public class ExtractDocumentationAction extends AContextualAction {
 
         setText("Save as...");
         setToolTipText("Extract documentation to the file system");
-        setImageDescriptor(ImageProvider.getImageDesc(EImage.DOCUMENTATION_ICON));
+        setImageDescriptor(ImageProvider.getImageDesc(ECoreImage.DOCUMENTATION_ICON));
     }
 
     /*

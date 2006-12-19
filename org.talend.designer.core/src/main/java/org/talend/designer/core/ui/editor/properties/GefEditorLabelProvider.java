@@ -29,8 +29,9 @@ import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.views.properties.tabbed.ITypeMapper;
-import org.talend.core.ui.images.EImage;
-import org.talend.core.ui.images.ImageProvider;
+import org.talend.commons.ui.image.EImage;
+import org.talend.commons.ui.image.ImageProvider;
+import org.talend.core.ui.images.ECoreImage;
 import org.talend.designer.core.ui.editor.connections.ConnLabelEditPart;
 import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.connections.ConnectionLabel;
@@ -88,7 +89,7 @@ public class GefEditorLabelProvider extends LabelProvider {
                 node = lastNode;
             } else {
                 if (object instanceof ProcessPart) {
-                    return ImageProvider.getImage(EImage.PROCESS_ICON);
+                    return ImageProvider.getImage(ECoreImage.PROCESS_ICON);
                 }
                 if (object instanceof ConnectionPart) {
                     return ImageProvider.getImage(EImage.RIGHT_ICON);

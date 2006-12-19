@@ -29,9 +29,9 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
+import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.ui.images.EImage;
-import org.talend.core.ui.images.ImageProvider;
+import org.talend.core.ui.images.ECoreImage;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNodeUtilities;
@@ -51,7 +51,7 @@ public class CreateFolderAction extends AContextualAction {
         super();
         this.setText(Messages.getString("CreateFolderAction.action.title")); //$NON-NLS-1$
         this.setToolTipText(Messages.getString("CreateFolderAction.action.toolTipText")); //$NON-NLS-1$
-        this.setImageDescriptor(ImageProvider.getImageDesc(EImage.FOLDER_CLOSE_ICON));
+        this.setImageDescriptor(ImageProvider.getImageDesc(ECoreImage.FOLDER_CLOSE_ICON));
     }
 
     /*

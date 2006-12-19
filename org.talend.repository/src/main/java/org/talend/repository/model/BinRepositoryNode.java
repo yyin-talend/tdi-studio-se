@@ -21,8 +21,8 @@
 // ============================================================================
 package org.talend.repository.model;
 
-import org.talend.core.ui.images.EImage;
-import org.talend.core.ui.images.IImage;
+import org.talend.commons.ui.image.IImage;
+import org.talend.core.ui.images.ECoreImage;
 
 /**
  * DOC smallet class global comment. Detailled comment <br/>
@@ -50,9 +50,9 @@ public class BinRepositoryNode extends StableRepositoryNode {
      */
     public IImage getIcon() {
         if (hasChildren()) {
-            return EImage.RECYCLE_BIN_FULL_ICON;
+            return ECoreImage.RECYCLE_BIN_FULL_ICON;
         } else {
-            return EImage.RECYCLE_BIN_EMPTY_ICON;
+            return ECoreImage.RECYCLE_BIN_EMPTY_ICON;
         }
     }
 

@@ -26,10 +26,10 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.widgets.Shell;
+import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.repository.IRepositoryObject;
-import org.talend.core.ui.images.EImage;
-import org.talend.core.ui.images.ImageProvider;
+import org.talend.core.ui.images.ECoreImage;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.BinRepositoryNode;
 import org.talend.repository.model.IProxyRepositoryFactory;
@@ -49,7 +49,7 @@ public class EmptyRecycleBinAction extends AContextualAction {
         super();
         this.setText(Messages.getString("EmptyRecycleBinAction.action.title"));
         this.setToolTipText(Messages.getString("EmptyRecycleBinAction.action.toolTipText"));
-        this.setImageDescriptor(ImageProvider.getImageDesc(EImage.RECYCLE_BIN_EMPTY_ICON));
+        this.setImageDescriptor(ImageProvider.getImageDesc(ECoreImage.RECYCLE_BIN_EMPTY_ICON));
     }
 
     public void run() {

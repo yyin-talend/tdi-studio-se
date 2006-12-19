@@ -33,9 +33,10 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
+import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.ui.images.ImageProvider;
+import org.talend.core.ui.images.CoreImageProvider;
 import org.talend.sqlbuilder.SqlBuilderPlugin;
 import org.talend.sqlbuilder.sessiontree.model.SessionTreeNode;
 
@@ -175,7 +176,7 @@ public class CatalogNode extends AbstractNode {
      * @return Image.
      */
     public Image getImage() {
-        return ImageProvider.getImage(ERepositoryObjectType.METADATA_CONNECTIONS);
+        return CoreImageProvider.getImage(ERepositoryObjectType.METADATA_CONNECTIONS);
     }
 
     /**

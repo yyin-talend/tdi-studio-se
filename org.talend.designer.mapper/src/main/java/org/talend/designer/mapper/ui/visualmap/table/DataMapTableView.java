@@ -67,7 +67,7 @@ import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
-import org.talend.commons.ui.swt.advanced.dataeditor.commands.ExtendedTableMoveCommand;
+import org.talend.commons.ui.image.EImage;
 import org.talend.commons.ui.swt.extended.table.AbstractExtendedTableViewer;
 import org.talend.commons.ui.swt.proposal.ContentProposalAdapterExtended;
 import org.talend.commons.ui.swt.proposal.TextCellEditorWithProposal;
@@ -89,8 +89,6 @@ import org.talend.commons.utils.data.list.IListenableListListener;
 import org.talend.commons.utils.data.list.ListenableListEvent;
 import org.talend.commons.utils.threading.AsynchronousThreading;
 import org.talend.commons.utils.threading.ExecutionLimiter;
-import org.talend.core.ui.images.EImage;
-import org.talend.core.ui.images.ImageProvider;
 import org.talend.core.ui.proposal.ProcessProposalProvider;
 import org.talend.designer.mapper.MapperMain;
 import org.talend.designer.mapper.managers.MapperManager;
@@ -98,7 +96,6 @@ import org.talend.designer.mapper.managers.UIManager;
 import org.talend.designer.mapper.model.table.AbstractDataMapTable;
 import org.talend.designer.mapper.model.table.AbstractInOutTable;
 import org.talend.designer.mapper.model.table.OutputTable;
-import org.talend.designer.mapper.model.table.VarsTable;
 import org.talend.designer.mapper.model.tableentry.AbstractInOutTableEntry;
 import org.talend.designer.mapper.model.tableentry.FilterTableEntry;
 import org.talend.designer.mapper.model.tableentry.IColumnEntry;
@@ -369,10 +366,10 @@ public abstract class DataMapTableView extends Composite {
                 if (getDataMapTable() instanceof AbstractInOutTable) {
 
                     if (imageKey == null) {
-                        imageKey = org.talend.core.ui.images.ImageProvider.getImage(EImage.KEY_ICON);
+                        imageKey = org.talend.commons.ui.image.ImageProvider.getImage(EImage.KEY_ICON);
                     }
                     if (imageEmpty == null) {
-                        imageEmpty = org.talend.core.ui.images.ImageProvider.getImage(EImage.EMPTY);
+                        imageEmpty = org.talend.commons.ui.image.ImageProvider.getImage(EImage.EMPTY);
                     }
                 }
                 newTableViewerCreator.setLabelProvider(new DefaultTableLabelProvider(newTableViewerCreator) {

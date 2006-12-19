@@ -65,12 +65,12 @@ import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.views.properties.IPropertySheetPage;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertySheetPageContributor;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
+import org.talend.commons.ui.image.ImageProvider;
 import org.talend.commons.ui.swt.actions.ITreeContextualAction;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
-import org.talend.core.ui.images.EImage;
-import org.talend.core.ui.images.ImageProvider;
+import org.talend.core.ui.images.ECoreImage;
 import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.RepositoryNode;
@@ -136,7 +136,7 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
                 if (node.getType().equals(ENodeType.SIMPLE_FOLDER)) {
                     TreeItem item = getObject(viewer.getTree(), event.getElement());
                     if (item != null) {
-                        item.setImage(ImageProvider.getImage(EImage.FOLDER_CLOSE_ICON));
+                        item.setImage(ImageProvider.getImage(ECoreImage.FOLDER_CLOSE_ICON));
                     }
                 }
             }
@@ -146,7 +146,7 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
                 if (node.getType().equals(ENodeType.SIMPLE_FOLDER)) {
                     TreeItem item = getObject(viewer.getTree(), event.getElement());
                     if (item != null) {
-                        item.setImage(ImageProvider.getImage(EImage.FOLDER_OPEN_ICON));
+                        item.setImage(ImageProvider.getImage(ECoreImage.FOLDER_OPEN_ICON));
                     }
                 }
             }
