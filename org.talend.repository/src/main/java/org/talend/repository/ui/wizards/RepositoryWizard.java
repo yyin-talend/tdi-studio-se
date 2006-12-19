@@ -31,6 +31,7 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.swt.dialogs.ErrorDialogWidthDetailArea;
+import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.i18n.Messages;
@@ -113,8 +114,8 @@ public abstract class RepositoryWizard extends Wizard {
      * @param IRepositoryObject
      */
     public boolean performCancel() {
-        closeLockStrategy();
         reload();
+        closeLockStrategy();
         return true;
     }
 
@@ -124,7 +125,8 @@ public abstract class RepositoryWizard extends Wizard {
     private void reload() {
         if (repositoryObject != null) {
             IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
-            factory.reload(repositoryObject.getProperty());
+            Property property = factory.reload(repositoryObject.getProperty());
+            repositoryObject.setProperty(property);
         }
     }
 

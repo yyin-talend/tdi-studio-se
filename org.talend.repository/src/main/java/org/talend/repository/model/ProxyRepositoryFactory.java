@@ -608,8 +608,8 @@ public class ProxyRepositoryFactory implements IProxyRepositoryFactory {
      * 
      * @see org.talend.repository.model.IProxyRepositoryFactory#reload(org.talend.core.model.properties.Property)
      */
-    public void reload(Property property) {
-        this.repositoryFactoryFromProvider.reload(property);
+    public Property reload(Property property) {
+        return this.repositoryFactoryFromProvider.reload(property);
     }
 
     /*

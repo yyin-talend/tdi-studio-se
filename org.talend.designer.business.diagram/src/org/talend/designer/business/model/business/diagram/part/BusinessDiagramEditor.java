@@ -21,6 +21,7 @@ import org.eclipse.ui.views.properties.IPropertySheetPage;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.core.model.properties.BusinessProcessItem;
 import org.talend.core.model.properties.Item;
+import org.talend.core.model.properties.Property;
 import org.talend.designer.business.diagram.custom.actions.DiagramResourceManager;
 import org.talend.designer.business.diagram.custom.dnd.BusinessDiagramDropTargetListener;
 import org.talend.designer.business.diagram.custom.properties.BusinessPropertiesBrowserPage;
@@ -160,8 +161,9 @@ public class BusinessDiagramEditor extends FileDiagramEditor implements IGotoMar
         // Unlock the process :
         IProxyRepositoryFactory repFactory = ProxyRepositoryFactory.getInstance();
         try {
+            Property property = repFactory.reload(repositoryEditorInput.getItem().getProperty());
+            repositoryEditorInput.setItem(property.getItem());
             repFactory.unlock(repositoryEditorInput.getItem());
-            repFactory.reload(repositoryEditorInput.getItem().getProperty());
         } catch (PersistenceException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

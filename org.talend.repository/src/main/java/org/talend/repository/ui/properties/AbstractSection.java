@@ -283,6 +283,9 @@ public abstract class AbstractSection extends AbstractPropertySection {
             return null;
         }
 
+        public void setProperty(Property property) {
+        }
+
         /*
          * (non-Javadoc)
          * 

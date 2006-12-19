@@ -188,7 +188,7 @@ public interface IRepositoryFactory {
      * 
      * @param property
      */
-    public void reload(Property property);
+    public Property reload(Property property);
 
     public RootContainer<String, IRepositoryObject> getBusinessProcess() throws PersistenceException;
 

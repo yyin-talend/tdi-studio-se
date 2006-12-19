@@ -1617,6 +1617,10 @@ public class Process extends Element implements IProcess {
         return property;
     }
 
+    public void setProperty(Property property) {
+        this.property = property;
+    }
+
     /*
      * (non-Javadoc)
      * 
