@@ -32,7 +32,7 @@ import org.talend.core.model.metadata.IMetadataTable;
  * $Id: IProcessDescription.java 663 2006-11-21 17:21:53 +0000 (星期二, 21 十一月 2006) cantoine $
  * 
  */
-public abstract class AbstractProcessDescription implements IProcessDescription{
+public abstract class AbstractProcessDescription implements IProcessDescription {
 
     /** Server owning the file. */
     private String server;
@@ -65,13 +65,15 @@ public abstract class AbstractProcessDescription implements IProcessDescription{
     private boolean removeEmptyRow;
 
     private String encoding;
-    
+
     private List<IMetadataTable> schema;
-    
+
     private String loopQuery;
-    
-    private List<Map<String, String> > mapping;
-    
+
+    private String loopLimit;
+
+    private List<Map<String, String>> mapping;
+
     /**
      * Getter for escapeCharacter.
      * 
@@ -269,7 +271,7 @@ public abstract class AbstractProcessDescription implements IProcessDescription{
     public void setPattern(String pattern) {
         this.pattern = pattern;
     }
-    
+
     /**
      * Getter for encoding.
      * 
@@ -288,18 +290,18 @@ public abstract class AbstractProcessDescription implements IProcessDescription{
         this.encoding = encoding;
     }
 
-    
     /**
      * Getter for schema.
+     * 
      * @return the schema
      */
     public List<IMetadataTable> getSchema() {
         return this.schema;
     }
 
-    
     /**
      * Sets the schema.
+     * 
      * @param schema the schema to set
      */
     public void setSchema(List<IMetadataTable> schema) {
@@ -323,7 +325,25 @@ public abstract class AbstractProcessDescription implements IProcessDescription{
     public void setLoopQuery(String loopQuery) {
         this.loopQuery = loopQuery;
     }
-    
+
+    /**
+     * Getter for loopQuery.
+     * 
+     * @return the loopQuery
+     */
+    public String getLoopLimit() {
+        return this.loopLimit;
+    }
+
+    /**
+     * Sets the loopLimit.
+     * 
+     * @param loopLimit the loopLimit to set
+     */
+    public void setLoopLimit(String loopLimit) {
+        this.loopLimit = loopLimit;
+    }
+
     /**
      * Getter for mapping.
      * 

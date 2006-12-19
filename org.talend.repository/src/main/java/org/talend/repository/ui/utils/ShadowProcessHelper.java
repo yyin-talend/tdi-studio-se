@@ -110,6 +110,11 @@ public class ShadowProcessHelper {
         ProcessDescription processDescription = new ProcessDescription();
         processDescription.setFilepath(connection.getXmlFilePath());
         processDescription.setLoopQuery("'" + ((XmlXPathLoopDescriptor) connection.getSchema().get(0)).getAbsoluteXPathQuery() + "'");
+        if (((XmlXPathLoopDescriptor) connection.getSchema().get(0)).getLimitBoucle() != null 
+                && !("").equals(((XmlXPathLoopDescriptor) connection.getSchema().get(0)).getLimitBoucle())
+                    && (((XmlXPathLoopDescriptor) connection.getSchema().get(0)).getLimitBoucle().intValue()) != 0) {
+            processDescription.setLoopLimit("'" + ((XmlXPathLoopDescriptor) connection.getSchema().get(0)).getLimitBoucle() + "'");
+        }
 
         List<Map<String, String>> mapping = new ArrayList<Map<String, String>>();
 
@@ -130,7 +135,7 @@ public class ShadowProcessHelper {
         } else {
             processDescription.setEncoding("'UTF-8'");
         }
-
+        
         return processDescription;
     }
 
