@@ -408,6 +408,7 @@ public class DataProcess {
                 hashNode.getMetadataList().remove(0);
                 hashNode.getMetadataList().add(newMetadata);
                 hashNode.setSubProcessStart(false);
+                hashNode.setProcess(graphicalNode.getProcess());
                 outgoingConnections = new ArrayList<IConnection>();
                 incomingConnections = new ArrayList<IConnection>();
                 hashNode.setIncomingConnections(incomingConnections);
