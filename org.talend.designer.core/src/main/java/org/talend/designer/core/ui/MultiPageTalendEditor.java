@@ -56,6 +56,7 @@ import org.talend.commons.exception.MessageBoxExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.model.process.IProcess;
+import org.talend.core.model.properties.Property;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
@@ -183,12 +184,13 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
         super.dispose();
 
         // Unlock the process :
-        IRepositoryService service=DesignerPlugin.getDefault().getRepositoryService();
+        IRepositoryService service = DesignerPlugin.getDefault().getRepositoryService();
         IProxyRepositoryFactory repFactory = service.getProxyRepositoryFactory();
         try {
             getTalendEditor().getProperty().eAdapters().remove(dirtyListener);
-            repFactory.unlock(getTalendEditor().getProcess());
-            repFactory.reload(getTalendEditor().getProperty());
+            Property property =  repFactory.reload(getTalendEditor().getProperty());
+            getTalendEditor().setProperty(property);
+            repFactory.unlock(property.getItem());
         } catch (PersistenceException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

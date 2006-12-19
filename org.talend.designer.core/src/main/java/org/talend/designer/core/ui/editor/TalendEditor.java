@@ -159,6 +159,15 @@ public class TalendEditor extends GraphicalEditorWithFlyoutPalette implements IT
         return this.property;
     }
 
+    
+    /**
+     * Sets the property.
+     * @param property the property to set
+     */
+    public void setProperty(Property property) {
+        this.property = property;
+    }
+
     /*
      * (non-Javadoc)
      * 
