@@ -883,9 +883,7 @@ public class ContextProcessSection extends AbstractPropertySection {
         for (int i = 0; i < process.getContextManager().getListContext().size(); i++) {
             TableViewerCreator tableViewerCreator = tableViewerCreatorMap.get(process.getContextManager()
                     .getListContext().get(i));
-            tableViewerCreator.init();
             tableViewerCreator.getTableViewer().refresh();
-            // tableViewerCreatorMap.get(process.getContextManager().getListContext().get(i)).getTableViewer().refresh();
 
             Table table = tableViewerCreator.getTable();
             TableItem tableItem;
