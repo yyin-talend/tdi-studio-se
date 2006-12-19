@@ -27,10 +27,17 @@ import java.util.List;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.IViewPart;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.views.properties.PropertySheet;
+import org.eclipse.ui.views.properties.tabbed.ISection;
+import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 import org.talend.core.model.components.IODataComponent;
 import org.talend.core.model.components.IODataComponentContainer;
-import org.talend.core.model.components.IODataComponent.ColumnNameChanged;
+import org.talend.core.model.metadata.ColumnNameChanged;
 import org.talend.core.model.metadata.IMetadataTable;
+import org.talend.core.model.metadata.MetadataTool;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.INode;
@@ -39,6 +46,7 @@ import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.process.Process;
+import org.talend.designer.core.ui.editor.properties.DynamicTabbedPropertySection;
 
 /**
  * Command that will change a metadata in a node.
@@ -157,6 +165,23 @@ public class ChangeMetadataCommand extends Command {
     private boolean getPropagate() {
         return getPropagate(null);
     }
+    
+    protected void updateColumnList(IMetadataTable oldTable, IMetadataTable newTable) {
+        IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+        IViewPart view = page.findView("org.eclipse.ui.views.PropertySheet");
+        PropertySheet sheet = (PropertySheet) view;
+        TabbedPropertySheetPage tabbedPropertySheetPage = (TabbedPropertySheetPage) sheet.getCurrentPage();
+        ISection[] sections = tabbedPropertySheetPage.getCurrentTab().getSections();
+        for (int i = 0; i < sections.length; i++) {
+            if (sections[i] instanceof DynamicTabbedPropertySection) {
+                DynamicTabbedPropertySection currentSection = (DynamicTabbedPropertySection) sections[i];
+                if (currentSection.getElement().equals(node)) {
+                    currentSection.updateColumnList(MetadataTool.getColumnNameChanged(oldTable, newTable));
+                    currentSection.refresh();
+                }
+            }
+        }
+    }
 
     public void execute(Boolean propagateP) {
         this.propagate = propagateP;
@@ -267,6 +292,7 @@ public class ChangeMetadataCommand extends Command {
             }
         }
         if (!internal) {
+            updateColumnList(oldOutputMetadata, newOutputMetadata);
             ((Process) node.getProcess()).checkProcess();
         }
     }
@@ -293,6 +319,7 @@ public class ChangeMetadataCommand extends Command {
             cmd.undo();
         }
         if (!internal) {
+            updateColumnList(newOutputMetadata, oldOutputMetadata);
             ((Process) node.getProcess()).checkProcess();
         }
     }

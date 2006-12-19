@@ -21,13 +21,20 @@
 // ============================================================================
 package org.talend.designer.core.ui.editor.cmd;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.views.properties.PropertySheet;
+import org.eclipse.ui.views.properties.tabbed.ISection;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
+import org.talend.core.model.metadata.ColumnNameChanged;
 import org.talend.core.model.metadata.IMetadataTable;
+import org.talend.core.model.metadata.MetadataTool;
 import org.talend.designer.core.ui.editor.nodes.Node;
+import org.talend.designer.core.ui.editor.properties.DynamicTabbedPropertySection;
 
 
 /**
@@ -73,5 +80,31 @@ public class RepositoryChangeMetadataCommand extends ChangeMetadataCommand {
         node.setPropertyValue(propName, oldPropValue);
         refreshPropertyView();
         super.undo();
+    }
+    
+    protected void updateColumnList(IMetadataTable oldTable, IMetadataTable newTable) {
+        IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+        IViewPart view = page.findView("org.eclipse.ui.views.PropertySheet");
+        PropertySheet sheet = (PropertySheet) view;
+        TabbedPropertySheetPage tabbedPropertySheetPage = (TabbedPropertySheetPage) sheet.getCurrentPage();
+        ISection[] sections = tabbedPropertySheetPage.getCurrentTab().getSections();
+        for (int i = 0; i < sections.length; i++) {
+            if (sections[i] instanceof DynamicTabbedPropertySection) {
+                DynamicTabbedPropertySection currentSection = (DynamicTabbedPropertySection) sections[i];
+                if (currentSection.getElement().equals(node)) {
+                    List<ColumnNameChanged> columnNameChanged = new ArrayList<ColumnNameChanged>();
+                    for (int j = 0; j < oldTable.getListColumns().size(); j++) {
+                        if (newTable.getListColumns().size() > j) {
+                            String oldName = oldTable.getListColumns().get(j).getLabel();
+                            String newName = newTable.getListColumns().get(j).getLabel();
+                            if (!oldName.equals(newName)) {
+                                columnNameChanged.add(new ColumnNameChanged(oldName, newName));
+                            }
+                        }
+                    }
+                    currentSection.updateColumnList(columnNameChanged);
+                }
+            }
+        }
     }
 }

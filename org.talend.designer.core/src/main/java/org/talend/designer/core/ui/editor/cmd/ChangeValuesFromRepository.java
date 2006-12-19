@@ -22,15 +22,19 @@
 package org.talend.designer.core.ui.editor.cmd;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.views.properties.PropertySheet;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
+import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.builder.connection.Connection;
+import org.talend.core.model.metadata.builder.connection.SchemaTarget;
 import org.talend.core.model.metadata.designerproperties.RepositoryToComponentProperty;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.Element;
@@ -38,6 +42,7 @@ import org.talend.core.model.process.IElementParameter;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
+import org.talend.designer.core.ui.editor.nodes.Node;
 
 /**
  * DOC nrousseau class global comment. Detailled comment <br/>
@@ -79,9 +84,9 @@ public class ChangeValuesFromRepository extends Command {
 
     @Override
     public void execute() {
-        //Force redraw of Commponents propoerties
+        // Force redraw of Commponents propoerties
         elem.setPropertyValue(EParameterName.UPDATE_COMPONENTS.getName(), new Boolean(true));
-        
+
         if (propertyName.equals(EParameterName.PROPERTY_TYPE.getName()) && (EmfComponent.BUILTIN.equals(value))) {
             for (IElementParameter param : elem.getElementParameters()) {
                 param.setRepositoryValueUsed(false);
@@ -107,7 +112,34 @@ public class ChangeValuesFromRepository extends Command {
                                 }
                             }
                         } else {
-                            elem.setPropertyValue(param.getName(), objectValue);
+                            if (param.getField().equals(EParameterFieldType.TABLE)
+                                    && param.getRepositoryValue().equals("XML_MAPPING")) {
+                                boolean found = false;
+                                String[] list = param.getListRepositoryItems();
+                                List<Map<String, Object>> tableInfo = (List<Map<String, Object>>) elem
+                                        .getPropertyValue(param.getName());
+                                int column = 0;
+                                for (int i = 0; (i < list.length) && (!found); i++) {
+                                    if (list[i].equals("XML_QUERY")) {
+                                        column = i;
+                                        found = true;
+                                    }
+                                }
+                                EList schemaList = (EList) objectValue;
+                                String[] names = param.getListItemsDisplayCodeName();
+                                IMetadataTable table = ((Node) elem).getMetadataList().get(0);
+                                for (int i = 0; i < schemaList.size(); i++) {
+                                    Map<String, Object> line = tableInfo.get(i);
+                                    if (table != null) {
+                                        if (table.getListColumns().size() > i) {
+                                            SchemaTarget schemaTarget = (SchemaTarget) schemaList.get(i);
+                                            line.put(names[column], schemaTarget.getRelativeXPathQuery());
+                                        }
+                                    }
+                                }
+                            } else {
+                                elem.setPropertyValue(param.getName(), objectValue);
+                            }
                         }
                         param.setRepositoryValueUsed(true);
                     }
@@ -125,13 +157,14 @@ public class ChangeValuesFromRepository extends Command {
 
     @Override
     public void undo() {
-        //Force redraw of Commponents propoerties
+        // Force redraw of Commponents propoerties
         elem.setPropertyValue(EParameterName.UPDATE_COMPONENTS.getName(), new Boolean(true));
-        
+
         if (propertyName.equals(EParameterName.PROPERTY_TYPE.getName()) && (EmfComponent.BUILTIN.equals(value))) {
             for (IElementParameter param : elem.getElementParameters()) {
                 String repositoryValue = param.getRepositoryValue();
-                if (param.isShow(elem.getElementParameters()) && (repositoryValue != null)) {
+                if (param.isShow(elem.getElementParameters()) && (repositoryValue != null)
+                        && (!param.getName().equals(EParameterName.PROPERTY_TYPE.getName()))) {
                     param.setRepositoryValueUsed(true);
                 }
             }

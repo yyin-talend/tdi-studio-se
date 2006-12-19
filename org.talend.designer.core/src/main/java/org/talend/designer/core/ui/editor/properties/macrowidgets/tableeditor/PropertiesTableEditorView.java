@@ -147,6 +147,7 @@ public class PropertiesTableEditorView<B> extends AbstractDataTableEditorView<B>
                 case PREV_COLUMN_LIST:
                     ComboBoxCellEditor cellEditor = new ComboBoxCellEditor(table, tmpParam.getListItemsDisplayName());
                     ((CCombo) cellEditor.getControl()).setEditable(false);
+                    ((CCombo) cellEditor.getControl()).setEnabled(!param.isRepositoryValueUsed());
                     column.setCellEditor(cellEditor, new CellEditorValueAdapter() {
 
                         public String getColumnText(CellEditor cellEditor, Object cellEditorValue) {
@@ -177,13 +178,13 @@ public class PropertiesTableEditorView<B> extends AbstractDataTableEditorView<B>
                     });
                     break;
                 case CHECK:
-                    column.setTableEditorContent(new CheckboxTableEditorContent(false));
+                    column.setTableEditorContent(new CheckboxTableEditorContent(param.isRepositoryValueUsed()));
                     column.setDisplayedValue("");
                     break;
                 default: // TEXT
                     TextCellEditorWithProposal textCellEditor = new TextCellEditorWithProposal(table, column);
                     textCellEditor.setContentProposalProvider(processProposalProvider);
-                    if ((i == 0) && (param.isBasedOnSchema())) {
+                    if (((i == 0) && (param.isBasedOnSchema())) || (param.isRepositoryValueUsed())) {
                         Text text = (Text) textCellEditor.getControl();
                         text.setEditable(false);
                     }
