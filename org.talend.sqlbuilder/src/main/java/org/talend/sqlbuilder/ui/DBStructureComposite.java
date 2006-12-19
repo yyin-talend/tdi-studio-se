@@ -533,7 +533,7 @@ public class DBStructureComposite extends Composite {
                             continue;
                         }
                         node = repositoryNodeManager.getRepositoryNodeFromDB(node);
-                        doRefresh(getConnectionNode(node));
+                        doRefresh(node);
                     }
                     return null;
                 }
