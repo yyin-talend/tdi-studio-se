@@ -299,6 +299,8 @@ public class UIManager {
                 metadataTableEditorView.getTableViewerCreator().getSelectionHelper().setActiveFireSelectionChanged(false);
                 metadataTableEditorView.setMetadataTableEditor(metadataTableEditor);
                 metadataTableEditorView.getTableViewerCreator().getSelectionHelper().setActiveFireSelectionChanged(true);
+                metadataTableEditorView.getExtendedToolbar().updateEnabledStateOfButtons();
+                
                 dataMapTVCreator.getSelectionHelper().setActiveFireSelectionChanged(false);
                 metadataTableEditorView. getTableViewerCreator().getSelectionHelper().setSelection(dataMapTableViewer.getTable().getSelectionIndices());
                 dataMapTVCreator.getSelectionHelper().setActiveFireSelectionChanged(true);
@@ -627,6 +629,7 @@ public class UIManager {
             metadataTableEditorView.getTableViewerCreator().getSelectionHelper().setActiveFireSelectionChanged(false);
             metadataTableEditorView.getExtendedTableViewer().getTableViewerCreator().getSelectionHelper().setSelection(selectionIndices);
             metadataTableEditorView.getTableViewerCreator().getSelectionHelper().setActiveFireSelectionChanged(true);
+            metadataTableEditorView.getExtendedToolbar().updateEnabledStateOfButtons();
         }
     }
 
