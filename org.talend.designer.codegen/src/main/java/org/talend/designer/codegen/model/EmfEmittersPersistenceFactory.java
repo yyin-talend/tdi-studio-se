@@ -23,6 +23,7 @@ package org.talend.designer.codegen.model;
 
 import java.io.File;
 
+import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
@@ -31,11 +32,9 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.emf.codegen.CodeGenPlugin;
 import org.eclipse.jdt.core.JavaCore;
-import org.talend.designer.codegen.CodeGeneratorActivator;
 
 /**
  * DOC mhirt class global comment. Detailled comment <br/>
@@ -44,6 +43,8 @@ import org.talend.designer.codegen.CodeGeneratorActivator;
  * 
  */
 public final class EmfEmittersPersistenceFactory {
+
+    private static Logger log = Logger.getLogger(EmfEmittersPersistenceFactory.class);
 
     private static EmfEmittersPersistence singleton = null;
 
@@ -91,9 +92,7 @@ public final class EmfEmittersPersistenceFactory {
                 project.setDescription(description, new SubProgressMonitor(progressMonitor, 1));
             }
         } catch (CoreException e) {
-            Status status = new Status(Status.ERROR, CodeGeneratorActivator.PLUGIN_ID, Status.WARNING, e.getMessage(),
-                    e);
-            CodeGeneratorActivator.getDefault().getLog().log(status);
+            log.error(e.getMessage(), e);
             project = null;
         }
         return project;

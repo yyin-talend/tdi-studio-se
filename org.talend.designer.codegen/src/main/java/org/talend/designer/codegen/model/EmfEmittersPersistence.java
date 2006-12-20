@@ -31,11 +31,10 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.core.runtime.Status;
+import org.apache.log4j.Logger;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.talend.commons.exception.BusinessException;
-import org.talend.designer.codegen.CodeGeneratorActivator;
 import org.talend.designer.codegen.config.LightJetBean;
 import org.talend.designer.codegen.persistence.DocumentRoot;
 import org.talend.designer.codegen.persistence.EmittersPoolFactory;
@@ -53,6 +52,8 @@ import org.talend.designer.codegen.persistence.util.EmittersPoolResourceImpl;
 public class EmfEmittersPersistence {
 
     private File persistantFile = null;
+
+    private static Logger log = Logger.getLogger(EmfEmittersPersistence.class);
 
     /**
      * DOC mhirt EmfEmittersPersistance constructor comment.
@@ -97,10 +98,7 @@ public class EmfEmittersPersistence {
         try {
             poolAsBytes = loadEmfPoolFactory(persistantFile);
         } catch (IOException e) {
-            Status status = new Status(Status.INFO, CodeGeneratorActivator.PLUGIN_ID, Status.INFO,
-                    "Code Generation Datas missing. Starting Full Code Generation.", null);
-            CodeGeneratorActivator.getDefault().getLog().log(status);
-
+            log.info("Code Generation Datas missing. Starting Full Code Generation.");
             // Nothing to do if persistent file not found
             return emittersToReturn;
         }
@@ -114,13 +112,9 @@ public class EmfEmittersPersistence {
                     oin.close();
                     return emittersToReturn;
                 } catch (IOException e) {
-                    Status status = new Status(Status.ERROR, CodeGeneratorActivator.PLUGIN_ID, Status.ERROR, e
-                            .getMessage(), e);
-                    CodeGeneratorActivator.getDefault().getLog().log(status);
+                    log.error(e.getMessage(), e);
                 } catch (ClassNotFoundException e) {
-                    Status status = new Status(Status.ERROR, CodeGeneratorActivator.PLUGIN_ID, Status.ERROR, e
-                            .getMessage(), e);
-                    CodeGeneratorActivator.getDefault().getLog().log(status);
+                    log.error(e.getMessage(), e);
                 }
             }
         }
@@ -171,9 +165,7 @@ public class EmfEmittersPersistence {
             res.getContents().add(xmlDoc);
             res.save(null);
         } catch (IOException e) {
-            Status status = new Status(Status.ERROR, CodeGeneratorActivator.PLUGIN_ID, Status.WARNING, e.getMessage(),
-                    e);
-            CodeGeneratorActivator.getDefault().getLog().log(status);
+            log.error(e.getMessage(), e);
         }
     }
 }

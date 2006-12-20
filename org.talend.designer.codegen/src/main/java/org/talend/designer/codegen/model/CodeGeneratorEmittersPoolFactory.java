@@ -34,12 +34,12 @@ import java.util.List;
 import java.util.zip.Adler32;
 import java.util.zip.CheckedInputStream;
 
+import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.emf.codegen.jet.JETEmitter;
 import org.eclipse.emf.codegen.jet.JETException;
@@ -74,6 +74,8 @@ public final class CodeGeneratorEmittersPoolFactory {
 
     private static boolean initialized = false;
 
+    private static Logger log = Logger.getLogger(CodeGeneratorEmittersPoolFactory.class);
+
     /**
      * Default Constructor. Must not be used.
      */
@@ -87,7 +89,7 @@ public final class CodeGeneratorEmittersPoolFactory {
         RepositoryContext repositoryContext = (RepositoryContext) CorePlugin.getContext().getProperty(
                 Context.REPOSITORY_CONTEXT_KEY);
         ECodeLanguage codeLanguage = repositoryContext.getProject().getLanguage();
-        
+
         List<JetBean> jetBeans = new ArrayList<JetBean>();
 
         CodeGeneratorInternalTemplatesFactory templatesFactory = CodeGeneratorInternalTemplatesFactoryProvider
@@ -211,9 +213,7 @@ public final class CodeGeneratorEmittersPoolFactory {
                         alreadyCompiledEmitters.add(jetBean);
                     }
                 } catch (JETException e) {
-                    Status status = new Status(Status.ERROR, CodeGeneratorActivator.PLUGIN_ID, Status.ERROR,
-                            "Error during JetEmitter initalization " + e.getMessage(), e);
-                    CodeGeneratorActivator.getDefault().getLog().log(status);
+                    log.error("Error during JetEmitter initalization " + e.getMessage(), e);
                 }
                 emitterPool.put(jetBean, emitter);
             }
@@ -222,9 +222,7 @@ public final class CodeGeneratorEmittersPoolFactory {
             EmfEmittersPersistenceFactory.getInstance().saveEmittersPool(
                     extractEmfPersistenData(alreadyCompiledEmitters));
         } catch (BusinessException e) {
-            Status status = new Status(Status.ERROR, CodeGeneratorActivator.PLUGIN_ID, Status.ERROR,
-                    "Persitent data cannot be saved : " + e.getMessage(), e);
-            CodeGeneratorActivator.getDefault().getLog().log(status);
+            log.error("Persitent data cannot be saved : " + e.getMessage(), e);
         }
     }
 
@@ -292,15 +290,11 @@ public final class CodeGeneratorEmittersPoolFactory {
                             toReturn.add(unit);
                         }
                     } catch (MalformedURLException e) {
-                        Status status = new Status(Status.ERROR, CodeGeneratorActivator.PLUGIN_ID, Status.ERROR,
-                                "JETEmitters Project not present, full reinitialize is needed", e);
-                        CodeGeneratorActivator.getDefault().getLog().log(status);
+                        log.error("JETEmitters Project not present, full reinitialize is needed");
                         throw new BusinessException(e);
                     } catch (ClassNotFoundException e) {
-                        Status status = new Status(Status.ERROR, CodeGeneratorActivator.PLUGIN_ID, Status.ERROR,
-                                "Template still present, but class " + unit.getClassName()
-                                        + " has disapeared from workspace. This unit needs to be recompiled.", e);
-                        CodeGeneratorActivator.getDefault().getLog().log(status);
+                        log.info("Template still present, but class " + unit.getClassName()
+                                + " has disapeared from workspace. This unit needs to be recompiled.");
                     }
 
                 }

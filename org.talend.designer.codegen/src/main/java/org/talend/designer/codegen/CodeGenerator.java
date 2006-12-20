@@ -25,8 +25,8 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Vector;
 
+import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.emf.codegen.jet.JETException;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
@@ -57,6 +57,8 @@ import org.talend.designer.codegen.proxy.JetProxy;
  * 
  */
 public class CodeGenerator implements ICodeGenerator {
+
+    private static Logger log = Logger.getLogger(CodeGenerator.class);
 
     private IProcess process;
 
@@ -149,8 +151,7 @@ public class CodeGenerator implements ICodeGenerator {
                 endTimer = Calendar.getInstance().getTimeInMillis();
             }
         } catch (InterruptedException e) {
-            Status status = new Status(Status.ERROR, CodeGeneratorActivator.PLUGIN_ID, Status.ERROR, e.getMessage(), e);
-            CodeGeneratorActivator.getDefault().getLog().log(status);
+            log.error(e.getMessage(), e);
             throw new CodeGeneratorException(e);
         }
         if ((endTimer - startTimer) > INIT_TIMEOUT) {
@@ -185,6 +186,7 @@ public class CodeGenerator implements ICodeGenerator {
 
     /**
      * Parse Process, and generate Code for Context Variables.
+     * 
      * @param designerContext the context to generate code from
      * @return the generated code
      * @throws CodeGeneratorException if an error occurs during Code Generation
@@ -207,14 +209,10 @@ public class CodeGenerator implements ICodeGenerator {
                 try {
                     content = proxy.generate();
                 } catch (JETException e) {
-                    Status status = new Status(Status.ERROR, CodeGeneratorActivator.PLUGIN_ID, Status.ERROR, e
-                            .getMessage(), e);
-                    CodeGeneratorActivator.getDefault().getLog().log(status);
+                    log.error(e.getMessage(), e);
                     throw new CodeGeneratorException(e);
                 } catch (CoreException e) {
-                    Status status = new Status(Status.ERROR, CodeGeneratorActivator.PLUGIN_ID, Status.ERROR, e
-                            .getMessage(), e);
-                    CodeGeneratorActivator.getDefault().getLog().log(status);
+                    log.error(e.getMessage(), e);
                     throw new CodeGeneratorException(e);
                 }
                 return content;
@@ -227,7 +225,7 @@ public class CodeGenerator implements ICodeGenerator {
      * Generate Code for a given Component.
      * 
      * @param type the internal component template
-     * @param argument the bean 
+     * @param argument the bean
      * @return the generated code
      * @throws CodeGeneratorException if an error occurs during Code Generation
      */
@@ -240,7 +238,7 @@ public class CodeGenerator implements ICodeGenerator {
      * Generate Code Part for a given Component.
      * 
      * @param type the internal component template
-     * @param argument the bean 
+     * @param argument the bean
      * @param part part of code to generate
      * @return the genrated code
      * @throws CodeGeneratorException if an error occurs during Code Generation
@@ -268,12 +266,10 @@ public class CodeGenerator implements ICodeGenerator {
         try {
             content.append(proxy.generate());
         } catch (JETException e) {
-            Status status = new Status(Status.ERROR, CodeGeneratorActivator.PLUGIN_ID, Status.ERROR, e.getMessage(), e);
-            CodeGeneratorActivator.getDefault().getLog().log(status);
+            log.error(e.getMessage(), e);
             throw new CodeGeneratorException(e);
         } catch (CoreException e) {
-            Status status = new Status(Status.ERROR, CodeGeneratorActivator.PLUGIN_ID, Status.ERROR, e.getMessage(), e);
-            CodeGeneratorActivator.getDefault().getLog().log(status);
+            log.error(e.getMessage(), e);
             throw new CodeGeneratorException(e);
         }
         return content;
@@ -281,6 +277,7 @@ public class CodeGenerator implements ICodeGenerator {
 
     /**
      * Generate Code Parts for a Sub Process .
+     * 
      * @param subProcess the suprocess
      * @param node the subprocess root
      * @param part the part of code to generate
@@ -399,14 +396,10 @@ public class CodeGenerator implements ICodeGenerator {
             content = content.append(proxy.generate());
             content = content.append(generateTypedComponentCode(EInternalTemplate.PART_FOOTER, node, part));
         } catch (JETException jetException) {
-            Status status = new Status(Status.ERROR, CodeGeneratorActivator.PLUGIN_ID, Status.ERROR, jetException
-                    .getMessage(), jetException);
-            CodeGeneratorActivator.getDefault().getLog().log(status);
+            log.error(jetException.getMessage(), jetException);
             throw new CodeGeneratorException(jetException);
         } catch (CoreException coreException) {
-            Status status = new Status(Status.ERROR, CodeGeneratorActivator.PLUGIN_ID, Status.ERROR, coreException
-                    .getMessage(), coreException);
-            CodeGeneratorActivator.getDefault().getLog().log(status);
+            log.error(coreException.getMessage(), coreException);
             throw new CodeGeneratorException(coreException);
         }
         return content.toString();
