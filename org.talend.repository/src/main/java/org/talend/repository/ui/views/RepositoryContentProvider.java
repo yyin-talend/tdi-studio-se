@@ -376,6 +376,10 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
             return repObj.getProperty();
         }
 
+        public void setProperty(Property property) {
+            repObj.setProperty(property);
+        }
+
         public String getVersion() {
             return repObj.getVersion();
         }
