@@ -54,4 +54,11 @@ public interface IMapperLink {
      */
     public LinkState getState();
 
+    /**
+     * DOC amaumont Comment method "setLevel".
+     * @param level
+     */
+    public void setLevel(Integer level);
+    public Integer getLevel();
+
 }

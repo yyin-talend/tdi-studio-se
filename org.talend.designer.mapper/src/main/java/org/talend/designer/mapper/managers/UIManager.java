@@ -943,9 +943,9 @@ public class UIManager {
         if (dataMapTableView.getZone() == Zone.INPUTS) {
             if (linkHasBeenAdded || linkHasBeenRemoved) {
                 checkTargetInputKey(currentModifiedITableEntry, checkInputKeyAutomatically, inputExpressionAppliedOrCanceled);
-                if (inputExpressionAppliedOrCanceled) {
-                    openChangeKeysDialog((InputDataMapTableView) dataMapTableView);
-                }
+            }
+            if (inputExpressionAppliedOrCanceled) {
+                openChangeKeysDialog((InputDataMapTableView) dataMapTableView);
             }
         }
 
@@ -961,7 +961,7 @@ public class UIManager {
         List<IColumnEntry> targetTableEntries = inputDataMapTableView.getDataMapTable().getColumnEntries();
         for (IColumnEntry entry : targetTableEntries) {
             InputColumnTableEntry inputEntry = (InputColumnTableEntry) entry;
-            if (!checkEntryHasValidKey(inputEntry)) {
+            if (checkEntryHasInvalidKey(inputEntry)) {
                 inputEntry.getMetadataColumn().setKey(false);
             }
         }
@@ -972,9 +972,9 @@ public class UIManager {
      * 
      * @param inputEntry
      */
-    private boolean checkEntryHasValidKey(InputColumnTableEntry inputEntry) {
-        return inputEntry.getMetadataColumn().isKey() && inputEntry.getExpression() == null
-                || inputEntry.getExpression().trim().length() == 0;
+    private boolean checkEntryHasInvalidKey(InputColumnTableEntry inputEntry) {
+        return inputEntry.getMetadataColumn().isKey() && (inputEntry.getExpression() == null
+                || inputEntry.getExpression().trim().length() == 0);
     }
 
     /**
@@ -993,7 +993,7 @@ public class UIManager {
         List<IColumnEntry> targetTableEntries = inputDataMapTableView.getDataMapTable().getColumnEntries();
         for (IColumnEntry entry : targetTableEntries) {
             InputColumnTableEntry inputEntry = (InputColumnTableEntry) entry;
-            if (checkEntryHasValidKey(inputEntry)) {
+            if (checkEntryHasInvalidKey(inputEntry)) {
                 return true;
             }
         }

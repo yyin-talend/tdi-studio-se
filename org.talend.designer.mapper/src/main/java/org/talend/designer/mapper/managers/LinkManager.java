@@ -31,6 +31,8 @@ import java.util.Map;
 import java.util.Set;
 
 import org.talend.designer.mapper.model.tableentry.ITableEntry;
+import org.talend.designer.mapper.model.tableentry.InputColumnTableEntry;
+import org.talend.designer.mapper.model.tableentry.VarTableEntry;
 import org.talend.designer.mapper.ui.visualmap.link.IMapperLink;
 import org.talend.designer.mapper.ui.visualmap.link.LinkState;
 
@@ -66,6 +68,14 @@ public class LinkManager {
 
     private Map<ITableEntry, Set<IMapperLink>> targetTableEntryToLinks = new HashMap<ITableEntry, Set<IMapperLink>>();
 
+    // levels
+
+    private Map<IMapperLink, Integer> linkToIndexLevel = new HashMap<IMapperLink, Integer>();
+
+    private List<List<IMapperLink>> inputLinksForLevels = new ArrayList<List<IMapperLink>>();
+
+    private List<List<IMapperLink>> varLinksForLevels = new ArrayList<List<IMapperLink>>();
+
     public LinkManager() {
         super();
         currentNumberLinks = 0;
@@ -83,13 +93,174 @@ public class LinkManager {
         links.add(link);
         ITableEntry sourceITableEntry = link.getPointLinkDescriptor1().getTableEntry();
         ITableEntry targetITableEntry = link.getPointLinkDescriptor2().getTableEntry();
-        Set<ITableEntry> targetDataMapTableEntries = getSourcesCollection(targetITableEntry);
-        targetDataMapTableEntries.add(sourceITableEntry);
-        Set<IMapperLink> targetGraphicalLinks = getGraphicalLinksFromTarget(targetITableEntry);
-        targetGraphicalLinks.add(link);
-        Set<IMapperLink> sourceGraphicalLinks = getGraphicalLinksFromSource(sourceITableEntry);
-        sourceGraphicalLinks.add(link);
+
+        Set<ITableEntry> sourcesDataMapTableEntries = getSourcesCollection(targetITableEntry);
+        sourcesDataMapTableEntries.add(sourceITableEntry);
+
+        Set<IMapperLink> graphicalLinksFromTarget = getGraphicalLinksFromTarget(targetITableEntry);
+        registerLevelForNewLink(link, graphicalLinksFromTarget);
+
+        graphicalLinksFromTarget.add(link);
+
+        Set<IMapperLink> graphicalLinksFromSources = getGraphicalLinksFromSource(sourceITableEntry);
+        graphicalLinksFromSources.add(link);
     }
+
+    /**
+     * DOC amaumont Comment method "registerLevelForNewLink".
+     * 
+     * @param link
+     * @param graphicalLinksFromTarget
+     */
+    private void registerLevelForNewLink(IMapperLink link, Set<IMapperLink> graphicalLinksFromTarget) {
+        boolean hasAlreadyInputTarget = false;
+        boolean hasAlreadyVarTarget = false;
+        ITableEntry targetEntry = link.getPointLinkDescriptor2().getTableEntry();
+        boolean hasSameZone = link.getPointLinkDescriptor1().getTableEntry().getClass() == targetEntry.getClass();
+
+        if (hasSameZone) {
+            boolean isInput = targetEntry instanceof InputColumnTableEntry;
+            boolean isVar = targetEntry instanceof VarTableEntry;
+
+            List<List<IMapperLink>> leveledLinks = null;
+            if (isInput) {
+                leveledLinks = inputLinksForLevels;
+            }
+
+            if (isVar) {
+                leveledLinks = varLinksForLevels;
+            }
+
+            int lstSize = leveledLinks.size();
+            for (int indexOfLeveledLink = 0; indexOfLeveledLink < lstSize; indexOfLeveledLink++) {
+                List<IMapperLink> linksFromLevelsList = leveledLinks.get(indexOfLeveledLink);
+                if (linksFromLevelsList != null && linksFromLevelsList.size() > 0) {
+                    IMapperLink linkFromLevelsList = linksFromLevelsList.get(0);
+                    ITableEntry sourceTableEntry = linkFromLevelsList.getPointLinkDescriptor1().getTableEntry();
+                    ITableEntry targetTableEntry = linkFromLevelsList.getPointLinkDescriptor2().getTableEntry();
+                    if (targetEntry == targetTableEntry) {
+
+                        if (sourceTableEntry instanceof InputColumnTableEntry && targetTableEntry instanceof InputColumnTableEntry) {
+                            hasAlreadyInputTarget = true;
+                        }
+                        if (sourceTableEntry instanceof VarTableEntry && targetTableEntry instanceof VarTableEntry) {
+                            hasAlreadyVarTarget = true;
+                        }
+                        if (hasAlreadyInputTarget || hasAlreadyVarTarget) {
+                            linksFromLevelsList.add(link);
+                            link.setLevel(indexOfLeveledLink + 1);
+                            break;
+                        }
+                    }
+                }
+            }
+
+            if (isInput && !hasAlreadyInputTarget || isVar && !hasAlreadyVarTarget) {
+                ArrayList<IMapperLink> list = new ArrayList<IMapperLink>();
+                int firstEmptyIndex = searchFirstEmptyIndexLeveledList(leveledLinks);
+                link.setLevel(firstEmptyIndex + 1);
+                list.add(link);
+                if (firstEmptyIndex < leveledLinks.size()) {
+                    leveledLinks.set(firstEmptyIndex, list);
+                } else {
+                    leveledLinks.add(list);
+                }
+            }
+        }
+    }
+
+    /**
+     * DOC amaumont Comment method "searchFirstFreeIndexLeveledList".
+     * 
+     * @param leveledLinks
+     */
+    private int searchFirstEmptyIndexLeveledList(List<List<IMapperLink>> leveledLinks) {
+
+        int freeIndex = leveledLinks.size();
+
+        int lstSize = leveledLinks.size();
+        for (int i = 0; i < lstSize; i++) {
+            if (leveledLinks.get(i) == null) {
+                freeIndex = i;
+                break;
+            }
+
+        }
+        return freeIndex;
+
+    }
+
+    /**
+     * DOC amaumont Comment method "addLink".
+     * 
+     * @param link
+     */
+    public void removeLink(IMapperLink link) {
+        currentNumberLinks--;
+
+        links.remove(link);
+        ITableEntry sourceITableEntry = link.getPointLinkDescriptor1().getTableEntry();
+        ITableEntry targetITableEntry = link.getPointLinkDescriptor2().getTableEntry();
+        Set<ITableEntry> targetDataMapTableEntries = getSourcesCollection(targetITableEntry);
+        targetDataMapTableEntries.remove(sourceITableEntry);
+        Set<IMapperLink> sourceGraphicalLinks = getGraphicalLinksFromSource(sourceITableEntry);
+        sourceGraphicalLinks.remove(link);
+        getGraphicalLinksFromTarget(targetITableEntry).remove(link);
+
+        unregisterLevelForRemovedLink(link, sourceGraphicalLinks);
+
+    }
+
+    /**
+     * DOC amaumont Comment method "unregisterLevelForRemovedLink".
+     * 
+     * @param link
+     * @param sourceGraphicalLinks
+     */
+    private void unregisterLevelForRemovedLink(IMapperLink link, Set<IMapperLink> sourceGraphicalLinks) {
+        ITableEntry targetEntry = link.getPointLinkDescriptor2().getTableEntry();
+        boolean hasSameZone = link.getPointLinkDescriptor1().getTableEntry().getClass() == targetEntry.getClass();
+
+        if (hasSameZone) {
+            boolean isInput = targetEntry instanceof InputColumnTableEntry;
+            boolean isVar = targetEntry instanceof VarTableEntry;
+
+            List<List<IMapperLink>> leveledLinks = null;
+            if (isInput) {
+                leveledLinks = inputLinksForLevels;
+            }
+
+            if (isVar) {
+                leveledLinks = varLinksForLevels;
+            }
+
+            boolean breakAll = false;
+
+            int lstSize = leveledLinks.size();
+            for (int indexOfLeveledLink = 0; indexOfLeveledLink < lstSize; indexOfLeveledLink++) {
+                List<IMapperLink> linksFromLevelsList = leveledLinks.get(indexOfLeveledLink);
+                if (linksFromLevelsList != null && linksFromLevelsList.size() > 0) {
+
+                    int lstSizeInternal = linksFromLevelsList.size();
+                    for (int i = 0; i < lstSizeInternal; i++) {
+                        IMapperLink currentLink = linksFromLevelsList.get(i);
+                        if (currentLink == link) {
+                            linksFromLevelsList.remove(i);
+                            if (linksFromLevelsList.size() == 0) {
+                                leveledLinks.set(indexOfLeveledLink, null);
+                                breakAll = true;
+                                break;
+                            }
+                        }
+                    } // for (int i = 0; i < lstSizeInternal; i++) {
+                    if (breakAll) {
+                        break;
+                    }
+                }
+            } // for (int indexOfLeveledLink = 0; indexOfLeveledLink < lstSize; indexOfLeveledLink++) {
+        }
+
+    } // method
 
     /**
      * DOC amaumont Comment method "getGraphicalLinks".
@@ -151,28 +322,12 @@ public class LinkManager {
     }
 
     /**
-     * DOC amaumont Comment method "addLink".
-     * 
-     * @param link
-     */
-    public void removeLink(IMapperLink link) {
-        currentNumberLinks--;
-
-        links.remove(link);
-        ITableEntry sourceITableEntry = link.getPointLinkDescriptor1().getTableEntry();
-        ITableEntry targetITableEntry = link.getPointLinkDescriptor2().getTableEntry();
-        Set<ITableEntry> targetDataMapTableEntries = getSourcesCollection(targetITableEntry);
-        targetDataMapTableEntries.remove(sourceITableEntry);
-        getGraphicalLinksFromSource(sourceITableEntry).remove(link);
-        getGraphicalLinksFromTarget(targetITableEntry).remove(link);
-    }
-
-    /**
      * DOC amaumont Comment method "clearLinks".
      */
     public void clearLinks() {
         links.clear();
         targetToSources.clear();
+        linkToIndexLevel.clear();
     }
 
     /**

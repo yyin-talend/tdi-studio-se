@@ -34,6 +34,7 @@ import org.talend.designer.mapper.model.tableentry.FilterTableEntry;
 import org.talend.designer.mapper.model.tableentry.ITableEntry;
 import org.talend.designer.mapper.ui.color.ColorInfo;
 import org.talend.designer.mapper.ui.color.ColorProviderMapper;
+import org.talend.designer.mapper.ui.visualmap.zone.Zone;
 
 /**
  * DOC amaumont class global comment. Detailled comment <br/>
@@ -51,11 +52,15 @@ public class StyleLinkFactory {
 
     private IStyleLink unselectedFilterStyle;
 
-    private IStyleLink selectedSameZoneStyle;
+    private IStyleLink selectedSameInputZoneStyle;
 
-    private IStyleLink unselectedSameZoneStyle;
+    private IStyleLink unselectedSameInputZoneStyle;
 
     private IStyleLink unselectedZoneToZoneStyle;
+
+    private IStyleLink selectedSameVarsZoneStyle;
+
+    private IStyleLink unselectedSameVarsZoneStyle;
 
     /**
      * DOC amaumont LinkFactory constructor comment.
@@ -71,11 +76,16 @@ public class StyleLinkFactory {
     private void init() {
 
         selectedZoneToZoneStyle = getSelectedZoneToOtherZoneStyle(ColorProviderMapper.getColor(ColorInfo.COLOR_SELECTED_ZONE_TO_ZONE_LINK));
+        unselectedZoneToZoneStyle = getUnselectedZoneToZoneStyle();
+
         selectedFilterStyle = getSelectedFilterStyle();
         unselectedFilterStyle = getUnselectedFilterStyle();
-        selectedSameZoneStyle = getSelectedSameZoneStyle();
-        unselectedSameZoneStyle = getUnselectedSameZoneStyle();
-        unselectedZoneToZoneStyle = getUnselectedZoneToZoneStyle();
+
+        selectedSameInputZoneStyle = getSelectedSameInputZoneStyle();
+        unselectedSameInputZoneStyle = getUnselectedSameInputZoneStyle();
+
+        selectedSameVarsZoneStyle = getSelectedSameVarsZoneStyle();
+        unselectedSameVarsZoneStyle = getUnselectedSameVarsZoneStyle();
 
     }
 
@@ -124,11 +134,19 @@ public class StyleLinkFactory {
                     style = unselectedZoneToZoneStyle;
                 }
             }
-        } else if (pointLinkDescriptorSource.getZone() == pointLinkDescriptorTarget.getZone()) {
+        } else if (pointLinkDescriptorSource.getZone() == Zone.INPUTS
+                && pointLinkDescriptorSource.getZone() == pointLinkDescriptorTarget.getZone()) {
             if (linkState == LinkState.SELECTED) {
-                style = selectedSameZoneStyle;
+                style = selectedSameInputZoneStyle;
             } else if (linkState == LinkState.UNSELECTED) {
-                style = unselectedSameZoneStyle;
+                style = unselectedSameInputZoneStyle;
+            }
+        } else if (pointLinkDescriptorSource.getZone() == Zone.VARS
+                && pointLinkDescriptorSource.getZone() == pointLinkDescriptorTarget.getZone()) {
+            if (linkState == LinkState.SELECTED) {
+                style = selectedSameVarsZoneStyle;
+            } else if (linkState == LinkState.UNSELECTED) {
+                style = unselectedSameVarsZoneStyle;
             }
         }
         return style;
@@ -163,9 +181,9 @@ public class StyleLinkFactory {
         style.setDrawableLink(getZoneToZoneLink(style));
         // ExtremityEastArrow eastArrowSource = new ExtremityEastArrow(style);
         // style.setExtremity1(eastArrowSource);
-        // ExtremityEastArrow eastArrowTarget = new ExtremityEastArrow(style);
-        // eastArrowTarget.setXOffset(-eastArrowTarget.getSize().x);
-        // style.setExtremity2(eastArrowTarget);
+         ExtremityEastArrow eastArrowTarget = new ExtremityEastArrow(style);
+         eastArrowTarget.setXOffset(-eastArrowTarget.getSize().x);
+         style.setExtremity2(eastArrowTarget);
         style.setForegroundColor(ColorProviderMapper.getColor(ColorInfo.COLOR_UNSELECTED_FILTER_LINK));
         return style;
     }
@@ -192,6 +210,9 @@ public class StyleLinkFactory {
         StyleLink style = new StyleLink();
         setCommonsStyleProperties(style);
         style.setDrawableLink(getZoneToZoneLink(style));
+        ExtremityEastArrow eastArrowTarget = new ExtremityEastArrow(style);
+        eastArrowTarget.setXOffset(-eastArrowTarget.getSize().x);
+        style.setExtremity2(eastArrowTarget);
         style.setForegroundColor(ColorProviderMapper.getColor(ColorInfo.COLOR_UNSELECTED_ZONE_TO_ZONE_LINK));
         return style;
     }
@@ -201,7 +222,43 @@ public class StyleLinkFactory {
      * 
      * @return
      */
-    private IStyleLink getUnselectedSameZoneStyle() {
+    private IStyleLink getUnselectedSameInputZoneStyle() {
+        StyleLink style = new StyleLink();
+        setCommonsStyleProperties(style);
+        style.setDrawableLink(getSameZoneLink(style));
+        ExtremityEastArrow eastArrowTarget = new ExtremityEastArrow(style);
+        eastArrowTarget.setXOffset(-eastArrowTarget.getSize().x);
+        style.setExtremity2(eastArrowTarget);
+        style.setForegroundColor(ColorProviderMapper.getColor(ColorInfo.COLOR_UNSELECTED_LOOKUP_LINKS));
+        return style;
+    }
+
+    /**
+     * DOC amaumont Comment method "getSelectedSameZoneStyle".
+     * 
+     * @param foregroundColor
+     * @return
+     */
+    public IStyleLink getSelectedSameInputZoneStyle() {
+        StyleLink style = new StyleLink();
+        setCommonsStyleProperties(style);
+        IDrawableLink sameZoneLink = getSameZoneLink(style);
+        style.setDrawableLink(sameZoneLink);
+        ExtremityWestArrow westArrow = new ExtremityWestArrow(style);
+        style.setExtremity1(westArrow);
+        ExtremityEastArrow eastArrowTarget = new ExtremityEastArrow(style);
+        eastArrowTarget.setXOffset(-eastArrowTarget.getSize().x);
+        style.setExtremity2(eastArrowTarget);
+        style.setForegroundColor(ColorProviderMapper.getColor(ColorInfo.COLOR_SELECTED_LOOKUP_LINKS));
+        return style;
+    }
+
+    /**
+     * DOC amaumont Comment method "getNotSelectedSameZoneStyle".
+     * 
+     * @return
+     */
+    private IStyleLink getUnselectedSameVarsZoneStyle() {
         StyleLink style = new StyleLink();
         setCommonsStyleProperties(style);
         style.setDrawableLink(getSameZoneLink(style));
@@ -220,10 +277,11 @@ public class StyleLinkFactory {
      * @param foregroundColor
      * @return
      */
-    private IStyleLink getSelectedSameZoneStyle() {
+    public IStyleLink getSelectedSameVarsZoneStyle() {
         StyleLink style = new StyleLink();
         setCommonsStyleProperties(style);
-        style.setDrawableLink(getSameZoneLink(style));
+        IDrawableLink sameZoneLink = getSameZoneLink(style);
+        style.setDrawableLink(sameZoneLink);
         ExtremityWestArrow westArrow = new ExtremityWestArrow(style);
         style.setExtremity1(westArrow);
         ExtremityEastArrow eastArrowTarget = new ExtremityEastArrow(style);

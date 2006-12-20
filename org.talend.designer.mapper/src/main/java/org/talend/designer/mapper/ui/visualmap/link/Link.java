@@ -59,6 +59,8 @@ public class Link implements IMapperLink {
 
     protected int widthTable2;
 
+    private Integer level;
+
     public Link(PointLinkDescriptor pointDescriptor1, PointLinkDescriptor pointDescriptor2, MapperManager mapperManager) {
         super();
         this.pointLinkDescriptor1 = pointDescriptor1;
@@ -112,12 +114,12 @@ public class Link implements IMapperLink {
         boundsOfSolidLine.height = boundsOfDrawing.height - 2 * MapperUI.OFFSET_VISIBLES_POINTS;
 
         drawableLink.getStyle().apply(gc);
-        
-//        gc.setForeground(new Color(gc.getDevice(), 200, 186, 225)); violet pastel
-//        gc.setForeground(new Color(gc.getDevice(), 160, 40, 210)); // violet
-//        gc.setForeground(new Color(gc.getDevice(), 200, 200, 0)); // 
-//        gc.setForeground(new Color(gc.getDevice(), 255, 150, 20)); // orange 
-//        gc.setForeground(new Color(gc.getDevice(), 255, 200, 70)); // orange pastel
+
+        // gc.setForeground(new Color(gc.getDevice(), 200, 186, 225)); violet pastel
+        // gc.setForeground(new Color(gc.getDevice(), 160, 40, 210)); // violet
+        // gc.setForeground(new Color(gc.getDevice(), 200, 200, 0)); //
+        // gc.setForeground(new Color(gc.getDevice(), 255, 150, 20)); // orange
+        // gc.setForeground(new Color(gc.getDevice(), 255, 200, 70)); // orange pastel
 
         if (!boundsOfSolidLine.contains(new Point(point1xForTraceLink, point1yOffset))
                 || !boundsOfSolidLine.contains(new Point(point2xForTraceLink, point2yOffset))) {
@@ -128,6 +130,10 @@ public class Link implements IMapperLink {
         } else {
             gc.setLineStyle(SWT.LINE_SOLID);
             // System.out.println("SWT.LINE_SOLID");
+        }
+
+        if (this.level != null) {
+            drawableLink.setConnectorWidth(this.level * 5);
         }
 
         drawableLink.draw(gc);
@@ -221,6 +227,24 @@ public class Link implements IMapperLink {
      */
     public void setPointLinkDescriptor2(PointLinkDescriptor pointDescriptor2) {
         this.pointLinkDescriptor2 = pointDescriptor2;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.mapper.ui.visualmap.link.IMapperLink#getLevel()
+     */
+    public Integer getLevel() {
+        return level;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.mapper.ui.visualmap.link.IMapperLink#setLevel(java.lang.Integer)
+     */
+    public void setLevel(Integer level) {
+        this.level = level;
     }
 
 }

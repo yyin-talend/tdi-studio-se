@@ -255,6 +255,8 @@ public class VarsDataMapTableView extends DataMapTableView {
                 mapperManager.getUiManager().refreshBackground(true, false);
                 table.setSelection(indexInsert);
                 removeEntryItem.setEnabled(true);
+                moveUpEntryItem.setEnabled(true);
+                moveDownEntryItem.setEnabled(true);
             }
 
         });
