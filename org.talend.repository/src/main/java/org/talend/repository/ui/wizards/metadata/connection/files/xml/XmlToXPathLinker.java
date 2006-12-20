@@ -454,6 +454,9 @@ public class XmlToXPathLinker extends TreeToTablesLinker<Object, Object> {
     private void createLoopLinks(String xPathExpression, TableItem tableItemTarget) {
 
         if (xPathExpression == null || xPathExpression.trim().length() == 0) {
+            loopXpathNodes.clear();
+            uniqueLoopNodes.clear();
+            allLoopNodes.clear();
             return;
         }
 
@@ -499,20 +502,18 @@ public class XmlToXPathLinker extends TreeToTablesLinker<Object, Object> {
             return;
         }
 
+        boolean expressionIsAbsolute = false;
+        if (relativeXpathPrm.trim().startsWith("/")) {
+            expressionIsAbsolute = true;
+        }
+
+        
         int nodesLoopMax = 50;
         int nodesFieldMax = 50;
 
         String relativeXpath = relativeXpathPrm;
 
         String currentLoopXPath = getCurrentLoopXPath();
-
-        if (currentLoopXPath == null || currentLoopXPath.trim().length() == 0) {
-            return;
-        }
-
-        if (relativeXpath == null || relativeXpath.trim().length() == 0) {
-            return;
-        }
 
         boolean limitLoopExceeded = false;
         boolean limitFieldExceeded = false;
@@ -576,7 +577,7 @@ public class XmlToXPathLinker extends TreeToTablesLinker<Object, Object> {
 
         }
 
-        if (limitLoopExceeded || limitFieldExceeded) {
+        if (limitLoopExceeded || limitFieldExceeded || expressionIsAbsolute) {
 
             String expression = null;
 
