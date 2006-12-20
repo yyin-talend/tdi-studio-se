@@ -296,8 +296,9 @@ public class UIManager {
                     }
 
                 });
-//                metadataTableEditorView.getTableViewerCreator().getSelectionHelper().setActiveFireSelectionChanged(false);
+                metadataTableEditorView.getTableViewerCreator().getSelectionHelper().setActiveFireSelectionChanged(false);
                 metadataTableEditorView.setMetadataTableEditor(metadataTableEditor);
+                metadataTableEditorView.getTableViewerCreator().getSelectionHelper().setActiveFireSelectionChanged(true);
                 dataMapTVCreator.getSelectionHelper().setActiveFireSelectionChanged(false);
                 metadataTableEditorView. getTableViewerCreator().getSelectionHelper().setSelection(dataMapTableViewer.getTable().getSelectionIndices());
                 dataMapTVCreator.getSelectionHelper().setActiveFireSelectionChanged(true);
@@ -623,9 +624,9 @@ public class UIManager {
             metadataTableEditorView = getOutputMetaEditorView();
         }
         if (metadataTableEditorView != null) {
-            view.getTableViewerCreatorForColumns().getSelectionHelper().setActiveFireSelectionChanged(false);
+            metadataTableEditorView.getTableViewerCreator().getSelectionHelper().setActiveFireSelectionChanged(false);
             metadataTableEditorView.getExtendedTableViewer().getTableViewerCreator().getSelectionHelper().setSelection(selectionIndices);
-            view.getTableViewerCreatorForColumns().getSelectionHelper().setActiveFireSelectionChanged(true);
+            metadataTableEditorView.getTableViewerCreator().getSelectionHelper().setActiveFireSelectionChanged(true);
         }
     }
 
