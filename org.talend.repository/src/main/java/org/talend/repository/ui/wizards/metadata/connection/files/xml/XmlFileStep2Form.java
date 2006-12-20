@@ -46,8 +46,10 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.ScrollBar;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Tree;
@@ -57,6 +59,7 @@ import org.talend.commons.ui.swt.dialogs.ErrorDialogWidthDetailArea;
 import org.talend.commons.ui.swt.formtools.Form;
 import org.talend.commons.ui.swt.formtools.LabelledCheckboxCombo;
 import org.talend.commons.ui.swt.formtools.UtilsButton;
+import org.talend.commons.ui.ws.WindowSystem;
 import org.talend.commons.utils.data.list.IListenableListListener;
 import org.talend.commons.utils.data.list.ListenableListEvent;
 import org.talend.commons.utils.encoding.CharsetToolkit;
@@ -207,7 +210,12 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
 
         // Group Schema Viewer
         Group group = Form.createGroup(mainComposite, 1, Messages.getString("XmlFileStep1.sourceSchema"), height);
+        group.setBackgroundMode(SWT.INHERIT_FORCE);
+
         availableXmlTree = new Tree(group, SWT.MULTI | SWT.BORDER);
+        availableXmlTree.setBackgroundMode(SWT.INHERIT_FORCE);
+        
+        
         // availableXmlTree.setVisible(false);
         GridData gridData2 = new GridData(GridData.FILL_BOTH);
         availableXmlTree.setLayoutData(gridData2);
@@ -215,11 +223,13 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
                 + TreePopulator.MAXIMUM_ROWS_TO_PREVIEW + " " + Messages.getString("FileStep1.fileViewerTip2"));
     }
 
-    private void addGroupSchemaTarget(final Composite mainComposite, final int width, final int height) {
+	private void addGroupSchemaTarget(final Composite mainComposite, final int width, final int height) {
         // Group Schema Viewer
         final Group group = Form.createGroup(mainComposite, 1, Messages.getString("XmlFileStep1.groupSchemaTarget"),
                 height);
-
+        group.setBackgroundMode(SWT.INHERIT_FORCE);
+        
+        
         CommandStackForComposite commandStack = new CommandStackForComposite(group);
 
         loopModel = new XmlExtractorLoopModel("Xpath loop expression");
@@ -228,13 +238,18 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
         loopTableEditorView.getExtendedTableViewer().setCommandStack(commandStack);
         GridData data2 = new GridData(GridData.FILL_HORIZONTAL);
         data2.heightHint = 70;
+        if(WindowSystem.isGTK()) {
+            data2.heightHint = 90;
+        }
         loopTableEditorView.getMainComposite().setLayoutData(data2);
+        loopTableEditorView.getMainComposite().setBackground(null);
 
         // Messages.getString("FileStep3.metadataDescription")
         fieldsModel = new XmlExtractorFieldModel("Fields to extract");
         fieldsTableEditorView = new ExtractionFieldsWithXPathEditorView(fieldsModel, group);
         fieldsTableEditorView.getExtendedTableViewer().setCommandStack(commandStack);
         fieldsTableEditorView.getMainComposite().setLayoutData(new GridData(GridData.FILL_BOTH));
+        fieldsTableEditorView.getMainComposite().setBackground(null);
 
     }
 

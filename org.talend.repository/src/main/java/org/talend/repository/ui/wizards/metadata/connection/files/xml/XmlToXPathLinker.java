@@ -36,6 +36,7 @@ import javax.xml.xpath.XPathFactory;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.GC;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -62,6 +63,7 @@ import org.talend.commons.ui.swt.tableviewer.selection.ILineSelectionListener;
 import org.talend.commons.ui.swt.tableviewer.selection.LineSelectionEvent;
 import org.talend.commons.ui.swt.tableviewer.selection.SelectionHelper;
 import org.talend.commons.ui.utils.TableUtils;
+import org.talend.commons.ui.ws.WindowSystem;
 import org.talend.commons.utils.data.list.IListenableListListener;
 import org.talend.commons.utils.data.list.ListenableListEvent;
 import org.talend.commons.utils.data.list.ListenableListEvent.TYPE;
@@ -322,10 +324,15 @@ public class XmlToXPathLinker extends TreeToTablesLinker<Object, Object> {
         clipBounds.x = 0;
         clipBounds.y = offset;
 
-        gc.setClipping(clipBounds);
+//        if(!WindowSystem.isGTK()) {
+        	gc.setClipping(clipBounds);
+//        }
 
         super.drawBackground(gc);
-        gc.setClipping((Rectangle) null);
+        
+//        if(!WindowSystem.isGTK()) {
+        	gc.setClipping((Rectangle) null);
+//        }
     }
 
     private void handleListenableListBeforeTableViewerRefreshedEvent(ListenableListEvent<SchemaTarget> event) {
