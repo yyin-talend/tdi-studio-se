@@ -86,9 +86,7 @@ public class RepositoryPlugin extends AbstractUIPlugin {
     }
 
     public static void log(String msg, Throwable e) {
-        // FIXME BQUIAN use ExceptionHandler.process(e);
-        IStatus status = new Status(IStatus.ERROR, PLUGIN_ID, IStatus.ERROR, msg, e);
-        getDefault().getLog().log(status);
+        ExceptionHandler.process(e);
     }
 
     public IPerlModuleService getPerlModuleService() {
