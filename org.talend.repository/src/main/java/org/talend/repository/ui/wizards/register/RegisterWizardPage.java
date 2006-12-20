@@ -123,8 +123,9 @@ public class RegisterWizardPage extends WizardPage {
 
         setControl(container);
         addListeners();
-//      checkFieldsValue();
-//        updatePageStatus();
+        // checkFieldsValue();
+        // updatePageStatus();
+        setPageComplete(false);
     }
 
     /**
