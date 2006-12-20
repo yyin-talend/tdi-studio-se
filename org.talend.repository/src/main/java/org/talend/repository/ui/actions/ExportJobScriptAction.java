@@ -29,6 +29,8 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.internal.IWorkbenchGraphicConstants;
 import org.eclipse.ui.internal.WorkbenchImages;
+import org.talend.commons.ui.image.EImage;
+import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNode.EProperties;
@@ -43,15 +45,6 @@ import org.talend.repository.ui.wizards.exportjob.JobScriptsExportWizard;
 public final class ExportJobScriptAction extends AContextualAction {
 
     private static final String EXPORTJOBSCRIPTS = "Export Job Scripts";
-
-    private static ExportJobScriptAction singleton;
-
-    public static ExportJobScriptAction getInstance() {
-        if (singleton == null) {
-            singleton = new ExportJobScriptAction();
-        }
-        return singleton;
-    }
 
     /*
      * (non-Javadoc)
@@ -85,7 +78,7 @@ public final class ExportJobScriptAction extends AContextualAction {
         super();
         this.setText(EXPORTJOBSCRIPTS);
         this.setToolTipText(EXPORTJOBSCRIPTS);
-        this.setImageDescriptor(WorkbenchImages.getImageDescriptor(IWorkbenchGraphicConstants.IMG_ETOOL_EXPORT_WIZ));
+        this.setImageDescriptor(ImageProvider.getImageDesc(EImage.EXPORT_ICON));
     }
 
     public void run() {

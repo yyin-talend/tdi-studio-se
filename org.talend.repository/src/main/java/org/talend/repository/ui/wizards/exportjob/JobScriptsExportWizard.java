@@ -59,6 +59,12 @@ public class JobScriptsExportWizard extends Wizard implements IExportWizard {
                 .getSection("JobScriptsExportWizard");//$NON-NLS-1$
         if (section == null) {
             section = workbenchSettings.addNewSection("JobScriptsExportWizard");//$NON-NLS-1$
+            section.put(JobScriptsExportWizardPage.STORE_SHELL_LAUNCHER_ID, true);
+            section.put(JobScriptsExportWizardPage.STORE_SYSTEM_ROUTINE_ID, true);
+            section.put(JobScriptsExportWizardPage.STORE_USER_ROUTINE_ID, true);
+            section.put(JobScriptsExportWizardPage.STORE_MODEL_ID, true);
+            section.put(JobScriptsExportWizardPage.STORE_JOB_ID,true);
+            section.put(JobScriptsExportWizardPage.STORE_CONTEXT_ID, true);
         }
         setDialogSettings(section);
     }

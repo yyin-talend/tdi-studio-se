@@ -22,7 +22,10 @@
 package org.talend.repository.ui.wizards.exportjob;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -34,6 +37,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
@@ -58,6 +62,8 @@ import org.talend.repository.model.ProxyRepositoryFactory;
  */
 public class JobScriptsManager {
 
+    private String[] launcherPerlScriptFile = { "run.sh", "run.bat" };
+
     /**
      * DOC qian Gets the export resources.
      * 
@@ -71,11 +77,11 @@ public class JobScriptsManager {
      * @return
      */
     public List<URL> getExportResources(ProcessItem[] process, boolean needLauncher, boolean needSystemRoutine,
-            boolean needUserRoutine, boolean needModel, boolean needJob, boolean needContext) {
+            boolean needUserRoutine, boolean needModel, boolean needJob, boolean needContext, String contextName) {
 
         List<URL> resources = new ArrayList<URL>();
 
-        resources.addAll(getLauncher(needLauncher));
+        resources.addAll(getLauncher(needLauncher, process, contextName));
 
         resources.addAll(getSystemRoutine(needSystemRoutine));
         resources.addAll(getUserRoutine(needUserRoutine));
@@ -86,26 +92,100 @@ public class JobScriptsManager {
         return resources;
     }
 
+    private String getTmpFolder() {
+        String tmpFold = System.getProperty("user.dir");
+        return tmpFold;
+    }
+
+    /**
+     * DOC qian Deletes the temporary files.
+     */
+    public void deleteTempFiles() {
+        String tmpFold = getTmpFolder();
+        for (int i = 0; i < launcherPerlScriptFile.length; i++) {
+            String fileName = launcherPerlScriptFile[i];
+            File file = new File(tmpFold, fileName);
+            if (file.exists()) {
+                file.delete();
+            }
+        }
+    }
+
     /**
      * DOC qian Gets perl intepreter.
      * 
      * @param needLauncher
+     * @param process
      * @return
      */
-    private List<URL> getLauncher(boolean needLauncher) {
+    private List<URL> getLauncher(boolean needLauncher, ProcessItem[] process, String contextName) {
+
         List<URL> list = new ArrayList<URL>();
-        if (needLauncher) {
-            String perlIntepreter = getPerlLauncher();
-            File perlIntepreterFile = new File(perlIntepreter);
-            if (perlIntepreterFile.exists() && perlIntepreterFile.isFile()) {
-                try {
-                    list.add(perlIntepreterFile.toURL());
-                } catch (Exception e) {
-                    RepositoryPlugin.log("get perl intepreter", e);
+        if (!needLauncher) {
+            return list;
+        }
+
+        String cmd = getCommandByTalendJob(getCurrentProjectName(), process[0].getProperty().getLabel(), contextName);
+
+        String tmpFold = getTmpFolder();
+        PrintWriter pw = null;
+        try {
+            for (int i = 0; i < launcherPerlScriptFile.length; i++) {
+                String fileName = launcherPerlScriptFile[i];
+                File file = new File(tmpFold, fileName);
+                file.createNewFile();
+                pw = new PrintWriter(new FileOutputStream(file));
+                pw.print(cmd);
+                pw.flush();
+
+                list.add(file.toURL());
+                pw.close();
+            }
+        } catch (Exception e) {
+            RepositoryPlugin.log("generate file", e);
+        } finally {
+            try {
+                if (pw != null) {
+                    pw.close();
                 }
+            } catch (Exception e) {
+                // TODO: handle exception
             }
         }
+
         return list;
+    }
+
+    // FIXME to reuse the exstentent code of this implementation
+    public String getCommandByTalendJob(String project, String jobName, String context) {
+        String contextArg = "--context=";
+
+        String projectSeparator = ".process";
+
+        String wordSeparator = "_";
+
+        String perlExt = ".pl";
+        IPreferenceStore prefStore = CorePlugin.getDefault().getPreferenceStore();
+        String perlInterpreter = prefStore.getString(ITalendCorePrefConstants.PERL_INTERPRETER);
+        if (perlInterpreter == null || perlInterpreter.length() == 0) {
+            // throw new ProcessorException(Messages.getString("Processor.configurePerl")); //$NON-NLS-1$
+        }
+
+        String perlLib = null;
+
+        String perlCode = project + projectSeparator + wordSeparator + jobName + perlExt;
+
+        String contextCode = project + projectSeparator + wordSeparator + jobName + wordSeparator + context + perlExt;
+
+        String[] cmd = new String[] { perlInterpreter, perlCode, contextArg + contextCode };
+
+        StringBuffer sb = new StringBuffer();
+        sb.append("");
+        for (String s : cmd) {
+            sb.append(s).append(' ');
+        }
+        sb.deleteCharAt(sb.length() - 1);
+        return sb.toString();
     }
 
     /**

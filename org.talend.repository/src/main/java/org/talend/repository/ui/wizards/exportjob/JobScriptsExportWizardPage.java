@@ -45,7 +45,6 @@ import org.eclipse.ui.internal.wizards.datatransfer.DataTransferMessages;
 import org.eclipse.ui.internal.wizards.datatransfer.WizardFileSystemResourceExportPage1;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.repository.IRepositoryObject;
-import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.RepositoryNode;
 
 /**
@@ -78,17 +77,17 @@ public class JobScriptsExportWizardPage extends WizardFileSystemResourceExportPa
     private Text laucherText;
 
     // dialog store id constants
-    private final static String STORE_SHELL_LAUNCHER_ID = "JobScriptsExportWizardPage.STORE_SHELL_LAUNCHER_ID"; //$NON-NLS-1$
+    public final static String STORE_SHELL_LAUNCHER_ID = "JobScriptsExportWizardPage.STORE_SHELL_LAUNCHER_ID"; //$NON-NLS-1$
 
-    private final static String STORE_SYSTEM_ROUTINE_ID = "JobScriptsExportWizardPage.STORE_SYSTEM_ROUTINE_ID"; //$NON-NLS-1$
+    public final static String STORE_SYSTEM_ROUTINE_ID = "JobScriptsExportWizardPage.STORE_SYSTEM_ROUTINE_ID"; //$NON-NLS-1$
 
-    private static final String STORE_USER_ROUTINE_ID = "JobScriptsExportWizardPage.STORE_USER_ROUTINE_ID"; //$NON-NLS-1$
+    public static final String STORE_USER_ROUTINE_ID = "JobScriptsExportWizardPage.STORE_USER_ROUTINE_ID"; //$NON-NLS-1$
 
-    private final static String STORE_MODEL_ID = "JobScriptsExportWizardPage.STORE_MODEL_ID"; //$NON-NLS-1$
+    public final static String STORE_MODEL_ID = "JobScriptsExportWizardPage.STORE_MODEL_ID"; //$NON-NLS-1$
 
-    private final static String STORE_JOB_ID = "JobScriptsExportWizardPage.STORE_JOB_ID"; //$NON-NLS-1$
+    public final static String STORE_JOB_ID = "JobScriptsExportWizardPage.STORE_JOB_ID"; //$NON-NLS-1$
 
-    private final static String STORE_CONTEXT_ID = "JobScriptsExportWizardPage.STORE_CONTEXT_ID"; //$NON-NLS-1$
+    public final static String STORE_CONTEXT_ID = "JobScriptsExportWizardPage.STORE_CONTEXT_ID"; //$NON-NLS-1$
 
     private static final String STORE_DESTINATION_NAMES_ID = "JobScriptsExportWizardPage.STORE_DESTINATION_NAMES_ID"; //$NON-NLS-1$
 
@@ -123,7 +122,7 @@ public class JobScriptsExportWizardPage extends WizardFileSystemResourceExportPa
     public JobScriptsExportWizardPage(IStructuredSelection selection) {
         this("jobscriptsExportPage1", selection); //$NON-NLS-1$
         setTitle(DataTransferMessages.ArchiveExport_exportTitle);
-        setDescription(Messages.getString("JobScriptsExportWizardPage.dialogDesc")); //$NON-NLS-1$
+        setDescription("Export job scripts to an archive file on the local file system.");
     }
 
     /**
@@ -197,7 +196,7 @@ public class JobScriptsExportWizardPage extends WizardFileSystemResourceExportPa
     protected void createOptions(Composite optionsGroup, Font font) {
         // create directory structure radios
         shellLauncherButton = new Button(optionsGroup, SWT.CHECK | SWT.LEFT);
-        shellLauncherButton.setText(Messages.getString("JobScriptsExportWizardPage.launcher")); //$NON-NLS-1$
+        shellLauncherButton.setText("Shell launcher");
         shellLauncherButton.setSelection(true);
         shellLauncherButton.setFont(font);
 
@@ -206,17 +205,17 @@ public class JobScriptsExportWizardPage extends WizardFileSystemResourceExportPa
 
         // create directory structure radios
         systemRoutineButton = new Button(optionsGroup, SWT.CHECK | SWT.LEFT);
-        systemRoutineButton.setText(Messages.getString("JobScriptsExportWizardPage.sysRoutines")); //$NON-NLS-1$
+        systemRoutineButton.setText("System Routines");
         systemRoutineButton.setSelection(true);
         systemRoutineButton.setFont(font);
 
         userRoutineButton = new Button(optionsGroup, SWT.CHECK | SWT.LEFT);
-        userRoutineButton.setText(Messages.getString("JobScriptsExportWizardPage.userRoutines")); //$NON-NLS-1$
+        userRoutineButton.setText("User Routines");
         userRoutineButton.setSelection(true);
         userRoutineButton.setFont(font);
 
         modelButton = new Button(optionsGroup, SWT.CHECK | SWT.LEFT);
-        modelButton.setText(Messages.getString("JobScriptsExportWizardPage.required")); //$NON-NLS-1$
+        modelButton.setText("Required talend Perl modules");
         modelButton.setSelection(true);
         modelButton.setFont(font);
         GridData gd = new GridData(GridData.FILL_HORIZONTAL);
@@ -224,7 +223,7 @@ public class JobScriptsExportWizardPage extends WizardFileSystemResourceExportPa
         modelButton.setLayoutData(gd);
 
         jobButton = new Button(optionsGroup, SWT.CHECK | SWT.LEFT);
-        jobButton.setText(Messages.getString("JobScriptsExportWizardPage.job")); //$NON-NLS-1$
+        jobButton.setText("Job Perl scripts");
         jobButton.setSelection(true);
         jobButton.setFont(font);
         gd = new GridData(GridData.FILL_HORIZONTAL);
@@ -232,7 +231,7 @@ public class JobScriptsExportWizardPage extends WizardFileSystemResourceExportPa
         jobButton.setLayoutData(gd);
 
         contextButton = new Button(optionsGroup, SWT.CHECK | SWT.LEFT);
-        contextButton.setText(Messages.getString("JobScriptsExportWizardPage.contex")); //$NON-NLS-1$
+        contextButton.setText("Context perl scripts");
         contextButton.setSelection(true);
         contextButton.setFont(font);
 
@@ -301,7 +300,7 @@ public class JobScriptsExportWizardPage extends WizardFileSystemResourceExportPa
      * boolean indicating success.
      */
     protected boolean executeExportOperation(ArchiveFileExportOperationFullPath op) {
-        op.setCreateLeadupStructure(false);
+        op.setCreateLeadupStructure(true);
         op.setUseCompression(true);
 
         try {
@@ -344,8 +343,10 @@ public class JobScriptsExportWizardPage extends WizardFileSystemResourceExportPa
         // about to invoke the operation so save our state
         saveWidgetValues();
 
-        return executeExportOperation(new ArchiveFileExportOperationFullPath(null, resourcesToExport,
-                getDestinationValue()));
+        boolean ok = executeExportOperation(new ArchiveFileExportOperationFullPath(resourcesToExport,
+                getDestinationValue(), process[0].getProperty().getLabel()));
+        manager.deleteTempFiles();
+        return ok;
     }
 
     /**
@@ -363,7 +364,7 @@ public class JobScriptsExportWizardPage extends WizardFileSystemResourceExportPa
         boolean needContext = contextButton.getSelection();
 
         return manager.getExportResources(process, needLauncher, needSystemRoutine, needUserRoutine, needModel,
-                needJob, needContext);
+                needJob, needContext, contextCombo.getText());
     }
 
     /**
