@@ -910,35 +910,13 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                     paramValues.addAll(newParamValues);
 
                     if (param.isRepositoryValueUsed() && param.getRepositoryValue().equals("XML_MAPPING")) {
-                        String[] list = param.getListRepositoryItems();
-                        List<Map<String, Object>> tableInfo = (List<Map<String, Object>>) elem.getPropertyValue(param
-                                .getName());
-                        int column = 0;
-                        boolean found = false;
-                        for (int k = 0; (k < list.length) && (!found); k++) {
-                            if (list[k].equals("XML_QUERY")) {
-                                column = k;
-                                found = true;
-                            }
-                        }
                         String connectionSelected = (String) elem
                                 .getPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE.getName());
-                        Object objectValue = (Object) RepositoryToComponentProperty.getValue(
-                                repositoryConnectionItemMap.get(connectionSelected).getConnection(), "XML_MAPPING");
-                        EList schemaList = (EList) objectValue;
-                        String[] names = param.getListItemsDisplayCodeName();
-                        IMetadataTable table = ((Node) elem).getMetadataList().get(0);
-                        for (int k = 0; k < schemaList.size(); k++) {
-                            if (tableInfo.size() > k) {
-                                Map<String, Object> line = tableInfo.get(k);
-                                if (table != null) {
-                                    if (table.getListColumns().size() > k) {
-                                        SchemaTarget schemaTarget = (SchemaTarget) schemaList.get(k);
-                                        line.put(names[column], schemaTarget.getRelativeXPathQuery());
-                                    }
-                                }
-                            }
-                        }
+                        List<Map<String, Object>> table = (List<Map<String, Object>>) elem.getPropertyValue(param
+                                .getName());
+                        IMetadataTable metaTable = ((Node) elem).getMetadataList().get(0);
+                        RepositoryToComponentProperty.getTableXmlFileValue(repositoryConnectionItemMap.get(connectionSelected)
+                                .getConnection(), "XML_MAPPING", param, table, metaTable);
                     }
                 }
 
@@ -2306,7 +2284,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
         if ((labelSize2.x + ITabbedPropertyConstants.HSPACE) > currentLabelWidth2) {
             currentLabelWidth2 = labelSize2.x + ITabbedPropertyConstants.HSPACE;
         }
-        
+
         int tableHorizontalOffset = -5;
         if (numInRow == 1) {
             if (lastControlPrm != null) {

@@ -112,36 +112,20 @@ public class ChangeValuesFromRepository extends Command {
                                 }
                             }
                         } else {
-                            if (param.getField().equals(EParameterFieldType.TABLE)
-                                    && param.getRepositoryValue().equals("XML_MAPPING")) {
-                                boolean found = false;
-                                String[] list = param.getListRepositoryItems();
-                                List<Map<String, Object>> tableInfo = (List<Map<String, Object>>) elem
-                                        .getPropertyValue(param.getName());
-                                int column = 0;
-                                for (int i = 0; (i < list.length) && (!found); i++) {
-                                    if (list[i].equals("XML_QUERY")) {
-                                        column = i;
-                                        found = true;
-                                    }
-                                }
-                                EList schemaList = (EList) objectValue;
-                                String[] names = param.getListItemsDisplayCodeName();
-                                IMetadataTable table = ((Node) elem).getMetadataList().get(0);
-                                for (int i = 0; i < schemaList.size(); i++) {
-                                    Map<String, Object> line = tableInfo.get(i);
-                                    if (table != null) {
-                                        if (table.getListColumns().size() > i) {
-                                            SchemaTarget schemaTarget = (SchemaTarget) schemaList.get(i);
-                                            line.put(names[column], schemaTarget.getRelativeXPathQuery());
-                                        }
-                                    }
-                                }
-                            } else {
-                                elem.setPropertyValue(param.getName(), objectValue);
-                            }
+                            elem.setPropertyValue(param.getName(), objectValue);
                         }
                         param.setRepositoryValueUsed(true);
+                    } else {
+                        if (param.getField().equals(EParameterFieldType.TABLE)
+                                && param.getRepositoryValue().equals("XML_MAPPING")) {
+
+                            List<Map<String, Object>> table = (List<Map<String, Object>>) elem
+                                    .getPropertyValue(param.getName());
+                            IMetadataTable metaTable = ((Node) elem).getMetadataList().get(0);
+                            RepositoryToComponentProperty.getTableXmlFileValue(connection, "XML_MAPPING", param,
+                                    table, metaTable);
+                            param.setRepositoryValueUsed(true);
+                        }
                     }
                 }
             }
