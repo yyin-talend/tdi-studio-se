@@ -545,10 +545,14 @@ public class LoginComposite extends Composite {
         }
         projectViewer.setInput(projects);
 
-        // Try to select the last recently used project
-        selectLastUsedProject();
+        if (projects.length > 0) {
+            // Try to select the last recently used project
+            selectLastUsedProject();
 
-        projectViewer.getControl().setEnabled(true);
+            projectViewer.getControl().setEnabled(true);
+        } else {
+            projectViewer.getControl().setEnabled(false);
+        }
     }
 
     /**
