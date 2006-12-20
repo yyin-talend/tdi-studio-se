@@ -52,6 +52,7 @@ import org.talend.repository.registeruser.RegisterManagement;
 import org.talend.repository.ui.wizards.license.LicenseWizard;
 import org.talend.repository.ui.wizards.license.LicenseWizardDialog;
 import org.talend.repository.ui.wizards.register.RegisterWizard;
+import org.talend.repository.ui.wizards.register.RegisterWizardDialog;
 
 /**
  * Login dialog. <br/>
@@ -119,7 +120,7 @@ public class LoginDialog extends TitleAreaDialog {
             }
             if (!RegisterManagement.isProductRegistered()) {
                 RegisterWizard registerWizard = new RegisterWizard();
-                WizardDialog dialog = new WizardDialog(getShell(), registerWizard);
+                WizardDialog dialog = new RegisterWizardDialog(getShell(), registerWizard);
                 dialog.setTitle(Messages.getString("RegisterWizard.windowTitle")); //$NON-NLS-1$
                 if (dialog.open() == WizardDialog.OK) {
                     RegisterManagement.register(registerWizard.getEmail(), registerWizard.getCountry(), registerWizard

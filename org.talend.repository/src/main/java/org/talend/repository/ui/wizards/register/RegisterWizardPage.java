@@ -49,299 +49,301 @@ import org.talend.repository.model.RepositoryConstants;
 /**
  * Page for new project details. <br/>
  * 
- * $Id: RegisterWizardPage.java 1 2006-09-29 17:06:40 +0000 (ven., 29 sept.
- * 2006) nrousseau $
+ * $Id$
  * 
  */
 public class RegisterWizardPage extends WizardPage {
 
-	/** EMail field. */
-	private Text emailText;
+    /**
+     * 
+     */
+    private static final String DESCRIPTION = Messages.getString("RegisterWizardPage.description"); //$NON-NLS-1$
 
-	/** Country. */
-	private Combo countryCombo;
+    /** EMail field. */
+    private Text emailText;
 
-	private int countryToSelect = 0;
+    /** Country. */
+    private Combo countryCombo;
 
-	private IStatus emailStatus;
+    private int countryToSelect = 0;
 
-	private Label httpProxyHostLabel;
+    private IStatus emailStatus;
 
-	private Label httpProxyPortLabel;
+    private Label httpProxyHostLabel;
 
-	private Text httpProxyHostText;
+    private Label httpProxyPortLabel;
 
-	private Text httpProxyPortText;
+    private Text httpProxyHostText;
 
-	private Button enableHttpProxy;
+    private Text httpProxyPortText;
 
-	/**
-	 * Constructs a new RegisterWizardPage.
-	 * 
-	 * @param server
-	 * @param password
-	 * @param author
-	 */
-	public RegisterWizardPage() {
-		super("WizardPage"); //$NON-NLS-1$
+    private Button enableHttpProxy;
 
-		setTitle(Messages.getString("RegisterWizardPage.title")); //$NON-NLS-1$
-		setDescription(Messages.getString("RegisterWizardPage.description")); //$NON-NLS-1$
-	}
+    /**
+     * Constructs a new RegisterWizardPage.
+     * 
+     * @param server
+     * @param password
+     * @param author
+     */
+    public RegisterWizardPage() {
+        super("WizardPage"); //$NON-NLS-1$
 
-	/**
-	 * @see org.eclipse.jface.dialogs.IDialogPage#createControl(org.eclipse.swt.widgets.Composite)
-	 */
-	public void createControl(Composite parent) {
-		Composite container = new Composite(parent, SWT.NONE);
+        setTitle(Messages.getString("RegisterWizardPage.title")); //$NON-NLS-1$
+        setDescription(DESCRIPTION);
+    }
 
-		GridLayout layout = new GridLayout(2, false);
-		container.setLayout(layout);
+    /**
+     * @see org.eclipse.jface.dialogs.IDialogPage#createControl(org.eclipse.swt.widgets.Composite)
+     */
+    public void createControl(Composite parent) {
+        Composite container = new Composite(parent, SWT.NONE);
 
-		// Email
-		Label emailLabel = new Label(container, SWT.NONE);
-		emailLabel.setText(Messages.getString("RegisterWizardPage.email")); //$NON-NLS-1$
+        GridLayout layout = new GridLayout(2, false);
+        container.setLayout(layout);
 
-		emailText = new Text(container, SWT.BORDER);
-		emailText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+        // Email
+        Label emailLabel = new Label(container, SWT.NONE);
+        emailLabel.setText(Messages.getString("RegisterWizardPage.email")); //$NON-NLS-1$
 
-		// Country
-		Label countryLabel = new Label(container, SWT.NONE);
-		countryLabel.setText(Messages.getString("RegisterWizardPage.country")); //$NON-NLS-1$
+        emailText = new Text(container, SWT.BORDER);
+        emailText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
-		countryCombo = new Combo(container, SWT.BORDER | SWT.READ_ONLY);
-		countryCombo.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		countryCombo.setItems(initiateCountryList());
-		countryCombo.select(countryToSelect);
+        // Country
+        Label countryLabel = new Label(container, SWT.NONE);
+        countryLabel.setText(Messages.getString("RegisterWizardPage.country")); //$NON-NLS-1$
 
-		createSpacer(container, 2);
-		createHttpProxy(container, 2);
+        countryCombo = new Combo(container, SWT.BORDER | SWT.READ_ONLY);
+        countryCombo.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+        countryCombo.setItems(initiateCountryList());
+        countryCombo.select(countryToSelect);
 
-		setControl(container);
-		addListeners();
-		setPageComplete(false);
-	}
+        createSpacer(container, 2);
+        createHttpProxy(container, 2);
 
-	/**
-	 * DOC mhirt Comment method "initiateCountryList".
-	 * 
-	 * @return
-	 */
-	private String[] initiateCountryList() {
-		SortedSet<String> countryList = new TreeSet<String>();
-		for (Locale locale : Locale.getAvailableLocales()) {
-			if (locale.getDisplayCountry().compareTo("") != 0) {
-				countryList.add(locale.getDisplayCountry());
-			}
-		}
-		// initiate selection of default country
-		String defaultCountry = Locale.getDefault().getDisplayCountry();
-		int i = 0;
-		for (String country : countryList) {
-			if (country.equals(defaultCountry)) {
-				countryToSelect = i;
-				break;
-			}
-			i++;
-		}
-		return countryList.toArray(new String[] {});
-	}
+        setControl(container);
+        addListeners();
+//      checkFieldsValue();
+//        updatePageStatus();
+    }
 
-	private void addListeners() {
-		emailText.addModifyListener(new ModifyListener() {
+    /**
+     * DOC mhirt Comment method "initiateCountryList".
+     * 
+     * @return
+     */
+    private String[] initiateCountryList() {
+        SortedSet<String> countryList = new TreeSet<String>();
+        for (Locale locale : Locale.getAvailableLocales()) {
+            if (locale.getDisplayCountry().compareTo("") != 0) {
+                countryList.add(locale.getDisplayCountry());
+            }
+        }
+        // initiate selection of default country
+        String defaultCountry = Locale.getDefault().getDisplayCountry();
+        int i = 0;
+        for (String country : countryList) {
+            if (country.equals(defaultCountry)) {
+                countryToSelect = i;
+                break;
+            }
+            i++;
+        }
+        return countryList.toArray(new String[] {});
+    }
 
-			public void modifyText(ModifyEvent e) {
-				checkFieldsValue();
-			}
-		});
-	}
+    private void addListeners() {
+        emailText.addModifyListener(new ModifyListener() {
 
-	/**
-	 * DOC ocarbone Comment method "checkField".
-	 */
-	protected void checkFieldsValue() {
-		emailStatus = createOkStatus();
-		// Email Name
-		if (emailText.getText().length() == 0) {
-			emailStatus = new Status(IStatus.ERROR, RepositoryPlugin.PLUGIN_ID,
-					IStatus.OK, Messages
-							.getString("RegisterWizardPage.emailEmpty"), null); //$NON-NLS-1$
-		} else {
-			// Reg Exp validation
-			if (!Pattern.matches(RepositoryConstants.MAIL_PATTERN, emailText
-					.getText())) {
-				emailStatus = new Status(
-						IStatus.ERROR,
-						RepositoryPlugin.PLUGIN_ID,
-						IStatus.OK,
-						Messages.getString("RegisterWizardPage.emailNotValid"), null); //$NON-NLS-1$
-			}
-		}
-		updatePageStatus();
-	}
+            public void modifyText(ModifyEvent e) {
+                checkFieldsValue();
+            }
+        });
+    }
 
-	private void updatePageStatus() {
-		IStatus findMostSevere = findMostSevere();
-		setMessage(findMostSevere);
-		setPageComplete((findMostSevere != null) ? (findMostSevere
-				.getSeverity() != IStatus.ERROR) : true);
-	}
+    /**
+     * DOC ocarbone Comment method "checkField".
+     */
+    protected void checkFieldsValue() {
+        emailStatus = createOkStatus();
+        // Email Name
+        if (emailText.getText().length() == 0) {
+            emailStatus = new Status(IStatus.ERROR, RepositoryPlugin.PLUGIN_ID, IStatus.OK, Messages
+                    .getString("RegisterWizardPage.emailEmpty"), null); //$NON-NLS-1$
+        } else {
+            // Reg Exp validation
+            if (!Pattern.matches(RepositoryConstants.MAIL_PATTERN, emailText.getText())) {
+                emailStatus = new Status(IStatus.ERROR, RepositoryPlugin.PLUGIN_ID, IStatus.OK, Messages
+                        .getString("RegisterWizardPage.emailNotValid"), null); //$NON-NLS-1$
+            }
+        }
+        updatePageStatus();
+    }
 
-	private IStatus findMostSevere() {
-		IStatus status = null;
-		if (emailStatus.getSeverity() == IStatus.ERROR) {
-			status = emailStatus;
-		}
-		return status;
-	}
+    private void updatePageStatus() {
+        IStatus findMostSevere = findMostSevere();
+        setMessage(findMostSevere);
+        setPageComplete((findMostSevere != null) ? (findMostSevere.getSeverity() != IStatus.ERROR) : true);
+    }
 
-	private void setMessage(IStatus status) {
-		if ((status != null) && (IStatus.ERROR == status.getSeverity())) {
-			setErrorMessage(status.getMessage());
-			setMessage(""); //$NON-NLS-1$
-		} else {
-			setMessage("");
-			setErrorMessage(null);
-		}
-	}
+    private IStatus findMostSevere() {
+        IStatus status = null;
+        if (emailStatus.getSeverity() == IStatus.ERROR) {
+            status = emailStatus;
+        }
+        return status;
+    }
 
-	public String getEmail() {
-		return emailText.getText();
-	}
+    private void setMessage(IStatus status) {
+        if ((status != null) && (IStatus.ERROR == status.getSeverity())) {
+            setErrorMessage(status.getMessage());
+            setMessage(""); //$NON-NLS-1$
+        } else {
+            setMessage(DESCRIPTION);
+            setErrorMessage(null);
+        }
+    }
 
-	public String getCountry() {
-		if (countryCombo.getSelectionIndex() != -1) {
-			String selectedCountry = countryCombo.getItem(countryCombo
-					.getSelectionIndex());
-			for (Locale locale : Locale.getAvailableLocales()) {
-				if (locale.getDisplayCountry().compareTo(selectedCountry) == 0) {
-					return locale.getCountry();
-				}
-			}
-		}
-		return null;
-	}
+    public String getEmail() {
+        return emailText.getText();
+    }
 
-	private static IStatus createOkStatus() {
-		return new Status(IStatus.OK, RepositoryPlugin.PLUGIN_ID, IStatus.OK,
-				"", null); //$NON-NLS-1$
-	}
+    public String getCountry() {
+        if (countryCombo.getSelectionIndex() != -1) {
+            String selectedCountry = countryCombo.getItem(countryCombo.getSelectionIndex());
+            for (Locale locale : Locale.getAvailableLocales()) {
+                if (locale.getDisplayCountry().compareTo(selectedCountry) == 0) {
+                    return locale.getCountry();
+                }
+            }
+        }
+        return null;
+    }
 
-	protected void createHttpProxy(Composite composite, int columnSpan) {
-		Group group = new Group(composite, SWT.NONE);
-		group.setText(Messages.getString("RegisterWizardPage.proxyGroup"));
-		GridLayout layout = new GridLayout();
-		layout.numColumns = 2;
-		group.setLayout(layout);
-		GridData gd = new GridData(GridData.FILL_HORIZONTAL);
-		gd.horizontalSpan = columnSpan;
-		group.setLayoutData(gd);
+    private static IStatus createOkStatus() {
+        return new Status(IStatus.OK, RepositoryPlugin.PLUGIN_ID, IStatus.OK, "", null); //$NON-NLS-1$
+    }
 
-		enableHttpProxy = new Button(group, SWT.CHECK);
-		enableHttpProxy.setText(Messages
-				.getString("RegisterWizardPage.enableHttpProxy"));
-		gd = new GridData();
-		gd.horizontalSpan = 2;
-		enableHttpProxy.setLayoutData(gd);
+    protected void createHttpProxy(Composite composite, int columnSpan) {
+        Group group = new Group(composite, SWT.NONE);
+        group.setText(Messages.getString("RegisterWizardPage.proxyGroup"));
+        GridLayout layout = new GridLayout();
+        layout.numColumns = 2;
+        group.setLayout(layout);
+        GridData gd = new GridData(GridData.FILL_HORIZONTAL);
+        gd.horizontalSpan = columnSpan;
+        group.setLayoutData(gd);
 
-		httpProxyHostLabel = new Label(group, SWT.NONE);
-		httpProxyHostLabel.setText(Messages
-				.getString("RegisterWizardPage.httpProxyHost"));
+        enableHttpProxy = new Button(group, SWT.CHECK);
+        enableHttpProxy.setText(Messages.getString("RegisterWizardPage.enableHttpProxy"));
+        gd = new GridData();
+        gd.horizontalSpan = 2;
+        enableHttpProxy.setLayoutData(gd);
 
-		httpProxyHostText = new Text(group, SWT.SINGLE | SWT.BORDER);
-		httpProxyHostText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+        httpProxyHostLabel = new Label(group, SWT.NONE);
+        httpProxyHostLabel.setText(Messages.getString("RegisterWizardPage.httpProxyHost"));
 
-		httpProxyPortLabel = new Label(group, SWT.NONE);
-		httpProxyPortLabel.setText(Messages
-				.getString("RegisterWizardPage.httpProxyPort"));
+        httpProxyHostText = new Text(group, SWT.SINGLE | SWT.BORDER);
+        httpProxyHostText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
-		httpProxyPortText = new Text(group, SWT.SINGLE | SWT.BORDER);
-		httpProxyPortText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		// Validation of port field
-		httpProxyPortText.addModifyListener(new ModifyListener() {
-			public void modifyText(ModifyEvent e) {
-				try {
-					String portValue = httpProxyPortText.getText();
-					int num = 80;
-					if (portValue != null && portValue.trim().length() > 0) {
-						num = Integer.valueOf(portValue).intValue();
+        httpProxyPortLabel = new Label(group, SWT.NONE);
+        httpProxyPortLabel.setText(Messages.getString("RegisterWizardPage.httpProxyPort"));
+
+        httpProxyPortText = new Text(group, SWT.SINGLE | SWT.BORDER);
+        httpProxyPortText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+        // Validation of port field
+        httpProxyPortText.addModifyListener(new ModifyListener() {
+
+            public void modifyText(ModifyEvent e) {
+                try {
+                    String portValue = httpProxyPortText.getText();
+                    int num = 80;
+                    if (portValue != null && portValue.trim().length() > 0) {
+                        num = Integer.valueOf(portValue).intValue();
                     }
-					if (0 <= num && num <= 0xFFFF) {
-						// port is valid
-						updatePageStatus();
-						setErrorMessage(null);
-						return;
-					}
+                    if (0 <= num && num <= 0xFFFF) {
+                        // port is valid
+                        updatePageStatus();
+                        setErrorMessage(null);
+                        return;
+                    }
 
-					// port is invalid
-				} catch (NumberFormatException nfe) {
-				}
-				setPageComplete(false);
-				setErrorMessage(Messages
-						.getString("RegisterWizardPage.invalidPort"));
-			}
-		});
+                    // port is invalid
+                } catch (NumberFormatException nfe) {
+                }
+                setPageComplete(false);
+                setErrorMessage(Messages.getString("RegisterWizardPage.invalidPort"));
+            }
+        });
 
-		enableHttpProxy.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent e) {
-				boolean enable = enableHttpProxy.getSelection();
-				httpProxyPortLabel.setEnabled(enable);
-				httpProxyHostLabel.setEnabled(enable);
-				httpProxyPortText.setEnabled(enable);
-				httpProxyHostText.setEnabled(enable);
-			}
-		});
+        enableHttpProxy.addSelectionListener(new SelectionAdapter() {
 
-	}
+            public void widgetSelected(SelectionEvent e) {
+                updateProxyButtons();
+            }
 
-	protected void createSpacer(Composite composite, int columnSpan) {
-		Label label = new Label(composite, SWT.NONE);
-		GridData gd = new GridData();
-		gd.horizontalSpan = columnSpan;
-		label.setLayoutData(gd);
-	}
+        });
+        updateProxyButtons();
+    }
 
-	/**
-	 * @return the enableHttpProxy
-	 */
-	public Button getEnableHttpProxy() {
-		return enableHttpProxy;
-	}
+    /**
+     * DOC smallet Comment method "updateProxyButtons".
+     */
+    private void updateProxyButtons() {
+        boolean enable = enableHttpProxy.getSelection();
+        httpProxyPortLabel.setEnabled(enable);
+        httpProxyHostLabel.setEnabled(enable);
+        httpProxyPortText.setEnabled(enable);
+        httpProxyHostText.setEnabled(enable);
+    }
 
-	/**
-	 * @param enableHttpProxy the enableHttpProxy to set
-	 */
-	public void setEnableHttpProxy(Button enableHttpProxy) {
-		this.enableHttpProxy = enableHttpProxy;
-	}
+    protected void createSpacer(Composite composite, int columnSpan) {
+        Label label = new Label(composite, SWT.NONE);
+        GridData gd = new GridData();
+        gd.horizontalSpan = columnSpan;
+        label.setLayoutData(gd);
+    }
 
-	/**
-	 * @return the httpProxyHostText
-	 */
-	public Text getHttpProxyHostText() {
-		return httpProxyHostText;
-	}
+    /**
+     * @return the enableHttpProxy
+     */
+    public Button getEnableHttpProxy() {
+        return enableHttpProxy;
+    }
 
-	/**
-	 * @param httpProxyHostText the httpProxyHostText to set
-	 */
-	public void setHttpProxyHostText(Text httpProxyHostText) {
-		this.httpProxyHostText = httpProxyHostText;
-	}
+    /**
+     * @param enableHttpProxy the enableHttpProxy to set
+     */
+    public void setEnableHttpProxy(Button enableHttpProxy) {
+        this.enableHttpProxy = enableHttpProxy;
+    }
 
-	/**
-	 * @return the httpProxyPortText
-	 */
-	public Text getHttpProxyPortText() {
-		return httpProxyPortText;
-	}
+    /**
+     * @return the httpProxyHostText
+     */
+    public Text getHttpProxyHostText() {
+        return httpProxyHostText;
+    }
 
-	/**
-	 * @param httpProxyPortText the httpProxyPortText to set
-	 */
-	public void setHttpProxyPortText(Text httpProxyPortText) {
-		this.httpProxyPortText = httpProxyPortText;
-	}
-	
-	
+    /**
+     * @param httpProxyHostText the httpProxyHostText to set
+     */
+    public void setHttpProxyHostText(Text httpProxyHostText) {
+        this.httpProxyHostText = httpProxyHostText;
+    }
+
+    /**
+     * @return the httpProxyPortText
+     */
+    public Text getHttpProxyPortText() {
+        return httpProxyPortText;
+    }
+
+    /**
+     * @param httpProxyPortText the httpProxyPortText to set
+     */
+    public void setHttpProxyPortText(Text httpProxyPortText) {
+        this.httpProxyPortText = httpProxyPortText;
+    }
+
 }
