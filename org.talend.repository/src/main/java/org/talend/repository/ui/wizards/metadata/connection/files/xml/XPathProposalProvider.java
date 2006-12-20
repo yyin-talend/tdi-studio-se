@@ -121,6 +121,8 @@ public class XPathProposalProvider implements IContentProposalProvider {
 
         String currentWord = extractLastWord(beforeCursorExp);
 
+        boolean expressionIsEmpty = currentExpr.trim().length() == 0;
+        
         // String xPathExpression =
         //            
         // // + " | " +
@@ -163,7 +165,7 @@ public class XPathProposalProvider implements IContentProposalProvider {
         // ///////////////////////////////////////////////////////////////////////////////////////////////
         // XPath requests for relative XPath
         //
-        if (isRelativeTable) {
+        if (isRelativeTable && ( isRelativeExpression || expressionIsEmpty )) {
             int allNodesLoopSize = allLoopNodes.size();
 
             // System.out.println("nodeLoop size list : " + allNodesLoopSize);
@@ -264,8 +266,6 @@ public class XPathProposalProvider implements IContentProposalProvider {
         // ///////////////////////////////////////////////////////////////////////////////////////////////
         // XPath requests for absolute XPath
         //
-        boolean expressionIsEmpty = currentExpr.trim().length() == 0;
-
         NodeList nodeList = null;
 
         if (!expressionIsEmpty) {
