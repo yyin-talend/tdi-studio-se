@@ -68,6 +68,9 @@ public class FileinToXmlProcess<K extends FileInputNode> extends RepositoryObjec
         ShadowConnection cnx = new ShadowConnection(inNode, outNode);
         inNode.setOutCnx(cnx);
         outNode.setInCnx(cnx);
+        
+        inNode.setProcess(this);
+        outNode.setProcess(this);
 
         contextManager = new EmptyContextManager();
     }

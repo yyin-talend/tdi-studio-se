@@ -61,6 +61,8 @@ public abstract class ShadowNode implements INode {
     private List<IElementParameter> parameters;
 
     private String pluginFullName;
+    
+    private IProcess process;
 
     /**
      * DOC chuger ShadowNode constructor comment.
@@ -297,11 +299,20 @@ public abstract class ShadowNode implements INode {
         return new ArrayList<INodeReturn>();
     }
 
+    /**
+     * Getter for process.
+     * @return the process
+     */
     public IProcess getProcess() {
-        return null;
+        return this.process;
     }
-
+    
+    /**
+     * Sets the process.
+     * @param process the process to set
+     */
     public void setProcess(IProcess process) {
+        this.process = process;
     }
 
     /*
