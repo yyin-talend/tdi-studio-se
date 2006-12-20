@@ -85,7 +85,7 @@ public class SQLEditorAllProposal implements IContentProposal {
 	 * @param allString
 	 * @return
 	 */
-	private String initHasString(String hasString, String allString, String dbType) {
+    protected String initHasString(String hasString, String allString, String dbType) {
 		label = allString;
         int index = label.indexOf(".");
         int index2 = label.lastIndexOf(".");
@@ -105,16 +105,46 @@ public class SQLEditorAllProposal implements IContentProposal {
         		String newQualityName = qualityName.replaceAll("\"", "");
         		if (!"".equals(hasString) && (qualityName.toLowerCase().startsWith(hasString.toLowerCase())
         				|| newQualityName.toLowerCase().startsWith(newHasString.toLowerCase()))) {
-        			hasString = hasString.substring(index3 + 1);
+                    if (hasString.indexOf(".") > -1) {
+                        hasString = hasString.substring(index3 + 1);
+                    }
         		}
         		label = label.substring(index2 + 1, label.length());
         		image = ImageUtil.getDescriptor("Images.ColumnIcon").createImage();
         	}
             
         }
+        
 		return hasString;
 	}
 
+    protected String initHasString2(String hasString, String allString, String dbType) {
+        int index = label.indexOf(".");
+        int index2 = label.lastIndexOf(".");
+        if (index > -1) {
+            if (index == index2) {
+                image = ImageUtil.getDescriptor("Images.TableIcon").createImage();
+            } else {
+                image = ImageUtil.getDescriptor("Images.ColumnIcon").createImage();
+            }
+        } 
+        String lastHasString = getLastString(hasString);
+        String lastAllString = getLastString(allString);
+        label = lastAllString;
+        if (lastAllString.toLowerCase().startsWith(lastHasString.toLowerCase())) {
+            hasString = lastAllString.substring(0, lastHasString.length());
+        }
+        return hasString;
+    }
+    private String getLastString(String str) {
+        int hasIndex = str.indexOf(".");
+        if (hasIndex > -1) {
+            return getLastString(str.substring(hasIndex));
+        } else {
+            return str;
+        }
+    }
+    
     /**
      * Getter for image.
      * @return the image

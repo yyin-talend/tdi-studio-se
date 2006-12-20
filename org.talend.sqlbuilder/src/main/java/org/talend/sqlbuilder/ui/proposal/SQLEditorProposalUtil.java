@@ -257,7 +257,7 @@ public class SQLEditorProposalUtil {
 	 */
 	private void hasSQLQueryProposal(List<String> queryStrings, String[] curSql) {
 		String querySql = (String) queryStrings.remove(0);
-		if ((curSql[0] + curSql[1]).startsWith(querySql)) {
+		if ((curSql[0] + curSql[1]).trim().startsWith(querySql.trim())) {
 			String hasInput = "";
 			int seqIndex = curSql[0].lastIndexOf(" ");
 			int dotIndex = curSql[0].lastIndexOf(".");
