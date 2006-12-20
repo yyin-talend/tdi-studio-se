@@ -32,6 +32,7 @@ import org.epic.perleditor.editors.PerlEditor;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.core.model.properties.ByteArray;
 import org.talend.core.model.properties.PropertiesFactory;
+import org.talend.core.model.properties.Property;
 import org.talend.core.model.properties.RoutineItem;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.repository.editor.RepositoryEditorInput;
@@ -85,9 +86,9 @@ public class StandAloneTalendPerlEditor extends PerlEditor {
         IProxyRepositoryFactory repFactory = service.getProxyRepositoryFactory();
         try {
             item.getProperty().eAdapters().remove(dirtyListener);
+            Property property = repFactory.reload(item.getProperty());
+            item = (RoutineItem) property.getItem();
             repFactory.unlock(item);
-            repFactory.reload(item.getProperty());
-
         } catch (PersistenceException e) {
             e.printStackTrace();
         }
