@@ -210,10 +210,9 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
 
         // Group Schema Viewer
         Group group = Form.createGroup(mainComposite, 1, Messages.getString("XmlFileStep1.sourceSchema"), height);
-        group.setBackgroundMode(SWT.INHERIT_FORCE);
+        group.setBackground(null);
 
         availableXmlTree = new Tree(group, SWT.MULTI | SWT.BORDER);
-        availableXmlTree.setBackgroundMode(SWT.INHERIT_FORCE);
         
         
         // availableXmlTree.setVisible(false);
