@@ -127,7 +127,7 @@ public class XPathProposalProvider implements IContentProposalProvider {
         // createXPathExpression(beforeCursorExp)
         // ;
         // System.out.println("#############################");
-//        System.out.println("currentExpr='" + currentExpr + "'");
+        // System.out.println("currentExpr='" + currentExpr + "'");
         // System.out.println("beforeCursorExp='"+beforeCursorExp+"'");
         // System.out.println("currentWord='"+currentWord+"'");
         // System.out.println("1");
@@ -154,59 +154,85 @@ public class XPathProposalProvider implements IContentProposalProvider {
         // proposals.add(contentProposal);
         //
         // } else
-        boolean mayBeIncomplete = false;
+        boolean resultsMayBeIncomplete = false;
         boolean breakAll = false;
+
+        Set<String> alreadyAdded = new HashSet<String>();
 
         if (!isRelativeTable) {
 
+            boolean expressionIsEmpty = currentExpr.trim().length() == 0;
+
             NodeList nodeList = null;
 
-            try {
-                
-                nodeList = this.linker.getNodeRetriever().retrieveNodeList(modifyXpathToSetFirstAscendant(currentExpr));
-            } catch (XPathExpressionException e) {
-                ExceptionHandler.process(e);
+            if (!expressionIsEmpty) {
+                try {
+
+                    nodeList = this.linker.getNodeRetriever().retrieveNodeList(modifyXpathToSetFirstAscendant(currentExpr));
+                } catch (XPathExpressionException e) {
+                    ExceptionHandler.process(e);
+                }
             }
 
-            if (nodeList != null) {
-                if (nodeList.getLength() > nodeLoopMax) {
+            if (nodeList != null || expressionIsEmpty) {
+                if (!expressionIsEmpty && nodeList.getLength() > nodeLoopMax) {
 
-                    mayBeIncomplete = true;
+                    resultsMayBeIncomplete = true;
 
                 } else {
                     try {
-                        nodeList = this.linker.getNodeRetriever().retrieveNodeList(modifyXpathToSearchAllChildren(currentExpr));
+                        nodeList = this.linker.getNodeRetriever().retrieveNodeList(modifyXpathToSearchAllChildren(currentExpr, false));
                     } catch (XPathExpressionException e) {
                         ExceptionHandler.process(e);
                     }
                 }
+                
+                if (nodeList != null) {
+
+                        for (int j = 0; j < nodeList.getLength(); ++j) {
+                            // System.out.println("nodeField : " + j);
+                            Node node = nodeList.item(j);
+                            String nodeName = node.getNodeName();
+                            String absoluteXPathFromNode = NodeRetriever.getAbsoluteXPathFromNode(node);
+                            if ((currentWord.length() > 0 && nodeName.startsWith(currentWord) || currentWord.length() == 0 || currentWord
+                                    .equals("/"))
+                                    && !alreadyAdded.contains(absoluteXPathFromNode)) {
+                                // System.out.println(absoluteXPathFromNode);
+                                XPathContentProposal contentProposal = new XPathContentProposal(node);
+                                proposals.add(contentProposal);
+                                alreadyAdded.add(absoluteXPathFromNode);
+                            }
+
+                        } // for (int j = 0; j < nodeListLength; ++j) {
+
+
+                } // if (nodeList != null) {
+
             }
 
         } else {
             int allNodesLoopSize = allLoopNodes.size();
 
-//            System.out.println("nodeLoop size list : " + allNodesLoopSize);
+            // System.out.println("nodeLoop size list : " + allNodesLoopSize);
 
             currentNodeNumber += allNodesLoopSize;
 
             if (allNodesLoopSize > nodeLoopMax) {
 
-                mayBeIncomplete = true;
+                resultsMayBeIncomplete = true;
 
             } else {
-
-                Set<String> alreadyAdded = new HashSet<String>();
 
                 int nodeLoopNumberOfLoop = allNodesLoopSize;
                 if (allNodesLoopSize > nodeLoopNumberLimit) {
                     nodeLoopNumberOfLoop = nodeLoopNumberLimit;
-                    mayBeIncomplete = true;
+                    resultsMayBeIncomplete = true;
                 }
 
                 for (int i = 0; i < nodeLoopNumberOfLoop; i++) {
                     Node nodeLoop = allLoopNodes.get(i);
 
-//                    System.out.println("nodeLoop : " + i);
+                    // System.out.println("nodeLoop : " + i);
 
                     NodeList nodeList = null;
 
@@ -214,13 +240,15 @@ public class XPathProposalProvider implements IContentProposalProvider {
 
                         // list =
                         // this.linker.getNodeRetriever().retrieveListOfNodes(createXPathExpression(currentExpr));
-                        nodeList = this.linker.getNodeRetriever().retrieveNodeListFromNode(modifyXpathToSearchAllChildren(currentExpr), nodeLoop);
+                        nodeList = this.linker.getNodeRetriever().retrieveNodeListFromNode(
+                                modifyXpathToSearchAllChildren(currentExpr, true), nodeLoop);
                     } catch (XPathExpressionException e) {
                         ExceptionHandler.process(e);
                     }
                     if (nodeList != null && nodeList.getLength() == 0) {
                         try {
-                            nodeList = linker.getNodeRetriever().retrieveNodeListFromNode(modifyXpathToSearchAllChildren(beforeCursorExp), nodeLoop);
+                            nodeList = linker.getNodeRetriever().retrieveNodeListFromNode(
+                                    modifyXpathToSearchAllChildren(beforeCursorExp, true), nodeLoop);
                         } catch (XPathExpressionException e) {
                             ExceptionHandler.process(e);
                         }
@@ -233,7 +261,7 @@ public class XPathProposalProvider implements IContentProposalProvider {
                         currentNodeNumber += allNodesFieldsLoopSize;
                         if (allNodesFieldsLoopSize > nodeFieldMax) {
 
-                            mayBeIncomplete = true;
+                            resultsMayBeIncomplete = true;
                             breakAll = true;
 
                         } else {
@@ -241,11 +269,11 @@ public class XPathProposalProvider implements IContentProposalProvider {
                             int nodeFieldNumberOfLoop = allNodesFieldsLoopSize;
                             if (allNodesFieldsLoopSize > nodeFieldMax) {
                                 nodeFieldNumberOfLoop = nodeFieldNumberLimit;
-                                mayBeIncomplete = true;
+                                resultsMayBeIncomplete = true;
                             }
 
                             for (int j = 0; j < nodeFieldNumberOfLoop; ++j) {
-//                                System.out.println("nodeField : " + j);
+                                // System.out.println("nodeField : " + j);
                                 Node node = nodeList.item(j);
                                 String nodeName = node.getNodeName();
                                 String absoluteXPathFromNode = NodeRetriever.getAbsoluteXPathFromNode(node);
@@ -277,7 +305,7 @@ public class XPathProposalProvider implements IContentProposalProvider {
 
         } // if (!estimationError) {
 
-        if (mayBeIncomplete) {
+        if (resultsMayBeIncomplete) {
             addTooManyNodesContentProposal(proposals);
         }
 
@@ -289,19 +317,21 @@ public class XPathProposalProvider implements IContentProposalProvider {
 
     /**
      * DOC amaumont Comment method "modifyXpathToSetFirstAscendant".
+     * 
      * @param currentExpr
      * @return
      */
     private String modifyXpathToSetFirstAscendant(String currentExpr) {
-        
-        do {
-          
-            currentExpr = currentExpr.trim().substring(0, currentExpr.length()-1);
-            
-        } while(currentExpr.trim().endsWith("/"));
-        
-        
-        
+
+        if (currentExpr.trim().length() > 0) {
+
+            do {
+
+                currentExpr = currentExpr.trim().substring(0, currentExpr.length() - 1);
+
+            } while (currentExpr.trim().endsWith("/"));
+        }
+
         return currentExpr;
     }
 
@@ -334,15 +364,17 @@ public class XPathProposalProvider implements IContentProposalProvider {
     /**
      * DOC amaumont Comment method "createXPathExpression".
      * 
-     * @param slash
      * @param currentExpr
+     * @param isRelative TODO
+     * @param slash
+     * 
      * @return
      */
-    private String modifyXpathToSearchAllChildren(String currentExpr) {
+    private String modifyXpathToSearchAllChildren(String currentExpr, boolean isRelative) {
         String xPathExpression;
         String slash = SLASH;
 
-        if (currentExpr.trim().equals("")) {
+        if (currentExpr.trim().equals("") && isRelative) {
             currentExpr = ".";
         }
 
