@@ -67,7 +67,6 @@ COMPATIBILITY="ALL"
       <ITEMS>
         <ITEM NAME="FILEMASK" />
         <ITEM NAME="NEWNAME" SHOW_IF="ACTION=='RENAME'"/>
-		<ITEM NAME="TEST" FIELD="CHECK" VALUE="false" />        
       </ITEMS>
     </PARAMETER>
   </PARAMETERS>
