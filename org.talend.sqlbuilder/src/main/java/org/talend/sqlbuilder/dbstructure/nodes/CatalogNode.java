@@ -21,19 +21,17 @@
 // ============================================================================
 package org.talend.sqlbuilder.dbstructure.nodes;
 
+
 import java.util.ArrayList;
 import java.util.List;
 
 import net.sourceforge.sqlexplorer.SQLAlias;
 import net.sourceforge.squirrel_sql.fw.sql.ITableInfo;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
-import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.ui.images.CoreImageProvider;
@@ -51,8 +49,6 @@ public class CatalogNode extends AbstractNode {
     private List pchildNames = new ArrayList();
 
     private String[] pfilteredNames;
-
-    private static final Log LOGGER = LogFactory.getLog(CatalogNode.class);
 
     /**
      * Create new database Catalog node.
@@ -156,7 +152,7 @@ public class CatalogNode extends AbstractNode {
             try {
                 tables = psessionNode.getMetaData().getTables(null, getSchemaName(), "%", tableTypes);
             } catch (Throwable e) {
-                LOGGER.debug("Loading all tables at once is not supported");
+                SqlBuilderPlugin.log("Loading all tables at once is not supported", e);
             }
 
             // for (int i = 0; i < tableTypes.length; ++i) {

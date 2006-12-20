@@ -28,7 +28,6 @@ import java.util.List;
 import net.sourceforge.sqlexplorer.SQLAlias;
 
 import org.eclipse.swt.graphics.Image;
-import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.ui.images.CoreImageProvider;
 import org.talend.sqlbuilder.SqlBuilderPlugin;

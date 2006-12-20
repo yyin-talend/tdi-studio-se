@@ -22,8 +22,6 @@
 package org.talend.sqlbuilder.dbdetail.tab;
 
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
@@ -48,8 +46,6 @@ public abstract class AbstractDataSetTab extends AbstractTab {
    
     private DataSet pDataSet;
       
-    protected static final Log CONSTANT_LOGGER = LogFactory.getLog(AbstractDataSetTab.class);
-    
     private Composite pComposite;    
     
     public final void fillDetailComposite(Composite composite) {
@@ -70,7 +66,7 @@ public abstract class AbstractDataSetTab extends AbstractTab {
                          
             
         } catch (Exception e) {
-            e.printStackTrace();
+            SqlBuilderPlugin.log("DataSetTab Exception", e);
             // couldn't get results.. clean mess up
             Control[] controls = composite.getChildren();
             for (int i = 0; i < controls.length; i++) {
@@ -94,7 +90,7 @@ public abstract class AbstractDataSetTab extends AbstractTab {
      */
     public final DataSet getCachedDataSet() throws Exception {
         
-    	CONSTANT_LOGGER.debug("getting cached data for " + this.getClass().getName());
+//    	CONSTANT_LOGGER.debug("getting cached data for " + this.getClass().getName());
     	
         if (pDataSet != null) {
             return pDataSet;

@@ -26,8 +26,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
@@ -64,8 +62,6 @@ public abstract class AbstractNode implements INode {
     protected String ptype;
     
     protected String prepositoryName;
-
-    private static final Log LOGGER = LogFactory.getLog(AbstractNode.class);
 
     /**
      * DOC dev Comment method "addChildNode".
@@ -372,9 +368,9 @@ public abstract class AbstractNode implements INode {
 
             try {
 
-                if (LOGGER.isDebugEnabled()) {
-                    LOGGER.debug("Loading child nodes for " + pname);
-                }
+//                if (LOGGER.isDebugEnabled()) {
+//                    LOGGER.debug("Loading child nodes for " + pname);
+//                }
 
                 loadChildren();
                 pchildrenLoaded = true;

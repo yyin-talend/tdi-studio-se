@@ -27,8 +27,6 @@ import java.util.List;
 import net.sourceforge.sqlexplorer.SQLAlias;
 import net.sourceforge.squirrel_sql.fw.sql.ITableInfo;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
@@ -53,9 +51,6 @@ public class SchemaNode extends AbstractNode {
     private List pchildNames = new ArrayList();
 
     private String[] pfilteredNames;
-
-    private static final Log LOGGER = LogFactory.getLog(SchemaNode.class);
-
 
     /**
      * Create new database Schema node.
@@ -321,7 +316,7 @@ public class SchemaNode extends AbstractNode {
             try {
                 tables = psessionNode.getMetaData().getTables(pname, pname, "%", tableTypes);
             } catch (Throwable e) {
-                LOGGER.debug("Loading all tables at once is not supported");
+                SqlBuilderPlugin.log("Loading all tables at once is not supported", e);
             }
 
             for (int i = 0; i < tableTypes.length; ++i) {

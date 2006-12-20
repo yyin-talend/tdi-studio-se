@@ -97,7 +97,6 @@ public abstract class AbstractSQLScanner extends BufferedRuleBasedScanner {
 
 	@SuppressWarnings("unchecked")
 	private void addToken(final String colorKey, final String styleKey) {
-		// System.out.println("AddToken "+colorKey+" "+styleKey);
 		final RGB rgb = PreferenceConverter
 				.getColor(fPreferenceStore, colorKey);
 		if (fColorManager instanceof IColorManagerExtension) {

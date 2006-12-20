@@ -52,6 +52,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.actions.SelectionProviderAction;
 import org.talend.repository.model.RepositoryNode;
+import org.talend.sqlbuilder.SqlBuilderPlugin;
 import org.talend.sqlbuilder.dbstructure.SessionTreeNodeManager;
 import org.talend.sqlbuilder.dbstructure.SessionTreeNodeUtils;
 import org.talend.sqlbuilder.dbstructure.nodes.INode;
@@ -68,6 +69,8 @@ import org.talend.sqlbuilder.util.UIUtils;
  */
 public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog {
 
+    private boolean isFromRepositoryView = false;
+    
     private DBDetailsComposite dbDetailsComposite;
 
     private DBStructureComposite structureComposite;
@@ -431,8 +434,8 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog {
 	        				 final RepositoryNode repositoryNode = (RepositoryNode) selection.getFirstElement();
 	        				 node = nodeManager.convert2INode(repositoryNode);
 	        			 } catch (Exception e) {
-	        				 e.printStackTrace();
 	        				 msg = e.getMessage();
+                             SqlBuilderPlugin.log(msg, e);
 	        			 }
 	        			 final INode argNode = node;
 	        			 final String argMsg = msg;
@@ -465,7 +468,6 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog {
 			 */
 			@Override
 			public void shellActivated(ShellEvent e) {
-//				System.out.println("shellActivated " + 1);
 //				SQLBuilderRepositoryNodeManager.reductionALLRepositoryNode();
 				SQLBuilderRepositoryNodeManager.increaseALLRepositoryNode();
 				SQLBuilderRepositoryNodeManager.setReduction(false);
@@ -489,8 +491,6 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog {
 			 */
 			@Override
 			public void shellDeactivated(ShellEvent e) {
-//				System.out.println("shellDeactivated " + 1);
-//				System.out.println("isIncrease: " + SQLBuilderRepositoryNodeManager.isIncrease);
 				SQLBuilderRepositoryNodeManager.reductionALLRepositoryNode();
 				SQLBuilderRepositoryNodeManager.setIncrease(false);
                 SQLBuilderRepositoryNodeManager.setReduction(true);
@@ -503,7 +503,6 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog {
 			 */
 			@Override
 			public void shellDeiconified(ShellEvent e) {
-//				System.out.println("shellDeiconified");
 				super.shellDeiconified(e);
 			}
 
@@ -512,11 +511,20 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog {
 			 */
 			@Override
 			public void shellIconified(ShellEvent e) {
-//				System.out.println("shellIconified");
 				super.shellIconified(e);
 			}
     		
     	};
     	return shellListener;
+    }
+
+    
+    public boolean isFromRepositoryView() {
+        return this.isFromRepositoryView;
+    }
+
+    
+    public void setFromRepositoryView(boolean isFromRepositoryView) {
+        this.isFromRepositoryView = isFromRepositoryView;
     }
 }

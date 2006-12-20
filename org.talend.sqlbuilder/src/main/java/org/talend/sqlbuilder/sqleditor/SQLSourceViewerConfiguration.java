@@ -63,7 +63,6 @@ public class SQLSourceViewerConfiguration extends SourceViewerConfiguration {
 
 	public ITextDoubleClickStrategy getDoubleClickStrategy(
 			ISourceViewer sourceViewer, String contentType) {
-		// System.out.println("double click");
 		return defaultTextDoubleClickStrategy;
 
 	}
@@ -132,7 +131,6 @@ public class SQLSourceViewerConfiguration extends SourceViewerConfiguration {
 
 		ContentAssistant assistant = new ContentAssistant() {
 			public void uninstall() {
-				// System.out.println("Uninstalling content assistant");
 				SQLCompletionProcessor p1 = (SQLCompletionProcessor) getContentAssistProcessor(IConstants.SQL_STRING);
 				SQLCompletionProcessor p2 = (SQLCompletionProcessor) getContentAssistProcessor(IConstants.SQL_SINGLE_LINE_COMMENT);
 				p1.dispose();

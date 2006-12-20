@@ -27,6 +27,7 @@ import net.sourceforge.squirrel_sql.fw.sql.SQLConnection;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.ListenerList;
 import org.talend.repository.model.RepositoryNode;
+import org.talend.sqlbuilder.SqlBuilderPlugin;
 
 /**
  * Session Tree Model.
@@ -113,7 +114,7 @@ public class SessionTreeModel implements ISessionTreeNode {
             try {
                 ((SessionTreeModelChangedListener) ls[i]).modelChanged(stn);
             } catch (Throwable e) {
-                e.printStackTrace();
+                SqlBuilderPlugin.log("Get SessionTreeModel Exception: ", e);
             }
 
         }

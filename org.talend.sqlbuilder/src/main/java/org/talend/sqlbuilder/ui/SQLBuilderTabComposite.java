@@ -34,6 +34,7 @@ import org.eclipse.swt.widgets.Control;
 import org.talend.core.model.metadata.builder.connection.Query;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNode.EProperties;
+import org.talend.sqlbuilder.SqlBuilderPlugin;
 import org.talend.sqlbuilder.dbstructure.RepositoryNodeType;
 import org.talend.sqlbuilder.dbstructure.DBTreeProvider.QueryRepositoryObject;
 import org.talend.sqlbuilder.repository.utility.SQLBuilderRepositoryNodeManager;
@@ -47,6 +48,7 @@ import org.talend.sqlbuilder.util.ConnectionParameters;
  */
 public class SQLBuilderTabComposite extends Composite {
 
+   
 	private CTabFolder tabFolder;
 
 	private ISQLBuilderDialog dialog;
@@ -56,6 +58,7 @@ public class SQLBuilderTabComposite extends Composite {
 		super(parent, style);
 		this.dialog = d;
 		this.setLayout(new FillLayout());
+        
 	}
 
 	/**
@@ -78,7 +81,7 @@ public class SQLBuilderTabComposite extends Composite {
 		try {
 			createTabItem(node, connParam, isDefaultEditor);
 		} catch (Exception e) {
-			e.printStackTrace();
+			SqlBuilderPlugin.log(e.getMessage(), e);
 		}
 	}
 
@@ -170,7 +173,7 @@ public class SQLBuilderTabComposite extends Composite {
 				tabFolder, tabItem, isDefaultEditor, connParam, node, dialog);
 		// builderEditorComposite.setEditorContent(connParam);
 		// builderEditorComposite.setRepositoryNode(node);
-
+        builderEditorComposite.setQueryObject(dialog.getConnParameters().getQueryObject());
 		builderEditorComposite.setLayoutData(new GridData(SWT.FILL, SWT.TOP,
 				true, false));
 
@@ -206,4 +209,9 @@ public class SQLBuilderTabComposite extends Composite {
 		SQLBuilderEditorComposite composite = (SQLBuilderEditorComposite) control;
 		return composite.getSQLToBeExecuted();
 	}
+
+    
+    public CTabFolder getTabFolder() {
+        return this.tabFolder;
+    }
 }

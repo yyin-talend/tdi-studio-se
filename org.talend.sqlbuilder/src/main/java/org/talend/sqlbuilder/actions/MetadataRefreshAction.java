@@ -43,6 +43,7 @@ import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNode.EProperties;
+import org.talend.sqlbuilder.SqlBuilderPlugin;
 import org.talend.sqlbuilder.dbstructure.DBTreeProvider;
 import org.talend.sqlbuilder.dbstructure.RepositoryNodeType;
 import org.talend.sqlbuilder.repository.utility.SQLBuilderRepositoryNodeManager;
@@ -219,7 +220,7 @@ public class MetadataRefreshAction extends SelectionProviderAction {
 		try {
 			factory.save(item);
 		} catch (PersistenceException e) {
-			e.printStackTrace();
+			SqlBuilderPlugin.log("SaveMetaData Exception: ", e);
 		}
 	}
 

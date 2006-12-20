@@ -169,7 +169,7 @@ public class DB2ExplainPlanAction extends AbstractEditorAction {
 
                 
         } catch (Exception e) {
-            e.printStackTrace();
+            SqlBuilderPlugin.log("DB2ExplainPlan Action Exception: ", e);
         }
         
         

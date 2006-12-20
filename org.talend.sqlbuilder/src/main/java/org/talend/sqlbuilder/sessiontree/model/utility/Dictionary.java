@@ -26,9 +26,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.TreeSet;
 
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.talend.sqlbuilder.Messages;
 import org.talend.sqlbuilder.dbstructure.nodes.CatalogNode;
@@ -49,9 +46,6 @@ public class Dictionary {
 
     // TODO check if we need to add more types or remove restriction completely?
     private static final String[] SUPPORTED_CONTENT_ASSIST_TYPES = new String[] {"TABLE_FOLDER", "TABLE_TYPE", "VIEW_FOLDER", "VIEW_TYPE"};
-
-    private static Log logger = LogFactory.getLog(Dictionary.class);
-
 
     public Dictionary() {
 
@@ -348,9 +342,9 @@ public class Dictionary {
     @SuppressWarnings("unchecked")
     private void loadSchemaCatalog(INode iNode, IProgressMonitor monitor) throws InterruptedException {
 
-        if (logger.isDebugEnabled()) {
-            logger.debug("Loading dictionary: " + iNode.getName());
-        }
+//        if (logger.isDebugEnabled()) {
+//            logger.debug("Loading dictionary: " + iNode.getName());
+//        }
 
         // check for cancellation by user
         if (monitor.isCanceled()) {
@@ -377,9 +371,9 @@ public class Dictionary {
 
                 INode typeNode = children[i];
 
-                if (logger.isDebugEnabled()) {
-                    logger.debug("Loading dictionary: " + typeNode.getName());
-                }
+//                if (logger.isDebugEnabled()) {
+//                    logger.debug("Loading dictionary: " + typeNode.getName());
+//                }
 
                 // only load a few types like tables and view nodes into the
                 // dictionary
@@ -414,19 +408,19 @@ public class Dictionary {
 
                         INode tableNode = tableNodes[j];
 
-                        if (logger.isDebugEnabled()) {
-                            logger.debug("Loading dictionary: " + tableNode.getName());
-                        }
+//                        if (logger.isDebugEnabled()) {
+//                            logger.debug("Loading dictionary: " + tableNode.getName());
+//                        }
 
                         if (monitor != null) {
 
                             monitor.worked(tableNodeWorkUnit);
                             typeNodeWorkCompleted = typeNodeWorkCompleted + tableNodeWorkUnit;
 
-                            if (logger.isDebugEnabled()) {
-                                logger.debug("worked table: " + tableNodeWorkUnit + ", total type work: "
-                                        + typeNodeWorkCompleted);
-                            }
+//                            if (logger.isDebugEnabled()) {
+//                                logger.debug("worked table: " + tableNodeWorkUnit + ", total type work: "
+//                                        + typeNodeWorkCompleted);
+//                            }
 
                             monitor.subTask(tableNode.getQualifiedName());
 
@@ -465,9 +459,9 @@ public class Dictionary {
                 if (typeNodeWorkCompleted < typeNodeWorkUnit) {
                     // consume remainder of work for this type node
 
-                    if (logger.isDebugEnabled()) {
-                        logger.debug("consuming remainder: " + (typeNodeWorkUnit - typeNodeWorkCompleted));
-                    }
+//                    if (logger.isDebugEnabled()) {
+//                        logger.debug("consuming remainder: " + (typeNodeWorkUnit - typeNodeWorkCompleted));
+//                    }
 
                     monitor.worked(typeNodeWorkUnit - typeNodeWorkCompleted);
                 }

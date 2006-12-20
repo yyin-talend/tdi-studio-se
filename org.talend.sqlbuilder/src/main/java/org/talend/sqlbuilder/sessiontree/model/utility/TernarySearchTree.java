@@ -662,67 +662,67 @@ class TernarySearchTree {
 		}
 	}
 	
-	/** Prints entire tree structure to standard output, beginning with the root node and workind down.
-	*/
-	protected void printTree() {
-		System.out.println(""); //$NON-NLS-1$
-		if (rootNode == null) {
-			System.out.println("tree is empty"); //$NON-NLS-1$
-			return;
-		}
-		System.out.println("Here's the entire tree structure:"); //$NON-NLS-1$
-		printNodeRecursion(rootNode);
-	}
-	
-	/** Prints subtree structure to standard output, beginning with startingNode and workind down.
-	*/
-	protected void printTree(TSTNode startingNode) {
-		System.out.println(""); //$NON-NLS-1$
-		if (rootNode == null) {
-			System.out.println("subtree is empty"); //$NON-NLS-1$
-			return;
-		}
-		System.out.println("Here's the entire subtree structure:"); //$NON-NLS-1$
-		printNodeRecursion(startingNode);
-	}
-	
-	/** Recursive method used to print out tree or subtree structure.
-	*/
-	private void printNodeRecursion(TSTNode currentNode) {
-		if (currentNode == null) {
-            return;
-        }
-		System.out.println(""); //$NON-NLS-1$
-		System.out.println("( keys are delimited by vertical lines: |example key| )"); //$NON-NLS-1$
-		System.out.println("info for node   |" + getKey(currentNode) 
-                + "|         node data: " + currentNode.data); //$NON-NLS-1$ //$NON-NLS-2$
-		if (currentNode.relatives[TSTNode.PARENT] == null) {
-			System.out.println("parent null"); //$NON-NLS-1$
-		} else {
-			System.out.println("parent key   |" + getKey(currentNode.relatives[TSTNode.PARENT])  
-                 +   "|       parent data: " + currentNode.relatives[TSTNode.PARENT].data); //$NON-NLS-1$ //$NON-NLS-2$
-		}
-		if (currentNode.relatives[TSTNode.LOKID] == null) {
-			System.out.println("lokid null"); //$NON-NLS-1$
-		} else {
-			System.out.println("lokid key   |" + getKey(currentNode.relatives[TSTNode.LOKID])
-                    +  "|       lo kid data: " + currentNode.relatives[TSTNode.LOKID].data); //$NON-NLS-1$ //$NON-NLS-2$
-		}
-		if (currentNode.relatives[TSTNode.EQKID] == null) {
-			System.out.println("eqkid null"); //$NON-NLS-1$
-		} else {
-			System.out.println("eqkid key   |" + getKey(currentNode.relatives[TSTNode.EQKID])  
-                    + "|       equal kid data: " + currentNode.relatives[TSTNode.EQKID].data); //$NON-NLS-1$ //$NON-NLS-2$
-		}
-		if (currentNode.relatives[TSTNode.HIKID] == null) {
-			System.out.println("hikid null"); //$NON-NLS-1$
-		} else {
-			System.out.println("hikid key   |" + getKey(currentNode.relatives[TSTNode.HIKID]) 
-                    + "|       hi kid data: " + currentNode.relatives[TSTNode.HIKID].data); //$NON-NLS-1$ //$NON-NLS-2$
-		}
-		printNodeRecursion(currentNode.relatives[TSTNode.LOKID]);
-		printNodeRecursion(currentNode.relatives[TSTNode.EQKID]);
-		printNodeRecursion(currentNode.relatives[TSTNode.HIKID]);
-	}
+//	/** Prints entire tree structure to standard output, beginning with the root node and workind down.
+//	*/
+//	protected void printTree() {
+//		System.out.println(""); //$NON-NLS-1$
+//		if (rootNode == null) {
+//			System.out.println("tree is empty"); //$NON-NLS-1$
+//			return;
+//		}
+//		System.out.println("Here's the entire tree structure:"); //$NON-NLS-1$
+//		printNodeRecursion(rootNode);
+//	}
+//	
+//	/** Prints subtree structure to standard output, beginning with startingNode and workind down.
+//	*/
+//	protected void printTree(TSTNode startingNode) {
+//		System.out.println(""); //$NON-NLS-1$
+//		if (rootNode == null) {
+//			System.out.println("subtree is empty"); //$NON-NLS-1$
+//			return;
+//		}
+//		System.out.println("Here's the entire subtree structure:"); //$NON-NLS-1$
+//		printNodeRecursion(startingNode);
+//	}
+//	
+//	/** Recursive method used to print out tree or subtree structure.
+//	*/
+//	private void printNodeRecursion(TSTNode currentNode) {
+//		if (currentNode == null) {
+//            return;
+//        }
+//		System.out.println(""); //$NON-NLS-1$
+//		System.out.println("( keys are delimited by vertical lines: |example key| )"); //$NON-NLS-1$
+//		System.out.println("info for node   |" + getKey(currentNode) 
+//                + "|         node data: " + currentNode.data); //$NON-NLS-1$ //$NON-NLS-2$
+//		if (currentNode.relatives[TSTNode.PARENT] == null) {
+//			System.out.println("parent null"); //$NON-NLS-1$
+//		} else {
+//			System.out.println("parent key   |" + getKey(currentNode.relatives[TSTNode.PARENT])  
+//                 +   "|       parent data: " + currentNode.relatives[TSTNode.PARENT].data); //$NON-NLS-1$ //$NON-NLS-2$
+//		}
+//		if (currentNode.relatives[TSTNode.LOKID] == null) {
+//			System.out.println("lokid null"); //$NON-NLS-1$
+//		} else {
+//			System.out.println("lokid key   |" + getKey(currentNode.relatives[TSTNode.LOKID])
+//                    +  "|       lo kid data: " + currentNode.relatives[TSTNode.LOKID].data); //$NON-NLS-1$ //$NON-NLS-2$
+//		}
+//		if (currentNode.relatives[TSTNode.EQKID] == null) {
+//			System.out.println("eqkid null"); //$NON-NLS-1$
+//		} else {
+//			System.out.println("eqkid key   |" + getKey(currentNode.relatives[TSTNode.EQKID])  
+//                    + "|       equal kid data: " + currentNode.relatives[TSTNode.EQKID].data); //$NON-NLS-1$ //$NON-NLS-2$
+//		}
+//		if (currentNode.relatives[TSTNode.HIKID] == null) {
+//			System.out.println("hikid null"); //$NON-NLS-1$
+//		} else {
+//			System.out.println("hikid key   |" + getKey(currentNode.relatives[TSTNode.HIKID]) 
+//                    + "|       hi kid data: " + currentNode.relatives[TSTNode.HIKID].data); //$NON-NLS-1$ //$NON-NLS-2$
+//		}
+//		printNodeRecursion(currentNode.relatives[TSTNode.LOKID]);
+//		printNodeRecursion(currentNode.relatives[TSTNode.EQKID]);
+//		printNodeRecursion(currentNode.relatives[TSTNode.HIKID]);
+//	}
 	
 }

@@ -27,8 +27,6 @@ import java.sql.Statement;
 
 import net.sourceforge.squirrel_sql.fw.sql.SQLConnection;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.talend.sqlbuilder.IConstants;
 import org.talend.sqlbuilder.SqlBuilderPlugin;
 import org.talend.sqlbuilder.dataset.dataset.DataSet;
@@ -44,7 +42,6 @@ import org.talend.sqlbuilder.dataset.dataset.DataSet;
  */
 public abstract class AbstractSQLTab extends AbstractDataSetTab {
    
-    protected static final Log CONSTANT_LOGGER = LogFactory.getLog(AbstractSQLTab.class);
 
     public final DataSet getDataSet() throws Exception {
         

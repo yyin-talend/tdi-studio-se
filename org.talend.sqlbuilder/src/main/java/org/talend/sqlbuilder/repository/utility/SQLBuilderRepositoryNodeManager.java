@@ -81,7 +81,8 @@ public class SQLBuilderRepositoryNodeManager {
     // store all label name of connections's tables and columns
     private static Map<String, String> labelsAndNames = new HashMap<String, String>();
 
-    private static Map<DatabaseConnection, Map<MetadataTable, List<MetadataColumn>>> oldMetaData = new HashMap<DatabaseConnection, Map<MetadataTable, List<MetadataColumn>>>();
+    private static Map<DatabaseConnection, Map<MetadataTable, List<MetadataColumn>>> oldMetaData = 
+        new HashMap<DatabaseConnection, Map<MetadataTable, List<MetadataColumn>>>();
 
     private static boolean isDialogClosed = false;
 
@@ -319,7 +320,6 @@ public class SQLBuilderRepositoryNodeManager {
      * DOC dev Comment method "increaseALLRepositoryNode".
      */
     public static void increaseALLRepositoryNode() {
-        // System.out.println("In Increase All Repository: isAction " + isAction+", isIncrease "+isIncrease);
         if (!isFirst && !isIncrease) {
             if (repositoryNodes != null) {
                 for (RepositoryNode node : repositoryNodes) {

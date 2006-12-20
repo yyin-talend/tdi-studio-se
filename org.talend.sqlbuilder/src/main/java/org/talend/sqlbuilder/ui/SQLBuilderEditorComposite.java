@@ -96,6 +96,8 @@ import org.talend.sqlbuilder.util.UIUtils;
  */
 public class SQLBuilderEditorComposite extends Composite implements ISQLEditor {
 
+    private Query queryObject;
+    
 	private AbstractEditorAction clearTextAction;
 
 	private CoolBar coolBar;
@@ -511,7 +513,10 @@ public class SQLBuilderEditorComposite extends Composite implements ISQLEditor {
 		title = title + dbName + "(" + repositoryName + ").sql";
 		if (connParam.getQueryObject() != null) {
 			title = "Query: " + connParam.getQueryObject().getLabel();
-		}
+		} else if (dialog.getConnParameters().getQueryObject() != null) {
+            title = "Query: " + dialog.getConnParameters().getQueryObject().getLabel();
+        }
+        
 		tabItem.setText(title);
 	}
 
@@ -588,7 +593,7 @@ public class SQLBuilderEditorComposite extends Composite implements ISQLEditor {
 				try {
 					writer.close();
 				} catch (Exception e) {
-					e.printStackTrace();
+					SqlBuilderPlugin.log(e.getMessage(), e);
 				}
 			}
 
@@ -668,4 +673,14 @@ public class SQLBuilderEditorComposite extends Composite implements ISQLEditor {
 	public ConnectionParameters getConnParam() {
 		return this.connParam;
 	}
+
+    
+    public Query getQueryObject() {
+        return this.queryObject;
+    }
+
+    
+    public void setQueryObject(Query queryObject) {
+        this.queryObject = queryObject;
+    }
 }

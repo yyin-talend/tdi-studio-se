@@ -53,6 +53,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 import org.talend.sqlbuilder.IConstants;
+import org.talend.sqlbuilder.SqlBuilderPlugin;
 import org.talend.sqlbuilder.sessiontree.model.utility.Dictionary;
 
 /**
@@ -145,7 +146,7 @@ public class SQLTextViewer extends SourceViewer {
                         try {
                             contentAssistant.uninstall();
                         } catch (Exception e) {
-                            e.printStackTrace();
+                            SqlBuilderPlugin.log("", e);
                         }
                     }
                 }

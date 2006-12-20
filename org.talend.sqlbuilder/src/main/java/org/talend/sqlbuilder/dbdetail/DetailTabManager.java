@@ -26,8 +26,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabItem;
@@ -62,8 +60,6 @@ public class DetailTabManager {
 
     private static String pActiveTabName = null;
 
-    private static final Log CONSTANT_LOGGER = LogFactory.getLog(DetailTabManager.class);
-
     private static final HashMap CONSTANT_SESSION_TAB_CACHE = new HashMap();
 
 
@@ -74,9 +70,9 @@ public class DetailTabManager {
      */
     public static void clearCacheForNode(INode node) {
 
-        if (CONSTANT_LOGGER.isDebugEnabled()) {
-            CONSTANT_LOGGER.debug("Clearing tab cache for: " + node.getUniqueIdentifier());
-        }
+//        if (CONSTANT_LOGGER.isDebugEnabled()) {
+//            CONSTANT_LOGGER.debug("Clearing tab cache for: " + node.getUniqueIdentifier());
+//        }
 
         HashMap tabCache = (HashMap) CONSTANT_SESSION_TAB_CACHE.get(node.getSession());
         tabCache.remove(node.getUniqueIdentifier());
@@ -92,9 +88,9 @@ public class DetailTabManager {
      */
     public static void clearCacheForSession(SessionTreeNode session) {
 
-        if (CONSTANT_LOGGER.isDebugEnabled()) {
-            CONSTANT_LOGGER.debug("Clearing tab cache for: " + session.toString());
-        }
+//        if (CONSTANT_LOGGER.isDebugEnabled()) {
+//            CONSTANT_LOGGER.debug("Clearing tab cache for: " + session.toString());
+//        }
 
         CONSTANT_SESSION_TAB_CACHE.remove(session);
     }
@@ -206,9 +202,9 @@ public class DetailTabManager {
     @SuppressWarnings("unchecked")
     private static List createTabs(INode node) {
 
-        if (CONSTANT_LOGGER.isDebugEnabled()) {
-            CONSTANT_LOGGER.debug("Creating tabs for: " + node.getUniqueIdentifier());
-        }
+//        if (CONSTANT_LOGGER.isDebugEnabled()) {
+//            CONSTANT_LOGGER.debug("Creating tabs for: " + node.getUniqueIdentifier());
+//        }
 
         ArrayList tabList = new ArrayList();
 
@@ -367,9 +363,9 @@ public class DetailTabManager {
     @SuppressWarnings("unchecked")
     private static List getTabs(INode node) {
 
-        if (CONSTANT_LOGGER.isDebugEnabled()) {
-            CONSTANT_LOGGER.debug("Loading tabs for: " + node.getUniqueIdentifier());
-        }
+//        if (CONSTANT_LOGGER.isDebugEnabled()) {
+//            CONSTANT_LOGGER.debug("Loading tabs for: " + node.getUniqueIdentifier());
+//        }
 
         HashMap tabCache = (HashMap) CONSTANT_SESSION_TAB_CACHE.get(node.getSession());
 

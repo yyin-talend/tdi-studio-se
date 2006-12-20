@@ -107,7 +107,6 @@ public class SessionTreeNodeManager {
             MetadataTableRepositoryObject tableObject = (MetadataTableRepositoryObject) repositoryNode.getObject();
             MetadataTable table = tableObject.getTable();
             String realName = table.getSourceName();
-            System.out.println("real name : " + realName);
 
             DatabaseModel model = sessionTreeNode.getDbModel();
             INode[] nodes = model.getChildNodes();

@@ -56,6 +56,7 @@ import org.talend.repository.model.RepositoryNode.ENodeType;
 import org.talend.repository.model.RepositoryNode.EProperties;
 import org.talend.repository.ui.views.RepositoryContentProvider;
 import org.talend.repository.ui.views.RepositoryView;
+import org.talend.sqlbuilder.SqlBuilderPlugin;
 import org.talend.sqlbuilder.repository.utility.SQLBuilderRepositoryNodeManager;
 import org.talend.sqlbuilder.util.ConnectionParameters;
 import org.talend.sqlbuilder.util.ImageUtil;
@@ -198,8 +199,8 @@ ITableColorProvider {
 		try {
 			container = factory.getMetadataConnection();
 		} catch (PersistenceException e) {
-			e.printStackTrace();
-		}
+		    SqlBuilderPlugin.log("PersistenceException: ", e);
+        }
     	return container;
     }
     

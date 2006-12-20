@@ -33,8 +33,6 @@ import net.sourceforge.squirrel_sql.fw.sql.ISQLAlias;
 import net.sourceforge.squirrel_sql.fw.sql.SQLConnection;
 import net.sourceforge.squirrel_sql.fw.sql.SQLDatabaseMetaData;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.swt.widgets.Table;
@@ -101,7 +99,6 @@ public class SessionTreeNode implements ISessionTreeNode {
 
     private RepositoryNode repositoryNode;
 
-    private static Log logger = LogFactory.getLog(SessionTreeNode.class);
 
     /**
      * 
@@ -208,7 +205,7 @@ public class SessionTreeNode implements ISessionTreeNode {
             try {
                 ((ISessionTreeClosedListener) listensers[i]).sessionTreeClosed();
             } catch (Throwable e) {
-                e.printStackTrace();
+                SqlBuilderPlugin.log(e.getMessage(), e);
             }
 
         }
@@ -263,7 +260,7 @@ public class SessionTreeNode implements ISessionTreeNode {
         try {
             cat = interactiveConnection.getCatalog();
         } catch (Throwable e) {
-            e.printStackTrace();
+            SqlBuilderPlugin.log(e.getMessage(), e);
         }
         return cat;
     }
@@ -359,7 +356,6 @@ public class SessionTreeNode implements ISessionTreeNode {
 
         if (currentNumber.intValue() == number.intValue()) {
             backgroundConnectionInUse = true;
-            logger.debug("Connection " + number + " acquired.");
             return backgroundConnection;
         }
 
@@ -395,7 +391,7 @@ public class SessionTreeNode implements ISessionTreeNode {
         try {
             result = interactiveConnection.getAutoCommit();
         } catch (Throwable e) {
-            e.printStackTrace();
+            SqlBuilderPlugin.log(e.getMessage(), e);
         }
         return result;
     }
@@ -415,7 +411,6 @@ public class SessionTreeNode implements ISessionTreeNode {
             // release current connection
             backgroundConnectionInUse = false;
             connectionNumberQueue.remove(0);
-            logger.debug("Connection " + number + " released.");
 
             // check for pending commit or rollback requests
 
@@ -423,29 +418,25 @@ public class SessionTreeNode implements ISessionTreeNode {
                 int nextNumber = ((Integer) connectionNumberQueue.get(0)).intValue();
                 try {
                     if (nextNumber == COMMIT_REQUEST) {
-                        logger.debug("Committing.");
                         connectionNumberQueue.remove(0);
                         backgroundConnection.commit();
                     } else if (nextNumber == ROLLBACK_REQUEST) {
-                        logger.debug("Rolling back.");
                         connectionNumberQueue.remove(0);
                         backgroundConnection.rollback();
                     } else if (nextNumber == CATALOG_CHANGE_REQUEST) {
-                        logger.debug("Changing catalog.");
                         connectionNumberQueue.remove(0);
                         backgroundConnection.setCatalog(newCatalog);
                     } else {
                         break;
                     }
                 } catch (Exception e) {
-                    logger.error("Couldn't perform commit/rollback or catalog change.", e);
+                    SqlBuilderPlugin.log("Couldn't perform commit/rollback or catalog change.", e);
                 }
             }
 
         } else {
             // remove pending queue number
             connectionNumberQueue.remove(number);
-            logger.debug("Connection request " + number + " removed from queue.");
         }
 
     }
