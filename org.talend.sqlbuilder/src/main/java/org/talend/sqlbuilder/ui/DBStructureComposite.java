@@ -33,6 +33,8 @@ import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
+import org.eclipse.jface.viewers.DoubleClickEvent;
+import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -59,6 +61,7 @@ import org.talend.commons.ui.image.ImageProvider;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNode.ENodeType;
 import org.talend.repository.model.RepositoryNode.EProperties;
+import org.talend.repository.ui.actions.RepositoryDoubleClickAction;
 import org.talend.repository.ui.views.RepositoryView;
 import org.talend.sqlbuilder.Messages;
 import org.talend.sqlbuilder.actions.DeleteQueryAction;
@@ -82,6 +85,8 @@ import org.talend.sqlbuilder.util.UIUtils;
 
 public class DBStructureComposite extends Composite {
 
+    private Action doubleClickAction;
+    
     private static final int COLUMN_REPOSITORY_WIDTH = 100;
 
     private static final int COLUMN_DATABASE_WIDTH = 170;
@@ -152,11 +157,21 @@ public class DBStructureComposite extends Composite {
     public DBStructureComposite(SashForm sashFormStructureAndEditor, int none, SQLBuilderDialog dialog) {
         this(sashFormStructureAndEditor, none);
         this.builderDialog = dialog;
+        
         createToolbar();
         createDBTree();
         makeActions();
     }
 
+    private void hookDoubleClickAction() {
+        treeViewer.addDoubleClickListener(new IDoubleClickListener() {
+
+            public void doubleClick(DoubleClickEvent event) {
+                doubleClickAction.run();
+            }
+        });
+    }
+    
     public void openNewEditor() {
         treeViewer.getTree().setSelection(treeViewer.getTree().getItem(0));
         Action tempOpenNewEditorAction = new OpenNewEditorAction(treeViewer, builderDialog, builderDialog
@@ -209,6 +224,7 @@ public class DBStructureComposite extends Composite {
 			}
         	
         });
+        hookDoubleClickAction();
         addContextMenu();
 
     }
@@ -286,8 +302,9 @@ public class DBStructureComposite extends Composite {
         openQueryAction = new OpenQueryAction(treeViewer, builderDialog, builderDialog.getConnParameters());
         deleteQueryAction = new DeleteQueryAction(treeViewer, builderDialog);
         showQueryPropertyAction = new ShowQueryPropertyAction(treeViewer, builderDialog);
+        doubleClickAction = new OpenQueryAction(treeViewer, builderDialog, builderDialog.getConnParameters());
     }
-
+    
     /**
      * Add context menu.
      * 
