@@ -73,9 +73,9 @@ public class PropertiesTableEditorView<B> extends AbstractDataTableEditorView<B>
      * @param labelVisible TODO
      * @param extendedTableModel
      */
-    public PropertiesTableEditorView(Composite parentComposite, int mainCompositeStyle, PropertiesTableEditorModel model, boolean readOnly,
+    public PropertiesTableEditorView(Composite parentComposite, int mainCompositeStyle, PropertiesTableEditorModel model,
             boolean toolbarVisible, boolean labelVisible) {
-        super(parentComposite, mainCompositeStyle, model, readOnly, toolbarVisible, labelVisible);
+        super(parentComposite, mainCompositeStyle, model, model.getElemParameter().isReadOnly(), toolbarVisible, labelVisible);
     }
 
     /**
@@ -130,7 +130,7 @@ public class PropertiesTableEditorView<B> extends AbstractDataTableEditorView<B>
         String[] titles = model.getTitles();
         final Object[] itemsValue = model.getItemsValue();
         final String[] items = model.getItems();
-        final Element elem = model.getElement();
+//        final Element elem = model.getElement();
         final IElementParameter param = model.getElemParameter();
         for (int i = 0; i < titles.length; i++) {
             if (param.isShow(model.getItemsShowIf()[i], model.getItemsNotShowIf()[i], model.getElement().getElementParameters())) {
@@ -147,7 +147,7 @@ public class PropertiesTableEditorView<B> extends AbstractDataTableEditorView<B>
                 case PREV_COLUMN_LIST:
                     ComboBoxCellEditor cellEditor = new ComboBoxCellEditor(table, tmpParam.getListItemsDisplayName());
                     ((CCombo) cellEditor.getControl()).setEditable(false);
-                    ((CCombo) cellEditor.getControl()).setEnabled(!param.isRepositoryValueUsed());
+                    ((CCombo) cellEditor.getControl()).setEnabled(!(param.isRepositoryValueUsed() || param.isReadOnly()));
                     column.setCellEditor(cellEditor, new CellEditorValueAdapter() {
 
                         public String getColumnText(CellEditor cellEditor, Object cellEditorValue) {
@@ -178,13 +178,13 @@ public class PropertiesTableEditorView<B> extends AbstractDataTableEditorView<B>
                     });
                     break;
                 case CHECK:
-                    column.setTableEditorContent(new CheckboxTableEditorContent(param.isRepositoryValueUsed()));
+                    column.setTableEditorContent(new CheckboxTableEditorContent(param.isRepositoryValueUsed() || param.isReadOnly()));
                     column.setDisplayedValue("");
                     break;
                 default: // TEXT
                     TextCellEditorWithProposal textCellEditor = new TextCellEditorWithProposal(table, column);
                     textCellEditor.setContentProposalProvider(processProposalProvider);
-                    if (((i == 0) && (param.isBasedOnSchema())) || (param.isRepositoryValueUsed())) {
+                    if (((i == 0) && (param.isBasedOnSchema())) || (param.isRepositoryValueUsed()) || (param.isReadOnly())) {
                         Text text = (Text) textCellEditor.getControl();
                         text.setEditable(false);
                     }

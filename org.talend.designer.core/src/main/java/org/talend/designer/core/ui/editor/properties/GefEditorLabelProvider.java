@@ -146,7 +146,8 @@ public class GefEditorLabelProvider extends LabelProvider {
                 return conn.getName();
             }
             if (object instanceof ConnLabelEditPart) {
-                Connection conn = (Connection) ((ConnectionLabel) ((ConnLabelEditPart) object).getModel()).getConnection();
+                Connection conn = (Connection) ((ConnectionLabel) ((ConnLabelEditPart) object).getModel())
+                        .getConnection();
                 return conn.getName();
             }
             if (object instanceof NodeTreeEditPart) {
@@ -167,7 +168,11 @@ public class GefEditorLabelProvider extends LabelProvider {
             if (lastNode != node) {
                 lastNode = node;
             }
-            return node.getComponentName();
+            String name = node.getComponent().getTranslatedName();
+            if (!node.getComponent().getTranslatedName().equals(node.getComponent().getName())) {
+                name += " (" + node.getComponent().getName() + ")";
+            }
+            return name;
         }
     }
 

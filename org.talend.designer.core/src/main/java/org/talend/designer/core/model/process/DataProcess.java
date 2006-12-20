@@ -92,7 +92,7 @@ public class DataProcess {
         dataNodeList.add(dataNode);
         dataNode.setActivate(graphicalNode.isActivate());
         dataNode.setStart(graphicalNode.isStart());
-        dataNode.setComponentName(graphicalNode.getComponentName());
+//        dataNode.setComponentName(graphicalNode.getComponentName());
         dataNode.setMetadataList(graphicalNode.getMetadataList());
         dataNode.setPluginFullName(graphicalNode.getPluginFullName());
         dataNode.setElementParameters(graphicalNode.getElementParameters());

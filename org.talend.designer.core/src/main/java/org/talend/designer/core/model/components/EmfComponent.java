@@ -121,7 +121,7 @@ public class EmfComponent implements IComponent {
     private String getTranslatedValue(final String nameValue) {
 
         String returnValue = nameValue;
-        String compName = file.getParentFile().getName();
+        String compName = getName();
         ResourceBundle resourceBundle = ResourceBundle.getBundle("components." + compName + ".component");
         returnValue = Messages.getString(nameValue, resourceBundle);
         return returnValue;
@@ -284,11 +284,33 @@ public class EmfComponent implements IComponent {
         param.setReadOnly(true);
         param.setShow(true);
         listParam.add(param);
+        
+//        param = new ElementParameter(node);
+//        param.setName(EParameterName.TRANSLATED_UNIQUE_NAME.getName());
+//        param.setValue("");
+//        param.setDisplayName(EParameterName.TRANSLATED_UNIQUE_NAME.getDisplayName());
+//        param.setField(EParameterFieldType.TEXT);
+//        param.setCategory(EComponentCategory.MAIN);
+//        param.setNumRow(1);
+//        param.setReadOnly(true);
+//        param.setShow(!getName().equals(getTranslatedName()));
+//        listParam.add(param);
 
         param = new ElementParameter(node);
         param.setName(EParameterName.COMPONENT_NAME.getName());
-        param.setValue(getTranslatedValue(PROP_NAME));
+        param.setValue(getName());
         param.setDisplayName(EParameterName.COMPONENT_NAME.getDisplayName());
+        param.setField(EParameterFieldType.TEXT);
+        param.setCategory(EComponentCategory.MAIN);
+        param.setNumRow(1);
+        param.setReadOnly(true);
+        param.setShow(false);
+        listParam.add(param);
+        
+        param = new ElementParameter(node);
+        param.setName(EParameterName.TRANSLATED_COMPONENT_NAME.getName());
+        param.setValue(getTranslatedName());
+        param.setDisplayName(EParameterName.TRANSLATED_COMPONENT_NAME.getDisplayName());
         param.setField(EParameterFieldType.TEXT);
         param.setCategory(EComponentCategory.MAIN);
         param.setNumRow(1);
@@ -795,6 +817,10 @@ public class EmfComponent implements IComponent {
     }
 
     public String getName() {
+        return file.getParentFile().getName();
+    }
+    
+    public String getTranslatedName() {
         return getTranslatedValue(PROP_NAME);
     }
 

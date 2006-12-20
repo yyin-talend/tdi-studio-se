@@ -175,7 +175,7 @@ public class Node extends Element implements INode {
 
     private void init(IComponent newComponent) {
         this.component = newComponent;
-        this.label = component.getName();
+        this.label = component.getTranslatedName();
         this.componentName = this.label;
 
         IPreferenceStore store = DesignerPlugin.getDefault().getPreferenceStore();
@@ -378,24 +378,6 @@ public class Node extends Element implements INode {
     }
 
     /**
-     * Set the name of the node. Typically it's the name of the component type.
-     * 
-     * @param titleName
-     */
-    public void setComponentName(final String componentName) {
-        this.componentName = componentName;
-    }
-
-    /**
-     * Gives the name of the node. Typically it's the name of the component type.
-     * 
-     * @return
-     */
-    public String getComponentName() {
-        return componentName;
-    }
-
-    /**
      * Gives the object of the model part for the label.
      * 
      * @return
@@ -545,7 +527,7 @@ public class Node extends Element implements INode {
         if (externalNode != null) {
             externalNode.setActivate(isActivate());
             externalNode.setStart(isStart());
-            externalNode.setComponentName(getComponentName());
+//            externalNode.setComponentName(getComponentName());
             // externalNode.setExternalData(getExternalData());
             List<IMetadataTable> copyOfMetadataList = new ArrayList<IMetadataTable>();
             for (IMetadataTable metaTable : metadataList) {
@@ -849,7 +831,7 @@ public class Node extends Element implements INode {
         // List<ModuleNeeded> list = ModulesNeededProvider.getModulesNeeded(getComponentName());
         IPerlModuleService perlModuleService = (IPerlModuleService) GlobalServiceRegister.getDefault().getService(
                 IPerlModuleService.class);
-        List<ModuleNeeded> list = perlModuleService.getModulesNeeded(getComponentName());
+        List<ModuleNeeded> list = perlModuleService.getModulesNeeded(component.getName());
         for (ModuleNeeded current : list) {
             Problem problem = getProblem(current);
             if (problem != null) {
@@ -1163,7 +1145,7 @@ public class Node extends Element implements INode {
 
     @Override
     public String toString() {
-        return getComponentName() + "/" + getLabel();
+        return component.getTranslatedName() + "/" + getLabel();
     }
 
     /*

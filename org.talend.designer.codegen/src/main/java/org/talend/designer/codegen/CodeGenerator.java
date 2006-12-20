@@ -390,7 +390,7 @@ public class CodeGenerator implements ICodeGenerator {
         try {
             content = content.append(generateTypedComponentCode(EInternalTemplate.PART_HEADER, node, part));
             jetBean.setTemplateRelativeUri(IComponentsFactory.COMPONENTS_DIRECTORY + TemplateUtil.DIR_SEP
-                    + node.getComponentName() + TemplateUtil.DIR_SEP + node.getComponentName() + "_" + part
+                    + node.getComponent().getName() + TemplateUtil.DIR_SEP + node.getComponent().getName() + "_" + part
                     + TemplateUtil.EXT_SEP + language.getExtension() + TemplateUtil.TEMPLATE_EXT);
             JetProxy proxy = new JetProxy(jetBean);
             content = content.append(proxy.generate());

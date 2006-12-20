@@ -110,7 +110,7 @@ public class NodesPasteCommand extends Command {
         // create the nodes
         for (NodePart copiedNodePart : nodeParts) {
             Node copiedNode = (Node) copiedNodePart.getModel();
-            Node pastedNode = new Node(ComponentsFactoryProvider.getInstance().get(copiedNode.getComponentName()),
+            Node pastedNode = new Node(ComponentsFactoryProvider.getInstance().get(copiedNode.getComponent().getName()),
                     process);
 
             Point location = copiedNode.getLocation();

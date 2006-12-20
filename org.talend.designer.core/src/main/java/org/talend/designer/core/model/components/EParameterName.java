@@ -32,6 +32,7 @@ import org.talend.designer.core.i18n.Messages;
 public enum EParameterName {
     NAME(Messages.getString("EParameterName.0")), //$NON-NLS-1$
     UNIQUE_NAME("Unique Name"),
+    TRANSLATED_UNIQUE_NAME("Translated Unique Name"),
     AUTHOR(Messages.getString("EParameterName.1")), //$NON-NLS-1$
     PURPOSE(Messages.getString("EParameterName.2")), //$NON-NLS-1$
     HELP("Help"),
@@ -61,6 +62,7 @@ public enum EParameterName {
     REPOSITORY_PROPERTY_TYPE("Repository"),
     CONDITION("Condition"),
     COMPONENT_NAME("Component Name"),
+    TRANSLATED_COMPONENT_NAME("Translated Component Name"),
     UPDATE_COMPONENTS("Update components"), //$NON-NLS-1$  Hidden parameter so no translation needed
     PROCESS_TYPE_PROCESS("Process"),
     PROCESS_TYPE_CONTEXT("Context"),

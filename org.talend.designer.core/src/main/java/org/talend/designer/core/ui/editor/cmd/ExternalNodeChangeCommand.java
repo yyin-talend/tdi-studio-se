@@ -120,7 +120,7 @@ public class ExternalNodeChangeCommand extends Command {
             }
         }
 
-        setLabel("Modification from " + node.getComponentName());
+        setLabel("Modification from " + node.getUniqueName());
     }
 
     private void refreshSectionsPropertyView() {

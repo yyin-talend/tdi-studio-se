@@ -79,7 +79,7 @@ public final class TalendEditorPaletteFactory {
         Collections.sort(componentList, new Comparator<IComponent>() {
 
             public int compare(IComponent component1, IComponent component2) {
-                return component1.getName().compareTo(component2.getName());
+                return component1.getTranslatedName().compareTo(component2.getTranslatedName());
             }
 
         });
@@ -94,7 +94,7 @@ public final class TalendEditorPaletteFactory {
             }
 
             if (xmlComponent.isLoaded()) {
-                name = xmlComponent.getName();
+                name = xmlComponent.getTranslatedName();
                 family = xmlComponent.getFamily();
                 longName = xmlComponent.getLongName();
 

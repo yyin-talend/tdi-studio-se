@@ -2248,9 +2248,10 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                 .setData(elem, param, part.getTalendEditor().getProcess(), getColumnList(), getPrevColumnList());
 
         PropertiesTableEditorView<Map<String, Object>> tableEditorView = new PropertiesTableEditorView<Map<String, Object>>(
-                parentComposite, SWT.NONE, tableEditorModel, param.isReadOnly(), !param.isBasedOnSchema(), false);
+                parentComposite, SWT.NONE, tableEditorModel, !param.isBasedOnSchema(), false);
         // PropertiesTableEditorView tableEditorView = new PropertiesTableEditorView(parentComposite, SWT.NONE);
         tableEditorView.getExtendedTableViewer().setCommandStack(getCommandStack());
+        tableEditorView.getTable().setToolTipText(VARIABLE_TOOLTIP + param.getVariableName());
 
         Composite mainComposite = tableEditorView.getMainComposite();
 
