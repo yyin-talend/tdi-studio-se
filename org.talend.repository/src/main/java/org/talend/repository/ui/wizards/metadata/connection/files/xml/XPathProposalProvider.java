@@ -159,58 +159,11 @@ public class XPathProposalProvider implements IContentProposalProvider {
 
         Set<String> alreadyAdded = new HashSet<String>();
 
-        if (!isRelativeTable) {
-
-            boolean expressionIsEmpty = currentExpr.trim().length() == 0;
-
-            NodeList nodeList = null;
-
-            if (!expressionIsEmpty) {
-                try {
-
-                    nodeList = this.linker.getNodeRetriever().retrieveNodeList(modifyXpathToSetFirstAscendant(currentExpr));
-                } catch (XPathExpressionException e) {
-                    ExceptionHandler.process(e);
-                }
-            }
-
-            if (nodeList != null || expressionIsEmpty) {
-                if (!expressionIsEmpty && nodeList.getLength() > nodeLoopMax) {
-
-                    resultsMayBeIncomplete = true;
-
-                } else {
-                    try {
-                        nodeList = this.linker.getNodeRetriever().retrieveNodeList(modifyXpathToSearchAllChildren(currentExpr, false));
-                    } catch (XPathExpressionException e) {
-                        ExceptionHandler.process(e);
-                    }
-                }
-                
-                if (nodeList != null) {
-
-                        for (int j = 0; j < nodeList.getLength(); ++j) {
-                            // System.out.println("nodeField : " + j);
-                            Node node = nodeList.item(j);
-                            String nodeName = node.getNodeName();
-                            String absoluteXPathFromNode = NodeRetriever.getAbsoluteXPathFromNode(node);
-                            if ((currentWord.length() > 0 && nodeName.startsWith(currentWord) || currentWord.length() == 0 || currentWord
-                                    .equals("/"))
-                                    && !alreadyAdded.contains(absoluteXPathFromNode)) {
-                                // System.out.println(absoluteXPathFromNode);
-                                XPathContentProposal contentProposal = new XPathContentProposal(node);
-                                proposals.add(contentProposal);
-                                alreadyAdded.add(absoluteXPathFromNode);
-                            }
-
-                        } // for (int j = 0; j < nodeListLength; ++j) {
-
-
-                } // if (nodeList != null) {
-
-            }
-
-        } else {
+        // ///////////////////////////////////////////////////////////////////////////////////////////////
+        // ///////////////////////////////////////////////////////////////////////////////////////////////
+        // XPath requests for relative XPath
+        //
+        if (isRelativeTable) {
             int allNodesLoopSize = allLoopNodes.size();
 
             // System.out.println("nodeLoop size list : " + allNodesLoopSize);
@@ -304,6 +257,62 @@ public class XPathProposalProvider implements IContentProposalProvider {
             } // } else {
 
         } // if (!estimationError) {
+        // ///////////////////////////////////////////////////////////////////////////////////////////////
+        // ///////////////////////////////////////////////////////////////////////////////////////////////
+
+        // ///////////////////////////////////////////////////////////////////////////////////////////////
+        // ///////////////////////////////////////////////////////////////////////////////////////////////
+        // XPath requests for absolute XPath
+        //
+        boolean expressionIsEmpty = currentExpr.trim().length() == 0;
+
+        NodeList nodeList = null;
+
+        if (!expressionIsEmpty) {
+            try {
+
+                nodeList = this.linker.getNodeRetriever().retrieveNodeList(modifyXpathToSetFirstAscendant(currentExpr));
+            } catch (XPathExpressionException e) {
+                ExceptionHandler.process(e);
+            }
+        }
+
+        if (nodeList != null || expressionIsEmpty) {
+            if (!expressionIsEmpty && nodeList.getLength() > nodeLoopMax) {
+
+                resultsMayBeIncomplete = true;
+
+            } else {
+                try {
+                    nodeList = this.linker.getNodeRetriever().retrieveNodeList(modifyXpathToSearchAllChildren(currentExpr, false));
+                } catch (XPathExpressionException e) {
+                    ExceptionHandler.process(e);
+                }
+            }
+
+            if (nodeList != null) {
+
+                for (int j = 0; j < nodeList.getLength(); ++j) {
+                    // System.out.println("nodeField : " + j);
+                    Node node = nodeList.item(j);
+                    String nodeName = node.getNodeName();
+                    String absoluteXPathFromNode = NodeRetriever.getAbsoluteXPathFromNode(node);
+                    if ((currentWord.length() > 0 && nodeName.startsWith(currentWord) || currentWord.length() == 0 || currentWord
+                            .equals("/"))
+                            && !alreadyAdded.contains(absoluteXPathFromNode)) {
+                        // System.out.println(absoluteXPathFromNode);
+                        XPathContentProposal contentProposal = new XPathContentProposal(node);
+                        proposals.add(contentProposal);
+                        alreadyAdded.add(absoluteXPathFromNode);
+                    }
+
+                } // for (int j = 0; j < nodeListLength; ++j) {
+
+            } // if (nodeList != null) {
+
+        }
+        // ///////////////////////////////////////////////////////////////////////////////////////////////
+        // ///////////////////////////////////////////////////////////////////////////////////////////////
 
         if (resultsMayBeIncomplete) {
             addTooManyNodesContentProposal(proposals);
@@ -341,7 +350,7 @@ public class XPathProposalProvider implements IContentProposalProvider {
      * @param proposals
      */
     private void addTooManyNodesContentProposal(List<IContentProposal> proposals) {
-        XPathContentProposal contentProposal = new XPathContentProposal("<< Too many nodes !   Results may be incomplete ... >>");
+        XPathContentProposal contentProposal = new XPathContentProposal("<< Too many nodes, proposed values may be incomplete ... >>");
         proposals.add(contentProposal);
     }
 
