@@ -25,11 +25,11 @@
 # start part of your Perl code
 return if (not scalar @_);
 
-my @catched_origins = (
+my @catched_types = (
 <%
     if (ElementParameterParser.getValue(node, "__CATCH_PERL_DIE__").equals("true")) {
 %>
-    'die',
+    'Perl die',
 <%
     }
     if (ElementParameterParser.getValue(node, "__CATCH_TDIE__").equals("true")) {
@@ -47,7 +47,7 @@ my @catched_origins = (
 
 my %params = @_;
 
-if (not grep /^$params{origin}$/, @catched_origins) {
+if (not grep /^$params{type}$/, @catched_types) {
     return;
 }
 
@@ -57,6 +57,7 @@ my @<%=cid %> = (
     '<%=codeGenArgument.getJobName() %>',
     '<%=codeGenArgument.getContextName() %>',
     $params{priority},
+    $params{type},
     $params{origin},
     $params{error_message},
     $params{error_code},

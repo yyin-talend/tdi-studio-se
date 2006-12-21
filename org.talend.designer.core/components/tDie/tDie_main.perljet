@@ -25,7 +25,8 @@ if (defined &main::tCatcher_1_subprocess) {
     tCatcher_1_subprocess(
         error_message => <%=ElementParameterParser.getValue(node, "__MESSAGE__") %>,
         error_code => <%=ElementParameterParser.getValue(node, "__CODE__") %>,
-        origin => 'tDie',
+        type => 'tDie',
+        origin => '<%=metadata.getTableName()%>',
         priority => <%=ElementParameterParser.getValue(node, "__PRIORITY__") %>,
     );
 }

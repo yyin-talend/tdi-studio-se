@@ -49,6 +49,8 @@ tStatCatcher_1_subprocess(
 );
 
 $_globals{<%=node.getUniqueName() %>}{start} = [gettimeofday];
+
+$current_component="<%=node.getUniqueName() %>";
 <%
   }
 %>
