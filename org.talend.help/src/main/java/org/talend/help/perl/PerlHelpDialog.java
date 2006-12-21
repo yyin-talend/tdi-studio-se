@@ -69,7 +69,7 @@ public class PerlHelpDialog extends TitleAreaDialog {
 
     private static final int HEIGHT_DIALOG = 350;
     
-    private static final int WIDTH_DIALOG = 550;
+    private static final int WIDTH_DIALOG = 600;
     
     private void createDialogAreaContent(Composite parent) {
         PerlHelpComposite perlHelpComposite = new PerlHelpComposite(parent, SWT.BORDER);
