@@ -348,7 +348,7 @@ public class CompleteDropTargetListener extends DefaultDropTargetListener {
             tableViewerCreatorTarget = dataMapTableViewTarget.getTableViewerCreatorForColumns();
         }
 
-//        MapperDropCommand dropCommand = new MapperDropCommand();
+        // MapperDropCommand dropCommand = new MapperDropCommand();
 
         // MetadataEditorEvent metadataEditorEvent = new MetadataEditorEvent(MetadataEditorEvent.TYPE.ADD);
         ITableEntry lastEntryTarget = null;

@@ -115,7 +115,8 @@ public class InputDataMapTableView extends DataMapTableView {
             final ToolItem rejectConstraintCheck = new ToolItem(toolBarActions, SWT.CHECK);
             rejectConstraintCheck.setToolTipText("Reject main row if this lookup row doesn't exist");
             boolean isInnerJoin = getInputTable().isInnerJoin();
-//            Image image = ImageProviderMapper.getImage(isInnerJoin ? ImageInfo.CHECKED_ICON : ImageInfo.UNCHECKED_ICON);
+            // Image image = ImageProviderMapper.getImage(isInnerJoin ? ImageInfo.CHECKED_ICON :
+            // ImageInfo.UNCHECKED_ICON);
             Image image = ImageProviderMapper.getImage(isInnerJoin ? ImageInfo.CHECKED_ICON : ImageInfo.UNCHECKED_ICON);
             if (WindowSystem.isGTK()) {
                 rejectConstraintCheck.setImage(image);
@@ -169,7 +170,9 @@ public class InputDataMapTableView extends DataMapTableView {
         return (InputTable) abstractDataMapTable;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.designer.mapper.ui.visualmap.table.DataMapTableView#toolbarNeededToBeRightStyle()
      */
     @Override

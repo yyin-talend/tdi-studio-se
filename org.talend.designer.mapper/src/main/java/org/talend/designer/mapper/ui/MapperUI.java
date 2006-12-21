@@ -52,7 +52,6 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.ScrollBar;
 import org.eclipse.swt.widgets.Shell;
 import org.talend.commons.ui.swt.drawing.background.BackgroundRefresher;
-import org.talend.commons.ui.swt.drawing.background.IBgDrawableComposite;
 import org.talend.commons.ui.swt.linking.BgDrawableComposite;
 import org.talend.commons.ui.ws.WindowSystem;
 import org.talend.commons.utils.threading.AsynchronousThreading;

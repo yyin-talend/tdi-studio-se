@@ -181,9 +181,9 @@ public class StyleLinkFactory {
         style.setDrawableLink(getZoneToZoneLink(style));
         // ExtremityEastArrow eastArrowSource = new ExtremityEastArrow(style);
         // style.setExtremity1(eastArrowSource);
-         ExtremityEastArrow eastArrowTarget = new ExtremityEastArrow(style);
-         eastArrowTarget.setXOffset(-eastArrowTarget.getSize().x);
-         style.setExtremity2(eastArrowTarget);
+        ExtremityEastArrow eastArrowTarget = new ExtremityEastArrow(style);
+        eastArrowTarget.setXOffset(-eastArrowTarget.getSize().x);
+        style.setExtremity2(eastArrowTarget);
         style.setForegroundColor(ColorProviderMapper.getColor(ColorInfo.COLOR_UNSELECTED_FILTER_LINK));
         return style;
     }

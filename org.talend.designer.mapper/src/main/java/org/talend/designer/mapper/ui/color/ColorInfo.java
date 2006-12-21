@@ -74,9 +74,9 @@ public enum ColorInfo {
         this.blue = blue;
     }
 
-//    private ColorInfo(int systemColor) {
-//        this.systemColor = systemColor;
-//    }
+    // private ColorInfo(int systemColor) {
+    // this.systemColor = systemColor;
+    // }
 
     public int getBlue() {
         return this.blue;

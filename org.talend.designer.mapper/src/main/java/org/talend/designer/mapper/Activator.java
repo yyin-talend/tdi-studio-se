@@ -94,7 +94,7 @@ public class Activator extends AbstractUIPlugin {
         IService service = GlobalServiceRegister.getDefault().getService(ICodeGeneratorService.class);
         return (ICodeGeneratorService) service;
     }
-    
+
     /**
      * DOC get a implement of CodeGeneratorService.
      * 

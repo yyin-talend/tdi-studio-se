@@ -43,7 +43,6 @@ import org.talend.commons.ui.swt.tableviewer.data.ModifiedObjectInfo;
 import org.talend.commons.utils.data.bean.IBeanPropertyAccessors;
 import org.talend.commons.utils.data.list.IListenableListListener;
 import org.talend.commons.utils.data.list.ListenableListEvent;
-import org.talend.core.ui.images.ECoreImage;
 import org.talend.designer.mapper.managers.MapperManager;
 import org.talend.designer.mapper.managers.UIManager;
 import org.talend.designer.mapper.model.table.AbstractDataMapTable;

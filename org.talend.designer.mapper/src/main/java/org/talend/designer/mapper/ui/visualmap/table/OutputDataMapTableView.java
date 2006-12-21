@@ -204,8 +204,8 @@ public class OutputDataMapTableView extends DataMapTableView {
             public void selectionChanged(SelectionChangedEvent event) {
                 selectThisDataMapTableView();
                 UIManager uiManager = mapperManager.getUiManager();
-                uiManager.processSelectedDataMapEntries(OutputDataMapTableView.this, uiManager
-                        .extractSelectedTableEntries(tableViewer.getSelection()), true);
+                uiManager.processSelectedDataMapEntries(OutputDataMapTableView.this, uiManager.extractSelectedTableEntries(tableViewer
+                        .getSelection()), true);
             }
 
         });

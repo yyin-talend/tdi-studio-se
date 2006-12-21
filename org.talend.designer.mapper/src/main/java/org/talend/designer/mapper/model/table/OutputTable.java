@@ -44,7 +44,7 @@ public class OutputTable extends AbstractInOutTable {
     protected List<FilterTableEntry> filterTableEntries = new ArrayList<FilterTableEntry>(0);
 
     private boolean reject;
-    
+
     private boolean rejectInnerJoin;
 
     private ExtendedTableModel<FilterTableEntry> tableFiltersEntriesModel;
@@ -99,6 +99,7 @@ public class OutputTable extends AbstractInOutTable {
 
     /**
      * Getter for rejectInnerJoin.
+     * 
      * @return the rejectInnerJoin
      */
     public boolean isRejectInnerJoin() {
@@ -107,21 +108,20 @@ public class OutputTable extends AbstractInOutTable {
 
     /**
      * Sets the rejectInnerJoin.
+     * 
      * @param rejectInnerJoin the rejectInnerJoin to set
      */
     public void setRejectInnerJoin(boolean rejectInnerJoin) {
         this.rejectInnerJoin = rejectInnerJoin;
     }
 
-    
     /**
      * Getter for tableFiltersEntriesModel.
+     * 
      * @return the tableFiltersEntriesModel
      */
     public ExtendedTableModel<FilterTableEntry> getTableFiltersEntriesModel() {
         return this.tableFiltersEntriesModel;
     }
 
-    
-    
 }

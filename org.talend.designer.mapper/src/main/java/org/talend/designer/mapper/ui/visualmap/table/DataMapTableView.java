@@ -161,7 +161,6 @@ public abstract class DataMapTableView extends Composite {
 
     private Text constraintExpressionTextEditor;
 
-
     protected boolean dragDetected;
 
     private Cursor currentCursor;

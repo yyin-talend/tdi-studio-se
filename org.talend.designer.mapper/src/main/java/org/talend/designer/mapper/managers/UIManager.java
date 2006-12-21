@@ -300,11 +300,11 @@ public class UIManager {
                 metadataTableEditorView.setMetadataTableEditor(metadataTableEditor);
                 metadataTableEditorView.getTableViewerCreator().getSelectionHelper().setActiveFireSelectionChanged(true);
                 metadataTableEditorView.getExtendedToolbar().updateEnabledStateOfButtons();
-                
+
                 dataMapTVCreator.getSelectionHelper().setActiveFireSelectionChanged(false);
-                metadataTableEditorView. getTableViewerCreator().getSelectionHelper().setSelection(dataMapTableViewer.getTable().getSelectionIndices());
+                metadataTableEditorView.getTableViewerCreator().getSelectionHelper().setSelection(
+                        dataMapTableViewer.getTable().getSelectionIndices());
                 dataMapTVCreator.getSelectionHelper().setActiveFireSelectionChanged(true);
-//                metadataTableEditorView.getTableViewerCreator().getSelectionHelper().setActiveFireSelectionChanged(true);
 
                 // disable highlight for other DataMapTableView and highlight selected DataMapTableView
                 for (AbstractDataMapTable table : tables) {
@@ -340,20 +340,6 @@ public class UIManager {
     private void modifySelectionChangedListener(final Zone currentZone, final MetadataTableEditorView metadataTableEditorViewFinal,
             final TableViewerCreator metadataTVCreator, final MetadataTableEditor metadataTableEditor,
             final DataMapTableView dataMapTableView) {
-        // ISelectionChangedListener metadataEditorViewerSelectionChangedListener = new ISelectionChangedListener() {
-        //
-        // public void selectionChanged(SelectionChangedEvent event) {
-        // // System.out.println("Metadata editor selectionChanged");
-        // onSelectionChanged();
-        // }
-        //
-        // public void onSelectionChanged() {
-        // if (metadataTableEditorViewFinal.isExecuteSelectionEvent()) {
-        // mapperManager.getUiManager().selectLinkedTableEntries(metadataTableEditor.getMetadataTable(),
-        // metadataTVCreator.getTable().getSelectionIndices());
-        // }
-        // }
-        // };
 
         final TableViewer dataMapTableViewer = dataMapTableView.getTableViewerCreatorForColumns().getTableViewer();
 
@@ -601,9 +587,9 @@ public class UIManager {
     public void selectLinkedTableEntries(IMetadataTable metadataTable, int[] selectionIndices) {
         DataMapTableView dataMapTableView = tableManager.getView(metadataTable);
 
-//        view.getTableViewerCreatorForColumns().getSelectionHelper().setActiveFireSelectionChanged(false);
-//        metadataTableEditorView.getExtendedTableViewer().getTableViewerCreator().getSelectionHelper().setSelection(selectionIndices);
-//        view.getTableViewerCreatorForColumns().getSelectionHelper().setActiveFireSelectionChanged(true);
+        // view.getTableViewerCreatorForColumns().getSelectionHelper().setActiveFireSelectionChanged(false);
+        // metadataTableEditorView.getExtendedTableViewer().getTableViewerCreator().getSelectionHelper().setSelection(selectionIndices);
+        // view.getTableViewerCreatorForColumns().getSelectionHelper().setActiveFireSelectionChanged(true);
         dataMapTableView.setTableSelection(selectionIndices);
 
         List<ITableEntry> list = extractSelectedTableEntries(dataMapTableView.getTableViewerCreatorForColumns().getTableViewer()
@@ -977,8 +963,8 @@ public class UIManager {
      * @param inputEntry
      */
     private boolean checkEntryHasInvalidKey(InputColumnTableEntry inputEntry) {
-        return inputEntry.getMetadataColumn().isKey() && (inputEntry.getExpression() == null
-                || inputEntry.getExpression().trim().length() == 0);
+        return inputEntry.getMetadataColumn().isKey()
+                && (inputEntry.getExpression() == null || inputEntry.getExpression().trim().length() == 0);
     }
 
     /**

@@ -46,15 +46,15 @@ public class TMapperStartPerljet {
 
         // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-//        List<IConnection> connections;
+        // List<IConnection> connections;
         ExternalMapperData data;
         if (node != null) {
-//            connections = (List<IConnection>) node.getIncomingConnections();
+            // connections = (List<IConnection>) node.getIncomingConnections();
             data = (ExternalMapperData) node.getExternalData();
         } else {
             org.talend.designer.mapper.MapperMain.setStandAloneMode(true);
             MapperDataTestGenerator testGenerator = new MapperDataTestGenerator(LanguageProvider.getCurrentLanguage(), false);
-//            connections = testGenerator.getConnectionList();
+            // connections = testGenerator.getConnectionList();
             data = (ExternalMapperData) testGenerator.getExternalData();
         }
 
