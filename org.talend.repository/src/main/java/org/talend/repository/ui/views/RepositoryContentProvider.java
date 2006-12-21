@@ -127,7 +127,7 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
             // convert(factory.getProcess2(), processNode, ERepositoryObjectType.PROCESS, recBinNode);
 
             // 3. Routines
-            RepositoryNode codeNode = new StableRepositoryNode(root, "Code", ECoreImage.ROUTINE_ICON, 2);
+            RepositoryNode codeNode = new StableRepositoryNode(root, "Code", ECoreImage.CODE_ICON, 2);
             nodes.add(codeNode);
 
             RepositoryNode routineNode = new RepositoryNode(null, root, ENodeType.SYSTEM_FOLDER);
@@ -231,7 +231,7 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
             RepositoryNode folder;
             if (container.getLabel().equals(RepositoryConstants.SYSTEM_DIRECTORY)) {
                 // FIXME SML remove "System" hardcoded
-                folder = new StableRepositoryNode(parent, "System", ECoreImage.ROUTINE_ICON, 0);
+                folder = new StableRepositoryNode(parent, "System", ECoreImage.FOLDER_CLOSE_ICON, 0);
             } else {
                 folder = new RepositoryNode(oFolder, parent, ENodeType.SIMPLE_FOLDER);
             }
