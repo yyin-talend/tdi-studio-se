@@ -355,8 +355,6 @@ public class XmlFileStep1Form extends AbstractXmlFileStepForm {
                 encodingCombo.select(0);
             }
 
-            // PTODO cantoine : make internationalisation for Perl Module not Installed, detail Message URL of PPM
-            // module ??
             IPerlModuleService perlModuleService = (IPerlModuleService) GlobalServiceRegister.getDefault().getService(
                     IPerlModuleService.class);
             try {
