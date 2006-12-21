@@ -58,6 +58,8 @@ public enum EParameterName {
     LOG_TO_STDOUT(Messages.getString("EParameterName.20")), //$NON-NLS-1$
     SCHEMA_TYPE("Schema Type"),
     REPOSITORY_SCHEMA_TYPE("Repository"),
+    QUERYSTORE_TYPE("Query Type"),
+    REPOSITORY_QUERYSTORE_TYPE("Repository"),
     PROPERTY_TYPE("Property Type"),
     REPOSITORY_PROPERTY_TYPE("Repository"),
     CONDITION("Condition"),

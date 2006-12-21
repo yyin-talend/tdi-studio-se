@@ -124,14 +124,16 @@ import org.talend.core.model.metadata.ColumnNameChanged;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataTable;
-import org.talend.core.model.metadata.MetadataTool;
 import org.talend.core.model.metadata.builder.ConvertionHelper;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.metadata.builder.connection.DelimitedFileConnection;
 import org.talend.core.model.metadata.builder.connection.PositionalFileConnection;
+import org.talend.core.model.metadata.builder.connection.QueriesConnection;
+import org.talend.core.model.metadata.builder.connection.Query;
 import org.talend.core.model.metadata.builder.connection.RegexpFileConnection;
 import org.talend.core.model.metadata.builder.connection.SchemaTarget;
 import org.talend.core.model.metadata.builder.connection.XmlFileConnection;
+import org.talend.core.model.metadata.builder.connection.impl.QueryImpl;
 import org.talend.core.model.metadata.designerproperties.RepositoryToComponentProperty;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.EConnectionType;
@@ -141,6 +143,7 @@ import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IContextManager;
 import org.talend.core.model.process.IElementParameter;
+import org.talend.core.model.process.IElementParameterDefaultValue;
 import org.talend.core.model.process.IExternalNode;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.Problem;
@@ -150,7 +153,6 @@ import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.model.temp.ECodeLanguage;
-import org.talend.core.ui.images.ECoreImage;
 import org.talend.core.ui.metadata.dialog.MetadataDialog;
 import org.talend.core.ui.proposal.ProcessProposalProvider;
 import org.talend.core.ui.proposal.ProcessProposalUtils;
@@ -210,9 +212,13 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
 
     private String oldSchemaType;
 
+    private String oldQueryStoreType;
+
     private String oldProcessType;
 
     private Map<String, IMetadataTable> repositoryTableMap;
+
+    private Map<String, Query> repositoryQueryStoreMap;
 
     private Map<String, ConnectionItem> repositoryConnectionItemMap;
 
@@ -648,7 +654,26 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                                                     repositoryMetadata);
                                             getCommandStack().execute(cmd);
                                         }
-                                    } else if (name.equals(EParameterName.REPOSITORY_PROPERTY_TYPE.getName())) {
+                                    } else if (name.equals(EParameterName.REPOSITORY_QUERYSTORE_TYPE.getName())) {
+                                        updateRepositoryList();
+                                        Command cmd = new PropertyChangeCommand((Node) elem, name, value);
+                                        getCommandStack().execute(cmd);
+                                        if (elem instanceof Node) {
+                                            if (repositoryQueryStoreMap.containsKey(value)) {
+                                                Query query = repositoryQueryStoreMap.get(value);
+
+                                                IElementParameter queryText = getQueryTextElementParameter(elem);
+                                                if (queryText != null) {
+                                                    String sql = convertSQL(query.getValue());
+                                                    cmd = new PropertyChangeCommand((Node) elem, queryText.getName(),
+                                                            sql);
+                                                    getCommandStack().execute(cmd);
+                                                }
+                                            }
+                                        }
+                                    }
+
+                                    else if (name.equals(EParameterName.REPOSITORY_PROPERTY_TYPE.getName())) {
                                         updateRepositoryList();
                                         if (repositoryConnectionItemMap.containsKey(value)) {
                                             repositoryConnection = (org.talend.core.model.metadata.builder.connection.Connection) repositoryConnectionItemMap
@@ -699,6 +724,34 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                                                     repositoryMetadata);
                                             getCommandStack().execute(cmd);
                                         }
+                                    } else if (name.equals(EParameterName.QUERYSTORE_TYPE.getName())) {
+                                        if (elem instanceof Node) {
+                                            updateRepositoryList();
+                                            Command cmd = new PropertyChangeCommand((Node) elem, name, value);
+                                            getCommandStack().execute(cmd);
+//                                            updateRepositoryList();
+                                            IElementParameter queryText = getQueryTextElementParameter(elem);
+                                            String schemaSelected;
+                                            schemaSelected = (String) elem
+                                                    .getPropertyValue(EParameterName.QUERYSTORE_TYPE.getName());
+                                            String sql = "";
+                                            if (EmfComponent.BUILTIN.equals(schemaSelected)) {
+                                                IElementParameterDefaultValue defaultValue = queryText
+                                                        .getDefaultValues().get(0);
+                                                sql = defaultValue.getDefaultValue();
+                                            } else {
+                                                schemaSelected = (String) elem
+                                                        .getPropertyValue(EParameterName.REPOSITORY_QUERYSTORE_TYPE
+                                                                .getName());
+                                                if (repositoryQueryStoreMap.containsKey(schemaSelected)) {
+                                                    Query query = repositoryQueryStoreMap.get(schemaSelected);
+                                                    sql = query.getValue();
+                                                }
+                                            }
+                                            sql = convertSQL(sql);
+                                            cmd = new PropertyChangeCommand((Node) elem, queryText.getName(), sql);
+                                            getCommandStack().execute(cmd);
+                                        }
                                     } else {
                                         Command cmd = new PropertyChangeCommand(elem, name, value);
                                         getCommandStack().execute(cmd);
@@ -714,10 +767,35 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
 
     };
 
+    private String convertSQL(String sql) {
+        if(sql.startsWith("'")){
+            return sql;
+        }
+        return "'" + sql + "'";
+    }
+
+    private IElementParameter getQueryTextElementParameter(Element elem) {
+        for (IElementParameter param : (List<IElementParameter>) elem.getElementParameters()) {
+            if (param.getField() == EParameterFieldType.MEMO_SQL) {
+                return param;
+            }
+        }
+        return null;
+    }
+
     private void showSchemaRepositoryList(boolean show) {
         for (int i = 0; i < elem.getElementParameters().size(); i++) {
             IElementParameter param = elem.getElementParameters().get(i);
             if (param.getName().equals(EParameterName.REPOSITORY_SCHEMA_TYPE.getName())) {
+                param.setShow(show);
+            }
+        }
+    }
+
+    private void showQueryStoreRepositoryList(boolean show) {
+        for (int i = 0; i < elem.getElementParameters().size(); i++) {
+            IElementParameter param = elem.getElementParameters().get(i);
+            if (param.getName().equals(EParameterName.REPOSITORY_QUERYSTORE_TYPE.getName())) {
                 param.setShow(show);
             }
         }
@@ -1032,6 +1110,8 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
         String[] repositoryTableValueList = new String[] {};
         String[] repositoryConnectionNameList = new String[] {};
         String[] repositoryConnectionValueList = new String[] {};
+        String[] repositoryQueryStoreList = new String[] {};
+
         try {
             metadataConnectionsItem = factory.getMetadataConnectionsItem();
         } catch (PersistenceException e) {
@@ -1039,9 +1119,12 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
         }
         if (metadataConnectionsItem != null) {
             repositoryTableMap.clear();
+            repositoryQueryStoreMap.clear();
             repositoryConnectionItemMap.clear();
             List<String> tableNamesList = new ArrayList<String>();
             List<String> tableValuesList = new ArrayList<String>();
+            List<String> queryStoreValuesList = new ArrayList<String>();
+
             for (ConnectionItem connectionItem : metadataConnectionsItem) {
                 org.talend.core.model.metadata.builder.connection.Connection connection = (org.talend.core.model.metadata.builder.connection.Connection) connectionItem
                         .getConnection();
@@ -1057,9 +1140,35 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                         tableValuesList.add(value);
                     }
                 }
+                if (connection instanceof DatabaseConnection && !connection.isReadOnly()) {
+                    DatabaseConnection dbConnection = (DatabaseConnection) connection;
+
+                    List<QueriesConnection> qcs = dbConnection.getQueries();
+                    if (!qcs.isEmpty()) {
+                        QueriesConnection connection2 = qcs.get(0);
+                        List<Query> qs = connection2.getQuery();
+                        for (Query query : qs) {
+                            String value = connectionItem.getProperty().getLabel() + " - " + query.getLabel();
+                            repositoryQueryStoreMap.put(value, query);
+                            queryStoreValuesList.add(value);
+                        }
+                    }
+
+                    // repositoryConnectionItemMap.put(connectionItem.getProperty().getId() + "", connectionItem);
+                    // for (Object tableObj : connection.getTables()) {
+                    // org.talend.core.model.metadata.builder.connection.MetadataTable table;
+                    // table = (org.talend.core.model.metadata.builder.connection.MetadataTable) tableObj;
+                    // String name = connectionItem.getProperty().getLabel() + " - " + table.getLabel();
+                    // String value = connectionItem.getProperty().getId() + " - " + table.getLabel();
+                    // repositoryTableMap.put(value, ConvertionHelper.convert(table));
+                    // tableNamesList.add(name);
+                    // tableValuesList.add(value);
+                    // }
+                }
             }
             repositoryTableNameList = (String[]) tableNamesList.toArray(new String[0]);
             repositoryTableValueList = (String[]) tableValuesList.toArray(new String[0]);
+            repositoryQueryStoreList = (String[]) queryStoreValuesList.toArray(new String[0]);
         }
 
         for (int i = 0; i < elem.getElementParameters().size(); i++) {
@@ -1075,6 +1184,19 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                     }
                 }
             }
+
+            if (param.getName().equals(EParameterName.REPOSITORY_QUERYSTORE_TYPE.getName())) {
+
+                param.setListItemsDisplayName(repositoryQueryStoreList);
+                param.setListItemsValue(repositoryQueryStoreList);
+                if (!repositoryQueryStoreMap.keySet().contains(param.getValue())) {
+                    if (repositoryQueryStoreList.length > 0) {
+                        elem.setPropertyValue(EParameterName.REPOSITORY_QUERYSTORE_TYPE.getName(),
+                                repositoryQueryStoreList[0]);
+                    }
+                }
+            }
+
             if (param.getName().equals(EParameterName.REPOSITORY_PROPERTY_TYPE.getName())) {
 
                 String repositoryValue = elem.getElementParameter(EParameterName.PROPERTY_TYPE.getName())
@@ -1514,6 +1636,90 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
 
     protected Control addSchemaType(final Composite subComposite, final IElementParameter param, final int numInRow,
             final int nbInRow, final int top, final Control lastControl) {
+
+        FormData data;
+        Control lastControlUsed;
+        Button resetBtn = null;
+
+        Point btnSize;
+
+        Button btn;
+        btn = getWidgetFactory().createButton(subComposite, "", SWT.PUSH); //$NON-NLS-1$
+        btnSize = btn.computeSize(SWT.DEFAULT, SWT.DEFAULT);
+
+        btn.setImage(CorePlugin.getImageDescriptor(DOTS_BUTTON).createImage());
+
+        btn.addSelectionListener(listenerSelection);
+        btn.setData(NAME, SCHEMA);
+        btn.setData(PROPERTY, param.getName());
+
+        lastControlUsed = btn;
+
+        if (elem instanceof Node) {
+            Node node = (Node) elem;
+            boolean flowMainInput = false;
+            for (IConnection connec : node.getIncomingConnections()) {
+                if (connec.getLineStyle().equals(EConnectionType.FLOW_MAIN)) {
+                    flowMainInput = true;
+                }
+            }
+            if (flowMainInput) {
+                resetBtn = getWidgetFactory().createButton(subComposite, "Sync columns", SWT.PUSH);
+                resetBtn.setToolTipText("This will take automatically the columns of the previous component");
+
+                Point resetBtnSize = resetBtn.computeSize(SWT.DEFAULT, SWT.DEFAULT);
+
+                resetBtn.addSelectionListener(listenerSelection);
+                data = new FormData();
+                data.left = new FormAttachment(btn, 0);
+                data.right = new FormAttachment(btn, resetBtnSize.x + ITabbedPropertyConstants.HSPACE, SWT.RIGHT);
+                data.top = new FormAttachment(0, top);
+                data.height = resetBtnSize.y;
+                resetBtn.setLayoutData(data);
+                resetBtn.setData(NAME, RESET_COLUMNS);
+                resetBtn.setData(PROPERTY, param.getName());
+                resetBtn.setEnabled(!param.isReadOnly());
+
+                if (resetBtnSize.y > btnSize.y) {
+                    btnSize.y = resetBtnSize.y;
+                }
+
+                lastControlUsed = btn;
+            }
+        }
+
+        CLabel labelLabel = getWidgetFactory().createCLabel(subComposite, "Edit schema");
+        data = new FormData();
+        data.left = new FormAttachment(lastControl, 0);
+        data.right = new FormAttachment(lastControl, labelLabel.computeSize(SWT.DEFAULT, SWT.DEFAULT).x
+                + (ITabbedPropertyConstants.HSPACE * 2), SWT.RIGHT);
+        if (resetBtn != null) {
+            data.top = new FormAttachment(resetBtn, 0, SWT.CENTER);
+        } else {
+            data.top = new FormAttachment(0, top);
+        }
+        labelLabel.setLayoutData(data);
+        if (numInRow != 1) {
+            labelLabel.setAlignment(SWT.RIGHT);
+        }
+
+        data = new FormData();
+        data.left = new FormAttachment(labelLabel, 0);
+        data.right = new FormAttachment(labelLabel, STANDARD_BUTTON_WIDTH, SWT.RIGHT);
+        if (resetBtn != null) {
+            data.top = new FormAttachment(resetBtn, 0, SWT.CENTER);
+        } else {
+            data.top = new FormAttachment(0, top);
+        }
+        data.height = STANDARD_HEIGHT - 2;
+        btn.setLayoutData(data);
+
+        curRowSize = btnSize.y + ITabbedPropertyConstants.VSPACE;
+        return lastControlUsed;
+    }
+
+    protected Control addQueryStoreType(final Composite subComposite, final IElementParameter param,
+            final int numInRow, final int nbInRow, final int top, final Control lastControl) {
 
         FormData data;
         Control lastControlUsed;
@@ -2881,6 +3087,16 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
             }
         }
 
+        oldQueryStoreType = (String) elem.getPropertyValue(EParameterName.QUERYSTORE_TYPE.getName());
+        if (oldQueryStoreType != null) {
+            if (oldQueryStoreType.equals(EmfComponent.REPOSITORY)) {
+                showQueryStoreRepositoryList(true);
+                updateRepositoryList();
+            } else {
+                showQueryStoreRepositoryList(false);
+            }
+        }
+
         oldPropertyType = (String) elem.getPropertyValue(EParameterName.PROPERTY_TYPE.getName());
         if (oldPropertyType != null) {
             if (oldPropertyType.equals(EmfComponent.REPOSITORY)) {
@@ -2945,6 +3161,13 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                         case SCHEMA_TYPE:
                             lastControl = addSchemaType(composite, listParam.get(i), numInRow, nbInRow, heightSize,
                                     lastControl);
+                            break;
+
+                        case QUERYSTORE_TYPE:
+                            // if some other components needed here, uncomment the codes.
+                            // lastControl = addQueryStoreType(composite, listParam.get(i), numInRow, nbInRow,
+                            // heightSize,
+                            // lastControl);
                             break;
                         case TEXT:
                             lastControl = addText(composite, listParam.get(i), numInRow, nbInRow, heightSize,
@@ -3045,6 +3268,13 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
         if (oldSchemaType != null) {
             String newSchemaType = (String) elem.getPropertyValue(EParameterName.SCHEMA_TYPE.getName());
             if (!oldSchemaType.equals(newSchemaType)) {
+                addComponents();
+            }
+        }
+
+        if (oldQueryStoreType != null) {
+            String newQueryStoreType = (String) elem.getPropertyValue(EParameterName.QUERYSTORE_TYPE.getName());
+            if (!oldQueryStoreType.equals(newQueryStoreType)) {
                 addComponents();
             }
         }
@@ -3246,6 +3476,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
         repositoryConnectionItemMap = new HashMap<String, ConnectionItem>();
 
         repositoryTableMap = new HashMap<String, IMetadataTable>();
+        repositoryQueryStoreMap = new HashMap<String, Query>();
 
         this.editionControlHelper = new EditionControlHelper();
 

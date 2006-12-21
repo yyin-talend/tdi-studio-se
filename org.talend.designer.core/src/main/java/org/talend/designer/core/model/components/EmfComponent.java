@@ -509,6 +509,40 @@ public class EmfComponent implements IComponent {
                 newParam.setNotShowIf(xmlParam.getNOTSHOWIF());
                 listParam.add(newParam);
             }
+            if (type == EParameterFieldType.QUERYSTORE_TYPE) {
+                ElementParameter newParam = new ElementParameter(node);
+                newParam.setCategory(EComponentCategory.PROPERTY);
+                newParam.setName(EParameterName.QUERYSTORE_TYPE.getName());
+                newParam.setDisplayName(EParameterName.QUERYSTORE_TYPE.getDisplayName());
+                newParam.setListItemsDisplayName(new String[] { TEXT_BUILTIN, TEXT_REPOSITORY });
+                newParam.setListItemsDisplayCodeName(new String[] { BUILTIN, REPOSITORY });
+                newParam.setListItemsValue(new String[] { BUILTIN, REPOSITORY });
+                newParam.setValue(BUILTIN);
+                newParam.setNumRow(xmlParam.getNUMROW());
+                newParam.setField(EParameterFieldType.CLOSED_LIST);
+                if (xmlParam.isSetSHOW()) {
+                    newParam.setShow(xmlParam.isSHOW());
+                }
+                newParam.setShowIf(xmlParam.getSHOWIF());
+                newParam.setNotShowIf(xmlParam.getNOTSHOWIF());
+                listParam.add(newParam);
+
+                newParam = new ElementParameter(node);
+                newParam.setCategory(EComponentCategory.PROPERTY);
+                newParam.setName(EParameterName.REPOSITORY_QUERYSTORE_TYPE.getName());
+                newParam.setDisplayName(EParameterName.REPOSITORY_QUERYSTORE_TYPE.getDisplayName());
+                newParam.setListItemsDisplayName(new String[] {});
+                newParam.setListItemsValue(new String[] {});
+                newParam.setNumRow(xmlParam.getNUMROW());
+                newParam.setField(EParameterFieldType.CLOSED_LIST);
+                newParam.setValue("");
+                newParam.setShow(false);
+                newParam.setRequired(true);
+                newParam.setShowIf(xmlParam.getSHOWIF());
+                newParam.setNotShowIf(xmlParam.getNOTSHOWIF());
+                listParam.add(newParam);
+            }
+
             if (type == EParameterFieldType.PROCESS_TYPE) {
                 ElementParameter newParam = new ElementParameter(node);
                 newParam.setCategory(EComponentCategory.PROPERTY);
