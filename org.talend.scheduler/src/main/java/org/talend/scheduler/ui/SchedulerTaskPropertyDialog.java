@@ -51,7 +51,8 @@ import org.talend.scheduler.core.TalendJobManager;
 import org.talend.scheduler.i18n.Messages;
 
 /**
- * A Scheduler Task property dialog. $Id$
+ * A Scheduler Task property dialog. $Id: SchedulerTaskPropertyDialog.java 292 2006-11-02 04:31:28 +0000 (jeu., 02 nov.
+ * 2006) nrousseau $
  */
 public class SchedulerTaskPropertyDialog extends Dialog {
 
@@ -160,7 +161,7 @@ public class SchedulerTaskPropertyDialog extends Dialog {
 
         resultComposite.enableAllWidgets(true);
         commandComposite.refreshTalendJobCommand();
-        
+
         updateUI();
 
         return container;
@@ -298,9 +299,11 @@ public class SchedulerTaskPropertyDialog extends Dialog {
     @Override
     protected void createButtonsForButtonBar(Composite parent) {
         if (dialogType == DialogType.ADD) {
-            createButton(parent, IDialogConstants.OK_ID, Messages.getString("SchedulerTaskPropertyDialog.addTaskButton"), true); //$NON-NLS-1$
+            createButton(parent, IDialogConstants.OK_ID, Messages
+                    .getString("SchedulerTaskPropertyDialog.addTaskButton"), true); //$NON-NLS-1$
         } else {
-            createButton(parent, IDialogConstants.OK_ID, Messages.getString("SchedulerTaskPropertyDialog.modifyTaskButton"), true); //$NON-NLS-1$
+            createButton(parent, IDialogConstants.OK_ID, Messages
+                    .getString("SchedulerTaskPropertyDialog.modifyTaskButton"), true); //$NON-NLS-1$
         }
         createButton(parent, IDialogConstants.CANCEL_ID, IDialogConstants.CANCEL_LABEL, false);
     }
@@ -510,8 +513,8 @@ public class SchedulerTaskPropertyDialog extends Dialog {
          */
         private void refreshTalendJobCommand() {
             try {
-                String command = jobManager.getCommandByTalendJob(projectCombo.getText(), jobCombo.getText(), contextCombo
-                        .getText());
+                String command = jobManager.getCommandByTalendJob(projectCombo.getText(), jobCombo.getText(),
+                        contextCombo.getText());
                 refreshCommandDiaplay(command);
             } catch (Exception ex) {
                 SchedulerPlugin.log(ex);

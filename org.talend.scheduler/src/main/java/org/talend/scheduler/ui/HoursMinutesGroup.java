@@ -124,7 +124,7 @@ public class HoursMinutesGroup extends Group implements IWidgetEnableListener {
 
         private static final int SELECTED_BUTTON_NUM = 24;
 
-        int selectedButton[] = new int[SELECTED_BUTTON_NUM];
+        int [] selectedButton = new int[SELECTED_BUTTON_NUM];
 
         HoursButtonListener() {
             for (int j = 0; j < selectedButton.length; j++) {
@@ -167,8 +167,8 @@ public class HoursMinutesGroup extends Group implements IWidgetEnableListener {
                     }
                 }
                 if (start == 0 && end == 23) {
-                    cronRunningHours = "*";} //$NON-NLS-1$
-                else {
+                    cronRunningHours = "*";
+                } else {
                     if (!firstFlag && start >= end) {
 
                         firstFlag = true;
@@ -222,7 +222,7 @@ public class HoursMinutesGroup extends Group implements IWidgetEnableListener {
         for (; i < 24; i++) {
             createButton(String.valueOf(i), String.valueOf(i), new HoursButtonListener(), hoursButtons);
         }
-        
+
         new Label(this, SWT.NONE);
         new Label(this, SWT.NONE);
         new Label(this, SWT.NONE);
