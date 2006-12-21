@@ -34,7 +34,8 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
-import org.talend.help.util.ImageUtil;
+import org.talend.commons.ui.image.ImageProvider;
+import org.talend.help.perl.model.EImage;
 
 /**
  * DOC Administrator class global comment. Detailled comment <br/>
@@ -59,17 +60,17 @@ public class BackForwardBar {
         this.browser = htmlBrowser;
     }
 
-    private static final Image ENTER_BACKIMAGE = ImageUtil.getImage("icons/e_back2.gif");
+    private static final Image ENTER_BACKIMAGE = ImageProvider.getImage(EImage.ENTER_BACKIMAGE);
 
-    private static final Image OUT_BACKIMAGE = ImageUtil.getImage("icons/e_back.gif");
+    private static final Image OUT_BACKIMAGE = ImageProvider.getImage(EImage.OUT_BACKIMAGE);
 
-    private static final Image DISABLE_BACKIMAGE = ImageUtil.getImage("icons/back.gif");
+    private static final Image DISABLE_BACKIMAGE = ImageProvider.getImage(EImage.DISABLE_BACKIMAGE);
 
-    private static final Image ENTER_FORWARDIMAGE = ImageUtil.getImage("icons/e_forward2.gif");
+    private static final Image ENTER_FORWARDIMAGE = ImageProvider.getImage(EImage.ENTER_FORWARDIMAGE);
 
-    private static final Image OUT_FORWARDIMAGE = ImageUtil.getImage("icons/e_forward.gif");
+    private static final Image OUT_FORWARDIMAGE = ImageProvider.getImage(EImage.OUT_FORWARDIMAGE);
 
-    private static final Image DISABLE_FORWARDIMAGE = ImageUtil.getImage("icons/forward.gif");
+    private static final Image DISABLE_FORWARDIMAGE = ImageProvider.getImage(EImage.DISABLE_FORWARDIMAGE);
 
     private void initBackForwardLabel(Composite parentComp) {
         backLabel = new Label(parentComp, SWT.None);
