@@ -105,13 +105,8 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
     private Action importAction;
 
     private Listener dragDetectListener;
-
+    
     public RepositoryView() {
-        this((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY));
-    }
-
-    public RepositoryView(RepositoryContext repositoryContext) {
-        super();
     }
 
     @Override
