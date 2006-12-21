@@ -19,7 +19,7 @@
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 // ============================================================================
-package org.talend.repository.ui.wizards.metadata.connection.files.xml;
+package org.talend.repository.ui.wizards.metadata.connection.files.xml.extraction.view;
 
 import org.talend.commons.ui.swt.drawing.background.BackgroundRefresher;
 import org.talend.commons.ui.swt.drawing.background.IBgDrawableComposite;

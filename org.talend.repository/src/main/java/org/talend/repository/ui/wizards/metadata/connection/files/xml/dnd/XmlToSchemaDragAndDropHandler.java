@@ -49,9 +49,9 @@ import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumn;
 import org.talend.commons.ui.utils.TableUtils;
 import org.talend.core.model.metadata.builder.connection.SchemaTarget;
 import org.talend.core.model.metadata.builder.connection.XmlXPathLoopDescriptor;
-import org.talend.repository.ui.wizards.metadata.connection.files.xml.ExtractionFieldsWithXPathEditorView;
-import org.talend.repository.ui.wizards.metadata.connection.files.xml.ExtractionLoopWithXPathEditorView;
-import org.talend.repository.ui.wizards.metadata.connection.files.xml.XmlToXPathLinker;
+import org.talend.repository.ui.wizards.metadata.connection.files.xml.extraction.view.ExtractionFieldsWithXPathEditorView;
+import org.talend.repository.ui.wizards.metadata.connection.files.xml.extraction.view.ExtractionLoopWithXPathEditorView;
+import org.talend.repository.ui.wizards.metadata.connection.files.xml.extraction.view.XmlToXPathLinker;
 
 /**
  * DOC amaumont class global comment. Detailled comment <br/>
@@ -150,14 +150,14 @@ public class XmlToSchemaDragAndDropHandler {
         }
 
         public void dragSetData(DragSourceEvent event) {
-            System.out.println("\n>>dragSetData");
+//            System.out.println("\n>>dragSetData");
             // System.out.println(event);
             // if (TableEntriesTransfer.getInstance().isSupportedType(event.dataType)) {
             // }
         }
 
         public void dragStart(DragSourceEvent event) {
-            System.out.println("\n>>dragStart");
+//            System.out.println("\n>>dragStart");
             // System.out.println(event);
             TreeItem[] items = tree.getSelection();
             if (items.length == 0) {
@@ -201,25 +201,25 @@ public class XmlToSchemaDragAndDropHandler {
         }
 
         public void dragOver(DropTargetEvent event) {
-            System.out.println("\n>>dragOver");
+//            System.out.println("\n>>dragOver");
 
         }
 
         public void dragLeave(DropTargetEvent event) {
-            System.out.println("\n>>dragLeave");
-            System.out.println(event);
+            //System.out.println("\n>>dragLeave");
+            //System.out.println(event);
         }
 
         public void dragOperationChanged(DropTargetEvent event) {
-            System.out.println("\n>>dragOperationChanged");
+            //System.out.println("\n>>dragOperationChanged");
             // showInfos(event);
             XmlToSchemaDraggedData draggedData = XPathTransfer.getInstance().getDraggedData();
 
         }
 
         public void dropAccept(DropTargetEvent event) {
-            System.out.println("\n>>dropAccept");
-            System.out.println(event);
+            //System.out.println("\n>>dropAccept");
+            //System.out.println(event);
             XmlToSchemaDraggedData draggedData = XPathTransfer.getInstance().getDraggedData();
 
         }
@@ -249,7 +249,7 @@ public class XmlToSchemaDragAndDropHandler {
          * @see org.eclipse.swt.dnd.DropTargetListener#drop(org.eclipse.swt.dnd.DropTargetEvent)
          */
         public void drop(DropTargetEvent event) {
-            System.out.println("\n>>drop");
+            //System.out.println("\n>>drop");
             DropTarget dropTarget = (DropTarget) event.getSource();
             Control control = dropTarget.getControl();
 
@@ -324,8 +324,8 @@ public class XmlToSchemaDragAndDropHandler {
 
     public static void main(String[] args) {
         String relativePath = XPathPopulationUtil.populateColumnPath("/doc/members/member/returns", "/doc/members");
-        System.out.println(relativePath);
+        //System.out.println(relativePath);
         relativePath = XPathPopulationUtil.populateColumnPath("/doc/members/member/returns/see/@cref", "/doc/members/member/summary/@name");
-        System.out.println(relativePath);
+        //System.out.println(relativePath);
     }
 }

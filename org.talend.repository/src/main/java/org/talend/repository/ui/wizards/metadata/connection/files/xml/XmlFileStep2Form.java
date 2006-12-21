@@ -74,6 +74,9 @@ import org.talend.repository.preview.ProcessDescription;
 import org.talend.repository.ui.swt.preview.ShadowProcessPreview;
 import org.talend.repository.ui.swt.utils.AbstractXmlFileStepForm;
 import org.talend.repository.ui.utils.ShadowProcessHelper;
+import org.talend.repository.ui.wizards.metadata.connection.files.xml.extraction.view.ExtractionFieldsWithXPathEditorView;
+import org.talend.repository.ui.wizards.metadata.connection.files.xml.extraction.view.ExtractionLoopWithXPathEditorView;
+import org.talend.repository.ui.wizards.metadata.connection.files.xml.extraction.view.XmlToXPathLinker;
 
 /**
  * @author ocarbone
