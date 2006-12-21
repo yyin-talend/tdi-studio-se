@@ -63,7 +63,8 @@ public class PlainSearcher extends Searcher {
             if (!isEndOfSearch(currentNode)) {
                 currentNode = startSearch(nextSiblingNode, searchText.getText());
             } else {
-                // TODO add a tip to the user when searching end
+                // currentNode = repeatToStart();
+                // currentNode = startSearch(nextSiblingNode, searchText.getText());
             }
         } else {
             if ("".equals(searchText.getText())) {
@@ -115,6 +116,10 @@ public class PlainSearcher extends Searcher {
             } else {
                 searchFlag = false;
             }
+        }
+        if (searcherCache.size() != 0) {
+            Node repeatNode =  repeatToStart();
+            return startSearch(repeatNode, searchStr);
         }
         return null;
 

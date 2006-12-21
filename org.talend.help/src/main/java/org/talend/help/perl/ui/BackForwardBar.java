@@ -23,8 +23,10 @@
 package org.talend.help.perl.ui;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
-
+import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.events.MouseAdapter;
@@ -36,6 +38,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.help.perl.model.EImage;
+import org.talend.help.perl.model.Node;
 
 /**
  * DOC Administrator class global comment. Detailled comment <br/>
@@ -49,7 +52,9 @@ public class BackForwardBar {
 
     private Label forwardLabel = null;
 
-    private Browser browser;
+    private TreeViewer treeViewer = null;
+
+    private boolean selectTreeFlag = true;
 
     public BackForwardBar(Composite parent) {
 
@@ -57,7 +62,6 @@ public class BackForwardBar {
     }
 
     public void setBrowser(Browser htmlBrowser) {
-        this.browser = htmlBrowser;
     }
 
     private static final Image ENTER_BACKIMAGE = ImageProvider.getImage(EImage.ENTER_BACKIMAGE);
@@ -101,7 +105,8 @@ public class BackForwardBar {
                 if (currentNavIndex == 0) {
                     backLabel.setImage(DISABLE_BACKIMAGE);
                 }
-                browser.setText(globalNavigation.get(backIndex));
+                setSelectTreeFlag(false);
+                fireTreeState(globalNavigation.get(backIndex));
                 fireNavItemState();
             }
 
@@ -135,14 +140,15 @@ public class BackForwardBar {
                 if (currentNavIndex == globalNavigation.size() - 1) {
                     forwardLabel.setImage(DISABLE_FORWARDIMAGE);
                 }
-                browser.setText(globalNavigation.get(forwardIndex));
+                setSelectTreeFlag(false);
+                fireTreeState(globalNavigation.get(forwardIndex));
                 fireNavItemState();
             }
 
         });
     }
 
-    private List<String> globalNavigation = new ArrayList<String>();
+    private List<Node> globalNavigation = new ArrayList<Node>();
 
     private int currentNavIndex = -1;
 
@@ -151,14 +157,38 @@ public class BackForwardBar {
      * 
      * @param htmlContent the content of selected html page
      */
-    public void addToNav(String htmlContent) {
+    public void addToNav(Node navNode) {
         int size = globalNavigation.size();
         for (int i = size - 1; i > currentNavIndex; i--) {
             globalNavigation.remove(i);
         }
-        globalNavigation.add(htmlContent);
+        globalNavigation.add(navNode);
         currentNavIndex++;
         fireNavItemState();
+    }
+
+    public void setTreeViewer(TreeViewer viewer) {
+        this.treeViewer = viewer;
+    }
+
+    /**
+     * auto selected the given node.
+     * @param node
+     */
+    private void fireTreeState(Node node) {
+        treeViewer.setExpandedElements(getNodeArray(node));
+        treeViewer.refresh();
+        treeViewer.setSelection(new StructuredSelection(new Object[] { node }), true);
+    }
+
+    private Object[] getNodeArray(Node node) {
+        Node parent = node;
+        LinkedList<Node> elements = new LinkedList<Node>();
+        while (parent != null) {
+            elements.addFirst(parent);
+            parent = parent.getParent();
+        }
+        return elements.toArray();
     }
 
     private void fireNavItemState() {
@@ -169,4 +199,14 @@ public class BackForwardBar {
             forwardLabel.setImage(OUT_FORWARDIMAGE);
         }
     }
+
+    public void setSelectTreeFlag(boolean selectTreeFlag) {
+        this.selectTreeFlag = selectTreeFlag;
+    }
+
+    public boolean isSelectTreeFlag() {
+        return selectTreeFlag;
+    }
+
+    
 }

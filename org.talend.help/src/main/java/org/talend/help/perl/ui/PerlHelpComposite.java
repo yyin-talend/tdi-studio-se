@@ -73,306 +73,304 @@ import org.talend.help.perl.searcher.Searcher;
  */
 /**
  * @author xue
- *
+ * 
  */
 public class PerlHelpComposite extends Composite {
 
-	/**
-	 * FunctionFilter.
-	 * 
-	 */
-	private final class FunctionFilter extends ViewerFilter {
+    /**
+     * FunctionFilter.
+     * 
+     */
+    private final class FunctionFilter extends ViewerFilter {
 
-		@Override
-		public boolean select(Viewer viewer, Object parentElement,
-				Object element) {
-			Node node = (Node) element;
-			String searchStr = searchButton.getText();
-			boolean flag = (LABEL_BLANK.equals(searchStr) || LABEL_SEARCH
-					.equals(searchStr)) ? true : node.isSearchMatchFlag();
-			return flag;
-		}
-	}
+        @Override
+        public boolean select(Viewer viewer, Object parentElement, Object element) {
+            Node node = (Node) element;
+            String searchStr = searchButton.getText();
+            boolean flag = (LABEL_BLANK.equals(searchStr) || LABEL_SEARCH.equals(searchStr)) ? true : node
+                    .isSearchMatchFlag();
+            return flag;
+        }
+    }
 
-	private TreeViewer viewer;
+    private TreeViewer viewer;
 
-	private Text searchText;
+    private Text searchText;
 
-	private Button searchButton;
+    private Button searchButton;
 
-	private static final String LABEL_SEARCH = "search";
+    private static final String LABEL_SEARCH = "search";
 
-	private static final String LABEL_BLANK = "";
+    private static final String LABEL_BLANK = "";
 
-	private static final String HEADTAG_HTML = "<html><head></head><body>";
+    private static final String HEADTAG_HTML = "<html><head></head><body>";
 
-	private static final String TAILTAG_HTML = "</body></html>";
+    private static final String TAILTAG_HTML = "</body></html>";
 
-	private Searcher searcher = null;
+    private Searcher searcher = null;
 
-	private Searcher funcSearcher = null;
+    private Searcher funcSearcher = null;
 
-	private Searcher plainSearcher = null;
+    private Searcher plainSearcher = null;
 
-	private Browser htmlBrowser;
+    private Browser htmlBrowser;
 
-	private BackForwardBar backForwardBar;
+    private BackForwardBar backForwardBar;
 
-	private Button funcBtn = null;
+    private Button funcBtn = null;
 
-	private Button plainBtn = null;
+    private Button plainBtn = null;
 
-	public PerlHelpComposite(Composite parent, int style) {
-		super(parent, style);
-		init();
-	}
+    public PerlHelpComposite(Composite parent, int style) {
+        super(parent, style);
+        init();
+    }
 
-	/**
-	 * DOC Administrator PerlHelpComposite class global comment. Detailled comment
-	 * <br/>
-	 *
-	 * $Id: talend-code-templates.xml 1 2006-09-29 17:06:40 +0000 (星期五, 29 九月 2006) nrousseau $
-	 *
-	 */
-	class RadioSelection extends SelectionAdapter {
-		public void widgetSelected(SelectionEvent e) {
-			if (searcher != null) {
-				searcherReset();
-			}
-			searcher = funcBtn.getSelection() ? funcSearcher : plainSearcher;
-		}
-	}
+    /**
+     * DOC Administrator PerlHelpComposite class global comment. Detailled comment <br/>
+     * 
+     * $Id: talend-code-templates.xml 1 2006-09-29 17:06:40 +0000 (星期五, 29 九月 2006) nrousseau $
+     * 
+     */
+    class RadioSelection extends SelectionAdapter {
 
-	private Composite creatSearchRadioComp(Composite parentComp) {
-		Composite searchRadioComp = new Composite(parentComp, SWT.None);
-		searchRadioComp.setLayout(new RowLayout());
-		funcBtn = new Button(searchRadioComp, SWT.RADIO);
-		funcBtn.setText("Fuction");
-		funcBtn.setSelection(true);
-		funcBtn.addSelectionListener(new RadioSelection());
-		plainBtn = new Button(searchRadioComp, SWT.RADIO);
-		plainBtn.setText("Plain Text");
-		plainBtn.addSelectionListener(new RadioSelection());
-		return searchRadioComp;
-	}
+        public void widgetSelected(SelectionEvent e) {
+            if (searcher != null) {
+                searcherReset();
+            }
+            searcher = funcBtn.getSelection() ? funcSearcher : plainSearcher;
+        }
+    }
 
-	private Composite createLeftComponent() {
-		Composite treeComposite = new Composite(this, SWT.None);
-		treeComposite.setLayout(new GridLayout());
-		Composite searchTextComp = new Composite(treeComposite, SWT.None);
-		searchTextComp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		searchTextComp.setLayout(new GridLayout(4, false));
-		searchText = new Text(searchTextComp, SWT.BORDER);
-		GridData textGd = new GridData();
-		textGd.widthHint = 150;
-		searchText.setLayoutData(textGd);
-		searchButton = new Button(searchTextComp, SWT.None);
-		GridData buttonGd = new GridData();
-		// buttonGd.horizontalSpan = 1;
-		searchButton.setLayoutData(buttonGd);
-		searchButton.setText(LABEL_SEARCH);
-		backForwardBar = new BackForwardBar(searchTextComp);
-		creatSearchRadioComp(treeComposite).setLayoutData(
-				new GridData(GridData.FILL_HORIZONTAL));
-		viewer = new TreeViewer(treeComposite, SWT.SINGLE | SWT.H_SCROLL
-				| SWT.V_SCROLL | SWT.BORDER);
-		viewer.getTree().setLayoutData(new GridData(GridData.FILL_BOTH));
+    private Composite creatSearchRadioComp(Composite parentComp) {
+        Composite searchRadioComp = new Composite(parentComp, SWT.None);
+        searchRadioComp.setLayout(new RowLayout());
+        funcBtn = new Button(searchRadioComp, SWT.RADIO);
+        funcBtn.setText("Fuction");
+        funcBtn.setSelection(true);
+        funcBtn.addSelectionListener(new RadioSelection());
+        plainBtn = new Button(searchRadioComp, SWT.RADIO);
+        plainBtn.setText("Plain Text");
+        plainBtn.addSelectionListener(new RadioSelection());
+        return searchRadioComp;
+    }
 
-		// viewer.setUseHashlookup(true);
-		viewer.setLabelProvider(new TreeLabelProvider());
-		viewer.setContentProvider(new TreeContentProvider());
-		viewer.addFilter(new FunctionFilter());
-		viewer.addSelectionChangedListener(new ISelectionChangedListener() {
+    private Composite createLeftComponent() {
+        Composite treeComposite = new Composite(this, SWT.None);
+        treeComposite.setLayout(new GridLayout());
+        Composite searchTextComp = new Composite(treeComposite, SWT.None);
+        searchTextComp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+        searchTextComp.setLayout(new GridLayout(4, false));
+        searchText = new Text(searchTextComp, SWT.BORDER);
+        GridData textGd = new GridData();
+        textGd.widthHint = 150;
+        searchText.setLayoutData(textGd);
+        searchButton = new Button(searchTextComp, SWT.None);
+        GridData buttonGd = new GridData();
+        // buttonGd.horizontalSpan = 1;
+        searchButton.setLayoutData(buttonGd);
+        searchButton.setText(LABEL_SEARCH);
+        backForwardBar = new BackForwardBar(searchTextComp);
+        creatSearchRadioComp(treeComposite).setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+        viewer = new TreeViewer(treeComposite, SWT.SINGLE | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
+        viewer.getTree().setLayoutData(new GridData(GridData.FILL_BOTH));
 
-			public void selectionChanged(SelectionChangedEvent event) {
-				StructuredSelection selection = (StructuredSelection) event
-						.getSelection();
-				Node node = (Node) selection.getFirstElement();
-				if (node != null && node.getType() == EType.FUNCTION) {
-					Node anchorNode = node.getChildren().get(0);
-					String anchor = anchorNode.getProperties().get(
-							EProperty.VALUE);
-					String htmlContent;
-					String midContent = "";
-					try {
-						midContent = DocParser.getInstance().getDoc(anchor);
-					} catch (IOException e) {
-						openError(e);
-					}
-					if (searcher.getMatchTextFlag()) {
-						htmlContent = HEADTAG_HTML
-								+ searcher.getHtmlByKey(node) + TAILTAG_HTML;
-						htmlBrowser.setText(htmlContent);
-						// searchAdapter.setMatchTextFlag(false);
-					} else {
+        // viewer.setUseHashlookup(true);
+        viewer.setLabelProvider(new TreeLabelProvider());
+        viewer.setContentProvider(new TreeContentProvider());
+        viewer.addFilter(new FunctionFilter());
+        backForwardBar.setTreeViewer(viewer);
+        viewer.addSelectionChangedListener(new ISelectionChangedListener() {
 
-						htmlContent = HEADTAG_HTML + midContent + TAILTAG_HTML;
-						htmlBrowser.setText(htmlContent);
-					}
-					setFLText(midContent);
-					backForwardBar.addToNav(htmlContent);
-					return;
-				}
-				htmlBrowser.setText("");
-				setFLText("");
-			}
-		});
-		try {
-			viewer.setInput(IndexParser.parse());
-		} catch (Exception e1) {
-			openError(e1);
-		}
-		searchText.addModifyListener(new ModifyListener() {
+            public void selectionChanged(SelectionChangedEvent event) {
+                StructuredSelection selection = (StructuredSelection) event.getSelection();
+                Node node = (Node) selection.getFirstElement();
+                if (node != null && node.getType() == EType.FUNCTION) {
+                    Node anchorNode = node.getChildren().get(0);
+                    String anchor = anchorNode.getProperties().get(EProperty.VALUE);
+                    String htmlContent;
+                    String midContent = "";
+                    try {
+                        midContent = DocParser.getInstance().getDoc(anchor);
+                    } catch (IOException e) {
+                        openError(e);
+                    }
+                    if (searcher.getMatchTextFlag()) {
+                        htmlContent = HEADTAG_HTML + searcher.getHtmlByKey(node) + TAILTAG_HTML;
+                        htmlBrowser.setText(htmlContent);
+                        // searchAdapter.setMatchTextFlag(false);
+                    } else {
 
-			public void modifyText(ModifyEvent e) {
-				viewer.refresh();
-				searcherReset();
-			}
-		});
-		searchButton.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent e) {
-				searcher.processSearch();
-			}
-		});
-		this.getShell().setDefaultButton(searchButton);
-		funcSearcher = new FunctionSearcher(viewer, searchButton, searchText);
-		plainSearcher = new PlainSearcher(viewer, searchButton, searchText);
-		searcher = funcSearcher;
-		return treeComposite;
-	}
+                        htmlContent = HEADTAG_HTML + midContent + TAILTAG_HTML;
+                        htmlBrowser.setText(htmlContent);
+                    }
+                    setFLText(midContent);
+                    // NavNode navNode = getNavNode(node, htmlContent);
+                    if (backForwardBar.isSelectTreeFlag()) {
+                        backForwardBar.addToNav(node);
+                        backForwardBar.setSelectTreeFlag(true);
+                    }
+                    return;
+                }
+                htmlBrowser.setText("");
+                setFLText("");
+            }
+        });
+        try {
+            viewer.setInput(IndexParser.parse());
+        } catch (Exception e1) {
+            openError(e1);
+        }
+        searchText.addModifyListener(new ModifyListener() {
 
-	
-	/**
-	 * reset the search result.
-	 */
-	private void searcherReset() {
-		searchButton.setText(LABEL_SEARCH);
-		searcher.setMatchTextFlag(false);
-		searcher.clearSearchCache();
-	}
+            public void modifyText(ModifyEvent e) {
+                viewer.refresh();
+                searcherReset();
+            }
+        });
+        searchButton.addSelectionListener(new SelectionAdapter() {
 
-	private static void openError(Exception e1) {
-		Display workbenchDisplay = PlatformUI.getWorkbench().getDisplay();
-		ErrorDialog.openError(workbenchDisplay.getActiveShell(),
-				"Error occured", e1.getMessage(), null);
-	}
+            public void widgetSelected(SelectionEvent e) {
+                searcher.processSearch();
+            }
+        });
+        this.getShell().setDefaultButton(searchButton);
+        funcSearcher = new FunctionSearcher(viewer, searchButton, searchText);
+        plainSearcher = new PlainSearcher(viewer, searchButton, searchText);
+        searcher = funcSearcher;
+        return treeComposite;
+    }
 
-	private void init() {
+    /**
+     * reset the search result.
+     */
+    private void searcherReset() {
+        searchButton.setText(LABEL_SEARCH);
+        searcher.setMatchTextFlag(false);
+        searcher.clearSearchCache();
+    }
 
-		Composite treeComposite = createLeftComponent();
-		final Sash sash = new Sash(this, SWT.VERTICAL);
-		Composite rihtComposite = creatRightComp();
+    private static void openError(Exception e1) {
+        Display workbenchDisplay = PlatformUI.getWorkbench().getDisplay();
+        ErrorDialog.openError(workbenchDisplay.getActiveShell(), "Error occured", e1.getMessage(), null);
+    }
 
-		final FormLayout form = new FormLayout();
-		this.setLayout(form);
+    private void init() {
 
-		FormData viewerData = new FormData();
-		viewerData.left = new FormAttachment(0, 0);
-		viewerData.right = new FormAttachment(sash, 0);
-		viewerData.top = new FormAttachment(0, 0);
-		viewerData.bottom = new FormAttachment(100, 0);
-		treeComposite.setLayoutData(viewerData);
+        Composite treeComposite = createLeftComponent();
+        final Sash sash = new Sash(this, SWT.VERTICAL);
+        Composite rihtComposite = creatRightComp();
 
-		final int limit = 20, percent = 45;
-		final FormData sashData = new FormData();
-		sashData.left = new FormAttachment(percent, 0);
-		sashData.top = new FormAttachment(0, 0);
-		sashData.bottom = new FormAttachment(100, 0);
-		sash.setLayoutData(sashData);
-		sash.addListener(SWT.Selection, new Listener() {
+        final FormLayout form = new FormLayout();
+        this.setLayout(form);
 
-			public void handleEvent(Event e) {
-				Rectangle sashRect = sash.getBounds();
-				Rectangle shellRect = getClientArea();
-				int right = shellRect.width - sashRect.width - limit;
-				e.x = Math.max(Math.min(e.x, right), limit);
-				if (e.x != sashRect.x) {
-					sashData.left = new FormAttachment(0, e.x);
-					layout();
-				}
-			}
-		});
+        FormData viewerData = new FormData();
+        viewerData.left = new FormAttachment(0, 0);
+        viewerData.right = new FormAttachment(sash, 0);
+        viewerData.top = new FormAttachment(0, 0);
+        viewerData.bottom = new FormAttachment(100, 0);
+        treeComposite.setLayoutData(viewerData);
 
-		FormData textData = new FormData();
-		textData.left = new FormAttachment(sash, 0);
-		textData.right = new FormAttachment(100, 0);
-		textData.top = new FormAttachment(0, 0);
-		textData.bottom = new FormAttachment(100, 0);
-		rihtComposite.setLayoutData(textData);
+        final int limit = 20, percent = 45;
+        final FormData sashData = new FormData();
+        sashData.left = new FormAttachment(percent, 0);
+        sashData.top = new FormAttachment(0, 0);
+        sashData.bottom = new FormAttachment(100, 0);
+        sash.setLayoutData(sashData);
+        sash.addListener(SWT.Selection, new Listener() {
 
-	}
+            public void handleEvent(Event e) {
+                Rectangle sashRect = sash.getBounds();
+                Rectangle shellRect = getClientArea();
+                int right = shellRect.width - sashRect.width - limit;
+                e.x = Math.max(Math.min(e.x, right), limit);
+                if (e.x != sashRect.x) {
+                    sashData.left = new FormAttachment(0, e.x);
+                    layout();
+                }
+            }
+        });
 
-	private Composite creatRightComp() {
-		Composite rightComp = new Composite(this, SWT.None);
-		GridLayout layout = new GridLayout();
-		rightComp.setLayout(layout);
-		htmlBrowser = new Browser(rightComp, SWT.BORDER);
-		htmlBrowser.setText("");
-		htmlBrowser.setLayoutData(new GridData(GridData.FILL_BOTH));
-		backForwardBar.setBrowser(htmlBrowser);
-		creatFLCopyComp(rightComp).setLayoutData(
-				new GridData(GridData.FILL_HORIZONTAL));
-		return rightComp;
+        FormData textData = new FormData();
+        textData.left = new FormAttachment(sash, 0);
+        textData.right = new FormAttachment(100, 0);
+        textData.top = new FormAttachment(0, 0);
+        textData.bottom = new FormAttachment(100, 0);
+        rihtComposite.setLayoutData(textData);
 
-	}
+    }
 
-	private Text flText = null;
+    private Composite creatRightComp() {
+        Composite rightComp = new Composite(this, SWT.None);
+        GridLayout layout = new GridLayout();
+        rightComp.setLayout(layout);
+        htmlBrowser = new Browser(rightComp, SWT.BORDER);
+        htmlBrowser.setText("");
+        htmlBrowser.setLayoutData(new GridData(GridData.FILL_BOTH));
+        backForwardBar.setBrowser(htmlBrowser);
+        creatFLCopyComp(rightComp).setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+        return rightComp;
 
-	private Composite creatFLCopyComp(Composite parentComp) {
-		Composite flCopyComp = new Composite(parentComp, SWT.None);
-		GridLayout layout = new GridLayout(3, false);
-		flCopyComp.setLayout(layout);
-		Label codeLabel = new Label(flCopyComp, SWT.None);
-		codeLabel.setText("Code:");
-		codeLabel.setLayoutData(new GridData());
-		flText = new Text(flCopyComp, SWT.BORDER);
-		flText.setText("");
-		GridData textGD = new GridData();
-		textGD.widthHint = 180;
-		flText.setLayoutData(textGD);
-		Button copyBtn = new Button(flCopyComp, SWT.None);
-		copyBtn.setText("Copy");
-		copyBtn.setLayoutData(new GridData());
-		copyBtn.addSelectionListener(new SelectionAdapter() {
+    }
 
-			public void widgetSelected(SelectionEvent e) {
-				Clipboard clipboard = new Clipboard(null);
-				String plainText = flText.getText();
-				String rtfText = "{\\rtf1\\b " + plainText + "}";
-				TextTransfer textTransfer = TextTransfer.getInstance();
-				RTFTransfer rftTransfer = RTFTransfer.getInstance();
-				clipboard.setContents(new String[] { plainText, rtfText },
-						new Transfer[] { textTransfer, rftTransfer });
-				clipboard.dispose();
-			}
-		});
-		return flCopyComp;
-	}
+    private Text flText = null;
 
-	private static final String TEXT_REGEX = "<a name=.*>(.*)</a>";
+    private Composite creatFLCopyComp(Composite parentComp) {
+        Composite flCopyComp = new Composite(parentComp, SWT.None);
+        GridLayout layout = new GridLayout(3, false);
+        flCopyComp.setLayout(layout);
+        Label codeLabel = new Label(flCopyComp, SWT.None);
+        codeLabel.setText("Code:");
+        codeLabel.setLayoutData(new GridData());
+        flText = new Text(flCopyComp, SWT.BORDER);
+        flText.setText("");
+        GridData textGD = new GridData();
+        textGD.widthHint = 180;
+        flText.setLayoutData(textGD);
+        Button copyBtn = new Button(flCopyComp, SWT.None);
+        copyBtn.setText("Copy");
+        copyBtn.setLayoutData(new GridData());
+        copyBtn.addSelectionListener(new SelectionAdapter() {
 
-	
-	/**get the first line text content according the content of html page.
-	 * @param htmlContent the content of html page
-	 */
-	private void setFLText(String htmlContent) {
-		if ("".equals(htmlContent)) {
-			flText.setText("");
-		} else {
-			Matcher matcher = Pattern.compile(TEXT_REGEX).matcher(htmlContent);
-			matcher.find();
-			String tempText = matcher.group(0);
-			String textStr = tempText.replaceAll(TEXT_REGEX, "$1");
-			flText.setText(textStr);
-		}
+            public void widgetSelected(SelectionEvent e) {
+                Clipboard clipboard = new Clipboard(null);
+                String plainText = flText.getText();
+                String rtfText = "{\\rtf1\\b " + plainText + "}";
+                TextTransfer textTransfer = TextTransfer.getInstance();
+                RTFTransfer rftTransfer = RTFTransfer.getInstance();
+                clipboard
+                        .setContents(new String[] { plainText, rtfText }, new Transfer[] { textTransfer, rftTransfer });
+                clipboard.dispose();
+            }
+        });
+        return flCopyComp;
+    }
 
-	}
+    private static final String TEXT_REGEX = "<a name=.*>(.*)</a>";
 
-	@Override
-	public void dispose() {
-		htmlBrowser = null;
-		searchText = null;
-		super.dispose();
-	}
+    /**
+     * get the first line text content according the content of html page.
+     * 
+     * @param htmlContent the content of html page
+     */
+    private void setFLText(String htmlContent) {
+        if ("".equals(htmlContent)) {
+            flText.setText("");
+        } else {
+            Matcher matcher = Pattern.compile(TEXT_REGEX).matcher(htmlContent);
+            matcher.find();
+            String tempText = matcher.group(0);
+            String textStr = tempText.replaceAll(TEXT_REGEX, "$1");
+            flText.setText(textStr);
+        }
+
+    }
+
+    @Override
+    public void dispose() {
+        htmlBrowser = null;
+        searchText = null;
+        super.dispose();
+    }
 
 }

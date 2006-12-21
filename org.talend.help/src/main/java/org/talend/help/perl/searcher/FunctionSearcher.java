@@ -56,7 +56,7 @@ public class FunctionSearcher extends Searcher {
 			if (!isEndOfSearch(currentNode)) {
 				currentNode = startSearch(nextSiblingNode, searchText.getText());
 			} else {
-				// TODO add a tip to the user when searching end
+                //currentNode = repeatToStart();
 			}
 		} else {
 			if ("".equals(searchText.getText())) {
@@ -109,6 +109,10 @@ public class FunctionSearcher extends Searcher {
 				searchFlag = false;
 			}
 		}
+        if (searcherCache.size() != 0) {
+            Node repeatNode =  repeatToStart();
+            return startSearch(repeatNode, searchStr);
+        }
 		return null;
 
 	}
