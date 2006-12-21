@@ -46,7 +46,6 @@ import org.talend.core.prefs.PreferenceManipulator;
 import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.license.LicenseManagement;
-import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.registeruser.RegisterManagement;
 import org.talend.repository.ui.wizards.license.LicenseWizard;
@@ -159,23 +158,7 @@ public class LoginDialog extends TitleAreaDialog {
      */
     @Override
     protected void okPressed() {
-        boolean logged = true;
-
-        // check if user already exists retrieve it else create it
-        IProxyRepositoryFactory repositoryFactory = ProxyRepositoryFactory.getInstance();
-        try {
-            boolean found = repositoryFactory.doesLoggedUserExist();
-            if (!found && !loginComposite.isAuthenticationNeeded()) {
-                repositoryFactory.createUser();
-            }
-        } catch (PersistenceException e) {
-            logged = false;
-            e.printStackTrace();
-        }
-
-        if (logged) {
-            logIn(loginComposite.getProject());
-        }
+        logIn(loginComposite.getProject());
     }
 
     /**

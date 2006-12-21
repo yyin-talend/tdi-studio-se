@@ -230,7 +230,6 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
 
             RepositoryNode folder;
             if (container.getLabel().equals(RepositoryConstants.SYSTEM_DIRECTORY)) {
-                // FIXME SML remove "System" hardcoded
                 folder = new StableRepositoryNode(parent, "System", ECoreImage.FOLDER_CLOSE_ICON, 0);
             } else {
                 folder = new RepositoryNode(oFolder, parent, ENodeType.SIMPLE_FOLDER);

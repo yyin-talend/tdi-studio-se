@@ -29,6 +29,7 @@ import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
+import org.talend.commons.exception.BusinessException;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.swt.dialogs.ErrorDialogWidthDetailArea;
 import org.talend.core.model.properties.Property;
@@ -107,7 +108,7 @@ public abstract class RepositoryWizard extends Wizard {
     public void setWorkbench(IWorkbench workbench) {
         this.workbench = workbench;
     }
-    
+
     /**
      * DOC ocarbone Comment method "performCancel". Unlock the IRepositoryObject before the close of the wizard.
      * 
@@ -177,6 +178,8 @@ public abstract class RepositoryWizard extends Wizard {
                 new ErrorDialogWidthDetailArea(getShell(), PID, Messages.getString("CommonWizard.persistenceException"),
                         detailError);
                 log.error(Messages.getString("CommonWizard.persistenceException") + "\n" + detailError);
+            } catch (BusinessException e) {
+                // Nothing to do
             }
         }
     }

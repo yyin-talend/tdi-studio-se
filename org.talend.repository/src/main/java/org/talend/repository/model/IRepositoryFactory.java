@@ -24,6 +24,7 @@ package org.talend.repository.model;
 import java.util.List;
 
 import org.eclipse.core.runtime.IPath;
+import org.talend.commons.exception.BusinessException;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.utils.data.container.RootContainer;
 import org.talend.core.model.general.Project;
@@ -62,11 +63,11 @@ public interface IRepositoryFactory {
     public Project createProject(String label, String description, ECodeLanguage language, User author)
             throws PersistenceException;
 
-    public boolean doesLoggedUserExist() throws PersistenceException;
+ //   public boolean doesLoggedUserExist() throws PersistenceException;
 
-    public void createUser() throws PersistenceException;
+    // public void createUser() throws PersistenceException;
 
-    public Project[] readProject() throws PersistenceException;
+    public Project[] readProject() throws PersistenceException, BusinessException;
 
     public Folder createFolder(ERepositoryObjectType type, IPath path, String label) throws PersistenceException;
 
@@ -159,7 +160,7 @@ public interface IRepositoryFactory {
 
     public void moveObject(IRepositoryObject objToMove, IPath newPath) throws PersistenceException;
 
-    public void lock(Item item) throws PersistenceException;
+    public void lock(Item item) throws PersistenceException, BusinessException;
 
     public void unlock(Item obj) throws PersistenceException;
 
@@ -173,7 +174,7 @@ public interface IRepositoryFactory {
 
     void setDocumentationStatus(List<Status> list) throws PersistenceException;
 
-    public String isServerValid();
+    public String isServerValid() throws BusinessException;
 
     public void create(Item item, IPath path) throws PersistenceException;
 

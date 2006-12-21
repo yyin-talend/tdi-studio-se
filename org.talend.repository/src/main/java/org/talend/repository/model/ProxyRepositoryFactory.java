@@ -30,6 +30,7 @@ import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.emf.common.util.EList;
 import org.talend.commons.exception.BusinessException;
+import org.talend.commons.exception.MessageBoxExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.utils.data.container.RootContainer;
 import org.talend.core.CorePlugin;
@@ -280,7 +281,7 @@ public class ProxyRepositoryFactory implements IProxyRepositoryFactory {
      * 
      * @see org.talend.repository.model.IProxyRepositoryFactory#readProject()
      */
-    public Project[] readProject() throws PersistenceException {
+    public Project[] readProject() throws PersistenceException, BusinessException {
         return this.repositoryFactoryFromProvider.readProject();
     }
 
@@ -408,7 +409,7 @@ public class ProxyRepositoryFactory implements IProxyRepositoryFactory {
      * 
      * @see org.talend.repository.model.IProxyRepositoryFactory#lock(org.talend.core.model.repository.IRepositoryObject)
      */
-    public void lock(IRepositoryObject obj) throws PersistenceException {
+    public void lock(IRepositoryObject obj) throws PersistenceException, BusinessException {
         lock(getItem(obj));
     }
 
@@ -417,7 +418,7 @@ public class ProxyRepositoryFactory implements IProxyRepositoryFactory {
      * 
      * @see org.talend.repository.model.IProxyRepositoryFactory#lock(org.talend.core.model.properties.Item)
      */
-    public void lock(Item item) throws PersistenceException {
+    public void lock(Item item) throws PersistenceException, BusinessException {
         if (getStatus(item).isPotentiallyEditable()) {
             this.repositoryFactoryFromProvider.lock(item);
             log.debug("Lock [" + item + "] by \"" + getRepositoryContext().getUser() + "\".");
@@ -560,10 +561,9 @@ public class ProxyRepositoryFactory implements IProxyRepositoryFactory {
      * 
      * @see org.talend.repository.model.IProxyRepositoryFactory#isServerValid()
      */
-    public String isServerValid() {
-        return this.repositoryFactoryFromProvider.isServerValid();
-    }
-
+    // public String isServerValid() {
+    // return this.repositoryFactoryFromProvider.isServerValid();
+    // }
     /*
      * (non-Javadoc)
      * 
@@ -648,19 +648,17 @@ public class ProxyRepositoryFactory implements IProxyRepositoryFactory {
      * 
      * @see org.talend.repository.model.IProxyRepositoryFactory#findUser(org.talend.core.model.general.Project)
      */
-    public boolean doesLoggedUserExist() throws PersistenceException {
-        return this.repositoryFactoryFromProvider.doesLoggedUserExist();
-    }
-
+    // public boolean doesLoggedUserExist() throws PersistenceException {
+    // return this.repositoryFactoryFromProvider.doesLoggedUserExist();
+    // }
     /*
      * (non-Javadoc)
      * 
      * @see org.talend.repository.model.IProxyRepositoryFactory#createUser(org.talend.core.model.general.Project)
      */
-    public void createUser() throws PersistenceException {
-        this.repositoryFactoryFromProvider.createUser();
-    }
-
+    // public void createUser() throws PersistenceException {
+    // this.repositoryFactoryFromProvider.createUser();
+    // }
     /*
      * (non-Javadoc)
      * 
@@ -731,7 +729,9 @@ public class ProxyRepositoryFactory implements IProxyRepositoryFactory {
             try {
                 lock(item);
             } catch (PersistenceException e) {
-                e.printStackTrace();
+                MessageBoxExceptionHandler.process(e);
+            } catch (BusinessException e) {
+                // Nothing to do
             }
             status = getStatus(item);
         }

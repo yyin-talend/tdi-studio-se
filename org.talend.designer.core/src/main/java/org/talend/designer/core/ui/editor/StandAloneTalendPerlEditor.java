@@ -29,6 +29,7 @@ import org.eclipse.emf.common.util.EList;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.epic.perleditor.editors.PerlEditor;
+import org.talend.commons.exception.BusinessException;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.core.model.properties.ByteArray;
 import org.talend.core.model.properties.PropertiesFactory;
@@ -75,6 +76,8 @@ public class StandAloneTalendPerlEditor extends PerlEditor {
             repFactory.lock(item);
         } catch (PersistenceException e) {
             e.printStackTrace();
+        } catch (BusinessException e) {
+            // Nothing to do
         }
     }
 

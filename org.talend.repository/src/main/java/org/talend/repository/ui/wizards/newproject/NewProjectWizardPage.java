@@ -37,7 +37,6 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
-import org.talend.commons.exception.PersistenceException;
 import org.talend.core.model.general.Project;
 import org.talend.core.model.temp.ECodeLanguage;
 import org.talend.repository.RepositoryPlugin;
@@ -145,8 +144,8 @@ public class NewProjectWizardPage extends WizardPage {
         if (projects == null) {
             try {
                 projects = repositoryFactory.readProject();
-            } catch (PersistenceException e) {
-                projects = new Project[0];
+            } catch (Exception e) {
+                return true;
             }
         }
         for (Project project : projects) {

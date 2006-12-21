@@ -25,7 +25,6 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -53,6 +52,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.Form;
 import org.eclipse.ui.forms.widgets.FormToolkit;
+import org.talend.commons.exception.BusinessException;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.image.EImage;
 import org.talend.commons.ui.image.ImageProvider;
@@ -63,9 +63,7 @@ import org.talend.core.model.general.Project;
 import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.User;
 import org.talend.core.prefs.PreferenceManipulator;
-import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.i18n.Messages;
-import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.IRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryConstants;
@@ -109,11 +107,9 @@ public class LoginComposite extends Composite {
 
     private Image checkImage;
 
-    private Image fillProjectsImage;
-
     private Button fillProjectsBtn;
 
-    private Button checkBtn;
+    // private Button checkBtn;
 
     private Button newProjectButton;
 
@@ -155,7 +151,7 @@ public class LoginComposite extends Composite {
 
         // Line 1
         // Repository
-        toolkit.createLabel(formBody, Messages.getString("LoginComposite.repository"));
+        Label tmpLabel = toolkit.createLabel(formBody, Messages.getString("LoginComposite.repository"));
         repositoryCombo = new ComboViewer(formBody, SWT.BORDER | SWT.READ_ONLY);
         toolkit.adapt(repositoryCombo.getCombo());
         repositoryCombo.setContentProvider(new ArrayContentProvider());
@@ -186,16 +182,23 @@ public class LoginComposite extends Composite {
         portCombo.setLayoutData(portGrid);
 
         // Check Server Availability Button
-        checkBtn = toolkit.createButton(formBody, null, SWT.PUSH);
-        checkBtn.setToolTipText(Messages.getString("LoginComposite.checkServerHint"));
-        ImageDescriptor imgDesc = RepositoryPlugin.imageDescriptorFromPlugin(RepositoryPlugin.PLUGIN_ID, "icons/checkserver.gif");
-        if (imgDesc != null) {
-            checkImage = imgDesc.createImage();
-            checkBtn.setImage(checkImage);
-        }
+        // Button checkBtn = toolkit.createButton(formBody, null, SWT.PUSH);
+        // checkBtn.setToolTipText(Messages.getString("LoginComposite.checkServerHint"));
+        // ImageDescriptor imgDesc = RepositoryPlugin.imageDescriptorFromPlugin(RepositoryPlugin.PLUGIN_ID,
+        // "icons/checkserver.gif");
+        // if (imgDesc != null) {
+        // checkImage = imgDesc.createImage();
+        // checkBtn.setImage(checkImage);
+        // }
+        // GridData checkGrid = new GridData(SWT.BORDER | SWT.RIGHT);
+        // checkGrid.verticalSpan = 2;
+        // checkBtn.setLayoutData(checkGrid);
+
+        // Uncomment previous line and comment following lines to reactive check button:
+        Label tmp = toolkit.createLabel(formBody, null);
         GridData checkGrid = new GridData(SWT.BORDER | SWT.RIGHT);
         checkGrid.verticalSpan = 2;
-        checkBtn.setLayoutData(checkGrid);
+        tmp.setLayoutData(checkGrid);
 
         // Line 3
         // Context
@@ -243,10 +246,10 @@ public class LoginComposite extends Composite {
         // Fill projects
         fillProjectsBtn = toolkit.createButton(formBody, null, SWT.PUSH);
         fillProjectsBtn.setToolTipText(Messages.getString("LoginComposite.refresh"));
-        if (imgDesc != null) {
-            fillProjectsImage = ImageProvider.getImage(EImage.REFRESH_ICON);
-            fillProjectsBtn.setImage(fillProjectsImage);
-        }
+        // if (imgDesc != null) {
+        // fillProjectsImage = ImageProvider.getImage(EImage.REFRESH_ICON);
+        fillProjectsBtn.setImage(ImageProvider.getImage(EImage.REFRESH_ICON));
+        // }
         GridData fillGrid = new GridData();
         fillGrid.horizontalSpan = 1;
         fillProjectsBtn.setLayoutData(fillGrid);
@@ -311,10 +314,10 @@ public class LoginComposite extends Composite {
             repositoryCombo.getControl().setBackground(GREY_COLOR);
         } else {
             // select last repository used
-            String className = prefManipulator.getLastRepository();
+            String lastRepository = prefManipulator.getLastRepository();
             boolean selected = false;
             for (IRepositoryFactory curent : availableRepositories) {
-                if (curent.getClass().getName().equals(className)) {
+                if (curent.getClass().getName().equals(lastRepository)) {
                     selectLast(curent.toString(), repositoryCombo.getCombo());
                     selected = true;
                 }
@@ -350,8 +353,8 @@ public class LoginComposite extends Composite {
         if (!isAuthenticationNeeded()) {
             unpopulateRemoteLoginElements();
         }
-
         setRepositoryContextInContext();
+        updateButtons();
     }
 
     /**
@@ -401,6 +404,7 @@ public class LoginComposite extends Composite {
 
             public void modifyText(ModifyEvent e) {
                 updateServerFields();
+                updateButtons();
             }
 
         };
@@ -409,6 +413,7 @@ public class LoginComposite extends Composite {
 
             public void selectionChanged(SelectionChangedEvent event) {
                 updateServerFields();
+                updateButtons();
             }
         });
         serverCombo.addModifyListener(modifyListenerServerCombo);
@@ -439,18 +444,18 @@ public class LoginComposite extends Composite {
             }
         });
 
-        checkBtn.addSelectionListener(new SelectionAdapter() {
-
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-                IProxyRepositoryFactory repositoryFactory = ProxyRepositoryFactory.getInstance();
-
-                if (validateFields()) {
-                    MessageDialog.openInformation(getShell(), Messages.getString("LoginComposite.remoteRepositoryCheck"),
-                            repositoryFactory.isServerValid());
-                }
-            }
-        });
+        // checkBtn.addSelectionListener(new SelectionAdapter() {
+        //
+        // @Override
+        // public void widgetSelected(SelectionEvent e) {
+        // IProxyRepositoryFactory repositoryFactory = ProxyRepositoryFactory.getInstance();
+        //
+        // if (validateFields()) {
+        // MessageDialog.openInformation(getShell(), Messages.getString("LoginComposite.remoteRepositoryCheck"),
+        // repositoryFactory.isServerValid());
+        // }
+        // }
+        // });
 
         newProjectButton.addSelectionListener(new SelectionAdapter() {
 
@@ -509,6 +514,16 @@ public class LoginComposite extends Composite {
         return false;
     }
 
+    private void updateButtons() {
+        if (isAuthenticationNeeded() || !validateFields()) {
+            newProjectButton.setEnabled(false);
+            importProjectsButton.setEnabled(false);
+        } else {
+            newProjectButton.setEnabled(true);
+            importProjectsButton.setEnabled(true);
+        }
+    }
+
     private void unpopulateProjectList() {
         projectViewer.setInput(null);
         projectViewer.getControl().setEnabled(false);
@@ -542,6 +557,10 @@ public class LoginComposite extends Composite {
 
             dialog.setErrorMessage(Messages.getString("LoginComposite.refreshFailure1") + e.getMessage()
                     + Messages.getString("LoginComposite.refreshFailure2"));
+        } catch (BusinessException e) {
+            projects = new Project[0];
+
+            MessageDialog.openError(getShell(), "Enable to retrieve projects", "Enable to retrieve projects:\n" + e.getMessage());
         }
         projectViewer.setInput(projects);
 
@@ -659,8 +678,13 @@ public class LoginComposite extends Composite {
         @Override
         public String getText(Object element) {
             Project prj = (Project) element;
-            return prj.getLabel();
+            String toReturn = prj.getLabel();
+            if (!prj.isLocal() && !isAuthenticationNeeded()) {
+                toReturn += " (remote project in offline mode)";
+            }
+            return toReturn;
         }
+
     }
 
     /**
@@ -695,7 +719,7 @@ public class LoginComposite extends Composite {
         passwordText.setEnabled(false);
         passwordText.setEditable(false);
         passwordText.setBackground(GREY_COLOR);
-        checkBtn.setEnabled(false);
+        // checkBtn.setEnabled(false);
         populateProjectList();
     }
 
@@ -712,7 +736,7 @@ public class LoginComposite extends Composite {
         passwordText.setEnabled(true);
         passwordText.setEditable(true);
         passwordText.setBackground(WHITE_COLOR);
-        checkBtn.setEnabled(true);
+        // checkBtn.setEnabled(true);
 
         if (userCombo.getText().length() == 0) {
             PreferenceManipulator prefManipulator = new PreferenceManipulator(CorePlugin.getDefault().getPreferenceStore());
@@ -749,11 +773,11 @@ public class LoginComposite extends Composite {
 
         if (!valid) {
             dialog.setErrorMessage(errorMsg);
-            checkBtn.setEnabled(false);
+            // checkBtn.setEnabled(false);
         } else {
             dialog.setErrorMessage(null);
             if (isAuthenticationNeeded()) {
-                checkBtn.setEnabled(true);
+                // checkBtn.setEnabled(true);
             }
         }
         return valid;

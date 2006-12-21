@@ -52,6 +52,7 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.part.MultiPageEditorPart;
 import org.epic.perleditor.PerlEditorPlugin;
+import org.talend.commons.exception.BusinessException;
 import org.talend.commons.exception.MessageBoxExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.image.ImageProvider;
@@ -134,7 +135,7 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
     void createPage1() {
         perlEditor = new TalendPerlEditor();
         IProcess process = designerEditor.getProcess();
-        IRunProcessService service = DesignerPlugin.getDefault().getRunProcessService();;
+        IRunProcessService service = DesignerPlugin.getDefault().getRunProcessService();
         IPerlProcessor plProcessor = service.createPerlProcessor(process, false);
         try {
             plProcessor.initPaths(process.getContextManager().getDefaultContext());
@@ -188,7 +189,7 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
         IProxyRepositoryFactory repFactory = service.getProxyRepositoryFactory();
         try {
             getTalendEditor().getProperty().eAdapters().remove(dirtyListener);
-            Property property =  repFactory.reload(getTalendEditor().getProperty());
+            Property property = repFactory.reload(getTalendEditor().getProperty());
             getTalendEditor().setProperty(property);
             repFactory.unlock(property.getItem());
         } catch (PersistenceException e) {
@@ -246,7 +247,7 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
         getSite().getWorkbenchWindow().getSelectionService().addSelectionListener(this);
 
         // Lock the process :
-        IRepositoryService service=DesignerPlugin.getDefault().getRepositoryService();
+        IRepositoryService service = DesignerPlugin.getDefault().getRepositoryService();
         IProxyRepositoryFactory repFactory = service.getProxyRepositoryFactory();
         ProcessEditorInput processEditorInput = (ProcessEditorInput) editorInput;
         Process process = (processEditorInput).getLoadedProcess();
@@ -256,6 +257,8 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
                 repFactory.lock(process);
             } catch (PersistenceException e) {
                 e.printStackTrace();
+            } catch (BusinessException e) {
+                // Nothing to do
             }
         }
     }
@@ -394,8 +397,8 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
                 public void run() {
                     IWorkbenchPage[] pages = getSite().getWorkbenchWindow().getPages();
                     for (int i = 0; i < pages.length; i++) {
-                        if (((FileEditorInput) designerEditor.getEditorInput()).getFile().getProject().equals(
-                                event.getResource())) {
+                        if (((FileEditorInput) designerEditor.getEditorInput()).getFile().getProject()
+                                .equals(event.getResource())) {
                             IEditorPart editorPart = pages[i].findEditor(designerEditor.getEditorInput());
                             pages[i].closeEditor(editorPart, true);
                         }
