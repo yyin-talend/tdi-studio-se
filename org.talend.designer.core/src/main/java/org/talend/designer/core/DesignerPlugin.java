@@ -21,14 +21,13 @@
 // ============================================================================
 package org.talend.designer.core;
 
-import java.util.Date;
-
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.IPartService;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.BundleException;
 import org.talend.commons.ui.swt.colorstyledtext.jedit.Modes;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.IService;
@@ -75,15 +74,18 @@ public class DesignerPlugin extends AbstractUIPlugin {
 
     public void start(final BundleContext context) throws Exception {
         super.start(context);
-
-        IWorkbenchWindow activeWorkbenchWindow = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+        IWorkbenchWindow activeWorkbenchWindow = null;
+        try {
+            activeWorkbenchWindow = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+        } catch (IllegalStateException e) {
+            if (e.getMessage().equalsIgnoreCase("Workbench has not been created yet.")) {
+                return;
+            }
+        }
         if (activeWorkbenchWindow != null) {
             IPartService partService = activeWorkbenchWindow.getPartService();
             partService.addPartListener(new ActiveProcessTracker());
         }
-
-        System.out.println("designer core start over" + new Date());
-
     }
 
     public void stop(final BundleContext context) throws Exception {
