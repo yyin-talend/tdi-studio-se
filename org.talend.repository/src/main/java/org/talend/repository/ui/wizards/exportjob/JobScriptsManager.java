@@ -24,7 +24,6 @@ package org.talend.repository.ui.wizards.exportjob;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.URL;
 import java.util.ArrayList;
@@ -38,6 +37,7 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
@@ -142,7 +142,7 @@ public class JobScriptsManager {
                 pw.close();
             }
         } catch (Exception e) {
-            RepositoryPlugin.log("generate file", e);
+            ExceptionHandler.process(e);
         } finally {
             try {
                 if (pw != null) {
@@ -194,8 +194,7 @@ public class JobScriptsManager {
      * @return
      */
     public String getPerlLauncher() {
-        String perlIntepreter = CorePlugin.getDefault().getPreferenceStore().getString(
-                ITalendCorePrefConstants.PERL_INTERPRETER);
+        String perlIntepreter = CorePlugin.getDefault().getPreferenceStore().getString(ITalendCorePrefConstants.PERL_INTERPRETER);
         return perlIntepreter;
     }
 
@@ -241,7 +240,7 @@ public class JobScriptsManager {
                         list.add(FileLocator.toFileURL(url));
                         break;
                     } catch (Exception e) {
-                        RepositoryPlugin.log("get resource " + name, e);
+                        ExceptionHandler.process(e);
                     }
                 }
             }
@@ -265,7 +264,7 @@ public class JobScriptsManager {
 
                 resouces = perlProject.members();
             } catch (Exception e) {
-                RepositoryPlugin.log("get perl resouces", e);
+                ExceptionHandler.process(e);
                 resouces = new IResource[0];
             }
         }
@@ -281,8 +280,7 @@ public class JobScriptsManager {
     private void getRoutineNames(List list, boolean isBuildin) {
         String projectName = getCurrentProjectName();
         try {
-            List<IRepositoryObject> routines = ProxyRepositoryFactory.getInstance().getAll(
-                    ERepositoryObjectType.ROUTINES);
+            List<IRepositoryObject> routines = ProxyRepositoryFactory.getInstance().getAll(ERepositoryObjectType.ROUTINES);
             for (int i = 0; i < routines.size(); i++) {
                 RoutineItem routine = (RoutineItem) routines.get(i).getProperty().getItem();
                 if (routine.isBuiltIn() == isBuildin) {
@@ -292,7 +290,7 @@ public class JobScriptsManager {
                 }
             }
         } catch (PersistenceException e) {
-            RepositoryPlugin.log("get all routines", e);
+            ExceptionHandler.process(e);
         }
     }
 
@@ -340,7 +338,7 @@ public class JobScriptsManager {
                 IPerlModuleService service = RepositoryPlugin.getDefault().getPerlModuleService();
                 list = service.getPerlModule();
             } catch (IOException e) {
-                RepositoryPlugin.log("get all perl models", e);
+                ExceptionHandler.process(e);
                 list = Collections.<URL> emptyList();
             }
         }
@@ -368,7 +366,7 @@ public class JobScriptsManager {
                 }
 
             } catch (Exception e) {
-                RepositoryPlugin.log("get all job scripts", e);
+                ExceptionHandler.process(e);
             }
 
         }
@@ -412,8 +410,7 @@ public class JobScriptsManager {
         List<String> contextNameList = new ArrayList<String>();
         // FIXME Separates this from the designer.core
         // IContextManager c = ContextManager.getContextManagerFromXmlProcess(processItem);
-        IContextManager c = RepositoryPlugin.getDefault().getDesignerCoreService().getContextManagerFromXmlProcess(
-                processItem);
+        IContextManager c = RepositoryPlugin.getDefault().getDesignerCoreService().getContextManagerFromXmlProcess(processItem);
         for (IContext context : c.getListContext()) {
             if (contextNameList.contains(context.getName())) {
                 continue;

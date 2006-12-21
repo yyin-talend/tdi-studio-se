@@ -85,10 +85,6 @@ public class RepositoryPlugin extends AbstractUIPlugin {
         return this.userContext;
     }
 
-    public static void log(String msg, Throwable e) {
-        ExceptionHandler.process(e);
-    }
-
     public IPerlModuleService getPerlModuleService() {
         return (IPerlModuleService) GlobalServiceRegister.getDefault().getService(IPerlModuleService.class);
     }
