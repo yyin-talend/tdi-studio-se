@@ -179,6 +179,7 @@ public class UIManager {
         TabFolderEditors tabFolderEditors = mapperUI.getTabFolderEditors();
         // tabFolderEditors.setSelection(TabFolderEditors.INDEX_TAB_METADATA_EDITOR);
         MetadataTableEditorView metadataTableEditorView = null;
+        MetadataTableEditorView otherMetadataTableEditorView = null;
         final Zone currentZone = dataMapTableView.getZone();
 
         List<? extends AbstractDataMapTable> tables = null;
@@ -187,11 +188,13 @@ public class UIManager {
 
         if (currentZone == Zone.INPUTS) {
             metadataTableEditorView = tabFolderEditors.getInputMetaEditor();
+            otherMetadataTableEditorView = tabFolderEditors.getOutputMetaEditor();
             tables = mapperManager.getInputTables();
             previousSelectedTableView = this.currentSelectedInputTableView;
             this.currentSelectedInputTableView = (InputDataMapTableView) dataMapTableView;
         } else if (currentZone == Zone.OUTPUTS) {
             metadataTableEditorView = tabFolderEditors.getOutputMetaEditor();
+            otherMetadataTableEditorView = tabFolderEditors.getInputMetaEditor();
             tables = mapperManager.getOutputTables();
             previousSelectedTableView = this.currentSelectedOutputTableView;
             this.currentSelectedOutputTableView = (OutputDataMapTableView) dataMapTableView;
@@ -314,6 +317,9 @@ public class UIManager {
                 dataMapTableView.setBackground(dataMapTableView.getDisplay().getSystemColor(SWT.COLOR_YELLOW));
             }
 
+        }
+        if (otherMetadataTableEditorView != null) {
+            otherMetadataTableEditorView.getExtendedToolbar().updateEnabledStateOfButtons();
         }
 
     }
@@ -606,16 +612,23 @@ public class UIManager {
      */
     public void selectLinkedMetadataEditorEntries(DataMapTableView view, int[] selectionIndices) {
         MetadataTableEditorView metadataTableEditorView = null;
+        MetadataTableEditorView otherMetadataTableEditorView = null;
         if (view.getZone() == Zone.INPUTS) {
             metadataTableEditorView = getInputMetaEditorView();
+            otherMetadataTableEditorView = getOutputMetaEditorView();
         } else if (view.getZone() == Zone.OUTPUTS) {
             metadataTableEditorView = getOutputMetaEditorView();
+            otherMetadataTableEditorView = getInputMetaEditorView();
         }
         if (metadataTableEditorView != null) {
             metadataTableEditorView.getTableViewerCreator().getSelectionHelper().setActiveFireSelectionChanged(false);
             metadataTableEditorView.getExtendedTableViewer().getTableViewerCreator().getSelectionHelper().setSelection(selectionIndices);
             metadataTableEditorView.getTableViewerCreator().getSelectionHelper().setActiveFireSelectionChanged(true);
             metadataTableEditorView.getExtendedToolbar().updateEnabledStateOfButtons();
+
+        }
+        if (otherMetadataTableEditorView != null) {
+            otherMetadataTableEditorView.getExtendedToolbar().updateEnabledStateOfButtons();
         }
     }
 
