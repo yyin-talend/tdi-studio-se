@@ -789,7 +789,16 @@ public class ProxyRepositoryFactory implements IProxyRepositoryFactory {
      * @see org.talend.repository.model.IProxyRepositoryFactory#isPotentiallyEditable(org.talend.core.model.repository.IRepositoryObject)
      */
     public boolean isPotentiallyEditable(IRepositoryObject obj) {
-        return isPotentiallyEditable(getItem(obj));
+        if (obj instanceof MetadataTableRepositoryObject) {
+            MetadataTable table = ((MetadataTableRepositoryObject) obj).getTable();
+            if (TableHelper.isDeleted(table)) {
+                return false;
+            } else {
+                return isPotentiallyEditable(getItem(obj));
+            }
+        } else {
+            return isPotentiallyEditable(getItem(obj));
+        }
     }
 
     private Item getItem(IRepositoryObject obj) {
