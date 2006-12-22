@@ -43,6 +43,7 @@ import org.talend.core.model.metadata.builder.connection.XmlFileConnection;
 import org.talend.core.model.metadata.builder.connection.XmlXPathLoopDescriptor;
 import org.talend.core.utils.XmlArray;
 import org.talend.repository.preview.IPreview;
+import org.talend.repository.preview.AsynchronousPreviewHandler;
 import org.talend.repository.preview.ProcessDescription;
 
 /**
@@ -79,8 +80,7 @@ public class ShadowProcessHelper {
         processDescription.setFooterRow(connection.getFooterValue());
         processDescription.setLimitRows(connection.getLimitValue());
 
-        if (connection.getEscapeChar() != null && !connection.getEscapeChar().equals("")
-                && !connection.getEscapeChar().equals("Empty")) {
+        if (connection.getEscapeChar() != null && !connection.getEscapeChar().equals("") && !connection.getEscapeChar().equals("Empty")) {
             processDescription.setEscapeCharacter("'" + connection.getEscapeChar() + "'");
         } else {
             processDescription.setEscapeCharacter("''");
@@ -110,9 +110,9 @@ public class ShadowProcessHelper {
         ProcessDescription processDescription = new ProcessDescription();
         processDescription.setFilepath(connection.getXmlFilePath());
         processDescription.setLoopQuery("'" + ((XmlXPathLoopDescriptor) connection.getSchema().get(0)).getAbsoluteXPathQuery() + "'");
-        if (((XmlXPathLoopDescriptor) connection.getSchema().get(0)).getLimitBoucle() != null 
+        if (((XmlXPathLoopDescriptor) connection.getSchema().get(0)).getLimitBoucle() != null
                 && !("").equals(((XmlXPathLoopDescriptor) connection.getSchema().get(0)).getLimitBoucle())
-                    && (((XmlXPathLoopDescriptor) connection.getSchema().get(0)).getLimitBoucle().intValue()) != 0) {
+                && (((XmlXPathLoopDescriptor) connection.getSchema().get(0)).getLimitBoucle().intValue()) != 0) {
             processDescription.setLoopLimit("'" + ((XmlXPathLoopDescriptor) connection.getSchema().get(0)).getLimitBoucle() + "'");
         }
 
@@ -135,7 +135,7 @@ public class ShadowProcessHelper {
         } else {
             processDescription.setEncoding("'UTF-8'");
         }
-        
+
         return processDescription;
     }
 
@@ -212,19 +212,42 @@ public class ShadowProcessHelper {
 
         XmlArray xmlArray = null;
 
-        IExtensionRegistry registry = Platform.getExtensionRegistry();
+        IPreview preview = createPreview();
 
-        // use the org.talend.repository.filepreview_provider
-        IConfigurationElement[] configurationElements = registry
-                .getConfigurationElementsFor("org.talend.core.filepreview_provider");
-
-        if (configurationElements.length > 0) {
-            IPreview iPreview = (IPreview) configurationElements[0].createExecutableExtension("class");
-            xmlArray = iPreview.preview(processDescription, type);
-        } else {
-            log.error("\nThe ShadowProcess use to extract data or metadata on a File don't run."
-                    + "\nConfigurationElementsFor(\"org.talend.repository.filepreview_provider\").length == 0 ??");
+        if (preview != null) {
+            xmlArray = preview.preview(processDescription, type);
         }
         return xmlArray;
     }
+
+    /**
+     * DOC amaumont Comment method "createPreview".
+     * 
+     * @param configurationElements
+     * @return
+     * @throws CoreException
+     */
+    private static IPreview createPreview() throws CoreException {
+        IExtensionRegistry registry = Platform.getExtensionRegistry();
+
+        // use the org.talend.repository.filepreview_provider
+        IConfigurationElement[] configurationElements = registry.getConfigurationElementsFor("org.talend.core.filepreview_provider");
+
+        IPreview preview = null;
+        if (configurationElements.length > 0) {
+            preview = (IPreview) configurationElements[0].createExecutableExtension("class");
+        }
+        if (preview == null) {
+            log.error("\nThe ShadowProcess use to extract data or metadata on a File don't run."
+                    + "\nConfigurationElementsFor(\"org.talend.repository.filepreview_provider\").length == 0 ??");
+        }
+        
+        return preview;
+    }
+
+    public static AsynchronousPreviewHandler<XmlArray> createPreviewHandler() throws CoreException {
+        IPreview preview = createPreview();
+        return new AsynchronousPreviewHandler<XmlArray>(preview);
+    }
+
 }

@@ -28,6 +28,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.lang.reflect.InvocationTargetException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -35,9 +36,13 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.ProgressMonitorWrapper;
 import org.eclipse.datatools.enablement.oda.xml.util.ui.ATreeNode;
 import org.eclipse.datatools.enablement.oda.xml.util.ui.XPathPopulationUtil;
+import org.eclipse.jface.dialogs.ProgressMonitorDialog;
+import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -46,14 +51,14 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.ScrollBar;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
+import org.eclipse.ui.internal.dialogs.EventLoopProgressMonitor;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.ui.command.CommandStackForComposite;
 import org.talend.commons.ui.swt.dialogs.ErrorDialogWidthDetailArea;
 import org.talend.commons.ui.swt.formtools.Form;
@@ -70,13 +75,17 @@ import org.talend.core.model.targetschema.editor.XmlExtractorFieldModel;
 import org.talend.core.model.targetschema.editor.XmlExtractorLoopModel;
 import org.talend.core.utils.XmlArray;
 import org.talend.repository.i18n.Messages;
+import org.talend.repository.preview.AsynchronousPreviewHandler;
+import org.talend.repository.preview.IPreviewHandlerListener;
+import org.talend.repository.preview.PreviewHandlerEvent;
 import org.talend.repository.preview.ProcessDescription;
+import org.talend.repository.preview.PreviewHandlerEvent.TYPE;
 import org.talend.repository.ui.swt.preview.ShadowProcessPreview;
 import org.talend.repository.ui.swt.utils.AbstractXmlFileStepForm;
 import org.talend.repository.ui.utils.ShadowProcessHelper;
-import org.talend.repository.ui.wizards.metadata.connection.files.xml.extraction.view.ExtractionFieldsWithXPathEditorView;
-import org.talend.repository.ui.wizards.metadata.connection.files.xml.extraction.view.ExtractionLoopWithXPathEditorView;
-import org.talend.repository.ui.wizards.metadata.connection.files.xml.extraction.view.XmlToXPathLinker;
+import org.talend.repository.ui.wizards.metadata.connection.files.xml.extraction.ExtractionFieldsWithXPathEditorView;
+import org.talend.repository.ui.wizards.metadata.connection.files.xml.extraction.ExtractionLoopWithXPathEditorView;
+import org.talend.repository.ui.wizards.metadata.connection.files.xml.extraction.XmlToXPathLinker;
 
 /**
  * @author ocarbone
@@ -123,7 +132,9 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
     private XmlExtractorLoopModel loopModel;
 
     private XmlXPathLoopDescriptor xmlXPathLoopDescriptor;
-    
+
+    private IPreviewHandlerListener previewHandlerListener;
+
     /**
      * Constructor to use by RCP Wizard.
      * 
@@ -195,8 +206,8 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
             // Bottom Button
             Composite compositeBottomButton = Form.startNewGridLayout(this, 2, false, SWT.CENTER, SWT.CENTER);
             // Button Cancel
-            cancelButton = new UtilsButton(compositeBottomButton, Messages.getString("CommonWizard.cancel"),
-                    WIDTH_BUTTON_PIXEL, HEIGHT_BUTTON_PIXEL);
+            cancelButton = new UtilsButton(compositeBottomButton, Messages.getString("CommonWizard.cancel"), WIDTH_BUTTON_PIXEL,
+                    HEIGHT_BUTTON_PIXEL);
         }
         addUtilsButtonListeners();
     }
@@ -216,22 +227,19 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
         group.setBackground(null);
 
         availableXmlTree = new Tree(group, SWT.MULTI | SWT.BORDER);
-        
-        
+
         // availableXmlTree.setVisible(false);
         GridData gridData2 = new GridData(GridData.FILL_BOTH);
         availableXmlTree.setLayoutData(gridData2);
-        availableXmlTree.setToolTipText(Messages.getString("FileStep1.fileViewerTip1") + " "
-                + TreePopulator.MAXIMUM_ROWS_TO_PREVIEW + " " + Messages.getString("FileStep1.fileViewerTip2"));
+        availableXmlTree.setToolTipText(Messages.getString("FileStep1.fileViewerTip1") + " " + TreePopulator.MAXIMUM_ROWS_TO_PREVIEW + " "
+                + Messages.getString("FileStep1.fileViewerTip2"));
     }
 
-	private void addGroupSchemaTarget(final Composite mainComposite, final int width, final int height) {
+    private void addGroupSchemaTarget(final Composite mainComposite, final int width, final int height) {
         // Group Schema Viewer
-        final Group group = Form.createGroup(mainComposite, 1, Messages.getString("XmlFileStep1.groupSchemaTarget"),
-                height);
+        final Group group = Form.createGroup(mainComposite, 1, Messages.getString("XmlFileStep1.groupSchemaTarget"), height);
         group.setBackgroundMode(SWT.INHERIT_FORCE);
-        
-        
+
         CommandStackForComposite commandStack = new CommandStackForComposite(group);
 
         loopModel = new XmlExtractorLoopModel("Xpath loop expression");
@@ -240,7 +248,7 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
         loopTableEditorView.getExtendedTableViewer().setCommandStack(commandStack);
         GridData data2 = new GridData(GridData.FILL_HORIZONTAL);
         data2.heightHint = 70;
-        if(WindowSystem.isGTK()) {
+        if (WindowSystem.isGTK()) {
             data2.heightHint = 90;
         }
         loopTableEditorView.getMainComposite().setLayoutData(data2);
@@ -266,26 +274,19 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
     private void addGroupFileViewer(final Composite parent, final int width, int height) {
         // composite Xml File Preview
         Group previewGroup = Form.createGroup(parent, 1, Messages.getString("FileStep2.groupPreview"), height);
-//        Composite compositeXmlFilePreviewButton = Form.startNewDimensionnedGridLayout(previewGroup, 4, width,
-//                HEIGHT_BUTTON_PIXEL);
-//        height = height - HEIGHT_BUTTON_PIXEL - 15;
+        // Composite compositeXmlFilePreviewButton = Form.startNewDimensionnedGridLayout(previewGroup, 4, width,
+        // HEIGHT_BUTTON_PIXEL);
+        // height = height - HEIGHT_BUTTON_PIXEL - 15;
 
         previewGroup.setLayout(new GridLayout());
-        
+
         // Preview Button
         previewButton = new Button(previewGroup, SWT.NONE);
         previewButton.setText(Messages.getString("FileStep2.refreshPreview"));
         previewButton.setSize(WIDTH_BUTTON_PIXEL, HEIGHT_BUTTON_PIXEL);
 
-        // simple space
-//        new Label(previewGroup, SWT.NONE);
-        // Information Label
         previewInformationLabel = new Label(previewGroup, SWT.NONE);
-//        previewInformationLabel
-//                .setText("                                                                                                                        ");
         previewInformationLabel.setForeground(getDisplay().getSystemColor(SWT.COLOR_BLUE));
-
-//        Composite compositeXmlFilePreview = Form.startNewDimensionnedGridLayout(previewGroup, 1, width, height);
 
         // Xml File Preview
         xmlFilePreview = new ShadowProcessPreview(previewGroup, null, width, height - 10);
@@ -310,8 +311,8 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
         gridData.minimumWidth = width;
         gridData.minimumHeight = HEIGHT_BUTTON_PIXEL;
         fileXmlText.setLayoutData(gridData);
-        fileXmlText.setToolTipText(Messages.getString("FileStep1.fileViewerTip1") + " "
-                + TreePopulator.MAXIMUM_ROWS_TO_PREVIEW + " " + Messages.getString("FileStep1.fileViewerTip2"));
+        fileXmlText.setToolTipText(Messages.getString("FileStep1.fileViewerTip1") + " " + TreePopulator.MAXIMUM_ROWS_TO_PREVIEW + " "
+                + Messages.getString("FileStep1.fileViewerTip2"));
         fileXmlText.setEditable(false);
         fileXmlText.setText(Messages.getString("FileStep1.fileViewerAlert"));
     }
@@ -357,29 +358,146 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
 
         previewInformationLabel.setText("   " + Messages.getString("FileStep2.previewProgress"));
 
-        // get the XmlArray width an adapt ProcessDescription
+        AsynchronousPreviewHandler<XmlArray> previewHandler = null;
         try {
-            ProcessDescription processDescription = getProcessDescription();
-            XmlArray xmlArray = ShadowProcessHelper.getXmlArray(processDescription, "FILE_XML");
-            if (xmlArray == null) {
-                previewInformationLabel.setText("   " + Messages.getString("FileStep2.previewFailure"));
-            } else {
-                previewInformationLabel.setText("   " + Messages.getString("FileStep2.previewIsDone"));
-
-                // refresh TablePreview on this step
-                xmlFilePreview.refreshTablePreview(xmlArray, false, ((XmlXPathLoopDescriptor) getConnection()
-                        .getSchema().get(0)).getSchemaTargets());
-                
-                previewInformationLabel.setText("");
-            }
+            previewHandler = ShadowProcessHelper.createPreviewHandler();
         } catch (CoreException e) {
-            previewInformationLabel.setText("   " + Messages.getString("FileStep2.previewFailure"));
-            new ErrorDialogWidthDetailArea(getShell(), PID, Messages.getString("FileStep2.previewFailure"), e
-                    .getMessage());
-            log.error(Messages.getString("FileStep2.previewFailure") + " " + e.getMessage());
+            previewInError(e);
         }
+
+        if (previewHandler != null && previewHandlerListener == null) {
+            previewHandlerListener = new IPreviewHandlerListener<XmlArray>() {
+
+                private ProgressMonitorWrapper monitorWrap;
+
+                private boolean breakInfiniteLoop;
+
+                public void handleEvent(PreviewHandlerEvent<XmlArray> event) {
+
+                    final TYPE eventType = event.getType();
+                    final AsynchronousPreviewHandler<XmlArray> source = event.getSource();
+
+                    if (eventType == PreviewHandlerEvent.TYPE.PREVIEW_STARTED) {
+
+                        final IRunnableWithProgress op = new IRunnableWithProgress() {
+
+                            public void run(IProgressMonitor monitor) {
+                                monitorWrap = new EventLoopProgressMonitor(monitor);
+//                                monitorWrap = new InfiniteSubProgressMonitor(monitor, IProgressMonitor.UNKNOWN, SubProgressMonitor.PREPEND_MAIN_LABEL_TO_SUBTASK);
+                                int size = 10;
+                                monitorWrap.beginTask("Loading preview...", IProgressMonitor.UNKNOWN); //$NON-NLS-1$
+
+                                breakInfiniteLoop = false;
+
+                                while (true) {
+                                    if (monitorWrap.isCanceled() || breakInfiniteLoop) {
+                                        break;
+                                    }
+                                }
+                                
+                                if(monitorWrap.isCanceled()) {
+                                    source.stopPreviewProcess();
+                                } else {
+                                    monitorWrap.done();
+                                }
+                                
+                            }
+                        };
+
+                        getDisplay().asyncExec(new Runnable() {
+
+                            public void run() {
+
+                                try {
+                                    new ProgressMonitorDialog(getShell()).run(true, true, op);
+                                } catch (InvocationTargetException e) {
+                                    ExceptionHandler.process(e);
+                                } catch (InterruptedException e) {
+                                    ExceptionHandler.process(e);
+                                }
+                            }
+                        });
+
+                    } else if (eventType == PreviewHandlerEvent.TYPE.PREVIEW_INTERRUPTED) {
+
+                        breakInfiniteLoop = true;
+
+                        getDisplay().syncExec(new Runnable() {
+
+                            public void run() {
+                                previewInformationLabel.setText("   " + "Preview interrupted");
+                            }
+                        });
+
+                    } else if (eventType == PreviewHandlerEvent.TYPE.PREVIEW_ENDED) {
+
+                        breakInfiniteLoop = true;
+
+                        getDisplay().syncExec(new Runnable() {
+
+                            public void run() {
+                                previewInformationLabel.setText("   " + Messages.getString("FileStep2.previewIsDone"));
+                                previewInformationLabel.getParent().layout();
+                                XmlArray xmlArray = source.getResult();
+                                // refresh TablePreview on this step
+                                xmlFilePreview.refreshTablePreview(xmlArray, false, ((XmlXPathLoopDescriptor) getConnection().getSchema()
+                                        .get(0)).getSchemaTargets());
+                            }
+                        });
+
+                    } else if (eventType == PreviewHandlerEvent.TYPE.PREVIEW_IN_ERROR) {
+
+                        breakInfiniteLoop = true;
+
+                        final CoreException e = event.getException();
+                        getDisplay().syncExec(new Runnable() {
+
+                            public void run() {
+                                previewInError(e);
+                            }
+                        });
+
+                    }
+
+                }
+
+            };
+        }
+
+        final ProcessDescription processDescription = getProcessDescription();
+
+        final AsynchronousPreviewHandler<XmlArray> previewHandlerFinal = previewHandler;
+        previewHandler.addListener(previewHandlerListener);
+
+        getDisplay().syncExec(new Runnable() {
+
+            public void run() {
+                previewHandlerFinal.launchPreview(processDescription, "FILE_XML");
+            }
+
+        });
+
     }
 
+    /**
+     * DOC amaumont Comment method "previewInError".
+     * 
+     * @param e
+     */
+    private void previewInError(CoreException e) {
+
+        String errorMessage = null;
+        if (e != null) {
+            errorMessage = e.getMessage();
+        }
+
+        previewInformationLabel.setText("   " + Messages.getString("FileStep2.previewFailure"));
+        new ErrorDialogWidthDetailArea(getShell(), PID, Messages.getString("FileStep2.previewFailure"), errorMessage);
+        log.error(Messages.getString("FileStep2.previewFailure") + " " + errorMessage);
+    }
+
+
+    
     /**
      * Main Fields addControls.
      */
@@ -440,8 +558,7 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
             // if the checkbox is checked, check Numeric value
             if (labelledCheckboxCombo.getCheckbox().getSelection()) {
                 if (labelledCheckboxCombo.getText() == "") {
-                    updateStatus(IStatus.ERROR, labelledCheckboxCombo.getLabelText()
-                            + Messages.getString("FileStep2.mustBePrecised"));
+                    updateStatus(IStatus.ERROR, labelledCheckboxCombo.getLabelText() + Messages.getString("FileStep2.mustBePrecised"));
                     return false;
                 }
             }
@@ -466,23 +583,24 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
             public void widgetSelected(final SelectionEvent e) {
                 if (!previewButton.getText().equals(Messages.getString("FileStep2.wait"))) {
                     previewButton.setText(Messages.getString("FileStep2.wait"));
-                    if (getConnection().getXmlFilePath() != null && !getConnection().getXmlFilePath().equals("") 
-                            && getConnection().getSchema() != null && !getConnection().getSchema().isEmpty() 
-                            && ((XmlXPathLoopDescriptor) getConnection().getSchema().get(0)).getAbsoluteXPathQuery()!=null
+                    if (getConnection().getXmlFilePath() != null && !getConnection().getXmlFilePath().equals("")
+                            && getConnection().getSchema() != null && !getConnection().getSchema().isEmpty()
+                            && ((XmlXPathLoopDescriptor) getConnection().getSchema().get(0)).getAbsoluteXPathQuery() != null
                             && !("").equals(((XmlXPathLoopDescriptor) getConnection().getSchema().get(0)).getAbsoluteXPathQuery())
                             && ((XmlXPathLoopDescriptor) getConnection().getSchema().get(0)).getSchemaTargets() != null
                             && !((XmlXPathLoopDescriptor) getConnection().getSchema().get(0)).getSchemaTargets().isEmpty()) {
-                    refreshPreview();
-                } else {
-                    previewButton.setText(Messages.getString("FileStep2.refreshPreview"));
-                        if (! previewButton.getEnabled()) {
-                            new ErrorDialogWidthDetailArea(getShell(), PID, Messages.getString("FileStep2.noresult"), Messages.getString("FileStep2.noresultDetailMessage"));
+                        refreshPreview();
+                    } else {
+                        previewButton.setText(Messages.getString("FileStep2.refreshPreview"));
+                        if (!previewButton.getEnabled()) {
+                            new ErrorDialogWidthDetailArea(getShell(), PID, Messages.getString("FileStep2.noresult"), Messages
+                                    .getString("FileStep2.noresultDetailMessage"));
                             log.error(Messages.getString("FileStep2.noresult"));
                             previewButton.setEnabled(true);
                         } else {
                             previewButton.setEnabled(false);
-                }
-            }
+                        }
+                    }
                 } else {
                     previewButton.setText(Messages.getString("FileStep2.refreshPreview"));
                 }
@@ -509,12 +627,12 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
         updateStatus(IStatus.OK, null);
         filePathIsDone = false;
         if (getConnection().getXmlFilePath() == "") {
-            fileXmlText.setText(Messages.getString("FileStep1.fileViewerTip1") + " "
-                    + TreePopulator.MAXIMUM_ROWS_TO_PREVIEW + " " + Messages.getString("FileStep1.fileViewerTip2"));
+            fileXmlText.setText(Messages.getString("FileStep1.fileViewerTip1") + " " + TreePopulator.MAXIMUM_ROWS_TO_PREVIEW + " "
+                    + Messages.getString("FileStep1.fileViewerTip2"));
         } else {
             fileXmlText.setText(Messages.getString("FileStep1.fileViewerProgress"));
 
-            StringBuffer previewRows = new StringBuffer("");
+            StringBuilder previewRows = new StringBuilder();
             BufferedReader in = null;
 
             try {
@@ -523,8 +641,8 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
                 Charset guessedCharset = CharsetToolkit.guessEncoding(file, 4096);
 
                 String str;
-                in = new BufferedReader(new InputStreamReader(new FileInputStream(getConnection().getXmlFilePath()),
-                        guessedCharset.displayName()));
+                in = new BufferedReader(new InputStreamReader(new FileInputStream(getConnection().getXmlFilePath()), guessedCharset
+                        .displayName()));
                 while ((str = in.readLine()) != null) {
                     previewRows.append(str + "\n");
                 }
@@ -534,8 +652,7 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
                 filePathIsDone = true;
 
             } catch (Exception e) {
-                String msgError = Messages.getString("FileStep1.filepath") + " \""
-                        + fileXmlText.getText().replace("\\\\", "\\") + "\"\n";
+                String msgError = Messages.getString("FileStep1.filepath") + " \"" + fileXmlText.getText().replace("\\\\", "\\") + "\"\n";
                 if (e instanceof FileNotFoundException) {
                     msgError = msgError + Messages.getString("FileStep1.fileNotFoundException");
                 } else if (e instanceof EOFException) {
@@ -551,13 +668,14 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
                 }
                 log.error(msgError + " " + e.getMessage());
             } finally {
-                String msgError = Messages.getString("FileStep1.filepath") + " \""
-                        + fileXmlText.getText().replace("\\\\", "\\") + "\"\n";
+                String msgError = Messages.getString("FileStep1.filepath") + " \"" + fileXmlText.getText().replace("\\\\", "\\") + "\"\n";
                 try {
-                    in.close();
+                    if (in != null) {
+                        in.close();
+                    }
                 } catch (IOException e) {
                     msgError = msgError + Messages.getString("FileStep1.fileLocked");
-            }
+                }
             }
             checkFieldsValue();
         }
@@ -592,9 +710,9 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
             checkFilePathAndManageIt();
             // Refresh the preview width the adapted rowSeparator
             // If metadata exist, refreshMetadata
-            if (getConnection().getXmlFilePath() != null && !getConnection().getXmlFilePath().equals("") 
-                    && getConnection().getSchema() != null && !getConnection().getSchema().isEmpty() 
-                    && ((XmlXPathLoopDescriptor) getConnection().getSchema().get(0)).getAbsoluteXPathQuery()!=null
+            if (getConnection().getXmlFilePath() != null && !getConnection().getXmlFilePath().equals("")
+                    && getConnection().getSchema() != null && !getConnection().getSchema().isEmpty()
+                    && ((XmlXPathLoopDescriptor) getConnection().getSchema().get(0)).getAbsoluteXPathQuery() != null
                     && ((XmlXPathLoopDescriptor) getConnection().getSchema().get(0)).getSchemaTargets() != null
                     && !((XmlXPathLoopDescriptor) getConnection().getSchema().get(0)).getSchemaTargets().isEmpty()) {
                 refreshPreview();

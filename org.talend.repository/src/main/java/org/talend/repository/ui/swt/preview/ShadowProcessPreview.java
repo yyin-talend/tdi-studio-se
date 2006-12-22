@@ -41,7 +41,7 @@ import org.talend.repository.preview.ProcessDescription;
 /**
  * Create SWT Table to show the content of a file. <br/>
  * 
- * $Id$
+ * $Id: ShadowProcessPreview.java 1094 2006-12-19 11:43:50Z amaumont $
  * 
  */
 public class ShadowProcessPreview {
@@ -293,7 +293,7 @@ public class ShadowProcessPreview {
         this.header = title;
 
         // clear all the item
-        table.clearAll();
+        table.removeAll();
 
         // refresh the Header and the Item of the table
         refreshPreviewHeader(title);
@@ -302,7 +302,7 @@ public class ShadowProcessPreview {
         refreshPreviewHeader(title);
 
         // resize all the columns but not the table
-        for (int i = 0; i < table.getColumnCount(); i++) {
+        for (int i = table.getColumnCount() - 1; i >= 0 ; i--) {
             table.getColumn(i).pack();
         }
 
@@ -405,7 +405,7 @@ public class ShadowProcessPreview {
         table.clearAll();
         for (int i = 0; i < table.getColumnCount(); i++) {
             table.getColumn(i).setText("");
-            table.getColumn(i).pack();
+            table.getColumn(i).setWidth(0);
         }
     }
 

@@ -19,10 +19,8 @@
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 // ============================================================================
-package org.talend.repository.ui.wizards.metadata.connection.files.xml.extraction.view;
+package org.talend.repository.preview;
 
-import org.talend.commons.ui.swt.drawing.background.BackgroundRefresher;
-import org.talend.commons.ui.swt.drawing.background.IBgDrawableComposite;
 
 
 /**
@@ -31,16 +29,10 @@ import org.talend.commons.ui.swt.drawing.background.IBgDrawableComposite;
  *
  * $Id$
  *
+ * @param <R> result of preview
  */
-public class XmlExtractorBgRefresher extends BackgroundRefresher {
+public interface IPreviewHandlerListener<R> {
 
-    /**
-     * DOC amaumont XmlExtractorBgRefresher constructor comment.
-     * @param commonParent
-     */
-    public XmlExtractorBgRefresher(IBgDrawableComposite drawableComposite) {
-        super(drawableComposite);
-    }
+    public void handleEvent(PreviewHandlerEvent<R> event);
 
-    
 }

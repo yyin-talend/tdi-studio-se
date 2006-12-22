@@ -49,9 +49,9 @@ import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumn;
 import org.talend.commons.ui.utils.TableUtils;
 import org.talend.core.model.metadata.builder.connection.SchemaTarget;
 import org.talend.core.model.metadata.builder.connection.XmlXPathLoopDescriptor;
-import org.talend.repository.ui.wizards.metadata.connection.files.xml.extraction.view.ExtractionFieldsWithXPathEditorView;
-import org.talend.repository.ui.wizards.metadata.connection.files.xml.extraction.view.ExtractionLoopWithXPathEditorView;
-import org.talend.repository.ui.wizards.metadata.connection.files.xml.extraction.view.XmlToXPathLinker;
+import org.talend.repository.ui.wizards.metadata.connection.files.xml.extraction.ExtractionFieldsWithXPathEditorView;
+import org.talend.repository.ui.wizards.metadata.connection.files.xml.extraction.ExtractionLoopWithXPathEditorView;
+import org.talend.repository.ui.wizards.metadata.connection.files.xml.extraction.XmlToXPathLinker;
 
 /**
  * DOC amaumont class global comment. Detailled comment <br/>
@@ -293,7 +293,7 @@ public class XmlToSchemaDragAndDropHandler {
                         if (relativeXPath.endsWith("../")) {
                             relativeXPath = relativeXPath.substring(0, relativeXPath.length() - 1);
                         }
-                        if (relativeXPath.equals("")) {
+                        if (relativeXPath.trim().equals("")) {
                             relativeXPath = ".";
                         }
 
