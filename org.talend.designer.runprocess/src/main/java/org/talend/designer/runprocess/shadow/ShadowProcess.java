@@ -84,6 +84,8 @@ public class ShadowProcess<T extends IProcessDescription> {
 
     private EShadowProcessType type;
 
+    private Process process;
+
     /**
      * Constructs a new ShadowProcess.
      */
@@ -156,8 +158,8 @@ public class ShadowProcess<T extends IProcessDescription> {
     }
 
     public XmlArray run() throws ProcessorException {
-        IProcess process = buildProcess();
-        Processor processor = new Processor(process);
+        IProcess talendProcess = buildProcess();
+        Processor processor = new Processor(talendProcess);
         try {
             // Delete previous Perl generated file
             File previousFile = outPath.toFile();
@@ -168,9 +170,9 @@ public class ShadowProcess<T extends IProcessDescription> {
 //            Process ps = processor.run(process.getContextManager().getDefaultContext(), Processor.NO_STATISTICS,
 //                    Processor.NO_TRACES,Processor.WATCH_ALLOWED);//Old
             
-            Process ps = processor.run(process.getContextManager().getDefaultContext(), Processor.NO_STATISTICS,
+            process = processor.run(talendProcess.getContextManager().getDefaultContext(), Processor.NO_STATISTICS,
                     Processor.NO_TRACES, null);
-            ProcessStreamTrashReader.readAndForget(ps);
+            ProcessStreamTrashReader.readAndForget(process);
 
             if (!outPath.toFile().exists()) {
                 throw new ProcessorException("Output not generated.");
@@ -191,4 +193,24 @@ public class ShadowProcess<T extends IProcessDescription> {
         }
     }
 
+    
+    /**
+     * Destroy the current process if exists.
+     * @return error code of {@link java.lang.Process#exitValue()}
+     */
+    public int destroy() {
+        int exitCode = 0;
+        if (process != null) {
+            process.destroy();
+            try {
+                exitCode = process.exitValue();
+            } catch (IllegalThreadStateException itse) {
+                // Can be throw on some UNIX system :(
+                // but the process is really killed.
+            }
+            process = null;
+        }
+        return exitCode;
+    }
+    
 }

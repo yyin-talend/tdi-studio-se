@@ -38,6 +38,8 @@ import org.talend.repository.preview.IProcessDescription;
  */
 public class ShadowFilePreview implements IPreview {
 
+    public ShadowProcess shadowProcess;
+
     /**
      * Constructs a new ShadowPreview.
      */
@@ -56,9 +58,9 @@ public class ShadowFilePreview implements IPreview {
         
         EShadowProcessType typeShadow = EShadowProcessType.valueOf(type);
         
-        ShadowProcess process = new ShadowProcess(description, typeShadow);
+        shadowProcess = new ShadowProcess(description, typeShadow);
         try {
-            res = process.run();
+            res = shadowProcess.run();
         } catch (ProcessorException e) {
             Status status = new Status(Status.ERROR, RunProcessPlugin.PLUGIN_ID, Status.OK, e.getMessage(), e);
             RunProcessPlugin.getDefault().getLog().log(status);
@@ -67,4 +69,12 @@ public class ShadowFilePreview implements IPreview {
         return res;
     }
 
+    
+    /**
+     * Stop loading preview.
+     */
+    public void stopLoading() {
+        shadowProcess.destroy();
+    }
+    
 }
