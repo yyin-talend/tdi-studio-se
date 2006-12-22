@@ -327,7 +327,7 @@ public class EmfComponent implements IComponent {
         param.setNumRow(2);
         param.setReadOnly(true);
         param.setRequired(false);
-        param.setShow(true);
+        param.setShow(false);
         listParam.add(param);
 
         param = new ElementParameter(node);
