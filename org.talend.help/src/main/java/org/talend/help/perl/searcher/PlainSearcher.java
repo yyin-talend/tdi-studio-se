@@ -34,6 +34,7 @@ import org.talend.help.perl.model.EProperty;
 import org.talend.help.perl.model.EType;
 import org.talend.help.perl.model.Node;
 import org.talend.help.perl.reader.DocParser;
+import org.talend.help.perl.ui.BackForwardBar;
 
 /**
  * DOC Administrator class global comment. Detailled comment <br/>
@@ -46,8 +47,8 @@ public class PlainSearcher extends Searcher {
     /**
      * DOC Administrator PlainSearcher constructor comment.
      */
-    public PlainSearcher(TreeViewer viewer, Button btn, Text text) {
-        super(viewer, btn, text);
+    public PlainSearcher(TreeViewer viewer, Button btn, Text text, BackForwardBar bar) {
+        super(viewer, btn, text, bar);
     }
 
     /*
@@ -64,7 +65,6 @@ public class PlainSearcher extends Searcher {
                 currentNode = startSearch(nextSiblingNode, searchText.getText());
             } else {
                 // currentNode = repeatToStart();
-                // currentNode = startSearch(nextSiblingNode, searchText.getText());
             }
         } else {
             if ("".equals(searchText.getText())) {
@@ -77,13 +77,16 @@ public class PlainSearcher extends Searcher {
                     currentNode = startSearch(currentNode, searchText.getText());
                 }
             });
+            if (searcherCache.size() != 0) {
+                bfBar.clearHistory();
+            }
             if (currentNode != null) {
                 searchBtn.setText(LABEL_NEXT);
             }
         }
         treeViewer.setExpandedElements(getNodeArray(currentNode));
-        treeViewer.refresh();
         treeViewer.setSelection(new StructuredSelection(new Object[] { currentNode }), true);
+        treeViewer.refresh();        
     }
 
     /**
@@ -118,7 +121,7 @@ public class PlainSearcher extends Searcher {
             }
         }
         if (searcherCache.size() != 0) {
-            Node repeatNode =  repeatToStart();
+            Node repeatNode = repeatToStart();
             return startSearch(repeatNode, searchStr);
         }
         return null;

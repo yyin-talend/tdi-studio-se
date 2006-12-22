@@ -224,8 +224,8 @@ public class PerlHelpComposite extends Composite {
         searchText.addModifyListener(new ModifyListener() {
 
             public void modifyText(ModifyEvent e) {
-                viewer.refresh();
                 searcherReset();
+                viewer.refresh();
             }
         });
         searchButton.addSelectionListener(new SelectionAdapter() {
@@ -235,8 +235,8 @@ public class PerlHelpComposite extends Composite {
             }
         });
         this.getShell().setDefaultButton(searchButton);
-        funcSearcher = new FunctionSearcher(viewer, searchButton, searchText);
-        plainSearcher = new PlainSearcher(viewer, searchButton, searchText);
+        funcSearcher = new FunctionSearcher(viewer, searchButton, searchText, backForwardBar);
+        plainSearcher = new PlainSearcher(viewer, searchButton, searchText, backForwardBar);
         searcher = funcSearcher;
         return treeComposite;
     }

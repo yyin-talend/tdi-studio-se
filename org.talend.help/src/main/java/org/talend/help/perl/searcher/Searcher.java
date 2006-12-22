@@ -35,6 +35,7 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.PlatformUI;
 import org.talend.help.perl.model.EType;
 import org.talend.help.perl.model.Node;
+import org.talend.help.perl.ui.BackForwardBar;
 
 /**
  * DOC . Detailled comment <br/>
@@ -49,6 +50,8 @@ public abstract class Searcher {
     protected Button searchBtn;
 
     protected Text searchText;
+
+    protected BackForwardBar bfBar;
 
     protected static Node currentNode = null;
 
@@ -66,10 +69,11 @@ public abstract class Searcher {
 
     protected Node nextSiblingNode = null;
 
-    public Searcher(TreeViewer viewer, Button btn, Text text) {
+    public Searcher(TreeViewer viewer, Button btn, Text text, BackForwardBar bar) {
         this.treeViewer = viewer;
         this.searchBtn = btn;
         this.searchText = text;
+        this.bfBar = bar;
     }
 
     /**
@@ -136,6 +140,7 @@ public abstract class Searcher {
 
     /**
      * when click the next button util to the last,then locate to the top.
+     * 
      * @return
      */
     protected Node repeatToStart() {

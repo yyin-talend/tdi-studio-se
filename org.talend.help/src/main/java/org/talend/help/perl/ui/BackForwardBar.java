@@ -107,6 +107,7 @@ public class BackForwardBar {
                 }
                 setSelectTreeFlag(false);
                 fireTreeState(globalNavigation.get(backIndex));
+                setSelectTreeFlag(true);
                 fireNavItemState();
             }
 
@@ -142,6 +143,7 @@ public class BackForwardBar {
                 }
                 setSelectTreeFlag(false);
                 fireTreeState(globalNavigation.get(forwardIndex));
+                setSelectTreeFlag(true);
                 fireNavItemState();
             }
 
@@ -167,18 +169,30 @@ public class BackForwardBar {
         fireNavItemState();
     }
 
+    /**
+     * clear the history record of browser.
+     */
+    public void clearHistory() {
+        globalNavigation.clear();
+        currentNavIndex = -1;
+        fireNavItemState();
+        backLabel.setImage(DISABLE_BACKIMAGE);
+        forwardLabel.setImage(DISABLE_FORWARDIMAGE);
+    }
+
     public void setTreeViewer(TreeViewer viewer) {
         this.treeViewer = viewer;
     }
 
     /**
      * auto selected the given node.
+     * 
      * @param node
      */
     private void fireTreeState(Node node) {
         treeViewer.setExpandedElements(getNodeArray(node));
-        treeViewer.refresh();
         treeViewer.setSelection(new StructuredSelection(new Object[] { node }), true);
+        treeViewer.refresh();
     }
 
     private Object[] getNodeArray(Node node) {
@@ -208,5 +222,4 @@ public class BackForwardBar {
         return selectTreeFlag;
     }
 
-    
 }
