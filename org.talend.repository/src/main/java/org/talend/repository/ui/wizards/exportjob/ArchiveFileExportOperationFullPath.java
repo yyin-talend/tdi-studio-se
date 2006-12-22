@@ -43,6 +43,7 @@ import org.eclipse.jface.operation.ModalContext;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.ui.internal.ide.IDEWorkbenchPlugin;
 import org.eclipse.ui.internal.wizards.datatransfer.DataTransferMessages;
+import org.talend.commons.exception.ExceptionHandler;
 
 /**
  * Operation for exporting a resource and its children to a new .zip or .tar.gz file.
@@ -100,6 +101,7 @@ public class ArchiveFileExportOperationFullPath implements IRunnableWithProgress
      * Add a new entry to the error table with the passed information
      */
     protected void addError(String message, Throwable e) {
+        ExceptionHandler.process(e);
         errorTable.add(new Status(IStatus.ERROR, IDEWorkbenchPlugin.IDE_WORKBENCH, 0, message, e));
     }
 
