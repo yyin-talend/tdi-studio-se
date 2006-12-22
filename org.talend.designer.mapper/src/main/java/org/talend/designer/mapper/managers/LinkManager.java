@@ -248,9 +248,9 @@ public class LinkManager {
                             linksFromLevelsList.remove(i);
                             if (linksFromLevelsList.size() == 0) {
                                 leveledLinks.set(indexOfLeveledLink, null);
-                                breakAll = true;
-                                break;
                             }
+                            breakAll = true;
+                            break;
                         }
                     } // for (int i = 0; i < lstSizeInternal; i++) {
                     if (breakAll) {
