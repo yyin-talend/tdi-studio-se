@@ -119,11 +119,12 @@ public class ArchiveFileExportOperationFullPath implements IRunnableWithProgress
 
         int count = 0;
 
-        File[] children = file.listFiles();
-        for (int i = 0; i < children.length; i++) {
-            count += countChildrenOf(children[i].getPath());
+        if (file.isDirectory()) {
+            File[] children = file.listFiles();
+            for (int i = 0; i < children.length; i++) {
+                count += countChildrenOf(children[i].getPath());
+            }
         }
-
         return count;
     }
 
@@ -189,7 +190,7 @@ public class ArchiveFileExportOperationFullPath implements IRunnableWithProgress
 
             monitor.worked(1);
             ModalContext.checkCanceled(monitor);
-        } else {
+        } else if (file.isDirectory()) {
             File[] children = null;
 
             try {
