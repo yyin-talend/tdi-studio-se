@@ -194,7 +194,8 @@ public class JobScriptsManager {
      * @return
      */
     public String getPerlLauncher() {
-        String perlIntepreter = CorePlugin.getDefault().getPreferenceStore().getString(ITalendCorePrefConstants.PERL_INTERPRETER);
+        String perlIntepreter = CorePlugin.getDefault().getPreferenceStore().getString(
+                ITalendCorePrefConstants.PERL_INTERPRETER);
         return perlIntepreter;
     }
 
@@ -280,7 +281,8 @@ public class JobScriptsManager {
     private void getRoutineNames(List list, boolean isBuildin) {
         String projectName = getCurrentProjectName();
         try {
-            List<IRepositoryObject> routines = ProxyRepositoryFactory.getInstance().getAll(ERepositoryObjectType.ROUTINES);
+            List<IRepositoryObject> routines = ProxyRepositoryFactory.getInstance().getAll(
+                    ERepositoryObjectType.ROUTINES);
             for (int i = 0; i < routines.size(); i++) {
                 RoutineItem routine = (RoutineItem) routines.get(i).getProperty().getItem();
                 if (routine.isBuiltIn() == isBuildin) {
@@ -337,10 +339,12 @@ public class JobScriptsManager {
             try {
                 IPerlModuleService service = RepositoryPlugin.getDefault().getPerlModuleService();
                 list = service.getPerlModule();
-            } catch (IOException e) {
+            } catch (Exception e) {
                 ExceptionHandler.process(e);
-                list = Collections.<URL> emptyList();
             }
+        }
+        if (list == null) {
+            list = Collections.<URL> emptyList();
         }
         return list;
     }
@@ -410,7 +414,8 @@ public class JobScriptsManager {
         List<String> contextNameList = new ArrayList<String>();
         // FIXME Separates this from the designer.core
         // IContextManager c = ContextManager.getContextManagerFromXmlProcess(processItem);
-        IContextManager c = RepositoryPlugin.getDefault().getDesignerCoreService().getContextManagerFromXmlProcess(processItem);
+        IContextManager c = RepositoryPlugin.getDefault().getDesignerCoreService().getContextManagerFromXmlProcess(
+                processItem);
         for (IContext context : c.getListContext()) {
             if (contextNameList.contains(context.getName())) {
                 continue;
