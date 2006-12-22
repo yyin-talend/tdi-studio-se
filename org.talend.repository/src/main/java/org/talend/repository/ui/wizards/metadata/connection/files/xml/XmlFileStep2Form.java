@@ -79,6 +79,7 @@ import org.talend.repository.preview.AsynchronousPreviewHandler;
 import org.talend.repository.preview.IPreviewHandlerListener;
 import org.talend.repository.preview.PreviewHandlerEvent;
 import org.talend.repository.preview.ProcessDescription;
+import org.talend.repository.preview.StoppablePreviewLoader;
 import org.talend.repository.preview.PreviewHandlerEvent.TYPE;
 import org.talend.repository.ui.swt.preview.ShadowProcessPreview;
 import org.talend.repository.ui.swt.utils.AbstractXmlFileStepForm;
@@ -360,131 +361,42 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
 
         AsynchronousPreviewHandler<XmlArray> previewHandler = null;
         try {
-            previewHandler = ShadowProcessHelper.createPreviewHandler();
+            previewHandler = (AsynchronousPreviewHandler<XmlArray>) ShadowProcessHelper.createPreviewHandler();
         } catch (CoreException e) {
             previewInError(e);
+            return;
         }
 
-        if (previewHandler != null && previewHandlerListener == null) {
-            previewHandlerListener = new IPreviewHandlerListener<XmlArray>() {
+        StoppablePreviewLoader previewLoader = new StoppablePreviewLoader<XmlArray>(previewHandler, previewInformationLabel) {
 
-                private ProgressMonitorWrapper monitorWrap;
-
-                private boolean breakInfiniteLoop;
-
-                public void handleEvent(PreviewHandlerEvent<XmlArray> event) {
-
-                    final TYPE eventType = event.getType();
-                    final AsynchronousPreviewHandler<XmlArray> source = event.getSource();
-
-                    if (eventType == PreviewHandlerEvent.TYPE.PREVIEW_STARTED) {
-
-                        final IRunnableWithProgress op = new IRunnableWithProgress() {
-
-                            public void run(IProgressMonitor monitor) {
-                                monitorWrap = new EventLoopProgressMonitor(monitor);
-//                                monitorWrap = new InfiniteSubProgressMonitor(monitor, IProgressMonitor.UNKNOWN, SubProgressMonitor.PREPEND_MAIN_LABEL_TO_SUBTASK);
-                                int size = 10;
-                                monitorWrap.beginTask("Loading preview...", IProgressMonitor.UNKNOWN); //$NON-NLS-1$
-
-                                breakInfiniteLoop = false;
-
-                                while (true) {
-                                    if (monitorWrap.isCanceled() || breakInfiniteLoop) {
-                                        break;
-                                    }
-                                }
-                                
-                                if(monitorWrap.isCanceled()) {
-                                    source.stopPreviewProcess();
-                                } else {
-                                    monitorWrap.done();
-                                }
-                                
-                            }
-                        };
-
-                        getDisplay().asyncExec(new Runnable() {
-
-                            public void run() {
-
-                                try {
-                                    new ProgressMonitorDialog(getShell()).run(true, true, op);
-                                } catch (InvocationTargetException e) {
-                                    ExceptionHandler.process(e);
-                                } catch (InterruptedException e) {
-                                    ExceptionHandler.process(e);
-                                }
-                            }
-                        });
-
-                    } else if (eventType == PreviewHandlerEvent.TYPE.PREVIEW_INTERRUPTED) {
-
-                        breakInfiniteLoop = true;
-
-                        getDisplay().syncExec(new Runnable() {
-
-                            public void run() {
-                                previewInformationLabel.setText("   " + "Preview interrupted");
-                            }
-                        });
-
-                    } else if (eventType == PreviewHandlerEvent.TYPE.PREVIEW_ENDED) {
-
-                        breakInfiniteLoop = true;
-
-                        getDisplay().syncExec(new Runnable() {
-
-                            public void run() {
-                                previewInformationLabel.setText("   " + Messages.getString("FileStep2.previewIsDone"));
-                                previewInformationLabel.getParent().layout();
-                                XmlArray xmlArray = source.getResult();
-                                // refresh TablePreview on this step
-                                xmlFilePreview.refreshTablePreview(xmlArray, false, ((XmlXPathLoopDescriptor) getConnection().getSchema()
-                                        .get(0)).getSchemaTargets());
-                            }
-                        });
-
-                    } else if (eventType == PreviewHandlerEvent.TYPE.PREVIEW_IN_ERROR) {
-
-                        breakInfiniteLoop = true;
-
-                        final CoreException e = event.getException();
-                        getDisplay().syncExec(new Runnable() {
-
-                            public void run() {
-                                previewInError(e);
-                            }
-                        });
-
-                    }
-
-                }
-
-            };
-        }
-
-        final ProcessDescription processDescription = getProcessDescription();
-
-        final AsynchronousPreviewHandler<XmlArray> previewHandlerFinal = previewHandler;
-        previewHandler.addListener(previewHandlerListener);
-
-        getDisplay().syncExec(new Runnable() {
-
-            public void run() {
-                previewHandlerFinal.launchPreview(processDescription, "FILE_XML");
+            /*
+             * (non-Javadoc)
+             * 
+             * @see org.talend.repository.ui.wizards.metadata.connection.files.xml.StoppablePreviewLoader#previewEnded(java.lang.Object)
+             */
+            @Override
+            protected void previewEnded(XmlArray result) {
+                xmlFilePreview.refreshTablePreview(result, false, ((XmlXPathLoopDescriptor) getConnection().getSchema().get(0))
+                        .getSchemaTargets());
             }
 
-        });
+            @Override
+            public void previewInError(CoreException e) {
+                XmlFileStep2Form.this.previewInError(e);
+            }
+
+        };
+
+        previewLoader.load(getProcessDescription());
 
     }
 
     /**
-     * DOC amaumont Comment method "previewInError".
+     * DOC amaumont Comment method "previewInFileError".
      * 
      * @param e
      */
-    private void previewInError(CoreException e) {
+    protected void previewInError(CoreException e) {
 
         String errorMessage = null;
         if (e != null) {
@@ -492,12 +404,12 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
         }
 
         previewInformationLabel.setText("   " + Messages.getString("FileStep2.previewFailure"));
-        new ErrorDialogWidthDetailArea(getShell(), PID, Messages.getString("FileStep2.previewFailure"), errorMessage);
+        new ErrorDialogWidthDetailArea(previewInformationLabel.getShell(), PID, Messages.getString("FileStep2.previewFailure"),
+                errorMessage);
         log.error(Messages.getString("FileStep2.previewFailure") + " " + errorMessage);
+
     }
 
-
-    
     /**
      * Main Fields addControls.
      */

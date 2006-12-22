@@ -57,7 +57,9 @@ public class AsynchronousPreviewHandler<R> {
      */
     public void launchPreview(final ProcessDescription processDescription, final String type) {
 
-        previewStopped = false;
+        this.result = null;
+        
+        this.previewStopped = false;
 
         Thread thread = new Thread() {
 
