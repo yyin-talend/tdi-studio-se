@@ -74,7 +74,9 @@
 
 	<extension
          point="org.talend.core.service">
-      <Service class="org.talend.designer.runprocess.RunProcessService"/>
+      <Service
+      		serviceId="IRunProcessService" 
+      		class="org.talend.designer.runprocess.RunProcessService"/>
    </extension>
 
 </plugin>

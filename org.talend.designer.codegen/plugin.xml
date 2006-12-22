@@ -27,7 +27,9 @@
    
    <extension
          point="org.talend.core.service">
-      <Service class="org.talend.designer.codegen.CodeGeneratorService"/>
+      <Service 
+      		serviceId="ICodeGeneratorService"
+      		class="org.talend.designer.codegen.CodeGeneratorService"/>
    </extension>
    
 </plugin>

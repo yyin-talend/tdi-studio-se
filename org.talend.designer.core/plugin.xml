@@ -244,6 +244,8 @@
    </extension>
    <extension
          point="org.talend.core.service">
-      <Service class="org.talend.designer.core.DesignerCoreService"/>
+      <Service
+      		serviceId="IDesignerCoreService"
+      		class="org.talend.designer.core.DesignerCoreService"/>
    </extension>
 </plugin>

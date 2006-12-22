@@ -254,7 +254,9 @@
    </extension>
    <extension
          point="org.talend.core.service">
-      <Service class="org.talend.repository.RepositoryService"/>
+      <Service
+      		serviceId="IRepositoryService" 
+      		class="org.talend.repository.RepositoryService"/>
    </extension>
    
    <extension
