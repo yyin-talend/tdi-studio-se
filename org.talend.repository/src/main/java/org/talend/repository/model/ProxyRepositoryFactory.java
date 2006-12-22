@@ -37,6 +37,7 @@ import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.model.general.Project;
+import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.builder.connection.TableHelper;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.FolderItem;
@@ -750,7 +751,16 @@ public class ProxyRepositoryFactory implements IProxyRepositoryFactory {
      * @see org.talend.repository.model.IProxyRepositoryFactory#isEditableAndLockIfPossible(org.talend.core.model.repository.IRepositoryObject)
      */
     public boolean isEditableAndLockIfPossible(IRepositoryObject obj) {
-        return isEditableAndLockIfPossible(getItem(obj));
+        if (obj instanceof MetadataTableRepositoryObject) {
+            MetadataTable table = ((MetadataTableRepositoryObject) obj).getTable();
+            if (TableHelper.isDeleted(table)) {
+                return false;
+            } else {
+                return isEditableAndLockIfPossible(getItem(obj));
+            }
+        } else {
+            return isEditableAndLockIfPossible(getItem(obj));
+        }
     }
 
     /*
