@@ -8,6 +8,8 @@
 		org.talend.designer.codegen.config.CodeGeneratorArgument
                 org.talend.core.model.metadata.MetadataTalendType
 		java.util.List
+		java.util.ArrayList
+                org.talend.commons.utils.StringUtils
 	" 
 	class="DBOutputStart" 
 %>
@@ -29,6 +31,8 @@
                         String perlDbtype   = dbtypes[0];
                         String perlDriver   = dbtypes[1];
                         String talendDbtype = dbtypes[2];
+
+                        String dataAction = ElementParameterParser.getValue(node, "__DATA_ACTION__");
 %>
 
 use DBI;
@@ -44,18 +48,6 @@ my %desc_<%=cid %> = (
     dbuser        => <%=ElementParameterParser.getValue(node, "__USER__") %>,
     dbpass        => <%=ElementParameterParser.getValue(node, "__PASS__") %>,
     encoding      => <%=ElementParameterParser.getValue(node, "__ENCODING__") %>,
-<%
-    if (perlDbtype.equals("mysql")) {
-%>
-    packet_size   => 100, # benchmarks tell 100 is a good compromise between speed and memory usage
-<%
-    }
-    else {
-%>
-    packet_size   => 1,
-<%
-    }
-%>
     schema        => [
     <%
 		for (IMetadataColumn column: metadata.getListColumns()) {
@@ -133,6 +125,15 @@ my $dbh_<%=cid %> = DBI->connect(
     ),
     $desc_<%=cid %>{dbuser},
     $desc_<%=cid %>{dbpass},
+    {
+<%
+    if (dataAction.equals("INSERT_OR_UPDATE")) {
+%>
+        PrintError => 0,
+<%
+    }
+%>
+    }
 )
     or die "can't connect to database";
 
@@ -150,12 +151,13 @@ set names "UTF8"
 
 if ($create) {
     my $schema = '%';
+    my $catalog = '%';
 
     if ($desc_<%=cid %>{driver} eq 'oracle') {
         $schema = uc $desc_<%=cid %>{dbuser};
     }
 
-    my $tabsth = $dbh_<%=cid %>->table_info('%', $schema);
+    my $tabsth = $dbh_<%=cid %>->table_info($catalog, $schema);
     my @tables = ();
 
     while (my($qual, $owner, $table, $type) = $tabsth->fetchrow_array()) {
@@ -223,29 +225,88 @@ DELETE
 }
 
 my @colnames = map { $_->{name} } @{ $desc_<%=cid %>{schema} };
+my $query = '';
 
-my $query_start_<%=cid %> = '
+<%
+if ((dataAction.equals("UPDATE"))
+    || (dataAction.equals("UPDATE_OR_INSERT"))
+    || (dataAction.equals("INSERT_OR_UPDATE"))
+    || (dataAction.equals("DELETE"))) {
+    List updateCols  = new ArrayList();
+    List keyCols     = new ArrayList();
+
+    int i = 0;
+    for (IMetadataColumn column: metadata.getListColumns()) {
+        if (column.isKey()) {
+            keyCols.add(column.getLabel() + " = ?");
+        }
+        i++;
+    }
+
+    i = 0;
+    for (IMetadataColumn column: metadata.getListColumns()) {
+        if (!column.isKey()) {
+            updateCols.add(column.getLabel() + " = ?");
+        }
+        i++;
+    }
+
+    String keyString        = StringUtils.join(keyCols.toArray(),     " AND ");
+    String updateString     = StringUtils.join(updateCols.toArray(),  ", ");
+
+    if ((dataAction.equals("UPDATE"))
+        || (dataAction.equals("UPDATE_OR_INSERT"))
+        || (dataAction.equals("INSERT_OR_UPDATE"))) {
+%>
+
+$query = '
+UPDATE '.$desc_<%=cid %>{dbtable}.'
+  SET <%=updateString%>
+  WHERE <%=keyString%>
+';
+
+my $usth_<%=cid %> = $dbh_<%=cid %>->prepare($query);
+
+<%
+    }
+
+    if (dataAction.equals("DELETE")) {
+%>
+
+$query = '
+DELETE FROM '.$desc_<%=cid %>{dbtable}.'
+  WHERE <%=keyString%>
+';
+
+my $dsth_<%=cid %> = $dbh_<%=cid %>->prepare($query);
+
+<%
+    }
+}
+
+if ((dataAction.equals("INSERT"))
+    || (dataAction.equals("UPDATE_OR_INSERT"))
+    || (dataAction.equals("INSERT_OR_UPDATE"))) {
+%>
+
+$query = '
 INSERT
   INTO '.$desc_<%=cid %>{dbtable}.'
   ('.join(',', @colnames).')
   VALUES
+  ('.join(',', map {'?'} (1 .. scalar @colnames)).')
 ';
 
-my $question_marks_<%=cid %> = sprintf(
-    '(%s)',
-    join(',', map {'?'} @colnames)
-);
+my $isth_<%=cid %> = $dbh_<%=cid %>->prepare($query);
 
-$query = $query_start_<%=cid %>.'
-  '.$question_marks_<%=cid %>.",$question_marks_<%=cid %>"x($desc_<%=cid %>{packet_size}-1).'
-';
+<%
+}
+%>
 
-my $sth_<%=cid %> = $dbh_<%=cid %>->prepare(
-    $query
-);
-
-my $nb_line_<%=cid %> = 0;
-my @lines_<%=cid %> = ();
+my $nb_line_<%=cid%> = 0;
+my $nb_line_updated_<%=cid%>  = 0;
+my $nb_line_inserted_<%=cid%> = 0;
+my $nb_line_deleted_<%=cid%>  = 0;
 
 <%
 		}
