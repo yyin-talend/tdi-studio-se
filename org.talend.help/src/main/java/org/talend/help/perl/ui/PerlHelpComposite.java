@@ -139,6 +139,7 @@ public class PerlHelpComposite extends Composite {
                 searcherReset();
             }
             searcher = funcBtn.getSelection() ? funcSearcher : plainSearcher;
+            viewer.refresh();
         }
     }
 

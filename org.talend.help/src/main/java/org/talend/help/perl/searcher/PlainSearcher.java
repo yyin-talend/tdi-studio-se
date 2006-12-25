@@ -22,6 +22,7 @@
 package org.talend.help.perl.searcher;
 
 import java.io.IOException;
+import java.util.regex.Pattern;
 
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeSelection;
@@ -86,7 +87,7 @@ public class PlainSearcher extends Searcher {
         }
         treeViewer.setExpandedElements(getNodeArray(currentNode));
         treeViewer.setSelection(new StructuredSelection(new Object[] { currentNode }), true);
-        treeViewer.refresh();        
+        treeViewer.refresh();
     }
 
     /**
@@ -178,14 +179,25 @@ public class PlainSearcher extends Searcher {
 
     private static final String TAIL_REGEX = ")+(([^>^<])*)<";
 
-    private static final String HEAD_REPLACE = ">$1<span style=\"background:#ff9000\">";
+    private static final String HEAD_REPLACE = ">$1<span style=\"background:#ff9000\">$3";
 
     private static final String TAIL_REPLACE = "</span>$4<";
 
+    private String defaultStr = "";
+
+    private Pattern pattern;
+
     protected String getHighLightStr(String htmlFileContent, String searchStr) {
-        String regexStr = HEAD_REGEX + searchStr + TAIL_REGEX;
-        String replaceStr = HEAD_REPLACE + searchStr + TAIL_REPLACE;
-        String resultStr = htmlFileContent.replaceAll(regexStr, replaceStr);
+        String regexStr;
+        String replaceStr = HEAD_REPLACE + TAIL_REPLACE;
+        if (!defaultStr.equals(searchStr)) {
+            defaultStr = searchStr;
+            regexStr = HEAD_REGEX + defaultStr + TAIL_REGEX;
+            pattern = Pattern.compile(regexStr, Pattern.CASE_INSENSITIVE);
+        }
+        // String regexStr = HEAD_REGEX + defaultStr + TAIL_REGEX;
+        String resultStr = pattern.matcher(htmlFileContent).replaceAll(replaceStr);
+        // String resultStr2 = htmlFileContent.replaceAll(regexStr, replaceStr);
         return resultStr;
     }
 
