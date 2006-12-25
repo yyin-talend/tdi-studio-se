@@ -56,12 +56,10 @@ public final class ExportJobScriptAction extends AContextualAction {
         boolean canWork = true;
         if (selection.size() == 1) {
             RepositoryNode node = (RepositoryNode) selection.getFirstElement();
-            ERepositoryObjectType nodeType = (ERepositoryObjectType) node.getProperties(EProperties.CONTENT_TYPE);
-
-            if (nodeType != ERepositoryObjectType.PROCESS) {
+            if (node.getObjectType() == ERepositoryObjectType.FOLDER) {
                 canWork = false;
             }
-            if(node.getChildren().size()>0){
+            if (node.getChildren().size() > 0) {
                 canWork = false;
             }
         } else {
