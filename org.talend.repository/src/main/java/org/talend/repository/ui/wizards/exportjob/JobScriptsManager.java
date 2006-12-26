@@ -237,7 +237,7 @@ public class JobScriptsManager {
                 IResource resource = resources[i];
                 if (resource.getFullPath().toOSString().endsWith(name)) {
                     try {
-                        URL url = resource.getLocationURI().toURL();
+                        URL url = resource.getLocation().toFile().toURL();
                         list.add(FileLocator.toFileURL(url));
                         break;
                     } catch (Exception e) {
