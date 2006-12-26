@@ -65,6 +65,8 @@ my %desc_<%=cid %> = (
     }
 %>
 
+$_globals{<%=cid%>}{NB_LINE} = $desc_<%=cid %>{nb_rows};
+
 for (1..$desc_<%=cid %>{nb_rows}) {
 
 <%
