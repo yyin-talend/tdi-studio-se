@@ -92,6 +92,14 @@
     </PARAMETER>
 
     <PARAMETER
+      NAME="INCLUDEHEADER"
+      FIELD="CHECK"
+      NUM_ROW="4"
+    >
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER
       NAME="ENCODING"
       FIELD="TEXT"
       NUM_ROW="5"

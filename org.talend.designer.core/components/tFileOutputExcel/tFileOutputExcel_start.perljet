@@ -31,6 +31,11 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
             node,
             "__SHEETNAME__"
         );
+
+        String includeHeader = ElementParameterParser.getValue(
+            node,
+            "__INCLUDEHEADER__"
+        );
 %>
 
 use FileHandle;
@@ -39,6 +44,7 @@ use Spreadsheet::WriteExcel;
 my %desc_<%=cid %> = (
     filename   => <%=filename%>,
     sheetname  => <%=sheetname %>,
+    include_header => <%=includeHeader %>,
     schema        => [
 <%
         for (IMetadataColumn column: metadata.getListColumns()) {
@@ -63,6 +69,23 @@ my $nb_line_<%=cid %> = 0;
 
 my $workbook_<%=cid%>  = Spreadsheet::WriteExcel->new(<%=filename%>);
 my $worksheet_<%=cid%> = $workbook_<%=cid%>->add_worksheet(<%=sheetname%>);
+
+<%
+        if (includeHeader.equals("true")) {
+%>
+for (1 .. scalar @{ $desc_<%=cid%>{schema} }) {
+    $worksheet_<%=cid %>->write(
+        $nb_line_<%=cid %>,
+        $_ - 1,
+        $desc_<%=cid%>{schema}[$_ - 1]{name}
+    );
+}
+
+$nb_line_<%=cid %>++;
+<%
+        }
+%>
+
 
 <%
     }

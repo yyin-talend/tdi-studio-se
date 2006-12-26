@@ -29,7 +29,20 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         }
 
         String cid = metadata.getTableName();
-        String filename = ElementParameterParser.getValue(node, "__FILENAME__");
+        String filename = ElementParameterParser.getValue(
+            node,
+            "__FILENAME__"
+        );
+
+        String includeHeader = ElementParameterParser.getValue(
+            node,
+            "__INCLUDEHEADER__"
+        );
+
+        String append = ElementParameterParser.getValue(
+            node,
+            "__APPEND__"
+        );
 
         List<Map<String, String>> formats =
             (List<Map<String,String>>)ElementParameterParser.getObjectValue(
@@ -43,7 +56,8 @@ use FileHandle;
 my %desc_<%=cid %> = (
     filename => <%=filename %>,
     encoding => <%=encoding%> || 'UTF-8',
-    append => <%=ElementParameterParser.getValue(node, "__APPEND__") %>,
+    append => <%=append %>,
+    include_header => <%=includeHeader%>,
     schema   => [
 <%
         for (IMetadataColumn column: metadata.getListColumns()) {
@@ -97,6 +111,33 @@ open(
     $desc_<%=cid %>{filename}
 )
     or die 'cannot open file "' . $desc_<%=cid %>{filename} . '"';
+
+<%
+        if (includeHeader.equals("true")) {
+%>
+print {$output_FH_<%=cid %>} (
+<%
+            for (int i = 0; i < formats.size(); i++) {
+                Map<String, String> format = formats.get(i);
+%>
+    formatString(
+        string       => $desc_<%=cid %>{schema}[<%=i%>]{name},
+        size         => <%= format.get("SIZE") %>,
+        padding_char => <%= format.get("PADDING_CHAR") %>,
+        align        => <%= format.get("ALIGN") %>,
+        keep         => <%= format.get("KEEP") %>,
+    ),
+<%
+            }
+%>
+    "\n",
+)
+    or die "can't write to file " . $desc_<%=cid %>{filename} . "\n";
+
+$nb_line_<%=cid %>++;
+<%
+        }
+%>
 
 <%
     }
