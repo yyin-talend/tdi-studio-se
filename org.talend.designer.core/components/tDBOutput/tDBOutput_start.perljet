@@ -151,7 +151,7 @@ set names "UTF8"
 
 if ($create) {
     my $schema = '%';
-    my $catalog = '%';
+    my $catalog = undef;
 
     if ($desc_<%=cid %>{driver} eq 'oracle') {
         $schema = uc $desc_<%=cid %>{dbuser};
