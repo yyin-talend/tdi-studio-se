@@ -18,17 +18,19 @@
 	if ((metadatas!=null)&&(metadatas.size()>0)) {
 		IMetadataTable metadata = metadatas.get(0);
 		if (metadata!=null) {
+                    String cid = metadata.getTableName();
 %>
 
 }
 
-$sth_<%=metadata.getTableName() %>->finish();
-$dbh_<%=metadata.getTableName() %>->disconnect();
+$sth_<%=cid %>->finish();
+$dbh_<%=cid %>->disconnect();
 
+$_globals{<%=cid %>}{NB_LINE} = $nb_line_<%=cid%>;
 <%
     if (stats) {
 %>
-UpdateStat('<%=metadata.getTableName() %>', 0, 2);
+UpdateStat('<%=cid %>', 0, 2);
 <%
     }
 %>
