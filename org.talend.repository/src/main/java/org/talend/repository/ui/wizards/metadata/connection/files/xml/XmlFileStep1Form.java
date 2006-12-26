@@ -24,6 +24,7 @@ package org.talend.repository.ui.wizards.metadata.connection.files.xml;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 
@@ -268,12 +269,14 @@ public class XmlFileStep1Form extends AbstractXmlFileStepForm {
             public void modifyText(final ModifyEvent e) {
                 getConnection().setXmlFilePath(fileFieldXml.getText());
 
+                BufferedReader in = null;
+                
                 try {
                     File file = new File(getConnection().getXmlFilePath());
                     Charset guessedCharset = CharsetToolkit.guessEncoding(file, 4096);
 
                     String str;
-                    BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(getConnection()
+                    in = new BufferedReader(new InputStreamReader(new FileInputStream(getConnection()
                             .getXmlFilePath()), guessedCharset.displayName()));
                     while ((str = in.readLine()) != null) {
                         if (str.contains("encoding")) {
@@ -295,9 +298,13 @@ public class XmlFileStep1Form extends AbstractXmlFileStepForm {
                             }
                         }
                     }
-                    in.close();
                 } catch (Exception ex) {
-
+                } finally {
+                    try {
+                        if (in != null) {
+                            in.close();
+                        }
+                    } catch (Exception ex2) { }
                 }
                 getConnection().setEncoding(encoding);
                 if (encoding != null && !("").equals(encoding)) {

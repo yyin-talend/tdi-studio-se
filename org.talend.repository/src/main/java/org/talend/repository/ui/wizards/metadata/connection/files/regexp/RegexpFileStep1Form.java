@@ -304,7 +304,9 @@ public class RegexpFileStep1Form extends AbstractRegexpFileStepForm {
             } finally {
                 String msgError = Messages.getString("FileStep1.filepath") + " \"" + fileViewerText.getText().replace("\\\\", "\\") + "\"\n";
                 try {
-                    in.close();
+                    if (in != null) {
+                        in.close();
+                    }
                 } catch (IOException e) {
                     msgError = msgError + Messages.getString("FileStep1.fileLocked");
                 }

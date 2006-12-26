@@ -513,7 +513,9 @@ public class FileStep1Form extends AbstractPositionalFileStepForm {
             } finally {
                 String msgError = Messages.getString("FileStep1.filepath") + " \"" + fileField.getText().replace("\\\\", "\\") + "\"\n";
                 try {
-                    in.close();
+                    if (in != null) {
+                        in.close();
+                    }
                 } catch (IOException e) {
                     msgError = msgError + Messages.getString("FileStep1.fileLocked");
                 }
