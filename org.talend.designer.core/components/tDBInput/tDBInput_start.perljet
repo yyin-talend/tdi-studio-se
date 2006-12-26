@@ -97,6 +97,16 @@ set names "UTF8"
     $sth_<%=cid %>->finish();
 }
 
+if ($desc_<%=cid %>{dbtype} eq 'postgresql') {
+    my $encoding = $desc_<%=cid %>{encoding};
+
+    $query = '
+set names \''.$encoding.'\'
+';
+    $sth_<%=cid %> = $dbh_<%=cid %>->prepare($query);
+    $sth_<%=cid %>->execute();
+}
+
 $sth_<%=cid %> = $dbh_<%=cid %>->prepare(
     $desc_<%=cid %>{query}
 );

@@ -149,6 +149,16 @@ set names "UTF8"
     $sth_<%=cid %>->execute();
 }
 
+if ($desc_<%=cid %>{dbtype} eq 'postgresql') {
+    my $encoding = $desc_<%=cid %>{encoding};
+
+    $query = '
+set names \''.$encoding.'\'
+';
+    $sth_<%=cid %> = $dbh_<%=cid %>->prepare($query);
+    $sth_<%=cid %>->execute();
+}
+
 if ($create) {
     my $schema = '%';
     my $catalog = undef;
