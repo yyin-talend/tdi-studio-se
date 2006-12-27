@@ -90,7 +90,7 @@ public class RepositoryChangeQueryCommand extends Command {
             for (IElementParameter param : (List<IElementParameter>) elem.getElementParameters()) {
                 if (param.getField() == EParameterFieldType.MEMO_SQL) {
                     oldValue = elem.getPropertyValue(param.getName());
-                    elem.setPropertyValue(param.getName(), query.getValue());
+                    elem.setPropertyValue(param.getName(), convertSQL(query.getValue()));
                     param.setRepositoryValueUsed(true);
                 }
             }
@@ -136,5 +136,17 @@ public class RepositoryChangeQueryCommand extends Command {
             elem.setPropertyValue(EParameterName.REPOSITORY_QUERYSTORE_TYPE.getName(), oldMetadata);
         }
         refreshPropertyView();
+    }
+    
+    /**
+     * DOC admin Comment method "convertSQL".
+     * @param sql
+     * @return
+     */
+    private String convertSQL(String sql) {
+        if (sql.startsWith("'")) {
+            return sql;
+        }
+        return "'" + sql + "'";
     }
 }
