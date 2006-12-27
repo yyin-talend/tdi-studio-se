@@ -106,8 +106,10 @@ public class JobScriptsExportWizardPage extends WizardFileSystemResourceExportPa
             RepositoryNode node = nodes[i];
             IRepositoryObject repositoryObject = node.getObject();
 
-            ProcessItem process = (ProcessItem) repositoryObject.getProperty().getItem();
-            list.add(process);
+            if (repositoryObject.getProperty().getItem() instanceof ProcessItem) {
+                ProcessItem process = (ProcessItem) repositoryObject.getProperty().getItem();
+                list.add(process);
+            }
         }
 
         process = list.toArray(new ProcessItem[list.size()]);
@@ -343,8 +345,8 @@ public class JobScriptsExportWizardPage extends WizardFileSystemResourceExportPa
         // about to invoke the operation so save our state
         saveWidgetValues();
 
-        boolean ok = executeExportOperation(new ArchiveFileExportOperationFullPath(resourcesToExport,
-                getDestinationValue(), process[0].getProperty().getLabel()));
+        boolean ok = executeExportOperation(new ArchiveFileExportOperationFullPath(resourcesToExport, getDestinationValue(),
+                process[0].getProperty().getLabel()));
         manager.deleteTempFiles();
         return ok;
     }
@@ -363,8 +365,8 @@ public class JobScriptsExportWizardPage extends WizardFileSystemResourceExportPa
         boolean needJob = jobButton.getSelection();
         boolean needContext = contextButton.getSelection();
 
-        return manager.getExportResources(process, needLauncher, needSystemRoutine, needUserRoutine, needModel,
-                needJob, needContext, contextCombo.getText());
+        return manager.getExportResources(process, needLauncher, needSystemRoutine, needUserRoutine, needModel, needJob,
+                needContext, contextCombo.getText());
     }
 
     /**
