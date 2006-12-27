@@ -170,6 +170,7 @@ import org.talend.designer.core.ui.editor.cmd.ChangeValuesFromRepository;
 import org.talend.designer.core.ui.editor.cmd.ExternalNodeChangeCommand;
 import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
 import org.talend.designer.core.ui.editor.cmd.RepositoryChangeMetadataCommand;
+import org.talend.designer.core.ui.editor.cmd.RepositoryChangeQueryCommand;
 import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.connections.ConnectionLabel;
 import org.talend.designer.core.ui.editor.nodecontainer.NodeContainerPart;
@@ -656,24 +657,18 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                                         }
                                     } else if (name.equals(EParameterName.REPOSITORY_QUERYSTORE_TYPE.getName())) {
                                         updateRepositoryList();
-                                        Command cmd = new PropertyChangeCommand((Node) elem, name, value);
-                                        getCommandStack().execute(cmd);
                                         if (elem instanceof Node) {
                                             if (repositoryQueryStoreMap.containsKey(value)) {
                                                 Query query = repositoryQueryStoreMap.get(value);
-
                                                 IElementParameter queryText = getQueryTextElementParameter(elem);
                                                 if (queryText != null) {
-                                                    String sql = convertSQL(query.getValue());
-                                                    cmd = new PropertyChangeCommand((Node) elem, queryText.getName(),
-                                                            sql);
+                                                    Command cmd = new RepositoryChangeQueryCommand(elem, query, name,
+                                                            value);
                                                     getCommandStack().execute(cmd);
                                                 }
                                             }
                                         }
-                                    }
-
-                                    else if (name.equals(EParameterName.REPOSITORY_PROPERTY_TYPE.getName())) {
+                                    } else if (name.equals(EParameterName.REPOSITORY_PROPERTY_TYPE.getName())) {
                                         updateRepositoryList();
                                         if (repositoryConnectionItemMap.containsKey(value)) {
                                             repositoryConnection = (org.talend.core.model.metadata.builder.connection.Connection) repositoryConnectionItemMap
@@ -727,30 +722,23 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                                     } else if (name.equals(EParameterName.QUERYSTORE_TYPE.getName())) {
                                         if (elem instanceof Node) {
                                             updateRepositoryList();
-                                            Command cmd = new PropertyChangeCommand((Node) elem, name, value);
-                                            getCommandStack().execute(cmd);
-//                                            updateRepositoryList();
-                                            IElementParameter queryText = getQueryTextElementParameter(elem);
-                                            String schemaSelected;
-                                            schemaSelected = (String) elem
-                                                    .getPropertyValue(EParameterName.QUERYSTORE_TYPE.getName());
-                                            String sql = "";
-                                            if (EmfComponent.BUILTIN.equals(schemaSelected)) {
-                                                IElementParameterDefaultValue defaultValue = queryText
-                                                        .getDefaultValues().get(0);
-                                                sql = defaultValue.getDefaultValue();
+                                            String querySelected;
+                                            Query repositoryQuery = null;
+                                            querySelected = (String) elem
+                                                    .getPropertyValue(EParameterName.REPOSITORY_QUERYSTORE_TYPE.getName());
+                                            
+                                            if (repositoryQueryStoreMap.containsKey(querySelected)) {
+                                                repositoryQuery = repositoryQueryStoreMap.get(querySelected);
+                                            } 
+                                            if (repositoryQuery != null) {
+                                                Command cmd = new RepositoryChangeQueryCommand(elem, repositoryQuery, name,
+                                                        value);
+                                                getCommandStack().execute(cmd);
                                             } else {
-                                                schemaSelected = (String) elem
-                                                        .getPropertyValue(EParameterName.REPOSITORY_QUERYSTORE_TYPE
-                                                                .getName());
-                                                if (repositoryQueryStoreMap.containsKey(schemaSelected)) {
-                                                    Query query = repositoryQueryStoreMap.get(schemaSelected);
-                                                    sql = query.getValue();
-                                                }
+                                                Command cmd = new PropertyChangeCommand(elem, name, value);
+                                                getCommandStack().execute(cmd);
                                             }
-                                            sql = convertSQL(sql);
-                                            cmd = new PropertyChangeCommand((Node) elem, queryText.getName(), sql);
-                                            getCommandStack().execute(cmd);
+
                                         }
                                     } else {
                                         Command cmd = new PropertyChangeCommand(elem, name, value);

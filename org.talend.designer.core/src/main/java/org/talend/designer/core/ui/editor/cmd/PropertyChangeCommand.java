@@ -91,7 +91,11 @@ public class PropertyChangeCommand extends Command {
         oldElementValues.clear();
 
         if (currentParam.isRepositoryValueUsed()) {
-            elem.setPropertyValue(EParameterName.PROPERTY_TYPE.getName(), EmfComponent.BUILTIN);
+            if (propName.equals("QUERY")) {
+                elem.setPropertyValue(EParameterName.QUERYSTORE_TYPE.getName(), EmfComponent.BUILTIN);
+            } else {
+                elem.setPropertyValue(EParameterName.PROPERTY_TYPE.getName(), EmfComponent.BUILTIN);
+            }
 
             for (IElementParameter param : elem.getElementParameters()) {
                 param.setRepositoryValueUsed(false);
