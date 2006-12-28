@@ -261,6 +261,10 @@ public class SelectorTableForm extends AbstractForm {
                         if (!tableItem.getChecked()) {
                             tableItem.setText(2, Messages.getString("SelectorTableForm.Pending"));
                             refreshTable(tableItem, size);
+                        } else {
+                            updateStatus(IStatus.OK, null);
+                            selectNoneTablesButton.setEnabled(true);
+                            checkConnectionButton.setEnabled(true);
                         }
                         tableItem.setChecked(true);
                     }
