@@ -21,6 +21,7 @@
 // ============================================================================
 package org.talend.repository.model;
 
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -29,12 +30,16 @@ import java.util.Set;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.ecore.util.EcoreUtil;
+import org.talend.commons.utils.VersionUtils;
 import org.talend.core.model.properties.FolderItem;
 import org.talend.core.model.properties.FolderType;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ItemState;
 import org.talend.core.model.properties.Project;
 import org.talend.core.model.properties.PropertiesFactory;
+import org.talend.core.model.properties.Property;
+import org.talend.core.model.properties.User;
 
 /**
  * This helper class contains a set of methods to perform basic operations on FolderItem objects.
@@ -47,14 +52,16 @@ import org.talend.core.model.properties.PropertiesFactory;
 public abstract class FolderHelper {
 
     protected Project project;
+    private User connectedUser;
 
     /**
      * DOC tguiu FolderHelper constructor comment.
      * 
      * @param project
      */
-    protected FolderHelper(Project project) {
+    protected FolderHelper(Project project, User connectedUser) {
         this.project = project;
+        this.connectedUser = connectedUser;
     }
 
     public void createSystemFolder(IPath path) {
@@ -80,7 +87,21 @@ public abstract class FolderHelper {
             String segment = path.segment(i);
             FolderItem child = findChildFolder(folder, segment);
             if (child == null) {
-                child = doCreateFolder(segment, type);
+                child = PropertiesFactory.eINSTANCE.createFolderItem();
+                child.setType(type);
+
+                Property property = PropertiesFactory.eINSTANCE.createProperty();
+                property.setId(EcoreUtil.generateUUID());
+                property.setLabel(segment);
+                property.setVersion(VersionUtils.DEFAULT_VERSION);
+                property.setCreationDate(new Date());
+                property.setAuthor(connectedUser);
+
+                child.setProperty(property);
+
+                createItemState(child);
+                doCreateFolder(child);
+                
                 if (folder == null) {
                     project.getFolders().add(child);
                 } else {
@@ -91,7 +112,7 @@ public abstract class FolderHelper {
         }
     }
 
-    protected abstract FolderItem doCreateFolder(String name, FolderType type);
+    protected abstract void doCreateFolder(FolderItem folderItem);
 
     public void deleteFolder(String completePath) {
         deleteFolder(new Path(completePath));
