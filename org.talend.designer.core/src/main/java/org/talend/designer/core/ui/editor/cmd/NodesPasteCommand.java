@@ -33,6 +33,7 @@ import org.eclipse.gef.commands.Command;
 import org.eclipse.ui.PlatformUI;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.process.EConnectionType;
+import org.talend.core.model.process.EParameterFieldType;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.ElementParameter;
 import org.talend.designer.core.ui.MultiPageTalendEditor;
@@ -110,8 +111,7 @@ public class NodesPasteCommand extends Command {
         // create the nodes
         for (NodePart copiedNodePart : nodeParts) {
             Node copiedNode = (Node) copiedNodePart.getModel();
-            Node pastedNode = new Node(ComponentsFactoryProvider.getInstance().get(copiedNode.getComponent().getName()),
-                    process);
+            Node pastedNode = new Node(ComponentsFactoryProvider.getInstance().get(copiedNode.getComponent().getName()), process);
 
             Point location = copiedNode.getLocation();
             if (process.isGridEnabled()) {
@@ -137,7 +137,18 @@ public class NodesPasteCommand extends Command {
 
             for (ElementParameter param : (List<ElementParameter>) copiedNode.getElementParameters()) {
                 if (!EParameterName.UNIQUE_NAME.getName().equals(param.getName())) {
-                    pastedNode.getElementParameter(param.getName()).setValue(param.getValue());
+                    if (param.getField() == EParameterFieldType.TABLE) {
+                        List<Map<String, Object>> tableValues = (List<Map<String, Object>>) param.getValue();
+                        ArrayList newValues = new ArrayList();
+                        for (Map<String, Object> map : tableValues) {
+                            Map<String, Object> newMap = new HashMap<String, Object>();
+                            newMap.putAll(map);
+                            newValues.add(newMap);
+                        }
+                        pastedNode.getElementParameter(param.getName()).setValue(newValues);
+                    } else {
+                        pastedNode.getElementParameter(param.getName()).setValue(param.getValue());
+                    }
                 }
             }
             nodeContainerList.add(new NodeContainer(pastedNode));
@@ -191,13 +202,12 @@ public class NodesPasteCommand extends Command {
                         pastedSourceNode.getMetadataList().add(newMetaTable);
 
                     }
-                    Connection pastedConnection = new Connection(pastedSourceNode, pastedTargetNode, connection
-                            .getLineStyle(), metaTableName, newConnectionName);
+                    Connection pastedConnection = new Connection(pastedSourceNode, pastedTargetNode, connection.getLineStyle(),
+                            metaTableName, newConnectionName);
                     for (ElementParameter param : (List<ElementParameter>) connection.getElementParameters()) {
                         pastedConnection.getElementParameter(param.getName()).setValue(param.getValue());
                     }
-                    pastedConnection.getConnectionLabel().setOffset(
-                            new Point(connection.getConnectionLabel().getOffset()));
+                    pastedConnection.getConnectionLabel().setOffset(new Point(connection.getConnectionLabel().getOffset()));
                 }
             }
         }

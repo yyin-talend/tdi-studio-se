@@ -24,8 +24,8 @@ package org.talend.sqlbuilder.repository.utility;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -94,7 +94,6 @@ public class SQLBuilderRepositoryNodeManager {
 
     private static String currentNodeLabel = "";
 
-    // public static boolean isAction = false;
     /**
      * Getter for oldMetaData.
      * 
@@ -417,31 +416,15 @@ public class SQLBuilderRepositoryNodeManager {
                 norTables.add(object);
             }
         }
-        MetadataTable[] norTablesArray = new MetadataTable[norTables.size()];
-        norTablesArray = norTables.toArray(norTablesArray);
-        MetadataTable[] sysTablesArray = new MetadataTable[sysTables.size()];
-        sysTablesArray = sysTables.toArray(sysTablesArray);
-        MetadataTable[] divTablesArray = new MetadataTable[divTables.size()];
-        divTablesArray = divTables.toArray(divTablesArray);
-        MetadataTable[] grayTablesArray = new MetadataTable[grayTables.size()];
-        grayTablesArray = grayTables.toArray(grayTablesArray);
         MetadataTableComparator metadataTableComparator = new MetadataTableComparator();
-        Arrays.sort(norTablesArray, metadataTableComparator);
-        Arrays.sort(sysTablesArray, metadataTableComparator);
-        Arrays.sort(divTablesArray, metadataTableComparator);
-        Arrays.sort(grayTablesArray, metadataTableComparator);
-        for (MetadataTable table : norTablesArray) {
-            sortTables.add(table);
-        }
-        for (MetadataTable table : sysTablesArray) {
-            sortTables.add(table);
-        }
-        for (MetadataTable table : divTablesArray) {
-            sortTables.add(table);
-        }
-        for (MetadataTable table : grayTablesArray) {
-            sortTables.add(table);
-        }
+        Collections.sort(norTables, metadataTableComparator);
+        Collections.sort(sysTables, metadataTableComparator);
+        Collections.sort(divTables, metadataTableComparator);
+        Collections.sort(grayTables, metadataTableComparator);
+        sortTables.addAll(norTables);
+        sortTables.addAll(sysTables);
+        sortTables.addAll(divTables);
+        sortTables.addAll(grayTables);
         return sortTables;
     }
 
@@ -472,31 +455,15 @@ public class SQLBuilderRepositoryNodeManager {
             }
             norColumns.add(column);
         }
-        MetadataColumn[] norColumnsArray = new MetadataColumn[norColumns.size()];
-        norColumnsArray = norColumns.toArray(norColumnsArray);
-        MetadataColumn[] sysColumnsArray = new MetadataColumn[sysColumns.size()];
-        sysColumnsArray = sysColumns.toArray(sysColumnsArray);
-        MetadataColumn[] divColumnsArray = new MetadataColumn[divColumns.size()];
-        divColumnsArray = divColumns.toArray(divColumnsArray);
-        MetadataColumn[] grayColumnsArray = new MetadataColumn[grayColumns.size()];
-        grayColumnsArray = grayColumns.toArray(grayColumnsArray);
         MetadataColumnComparator metadataColumnComparator = new MetadataColumnComparator();
-        Arrays.sort(norColumnsArray, metadataColumnComparator);
-        Arrays.sort(sysColumnsArray, metadataColumnComparator);
-        Arrays.sort(divColumnsArray, metadataColumnComparator);
-        Arrays.sort(grayColumnsArray, metadataColumnComparator);
-        for (MetadataColumn column : norColumnsArray) {
-            sortColumns.add(column);
-        }
-        for (MetadataColumn column : sysColumnsArray) {
-            sortColumns.add(column);
-        }
-        for (MetadataColumn column : divColumnsArray) {
-            sortColumns.add(column);
-        }
-        for (MetadataColumn column : grayColumnsArray) {
-            sortColumns.add(column);
-        }
+        Collections.sort(norColumns, metadataColumnComparator);
+        Collections.sort(sysColumns, metadataColumnComparator);
+        Collections.sort(divColumns, metadataColumnComparator);
+        Collections.sort(grayColumns, metadataColumnComparator);
+        sortColumns.addAll(norColumns);
+        sortColumns.addAll(sysColumns);
+        sortColumns.addAll(divColumns);
+        sortColumns.addAll(grayColumns);
         return sortColumns;
     }
 
@@ -695,11 +662,14 @@ public class SQLBuilderRepositoryNodeManager {
      */
     @SuppressWarnings("unchecked")
     public RepositoryNode getRepositoryNodeByBuildIn(RepositoryNode node, ConnectionParameters parameters) {
-        if (parameters.getSchema().equals("\'\'")) {
+        boolean isNeedSchema = !parameters.getDbType().equals("MySQL")
+        && !parameters.getDbType().equals("Generic ODBC")
+        && !parameters.getDbType().equals("Microsoft SQL Server (Odbc driver)");
+        if (parameters.getSchema().equals("\'\'") && isNeedSchema) {
             parameters.setConnectionComment("Please Input Schema !");
             return null;
         }
-        DatabaseConnection connection = createConnection(parameters);
+        DatabaseConnection connection = createConnection(parameters, isNeedSchema);
         IMetadataConnection iMetadataConnection = ConvertionHelper.convert(connection);
 
         RepositoryNode newNode = createNewRepositoryNode(node, parameters, connection, iMetadataConnection);
@@ -793,7 +763,7 @@ public class SQLBuilderRepositoryNodeManager {
      * @param parameters inputed when use Built-In .
      * @return DatabaseConnection : connetion .
      */
-    public DatabaseConnection createConnection(ConnectionParameters parameters) {
+    public DatabaseConnection createConnection(ConnectionParameters parameters , boolean isSchemaNeed) {
         DatabaseConnection connection = ConnectionFactory.eINSTANCE.createDatabaseConnection();
         connection.setDatabaseType(parameters.getDbType());
         connection.setUsername(parameters.getUserName());
@@ -802,7 +772,7 @@ public class SQLBuilderRepositoryNodeManager {
         connection.setSID(parameters.getDbName());
         connection.setLabel(parameters.getDbName());
         connection.setDatasourceName(parameters.getDatasource());
-        if (parameters.getSchema() != null) {
+        if (parameters.getSchema() != null && isSchemaNeed) {
             connection.setSchema(parameters.getSchema().replaceAll("\'", ""));
         }
         connection.setURL(parameters.getURL());
@@ -1032,11 +1002,6 @@ public class SQLBuilderRepositoryNodeManager {
             if (db.getSourceName().equals(emf.getSourceName())) {
                 flag = false;
                 break;
-                // if (!emf.getLabel().equals("")
-                // && !emf.getLabel().equals(
-                // db.getSourceName().replaceAll("_", "-"))) {
-                // emf.setDivergency(true);
-                // }
             }
         }
         if (flag) {
@@ -1117,11 +1082,6 @@ public class SQLBuilderRepositoryNodeManager {
         for (MetadataColumn emf : cloumnsFromEMF) {
             if (db.getOriginalField().equals(emf.getOriginalField())) {
                 flag = false;
-                // if (emf.getLabel().length() != 0) {
-                // boolean is = !isEquivalent(db, emf);
-                // emf.setDivergency(is);
-                // emf.setSynchronised(is);
-                // }
                 break;
             }
         }
@@ -1152,7 +1112,6 @@ public class SQLBuilderRepositoryNodeManager {
                     emf.setDivergency(is);
                     emf.setSynchronised(is);
                 }
-                // break;
             }
         }
         if (flag) {
@@ -1232,6 +1191,7 @@ public class SQLBuilderRepositoryNodeManager {
      */
     public static RepositoryNode getRoot(RepositoryNode repositoryNode) {
         if (getRepositoryType(repositoryNode) == RepositoryNodeType.FOLDER) {
+//            return null;
             throw new RuntimeException("RepositoryNode with folder info should not call this.");
         }
 
@@ -1305,11 +1265,6 @@ public class SQLBuilderRepositoryNodeManager {
  */
 class MetadataTableComparator implements Comparator<MetadataTable> {
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
-     */
     public int compare(MetadataTable o1, MetadataTable o2) {
         if (o1.getSourceName() == null || "".equals(o1.getSourceName()) || " ".equals(o1.getSourceName())
                 || o2.getSourceName() == null) {

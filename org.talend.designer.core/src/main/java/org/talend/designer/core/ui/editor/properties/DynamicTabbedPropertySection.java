@@ -755,13 +755,6 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
 
     };
 
-    private String convertSQL(String sql) {
-        if(sql.startsWith("'")){
-            return sql;
-        }
-        return "'" + sql + "'";
-    }
-
     private IElementParameter getQueryTextElementParameter(Element elem) {
         for (IElementParameter param : (List<IElementParameter>) elem.getElementParameters()) {
             if (param.getField() == EParameterFieldType.MEMO_SQL) {

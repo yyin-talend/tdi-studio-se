@@ -91,7 +91,7 @@ public class PropertyChangeCommand extends Command {
         oldElementValues.clear();
 
         if (currentParam.isRepositoryValueUsed()) {
-            if (propName.equals("QUERY")) {
+            if (currentParam.getField() == EParameterFieldType.MEMO_SQL) {
                 elem.setPropertyValue(EParameterName.QUERYSTORE_TYPE.getName(), EmfComponent.BUILTIN);
             } else {
                 elem.setPropertyValue(EParameterName.PROPERTY_TYPE.getName(), EmfComponent.BUILTIN);
@@ -171,7 +171,12 @@ public class PropertyChangeCommand extends Command {
     @Override
     public void undo() {
         if (repositoryValueWasUsed) {
-            elem.setPropertyValue(EParameterName.PROPERTY_TYPE.getName(), EmfComponent.REPOSITORY);
+            IElementParameter currentParam = elem.getElementParameter(propName);
+            if (currentParam.getField() == EParameterFieldType.MEMO_SQL) {
+                elem.setPropertyValue(EParameterName.QUERYSTORE_TYPE.getName(), EmfComponent.REPOSITORY);
+            } else {
+                elem.setPropertyValue(EParameterName.PROPERTY_TYPE.getName(), EmfComponent.REPOSITORY);
+            }
             for (IElementParameter param : elem.getElementParameters()) {
                 String repositoryValue = param.getRepositoryValue();
                 if (param.isShow(elem.getElementParameters()) && (repositoryValue != null)) {
@@ -196,8 +201,13 @@ public class PropertyChangeCommand extends Command {
 
     @Override
     public void redo() {
+        IElementParameter currentParam = elem.getElementParameter(propName);
         if (repositoryValueWasUsed) {
-            elem.setPropertyValue(EParameterName.PROPERTY_TYPE.getName(), EmfComponent.BUILTIN);
+            if (currentParam.getField() == EParameterFieldType.MEMO_SQL) {
+                elem.setPropertyValue(EParameterName.QUERYSTORE_TYPE.getName(), EmfComponent.BUILTIN);
+            } else {
+                elem.setPropertyValue(EParameterName.PROPERTY_TYPE.getName(), EmfComponent.BUILTIN);
+            }
 
             for (IElementParameter param : elem.getElementParameters()) {
                 param.setRepositoryValueUsed(false);
@@ -206,7 +216,6 @@ public class PropertyChangeCommand extends Command {
 
         elem.setPropertyValue(propName, newValue);
 
-        IElementParameter currentParam = elem.getElementParameter(propName);
         if (currentParam.getField().equals(EParameterFieldType.CLOSED_LIST)) {
             for (int i = 0; i < elem.getElementParameters().size(); i++) {
                 IElementParameter param = elem.getElementParameters().get(i);
