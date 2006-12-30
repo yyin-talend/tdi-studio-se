@@ -23,7 +23,6 @@ package org.talend.repository.ui.wizards.exportjob;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URL;
 import java.util.ArrayList;
@@ -81,7 +80,7 @@ public class JobScriptsManager {
 
         List<URL> resources = new ArrayList<URL>();
 
-        resources.addAll(getLauncher(needLauncher, process, contextName));
+        resources.addAll(getLauncher(needLauncher, process, escapeSpace(contextName)));
 
         resources.addAll(getSystemRoutine(needSystemRoutine));
         resources.addAll(getUserRoutine(needUserRoutine));
@@ -125,7 +124,7 @@ public class JobScriptsManager {
             return list;
         }
 
-        String cmd = getCommandByTalendJob(getCurrentProjectName(), process[0].getProperty().getLabel(), contextName);
+        String cmd = getCommandByTalendJob(getCurrentProjectName(), escapeFileNameSpace(process[0]), contextName);
 
         String tmpFold = getTmpFolder();
         PrintWriter pw = null;
@@ -157,7 +156,7 @@ public class JobScriptsManager {
     }
 
     // FIXME to reuse the exstentent code of this implementation
-    public String getCommandByTalendJob(String project, String jobName, String context) {
+    private String getCommandByTalendJob(String project, String jobName, String context) {
         String contextArg = "--context=";
 
         String projectSeparator = ".process";
@@ -363,8 +362,7 @@ public class JobScriptsManager {
             try {
 
                 for (int i = 0; i < process.length; i++) {
-                    ProcessItem object = process[i];
-                    String name = object.getProperty().getLabel();
+                    String name = escapeFileNameSpace(process[i]);
                     name = projectName + ".process_" + name + ".pl";
                     list.add(name);
                 }
@@ -390,10 +388,12 @@ public class JobScriptsManager {
         List<String> list = new ArrayList<String>();
         if (needContext) {
             List<String> contexts = getJobContexts(process[0]);
-            String processName = process[0].getProperty().getLabel();
+            // String processName = process[0].getProperty().getLabel();
+            String processName = escapeFileNameSpace(process[0]);
             String projectName = getCurrentProjectName();
             for (Iterator<String> iter = contexts.iterator(); iter.hasNext();) {
                 String contextName = iter.next();
+                contextName = escapeSpace(contextName);
                 String contextFullName = projectName + ".process_" + processName + "_" + contextName + ".pl";
                 list.add(contextFullName);
             }
@@ -420,9 +420,30 @@ public class JobScriptsManager {
             if (contextNameList.contains(context.getName())) {
                 continue;
             }
-            contextNameList.add(context.getName());
+            contextNameList.add(escapeSpace(context.getName()));
         }
 
         return contextNameList;
+    }
+
+    /**
+     * DOC ftang Comment method "escapeFileNameSpace".
+     * 
+     * @param processItem
+     * @return
+     */
+    private String escapeFileNameSpace(ProcessItem processItem) {
+        String jobName = processItem.getProperty().getLabel();
+        return escapeSpace(jobName);
+    }
+
+    /**
+     * DOC ftang Comment method "escapeSpace".
+     * @param name
+     * @return
+     */
+    private String escapeSpace(String name) {
+        return name != null ? name.replace(" ", "") : "";
+
     }
 }
