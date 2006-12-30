@@ -25,6 +25,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
+import org.talend.commons.exception.ExceptionHandler;
 
 /**
  * The activator class controls the plug-in life cycle.
@@ -73,7 +74,6 @@ public class SqlBuilderPlugin extends AbstractUIPlugin {
     }
 
     public static void log(String msg, Throwable e) {
-        IStatus status = new Status(IStatus.ERROR, PLUGIN_ID, IStatus.ERROR, msg, e);
-        getDefault().getLog().log(status);
+        ExceptionHandler.process(e);
     }
 }

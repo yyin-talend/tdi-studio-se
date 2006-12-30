@@ -26,6 +26,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
+import org.talend.commons.exception.ExceptionHandler;
 
 /**
  * The activator class controls the plug-in life cycle.
@@ -85,10 +86,10 @@ public class SchedulerPlugin extends AbstractUIPlugin {
 
     /**
      * Log the exception.
+     * 
      * @param e Exception
      */
     public static void log(Exception e) {
-        IStatus status = new Status(IStatus.ERROR, PLUGIN_ID, IStatus.ERROR, "Exception happened", e);
-        getDefault().getLog().log(status);
+        ExceptionHandler.process(e);
     }
 }
