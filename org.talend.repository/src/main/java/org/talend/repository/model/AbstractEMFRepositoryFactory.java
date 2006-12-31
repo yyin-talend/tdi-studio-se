@@ -182,7 +182,7 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
             return !folderHelper.pathExists((FolderItem) item, name);
         }
 
-        ERepositoryObjectType type = getItemType(item);
+        ERepositoryObjectType type = ERepositoryObjectType.getItemType(item);
 
         if (type == ERepositoryObjectType.METADATA_CON_TABLE) {
             return false;
@@ -197,58 +197,7 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
         return true;
     }
 
-    ERepositoryObjectType getItemType(Item item) {
-        return (ERepositoryObjectType) new PropertiesSwitch() {
-
-            public Object caseDocumentationItem(DocumentationItem object) {
-                return ERepositoryObjectType.DOCUMENTATION;
-            }
-
-            public Object caseRoutineItem(RoutineItem object) {
-                return ERepositoryObjectType.ROUTINES;
-            }
-
-            public Object caseProcessItem(ProcessItem object) {
-                return ERepositoryObjectType.PROCESS;
-            }
-
-            public Object caseBusinessProcessItem(BusinessProcessItem object) {
-                return ERepositoryObjectType.BUSINESS_PROCESS;
-            }
-
-            public Object caseCSVFileConnectionItem(CSVFileConnectionItem object) {
-                throw new IllegalStateException("not implemented");
-            }
-
-            public Object caseDatabaseConnectionItem(DatabaseConnectionItem object) {
-                return ERepositoryObjectType.METADATA_CONNECTIONS;
-            }
-
-            public Object caseDelimitedFileConnectionItem(DelimitedFileConnectionItem object) {
-                return ERepositoryObjectType.METADATA_FILE_DELIMITED;
-            }
-
-            public Object casePositionalFileConnectionItem(PositionalFileConnectionItem object) {
-                return ERepositoryObjectType.METADATA_FILE_POSITIONAL;
-            }
-
-            public Object caseRegExFileConnectionItem(RegExFileConnectionItem object) {
-                return ERepositoryObjectType.METADATA_FILE_REGEXP;
-            }
-
-            public Object caseXmlFileConnectionItem(XmlFileConnectionItem object) {
-                return ERepositoryObjectType.METADATA_FILE_XML;
-            }
-
-            public Object caseLdifFileConnectionItem(LdifFileConnectionItem object) {
-                return ERepositoryObjectType.METADATA_FILE_LDIF;
-            }
-
-            public Object defaultCase(EObject object) {
-                throw new IllegalStateException();
-            }
-        }.doSwitch(item);
-    }
+    
 
     protected abstract List<IRepositoryObject> getSerializableFromFolder(Object folder, String id, ERepositoryObjectType type,
             boolean allVersion, boolean searchInChildren) throws PersistenceException;

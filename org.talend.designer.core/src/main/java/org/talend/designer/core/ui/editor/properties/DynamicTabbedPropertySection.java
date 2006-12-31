@@ -532,14 +532,13 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                         // System.out.println(param.toString());
                         if (param.getName().equals(EParameterName.REPOSITORY_PROPERTY_TYPE.getName())) {
                             String value = (String) param.getValue();
-                            String[] valuesList = (String[]) param.getListItemsValue();
-                            String[] displayList = param.getListItemsDisplayName();
-                            for (int i = 0; i < valuesList.length; i++) {
-                                if (valuesList[i].equals(value)) {
 
-                                    repositoryName = displayList[i];
+                            for (String key : repositoryConnectionItemMap.keySet()) {
+                                if (key.equals(value)) {
+                                    repositoryName = repositoryConnectionItemMap.get(key).getProperty().getLabel();
                                 }
                             }
+
                         }
                     }
 
@@ -1096,7 +1095,8 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
         String[] repositoryTableValueList = new String[] {};
         String[] repositoryConnectionNameList = new String[] {};
         String[] repositoryConnectionValueList = new String[] {};
-        String[] repositoryQueryStoreList = new String[] {};
+        String[] repositoryQueryNameList = new String[] {};
+        String[] repositoryQueryValueList = new String[] {};
 
         try {
             metadataConnectionsItem = factory.getMetadataConnectionsItem();
@@ -1109,17 +1109,20 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
             repositoryConnectionItemMap.clear();
             List<String> tableNamesList = new ArrayList<String>();
             List<String> tableValuesList = new ArrayList<String>();
+            List<String> queryStoreNameList = new ArrayList<String>();
             List<String> queryStoreValuesList = new ArrayList<String>();
 
             for (ConnectionItem connectionItem : metadataConnectionsItem) {
                 org.talend.core.model.metadata.builder.connection.Connection connection = (org.talend.core.model.metadata.builder.connection.Connection) connectionItem
                         .getConnection();
+                ERepositoryObjectType repositoryObjectType = ERepositoryObjectType.getItemType(connectionItem);
                 if (!connection.isReadOnly()) {
                     repositoryConnectionItemMap.put(connectionItem.getProperty().getId() + "", connectionItem);
                     for (Object tableObj : connection.getTables()) {
                         org.talend.core.model.metadata.builder.connection.MetadataTable table;
                         table = (org.talend.core.model.metadata.builder.connection.MetadataTable) tableObj;
-                        String name = connectionItem.getProperty().getLabel() + " - " + table.getLabel();
+                        String name = repositoryObjectType.getAlias() + ":" + connectionItem.getProperty().getLabel()
+                                + " - " + table.getLabel();
                         String value = connectionItem.getProperty().getId() + " - " + table.getLabel();
                         repositoryTableMap.put(value, ConvertionHelper.convert(table));
                         tableNamesList.add(name);
@@ -1134,8 +1137,11 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                         QueriesConnection connection2 = qcs.get(0);
                         List<Query> qs = connection2.getQuery();
                         for (Query query : qs) {
-                            String value = connectionItem.getProperty().getLabel() + " - " + query.getLabel();
+                            String name = repositoryObjectType.getAlias() + ":"
+                                    + connectionItem.getProperty().getLabel() + " - " + query.getLabel();
+                            String value = connectionItem.getProperty().getId() + " - " + query.getLabel();
                             repositoryQueryStoreMap.put(value, query);
+                            queryStoreNameList.add(name);
                             queryStoreValuesList.add(value);
                         }
                     }
@@ -1154,7 +1160,8 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
             }
             repositoryTableNameList = (String[]) tableNamesList.toArray(new String[0]);
             repositoryTableValueList = (String[]) tableValuesList.toArray(new String[0]);
-            repositoryQueryStoreList = (String[]) queryStoreValuesList.toArray(new String[0]);
+            repositoryQueryNameList = (String[]) queryStoreNameList.toArray(new String[0]);
+            repositoryQueryValueList = (String[]) queryStoreValuesList.toArray(new String[0]);
         }
 
         for (int i = 0; i < elem.getElementParameters().size(); i++) {
@@ -1173,12 +1180,12 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
 
             if (param.getName().equals(EParameterName.REPOSITORY_QUERYSTORE_TYPE.getName())) {
 
-                param.setListItemsDisplayName(repositoryQueryStoreList);
-                param.setListItemsValue(repositoryQueryStoreList);
+                param.setListItemsDisplayName(repositoryQueryNameList);
+                param.setListItemsValue(repositoryQueryValueList);
                 if (!repositoryQueryStoreMap.keySet().contains(param.getValue())) {
-                    if (repositoryQueryStoreList.length > 0) {
+                    if (repositoryQueryNameList.length > 0) {
                         elem.setPropertyValue(EParameterName.REPOSITORY_QUERYSTORE_TYPE.getName(),
-                                repositoryQueryStoreList[0]);
+                                repositoryQueryValueList[0]);
                     }
                 }
             }
@@ -1194,25 +1201,27 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                         ConnectionItem connectionItem = repositoryConnectionItemMap.get(key);
                         org.talend.core.model.metadata.builder.connection.Connection connection = (org.talend.core.model.metadata.builder.connection.Connection) connectionItem
                                 .getConnection();
+                        ERepositoryObjectType repositoryObjectType = ERepositoryObjectType.getItemType(connectionItem);
+                        String name = repositoryObjectType.getAlias() + ":" + connectionItem.getProperty().getLabel();
                         if ((connection instanceof DelimitedFileConnection) && (repositoryValue.equals("DELIMITED"))) {
-                            connectionNamesList.add(connectionItem.getProperty().getLabel());
+                            connectionNamesList.add(name);
                             connectionValuesList.add(key);
                         }
                         if ((connection instanceof PositionalFileConnection) && (repositoryValue.equals("POSITIONAL"))) {
-                            connectionNamesList.add(connectionItem.getProperty().getLabel());
+                            connectionNamesList.add(name);
                             connectionValuesList.add(key);
                         }
                         if ((connection instanceof RegexpFileConnection) && (repositoryValue.equals("REGEX"))) {
-                            connectionNamesList.add(connectionItem.getProperty().getLabel());
+                            connectionNamesList.add(name);
                             connectionValuesList.add(key);
                         }
                         if ((connection instanceof XmlFileConnection) && (repositoryValue.equals("XML"))) {
-                            connectionNamesList.add(connectionItem.getProperty().getLabel());
+                            connectionNamesList.add(name);
                             connectionValuesList.add(key);
                         }
 
                         if ((connection instanceof DatabaseConnection) && (repositoryValue.equals("DATABASE"))) {
-                            connectionNamesList.add(connectionItem.getProperty().getLabel());
+                            connectionNamesList.add(name);
                             connectionValuesList.add(key);
                         }
 
