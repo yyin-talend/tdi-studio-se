@@ -42,14 +42,13 @@ import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.model.general.Project;
-import org.talend.core.model.process.IContext;
-import org.talend.core.model.process.IContextManager;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.RoutineItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.designer.codegen.perlmodule.IPerlModuleService;
+import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
 import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.model.ProxyRepositoryFactory;
 
@@ -272,7 +271,7 @@ public class JobScriptsManager {
     }
 
     /**
-     * DOC qian Gets routine names
+     * DOC qian Gets routine names.
      * 
      * @param list
      * @param isBuildin
@@ -412,17 +411,15 @@ public class JobScriptsManager {
      */
     public List<String> getJobContexts(ProcessItem processItem) {
         List<String> contextNameList = new ArrayList<String>();
-        // FIXME Separates this from the designer.core
-        // IContextManager c = ContextManager.getContextManagerFromXmlProcess(processItem);
-        IContextManager c = RepositoryPlugin.getDefault().getDesignerCoreService().getContextManagerFromXmlProcess(
-                processItem);
-        for (IContext context : c.getListContext()) {
-            if (contextNameList.contains(context.getName())) {
-                continue;
+        for (Object o : processItem.getProcess().getContext()) {
+            if (o instanceof ContextType) {
+                ContextType context = (ContextType) o;
+                if (contextNameList.contains(context.getName())) {
+                    continue;
+                }
+                contextNameList.add(context.getName());
             }
-            contextNameList.add(escapeSpace(context.getName()));
         }
-
         return contextNameList;
     }
 
@@ -439,6 +436,7 @@ public class JobScriptsManager {
 
     /**
      * DOC ftang Comment method "escapeSpace".
+     * 
      * @param name
      * @return
      */

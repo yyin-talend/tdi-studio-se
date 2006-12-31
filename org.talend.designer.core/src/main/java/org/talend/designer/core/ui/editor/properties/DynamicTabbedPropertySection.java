@@ -162,6 +162,7 @@ import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.model.components.ExternalUtilities;
 import org.talend.designer.core.model.context.ContextManager;
+import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
 import org.talend.designer.core.ui.MultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.TalendEditor;
 import org.talend.designer.core.ui.editor.cmd.ChangeActivateStatusNodeCommand;
@@ -725,14 +726,15 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                                             String querySelected;
                                             Query repositoryQuery = null;
                                             querySelected = (String) elem
-                                                    .getPropertyValue(EParameterName.REPOSITORY_QUERYSTORE_TYPE.getName());
-                                            
+                                                    .getPropertyValue(EParameterName.REPOSITORY_QUERYSTORE_TYPE
+                                                            .getName());
+
                                             if (repositoryQueryStoreMap.containsKey(querySelected)) {
                                                 repositoryQuery = repositoryQueryStoreMap.get(querySelected);
-                                            } 
+                                            }
                                             if (repositoryQuery != null) {
-                                                Command cmd = new RepositoryChangeQueryCommand(elem, repositoryQuery, name,
-                                                        value);
+                                                Command cmd = new RepositoryChangeQueryCommand(elem, repositoryQuery,
+                                                        name, value);
                                                 getCommandStack().execute(cmd);
                                             } else {
                                                 Command cmd = new PropertyChangeCommand(elem, name, value);
@@ -974,8 +976,8 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                         List<Map<String, Object>> table = (List<Map<String, Object>>) elem.getPropertyValue(param
                                 .getName());
                         IMetadataTable metaTable = ((Node) elem).getMetadataList().get(0);
-                        RepositoryToComponentProperty.getTableXmlFileValue(repositoryConnectionItemMap.get(connectionSelected)
-                                .getConnection(), "XML_MAPPING", param, table, metaTable);
+                        RepositoryToComponentProperty.getTableXmlFileValue(repositoryConnectionItemMap.get(
+                                connectionSelected).getConnection(), "XML_MAPPING", param, table, metaTable);
                     }
                 }
 
@@ -1054,10 +1056,13 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                 if (selectedProcess.equals(id)) {
                     if (process.getProperty().getItem() instanceof ProcessItem) {
                         ProcessItem processItem = (ProcessItem) process.getProperty().getItem();
-                        IContextManager contextManager = ContextManager.getContextManagerFromXmlProcess(processItem);
-                        for (IContext context : contextManager.getListContext()) {
-                            contextNameList.add(context.getName());
-                            contextValueList.add("'" + context.getName() + "'");
+
+                        for (Object o : processItem.getProcess().getContext()) {
+                            if (o instanceof ContextType) {
+                                ContextType context = (ContextType) o;
+                                contextNameList.add(context.getName());
+                                contextValueList.add("'" + context.getName() + "'");
+                            }
                         }
                     }
                 }

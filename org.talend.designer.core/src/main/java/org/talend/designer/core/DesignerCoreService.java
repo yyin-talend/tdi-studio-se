@@ -21,25 +21,13 @@
 // ============================================================================
 package org.talend.designer.core;
 
-import org.talend.core.model.process.IContextManager;
-import org.talend.core.model.properties.ProcessItem;
-import org.talend.designer.core.model.context.ContextManager;
-
 /**
- * Detailled comment <br/>
+ * Detailled comment <br/>.
  * 
  * $Id: DesignerCoreService.java 1 2006-12-19 上午10:25:42 bqian
  * 
  */
 public class DesignerCoreService implements IDesignerCoreService {
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.designer.core.IDesignerCoreService#getContextManagerFromXmlProcess(org.talend.core.model.properties.ProcessItem)
-     */
-    public IContextManager getContextManagerFromXmlProcess(ProcessItem processItem) {
-        return ContextManager.getContextManagerFromXmlProcess(processItem);
-    }
 
 }

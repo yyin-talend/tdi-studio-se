@@ -40,6 +40,7 @@ import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.designer.core.model.context.ContextManager;
+import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
 import org.talend.designer.runprocess.ProcessorException;
 import org.talend.designer.runprocess.perl.PerlUtils;
 import org.talend.repository.model.ERepositoryStatus;
@@ -182,19 +183,19 @@ public class TalendJobManager {
      */
     public List<String> getCurrentJobContexts() {
         List<String> contextNameList = new ArrayList<String>();
-
         try {
             for (Content<String, IRepositoryObject> object : processAbsoluteMembers.values()) {
                 IRepositoryObject process = (IRepositoryObject) object.getContent();
                 if (process.getProperty().getItem() instanceof ProcessItem) {
                     ProcessItem processItem = (ProcessItem) process.getProperty().getItem();
-
-                    IContextManager c = ContextManager.getContextManagerFromXmlProcess(processItem);
-                    for (IContext context : c.getListContext()) {
-                        if (contextNameList.contains(context.getName())) {
-                            continue;
+                    for (Object o : processItem.getProcess().getContext()) {
+                        if (o instanceof ContextType) {
+                            ContextType context = (ContextType) o;
+                            if (contextNameList.contains(context.getName())) {
+                              continue;
+                          }
+                            contextNameList.add(context.getName());
                         }
-                        contextNameList.add(context.getName());
                     }
                 }
             }
@@ -227,10 +228,14 @@ public class TalendJobManager {
                     if (process.getProperty().getItem() instanceof ProcessItem) {
 
                         ProcessItem processItem = (ProcessItem) process.getProperty().getItem();
-
-                        IContextManager c = ContextManager.getContextManagerFromXmlProcess(processItem);
-                        for (IContext context : c.getListContext()) {
-                            contextNameList.add(context.getName());
+                        for (Object o : processItem.getProcess().getContext()) {
+                            if (o instanceof ContextType) {
+                                ContextType context = (ContextType) o;
+                                if (contextNameList.contains(context.getName())) {
+                                  continue;
+                              }
+                                contextNameList.add(context.getName());
+                            }
                         }
                     }
                 }

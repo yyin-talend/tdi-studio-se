@@ -140,17 +140,4 @@ public class ContextManager implements IContextManager {
 
         return true;
     }
-
-    /**
-     * Load a temporary process from a xml file to have an access to the context manager.
-     * @param processType
-     * @return
-     */
-    public static IContextManager getContextManagerFromXmlProcess(ProcessItem processItem) {
-        Process process = new Process(processItem.getProperty());
-        process.loadXmlFile(processItem.getProcess());
-        IContextManager contextManager = process.getContextManager();
-
-        return contextManager;
-    }
 }
