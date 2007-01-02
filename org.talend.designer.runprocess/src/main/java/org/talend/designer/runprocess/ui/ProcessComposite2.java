@@ -167,8 +167,8 @@ public class ProcessComposite2 extends Composite {
         execHeader.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
         debugBtn = new Button(execHeader, SWT.PUSH);
-        debugBtn.setText("Debug");
-        debugBtn.setToolTipText("Launch job in debug mode");
+        debugBtn.setText(Messages.getString("ProcessComposite.debug"));
+        debugBtn.setToolTipText(Messages.getString("ProcessComposite.debugHint"));
         debugBtn.setImage(RunProcessPlugin.imageDescriptorFromPlugin(RunProcessPlugin.PLUGIN_ID,
                 "icons/process_debug.gif").createImage());
         FormData formData = new FormData();
@@ -203,8 +203,8 @@ public class ProcessComposite2 extends Composite {
         killBtn.setLayoutData(formData);
 
         clearBeforeExec = new Button(execHeader, SWT.CHECK);
-        clearBeforeExec.setText("Clear before run"); //$NON-NLS-1$
-        clearBeforeExec.setToolTipText("Clear the logs before run this job"); //$NON-NLS-1$
+        clearBeforeExec.setText(Messages.getString("ProcessComposite.clearBefore")); //$NON-NLS-1$
+        clearBeforeExec.setToolTipText(Messages.getString("ProcessComposite.clearBeforeHint")); //$NON-NLS-1$
         clearBeforeExec.setEnabled(false);
         clearBeforeExec.setSelection(true);
         data = new GridData();
@@ -216,10 +216,9 @@ public class ProcessComposite2 extends Composite {
         formData.left = new FormAttachment(execBtn, 0, SWT.LEFT);
         clearBeforeExec.setLayoutData(formData);
 
-        // Added by ftang
         watchBtn = new Button(execHeader, SWT.CHECK);
-        watchBtn.setText("Watch"); //$NON-NLS-1$
-        watchBtn.setToolTipText("Show the time of running this job"); //$NON-NLS-1$
+        watchBtn.setText(Messages.getString("ProcessComposite.execTime")); //$NON-NLS-1$
+        watchBtn.setToolTipText(Messages.getString("ProcessComposite.execTimeHint")); //$NON-NLS-1$
         watchBtn.setEnabled(false);
         watchBtn.setSelection(true);
         data = new GridData();
@@ -230,7 +229,6 @@ public class ProcessComposite2 extends Composite {
         formData.top = new FormAttachment(killBtn, 0, SWT.BOTTOM);
         formData.left = new FormAttachment(clearBeforeExec, 0, SWT.RIGHT);
         watchBtn.setLayoutData(formData);
-        // Ends
 
         Group statisticsComposite = new Group(execHeader, SWT.NONE);
         statisticsComposite.setText("Stats && Traces");
