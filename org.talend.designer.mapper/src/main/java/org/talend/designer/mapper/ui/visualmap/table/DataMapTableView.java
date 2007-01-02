@@ -1039,7 +1039,7 @@ public abstract class DataMapTableView extends Composite {
         // /////////////////////////////////////////////////////////////////
 
         final ToolItem rejectFilterCheck = new ToolItem(toolBarActions, SWT.CHECK);
-        rejectFilterCheck.setToolTipText("Active/unactive output reject");
+        rejectFilterCheck.setToolTipText("Enable/disable output reject");
         boolean isReject = ((OutputTable) abstractDataMapTable).isReject();
         // Image image = ImageProviderMapper.getImage(isReject ? ImageInfo.CHECKED_ICON : ImageInfo.UNCHECKED_ICON);
         Image image = ImageProviderMapper.getImage(isReject ? ImageInfo.REJECT_FILTER_ICON : ImageInfo.REJECT_FILTER_ICON);
@@ -1126,7 +1126,7 @@ public abstract class DataMapTableView extends Composite {
         //        
         // // /////////////////////////////////////////////////////////////////
         final ToolItem rejectInnerJoinFilterCheck = new ToolItem(toolBarActions, SWT.CHECK);
-        rejectInnerJoinFilterCheck.setToolTipText("Active/unactive lookup inner join reject");
+        rejectInnerJoinFilterCheck.setToolTipText("Enable/disable lookup inner join reject");
         boolean isRejectInnerJoin = ((OutputTable) abstractDataMapTable).isRejectInnerJoin();
         // image = ImageProviderMapper.getImage(isRejectInnerJoin ? ImageInfo.CHECKED_ICON : ImageInfo.UNCHECKED_ICON);
         image = ImageProviderMapper.getImage(isRejectInnerJoin ? ImageInfo.REJECT_LOOKUP_ICON : ImageInfo.REJECT_LOOKUP_ICON);
