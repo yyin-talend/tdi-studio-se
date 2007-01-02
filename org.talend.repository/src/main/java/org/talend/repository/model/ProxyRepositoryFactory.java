@@ -467,7 +467,7 @@ public class ProxyRepositoryFactory implements IProxyRepositoryFactory {
      */
     public List<IRepositoryObject> getAll(ERepositoryObjectType type) throws PersistenceException {
         // TODO SML Gets up the boolean param
-        return this.repositoryFactoryFromProvider.getAll(type,false);
+        return this.repositoryFactoryFromProvider.getAll(type, false);
     }
 
     public List<String> getFolders(ERepositoryObjectType type) throws PersistenceException {
@@ -699,6 +699,15 @@ public class ProxyRepositoryFactory implements IProxyRepositoryFactory {
             }
         }
         return getStatus(getItem(obj));
+    }
+
+    @Deprecated
+    public boolean isDeleted(MetadataTable table) {
+        // TODO SML/MHE Remove when table are items
+        if (TableHelper.isDeleted(table)) {
+            return true;
+        }
+        return false;
     }
 
     /*
