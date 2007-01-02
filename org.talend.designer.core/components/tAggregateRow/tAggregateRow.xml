@@ -42,7 +42,6 @@
     <PARAMETER
       NAME="GROUPBYS"
       FIELD="TABLE"
-      REQUIRED="true"
       NUM_ROW="2"
       NB_LINES="2"
     >

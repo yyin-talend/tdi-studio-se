@@ -66,8 +66,13 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
             hashKey.append(groupby.get("INPUT_COLUMN"));
             hashKey.append("] }");
         }
+
+        String dataType = "$";
+        if (groupbys.size() == 0) {
+            dataType = "%";
+        }
 %>
-my $key_href_<%=cid%> = \%{ $<%=destination%><%=hashKey%> };
+my $key_href_<%=cid%> = \%{ <%=dataType%><%=destination%><%=hashKey%> };
 <%
         for(int opNum = 1; opNum <= operations.size(); opNum++) {
             Map<String, String> operation = operations.get(opNum - 1);
