@@ -63,7 +63,7 @@ public interface IRepositoryFactory {
     public Project createProject(String label, String description, ECodeLanguage language, User author)
             throws PersistenceException;
 
- //   public boolean doesLoggedUserExist() throws PersistenceException;
+    // public boolean doesLoggedUserExist() throws PersistenceException;
 
     // public void createUser() throws PersistenceException;
 
@@ -123,7 +123,7 @@ public interface IRepositoryFactory {
      * @return a list of all objects of type <code>type</code> in the repository in the project
      * @throws PersistenceException
      */
-    public List<IRepositoryObject> getAll(ERepositoryObjectType type) throws PersistenceException;
+    public List<IRepositoryObject> getAll(ERepositoryObjectType type, boolean withDeleted) throws PersistenceException;
 
     /**
      * Deletes logically the given object. <code>isDeleted</code> on this object will now returned <code>true</code>.

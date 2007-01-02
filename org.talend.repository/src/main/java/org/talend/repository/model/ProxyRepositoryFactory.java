@@ -466,7 +466,8 @@ public class ProxyRepositoryFactory implements IProxyRepositoryFactory {
      * @see org.talend.repository.model.IProxyRepositoryFactory#getAll(org.talend.core.model.repository.ERepositoryObjectType)
      */
     public List<IRepositoryObject> getAll(ERepositoryObjectType type) throws PersistenceException {
-        return this.repositoryFactoryFromProvider.getAll(type);
+        // TODO SML Gets up the boolean param
+        return this.repositoryFactoryFromProvider.getAll(type,false);
     }
 
     public List<String> getFolders(ERepositoryObjectType type) throws PersistenceException {
