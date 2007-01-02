@@ -1,0 +1,77 @@
+<%@ jet 
+package="org.talend.designer.codegen.translators" 
+imports="
+    org.talend.core.model.process.INode 
+    org.talend.core.model.process.ElementParameterParser
+    org.talend.core.model.process.IConnection
+    org.talend.core.model.metadata.IMetadataTable
+    org.talend.core.model.metadata.IMetadataColumn
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    java.util.List
+"
+class="PerlRowBegin"
+%>
+
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+boolean stats = codeGenArgument.isStatistics();
+
+List<IMetadataTable> metadatas = node.getMetadataList();
+if ((metadatas!=null)&&(metadatas.size()>0)) {
+    IMetadataTable metadata = metadatas.get(0);
+    if (metadata!=null) {
+        String cid = metadata.getTableName();
+%>
+
+my %desc_<%=cid%> = (
+    schema        => [
+<%
+        for (IMetadataColumn column: metadata.getListColumns()) {
+%>
+    	{
+            name    => '<%=column.getLabel() %>',
+            key     => <%=column.isKey() %>,
+            type    => '<%=column.getType() %>',
+            len     => <%=column.getLength() %>,
+            null    => <%=column.isNullable() %>,
+            default => '<%=column.getDefault() %>',
+            comment => '<%=column.getComment() %>',
+        },
+<%
+        }
+%>
+    ],
+);
+
+<%
+        int i = 0;
+        for (IMetadataColumn column: metadata.getListColumns()) {
+%>
+use constant <%=metadata.getTableName() %>__<%=column.getLabel() %> => <%= i %>;
+<%
+            i++;
+        }
+
+        List<? extends IConnection> inConns = node.getIncomingConnections();
+
+        if (inConns != null && !inConns.isEmpty()) {
+            IConnection inConn = inConns.get(0);
+            IMetadataTable inMetadata = inConn.getMetadataTable();
+            String inputRowName = inConn.getName();
+
+            int j = 0;
+            for (IMetadataColumn column: inMetadata.getListColumns()) {
+%>
+use constant <%=inputRowName%>__<%=column.getLabel() %> => <%=j%>;
+<%
+                j++;
+            }
+        }
+%>
+
+my $nb_line_<%=cid%> = 0;
+<%
+    }
+}
+%>

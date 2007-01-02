@@ -1,0 +1,97 @@
+<%@ jet 
+package="org.talend.designer.codegen.translators" 
+imports="
+    org.talend.core.model.process.INode 
+    org.talend.core.model.process.ElementParameterParser 
+    org.talend.core.model.metadata.IMetadataTable 
+    org.talend.core.model.metadata.IMetadataColumn
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    java.util.List
+" 
+class="MysqlOutputBulkExecBegin" 
+%>
+
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+boolean stats = codeGenArgument.isStatistics();
+
+List<IMetadataTable> metadatas = node.getMetadataList();
+if ((metadatas!=null)&&(metadatas.size()>0)) {
+   IMetadataTable metadata = metadatas.get(0);
+   if (metadata!=null) {
+       String cid = metadata.getTableName();
+%>
+
+use DBI;
+use talend::dbOp;
+
+my %desc_<%=cid %> = (
+    dbtype    => 'mysql',
+    driver    => 'mysql',
+    filename  => <%=ElementParameterParser.getValue(node, "__FILENAME__") %>,
+    dbhost    => <%=ElementParameterParser.getValue(node, "__HOST__") %>,
+    dbport    => <%=ElementParameterParser.getValue(node, "__PORT__") %>,
+    dbname    => <%=ElementParameterParser.getValue(node, "__DBNAME__") %>,
+    dbuser    => <%=ElementParameterParser.getValue(node, "__USER__") %>,
+    dbpass    => <%=ElementParameterParser.getValue(node, "__PASS__") %>,
+    table     => <%=ElementParameterParser.getValue(node, "__TABLE__") %>,
+    fields_terminated_by => <%=ElementParameterParser.getValue(node, "__FIELDS_TERMINATED_BY__") %>,
+    encoding  => <%=ElementParameterParser.getValue(node, "__ENCODING__") %>,
+);
+
+<%
+        if (stats) {
+%>
+UpdateStat('<%=cid %>', 0);
+<%
+        }
+%>
+
+my $dbh_<%=cid %> = DBI->connect(
+    getConnectionString(
+        driver => $desc_<%=cid %>{driver},
+        dbname => $desc_<%=cid %>{dbname},
+        dbhost => $desc_<%=cid %>{dbhost},
+        dbport => $desc_<%=cid %>{dbport},
+    ),
+    $desc_<%=cid %>{dbuser},
+    $desc_<%=cid %>{dbpass},
+)
+    or die "can't connect to database";
+
+my $sth_<%=cid %> = $dbh_<%=cid %>->prepare(
+    sprintf(
+        'LOAD DATA INFILE ? INTO TABLE %s FIELDS TERMINATED BY ?',
+        $desc_<%=cid %>{table},
+    )
+);
+
+if (lc $desc_<%=cid %>{encoding} eq 'utf-8') {
+    $sth_<%=cid %> = $dbh_<%=cid %>->prepare('set names "UTF8"');
+    $sth_<%=cid %>->execute();
+    $sth_<%=cid %>->finish();
+}
+
+$sth_<%=cid %>->execute(
+    $desc_<%=cid %>{filename},
+    $desc_<%=cid %>{fields_terminated_by},
+)
+    or die "can't execute load data query";
+
+$sth_<%=cid %>->finish();
+$dbh_<%=cid %>->disconnect();
+
+<%
+        if (stats) {
+%>
+UpdateStat('<%=cid %>', 0, 2);
+<%
+        }
+%>
+
+<%
+    }
+}
+%>
+

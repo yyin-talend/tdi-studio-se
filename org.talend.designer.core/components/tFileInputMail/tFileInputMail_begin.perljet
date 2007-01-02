@@ -1,0 +1,111 @@
+<%@ jet 
+package="org.talend.designer.codegen.translators" 
+imports="
+    org.talend.core.model.process.INode 
+    org.talend.core.model.process.ElementParameterParser 
+    org.talend.core.model.metadata.IMetadataTable 
+    org.talend.core.model.metadata.IMetadataColumn 
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    java.util.Map
+    java.util.List
+" 
+class="FileInputMailBegin" 
+%>
+
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+boolean stats = codeGenArgument.isStatistics();
+
+List<IMetadataTable> metadatas = node.getMetadataList();
+if ((metadatas!=null)&&(metadatas.size()>0)) {
+    IMetadataTable metadata = metadatas.get(0);
+    if (metadata!=null) {
+        // component id
+        String cid = metadata.getTableName();
+
+        String filename = ElementParameterParser.getValue(
+            node,
+            "__FILENAME__"
+        );
+
+        List<Map<String, String>> mailParts =
+            (List<Map<String,String>>)ElementParameterParser.getObjectValue(
+                node,
+                "__MAIL_PARTS__"
+            );
+%>
+
+use FileHandle;
+use Email::Filter;
+
+my %desc_<%=cid%> = (
+    filename      => <%=filename %>,
+    schema        => [
+<%
+        for (IMetadataColumn column: metadata.getListColumns()) {
+%>
+        {
+            name    => '<%=column.getLabel() %>',
+            key     => <%=column.isKey() %>,
+            type    => '<%=column.getType() %>',
+            len     => <%=column.getLength() %>,
+            null    => <%=column.isNullable() %>,
+            default => '<%=column.getDefault() %>',
+            comment => '<%=column.getComment() %>',
+        },
+<%
+        }
+%>
+    ],
+    mail_parts    => [
+<%
+        for (int i = 0; i < mailParts.size(); i++) {
+            Map<String, String> mailPart = mailParts.get(i);
+%>
+        <%= mailPart.get("MAIL_PART") %>,
+<%
+        }
+%>
+    ],
+
+);
+
+my $nb_fields_<%=cid%> = scalar @{ $desc_<%=cid%>{schema} };
+
+<%
+        if (stats) {
+%>
+UpdateStat('<%=cid%>', 0);
+<%
+        }
+%>
+
+my $input_FH_<%=cid %> = new FileHandle;
+open($input_FH_<%=cid %>, '<', $desc_<%=cid %>{filename})
+    or die 'cannot open file "' . $desc_<%=cid %>{filename} . '"';
+
+my $mail_data_<%=cid %> = join('', <$input_FH_<%=cid %>>);
+close($input_FH_<%=cid %>);
+
+my $mail_<%=cid%> = Email::Filter->new(data => $mail_data_<%=cid %>);
+
+my @<%=cid%> = ();
+my $col_num = 0;
+
+foreach my $mail_part (@{ $desc_<%=cid%>{mail_parts} }) {
+
+    if ($mail_part eq 'body') {
+        $<%=cid%>[$col_num] = $mail_<%=cid%>->body();
+    }
+    else {
+        $<%=cid%>[$col_num] = $mail_<%=cid%>->header($mail_part);
+    }
+
+    $col_num++;
+}
+
+<%
+    }
+}
+%>

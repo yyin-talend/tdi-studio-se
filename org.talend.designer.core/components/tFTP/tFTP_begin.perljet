@@ -1,0 +1,50 @@
+<%@ jet 
+	package="org.talend.designer.codegen.translators" 
+	imports="
+		org.talend.core.model.process.INode 
+		org.talend.core.model.process.ElementParameterParser
+		org.talend.core.model.metadata.IMetadataTable
+		org.talend.designer.codegen.config.CodeGeneratorArgument
+		java.util.List
+	"
+	class="FTPBegin"
+%>
+
+<%
+	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+	INode node = (INode)codeGenArgument.getArgument();
+	boolean stats = codeGenArgument.isStatistics();
+	
+	List<IMetadataTable> metadatas = node.getMetadataList();
+	if ((metadatas!=null)&&(metadatas.size()>0)) {
+		IMetadataTable metadata = metadatas.get(0);
+		if (metadata!=null) {
+
+String host = ElementParameterParser.getValue(node, "__HOST__");
+String port = ElementParameterParser.getValue(node, "__PORT__");
+String user = ElementParameterParser.getValue(node, "__USERNAME__");
+String pass = ElementParameterParser.getValue(node, "__PASSWORD__");
+
+// component id
+String cid = metadata.getTableName();
+%>
+
+use Net::FTP;
+use File::Basename;
+
+use talend::filesOp;
+
+my $ftp_<%=cid%> = Net::FTP->new(
+    <%=host%>,
+    Debug => 0,
+    Port  => <%=port%>
+)
+    or die "Cannot connect to <%= host %> on port <%= port %>: $@";
+
+$ftp_<%=cid%>->login(<%=user%>, <%=pass%>)
+    or die "Cannot login ", $ftp_<%=cid%>->message;
+
+<%
+		}
+	}
+%>
