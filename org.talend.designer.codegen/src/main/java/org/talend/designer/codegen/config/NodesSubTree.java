@@ -49,7 +49,7 @@ public class NodesSubTree {
 
     List<INode> nodes;
 
-    HashMap<INode, Boolean> visitedNodesStartCode;
+    HashMap<INode, Boolean> visitedNodesBeginCode;
 
     HashMap<INode, Boolean> visitedNodesMainCode;
 
@@ -67,7 +67,7 @@ public class NodesSubTree {
         afterSubProcesses = new ArrayList<String>();
         beforeSubProcesses = new ArrayList<String>();
         this.visitedNodesMainCode = new HashMap<INode, Boolean>();
-        this.visitedNodesStartCode = new HashMap<INode, Boolean>();
+        this.visitedNodesBeginCode = new HashMap<INode, Boolean>();
         this.visitedNodesEndCode = new HashMap<INode, Boolean>();
         buildSubTree(node);
     }
@@ -93,7 +93,7 @@ public class NodesSubTree {
         }
 
         visitedNodesMainCode.put(node, false);
-        visitedNodesStartCode.put(node, false);
+        visitedNodesBeginCode.put(node, false);
         visitedNodesEndCode.put(node, false);
     }
 
@@ -108,8 +108,8 @@ public class NodesSubTree {
         switch (part) {
         case MAIN:
             return visitedNodesMainCode.get(node);
-        case START:
-            return visitedNodesStartCode.get(node);
+        case BEGIN:
+            return visitedNodesBeginCode.get(node);
         case END:
             return visitedNodesEndCode.get(node);
         default:
@@ -128,8 +128,8 @@ public class NodesSubTree {
         case MAIN:
             visitedNodesMainCode.put(node, true);
             break;
-        case START:
-            visitedNodesStartCode.put(node, true);
+        case BEGIN:
+            visitedNodesBeginCode.put(node, true);
             break;
         case END:
             visitedNodesEndCode.put(node, true);

@@ -25,7 +25,7 @@ $current_component="<%=node.getUniqueName() %>";
 
 
 <%
-	if (codePart.equals(ECodePart.START)) {
+	if (codePart.equals(ECodePart.BEGIN)) {
 %>
 
 =head1 <%=ElementParameterParser.getValue(node, "__COMPONENT_NAME__") %> <%=node.getUniqueName() %>

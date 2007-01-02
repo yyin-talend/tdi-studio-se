@@ -165,7 +165,7 @@ public final class CodeGeneratorEmittersPoolFactory {
         }
 
         if ((component.isMultipleMethods(codeLanguage)) && (codePart.compareTo(ECodePart.MAIN) == 0)) {
-            initComponent(codeLanguage, jetBeans, ECodePart.START, component);
+            initComponent(codeLanguage, jetBeans, ECodePart.BEGIN, component);
             initComponent(codeLanguage, jetBeans, ECodePart.END, component);
         }
         jetBeans.add(jetBean);
@@ -213,7 +213,7 @@ public final class CodeGeneratorEmittersPoolFactory {
                         alreadyCompiledEmitters.add(jetBean);
                     }
                 } catch (JETException e) {
-                    log.error("Error during JetEmitter initalization " + e.getMessage(), e);
+                    //log.error("Error during JetEmitter initalization " + e.getMessage(), e);
                 }
                 emitterPool.put(jetBean, emitter);
             }

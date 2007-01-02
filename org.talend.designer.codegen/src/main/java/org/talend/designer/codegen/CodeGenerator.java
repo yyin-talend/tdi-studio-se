@@ -166,7 +166,7 @@ public class CodeGenerator implements ICodeGenerator {
                 componentsCode.append(generateTypedComponentCode(EInternalTemplate.HEADER, headerArgument));
                 for (NodesSubTree subTree : processTree.getSubTrees()) {
                     componentsCode.append(generateTypedComponentCode(EInternalTemplate.SUBPROCESS_HEADER, subTree));
-                    componentsCode.append(generateComponentsCode(subTree, subTree.getRootNode(), ECodePart.START));
+                    componentsCode.append(generateComponentsCode(subTree, subTree.getRootNode(), ECodePart.BEGIN));
                     componentsCode.append(generateComponentsCode(subTree, subTree.getRootNode(), ECodePart.MAIN));
                     componentsCode.append(generateTypedComponentCode(EInternalTemplate.PART_ENDMAIN, null));
                     componentsCode.append(generateComponentsCode(subTree, subTree.getRootNode(), ECodePart.END));
@@ -292,13 +292,13 @@ public class CodeGenerator implements ICodeGenerator {
         boolean isIterate = isIterateNode(node);
         if ((isMarked != null) && (!isMarked)) {
             switch (part) {
-            case START:
+            case BEGIN:
                 if (isIterate) {
-                    codeComponent.append(generateComponentCode(node, ECodePart.START));
+                    codeComponent.append(generateComponentCode(node, ECodePart.BEGIN));
                 }
                 codeComponent = codeComponent.append(generatesTreeCode(subProcess, node, part));
                 if ((node.isMultipleMethods()) && (!isIterate)) {
-                    codeComponent = codeComponent.append(generateComponentCode(node, ECodePart.START));
+                    codeComponent = codeComponent.append(generateComponentCode(node, ECodePart.BEGIN));
                 }
                 break;
             case MAIN:
