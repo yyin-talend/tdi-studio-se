@@ -1,31 +1,56 @@
 <%@ jet 
-	package="org.talend.designer.codegen.translators" 
-	imports="
-		org.talend.core.model.process.INode 
-		org.talend.core.model.metadata.IMetadataTable 
-		org.talend.core.model.process.ElementParameterParser
-		org.talend.designer.codegen.config.CodeGeneratorArgument
-		java.util.List
-	"
-	class="RunJobMain"
+package="org.talend.designer.codegen.translators" 
+imports="
+    org.talend.core.model.process.INode 
+    org.talend.core.model.metadata.IMetadataTable 
+    org.talend.core.model.process.ElementParameterParser
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    java.util.List
+"
+class="RunJobMain"
 %>
 
 <%
-	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
-	INode node = (INode)codeGenArgument.getArgument();
-	boolean stats = codeGenArgument.isStatistics();
-	
-	List<IMetadataTable> metadatas = node.getMetadataList();
-	if ((metadatas!=null)&&(metadatas.size()>0)) {
-		IMetadataTable metadata = metadatas.get(0);
-		if (metadata!=null) {
-                  String interpreterPath    = codeGenArgument.getInterpreterPath().replace("\\","/");
-                  String libPath            = codeGenArgument.getLibPath().replace("\\","/");
-                  String runtimeFilePath    = codeGenArgument.getRuntimeFilePath().replace("\\","/");
-                  String currentProjectName = codeGenArgument.getCurrentProjectName();
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+boolean stats = codeGenArgument.isStatistics();
 
-                  String process = ElementParameterParser.getValue(node, "__PROCESS_TYPE_PROCESS__");
-                  String context = ElementParameterParser.getValue(node, "__PROCESS_TYPE_CONTEXT__");
+List<IMetadataTable> metadatas = node.getMetadataList();
+if ((metadatas!=null)&&(metadatas.size()>0)) {
+    IMetadataTable metadata = metadatas.get(0);
+        if (metadata != null) {
+            String interpreterPath = "<perl_interpreter_path>";
+            if (codeGenArgument.getInterpreterPath() != null) {
+                interpreterPath = codeGenArgument.getInterpreterPath();
+                interpreterPath.replace("\\","/");
+            }
+
+            String libPath = "<perl_library_path>";
+            if (codeGenArgument.getLibPath() != null) {
+                libPath = codeGenArgument.getLibPath();
+                libPath.replace("\\","/");
+            }
+
+            String runtimeFilePath = "<runtime_path>";
+            if (codeGenArgument.getRuntimeFilePath() != null) {
+                runtimeFilePath = codeGenArgument.getRuntimeFilePath();
+                runtimeFilePath.replace("\\","/");
+            }
+
+            String currentProjectName = "<project_name>";
+            if (codeGenArgument.getCurrentProjectName() != null) {
+                currentProjectName = codeGenArgument.getCurrentProjectName();
+            }
+
+            String process = ElementParameterParser.getValue(
+                node,
+                "__PROCESS_TYPE_PROCESS__"
+            );
+
+            String context = ElementParameterParser.getValue(
+                node,
+                "__PROCESS_TYPE_CONTEXT__"
+            );
 %>
 
 my @arguments = (
