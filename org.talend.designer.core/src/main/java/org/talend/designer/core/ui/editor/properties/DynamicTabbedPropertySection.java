@@ -117,6 +117,8 @@ import org.talend.commons.utils.data.bean.IBeanPropertyAccessors;
 import org.talend.commons.utils.data.container.Content;
 import org.talend.commons.utils.data.container.ContentList;
 import org.talend.commons.utils.data.container.RootContainer;
+import org.talend.commons.utils.data.list.IListenableListListener;
+import org.talend.commons.utils.data.list.ListenableListEvent;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.language.perl.ICodeSyntaxChecker;
@@ -2442,7 +2444,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
     private Control addTable2(final Composite parentComposite, final IElementParameter param, final int numInRow,
             final int nbInRow, int top, final Control lastControlPrm) {
 
-        final Composite container = parentComposite; // new Composite(subComposite, SWT.NONE);
+        final Composite container = parentComposite;
 
         PropertiesTableEditorModel<Map<String, Object>> tableEditorModel = new PropertiesTableEditorModel<Map<String, Object>>();
         tableEditorModel
@@ -2450,34 +2452,28 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
 
         PropertiesTableEditorView<Map<String, Object>> tableEditorView = new PropertiesTableEditorView<Map<String, Object>>(
                 parentComposite, SWT.NONE, tableEditorModel, !param.isBasedOnSchema(), false);
-        // PropertiesTableEditorView tableEditorView = new PropertiesTableEditorView(parentComposite, SWT.NONE);
         tableEditorView.getExtendedTableViewer().setCommandStack(getCommandStack());
-        tableEditorView.getTable().setToolTipText(VARIABLE_TOOLTIP + param.getVariableName());
 
-        Composite mainComposite = tableEditorView.getMainComposite();
+        final Table table = tableEditorView.getTable();
 
-        // List<Map<String, Object>> values = copyTableValue(param);
-        // List<ElemParamValueWrapper> wrapperList = new ArrayList<ElemParamValueWrapper>();
-        // for (Map<String, Object> map : values) {
-        // ElemParamValueWrapper wrapper = new ElemParamValueWrapper(map);
-        // wrapperList.add(wrapper);
-        // }
-        // tableEditorModel.registerDataList(wrapperList);
+        table.setToolTipText(VARIABLE_TOOLTIP + param.getVariableName());
+
+        final Composite mainComposite = tableEditorView.getMainComposite();
 
         CLabel labelLabel2 = getWidgetFactory().createCLabel(container, param.getDisplayName());
-        FormData data2 = new FormData();
+        FormData formData = new FormData();
         if (lastControlPrm != null) {
-            data2.left = new FormAttachment(lastControlPrm, 0);
+            formData.left = new FormAttachment(lastControlPrm, 0);
         } else {
-            data2.left = new FormAttachment((((numInRow - 1) * MAX_PERCENT) / nbInRow), 0);
+            formData.left = new FormAttachment((((numInRow - 1) * MAX_PERCENT) / nbInRow), 0);
         }
-        data2.top = new FormAttachment(0, top);
-        labelLabel2.setLayoutData(data2);
+        formData.top = new FormAttachment(0, top);
+        labelLabel2.setLayoutData(formData);
         if (numInRow != 1) {
             labelLabel2.setAlignment(SWT.RIGHT);
         }
         // *********************
-        data2 = new FormData();
+        formData = new FormData();
         int currentLabelWidth2 = STANDARD_LABEL_WIDTH;
         GC gc2 = new GC(labelLabel2);
         Point labelSize2 = gc2.stringExtent(param.getDisplayName());
@@ -2490,23 +2486,25 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
         int tableHorizontalOffset = -5;
         if (numInRow == 1) {
             if (lastControlPrm != null) {
-                data2.left = new FormAttachment(lastControlPrm, currentLabelWidth2 + tableHorizontalOffset);
+                formData.left = new FormAttachment(lastControlPrm, currentLabelWidth2 + tableHorizontalOffset);
             } else {
-                data2.left = new FormAttachment(0, currentLabelWidth2 + tableHorizontalOffset);
+                formData.left = new FormAttachment(0, currentLabelWidth2 + tableHorizontalOffset);
             }
         } else {
-            data2.left = new FormAttachment(labelLabel2, 0 + tableHorizontalOffset, SWT.RIGHT);
+            formData.left = new FormAttachment(labelLabel2, 0 + tableHorizontalOffset, SWT.RIGHT);
         }
-        data2.right = new FormAttachment((numInRow * MAX_PERCENT) / nbInRow, 0);
-        data2.top = new FormAttachment(0, top);
+        formData.right = new FormAttachment((numInRow * MAX_PERCENT) / nbInRow, 0);
+        formData.top = new FormAttachment(0, top);
 
-        Table table2 = tableEditorView.getTable();
 
-        int itemsHeight = table2.getHeaderHeight() + (param.getNbLines() * table2.getItemHeight())
-                + (table2.getItemHeight() / 2);
-        int ySize2 = Math.max(itemsHeight, 150);
-        data2.bottom = new FormAttachment(0, top + ySize2);
-        mainComposite.setLayoutData(data2);
+        int currentHeightEditor = table.getHeaderHeight() + ((List)param.getValue()).size() * table.getItemHeight()
+                + table.getItemHeight() + 50;
+        int minHeightEditor = table.getHeaderHeight() + 10 * table.getItemHeight()
+        + table.getItemHeight() + 50;
+        int ySize2 = Math.max(currentHeightEditor, minHeightEditor);
+        
+        formData.bottom = new FormAttachment(0, top + ySize2);
+        mainComposite.setLayoutData(formData);
 
         if (!param.isReadOnly()) {
             hashCurControls.put(param.getName(), tableEditorView.getExtendedTableViewer().getTableViewerCreator());
