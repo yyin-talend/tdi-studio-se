@@ -186,7 +186,7 @@ public class CodeView extends ViewPart implements ISelectionListener {
                 viewMainAction.setChecked(false);
                 viewAllAction.setChecked(true);
                 try {
-                    generatedCode = codeGenerator.generateComponentCode(node, ECodePart.START);
+                    generatedCode = codeGenerator.generateComponentCode(node, ECodePart.BEGIN);
                     generatedCode += codeGenerator.generateComponentCode(node, ECodePart.MAIN);
                     generatedCode += codeGenerator.generateComponentCode(node, ECodePart.END);
                 } catch (SystemException e) {
