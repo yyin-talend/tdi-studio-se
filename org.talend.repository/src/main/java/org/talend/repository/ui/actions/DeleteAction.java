@@ -135,10 +135,11 @@ public class DeleteAction extends AContextualAction {
                     IRepositoryObject repObj = node.getObject();
                     IProxyRepositoryFactory repFactory = ProxyRepositoryFactory.getInstance();
 
-                    boolean isPotentiallyEditable = repFactory.isPotentiallyEditable(repObj);
-                    boolean idDeleted = repFactory.getStatus(repObj) == ERepositoryStatus.DELETED;
+                    ERepositoryStatus status = repFactory.getStatus(repObj);
+                    boolean isEditable = status.isPotentiallyEditable() || status.isEditable();
+                    boolean isDeleted = repFactory.getStatus(repObj) == ERepositoryStatus.DELETED;
 
-                    if (idDeleted) {
+                    if (isDeleted) {
                         ERepositoryObjectType nodeType = (ERepositoryObjectType) node.getProperties(EProperties.CONTENT_TYPE);
                         if (ERepositoryObjectType.METADATA_CON_TABLE.equals(nodeType)) {
                             visible = false;
@@ -161,7 +162,7 @@ public class DeleteAction extends AContextualAction {
                                 this.setText(DELETE_LOGICAL_TITLE);
                                 this.setToolTipText(DELETE_LOGICAL_TOOLTIP);
 
-                                if (!isPotentiallyEditable) {
+                                if (!isEditable) {
                                     visible = true;
                                     enabled = false;
                                 }
