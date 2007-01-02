@@ -170,8 +170,8 @@ public class ExtractionLoopWithXPathEditorView extends AbstractDataTableEditorVi
 
             @Override
             public void newValidValueTyped(int itemIndex, Object previousValue, Object newValue, CELL_EDITOR_STATE state) {
-                if (state == CELL_EDITOR_STATE.EDITING) {
-                    linker.onXPathValueChanged(table, newValue.toString(), itemIndex);
+                if (state == CELL_EDITOR_STATE.APPLYING) {
+//                    linker.onXPathValueChanged(table, newValue.toString(), itemIndex);
                 }
             }
 

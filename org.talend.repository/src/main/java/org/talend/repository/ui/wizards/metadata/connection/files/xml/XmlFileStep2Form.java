@@ -627,7 +627,7 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
                     && ((XmlXPathLoopDescriptor) getConnection().getSchema().get(0)).getAbsoluteXPathQuery() != null
                     && ((XmlXPathLoopDescriptor) getConnection().getSchema().get(0)).getSchemaTargets() != null
                     && !((XmlXPathLoopDescriptor) getConnection().getSchema().get(0)).getSchemaTargets().isEmpty()) {
-                refreshPreview();
+//                refreshPreview();
             }
         }
     }
