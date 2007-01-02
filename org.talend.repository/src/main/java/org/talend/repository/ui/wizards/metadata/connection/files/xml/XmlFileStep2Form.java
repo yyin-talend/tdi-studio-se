@@ -47,12 +47,15 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.ScrollBar;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Tree;
@@ -136,6 +139,8 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
 
     private IPreviewHandlerListener previewHandlerListener;
 
+    private static Boolean firstTimeWizardOpened = null;
+    
     /**
      * Constructor to use by RCP Wizard.
      * 
@@ -188,6 +193,12 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
         SashForm mainComposite = new SashForm(this, SWT.VERTICAL | SWT.SMOOTH);
         mainComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
 
+        if(firstTimeWizardOpened == null) {
+        	firstTimeWizardOpened = Boolean.TRUE;
+        } else if(firstTimeWizardOpened.equals(Boolean.TRUE)) {
+        	firstTimeWizardOpened = Boolean.FALSE;
+        }
+        
         // Splitter
         this.xmlToSchemaSash = new SashForm(mainComposite, SWT.HORIZONTAL | SWT.SMOOTH);
         xmlToSchemaSash.setLayoutData(new GridData(GridData.FILL_BOTH));
@@ -239,6 +250,22 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
     private void addGroupSchemaTarget(final Composite mainComposite, final int width, final int height) {
         // Group Schema Viewer
         final Group group = Form.createGroup(mainComposite, 1, Messages.getString("XmlFileStep1.groupSchemaTarget"), height);
+        
+        /////////////////////////////////////////////
+        // to correct graphic bug under Linux-GTK when the wizard is opened the first time 
+        if(WindowSystem.isGTK() && firstTimeWizardOpened.equals(Boolean.TRUE)) {
+        	group.addListener(SWT.Paint, new Listener() {
+
+				public void handleEvent(Event event) {
+					Point offsetPoint = event.display.map(linker.getBgDrawableComposite(), group, new Point(0, 0));
+					linker.setOffset(offsetPoint);
+					linker.drawBackground(event.gc);
+				}
+        		
+        	});
+        }
+        /////////////////////////////////////////////
+        
         group.setBackgroundMode(SWT.INHERIT_FORCE);
 
         CommandStackForComposite commandStack = new CommandStackForComposite(group);
@@ -252,15 +279,47 @@ public class XmlFileStep2Form extends AbstractXmlFileStepForm {
         if (WindowSystem.isGTK()) {
             data2.heightHint = 90;
         }
-        loopTableEditorView.getMainComposite().setLayoutData(data2);
-        loopTableEditorView.getMainComposite().setBackground(null);
+        final Composite loopTableEditorComposite =  loopTableEditorView.getMainComposite();
+        loopTableEditorComposite.setLayoutData(data2);
+        loopTableEditorComposite.setBackground(null);
+        /////////////////////////////////////////////
+        // to correct graphic bug under Linux-GTK when the wizard is opened the first time 
+        if(WindowSystem.isGTK() && firstTimeWizardOpened.equals(Boolean.TRUE)) {
+        	loopTableEditorComposite.addListener(SWT.Paint, new Listener() {
 
+				public void handleEvent(Event event) {
+					Point offsetPoint = event.display.map(linker.getBgDrawableComposite(), loopTableEditorComposite, new Point(0, 0));
+					linker.setOffset(offsetPoint);
+					linker.drawBackground(event.gc);
+				}
+        		
+        	});
+        }
+        /////////////////////////////////////////////
+        
+        
         // Messages.getString("FileStep3.metadataDescription")
         fieldsModel = new XmlExtractorFieldModel("Fields to extract");
         fieldsTableEditorView = new ExtractionFieldsWithXPathEditorView(fieldsModel, group);
         fieldsTableEditorView.getExtendedTableViewer().setCommandStack(commandStack);
-        fieldsTableEditorView.getMainComposite().setLayoutData(new GridData(GridData.FILL_BOTH));
-        fieldsTableEditorView.getMainComposite().setBackground(null);
+        final Composite fieldTableEditorComposite = fieldsTableEditorView.getMainComposite();
+        fieldTableEditorComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
+        fieldTableEditorComposite.setBackground(null);
+        /////////////////////////////////////////////
+        // to correct graphic bug under Linux-GTK when the wizard is opened the first time 
+        if(WindowSystem.isGTK() && firstTimeWizardOpened.equals(Boolean.TRUE)) {
+        	fieldTableEditorComposite.addListener(SWT.Paint, new Listener() {
+
+				public void handleEvent(Event event) {
+					Point offsetPoint = event.display.map(linker.getBgDrawableComposite(), fieldTableEditorComposite, new Point(0, 0));
+					linker.setOffset(offsetPoint);
+					linker.drawBackground(event.gc);
+				}
+        		
+        	});
+        }
+        /////////////////////////////////////////////
+        
 
     }
 
