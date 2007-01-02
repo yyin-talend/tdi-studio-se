@@ -1123,12 +1123,14 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                     for (Object tableObj : connection.getTables()) {
                         org.talend.core.model.metadata.builder.connection.MetadataTable table;
                         table = (org.talend.core.model.metadata.builder.connection.MetadataTable) tableObj;
-                        String name = repositoryObjectType.getAlias() + ":" + connectionItem.getProperty().getLabel()
-                                + " - " + table.getLabel();
-                        String value = connectionItem.getProperty().getId() + " - " + table.getLabel();
-                        repositoryTableMap.put(value, ConvertionHelper.convert(table));
-                        tableNamesList.add(name);
-                        tableValuesList.add(value);
+                        if (!factory.isDeleted(table)) {
+                            String name = repositoryObjectType.getAlias() + ":" + connectionItem.getProperty().getLabel() + " - "
+                                    + table.getLabel();
+                            String value = connectionItem.getProperty().getId() + " - " + table.getLabel();
+                            repositoryTableMap.put(value, ConvertionHelper.convert(table));
+                            tableNamesList.add(name);
+                            tableValuesList.add(value);
+                        }
                     }
                 }
                 if (connection instanceof DatabaseConnection && !connection.isReadOnly()) {
