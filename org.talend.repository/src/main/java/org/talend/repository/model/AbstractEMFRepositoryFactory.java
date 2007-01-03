@@ -59,30 +59,6 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
         return EcoreUtil.generateUUID();
     }
 
-    private void collect(RootContainer<String, IRepositoryObject> rootContainer, List<ConnectionItem> result)
-            throws PersistenceException {
-        for (IRepositoryObject repositoryObject : rootContainer.getAbsoluteMembers().objects()) {
-            ConnectionItem connectionItem = (ConnectionItem) repositoryObject.getProperty().getItem();
-            if (getStatus(connectionItem) != ERepositoryStatus.DELETED) {
-                result.add(connectionItem);
-            }
-        }
-    }
-
-    // gather all the metadata connections (file / db / etc ...)
-    public List<ConnectionItem> getMetadataConnectionsItem() throws PersistenceException {
-        List<ConnectionItem> result = new ArrayList<ConnectionItem>();
-
-        collect(getMetadataFileDelimited(), result);
-        collect(getMetadataFilePositional(), result);
-        collect(getMetadataFileRegexp(), result);
-        collect(getMetadataFileXml(), result);
-        collect(getMetadataFileLdif(), result);
-        collect(getMetadataConnection(), result);
-
-        return result;
-    }
-
     public RootContainer<String, IRepositoryObject> getDocumentation() throws PersistenceException {
         return getObjectFromFolder(ERepositoryObjectType.DOCUMENTATION, true);
     }
