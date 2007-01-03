@@ -67,10 +67,9 @@ public class PropertyTablePasteCommand<B> extends ExtendedTablePasteCommand {
         ArrayList list = new ArrayList();
         
         for (Object current : copiedObjectsList) {
-            if (current instanceof Map) {
+            if (current instanceof HashMap) {
                 // create a new column as a copy of this column
-                HashMap<String, Object> row = new HashMap<String, Object>();
-                Map<String, Object> clonedRow = (Map<String, Object>) row.clone();
+                Map<String, Object> clonedRow = (Map<String, Object>) ((HashMap) current).clone();
 //                newColumnCopy.setLabel(nextGeneratedColumnName);
                 list.add(clonedRow);
             }
