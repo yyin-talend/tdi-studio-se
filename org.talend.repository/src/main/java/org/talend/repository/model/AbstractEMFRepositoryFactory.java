@@ -26,6 +26,7 @@ import java.util.List;
 
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.utils.data.container.Container;
@@ -35,6 +36,8 @@ import org.talend.core.model.general.Project;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.FolderItem;
 import org.talend.core.model.properties.Item;
+import org.talend.core.model.properties.PropertiesPackage;
+import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
 
@@ -170,5 +173,38 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
             boolean onlyLastVersion) throws PersistenceException;
 
     protected abstract FolderHelper getFolderHelper(org.talend.core.model.properties.Project emfProject);
+
+    protected Item copyFromResource(Resource createResource) throws PersistenceException {
+        Item newItem = (Item) EcoreUtil.getObjectByType(createResource.getContents(), PropertiesPackage.eINSTANCE.getItem());
+        Property property = newItem.getProperty();
+        property.setId(getNextId());
+        property.setAuthor(getRepositoryContext().getUser());
+        setPropNewName(property);
+        EcoreUtil.resolveAll(createResource);
+        return newItem;
+    }
+
+    /**
+     * DOC smallet Comment method "getCopiedLabel".
+     * 
+     * @param copiedProperty
+     * @return
+     * @throws PersistenceException
+     */
+    private void setPropNewName(Property copiedProperty) throws PersistenceException {
+        String originalLabel = copiedProperty.getLabel();
+        String add1 = "Copy of ";
+        String initialTry = add1 + originalLabel;
+        copiedProperty.setLabel(initialTry);
+        if (isNameAvailable(copiedProperty.getItem(), null)) {
+            return;
+        } else {
+            int i = 2;
+            while (!isNameAvailable(copiedProperty.getItem(), null)) {
+                String nextTry = initialTry + " (" + (i++) + ")";
+                copiedProperty.setLabel(nextTry);
+            }
+        }
+    }
 
 }
