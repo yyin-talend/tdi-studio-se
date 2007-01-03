@@ -14,7 +14,7 @@
    <extension
          id="rep.actions"
          name="Actions"
-         point="org.talend.core.actions">
+         point="org.talend.core.repositoryContextualsActions">
       <Action
             class="org.talend.repository.ui.actions.folder.CreateFolderAction"
             id="org.talend.repository.actions.createfolder"
