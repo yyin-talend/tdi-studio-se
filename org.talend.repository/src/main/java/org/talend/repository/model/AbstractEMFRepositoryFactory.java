@@ -156,7 +156,7 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
         List<IRepositoryObject> list = getAll(type, true);
 
         for (IRepositoryObject current : list) {
-            if (name.equals(current.getProperty().getLabel()) && item.getProperty().getId() != current.getProperty().getId()) {
+            if (name.equalsIgnoreCase(current.getProperty().getLabel()) && item.getProperty().getId() != current.getProperty().getId()) {
                 return false;
             }
         }
@@ -193,7 +193,7 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
      */
     private void setPropNewName(Property copiedProperty) throws PersistenceException {
         String originalLabel = copiedProperty.getLabel();
-        String add1 = "Copy of ";
+        String add1 = "Copy_of_";
         String initialTry = add1 + originalLabel;
         copiedProperty.setLabel(initialTry);
         if (isNameAvailable(copiedProperty.getItem(), null)) {
@@ -201,7 +201,7 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
         } else {
             int i = 2;
             while (!isNameAvailable(copiedProperty.getItem(), null)) {
-                String nextTry = initialTry + " (" + (i++) + ")";
+                String nextTry = initialTry + "_(" + (i++) + ")";
                 copiedProperty.setLabel(nextTry);
             }
         }
