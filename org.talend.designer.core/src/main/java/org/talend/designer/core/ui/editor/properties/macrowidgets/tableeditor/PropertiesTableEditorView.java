@@ -130,7 +130,7 @@ public class PropertiesTableEditorView<B> extends AbstractDataTableEditorView<B>
         String[] titles = model.getTitles();
         final Object[] itemsValue = model.getItemsValue();
         final String[] items = model.getItems();
-//        final Element elem = model.getElement();
+        // final Element elem = model.getElement();
         final IElementParameter param = model.getElemParameter();
         for (int i = 0; i < titles.length; i++) {
             if (param.isShow(model.getItemsShowIf()[i], model.getItemsNotShowIf()[i], model.getElement().getElementParameters())) {
@@ -151,29 +151,47 @@ public class PropertiesTableEditorView<B> extends AbstractDataTableEditorView<B>
                     column.setCellEditor(cellEditor, new CellEditorValueAdapter() {
 
                         public String getColumnText(CellEditor cellEditor, Object cellEditorValue) {
+                            // System.out.println("getColumnText() cellEditorValue=" + cellEditorValue + "
+                            // returnedValue=" + cellEditorValue);
+
                             return (String) cellEditorValue;
                         }
 
                         public Object getOriginalTypedValue(CellEditor cellEditor, Object cellEditorTypedValue) {
-                            if (cellEditorTypedValue instanceof Integer) {
-                                return cellEditorTypedValue;
+                            Object returnedValue = null;
+                            if (cellEditorTypedValue != null && cellEditorTypedValue instanceof Integer) {
+                                int index = (Integer) cellEditorTypedValue;
+                                String[] namesSet = ((CCombo) cellEditor.getControl()).getItems();
+                                if (namesSet.length > 0 && index > -1 && index < namesSet.length) {
+                                    returnedValue = namesSet[index];
+                                } else {
+                                    returnedValue = null;
+                                }
+                            } else {
+                                returnedValue = null;
                             }
-                            return new Integer(0);
+                            // System.out.println("getOriginalTypedValue() cellEditorTypedValue=" + cellEditorTypedValue
+                            // + " returnedValue="
+                            // + returnedValue);
+                            return returnedValue;
                         };
 
                         public Object getCellEditorTypedValue(CellEditor cellEditor, Object originalTypedValue) {
-                            boolean found = false;
-                            int nb = 0;
 
-                            String[] namesSet = ((CCombo) cellEditor.getControl()).getItems();
-
-                            for (int j = 0; j < namesSet.length && !found; j++) {
-                                if (namesSet[j].equals(originalTypedValue)) {
-                                    found = true;
-                                    nb = j;
+                            Object returnedValue = 0;
+                            if (originalTypedValue != null) {
+                                String[] namesSet = ((CCombo) cellEditor.getControl()).getItems();
+                                for (int j = 0; j < namesSet.length; j++) {
+                                    if (namesSet[j].equals(originalTypedValue)) {
+                                        returnedValue = j;
+                                        break;
+                                    }
                                 }
                             }
-                            return new Integer(nb);
+                            // System.out.println("getCellEditorTypedValue() originalTypedValue=" + originalTypedValue +
+                            // " returnedValue="
+                            // + returnedValue);
+                            return returnedValue;
                         };
                     });
                     break;
@@ -185,10 +203,11 @@ public class PropertiesTableEditorView<B> extends AbstractDataTableEditorView<B>
                     TextCellEditorWithProposal textCellEditor = new TextCellEditorWithProposal(table, column);
                     textCellEditor.setContentProposalProvider(processProposalProvider);
                     if (((i == 0) && (param.isBasedOnSchema())) || (param.isRepositoryValueUsed()) || (param.isReadOnly())) {
-                        Text text = (Text) textCellEditor.getControl();
-                        text.setEditable(false);
+                        // read only cell
+                    } else {
+                        // writable cell
+                        column.setCellEditor(textCellEditor);
                     }
-                    column.setCellEditor(textCellEditor);
                 }
                 final int curCol = i;
                 column.setBeanPropertyAccessors(new IBeanPropertyAccessors<B, Object>() {
@@ -252,5 +271,4 @@ public class PropertiesTableEditorView<B> extends AbstractDataTableEditorView<B>
         return (PropertiesTableEditorModel) getExtendedTableModel();
     }
 
-    
 }

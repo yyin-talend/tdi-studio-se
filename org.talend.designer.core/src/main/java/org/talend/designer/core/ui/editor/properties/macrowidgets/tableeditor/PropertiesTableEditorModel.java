@@ -130,7 +130,7 @@ public class PropertiesTableEditorModel<B> extends ExtendedTableModel<B> {
         case CLOSED_LIST:
         case COLUMN_LIST:
         case PREV_COLUMN_LIST:
-            line.put(items[0], new Integer(tmpParam.getIndexOfItemFromList((String) tmpParam.getDefaultClosedListValue())));
+            line.put(items[0], null);
             break;
         case CHECK:
             line.put(items[0], tmpParam.getValue());
