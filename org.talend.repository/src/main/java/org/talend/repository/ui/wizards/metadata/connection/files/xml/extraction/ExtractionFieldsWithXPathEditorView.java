@@ -21,6 +21,11 @@
 // ============================================================================
 package org.talend.repository.ui.wizards.metadata.connection.files.xml.extraction;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.eclipse.emf.common.util.BasicEList;
+import org.eclipse.gef.commands.Command;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.swt.SWT;
@@ -28,7 +33,9 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
 import org.talend.commons.ui.swt.advanced.dataeditor.AbstractDataTableEditorView;
 import org.talend.commons.ui.swt.advanced.dataeditor.AbstractExtendedToolbar;
-import org.talend.commons.ui.swt.advanced.dataeditor.button.CopyPushButton;
+import org.talend.commons.ui.swt.advanced.dataeditor.button.PastePushButton;
+import org.talend.commons.ui.swt.advanced.dataeditor.commands.ExtendedTablePasteCommand;
+import org.talend.commons.ui.swt.extended.table.ExtendedTableModel;
 import org.talend.commons.ui.swt.proposal.TextCellEditorWithProposal;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumn;
@@ -39,8 +46,10 @@ import org.talend.commons.utils.data.bean.IBeanPropertyAccessors;
 import org.talend.commons.utils.data.list.ListenableListEvent;
 import org.talend.core.model.metadata.builder.connection.SchemaTarget;
 import org.talend.core.model.targetschema.editor.XmlExtractorFieldModel;
+import org.talend.core.model.targetschema.editor.XmlExtractorLoopModel;
 import org.talend.core.ui.extended.ExtendedToolbarView;
 import org.talend.core.ui.extended.button.AddPushButtonForExtendedTable;
+import org.talend.core.ui.extended.button.PastePushButtonForExtendedTable;
 
 /**
  * DOC amaumont class global comment. Detailled comment <br/> TGU same purpose as TargetSchemaTableEditorView but uses
@@ -272,16 +281,40 @@ public class ExtractionFieldsWithXPathEditorView extends AbstractDataTableEditor
                 };
             }
 
-            /*
-             * (non-Javadoc)
-             * 
-             * @see org.talend.core.ui.extended.ExtendedToolbarView#createCopyPushButton()
+            /* (non-Javadoc)
+             * @see org.talend.core.ui.extended.ExtendedToolbarView#createPastePushButton()
              */
             @Override
-            protected CopyPushButton createCopyPushButton() {
-                return null;
+            protected PastePushButton createPastePushButton() {
+                return new PastePushButtonForExtendedTable(toolbar, extendedTableViewer) {
+
+                    @Override
+                    protected Command getCommandToExecute(ExtendedTableModel extendedTableModel, Integer indexWhereInsert) {
+                         return new ExtendedTablePasteCommand(extendedTableModel, indexWhereInsert) {
+
+                            @Override
+                            public List createPastableBeansList(ExtendedTableModel extendedTableModel, List copiedObjectsList) {
+                                ArrayList list = new ArrayList();
+                                XmlExtractorFieldModel fieldsModel = (XmlExtractorFieldModel) extendedTableModel;
+                                for (Object current : copiedObjectsList) {
+                                    if (current instanceof SchemaTarget) {
+                                        SchemaTarget original = (SchemaTarget) current;
+                                        SchemaTarget copy = fieldsModel.createNewSchemaTarget();
+                                        copy.setRelativeXPathQuery(original.getRelativeXPathQuery());
+                                        copy.setTagName(original.getTagName());
+                                        list.add(copy);
+                                    }
+                                }
+                                return list;
+                            }
+                         };
+                    }
+
+                };
             }
 
+            
+            
         };
 
     }

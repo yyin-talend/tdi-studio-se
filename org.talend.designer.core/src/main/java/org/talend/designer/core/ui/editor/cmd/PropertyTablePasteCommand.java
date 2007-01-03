@@ -70,32 +70,11 @@ public class PropertyTablePasteCommand<B> extends ExtendedTablePasteCommand {
             if (current instanceof HashMap) {
                 // create a new column as a copy of this column
                 Map<String, Object> clonedRow = (Map<String, Object>) ((HashMap) current).clone();
-//                newColumnCopy.setLabel(nextGeneratedColumnName);
                 list.add(clonedRow);
             }
         }
         return list;
     }
 
-//    private void getUniqueStringValue(String baseStringValue, List<B> beansList) {
-//        UniqueStringGenerator<B> uniqueStringGenerator = new UniqueStringGenerator<B>(baseStringValue,
-//                beansList) {
-//
-//            /*
-//             * (non-Javadoc)
-//             * 
-//             * @see org.talend.commons.utils.data.list.UniqueStringGenerator#getBeanString(java.lang.Object)
-//             */
-//            @Override
-//            protected String getBeanString(B bean) {
-//                return bean.getLabel();
-//            }
-//
-//        };
-//
-//        return uniqueStringGenerator.getUniqueString();
-//
-//    }
-    
     
 }
