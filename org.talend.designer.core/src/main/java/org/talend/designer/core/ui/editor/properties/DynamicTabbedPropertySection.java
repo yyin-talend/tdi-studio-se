@@ -121,7 +121,7 @@ import org.talend.commons.utils.data.list.IListenableListListener;
 import org.talend.commons.utils.data.list.ListenableListEvent;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.RepositoryContext;
-import org.talend.core.language.perl.ICodeSyntaxChecker;
+import org.talend.core.language.ICodeSyntaxChecker;
 import org.talend.core.model.metadata.ColumnNameChanged;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;

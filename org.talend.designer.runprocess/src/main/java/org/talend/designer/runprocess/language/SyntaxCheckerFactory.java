@@ -21,7 +21,7 @@
 // ============================================================================
 package org.talend.designer.runprocess.language;
 
-import org.talend.core.language.perl.ICodeSyntaxChecker;
+import org.talend.core.language.ICodeSyntaxChecker;
 import org.talend.core.model.temp.ECodeLanguage;
 import org.talend.designer.runprocess.language.perl.PerlExpressionSyntaxChecker;
 

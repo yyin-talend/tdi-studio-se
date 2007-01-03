@@ -21,7 +21,7 @@
 // ============================================================================
 package org.talend.designer.mapper.language.perl;
 
-import org.talend.core.language.perl.ICodeSyntaxChecker;
+import org.talend.core.language.ICodeSyntaxChecker;
 import org.talend.core.model.process.Problem;
 import org.talend.core.model.temp.ECodeLanguage;
 import org.talend.designer.mapper.Activator;
