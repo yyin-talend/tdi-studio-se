@@ -42,11 +42,18 @@ import org.talend.repository.model.actions.CopyObjectAction;
  */
 public class PasteAction extends AContextualAction {
 
+    private static PasteAction singleton;
+
     public PasteAction() {
         super();
         this.setText("Paste");
         this.setImageDescriptor(ImageProvider.getImageDesc(EImage.PASTE_ICON));
         this.setActionDefinitionId("pasteItem");
+        singleton = this;
+    }
+
+    public static PasteAction getInstance() {
+        return singleton;
     }
 
     @Override

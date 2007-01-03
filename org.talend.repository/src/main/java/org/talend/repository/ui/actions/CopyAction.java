@@ -38,11 +38,18 @@ import org.talend.repository.model.actions.CopyObjectAction;
  */
 public class CopyAction extends AContextualAction {
 
+    private static CopyAction singleton;
+
     public CopyAction() {
         super();
         this.setText("Copy");
         this.setImageDescriptor(ImageProvider.getImageDesc(EImage.COPY_ICON));
         this.setActionDefinitionId("copyItem");
+        singleton = this;
+    }
+
+    public static CopyAction getInstance() {
+        return singleton;
     }
 
     @Override

@@ -57,6 +57,7 @@ import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.IWorkbenchActionConstants;
+import org.eclipse.ui.actions.TextActionHandler;
 import org.eclipse.ui.commands.ActionHandler;
 import org.eclipse.ui.contexts.IContextActivation;
 import org.eclipse.ui.contexts.IContextService;
@@ -77,7 +78,10 @@ import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNode.ENodeType;
 import org.talend.repository.model.actions.MoveObjectAction;
 import org.talend.repository.ui.actions.ActionsHelper;
+import org.talend.repository.ui.actions.CopyAction;
+import org.talend.repository.ui.actions.DeleteAction;
 import org.talend.repository.ui.actions.ImportProjectsAction;
+import org.talend.repository.ui.actions.PasteAction;
 import org.talend.repository.ui.actions.RefreshAction;
 import org.talend.repository.ui.actions.RepositoryDoubleClickAction;
 
@@ -105,7 +109,7 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
     private Action importAction;
 
     private Listener dragDetectListener;
-    
+
     public RepositoryView() {
     }
 
@@ -276,6 +280,11 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
             }
         }
         doubleClickAction = new RepositoryDoubleClickAction(this, contextualsActions);
+
+        TextActionHandler textActionHandler = new TextActionHandler(getViewSite().getActionBars());
+        textActionHandler.setCopyAction(CopyAction.getInstance());
+        textActionHandler.setPasteAction(PasteAction.getInstance());
+        textActionHandler.setDeleteAction(DeleteAction.getInstance());
     }
 
     private void hookDoubleClickAction() {

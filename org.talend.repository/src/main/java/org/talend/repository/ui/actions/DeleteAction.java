@@ -50,6 +50,8 @@ import org.talend.repository.model.RepositoryNode.EProperties;
  */
 public class DeleteAction extends AContextualAction {
 
+    private static DeleteAction singleton;
+
     private static final String DELETE_LOGICAL_TITLE = Messages.getString("DeleteAction.action.logicalTitle");
 
     private static final String DELETE_FOREVER_TITLE = Messages.getString("DeleteAction.action.foreverTitle");
@@ -62,6 +64,11 @@ public class DeleteAction extends AContextualAction {
         super();
         this.setImageDescriptor(ImageProvider.getImageDesc(EImage.DELETE_ICON));
         this.setActionDefinitionId("deleteItem");
+        singleton = this;
+    }
+
+    public static DeleteAction getInstance() {
+        return singleton;
     }
 
     public void run() {
