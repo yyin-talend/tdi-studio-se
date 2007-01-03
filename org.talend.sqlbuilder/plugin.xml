@@ -47,7 +47,7 @@
    </extension>
    <extension-point id="editorAction" name="SQL Editor Action" schema="schema/editorAction.exsd"/>
    <extension
-         point="org.talend.core.actions">
+         point="org.talend.core.repositoryContextualsActions">
       <Action
             class="org.talend.sqlbuilder.actions.EditQueriesAction"
             id="org.talend.sqlbuilder.EditQueries"
