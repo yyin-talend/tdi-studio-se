@@ -170,7 +170,7 @@
                         name="Problems"/>
    </extension>
    <extension
-         point="org.talend.core.actions">
+         point="org.talend.core.repositoryContextualsActions">
       <Action
             class="org.talend.designer.core.ui.action.EditProcess"
             id="org.talend.designer.core.actions.editprocess"
