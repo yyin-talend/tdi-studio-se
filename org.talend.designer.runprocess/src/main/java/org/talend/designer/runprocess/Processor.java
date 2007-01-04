@@ -97,7 +97,7 @@ public class Processor {
     // ProcessorException { //Old
     public Process run(final IContext context, int statisticsPort, int tracePort, String watchParam)
             throws ProcessorException {
-        PerlProcessor plProcessor = new PerlProcessor(process, false);
+        PerlProcessor plProcessor = new PerlProcessor(process, true);
         // plProcessor.generateCode(context, statisticsPort != NO_STATISTICS, tracePort != NO_TRACES, swatchPort !=
         // WATCH_LIMITED, true);
         plProcessor.generateCode(context, statisticsPort != NO_STATISTICS, tracePort != NO_TRACES, true);
@@ -137,7 +137,7 @@ public class Processor {
      * @throws ProcessorException Process failed.
      */
     public ILaunchConfiguration debug(final IContext context) throws ProcessorException {
-        PerlProcessor plProcessor = new PerlProcessor(process, false);
+        PerlProcessor plProcessor = new PerlProcessor(process, true);
         // plProcessor.generateCode(context, false, false, false, true);
         plProcessor.generateCode(context, false, false, true);
 
