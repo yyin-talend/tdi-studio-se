@@ -3090,15 +3090,17 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
 
                 @Override
                 public void updateCommand(Control control) {
-                    Object[] commands = getCommandStack().getCommands();
-                    if (commands.length == 0) {
+                    CommandStack commandStack = getCommandStack();
+                    Object[] commands = commandStack.getCommands();
+                    
+                    if (commands.length == 0 || commandStack.getRedoCommand() != null) {
                         addNewCommand(control);
                     } else {
                         Object lastCommandObject = commands[commands.length - 1];
                         String name = getParameterName(control);
                         if (lastCommandObject instanceof PropertyChangeCommand) {
                             PropertyChangeCommand lastCommand = (PropertyChangeCommand) lastCommandObject;
-                            if (name.equals(lastCommand.getPropName()) && (lastCommand.getElement() == elem)) {
+                            if (name.equals(lastCommand.getPropName())) {
                                 String text = ControlUtils.getText(control);
                                 lastCommand.modifyValue(text);
                                 // System.out.println("--------------------------------------------");
