@@ -1915,6 +1915,8 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
         }
         Control cLayout = dField.getLayoutControl();
         labelText = (Text) dField.getControl();
+        
+        labelText.setData(PROPERTY, param.getName());
 
         editionControlHelper.register(param.getName(), labelText, true);
 
@@ -3096,7 +3098,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                         String name = getParameterName(control);
                         if (lastCommandObject instanceof PropertyChangeCommand) {
                             PropertyChangeCommand lastCommand = (PropertyChangeCommand) lastCommandObject;
-                            if (name.equals(lastCommand.getPropName())) {
+                            if (name.equals(lastCommand.getPropName()) && (lastCommand.getElement() == elem)) {
                                 String text = ControlUtils.getText(control);
                                 lastCommand.modifyValue(text);
                                 // System.out.println("--------------------------------------------");
