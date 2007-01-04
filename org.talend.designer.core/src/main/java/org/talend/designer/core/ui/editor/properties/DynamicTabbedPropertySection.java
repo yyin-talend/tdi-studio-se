@@ -3100,7 +3100,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                         String name = getParameterName(control);
                         if (lastCommandObject instanceof PropertyChangeCommand) {
                             PropertyChangeCommand lastCommand = (PropertyChangeCommand) lastCommandObject;
-                            if (name.equals(lastCommand.getPropName())) {
+                            if (name.equals(lastCommand.getPropName()) && (lastCommand.getElement() == elem)) {
                                 String text = ControlUtils.getText(control);
                                 lastCommand.modifyValue(text);
                                 // System.out.println("--------------------------------------------");

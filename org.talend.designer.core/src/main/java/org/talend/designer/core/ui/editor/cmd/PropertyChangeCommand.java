@@ -242,5 +242,9 @@ public class PropertyChangeCommand extends Command {
     public String getPropName() {
         return this.propName;
     }
+    
+    public Element getElement() {
+        return this.elem;
+    }
 
 }
