@@ -343,14 +343,7 @@ public class TMapperMainPerljet {
                 // write outputs arrays initialization with empty list for reject tables
                 for (int indexReject = indexCurrentTable; indexReject < lstSize; indexReject++) {
                     ExternalMapperTable outputRejectTable = (ExternalMapperTable) outputTablesSortedByReject.get(indexReject);
-                    // List<ExternalMapperTableEntry> metadataTableEntries =
-                    // outputRejectTable.getMetadataTableEntries();
-                    // List<ExternalMapperTableEntry> filtersForReject = outputRejectTable.getConstraintTableEntries();
-                    // boolean hasFilterForReject = filtersForReject != null && filtersForReject.size() > 0
-                    // && !gm.checkFiltersAreEmpty(outputRejectTable);
                     if (outputRejectTable.isReject() || outputRejectTable.isRejectInnerJoin()) {
-                        // if (metadataTableEntries != null && metadataTableEntries.size() > 0 && hasFilterForReject
-                        // && outputRejectTable.isReject() && hasFilters || outputRejectTable.isRejectInnerJoin()) {
                         sb.append(cr + gm.indent(indent) + "# Output reject table: '" + outputRejectTable.getName() + "'");
                         sb.append(cr + gm.indent(indent) + gm.buildNewArrayDeclaration(outputRejectTable.getName(), indent));
                     }
