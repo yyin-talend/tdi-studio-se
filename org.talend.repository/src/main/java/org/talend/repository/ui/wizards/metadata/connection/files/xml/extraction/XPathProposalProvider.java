@@ -122,7 +122,7 @@ public class XPathProposalProvider implements IContentProposalProvider {
         String currentWord = extractLastWord(beforeCursorExp);
 
         boolean expressionIsEmpty = currentExpr.trim().length() == 0;
-        
+
         // String xPathExpression =
         //            
         // // + " | " +
@@ -136,26 +136,9 @@ public class XPathProposalProvider implements IContentProposalProvider {
         List<Node> list = new ArrayList<Node>(0);
 
         boolean estimationError = false;
-        // NodeList nodesList = null;
-        // try {
-        // nodesList = this.linker.getNodeRetriever().retrieveNodeList(currentExpr);
-        // } catch (XPathExpressionException e) {
-        // ExceptionHandler.process(e);
-        // estimationError = true;
-        // }
-
-        // if (true || linker.getAllLoopNodes().size() > 500 || !estimationError && nodesList.getLength() > 500) {
 
         ArrayList<Node> allLoopNodes = linker.getAllLoopNodes();
 
-        // if (isRelative && expressionIsRelative && allLoopNodes.size() < nodeNumberLimit) {
-        //
-        // // System.out.println("nodesList.getLength():" + nodesList.getLength());
-        // System.out.println("nodesList.getLength():" + linker.getAllLoopNodes().size());
-        // XPathContentProposal contentProposal = new XPathContentProposal("<< Too many nodes ! >>");
-        // proposals.add(contentProposal);
-        //
-        // } else
         boolean resultsMayBeIncomplete = false;
         boolean breakAll = false;
 
@@ -165,7 +148,7 @@ public class XPathProposalProvider implements IContentProposalProvider {
         // ///////////////////////////////////////////////////////////////////////////////////////////////
         // XPath requests for relative XPath
         //
-        if (isRelativeTable && ( isRelativeExpression || expressionIsEmpty )) {
+        if (isRelativeTable && (isRelativeExpression || expressionIsEmpty)) {
             int allNodesLoopSize = allLoopNodes.size();
 
             // System.out.println("nodeLoop size list : " + allNodesLoopSize);
@@ -193,8 +176,6 @@ public class XPathProposalProvider implements IContentProposalProvider {
 
                     try {
 
-                        // list =
-                        // this.linker.getNodeRetriever().retrieveListOfNodes(createXPathExpression(currentExpr));
                         nodeList = this.linker.getNodeRetriever().retrieveNodeListFromNode(
                                 modifyXpathToSearchAllChildren(currentExpr, true), nodeLoop);
                     } catch (XPathExpressionException e) {
@@ -235,7 +216,6 @@ public class XPathProposalProvider implements IContentProposalProvider {
                                 if ((currentWord.length() > 0 && nodeName.startsWith(currentWord) || currentWord.length() == 0 || currentWord
                                         .equals("/"))
                                         && !alreadyAdded.contains(absoluteXPathFromNode)) {
-                                    // System.out.println(absoluteXPathFromNode);
                                     XPathContentProposal contentProposal = new XPathContentProposal(node);
                                     if (isRelativeTable && isRelativeExpression) {
                                         contentProposal.setRelative(isRelativeTable);
