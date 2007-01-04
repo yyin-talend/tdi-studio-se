@@ -49,26 +49,37 @@ public class PromptDialog extends Dialog {
      * 
      */
     private static final int Y_POSITION = 100;
+
     /**
      * 
      */
     private static final int X_POSITION = 300;
+
     /**
      * 
      */
     private static final int CELLPADDING = 10;
+
     /**
      * 
      */
     private static final int MINIMUM_WIDTH = 50;
+
     /**
      * 
      */
     private static final int MARGIN_HEIGHT = 4;
+
     /**
      * 
      */
     private static final int MARGIN_WIDTH = 7;
+
+    /**
+     * 
+     */
+    private static final int MAX_LABEL_LENGTH_ONE_LINE = 16;
+
     IContext context;
 
     /**
@@ -113,13 +124,15 @@ public class PromptDialog extends Dialog {
                     }
                 }
 
-                GridData data = new GridData(GridData.FILL_HORIZONTAL);
-                data.minimumWidth = MINIMUM_WIDTH;
-                text.setLayoutData(data);
-
-                data = new GridData();
+                GridData data = new GridData();
                 data.minimumWidth = MINIMUM_WIDTH;
                 label.setLayoutData(data);
+                data.horizontalSpan = 2;
+                
+                data = new GridData(GridData.FILL_HORIZONTAL);
+                data.horizontalSpan = 2;
+                data.minimumWidth = MINIMUM_WIDTH;
+                text.setLayoutData(data);
 
                 position += text.getLineHeight() + CELLPADDING;
             }
@@ -141,7 +154,7 @@ public class PromptDialog extends Dialog {
         newPosition.x = centerScreen.x - newPosition.x;
         newPosition.y = centerScreen.y - newPosition.y;
         shell.setLocation(newPosition);
-        shell.setSize(size.x, size.y);
+        shell.setSize(size.x + (size.x / 2), size.y + (size.y / 2));
     }
 
     @Override
