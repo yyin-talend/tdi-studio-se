@@ -219,7 +219,7 @@ public class FileStep3Form extends AbstractPositionalFileStepForm {
 
             public void keyPressed(KeyEvent e) {
                 if ((!Character.isIdentifierIgnorable(e.character))
-                        && (!Pattern.matches(RepositoryConstants.FILE_PATTERN, "" + e.character))) {
+                        && (!Pattern.matches(RepositoryConstants.REPOSITORY_ITEM_PATTERN, "" + e.character))) {
                     e.doit = false;
                 }
             }
@@ -422,7 +422,7 @@ public class FileStep3Form extends AbstractPositionalFileStepForm {
             metadataNameText.forceFocus();
             updateStatus(IStatus.ERROR, Messages.getString("FileStep1.nameAlert"));
             return false;
-        } else if (!Pattern.matches(RepositoryConstants.FILE_PATTERN, metadataNameText.getText())) {
+        } else if (!Pattern.matches(RepositoryConstants.REPOSITORY_ITEM_PATTERN, metadataNameText.getText())) {
             metadataNameText.forceFocus();
             updateStatus(IStatus.ERROR, Messages.getString("FileStep1.nameAlertIllegalChar"));
             return false;

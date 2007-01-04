@@ -186,7 +186,7 @@ public class ProxyRepositoryFactory implements IProxyRepositoryFactory {
      * org.eclipse.core.runtime.IPath, java.lang.String)
      */
     public Folder createFolder(ERepositoryObjectType type, IPath path, String label) throws PersistenceException {
-        checkFileNameAndPath(label, RepositoryConstants.FILE_PATTERN, type, path, true);
+        checkFileNameAndPath(label, RepositoryConstants.REPOSITORY_ITEM_PATTERN, type, path, true);
         return this.repositoryFactoryFromProvider.createFolder(type, path, label);
     }
 
@@ -356,7 +356,7 @@ public class ProxyRepositoryFactory implements IProxyRepositoryFactory {
      */
     public void moveObject(IRepositoryObject objToMove, IPath path) throws PersistenceException, BusinessException {
         checkDisponibilite(objToMove);
-        checkFileNameAndPath(objToMove.getProperty().getItem(), RepositoryConstants.FILE_PATTERN, path, false);
+        checkFileNameAndPath(objToMove.getProperty().getItem(), RepositoryConstants.REPOSITORY_ITEM_PATTERN, path, false);
         this.repositoryFactoryFromProvider.moveObject(objToMove, path);
         log.debug("Move [" + objToMove + "] to \"" + path + "\".");
         unlock(getItem(objToMove));
@@ -573,7 +573,7 @@ public class ProxyRepositoryFactory implements IProxyRepositoryFactory {
      * org.eclipse.core.runtime.IPath)
      */
     public void create(Item item, IPath path) throws PersistenceException {
-        checkFileNameAndPath(item, RepositoryConstants.FILE_PATTERN, path, false);
+        checkFileNameAndPath(item, RepositoryConstants.REPOSITORY_ITEM_PATTERN, path, false);
         this.repositoryFactoryFromProvider.create(item, path);
     }
 

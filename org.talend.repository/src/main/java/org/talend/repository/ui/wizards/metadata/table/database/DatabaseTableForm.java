@@ -551,7 +551,7 @@ public class DatabaseTableForm extends AbstractForm {
 
             public void keyPressed(KeyEvent e) {
                 if ((!Character.isIdentifierIgnorable(e.character))
-                        && (!Pattern.matches(RepositoryConstants.FILE_PATTERN, "" + e.character))) {
+                        && (!Pattern.matches(RepositoryConstants.REPOSITORY_ITEM_PATTERN, "" + e.character))) {
                     e.doit = false;
                 }
             }
@@ -606,7 +606,7 @@ public class DatabaseTableForm extends AbstractForm {
             if (table.getLabel().equals("")) {
                 updateStatus(IStatus.ERROR, Messages.getString("DatabaseTableForm.nameAlert"));
                 return false;
-            } else if (!Pattern.matches(RepositoryConstants.FILE_PATTERN, table.getLabel())) {
+            } else if (!Pattern.matches(RepositoryConstants.REPOSITORY_ITEM_PATTERN, table.getLabel())) {
                 updateStatus(IStatus.ERROR, Messages.getString("DatabaseTableForm.nameAlertIllegalChar") + " \""
                         + table.getLabel() + "\"");
                 return false;
