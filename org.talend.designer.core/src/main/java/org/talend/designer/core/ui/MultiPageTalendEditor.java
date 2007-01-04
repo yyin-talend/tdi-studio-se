@@ -136,7 +136,7 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
         perlEditor = new TalendPerlEditor();
         IProcess process = designerEditor.getProcess();
         IRunProcessService service = DesignerPlugin.getDefault().getRunProcessService();
-        IPerlProcessor plProcessor = service.createPerlProcessor(process, false);
+        IPerlProcessor plProcessor = service.createPerlProcessor(process, true);
         try {
             plProcessor.initPaths(process.getContextManager().getDefaultContext());
             IFile codeFile = ResourcesPlugin.getWorkspace().getRoot().getFile(
@@ -285,7 +285,7 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
             IProcess process = designerEditor.getProcess();
 
             IRunProcessService service = DesignerPlugin.getDefault().getRunProcessService();
-            IPerlProcessor plProcessor = service.createPerlProcessor(process, false);
+            IPerlProcessor plProcessor = service.createPerlProcessor(process, true);
 
             try {
                 // plProcessor.generateCode(process.getContextManager().getDefaultContext(), false, false, true,

@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.jface.dialogs.InputDialog;
@@ -54,6 +55,7 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.MessageBox;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.ui.IWorkbenchPart;
@@ -86,6 +88,7 @@ import org.talend.designer.core.ui.editor.cmd.ContextRenameParameterCommand;
 import org.talend.designer.core.ui.editor.outline.ProcessTreeEditPart;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.editor.process.ProcessPart;
+import org.talend.repository.model.RepositoryConstants;
 
 /**
  * Section used for the contexts in a process.
@@ -150,8 +153,7 @@ public class ContextProcessSection extends AbstractPropertySection {
                 IContext oldContextCloned = context.clone();
                 context.setConfirmationNeeded(selected);
 
-                getCommandStack().execute(
-                        new ContextModifyCommand(process.getContextManager(), oldContextCloned, context));
+                getCommandStack().execute(new ContextModifyCommand(process.getContextManager(), oldContextCloned, context));
 
             } else {
 
@@ -159,8 +161,7 @@ public class ContextProcessSection extends AbstractPropertySection {
                 for (int i = 0; i < process.getContextManager().getListContext().size(); i++) {
                     if (process.getContextManager().getListContext().get(i).getName().equals(combo.getText())) {
                         getCommandStack().execute(
-                                new ContextChangeDefaultCommand(process, process.getContextManager().getListContext()
-                                        .get(i)));
+                                new ContextChangeDefaultCommand(process, process.getContextManager().getListContext().get(i)));
                     }
                 }
                 IContext context = getSelectedContext();
@@ -205,8 +206,7 @@ public class ContextProcessSection extends AbstractPropertySection {
                     public void handleEvent(final Event event) {
                         TableItem tableItem = tableItems[0];
                         String paramName = ((IContextParameter) tableItem.getData()).getName();
-                        getCommandStack().execute(
-                                new ContextRemoveParameterCommand(process.getContextManager(), paramName));
+                        getCommandStack().execute(new ContextRemoveParameterCommand(process.getContextManager(), paramName));
                         table.deselectAll();
                         removeButtons.get(selectedContext).setEnabled(false);
                     }
@@ -312,8 +312,7 @@ public class ContextProcessSection extends AbstractPropertySection {
 
         public void handleEvent(final Event event) {
             String contextName = tabFolder.getSelection().getText();
-            boolean delete = MessageDialog.openQuestion(composite.getShell(), Messages
-                    .getString("ContextProcessSection.18"), //$NON-NLS-1$
+            boolean delete = MessageDialog.openQuestion(composite.getShell(), Messages.getString("ContextProcessSection.18"), //$NON-NLS-1$
                     Messages.getString("ContextProcessSection.19") + contextName + ")"); //$NON-NLS-1$ //$NON-NLS-2$
 
             if (delete) {
@@ -325,15 +324,17 @@ public class ContextProcessSection extends AbstractPropertySection {
     private Listener copyContextListener = new Listener() {
 
         public void handleEvent(final Event event) {
-            InputDialog inputDial = new InputDialog(composite.getShell(),
-                    Messages.getString("ContextProcessSection.6"), //$NON-NLS-1$
+            InputDialog inputDial = new InputDialog(composite.getShell(), Messages.getString("ContextProcessSection.6"), //$NON-NLS-1$
                     Messages.getString("ContextProcessSection.7"), "", null); //$NON-NLS-1$ //$NON-NLS-2$
 
             inputDial.open();
             String returnValue = inputDial.getValue();
             if (returnValue != null) {
-                if (!returnValue.equals("")) { //$NON-NLS-1$
+                if (!returnValue.equals("") && Pattern.matches(RepositoryConstants.FILE_PATTERN, returnValue)) { //$NON-NLS-1$
                     createContext(returnValue);
+                } else {
+                    MessageDialog.openWarning(new Shell(), Messages.getString("ContextProcessSection.14"), Messages
+                            .getString("ContextProcessSection.15"));
                 }
             }
         }
@@ -342,15 +343,17 @@ public class ContextProcessSection extends AbstractPropertySection {
     private Listener renameContextListener = new Listener() {
 
         public void handleEvent(final Event event) {
-            InputDialog inputDial = new InputDialog(composite.getShell(), Messages
-                    .getString("ContextProcessSection.12"), //$NON-NLS-1$
+            InputDialog inputDial = new InputDialog(composite.getShell(), Messages.getString("ContextProcessSection.12"), //$NON-NLS-1$
                     Messages.getString("ContextProcessSection.13"), "", null); //$NON-NLS-1$ //$NON-NLS-2$
             inputDial.open();
             String newName = inputDial.getValue();
             if (newName != null) {
-                if (!newName.equals("")) { //$NON-NLS-1$
+                if (!newName.equals("") && Pattern.matches(RepositoryConstants.FILE_PATTERN, newName)) { //$NON-NLS-1$
                     String contextName = tabFolder.getSelection().getText();
                     renameContext(contextName, newName);
+                } else {
+                    MessageDialog.openWarning(new Shell(), Messages.getString("ContextProcessSection.14"), Messages
+                            .getString("ContextProcessSection.15"));
                 }
             }
         }
@@ -405,8 +408,7 @@ public class ContextProcessSection extends AbstractPropertySection {
             return false;
         }
 
-        getCommandStack().execute(
-                new ContextRenameParameterCommand(process.getContextManager(), oldParamName, newParamName));
+        getCommandStack().execute(new ContextRenameParameterCommand(process.getContextManager(), oldParamName, newParamName));
         return true;
     }
 
@@ -523,8 +525,7 @@ public class ContextProcessSection extends AbstractPropertySection {
 
         Composite buttonParameterComposite = getWidgetFactory().createComposite(buttonComposite);
         buttonParameterComposite.setLayout(new GridLayout(3, false));
-        buttonParameterComposite
-                .setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_CENTER | GridData.GRAB_HORIZONTAL));
+        buttonParameterComposite.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_CENTER | GridData.GRAB_HORIZONTAL));
         CLabel label = getWidgetFactory().createCLabel(buttonParameterComposite, "Parameters:");
         label.setAlignment(SWT.RIGHT);
         Button addParameter = new Button(buttonParameterComposite, SWT.None);
@@ -598,8 +599,8 @@ public class ContextProcessSection extends AbstractPropertySection {
             }
         });
         removeParameter.addListener(SWT.Selection, removeParameterListener);
-        table.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_FILL | GridData.HORIZONTAL_ALIGN_FILL
-                | GridData.GRAB_HORIZONTAL | GridData.GRAB_VERTICAL));
+        table.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_FILL | GridData.HORIZONTAL_ALIGN_FILL | GridData.GRAB_HORIZONTAL
+                | GridData.GRAB_VERTICAL));
 
         if (!process.isReadOnly()) {
             Menu menuTable;
@@ -675,8 +676,7 @@ public class ContextProcessSection extends AbstractPropertySection {
                 bean.setPrompt(value);
                 if (!oldCellEditorValue.equals(newCellEditorValue)) {
                     IContext context = getSelectedContext();
-                    getCommandStack().execute(
-                            new ContextModifyCommand(process.getContextManager(), oldContext, context));
+                    getCommandStack().execute(new ContextModifyCommand(process.getContextManager(), oldContext, context));
                 }
             }
         });
@@ -697,8 +697,7 @@ public class ContextProcessSection extends AbstractPropertySection {
                 bean.setType(value);
                 if (!oldCellEditorValue.equals(newCellEditorValue)) {
                     IContext context = getSelectedContext();
-                    getCommandStack().execute(
-                            new ContextModifyCommand(process.getContextManager(), oldContext, context));
+                    getCommandStack().execute(new ContextModifyCommand(process.getContextManager(), oldContext, context));
                 }
             }
         });
@@ -725,8 +724,7 @@ public class ContextProcessSection extends AbstractPropertySection {
                 bean.setValue(value);
                 if (!oldCellEditorValue.equals(newCellEditorValue)) {
                     IContext context = getSelectedContext();
-                    getCommandStack().execute(
-                            new ContextModifyCommand(process.getContextManager(), oldContext, context));
+                    getCommandStack().execute(new ContextModifyCommand(process.getContextManager(), oldContext, context));
                 }
             }
         });
@@ -747,8 +745,7 @@ public class ContextProcessSection extends AbstractPropertySection {
                 bean.setComment(value);
                 if (!oldCellEditorValue.equals(newCellEditorValue)) {
                     IContext context = getSelectedContext();
-                    getCommandStack().execute(
-                            new ContextModifyCommand(process.getContextManager(), oldContext, context));
+                    getCommandStack().execute(new ContextModifyCommand(process.getContextManager(), oldContext, context));
                 }
             }
         });
@@ -761,9 +758,8 @@ public class ContextProcessSection extends AbstractPropertySection {
         column.setBeanPropertyAccessors(new IBeanPropertyAccessors<IContextParameter, String>() {
 
             public String get(IContextParameter bean) {
-                return ContextParameterUtils.getScriptCode(bean, ((RepositoryContext) org.talend.core.CorePlugin
-                        .getContext().getProperty(org.talend.core.context.Context.REPOSITORY_CONTEXT_KEY)).getProject()
-                        .getLanguage());
+                return ContextParameterUtils.getScriptCode(bean, ((RepositoryContext) org.talend.core.CorePlugin.getContext()
+                        .getProperty(org.talend.core.context.Context.REPOSITORY_CONTEXT_KEY)).getProject().getLanguage());
             }
 
             public void set(IContextParameter bean, String value) {
@@ -851,8 +847,7 @@ public class ContextProcessSection extends AbstractPropertySection {
         if (workbenchPart instanceof MultiPageTalendEditor) {
             part = (MultiPageTalendEditor) workbenchPart;
         } else {
-            part = (MultiPageTalendEditor) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
-                    .getActiveEditor();
+            part = (MultiPageTalendEditor) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
         }
         super.setInput(part, selection);
         Object input = ((IStructuredSelection) selection).getFirstElement();
@@ -881,8 +876,8 @@ public class ContextProcessSection extends AbstractPropertySection {
         combo.clearSelection();
 
         for (int i = 0; i < process.getContextManager().getListContext().size(); i++) {
-            TableViewerCreator tableViewerCreator = tableViewerCreatorMap.get(process.getContextManager()
-                    .getListContext().get(i));
+            TableViewerCreator tableViewerCreator = tableViewerCreatorMap
+                    .get(process.getContextManager().getListContext().get(i));
             tableViewerCreator.getTableViewer().refresh();
 
             Table table = tableViewerCreator.getTable();
