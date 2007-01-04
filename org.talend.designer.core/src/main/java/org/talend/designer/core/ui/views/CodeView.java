@@ -46,6 +46,7 @@ import org.talend.core.model.temp.ECodePart;
 import org.talend.designer.codegen.ICodeGenerator;
 import org.talend.designer.codegen.ICodeGeneratorService;
 import org.talend.designer.core.DesignerPlugin;
+import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.nodes.NodeLabel;
 import org.talend.designer.core.ui.editor.nodes.NodeLabelEditPart;
@@ -64,20 +65,60 @@ public class CodeView extends ViewPart implements ISelectionListener {
 
     private ICodeGenerator codeGenerator = null;
 
-    private boolean mainOnly = true;
+    private static final int CODE_START = 0;
+
+    private static final int CODE_MAIN = 1;
+
+    private static final int CODE_END = 2;
+
+    private static final int CODE_ALL = 3;
+
+    private int codeView = CODE_MAIN;
+    
+    private static final String ERROR_MESSAGE = Messages.getString("CodeView.Error"); //$NON-NLS-1$
 
     private INode node = null;
+
+    IAction viewStartAction = new Action() {
+
+        @Override
+        public String getText() {
+            return Messages.getString("CodeView.Start"); //$NON-NLS-1$
+        }
+
+        @Override
+        public void run() {
+            codeView = CODE_START;
+            refresh();
+        }
+
+    };
 
     IAction viewMainAction = new Action() {
 
         @Override
         public String getText() {
-            return "Main";
+            return Messages.getString("CodeView.Main"); //$NON-NLS-1$
         }
 
         @Override
         public void run() {
-            mainOnly = true;
+            codeView = CODE_MAIN;
+            refresh();
+        }
+
+    };
+
+    IAction viewEndAction = new Action() {
+
+        @Override
+        public String getText() {
+            return Messages.getString("CodeView.End"); //$NON-NLS-1$
+        }
+
+        @Override
+        public void run() {
+            codeView = CODE_END;
             refresh();
         }
 
@@ -87,12 +128,12 @@ public class CodeView extends ViewPart implements ISelectionListener {
 
         @Override
         public String getText() {
-            return "All";
+            return Messages.getString("CodeView.All"); //$NON-NLS-1$
         }
 
         @Override
         public void run() {
-            mainOnly = false;
+            codeView = CODE_ALL;
             refresh();
         }
 
@@ -105,12 +146,12 @@ public class CodeView extends ViewPart implements ISelectionListener {
     public void createPartControl(final Composite parent) {
         parent.setLayout(new FillLayout());
         ColorManager colorManager = new ColorManager(CorePlugin.getDefault().getPreferenceStore());
-        ECodeLanguage language = ((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY))
-                .getProject().getLanguage();
+        ECodeLanguage language = ((RepositoryContext) CorePlugin.getContext().getProperty(
+                Context.REPOSITORY_CONTEXT_KEY)).getProject().getLanguage();
         text = new ColorStyledText(parent, SWT.H_SCROLL | SWT.V_SCROLL, colorManager, language.getName());
         getSite().getWorkbenchWindow().getSelectionService().addSelectionListener(this);
         text.setEditable(false);
-        Font font = new Font(parent.getDisplay(), "courier", 8, SWT.NONE);
+        Font font = new Font(parent.getDisplay(), "courier", 8, SWT.NONE); //$NON-NLS-1$
         text.setFont(font);
 
         createMenu();
@@ -119,7 +160,9 @@ public class CodeView extends ViewPart implements ISelectionListener {
     private void createMenu() {
         IMenuManager manager = getViewSite().getActionBars().getMenuManager();
 
+        manager.add(viewStartAction);
         manager.add(viewMainAction);
+        manager.add(viewEndAction);
         manager.add(viewAllAction);
         viewMainAction.setChecked(true);
     }
@@ -169,29 +212,40 @@ public class CodeView extends ViewPart implements ISelectionListener {
 
     public void refresh() {
         if (node != null) {
-            String generatedCode;
+            String generatedCode = ""; //$NON-NLS-1$
             if (codeGenerator == null) {
                 ICodeGeneratorService service = DesignerPlugin.getDefault().getCodeGeneratorService();
                 codeGenerator = service.createCodeGenerator();
             }
-            if (mainOnly) {
-                viewMainAction.setChecked(true);
-                viewAllAction.setChecked(false);
-                try {
+            viewStartAction.setChecked(false);
+            viewMainAction.setChecked(false);
+            viewEndAction.setChecked(false);
+            viewAllAction.setChecked(false);
+            try {
+                switch (codeView) {
+                case CODE_START:
+                    viewStartAction.setChecked(true);
+                    generatedCode = codeGenerator.generateComponentCode(node, ECodePart.BEGIN);
+                    break;
+                case CODE_MAIN:
+                    viewMainAction.setChecked(true);
                     generatedCode = codeGenerator.generateComponentCode(node, ECodePart.MAIN);
-                } catch (SystemException e) {
-                    throw new RuntimeException(e);
-                }
-            } else {
-                viewMainAction.setChecked(false);
-                viewAllAction.setChecked(true);
-                try {
+                    break;
+                case CODE_END:
+                    viewEndAction.setChecked(true);
+                    generatedCode = codeGenerator.generateComponentCode(node, ECodePart.END);
+                    break;
+                case CODE_ALL:
+                    viewAllAction.setChecked(true);
                     generatedCode = codeGenerator.generateComponentCode(node, ECodePart.BEGIN);
                     generatedCode += codeGenerator.generateComponentCode(node, ECodePart.MAIN);
                     generatedCode += codeGenerator.generateComponentCode(node, ECodePart.END);
-                } catch (SystemException e) {
-                    throw new RuntimeException(e);
+                    break;
+                default:
                 }
+            } catch (SystemException e) {
+                text.setText(ERROR_MESSAGE);
+                throw new RuntimeException(e);
             }
             text.setText(generatedCode);
         }
