@@ -21,7 +21,6 @@
 // ============================================================================
 package org.talend.repository.ui.wizards.metadata.connection.files.xml.extraction;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
@@ -36,8 +35,6 @@ import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.jface.dialogs.ProgressMonitorDialog;
-import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Rectangle;
@@ -50,6 +47,7 @@ import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.internal.dialogs.EventLoopProgressMonitor;
 import org.talend.commons.exception.ExceptionHandler;
+import org.talend.commons.ui.swt.dialogs.ProgressDialog;
 import org.talend.commons.ui.swt.drawing.link.BezierHorizontalLink;
 import org.talend.commons.ui.swt.drawing.link.ExtremityEastArrow;
 import org.talend.commons.ui.swt.drawing.link.ExtremityLink;
@@ -189,91 +187,82 @@ public class XmlToXPathLinker extends TreeToTablesLinker<Object, Object> {
 
         removeAllLinks();
         getBackgroundRefresher().refreshBackground();
-        
-        final Display display = getBgDrawableComposite().getDisplay();
-        
-        final IRunnableWithProgress op = new IRunnableWithProgress() {
 
-            public void run(final IProgressMonitor monitor) {
-                display.asyncExec(new Runnable() {
+        ProgressDialog progressDialog = new ProgressDialog(getTree().getShell()) {
 
-                    private IProgressMonitor monitorWrap;
+            private IProgressMonitor monitorWrap;
 
-                    public void run() {
+            @Override
+            public void run(IProgressMonitor monitor) {
 
-                        TableItem[] loopTableItems = loopTableEditorView.getTable().getItems();
-                        TableItem[] fieldsTableItems = fieldsTableEditorView.getTable().getItems();
+                TableItem[] loopTableItems = loopTableEditorView.getTable().getItems();
+                TableItem[] fieldsTableItems = fieldsTableEditorView.getTable().getItems();
 
-                        monitorWrap = new EventLoopProgressMonitor(monitor);
+                monitorWrap = new EventLoopProgressMonitor(monitor);
 
-                        String taskName = "Loop links creation ...";
-                        int totalWork = loopTableItems.length + fieldsTableItems.length;
+                String taskName = "Loop links creation ...";
+                int totalWork = loopTableItems.length + fieldsTableItems.length;
 
-//                        System.out.println("Total work : " + totalWork);
+                monitorWrap.beginTask(taskName, totalWork); //$NON-NLS-1$
 
-//                        int worked = 0;
+                List<XmlXPathLoopDescriptor> xpathLoopDescriptorList = loopTableEditorView.getModel().getBeansList();
+                for (int i = 0; i < loopTableItems.length; i++) {
 
-                        monitorWrap.beginTask(taskName, totalWork); //$NON-NLS-1$
-
-                        List<XmlXPathLoopDescriptor> xpathLoopDescriptorList = loopTableEditorView.getModel().getBeansList();
-                        for (int i = 0; i < loopTableItems.length; i++) {
-
-                            // if (progressDialog.isCanceled()) {
-                            if (monitorWrap.isCanceled()) {
-                                return;
-                            }
-
-                            TableItem tableItem = loopTableItems[i];
-                            XmlXPathLoopDescriptor xpathLoopDescriptor = xpathLoopDescriptorList.get(i);
-                            String xPathQuery = xpathLoopDescriptor.getAbsoluteXPathQuery();
-                            if (xPathQuery != null) {
-                                createLoopLinks(xPathQuery, tableItem, monitorWrap);
-                            }
-
-                            monitorWrap.worked(1);
-                        }
-
-                        monitorWrap.beginTask("Fields links creation ...", totalWork);
-
-                        List<SchemaTarget> schemaTargetList = fieldsTableEditorView.getModel().getBeansList();
-                        for (int i = 0; i < fieldsTableItems.length; i++) {
-
-                            if (monitorWrap.isCanceled()) {
-                                return;
-                            }
-
-                            TableItem tableItem = fieldsTableItems[i];
-                            SchemaTarget schemaTarget = schemaTargetList.get(i);
-                            String relativeXpathQuery = schemaTarget.getRelativeXPathQuery();
-                            createFieldLinks(relativeXpathQuery, tableItem, monitorWrap);
-
-                            monitorWrap.worked(1);
-//                            System.out.println(worked++);
-                        }
-                        monitorWrap.done();
-
+                    if (monitorWrap.isCanceled()) {
+                        return;
                     }
 
-                });
-            }
-        };
+                    TableItem tableItem = loopTableItems[i];
+                    XmlXPathLoopDescriptor xpathLoopDescriptor = xpathLoopDescriptorList.get(i);
+                    String xPathQuery = xpathLoopDescriptor.getAbsoluteXPathQuery();
+                    if (xPathQuery != null) {
+                        createLoopLinks(xPathQuery, tableItem, monitorWrap);
+                    }
 
-        display.asyncExec(new Runnable() {
-
-            public void run() {
-
-                try {
-                    new ProgressMonitorDialog(getTree().getShell()).run(true, true, op);
-                } catch (InvocationTargetException e) {
-                    ExceptionHandler.process(e);
-                } catch (InterruptedException e) {
-                    ExceptionHandler.process(e);
+                    monitorWrap.worked(1);
                 }
-                getBackgroundRefresher().refreshBackground();
+
+                List<SchemaTarget> schemaTargetList = fieldsTableEditorView.getModel().getBeansList();
+
+                createFieldsLinkWithProgressMonitor(monitorWrap, schemaTargetList.size() + loopTableItems.length, schemaTargetList, 0,
+                        fieldsTableItems.length);
+
+                monitorWrap.done();
+
             }
 
-        });
+        };
+        progressDialog.executeProcess();
 
+    }
+
+    /**
+     * DOC amaumont Comment method "createFieldsLinkWithProgressDialog".
+     * 
+     * @param monitorWrap
+     * @param fieldsTableItems
+     * @param totalWork
+     * @param schemaTargetList
+     */
+    private void createFieldsLinkWithProgressMonitor(IProgressMonitor monitorWrap, int totalWork, List<SchemaTarget> schemaTargetList,
+            int startTableItem, int tableItemLength) {
+        monitorWrap.beginTask("Fields links creation ...", totalWork);
+
+        TableItem[] fieldsTableItems = fieldsTableEditorView.getTable().getItems();
+
+        for (int i = startTableItem, indexShemaTarget = 0; i < startTableItem + tableItemLength; i++, indexShemaTarget++) {
+
+            if (monitorWrap.isCanceled()) {
+                return;
+            }
+
+            TableItem tableItem = fieldsTableItems[i];
+            SchemaTarget schemaTarget = schemaTargetList.get(indexShemaTarget);
+            String relativeXpathQuery = schemaTarget.getRelativeXPathQuery();
+            createFieldLinks(relativeXpathQuery, tableItem, monitorWrap);
+
+            monitorWrap.worked(1);
+        }
     }
 
     /**
@@ -418,17 +407,30 @@ public class XmlToXPathLinker extends TreeToTablesLinker<Object, Object> {
 
     }
 
-    public void handleListenableListAfterTableViewerRefreshedEvent(ListenableListEvent<SchemaTarget> event) {
+    public void handleListenableListAfterTableViewerRefreshedEvent(final ListenableListEvent<SchemaTarget> event) {
         if (event.type == ListenableListEvent.TYPE.ADDED) {
-            // event.indicesTarget;
-            Collection<SchemaTarget> addedObjects = event.addedObjects;
-            for (SchemaTarget schemaTarget : addedObjects) {
-                TableItem tableItem = TableUtils.getTableItem(fieldsTableEditorView.getTable(), schemaTarget);
-                if (tableItem == null) {
-                    throw new IllegalStateException("tableItem shouldn't be null");
+
+            ProgressDialog progressDialog = new ProgressDialog(getTree().getShell()) {
+
+                private IProgressMonitor monitorWrap;
+
+                @Override
+                public void run(IProgressMonitor monitor) {
+
+                    monitorWrap = new EventLoopProgressMonitor(monitor);
+
+                    List<SchemaTarget> addedObjects = new ArrayList<SchemaTarget>(event.addedObjects);
+
+                    XmlToXPathLinker.this.createFieldsLinkWithProgressMonitor(monitorWrap, addedObjects.size(), addedObjects, event.index,
+                            addedObjects.size());
+
+                    monitorWrap.done();
+
                 }
-                createFieldLinks(schemaTarget.getRelativeXPathQuery(), tableItem, null);
-            }
+
+            };
+            progressDialog.executeProcess();
+
             getBackgroundRefresher().refreshBackground();
         } else if (event.type == ListenableListEvent.TYPE.SWAPED) {
             getBackgroundRefresher().refreshBackground();

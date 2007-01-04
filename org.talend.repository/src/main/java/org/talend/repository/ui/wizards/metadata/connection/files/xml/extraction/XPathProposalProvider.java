@@ -89,8 +89,6 @@ public class XPathProposalProvider implements IContentProposalProvider {
 
         List<IContentProposal> proposals = new ArrayList<IContentProposal>();
 
-        // isRelative = false;
-
         String beforeCursorExp = null;
         boolean isRelativeExpression = !contents.trim().startsWith(SLASH);
         if (isRelativeTable && isRelativeExpression) {
@@ -133,9 +131,6 @@ public class XPathProposalProvider implements IContentProposalProvider {
         // System.out.println("beforeCursorExp='"+beforeCursorExp+"'");
         // System.out.println("currentWord='"+currentWord+"'");
         // System.out.println("1");
-        List<Node> list = new ArrayList<Node>(0);
-
-        boolean estimationError = false;
 
         ArrayList<Node> allLoopNodes = linker.getAllLoopNodes();
 
