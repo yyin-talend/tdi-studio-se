@@ -264,7 +264,7 @@ public class TalendJobManager {
         context = context.replace("/", "");
         String contextArg = "--context=";
 
-        String projectSeparator = ".process";
+        String projectSeparator = ".job";
 
         String wordSeparator = "_";
 

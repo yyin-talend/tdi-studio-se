@@ -57,8 +57,8 @@ my @arguments = (
     '"<%=interpreterPath %>"',
     '-I "<%=libPath %>"',
     '-I "<%=runtimeFilePath %>"',
-    '"<%=runtimeFilePath %>/<%=currentProjectName %>.process_'.<%=process %>.'.pl"',
-    '--context="<%=runtimeFilePath %>/<%=currentProjectName %>.process_'.<%=process %>.'_'.<%=context %>.'.pl"',
+    '"<%=runtimeFilePath %>/<%=currentProjectName %>.job_'.<%=process %>.'.pl"',
+    '--context="<%=runtimeFilePath %>/<%=currentProjectName %>.job_'.<%=process %>.'_'.<%=context %>.'.pl"',
 );
 
 system(

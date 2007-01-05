@@ -158,7 +158,7 @@ public class JobScriptsManager {
     private String getCommandByTalendJob(String project, String jobName, String context) {
         String contextArg = "--context=";
 
-        String projectSeparator = ".process";
+        String projectSeparator = ".job";
 
         String wordSeparator = "_";
 
@@ -362,7 +362,7 @@ public class JobScriptsManager {
 
                 for (int i = 0; i < process.length; i++) {
                     String name = escapeFileNameSpace(process[i]);
-                    name = projectName + ".process_" + name + ".pl";
+                    name = projectName + ".job_" + name + ".pl";
                     list.add(name);
                 }
 
@@ -393,7 +393,7 @@ public class JobScriptsManager {
             for (Iterator<String> iter = contexts.iterator(); iter.hasNext();) {
                 String contextName = iter.next();
                 contextName = escapeSpace(contextName);
-                String contextFullName = projectName + ".process_" + processName + "_" + contextName + ".pl";
+                String contextFullName = projectName + ".job_" + processName + "_" + contextName + ".pl";
                 list.add(contextFullName);
             }
         }
