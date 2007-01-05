@@ -69,6 +69,7 @@ import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryConstants;
 import org.talend.repository.model.RepositoryFactoryProvider;
 import org.talend.repository.ui.ERepositoryImages;
+import org.talend.repository.ui.actions.ImportDemoProjectAction;
 import org.talend.repository.ui.actions.ImportProjectsAction;
 import org.talend.repository.ui.wizards.newproject.NewProjectWizard;
 
@@ -114,6 +115,8 @@ public class LoginComposite extends Composite {
     private Button newProjectButton;
 
     private Button importProjectsButton;
+
+    private Button importDemoProjectButton;
 
     public static final Project NEW_PROJECT = new Project(Messages.getString("LoginComposite.newProject"));
 
@@ -255,12 +258,12 @@ public class LoginComposite extends Composite {
         fillProjectsBtn.setLayoutData(fillGrid);
 
         // Blank
-        toolkit.createLabel(formBody, null);
+        // toolkit.createLabel(formBody, null);
 
         Composite bottomButtons = toolkit.createComposite(formBody);
         // bottomButtons.setBackground(new Color(null,255,0,0));
         GridData fillGrid2 = new GridData(GridData.FILL_HORIZONTAL);
-        fillGrid2.horizontalSpan = 8;
+        fillGrid2.horizontalSpan = 9;
         bottomButtons.setLayoutData(fillGrid2);
         bottomButtons.setLayout(new FormLayout());
 
@@ -280,6 +283,17 @@ public class LoginComposite extends Composite {
         formData = new FormData();
         formData.left = new FormAttachment(newProjectButton, 5);
         importProjectsButton.setLayoutData(formData);
+
+        importDemoProjectButton = toolkit.createButton(bottomButtons, null, SWT.PUSH);
+        ImportDemoProjectAction idpa = ImportDemoProjectAction.getInstance();
+        importDemoProjectButton.setText(idpa.getText());
+        importDemoProjectButton.setToolTipText(idpa.getToolTipText());
+        // importDemoProjectButton.setImage(ImageProvider.getImage(idpa.getImageDescriptor()));
+        formData = new FormData();
+        formData.left = new FormAttachment(importProjectsButton, 5);
+        formData.top = new FormAttachment(0);
+        formData.bottom = new FormAttachment(100);
+        importDemoProjectButton.setLayoutData(formData);
 
         fillContents();
         addListeners();
@@ -481,6 +495,17 @@ public class LoginComposite extends Composite {
                 populateProjectList();
             }
         });
+
+        importDemoProjectButton.addSelectionListener(new SelectionAdapter() {
+
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                // dialog.setMessage("Importing demo project ...");
+                ImportDemoProjectAction.getInstance().setShell(getShell());
+                ImportDemoProjectAction.getInstance().run();
+                populateProjectList();
+            }
+        });
     }
 
     /**
@@ -518,9 +543,11 @@ public class LoginComposite extends Composite {
         if (isAuthenticationNeeded() || !validateFields()) {
             newProjectButton.setEnabled(false);
             importProjectsButton.setEnabled(false);
+            importDemoProjectButton.setEnabled(false);
         } else {
             newProjectButton.setEnabled(true);
             importProjectsButton.setEnabled(true);
+            importDemoProjectButton.setEnabled(true);
         }
     }
 
