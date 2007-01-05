@@ -53,7 +53,7 @@ import org.talend.repository.ui.ERepositoryImages;
  */
 public final class ImportDemoProjectAction extends Action {
 
-    private static final String ACTION_TITLE = "Import demo project";
+    private static final String ACTION_TITLE = "Import demo";
 
     private static final String ACTION_TOOLTIP = "Import demo project";
 
