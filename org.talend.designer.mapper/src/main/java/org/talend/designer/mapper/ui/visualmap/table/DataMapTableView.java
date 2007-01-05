@@ -263,9 +263,6 @@ public abstract class DataMapTableView extends Composite {
         headerLayout.verticalSpacing = spacing;
         headerComposite.setLayout(headerLayout);
 
-        // Button check = new Button(headerComposite, SWT.CHECK);
-        // check.setLayoutData(new GridData(SWT.BEGINNING));
-
         nameLabel = new Label(headerComposite, SWT.NONE);
         nameLabel.setFont(FontProviderMapper.getFont(FontInfo.FONT_SYSTEM_BOLD));
         nameLabel.setText(abstractDataMapTable.getName());
@@ -287,12 +284,8 @@ public abstract class DataMapTableView extends Composite {
             gridData.widthHint = sizeToolBar.x;
             // to correct invalid margin when SWT.RIGHT style set in ToolBar
             gridData.widthHint -= 48;
-            // gridData.widthHint -= 34;
         }
-        if (
-        // toolbarNeededToBeRightStyle() &&
-        WindowSystem.isGTK()) {
-            // gridData.widthHint += 5;
+        if (WindowSystem.isGTK()) {
             gridData.heightHint = 26;
         }
         toolBarActions.setLayoutData(gridData);
@@ -942,88 +935,6 @@ public abstract class DataMapTableView extends Composite {
 
             });
         }
-        // /////////////////////////////////////////////////////////////////
-
-        // ToolItem removeConstraintButton = new ToolItem(toolBarActions, SWT.PUSH);
-        // removeConstraintButton.setImage(ImageProviderMapper.getImage(ImageInfo.REMOVE_CONSTRAINT_ICON));
-        // removeConstraintButton.setToolTipText("Remove selected constraints");
-        // // /////////////////////////////////////////////////////////////////
-        // if (removeConstraintButton != null) {
-        //
-        // removeConstraintButton.addSelectionListener(new SelectionListener() {
-        //
-        // public void widgetDefaultSelected(SelectionEvent e) {
-        // }
-        //
-        // public void widgetSelected(SelectionEvent e) {
-        //
-        // StructuredSelection selection = (StructuredSelection) tableViewerCreatorForConstraints
-        // .getTableViewer().getSelection();
-        // List list = tableViewerCreatorForConstraints.getInputList();
-        // int sizeBeforeRemoving = list.size();
-        // Iterator iterator = selection.iterator();
-        // for (; iterator.hasNext();) {
-        // mapperManager.removeTableEntry((ITableEntry) iterator.next());
-        // }
-        // if (sizeBeforeRemoving != list.size()) {
-        // tableViewerCreatorForConstraints.getTableViewer().refresh();
-        // updateGridDataHeightForTableConstraints();
-        // if (list != null && list.size() == 0) {
-        // showTableConstraints(false);
-        // } else {
-        // showTableConstraints(true);
-        // }
-        // }
-        // }
-        //
-        // });
-        // }
-
-        // /////////////////////////////////////////////////////////////////
-
-        // final ToolItem rejectFilterCheck = new ToolItem(toolBarActions, SWT.CHECK);
-        // rejectFilterCheck.setToolTipText("Active/unactive reject");
-        // boolean isReject = ((OutputTable) abstractDataMapTable).isReject();
-        // Image image = ImageProviderMapper.getImage(isReject ? ImageInfo.CHECKED_ICON : ImageInfo.UNCHECKED_ICON);
-        // if (WindowSystem.isGTK()) {
-        // rejectFilterCheck.setImage(image);
-        // rejectFilterCheck.setHotImage(image);
-        // } else {
-        // rejectFilterCheck.setImage(ImageProviderMapper.getImage(ImageInfo.UNCHECKED_ICON));
-        // rejectFilterCheck.setHotImage(image);
-        // }
-        // rejectFilterCheck.setSelection(isReject);
-        // rejectFilterCheck.setText("Reject");
-        //        
-        // // /////////////////////////////////////////////////////////////////
-        // if (rejectFilterCheck != null) {
-        //
-        // rejectFilterCheck.addSelectionListener(new SelectionListener() {
-        //
-        // public void widgetDefaultSelected(SelectionEvent e) {
-        // }
-        //
-        // public void widgetSelected(SelectionEvent e) {
-        // Image image = null;
-        // if (rejectFilterCheck.getSelection()) {
-        // ((OutputTable) abstractDataMapTable).setReject(true);
-        // image = ImageProviderMapper.getImage(ImageInfo.CHECKED_ICON);
-        // } else {
-        // ((OutputTable) abstractDataMapTable).setReject(false);
-        // image = ImageProviderMapper.getImage(ImageInfo.UNCHECKED_ICON);
-        // }
-        // if (WindowSystem.isGTK()) {
-        // rejectFilterCheck.setImage(image);
-        // rejectFilterCheck.setHotImage(image);
-        // } else {
-        // rejectFilterCheck.setHotImage(image);
-        // }
-        // }
-        //
-        // });
-        //
-        // }
-
         // /////////////////////////////////////////////////////////////////
 
         final ToolItem rejectFilterCheck = new ToolItem(toolBarActions, SWT.CHECK);

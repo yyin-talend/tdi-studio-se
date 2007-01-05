@@ -364,4 +364,14 @@ public class LinkManager {
     public int getCurrentNumberLinks() {
         return this.currentNumberLinks;
     }
+
+    /**
+     * Get the count of inputs levels.
+     * 
+     * @return the count of inputs levels
+     */
+    public int getCountOfInputLevels() {
+        return this.inputLinksForLevels.size();
+    }
+
 }

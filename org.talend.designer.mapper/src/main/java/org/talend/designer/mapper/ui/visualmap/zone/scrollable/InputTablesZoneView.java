@@ -34,13 +34,15 @@ import org.talend.designer.mapper.managers.MapperManager;
  */
 public class InputTablesZoneView extends TablesZoneView {
 
+    private FormLayout formLayout;
+
     public InputTablesZoneView(Composite parent, int style, MapperManager mapperManager) {
         super(parent, style, mapperManager);
     }
 
     @Override
     public Layout initLayout() {
-        FormLayout formLayout = new FormLayout();
+        formLayout = new FormLayout();
         formLayout.marginLeft = 30;
         formLayout.marginRight = 40;
         formLayout.marginTop = MARGIN_TOP_ZONE_WITHOUT_ACTION_BAR;
@@ -52,4 +54,14 @@ public class InputTablesZoneView extends TablesZoneView {
         return formLayout;
     }
 
+    public void setMarginLeft(int marginLeft) {
+        formLayout.marginLeft = marginLeft;
+        this.layout();
+    }
+    
+    public int getMarginLeft() {
+        return formLayout.marginLeft;
+    }
+    
+    
 }

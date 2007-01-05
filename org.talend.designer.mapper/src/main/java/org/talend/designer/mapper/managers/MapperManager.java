@@ -205,6 +205,14 @@ public class MapperManager {
     public void addLink(IMapperLink link) {
         linkManager.addLink(link);
         changeDependentSourcesAndTargetEntriesState(link.getPointLinkDescriptor2().getTableEntry(), link, false);
+        
+        if(
+                link.getPointLinkDescriptor2().getTableEntry() instanceof InputColumnTableEntry && 
+                linkManager.getCountOfInputLevels() > 4
+        ) {
+            uiManager.enlargeLeftMarginForInputTables(linkManager.getCountOfInputLevels());
+        }
+        
     }
 
     /**

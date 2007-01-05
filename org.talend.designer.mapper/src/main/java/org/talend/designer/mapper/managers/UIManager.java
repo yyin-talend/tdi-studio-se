@@ -917,16 +917,13 @@ public class UIManager {
         for (int i = 0; i < tableEntriesLocationsSources.length; i++) {
             TableEntryLocation location = tableEntriesLocationsSources[i];
 
-            
-            // tests to know if link must be removed if key is unchecked 
+            // tests to know if link must be removed if key is unchecked
             boolean dontRemoveLink = (!isInputEntry || isInputEntry
                     && (inputExpressionAppliedOrCanceled || !inputExpressionAppliedOrCanceled
                             && !mapperManager.checkEntryHasInvalidUncheckedKey((InputColumnTableEntry) currentModifiedITableEntry)));
-            
-            if (!alreadyProcessed.contains(location)
-                    && mapperManager.checkSourceLocationIsValid(location, currentModifiedITableEntry)
-                    && dontRemoveLink 
-                                    ) {
+
+            if (!alreadyProcessed.contains(location) && mapperManager.checkSourceLocationIsValid(location, currentModifiedITableEntry)
+                    && dontRemoveLink) {
                 ITableEntry sourceTableEntry = mapperManager.retrieveTableEntry(location);
                 sourcesForTargetToDelete.remove(sourceTableEntry);
                 if (sourceTableEntry != null && !sourcesForTarget.contains(sourceTableEntry)
@@ -1501,6 +1498,8 @@ public class UIManager {
             view.layout();
         }
         resizeTablesZoneViewAtComputedSize(zone);
+
+        moveScrollBarZoneAtSelectedTable(zone);
     }
 
     /**
@@ -1593,7 +1592,23 @@ public class UIManager {
         for (DataMapTableView view : tablesView) {
             view.unselectAllEntries();
         }
-        
+
+    }
+
+    /**
+     * DOC amaumont Comment method "enlargeLeftMarginForInputTables".
+     */
+    public void enlargeLeftMarginForInputTables(int countOfLevels) {
+        int marginLeft = mapperUI.getInputTablesZoneView().getMarginLeft();
+        int calculatedMarginLeft = calculateLeftMargin(countOfLevels);
+        if (calculatedMarginLeft >= marginLeft) {
+            mapperUI.getInputTablesZoneView().setMarginLeft(calculatedMarginLeft + 5);
+        }
+
+    }
+
+    public int calculateLeftMargin(int countOfLevels) {
+        return 5 + countOfLevels * 5;
     }
     
     

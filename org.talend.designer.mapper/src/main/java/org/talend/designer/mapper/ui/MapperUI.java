@@ -842,7 +842,7 @@ public class MapperUI {
         });
     }
 
-    public TablesZoneView getInputTablesZoneView() {
+    public InputTablesZoneView getInputTablesZoneView() {
         return this.inputTablesZoneView;
     }
 
