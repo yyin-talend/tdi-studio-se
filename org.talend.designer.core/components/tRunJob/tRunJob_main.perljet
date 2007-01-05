@@ -22,19 +22,19 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
             String interpreterPath = "<perl_interpreter_path>";
             if (codeGenArgument.getInterpreterPath() != null) {
                 interpreterPath = codeGenArgument.getInterpreterPath();
-                interpreterPath.replace("\\","/");
+                interpreterPath = interpreterPath.replace("\\","/");
             }
 
             String libPath = "<perl_library_path>";
             if (codeGenArgument.getLibPath() != null) {
                 libPath = codeGenArgument.getLibPath();
-                libPath.replace("\\","/");
+                libPath = libPath.replace("\\","/");
             }
 
             String runtimeFilePath = "<runtime_path>";
             if (codeGenArgument.getRuntimeFilePath() != null) {
                 runtimeFilePath = codeGenArgument.getRuntimeFilePath();
-                runtimeFilePath.replace("\\","/");
+                runtimeFilePath = runtimeFilePath.replace("\\","/");
             }
 
             String currentProjectName = "<project_name>";
