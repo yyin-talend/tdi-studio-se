@@ -182,7 +182,13 @@ public class GenerationManager {
             }
             String constraintExpressionToWrite = prefixEntryLocationsForOutputExpression(constraintExpression, expressionParser,
                     new TableType[] { TableType.INPUT, TableType.VARS });
-            stringBuilder.append(constraintExpressionToWrite);
+
+            if (lstSize > 1) {
+                stringBuilder.append(" ( " + constraintExpressionToWrite + " ) ");
+            } else {
+                stringBuilder.append(constraintExpressionToWrite);
+            }
+
             if (and == null) {
                 and = language.getAndCondition();
             }
