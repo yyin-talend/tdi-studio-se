@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang.ArrayUtils;
+import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.swt.dnd.DropTargetEvent;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
@@ -387,9 +388,9 @@ public class CompleteDropTargetListener extends DefaultDropTargetListener {
                     columnIndicesToSelect.add(currentIndex);
                 }
                 if (zoneSourceEntry == Zone.INPUTS && zoneTarget == Zone.VARS || zoneSourceEntry == Zone.VARS && zoneTarget == Zone.VARS) {
+                    columnIndicesToSelect.add(currentIndex);
                     currentIndex = insertNewVarEntry(currentLanguage, dataMapTableViewTarget, currentIndex, tableEntrySource, columnName);
                     atLeastOneEntryInserted = true;
-                    columnIndicesToSelect.add(currentIndex);
 
                 } else if (zoneSourceEntry == Zone.VARS && zoneTarget == Zone.OUTPUTS) {
                     insertNewOutputEntryFromVarEntry(sourceEntriesOfEntriesBeingAdded, metadataColumnsBeingAdded,
@@ -440,7 +441,8 @@ public class CompleteDropTargetListener extends DefaultDropTargetListener {
 
         }
         dataMapTableViewTarget.resizeAtExpandedSize();
-        dataMapTableViewTarget.unselectAllEntries();
+
+        uiManager.unselectAllEntriesOfAllTables();
 
         uiManager.refreshBackground(true, false);
         if (metadataEditorView != null && !targetTableIsConstraintsTable) {
@@ -449,8 +451,11 @@ public class CompleteDropTargetListener extends DefaultDropTargetListener {
 
         int[] selection = ArrayUtils.toPrimitive((Integer[]) columnIndicesToSelect.toArray(new Integer[0]));
         tableViewerCreatorTarget.getSelectionHelper().setSelection(selection);
+        ISelection iselection = tableViewerCreatorTarget.getTableViewer().getSelection();
+        List<ITableEntry> selectedEntries = uiManager.extractSelectedTableEntries(iselection);
+
+        uiManager.processSelectedDataMapEntries(dataMapTableViewTarget, selectedEntries, false, true);
         tableViewerCreatorTarget.getTable().setFocus();
-        uiManager.selectLinkedTableEntries(metadataEditorView.getMetadataTableEditor().getMetadataTable(), selection);
 
         uiManager.setDragging(false);
     }

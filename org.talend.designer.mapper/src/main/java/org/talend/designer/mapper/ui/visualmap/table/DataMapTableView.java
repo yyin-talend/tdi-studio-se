@@ -21,6 +21,8 @@
 // ============================================================================
 package org.talend.designer.mapper.ui.visualmap.table;
 
+import java.util.ArrayList;
+
 import org.eclipse.jface.fieldassist.IContentProposalProvider;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ICellEditorListener;
@@ -885,7 +887,7 @@ public abstract class DataMapTableView extends Composite {
     public void onSelectedEntries(ISelection selection, int[] selectionIndices) {
         if (executeSelectionEvent) {
             UIManager uiManager = mapperManager.getUiManager();
-            uiManager.processSelectedDataMapEntries(DataMapTableView.this, uiManager.extractSelectedTableEntries(selection), false);
+            uiManager.processSelectedDataMapEntries(DataMapTableView.this, uiManager.extractSelectedTableEntries(selection), false, false);
             uiManager.selectLinkedMetadataEditorEntries(this, selectionIndices);
         }
     }

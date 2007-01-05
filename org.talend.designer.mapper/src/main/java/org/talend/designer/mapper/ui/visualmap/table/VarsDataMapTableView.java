@@ -23,6 +23,8 @@ package org.talend.designer.mapper.ui.visualmap.table;
 
 import java.util.List;
 
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
@@ -40,6 +42,8 @@ import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumn;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator.CELL_EDITOR_STATE;
 import org.talend.commons.ui.swt.tableviewer.celleditor.DialogErrorForCellEditorListener;
 import org.talend.commons.ui.swt.tableviewer.data.ModifiedObjectInfo;
+import org.talend.commons.ui.swt.tableviewer.selection.ILineSelectionListener;
+import org.talend.commons.ui.swt.tableviewer.selection.LineSelectionEvent;
 import org.talend.commons.utils.data.bean.IBeanPropertyAccessors;
 import org.talend.commons.utils.data.list.IListenableListListener;
 import org.talend.commons.utils.data.list.ListenableListEvent;
@@ -72,12 +76,9 @@ public class VarsDataMapTableView extends DataMapTableView {
     @Override
     protected void addListeners() {
         super.addListeners();
-        tableViewerCreatorForColumns.getTable().addSelectionListener(new SelectionListener() {
+        tableViewerCreatorForColumns.getSelectionHelper().addAfterSelectionListener(new ILineSelectionListener() {
 
-            public void widgetDefaultSelected(SelectionEvent e) {
-            }
-
-            public void widgetSelected(SelectionEvent e) {
+            public void handle(LineSelectionEvent e) {
                 boolean atLeastOneItemIsSelected = tableViewerCreatorForColumns.getTable().getSelectionCount() > 0;
                 removeEntryItem.setEnabled(atLeastOneItemIsSelected);
                 moveUpEntryItem.setEnabled(atLeastOneItemIsSelected);
@@ -98,7 +99,7 @@ public class VarsDataMapTableView extends DataMapTableView {
                     List<ITableEntry> list = uiManager.extractSelectedTableEntries(varsDataMapTableView.getTableViewerCreatorForColumns()
                             .getTableViewer().getSelection());
 
-                    uiManager.processSelectedDataMapEntries(varsDataMapTableView, list, false);
+                    uiManager.processSelectedDataMapEntries(varsDataMapTableView, list, false, false);
                 }
             }
 
@@ -274,12 +275,13 @@ public class VarsDataMapTableView extends DataMapTableView {
             }
 
             public void widgetSelected(SelectionEvent e) {
-                TableItem[] tableItems = tableViewerCreatorForColumns.getTable().getSelection();
-                for (int i = 0; i < tableItems.length; i++) {
-                    TableItem item = tableItems[i];
-                    mapperManager.removeTableEntry((ITableEntry) item.getData());
+                IStructuredSelection selection = (IStructuredSelection) tableViewerCreatorForColumns.getTableViewer().getSelection();
+                List<ITableEntry> selectedBeans = (List<ITableEntry>) selection.toList();
+
+                for (ITableEntry entry : selectedBeans) {
+                    mapperManager.removeTableEntry(entry);
                 }
-                if (tableItems.length > 0) {
+                if (selectedBeans.size() > 0) {
                     tableViewerCreatorForColumns.getTableViewer().refresh();
                     mapperManager.getUiManager().refreshBackground(true, false);
                     resizeAtExpandedSize();

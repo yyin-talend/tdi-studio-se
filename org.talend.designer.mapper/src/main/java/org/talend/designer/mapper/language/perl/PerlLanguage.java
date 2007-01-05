@@ -40,7 +40,7 @@ public class PerlLanguage extends AbstractLanguage {
 
     private static final String PREFIX_VARIABLE_NAME = "$";
 
-    private static final String AND_CONDITION = " && ";
+    private static final String AND_CONDITION = "&&";
 
     private static final String PREFIX_FIELD_NAME = "[";
 

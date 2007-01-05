@@ -595,14 +595,11 @@ public class UIManager {
     public void selectLinkedTableEntries(IMetadataTable metadataTable, int[] selectionIndices) {
         DataMapTableView dataMapTableView = tableManager.getView(metadataTable);
 
-        // view.getTableViewerCreatorForColumns().getSelectionHelper().setActiveFireSelectionChanged(false);
-        // metadataTableEditorView.getExtendedTableViewer().getTableViewerCreator().getSelectionHelper().setSelection(selectionIndices);
-        // view.getTableViewerCreatorForColumns().getSelectionHelper().setActiveFireSelectionChanged(true);
         dataMapTableView.setTableSelection(selectionIndices);
 
         List<ITableEntry> list = extractSelectedTableEntries(dataMapTableView.getTableViewerCreatorForColumns().getTableViewer()
                 .getSelection());
-        processSelectedDataMapEntries(dataMapTableView, list, false);
+        processSelectedDataMapEntries(dataMapTableView, list, false, false);
     }
 
     /**
@@ -640,22 +637,19 @@ public class UIManager {
      * @param dataMapTableView
      * @param selectedMetadataTableEntries
      * @param isConstraintsTableSelected TODO
+     * @param forceResetHighlightLinksForOtherTables TODO
      */
     @SuppressWarnings("unchecked")
     public void processSelectedDataMapEntries(DataMapTableView dataMapTableView, List<ITableEntry> selectedMetadataTableEntries,
-            boolean isConstraintsTableSelected) {
+            boolean isConstraintsTableSelected, boolean forceResetHighlightLinksForOtherTables) {
 
         UIManager uiManager = mapperManager.getUiManager();
         TableViewerCreator<ITableEntry> currentTableViewer = null;
 
-        if (selectedMetadataTableEntries.size() > 0) {
-            if (selectedMetadataTableEntries.get(0) instanceof FilterTableEntry) {
-                currentTableViewer = dataMapTableView.getTableViewerCreatorForFilters();
-            } else if (selectedMetadataTableEntries.get(0) instanceof ITableEntry) {
-                currentTableViewer = dataMapTableView.getTableViewerCreatorForColumns();
-            } else {
-                throw new IllegalArgumentException("Case not found");
-            }
+        if (isConstraintsTableSelected) {
+            currentTableViewer = dataMapTableView.getTableViewerCreatorForFilters();
+        } else {
+            currentTableViewer = dataMapTableView.getTableViewerCreatorForColumns();
         }
 
         // Color selectedColor = dataMapTableView.getDisplay().getSystemColor(SWT.COLOR_YELLOW);
@@ -672,7 +666,7 @@ public class UIManager {
         boolean tableTypeHasChanged = previousSelectedTableIsConstraint != isConstraintsTableSelected && currentZone == Zone.OUTPUTS;
         boolean resetHighlightObjectsForOtherTables = !uiManager.isDragging()
                 && (!uiManager.isCtrlPressed() && !uiManager.isShiftPressed() || zoneHasChanged);
-        if (resetHighlightObjectsForOtherTables) {
+        if (resetHighlightObjectsForOtherTables || forceResetHighlightLinksForOtherTables) {
             for (IMapperLink link : mapperManager.getLinks()) {
                 if (!hashSelectedMetadataTableEntries.contains(link.getPointLinkDescriptor1().getTableEntry())
                         && !hashSelectedMetadataTableEntries.contains(link.getPointLinkDescriptor2().getTableEntry())) {
@@ -1592,4 +1586,15 @@ public class UIManager {
         return this.drawableLinkFactory;
     }
 
+    public void unselectAllEntriesOfAllTables() {
+        List<DataMapTableView> tablesView = mapperManager.getOutputsTablesView();
+        tablesView.addAll(mapperManager.getInputsTablesView());
+        tablesView.addAll(mapperManager.getVarsTablesView());
+        for (DataMapTableView view : tablesView) {
+            view.unselectAllEntries();
+        }
+        
+    }
+    
+    
 }
