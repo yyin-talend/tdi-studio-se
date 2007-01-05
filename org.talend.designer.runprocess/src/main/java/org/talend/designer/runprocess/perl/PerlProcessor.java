@@ -111,7 +111,8 @@ public class PerlProcessor implements IPerlProcessor {
         filePrefix += Messages.getString("Processor.fileSuffix"); //$NON-NLS-1$
         filePrefix += filenameFromLabel ? escapeFilename(process.getLabel()) : process.getId();
         codePath = new Path(filePrefix + Messages.getString("Processor.perlExt")); //$NON-NLS-1$
-        contextPath = new Path(filePrefix + "_" + escapeFilename(context.getName()) + Messages.getString("Processor.perlExt")); //$NON-NLS-1$ //$NON-NLS-2$
+        contextPath = new Path(filePrefix
+                + "_" + escapeFilename(context.getName()) + Messages.getString("Processor.perlExt")); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     public void generateCode(IContext context, boolean statistics, boolean trace, boolean perlProperties)
@@ -131,8 +132,8 @@ public class PerlProcessor implements IPerlProcessor {
                 String currentPerlProject = project.getTechnicalLabel();
                 String perlContext = getPerlContext();
 
-                codeGen = service.createCodeGenerator(process, statistics, trace, perlInterpreter, perlLib, perlContext,
-                        currentPerlProject);
+                codeGen = service.createCodeGenerator(process, statistics, trace, perlInterpreter, perlLib,
+                        perlContext, currentPerlProject);
 
             } else {
                 codeGen = service.createCodeGenerator(process, statistics, trace);
@@ -267,7 +268,7 @@ public class PerlProcessor implements IPerlProcessor {
         // List of code's lines searched in the file
         List<String> searchedLines = new ArrayList<String>();
         for (String node : nodes) {
-            searchedLines.add("[" + node + " main ] starts here");
+            searchedLines.add("[" + node + " main ] start");
         }
 
         LineNumberReader lineReader = new LineNumberReader(new InputStreamReader(file.getContents()));
@@ -348,7 +349,8 @@ public class PerlProcessor implements IPerlProcessor {
         codeFile.deleteMarkers(perlBrekPointMarker, true, IResource.DEPTH_ZERO);
 
         IExtensionRegistry registry = Platform.getExtensionRegistry();
-        IConfigurationElement[] configElems = registry.getConfigurationElementsFor("org.eclipse.debug.core.breakpoints");
+        IConfigurationElement[] configElems = registry
+                .getConfigurationElementsFor("org.eclipse.debug.core.breakpoints");
         IConfigurationElement perlBreakConfigElem = null;
         for (IConfigurationElement elem : configElems) {
             if (elem.getAttribute("id").equals("perlLineBreakpoint")) {
