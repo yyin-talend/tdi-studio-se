@@ -38,9 +38,7 @@ import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
 import org.eclipse.gef.editpolicies.ConnectionEditPolicy;
 import org.eclipse.gef.requests.GroupRequest;
-import org.eclipse.jface.viewers.TextCellEditor;
 import org.talend.commons.utils.workbench.gef.LabelCellEditorLocator;
-import org.talend.commons.utils.workbench.gef.TextEditManager;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.Element;
 import org.talend.designer.core.ui.editor.cmd.ConnectionDeleteCommand;
@@ -53,7 +51,7 @@ import org.talend.designer.core.ui.editor.cmd.ConnectionDeleteCommand;
  */
 public class ConnLabelEditPart extends AbstractGraphicalEditPart implements PropertyChangeListener {
 
-    TextEditManager manager = null;
+    NodeLabelEditManager manager = null;
 
     /*
      * (non-Javadoc)
@@ -178,7 +176,8 @@ public class ConnLabelEditPart extends AbstractGraphicalEditPart implements Prop
     private void performDirectEdit() {
         ((Label) getFigure()).setText(((Connection) getParent().getModel()).getName());
         if (manager == null) {
-            manager = new TextEditManager(this, TextCellEditor.class, new LabelCellEditorLocator((Label) getFigure()));
+            manager = new NodeLabelEditManager(this, NodeLabelCellEditor.class, new LabelCellEditorLocator(
+                    (Label) getFigure()));
         }
         manager.show();
     }

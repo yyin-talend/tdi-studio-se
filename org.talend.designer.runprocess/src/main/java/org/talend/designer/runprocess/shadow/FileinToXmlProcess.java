@@ -462,4 +462,8 @@ public class FileinToXmlProcess<K extends FileInputNode> extends RepositoryObjec
         }
         return matchingNodes;
     }
+
+    public boolean checkValidConnectionName(String connectionName, boolean checkExists) {
+        return false;
+    }
 }

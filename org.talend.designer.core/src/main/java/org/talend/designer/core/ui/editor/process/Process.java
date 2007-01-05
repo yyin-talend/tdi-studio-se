@@ -94,10 +94,6 @@ import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
 import org.talend.designer.core.model.utils.emf.talendfile.DocumentRoot;
 import org.talend.designer.core.model.utils.emf.talendfile.ElementParameterType;
 import org.talend.designer.core.model.utils.emf.talendfile.ElementValueType;
-import org.talend.designer.core.model.utils.emf.talendfile.LogToDatabaseType;
-import org.talend.designer.core.model.utils.emf.talendfile.LogToFileType;
-import org.talend.designer.core.model.utils.emf.talendfile.LogToStdOutType;
-import org.talend.designer.core.model.utils.emf.talendfile.LogsType;
 import org.talend.designer.core.model.utils.emf.talendfile.MetadataType;
 import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
 import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
@@ -1316,10 +1312,11 @@ public class Process extends Element implements IProcess {
      * be returned.
      * 
      * @param uniqueName
+     * @param checkEsists
      * @return true if the name is unique
      */
-    public boolean checkValidConnectionName(String connectionName) {
-        if (uniqueConnectionNameList.contains(connectionName)) {
+    public boolean checkValidConnectionName(String connectionName, boolean checkExists) {
+        if (checkExists && uniqueConnectionNameList.contains(connectionName)) {
             return false;
         }
         Perl5Matcher matcher = new Perl5Matcher();
@@ -1339,6 +1336,17 @@ public class Process extends Element implements IProcess {
         default:
         }
         return true;
+    }
+    
+    /**
+     * Check if the given name will be unique in the process. If another link already exists with that name, false will
+     * be returned.
+     * 
+     * @param uniqueName
+     * @return true if the name is unique
+     */
+    public boolean checkValidConnectionName(String connectionName) {
+        return checkValidConnectionName(connectionName, true);
     }
 
     /**
