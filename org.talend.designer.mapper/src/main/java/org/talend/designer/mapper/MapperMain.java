@@ -175,15 +175,22 @@ public class MapperMain {
      */
     public void loadFromExternalData(List<? extends IConnection> incomingConnections, List<? extends IConnection> outgoingConnections,
             ExternalMapperData externalData, List<IMetadataTable> outputMetadataTables) {
-        ArrayList<IOConnection> inputs = new ArrayList<IOConnection>(incomingConnections.size());
-        for (IConnection connection : incomingConnections) {
-            inputs.add(new IOConnection(connection));
-        }
-        ArrayList<IOConnection> outputs = new ArrayList<IOConnection>(outgoingConnections.size());
-        for (IConnection connection : incomingConnections) {
-            outputs.add(new IOConnection(connection));
-        }
+        ArrayList<IOConnection> inputs = createIOConnections(incomingConnections);
+        ArrayList<IOConnection> outputs = createIOConnections(outgoingConnections);
         loadFromExternalData(inputs, outputs, outputMetadataTables, externalData);
+    }
+
+    /**
+     * DOC amaumont Comment method "createIOConnections".
+     * @param connections
+     * @return
+     */
+    public ArrayList<IOConnection> createIOConnections(List<? extends IConnection> connections) {
+        ArrayList<IOConnection> ioConnections = new ArrayList<IOConnection>(connections.size());
+        for (IConnection connection : connections) {
+            ioConnections.add(new IOConnection(connection));
+        }
+        return ioConnections;
     }
 
     public void loadFromExternalData(IODataComponentContainer ioDataContainer, List<IMetadataTable> outputMetadataTables,

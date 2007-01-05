@@ -22,13 +22,33 @@
 package org.talend.designer.mapper.utils.problems;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
+import org.talend.core.model.metadata.IMetadataColumn;
+import org.talend.core.model.metadata.IMetadataTable;
+import org.talend.core.model.process.EConnectionType;
+import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.Problem;
+import org.talend.core.model.process.Problem.ProblemStatus;
+import org.talend.designer.mapper.MapperMain;
+import org.talend.designer.mapper.external.connection.IOConnection;
+import org.talend.designer.mapper.external.converter.ExternalDataConverter;
 import org.talend.designer.mapper.external.data.ExternalMapperData;
 import org.talend.designer.mapper.external.data.ExternalMapperTable;
 import org.talend.designer.mapper.external.data.ExternalMapperTableEntry;
+import org.talend.designer.mapper.language.ILanguage;
+import org.talend.designer.mapper.language.LanguageProvider;
+import org.talend.designer.mapper.language.generation.TableType;
 import org.talend.designer.mapper.managers.MapperManager;
+import org.talend.designer.mapper.model.table.InputTable;
+import org.talend.designer.mapper.model.tableentry.IColumnEntry;
+import org.talend.designer.mapper.model.tableentry.ITableEntry;
+import org.talend.designer.mapper.model.tableentry.InputColumnTableEntry;
 import org.talend.designer.mapper.model.tableentry.TableEntryLocation;
 import org.talend.designer.mapper.utils.DataMapExpressionParser;
 
@@ -58,29 +78,80 @@ public class ProblemsAnalyser {
 
         if (externalData != null) {
 
-            // replace old location by new location for all expressions in mapper
-            List<ExternalMapperTable> tables = new ArrayList<ExternalMapperTable>(externalData.getInputTables());
-            tables.addAll(new ArrayList<ExternalMapperTable>(externalData.getVarsTables()));
-            tables.addAll(new ArrayList<ExternalMapperTable>(externalData.getOutputTables()));
+            List<ExternalMapperTable> extInputTables = new ArrayList<ExternalMapperTable>(externalData.getInputTables());
+            List<ExternalMapperTable> extVarTables = new ArrayList<ExternalMapperTable>(externalData.getVarsTables());
+            List<ExternalMapperTable> extOutputTables = new ArrayList<ExternalMapperTable>(externalData.getOutputTables());
             // loop on all tables
-            for (ExternalMapperTable table : tables) {
-                List<ExternalMapperTableEntry> metadataTableEntries = table.getMetadataTableEntries();
-                // loop on all entries of current table
-                if (metadataTableEntries != null) {
-                    for (ExternalMapperTableEntry entry : metadataTableEntries) {
-                        checkProblems(entry);
-                    } // for (ExternalMapperTableEntry entry : metadataTableEntries) {
-                }
-                if (table.getConstraintTableEntries() != null) {
-                    for (ExternalMapperTableEntry entry : table.getConstraintTableEntries()) {
-                        checkProblems(entry);
-                    }
-                }
-            } // for (ExternalMapperTable table : tables) {
+            checkExpressionSyntaxProblems(extInputTables);
+            checkExpressionSyntaxProblems(extVarTables);
+            checkExpressionSyntaxProblems(extOutputTables);
+
+            List<? extends IConnection> incomingConnections = new ArrayList<IConnection>(this.mapperManager.getComponent()
+                    .getIncomingConnections());
+            ExternalDataConverter converter = new ExternalDataConverter();
+            MapperMain mapperMain = mapperManager.getComponent().getMapperMain();
+            ArrayList<IOConnection> inputsIOConnections = mapperMain.createIOConnections(incomingConnections);
+            ArrayList<InputTable> inputTables = converter.prepareInputTables(inputsIOConnections, externalData);
+
+            checkKeysProblems(inputTables);
 
         }
 
         return getProblems();
+    }
+
+    /**
+     * DOC amaumont Comment method "checkKeysProblems".
+     * 
+     * @param incomingConnections
+     * @param inputTables
+     */
+    private void checkKeysProblems(ArrayList<InputTable> inputTables) {
+
+        ILanguage currentLanguage = LanguageProvider.getCurrentLanguage();
+        for (InputTable table : inputTables) {
+            if (table.isMainConnection()) {
+                continue;
+            }
+            String tableName = table.getName();
+            List<IColumnEntry> columnEntries = table.getColumnEntries();
+            for (IColumnEntry entry : columnEntries) {
+                InputColumnTableEntry inputEntry = (InputColumnTableEntry) entry;
+                String columnName = entry.getName();
+                if (mapperManager.checkEntryHasInvalidUncheckedKey(inputEntry)) {
+                    String description = "Key of " + currentLanguage.getLocation(tableName, columnName) + " input entry should be checked";
+                    addProblem(new Problem(null, description, ProblemStatus.WARNING));
+                }
+                if (mapperManager.checkEntryHasInvalidCheckedKey(inputEntry)) {
+                    String description = "Key of " + currentLanguage.getLocation(tableName, columnName)
+                            + " input entry should be unchecked";
+                    addProblem(new Problem(null, description, ProblemStatus.WARNING));
+                }
+            }
+        }
+
+    }
+
+    /**
+     * DOC amaumont Comment method "checkExpressionSyntaxProblems".
+     * 
+     * @param tables
+     */
+    private void checkExpressionSyntaxProblems(List<ExternalMapperTable> tables) {
+        for (ExternalMapperTable table : tables) {
+            List<ExternalMapperTableEntry> metadataTableEntries = table.getMetadataTableEntries();
+            // loop on all entries of current table
+            if (metadataTableEntries != null) {
+                for (ExternalMapperTableEntry entry : metadataTableEntries) {
+                    addProblem(checkExpressionSyntax(entry.getExpression()));
+                } // for (ExternalMapperTableEntry entry : metadataTableEntries) {
+            }
+            if (table.getConstraintTableEntries() != null) {
+                for (ExternalMapperTableEntry entry : table.getConstraintTableEntries()) {
+                    addProblem(checkExpressionSyntax(entry.getExpression()));
+                }
+            }
+        } // for (ExternalMapperTable table : tables) {
     }
 
     /**
@@ -93,13 +164,11 @@ public class ProblemsAnalyser {
     }
 
     /**
-     * DOC amaumont Comment method "checkEntryValidity".
+     * DOC amaumont Comment method "addProblem".
      * 
-     * @param entry
-     * @return
+     * @param problem
      */
-    private void checkProblems(ExternalMapperTableEntry entry) {
-        Problem problem = checkExpressionSyntax(entry.getExpression());
+    private void addProblem(Problem problem) {
         if (problem != null) {
             problems.add(problem);
         }

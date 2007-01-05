@@ -662,31 +662,6 @@ public class MapperManager {
                     String previewFileName = getPreviewFileName();
                     parameter.setValue(previewFileName == null ? "" : previewFileName);
                 }
-
-                // if (MAPPER_MODEL_DATA.equals(parameter.getName())) {
-                // // TimeMeasurer.start("test");
-                // StringWriter stringWriter = new StringWriter();
-                // try {
-                // Marshaller marshaller = new Marshaller(stringWriter);
-                // marshaller.marshal(mapperComponent.getExternalData());
-                // } catch (MarshalException e) {
-                // ExceptionHandler.process(e);
-                // } catch (ValidationException e) {
-                // ExceptionHandler.process(e);
-                // } catch (IOException e) {
-                // ExceptionHandler.process(e);
-                // } finally {
-                // // if (outputStreamWriter != null) {
-                // // outputStreamWriter.close();
-                // // }
-                // }
-                // // StringWriter writer = new StringWriter();
-                // // OutputStreamWriter outputStreamWriter = new OutputStreamWriter(writer);
-                // // mapperComponent.getExternalCustomData(outputStreamWriter);
-                // String persistentData = stringWriter.toString();
-                // parameter.setValue(persistentData == null ? "" : persistentData);
-                // // TimeMeasurer.end("test");
-                // }
             }
         }
     }
@@ -796,32 +771,26 @@ public class MapperManager {
         }
     }
 
-    // public Object getEmfParameterValue(String parameterName) {
-    // List<? extends IElementParameter> elementParameters = mapperComponent.getElementParameters();
-    // for (IElementParameter parameter : elementParameters) {
-    // if (parameterName.equals(parameter.getName())) {
-    // if (MAPPER_MODEL_DATA.equals(parameterName)) {
-    // ExternalMapperData externalData = null;
-    // System.out.println("getEmfParameterValue="+(String)parameter.getValue());
-    // StringReader stringReader = new StringReader((String) parameter.getValue());
-    // Unmarshaller unmarshaller = new Unmarshaller(ExternalMapperData.class);
-    // // unmarshaller.setReuseObjects(false);
-    // try {
-    // externalData = (ExternalMapperData) unmarshaller.unmarshal(stringReader);
-    // } catch (MarshalException e) {
-    // ExceptionHandler.process(e);
-    // } catch (ValidationException e) {
-    // ExceptionHandler.process(e);
-    // } finally {
-    // if (stringReader != null) {
-    // stringReader.close();
-    // }
-    // }
-    // return externalData;
-    // }
-    // }
-    // }
-    // return null;
-    // }
+    /**
+     * DOC amaumont Comment method "checkEntryHasValidKey".
+     * 
+     * @param inputEntry
+     */
+    public boolean checkEntryHasInvalidCheckedKey(InputColumnTableEntry inputEntry) {
+        return inputEntry.getMetadataColumn().isKey()
+                && (inputEntry.getExpression() == null || inputEntry.getExpression().trim().length() == 0);
+    }
 
+    /**
+     * DOC amaumont Comment method "checkEntryHasValidKey".
+     * 
+     * @param inputEntry
+     */
+    public boolean checkEntryHasInvalidUncheckedKey(InputColumnTableEntry inputEntry) {
+        return !inputEntry.getMetadataColumn().isKey()
+        && inputEntry.getExpression() != null && inputEntry.getExpression().trim().length() > 0;
+    }
+    
+
+    
 }

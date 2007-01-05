@@ -482,23 +482,6 @@ public abstract class DataMapTableView extends Composite {
 
         });
 
-        // abstractDataMapTable.getTableColumnsEntriesModel().addAfterOperationListListener(new
-        // IListenableListListener<IColumnEntry>() {
-        //
-        // public void handleEvent(ListenableListEvent<IColumnEntry> event) {
-        //
-        // // if (event.type == ListenableListEvent.TYPE.ADDED) {
-        // // // mapperManager.getUiManager().parseAllExpressions(tableViewerForEntries)
-        // // Collection<IColumnEntry> addedObjects = event.addedObjects;
-        // // for (IColumnEntry entry : addedObjects) {
-        // // mapperManager.getUiManager().parseExpression(entry.getExpression(), entry, false, false, false);
-        // // }
-        // // }
-        //
-        // }
-        //
-        // });
-
         abstractDataMapTable.getTableColumnsEntriesModel().addModifiedBeanListener(new IModifiedBeanListener<IColumnEntry>() {
 
             public void handleEvent(ModifiedBeanEvent<IColumnEntry> event) {

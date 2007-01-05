@@ -964,20 +964,10 @@ public class UIManager {
         List<IColumnEntry> targetTableEntries = inputDataMapTableView.getDataMapTable().getColumnEntries();
         for (IColumnEntry entry : targetTableEntries) {
             InputColumnTableEntry inputEntry = (InputColumnTableEntry) entry;
-            if (checkEntryHasInvalidKey(inputEntry)) {
+            if (mapperManager.checkEntryHasInvalidCheckedKey(inputEntry)) {
                 inputEntry.getMetadataColumn().setKey(false);
             }
         }
-    }
-
-    /**
-     * DOC amaumont Comment method "checkEntryHasValidKey".
-     * 
-     * @param inputEntry
-     */
-    private boolean checkEntryHasInvalidKey(InputColumnTableEntry inputEntry) {
-        return inputEntry.getMetadataColumn().isKey()
-                && (inputEntry.getExpression() == null || inputEntry.getExpression().trim().length() == 0);
     }
 
     /**
@@ -996,7 +986,7 @@ public class UIManager {
         List<IColumnEntry> targetTableEntries = inputDataMapTableView.getDataMapTable().getColumnEntries();
         for (IColumnEntry entry : targetTableEntries) {
             InputColumnTableEntry inputEntry = (InputColumnTableEntry) entry;
-            if (checkEntryHasInvalidKey(inputEntry)) {
+            if (mapperManager.checkEntryHasInvalidCheckedKey(inputEntry)) {
                 return true;
             }
         }

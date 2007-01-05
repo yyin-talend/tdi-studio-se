@@ -392,4 +392,14 @@ public class MapperComponent extends AbstractExternalNode {
         return problemsAnalyser.checkProblems(externalData);
     }
 
+    
+    /**
+     * Getter for mapperMain.
+     * @return the mapperMain
+     */
+    public MapperMain getMapperMain() {
+        return this.mapperMain;
+    }
+
+    
 }
