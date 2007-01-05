@@ -446,11 +446,14 @@ public abstract class DataMapTableView extends Composite {
         tableViewerForEntries.addSelectionChangedListener(new ISelectionChangedListener() {
 
             public void selectionChanged(SelectionChangedEvent event) {
-                selectThisDataMapTableView();
-                if (!dragDetected) { // useful when drag finished
-                    onSelectedEntries(event.getSelection(), tableViewerForEntries.getTable().getSelectionIndices());
+                int[] selectionIndices = tableViewerForEntries.getTable().getSelectionIndices();
+                if (selectionIndices.length > 0) {
+                    selectThisDataMapTableView();
+                    if (!dragDetected) { // useful when drag finished
+                        onSelectedEntries(event.getSelection(), selectionIndices);
+                    }
+                    dragDetected = false;
                 }
-                dragDetected = false;
             }
 
         });

@@ -364,6 +364,8 @@ public class UIManager {
                     dataMapTableViewer.refresh(true);
                 } else if (MetadataTableEditorView.ID_COLUMN_KEY.equals(event.column.getId())) {
                     dataMapTableViewer.refresh(true);
+                    IColumnEntry entry = dataMapTableView.getDataMapTable().getColumnEntries().get(event.index);
+                    parseExpression(entry.getExpression(), entry, false, false, false);
                 }
             }
 
@@ -916,12 +918,26 @@ public class UIManager {
         Set<ITableEntry> sourcesForTarget = mapperManager.getSourcesForTarget(currentModifiedITableEntry);
         Set<ITableEntry> sourcesForTargetToDelete = new HashSet<ITableEntry>(sourcesForTarget);
 
+        boolean isInputEntry = currentModifiedITableEntry instanceof InputColumnTableEntry;
+
         for (int i = 0; i < tableEntriesLocationsSources.length; i++) {
             TableEntryLocation location = tableEntriesLocationsSources[i];
-            if (!alreadyProcessed.contains(location) && mapperManager.checkSourceLocationIsValid(location, currentModifiedITableEntry)) {
+
+            
+            // tests to know if link must be removed if key is unchecked 
+            boolean dontRemoveLink = (!isInputEntry || isInputEntry
+                    && (inputExpressionAppliedOrCanceled || !inputExpressionAppliedOrCanceled
+                            && !mapperManager.checkEntryHasInvalidUncheckedKey((InputColumnTableEntry) currentModifiedITableEntry)));
+            
+            if (!alreadyProcessed.contains(location)
+                    && mapperManager.checkSourceLocationIsValid(location, currentModifiedITableEntry)
+                    && dontRemoveLink 
+                                    ) {
                 ITableEntry sourceTableEntry = mapperManager.retrieveTableEntry(location);
                 sourcesForTargetToDelete.remove(sourceTableEntry);
-                if (sourceTableEntry != null && !sourcesForTarget.contains(sourceTableEntry)) {
+                if (sourceTableEntry != null && !sourcesForTarget.contains(sourceTableEntry)
+
+                ) {
                     DataMapTableView sourceDataMapTableView = mapperManager.retrieveDataMapTableView(sourceTableEntry);
                     IMapperLink link = new Link(new PointLinkDescriptor(sourceTableEntry, sourceDataMapTableView.getZone()),
                             new PointLinkDescriptor(currentModifiedITableEntry, dataMapTableView.getZone()), mapperManager);

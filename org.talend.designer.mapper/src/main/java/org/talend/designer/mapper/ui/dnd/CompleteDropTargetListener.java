@@ -24,6 +24,7 @@ package org.talend.designer.mapper.ui.dnd;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.eclipse.swt.dnd.DropTargetEvent;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
@@ -41,6 +42,7 @@ import org.talend.designer.mapper.managers.MapperManager;
 import org.talend.designer.mapper.managers.UIManager;
 import org.talend.designer.mapper.model.tableentry.IColumnEntry;
 import org.talend.designer.mapper.model.tableentry.ITableEntry;
+import org.talend.designer.mapper.model.tableentry.InputColumnTableEntry;
 import org.talend.designer.mapper.model.tableentry.TableEntryLocation;
 import org.talend.designer.mapper.ui.visualmap.table.DataMapTableView;
 import org.talend.designer.mapper.ui.visualmap.zone.Zone;
@@ -332,6 +334,7 @@ public class CompleteDropTargetListener extends DefaultDropTargetListener {
         ITableEntry currentEntryTarget = getEntryFromPosition(cursorPosition);
 
         ArrayList<String> columnsBeingAdded = new ArrayList<String>();
+        ArrayList<Integer> columnIndicesToSelect = new ArrayList<Integer>();
         ArrayList<ITableEntry> sourceEntriesOfEntriesBeingAdded = new ArrayList<ITableEntry>();
         ArrayList<IMetadataColumn> metadataColumnsBeingAdded = new ArrayList<IMetadataColumn>();
 
@@ -371,6 +374,9 @@ public class CompleteDropTargetListener extends DefaultDropTargetListener {
                 modifyExistingExpression(currentLanguage, currentEntryTarget, tableEntrySource, overwrite, zoneSourceEntry);
                 uiManager.parseExpression(currentEntryTarget.getExpression(), currentEntryTarget, false, true, true);
 
+                int indexOfEntry = tableViewerCreatorTarget.getInputList().indexOf(currentEntryTarget);
+                columnIndicesToSelect.add(indexOfEntry);
+
             } else {
                 String columnName = transferableEntry.getTableEntrySource().getName();
                 tableEntryLocationTarget = mapperManager.findUniqueLocation(tableEntryLocationTarget, columnsBeingAdded
@@ -378,10 +384,12 @@ public class CompleteDropTargetListener extends DefaultDropTargetListener {
                 columnName = tableEntryLocationTarget.columnName;
                 if (currentEntryTarget == null && analyzer.isMapOneToOneMode()) {
                     currentIndex = tableViewerCreatorTarget.getInputList().size();
+                    columnIndicesToSelect.add(currentIndex);
                 }
                 if (zoneSourceEntry == Zone.INPUTS && zoneTarget == Zone.VARS || zoneSourceEntry == Zone.VARS && zoneTarget == Zone.VARS) {
                     currentIndex = insertNewVarEntry(currentLanguage, dataMapTableViewTarget, currentIndex, tableEntrySource, columnName);
                     atLeastOneEntryInserted = true;
+                    columnIndicesToSelect.add(currentIndex);
 
                 } else if (zoneSourceEntry == Zone.VARS && zoneTarget == Zone.OUTPUTS) {
                     insertNewOutputEntryFromVarEntry(sourceEntriesOfEntriesBeingAdded, metadataColumnsBeingAdded,
@@ -408,6 +416,7 @@ public class CompleteDropTargetListener extends DefaultDropTargetListener {
                     // throw new IllegalStateException("Drop case not found !");
                 }
                 columnsBeingAdded.add(columnName);
+
             }
 
             lastEntryTarget = currentEntryTarget;
@@ -424,6 +433,11 @@ public class CompleteDropTargetListener extends DefaultDropTargetListener {
                     targetTableIsConstraintsTable, tableViewerCreatorTarget
                     // , metadataEditorEvent
                     , metadataColumnsBeingAdded);
+
+            for (int i = currentIndex; i < currentIndex + sourceEntriesOfEntriesBeingAdded.size(); i++) {
+                columnIndicesToSelect.add(i);
+            }
+
         }
         dataMapTableViewTarget.resizeAtExpandedSize();
         dataMapTableViewTarget.unselectAllEntries();
@@ -432,6 +446,11 @@ public class CompleteDropTargetListener extends DefaultDropTargetListener {
         if (metadataEditorView != null && !targetTableIsConstraintsTable) {
             metadataEditorView.getTableViewerCreator().getTableViewer().refresh();
         }
+
+        int[] selection = ArrayUtils.toPrimitive((Integer[]) columnIndicesToSelect.toArray(new Integer[0]));
+        tableViewerCreatorTarget.getSelectionHelper().setSelection(selection);
+        tableViewerCreatorTarget.getTable().setFocus();
+        uiManager.selectLinkedTableEntries(metadataEditorView.getMetadataTableEditor().getMetadataTable(), selection);
 
         uiManager.setDragging(false);
     }
@@ -465,10 +484,15 @@ public class CompleteDropTargetListener extends DefaultDropTargetListener {
             // metadataEditorEvent);
             // action.run(metadataEditorEvent);
 
+            Zone zoneTarget = mapperManager.retrieveDataMapTableView(tableViewerCreatorTarget.getTable()).getZone();
+
             List<IColumnEntry> lastCreatedTableEntries = uiManager.getLastCreatedInOutColumnEntries();
             for (int i = 0; i < lastCreatedTableEntries.size(); i++) {
                 ITableEntry tableEntrySource = sourceEntriesOfEntriesBeingAdded.get(i);
                 ITableEntry dataMapTableEntry = lastCreatedTableEntries.get(i);
+                if (zoneTarget == Zone.INPUTS) {
+                    ((InputColumnTableEntry) dataMapTableEntry).getMetadataColumn().setKey(true);
+                }
                 DataMapTableView dataMapTableView = mapperManager.retrieveAbstractDataMapTableView(tableEntrySource.getParent());
                 Zone zoneSource = dataMapTableView.getZone();
                 String location = null;
@@ -490,6 +514,7 @@ public class CompleteDropTargetListener extends DefaultDropTargetListener {
         for (ITableEntry tableEntry : refreshedTableEntriesList) {
             uiManager.parseExpression(tableEntry.getExpression(), tableEntry, false, true, false);
         }
+
     }
 
     @SuppressWarnings("unchecked")
@@ -560,7 +585,6 @@ public class CompleteDropTargetListener extends DefaultDropTargetListener {
         }
         String expressionToWrite = null;
         if (overwriteExpression) {
-            // entryTarget.setExpression(expression + " ");
             expressionToWrite = expression + "  ";
         } else {
             String currentTargetExpression = entryTarget.getExpression();
@@ -576,22 +600,9 @@ public class CompleteDropTargetListener extends DefaultDropTargetListener {
             } else if (!isEmpty) {
                 space = "  ";
             }
-            // entryTarget.setExpression(currentTargetExpression + space + expression + " ");
             expressionToWrite = currentTargetExpression + space + expression + " ";
         }
         entryTarget.setExpression(expressionToWrite);
-
-        // DataMapTableView dataMapTableView =
-        // mapperManager.retrieveAbstractDataMapTableView(tableEntrySource.getParent());
-        // TableViewerCreator<ITableEntry> tableViewerCreator = null;
-        // if (entryTarget instanceof IColumnEntry) {
-        // tableViewerCreator = dataMapTableView.getTableViewerCreatorForColumns();
-        // } else {
-        // tableViewerCreator = dataMapTableView.getTableViewerCreatorForFilters();
-        // }
-        //
-        // TableViewerCreatorColumn column = tableViewerCreator.getColumn(DataMapTableView.ID_EXPRESSION_COLUMN);
-        // tableViewerCreator.setBeanValue(column, entryTarget, expressionToWrite, true);
 
     }
 
