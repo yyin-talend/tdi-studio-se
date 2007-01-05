@@ -454,6 +454,12 @@ public class CompleteDropTargetListener extends DefaultDropTargetListener {
         ISelection iselection = tableViewerCreatorTarget.getTableViewer().getSelection();
         List<ITableEntry> selectedEntries = uiManager.extractSelectedTableEntries(iselection);
 
+        uiManager.unselectAllOutputMetaDataEntries();
+        uiManager.unselectAllInputMetaDataEntries();
+
+        if (zoneTarget != Zone.OUTPUTS) {
+            uiManager.parseAllExpressionsForAllTables();
+        }
         uiManager.processSelectedDataMapEntries(dataMapTableViewTarget, selectedEntries, false, true);
         tableViewerCreatorTarget.getTable().setFocus();
 

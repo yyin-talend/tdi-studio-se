@@ -753,11 +753,11 @@ public class UIManager {
         previousSelectedTableIsConstraint = isConstraintsTableSelected;
     }
 
-    private void unselectAllInputMetaDataEntries() {
+    public void unselectAllInputMetaDataEntries() {
         getInputMetaEditorView().getTable().deselectAll();
     }
 
-    private void unselectAllOutputMetaDataEntries() {
+    public void unselectAllOutputMetaDataEntries() {
         getOutputMetaEditorView().getTable().deselectAll();
     }
 
