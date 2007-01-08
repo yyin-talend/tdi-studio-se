@@ -878,26 +878,27 @@ public class UIManager {
         tablesView.addAll(tableManager.getVarsTablesView());
         tablesView.addAll(tableManager.getOutputsTablesView());
         for (DataMapTableView view : tablesView) {
-            parseAllExpressions(view);
+            parseAllExpressions(view, false);
         }
     }
 
     /**
      * DOC amaumont Comment method "processAllExpressions".
+     * @param newLinksMustHaveSelectedState TODO
      */
     @SuppressWarnings("unchecked")
-    public void parseAllExpressions(DataMapTableView dataMapTableView) {
+    public void parseAllExpressions(DataMapTableView dataMapTableView, boolean newLinksMustHaveSelectedState) {
         List<IColumnEntry> columnsEntriesList = dataMapTableView.getDataMapTable().getColumnEntries();
-        parseAllExpressions(columnsEntriesList);
+        parseAllExpressions(columnsEntriesList, newLinksMustHaveSelectedState);
         if (dataMapTableView.getZone() == Zone.OUTPUTS) {
             List<ITableEntry> constraintEntriesList = dataMapTableView.getTableViewerCreatorForFilters().getInputList();
-            parseAllExpressions(constraintEntriesList);
+            parseAllExpressions(constraintEntriesList, newLinksMustHaveSelectedState);
         }
     }
 
-    private void parseAllExpressions(List<? extends ITableEntry> inputList) {
+    private void parseAllExpressions(List<? extends ITableEntry> inputList, boolean newLinksMustHaveSelectedState) {
         for (ITableEntry entry : inputList) {
-            parseExpression(entry.getExpression(), entry, false, false, false);
+            parseExpression(entry.getExpression(), entry, newLinksMustHaveSelectedState, false, false);
         }
     }
 
@@ -1443,8 +1444,8 @@ public class UIManager {
 
         tableManager.swapWithPreviousTable(currentSelectedTableView.getDataMapTable());
         currentSelectedTableView.getParent().layout();
-        parseAllExpressions(currentSelectedTableView);
-        parseAllExpressions(previousTableView);
+        parseAllExpressions(currentSelectedTableView, false);
+        parseAllExpressions(previousTableView, false);
     }
 
     private void moveSelectedTableDown(DataMapTableView currentSelectedTableView, List<DataMapTableView> tablesView,
@@ -1475,8 +1476,8 @@ public class UIManager {
         tableManager.swapWithNextTable(currentSelectedTableView.getDataMapTable());
 
         currentSelectedTableView.getParent().layout();
-        parseAllExpressions(currentSelectedTableView);
-        parseAllExpressions(nextTableView);
+        parseAllExpressions(currentSelectedTableView, false);
+        parseAllExpressions(nextTableView, false);
     }
 
     public void minimizeAllTables(Zone zone, boolean minimize, ToolItem minimizeButton) {

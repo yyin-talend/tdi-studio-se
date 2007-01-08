@@ -57,6 +57,7 @@ import org.talend.designer.mapper.model.tableentry.InputColumnTableEntry;
 import org.talend.designer.mapper.model.tableentry.OutputColumnTableEntry;
 import org.talend.designer.mapper.model.tableentry.TableEntryLocation;
 import org.talend.designer.mapper.model.tableentry.VarTableEntry;
+import org.talend.designer.mapper.ui.automap.AutoMapper;
 import org.talend.designer.mapper.ui.commands.AddVarEntryCommand;
 import org.talend.designer.mapper.ui.visualmap.TableEntryProperties;
 import org.talend.designer.mapper.ui.visualmap.link.IMapperLink;
@@ -801,6 +802,14 @@ public class MapperManager {
     
     public boolean checkEntryHasEmptyExpression(ITableEntry entry) {
         return entry.getExpression() == null || entry.getExpression().trim().length() == 0;
+    }
+
+    /**
+     * DOC amaumont Comment method "mapAutomaticallly".
+     */
+    public void mapAutomaticallly() {
+        AutoMapper autoMapper = new AutoMapper(this);
+        autoMapper.map();
     }
     
     

@@ -42,6 +42,8 @@ public class ToolbarOutputZone extends ToolbarZone {
 
     private ToolItem removeOutputItem;
 
+    private ToolItem guessItem;
+
     public static final String MINIMIZE_TOOLTIP = "Minimize all output tables";
 
     public static final String RESTORE_TOOLTIP = "Restore all output tables";
@@ -80,6 +82,12 @@ public class ToolbarOutputZone extends ToolbarZone {
                 .getImageDesc(EImage.MINUS_ICON)));
         removeOutputItem.setToolTipText("Remove selected output table");
 
+        new ToolItem(getToolBarActions(), SWT.SEPARATOR);
+
+        guessItem = new ToolItem(getToolBarActions(), SWT.PUSH);
+        guessItem.setToolTipText("Map automaitcally inputs and outputs (for empty expressions only)");
+        guessItem.setText("Guess");
+        
     }
 
     /**
@@ -103,6 +111,14 @@ public class ToolbarOutputZone extends ToolbarZone {
 
         });
 
+        guessItem.addListener(SWT.Selection, new Listener() {
+            
+            public void handleEvent(Event event) {
+                getMapperManager().mapAutomaticallly();
+            }
+            
+        });
+        
     }
 
     public String getMinimizeTooltipText() {

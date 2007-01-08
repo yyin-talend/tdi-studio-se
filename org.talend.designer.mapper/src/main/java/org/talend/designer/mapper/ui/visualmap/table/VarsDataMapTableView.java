@@ -94,7 +94,7 @@ public class VarsDataMapTableView extends DataMapTableView {
                     DataMapTableView varsDataMapTableView = mapperManager.retrieveDataMapTableView(getExtendedTableViewerForColumns()
                             .getTable());
                     UIManager uiManager = mapperManager.getUiManager();
-                    uiManager.parseAllExpressions(varsDataMapTableView);
+                    uiManager.parseAllExpressions(varsDataMapTableView, false);
                     uiManager.refreshBackground(true, false);
                     List<ITableEntry> list = uiManager.extractSelectedTableEntries(varsDataMapTableView.getTableViewerCreatorForColumns()
                             .getTableViewer().getSelection());
