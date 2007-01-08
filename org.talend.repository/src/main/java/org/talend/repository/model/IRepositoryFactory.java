@@ -37,6 +37,7 @@ import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.Folder;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.model.temp.ECodeLanguage;
+import org.talend.repository.exception.LoginException;
 
 /**
  * Defines all methods that a repository provider plug-in must provides to client.<br/>
@@ -56,7 +57,7 @@ public interface IRepositoryFactory {
 
     public void initialize();
 
-    public void logOnProject(Project project) throws PersistenceException;
+    public void logOnProject(Project project) throws PersistenceException, LoginException;
 
     public String getNextId();
 

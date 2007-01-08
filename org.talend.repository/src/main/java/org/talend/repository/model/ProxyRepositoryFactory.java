@@ -50,6 +50,7 @@ import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.Folder;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.model.temp.ECodeLanguage;
+import org.talend.repository.exception.LoginException;
 import org.talend.repository.ui.views.RepositoryContentProvider.MetadataTableRepositoryObject;
 
 /**
@@ -673,9 +674,10 @@ public class ProxyRepositoryFactory implements IProxyRepositoryFactory {
     /**
      * @param project
      * @throws PersistenceException
+     * @throws LoginException 
      * @see org.talend.repository.model.IRepositoryFactory#logOnProject(org.talend.core.model.general.Project)
      */
-    public void logOnProject(Project project) throws PersistenceException {
+    public void logOnProject(Project project) throws PersistenceException, LoginException {
         getRepositoryContext().setProject(project);
         this.repositoryFactoryFromProvider.logOnProject(project);
         log.info(getRepositoryContext().getUser() + " logged on " + getRepositoryContext().getProject());

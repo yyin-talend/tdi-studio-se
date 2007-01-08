@@ -44,6 +44,7 @@ import org.talend.core.CorePlugin;
 import org.talend.core.model.general.Project;
 import org.talend.core.prefs.PreferenceManipulator;
 import org.talend.repository.RepositoryPlugin;
+import org.talend.repository.exception.LoginException;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.license.LicenseManagement;
 import org.talend.repository.model.ProxyRepositoryFactory;
@@ -187,6 +188,9 @@ public class LoginDialog extends TitleAreaDialog {
             ProxyRepositoryFactory.getInstance().logOnProject(project);
         } catch (PersistenceException e) {
             MessageBoxExceptionHandler.process(e, getShell());
+        } catch (LoginException e) {
+            setErrorMessage(e.getMessage());
+            return;
         }
 
         super.okPressed();
