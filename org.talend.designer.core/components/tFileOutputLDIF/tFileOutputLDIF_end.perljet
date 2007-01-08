@@ -21,7 +21,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         String cid = metadata.getTableName();
 %>
 
-$ldif_<%cid %>->done;
+$ldif_<%=cid %>->done;
 
 $_globals{<%=cid %>}{NB_LINE} = $nb_line_<%=cid %>;
 
