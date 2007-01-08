@@ -22,16 +22,8 @@
 package org.talend.designer.mapper.utils.problems;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
-import org.talend.core.model.metadata.IMetadataColumn;
-import org.talend.core.model.metadata.IMetadataTable;
-import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.Problem;
 import org.talend.core.model.process.Problem.ProblemStatus;
@@ -43,11 +35,9 @@ import org.talend.designer.mapper.external.data.ExternalMapperTable;
 import org.talend.designer.mapper.external.data.ExternalMapperTableEntry;
 import org.talend.designer.mapper.language.ILanguage;
 import org.talend.designer.mapper.language.LanguageProvider;
-import org.talend.designer.mapper.language.generation.TableType;
 import org.talend.designer.mapper.managers.MapperManager;
 import org.talend.designer.mapper.model.table.InputTable;
 import org.talend.designer.mapper.model.tableentry.IColumnEntry;
-import org.talend.designer.mapper.model.tableentry.ITableEntry;
 import org.talend.designer.mapper.model.tableentry.InputColumnTableEntry;
 import org.talend.designer.mapper.model.tableentry.TableEntryLocation;
 import org.talend.designer.mapper.utils.DataMapExpressionParser;
@@ -138,17 +128,33 @@ public class ProblemsAnalyser {
      * @param tables
      */
     private void checkExpressionSyntaxProblems(List<ExternalMapperTable> tables) {
+
+        ILanguage currentLanguage = LanguageProvider.getCurrentLanguage();
         for (ExternalMapperTable table : tables) {
             List<ExternalMapperTableEntry> metadataTableEntries = table.getMetadataTableEntries();
             // loop on all entries of current table
             if (metadataTableEntries != null) {
                 for (ExternalMapperTableEntry entry : metadataTableEntries) {
-                    addProblem(checkExpressionSyntax(entry.getExpression()));
+                    Problem problem = checkExpressionSyntax(entry.getExpression());
+                    if (problem != null) {
+                        String location = currentLanguage.getLocation(table.getName(), entry.getName());
+                        String description = "Expression of " + location + " invalid : " + problem.getDescription();
+                        problem.setDescription(description);
+                        addProblem(problem);
+                    }
                 } // for (ExternalMapperTableEntry entry : metadataTableEntries) {
             }
             if (table.getConstraintTableEntries() != null) {
                 for (ExternalMapperTableEntry entry : table.getConstraintTableEntries()) {
-                    addProblem(checkExpressionSyntax(entry.getExpression()));
+
+                    Problem problem = checkExpressionSyntax(entry.getExpression());
+
+                    if (problem != null) {
+                        String description = "Filter invalid in table " + table.getName() + " : " + problem.getDescription();
+                        problem.setDescription(description);
+                        addProblem(problem);
+                    }
+
                 }
             }
         } // for (ExternalMapperTable table : tables) {

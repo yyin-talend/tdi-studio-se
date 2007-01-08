@@ -950,7 +950,6 @@ public abstract class DataMapTableView extends Composite {
             rejectFilterCheck.setHotImage(image);
         }
         rejectFilterCheck.setSelection(isReject);
-        // rejectFilterCheck.setText("Reject");
 
         // /////////////////////////////////////////////////////////////////
         if (rejectFilterCheck != null) {
@@ -981,48 +980,6 @@ public abstract class DataMapTableView extends Composite {
 
         }
 
-        // final ToolItem rejectInnerJoinFilterCheck = new ToolItem(toolBarActions, SWT.CHECK);
-        // rejectInnerJoinFilterCheck.setToolTipText("Active/unactive reject lookup inner join");
-        // boolean isRejectInnerJoin = ((OutputTable) abstractDataMapTable).isRejectInnerJoin();
-        // image = ImageProviderMapper.getImage(isRejectInnerJoin ? ImageInfo.CHECKED_ICON : ImageInfo.UNCHECKED_ICON);
-        // if (WindowSystem.isGTK()) {
-        // rejectInnerJoinFilterCheck.setImage(image);
-        // rejectInnerJoinFilterCheck.setHotImage(image);
-        // } else {
-        // rejectInnerJoinFilterCheck.setImage(ImageProviderMapper.getImage(ImageInfo.UNCHECKED_ICON));
-        // rejectInnerJoinFilterCheck.setHotImage(image);
-        // }
-        // rejectInnerJoinFilterCheck.setSelection(isRejectInnerJoin);
-        // rejectInnerJoinFilterCheck.setText("Reject2");
-        // // /////////////////////////////////////////////////////////////////
-        // if (rejectInnerJoinFilterCheck != null) {
-        //            
-        // rejectInnerJoinFilterCheck.addSelectionListener(new SelectionListener() {
-        //                
-        // public void widgetDefaultSelected(SelectionEvent e) {
-        // }
-        //                
-        // public void widgetSelected(SelectionEvent e) {
-        // Image image = null;
-        // if (rejectInnerJoinFilterCheck.getSelection()) {
-        // ((OutputTable) abstractDataMapTable).setRejectInnerJoin(true);
-        // image = ImageProviderMapper.getImage(ImageInfo.CHECKED_ICON);
-        // } else {
-        // ((OutputTable) abstractDataMapTable).setRejectInnerJoin(false);
-        // image = ImageProviderMapper.getImage(ImageInfo.UNCHECKED_ICON);
-        // }
-        // if (WindowSystem.isGTK()) {
-        // rejectInnerJoinFilterCheck.setImage(image);
-        // rejectInnerJoinFilterCheck.setHotImage(image);
-        // } else {
-        // rejectInnerJoinFilterCheck.setHotImage(image);
-        // }
-        // }
-        //                
-        // });
-        //            
-        // }
-        //        
         // // /////////////////////////////////////////////////////////////////
         final ToolItem rejectInnerJoinFilterCheck = new ToolItem(toolBarActions, SWT.CHECK);
         rejectInnerJoinFilterCheck.setToolTipText("Enable/disable lookup inner join reject");
@@ -1251,14 +1208,6 @@ public abstract class DataMapTableView extends Composite {
             }
 
         });
-
-        // expressionTextEditor.addListener(SWT.KeyDown, new Listener() {
-        //
-        // public void handleEvent(Event event) {
-        // // highlightLineOfCursorPosition();
-        // }
-        //
-        // });
 
         expressionTextEditor.addMouseListener(new MouseListener() {
 

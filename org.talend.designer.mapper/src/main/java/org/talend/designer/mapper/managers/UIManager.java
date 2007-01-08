@@ -228,7 +228,7 @@ public class UIManager {
                 final MetadataTableEditor metadataTableEditor = currentMetadataTableEditor;
 
                 modifySelectionChangedListener(currentZone, metadataTableEditorViewFinal, metadataTVCreator, metadataTableEditor,
-                        dataMapTableView);
+                        dataMapTableView, previousSelectedTableView);
 
                 // init actions listeners for list which contains metadata
                 metadataTableEditor.addAfterOperationListListener(new IListenableListListener() {
@@ -345,9 +345,9 @@ public class UIManager {
 
     private void modifySelectionChangedListener(final Zone currentZone, final MetadataTableEditorView metadataTableEditorViewFinal,
             final TableViewerCreator metadataTVCreator, final MetadataTableEditor metadataTableEditor,
-            final DataMapTableView dataMapTableView) {
+            final DataMapTableView dataMapTableView, DataMapTableView previousSelectedTableView) {
 
-        final TableViewer dataMapTableViewer = dataMapTableView.getTableViewerCreatorForColumns().getTableViewer();
+        final TableViewer tableViewer = dataMapTableView.getTableViewerCreatorForColumns().getTableViewer();
 
         IModifiedBeanListener<IMetadataColumn> modifiedBeanListener = new IModifiedBeanListener<IMetadataColumn>() {
 
@@ -361,9 +361,9 @@ public class UIManager {
                         processColumnNameChanged((String) event.previousValue, (String) event.newValue, dataMapTableView, dataMapTableEntry);
                     }
                     // dataMapTableViewer.refresh(event.bean, true);
-                    dataMapTableViewer.refresh(true);
+                    tableViewer.refresh(true);
                 } else if (MetadataTableEditorView.ID_COLUMN_KEY.equals(event.column.getId())) {
-                    dataMapTableViewer.refresh(true);
+                    tableViewer.refresh(true);
                     IColumnEntry entry = dataMapTableView.getDataMapTable().getColumnEntries().get(event.index);
                     parseExpression(entry.getExpression(), entry, false, false, false);
                 }
@@ -375,9 +375,18 @@ public class UIManager {
 
             public void handle(LineSelectionEvent e) {
                 // System.out.println("LineSelectionEvent");
-                if (metadataTableEditorViewFinal.getExtendedTableViewer().isExecuteSelectionEvent()) {
-                    mapperManager.getUiManager().selectLinkedTableEntries(metadataTableEditor.getMetadataTable(),
-                            metadataTVCreator.getTable().getSelectionIndices());
+
+                if (metadataTableEditorViewFinal.getTableViewerCreator() == e.source) {
+                    if (metadataTableEditorViewFinal.getExtendedTableViewer().isExecuteSelectionEvent()) {
+                        mapperManager.getUiManager().selectLinkedTableEntries(metadataTableEditor.getMetadataTable(),
+                                metadataTVCreator.getTable().getSelectionIndices());
+                    }
+                } else {
+//                    if (dataMapTableView.getExtendedTableViewerForColumns().isExecuteSelectionEvent()) {
+//                        int[] selectionIndices = dataMapTableView.getTableViewerCreatorForColumns().getTable().getSelectionIndices();
+//                        mapperManager.getUiManager().selectLinkedMetadataEditorEntries(dataMapTableView, selectionIndices);
+//                    }
+
                 }
             }
 
@@ -396,6 +405,8 @@ public class UIManager {
         if (previousSelectionChangedListener != null) {
             // metadataTVCreator.removeSelectionChangedListener(previousSelectionChangedListener);
             metadataTVCreator.getSelectionHelper().removeAfterSelectionListener(previousSelectionChangedListener);
+            previousSelectedTableView.getTableViewerCreatorForColumns().getSelectionHelper().removeAfterSelectionListener(
+                    previousSelectionChangedListener);
         }
 
         if (previousModifiedBeanListener != null) {
@@ -411,6 +422,8 @@ public class UIManager {
         }
         // metadataTVCreator.addSelectionChangedListener(metadataEditorViewerSelectionChangedListener);
         metadataTVCreator.getSelectionHelper().addAfterSelectionListener(metadataEditorViewerSelectionChangedListener);
+        dataMapTableView.getTableViewerCreatorForColumns().getSelectionHelper().addAfterSelectionListener(
+                metadataEditorViewerSelectionChangedListener);
         metadataTableEditor.addModifiedBeanListener(modifiedBeanListener);
 
         if (this.commonMetadataDisposeListener == null) {
@@ -1117,7 +1130,7 @@ public class UIManager {
         formData.top = new FormAttachment(previousControl);
         dataMapTableView.setLayoutData(formData);
         dataMapTableView.minimizeTable(abstractDataMapTable.isMinimized());
-        // dataMapTableView.registerStyledExpressionEditor(mapperUI.getTabFolderEditors().getStyledTextHandler());
+        dataMapTableView.registerStyledExpressionEditor(getTabFolderEditors().getStyledTextHandler());
         return dataMapTableView;
     }
 
@@ -1600,16 +1613,15 @@ public class UIManager {
      */
     public void enlargeLeftMarginForInputTables(int countOfLevels) {
         int marginLeft = mapperUI.getInputTablesZoneView().getMarginLeft();
-        int calculatedMarginLeft = calculateLeftMargin(countOfLevels);
+        int calculatedMarginLeft = calculateInputsLeftMarginFromLevelsCount(countOfLevels);
         if (calculatedMarginLeft >= marginLeft) {
             mapperUI.getInputTablesZoneView().setMarginLeft(calculatedMarginLeft + 5);
         }
 
     }
 
-    public int calculateLeftMargin(int countOfLevels) {
+    private int calculateInputsLeftMarginFromLevelsCount(int countOfLevels) {
         return 5 + countOfLevels * 5;
     }
-    
-    
+
 }
