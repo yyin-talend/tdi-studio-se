@@ -786,7 +786,7 @@ public class MapperManager {
      */
     public boolean checkEntryHasInvalidCheckedKey(InputColumnTableEntry inputEntry) {
         return inputEntry.getMetadataColumn().isKey()
-                && (inputEntry.getExpression() == null || inputEntry.getExpression().trim().length() == 0);
+                && checkEntryHasEmptyExpression(inputEntry);
     }
 
     /**
@@ -799,6 +799,11 @@ public class MapperManager {
         && inputEntry.getExpression() != null && inputEntry.getExpression().trim().length() > 0;
     }
     
-
+    public boolean checkEntryHasEmptyExpression(ITableEntry entry) {
+        return entry.getExpression() == null || entry.getExpression().trim().length() == 0;
+    }
+    
+    
+    
     
 }

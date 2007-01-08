@@ -85,9 +85,41 @@ public class ProblemsAnalyser {
 
             checkKeysProblems(inputTables);
 
+            checkLookupTablesUnusedProblems(inputTables);
+
         }
 
         return getProblems();
+    }
+
+    /**
+     * DOC amaumont Comment method "checkLookupTablesUnusedProblems".
+     * 
+     * @param inputTables
+     */
+    private void checkLookupTablesUnusedProblems(ArrayList<InputTable> inputTables) {
+
+        for (InputTable table : inputTables) {
+            if (table.isMainConnection()) {
+                continue;
+            }
+            List<IColumnEntry> columnEntries = table.getColumnEntries();
+            boolean atLeastOneExpressionFilled = false;
+            for (IColumnEntry entry : columnEntries) {
+                InputColumnTableEntry inputEntry = (InputColumnTableEntry) entry;
+                if (!mapperManager.checkEntryHasEmptyExpression(inputEntry)) {
+                    atLeastOneExpressionFilled = true;
+                    break;
+                }
+            }
+
+            if (!atLeastOneExpressionFilled) {
+                addProblem(new Problem(null, "The lookup table '" + table.getName() + "' should have at least one expression key filled. ",
+                        ProblemStatus.WARNING));
+            }
+
+        }
+
     }
 
     /**
@@ -109,12 +141,13 @@ public class ProblemsAnalyser {
                 InputColumnTableEntry inputEntry = (InputColumnTableEntry) entry;
                 String columnName = entry.getName();
                 if (mapperManager.checkEntryHasInvalidUncheckedKey(inputEntry)) {
-                    String description = "Key of " + currentLanguage.getLocation(tableName, columnName) + " input entry should be checked";
+                    String description = "Key of " + currentLanguage.getLocation(tableName, columnName)
+                            + " input entry should be checked or expression should be removed. ";
                     addProblem(new Problem(null, description, ProblemStatus.WARNING));
                 }
                 if (mapperManager.checkEntryHasInvalidCheckedKey(inputEntry)) {
                     String description = "Key of " + currentLanguage.getLocation(tableName, columnName)
-                            + " input entry should be unchecked";
+                            + " input entry should be unchecked or expression should be filled. ";
                     addProblem(new Problem(null, description, ProblemStatus.WARNING));
                 }
             }
@@ -138,7 +171,7 @@ public class ProblemsAnalyser {
                     Problem problem = checkExpressionSyntax(entry.getExpression());
                     if (problem != null) {
                         String location = currentLanguage.getLocation(table.getName(), entry.getName());
-                        String description = "Expression of " + location + " invalid : " + problem.getDescription();
+                        String description = "Expression of " + location + " is invalid : " + problem.getDescription() + ". ";
                         problem.setDescription(description);
                         addProblem(problem);
                     }
@@ -150,7 +183,7 @@ public class ProblemsAnalyser {
                     Problem problem = checkExpressionSyntax(entry.getExpression());
 
                     if (problem != null) {
-                        String description = "Filter invalid in table " + table.getName() + " : " + problem.getDescription();
+                        String description = "Filter invalid in table " + table.getName() + " : " + problem.getDescription() + ".";
                         problem.setDescription(description);
                         addProblem(problem);
                     }
@@ -188,25 +221,6 @@ public class ProblemsAnalyser {
      */
     private Problem checkExpressionSyntax(String expression) {
         return mapperManager.checkExpressionSyntax(expression);
-    }
-
-    public void replaceLocation(TableEntryLocation oldLocation, TableEntryLocation newLocation, String newColumnName,
-            ExternalMapperTableEntry entry, DataMapExpressionParser dataMapExpressionParser) {
-        String currentExpression = entry.getExpression();
-        if (currentExpression == null || currentExpression.length() == 0) {
-            return;
-        }
-        TableEntryLocation[] tableEntryLocations = dataMapExpressionParser.parseTableEntryLocations(currentExpression);
-        // loop on all locations of current expression
-        for (int i = 0; i < tableEntryLocations.length; i++) {
-            TableEntryLocation currentLocation = tableEntryLocations[i];
-            if (currentLocation.equals(oldLocation)) {
-                newLocation.columnName = newColumnName;
-                currentExpression = dataMapExpressionParser.replaceLocation(currentExpression, currentLocation, newLocation);
-            }
-        } // for (int i = 0; i < tableEntryLocations.length; i++) {
-        entry.setExpression(currentExpression);
-
     }
 
 }
