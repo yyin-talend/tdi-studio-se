@@ -147,7 +147,7 @@ public class PerlHelpComposite extends Composite {
         Composite searchRadioComp = new Composite(parentComp, SWT.None);
         searchRadioComp.setLayout(new RowLayout());
         funcBtn = new Button(searchRadioComp, SWT.RADIO);
-        funcBtn.setText("Fuction");
+        funcBtn.setText("Function");
         funcBtn.setSelection(true);
         funcBtn.addSelectionListener(new RadioSelection());
         plainBtn = new Button(searchRadioComp, SWT.RADIO);
