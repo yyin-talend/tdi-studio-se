@@ -129,7 +129,7 @@ public class DropContextAnalyzer {
         isInputToInput = false;
         mapOneToOneAuthorized = true;
 
-        if (targetTableIsConstraintsTable() || draggedData.getTransferableEntryList().size() <= 1) {
+        if (targetTableIsFiltersTable() || draggedData.getTransferableEntryList().size() <= 1) {
             mapOneToOneAuthorized = false;
         }
 
@@ -260,7 +260,7 @@ public class DropContextAnalyzer {
 
     private void analyzeForFeedback() {
         int dropFeedback = DND.FEEDBACK_SCROLL;
-        boolean targetTableIsConstraintsTable = targetTableIsConstraintsTable(dataMapTableViewTarget);
+        boolean targetTableIsConstraintsTable = targetTableIsFiltersTable(dataMapTableViewTarget);
 
         if (isDropValid) {
 
@@ -316,15 +316,15 @@ public class DropContextAnalyzer {
         detail = dropOperation;
     }
 
-    private boolean targetTableIsConstraintsTable(DataMapTableView target) {
+    private boolean targetTableIsFiltersTable(DataMapTableView target) {
         if (target.getZone() != Zone.OUTPUTS) {
             return false;
         }
         return currentTableTarget == target.getTableViewerCreatorForFilters().getTable();
     }
 
-    public boolean targetTableIsConstraintsTable() {
-        return targetTableIsConstraintsTable(dataMapTableViewTarget);
+    public boolean targetTableIsFiltersTable() {
+        return targetTableIsFiltersTable(dataMapTableViewTarget);
     }
 
     private TableItem getTableItemFromPosition(Point cursorPosition) {

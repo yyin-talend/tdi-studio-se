@@ -173,8 +173,9 @@ public class UIManager {
      * 
      * @param dataMapTableView
      * @param useNewCommand
+     * @param selectAllEntries TODO
      */
-    public void selectDataMapTableView(final DataMapTableView dataMapTableView, boolean useNewCommand) {
+    public void selectDataMapTableView(final DataMapTableView dataMapTableView, boolean useNewCommand, boolean selectAllEntries) {
 
         TabFolderEditors tabFolderEditors = mapperUI.getTabFolderEditors();
         // tabFolderEditors.setSelection(TabFolderEditors.INDEX_TAB_METADATA_EDITOR);
@@ -317,7 +318,25 @@ public class UIManager {
                 dataMapTableView.setBackground(dataMapTableView.getDisplay().getSystemColor(SWT.COLOR_YELLOW));
             }
 
+            if (selectAllEntries) {
+                dataMapTVCreator.getTable().selectAll();
+                selectAllLinks(dataMapTableView);
+                if (currentZone != Zone.VARS) {
+                    metadataTableEditorView.getTableViewerCreator().getTable().selectAll();
+                    metadataTableEditorView.getToolBar().updateEnabledStateOfButtons();
+                }
+                if (currentZone == Zone.OUTPUTS) {
+                    dataMapTableView.getTableViewerCreatorForFilters().getTable().selectAll();
+                }
+            }
+
         }
+
+        if (selectAllEntries && currentZone == Zone.VARS) {
+            selectAllLinks(dataMapTableView);
+            mapperManager.getVarsTablesView().get(0).getTableViewerCreatorForColumns().getTable().selectAll();
+        }
+
         if (otherMetadataTableEditorView != null) {
             otherMetadataTableEditorView.getExtendedToolbar().updateEnabledStateOfButtons();
         }
@@ -382,10 +401,12 @@ public class UIManager {
                                 metadataTVCreator.getTable().getSelectionIndices());
                     }
                 } else {
-//                    if (dataMapTableView.getExtendedTableViewerForColumns().isExecuteSelectionEvent()) {
-//                        int[] selectionIndices = dataMapTableView.getTableViewerCreatorForColumns().getTable().getSelectionIndices();
-//                        mapperManager.getUiManager().selectLinkedMetadataEditorEntries(dataMapTableView, selectionIndices);
-//                    }
+                    // if (dataMapTableView.getExtendedTableViewerForColumns().isExecuteSelectionEvent()) {
+                    // int[] selectionIndices =
+                    // dataMapTableView.getTableViewerCreatorForColumns().getTable().getSelectionIndices();
+                    // mapperManager.getUiManager().selectLinkedMetadataEditorEntries(dataMapTableView,
+                    // selectionIndices);
+                    // }
 
                 }
             }
@@ -612,7 +633,7 @@ public class UIManager {
 
         List<ITableEntry> list = extractSelectedTableEntries(dataMapTableView.getTableViewerCreatorForColumns().getTableViewer()
                 .getSelection());
-        processSelectedDataMapEntries(dataMapTableView, list, false, false);
+        selectLinks(dataMapTableView, list, false, false);
     }
 
     /**
@@ -644,22 +665,29 @@ public class UIManager {
         }
     }
 
+    public void selectAllLinks(DataMapTableView dataMapTableView) {
+        selectLinks(dataMapTableView, null, false, false);
+    }
+
     /**
      * Highlight links and linked cells which have are referenced by the selected items.
      * 
      * @param dataMapTableView
-     * @param selectedMetadataTableEntries
-     * @param isConstraintsTableSelected TODO
+     * @param selectedMetadataTableEntries, source or targets entries which must be highlighted, can be null to select
+     * all links of a same DataMapTableView
+     * @param isFilterTableSelected TODO
      * @param forceResetHighlightLinksForOtherTables TODO
      */
     @SuppressWarnings("unchecked")
-    public void processSelectedDataMapEntries(DataMapTableView dataMapTableView, List<ITableEntry> selectedMetadataTableEntries,
-            boolean isConstraintsTableSelected, boolean forceResetHighlightLinksForOtherTables) {
+    public void selectLinks(DataMapTableView dataMapTableView, List<ITableEntry> selectedMetadataTableEntries,
+            boolean isFilterTableSelected, boolean forceResetHighlightLinksForOtherTables) {
+
+        boolean selectColumnAndFiltersLinks = (selectedMetadataTableEntries == null);
 
         UIManager uiManager = mapperManager.getUiManager();
         TableViewerCreator<ITableEntry> currentTableViewer = null;
 
-        if (isConstraintsTableSelected) {
+        if (isFilterTableSelected) {
             currentTableViewer = dataMapTableView.getTableViewerCreatorForFilters();
         } else {
             currentTableViewer = dataMapTableView.getTableViewerCreatorForColumns();
@@ -668,15 +696,24 @@ public class UIManager {
         // Color selectedColor = dataMapTableView.getDisplay().getSystemColor(SWT.COLOR_YELLOW);
         Color unselectedColor = dataMapTableView.getDisplay().getSystemColor(SWT.COLOR_WHITE);
 
-        Set<ITableEntry> hashSelectedMetadataTableEntries = new HashSet<ITableEntry>(selectedMetadataTableEntries);
+        Zone currentZone = dataMapTableView.getZone();
+
+        Set<ITableEntry> hashSelectedMetadataTableEntries = new HashSet<ITableEntry>();
+        if (selectColumnAndFiltersLinks) {
+            hashSelectedMetadataTableEntries.addAll(dataMapTableView.getTableViewerCreatorForColumns().getInputList());
+            if (currentZone == Zone.OUTPUTS) {
+                hashSelectedMetadataTableEntries.addAll(dataMapTableView.getTableViewerCreatorForFilters().getInputList());
+            }
+        } else {
+            hashSelectedMetadataTableEntries.addAll(selectedMetadataTableEntries);
+        }
 
         // ////////////////////////////////////////////////////////////////////////
         // Unselect all links and tableEntries if Ctrl or Shift keys are not pressed or if zone different of last
         // selection
-        Zone currentZone = dataMapTableView.getZone();
         boolean zoneHasChanged = (previousSelectedZone == Zone.INPUTS || previousSelectedZone == Zone.VARS) && currentZone == Zone.OUTPUTS
                 || (currentZone == Zone.INPUTS || currentZone == Zone.VARS) && previousSelectedZone == Zone.OUTPUTS;
-        boolean tableTypeHasChanged = previousSelectedTableIsConstraint != isConstraintsTableSelected && currentZone == Zone.OUTPUTS;
+        boolean tableTypeHasChanged = previousSelectedTableIsConstraint != isFilterTableSelected && currentZone == Zone.OUTPUTS;
         boolean resetHighlightObjectsForOtherTables = !uiManager.isDragging()
                 && (!uiManager.isCtrlPressed() && !uiManager.isShiftPressed() || zoneHasChanged);
         if (resetHighlightObjectsForOtherTables || forceResetHighlightLinksForOtherTables) {
@@ -704,7 +741,7 @@ public class UIManager {
                 if (viewToDeselectEntries != dataMapTableView) {
                     viewToDeselectEntries.unselectAllEntries();
                 } else if (viewToDeselectEntries == dataMapTableView && tableTypeHasChanged) {
-                    if (isConstraintsTableSelected) {
+                    if (isFilterTableSelected) {
                         viewToDeselectEntries.unselectAllColumnEntries();
                     } else {
                         viewToDeselectEntries.unselectAllConstraintEntries();
@@ -719,6 +756,9 @@ public class UIManager {
         List<ITableEntry> allEntriesOfCurrentTableView = new ArrayList<ITableEntry>();
         if (currentTableViewer != null) {
             allEntriesOfCurrentTableView.addAll(currentTableViewer.getInputList());
+            if (selectColumnAndFiltersLinks && currentZone == Zone.OUTPUTS) {
+                allEntriesOfCurrentTableView.addAll(dataMapTableView.getTableViewerCreatorForFilters().getInputList());
+            }
         }
         int lstSize = allEntriesOfCurrentTableView.size();
         Set<IMapperLink> linksAlreadySelected = new HashSet<IMapperLink>();
@@ -763,7 +803,7 @@ public class UIManager {
         uiManager.refreshBackground(false, false);
 
         previousSelectedZone = dataMapTableView.getZone();
-        previousSelectedTableIsConstraint = isConstraintsTableSelected;
+        previousSelectedTableIsConstraint = isFilterTableSelected;
     }
 
     public void unselectAllInputMetaDataEntries() {
@@ -884,6 +924,7 @@ public class UIManager {
 
     /**
      * DOC amaumont Comment method "processAllExpressions".
+     * 
      * @param newLinksMustHaveSelectedState TODO
      */
     @SuppressWarnings("unchecked")

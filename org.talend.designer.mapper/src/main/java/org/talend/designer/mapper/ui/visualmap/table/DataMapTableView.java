@@ -444,10 +444,7 @@ public abstract class DataMapTableView extends Composite {
                 int[] selectionIndices = tableViewerForEntries.getTable().getSelectionIndices();
                 if (selectionIndices.length > 0) {
                     selectThisDataMapTableView();
-                    if (!dragDetected) { // useful when drag finished
-                        onSelectedEntries(event.getSelection(), selectionIndices);
-                    }
-                    dragDetected = false;
+                    onSelectedEntries(event.getSelection(), selectionIndices);
                 }
             }
 
@@ -803,7 +800,7 @@ public abstract class DataMapTableView extends Composite {
      * DOC amaumont Comment method "onSelectDataMapTableView".
      */
     protected void onSelectDataMapTableView() {
-        mapperManager.getUiManager().selectDataMapTableView(this, true);
+        mapperManager.getUiManager().selectDataMapTableView(this, true, true);
     }
 
     /**
@@ -880,7 +877,7 @@ public abstract class DataMapTableView extends Composite {
     public void onSelectedEntries(ISelection selection, int[] selectionIndices) {
         if (executeSelectionEvent) {
             UIManager uiManager = mapperManager.getUiManager();
-            uiManager.processSelectedDataMapEntries(DataMapTableView.this, uiManager.extractSelectedTableEntries(selection), false, false);
+            uiManager.selectLinks(DataMapTableView.this, uiManager.extractSelectedTableEntries(selection), false, false);
             uiManager.selectLinkedMetadataEditorEntries(this, selectionIndices);
         }
     }
@@ -1505,7 +1502,7 @@ public abstract class DataMapTableView extends Composite {
         if (uiManager.getCurrentSelectedInputTableView() != DataMapTableView.this
                 && uiManager.getCurrentSelectedOutputTableView() != DataMapTableView.this) {
 
-            uiManager.selectDataMapTableView(DataMapTableView.this, true);
+            uiManager.selectDataMapTableView(DataMapTableView.this, true, false);
         }
     }
 

@@ -489,7 +489,7 @@ public class MapperManager {
         uiManager.moveOutputScrollBarZoneToMax();
         uiManager.refreshBackground(true, false);
         tablesZoneViewOutputs.layout();
-        uiManager.selectDataMapTableView(dataMapTableView, true);
+        uiManager.selectDataMapTableView(dataMapTableView, true, false);
     }
 
     public void removeSelectedOutput() {

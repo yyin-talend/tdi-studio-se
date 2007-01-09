@@ -85,8 +85,8 @@ public class ToolbarOutputZone extends ToolbarZone {
         new ToolItem(getToolBarActions(), SWT.SEPARATOR);
 
         guessItem = new ToolItem(getToolBarActions(), SWT.PUSH);
-        guessItem.setToolTipText("Map automaitcally inputs and outputs (for empty expressions only)");
-        guessItem.setText("Guess");
+        guessItem.setToolTipText("Map automatically inputs and outputs (for empty expressions only)");
+        guessItem.setText("Auto map!");
         
     }
 

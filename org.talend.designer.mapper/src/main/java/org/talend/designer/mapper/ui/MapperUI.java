@@ -278,12 +278,12 @@ public class MapperUI {
         List<DataMapTableView> inputsTablesView = mapperManager.getInputsTablesView();
         UIManager uiManager = mapperManager.getUiManager();
         if (inputsTablesView.size() > 0) {
-            uiManager.selectDataMapTableView(inputsTablesView.get(0), true);
+            uiManager.selectDataMapTableView(inputsTablesView.get(0), true, false);
         }
 
         List<DataMapTableView> outputsTablesView = mapperManager.getOutputsTablesView();
         if (outputsTablesView.size() > 0) {
-            uiManager.selectDataMapTableView(outputsTablesView.get(0), true);
+            uiManager.selectDataMapTableView(outputsTablesView.get(0), true, false);
         }
     }
 

@@ -90,7 +90,7 @@ public class DataMapTableViewSelectedCommand extends Command {
      */
     @Override
     public void redo() {
-        uiManager.selectDataMapTableView(newSelectedDataMapTableView, false);
+        uiManager.selectDataMapTableView(newSelectedDataMapTableView, false, false);
     }
 
     /*
@@ -101,7 +101,7 @@ public class DataMapTableViewSelectedCommand extends Command {
     @Override
     public void undo() {
         if (previousSelectedTableView != null) {
-            uiManager.selectDataMapTableView(previousSelectedTableView, false);
+            uiManager.selectDataMapTableView(previousSelectedTableView, false, false);
         }
     }
 

@@ -99,7 +99,7 @@ public class VarsDataMapTableView extends DataMapTableView {
                     List<ITableEntry> list = uiManager.extractSelectedTableEntries(varsDataMapTableView.getTableViewerCreatorForColumns()
                             .getTableViewer().getSelection());
 
-                    uiManager.processSelectedDataMapEntries(varsDataMapTableView, list, false, false);
+                    uiManager.selectLinks(varsDataMapTableView, list, false, false);
                 }
             }
 

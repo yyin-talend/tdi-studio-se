@@ -100,7 +100,7 @@ public class CompleteDropTargetListener extends DefaultDropTargetListener {
                 draggingInfosPopup.setInsertionEntryContext(false);
             } else if (analyzer.isCursorOverExpressionCell()) {
                 draggingInfosPopup.setExpressionContext(true);
-            } else if (analyzer.targetTableIsConstraintsTable()) {
+            } else if (analyzer.targetTableIsFiltersTable()) {
                 draggingInfosPopup.setExpressionContext(true);
             } else {
                 draggingInfosPopup.setExpressionContext(false);
@@ -112,7 +112,7 @@ public class CompleteDropTargetListener extends DefaultDropTargetListener {
                 int size = draggedData.getTransferableEntryList().size();
                 if (itemIndexWhereInsertFromPosition != null) {
                     draggableTable.setSelection(itemIndexWhereInsertFromPosition, itemIndexWhereInsertFromPosition + size - 1);
-                    if (!analyzer.targetTableIsConstraintsTable()
+                    if (!analyzer.targetTableIsFiltersTable()
                             && itemIndexWhereInsertFromPosition + size - 1 >= draggableTable.getItemCount()) {
                         insertionIndicator.updatePosition(draggableTable, draggableTable.getItemCount());
                         insertionIndicator.setVisible(true);
@@ -133,7 +133,7 @@ public class CompleteDropTargetListener extends DefaultDropTargetListener {
                 if (itemIndexWhereInsertFromPosition != null && !analyzer.isInsertionEntryMode()) {
                     draggableTable.setSelection(itemIndexWhereInsertFromPosition);
                 }
-                if (!analyzer.targetTableIsConstraintsTable()) {
+                if (!analyzer.targetTableIsFiltersTable()) {
                     updateInsertionIndicator(event);
                     insertionIndicator.setVisible(analyzer.isInsertionEntryMode());
                 }
@@ -174,7 +174,7 @@ public class CompleteDropTargetListener extends DefaultDropTargetListener {
             } else if (analyzer.isCursorOverExpressionCell()) {
                 draggingInfosPopup.setExpressionContext(true);
                 draggingInfosPopup.setInsertionEntryContext(analyzer.isInsertionEntryMode());
-            } else if (analyzer.targetTableIsConstraintsTable()) {
+            } else if (analyzer.targetTableIsFiltersTable()) {
                 draggingInfosPopup.setExpressionContext(true);
                 draggingInfosPopup.setInsertionEntryContext(false);
             } else {
@@ -324,7 +324,7 @@ public class CompleteDropTargetListener extends DefaultDropTargetListener {
         DataMapTableView dataMapTableViewTarget = mapperManager.retrieveDataMapTableView(draggableTable);
         Zone zoneTarget = dataMapTableViewTarget.getZone();
 
-        uiManager.selectDataMapTableView(dataMapTableViewTarget, true);
+        uiManager.selectDataMapTableView(dataMapTableViewTarget, true, false);
         MetadataTableEditorView metadataEditorView = mapperManager.getUiManager().getMetadataEditorView(dataMapTableViewTarget.getZone());
         List<TransferableEntry> transferableEntryList = draggedData.getTransferableEntryList();
         int currentIndex = startInsertAtThisIndex;
@@ -339,14 +339,14 @@ public class CompleteDropTargetListener extends DefaultDropTargetListener {
         ArrayList<ITableEntry> sourceEntriesOfEntriesBeingAdded = new ArrayList<ITableEntry>();
         ArrayList<IMetadataColumn> metadataColumnsBeingAdded = new ArrayList<IMetadataColumn>();
 
-        boolean targetTableIsConstraintsTable = analyzer.targetTableIsConstraintsTable();
+        boolean targetTableIsFiltersTable = analyzer.targetTableIsFiltersTable();
         boolean atLeastOneEntryInserted = false;
 
         boolean insertionEntryMode = analyzer.isInsertionEntryMode();
         boolean mapEachSourceToNextTargets = analyzer.isMapOneToOneMode();
 
         TableViewerCreator tableViewerCreatorTarget = null;
-        if (targetTableIsConstraintsTable) {
+        if (targetTableIsFiltersTable) {
             tableViewerCreatorTarget = dataMapTableViewTarget.getTableViewerCreatorForFilters();
         } else {
             tableViewerCreatorTarget = dataMapTableViewTarget.getTableViewerCreatorForColumns();
@@ -431,7 +431,7 @@ public class CompleteDropTargetListener extends DefaultDropTargetListener {
             tableViewerCreatorTarget.getTableViewer().refresh();
         } else {
             updateExpressionsOfInsertedEntries(currentLanguage, metadataEditorView, currentIndex, sourceEntriesOfEntriesBeingAdded,
-                    targetTableIsConstraintsTable, tableViewerCreatorTarget
+                    targetTableIsFiltersTable, tableViewerCreatorTarget
                     // , metadataEditorEvent
                     , metadataColumnsBeingAdded);
 
@@ -445,7 +445,7 @@ public class CompleteDropTargetListener extends DefaultDropTargetListener {
         uiManager.unselectAllEntriesOfAllTables();
 
         uiManager.refreshBackground(true, false);
-        if (metadataEditorView != null && !targetTableIsConstraintsTable) {
+        if (metadataEditorView != null && !targetTableIsFiltersTable) {
             metadataEditorView.getTableViewerCreator().getTableViewer().refresh();
         }
 
@@ -460,7 +460,7 @@ public class CompleteDropTargetListener extends DefaultDropTargetListener {
         if (zoneTarget != Zone.OUTPUTS) {
             uiManager.parseAllExpressionsForAllTables();
         }
-        uiManager.processSelectedDataMapEntries(dataMapTableViewTarget, selectedEntries, false, true);
+        uiManager.selectLinks(dataMapTableViewTarget, selectedEntries, targetTableIsFiltersTable, true);
         tableViewerCreatorTarget.getTable().setFocus();
 
         uiManager.setDragging(false);
