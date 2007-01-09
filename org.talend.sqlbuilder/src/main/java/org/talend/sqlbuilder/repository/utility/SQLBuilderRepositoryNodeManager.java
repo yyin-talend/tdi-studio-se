@@ -1032,7 +1032,7 @@ public class SQLBuilderRepositoryNodeManager {
         for (MetadataTable db : metaFromDB) {
             if (db.getSourceName().equals(emf.getSourceName())) {
                 flag = false;
-                if (!emf.getLabel().equals("") && !emf.getLabel().equals(db.getSourceName().replaceAll("_", "-"))) {
+                if (!emf.getLabel().equals("") && !emf.getLabel().equals(db.getSourceName())) {
                     emf.setDivergency(true);
                 }
             }
