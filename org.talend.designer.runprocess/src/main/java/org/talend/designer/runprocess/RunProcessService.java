@@ -29,6 +29,7 @@ import org.talend.core.language.ICodeSyntaxChecker;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.temp.ECodeLanguage;
 import org.talend.designer.runprocess.data.PerformanceData;
+import org.talend.designer.runprocess.java.JavaProcessor;
 import org.talend.designer.runprocess.language.SyntaxCheckerFactory;
 import org.talend.designer.runprocess.perl.PerlProcessor;
 import org.talend.designer.runprocess.perl.PerlUtils;
@@ -76,8 +77,8 @@ public class RunProcessService implements IRunProcessService {
      * java.lang.String, int, int, java.lang.String)
      */
     public int exec(StringBuffer out, StringBuffer err, IPath absCodePath, IPath absContextPath, Level level,
-            String perlInterpreterLibOption, String perlInterpreterLibCtxOption, String perlModuleDirectoryOption, int statOption, int traceOption,
-            String... codeOptions) throws ProcessorException {
+            String perlInterpreterLibOption, String perlInterpreterLibCtxOption, String perlModuleDirectoryOption,
+            int statOption, int traceOption, String... codeOptions) throws ProcessorException {
         return Processor.exec(out, err, absCodePath, absContextPath, level, perlInterpreterLibOption,
                 perlInterpreterLibCtxOption, perlModuleDirectoryOption, statOption, traceOption, codeOptions);
 
@@ -89,8 +90,18 @@ public class RunProcessService implements IRunProcessService {
      * @see org.talend.designer.runprocess.IRunProcessFactory#createPerlProcessor(org.talend.core.model.process.IProcess,
      * boolean)
      */
-    public IPerlProcessor createPerlProcessor(IProcess process, boolean filenameFromLabel) {
+    public IProcessor createPerlProcessor(IProcess process, boolean filenameFromLabel) {
         return new PerlProcessor(process, filenameFromLabel);
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.runprocess.IRunProcessService#createJavaProcessor(org.talend.core.model.process.IProcess,
+     * boolean)
+     */
+    public IProcessor createJavaProcessor(IProcess process, boolean filenameFromLabel) {
+        return new JavaProcessor(process, filenameFromLabel);
     }
 
     /*

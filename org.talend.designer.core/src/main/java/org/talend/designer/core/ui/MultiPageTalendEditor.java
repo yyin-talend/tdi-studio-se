@@ -34,6 +34,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.impl.AdapterImpl;
 import org.eclipse.gef.EditPart;
+import org.eclipse.jdt.internal.ui.javaeditor.CompilationUnitEditor;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
@@ -51,13 +52,18 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.part.MultiPageEditorPart;
+import org.eclipse.ui.texteditor.AbstractDecoratedTextEditor;
 import org.epic.perleditor.PerlEditorPlugin;
 import org.talend.commons.exception.BusinessException;
 import org.talend.commons.exception.MessageBoxExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.image.ImageProvider;
+import org.talend.core.CorePlugin;
+import org.talend.core.context.Context;
+import org.talend.core.context.RepositoryContext;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.properties.Property;
+import org.talend.core.model.temp.ECodeLanguage;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
@@ -70,7 +76,7 @@ import org.talend.designer.core.ui.editor.nodes.NodeLabelEditPart;
 import org.talend.designer.core.ui.editor.nodes.NodePart;
 import org.talend.designer.core.ui.editor.outline.NodeTreeEditPart;
 import org.talend.designer.core.ui.editor.process.Process;
-import org.talend.designer.runprocess.IPerlProcessor;
+import org.talend.designer.runprocess.IProcessor;
 import org.talend.designer.runprocess.IRunProcessService;
 import org.talend.designer.runprocess.ProcessorException;
 import org.talend.repository.model.IProxyRepositoryFactory;
@@ -103,7 +109,7 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
 
     private TalendEditor designerEditor = new TalendEditor();;
 
-    private TalendPerlEditor perlEditor;
+    private AbstractDecoratedTextEditor codeEditor;
 
     public MultiPageTalendEditor() {
         super();
@@ -129,40 +135,80 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
         return designerEditor;
     }
 
+    private CompilationUnitEditor javaEditor;
+
     /**
      * Creates page 1 of the multi-page editor, which allows you to change the font used in page 2.
      */
     void createPage1() {
-        perlEditor = new TalendPerlEditor();
-        IProcess process = designerEditor.getProcess();
-        IRunProcessService service = DesignerPlugin.getDefault().getRunProcessService();
-        IPerlProcessor plProcessor = service.createPerlProcessor(process, true);
         try {
-            plProcessor.initPaths(process.getContextManager().getDefaultContext());
-            IFile codeFile = ResourcesPlugin.getWorkspace().getRoot().getFile(
-                    plProcessor.getPerlProject().getFullPath().append(plProcessor.getCodePath()));
-            if (!codeFile.exists()) {
-                // Create empty one
-                try {
-                    codeFile.create(new ByteArrayInputStream("".getBytes()), true, null);
-                } catch (CoreException e) {
-                    // Do nothing.
-                }
+            if (isJavaLang()) {
+                handleJavaProj();
+            } else {
+                handlePerlProj();
             }
-
-            int index = addPage(perlEditor, new FileEditorInput(codeFile));
-
-            // init Syntax Validation.
-            PerlEditorPlugin.getDefault().setSyntaxValidationPreference(true);
-
-            setPageText(index, Messages.getString("MultiPageTalendEditor.4")); //$NON-NLS-1$
-        } catch (PartInitException pie) {
+        } catch (CoreException ce) {
             ErrorDialog.openError(getSite().getShell(), Messages.getString("MultiPageTalendEditor.3"), //$NON-NLS-1$
-                    null, pie.getStatus());
+                    null, ce.getStatus());
         } catch (ProcessorException pe) {
             ErrorDialog.openError(getSite().getShell(), Messages.getString("MultiPageTalendEditor.3"), //$NON-NLS-1$
                     pe.getMessage(), null);
         }
+
+    }
+
+    private void handleJavaProj() throws CoreException, ProcessorException {
+        codeEditor = new CompilationUnitEditor(){
+            @Override
+            public boolean isEditable() {
+                return false;
+            }
+        };
+        IProcess process = designerEditor.getProcess();
+        IRunProcessService service = DesignerPlugin.getDefault().getRunProcessService();
+        IProcessor jProcessor = service.createJavaProcessor(process, true);
+        jProcessor.initPaths(process.getContextManager().getDefaultContext());
+        IFile codeFile = ResourcesPlugin.getWorkspace().getRoot().getFile(
+                jProcessor.getPerlProject().getFullPath().append(jProcessor.getCodePath()));
+        if (!codeFile.exists()) {
+            // Create empty one
+            codeFile.create(new ByteArrayInputStream("".getBytes()), true, null);
+        }
+        int index = addPage(codeEditor, new FileEditorInput(codeFile));
+        // TODO init Syntax Validation.
+        setPageText(index, Messages.getString("MultiPageTalendEditor.4")); //$NON-NLS-1$
+    }
+
+    private void handlePerlProj() throws CoreException, ProcessorException {
+        codeEditor = new TalendPerlEditor();
+        IProcess process = designerEditor.getProcess();
+        IRunProcessService service = DesignerPlugin.getDefault().getRunProcessService();
+        IProcessor plProcessor = service.createPerlProcessor(process, true);
+        IFile codeFile = null;
+        plProcessor.initPaths(process.getContextManager().getDefaultContext());
+        codeFile = ResourcesPlugin.getWorkspace().getRoot().getFile(
+                plProcessor.getPerlProject().getFullPath().append(plProcessor.getCodePath()));
+        if (!codeFile.exists()) {
+            // Create empty one
+            codeFile.create(new ByteArrayInputStream("".getBytes()), true, null);
+        }
+        int index = addPage(codeEditor, new FileEditorInput(codeFile));
+
+        // init Syntax Validation.
+        PerlEditorPlugin.getDefault().setSyntaxValidationPreference(true);
+
+        setPageText(index, Messages.getString("MultiPageTalendEditor.4")); //$NON-NLS-1$
+    }
+
+    /**
+     * Judge current project language whether Java.
+     * 
+     * @return if the current project language is Java,return true;else,return false
+     */
+    private boolean isJavaLang() {
+        ECodeLanguage language = ((RepositoryContext) CorePlugin.getContext().getProperty(
+                Context.REPOSITORY_CONTEXT_KEY)).getProject().getLanguage();
+        return language == ECodeLanguage.JAVA ? true : false;
     }
 
     /**
@@ -285,7 +331,8 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
             IProcess process = designerEditor.getProcess();
 
             IRunProcessService service = DesignerPlugin.getDefault().getRunProcessService();
-            IPerlProcessor plProcessor = service.createPerlProcessor(process, true);
+            IProcessor plProcessor = isJavaLang() ? service.createJavaProcessor(process, true) : service
+                    .createPerlProcessor(process, true);
 
             try {
                 // plProcessor.generateCode(process.getContextManager().getDefaultContext(), false, false, true,
@@ -299,9 +346,10 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
                 // pe.getMessage(), null);
             }
 
-            moveCursorToSelectedComponent(plProcessor);
-
-            perlEditor.revalidateSyntax();
+            if (codeEditor instanceof TalendPerlEditor) {
+                moveCursorToSelectedComponent(plProcessor);
+                ((TalendPerlEditor) codeEditor).revalidateSyntax();
+            }
         }
     }
 
@@ -332,18 +380,18 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
      * 
      * @param plProcessor
      */
-    private void moveCursorToSelectedComponent(IPerlProcessor plProcessor) {
+    private void moveCursorToSelectedComponent(IProcessor plProcessor) {
         String nodeName = getSelectedNode();
 
         if (nodeName.compareTo("") != 0) {
             int lineNumber = plProcessor.getLineNumber(nodeName) - 1;
-            IDocument document = perlEditor.getDocumentProvider().getDocument(perlEditor.getEditorInput());
+            IDocument document = codeEditor.getDocumentProvider().getDocument(codeEditor.getEditorInput());
             try {
                 int start = document.getLineOffset(lineNumber);
                 int end = start + document.getLineLength(lineNumber) - 1;
-                perlEditor.selectAndReveal(start, end - start);
+                codeEditor.selectAndReveal(start, end - start);
             } catch (BadLocationException e) {
-                perlEditor.selectAndReveal(0, 0);
+                codeEditor.selectAndReveal(0, 0);
             }
         }
     }
@@ -397,8 +445,8 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
                 public void run() {
                     IWorkbenchPage[] pages = getSite().getWorkbenchWindow().getPages();
                     for (int i = 0; i < pages.length; i++) {
-                        if (((FileEditorInput) designerEditor.getEditorInput()).getFile().getProject()
-                                .equals(event.getResource())) {
+                        if (((FileEditorInput) designerEditor.getEditorInput()).getFile().getProject().equals(
+                                event.getResource())) {
                             IEditorPart editorPart = pages[i].findEditor(designerEditor.getEditorInput());
                             pages[i].closeEditor(editorPart, true);
                         }

@@ -60,6 +60,7 @@ public class DesignerPlugin extends AbstractUIPlugin {
         plugin = this;
         Modes.getMode("perl.xml");
         Modes.getMode("tsql.xml");
+        Modes.getMode("java.xml");
         /*
          * // plugins list IExtensionRegistry extensionRegistry = Platform.getExtensionRegistry(); String[] namespaces =
          * extensionRegistry.getNamespaces(); System.out.println("Liste des plugins talend:"); for (int i = 0; i <

@@ -275,6 +275,7 @@ public class CodeGenerator implements ICodeGenerator {
         return content;
     }
 
+    
     /**
      * Generate Code Parts for a Sub Process .
      * 
@@ -287,7 +288,6 @@ public class CodeGenerator implements ICodeGenerator {
     private StringBuffer generateComponentsCode(NodesSubTree subProcess, INode node, ECodePart part)
             throws CodeGeneratorException {
         StringBuffer codeComponent = new StringBuffer();
-
         Boolean isMarked = subProcess.isMarkedNode(node, part);
         boolean isIterate = isIterateNode(node);
         if ((isMarked != null) && (!isMarked)) {
@@ -362,6 +362,10 @@ public class CodeGenerator implements ICodeGenerator {
         }
         return code;
     }
+    
+    public static final String JAVATIP = "//The function of generating Java code haven't achive yet"
+        + System.getProperty("line.separator") + "public class JavaTest extends Test {}";
+    
 
     /**
      * Generate Part Code for a given Component.
@@ -372,6 +376,11 @@ public class CodeGenerator implements ICodeGenerator {
      * @throws CodeGeneratorException if an error occurs during Code Generation
      */
     public String generateComponentCode(INode node, ECodePart part) throws CodeGeneratorException {
+      
+        if (language == ECodeLanguage.JAVA) {
+            return JAVATIP;
+        }
+        
         CodeGeneratorArgument argument = new CodeGeneratorArgument();
         argument.setNode(node);
         argument.setCodePart(part);

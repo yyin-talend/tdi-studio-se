@@ -57,7 +57,7 @@ import org.talend.core.model.process.IProcess;
 import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.designer.codegen.ICodeGenerator;
 import org.talend.designer.codegen.ICodeGeneratorService;
-import org.talend.designer.runprocess.IPerlProcessor;
+import org.talend.designer.runprocess.IProcessor;
 import org.talend.designer.runprocess.ProcessorException;
 import org.talend.designer.runprocess.RunProcessPlugin;
 import org.talend.designer.runprocess.i18n.Messages;
@@ -68,7 +68,7 @@ import org.talend.designer.runprocess.i18n.Messages;
  * $Id$
  * 
  */
-public class PerlProcessor implements IPerlProcessor {
+public class PerlProcessor implements IProcessor {
 
     /** Process to be turned in PERL code. */
     private IProcess process;

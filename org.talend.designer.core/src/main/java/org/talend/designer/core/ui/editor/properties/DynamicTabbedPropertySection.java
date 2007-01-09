@@ -2702,6 +2702,10 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                             lastControl = addLanguageMemo(composite, listParam.get(i), numInRow, nbInRow, heightSize,
                                     lastControl, "perl");
                             break;
+                        case MEMO_JAVA:
+                            lastControl = addLanguageMemo(composite, listParam.get(i), numInRow, nbInRow, heightSize,
+                                    lastControl, "java");
+                            break;
                         case CHECK:
                             lastControl = addCheck(composite, listParam.get(i), numInRow, nbInRow, heightSize,
                                     lastControl);
