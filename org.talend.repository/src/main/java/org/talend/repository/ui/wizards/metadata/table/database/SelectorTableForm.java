@@ -431,7 +431,7 @@ public class SelectorTableForm extends AbstractForm {
             Iterator<MetadataTable> iterate = getConnection().getTables().iterator();
             while (iterate.hasNext()) {
                 MetadataTable metadata = iterate.next();
-                if (metadata.getLabel().equals(tableItem.getText().replaceAll("_", "-"))) {
+                if (metadata.getLabel().equals(tableItem.getText())) {
                     tables.add(metadata);
                 }
             }
