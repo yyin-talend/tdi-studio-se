@@ -94,14 +94,16 @@ public class NodeContainerFigure extends Figure {
         errorFigure.setVisible(false);
         errorFigure.setSize(errorFigure.getPreferredSize());
         this.add(errorFigure);
-        errorSize = new Dimension(errorFigure.getImage().getImageData().width, errorFigure.getImage().getImageData().height);
+        errorSize = new Dimension(errorFigure.getImage().getImageData().width,
+                errorFigure.getImage().getImageData().height);
 
         warningFigure = new ImageFigure();
         warningFigure.setImage(ImageProvider.getImage(EImage.WARNING_SMALL));
         warningFigure.setVisible(false);
         warningFigure.setSize(warningFigure.getPreferredSize());
         this.add(warningFigure);
-        warningSize = new Dimension(warningFigure.getImage().getImageData().width, warningFigure.getImage().getImageData().height);
+        warningSize = new Dimension(warningFigure.getImage().getImageData().width, warningFigure.getImage()
+                .getImageData().height);
 
         htmlStatusHint = new SimpleHtmlFigure();
     }
@@ -136,16 +138,21 @@ public class NodeContainerFigure extends Figure {
             List<String> problemsList;
 
             String text = "<b>" + nodeContainer.getNode().getUniqueName() + "</b><br><br>";
-            text += "<i>Warnings:</i><br>";
 
-            problemsList = Problems.getStatusList(ProblemStatus.WARNING, nodeContainer.getNode());
-            for (String str : problemsList) {
-                text += "\t" + str + "<br>";
+            if ((status & Process.WARNING_STATUS) != 0) {
+                text += "<i>Warnings:</i><br>";
+
+                problemsList = Problems.getStatusList(ProblemStatus.WARNING, nodeContainer.getNode());
+                for (String str : problemsList) {
+                    text += "\t- " + str + "<br>";
+                }
             }
-            text += "<i>Errors:</i><br>";
-            problemsList = Problems.getStatusList(ProblemStatus.ERROR, nodeContainer.getNode());
-            for (String str : problemsList) {
-                text += "\t" + str + "<br>";
+            if ((status & Process.ERROR_STATUS) != 0) {
+                text += "<i>Errors:</i><br>";
+                problemsList = Problems.getStatusList(ProblemStatus.ERROR, nodeContainer.getNode());
+                for (String str : problemsList) {
+                    text += "\t- " + str + "<br>";
+                }
             }
             htmlStatusHint.setText(text);
             if (errorFigure.isVisible()) {

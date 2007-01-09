@@ -758,20 +758,24 @@ public class Node extends Element implements INode {
             this.process = (Process) process;
         }
     }
+    
+    public void updateStatus() {
+        firePropertyChange(UPDATE_STATUS, null, new Integer(this.currentStatus));
+    }
 
     public void addStatus(int status) {
         if ((this.currentStatus & status) != 0) {
             return;
         }
         this.currentStatus = this.currentStatus | status;
-        firePropertyChange(UPDATE_STATUS, null, new Integer(this.currentStatus));
+        updateStatus();
     }
 
     public void removeStatus(int status) {
         if ((this.currentStatus & status) != 0) {
             this.currentStatus = this.currentStatus ^ status;
         }
-        firePropertyChange(UPDATE_STATUS, null, new Integer(this.currentStatus));
+        updateStatus();
     }
 
     public int getStatus() {

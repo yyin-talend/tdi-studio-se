@@ -95,9 +95,11 @@ public class Problems {
             Problem currentProblem = currentProblems.get(problem.getStatus()).get(i);
             if (problem.getElement().equals(currentProblem.getElement())) {
                 if (problem.getDescription().equals(currentProblem.getDescription())) {
-                    // problem already exists
-                    oldProblem = currentProblem;
-                    found = true;
+                    if (currentProblem.getAction() != ProblemAction.DELETED) {
+                        // problem already exists
+                        oldProblem = currentProblem;
+                        found = true;
+                    }
                 }
             }
         }
@@ -154,7 +156,7 @@ public class Problems {
             ((Process) currentProcess).checkProcess();
         }
     }
-    
+
     public static void recheckCurrentProblems(ProblemsView view) {
         if (currentProcess == null || problemsMap.size() == 0) {
             return;
@@ -227,28 +229,6 @@ public class Problems {
         for (List<Problem> problemList : currentProblems.values()) {
             for (Problem problem : problemList) {
                 switch (problem.getAction()) {
-                case DELETED:
-                    IElement elem = problem.getElement();
-                    if (elem instanceof Node) {
-                        switch (problem.getStatus()) {
-                        case WARNING:
-                            ((Node) elem).removeStatus(Process.WARNING_STATUS);
-                            break;
-                        case ERROR:
-                            ((Node) elem).removeStatus(Process.ERROR_STATUS);
-                            break;
-                        default:
-                        }
-                    }
-                    break;
-                default:
-                }
-            }
-        }
-
-        for (List<Problem> problemList : currentProblems.values()) {
-            for (Problem problem : problemList) {
-                switch (problem.getAction()) {
                 case ADDED:
                     if (problemsView != null) {
                         problemsView.addProblem(problem.getStatus(), problem);
@@ -271,17 +251,37 @@ public class Problems {
                     if (problemsView != null) {
                         problemsView.removeProblem(problem.getStatus(), problem);
                     }
-                        switch (problem.getStatus()) {
-                        case WARNING:
-                            warningsToRemove.add(problem);
-                            break;
-                        case ERROR:
-                            errorsToRemove.add(problem);
-                            break;
-                        default:
-                        }
+                    switch (problem.getStatus()) {
+                    case WARNING:
+                        warningsToRemove.add(problem);
+                        break;
+                    case ERROR:
+                        errorsToRemove.add(problem);
+                        break;
+                    default:
+                    }
                     break;
                 default:
+                }
+            }
+        }
+        for (Problem warning : warningsToRemove) {
+            IElement elem = warning.getElement();
+            if (elem instanceof Node) {
+                if (getStatusList(warning.getStatus(), warning.getElement()).isEmpty()) {
+                    ((Node) elem).removeStatus(Process.WARNING_STATUS);
+                } else {
+                    ((Node) elem).updateStatus();
+                }
+            }
+        }
+        for (Problem error : errorsToRemove) {
+            IElement elem = error.getElement();
+            if (elem instanceof Node) {
+                if (getStatusList(error.getStatus(), error.getElement()).isEmpty()) {
+                    ((Node) elem).removeStatus(Process.ERROR_STATUS);
+                } else {
+                    ((Node) elem).updateStatus();
                 }
             }
         }
