@@ -336,9 +336,7 @@ public class TableNode extends AbstractNode {
         if (labelText == null) {
             return null;
         }
-
-        return labelText.replaceAll("_", "-");
-
+        return labelText;
     }
 
     @Override
