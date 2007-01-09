@@ -379,7 +379,7 @@ public class SelectorTableForm extends AbstractForm {
      */
     protected void createTable(TableItem tableItem) {
 
-        String tableString = tableItem.getText().replaceAll("_", "-");
+        String tableString = tableItem.getText();
 
         IMetadataConnection iMetadataConnection = ConvertionHelper.convert(getConnection());
         boolean checkConnectionIsDone = managerConnection.check(iMetadataConnection);
