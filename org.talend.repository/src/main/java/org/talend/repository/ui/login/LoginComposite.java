@@ -21,6 +21,7 @@
 // ============================================================================
 package org.talend.repository.ui.login;
 
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -56,6 +57,7 @@ import org.talend.commons.exception.BusinessException;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.image.EImage;
 import org.talend.commons.ui.image.ImageProvider;
+import org.talend.commons.utils.PasswordHelper;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
@@ -674,7 +676,11 @@ public class LoginComposite extends Composite {
         User toReturn = PropertiesFactory.eINSTANCE.createUser();
         toReturn.setId(1);
         toReturn.setLogin(userCombo.getText());
-        toReturn.setPassword(passwordText.getText());
+        try {
+            toReturn.setPassword(PasswordHelper.encryptPasswd(passwordText.getText()));
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
         return toReturn;
     }
 
