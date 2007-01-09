@@ -82,13 +82,14 @@ public class ToolbarOutputZone extends ToolbarZone {
                 .getImageDesc(EImage.MINUS_ICON)));
         removeOutputItem.setToolTipText("Remove selected output table");
 
+        addCommonsComponents();
+        
         new ToolItem(getToolBarActions(), SWT.SEPARATOR);
-
+        
         guessItem = new ToolItem(getToolBarActions(), SWT.PUSH);
         guessItem.setToolTipText("Map automatically inputs and outputs (for empty expressions only)");
         guessItem.setText("Auto map!");
         
-        addCommonsComponents();
     }
 
     /**
