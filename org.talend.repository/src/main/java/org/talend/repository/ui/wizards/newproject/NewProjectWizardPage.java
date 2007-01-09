@@ -209,6 +209,10 @@ public class NewProjectWizardPage extends WizardPage {
                         languageStatus = new Status(IStatus.ERROR, RepositoryPlugin.PLUGIN_ID, IStatus.OK, Messages
                                 .getString("NewProjectWizardPage.languageEmpty"), //$NON-NLS-1$
                                 null);
+                    } else if (!ECodeLanguage.PERL.getName().equals(getLanguage())) {
+                        languageStatus = new Status(IStatus.ERROR, RepositoryPlugin.PLUGIN_ID, IStatus.OK, Messages
+                                .getString("NewProjectWizardPage.perlOnly"), //$NON-NLS-1$
+                                null);
                     } else {
                         languageStatus = createOkStatus();
                     }
