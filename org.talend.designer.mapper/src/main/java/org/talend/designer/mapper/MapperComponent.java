@@ -27,7 +27,10 @@ import java.io.OutputStream;
 import java.io.Reader;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
@@ -38,8 +41,11 @@ import org.exolab.castor.xml.Unmarshaller;
 import org.exolab.castor.xml.ValidationException;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.SystemException;
+import org.talend.core.model.components.IODataComponent;
+import org.talend.core.model.components.IODataComponentContainer;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.process.AbstractExternalNode;
+import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.Problem;
 import org.talend.core.model.temp.ECodePart;
 import org.talend.designer.codegen.ICodeGeneratorService;
@@ -131,6 +137,34 @@ public class MapperComponent extends AbstractExternalNode {
     private void refreshMapperConnectorData() {
         metadataListOut = mapperMain.getMetadataListOut();
         externalData = mapperMain.buildExternalData();
+        sortOutputsConnectionsLikeVisualOrder();
+    }
+
+    /**
+     * Sort outgoingConnections for code generation as visible output zone of tMap.
+     */
+    @SuppressWarnings("unchecked")
+    private void sortOutputsConnectionsLikeVisualOrder() {
+        List<IConnection> outgoingConnections = (List<IConnection>) getOutgoingConnections();
+        Map<String, IConnection> connectionNameToOutgoingConnection = new HashMap<String, IConnection>();
+        for (IConnection connection : outgoingConnections) {
+            connectionNameToOutgoingConnection.put(connection.getName(), connection);
+        }
+
+        List<ExternalMapperTable> outputTables = externalData.getOutputTables();
+        outgoingConnections.clear();
+
+        int lstSize = outputTables.size();
+        for (int i = 0; i < lstSize; i++) {
+            ExternalMapperTable table = outputTables.get(i);
+            String tableName = table.getName();
+
+            IConnection connection = connectionNameToOutgoingConnection.get(tableName);
+            if (connection != null) {
+                outgoingConnections.add(connection);
+            }
+        }
+
     }
 
     /*
@@ -392,14 +426,13 @@ public class MapperComponent extends AbstractExternalNode {
         return problemsAnalyser.checkProblems(externalData);
     }
 
-    
     /**
      * Getter for mapperMain.
+     * 
      * @return the mapperMain
      */
     public MapperMain getMapperMain() {
         return this.mapperMain;
     }
 
-    
 }
