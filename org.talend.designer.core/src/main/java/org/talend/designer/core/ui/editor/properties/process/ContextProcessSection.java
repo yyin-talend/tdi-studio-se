@@ -330,7 +330,7 @@ public class ContextProcessSection extends AbstractPropertySection {
             inputDial.open();
             String returnValue = inputDial.getValue();
             if (returnValue != null) {
-                if (!returnValue.equals("") && Pattern.matches(RepositoryConstants.REPOSITORY_ITEM_PATTERN, returnValue)) { //$NON-NLS-1$
+                if (!returnValue.equals("") && Pattern.matches(RepositoryConstants.CODE_ITEM_PATTERN, returnValue)) { //$NON-NLS-1$
                     createContext(returnValue);
                 } else {
                     MessageDialog.openWarning(new Shell(), Messages.getString("ContextProcessSection.14"), Messages
@@ -348,7 +348,7 @@ public class ContextProcessSection extends AbstractPropertySection {
             inputDial.open();
             String newName = inputDial.getValue();
             if (newName != null) {
-                if (!newName.equals("") && Pattern.matches(RepositoryConstants.REPOSITORY_ITEM_PATTERN, newName)) { //$NON-NLS-1$
+                if (!newName.equals("") && Pattern.matches(RepositoryConstants.CODE_ITEM_PATTERN, newName)) { //$NON-NLS-1$
                     String contextName = tabFolder.getSelection().getText();
                     renameContext(contextName, newName);
                 } else {
