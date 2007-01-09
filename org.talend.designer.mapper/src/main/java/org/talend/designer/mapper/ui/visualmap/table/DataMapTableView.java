@@ -163,8 +163,6 @@ public abstract class DataMapTableView extends Composite {
 
     private Text constraintExpressionTextEditor;
 
-    protected boolean dragDetected;
-
     private Cursor currentCursor;
 
     private ExpressionColorProvider expressionColorProvider;
@@ -453,7 +451,6 @@ public abstract class DataMapTableView extends Composite {
         tableForEntries.addListener(SWT.DragDetect, new Listener() {
 
             public void handleEvent(Event event) {
-                dragDetected = true;
                 onSelectedEntries(tableViewerForEntries.getSelection(), tableViewerForEntries.getTable().getSelectionIndices());
             }
 

@@ -70,17 +70,17 @@ public abstract class ToolbarZone {
         this.mapperManager = manager;
         composite = new Composite(parent, style);
         composite.setLayout(new RowLayout(SWT.HORIZONTAL));
+        toolBarActions = new ToolBar(composite, SWT.FLAT | SWT.RIGHT);
     }
 
     /**
      * DOC amaumont Comment method "createComponents".
      */
     public void addCommonsComponents() {
-        toolBarActions = new ToolBar(composite, SWT.FLAT | SWT.RIGHT);
 
         upTableButton = new ToolItem(toolBarActions, SWT.PUSH);
         upTableButton.setEnabled(false);
-        upTableButton.setToolTipText("Move up input table");
+        upTableButton.setToolTipText(getMoveUpTooltipText());
         upTableButton.setImage(org.talend.commons.ui.image.ImageProvider.getImage(org.talend.commons.ui.image.ImageProvider
                 .getImageDesc(EImage.UP_ICON)));
 
@@ -88,7 +88,9 @@ public abstract class ToolbarZone {
         downTableButton.setEnabled(false);
         downTableButton.setImage(org.talend.commons.ui.image.ImageProvider.getImage(org.talend.commons.ui.image.ImageProvider
                 .getImageDesc(EImage.DOWN_ICON)));
-        downTableButton.setToolTipText("Move down input table");
+        downTableButton.setToolTipText(getMoveDownTooltipText());
+
+        new ToolItem(getToolBarActions(), SWT.SEPARATOR);
 
         minimizeButton = new ToolItem(toolBarActions, SWT.PUSH);
         minimizeButton.setEnabled(false);
@@ -133,8 +135,12 @@ public abstract class ToolbarZone {
     }
 
     public abstract String getMinimizeTooltipText();
-
+    
     public abstract String getRestoreTooltipText();
+
+    public abstract String getMoveUpTooltipText();
+    
+    public abstract String getMoveDownTooltipText();
 
     public abstract Zone getZone();
 

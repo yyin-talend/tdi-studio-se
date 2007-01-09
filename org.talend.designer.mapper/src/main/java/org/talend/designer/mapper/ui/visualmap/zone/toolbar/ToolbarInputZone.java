@@ -37,6 +37,11 @@ public class ToolbarInputZone extends ToolbarZone {
 
     public static final String RESTORE_TOOLTIP = "Restore all input tables";
 
+    private static final String MOVE_UP_TOOLTIP = "Move up selected input lookup table";
+
+    private static final String MOVE_DOWN_TOOLTIP = "Move down selected output lookup table";
+    
+
     /**
      * DOC amaumont MatadataToolbarEditor constructor comment.
      * 
@@ -66,6 +71,15 @@ public class ToolbarInputZone extends ToolbarZone {
     @Override
     public Zone getZone() {
         return Zone.INPUTS;
+    }
+
+    
+    public String getMoveUpTooltipText() {
+        return MOVE_UP_TOOLTIP;
+    }
+    
+    public String getMoveDownTooltipText() {
+        return MOVE_DOWN_TOOLTIP;
     }
 
 }

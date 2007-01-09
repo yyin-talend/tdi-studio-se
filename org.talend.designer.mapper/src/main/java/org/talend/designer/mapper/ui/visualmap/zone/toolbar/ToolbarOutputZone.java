@@ -48,6 +48,10 @@ public class ToolbarOutputZone extends ToolbarZone {
 
     public static final String RESTORE_TOOLTIP = "Restore all output tables";
 
+    private static final String MOVE_UP_TOOLTIP = "Move up selected output table";
+
+    private static final String MOVE_DOWN_TOOLTIP = "Move down selected output table";
+    
     /**
      * DOC amaumont MatadataToolbarEditor constructor comment.
      * 
@@ -67,10 +71,6 @@ public class ToolbarOutputZone extends ToolbarZone {
      */
     private void createComponents() {
 
-        addCommonsComponents();
-
-        new ToolItem(getToolBarActions(), SWT.SEPARATOR);
-
         addOutputItem = new ToolItem(getToolBarActions(), SWT.PUSH);
         addOutputItem.setToolTipText("Add output table");
         addOutputItem.setImage(org.talend.commons.ui.image.ImageProvider.getImage(org.talend.commons.ui.image.ImageProvider
@@ -88,6 +88,7 @@ public class ToolbarOutputZone extends ToolbarZone {
         guessItem.setToolTipText("Map automatically inputs and outputs (for empty expressions only)");
         guessItem.setText("Auto map!");
         
+        addCommonsComponents();
     }
 
     /**
@@ -129,6 +130,14 @@ public class ToolbarOutputZone extends ToolbarZone {
         return RESTORE_TOOLTIP;
     }
 
+    public String getMoveUpTooltipText() {
+        return MOVE_UP_TOOLTIP;
+    }
+    
+    public String getMoveDownTooltipText() {
+        return MOVE_DOWN_TOOLTIP;
+    }
+    
     /*
      * (non-Javadoc)
      * 
