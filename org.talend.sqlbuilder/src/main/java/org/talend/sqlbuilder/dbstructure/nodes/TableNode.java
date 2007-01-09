@@ -419,8 +419,7 @@ public class TableNode extends AbstractNode {
         // Retrive metadataColumns from Database
         IMetadataConnection iMetadataConnection = ConvertionHelper.convert(connection);
         List<MetadataColumn> metadataColumns = new ArrayList<MetadataColumn>();
-        metadataColumns = ExtractMetaDataFromDataBase.returnMetadataColumnsFormTable(iMetadataConnection,
-                getLabelText().replaceAll("-", "_"));
+        metadataColumns = ExtractMetaDataFromDataBase.returnMetadataColumnsFormTable(iMetadataConnection, getLabelText());
         Iterator iterate = metadataColumns.iterator();
 
         while (iterate.hasNext()) {
