@@ -103,7 +103,7 @@ public class NewFolderWizardPage extends WizardPage {
         if (nameText.getText().length() == 0) {
             nameStatus = new Status(IStatus.ERROR, RepositoryPlugin.PLUGIN_ID, IStatus.OK, Messages
                     .getString("NewFolderWizard.nameEmpty"), null); //$NON-NLS-1$
-        } else if (!Pattern.matches(RepositoryConstants.REPOSITORY_ITEM_PATTERN, nameText.getText())) {
+        } else if (!Pattern.matches(RepositoryConstants.FOLDER_PATTERN, nameText.getText())) {
             nameStatus = new Status(IStatus.ERROR, RepositoryPlugin.PLUGIN_ID, IStatus.OK, Messages
                     .getString("NewFolderWizard.nameIncorrect"), null); //$NON-NLS-1$
         } else if (!((NewFolderWizard) getWizard()).isValid(nameText.getText())) {

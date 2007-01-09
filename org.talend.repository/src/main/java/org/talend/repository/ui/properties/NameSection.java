@@ -102,7 +102,7 @@ public class NameSection extends AbstractSection {
         errorLabel.setLayoutData(data);
         errorLabel.setImage(ImageProvider.getImage(EImage.ERROR_ICON));
         errorLabel.setVisible(false);
-        
+
         addFocusListenerToChildren(composite);
     }
 
@@ -114,7 +114,7 @@ public class NameSection extends AbstractSection {
         String text = nameText.getText();
         if (text.length() == 0) {
             return createStatus(IStatus.ERROR, "Name is empty.");
-        } else if (!Pattern.matches(RepositoryConstants.REPOSITORY_ITEM_PATTERN, text)) {
+        } else if (!Pattern.matches(RepositoryConstants.getPattern(getType()), text)) {
             return createStatus(IStatus.ERROR, "Name contains incorrect characters.");
         } else if (!isValid(text)) {
             return createStatus(IStatus.ERROR, "Item with the same name already exists.");
@@ -174,7 +174,7 @@ public class NameSection extends AbstractSection {
 
     @Override
     protected void enableControl(boolean enable) {
-//        nameText.setEditable(enable);
+        // nameText.setEditable(enable);
         nameText.setEnabled(enable);
     }
 
