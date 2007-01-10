@@ -87,28 +87,42 @@ public class RunProcessService implements IRunProcessService {
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.designer.runprocess.IRunProcessFactory#createPerlProcessor(org.talend.core.model.process.IProcess,
+     * @see org.talend.designer.runprocess.IRunProcessFactory#createCodeProcessor(org.talend.core.model.process.IProcess,
      * boolean)
      */
-    public IProcessor createPerlProcessor(IProcess process, boolean filenameFromLabel) {
+    public IProcessor createCodeProcessor(IProcess process, ECodeLanguage language, boolean filenameFromLabel) {
+        switch (language) {
+        case PERL:
+            return createPerlProcessor(process, filenameFromLabel);
+        case JAVA:
+            return createJavaProcessor(process, filenameFromLabel);
+        default:
+            return createPerlProcessor(process, filenameFromLabel);
+        }
+    }
+
+    /**
+     * DOC xue Comment method "createPerlProcessor".
+     * @param process
+     * @param filenameFromLabel
+     * @return
+     */
+    private IProcessor createPerlProcessor(IProcess process, boolean filenameFromLabel) {
         return new PerlProcessor(process, filenameFromLabel);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.designer.runprocess.IRunProcessService#createJavaProcessor(org.talend.core.model.process.IProcess,
-     * boolean)
+   
+    /**
+     * DOC xue Comment method "createJavaProcessor".
+     * @param process
+     * @param filenameFromLabel
+     * @return
      */
-    public IProcessor createJavaProcessor(IProcess process, boolean filenameFromLabel) {
+    private IProcessor createJavaProcessor(IProcess process, boolean filenameFromLabel) {
         return new JavaProcessor(process, filenameFromLabel);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.designer.runprocess.IRunProcessFactory#createPerformanceData(java.lang.String)
-     */
+    
     public IPerformanceData createPerformanceData(String data) {
         return new PerformanceData(data);
     }

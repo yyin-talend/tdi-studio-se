@@ -34,7 +34,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.impl.AdapterImpl;
 import org.eclipse.gef.EditPart;
-import org.eclipse.jdt.internal.ui.javaeditor.CompilationUnitEditor;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
@@ -67,6 +66,7 @@ import org.talend.core.model.temp.ECodeLanguage;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
+import org.talend.designer.core.ui.editor.CodeEditorFactory;
 import org.talend.designer.core.ui.editor.ProcessEditorInput;
 import org.talend.designer.core.ui.editor.TalendEditor;
 import org.talend.designer.core.ui.editor.TalendPerlEditor;
@@ -135,80 +135,52 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
         return designerEditor;
     }
 
-    private CompilationUnitEditor javaEditor;
-
     /**
      * Creates page 1 of the multi-page editor, which allows you to change the font used in page 2.
      */
     void createPage1() {
+        codeEditor = CodeEditorFactory.getInstance().getCodeEditor(getCurrentLang());
+        IProcess process = designerEditor.getProcess();
+        IRunProcessService service = DesignerPlugin.getDefault().getRunProcessService();
+        IProcessor plProcessor = service.createCodeProcessor(process, getCurrentLang(), true);
         try {
-            if (isJavaLang()) {
-                handleJavaProj();
-            } else {
-                handlePerlProj();
+            plProcessor.initPaths(process.getContextManager().getDefaultContext());
+            IFile codeFile = ResourcesPlugin.getWorkspace().getRoot().getFile(
+                    plProcessor.getPerlProject().getFullPath().append(plProcessor.getCodePath()));
+            if (!codeFile.exists()) {
+                // Create empty one
+                try {
+                    codeFile.create(new ByteArrayInputStream("".getBytes()), true, null);
+                } catch (CoreException e) {
+                    // Do nothing.
+                }
             }
-        } catch (CoreException ce) {
+
+            int index = addPage(codeEditor, new FileEditorInput(codeFile));
+
+            // init Syntax Validation.
+            if (getCurrentLang() == ECodeLanguage.PERL) {
+                PerlEditorPlugin.getDefault().setSyntaxValidationPreference(true);
+            }
+
+            setPageText(index, Messages.getString("MultiPageTalendEditor.4")); //$NON-NLS-1$
+        } catch (PartInitException pie) {
             ErrorDialog.openError(getSite().getShell(), Messages.getString("MultiPageTalendEditor.3"), //$NON-NLS-1$
-                    null, ce.getStatus());
+                    null, pie.getStatus());
         } catch (ProcessorException pe) {
             ErrorDialog.openError(getSite().getShell(), Messages.getString("MultiPageTalendEditor.3"), //$NON-NLS-1$
                     pe.getMessage(), null);
         }
-
-    }
-
-    private void handleJavaProj() throws CoreException, ProcessorException {
-        codeEditor = new CompilationUnitEditor(){
-            @Override
-            public boolean isEditable() {
-                return false;
-            }
-        };
-        IProcess process = designerEditor.getProcess();
-        IRunProcessService service = DesignerPlugin.getDefault().getRunProcessService();
-        IProcessor jProcessor = service.createJavaProcessor(process, true);
-        jProcessor.initPaths(process.getContextManager().getDefaultContext());
-        IFile codeFile = ResourcesPlugin.getWorkspace().getRoot().getFile(
-                jProcessor.getPerlProject().getFullPath().append(jProcessor.getCodePath()));
-        if (!codeFile.exists()) {
-            // Create empty one
-            codeFile.create(new ByteArrayInputStream("".getBytes()), true, null);
-        }
-        int index = addPage(codeEditor, new FileEditorInput(codeFile));
-        // TODO init Syntax Validation.
-        setPageText(index, Messages.getString("MultiPageTalendEditor.4")); //$NON-NLS-1$
-    }
-
-    private void handlePerlProj() throws CoreException, ProcessorException {
-        codeEditor = new TalendPerlEditor();
-        IProcess process = designerEditor.getProcess();
-        IRunProcessService service = DesignerPlugin.getDefault().getRunProcessService();
-        IProcessor plProcessor = service.createPerlProcessor(process, true);
-        IFile codeFile = null;
-        plProcessor.initPaths(process.getContextManager().getDefaultContext());
-        codeFile = ResourcesPlugin.getWorkspace().getRoot().getFile(
-                plProcessor.getPerlProject().getFullPath().append(plProcessor.getCodePath()));
-        if (!codeFile.exists()) {
-            // Create empty one
-            codeFile.create(new ByteArrayInputStream("".getBytes()), true, null);
-        }
-        int index = addPage(codeEditor, new FileEditorInput(codeFile));
-
-        // init Syntax Validation.
-        PerlEditorPlugin.getDefault().setSyntaxValidationPreference(true);
-
-        setPageText(index, Messages.getString("MultiPageTalendEditor.4")); //$NON-NLS-1$
     }
 
     /**
-     * Judge current project language whether Java.
+     * get the current project generating code language.
      * 
-     * @return if the current project language is Java,return true;else,return false
+     * @return the current generating code language
      */
-    private boolean isJavaLang() {
-        ECodeLanguage language = ((RepositoryContext) CorePlugin.getContext().getProperty(
-                Context.REPOSITORY_CONTEXT_KEY)).getProject().getLanguage();
-        return language == ECodeLanguage.JAVA ? true : false;
+    private ECodeLanguage getCurrentLang() {
+        return ((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY)).getProject()
+                .getLanguage();
     }
 
     /**
@@ -331,8 +303,7 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
             IProcess process = designerEditor.getProcess();
 
             IRunProcessService service = DesignerPlugin.getDefault().getRunProcessService();
-            IProcessor plProcessor = isJavaLang() ? service.createJavaProcessor(process, true) : service
-                    .createPerlProcessor(process, true);
+            IProcessor plProcessor = service.createCodeProcessor(process, getCurrentLang(), true);
 
             try {
                 // plProcessor.generateCode(process.getContextManager().getDefaultContext(), false, false, true,
