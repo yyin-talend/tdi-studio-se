@@ -57,6 +57,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.progress.IProgressService;
+import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.model.process.IContext;
 import org.talend.designer.runprocess.ProcessMessage;
 import org.talend.designer.runprocess.Processor;
@@ -169,8 +170,8 @@ public class ProcessComposite2 extends Composite {
         debugBtn = new Button(execHeader, SWT.PUSH);
         debugBtn.setText(Messages.getString("ProcessComposite.debug"));
         debugBtn.setToolTipText(Messages.getString("ProcessComposite.debugHint"));
-        debugBtn.setImage(RunProcessPlugin.imageDescriptorFromPlugin(RunProcessPlugin.PLUGIN_ID,
-                "icons/process_debug.gif").createImage());
+        debugBtn.setImage(RunProcessPlugin.imageDescriptorFromPlugin(RunProcessPlugin.PLUGIN_ID, "icons/process_debug.gif")
+                .createImage());
         FormData formData = new FormData();
         formData.top = new FormAttachment(0, 15);
         formData.left = new FormAttachment(0);
@@ -180,8 +181,7 @@ public class ProcessComposite2 extends Composite {
         execBtn = new Button(execHeader, SWT.PUSH);
         execBtn.setText(Messages.getString("ProcessComposite.exec")); //$NON-NLS-1$
         execBtn.setToolTipText(Messages.getString("ProcessComposite.execHint")); //$NON-NLS-1$
-        execBtn.setImage(RunProcessPlugin
-                .imageDescriptorFromPlugin(RunProcessPlugin.PLUGIN_ID, "icons/process_run.gif").createImage()); //$NON-NLS-1$
+        execBtn.setImage(ImageProvider.getImage(ERunprocessImages.RUN_PROCESS_ACTION));
         execBtn.setEnabled(false);
         formData = new FormData();
         formData.top = new FormAttachment(debugBtn, 0, SWT.TOP);
@@ -192,8 +192,8 @@ public class ProcessComposite2 extends Composite {
         killBtn = new Button(execHeader, SWT.PUSH);
         killBtn.setText(Messages.getString("ProcessComposite.kill")); //$NON-NLS-1$
         killBtn.setToolTipText(Messages.getString("ProcessComposite.killHint")); //$NON-NLS-1$
-        killBtn.setImage(RunProcessPlugin.imageDescriptorFromPlugin(RunProcessPlugin.PLUGIN_ID,
-                "icons/process_kill.gif").createImage()); //$NON-NLS-1$
+        killBtn.setImage(RunProcessPlugin
+                .imageDescriptorFromPlugin(RunProcessPlugin.PLUGIN_ID, "icons/process_kill.gif").createImage()); //$NON-NLS-1$
         setButtonLayoutData(killBtn);
         killBtn.setEnabled(false);
         formData = new FormData();
@@ -270,7 +270,7 @@ public class ProcessComposite2 extends Composite {
         consoleText.setLayoutData(data);
         Font font = new Font(parent.getDisplay(), "courier", 8, SWT.NONE);
         consoleText.setFont(font);
-        
+
         execScroll.setMinSize(execContent.computeSize(SWT.DEFAULT, SWT.DEFAULT));
         sash.setWeights(new int[] { 2, H_WEIGHT });
 
@@ -499,16 +499,15 @@ public class ProcessComposite2 extends Composite {
                             // DebugInNewWindowListener());
                             DebugUITools.launch(config, ILaunchManager.DEBUG_MODE);
                         } else {
-                            MessageDialog.openInformation(getShell(), Messages
-                                    .getString("ProcessDebugDialog.errorTitle"), Messages
-                                    .getString("ProcessDebugDialog.errortext")); //$NON-NLS-1$ //$NON-NLS-2$
+                            MessageDialog.openInformation(getShell(), Messages.getString("ProcessDebugDialog.errorTitle"),
+                                    Messages.getString("ProcessDebugDialog.errortext")); //$NON-NLS-1$ //$NON-NLS-2$
                         }
                     } catch (ProcessorException e) {
                         IStatus status = new Status(IStatus.ERROR, RunProcessPlugin.PLUGIN_ID, IStatus.OK,
                                 "Debug launch failed.", e); //$NON-NLS-1$
                         RunProcessPlugin.getDefault().getLog().log(status);
-                        MessageDialog.openError(getShell(), Messages.getString("ProcessDebugDialog.errorTitle"),
-                                Messages.getString("ProcessDebugDialog.errorText")); //$NON-NLS-1$ //$NON-NLS-2$
+                        MessageDialog.openError(getShell(), Messages.getString("ProcessDebugDialog.errorTitle"), Messages
+                                .getString("ProcessDebugDialog.errorText")); //$NON-NLS-1$ //$NON-NLS-2$
                     } finally {
                         monitor.done();
                     }
@@ -517,8 +516,8 @@ public class ProcessComposite2 extends Composite {
 
             IProgressService progressService = PlatformUI.getWorkbench().getProgressService();
             try {
-                progressService.runInUI(PlatformUI.getWorkbench().getProgressService(), worker, ResourcesPlugin
-                        .getWorkspace().getRoot());
+                progressService.runInUI(PlatformUI.getWorkbench().getProgressService(), worker, ResourcesPlugin.getWorkspace()
+                        .getRoot());
             } catch (InvocationTargetException e) {
                 e.printStackTrace();
             } catch (InterruptedException e) {
@@ -533,6 +532,7 @@ public class ProcessComposite2 extends Composite {
             appendToConsole((ProcessMessage) evt.getNewValue());
         } else if (RunProcessContext.PROP_MESSAGE_CLEAR.equals(propName)) {
             getDisplay().asyncExec(new Runnable() {
+
                 public void run() {
                     consoleText.setText(""); //$NON-NLS-1$
                 }

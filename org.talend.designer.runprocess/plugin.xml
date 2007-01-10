@@ -68,7 +68,9 @@
    </extension>
    <extension
          point="org.talend.core.global_actions">
-      <GlobalAction class="org.talend.designer.runprocess.ui.actions.RunProcessAction"/>
+      <GlobalAction
+            class="org.talend.designer.runprocess.ui.actions.RunProcessAction"
+            />
       <GlobalAction class="org.talend.designer.runprocess.ui.actions.ShowRunProcessViewAction"/>
    </extension>
 
@@ -78,5 +80,27 @@
       		serviceId="IRunProcessService" 
       		class="org.talend.designer.runprocess.RunProcessService"/>
    </extension>
+ <extension
+       point="org.eclipse.ui.actionSets">
+    <actionSet
+          id="org.talend.designer.runprocess.actionSet"
+          label="Action set"
+          visible="true">
+       <menu
+             id="talend"
+             label="Talend">
+          <separator name="Run process"/>
+       </menu>
+       <action
+             class="org.talend.designer.runprocess.ui.actions.RunProcessAction"
+             icon="icons/process_run.gif"
+             id="org.talend.designer.runprocess.action4"
+             label="%runJobAction.title"
+             menubarPath="talend/Run process"
+             style="push"
+             toolbarPath="Run process"
+             tooltip="%runJobAction.toolTip"/>
+    </actionSet>
+ </extension>
 
 </plugin>
