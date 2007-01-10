@@ -23,13 +23,15 @@ package org.talend.sqlbuilder.actions;
 
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
-import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.PlatformUI;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.IRepositoryService;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.ui.actions.AContextualAction;
+import org.talend.repository.ui.views.IRepositoryView;
 import org.talend.sqlbuilder.ui.SQLBuilderDialog;
 import org.talend.sqlbuilder.util.ConnectionParameters;
 
@@ -48,10 +50,13 @@ public class EditQueriesAction extends AContextualAction {
         ConnectionParameters connParameters = new ConnectionParameters();
         connParameters.setRepositoryName(node.getObject().getLabel());
 
-        SQLBuilderDialog dial = new SQLBuilderDialog(Display.getCurrent().getActiveShell());
+        Shell parentShell = new Shell(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView(
+                IRepositoryView.VIEW_ID).getSite().getShell().getDisplay());
+        SQLBuilderDialog dial = new SQLBuilderDialog(parentShell);
         connParameters.setQuery("");
         dial.setConnParameters(connParameters);
         dial.open();
+
     }
 
     public void init(TreeViewer viewer, IStructuredSelection selection) {
