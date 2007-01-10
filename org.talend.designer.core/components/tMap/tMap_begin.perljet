@@ -12,7 +12,7 @@ package="org.talend.designer.codegen.translators"
 	org.talend.designer.mapper.external.data.ExternalMapperTable
 	org.talend.designer.mapper.external.data.ExternalMapperTableEntry
 	org.talend.designer.mapper.language.ILanguage
-	org.talend.designer.mapper.language.generation.GenerationManager
+	org.talend.designer.mapper.language.generation.PerlGenerationManager
 	org.talend.designer.mapper.language.LanguageProvider
 	org.talend.designer.mapper.model.metadata.MapperDataTestGenerator
 	org.talend.designer.mapper.model.tableentry.TableEntryLocation

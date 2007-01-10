@@ -36,7 +36,7 @@ import org.talend.designer.mapper.external.data.ExternalMapperTable;
 import org.talend.designer.mapper.external.data.ExternalMapperTableEntry;
 import org.talend.designer.mapper.language.ILanguage;
 import org.talend.designer.mapper.language.LanguageProvider;
-import org.talend.designer.mapper.language.generation.GenerationManager;
+import org.talend.designer.mapper.language.generation.PerlGenerationManager;
 import org.talend.designer.mapper.language.generation.TableType;
 import org.talend.designer.mapper.model.metadata.MapperDataTestGenerator;
 import org.talend.designer.mapper.model.tableentry.TableEntryLocation;
@@ -87,7 +87,7 @@ public class TMapperMainPerljet {
 
         DataMapExpressionParser expressionParser = new DataMapExpressionParser(currentLanguage);
 
-        GenerationManager gm = new GenerationManager(currentLanguage);
+        PerlGenerationManager gm = new PerlGenerationManager(currentLanguage);
 
         StringBuilder sb = new StringBuilder();
 

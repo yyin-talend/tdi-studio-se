@@ -39,87 +39,15 @@ import org.talend.designer.mapper.utils.DataMapExpressionParser;
  * $Id$
  * 
  */
-public class GenerationManager {
+public class PerlGenerationManager extends GenerationManager {
 
     // private List<ExternalMapperTable> inputTables;
 
-    private Map<String, ExternalMapperTable> nameToInputTable;
 
-    private HashMap<String, ExternalMapperTable> nameToVarsTable;
-
-    private ILanguage language;
-
-    public GenerationManager(ILanguage language) {
-        super();
-        this.language = language;
+    public PerlGenerationManager(ILanguage language) {
+        super(language);
     }
 
-    /**
-     * DOC amaumont Comment method "setInputTables".
-     * 
-     * @param inputTables
-     */
-    public void setInputTables(List<ExternalMapperTable> inputTables) {
-        // this.inputTables = inputTables;
-        nameToInputTable = new HashMap<String, ExternalMapperTable>(inputTables.size());
-        for (ExternalMapperTable table : inputTables) {
-            nameToInputTable.put(table.getName(), table);
-        }
-    }
-
-    /**
-     * DOC amaumont Comment method "setInputTables".
-     * 
-     * @param varsTables
-     */
-    public void setVarsTables(List<ExternalMapperTable> varsTables) {
-        // this.inputTables = varsTables;
-        nameToVarsTable = new HashMap<String, ExternalMapperTable>(varsTables.size());
-        for (ExternalMapperTable table : varsTables) {
-            nameToVarsTable.put(table.getName(), table);
-        }
-    }
-
-    public ExternalMapperTable getInputTable(String tableName) {
-        return nameToInputTable.get(tableName);
-    }
-
-    public ExternalMapperTable getVarsTable(String tableName) {
-        return nameToVarsTable.get(tableName);
-    }
-
-    public boolean isInputTable(String tableName) {
-        return getInputTable(tableName) != null;
-    }
-
-    public boolean isVarsTable(String tableName) {
-        return getVarsTable(tableName) != null;
-    }
-
-    public String getTableColumnVariable(String tableName, String columnName) {
-        return StringHelper.replacePrms(this.language.getTemplateTableColumnVariable(), new Object[] { tableName, columnName });
-    }
-
-    public String getGeneratedCodeTableColumnVariable(String tableName, String columnName) {
-        return StringHelper
-                .replacePrms(this.language.getTemplateGeneratedCodeTableColumnVariable(), new Object[] { tableName, columnName });
-    }
-
-    public String getTableColumnVariable(TableEntryLocation location) {
-        return this.language.getLocation(location.tableName, location.columnName);
-    }
-
-    public String getVarsColumnVariable(String columnName) {
-        return StringHelper.replacePrms(this.language.getTemplateVarsColumnVariable(), new Object[] { columnName });
-    }
-
-    public String indent(final int i) {
-        StringBuilder stringBuilder = new StringBuilder();
-        for (int j = 0; j < i; j++) {
-            stringBuilder.append("  ");
-        }
-        return stringBuilder.toString();
-    }
 
     /**
      * DOC amaumont Comment method "prefixEntryLocations".
@@ -220,27 +148,6 @@ public class GenerationManager {
         }
         string += "};";
         return string;
-    }
-
-    /**
-     * DOC amaumont Comment method "ckeckConstraintsAreEmpty".
-     * 
-     * @param ExternalMapperTable
-     * @return
-     */
-    public boolean checkFiltersAreEmpty(ExternalMapperTable outputTable) {
-        List<ExternalMapperTableEntry> constraints = outputTable.getConstraintTableEntries();
-        int lstSize = constraints.size();
-        boolean oneConstraintIsNotEmpty = false;
-        for (int i = 0; i < lstSize; i++) {
-
-            String constraintExpression = ((ExternalMapperTableEntry) constraints.get(i)).getExpression();
-            if (constraintExpression != null && constraintExpression.trim().length() > 0) {
-                oneConstraintIsNotEmpty = true;
-                break;
-            }
-        }
-        return !oneConstraintIsNotEmpty;
     }
 
 }

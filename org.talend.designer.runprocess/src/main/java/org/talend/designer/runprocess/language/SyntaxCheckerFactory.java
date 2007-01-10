@@ -23,6 +23,7 @@ package org.talend.designer.runprocess.language;
 
 import org.talend.core.language.ICodeSyntaxChecker;
 import org.talend.core.model.temp.ECodeLanguage;
+import org.talend.designer.runprocess.language.java.JavaExpressionSyntaxChecker;
 import org.talend.designer.runprocess.language.perl.PerlExpressionSyntaxChecker;
 
 
@@ -47,8 +48,8 @@ public class SyntaxCheckerFactory {
     public ICodeSyntaxChecker getSyntaxChecker(ECodeLanguage codeLanguage) {
         if (codeLanguage == ECodeLanguage.PERL) {
             return (ICodeSyntaxChecker) new PerlExpressionSyntaxChecker();
-//        } else if (codeLanguage == ECodeLanguage.JAVA) {
-//            return null;
+        } else if (codeLanguage == ECodeLanguage.JAVA) {
+            return (ICodeSyntaxChecker) new JavaExpressionSyntaxChecker();
         } else {
             throw new IllegalArgumentException("Syntax checker not found for this language: " + codeLanguage.getName());
         }

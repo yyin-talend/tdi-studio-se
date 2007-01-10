@@ -25,7 +25,7 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 import org.talend.designer.mapper.language.ILanguage;
-import org.talend.designer.mapper.language.generation.GenerationManager;
+import org.talend.designer.mapper.language.generation.PerlGenerationManager;
 import org.talend.designer.mapper.language.perl.PerlLanguage;
 import org.talend.designer.mapper.model.tableentry.TableEntryLocation;
 
@@ -45,7 +45,7 @@ public class DataMapExpressionParserTest {
     public void testParse() {
         ILanguage language = new PerlLanguage();
         DataMapExpressionParser expressionParser = new DataMapExpressionParser(language);
-        GenerationManager gen = new GenerationManager(language);
+        PerlGenerationManager gen = new PerlGenerationManager(language);
         TableEntryLocation[] stringCouples = expressionParser.parseTableEntryLocations("abc * "
                 + gen.getTableColumnVariable("table1", "col1") + " + " + gen.getTableColumnVariable("ta_ble2", "co_l2") + " - "
                 + gen.getTableColumnVariable("$table1", "col2"));
@@ -88,7 +88,7 @@ public class DataMapExpressionParserTest {
     public void testaddTablePrefixToColumnNameString() {
         ILanguage language = new PerlLanguage();
         DataMapExpressionParser expressionParser = new DataMapExpressionParser(language);
-        GenerationManager gen = new GenerationManager(language);
+        PerlGenerationManager gen = new PerlGenerationManager(language);
 
         TableEntryLocation[] locations = new TableEntryLocation[] { new TableEntryLocation("page", "content"),
                 new TableEntryLocation("book", "id_book"), };
