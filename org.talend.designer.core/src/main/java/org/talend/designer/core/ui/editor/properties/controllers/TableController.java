@@ -1,0 +1,239 @@
+// ============================================================================
+//
+// Talend Community Edition
+//
+// Copyright (C) 2006 Talend - www.talend.com
+//
+// This library is free software; you can redistribute it and/or
+// modify it under the terms of the GNU Lesser General Public
+// License as published by the Free Software Foundation; either
+// version 2.1 of the License, or (at your option) any later version.
+//
+// This library is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+// Lesser General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program; if not, write to the Free Software
+// Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+//
+// ============================================================================
+package org.talend.designer.core.ui.editor.properties.controllers;
+
+import java.beans.PropertyChangeEvent;
+import java.util.List;
+import java.util.Map;
+
+import org.eclipse.gef.commands.Command;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.CLabel;
+import org.eclipse.swt.graphics.GC;
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.layout.FormAttachment;
+import org.eclipse.swt.layout.FormData;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Table;
+import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
+import org.talend.core.model.process.IElementParameter;
+import org.talend.designer.core.ui.editor.properties.DynamicTabbedPropertySection;
+import org.talend.designer.core.ui.editor.properties.macrowidgets.tableeditor.PropertiesTableEditorModel;
+import org.talend.designer.core.ui.editor.properties.macrowidgets.tableeditor.PropertiesTableEditorView;
+
+/**
+ * DOC yzhang class global comment. Detailled comment <br/>
+ * 
+ * $Id: TableController.java 1 2006-12-14 下午05:44:30 +0000 (下午05:44:30) yzhang $
+ * 
+ */
+public class TableController extends AbstractElementPropertySectionController {
+
+    /**
+     * 
+     */
+    private static final int MIN_NUMBER_ROWS = 8;
+
+    /**
+     * DOC yzhang TableController constructor comment.
+     * 
+     * @param dtp
+     */
+    public TableController(DynamicTabbedPropertySection dtp) {
+        super(dtp);
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.core.ui.editor.properties2.editors.AbstractElementPropertySectionController#createCommand()
+     */
+    @Override
+    public Command createCommand() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.core.ui.editor.properties2.editors.AbstractElementPropertySectionController#
+     * createControl(org.eclipse.swt.widgets.Composite, org.talend.core.model.process.IElementParameter, int, int, int,
+     * org.eclipse.swt.widgets.Control)
+     */
+    @Override
+    public Control createControl(final Composite parentComposite, final IElementParameter param, final int numInRow,
+            final int nbInRow, int top, final Control lastControlPrm) {
+
+        final Composite container = parentComposite;
+
+        PropertiesTableEditorModel<Map<String, Object>> tableEditorModel = new PropertiesTableEditorModel<Map<String, Object>>();
+        tableEditorModel.setData(elem, param, part.getTalendEditor().getProcess(), this.dynamicTabbedPropertySection
+                .getColumnList(), this.dynamicTabbedPropertySection.getPrevColumnList());
+
+        PropertiesTableEditorView<Map<String, Object>> tableEditorView = new PropertiesTableEditorView<Map<String, Object>>(
+                parentComposite, SWT.NONE, tableEditorModel, !param.isBasedOnSchema(), false);
+        tableEditorView.getExtendedTableViewer().setCommandStack(getCommandStack());
+
+        final Table table = tableEditorView.getTable();
+
+        table.setToolTipText(VARIABLE_TOOLTIP + param.getVariableName());
+
+        final Composite mainComposite = tableEditorView.getMainComposite();
+
+        CLabel labelLabel2 = getWidgetFactory().createCLabel(container, param.getDisplayName());
+        FormData formData = new FormData();
+        if (lastControlPrm != null) {
+            formData.left = new FormAttachment(lastControlPrm, 0);
+        } else {
+            formData.left = new FormAttachment((((numInRow - 1) * MAX_PERCENT) / nbInRow), 0);
+        }
+        formData.top = new FormAttachment(0, top);
+        labelLabel2.setLayoutData(formData);
+        if (numInRow != 1) {
+            labelLabel2.setAlignment(SWT.RIGHT);
+        }
+        // *********************
+        formData = new FormData();
+        int currentLabelWidth2 = STANDARD_LABEL_WIDTH;
+        GC gc2 = new GC(labelLabel2);
+        Point labelSize2 = gc2.stringExtent(param.getDisplayName());
+        gc2.dispose();
+
+        if ((labelSize2.x + ITabbedPropertyConstants.HSPACE) > currentLabelWidth2) {
+            currentLabelWidth2 = labelSize2.x + ITabbedPropertyConstants.HSPACE;
+        }
+
+        int tableHorizontalOffset = -5;
+        if (numInRow == 1) {
+            if (lastControlPrm != null) {
+                formData.left = new FormAttachment(lastControlPrm, currentLabelWidth2 + tableHorizontalOffset);
+            } else {
+                formData.left = new FormAttachment(0, currentLabelWidth2 + tableHorizontalOffset);
+            }
+        } else {
+            formData.left = new FormAttachment(labelLabel2, 0 + tableHorizontalOffset, SWT.RIGHT);
+        }
+        formData.right = new FormAttachment((numInRow * MAX_PERCENT) / nbInRow, 0);
+        formData.top = new FormAttachment(0, top);
+
+        int currentHeightEditor = table.getHeaderHeight() + ((List) param.getValue()).size() * table.getItemHeight()
+                + table.getItemHeight() + 50;
+        int minHeightEditor = table.getHeaderHeight() + MIN_NUMBER_ROWS * table.getItemHeight() + table.getItemHeight()
+                + 50;
+        int ySize2 = Math.max(currentHeightEditor, minHeightEditor);
+
+        formData.bottom = new FormAttachment(0, top + ySize2);
+        mainComposite.setLayoutData(formData);
+
+        if (!param.isReadOnly()) {
+            hashCurControls.put(param.getName(), tableEditorView.getExtendedTableViewer().getTableViewerCreator());
+        }
+
+        this.dynamicTabbedPropertySection.setCurRowSize(ySize2 + ITabbedPropertyConstants.VSPACE);
+
+        top += this.dynamicTabbedPropertySection.getCurRowSize();
+
+        return null;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
+     */
+    public void propertyChange(PropertyChangeEvent arg0) {
+        // TODO Auto-generated method stub
+
+    }
+
+    // /**
+    // * DOC ftang Comment method "copyTableValue".
+    // *
+    // * @param param IElementParameter
+    // * @return List
+    // */
+    // private List<Map<String, Object>> copyTableValue(final IElementParameter param) {
+    // List<Map<String, Object>> paramValues = (List<Map<String, Object>>) param.getValue();
+    // List<Map<String, Object>> tableValues = new ArrayList<Map<String, Object>>();
+    //
+    // int numLine = 0;
+    // for (Map<String, Object> currentLine : paramValues) {
+    // tableValues.add(copyLine(currentLine, param, numLine));
+    // numLine++;
+    // }
+    // return tableValues;
+    // }
+    //
+    // private Map<String, Object> clipboard;
+    //
+    // // private boolean checkErrorsWhenViewRefreshed;
+    //
+    // /**
+    // * DOC ftang Comment method "copyToCliboard".
+    // *
+    // * @param line Map
+    // * @param param IElementParameter
+    // */
+    // private void copyToCliboard(Map<String, Object> line, final IElementParameter param) {
+    // clipboard = copyLine(line, param, -1);
+    // }
+    //
+    // /**
+    // * DOC ftang Comment method "copyLine".
+    // *
+    // * @param currentLine Map
+    // * @param param IElementParameter
+    // * @param numLine int
+    // * @return Map
+    // */
+    // private Map<String, Object> copyLine(final Map<String, Object> currentLine, final IElementParameter param,
+    // final int numLine) {
+    // Map<String, Object> newLine = new HashMap<String, Object>();
+    // String[] items = param.getListItemsDisplayCodeName();
+    // for (int i = 0; i < items.length; i++) {
+    // Object value = currentLine.get(items[i]);
+    // Object[] tmpObjects = param.getListItemsValue();
+    // if (tmpObjects[i] instanceof IElementParameter) {
+    // if (value instanceof String) { // only when the job is just loaded
+    // boolean found = false;
+    // int index = 0;
+    // Object[] itemsValue = ((IElementParameter) tmpObjects[i]).getListItemsValue();
+    // for (int j = 0; j < itemsValue.length && !found; j++) {
+    // if (itemsValue[j].equals(value)) {
+    // found = true;
+    // index = j;
+    // }
+    // }
+    // value = new Integer(index);
+    // }
+    // } else {
+    // if (i == 0 && param.isBasedOnSchema() && value == null && numLine >= 0) {
+    // value = getColumnList().get(numLine);
+    // }
+    // }
+    // newLine.put(items[i], value);
+    // }
+    // return newLine;
+    // }
+}
