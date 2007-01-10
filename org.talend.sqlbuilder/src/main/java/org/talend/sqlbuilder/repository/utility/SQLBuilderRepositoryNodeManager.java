@@ -81,8 +81,7 @@ public class SQLBuilderRepositoryNodeManager {
     // store all label name of connections's tables and columns
     private static Map<String, String> labelsAndNames = new HashMap<String, String>();
 
-    private static Map<DatabaseConnection, Map<MetadataTable, List<MetadataColumn>>> oldMetaData = 
-        new HashMap<DatabaseConnection, Map<MetadataTable, List<MetadataColumn>>>();
+    private static Map<DatabaseConnection, Map<MetadataTable, List<MetadataColumn>>> oldMetaData = new HashMap<DatabaseConnection, Map<MetadataTable, List<MetadataColumn>>>();
 
     private static boolean isDialogClosed = false;
 
@@ -183,6 +182,12 @@ public class SQLBuilderRepositoryNodeManager {
         return new boolean[] { isDiffGray, isDiffDivergency, isDiffSyschronize };
     }
 
+    public void clean() {
+        repositoryNodes.clear();
+        labelsAndNames.clear();
+        oldMetaData.clear();
+    }
+
     /**
      * DOC dev Comment method "removeAllRepositoryNodes".
      */
@@ -255,7 +260,7 @@ public class SQLBuilderRepositoryNodeManager {
      * @param node
      */
     public static void reductionOneRepositoryNode(RepositoryNode node) {
-//        isReduction = true;
+        // isReduction = true;
         DatabaseConnection connection = (DatabaseConnection) getItem(getRoot(node)).getConnection();
         currentNodeLabel = "Connections: " + getRoot(node).getObject().getLabel();
         reductionOneConnection(connection);
@@ -281,9 +286,7 @@ public class SQLBuilderRepositoryNodeManager {
                 oldCloumns.add(column);
                 if (!column.getLabel().equals("")) {
                     if (column.getOriginalField() != null && column.getOriginalField().equals(" ")) {
-                        column
-                                .setOriginalField(labelsAndNames.get(connAndTableLabel + "Columns: "
-                                        + column.getLabel()));
+                        column.setOriginalField(labelsAndNames.get(connAndTableLabel + "Columns: " + column.getLabel()));
                     }
                     if (isDialogClosed) {
                         column.setDivergency(false);
@@ -515,6 +518,15 @@ public class SQLBuilderRepositoryNodeManager {
     }
 
     /**
+     * Gets all the connection repositories.
+     * 
+     * @return
+     */
+    public List<RepositoryNode> getAllDisplayedConnection() {
+        return repositoryNodes;
+    }
+
+    /**
      * method "getRepositoryNodeFromDB".
      * 
      * @param oldNode
@@ -662,9 +674,8 @@ public class SQLBuilderRepositoryNodeManager {
      */
     @SuppressWarnings("unchecked")
     public RepositoryNode getRepositoryNodeByBuildIn(RepositoryNode node, ConnectionParameters parameters) {
-        boolean isNeedSchema = !parameters.getDbType().equals("MySQL")
-        && !parameters.getDbType().equals("Generic ODBC")
-        && !parameters.getDbType().equals("Microsoft SQL Server (Odbc driver)");
+        boolean isNeedSchema = !parameters.getDbType().equals("MySQL") && !parameters.getDbType().equals("Generic ODBC")
+                && !parameters.getDbType().equals("Microsoft SQL Server (Odbc driver)");
         if (parameters.getSchema().equals("\'\'") && isNeedSchema) {
             parameters.setConnectionComment("Please Input Schema !");
             return null;
@@ -712,8 +723,8 @@ public class SQLBuilderRepositoryNodeManager {
         }
         DatabaseConnectionItem item = PropertiesFactory.eINSTANCE.createDatabaseConnectionItem();
         Property connectionProperty = PropertiesFactory.eINSTANCE.createProperty();
-        connectionProperty.setAuthor(((RepositoryContext) CorePlugin.getContext().getProperty(
-                Context.REPOSITORY_CONTEXT_KEY)).getUser());
+        connectionProperty.setAuthor(((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY))
+                .getUser());
         connectionProperty.setVersion(VersionUtils.DEFAULT_VERSION);
         connectionProperty.setStatusCode("");
 
@@ -763,7 +774,7 @@ public class SQLBuilderRepositoryNodeManager {
      * @param parameters inputed when use Built-In .
      * @return DatabaseConnection : connetion .
      */
-    public DatabaseConnection createConnection(ConnectionParameters parameters , boolean isSchemaNeed) {
+    public DatabaseConnection createConnection(ConnectionParameters parameters, boolean isSchemaNeed) {
         DatabaseConnection connection = ConnectionFactory.eINSTANCE.createDatabaseConnection();
         connection.setDatabaseType(parameters.getDbType());
         connection.setUsername(parameters.getUserName());
@@ -854,9 +865,9 @@ public class SQLBuilderRepositoryNodeManager {
      * @return dbMetaData DatabaseMetaData .
      */
     private DatabaseMetaData getDatabaseMetaData(IMetadataConnection iMetadataConnection) {
-        ExtractMetaDataUtils.getConnection(iMetadataConnection.getDbType(), iMetadataConnection.getUrl(),
-                iMetadataConnection.getUsername(), iMetadataConnection.getPassword(),
-                iMetadataConnection.getDatabase(), iMetadataConnection.getSchema());
+        ExtractMetaDataUtils.getConnection(iMetadataConnection.getDbType(), iMetadataConnection.getUrl(), iMetadataConnection
+                .getUsername(), iMetadataConnection.getPassword(), iMetadataConnection.getDatabase(), iMetadataConnection
+                .getSchema());
         DatabaseMetaData dbMetaData = ExtractMetaDataUtils.getDatabaseMetaData(ExtractMetaDataUtils.conn);
         return dbMetaData;
     }
@@ -1059,8 +1070,7 @@ public class SQLBuilderRepositoryNodeManager {
      * @param columnsFromDB MetadataColumn from Database
      * @param cloumnsFromEMF MetadataColumn from Emf
      */
-    private void fixedColumns(List<MetadataColumn> columnsFromDB, List<MetadataColumn> cloumnsFromEMF,
-            String connAndTableLabel) {
+    private void fixedColumns(List<MetadataColumn> columnsFromDB, List<MetadataColumn> cloumnsFromEMF, String connAndTableLabel) {
         for (MetadataColumn emf : cloumnsFromEMF) {
             modifyOldOneColumnFromDB(columnsFromDB, connAndTableLabel, emf);
         }
@@ -1100,8 +1110,7 @@ public class SQLBuilderRepositoryNodeManager {
      * @param connAndTableLabel
      * @param emf
      */
-    private void modifyOldOneColumnFromDB(List<MetadataColumn> columnsFromDB, String connAndTableLabel,
-            MetadataColumn emf) {
+    private void modifyOldOneColumnFromDB(List<MetadataColumn> columnsFromDB, String connAndTableLabel, MetadataColumn emf) {
         boolean flag = true;
         for (MetadataColumn db : columnsFromDB) {
 
@@ -1153,12 +1162,10 @@ public class SQLBuilderRepositoryNodeManager {
         if (info.getSourceType() != null && !info.getSourceType().equals(column.getSourceType())) {
             return false;
         }
-        if (info.getComment() != null && info.getComment().length() != 0
-                && !info.getComment().equals(column.getComment())) {
+        if (info.getComment() != null && info.getComment().length() != 0 && !info.getComment().equals(column.getComment())) {
             return false;
         }
-        if (column.getComment() != null && column.getComment().length() != 0
-                && !column.getComment().equals(info.getComment())) {
+        if (column.getComment() != null && column.getComment().length() != 0 && !column.getComment().equals(info.getComment())) {
             return false;
         }
 
@@ -1191,7 +1198,7 @@ public class SQLBuilderRepositoryNodeManager {
      */
     public static RepositoryNode getRoot(RepositoryNode repositoryNode) {
         if (getRepositoryType(repositoryNode) == RepositoryNodeType.FOLDER) {
-//            return null;
+            // return null;
             throw new RuntimeException("RepositoryNode with folder info should not call this.");
         }
 

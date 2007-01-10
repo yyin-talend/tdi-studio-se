@@ -22,6 +22,7 @@
 package org.talend.sqlbuilder.ui;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -58,10 +59,12 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.SelectionProviderAction;
 import org.talend.commons.ui.image.EImage;
 import org.talend.commons.ui.image.ImageProvider;
+import org.talend.core.model.properties.DatabaseConnectionItem;
+import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.repository.RepositoryChangedEvent;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNode.ENodeType;
 import org.talend.repository.model.RepositoryNode.EProperties;
-import org.talend.repository.ui.actions.RepositoryDoubleClickAction;
 import org.talend.repository.ui.views.RepositoryView;
 import org.talend.sqlbuilder.Messages;
 import org.talend.sqlbuilder.actions.DeleteQueryAction;
@@ -86,7 +89,7 @@ import org.talend.sqlbuilder.util.UIUtils;
 public class DBStructureComposite extends Composite {
 
     private Action doubleClickAction;
-    
+
     private static final int COLUMN_REPOSITORY_WIDTH = 100;
 
     private static final int COLUMN_DATABASE_WIDTH = 170;
@@ -120,7 +123,7 @@ public class DBStructureComposite extends Composite {
     private Separator separator = new Separator(IWorkbenchActionConstants.MB_ADDITIONS);
 
     private SQLBuilderRepositoryNodeManager repositoryNodeManager = new SQLBuilderRepositoryNodeManager();
-    
+
     /**
      * Create the composite.
      * 
@@ -157,7 +160,7 @@ public class DBStructureComposite extends Composite {
     public DBStructureComposite(SashForm sashFormStructureAndEditor, int none, SQLBuilderDialog dialog) {
         this(sashFormStructureAndEditor, none);
         this.builderDialog = dialog;
-        
+
         createToolbar();
         createDBTree();
         makeActions();
@@ -171,30 +174,63 @@ public class DBStructureComposite extends Composite {
             }
         });
     }
-    
+
     public void openNewEditor() {
         treeViewer.getTree().setSelection(treeViewer.getTree().getItem(0));
-        Action tempOpenNewEditorAction = new OpenNewEditorAction(treeViewer, builderDialog, builderDialog
-                .getConnParameters(), true);
+        Action tempOpenNewEditorAction = new OpenNewEditorAction(treeViewer, builderDialog, builderDialog.getConnParameters(),
+                true);
         tempOpenNewEditorAction.run();
         treeViewer.getTree().deselectAll();
+    }
+
+    /**
+     * Updates the structure view to reflect the change of Repository View.
+     * 
+     * @see SQLBuilderDialog.repositoryChanged(RepositoryChangedEvent event)
+     * @param event
+     */
+    protected void updateStructureView(RepositoryChangedEvent event) {
+        if (!isShowAllConnections) {
+            DatabaseConnectionItem originalConnection = getDisplayedConnection();
+            DatabaseConnectionItem newConnection = (DatabaseConnectionItem) event.getDelta().getRepositoryObject().getProperty()
+                    .getItem();
+            if (originalConnection != newConnection) {
+                return;
+            }
+
+            String newRepositoryName = newConnection.getProperty().getLabel();
+            this.builderDialog.getConnParameters().setRepositoryName(newRepositoryName);
+        }
+
+        repositoryNodeManager.clean();
+        treeViewer.setInput(new RepositoryNode(null, null, ENodeType.SYSTEM_FOLDER));
+    }
+
+    private DatabaseConnectionItem getDisplayedConnection() {
+        List<RepositoryNode> list = repositoryNodeManager.getAllDisplayedConnection();
+
+        if (list.isEmpty()) {
+            throw new RuntimeException("This repository list should not be empty.");
+        }
+        RepositoryNode node = list.get(0);
+
+        IRepositoryObject o = node.getObject();
+        DatabaseConnectionItem item = (DatabaseConnectionItem) o.getProperty().getItem();
+        return item;
+
     }
 
     /**
      * Create contents of the dialog.
      */
     protected void createDBTree() {
-        RepositoryView repositoryView = (RepositoryView) PlatformUI.getWorkbench().getActiveWorkbenchWindow()
-                .getActivePage().findView(RepositoryView.VIEW_ID);
+        RepositoryView repositoryView = (RepositoryView) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
+                .findView(RepositoryView.VIEW_ID);
 
         treeViewer = new TreeViewer(this, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL | SWT.FULL_SELECTION);
         //
         treeViewer.getControl().setLayoutData(new GridData(GridData.FILL, GridData.FILL, true, true, 2, 1));
         treeViewer.setUseHashlookup(true);
-
-        DBTreeProvider treeLabelProvider = new DBTreeProvider(repositoryView, builderDialog.getConnParameters());
-        treeViewer.setContentProvider(treeLabelProvider);
-        treeViewer.setLabelProvider(treeLabelProvider);
 
         Tree tree = treeViewer.getTree();
         TreeColumn database = new TreeColumn(tree, SWT.LEFT);
@@ -209,20 +245,24 @@ public class DBStructureComposite extends Composite {
         diff.setText("Diff"); //$NON-NLS-1$
         diff.setWidth(30);
 
-        
         tree.setHeaderVisible(true);
 
+        DBTreeProvider treeLabelProvider = new DBTreeProvider(repositoryView, builderDialog.getConnParameters());
+        treeViewer.setContentProvider(treeLabelProvider);
+        treeViewer.setLabelProvider(treeLabelProvider);
         treeViewer.addFilter(filter);
         treeViewer.setInput(new RepositoryNode(null, null, ENodeType.SYSTEM_FOLDER));
-        
+
         treeViewer.addTreeListener(new ITreeViewerListener() {
-			public void treeCollapsed(TreeExpansionEvent event) {
-//				doSetColorOrNot(event);
-			}
-			public void treeExpanded(TreeExpansionEvent event) {
-//				doSetColorOrNot(event);
-			}
-        	
+
+            public void treeCollapsed(TreeExpansionEvent event) {
+                // doSetColorOrNot(event);
+            }
+
+            public void treeExpanded(TreeExpansionEvent event) {
+                // doSetColorOrNot(event);
+            }
+
         });
         hookDoubleClickAction();
         addContextMenu();
@@ -236,9 +276,9 @@ public class DBStructureComposite extends Composite {
             if (isShowAllConnections) {
                 return true;
             } else {
-            	removeOtherRepositoryNodeFromCache(builderDialog.getConnParameters());
+                removeOtherRepositoryNodeFromCache(builderDialog.getConnParameters());
             }
-            
+
             RepositoryNode node = (RepositoryNode) element;
             if (node.getProperties(EProperties.CONTENT_TYPE) == RepositoryNodeType.FOLDER) {
                 if (isExistChildWithRepositoryNodeName(node, builderDialog.getConnParameters().getRepositoryName())) {
@@ -251,8 +291,7 @@ public class DBStructureComposite extends Composite {
                         return true;
                     }
                 } else {
-                    if (node.getProperties(EProperties.LABEL) == null
-                            || node.getProperties(EProperties.LABEL).equals("")) { //$NON-NLS-1$
+                    if (node.getProperties(EProperties.LABEL) == null || node.getProperties(EProperties.LABEL).equals("")) { //$NON-NLS-1$
                         return true;
                     }
                 }
@@ -262,15 +301,15 @@ public class DBStructureComposite extends Composite {
             return false;
         }
 
-		private void removeOtherRepositoryNodeFromCache(ConnectionParameters connectionParameters) {
-			if (connectionParameters.isRepository()) {
-				repositoryNodeManager.removeRepositoryNodeExceptNodeByName(connectionParameters.getRepositoryName());
-			} else {
-				repositoryNodeManager.removeRepositoryNodeExceptNodeByName("Built-In");
-			}
-		}
+        private void removeOtherRepositoryNodeFromCache(ConnectionParameters connectionParameters) {
+            if (connectionParameters.isRepository()) {
+                repositoryNodeManager.removeRepositoryNodeExceptNodeByName(connectionParameters.getRepositoryName());
+            } else {
+                repositoryNodeManager.removeRepositoryNodeExceptNodeByName("Built-In");
+            }
+        }
 
-		private boolean isExistChildWithRepositoryNodeName(RepositoryNode folderNode, String repositoryName) {
+        private boolean isExistChildWithRepositoryNodeName(RepositoryNode folderNode, String repositoryName) {
             List<RepositoryNode> nodes = folderNode.getChildren();
             for (RepositoryNode node : nodes) {
                 if (node.getProperties(EProperties.CONTENT_TYPE) == RepositoryNodeType.FOLDER) {
@@ -291,11 +330,9 @@ public class DBStructureComposite extends Composite {
     private void makeActions() {
         generateSelectAction = new GenerateSelectSQLAction(treeViewer, builderDialog, false);
 
-        openNewEditorAction = new OpenNewEditorAction(treeViewer, builderDialog, builderDialog.getConnParameters(),
-                false);
+        openNewEditorAction = new OpenNewEditorAction(treeViewer, builderDialog, builderDialog.getConnParameters(), false);
 
-        refreshConnectionAction = new RefreshConnectionAction(treeViewer, Messages
-                .getString("DBStructureComposite.Refresh"));
+        refreshConnectionAction = new RefreshConnectionAction(treeViewer, Messages.getString("DBStructureComposite.Refresh"));
 
         metadataRefreshAction = new MetadataRefreshAction(treeViewer, builderDialog);
 
@@ -304,7 +341,7 @@ public class DBStructureComposite extends Composite {
         showQueryPropertyAction = new ShowQueryPropertyAction(treeViewer, builderDialog);
         doubleClickAction = new OpenQueryAction(treeViewer, builderDialog, builderDialog.getConnParameters());
     }
-    
+
     /**
      * Add context menu.
      * 
@@ -430,11 +467,8 @@ public class DBStructureComposite extends Composite {
 
         @Override
         public void run() {
-            if (!MessageDialog
-                    .openConfirm(
-                            getShell(),
-                            Messages.getString("DBStructureComposite.Refresh"),
-                            Messages.getString("DBStructureComposite.TakeALongTime"))) { //$NON-NLS-2$
+            if (!MessageDialog.openConfirm(getShell(), Messages.getString("DBStructureComposite.Refresh"), Messages
+                    .getString("DBStructureComposite.TakeALongTime"))) { //$NON-NLS-2$
                 return;
             }
             final IRunnableWithProgress r = new IRunnableWithProgress() {
@@ -475,8 +509,8 @@ public class DBStructureComposite extends Composite {
      * @return
      * @exception
      */
-	public void doRefresh(final RepositoryNode refreshNode) {
-    	final RepositoryNode rootNode = SQLBuilderRepositoryNodeManager.getRoot(refreshNode);
+    public void doRefresh(final RepositoryNode refreshNode) {
+        final RepositoryNode rootNode = SQLBuilderRepositoryNodeManager.getRoot(refreshNode);
         Display.getDefault().asyncExec(new Runnable() {
 
             public void run() {
@@ -489,7 +523,7 @@ public class DBStructureComposite extends Composite {
         });
 
     }
-    
+
     /**
      * RefreshAction.
      */
@@ -509,8 +543,7 @@ public class DBStructureComposite extends Composite {
 
         @SuppressWarnings("unchecked")//$NON-NLS-1$
         public void init() {
-            IStructuredSelection selection = (IStructuredSelection) getSelectionProvider()
-            .getSelection();
+            IStructuredSelection selection = (IStructuredSelection) getSelectionProvider().getSelection();
             if (selection.isEmpty()) {
                 this.setEnabled(false);
                 return;

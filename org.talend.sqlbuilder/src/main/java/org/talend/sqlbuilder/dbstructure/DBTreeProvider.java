@@ -87,7 +87,6 @@ ITableColorProvider {
     private ConnectionParameters connectionParameters;
     private boolean isRefresh;
     private Map<String, Color> colors = new HashMap<String, Color>(); 
-    private Map<String, RepositoryNode> allRepositoryNodes = new HashMap<String, RepositoryNode>();
     
     public DBTreeProvider(RepositoryView repositoryView, ConnectionParameters connectionParameters) {
         this.connectionParameters = connectionParameters;
@@ -175,7 +174,7 @@ ITableColorProvider {
 
     public Object[] getElements(Object inputElement) {
         if (!(inputElement instanceof RepositoryNode)) {
-            return null;
+            return new Object[0];
         }
         RepositoryNode treeRoot = (RepositoryNode) inputElement;
         initialize(treeRoot);
@@ -271,7 +270,6 @@ ITableColorProvider {
             } else {
                 parent.getChildren().add(index.intValue(), node);
             }
-            allRepositoryNodes.put(node.getObject().getLabel(), node);
             repositoryNodeManager.addRepositoryNode(node);
         }
 
@@ -296,7 +294,6 @@ ITableColorProvider {
             RepositoryNode queriesConnectionNode = new RepositoryNode(repositoryObject, node, ENodeType.REPOSITORY_ELEMENT);
             queriesConnectionNode.setProperties(EProperties.CONTENT_TYPE, RepositoryNodeType.QUERIESCONNECTION);
             node.getChildren().add(queriesConnectionNode);
-            allRepositoryNodes.put(queriesConnectionNode.getObject().getLabel(), queriesConnectionNode);
             createQuery(queriesConnectionNode, repObj, queriesConnection);
         }
     }
@@ -310,7 +307,6 @@ ITableColorProvider {
         	RepositoryNode node = new RepositoryNode(repositoryObject, queriesConnectionNode, ENodeType.REPOSITORY_ELEMENT);
         	node.setProperties(EProperties.CONTENT_TYPE, RepositoryNodeType.QUERY);
         	queriesConnectionNode.getChildren().add(node);
-        	allRepositoryNodes.put(node.getObject().getLabel(), node);
         }
     }
 
@@ -332,7 +328,6 @@ ITableColorProvider {
                 //ignore recycle node
             } else {
                 node.getChildren().add(tableNode);
-                allRepositoryNodes.put(tableNode.getObject().getLabel(), tableNode);
             }
             
             //create columns
@@ -346,7 +341,6 @@ ITableColorProvider {
             RepositoryNode columnNode = createMetacolumn(tableNode, repObj, metadataColumn, isBuildIn);
 
             tableNode.getChildren().add(columnNode);
-            allRepositoryNodes.put(columnNode.getObject().getLabel(), columnNode);
         }
     }
 

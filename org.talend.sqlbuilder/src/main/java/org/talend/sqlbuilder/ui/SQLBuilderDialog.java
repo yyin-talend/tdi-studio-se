@@ -51,6 +51,8 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.actions.SelectionProviderAction;
+import org.talend.repository.IRepositoryChangedListener;
+import org.talend.repository.RepositoryChangedEvent;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.sqlbuilder.SqlBuilderPlugin;
 import org.talend.sqlbuilder.dbstructure.SessionTreeNodeManager;
@@ -67,10 +69,10 @@ import org.talend.sqlbuilder.util.UIUtils;
  * $Id: SQLBuilderDialog.java,v 1.44 2006/11/09 08:44:09 tangfn Exp $
  * 
  */
-public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog {
+public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog, IRepositoryChangedListener {
 
     private boolean isFromRepositoryView = false;
-    
+
     private DBDetailsComposite dbDetailsComposite;
 
     private DBStructureComposite structureComposite;
@@ -180,6 +182,7 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog {
         super(parentShell);
         setShellStyle(SWT.DIALOG_TRIM | SWT.RESIZE | SWT.RESIZE | SWT.MIN | SWT.MAX);
         parentShell.setImage(ImageUtil.getImage("Images.title"));
+        SqlBuilderPlugin.getDefault().getRepositoryService().registerRepositoryChangedListener(this);
     }
 
     /*
@@ -191,7 +194,7 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog {
         super.configureShell(shell);
         // Set the title bar text
         shell.setText("SQL Builder"); //$NON-NLS-1$
-        
+
     }
 
     /**
@@ -221,9 +224,8 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog {
 
         structureComposite.openNewEditor();
 
-//        RefreshDetailCompositeAction refreshAction = 
-        new RefreshDetailCompositeAction(structureComposite
-                .getTreeViewer());
+        // RefreshDetailCompositeAction refreshAction =
+        new RefreshDetailCompositeAction(structureComposite.getTreeViewer());
 
         return container;
     }
@@ -254,8 +256,8 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog {
      * @param sashFormResultAndDetail
      */
     private void createResult(SashForm sashFormResultAndDetail) {
-//        SQLResultComposite resultView = 
-        	new SQLResultComposite(sashFormResultAndDetail, SWT.BORDER);
+        // SQLResultComposite resultView =
+        new SQLResultComposite(sashFormResultAndDetail, SWT.BORDER);
 
     }
 
@@ -345,11 +347,17 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog {
 
     @Override
     public boolean close() {
-    	SQLBuilderRepositoryNodeManager.setDialogClosed(true);
+        SqlBuilderPlugin.getDefault().getRepositoryService().removeRepositoryChangedListener(this);
+
+        clean();
+
+        return super.close();
+    }
+
+    private void clean() {
         SQLBuilderRepositoryNodeManager.reductionALLRepositoryNode();
         SessionTreeNodeUtils.dispose();
         nodeManager.clear();
-        return super.close();
     }
 
     /**
@@ -380,10 +388,10 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog {
      * @see org.eclipse.jface.dialogs.Dialog#okPressed()
      */
     public void okPressed() {
-    	String sql = ""; 
-//      sql = editorComposite.getDefaultTabSql();
+        String sql = "";
+        // sql = editorComposite.getDefaultTabSql();
         sql = editorComposite.getCurrentTabSql();
-        
+
         connParameters.setQuery(sql);
         super.okPressed();
     }
@@ -421,110 +429,127 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog {
          * @see org.eclipse.ui.actions.SelectionProviderAction#selectionChanged(org.eclipse.jface.viewers.IStructuredSelection)
          */
         public void selectionChanged(final IStructuredSelection selection) {
-             IRunnableWithProgress progress = new IRunnableWithProgress() {
-            
-             public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-	             monitor.beginTask("", IProgressMonitor.UNKNOWN);
+            IRunnableWithProgress progress = new IRunnableWithProgress() {
 
-	             try {
-	            	 INode node = null;
-	        		 String msg = null;
-	        		 if (!selection.isEmpty()) {
-	        			 try {
-	        				 final RepositoryNode repositoryNode = (RepositoryNode) selection.getFirstElement();
-	        				 node = nodeManager.convert2INode(repositoryNode);
-	        			 } catch (Exception e) {
-	        				 msg = e.getMessage();
-                             SqlBuilderPlugin.log(msg, e);
-	        			 }
-	        			 final INode argNode = node;
-	        			 final String argMsg = msg;
-	        			 Display.getDefault().asyncExec(new Runnable() {
-	        				 public void run() {
-	        					 dbDetailsComposite.setSelectedNode(argNode, argMsg);
-	        				 }
-	        			 });
-	        		 }
-	             } finally {
-	            	 monitor.done();
-	             }
-             } };
+                public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
+                    monitor.beginTask("", IProgressMonitor.UNKNOWN);
 
-             UIUtils.runWithProgress(progress, true, getProgressMonitor(), getShell());
-        	
+                    try {
+                        INode node = null;
+                        String msg = null;
+                        if (!selection.isEmpty()) {
+                            try {
+                                final RepositoryNode repositoryNode = (RepositoryNode) selection.getFirstElement();
+                                node = nodeManager.convert2INode(repositoryNode);
+                            } catch (Exception e) {
+                                msg = e.getMessage();
+                                SqlBuilderPlugin.log(msg, e);
+                            }
+                            final INode argNode = node;
+                            final String argMsg = msg;
+                            Display.getDefault().asyncExec(new Runnable() {
+
+                                public void run() {
+                                    dbDetailsComposite.setSelectedNode(argNode, argMsg);
+                                }
+                            });
+                        }
+                    } finally {
+                        monitor.done();
+                    }
+                }
+            };
+
+            UIUtils.runWithProgress(progress, true, getProgressMonitor(), getShell());
+
         }
     }
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.eclipse.jface.window.Window#getShellListener()
      */
     @Override
     protected ShellListener getShellListener() {
-    	ShellListener shellListener = new ShellAdapter() {
+        ShellListener shellListener = new ShellAdapter() {
 
-//    		int i = 0;
-			/* (non-Javadoc)
-			 * @see org.eclipse.swt.events.ShellAdapter#shellActivated(org.eclipse.swt.events.ShellEvent)
-			 */
-			@Override
-			public void shellActivated(ShellEvent e) {
-//				SQLBuilderRepositoryNodeManager.reductionALLRepositoryNode();
-				SQLBuilderRepositoryNodeManager.increaseALLRepositoryNode();
-				SQLBuilderRepositoryNodeManager.setReduction(false);
-				SQLBuilderRepositoryNodeManager.setIncrease(true);
-				super.shellActivated(e);
-			}
+            // int i = 0;
+            /*
+             * (non-Javadoc)
+             * 
+             * @see org.eclipse.swt.events.ShellAdapter#shellActivated(org.eclipse.swt.events.ShellEvent)
+             */
+            @Override
+            public void shellActivated(ShellEvent e) {
+                // SQLBuilderRepositoryNodeManager.reductionALLRepositoryNode();
+                SQLBuilderRepositoryNodeManager.increaseALLRepositoryNode();
+                SQLBuilderRepositoryNodeManager.setReduction(false);
+                SQLBuilderRepositoryNodeManager.setIncrease(true);
+                super.shellActivated(e);
+            }
 
-			/* (non-Javadoc)
-			 * @see org.eclipse.swt.events.ShellAdapter#shellClosed(org.eclipse.swt.events.ShellEvent)
-			 */
-			@Override
-			public void shellClosed(ShellEvent e) {
-				e.doit = false; // don't close now
-				if (canHandleShellCloseEvent()) {
-					handleShellCloseEvent();
-				}
-			}
+            /*
+             * (non-Javadoc)
+             * 
+             * @see org.eclipse.swt.events.ShellAdapter#shellClosed(org.eclipse.swt.events.ShellEvent)
+             */
+            @Override
+            public void shellClosed(ShellEvent e) {
+                e.doit = false; // don't close now
+                if (canHandleShellCloseEvent()) {
+                    handleShellCloseEvent();
+                }
+            }
 
-			/* (non-Javadoc)
-			 * @see org.eclipse.swt.events.ShellAdapter#shellDeactivated(org.eclipse.swt.events.ShellEvent)
-			 */
-			@Override
-			public void shellDeactivated(ShellEvent e) {
-				SQLBuilderRepositoryNodeManager.reductionALLRepositoryNode();
-				SQLBuilderRepositoryNodeManager.setIncrease(false);
+            /*
+             * (non-Javadoc)
+             * 
+             * @see org.eclipse.swt.events.ShellAdapter#shellDeactivated(org.eclipse.swt.events.ShellEvent)
+             */
+            @Override
+            public void shellDeactivated(ShellEvent e) {
+                SQLBuilderRepositoryNodeManager.reductionALLRepositoryNode();
+                SQLBuilderRepositoryNodeManager.setIncrease(false);
                 SQLBuilderRepositoryNodeManager.setReduction(true);
-//				SQLBuilderRepositoryNodeManager.increaseALLRepositoryNode();
-				super.shellDeactivated(e);
-			}
+                // SQLBuilderRepositoryNodeManager.increaseALLRepositoryNode();
+                super.shellDeactivated(e);
+            }
 
-			/* (non-Javadoc)
-			 * @see org.eclipse.swt.events.ShellAdapter#shellDeiconified(org.eclipse.swt.events.ShellEvent)
-			 */
-			@Override
-			public void shellDeiconified(ShellEvent e) {
-				super.shellDeiconified(e);
-			}
+            /*
+             * (non-Javadoc)
+             * 
+             * @see org.eclipse.swt.events.ShellAdapter#shellDeiconified(org.eclipse.swt.events.ShellEvent)
+             */
+            @Override
+            public void shellDeiconified(ShellEvent e) {
+                super.shellDeiconified(e);
+            }
 
-			/* (non-Javadoc)
-			 * @see org.eclipse.swt.events.ShellAdapter#shellIconified(org.eclipse.swt.events.ShellEvent)
-			 */
-			@Override
-			public void shellIconified(ShellEvent e) {
-				super.shellIconified(e);
-			}
-    		
-    	};
-    	return shellListener;
+            /*
+             * (non-Javadoc)
+             * 
+             * @see org.eclipse.swt.events.ShellAdapter#shellIconified(org.eclipse.swt.events.ShellEvent)
+             */
+            @Override
+            public void shellIconified(ShellEvent e) {
+                super.shellIconified(e);
+            }
+
+        };
+        return shellListener;
     }
 
-    
     public boolean isFromRepositoryView() {
         return this.isFromRepositoryView;
     }
 
-    
     public void setFromRepositoryView(boolean isFromRepositoryView) {
         this.isFromRepositoryView = isFromRepositoryView;
+    }
+
+    public void repositoryChanged(RepositoryChangedEvent event) {
+        clean();
+        structureComposite.updateStructureView(event);
     }
 }

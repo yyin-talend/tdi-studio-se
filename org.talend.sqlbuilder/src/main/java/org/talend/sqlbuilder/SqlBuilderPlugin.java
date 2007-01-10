@@ -26,6 +26,8 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 import org.talend.commons.exception.ExceptionHandler;
+import org.talend.core.GlobalServiceRegister;
+import org.talend.repository.model.IRepositoryService;
 
 /**
  * The activator class controls the plug-in life cycle.
@@ -75,5 +77,9 @@ public class SqlBuilderPlugin extends AbstractUIPlugin {
 
     public static void log(String msg, Throwable e) {
         ExceptionHandler.process(e);
+    }
+    
+    public IRepositoryService getRepositoryService() {
+        return (IRepositoryService) GlobalServiceRegister.getDefault().getService(IRepositoryService.class);
     }
 }
