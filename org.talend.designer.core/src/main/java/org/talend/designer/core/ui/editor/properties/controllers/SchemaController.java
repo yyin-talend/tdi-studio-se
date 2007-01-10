@@ -38,8 +38,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.talend.core.CorePlugin;
-import org.talend.core.model.components.IODataComponent;
-import org.talend.core.model.components.IODataComponentContainer;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.process.EConnectionType;
@@ -55,7 +53,7 @@ import org.talend.designer.core.ui.editor.properties.DynamicTabbedPropertySectio
 /**
  * DOC yzhang class global comment. Detailled comment <br/>
  * 
- * $Id: SchemaController.java 1 2006-12-12 上午11:21:25 +0000 (上午11:21:25) yzhang $
+ * $Id: SchemaController.java 1 2006-12-12 上午11:21:25 +0000 (上午11:21:25) ftang $
  * 
  */
 public class SchemaController extends AbstractElementPropertySectionController {
@@ -64,9 +62,7 @@ public class SchemaController extends AbstractElementPropertySectionController {
 
     private static final String SCHEMA = "SCHEMA"; //$NON-NLS-1$
 
-    private Button btn;
-
-    private Button resetBtn = null;
+    private Button inputButton;
 
     /**
      * DOC yzhang SchemaController constructor comment.
@@ -85,7 +81,7 @@ public class SchemaController extends AbstractElementPropertySectionController {
     @Override
     public Command createCommand() {
 
-        if (btn.getData(NAME).equals(SCHEMA)) {
+        if (inputButton.getData(NAME).equals(SCHEMA)) {
 
             Node node;
             if (elem instanceof Node) {
@@ -118,7 +114,7 @@ public class SchemaController extends AbstractElementPropertySectionController {
                 }
             }
 
-            String propertyName = (String) btn.getData(PROPERTY);
+            String propertyName = (String) inputButton.getData(PROPERTY);
             IElementParameter param = node.getElementParameter(propertyName);
             if (param.isReadOnly() || node.isReadOnly()) {
                 outputReadOnly = true;
@@ -163,18 +159,17 @@ public class SchemaController extends AbstractElementPropertySectionController {
                 }
             }
 
-        } else if (btn.getData(NAME).equals(RESET_COLUMNS)) {
+        } else if (inputButton.getData(NAME).equals(RESET_COLUMNS)) {
             Node node = (Node) elem;
             IMetadataTable meta = (IMetadataTable) node.getMetadataList().get(0);
             IMetadataTable metaCopy = meta.clone();
             metaCopy.setListColumns(new ArrayList<IMetadataColumn>());
-            
+
             for (Connection connec : (List<Connection>) node.getIncomingConnections()) {
                 if (connec.isActivate() && connec.getLineStyle().equals(EConnectionType.FLOW_MAIN)) {
                     metaCopy = connec.getMetadataTable().clone();
                 }
             }
-
 
             return new ChangeMetadataCommand(node, meta, metaCopy);
         }
@@ -192,6 +187,10 @@ public class SchemaController extends AbstractElementPropertySectionController {
 
         FormData data;
         Control lastControlUsed;
+
+        Button btn;
+
+        Button resetBtn = null;
 
         Point btnSize;
 
@@ -283,16 +282,19 @@ public class SchemaController extends AbstractElementPropertySectionController {
     SelectionListener listenerSelection = new SelectionListener() {
 
         public void widgetDefaultSelected(SelectionEvent e) {
-
+            // do nothing.
         }
 
         public void widgetSelected(SelectionEvent e) {
+            if (e.getSource() != null && e.getSource() instanceof Button) {
+                inputButton = (Button) e.getSource();
+            } else {
+                throw new RuntimeException("Unexpected exception.");
+            }
             Command cmd = createCommand();
             if (cmd != null) {
                 getCommandStack().execute(cmd);
             }
         }
-
     };
-
 }
