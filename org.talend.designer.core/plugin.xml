@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.0"?>
 <plugin>
-
+	<extension-point id="generators" name="Controller Generators" schema="schema/generators.exsd"/>
    <extension
          point="org.eclipse.ui.editors">
       <editor
@@ -247,5 +247,72 @@
       <Service
       		serviceId="IDesignerCoreService"
       		class="org.talend.designer.core.DesignerCoreService"/>
+   </extension>
+      <extension
+         point="org.talend.designer.core.generators">
+      <generator
+            class="org.talend.designer.core.ui.editor.properties.controllers.generator.SchemaGenerator"
+            mapping="SCHEMA_TYPE"
+            name="Schema Type"/>
+      <generator
+            class="org.talend.designer.core.ui.editor.properties.controllers.generator.TextGenerator"
+            mapping="TEXT"
+            name="Text"/>
+      <generator
+            class="org.talend.designer.core.ui.editor.properties.controllers.generator.ComboGenerator"
+            mapping="CLOSED_LIST"
+            name="Combo"/>
+      <generator
+            class="org.talend.designer.core.ui.editor.properties.controllers.generator.MemoGenerator"
+            mapping="MEMO"
+            name="Memo"/>
+      <generator
+            class="org.talend.designer.core.ui.editor.properties.controllers.generator.ColumnListGenerator"
+            mapping="COLUMN_LIST"
+            name="Column List"/>
+      <generator
+            class="org.talend.designer.core.ui.editor.properties.controllers.generator.ColumnListGenerator"
+            mapping="PREV_COLUMN_LIST"
+            name="Pre Column List"/>
+      <generator
+            class="org.talend.designer.core.ui.editor.properties.controllers.generator.SqlMemoGenerator"
+            mapping="MEMO_SQL"
+            name="Sql Memo"/>
+      <generator
+            class="org.talend.designer.core.ui.editor.properties.controllers.generator.PerlMemoGenerator"
+            mapping="MEMO_PERL"
+            name="Perl Memo"/>
+      <generator
+            class="org.talend.designer.core.ui.editor.properties.controllers.generator.CheckGenerator"
+            mapping="CHECK"
+            name="Check"/>
+      <generator
+            class="org.talend.designer.core.ui.editor.properties.controllers.generator.FileGenerator"
+            mapping="FILE"
+            name="File"/>
+      <generator
+            class="org.talend.designer.core.ui.editor.properties.controllers.generator.DirectoryGenerator"
+            mapping="DIRECTORY"
+            name="Directory"/>
+      <generator
+            class="org.talend.designer.core.ui.editor.properties.controllers.generator.VersionGenerator"
+            mapping="VERSION"
+            name="Version"/>
+      <generator
+            class="org.talend.designer.core.ui.editor.properties.controllers.generator.TableGenerator"
+            mapping="TABLE"
+            name="Table"/>
+      <generator
+            class="org.talend.designer.core.ui.editor.properties.controllers.generator.ImageGenerator"
+            mapping="IMAGE"
+            name="Image"/>
+      <generator
+            class="org.talend.designer.core.ui.editor.properties.controllers.generator.ExternalGenerator"
+            mapping="EXTERNAL"
+            name="External"/>
+      <generator
+            class="org.talend.designer.core.ui.editor.properties.controllers.generator.JavaMemoGenerator"
+            mapping="MEMO_JAVA"
+            name="Jave Memo"/>
    </extension>
 </plugin>

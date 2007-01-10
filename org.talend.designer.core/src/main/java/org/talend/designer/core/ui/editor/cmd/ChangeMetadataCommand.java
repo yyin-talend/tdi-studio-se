@@ -179,7 +179,7 @@ public class ChangeMetadataCommand extends Command {
                     currentSection.updateColumnList(MetadataTool.getColumnNameChanged(oldTable, newTable));
                     currentSection.refresh();
                 }
-            }
+            } 
         }
     }
 
