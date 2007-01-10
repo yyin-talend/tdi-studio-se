@@ -74,10 +74,14 @@ public class CodeView extends ViewPart implements ISelectionListener {
     private static final int CODE_ALL = 3;
 
     private int codeView = CODE_MAIN;
-    
+
     private static final String ERROR_MESSAGE = Messages.getString("CodeView.Error"); //$NON-NLS-1$
 
-    private INode node = null;
+    private INode selectedNode = null;
+
+    private INode generatingNode = null;
+
+    public static final String ID = "org.talend.designer.core.codeView";
 
     IAction viewStartAction = new Action() {
 
@@ -182,28 +186,16 @@ public class CodeView extends ViewPart implements ISelectionListener {
             Object input = ((IStructuredSelection) selection).getFirstElement();
             if (input instanceof NodeTreeEditPart) {
                 NodeTreeEditPart nTreePart = (NodeTreeEditPart) input;
-                node = (Node) nTreePart.getModel();
-                IExternalNode externalNode = ((Node) node).getExternalNode();
-                if (externalNode != null) {
-                    node = externalNode;
-                }
+                selectedNode = (Node) nTreePart.getModel();
                 refresh();
             } else {
                 if (input instanceof NodePart) {
                     NodePart editPart = (NodePart) input;
-                    node = (Node) editPart.getModel();
-                    IExternalNode externalNode = ((Node) node).getExternalNode();
-                    if (externalNode != null) {
-                        node = externalNode;
-                    }
+                    selectedNode = (Node) editPart.getModel();
                     refresh();
                 } else if (input instanceof NodeLabelEditPart) {
                     NodeLabelEditPart editPart = (NodeLabelEditPart) input;
-                    node = (Node) ((NodeLabel) editPart.getModel()).getNode();
-                    IExternalNode externalNode = ((Node) node).getExternalNode();
-                    if (externalNode != null) {
-                        node = externalNode;
-                    }
+                    selectedNode = (Node) ((NodeLabel) editPart.getModel()).getNode();
                     refresh();
                 }
             }
@@ -211,7 +203,14 @@ public class CodeView extends ViewPart implements ISelectionListener {
     }
 
     public void refresh() {
-        if (node != null) {
+        if (selectedNode != null) {
+            IExternalNode externalNode = ((Node) selectedNode).getExternalNode();
+            if (externalNode != null) {
+                generatingNode = externalNode;
+                externalNode.setExternalData(((Node) selectedNode).getExternalData());
+            } else {
+                generatingNode = selectedNode;
+            }
             String generatedCode = ""; //$NON-NLS-1$
             if (codeGenerator == null) {
                 ICodeGeneratorService service = DesignerPlugin.getDefault().getCodeGeneratorService();
@@ -225,21 +224,21 @@ public class CodeView extends ViewPart implements ISelectionListener {
                 switch (codeView) {
                 case CODE_START:
                     viewStartAction.setChecked(true);
-                    generatedCode = codeGenerator.generateComponentCode(node, ECodePart.BEGIN);
+                    generatedCode = codeGenerator.generateComponentCode(generatingNode, ECodePart.BEGIN);
                     break;
                 case CODE_MAIN:
                     viewMainAction.setChecked(true);
-                    generatedCode = codeGenerator.generateComponentCode(node, ECodePart.MAIN);
+                    generatedCode = codeGenerator.generateComponentCode(generatingNode, ECodePart.MAIN);
                     break;
                 case CODE_END:
                     viewEndAction.setChecked(true);
-                    generatedCode = codeGenerator.generateComponentCode(node, ECodePart.END);
+                    generatedCode = codeGenerator.generateComponentCode(generatingNode, ECodePart.END);
                     break;
                 case CODE_ALL:
                     viewAllAction.setChecked(true);
-                    generatedCode = codeGenerator.generateComponentCode(node, ECodePart.BEGIN);
-                    generatedCode += codeGenerator.generateComponentCode(node, ECodePart.MAIN);
-                    generatedCode += codeGenerator.generateComponentCode(node, ECodePart.END);
+                    generatedCode = codeGenerator.generateComponentCode(generatingNode, ECodePart.BEGIN);
+                    generatedCode += codeGenerator.generateComponentCode(generatingNode, ECodePart.MAIN);
+                    generatedCode += codeGenerator.generateComponentCode(generatingNode, ECodePart.END);
                     break;
                 default:
                 }

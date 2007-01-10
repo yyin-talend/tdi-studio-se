@@ -37,6 +37,7 @@ import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.ui.editor.nodes.Node;
+import org.talend.designer.core.ui.views.CodeView;
 
 /**
  * Command that changes a given property. It will call the set or get property value in an element. This element can be
@@ -83,6 +84,15 @@ public class PropertyChangeCommand extends Command {
         PropertySheet sheet = (PropertySheet) view;
         TabbedPropertySheetPage tabbedPropertySheetPage = (TabbedPropertySheetPage) sheet.getCurrentPage();
         tabbedPropertySheetPage.refresh();
+    }
+
+    private void refreshCodeView() {
+        IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+        IViewPart view = page.findView(CodeView.ID);
+        if (view != null) {
+            CodeView codeView = (CodeView) view;
+            codeView.refresh();
+        }
     }
 
     @Override
@@ -166,6 +176,7 @@ public class PropertyChangeCommand extends Command {
         }
 
         refreshPropertyView();
+        refreshCodeView();
     }
 
     @Override
@@ -197,6 +208,7 @@ public class PropertyChangeCommand extends Command {
             ((Node) elem).checkAndRefreshNode();
         }
         refreshPropertyView();
+        refreshCodeView();
     }
 
     @Override
@@ -232,6 +244,7 @@ public class PropertyChangeCommand extends Command {
             ((Node) elem).checkAndRefreshNode();
         }
         refreshPropertyView();
+        refreshCodeView();
     }
 
     public void modifyValue(String value) {
@@ -242,7 +255,7 @@ public class PropertyChangeCommand extends Command {
     public String getPropName() {
         return this.propName;
     }
-    
+
     public Element getElement() {
         return this.elem;
     }

@@ -45,6 +45,7 @@ import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.editor.properties.DynamicTabbedPropertySection;
+import org.talend.designer.core.ui.views.CodeView;
 
 /**
  * Command that will change the datas stored for an external node.
@@ -140,6 +141,15 @@ public class ExternalNodeChangeCommand extends Command {
         }
     }
 
+    private void refreshCodeView() {
+        IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+        IViewPart view = page.findView(CodeView.ID);
+        if (view != null) {
+            CodeView codeView = (CodeView) view;
+            codeView.refresh();
+        }
+    }
+
     private boolean getPropagate() {
         if (propagate == null) {
             propagate = MessageDialog.openQuestion(new Shell(), "Propagate", "Would you like to propagate changes ?");
@@ -160,10 +170,8 @@ public class ExternalNodeChangeCommand extends Command {
                                 EmfComponent.BUILTIN);
                     }
 
-                    connection.getSource().getMetadataTable(connection.getMetaName()).setListColumns(
-                            repositoryMetadata.getListColumns());
-                    connection.getSource().getMetadataTable(connection.getMetaName()).setTableName(
-                            repositoryMetadata.getTableName());
+                    connection.getMetadataTable().setListColumns(repositoryMetadata.getListColumns());
+                    connection.getMetadataTable().setTableName(repositoryMetadata.getTableName());
                 }
             }
         }
@@ -195,6 +203,7 @@ public class ExternalNodeChangeCommand extends Command {
         }
         ((Process) node.getProcess()).checkProcess();
         refreshSectionsPropertyView();
+        refreshCodeView();
     }
 
     @Override
@@ -217,5 +226,6 @@ public class ExternalNodeChangeCommand extends Command {
         }
         ((Process) node.getProcess()).checkProcess();
         refreshSectionsPropertyView();
+        refreshCodeView();
     }
 }

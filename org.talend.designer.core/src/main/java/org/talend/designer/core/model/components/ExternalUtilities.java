@@ -43,7 +43,7 @@ public class ExternalUtilities {
         if (externalNode == null) {
             return null;
         }
-        node.setExternalData(externalNode.getExternalData());
+        externalNode.setExternalData(node.getExternalData());
 
         IODataComponentContainer inAndOut = new IODataComponentContainer();
 
