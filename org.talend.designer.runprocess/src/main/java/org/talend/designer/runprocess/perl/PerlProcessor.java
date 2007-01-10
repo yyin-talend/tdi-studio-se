@@ -130,7 +130,7 @@ public class PerlProcessor implements IProcessor {
                 String perlInterpreter = getPerlInterpreter();
                 String perlLib = getPerlLib();
                 String currentPerlProject = project.getTechnicalLabel();
-                String perlContext = getPerlContext();
+                String perlContext = getCodeContext();
 
                 codeGen = service.createCodeGenerator(process, statistics, trace, perlInterpreter, perlLib,
                         perlContext, currentPerlProject);
@@ -185,13 +185,12 @@ public class PerlProcessor implements IProcessor {
         }
     }
 
-    /**
-     * DOC mhirt Comment method "getPerlContext".
-     * 
-     * @return
+ 
+    /* (non-Javadoc)
+     * @see org.talend.designer.runprocess.IProcessor#getCodeContext()
      */
-    public String getPerlContext() {
-        return getPerlProject().getLocation().append(getContextPath()).removeLastSegments(1).toOSString();
+    public String getCodeContext() {
+        return getCodeProject().getLocation().append(getContextPath()).removeLastSegments(1).toOSString();
     }
 
     /**
@@ -244,13 +243,11 @@ public class PerlProcessor implements IProcessor {
     public IPath getContextPath() {
         return this.contextPath;
     }
-
-    /**
-     * Getter for perlProject.
-     * 
-     * @return the perlProject
+  
+    /* (non-Javadoc)
+     * @see org.talend.designer.runprocess.IProcessor#getCodeProject()
      */
-    public IProject getPerlProject() {
+    public IProject getCodeProject() {
         return this.perlProject;
     }
 

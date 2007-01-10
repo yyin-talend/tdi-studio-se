@@ -109,8 +109,8 @@ public class Processor {
             throw new ProcessorException(Messages.getString("Processor.perlModuleNotFound")); //$NON-NLS-1$
         }
         String perlLibOption = perlLib != null && perlLib.length() > 0 ? "-I" + perlLib : ""; //$NON-NLS-1$ //$NON-NLS-2$
-        IPath absCodePath = plProcessor.getPerlProject().getLocation().append(plProcessor.getCodePath());
-        IPath absContextPath = plProcessor.getPerlProject().getLocation().append(plProcessor.getContextPath());
+        IPath absCodePath = plProcessor.getCodeProject().getLocation().append(plProcessor.getCodePath());
+        IPath absContextPath = plProcessor.getCodeProject().getLocation().append(plProcessor.getContextPath());
         String perlLibCtxOption = "-I" + absContextPath.removeLastSegments(1).toOSString(); //$NON-NLS-1$
         // Added by ftang
         String perlModuleDirectoryOption;
@@ -143,7 +143,7 @@ public class Processor {
 
         // Create LaunchConfiguration
         ILaunchManager launchManager = DebugPlugin.getDefault().getLaunchManager();
-        String projectName = plProcessor.getPerlProject().getName();
+        String projectName = plProcessor.getCodeProject().getName();
         ILaunchConfigurationType[] configType = launchManager.getLaunchConfigurationTypes();
         ILaunchConfigurationType type = null;
         for (int i = 0; type == null && i < configType.length; i++) {

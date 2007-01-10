@@ -187,13 +187,11 @@ public class JavaProcessor implements IProcessor {
         }
     }
 
-    /**
-     * DOC mhirt Comment method "getPerlContext".
-     * 
-     * @return
+    /* (non-Javadoc)
+     * @see org.talend.designer.runprocess.IProcessor#getCodeContext()
      */
-    public String getPerlContext() {
-        return getPerlProject().getLocation().append(getContextPath()).removeLastSegments(1).toOSString();
+    public String getCodeContext() {
+        return getCodeProject().getLocation().append(getContextPath()).removeLastSegments(1).toOSString();
     }
 
     /**
@@ -247,12 +245,10 @@ public class JavaProcessor implements IProcessor {
         return this.contextPath;
     }
 
-    /**
-     * Getter for perlProject.
-     * 
-     * @return the perlProject
+    /* (non-Javadoc)
+     * @see org.talend.designer.runprocess.IProcessor#getCodeProject()
      */
-    public IProject getPerlProject() {
+    public IProject getCodeProject() {
         return this.perlProject;
     }
 
