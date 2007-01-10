@@ -22,10 +22,14 @@
 package org.talend.repository.ui.actions;
 
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.IDialogSettings;
+import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 import org.eclipse.ui.wizards.datatransfer.ExternalProjectImportWizard;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.repository.ui.ERepositoryImages;
@@ -36,7 +40,7 @@ import org.talend.repository.ui.ERepositoryImages;
  * $Id: RefreshAction.java 824 2006-12-01 15:49:55 +0000 (ven., 01 déc. 2006) smallet $
  * 
  */
-public final class ImportProjectsAction extends Action {
+public final class ImportProjectsAction extends Action implements IWorkbenchWindowActionDelegate {
 
     private static final String ACTION_TITLE = "Import projects";
 
@@ -46,18 +50,19 @@ public final class ImportProjectsAction extends Action {
 
     private static ImportProjectsAction singleton;
 
+    public ImportProjectsAction() {
+        super();
+        this.setText(ACTION_TITLE);
+        this.setToolTipText(ACTION_TOOLTIP);
+        this.setImageDescriptor(ImageProvider.getImageDesc(ERepositoryImages.IMPORT_PROJECTS_ACTION));
+        singleton = this;
+    }
+
     public static ImportProjectsAction getInstance() {
         if (singleton == null) {
             singleton = new ImportProjectsAction();
         }
         return singleton;
-    }
-
-    private ImportProjectsAction() {
-        super();
-        this.setText(ACTION_TITLE);
-        this.setToolTipText(ACTION_TOOLTIP);
-        this.setImageDescriptor(ImageProvider.getImageDesc(ERepositoryImages.IMPORT_PROJECTS_ACTION));
     }
 
     public void run() {
@@ -75,5 +80,18 @@ public final class ImportProjectsAction extends Action {
         dialog.create();
 
         dialog.open();
+    }
+
+    public void dispose() {
+    }
+
+    public void init(IWorkbenchWindow window) {
+    }
+
+    public void run(IAction action) {
+        run();
+    }
+
+    public void selectionChanged(IAction action, ISelection selection) {
     }
 }

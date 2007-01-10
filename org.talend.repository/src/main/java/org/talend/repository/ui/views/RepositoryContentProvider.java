@@ -23,6 +23,7 @@ package org.talend.repository.ui.views;
 
 import java.util.List;
 
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.ITreeContentProvider;
@@ -64,6 +65,8 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
 
     private IRepositoryView view;
 
+    private RepositoryNode root;
+
     public RepositoryContentProvider(IRepositoryView view) {
         super();
         this.view = view;
@@ -99,8 +102,32 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
         return !((RepositoryNode) parent).getChildren().isEmpty();
     }
 
+    // TODO SML Remove
+    // public RepositoryNode getElement(IPath path, ERepositoryObjectType type) {
+    // for (RepositoryNode currentNode : root.getChildren()) {
+    // if (currentNode.getType() == ENodeType.STABLE_SYSTEM_FOLDER) {
+    // return getElement(path, currentNode);
+    // }
+    // }
+    // return null;
+    // }
+    //
+    // private RepositoryNode getElement(IPath path, RepositoryNode node) {
+    // String folder = path.segment(0);
+    // for (RepositoryNode currentNode : node.getChildren()) {
+    // if (currentNode.getType() == ENodeType.SIMPLE_FOLDER && currentNode.getLabel().equals(folder)) {
+    // if (path.segmentCount() == 1) {
+    // return currentNode;
+    // } else {
+    // getElement(path.removeFirstSegments(1), currentNode);
+    // }
+    // }
+    // }
+    // return null;
+    // }
+
     private void initialize() {
-        RepositoryNode root = view.getRoot();
+        root = view.getRoot();
         List<RepositoryNode> nodes = root.getChildren();
 
         IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();

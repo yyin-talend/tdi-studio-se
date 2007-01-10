@@ -92,7 +92,7 @@ public final class ImportDemoProjectAction extends Action {
             operation.setContext(shell);
             operation.run(null);
 
-            MessageDialog.openConfirm(shell, "Demo project imported",
+            MessageDialog.openInformation(shell, "Demo project imported",
                     "Demo project has been successfully imported in your workspace");
         } catch (IOException e) {
             MessageBoxExceptionHandler.process(e, shell);

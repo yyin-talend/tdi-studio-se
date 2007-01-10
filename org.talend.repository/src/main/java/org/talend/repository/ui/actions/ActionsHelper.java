@@ -44,7 +44,7 @@ public class ActionsHelper {
     private static final Comparator COMP = new ActionsLevelComparator();
 
     @SuppressWarnings("unchecked")
-    public static List<ITreeContextualAction> getActions() {
+    public static List<ITreeContextualAction> getRepositoryContextualsActions() {
         List<ITreeContextualAction> toReturn = new ArrayList<ITreeContextualAction>();
         ISimpleExtensionPoint actionExtensionPoint = new ExtensionPointImpl("org.talend.core.repositoryContextualsActions",
                 "Action", -1, -1);

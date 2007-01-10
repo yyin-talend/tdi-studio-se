@@ -80,7 +80,6 @@ import org.talend.repository.model.actions.MoveObjectAction;
 import org.talend.repository.ui.actions.ActionsHelper;
 import org.talend.repository.ui.actions.CopyAction;
 import org.talend.repository.ui.actions.DeleteAction;
-import org.talend.repository.ui.actions.ImportProjectsAction;
 import org.talend.repository.ui.actions.PasteAction;
 import org.talend.repository.ui.actions.RefreshAction;
 import org.talend.repository.ui.actions.RepositoryDoubleClickAction;
@@ -105,8 +104,6 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
     private Action doubleClickAction;
 
     private Action refreshAction;
-
-    private Action importAction;
 
     private Listener dragDetectListener;
 
@@ -266,13 +263,11 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
     private void makeActions() {
         IHandlerService handlerService = (IHandlerService) getSite().getService(IHandlerService.class);
 
-        importAction = ImportProjectsAction.getInstance();
-
         refreshAction = new RefreshAction(this);
         IHandler handler1 = new ActionHandler(refreshAction);
         handlerService.activateHandler(refreshAction.getActionDefinitionId(), handler1);
 
-        contextualsActions = ActionsHelper.getActions();
+        contextualsActions = ActionsHelper.getRepositoryContextualsActions();
         for (ITreeContextualAction action : contextualsActions) {
             if (action.getActionDefinitionId() != null) {
                 handler1 = new ActionHandler(action);
@@ -335,7 +330,6 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
 
     private void fillLocalToolBar(IToolBarManager manager) {
         manager.add(refreshAction);
-        manager.add(importAction);
     }
 
     @Override
@@ -366,7 +360,9 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
 
     public void refresh(Object object) {
         refresh();
-        viewer.setExpandedState(object, true);
+        if (object != null) {
+            viewer.setExpandedState(object, true);
+        }
     }
 
     public void expand(Object object) {
