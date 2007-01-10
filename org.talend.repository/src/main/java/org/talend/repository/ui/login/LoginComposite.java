@@ -102,6 +102,10 @@ public class LoginComposite extends Composite {
 
     private Combo portCombo;
 
+    private Combo dbLoginCombo;
+
+    private Combo dbPasswordCombo;
+
     private Combo userCombo;
 
     private Text passwordText;
@@ -149,10 +153,10 @@ public class LoginComposite extends Composite {
         formBody.setLayout(layout);
 
         // Blank
-        Label blankLabel = toolkit.createLabel(formBody, null);
-        GridData blankGrid = new GridData(GridData.FILL_HORIZONTAL);
-        blankGrid.horizontalSpan = 9;
-        blankLabel.setLayoutData(blankGrid);
+        // Label blankLabel = toolkit.createLabel(formBody, null);
+        // GridData blankGrid = new GridData(GridData.FILL_HORIZONTAL);
+        // blankGrid.horizontalSpan = 9;
+        // blankLabel.setLayoutData(blankGrid);
 
         // Line 1
         // Repository
@@ -213,6 +217,26 @@ public class LoginComposite extends Composite {
         GridData contextGrid = new GridData(GridData.FILL_HORIZONTAL);
         contextGrid.horizontalSpan = 7;
         contextCombo.setLayoutData(contextGrid);
+
+        // Line 3bis
+        // Db login
+        toolkit.createLabel(formBody, "Login");
+        dbLoginCombo = new Combo(formBody, SWT.BORDER);
+        toolkit.adapt(dbLoginCombo);
+        GridData dbLoginGrid = new GridData(GridData.FILL_HORIZONTAL);
+        dbLoginGrid.horizontalSpan = 4;
+        dbLoginCombo.setLayoutData(dbLoginGrid);
+
+        // Db password
+        toolkit.createLabel(formBody, "Password");
+        dbPasswordCombo = new Combo(formBody, SWT.BORDER);
+        toolkit.adapt(dbPasswordCombo);
+        GridData dbPasswordGrid = new GridData(GridData.FILL_HORIZONTAL);
+        dbPasswordGrid.horizontalSpan = 2;
+        dbPasswordCombo.setLayoutData(dbPasswordGrid);
+
+        // Blank
+        toolkit.createLabel(formBody, null);
 
         // Line 4
         // User
@@ -356,6 +380,14 @@ public class LoginComposite extends Composite {
         portCombo.setItems(ports);
         selectLast(prefManipulator.getLastPort(), portCombo);
 
+        String[] dblogins = prefManipulator.readDblogins();
+        dbLoginCombo.setItems(dblogins);
+        selectLast(prefManipulator.getLastDblogin(), dbLoginCombo);
+
+        String[] dbpasswords = prefManipulator.readDbpasswords();
+        dbPasswordCombo.setItems(dbpasswords);
+        selectLast(prefManipulator.getLastDbpassword(), dbPasswordCombo);
+
         projectViewer.getControl().setEnabled(false);
 
         String[] users = prefManipulator.readUsers();
@@ -434,6 +466,8 @@ public class LoginComposite extends Composite {
         });
         serverCombo.addModifyListener(modifyListenerServerCombo);
         portCombo.addModifyListener(modifyListenerServerCombo);
+        dbLoginCombo.addModifyListener(modifyListenerServerCombo);
+        dbPasswordCombo.addModifyListener(modifyListenerServerCombo);
         contextCombo.addModifyListener(modifyListenerServerCombo);
         userCombo.addModifyListener(modifyListenerServerCombo);
         passwordText.addModifyListener(modifyListener);
@@ -564,6 +598,8 @@ public class LoginComposite extends Composite {
         String context = getContext();
         User user = getUser();
         RepositoryContext repositoryContext = new RepositoryContext(server, portAsNumber, context, user);
+        repositoryContext.setDbLogin(getDblogin());
+        repositoryContext.setDbPassword(getDbpassword());
         repositoryContext.setProject(getProject());
         return repositoryContext;
     }
@@ -659,6 +695,14 @@ public class LoginComposite extends Composite {
         return portCombo.getText();
     }
 
+    public String getDblogin() {
+        return dbLoginCombo.getText();
+    }
+
+    public String getDbpassword() {
+        return dbPasswordCombo.getText();
+    }
+
     /**
      * DOC mhirt Comment method "getPortAsNumber".
      * 
@@ -748,6 +792,10 @@ public class LoginComposite extends Composite {
         contextCombo.setBackground(GREY_COLOR);
         portCombo.setEnabled(false);
         portCombo.setBackground(GREY_COLOR);
+        dbLoginCombo.setEnabled(false);
+        dbLoginCombo.setBackground(GREY_COLOR);
+        dbPasswordCombo.setEnabled(false);
+        dbPasswordCombo.setBackground(GREY_COLOR);
         passwordText.setText("");
         passwordText.setEnabled(false);
         passwordText.setEditable(false);
@@ -766,6 +814,10 @@ public class LoginComposite extends Composite {
         contextCombo.setBackground(WHITE_COLOR);
         portCombo.setEnabled(true);
         portCombo.setBackground(WHITE_COLOR);
+        dbLoginCombo.setEnabled(true);
+        dbLoginCombo.setBackground(WHITE_COLOR);
+        dbPasswordCombo.setEnabled(true);
+        dbPasswordCombo.setBackground(WHITE_COLOR);
         passwordText.setEnabled(true);
         passwordText.setEditable(true);
         passwordText.setBackground(WHITE_COLOR);

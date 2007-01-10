@@ -28,6 +28,7 @@ import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
@@ -104,6 +105,7 @@ public class LoginDialog extends TitleAreaDialog {
         layout.horizontalSpacing = 0;
         layout.verticalSpacing = 0;
         container.setLayout(layout);
+        container.setBackground(new Color(null, 0, 0, 0));
 
         new ImageCanvas(container, "icons/login_v.jpg"); //$NON-NLS-1$
 
@@ -173,6 +175,8 @@ public class LoginDialog extends TitleAreaDialog {
         prefManipulator.setLastServer(loginComposite.getServer());
         prefManipulator.setLastContext(loginComposite.getContext());
         prefManipulator.setLastPort(loginComposite.getPort());
+        prefManipulator.setLastDblogin(loginComposite.getDblogin());
+        prefManipulator.setLastDbpassword(loginComposite.getDbpassword());
         prefManipulator.setLastRepository(loginComposite.getRepository().getClass().getName());
         prefManipulator.setLastProject(project.getLabel());
         prefManipulator.setLastUser(loginComposite.getUser().getLogin());
@@ -181,6 +185,8 @@ public class LoginDialog extends TitleAreaDialog {
             prefManipulator.addServer(loginComposite.getServer());
             prefManipulator.addContext(loginComposite.getContext());
             prefManipulator.addPort(loginComposite.getPort());
+            prefManipulator.addDblogin(loginComposite.getDblogin());
+            prefManipulator.addDbpassword(loginComposite.getDbpassword());
         }
         prefManipulator.addUser(loginComposite.getUser().getLogin());
 
