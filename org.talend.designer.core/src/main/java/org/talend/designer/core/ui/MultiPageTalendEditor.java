@@ -146,7 +146,7 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
         try {
             plProcessor.initPaths(process.getContextManager().getDefaultContext());
             IFile codeFile = ResourcesPlugin.getWorkspace().getRoot().getFile(
-                    plProcessor.getPerlProject().getFullPath().append(plProcessor.getCodePath()));
+                    plProcessor.getCodeProject().getFullPath().append(plProcessor.getCodePath()));
             if (!codeFile.exists()) {
                 // Create empty one
                 try {
