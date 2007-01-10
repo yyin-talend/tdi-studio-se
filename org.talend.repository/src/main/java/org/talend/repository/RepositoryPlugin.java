@@ -30,6 +30,7 @@ import org.talend.core.GlobalServiceRegister;
 import org.talend.core.context.Context;
 import org.talend.designer.codegen.perlmodule.IPerlModuleService;
 import org.talend.designer.core.IDesignerCoreService;
+import org.talend.repository.model.IRepositoryService;
 
 /**
  * DOC smallet class global comment. Detailled comment <br/>
@@ -91,6 +92,10 @@ public class RepositoryPlugin extends AbstractUIPlugin {
 
     public IDesignerCoreService getDesignerCoreService() {
         return (IDesignerCoreService) GlobalServiceRegister.getDefault().getService(IDesignerCoreService.class);
+    }
+
+    public IRepositoryService getRepositoryService() {
+        return (IRepositoryService) GlobalServiceRegister.getDefault().getService(IRepositoryService.class);
     }
 
 }

@@ -61,4 +61,18 @@ public class RepositoryService implements IRepositoryService {
         return RepositoryNodeUtilities.getPath(node);
     }
 
+    ChangeProcessor changeProcessor = new ChangeProcessor();
+
+    public void registerRepositoryChangedListener(IRepositoryChangedListener listener) {
+        changeProcessor.addRepositoryChangedListener(listener);
+    }
+
+    public void removeRepositoryChangedListener(IRepositoryChangedListener listener) {
+        changeProcessor.removeRepositoryChangedListener(listener);
+    }
+
+    public void repositoryChanged(RepositoryElementDelta delta) {
+        changeProcessor.repositoryChanged(delta);
+    }
+
 }

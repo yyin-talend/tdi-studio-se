@@ -42,6 +42,8 @@ import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.ui.images.ECoreImage;
+import org.talend.repository.RepositoryElementDelta;
+import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
@@ -176,6 +178,8 @@ public class DatabaseWizard extends RepositoryWizard implements INewWizard {
                 log.error(Messages.getString("CommonWizard.persistenceException") + "\n" + detailError);
                 return false;
             }
+            RepositoryPlugin.getDefault().getRepositoryService().repositoryChanged(new RepositoryElementDelta(repositoryObject));
+
             return true;
         } else {
             return false;

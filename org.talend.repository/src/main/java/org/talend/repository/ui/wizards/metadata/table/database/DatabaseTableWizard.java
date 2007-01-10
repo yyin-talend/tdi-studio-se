@@ -30,6 +30,8 @@ import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.swt.dialogs.ErrorDialogWidthDetailArea;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.properties.ConnectionItem;
+import org.talend.repository.RepositoryElementDelta;
+import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
@@ -116,6 +118,7 @@ public class DatabaseTableWizard extends RepositoryWizard implements INewWizard 
         if (tableWizardpage.isPageComplete()) {
             saveMetaData();
             closeLockStrategy();
+            RepositoryPlugin.getDefault().getRepositoryService().repositoryChanged(new RepositoryElementDelta(repositoryObject));
             return true;
         } else {
             return false;
