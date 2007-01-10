@@ -26,6 +26,7 @@ import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.IExternalNode;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.editor.connections.Connection;
+import org.talend.designer.core.ui.editor.process.Process;
 
 /**
  * Command that change the label of a connection. <br/>
@@ -75,6 +76,7 @@ public class ChangeConnTextCommand extends Command {
         if (externalNode != null) {
             externalNode.renameOutputConnection(oldName, newName);
         }
+        ((Process) connection.getSource().getProcess()).checkProcess();
     }
 
     public void redo() {
@@ -98,5 +100,6 @@ public class ChangeConnTextCommand extends Command {
         if (externalNode != null) {
             externalNode.renameOutputConnection(newName, oldName);
         }
+        ((Process) connection.getSource().getProcess()).checkProcess();
     }
 }
