@@ -94,9 +94,11 @@ import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
 import org.talend.designer.core.model.utils.emf.talendfile.DocumentRoot;
 import org.talend.designer.core.model.utils.emf.talendfile.ElementParameterType;
 import org.talend.designer.core.model.utils.emf.talendfile.ElementValueType;
+import org.talend.designer.core.model.utils.emf.talendfile.JobType;
 import org.talend.designer.core.model.utils.emf.talendfile.MetadataType;
 import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
 import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
+import org.talend.designer.core.model.utils.emf.talendfile.RequiredType;
 import org.talend.designer.core.model.utils.emf.talendfile.TalendFileFactory;
 import org.talend.designer.core.model.utils.emf.talendfile.util.TalendFileResourceImpl;
 import org.talend.designer.core.ui.MultiPageTalendEditor;
@@ -485,12 +487,35 @@ public class Process extends Element implements IProcess {
 
     @SuppressWarnings("unchecked")
     private void saveElementParameters(TalendFileFactory fileFact, List<? extends IElementParameter> paramList,
-            EList listParamType) {
+            EList listParamType, ProcessType process) {
         IElementParameter param;
         ElementParameterType pType;
 
         for (int j = 0; j < paramList.size(); j++) {
             param = paramList.get(j);
+            if (param.getName().equals(EParameterName.PROCESS_TYPE_PROCESS.getName())) {
+                // if this parameter is defined in a component, then we add a dependancy to this job.
+                RequiredType rType = process.getRequired();
+                if (rType == null) {
+                    rType = fileFact.createRequiredType();
+                    process.setRequired(rType);
+                }
+                JobType jType = fileFact.createJobType();
+                String jobName;
+                jobName = ((String) param.getValue()).replace("'", "");
+                jType.setName(jobName);
+                String contextName = "";
+                boolean found = false;
+                for (int i = 0; i < paramList.size() && !found; i++) {
+                    IElementParameter contextParam = paramList.get(i);
+                    if (contextParam.getName().equals(EParameterName.PROCESS_TYPE_CONTEXT.getName())) {
+                        contextName = ((String) contextParam.getValue()).replace("'", "");
+                        found = true;
+                    }
+                }
+                jType.setContext(contextName);
+                rType.getJob().add(jType);
+            }
             if ((!param.isReadOnly()) || param.getName().equals(EParameterName.UNIQUE_NAME.getName())
                     || param.getName().equals(EParameterName.VERSION.getName())) {
                 pType = fileFact.createElementParameterType();
@@ -620,23 +645,23 @@ public class Process extends Element implements IProcess {
         // getPropertyValue(EParameterName.PURPOSE.getName()));
         // process.setDescription((String)
         // getPropertyValue(EParameterName.DESCRIPTION.getName()));
-        
-//      logs are not used anymore
-//        LogsType lType = fileFact.createLogsType();
-//        LogToFileType lFileType = fileFact.createLogToFileType();
-//        lFileType.setFilename((String) getPropertyValue(EParameterName.LOG_FILENAME.getName()));
-//        lFileType.setLevel(new Integer((String) getPropertyValue(EParameterName.LEVEL_LOG_TO_FILE.getName())));
-//        lFileType.setSelected((Boolean) getPropertyValue(EParameterName.LOG_TO_FILE.getName()));
-//        lType.setLogToFile(lFileType);
-//        LogToDatabaseType lDBType = fileFact.createLogToDatabaseType();
-//        lDBType.setLevel(new Integer((String) getPropertyValue(EParameterName.LEVEL_LOG_TO_DB.getName())));
-//        lDBType.setSelected((Boolean) getPropertyValue(EParameterName.LOG_TO_DB.getName()));
-//        lType.setLogToDatabase(lDBType);
-//        LogToStdOutType lStdOutType = fileFact.createLogToStdOutType();
-//        lStdOutType.setLevel(new Integer((String) getPropertyValue(EParameterName.LEVEL_LOG_TO_STDOUT.getName())));
-//        lStdOutType.setSelected((Boolean) getPropertyValue(EParameterName.LOG_TO_STDOUT.getName()));
-//        lType.setLogToStdOut(lStdOutType);
-//        process.setLogs(lType);
+
+        // logs are not used anymore
+        // LogsType lType = fileFact.createLogsType();
+        // LogToFileType lFileType = fileFact.createLogToFileType();
+        // lFileType.setFilename((String) getPropertyValue(EParameterName.LOG_FILENAME.getName()));
+        // lFileType.setLevel(new Integer((String) getPropertyValue(EParameterName.LEVEL_LOG_TO_FILE.getName())));
+        // lFileType.setSelected((Boolean) getPropertyValue(EParameterName.LOG_TO_FILE.getName()));
+        // lType.setLogToFile(lFileType);
+        // LogToDatabaseType lDBType = fileFact.createLogToDatabaseType();
+        // lDBType.setLevel(new Integer((String) getPropertyValue(EParameterName.LEVEL_LOG_TO_DB.getName())));
+        // lDBType.setSelected((Boolean) getPropertyValue(EParameterName.LOG_TO_DB.getName()));
+        // lType.setLogToDatabase(lDBType);
+        // LogToStdOutType lStdOutType = fileFact.createLogToStdOutType();
+        // lStdOutType.setLevel(new Integer((String) getPropertyValue(EParameterName.LEVEL_LOG_TO_STDOUT.getName())));
+        // lStdOutType.setSelected((Boolean) getPropertyValue(EParameterName.LOG_TO_STDOUT.getName()));
+        // lType.setLogToStdOut(lStdOutType);
+        // process.setLogs(lType);
 
         EList nList = process.getNode();
         EList cList = process.getConnection();
@@ -670,7 +695,7 @@ public class Process extends Element implements IProcess {
             }
             listParamType = nType.getElementParameter();
             paramList = node.getElementParameters();
-            saveElementParameters(fileFact, paramList, listParamType);
+            saveElementParameters(fileFact, paramList, listParamType, process);
             listMetaType = nType.getMetadata();
             listMetaData = node.getMetadataList();
             for (int j = 0; j < listMetaData.size(); j++) {
@@ -692,7 +717,7 @@ public class Process extends Element implements IProcess {
                 cType.setMetaname(connec.getMetaName());
                 listParamType = cType.getElementParameter();
                 paramList = connec.getElementParameters();
-                saveElementParameters(fileFact, paramList, listParamType);
+                saveElementParameters(fileFact, paramList, listParamType, process);
                 cList.add(cType);
             }
             nList.add(nType);
@@ -792,23 +817,24 @@ public class Process extends Element implements IProcess {
         // process.getPurpose());
         // setPropertyValue(EParameterName.DESCRIPTION.getName(),
         // process.getDescription());
-        
+
         // logs are not used anymore
-//        LogsType lType = process.getLogs();
-//        LogToFileType lFileType = lType.getLogToFile();
-//        setPropertyValue(EParameterName.LOG_FILENAME.getName(), lFileType.getFilename());
-//        setPropertyValue(EParameterName.LEVEL_LOG_TO_FILE.getName(), new Integer(lFileType.getLevel()).toString());
-//        setPropertyValue(EParameterName.LOG_TO_FILE.getName(), new Boolean(lFileType.isSelected()));
-//        lType.setLogToFile(lFileType);
-//        LogToDatabaseType lDBType = lType.getLogToDatabase();
-//        setPropertyValue(EParameterName.LEVEL_LOG_TO_DB.getName(), new Integer(lDBType.getLevel()).toString());
-//        setPropertyValue(EParameterName.LOG_TO_DB.getName(), new Boolean(lDBType.isSelected()));
-//        lType.setLogToDatabase(lDBType);
-//        LogToStdOutType lStdOutType = lType.getLogToStdOut();
-//        setPropertyValue(EParameterName.LEVEL_LOG_TO_STDOUT.getName(), new Integer(lStdOutType.getLevel()).toString());
-//        setPropertyValue(EParameterName.LOG_TO_STDOUT.getName(), new Boolean(lStdOutType.isSelected()));
-//        lType.setLogToStdOut(lStdOutType);
-//        process.setLogs(lType);
+        // LogsType lType = process.getLogs();
+        // LogToFileType lFileType = lType.getLogToFile();
+        // setPropertyValue(EParameterName.LOG_FILENAME.getName(), lFileType.getFilename());
+        // setPropertyValue(EParameterName.LEVEL_LOG_TO_FILE.getName(), new Integer(lFileType.getLevel()).toString());
+        // setPropertyValue(EParameterName.LOG_TO_FILE.getName(), new Boolean(lFileType.isSelected()));
+        // lType.setLogToFile(lFileType);
+        // LogToDatabaseType lDBType = lType.getLogToDatabase();
+        // setPropertyValue(EParameterName.LEVEL_LOG_TO_DB.getName(), new Integer(lDBType.getLevel()).toString());
+        // setPropertyValue(EParameterName.LOG_TO_DB.getName(), new Boolean(lDBType.isSelected()));
+        // lType.setLogToDatabase(lDBType);
+        // LogToStdOutType lStdOutType = lType.getLogToStdOut();
+        // setPropertyValue(EParameterName.LEVEL_LOG_TO_STDOUT.getName(), new
+        // Integer(lStdOutType.getLevel()).toString());
+        // setPropertyValue(EParameterName.LOG_TO_STDOUT.getName(), new Boolean(lStdOutType.isSelected()));
+        // lType.setLogToStdOut(lStdOutType);
+        // process.setLogs(lType);
     }
 
     private List<String> uploadedNodeNames = null;
@@ -1337,7 +1363,7 @@ public class Process extends Element implements IProcess {
         }
         return true;
     }
-    
+
     /**
      * Check if the given name will be unique in the process. If another link already exists with that name, false will
      * be returned.

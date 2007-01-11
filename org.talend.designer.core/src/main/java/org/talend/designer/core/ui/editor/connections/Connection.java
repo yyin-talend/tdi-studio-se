@@ -121,6 +121,7 @@ public class Connection extends Element implements IConnection {
      */
     public void setName(String name) {
         String labelText;
+
         this.name = name;
 
         labelText = name;
@@ -136,6 +137,12 @@ public class Connection extends Element implements IConnection {
             if (!label.getLabelText().equals(labelText)) {
                 label.setLabelText(labelText);
             }
+        }
+
+        IMetadataTable table = getMetadataTable();
+        if (table != null) {
+            table.setTableName(name);
+            metaName = name;
         }
 
         firePropertyChange(NAME, null, name);
@@ -296,7 +303,10 @@ public class Connection extends Element implements IConnection {
      * @see org.talend.designer.core.ui.editor.connections.IDesignerConnection#getMetadataTable()
      */
     public IMetadataTable getMetadataTable() {
-        return source.getMetadataTable(metaName);
+        if (source != null) {
+            return source.getMetadataTable(metaName);
+        }
+        return null;
     }
 
     public void setMetaName(String metaName) {
