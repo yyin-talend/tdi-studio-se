@@ -139,10 +139,12 @@ public class Connection extends Element implements IConnection {
             }
         }
 
-        IMetadataTable table = getMetadataTable();
-        if (table != null) {
-            table.setTableName(name);
-            metaName = name;
+        if (source != null && (lineStyle == EConnectionType.FLOW_MAIN || lineStyle == EConnectionType.FLOW_REF)) {
+            if (source.getConnectorFromType(lineStyle).isBuiltIn()) {
+                IMetadataTable table = getMetadataTable();
+                table.setTableName(name);
+                metaName = name;
+            }
         }
 
         firePropertyChange(NAME, null, name);
