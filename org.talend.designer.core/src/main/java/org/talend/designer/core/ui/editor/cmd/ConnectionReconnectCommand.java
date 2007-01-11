@@ -378,7 +378,7 @@ public class ConnectionReconnectCommand extends Command {
             connector.setCurLinkNbInput(connector.getCurLinkNbInput() - 1);
         }
         connection.reconnect(oldSource, oldTarget);
-        ((Process) newSource.getProcess()).checkStartNodes();
+        ((Process) oldSource.getProcess()).checkStartNodes();
         ((Process) oldSource.getProcess()).checkProcess();
     }
 
