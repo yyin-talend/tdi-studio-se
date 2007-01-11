@@ -22,8 +22,6 @@
 package org.talend.designer.core.model.components;
 
 import java.io.File;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -35,10 +33,7 @@ import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.talend.commons.exception.ExceptionHandler;
-import org.talend.commons.exception.SystemException;
-import org.talend.commons.ui.image.EImage;
-import org.talend.commons.ui.image.ImageProvider;
+import org.talend.commons.exception.BusinessException;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
@@ -90,11 +85,11 @@ public class EmfComponent implements IComponent {
 
     private COMPONENTType compType;
 
-    private ImageDescriptor image32;
+    private ImageDescriptor icon32;
 
-    private ImageDescriptor image24;
+    private ImageDescriptor icon24;
 
-    private ImageDescriptor image16;
+    private ImageDescriptor icon16;
 
     private ECodeLanguage codeLanguage;
 
@@ -110,24 +105,25 @@ public class EmfComponent implements IComponent {
 
     private IMultipleComponentManager multipleComponentManager;
 
-    public EmfComponent(File file) throws SystemException {
+    private String messagesFile;
+
+    public EmfComponent(File file, String messagesFile) throws BusinessException {
         this.file = file;
+        this.messagesFile = messagesFile;
         load();
-        codeLanguage = ((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY))
-                .getProject().getLanguage();
+        codeLanguage = ((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY)).getProject()
+                .getLanguage();
     }
 
     private String getTranslatedValue(final String nameValue) {
-
         String returnValue = nameValue;
-        String compName = getName();
-        ResourceBundle resourceBundle = ResourceBundle.getBundle("components." + compName + ".component");
+        ResourceBundle resourceBundle = ResourceBundle.getBundle(messagesFile);
         returnValue = Messages.getString(nameValue, resourceBundle);
         return returnValue;
     }
 
     @SuppressWarnings("unchecked")//$NON-NLS-1$
-    private void load() throws SystemException {
+    private void load() throws BusinessException {
         if (isLoaded == null) {
             try {
                 ResourceSet resourceSet = new ResourceSetImpl();
@@ -150,7 +146,7 @@ public class EmfComponent implements IComponent {
                 isLoaded = true;
             } catch (Exception e) {
                 isLoaded = false;
-                throw new SystemException("Cannot load component " + file.getName(), e);
+                throw new BusinessException("Cannot load component " + file.getName(), e);
             }
         }
     }
@@ -613,8 +609,7 @@ public class EmfComponent implements IComponent {
                 param.setValue("");
             }
 
-            if (!param.getField().equals(EParameterFieldType.TABLE)
-                    && !param.getField().equals(EParameterFieldType.CLOSED_LIST)) {
+            if (!param.getField().equals(EParameterFieldType.TABLE) && !param.getField().equals(EParameterFieldType.CLOSED_LIST)) {
                 List<DEFAULTType> listDefault = xmlParam.getDEFAULT();
                 for (DEFAULTType defaultType : listDefault) {
                     IElementParameterDefaultValue defaultValue = new ElementParameterDefaultValue();
@@ -682,8 +677,8 @@ public class EmfComponent implements IComponent {
         }
     }
 
-    public void addItemsPropertyParameters(String paramName, ITEMSType items, ElementParameter param,
-            EParameterFieldType type, INode node) {
+    public void addItemsPropertyParameters(String paramName, ITEMSType items, ElementParameter param, EParameterFieldType type,
+            INode node) {
         ITEMType item;
         ElementParameter newParam;
 
@@ -742,8 +737,8 @@ public class EmfComponent implements IComponent {
                 case CLOSED_LIST:
                 case COLUMN_LIST:
                 case PREV_COLUMN_LIST:
-                    addItemsPropertyParameters(paramName + ".ITEM." + item.getNAME(), item.getITEMS(), newParam,
-                            currentField, node);
+                    addItemsPropertyParameters(paramName + ".ITEM." + item.getNAME(), item.getITEMS(), newParam, currentField,
+                            node);
                     break;
                 case CHECK:
                     newParam.setValue(new Boolean(item.getVALUE()));
@@ -804,49 +799,6 @@ public class EmfComponent implements IComponent {
             }
         }
         return multiple;
-    }
-
-    private ImageDescriptor getImage(String name) {
-        URL url;
-        try {
-            url = new URL(file.getParentFile().toURL() + name);
-            return ImageDescriptor.createFromURL(url);
-        } catch (MalformedURLException e) {
-            ExceptionHandler.process(new SystemException("Cannot load component icon " + name, e));
-            return ImageProvider.getImageDesc(EImage.DEFAULT_IMAGE);
-        }
-    }
-
-    public ImageDescriptor getIcon32() {
-        if (image32 == null) {
-            image32 = getImage(compType.getHEADER().getICON32());
-        }
-        return image32;
-    }
-
-    public ImageDescriptor getIcon24() {
-        if (image24 == null) {
-            if (compType.getHEADER().getICON24() != null && compType.getHEADER().getICON24().length() > 0) {
-                image24 = getImage(compType.getHEADER().getICON24());
-            } else {
-                image24 = getIcon32(); // Temporary while 24 pix components icons aren't available
-                // image24 = ImageDescriptor.createFromImageData(getIcon32().getImageData().scaledTo(24, 24));
-            }
-        }
-
-        return image24;
-    }
-
-    public ImageDescriptor getIcon16() {
-        if (image16 == null) {
-            if (compType.getHEADER().getICON16() != null && compType.getHEADER().getICON16().length() > 0) {
-                image16 = getImage(compType.getHEADER().getICON16());
-            } else {
-                image16 = ImageDescriptor.createFromImageData(getIcon32().getImageData().scaledTo(16, 16));
-            }
-        }
-
-        return image16;
     }
 
     public String getName() {
@@ -943,8 +895,7 @@ public class EmfComponent implements IComponent {
                     msg = Messages.getString("modules.required");
                 }
 
-                ModuleNeeded componentImportNeeds = new ModuleNeeded(this, importType.getMODULE(), msg, importType
-                        .isREQUIRED());
+                ModuleNeeded componentImportNeeds = new ModuleNeeded(this, importType.getMODULE(), msg, importType.isREQUIRED());
 
                 componentImportNeedsList.add(componentImportNeeds);
             }
@@ -1026,5 +977,59 @@ public class EmfComponent implements IComponent {
             return false;
         }
         return isLoaded;
+    }
+
+    /**
+     * Getter for icon16.
+     * 
+     * @return the icon16
+     */
+    public ImageDescriptor getIcon16() {
+        return this.icon16;
+    }
+
+    /**
+     * Sets the icon16.
+     * 
+     * @param icon16 the icon16 to set
+     */
+    public void setIcon16(ImageDescriptor icon16) {
+        this.icon16 = icon16;
+    }
+
+    /**
+     * Getter for icon24.
+     * 
+     * @return the icon24
+     */
+    public ImageDescriptor getIcon24() {
+        return this.icon24;
+    }
+
+    /**
+     * Sets the icon24.
+     * 
+     * @param icon24 the icon24 to set
+     */
+    public void setIcon24(ImageDescriptor icon24) {
+        this.icon24 = icon24;
+    }
+
+    /**
+     * Getter for icon32.
+     * 
+     * @return the icon32
+     */
+    public ImageDescriptor getIcon32() {
+        return this.icon32;
+    }
+
+    /**
+     * Sets the icon32.
+     * 
+     * @param icon32 the icon32 to set
+     */
+    public void setIcon32(ImageDescriptor icon32) {
+        this.icon32 = icon32;
     }
 }
