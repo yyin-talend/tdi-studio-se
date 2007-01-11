@@ -1,0 +1,58 @@
+<%@ jet 
+	package="org.talend.designer.codegen.translators" 
+	imports="
+		org.talend.core.model.process.INode 
+		org.talend.core.model.metadata.IMetadataTable
+		org.talend.core.model.metadata.IMetadataColumn
+		org.talend.core.model.process.IConnection
+		org.talend.core.model.process.EConnectionType
+		org.talend.core.model.process.ElementParameterParser 
+		org.talend.designer.codegen.config.CodeGeneratorArgument
+		java.util.List
+	"
+	class="FileOutputDelimitedMain"
+%>
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+boolean stats = codeGenArgument.isStatistics();
+
+List<IMetadataTable> metadatas = node.getMetadataList();
+if ((metadatas!=null)&&(metadatas.size()>0)) {
+    IMetadataTable metadata = metadatas.get(0);
+    if (metadata!=null) {
+        String cid = metadata.getTableName();
+
+        String filename = ElementParameterParser.getValue(
+            node,
+            "__FILENAME__"
+        );
+        
+        String rowSeparator = ElementParameterParser.getValue(
+            node,
+            "__ROWSEPARATOR__"
+        );
+
+        String fieldSeparator = ElementParameterParser.getValue(
+            node,
+            "__FIELDSEPARATOR__"
+        );
+%>
+
+<%
+	List< ? extends IConnection> conns = node.getOutgoingConnections();
+	for (IConnection conn : conns) {
+		if (conn.getLineStyle().equals(EConnectionType.FLOW_MAIN)) {
+			for (IMetadataColumn column: metadata.getListColumns()) {
+%>
+	out<%=cid %>.write(<%=conn.getName() %>Struct.<%=column.getLabel() %>+ OUT_DELIM_<%=cid %>);
+<%
+			}
+		}
+	}
+%>
+	out<%=cid %>.write(<%=rowSeparator %>);
+<%
+    }
+}
+%>

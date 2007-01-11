@@ -1,0 +1,55 @@
+<%@ jet 
+	package="org.talend.designer.codegen.translators" 
+	imports="
+		org.talend.core.model.process.INode 
+		org.talend.core.model.process.ElementParameterParser 
+		org.talend.core.model.metadata.IMetadataTable 
+		org.talend.core.model.metadata.IMetadataColumn 
+		org.talend.core.model.process.IConnection
+		org.talend.core.model.process.EConnectionType
+		org.talend.designer.codegen.config.CodeGeneratorArgument
+		java.util.List
+	" 
+	class="FileInputDelimitedBegin" 
+%>
+
+<%
+	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+	INode node = (INode)codeGenArgument.getArgument();
+	boolean stats = codeGenArgument.isStatistics();
+	
+	List<IMetadataTable> metadatas = node.getMetadataList();
+	if ((metadatas!=null)&&(metadatas.size()>0)) {
+		IMetadataTable metadata = metadatas.get(0);
+		if (metadata!=null) {
+			String cid = metadata.getTableName();
+%>
+
+        final String IN_DELIM_<%=cid %> = <%=ElementParameterParser.getValue(node, "__FIELDSEPARATOR__") %>;
+        java.io.BufferedReader in<%=cid %> = null;
+        try {
+            in<%=cid %> = new java.io.BufferedReader(new java.io.FileReader(<%=ElementParameterParser.getValue(node, "__FILENAME__") %>));
+        } catch (java.io.IOException e) {
+        }
+
+        String str;
+        java.util.StringTokenizer strToken;
+        try {
+            while ((str = in<%=cid %>.readLine()) != null) {
+                strToken = new java.util.StringTokenizer(str.trim(), IN_DELIM_<%=cid %>);
+<%
+	List< ? extends IConnection> conns = node.getOutgoingConnections();
+	for (IConnection conn : conns) {
+		if (conn.getLineStyle().equals(EConnectionType.FLOW_MAIN)) {
+			for (IMetadataColumn column: metadata.getListColumns()) {
+%>
+	<%=conn.getName() %>Struct.<%=column.getLabel() %> = <%=((column.getTalendType().compareTo("int")==0)?"Integer.parseInt(":"") %>strToken.nextToken()<%=((column.getTalendType().compareTo("int")==0)?")":"") %>;
+<%
+			}
+		}
+	}
+%>
+ <%
+		}
+	}
+%>

@@ -1,0 +1,51 @@
+<%@ jet 
+package="org.talend.designer.codegen.translators" 
+imports="
+    org.talend.core.model.process.INode 
+    org.talend.core.model.process.ElementParameterParser
+    org.talend.core.model.metadata.IMetadataTable
+    org.talend.core.model.metadata.IMetadataColumn
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    java.util.List
+"
+class="FileOutputDelimitedBegin"
+%>
+
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+boolean stats = codeGenArgument.isStatistics();
+
+List<IMetadataTable> metadatas = node.getMetadataList();
+if ((metadatas!=null)&&(metadatas.size()>0)) {
+    IMetadataTable metadata = metadatas.get(0);
+    if (metadata!=null) {
+        String cid = metadata.getTableName();
+
+        String filename = ElementParameterParser.getValue(
+            node,
+            "__FILENAME__"
+        );
+        
+        String rowSeparator = ElementParameterParser.getValue(
+            node,
+            "__ROWSEPARATOR__"
+        );
+
+        String fieldSeparator = ElementParameterParser.getValue(
+            node,
+            "__FIELDSEPARATOR__"
+        );
+%>
+
+final String OUT_DELIM_<%=cid %> = <%=fieldSeparator %>;
+        java.io.BufferedWriter out<%=cid %> = null;
+        try {
+            out<%=cid %> = new java.io.BufferedWriter(new java.io.FileWriter(<%=filename %>));
+        } catch (java.io.IOException e) {
+        }
+
+<%
+    }
+}
+%>
