@@ -55,6 +55,7 @@ import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.prefs.ITalendCorePrefConstants;
+import org.talend.designer.codegen.ICodeGenerator;
 import org.talend.designer.codegen.ICodeGeneratorService;
 import org.talend.designer.runprocess.IProcessor;
 import org.talend.designer.runprocess.ProcessorException;
@@ -71,7 +72,7 @@ import org.talend.designer.runprocess.perl.PerlUtils;
 public class JavaProcessor implements IProcessor {
 
     public static final String JAVATIP = "//The function of generating Java code haven't achive yet"
-        + System.getProperty("line.separator") + "public class JavaTest extends Test {}";
+            + System.getProperty("line.separator") + "public class JavaTest extends Test {}";
 
     /** Process to be turned in PERL code. */
     private IProcess process;
@@ -125,7 +126,7 @@ public class JavaProcessor implements IProcessor {
             // Context.REPOSITORY_CONTEXT_KEY);
             // Project project = repositoryContext.getProject();
             //
-            // ICodeGenerator codeGen;
+            ICodeGenerator codeGen;
             ICodeGeneratorService service = RunProcessPlugin.getDefault().getCodeGeneratorService();
             service.createRoutineSynchronizer().syncAllRoutines();
             // if (perlProperties) {
@@ -138,17 +139,17 @@ public class JavaProcessor implements IProcessor {
             // currentPerlProject);
             //
             // } else {
-            // codeGen = service.createCodeGenerator(process, statistics, trace);
+            codeGen = service.createCodeGenerator(process, statistics, trace);
             // }
 
-            String processCode = JAVATIP;
+            String processCode = "";
             String processContext = "false";
-            // try {
-            // processCode = codeGen.generateProcessCode();
-            // processContext = codeGen.generateContextCode(context);
-            // } catch (SystemException e) {
-            // throw new ProcessorException(Messages.getString("Processor.generationFailed"), e); //$NON-NLS-1$
-            // }
+            try {
+                processCode = codeGen.generateProcessCode();
+                processContext = codeGen.generateContextCode(context);
+            } catch (SystemException e) {
+                throw new ProcessorException(Messages.getString("Processor.generationFailed"), e); //$NON-NLS-1$
+            }
 
             // Generating files
             IFile codeFile = perlProject.getFile(codePath);
