@@ -80,6 +80,10 @@ public class MultipleComponentManager implements IMultipleComponentManager {
         paramList.add(new MultipleComponentParameter(source, target));
     }
 
+    public void addValue(String target, String value) {
+        paramList.add(new MultipleComponentParameterValue(target, value));
+    }
+
     public void validateItems() {
         for (IMultipleComponentItem mainItem : itemList) {
             for (IMultipleComponentConnection connection : mainItem.getOutputConnections()) {

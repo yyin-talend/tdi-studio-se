@@ -92,7 +92,6 @@ public class DataProcess {
         dataNodeList.add(dataNode);
         dataNode.setActivate(graphicalNode.isActivate());
         dataNode.setStart(graphicalNode.isStart());
-//        dataNode.setComponentName(graphicalNode.getComponentName());
         dataNode.setMetadataList(graphicalNode.getMetadataList());
         dataNode.setPluginFullName(graphicalNode.getPluginFullName());
         dataNode.setElementParameters(graphicalNode.getElementParameters());
@@ -319,44 +318,60 @@ public class DataProcess {
         for (IMultipleComponentParameter param : multipleComponentManager.getParamList()) {
             INode sourceNode = null, targetNode = null;
             boolean sourceFound = false, targetFound = false;
-            if (param.getSourceComponent().equals("self")) {
-                sourceNode = graphicalNode;
-            } else {
-                for (int i = 0; i < itemList.size() && !sourceFound; i++) {
-                    if (itemList.get(i).getName().equals(param.getSourceComponent())) {
-                        sourceNode = itemsMap.get(itemList.get(i));
-                        sourceFound = true;
-                    }
-                }
-            }
             for (int i = 0; i < itemList.size() && !targetFound; i++) {
                 if (itemList.get(i).getName().equals(param.getTargetComponent())) {
                     targetNode = itemsMap.get(itemList.get(i));
                     targetFound = true;
                 }
             }
-            if ((sourceNode != null) && (targetNode != null)) {
-                sourceFound = false;
-                targetFound = false;
-                IElementParameter paramSource = null, paramTarget = null;
-                for (int i = 0; i < sourceNode.getElementParameters().size() && !sourceFound; i++) {
-                    if (sourceNode.getElementParameters().get(i).getName().equals(param.getSourceValue())) {
-                        paramSource = sourceNode.getElementParameters().get(i);
-                        sourceFound = true;
+            if (param.getSourceComponent() != null) { // target.value = source.value
+                if (param.getSourceComponent().equals("self")) {
+                    sourceNode = graphicalNode;
+                } else {
+                    for (int i = 0; i < itemList.size() && !sourceFound; i++) {
+                        if (itemList.get(i).getName().equals(param.getSourceComponent())) {
+                            sourceNode = itemsMap.get(itemList.get(i));
+                            sourceFound = true;
+                        }
                     }
                 }
+                if ((sourceNode != null) && (targetNode != null)) {
+                    sourceFound = false;
+                    targetFound = false;
+                    IElementParameter paramSource = null, paramTarget = null;
+                    for (int i = 0; i < sourceNode.getElementParameters().size() && !sourceFound; i++) {
+                        if (sourceNode.getElementParameters().get(i).getName().equals(param.getSourceValue())) {
+                            paramSource = sourceNode.getElementParameters().get(i);
+                            sourceFound = true;
+                        }
+                    }
 
-                for (int i = 0; i < targetNode.getElementParameters().size() && !targetFound; i++) {
-                    if (targetNode.getElementParameters().get(i).getName().equals(param.getTargetValue())) {
-                        paramTarget = targetNode.getElementParameters().get(i);
-                        targetFound = true;
+                    for (int i = 0; i < targetNode.getElementParameters().size() && !targetFound; i++) {
+                        if (targetNode.getElementParameters().get(i).getName().equals(param.getTargetValue())) {
+                            paramTarget = targetNode.getElementParameters().get(i);
+                            targetFound = true;
+                        }
+                    }
+                    if ((paramSource != null) && (paramTarget != null)) {
+                        paramTarget.setDefaultClosedListValue(paramSource.getDefaultClosedListValue());
+                        paramTarget.setListItemsDisplayCodeName(paramSource.getListItemsDisplayCodeName());
+                        paramTarget.setListItemsValue(paramSource.getListItemsValue());
+                        paramTarget.setValue(paramSource.getValue());
                     }
                 }
-                if ((paramSource != null) && (paramTarget != null)) {
-                    paramTarget.setDefaultClosedListValue(paramSource.getDefaultClosedListValue());
-                    paramTarget.setListItemsDisplayCodeName(paramSource.getListItemsDisplayCodeName());
-                    paramTarget.setListItemsValue(paramSource.getListItemsValue());
-                    paramTarget.setValue(paramSource.getValue());
+            } else {
+                if (param.getSourceValue() != null && targetFound) { // target.value = value
+                    targetFound = false;
+                    IElementParameter paramTarget = null;
+                    for (int i = 0; i < targetNode.getElementParameters().size() && !targetFound; i++) {
+                        if (targetNode.getElementParameters().get(i).getName().equals(param.getTargetValue())) {
+                            paramTarget = targetNode.getElementParameters().get(i);
+                            targetFound = true;
+                        }
+                    }
+                    if (paramTarget != null) {
+                        paramTarget.setValue(param.getSourceValue());
+                    }
                 }
             }
         }

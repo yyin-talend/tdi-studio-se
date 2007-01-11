@@ -56,7 +56,6 @@ import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IElementParameterDefaultValue;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.temp.ECodeLanguage;
-import org.talend.core.ui.images.ECoreImage;
 import org.talend.designer.codegen.perlmodule.ModuleNeeded;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.utils.emf.component.COLUMNType;
@@ -284,17 +283,17 @@ public class EmfComponent implements IComponent {
         param.setReadOnly(true);
         param.setShow(true);
         listParam.add(param);
-        
-//        param = new ElementParameter(node);
-//        param.setName(EParameterName.TRANSLATED_UNIQUE_NAME.getName());
-//        param.setValue("");
-//        param.setDisplayName(EParameterName.TRANSLATED_UNIQUE_NAME.getDisplayName());
-//        param.setField(EParameterFieldType.TEXT);
-//        param.setCategory(EComponentCategory.MAIN);
-//        param.setNumRow(1);
-//        param.setReadOnly(true);
-//        param.setShow(!getName().equals(getTranslatedName()));
-//        listParam.add(param);
+
+        // param = new ElementParameter(node);
+        // param.setName(EParameterName.TRANSLATED_UNIQUE_NAME.getName());
+        // param.setValue("");
+        // param.setDisplayName(EParameterName.TRANSLATED_UNIQUE_NAME.getDisplayName());
+        // param.setField(EParameterFieldType.TEXT);
+        // param.setCategory(EComponentCategory.MAIN);
+        // param.setNumRow(1);
+        // param.setReadOnly(true);
+        // param.setShow(!getName().equals(getTranslatedName()));
+        // listParam.add(param);
 
         param = new ElementParameter(node);
         param.setName(EParameterName.COMPONENT_NAME.getName());
@@ -306,7 +305,7 @@ public class EmfComponent implements IComponent {
         param.setReadOnly(true);
         param.setShow(false);
         listParam.add(param);
-        
+
         param = new ElementParameter(node);
         param.setName(EParameterName.TRANSLATED_COMPONENT_NAME.getName());
         param.setValue(getTranslatedName());
@@ -853,7 +852,7 @@ public class EmfComponent implements IComponent {
     public String getName() {
         return file.getParentFile().getName();
     }
-    
+
     public String getTranslatedName() {
         return getTranslatedValue(PROP_NAME);
     }
@@ -998,11 +997,20 @@ public class EmfComponent implements IComponent {
         for (int i = 0; i < listTempParamType.size(); i++) {
             TEMPLATEPARAMType templateParamType = (TEMPLATEPARAMType) listTempParamType.get(i);
 
-            String source, target;
-            source = templateParamType.getSOURCE();
-            target = templateParamType.getTARGET();
+            if ((templateParamType.getSOURCE() != null) && (templateParamType.getTARGET() != null)) {
+                String source, target;
+                source = templateParamType.getSOURCE();
+                target = templateParamType.getTARGET();
 
-            multipleComponentManager.addParam(source, target);
+                multipleComponentManager.addParam(source, target);
+            }
+            if ((templateParamType.getTARGET() != null) && (templateParamType.getVALUE() != null)) {
+                String value, target;
+                value = templateParamType.getVALUE();
+                target = templateParamType.getTARGET();
+
+                multipleComponentManager.addValue(target, value);
+            }
         }
 
         multipleComponentManager.validateItems();
