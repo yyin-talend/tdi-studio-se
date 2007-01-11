@@ -41,6 +41,8 @@ public class LightJetBean implements Serializable {
 
     private String version = "";
     
+    private String language = "";
+    
     private long crc = 0;
 
     /**
@@ -51,11 +53,12 @@ public class LightJetBean implements Serializable {
      * @param methodName
      * @param version
      */
-    public LightJetBean(String templateRelativeUri, String className, String methodName, String version, long crc) {
+    public LightJetBean(String templateRelativeUri, String className, String methodName, String version, String language, long crc) {
         this.templateRelativeUri = templateRelativeUri;
         this.className = className;
         this.methodName = methodName;
         this.version = version;
+        this.language = language;
         this.crc = crc;
     }
 
@@ -147,6 +150,24 @@ public class LightJetBean implements Serializable {
      */
     public void setCrc(long crc) {
         this.crc = crc;
+    }
+
+    
+    /**
+     * Getter for language.
+     * @return the language
+     */
+    public String getLanguage() {
+        return this.language;
+    }
+
+    
+    /**
+     * Sets the language.
+     * @param language the language to set
+     */
+    public void setLanguage(String language) {
+        this.language = language;
     }
     
     

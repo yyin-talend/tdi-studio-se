@@ -95,6 +95,7 @@ public class NodesSubTree {
         visitedNodesMainCode.put(node, false);
         visitedNodesBeginCode.put(node, false);
         visitedNodesEndCode.put(node, false);
+        nodes.add(node);
     }
 
     /**
@@ -182,5 +183,21 @@ public class NodesSubTree {
      */
     public List<String> getBeforeSubProcesses() {
         return this.beforeSubProcesses;
+    }
+    
+    /**
+     * Getter for nodes.
+     * @return the nodes
+     */
+    public List<INode> getNodes() {
+        return this.nodes;
+    }
+    
+    /**
+     * Sets the nodes.
+     * @param nodes the nodes to set
+     */
+    public void setNodes(List<INode> nodes) {
+        this.nodes = nodes;
     }
 }

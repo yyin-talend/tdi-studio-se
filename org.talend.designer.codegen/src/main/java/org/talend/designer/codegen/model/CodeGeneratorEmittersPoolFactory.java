@@ -57,6 +57,7 @@ import org.talend.core.model.temp.ECodePart;
 import org.talend.designer.codegen.CodeGeneratorActivator;
 import org.talend.designer.codegen.config.JetBean;
 import org.talend.designer.codegen.config.LightJetBean;
+import org.talend.designer.codegen.config.TalendJetEmitter;
 import org.talend.designer.codegen.config.TemplateUtil;
 import org.talend.repository.model.ComponentsFactoryProvider;
 import org.talend.repository.model.ExternalNodesFactory;
@@ -125,7 +126,7 @@ public final class CodeGeneratorEmittersPoolFactory {
     private static JetBean initializeUtilTemplate(TemplateUtil template, ECodeLanguage codeLanguage) {
         JetBean jetBean = new JetBean(CodeGeneratorActivator.PLUGIN_ID, TemplateUtil.RESOURCES_DIRECTORY
                 + TemplateUtil.DIR_SEP + template.getResourceName() + TemplateUtil.EXT_SEP
-                + codeLanguage.getExtension() + TemplateUtil.TEMPLATE_EXT, template.getVersion());
+                + codeLanguage.getExtension() + TemplateUtil.TEMPLATE_EXT, template.getResourceName(), template.getVersion(), codeLanguage.getName(), "");
         jetBean.addClassPath("CORE_LIBRARIES", CorePlugin.PLUGIN_ID);
         jetBean.addClassPath("CODEGEN_LIBRARIES", CodeGeneratorActivator.PLUGIN_ID);
         jetBean.addClassPath("COMMON_LIBRARIES", CommonsPlugin.PLUGIN_ID);
@@ -149,7 +150,7 @@ public final class CodeGeneratorEmittersPoolFactory {
         }
         JetBean jetBean = new JetBean(IComponentsFactory.COMPONENTS_LOCATION, IComponentsFactory.COMPONENTS_DIRECTORY
                 + TemplateUtil.DIR_SEP + component.getName() + TemplateUtil.DIR_SEP + component.getName() + "_"
-                + codePart + "." + codeLanguage.getExtension() + TemplateUtil.TEMPLATE_EXT, component.getVersion());
+                + codePart + "." + codeLanguage.getExtension() + TemplateUtil.TEMPLATE_EXT, component.getName(), component.getVersion(), codeLanguage.getName(), codePart.getName());
         jetBean.addClassPath("CORE_LIBRARIES", CorePlugin.PLUGIN_ID);
         jetBean.addClassPath("CODEGEN_LIBRARIES", CodeGeneratorActivator.PLUGIN_ID);
         jetBean.addClassPath("COMMON_LIBRARIES", CommonsPlugin.PLUGIN_ID);
@@ -201,7 +202,7 @@ public final class CodeGeneratorEmittersPoolFactory {
         }
         for (JetBean jetBean : components) {
             if (!emitterPool.containsKey(jetBean)) {
-                JETEmitter emitter = new JETEmitter(jetBean.getTemplateFullUri(), jetBean.getClassLoader());
+                TalendJetEmitter emitter = new TalendJetEmitter(jetBean.getTemplateFullUri(), jetBean.getClassLoader(), jetBean.getClassName(), jetBean.getLanguage(), jetBean.getCodePart());
                 try {
                     for (String classKey : globalClasspath.keySet()) {
                         emitter.addVariable(classKey, globalClasspath.get(classKey));
@@ -238,7 +239,7 @@ public final class CodeGeneratorEmittersPoolFactory {
             long unitCRC = extractTemplateHashCode(unit);
 
             toReturn.add(new LightJetBean(unit.getTemplateFullUri(), unit.getClassName(), unit.getMethod().getName(),
-                    unit.getVersion(), unitCRC));
+                    unit.getVersion(), unit.getLanguage(), unitCRC));
         }
         return toReturn;
     }
