@@ -40,9 +40,9 @@ public class ComponentFilesNaming {
         toReturn.add(getMainXMLFileName(componentName, languageSuffix));
         toReturn.add(getPropertiesFileName(componentName));
         toReturn.add(getIcon32FileName(componentName));
-        toReturn.add(getBeginJetFileName(componentName, languageSuffix));
-        toReturn.add(getMainJetFileName(componentName, languageSuffix));
-        toReturn.add(getEndJetFileName(componentName, languageSuffix));
+        // toReturn.add(getBeginJetFileName(componentName, languageSuffix));
+        // toReturn.add(getMainJetFileName(componentName, languageSuffix));
+        // toReturn.add(getEndJetFileName(componentName, languageSuffix));
         return toReturn;
     }
 
