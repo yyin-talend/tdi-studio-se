@@ -419,7 +419,7 @@ public class DBStructureComposite extends Composite {
 
         public ListAllConnectionAction(int style) {
             super("", style); //$NON-NLS-1$
-            setImageDescriptor(ImageProvider.getImageDesc(EImage.ADD_ICON));
+            setImageDescriptor(ImageProvider.getImageDesc(EImage.HIERARCHY_ICON));
             setToolTipText(Messages.getString("DBStructureComposite.ShowAllConnections")); //$NON-NLS-1$
         }
 
