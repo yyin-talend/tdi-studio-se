@@ -1,0 +1,135 @@
+<%@ jet 
+  package="org.talend.designer.codegen.translators" 
+  imports="
+		org.talend.core.model.process.INode
+		org.talend.core.model.temp.ECodePart		
+        org.talend.core.model.process.ElementParameterParser
+		org.talend.core.model.process.IConnection 
+		org.talend.core.model.metadata.IMetadataTable
+		org.talend.core.model.metadata.IMetadataColumn 
+		org.talend.core.model.process.EConnectionType 
+		org.talend.core.model.process.IExternalNode
+		org.talend.designer.codegen.config.CodeGeneratorArgument
+		java.util.List
+	"
+  class="ComponentPartFooter"     
+%>
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+ECodePart codePart = codeGenArgument.getCodePart();
+boolean trace = codeGenArgument.isTrace();
+%>
+
+<%
+if (!(node instanceof IExternalNode)) {
+	if (codePart.equals(ECodePart.BEGIN)) {
+		List<IMetadataTable> metadatas = node.getMetadataList();
+		if ((metadatas!=null)&&(metadatas.size()>0)) {
+			IMetadataTable metadata = metadatas.get(0);
+			if (metadata!=null) {
+				List< ? extends IConnection> conns = node.getOutgoingConnections();
+				for (IConnection conn : conns) {
+					if (conn.getLineStyle().equals(EConnectionType.FLOW_MAIN)) {
+						if (trace) {
+%>
+// PTODO MHIRT
+//my @colnames_<%=conn.getName() %> = undef;
+//if (scalar @{ $desc_<%=node.getUniqueName() %>{schema} }) {
+//    @colnames_<%=conn.getName() %> = map { $_->{name} } @{ $desc_<%=node.getUniqueName() %>{schema} };
+//}
+
+<%
+						}
+					}
+				}
+			}
+		}
+	}
+
+	if (codePart.equals(ECodePart.MAIN)) {
+		if (!node.isSubProcessStart()) {
+			String inputColName = null;
+			if (node.getIncomingConnections()!=null) {
+				for (IConnection incomingConn : node.getIncomingConnections()) {
+					if (incomingConn.getLineStyle().equals(EConnectionType.FLOW_MAIN)) {
+						inputColName = incomingConn.getName();
+						break;
+					}
+				}
+			}
+			if (inputColName!=null) {
+				List<IMetadataTable> metadatas = node.getMetadataList();
+				if ((metadatas != null) && (metadatas.size() > 0)) {
+					IMetadataTable metadata = metadatas.get(0);
+					if (metadata != null) {
+						for (IConnection conn : node.getOutgoingConnections()) {
+							if (conn.getLineStyle().equals(EConnectionType.FLOW_MAIN)) {
+								if (trace) {
+%>
+
+//# here we dump the line content for trace purpose
+//SendTrace(
+//    '<%=conn.getName() %>',
+//  ++$<%=conn.getName() %>_trace_num,
+//  \@<%=conn.getName() %>,
+//  \@colnames_<%=conn.getName() %>,
+//
+<%
+								}
+								for (IMetadataColumn column : metadata.getListColumns()) {
+%>
+	<%=conn.getName() %>Struct.<%=column.getLabel() %> = <%=inputColName %>Struct.<%=column.getLabel() %>;
+<% 
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+	if (codePart.equals(ECodePart.END)) {
+%>
+
+//$_globals{<%=node.getUniqueName() %>}{OK} = true;
+
+<%
+		String statCatcher = ElementParameterParser.getValue(node,"__TSTATCATCHER_STATS__");
+		if ((node.getProcess().getNodesOfType("tStatCatcher").size() > 0) & (statCatcher.equals("true"))) {
+%>
+//tStatCatcher_1_subprocess(
+//    message => 'end',
+//    origin  => '<%=node.getUniqueName() %>',
+//);
+
+//tStatCatcher_1_subprocess(
+//    message => sprintf(
+//        '%.1f seconds',
+//        tv_interval(
+//            $_globals{<%=node.getUniqueName() %>}{start},
+//            [gettimeofday]
+//        )
+//    ),
+//    origin  => '<%=node.getUniqueName() %>',
+//);
+<%
+		}
+		
+		for (IConnection outgoingConn : node.getOutgoingConnections()) {
+			if (outgoingConn.getLineStyle().equals(EConnectionType.RUN_IF_OK)) {
+%>
+<%=outgoingConn.getTarget().getUniqueName() %>_subprocess();
+<%
+			}
+			if (outgoingConn.getLineStyle().equals(EConnectionType.RUN_IF)) {
+%>
+			if (<%=outgoingConn.getCondition() %>) {
+				<%=outgoingConn.getTarget().getUniqueName() %>_subprocess();
+			}
+<%
+			}
+		}
+	}
+}
+%>

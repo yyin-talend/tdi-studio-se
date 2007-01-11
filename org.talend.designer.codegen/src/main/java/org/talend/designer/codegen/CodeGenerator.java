@@ -363,10 +363,6 @@ public class CodeGenerator implements ICodeGenerator {
         return code;
     }
     
-    public static final String JAVATIP = "//The function of generating Java code haven't achive yet"
-        + System.getProperty("line.separator") + "public class JavaTest extends Test {}";
-    
-
     /**
      * Generate Part Code for a given Component.
      * 
@@ -375,12 +371,7 @@ public class CodeGenerator implements ICodeGenerator {
      * @return the generated code
      * @throws CodeGeneratorException if an error occurs during Code Generation
      */
-    public String generateComponentCode(INode node, ECodePart part) throws CodeGeneratorException {
-      
-        if (language == ECodeLanguage.JAVA) {
-            return JAVATIP;
-        }
-        
+    public String generateComponentCode(INode node, ECodePart part) throws CodeGeneratorException {     
         CodeGeneratorArgument argument = new CodeGeneratorArgument();
         argument.setNode(node);
         argument.setCodePart(part);

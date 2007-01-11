@@ -1,0 +1,22 @@
+<%@ jet 
+	package="org.talend.designer.codegen.translators" 
+	imports="
+		org.talend.designer.codegen.config.NodesSubTree
+		org.talend.designer.codegen.config.CodeGeneratorArgument
+	" 
+	class="SubProcessFooter" 
+%>
+<%
+	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+	NodesSubTree subTree = (NodesSubTree) codeGenArgument.getArgument();
+%>
+
+<%
+	// Calls for RUN BEFORE links
+	for (String before : subTree.getBeforeSubProcesses()) {
+%>
+		<%=before %>Process();
+<%
+	}
+%>
+}

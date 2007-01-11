@@ -1,0 +1,10 @@
+<%@ jet 
+	package="org.talend.designer.codegen.translators" 
+	imports="
+		org.talend.core.model.process.IContextParameter 
+		java.util.List
+	" 
+	class="Context" 
+%>
+
+1;

@@ -1,0 +1,58 @@
+<%@ jet 
+	package="org.talend.designer.codegen.translators" 
+	imports="
+		org.talend.core.model.process.INode
+		org.talend.core.model.temp.ECodePart		
+		org.talend.core.model.process.IConnection 
+		org.talend.core.model.metadata.IMetadataTable 
+		org.talend.core.model.process.EConnectionType 
+                org.talend.core.model.process.ElementParameterParser
+		org.talend.designer.codegen.config.CodeGeneratorArgument
+		java.util.List
+	"
+	class="ComponentPartHeader" 
+%>
+<%
+	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+	INode node = (INode)codeGenArgument.getArgument();
+	ECodePart codePart = codeGenArgument.getCodePart();
+%>
+
+currentComponent="<%=node.getUniqueName() %>";
+
+
+<%
+	if (codePart.equals(ECodePart.BEGIN)) {
+%>
+
+//=head1 <%=ElementParameterParser.getValue(node, "__COMPONENT_NAME__") %> <%=node.getUniqueName() %>
+//<%=ElementParameterParser.getValue(node, "__COMMENT__") %>
+//=cut
+
+//$_globals{<%=node.getUniqueName() %>}{OK} = false;
+
+<%
+  String statCatcher = ElementParameterParser.getValue(
+    node,
+    "__TSTATCATCHER_STATS__"
+  );
+
+  if ((node.getProcess().getNodesOfType("tStatCatcher").size() > 0) 
+      && (statCatcher.equals("true"))) {
+%>
+//tStatCatcher_1_subprocess(
+//    message => 'begin',
+//    origin  => '<%=node.getUniqueName() %>',
+//);
+
+//$_globals{<%=node.getUniqueName() %>}{start} = [gettimeofday];
+
+currentComponent="<%=node.getUniqueName() %>";
+<%
+  }
+%>
+
+<%
+	}
+%>
+
