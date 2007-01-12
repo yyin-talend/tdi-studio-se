@@ -37,7 +37,6 @@ import org.talend.sqlbuilder.repository.utility.SQLBuilderRepositoryNodeManager;
  */
 public class ConnectionParameters {
 
-	
     private String query;
 
     private String port;
@@ -63,17 +62,17 @@ public class ConnectionParameters {
     private Query queryObject;
 
     private RepositoryNode repositoryNodeBuiltIn;
-    
+
     private String connectionComment;
-    
+
     private boolean status = true;
-    
+
     private String schema;
-    
+
     private static Hashtable<String, String> hashTable = new Hashtable<String, String>();
-    
+
     static {
-    	try {
+        try {
             hashTable.put("MySQL", "MySQL");
             hashTable.put("PostgreSQL", "PostgreSQL");
             hashTable.put("Oracle", "Oracle with SID");
@@ -83,62 +82,61 @@ public class ConnectionParameters {
             throw new RuntimeException(e);
         }
     }
-    
+
     /**
-	 * Sets the connectionComment.
-	 * @param connectionComment the connectionComment to set
-	 */
-	public void setConnectionComment(String connectionComment) {
-		this.connectionComment = connectionComment;
-	}
-	
-	
-	
-	/**
-	 * Getter for schema.
-	 * @return the schema
-	 */
-	public String getSchema() {
-		return this.schema;
-	}
+     * Sets the connectionComment.
+     * 
+     * @param connectionComment the connectionComment to set
+     */
+    public void setConnectionComment(String connectionComment) {
+        this.connectionComment = connectionComment;
+    }
 
+    /**
+     * Getter for schema.
+     * 
+     * @return the schema
+     */
+    public String getSchema() {
+        return this.schema;
+    }
 
+    /**
+     * Sets the schema.
+     * 
+     * @param schema the schema to set
+     */
+    public void setSchema(String schema) {
+        this.schema = schema;
+    }
 
-	/**
-	 * Sets the schema.
-	 * @param schema the schema to set
-	 */
-	public void setSchema(String schema) {
-		this.schema = schema;
-	}
+    /**
+     * Getter for status.
+     * 
+     * @return the status
+     */
+    public boolean isStatus() {
+        return this.status;
+    }
 
+    /**
+     * Sets the status.
+     * 
+     * @param status the status to set
+     */
+    public void setStatus(boolean status) {
+        this.status = status;
+    }
 
+    /**
+     * Getter for connectionComment.
+     * 
+     * @return the connectionComment
+     */
+    public String getConnectionComment() {
+        return this.connectionComment;
+    }
 
-	/**
-	 * Getter for status.
-	 * @return the status
-	 */
-	public boolean isStatus() {
-		return this.status;
-	}
-
-
-	/**
-	 * Sets the status.
-	 * @param status the status to set
-	 */
-	public void setStatus(boolean status) {
-		this.status = status;
-	}
-
-
-	/**
-	 * Getter for connectionComment.
-	 * @return the connectionComment
-	 */
-	public String getConnectionComment() {
-		return this.connectionComment;
-	}
     /**
      * Getter for queryObject.
      * 
@@ -315,7 +313,7 @@ public class ConnectionParameters {
      * @param query the query to set
      */
     public void setQuery(String query) {
-        this.query = trimInvertedComma(query);
+        this.query = query;
     }
 
     /**
@@ -361,6 +359,7 @@ public class ConnectionParameters {
      * @return the String without " ' "
      */
     private String trimInvertedComma(String input) {
+
         String out = input.replaceAll("\'", "");
         return out;
     }
@@ -383,29 +382,6 @@ public class ConnectionParameters {
 
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see java.lang.Object#toString()
-     */
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        String enter = "\n";
-        sb.append("is Repository? " + isRepository() + enter);
-        if (!isRepository()) {
-            sb.append("Database driver: " + this.getDbType() + enter);
-            sb.append("Database name: " + this.getDbName() + enter);
-            sb.append("Host: " + this.getHost() + enter);
-            sb.append("Port: " + this.getPort() + enter);
-            sb.append("User name: " + this.getUserName() + enter);
-            sb.append("Password: " + this.getPassword() + enter);
-            sb.append("Query: " + this.getQuery());
-        } else {
-            sb.append("Repository name: " + this.getRepositoryName() + enter);
-        }
-        return sb.toString();
-    }
-
     /**
      * Sets selected component name.
      * 
@@ -425,26 +401,28 @@ public class ConnectionParameters {
         return selectedComponentName != null ? selectedComponentName : "";
     }
 
-	/**
-	 * Getter for repositoryNodeBuiltIn.
-	 * @return the repositoryNodeBuiltIn
-	 */
-	public RepositoryNode getRepositoryNodeBuiltIn() {
-		return this.repositoryNodeBuiltIn;
-	}
+    /**
+     * Getter for repositoryNodeBuiltIn.
+     * 
+     * @return the repositoryNodeBuiltIn
+     */
+    public RepositoryNode getRepositoryNodeBuiltIn() {
+        return this.repositoryNodeBuiltIn;
+    }
 
-	/**
-	 * Sets the repositoryNodeBuiltIn.
-	 * @param repositoryNodeBuiltIn the repositoryNodeBuiltIn to set
-	 */
-	public void setRepositoryNodeBuiltIn(RepositoryNode repositoryNodeBuiltIn) {
-		this.repositoryNodeBuiltIn = repositoryNodeBuiltIn;
-		if (repositoryNodeBuiltIn != null) {
-			DatabaseConnection databaseConnection = (DatabaseConnection) SQLBuilderRepositoryNodeManager.getItem(
-					repositoryNodeBuiltIn).getConnection();
-			status = !(databaseConnection.isDivergency());
-		} else {
-		    status = false;
+    /**
+     * Sets the repositoryNodeBuiltIn.
+     * 
+     * @param repositoryNodeBuiltIn the repositoryNodeBuiltIn to set
+     */
+    public void setRepositoryNodeBuiltIn(RepositoryNode repositoryNodeBuiltIn) {
+        this.repositoryNodeBuiltIn = repositoryNodeBuiltIn;
+        if (repositoryNodeBuiltIn != null) {
+            DatabaseConnection databaseConnection = (DatabaseConnection) SQLBuilderRepositoryNodeManager.getItem(
+                    repositoryNodeBuiltIn).getConnection();
+            status = !(databaseConnection.isDivergency());
+        } else {
+            status = false;
         }
-	}
+    }
 }

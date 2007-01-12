@@ -164,6 +164,7 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
         String repositoryType = (String) elem.getPropertyValue(EParameterName.PROPERTY_TYPE.getName());
         String propertyName = (String) openSQLEditorButton.getData(PROPERTY);
         String query = (String) elem.getPropertyValue(propertyName);
+        query = this.removeStrInQuery(query);
         // boolean status = true;
         if (repositoryType.equals(EmfComponent.BUILTIN)) {
 
@@ -188,8 +189,8 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
             connParameters.setQuery(query);
             String schema = getValueFromRepositoryName("SCHEMA");
             connParameters.setSchema(schema);
-            OpenSQLBuilderDialogJob openDialogJob = new OpenSQLBuilderDialogJob(connParameters, composite, elem, propertyName,
-                    getCommandStack());
+            OpenSQLBuilderDialogJob openDialogJob = new OpenSQLBuilderDialogJob(connParameters, composite, elem,
+                    propertyName, getCommandStack());
 
             IWorkbenchSiteProgressService siteps = (IWorkbenchSiteProgressService) part.getSite().getAdapter(
                     IWorkbenchSiteProgressService.class);
@@ -206,9 +207,10 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
                 if (param.getName().equals(EParameterName.REPOSITORY_PROPERTY_TYPE.getName())) {
                     String value = (String) param.getValue();
                     for (String key : this.dynamicTabbedPropertySection.getRepositoryConnectionItemMap().keySet()) {
-                        
+
                         if (key.equals(value)) {
-                            repositoryName = this.dynamicTabbedPropertySection.getRepositoryConnectionItemMap().get(key).getProperty().getLabel();
+                            repositoryName = this.dynamicTabbedPropertySection.getRepositoryConnectionItemMap()
+                                    .get(key).getProperty().getLabel();
 
                         }
                     }
@@ -231,11 +233,49 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
             if (Window.OK == dial.open()) {
                 if (!composite.isDisposed()) {
                     String sql = connParameters.getQuery();
-                    return new PropertyChangeCommand(elem, propertyName, "'" + sql + "'");
+                    sql = addStrInQuery(sql);
+                    return new PropertyChangeCommand(elem, propertyName, sql);
                 }
             }
         }
         return null;
+    }
+
+    /**
+     * DOC ftang Comment method "removeStrInQuery".
+     * @param input
+     * @return
+     */
+    private String removeStrInQuery(String input) {
+        String out = removeSlash(input);
+        if (out.startsWith("'")) {
+            out = out.substring(1, out.length());
+        }
+        if (out.endsWith("'")) {
+            out = out.substring(0, out.length() - 1);
+        }
+        return out;
+    }
+
+    /**
+     * DOC ftang Comment method "addStrInQuery".
+     * @param input
+     * @return
+     */
+    private String addStrInQuery(String input) {
+        String out = input.replaceAll("'", "\\\\\'");
+        out = "'" + out + "'";
+        return out;
+    }
+
+    /**
+     * DOC ftang Comment method "removeSlash".
+     * @param input
+     * @return
+     */
+    private String removeSlash(String input) {
+        String out = input.replaceAll("\\\\", "");
+        return out;
     }
 
     /*
