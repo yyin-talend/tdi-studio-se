@@ -29,15 +29,21 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import org.eclipse.core.internal.resources.Workspace;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
+import org.talend.commons.utils.data.container.Content;
+import org.talend.commons.utils.data.container.ContentList;
+import org.talend.commons.utils.data.container.RootContainer;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
@@ -49,7 +55,10 @@ import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.designer.codegen.perlmodule.IPerlModuleService;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
+import org.talend.designer.core.model.utils.emf.talendfile.JobType;
 import org.talend.repository.RepositoryPlugin;
+import org.talend.repository.model.ERepositoryStatus;
+import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
 
 /**
@@ -63,7 +72,7 @@ public class JobScriptsManager {
     private String[] launcherPerlScriptFile = { "run.sh", "run.bat" };
 
     /**
-     * DOC qian Gets the export resources.
+     * qian Gets the export resources.
      * 
      * @param process
      * @param needLauncher
@@ -86,6 +95,8 @@ public class JobScriptsManager {
         resources.addAll(getModel(needModel));
         resources.addAll(getJobScripts(process, needJob));
         resources.addAll(getContextScripts(process, needContext));
+        boolean needChildren = needJob && needContext;
+        resources.addAll(getChildrenScripts(process, needChildren));
 
         return resources;
     }
@@ -96,7 +107,7 @@ public class JobScriptsManager {
     }
 
     /**
-     * DOC qian Deletes the temporary files.
+     * Deletes the temporary files.
      */
     public void deleteTempFiles() {
         String tmpFold = getTmpFolder();
@@ -110,7 +121,7 @@ public class JobScriptsManager {
     }
 
     /**
-     * DOC qian Gets perl intepreter.
+     * Gets perl intepreter.
      * 
      * @param needLauncher
      * @param process
@@ -147,7 +158,7 @@ public class JobScriptsManager {
                     pw.close();
                 }
             } catch (Exception e) {
-                // TODO: handle exception
+                // do nothing here
             }
         }
 
@@ -166,10 +177,10 @@ public class JobScriptsManager {
         IPreferenceStore prefStore = CorePlugin.getDefault().getPreferenceStore();
         String perlInterpreter = prefStore.getString(ITalendCorePrefConstants.PERL_INTERPRETER);
         if (perlInterpreter == null || perlInterpreter.length() == 0) {
-            // throw new ProcessorException(Messages.getString("Processor.configurePerl")); //$NON-NLS-1$
+            // throw new
+            // ProcessorException(Messages.getString("Processor.configurePerl"));
+            // //$NON-NLS-1$
         }
-
-        String perlLib = null;
 
         String perlCode = project + projectSeparator + wordSeparator + jobName + perlExt;
 
@@ -187,24 +198,24 @@ public class JobScriptsManager {
     }
 
     /**
-     * DOC qian Gets the perl launcher location.
+     * Gets the perl launcher location.
      * 
      * @return
      */
     public String getPerlLauncher() {
-        String perlIntepreter = CorePlugin.getDefault().getPreferenceStore().getString(
-                ITalendCorePrefConstants.PERL_INTERPRETER);
+        String perlIntepreter = CorePlugin.getDefault().getPreferenceStore().getString(ITalendCorePrefConstants.PERL_INTERPRETER);
         return perlIntepreter;
     }
 
     /**
-     * DOC qian Gets system routines.
+     * Gets system routines.
      * 
      * @param needSystemRoutine
      * @return
      */
     private List<URL> getSystemRoutine(boolean needSystemRoutine) {
-        // IPerlModuleService s = (IPerlModuleService) GlobalServiceRegister.getDefault().getService(
+        // IPerlModuleService s = (IPerlModuleService)
+        // GlobalServiceRegister.getDefault().getService(
         // IPerlModuleService.class);
         // List<URL> l = s.getBuiltInRoutines();
         // for (URL url : l) {
@@ -220,7 +231,7 @@ public class JobScriptsManager {
     }
 
     /**
-     * DOC qian Gets resources' URL.
+     * Gets resources' URL.
      * 
      * @param resources
      * @param fileNames
@@ -250,7 +261,7 @@ public class JobScriptsManager {
     IResource[] resouces = null;
 
     /**
-     * DOC qian Gets all the perl files in the project .Perl.
+     * Gets all the perl files in the project .Perl.
      * 
      * @return
      */
@@ -271,7 +282,7 @@ public class JobScriptsManager {
     }
 
     /**
-     * DOC qian Gets routine names.
+     * Gets routine names.
      * 
      * @param list
      * @param isBuildin
@@ -279,8 +290,7 @@ public class JobScriptsManager {
     private void getRoutineNames(List list, boolean isBuildin) {
         String projectName = getCurrentProjectName();
         try {
-            List<IRepositoryObject> routines = ProxyRepositoryFactory.getInstance().getAll(
-                    ERepositoryObjectType.ROUTINES);
+            List<IRepositoryObject> routines = ProxyRepositoryFactory.getInstance().getAll(ERepositoryObjectType.ROUTINES);
             for (int i = 0; i < routines.size(); i++) {
                 RoutineItem routine = (RoutineItem) routines.get(i).getProperty().getItem();
                 if (routine.isBuiltIn() == isBuildin) {
@@ -295,7 +305,7 @@ public class JobScriptsManager {
     }
 
     /**
-     * DOC qian Gets user routine.
+     * Gets user routine.
      * 
      * @param needModel
      * @return
@@ -309,7 +319,7 @@ public class JobScriptsManager {
     }
 
     /**
-     * DOC qian Gets current project name.
+     * Gets current project name.
      * 
      * @return
      */
@@ -326,7 +336,7 @@ public class JobScriptsManager {
     }
 
     /**
-     * DOC qian Gets required perl models.
+     * Gets required perl models.
      * 
      * @param needModel
      * @return
@@ -348,7 +358,7 @@ public class JobScriptsManager {
     }
 
     /**
-     * DOC qian Gets Job Scripts.
+     * Gets Job Scripts.
      * 
      * @param process
      * @param needJob
@@ -376,8 +386,98 @@ public class JobScriptsManager {
         return getResourcesURL(resources, list);
     }
 
+    private List getChildrenScripts(ProcessItem[] process, boolean needChildren) {
+        List<String> list = new ArrayList<String>();
+        if (needChildren) {
+            String projectName = getCurrentProjectName();
+            try {
+                for (int i = 0; i < process.length; i++) {
+                    // gets the children process
+                    List<ProcessItem> processedJob = new ArrayList<ProcessItem>();
+                    getChildrenJobAndContextName(process[i].getProperty().getLabel(), list, process[i], projectName, processedJob);
+                }
+
+            } catch (Exception e) {
+                ExceptionHandler.process(e);
+            }
+
+        }
+
+        IResource[] resources = this.getAllPerlFiles();
+        return getResourcesURL(resources, list);
+    }
+
+    private void getChildrenJobAndContextName(String rootName, List<String> list, ProcessItem process, String projectName,
+            List<ProcessItem> processedJob) {
+        if (processedJob.contains(process)) {
+            // pretent circle
+            return;
+        }
+        processedJob.add(process);
+        EList jobList = process.getProcess().getRequired().getJob();
+        for (int j = 0; j < jobList.size(); j++) {
+            JobType jType = (JobType) jobList.get(j);
+            String processLabel = jType.getName();
+            if (processLabel.equals(rootName)) {
+                continue;
+            }
+
+            String processName = escapeSpace(processLabel);
+            String jobScriptName = projectName + ".job_" + processName + ".pl";
+            String contextName = escapeSpace(jType.getContext());
+            String contextFullName = projectName + ".job_" + processName + "_" + contextName + ".pl";
+
+            addToList(list, jobScriptName);
+            addToList(list, contextFullName);
+
+            ProcessItem childProcess = findProcess(processLabel);
+
+            getChildrenJobAndContextName(rootName, list, childProcess, projectName, processedJob);
+        }
+    }
+
+    ContentList<String, IRepositoryObject> processAbsoluteMembers;
+
+    IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+
+    private ProcessItem findProcess(String name) {
+        if (processAbsoluteMembers == null) {
+            try {
+                // RepositoryContext repositoryContext = (RepositoryContext)
+                // CorePlugin
+                // .getContext().getProperty(
+                // Context.REPOSITORY_CONTEXT_KEY);
+
+                RootContainer<String, IRepositoryObject> processContainer = factory.getProcess();
+
+                processAbsoluteMembers = processContainer.getAbsoluteMembers();
+
+            } catch (Exception exception) {
+                ExceptionHandler.process(exception);
+            }
+        }
+        Set keys = processAbsoluteMembers.keySet();
+
+        for (Content<String, IRepositoryObject> object : processAbsoluteMembers.values()) {
+            IRepositoryObject process = (IRepositoryObject) object.getContent();
+            if (factory.getStatus(process) != ERepositoryStatus.DELETED) {
+                ProcessItem pi = (ProcessItem) process.getProperty().getItem();
+                if (pi.getProperty().getLabel().equals(name)) {
+                    return pi;
+                }
+            }
+        }
+        return null;
+    }
+
+    private void addToList(List list, Object o) {
+        if (!list.contains(o)) {
+            list.add(o);
+        }
+    }
+
     /**
-     * DOC qian Gets context scripts.
+     * Gets context scripts.
      * 
      * @param process
      * @param needContext
@@ -424,7 +524,7 @@ public class JobScriptsManager {
     }
 
     /**
-     * DOC ftang Comment method "escapeFileNameSpace".
+     * ftang Comment method "escapeFileNameSpace".
      * 
      * @param processItem
      * @return
@@ -435,7 +535,7 @@ public class JobScriptsManager {
     }
 
     /**
-     * DOC ftang Comment method "escapeSpace".
+     * ftang Comment method "escapeSpace".
      * 
      * @param name
      * @return
