@@ -22,6 +22,7 @@
 package org.talend.sqlbuilder.actions;
 
 import java.util.List;
+
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.actions.SelectionProviderAction;
@@ -81,7 +82,9 @@ public class OpenNewEditorAction extends SelectionProviderAction {
         }
         int i = 0;
         for (RepositoryNode node : selectedNodes) {
-            if (node.getProperties(EProperties.CONTENT_TYPE) == RepositoryNodeType.FOLDER) {
+            if (node.getProperties(EProperties.CONTENT_TYPE) == RepositoryNodeType.FOLDER
+                    || node.getProperties(EProperties.CONTENT_TYPE) == RepositoryNodeType.QUERY
+                    || node.getProperties(EProperties.CONTENT_TYPE) == RepositoryNodeType.QUERIESCONNECTION) {
                 i++;
             }
         }
@@ -103,21 +106,22 @@ public class OpenNewEditorAction extends SelectionProviderAction {
         RepositoryNode firstNode = (RepositoryNode) selection.getFirstElement();
         if (firstNode.getProperties(EProperties.CONTENT_TYPE) == RepositoryNodeType.FOLDER) {
             firstNode = repositoryNodeManager.getRepositoryNodebyName(connParam.getRepositoryName());
-        } 
+        }
         List<String> repositoryNames = repositoryNodeManager.getALLReposotoryNodeNames();
         ConnectionParameters connectionParameters = new ConnectionParameters();
         connectionParameters.setQuery(connParam.getQuery());
+        connectionParameters.setRepositoryName(SQLBuilderRepositoryNodeManager.getRoot(firstNode).getObject()
+                .getLabel());
         dialog.openEditor(firstNode, repositoryNames, connectionParameters, isDefaultEditor);
     }
 
-    
     /**
      * Getter for connParam.
+     * 
      * @return the connParam
      */
     public ConnectionParameters getConnParam() {
         return connParam;
     }
-    
-    
+
 }

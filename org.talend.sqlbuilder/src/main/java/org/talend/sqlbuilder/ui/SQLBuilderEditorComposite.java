@@ -506,7 +506,7 @@ public class SQLBuilderEditorComposite extends Composite implements ISQLEditor {
 		String repositoryName = getRepositoryName();
 		String selectedComponentName = connParam.getSelectedComponentName();
 		if (this.isDefaultEditor
-				&& (selectedComponentName != null || selectedComponentName
+				&& (selectedComponentName != null && selectedComponentName
 						.length() != 0)) {
 			title = selectedComponentName + ".";
 		}
@@ -516,7 +516,6 @@ public class SQLBuilderEditorComposite extends Composite implements ISQLEditor {
 		} else if (dialog.getConnParameters().getQueryObject() != null) {
             title = "Query: " + dialog.getConnParameters().getQueryObject().getLabel();
         }
-        
 		tabItem.setText(title);
 	}
 
