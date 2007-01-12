@@ -31,11 +31,13 @@ import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.talend.commons.exception.BusinessException;
 import org.talend.commons.exception.MessageBoxExceptionHandler;
@@ -78,6 +80,8 @@ public class LoginDialog extends TitleAreaDialog {
         if (imgDesc != null) {
             setTitleImage(imgDesc.createImage());
         }
+        RGB rgb = parentShell.getBackground().getRGB();
+        setTitleAreaColor(rgb);
     }
 
     /**
@@ -86,7 +90,6 @@ public class LoginDialog extends TitleAreaDialog {
     @Override
     protected void configureShell(final Shell newShell) {
         super.configureShell(newShell);
-
         newShell.setText(Messages.getString("LoginDialog.title")); //$NON-NLS-1$
     }
 
@@ -96,6 +99,8 @@ public class LoginDialog extends TitleAreaDialog {
     @Override
     protected Control createDialogArea(final Composite parent) {
         Composite composite = (Composite) super.createDialogArea(parent);
+
+        composite.setBackground(new Color(null, 0, 0, 0));
 
         Composite container = new Composite(composite, SWT.NONE);
 
@@ -143,6 +148,9 @@ public class LoginDialog extends TitleAreaDialog {
         data.widthHint = 350;
         loginComposite.setLayoutData(data);
 
+        Label titleBarSeparator = new Label(composite, SWT.HORIZONTAL | SWT.SEPARATOR);
+        titleBarSeparator.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+
         return composite;
     }
 
@@ -152,7 +160,6 @@ public class LoginDialog extends TitleAreaDialog {
     @Override
     protected void createButtonsForButtonBar(Composite parent) {
         super.createButtonsForButtonBar(parent);
-
         updateButtons();
     }
 
