@@ -21,8 +21,12 @@
 // ============================================================================
 package org.talend.designer.mapper.language.java;
 
+import org.talend.core.language.ICodeSyntaxChecker;
 import org.talend.core.model.process.Problem;
+import org.talend.core.model.temp.ECodeLanguage;
+import org.talend.designer.mapper.Activator;
 import org.talend.designer.mapper.language.AbstractLanguage;
+import org.talend.designer.runprocess.IRunProcessService;
 
 /**
  * DOC amaumont class global comment. Detailled comment <br/>
@@ -34,17 +38,17 @@ public class JavaLanguage extends AbstractLanguage {
 
     private static final String DOUBLE_ESCAPE = "\\";
 
-    private static final String PREFIX_VARIABLE_NAME = "$";
+    private static final String PREFIX_VARIABLE_NAME = "";
 
-    private static final String AND_CONDITION = " && ";
+    private static final String AND_CONDITION = "&&";
 
-    private static final String PREFIX_FIELD_NAME = "[";
+    private static final String PREFIX_FIELD_NAME = ".";
 
-    private static final String SUFFIX_FIELD_NAME = "]";
+    private static final String SUFFIX_FIELD_NAME = "";
 
     private static final String PREFIX_TABLE_NAME = PREFIX_VARIABLE_NAME;
 
-    private static final String PREFIX_TABLE_NAME_REGEXP = DOUBLE_ESCAPE + PREFIX_TABLE_NAME;
+    private static final String PREFIX_TABLE_NAME_REGEXP = "";
 
     private static final String SUFFIX_TABLE_NAME = "";
 
@@ -52,7 +56,7 @@ public class JavaLanguage extends AbstractLanguage {
 
     private static final String PREFIX_FIELD_NAME_REGEXP = DOUBLE_ESCAPE + PREFIX_FIELD_NAME;
 
-    private static final String SUFFIX_FIELD_NAME_REGEXP = DOUBLE_ESCAPE + SUFFIX_FIELD_NAME;
+    private static final String SUFFIX_FIELD_NAME_REGEXP = SUFFIX_FIELD_NAME;
 
     private static final String LOCATION_PATTERN = PREFIX_TABLE_NAME_REGEXP + "\\s*(\\w+)\\s*" + PREFIX_FIELD_NAME_REGEXP
             + "\\s*(\\w+)\\s*" + SUFFIX_FIELD_NAME_REGEXP;
@@ -66,18 +70,45 @@ public class JavaLanguage extends AbstractLanguage {
     /**
      * {0} and {1} must be replaced respectively by the table name and the column name.
      */
-    private static final String TEMPLATE_TABLE_COLUMN_VARIABLE = PREFIX_TABLE_NAME + "{0}" + PREFIX_FIELD_NAME + "{1}" + SUFFIX_FIELD_NAME;
+    private static final String SUBST_PATTERN_FOR_REPLACE_LOCATION = PREFIX_TABLE_NAME_REGEXP + "(\\s*){0}(\\s*)"
+            + SUFFIX_TABLE_NAME_REGEXP + "(\\s*)" + PREFIX_FIELD_NAME_REGEXP + "(\\s*){1}(\\s*)" + SUFFIX_FIELD_NAME_REGEXP;
 
     /**
      * {0} and {1} must be replaced respectively by the table name and the column name.
      */
-    private static final String TEMPLATE_GENERATED_CODE_TABLE_COLUMN_VARIABLE = PREFIX_TABLE_NAME + "{0}" + PREFIX_FIELD_NAME + "{0}__{1}"
+    private static final String TEMPLATE_TABLE_VARIABLE = PREFIX_TABLE_NAME + "{0}";
+
+    /**
+     * {0} and {1} must be replaced respectively by the table name and the column name.
+     */
+    private static final String TEMPLATE_TABLE_COLUMN_VARIABLE = TEMPLATE_TABLE_VARIABLE + PREFIX_FIELD_NAME + "{1}" + SUFFIX_FIELD_NAME;
+
+    /**
+     * {0} and {1} must be replaced respectively by the table name and the column name.
+     */
+    private static final String TEMPLATE_GENERATED_CODE_TABLE_COLUMN_VARIABLE = PREFIX_TABLE_NAME + "{0}" + PREFIX_FIELD_NAME + "{1}"
             + SUFFIX_FIELD_NAME;
 
     /**
      * {0} and {1} must be replaced respectively by the table name and the column name.
      */
     private static final String TEMPLATE_VARS_COLUMN_VARIABLE = PREFIX_VARIABLE_NAME + "{0}";
+
+    private ICodeSyntaxChecker syntaxChecker;
+
+    /**
+     * DOC amaumont PerlLanguage constructor comment.
+     */
+    public JavaLanguage() {
+        super(ECodeLanguage.JAVA);
+
+        Activator activator = Activator.getDefault();
+        if (activator != null) {
+            IRunProcessService service = activator.getRunProcessService();
+            this.syntaxChecker = service.getSyntaxChecker(ECodeLanguage.JAVA);
+        }
+
+    }
 
     /*
      * (non-Javadoc)
@@ -127,10 +158,19 @@ public class JavaLanguage extends AbstractLanguage {
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.designer.mapper.model.language.ILanguage#getSUBST_PATTERN_FOR_PREFIX_COLUMN_NAME()
+     * @see org.talend.designer.mapper.model.language.ILanguage#getSubstPatternForPrefixColumnName()
      */
     public String getSubstPatternForPrefixColumnName() {
         return SUBST_PATTERN_FOR_PREFIX_COLUMN_NAME;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.mapper.model.language.ILanguage#getSubstPatternForReplaceLocation()
+     */
+    public String getSubstPatternForReplaceLocation() {
+        return SUBST_PATTERN_FOR_REPLACE_LOCATION;
     }
 
     /*
@@ -175,8 +215,7 @@ public class JavaLanguage extends AbstractLanguage {
      * @see org.talend.designer.mapper.language.ILanguage#getPrefixField()
      */
     public String getPrefixField() {
-        // TODO Auto-generated method stub
-        return null;
+        return PREFIX_FIELD_NAME;
     }
 
     /*
@@ -185,8 +224,7 @@ public class JavaLanguage extends AbstractLanguage {
      * @see org.talend.designer.mapper.language.ILanguage#getPrefixTable()
      */
     public String getPrefixTable() {
-        // TODO Auto-generated method stub
-        return null;
+        return PREFIX_TABLE_NAME;
     }
 
     /*
@@ -196,7 +234,7 @@ public class JavaLanguage extends AbstractLanguage {
      */
     public String getSuffixField() {
         // TODO Auto-generated method stub
-        return null;
+        return SUFFIX_FIELD_NAME;
     }
 
     /*
@@ -205,8 +243,7 @@ public class JavaLanguage extends AbstractLanguage {
      * @see org.talend.designer.mapper.language.ILanguage#getSuffixTable()
      */
     public String getSuffixTable() {
-        // TODO Auto-generated method stub
-        return null;
+        return SUFFIX_TABLE_NAME;
     }
 
     /*
@@ -215,18 +252,7 @@ public class JavaLanguage extends AbstractLanguage {
      * @see org.talend.designer.mapper.language.ILanguage#getTemplateTableVariable()
      */
     public String getTemplateTableVariable() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.designer.mapper.language.ILanguage#getSubstPatternForReplaceLocation()
-     */
-    public String getSubstPatternForReplaceLocation() {
-        // TODO Auto-generated method stub
-        return null;
+        return TEMPLATE_TABLE_VARIABLE;
     }
 
     /*
@@ -235,8 +261,7 @@ public class JavaLanguage extends AbstractLanguage {
      * @see org.talend.designer.mapper.language.ILanguage#checkExpressionSyntax(java.lang.String)
      */
     public Problem checkExpressionSyntax(String expression) {
-        // TODO Auto-generated method stub
-        return null;
+        return syntaxChecker.checkSyntax(expression);
     }
 
 }

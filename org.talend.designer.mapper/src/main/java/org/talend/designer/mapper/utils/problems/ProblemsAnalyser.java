@@ -39,8 +39,6 @@ import org.talend.designer.mapper.managers.MapperManager;
 import org.talend.designer.mapper.model.table.InputTable;
 import org.talend.designer.mapper.model.tableentry.IColumnEntry;
 import org.talend.designer.mapper.model.tableentry.InputColumnTableEntry;
-import org.talend.designer.mapper.model.tableentry.TableEntryLocation;
-import org.talend.designer.mapper.utils.DataMapExpressionParser;
 
 /**
  * DOC amaumont class global comment. Detailled comment <br/>

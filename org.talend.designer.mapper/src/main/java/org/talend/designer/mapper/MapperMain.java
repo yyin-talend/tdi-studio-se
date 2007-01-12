@@ -182,6 +182,7 @@ public class MapperMain {
 
     /**
      * DOC amaumont Comment method "createIOConnections".
+     * 
      * @param connections
      * @return
      */

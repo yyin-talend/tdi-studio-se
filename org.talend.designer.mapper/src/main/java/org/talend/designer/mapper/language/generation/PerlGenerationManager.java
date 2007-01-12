@@ -22,14 +22,12 @@
 package org.talend.designer.mapper.language.generation;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import org.talend.commons.utils.data.text.StringHelper;
-import org.talend.designer.mapper.external.data.ExternalMapperTable;
 import org.talend.designer.mapper.external.data.ExternalMapperTableEntry;
 import org.talend.designer.mapper.language.ILanguage;
+import org.talend.designer.mapper.language.generation.GenerationManager;
+import org.talend.designer.mapper.language.generation.TableType;
 import org.talend.designer.mapper.model.tableentry.TableEntryLocation;
 import org.talend.designer.mapper.utils.DataMapExpressionParser;
 
@@ -41,13 +39,9 @@ import org.talend.designer.mapper.utils.DataMapExpressionParser;
  */
 public class PerlGenerationManager extends GenerationManager {
 
-    // private List<ExternalMapperTable> inputTables;
-
-
     public PerlGenerationManager(ILanguage language) {
         super(language);
     }
-
 
     /**
      * DOC amaumont Comment method "prefixEntryLocations".

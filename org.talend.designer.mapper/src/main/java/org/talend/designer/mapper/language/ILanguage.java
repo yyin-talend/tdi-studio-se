@@ -22,6 +22,7 @@
 package org.talend.designer.mapper.language;
 
 import org.talend.core.model.process.Problem;
+import org.talend.core.model.temp.ECodeLanguage;
 
 /**
  * DOC amaumont class global comment. Detailled comment <br/>
@@ -30,6 +31,8 @@ import org.talend.core.model.process.Problem;
  * 
  */
 public interface ILanguage {
+
+    public ECodeLanguage getCodeLanguage();
 
     public String getLocationPattern();
 

@@ -50,14 +50,23 @@ public class LanguageProvider {
         switch (codeLanguage) {
         case JAVA:
             if (!(language instanceof JavaLanguage) || LanguageProvider.language == null) {
-                LanguageProvider.language = new JavaLanguage();
+                LanguageProvider.language = getJavaLanguage();
             }
+            break;
         default:
             if (!(language instanceof PerlLanguage) || LanguageProvider.language == null) {
-                LanguageProvider.language = new PerlLanguage();
+                LanguageProvider.language = getPerlLanguage();
             }
         }
         return LanguageProvider.language;
+    }
+
+    public static ILanguage getPerlLanguage() {
+        return new PerlLanguage();
+    }
+
+    public static ILanguage getJavaLanguage() {
+        return new JavaLanguage();
     }
 
 }

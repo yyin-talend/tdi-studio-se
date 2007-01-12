@@ -40,6 +40,11 @@ public class ExternalMapperTableEntry implements Serializable {
 
     private String expression;
 
+    /**
+     * Talend types, used for var entries only.
+     */
+    private String type;
+
     public ExternalMapperTableEntry() {
         super();
     }
@@ -69,6 +74,24 @@ public class ExternalMapperTableEntry implements Serializable {
 
     public void setName(String metadataName) {
         this.name = metadataName;
+    }
+
+    /**
+     * Talend types, used for var entries only.
+     * 
+     * @return
+     */
+    public String getType() {
+        return type;
+    }
+
+    /**
+     * Talend types, used for var entries only.
+     * 
+     * @param type the type to set
+     */
+    public void setType(String type) {
+        this.type = type;
     }
 
 }

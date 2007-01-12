@@ -100,7 +100,7 @@ public class PerlLanguage extends AbstractLanguage {
      * DOC amaumont PerlLanguage constructor comment.
      */
     public PerlLanguage() {
-        super();
+        super(ECodeLanguage.PERL);
 
         Activator activator = Activator.getDefault();
         if (activator != null) {

@@ -23,7 +23,7 @@ package org.talend.designer.mapper.ui.visualmap.table;
 
 import java.util.List;
 
-import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.ComboBoxCellEditor;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.swt.SWT;
@@ -31,15 +31,16 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
-import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.ToolItem;
 import org.talend.commons.ui.image.EImage;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.commons.ui.swt.advanced.dataeditor.commands.ExtendedTableMoveCommand;
 import org.talend.commons.ui.swt.extended.table.AbstractExtendedTableViewer;
+import org.talend.commons.ui.swt.tableviewer.CellEditorValueAdapterFactory;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumn;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator.CELL_EDITOR_STATE;
+import org.talend.commons.ui.swt.tableviewer.behavior.CellEditorValueAdapter;
 import org.talend.commons.ui.swt.tableviewer.celleditor.DialogErrorForCellEditorListener;
 import org.talend.commons.ui.swt.tableviewer.data.ModifiedObjectInfo;
 import org.talend.commons.ui.swt.tableviewer.selection.ILineSelectionListener;
@@ -47,6 +48,9 @@ import org.talend.commons.ui.swt.tableviewer.selection.LineSelectionEvent;
 import org.talend.commons.utils.data.bean.IBeanPropertyAccessors;
 import org.talend.commons.utils.data.list.IListenableListListener;
 import org.talend.commons.utils.data.list.ListenableListEvent;
+import org.talend.core.model.metadata.MetadataTalendType;
+import org.talend.core.model.temp.ECodeLanguage;
+import org.talend.designer.mapper.language.LanguageProvider;
 import org.talend.designer.mapper.managers.MapperManager;
 import org.talend.designer.mapper.managers.UIManager;
 import org.talend.designer.mapper.model.table.AbstractDataMapTable;
@@ -109,6 +113,9 @@ public class VarsDataMapTableView extends DataMapTableView {
 
     @Override
     public void initColumnsOfTableColumns(final TableViewerCreator tableViewerCreatorForColumns) {
+
+        ECodeLanguage codeLanguage = LanguageProvider.getCurrentLanguage().getCodeLanguage();
+
         TableViewerCreatorColumn column = new TableViewerCreatorColumn(tableViewerCreatorForColumns);
         column.setTitle("Expression");
         column.setId(DataMapTableView.ID_EXPRESSION_COLUMN);
@@ -126,7 +133,44 @@ public class VarsDataMapTableView extends DataMapTableView {
         column.setModifiable(true);
         column.setDefaultInternalValue("");
         createExpressionCellEditor(tableViewerCreatorForColumns, column, new Zone[] { Zone.INPUTS, Zone.VARS }, false);
-        column.setWeight(COLUMN_EXPRESSION_SIZE_WEIGHT);
+        if (codeLanguage == ECodeLanguage.JAVA) {
+            column.setWeight(10);
+        } else {
+            column.setWeight(COLUMN_EXPRESSION_SIZE_WEIGHT);
+        }
+
+        if (codeLanguage == ECodeLanguage.JAVA) {
+
+            String[] arrayTalendTypes = new String[0];
+            try {
+                arrayTalendTypes = MetadataTalendType.loadTalendTypes("TALENDDEFAULT", false);
+            } catch (NoClassDefFoundError e) {
+                // shouln't be happend
+                e.printStackTrace();
+            } catch (ExceptionInInitializerError e) {
+                // shouln't be happend
+                e.printStackTrace();
+            }
+
+            CellEditorValueAdapter comboValueAdapter = CellEditorValueAdapterFactory.getComboAdapter();
+
+            column = new TableViewerCreatorColumn(tableViewerCreatorForColumns);
+            column.setTitle("Type");
+            column.setBeanPropertyAccessors(new IBeanPropertyAccessors<VarTableEntry, String>() {
+
+                public String get(VarTableEntry bean) {
+                    return bean.getType();
+                }
+
+                public void set(VarTableEntry bean, String value) {
+                    bean.setType(value);
+                }
+
+            });
+            column.setModifiable(true);
+            column.setWeight(10);
+            column.setCellEditor(new ComboBoxCellEditor(tableViewerCreatorForColumns.getTable(), arrayTalendTypes), comboValueAdapter);
+        }
 
         column = new TableViewerCreatorColumn(tableViewerCreatorForColumns);
         column.setTitle("Variable");
@@ -143,7 +187,11 @@ public class VarsDataMapTableView extends DataMapTableView {
 
         });
         column.setModifiable(true);
-        column.setWeight(COLUMN_NAME_SIZE_WEIGHT);
+        if (codeLanguage == ECodeLanguage.JAVA) {
+            column.setWeight(10);
+        } else {
+            column.setWeight(COLUMN_NAME_SIZE_WEIGHT);
+        }
         final TextCellEditor cellEditor = new TextCellEditor(tableViewerCreatorForColumns.getTable());
         cellEditor.addListener(new DialogErrorForCellEditorListener(cellEditor, column) {
 
@@ -164,7 +212,6 @@ public class VarsDataMapTableView extends DataMapTableView {
             }
 
         });
-
         column.setCellEditor(cellEditor);
 
     }

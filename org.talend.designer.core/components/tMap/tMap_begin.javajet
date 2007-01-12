@@ -4,7 +4,7 @@ package="org.talend.designer.codegen.translators"
 	java.util.ArrayList
 	java.util.List
 	org.talend.designer.codegen.config.CodeGeneratorArgument
-
+	org.talend.core.model.metadata.MetadataTalendType
 	org.talend.designer.mapper.MapperComponent
 	org.talend.designer.mapper.external.data.ExternalMapperData 
 	org.talend.designer.mapper.external.data.ExternalMapperTable

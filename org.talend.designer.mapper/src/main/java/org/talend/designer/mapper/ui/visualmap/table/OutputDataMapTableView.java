@@ -21,7 +21,6 @@
 // ============================================================================
 package org.talend.designer.mapper.ui.visualmap.table;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -205,8 +204,8 @@ public class OutputDataMapTableView extends DataMapTableView {
             public void selectionChanged(SelectionChangedEvent event) {
                 selectThisDataMapTableView();
                 UIManager uiManager = mapperManager.getUiManager();
-                uiManager.selectLinks(OutputDataMapTableView.this, uiManager.extractSelectedTableEntries(tableViewer
-                        .getSelection()), true, false);
+                uiManager.selectLinks(OutputDataMapTableView.this, uiManager.extractSelectedTableEntries(tableViewer.getSelection()), true,
+                        false);
             }
 
         });

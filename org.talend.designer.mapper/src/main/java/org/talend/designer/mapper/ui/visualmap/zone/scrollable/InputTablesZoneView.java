@@ -58,10 +58,9 @@ public class InputTablesZoneView extends TablesZoneView {
         formLayout.marginLeft = marginLeft;
         this.layout();
     }
-    
+
     public int getMarginLeft() {
         return formLayout.marginLeft;
     }
-    
-    
+
 }

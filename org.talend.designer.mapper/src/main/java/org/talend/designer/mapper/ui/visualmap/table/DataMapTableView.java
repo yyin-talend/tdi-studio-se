@@ -21,8 +21,6 @@
 // ============================================================================
 package org.talend.designer.mapper.ui.visualmap.table;
 
-import java.util.ArrayList;
-
 import org.eclipse.jface.fieldassist.IContentProposalProvider;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ICellEditorListener;

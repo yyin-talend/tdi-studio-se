@@ -22,6 +22,7 @@
 package org.talend.designer.mapper.language;
 
 import org.talend.commons.utils.data.text.StringHelper;
+import org.talend.core.model.temp.ECodeLanguage;
 
 /**
  * DOC amaumont class global comment. Detailled comment <br/>
@@ -32,6 +33,17 @@ import org.talend.commons.utils.data.text.StringHelper;
 public abstract class AbstractLanguage implements ILanguage {
 
     public static final String CARRIAGE_RETURN = "\n";
+
+    private ECodeLanguage codeLanguage;
+
+    /**
+     * DOC amaumont AbstractLanguage constructor comment.
+     * 
+     * @param perl
+     */
+    public AbstractLanguage(ECodeLanguage codeLanguage) {
+        this.codeLanguage = codeLanguage;
+    }
 
     /*
      * (non-Javadoc)
@@ -49,6 +61,15 @@ public abstract class AbstractLanguage implements ILanguage {
      */
     public String getLocation(String tableName) {
         return StringHelper.replacePrms(getTemplateTableVariable(), new Object[] { tableName });
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.mapper.language.ILanguage#getCodeLanguage()
+     */
+    public ECodeLanguage getCodeLanguage() {
+        return codeLanguage;
     }
 
 }

@@ -206,14 +206,11 @@ public class MapperManager {
     public void addLink(IMapperLink link) {
         linkManager.addLink(link);
         changeDependentSourcesAndTargetEntriesState(link.getPointLinkDescriptor2().getTableEntry(), link, false);
-        
-        if(
-                link.getPointLinkDescriptor2().getTableEntry() instanceof InputColumnTableEntry && 
-                linkManager.getCountOfInputLevels() > 4
-        ) {
+
+        if (link.getPointLinkDescriptor2().getTableEntry() instanceof InputColumnTableEntry && linkManager.getCountOfInputLevels() > 4) {
             uiManager.enlargeLeftMarginForInputTables(linkManager.getCountOfInputLevels());
         }
-        
+
     }
 
     /**
@@ -786,8 +783,7 @@ public class MapperManager {
      * @param inputEntry
      */
     public boolean checkEntryHasInvalidCheckedKey(InputColumnTableEntry inputEntry) {
-        return inputEntry.getMetadataColumn().isKey()
-                && checkEntryHasEmptyExpression(inputEntry);
+        return inputEntry.getMetadataColumn().isKey() && checkEntryHasEmptyExpression(inputEntry);
     }
 
     /**
@@ -796,10 +792,10 @@ public class MapperManager {
      * @param inputEntry
      */
     public boolean checkEntryHasInvalidUncheckedKey(InputColumnTableEntry inputEntry) {
-        return !inputEntry.getMetadataColumn().isKey()
-        && inputEntry.getExpression() != null && inputEntry.getExpression().trim().length() > 0;
+        return !inputEntry.getMetadataColumn().isKey() && inputEntry.getExpression() != null
+                && inputEntry.getExpression().trim().length() > 0;
     }
-    
+
     public boolean checkEntryHasEmptyExpression(ITableEntry entry) {
         return entry.getExpression() == null || entry.getExpression().trim().length() == 0;
     }
@@ -811,8 +807,5 @@ public class MapperManager {
         AutoMapper autoMapper = new AutoMapper(this);
         autoMapper.map();
     }
-    
-    
-    
-    
+
 }

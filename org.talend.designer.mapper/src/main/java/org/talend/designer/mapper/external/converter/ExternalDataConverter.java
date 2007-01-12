@@ -43,6 +43,7 @@ import org.talend.designer.mapper.model.table.OutputTable;
 import org.talend.designer.mapper.model.table.VarsTable;
 import org.talend.designer.mapper.model.tableentry.FilterTableEntry;
 import org.talend.designer.mapper.model.tableentry.ITableEntry;
+import org.talend.designer.mapper.model.tableentry.VarTableEntry;
 
 /**
  * Convert external data to internal data and conversely.
@@ -191,10 +192,14 @@ public class ExternalDataConverter {
             ExternalMapperTable externalMapperTable = new ExternalMapperTable();
             fillExternalTable(table, externalMapperTable);
             ArrayList<ExternalMapperTableEntry> perTableEntries = new ArrayList<ExternalMapperTableEntry>();
+            boolean isVarTable = table instanceof VarsTable;
             for (ITableEntry dataMapTableEntry : table.getColumnEntries()) {
                 ExternalMapperTableEntry externalMapperTableEntry = new ExternalMapperTableEntry();
                 externalMapperTableEntry.setExpression(dataMapTableEntry.getExpression());
                 externalMapperTableEntry.setName(dataMapTableEntry.getName());
+                if (isVarTable) {
+                    externalMapperTableEntry.setType(((VarTableEntry) dataMapTableEntry).getType());
+                }
                 perTableEntries.add(externalMapperTableEntry);
             }
             externalMapperTable.setMetadataTableEntries(perTableEntries);

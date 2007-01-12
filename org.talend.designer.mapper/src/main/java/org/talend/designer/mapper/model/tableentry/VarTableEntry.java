@@ -31,12 +31,33 @@ import org.talend.designer.mapper.model.table.AbstractDataMapTable;
  */
 public class VarTableEntry extends TableEntry implements IColumnEntry {
 
-    public VarTableEntry(AbstractDataMapTable abstractDataMapTable, String name, String expression) {
+    private String type;
+
+    public VarTableEntry(AbstractDataMapTable abstractDataMapTable, String name, String expression, String type) {
         super(abstractDataMapTable, name, expression);
+        this.type = type;
     }
 
     public VarTableEntry(AbstractDataMapTable abstractDataMapTable, String name) {
-        super(abstractDataMapTable, name, null);
+        this(abstractDataMapTable, name, null, null);
+    }
+
+    /**
+     * Getter for type.
+     * 
+     * @return the type
+     */
+    public String getType() {
+        return this.type;
+    }
+
+    /**
+     * Sets the type.
+     * 
+     * @param type the type to set
+     */
+    public void setType(String type) {
+        this.type = type;
     }
 
 }

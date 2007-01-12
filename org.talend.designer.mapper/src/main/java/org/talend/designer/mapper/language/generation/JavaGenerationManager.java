@@ -21,16 +21,11 @@
 // ============================================================================
 package org.talend.designer.mapper.language.generation;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import org.talend.commons.utils.data.text.StringHelper;
-import org.talend.designer.mapper.external.data.ExternalMapperTable;
 import org.talend.designer.mapper.external.data.ExternalMapperTableEntry;
 import org.talend.designer.mapper.language.ILanguage;
-import org.talend.designer.mapper.model.tableentry.TableEntryLocation;
+import org.talend.designer.mapper.language.generation.GenerationManager;
 import org.talend.designer.mapper.utils.DataMapExpressionParser;
 
 /**
@@ -41,11 +36,66 @@ import org.talend.designer.mapper.utils.DataMapExpressionParser;
  */
 public class JavaGenerationManager extends GenerationManager {
 
-    // private List<ExternalMapperTable> inputTables;
-
-
     public JavaGenerationManager(ILanguage language) {
         super(language);
+    }
+
+    /**
+     * DOC amaumont Comment method "buildLookupDataInstance".
+     * 
+     * @param tableName
+     * @param keysValues
+     * @param indent
+     * @return
+     */
+    public String buildLookupDataInstance(String name, String[] keysValues, int indent) {
+        String string = "";
+        string += "Class__" + name + " " + name + " = tHash_" + name + ".get( " + "\n" + indent(++indent)
+                + "new MultiKey( new Object[]{ \n";
+        indent++;
+        for (int i = 0; i < keysValues.length; i++) {
+            string += (i != 0 ? "\n" : "") + indent(indent) + keysValues[i] + ",";
+        }
+        string += "\n" + indent(--indent) + "})";
+        indent--;
+        string += "\n" + indent(indent) + " );";
+        return string;
+    }
+
+    /**
+     * DOC amaumont Comment method "buildConditions".
+     * 
+     * @param gm
+     * 
+     * @param constraintTableEntries
+     * @param expressionParser
+     * @return
+     */
+    public String buildConditions(List<ExternalMapperTableEntry> constraintTableEntries, DataMapExpressionParser expressionParser) {
+        int lstSize = constraintTableEntries.size();
+        StringBuilder stringBuilder = new StringBuilder();
+        String and = null;
+        for (int i = 0; i < lstSize; i++) {
+
+            String constraintExpression = ((ExternalMapperTableEntry) constraintTableEntries.get(i)).getExpression();
+            if (constraintExpression == null) {
+                continue;
+            }
+            if (and != null && constraintExpression.trim().length() > 0) {
+                stringBuilder.append(and);
+            }
+
+            if (lstSize > 1) {
+                stringBuilder.append(" ( " + constraintExpression + " ) ");
+            } else {
+                stringBuilder.append(constraintExpression);
+            }
+
+            if (and == null) {
+                and = language.getAndCondition();
+            }
+        }
+        return stringBuilder.toString();
     }
 
 }

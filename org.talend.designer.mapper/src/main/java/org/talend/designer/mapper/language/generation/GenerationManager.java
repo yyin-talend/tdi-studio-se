@@ -31,13 +31,11 @@ import org.talend.designer.mapper.external.data.ExternalMapperTableEntry;
 import org.talend.designer.mapper.language.ILanguage;
 import org.talend.designer.mapper.model.tableentry.TableEntryLocation;
 
-
 /**
- * DOC amaumont  class global comment. Detailled comment
- * <br/>
- *
+ * DOC amaumont class global comment. Detailled comment <br/>
+ * 
  * $Id$
- *
+ * 
  */
 public class GenerationManager {
 
@@ -45,11 +43,11 @@ public class GenerationManager {
 
     private HashMap<String, ExternalMapperTable> nameToVarsTable;
 
-
     protected ILanguage language;
-    
+
     /**
      * DOC amaumont GenerationManager constructor comment.
+     * 
      * @param language2
      */
     public GenerationManager(ILanguage language) {
@@ -145,6 +143,4 @@ public class GenerationManager {
         return !oneConstraintIsNotEmpty;
     }
 
-    
 }
-
