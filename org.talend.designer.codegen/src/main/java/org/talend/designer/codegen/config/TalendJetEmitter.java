@@ -119,6 +119,9 @@ public class TalendJetEmitter extends JETEmitter {
         }
     }
 
+    /**
+     * . 
+     */
     private static class TalendEclipseHelper
     {
       public static void initialize(Monitor monitor, TalendJetEmitter jetEmitter, String templateName, String templateLanguage, String codePart) throws JETException

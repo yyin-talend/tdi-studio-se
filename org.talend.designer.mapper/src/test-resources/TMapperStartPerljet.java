@@ -28,6 +28,7 @@ import org.talend.designer.mapper.external.data.ExternalMapperTable;
 import org.talend.designer.mapper.external.data.ExternalMapperTableEntry;
 import org.talend.designer.mapper.language.ILanguage;
 import org.talend.designer.mapper.language.LanguageProvider;
+import org.talend.designer.mapper.language.generation.GenerationManagerFactory;
 import org.talend.designer.mapper.language.generation.PerlGenerationManager;
 import org.talend.designer.mapper.model.metadata.MapperDataTestGenerator;
 
@@ -46,15 +47,12 @@ public class TMapperStartPerljet {
 
         // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        // List<IConnection> connections;
         ExternalMapperData data;
         if (node != null) {
-            // connections = (List<IConnection>) node.getIncomingConnections();
             data = (ExternalMapperData) node.getExternalData();
         } else {
             org.talend.designer.mapper.MapperMain.setStandAloneMode(true);
             MapperDataTestGenerator testGenerator = new MapperDataTestGenerator(LanguageProvider.getCurrentLanguage(), false);
-            // connections = testGenerator.getConnectionList();
             data = (ExternalMapperData) testGenerator.getExternalData();
         }
 
@@ -66,9 +64,9 @@ public class TMapperStartPerljet {
 
         int indent = 1;
 
-        ILanguage currentLanguage = LanguageProvider.getCurrentLanguage();
+        ILanguage currentLanguage = LanguageProvider.getJavaLanguage();
 
-        PerlGenerationManager gm = new PerlGenerationManager(currentLanguage);
+        PerlGenerationManager gm = (PerlGenerationManager) GenerationManagerFactory.getInstance().getGenerationManager(currentLanguage);
 
         StringBuilder sb = new StringBuilder();
 

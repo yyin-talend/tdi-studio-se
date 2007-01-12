@@ -1,0 +1,83 @@
+<%@ jet 
+package="org.talend.designer.codegen.translators" 
+	imports="
+	java.util.ArrayList
+	java.util.List
+	org.talend.designer.codegen.config.CodeGeneratorArgument
+
+	org.talend.designer.mapper.MapperComponent
+	org.talend.designer.mapper.external.data.ExternalMapperData 
+	org.talend.designer.mapper.external.data.ExternalMapperTable
+	org.talend.designer.mapper.external.data.ExternalMapperTableEntry
+	org.talend.designer.mapper.language.ILanguage
+	org.talend.designer.mapper.language.generation.GenerationManagerFactory
+	org.talend.designer.mapper.language.generation.JavaGenerationManager
+	org.talend.designer.mapper.language.LanguageProvider
+	org.talend.designer.mapper.model.metadata.MapperDataTestGenerator
+	" 
+	class="MapperBegin" 
+%>
+
+<%
+
+	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+	MapperComponent node = (MapperComponent) codeGenArgument.getArgument();
+	boolean stats = codeGenArgument.isStatistics();
+	
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        ExternalMapperData data;
+        if (node != null) {
+            data = (ExternalMapperData) node.getExternalData();
+        } else {
+            org.talend.designer.mapper.MapperMain.setStandAloneMode(true);
+            MapperDataTestGenerator testGenerator = new MapperDataTestGenerator(LanguageProvider.getCurrentLanguage(), false);
+            data = (ExternalMapperData) testGenerator.getExternalData();
+        }
+
+        List<ExternalMapperTable> varsTables = data.getVarsTables();
+
+        String cr = "\n";
+
+        int indent = 1;
+
+        ILanguage currentLanguage = LanguageProvider.getJavaLanguage();
+
+        JavaGenerationManager gm = (JavaGenerationManager) GenerationManagerFactory.getInstance().getGenerationManager(currentLanguage);
+
+        StringBuilder sb = new StringBuilder();
+
+        gm.setVarsTables(varsTables);
+
+        List<ExternalMapperTable> varTablesList = new ArrayList<ExternalMapperTable>(varsTables);
+
+        // constants
+        for (ExternalMapperTable table : varTablesList) {
+            List<ExternalMapperTableEntry> tableEntries = table.getMetadataTableEntries();
+            if (tableEntries == null) {
+                continue;
+            }
+            String tableName = table.getName();
+            
+            String className = "Class__"+ tableName;
+            
+            %>class  <%=className%>  {<%
+            int lstSize = tableEntries.size();
+            for (int i = 0; i < lstSize; i++) {
+                ExternalMapperTableEntry varTableEntry = (ExternalMapperTableEntry) tableEntries.get(i);
+                String javaType = null;
+                if(node != null) {
+                    javaType = MetadataTalendType.loadDBMSType(varTableEntry.getType(), "JAVA", false);
+                }
+                if(javaType == null) {
+                    javaType = "String";
+                }
+                %>		public <%= javaType %> <%= varTableEntry.getName() %>;<%
+            }
+            %>}
+            <%= className %> <%= tableName %> = new <%= className %>();<%
+        }
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+%>

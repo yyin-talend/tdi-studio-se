@@ -36,6 +36,7 @@ import org.talend.designer.mapper.external.data.ExternalMapperTable;
 import org.talend.designer.mapper.external.data.ExternalMapperTableEntry;
 import org.talend.designer.mapper.language.ILanguage;
 import org.talend.designer.mapper.language.LanguageProvider;
+import org.talend.designer.mapper.language.generation.GenerationManagerFactory;
 import org.talend.designer.mapper.language.generation.PerlGenerationManager;
 import org.talend.designer.mapper.language.generation.TableType;
 import org.talend.designer.mapper.model.metadata.MapperDataTestGenerator;
@@ -59,6 +60,7 @@ public class TMapperMainPerljet {
         // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // start of code to copy in template
 
+        ILanguage currentLanguage = LanguageProvider.getPerlLanguage();
         List<IConnection> connections;
         ExternalMapperData data;
         if (node != null) {
@@ -83,11 +85,9 @@ public class TMapperMainPerljet {
 
         int indent = 1;
 
-        ILanguage currentLanguage = LanguageProvider.getCurrentLanguage();
-
         DataMapExpressionParser expressionParser = new DataMapExpressionParser(currentLanguage);
 
-        PerlGenerationManager gm = new PerlGenerationManager(currentLanguage);
+        PerlGenerationManager gm = (PerlGenerationManager) GenerationManagerFactory.getInstance().getGenerationManager(currentLanguage);
 
         StringBuilder sb = new StringBuilder();
 
@@ -191,7 +191,7 @@ public class TMapperMainPerljet {
                 }
                 String varExpressionWithPrefixs = expressionParser.addTablePrefixToColumnName(varExpression, entryLocations);
 
-                sb.append(cr + gm.indent(indent) + "" + gm.getGeneratedCodeTableColumnVariable(varsTableName, varsColumnName) + " = "
+                sb.append(cr + gm.indent(indent) + gm.getGeneratedCodeTableColumnVariable(varsTableName, varsColumnName) + " = "
                         + varExpressionWithPrefixs + ";");
 
             }

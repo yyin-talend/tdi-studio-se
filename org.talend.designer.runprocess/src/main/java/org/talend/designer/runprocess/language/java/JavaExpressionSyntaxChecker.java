@@ -45,7 +45,7 @@ public class JavaExpressionSyntaxChecker implements ICodeSyntaxChecker {
      * @see org.talend.designer.core.language.perl.CodeSyntaxChecker#checkSyntax(java.lang.String)
      */
     public Problem checkSyntax(String expression) {
-
+        
         return null;
     }
 

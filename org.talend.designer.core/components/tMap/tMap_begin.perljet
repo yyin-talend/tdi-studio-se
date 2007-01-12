@@ -2,8 +2,6 @@
 package="org.talend.designer.codegen.translators" 
 	imports="
 	java.util.ArrayList
-	java.util.Collections
-	java.util.Comparator
 	java.util.List
 	org.talend.designer.codegen.config.CodeGeneratorArgument
 
@@ -12,12 +10,10 @@ package="org.talend.designer.codegen.translators"
 	org.talend.designer.mapper.external.data.ExternalMapperTable
 	org.talend.designer.mapper.external.data.ExternalMapperTableEntry
 	org.talend.designer.mapper.language.ILanguage
+	org.talend.designer.mapper.language.generation.GenerationManagerFactory
 	org.talend.designer.mapper.language.generation.PerlGenerationManager
 	org.talend.designer.mapper.language.LanguageProvider
 	org.talend.designer.mapper.model.metadata.MapperDataTestGenerator
-	org.talend.designer.mapper.model.tableentry.TableEntryLocation
-	org.talend.designer.mapper.utils.DataMapExpressionParser
-	org.talend.core.model.process.IConnection
 	" 
 	class="MapperBegin" 
 %>
@@ -30,15 +26,12 @@ package="org.talend.designer.codegen.translators"
 	
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        List<IConnection> connections;
         ExternalMapperData data;
         if (node != null) {
-            connections = (List<IConnection>) node.getIncomingConnections();
             data = (ExternalMapperData) node.getExternalData();
         } else {
             org.talend.designer.mapper.MapperMain.setStandAloneMode(true);
             MapperDataTestGenerator testGenerator = new MapperDataTestGenerator(LanguageProvider.getCurrentLanguage(), false);
-            connections = testGenerator.getConnectionList();
             data = (ExternalMapperData) testGenerator.getExternalData();
         }
 
@@ -46,13 +39,13 @@ package="org.talend.designer.codegen.translators"
         List<ExternalMapperTable> varsTables = data.getVarsTables();
         List<ExternalMapperTable> outputTables = data.getOutputTables();
 
-        String CR = "\n";
+        String cr = "\n";
 
         int indent = 1;
 
-        ILanguage currentLanguage = LanguageProvider.getCurrentLanguage();
+        ILanguage currentLanguage = LanguageProvider.getPerlLanguage();
 
-        GenerationManager gm = new GenerationManager(currentLanguage);
+        PerlGenerationManager gm = (PerlGenerationManager) GenerationManagerFactory.getInstance().getGenerationManager(currentLanguage);
 
         StringBuilder sb = new StringBuilder();
 
@@ -70,11 +63,11 @@ package="org.talend.designer.codegen.translators"
                 continue;
             }
             String tableName = table.getName();
-            sb.append(CR);
+            sb.append(cr);
             int lstSize = tableEntries.size();
             for (int i = 0; i < lstSize; i++) {
                 ExternalMapperTableEntry tableEntry = (ExternalMapperTableEntry) tableEntries.get(i);
-                sb.append(CR + gm.indent(indent) + "use constant " + tableName + "__" + tableEntry.getName() + " => " + i + ";");
+                sb.append(cr + gm.indent(indent) + "use constant " + tableName + "__" + tableEntry.getName() + " => " + i + ";");
             }
         }
 
@@ -82,15 +75,15 @@ package="org.talend.designer.codegen.translators"
         for (ExternalMapperTable table : outputTables) {
             List<ExternalMapperTableEntry> tableEntries = table.getMetadataTableEntries();
             String tableName = table.getName();
-            sb.append(CR + CR + gm.indent(indent) + "my @colnames_" + tableName + " = (");
+            sb.append(cr + cr + gm.indent(indent) + "my @colnames_" + tableName + " = (");
             int lstSize = tableEntries.size();
             indent++;
             for (int i = 0; i < lstSize; i++) {
                 ExternalMapperTableEntry tableEntry = (ExternalMapperTableEntry) tableEntries.get(i);
-                sb.append(CR + gm.indent(indent) + "'" + tableEntry.getName() + "',");
+                sb.append(cr + gm.indent(indent) + "'" + tableEntry.getName() + "',");
             }
             indent--;
-            sb.append(CR + gm.indent(indent) + ");");
+            sb.append(cr + gm.indent(indent) + ");");
         }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
