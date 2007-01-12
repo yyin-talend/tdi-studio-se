@@ -303,8 +303,7 @@ public class ProcessEditorInput extends RepositoryEditorInput {
      * @see org.eclipse.ui.IEditorInput#getToolTipText()
      */
     public String getToolTipText() {
-        // TODO Auto-generated method stub
-        return "ProcessEditorInput";
+        return this.getName();
     }
 
     /*
