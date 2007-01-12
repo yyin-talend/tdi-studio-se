@@ -58,18 +58,12 @@ public class OpenQueryAction extends OpenNewEditorAction {
     @Override
     public void run() {
         RepositoryNode node = (RepositoryNode) getStructuredSelection().getFirstElement();
-
-//        QueryRepositoryObject object = (QueryRepositoryObject) node.getObject();
-//        Query query = object.getQuery();
-
-        // Finds the root
-//        node = SQLBuilderRepositoryNodeManager.getRoot(node);
-        List<String> repositoryName = repositoryNodeManager.getALLReposotoryNodeNames();
-
-//        dialog.getConnParameters().setQueryObject(query);
-        ConnectionParameters  connectionParameters = new ConnectionParameters();
-        connectionParameters.setQuery(dialog.getConnParameters().getQuery());
-        dialog.openEditor(node, repositoryName, connectionParameters, false);
+        if (node.getProperties(EProperties.CONTENT_TYPE) == RepositoryNodeType.QUERY) {
+            List<String> repositoryName = repositoryNodeManager.getALLReposotoryNodeNames();
+            ConnectionParameters connectionParameters = new ConnectionParameters();
+            connectionParameters.setQuery(dialog.getConnParameters().getQuery());
+            dialog.openEditor(node, repositoryName, connectionParameters, false);
+        }
     }
 
     @Override
