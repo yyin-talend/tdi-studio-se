@@ -71,7 +71,8 @@
 <%
 	for (INode rootNode : rootNodes) {
 %>
-	<%=process.getName() %>.<%=rootNode.getUniqueName() %>Process();
+	<%=process.getName() %> <%=process.getName() %>Class = new <%=process.getName() %>();
+	<%=process.getName() %>Class.<%=rootNode.getUniqueName() %>Process();
 <%
 	}
 %>

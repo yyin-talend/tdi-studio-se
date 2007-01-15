@@ -7,3 +7,12 @@
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
         boolean trace =  codeGenArgument.isTrace();
 %>
+
+<%
+if (trace) {
+%>
+//PTODO MHIRT
+//sleep 2;
+<%
+}
+%>

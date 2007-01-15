@@ -11,7 +11,8 @@
 		org.talend.core.model.metadata.IMetadataColumn
 		org.talend.designer.codegen.config.CodeGeneratorArgument
 	" 
-	class="SubProcessHeader" 
+	class="SubProcessHeader"
+	skeleton="subprocess_header_java.skeleton"
 %>
 <%
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
@@ -32,11 +33,11 @@
 							hSet.add(conn.getName());
 %>
 
-private static class <%=conn.getName() %>Struct {
+private class <%=conn.getName() %>Struct {
 	<%
 		for (IMetadataColumn column: metadata.getListColumns()) {
     %>
-    	private static <%=column.getTalendType() %> <%=column.getLabel() %> = <%=(column.getTalendType().compareTo("int")==0)?"0":"null" %>;
+    	private <%=column.getTalendType() %> <%=column.getLabel() %> = <%=(column.getTalendType().compareTo("int")==0)?"0":"null" %>;
 	<%
 		}
     %>
@@ -50,12 +51,21 @@ private static class <%=conn.getName() %>Struct {
 	}
 %>
 
-public static void <%=subTree.getName() %>Process() {
+public void <%=subTree.getName() %>Process() {
 <%
 	// Call for RUN AFTER links
 	for (String after : subTree.getAfterSubProcesses()) {
 %>
 		<%=after %>Process();
+<%
+	}
+%>
+
+<%
+	List< ? extends IConnection> rootConns = subTree.getRootNode().getOutgoingConnections();
+	if ((rootConns!=null)&&(rootConns.size()>0)) {
+%>
+		<%=createPrivateClassInstance(subTree.getRootNode(), rootConns.get(0).getName())%>
 <%
 	}
 %>

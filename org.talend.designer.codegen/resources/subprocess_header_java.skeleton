@@ -1,0 +1,26 @@
+public class CLASS
+{
+    public String createPrivateClassInstance(INode n, String parentLastRoot) {
+        String toReturn = "";
+        // declare root structs (all main outgoing connections)
+        for (IConnection conn : n.getOutgoingConnections()) {
+            if (conn.getLineStyle().equals(EConnectionType.FLOW_MAIN)) {
+                if (n.isSubProcessStart() || !(n.getComponent().isDataAutoPropagated())) {
+                    // new Instance
+                    toReturn += conn.getName() + "Struct " + conn.getName() + " = new " + conn.getName()
+                            + "Struct();\n";
+                    parentLastRoot = conn.getName();
+                } else {
+                    // copy
+                    toReturn += parentLastRoot + "Struct " + conn.getName() + " = " + parentLastRoot + ";\n";
+                }
+                toReturn += createPrivateClassInstance(conn.getTarget(), parentLastRoot);                
+            }
+        }
+        return toReturn;
+    }
+		 
+    public String generate(Object argument) {
+        return "";
+    }
+}

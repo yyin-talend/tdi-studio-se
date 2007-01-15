@@ -79,7 +79,7 @@ if (!(node instanceof IExternalNode)) {
 								}
 								for (IMetadataColumn column : metadata.getListColumns()) {
 %>
-	<%=conn.getName() %>Struct.<%=column.getLabel() %> = <%=inputColName %>Struct.<%=column.getLabel() %>;
+	<%=conn.getName() %>.<%=column.getLabel() %> = <%=inputColName %>.<%=column.getLabel() %>;
 <% 
 								}
 							}
