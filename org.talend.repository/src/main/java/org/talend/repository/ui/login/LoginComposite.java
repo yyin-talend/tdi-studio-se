@@ -124,10 +124,6 @@ public class LoginComposite extends Composite {
 
     private Button importDemoProjectButton;
 
-    public static final Project NEW_PROJECT = new Project(Messages.getString("LoginComposite.newProject"));
-
-    public static final Project IMPORT_PROJECTS = new Project("<Import projects>");
-
     /**
      * Constructs a new LoginComposite.
      * 
