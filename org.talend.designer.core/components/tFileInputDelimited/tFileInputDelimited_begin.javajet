@@ -27,16 +27,12 @@
 
         final String IN_DELIM_<%=cid %> = <%=ElementParameterParser.getValue(node, "__FIELDSEPARATOR__") %>;
         java.io.BufferedReader in<%=cid %> = null;
-        try {
-            in<%=cid %> = new java.io.BufferedReader(new java.io.FileReader(<%=ElementParameterParser.getValue(node, "__FILENAME__") %>));
-        } catch (java.io.IOException e) {
-        }
+        in<%=cid %> = new java.io.BufferedReader(new java.io.FileReader(<%=ElementParameterParser.getValue(node, "__FILENAME__") %>));
 
         String str;
         java.util.StringTokenizer strToken;
-        try {
-            while ((str = in<%=cid %>.readLine()) != null) {
-                strToken = new java.util.StringTokenizer(str.trim(), IN_DELIM_<%=cid %>);
+        while ((str = in<%=cid %>.readLine()) != null) {
+            strToken = new java.util.StringTokenizer(str.trim(), IN_DELIM_<%=cid %>);
 <%
 	List< ? extends IConnection> conns = node.getOutgoingConnections();
 	String firstConnName = "";

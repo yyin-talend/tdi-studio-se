@@ -38,13 +38,8 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         );
 %>
 
-final String OUT_DELIM_<%=cid %> = <%=fieldSeparator %>;
-        java.io.BufferedWriter out<%=cid %> = null;
-        try {
-            out<%=cid %> = new java.io.BufferedWriter(new java.io.FileWriter(<%=filename %>));
-        } catch (java.io.IOException e) {
-        }
-
+		final String OUT_DELIM_<%=cid %> = <%=fieldSeparator %>;
+        java.io.BufferedWriter out<%=cid %> = new java.io.BufferedWriter(new java.io.FileWriter(<%=filename %>));
 <%
     }
 }
