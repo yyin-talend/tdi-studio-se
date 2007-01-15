@@ -236,10 +236,12 @@ public abstract class FolderHelper {
      */
     public boolean pathExists(FolderItem folder, String label) {
         for (Object child : ((FolderItem) folder.eContainer()).getChildren()) {
-            FolderItem folderChild = (FolderItem) child;
-            if (!folderChild.getProperty().getId().equals(folder.getProperty().getId())
-                    && folderChild.getProperty().getLabel().equals(label)) {
-                return true;
+            if (child instanceof FolderItem) {
+                FolderItem folderChild = (FolderItem) child;
+                if (!folderChild.getProperty().getId().equals(folder.getProperty().getId())
+                        && folderChild.getProperty().getLabel().equals(label)) {
+                    return true;
+                }
             }
         }
         return false;
