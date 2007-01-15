@@ -19,4 +19,7 @@
 <%
 	}
 %>
+	} catch(Exception e) {
+		throw new TalendException(this, e);
+	}
 }

@@ -70,43 +70,39 @@ public class <%=process.getName() %> {
 
 private static String jobName = "<%=codeGenArgument.getJobName() %>";
 private static String currentComponent = "";
-
-<%
-    if (process.getNodesOfType("tStatCatcher").size() > 0) {
-%>
-// PTODO MHIRT tStatCatcher
-//tStatCatcher_1_subprocess(
-//    message => 'begin',
-//);
-<%
-    }
-%>
+private static java.util.Hashtable<String, Long> start_Hash = new java.util.Hashtable<String, Long>(); 
+private static java.util.Hashtable<String, Long> end_Hash = new java.util.Hashtable<String, Long>();
+private static java.util.Hashtable<String, Boolean> ok_Hash = new java.util.Hashtable<String, Boolean>();
 
 private class TalendException extends Exception {
-	private TalendException() {
-		super();
+	private Exception e = null;
+	private <%=process.getName() %> c = null;
+	
+	private TalendException(<%=process.getName() %> c, Exception e) {
+		this.e = e;
+		this.c = c;
 	}
 	
 	@Override
-    public void printStackTrace() {
-        System.err.println("Exception in component "+currentComponent);
-        super.printStackTrace();
-        
-        try {
-            java.lang.reflect.Method m = this.getClass().getMethod(currentComponent+"_error", (Class)null);
-            m.invoke(m, (Object[])null);
-        } catch (java.lang.SecurityException e) {
-            e.printStackTrace();
-        } catch (java.lang.NoSuchMethodException e) {
-            e.printStackTrace();
-        } catch (java.lang.IllegalArgumentException e) {
-            e.printStackTrace();
-        } catch (java.lang.IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (java.lang.reflect.InvocationTargetException e) {
-            e.printStackTrace();
-        }       
-    }
+	public void printStackTrace() {
+		System.err.println("Exception in component " + currentComponent);
+		super.printStackTrace();
+		try {
+			for (java.lang.reflect.Method m : this.getClass().getEnclosingClass().getMethods()) {
+				if (m.getName().compareTo(currentComponent + "_error") == 0) {
+					m.invoke(c, (Object[])null);
+				}
+			}
+		} catch (java.lang.SecurityException e) {
+			this.e.printStackTrace();
+		} catch (java.lang.IllegalArgumentException e) {
+			this.e.printStackTrace();
+		} catch (java.lang.IllegalAccessException e) {
+			this.e.printStackTrace();
+		} catch (java.lang.reflect.InvocationTargetException e) {
+			this.e.printStackTrace();
+		}
+	}
 }
 
 <% // Methods for RUN IF Error links %>
@@ -114,7 +110,7 @@ private class TalendException extends Exception {
 	for (INode node : processNodes) {
 		if (node.isActivate()) {
 %>
-private void <%=node.getUniqueName() %>_error() {
+public void <%=node.getUniqueName() %>_error() {
 <%
 		List< ? extends IConnection> conns = node.getOutgoingConnections();
     	for (IConnection conn : conns) {

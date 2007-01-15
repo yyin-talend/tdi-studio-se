@@ -9,10 +9,10 @@
 %>
 
 <%
+//PTODO MHIRT
 if (trace) {
 %>
-//PTODO MHIRT
-//sleep 2;
+sleep 2;
 <%
 }
 %>

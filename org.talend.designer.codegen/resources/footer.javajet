@@ -51,23 +51,34 @@
 // }
 
 <%
-        if (stats) {
+		// PTODO MHIRT Implements Stats
+		if (stats) {
 %>
-// PTODO MHIRT Stats début
-// StartThreadStat();
+	StartThreadStat();
 <%
-       }
+		}
 %>
 
 <%
-        if (trace) {
+		// PTODO MHIRT Implements trace
+		if (trace) {
 %>
-// PTODO MHIRT trace
-// StartTrace($opt{trace_port}, '127.0.0.1');
+	StartTrace($opt{trace_port}, '127.0.0.1');
 <%
-       }
+		}
 %>
+
+<%
+		// PTODO MHIRT Implements tStatCatcher
+    	if ((1!=1)&&(process.getNodesOfType("tStatCatcher").size() > 0)) {
+%>
+	tStatCatcher_1_subprocess('begin');
+<%
+    	}
+%>
+
 	long start = java.util.Calendar.getInstance().getTimeInMillis();
+	try {
 <%
 	for (INode rootNode : rootNodes) {
 %>
@@ -75,43 +86,33 @@
 	<%=process.getName() %>Class.<%=rootNode.getUniqueName() %>Process();
 <%
 	}
-%>
-    
+%>  
+	} catch(TalendException e) {
+		e.printStackTrace();
+	} 
     long end = java.util.Calendar.getInstance().getTimeInMillis();
-    System.out.println((end-start)+" milliseconds");
+    
+    if (watch) {
+    	System.out.println((end-start)+" milliseconds");
+    }
+    
 <%
+		// PTODO MHIRT Implements Stats
         if (stats) {
 %>
-// PTODO MHIRT Stats fin
-// StopThreadStat();
+	StopThreadStat();
 <%
         }
 %>
 
 <%
+		// PTODO MHIRT Implements tStatsCatcher
         if (process.getNodesOfType("tStatCatcher").size() > 0) {
 %>
-// PTODO MHIRT tStatsCatcher
-//tStatCatcher_1_subprocess(
-//    message => 'end',
-//);
-
-//tStatCatcher_1_subprocess(
-//    message => sprintf(
-//        '%s seconds',
-//        $_globals{duration}
-//    ),
-//);
-
+	tStatCatcher_1_subprocess('end');
+	tStatCatcher_1_subprocess(sprintf('%s seconds',$_globals{duration}));
 <%
         }
 %>
-
-//if (defined $opt{watch}) {
-//    printf(
-//        "===\nexecution time: %s seconds\n===\n",
-//        $_globals{duration}
-//    );
-//}
 	}
 }

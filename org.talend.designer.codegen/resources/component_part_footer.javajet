@@ -92,16 +92,15 @@ if (!(node instanceof IExternalNode)) {
 	if (codePart.equals(ECodePart.END)) {
 %>
 
-//$_globals{<%=node.getUniqueName() %>}{OK} = true;
+ok_Hash.put("<%=node.getUniqueName() %>", true);
+
 
 <%
 		String statCatcher = ElementParameterParser.getValue(node,"__TSTATCATCHER_STATS__");
 		if ((node.getProcess().getNodesOfType("tStatCatcher").size() > 0) & (statCatcher.equals("true"))) {
 %>
-//tStatCatcher_1_subprocess(
-//    message => 'end',
-//    origin  => '<%=node.getUniqueName() %>',
-//);
+tStatCatcher_1_subprocess('end','<%=node.getUniqueName() %>');
+end_Hash.put("<%=node.getUniqueName() %>", java.util.Calendar.getInstance().getTime());
 
 //tStatCatcher_1_subprocess(
 //    message => sprintf(
