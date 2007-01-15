@@ -51,8 +51,8 @@ public class CreateDocumentationAction extends AContextualAction {
     public CreateDocumentationAction() {
         super();
 
-        setText("Create documentation");
-        setToolTipText("Create a new documentation item");
+        setText("Add documentation");
+        setToolTipText("Add a new documentation item");
         setImageDescriptor(CoreImageProvider.getImageDesc(ERepositoryObjectType.DOCUMENTATION));
     }
 

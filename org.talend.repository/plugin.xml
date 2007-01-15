@@ -78,7 +78,7 @@
             class="org.talend.repository.ui.actions.documentation.CreateDocumentationAction"
             id="org.talend.repository.actions.createdocumentation"
             level="10"
-            name="Create documentation"/>
+            name="Add documentation"/>
       <Action
             class="org.talend.repository.ui.actions.documentation.OpenDocumentationAction"
             id="org.talend.repository.actions.opendocumentation"
