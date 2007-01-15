@@ -50,7 +50,7 @@ public class JavaGenerationManager extends GenerationManager {
      */
     public String buildLookupDataInstance(String name, String[] keysValues, int indent) {
         String string = "";
-        string += "Class__" + name + " " + name + " = tHash_" + name + ".get( " + "\n" + indent(++indent)
+        string += name + "Struct" + " " + name + " = tHash_" + name + ".get( " + "\n" + indent(++indent)
                 + "new MultiKey( new Object[]{ \n";
         indent++;
         for (int i = 0; i < keysValues.length; i++) {

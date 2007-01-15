@@ -81,28 +81,27 @@ public class TMapperStartJavajet {
             }
             String tableName = table.getName();
 
-            String className = "Class__" + tableName;
+            String instanceVarName = tableName + "__" + node.getUniqueName();
+            String className = instanceVarName + "__Struct";
 
             sb.append(cr + "class " + className + " {");
             int lstSize = tableEntries.size();
             for (int i = 0; i < lstSize; i++) {
                 ExternalMapperTableEntry varTableEntry = (ExternalMapperTableEntry) tableEntries.get(i);
-                String javaType = null;
-                if (node != null) {
-                    javaType = MetadataTalendType.loadDBMSType(varTableEntry.getType(), "JAVA", false);
-                }
+                String javaType = varTableEntry.getType();
                 if (javaType == null) {
                     javaType = "String";
                 }
                 sb.append(cr + gm.indent(indent) + "public " + javaType + " " + varTableEntry.getName() + ";");
             }
             sb.append(cr + "}");
-            sb.append(cr + className + " " + tableName + " = new " + className + "();");
+            sb.append(cr + className + " " + instanceVarName + " = new " + className + "();");
         }
 
         // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         System.out.println(sb);
     }
+
 
 }

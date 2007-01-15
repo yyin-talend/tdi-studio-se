@@ -41,10 +41,13 @@ import org.talend.designer.mapper.language.ILanguage;
 import org.talend.designer.mapper.language.LanguageProvider;
 import org.talend.designer.mapper.managers.MapperManager;
 import org.talend.designer.mapper.managers.UIManager;
+import org.talend.designer.mapper.model.table.InputTable;
+import org.talend.designer.mapper.model.table.VarsTable;
 import org.talend.designer.mapper.model.tableentry.IColumnEntry;
 import org.talend.designer.mapper.model.tableentry.ITableEntry;
 import org.talend.designer.mapper.model.tableentry.InputColumnTableEntry;
 import org.talend.designer.mapper.model.tableentry.TableEntryLocation;
+import org.talend.designer.mapper.model.tableentry.VarTableEntry;
 import org.talend.designer.mapper.ui.visualmap.table.DataMapTableView;
 import org.talend.designer.mapper.ui.visualmap.zone.Zone;
 import org.talend.designer.mapper.ui.visualmap.zone.scrollable.TablesZoneView;
@@ -577,7 +580,15 @@ public class CompleteDropTargetListener extends DefaultDropTargetListener {
     private int insertNewVarEntry(ILanguage currentLanguage, DataMapTableView dataMapTableViewTarget, int currentIndex,
             ITableEntry tableEntrySource, String columnName) {
         ITableEntry dataMapTableEntry;
-        dataMapTableEntry = mapperManager.addNewVarEntry(dataMapTableViewTarget, columnName, currentIndex++);
+
+        String type = null;
+        if (tableEntrySource.getParent() instanceof InputTable) {
+            type = ((InputColumnTableEntry) tableEntrySource).getMetadataColumn().getTalendType();
+        } else if (tableEntrySource.getParent() instanceof VarsTable) {
+            type = ((VarTableEntry) tableEntrySource).getType();
+        }
+
+        dataMapTableEntry = mapperManager.addNewVarEntry(dataMapTableViewTarget, columnName, currentIndex++, type);
         String location = currentLanguage.getLocation(tableEntrySource.getParentName(), tableEntrySource.getName());
         dataMapTableEntry.setExpression(location + " ");
         return currentIndex;

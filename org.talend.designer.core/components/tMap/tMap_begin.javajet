@@ -59,23 +59,26 @@ package="org.talend.designer.codegen.translators"
             }
             String tableName = table.getName();
             
-            String className = "Class__"+ tableName;
+            String instanceVarName = tableName + "__" + node.getUniqueName();
+            String className = instanceVarName + "__Struct";
             
-            %>class  <%=className%>  {<%
+%>class  <%=className%>  {
+
+<%
             int lstSize = tableEntries.size();
             for (int i = 0; i < lstSize; i++) {
                 ExternalMapperTableEntry varTableEntry = (ExternalMapperTableEntry) tableEntries.get(i);
-                String javaType = null;
-                if(node != null) {
-                    javaType = MetadataTalendType.loadDBMSType(varTableEntry.getType(), "JAVA", false);
-                }
-                if(javaType == null) {
+                String javaType = varTableEntry.getType();
+                if (javaType == null) {
                     javaType = "String";
                 }
-                %>		public <%= javaType %> <%= varTableEntry.getName() %>;<%
+%>	public <%= javaType %> <%= varTableEntry.getName() %>;
+
+<%
             }
-            %>}
-            <%= className %> <%= tableName %> = new <%= className %>();<%
+%>}
+<%= className %> <%= instanceVarName %> = new <%= className %>();
+<%
         }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

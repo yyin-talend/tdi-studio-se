@@ -418,14 +418,15 @@ public class MapperManager {
      * MetadataEditors are not active, call it.
      * 
      * @param dataMapTableView
-     * @param metadataColumn, can be null if added in VarsTable
      * @param index
+     * @param type TODO
+     * @param metadataColumn, can be null if added in VarsTable
      */
-    public VarTableEntry addNewVarEntry(DataMapTableView dataMapTableView, String name, Integer index) {
+    public VarTableEntry addNewVarEntry(DataMapTableView dataMapTableView, String name, Integer index, String type) {
         AbstractDataMapTable abstractDataMapTable = dataMapTableView.getDataMapTable();
         VarTableEntry dataMapTableEntry = null;
         if (dataMapTableView.getZone() == Zone.VARS) {
-            dataMapTableEntry = new VarTableEntry(abstractDataMapTable, name);
+            dataMapTableEntry = new VarTableEntry(abstractDataMapTable, name, null, type);
         } else {
             throw new IllegalArgumentException("Use other signature method to add entry");
         }

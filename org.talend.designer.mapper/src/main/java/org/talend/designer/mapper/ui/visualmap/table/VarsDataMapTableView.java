@@ -45,6 +45,7 @@ import org.talend.commons.ui.swt.tableviewer.celleditor.DialogErrorForCellEditor
 import org.talend.commons.ui.swt.tableviewer.data.ModifiedObjectInfo;
 import org.talend.commons.ui.swt.tableviewer.selection.ILineSelectionListener;
 import org.talend.commons.ui.swt.tableviewer.selection.LineSelectionEvent;
+import org.talend.commons.ui.swt.tableviewer.tableeditor.CheckboxTableEditorContent;
 import org.talend.commons.utils.data.bean.IBeanPropertyAccessors;
 import org.talend.commons.utils.data.list.IListenableListListener;
 import org.talend.commons.utils.data.list.ListenableListEvent;
@@ -134,16 +135,38 @@ public class VarsDataMapTableView extends DataMapTableView {
         column.setDefaultInternalValue("");
         createExpressionCellEditor(tableViewerCreatorForColumns, column, new Zone[] { Zone.INPUTS, Zone.VARS }, false);
         if (codeLanguage == ECodeLanguage.JAVA) {
-            column.setWeight(10);
+            column.setWeight(40);
         } else {
             column.setWeight(COLUMN_EXPRESSION_SIZE_WEIGHT);
         }
 
         if (codeLanguage == ECodeLanguage.JAVA) {
 
+//            column = new TableViewerCreatorColumn(tableViewerCreatorForColumns);
+//            column.setTitle("Nullable");
+//            column.setBeanPropertyAccessors(new IBeanPropertyAccessors<VarTableEntry, Boolean>() {
+//                
+//                public Boolean get(VarTableEntry bean) {
+//                    return bean.isNullable() ? Boolean.TRUE : Boolean.FALSE;
+//                }
+//                
+//                public void set(VarTableEntry bean, Boolean value) {
+//                    bean.setNullable(value.booleanValue());
+//                }
+//                
+//            });
+//            column.setModifiable(true);
+//            column.setWidth(12);
+//            column.setDisplayedValue("");
+//            column.setResizable(false);
+//            CheckboxTableEditorContent checkboxTableEditorContent = new CheckboxTableEditorContent();
+//            checkboxTableEditorContent.setToolTipText("Nullable");
+//            column.setTableEditorContent(checkboxTableEditorContent);
+//            column.setToolTipHeader("Nullable");
+            
             String[] arrayTalendTypes = new String[0];
             try {
-                arrayTalendTypes = MetadataTalendType.loadTalendTypes("TALENDDEFAULT", false);
+                arrayTalendTypes = MetadataTalendType.loadTalendTypes(MetadataTalendType.LANGUAGE_JAVA, false);
             } catch (NoClassDefFoundError e) {
                 // shouln't be happend
                 e.printStackTrace();
@@ -170,6 +193,7 @@ public class VarsDataMapTableView extends DataMapTableView {
             column.setModifiable(true);
             column.setWeight(10);
             column.setCellEditor(new ComboBoxCellEditor(tableViewerCreatorForColumns.getTable(), arrayTalendTypes), comboValueAdapter);
+            
         }
 
         column = new TableViewerCreatorColumn(tableViewerCreatorForColumns);
@@ -188,7 +212,7 @@ public class VarsDataMapTableView extends DataMapTableView {
         });
         column.setModifiable(true);
         if (codeLanguage == ECodeLanguage.JAVA) {
-            column.setWeight(10);
+            column.setWeight(20);
         } else {
             column.setWeight(COLUMN_NAME_SIZE_WEIGHT);
         }
@@ -295,7 +319,7 @@ public class VarsDataMapTableView extends DataMapTableView {
                 } else {
                     throw new UnsupportedOperationException("Can't create new column, case not found");
                 }
-                mapperManager.addNewVarEntry(VarsDataMapTableView.this, varName, indexInsert);
+                mapperManager.addNewVarEntry(VarsDataMapTableView.this, varName, indexInsert, "String");
                 VarsDataMapTableView.this.changeSize(VarsDataMapTableView.this.getPreferredSize(true, true, false), true, true);
                 changeMinimizeState(false);
                 tableViewerCreatorForColumns.getTableViewer().refresh();

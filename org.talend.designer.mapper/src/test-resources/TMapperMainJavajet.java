@@ -172,6 +172,12 @@ public class TMapperMainJavajet {
                 // sb.append(cr + gm.indent(indent) + gm.buildNewArrayDeclaration(varsTable.getName(), indent));
             }
             String varsTableName = varsTable.getName();
+            sb.append(cr + gm.indent(indent) + "{");
+            indent++;
+            String instanceVarName = varsTableName + "__" + node.getUniqueName();
+            String className = instanceVarName + "__Struct";
+
+            sb.append(cr + gm.indent(indent) + className + " " + varsTableName + " = " + instanceVarName + ";");
             for (ExternalMapperTableEntry varsTableEntry : varsTableEntries) {
                 String varsColumnName = varsTableEntry.getName();
                 String varExpression = varsTableEntry.getExpression();
@@ -189,6 +195,8 @@ public class TMapperMainJavajet {
                         + varExpression + ";");
 
             }
+            indent--;
+            sb.append(cr + gm.indent(indent) + "}");
         }
         sb.append(cr + gm.indent(indent) + "// ###############################");
         // /////////////////////////////////////////////////////////////////////////////////////////////////////
