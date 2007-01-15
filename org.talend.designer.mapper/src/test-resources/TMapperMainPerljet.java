@@ -31,6 +31,7 @@ import org.talend.core.model.process.AbstractExternalNode;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IExternalNode;
+import org.talend.designer.mapper.MapperMain;
 import org.talend.designer.mapper.external.data.ExternalMapperData;
 import org.talend.designer.mapper.external.data.ExternalMapperTable;
 import org.talend.designer.mapper.external.data.ExternalMapperTableEntry;
@@ -69,7 +70,7 @@ public class TMapperMainPerljet {
             data = (ExternalMapperData) node.getExternalData();
         } else {
             // Stand alone / tests
-            org.talend.designer.mapper.MapperMain.setStandAloneMode(true);
+            MapperMain.setStandAloneMode(true);
             MapperDataTestGenerator testGenerator = new MapperDataTestGenerator(LanguageProvider.getCurrentLanguage(), false);
             connections = testGenerator.getConnectionList();
             data = (ExternalMapperData) testGenerator.getExternalData();

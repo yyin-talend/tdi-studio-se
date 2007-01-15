@@ -5,6 +5,7 @@ package="org.talend.designer.codegen.translators"
 	java.util.List
 	org.talend.designer.codegen.config.CodeGeneratorArgument
 
+	org.talend.designer.mapper.MapperMain
 	org.talend.designer.mapper.MapperComponent
 	org.talend.designer.mapper.external.data.ExternalMapperData 
 	org.talend.designer.mapper.external.data.ExternalMapperTable
@@ -30,7 +31,7 @@ package="org.talend.designer.codegen.translators"
         if (node != null) {
             data = (ExternalMapperData) node.getExternalData();
         } else {
-            org.talend.designer.mapper.MapperMain.setStandAloneMode(true);
+            MapperMain.setStandAloneMode(true);
             MapperDataTestGenerator testGenerator = new MapperDataTestGenerator(LanguageProvider.getCurrentLanguage(), false);
             data = (ExternalMapperData) testGenerator.getExternalData();
         }

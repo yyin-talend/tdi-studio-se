@@ -5,6 +5,7 @@ package="org.talend.designer.codegen.translators"
 	java.util.List
 	org.talend.designer.codegen.config.CodeGeneratorArgument
 	org.talend.core.model.metadata.MetadataTalendType
+	org.talend.designer.mapper.MapperMain
 	org.talend.designer.mapper.MapperComponent
 	org.talend.designer.mapper.external.data.ExternalMapperData 
 	org.talend.designer.mapper.external.data.ExternalMapperTable
@@ -30,22 +31,16 @@ package="org.talend.designer.codegen.translators"
         if (node != null) {
             data = (ExternalMapperData) node.getExternalData();
         } else {
-            org.talend.designer.mapper.MapperMain.setStandAloneMode(true);
+            MapperMain.setStandAloneMode(true);
             MapperDataTestGenerator testGenerator = new MapperDataTestGenerator(LanguageProvider.getCurrentLanguage(), false);
             data = (ExternalMapperData) testGenerator.getExternalData();
         }
 
         List<ExternalMapperTable> varsTables = data.getVarsTables();
 
-        String cr = "\n";
-
-        int indent = 1;
-
         ILanguage currentLanguage = LanguageProvider.getJavaLanguage();
 
         JavaGenerationManager gm = (JavaGenerationManager) GenerationManagerFactory.getInstance().getGenerationManager(currentLanguage);
-
-        StringBuilder sb = new StringBuilder();
 
         gm.setVarsTables(varsTables);
 

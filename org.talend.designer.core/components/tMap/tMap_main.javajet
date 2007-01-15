@@ -8,6 +8,7 @@
 	java.util.HashMap
 	org.talend.designer.codegen.config.CodeGeneratorArgument
 
+	org.talend.designer.mapper.MapperMain
 	org.talend.designer.mapper.MapperComponent
 	org.talend.designer.mapper.external.data.ExternalMapperData
 	org.talend.designer.mapper.external.data.ExternalMapperTable
@@ -44,7 +45,7 @@
             data = (ExternalMapperData) node.getExternalData();
         } else {
             // Stand alone / tests
-            org.talend.designer.mapper.MapperMain.setStandAloneMode(true);
+            MapperMain.setStandAloneMode(true);
             MapperDataTestGenerator testGenerator = new MapperDataTestGenerator(currentLanguage, false);
             connections = testGenerator.getConnectionList();
             data = (ExternalMapperData) testGenerator.getExternalData();

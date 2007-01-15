@@ -22,8 +22,8 @@
 import java.util.ArrayList;
 import java.util.List;
 
-import org.talend.core.model.metadata.MetadataTalendType;
 import org.talend.core.model.process.AbstractExternalNode;
+import org.talend.designer.mapper.MapperMain;
 import org.talend.designer.mapper.external.data.ExternalMapperData;
 import org.talend.designer.mapper.external.data.ExternalMapperTable;
 import org.talend.designer.mapper.external.data.ExternalMapperTableEntry;
@@ -52,7 +52,7 @@ public class TMapperStartJavajet {
         if (node != null) {
             data = (ExternalMapperData) node.getExternalData();
         } else {
-            org.talend.designer.mapper.MapperMain.setStandAloneMode(true);
+            MapperMain.setStandAloneMode(true);
             MapperDataTestGenerator testGenerator = new MapperDataTestGenerator(LanguageProvider.getCurrentLanguage(), false);
             data = (ExternalMapperData) testGenerator.getExternalData();
         }
