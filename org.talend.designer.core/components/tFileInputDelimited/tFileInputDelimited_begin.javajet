@@ -39,12 +39,30 @@
                 strToken = new java.util.StringTokenizer(str.trim(), IN_DELIM_<%=cid %>);
 <%
 	List< ? extends IConnection> conns = node.getOutgoingConnections();
-	for (IConnection conn : conns) {
-		if (conn.getLineStyle().equals(EConnectionType.FLOW_MAIN)) {
-			for (IMetadataColumn column: metadata.getListColumns()) {
+	String firstConnName = "";
+	if (conns!=null) {
+		if (conns.size()>0) {
+			IConnection conn = conns.get(0);
+			firstConnName = conn.getName();
+			
+			if (conn.getLineStyle().equals(EConnectionType.FLOW_MAIN)) {
+				for (IMetadataColumn column: metadata.getListColumns()) {
 %>
-	<%=conn.getName() %>Struct.<%=column.getLabel() %> = <%=((column.getTalendType().compareTo("int")==0)?"Integer.parseInt(":"") %>strToken.nextToken()<%=((column.getTalendType().compareTo("int")==0)?")":"") %>;
+	<%=conn.getName() %>.<%=column.getLabel() %> = <%=((column.getTalendType().compareTo("int")==0)?"Integer.parseInt(":"") %>strToken.nextToken()<%=((column.getTalendType().compareTo("int")==0)?")":"") %>;
 <%
+				}
+			}
+		}
+		if (conns.size()>1) {
+			for (int i=1;i<conns.size();i++) {
+				IConnection conn = conns.get(i);
+				if (conn.getLineStyle().equals(EConnectionType.FLOW_MAIN)) {
+					for (IMetadataColumn column: metadata.getListColumns()) {
+%>
+	<%=conn.getName() %>.<%=column.getLabel() %> = <%=firstConnName %>.<%=column.getLabel() %>;
+<%
+					}
+				}
 			}
 		}
 	}

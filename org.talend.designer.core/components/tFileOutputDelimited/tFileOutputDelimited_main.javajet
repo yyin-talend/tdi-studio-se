@@ -40,12 +40,12 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 %>
 
 <%
-	List< ? extends IConnection> conns = node.getOutgoingConnections();
+	List< ? extends IConnection> conns = node.getIncomingConnections();
 	for (IConnection conn : conns) {
 		if (conn.getLineStyle().equals(EConnectionType.FLOW_MAIN)) {
 			for (IMetadataColumn column: metadata.getListColumns()) {
 %>
-	out<%=cid %>.write(<%=conn.getName() %>Struct.<%=column.getLabel() %>+ OUT_DELIM_<%=cid %>);
+	out<%=cid %>.write(<%=conn.getName() %>.<%=column.getLabel() %>+ OUT_DELIM_<%=cid %>);
 <%
 			}
 		}
