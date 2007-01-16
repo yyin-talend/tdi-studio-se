@@ -111,7 +111,7 @@ public class TextPropertyChangeUtil {
         final Runnable applyProperty = new Runnable() {
 
             public void run() {
-                TimeMeasure.start("PropertyChangeCommand()");
+                TimeMeasure.begin("PropertyChangeCommand()");
 
                 Command cmd = new PropertyChangeCommand(textElement.getElement(), textElement.getPropertyName(), currentText);
                 cmdStack.execute(cmd);
@@ -127,7 +127,7 @@ public class TextPropertyChangeUtil {
 
         @Override
         public void run() {
-            TimeMeasure.start("run()");
+            // TimeMeasure.begin("run()");
             try {
                 long currentTime;
                 do {
@@ -142,7 +142,7 @@ public class TextPropertyChangeUtil {
             } catch (Throwable t) {
                 t.printStackTrace();
             }
-            TimeMeasure.end("run()");
+            // TimeMeasure.end("run()");
         }
 
         public void setCurrentText(String currentText) {
