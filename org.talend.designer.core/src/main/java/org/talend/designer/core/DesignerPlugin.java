@@ -27,8 +27,6 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.BundleException;
-import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.ui.swt.colorstyledtext.jedit.Modes;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.IService;

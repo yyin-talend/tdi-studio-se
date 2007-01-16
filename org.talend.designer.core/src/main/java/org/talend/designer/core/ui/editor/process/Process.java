@@ -776,6 +776,15 @@ public class Process extends Element implements IProcess {
      * @param process
      */
     public void loadXmlFile(ProcessType process) {
+        loadXmlFile(process, false);
+    }
+
+    /**
+     * DOC mhelleboid Comment method "loadXmlFile".
+     * 
+     * @param process
+     */
+    public void loadXmlFile(ProcessType process, boolean noCheck) {
         init();
         Hashtable<String, Node> nodesHashtable = new Hashtable<String, Node>();
 
@@ -783,7 +792,7 @@ public class Process extends Element implements IProcess {
         loadProcessProperties(process);
 
         try {
-            loadNodes(process, nodesHashtable);
+            loadNodes(process, nodesHashtable, noCheck);
         } catch (PersistenceException e) {
             // there are some components unloaded.
             return;
@@ -839,7 +848,8 @@ public class Process extends Element implements IProcess {
 
     private List<String> uploadedNodeNames = null;
 
-    private void loadNodes(ProcessType process, Hashtable<String, Node> nodesHashtable) throws PersistenceException {
+    private void loadNodes(ProcessType process, Hashtable<String, Node> nodesHashtable, boolean noCheck)
+            throws PersistenceException {
         EList nodeList;
         NodeType nType;
         nodeList = process.getNode();
@@ -864,8 +874,10 @@ public class Process extends Element implements IProcess {
 
             nc.setData(nType.getBinaryData(), nType.getStringData());
 
-            checkNodeSchemaFromRepository(nc, nType);
-            checkNodePropertiesFromRepository(nc);
+            if (!noCheck) {
+                checkNodeSchemaFromRepository(nc, nType);
+                checkNodePropertiesFromRepository(nc);
+            }
 
             addNodeContainer(new NodeContainer(nc));
             nodesHashtable.put(nc.getUniqueName(), nc);

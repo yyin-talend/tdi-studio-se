@@ -19,26 +19,29 @@
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 // ============================================================================
-package org.talend.designer.core;
+package org.talend.designer.core.ui.editor.properties.controllers.generator;
 
-import org.talend.core.model.process.IProcess;
-import org.talend.core.model.properties.ProcessItem;
-import org.talend.designer.core.ui.editor.process.Process;
+import org.talend.designer.core.ui.editor.properties.DynamicTabbedPropertySection;
+import org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController;
+import org.talend.designer.core.ui.editor.properties.controllers.ProcessController;
+
 
 /**
- * Detailled comment <br/>.
- * 
- * $Id: DesignerCoreService.java 1 2006-12-19 上午10:25:42 bqian
- * 
+ * DOC nrousseau  class global comment. Detailled comment
+ * <br/>
+ *
+ * $Id: talend-code-templates.xml 1 2006-09-29 17:06:40 +0000 (ven., 29 sept. 2006) nrousseau $
+ *
  */
-public class DesignerCoreService implements IDesignerCoreService {
+public class ProcessGenerator implements IControllerGenerator {
+    private DynamicTabbedPropertySection dtp;
 
-    public IProcess getProcessFromProcessItem(ProcessItem processItem) {
-        Process process = null;
-        process = new Process(processItem.getProperty());
-        process.loadXmlFile(processItem.getProcess(), true); // no check needed here.
+    public AbstractElementPropertySectionController generate() {
+        return new ProcessController(dtp);
+    }
 
-        return process;
+    public void setDynamicTabbedPropertySection(DynamicTabbedPropertySection dtp) {
+        this.dtp = dtp;
     }
 
 }

@@ -66,6 +66,7 @@ public enum EParameterName {
     COMPONENT_NAME("Component Name"),
     TRANSLATED_COMPONENT_NAME("Translated Component Name"),
     UPDATE_COMPONENTS("Update components"), //$NON-NLS-1$  Hidden parameter so no translation needed
+    PROCESS_TYPE("Generate Code"),
     PROCESS_TYPE_PROCESS("Process"),
     PROCESS_TYPE_CONTEXT("Context"),
     PREVIEW("Preview"),

@@ -545,7 +545,7 @@ public class EmfComponent implements IComponent {
                 newParam.setDisplayName(EParameterName.PROCESS_TYPE_PROCESS.getDisplayName());
                 newParam.setListItemsDisplayName(new String[] {});
                 newParam.setListItemsValue(new String[] {});
-                newParam.setValue("");
+                newParam.setValue("NO_PROCESS");
                 newParam.setNumRow(xmlParam.getNUMROW());
                 newParam.setField(EParameterFieldType.CLOSED_LIST);
                 if (xmlParam.isSetSHOW()) {
@@ -605,6 +605,9 @@ public class EmfComponent implements IComponent {
                     param.setValue(defaultTable);
                 }
                 break;
+            case PROCESS_TYPE:
+                param.setDisplayName(EParameterName.PROCESS_TYPE.getDisplayName());
+                param.setValue(""); // TODO to change ?
             default:
                 param.setValue("");
             }

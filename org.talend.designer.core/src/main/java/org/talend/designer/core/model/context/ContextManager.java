@@ -32,9 +32,7 @@ import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IContextListener;
 import org.talend.core.model.process.IContextManager;
 import org.talend.core.model.process.IContextParameter;
-import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.temp.ECodeLanguage;
-import org.talend.designer.core.ui.editor.process.Process;
 
 /**
  * DOC nrousseau class global comment. Detailled comment <br/>
@@ -139,5 +137,14 @@ public class ContextManager implements IContextManager {
         }
 
         return true;
+    }
+
+    public IContext getContext(String name) {
+        for (int i = 0; i < listContext.size(); i++) {
+            if (listContext.get(i).getName().equals(name)) {
+                return listContext.get(i);
+            }
+        }
+        return defaultContext;
     }
 }

@@ -58,6 +58,7 @@ import org.talend.core.model.metadata.ColumnNameChanged;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.builder.ConvertionHelper;
+import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.metadata.builder.connection.DelimitedFileConnection;
 import org.talend.core.model.metadata.builder.connection.PositionalFileConnection;
@@ -81,7 +82,6 @@ import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
 import org.talend.designer.core.ui.MultiPageTalendEditor;
-import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.connections.ConnectionLabel;
 import org.talend.designer.core.ui.editor.nodecontainer.NodeContainerPart;
 import org.talend.designer.core.ui.editor.nodes.Node;
@@ -223,7 +223,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
             if (param.getName().equals(EParameterName.PROCESS_TYPE_PROCESS.getName())) {
                 param.setListItemsDisplayName(processTableNameList);
                 param.setListItemsValue(processTableValueList);
-                if (param.getValue().equals("")) {
+                if (param.getValue().equals("NO_PROCESS")) {
                     if (!processMap.keySet().contains(param.getValue())) {
                         if (processTableNameList.length > 0) {
                             elem.setPropertyValue(EParameterName.PROCESS_TYPE_PROCESS.getName(),
@@ -296,6 +296,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
     /**
      * DOC ftang Comment method "updateRepositoryList".
      */
+    @SuppressWarnings("unchecked")
     public void updateRepositoryList() {
         IProxyRepositoryFactory factory = DesignerPlugin.getDefault().getProxyRepositoryFactory();
         List<ConnectionItem> metadataConnectionsItem = null;
@@ -321,15 +322,14 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
             List<String> queryStoreValuesList = new ArrayList<String>();
 
             for (ConnectionItem connectionItem : metadataConnectionsItem) {
-                org.talend.core.model.metadata.builder.connection.Connection connection = (org.talend.core.model.metadata.builder.connection.Connection) connectionItem
-                        .getConnection();
+                Connection connection = (Connection) connectionItem.getConnection();
                 ERepositoryObjectType repositoryObjectType = ERepositoryObjectType.getItemType(connectionItem);
                 if (!connection.isReadOnly()) {
                     repositoryConnectionItemMap.put(connectionItem.getProperty().getId() + "", connectionItem);
                     for (Object tableObj : connection.getTables()) {
                         org.talend.core.model.metadata.builder.connection.MetadataTable table;
                         table = (org.talend.core.model.metadata.builder.connection.MetadataTable) tableObj;
-                        if (!factory.isDeleted(table)) {
+                        if (factory.getStatus(connectionItem) != ERepositoryStatus.DELETED) {
                             String name = repositoryObjectType.getAlias() + ":"
                                     + connectionItem.getProperty().getLabel() + " - " + table.getLabel();
                             String value = connectionItem.getProperty().getId() + " - " + table.getLabel();
@@ -355,17 +355,6 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                             queryStoreValuesList.add(value);
                         }
                     }
-
-                    // repositoryConnectionItemMap.put(connectionItem.getProperty().getId() + "", connectionItem);
-                    // for (Object tableObj : connection.getTables()) {
-                    // org.talend.core.model.metadata.builder.connection.MetadataTable table;
-                    // table = (org.talend.core.model.metadata.builder.connection.MetadataTable) tableObj;
-                    // String name = connectionItem.getProperty().getLabel() + " - " + table.getLabel();
-                    // String value = connectionItem.getProperty().getId() + " - " + table.getLabel();
-                    // repositoryTableMap.put(value, ConvertionHelper.convert(table));
-                    // tableNamesList.add(name);
-                    // tableValuesList.add(value);
-                    // }
                 }
             }
             repositoryTableNameList = (String[]) tableNamesList.toArray(new String[0]);
@@ -387,7 +376,6 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                     }
                 }
             }
-
             if (param.getName().equals(EParameterName.REPOSITORY_QUERYSTORE_TYPE.getName())) {
 
                 param.setListItemsDisplayName(repositoryQueryNameList);
@@ -399,7 +387,6 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                     }
                 }
             }
-
             if (param.getName().equals(EParameterName.REPOSITORY_PROPERTY_TYPE.getName())) {
 
                 String repositoryValue = elem.getElementParameter(EParameterName.PROPERTY_TYPE.getName())
@@ -409,8 +396,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                     List<String> connectionValuesList = new ArrayList<String>();
                     for (String key : repositoryConnectionItemMap.keySet()) {
                         ConnectionItem connectionItem = repositoryConnectionItemMap.get(key);
-                        org.talend.core.model.metadata.builder.connection.Connection connection = (org.talend.core.model.metadata.builder.connection.Connection) connectionItem
-                                .getConnection();
+                        Connection connection = (Connection) connectionItem.getConnection();
                         ERepositoryObjectType repositoryObjectType = ERepositoryObjectType.getItemType(connectionItem);
                         String name = repositoryObjectType.getAlias() + ":" + connectionItem.getProperty().getLabel();
                         if ((connection instanceof DelimitedFileConnection) && (repositoryValue.equals("DELIMITED"))) {
@@ -520,9 +506,12 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
         if (oldProcessType != null) {
             String[] list = elem.getElementParameter(EParameterName.PROCESS_TYPE_PROCESS.getName())
                     .getListItemsDisplayName();
-            if ((oldProcessType.equals("") || (list.length == 0))) {
+            if ((oldProcessType.equals("NO_PROCESS") || (list.length == 0))) {
                 updateProcessList();
                 updateContextList();
+                if (elem instanceof Node) {
+                    ((Node) elem).checkAndRefreshNode();
+                }
             }
         }
 
@@ -644,6 +633,9 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
             if (!oldProcessType.equals(newProcessType)) {
                 updateProcessList();
                 updateContextList();
+                if (elem instanceof Node) {
+                    ((Node) elem).checkAndRefreshNode();
+                }
                 addComponents();
             }
         }
@@ -795,7 +787,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
             elem = ((ConnectionLabel) elem).getConnection();
         }
 
-        if (currentComponent == null || elem instanceof Connection) {
+        if (currentComponent == null || elem instanceof org.talend.designer.core.ui.editor.connections.Connection) {
             addComponents();
         } else {
             if (!currentComponent.equals(elem.getElementName())) {
@@ -1006,17 +998,15 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
     /**
      * DOC yzhang Comment method "updateColumnList".
      */
+    @SuppressWarnings("unchecked")
     public void updateColumnList(List<ColumnNameChanged> columnsChanged) {
         List<String> columnList = getColumnList();
         List<String> prevColumnList = getPrevColumnList();
-
         List<String> curColumnList = null;
 
         String[] columnNameList = (String[]) columnList.toArray(new String[0]);
         String[] prevColumnNameList = (String[]) prevColumnList.toArray(new String[0]);
-
         String[] curColumnNameList = null;
-
         for (int i = 0; i < elem.getElementParameters().size(); i++) {
             IElementParameter param = elem.getElementParameters().get(i);
             if (param.getField() == EParameterFieldType.COLUMN_LIST) {
@@ -1067,7 +1057,6 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                             } else {
                                 tmpParam.setDefaultClosedListValue("");
                             }
-
                             // j + 1 because first column is masked
                             TableViewerCreatorColumn column = (TableViewerCreatorColumn) colList.get(j + 1);
 
@@ -1156,7 +1145,6 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                                 table, metaTable);
                     }
                 }
-
                 tableViewerCreator.getTableViewer().refresh();
             }
         }

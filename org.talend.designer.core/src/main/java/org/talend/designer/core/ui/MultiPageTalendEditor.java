@@ -142,11 +142,11 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
         codeEditor = CodeEditorFactory.getInstance().getCodeEditor(getCurrentLang());
         IProcess process = designerEditor.getProcess();
         IRunProcessService service = DesignerPlugin.getDefault().getRunProcessService();
-        IProcessor plProcessor = service.createCodeProcessor(process, getCurrentLang(), true);
+        IProcessor processor = service.createCodeProcessor(process, getCurrentLang(), true);
         try {
-            plProcessor.initPaths(process.getContextManager().getDefaultContext());
+            processor.initPaths(process.getContextManager().getDefaultContext());
             IFile codeFile = ResourcesPlugin.getWorkspace().getRoot().getFile(
-                    plProcessor.getCodeProject().getFullPath().append(plProcessor.getCodePath()));
+                    processor.getCodeProject().getFullPath().append(processor.getCodePath()));
             if (!codeFile.exists()) {
                 // Create empty one
                 try {

@@ -50,8 +50,9 @@ import org.talend.core.model.repository.RepositoryObject;
  * @param <K>
  */
 public class FileinToXmlProcess<K extends FileInputNode> extends RepositoryObject implements IProcess {
-    private String name="FileinToXml";
-    
+
+    private String name = "FileinToXml";
+
     private IContextManager contextManager;
 
     private K inNode;
@@ -69,13 +70,13 @@ public class FileinToXmlProcess<K extends FileInputNode> extends RepositoryObjec
         ShadowConnection cnx = new ShadowConnection(inNode, outNode);
         inNode.setOutCnx(cnx);
         outNode.setInCnx(cnx);
-        
+
         inNode.setProcess(this);
         outNode.setProcess(this);
 
         contextManager = new EmptyContextManager();
     }
-    
+
     public String getTechnicalName() {
         return "FileinToXml";
     }
@@ -126,17 +127,19 @@ public class FileinToXmlProcess<K extends FileInputNode> extends RepositoryObjec
     public String getLabel() {
         return "Shadow FileInput to XmlOutput";
     }
-    
+
     /**
      * Getter for name.
+     * 
      * @return the name
      */
     public String getName() {
         return this.name;
     }
-    
+
     /**
      * Sets the name.
+     * 
      * @param name the name to set
      */
     public void setName(String name) {
@@ -452,6 +455,10 @@ public class FileinToXmlProcess<K extends FileInputNode> extends RepositoryObjec
          */
         public boolean checkValidParameterName(String contextName) {
             return false;
+        }
+
+        public IContext getContext(String name) {
+            return null;
         }
     }
 
