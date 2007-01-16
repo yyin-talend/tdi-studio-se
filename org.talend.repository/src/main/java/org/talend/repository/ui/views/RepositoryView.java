@@ -74,6 +74,8 @@ import org.talend.core.context.RepositoryContext;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.i18n.Messages;
+import org.talend.repository.model.IProxyRepositoryFactory;
+import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNode.ENodeType;
 import org.talend.repository.model.actions.MoveObjectAction;
@@ -352,6 +354,7 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
      * @see org.talend.core.ui.repository.views.IRepositoryView#refresh()
      */
     public void refresh() {
+        ProxyRepositoryFactory.getInstance().initialize();
         root = new RepositoryNode(null, null, ENodeType.STABLE_SYSTEM_FOLDER);
         viewer.refresh();
         // unsetting the selection will prevent the propertyView from displaying dirty data
