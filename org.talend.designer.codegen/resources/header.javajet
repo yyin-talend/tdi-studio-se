@@ -68,6 +68,47 @@
  */
 public class <%=process.getName() %> {
 
+	// WHILE WAITING FOR ROUTINES
+    private static class StringUtils {
+        public static String[] split(String str, String separator) {
+            return str.split(separator);
+        }
+        public static char convertchar(String s) {
+            return (s != null) ? s.charAt(0) : null;
+        }
+        public static java.util.Date convertDate(String s) {
+            // PTODO MHIRT Convert Date
+            return java.util.Calendar.getInstance().getTime();
+        }
+        public static Double convertDouble(String s) {
+            return Double.parseDouble(s);
+        }
+        public static double convertdouble(String s) {
+            return Double.parseDouble(s);
+        }
+        public static float convertfloat(String s) {
+            return Float.parseFloat(s);
+        }
+        public static Float convertFloat(String s) {
+            return Float.parseFloat(s);
+        }
+        public static int convertint(String s) {
+            return Integer.parseInt(s);
+        }
+        public static Integer convertInteger(String s) {
+            return Integer.parseInt(s);
+        }
+        public static long convertlong(String s) {
+            return Long.parseLong(s);
+        }
+        public static Long convertLong(String s) {
+            return Long.parseLong(s);
+        }
+        public static String convertString(String s) {
+            return s;
+        }
+    }
+
 private static String jobName = "<%=codeGenArgument.getJobName() %>";
 private static String currentComponent = "";
 private static java.util.Map<String, Long> start_Hash = new java.util.HashMap<String, Long>(); 

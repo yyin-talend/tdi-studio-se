@@ -25,6 +25,7 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 
 import org.eclipse.core.runtime.Platform;
+import org.talend.commons.utils.StringUtils;
 
 /**
  * Jet container for a particular component.
@@ -51,9 +52,9 @@ public class JetBean {
     private Method method = null;
 
     private String version = null;
-    
+
     private String language = null;
-    
+
     private String codePart = null;
 
     /**
@@ -70,21 +71,22 @@ public class JetBean {
      * @param classpathParameter
      * @param templateRelativeUri
      */
-    public JetBean(String jetPluginRepository, String templateRelativeUri, String className, String version, String language, String codePart) {
+    public JetBean(String jetPluginRepository, String templateRelativeUri, String className, String version,
+            String language, String codePart) {
         this.classPath = new HashMap<String, String>();
         this.jetPluginRepository = jetPluginRepository;
         this.templateRelativeUri = templateRelativeUri;
         this.version = version;
         String tmpClassName = "";
-        if (className.lastIndexOf(".")>-1) {
+        if (className.lastIndexOf(".") > -1) {
             tmpClassName = className.substring(className.lastIndexOf("."));
         } else {
             tmpClassName = className;
         }
-        this.className = tmpClassName.substring(0, 1).toUpperCase()+tmpClassName.substring(1);
-        this.language = language.substring(0, 1).toUpperCase()+language.substring(1);
-        if ((codePart!=null)&&(codePart.length()!=0)) {
-            this.codePart = codePart.substring(0, 1).toUpperCase()+codePart.substring(1);
+        this.className = StringUtils.capitalize(tmpClassName);
+        this.language = StringUtils.capitalize(language);
+        if ((codePart != null) && (codePart.length() != 0)) {
+            this.codePart = StringUtils.capitalize(codePart);
         } else {
             this.codePart = "";
         }
@@ -322,36 +324,40 @@ public class JetBean {
     public void setVersion(String version) {
         this.version = version;
     }
-    
+
     /**
      * Getter for language.
+     * 
      * @return the language
      */
     public String getLanguage() {
         return this.language;
     }
-    
+
     /**
      * Sets the language.
+     * 
      * @param language the language to set
      */
     public void setLanguage(String language) {
         this.language = language;
     }
-    
+
     /**
      * Getter for codePart.
+     * 
      * @return the codePart
      */
     public String getCodePart() {
         return this.codePart;
     }
-    
+
     /**
      * Sets the codePart.
+     * 
      * @param codePart the codePart to set
      */
     public void setCodePart(String codePart) {
         this.codePart = codePart;
-    }   
+    }
 }
