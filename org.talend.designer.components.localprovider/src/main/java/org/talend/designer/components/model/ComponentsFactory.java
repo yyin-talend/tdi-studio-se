@@ -181,6 +181,7 @@ public class ComponentsFactory implements IComponentsFactory {
 
         // modified to make the old tRunProcess compatible
         // this test must be removed once the migration tool will be finished.
+        // FIXME SML Move to migration tool
         String loadedName = name;
         if (name.equals("tRunProcess")) {
             loadedName = "tRunJob";
