@@ -390,7 +390,8 @@ public class ConnectionFormComposite extends Composite {
 
                 for (String fieldKey : map.keySet()) {
                     LabelText current = map.get(fieldKey);
-                    current.setText(connection.getDynamicFields().get(fieldKey));
+                    String string = connection.getDynamicFields().get(fieldKey);
+                    current.setText(string == null ? "" : string);
                 }
             }
             nameText.setText((connection.getName() == null ? "" : connection.getName()));
