@@ -85,7 +85,10 @@ public class JobScriptsManager {
      * @return
      */
     public List<URL> getExportResources(ProcessItem[] process, boolean needLauncher, boolean needSystemRoutine,
-            boolean needUserRoutine, boolean needModel, boolean needJob, boolean needContext, String contextName) {
+            boolean needUserRoutine, boolean needModel, boolean needJob, boolean needContext, boolean needGenerateCode,
+            String contextName) {
+
+        generatePerlFiles(needGenerateCode, process, contextName);
 
         List<URL> resources = new ArrayList<URL>();
 
@@ -100,6 +103,23 @@ public class JobScriptsManager {
         resources.addAll(getChildrenScripts(process, needChildren));
 
         return resources;
+    }
+
+    /**
+     * Generates the perl files.
+     * 
+     * @param needGenerateCode
+     * @param contextName
+     * @param process
+     */
+    private void generatePerlFiles(boolean needGenerateCode, ProcessItem[] process, String contextName) {
+        if (!needGenerateCode) {
+            return;
+        }
+        for (int i = 0; i < process.length; i++) {
+            ProcessItem item = process[i];
+            ProcessorUtilities.generateCode(item.getProperty().getLabel(), contextName);
+        }
     }
 
     private String getTmpFolder() {

@@ -76,6 +76,8 @@ public class JobScriptsExportWizardPage extends WizardFileSystemResourceExportPa
 
     private Text laucherText;
 
+    private Button genCodeButton;
+
     // dialog store id constants
     public final static String STORE_SHELL_LAUNCHER_ID = "JobScriptsExportWizardPage.STORE_SHELL_LAUNCHER_ID"; //$NON-NLS-1$
 
@@ -88,6 +90,8 @@ public class JobScriptsExportWizardPage extends WizardFileSystemResourceExportPa
     public final static String STORE_JOB_ID = "JobScriptsExportWizardPage.STORE_JOB_ID"; //$NON-NLS-1$
 
     public final static String STORE_CONTEXT_ID = "JobScriptsExportWizardPage.STORE_CONTEXT_ID"; //$NON-NLS-1$
+    
+    public final static String STORE_GENERATECODE_ID = "JobScriptsExportWizardPage.STORE_GENERATECODE_ID"; //$NON-NLS-1$
 
     private static final String STORE_DESTINATION_NAMES_ID = "JobScriptsExportWizardPage.STORE_DESTINATION_NAMES_ID"; //$NON-NLS-1$
 
@@ -239,6 +243,11 @@ public class JobScriptsExportWizardPage extends WizardFileSystemResourceExportPa
 
         contextCombo = new Combo(optionsGroup, SWT.PUSH);
 
+        genCodeButton = new Button(optionsGroup, SWT.CHECK | SWT.LEFT);
+        genCodeButton.setText("Generate Perl Files");
+        genCodeButton.setSelection(true);
+        genCodeButton.setFont(font);
+        
     }
 
     /**
@@ -364,9 +373,9 @@ public class JobScriptsExportWizardPage extends WizardFileSystemResourceExportPa
         boolean needModel = modelButton.getSelection();
         boolean needJob = jobButton.getSelection();
         boolean needContext = contextButton.getSelection();
-
+        boolean needGenerateCode=genCodeButton.getSelection();
         return manager.getExportResources(process, needLauncher, needSystemRoutine, needUserRoutine, needModel, needJob,
-                needContext, contextCombo.getText());
+                needContext,needGenerateCode, contextCombo.getText());
     }
 
     /**
@@ -454,6 +463,7 @@ public class JobScriptsExportWizardPage extends WizardFileSystemResourceExportPa
             settings.put(STORE_MODEL_ID, modelButton.getSelection());
             settings.put(STORE_JOB_ID, jobButton.getSelection());
             settings.put(STORE_CONTEXT_ID, contextButton.getSelection());
+            settings.put(STORE_GENERATECODE_ID, genCodeButton.getSelection());
         }
     }
 
@@ -478,6 +488,7 @@ public class JobScriptsExportWizardPage extends WizardFileSystemResourceExportPa
             modelButton.setSelection(settings.getBoolean(STORE_MODEL_ID));
             jobButton.setSelection(settings.getBoolean(STORE_JOB_ID));
             contextButton.setSelection(settings.getBoolean(STORE_CONTEXT_ID));
+            genCodeButton.setSelection(settings.getBoolean(STORE_GENERATECODE_ID));
         }
 
         laucherText.setText(manager.getPerlLauncher());
