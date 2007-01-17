@@ -41,7 +41,7 @@
 			IConnection conn = conns.get(0);
 			firstConnName = conn.getName();
 			
-			if (conn.getLineStyle().equals(EConnectionType.FLOW_MAIN)) {
+			if ((conn.getLineStyle().equals(EConnectionType.FLOW_MAIN))||(conn.getLineStyle().equals(EConnectionType.FLOW_REF))) {
 				for (IMetadataColumn column: metadata.getListColumns()) {
 %>
 	<%=conn.getName() %>.<%=column.getLabel() %> = <%=((column.getTalendType().compareTo("int")==0)?"Integer.parseInt(":"") %>strToken.nextToken()<%=((column.getTalendType().compareTo("int")==0)?")":"") %>;
@@ -52,7 +52,7 @@
 		if (conns.size()>1) {
 			for (int i=1;i<conns.size();i++) {
 				IConnection conn = conns.get(i);
-				if (conn.getLineStyle().equals(EConnectionType.FLOW_MAIN)) {
+				if ((conn.getName().compareTo(firstConnName)!=0)&&((conn.getLineStyle().equals(EConnectionType.FLOW_MAIN))||(conn.getLineStyle().equals(EConnectionType.FLOW_REF)))) {
 					for (IMetadataColumn column: metadata.getListColumns()) {
 %>
 	<%=conn.getName() %>.<%=column.getLabel() %> = <%=firstConnName %>.<%=column.getLabel() %>;
