@@ -1475,6 +1475,11 @@ public class MapperDataTestGenerator {
 
         }
 
+        public INode getSubProcessStartNode(boolean withConditions) {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
     }
 
     public ArrayList<IConnection> getConnectionList() {

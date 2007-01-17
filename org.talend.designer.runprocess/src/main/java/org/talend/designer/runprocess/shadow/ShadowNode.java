@@ -355,4 +355,8 @@ public abstract class ShadowNode implements INode {
 
     }
 
+    public INode getSubProcessStartNode(boolean withConditions) {
+        // TODO Auto-generated method stub
+        return null;
+    }
 }
