@@ -54,9 +54,17 @@ public class RepositoryFactoryProvider {
             for (IConfigurationElement current : extension) {
                 try {
                     IRepositoryFactory currentAction = (IRepositoryFactory) current.createExecutableExtension("class");
-                    String attribute = current.getAttribute("name");
-                    currentAction.setName(attribute);
+                    currentAction.setId(current.getAttribute("id"));
+                    currentAction.setName(current.getAttribute("name"));
                     currentAction.setAuthenticationNeeded(new Boolean(current.getAttribute("authenticationNeeded")));
+
+                    // Getting dynamic login fields:
+                    for (IConfigurationElement currentLoginField : current.getChildren("loginField")) {
+                        DynamicFieldBean key = new DynamicFieldBean(currentLoginField.getAttribute("id"), currentLoginField
+                                .getAttribute("name"));
+                        currentAction.getFields().add(key);
+                    }
+
                     list.add(currentAction);
                 } catch (CoreException e) {
                     e.printStackTrace();
@@ -64,5 +72,14 @@ public class RepositoryFactoryProvider {
             }
         }
         return list;
+    }
+
+    public static IRepositoryFactory getRepositoriyById(String id) {
+        for (IRepositoryFactory current : getAvailableRepositories()) {
+            if (current.getId().equals(id)) {
+                return current;
+            }
+        }
+        return null;
     }
 }

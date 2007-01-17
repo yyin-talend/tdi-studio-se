@@ -47,9 +47,17 @@ import org.talend.repository.exception.LoginException;
  */
 public interface IRepositoryFactory {
 
+    public String getId();
+
+    public void setId(String id);
+
     public String getName();
 
     public void setName(String name);
+
+    public List<DynamicFieldBean> getFields();
+
+    public void setFields(List<DynamicFieldBean> fields);
 
     public boolean isAuthenticationNeeded();
 

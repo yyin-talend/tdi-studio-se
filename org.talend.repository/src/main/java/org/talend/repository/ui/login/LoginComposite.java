@@ -33,6 +33,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.jface.window.Window;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
@@ -40,7 +41,6 @@ import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
@@ -49,7 +49,6 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.Form;
 import org.eclipse.ui.forms.widgets.FormToolkit;
@@ -61,6 +60,7 @@ import org.talend.commons.utils.PasswordHelper;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
+import org.talend.core.model.general.ConnectionBean;
 import org.talend.core.model.general.Project;
 import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.User;
@@ -73,6 +73,7 @@ import org.talend.repository.model.RepositoryFactoryProvider;
 import org.talend.repository.ui.ERepositoryImages;
 import org.talend.repository.ui.actions.ImportDemoProjectAction;
 import org.talend.repository.ui.actions.ImportProjectsAction;
+import org.talend.repository.ui.login.connections.ConnectionsDialog;
 import org.talend.repository.ui.wizards.newproject.NewProjectWizard;
 
 /**
@@ -86,37 +87,25 @@ public class LoginComposite extends Composite {
     /**
      * Colors used for Remote Object background when enabled.
      */
-    private static final Color WHITE_COLOR = new Color(null, 255, 255, 255);
+    public static final Color WHITE_COLOR = new Color(null, 255, 255, 255);
 
-    private static final Color GREY_COLOR = new Color(null, 200, 200, 200);
+    public static final Color GREY_COLOR = new Color(null, 200, 200, 200);
 
     private FormToolkit toolkit;
 
+    private ComboViewer connectionsViewer;
+
     private LoginDialog dialog;
 
-    private ComboViewer repositoryCombo;
-
-    private Combo serverCombo;
-
-    private Combo contextCombo;
-
-    private Combo portCombo;
-
-    private Combo dbLoginCombo;
-
-    private Combo dbPasswordCombo;
-
-    private Combo userCombo;
+    private Text user;
 
     private Text passwordText;
 
     private ComboViewer projectViewer;
 
-    private Image checkImage;
-
     private Button fillProjectsBtn;
 
-    // private Button checkBtn;
+    private Button manageConnectionsButton;
 
     private Button newProjectButton;
 
@@ -145,125 +134,47 @@ public class LoginComposite extends Composite {
         setLayout(layout);
         form.setLayoutData(new GridData(GridData.FILL_BOTH));
 
-        layout = new GridLayout(9, false);
+        layout = new GridLayout(3, false);
         formBody.setLayout(layout);
 
-        // Blank
-        // Label blankLabel = toolkit.createLabel(formBody, null);
-        // GridData blankGrid = new GridData(GridData.FILL_HORIZONTAL);
-        // blankGrid.horizontalSpan = 9;
-        // blankLabel.setLayoutData(blankGrid);
+        // Connections listbox:
+        toolkit.createLabel(formBody, Messages.getString("LoginComposite.connections"));
+        connectionsViewer = new ComboViewer(formBody, SWT.BORDER | SWT.READ_ONLY);
+        toolkit.adapt(connectionsViewer.getCombo());
+        GridData conGrid = new GridData(GridData.FILL_HORIZONTAL);
+        conGrid.horizontalSpan = 1;
+        connectionsViewer.getControl().setLayoutData(conGrid);
+        connectionsViewer.setContentProvider(new ArrayContentProvider());
+        connectionsViewer.setLabelProvider(new ConnectionLabelProvider());
 
-        // Line 1
-        // Repository
-        Label tmpLabel = toolkit.createLabel(formBody, Messages.getString("LoginComposite.repository"));
-        repositoryCombo = new ComboViewer(formBody, SWT.BORDER | SWT.READ_ONLY);
-        toolkit.adapt(repositoryCombo.getCombo());
-        repositoryCombo.setContentProvider(new ArrayContentProvider());
-        repositoryCombo.setLabelProvider(new RepositoryFactoryLabelProvider());
-
-        GridData repositoryGrid = new GridData(GridData.FILL_HORIZONTAL);
-        repositoryGrid.horizontalSpan = 7;
-        repositoryCombo.getControl().setLayoutData(repositoryGrid);
-
-        // Blank
-        toolkit.createLabel(formBody, null);
-
-        // Line 2
-        // Server
-        toolkit.createLabel(formBody, Messages.getString("LoginComposite.server"));
-        serverCombo = new Combo(formBody, SWT.BORDER);
-        toolkit.adapt(serverCombo);
-        GridData serverGrid = new GridData(GridData.FILL_HORIZONTAL);
-        serverGrid.horizontalSpan = 4;
-        serverCombo.setLayoutData(serverGrid);
-
-        // Port
-        toolkit.createLabel(formBody, Messages.getString("LoginComposite.port"));
-        portCombo = new Combo(formBody, SWT.FILL);
-        toolkit.adapt(portCombo);
-        GridData portGrid = new GridData(50, 20);
-        portGrid.horizontalSpan = 2;
-        portCombo.setLayoutData(portGrid);
-
-        // Check Server Availability Button
-        // Button checkBtn = toolkit.createButton(formBody, null, SWT.PUSH);
-        // checkBtn.setToolTipText(Messages.getString("LoginComposite.checkServerHint"));
-        // ImageDescriptor imgDesc = RepositoryPlugin.imageDescriptorFromPlugin(RepositoryPlugin.PLUGIN_ID,
-        // "icons/checkserver.gif");
-        // if (imgDesc != null) {
-        // checkImage = imgDesc.createImage();
-        // checkBtn.setImage(checkImage);
-        // }
-        // GridData checkGrid = new GridData(SWT.BORDER | SWT.RIGHT);
-        // checkGrid.verticalSpan = 2;
-        // checkBtn.setLayoutData(checkGrid);
-
-        // Uncomment previous line and comment following lines to reactive check button:
-        Label tmp = toolkit.createLabel(formBody, null);
+        manageConnectionsButton = toolkit.createButton(formBody, null, SWT.PUSH);
+        manageConnectionsButton.setToolTipText(Messages.getString("LoginComposite.manageConnectionsToolTipHint"));
+        manageConnectionsButton.setImage(ImageProvider.getImage(EImage.THREE_DOTS_ICON));
         GridData checkGrid = new GridData(SWT.BORDER | SWT.RIGHT);
-        checkGrid.verticalSpan = 2;
-        tmp.setLayoutData(checkGrid);
+        checkGrid.verticalSpan = 1;
+        manageConnectionsButton.setLayoutData(checkGrid);
 
-        // Line 3
-        // Context
-        toolkit.createLabel(formBody, Messages.getString("LoginComposite.context"));
-        contextCombo = new Combo(formBody, SWT.BORDER);
-        toolkit.adapt(contextCombo);
-        GridData contextGrid = new GridData(GridData.FILL_HORIZONTAL);
-        contextGrid.horizontalSpan = 7;
-        contextCombo.setLayoutData(contextGrid);
+        // Username:
+        toolkit.createLabel(formBody, Messages.getString("connections.form.field.username"));
+        user = toolkit.createText(formBody, "", SWT.BORDER);
+        GridData userGrid2 = new GridData(GridData.FILL_HORIZONTAL);
+        userGrid2.horizontalSpan = 2;
+        user.setLayoutData(userGrid2);
+        user.setEnabled(false);
 
-        // Line 3bis
-        // Db login
-        toolkit.createLabel(formBody, "Login");
-        dbLoginCombo = new Combo(formBody, SWT.BORDER);
-        toolkit.adapt(dbLoginCombo);
-        GridData dbLoginGrid = new GridData(GridData.FILL_HORIZONTAL);
-        dbLoginGrid.horizontalSpan = 4;
-        dbLoginCombo.setLayoutData(dbLoginGrid);
-
-        // Db password
-        toolkit.createLabel(formBody, "Password");
-        dbPasswordCombo = new Combo(formBody, SWT.BORDER);
-        toolkit.adapt(dbPasswordCombo);
-        GridData dbPasswordGrid = new GridData(GridData.FILL_HORIZONTAL);
-        dbPasswordGrid.horizontalSpan = 2;
-        dbPasswordCombo.setLayoutData(dbPasswordGrid);
-
-        // Blank
-        toolkit.createLabel(formBody, null);
-
-        // Line 4
-        // User
-        toolkit.createLabel(formBody, Messages.getString("LoginComposite.username"));
-        userCombo = new Combo(formBody, SWT.BORDER);
-        toolkit.adapt(userCombo);
-        GridData userGrid = new GridData(GridData.FILL_HORIZONTAL);
-        userGrid.horizontalSpan = 7;
-        userCombo.setLayoutData(userGrid);
-
-        // Blank
-        toolkit.createLabel(formBody, null);
-
-        // Line 5
-        // Password
-        toolkit.createLabel(formBody, Messages.getString("LoginComposite.password"));
+        // Password:
+        toolkit.createLabel(formBody, Messages.getString("connections.form.field.password"));
         passwordText = toolkit.createText(formBody, "", SWT.PASSWORD | SWT.BORDER);
         GridData passwordGrid = new GridData(GridData.FILL_HORIZONTAL);
-        passwordGrid.horizontalSpan = 7;
+        passwordGrid.horizontalSpan = 2;
         passwordText.setLayoutData(passwordGrid);
 
-        // Blank
-        toolkit.createLabel(formBody, null);
-
-        // Line 6
         // Project
         toolkit.createLabel(formBody, Messages.getString("LoginComposite.project"));
         projectViewer = new ComboViewer(formBody, SWT.BORDER | SWT.READ_ONLY);
         toolkit.adapt(projectViewer.getCombo());
         GridData projectGrid = new GridData(GridData.FILL_HORIZONTAL);
-        projectGrid.horizontalSpan = 7;
+        projectGrid.horizontalSpan = 1;
         projectViewer.getControl().setLayoutData(projectGrid);
         projectViewer.setContentProvider(new ArrayContentProvider());
         projectViewer.setLabelProvider(new ProjectLabelProvider());
@@ -271,21 +182,16 @@ public class LoginComposite extends Composite {
         // Fill projects
         fillProjectsBtn = toolkit.createButton(formBody, null, SWT.PUSH);
         fillProjectsBtn.setToolTipText(Messages.getString("LoginComposite.refresh"));
-        // if (imgDesc != null) {
-        // fillProjectsImage = ImageProvider.getImage(EImage.REFRESH_ICON);
         fillProjectsBtn.setImage(ImageProvider.getImage(EImage.REFRESH_ICON));
-        // }
         GridData fillGrid = new GridData();
         fillGrid.horizontalSpan = 1;
         fillProjectsBtn.setLayoutData(fillGrid);
 
-        // Blank
-        // toolkit.createLabel(formBody, null);
-
+        // Bottom buttons:
         Composite bottomButtons = toolkit.createComposite(formBody);
         // bottomButtons.setBackground(new Color(null,255,0,0));
         GridData fillGrid2 = new GridData(GridData.FILL_HORIZONTAL);
-        fillGrid2.horizontalSpan = 9;
+        fillGrid2.horizontalSpan = 3;
         bottomButtons.setLayoutData(fillGrid2);
         bottomButtons.setLayout(new FormLayout());
 
@@ -326,79 +232,50 @@ public class LoginComposite extends Composite {
      */
     @Override
     public void dispose() {
-        if (checkImage != null) {
-            checkImage.dispose();
-            checkImage = null;
-        }
-
         toolkit.dispose();
-
         super.dispose();
     }
 
     private void fillContents() {
         PreferenceManipulator prefManipulator = new PreferenceManipulator(CorePlugin.getDefault().getPreferenceStore());
 
-        List<IRepositoryFactory> availableRepositories = RepositoryFactoryProvider.getAvailableRepositories();
-        repositoryCombo.setInput(availableRepositories);
+        List<ConnectionBean> storedConnections = prefManipulator.readConnections();
+        connectionsViewer.setInput(storedConnections);
 
-        // Check number of repository available.
-        if (availableRepositories.size() == 1) {
-            // disable combo box and select it automatically
-            repositoryCombo.setSelection(new StructuredSelection(new Object[] { availableRepositories.get(0) }));
-            repositoryCombo.getControl().setEnabled(false);
-            repositoryCombo.getControl().setBackground(GREY_COLOR);
+        // Check number of connection available.
+        if (storedConnections.size() == 0) {
+
+        } else if (storedConnections.size() == 1) {
+            connectionsViewer.setSelection(new StructuredSelection(new Object[] { storedConnections.get(0) }));
         } else {
-            // select last repository used
-            String lastRepository = prefManipulator.getLastRepository();
+            // select last connection used
+            String lastConnection = prefManipulator.getLastConnection();
             boolean selected = false;
-            for (IRepositoryFactory curent : availableRepositories) {
-                if (curent.getClass().getName().equals(lastRepository)) {
-                    selectLast(curent.toString(), repositoryCombo.getCombo());
+            for (ConnectionBean curent : storedConnections) {
+                String stringValue = ((LabelProvider) connectionsViewer.getLabelProvider()).getText(curent);
+                if (stringValue.equals(lastConnection)) {
+                    selectLast(stringValue, connectionsViewer.getCombo());
                     selected = true;
                 }
             }
             if (!selected) {
-                repositoryCombo.setSelection(new StructuredSelection(new Object[] { availableRepositories.get(0) }));
+                connectionsViewer.setSelection(new StructuredSelection(new Object[] { storedConnections.get(0) }));
             }
         }
-        ProxyRepositoryFactory.getInstance().setRepositoryFactoryFromProvider(getRepository());
-
-        String[] servers = prefManipulator.readServers();
-        serverCombo.setItems(servers);
-        selectLast(prefManipulator.getLastServer(), serverCombo);
-
-        String[] contexts = prefManipulator.readContexts();
-        contextCombo.setItems(contexts);
-        selectLast(prefManipulator.getLastContext(), contextCombo);
-
-        String[] ports = prefManipulator.readPorts();
-        portCombo.setItems(ports);
-        selectLast(prefManipulator.getLastPort(), portCombo);
-
-        String[] dblogins = prefManipulator.readDblogins();
-        dbLoginCombo.setItems(dblogins);
-        selectLast(prefManipulator.getLastDblogin(), dbLoginCombo);
-
-        String[] dbpasswords = prefManipulator.readDbpasswords();
-        dbPasswordCombo.setItems(dbpasswords);
-        selectLast(prefManipulator.getLastDbpassword(), dbPasswordCombo);
 
         projectViewer.getControl().setEnabled(false);
 
-        String[] users = prefManipulator.readUsers();
-        if (users.length < 1) {
-            users = new String[] { "" };
-        }
-        userCombo.setItems(users);
+        if (getConnection() != null) {
+            user.setText(getConnection().getUser());
+            passwordText.setText(getConnection().getPassword());
 
-        selectLast(prefManipulator.getLastUser(), userCombo);
-
-        if (!isAuthenticationNeeded()) {
-            unpopulateRemoteLoginElements();
+            if (!isAuthenticationNeeded()) {
+                unpopulateRemoteLoginElements();
+            }
+            setRepositoryContextInContext();
+            updateButtons();
         }
-        setRepositoryContextInContext();
-        updateButtons();
+
     }
 
     /**
@@ -428,7 +305,10 @@ public class LoginComposite extends Composite {
      * @return
      */
     protected boolean isAuthenticationNeeded() {
-        IRepositoryFactory repository = getRepository();
+        if (getConnection() == null || !getConnection().isComplete()) {
+            return false;
+        }
+        IRepositoryFactory repository = RepositoryFactoryProvider.getRepositoriyById(getConnection().getRepositoryId());
         if (repository == null) {
             return false;
         }
@@ -436,6 +316,16 @@ public class LoginComposite extends Composite {
     }
 
     private void addListeners() {
+        connectionsViewer.addSelectionChangedListener(new ISelectionChangedListener() {
+
+            public void selectionChanged(SelectionChangedEvent event) {
+                user.setText(getConnection().getUser());
+                passwordText.setText(getConnection().getPassword());
+                updateServerFields();
+                updateButtons();
+            }
+        });
+
         ModifyListener modifyListener = new ModifyListener() {
 
             public void modifyText(ModifyEvent e) {
@@ -444,28 +334,6 @@ public class LoginComposite extends Composite {
             }
         };
 
-        ModifyListener modifyListenerServerCombo = new ModifyListener() {
-
-            public void modifyText(ModifyEvent e) {
-                updateServerFields();
-                updateButtons();
-            }
-
-        };
-
-        repositoryCombo.addSelectionChangedListener(new ISelectionChangedListener() {
-
-            public void selectionChanged(SelectionChangedEvent event) {
-                updateServerFields();
-                updateButtons();
-            }
-        });
-        serverCombo.addModifyListener(modifyListenerServerCombo);
-        portCombo.addModifyListener(modifyListenerServerCombo);
-        dbLoginCombo.addModifyListener(modifyListenerServerCombo);
-        dbPasswordCombo.addModifyListener(modifyListenerServerCombo);
-        contextCombo.addModifyListener(modifyListenerServerCombo);
-        userCombo.addModifyListener(modifyListenerServerCombo);
         passwordText.addModifyListener(modifyListener);
 
         fillProjectsBtn.addSelectionListener(new SelectionAdapter() {
@@ -490,18 +358,20 @@ public class LoginComposite extends Composite {
             }
         });
 
-        // checkBtn.addSelectionListener(new SelectionAdapter() {
-        //
-        // @Override
-        // public void widgetSelected(SelectionEvent e) {
-        // IProxyRepositoryFactory repositoryFactory = ProxyRepositoryFactory.getInstance();
-        //
-        // if (validateFields()) {
-        // MessageDialog.openInformation(getShell(), Messages.getString("LoginComposite.remoteRepositoryCheck"),
-        // repositoryFactory.isServerValid());
-        // }
-        // }
-        // });
+        manageConnectionsButton.addSelectionListener(new SelectionAdapter() {
+
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                ConnectionsDialog connectionsDialog = new ConnectionsDialog(getShell());
+                int open = connectionsDialog.open();
+                if (open == Window.OK) {
+                    PreferenceManipulator prefManipulator = new PreferenceManipulator(CorePlugin.getDefault()
+                            .getPreferenceStore());
+                    prefManipulator.saveConnections(connectionsDialog.getConnections());
+                    fillContents();
+                }
+            }
+        });
 
         newProjectButton.addSelectionListener(new SelectionAdapter() {
 
@@ -544,10 +414,7 @@ public class LoginComposite extends Composite {
      * DOC smallet Comment method "updateServerFields".
      */
     private void updateServerFields() {
-        ProxyRepositoryFactory.getInstance().setRepositoryFactoryFromProvider(getRepository());
-
         setRepositoryContextInContext();
-
         validateFields();
 
         if (isAuthenticationNeeded()) {
@@ -557,18 +424,6 @@ public class LoginComposite extends Composite {
             unpopulateRemoteLoginElements();
         }
         dialog.updateButtons();
-    }
-
-    /**
-     * DOC mhirt Comment method "checkPortIsANumber".
-     * 
-     * @return
-     */
-    private boolean checkPortIsNumber() {
-        if (getPortAsNumber() != null) {
-            return true;
-        }
-        return false;
     }
 
     private void updateButtons() {
@@ -589,14 +444,10 @@ public class LoginComposite extends Composite {
     }
 
     public RepositoryContext getRepositoryContext() {
-        String server = getServer();
-        Integer portAsNumber = getPortAsNumber();
-        String context = getContext();
-        User user = getUser();
-        RepositoryContext repositoryContext = new RepositoryContext(server, portAsNumber, context, user);
-        repositoryContext.setDbLogin(getDblogin());
-        repositoryContext.setDbPassword(getDbpassword());
+        RepositoryContext repositoryContext = new RepositoryContext();
+        repositoryContext.setUser(getUser());
         repositoryContext.setProject(getProject());
+        repositoryContext.setFields(getConnection().getDynamicFields());
         return repositoryContext;
     }
 
@@ -606,8 +457,13 @@ public class LoginComposite extends Composite {
     }
 
     protected void populateProjectList() {
+
+        if (getConnection() == null || !getConnection().isComplete()) {
+            return;
+        }
         ProxyRepositoryFactory repositoryFactory = ProxyRepositoryFactory.getInstance();
-        repositoryFactory.setRepositoryFactoryFromProvider(getRepository());
+        repositoryFactory.setRepositoryFactoryFromProvider(RepositoryFactoryProvider.getRepositoriyById(getConnection()
+                .getRepositoryId()));
         repositoryFactory.initialize();
 
         Project[] projects;
@@ -672,50 +528,16 @@ public class LoginComposite extends Composite {
         setRepositoryContextInContext();
     }
 
-    public IRepositoryFactory getRepository() {
-        IRepositoryFactory repositoryFactory = null;
-        IStructuredSelection sel = (IStructuredSelection) repositoryCombo.getSelection();
-        repositoryFactory = (IRepositoryFactory) sel.getFirstElement();
-        return repositoryFactory;
-    }
-
-    public String getServer() {
-        return serverCombo.getText();
-    }
-
-    public String getContext() {
-        return contextCombo.getText();
-    }
-
-    public String getPort() {
-        return portCombo.getText();
-    }
-
-    public String getDblogin() {
-        return dbLoginCombo.getText();
-    }
-
-    public String getDbpassword() {
-        return dbPasswordCombo.getText();
-    }
-
-    /**
-     * DOC mhirt Comment method "getPortAsNumber".
-     * 
-     * @return
-     */
-    public Integer getPortAsNumber() {
-        try {
-            return Integer.parseInt(portCombo.getText());
-        } catch (NumberFormatException nfe) {
-            return null;
-        }
+    public ConnectionBean getConnection() {
+        IStructuredSelection sel = (IStructuredSelection) connectionsViewer.getSelection();
+        ConnectionBean firstElement = (ConnectionBean) sel.getFirstElement();
+        return firstElement;
     }
 
     public User getUser() {
         User toReturn = PropertiesFactory.eINSTANCE.createUser();
         toReturn.setId(1);
-        toReturn.setLogin(userCombo.getText());
+        toReturn.setLogin(user.getText());
         try {
             toReturn.setPassword(PasswordHelper.encryptPasswd(passwordText.getText()));
         } catch (NoSuchAlgorithmException e) {
@@ -766,15 +588,19 @@ public class LoginComposite extends Composite {
      * $Id$
      * 
      */
-    private class RepositoryFactoryLabelProvider extends LabelProvider {
+    private class ConnectionLabelProvider extends LabelProvider {
 
         /**
          * @see org.eclipse.jface.viewers.LabelProvider#getText(java.lang.Object)
          */
         @Override
         public String getText(Object element) {
-            IRepositoryFactory prj = (IRepositoryFactory) element;
-            return prj.getName();
+            ConnectionBean prj = (ConnectionBean) element;
+            if (prj.isComplete()) {
+                return prj.getName();
+            } else {
+                return prj.getName() + " (" + Messages.getString("connections.form.field.imcomplete") + ")";
+            }
         }
     }
 
@@ -782,16 +608,6 @@ public class LoginComposite extends Composite {
      * clear login values.
      */
     private void unpopulateRemoteLoginElements() {
-        serverCombo.setEnabled(false);
-        serverCombo.setBackground(GREY_COLOR);
-        contextCombo.setEnabled(false);
-        contextCombo.setBackground(GREY_COLOR);
-        portCombo.setEnabled(false);
-        portCombo.setBackground(GREY_COLOR);
-        dbLoginCombo.setEnabled(false);
-        dbLoginCombo.setBackground(GREY_COLOR);
-        dbPasswordCombo.setEnabled(false);
-        dbPasswordCombo.setBackground(GREY_COLOR);
         passwordText.setText("");
         passwordText.setEnabled(false);
         passwordText.setEditable(false);
@@ -804,25 +620,16 @@ public class LoginComposite extends Composite {
      * fill login valueswith default elements.
      */
     private void populateRemoteLoginElements() {
-        serverCombo.setEnabled(true);
-        serverCombo.setBackground(WHITE_COLOR);
-        contextCombo.setEnabled(true);
-        contextCombo.setBackground(WHITE_COLOR);
-        portCombo.setEnabled(true);
-        portCombo.setBackground(WHITE_COLOR);
-        dbLoginCombo.setEnabled(true);
-        dbLoginCombo.setBackground(WHITE_COLOR);
-        dbPasswordCombo.setEnabled(true);
-        dbPasswordCombo.setBackground(WHITE_COLOR);
         passwordText.setEnabled(true);
         passwordText.setEditable(true);
         passwordText.setBackground(WHITE_COLOR);
         // checkBtn.setEnabled(true);
 
-        if (userCombo.getText().length() == 0) {
-            PreferenceManipulator prefManipulator = new PreferenceManipulator(CorePlugin.getDefault().getPreferenceStore());
-            selectLast(prefManipulator.getLastUser(), userCombo);
-        }
+        // if (userCombo.getText().length() == 0) {
+        // PreferenceManipulator prefManipulator = new
+        // PreferenceManipulator(CorePlugin.getDefault().getPreferenceStore());
+        // selectLast(prefManipulator.getLastUser(), userCombo);
+        // }
         unpopulateProjectList();
     }
 
@@ -830,19 +637,15 @@ public class LoginComposite extends Composite {
         String errorMsg = null;
         boolean valid = true;
         boolean serverIsLocal = !isAuthenticationNeeded();
-        if (valid && !serverIsLocal && getServer().length() == 0) {
+        if (valid && getConnection() == null) {
             valid = false;
-            errorMsg = Messages.getString("LoginComposite.serverEmpty");
-        }
-        if (valid && !serverIsLocal && userCombo.getText().length() == 0) {
+            errorMsg = Messages.getString("LoginComposite.connectionEmpty");
+        } else if (valid && !getConnection().isComplete()) {
+            valid = false;
+            errorMsg = Messages.getString("LoginComposite.connectionIncomplete");
+        } else if (valid && !serverIsLocal && user.getText().length() == 0) {
             valid = false;
             errorMsg = Messages.getString("LoginComposite.usernameEmpty");
-        } else if (valid && !serverIsLocal && getPort().length() == 0) {
-            valid = false;
-            errorMsg = Messages.getString("LoginComposite.portEmpty");
-        } else if (valid && !serverIsLocal && !checkPortIsNumber()) {
-            valid = false;
-            errorMsg = Messages.getString("LoginComposite.portNotANumber");
         } else if (valid && !Pattern.matches(RepositoryConstants.MAIL_PATTERN, getUser().getLogin())) {
             valid = false;
             errorMsg = Messages.getString("LoginComposite.usernameMail");

@@ -80,7 +80,8 @@ public class LoginDialog extends TitleAreaDialog {
         if (imgDesc != null) {
             setTitleImage(imgDesc.createImage());
         }
-        RGB rgb = parentShell.getBackground().getRGB();
+        // RGB rgb = parentShell.getBackground().getRGB();
+        RGB rgb = new RGB(255, 255, 255);
         setTitleAreaColor(rgb);
     }
 
@@ -179,23 +180,8 @@ public class LoginDialog extends TitleAreaDialog {
     protected void logIn(Project project) {
         // Save last used parameters
         PreferenceManipulator prefManipulator = new PreferenceManipulator(CorePlugin.getDefault().getPreferenceStore());
-        prefManipulator.setLastServer(loginComposite.getServer());
-        prefManipulator.setLastContext(loginComposite.getContext());
-        prefManipulator.setLastPort(loginComposite.getPort());
-        prefManipulator.setLastDblogin(loginComposite.getDblogin());
-        prefManipulator.setLastDbpassword(loginComposite.getDbpassword());
-        prefManipulator.setLastRepository(loginComposite.getRepository().getClass().getName());
+        prefManipulator.setLastConnection(loginComposite.getConnection().getName());
         prefManipulator.setLastProject(project.getLabel());
-        prefManipulator.setLastUser(loginComposite.getUser().getLogin());
-
-        if (loginComposite.getRepository().isAuthenticationNeeded()) {
-            prefManipulator.addServer(loginComposite.getServer());
-            prefManipulator.addContext(loginComposite.getContext());
-            prefManipulator.addPort(loginComposite.getPort());
-            prefManipulator.addDblogin(loginComposite.getDblogin());
-            prefManipulator.addDbpassword(loginComposite.getDbpassword());
-        }
-        prefManipulator.addUser(loginComposite.getUser().getLogin());
 
         try {
             ProxyRepositoryFactory.getInstance().logOnProject(project);

@@ -43,7 +43,11 @@ public abstract class AbstractRepositoryFactory implements IRepositoryFactory {
 
     private String name;
 
+    private String id;
+
     private boolean authenticationNeeded;
+
+    private List<DynamicFieldBean> fields = new ArrayList<DynamicFieldBean>();
 
     /**
      * Getter for authenticationNeeded.
@@ -79,6 +83,22 @@ public abstract class AbstractRepositoryFactory implements IRepositoryFactory {
      */
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getId() {
+        return this.id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public List<DynamicFieldBean> getFields() {
+        return this.fields;
+    }
+
+    public void setFields(List<DynamicFieldBean> fields) {
+        this.fields = fields;
     }
 
     public RepositoryContext getRepositoryContext() {
