@@ -78,23 +78,23 @@
         sb.append(cr + gm.indent(indent) + "###############################");
         sb.append(cr + gm.indent(indent) + "# Input tables ");
 
-        HashMap<String, ExternalMapperTable> hExternalInpuTables = new HashMap<String, ExternalMapperTable>();
-        for (ExternalMapperTable inputTable : inputTables) {
-            hExternalInpuTables.put(inputTable.getName(), inputTable);
+        HashMap<String, IConnection> hNameToConnection = new HashMap<String, IConnection>();
+        for (IConnection connection : connections) {
+            hNameToConnection.put(connection.getName(), connection);
         }
 
         ArrayList<ExternalMapperTable> inputTablesWithInnerJoin = new ArrayList<ExternalMapperTable>();
 
         HashMap<String, ExternalMapperTableEntry> hExternalInputTableEntries = new HashMap<String, ExternalMapperTableEntry>();
-        for (IConnection connection : connections) {
+        for (ExternalMapperTable externalTable : inputTables) {
+            String tableName = externalTable.getName();
+            IConnection connection = hNameToConnection.get(tableName);
             EConnectionType connectionType = connection.getLineStyle();
             if (connectionType == EConnectionType.FLOW_MAIN) {
                 continue;
             } else if (connectionType == EConnectionType.FLOW_REF) {
 
                 IMetadataTable metadataTable = connection.getMetadataTable();
-                String tableName = connection.getName();
-                ExternalMapperTable externalTable = hExternalInpuTables.get(tableName);
                 if (externalTable != null) {
                     if (externalTable.isInnerJoin()) {
                         inputTablesWithInnerJoin.add(externalTable);
