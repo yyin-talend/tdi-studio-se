@@ -84,6 +84,8 @@ public class ConnectionFormComposite extends Composite {
 
     private Map<IRepositoryFactory, Map<String, LabelText>> dynamicControls = new HashMap<IRepositoryFactory, Map<String, LabelText>>();
 
+    private Map<IRepositoryFactory, Map<String, LabelText>> dynamicRequiredControls = new HashMap<IRepositoryFactory, Map<String, LabelText>>();
+
     /**
      * DOC smallet ConnectionsComposite constructor comment.
      * 
@@ -187,7 +189,9 @@ public class ConnectionFormComposite extends Composite {
         List<IRepositoryFactory> availableRepositories = RepositoryFactoryProvider.getAvailableRepositories();
         for (IRepositoryFactory current : availableRepositories) {
             Map<String, LabelText> list = new HashMap<String, LabelText>();
+            Map<String, LabelText> listRequired = new HashMap<String, LabelText>();
             dynamicControls.put(current, list);
+            dynamicRequiredControls.put(current, listRequired);
             Control baseControl = passwordLabel;
             for (DynamicFieldBean currentField : current.getFields()) {
                 Text text = toolkit.createText(formBody, "", SWT.BORDER);
@@ -206,6 +210,9 @@ public class ConnectionFormComposite extends Composite {
                 baseControl = text;
 
                 LabelText labelText = new LabelText(label, text);
+                if (currentField.isRequired()) {
+                    listRequired.put(currentField.getId(), labelText);
+                }
                 list.put(currentField.getId(), labelText);
             }
         }
@@ -236,7 +243,7 @@ public class ConnectionFormComposite extends Composite {
             valid = false;
             errorMsg = Messages.getString("connections.form.malformedField.username");
         } else {
-            for (LabelText current : dynamicControls.get(getRepository()).values()) {
+            for (LabelText current : dynamicRequiredControls.get(getRepository()).values()) {
                 if (valid && current.getText().length() == 0) {
                     valid = false;
                     errorMsg = Messages.getString("connections.form.dynamicFieldEmpty", current.getLabel());

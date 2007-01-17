@@ -33,16 +33,19 @@ public class DynamicFieldBean {
 
     private String name;
 
+    private boolean required;
+
     /**
      * DOC smallet DynamicFieldBean constructor comment.
      * 
      * @param id
      * @param name
      */
-    public DynamicFieldBean(String id, String name) {
+    public DynamicFieldBean(String id, String name, boolean required) {
         super();
         this.id = id;
         this.name = name;
+        this.required = required;
     }
 
     public String getId() {
@@ -59,6 +62,14 @@ public class DynamicFieldBean {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public boolean isRequired() {
+        return this.required;
+    }
+
+    public void setRequired(boolean required) {
+        this.required = required;
     }
 
 }

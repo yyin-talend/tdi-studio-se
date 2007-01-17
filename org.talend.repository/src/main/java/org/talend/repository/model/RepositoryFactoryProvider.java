@@ -61,7 +61,7 @@ public class RepositoryFactoryProvider {
                     // Getting dynamic login fields:
                     for (IConfigurationElement currentLoginField : current.getChildren("loginField")) {
                         DynamicFieldBean key = new DynamicFieldBean(currentLoginField.getAttribute("id"), currentLoginField
-                                .getAttribute("name"));
+                                .getAttribute("name"), new Boolean(currentLoginField.getAttribute("required")));
                         currentAction.getFields().add(key);
                     }
 
