@@ -194,7 +194,8 @@ public class JobPerlScriptsManager extends JobScriptsManager {
      * @return
      */
     public String getLauncher() {
-        String perlIntepreter = CorePlugin.getDefault().getPreferenceStore().getString(ITalendCorePrefConstants.PERL_INTERPRETER);
+        String perlIntepreter = CorePlugin.getDefault().getPreferenceStore().getString(
+                ITalendCorePrefConstants.PERL_INTERPRETER);
         return perlIntepreter;
     }
 
@@ -270,7 +271,8 @@ public class JobPerlScriptsManager extends JobScriptsManager {
     private void getRoutineNames(List list, boolean isBuildin) {
         String projectName = getCurrentProjectName();
         try {
-            List<IRepositoryObject> routines = ProxyRepositoryFactory.getInstance().getAll(ERepositoryObjectType.ROUTINES);
+            List<IRepositoryObject> routines = ProxyRepositoryFactory.getInstance().getAll(
+                    ERepositoryObjectType.ROUTINES);
             for (int i = 0; i < routines.size(); i++) {
                 RoutineItem routine = (RoutineItem) routines.get(i).getProperty().getItem();
                 if (routine.isBuiltIn() == isBuildin) {
@@ -374,7 +376,8 @@ public class JobPerlScriptsManager extends JobScriptsManager {
                 for (int i = 0; i < process.length; i++) {
                     // gets the children process
                     List<ProcessItem> processedJob = new ArrayList<ProcessItem>();
-                    getChildrenJobAndContextName(process[i].getProperty().getLabel(), list, process[i], projectName, processedJob);
+                    getChildrenJobAndContextName(process[i].getProperty().getLabel(), list, process[i], projectName,
+                            processedJob);
                 }
 
             } catch (Exception e) {
@@ -387,13 +390,16 @@ public class JobPerlScriptsManager extends JobScriptsManager {
         return getResourcesURL(resources, list);
     }
 
-    private void getChildrenJobAndContextName(String rootName, List<String> list, ProcessItem process, String projectName,
-            List<ProcessItem> processedJob) {
+    private void getChildrenJobAndContextName(String rootName, List<String> list, ProcessItem process,
+            String projectName, List<ProcessItem> processedJob) {
         if (processedJob.contains(process)) {
             // pretent circle
             return;
         }
         processedJob.add(process);
+        if (process.getProcess().getRequired() == null) {
+            return;
+        }
         EList jobList = process.getProcess().getRequired().getJob();
         for (int j = 0; j < jobList.size(); j++) {
             JobType jType = (JobType) jobList.get(j);
