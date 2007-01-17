@@ -25,14 +25,14 @@
 			String cid = metadata.getTableName();
 %>
 
-        final String IN_DELIM_<%=cid %> = <%=ElementParameterParser.getValue(node, "__FIELDSEPARATOR__") %>;
+        final String IN_DELIM_<%=cid %> = <%=(((String)ElementParameterParser.getValue(node, "__FIELDSEPARATOR__")).compareTo("*")==0)?"\\*":ElementParameterParser.getValue(node, "__FIELDSEPARATOR__") %>;
         java.io.BufferedReader in<%=cid %> = null;
         in<%=cid %> = new java.io.BufferedReader(new java.io.FileReader(<%=ElementParameterParser.getValue(node, "__FILENAME__") %>));
 
         String str;
-        java.util.StringTokenizer strToken;
+        String[] fields;
         while ((str = in<%=cid %>.readLine()) != null) {
-            strToken = new java.util.StringTokenizer(str.trim(), IN_DELIM_<%=cid %>);
+        	fields = StringUtils.split(str, IN_DELIM_<%=cid %>);
 <%
 	List< ? extends IConnection> conns = node.getOutgoingConnections();
 	String firstConnName = "";
@@ -42,10 +42,13 @@
 			firstConnName = conn.getName();
 			
 			if ((conn.getLineStyle().equals(EConnectionType.FLOW_MAIN))||(conn.getLineStyle().equals(EConnectionType.FLOW_REF))) {
+				int cntOccur = 0;
 				for (IMetadataColumn column: metadata.getListColumns()) {
+				
 %>
-	<%=conn.getName() %>.<%=column.getLabel() %> = <%=((column.getTalendType().compareTo("int")==0)?"Integer.parseInt(":"") %>strToken.nextToken()<%=((column.getTalendType().compareTo("int")==0)?")":"") %>;
+	<%=conn.getName() %>.<%=column.getLabel() %> = StringUtils.convert<%=column.getTalendType() %>(fields[<%=cntOccur %>]);
 <%
+					cntOccur++;
 				}
 			}
 		}
