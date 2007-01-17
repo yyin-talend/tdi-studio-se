@@ -573,7 +573,7 @@ public class LoginComposite extends Composite {
         @Override
         public String getText(Object element) {
             Project prj = (Project) element;
-            String toReturn = prj.getLabel();
+            String toReturn = prj.getLabel() + " - " + prj.getLanguage().getName();
             if (!prj.isLocal() && !isAuthenticationNeeded()) {
                 toReturn += " (remote project in offline mode)";
             }
