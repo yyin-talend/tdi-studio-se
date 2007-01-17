@@ -124,7 +124,12 @@
             class="org.talend.repository.ui.actions.ExportJobScriptAction"
             id="org.talend.repository.ui.actions.exportjobscript"
             level="99"
-            name="Export job scripts"/>     
+            name="Export job scripts"/>
+       <Action
+             class="org.talend.repository.ui.actions.EditPropertiesAction"
+             id="org.talend.repository.actions.editProperties"
+             level="12"
+             name="Edit properties"/>     
    </extension>
    <extension
          point="org.eclipse.ui.views.properties.tabbed.propertyContributor">

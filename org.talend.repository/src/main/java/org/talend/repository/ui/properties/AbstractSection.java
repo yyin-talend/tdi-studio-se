@@ -62,11 +62,13 @@ public abstract class AbstractSection extends AbstractPropertySection {
     private FocusListener listener = new FocusListener() {
 
         public void focusLost(FocusEvent e) {
-            performSave();
+            // Commented because sections arenow read-only
+            // performSave();
         }
 
         public void focusGained(FocusEvent e) {
-            manageLock();
+            // Commented because sections arenow read-only
+            // manageLock();
         }
     };
 
