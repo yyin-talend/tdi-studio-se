@@ -56,6 +56,7 @@ import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.designer.codegen.perlmodule.IPerlModuleService;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
 import org.talend.designer.core.model.utils.emf.talendfile.JobType;
+import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
@@ -364,7 +365,7 @@ public class JobScriptsManager {
      * @param needJob
      * @return
      */
-    private List getJobScripts(ProcessItem[] process, boolean needJob) {
+    private List<URL> getJobScripts(ProcessItem[] process, boolean needJob) {
         List<String> list = new ArrayList<String>();
         if (needJob) {
             String projectName = getCurrentProjectName();
@@ -386,7 +387,7 @@ public class JobScriptsManager {
         return getResourcesURL(resources, list);
     }
 
-    private List getChildrenScripts(ProcessItem[] process, boolean needChildren) {
+    private List<URL> getChildrenScripts(ProcessItem[] process, boolean needChildren) {
         List<String> list = new ArrayList<String>();
         if (needChildren) {
             String projectName = getCurrentProjectName();
@@ -431,43 +432,15 @@ public class JobScriptsManager {
             addToList(list, contextFullName);
 
             ProcessItem childProcess = findProcess(processLabel);
-
+            if (childProcess == null) {
+                return;
+            }
             getChildrenJobAndContextName(rootName, list, childProcess, projectName, processedJob);
         }
     }
 
-    ContentList<String, IRepositoryObject> processAbsoluteMembers;
-
-    IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
-
     private ProcessItem findProcess(String name) {
-        if (processAbsoluteMembers == null) {
-            try {
-                // RepositoryContext repositoryContext = (RepositoryContext)
-                // CorePlugin
-                // .getContext().getProperty(
-                // Context.REPOSITORY_CONTEXT_KEY);
-
-                RootContainer<String, IRepositoryObject> processContainer = factory.getProcess();
-
-                processAbsoluteMembers = processContainer.getAbsoluteMembers();
-
-            } catch (Exception exception) {
-                ExceptionHandler.process(exception);
-            }
-        }
-        Set keys = processAbsoluteMembers.keySet();
-
-        for (Content<String, IRepositoryObject> object : processAbsoluteMembers.values()) {
-            IRepositoryObject process = (IRepositoryObject) object.getContent();
-            if (factory.getStatus(process) != ERepositoryStatus.DELETED) {
-                ProcessItem pi = (ProcessItem) process.getProperty().getItem();
-                if (pi.getProperty().getLabel().equals(name)) {
-                    return pi;
-                }
-            }
-        }
-        return null;
+        return ProcessorUtilities.getProcessItem(name);
     }
 
     private void addToList(List list, Object o) {
