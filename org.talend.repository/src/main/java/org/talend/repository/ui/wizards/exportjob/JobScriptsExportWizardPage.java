@@ -43,8 +43,12 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.internal.wizards.datatransfer.DataTransferMessages;
 import org.eclipse.ui.internal.wizards.datatransfer.WizardFileSystemResourceExportPage1;
+import org.talend.core.CorePlugin;
+import org.talend.core.context.Context;
+import org.talend.core.context.RepositoryContext;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.core.model.temp.ECodeLanguage;
 import org.talend.repository.model.RepositoryNode;
 
 /**
@@ -90,7 +94,7 @@ public class JobScriptsExportWizardPage extends WizardFileSystemResourceExportPa
     public final static String STORE_JOB_ID = "JobScriptsExportWizardPage.STORE_JOB_ID"; //$NON-NLS-1$
 
     public final static String STORE_CONTEXT_ID = "JobScriptsExportWizardPage.STORE_CONTEXT_ID"; //$NON-NLS-1$
-    
+
     public final static String STORE_GENERATECODE_ID = "JobScriptsExportWizardPage.STORE_GENERATECODE_ID"; //$NON-NLS-1$
 
     private static final String STORE_DESTINATION_NAMES_ID = "JobScriptsExportWizardPage.STORE_DESTINATION_NAMES_ID"; //$NON-NLS-1$
@@ -102,7 +106,7 @@ public class JobScriptsExportWizardPage extends WizardFileSystemResourceExportPa
      */
     protected JobScriptsExportWizardPage(String name, IStructuredSelection selection) {
         super(name, null);
-        manager = new JobScriptsManager();
+        manager = createJobScriptsManager();
         RepositoryNode[] nodes = (RepositoryNode[]) selection.toList().toArray(new RepositoryNode[selection.size()]);
 
         List<ProcessItem> list = new ArrayList<ProcessItem>();
@@ -117,6 +121,23 @@ public class JobScriptsExportWizardPage extends WizardFileSystemResourceExportPa
         }
 
         process = list.toArray(new ProcessItem[list.size()]);
+
+    }
+
+    private JobScriptsManager createJobScriptsManager() {
+
+        ECodeLanguage language = ((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY))
+                .getProject().getLanguage();
+
+        switch (language) {
+        case PERL:
+            return new JobPerlScriptsManager();
+        case JAVA:
+            // return new JobJavaScriptsManager();
+            throw new RuntimeException("The java exporter has not been implemented yet.");
+        default:
+            return new JobPerlScriptsManager();
+        }
 
     }
 
@@ -247,7 +268,7 @@ public class JobScriptsExportWizardPage extends WizardFileSystemResourceExportPa
         genCodeButton.setText("Generate Perl Files");
         genCodeButton.setSelection(true);
         genCodeButton.setFont(font);
-        
+
     }
 
     /**
@@ -373,9 +394,9 @@ public class JobScriptsExportWizardPage extends WizardFileSystemResourceExportPa
         boolean needModel = modelButton.getSelection();
         boolean needJob = jobButton.getSelection();
         boolean needContext = contextButton.getSelection();
-        boolean needGenerateCode=genCodeButton.getSelection();
+        boolean needGenerateCode = genCodeButton.getSelection();
         return manager.getExportResources(process, needLauncher, needSystemRoutine, needUserRoutine, needModel, needJob,
-                needContext,needGenerateCode, contextCombo.getText());
+                needContext, needGenerateCode, contextCombo.getText());
     }
 
     /**
@@ -491,7 +512,7 @@ public class JobScriptsExportWizardPage extends WizardFileSystemResourceExportPa
             genCodeButton.setSelection(settings.getBoolean(STORE_GENERATECODE_ID));
         }
 
-        laucherText.setText(manager.getPerlLauncher());
+        laucherText.setText(manager.getLauncher());
 
         List<String> contextNames = manager.getJobContexts(process[0]);
 

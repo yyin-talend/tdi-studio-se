@@ -30,6 +30,7 @@ import org.talend.core.GlobalServiceRegister;
 import org.talend.core.context.Context;
 import org.talend.designer.codegen.perlmodule.IPerlModuleService;
 import org.talend.designer.core.IDesignerCoreService;
+import org.talend.designer.runprocess.IRunProcessService;
 import org.talend.repository.model.IRepositoryService;
 
 /**
@@ -96,6 +97,10 @@ public class RepositoryPlugin extends AbstractUIPlugin {
 
     public IRepositoryService getRepositoryService() {
         return (IRepositoryService) GlobalServiceRegister.getDefault().getService(IRepositoryService.class);
+    }
+    
+    public IRunProcessService getRunProcessService() {
+        return (IRunProcessService) GlobalServiceRegister.getDefault().getService(IRunProcessService.class);
     }
 
 }
