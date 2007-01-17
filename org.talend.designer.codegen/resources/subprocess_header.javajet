@@ -34,13 +34,73 @@
 %>
 
 private class <%=conn.getName() %>Struct {
+	private static final int DEFAULT_HASHCODE = 1;
+    private static final int PRIME = 31;
+    private int hashCode = DEFAULT_HASHCODE;
+    public boolean hashCodeDirty = true;
+    
 	<%
 		for (IMetadataColumn column: metadata.getListColumns()) {
     %>
-    	private <%=column.getTalendType() %> <%=column.getLabel() %> = <%=(column.getTalendType().compareTo("int")==0)?"0":"null" %>;
+    	private <%=column.getTalendType() %> <%=column.getLabel() %>;
+    	private boolean <%=column.getLabel() %>IsKey = <%=column.isKey() %>;
 	<%
 		}
     %>
+    
+	@Override
+	public int hashCode() {
+		if (this.hashCodeDirty) {
+			final int prime = PRIME;
+			int result = 0;
+	<%
+		for (IMetadataColumn column: metadata.getListColumns()) {
+    %>
+			if (<%=column.getLabel() %>IsKey) {
+	<%
+			if (column.getTalendType().substring(0, 1).toUpperCase().equals(column.getTalendType().substring(0,1))) {
+	%>
+				result = prime * result + ((this.<%=column.getLabel() %> == null) ? 0 : this.<%=column.getLabel() %>.hashCode());
+	<%
+			} else {
+	%>
+				result = prime * result + this.<%=column.getLabel() %>;
+	<%
+			}
+	%>
+			}
+	<%
+		}
+    %>		
+		}
+		return this.hashCode;
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) return true;
+		if (obj == null) return false;
+		if (getClass() != obj.getClass()) return false;
+		final <%=conn.getName() %>Struct other = (<%=conn.getName() %>Struct) obj;
+	<%
+		for (IMetadataColumn column: metadata.getListColumns()) {
+			if (column.getTalendType().substring(0, 1).toUpperCase().equals(column.getTalendType().substring(0,1))) {
+	%>
+		if (<%=column.getLabel() %>IsKey) {
+			if (this.<%=column.getLabel() %> == null) {
+				if (other.<%=column.getLabel() %> != null) return false;
+			} else if (!this.<%=column.getLabel() %>.equals(other.<%=column.getLabel() %>)) return false;
+		}
+	<%
+			} else {
+	%>
+		if (<%=column.getLabel() %>IsKey && this.<%=column.getLabel() %> != other.<%=column.getLabel() %>) return false;
+	<%
+			}
+    	}
+    %>
+		return true;
+    }
 }
 <%
 						}
