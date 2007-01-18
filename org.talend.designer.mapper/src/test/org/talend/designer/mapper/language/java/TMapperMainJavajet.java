@@ -19,6 +19,7 @@
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 // ============================================================================
+package org.talend.designer.mapper.language.java;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -60,6 +61,7 @@ public class TMapperMainJavajet {
         // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // start of code to copy in template
 
+        String uniqueNameNode = null;
         ILanguage currentLanguage = LanguageProvider.getJavaLanguage();
         List<IConnection> connections;
         ExternalMapperData data;
@@ -67,12 +69,14 @@ public class TMapperMainJavajet {
             // normal use
             connections = (List<IConnection>) node.getIncomingConnections();
             data = (ExternalMapperData) node.getExternalData();
+            uniqueNameNode = node.getUniqueName();
         } else {
             // Stand alone / tests
             MapperMain.setStandAloneMode(true);
             MapperDataTestGenerator testGenerator = new MapperDataTestGenerator(currentLanguage, false);
             connections = testGenerator.getConnectionList();
             data = (ExternalMapperData) testGenerator.getExternalData();
+            uniqueNameNode = "testUniqueNameNode";
         }
 
         String cr = "\n";
@@ -100,7 +104,7 @@ public class TMapperMainJavajet {
         // 
         sb.append(cr + gm.indent(indent));
         sb.append(cr + gm.indent(indent) + "// ###############################");
-        sb.append(cr + gm.indent(indent) + "// # Input tables ");
+        sb.append(cr + gm.indent(indent) + "// # Input tables (lookups)");
 
         HashMap<String, IConnection> hNameToConnection = new HashMap<String, IConnection>();
         for (IConnection connection : connections) {
@@ -132,6 +136,7 @@ public class TMapperMainJavajet {
                         hExternalInputTableEntries.put(externalTableEntry.getName(), externalTableEntry);
                     }
                     List<IMetadataColumn> listColumns = metadataTable.getListColumns();
+                    ArrayList<String> keysNames = new ArrayList<String>();
                     ArrayList<String> keysValues = new ArrayList<String>();
                     for (IMetadataColumn column : listColumns) {
                         String columnName = column.getLabel();
@@ -139,13 +144,15 @@ public class TMapperMainJavajet {
                         if (externalInputTableEntry != null) {
                             String expressionKey = externalInputTableEntry.getExpression();
                             if (column.isKey() && expressionKey != null && !"".equals(expressionKey.trim())) {
+                                keysNames.add(columnName);
                                 keysValues.add(expressionKey);
                             }
                         }
                     }
+                    String[] aKeysNames = keysNames.toArray(new String[0]);
                     String[] aKeysValues = keysValues.toArray(new String[0]);
                     if (aKeysValues.length > 0) {
-                        sb.append(cr + gm.indent(indent) + gm.buildLookupDataInstance(tableName, aKeysValues, indent));
+                        sb.append(gm.buildLookupDataInstance(tableName, aKeysNames, aKeysValues, indent));
                     }
 
                 } // if(externalTable != null) {
@@ -175,7 +182,7 @@ public class TMapperMainJavajet {
             String varsTableName = varsTable.getName();
             sb.append(cr + gm.indent(indent) + "{");
             indent++;
-            String instanceVarName = varsTableName + "__" + node.getUniqueName();
+            String instanceVarName = varsTableName + "__" + uniqueNameNode;
             String className = instanceVarName + "__Struct";
 
             sb.append(cr + gm.indent(indent) + className + " " + varsTableName + " = " + instanceVarName + ";");
@@ -247,6 +254,12 @@ public class TMapperMainJavajet {
         // init of allNotRejectTablesHaveFilter and atLeastOneReject
         for (int i = 0; i < lstSize; i++) {
             ExternalMapperTable outputTable = (ExternalMapperTable) outputTablesSortedByReject.get(i);
+            
+            String outputTableName = outputTable.getName();
+            String className = outputTableName + "Struct";
+//            sb.append(cr + cr + gm.indent(indent) + className +  " " + outputTableName + "_tmp = " + outputTableName + ";");
+//            sb.append(cr + gm.indent(indent) + outputTableName + " = null;");
+            
             List<ExternalMapperTableEntry> columnsEntries = outputTable.getMetadataTableEntries();
             List<ExternalMapperTableEntry> filters = outputTable.getConstraintTableEntries();
             boolean hasFilter = filters != null && filters.size() > 0 && !gm.checkFiltersAreEmpty(outputTable);
@@ -264,6 +277,8 @@ public class TMapperMainJavajet {
         }
         // ///////////////////////////////////////////////////////////////////
 
+        sb.append(cr);
+        
         if (allNotRejectTablesHaveFilter && atLeastOneReject) {
             // write $oneNotRejectFilterValidated = false;
             sb.append(cr + gm.indent(indent) + "boolean " + rejected + " = true;");
@@ -400,10 +415,13 @@ public class TMapperMainJavajet {
                             outputExpression = null;
                         }
 
-                        sb.append(cr + gm.indent(indent) + gm.getGeneratedCodeTableColumnVariable(outputTableName, outputColumnName)
+                        sb.append(cr + gm.indent(indent) + gm.getGeneratedCodeTableColumnVariable(outputTableName + "_tmp", outputColumnName)
                                 + " = " + outputExpression + ";");
 
                     } // for entries
+                    
+                    sb.append(cr + gm.indent(indent) + outputTableName + " = " + outputTableName + "_tmp;");
+                    
                 }
                 if (closeFilterOrRejectBracket) {
                     indent--;

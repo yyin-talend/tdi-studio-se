@@ -120,35 +120,6 @@ public class PerformanceJavaTHash {
     @Test
     public void testWithIntegerKeys() {
 
-        TimeMeasure.begin("testWithIntegerKeys LoadReadExecutorWithEqualsHashCode");
-        LoadReadExecutorWithEqualsHashCode executorEqualsHashCode = new LoadReadExecutorWithEqualsHashCode(ITERATIONS_FOR_QUICK);
-
-        {
-            // TimeMeasure.begin("executeWithIntegerAndMapAndMultiThreading with HashMap");
-            // executorWithout.executeWithIntegerAndMapAndMultiThreading(new HashMap(ITERATIONS_FOR_QUICK + 1));
-            // TimeMeasure.end("executeWithIntegerAndMapAndMultiThreading with HashMap");
-            //
-            // TimeMeasure.begin("executeWithIntegerAndMapAndMultiThreading with HashedMap");
-            // executorWithout.executeWithIntegerAndMapAndMultiThreading(new HashedMap(ITERATIONS_FOR_QUICK));
-            // TimeMeasure.end("executeWithIntegerAndMapAndMultiThreading with HashedMap");
-            //
-            // TimeMeasure.begin("executeWithIntegerAndMapAndMultiThreading with FastHashMap");
-            // executorWithout.executeWithIntegerAndMapAndMultiThreading(new FastHashMap(ITERATIONS_FOR_QUICK));
-            // TimeMeasure.end("executeWithIntegerAndMapAndMultiThreading with FastHashMap");
-            //
-            // System.out.println("executeWithIntegerAndFastHashMap");
-            // executorWithout.executeWithIntegerAndFastHashMap();
-
-            for (int i = 0; i < 10; i++) {
-                System.out.println("executeWithIntegerAndHashMap " + i);
-                executorEqualsHashCode.executeWithIntegerAndHashMap();
-            }
-
-            // System.out.println("executeWithIntegerAndHashedMap");
-            // executorWithout.executeWithIntegerAndHashedMap();
-        }
-        TimeMeasure.end("testWithIntegerKeys LoadReadExecutorWithEqualsHashCode");
-
         TimeMeasure.begin("testWithIntegerKeys LoadReadExecutorWithoutMultiKey");
         LoadReadExecutorWithoutMultiKey executorWithout = new LoadReadExecutorWithoutMultiKey(ITERATIONS_FOR_QUICK);
 
@@ -177,6 +148,20 @@ public class PerformanceJavaTHash {
             executorWithout.executeWithIntegerAndHashedMap();
         }
         TimeMeasure.end("testWithIntegerKeys LoadReadExecutorWithoutMultiKey");
+
+        
+        TimeMeasure.begin("testWithIntegerKeys LoadReadExecutorWithEqualsHashCode");
+        LoadReadExecutorWithEqualsHashCode executorEqualsHashCode = new LoadReadExecutorWithEqualsHashCode(ITERATIONS_FOR_QUICK);
+
+        {
+            for (int i = 0; i < 10; i++) {
+                System.out.println("executeWithIntegerAndHashMap " + i);
+                executorEqualsHashCode.executeWithIntegerAndHashMap();
+            }
+
+        }
+        TimeMeasure.end("testWithIntegerKeys LoadReadExecutorWithEqualsHashCode");
+
 
         TimeMeasure.begin("testWithIntegerKeys executeWithMultiKey");
         LoadReadExecutorWithMultiKey executor = new LoadReadExecutorWithMultiKey(ITERATIONS_FOR_QUICK) {
@@ -876,6 +861,98 @@ public class PerformanceJavaTHash {
 
         }
 
+        public void executeWithIntegerAndMapAndMultiThreading(Map tHash) {
+
+            /**
+             * 
+             * DOC amaumont PerformanceJavaTHash.LoadReadExecutorWithoutMultiKey class global comment. Detailled comment
+             * <br/>
+             * 
+             * $Id$
+             * 
+             */
+            class PutThread extends Thread {
+
+                private int length;
+
+                private int start;
+
+                private ArrayList rows;
+
+                private Map map;
+
+                private boolean ended;
+
+                /**
+                 * DOC amaumont PutThread constructor comment.
+                 * 
+                 * @param localRowsLookup
+                 * @param i
+                 * @param j
+                 */
+                public PutThread(Map map, ArrayList rows, int start, int length) {
+                    this.map = map;
+                    this.rows = rows;
+                    this.start = start;
+                    this.length = length;
+                }
+
+                /*
+                 * (non-Javadoc)
+                 * 
+                 * @see java.lang.Thread#run()
+                 */
+                @Override
+                public void run() {
+
+                    ArrayList localRows = this.rows;
+                    int start = this.start;
+                    int length = this.length;
+                    Map map = this.map;
+
+                    for (int i = start; i < length; i++) {
+                        RowStruct row = (RowStruct) localRows.get(i);
+                        map.put(row.integerKey, row);
+                    }
+                }
+
+            }
+            ;
+
+            ArrayList<RowStruct> localRowsLookup = rowsLookup;
+            ArrayList<Integer> localIntegers = integers;
+
+            int lstSize = nIterations;
+            PutThread putThread1 = new PutThread(tHash, localRowsLookup, 0, nIterations / 2);
+            PutThread putThread2 = new PutThread(tHash, localRowsLookup, nIterations / 2, nIterations);
+            TimeMeasure.begin("loading");
+
+            putThread1.start();
+            putThread2.start();
+
+            while (putThread1.isAlive() || putThread2.isAlive())
+                ;
+
+            TimeMeasure.end("loading");
+
+            TimeMeasure.begin("reading");
+            int nRowsFound = 0;
+            for (int i = 0; i < lstSize; i++) {
+
+                RowStruct row = (RowStruct) tHash.get(localIntegers.get(i));
+                if (row != null) {
+                    nRowsFound++;
+                }
+                // System.out.println(row.name);
+            }
+            TimeMeasure.end("reading");
+            tHash.clear();
+
+            System.out.println("nRowsFound=" + nRowsFound);
+
+        }
+
+
     }
 
     /**
@@ -932,14 +1009,14 @@ public class PerformanceJavaTHash {
         }
 
         public void executeWithIntegerAndHashMap() {
-            Map<Integer, RowStruct> tHash = new HashMap<Integer, RowStruct>();
+            int lstSize = nIterations;
+            Map<Integer, RowStruct> tHash = new HashMap<Integer, RowStruct>(lstSize);
 
             TimeMeasure.measureActive = true;
 
             ArrayList<RowStruct> localRowsLookup = rowsLookup;
             ArrayList<Integer> localIntegers = integers;
 
-            int lstSize = nIterations;
 
             TimeMeasure.begin("loading");
             for (int i = 0; i < lstSize; i++) {
@@ -967,14 +1044,14 @@ public class PerformanceJavaTHash {
         }
 
         public void executeWithIntegerAndHashedMap() {
-            Map tHash = new HashedMap();
+            int lstSize = nIterations;
+            Map tHash = new HashedMap(lstSize);
 
             TimeMeasure.measureActive = true;
 
             ArrayList<RowStruct> localRowsLookup = rowsLookup;
             ArrayList<Integer> localIntegers = integers;
 
-            int lstSize = nIterations;
 
             TimeMeasure.begin("loading");
             for (int i = 0; i < lstSize; i++) {
@@ -1002,14 +1079,14 @@ public class PerformanceJavaTHash {
         }
 
         public void executeWithIntegerAndFastHashMap() {
-            Map tHash = new FastHashMap();
+            int lstSize = nIterations;
+            Map tHash = new FastHashMap(lstSize);
 
             TimeMeasure.measureActive = true;
 
             ArrayList<RowStruct> localRowsLookup = rowsLookup;
             ArrayList<Integer> localIntegers = integers;
 
-            int lstSize = nIterations;
 
             TimeMeasure.begin("loading");
             for (int i = 0; i < lstSize; i++) {
@@ -1196,6 +1273,129 @@ public class PerformanceJavaTHash {
 
             System.out.println("nRowsFound=" + nRowsFound);
 
+        }
+
+    }
+
+    /**
+     * 
+     * DOC amaumont PerformanceJavaTHash class global comment. Detailled comment
+     * <br/>
+     *
+     * $Id$
+     *
+     */
+    public static class RowStruct {
+
+        private static final int DEFAULT_HASHCODE = 1;
+
+        private static final int PRIME = 31;
+        
+        public static boolean intKeyIsKey;
+        public static boolean integerKeyIsKey;
+        public static boolean stringKeyIsKey;
+        public static boolean stringKey2IsKey;
+        public static boolean nameIsKey;
+
+        private int hashCode = DEFAULT_HASHCODE;
+        
+        public boolean hashCodeDirty = true;
+
+        
+        
+        public int intKey;
+        public Integer integerKey;
+        public String stringKey;
+        public String stringKey2;
+        public String name;
+
+        /**
+         * DOC amaumont BeanStruct constructor comment.
+         * 
+         * @param id1
+         * @param name
+         * @param id2
+         */
+        public RowStruct(int intKey, Integer integerKey, String stringKey, String stringKey2, String name) {
+            super();
+            this.intKey = intKey;
+            this.integerKey = integerKey;
+            this.stringKey = stringKey;
+            this.stringKey2 = stringKey2;
+            this.name = name;
+        }
+
+        public RowStruct() {
+            super();
+        }
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see java.lang.Object#hashCode()
+         */
+        @Override
+        public int hashCode() {
+            if (this.hashCodeDirty) {
+                final int prime = PRIME;
+                int result = 0;
+                if (intKeyIsKey) {
+                    result = prime * result + this.intKey;
+                }
+                if (integerKeyIsKey) {
+                    result = prime * result + ((this.integerKey == null) ? 0 : this.integerKey.hashCode());
+                }
+                if (stringKeyIsKey) {
+                    result = prime * result + ((this.stringKey == null) ? 0 : this.stringKey.hashCode());
+                }
+                if (stringKey2IsKey) {
+                    result = prime * result + ((this.stringKey2 == null) ? 0 : this.stringKey2.hashCode());
+                }
+                this.hashCode = result;
+                this.hashCodeDirty = false;
+            }
+
+            return this.hashCode;
+        }
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see java.lang.Object#equals(java.lang.Object)
+         */
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj)
+                return true;
+            if (obj == null)
+                return false;
+            if (getClass() != obj.getClass())
+                return false;
+            final RowStruct other = (RowStruct) obj;
+            if (intKeyIsKey && this.intKey != other.intKey)
+                return false;
+            if (integerKeyIsKey) {
+                if (this.integerKey == null) {
+                    if (other.integerKey != null)
+                        return false;
+                } else if (!this.integerKey.equals(other.integerKey))
+                    return false;
+            }
+            if (stringKeyIsKey) {
+                if (this.stringKey == null) {
+                    if (other.stringKey != null)
+                        return false;
+                } else if (!this.stringKey.equals(other.stringKey))
+                    return false;
+            }
+            if (stringKey2IsKey) {
+                if (this.stringKey2 == null) {
+                    if (other.stringKey2 != null)
+                        return false;
+                } else if (!this.stringKey2.equals(other.stringKey2))
+                    return false;
+            }
+            return true;
         }
 
     }

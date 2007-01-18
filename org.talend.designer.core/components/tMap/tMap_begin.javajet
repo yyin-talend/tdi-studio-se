@@ -3,9 +3,10 @@ package="org.talend.designer.codegen.translators"
 	imports="
 	java.util.ArrayList
 	java.util.List
-	org.talend.designer.codegen.config.CodeGeneratorArgument
+	java.util.Map
 	org.talend.core.model.metadata.MetadataTalendType
 	org.talend.designer.mapper.MapperMain
+	org.talend.designer.codegen.config.CodeGeneratorArgument
 	org.talend.designer.mapper.MapperComponent
 	org.talend.designer.mapper.external.data.ExternalMapperData 
 	org.talend.designer.mapper.external.data.ExternalMapperTable
@@ -27,14 +28,7 @@ package="org.talend.designer.codegen.translators"
 	
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        ExternalMapperData data;
-        if (node != null) {
-            data = (ExternalMapperData) node.getExternalData();
-        } else {
-            MapperMain.setStandAloneMode(true);
-            MapperDataTestGenerator testGenerator = new MapperDataTestGenerator(LanguageProvider.getCurrentLanguage(), false);
-            data = (ExternalMapperData) testGenerator.getExternalData();
-        }
+        ExternalMapperData data = (ExternalMapperData) node.getExternalData();
 
         List<ExternalMapperTable> varsTables = data.getVarsTables();
 
@@ -42,6 +36,31 @@ package="org.talend.designer.codegen.translators"
 
         JavaGenerationManager gm = (JavaGenerationManager) GenerationManagerFactory.getInstance().getGenerationManager(currentLanguage);
 
+%>
+// ###############################
+// # Lookup's keys initialization<%
+        List<ExternalMapperTable> inputTablesList = new ArrayList<ExternalMapperTable>(data.getInputTables());
+        int lstSizeInputs = inputTablesList.size();
+        for (int i = 1; i < lstSizeInputs; i++) {
+            ExternalMapperTable inputTable = (ExternalMapperTable) inputTablesList.get(i);
+            List<ExternalMapperTableEntry> tableEntries = inputTable.getMetadataTableEntries();
+            if (tableEntries == null) {
+                continue;
+            }
+            String tableName = inputTable.getName();
+            String className = tableName + "Struct";
+%>
+java.util.Map tHash_<%=tableName%> = (java.util.Map) globalMap.get( "tHash_<%=tableName%>" );
+<%=className%> <%=tableName%>HashKey = new <%=className%>();<%
+        }
+%>
+// ###############################        
+
+// ###############################
+// # Vars initialization
+<%
+
+        /////////////////////////////////////////////////////////////////////////
         gm.setVarsTables(varsTables);
 
         List<ExternalMapperTable> varTablesList = new ArrayList<ExternalMapperTable>(varsTables);
@@ -57,7 +76,8 @@ package="org.talend.designer.codegen.translators"
             String instanceVarName = tableName + "__" + node.getUniqueName();
             String className = instanceVarName + "__Struct";
             
-%>class  <%=className%>  {
+%>
+class  <%=className%>  {
 
 <%
             int lstSize = tableEntries.size();
@@ -67,7 +87,7 @@ package="org.talend.designer.codegen.translators"
                 if (javaType == null) {
                     javaType = "String";
                 }
-%>	public <%= javaType %> <%= varTableEntry.getName() %>;
+%>	<%= javaType %> <%= varTableEntry.getName() %>;
 
 <%
             }
@@ -75,6 +95,33 @@ package="org.talend.designer.codegen.translators"
 <%= className %> <%= instanceVarName %> = new <%= className %>();
 <%
         }
+%>
+// ###############################
+
+// ###############################
+// # Outputs initialization
+<%
+        List<ExternalMapperTable> outputTablesList = new ArrayList<ExternalMapperTable>(data.getOutputTables());
+
+        // constants
+        for (ExternalMapperTable table : outputTablesList) {
+            List<ExternalMapperTableEntry> tableEntries = table.getMetadataTableEntries();
+            if (tableEntries == null) {
+                continue;
+            }
+            String tableName = table.getName();
+            
+            String instanceVarName = tableName + "__" + node.getUniqueName();
+            String className = tableName + "Struct";
+            
+%>
+<%= className %> <%= tableName %>_tmp = new <%= className %>();
+<%
+        }
+%>
+// ###############################
+<%
+
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

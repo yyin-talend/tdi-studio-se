@@ -19,7 +19,7 @@
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 // ============================================================================
-import java.util.ArrayList;
+package org.talend.designer.mapper.language.perl;
 import java.util.List;
 
 import org.talend.core.model.process.AbstractExternalNode;
@@ -32,6 +32,7 @@ import org.talend.designer.mapper.language.LanguageProvider;
 import org.talend.designer.mapper.language.generation.GenerationManagerFactory;
 import org.talend.designer.mapper.language.generation.PerlGenerationManager;
 import org.talend.designer.mapper.model.metadata.MapperDataTestGenerator;
+import java.util.ArrayList;
 
 /**
  * DOC amaumont class global comment. Detailled comment <br/>

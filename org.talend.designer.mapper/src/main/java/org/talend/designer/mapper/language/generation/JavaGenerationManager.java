@@ -45,21 +45,20 @@ public class JavaGenerationManager extends GenerationManager {
      * 
      * @param tableName
      * @param keysValues
+     * @param keysValues2
      * @param indent
      * @return
      */
-    public String buildLookupDataInstance(String name, String[] keysValues, int indent) {
-        String string = "";
-        string += name + "Struct" + " " + name + " = tHash_" + name + ".get( " + "\n" + indent(++indent)
-                + "new MultiKey( new Object[]{ \n";
-        indent++;
-        for (int i = 0; i < keysValues.length; i++) {
-            string += (i != 0 ? "\n" : "") + indent(indent) + keysValues[i] + ",";
+    public String buildLookupDataInstance(String name, String[] keysNames, String[] keysValues, int indent) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < keysNames.length; i++) {
+            sb.append("\n" + indent(indent) + name + "HashKey." + keysNames[i] + " = " + keysValues[i] + ";");
         }
-        string += "\n" + indent(--indent) + "})";
-        indent--;
-        string += "\n" + indent(indent) + " );";
-        return string;
+        sb.append("\n" + indent(indent) + name + "HashKey.hashCodeDirty = true;");
+        String className = name + "Struct";
+        sb.append("\n" + indent(indent) + className + " " + name + " = (" + className + ") tHash_" + name + ".get( " + name + "HashKey );");
+        sb.append("\n");
+        return sb.toString();
     }
 
     /**

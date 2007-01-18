@@ -19,11 +19,11 @@
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 // ============================================================================
+package org.talend.designer.mapper.language.java;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.talend.core.model.process.AbstractExternalNode;
-import org.talend.designer.core.performance.RowStruct;
 import org.talend.designer.mapper.MapperMain;
 import org.talend.designer.mapper.external.data.ExternalMapperData;
 import org.talend.designer.mapper.external.data.ExternalMapperTable;
@@ -49,13 +49,16 @@ public class TMapperStartJavajet {
 
         // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+        String uniqueNameNode = null;
         ExternalMapperData data;
         if (node != null) {
             data = (ExternalMapperData) node.getExternalData();
+            uniqueNameNode = node.getUniqueName();
         } else {
             MapperMain.setStandAloneMode(true);
             MapperDataTestGenerator testGenerator = new MapperDataTestGenerator(LanguageProvider.getCurrentLanguage(), false);
             data = (ExternalMapperData) testGenerator.getExternalData();
+            uniqueNameNode = "testUniqueNameNode";
         }
 
         List<ExternalMapperTable> varsTables = data.getVarsTables();
@@ -71,21 +74,35 @@ public class TMapperStartJavajet {
         StringBuilder sb = new StringBuilder();
 
 
-        sb.append(cr + className + " " + instanceVarName + " = new " + className + "();");
-        Struct rowStructKey = new RowStruct();
+        sb.append(cr + gm.indent(indent) + "// ###############################");
+        sb.append(cr + gm.indent(indent) + "// # Lookup's keys");
+        List<ExternalMapperTable> inputTablesList = new ArrayList<ExternalMapperTable>(data.getInputTables());
+        int lstSizeInputs = inputTablesList.size();
+        for (int i = 1; i < lstSizeInputs; i++) {
+            ExternalMapperTable inputTable = (ExternalMapperTable) inputTablesList.get(i);
+            List<ExternalMapperTableEntry> tableEntries = inputTable.getMetadataTableEntries();
+            if (tableEntries == null) {
+                continue;
+            }
+            String tableName = inputTable.getName();
+            String className = tableName + "Struct";
+            sb.append(cr + gm.indent(indent) + "Map tHash_" + tableName + " = (Map) globalMap.get( \"tHash_" + tableName + "\" );");
+            sb.append(cr + gm.indent(indent) + className + " " + inputTable.getName() + "HashKey = new " + className + "();");
+        }
+        sb.append(cr + gm.indent(indent) + "// ###############################");
 
         /////////////////////////////////////////////////////////////////////////
         gm.setVarsTables(varsTables);
         // Classes of var tables
         List<ExternalMapperTable> varTablesList = new ArrayList<ExternalMapperTable>(varsTables);
-        for (ExternalMapperTable table : varTablesList) {
-            List<ExternalMapperTableEntry> tableEntries = table.getMetadataTableEntries();
+        for (ExternalMapperTable varTable : varTablesList) {
+            List<ExternalMapperTableEntry> tableEntries = varTable.getMetadataTableEntries();
             if (tableEntries == null) {
                 continue;
             }
-            String tableName = table.getName();
+            String tableName = varTable.getName();
 
-            String instanceVarName = tableName + "__" + node.getUniqueName();
+            String instanceVarName = tableName + "__" + uniqueNameNode;
             String className = instanceVarName + "__Struct";
 
             sb.append(cr + "class " + className + " {");

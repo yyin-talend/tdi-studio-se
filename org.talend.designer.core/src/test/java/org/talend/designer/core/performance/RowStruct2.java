@@ -34,18 +34,17 @@ package org.talend.designer.core.performance;
  * $Id$
  * 
  */
-public class RowStruct {
+public class RowStruct2 {
 
     private static final int DEFAULT_HASHCODE = 1;
 
     private static final int PRIME = 31;
     
     public static boolean intKeyIsKey;
-
     public static boolean integerKeyIsKey;
-
     public static boolean stringKeyIsKey;
     public static boolean stringKey2IsKey;
+    public static boolean nameIsKey;
 
     private int hashCode = DEFAULT_HASHCODE;
     
@@ -54,12 +53,9 @@ public class RowStruct {
     
     
     public int intKey;
-
     public Integer integerKey;
-
     public String stringKey;
     public String stringKey2;
-
     public String name;
 
     /**
@@ -69,7 +65,7 @@ public class RowStruct {
      * @param name
      * @param id2
      */
-    public RowStruct(int intKey, Integer integerKey, String stringKey, String stringKey2, String name) {
+    public RowStruct2(int intKey, Integer integerKey, String stringKey, String stringKey2, String name) {
         super();
         this.intKey = intKey;
         this.integerKey = integerKey;
@@ -78,7 +74,7 @@ public class RowStruct {
         this.name = name;
     }
 
-    public RowStruct() {
+    public RowStruct2() {
         super();
     }
 
@@ -124,7 +120,7 @@ public class RowStruct {
             return false;
         if (getClass() != obj.getClass())
             return false;
-        final RowStruct other = (RowStruct) obj;
+        final RowStruct2 other = (RowStruct2) obj;
         if (intKeyIsKey && this.intKey != other.intKey)
             return false;
         if (integerKeyIsKey) {

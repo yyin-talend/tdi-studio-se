@@ -43,16 +43,23 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 	List< ? extends IConnection> conns = node.getIncomingConnections();
 	for (IConnection conn : conns) {
 		if (conn.getLineStyle().equals(EConnectionType.FLOW_MAIN)) {
-			for (IMetadataColumn column: metadata.getListColumns()) {
-%>
-	out<%=cid %>.write(<%=conn.getName() %>.<%=column.getLabel() %>+ OUT_DELIM_<%=cid %>);
-<%
+		%>if(<%=conn.getName() %> != null) {<%
+			List<IMetadataColumn> columns = metadata.getListColumns();
+			int sizeColumns = columns.size();
+			for (int i = 0; i < sizeColumns; i++) {
+				IMetadataColumn column = columns.get(i);
+				%>
+				out<%=cid %>.write(<%=conn.getName() %>.<%=column.getLabel() %>);
+				<%
+				if(i != sizeColumns - 1) {
+					%>out<%=cid %>.write(OUT_DELIM_<%=cid %>);<%
+				}
 			}
+			%>
+			out<%=cid %>.write(<%=rowSeparator %>);
+		}<%
 		}
 	}
-%>
-	out<%=cid %>.write(<%=rowSeparator %>);
-<%
     }
 }
 %>
