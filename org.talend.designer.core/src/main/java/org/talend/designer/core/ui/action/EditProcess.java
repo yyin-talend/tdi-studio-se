@@ -32,7 +32,6 @@ import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.ui.MultiPageTalendEditor;
@@ -83,7 +82,7 @@ public class EditProcess extends AContextualAction {
 
             if (editorPart == null) {
                 fileEditorInput.setView(getViewPart());
-                fileEditorInput.setNode(node);
+                fileEditorInput.setRepositoryNode(node);
                 page.openEditor(fileEditorInput, MultiPageTalendEditor.ID, true);
             } else {
                 page.activate(editorPart);

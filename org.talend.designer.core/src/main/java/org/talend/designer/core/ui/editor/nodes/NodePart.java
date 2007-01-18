@@ -43,20 +43,30 @@ import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
 import org.eclipse.gef.tools.DirectEditManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
+import org.talend.commons.exception.MessageBoxExceptionHandler;
+import org.talend.commons.exception.PersistenceException;
 import org.talend.core.model.process.IExternalNode;
 import org.talend.core.model.process.INode;
+import org.talend.core.model.properties.ProcessItem;
+import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.ExternalUtilities;
 import org.talend.designer.core.ui.MultiPageTalendEditor;
+import org.talend.designer.core.ui.editor.ProcessEditorInput;
 import org.talend.designer.core.ui.editor.cmd.ExternalNodeChangeCommand;
 import org.talend.designer.core.ui.editor.nodecontainer.NodeContainer;
 import org.talend.designer.core.ui.editor.nodecontainer.NodeContainerPart;
 import org.talend.designer.core.ui.editor.process.ProcessPart;
+import org.talend.repository.model.IProxyRepositoryFactory;
+import org.talend.repository.ui.views.IRepositoryView;
 
 /**
  * Graphical part of the node of Gef. <br/>
@@ -327,11 +337,12 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
 
     @Override
     public void performRequest(Request req) {
+        Node node = (Node) getModel();
         if (req.getType().equals("open")) {
-            Node node = (Node) getModel();
             IExternalNode externalNode = ExternalUtilities.getExternalNodeReadyToOpen(node);
 
-            IWorkbenchPart part = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
+            IWorkbenchPart part = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
+                    .getActiveEditor();
             if (externalNode != null && (part instanceof MultiPageTalendEditor) && !node.isReadOnly()) {
                 if (externalNode.open(getViewer().getControl().getDisplay()) == SWT.OK) {
                     Command cmd = new ExternalNodeChangeCommand(node, externalNode);
@@ -342,11 +353,51 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
                 }
             } else {
                 IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+                String processName = (String) node.getPropertyValue(EParameterName.PROCESS_TYPE_PROCESS.getName());
+                if (processName != null) {
+                    processName = processName.replace("'", "");
+                    try {
+                        IProxyRepositoryFactory factory = DesignerPlugin.getDefault().getProxyRepositoryFactory();
+                        IRepositoryObject selectedProcess = null;
 
-                try {
-                    page.showView("org.eclipse.ui.views.PropertySheet");
-                } catch (PartInitException e) {
-                    e.printStackTrace();
+                        List<IRepositoryObject> list = factory.getAll(ERepositoryObjectType.PROCESS);
+
+                        for (IRepositoryObject process : list) {
+                            if (processName.equals(process.getLabel())) {
+                                if (process.getProperty().getItem() instanceof ProcessItem) {
+                                    selectedProcess = process;
+                                    break;
+                                }
+                            }
+                        }
+                        if (selectedProcess != null) {
+                            ProcessItem processItem = (ProcessItem) selectedProcess.getProperty().getItem();
+                            ProcessEditorInput fileEditorInput = new ProcessEditorInput(processItem, true);
+
+                            IEditorPart editorPart = page.findEditor(fileEditorInput);
+
+                            if (editorPart == null) {
+                                IViewPart viewPart = (IViewPart) page.findView(IRepositoryView.VIEW_ID);
+                                if (viewPart != null) {
+                                    fileEditorInput.setView((IRepositoryView) viewPart);
+                                    fileEditorInput.setRepositoryNode(null);
+                                    page.openEditor(fileEditorInput, MultiPageTalendEditor.ID, true);
+                                }
+                            } else {
+                                page.activate(editorPart);
+                            }
+                        }
+                    } catch (PartInitException e) {
+                        MessageBoxExceptionHandler.process(e);
+                    } catch (PersistenceException e) {
+                        MessageBoxExceptionHandler.process(e);
+                    }
+                } else {
+                    try {
+                        page.showView("org.eclipse.ui.views.PropertySheet");
+                    } catch (PartInitException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         }

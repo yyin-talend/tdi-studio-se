@@ -66,11 +66,11 @@ public class ProcessEditorInput extends RepositoryEditorInput {
 
     private IRepositoryView view;
 
-    private RepositoryNode node;
+    private RepositoryNode repositoryNode;
 
     public ProcessEditorInput(ProcessItem processItem, boolean load) throws PersistenceException {
         super(initFile(processItem.getProperty().getId()), processItem);
-        
+
         loadedProcess = new Process(getProcessItem().getProperty());
         if (load) {
             loadProcess();
@@ -109,15 +109,15 @@ public class ProcessEditorInput extends RepositoryEditorInput {
      * @throws PersistenceException
      */
     private void checkReadOnly() throws PersistenceException {
-        
+
         loadedProcess.checkReadOnly();
-        
-//        IRepositoryFactory repFactory = RepositoryFactoryProvider.getInstance();
-//        boolean isLocked = repFactory.isLocked(getProcessItem());
-//        boolean isDeleted = repFactory.isDeleted(getProcessItem());
-////        if (isLocked || isDeleted) {
-//            loadedProcess.setReadOnly(isLocked || isDeleted);
-////        }
+
+        // IRepositoryFactory repFactory = RepositoryFactoryProvider.getInstance();
+        // boolean isLocked = repFactory.isLocked(getProcessItem());
+        // boolean isDeleted = repFactory.isDeleted(getProcessItem());
+        // // if (isLocked || isDeleted) {
+        // loadedProcess.setReadOnly(isLocked || isDeleted);
+        // // }
     }
 
     private void loadProcess() throws PersistenceException {
@@ -131,7 +131,8 @@ public class ProcessEditorInput extends RepositoryEditorInput {
      * @throws PersistenceException
      */
     private static IFile initFile(String id) throws PersistenceException {
-        Project project = ((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY)).getProject();
+        Project project = ((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY))
+                .getProject();
         IProject fsProject = ResourceModelUtils.getProject(project);
         IFolder folder = ResourceUtils.getFolder(fsProject, TEMP_DIRECTORY, true);
         return ResourceUtils.getFile(folder, "tempProcess" + id, false);
@@ -156,7 +157,7 @@ public class ProcessEditorInput extends RepositoryEditorInput {
 
             loadedProcess.setXmlStream(getFile().getContents());
 
-            IRepositoryService service=DesignerPlugin.getDefault().getRepositoryService();
+            IRepositoryService service = DesignerPlugin.getDefault().getRepositoryService();
             IProxyRepositoryFactory factory = service.getProxyRepositoryFactory();
 
             if (path != null) {
@@ -211,8 +212,8 @@ public class ProcessEditorInput extends RepositoryEditorInput {
      * DOC smallet Comment method "refresh".
      */
     private void refresh() {
-        if (view != null && node != null) {
-            view.refresh(node);
+        if (view != null && repositoryNode != null) {
+            view.refresh(repositoryNode);
         }
     }
 
@@ -330,8 +331,8 @@ public class ProcessEditorInput extends RepositoryEditorInput {
      * 
      * @param node
      */
-    public void setNode(RepositoryNode node) {
-        this.node = node;
+    public void setRepositoryNode(RepositoryNode repositoryNode) {
+        this.repositoryNode = repositoryNode;
     }
 
     /**
@@ -339,8 +340,8 @@ public class ProcessEditorInput extends RepositoryEditorInput {
      * 
      * @return the node
      */
-    public RepositoryNode getNode() {
-        return this.node;
+    public RepositoryNode getRepositoryNode() {
+        return this.repositoryNode;
     }
 
     private ProcessItem getProcessItem() {

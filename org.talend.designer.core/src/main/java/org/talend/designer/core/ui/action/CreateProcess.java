@@ -84,7 +84,7 @@ public class CreateProcess extends AContextualAction {
                 fileEditorInput = new ProcessEditorInput(processWizard.getProcess(), false);
 
                 fileEditorInput.setView(getViewPart());
-                fileEditorInput.setNode(node);
+                fileEditorInput.setRepositoryNode(node);
 
                 IWorkbenchPage page = getActivePage();
                 page.openEditor(fileEditorInput, MultiPageTalendEditor.ID, true);
