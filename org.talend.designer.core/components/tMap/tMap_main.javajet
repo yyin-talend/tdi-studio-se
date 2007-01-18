@@ -325,7 +325,7 @@
                     if (atLeastOneReject) {
                         sb.append(" else {");
                         indent++;
-                        sb.append(cr + gm.indent(indent) + "boolean " + rejected + " = false;");
+                        sb.append(cr + gm.indent(indent) + rejected + " = false;");
                         indent--;
                         sb.append(cr + gm.indent(indent) + "}");
                     }

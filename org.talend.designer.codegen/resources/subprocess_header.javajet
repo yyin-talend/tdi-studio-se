@@ -23,21 +23,33 @@
 	HashSet<String> hSet = new HashSet<String>();
 	for (INode node : subTree.getNodes()) {
 		List<IMetadataTable> metadatas = node.getMetadataList();
-		if ((metadatas!=null)&&(metadatas.size()>0)) {
-			IMetadataTable metadata = metadatas.get(0);
-			if (metadata!=null) {
-				List< ? extends IConnection> conns = node.getOutgoingConnections();
-				for (IConnection conn : conns) {
-					if (conn.getLineStyle().equals(EConnectionType.FLOW_MAIN)) {
-						if (!hSet.contains(conn.getName())) {
-							hSet.add(conn.getName());
+			List< ? extends IConnection> conns = node.getOutgoingConnections();
+			for (IConnection conn : conns) {
+//				if (conn.getLineStyle().equals(EConnectionType.FLOW_MAIN)) {
+					if (!hSet.contains(conn.getName())) {
+						hSet.add(conn.getName());
+						IMetadataTable metadata = conn.getMetadataTable();
+						boolean hasAtLeastOneKey = false;
+						for (IMetadataColumn column: metadata.getListColumns()) {
+							if (column.isKey()) {
+								hasAtLeastOneKey = true;
+								break;
+							}
+						}
+						
 %>
 
 private class <%=conn.getName() %>Struct {
+<%
+	if(hasAtLeastOneKey) {
+%>
 	private static final int DEFAULT_HASHCODE = 1;
     private static final int PRIME = 31;
     private int hashCode = DEFAULT_HASHCODE;
     public boolean hashCodeDirty = true;
+<%
+	}
+%>
     
 	<%
 		for (IMetadataColumn column: metadata.getListColumns()) {
@@ -46,6 +58,10 @@ private class <%=conn.getName() %>Struct {
 	<%
 		}
     %>
+    
+    <%
+	if(hasAtLeastOneKey) {
+	%>
     
 	@Override
 	public int hashCode() {
@@ -98,13 +114,16 @@ private class <%=conn.getName() %>Struct {
     %>
 		return true;
     }
+    
+    <%
+	}
+	%>
+    
 }
 <%
 						}
 					}
-				}
-			}
-		}
+//				}
 	}
 %>
 
