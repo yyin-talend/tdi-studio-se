@@ -45,6 +45,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.IBreakpointManager;
 import org.eclipse.debug.core.model.IBreakpoint;
+import org.eclipse.jdt.internal.core.JavaProject;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.talend.commons.exception.SystemException;
 import org.talend.core.CorePlugin;
@@ -78,7 +79,7 @@ public class JavaProcessor implements IProcessor {
     private IProcess process;
 
     /** Perl project. */
-    private IProject perlProject;
+    private IProject javaProject;
 
     /** Path to generated perl code. */
     private IPath codePath;
@@ -104,9 +105,9 @@ public class JavaProcessor implements IProcessor {
 
     public void initPaths(IContext context) throws ProcessorException {
         try {
-            perlProject = PerlUtils.getProject();
+            javaProject = JavaUtils.getProject();
         } catch (CoreException e1) {
-            throw new ProcessorException("Perl project not found.");
+            throw new ProcessorException("Java project not found.");
         }
         RepositoryContext repositoryContext = (RepositoryContext) CorePlugin.getContext().getProperty(
                 Context.REPOSITORY_CONTEXT_KEY);
@@ -152,7 +153,7 @@ public class JavaProcessor implements IProcessor {
             }
 
             // Generating files
-            IFile codeFile = perlProject.getFile(codePath);
+            IFile codeFile = javaProject.getProject().getFile(codePath);
             InputStream codeStream = new ByteArrayInputStream(processCode.getBytes());
             if (!codeFile.exists()) {
                 codeFile.create(codeStream, true, null);
@@ -172,7 +173,8 @@ public class JavaProcessor implements IProcessor {
                 setBreakpoints(codeFile, lineNumbers);
             }
 
-            IFile contextFile = perlProject.getFile(contextPath);
+            // IFile contextFile = javaProject.getFile(contextPath);
+            IFile contextFile = javaProject.getProject().getFile(contextPath);
             InputStream contextStream = new ByteArrayInputStream(processContext.getBytes());
             if (!contextFile.exists()) {
                 contextFile.create(contextStream, true, null);
@@ -188,7 +190,9 @@ public class JavaProcessor implements IProcessor {
         }
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.designer.runprocess.IProcessor#getCodeContext()
      */
     public String getCodeContext() {
@@ -246,11 +250,13 @@ public class JavaProcessor implements IProcessor {
         return this.contextPath;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.designer.runprocess.IProcessor#getCodeProject()
      */
     public IProject getCodeProject() {
-        return this.perlProject;
+        return this.javaProject.getProject();
     }
 
     /**
@@ -314,7 +320,7 @@ public class JavaProcessor implements IProcessor {
      * @param nodeName
      */
     public int getLineNumber(String nodeName) {
-        IFile codeFile = perlProject.getFile(codePath);
+        IFile codeFile = javaProject.getProject().getFile(codePath);
         int[] lineNumbers = new int[] { 0 };
         try {
             lineNumbers = JavaProcessor.getLineNumbers(codeFile, new String[] { nodeName });
@@ -348,8 +354,7 @@ public class JavaProcessor implements IProcessor {
         codeFile.deleteMarkers(perlBrekPointMarker, true, IResource.DEPTH_ZERO);
 
         IExtensionRegistry registry = Platform.getExtensionRegistry();
-        IConfigurationElement[] configElems = registry
-                .getConfigurationElementsFor("org.eclipse.debug.core.breakpoints");
+        IConfigurationElement[] configElems = registry.getConfigurationElementsFor("org.eclipse.debug.core.breakpoints");
         IConfigurationElement perlBreakConfigElem = null;
         for (IConfigurationElement elem : configElems) {
             if (elem.getAttribute("id").equals("perlLineBreakpoint")) {

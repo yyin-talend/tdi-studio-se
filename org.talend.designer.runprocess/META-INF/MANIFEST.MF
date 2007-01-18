@@ -17,7 +17,8 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.debug.ui,
  org.epic.debug,
  org.eclipse.emf.ecore,
- org.talend.libraries
+ org.talend.libraries,
+ org.eclipse.jdt.core
 Eclipse-LazyStart: true
 Export-Package: org.talend.designer.runprocess,
  org.talend.designer.runprocess.data,
