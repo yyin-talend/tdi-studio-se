@@ -49,7 +49,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 			for (int i = 0; i < sizeColumns; i++) {
 				IMetadataColumn column = columns.get(i);
 				%>
-				out<%=cid %>.write(<%=conn.getName() %>.<%=column.getLabel() %>);
+				out<%=cid %>.write((<%=conn.getName() %>.<%=column.getLabel() %> == null) ? "" : <%=conn.getName() %>.<%=column.getLabel() %> );
 				<%
 				if(i != sizeColumns - 1) {
 					%>out<%=cid %>.write(OUT_DELIM_<%=cid %>);<%

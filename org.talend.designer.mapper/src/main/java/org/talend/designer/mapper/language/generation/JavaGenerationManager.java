@@ -56,7 +56,8 @@ public class JavaGenerationManager extends GenerationManager {
         }
         sb.append("\n" + indent(indent) + name + "HashKey.hashCodeDirty = true;");
         String className = name + "Struct";
-        sb.append("\n" + indent(indent) + className + " " + name + " = (" + className + ") tHash_" + name + ".get( " + name + "HashKey );");
+        sb.append("\n" + indent(indent) + className + " " + name + "FromHash = (" + className + ") tHash_" + name + ".get( " + name
+                + "HashKey );");
         sb.append("\n");
         return sb.toString();
     }

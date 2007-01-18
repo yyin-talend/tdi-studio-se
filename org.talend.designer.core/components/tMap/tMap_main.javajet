@@ -87,6 +87,7 @@
         }
 
         ArrayList<ExternalMapperTable> inputTablesWithInnerJoin = new ArrayList<ExternalMapperTable>();
+        ArrayList<ExternalMapperTable> lookupTables = new ArrayList<ExternalMapperTable>();
 
         HashMap<String, ExternalMapperTableEntry> hExternalInputTableEntries = new HashMap<String, ExternalMapperTableEntry>();
         for (ExternalMapperTable externalTable : inputTables) {
@@ -102,6 +103,7 @@
                     if (externalTable.isInnerJoin()) {
                         inputTablesWithInnerJoin.add(externalTable);
                     }
+                    lookupTables.add(externalTable);
                     hExternalInputTableEntries.clear();
                     List<ExternalMapperTableEntry> metadataTableEntries = externalTable.getMetadataTableEntries();
                     if (metadataTableEntries == null) {
@@ -254,6 +256,17 @@
 
         sb.append(cr);
         
+        for (ExternalMapperTable inputTable : lookupTables) {
+            String tableName = inputTable.getName();
+            sb.append(cr + gm.indent(indent) + tableName + "Struct " + tableName 
+                    + " = ( " + tableName + "FromHash == null )" 
+                    + " ? " + tableName +  "Default"
+                    + " : " + tableName + "FromHash;"
+            );
+        }
+        
+        sb.append(cr);
+        
         if (allNotRejectTablesHaveFilter && atLeastOneReject) {
             // write $oneNotRejectFilterValidated = false;
             sb.append(cr + gm.indent(indent) + "boolean " + rejected + " = true;");
@@ -286,7 +299,7 @@
                 } else {
                     and = " &&";
                 }
-                sb.append(and + " " + inputTable.getName() + " != null");
+                sb.append(and + " " + inputTable.getName() + "FromHash != null");
             }
             sb.append(" ) {");
             closeTestInnerJoinConditionsBracket = true;
@@ -294,6 +307,7 @@
             if (atLeastOneInputTableWithInnerJoin && atLeastOneRejectInnerJoin) {
                 sb.append(cr + gm.indent(indent) + rejectedInnerJoin + " = false;");
             }
+            
         }
 
         // ///////////////////////////////////////////////////////////////////

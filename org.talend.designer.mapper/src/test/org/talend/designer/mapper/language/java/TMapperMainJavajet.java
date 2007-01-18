@@ -112,6 +112,7 @@ public class TMapperMainJavajet {
         }
 
         ArrayList<ExternalMapperTable> inputTablesWithInnerJoin = new ArrayList<ExternalMapperTable>();
+        ArrayList<ExternalMapperTable> lookupTables = new ArrayList<ExternalMapperTable>();
 
         HashMap<String, ExternalMapperTableEntry> hExternalInputTableEntries = new HashMap<String, ExternalMapperTableEntry>();
         for (ExternalMapperTable externalTable : inputTables) {
@@ -127,6 +128,7 @@ public class TMapperMainJavajet {
                     if (externalTable.isInnerJoin()) {
                         inputTablesWithInnerJoin.add(externalTable);
                     }
+                    lookupTables.add(externalTable);
                     hExternalInputTableEntries.clear();
                     List<ExternalMapperTableEntry> metadataTableEntries = externalTable.getMetadataTableEntries();
                     if (metadataTableEntries == null) {
@@ -256,9 +258,9 @@ public class TMapperMainJavajet {
             ExternalMapperTable outputTable = (ExternalMapperTable) outputTablesSortedByReject.get(i);
             
             String outputTableName = outputTable.getName();
-            String className = outputTableName + "Struct";
-//            sb.append(cr + cr + gm.indent(indent) + className +  " " + outputTableName + "_tmp = " + outputTableName + ";");
-//            sb.append(cr + gm.indent(indent) + outputTableName + " = null;");
+            //String className = outputTableName + "Struct";
+            //sb.append(cr + cr + gm.indent(indent) + className +  " " + outputTableName + "_tmp = " + outputTableName + ";");
+            sb.append(cr + gm.indent(indent) + outputTableName + " = null;");
             
             List<ExternalMapperTableEntry> columnsEntries = outputTable.getMetadataTableEntries();
             List<ExternalMapperTableEntry> filters = outputTable.getConstraintTableEntries();
@@ -277,6 +279,17 @@ public class TMapperMainJavajet {
         }
         // ///////////////////////////////////////////////////////////////////
 
+        sb.append(cr);
+        
+        for (ExternalMapperTable inputTable : lookupTables) {
+            String tableName = inputTable.getName();
+            sb.append(cr + gm.indent(indent) + tableName + "Struct " + tableName 
+                    + " = ( " + tableName + "FromHash == null )" 
+                    + " ? " + tableName +  "Default"
+                    + " : " + tableName + "FromHash;"
+            );
+        }
+        
         sb.append(cr);
         
         if (allNotRejectTablesHaveFilter && atLeastOneReject) {
@@ -311,7 +324,7 @@ public class TMapperMainJavajet {
                 } else {
                     and = " &&";
                 }
-                sb.append(and + " " + inputTable.getName() + " != null");
+                sb.append(and + " " + inputTable.getName() + "FromHash != null");
             }
             sb.append(" ) {");
             closeTestInnerJoinConditionsBracket = true;
@@ -319,6 +332,7 @@ public class TMapperMainJavajet {
             if (atLeastOneInputTableWithInnerJoin && atLeastOneRejectInnerJoin) {
                 sb.append(cr + gm.indent(indent) + rejectedInnerJoin + " = false;");
             }
+            
         }
 
         // ///////////////////////////////////////////////////////////////////
@@ -350,7 +364,7 @@ public class TMapperMainJavajet {
                     if (atLeastOneReject) {
                         sb.append(" else {");
                         indent++;
-                        sb.append(cr + gm.indent(indent) + "boolean " + rejected + " = false;");
+                        sb.append(cr + gm.indent(indent) + rejected + " = false;");
                         indent--;
                         sb.append(cr + gm.indent(indent) + "}");
                     }

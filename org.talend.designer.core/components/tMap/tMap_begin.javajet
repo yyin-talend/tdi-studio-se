@@ -51,7 +51,9 @@ package="org.talend.designer.codegen.translators"
             String className = tableName + "Struct";
 %>
 java.util.Map tHash_<%=tableName%> = (java.util.Map) globalMap.get( "tHash_<%=tableName%>" );
-<%=className%> <%=tableName%>HashKey = new <%=className%>();<%
+<%=className%> <%=tableName%>HashKey = new <%=className%>();
+<%=className%> <%=tableName%>Default = new <%=className%>();
+<%
         }
 %>
 // ###############################        
