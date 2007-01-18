@@ -56,8 +56,11 @@ my %desc_<%=cid %> = (
 );
 
 if (not -d $desc_<%=cid%>{output_directory}) {
-    mkdir $desc_<%=cid%>{output_directory}
-        or die 'Cannot create directory "'.$desc_<%=cid%>{output_directory}.'"';
+    use File::Path;
+    eval { mkpath $desc_<%=cid%>{output_directory} };
+    if ($@) {
+        die 'Cannot create directory "'.$desc_<%=cid%>{output_directory}.'": '.$@;
+    }
 }
 
 if (not -w $desc_<%=cid%>{output_directory}) {
