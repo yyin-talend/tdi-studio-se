@@ -39,6 +39,7 @@ import org.talend.commons.ui.swt.colorstyledtext.ColorStyledText;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
+import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.IExternalNode;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.temp.ECodeLanguage;
@@ -47,6 +48,10 @@ import org.talend.designer.codegen.ICodeGenerator;
 import org.talend.designer.codegen.ICodeGeneratorService;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
+import org.talend.designer.core.ui.editor.connections.ConnLabelEditPart;
+import org.talend.designer.core.ui.editor.connections.Connection;
+import org.talend.designer.core.ui.editor.connections.ConnectionLabel;
+import org.talend.designer.core.ui.editor.connections.ConnectionPart;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.nodes.NodeLabel;
 import org.talend.designer.core.ui.editor.nodes.NodeLabelEditPart;
@@ -74,6 +79,8 @@ public class CodeView extends ViewPart implements ISelectionListener {
     private static final int CODE_ALL = 3;
 
     private int codeView = CODE_MAIN;
+
+    private int nodeCodeView = -1;
 
     private static final String ERROR_MESSAGE = Messages.getString("CodeView.Error"); //$NON-NLS-1$
 
@@ -184,18 +191,47 @@ public class CodeView extends ViewPart implements ISelectionListener {
     public void selectionChanged(final IWorkbenchPart part, final ISelection selection) {
         if (selection instanceof IStructuredSelection) {
             Object input = ((IStructuredSelection) selection).getFirstElement();
+            // just used to save the state of the node view when we select on a RUN_IF connection
             if (input instanceof NodeTreeEditPart) {
                 NodeTreeEditPart nTreePart = (NodeTreeEditPart) input;
                 selectedNode = (Node) nTreePart.getModel();
+                if (nodeCodeView != -1) {
+                    codeView = nodeCodeView;
+                    nodeCodeView = -1;
+                }
                 refresh();
-            } else {
-                if (input instanceof NodePart) {
-                    NodePart editPart = (NodePart) input;
-                    selectedNode = (Node) editPart.getModel();
+            } else if (input instanceof NodePart) {
+                NodePart editPart = (NodePart) input;
+                selectedNode = (Node) editPart.getModel();
+                if (nodeCodeView != -1) {
+                    codeView = nodeCodeView;
+                    nodeCodeView = -1;
+                }
+                refresh();
+            } else if (input instanceof NodeLabelEditPart) {
+                NodeLabelEditPart editPart = (NodeLabelEditPart) input;
+                selectedNode = (Node) ((NodeLabel) editPart.getModel()).getNode();
+                if (nodeCodeView != -1) {
+                    codeView = nodeCodeView;
+                    nodeCodeView = -1;
+                }
+                refresh();
+            } else if (input instanceof ConnectionPart) {
+                ConnectionPart editPart = (ConnectionPart) input;
+                Connection connection = (Connection) editPart.getModel();
+                if (connection.getLineStyle() == EConnectionType.RUN_IF) {
+                    selectedNode = connection.getSource();
+                    nodeCodeView = codeView;
+                    codeView = CODE_END;
                     refresh();
-                } else if (input instanceof NodeLabelEditPart) {
-                    NodeLabelEditPart editPart = (NodeLabelEditPart) input;
-                    selectedNode = (Node) ((NodeLabel) editPart.getModel()).getNode();
+                }
+            } else if (input instanceof ConnLabelEditPart) {
+                ConnLabelEditPart editPart = (ConnLabelEditPart) input;
+                Connection connection = ((ConnectionLabel) editPart.getModel()).getConnection();
+                if (connection.getLineStyle() == EConnectionType.RUN_IF) {
+                    selectedNode = connection.getSource();
+                    nodeCodeView = codeView;
+                    codeView = CODE_END;
                     refresh();
                 }
             }
