@@ -26,6 +26,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.StringTokenizer;
 
 import org.apache.commons.collections.BidiMap;
 import org.apache.commons.collections.bidimap.DualHashBidiMap;
@@ -293,6 +294,17 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
 
     }
 
+    private String getRepositoryAliasName(ConnectionItem connectionItem) {
+        ERepositoryObjectType repositoryObjectType = ERepositoryObjectType.getItemType(connectionItem);
+        String aliasName = repositoryObjectType.getAlias();
+        Connection connection = (Connection) connectionItem.getConnection();
+        if (connection instanceof DatabaseConnection) {
+            String currentDbType = (String) RepositoryToComponentProperty.getValue(connection, "TYPE");
+            aliasName += " (" + currentDbType + ")";
+        }
+        return aliasName;
+    }
+
     /**
      * DOC ftang Comment method "updateRepositoryList".
      */
@@ -323,14 +335,13 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
 
             for (ConnectionItem connectionItem : metadataConnectionsItem) {
                 Connection connection = (Connection) connectionItem.getConnection();
-                ERepositoryObjectType repositoryObjectType = ERepositoryObjectType.getItemType(connectionItem);
                 if (!connection.isReadOnly()) {
                     repositoryConnectionItemMap.put(connectionItem.getProperty().getId() + "", connectionItem);
                     for (Object tableObj : connection.getTables()) {
                         org.talend.core.model.metadata.builder.connection.MetadataTable table;
                         table = (org.talend.core.model.metadata.builder.connection.MetadataTable) tableObj;
                         if (factory.getStatus(connectionItem) != ERepositoryStatus.DELETED) {
-                            String name = repositoryObjectType.getAlias() + ":"
+                            String name = getRepositoryAliasName(connectionItem) + ":"
                                     + connectionItem.getProperty().getLabel() + " - " + table.getLabel();
                             String value = connectionItem.getProperty().getId() + " - " + table.getLabel();
                             repositoryTableMap.put(value, ConvertionHelper.convert(table));
@@ -347,7 +358,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                         QueriesConnection connection2 = qcs.get(0);
                         List<Query> qs = connection2.getQuery();
                         for (Query query : qs) {
-                            String name = repositoryObjectType.getAlias() + ":"
+                            String name = getRepositoryAliasName(connectionItem) + ":"
                                     + connectionItem.getProperty().getLabel() + " - " + query.getLabel();
                             String value = connectionItem.getProperty().getId() + " - " + query.getLabel();
                             repositoryQueryStoreMap.put(value, query);
@@ -397,8 +408,8 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                     for (String key : repositoryConnectionItemMap.keySet()) {
                         ConnectionItem connectionItem = repositoryConnectionItemMap.get(key);
                         Connection connection = (Connection) connectionItem.getConnection();
-                        ERepositoryObjectType repositoryObjectType = ERepositoryObjectType.getItemType(connectionItem);
-                        String name = repositoryObjectType.getAlias() + ":" + connectionItem.getProperty().getLabel();
+                        String name = getRepositoryAliasName(connectionItem) + ":"
+                                + connectionItem.getProperty().getLabel();
                         if ((connection instanceof DelimitedFileConnection) && (repositoryValue.equals("DELIMITED"))) {
                             connectionNamesList.add(name);
                             connectionValuesList.add(key);
@@ -416,9 +427,18 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                             connectionValuesList.add(key);
                         }
 
-                        if ((connection instanceof DatabaseConnection) && (repositoryValue.equals("DATABASE"))) {
-                            connectionNamesList.add(name);
-                            connectionValuesList.add(key);
+                        if ((connection instanceof DatabaseConnection) && (repositoryValue.startsWith("DATABASE"))) {
+                            String currentDbType = (String) RepositoryToComponentProperty.getValue(connection, "TYPE");
+                            if (repositoryValue.contains(":")) { // database is specified
+                                String neededDbType = repositoryValue.substring(repositoryValue.indexOf(":") + 1);
+                                if (neededDbType.equals(currentDbType)) {
+                                    connectionNamesList.add(name);
+                                    connectionValuesList.add(key);
+                                }
+                            } else {
+                                connectionNamesList.add(name);
+                                connectionValuesList.add(key);
+                            }
                         }
 
                     }
