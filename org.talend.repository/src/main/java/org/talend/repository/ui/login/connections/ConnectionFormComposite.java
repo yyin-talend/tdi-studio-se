@@ -220,6 +220,7 @@ public class ConnectionFormComposite extends Composite {
         addListeners();
         fillLists();
         showHideDynamicsControls();
+        showHideTexts();
         // validateFields();
     }
 
@@ -280,6 +281,25 @@ public class ConnectionFormComposite extends Composite {
         }
     }
 
+    private void showHideTexts() {
+        if (connection != null) {
+            IRepositoryFactory factory = RepositoryFactoryProvider.getRepositoriyById(connection.getRepositoryId());
+            if (factory != null) {
+                boolean authenticationNeeded = factory.isAuthenticationNeeded();
+                if (authenticationNeeded) {
+                    passwordText.setEnabled(true);
+                    passwordText.setEditable(true);
+                    passwordText.setBackground(LoginComposite.WHITE_COLOR);
+                } else {
+                    passwordText.setText("");
+                    passwordText.setEnabled(false);
+                    passwordText.setEditable(false);
+                    passwordText.setBackground(LoginComposite.GREY_COLOR);
+                }
+            }
+        }
+    }
+
     public IRepositoryFactory getRepository() {
         IRepositoryFactory repositoryFactory = null;
         IStructuredSelection sel = (IStructuredSelection) repositoryCombo.getSelection();
@@ -309,25 +329,10 @@ public class ConnectionFormComposite extends Composite {
             showHideDynamicsControls();
             validateFields();
             fillBean();
-
-            if (connection != null) {
-                IRepositoryFactory factory = RepositoryFactoryProvider.getRepositoriyById(connection.getRepositoryId());
-                if (factory != null) {
-                    boolean authenticationNeeded = factory.isAuthenticationNeeded();
-                    if (authenticationNeeded) {
-                        passwordText.setEnabled(true);
-                        passwordText.setEditable(true);
-                        passwordText.setBackground(LoginComposite.WHITE_COLOR);
-                    } else {
-                        passwordText.setText("");
-                        passwordText.setEnabled(false);
-                        passwordText.setEditable(false);
-                        passwordText.setBackground(LoginComposite.GREY_COLOR);
-                    }
-                }
-            }
+            showHideTexts();
 
         }
+
     };
 
     private void addListeners() {
@@ -419,6 +424,7 @@ public class ConnectionFormComposite extends Composite {
         fillFields();
         showHideDynamicsControls();
         validateFields();
+        showHideTexts();
     }
 
     /**

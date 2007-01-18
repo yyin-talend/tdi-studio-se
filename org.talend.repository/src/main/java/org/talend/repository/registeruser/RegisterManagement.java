@@ -27,6 +27,7 @@ import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.ui.PlatformUI;
 import org.talend.commons.exception.BusinessException;
 import org.talend.core.CorePlugin;
+import org.talend.core.model.general.ConnectionBean;
 import org.talend.core.prefs.CorePreferenceInitializer;
 import org.talend.core.prefs.PreferenceManipulator;
 import org.talend.repository.registeruser.proxy.RegisterUserPortTypeProxy;
@@ -44,8 +45,8 @@ public class RegisterManagement {
     // REGISTRATION_DONE = 1 : registration OK
     private static final double REGISTRATION_DONE = 2;
 
-    public static boolean register(String email, String country, boolean isProxyEnabled, String proxyHost,
-            String proxyPort, String designerVersion) throws BusinessException {
+    public static boolean register(String email, String country, boolean isProxyEnabled, String proxyHost, String proxyPort,
+            String designerVersion) throws BusinessException {
         boolean result = false;
 
         // if proxy is enabled
@@ -64,10 +65,18 @@ public class RegisterManagement {
             result = proxy.registerUser(email, country, designerVersion);
             if (result) {
                 PlatformUI.getPreferenceStore().setValue("REGISTRATION_DONE", 1);
-                PreferenceManipulator prefManipulator = new PreferenceManipulator(CorePlugin.getDefault()
-                        .getPreferenceStore());
-                prefManipulator.addUser(email);
-                prefManipulator.setLastUser(email);
+                PreferenceManipulator prefManipulator = new PreferenceManipulator(CorePlugin.getDefault().getPreferenceStore());
+                // prefManipulator.addUser(email);
+                // prefManipulator.setLastUser(email);
+
+                // Create a default connection:
+                if (prefManipulator.readConnections().isEmpty()) {
+                    ConnectionBean recup = ConnectionBean.getDefaultConnectionBean();
+                    recup.setUser(email);
+                    recup.setComplete(true);
+                    prefManipulator.addConnection(recup);
+                }
+
             }
         } catch (RemoteException e) {
             decrementTry();
@@ -78,6 +87,7 @@ public class RegisterManagement {
 
     /**
      * DOC mhirt Comment method "isProductRegistered".
+     * 
      * @return
      */
     public static boolean isProductRegistered() {
@@ -91,6 +101,7 @@ public class RegisterManagement {
 
     /**
      * DOC mhirt Comment method "init".
+     * 
      * @return
      */
     private static void initPreferenceStore() {

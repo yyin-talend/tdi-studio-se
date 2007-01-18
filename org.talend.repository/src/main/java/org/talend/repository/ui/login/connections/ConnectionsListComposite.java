@@ -81,6 +81,11 @@ public class ConnectionsListComposite extends Composite {
 
         PreferenceManipulator prefManipulator = new PreferenceManipulator(CorePlugin.getDefault().getPreferenceStore());
         this.list = prefManipulator.readConnections();
+
+        if (list.isEmpty()) {
+            list.add(ConnectionBean.getDefaultConnectionBean());
+        }
+
         this.model = new ExtendedTableModel<ConnectionBean>(null, list);
 
         toolkit = new FormToolkit(this.getDisplay());
