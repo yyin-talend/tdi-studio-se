@@ -4,7 +4,7 @@
     SERIAL=""
     VERSION="0.102"
     STATUS="ALPHA"
-    ICON32="tFileInputDelimited.png"
+    
     COMPATIBILITY="ALL"
     AUTHOR="Talend"
     RELEASE_DATE="20070111A"
