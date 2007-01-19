@@ -179,7 +179,13 @@ public class ProxyRepositoryFactory implements IProxyRepositoryFactory {
     public Project createProject(String label, String description, ECodeLanguage language, User author)
             throws PersistenceException {
         checkFileName(label, RepositoryConstants.PROJECT_PATTERN);
-        return this.repositoryFactoryFromProvider.createProject(label, description, language, author);
+        Project toReturn = this.repositoryFactoryFromProvider.createProject(label, description, language, author);
+
+        IMigrationToolService service = (IMigrationToolService) GlobalServiceRegister.getDefault().getService(
+                IMigrationToolService.class);
+        service.initNewProjectTasks(toReturn);
+
+        return toReturn;
     }
 
     /*
@@ -556,8 +562,8 @@ public class ProxyRepositoryFactory implements IProxyRepositoryFactory {
         this.repositoryFactoryFromProvider.setTechnicalStatus(list);
     }
 
-    public void setMigrationTasksDone(List<String> list) throws PersistenceException {
-        this.repositoryFactoryFromProvider.setMigrationTasksDone(list);
+    public void setMigrationTasksDone(Project project, List<String> list) throws PersistenceException {
+        this.repositoryFactoryFromProvider.setMigrationTasksDone(project, list);
     }
 
     /*
@@ -690,7 +696,7 @@ public class ProxyRepositoryFactory implements IProxyRepositoryFactory {
 
         IMigrationToolService service = (IMigrationToolService) GlobalServiceRegister.getDefault().getService(
                 IMigrationToolService.class);
-        service.executeProjectTasks();
+        service.executeProjectTasks(project);
 
     }
 

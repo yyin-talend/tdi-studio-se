@@ -183,7 +183,7 @@ public interface IRepositoryFactory {
 
     void setDocumentationStatus(List<Status> list) throws PersistenceException;
 
-    void setMigrationTasksDone(List<String> list) throws PersistenceException;
+    void setMigrationTasksDone(Project project,List<String> list) throws PersistenceException;
 
     public String isServerValid() throws BusinessException;
 
