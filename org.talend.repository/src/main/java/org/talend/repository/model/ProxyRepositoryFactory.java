@@ -179,13 +179,7 @@ public class ProxyRepositoryFactory implements IProxyRepositoryFactory {
     public Project createProject(String label, String description, ECodeLanguage language, User author)
             throws PersistenceException {
         checkFileName(label, RepositoryConstants.PROJECT_PATTERN);
-        Project toReturn = this.repositoryFactoryFromProvider.createProject(label, description, language, author);
-
-        IMigrationToolService service = (IMigrationToolService) GlobalServiceRegister.getDefault().getService(
-                IMigrationToolService.class);
-        service.initNewProjectTasks();
-
-        return toReturn;
+        return this.repositoryFactoryFromProvider.createProject(label, description, language, author);
     }
 
     /*
