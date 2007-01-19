@@ -34,11 +34,13 @@ import org.talend.commons.exception.MessageBoxExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.utils.data.container.RootContainer;
 import org.talend.core.CorePlugin;
+import org.talend.core.GlobalServiceRegister;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.model.general.Project;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.builder.connection.TableHelper;
+import org.talend.core.model.migration.IMigrationToolService;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.FolderItem;
 import org.talend.core.model.properties.FolderType;
@@ -177,7 +179,13 @@ public class ProxyRepositoryFactory implements IProxyRepositoryFactory {
     public Project createProject(String label, String description, ECodeLanguage language, User author)
             throws PersistenceException {
         checkFileName(label, RepositoryConstants.PROJECT_PATTERN);
-        return this.repositoryFactoryFromProvider.createProject(label, description, language, author);
+        Project toReturn = this.repositoryFactoryFromProvider.createProject(label, description, language, author);
+
+        IMigrationToolService service = (IMigrationToolService) GlobalServiceRegister.getDefault().getService(
+                IMigrationToolService.class);
+        service.initNewProjectTasks();
+
+        return toReturn;
     }
 
     /*
@@ -554,6 +562,10 @@ public class ProxyRepositoryFactory implements IProxyRepositoryFactory {
         this.repositoryFactoryFromProvider.setTechnicalStatus(list);
     }
 
+    public void setMigrationTasksDone(List<String> list) throws PersistenceException {
+        this.repositoryFactoryFromProvider.setMigrationTasksDone(list);
+    }
+
     /*
      * (non-Javadoc)
      * 
@@ -674,13 +686,18 @@ public class ProxyRepositoryFactory implements IProxyRepositoryFactory {
     /**
      * @param project
      * @throws PersistenceException
-     * @throws LoginException 
+     * @throws LoginException
      * @see org.talend.repository.model.IRepositoryFactory#logOnProject(org.talend.core.model.general.Project)
      */
     public void logOnProject(Project project) throws PersistenceException, LoginException {
         getRepositoryContext().setProject(project);
         this.repositoryFactoryFromProvider.logOnProject(project);
         log.info(getRepositoryContext().getUser() + " logged on " + getRepositoryContext().getProject());
+
+        IMigrationToolService service = (IMigrationToolService) GlobalServiceRegister.getDefault().getService(
+                IMigrationToolService.class);
+        service.executeProjectTasks();
+
     }
 
     /*
