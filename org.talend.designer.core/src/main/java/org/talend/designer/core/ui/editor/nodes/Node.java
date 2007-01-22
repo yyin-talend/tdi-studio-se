@@ -701,6 +701,15 @@ public class Node extends Element implements INode {
         return component.isMultipleMethods(currentLanguage);
     }
 
+    
+    
+    /* (non-Javadoc)
+     * @see org.talend.core.model.process.INode#hasConditionnalOutputs()
+     */
+    public Boolean hasConditionalOutputs() {
+        return component.hasConditionalOutputs();
+    }
+
     /**
      * Will return the first item of the subprocess. If "withCondition" is true, if there is links from type RunIf /
      * RunAfter / RunBefore, it will return the first element found. If "withCondition" is false, it will return the

@@ -1,0 +1,25 @@
+
+<%@ jet 
+	package="org.talend.designer.codegen.translators" 
+	imports="
+		org.talend.core.model.process.IConnection 
+		org.talend.designer.codegen.config.CodeGeneratorArgument
+		org.talend.designer.codegen.config.SubTreeArgument
+	"
+	class="SubTreeBegin" 
+%>
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+SubTreeArgument subTreeArgument = (SubTreeArgument)codeGenArgument.getArgument();
+IConnection connection = subTreeArgument.getInputSubtreeConnection();
+
+if(subTreeArgument.isSourceComponentHasConditionnalOutputs()) {
+%>
+
+############ Start of branch "<%= connection.getName()%>" ##############
+if($<%= connection.getName()%>IsSet) {
+
+<% 
+} 
+%>
+

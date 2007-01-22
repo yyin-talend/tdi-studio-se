@@ -33,6 +33,8 @@ public enum EInternalTemplate {
     CONTEXT("context", "0.0.1"),
     SUBPROCESS_HEADER("subprocess_header", "0.0.1"),
     SUBPROCESS_FOOTER("subprocess_footer", "0.0.1"),
+    SUBTREE_BEGIN("subtree_begin", "0.0.1"),
+    SUBTREE_END("subtree_end", "0.0.1"),
     PART_HEADER("component_part_header", "0.0.1"),
     PART_FOOTER("component_part_footer", "0.0.1"),
     PART_ENDMAIN("component_part_endmain", "0.0.1"),

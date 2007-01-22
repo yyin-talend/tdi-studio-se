@@ -258,8 +258,7 @@ public class TMapperMainJavajet {
             ExternalMapperTable outputTable = (ExternalMapperTable) outputTablesSortedByReject.get(i);
             
             String outputTableName = outputTable.getName();
-            //String className = outputTableName + "Struct";
-            //sb.append(cr + cr + gm.indent(indent) + className +  " " + outputTableName + "_tmp = " + outputTableName + ";");
+
             sb.append(cr + gm.indent(indent) + outputTableName + " = null;");
             
             List<ExternalMapperTableEntry> columnsEntries = outputTable.getMetadataTableEntries();
@@ -299,19 +298,6 @@ public class TMapperMainJavajet {
         if (atLeastOneInputTableWithInnerJoin && atLeastOneRejectInnerJoin) {
             // write $oneNotRejectFilterValidated = false;
             sb.append(cr + gm.indent(indent) + "boolean " + rejectedInnerJoin + " = true;");
-        }
-
-        // write outputs arrays initialization with empty list for NOT reject tables
-        for (int indexReject = 0; indexReject < lstSize; indexReject++) {
-            ExternalMapperTable outputNormalTable = (ExternalMapperTable) outputTablesSortedByReject.get(indexReject);
-            if (outputNormalTable.isReject() || outputNormalTable.isRejectInnerJoin()) {
-                break;
-            }
-            List<ExternalMapperTableEntry> metadataTableEntries = outputNormalTable.getMetadataTableEntries();
-            if (metadataTableEntries != null && metadataTableEntries.size() > 0) {
-                sb.append(cr + gm.indent(indent) + "// # Output table: '" + outputNormalTable.getName() + "'");
-                // sb.append(cr + gm.indent(indent) + gm.buildNewArrayDeclaration(outputNormalTable.getName(), indent));
-            }
         }
 
         // write conditions for inner join reject
@@ -372,13 +358,6 @@ public class TMapperMainJavajet {
                 }
 
                 sb.append(cr + gm.indent(indent) + "// ###### START REJECTS ##### ");
-                // write outputs arrays initialization with empty list for reject tables
-                for (int indexReject = indexCurrentTable; indexReject < lstSize; indexReject++) {
-                    ExternalMapperTable outputRejectTable = (ExternalMapperTable) outputTablesSortedByReject.get(indexReject);
-                    if (outputRejectTable.isReject() || outputRejectTable.isRejectInnerJoin()) {
-                        sb.append(cr + gm.indent(indent) + "// # Output reject table: '" + outputRejectTable.getName() + "'");
-                    }
-                }
             }
 
             // write filters conditions and code to execute
@@ -386,8 +365,13 @@ public class TMapperMainJavajet {
                     && allNotRejectTablesHaveFilter || currentIsRejectInnerJoin && atLeastOneInputTableWithInnerJoin) {
 
                 boolean closeFilterOrRejectBracket = false;
+                if (currentIsReject || currentIsRejectInnerJoin) {
+                    sb.append(cr + gm.indent(indent) + "// # Output reject table: '" + outputTableName + "'");
+                } else {
+                    sb.append(cr + gm.indent(indent) + "// # Output table: '" + outputTableName + "'");
+                }
                 if (hasFilters || currentIsReject || currentIsRejectInnerJoin && atLeastOneInputTableWithInnerJoin) {
-                    sb.append(cr + gm.indent(indent) + "// # Filter condition ");
+                    sb.append(cr + gm.indent(indent) + "// # Filter conditions ");
                     sb.append(cr + gm.indent(indent) + "if( ");
 
                     String rejectedTests = null;

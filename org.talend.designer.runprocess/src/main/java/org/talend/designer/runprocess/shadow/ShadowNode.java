@@ -275,9 +275,13 @@ public abstract class ShadowNode implements INode {
     }
     
     public Boolean isMultipleMethods() {
-        return new Boolean(true);
+        return Boolean.TRUE;
     }
 
+    public Boolean hasConditionalOutputs() {
+        return Boolean.TRUE;
+    }
+    
     public IExternalNode getExternalNode() {
         return null;
     }

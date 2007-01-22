@@ -246,6 +246,11 @@ public class TMapperMainPerljet {
         // init of allNotRejectTablesHaveFilter and atLeastOneReject
         for (int i = 0; i < lstSize; i++) {
             ExternalMapperTable outputTable = (ExternalMapperTable) outputTablesSortedByReject.get(i);
+            
+            String outputTableName = outputTable.getName();
+
+            sb.append(cr + gm.indent(indent) + "$" + outputTableName + "IsSet = false;");
+            
             List<ExternalMapperTableEntry> columnsEntries = outputTable.getMetadataTableEntries();
             List<ExternalMapperTableEntry> filters = outputTable.getConstraintTableEntries();
             boolean hasFilter = filters != null && filters.size() > 0 && !gm.checkFiltersAreEmpty(outputTable);
@@ -390,6 +395,8 @@ public class TMapperMainPerljet {
                         sb.append(cr + gm.indent(indent) + "$" + rejected + " = false;");
                     }
                 }
+
+                sb.append(cr + gm.indent(indent) + "$" + outputTableName + "IsSet = true;");
 
                 if (!currentIsReject && !currentIsRejectInnerJoin || currentIsReject || currentIsRejectInnerJoin
                         && atLeastOneInputTableWithInnerJoin) {

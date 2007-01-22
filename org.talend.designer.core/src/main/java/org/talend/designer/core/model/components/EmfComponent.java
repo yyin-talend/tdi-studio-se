@@ -788,19 +788,37 @@ public class EmfComponent implements IComponent {
         return getTranslatedValue(PROP_FAMILY);
     }
 
-    public Boolean isMultipleMethods(ECodeLanguage language) {
-        // language is not used anymore for the moment.
-
-        Boolean multiple = null;
+    /* (non-Javadoc)
+     * @see org.talend.core.model.components.IComponent#hasConditionalOutputs()
+     */
+    public Boolean hasConditionalOutputs() {
+        Boolean hasConditionalOutputs = Boolean.FALSE;
         TEMPLATEType tempType;
         EList listTempType = compType.getCODEGENERATION().getTEMPLATES().getTEMPLATE();
 
-        if (listTempType.size() == 1) {
-            tempType = (TEMPLATEType) listTempType.get(0);
+        for (Object object : listTempType) {
+            tempType = (TEMPLATEType) object;
+            if (tempType.isSetHASCONDITIONALOUTPUTS()) {
+                hasConditionalOutputs = new Boolean(tempType.isHASCONDITIONALOUTPUTS());
+            }
+        }
+        return hasConditionalOutputs;
+    }
+    
+    public Boolean isMultipleMethods(ECodeLanguage language) {
+        // language is not used anymore for the moment.
+
+        Boolean multiple = Boolean.FALSE;
+        TEMPLATEType tempType;
+        EList listTempType = compType.getCODEGENERATION().getTEMPLATES().getTEMPLATE();
+
+        for (Object object : listTempType) {
+            tempType = (TEMPLATEType) object;
             if (tempType.isSetMULTIPLEMETHODS()) {
                 multiple = new Boolean(tempType.isMULTIPLEMETHODS());
             }
         }
+        
         return multiple;
     }
 
@@ -1035,4 +1053,5 @@ public class EmfComponent implements IComponent {
     public void setIcon32(ImageDescriptor icon32) {
         this.icon32 = icon32;
     }
+
 }

@@ -86,7 +86,7 @@ public class MapperDataTestGenerator {
         ONE_INNER_JOIN_AND_A_TABLE_WITH_INNER_JOIN_REJECT_WITHOUT_REGULAR_TABLE,
     };
 
-    TEST currentTest = TEST.ONE_INNER_JOIN_AND_A_TABLE_WITH_INNER_JOIN_REJECT_WITHOUT_REGULAR_TABLE;
+    TEST currentTest = TEST.ONE_INNER_JOIN_AND_2_TABLES_WITH_FILTER_AND_OTHER_TABLE_WITH_REJECT_AND_REJECT_INNER_JOIN;
 
     public MapperDataTestGenerator(ILanguage language, boolean random) {
         super();
@@ -1476,6 +1476,14 @@ public class MapperDataTestGenerator {
         }
 
         public INode getSubProcessStartNode(boolean withConditions) {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        /* (non-Javadoc)
+         * @see org.talend.core.model.process.INode#hasConditionalOutputs()
+         */
+        public Boolean hasConditionalOutputs() {
             // TODO Auto-generated method stub
             return null;
         }
