@@ -25,15 +25,15 @@ import java.util.Map;
 
 import org.eclipse.gef.commands.Command;
 import org.eclipse.swt.widgets.Composite;
+import org.talend.commons.ui.swt.advanced.dataeditor.ExtendedToolbarView;
 import org.talend.commons.ui.swt.advanced.dataeditor.button.AddPushButton;
+import org.talend.commons.ui.swt.advanced.dataeditor.button.AddPushButtonForExtendedTable;
 import org.talend.commons.ui.swt.advanced.dataeditor.button.ExportPushButton;
 import org.talend.commons.ui.swt.advanced.dataeditor.button.ImportPushButton;
 import org.talend.commons.ui.swt.advanced.dataeditor.button.PastePushButton;
+import org.talend.commons.ui.swt.advanced.dataeditor.button.PastePushButtonForExtendedTable;
 import org.talend.commons.ui.swt.extended.table.AbstractExtendedTableViewer;
 import org.talend.commons.ui.swt.extended.table.ExtendedTableModel;
-import org.talend.core.ui.extended.ExtendedToolbarView;
-import org.talend.core.ui.extended.button.AddPushButtonForExtendedTable;
-import org.talend.core.ui.extended.button.PastePushButtonForExtendedTable;
 import org.talend.designer.core.ui.editor.cmd.PropertyTablePasteCommand;
 
 /**

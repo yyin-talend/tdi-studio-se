@@ -27,15 +27,15 @@ import java.util.List;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.swt.widgets.Composite;
 import org.talend.commons.exception.MessageBoxExceptionHandler;
+import org.talend.commons.ui.swt.advanced.dataeditor.ExtendedToolbarView;
 import org.talend.commons.ui.swt.advanced.dataeditor.button.AddPushButton;
+import org.talend.commons.ui.swt.advanced.dataeditor.button.AddPushButtonForExtendedTable;
 import org.talend.commons.ui.swt.advanced.dataeditor.button.PastePushButton;
+import org.talend.commons.ui.swt.advanced.dataeditor.button.PastePushButtonForExtendedTable;
 import org.talend.commons.ui.swt.advanced.dataeditor.commands.ExtendedTablePasteCommand;
 import org.talend.commons.ui.swt.extended.table.AbstractExtendedTableViewer;
 import org.talend.commons.ui.swt.extended.table.ExtendedTableModel;
 import org.talend.core.model.general.ConnectionBean;
-import org.talend.core.ui.extended.ExtendedToolbarView;
-import org.talend.core.ui.extended.button.AddPushButtonForExtendedTable;
-import org.talend.core.ui.extended.button.PastePushButtonForExtendedTable;
 
 /**
  * DOC smallet class global comment. Detailled comment <br/>

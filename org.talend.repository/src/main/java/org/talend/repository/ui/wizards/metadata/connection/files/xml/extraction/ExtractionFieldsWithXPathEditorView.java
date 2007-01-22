@@ -33,7 +33,10 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
 import org.talend.commons.ui.swt.advanced.dataeditor.AbstractDataTableEditorView;
 import org.talend.commons.ui.swt.advanced.dataeditor.AbstractExtendedToolbar;
+import org.talend.commons.ui.swt.advanced.dataeditor.ExtendedToolbarView;
+import org.talend.commons.ui.swt.advanced.dataeditor.button.AddPushButtonForExtendedTable;
 import org.talend.commons.ui.swt.advanced.dataeditor.button.PastePushButton;
+import org.talend.commons.ui.swt.advanced.dataeditor.button.PastePushButtonForExtendedTable;
 import org.talend.commons.ui.swt.advanced.dataeditor.commands.ExtendedTablePasteCommand;
 import org.talend.commons.ui.swt.extended.table.ExtendedTableModel;
 import org.talend.commons.ui.swt.proposal.TextCellEditorWithProposal;
@@ -47,9 +50,6 @@ import org.talend.commons.utils.data.list.ListenableListEvent;
 import org.talend.core.model.metadata.builder.connection.SchemaTarget;
 import org.talend.core.model.targetschema.editor.XmlExtractorFieldModel;
 import org.talend.core.model.targetschema.editor.XmlExtractorLoopModel;
-import org.talend.core.ui.extended.ExtendedToolbarView;
-import org.talend.core.ui.extended.button.AddPushButtonForExtendedTable;
-import org.talend.core.ui.extended.button.PastePushButtonForExtendedTable;
 
 /**
  * DOC amaumont class global comment. Detailled comment <br/> TGU same purpose as TargetSchemaTableEditorView but uses
@@ -266,7 +266,7 @@ public class ExtractionFieldsWithXPathEditorView extends AbstractDataTableEditor
      * @see org.talend.commons.ui.swt.advanced.dataeditor.AbstractDataTableEditorView#initToolBar()
      */
     @Override
-    protected AbstractExtendedToolbar initToolBar() {
+    protected ExtendedToolbarView initToolBar() {
         return new ExtendedToolbarView(getMainComposite(), SWT.NONE, getExtendedTableViewer()) {
 
             @Override

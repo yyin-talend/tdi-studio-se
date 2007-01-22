@@ -32,6 +32,7 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.Text;
 import org.talend.commons.ui.swt.advanced.dataeditor.AbstractDataTableEditorView;
 import org.talend.commons.ui.swt.advanced.dataeditor.AbstractExtendedToolbar;
+import org.talend.commons.ui.swt.advanced.dataeditor.ExtendedToolbarView;
 import org.talend.commons.ui.swt.proposal.TextCellEditorWithProposal;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumn;
@@ -98,7 +99,7 @@ public class PropertiesTableEditorView<B> extends AbstractDataTableEditorView<B>
      * @see org.talend.commons.ui.swt.advanced.dataeditor.AbstractDataTableEditorView#initToolBar()
      */
     @Override
-    protected AbstractExtendedToolbar initToolBar() {
+    protected ExtendedToolbarView initToolBar() {
         return new PropertiesTableToolbarEditorView(getMainComposite(), SWT.NONE, this.getExtendedTableViewer());
     }
 
