@@ -21,6 +21,10 @@
 // ============================================================================
 package org.talend.designer.runprocess.java;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
@@ -30,7 +34,11 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionRegistry;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.jdt.core.IClasspathEntry;
+import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jdt.core.JavaCore;
 
 /**
  * DOC yzhang class global comment. Detailled comment <br/>
@@ -43,6 +51,8 @@ public class JavaUtils {
     public static final String JAVA_PROJECT_NAME = ".Java";
 
     private static final String JAVA_NATURE = "org.eclipse.jdt.core.javanature";
+
+    private static IJavaProject javaProject;
 
     /**
      * DOC yzhang Comment method "getProject".
@@ -64,8 +74,12 @@ public class JavaUtils {
             if (nature != null) {
                 desc.setNatureIds(new String[] { JAVA_NATURE });
             }
-            prj.create(desc, null);
+            // javaProject = JavaCore.create(prj);
+            // prj.open(IResource.BACKGROUND_REFRESH, null);
+            prj.create(null);
             prj.open(IResource.BACKGROUND_REFRESH, null);
+            prj.setDescription(desc, null);
+
         } else if (prj.getNature(JAVA_NATURE) == null && nature != null) {
             IProjectDescription description = prj.getDescription();
             String[] natures = description.getNatureIds();
@@ -73,8 +87,32 @@ public class JavaUtils {
             System.arraycopy(natures, 0, newNatures, 0, natures.length);
             newNatures[natures.length] = JAVA_NATURE;
             description.setNatureIds(newNatures);
+            prj.open(IResource.BACKGROUND_REFRESH, null);
             prj.setDescription(description, null);
         }
+        javaProject = JavaCore.create(prj);
+
+        IClasspathEntry jreClasspathEntry = JavaCore.newContainerEntry(new Path("org.eclipse.jdt.launching.JRE_CONTAINER"));
+        IClasspathEntry classpathEntry = JavaCore.newSourceEntry(new Path("/" + prj.getName() + "/src"));
+
+        List classpath = new ArrayList();
+        classpath.add(jreClasspathEntry);
+        classpath.add(classpathEntry);
+
+        IClasspathEntry[] classpathEntryArray = (IClasspathEntry[]) classpath.toArray(new IClasspathEntry[classpath.size()]);
+
+        IFolder runtimeFolder = prj.getFolder(new Path("classes"));
+        if (!runtimeFolder.exists()) {
+            runtimeFolder.create(false, true, null);
+        }
+        IFolder sourceFolder = prj.getFolder(new Path("src"));
+        if (!sourceFolder.exists()) {
+            sourceFolder.create(false, true, null);
+        }
+
+        javaProject.setRawClasspath(classpathEntryArray, null);
+        javaProject.setOutputLocation(new Path("/" + prj.getName() + "/classes"), null);
+        javaProject.close();
 
         return prj;
     }

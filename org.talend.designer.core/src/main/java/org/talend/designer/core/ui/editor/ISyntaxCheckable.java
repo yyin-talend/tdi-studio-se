@@ -21,34 +21,28 @@
 // ============================================================================
 package org.talend.designer.core.ui.editor;
 
-import org.eclipse.ui.texteditor.AbstractDecoratedTextEditor;
-import org.talend.core.model.temp.ECodeLanguage;
-
 /**
- * DOC Administrator class global comment. Detailled comment <br/>
  * 
- * $Id: talend-code-templates.xml 1 2006-09-29 17:06:40 +0000 (星期五, 29 九月 2006) nrousseau $
+ * If the syntax of the editor used in the multiple page Talend editor need to be checked, this 
+ * interface should be implemented.
+ * 
+ * For example the condition below:
+ * When switch the tab from the designer to code in the multiple page Talend editor, the syntax of the 
+ * code need to be validated by calling the method validateSyntax.
+ * 
+ * yzhang class global comment. Detailled comment <br/>
+ * 
+ * 
+ * $Id: ICheckable.java 1 2007-1-18 下午03:52:46 +0000 (下午03:52:46, 2007-1-18 2007) yzhang $
  * 
  */
-public final class CodeEditorFactory {
+public interface ISyntaxCheckable {
 
-    private static CodeEditorFactory instance = new CodeEditorFactory();
+    /**
+     * Validate the syntax of the code.
+     * 
+     * DOC yzhang Comment method "checkCode".
+     */
+    public void validateSyntax();
 
-    private CodeEditorFactory() {
-    }
-
-    public static CodeEditorFactory getInstance() {
-        return instance;
-    }
-
-    public AbstractDecoratedTextEditor getCodeEditor(ECodeLanguage language) {
-        switch (language) {
-        case PERL:
-            return new TalendPerlEditor();
-        case JAVA:
-            return new TalendJavaEditor();
-        default:
-            return new TalendPerlEditor();
-        }
-    }
 }

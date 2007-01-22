@@ -67,8 +67,10 @@ import org.talend.core.ui.images.ECoreImage;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.editor.CodeEditorFactory;
+import org.talend.designer.core.ui.editor.ISyntaxCheckable;
 import org.talend.designer.core.ui.editor.ProcessEditorInput;
 import org.talend.designer.core.ui.editor.TalendEditor;
+import org.talend.designer.core.ui.editor.TalendJavaEditor;
 import org.talend.designer.core.ui.editor.TalendPerlEditor;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.nodes.NodeLabel;
@@ -317,9 +319,9 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
                 // pe.getMessage(), null);
             }
 
-            if (codeEditor instanceof TalendPerlEditor) {
+            if (codeEditor instanceof ISyntaxCheckable) {
                 moveCursorToSelectedComponent(plProcessor);
-                ((TalendPerlEditor) codeEditor).revalidateSyntax();
+                ((ISyntaxCheckable) codeEditor).validateSyntax();
             }
         }
     }
@@ -416,8 +418,8 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
                 public void run() {
                     IWorkbenchPage[] pages = getSite().getWorkbenchWindow().getPages();
                     for (int i = 0; i < pages.length; i++) {
-                        if (((FileEditorInput) designerEditor.getEditorInput()).getFile().getProject().equals(
-                                event.getResource())) {
+                        if (((FileEditorInput) designerEditor.getEditorInput()).getFile().getProject()
+                                .equals(event.getResource())) {
                             IEditorPart editorPart = pages[i].findEditor(designerEditor.getEditorInput());
                             pages[i].closeEditor(editorPart, true);
                         }

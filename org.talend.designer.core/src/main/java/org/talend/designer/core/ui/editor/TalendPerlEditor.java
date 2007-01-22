@@ -29,7 +29,7 @@ import org.epic.perleditor.editors.PerlEditor;
  * $Id$
  * 
  */
-public class TalendPerlEditor extends PerlEditor {
+public class TalendPerlEditor extends PerlEditor implements ISyntaxCheckable {
 
     /**
      * Constructs a new TalendPerlEditor.
@@ -56,6 +56,15 @@ public class TalendPerlEditor extends PerlEditor {
     @Override
     public boolean isEditable() {
         return false;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.core.ui.editor.ICheckable#checkCode()
+     */
+    public void validateSyntax() {
+        revalidateSyntax();
     }
 
 }
