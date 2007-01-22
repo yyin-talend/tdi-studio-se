@@ -34,7 +34,10 @@
 // Public License or under the Artistic License just like Perl itself.
 //
 // ============================================================================
-
+<%
+  String packageName = codeGenArgument.getCurrentProjectName().toLowerCase() + "." + codeGenArgument.getJobName().toLowerCase();
+%> 
+package <%= packageName %>;
 
 <%
     if (stats) {
@@ -44,7 +47,6 @@
 <%
     }
 %>
-
 <%
     if (trace) {
 %>
@@ -53,7 +55,6 @@
 <%
     }
 %>
-
 <%for (String routine : CodeGeneratorRoutine.getRoutineName()) {%>
 //PTODO MHIRT Routines
 //use <%=routine%>;
@@ -66,7 +67,7 @@
  * @version <%=ElementParameterParser.getValue(process, "__VERSION__") %>
  * @status <%=ElementParameterParser.getValue(process, "__STATUS__") %> 
  */
-public class <%=process.getName() %> {
+ public class <%=process.getName() %> {
 
 	// WHILE WAITING FOR ROUTINES
     private static class StringUtils {

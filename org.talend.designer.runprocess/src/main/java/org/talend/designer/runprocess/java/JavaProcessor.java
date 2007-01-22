@@ -39,14 +39,12 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.IBreakpointManager;
 import org.eclipse.debug.core.model.IBreakpoint;
-import org.eclipse.jdt.internal.core.JavaProject;
-import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jdt.core.IPackageFragment;
 import org.talend.commons.exception.SystemException;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
@@ -55,45 +53,51 @@ import org.talend.core.model.general.Project;
 import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
-import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.designer.codegen.ICodeGenerator;
 import org.talend.designer.codegen.ICodeGeneratorService;
 import org.talend.designer.runprocess.IProcessor;
 import org.talend.designer.runprocess.ProcessorException;
 import org.talend.designer.runprocess.RunProcessPlugin;
 import org.talend.designer.runprocess.i18n.Messages;
-import org.talend.designer.runprocess.perl.PerlUtils;
 
 /**
- * This class is copy from PerlProcessor,when java generator designed.This class need to write again. <br/>
+ * Creat the package folder for the java file, and put the generated file to the correct folder.
  * 
- * $Id: PerlProcessor.java 906 2006-12-08 02:18:54 +0000 (星期五, 08 十二月 2006) rli $
+ * The creation for the java package should follow the pattern below:
+ * 
+ * 1)The name for the first grade folder should keep same with the T.O.S project name. 2)The folder name within the
+ * project should be the job name.
+ * 
+ * <br/>
+ * 
+ * $Id: JavaProcessor.java 2007-1-22 上午10:53:24 yzhang $
  * 
  */
 public class JavaProcessor implements IProcessor {
 
+    /** added by rxl. */
     public static final String JAVATIP = "//The function of generating Java code haven't achive yet"
             + System.getProperty("line.separator") + "public class JavaTest extends Test {}";
 
-    /** Process to be turned in PERL code. */
+    /** Process to be turned in JAVA code. */
     private IProcess process;
 
-    /** Perl project. */
+    /** Java project. */
     private IProject javaProject;
 
-    /** Path to generated perl code. */
+    /** The path of the java file sroted the generated java code. */
     private IPath codePath;
 
-    /** Path to generated context code. */
+    /** The path of the java file sroted the generated context java code. */
     private IPath contextPath;
 
     /** Tells if filename is based on id or label of the process. */
     private boolean filenameFromLabel;
 
     /**
-     * Constructs a new PerlProcessor.
+     * Constructs a new JavaProcessor.
      * 
-     * @param process Process to be turned in PERL code.
+     * @param process Process to be turned in Java code.
      * @param filenameFromLabel Tells if filename is based on id or label of the process.
      */
     public JavaProcessor(IProcess process, boolean filenameFromLabel) {
@@ -103,7 +107,13 @@ public class JavaProcessor implements IProcessor {
         this.filenameFromLabel = filenameFromLabel;
     }
 
+    /*
+     * Initialization of the variable codePath and contextPath.
+     * 
+     * @see org.talend.designer.runprocess.IProcessor#initPaths(org.talend.core.model.process.IContext)
+     */
     public void initPaths(IContext context) throws ProcessorException {
+
         try {
             javaProject = JavaUtils.getProject();
         } catch (CoreException e1) {
@@ -112,36 +122,53 @@ public class JavaProcessor implements IProcessor {
         RepositoryContext repositoryContext = (RepositoryContext) CorePlugin.getContext().getProperty(
                 Context.REPOSITORY_CONTEXT_KEY);
         Project project = repositoryContext.getProject();
-        String filePrefix = project.getTechnicalLabel() + ".";
-        filePrefix += Messages.getString("Processor.fileSuffix"); //$NON-NLS-1$
-        filePrefix += filenameFromLabel ? escapeFilename(process.getLabel()) : process.getId();
-        codePath = new Path(filePrefix + ".java"); //$NON-NLS-1$
-        contextPath = new Path(filePrefix + "_" + escapeFilename(context.getName()) + ".java"); //$NON-NLS-1$ //$NON-NLS-2$
+
+        String projectFolderName = project.getTechnicalLabel();
+        projectFolderName = projectFolderName.toLowerCase();
+        String jobFolderName = process.getLabel();
+        jobFolderName = jobFolderName.toLowerCase();
+        String fileName = filenameFromLabel ? escapeFilename(process.getLabel()) : process.getId();
+
+        try {
+            IPackageFragment projectPackage = JavaUtils.getPackage(projectFolderName);
+            IPackageFragment jobPackage = JavaUtils.getPackage(projectPackage, jobFolderName);
+            IPackageFragment contextPackage = JavaUtils.getPackage(jobPackage, "contexts");
+
+            codePath = jobPackage.getPath().append(fileName + ".java");
+            codePath = codePath.removeFirstSegments(1);
+
+            contextPath = contextPackage.getPath().append(escapeFilename(context.getName()) + ".java");
+            contextPath = contextPath.removeFirstSegments(1);
+
+        } catch (CoreException e) {
+            throw new ProcessorException("Folder within .Java project not founded");
+        }
+
     }
 
-    public void generateCode(IContext context, boolean statistics, boolean trace, boolean perlProperties)
+    public void generateCode(IContext context, boolean statistics, boolean trace, boolean javaProperties)
             throws ProcessorException {
         initPaths(context);
         try {
-            // RepositoryContext repositoryContext = (RepositoryContext) CorePlugin.getContext().getProperty(
-            // Context.REPOSITORY_CONTEXT_KEY);
-            // Project project = repositoryContext.getProject();
-            //
+            RepositoryContext repositoryContext = (RepositoryContext) CorePlugin.getContext().getProperty(
+                    Context.REPOSITORY_CONTEXT_KEY);
+            Project project = repositoryContext.getProject();
+
             ICodeGenerator codeGen;
             ICodeGeneratorService service = RunProcessPlugin.getDefault().getCodeGeneratorService();
             service.createRoutineSynchronizer().syncAllRoutines();
-            // if (perlProperties) {
-            // String perlInterpreter = getPerlInterpreter();
-            // String perlLib = getPerlLib();
-            // String currentPerlProject = project.getTechnicalLabel();
-            // String perlContext = getPerlContext();
-            //
-            // codeGen = service.createCodeGenerator(process, statistics, trace, perlInterpreter, perlLib, perlContext,
-            // currentPerlProject);
-            //
-            // } else {
-            codeGen = service.createCodeGenerator(process, statistics, trace);
-            // }
+            if (javaProperties) {
+                String javaInterpreter = "";//getPerlInterpreter();
+                String javaLib = "";//getPerlLib();
+                String currentJavaProject = project.getTechnicalLabel();
+                String javaContext = getContextPath().toOSString();
+
+                codeGen = service.createCodeGenerator(process, statistics, trace, javaInterpreter, javaLib, javaContext,
+                        currentJavaProject);
+
+            } else {
+                codeGen = service.createCodeGenerator(process, statistics, trace);
+            }
 
             String processCode = "";
             String processContext = "false";
@@ -153,8 +180,9 @@ public class JavaProcessor implements IProcessor {
             }
 
             // Generating files
-            IFile codeFile = javaProject.getProject().getFile(codePath);
+            IFile codeFile = javaProject.getFile(codePath);
             InputStream codeStream = new ByteArrayInputStream(processCode.getBytes());
+
             if (!codeFile.exists()) {
                 codeFile.create(codeStream, true, null);
             } else {
@@ -204,30 +232,28 @@ public class JavaProcessor implements IProcessor {
      * 
      * @throws ProcessorException
      */
-    public static String getPerlLib() throws ProcessorException {
-        String perlLib;
-        try {
-            perlLib = PerlUtils.getPerlModulePath().toOSString();
-        } catch (CoreException e) {
-            throw new ProcessorException(Messages.getString("Processor.perlModuleNotFound")); //$NON-NLS-1$
-        }
-        return perlLib;
-    }
-
+    // public static String getPerlLib() throws ProcessorException {
+    // String perlLib;
+    // try {
+    // perlLib = PerlUtils.getPerlModulePath().toOSString();
+    // } catch (CoreException e) {
+    // throw new ProcessorException(Messages.getString("Processor.perlModuleNotFound")); //$NON-NLS-1$
+    // }
+    // return perlLib;
+    // }
     /**
      * DOC mhirt Comment method "getPerlInterpreter".
      * 
      * @throws ProcessorException
      */
-    public static String getPerlInterpreter() throws ProcessorException {
-        IPreferenceStore prefStore = CorePlugin.getDefault().getPreferenceStore();
-        String perlInterpreter = prefStore.getString(ITalendCorePrefConstants.PERL_INTERPRETER);
-        if (perlInterpreter == null || perlInterpreter.length() == 0) {
-            throw new ProcessorException(Messages.getString("Processor.configurePerl")); //$NON-NLS-1$
-        }
-        return perlInterpreter;
-    }
-
+    // public static String getPerlInterpreter() throws ProcessorException {
+    // IPreferenceStore prefStore = CorePlugin.getDefault().getPreferenceStore();
+    // String perlInterpreter = prefStore.getString(ITalendCorePrefConstants.PERL_INTERPRETER);
+    // if (perlInterpreter == null || perlInterpreter.length() == 0) {
+    // throw new ProcessorException(Messages.getString("Processor.configurePerl")); //$NON-NLS-1$
+    // }
+    // return perlInterpreter;
+    // }
     private String escapeFilename(final String filename) {
         return filename != null ? filename.replace(" ", "") : ""; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
@@ -384,5 +410,4 @@ public class JavaProcessor implements IProcessor {
             breakpointManager.addBreakpoint(breakpoint);
         }
     }
-
 }
