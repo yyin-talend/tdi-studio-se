@@ -498,6 +498,12 @@ public class SQLEditorProposalUtil {
                 } else {
                     tmp2 = string;
                 }
+                int index3 = string.indexOf("alias: ");
+                if (index3 != -1) {
+                    String string2 = string.substring(index3 + 7, string.indexOf("\n"));
+                    index = string2.indexOf(".");
+                    tmp2 = string2.substring(index + 2, string2.length() - 1).replaceAll("\"", "");
+                }
                 if (tmp2.toLowerCase().startsWith(newHasInput.toLowerCase())
                         || column.toLowerCase().startsWith(newHasInput.toLowerCase())) {
                     proposals.add(createAllProposal(hasInput, string));
