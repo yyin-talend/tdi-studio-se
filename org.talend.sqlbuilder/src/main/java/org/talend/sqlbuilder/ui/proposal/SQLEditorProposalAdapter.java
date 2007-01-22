@@ -131,7 +131,7 @@ public class SQLEditorProposalAdapter {
 		    if (!isEnabled) {
 		        return;
 		    }
-		
+            
 		    switch (e.type) {
 		    case SWT.Traverse:
 		    case SWT.KeyDown:
@@ -790,7 +790,7 @@ public class SQLEditorProposalAdapter {
         private void updateIntialFilterText() {
             if (controlContentAdapter instanceof IControlContentAdapterExtended && filterStyle == FILTER_CUMULATIVE) {
                 filterText = ((IControlContentAdapterExtended) controlContentAdapter).getFilterValue(getControl());
-//                System.out.println("Update initialfilter: "+filterText);
+                System.out.println("Update initialfilter: "+filterText);
             }
         }
 

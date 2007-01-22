@@ -26,35 +26,45 @@ import org.eclipse.swt.graphics.Image;
 import org.talend.sqlbuilder.util.ImageUtil;
 
 /**
- * DOC dev  class global comment. Detailled comment
- * <br/>
- *
+ * DOC dev class global comment. Detailled comment <br/>
+ * 
  * $Id: SQLEditorAllProposal.java,v 1.9 2006/11/06 08:15:37 qiang.zhang Exp $
- *
+ * 
  */
 public class SQLEditorAllProposal implements IContentProposal {
 
     private String content;
+
     private String label;
+
     private String description;
+
     private int position;
+
     private Image image;
+
+    private String allString;
     /**
      * DOC dev SQLEditorAllProposal constructor comment.
+     * 
      * @param hasString has input String
      * @param allString full String
      * @param position Cursor current positioon
      * @param contents text edited all content
      */
-    public SQLEditorAllProposal(String hasString, String allString, int position, String[] contents , String dbType) {
+    public SQLEditorAllProposal(String hasString, String allString, int position, String[] contents, String dbType) {
         super();
-        hasString = initHasString(hasString, allString, dbType);
+        this.allString = allString;
+        setImages();
         if (!dbType.equals("PostgreSQL")) {
-        	label = label.replaceAll("\"", "");
+            hasString = initHasString(hasString);
+            label = label.replaceAll("\"", "");
+        } else {
+            hasString = initHasStringForPostgres(hasString);
         }
         hasString = label.substring(0, hasString.length());
         label = label.replaceAll("\"", "");
-        String tmp = initLabel(dbType, allString);
+        String tmp = initLabel(dbType);
         contents[0] = contents[0].substring(0, contents[0].length() - hasString.length()) + hasString;
         content = contents[0];
         content += tmp.substring(hasString.length());
@@ -63,109 +73,153 @@ public class SQLEditorAllProposal implements IContentProposal {
         this.position = position + tmp.substring(hasString.length()).length();
     }
 
-	/**
-	 * DOC dev Comment method "initLabel".
-	 * @param dbType
-	 * @return
-	 */
-	private String initLabel(String dbType, String allString) {
-		String tmp = label;
-		int index = allString.indexOf(".");
-        if (index > -1 && dbType.equals("PostgreSQL")) {
-        	tmp = "\"" + label + "\"";
-        } else {
-        	tmp = label;
+    private void setImages() {
+        if (this.allString.indexOf(".") != -1) {
+            if (this.allString.indexOf(".") == this.allString.lastIndexOf(".")) {
+                image = ImageUtil.getImage("Images.TableIcon");
+            } else {
+                image = ImageUtil.getImage("Images.ColumnIcon");
+            }
         }
-		return tmp;
-	}
+        if (allString.indexOf("alias: ") != -1) {
+            image = ImageUtil.getImage("Image.sqlAliasIcon");
+            this.allString = this.allString.substring(0, this.allString.indexOf("\n"));
+        }
 
-	/**
-	 * DOC dev Comment method "initHasString".
-	 * @param hasString
-	 * @param allString
-	 * @return
-	 */
-    protected String initHasString(String hasString, String allString, String dbType) {
-		label = allString;
+    }
+
+    private String initHasStringForPostgres(String hasString) {
+        label = allString;
         int index = label.indexOf(".");
         int index2 = label.lastIndexOf(".");
         String qualityName = "";
         if (index > -1) {
-        	qualityName = label.substring(index + 1, label.length());
-        	if (!dbType.equals("PostgreSQL")) {
-        		qualityName = qualityName.replaceAll("\"", "");
-        	}
-        	
-        	if (index == index2) {
-        		label = qualityName;
-                image = ImageUtil.getDescriptor("Images.TableIcon").createImage();
-        	} else {
-        		int index3 = qualityName.indexOf(".");
-        		String newHasString = hasString.replaceAll("\"", "");
-        		String newQualityName = qualityName.replaceAll("\"", "");
-        		if (!"".equals(hasString) && (qualityName.toLowerCase().startsWith(hasString.toLowerCase())
-        				|| newQualityName.toLowerCase().startsWith(newHasString.toLowerCase()))) {
-                    if (hasString.indexOf(".") > -1) {
-                        hasString = hasString.substring(index3 + 1);
-                    }
-        		}
-        		label = label.substring(index2 + 1, label.length());
-        		image = ImageUtil.getDescriptor("Images.ColumnIcon").createImage();
-        	}
-            
-        }
-        
-		return hasString;
-	}
-
-    protected String initHasString2(String hasString, String allString, String dbType) {
-        int index = label.indexOf(".");
-        int index2 = label.lastIndexOf(".");
-        if (index > -1) {
+            qualityName = label.substring(index + 1, label.length());
             if (index == index2) {
-                image = ImageUtil.getDescriptor("Images.TableIcon").createImage();
+                label = qualityName;
             } else {
-                image = ImageUtil.getDescriptor("Images.ColumnIcon").createImage();
+                hasString = getColumnHasString(hasString, qualityName);
+                label = label.substring(index2 + 1, label.length());
             }
-        } 
-        String lastHasString = getLastString(hasString);
-        String lastAllString = getLastString(allString);
-        label = lastAllString;
-        if (lastAllString.toLowerCase().startsWith(lastHasString.toLowerCase())) {
-            hasString = lastAllString.substring(0, lastHasString.length());
         }
         return hasString;
     }
-    private String getLastString(String str) {
-        int hasIndex = str.indexOf(".");
-        if (hasIndex > -1) {
-            return getLastString(str.substring(hasIndex));
+
+    private String getColumnHasString(String hasString, String qualityName) {
+        int index3;
+
+        String newQualityName = qualityName.replaceAll("\"", "");
+        int hasX = hasString.lastIndexOf("\"");
+
+        if (hasX != -1) {
+            String newQualityName2 = qualityName.replaceFirst("\"", "");
+            newQualityName2 = newQualityName2.replaceFirst("\"", "");
+            if (hasString.indexOf("\"") == newQualityName2.indexOf("\"")) {
+                index3 = newQualityName2.indexOf(".");
+            } else {
+                index3 = qualityName.indexOf(".");
+            }
         } else {
-            return str;
+            index3 = newQualityName.indexOf(".");
         }
+
+        String newHasString = hasString.replaceAll("\"", "");
+        if (!"".equals(hasString)
+                && (qualityName.toLowerCase().startsWith(hasString.toLowerCase()) || newQualityName.toLowerCase()
+                        .startsWith(newHasString.toLowerCase()))) {
+            if (hasString.indexOf(".") > -1) {
+                hasString = hasString.substring(index3 + 1);
+            }
+        }
+        return hasString;
     }
-    
+
+    /**
+     * DOC dev Comment method "initLabel".
+     * 
+     * @param dbType
+     * @return
+     */
+    private String initLabel(String dbType) {
+        String tmp = label;
+        int index = allString.indexOf(".");
+        if (index > -1 && dbType.equals("PostgreSQL")) {
+            tmp = "\"" + label + "\"";
+        } else {
+            tmp = label;
+        }
+        return tmp;
+    }
+
+    /**
+     * DOC dev Comment method "initHasString".
+     * 
+     * @param hasString
+     * @param allString
+     * @return
+     */
+    protected String initHasString(String hasString) {
+        label = allString;
+        int index = label.indexOf(".");
+        int index2 = label.lastIndexOf(".");
+        String qualityName = "";
+        if (index > -1) {
+            qualityName = label.substring(index + 1, label.length());
+            // if (!dbType.equals("PostgreSQL")) {
+            qualityName = qualityName.replaceAll("\"", "");
+            // }
+
+            if (index == index2) {
+                label = qualityName;
+            } else {
+                int index3;
+                String newHasString = hasString.replaceAll("\"", "");
+
+                String newQualityName = qualityName.replaceAll("\"", "");
+                index3 = qualityName.indexOf(".");
+
+                if (!"".equals(hasString)
+                        && (qualityName.toLowerCase().startsWith(hasString.toLowerCase()) || newQualityName
+                                .toLowerCase().startsWith(newHasString.toLowerCase()))) {
+                    if (hasString.indexOf(".") > -1) {
+                        hasString = hasString.substring(index3 + 1);
+                    }
+                }
+                label = label.substring(index2 + 1, label.length());
+            }
+
+        }
+
+        return hasString;
+    }
+
     /**
      * Getter for image.
+     * 
      * @return the image
      */
     public Image getImage() {
         return this.image;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.eclipse.jface.fieldassist.IContentProposal#getContent()
      */
     /**
      * Get edit text Content.
+     * 
      * @return the content String.
      */
     public String getContent() {
         return content;
     }
+
     /**
      * Get cursor position after insert accepted string.
-     * @return the position int. 
+     * 
+     * @return the position int.
      */
     public int getCursorPosition() {
         return position;
@@ -173,6 +227,7 @@ public class SQLEditorAllProposal implements IContentProposal {
 
     /**
      * Get label's description information and show in InfoPopupDialog.
+     * 
      * @return the description Information String.
      */
     public String getDescription() {
@@ -181,7 +236,8 @@ public class SQLEditorAllProposal implements IContentProposal {
 
     /**
      * Get label and show in ContentProposalPopup.
-     * @return the label String. 
+     * 
+     * @return the label String.
      */
     public String getLabel() {
         return label;
