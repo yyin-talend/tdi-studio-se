@@ -792,17 +792,7 @@ public class EmfComponent implements IComponent {
      * @see org.talend.core.model.components.IComponent#hasConditionalOutputs()
      */
     public Boolean hasConditionalOutputs() {
-        Boolean hasConditionalOutputs = Boolean.FALSE;
-        TEMPLATEType tempType;
-        EList listTempType = compType.getCODEGENERATION().getTEMPLATES().getTEMPLATE();
-
-        for (Object object : listTempType) {
-            tempType = (TEMPLATEType) object;
-            if (tempType.isSetHASCONDITIONALOUTPUTS()) {
-                hasConditionalOutputs = new Boolean(tempType.isHASCONDITIONALOUTPUTS());
-            }
-        }
-        return hasConditionalOutputs;
+        return compType.getHEADER().isHASCONDITIONALOUTPUTS();
     }
     
     public Boolean isMultipleMethods(ECodeLanguage language) {
