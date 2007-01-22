@@ -19,58 +19,49 @@
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 // ============================================================================
-package org.talend.sqlbuilder.erdiagram.model;
+package org.talend.sqlbuilder.erdiagram.ui.nodes;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.Serializable;
 
 /**
- * DOC yzhang class global comment. Detailled comment <br/>
+ * qzhang classes :Abstract base class of elements in the model. All elements in the diagram must extends this class <br/>
  * 
- * $Id: talend.epf 1 2006-09-29 17:06:40 +0000 (ææäº, 29 ä¹æ 2006) nrousseau $
+ * $Id: Element.java 300 2006-11-02 13:01:44 +0000 (星期四, 02 十一月 2006) smallet $
  * 
  */
-public class ErElement {
 
-    private PropertyChangeSupport listeners = new PropertyChangeSupport(this);
+public abstract class Element implements Cloneable, Serializable {
 
-    /**
-     * DOC yzhang Comment method "firePropertyChange".
-     * 
-     * @param prop
-     * @param old
-     * @param newValue
-     */
+
+    // property change listeners
+    protected PropertyChangeSupport listeners = new PropertyChangeSupport(this);
+
+    public void addPropertyChangeListener(PropertyChangeListener listener) {
+        listeners.addPropertyChangeListener(listener);
+    }
+
     protected void firePropertyChange(String prop, Object old, Object newValue) {
         listeners.firePropertyChange(prop, old, newValue);
     }
 
-    /**
-     * DOC yzhang Comment method "fireStructureChange".
-     * 
-     * @param prop
-     * @param child
-     */
     protected void fireStructureChange(String prop, Object child) {
         listeners.firePropertyChange(prop, null, child);
     }
 
-    /**
-     * DOC yzhang Comment method "addPropertyChangeListener".
-     * 
-     * @param listener
-     */
-    protected void addPropertyChangeListener(PropertyChangeListener listener) {
-        listeners.addPropertyChangeListener(listener);
+    // implemented in order to create listeners field
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+        in.defaultReadObject();
+        listeners = new PropertyChangeSupport(this);
     }
 
-    /**
-     * DOC yzhang Comment method "removePropertyChangeListener".
-     * 
-     * @param listener
-     */
-    protected void removePropertyChangeListener(PropertyChangeListener listener) {
-        listeners.removePropertyChangeListener(listener);
+    public void removePropertyChangeListener(PropertyChangeListener l) {
+        listeners.removePropertyChangeListener(l);
     }
 
+    public abstract String getElementName();
+    
 }
