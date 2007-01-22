@@ -162,6 +162,18 @@ public class TMapperMainJavajet {
         } // for (IConnection connection : connections) {
         boolean atLeastOneInputTableWithInnerJoin = !inputTablesWithInnerJoin.isEmpty();
 
+        // lookup inputs initialization
+        for (ExternalMapperTable inputTable : lookupTables) {
+            String tableName = inputTable.getName();
+            sb.append(cr + gm.indent(indent) + tableName + "Struct " + tableName 
+                    + " = ( " + tableName + "FromHash == null )" 
+                    + " ? " + tableName +  "Default"
+                    + " : " + tableName + "FromHash;"
+            );
+        }
+        
+        sb.append(cr);
+
         sb.append(cr + gm.indent(indent) + "// ###############################");
         // /////////////////////////////////////////////////////////////////////////////////////////////////////
         // /////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -170,7 +182,10 @@ public class TMapperMainJavajet {
         // /////////////////////////////////////////////////////////////////////////////////////////////////////
         // VARIABLES
         // 
-        sb.append(cr + gm.indent(indent));
+        sb.append(cr);
+        sb.append(cr + gm.indent(indent) + "{ // start of Var scope");
+        indent++;
+        sb.append(cr);
         sb.append(cr + gm.indent(indent) + "// ###############################");
         sb.append(cr + gm.indent(indent) + "// # Vars tables");
         for (ExternalMapperTable varsTable : varsTables) {
@@ -182,8 +197,6 @@ public class TMapperMainJavajet {
                 // sb.append(cr + gm.indent(indent) + gm.buildNewArrayDeclaration(varsTable.getName(), indent));
             }
             String varsTableName = varsTable.getName();
-            sb.append(cr + gm.indent(indent) + "{");
-            indent++;
             String instanceVarName = varsTableName + "__" + uniqueNameNode;
             String className = instanceVarName + "__Struct";
 
@@ -205,8 +218,6 @@ public class TMapperMainJavajet {
                         + varExpression + ";");
 
             }
-            indent--;
-            sb.append(cr + gm.indent(indent) + "}");
         }
         sb.append(cr + gm.indent(indent) + "// ###############################");
         // /////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -278,17 +289,6 @@ public class TMapperMainJavajet {
         }
         // ///////////////////////////////////////////////////////////////////
 
-        sb.append(cr);
-        
-        for (ExternalMapperTable inputTable : lookupTables) {
-            String tableName = inputTable.getName();
-            sb.append(cr + gm.indent(indent) + tableName + "Struct " + tableName 
-                    + " = ( " + tableName + "FromHash == null )" 
-                    + " ? " + tableName +  "Default"
-                    + " : " + tableName + "FromHash;"
-            );
-        }
-        
         sb.append(cr);
         
         if (allNotRejectTablesHaveFilter && atLeastOneReject) {
@@ -439,6 +439,11 @@ public class TMapperMainJavajet {
         } // for output tables
 
         sb.append(cr + gm.indent(indent) + "// ###############################");
+
+        sb.append(cr);
+        indent--;
+        sb.append(cr + gm.indent(indent) + "} // end of Var scope");
+        sb.append(cr);
 
         // end of code to copy in template
         // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
