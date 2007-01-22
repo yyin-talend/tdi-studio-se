@@ -158,12 +158,6 @@ public class SQLEditorProposalUtil {
         String originalStr = string.substring(0, indexOfWhiteSpace + 1).trim();
         String aliasStr = string.substring(indexOfWhiteSpace + 1).trim();
         List<String> needChangedList = new ArrayList<String>();
-
-        // Check
-        boolean isExistingInAllString = isExisting(originalStr);
-        if (isExistingInAllString && (!allString.contains(aliasStr))) {
-            allString.add(aliasStr);
-        }
         addChangedEntry(originalStr, aliasStr, needChangedList);
         allString.addAll(0, needChangedList);
     }
@@ -177,6 +171,10 @@ public class SQLEditorProposalUtil {
      */
     private void addChangedEntry(String originalStr, String aliasStr, List<String> needChangedList) {
         // Put all alias into needChangedList;
+        if (allString.contains(aliasStr)) {
+            allString.remove(aliasStr);
+        }
+
         for (Object object : allString) {
             String str = (String) object;
             if (isTable(str, originalStr)) {
@@ -294,28 +292,28 @@ public class SQLEditorProposalUtil {
             }
         }
 
-        // /TODO: in case of: columnname1 as alias1, column2 as alias2
-        int indexOfFrom = this.getIndex(currentSql, "from");
-        if (indexOfFrom != -1) {
-            splitStr1 = currentSql.split(",");
-            for (String string : splitStr1) {
-                String aliasStr = this.findAliasWithAs(string);
-                if (aliasStr != null && aliasStr.length() != 0 && !isExisting(aliasStr)) {
-                    allString.add(aliasStr);
-                    if (!aliasList.contains(aliasStr)) {
-                        aliasList.add(aliasStr);
-                    }
-                }
-            }
-        }
+        // // /TODO: in case of: columnname1 as alias1, column2 as alias2
+        // int indexOfFrom = this.getIndex(currentSql, "from");
+        // if (indexOfFrom != -1) {
+        // splitStr1 = currentSql.split(",");
+        // for (String string : splitStr1) {
+        // String aliasStr = this.findAliasWithAs(string);
+        // if (aliasStr != null && aliasStr.length() != 0 && !isExisting(aliasStr)) {
+        // allString.add(aliasStr);
+        // if (!aliasList.contains(aliasStr)) {
+        // aliasList.add(aliasStr);
+        // }
+        // }
+        // }
+        // }
 
     }
 
-    // select column1 as alias1, column2 as alias2 from table1 as t1, table2 as t2 where t1.alias1 = t2.alias2;
-    private String findAliasWithAs(String splitStr) {
-        String aliasStr = splitStr.substring(this.getIndex(splitStr, "as") + 2);
-        return aliasStr;
-    }
+    // // select column1 as alias1, column2 as alias2 from table1 as t1, table2 as t2 where t1.alias1 = t2.alias2;
+    // private String findAliasWithAs(String splitStr) {
+    // String aliasStr = splitStr.substring(this.getIndex(splitStr, "as") + 2);
+    // return aliasStr;
+    // }
 
     /**
      * DOC ftang Comment method "isExisting".
