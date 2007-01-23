@@ -43,6 +43,7 @@ import org.eclipse.ui.wizards.datatransfer.ImportOperation;
 import org.osgi.framework.Bundle;
 import org.talend.commons.exception.MessageBoxExceptionHandler;
 import org.talend.commons.ui.image.ImageProvider;
+import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.ui.ERepositoryImages;
 
 /**
@@ -77,8 +78,8 @@ public final class ImportDemoProjectAction extends Action {
 
     public void run() {
         try {
-            Bundle bundle = Platform.getBundle("org.talend.rcp");
-            URL url = FileLocator.resolve(bundle.getEntry("temp/TALENDDEMOS.zip"));
+            Bundle bundle = Platform.getBundle(RepositoryPlugin.PLUGIN_ID);
+            URL url = FileLocator.resolve(bundle.getEntry("resources/TALENDDEMOS.zip"));
             String archiveFilePath = new Path(url.getFile()).toOSString();
 
             ZipFile zipFile = new ZipFile(archiveFilePath);
