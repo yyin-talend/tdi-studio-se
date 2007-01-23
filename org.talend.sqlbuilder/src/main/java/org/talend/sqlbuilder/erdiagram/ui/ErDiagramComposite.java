@@ -56,6 +56,7 @@ public class ErDiagramComposite extends Composite {
 
     private ErdiagramDiagramEditor editor;
 
+    private EMFRepositoryNodeManager nodeManager = new EMFRepositoryNodeManager();
     /**
      * DOC admin ErDiagramComposite constructor comment.
      * 
@@ -94,12 +95,17 @@ public class ErDiagramComposite extends Composite {
      */
     private ErDiagram createErDiagram() {
         ErDiagram erDiagram = new ErDiagram();
-        for (MetadataTable metadataTable : EMFRepositoryNodeManager.getTables(getNodes())) {
+        erDiagram.setNodeManager(nodeManager);
+        List<MetadataTable> tables = nodeManager.getTables(getNodes());
+        erDiagram.setMetadataTables(tables);
+        List<String[]> fks = nodeManager.getPKFromTables(tables);
+        for (MetadataTable metadataTable : tables) {
             Table table = new Table();
             table.setMetadataTable(metadataTable);
             table.setErDiagram(erDiagram);
-            erDiagram.getTables().add(table);
+            erDiagram.addTable(table);
         }
+        erDiagram.setRelations(fks);
         return erDiagram;
     }
 
@@ -206,4 +212,5 @@ public class ErDiagramComposite extends Composite {
         this.nodes = nodes;
         addErDiagramEditor();
     }
+    
 }

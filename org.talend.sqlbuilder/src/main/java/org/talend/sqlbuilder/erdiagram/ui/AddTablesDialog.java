@@ -60,7 +60,7 @@ public class AddTablesDialog extends Dialog {
      */
     public AddTablesDialog(Shell parentShell) {
         super(parentShell);
-        setShellStyle(SWT.DIALOG_TRIM | SWT.RESIZE | SWT.RESIZE | SWT.MIN | SWT.MAX);
+        setShellStyle(SWT.APPLICATION_MODAL | SWT.DIALOG_TRIM | SWT.RESIZE | SWT.RESIZE | SWT.MIN | SWT.MAX);
 
     }
 

@@ -28,6 +28,7 @@ import org.eclipse.gef.commands.Command;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.sqlbuilder.erdiagram.ui.nodes.ErDiagram;
 import org.talend.sqlbuilder.erdiagram.ui.nodes.Table;
+import org.talend.sqlbuilder.repository.utility.EMFRepositoryNodeManager;
 
 /**
  * DOC qzhang class global comment. Detailled comment <br/>
@@ -36,7 +37,7 @@ import org.talend.sqlbuilder.erdiagram.ui.nodes.Table;
  * 
  */
 public class CreateTableCommand extends Command {
-
+    
     protected List<MetadataTable> metaTables;
 
     private List<Table> tables;
@@ -72,7 +73,8 @@ public class CreateTableCommand extends Command {
                 erDiagram.addTable(table);
             }
         }
-
+        List<String[]> fks = erDiagram.getNodeManager().getPKFromTables(erDiagram.getMetadataTables());
+        erDiagram.setRelations(fks);
     }
 
     @Override

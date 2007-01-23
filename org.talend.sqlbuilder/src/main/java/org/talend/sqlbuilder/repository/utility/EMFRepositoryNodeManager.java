@@ -21,18 +21,26 @@
 // ============================================================================
 package org.talend.sqlbuilder.repository.utility;
 
+import java.sql.DatabaseMetaData;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import org.talend.core.model.metadata.IMetadataConnection;
+import org.talend.core.model.metadata.builder.ConvertionHelper;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.builder.connection.QueriesConnection;
 import org.talend.core.model.metadata.builder.connection.Query;
+import org.talend.core.model.metadata.builder.database.ExtractMetaDataUtils;
 import org.talend.core.model.properties.DatabaseConnectionItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNode.EProperties;
+import org.talend.sqlbuilder.SqlBuilderPlugin;
 import org.talend.sqlbuilder.dbstructure.RepositoryNodeType;
 import org.talend.sqlbuilder.dbstructure.DBTreeProvider.MetadataColumnRepositoryObject;
 import org.talend.sqlbuilder.dbstructure.DBTreeProvider.MetadataTableRepositoryObject;
@@ -44,6 +52,10 @@ import org.talend.sqlbuilder.dbstructure.DBTreeProvider.MetadataTableRepositoryO
  * 
  */
 public class EMFRepositoryNodeManager {
+
+    private DatabaseMetaData dbMetaData;
+
+    private SQLBuilderRepositoryNodeManager rnmanager = new SQLBuilderRepositoryNodeManager();
 
     /**
      * DOC dev Comment method "getQueryByLabel".
@@ -76,11 +88,14 @@ public class EMFRepositoryNodeManager {
     }
 
     @SuppressWarnings("unchecked")
-    public static List<MetadataTable> getTables(List<RepositoryNode> nodes) {
+    public List<MetadataTable> getTables(List<RepositoryNode> nodes) {
         List<MetadataTable> tables = new ArrayList<MetadataTable>();
+        IMetadataConnection iMetadataConnection = null;
+        RepositoryNode root = null;
         for (RepositoryNode node : nodes) {
             RepositoryNodeType type = SQLBuilderRepositoryNodeManager.getRepositoryType(node);
             if (type == RepositoryNodeType.DATABASE) {
+                root = node;
                 DatabaseConnection connection = (DatabaseConnection) SQLBuilderRepositoryNodeManager.getItem(node)
                         .getConnection();
                 for (MetadataTable table : (List<MetadataTable>) connection.getTables()) {
@@ -93,15 +108,71 @@ public class EMFRepositoryNodeManager {
                 if (!tables.contains(table)) {
                     tables.add(table);
                 }
+                if (root == null) {
+                    root = SQLBuilderRepositoryNodeManager.getRoot(node);
+                }
+
             } else if (type == RepositoryNodeType.COLUMN) {
                 MetadataTable table = ((MetadataColumnRepositoryObject) node.getObject()).getColumn().getTable();
                 if (!tables.contains(table)) {
                     tables.add(table);
                 }
+                if (root == null) {
+                    root = SQLBuilderRepositoryNodeManager.getRoot(node);
+                }
+            }
+            if (root != null) {
+                iMetadataConnection = ConvertionHelper.convert((DatabaseConnection) SQLBuilderRepositoryNodeManager.getItem(root)
+                        .getConnection());
+                dbMetaData = rnmanager.getDatabaseMetaData(iMetadataConnection);
             }
 
         }
         return tables;
+    }
+
+    public List<String[]> getPKFromTables(List<MetadataTable> tables) {
+        List<String[]> fks = new ArrayList<String[]>();
+        String fk = "";
+        String pk = "";
+        for (MetadataTable table : tables) {
+            try {
+                if (dbMetaData != null) {
+                    ResultSet resultSet = dbMetaData.getExportedKeys("", ExtractMetaDataUtils.schema, table.getSourceName());
+                    ResultSetMetaData metadata = resultSet.getMetaData();
+                    int[] relevantIndeces = new int[metadata.getColumnCount()];
+                    for (int i = 1; i <= metadata.getColumnCount(); i++) {
+                        relevantIndeces[i - 1] = i;
+                    }
+
+                    while (resultSet.next()) {
+                        for (int i = 0; i < relevantIndeces.length; i++) {
+                            String key = metadata.getColumnName(relevantIndeces[i]);
+                            if (key.equals("FKCOLUMN_NAME")) {
+                                fk += resultSet.getString(relevantIndeces[i]);
+                            } else if (key.equals("FKTABLE_NAME")) {
+                                fk = resultSet.getString(relevantIndeces[i]) + ".";
+                            } else if (key.equals("PKCOLUMN_NAME")) {
+                                pk = table.getSourceName() + "." + resultSet.getString(relevantIndeces[i]);
+                            }
+                        }
+                        if (!"".equals(fk) && !"".equals(pk)) {
+                            String[] strs = new String[2];
+                            strs[0] = pk;
+                            strs[1] = fk;
+                            fks.add(strs);
+                            fk = "";
+                            pk = "";
+                        }
+                    }
+                    resultSet.close();
+                }
+
+            } catch (Exception e) {
+                SqlBuilderPlugin.log("EMFRepositoryNodeManager.getPKFromTables()", e);
+            }
+        }
+        return fks;
     }
 
     private static List<RepositoryNode> folderdbNodes = new ArrayList<RepositoryNode>();
@@ -117,14 +188,12 @@ public class EMFRepositoryNodeManager {
         return setParentNodesOverDatabaseNode(parentNode);
     }
 
-    
     public static List<RepositoryNode> getFolderdbNodes() {
         return folderdbNodes;
     }
 
-    
     public static void setFolderdbNodes(List<RepositoryNode> folderdbNodes) {
         EMFRepositoryNodeManager.folderdbNodes = folderdbNodes;
     }
-    
+
 }

@@ -864,7 +864,7 @@ public class SQLBuilderRepositoryNodeManager {
      * @param iMetadataConnection contains connection
      * @return dbMetaData DatabaseMetaData .
      */
-    private DatabaseMetaData getDatabaseMetaData(IMetadataConnection iMetadataConnection) {
+    public DatabaseMetaData getDatabaseMetaData(IMetadataConnection iMetadataConnection) {
         ExtractMetaDataUtils.getConnection(iMetadataConnection.getDbType(), iMetadataConnection.getUrl(), iMetadataConnection
                 .getUsername(), iMetadataConnection.getPassword(), iMetadataConnection.getDatabase(), iMetadataConnection
                 .getSchema());
