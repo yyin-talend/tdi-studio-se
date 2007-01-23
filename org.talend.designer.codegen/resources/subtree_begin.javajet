@@ -16,7 +16,7 @@
     if(subTreeArgument.isSourceComponentHasConditionnalOutputs()) {
 %>
 
-// ############ Start of branch "<%= connection.getName()%>" ##############
+// Start of branch "<%= connection.getName()%>"
 if(<%= connection.getName()%> != null) {
 
 <% 

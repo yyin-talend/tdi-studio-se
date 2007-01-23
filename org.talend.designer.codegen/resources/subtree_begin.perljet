@@ -16,8 +16,7 @@ IConnection connection = subTreeArgument.getInputSubtreeConnection();
 if(subTreeArgument.isSourceComponentHasConditionnalOutputs()) {
 %>
 
-############ Start of branch "<%= connection.getName()%>" ##############
-if($<%= connection.getName()%>IsSet) {
+if($branch_<%= connection.getName()%>_is_active) {
 
 <% 
 } 

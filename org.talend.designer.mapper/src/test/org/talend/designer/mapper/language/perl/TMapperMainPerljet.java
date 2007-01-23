@@ -249,7 +249,7 @@ public class TMapperMainPerljet {
             
             String outputTableName = outputTable.getName();
 
-            sb.append(cr + gm.indent(indent) + "$" + outputTableName + "IsSet = false;");
+            sb.append(cr + gm.indent(indent) + "$branch_" + outputTableName + "_is_active = false;");
             
             List<ExternalMapperTableEntry> columnsEntries = outputTable.getMetadataTableEntries();
             List<ExternalMapperTableEntry> filters = outputTable.getConstraintTableEntries();
@@ -396,7 +396,7 @@ public class TMapperMainPerljet {
                     }
                 }
 
-                sb.append(cr + gm.indent(indent) + "$" + outputTableName + "IsSet = true;");
+                sb.append(cr + gm.indent(indent)  + "$branch_" + outputTableName + "_is_active = true;");
 
                 if (!currentIsReject && !currentIsRejectInnerJoin || currentIsReject || currentIsRejectInnerJoin
                         && atLeastOneInputTableWithInnerJoin) {

@@ -15,8 +15,7 @@ CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
     if(subTreeArgument.isSourceComponentHasConditionnalOutputs()) {
 %>
 
-}
-//############ End of branch "<%= connection.getName()%>" ##############
+} // End of branch "<%= connection.getName()%>"
 
 <% 
 } 
