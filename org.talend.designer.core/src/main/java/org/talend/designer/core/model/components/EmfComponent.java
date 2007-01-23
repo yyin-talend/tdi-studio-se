@@ -621,12 +621,16 @@ public class EmfComponent implements IComponent {
                 for (DEFAULTType defaultType : listDefault) {
                     IElementParameterDefaultValue defaultValue = new ElementParameterDefaultValue();
 
-                    defaultValue.setDefaultValue(ElementParameterParser
-                            .parse(node.getProcess(), defaultType.getValue()));
-                    if (param.getField() == EParameterFieldType.FILE
-                            || param.getField() == EParameterFieldType.DIRECTORY) {
-                        IPath path = Path.fromOSString(defaultValue.getDefaultValue());
-                        defaultValue.setDefaultValue(path.toOSString());
+                    if (node.getProcess() != null) {
+                        defaultValue.setDefaultValue(ElementParameterParser.parse(node.getProcess(), defaultType
+                                .getValue()));
+                        if (param.getField() == EParameterFieldType.FILE
+                                || param.getField() == EParameterFieldType.DIRECTORY) {
+                            IPath path = Path.fromOSString(defaultValue.getDefaultValue());
+                            defaultValue.setDefaultValue(path.toOSString());
+                        }
+                    } else {
+                        defaultValue.setDefaultValue(defaultType.getValue());
                     }
                     defaultValue.setIfCondition(defaultType.getIF());
                     defaultValue.setNotIfCondition(defaultType.getNOTIF());
