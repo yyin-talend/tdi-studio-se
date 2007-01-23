@@ -72,7 +72,8 @@ public enum EParameterName {
     PREVIEW("Preview"),
     COLUMN_LIST("Column list"),
     PREV_COLUMN_LIST("Prev. Comp. Column list"),
-    TSTATCATCHER_STATS("tStatCatcher Statistics");
+    TSTATCATCHER_STATS("tStatCatcher Statistics"),
+    COMP_DEFAULT_FILE_DIR("COMP_DEFAULT_FILE_DIR"); //$NON-NLS-1$  Hidden parameter so no translation needed
 
     private String displayName;
 

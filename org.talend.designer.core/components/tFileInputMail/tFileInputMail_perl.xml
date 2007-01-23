@@ -35,7 +35,7 @@
       NUM_ROW="1"
       REQUIRED="true"
     >
-      <DEFAULT>'C:\talend_files\01234.mail'</DEFAULT>
+      <DEFAULT>'__COMP_DEFAULT_FILE_DIR__/01234.mail'</DEFAULT>
     </PARAMETER>
 
     <PARAMETER

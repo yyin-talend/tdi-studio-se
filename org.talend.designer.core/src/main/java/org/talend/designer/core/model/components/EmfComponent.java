@@ -27,6 +27,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
@@ -48,6 +50,7 @@ import org.talend.core.model.metadata.MetadataColumn;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.EParameterFieldType;
+import org.talend.core.model.process.ElementParameterParser;
 import org.talend.core.model.process.IElementParameterDefaultValue;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.temp.ECodeLanguage;
@@ -111,8 +114,8 @@ public class EmfComponent implements IComponent {
         this.file = file;
         this.messagesFile = messagesFile;
         load();
-        codeLanguage = ((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY)).getProject()
-                .getLanguage();
+        codeLanguage = ((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY))
+                .getProject().getLanguage();
     }
 
     private String getTranslatedValue(final String nameValue) {
@@ -612,11 +615,19 @@ public class EmfComponent implements IComponent {
                 param.setValue("");
             }
 
-            if (!param.getField().equals(EParameterFieldType.TABLE) && !param.getField().equals(EParameterFieldType.CLOSED_LIST)) {
+            if (!param.getField().equals(EParameterFieldType.TABLE)
+                    && !param.getField().equals(EParameterFieldType.CLOSED_LIST)) {
                 List<DEFAULTType> listDefault = xmlParam.getDEFAULT();
                 for (DEFAULTType defaultType : listDefault) {
                     IElementParameterDefaultValue defaultValue = new ElementParameterDefaultValue();
-                    defaultValue.setDefaultValue(defaultType.getValue());
+
+                    defaultValue.setDefaultValue(ElementParameterParser
+                            .parse(node.getProcess(), defaultType.getValue()));
+                    if (param.getField() == EParameterFieldType.FILE
+                            || param.getField() == EParameterFieldType.DIRECTORY) {
+                        IPath path = Path.fromOSString(defaultValue.getDefaultValue());
+                        defaultValue.setDefaultValue(path.toOSString());
+                    }
                     defaultValue.setIfCondition(defaultType.getIF());
                     defaultValue.setNotIfCondition(defaultType.getNOTIF());
                     param.getDefaultValues().add(defaultValue);
@@ -680,8 +691,8 @@ public class EmfComponent implements IComponent {
         }
     }
 
-    public void addItemsPropertyParameters(String paramName, ITEMSType items, ElementParameter param, EParameterFieldType type,
-            INode node) {
+    public void addItemsPropertyParameters(String paramName, ITEMSType items, ElementParameter param,
+            EParameterFieldType type, INode node) {
         ITEMType item;
         ElementParameter newParam;
 
@@ -740,8 +751,8 @@ public class EmfComponent implements IComponent {
                 case CLOSED_LIST:
                 case COLUMN_LIST:
                 case PREV_COLUMN_LIST:
-                    addItemsPropertyParameters(paramName + ".ITEM." + item.getNAME(), item.getITEMS(), newParam, currentField,
-                            node);
+                    addItemsPropertyParameters(paramName + ".ITEM." + item.getNAME(), item.getITEMS(), newParam,
+                            currentField, node);
                     break;
                 case CHECK:
                     newParam.setValue(new Boolean(item.getVALUE()));
@@ -788,13 +799,15 @@ public class EmfComponent implements IComponent {
         return getTranslatedValue(PROP_FAMILY);
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.core.model.components.IComponent#hasConditionalOutputs()
      */
     public Boolean hasConditionalOutputs() {
         return compType.getHEADER().isHASCONDITIONALOUTPUTS();
     }
-    
+
     public Boolean isMultipleMethods(ECodeLanguage language) {
         // language is not used anymore for the moment.
 
@@ -808,7 +821,7 @@ public class EmfComponent implements IComponent {
                 multiple = new Boolean(tempType.isMULTIPLEMETHODS());
             }
         }
-        
+
         return multiple;
     }
 
@@ -906,7 +919,8 @@ public class EmfComponent implements IComponent {
                     msg = Messages.getString("modules.required");
                 }
 
-                ModuleNeeded componentImportNeeds = new ModuleNeeded(this, importType.getMODULE(), msg, importType.isREQUIRED());
+                ModuleNeeded componentImportNeeds = new ModuleNeeded(this, importType.getMODULE(), msg, importType
+                        .isREQUIRED());
 
                 componentImportNeedsList.add(componentImportNeeds);
             }

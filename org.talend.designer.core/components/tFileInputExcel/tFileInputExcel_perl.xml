@@ -35,7 +35,7 @@
       NUM_ROW="2"
       REQUIRED="true"
     >
-      <DEFAULT>'C:\talend_files\in.xls'</DEFAULT>
+      <DEFAULT>'__COMP_DEFAULT_FILE_DIR__/in.xls'</DEFAULT>
     </PARAMETER>
 
     <PARAMETER

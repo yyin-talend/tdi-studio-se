@@ -37,7 +37,7 @@
       NUM_ROW="1"
       REQUIRED="true"
     >
-      <DEFAULT>'C:\talend_files\out.csv'</DEFAULT>
+      <DEFAULT>'__COMP_DEFAULT_FILE_DIR__/out.csv'</DEFAULT>
     </PARAMETER>
 
     <PARAMETER

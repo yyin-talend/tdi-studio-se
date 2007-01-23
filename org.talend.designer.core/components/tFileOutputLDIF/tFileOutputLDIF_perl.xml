@@ -37,7 +37,7 @@
       NUM_ROW="2"
       REQUIRED="true"
     >
-      <DEFAULT>'C:\talend_files\out.ldif'</DEFAULT>
+      <DEFAULT>'__COMP_DEFAULT_FILE_DIR__/out.ldif'</DEFAULT>
     </PARAMETER>
 
     <PARAMETER

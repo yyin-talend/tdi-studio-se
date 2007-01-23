@@ -54,7 +54,7 @@
       REQUIRED="true"
       REPOSITORY_VALUE="FILE_PATH"
     >
-      <DEFAULT>'C:\talend_files\in.xml'</DEFAULT>
+      <DEFAULT>'__COMP_DEFAULT_FILE_DIR__/in.xml'</DEFAULT>
     </PARAMETER>
 
     <PARAMETER

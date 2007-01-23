@@ -53,6 +53,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PlatformUI;
 import org.talend.commons.exception.PersistenceException;
+import org.talend.core.CorePlugin;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.metadata.EMetadataType;
@@ -78,6 +79,7 @@ import org.talend.core.model.properties.User;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.model.temp.ECodeLanguage;
+import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
@@ -363,6 +365,17 @@ public class Process extends Element implements IProcess {
         param.setDisplayName(EParameterName.LOG_TO_STDOUT.getDisplayName());
         param.setNumRow(3);
         param.setValue(new Boolean(false));
+        addElementParameter(param);
+
+        param = new ElementParameter(this);
+        param.setName(EParameterName.COMP_DEFAULT_FILE_DIR.getName());
+        param.setCategory(EComponentCategory.MAIN);
+        param.setField(EParameterFieldType.DIRECTORY);
+        param.setDisplayName(EParameterName.COMP_DEFAULT_FILE_DIR.getDisplayName());
+        param.setNumRow(99);
+        param.setShow(false);
+        param.setValue(CorePlugin.getDefault().getPluginPreferences().getString(
+                ITalendCorePrefConstants.COMP_DEFAULT_FILE_DIR));
         addElementParameter(param);
     }
 

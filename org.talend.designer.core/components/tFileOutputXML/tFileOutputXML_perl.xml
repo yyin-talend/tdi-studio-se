@@ -20,7 +20,7 @@
    <PARAMETERS>
 
      <PARAMETER NAME="FILENAME" FIELD="FILE" NUM_ROW="1" REQUIRED="true">
-       <DEFAULT>'C:\talend_files\out.xml'</DEFAULT>
+       <DEFAULT>'__COMP_DEFAULT_FILE_DIR__/out.xml'</DEFAULT>
      </PARAMETER>
 
     <PARAMETER
