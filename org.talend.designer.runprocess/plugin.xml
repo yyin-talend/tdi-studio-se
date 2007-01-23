@@ -85,7 +85,7 @@
     <actionSet
           id="org.talend.designer.runprocess.actionSet"
           label="Action set"
-          visible="true">
+          >
        <menu
              id="talend"
              label="Talend">
@@ -96,7 +96,6 @@
              icon="icons/process_run.gif"
              id="org.talend.designer.runprocess.action4"
              label="%runJobAction.title"
-             menubarPath="talend/Run process"
              style="push"
              toolbarPath="Run process"
              tooltip="%runJobAction.toolTip"/>
