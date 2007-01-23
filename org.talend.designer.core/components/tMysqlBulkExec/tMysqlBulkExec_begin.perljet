@@ -60,18 +60,22 @@ my $dbh_<%=cid %> = DBI->connect(
 )
     or die "can't connect to database";
 
-my $sth_<%=cid %> = $dbh_<%=cid %>->prepare(
+my $sth_<%=cid %>;
+
+if (lc $desc_<%=cid %>{encoding} eq 'utf-8') {
+    $sth_<%=cid %> = $dbh_<%=cid %>->prepare(
+        'SET character_set_database=utf8'
+    );
+    $sth_<%=cid %>->execute();
+    $sth_<%=cid %>->finish();
+}
+
+$sth_<%=cid %> = $dbh_<%=cid %>->prepare(
     sprintf(
         'LOAD DATA INFILE ? INTO TABLE %s FIELDS TERMINATED BY ?',
         $desc_<%=cid %>{table},
     )
 );
-
-if (lc $desc_<%=cid %>{encoding} eq 'utf-8') {
-    $sth_<%=cid %> = $dbh_<%=cid %>->prepare('set names "UTF8"');
-    $sth_<%=cid %>->execute();
-    $sth_<%=cid %>->finish();
-}
 
 $sth_<%=cid %>->execute(
     $desc_<%=cid %>{filename},
