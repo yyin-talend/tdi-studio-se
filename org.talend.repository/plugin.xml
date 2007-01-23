@@ -289,10 +289,10 @@
       <actionSet
             id="org.talend.repository.actionSet"
             label="Acction set"
-            visible="true">
+            >
          <menu
                id="talend"
-               label="File">
+               label="Talend">
             <separator name="Repository"/>
          </menu>
          <action
@@ -300,7 +300,6 @@
                icon="icons/import_projects_action.gif"
                id="org.talend.repository.action3"
                label="%importProjectsAction.title"
-               menubarPath="talend/Repository"
                style="push"
                toolbarPath="repository"
                tooltip="%importProjectsAction.toolTip"/>
