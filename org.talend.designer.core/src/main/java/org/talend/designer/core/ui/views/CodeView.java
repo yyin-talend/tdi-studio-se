@@ -84,6 +84,9 @@ public class CodeView extends ViewPart implements ISelectionListener {
 
     private static final String ERROR_MESSAGE = Messages.getString("CodeView.Error"); //$NON-NLS-1$
 
+    private static final String MULTIPLE_COMPONENT_ERROR_MESSAGE = Messages
+            .getString("CodeView.MultipleComponentError"); //$NON-NLS-1$
+
     private INode selectedNode = null;
 
     private INode generatingNode = null;
@@ -247,6 +250,10 @@ public class CodeView extends ViewPart implements ISelectionListener {
             } else {
                 generatingNode = selectedNode;
             }
+            if (generatingNode.getComponent().getMultipleComponentManager() != null) {
+                text.setText(MULTIPLE_COMPONENT_ERROR_MESSAGE);
+                return;
+            }
             String generatedCode = ""; //$NON-NLS-1$
             if (codeGenerator == null) {
                 ICodeGeneratorService service = DesignerPlugin.getDefault().getCodeGeneratorService();
@@ -285,5 +292,4 @@ public class CodeView extends ViewPart implements ISelectionListener {
             text.setText(generatedCode);
         }
     }
-
 }
