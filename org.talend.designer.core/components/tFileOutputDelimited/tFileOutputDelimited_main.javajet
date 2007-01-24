@@ -57,7 +57,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 					
 				} else {
 				
-					%>(<%=conn.getName() %>.<%=column.getLabel() %> == null) ? "" : <%=conn.getName() %>.<%=column.getLabel() %><%
+					%>(<%=conn.getName() %>.<%=column.getLabel() %> == null) ? "" : String.valueOf(<%=conn.getName() %>.<%=column.getLabel() %>)<%
 				
 				}
 				%> );
