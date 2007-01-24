@@ -289,22 +289,22 @@ public class CodeGenerator implements ICodeGenerator {
                 if (isIterate) {
                     codeComponent.append(generateComponentCode(node, ECodePart.BEGIN));
                 }
-                codeComponent = codeComponent.append(generatesTreeCode(subProcess, node, part));
+                codeComponent.append(generatesTreeCode(subProcess, node, part));
                 if ((node.isMultipleMethods()) && (!isIterate)) {
-                    codeComponent = codeComponent.append(generateComponentCode(node, ECodePart.BEGIN));
+                    codeComponent.append(generateComponentCode(node, ECodePart.BEGIN));
                 }
                 break;
             case MAIN:
-                codeComponent = codeComponent.append(generateComponentCode(node, ECodePart.MAIN));
-                codeComponent = codeComponent.append(generatesTreeCode(subProcess, node, part));
+                codeComponent.append(generateComponentCode(node, ECodePart.MAIN));
+                codeComponent.append(generatesTreeCode(subProcess, node, part));
                 break;
             case END:
                 if ((node.isMultipleMethods()) && (!isIterate)) {
-                    codeComponent = codeComponent.append(generateComponentCode(node, ECodePart.END));
+                    codeComponent.append(generateComponentCode(node, ECodePart.END));
                 }
-                codeComponent = codeComponent.append(generatesTreeCode(subProcess, node, part));
+                codeComponent.append(generatesTreeCode(subProcess, node, part));
                 if (isIterate) {
-                    codeComponent = codeComponent.append(generateComponentCode(node, ECodePart.END));
+                    codeComponent.append(generateComponentCode(node, ECodePart.END));
                 }
                 break;
             default:
@@ -389,13 +389,13 @@ public class CodeGenerator implements ICodeGenerator {
 
         StringBuffer content = new StringBuffer();
         try {
-            content = content.append(generateTypedComponentCode(EInternalTemplate.PART_HEADER, node, part));
+            content.append(generateTypedComponentCode(EInternalTemplate.PART_HEADER, node, part));
             jetBean.setTemplateRelativeUri(IComponentsFactory.COMPONENTS_DIRECTORY + TemplateUtil.DIR_SEP + node.getComponent().getName()
                     + TemplateUtil.DIR_SEP + node.getComponent().getName() + "_" + part + TemplateUtil.EXT_SEP + language.getExtension()
                     + TemplateUtil.TEMPLATE_EXT);
             JetProxy proxy = new JetProxy(jetBean);
-            content = content.append(proxy.generate());
-            content = content.append(generateTypedComponentCode(EInternalTemplate.PART_FOOTER, node, part));
+            content.append(proxy.generate());
+            content.append(generateTypedComponentCode(EInternalTemplate.PART_FOOTER, node, part));
         } catch (JETException jetException) {
             log.error(jetException.getMessage(), jetException);
             throw new CodeGeneratorException(jetException);
