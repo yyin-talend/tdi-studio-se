@@ -85,7 +85,7 @@
     <actionSet
           id="org.talend.designer.runprocess.actionSet"
           label="Action set"
-          >
+          visible="true">
        <menu
              id="talend"
              label="Talend">
