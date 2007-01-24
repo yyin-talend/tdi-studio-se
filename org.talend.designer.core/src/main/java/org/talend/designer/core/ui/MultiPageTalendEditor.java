@@ -120,6 +120,10 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
         // (org.eclipse.jface.util.IPropertyChangeListener)this);
     }
 
+    public void setReadOnly(boolean readonly) {
+        designerEditor.setReadOnly(readonly);
+    }
+
     /**
      * Creates page 0 of the multi-page editor, which contains a text editor.
      */
@@ -280,6 +284,8 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
             } catch (BusinessException e) {
                 // Nothing to do
             }
+        } else {
+            setReadOnly(true);
         }
     }
 

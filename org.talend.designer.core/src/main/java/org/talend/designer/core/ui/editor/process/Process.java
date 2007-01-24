@@ -1186,10 +1186,11 @@ public class Process extends Element implements IProcess {
         return readOnly;
     }
 
-    public void checkReadOnly() {
+    public boolean checkReadOnly() {
         IProxyRepositoryFactory repFactory = DesignerPlugin.getDefault().getProxyRepositoryFactory();
         boolean readOnlyLocal = !repFactory.isEditableAndLockIfPossible(property.getItem());
         this.setReadOnly(readOnlyLocal);
+        return readOnlyLocal;
     }
 
     @SuppressWarnings("unchecked")

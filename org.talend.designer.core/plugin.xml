@@ -177,6 +177,11 @@
             level="10"
             name="Edit process"/>
       <Action
+            class="org.talend.designer.core.ui.action.ReadProcess"
+            id="org.talend.designer.core.actions.readprocess"
+            level="11"
+            name="Read process"/>
+      <Action
             class="org.talend.designer.core.ui.action.CreateProcess"
             id="org.talend.designer.core.actions.createprocess"
             level="10"

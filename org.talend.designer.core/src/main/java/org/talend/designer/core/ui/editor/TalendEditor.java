@@ -141,14 +141,26 @@ public class TalendEditor extends GraphicalEditorWithFlyoutPalette implements IT
 
     private Property property;
 
+    private boolean readOnly;
+
     public static final String ID = "org.talend.designer.core.ui.editor.TalendEditor"; //$NON-NLS-1$
 
     public static final int GRID_SIZE = 32;
 
     public TalendEditor() {
+        this(false);
+    }
+
+    public TalendEditor(boolean readOnly) {
         // an EditDomain is a "session" of editing which contains things
         // like the CommandStack
         setEditDomain(new DefaultEditDomain(this));
+        this.readOnly = readOnly;
+    }
+
+    
+    public void setReadOnly(boolean readOnly) {
+        this.readOnly = readOnly;
     }
 
     public Process getProcess() {
@@ -176,12 +188,14 @@ public class TalendEditor extends GraphicalEditorWithFlyoutPalette implements IT
     @Override
     public void setFocus() {
         super.setFocus();
-        // When gain focus, check read-only to disable read-only mode if process has been restore while opened :
-        // 1. Enabled/disabled components :
-        process.checkReadOnly();
-        // 2. Set backgroung color :
-        ProcessPart rep = (ProcessPart) getViewer().getRootEditPart().getChildren().get(0);
-        rep.ajustReadOnly();
+        if (!readOnly) {
+            // When gain focus, check read-only to disable read-only mode if process has been restore while opened :
+            // 1. Enabled/disabled components :
+            process.checkReadOnly();
+            // 2. Set backgroung color :
+            ProcessPart rep = (ProcessPart) getViewer().getRootEditPart().getChildren().get(0);
+            rep.ajustReadOnly();
+        }
     }
 
     protected KeyHandler getCommonKeyHandler() {

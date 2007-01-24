@@ -69,6 +69,10 @@ public class ProcessEditorInput extends RepositoryEditorInput {
     private RepositoryNode repositoryNode;
 
     public ProcessEditorInput(ProcessItem processItem, boolean load) throws PersistenceException {
+        this(processItem, load, null);
+    }
+
+    public ProcessEditorInput(ProcessItem processItem, boolean load, Boolean readonly) throws PersistenceException {
         super(initFile(processItem.getProperty().getId()), processItem);
 
         loadedProcess = new Process(getProcessItem().getProperty());
@@ -77,29 +81,25 @@ public class ProcessEditorInput extends RepositoryEditorInput {
         } else {
             saveProcess(null, null);
         }
-        checkReadOnly();
+        if (readonly == null) {
+            checkReadOnly();
+        } else {
+            setReadOnly(readonly);
+        }
+    }
 
-        // InputStream xmlStream = process.getXmlStream();
-        // try {
-        // if (xmlStream.read() == -1) {
-        // loadedProcess.setLabel(process.getLabel());
-        // loadedProcess.setVersion(process.getVersion());
-        // loadedProcess.setAuthor(process.getAuthor());
-        // loadedProcess.setStatusCode(process.getStatusCode());
-        //
-        // saveProcess(null, null);
-        // }
-        // } catch (IOException e) {
-        // // TODO Auto-generated catch block
-        // e.printStackTrace();
-        // } finally {
-        // try {
-        // xmlStream.close();
-        // } catch (IOException e) {
-        // // TODO Auto-generated catch block
-        // e.printStackTrace();
-        // }
-        // }
+    public boolean setReadOnly(boolean readonly) {
+        if (readonly) {
+            loadedProcess.setReadOnly(readonly);
+            return true;
+        } else {
+            try {
+                return checkReadOnly();
+            } catch (PersistenceException e) {
+                ExceptionHandler.process(e);
+                return false;
+            }
+        }
     }
 
     /**
@@ -108,16 +108,8 @@ public class ProcessEditorInput extends RepositoryEditorInput {
      * @param processItem
      * @throws PersistenceException
      */
-    private void checkReadOnly() throws PersistenceException {
-
-        loadedProcess.checkReadOnly();
-
-        // IRepositoryFactory repFactory = RepositoryFactoryProvider.getInstance();
-        // boolean isLocked = repFactory.isLocked(getProcessItem());
-        // boolean isDeleted = repFactory.isDeleted(getProcessItem());
-        // // if (isLocked || isDeleted) {
-        // loadedProcess.setReadOnly(isLocked || isDeleted);
-        // // }
+    private boolean checkReadOnly() throws PersistenceException {
+        return loadedProcess.checkReadOnly();
     }
 
     private void loadProcess() throws PersistenceException {
@@ -131,8 +123,7 @@ public class ProcessEditorInput extends RepositoryEditorInput {
      * @throws PersistenceException
      */
     private static IFile initFile(String id) throws PersistenceException {
-        Project project = ((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY))
-                .getProject();
+        Project project = ((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY)).getProject();
         IProject fsProject = ResourceModelUtils.getProject(project);
         IFolder folder = ResourceUtils.getFolder(fsProject, TEMP_DIRECTORY, true);
         return ResourceUtils.getFile(folder, "tempProcess" + id, false);
