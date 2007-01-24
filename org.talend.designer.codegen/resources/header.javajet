@@ -60,6 +60,8 @@ package <%= packageName %>;
 //use <%=routine%>;
 <%}%>
 
+import java.util.Date;
+
 /**
  * <%=process.getName() %> <%=ElementParameterParser.getValue(process, "__PURPOSE__") %>
  * <%=ElementParameterParser.getValue(process, "__DESCRIPTION__") %> 
