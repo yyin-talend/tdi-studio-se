@@ -74,9 +74,10 @@ public class PropertiesTableEditorView<B> extends AbstractDataTableEditorView<B>
      * @param labelVisible TODO
      * @param extendedTableModel
      */
-    public PropertiesTableEditorView(Composite parentComposite, int mainCompositeStyle, PropertiesTableEditorModel model,
-            boolean toolbarVisible, boolean labelVisible) {
-        super(parentComposite, mainCompositeStyle, model, model.getElemParameter().isReadOnly(), toolbarVisible, labelVisible);
+    public PropertiesTableEditorView(Composite parentComposite, int mainCompositeStyle,
+            PropertiesTableEditorModel model, boolean toolbarVisible, boolean labelVisible) {
+        super(parentComposite, mainCompositeStyle, model, model.getElemParameter().isReadOnly(), toolbarVisible,
+                labelVisible);
     }
 
     /**
@@ -134,7 +135,8 @@ public class PropertiesTableEditorView<B> extends AbstractDataTableEditorView<B>
         // final Element elem = model.getElement();
         final IElementParameter param = model.getElemParameter();
         for (int i = 0; i < titles.length; i++) {
-            if (param.isShow(model.getItemsShowIf()[i], model.getItemsNotShowIf()[i], model.getElement().getElementParameters())) {
+            if (param.isShow(model.getItemsShowIf()[i], model.getItemsNotShowIf()[i], model.getElement()
+                    .getElementParameters())) {
                 TableViewerCreatorColumn column = new TableViewerCreatorColumn(tableViewerCreator);
                 column.setTitle(titles[i]);
                 column.setModifiable(true);
@@ -148,7 +150,8 @@ public class PropertiesTableEditorView<B> extends AbstractDataTableEditorView<B>
                 case PREV_COLUMN_LIST:
                     ComboBoxCellEditor cellEditor = new ComboBoxCellEditor(table, tmpParam.getListItemsDisplayName());
                     ((CCombo) cellEditor.getControl()).setEditable(false);
-                    ((CCombo) cellEditor.getControl()).setEnabled(!(param.isRepositoryValueUsed() || param.isReadOnly()));
+                    ((CCombo) cellEditor.getControl())
+                            .setEnabled(!(param.isRepositoryValueUsed() || param.isReadOnly()));
                     column.setCellEditor(cellEditor, new CellEditorValueAdapter() {
 
                         public String getColumnText(CellEditor cellEditor, Object cellEditorValue) {
@@ -197,13 +200,15 @@ public class PropertiesTableEditorView<B> extends AbstractDataTableEditorView<B>
                     });
                     break;
                 case CHECK:
-                    column.setTableEditorContent(new CheckboxTableEditorContent(param.isRepositoryValueUsed() || param.isReadOnly()));
+                    column.setTableEditorContent(new CheckboxTableEditorContent(param.isRepositoryValueUsed()
+                            || param.isReadOnly()));
                     column.setDisplayedValue("");
                     break;
                 default: // TEXT
                     TextCellEditorWithProposal textCellEditor = new TextCellEditorWithProposal(table, column);
                     textCellEditor.setContentProposalProvider(processProposalProvider);
-                    if (((i == 0) && (param.isBasedOnSchema())) || (param.isRepositoryValueUsed()) || (param.isReadOnly())) {
+                    if (((i == 0) && (param.isBasedOnSchema())) || (param.isRepositoryValueUsed())
+                            || (param.isReadOnly())) {
                         // read only cell
                     } else {
                         // writable cell
@@ -257,7 +262,30 @@ public class PropertiesTableEditorView<B> extends AbstractDataTableEditorView<B>
                     }
 
                     public void set(B bean, Object value) {
-                        ((Map<String, Object>) bean).put(items[curCol], value);
+                        Object finalValue = value;
+                        IElementParameter tmpParam = (IElementParameter) itemsValue[curCol];
+                        switch (tmpParam.getField()) {
+                        case CLOSED_LIST:
+                        case COLUMN_LIST:
+                        case PREV_COLUMN_LIST:
+                            if (value instanceof String) {
+                                Object[] itemNames = ((IElementParameter) itemsValue[curCol]).getListItemsDisplayName();
+                                Object[] itemValues = ((IElementParameter) itemsValue[curCol]).getListItemsValue();
+                                boolean found = false;
+                                int index = 0;
+                                for (int j = 0; j < itemNames.length && !found; j++) {
+                                    if (itemNames[j].equals(value)) {
+                                        found = true;
+                                        index = j;
+                                    }
+                                }
+                                if (value != null && (index >= 0)) {
+                                    finalValue = itemValues[new Integer(index)];
+                                }
+                            }
+                        default:
+                        }
+                        ((Map<String, Object>) bean).put(items[curCol], finalValue);
                     }
                 });
             }

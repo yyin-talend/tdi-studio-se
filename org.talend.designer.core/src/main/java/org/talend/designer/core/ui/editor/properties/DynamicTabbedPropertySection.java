@@ -738,6 +738,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                     }
                     if (param.getField() == EParameterFieldType.TABLE) {
                         TableViewerCreator tableViewerCreator = (TableViewerCreator) object;
+                        updateColumnList(null);
                         if (!tableViewerCreator.getInputList().equals(param.getValue())) {
                             tableViewerCreator.init((List) param.getValue());
                         }
