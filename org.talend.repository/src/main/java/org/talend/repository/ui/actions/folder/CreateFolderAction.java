@@ -37,7 +37,7 @@ import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNodeUtilities;
 import org.talend.repository.model.RepositoryNode.EProperties;
 import org.talend.repository.ui.actions.AContextualAction;
-import org.talend.repository.ui.wizards.newfolder.NewFolderWizard;
+import org.talend.repository.ui.wizards.folder.FolderWizard;
 
 /**
  * Action used to create a new folder in repository.<br/>
@@ -71,7 +71,7 @@ public class CreateFolderAction extends AContextualAction {
         objectType = (ERepositoryObjectType) node.getProperties(EProperties.CONTENT_TYPE);
 
         if (objectType != null) {
-            NewFolderWizard processWizard = new NewFolderWizard(path, objectType);
+            FolderWizard processWizard = new FolderWizard(path, objectType, null);
             Shell activeShell = Display.getCurrent().getActiveShell();
             WizardDialog dialog = new WizardDialog(activeShell, processWizard);
             dialog.setPageSize(400, 60);
@@ -93,7 +93,6 @@ public class CreateFolderAction extends AContextualAction {
         if (canWork) {
             Object o = selection.getFirstElement();
             RepositoryNode node = (RepositoryNode) o;
-            ERepositoryObjectType contentType = (ERepositoryObjectType) node.getProperties(EProperties.CONTENT_TYPE);
             switch (node.getType()) {
             case REPOSITORY_ELEMENT:
             case STABLE_SYSTEM_FOLDER:

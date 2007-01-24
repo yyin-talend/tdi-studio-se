@@ -21,6 +21,11 @@
             level="20"
             name="Create folder"/>
       <Action
+            class="org.talend.repository.ui.actions.folder.RenameFolderAction"
+            id="org.talend.repository.actions.renamefolder"
+            level="20"
+            name="Rename folder"/>
+      <Action
             class="org.talend.repository.ui.actions.metadata.CreateConnectionAction"
             id="org.talend.repository.actions.createconnection"
             level="10"
