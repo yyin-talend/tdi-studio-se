@@ -33,6 +33,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.utils.VersionUtils;
 import org.talend.core.CorePlugin;
@@ -539,7 +540,12 @@ public class SQLBuilderRepositoryNodeManager {
             DatabaseConnectionItem item = getItem(getRoot(oldNode));
             DatabaseConnection connection = (DatabaseConnection) item.getConnection();
             IMetadataConnection iMetadataConnection = ConvertionHelper.convert(connection);
-            modifyOldRepositoryNode(connection, iMetadataConnection, oldNode);
+            try {
+                modifyOldRepositoryNode(connection, iMetadataConnection, oldNode);
+            } catch (Exception e) {
+                ExceptionHandler.process(e);
+            }
+           
 
         }
         return oldNode;
@@ -553,7 +559,7 @@ public class SQLBuilderRepositoryNodeManager {
      */
     @SuppressWarnings("unchecked")
     private void modifyOldRepositoryNode(DatabaseConnection connection, IMetadataConnection iMetadataConnection,
-            RepositoryNode oldNode) {
+            RepositoryNode oldNode) throws Exception{
 
         boolean status = new ManagerConnection().check(iMetadataConnection);
         connection.setDivergency(!status);
@@ -705,17 +711,25 @@ public class SQLBuilderRepositoryNodeManager {
         connection.setDivergency(!status);
         connection.getTables().clear();
         if (status) {
-            List<MetadataTable> tablesFromDB = getTablesFromDB(iMetadataConnection);
-            for (MetadataTable table : tablesFromDB) {
-                List<MetadataColumn> columnsFromDB = getColumnsFromDB(iMetadataConnection, table);
-                table.getColumns().clear();
-                for (MetadataColumn column : columnsFromDB) {
-                    column.setLabel("");
-                    table.getColumns().add(column);
+            try {
+                List<MetadataTable> tablesFromDB = getTablesFromDB(iMetadataConnection);
+                for (MetadataTable table : tablesFromDB) {
+                    List<MetadataColumn> columnsFromDB = getColumnsFromDB(iMetadataConnection, table);
+                    table.getColumns().clear();
+                    for (MetadataColumn column : columnsFromDB) {
+                        column.setLabel("");
+                        table.getColumns().add(column);
+                    }
+                    table.setLabel("");
+                    connection.getTables().add(table);
                 }
-                table.setLabel("");
-                connection.getTables().add(table);
+            } catch (Exception e) {
+                if (parameters != null) {
+                    parameters.setConnectionComment(e.getMessage());
+                }
+                return null;
             }
+
         } else {
             if (parameters != null) {
                 parameters.setConnectionComment(managerConnection.getMessageException());
@@ -832,14 +846,15 @@ public class SQLBuilderRepositoryNodeManager {
      * @param iMetadataConnection contains connection
      * @return all Tables from Database.
      */
-    private List<MetadataTable> getTablesFromDB(IMetadataConnection iMetadataConnection) {
+    private List<MetadataTable> getTablesFromDB(IMetadataConnection iMetadataConnection) throws Exception {
 
         DatabaseMetaData dbMetaData = getDatabaseMetaData(iMetadataConnection);
 
         List<MetadataTable> metadataTables = new ArrayList<MetadataTable>();
+        ResultSet rsTables = null;
         try {
             String[] tableTypes = { "TABLE", "VIEW" };
-            ResultSet rsTables = null;
+
             rsTables = dbMetaData.getTables(null, ExtractMetaDataUtils.schema, null, tableTypes);
             while (rsTables.next()) {
                 MetadataTable medataTable = ConnectionFactory.eINSTANCE.createMetadataTable();
@@ -849,11 +864,17 @@ public class SQLBuilderRepositoryNodeManager {
                 medataTable.setComment(ExtractMetaDataUtils.getStringMetaDataInfo(rsTables, "REMARKS"));
                 metadataTables.add(medataTable);
             }
-            rsTables.close();
+
+        } finally {
+            if (rsTables != null) {
+                try {
+                    rsTables.close();
+                } catch (Exception e) {
+                    // do nothing
+                }
+
+            }
             ExtractMetaDataUtils.closeConnection();
-        } catch (Exception e) {
-            SqlBuilderPlugin.log("Connection Exception", e);
-            throw new RuntimeException(e);
         }
         return metadataTables;
     }
