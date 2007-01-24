@@ -170,7 +170,8 @@ public class DataStringConnection {
         String s = init;
 
         if (after != null) {
-            s = init.replaceFirst(before, after);
+            //s = init.replaceFirst(before, after);
+            s = init.replace(before, after);
         }
         return s;
     }
