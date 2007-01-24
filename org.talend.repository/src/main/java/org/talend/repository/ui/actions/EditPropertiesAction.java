@@ -48,8 +48,7 @@ public class EditPropertiesAction extends AContextualAction {
         super();
         this.setText(Messages.getString("EditPropertiesAction.action.title")); //$NON-NLS-1$
         this.setToolTipText(Messages.getString("EditPropertiesAction.action.toolTipText")); //$NON-NLS-1$
-        this.setImageDescriptor(ImageProvider.getImageDesc(EImage.THREE_DOTS_ICON));
-        // this.setActionDefinitionId("restoreItem");
+        this.setImageDescriptor(ImageProvider.getImageDesc(EImage.EDIT_ICON));
     }
 
     public void run() {

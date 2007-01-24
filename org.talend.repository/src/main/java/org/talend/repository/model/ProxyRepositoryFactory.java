@@ -463,17 +463,6 @@ public class ProxyRepositoryFactory implements IProxyRepositoryFactory {
         return this.repositoryFactoryFromProvider.getLastVersion(id);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.repository.model.IRepositoryFactory#getAll(org.talend.core.model.general.Project,
-     * org.talend.core.model.repository.ERepositoryObjectType)
-     */
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.repository.model.IProxyRepositoryFactory#getAll(org.talend.core.model.repository.ERepositoryObjectType)
-     */
     public List<IRepositoryObject> getAll(ERepositoryObjectType type) throws PersistenceException {
         // TODO SML Gets up the boolean param
         return this.repositoryFactoryFromProvider.getAll(type, false);
