@@ -26,16 +26,10 @@ import org.eclipse.jdt.internal.ui.javaeditor.CompilationUnitEditor;
 import org.eclipse.jdt.internal.ui.javaeditor.JavaSourceViewer;
 import org.eclipse.jdt.internal.ui.text.JavaCompositeReconcilingStrategy;
 import org.eclipse.jdt.internal.ui.text.JavaReconciler;
-import org.eclipse.jdt.ui.text.IColorManager;
-import org.eclipse.jdt.ui.text.JavaSourceViewerConfiguration;
-import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.text.IDocumentExtension3;
-import org.eclipse.jface.text.reconciler.IReconciler;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.ui.IWorkbenchPartSite;
-import org.eclipse.ui.IWorkbenchWindow;
-import org.eclipse.ui.texteditor.ITextEditor;
 
 /**
  * DOC yzhang class global comment. Detailled comment <br/>
@@ -46,7 +40,8 @@ import org.eclipse.ui.texteditor.ITextEditor;
 public class TalendJavaEditor extends CompilationUnitEditor implements ISyntaxCheckable {
 
     /*
-     * (non-Javadoc)
+     * Over write this method force to add complier to this editor. Beacuse by default if the editor is not editable,
+     * the complier for error check will not installed.
      * 
      * @see org.eclipse.jdt.internal.ui.javaeditor.CompilationUnitEditor#createPartControl(org.eclipse.swt.widgets.Composite)
      */
@@ -57,6 +52,8 @@ public class TalendJavaEditor extends CompilationUnitEditor implements ISyntaxCh
     }
 
     /**
+     * Add complier for error check in this Java editor.
+     * 
      * DOC yzhang Comment method "addComplier".
      */
     private void addComplier() {
@@ -71,7 +68,7 @@ public class TalendJavaEditor extends CompilationUnitEditor implements ISyntaxCh
     }
 
     /*
-     * (non-Javadoc)
+     * Edit is not allowed.
      * 
      * @see org.eclipse.ui.texteditor.AbstractTextEditor#isEditable()
      */
@@ -81,12 +78,27 @@ public class TalendJavaEditor extends CompilationUnitEditor implements ISyntaxCh
     }
 
     /*
-     * (non-Javadoc)
+     * Check the syntax for java code.
      * 
      * @see org.talend.designer.core.ui.editor.ISyntaxCheckable#validateSyntax()
      */
     public void validateSyntax() {
+        ISourceViewer sourceViewer = getSourceViewer();
+        if (sourceViewer instanceof JavaSourceViewer) {
+            JavaSourceViewer javaSourceViewer = (JavaSourceViewer) sourceViewer;
+            javaSourceViewer.doOperation(ISourceViewer.FORMAT);
+            doSave(null);
+        }
         setFocus();
     }
 
+    /*
+     * Save as is not allowed.
+     * 
+     * @see org.eclipse.jdt.internal.ui.javaeditor.CompilationUnitEditor#isSaveAsAllowed()
+     */
+    @Override
+    public boolean isSaveAsAllowed() {
+        return false;
+    }
 }
