@@ -62,13 +62,11 @@ public abstract class AbstractSection extends AbstractPropertySection {
     private FocusListener listener = new FocusListener() {
 
         public void focusLost(FocusEvent e) {
-            // Commented because sections arenow read-only
-            // performSave();
+            performSave();
         }
 
         public void focusGained(FocusEvent e) {
-            // Commented because sections arenow read-only
-            // manageLock();
+            manageLock();
         }
     };
 
@@ -123,9 +121,10 @@ public abstract class AbstractSection extends AbstractPropertySection {
     }
 
     protected void performSave() {
-        for (AbstractSection section : REGISTERED_SECTIONS) {
-            section.beforeSave();
-        }
+        // Because props are now read-only:
+        // for (AbstractSection section : REGISTERED_SECTIONS) {
+        // section.beforeSave();
+        // }
         // save();
         // performRefresh();
         // refreshRepositoryView();
@@ -162,8 +161,12 @@ public abstract class AbstractSection extends AbstractPropertySection {
      * DOC tguiu Comment method "manageLock".
      */
     protected void manageLock() {
-        boolean enableControl = ProxyRepositoryFactory.getInstance().getStatus(repositoryObject).isEditable();
-        enableControls(enableControl);
+        // Because props are now read-only:
+        // boolean enableControl = ProxyRepositoryFactory.getInstance().getStatus(repositoryObject).isEditable();
+        // enableControls(enableControl);
+
+        // Because props are now read-only:
+        enableControls(false);
     }
 
     protected final IWorkbenchPage getActivePage() {
