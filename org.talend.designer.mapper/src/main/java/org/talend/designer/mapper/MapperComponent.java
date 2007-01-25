@@ -74,7 +74,7 @@ public class MapperComponent extends AbstractExternalNode {
      * @see org.talend.core.model.process.AbstractExternalNode#initialize()
      */
     public void initialize() {
-        initMapperMain();
+        initMapperMain(); 
         mapperMain.loadInitialParamters();
     }
 

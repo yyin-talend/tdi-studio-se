@@ -35,6 +35,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
+import org.talend.core.language.ICodeProblemsChecker;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.MetadataTable;
 import org.talend.core.model.metadata.editor.MetadataTableEditor;
@@ -46,6 +47,9 @@ import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.mapper.Activator;
 import org.talend.designer.mapper.MapperComponent;
 import org.talend.designer.mapper.language.LanguageProvider;
+import org.talend.designer.mapper.language.generation.GenerationManager;
+import org.talend.designer.mapper.language.generation.JavaGenerationManager;
+import org.talend.designer.mapper.language.generation.JavaGenerationManager.PROBLEM_KEY_FIELD;
 import org.talend.designer.mapper.model.table.AbstractDataMapTable;
 import org.talend.designer.mapper.model.table.InputTable;
 import org.talend.designer.mapper.model.table.OutputTable;
@@ -478,7 +482,7 @@ public class MapperManager {
             lastChild = outputsTablesView.get(sizeOutputsView - 1);
         }
 
-        AbstractDataMapTable abstractDataMapTable = new OutputTable(metadataTable, null, tableName);
+        AbstractDataMapTable abstractDataMapTable = new OutputTable(this, metadataTable, tableName);
 
         TablesZoneView tablesZoneViewOutputs = uiManager.getTablesZoneViewOutputs();
         DataMapTableView dataMapTableView = uiManager.createNewOutputTableView(lastChild, abstractDataMapTable, tablesZoneViewOutputs);
@@ -587,7 +591,7 @@ public class MapperManager {
         } else if (currentEntry instanceof FilterTableEntry) {
             tableViewer = dataMapTableView.getTableViewerCreatorForFilters().getTableViewer();
         }
-        if (currentEntry.getProblem() != null) {
+        if (currentEntry.getProblems() != null) {
             tableViewer.getTable().deselectAll();
         }
         tableViewer.refresh(currentEntry);
@@ -741,8 +745,9 @@ public class MapperManager {
      * 
      * @param expression
      */
-    public Problem checkExpressionSyntax(String expression) {
-        return LanguageProvider.getCurrentLanguage().checkExpressionSyntax(expression);
+    public List<Problem> checkExpressionSyntax(String expression) {
+        ICodeProblemsChecker codeChecker = LanguageProvider.getCurrentLanguage().getCodeChecker();
+        return codeChecker.checkProblems(expression);
     }
 
     /**
@@ -807,6 +812,16 @@ public class MapperManager {
     public void mapAutomaticallly() {
         AutoMapper autoMapper = new AutoMapper(this);
         autoMapper.map();
+    }
+
+    /**
+     * DOC amaumont Comment method "buildKey".
+     * @param tableName
+     * @param entryName
+     * @return
+     */
+    public String buildProblemKey(PROBLEM_KEY_FIELD problemKeyField,String tableName, String entryName) {
+        return JavaGenerationManager.buildProblemKey(mapperComponent.getUniqueName(), problemKeyField, tableName, entryName);
     }
 
 }

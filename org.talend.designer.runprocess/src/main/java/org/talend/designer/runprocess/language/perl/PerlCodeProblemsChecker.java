@@ -24,11 +24,13 @@ package org.talend.designer.runprocess.language.perl;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Level;
 import org.talend.commons.exception.ExceptionHandler;
-import org.talend.core.language.ICodeSyntaxChecker;
+import org.talend.core.language.CodeProblemsChecker;
 import org.talend.core.model.process.Problem;
 import org.talend.core.model.process.Problem.ProblemStatus;
 import org.talend.designer.runprocess.Processor;
@@ -44,7 +46,7 @@ import org.talend.designer.runprocess.ProcessorException;
  * $Id$
  * 
  */
-public class PerlExpressionSyntaxChecker implements ICodeSyntaxChecker {
+public class PerlCodeProblemsChecker  extends CodeProblemsChecker {
 
     private static File tempFile;
 
@@ -63,6 +65,8 @@ public class PerlExpressionSyntaxChecker implements ICodeSyntaxChecker {
     public static final int PERL_STATUS_OK = 0;
 
     public static final int PERL_STATUS_ERROR_EXPRESSION = 2;
+    
+    public static final int PERL_STATUS_ERROR_SCALAR_FOUND = 255;
 
     public static final int PERL_STATUS_ERROR_FILE = 9;
 
@@ -71,7 +75,7 @@ public class PerlExpressionSyntaxChecker implements ICodeSyntaxChecker {
     /**
      * DOC amaumont PerlExpressionSyntaxChecker constructor comment.
      */
-    public PerlExpressionSyntaxChecker() {
+    public PerlCodeProblemsChecker() {
         super();
     }
 
@@ -97,12 +101,13 @@ public class PerlExpressionSyntaxChecker implements ICodeSyntaxChecker {
      * 
      * @see org.talend.designer.core.language.perl.CodeSyntaxChecker#checkSyntax(java.lang.String)
      */
-    public Problem checkSyntax(String expression) {
+    public List<Problem> checkProblems(String expression) {
 
         if (expression == null) {
             return null;
         }
 
+        
         StringBuffer out = new StringBuffer();
         StringBuffer err = new StringBuffer();
 
@@ -122,12 +127,12 @@ public class PerlExpressionSyntaxChecker implements ICodeSyntaxChecker {
 
         if (status == PERL_STATUS_OK) {
 
-        } else if (status == PERL_STATUS_ERROR_EXPRESSION || status == PERL_STATUS_ERROR_FILE) {
+        } else if (status == PERL_STATUS_ERROR_EXPRESSION || status == PERL_STATUS_ERROR_SCALAR_FOUND || status == PERL_STATUS_ERROR_FILE) {
             stdErr = err.toString();
             if (status == PERL_STATUS_ERROR_EXPRESSION) {
                 stdErr = replaceStdErrStringForExpression(stdErr);
 
-            } else if (status == PERL_STATUS_ERROR_FILE) {
+            } else if (status == PERL_STATUS_ERROR_FILE || status == PERL_STATUS_ERROR_SCALAR_FOUND) {
                 stdErr = replaceStdErrStringForFile(stdErr);
             }
 
@@ -136,7 +141,9 @@ public class PerlExpressionSyntaxChecker implements ICodeSyntaxChecker {
         }
 
         if (stdErr != null) {
-            return new Problem(null, stdErr, ProblemStatus.ERROR);
+            ArrayList<Problem> problems = new ArrayList<Problem>();
+            problems.add(new Problem(null, stdErr, ProblemStatus.ERROR));
+            return problems;
         }
 
         // System.out.println("\nout= " + out.toString());
@@ -241,6 +248,13 @@ public class PerlExpressionSyntaxChecker implements ICodeSyntaxChecker {
         }
 
         return status;
+    }
+
+    /* (non-Javadoc)
+     * @see org.talend.core.language.ICodeProblemsChecker#checkProblems()
+     */
+    public List<Problem> checkProblems() {
+        throw new UnsupportedOperationException();
     }
 
 }

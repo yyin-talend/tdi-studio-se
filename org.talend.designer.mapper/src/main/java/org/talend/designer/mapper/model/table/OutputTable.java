@@ -29,6 +29,7 @@ import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.designer.mapper.external.data.ExternalMapperTable;
 import org.talend.designer.mapper.external.data.ExternalMapperTableEntry;
+import org.talend.designer.mapper.managers.MapperManager;
 import org.talend.designer.mapper.model.tableentry.AbstractInOutTableEntry;
 import org.talend.designer.mapper.model.tableentry.FilterTableEntry;
 import org.talend.designer.mapper.model.tableentry.OutputColumnTableEntry;
@@ -49,13 +50,13 @@ public class OutputTable extends AbstractInOutTable {
 
     private ExtendedTableModel<FilterTableEntry> tableFiltersEntriesModel;
 
-    public OutputTable(IMetadataTable metadataTable, ExternalMapperTable externalMapperTable, String name) {
-        super(metadataTable, externalMapperTable, name);
+    public OutputTable(MapperManager mapperManager, IMetadataTable metadataTable, String name) {
+        super(mapperManager, metadataTable, name);
         this.tableFiltersEntriesModel = new ExtendedTableModel<FilterTableEntry>(name + " : model for Filters", filterTableEntries);
-        initFromExternalData(externalMapperTable);
     }
 
-    private void initFromExternalData(ExternalMapperTable externalMapperTable) {
+    public void initFromExternalData(ExternalMapperTable externalMapperTable) {
+        super.initFromExternalData(externalMapperTable);
         if (externalMapperTable != null) {
             this.reject = externalMapperTable.isReject();
             this.rejectInnerJoin = externalMapperTable.isRejectInnerJoin();

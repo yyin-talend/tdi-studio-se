@@ -24,9 +24,11 @@ package org.talend.designer.mapper.utils.problems;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.talend.core.language.ICodeProblemsChecker;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.Problem;
 import org.talend.core.model.process.Problem.ProblemStatus;
+import org.talend.core.model.temp.ECodeLanguage;
 import org.talend.designer.mapper.MapperMain;
 import org.talend.designer.mapper.external.connection.IOConnection;
 import org.talend.designer.mapper.external.converter.ExternalDataConverter;
@@ -35,6 +37,7 @@ import org.talend.designer.mapper.external.data.ExternalMapperTable;
 import org.talend.designer.mapper.external.data.ExternalMapperTableEntry;
 import org.talend.designer.mapper.language.ILanguage;
 import org.talend.designer.mapper.language.LanguageProvider;
+import org.talend.designer.mapper.language.generation.JavaGenerationManager;
 import org.talend.designer.mapper.managers.MapperManager;
 import org.talend.designer.mapper.model.table.InputTable;
 import org.talend.designer.mapper.model.tableentry.IColumnEntry;
@@ -70,13 +73,20 @@ public class ProblemsAnalyser {
             List<ExternalMapperTable> extVarTables = new ArrayList<ExternalMapperTable>(externalData.getVarsTables());
             List<ExternalMapperTable> extOutputTables = new ArrayList<ExternalMapperTable>(externalData.getOutputTables());
             // loop on all tables
-            checkExpressionSyntaxProblems(extInputTables);
-            checkExpressionSyntaxProblems(extVarTables);
-            checkExpressionSyntaxProblems(extOutputTables);
+
+            ICodeProblemsChecker codeChecker = LanguageProvider.getCurrentLanguage().getCodeChecker();
+            ILanguage currentLanguage = LanguageProvider.getCurrentLanguage();
+            if (currentLanguage.getCodeLanguage() == ECodeLanguage.JAVA) {
+                codeChecker.checkProblems();
+            }
+
+            checkExpressionSyntaxProblems(extInputTables, codeChecker);
+            checkExpressionSyntaxProblems(extVarTables, codeChecker);
+            checkExpressionSyntaxProblems(extOutputTables, codeChecker);
 
             List<? extends IConnection> incomingConnections = new ArrayList<IConnection>(this.mapperManager.getComponent()
                     .getIncomingConnections());
-            ExternalDataConverter converter = new ExternalDataConverter();
+            ExternalDataConverter converter = new ExternalDataConverter(mapperManager);
             MapperMain mapperMain = mapperManager.getComponent().getMapperMain();
             ArrayList<IOConnection> inputsIOConnections = mapperMain.createIOConnections(incomingConnections);
             ArrayList<InputTable> inputTables = converter.prepareInputTables(inputsIOConnections, externalData);
@@ -157,33 +167,59 @@ public class ProblemsAnalyser {
      * DOC amaumont Comment method "checkExpressionSyntaxProblems".
      * 
      * @param tables
+     * @param codeChecker
      */
-    private void checkExpressionSyntaxProblems(List<ExternalMapperTable> tables) {
+    private void checkExpressionSyntaxProblems(List<ExternalMapperTable> tables, ICodeProblemsChecker codeChecker) {
 
         ILanguage currentLanguage = LanguageProvider.getCurrentLanguage();
+        boolean keyIsUsed = currentLanguage.getCodeLanguage() == ECodeLanguage.JAVA;
+
         for (ExternalMapperTable table : tables) {
             List<ExternalMapperTableEntry> metadataTableEntries = table.getMetadataTableEntries();
             // loop on all entries of current table
             if (metadataTableEntries != null) {
                 for (ExternalMapperTableEntry entry : metadataTableEntries) {
-                    Problem problem = checkExpressionSyntax(entry.getExpression());
-                    if (problem != null) {
+                    List<Problem> problems = null;
+                    if (keyIsUsed) {
+                        String key = mapperManager.buildProblemKey(
+                                JavaGenerationManager.PROBLEM_KEY_FIELD.METADATA_COLUMN, table.getName(), entry.getName());
+                        problems = codeChecker.getProblemsFromKey(key);
+                    } else {
+                        problems = checkCodeProblems(entry.getExpression());
+                    }
+                    if (problems != null) {
                         String location = currentLanguage.getLocation(table.getName(), entry.getName());
-                        String description = "Expression of " + location + " is invalid : " + problem.getDescription() + ". ";
-                        problem.setDescription(description);
-                        addProblem(problem);
+                        String prefix = "Expression of " + location + " is invalid : ";
+                        for (Problem problem : problems) {
+                            if (!problem.getDescription().startsWith(prefix)) {
+                                String description = prefix + problem.getDescription() + ".";
+                                problem.setDescription(description);
+                            }
+                            addProblem(problem);
+                        }
                     }
                 } // for (ExternalMapperTableEntry entry : metadataTableEntries) {
             }
             if (table.getConstraintTableEntries() != null) {
+                String prefix = "Filter invalid in table " + table.getName() + " : ";
                 for (ExternalMapperTableEntry entry : table.getConstraintTableEntries()) {
 
-                    Problem problem = checkExpressionSyntax(entry.getExpression());
+                    List<Problem> problems = null;
+                    if (keyIsUsed) {
+                        problems = codeChecker.getProblemsFromKey(mapperManager.buildProblemKey(
+                                JavaGenerationManager.PROBLEM_KEY_FIELD.FILTER, table.getName(), null));
+                    } else {
+                        problems = checkCodeProblems(entry.getExpression());
+                    }
 
-                    if (problem != null) {
-                        String description = "Filter invalid in table " + table.getName() + " : " + problem.getDescription() + ".";
-                        problem.setDescription(description);
-                        addProblem(problem);
+                    if (problems != null) {
+                        for (Problem problem : problems) {
+                            if (!problem.getDescription().startsWith(prefix)) {
+                                String description = prefix + problem.getDescription() + ".";
+                                problem.setDescription(description);
+                            }
+                            addProblem(problem);
+                        }
                     }
 
                 }
@@ -211,13 +247,7 @@ public class ProblemsAnalyser {
         }
     }
 
-    /**
-     * DOC amaumont Comment method "checkExpressionSyntax".
-     * 
-     * @param expression
-     * @return
-     */
-    private Problem checkExpressionSyntax(String expression) {
+    private List<Problem> checkCodeProblems(String expression) {
         return mapperManager.checkExpressionSyntax(expression);
     }
 

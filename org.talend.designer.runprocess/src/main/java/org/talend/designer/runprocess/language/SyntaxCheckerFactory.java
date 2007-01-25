@@ -21,10 +21,10 @@
 // ============================================================================
 package org.talend.designer.runprocess.language;
 
-import org.talend.core.language.ICodeSyntaxChecker;
+import org.talend.core.language.ICodeProblemsChecker;
 import org.talend.core.model.temp.ECodeLanguage;
-import org.talend.designer.runprocess.language.java.JavaExpressionSyntaxChecker;
-import org.talend.designer.runprocess.language.perl.PerlExpressionSyntaxChecker;
+import org.talend.designer.runprocess.language.java.JavaFieldKeyProblemsChecker;
+import org.talend.designer.runprocess.language.perl.PerlCodeProblemsChecker;
 
 
 /**
@@ -45,11 +45,11 @@ public class SyntaxCheckerFactory {
         return instance;
     }
     
-    public ICodeSyntaxChecker getSyntaxChecker(ECodeLanguage codeLanguage) {
+    public ICodeProblemsChecker getSyntaxChecker(ECodeLanguage codeLanguage) {
         if (codeLanguage == ECodeLanguage.PERL) {
-            return (ICodeSyntaxChecker) new PerlExpressionSyntaxChecker();
+            return (ICodeProblemsChecker) new PerlCodeProblemsChecker();
         } else if (codeLanguage == ECodeLanguage.JAVA) {
-            return (ICodeSyntaxChecker) new JavaExpressionSyntaxChecker();
+            return (ICodeProblemsChecker) new JavaFieldKeyProblemsChecker();
         } else {
             throw new IllegalArgumentException("Syntax checker not found for this language: " + codeLanguage.getName());
         }

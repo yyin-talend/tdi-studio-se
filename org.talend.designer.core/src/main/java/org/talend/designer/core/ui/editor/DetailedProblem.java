@@ -19,34 +19,64 @@
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 // ============================================================================
-package org.talend.designer.runprocess.language.java;
+package org.talend.designer.core.ui.editor;
 
-import org.talend.core.language.ICodeSyntaxChecker;
-import org.talend.core.model.process.Problem;
+import org.eclipse.jdt.core.compiler.IProblem;
+
 
 /**
- * Check syntax of Java expressions.
- * 
+ * DOC amaumont  class global comment. Detailled comment
+ * <br/>
+ *
  * $Id$
- * 
+ *
  */
-public class JavaExpressionSyntaxChecker implements ICodeSyntaxChecker {
+public class DetailedProblem {
+
+    private IProblem problem;
+    private String key;
+    private String source;
 
     /**
-     * DOC amaumont PerlExpressionSyntaxChecker constructor comment.
+     * DOC amaumont ProblemWithLine constructor comment.
+     * @param problem
+     * @param line
+     * @param source 
      */
-    public JavaExpressionSyntaxChecker() {
-        super();
+    public DetailedProblem(IProblem problem, String line, String source) {
+        this.problem = problem;
+        this.key = line;
+        this.source = source;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.designer.core.language.perl.CodeSyntaxChecker#checkSyntax(java.lang.String)
+    
+    /**
+     * Getter for line.
+     * @return the line
      */
-    public Problem checkSyntax(String expression) {
-        
-        return null;
+    public String getKey() {
+        return this.key;
     }
+
+    
+    /**
+     * Getter for problem.
+     * @return the problem
+     */
+    public IProblem getJdtProblem() {
+        return this.problem;
+    }
+
+
+    
+    /**
+     * Getter for source.
+     * @return the source
+     */
+    public String getSource() {
+        return this.source;
+    }
+    
+    
 
 }

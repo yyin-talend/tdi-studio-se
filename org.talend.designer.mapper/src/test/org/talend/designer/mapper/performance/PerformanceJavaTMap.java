@@ -22,6 +22,7 @@
 package org.talend.designer.mapper.performance;
 
 import junit.framework.TestCase;
+
 import org.talend.commons.utils.time.TimeMeasure;
 
 /**

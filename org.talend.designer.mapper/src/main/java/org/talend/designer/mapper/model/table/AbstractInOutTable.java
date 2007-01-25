@@ -29,6 +29,7 @@ import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.designer.mapper.external.data.ExternalMapperTable;
 import org.talend.designer.mapper.external.data.ExternalMapperTableEntry;
+import org.talend.designer.mapper.managers.MapperManager;
 import org.talend.designer.mapper.model.tableentry.AbstractInOutTableEntry;
 
 /**
@@ -49,17 +50,13 @@ public abstract class AbstractInOutTable extends AbstractDataMapTable {
      * @param externalMapperTable can be null
      * @param name
      */
-    public AbstractInOutTable(IMetadataTable metadataTable, ExternalMapperTable externalMapperTable, String name) {
-        super(name, externalMapperTable);
+    public AbstractInOutTable(MapperManager mapperManager, IMetadataTable metadataTable, String name) {
+        super(mapperManager, name);
         this.metadataTable = metadataTable;
-        initFromExternalData(externalMapperTable);
     }
 
-    public AbstractInOutTable(IMetadataTable metadataTable, String name) {
-        this(metadataTable, null, name);
-    }
-
-    private void initFromExternalData(ExternalMapperTable externalMapperTable) {
+    protected void initFromExternalData(ExternalMapperTable externalMapperTable) {
+        super.initFromExternalData(externalMapperTable);
         List<IMetadataColumn> columns = this.metadataTable.getListColumns();
         Map<String, ExternalMapperTableEntry> nameToPerTabEntry = new HashMap<String, ExternalMapperTableEntry>();
         if (externalMapperTable != null && externalMapperTable.getMetadataTableEntries() != null) {

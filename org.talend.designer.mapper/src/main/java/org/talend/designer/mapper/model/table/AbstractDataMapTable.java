@@ -26,6 +26,7 @@ import java.util.List;
 
 import org.talend.commons.ui.swt.extended.table.ExtendedTableModel;
 import org.talend.designer.mapper.external.data.ExternalMapperTable;
+import org.talend.designer.mapper.managers.MapperManager;
 import org.talend.designer.mapper.model.tableentry.IColumnEntry;
 
 /**
@@ -44,6 +45,10 @@ public abstract class AbstractDataMapTable {
 
     private ExtendedTableModel<IColumnEntry> tableColumnsEntriesModel;
 
+    protected MapperManager mapperManager;
+
+    
+    
     /**
      * DOC amaumont DataMapTable constructor comment.
      * 
@@ -52,29 +57,20 @@ public abstract class AbstractDataMapTable {
      * @param metadataTable
      * @param externalMapperTable
      */
-    public AbstractDataMapTable(String name, ExternalMapperTable persistentTable) {
+    public AbstractDataMapTable(MapperManager mapperManager, String name) {
+        this.mapperManager = mapperManager;
         this.name = name;
         if (name == null) {
             throw new IllegalArgumentException("Name's AbstractDataMapTable can't be null");
         }
-        initFromExternalData(persistentTable);
         this.tableColumnsEntriesModel = new ExtendedTableModel<IColumnEntry>(name + " : model for Columns", dataMapTableEntries);
 
     }
 
     /**
-     * DOC amaumont AbstractDataMapTable constructor comment.
-     * 
-     * @param name2
-     */
-    public AbstractDataMapTable(String name) {
-        this(name, null);
-    }
-
-    /**
      * DOC amaumont Comment method "init".
      */
-    private void initFromExternalData(ExternalMapperTable externalMapperTable) {
+    protected void initFromExternalData(ExternalMapperTable externalMapperTable) {
         if (externalMapperTable != null) {
             this.minimized = externalMapperTable.isMinimized();
         }
@@ -131,4 +127,14 @@ public abstract class AbstractDataMapTable {
         this.tableColumnsEntriesModel.swapElements(indicesOrigin, listIndexTarget);
     }
 
+    
+    /**
+     * Getter for mapperManager.
+     * @return the mapperManager
+     */
+    public MapperManager getMapperManager() {
+        return this.mapperManager;
+    }
+
+    
 }

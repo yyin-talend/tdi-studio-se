@@ -22,7 +22,9 @@
 package org.talend.designer.core.ui.editor.properties.controllers;
 
 import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.collections.BidiMap;
@@ -56,7 +58,7 @@ import org.talend.commons.ui.swt.proposal.ContentProposalAdapterExtended;
 import org.talend.commons.ui.utils.ControlUtils;
 import org.talend.commons.ui.utils.TypedTextCommandExecutor;
 import org.talend.core.context.RepositoryContext;
-import org.talend.core.language.ICodeSyntaxChecker;
+import org.talend.core.language.ICodeProblemsChecker;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IElementParameter;
@@ -341,25 +343,29 @@ public abstract class AbstractElementPropertySectionController implements Proper
                     org.talend.core.context.Context.REPOSITORY_CONTEXT_KEY)).getProject().getLanguage();
 
             IRunProcessService service = DesignerPlugin.getDefault().getRunProcessService();
-            final ICodeSyntaxChecker syntaxChecker = service.getSyntaxChecker(language);
+            final ICodeProblemsChecker syntaxChecker = service.getSyntaxChecker(language);
 
             final String valueFinal = ControlUtils.getText(control);
 
             ControlProperties existingControlProperties = controlToProp.get(control);
 
-            Problem problem = null;
+            List<Problem> problems = new ArrayList<Problem>();
             if (valueFinal != null) {
-                problem = syntaxChecker.checkSyntax(valueFinal);
-            }
-
-            boolean isRequired = elem.getElementParameter(getParameterName(control)).isRequired();
-            if (problem == null) {
-                if (isRequired && (valueFinal == null || valueFinal.trim().length() == 0)) {
-                    problem = new Problem(null, "This field is required.", ProblemStatus.ERROR);
+                if(language == ECodeLanguage.PERL) {
+                    problems = syntaxChecker.checkProblems(valueFinal);
+                } else if(language == ECodeLanguage.JAVA) {
+                    problems = syntaxChecker.checkProblemsFromKey("//TODO : KEY_TO_SET!!!!!");
                 }
             }
 
-            if (problem != null) {
+            boolean isRequired = elem.getElementParameter(getParameterName(control)).isRequired();
+            if (problems == null) {
+                if (isRequired && (valueFinal == null || valueFinal.trim().length() == 0)) {
+                    problems.add(new Problem(null, "This field is required.", ProblemStatus.ERROR));
+                }
+            }
+
+            if (problems != null && problems.size() > 0) {
                 if (existingControlProperties == null) {
                     ControlProperties properties = new ControlProperties();
                     controlToProp.put(control, properties);
@@ -371,7 +377,12 @@ public abstract class AbstractElementPropertySectionController implements Proper
 
                 control.setBackground(bgColorError);
                 control.setForeground(fgColorError);
-                control.setToolTipText("Syntax error: " + problem.getDescription());
+                String tooltip = "Syntax error(s): "; 
+
+                for (Problem problem : problems) {
+                    tooltip += "\n" + problem.getDescription();
+                }
+                control.setToolTipText(tooltip);
             } else {
                 resetErrorState(control);
             }

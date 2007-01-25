@@ -160,7 +160,7 @@ public class MapperMain {
      */
 
     public ExternalMapperData buildExternalData() {
-        ExternalDataConverter converter = new ExternalDataConverter();
+        ExternalDataConverter converter = new ExternalDataConverter(mapperManager);
         return converter.prepareExternalData(mapperModel, mapperManager.getUiManager().getUiProperties());
 
     }
@@ -216,7 +216,7 @@ public class MapperMain {
             externalData = new ExternalMapperData();
         }
         mapperManager.getUiManager().setUiProperties(externalData.getUiProperties());
-        ExternalDataConverter converter = new ExternalDataConverter();
+        ExternalDataConverter converter = new ExternalDataConverter(mapperManager);
         this.mapperModel = converter.prepareModel(inputs, outputs, outputMetadataTables, externalData);
     }
 

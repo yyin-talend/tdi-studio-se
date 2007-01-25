@@ -22,6 +22,7 @@
 package org.talend.designer.mapper.language;
 
 import org.talend.commons.utils.data.text.StringHelper;
+import org.talend.core.language.ICodeProblemsChecker;
 import org.talend.core.model.temp.ECodeLanguage;
 
 /**
@@ -35,6 +36,9 @@ public abstract class AbstractLanguage implements ILanguage {
     public static final String CARRIAGE_RETURN = "\n";
 
     private ECodeLanguage codeLanguage;
+
+    protected ICodeProblemsChecker codeChecker;
+
 
     /**
      * DOC amaumont AbstractLanguage constructor comment.
@@ -70,6 +74,16 @@ public abstract class AbstractLanguage implements ILanguage {
      */
     public ECodeLanguage getCodeLanguage() {
         return codeLanguage;
+    }
+
+    
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.mapper.language.ILanguage#getCodeChecker()
+     */
+    public ICodeProblemsChecker getCodeChecker() {
+        return codeChecker;
     }
 
 }

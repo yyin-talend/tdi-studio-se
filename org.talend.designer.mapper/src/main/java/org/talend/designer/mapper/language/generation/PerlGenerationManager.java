@@ -26,8 +26,6 @@ import java.util.List;
 
 import org.talend.designer.mapper.external.data.ExternalMapperTableEntry;
 import org.talend.designer.mapper.language.ILanguage;
-import org.talend.designer.mapper.language.generation.GenerationManager;
-import org.talend.designer.mapper.language.generation.TableType;
 import org.talend.designer.mapper.model.tableentry.TableEntryLocation;
 import org.talend.designer.mapper.utils.DataMapExpressionParser;
 

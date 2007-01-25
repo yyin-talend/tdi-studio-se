@@ -21,6 +21,8 @@
 // ============================================================================
 package org.talend.designer.mapper.ui.visualmap.table;
 
+import java.util.List;
+
 import org.eclipse.jface.fieldassist.IContentProposalProvider;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ICellEditorListener;
@@ -89,6 +91,7 @@ import org.talend.commons.utils.data.list.IListenableListListener;
 import org.talend.commons.utils.data.list.ListenableListEvent;
 import org.talend.commons.utils.threading.AsynchronousThreading;
 import org.talend.commons.utils.threading.ExecutionLimiter;
+import org.talend.core.model.process.Problem;
 import org.talend.core.ui.proposal.ProcessProposalProvider;
 import org.talend.designer.mapper.MapperMain;
 import org.talend.designer.mapper.managers.MapperManager;
@@ -537,7 +540,15 @@ public abstract class DataMapTableView extends Composite {
                         return;
                     }
                     ITableEntry tableEntry = (ITableEntry) tableItem.getData();
-                    String toolTip = tableEntry.getProblem() == null ? null : tableEntry.getProblem().getDescription();
+                    String toolTip = null;
+                    if (tableEntry.getProblems() != null) {
+                        List<Problem> problems = tableEntry.getProblems();
+                        toolTip = "";
+                        for (Problem problem : problems) {
+                            toolTip += problem.getDescription() + "\n";
+                        }
+                    }
+
                     String tableToolTip = table.getToolTipText();
                     if (!WindowSystem.isGTK()
                             || WindowSystem.isGTK()
@@ -1559,7 +1570,7 @@ public abstract class DataMapTableView extends Composite {
         ITableEntry entry = (ITableEntry) element;
         TableViewerCreatorColumn column = (TableViewerCreatorColumn) tableViewerCreator.getColumns().get(columnIndex);
         if (column.getId().equals(ID_EXPRESSION_COLUMN)) {
-            return expressionColorProvider.getBackgroundColor(entry.getProblem() == null ? true : false);
+            return expressionColorProvider.getBackgroundColor(entry.getProblems() == null ? true : false);
         }
         return null;
     }
@@ -1575,7 +1586,7 @@ public abstract class DataMapTableView extends Composite {
         ITableEntry entry = (ITableEntry) element;
         TableViewerCreatorColumn column = (TableViewerCreatorColumn) tableViewerCreator.getColumns().get(columnIndex);
         if (column.getId().equals(ID_EXPRESSION_COLUMN)) {
-            return expressionColorProvider.getForegroundColor(entry.getProblem() == null ? true : false);
+            return expressionColorProvider.getForegroundColor(entry.getProblems() == null ? true : false);
         }
         return null;
     }
@@ -1594,7 +1605,7 @@ public abstract class DataMapTableView extends Composite {
             } else if (currentEntry instanceof FilterTableEntry) {
                 tableViewer = DataMapTableView.this.getTableViewerCreatorForFilters().getTableViewer();
             }
-            if (currentEntry.getProblem() != null) {
+            if (currentEntry.getProblems() != null) {
                 tableViewer.getTable().deselectAll();
             }
         }

@@ -21,8 +21,6 @@
 // ============================================================================
 package org.talend.designer.mapper.language.perl;
 
-import org.talend.core.language.ICodeSyntaxChecker;
-import org.talend.core.model.process.Problem;
 import org.talend.core.model.temp.ECodeLanguage;
 import org.talend.designer.mapper.Activator;
 import org.talend.designer.mapper.language.AbstractLanguage;
@@ -94,8 +92,6 @@ public class PerlLanguage extends AbstractLanguage {
      */
     private static final String TEMPLATE_VARS_COLUMN_VARIABLE = PREFIX_VARIABLE_NAME + "{0}";
 
-    private ICodeSyntaxChecker syntaxChecker;
-
     /**
      * DOC amaumont PerlLanguage constructor comment.
      */
@@ -105,7 +101,7 @@ public class PerlLanguage extends AbstractLanguage {
         Activator activator = Activator.getDefault();
         if (activator != null) {
             IRunProcessService service = activator.getRunProcessService();
-            this.syntaxChecker = service.getSyntaxChecker(ECodeLanguage.PERL);
+            this.codeChecker = service.getSyntaxChecker(ECodeLanguage.PERL);
         }
 
     }
@@ -253,15 +249,6 @@ public class PerlLanguage extends AbstractLanguage {
      */
     public String getTemplateTableVariable() {
         return TEMPLATE_TABLE_VARIABLE;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.designer.mapper.language.ILanguage#checkExpressionSyntax(java.lang.String)
-     */
-    public Problem checkExpressionSyntax(String expression) {
-        return syntaxChecker.checkSyntax(expression);
     }
 
 }

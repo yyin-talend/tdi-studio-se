@@ -21,9 +21,18 @@
 // ============================================================================
 package org.talend.designer.mapper.model.tableentry;
 
+import java.util.Iterator;
+import java.util.List;
+
+import org.talend.core.language.ICodeProblemsChecker;
 import org.talend.core.model.process.Problem;
 import org.talend.core.model.process.Problem.ProblemStatus;
+import org.talend.core.model.temp.ECodeLanguage;
+import org.talend.designer.mapper.language.ILanguage;
 import org.talend.designer.mapper.language.LanguageProvider;
+import org.talend.designer.mapper.language.generation.JavaGenerationManager;
+import org.talend.designer.mapper.language.generation.JavaGenerationManager.PROBLEM_KEY_FIELD;
+import org.talend.designer.mapper.managers.MapperManager;
 import org.talend.designer.mapper.model.table.AbstractDataMapTable;
 
 /**
@@ -42,7 +51,7 @@ public abstract class TableEntry implements ITableEntry {
 
     private String name;
 
-    private Problem problem;
+    private List<Problem> problems;
 
     public TableEntry(AbstractDataMapTable abstractDataMapTable, String expression) {
         super();
@@ -108,12 +117,12 @@ public abstract class TableEntry implements ITableEntry {
         }
     }
 
-    public Problem getProblem() {
-        return this.problem;
+    public List<Problem> getProblems() {
+        return this.problems;
     }
 
-    public void setProblem(Problem problem) {
-        this.problem = problem;
+    public void setProblems(List<Problem> problems) {
+        this.problems = problems;
     }
 
     /**
@@ -124,17 +133,38 @@ public abstract class TableEntry implements ITableEntry {
     private void checkErrors() {
 
         if (expression == null || EMPTY_STRING.equals(expression.trim())) {
-            this.problem = null;
+            this.problems = null;
         } else {
+            ILanguage currentLanguage = LanguageProvider.getCurrentLanguage();
+            ECodeLanguage codeLanguage = currentLanguage.getCodeLanguage();
+            ICodeProblemsChecker codeChecker = currentLanguage.getCodeChecker();
             // System.out.println("check=" + expression);
-            Problem syntaxProblem = LanguageProvider.getCurrentLanguage().checkExpressionSyntax(expression);
-            if (syntaxProblem != null) {
-                ProblemStatus status = syntaxProblem.getStatus();
-                if (status == ProblemStatus.ERROR || this.problem == null) {
-                    this.problem = syntaxProblem;
+            List<Problem> problems = null;
+            if (codeLanguage == ECodeLanguage.PERL) {
+                problems = codeChecker.checkProblems(expression);
+            } else if (codeLanguage == ECodeLanguage.JAVA) {
+                PROBLEM_KEY_FIELD problemKeyField = JavaGenerationManager.PROBLEM_KEY_FIELD.METADATA_COLUMN;
+                String entryName = getName();
+                if (this instanceof FilterTableEntry) {
+                    problemKeyField = JavaGenerationManager.PROBLEM_KEY_FIELD.FILTER;
+                    entryName = null;
                 }
+                String key = parent.getMapperManager().buildProblemKey(problemKeyField, getParent().getName(), entryName);
+                problems = codeChecker.checkProblemsFromKey(key);
+            }
+            if (problems != null) {
+                for (Iterator iter = problems.iterator(); iter.hasNext();) {
+                    Problem problem = (Problem) iter.next();
+                    ProblemStatus status = problem.getStatus();
+                    if (status != ProblemStatus.ERROR) {
+                        iter.remove();
+                    }
+
+                }
+                this.problems = problems;
+
             } else {
-                this.problem = null;
+                this.problems = null;
             }
         }
 

@@ -36,6 +36,7 @@ import org.talend.designer.mapper.external.data.ExternalMapperData;
 import org.talend.designer.mapper.external.data.ExternalMapperTable;
 import org.talend.designer.mapper.external.data.ExternalMapperTableEntry;
 import org.talend.designer.mapper.external.data.ExternalMapperUiProperties;
+import org.talend.designer.mapper.managers.MapperManager;
 import org.talend.designer.mapper.model.MapperModel;
 import org.talend.designer.mapper.model.table.AbstractDataMapTable;
 import org.talend.designer.mapper.model.table.InputTable;
@@ -58,6 +59,19 @@ public class ExternalDataConverter {
     private ArrayList<ExternalMapperTable> outputTables;
 
     private ArrayList<ExternalMapperTable> varsTables;
+
+    private MapperManager mapperManager;
+
+    
+    
+    /**
+     * DOC amaumont ExternalDataConverter constructor comment.
+     * @param main 
+     */
+    public ExternalDataConverter(MapperManager mapperManager) {
+        super();
+        this.mapperManager = mapperManager;
+    }
 
     /**
      * Prepare internal data from connections and external data.
@@ -85,12 +99,13 @@ public class ExternalDataConverter {
         if (externalData != null) {
             List<ExternalMapperTable> varsExternalTables = externalData.getVarsTables();
             for (ExternalMapperTable persistentTable : varsExternalTables) {
-                VarsTable varsTable = new VarsTable(persistentTable);
+                VarsTable varsTable = new VarsTable(this.mapperManager, persistentTable.getName());
+                varsTable.initFromExternalData(persistentTable);
                 varsTablesList.add(varsTable);
             }
         }
         if (varsTablesList.size() == 0) {
-            VarsTable varsTable = new VarsTable(VarsTable.PREFIX_VARS_TABLE_NAME);
+            VarsTable varsTable = new VarsTable(this.mapperManager, VarsTable.PREFIX_VARS_TABLE_NAME);
             varsTable.setMinimized(true);
             varsTablesList.add(varsTable);
         }
@@ -117,13 +132,17 @@ public class ExternalDataConverter {
         ArrayList<OutputTable> outputDataMapTables = new ArrayList<OutputTable>();
         for (IMetadataTable table : outputMetadataTables) {
             IOConnection connection = nameMetadataToOutpuConn.get(table.getTableName());
+            OutputTable outputTable = null;
             if (connection != null) {
                 ExternalMapperTable persistentTable = nameToOutpuPersistentTable.get(connection.getName());
-                outputDataMapTables.add(new OutputTable(connection.getTable(), persistentTable, connection.getName()));
+                outputTable = new OutputTable(this.mapperManager, connection.getTable(), connection.getName());
+                outputTable.initFromExternalData(persistentTable); 
             } else {
                 ExternalMapperTable persistentTable = nameToOutpuPersistentTable.get(table.getTableName());
-                outputDataMapTables.add(new OutputTable(table, persistentTable, table.getTableName()));
+                outputTable = new OutputTable(this.mapperManager, table, table.getTableName());
+                outputTable.initFromExternalData(persistentTable); 
             }
+            outputDataMapTables.add(outputTable);
         }
         return outputDataMapTables;
     }
@@ -141,13 +160,15 @@ public class ExternalDataConverter {
         for (ExternalMapperTable persistentTable : externalData.getInputTables()) {
             IOConnection connection = nameToConnection.get(persistentTable.getName());
             if (connection != null) {
-                inputDataMapTables.add(new InputTable(connection, persistentTable, connection.getName()));
+                InputTable inputTable = new InputTable(this.mapperManager, connection, connection.getName());
+                inputTable.initFromExternalData(persistentTable);
+                inputDataMapTables.add(inputTable);
                 remainingConnections.remove(connection);
             }
         }
 
         for (IOConnection connection : remainingConnections) {
-            inputDataMapTables.add(new InputTable(connection, null, connection.getName()));
+            inputDataMapTables.add(new InputTable(this.mapperManager, connection, connection.getName()));
         }
 
         // sort for put table with main connection at top position of the list

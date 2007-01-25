@@ -25,7 +25,7 @@ import org.apache.log4j.Level;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.talend.core.language.ICodeSyntaxChecker;
+import org.talend.core.language.ICodeProblemsChecker;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.temp.ECodeLanguage;
 import org.talend.designer.runprocess.data.PerformanceData;
@@ -47,7 +47,7 @@ public class RunProcessService implements IRunProcessService {
      * 
      * @see org.talend.designer.runprocess.IRunProcessFactory#getSyntaxChecker(org.talend.core.model.temp.ECodeLanguage)
      */
-    public ICodeSyntaxChecker getSyntaxChecker(ECodeLanguage codeLanguage) {
+    public ICodeProblemsChecker getSyntaxChecker(ECodeLanguage codeLanguage) {
         return SyntaxCheckerFactory.getInstance().getSyntaxChecker(codeLanguage);
     }
 

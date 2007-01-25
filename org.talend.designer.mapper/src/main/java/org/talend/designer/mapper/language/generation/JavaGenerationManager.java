@@ -23,9 +23,10 @@ package org.talend.designer.mapper.language.generation;
 
 import java.util.List;
 
+import org.talend.designer.mapper.MapperComponent;
 import org.talend.designer.mapper.external.data.ExternalMapperTableEntry;
 import org.talend.designer.mapper.language.ILanguage;
-import org.talend.designer.mapper.language.generation.GenerationManager;
+import org.talend.designer.mapper.language.LanguageProvider;
 import org.talend.designer.mapper.utils.DataMapExpressionParser;
 
 /**
@@ -43,16 +44,27 @@ public class JavaGenerationManager extends GenerationManager {
     /**
      * DOC amaumont Comment method "buildLookupDataInstance".
      * 
+     * @param name
+     * 
      * @param tableName
      * @param keysValues
      * @param keysValues2
      * @param indent
      * @return
      */
-    public String buildLookupDataInstance(String name, String[] keysNames, String[] keysValues, int indent) {
+    public String buildLookupDataInstance(String uniqueNameComponent, String name, String[] keysNames, String[] keysValues, int indent, boolean writeCommentedFieldKeys) {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < keysNames.length; i++) {
-            sb.append("\n" + indent(indent) + name + "HashKey." + keysNames[i] + " = " + keysValues[i] + ";");
+
+            if (writeCommentedFieldKeys) {
+                String key = JavaGenerationManager.buildProblemKey(uniqueNameComponent,
+                        JavaGenerationManager.PROBLEM_KEY_FIELD.METADATA_COLUMN, name, keysNames[i]);
+                sb.append(buildCommentedFieldKey(key));
+            }
+            
+            String expression = indent(indent) + name + "HashKey."
+                    + keysNames[i] + " = " + keysValues[i] + ";";
+            sb.append("\n").append(expression);
         }
         sb.append("\n" + indent(indent) + name + "HashKey.hashCodeDirty = true;");
         String className = name + "Struct";
@@ -97,5 +109,50 @@ public class JavaGenerationManager extends GenerationManager {
         }
         return stringBuilder.toString();
     }
+
+    /**
+     * DOC amaumont Comment method "insertFieldKey".
+     * 
+     * @param string
+     * @param expression
+     * @return
+     */
+    public String buildCommentedFieldKey(String key) {
+        return "\n// " + key + "\n";
+    }
+
+    public static void main(String[] args) {
+
+        JavaGenerationManager manager = new JavaGenerationManager(LanguageProvider.getJavaLanguage());
+//        System.out.println(manager.insertFieldKey("table:column", "\nligne1\nligne2\nligne3"));
+    }
+
+    /**
+     * 
+     * DOC amaumont MapperManager class global comment. Detailled comment
+     * <br/>
+     *
+     * $Id$
+     *
+     */
+    public enum PROBLEM_KEY_FIELD {
+        METADATA_COLUMN,
+        FILTER,
+    }
+    
+    public static final String PROBLEM_KEY_FIELD_SEPARATOR = ":";
+    
+
+    /**
+     * DOC amaumont Comment method "buildProblemKey".
+     * @param mapperComponent
+     * @param problemKeyField
+     * @param tableName
+     * @param entryName
+     */
+    public static String buildProblemKey(String uniqueNameComponent, PROBLEM_KEY_FIELD problemKeyField, String tableName, String entryName) {
+        return uniqueNameComponent + PROBLEM_KEY_FIELD_SEPARATOR + problemKeyField + PROBLEM_KEY_FIELD_SEPARATOR + tableName + ((entryName != null) ? PROBLEM_KEY_FIELD_SEPARATOR + entryName : "");
+    }
+
 
 }

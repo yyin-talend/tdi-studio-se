@@ -26,5 +26,6 @@ Eclipse-LazyStart: true
 Plugin-Class: org.talend.designer.core.DesignerPlugin
 Export-Package: org.talend.designer.core.model.components,
  org.talend.designer.core.model.context,
+ org.talend.designer.core.ui,
  org.talend.designer.core.ui.editor
 Bundle-Vendor: .Talend SA.

@@ -30,6 +30,7 @@ import org.apache.oro.text.regex.Perl5Compiler;
 import org.apache.oro.text.regex.Perl5Matcher;
 import org.talend.designer.mapper.external.data.ExternalMapperTable;
 import org.talend.designer.mapper.external.data.ExternalMapperTableEntry;
+import org.talend.designer.mapper.managers.MapperManager;
 import org.talend.designer.mapper.model.tableentry.IColumnEntry;
 import org.talend.designer.mapper.model.tableentry.ITableEntry;
 import org.talend.designer.mapper.model.tableentry.VarTableEntry;
@@ -48,16 +49,12 @@ public class VarsTable extends AbstractDataMapTable {
 
     public static final String VALID_PATTERN_COLUMN_NAME = "^[a-zA-Z_][a-zA-Z_0-9]*$";
 
-    public VarsTable(String name) {
-        super(name);
+    public VarsTable(MapperManager mapperManager, String name) {
+        super(mapperManager, name);
     }
 
-    public VarsTable(ExternalMapperTable persistentTable) {
-        super(persistentTable.getName(), persistentTable);
-        initFromExternalData(persistentTable);
-    }
-
-    protected void initFromExternalData(ExternalMapperTable externalMapperTable) {
+    public void initFromExternalData(ExternalMapperTable externalMapperTable) {
+        super.initFromExternalData(externalMapperTable);
         if (externalMapperTable != null) {
             List<ExternalMapperTableEntry> metadataTableEntries = externalMapperTable.getMetadataTableEntries();
             if (metadataTableEntries != null) {

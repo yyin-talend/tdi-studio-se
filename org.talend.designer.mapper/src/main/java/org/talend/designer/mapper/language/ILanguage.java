@@ -21,7 +21,7 @@
 // ============================================================================
 package org.talend.designer.mapper.language;
 
-import org.talend.core.model.process.Problem;
+import org.talend.core.language.ICodeProblemsChecker;
 import org.talend.core.model.temp.ECodeLanguage;
 
 /**
@@ -75,13 +75,7 @@ public interface ILanguage {
 
     public String getLocation(String tableName);
 
-    /**
-     * 
-     * DOC amaumont Comment method "checkExpressionSyntax".
-     * 
-     * @param expression
-     * @return error message, null if no error
-     */
-    public Problem checkExpressionSyntax(String expression);
+
+    public ICodeProblemsChecker getCodeChecker();
 
 }

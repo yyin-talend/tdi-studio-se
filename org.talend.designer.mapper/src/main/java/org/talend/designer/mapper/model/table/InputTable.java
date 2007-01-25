@@ -25,6 +25,7 @@ import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.designer.mapper.external.connection.IOConnection;
 import org.talend.designer.mapper.external.data.ExternalMapperTable;
+import org.talend.designer.mapper.managers.MapperManager;
 import org.talend.designer.mapper.model.tableentry.AbstractInOutTableEntry;
 import org.talend.designer.mapper.model.tableentry.InputColumnTableEntry;
 
@@ -45,18 +46,31 @@ public class InputTable extends AbstractInOutTable {
 
     /**
      * DOC amaumont InputTable constructor comment.
+     * @param mapperManager 
      * 
      * @param metadataTable
      * @param externalMapperTable can be null
      * @param mainConnection
      */
-    public InputTable(IOConnection connection, ExternalMapperTable externalMapperTable, String name) {
-        super(connection.getTable(), externalMapperTable, name);
+    public InputTable(MapperManager mapperManager, IOConnection connection, String name) {
+        super(mapperManager, connection.getTable(), name);
         this.connection = connection;
+    }
+
+    
+    
+    /* (non-Javadoc)
+     * @see org.talend.designer.mapper.model.table.AbstractInOutTable#initFromExternalData(org.talend.designer.mapper.external.data.ExternalMapperTable)
+     */
+    @Override
+    public void initFromExternalData(ExternalMapperTable externalMapperTable) {
+        super.initFromExternalData(externalMapperTable);
         if (externalMapperTable != null) {
             this.innerJoin = externalMapperTable.isInnerJoin();
         }
     }
+
+
 
     /*
      * (non-Javadoc)
