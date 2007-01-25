@@ -57,6 +57,8 @@ import org.talend.core.model.process.IProcess;
 import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.designer.codegen.ICodeGenerator;
 import org.talend.designer.codegen.ICodeGeneratorService;
+import org.talend.designer.core.ISyntaxCheckableEditor;
+import org.talend.designer.runprocess.IJavaProcessorStates;
 import org.talend.designer.runprocess.IProcessor;
 import org.talend.designer.runprocess.ProcessorException;
 import org.talend.designer.runprocess.RunProcessPlugin;
@@ -69,6 +71,8 @@ import org.talend.designer.runprocess.i18n.Messages;
  * 
  */
 public class PerlProcessor implements IProcessor {
+
+    public static final String PROCESSOR_TYPE = "perlProcessor";
 
     /** Process to be turned in PERL code. */
     private IProcess process;
@@ -391,6 +395,35 @@ public class PerlProcessor implements IProcessor {
             throw new ProcessorException(Messages.getString("Processor.configurePerl")); //$NON-NLS-1$
         }
         return perlInterpreter;
+
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.runprocess.IProcessor#getProcessorType()
+     */
+    public String getProcessorType() {
+        return PROCESSOR_TYPE;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.runprocess.IProcessor#setProcessorStates(java.lang.String)
+     */
+    public void setProcessorStates(String states) {
+        // do nothings for perl right now.
+
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.runprocess.IProcessor#addSyntaxCheckableEditor(org.talend.designer.core.ISyntaxCheckableEditor)
+     */
+    public void addSyntaxCheckableEditor(ISyntaxCheckableEditor editor) {
+        // do nothing for perl right now.
 
     }
 

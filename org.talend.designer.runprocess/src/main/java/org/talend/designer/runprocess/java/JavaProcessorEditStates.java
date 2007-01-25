@@ -22,6 +22,7 @@
 package org.talend.designer.runprocess.java;
 
 import org.eclipse.core.runtime.IPath;
+import org.talend.designer.runprocess.IJavaProcessorStates;
 
 /**
  * DOC yzhang class global comment. Detailled comment <br/>
@@ -38,7 +39,7 @@ public class JavaProcessorEditStates implements IJavaProcessorStates {
      */
 
     public JavaProcessorEditStates(JavaProcessor javaProcessor) {
-        
+
         this.javaProcessor = javaProcessor;
         this.javaProcessor.setStatus(this);
     }

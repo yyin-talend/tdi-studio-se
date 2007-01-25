@@ -53,7 +53,6 @@ import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.ui.part.EditorPart;
 import org.talend.commons.exception.SystemException;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
@@ -66,6 +65,7 @@ import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.designer.codegen.ICodeGenerator;
 import org.talend.designer.codegen.ICodeGeneratorService;
 import org.talend.designer.core.ISyntaxCheckableEditor;
+import org.talend.designer.runprocess.IJavaProcessorStates;
 import org.talend.designer.runprocess.IProcessor;
 import org.talend.designer.runprocess.ProcessorException;
 import org.talend.designer.runprocess.RunProcessPlugin;
@@ -85,6 +85,8 @@ import org.talend.designer.runprocess.i18n.Messages;
  * 
  */
 public class JavaProcessor implements IProcessor {
+
+    public static final String PROCESSOR_TYPE = "javaProcessor";
 
     /** added by rxl. */
     public static final String JAVATIP = "//The function of generating Java code haven't achive yet"
@@ -643,5 +645,28 @@ public class JavaProcessor implements IProcessor {
         String packages = classPath.toString().replace('/', '.');
 
         return new String[] { command, "-cp", projectPath, packages };
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.runprocess.IProcessor#getProcessorType()
+     */
+    public String getProcessorType() {
+        return PROCESSOR_TYPE;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.runprocess.IProcessor#getProcessorStates()
+     */
+    public void setProcessorStates(String states) {
+        if (states.equals("runtime")) {
+            new JavaProcessorRuntimeStates(this);
+        } else if (states.equals("edit")) {
+            new JavaProcessorEditStates(this);
+        }
+
     }
 }
