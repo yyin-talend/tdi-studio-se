@@ -39,8 +39,11 @@ import org.eclipse.jdt.internal.compiler.ast.JavadocReturnStatement;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.CorePlugin;
+import org.talend.core.context.Context;
+import org.talend.core.context.RepositoryContext;
 import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IProcess;
+import org.talend.core.model.temp.ECodeLanguage;
 import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.designer.runprocess.i18n.Messages;
 import org.talend.designer.runprocess.java.JavaProcessor;
@@ -297,7 +300,24 @@ public class Processor {
 
         String interpreter = null;
         try {
-            interpreter = processor.getInterpreter();
+            // FIXME
+            // interpreter = processor.getInterpreter();
+            if (((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY)).getProject()
+                    .getLanguage() == ECodeLanguage.JAVA) {
+                IPreferenceStore prefStore = CorePlugin.getDefault().getPreferenceStore();
+                String javaInterpreter = prefStore.getString(ITalendCorePrefConstants.JAVA_INTERPRETER);
+                if (javaInterpreter == null || javaInterpreter.length() == 0) {
+                    throw new ProcessorException(Messages.getString("Processor.configureJava")); //$NON-NLS-1$
+                }
+                interpreter = javaInterpreter;
+            } else {
+                IPreferenceStore prefStore = CorePlugin.getDefault().getPreferenceStore();
+                String perlInterpreter = prefStore.getString(ITalendCorePrefConstants.PERL_INTERPRETER);
+                if (perlInterpreter == null || perlInterpreter.length() == 0) {
+                    throw new ProcessorException(Messages.getString("Processor.configurePerl")); //$NON-NLS-1$
+                }
+                interpreter = perlInterpreter;
+            }
         } catch (ProcessorException e) {
             ExceptionHandler.process(e);
         }
