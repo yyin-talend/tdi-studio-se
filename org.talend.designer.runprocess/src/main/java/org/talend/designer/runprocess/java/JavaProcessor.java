@@ -369,7 +369,7 @@ public class JavaProcessor implements IProcessor {
         // List of code's lines searched in the file
         List<String> searchedLines = new ArrayList<String>();
         for (String node : nodes) {
-            searchedLines.add("\"" + node + "\"");
+            searchedLines.add("[" + node + " main ] start");
             // some string can be added here to get the exactly position. here i just find the
             // line where the name of icon first appeared.
         }
