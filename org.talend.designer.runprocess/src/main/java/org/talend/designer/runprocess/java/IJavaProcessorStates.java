@@ -19,30 +19,34 @@
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 // ============================================================================
-package org.talend.designer.core.ui.editor;
+package org.talend.designer.runprocess.java;
+
+import org.eclipse.core.runtime.IPath;
 
 /**
- * 
- * If the syntax of the editor used in the multiple page Talend editor need to be checked, this 
- * interface should be implemented.
- * 
- * For example the condition below:
- * When switch the tab from the designer to code in the multiple page Talend editor, the syntax of the 
- * code need to be validated by calling the method validateSyntax.
- * 
- * yzhang class global comment. Detailled comment <br/>
+ * There are two kinds of java project status, one is editor status for the use of Talend java editor and another is run
+ * time status for the use of run process.
  * 
  * 
- * $Id: ICheckable.java 1 2007-1-18 下午03:52:46 +0000 (下午03:52:46, 2007-1-18 2007) yzhang $
+ * DOC yzhang class global comment. Detailled comment <br/>
+ * 
+ * $Id: JavaStatus.java JavaStatus 2007-1-23 下午05:12:45 +0000 (下午05:12:45, 2007-1-23 2007) yzhang $
  * 
  */
-public interface ISyntaxCheckable {
+public interface IJavaProcessorStates {
 
     /**
-     * Validate the syntax of the code.
+     * Return the code path.
      * 
-     * DOC yzhang Comment method "checkCode".
+     * DOC yzhang Comment method "getCodePath".
      */
-    public void validateSyntax();
+    public IPath getCodePath();
+
+    /**
+     * Return the context path.
+     * 
+     * DOC yzhang Comment method "getContextPath".
+     */
+    public IPath getContextPath();
 
 }

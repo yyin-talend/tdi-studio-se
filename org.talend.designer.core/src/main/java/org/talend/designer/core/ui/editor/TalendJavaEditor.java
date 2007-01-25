@@ -26,10 +26,10 @@ import org.eclipse.jdt.internal.ui.javaeditor.CompilationUnitEditor;
 import org.eclipse.jdt.internal.ui.javaeditor.JavaSourceViewer;
 import org.eclipse.jdt.internal.ui.text.JavaCompositeReconcilingStrategy;
 import org.eclipse.jdt.internal.ui.text.JavaReconciler;
-import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.text.IDocumentExtension3;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.swt.widgets.Composite;
+import org.talend.designer.core.ISyntaxCheckableEditor;
 
 /**
  * DOC yzhang class global comment. Detailled comment <br/>
@@ -37,7 +37,9 @@ import org.eclipse.swt.widgets.Composite;
  * $Id: TalendJavaEditor.java 1 2007-1-18 下午03:26:08 +0000 (下午03:26:08, 2007-1-18 2007) yzhang $
  * 
  */
-public class TalendJavaEditor extends CompilationUnitEditor implements ISyntaxCheckable {
+public class TalendJavaEditor extends CompilationUnitEditor implements ISyntaxCheckableEditor {
+
+    private boolean disposed = false;
 
     /*
      * Over write this method force to add complier to this editor. Beacuse by default if the editor is not editable,
@@ -101,4 +103,27 @@ public class TalendJavaEditor extends CompilationUnitEditor implements ISyntaxCh
     public boolean isSaveAsAllowed() {
         return false;
     }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.jdt.internal.ui.javaeditor.CompilationUnitEditor#dispose()
+     */
+    @Override
+    public void dispose() {
+        this.disposed = true;
+        super.dispose();
+    }
+
+    /**
+     * 
+     * 
+     * DOC yzhang Comment method "isDisposed".
+     * 
+     * @return Wheather this editor had been disposed.
+     */
+    public boolean isDisposed() {
+        return this.disposed;
+    }
+
 }

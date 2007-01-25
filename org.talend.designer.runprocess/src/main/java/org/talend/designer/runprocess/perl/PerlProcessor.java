@@ -111,8 +111,7 @@ public class PerlProcessor implements IProcessor {
         filePrefix += Messages.getString("Processor.fileSuffix"); //$NON-NLS-1$
         filePrefix += filenameFromLabel ? escapeFilename(process.getLabel()) : process.getId();
         codePath = new Path(filePrefix + Messages.getString("Processor.perlExt")); //$NON-NLS-1$
-        contextPath = new Path(filePrefix
-                + "_" + escapeFilename(context.getName()) + Messages.getString("Processor.perlExt")); //$NON-NLS-1$ //$NON-NLS-2$
+        contextPath = new Path(filePrefix + "_" + escapeFilename(context.getName()) + Messages.getString("Processor.perlExt")); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     public void generateCode(IContext context, boolean statistics, boolean trace, boolean perlProperties)
@@ -132,8 +131,8 @@ public class PerlProcessor implements IProcessor {
                 String currentPerlProject = project.getTechnicalLabel();
                 String perlContext = getCodeContext();
 
-                codeGen = service.createCodeGenerator(process, statistics, trace, perlInterpreter, perlLib,
-                        perlContext, currentPerlProject);
+                codeGen = service.createCodeGenerator(process, statistics, trace, perlInterpreter, perlLib, perlContext,
+                        currentPerlProject);
 
             } else {
                 codeGen = service.createCodeGenerator(process, statistics, trace);
@@ -185,8 +184,9 @@ public class PerlProcessor implements IProcessor {
         }
     }
 
- 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.designer.runprocess.IProcessor#getCodeContext()
      */
     public String getCodeContext() {
@@ -243,8 +243,10 @@ public class PerlProcessor implements IProcessor {
     public IPath getContextPath() {
         return this.contextPath;
     }
-  
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.designer.runprocess.IProcessor#getCodeProject()
      */
     public IProject getCodeProject() {
@@ -346,8 +348,7 @@ public class PerlProcessor implements IProcessor {
         codeFile.deleteMarkers(perlBrekPointMarker, true, IResource.DEPTH_ZERO);
 
         IExtensionRegistry registry = Platform.getExtensionRegistry();
-        IConfigurationElement[] configElems = registry
-                .getConfigurationElementsFor("org.eclipse.debug.core.breakpoints");
+        IConfigurationElement[] configElems = registry.getConfigurationElementsFor("org.eclipse.debug.core.breakpoints");
         IConfigurationElement perlBreakConfigElem = null;
         for (IConfigurationElement elem : configElems) {
             if (elem.getAttribute("id").equals("perlLineBreakpoint")) {
@@ -376,6 +377,21 @@ public class PerlProcessor implements IProcessor {
             breakpoint.setMarker(breakMarker);
             breakpointManager.addBreakpoint(breakpoint);
         }
+    }
+
+    /*
+     * Get the interpreter for Perl language.
+     * 
+     * @see org.talend.designer.runprocess.IProcessor#getInterpreter()
+     */
+    public String getInterpreter() throws ProcessorException {
+        IPreferenceStore prefStore = CorePlugin.getDefault().getPreferenceStore();
+        String perlInterpreter = prefStore.getString(ITalendCorePrefConstants.PERL_INTERPRETER);
+        if (perlInterpreter == null || perlInterpreter.length() == 0) {
+            throw new ProcessorException(Messages.getString("Processor.configurePerl")); //$NON-NLS-1$
+        }
+        return perlInterpreter;
+
     }
 
 }

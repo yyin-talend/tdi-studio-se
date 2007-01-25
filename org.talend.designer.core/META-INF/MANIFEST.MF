@@ -21,9 +21,11 @@ Require-Bundle: org.eclipse.core.expressions,
  org.talend.sqlbuilder,
  org.eclipse.update.scheduler,
  org.eclipse.jdt.ui,
- org.eclipse.jdt.core
+ org.eclipse.jdt.core,
+ org.talend.designer.runprocess
 Eclipse-LazyStart: true
 Plugin-Class: org.talend.designer.core.DesignerPlugin
 Export-Package: org.talend.designer.core.model.components,
- org.talend.designer.core.model.context
+ org.talend.designer.core.model.context,
+ org.talend.designer.core.ui.editor
 Bundle-Vendor: .Talend SA.

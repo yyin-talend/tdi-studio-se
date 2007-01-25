@@ -35,6 +35,7 @@ import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationType;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.core.ILaunchManager;
+import org.eclipse.jdt.internal.compiler.ast.JavadocReturnStatement;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.CorePlugin;
@@ -42,6 +43,8 @@ import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.designer.runprocess.i18n.Messages;
+import org.talend.designer.runprocess.java.JavaProcessor;
+import org.talend.designer.runprocess.java.JavaProcessorRuntimeStates;
 import org.talend.designer.runprocess.perl.PerlProcessor;
 import org.talend.designer.runprocess.perl.PerlUtils;
 
@@ -72,6 +75,8 @@ public class Processor {
     /** Process to be run. */
     private IProcess process;
 
+    private static IProcessor processor;
+
     /**
      * Construct a new Processor.
      * 
@@ -95,38 +100,47 @@ public class Processor {
      */
     // public Process run(final IContext context, int statisticsPort, int tracePort, int swatchPort) throws
     // ProcessorException { //Old
-    public Process run(final IContext context, int statisticsPort, int tracePort, String watchParam)
-            throws ProcessorException {
-        PerlProcessor plProcessor = new PerlProcessor(process, true);
+    public Process run(final IContext context, int statisticsPort, int tracePort, String watchParam) throws ProcessorException {
+        IProcessor concreteProcessor = ProcessorUtilities.getProcessor(process, context);
+        processor = concreteProcessor;
+        if (concreteProcessor instanceof JavaProcessor) {
+            new JavaProcessorRuntimeStates((JavaProcessor) concreteProcessor);
+        }
         // plProcessor.generateCode(context, statisticsPort != NO_STATISTICS, tracePort != NO_TRACES, swatchPort !=
         // WATCH_LIMITED, true);
-        plProcessor.generateCode(context, statisticsPort != NO_STATISTICS, tracePort != NO_TRACES, true);
+        concreteProcessor.generateCode(context, statisticsPort != NO_STATISTICS, tracePort != NO_TRACES, true);
 
-        String perlLib;
-        try {
-            perlLib = PerlUtils.getPerlModulePath().toOSString();
-        } catch (CoreException e) {
-            throw new ProcessorException(Messages.getString("Processor.perlModuleNotFound")); //$NON-NLS-1$
+        IPath absCodePath = concreteProcessor.getCodeProject().getLocation().append(concreteProcessor.getCodePath());
+        IPath absContextPath = concreteProcessor.getCodeProject().getLocation().append(concreteProcessor.getContextPath());
+
+        String libOption = null, libCtxOption = null, moduleDirectoryOption = null;
+
+        if (concreteProcessor instanceof PerlProcessor) {
+            String perlLib;
+            try {
+                perlLib = PerlUtils.getPerlModulePath().toOSString();
+            } catch (CoreException e) {
+                throw new ProcessorException(Messages.getString("Processor.perlModuleNotFound")); //$NON-NLS-1$
+            }
+            libOption = perlLib != null && perlLib.length() > 0 ? "-I" + perlLib : ""; //$NON-NLS-1$ //$NON-NLS-2$
+
+            libCtxOption = "-I" + absContextPath.removeLastSegments(1).toOSString(); //$NON-NLS-1$ 
+            // Added by ftang
+
+            try {
+                moduleDirectoryOption = "-I" + PerlUtils.getPerlModuleDirectoryPath().toOSString();
+            } catch (CoreException e) {
+                throw new ProcessorException(Messages.getString("Processor.perlModuleDirectoryNotFound"));
+            }
+            //$NON-NLS-1$ } // Ends
         }
-        String perlLibOption = perlLib != null && perlLib.length() > 0 ? "-I" + perlLib : ""; //$NON-NLS-1$ //$NON-NLS-2$
-        IPath absCodePath = plProcessor.getCodeProject().getLocation().append(plProcessor.getCodePath());
-        IPath absContextPath = plProcessor.getCodeProject().getLocation().append(plProcessor.getContextPath());
-        String perlLibCtxOption = "-I" + absContextPath.removeLastSegments(1).toOSString(); //$NON-NLS-1$
-        // Added by ftang
-        String perlModuleDirectoryOption;
-        try {
-            perlModuleDirectoryOption = "-I" + PerlUtils.getPerlModuleDirectoryPath().toOSString();
-        } catch (CoreException e) {
-            throw new ProcessorException(Messages.getString("Processor.perlModuleDirectoryNotFound")); //$NON-NLS-1$
-        }
-        // Ends
 
         if (watchParam == null) {
-            return exec(absCodePath, absContextPath, Level.INFO, perlLibOption, perlLibCtxOption,
-                    perlModuleDirectoryOption, statisticsPort, tracePort);
+            return exec(absCodePath, absContextPath, Level.INFO, libOption, libCtxOption, moduleDirectoryOption, statisticsPort,
+                    tracePort);
         }
-        return exec(absCodePath, absContextPath, Level.INFO, perlLibOption, perlLibCtxOption,
-                perlModuleDirectoryOption, statisticsPort, tracePort, watchParam);
+        return exec(absCodePath, absContextPath, Level.INFO, libOption, libCtxOption, moduleDirectoryOption, statisticsPort,
+                tracePort, watchParam);
     }
 
     /**
@@ -137,13 +151,14 @@ public class Processor {
      * @throws ProcessorException Process failed.
      */
     public ILaunchConfiguration debug(final IContext context) throws ProcessorException {
-        PerlProcessor plProcessor = new PerlProcessor(process, true);
-        // plProcessor.generateCode(context, false, false, false, true);
-        plProcessor.generateCode(context, false, false, true);
+        IProcessor concreteProcessor = ProcessorUtilities.getProcessor(process, context);
+        this.processor = concreteProcessor;
+
+        concreteProcessor.generateCode(context, false, false, true);
 
         // Create LaunchConfiguration
         ILaunchManager launchManager = DebugPlugin.getDefault().getLaunchManager();
-        String projectName = plProcessor.getCodeProject().getName();
+        String projectName = concreteProcessor.getCodeProject().getName();
         ILaunchConfigurationType[] configType = launchManager.getLaunchConfigurationTypes();
         ILaunchConfigurationType type = null;
         for (int i = 0; type == null && i < configType.length; i++) {
@@ -156,11 +171,11 @@ public class Processor {
         if (type != null) {
             try {
                 ILaunchConfigurationWorkingCopy wc = type.newInstance(null, launchManager
-                        .generateUniqueLaunchConfigurationNameFrom(plProcessor.getCodePath().lastSegment()));
-                wc.setAttribute(PerlUtils.ATTR_STARTUP_FILE, plProcessor.getCodePath().toOSString());
+                        .generateUniqueLaunchConfigurationNameFrom(concreteProcessor.getCodePath().lastSegment()));
+                wc.setAttribute(PerlUtils.ATTR_STARTUP_FILE, concreteProcessor.getCodePath().toOSString());
                 wc.setAttribute(PerlUtils.ATTR_PROJECT_NAME, projectName);
                 wc.setAttribute(PerlUtils.ATTR_WORKING_DIRECTORY, (String) null);
-                wc.setAttribute(PerlUtils.ATTR_PROGRAM_PARAMETERS, CTX_ARG + plProcessor.getContextPath().toOSString());
+                wc.setAttribute(PerlUtils.ATTR_PROGRAM_PARAMETERS, CTX_ARG + concreteProcessor.getContextPath().toOSString());
 
                 config = wc.doSave();
             } catch (CoreException ce) {
@@ -184,8 +199,8 @@ public class Processor {
             String perlInterpreterLibCtxOption, String perlModuleDirectoryOption, int statOption, int traceOption,
             String... codeOptions) throws ProcessorException {
 
-        String[] cmd = getCommandLine(absCodePath, absContextPath, perlInterpreterLibOption,
-                perlInterpreterLibCtxOption, perlModuleDirectoryOption, statOption, traceOption, codeOptions);
+        String[] cmd = getCommandLine(absCodePath, absContextPath, perlInterpreterLibOption, perlInterpreterLibCtxOption,
+                perlModuleDirectoryOption, statOption, traceOption, codeOptions);
 
         logCommandLine(cmd, level);
         try {
@@ -199,8 +214,8 @@ public class Processor {
             String perlInterpreterLibOption, String perlInterpreterLibCtxOption, String perlModuleDirectoryOption,
             int statOption, int traceOption, String... codeOptions) throws ProcessorException {
 
-        String[] cmd = getCommandLine(absCodePath, absContextPath, perlInterpreterLibOption,
-                perlInterpreterLibCtxOption, perlModuleDirectoryOption, statOption, traceOption, codeOptions);
+        String[] cmd = getCommandLine(absCodePath, absContextPath, perlInterpreterLibOption, perlInterpreterLibCtxOption,
+                perlModuleDirectoryOption, statOption, traceOption, codeOptions);
 
         logCommandLine(cmd, level);
         try {
@@ -268,16 +283,27 @@ public class Processor {
      */
     public static String[] getCommandLine(IPath absCodePath, IPath absContextPath, String perlInterpreterLibOption,
             String perlInterpreterLibCtxOption, String perlModuleDirectoryOption, int statOption, int traceOption,
-            String... codeOptions) throws ProcessorException {
+            String... codeOptions) {
+
         assert (absCodePath != null);
 
-        IPreferenceStore prefStore = CorePlugin.getDefault().getPreferenceStore();
-        String perlInterpreter = prefStore.getString(ITalendCorePrefConstants.PERL_INTERPRETER);
-        if (perlInterpreter == null || perlInterpreter.length() == 0) {
-            throw new ProcessorException(Messages.getString("Processor.configurePerl")); //$NON-NLS-1$
-        }
+        // modified by yzhang for feature 495.
+        /*
+         * IPreferenceStore prefStore = CorePlugin.getDefault().getPreferenceStore(); String perlInterpreter =
+         * prefStore.getString(ITalendCorePrefConstants.PERL_INTERPRETER); if (perlInterpreter == null ||
+         * perlInterpreter.length() == 0) { throw new ProcessorException(Messages.getString("Processor.configurePerl"));
+         * //$NON-NLS-1$ }
+         */
 
-        String[] cmd = new String[] { perlInterpreter };
+        String interpreter = null;
+        try {
+            interpreter = processor.getInterpreter();
+        } catch (ProcessorException e) {
+            ExceptionHandler.process(e);
+        }
+        // Ends.
+
+        String[] cmd = new String[] { interpreter };
 
         if (perlInterpreterLibOption != null && perlInterpreterLibOption.length() > 0) {
             cmd = (String[]) ArrayUtils.add(cmd, perlInterpreterLibOption);
@@ -303,6 +329,10 @@ public class Processor {
         if (traceOption != -1) {
             cmd = (String[]) ArrayUtils.add(cmd, TRACE_PORT_ARG + traceOption);
         }
+
+         if (processor instanceof JavaProcessor) {
+         cmd = ((JavaProcessor) processor).getCommandLine();
+                }
         return cmd;
     }
 

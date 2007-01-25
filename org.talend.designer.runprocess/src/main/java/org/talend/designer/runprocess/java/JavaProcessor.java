@@ -31,20 +31,29 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IMarker;
+import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.IWorkspaceRoot;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.debug.core.DebugPlugin;
-import org.eclipse.debug.core.IBreakpointManager;
-import org.eclipse.debug.core.model.IBreakpoint;
+import org.eclipse.jdt.core.IClasspathEntry;
+import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IPackageFragment;
+import org.eclipse.jdt.core.IPackageFragmentRoot;
+import org.eclipse.jdt.core.JavaCore;
+import org.eclipse.jdt.core.JavaModelException;
+import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.ui.part.EditorPart;
 import org.talend.commons.exception.SystemException;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
@@ -53,8 +62,10 @@ import org.talend.core.model.general.Project;
 import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
+import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.designer.codegen.ICodeGenerator;
 import org.talend.designer.codegen.ICodeGeneratorService;
+import org.talend.designer.core.ISyntaxCheckableEditor;
 import org.talend.designer.runprocess.IProcessor;
 import org.talend.designer.runprocess.ProcessorException;
 import org.talend.designer.runprocess.RunProcessPlugin;
@@ -79,20 +90,47 @@ public class JavaProcessor implements IProcessor {
     public static final String JAVATIP = "//The function of generating Java code haven't achive yet"
             + System.getProperty("line.separator") + "public class JavaTest extends Test {}";
 
+    /** Java project name. */
+    private static final String JAVA_PROJECT_NAME = ".Java";
+
     /** Process to be turned in JAVA code. */
     private IProcess process;
 
-    /** Java project. */
-    private IProject javaProject;
+    /** The project contains the java project. */
+    private IProject project;
 
-    /** The path of the java file sroted the generated java code. */
-    private IPath codePath;
+    /** The java project within the project. */
+    private IJavaProject javaProject;
 
-    /** The path of the java file sroted the generated context java code. */
-    private IPath contextPath;
+    /** The path of the java source file sroted the generated java code. */
+    private IPath srcCodePath;
+
+    /** The path of the java source file sroted the generated context java code. */
+    private IPath srcContextPath;
+
+    /** The complied code path. */
+    private IPath compliedCodePath;
+
+    /** The complied context file path. */
+    private IPath compliedContextPath;
 
     /** Tells if filename is based on id or label of the process. */
     private boolean filenameFromLabel;
+
+    private IJavaProcessorStates states;
+
+    private static List<ISyntaxCheckableEditor> checkableEditors = new ArrayList<ISyntaxCheckableEditor>();
+
+    /**
+     * Set current status.
+     * 
+     * DOC yzhang Comment method "setStatus".
+     * 
+     * @param states
+     */
+    public void setStatus(IJavaProcessorStates states) {
+        this.states = states;
+    }
 
     /**
      * Constructs a new JavaProcessor.
@@ -115,7 +153,7 @@ public class JavaProcessor implements IProcessor {
     public void initPaths(IContext context) throws ProcessorException {
 
         try {
-            javaProject = JavaUtils.getProject();
+            this.project = getProcessorProject();
         } catch (CoreException e1) {
             throw new ProcessorException("Java project not found.");
         }
@@ -130,15 +168,19 @@ public class JavaProcessor implements IProcessor {
         String fileName = filenameFromLabel ? escapeFilename(process.getLabel()) : process.getId();
 
         try {
-            IPackageFragment projectPackage = JavaUtils.getPackage(projectFolderName);
-            IPackageFragment jobPackage = JavaUtils.getPackage(projectPackage, jobFolderName);
-            IPackageFragment contextPackage = JavaUtils.getPackage(jobPackage, "contexts");
+            IPackageFragment projectPackage = getProjectPackage(projectFolderName);
+            IPackageFragment jobPackage = getProjectPackage(projectPackage, jobFolderName);
+            IPackageFragment contextPackage = getProjectPackage(jobPackage, "contexts");
 
-            codePath = jobPackage.getPath().append(fileName + ".java");
-            codePath = codePath.removeFirstSegments(1);
+            this.srcCodePath = jobPackage.getPath().append(fileName + ".java");
+            this.srcCodePath = this.srcCodePath.removeFirstSegments(1);
+            this.compliedCodePath = this.srcCodePath.removeLastSegments(1).append(fileName);
+            this.compliedCodePath = new Path("classes").append(this.compliedCodePath.removeFirstSegments(1));
 
-            contextPath = contextPackage.getPath().append(escapeFilename(context.getName()) + ".java");
-            contextPath = contextPath.removeFirstSegments(1);
+            this.srcContextPath = contextPackage.getPath().append(escapeFilename(context.getName()) + ".java");
+            this.srcContextPath = this.srcContextPath.removeFirstSegments(1);
+            this.compliedContextPath = this.srcContextPath.removeLastSegments(1).append(fileName);
+            this.compliedContextPath = new Path("classes").append(this.compliedContextPath.removeFirstSegments(1));
 
         } catch (CoreException e) {
             throw new ProcessorException("Folder within .Java project not founded");
@@ -146,6 +188,13 @@ public class JavaProcessor implements IProcessor {
 
     }
 
+    /*
+     * Append the generated java code form context into java file wihtin the project. If the file not existed new one
+     * will be created.
+     * 
+     * @see org.talend.designer.runprocess.IProcessor#generateCode(org.talend.core.model.process.IContext, boolean,
+     * boolean, boolean)
+     */
     public void generateCode(IContext context, boolean statistics, boolean trace, boolean javaProperties)
             throws ProcessorException {
         initPaths(context);
@@ -158,14 +207,13 @@ public class JavaProcessor implements IProcessor {
             ICodeGeneratorService service = RunProcessPlugin.getDefault().getCodeGeneratorService();
             service.createRoutineSynchronizer().syncAllRoutines();
             if (javaProperties) {
-                String javaInterpreter = "";//getPerlInterpreter();
-                String javaLib = "";//getPerlLib();
+                String javaInterpreter = "";// getPerlInterpreter();
+                String javaLib = "";// getPerlLib();
                 String currentJavaProject = project.getTechnicalLabel();
                 String javaContext = getContextPath().toOSString();
 
                 codeGen = service.createCodeGenerator(process, statistics, trace, javaInterpreter, javaLib, javaContext,
                         currentJavaProject);
-
             } else {
                 codeGen = service.createCodeGenerator(process, statistics, trace);
             }
@@ -180,7 +228,7 @@ public class JavaProcessor implements IProcessor {
             }
 
             // Generating files
-            IFile codeFile = javaProject.getFile(codePath);
+            IFile codeFile = this.project.getFile(this.srcCodePath);
             InputStream codeStream = new ByteArrayInputStream(processCode.getBytes());
 
             if (!codeFile.exists()) {
@@ -202,20 +250,38 @@ public class JavaProcessor implements IProcessor {
             }
 
             // IFile contextFile = javaProject.getFile(contextPath);
-            IFile contextFile = javaProject.getProject().getFile(contextPath);
+            IFile contextFile = this.project.getProject().getFile(this.srcContextPath);
             InputStream contextStream = new ByteArrayInputStream(processContext.getBytes());
             if (!contextFile.exists()) {
                 contextFile.create(contextStream, true, null);
             } else {
                 contextFile.setContents(contextStream, true, false, null);
             }
-
             service.createRoutineSynchronizer().syncAllRoutines();
+            syntaxCheck();
         } catch (CoreException e1) {
             throw new ProcessorException(Messages.getString("Processor.tempFailed"), e1); //$NON-NLS-1$
         } catch (SystemException e) {
             throw new ProcessorException(Messages.getString("Processor.tempFailed"), e); //$NON-NLS-1$
         }
+    }
+
+    public void addSyntaxCheckableEditor(ISyntaxCheckableEditor checkableEditor) {
+        if (!JavaProcessor.checkableEditors.contains(checkableEditor)) {
+            JavaProcessor.checkableEditors.add(checkableEditor);
+        }
+    }
+
+    private void syntaxCheck() {
+        for (Iterator iter = JavaProcessor.checkableEditors.iterator(); iter.hasNext();) {
+            ISyntaxCheckableEditor checkableEditor = (ISyntaxCheckableEditor) iter.next();
+            if (checkableEditor.isDisposed()) {
+                JavaProcessor.checkableEditors.remove(checkableEditor);
+                continue;
+            }
+            checkableEditor.validateSyntax();
+        }
+
     }
 
     /*
@@ -258,22 +324,24 @@ public class JavaProcessor implements IProcessor {
         return filename != null ? filename.replace(" ", "") : ""; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
 
-    /**
-     * Getter for codePath.
+    /*
+     * (non-Javadoc)
      * 
-     * @return the codePath
+     * @see org.talend.designer.runprocess.IProcessor#getCodePath()
      */
     public IPath getCodePath() {
-        return this.codePath;
+        // return this.codePath; old
+        return this.states.getCodePath();
     }
 
-    /**
-     * Getter for contextPath.
+    /*
+     * (non-Javadoc)
      * 
-     * @return the contextPath
+     * @see org.talend.designer.runprocess.IProcessor#getContextPath()
      */
     public IPath getContextPath() {
-        return this.contextPath;
+        // return this.contextPath; old
+        return this.states.getContextPath();
     }
 
     /*
@@ -282,7 +350,7 @@ public class JavaProcessor implements IProcessor {
      * @see org.talend.designer.runprocess.IProcessor#getCodeProject()
      */
     public IProject getCodeProject() {
-        return this.javaProject.getProject();
+        return this.project.getProject();
     }
 
     /**
@@ -299,7 +367,9 @@ public class JavaProcessor implements IProcessor {
         // List of code's lines searched in the file
         List<String> searchedLines = new ArrayList<String>();
         for (String node : nodes) {
-            searchedLines.add("[" + node + " main ] starts here");
+            searchedLines.add("\"" + node + "\"");
+            // some string can be added here to get the exactly position. here i just find the
+            // line where the name of icon first appeared.
         }
 
         LineNumberReader lineReader = new LineNumberReader(new InputStreamReader(file.getContents()));
@@ -346,7 +416,7 @@ public class JavaProcessor implements IProcessor {
      * @param nodeName
      */
     public int getLineNumber(String nodeName) {
-        IFile codeFile = javaProject.getProject().getFile(codePath);
+        IFile codeFile = this.project.getProject().getFile(this.srcCodePath);
         int[] lineNumbers = new int[] { 0 };
         try {
             lineNumbers = JavaProcessor.getLineNumbers(codeFile, new String[] { nodeName });
@@ -369,45 +439,209 @@ public class JavaProcessor implements IProcessor {
     }
 
     /**
-     * Set perl breakpoints on a perl file.
+     * Set java breakpoints on a java file.
      * 
-     * @param codeFile Perl file in wich breakpoints are added.
+     * @param codeFile Java file in wich breakpoints are added.
      * @param lineNumbers Line numbers in the source file where breakpoints are installed.
      * @throws CoreException Breakpoint addition failed.
      */
     private static void setBreakpoints(IFile codeFile, int[] lineNumbers) throws CoreException {
-        final String perlBrekPointMarker = "org.epic.debug.perlLineBreakpointMarker";
-        codeFile.deleteMarkers(perlBrekPointMarker, true, IResource.DEPTH_ZERO);
+        /*
+         * Old, set the break piont for perl.
+         * 
+         * final String perlBrekPointMarker = "org.epic.debug.perlLineBreakpointMarker";
+         * codeFile.deleteMarkers(perlBrekPointMarker, true, IResource.DEPTH_ZERO);
+         * 
+         * IExtensionRegistry registry = Platform.getExtensionRegistry(); IConfigurationElement[] configElems =
+         * registry.getConfigurationElementsFor("org.eclipse.debug.core.breakpoints"); IConfigurationElement
+         * perlBreakConfigElem = null; for (IConfigurationElement elem : configElems) { if
+         * (elem.getAttribute("id").equals("perlLineBreakpoint")) { perlBreakConfigElem = elem; } } if
+         * (perlBreakConfigElem == null) { IStatus status = new Status(IStatus.ERROR, RunProcessPlugin.PLUGIN_ID,
+         * IStatus.OK, "Breakpoint implementation not found.", null); throw new CoreException(status); }
+         * 
+         * IBreakpointManager breakpointManager = DebugPlugin.getDefault().getBreakpointManager(); for (int line :
+         * lineNumbers) { IMarker breakMarker = codeFile.createMarker(perlBrekPointMarker);
+         * breakMarker.setAttribute(IBreakpoint.ID, "perlBreak" + line); breakMarker.setAttribute(IMarker.LINE_NUMBER,
+         * new Integer(line)); breakMarker.setAttribute(IMarker.CHAR_START, new Integer(-1));
+         * breakMarker.setAttribute(IMarker.CHAR_END, new Integer(-1));
+         * breakMarker.setAttribute("PerlDebug_INVALID_POS", Boolean.FALSE);
+         * breakMarker.setAttribute(IBreakpoint.PERSISTED, Boolean.TRUE); breakMarker.setAttribute(IBreakpoint.ENABLED,
+         * Boolean.TRUE); breakMarker.setAttribute(IBreakpoint.REGISTERED, Boolean.TRUE);
+         * 
+         * IBreakpoint breakpoint = (IBreakpoint) perlBreakConfigElem.createExecutableExtension("class");
+         * breakpoint.setMarker(breakMarker); breakpointManager.addBreakpoint(breakpoint); }
+         */
+    }
 
+    /**
+     * A java project under folder .Java will be created if there is no existed.
+     * 
+     * DOC yzhang Comment method "getProject".
+     * 
+     * @return
+     * @throws CoreException
+     */
+    private IProject getProcessorProject() throws CoreException {
+
+        IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
+        IProject prj = root.getProject(JAVA_PROJECT_NAME);
+
+        // Does the java nature exists in the environment
         IExtensionRegistry registry = Platform.getExtensionRegistry();
-        IConfigurationElement[] configElems = registry.getConfigurationElementsFor("org.eclipse.debug.core.breakpoints");
-        IConfigurationElement perlBreakConfigElem = null;
-        for (IConfigurationElement elem : configElems) {
-            if (elem.getAttribute("id").equals("perlLineBreakpoint")) {
-                perlBreakConfigElem = elem;
+        IExtension nature = registry.getExtension("org.eclipse.core.resources.natures", JavaCore.NATURE_ID);
+
+        if (!prj.exists()) {
+            final IWorkspace workspace = ResourcesPlugin.getWorkspace();
+            final IProjectDescription desc = workspace.newProjectDescription(prj.getName());
+            if (nature != null) {
+                desc.setNatureIds(new String[] { JavaCore.NATURE_ID });
             }
+            prj.create(null);
+            prj.open(IResource.BACKGROUND_REFRESH, null);
+            prj.setDescription(desc, null);
+
+        } else if (prj.getNature(JavaCore.NATURE_ID) == null && nature != null) {
+            IProjectDescription description = prj.getDescription();
+            String[] natures = description.getNatureIds();
+            String[] newNatures = new String[natures.length + 1];
+            System.arraycopy(natures, 0, newNatures, 0, natures.length);
+            newNatures[natures.length] = JavaCore.NATURE_ID;
+            description.setNatureIds(newNatures);
+            prj.open(IResource.BACKGROUND_REFRESH, null);
+            prj.setDescription(description, null);
         }
-        if (perlBreakConfigElem == null) {
-            IStatus status = new Status(IStatus.ERROR, RunProcessPlugin.PLUGIN_ID, IStatus.OK,
-                    "Breakpoint implementation not found.", null);
-            throw new CoreException(status);
+        javaProject = JavaCore.create(prj);
+
+        IClasspathEntry jreClasspathEntry = JavaCore.newContainerEntry(new Path("org.eclipse.jdt.launching.JRE_CONTAINER"));
+        IClasspathEntry classpathEntry = JavaCore.newSourceEntry(javaProject.getPath().append("src"));
+
+        List classpath = new ArrayList();
+        classpath.add(jreClasspathEntry);
+        classpath.add(classpathEntry);
+
+        IClasspathEntry[] classpathEntryArray = (IClasspathEntry[]) classpath.toArray(new IClasspathEntry[classpath.size()]);
+
+        IFolder runtimeFolder = prj.getFolder(new Path("classes"));
+        if (!runtimeFolder.exists()) {
+            runtimeFolder.create(false, true, null);
         }
 
-        IBreakpointManager breakpointManager = DebugPlugin.getDefault().getBreakpointManager();
-        for (int line : lineNumbers) {
-            IMarker breakMarker = codeFile.createMarker(perlBrekPointMarker);
-            breakMarker.setAttribute(IBreakpoint.ID, "perlBreak" + line);
-            breakMarker.setAttribute(IMarker.LINE_NUMBER, new Integer(line));
-            breakMarker.setAttribute(IMarker.CHAR_START, new Integer(-1));
-            breakMarker.setAttribute(IMarker.CHAR_END, new Integer(-1));
-            breakMarker.setAttribute("PerlDebug_INVALID_POS", Boolean.FALSE);
-            breakMarker.setAttribute(IBreakpoint.PERSISTED, Boolean.TRUE);
-            breakMarker.setAttribute(IBreakpoint.ENABLED, Boolean.TRUE);
-            breakMarker.setAttribute(IBreakpoint.REGISTERED, Boolean.TRUE);
-
-            IBreakpoint breakpoint = (IBreakpoint) perlBreakConfigElem.createExecutableExtension("class");
-            breakpoint.setMarker(breakMarker);
-            breakpointManager.addBreakpoint(breakpoint);
+        IFolder sourceFolder = prj.getFolder(new Path("src"));
+        if (!sourceFolder.exists()) {
+            sourceFolder.create(false, true, null);
         }
+
+        javaProject.setRawClasspath(classpathEntryArray, null);
+        javaProject.setOutputLocation(javaProject.getPath().append("classes"), null);
+
+        return prj;
+
+    }
+
+    /**
+     * Get the required project package under java project, if not existed new one will be created.
+     * 
+     * DOC yzhang Comment method "getProjectPackage".
+     * 
+     * @param packageName The required package name, should keep same with the T.O.S project name.
+     * @return The required packaged.
+     * @throws JavaModelException
+     */
+    private IPackageFragment getProjectPackage(String packageName) throws JavaModelException {
+
+        IPackageFragmentRoot root = this.javaProject.getPackageFragmentRoot(this.javaProject.getProject().getFolder("src"));
+        IPackageFragment leave = root.getPackageFragment(packageName);
+        if (!leave.exists()) {
+            root.createPackageFragment(packageName, false, null);
+        }
+
+        return root.getPackageFragment(packageName);
+    }
+
+    /**
+     * Get the required job package under the project package within the tranfered project, if not existed new one will
+     * be created.
+     * 
+     * DOC yzhang Comment method "getJobPackage".
+     * 
+     * @param projectPackage The project package within which the job package you need to get, can be getted by method
+     * getProjectPackage().
+     * @param jobName The required job package name.
+     * @return The required job package.
+     * @throws JavaModelException
+     */
+    private IPackageFragment getProjectPackage(IPackageFragment projectPackage, String jobName) throws JavaModelException {
+
+        IPackageFragmentRoot root = this.javaProject.getPackageFragmentRoot(projectPackage.getResource());
+        IPackageFragment leave = root.getPackageFragment(jobName);
+        if (!leave.exists()) {
+            root.createPackageFragment(jobName, false, null);
+        }
+
+        return root.getPackageFragment(jobName);
+
+    }
+
+    /*
+     * Get the interpreter of Java.
+     * 
+     * @see org.talend.designer.runprocess.IProcessor#getInterpreter()
+     */
+    public String getInterpreter() throws ProcessorException {
+        IPreferenceStore prefStore = CorePlugin.getDefault().getPreferenceStore();
+        String javaInterpreter = prefStore.getString(ITalendCorePrefConstants.JAVA_INTERPRETER);
+        if (javaInterpreter == null || javaInterpreter.length() == 0) {
+            throw new ProcessorException(Messages.getString("Processor.configureJava")); //$NON-NLS-1$
+        }
+        return javaInterpreter;
+    }
+
+    /**
+     * Getter for compliedCodePath.
+     * 
+     * @return the compliedCodePath
+     */
+    public IPath getCompliedCodePath() {
+        return this.compliedCodePath;
+    }
+
+    /**
+     * Getter for compliedContextPath.
+     * 
+     * @return the compliedContextPath
+     */
+    public IPath getCompliedContextPath() {
+        return this.compliedContextPath;
+    }
+
+    /**
+     * Getter for srcCodePath.
+     * 
+     * @return the srcCodePath
+     */
+    public IPath getSrcCodePath() {
+        return this.srcCodePath;
+    }
+
+    /**
+     * Getter for srcContextPath.
+     * 
+     * @return the srcContextPath
+     */
+    public IPath getSrcContextPath() {
+        return this.srcContextPath;
+    }
+
+    public String[] getCommandLine() {
+        IFolder classesFolder = this.javaProject.getProject().getFolder("classes");
+        IPath projectFolderPath = classesFolder.getFullPath().removeFirstSegments(1);
+        IPath classPath = getCodePath().removeFirstSegments(1);
+
+        // String command = "\"C:\\Program Files\\Java\\jdk1.5.0_10\\bin\\java\"";
+        String command = "java";
+        String projectPath = getCodeProject().getLocation().append(projectFolderPath).toOSString();
+        String packages = classPath.toString().replace('/', '.');
+
+        return new String[] { command, "-cp", projectPath, packages };
     }
 }

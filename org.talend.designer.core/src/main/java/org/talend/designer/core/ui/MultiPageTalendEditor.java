@@ -65,13 +65,12 @@ import org.talend.core.model.properties.Property;
 import org.talend.core.model.temp.ECodeLanguage;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.designer.core.DesignerPlugin;
+import org.talend.designer.core.ISyntaxCheckableEditor;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.editor.CodeEditorFactory;
-import org.talend.designer.core.ui.editor.ISyntaxCheckable;
 import org.talend.designer.core.ui.editor.ProcessEditorInput;
 import org.talend.designer.core.ui.editor.TalendEditor;
 import org.talend.designer.core.ui.editor.TalendJavaEditor;
-import org.talend.designer.core.ui.editor.TalendPerlEditor;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.nodes.NodeLabel;
 import org.talend.designer.core.ui.editor.nodes.NodeLabelEditPart;
@@ -81,6 +80,8 @@ import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.runprocess.IProcessor;
 import org.talend.designer.runprocess.IRunProcessService;
 import org.talend.designer.runprocess.ProcessorException;
+import org.talend.designer.runprocess.java.JavaProcessor;
+import org.talend.designer.runprocess.java.JavaProcessorEditStates;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.IRepositoryService;
 import org.talend.repository.ui.views.IRepositoryView;
@@ -149,6 +150,12 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
         IProcess process = designerEditor.getProcess();
         IRunProcessService service = DesignerPlugin.getDefault().getRunProcessService();
         IProcessor processor = service.createCodeProcessor(process, getCurrentLang(), true);
+
+        if (processor instanceof JavaProcessor) {
+            new JavaProcessorEditStates((JavaProcessor) processor);
+            ((JavaProcessor) processor).addSyntaxCheckableEditor((ISyntaxCheckableEditor) codeEditor);
+        }
+
         try {
             processor.initPaths(process.getContextManager().getDefaultContext());
             IFile codeFile = ResourcesPlugin.getWorkspace().getRoot().getFile(
@@ -234,9 +241,30 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
         getTalendEditor().getProperty().eAdapters().remove(dirtyListener);
         getEditor(0).doSave(monitor);
         getTalendEditor().getProperty().eAdapters().add(dirtyListener);
+
+        IProcess process = designerEditor.getProcess();
+        IRunProcessService service = DesignerPlugin.getDefault().getRunProcessService();
+        IProcessor processor = service.createCodeProcessor(process, getCurrentLang(), true);
+
+        if (processor instanceof JavaProcessor) {
+            new JavaProcessorEditStates((JavaProcessor) processor);
+            // ((JavaProcessor) processor).addSyntaxCheckableEditor((ISyntaxCheckableEditor) codeEditor);
+        }
+
+        try {
+            // plProcessor.generateCode(process.getContextManager().getDefaultContext(), false, false, true,
+            // true);//Old
+            processor.generateCode(process.getContextManager().getDefaultContext(), false, false, true);
+
+        } catch (ProcessorException pe) {
+            MessageBoxExceptionHandler.process(pe);
+            // ErrorDialog.openError(getSite().getShell(), Messages.getString("MultiPageTalendEditor.3"),
+            // //$NON-NLS-1$
+            // pe.getMessage(), null);
+        }
+
         propertyIsDirty = false;
         firePropertyChange(IEditorPart.PROP_DIRTY);
-
     }
 
     /**
@@ -313,6 +341,11 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
             IRunProcessService service = DesignerPlugin.getDefault().getRunProcessService();
             IProcessor plProcessor = service.createCodeProcessor(process, getCurrentLang(), true);
 
+            if (plProcessor instanceof JavaProcessor) {
+                new JavaProcessorEditStates((JavaProcessor) plProcessor);
+                ((JavaProcessor) plProcessor).addSyntaxCheckableEditor((ISyntaxCheckableEditor) codeEditor);
+            }
+
             try {
                 // plProcessor.generateCode(process.getContextManager().getDefaultContext(), false, false, true,
                 // true);//Old
@@ -325,9 +358,14 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
                 // pe.getMessage(), null);
             }
 
-            if (codeEditor instanceof ISyntaxCheckable) {
+            if (codeEditor instanceof ISyntaxCheckableEditor) {
                 moveCursorToSelectedComponent(plProcessor);
-                ((ISyntaxCheckable) codeEditor).validateSyntax();
+
+                /*
+                 * Belowing method had been called at line 331 within the generateCode method, as soon as code
+                 * generated.
+                 */
+                // ((ISyntaxCheckableEditor) codeEditor).validateSyntax();
             }
         }
     }
@@ -363,6 +401,9 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
         String nodeName = getSelectedNode();
 
         if (nodeName.compareTo("") != 0) {
+            if (codeEditor instanceof TalendJavaEditor) {
+                ((TalendJavaEditor) codeEditor).validateSyntax();
+            }
             int lineNumber = plProcessor.getLineNumber(nodeName) - 1;
             IDocument document = codeEditor.getDocumentProvider().getDocument(codeEditor.getEditorInput());
             try {

@@ -22,6 +22,7 @@
 package org.talend.designer.core.ui.editor;
 
 import org.epic.perleditor.editors.PerlEditor;
+import org.talend.designer.core.ISyntaxCheckableEditor;
 
 /**
  * Perl editor with read only content. <br/>
@@ -29,7 +30,9 @@ import org.epic.perleditor.editors.PerlEditor;
  * $Id$
  * 
  */
-public class TalendPerlEditor extends PerlEditor implements ISyntaxCheckable {
+public class TalendPerlEditor extends PerlEditor implements ISyntaxCheckableEditor {
+
+    private boolean disposed = false;
 
     /**
      * Constructs a new TalendPerlEditor.
@@ -65,6 +68,26 @@ public class TalendPerlEditor extends PerlEditor implements ISyntaxCheckable {
      */
     public void validateSyntax() {
         revalidateSyntax();
+    }
+
+    /*
+     * Return if this perl editor had been disposed.
+     * 
+     * @see org.talend.designer.core.ISyntaxCheckableEditor#isDisposed()
+     */
+    public boolean isDisposed() {
+        return this.disposed;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.epic.perleditor.editors.PerlEditor#dispose()
+     */
+    @Override
+    public void dispose() {
+        this.disposed = true;
+        super.dispose();
     }
 
 }
