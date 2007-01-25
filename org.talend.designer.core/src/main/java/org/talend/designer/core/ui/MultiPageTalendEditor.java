@@ -80,8 +80,9 @@ import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.runprocess.IProcessor;
 import org.talend.designer.runprocess.IRunProcessService;
 import org.talend.designer.runprocess.ProcessorException;
-import org.talend.designer.runprocess.java.JavaProcessor;
-import org.talend.designer.runprocess.java.JavaProcessorEditStates;
+// ***
+// import org.talend.designer.runprocess.java.JavaProcessor;
+// import org.talend.designer.runprocess.java.JavaProcessorEditStates;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.IRepositoryService;
 import org.talend.repository.ui.views.IRepositoryView;
@@ -150,11 +151,11 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
         IProcess process = designerEditor.getProcess();
         IRunProcessService service = DesignerPlugin.getDefault().getRunProcessService();
         IProcessor processor = service.createCodeProcessor(process, getCurrentLang(), true);
-
-        if (processor instanceof JavaProcessor) {
-            new JavaProcessorEditStates((JavaProcessor) processor);
-            ((JavaProcessor) processor).addSyntaxCheckableEditor((ISyntaxCheckableEditor) codeEditor);
-        }
+        // ***
+        // if (processor instanceof JavaProcessor) {
+        // new JavaProcessorEditStates((JavaProcessor) processor);
+        // ((JavaProcessor) processor).addSyntaxCheckableEditor((ISyntaxCheckableEditor) codeEditor);
+        // }
 
         try {
             processor.initPaths(process.getContextManager().getDefaultContext());
@@ -245,11 +246,11 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
         IProcess process = designerEditor.getProcess();
         IRunProcessService service = DesignerPlugin.getDefault().getRunProcessService();
         IProcessor processor = service.createCodeProcessor(process, getCurrentLang(), true);
-
-        if (processor instanceof JavaProcessor) {
-            new JavaProcessorEditStates((JavaProcessor) processor);
-            // ((JavaProcessor) processor).addSyntaxCheckableEditor((ISyntaxCheckableEditor) codeEditor);
-        }
+        // ***
+        // if (processor instanceof JavaProcessor) {
+        // new JavaProcessorEditStates((JavaProcessor) processor);
+        // // ((JavaProcessor) processor).addSyntaxCheckableEditor((ISyntaxCheckableEditor) codeEditor);
+        // }
 
         try {
             // plProcessor.generateCode(process.getContextManager().getDefaultContext(), false, false, true,
@@ -340,11 +341,11 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
 
             IRunProcessService service = DesignerPlugin.getDefault().getRunProcessService();
             IProcessor plProcessor = service.createCodeProcessor(process, getCurrentLang(), true);
-
-            if (plProcessor instanceof JavaProcessor) {
-                new JavaProcessorEditStates((JavaProcessor) plProcessor);
-                ((JavaProcessor) plProcessor).addSyntaxCheckableEditor((ISyntaxCheckableEditor) codeEditor);
-            }
+            // ***
+            // if (plProcessor instanceof JavaProcessor) {
+            // new JavaProcessorEditStates((JavaProcessor) plProcessor);
+            // ((JavaProcessor) plProcessor).addSyntaxCheckableEditor((ISyntaxCheckableEditor) codeEditor);
+            // }
 
             try {
                 // plProcessor.generateCode(process.getContextManager().getDefaultContext(), false, false, true,
