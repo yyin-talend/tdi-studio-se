@@ -132,3 +132,7 @@ end_Hash.put("<%=node.getUniqueName() %>", java.util.Calendar.getInstance().getT
 	}
 }
 %>
+/**
+ * [<%=node.getUniqueName() %> <%=codePart %> ] stop
+ */
+ 

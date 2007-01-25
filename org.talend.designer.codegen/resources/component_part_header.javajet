@@ -17,7 +17,9 @@
 	INode node = (INode)codeGenArgument.getArgument();
 	ECodePart codePart = codeGenArgument.getCodePart();
 %>
-
+/**
+ * [<%=node.getUniqueName() %> <%=codePart %> ] start
+ */
 currentComponent="<%=node.getUniqueName() %>";
 
 
@@ -25,7 +27,7 @@ currentComponent="<%=node.getUniqueName() %>";
 	if (codePart.equals(ECodePart.BEGIN)) {
 %>
 
-//=head1 <%=ElementParameterParser.getValue(node, "__COMPONENT_NAME__") %> <%=node.getUniqueName() %>
+//=head1 <%=ElementParameterParser.getValue(node, "__COMPONENT_NAME__") %>Perl <%=node.getUniqueName() %>
 //<%=ElementParameterParser.getValue(node, "__COMMENT__") %>
 //=cut
 
