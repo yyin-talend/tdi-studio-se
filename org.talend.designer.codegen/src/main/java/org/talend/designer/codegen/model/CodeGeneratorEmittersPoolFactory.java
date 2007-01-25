@@ -126,7 +126,8 @@ public final class CodeGeneratorEmittersPoolFactory {
     private static JetBean initializeUtilTemplate(TemplateUtil template, ECodeLanguage codeLanguage) {
         JetBean jetBean = new JetBean(CodeGeneratorActivator.PLUGIN_ID, TemplateUtil.RESOURCES_DIRECTORY
                 + TemplateUtil.DIR_SEP + template.getResourceName() + TemplateUtil.EXT_SEP
-                + codeLanguage.getExtension() + TemplateUtil.TEMPLATE_EXT, template.getResourceName(), template.getVersion(), codeLanguage.getName(), "");
+                + codeLanguage.getExtension() + TemplateUtil.TEMPLATE_EXT, template.getResourceName(), template
+                .getVersion(), codeLanguage.getName(), "");
         jetBean.addClassPath("CORE_LIBRARIES", CorePlugin.PLUGIN_ID);
         jetBean.addClassPath("CODEGEN_LIBRARIES", CodeGeneratorActivator.PLUGIN_ID);
         jetBean.addClassPath("COMMON_LIBRARIES", CommonsPlugin.PLUGIN_ID);
@@ -150,13 +151,13 @@ public final class CodeGeneratorEmittersPoolFactory {
         }
         JetBean jetBean = new JetBean(IComponentsFactory.COMPONENTS_LOCATION, IComponentsFactory.COMPONENTS_DIRECTORY
                 + TemplateUtil.DIR_SEP + component.getName() + TemplateUtil.DIR_SEP + component.getName() + "_"
-                + codePart + "." + codeLanguage.getExtension() + TemplateUtil.TEMPLATE_EXT, component.getName(), component.getVersion(), codeLanguage.getName(), codePart.getName());
+                + codePart + "." + codeLanguage.getExtension() + TemplateUtil.TEMPLATE_EXT, component.getName(),
+                component.getVersion(), codeLanguage.getName(), codePart.getName());
         jetBean.addClassPath("CORE_LIBRARIES", CorePlugin.PLUGIN_ID);
         jetBean.addClassPath("CODEGEN_LIBRARIES", CodeGeneratorActivator.PLUGIN_ID);
         jetBean.addClassPath("COMMON_LIBRARIES", CommonsPlugin.PLUGIN_ID);
 
-        // PTODO MHI To Modify
-        if (component.getPluginFullName().compareTo("org.talend.designer.core") != 0) {
+        if (component.getPluginFullName().compareTo(IComponentsFactory.COMPONENTS_LOCATION) != 0) {
             jetBean.addClassPath("EXTERNAL_COMPONENT_" + component.getPluginFullName().toUpperCase(), component
                     .getPluginFullName());
             jetBean.setClassLoader(ExternalNodesFactory.getInstance(component.getPluginFullName()).getClass()
@@ -202,7 +203,8 @@ public final class CodeGeneratorEmittersPoolFactory {
         }
         for (JetBean jetBean : components) {
             if (!emitterPool.containsKey(jetBean)) {
-                TalendJetEmitter emitter = new TalendJetEmitter(jetBean.getTemplateFullUri(), jetBean.getClassLoader(), jetBean.getClassName(), jetBean.getLanguage(), jetBean.getCodePart());
+                TalendJetEmitter emitter = new TalendJetEmitter(jetBean.getTemplateFullUri(), jetBean.getClassLoader(),
+                        jetBean.getClassName(), jetBean.getLanguage(), jetBean.getCodePart());
                 try {
                     for (String classKey : globalClasspath.keySet()) {
                         emitter.addVariable(classKey, globalClasspath.get(classKey));
@@ -214,7 +216,7 @@ public final class CodeGeneratorEmittersPoolFactory {
                         alreadyCompiledEmitters.add(jetBean);
                     }
                 } catch (JETException e) {
-                    //log.error("Error during JetEmitter initalization " + e.getMessage(), e);
+                    // log.error("Error during JetEmitter initalization " + e.getMessage(), e);
                 }
                 emitterPool.put(jetBean, emitter);
             }
