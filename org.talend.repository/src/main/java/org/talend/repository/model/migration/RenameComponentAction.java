@@ -44,25 +44,27 @@ public class RenameComponentAction {
     public static void rename(String oldName, String newName) throws PersistenceException, IOException, CoreException {
         ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
 
-        List<IRepositoryObject> list = factory.getAll(ERepositoryObjectType.PROCESS);
-        // FIXME SML Récupérer toutes les versions des jobs et les jobs supprimés
+        List<IRepositoryObject> list = factory.getAll(ERepositoryObjectType.PROCESS, true);
 
         boolean modified;
-        for (IRepositoryObject object : list) {
-            modified = false;
-            ProcessItem item = (ProcessItem) object.getProperty().getItem();
-            for (Object o : item.getProcess().getNode()) {
-                NodeType currentNode = (NodeType) o;
-                if (currentNode.getComponentName().equals(oldName)) {
-                    currentNode.setComponentName(newName);
-                    String oldNodeUniqueName = getNodeUniqueName(currentNode);
-                    String newNodeUniqueName = oldNodeUniqueName.replaceFirst(oldName, newName);
-                    replaceAllInAllNodesParameterValue(item, oldNodeUniqueName, newNodeUniqueName);
-                    modified = true;
+        for (IRepositoryObject mainobject : list) {
+            List<IRepositoryObject> allVersion = factory.getAllVersion(mainobject.getId());
+            for (IRepositoryObject object : allVersion) {
+                modified = false;
+                ProcessItem item = (ProcessItem) object.getProperty().getItem();
+                for (Object o : item.getProcess().getNode()) {
+                    NodeType currentNode = (NodeType) o;
+                    if (currentNode.getComponentName().equals(oldName)) {
+                        currentNode.setComponentName(newName);
+                        String oldNodeUniqueName = getNodeUniqueName(currentNode);
+                        String newNodeUniqueName = oldNodeUniqueName.replaceFirst(oldName, newName);
+                        replaceAllInAllNodesParameterValue(item, oldNodeUniqueName, newNodeUniqueName);
+                        modified = true;
+                    }
                 }
-            }
-            if (modified) {
-                factory.save(item);
+                if (modified) {
+                    factory.save(item);
+                }
             }
         }
     }

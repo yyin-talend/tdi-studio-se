@@ -464,8 +464,11 @@ public class ProxyRepositoryFactory implements IProxyRepositoryFactory {
     }
 
     public List<IRepositoryObject> getAll(ERepositoryObjectType type) throws PersistenceException {
-        // TODO SML Gets up the boolean param
-        return this.repositoryFactoryFromProvider.getAll(type, false);
+        return getAll(type, false);
+    }
+
+    public List<IRepositoryObject> getAll(ERepositoryObjectType type, boolean withDeleted) throws PersistenceException {
+        return this.repositoryFactoryFromProvider.getAll(type, withDeleted);
     }
 
     public List<String> getFolders(ERepositoryObjectType type) throws PersistenceException {
