@@ -600,30 +600,28 @@ public class Process extends Element implements IProcess {
                 if (param != null) {
                     if (param.getField().equals(EParameterFieldType.CHECK)) {
                         elemParam.setPropertyValue(pType.getName(), new Boolean(pType.getValue()));
-                    } else {
-                        if (param.getField().equals(EParameterFieldType.TABLE)) {
-                            List<Map<String, Object>> tableValues = new ArrayList<Map<String, Object>>();
-                            String[] codeList = param.getListItemsDisplayCodeName();
-                            Map<String, Object> lineValues = null;
-                            for (ElementValueType elementValue : (List<ElementValueType>) pType.getElementValue()) {
-                                boolean found = false;
-                                for (int i = 0; i < codeList.length && !found; i++) {
-                                    if (codeList[i].equals(elementValue.getElementRef())) {
-                                        found = true;
-                                    }
-                                }
-                                if (found) {
-                                    if ((lineValues == null) || (lineValues.get(elementValue.getElementRef()) != null)) {
-                                        lineValues = new HashMap<String, Object>();
-                                        tableValues.add(lineValues);
-                                    }
-                                    lineValues.put(elementValue.getElementRef(), elementValue.getValue());
+                    } else if (param.getField().equals(EParameterFieldType.TABLE)) {
+                        List<Map<String, Object>> tableValues = new ArrayList<Map<String, Object>>();
+                        String[] codeList = param.getListItemsDisplayCodeName();
+                        Map<String, Object> lineValues = null;
+                        for (ElementValueType elementValue : (List<ElementValueType>) pType.getElementValue()) {
+                            boolean found = false;
+                            for (int i = 0; i < codeList.length && !found; i++) {
+                                if (codeList[i].equals(elementValue.getElementRef())) {
+                                    found = true;
                                 }
                             }
-                            elemParam.setPropertyValue(pType.getName(), tableValues);
-                        } else {
-                            elemParam.setPropertyValue(pType.getName(), pType.getValue());
+                            if (found) {
+                                if ((lineValues == null) || (lineValues.get(elementValue.getElementRef()) != null)) {
+                                    lineValues = new HashMap<String, Object>();
+                                    tableValues.add(lineValues);
+                                }
+                                lineValues.put(elementValue.getElementRef(), elementValue.getValue());
+                            }
                         }
+                        elemParam.setPropertyValue(pType.getName(), tableValues);
+                    } else if (param.getField().equals(EParameterFieldType.TABLE)) {
+                        elemParam.setPropertyValue(pType.getName(), pType.getValue());
                     }
                 }
             }

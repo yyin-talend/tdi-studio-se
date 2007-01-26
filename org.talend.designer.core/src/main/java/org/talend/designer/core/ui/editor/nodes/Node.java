@@ -41,10 +41,7 @@ import org.eclipse.swt.graphics.RGB;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PlatformUI;
 import org.talend.commons.exception.ExceptionHandler;
-import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
-import org.talend.core.context.Context;
-import org.talend.core.context.RepositoryContext;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IComponentsFactory;
 import org.talend.core.model.components.IODataComponent;
@@ -64,7 +61,6 @@ import org.talend.core.model.process.INodeReturn;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.Problem;
 import org.talend.core.model.process.Problem.ProblemStatus;
-import org.talend.core.model.temp.ECodeLanguage;
 import org.talend.designer.codegen.perlmodule.IPerlModuleService;
 import org.talend.designer.codegen.perlmodule.ModuleNeeded;
 import org.talend.designer.codegen.perlmodule.ModuleNeeded.ModuleStatus;
@@ -810,21 +806,24 @@ public class Node extends Element implements INode {
                 case SCHEMA_TYPE:
                     break;
                 case CLOSED_LIST:
-                    value = (String) param.getValue();
-                    if (value.equals("")) {
-                        String errorMessage = "Parameter (" + param.getDisplayName() + ") is empty but is required.";
-                        Problems.add(ProblemStatus.ERROR, this, errorMessage);
-                    } else {
-                        boolean found = false;
-                        for (int i = 0; i < param.getListItemsValue().length && !found; i++) {
-                            if (param.getListItemsValue()[i].equals(value)) {
-                                found = true;
-                            }
-                        }
-                        if (!found) {
-                            String errorMessage = "Parameter (" + param.getDisplayName() + ") has a value (" + value
-                                    + ") that doesn't exist anymore.";
+                    if (param.getListItemsValue().length != 0) {
+                        value = (String) param.getValue();
+                        if (value.equals("")) {
+                            String errorMessage = "Parameter (" + param.getDisplayName()
+                                    + ") is empty but is required.";
                             Problems.add(ProblemStatus.ERROR, this, errorMessage);
+                        } else {
+                            boolean found = false;
+                            for (int i = 0; i < param.getListItemsValue().length && !found; i++) {
+                                if (param.getListItemsValue()[i].equals(value)) {
+                                    found = true;
+                                }
+                            }
+                            if (!found) {
+                                String errorMessage = "Parameter (" + param.getDisplayName() + ") has a value ("
+                                        + value + ") that doesn't exist anymore.";
+                                Problems.add(ProblemStatus.ERROR, this, errorMessage);
+                            }
                         }
                     }
                     break;

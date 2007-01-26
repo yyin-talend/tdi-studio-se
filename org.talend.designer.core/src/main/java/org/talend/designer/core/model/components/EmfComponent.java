@@ -36,6 +36,10 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.talend.commons.exception.BusinessException;
+import org.talend.commons.exception.PersistenceException;
+import org.talend.commons.utils.data.container.Content;
+import org.talend.commons.utils.data.container.ContentList;
+import org.talend.commons.utils.data.container.RootContainer;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
@@ -53,8 +57,10 @@ import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.ElementParameterParser;
 import org.talend.core.model.process.IElementParameterDefaultValue;
 import org.talend.core.model.process.INode;
+import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.model.temp.ECodeLanguage;
 import org.talend.designer.codegen.perlmodule.ModuleNeeded;
+import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.utils.emf.component.COLUMNType;
 import org.talend.designer.core.model.utils.emf.component.COMPONENTType;
@@ -72,6 +78,8 @@ import org.talend.designer.core.model.utils.emf.component.TEMPLATESType;
 import org.talend.designer.core.model.utils.emf.component.TEMPLATEType;
 import org.talend.designer.core.model.utils.emf.component.util.ComponentResourceFactoryImpl;
 import org.talend.repository.model.ComponentsFactoryProvider;
+import org.talend.repository.model.ERepositoryStatus;
+import org.talend.repository.model.IProxyRepositoryFactory;
 
 /**
  * 
@@ -439,9 +447,140 @@ public class EmfComponent implements IComponent {
         param.setShow(false);
         listParam.add(param);
     }
+    
+    private void createSpecificParametersFromType(final List<ElementParameter> listParam, final PARAMETERType xmlParam, final INode node, final EParameterFieldType type) {
+        if (type == EParameterFieldType.PROPERTY_TYPE) {
+            ElementParameter newParam = new ElementParameter(node);
+            newParam.setCategory(EComponentCategory.PROPERTY);
+            newParam.setName(EParameterName.PROPERTY_TYPE.getName());
+            newParam.setDisplayName(EParameterName.PROPERTY_TYPE.getDisplayName());
+            newParam.setListItemsDisplayName(new String[] { TEXT_BUILTIN, TEXT_REPOSITORY });
+            newParam.setListItemsDisplayCodeName(new String[] { BUILTIN, REPOSITORY });
+            newParam.setListItemsValue(new String[] { BUILTIN, REPOSITORY });
+            newParam.setValue(BUILTIN);
+            newParam.setNumRow(xmlParam.getNUMROW());
+            newParam.setField(EParameterFieldType.CLOSED_LIST);
+            newParam.setRepositoryValue(xmlParam.getREPOSITORYVALUE());
+            if (xmlParam.isSetSHOW()) {
+                newParam.setShow(xmlParam.isSHOW());
+            }
+            listParam.add(newParam);
+
+            newParam = new ElementParameter(node);
+            newParam.setCategory(EComponentCategory.PROPERTY);
+            newParam.setName(EParameterName.REPOSITORY_PROPERTY_TYPE.getName());
+            newParam.setDisplayName(EParameterName.REPOSITORY_PROPERTY_TYPE.getDisplayName());
+            newParam.setListItemsDisplayName(new String[] {});
+            newParam.setListItemsValue(new String[] {});
+            newParam.setNumRow(xmlParam.getNUMROW());
+            newParam.setField(EParameterFieldType.CLOSED_LIST);
+            newParam.setValue("");
+            newParam.setShow(false);
+            newParam.setRequired(true);
+            listParam.add(newParam);
+        }
+        if (type == EParameterFieldType.SCHEMA_TYPE) {
+            ElementParameter newParam = new ElementParameter(node);
+            newParam.setCategory(EComponentCategory.PROPERTY);
+            newParam.setName(EParameterName.SCHEMA_TYPE.getName());
+            newParam.setDisplayName(EParameterName.SCHEMA_TYPE.getDisplayName());
+            newParam.setListItemsDisplayName(new String[] { TEXT_BUILTIN, TEXT_REPOSITORY });
+            newParam.setListItemsDisplayCodeName(new String[] { BUILTIN, REPOSITORY });
+            newParam.setListItemsValue(new String[] { BUILTIN, REPOSITORY });
+            newParam.setValue(BUILTIN);
+            newParam.setNumRow(xmlParam.getNUMROW());
+            newParam.setField(EParameterFieldType.CLOSED_LIST);
+            if (xmlParam.isSetSHOW()) {
+                newParam.setShow(xmlParam.isSHOW());
+            }
+            newParam.setShowIf(xmlParam.getSHOWIF());
+            newParam.setNotShowIf(xmlParam.getNOTSHOWIF());
+            listParam.add(newParam);
+
+            newParam = new ElementParameter(node);
+            newParam.setCategory(EComponentCategory.PROPERTY);
+            newParam.setName(EParameterName.REPOSITORY_SCHEMA_TYPE.getName());
+            newParam.setDisplayName(EParameterName.REPOSITORY_SCHEMA_TYPE.getDisplayName());
+            newParam.setListItemsDisplayName(new String[] {});
+            newParam.setListItemsValue(new String[] {});
+            newParam.setNumRow(xmlParam.getNUMROW());
+            newParam.setField(EParameterFieldType.CLOSED_LIST);
+            newParam.setValue("");
+            newParam.setShow(false);
+            newParam.setRequired(true);
+            newParam.setShowIf(xmlParam.getSHOWIF());
+            newParam.setNotShowIf(xmlParam.getNOTSHOWIF());
+            listParam.add(newParam);
+        }
+        if (type == EParameterFieldType.QUERYSTORE_TYPE) {
+            ElementParameter newParam = new ElementParameter(node);
+            newParam.setCategory(EComponentCategory.PROPERTY);
+            newParam.setName(EParameterName.QUERYSTORE_TYPE.getName());
+            newParam.setDisplayName(EParameterName.QUERYSTORE_TYPE.getDisplayName());
+            newParam.setListItemsDisplayName(new String[] { TEXT_BUILTIN, TEXT_REPOSITORY });
+            newParam.setListItemsDisplayCodeName(new String[] { BUILTIN, REPOSITORY });
+            newParam.setListItemsValue(new String[] { BUILTIN, REPOSITORY });
+            newParam.setValue(BUILTIN);
+            newParam.setNumRow(xmlParam.getNUMROW());
+            newParam.setField(EParameterFieldType.CLOSED_LIST);
+            if (xmlParam.isSetSHOW()) {
+                newParam.setShow(xmlParam.isSHOW());
+            }
+            newParam.setShowIf(xmlParam.getSHOWIF());
+            newParam.setNotShowIf(xmlParam.getNOTSHOWIF());
+            listParam.add(newParam);
+
+            newParam = new ElementParameter(node);
+            newParam.setCategory(EComponentCategory.PROPERTY);
+            newParam.setName(EParameterName.REPOSITORY_QUERYSTORE_TYPE.getName());
+            newParam.setDisplayName(EParameterName.REPOSITORY_QUERYSTORE_TYPE.getDisplayName());
+            newParam.setListItemsDisplayName(new String[] {});
+            newParam.setListItemsValue(new String[] {});
+            newParam.setNumRow(xmlParam.getNUMROW());
+            newParam.setField(EParameterFieldType.CLOSED_LIST);
+            newParam.setValue("");
+            newParam.setShow(false);
+            newParam.setRequired(true);
+            newParam.setShowIf(xmlParam.getSHOWIF());
+            newParam.setNotShowIf(xmlParam.getNOTSHOWIF());
+            listParam.add(newParam);
+        }
+
+        if (type == EParameterFieldType.PROCESS_TYPE) {
+            ElementParameter newParam = new ElementParameter(node);
+            newParam.setCategory(EComponentCategory.PROPERTY);
+            newParam.setName(EParameterName.PROCESS_TYPE_PROCESS.getName());
+            newParam.setDisplayName(EParameterName.PROCESS_TYPE_PROCESS.getDisplayName());
+            newParam.setListItemsDisplayName(new String[] {});
+            newParam.setListItemsValue(new String[] {});
+            newParam.setValue("NO_PROCESS");
+            newParam.setNumRow(xmlParam.getNUMROW());
+            newParam.setField(EParameterFieldType.CLOSED_LIST);
+            if (xmlParam.isSetSHOW()) {
+                newParam.setShow(xmlParam.isSHOW());
+            }
+            newParam.setRequired(true);
+            listParam.add(newParam);
+
+            newParam = new ElementParameter(node);
+            newParam.setCategory(EComponentCategory.PROPERTY);
+            newParam.setName(EParameterName.PROCESS_TYPE_CONTEXT.getName());
+            newParam.setDisplayName(EParameterName.PROCESS_TYPE_CONTEXT.getDisplayName());
+            newParam.setListItemsDisplayName(new String[] {});
+            newParam.setListItemsValue(new String[] {});
+            newParam.setNumRow(xmlParam.getNUMROW());
+            newParam.setField(EParameterFieldType.CLOSED_LIST);
+            newParam.setValue("");
+            if (xmlParam.isSetSHOW()) {
+                newParam.setShow(xmlParam.isSHOW());
+            }
+            newParam.setRequired(true);
+            listParam.add(newParam);
+        }
+    }
 
     @SuppressWarnings("unchecked")
-    private void addPropertyParameters(final List<ElementParameter> listParam, INode node) {
+    private void addPropertyParameters(final List<ElementParameter> listParam, final INode node) {
         EList listXmlParam;
         PARAMETERType xmlParam;
         ElementParameter param;
@@ -450,134 +589,8 @@ public class EmfComponent implements IComponent {
         for (int i = 0; i < listXmlParam.size(); i++) {
             xmlParam = (PARAMETERType) listXmlParam.get(i);
             EParameterFieldType type = EParameterFieldType.getFieldTypeByName(xmlParam.getFIELD());
-            if (type == EParameterFieldType.PROPERTY_TYPE) {
-                ElementParameter newParam = new ElementParameter(node);
-                newParam.setCategory(EComponentCategory.PROPERTY);
-                newParam.setName(EParameterName.PROPERTY_TYPE.getName());
-                newParam.setDisplayName(EParameterName.PROPERTY_TYPE.getDisplayName());
-                newParam.setListItemsDisplayName(new String[] { TEXT_BUILTIN, TEXT_REPOSITORY });
-                newParam.setListItemsDisplayCodeName(new String[] { BUILTIN, REPOSITORY });
-                newParam.setListItemsValue(new String[] { BUILTIN, REPOSITORY });
-                newParam.setValue(BUILTIN);
-                newParam.setNumRow(xmlParam.getNUMROW());
-                newParam.setField(EParameterFieldType.CLOSED_LIST);
-                newParam.setRepositoryValue(xmlParam.getREPOSITORYVALUE());
-                if (xmlParam.isSetSHOW()) {
-                    newParam.setShow(xmlParam.isSHOW());
-                }
-                listParam.add(newParam);
-
-                newParam = new ElementParameter(node);
-                newParam.setCategory(EComponentCategory.PROPERTY);
-                newParam.setName(EParameterName.REPOSITORY_PROPERTY_TYPE.getName());
-                newParam.setDisplayName(EParameterName.REPOSITORY_PROPERTY_TYPE.getDisplayName());
-                newParam.setListItemsDisplayName(new String[] {});
-                newParam.setListItemsValue(new String[] {});
-                newParam.setNumRow(xmlParam.getNUMROW());
-                newParam.setField(EParameterFieldType.CLOSED_LIST);
-                newParam.setValue("");
-                newParam.setShow(false);
-                newParam.setRequired(true);
-                listParam.add(newParam);
-            }
-            if (type == EParameterFieldType.SCHEMA_TYPE) {
-                ElementParameter newParam = new ElementParameter(node);
-                newParam.setCategory(EComponentCategory.PROPERTY);
-                newParam.setName(EParameterName.SCHEMA_TYPE.getName());
-                newParam.setDisplayName(EParameterName.SCHEMA_TYPE.getDisplayName());
-                newParam.setListItemsDisplayName(new String[] { TEXT_BUILTIN, TEXT_REPOSITORY });
-                newParam.setListItemsDisplayCodeName(new String[] { BUILTIN, REPOSITORY });
-                newParam.setListItemsValue(new String[] { BUILTIN, REPOSITORY });
-                newParam.setValue(BUILTIN);
-                newParam.setNumRow(xmlParam.getNUMROW());
-                newParam.setField(EParameterFieldType.CLOSED_LIST);
-                if (xmlParam.isSetSHOW()) {
-                    newParam.setShow(xmlParam.isSHOW());
-                }
-                newParam.setShowIf(xmlParam.getSHOWIF());
-                newParam.setNotShowIf(xmlParam.getNOTSHOWIF());
-                listParam.add(newParam);
-
-                newParam = new ElementParameter(node);
-                newParam.setCategory(EComponentCategory.PROPERTY);
-                newParam.setName(EParameterName.REPOSITORY_SCHEMA_TYPE.getName());
-                newParam.setDisplayName(EParameterName.REPOSITORY_SCHEMA_TYPE.getDisplayName());
-                newParam.setListItemsDisplayName(new String[] {});
-                newParam.setListItemsValue(new String[] {});
-                newParam.setNumRow(xmlParam.getNUMROW());
-                newParam.setField(EParameterFieldType.CLOSED_LIST);
-                newParam.setValue("");
-                newParam.setShow(false);
-                newParam.setRequired(true);
-                newParam.setShowIf(xmlParam.getSHOWIF());
-                newParam.setNotShowIf(xmlParam.getNOTSHOWIF());
-                listParam.add(newParam);
-            }
-            if (type == EParameterFieldType.QUERYSTORE_TYPE) {
-                ElementParameter newParam = new ElementParameter(node);
-                newParam.setCategory(EComponentCategory.PROPERTY);
-                newParam.setName(EParameterName.QUERYSTORE_TYPE.getName());
-                newParam.setDisplayName(EParameterName.QUERYSTORE_TYPE.getDisplayName());
-                newParam.setListItemsDisplayName(new String[] { TEXT_BUILTIN, TEXT_REPOSITORY });
-                newParam.setListItemsDisplayCodeName(new String[] { BUILTIN, REPOSITORY });
-                newParam.setListItemsValue(new String[] { BUILTIN, REPOSITORY });
-                newParam.setValue(BUILTIN);
-                newParam.setNumRow(xmlParam.getNUMROW());
-                newParam.setField(EParameterFieldType.CLOSED_LIST);
-                if (xmlParam.isSetSHOW()) {
-                    newParam.setShow(xmlParam.isSHOW());
-                }
-                newParam.setShowIf(xmlParam.getSHOWIF());
-                newParam.setNotShowIf(xmlParam.getNOTSHOWIF());
-                listParam.add(newParam);
-
-                newParam = new ElementParameter(node);
-                newParam.setCategory(EComponentCategory.PROPERTY);
-                newParam.setName(EParameterName.REPOSITORY_QUERYSTORE_TYPE.getName());
-                newParam.setDisplayName(EParameterName.REPOSITORY_QUERYSTORE_TYPE.getDisplayName());
-                newParam.setListItemsDisplayName(new String[] {});
-                newParam.setListItemsValue(new String[] {});
-                newParam.setNumRow(xmlParam.getNUMROW());
-                newParam.setField(EParameterFieldType.CLOSED_LIST);
-                newParam.setValue("");
-                newParam.setShow(false);
-                newParam.setRequired(true);
-                newParam.setShowIf(xmlParam.getSHOWIF());
-                newParam.setNotShowIf(xmlParam.getNOTSHOWIF());
-                listParam.add(newParam);
-            }
-
-            if (type == EParameterFieldType.PROCESS_TYPE) {
-                ElementParameter newParam = new ElementParameter(node);
-                newParam.setCategory(EComponentCategory.PROPERTY);
-                newParam.setName(EParameterName.PROCESS_TYPE_PROCESS.getName());
-                newParam.setDisplayName(EParameterName.PROCESS_TYPE_PROCESS.getDisplayName());
-                newParam.setListItemsDisplayName(new String[] {});
-                newParam.setListItemsValue(new String[] {});
-                newParam.setValue("NO_PROCESS");
-                newParam.setNumRow(xmlParam.getNUMROW());
-                newParam.setField(EParameterFieldType.CLOSED_LIST);
-                if (xmlParam.isSetSHOW()) {
-                    newParam.setShow(xmlParam.isSHOW());
-                }
-                newParam.setRequired(true);
-                listParam.add(newParam);
-
-                newParam = new ElementParameter(node);
-                newParam.setCategory(EComponentCategory.PROPERTY);
-                newParam.setName(EParameterName.PROCESS_TYPE_CONTEXT.getName());
-                newParam.setDisplayName(EParameterName.PROCESS_TYPE_CONTEXT.getDisplayName());
-                newParam.setListItemsDisplayName(new String[] {});
-                newParam.setListItemsValue(new String[] {});
-                newParam.setNumRow(xmlParam.getNUMROW());
-                newParam.setField(EParameterFieldType.CLOSED_LIST);
-                newParam.setValue("");
-                if (xmlParam.isSetSHOW()) {
-                    newParam.setShow(xmlParam.isSHOW());
-                }
-                newParam.setRequired(true);
-                listParam.add(newParam);
-            }
+            createSpecificParametersFromType(listParam, xmlParam, node, type);
+            
             param = new ElementParameter(node);
             param.setName(xmlParam.getNAME());
             param.setDisplayName(getTranslatedValue(xmlParam.getNAME() + "." + PROP_NAME));

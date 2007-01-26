@@ -231,6 +231,9 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                         }
                     }
                 }
+                if (elem instanceof Node) {
+                    ((Node) elem).checkAndRefreshNode();
+                }
             }
         }
     }
