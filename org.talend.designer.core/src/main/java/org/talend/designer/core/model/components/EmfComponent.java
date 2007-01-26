@@ -812,9 +812,7 @@ public class EmfComponent implements IComponent {
         return compType.getHEADER().isHASCONDITIONALOUTPUTS();
     }
 
-    public Boolean isMultipleMethods(ECodeLanguage language) {
-        // language is not used anymore for the moment.
-
+    public Boolean isMultipleMethods() {
         Boolean multiple = Boolean.FALSE;
         TEMPLATEType tempType;
         EList listTempType = compType.getCODEGENERATION().getTEMPLATES().getTEMPLATE();

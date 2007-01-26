@@ -146,7 +146,7 @@ public final class CodeGeneratorEmittersPoolFactory {
     private static void initComponent(ECodeLanguage codeLanguage, List<JetBean> jetBeans, ECodePart codePart,
             IComponent component) {
         // if this function returns null then there is no code to generate
-        if (component.isMultipleMethods(codeLanguage) == null) {
+        if (component.isMultipleMethods() == null) {
             return;
         }
         JetBean jetBean = new JetBean(IComponentsFactory.COMPONENTS_LOCATION, IComponentsFactory.COMPONENTS_DIRECTORY
@@ -166,7 +166,7 @@ public final class CodeGeneratorEmittersPoolFactory {
             jetBean.setClassLoader(new CodeGeneratorEmittersPoolFactory().getClass().getClassLoader());
         }
 
-        if ((component.isMultipleMethods(codeLanguage)) && (codePart.compareTo(ECodePart.MAIN) == 0)) {
+        if ((component.isMultipleMethods()) && (codePart.compareTo(ECodePart.MAIN) == 0)) {
             initComponent(codeLanguage, jetBeans, ECodePart.BEGIN, component);
             initComponent(codeLanguage, jetBeans, ECodePart.END, component);
         }

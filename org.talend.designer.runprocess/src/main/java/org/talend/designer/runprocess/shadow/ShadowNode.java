@@ -275,11 +275,11 @@ public abstract class ShadowNode implements INode {
     }
     
     public Boolean isMultipleMethods() {
-        return Boolean.TRUE;
+        return component.isMultipleMethods();
     }
 
     public Boolean hasConditionalOutputs() {
-        return Boolean.TRUE;
+        return component.hasConditionalOutputs();
     }
     
     public IExternalNode getExternalNode() {

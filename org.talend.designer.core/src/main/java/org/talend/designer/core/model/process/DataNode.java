@@ -53,10 +53,7 @@ public class DataNode extends AbstractNode {
         setComponent(component);
         setElementParameters(component.createElementParameters(this));
         setUniqueName(uniqueName);
-
-        ECodeLanguage currentLanguage = ((RepositoryContext) CorePlugin.getContext().getProperty(
-                Context.REPOSITORY_CONTEXT_KEY)).getProject().getLanguage();
-        setMultipleMethods(component.isMultipleMethods(currentLanguage));
+        setMultipleMethods(component.isMultipleMethods());
     }
 
     public DataNode() {
