@@ -641,9 +641,6 @@ public abstract class DataMapTableView extends Composite {
 
         this.addListener(SWT.MouseDown, onSelectDataMapTableViewListener);
         headerComposite.addListener(SWT.MouseDown, onSelectDataMapTableViewListener);
-        if (tableForConstraints != null) {
-            tableForConstraints.addListener(SWT.MouseDown, onSelectDataMapTableViewListener);
-        }
         nameLabel.addListener(SWT.MouseDown, onSelectDataMapTableViewListener);
         // /////////////////////////////////////////////////////////////////
 

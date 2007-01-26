@@ -132,8 +132,8 @@ public abstract class AbstractElementPropertySectionController implements Proper
      * @return. The control created by this method will be the paramenter of next be called createControl method for
      * position calculate.
      */
-    public abstract Control createControl(final Composite subComposite, final IElementParameter param,
-            final int numInRow, final int nbInRow, final int top, final Control lastControl);
+    public abstract Control createControl(final Composite subComposite, final IElementParameter param, final int numInRow,
+            final int nbInRow, final int top, final Control lastControl);
 
     /**
      * DOC yzhang Comment method "createCommand".
@@ -178,13 +178,6 @@ public abstract class AbstractElementPropertySectionController implements Proper
     protected TabbedPropertySheetWidgetFactory getWidgetFactory() {
         return dynamicTabbedPropertySection.getWidgetFactory();
     }
-   
-
-    
-
- 
-
-   
 
     /**
      * 
@@ -351,15 +344,15 @@ public abstract class AbstractElementPropertySectionController implements Proper
 
             List<Problem> problems = new ArrayList<Problem>();
             if (valueFinal != null) {
-                if(language == ECodeLanguage.PERL) {
+                if (language == ECodeLanguage.PERL) {
                     problems = syntaxChecker.checkProblems(valueFinal);
-                } else if(language == ECodeLanguage.JAVA) {
+                } else if (language == ECodeLanguage.JAVA) {
                     problems = syntaxChecker.checkProblemsFromKey("//TODO : KEY_TO_SET!!!!!");
                 }
             }
 
             boolean isRequired = elem.getElementParameter(getParameterName(control)).isRequired();
-            if (problems == null) {
+            if (problems != null) {
                 if (isRequired && (valueFinal == null || valueFinal.trim().length() == 0)) {
                     problems.add(new Problem(null, "This field is required.", ProblemStatus.ERROR));
                 }
@@ -377,7 +370,7 @@ public abstract class AbstractElementPropertySectionController implements Proper
 
                 control.setBackground(bgColorError);
                 control.setForeground(fgColorError);
-                String tooltip = "Syntax error(s): "; 
+                String tooltip = "Syntax error(s): ";
 
                 for (Problem problem : problems) {
                     tooltip += "\n" + problem.getDescription();
@@ -516,9 +509,8 @@ public abstract class AbstractElementPropertySectionController implements Proper
     private String getParameterName(Control control) {
         String name = (String) hashCurControls.getKey(control);
         if (name == null) {
-            throw new IllegalStateException(
-                    "parameterName shouldn't be null or you call this method too early ! (control value : '"
-                            + ControlUtils.getText(control) + "')");
+            throw new IllegalStateException("parameterName shouldn't be null or you call this method too early ! (control value : '"
+                    + ControlUtils.getText(control) + "')");
         }
         return name;
     }
@@ -638,8 +630,7 @@ public abstract class AbstractElementPropertySectionController implements Proper
      */
     private void registerListenerForRefreshingSection() {
 
-        CommandStackEventListener commandStackEventListener = DynamicTabbedPropertySection
-                .getCommandStackEventListener();
+        CommandStackEventListener commandStackEventListener = DynamicTabbedPropertySection.getCommandStackEventListener();
         if (commandStackEventListener == null) {
 
             commandStackEventListener = new CommandStackEventListener() {
@@ -652,8 +643,7 @@ public abstract class AbstractElementPropertySectionController implements Proper
                             IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
                             IViewPart view = page.findView("org.eclipse.ui.views.PropertySheet");
                             PropertySheet sheet = (PropertySheet) view;
-                            TabbedPropertySheetPage tabbedPropertySheetPage = (TabbedPropertySheetPage) sheet
-                                    .getCurrentPage();
+                            TabbedPropertySheetPage tabbedPropertySheetPage = (TabbedPropertySheetPage) sheet.getCurrentPage();
                             tabbedPropertySheetPage.refresh();
 
                         }
