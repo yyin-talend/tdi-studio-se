@@ -545,7 +545,8 @@ public abstract class DataMapTableView extends Composite {
                         List<Problem> problems = tableEntry.getProblems();
                         toolTip = "";
                         for (Problem problem : problems) {
-                            toolTip += problem.getDescription() + "\n";
+                            String description = problem.getDescription().replaceAll("[\r\n\t]", "");
+                            toolTip += description + "\n";
                         }
                     }
 

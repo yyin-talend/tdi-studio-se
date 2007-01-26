@@ -193,7 +193,7 @@ public class MapperDataTestGenerator {
         metadataColumn = new MetadataColumn();
         metadataColumn.setLabel("name");
         metadataColumn.setKey(false);
-        metadataColumn.setType(EMetadataType.STRING.toString());
+        metadataColumn.setType("int");
         metadatColumns.add(metadataColumn);
         /*
          * metadataColumn = new MetadataColumn(); metadataColumn.setLabel("name2"); metadataColumn.setKey(false);
@@ -237,7 +237,7 @@ public class MapperDataTestGenerator {
         metadataColumn = new MetadataColumn();
         metadataColumn.setLabel("newName");
         metadataColumn.setKey(false);
-        metadataColumn.setType(EMetadataType.STRING.toString());
+        metadataColumn.setType("int");
         metadatColumns.add(metadataColumn);
 
         metadataTable.setListColumns(metadatColumns);
@@ -419,16 +419,19 @@ public class MapperDataTestGenerator {
         ExternalMapperTableEntry mapperTableEntry = new ExternalMapperTableEntry();
         mapperTableEntry.setName("id");
         mapperTableEntry.setExpression("test");
+        mapperTableEntry.setType("int");
         tableEntries.add(mapperTableEntry);
 
         mapperTableEntry = new ExternalMapperTableEntry();
         mapperTableEntry.setName("name");
         mapperTableEntry.setExpression("");
+        mapperTableEntry.setType("String");
         tableEntries.add(mapperTableEntry);
 
         mapperTableEntry = new ExternalMapperTableEntry();
         mapperTableEntry.setName("nb_pages");
         mapperTableEntry.setExpression("");
+        mapperTableEntry.setType("Integer");
         tableEntries.add(mapperTableEntry);
 
         mapperTable.setMetadataTableEntries(tableEntries);
@@ -458,16 +461,19 @@ public class MapperDataTestGenerator {
         mapperTableEntry = new ExternalMapperTableEntry();
         mapperTableEntry.setName("id_page");
         mapperTableEntry.setExpression("");
+        mapperTableEntry.setType("Integer");
         tableEntries.add(mapperTableEntry);
 
         mapperTableEntry = new ExternalMapperTableEntry();
         mapperTableEntry.setName("id_book");
         mapperTableEntry.setExpression(gen.getTableColumnVariable("book", "id"));
+        mapperTableEntry.setType("String");
         tableEntries.add(mapperTableEntry);
 
         mapperTableEntry = new ExternalMapperTableEntry();
         mapperTableEntry.setName("content");
         mapperTableEntry.setExpression(gen.getTableColumnVariable("book", "name"));
+        mapperTableEntry.setType("int");
         tableEntries.add(mapperTableEntry);
 
         mapperTable.setMetadataTableEntries(tableEntries);
@@ -505,11 +511,13 @@ public class MapperDataTestGenerator {
         mapperTableEntry = new ExternalMapperTableEntry();
         mapperTableEntry.setName("id");
         mapperTableEntry.setExpression("");
+        mapperTableEntry.setType("String");
         tableEntries.add(mapperTableEntry);
 
         mapperTableEntry = new ExternalMapperTableEntry();
         mapperTableEntry.setName("id_book");
         mapperTableEntry.setExpression(gen.getTableColumnVariable("book", "id"));
+        mapperTableEntry.setType("String");
         tableEntries.add(mapperTableEntry);
 
         if (currentTest == TEST.ONE_INNER_JOIN_AND_A_TABLE_WITH_INNER_JOIN_REJECT_WITHOUT_REGULAR_TABLE) {
@@ -517,6 +525,7 @@ public class MapperDataTestGenerator {
         } else {
             mapperTableEntry = new ExternalMapperTableEntry();
             mapperTableEntry.setName("id_page");
+            mapperTableEntry.setType("String");
             mapperTableEntry.setExpression(gen.getTableColumnVariable("page", "id_page") + " . "
                     + gen.getTableColumnVariable("book", "name"));
             tableEntries.add(mapperTableEntry);
@@ -549,6 +558,7 @@ public class MapperDataTestGenerator {
 
         mapperTableEntry = new ExternalMapperTableEntry();
         mapperTableEntry.setName("upperCaseContent");
+        mapperTableEntry.setType("String");
         mapperTableEntry.setExpression("uc " + gen.getTableColumnVariable("page", "content") + " + "
                 + gen.getTableColumnVariable("book", "id_book") + " - 2 * " + gen.getTableColumnVariable("book", "id_book"));
         tableEntries.add(mapperTableEntry);
@@ -556,6 +566,7 @@ public class MapperDataTestGenerator {
         mapperTableEntry = new ExternalMapperTableEntry();
         mapperTableEntry.setName("newId");
         mapperTableEntry.setExpression(gen.getTableColumnVariable("book", "id_book") + " + 1");
+        mapperTableEntry.setType("String");
         tableEntries.add(mapperTableEntry);
 
         mapperTable.setMetadataTableEntries(tableEntries);
@@ -586,16 +597,19 @@ public class MapperDataTestGenerator {
         mapperTableEntry = new ExternalMapperTableEntry();
         mapperTableEntry.setName("idUser");
         mapperTableEntry.setExpression(gen.getTableColumnVariable(VarsTable.PREFIX_VARS_TABLE_NAME, "newId"));
+        mapperTableEntry.setType("String");
         tableEntries.add(mapperTableEntry);
 
         mapperTableEntry = new ExternalMapperTableEntry();
         mapperTableEntry.setName("idBook");
         mapperTableEntry.setExpression(gen.getTableColumnVariable("book", "id_book"));
+        mapperTableEntry.setType("String");
         tableEntries.add(mapperTableEntry);
 
         mapperTableEntry = new ExternalMapperTableEntry();
         mapperTableEntry.setName("content");
         mapperTableEntry.setExpression("");
+        mapperTableEntry.setType("String");
         tableEntries.add(mapperTableEntry);
 
         mapperTable.setMetadataTableEntries(tableEntries);
@@ -628,15 +642,18 @@ public class MapperDataTestGenerator {
         mapperTableEntry = new ExternalMapperTableEntry();
         mapperTableEntry.setName("newIdBook");
         mapperTableEntry.setExpression(gen.getTableColumnVariable(VarsTable.PREFIX_VARS_TABLE_NAME, "newId"));
+        mapperTableEntry.setType("String");
         tableEntries.add(mapperTableEntry);
 
         mapperTableEntry = new ExternalMapperTableEntry();
         mapperTableEntry.setName("id_book");
         mapperTableEntry.setExpression(gen.getTableColumnVariable("book", "id_book"));
+        mapperTableEntry.setType("String");
         tableEntries.add(mapperTableEntry);
 
         mapperTableEntry = new ExternalMapperTableEntry();
         mapperTableEntry.setName("content");
+        mapperTableEntry.setType("String");
         mapperTableEntry.setExpression("");
         tableEntries.add(mapperTableEntry);
 
@@ -649,6 +666,7 @@ public class MapperDataTestGenerator {
 
         mapperTableEntry = new ExternalMapperTableEntry();
         mapperTableEntry.setExpression(" test == 3 ");
+        mapperTableEntry.setType("String");
         tableEntries.add(mapperTableEntry);
 
         // mapperTableEntry = new ExternalMapperTableEntry();
@@ -720,16 +738,19 @@ public class MapperDataTestGenerator {
         mapperTableEntry = new ExternalMapperTableEntry();
         mapperTableEntry.setName("id_page");
         mapperTableEntry.setExpression("");
+        mapperTableEntry.setType("int");
         tableEntries.add(mapperTableEntry);
 
         mapperTableEntry = new ExternalMapperTableEntry();
         mapperTableEntry.setName("id_book");
         mapperTableEntry.setExpression(gen.getTableColumnVariable("page", "id_book"));
+        mapperTableEntry.setType("String");
         tableEntries.add(mapperTableEntry);
 
         mapperTableEntry = new ExternalMapperTableEntry();
         mapperTableEntry.setName("content");
         mapperTableEntry.setExpression(gen.getTableColumnVariable(VarsTable.PREFIX_VARS_TABLE_NAME, "upperCaseContent"));
+        mapperTableEntry.setType("String");
         tableEntries.add(mapperTableEntry);
 
         mapperTable.setMetadataTableEntries(tableEntries);
@@ -787,16 +808,19 @@ public class MapperDataTestGenerator {
         mapperTableEntry = new ExternalMapperTableEntry();
         mapperTableEntry.setName("id_page");
         mapperTableEntry.setExpression("");
+        mapperTableEntry.setType("String");
         tableEntries.add(mapperTableEntry);
 
         mapperTableEntry = new ExternalMapperTableEntry();
         mapperTableEntry.setName("id_book");
         mapperTableEntry.setExpression(gen.getTableColumnVariable("page", "id_book"));
+        mapperTableEntry.setType("String");
         tableEntries.add(mapperTableEntry);
 
         mapperTableEntry = new ExternalMapperTableEntry();
         mapperTableEntry.setName("content");
         mapperTableEntry.setExpression(gen.getTableColumnVariable(VarsTable.PREFIX_VARS_TABLE_NAME, "upperCaseContent"));
+        mapperTableEntry.setType("int");
         tableEntries.add(mapperTableEntry);
 
         mapperTable.setMetadataTableEntries(tableEntries);

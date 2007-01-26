@@ -25,10 +25,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
+import org.talend.core.model.metadata.MetadataTalendType;
 import org.talend.core.model.process.AbstractExternalNode;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.IConnection;
@@ -116,6 +119,7 @@ public class TMapperMainJavajet {
 
         ArrayList<ExternalMapperTable> inputTablesWithInnerJoin = new ArrayList<ExternalMapperTable>();
         ArrayList<ExternalMapperTable> lookupTables = new ArrayList<ExternalMapperTable>();
+        Set<ExternalMapperTable> validLookupTables = new HashSet<ExternalMapperTable>();
 
         HashMap<String, ExternalMapperTableEntry> hExternalInputTableEntries = new HashMap<String, ExternalMapperTableEntry>();
         for (ExternalMapperTable externalTable : inputTables) {
@@ -157,7 +161,9 @@ public class TMapperMainJavajet {
                     String[] aKeysNames = keysNames.toArray(new String[0]);
                     String[] aKeysValues = keysValues.toArray(new String[0]);
                     if (aKeysValues.length > 0) {
-                        sb.append(gm.buildLookupDataInstance(uniqueNameComponent, tableName, aKeysNames, aKeysValues, indent, writeCommentedFieldKeys));
+                        sb.append(gm.buildLookupDataInstance(uniqueNameComponent, tableName, aKeysNames, aKeysValues, indent,
+                                writeCommentedFieldKeys));
+                        validLookupTables.add(externalTable);
                     }
 
                 } // if(externalTable != null) {
@@ -168,8 +174,12 @@ public class TMapperMainJavajet {
         // lookup inputs initialization
         for (ExternalMapperTable inputTable : lookupTables) {
             String tableName = inputTable.getName();
-            sb.append(cr + gm.indent(indent) + tableName + "Struct " + tableName + " = ( " + tableName + "FromHash == null )" + " ? "
-                    + tableName + "Default" + " : " + tableName + "FromHash;");
+            if (validLookupTables.contains(inputTable)) {
+                sb.append(cr + gm.indent(indent) + tableName + "Struct " + tableName + " = ( " + tableName + "FromHash == null )" + " ? "
+                        + tableName + "Default" + " : " + tableName + "FromHash;");
+            } else {
+                sb.append(cr + gm.indent(indent) + tableName + "Struct " + tableName + " = " + tableName + "Default;");
+            }
         }
 
         sb.append(cr);
@@ -204,8 +214,8 @@ public class TMapperMainJavajet {
             for (ExternalMapperTableEntry varsTableEntry : varsTableEntries) {
                 String varsColumnName = varsTableEntry.getName();
                 String varExpression = varsTableEntry.getExpression();
-                if (varExpression != null && varExpression.trim().length() == 0) {
-                    varExpression = null;
+                if (varExpression == null || varExpression.trim().length() == 0) {
+                    varExpression = MetadataTalendType.getDefaultValueFromJavaType(varsTableEntry.getType());
                 }
                 TableEntryLocation[] entryLocations = expressionParser.parseTableEntryLocations(varExpression);
                 ArrayList<TableEntryLocation> listCoupleForAddTablePrefix = new ArrayList<TableEntryLocation>();
@@ -310,16 +320,16 @@ public class TMapperMainJavajet {
         }
 
         // write conditions for inner join reject
-        if (inputTablesWithInnerJoin.size() > 0) {
+        if (validLookupTables.size() > 0) {
             sb.append(cr + gm.indent(indent) + "if(");
             String and = null;
-            for (ExternalMapperTable inputTable : inputTablesWithInnerJoin) {
+            for (ExternalMapperTable validLookupTable : validLookupTables) {
                 if (and == null) {
                     and = "";
                 } else {
                     and = " &&";
                 }
-                sb.append(and + " " + inputTable.getName() + "FromHash != null");
+                sb.append(and + " " + validLookupTable.getName() + "FromHash != null");
             }
             sb.append(" ) {");
             closeTestInnerJoinConditionsBracket = true;
@@ -416,7 +426,7 @@ public class TMapperMainJavajet {
                     ifConditions += " ) {";
 
                     sb.append(cr).append(ifConditions);
-                    
+
                     indent++;
                     closeFilterOrRejectBracket = true;
                     if (allNotRejectTablesHaveFilter && !(currentIsReject || currentIsRejectInnerJoin) && atLeastOneReject) {
@@ -429,8 +439,8 @@ public class TMapperMainJavajet {
                     for (ExternalMapperTableEntry outputTableEntry : outputTableEntries) {
                         String outputColumnName = outputTableEntry.getName();
                         String outputExpression = outputTableEntry.getExpression();
-                        if (outputExpression != null && outputExpression.trim().length() == 0) {
-                            outputExpression = null;
+                        if (outputExpression == null || outputExpression.trim().length() == 0) {
+                            outputExpression = MetadataTalendType.getDefaultValueFromJavaType(outputTableEntry.getType());
                         }
 
                         if (writeCommentedFieldKeys) {
@@ -438,7 +448,7 @@ public class TMapperMainJavajet {
                                     JavaGenerationManager.PROBLEM_KEY_FIELD.METADATA_COLUMN, outputTableName, outputColumnName);
                             sb.append(gm.buildCommentedFieldKey(key));
                         }
-                        
+
                         String expression = gm.indent(indent)
                                 + gm.getGeneratedCodeTableColumnVariable(outputTableName + "_tmp", outputColumnName) + " = "
                                 + outputExpression + ";";
