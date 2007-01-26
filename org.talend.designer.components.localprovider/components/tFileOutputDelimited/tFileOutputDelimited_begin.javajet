@@ -7,8 +7,7 @@ imports="
     org.talend.core.model.metadata.IMetadataColumn
     org.talend.designer.codegen.config.CodeGeneratorArgument
     java.util.List
-	org.talend.commons.ui.utils.PathUtils
-"
+" 
 class="FileOutputDelimitedBegin"
 %>
 
@@ -40,7 +39,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 %>
 
 		final String OUT_DELIM_<%=cid %> = <%=fieldSeparator %>;
-        java.io.BufferedWriter out<%=cid %> = new java.io.BufferedWriter(new java.io.FileWriter(<%=PathUtils.getPortablePath(filename) %>));
+        java.io.BufferedWriter out<%=cid %> = new java.io.BufferedWriter(new java.io.FileWriter(<%=filename %>));
 <%
     }
 }
