@@ -28,6 +28,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ResourceBundle;
 
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -105,8 +106,8 @@ public class ComponentsFactory implements IComponentsFactory {
                         checkFiles(childDirectories[i]);
                         for (int j = 0; j < childXmlFiles.length; j++) {
                             checkXSD(childXmlFiles[j]);
-                            IComponent currentComp = new EmfComponent(childXmlFiles[j], ComponentFilesNaming
-                                    .getBundleName(childDirectories[i].getName()));
+                            EmfComponent currentComp = new EmfComponent(childXmlFiles[j]);
+                            currentComp.setResourceBundle(getComponentResourceBundle(currentComp));
                             loadIcons(childDirectories[i], currentComp);
                             componentList.add(currentComp);
                         }
@@ -118,6 +119,16 @@ public class ComponentsFactory implements IComponentsFactory {
                 }
             }
         }
+    }
+
+    private ResourceBundle getComponentResourceBundle(IComponent currentComp) {
+        String label = ComponentFilesNaming.getBundleName(currentComp.getName());
+        // String pluginFullName = currentComp.getPluginFullName();
+        // System.out.println(pluginFullName);
+        // Bundle bundle = Platform.getBundle(pluginFullName);
+        // ClassLoader classLoader = bundle.getClass().getClassLoader();
+        // return ResourceBundle.getBundle(label, Locale.getDefault(), classLoader);
+        return ResourceBundle.getBundle(label);
     }
 
     private void checkXSD(File file) throws BusinessException {
