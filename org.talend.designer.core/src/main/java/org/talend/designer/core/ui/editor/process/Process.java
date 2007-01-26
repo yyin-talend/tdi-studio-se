@@ -46,12 +46,17 @@ import org.eclipse.emf.ecore.xmi.XMLResource;
 import org.eclipse.gef.GraphicalViewer;
 import org.eclipse.gef.SnapToGeometry;
 import org.eclipse.gef.SnapToGrid;
-import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
+import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IViewPart;
+import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.views.properties.PropertySheet;
+import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.RepositoryContext;
@@ -487,11 +492,13 @@ public class Process extends Element implements IProcess {
                         .getConnection();
                 for (Object tableObj : connection.getTables()) {
                     MetadataTable table = (MetadataTable) tableObj;
-                    String name = connectionItem.getProperty().getId() + " - " + table.getLabel();
-                    if (name.equals(metaRepositoryName)) {
-                        metaToReturn = ConvertionHelper.convert(table);
+                    if (!factory.isDeleted(table)) {
+                        String name = connectionItem.getProperty().getId() + " - " + table.getLabel();
+                        if (name.equals(metaRepositoryName)) {
+                            metaToReturn = ConvertionHelper.convert(table);
+                        }
+                        repositoryList.add(name);
                     }
-                    repositoryList.add(name);
                 }
             }
         }
@@ -646,36 +653,6 @@ public class Process extends Element implements IProcess {
         ProcessType process = fileFact.createProcessType();
         xmlDoc.setProcess(process);
 
-        // process.setName((String)
-        // getPropertyValue(EParameterName.NAME.getName()));
-        // process.setAuthor((String)
-        // getPropertyValue(EParameterName.AUTHOR.getName()));
-        // process.setStatus((String)
-        // getPropertyValue(EParameterName.STATUS.getName()));
-        // process.setVersion(((Version)
-        // getPropertyValue(EParameterName.VERSION.getName())).toString());
-        // process.setPurpose((String)
-        // getPropertyValue(EParameterName.PURPOSE.getName()));
-        // process.setDescription((String)
-        // getPropertyValue(EParameterName.DESCRIPTION.getName()));
-
-        // logs are not used anymore
-        // LogsType lType = fileFact.createLogsType();
-        // LogToFileType lFileType = fileFact.createLogToFileType();
-        // lFileType.setFilename((String) getPropertyValue(EParameterName.LOG_FILENAME.getName()));
-        // lFileType.setLevel(new Integer((String) getPropertyValue(EParameterName.LEVEL_LOG_TO_FILE.getName())));
-        // lFileType.setSelected((Boolean) getPropertyValue(EParameterName.LOG_TO_FILE.getName()));
-        // lType.setLogToFile(lFileType);
-        // LogToDatabaseType lDBType = fileFact.createLogToDatabaseType();
-        // lDBType.setLevel(new Integer((String) getPropertyValue(EParameterName.LEVEL_LOG_TO_DB.getName())));
-        // lDBType.setSelected((Boolean) getPropertyValue(EParameterName.LOG_TO_DB.getName()));
-        // lType.setLogToDatabase(lDBType);
-        // LogToStdOutType lStdOutType = fileFact.createLogToStdOutType();
-        // lStdOutType.setLevel(new Integer((String) getPropertyValue(EParameterName.LEVEL_LOG_TO_STDOUT.getName())));
-        // lStdOutType.setSelected((Boolean) getPropertyValue(EParameterName.LOG_TO_STDOUT.getName()));
-        // lType.setLogToStdOut(lStdOutType);
-        // process.setLogs(lType);
-
         EList nList = process.getNode();
         EList cList = process.getConnection();
 
@@ -789,15 +766,6 @@ public class Process extends Element implements IProcess {
      * @param process
      */
     public void loadXmlFile(ProcessType process) {
-        loadXmlFile(process, false);
-    }
-
-    /**
-     * DOC mhelleboid Comment method "loadXmlFile".
-     * 
-     * @param process
-     */
-    public void loadXmlFile(ProcessType process, boolean noCheck) {
         init();
         Hashtable<String, Node> nodesHashtable = new Hashtable<String, Node>();
 
@@ -805,7 +773,7 @@ public class Process extends Element implements IProcess {
         loadProcessProperties(process);
 
         try {
-            loadNodes(process, nodesHashtable, noCheck);
+            loadNodes(process, nodesHashtable);
         } catch (PersistenceException e) {
             // there are some components unloaded.
             return;
@@ -861,8 +829,7 @@ public class Process extends Element implements IProcess {
 
     private List<String> uploadedNodeNames = null;
 
-    private void loadNodes(ProcessType process, Hashtable<String, Node> nodesHashtable, boolean noCheck)
-            throws PersistenceException {
+    private void loadNodes(ProcessType process, Hashtable<String, Node> nodesHashtable) throws PersistenceException {
         EList nodeList;
         NodeType nType;
         nodeList = process.getNode();
@@ -887,10 +854,7 @@ public class Process extends Element implements IProcess {
 
             nc.setData(nType.getBinaryData(), nType.getStringData());
 
-            if (!noCheck) {
-                checkNodeSchemaFromRepository(nc, nType);
-                checkNodePropertiesFromRepository(nc);
-            }
+            loadSchema(nc, nType);
 
             addNodeContainer(new NodeContainer(nc));
             nodesHashtable.put(nc.getUniqueName(), nc);
@@ -920,74 +884,123 @@ public class Process extends Element implements IProcess {
         throw ex;
     }
 
-    private void checkNodeSchemaFromRepository(Node nc, NodeType nType) {
+    private void loadSchema(Node nc, NodeType nType) {
         MetadataEmfFactory factory = new MetadataEmfFactory();
         MetadataType mType;
         EList listMetaType;
 
         List<IMetadataTable> listMetaData;
-        IMetadataTable metadataTable;
         listMetaType = nType.getMetadata();
+        IMetadataTable metadataTable;
         listMetaData = new ArrayList<IMetadataTable>();
+        // boolean metadataInitialiazed = checkNodeSchemaFromRepository(nc, metadataTable);
+        // if (!metadataInitialiazed) {
+        for (int j = 0; j < listMetaType.size(); j++) {
+            mType = (MetadataType) listMetaType.get(j);
+            factory.setMetadataType(mType);
+            metadataTable = factory.getMetadataTable();
+            listMetaData.add(metadataTable);
+            if (nc.getConnectorFromType(EConnectionType.FLOW_MAIN).isBuiltIn()) {
+                addUniqueConnectionName(metadataTable.getTableName());
+            }
+        }
+        // }
+        nc.setMetadataList(listMetaData);
+    }
 
-        String uniqueName = nc.getUniqueName();
+    /**
+     * 
+     * DOC nrousseau Comment method "checkNodeSchemaFromRepository".
+     * 
+     * @param nc
+     * @param metadataTable
+     * @return true if the data have been modified
+     */
+    private boolean checkNodeSchemaFromRepository(final Node node) {
+        boolean modified = false;
+
+        final IMetadataTable metadataTable = node.getMetadataTable(node.getUniqueName());
+
+        final String uniqueName = node.getUniqueName();
 
         // check the metadata from the repository to see if it's up to date.
-        String schemaType = (String) nc.getPropertyValue(EParameterName.SCHEMA_TYPE.getName());
-        boolean metadataInitialiazed = false;
+        String schemaType = (String) node.getPropertyValue(EParameterName.SCHEMA_TYPE.getName());
         if (schemaType != null) {
             if (schemaType.equals(EmfComponent.REPOSITORY)) {
-                String metaRepositoryName = (String) nc.getPropertyValue(EParameterName.REPOSITORY_SCHEMA_TYPE
+                String metaRepositoryName = (String) node.getPropertyValue(EParameterName.REPOSITORY_SCHEMA_TYPE
                         .getName());
                 IMetadataTable repositoryMetadata = getMetadataFromRepository(metaRepositoryName);
                 if (repositoryMetadata != null) {
                     repositoryMetadata = repositoryMetadata.clone();
-                    repositoryMetadata.setTableName(uniqueName);
+                    final IMetadataTable copyOfrepositoryMetadata = repositoryMetadata;
+                    copyOfrepositoryMetadata.setTableName(uniqueName);
 
-                    // get the first (and unique) metadata on the component
-                    // as it's not possible to have more than one metadata with
-                    // a schema_type
-                    mType = (MetadataType) listMetaType.get(0);
-                    factory.setMetadataType(mType);
-                    metadataTable = factory.getMetadataTable();
+                    if (!copyOfrepositoryMetadata.sameMetadataAs(metadataTable)) {
 
-                    if (!repositoryMetadata.sameMetadataAs(metadataTable)) {
-                        String message = "The metadata used in the component " + uniqueName + " has been modified.";
-                        message += "\nDo you want to upgrade it from the repository?";
-                        String[] buttons = { "Yes", "No" };
-                        Shell shell = PlatformUI.getWorkbench().getDisplay().getActiveShell();
-                        MessageDialog messageDialog = new MessageDialog(shell, "Metadata modification detected", null,
-                                message, MessageDialog.QUESTION, buttons, 0);
-                        int value = messageDialog.open();
-                        // set dirty state ?
-                        if (value == 0) {
-                            listMetaData.add(repositoryMetadata);
-                        } else {
-                            listMetaData.add(metadataTable);
-                            nc.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), EmfComponent.BUILTIN);
-                        }
-                    } else {
-                        listMetaData.add(repositoryMetadata);
+                        final Shell shell = PlatformUI.getWorkbench().getDisplay().getActiveShell();
+                        shell.getDisplay().asyncExec(new Runnable() {
+
+                            public void run() {
+                                MessageBox mBox = new MessageBox(shell, SWT.YES | SWT.NO | SWT.ICON_QUESTION);
+                                String message = "The metadata used in the component " + uniqueName
+                                        + " has been modified.";
+                                message += "\nDo you want to upgrade it from the repository?";
+                                mBox.setText("Metadata modification detected");
+                                mBox.setMessage(message);
+                                int value = mBox.open();
+                                if (value == SWT.YES) {
+                                    node.getMetadataList().remove(metadataTable);
+                                    node.getMetadataList().add(copyOfrepositoryMetadata);
+                                } else {
+                                    node.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), EmfComponent.BUILTIN);
+                                }
+                                refreshPropertyView();
+                            }
+                        });
+
+                        modified = true;
                     }
-                    metadataInitialiazed = true;
+                } else {
+                    final Shell shell = PlatformUI.getWorkbench().getDisplay().getActiveShell();
+                    shell.getDisplay().asyncExec(new Runnable() {
+
+                        public void run() {
+                            MessageBox mBox = new MessageBox(shell);
+                            String message = "The repository item used in the component " + node.getUniqueName()
+                                    + " has not been found,";
+                            message += "\nthe schema will now change to Built-In";
+                            mBox.setMessage(message);
+                            mBox.open();
+                            node.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), EmfComponent.BUILTIN);
+                            refreshPropertyView();
+                        }
+                    });
+                    // if the repository connection doesn't exists then set to built-in
+                    modified = true;
                 }
             }
         }
-        if (!metadataInitialiazed) {
-            for (int j = 0; j < listMetaType.size(); j++) {
-                mType = (MetadataType) listMetaType.get(j);
-                factory.setMetadataType(mType);
-                metadataTable = factory.getMetadataTable();
-                listMetaData.add(metadataTable);
-                if (nc.getConnectorFromType(EConnectionType.FLOW_MAIN).isBuiltIn()) {
-                    addUniqueConnectionName(metadataTable.getTableName());
-                }
-            }
-        }
-        nc.setMetadataList(listMetaData);
+        return modified;
     }
 
-    private void checkNodePropertiesFromRepository(Node node) {
+    private void refreshPropertyView() {
+        IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+        IViewPart view = page.findView("org.eclipse.ui.views.PropertySheet");
+        PropertySheet sheet = (PropertySheet) view;
+        TabbedPropertySheetPage tabbedPropertySheetPage = (TabbedPropertySheetPage) sheet.getCurrentPage();
+        tabbedPropertySheetPage.refresh();
+    }
+
+    /**
+     * 
+     * DOC nrousseau Comment method "checkNodePropertiesFromRepository".
+     * 
+     * @param node
+     * @return true if the data have been modified
+     */
+    private boolean checkNodePropertiesFromRepository(final Node node) {
+        boolean modified = false;
+
         String propertyType = (String) node.getPropertyValue(EParameterName.PROPERTY_TYPE.getName());
         if (propertyType != null) {
             if (propertyType.equals(EmfComponent.REPOSITORY)) {
@@ -998,17 +1011,18 @@ public class Process extends Element implements IProcess {
                 } catch (PersistenceException e) {
                     throw new RuntimeException(e);
                 }
-                org.talend.core.model.metadata.builder.connection.Connection repositoryConnection = null;
+                org.talend.core.model.metadata.builder.connection.Connection tmpRepositoryConnection = null;
                 if (metadataConnectionsItem != null) {
                     for (ConnectionItem connectionItem : metadataConnectionsItem) {
                         String value = connectionItem.getProperty().getId() + "";
                         if (value.equals((String) node.getPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE
                                 .getName()))) {
-                            repositoryConnection = (org.talend.core.model.metadata.builder.connection.Connection) connectionItem
+                            tmpRepositoryConnection = (org.talend.core.model.metadata.builder.connection.Connection) connectionItem
                                     .getConnection();
                         }
                     }
                 }
+                final org.talend.core.model.metadata.builder.connection.Connection repositoryConnection = tmpRepositoryConnection;
 
                 if (repositoryConnection != null) {
                     boolean sameValues = true;
@@ -1042,53 +1056,59 @@ public class Process extends Element implements IProcess {
                         }
                     }
                     if (!sameValues) {
-                        String message = "The properties used in the component " + node.getUniqueName()
-                                + " has been modified.";
-                        message += "\nDo you want to upgrade it from the repository?";
-                        String[] buttons = { "Yes", "No" };
-                        Shell shell = PlatformUI.getWorkbench().getDisplay().getActiveShell();
-                        MessageDialog messageDialog = new MessageDialog(shell, "Property modification detected", null,
-                                message, MessageDialog.QUESTION, buttons, 0);
-                        int value = messageDialog.open();
-                        // set dirty state ?
-                        if (value == 0) {
-                            // upgrade from repository
-                            for (IElementParameter param : node.getElementParameters()) {
-                                String repositoryValue = param.getRepositoryValue();
-                                if (param.isShow(node.getElementParameters()) && (repositoryValue != null)
-                                        && (!param.getName().equals(EParameterName.PROPERTY_TYPE.getName()))) {
-                                    Object objectValue = (Object) RepositoryToComponentProperty.getValue(
-                                            repositoryConnection, repositoryValue);
-                                    if (objectValue != null) {
-                                        if (param.getField().equals(EParameterFieldType.CLOSED_LIST)
-                                                && param.getRepositoryValue().equals("TYPE")) {
-                                            boolean found = false;
-                                            String[] list = param.getListRepositoryItems();
-                                            for (int i = 0; (i < list.length) && (!found); i++) {
-                                                if (objectValue.equals(list[i])) {
-                                                    found = true;
-                                                    node
-                                                            .setPropertyValue(param.getName(), param
+                        final Shell shell = PlatformUI.getWorkbench().getDisplay().getActiveShell();
+                        shell.getDisplay().asyncExec(new Runnable() {
+
+                            public void run() {
+                                String message = "The properties used in the component " + node.getUniqueName()
+                                        + " has been modified.";
+                                message += "\nDo you want to upgrade it from the repository?";
+                                MessageBox mBox = new MessageBox(shell, SWT.YES | SWT.NO | SWT.ICON_QUESTION);
+                                mBox.setText("Property modification detected");
+                                mBox.setMessage(message);
+                                int value = mBox.open();
+                                if (value == SWT.YES) {
+                                    // upgrade from repository
+                                    for (IElementParameter param : node.getElementParameters()) {
+                                        String repositoryValue = param.getRepositoryValue();
+                                        if (param.isShow(node.getElementParameters()) && (repositoryValue != null)
+                                                && (!param.getName().equals(EParameterName.PROPERTY_TYPE.getName()))) {
+                                            Object objectValue = (Object) RepositoryToComponentProperty.getValue(
+                                                    repositoryConnection, repositoryValue);
+                                            if (objectValue != null) {
+                                                if (param.getField().equals(EParameterFieldType.CLOSED_LIST)
+                                                        && param.getRepositoryValue().equals("TYPE")) {
+                                                    boolean found = false;
+                                                    String[] list = param.getListRepositoryItems();
+                                                    for (int i = 0; (i < list.length) && (!found); i++) {
+                                                        if (objectValue.equals(list[i])) {
+                                                            found = true;
+                                                            node.setPropertyValue(param.getName(), param
                                                                     .getListItemsValue()[i]);
+                                                        }
+                                                    }
+                                                } else {
+                                                    node.setPropertyValue(param.getName(), objectValue);
                                                 }
+                                                param.setRepositoryValueUsed(true);
                                             }
-                                        } else {
-                                            node.setPropertyValue(param.getName(), objectValue);
                                         }
-                                        param.setRepositoryValueUsed(true);
+                                    }
+                                } else {
+                                    // don't upgrade so set to builtin
+                                    node.setPropertyValue(EParameterName.PROPERTY_TYPE.getName(), EmfComponent.BUILTIN);
+                                    for (IElementParameter param : node.getElementParameters()) {
+                                        String repositoryValue = param.getRepositoryValue();
+                                        if (param.isShow(node.getElementParameters()) && (repositoryValue != null)) {
+                                            param.setRepositoryValueUsed(false);
+                                        }
                                     }
                                 }
+                                refreshPropertyView();
                             }
-                        } else {
-                            // don't upgrade so set to builtin
-                            node.setPropertyValue(EParameterName.PROPERTY_TYPE.getName(), EmfComponent.BUILTIN);
-                            for (IElementParameter param : node.getElementParameters()) {
-                                String repositoryValue = param.getRepositoryValue();
-                                if (param.isShow(node.getElementParameters()) && (repositoryValue != null)) {
-                                    param.setRepositoryValueUsed(false);
-                                }
-                            }
-                        }
+                        });
+
+                        modified = true;
                     } else {
                         for (IElementParameter param : node.getElementParameters()) {
                             String repositoryValue = param.getRepositoryValue();
@@ -1099,12 +1119,44 @@ public class Process extends Element implements IProcess {
                         }
                     }
                 } else {
-                    // if the repository connection doesn't exists then set
-                    // built-in
-                    node.setPropertyValue(EParameterName.PROPERTY_TYPE.getName(), EmfComponent.BUILTIN);
+                    final Shell shell = PlatformUI.getWorkbench().getDisplay().getActiveShell();
+                    shell.getDisplay().asyncExec(new Runnable() {
+
+                        public void run() {
+                            MessageBox mBox = new MessageBox(shell);
+                            String message = "The repository item used in the component " + node.getUniqueName()
+                                    + " has not been found,";
+                            message += "\nthe properties will now change to Built-In";
+                            mBox.setMessage(message);
+                            mBox.open();
+                            node.setPropertyValue(EParameterName.PROPERTY_TYPE.getName(), EmfComponent.BUILTIN);
+                            refreshPropertyView();
+                        }
+                    });
+                    modified = true;
                 }
             }
         }
+        return modified;
+    }
+
+    /**
+     * 
+     * DOC nrousseau Comment method "checkDifferenceWithRepository".
+     * 
+     * @return true if a difference has been detected
+     */
+    public boolean checkDifferenceWithRepository() {
+        boolean modified = false;
+        for (Node node : nodes) {
+            if (checkNodePropertiesFromRepository(node)) {
+                modified = true;
+            }
+            if (checkNodeSchemaFromRepository(node)) {
+                modified = true;
+            }
+        }
+        return modified;
     }
 
     private void loadConnections(ProcessType process, Hashtable<String, Node> nodesHashtable) {
@@ -1613,7 +1665,7 @@ public class Process extends Element implements IProcess {
 
     /**
      * 
-     * DOC check the problems of node.compare with the checkProblems(),this method can't refresh problems view
+     * DOC check the problems of node.compare with the checkProblems(),this method can't refresh problems view.
      */
     public void checkNodeProblems() {
         if (isActivate()) {

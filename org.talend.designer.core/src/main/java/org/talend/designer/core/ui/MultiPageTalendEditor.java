@@ -323,7 +323,7 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
     public boolean isDirty() {
         return propertyIsDirty || super.isDirty();
     }
-
+    
     /*
      * (non-Javadoc) Method declared on IEditorPart.
      */

@@ -393,8 +393,8 @@ public class Node extends Element implements INode {
      */
     public void addInput(final Connection connection) {
         this.inputs.add(connection);
-        if (!isExternalNode() && component.isSchemaAutoPropagated() && (connection.getLineStyle() == EConnectionType.FLOW_MAIN)
-                && ((Process) getProcess()).isActivate()) {
+        if (!isExternalNode() && component.isSchemaAutoPropagated()
+                && (connection.getLineStyle() == EConnectionType.FLOW_MAIN) && ((Process) getProcess()).isActivate()) {
             if ((metadataList.get(0).getListColumns().size() == 0) || (outputs.size() == 0)) {
                 metadataList.get(0).setListColumns(connection.getMetadataTable().clone().getListColumns());
             }
@@ -527,7 +527,7 @@ public class Node extends Element implements INode {
         if (externalNode != null) {
             externalNode.setActivate(isActivate());
             externalNode.setStart(isStart());
-//            externalNode.setComponentName(getComponentName());
+            // externalNode.setComponentName(getComponentName());
             // externalNode.setExternalData(getExternalData());
             List<IMetadataTable> copyOfMetadataList = new ArrayList<IMetadataTable>();
             for (IMetadataTable metaTable : metadataList) {
@@ -630,8 +630,8 @@ public class Node extends Element implements INode {
                 connec = (Connection) getIncomingConnections().get(j);
                 if (connec.isActivate()
                         && ((connec.getLineStyle().equals(EConnectionType.FLOW_MAIN)
-                                || connec.getLineStyle().equals(EConnectionType.FLOW_REF) || connec.getLineStyle().equals(
-                                EConnectionType.ITERATE)))) {
+                                || connec.getLineStyle().equals(EConnectionType.FLOW_REF) || connec.getLineStyle()
+                                .equals(EConnectionType.ITERATE)))) {
                     return false;
                 }
             }
@@ -696,14 +696,14 @@ public class Node extends Element implements INode {
      * @see org.talend.core.model.process.INode#isMultipleMethods(org.talend.core.model.temp.ECodeLanguage)
      */
     public Boolean isMultipleMethods() {
-        ECodeLanguage currentLanguage = ((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY))
-                .getProject().getLanguage();
+        ECodeLanguage currentLanguage = ((RepositoryContext) CorePlugin.getContext().getProperty(
+                Context.REPOSITORY_CONTEXT_KEY)).getProject().getLanguage();
         return component.isMultipleMethods(currentLanguage);
     }
 
-    
-    
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.core.model.process.INode#hasConditionnalOutputs()
      */
     public Boolean hasConditionalOutputs() {
@@ -767,7 +767,7 @@ public class Node extends Element implements INode {
             this.process = (Process) process;
         }
     }
-    
+
     public void updateStatus() {
         firePropertyChange(UPDATE_STATUS, null, new Integer(this.currentStatus));
     }
@@ -797,11 +797,13 @@ public class Node extends Element implements INode {
             // if the parameter is required but empty, an error will be added
             if (param.isRequired() && param.isShow(getElementParameters())) {
                 EParameterFieldType fieldType = param.getField();
+                String value;
                 switch (fieldType) {
                 case TABLE:
                     List<Map<String, String>> tableValues = (List<Map<String, String>>) param.getValue();
                     if (tableValues.size() == 0) {
-                        String errorMessage = "Parameter (" + param.getDisplayName() + ") must have at least one value.";
+                        String errorMessage = "Parameter (" + param.getDisplayName()
+                                + ") must have at least one value.";
                         Problems.add(ProblemStatus.ERROR, this, errorMessage);
                     }
                     break;
@@ -809,8 +811,27 @@ public class Node extends Element implements INode {
                     break;
                 case SCHEMA_TYPE:
                     break;
+                case CLOSED_LIST:
+                    value = (String) param.getValue();
+                    if (value.equals("")) {
+                        String errorMessage = "Parameter (" + param.getDisplayName() + ") is empty but is required.";
+                        Problems.add(ProblemStatus.ERROR, this, errorMessage);
+                    } else {
+                        boolean found = false;
+                        for (int i = 0; i < param.getListItemsValue().length && !found; i++) {
+                            if (param.getListItemsValue()[i].equals(value)) {
+                                found = true;
+                            }
+                        }
+                        if (!found) {
+                            String errorMessage = "Parameter (" + param.getDisplayName() + ") has a value (" + value
+                                    + ") that doesn't exist anymore.";
+                            Problems.add(ProblemStatus.ERROR, this, errorMessage);
+                        }
+                    }
+                    break;
                 default:
-                    String value = (String) param.getValue();
+                    value = (String) param.getValue();
                     if (value.equals("")) {
                         String errorMessage = "Parameter (" + param.getDisplayName() + ") is empty but is required.";
                         Problems.add(ProblemStatus.ERROR, this, errorMessage);
@@ -858,7 +879,8 @@ public class Node extends Element implements INode {
             return null;
         }
         if (componentImportNeeds.getStatus() == ModuleStatus.NOT_INSTALLED && componentImportNeeds.isRequired()) {
-            return new Problem(this, "Module " + componentImportNeeds.getModuleName() + " required", ProblemStatus.ERROR);
+            return new Problem(this, "Module " + componentImportNeeds.getModuleName() + " required",
+                    ProblemStatus.ERROR);
         }
 
         return null;

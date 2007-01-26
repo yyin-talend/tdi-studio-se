@@ -27,6 +27,8 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertySheetPageContributor;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
+import org.talend.designer.core.ui.MultiPageTalendEditor;
+import org.talend.designer.core.ui.editor.process.ProcessPart;
 
 /**
  * The TabbedPropertySheetPage will only change when an EditPart is selected. This class was created due to a problem
@@ -42,15 +44,24 @@ public class TalendTabbedPropertySheetPage extends TabbedPropertySheetPage {
         super(tabbedPropertySheetPageContributor);
     }
 
+    StructuredSelection oldSelection;
+
     @Override
     public void selectionChanged(IWorkbenchPart part, ISelection selection) {
+            MultiPageTalendEditor mpte = (MultiPageTalendEditor) part;
+        ISelection newSelection = mpte.getTalendEditor().getViewer().getSelection();
         if (selection instanceof StructuredSelection) {
-            StructuredSelection structSel = (StructuredSelection) selection;
+            StructuredSelection structSel = (StructuredSelection) newSelection;
             if (structSel.size() != 1) {
                 return;
             }
             if (structSel.getFirstElement() instanceof EditPart) {
-                super.selectionChanged(part, selection);
+                if (structSel.equals(oldSelection)) {
+                    this.getCurrentTab().setInput(part, selection);
+                } else {
+                    super.selectionChanged(part, selection);
+                }
+                oldSelection = structSel;
             }
         }
     }

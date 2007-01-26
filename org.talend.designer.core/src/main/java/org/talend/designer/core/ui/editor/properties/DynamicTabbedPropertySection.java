@@ -26,7 +26,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.StringTokenizer;
 
 import org.apache.commons.collections.BidiMap;
 import org.apache.commons.collections.bidimap.DualHashBidiMap;
@@ -253,6 +252,10 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
             }
         }
 
+        if (selectedProcess == null) {
+            return;
+        }
+
         try {
             List<IRepositoryObject> list = factory.getAll(ERepositoryObjectType.PROCESS);
 
@@ -341,12 +344,14 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                         org.talend.core.model.metadata.builder.connection.MetadataTable table;
                         table = (org.talend.core.model.metadata.builder.connection.MetadataTable) tableObj;
                         if (factory.getStatus(connectionItem) != ERepositoryStatus.DELETED) {
-                            String name = getRepositoryAliasName(connectionItem) + ":"
-                                    + connectionItem.getProperty().getLabel() + " - " + table.getLabel();
-                            String value = connectionItem.getProperty().getId() + " - " + table.getLabel();
-                            repositoryTableMap.put(value, ConvertionHelper.convert(table));
-                            tableNamesList.add(name);
-                            tableValuesList.add(value);
+                            if (!factory.isDeleted(table)) {
+                                String name = getRepositoryAliasName(connectionItem) + ":"
+                                        + connectionItem.getProperty().getLabel() + " - " + table.getLabel();
+                                String value = connectionItem.getProperty().getId() + " - " + table.getLabel();
+                                repositoryTableMap.put(value, ConvertionHelper.convert(table));
+                                tableNamesList.add(name);
+                                tableValuesList.add(value);
+                            }
                         }
                     }
                 }
@@ -726,6 +731,11 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                             }
                             nbInList++;
                         }
+                        String[] paramItems = param.getListItemsDisplayName();
+                        String[] comboItems = c.getItems();
+                        if (!paramItems.equals(comboItems)) {
+                            c.setItems(paramItems);
+                        }
                         c.setText(value);
                     }
                     if (param.getField() == EParameterFieldType.CHECK) {
@@ -761,8 +771,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
     // editionControlHelper.checkErrors(control);
     // }
     // }
-    private ISelection lastSelection;
-
+    // private ISelection lastSelection;
     /*
      * @Override (non-Javadoc)
      * 
@@ -773,12 +782,12 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
         if (!(selection instanceof IStructuredSelection)) {
             return;
         }
-        if (lastSelection != null) { // added to correct a bug of the TabbedProperties
-            if (lastSelection.equals(selection)) {
-                return;
-            }
-        }
-        lastSelection = selection;
+        // if (lastSelection != null) { // added to correct a bug of the TabbedProperties
+        // if (lastSelection.equals(selection)) {
+        // return;
+        // }
+        // }
+        // lastSelection = selection;
 
         if (workbenchPart instanceof MultiPageTalendEditor) {
             part = (MultiPageTalendEditor) workbenchPart;
@@ -813,6 +822,11 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
         } else {
             if (!currentComponent.equals(elem.getElementName())) {
                 addComponents();
+            } else {
+                updateRepositoryList();
+                updateProcessList();
+                updateContextList();
+                refresh();
             }
         }
         currentComponent = elem.getElementName();

@@ -36,7 +36,7 @@ public class DesignerCoreService implements IDesignerCoreService {
     public IProcess getProcessFromProcessItem(ProcessItem processItem) {
         Process process = null;
         process = new Process(processItem.getProperty());
-        process.loadXmlFile(processItem.getProcess(), true); // no check needed here.
+        process.loadXmlFile(processItem.getProcess());
 
         return process;
     }

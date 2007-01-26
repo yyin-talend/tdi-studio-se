@@ -197,22 +197,26 @@ public class Problems {
     public static void switchToCurProblemView() {
         IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
         IViewPart view = page.findView("org.talend.designer.core.ui.views.ProblemsView");
-        ProblemsView problemsView = (ProblemsView) view;
-        if (problemsView == null) {
-            return;
+        if (view instanceof ProblemsView) {
+            ProblemsView problemsView = (ProblemsView) view;
+            if (problemsView == null) {
+                return;
+            }
+            if (!newTitle.equals(currentTitle)) {
+                problemsView.setPartName(newTitle);
+                currentTitle = newTitle;
+            }
+            problemsView.setProblems(getCurrentProblems());
         }
-        if (!newTitle.equals(currentTitle)) {
-            problemsView.setPartName(newTitle);
-            currentTitle = newTitle;
-        }
-        problemsView.setProblems(getCurrentProblems());
     }
 
     public static void refreshView() {
         IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
         IViewPart view = page.findView("org.talend.designer.core.ui.views.ProblemsView");
-        ProblemsView problemsView = (ProblemsView) view;
-        refreshView(problemsView);
+        if (view instanceof ProblemsView) {
+            ProblemsView problemsView = (ProblemsView) view;
+            refreshView(problemsView);
+        }
     }
 
     public static void refreshView(ProblemsView problemsView) {

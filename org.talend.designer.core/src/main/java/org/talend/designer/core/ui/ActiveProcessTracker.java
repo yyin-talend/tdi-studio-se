@@ -21,10 +21,14 @@
 // ============================================================================
 package org.talend.designer.core.ui;
 
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.ui.IPartListener;
 import org.eclipse.ui.IWorkbenchPart;
 import org.talend.core.model.process.IProcess;
 import org.talend.designer.core.DesignerPlugin;
+import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.views.problems.Problems;
 import org.talend.designer.runprocess.IRunProcessService;
 
@@ -43,10 +47,20 @@ public class ActiveProcessTracker implements IPartListener {
      * 
      * @see org.eclipse.ui.IPartListener#partActivated(org.eclipse.ui.IWorkbenchPart)
      */
-    public void partActivated(IWorkbenchPart part) {
+    public void partActivated(final IWorkbenchPart part) {
         if (MultiPageTalendEditor.ID.equals(part.getSite().getId())) {
             MultiPageTalendEditor mpte = (MultiPageTalendEditor) part;
             mpte.setName();
+
+            IProcess process = mpte.getTalendEditor().getProcess();
+            if (process instanceof Process) {
+                Process p = (Process) process;
+                if (!p.isReadOnly() && p.isActivate()) {
+                    if (p.checkDifferenceWithRepository()) {
+                        mpte.getTalendEditor().setDirty(true);
+                    }
+                }
+            }
         }
     }
 
@@ -61,7 +75,7 @@ public class ActiveProcessTracker implements IPartListener {
             mpte.setName();
             IProcess process = mpte.getTalendEditor().getProcess();
             currentProcess = process;
-            
+
             Problems.setCurrentProcess(currentProcess);
 
             IRunProcessService service = DesignerPlugin.getDefault().getRunProcessService();
