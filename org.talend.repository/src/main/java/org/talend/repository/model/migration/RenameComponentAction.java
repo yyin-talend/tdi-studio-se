@@ -29,6 +29,7 @@ import org.talend.commons.exception.PersistenceException;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.designer.core.model.utils.emf.talendfile.ConnectionType;
 import org.talend.designer.core.model.utils.emf.talendfile.ElementParameterType;
 import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
 import org.talend.repository.model.ProxyRepositoryFactory;
@@ -73,6 +74,15 @@ public class RenameComponentAction {
         for (Object o : item.getProcess().getNode()) {
             NodeType nt = (NodeType) o;
             replaceInNodeParameterValue(nt, oldName, newName);
+        }
+        for (Object o : item.getProcess().getConnection()) {
+            ConnectionType currentConnection = (ConnectionType) o;
+            if (currentConnection.getSource().equals(oldName)) {
+                currentConnection.setSource(newName);
+            }
+            if (currentConnection.getTarget().equals(oldName)) {
+                currentConnection.setTarget(newName);
+            }
         }
     }
 
