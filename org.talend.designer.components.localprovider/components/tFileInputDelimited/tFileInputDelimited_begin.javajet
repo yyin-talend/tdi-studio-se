@@ -9,6 +9,7 @@
 		org.talend.core.model.process.EConnectionType
 		org.talend.designer.codegen.config.CodeGeneratorArgument
 		java.util.List
+		org.talend.commons.ui.utils.PathUtils
 	" 
 	class="FileInputDelimitedBegin" 
 %>
@@ -27,7 +28,7 @@
 
         final String IN_DELIM_<%=cid %> = <%=(((String)ElementParameterParser.getValue(node, "__FIELDSEPARATOR__")).compareTo("*")==0)?"\\*":ElementParameterParser.getValue(node, "__FIELDSEPARATOR__") %>;
         java.io.BufferedReader in<%=cid %> = null;
-        in<%=cid %> = new java.io.BufferedReader(new java.io.FileReader(<%=ElementParameterParser.getValue(node, "__FILENAME__") %>));
+        in<%=cid %> = new java.io.BufferedReader(new java.io.FileReader(<%=PathUtils.getPortablePath(ElementParameterParser.getValue(node, "__FILENAME__")) %>));
 
         String str;
         java.util.StringTokenizer strToken;
