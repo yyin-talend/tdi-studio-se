@@ -400,10 +400,14 @@ public class SelectorTableForm extends AbstractForm {
                     .getInstance();
 
             metadataTable = ConnectionFactory.eINSTANCE.createMetadataTable();
+            
             initExistingNames();
             metadataTable.setLabel(IndiceHelper.getIndexedLabel(tableString, existingNames));
             metadataTable.setSourceName(tableItem.getText());
             metadataTable.setId(factory.getNextId());
+            metadataTable.setTableType(ExtractMetaDataFromDataBase.getTableTypeByTableName(tableString));
+            
+            
             List<MetadataColumn> metadataColumnsValid = new ArrayList<MetadataColumn>();
             Iterator iterate = metadataColumns.iterator();
 

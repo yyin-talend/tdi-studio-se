@@ -41,6 +41,7 @@ import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNode.ENodeType;
+import org.talend.repository.ui.views.RepositoryContentProvider.MetadataTableRepositoryObject;
 
 /**
  * Label provider for the repository view. <code>DEBUG</code> boolean field specify if details (such as objects ids)
@@ -115,8 +116,46 @@ public class RepositoryLabelProvider extends LabelProvider implements IColorProv
                 DocumentationItem item = (DocumentationItem) node.getObject().getProperty().getItem();
                 return CoreImageProvider.getImage(item.getExtension());
             }
+
+            // if (node.getObject() != null && node.getObject().getType() == ERepositoryObjectType.METADATA_CON_TABLE) {
+            //
+            // if (node.getObject() instanceof MetadataTable) {
+            // System.out.println("node instanceof MetadataTable.");
+            // }
+            // MetadataTable metadataTable = (MetadataTable) node.getObject();
+            // String tableType = metadataTable.getType()();
+            // if (tableType!=null && tableType.equalsIgnoreCase("VIEW")) {
+            // return CoreImageProvider.getImage(ERepositoryObjectType.METADATA_CON_VIEW);
+            // }
+            // if (tableType!=null && tableType.equalsIgnoreCase("TABLE")) {
+            // return CoreImageProvider.getImage(ERepositoryObjectType.METADATA_CON_TABLE);
+            // }
+            // }
+
             // IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
             // ERepositoryStatus repositoryStatus = factory.getStatus(node.getObject());
+
+            //Gets different icons for corresponding table type(view, table, synonym).
+            if (node.getObject() instanceof MetadataTableRepositoryObject) {
+                String tableType = ((MetadataTableRepositoryObject) node.getObject()).getTableType();
+                if(tableType == null)
+                {
+                    return CoreImageProvider.getImage(node.getObject().getType());
+                }
+                ERepositoryObjectType tableImage;
+                if (tableType.equals("VIEW")) {
+                    tableImage = ERepositoryObjectType.METADATA_CON_VIEW;
+                } else if (tableType.equals("TABLE")) {
+                    tableImage = ERepositoryObjectType.METADATA_CON_TABLE;
+
+                } else if (tableType.equals("SYNONYM")) {
+                    tableImage = ERepositoryObjectType.METADATA_CON_SYNONYM;
+
+                } else {
+                    tableImage = ERepositoryObjectType.METADATA_CON_TABLE;
+                }
+                return CoreImageProvider.getImage(tableImage);
+            }
 
             return CoreImageProvider.getImage(node.getObject().getType());
             // return BusinessImageProvider.getImage(node.getObject().getType(), repositoryStatus);

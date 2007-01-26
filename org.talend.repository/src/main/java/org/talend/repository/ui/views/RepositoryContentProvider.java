@@ -141,7 +141,8 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
             businessProcessNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.BUSINESS_PROCESS);
             nodes.add(businessProcessNode);
 
-            convert(factory.getBusinessProcess(), businessProcessNode, ERepositoryObjectType.BUSINESS_PROCESS, recBinNode);
+            convert(factory.getBusinessProcess(), businessProcessNode, ERepositoryObjectType.BUSINESS_PROCESS,
+                    recBinNode);
 
             // 2. Process
             RepositoryNode processNode = new RepositoryNode(null, root, ENodeType.SYSTEM_FOLDER);
@@ -188,7 +189,8 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
             metadataConNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.METADATA_CONNECTIONS);
             metadataNode.getChildren().add(metadataConNode);
 
-            convert(factory.getMetadataConnection(), metadataConNode, ERepositoryObjectType.METADATA_CONNECTIONS, recBinNode);
+            convert(factory.getMetadataConnection(), metadataConNode, ERepositoryObjectType.METADATA_CONNECTIONS,
+                    recBinNode);
 
             // 5.2. Metadata file delimited
             RepositoryNode metadataFileNode = new RepositoryNode(null, root, ENodeType.SYSTEM_FOLDER);
@@ -196,13 +198,14 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
             metadataFileNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.METADATA_FILE_DELIMITED);
             metadataNode.getChildren().add(metadataFileNode);
 
-            convert(factory.getMetadataFileDelimited(), metadataFileNode, ERepositoryObjectType.METADATA_FILE_DELIMITED,
-                    recBinNode);
+            convert(factory.getMetadataFileDelimited(), metadataFileNode,
+                    ERepositoryObjectType.METADATA_FILE_DELIMITED, recBinNode);
 
             // 5.3. Metadata file positional
             RepositoryNode metadataFilePositionalNode = new RepositoryNode(null, root, ENodeType.SYSTEM_FOLDER);
             metadataFilePositionalNode.setProperties(EProperties.LABEL, ERepositoryObjectType.METADATA_FILE_POSITIONAL);
-            metadataFilePositionalNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.METADATA_FILE_POSITIONAL);
+            metadataFilePositionalNode.setProperties(EProperties.CONTENT_TYPE,
+                    ERepositoryObjectType.METADATA_FILE_POSITIONAL);
             metadataNode.getChildren().add(metadataFilePositionalNode);
 
             convert(factory.getMetadataFilePositional(), metadataFilePositionalNode,
@@ -214,8 +217,8 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
             metadataFileRegexpNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.METADATA_FILE_REGEXP);
             metadataNode.getChildren().add(metadataFileRegexpNode);
 
-            convert(factory.getMetadataFileRegexp(), metadataFileRegexpNode, ERepositoryObjectType.METADATA_FILE_REGEXP,
-                    recBinNode);
+            convert(factory.getMetadataFileRegexp(), metadataFileRegexpNode,
+                    ERepositoryObjectType.METADATA_FILE_REGEXP, recBinNode);
 
             // 5.5. Metadata file xml
             RepositoryNode metadataFileXmlNode = new RepositoryNode(null, root, ENodeType.SYSTEM_FOLDER);
@@ -223,7 +226,8 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
             metadataFileXmlNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.METADATA_FILE_XML);
             metadataNode.getChildren().add(metadataFileXmlNode);
 
-            convert(factory.getMetadataFileXml(), metadataFileXmlNode, ERepositoryObjectType.METADATA_FILE_XML, recBinNode);
+            convert(factory.getMetadataFileXml(), metadataFileXmlNode, ERepositoryObjectType.METADATA_FILE_XML,
+                    recBinNode);
 
             // 5.6. Metadata file ldif
             RepositoryNode metadataFileLdifNode = new RepositoryNode(null, root, ENodeType.SYSTEM_FOLDER);
@@ -231,7 +235,8 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
             metadataFileLdifNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.METADATA_FILE_LDIF);
             metadataNode.getChildren().add(metadataFileLdifNode);
 
-            convert(factory.getMetadataFileLdif(), metadataFileLdifNode, ERepositoryObjectType.METADATA_FILE_LDIF, recBinNode);
+            convert(factory.getMetadataFileLdif(), metadataFileLdifNode, ERepositoryObjectType.METADATA_FILE_LDIF,
+                    recBinNode);
 
         } catch (PersistenceException e) {
             e.printStackTrace();
@@ -245,7 +250,8 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
         }
     }
 
-    private void convert(Container fromModel, RepositoryNode parent, ERepositoryObjectType type, RepositoryNode recBinNode) {
+    private void convert(Container fromModel, RepositoryNode parent, ERepositoryObjectType type,
+            RepositoryNode recBinNode) {
         if (fromModel.isEmpty()) {
             return;
         }
@@ -288,8 +294,8 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
         }
 
         if (type == ERepositoryObjectType.METADATA_CONNECTIONS) {
-            DatabaseConnection metadataConnection = (DatabaseConnection) ((ConnectionItem) repositoryObject.getProperty()
-                    .getItem()).getConnection();
+            DatabaseConnection metadataConnection = (DatabaseConnection) ((ConnectionItem) repositoryObject
+                    .getProperty().getItem()).getConnection();
             createTables(recBinNode, node, repositoryObject, metadataConnection);
         }
         // PTODO tgu implementation a revoir
@@ -304,18 +310,18 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
             createTables(recBinNode, node, repositoryObject, metadataConnection);
         }
         if (type == ERepositoryObjectType.METADATA_FILE_REGEXP) {
-            RegexpFileConnection metadataConnection = (RegexpFileConnection) ((ConnectionItem) repositoryObject.getProperty()
-                    .getItem()).getConnection();
+            RegexpFileConnection metadataConnection = (RegexpFileConnection) ((ConnectionItem) repositoryObject
+                    .getProperty().getItem()).getConnection();
             createTables(recBinNode, node, repositoryObject, metadataConnection);
         }
         if (type == ERepositoryObjectType.METADATA_FILE_XML) {
-            XmlFileConnection metadataConnection = (XmlFileConnection) ((ConnectionItem) repositoryObject.getProperty().getItem())
-                    .getConnection();
+            XmlFileConnection metadataConnection = (XmlFileConnection) ((ConnectionItem) repositoryObject.getProperty()
+                    .getItem()).getConnection();
             createTables(recBinNode, node, repositoryObject, metadataConnection);
         }
         if (type == ERepositoryObjectType.METADATA_FILE_LDIF) {
-            LdifFileConnection metadataConnection = (LdifFileConnection) ((ConnectionItem) repositoryObject.getProperty()
-                    .getItem()).getConnection();
+            LdifFileConnection metadataConnection = (LdifFileConnection) ((ConnectionItem) repositoryObject
+                    .getProperty().getItem()).getConnection();
             createTables(recBinNode, node, repositoryObject, metadataConnection);
         }
     }
@@ -415,6 +421,10 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
 
         public String getId() {
             return table.getId();
+        }
+
+        public String getTableType() {
+            return table.getTableType();
         }
 
         public org.talend.core.model.metadata.builder.connection.MetadataTable getTable() {
