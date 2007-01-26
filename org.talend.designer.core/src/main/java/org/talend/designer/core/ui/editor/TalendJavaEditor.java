@@ -105,7 +105,8 @@ public class TalendJavaEditor extends CompilationUnitEditor implements ISyntaxCh
      * DOC yzhang Comment method "addComplier".
      */
     private void addComplier() {
-        JavaCompositeReconcilingStrategy strategy = new JavaCompositeReconcilingStrategy(this, IDocumentExtension3.DEFAULT_PARTITIONING);
+        JavaCompositeReconcilingStrategy strategy = new JavaCompositeReconcilingStrategy(this,
+                IDocumentExtension3.DEFAULT_PARTITIONING);
         JavaReconciler reconciler = new JavaReconciler(this, strategy, false);
         reconciler.setIsIncrementalReconciler(false);
         reconciler.setIsAllowedToModifyDocument(false);
@@ -136,9 +137,11 @@ public class TalendJavaEditor extends CompilationUnitEditor implements ISyntaxCh
      * @see org.talend.designer.core.ui.editor.ISyntaxCheckable#validateSyntax()
      */
     public void validateSyntax() {
+
         ISourceViewer sourceViewer = getSourceViewer();
         if (sourceViewer instanceof JavaSourceViewer) {
             JavaSourceViewer javaSourceViewer = (JavaSourceViewer) sourceViewer;
+            selectAndReveal(0, 0);
             javaSourceViewer.doOperation(ISourceViewer.FORMAT);
             doSave(null);
         }
@@ -171,7 +174,7 @@ public class TalendJavaEditor extends CompilationUnitEditor implements ISyntaxCh
      * 
      * DOC yzhang Comment method "isDisposed".
      * 
-     * @return Wheather this editor had been disposed.
+     * @return Whether this editor had been disposed.
      */
     public boolean isDisposed() {
         return this.disposed;
@@ -201,10 +204,10 @@ public class TalendJavaEditor extends CompilationUnitEditor implements ISyntaxCh
         DefaultProblemFactory problemFactory = new DefaultProblemFactory(Locale.getDefault());
         IErrorHandlingPolicy errorHandlingPolicy = DefaultErrorHandlingPolicies.proceedWithAllProblems();
         org.eclipse.jdt.internal.compiler.CompilationResult compilationResult = new CompilationResult(unit, 1, 1, 100);
-        org.eclipse.jdt.internal.compiler.problem.ProblemReporter problemReporter = new ProblemReporter(DefaultErrorHandlingPolicies
-                .proceedWithAllProblems(), compilerOptions, new DefaultProblemFactory());
-        CompilationUnitDeclaration compilationUnitDeclaration = new CompilationUnitDeclaration(problemReporter, compilationResult, unit
-                .getContents().length);
+        org.eclipse.jdt.internal.compiler.problem.ProblemReporter problemReporter = new ProblemReporter(
+                DefaultErrorHandlingPolicies.proceedWithAllProblems(), compilerOptions, new DefaultProblemFactory());
+        CompilationUnitDeclaration compilationUnitDeclaration = new CompilationUnitDeclaration(problemReporter,
+                compilationResult, unit.getContents().length);
         Compiler compiler = new Compiler(nameEnvironment, errorHandlingPolicy, compilerOptions, compilerRequestor, problemFactory);
 
         compiler.compile(new ICompilationUnit[] { (ICompilationUnit) unit });

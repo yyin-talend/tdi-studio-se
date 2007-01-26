@@ -259,8 +259,8 @@ public class JavaProcessor implements IProcessor {
             } else {
                 contextFile.setContents(contextStream, true, false, null);
             }
-            service.createRoutineSynchronizer().syncAllRoutines();
             syntaxCheck();
+            service.createRoutineSynchronizer().syncAllRoutines();
         } catch (CoreException e1) {
             throw new ProcessorException(Messages.getString("Processor.tempFailed"), e1); //$NON-NLS-1$
         } catch (SystemException e) {
