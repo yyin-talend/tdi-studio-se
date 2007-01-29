@@ -48,6 +48,7 @@ import org.talend.core.model.general.Project;
 import org.talend.core.prefs.PreferenceManipulator;
 import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.exception.LoginException;
+import org.talend.repository.i18n.BrandingMessages;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.license.LicenseManagement;
 import org.talend.repository.model.ProxyRepositoryFactory;
@@ -91,7 +92,7 @@ public class LoginDialog extends TitleAreaDialog {
     @Override
     protected void configureShell(final Shell newShell) {
         super.configureShell(newShell);
-        newShell.setText(Messages.getString("LoginDialog.title")); //$NON-NLS-1$
+        newShell.setText(BrandingMessages.getString("LoginDialog.title")); //$NON-NLS-1$
     }
 
     /**

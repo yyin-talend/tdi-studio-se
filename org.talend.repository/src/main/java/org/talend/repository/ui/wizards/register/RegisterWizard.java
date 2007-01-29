@@ -22,6 +22,7 @@
 package org.talend.repository.ui.wizards.register;
 
 import org.eclipse.jface.wizard.Wizard;
+import org.talend.repository.i18n.BrandingMessages;
 import org.talend.repository.i18n.Messages;
 
 /**
@@ -62,7 +63,7 @@ public class RegisterWizard extends Wizard {
     public void addPages() {
         mainPage = new RegisterWizardPage();
         addPage(mainPage);
-        setWindowTitle(Messages.getString("RegisterWizard.windowTitle"));
+        setWindowTitle(BrandingMessages.getString("RegisterWizard.windowTitle"));
     }
 
     /**

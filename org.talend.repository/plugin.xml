@@ -293,21 +293,15 @@
          point="org.eclipse.ui.actionSets">
       <actionSet
             id="org.talend.repository.actionSet"
-            label="Acction set"
+            label="Action set"
             visible="true">
-         <menu
-               id="talend"
-               label="Talend">
-            <separator name="Repository"/>
-         </menu>
          <action
                class="org.talend.repository.ui.actions.ImportProjectsAction"
                icon="icons/import_projects_action.gif"
                id="org.talend.repository.action3"
                label="%importProjectsAction.title"
-               menubarPath="talend/Repository"
                style="push"
-               toolbarPath="repository"
+               toolbarPath="Default"
                tooltip="%importProjectsAction.toolTip"/>
       </actionSet>
    </extension>
