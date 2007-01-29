@@ -620,7 +620,7 @@ public class Process extends Element implements IProcess {
                             }
                         }
                         elemParam.setPropertyValue(pType.getName(), tableValues);
-                    } else if (param.getField().equals(EParameterFieldType.TABLE)) {
+                    } else {
                         elemParam.setPropertyValue(pType.getName(), pType.getValue());
                     }
                 }

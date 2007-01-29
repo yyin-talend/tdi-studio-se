@@ -111,7 +111,8 @@ public class NodesPasteCommand extends Command {
         // create the nodes
         for (NodePart copiedNodePart : nodeParts) {
             Node copiedNode = (Node) copiedNodePart.getModel();
-            Node pastedNode = new Node(ComponentsFactoryProvider.getInstance().get(copiedNode.getComponent().getName()), process);
+            Node pastedNode = new Node(
+                    ComponentsFactoryProvider.getInstance().get(copiedNode.getComponent().getName()), process);
 
             Point location = copiedNode.getLocation();
             if (process.isGridEnabled()) {
@@ -202,12 +203,13 @@ public class NodesPasteCommand extends Command {
                         pastedSourceNode.getMetadataList().add(newMetaTable);
 
                     }
-                    Connection pastedConnection = new Connection(pastedSourceNode, pastedTargetNode, connection.getLineStyle(),
-                            metaTableName, newConnectionName);
+                    Connection pastedConnection = new Connection(pastedSourceNode, pastedTargetNode, connection
+                            .getLineStyle(), metaTableName, newConnectionName);
                     for (ElementParameter param : (List<ElementParameter>) connection.getElementParameters()) {
                         pastedConnection.getElementParameter(param.getName()).setValue(param.getValue());
                     }
-                    pastedConnection.getConnectionLabel().setOffset(new Point(connection.getConnectionLabel().getOffset()));
+                    pastedConnection.getConnectionLabel().setOffset(
+                            new Point(connection.getConnectionLabel().getOffset()));
                 }
             }
         }

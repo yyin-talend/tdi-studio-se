@@ -191,8 +191,11 @@ public class Node extends Element implements INode {
 
         setElementParameters(component.createElementParameters(this));
         listReturn = this.component.createReturns();
-        generateUniqueName();
-        meta.setTableName(getUniqueName());
+        String uniqueName = ((Process) getProcess()).generateUniqueNodeName(this);
+        ((Process) getProcess()).addUniqueNodeName(uniqueName);
+        setPropertyValue(EParameterName.UNIQUE_NAME.getName(), uniqueName);
+
+        meta.setTableName(uniqueName);
         setPropertyValue(EParameterName.LABEL.getName(), labelToParse);
         setPropertyValue(EParameterName.HINT.getName(), hintToParse);
         setPropertyValue(EParameterName.SHOW_HINT.getName(), new Boolean(showHint));
@@ -259,18 +262,6 @@ public class Node extends Element implements INode {
 
     public ImageDescriptor getIcon24() {
         return component.getIcon24();
-    }
-
-    /**
-     * Manage to find a unique name with the given name.
-     * 
-     * @param titleName
-     */
-    protected String generateUniqueName() {
-        String uniqueName = ((Process) getProcess()).generateUniqueNodeName(this);
-        ((Process) getProcess()).addUniqueNodeName(uniqueName);
-        setPropertyValue(EParameterName.UNIQUE_NAME.getName(), uniqueName);
-        return uniqueName;
     }
 
     /**
