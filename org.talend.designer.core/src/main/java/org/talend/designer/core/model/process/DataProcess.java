@@ -391,8 +391,13 @@ public class DataProcess {
                 // retrieve the starts node of each current nodes to add a before link
                 Node subNodeStartTarget = graphicalNode.getSubProcessStartNode(true);
                 Node subNodeStartSource = ((Node) connection.getTarget()).getSubProcessStartNode(false);
+
                 AbstractNode subDataNodeStartSource = (AbstractNode) buildCheckMap.get(subNodeStartSource);
                 AbstractNode subDataNodeStartTarget = (AbstractNode) buildCheckMap.get(subNodeStartTarget);
+
+                if (subDataNodeStartSource.getMetadataList().isEmpty()) {
+                    continue;
+                }
 
                 // create a link before between the two subprocess
                 DataConnection dataConnec = new DataConnection();
@@ -479,17 +484,17 @@ public class DataProcess {
 
         initialize();
         for (Node node : graphicalNodeList) {
-            if (node.getIncomingConnections().size() == 0) {
+            if (node.isSubProcessStart()) {
                 buildfromNode(node);
             }
         }
         for (Node node : graphicalNodeList) {
-            if (node.getIncomingConnections().size() == 0) {
+            if (node.isSubProcessStart()) {
                 checkFlowRefLink(node);
             }
         }
         for (Node node : graphicalNodeList) {
-            if (node.getIncomingConnections().size() == 0) {
+            if (node.isSubProcessStart()) {
                 replaceMultipleComponents(node);
             }
         }

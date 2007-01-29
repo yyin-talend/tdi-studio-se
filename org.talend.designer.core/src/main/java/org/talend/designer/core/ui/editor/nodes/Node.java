@@ -616,9 +616,8 @@ public class Node extends Element implements INode {
             for (int j = 0; j < getIncomingConnections().size(); j++) {
                 connec = (Connection) getIncomingConnections().get(j);
                 if (connec.isActivate()
-                        && ((connec.getLineStyle().equals(EConnectionType.FLOW_MAIN)
-                                || connec.getLineStyle().equals(EConnectionType.FLOW_REF) || connec.getLineStyle()
-                                .equals(EConnectionType.ITERATE)))) {
+                        && ((connec.getLineStyle().equals(EConnectionType.FLOW_MAIN) || connec.getLineStyle().equals(
+                                EConnectionType.ITERATE)))) {
                     return false;
                 }
             }
@@ -708,7 +707,7 @@ public class Node extends Element implements INode {
     public Node getSubProcessStartNode(boolean withConditions) {
         if (!withConditions) {
             if ((getCurrentActiveLinksNbInput(EConnectionType.FLOW_MAIN) == 0)
-                    && (getCurrentActiveLinksNbInput(EConnectionType.FLOW_REF) == 0)
+            // && (getCurrentActiveLinksNbInput(EConnectionType.FLOW_REF) == 0)
                     && (getCurrentActiveLinksNbInput(EConnectionType.ITERATE) == 0)) {
                 return this;
             }
