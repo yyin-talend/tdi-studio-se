@@ -43,6 +43,7 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.talend.repository.RepositoryPlugin;
+import org.talend.repository.i18n.BrandingMessages;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.RepositoryConstants;
 
@@ -57,7 +58,7 @@ public class RegisterWizardPage extends WizardPage {
     /**
      * 
      */
-    private static final String DESCRIPTION = Messages.getString("RegisterWizardPage.description"); //$NON-NLS-1$
+    private static final String DESCRIPTION = BrandingMessages.getString("RegisterWizardPage.description"); //$NON-NLS-1$
 
     /** EMail field. */
     private Text emailText;
