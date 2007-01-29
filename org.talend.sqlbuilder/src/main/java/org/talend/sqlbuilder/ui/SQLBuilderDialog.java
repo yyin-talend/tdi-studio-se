@@ -55,6 +55,7 @@ import org.talend.repository.IRepositoryChangedListener;
 import org.talend.repository.RepositoryChangedEvent;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.sqlbuilder.SqlBuilderPlugin;
+import org.talend.sqlbuilder.dbstructure.RepositoryNodeType;
 import org.talend.sqlbuilder.dbstructure.SessionTreeNodeManager;
 import org.talend.sqlbuilder.dbstructure.SessionTreeNodeUtils;
 import org.talend.sqlbuilder.dbstructure.nodes.INode;
@@ -440,6 +441,9 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog, IRepo
                         if (!selection.isEmpty()) {
                             try {
                                 final RepositoryNode repositoryNode = (RepositoryNode) selection.getFirstElement();
+                                if (SQLBuilderRepositoryNodeManager.getRepositoryType(repositoryNode) == RepositoryNodeType.FOLDER) {
+                                    return;
+                                }
                                 node = nodeManager.convert2INode(repositoryNode);
                             } catch (Exception e) {
                                 msg = e.getMessage();
