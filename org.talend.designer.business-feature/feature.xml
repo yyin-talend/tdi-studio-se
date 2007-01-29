@@ -2,7 +2,7 @@
 <feature
       id="org.talend.designer.business_feature"
       label="Business Feature"
-      version="1.1.0.qualifier"
+      version="1.2.0.qualifier"
       provider-name=".Talend SA.">
 
    <description url="http://www.talend.com/beta/">
