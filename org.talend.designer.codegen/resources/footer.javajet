@@ -82,10 +82,10 @@
 
 	long start = java.util.Calendar.getInstance().getTimeInMillis();
 	try {
+	<%=process.getName() %> <%=process.getName() %>Class = new <%=process.getName() %>();
 <%
 	for (INode rootNode : rootNodes) {
 %>
-	<%=process.getName() %> <%=process.getName() %>Class = new <%=process.getName() %>();
 	<%=process.getName() %>Class.<%=rootNode.getUniqueName() %>Process();
 <%
 	}

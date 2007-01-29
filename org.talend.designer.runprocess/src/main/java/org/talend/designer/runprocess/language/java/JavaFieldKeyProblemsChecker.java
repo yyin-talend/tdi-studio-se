@@ -70,7 +70,7 @@ public class JavaFieldKeyProblemsChecker extends CodeProblemsChecker {
             problems = new ArrayList<Problem>();
             for (DetailedProblem problemWithLine : list) {
                 Problem talendProblem = new Problem();
-                talendProblem.setDescription("Problem on '" + problemWithLine.getSource() + "'  =>  "
+                talendProblem.setDescription("Error on '" + problemWithLine.getSource() + "'  =>  "
                         + problemWithLine.getJdtProblem().getMessage());
                 talendProblem.setStatus(Problem.ProblemStatus.ERROR);
                 talendProblem.setAction(Problem.ProblemAction.ADDED);

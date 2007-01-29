@@ -20,6 +20,7 @@
 //
 // ============================================================================
 package org.talend.designer.mapper.language.perl;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -115,6 +116,9 @@ public class TMapperMainPerljet {
         for (ExternalMapperTable externalTable : inputTables) {
             String tableName = externalTable.getName();
             IConnection connection = hNameToConnection.get(tableName);
+            if (connection == null) {
+                continue;
+            }
             EConnectionType connectionType = connection.getLineStyle();
             if (connectionType == EConnectionType.FLOW_MAIN) {
                 continue;
@@ -246,11 +250,11 @@ public class TMapperMainPerljet {
         // init of allNotRejectTablesHaveFilter and atLeastOneReject
         for (int i = 0; i < lstSize; i++) {
             ExternalMapperTable outputTable = (ExternalMapperTable) outputTablesSortedByReject.get(i);
-            
+
             String outputTableName = outputTable.getName();
 
             sb.append(cr + gm.indent(indent) + "$branch_" + outputTableName + "_is_active = false;");
-            
+
             List<ExternalMapperTableEntry> columnsEntries = outputTable.getMetadataTableEntries();
             List<ExternalMapperTableEntry> filters = outputTable.getConstraintTableEntries();
             boolean hasFilter = filters != null && filters.size() > 0 && !gm.checkFiltersAreEmpty(outputTable);
@@ -396,7 +400,7 @@ public class TMapperMainPerljet {
                     }
                 }
 
-                sb.append(cr + gm.indent(indent)  + "$branch_" + outputTableName + "_is_active = true;");
+                sb.append(cr + gm.indent(indent) + "$branch_" + outputTableName + "_is_active = true;");
 
                 if (!currentIsReject && !currentIsRejectInnerJoin || currentIsReject || currentIsRejectInnerJoin
                         && atLeastOneInputTableWithInnerJoin) {

@@ -125,6 +125,9 @@ public class TMapperMainJavajet {
         for (ExternalMapperTable externalTable : inputTables) {
             String tableName = externalTable.getName();
             IConnection connection = hNameToConnection.get(tableName);
+            if (connection == null) {
+                continue;
+            }
             EConnectionType connectionType = connection.getLineStyle();
             if (connectionType == EConnectionType.FLOW_MAIN) {
                 continue;

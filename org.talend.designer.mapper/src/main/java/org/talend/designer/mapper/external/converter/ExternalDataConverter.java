@@ -63,11 +63,10 @@ public class ExternalDataConverter {
 
     private MapperManager mapperManager;
 
-    
-    
     /**
      * DOC amaumont ExternalDataConverter constructor comment.
-     * @param main 
+     * 
+     * @param main
      */
     public ExternalDataConverter(MapperManager mapperManager) {
         super();
@@ -137,11 +136,11 @@ public class ExternalDataConverter {
             if (connection != null) {
                 ExternalMapperTable persistentTable = nameToOutpuPersistentTable.get(connection.getName());
                 outputTable = new OutputTable(this.mapperManager, connection.getTable(), connection.getName());
-                outputTable.initFromExternalData(persistentTable); 
+                outputTable.initFromExternalData(persistentTable);
             } else {
                 ExternalMapperTable persistentTable = nameToOutpuPersistentTable.get(table.getTableName());
                 outputTable = new OutputTable(this.mapperManager, table, table.getTableName());
-                outputTable.initFromExternalData(persistentTable); 
+                outputTable.initFromExternalData(persistentTable);
             }
             outputDataMapTables.add(outputTable);
         }
@@ -149,17 +148,17 @@ public class ExternalDataConverter {
     }
 
     public ArrayList<InputTable> prepareInputTables(List<IOConnection> inputConnections, ExternalMapperData externalData) {
-        Map<String, IOConnection> nameToConnection = new HashMap<String, IOConnection>();
+        Map<String, ExternalMapperTable> nameToConnection = new HashMap<String, ExternalMapperTable>();
         if (externalData != null) {
-            for (IOConnection connection : inputConnections) {
-                nameToConnection.put(connection.getName(), connection);
+            for (ExternalMapperTable persistentTable : externalData.getInputTables()) {
+                nameToConnection.put(persistentTable.getName(), persistentTable);
             }
         }
 
         ArrayList<IOConnection> remainingConnections = new ArrayList<IOConnection>(inputConnections);
         ArrayList<InputTable> inputDataMapTables = new ArrayList<InputTable>();
-        for (ExternalMapperTable persistentTable : externalData.getInputTables()) {
-            IOConnection connection = nameToConnection.get(persistentTable.getName());
+        for (IOConnection connection : inputConnections) {
+            ExternalMapperTable persistentTable = nameToConnection.get(connection.getName());
             if (connection != null) {
                 InputTable inputTable = new InputTable(this.mapperManager, connection, connection.getName());
                 inputTable.initFromExternalData(persistentTable);

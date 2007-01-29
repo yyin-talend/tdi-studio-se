@@ -426,8 +426,10 @@ public class UIManager {
         if (previousSelectionChangedListener != null) {
             // metadataTVCreator.removeSelectionChangedListener(previousSelectionChangedListener);
             metadataTVCreator.getSelectionHelper().removeAfterSelectionListener(previousSelectionChangedListener);
-            previousSelectedTableView.getTableViewerCreatorForColumns().getSelectionHelper().removeAfterSelectionListener(
-                    previousSelectionChangedListener);
+            if (previousSelectedTableView != null) {
+                previousSelectedTableView.getTableViewerCreatorForColumns().getSelectionHelper().removeAfterSelectionListener(
+                        previousSelectionChangedListener);
+            }
         }
 
         if (previousModifiedBeanListener != null) {
@@ -628,6 +630,10 @@ public class UIManager {
      */
     public void selectLinkedTableEntries(IMetadataTable metadataTable, int[] selectionIndices) {
         DataMapTableView dataMapTableView = tableManager.getView(metadataTable);
+
+        if (dataMapTableView == null) {
+            return;
+        }
 
         dataMapTableView.setTableSelection(selectionIndices);
 
