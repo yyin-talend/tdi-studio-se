@@ -445,52 +445,76 @@ public class CodeGenerator implements ICodeGenerator {
 
     /**
      * DOC mhirt Comment method "generateComponentCodeWithRows".
+     * 
      * @param node
      * @return
      */
-    public String generateComponentCodeWithRows(INode node) {
+    public String generateComponentCodeWithRows(String nodeName) {
         StringBuffer componentsCode = new StringBuffer();
         if (process == null) {
             throw new NullPointerException();
         } else {
             List<? extends INode> allProcessNodes = (List<? extends INode>) process.getGeneratingNodes();
-            List<INode> lightProcessNodes = new ArrayList<INode>();
-            lightProcessNodes.add(node);
-            NodesTree lightProcess = new NodesTree(lightProcessNodes, false);
-            lightProcess.addRootNode(node);
-            lightProcess.buildSubTrees();
+            INode node = extractNodeFromProcess(nodeName);
+            if (node != null) {
+                List<INode> lightProcessNodes = new ArrayList<INode>();
+                lightProcessNodes.add(node);
+                NodesTree lightProcess = new NodesTree(lightProcessNodes, false);
+                lightProcess.addRootNode(node);
+                lightProcess.buildSubTrees();
 
-            Vector headerArgument = new Vector(2);
-            headerArgument.add(process);
-            headerArgument.add((String) CodeGeneratorActivator.getDefault().getBundle().getHeaders().get(
-                    org.osgi.framework.Constants.BUNDLE_VERSION));
+                Vector headerArgument = new Vector(2);
+                headerArgument.add(process);
+                headerArgument.add((String) CodeGeneratorActivator.getDefault().getBundle().getHeaders().get(
+                        org.osgi.framework.Constants.BUNDLE_VERSION));
 
-            try {
-                componentsCode.append(generateTypedComponentCode(EInternalTemplate.HEADER, headerArgument));
-                for (NodesSubTree subTree : processTree.getSubTrees()) {
-                    if (subTree.containsNode(node)) {
-                        componentsCode.append(generateTypedComponentCode(EInternalTemplate.SUBPROCESS_HEADER, subTree));
-                        componentsCode.append(generateComponentsCode(lightProcess.getSubTrees().get(0), lightProcess
-                                .getSubTrees().get(0).getRootNode(), ECodePart.BEGIN));
-                        componentsCode.append(generateComponentsCode(lightProcess.getSubTrees().get(0), lightProcess
-                                .getSubTrees().get(0).getRootNode(), ECodePart.MAIN));
-                        componentsCode.append(generateTypedComponentCode(EInternalTemplate.PART_ENDMAIN, null));
-                        componentsCode.append(generateComponentsCode(lightProcess.getSubTrees().get(0), lightProcess
-                                .getSubTrees().get(0).getRootNode(), ECodePart.END));
-                        componentsCode.append(generateTypedComponentCode(EInternalTemplate.SUBPROCESS_FOOTER, subTree));
+                try {
+                    componentsCode.append(generateTypedComponentCode(EInternalTemplate.HEADER, headerArgument));
+                    for (NodesSubTree subTree : processTree.getSubTrees()) {
+                        if (subTree.containsNode(node)) {
+                            componentsCode.append(generateTypedComponentCode(EInternalTemplate.SUBPROCESS_HEADER,
+                                    subTree));
+                            componentsCode.append(generateComponentsCode(lightProcess.getSubTrees().get(0),
+                                    lightProcess.getSubTrees().get(0).getRootNode(), ECodePart.BEGIN));
+                            componentsCode.append(generateComponentsCode(lightProcess.getSubTrees().get(0),
+                                    lightProcess.getSubTrees().get(0).getRootNode(), ECodePart.MAIN));
+                            componentsCode.append(generateTypedComponentCode(EInternalTemplate.PART_ENDMAIN, null));
+                            componentsCode.append(generateComponentsCode(lightProcess.getSubTrees().get(0),
+                                    lightProcess.getSubTrees().get(0).getRootNode(), ECodePart.END));
+                            componentsCode.append(generateTypedComponentCode(EInternalTemplate.SUBPROCESS_FOOTER,
+                                    subTree));
+                        }
                     }
+                    Vector footerArgument = new Vector(2);
+                    footerArgument.add(process);
+                    footerArgument.add(processTree.getRootNodes());
+                    componentsCode.append(generateTypedComponentCode(EInternalTemplate.FOOTER, footerArgument));
+                    componentsCode.append(generateTypedComponentCode(EInternalTemplate.PROCESSINFO, componentsCode
+                            .length()));
+                } catch (CodeGeneratorException ce) {
+                    ce.printStackTrace();
+                    componentsCode = new StringBuffer();
                 }
-                Vector footerArgument = new Vector(2);
-                footerArgument.add(process);
-                footerArgument.add(processTree.getRootNodes());
-                componentsCode.append(generateTypedComponentCode(EInternalTemplate.FOOTER, footerArgument));
-                componentsCode
-                        .append(generateTypedComponentCode(EInternalTemplate.PROCESSINFO, componentsCode.length()));
-            } catch (CodeGeneratorException ce) {
-                ce.printStackTrace();
-                componentsCode = new StringBuffer();
+            } else {
+                throw new TypeNotPresentException("Node not found in current process", null);
             }
         }
         return componentsCode.toString();
+    }
+
+    /**
+     * DOC mhirt Comment method "extractNodeFromProcess".
+     * 
+     * @param nodeName
+     * @return
+     */
+    private INode extractNodeFromProcess(String nodeName) {
+        List<? extends INode> allProcessNodes = (List<? extends INode>) process.getGeneratingNodes();
+        for (INode node : allProcessNodes) {
+            if (node.getUniqueName().compareTo(nodeName) == 0) {
+                return node;
+            }
+        }
+        return null;
     }
 }
