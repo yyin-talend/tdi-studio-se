@@ -135,27 +135,30 @@ public class RepositoryLabelProvider extends LabelProvider implements IColorProv
             // IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
             // ERepositoryStatus repositoryStatus = factory.getStatus(node.getObject());
 
-            //Gets different icons for corresponding table type(view, table, synonym).
-            if (node.getObject() instanceof MetadataTableRepositoryObject) {
-                String tableType = ((MetadataTableRepositoryObject) node.getObject()).getTableType();
-                if(tableType == null)
-                {
-                    return CoreImageProvider.getImage(node.getObject().getType());
-                }
-                ERepositoryObjectType tableImage;
-                if (tableType.equals("VIEW")) {
-                    tableImage = ERepositoryObjectType.METADATA_CON_VIEW;
-                } else if (tableType.equals("TABLE")) {
-                    tableImage = ERepositoryObjectType.METADATA_CON_TABLE;
-
-                } else if (tableType.equals("SYNONYM")) {
-                    tableImage = ERepositoryObjectType.METADATA_CON_SYNONYM;
-
-                } else {
-                    tableImage = ERepositoryObjectType.METADATA_CON_TABLE;
-                }
-                return CoreImageProvider.getImage(tableImage);
-            }
+            
+            //Gets different icons for corresponding table type(view, table, synonym),added by ftang.
+            //If want to display different icons for different table type, uncomment code below.
+//            if (node.getObject() instanceof MetadataTableRepositoryObject) {
+//                String tableType = ((MetadataTableRepositoryObject) node.getObject()).getTableType();
+//                if(tableType == null)
+//                {
+//                    return CoreImageProvider.getImage(node.getObject().getType());
+//                }
+//                ERepositoryObjectType tableImage;
+//                if (tableType.equals("VIEW")) {
+//                    tableImage = ERepositoryObjectType.METADATA_CON_VIEW;
+//                } else if (tableType.equals("TABLE")) {
+//                    tableImage = ERepositoryObjectType.METADATA_CON_TABLE;
+//
+//                } else if (tableType.equals("SYNONYM")) {
+//                    tableImage = ERepositoryObjectType.METADATA_CON_SYNONYM;
+//
+//                } else {
+//                    tableImage = ERepositoryObjectType.METADATA_CON_TABLE;
+//                }
+//                return CoreImageProvider.getImage(tableImage);
+//            }
+            //Ends
 
             return CoreImageProvider.getImage(node.getObject().getType());
             // return BusinessImageProvider.getImage(node.getObject().getType(), repositoryStatus);
