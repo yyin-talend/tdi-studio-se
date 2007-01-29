@@ -23,6 +23,7 @@
     	String context = null;
     	boolean watch = false;
     	int countParam = args.length;
+    	System.out.println(countParam);
     	switch (countParam) {
     		case 0 :
     			//do nothing
@@ -32,7 +33,9 @@
     			break;
     		case 2 : 
     			context = args[0];
+    			System.out.println(context);
     			watch = Boolean.parseBoolean(args[1]);
+    			System.out.println(watch);
     			break;
     		default:
     			//do nothing
@@ -54,7 +57,7 @@
 		// PTODO MHIRT Implements Stats
 		if (stats) {
 %>
-	StartThreadStat();
+	//StartThreadStat();
 <%
 		}
 %>
@@ -100,7 +103,7 @@
 		// PTODO MHIRT Implements Stats
         if (stats) {
 %>
-	StopThreadStat();
+	//StopThreadStat();
 <%
         }
 %>

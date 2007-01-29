@@ -9,6 +9,7 @@
 		org.talend.core.model.process.IConnection
 		org.talend.core.model.metadata.IMetadataTable 
 		org.talend.core.model.metadata.IMetadataColumn
+		org.talend.core.model.metadata.MetadataTalendType
 		org.talend.designer.codegen.config.CodeGeneratorArgument
 	" 
 	class="SubProcessHeader"
@@ -98,7 +99,7 @@ private class <%=conn.getName() %>Struct {
 	<%
 		for (IMetadataColumn column: metadata.getListColumns()) {
 			if (column.isKey()) {
-				if (column.getTalendType().substring(0, 1).toUpperCase().equals(column.getTalendType().substring(0,1))) {
+				if (MetadataTalendType.isJavaPrimitiveType(column.getTalendType())) {
 	%>
 			if (this.<%=column.getLabel() %> == null) {
 				if (other.<%=column.getLabel() %> != null) return false;

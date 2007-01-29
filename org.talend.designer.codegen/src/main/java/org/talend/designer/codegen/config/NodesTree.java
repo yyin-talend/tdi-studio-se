@@ -44,20 +44,23 @@ public class NodesTree {
      * Constuctor for NodesTree.
      * 
      * @param List of Available Nodes in this tree.
+     * @param execute init method or not
      */
-    public NodesTree(List<? extends INode> treeNodes) {
+    public NodesTree(List<? extends INode> treeNodes, boolean init) {
         this.nodes = treeNodes;
         buildRootNodes();
-        buildSubTrees();
+        if (init) {
+            buildSubTrees();
+        }
     }
 
     /**
      * Build SubTrees List.
      */
-    private void buildSubTrees() {
+    public void buildSubTrees() {
         subTrees = new ArrayList<NodesSubTree>();
         for (INode node : nodes) {
-            if ((node.isSubProcessStart()) && (node.isActivate())) {
+            if (((node.isSubProcessStart()) && (node.isActivate())) || (rootNodes.contains(node))) {
                 subTrees.add(new NodesSubTree(node));
             }
         }
@@ -84,6 +87,12 @@ public class NodesTree {
      */
     public List<INode> getRootNodes() {
         return rootNodes;
+    }
+
+    public void addRootNode(INode node) {
+        if (rootNodes != null) {
+            rootNodes.add(node);
+        }
     }
 
     /**

@@ -200,4 +200,18 @@ public class NodesSubTree {
     public void setNodes(List<INode> nodes) {
         this.nodes = nodes;
     }
+    
+    /**
+     * Return true if this subtree contains the node node.
+     * @param node the node to search
+     * @return true if the node exists , false otherwise
+     */
+    public boolean containsNode(INode node) {
+        for (INode toCompareNode : this.nodes) {
+            if (toCompareNode.getUniqueName().equals(node.getUniqueName())) {
+                return true;
+            }
+        }
+        return false;
+    }
 }
