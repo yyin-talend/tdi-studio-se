@@ -76,10 +76,11 @@ public class RunProcessService implements IRunProcessService {
      * org.eclipse.core.runtime.IPath, org.eclipse.core.runtime.IPath, org.apache.log4j.Level, java.lang.String,
      * java.lang.String, int, int, java.lang.String)
      */
-    public int exec(StringBuffer out, StringBuffer err, IPath absCodePath, IPath absContextPath, Level level,
+    public int perlExec(StringBuffer out, StringBuffer err, IPath absCodePath, IPath absContextPath, Level level,
             String perlInterpreterLibOption, String perlInterpreterLibCtxOption, String perlModuleDirectoryOption,
             int statOption, int traceOption, String... codeOptions) throws ProcessorException {
-        return Processor.exec(out, err, absCodePath, absContextPath, level, perlInterpreterLibOption,
+
+        return PerlProcessor.exec(out, err, absCodePath, absContextPath, level, perlInterpreterLibOption,
                 perlInterpreterLibCtxOption, perlModuleDirectoryOption, statOption, traceOption, codeOptions);
 
     }
@@ -103,6 +104,7 @@ public class RunProcessService implements IRunProcessService {
 
     /**
      * DOC xue Comment method "createPerlProcessor".
+     * 
      * @param process
      * @param filenameFromLabel
      * @return
@@ -111,9 +113,9 @@ public class RunProcessService implements IRunProcessService {
         return new PerlProcessor(process, filenameFromLabel);
     }
 
-   
     /**
      * DOC xue Comment method "createJavaProcessor".
+     * 
      * @param process
      * @param filenameFromLabel
      * @return
@@ -122,7 +124,6 @@ public class RunProcessService implements IRunProcessService {
         return new JavaProcessor(process, filenameFromLabel);
     }
 
-    
     public IPerformanceData createPerformanceData(String data) {
         return new PerformanceData(data);
     }

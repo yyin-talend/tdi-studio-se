@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.log4j.Level;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
@@ -60,6 +61,7 @@ import org.talend.designer.codegen.ICodeGeneratorService;
 import org.talend.designer.core.ISyntaxCheckableEditor;
 import org.talend.designer.runprocess.IJavaProcessorStates;
 import org.talend.designer.runprocess.IProcessor;
+import org.talend.designer.runprocess.Processor;
 import org.talend.designer.runprocess.ProcessorException;
 import org.talend.designer.runprocess.RunProcessPlugin;
 import org.talend.designer.runprocess.i18n.Messages;
@@ -425,6 +427,33 @@ public class PerlProcessor implements IProcessor {
     public void addSyntaxCheckableEditor(ISyntaxCheckableEditor editor) {
         // do nothing for perl right now.
 
+    }
+
+    public static int exec(StringBuffer out, StringBuffer err, IPath absCodePath, IPath absContextPath, Level level,
+            String perlInterpreterLibOption, String perlInterpreterLibCtxOption, String perlModuleDirectoryOption,
+            int statOption, int traceOption, String... codeOptions) throws ProcessorException {
+
+        String[] cmd = Processor.getCommandLine(absCodePath, absContextPath, perlInterpreterLibOption,
+                perlInterpreterLibCtxOption, perlModuleDirectoryOption, statOption, traceOption, codeOptions);
+
+        Processor.logCommandLine(cmd, level);
+        try {
+            int status = -1;
+
+            Process process = Runtime.getRuntime().exec(cmd);
+
+            Processor.createProdConsThread(process.getErrorStream(), true, 1024, out, err).start();
+
+            Processor.createProdConsThread(process.getInputStream(), false, 1024, out, err).start();
+
+            status = process.waitFor();
+
+            return status;
+        } catch (IOException ioe) {
+            throw new ProcessorException(Messages.getString("Processor.execFailed"), ioe); //$NON-NLS-1$
+        } catch (InterruptedException ie) {
+            throw new ProcessorException(Messages.getString("Processor.execFailed"), ie); //$NON-NLS-1$
+        }
     }
 
 }

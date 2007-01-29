@@ -213,34 +213,7 @@ public class Processor {
         }
     }
 
-    public static int exec(StringBuffer out, StringBuffer err, IPath absCodePath, IPath absContextPath, Level level,
-            String perlInterpreterLibOption, String perlInterpreterLibCtxOption, String perlModuleDirectoryOption,
-            int statOption, int traceOption, String... codeOptions) throws ProcessorException {
-
-        String[] cmd = getCommandLine(absCodePath, absContextPath, perlInterpreterLibOption, perlInterpreterLibCtxOption,
-                perlModuleDirectoryOption, statOption, traceOption, codeOptions);
-
-        logCommandLine(cmd, level);
-        try {
-            int status = -1;
-
-            Process process = Runtime.getRuntime().exec(cmd);
-
-            createProdConsThread(process.getErrorStream(), true, 1024, out, err).start();
-
-            createProdConsThread(process.getInputStream(), false, 1024, out, err).start();
-
-            status = process.waitFor();
-
-            return status;
-        } catch (IOException ioe) {
-            throw new ProcessorException(Messages.getString("Processor.execFailed"), ioe); //$NON-NLS-1$
-        } catch (InterruptedException ie) {
-            throw new ProcessorException(Messages.getString("Processor.execFailed"), ie); //$NON-NLS-1$
-        }
-    }
-
-    private static Thread createProdConsThread(final InputStream input, final boolean isError, final int bufferSize,
+    public static Thread createProdConsThread(final InputStream input, final boolean isError, final int bufferSize,
             final StringBuffer out, final StringBuffer err) {
         Thread thread = new Thread() {
 
@@ -350,13 +323,13 @@ public class Processor {
             cmd = (String[]) ArrayUtils.add(cmd, TRACE_PORT_ARG + traceOption);
         }
 
-         if (processor instanceof JavaProcessor) {
-         cmd = ((JavaProcessor) processor).getCommandLine();
-                }
+        if (processor instanceof JavaProcessor) {
+            cmd = ((JavaProcessor) processor).getCommandLine();
+        }
         return cmd;
     }
 
-    private static void logCommandLine(String[] cmd, Level level) {
+    public static void logCommandLine(String[] cmd, Level level) {
         StringBuffer sb = new StringBuffer();
         sb.append("Command line:");
         for (String s : cmd) {

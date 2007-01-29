@@ -35,6 +35,7 @@ import org.talend.core.model.process.Problem;
 import org.talend.core.model.process.Problem.ProblemStatus;
 import org.talend.designer.runprocess.Processor;
 import org.talend.designer.runprocess.ProcessorException;
+import org.talend.designer.runprocess.perl.PerlProcessor;
 
 /**
  * Check syntax of Perl expressions.
@@ -46,7 +47,7 @@ import org.talend.designer.runprocess.ProcessorException;
  * $Id$
  * 
  */
-public class PerlCodeProblemsChecker  extends CodeProblemsChecker {
+public class PerlCodeProblemsChecker extends CodeProblemsChecker {
 
     private static File tempFile;
 
@@ -65,7 +66,7 @@ public class PerlCodeProblemsChecker  extends CodeProblemsChecker {
     public static final int PERL_STATUS_OK = 0;
 
     public static final int PERL_STATUS_ERROR_EXPRESSION = 2;
-    
+
     public static final int PERL_STATUS_ERROR_SCALAR_FOUND = 255;
 
     public static final int PERL_STATUS_ERROR_FILE = 9;
@@ -107,7 +108,6 @@ public class PerlCodeProblemsChecker  extends CodeProblemsChecker {
             return null;
         }
 
-        
         StringBuffer out = new StringBuffer();
         StringBuffer err = new StringBuffer();
 
@@ -127,7 +127,8 @@ public class PerlCodeProblemsChecker  extends CodeProblemsChecker {
 
         if (status == PERL_STATUS_OK) {
 
-        } else if (status == PERL_STATUS_ERROR_EXPRESSION || status == PERL_STATUS_ERROR_SCALAR_FOUND || status == PERL_STATUS_ERROR_FILE) {
+        } else if (status == PERL_STATUS_ERROR_EXPRESSION || status == PERL_STATUS_ERROR_SCALAR_FOUND
+                || status == PERL_STATUS_ERROR_FILE) {
             stdErr = err.toString();
             if (status == PERL_STATUS_ERROR_EXPRESSION) {
                 stdErr = replaceStdErrStringForExpression(stdErr);
@@ -172,8 +173,7 @@ public class PerlCodeProblemsChecker  extends CodeProblemsChecker {
      * @return
      */
     private String replaceStdErrStringForExpression(String stdErr) {
-        stdErr = StringUtils.replace(stdErr, STRING1_PREFIX + STRING1_EXPRESSION + STRING1_SUFFIX,
-                STRING1_SUFFIX_PREFIX);
+        stdErr = StringUtils.replace(stdErr, STRING1_PREFIX + STRING1_EXPRESSION + STRING1_SUFFIX, STRING1_SUFFIX_PREFIX);
         stdErr = StringUtils.replace(stdErr, STRING1_EXPRESSION + STRING2_SUFFIX, STRING2_REPLACED);
         return stdErr;
     }
@@ -205,7 +205,7 @@ public class PerlCodeProblemsChecker  extends CodeProblemsChecker {
         String expressionEscapedQuoted = "\"" + expressionEscaped + "\"";
         // System.out.println(expressionEscapedQuoted);
         try {
-            status = Processor.exec(out, err, null, null, Level.TRACE, "-ce", expressionEscapedQuoted, "",-1, -1,
+            status = PerlProcessor.exec(out, err, null, null, Level.TRACE, "-ce", expressionEscapedQuoted, "", -1, -1,
                     new String[0]);
         } catch (ProcessorException e) {
             ExceptionHandler.process(e);
@@ -241,7 +241,7 @@ public class PerlCodeProblemsChecker  extends CodeProblemsChecker {
 
         // System.out.println(expression);
         try {
-            status = Processor.exec(out, err, null, null, Level.TRACE, "-c", file.getAbsolutePath(),"", -1, -1,
+            status = PerlProcessor.exec(out, err, null, null, Level.TRACE, "-c", file.getAbsolutePath(), "", -1, -1,
                     new String[0]);
         } catch (ProcessorException e) {
             ExceptionHandler.process(e);
@@ -250,7 +250,9 @@ public class PerlCodeProblemsChecker  extends CodeProblemsChecker {
         return status;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.core.language.ICodeProblemsChecker#checkProblems()
      */
     public List<Problem> checkProblems() {
