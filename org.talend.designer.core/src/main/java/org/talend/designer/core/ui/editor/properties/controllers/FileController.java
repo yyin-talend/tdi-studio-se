@@ -23,6 +23,7 @@ package org.talend.designer.core.ui.editor.properties.controllers;
 
 import java.beans.PropertyChangeEvent;
 
+import org.eclipse.core.runtime.Path;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.jface.fieldassist.DecoratedField;
 import org.eclipse.jface.fieldassist.FieldDecoration;
@@ -44,6 +45,7 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.talend.core.CorePlugin;
 import org.talend.core.model.process.IElementParameter;
+import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.properties.DynamicTabbedPropertySection;
@@ -83,7 +85,8 @@ public class FileController extends AbstractElementPropertySectionController {
             if (!file.equals("")) { //$NON-NLS-1$
                 String propertyName = (String) btnEdit.getData(PROPERTY);
                 if (!elem.getPropertyValue(propertyName).equals(file)) {
-                    return new PropertyChangeCommand(elem, propertyName, "'" + file + "'");
+                    String portableValue = Path.fromOSString(file).toPortableString();
+                    return new PropertyChangeCommand(elem, propertyName, TalendTextUtils.addQuotes(portableValue));
 
                 }
             }

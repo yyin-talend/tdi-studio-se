@@ -679,7 +679,7 @@ public class Node extends Element implements INode {
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.core.model.process.INode#isMultipleMethods(org.talend.core.model.temp.ECodeLanguage)
+     * @see org.talend.core.model.process.INode#isMultipleMethods()
      */
     public Boolean isMultipleMethods() {
         return component.isMultipleMethods();

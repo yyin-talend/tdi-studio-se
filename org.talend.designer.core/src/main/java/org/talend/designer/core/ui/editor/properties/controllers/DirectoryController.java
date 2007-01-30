@@ -23,6 +23,7 @@ package org.talend.designer.core.ui.editor.properties.controllers;
 
 import java.beans.PropertyChangeEvent;
 
+import org.eclipse.core.runtime.Path;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.jface.fieldassist.DecoratedField;
@@ -45,6 +46,7 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.talend.core.CorePlugin;
 import org.talend.core.model.process.IElementParameter;
+import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.properties.DynamicTabbedPropertySection;
@@ -61,7 +63,6 @@ public class DirectoryController extends AbstractElementPropertySectionControlle
 
     private Button btnEdit;
 
-    private CommandStack commandStack;
 
     /**
      * DOC yzhang DirectoryController constructor comment.
@@ -94,7 +95,8 @@ public class DirectoryController extends AbstractElementPropertySectionControlle
             if (!directory.equals("")) { //$NON-NLS-1$
                 String propertyName = (String) btnEdit.getData(PROPERTY);
                 if (!elem.getPropertyValue(propertyName).equals(directory)) {
-                    return new PropertyChangeCommand(elem, propertyName, "'" + directory + "'");
+                    String portableValue = Path.fromOSString(directory).toPortableString();
+                    return new PropertyChangeCommand(elem, propertyName, TalendTextUtils.addQuotes(portableValue));
 
                 }
             }
@@ -206,7 +208,7 @@ public class DirectoryController extends AbstractElementPropertySectionControlle
         public void widgetSelected(SelectionEvent e) {
             Command command = createCommand();
             if (command != null) {
-                commandStack.execute(command);
+                getCommandStack().execute(command);
             }
 
         }
