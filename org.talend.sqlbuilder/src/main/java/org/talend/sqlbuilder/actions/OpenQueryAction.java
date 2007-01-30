@@ -58,6 +58,9 @@ public class OpenQueryAction extends OpenNewEditorAction {
     @Override
     public void run() {
         RepositoryNode node = (RepositoryNode) getStructuredSelection().getFirstElement();
+        if (node == null) {
+            return;
+        }
         if (node.getProperties(EProperties.CONTENT_TYPE) == RepositoryNodeType.QUERY) {
             List<String> repositoryName = repositoryNodeManager.getALLReposotoryNodeNames();
             ConnectionParameters connectionParameters = new ConnectionParameters();
