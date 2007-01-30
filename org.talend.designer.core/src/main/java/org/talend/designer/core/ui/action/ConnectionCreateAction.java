@@ -200,7 +200,8 @@ public class ConnectionCreateAction extends SelectionAction {
                     if (node.getProcess().checkValidConnectionName(connectionName)) {
                         nameOk = true;
                     } else {
-                        String message = "The name of this connection is not valid or already exists";
+                        String message = Messages.getString(
+                                "ConnectionCreateAction.errorCreateConnectionName", connectionName); //$NON-NLS-1$
                         MessageDialog.openError(getWorkbenchPart().getSite().getShell(), "Error", message);
                     }
                 }
