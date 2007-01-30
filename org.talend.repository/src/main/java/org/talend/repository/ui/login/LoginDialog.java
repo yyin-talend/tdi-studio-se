@@ -46,9 +46,9 @@ import org.talend.commons.ui.swt.dialogs.ErrorDialogWidthDetailArea;
 import org.talend.core.CorePlugin;
 import org.talend.core.model.general.Project;
 import org.talend.core.prefs.PreferenceManipulator;
+import org.talend.core.ui.branding.BrandingService;
 import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.exception.LoginException;
-import org.talend.repository.i18n.BrandingMessages;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.license.LicenseManagement;
 import org.talend.repository.model.ProxyRepositoryFactory;
@@ -77,7 +77,7 @@ public class LoginDialog extends TitleAreaDialog {
     public LoginDialog(Shell parentShell) {
         super(parentShell);
 
-        ImageDescriptor imgDesc = RepositoryPlugin.imageDescriptorFromPlugin(RepositoryPlugin.PLUGIN_ID, "icons/login_h.jpg"); //$NON-NLS-1$
+        ImageDescriptor imgDesc = BrandingService.getInstance().getLoginHImage();
         if (imgDesc != null) {
             setTitleImage(imgDesc.createImage());
         }
@@ -92,7 +92,7 @@ public class LoginDialog extends TitleAreaDialog {
     @Override
     protected void configureShell(final Shell newShell) {
         super.configureShell(newShell);
-        newShell.setText(BrandingMessages.getString("LoginDialog.title")); //$NON-NLS-1$
+        newShell.setText(Messages.getString("LoginDialog.title", BrandingService.getInstance().getFullProductName())); //$NON-NLS-1$
     }
 
     /**
@@ -114,7 +114,7 @@ public class LoginDialog extends TitleAreaDialog {
         container.setLayout(layout);
         container.setBackground(new Color(null, 0, 0, 0));
 
-        new ImageCanvas(container, "icons/login_v.jpg"); //$NON-NLS-1$
+        new ImageCanvas(container, BrandingService.getInstance().getLoginVImage()); //$NON-NLS-1$
 
         try {
             if (!LicenseManagement.isLicenseValidated()) {
@@ -210,10 +210,9 @@ public class LoginDialog extends TitleAreaDialog {
 
         private Image img;
 
-        public ImageCanvas(Composite parent, String imgPath) {
+        public ImageCanvas(Composite parent, ImageDescriptor imgDesc) {
             super(parent, SWT.NONE);
 
-            ImageDescriptor imgDesc = RepositoryPlugin.imageDescriptorFromPlugin(RepositoryPlugin.PLUGIN_ID, imgPath);
             if (imgDesc != null) {
                 img = imgDesc.createImage();
 

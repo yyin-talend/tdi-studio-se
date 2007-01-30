@@ -22,7 +22,6 @@
 package org.talend.repository.ui.wizards.license;
 
 import org.eclipse.jface.wizard.Wizard;
-import org.talend.repository.i18n.BrandingMessages;
 import org.talend.repository.i18n.Messages;
 
 /**
@@ -55,7 +54,7 @@ public class LicenseWizard extends Wizard {
     public void addPages() {
         mainPage = new LicenseWizardPage();
         addPage(mainPage);
-        setWindowTitle(BrandingMessages.getString("LicenseWizard.windowTitle"));
+        setWindowTitle(Messages.getString("LicenseWizard.windowTitle"));
         
     }
 
