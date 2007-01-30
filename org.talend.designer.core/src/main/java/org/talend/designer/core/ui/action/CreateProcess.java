@@ -27,6 +27,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.window.Window;
 import org.eclipse.jface.wizard.WizardDialog;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
@@ -34,6 +35,7 @@ import org.talend.commons.exception.MessageBoxExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.core.ui.images.BusinessImageProvider;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.ui.MultiPageTalendEditor;
@@ -58,7 +60,9 @@ public class CreateProcess extends AContextualAction {
         super();
         this.setText(CREATE_LABEL);
         this.setToolTipText(CREATE_LABEL);
-        this.setImageDescriptor(ImageProvider.getImageDesc(ECoreImage.PROCESS_ICON));
+        
+        Image folderImg = ImageProvider.getImage(ECoreImage.PROCESS_ICON);
+        this.setImageDescriptor(BusinessImageProvider.getImageWithNew(folderImg));
     }
 
     /*
