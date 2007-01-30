@@ -8,6 +8,7 @@
 		org.talend.designer.codegen.config.CodeGeneratorArgument
                 org.talend.core.model.metadata.MetadataTalendType
 		java.util.List
+		java.util.Map
 		java.util.ArrayList
                 org.talend.commons.utils.StringUtils
 	" 
@@ -33,6 +34,20 @@
                         String talendDbtype = dbtypes[2];
 
                         String dataAction = ElementParameterParser.getValue(node, "__DATA_ACTION__");
+
+                        List<Map<String, String>> addCols =
+            (List<Map<String,String>>)ElementParameterParser.getObjectValue(
+                node,
+                "__ADD_COLS__"
+            );
+                        String action = ElementParameterParser.getValue(
+                            node,
+                            "__ACTION__"
+                        );
+                        if (action.equals("DROP_CREATE_TABLE")
+                            || action.equals("CREATE_TABLE")) {
+                            addCols.clear();
+                        }
 %>
 
 use DBI;
@@ -245,24 +260,64 @@ if ((dataAction.equals("UPDATE"))
     List updateCols  = new ArrayList();
     List keyCols     = new ArrayList();
 
-    int i = 0;
     for (IMetadataColumn column: metadata.getListColumns()) {
+        for(int i = 0; i < addCols.size(); i++) {
+            Map<String, String> addCol = addCols.get(i);
+            if (addCol.get("REFCOL").equals(column.getLabel())) {
+                if (addCol.get("POS").equals("BEFORE")) {
+                    updateCols.add(
+                        "'.sprintf('%s = %s', "
+                        + addCol.get("NAME")
+                        + ", "
+                        + addCol.get("SQL")
+                        + ").'"
+                    );
+                }
+            }
+        }
+
+        String currentQueryPart = column.getLabel() + " = ?";
+
+        for(int i = 0; i < addCols.size(); i++) {
+            Map<String, String> addCol = addCols.get(i);
+            if (addCol.get("REFCOL").equals(column.getLabel())) {
+                if (addCol.get("POS").equals("REPLACE")) {
+                    currentQueryPart =
+                        "'.sprintf('%s = %s', "
+                        + addCol.get("NAME")
+                        + ", "
+                        + addCol.get("SQL")
+                        + ").'"
+                    ;
+                }
+            }
+        }
+
         if (column.isKey()) {
-            keyCols.add(column.getLabel() + " = ?");
+            keyCols.add(currentQueryPart);
         }
-        i++;
+        else {
+            updateCols.add(currentQueryPart);
+        }
+
+        for(int i = 0; i < addCols.size(); i++) {
+            Map<String, String> addCol = addCols.get(i);
+            if (addCol.get("REFCOL").equals(column.getLabel())) {
+                if (addCol.get("POS").equals("AFTER")) {
+                    updateCols.add(
+                        "'.sprintf('%s = %s', "
+                        + addCol.get("NAME")
+                        + ", "
+                        + addCol.get("SQL")
+                        + ").'"
+                    );
+                }
+            }
+        }
     }
 
-    i = 0;
-    for (IMetadataColumn column: metadata.getListColumns()) {
-        if (!column.isKey()) {
-            updateCols.add(column.getLabel() + " = ?");
-        }
-        i++;
-    }
-
-    String keyString        = StringUtils.join(keyCols.toArray(),     " AND ");
-    String updateString     = StringUtils.join(updateCols.toArray(),  ", ");
+    String keyString = StringUtils.join(keyCols.toArray(), " AND ");
+    String updateString = StringUtils.join(updateCols.toArray(), ", ");
 
     if ((dataAction.equals("UPDATE"))
         || (dataAction.equals("UPDATE_OR_INSERT"))
@@ -297,14 +352,57 @@ my $dsth_<%=cid %> = $dbh_<%=cid %>->prepare($query);
 if ((dataAction.equals("INSERT"))
     || (dataAction.equals("UPDATE_OR_INSERT"))
     || (dataAction.equals("INSERT_OR_UPDATE"))) {
+
+    List keys = new ArrayList();
+    List parameters = new ArrayList();
+
+    for (IMetadataColumn column: metadata.getListColumns()) {
+        for(int i = 0; i < addCols.size(); i++) {
+            Map<String, String> addCol = addCols.get(i);
+            if (addCol.get("REFCOL").equals(column.getLabel())) {
+                if (addCol.get("POS").equals("BEFORE")) {
+                    keys.add("'." + addCol.get("NAME") + ".'");
+                    parameters.add("'." + addCol.get("SQL") + ".'");
+                }
+            }
+        }
+
+        String currentParameter = "?";
+        String currentKey = column.getLabel();
+        for(int i = 0; i < addCols.size(); i++) {
+            Map<String, String> addCol = addCols.get(i);
+            if (addCol.get("REFCOL").equals(column.getLabel())) {
+                if (addCol.get("POS").equals("REPLACE")) {
+                    currentKey = "'." + addCol.get("NAME") + ".'";
+                    currentParameter = "'." + addCol.get("SQL") + ".'";
+                }
+            }
+        }
+        keys.add(currentKey);
+        parameters.add(currentParameter);
+
+        for(int i = 0; i < addCols.size(); i++) {
+            Map<String, String> addCol = addCols.get(i);
+            if (addCol.get("REFCOL").equals(column.getLabel())) {
+                if (addCol.get("POS").equals("AFTER")) {
+                    keys.add("'." + addCol.get("NAME") + ".'");
+                    parameters.add("'." + addCol.get("SQL") + ".'");
+                }
+            }
+        }
+    }
+
+    // String keyString = StringUtils.join(keys.toArray(), ".','.");
+    String keyString = StringUtils.join(keys.toArray(), ",");
+    String parametersString = StringUtils.join(parameters.toArray(), ",");
 %>
 
 $query = '
 INSERT
   INTO '.$desc_<%=cid %>{dbtable}.'
-  ('.join(',', @colnames).')
+  (<%=keyString%>)
   VALUES
-  ('.join(',', map {'?'} (1 .. scalar @colnames)).')
+  (<%=parametersString%>)
 ';
 
 my $isth_<%=cid %> = $dbh_<%=cid %>->prepare($query);
