@@ -36,11 +36,11 @@ import org.talend.commons.i18n.MessagesCore;
  * $Id: Messages.java 1 2006-09-29 17:06:40 +0000 (ven., 29 sept. 2006) nrousseau $
  * 
  */
-public class BrandingMessages extends MessagesCore {
+public class Messages extends MessagesCore {
 
-    private static final String BUNDLE_NAME = "brandingmessages"; //$NON-NLS-1$
+    private static final String BUNDLE_NAME = "messages"; //$NON-NLS-1$
 
-    private static ResourceBundle resourceBundle;// = ResourceBundle.getBundle(BUNDLE_NAME);
+    private static ResourceBundle resourceBundle;
 
     private static ResourceBundle getBundle() {
         if (resourceBundle == null) {

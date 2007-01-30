@@ -2,7 +2,8 @@
 	package="org.talend.designer.codegen.translators"
 	imports="
 		org.talend.designer.codegen.config.CodeGeneratorArgument
-		org.talend.designer.codegen.i18n.BrandingMessages
+		org.talend.designer.codegen.i18n.Messages
+		org.talend.core.ui.branding.BrandingService
 		java.text.DateFormat
 		java.util.Calendar
 	"
@@ -13,6 +14,6 @@
     Integer chars = (Integer) codeGenArgument.getArgument();
 %>
 # +-------------------------------------------------------------------------+
-#      <%=BrandingMessages.getString("generatedcode.footerprocess.nbcharsgenerated", chars)%>
+#      <%=Messages.getString("generatedcode.footerprocess.nbcharsgenerated", chars, BrandingService.getInstance().getFullProductName())%>
 #      on the <%=DateFormat.getDateTimeInstance(DateFormat.LONG,DateFormat.LONG).format(Calendar.getInstance().getTime()) %>
 # +-------------------------------------------------------------------------+

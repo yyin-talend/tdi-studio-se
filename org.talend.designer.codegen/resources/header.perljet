@@ -8,7 +8,8 @@
 		org.talend.core.model.process.ElementParameterParser
 		org.talend.designer.codegen.config.CodeGeneratorArgument
 		org.talend.designer.codegen.temp.CodeGeneratorRoutine
-		org.talend.designer.codegen.i18n.BrandingMessages
+		org.talend.designer.codegen.i18n.Messages
+		org.talend.core.ui.branding.BrandingService
 		java.util.List
 		java.util.Vector
 	"
@@ -52,9 +53,9 @@ use talend::trace;
 
 my $_licence = <<'END_OF_LICENCE';
 
- <%=BrandingMessages.getString("generatedcode.copyright.title")%>
+ <%=Messages.getString("generatedcode.copyright.title")%>
 
- <%=BrandingMessages.getString("generatedcode.copyright.body", version)%>
+ <%=Messages.getString("generatedcode.copyright.body", version, BrandingService.getInstance().getFullProductName())%>
 
 END_OF_LICENCE
 
