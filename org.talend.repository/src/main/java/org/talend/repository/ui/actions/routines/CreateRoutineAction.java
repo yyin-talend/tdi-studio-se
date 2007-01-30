@@ -27,12 +27,14 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.window.Window;
 import org.eclipse.jface.wizard.WizardDialog;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PartInitException;
 import org.talend.commons.exception.MessageBoxExceptionHandler;
 import org.talend.commons.exception.SystemException;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.core.ui.images.BusinessImageProvider;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNodeUtilities;
@@ -52,7 +54,9 @@ public class CreateRoutineAction extends AbstractRoutineAction {
 
         setText("Create routine");
         setToolTipText("Create routine");
-        setImageDescriptor(ImageProvider.getImageDesc(ECoreImage.ROUTINE_ICON));
+
+        Image folderImg = ImageProvider.getImage(ECoreImage.ROUTINE_ICON);
+        this.setImageDescriptor(BusinessImageProvider.getImageWithNew(folderImg));
     }
 
     /*

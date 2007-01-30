@@ -21,6 +21,7 @@
 // ============================================================================
 package org.talend.repository.ui.actions.metadata;
 
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.WizardDialog;
@@ -29,6 +30,7 @@ import org.eclipse.ui.PlatformUI;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.model.properties.XmlFileConnectionItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.core.ui.images.BusinessImageProvider;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IProxyRepositoryFactory;
@@ -57,6 +59,11 @@ public class CreateFileXmlAction extends AbstractCreateAction {
 
     private boolean creation = false;
 
+    ImageDescriptor defaultImage = ImageProvider.getImageDesc(ECoreImage.METADATA_FILE_XML_ICON);
+
+    ImageDescriptor createImage = BusinessImageProvider
+            .getImageWithNew(ImageProvider.getImage(ECoreImage.METADATA_FILE_XML_ICON));
+
     /**
      * DOC cantoine CreateFileXmlAction constructor comment.
      * 
@@ -67,7 +74,7 @@ public class CreateFileXmlAction extends AbstractCreateAction {
 
         this.setText(CREATE_LABEL);
         this.setToolTipText(CREATE_LABEL);
-        this.setImageDescriptor(ImageProvider.getImageDesc(ECoreImage.METADATA_FILE_XML_ICON));
+        this.setImageDescriptor(defaultImage);
     }
 
     public void run() {
@@ -97,14 +104,17 @@ public class CreateFileXmlAction extends AbstractCreateAction {
             this.setText(CREATE_LABEL);
             collectChildNames(node);
             creation = true;
+            this.setImageDescriptor(createImage);
             break;
         case REPOSITORY_ELEMENT:
             IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
             if (factory.isPotentiallyEditable(node.getObject())) {
                 this.setText(EDIT_LABEL);
+                this.setImageDescriptor(defaultImage);
                 collectSiblingNames(node);
             } else {
                 this.setText(OPEN_LABEL);
+                this.setImageDescriptor(defaultImage);
             }
             collectSiblingNames(node);
             creation = false;

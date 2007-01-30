@@ -26,10 +26,14 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.wizard.WizardDialog;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
+import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.core.ui.images.BusinessImageProvider;
 import org.talend.core.ui.images.CoreImageProvider;
+import org.talend.core.ui.images.ECoreImage;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNodeUtilities;
 import org.talend.repository.model.RepositoryNode.ENodeType;
@@ -53,7 +57,8 @@ public class CreateDocumentationAction extends AContextualAction {
 
         setText("Add documentation");
         setToolTipText("Add a new documentation item");
-        setImageDescriptor(CoreImageProvider.getImageDesc(ERepositoryObjectType.DOCUMENTATION));
+        Image folderImg = ImageProvider.getImage(ECoreImage.DOCUMENTATION_ICON);
+        this.setImageDescriptor(BusinessImageProvider.getImageWithNew(folderImg));
     }
 
     /*

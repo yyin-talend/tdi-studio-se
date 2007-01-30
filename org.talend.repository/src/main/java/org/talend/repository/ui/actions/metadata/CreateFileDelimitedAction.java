@@ -21,6 +21,7 @@
 // ============================================================================
 package org.talend.repository.ui.actions.metadata;
 
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.WizardDialog;
@@ -29,6 +30,7 @@ import org.eclipse.ui.PlatformUI;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.model.properties.DelimitedFileConnectionItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.core.ui.images.BusinessImageProvider;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IProxyRepositoryFactory;
@@ -56,19 +58,24 @@ public class CreateFileDelimitedAction extends AbstractCreateAction {
     protected static final int WIZARD_HEIGHT = 475;
 
     private boolean creation = false;
-    
+
+    ImageDescriptor defaultImage = ImageProvider.getImageDesc(ECoreImage.METADATA_FILE_DELIMITED_ICON);
+
+    ImageDescriptor createImage = BusinessImageProvider.getImageWithNew(ImageProvider
+            .getImage(ECoreImage.METADATA_FILE_DELIMITED_ICON));
+
     public CreateFileDelimitedAction() {
         super();
 
         this.setText(CREATE_LABEL);
         this.setToolTipText(CREATE_LABEL);
-        this.setImageDescriptor(ImageProvider.getImageDesc(ECoreImage.METADATA_FILE_DELIMITED_ICON));
+        this.setImageDescriptor(defaultImage);
     }
 
     public void run() {
         ISelection selection = getSelection();
-        WizardDialog wizardDialog = new WizardDialog(new Shell(), new DelimitedFileWizard(PlatformUI.getWorkbench(), creation, selection,
-                getExistingNames()));
+        WizardDialog wizardDialog = new WizardDialog(new Shell(), new DelimitedFileWizard(PlatformUI.getWorkbench(), creation,
+                selection, getExistingNames()));
         wizardDialog.setPageSize(WIZARD_WIDTH, WIZARD_HEIGHT);
         wizardDialog.create();
         wizardDialog.open();
@@ -86,15 +93,18 @@ public class CreateFileDelimitedAction extends AbstractCreateAction {
         case SYSTEM_FOLDER:
             this.setText(CREATE_LABEL);
             collectChildNames(node);
+            this.setImageDescriptor(createImage);
             creation = true;
             break;
         case REPOSITORY_ELEMENT:
             IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
             if (factory.isPotentiallyEditable(node.getObject())) {
                 this.setText(EDIT_LABEL);
+                this.setImageDescriptor(defaultImage);
                 collectSiblingNames(node);
             } else {
                 this.setText(OPEN_LABEL);
+                this.setImageDescriptor(defaultImage);
             }
             collectSiblingNames(node);
             creation = false;
