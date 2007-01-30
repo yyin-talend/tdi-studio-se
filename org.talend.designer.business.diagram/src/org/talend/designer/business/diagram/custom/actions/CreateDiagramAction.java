@@ -5,9 +5,11 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.wizard.WizardDialog;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Shell;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.core.ui.images.BusinessImageProvider;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNodeUtilities;
@@ -27,7 +29,8 @@ public class CreateDiagramAction extends AContextualAction {
 
     public CreateDiagramAction() {
         super();
-        setImageDescriptor(ImageProvider.getImageDesc(ECoreImage.BUSINESS_PROCESS_ICON));
+        Image folderImg = ImageProvider.getImage(ECoreImage.BUSINESS_PROCESS_ICON);
+        this.setImageDescriptor(BusinessImageProvider.getImageWithNew(folderImg));
         setText("Create Business Model");
     }
 
