@@ -461,11 +461,13 @@ public class CodeGenerator implements ICodeGenerator {
                         org.osgi.framework.Constants.BUNDLE_VERSION));
 
                 try {
+                    if (nodeConfigurer != null) {
+                        nodeConfigurer.configure(node);
+                    }
                     componentsCode.append(generateTypedComponentCode(EInternalTemplate.HEADER, headerArgument));
                     for (NodesSubTree subTree : processTree.getSubTrees()) {
                         INode subTreeNode = subTree.getNode(node.getUniqueName());
                         if (subTreeNode != null && nodeConfigurer != null) {
-                            nodeConfigurer.configure(node);
                             nodeConfigurer.configure(subTreeNode);
                         }
                         componentsCode.append(generateTypedComponentCode(EInternalTemplate.SUBPROCESS_HEADER, subTree));
