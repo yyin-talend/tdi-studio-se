@@ -30,6 +30,7 @@ import org.talend.core.CorePlugin;
 import org.talend.core.model.general.ConnectionBean;
 import org.talend.core.prefs.CorePreferenceInitializer;
 import org.talend.core.prefs.PreferenceManipulator;
+import org.talend.core.ui.branding.BrandingService;
 import org.talend.repository.registeruser.proxy.RegisterUserPortTypeProxy;
 
 /**
@@ -45,8 +46,8 @@ public class RegisterManagement {
     // REGISTRATION_DONE = 1 : registration OK
     private static final double REGISTRATION_DONE = 2;
 
-    public static boolean register(String email, String country, boolean isProxyEnabled, String proxyHost, String proxyPort,
-            String designerVersion) throws BusinessException {
+    public static boolean register(String email, String country, boolean isProxyEnabled, String proxyHost,
+            String proxyPort, String designerVersion) throws BusinessException {
         boolean result = false;
 
         // if proxy is enabled
@@ -62,10 +63,12 @@ public class RegisterManagement {
         RegisterUserPortTypeProxy proxy = new RegisterUserPortTypeProxy();
         proxy.setEndpoint("http://www.talend.com/TalendRegisterWS/registerws.php");
         try {
-            result = proxy.registerUser(email, country, designerVersion);
+            result = proxy.registerUserWithProductName(email, country, designerVersion, BrandingService.getInstance()
+                    .getShortProductName());
             if (result) {
                 PlatformUI.getPreferenceStore().setValue("REGISTRATION_DONE", 1);
-                PreferenceManipulator prefManipulator = new PreferenceManipulator(CorePlugin.getDefault().getPreferenceStore());
+                PreferenceManipulator prefManipulator = new PreferenceManipulator(CorePlugin.getDefault()
+                        .getPreferenceStore());
                 // prefManipulator.addUser(email);
                 // prefManipulator.setLastUser(email);
 

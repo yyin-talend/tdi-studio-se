@@ -19,6 +19,7 @@
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 // ============================================================================
+
 package org.talend.repository.registeruser.proxy;
 
 /**
@@ -27,20 +28,32 @@ package org.talend.repository.registeruser.proxy;
  * $Id$
  * 
  */
-public class RegisterUserBindingStub extends org.apache.axis.client.Stub implements IRegisterUserPortType {
+public class RegisterUserBindingStub extends org.apache.axis.client.Stub implements
+        org.talend.repository.registeruser.proxy.IRegisterUserPortType {
+
+    private java.util.Vector cachedSerClasses = new java.util.Vector();
+
+    private java.util.Vector cachedSerQNames = new java.util.Vector();
+
+    private java.util.Vector cachedSerFactories = new java.util.Vector();
+
+    private java.util.Vector cachedDeserFactories = new java.util.Vector();
 
     static org.apache.axis.description.OperationDesc[] operations;
 
     static {
-        operations = new org.apache.axis.description.OperationDesc[1];
+        operations = new org.apache.axis.description.OperationDesc[2];
         initOperationDesc1();
     }
 
+    /**
+     * DOC mhirt Comment method "_initOperationDesc1".
+     */
     private static void initOperationDesc1() {
         org.apache.axis.description.OperationDesc oper;
         org.apache.axis.description.ParameterDesc param;
         oper = new org.apache.axis.description.OperationDesc();
-        oper.setName("RegisterUser");
+        oper.setName("IRegisterUser");
         param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "email"),
                 org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName(
                         "http://www.w3.org/2001/XMLSchema", "string"), java.lang.String.class, false, false);
@@ -59,6 +72,31 @@ public class RegisterUserBindingStub extends org.apache.axis.client.Stub impleme
         oper.setStyle(org.apache.axis.constants.Style.RPC);
         oper.setUse(org.apache.axis.constants.Use.ENCODED);
         operations[0] = oper;
+
+        oper = new org.apache.axis.description.OperationDesc();
+        oper.setName("RegisterUserWithProductName");
+        param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "email"),
+                org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName(
+                        "http://www.w3.org/2001/XMLSchema", "string"), java.lang.String.class, false, false);
+        oper.addParameter(param);
+        param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "country"),
+                org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName(
+                        "http://www.w3.org/2001/XMLSchema", "string"), java.lang.String.class, false, false);
+        oper.addParameter(param);
+        param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "designerversion"),
+                org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName(
+                        "http://www.w3.org/2001/XMLSchema", "string"), java.lang.String.class, false, false);
+        oper.addParameter(param);
+        param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "productname"),
+                org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName(
+                        "http://www.w3.org/2001/XMLSchema", "string"), java.lang.String.class, false, false);
+        oper.addParameter(param);
+        oper.setReturnType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "boolean"));
+        oper.setReturnClass(boolean.class);
+        oper.setReturnQName(new javax.xml.namespace.QName("", "result"));
+        oper.setStyle(org.apache.axis.constants.Style.RPC);
+        oper.setUse(org.apache.axis.constants.Use.ENCODED);
+        operations[1] = oper;
 
     }
 
@@ -121,14 +159,50 @@ public class RegisterUserBindingStub extends org.apache.axis.client.Stub impleme
         org.apache.axis.client.Call call = createCall();
         call.setOperation(operations[0]);
         call.setUseSOAPAction(true);
-        call.setSOAPActionURI("http://localhost/TalendRegisterWS/registerws.php/RegisterUser");
+        call.setSOAPActionURI("http://www.talend.com/TalendRegisterWS/registerws.php/IRegisterUser");
         call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
-        call.setOperationName(new javax.xml.namespace.QName("http://localhost/TalendRegisterWS/wsdl", "RegisterUser"));
+        call.setOperationName(new javax.xml.namespace.QName("http://www.talend.com/TalendRegisterWS/wsdl",
+                "IRegisterUser"));
 
         setRequestHeaders(call);
         setAttachments(call);
         try {
             java.lang.Object resp = call.invoke(new java.lang.Object[] { email, country, designerversion });
+
+            if (resp instanceof java.rmi.RemoteException) {
+                throw (java.rmi.RemoteException) resp;
+            } else {
+                extractAttachments(call);
+                try {
+                    return ((java.lang.Boolean) resp).booleanValue();
+                } catch (java.lang.Exception exception) {
+                    return ((java.lang.Boolean) org.apache.axis.utils.JavaUtils.convert(resp, boolean.class))
+                            .booleanValue();
+                }
+            }
+        } catch (org.apache.axis.AxisFault axisFaultException) {
+            throw axisFaultException;
+        }
+    }
+
+    public boolean registerUserWithProductName(java.lang.String email, java.lang.String country,
+            java.lang.String designerversion, java.lang.String productname) throws java.rmi.RemoteException {
+        if (super.cachedEndpoint == null) {
+            throw new org.apache.axis.NoEndPointException();
+        }
+        org.apache.axis.client.Call call = createCall();
+        call.setOperation(operations[1]);
+        call.setUseSOAPAction(true);
+        call.setSOAPActionURI("http://www.talend.com/TalendRegisterWS/registerws.php/RegisterUserWithProductName");
+        call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
+        call.setOperationName(new javax.xml.namespace.QName("http://www.talend.com/TalendRegisterWS/wsdl",
+                "RegisterUserWithProductName"));
+
+        setRequestHeaders(call);
+        setAttachments(call);
+        try {
+            java.lang.Object resp = call
+                    .invoke(new java.lang.Object[] { email, country, designerversion, productname });
 
             if (resp instanceof java.rmi.RemoteException) {
                 throw (java.rmi.RemoteException) resp;

@@ -19,6 +19,7 @@
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 // ============================================================================
+
 package org.talend.repository.registeruser.proxy;
 
 /**
@@ -27,11 +28,11 @@ package org.talend.repository.registeruser.proxy;
  * $Id$
  * 
  */
-public class RegisterUserPortTypeProxy implements IRegisterUserPortType {
+public class RegisterUserPortTypeProxy implements org.talend.repository.registeruser.proxy.IRegisterUserPortType {
 
     private String endpoint = null;
 
-    private IRegisterUserPortType registerUserPortType = null;
+    private org.talend.repository.registeruser.proxy.IRegisterUserPortType registerUserPortType = null;
 
     public RegisterUserPortTypeProxy() {
         initRegisterUserPortTypeProxy();
@@ -39,7 +40,8 @@ public class RegisterUserPortTypeProxy implements IRegisterUserPortType {
 
     private void initRegisterUserPortTypeProxy() {
         try {
-            registerUserPortType = (new RegisterUserLocator()).getRegisterUserPort();
+            registerUserPortType = (new org.talend.repository.registeruser.proxy.RegisterUserLocator())
+                    .getRegisterUserPort();
             if (registerUserPortType != null) {
                 if (endpoint != null) {
                     ((javax.xml.rpc.Stub) registerUserPortType)._setProperty("javax.xml.rpc.service.endpoint.address",
@@ -51,12 +53,12 @@ public class RegisterUserPortTypeProxy implements IRegisterUserPortType {
             }
 
         } catch (javax.xml.rpc.ServiceException serviceException) {
-            // do nothing
+            //
         }
     }
 
     public String getEndpoint() {
-        return endpoint;
+        return this.endpoint;
     }
 
     public void setEndpoint(String endpoint) {
@@ -65,9 +67,10 @@ public class RegisterUserPortTypeProxy implements IRegisterUserPortType {
             ((javax.xml.rpc.Stub) registerUserPortType)
                     ._setProperty("javax.xml.rpc.service.endpoint.address", endpoint);
         }
+
     }
 
-    public IRegisterUserPortType getRegisterUserPortType() {
+    public org.talend.repository.registeruser.proxy.IRegisterUserPortType getRegisterUserPortType() {
         if (registerUserPortType == null) {
             initRegisterUserPortTypeProxy();
         }
@@ -81,4 +84,13 @@ public class RegisterUserPortTypeProxy implements IRegisterUserPortType {
         }
         return registerUserPortType.registerUser(email, country, designerversion);
     }
+
+    public boolean registerUserWithProductName(java.lang.String email, java.lang.String country,
+            java.lang.String designerversion, java.lang.String productname) throws java.rmi.RemoteException {
+        if (registerUserPortType == null) {
+            initRegisterUserPortTypeProxy();
+        }
+        return registerUserPortType.registerUserWithProductName(email, country, designerversion, productname);
+    }
+
 }

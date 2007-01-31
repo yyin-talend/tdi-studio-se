@@ -30,9 +30,27 @@ package org.talend.repository.registeruser.proxy;
  *
  */
 public interface IRegisterUser extends javax.xml.rpc.Service {
+
+    /**
+     * DOC mhirt Comment method "getRegisterUserPortAddress".
+     * @return
+     */
     public java.lang.String getRegisterUserPortAddress();
 
-    public IRegisterUserPortType getRegisterUserPort() throws javax.xml.rpc.ServiceException;
+    /**
+     * DOC mhirt Comment method "getRegisterUserPort".
+     * @return
+     * @throws javax.xml.rpc.ServiceException
+     */
+    public org.talend.repository.registeruser.proxy.IRegisterUserPortType getRegisterUserPort()
+            throws javax.xml.rpc.ServiceException;
 
-    public IRegisterUserPortType getRegisterUserPort(java.net.URL portAddress) throws javax.xml.rpc.ServiceException;
+    /**
+     * DOC mhirt Comment method "getRegisterUserPort".
+     * @param portAddress
+     * @return
+     * @throws javax.xml.rpc.ServiceException
+     */
+    public org.talend.repository.registeruser.proxy.IRegisterUserPortType getRegisterUserPort(java.net.URL portAddress)
+            throws javax.xml.rpc.ServiceException;
 }

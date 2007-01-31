@@ -19,17 +19,18 @@
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 // ============================================================================
+
 package org.talend.repository.registeruser.proxy;
 
 /**
- * DOC mhirt class global comment. Detailled comment <br/>
- * 
+ * DOC mhirt  class global comment. Detailled comment
+ * <br/>
+ *
  * $Id$
- * 
+ *
  */
-public class RegisterUserLocator extends org.apache.axis.client.Service implements IRegisterUser {
-
-    private static final long serialVersionUID = 1650580149675365235L;
+public class RegisterUserLocator extends org.apache.axis.client.Service implements
+        org.talend.repository.registeruser.proxy.IRegisterUser {
 
     public RegisterUserLocator() {
     }
@@ -44,7 +45,7 @@ public class RegisterUserLocator extends org.apache.axis.client.Service implemen
     }
 
     // Use to get a proxy class for RegisterUserPort
-    private java.lang.String registerUserPortAddress = "http://localhost/TalendRegisterWS/registerws.php";
+    private java.lang.String registerUserPortAddress = "http://www.talend.com/TalendRegisterWS/registerws.php";
 
     public java.lang.String getRegisterUserPortAddress() {
         return registerUserPortAddress;
@@ -61,7 +62,8 @@ public class RegisterUserLocator extends org.apache.axis.client.Service implemen
         registerUserPortWSDDServiceName = name;
     }
 
-    public IRegisterUserPortType getRegisterUserPort() throws javax.xml.rpc.ServiceException {
+    public org.talend.repository.registeruser.proxy.IRegisterUserPortType getRegisterUserPort()
+            throws javax.xml.rpc.ServiceException {
         java.net.URL endpoint;
         try {
             endpoint = new java.net.URL(registerUserPortAddress);
@@ -71,9 +73,11 @@ public class RegisterUserLocator extends org.apache.axis.client.Service implemen
         return getRegisterUserPort(endpoint);
     }
 
-    public IRegisterUserPortType getRegisterUserPort(java.net.URL portAddress) throws javax.xml.rpc.ServiceException {
+    public org.talend.repository.registeruser.proxy.IRegisterUserPortType getRegisterUserPort(java.net.URL portAddress)
+            throws javax.xml.rpc.ServiceException {
         try {
-            RegisterUserBindingStub stub = new RegisterUserBindingStub(portAddress, this);
+            org.talend.repository.registeruser.proxy.RegisterUserBindingStub stub = new org.talend.repository.registeruser.proxy.RegisterUserBindingStub(
+                    portAddress, this);
             stub.setPortName(getRegisterUserPortWSDDServiceName());
             return stub;
         } catch (org.apache.axis.AxisFault e) {
@@ -91,9 +95,10 @@ public class RegisterUserLocator extends org.apache.axis.client.Service implemen
      */
     public java.rmi.Remote getPort(Class serviceEndpointInterface) throws javax.xml.rpc.ServiceException {
         try {
-            if (IRegisterUserPortType.class.isAssignableFrom(serviceEndpointInterface)) {
-                RegisterUserBindingStub stub = new RegisterUserBindingStub(new java.net.URL(registerUserPortAddress),
-                        this);
+            if (org.talend.repository.registeruser.proxy.IRegisterUserPortType.class
+                    .isAssignableFrom(serviceEndpointInterface)) {
+                org.talend.repository.registeruser.proxy.RegisterUserBindingStub stub = new org.talend.repository.registeruser.proxy.RegisterUserBindingStub(
+                        new java.net.URL(registerUserPortAddress), this);
                 stub.setPortName(getRegisterUserPortWSDDServiceName());
                 return stub;
             }
@@ -124,15 +129,15 @@ public class RegisterUserLocator extends org.apache.axis.client.Service implemen
     }
 
     public javax.xml.namespace.QName getServiceName() {
-        return new javax.xml.namespace.QName("http://localhost/TalendRegisterWS/wsdl", "RegisterUser");
+        return new javax.xml.namespace.QName("http://www.talend.com/TalendRegisterWS/wsdl", "IRegisterUser");
     }
 
-    private java.util.HashSet<javax.xml.namespace.QName> ports = null;
+    private java.util.HashSet ports = null;
 
     public java.util.Iterator getPorts() {
         if (ports == null) {
-            ports = new java.util.HashSet<javax.xml.namespace.QName>();
-            ports.add(new javax.xml.namespace.QName("http://localhost/TalendRegisterWS/wsdl", "RegisterUserPort"));
+            ports = new java.util.HashSet();
+            ports.add(new javax.xml.namespace.QName("http://www.talend.com/TalendRegisterWS/wsdl", "RegisterUserPort"));
         }
         return ports.iterator();
     }
@@ -145,8 +150,7 @@ public class RegisterUserLocator extends org.apache.axis.client.Service implemen
 
         if ("RegisterUserPort".equals(portName)) {
             setRegisterUserPortEndpointAddress(address);
-        } else {
-            // Unknown Port Name
+        } else { // Unknown Port Name
             throw new javax.xml.rpc.ServiceException(" Cannot set Endpoint Address for Unknown Port" + portName);
         }
     }
