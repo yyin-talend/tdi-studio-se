@@ -471,9 +471,9 @@ public class CodeGenerator implements ICodeGenerator {
                 try {
                     componentsCode.append(generateTypedComponentCode(EInternalTemplate.HEADER, headerArgument));
                     for (NodesSubTree subTree : processTree.getSubTrees()) {
+                        componentsCode.append(generateTypedComponentCode(EInternalTemplate.SUBPROCESS_HEADER,
+                                subTree));
                         if (subTree.containsNode(node)) {
-                            componentsCode.append(generateTypedComponentCode(EInternalTemplate.SUBPROCESS_HEADER,
-                                    subTree));
                             componentsCode.append(generateComponentsCode(lightProcess.getSubTrees().get(0),
                                     lightProcess.getSubTrees().get(0).getRootNode(), ECodePart.BEGIN));
                             componentsCode.append(generateComponentsCode(lightProcess.getSubTrees().get(0),
@@ -481,9 +481,9 @@ public class CodeGenerator implements ICodeGenerator {
                             componentsCode.append(generateTypedComponentCode(EInternalTemplate.PART_ENDMAIN, null));
                             componentsCode.append(generateComponentsCode(lightProcess.getSubTrees().get(0),
                                     lightProcess.getSubTrees().get(0).getRootNode(), ECodePart.END));
-                            componentsCode.append(generateTypedComponentCode(EInternalTemplate.SUBPROCESS_FOOTER,
-                                    subTree));
                         }
+                        componentsCode.append(generateTypedComponentCode(EInternalTemplate.SUBPROCESS_FOOTER,
+                                subTree));
                     }
                     Vector footerArgument = new Vector(2);
                     footerArgument.add(process);
