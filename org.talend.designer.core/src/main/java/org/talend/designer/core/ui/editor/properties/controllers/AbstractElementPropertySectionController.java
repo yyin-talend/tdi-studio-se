@@ -57,6 +57,7 @@ import org.talend.commons.ui.swt.advanced.dataeditor.commands.IExtendedTableComm
 import org.talend.commons.ui.swt.proposal.ContentProposalAdapterExtended;
 import org.talend.commons.ui.utils.ControlUtils;
 import org.talend.commons.ui.utils.TypedTextCommandExecutor;
+import org.talend.commons.utils.generation.CodeGenerationUtils;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.language.ICodeProblemsChecker;
 import org.talend.core.model.process.EComponentCategory;
@@ -324,7 +325,9 @@ public abstract class AbstractElementPropertySectionController implements Proper
          */
         public void checkErrors(final Control control) {
 
-            boolean isReadonly = elem.getElementParameter(getParameterName(control)).isReadOnly();
+            IElementParameter elementParameter = elem.getElementParameter(getParameterName(control));
+            
+            boolean isReadonly = elementParameter.isReadOnly();
             if (isReadonly) {
                 return;
             }
@@ -347,7 +350,8 @@ public abstract class AbstractElementPropertySectionController implements Proper
                 if (language == ECodeLanguage.PERL) {
                     problems = syntaxChecker.checkProblemsForExpression(valueFinal);
                 } else if (language == ECodeLanguage.JAVA) {
-                    problems = syntaxChecker.checkProblemsFromKey("//TODO : KEY_TO_SET!!!!!", null);
+                    String key = CodeGenerationUtils.buildProblemKey(elem.getElementName(), elementParameter.getName());
+                    problems = syntaxChecker.checkProblemsFromKey(key, null);
                 }
             }
 

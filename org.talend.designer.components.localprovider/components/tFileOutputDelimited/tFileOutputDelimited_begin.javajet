@@ -7,6 +7,7 @@ imports="
     org.talend.core.model.metadata.IMetadataColumn
     org.talend.designer.codegen.config.CodeGeneratorArgument
     java.util.List
+	org.talend.commons.utils.generation.CodeGenerationUtils
 " 
 class="FileOutputDelimitedBegin"
 %>
@@ -39,7 +40,11 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 %>
 
 		final String OUT_DELIM_<%=cid %> = <%=fieldSeparator %>;
+        
+        <% String fileNameFieldKey = CodeGenerationUtils.buildProblemKey(cid, "FILENAME"); %>
+        <%= CodeGenerationUtils.buildStartFieldKey(fileNameFieldKey) %>
         java.io.BufferedWriter out<%=cid %> = new java.io.BufferedWriter(new java.io.FileWriter(<%=filename %>));
+        <%= CodeGenerationUtils.buildEndFieldKey(fileNameFieldKey) %>
 <%
     }
 }

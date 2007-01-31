@@ -23,6 +23,7 @@ package org.talend.designer.mapper.language.generation;
 
 import java.util.List;
 
+import org.talend.commons.utils.generation.CodeGenerationUtils;
 import org.talend.designer.mapper.MapperComponent;
 import org.talend.designer.mapper.external.data.ExternalMapperTableEntry;
 import org.talend.designer.mapper.language.ILanguage;
@@ -57,17 +58,17 @@ public class JavaGenerationManager extends GenerationManager {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < keysNames.length; i++) {
 
-            String key = JavaGenerationManager.buildProblemKey(uniqueNameComponent,
-                    JavaGenerationManager.PROBLEM_KEY_FIELD.METADATA_COLUMN, name, keysNames[i]);
+            String key = CodeGenerationUtils.buildProblemKey(uniqueNameComponent,
+                    JavaGenerationManager.PROBLEM_KEY_FIELD.METADATA_COLUMN.toString(), name, keysNames[i]);
             if (writeCommentedFieldKeys) {
-                sb.append(buildStartFieldKey(key));
+                sb.append(CodeGenerationUtils.buildStartFieldKey(key));
             }
 
             String expression = indent(indent) + name + "HashKey." + keysNames[i] + " = " + keysValues[i] + ";";
             sb.append("\n").append(expression);
 
             if (writeCommentedFieldKeys) {
-                sb.append(buildEndFieldKey(key));
+                sb.append(CodeGenerationUtils.buildEndFieldKey(key));
             }
         }
         sb.append("\n" + indent(indent) + name + "HashKey.hashCodeDirty = true;");
@@ -114,27 +115,6 @@ public class JavaGenerationManager extends GenerationManager {
         return stringBuilder.toString();
     }
 
-    /**
-     * DOC amaumont Comment method "insertFieldKey".
-     * 
-     * @param string
-     * @param expression
-     * @return
-     */
-    public String buildStartFieldKey(String key) {
-        return "\n// Start field " + key + "\n";
-    }
-
-    /**
-     * DOC amaumont Comment method "buildEndFieldKey".
-     * 
-     * @param key
-     * @return
-     */
-    public String buildEndFieldKey(String key) {
-        return "\n// End field " + key + "\n";
-    }
-
     public static void main(String[] args) {
 
         JavaGenerationManager manager = new JavaGenerationManager(LanguageProvider.getJavaLanguage());
@@ -151,21 +131,6 @@ public class JavaGenerationManager extends GenerationManager {
     public enum PROBLEM_KEY_FIELD {
         METADATA_COLUMN,
         FILTER,
-    }
-
-    public static final String PROBLEM_KEY_FIELD_SEPARATOR = ":";
-
-    /**
-     * DOC amaumont Comment method "buildProblemKey".
-     * 
-     * @param mapperComponent
-     * @param problemKeyField
-     * @param tableName
-     * @param entryName
-     */
-    public static String buildProblemKey(String uniqueNameComponent, PROBLEM_KEY_FIELD problemKeyField, String tableName, String entryName) {
-        return uniqueNameComponent + PROBLEM_KEY_FIELD_SEPARATOR + problemKeyField + PROBLEM_KEY_FIELD_SEPARATOR + tableName
-                + ((entryName != null) ? PROBLEM_KEY_FIELD_SEPARATOR + entryName : "");
     }
 
 }

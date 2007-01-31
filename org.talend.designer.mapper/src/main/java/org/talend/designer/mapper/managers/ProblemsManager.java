@@ -26,6 +26,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
+import org.talend.commons.utils.generation.CodeGenerationUtils;
 import org.talend.core.language.ICodeProblemsChecker;
 import org.talend.core.model.components.IODataComponent;
 import org.talend.core.model.components.IODataComponentContainer;
@@ -175,7 +176,7 @@ public class ProblemsManager {
      * @param entryName
      */
     public String buildProblemKey(String uniqueName, PROBLEM_KEY_FIELD problemKeyField, String tableName, String entryName) {
-        return JavaGenerationManager.buildProblemKey(uniqueName, problemKeyField, tableName, entryName);
+        return CodeGenerationUtils.buildProblemKey(uniqueName, problemKeyField.toString(), tableName, entryName);
     }
 
     /**

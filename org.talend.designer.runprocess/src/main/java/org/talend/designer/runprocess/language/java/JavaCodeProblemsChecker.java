@@ -22,7 +22,9 @@
 package org.talend.designer.runprocess.language.java;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.oro.text.regex.MalformedPatternException;
 import org.apache.oro.text.regex.MatchResult;
@@ -143,8 +145,11 @@ public class JavaCodeProblemsChecker extends CodeProblemsChecker {
 
                 boolean reportProblems;
 
+                Set alreadyAdded = new HashSet();
+
                 public void acceptProblem(IProblem problem) {
-                    if (reportProblems && problem.isError()) {
+                    String keyAlreadyAdded = problem.getMessage() + problem.getSourceLineNumber();
+                    if (reportProblems && problem.isError() && !alreadyAdded.contains(keyAlreadyAdded)) {
                         System.out.println(problem.getID() + ": " + problem.getMessage());
                         char[] charArray = code.toCharArray();
 
@@ -156,6 +161,7 @@ public class JavaCodeProblemsChecker extends CodeProblemsChecker {
                         String key = extractKey(charArray, problem.getSourceStart());
                         DetailedProblem detailedProblem = new DetailedProblem(problem, key, source);
                         iproblems.add(detailedProblem);
+                        alreadyAdded.add(keyAlreadyAdded);
                     }
 
                 }
@@ -245,6 +251,7 @@ public class JavaCodeProblemsChecker extends CodeProblemsChecker {
                     problemRequestor.setReportProblems(true);
                     ((IOpenable) workingCopy).getBuffer().setContents(code);
                     ((org.eclipse.jdt.core.ICompilationUnit) workingCopy).reconcile(ICompilationUnit.NO_AST, true, null, null);
+                    problemRequestor.setReportProblems(false);
                 } finally {
                     if (workingCopy != null) {
                         workingCopy.discardWorkingCopy();

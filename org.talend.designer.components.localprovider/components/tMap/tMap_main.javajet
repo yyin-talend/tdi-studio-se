@@ -9,7 +9,7 @@
 	java.util.HashSet
 	java.util.Set
 	org.talend.designer.codegen.config.CodeGeneratorArgument
-
+	org.talend.commons.utils.generation.CodeGenerationUtils
 	org.talend.designer.mapper.MapperMain
 	org.talend.designer.mapper.MapperComponent
 	org.talend.designer.mapper.external.data.ExternalMapperData
@@ -202,11 +202,11 @@
                     }
                 }
 
-                String key = JavaGenerationManager.buildProblemKey(uniqueNameComponent,
-                        JavaGenerationManager.PROBLEM_KEY_FIELD.METADATA_COLUMN, varsTableName, varsColumnName);
+                String key = CodeGenerationUtils.buildProblemKey(uniqueNameComponent,
+                        JavaGenerationManager.PROBLEM_KEY_FIELD.METADATA_COLUMN.toString(), varsTableName, varsColumnName);
                 
                 if (writeCommentedFieldKeys) {
-                    sb.append(cr).append(gm.buildStartFieldKey(key));
+                    sb.append(cr).append(CodeGenerationUtils.buildStartFieldKey(key));
                 }
 
                 String expression = gm.indent(indent) + gm.getGeneratedCodeTableColumnVariable(varsTableName, varsColumnName) + " = "
@@ -214,7 +214,7 @@
                 sb.append(cr).append(expression);
 
                 if (writeCommentedFieldKeys) {
-                    sb.append(cr).append(gm.buildEndFieldKey(key));
+                    sb.append(cr).append(CodeGenerationUtils.buildEndFieldKey(key));
                 }
                 
             }
@@ -374,10 +374,10 @@
                     sb.append(cr + gm.indent(indent) + "// # Filter conditions ");
                     sb.append(cr);
 
-                    String key = JavaGenerationManager.buildProblemKey(uniqueNameComponent,
-                            JavaGenerationManager.PROBLEM_KEY_FIELD.FILTER, outputTableName, null);
+                    String key = CodeGenerationUtils.buildProblemKey(uniqueNameComponent,
+                            JavaGenerationManager.PROBLEM_KEY_FIELD.FILTER.toString(), outputTableName, null);
                     if (writeCommentedFieldKeys) {
-                        sb.append(gm.buildStartFieldKey(key));
+                        sb.append(CodeGenerationUtils.buildStartFieldKey(key));
                     }
 
                     String ifConditions = gm.indent(indent) + "if( ";
@@ -409,7 +409,7 @@
                     sb.append(cr).append(ifConditions);
 
                     if (writeCommentedFieldKeys) {
-                        sb.append(gm.buildEndFieldKey(key));
+                        sb.append(CodeGenerationUtils.buildEndFieldKey(key));
                     }
 
                     indent++;
@@ -428,10 +428,10 @@
                             outputExpression = MetadataTalendType.getDefaultValueFromJavaType(outputTableEntry.getType());
                         }
 
-                        String key = JavaGenerationManager.buildProblemKey(uniqueNameComponent,
-                                JavaGenerationManager.PROBLEM_KEY_FIELD.METADATA_COLUMN, outputTableName, outputColumnName);
+                        String key = CodeGenerationUtils.buildProblemKey(uniqueNameComponent,
+                                JavaGenerationManager.PROBLEM_KEY_FIELD.METADATA_COLUMN.toString(), outputTableName, outputColumnName);
                         if (writeCommentedFieldKeys) {
-                            sb.append(gm.buildStartFieldKey(key));
+                            sb.append(CodeGenerationUtils.buildStartFieldKey(key));
                         }
 
                         String expression = gm.indent(indent)
@@ -441,7 +441,7 @@
                         sb.append(cr).append(expression);
 
                         if (writeCommentedFieldKeys) {
-                            sb.append(gm.buildEndFieldKey(key));
+                            sb.append(CodeGenerationUtils.buildEndFieldKey(key));
                         }
                         
                     } // for entries

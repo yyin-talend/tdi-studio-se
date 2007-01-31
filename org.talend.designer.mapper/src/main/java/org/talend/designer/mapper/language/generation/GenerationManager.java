@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.talend.commons.utils.StringUtils;
 import org.talend.commons.utils.data.text.StringHelper;
 import org.talend.designer.mapper.external.data.ExternalMapperTable;
 import org.talend.designer.mapper.external.data.ExternalMapperTableEntry;
@@ -115,11 +116,7 @@ public class GenerationManager {
     }
 
     public String indent(final int i) {
-        StringBuilder stringBuilder = new StringBuilder();
-        for (int j = 0; j < i; j++) {
-            stringBuilder.append("  ");
-        }
-        return stringBuilder.toString();
+        return StringUtils.repeat("  ", i);
     }
 
     /**

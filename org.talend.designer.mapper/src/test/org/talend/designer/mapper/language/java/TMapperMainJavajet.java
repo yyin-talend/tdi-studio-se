@@ -29,6 +29,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.talend.commons.utils.generation.CodeGenerationUtils;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataTalendType;
@@ -228,11 +229,11 @@ public class TMapperMainJavajet {
                     }
                 }
 
-                String key = JavaGenerationManager.buildProblemKey(uniqueNameComponent,
-                        JavaGenerationManager.PROBLEM_KEY_FIELD.METADATA_COLUMN, varsTableName, varsColumnName);
+                String key = CodeGenerationUtils.buildProblemKey(uniqueNameComponent,
+                        JavaGenerationManager.PROBLEM_KEY_FIELD.METADATA_COLUMN.toString(), varsTableName, varsColumnName);
                 
                 if (writeCommentedFieldKeys) {
-                    sb.append(cr).append(gm.buildStartFieldKey(key));
+                    sb.append(cr).append(CodeGenerationUtils.buildStartFieldKey(key));
                 }
 
                 String expression = gm.indent(indent) + gm.getGeneratedCodeTableColumnVariable(varsTableName, varsColumnName) + " = "
@@ -240,7 +241,7 @@ public class TMapperMainJavajet {
                 sb.append(cr).append(expression);
 
                 if (writeCommentedFieldKeys) {
-                    sb.append(cr).append(gm.buildEndFieldKey(key));
+                    sb.append(cr).append(CodeGenerationUtils.buildEndFieldKey(key));
                 }
                 
             }
@@ -400,10 +401,10 @@ public class TMapperMainJavajet {
                     sb.append(cr + gm.indent(indent) + "// # Filter conditions ");
                     sb.append(cr);
 
-                    String key = JavaGenerationManager.buildProblemKey(uniqueNameComponent,
-                            JavaGenerationManager.PROBLEM_KEY_FIELD.FILTER, outputTableName, null);
+                    String key = CodeGenerationUtils.buildProblemKey(uniqueNameComponent,
+                            JavaGenerationManager.PROBLEM_KEY_FIELD.FILTER.toString(), outputTableName, null);
                     if (writeCommentedFieldKeys) {
-                        sb.append(gm.buildStartFieldKey(key));
+                        sb.append(CodeGenerationUtils.buildStartFieldKey(key));
                     }
 
                     String ifConditions = gm.indent(indent) + "if( ";
@@ -435,7 +436,7 @@ public class TMapperMainJavajet {
                     sb.append(cr).append(ifConditions);
 
                     if (writeCommentedFieldKeys) {
-                        sb.append(gm.buildEndFieldKey(key));
+                        sb.append(CodeGenerationUtils.buildEndFieldKey(key));
                     }
 
                     indent++;
@@ -454,10 +455,10 @@ public class TMapperMainJavajet {
                             outputExpression = MetadataTalendType.getDefaultValueFromJavaType(outputTableEntry.getType());
                         }
 
-                        String key = JavaGenerationManager.buildProblemKey(uniqueNameComponent,
-                                JavaGenerationManager.PROBLEM_KEY_FIELD.METADATA_COLUMN, outputTableName, outputColumnName);
+                        String key = CodeGenerationUtils.buildProblemKey(uniqueNameComponent,
+                                JavaGenerationManager.PROBLEM_KEY_FIELD.METADATA_COLUMN.toString(), outputTableName, outputColumnName);
                         if (writeCommentedFieldKeys) {
-                            sb.append(gm.buildStartFieldKey(key));
+                            sb.append(CodeGenerationUtils.buildStartFieldKey(key));
                         }
 
                         String expression = gm.indent(indent)
@@ -467,7 +468,7 @@ public class TMapperMainJavajet {
                         sb.append(cr).append(expression);
 
                         if (writeCommentedFieldKeys) {
-                            sb.append(gm.buildEndFieldKey(key));
+                            sb.append(CodeGenerationUtils.buildEndFieldKey(key));
                         }
                         
                     } // for entries
