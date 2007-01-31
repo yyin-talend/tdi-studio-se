@@ -33,6 +33,7 @@ import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.language.CodeProblemsChecker;
 import org.talend.core.model.process.Problem;
 import org.talend.core.model.process.Problem.ProblemStatus;
+import org.talend.designer.codegen.IAloneProcessNodeConfigurer;
 import org.talend.designer.runprocess.Processor;
 import org.talend.designer.runprocess.ProcessorException;
 import org.talend.designer.runprocess.perl.PerlProcessor;
@@ -102,7 +103,7 @@ public class PerlCodeProblemsChecker extends CodeProblemsChecker {
      * 
      * @see org.talend.designer.core.language.perl.CodeSyntaxChecker#checkSyntax(java.lang.String)
      */
-    public List<Problem> checkProblems(String expression) {
+    public List<Problem> checkProblemsForExpression(String expression) {
 
         if (expression == null) {
             return null;
@@ -255,8 +256,8 @@ public class PerlCodeProblemsChecker extends CodeProblemsChecker {
      * 
      * @see org.talend.core.language.ICodeProblemsChecker#checkProblems()
      */
-    public List<Problem> checkProblems() {
-        throw new UnsupportedOperationException();
+    public List<Problem> checkProblems(IAloneProcessNodeConfigurer nodeConfigurer) {
+        throw new UnsupportedOperationException("use checkProblemsForExpression()");
     }
 
 }

@@ -89,7 +89,6 @@ public class AutoMapper {
                                 break;
                             }
                         }
-
                         if (mapFound) {
                             break;
                         }
@@ -104,9 +103,12 @@ public class AutoMapper {
 
         }
 
+        mapperManager.getProblemsManager().checkProblems();
+
         List<DataMapTableView> outputsTablesView = mapperManager.getOutputsTablesView();
         for (DataMapTableView view : outputsTablesView) {
             mapperManager.getUiManager().parseAllExpressions(view, true);
+            mapperManager.getProblemsManager().checkProblemsForAllEntries(view, true);
         }
         mapperManager.getUiManager().refreshBackground(true, false);
 

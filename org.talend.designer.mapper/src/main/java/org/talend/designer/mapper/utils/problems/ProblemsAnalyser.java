@@ -77,7 +77,7 @@ public class ProblemsAnalyser {
             ICodeProblemsChecker codeChecker = LanguageProvider.getCurrentLanguage().getCodeChecker();
             ILanguage currentLanguage = LanguageProvider.getCurrentLanguage();
             if (currentLanguage.getCodeLanguage() == ECodeLanguage.JAVA) {
-                codeChecker.checkProblems();
+                codeChecker.checkProblems(null);
             }
 
             checkExpressionSyntaxProblems(extInputTables, codeChecker);
@@ -248,7 +248,7 @@ public class ProblemsAnalyser {
     }
 
     private List<Problem> checkCodeProblems(String expression) {
-        return mapperManager.checkExpressionSyntax(expression);
+        return mapperManager.getProblemsManager().checkExpressionSyntax(expression);
     }
 
 }

@@ -385,6 +385,8 @@ public class UIManager {
                     tableViewer.refresh(true);
                     IColumnEntry entry = dataMapTableView.getDataMapTable().getColumnEntries().get(event.index);
                     parseExpression(entry.getExpression(), entry, false, false, false);
+                } else if (MetadataTableEditorView.ID_COLUMN_TYPE.equals(event.column.getId())) {
+                    mapperManager.getProblemsManager().checkProblemsForAllEntriesOfAllTables(true);
                 }
             }
 
@@ -943,8 +945,8 @@ public class UIManager {
         }
     }
 
-    private void parseAllExpressions(List<? extends ITableEntry> inputList, boolean newLinksMustHaveSelectedState) {
-        for (ITableEntry entry : inputList) {
+    private void parseAllExpressions(List<? extends ITableEntry> entriesList, boolean newLinksMustHaveSelectedState) {
+        for (ITableEntry entry : entriesList) {
             parseExpression(entry.getExpression(), entry, newLinksMustHaveSelectedState, false, false);
         }
     }
@@ -1493,6 +1495,9 @@ public class UIManager {
         currentSelectedTableView.getParent().layout();
         parseAllExpressions(currentSelectedTableView, false);
         parseAllExpressions(previousTableView, false);
+        
+        mapperManager.getProblemsManager().checkProblemsForAllEntries(currentSelectedTableView, true);
+        mapperManager.getProblemsManager().checkProblemsForAllEntries(previousTableView, true);
     }
 
     private void moveSelectedTableDown(DataMapTableView currentSelectedTableView, List<DataMapTableView> tablesView,
@@ -1525,6 +1530,9 @@ public class UIManager {
         currentSelectedTableView.getParent().layout();
         parseAllExpressions(currentSelectedTableView, false);
         parseAllExpressions(nextTableView, false);
+        
+        mapperManager.getProblemsManager().checkProblemsForAllEntries(currentSelectedTableView, true);
+        mapperManager.getProblemsManager().checkProblemsForAllEntries(nextTableView, true);
     }
 
     public void minimizeAllTables(Zone zone, boolean minimize, ToolItem minimizeButton) {

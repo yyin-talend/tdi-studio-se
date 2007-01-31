@@ -99,7 +99,7 @@
         for (ExternalMapperTable externalTable : inputTables) {
             String tableName = externalTable.getName();
             IConnection connection = hNameToConnection.get(tableName);
-            if(connection == null) {
+            if (connection == null) {
                 continue;
             }
             EConnectionType connectionType = connection.getLineStyle();
@@ -202,17 +202,21 @@
                     }
                 }
 
+                String key = JavaGenerationManager.buildProblemKey(uniqueNameComponent,
+                        JavaGenerationManager.PROBLEM_KEY_FIELD.METADATA_COLUMN, varsTableName, varsColumnName);
+                
                 if (writeCommentedFieldKeys) {
-                    String key = JavaGenerationManager.buildProblemKey(uniqueNameComponent,
-                            JavaGenerationManager.PROBLEM_KEY_FIELD.METADATA_COLUMN, varsTableName, varsColumnName);
-                    sb.append(cr).append(gm.buildCommentedFieldKey(key));
+                    sb.append(cr).append(gm.buildStartFieldKey(key));
                 }
 
                 String expression = gm.indent(indent) + gm.getGeneratedCodeTableColumnVariable(varsTableName, varsColumnName) + " = "
                         + varExpression + ";";
-
                 sb.append(cr).append(expression);
 
+                if (writeCommentedFieldKeys) {
+                    sb.append(cr).append(gm.buildEndFieldKey(key));
+                }
+                
             }
         }
         sb.append(cr + gm.indent(indent) + "// ###############################");
@@ -370,10 +374,10 @@
                     sb.append(cr + gm.indent(indent) + "// # Filter conditions ");
                     sb.append(cr);
 
+                    String key = JavaGenerationManager.buildProblemKey(uniqueNameComponent,
+                            JavaGenerationManager.PROBLEM_KEY_FIELD.FILTER, outputTableName, null);
                     if (writeCommentedFieldKeys) {
-                        String key = JavaGenerationManager.buildProblemKey(uniqueNameComponent,
-                                JavaGenerationManager.PROBLEM_KEY_FIELD.FILTER, outputTableName, null);
-                        sb.append(gm.buildCommentedFieldKey(key));
+                        sb.append(gm.buildStartFieldKey(key));
                     }
 
                     String ifConditions = gm.indent(indent) + "if( ";
@@ -404,6 +408,10 @@
 
                     sb.append(cr).append(ifConditions);
 
+                    if (writeCommentedFieldKeys) {
+                        sb.append(gm.buildEndFieldKey(key));
+                    }
+
                     indent++;
                     closeFilterOrRejectBracket = true;
                     if (allNotRejectTablesHaveFilter && !(currentIsReject || currentIsRejectInnerJoin) && atLeastOneReject) {
@@ -420,10 +428,10 @@
                             outputExpression = MetadataTalendType.getDefaultValueFromJavaType(outputTableEntry.getType());
                         }
 
+                        String key = JavaGenerationManager.buildProblemKey(uniqueNameComponent,
+                                JavaGenerationManager.PROBLEM_KEY_FIELD.METADATA_COLUMN, outputTableName, outputColumnName);
                         if (writeCommentedFieldKeys) {
-                            String key = JavaGenerationManager.buildProblemKey(uniqueNameComponent,
-                                    JavaGenerationManager.PROBLEM_KEY_FIELD.METADATA_COLUMN, outputTableName, outputColumnName);
-                            sb.append(gm.buildCommentedFieldKey(key));
+                            sb.append(gm.buildStartFieldKey(key));
                         }
 
                         String expression = gm.indent(indent)
@@ -432,6 +440,10 @@
 
                         sb.append(cr).append(expression);
 
+                        if (writeCommentedFieldKeys) {
+                            sb.append(gm.buildEndFieldKey(key));
+                        }
+                        
                     } // for entries
 
                     sb.append(cr + gm.indent(indent) + outputTableName + " = " + outputTableName + "_tmp;");

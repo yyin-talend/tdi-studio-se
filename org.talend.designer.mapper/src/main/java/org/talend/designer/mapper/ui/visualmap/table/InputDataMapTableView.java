@@ -67,6 +67,7 @@ public class InputDataMapTableView extends DataMapTableView {
 
                 public void set(InputColumnTableEntry bean, String value) {
                     bean.setExpression(value);
+                    mapperManager.getProblemsManager().checkProblemsForTableEntry(bean, true);
                 }
 
             });

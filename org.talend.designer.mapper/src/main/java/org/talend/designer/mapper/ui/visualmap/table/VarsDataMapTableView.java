@@ -99,6 +99,7 @@ public class VarsDataMapTableView extends DataMapTableView {
                             .getTable());
                     UIManager uiManager = mapperManager.getUiManager();
                     uiManager.parseAllExpressions(varsDataMapTableView, false);
+                    mapperManager.getProblemsManager().checkProblemsForAllEntries(varsDataMapTableView, true);
                     uiManager.refreshBackground(true, false);
                     List<ITableEntry> list = uiManager.extractSelectedTableEntries(varsDataMapTableView.getTableViewerCreatorForColumns()
                             .getTableViewer().getSelection());
@@ -127,6 +128,7 @@ public class VarsDataMapTableView extends DataMapTableView {
 
             public void set(VarTableEntry bean, String value) {
                 bean.setExpression(value);
+                mapperManager.getProblemsManager().checkProblemsForTableEntry(bean, true);
             }
 
         });
@@ -186,6 +188,7 @@ public class VarsDataMapTableView extends DataMapTableView {
 
                 public void set(VarTableEntry bean, String value) {
                     bean.setType(value);
+                    mapperManager.getProblemsManager().checkProblemsForAllEntriesOfAllTables(true);
                 }
 
             });

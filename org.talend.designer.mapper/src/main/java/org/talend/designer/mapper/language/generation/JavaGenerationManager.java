@@ -52,19 +52,23 @@ public class JavaGenerationManager extends GenerationManager {
      * @param indent
      * @return
      */
-    public String buildLookupDataInstance(String uniqueNameComponent, String name, String[] keysNames, String[] keysValues, int indent, boolean writeCommentedFieldKeys) {
+    public String buildLookupDataInstance(String uniqueNameComponent, String name, String[] keysNames, String[] keysValues, int indent,
+            boolean writeCommentedFieldKeys) {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < keysNames.length; i++) {
 
+            String key = JavaGenerationManager.buildProblemKey(uniqueNameComponent,
+                    JavaGenerationManager.PROBLEM_KEY_FIELD.METADATA_COLUMN, name, keysNames[i]);
             if (writeCommentedFieldKeys) {
-                String key = JavaGenerationManager.buildProblemKey(uniqueNameComponent,
-                        JavaGenerationManager.PROBLEM_KEY_FIELD.METADATA_COLUMN, name, keysNames[i]);
-                sb.append(buildCommentedFieldKey(key));
+                sb.append(buildStartFieldKey(key));
             }
-            
-            String expression = indent(indent) + name + "HashKey."
-                    + keysNames[i] + " = " + keysValues[i] + ";";
+
+            String expression = indent(indent) + name + "HashKey." + keysNames[i] + " = " + keysValues[i] + ";";
             sb.append("\n").append(expression);
+
+            if (writeCommentedFieldKeys) {
+                sb.append(buildEndFieldKey(key));
+            }
         }
         sb.append("\n" + indent(indent) + name + "HashKey.hashCodeDirty = true;");
         String className = name + "Struct";
@@ -117,42 +121,51 @@ public class JavaGenerationManager extends GenerationManager {
      * @param expression
      * @return
      */
-    public String buildCommentedFieldKey(String key) {
-        return "\n// " + key + "\n";
+    public String buildStartFieldKey(String key) {
+        return "\n// Start field " + key + "\n";
+    }
+
+    /**
+     * DOC amaumont Comment method "buildEndFieldKey".
+     * 
+     * @param key
+     * @return
+     */
+    public String buildEndFieldKey(String key) {
+        return "\n// End field " + key + "\n";
     }
 
     public static void main(String[] args) {
 
         JavaGenerationManager manager = new JavaGenerationManager(LanguageProvider.getJavaLanguage());
-//        System.out.println(manager.insertFieldKey("table:column", "\nligne1\nligne2\nligne3"));
+        // System.out.println(manager.insertFieldKey("table:column", "\nligne1\nligne2\nligne3"));
     }
 
     /**
      * 
-     * DOC amaumont MapperManager class global comment. Detailled comment
-     * <br/>
-     *
+     * DOC amaumont MapperManager class global comment. Detailled comment <br/>
+     * 
      * $Id$
-     *
+     * 
      */
     public enum PROBLEM_KEY_FIELD {
         METADATA_COLUMN,
         FILTER,
     }
-    
+
     public static final String PROBLEM_KEY_FIELD_SEPARATOR = ":";
-    
 
     /**
      * DOC amaumont Comment method "buildProblemKey".
+     * 
      * @param mapperComponent
      * @param problemKeyField
      * @param tableName
      * @param entryName
      */
     public static String buildProblemKey(String uniqueNameComponent, PROBLEM_KEY_FIELD problemKeyField, String tableName, String entryName) {
-        return uniqueNameComponent + PROBLEM_KEY_FIELD_SEPARATOR + problemKeyField + PROBLEM_KEY_FIELD_SEPARATOR + tableName + ((entryName != null) ? PROBLEM_KEY_FIELD_SEPARATOR + entryName : "");
+        return uniqueNameComponent + PROBLEM_KEY_FIELD_SEPARATOR + problemKeyField + PROBLEM_KEY_FIELD_SEPARATOR + tableName
+                + ((entryName != null) ? PROBLEM_KEY_FIELD_SEPARATOR + entryName : "");
     }
-
 
 }

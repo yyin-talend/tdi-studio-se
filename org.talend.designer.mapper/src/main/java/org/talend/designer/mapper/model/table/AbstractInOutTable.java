@@ -70,6 +70,7 @@ public abstract class AbstractInOutTable extends AbstractDataMapTable {
             ExternalMapperTableEntry externalMapperTableEntry = nameToPerTabEntry.get(columnEntry.getMetadataColumn().getLabel());
             if (externalMapperTableEntry != null) {
                 columnEntry.setExpression(externalMapperTableEntry.getExpression());
+//                mapperManager.getProblemsManager().checkProblemsForTableEntry(columnEntry, false);
             }
             dataMapTableEntries.add(columnEntry);
         }

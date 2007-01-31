@@ -63,7 +63,9 @@ public class OutputTable extends AbstractInOutTable {
             List<ExternalMapperTableEntry> externalConstraintTableEntries = externalMapperTable.getConstraintTableEntries();
             if (externalConstraintTableEntries != null) {
                 for (ExternalMapperTableEntry entry : externalConstraintTableEntries) {
-                    addFilterEntry(new FilterTableEntry(this, entry.getName(), entry.getExpression()));
+                    FilterTableEntry filterTableEntry = new FilterTableEntry(this, entry.getName(), entry.getExpression());
+//                    mapperManager.getProblemsManager().checkProblemsForTableEntry(filterTableEntry, false);
+                    addFilterEntry(filterTableEntry);
                 }
             }
         }

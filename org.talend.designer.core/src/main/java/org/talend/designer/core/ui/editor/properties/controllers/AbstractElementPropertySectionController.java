@@ -345,9 +345,9 @@ public abstract class AbstractElementPropertySectionController implements Proper
             List<Problem> problems = new ArrayList<Problem>();
             if (valueFinal != null) {
                 if (language == ECodeLanguage.PERL) {
-                    problems = syntaxChecker.checkProblems(valueFinal);
+                    problems = syntaxChecker.checkProblemsForExpression(valueFinal);
                 } else if (language == ECodeLanguage.JAVA) {
-                    problems = syntaxChecker.checkProblemsFromKey("//TODO : KEY_TO_SET!!!!!");
+                    problems = syntaxChecker.checkProblemsFromKey("//TODO : KEY_TO_SET!!!!!", null);
                 }
             }
 

@@ -236,6 +236,7 @@ public class MapperUI {
         createOutputZoneWithTables(mapperModel, uiManager, display);
 
         uiManager.parseAllExpressionsForAllTables();
+        mapperManager.getProblemsManager().checkProblemsForAllEntriesOfAllTables(true);
 
         this.draggingInfosPopup = DraggingInfosPopup.getNewShell(this.mapperUIParent.getShell());
 

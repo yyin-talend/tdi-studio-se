@@ -60,6 +60,7 @@ import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
+import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.temp.ECodeLanguage;
@@ -67,6 +68,7 @@ import org.talend.core.ui.images.ECoreImage;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.ISyntaxCheckableEditor;
 import org.talend.designer.core.i18n.Messages;
+import org.talend.designer.core.model.process.DataProcess;
 import org.talend.designer.core.ui.editor.CodeEditorFactory;
 import org.talend.designer.core.ui.editor.ProcessEditorInput;
 import org.talend.designer.core.ui.editor.TalendEditor;
@@ -192,8 +194,7 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
      * @return the current generating code language
      */
     private ECodeLanguage getCurrentLang() {
-        return ((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY)).getProject()
-                .getLanguage();
+        return ((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY)).getProject().getLanguage();
     }
 
     /**
@@ -323,7 +324,7 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
     public boolean isDirty() {
         return propertyIsDirty || super.isDirty();
     }
-    
+
     /*
      * (non-Javadoc) Method declared on IEditorPart.
      */
@@ -402,9 +403,9 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
      * @param plProcessor
      */
     private void moveCursorToSelectedComponent(IProcessor plProcessor) {
-        String nodeName = getSelectedNode();
+        String nodeName = getSelectedNodeName();
 
-        if (nodeName.compareTo("") != 0) {
+        if (nodeName != null) {
             if (codeEditor instanceof TalendJavaEditor) {
                 ((TalendJavaEditor) codeEditor).validateSyntax();
             }
@@ -423,11 +424,31 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
     /**
      * Get the selected Node if any.
      * 
-     * @return the component selected name or "" if component is not found or is not activated
+     * @return the component selected name or null if component is not found or is not activated
      */
-    private String getSelectedNode() {
+    public String getSelectedNodeName() {
+        String nodeName = null;
+        Node node = getSelectedGraphicNode();
+        if (node != null) {
+            if (node.isActivate()) {
+                nodeName = node.getUniqueName();
+            } else {
+                nodeName = null;
+            }
+            if (node.getComponent().getMultipleComponentManager() != null) {
+                nodeName += "_" + node.getComponent().getMultipleComponentManager().getInput().getName();
+            }
+        }
+        return nodeName;
+    }
+
+    /**
+     * DOC amaumont Comment method "getSelectedNode".
+     * 
+     * @return
+     */
+    public Node getSelectedGraphicNode() {
         Node node = null;
-        String nodeName = "";
         List selections = designerEditor.getViewer().getSelectedEditParts();
         if (selections.size() == 1) {
             Object selection = selections.get(0);
@@ -445,17 +466,7 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
                 }
             }
         }
-        if (node != null) {
-            if (node.isActivate()) {
-                nodeName = node.getUniqueName();
-            } else {
-                nodeName = "";
-            }
-            if (node.getComponent().getMultipleComponentManager() != null) {
-                nodeName += "_" + node.getComponent().getMultipleComponentManager().getInput().getName();
-            }
-        }
-        return nodeName;
+        return node;
     }
 
     /**
@@ -469,8 +480,7 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
                 public void run() {
                     IWorkbenchPage[] pages = getSite().getWorkbenchWindow().getPages();
                     for (int i = 0; i < pages.length; i++) {
-                        if (((FileEditorInput) designerEditor.getEditorInput()).getFile().getProject()
-                                .equals(event.getResource())) {
+                        if (((FileEditorInput) designerEditor.getEditorInput()).getFile().getProject().equals(event.getResource())) {
                             IEditorPart editorPart = pages[i].findEditor(designerEditor.getEditorInput());
                             pages[i].closeEditor(editorPart, true);
                         }
@@ -506,6 +516,15 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
                 }
             }
         }
+    }
+
+    /**
+     * Getter for codeEditor.
+     * 
+     * @return the codeEditor
+     */
+    public TalendJavaEditor getCodeEditor() {
+        return (TalendJavaEditor) this.codeEditor;
     }
 
 }

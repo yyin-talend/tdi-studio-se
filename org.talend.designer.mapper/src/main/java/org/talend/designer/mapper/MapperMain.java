@@ -170,14 +170,16 @@ public class MapperMain {
      * 
      * @param incomingConnections
      * @param outgoingConnections
-     * @param metadataList
      * @param externalData
+     * @param checkProblems TODO
+     * @param metadataList
      */
-    public void loadFromExternalData(List<? extends IConnection> incomingConnections, List<? extends IConnection> outgoingConnections,
-            ExternalMapperData externalData, List<IMetadataTable> outputMetadataTables) {
+    public void createModelFromExternalData(List<? extends IConnection> incomingConnections,
+            List<? extends IConnection> outgoingConnections, ExternalMapperData externalData, List<IMetadataTable> outputMetadataTables,
+            boolean checkProblems) {
         ArrayList<IOConnection> inputs = createIOConnections(incomingConnections);
         ArrayList<IOConnection> outputs = createIOConnections(outgoingConnections);
-        loadFromExternalData(inputs, outputs, outputMetadataTables, externalData);
+        createModelFromExternalData(inputs, outputs, outputMetadataTables, externalData, checkProblems);
     }
 
     /**
@@ -194,8 +196,8 @@ public class MapperMain {
         return ioConnections;
     }
 
-    public void loadFromExternalData(IODataComponentContainer ioDataContainer, List<IMetadataTable> outputMetadataTables,
-            ExternalMapperData externalData) {
+    public void createModelFromExternalData(IODataComponentContainer ioDataContainer, List<IMetadataTable> outputMetadataTables,
+            ExternalMapperData externalData, boolean checkProblems) {
         List<IODataComponent> inputsData = ioDataContainer.getInputs();
         List<IODataComponent> ouputsData = ioDataContainer.getOuputs();
 
@@ -207,17 +209,17 @@ public class MapperMain {
         for (IODataComponent oData : ouputsData) {
             outputs.add(new IOConnection(oData));
         }
-        loadFromExternalData(inputs, outputs, outputMetadataTables, externalData);
+        createModelFromExternalData(inputs, outputs, outputMetadataTables, externalData, false);
     }
 
-    public void loadFromExternalData(List<IOConnection> inputs, List<IOConnection> outputs, List<IMetadataTable> outputMetadataTables,
-            ExternalMapperData externalData) {
+    public void createModelFromExternalData(List<IOConnection> inputs, List<IOConnection> outputs,
+            List<IMetadataTable> outputMetadataTables, ExternalMapperData externalData, boolean checkProblems) {
         if (externalData == null) {
             externalData = new ExternalMapperData();
         }
         mapperManager.getUiManager().setUiProperties(externalData.getUiProperties());
         ExternalDataConverter converter = new ExternalDataConverter(mapperManager);
-        this.mapperModel = converter.prepareModel(inputs, outputs, outputMetadataTables, externalData);
+        this.mapperModel = converter.prepareModel(inputs, outputs, outputMetadataTables, externalData, checkProblems);
     }
 
     /**

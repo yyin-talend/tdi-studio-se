@@ -228,17 +228,21 @@ public class TMapperMainJavajet {
                     }
                 }
 
+                String key = JavaGenerationManager.buildProblemKey(uniqueNameComponent,
+                        JavaGenerationManager.PROBLEM_KEY_FIELD.METADATA_COLUMN, varsTableName, varsColumnName);
+                
                 if (writeCommentedFieldKeys) {
-                    String key = JavaGenerationManager.buildProblemKey(uniqueNameComponent,
-                            JavaGenerationManager.PROBLEM_KEY_FIELD.METADATA_COLUMN, varsTableName, varsColumnName);
-                    sb.append(cr).append(gm.buildCommentedFieldKey(key));
+                    sb.append(cr).append(gm.buildStartFieldKey(key));
                 }
 
                 String expression = gm.indent(indent) + gm.getGeneratedCodeTableColumnVariable(varsTableName, varsColumnName) + " = "
                         + varExpression + ";";
-
                 sb.append(cr).append(expression);
 
+                if (writeCommentedFieldKeys) {
+                    sb.append(cr).append(gm.buildEndFieldKey(key));
+                }
+                
             }
         }
         sb.append(cr + gm.indent(indent) + "// ###############################");
@@ -396,10 +400,10 @@ public class TMapperMainJavajet {
                     sb.append(cr + gm.indent(indent) + "// # Filter conditions ");
                     sb.append(cr);
 
+                    String key = JavaGenerationManager.buildProblemKey(uniqueNameComponent,
+                            JavaGenerationManager.PROBLEM_KEY_FIELD.FILTER, outputTableName, null);
                     if (writeCommentedFieldKeys) {
-                        String key = JavaGenerationManager.buildProblemKey(uniqueNameComponent,
-                                JavaGenerationManager.PROBLEM_KEY_FIELD.FILTER, outputTableName, null);
-                        sb.append(gm.buildCommentedFieldKey(key));
+                        sb.append(gm.buildStartFieldKey(key));
                     }
 
                     String ifConditions = gm.indent(indent) + "if( ";
@@ -430,6 +434,10 @@ public class TMapperMainJavajet {
 
                     sb.append(cr).append(ifConditions);
 
+                    if (writeCommentedFieldKeys) {
+                        sb.append(gm.buildEndFieldKey(key));
+                    }
+
                     indent++;
                     closeFilterOrRejectBracket = true;
                     if (allNotRejectTablesHaveFilter && !(currentIsReject || currentIsRejectInnerJoin) && atLeastOneReject) {
@@ -446,10 +454,10 @@ public class TMapperMainJavajet {
                             outputExpression = MetadataTalendType.getDefaultValueFromJavaType(outputTableEntry.getType());
                         }
 
+                        String key = JavaGenerationManager.buildProblemKey(uniqueNameComponent,
+                                JavaGenerationManager.PROBLEM_KEY_FIELD.METADATA_COLUMN, outputTableName, outputColumnName);
                         if (writeCommentedFieldKeys) {
-                            String key = JavaGenerationManager.buildProblemKey(uniqueNameComponent,
-                                    JavaGenerationManager.PROBLEM_KEY_FIELD.METADATA_COLUMN, outputTableName, outputColumnName);
-                            sb.append(gm.buildCommentedFieldKey(key));
+                            sb.append(gm.buildStartFieldKey(key));
                         }
 
                         String expression = gm.indent(indent)
@@ -458,6 +466,10 @@ public class TMapperMainJavajet {
 
                         sb.append(cr).append(expression);
 
+                        if (writeCommentedFieldKeys) {
+                            sb.append(gm.buildEndFieldKey(key));
+                        }
+                        
                     } // for entries
 
                     sb.append(cr + gm.indent(indent) + outputTableName + " = " + outputTableName + "_tmp;");

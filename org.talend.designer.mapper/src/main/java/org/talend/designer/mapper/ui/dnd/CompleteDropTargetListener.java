@@ -460,9 +460,9 @@ public class CompleteDropTargetListener extends DefaultDropTargetListener {
         uiManager.unselectAllOutputMetaDataEntries();
         uiManager.unselectAllInputMetaDataEntries();
 
-        if (zoneTarget != Zone.OUTPUTS) {
-            uiManager.parseAllExpressionsForAllTables();
-        }
+        uiManager.parseAllExpressionsForAllTables();
+        mapperManager.getProblemsManager().checkProblemsForAllEntriesOfAllTables(true);
+        
         uiManager.selectLinks(dataMapTableViewTarget, selectedEntries, targetTableIsFiltersTable, true);
         tableViewerCreatorTarget.getTable().setFocus();
 

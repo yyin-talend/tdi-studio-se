@@ -80,9 +80,14 @@ public class ExternalDataConverter {
      * @param outputConnections
      * @param outputMetadataTables
      * @param externalData
+     * @param checkProblems
      */
     public MapperModel prepareModel(List<IOConnection> inputs, List<IOConnection> outputs, List<IMetadataTable> outputMetadataTables,
-            ExternalMapperData externalData) {
+            ExternalMapperData externalData, boolean checkProblems) {
+
+        if (checkProblems) {
+            mapperManager.getProblemsManager().checkProblems();
+        }
 
         ArrayList<InputTable> inputDataMapTables = prepareInputTables(inputs, externalData);
 

@@ -43,8 +43,6 @@ import org.talend.designer.mapper.model.table.AbstractDataMapTable;
  */
 public abstract class TableEntry implements ITableEntry {
 
-    private static final String EMPTY_STRING = "";
-
     private String expression;
 
     private AbstractDataMapTable parent;
@@ -77,9 +75,6 @@ public abstract class TableEntry implements ITableEntry {
             throw new IllegalArgumentException("Name of the TableEntry must not be null !");
         }
         this.expression = expression;
-        // TimeMeasure.start("checkErrors");
-        checkErrors();
-        // TimeMeasure.end("checkErrors");
     }
 
     public String getExpression() {
@@ -88,9 +83,6 @@ public abstract class TableEntry implements ITableEntry {
 
     public void setExpression(String expression) {
         this.expression = expression;
-        // TimeMeasure.start("checkErrors2");
-        checkErrors();
-        // TimeMeasure.end("checkErrors2");
     }
 
     public AbstractDataMapTable getParent() {
@@ -123,51 +115,6 @@ public abstract class TableEntry implements ITableEntry {
 
     public void setProblems(List<Problem> problems) {
         this.problems = problems;
-    }
-
-    /**
-     * DOC amaumont Comment method "checkErrors".
-     * 
-     * @param columnEntries
-     */
-    private void checkErrors() {
-
-        if (expression == null || EMPTY_STRING.equals(expression.trim())) {
-            this.problems = null;
-        } else {
-            ILanguage currentLanguage = LanguageProvider.getCurrentLanguage();
-            ECodeLanguage codeLanguage = currentLanguage.getCodeLanguage();
-            ICodeProblemsChecker codeChecker = currentLanguage.getCodeChecker();
-            // System.out.println("check=" + expression);
-            List<Problem> problems = null;
-            if (codeLanguage == ECodeLanguage.PERL) {
-                problems = codeChecker.checkProblems(expression);
-            } else if (codeLanguage == ECodeLanguage.JAVA) {
-                PROBLEM_KEY_FIELD problemKeyField = JavaGenerationManager.PROBLEM_KEY_FIELD.METADATA_COLUMN;
-                String entryName = getName();
-                if (this instanceof FilterTableEntry) {
-                    problemKeyField = JavaGenerationManager.PROBLEM_KEY_FIELD.FILTER;
-                    entryName = null;
-                }
-                String key = parent.getMapperManager().buildProblemKey(problemKeyField, getParent().getName(), entryName);
-                problems = codeChecker.checkProblemsFromKey(key);
-            }
-            if (problems != null) {
-                for (Iterator iter = problems.iterator(); iter.hasNext();) {
-                    Problem problem = (Problem) iter.next();
-                    ProblemStatus status = problem.getStatus();
-                    if (status != ProblemStatus.ERROR) {
-                        iter.remove();
-                    }
-
-                }
-                this.problems = problems;
-
-            } else {
-                this.problems = null;
-            }
-        }
-
     }
 
 }

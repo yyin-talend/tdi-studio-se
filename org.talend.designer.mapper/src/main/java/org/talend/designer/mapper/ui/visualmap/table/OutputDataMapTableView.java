@@ -85,6 +85,7 @@ public class OutputDataMapTableView extends DataMapTableView {
 
             public void set(OutputColumnTableEntry bean, String value) {
                 bean.setExpression(value);
+                mapperManager.getProblemsManager().checkProblemsForTableEntry(bean, true);
                 tableViewerCreatorForColumns.getTableViewer().refresh(bean);
             }
 
@@ -249,6 +250,7 @@ public class OutputDataMapTableView extends DataMapTableView {
 
             public void set(FilterTableEntry bean, String value) {
                 bean.setExpression(value);
+                mapperManager.getProblemsManager().checkProblemsForTableEntry(bean, true);
             }
 
         });

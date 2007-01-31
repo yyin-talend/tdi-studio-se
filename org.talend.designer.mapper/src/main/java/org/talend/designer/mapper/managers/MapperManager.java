@@ -35,17 +35,16 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
-import org.talend.core.language.ICodeProblemsChecker;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.MetadataTable;
 import org.talend.core.model.metadata.editor.MetadataTableEditor;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.IProcess;
-import org.talend.core.model.process.Problem;
 import org.talend.core.ui.metadata.editor.MetadataTableEditorView;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.mapper.Activator;
 import org.talend.designer.mapper.MapperComponent;
+import org.talend.designer.mapper.external.data.ExternalMapperData;
 import org.talend.designer.mapper.language.LanguageProvider;
 import org.talend.designer.mapper.language.generation.GenerationManager;
 import org.talend.designer.mapper.language.generation.JavaGenerationManager;
@@ -96,12 +95,15 @@ public class MapperManager {
 
     private CommandStack commandStack;
 
+    private ProblemsManager problemsManager;
+
     public MapperManager(MapperComponent mapperComponent) {
         super();
         tableEntriesManager = new TableEntriesManager(this);
         tableManager = new TableManager();
         linkManager = new LinkManager();
         uiManager = new UIManager(this, tableManager);
+        problemsManager = new ProblemsManager(this);
         this.mapperComponent = mapperComponent;
     }
 
@@ -584,6 +586,7 @@ public class MapperManager {
      */
     public void changeEntryExpression(ITableEntry currentEntry, String text) {
         currentEntry.setExpression(text);
+        getProblemsManager().checkProblemsForTableEntry(currentEntry, true);
         DataMapTableView dataMapTableView = retrieveDataMapTableView(currentEntry);
         TableViewer tableViewer = null;
         if (currentEntry instanceof IColumnEntry) {
@@ -741,16 +744,6 @@ public class MapperManager {
     }
 
     /**
-     * DOC amaumont Comment method "checkExpressionSyntax".
-     * 
-     * @param expression
-     */
-    public List<Problem> checkExpressionSyntax(String expression) {
-        ICodeProblemsChecker codeChecker = LanguageProvider.getCurrentLanguage().getCodeChecker();
-        return codeChecker.checkProblems(expression);
-    }
-
-    /**
      * @return
      * @see org.talend.designer.mapper.managers.LinkManager#getCurrentNumberLinks()
      */
@@ -816,12 +809,24 @@ public class MapperManager {
 
     /**
      * DOC amaumont Comment method "buildKey".
+     * 
      * @param tableName
      * @param entryName
      * @return
      */
-    public String buildProblemKey(PROBLEM_KEY_FIELD problemKeyField,String tableName, String entryName) {
-        return JavaGenerationManager.buildProblemKey(mapperComponent.getUniqueName(), problemKeyField, tableName, entryName);
+    public String buildProblemKey(PROBLEM_KEY_FIELD problemKeyField, String tableName, String entryName) {
+        return problemsManager.buildProblemKey(mapperComponent.getUniqueName(), problemKeyField, tableName, entryName);
     }
 
+    
+    /**
+     * Getter for problemsManager.
+     * @return the problemsManager
+     */
+    public ProblemsManager getProblemsManager() {
+        return this.problemsManager;
+    }
+
+    
+    
 }

@@ -214,4 +214,20 @@ public class NodesSubTree {
         }
         return false;
     }
+
+    /**
+     * Return node from uniqueNameNode.
+     * @param uniqueNameNode
+     * @return node if exists, null otherwise
+     */
+    public INode getNode(String uniqueNameNode) {
+        for (INode toCompareNode : this.nodes) {
+            if (toCompareNode.getUniqueName().equals(uniqueNameNode)) {
+                return toCompareNode;
+            }
+        }
+        return null;
+    }
+    
+
 }

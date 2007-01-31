@@ -26,6 +26,7 @@
 		List<IMetadataTable> metadatas = node.getMetadataList();
 			List< ? extends IConnection> conns = node.getOutgoingConnections();
 			for (IConnection conn : conns) {
+			System.out.println(conn.getName());
 //				if (conn.getLineStyle().equals(EConnectionType.FLOW_MAIN)) {
 					if (!hSet.contains(conn.getName())) {
 						hSet.add(conn.getName());
@@ -96,19 +97,22 @@ private class <%=conn.getName() %>Struct {
 		if (obj == null) return false;
 		if (getClass() != obj.getClass()) return false;
 		final <%=conn.getName() %>Struct other = (<%=conn.getName() %>Struct) obj;
-	<%
+		<%	
 		for (IMetadataColumn column: metadata.getListColumns()) {
 			if (column.isKey()) {
 				if (MetadataTalendType.isJavaPrimitiveType(column.getTalendType())) {
-	%>
-			if (this.<%=column.getLabel() %> == null) {
-				if (other.<%=column.getLabel() %> != null) return false;
-			} else if (!this.<%=column.getLabel() %>.equals(other.<%=column.getLabel() %>)) return false;
-	<%
+				%>
+					if (this.<%=column.getLabel() %> != other.<%=column.getLabel() %>) 
+						return false;
+				<%
 				} else {
-	%>
-			if (this.<%=column.getLabel() %> != other.<%=column.getLabel() %>) return false;
-	<%
+				%>
+					if (this.<%=column.getLabel() %> == null) {
+						if (other.<%=column.getLabel() %> != null) 
+							return false;
+					} else if (!this.<%=column.getLabel() %>.equals(other.<%=column.getLabel() %>)) 
+						return false;
+				<%
 				}
 			}
     	}

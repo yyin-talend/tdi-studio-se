@@ -103,7 +103,7 @@ public class MapperComponent extends AbstractExternalNode {
         // TimeMeasure.start("Total open");
         // TimeMeasure.display = false;
         initMapperMain();
-        mapperMain.loadFromExternalData(getIODataComponents(), getMetadataList(), externalData);
+        mapperMain.createModelFromExternalData(getIODataComponents(), getMetadataList(), externalData, true);
         Shell shell = mapperMain.createUI(display);
         // TimeMeasure.display = true;
         // TimeMeasure.end("Total open");
@@ -123,7 +123,6 @@ public class MapperComponent extends AbstractExternalNode {
         if (MapperMain.isStandAloneMode()) {
             display.dispose();
         }
-        mapperMain.loadModelFromInternalData();
         refreshMapperConnectorData();
         return mapperMain.getMapperDialogResponse();
     }
@@ -131,7 +130,8 @@ public class MapperComponent extends AbstractExternalNode {
     /**
      * DOC amaumont Comment method "refreshMapperConnectorData".
      */
-    private void refreshMapperConnectorData() {
+    public void refreshMapperConnectorData() {
+        mapperMain.loadModelFromInternalData();
         metadataListOut = mapperMain.getMetadataListOut();
         externalData = mapperMain.buildExternalData();
         sortOutputsConnectionsLikeVisualOrder();
@@ -171,7 +171,7 @@ public class MapperComponent extends AbstractExternalNode {
      */
     public int open(final Composite parent) {
         initMapperMain();
-        mapperMain.loadFromExternalData(getIODataComponents(), getMetadataList(), externalData);
+        mapperMain.createModelFromExternalData(getIODataComponents(), getMetadataList(), externalData, true);
         mapperMain.createUI(parent);
         return mapperMain.getMapperDialogResponse();
     }
@@ -255,10 +255,14 @@ public class MapperComponent extends AbstractExternalNode {
 
     }
 
+    /*
+     * (non-Javadoc)
+     * @see org.talend.core.model.process.IExternalNode#loadDataOut(java.io.OutputStream, java.io.Writer)
+     */
     public void loadDataOut(final OutputStream out, Writer writer) throws IOException {
 
         initMapperMain();
-        mapperMain.loadFromExternalData(getIncomingConnections(), getOutgoingConnections(), externalData, getMetadataList());
+        mapperMain.createModelFromExternalData(getIncomingConnections(), getOutgoingConnections(), externalData, getMetadataList(), false);
         ExternalMapperData data = mapperMain.buildExternalData();
         if (mapperMain != null && data != null) {
 
