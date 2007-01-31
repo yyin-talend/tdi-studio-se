@@ -26,7 +26,6 @@
 		List<IMetadataTable> metadatas = node.getMetadataList();
 			List< ? extends IConnection> conns = node.getOutgoingConnections();
 			for (IConnection conn : conns) {
-			System.out.println(conn.getName());
 //				if (conn.getLineStyle().equals(EConnectionType.FLOW_MAIN)) {
 					if (!hSet.contains(conn.getName())) {
 						hSet.add(conn.getName());

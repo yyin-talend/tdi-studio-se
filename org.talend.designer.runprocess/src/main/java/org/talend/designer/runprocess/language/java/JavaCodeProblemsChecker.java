@@ -134,15 +134,13 @@ public class JavaCodeProblemsChecker extends CodeProblemsChecker {
 
             System.out.println(code);
 
-            
-            
             // create requestor for accumulating discovered problems
-                
+
             /**
              * 
              */
             class MyProblemRequestor implements IProblemRequestor {
-                
+
                 boolean reportProblems;
 
                 public void acceptProblem(IProblem problem) {
@@ -209,45 +207,9 @@ public class JavaCodeProblemsChecker extends CodeProblemsChecker {
                         }
 
                     }
-
                     return key;
-
                 }
 
-                // private String extractKey(char[] contents, int start) {
-                // // search previous cr
-                // int previousCrIndex = -1;
-                // int nextCrIndex = -1;
-                // for (int i = start, j = start; i >= 0 && j < contents.length; i--, j++) {
-                // if (previousCrIndex == -1) {
-                // if (contents[i] == '\n') {
-                // previousCrIndex = i + 1;
-                // }
-                // }
-                // if (i == 0 && previousCrIndex == -1) {
-                // previousCrIndex = 0;
-                // }
-                //                    
-                // if (nextCrIndex == -1) {
-                // if (contents[j] == '\n' || contents[j] == '\r') {
-                // nextCrIndex = j;
-                // }
-                // }
-                //                    
-                // if (j == contents.length - 1 && nextCrIndex == -1) {
-                // nextCrIndex = contents.length;
-                // }
-                //                    
-                // if (previousCrIndex != -1 && nextCrIndex != -1) {
-                // break;
-                // }
-                //                    
-                // }
-                //                
-                // return String.copyValueOf(contents, previousCrIndex, nextCrIndex - previousCrIndex);
-                //                
-                // }
-                //            
                 public void beginReporting() {
                 }
 
@@ -258,17 +220,17 @@ public class JavaCodeProblemsChecker extends CodeProblemsChecker {
                     return true;
                 } // will detect problems if active
 
-                
                 /**
                  * Sets the reportProblems.
+                 * 
                  * @param reportProblems the reportProblems to set
                  */
                 public void setReportProblems(boolean reportProblems) {
                     this.reportProblems = reportProblems;
                 }
-                
-                
-            };
+
+            }
+            ;
 
             MyProblemRequestor problemRequestor = new MyProblemRequestor();
 
@@ -276,7 +238,8 @@ public class JavaCodeProblemsChecker extends CodeProblemsChecker {
             org.eclipse.jdt.core.ICompilationUnit workingCopy = null;
             try {
                 try {
-                    WorkingCopyOwner workingCopyOwner = new WorkingCopyOwner() {};
+                    WorkingCopyOwner workingCopyOwner = new WorkingCopyOwner() {
+                    };
                     workingCopy = ((org.eclipse.jdt.core.ICompilationUnit) compilationUnit).getWorkingCopy(workingCopyOwner,
                             problemRequestor, null);
                     problemRequestor.setReportProblems(true);
@@ -293,7 +256,6 @@ public class JavaCodeProblemsChecker extends CodeProblemsChecker {
         }
 
         return iproblems;
-        // return null;
     }
 
     /**

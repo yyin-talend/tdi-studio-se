@@ -120,7 +120,6 @@ public class CodeGenerator implements ICodeGenerator {
             }
 
             nodes = (List<? extends INode>) process.getGeneratingNodes();
-            System.out.println(nodes.size());
             processTree = new NodesTree(nodes, true);
             RepositoryContext repositoryContext = (RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY);
             language = repositoryContext.getProject().getLanguage();
@@ -464,15 +463,13 @@ public class CodeGenerator implements ICodeGenerator {
                 try {
                     componentsCode.append(generateTypedComponentCode(EInternalTemplate.HEADER, headerArgument));
                     for (NodesSubTree subTree : processTree.getSubTrees()) {
-                            componentsCode.append(generateTypedComponentCode(EInternalTemplate.SUBPROCESS_HEADER, subTree));
-                        if (subTree.containsNode(node)) {
-                            if (nodeConfigurer != null) {
-                                nodeConfigurer.configure(node);
-                                INode subTreeNode = subTree.getNode(node.getUniqueName());
-                                nodeConfigurer.configure(subTreeNode);
-                            }
-                            
-                            
+                        INode subTreeNode = subTree.getNode(node.getUniqueName());
+                        if (subTreeNode != null && nodeConfigurer != null) {
+                            nodeConfigurer.configure(node);
+                            nodeConfigurer.configure(subTreeNode);
+                        }
+                        componentsCode.append(generateTypedComponentCode(EInternalTemplate.SUBPROCESS_HEADER, subTree));
+                        if (subTreeNode != null) {
                             componentsCode.append(generateComponentsCode(lightProcess.getSubTrees().get(0), lightProcess.getSubTrees().get(
                                     0).getRootNode(), ECodePart.BEGIN));
                             componentsCode.append(generateComponentsCode(lightProcess.getSubTrees().get(0), lightProcess.getSubTrees().get(
@@ -481,7 +478,7 @@ public class CodeGenerator implements ICodeGenerator {
                             componentsCode.append(generateComponentsCode(lightProcess.getSubTrees().get(0), lightProcess.getSubTrees().get(
                                     0).getRootNode(), ECodePart.END));
                         }
-                            componentsCode.append(generateTypedComponentCode(EInternalTemplate.SUBPROCESS_FOOTER, subTree));
+                        componentsCode.append(generateTypedComponentCode(EInternalTemplate.SUBPROCESS_FOOTER, subTree));
                     }
                     Vector footerArgument = new Vector(2);
                     footerArgument.add(process);
