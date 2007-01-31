@@ -27,8 +27,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.core.resources.IFolder;
-import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.emf.ecore.resource.Resource;
@@ -36,11 +34,9 @@ import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.utils.data.container.Container;
 import org.talend.commons.utils.data.container.RootContainer;
-import org.talend.commons.utils.workbench.resources.ResourceUtils;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.general.Project;
 import org.talend.core.model.properties.ByteArray;
-import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.FolderItem;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.PropertiesFactory;
@@ -127,8 +123,6 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
     }
 
     protected List<IRepositoryObject> getSerializable(Project project, String id, boolean allVersion) throws PersistenceException {
-        IProject fsProject = ResourceModelUtils.getProject(project);
-
         List<IRepositoryObject> toReturn = new ArrayList<IRepositoryObject>();
 
         ERepositoryObjectType[] repositoryObjectTypeList = new ERepositoryObjectType[] { ERepositoryObjectType.BUSINESS_PROCESS,
@@ -137,11 +131,13 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
                 ERepositoryObjectType.METADATA_FILE_REGEXP, ERepositoryObjectType.METADATA_FILE_XML,
                 ERepositoryObjectType.METADATA_FILE_LDIF, ERepositoryObjectType.PROCESS, ERepositoryObjectType.ROUTINES };
         for (ERepositoryObjectType repositoryObjectType : repositoryObjectTypeList) {
-            IFolder folder = ResourceUtils.getFolder(fsProject, ERepositoryObjectType.getFolderName(repositoryObjectType), true);
+            Object folder = getFolder(project, repositoryObjectType);
             toReturn.addAll(getSerializableFromFolder(folder, id, repositoryObjectType, allVersion, true, true));
         }
         return toReturn;
     }
+
+    protected abstract Object getFolder(Project project, ERepositoryObjectType repositoryObjectType) throws PersistenceException;
 
     public List<IRepositoryObject> getAllVersion(String id) throws PersistenceException {
         List<IRepositoryObject> serializableAllVersion = getSerializable(getRepositoryContext().getProject(), id, true);
