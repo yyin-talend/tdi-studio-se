@@ -119,6 +119,21 @@ private static final java.util.Map<String, Long> end_Hash = new java.util.HashMa
 private static final java.util.Map<String, Boolean> ok_Hash = new java.util.HashMap<String, Boolean>();
 private static final java.util.Map<String, Object> globalMap = new java.util.HashMap<String, Object>();
 
+<%
+    if (stats) {
+%>
+private static RunStat runStat = new RunStat();
+<%
+    }
+%>
+<%
+    if (trace) {
+%>
+private static RunTrace runTrace = new RunTrace();
+<%
+    }
+%>
+
 private class TalendException extends Exception {
 	private Exception e = null;
 	private <%=process.getName() %> c = null;

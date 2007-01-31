@@ -9,10 +9,9 @@
 %>
 
 <%
-//PTODO MHIRT
 if (trace) {
 %>
-sleep 2;
+Thread.sleep(2000);
 <%
 }
 %>

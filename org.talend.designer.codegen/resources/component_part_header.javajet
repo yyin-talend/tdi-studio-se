@@ -16,6 +16,8 @@
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
 	ECodePart codePart = codeGenArgument.getCodePart();
+	boolean trace = codeGenArgument.isTrace();
+	boolean stat = codeGenArgument.isStatistics();
 %>
 /**
  * [<%=node.getUniqueName() %> <%=codePart %> ] start
@@ -43,8 +45,11 @@ ok_Hash.put("<%=node.getUniqueName() %>", false);
 start_Hash.put("<%=node.getUniqueName() %>", java.util.Calendar.getInstance().getTime());
 <%
   }
+  	if ((codePart.equals(ECodePart.BEGIN))&&(stat)) {
 %>
-
+	runStat.updateStat("<%=node.getUniqueName() %>",0, 0); 
+<%
+	}
 <%
 	}
 %>

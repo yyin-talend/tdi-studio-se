@@ -19,64 +19,59 @@ CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
 ECodePart codePart = codeGenArgument.getCodePart();
 boolean trace = codeGenArgument.isTrace();
+boolean stat = codeGenArgument.isStatistics();
 %>
 
 <%
-if (!(node instanceof IExternalNode)) {
-	if (codePart.equals(ECodePart.BEGIN)) {
-		List<IMetadataTable> metadatas = node.getMetadataList();
-		if ((metadatas!=null)&&(metadatas.size()>0)) {
-			IMetadataTable metadata = metadatas.get(0);
-			if (metadata!=null) {
-				List< ? extends IConnection> conns = node.getOutgoingConnections();
-				for (IConnection conn : conns) {
-					if (conn.getLineStyle().equals(EConnectionType.FLOW_MAIN)) {
-						if (trace) {
+	if ((codePart.equals(ECodePart.MAIN))&&(stat)) {
 %>
-// PTODO MHIRT
-//my @colnames_<%=conn.getName() %> = undef;
-//if (scalar @{ $desc_<%=node.getUniqueName() %>{schema} }) {
-//    @colnames_<%=conn.getName() %> = map { $_->{name} } @{ $desc_<%=node.getUniqueName() %>{schema} };
-//}
+	runStat.updateStat("<%=node.getUniqueName() %>",1, 1); 
+<%
+	}
+	if ((codePart.equals(ECodePart.END))&&(stat)) {
+%>
+	runStat.updateStat("<%=node.getUniqueName() %>",2, 0); 
+<%
+	}
 
+	if (codePart.equals(ECodePart.MAIN)) {
+		List<IMetadataTable> metadatas = node.getMetadataList();
+		if ((metadatas != null) && (metadatas.size() > 0)) {
+			IMetadataTable metadata = metadatas.get(0);
+			if (metadata != null) {
+				for (IConnection conn : node.getOutgoingConnections()) {
+					if (conn.getLineStyle().equals(EConnectionType.FLOW_MAIN)) {
+						if (trace) {				
+%>
+			// here we dump the line content for trace purpose
+			runTrace.sendTrace("<%=conn.getName() %>","<%
+									for (IMetadataColumn column : metadata.getListColumns()) {
+			%><%=column.getLabel() %>="+<%=conn.getName() %>.<%=column.getLabel() %>+"|<%
+									}
+%>");
 <%
 						}
 					}
 				}
 			}
 		}
-	}
-
-	if (codePart.equals(ECodePart.MAIN)) {
-		if (!node.isSubProcessStart()) {
-			String inputColName = null;
-			if (node.getIncomingConnections()!=null) {
-				for (IConnection incomingConn : node.getIncomingConnections()) {
-					if (incomingConn.getLineStyle().equals(EConnectionType.FLOW_MAIN)) {
-						inputColName = incomingConn.getName();
-						break;
-					}
+		
+		String inputColName = null;
+		if (node.getIncomingConnections()!=null) {
+			for (IConnection incomingConn : node.getIncomingConnections()) {
+				if (incomingConn.getLineStyle().equals(EConnectionType.FLOW_MAIN)) {
+					inputColName = incomingConn.getName();
+					break;
 				}
 			}
+		}
+		if (!node.isSubProcessStart()) {
 			if (inputColName!=null) {
-				List<IMetadataTable> metadatas = node.getMetadataList();
 				if ((metadatas != null) && (metadatas.size() > 0)) {
 					IMetadataTable metadata = metadatas.get(0);
 					if (metadata != null) {
 						for (IConnection conn : node.getOutgoingConnections()) {
 							if (conn.getLineStyle().equals(EConnectionType.FLOW_MAIN)) {
-								if (trace) {
-%>
-
-//# here we dump the line content for trace purpose
-//SendTrace(
-//    '<%=conn.getName() %>',
-//  ++$<%=conn.getName() %>_trace_num,
-//  \@<%=conn.getName() %>,
-//  \@colnames_<%=conn.getName() %>,
-//
-<%
-								}
 								for (IMetadataColumn column : metadata.getListColumns()) {
 %>
 	<%=conn.getName() %>.<%=column.getLabel() %> = <%=inputColName %>.<%=column.getLabel() %>;
@@ -130,7 +125,6 @@ end_Hash.put("<%=node.getUniqueName() %>", java.util.Calendar.getInstance().getT
 			}
 		}
 	}
-}
 %>
 /**
  * [<%=node.getUniqueName() %> <%=codePart %> ] stop
