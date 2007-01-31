@@ -63,16 +63,21 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.views.properties.tabbed.AbstractPropertySection;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
+import org.talend.commons.ui.swt.tableviewer.CellEditorValueAdapterFactory;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumn;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator.LAYOUT_MODE;
 import org.talend.commons.ui.swt.tableviewer.behavior.CellEditorValueAdapter;
 import org.talend.commons.ui.swt.tableviewer.tableeditor.TableEditorManager;
 import org.talend.commons.utils.data.bean.IBeanPropertyAccessors;
+import org.talend.core.CorePlugin;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.model.metadata.EMetadataType;
+import org.talend.core.model.metadata.IMetadataColumn;
+import org.talend.core.model.metadata.MetadataTalendType;
 import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IContextParameter;
+import org.talend.core.model.temp.ECodeLanguage;
 import org.talend.core.model.utils.ContextParameterUtils;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.context.Context;
@@ -300,8 +305,7 @@ public class ContextProcessSection extends AbstractPropertySection {
                     if (paramName.equals(listParams.get(i).getName())) {
                         listParams.get(i).setPromptNeeded(promptNeeded);
                         paramNameFound = true;
-                        getCommandStack().execute(
-                                new ContextModifyCommand(process.getContextManager(), oldContextCloned, context));
+                        getCommandStack().execute(new ContextModifyCommand(process.getContextManager(), oldContextCloned, context));
                     }
                 }
             }
@@ -685,6 +689,8 @@ public class ContextProcessSection extends AbstractPropertySection {
         textCellEditor = new TextCellEditor(table);
         column.setCellEditor(textCellEditor, setDirtyValueAdapter);
 
+        ////////////////////////////////////////////////////////////
+        // Type column
         column = new TableViewerCreatorColumn(tableViewerCreator);
         column.setTitle(Messages.getString("ContextProcessSection.43")); //$NON-NLS-1$
         column.setBeanPropertyAccessors(new IBeanPropertyAccessors<IContextParameter, EMetadataType>() {
@@ -703,15 +709,33 @@ public class ContextProcessSection extends AbstractPropertySection {
         });
         column.setModifiable(true);
         column.setWidth(TYPE_COLUMN_WIDTH);
+//        String dbms = null;
+//        RepositoryContext repositoryContext = (RepositoryContext) CorePlugin.getContext().getProperty(
+//                org.talend.core.context.Context.REPOSITORY_CONTEXT_KEY);
+//        ECodeLanguage codeLanguage = repositoryContext.getProject().getLanguage();
+//        CellEditorValueAdapter comboValueAdapter = null;
+//        if (codeLanguage == ECodeLanguage.JAVA) {
+//            comboValueAdapter  = CellEditorValueAdapterFactory.getComboAdapter("String");
+//            dbms = MetadataTalendType.LANGUAGE_JAVA;
+//        } else {
+//            comboValueAdapter = CellEditorValueAdapterFactory.getComboAdapter();
+//            dbms = MetadataTalendType.TALENDDEFAULT;
+//        }
+//        String[] stringValues = MetadataTalendType.loadTalendTypes(dbms, false);
+//        ComboBoxCellEditor comboBoxCellEditor = new ComboBoxCellEditor(table, stringValues);
+//        column.setCellEditor(comboBoxCellEditor, comboValueAdapter);
         EMetadataType[] values = EMetadataType.values();
         String[] stringValues = new String[values.length];
         for (int j = 0; j < values.length; j++) {
             stringValues[j] = values[j].getDisplayName();
         }
-
         ComboBoxCellEditor comboBoxCellEditor = new ComboBoxCellEditor(table, stringValues);
-        ((CCombo) comboBoxCellEditor.getControl()).setEditable(false);
         column.setCellEditor(comboBoxCellEditor, comboCellEditorValueAdapter);
+
+        ((CCombo) comboBoxCellEditor.getControl()).setEditable(false);
+        ////////////////////////////////////////////////////////////
+        
+        
         column = new TableViewerCreatorColumn(tableViewerCreator);
         column.setTitle(Messages.getString("ContextProcessSection.45")); //$NON-NLS-1$
         column.setBeanPropertyAccessors(new IBeanPropertyAccessors<IContextParameter, String>() {
@@ -758,8 +782,8 @@ public class ContextProcessSection extends AbstractPropertySection {
         column.setBeanPropertyAccessors(new IBeanPropertyAccessors<IContextParameter, String>() {
 
             public String get(IContextParameter bean) {
-                return ContextParameterUtils.getScriptCode(bean, ((RepositoryContext) org.talend.core.CorePlugin.getContext()
-                        .getProperty(org.talend.core.context.Context.REPOSITORY_CONTEXT_KEY)).getProject().getLanguage());
+                return ContextParameterUtils.getScriptCode(bean, ((RepositoryContext) org.talend.core.CorePlugin.getContext().getProperty(
+                        org.talend.core.context.Context.REPOSITORY_CONTEXT_KEY)).getProject().getLanguage());
             }
 
             public void set(IContextParameter bean, String value) {
@@ -804,8 +828,8 @@ public class ContextProcessSection extends AbstractPropertySection {
         combo.setEnabled(!process.isReadOnly());
 
         tabFolder = getWidgetFactory().createTabFolder(composite, SWT.BORDER);
-        tabFolder.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_FILL | GridData.HORIZONTAL_ALIGN_FILL
-                | GridData.GRAB_HORIZONTAL | GridData.GRAB_VERTICAL));
+        tabFolder.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_FILL | GridData.HORIZONTAL_ALIGN_FILL | GridData.GRAB_HORIZONTAL
+                | GridData.GRAB_VERTICAL));
 
         Menu menuTable = new Menu(tabFolder);
         hashCurControls.put(MENU_TABLE, menuTable);
@@ -876,8 +900,7 @@ public class ContextProcessSection extends AbstractPropertySection {
         combo.clearSelection();
 
         for (int i = 0; i < process.getContextManager().getListContext().size(); i++) {
-            TableViewerCreator tableViewerCreator = tableViewerCreatorMap
-                    .get(process.getContextManager().getListContext().get(i));
+            TableViewerCreator tableViewerCreator = tableViewerCreatorMap.get(process.getContextManager().getListContext().get(i));
             tableViewerCreator.getTableViewer().refresh();
 
             Table table = tableViewerCreator.getTable();
@@ -885,8 +908,7 @@ public class ContextProcessSection extends AbstractPropertySection {
             for (int j = 0; j < table.getItemCount(); j++) {
                 tableItem = table.getItem(j);
                 String paramName = ((IContextParameter) tableItem.getData()).getName();
-                List<IContextParameter> listParams = process.getContextManager().getListContext().get(i)
-                        .getContextParameterList();
+                List<IContextParameter> listParams = process.getContextManager().getListContext().get(i).getContextParameterList();
                 boolean paramNameFound = false;
                 for (int k = 0; k < listParams.size() && !paramNameFound; k++) {
                     if (paramName.equals(listParams.get(k).getName())) {
