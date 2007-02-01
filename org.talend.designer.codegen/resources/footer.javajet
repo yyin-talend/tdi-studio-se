@@ -19,55 +19,15 @@
 	boolean trace = codeGenArgument.isTrace();
 %>
 
+	public static String context = null;
+    public static boolean watch = false;
+    public static int portStats = 3334;
+    public static int portTraces = 4334;
+    
     public static void main(String[] args) {
-    	String context = null;
-    	boolean watch = false;
-    	int portStats = 3334;
-    	int portTraces = 4334;
-    	String arg2;
-    	int countParam = args.length;
-    	switch (countParam) {
-    		case 0 :
-    			//do nothing
-    			break;
-    		case 1 : 
-    			context = args[0];
-    			break;
-    		case 2 : 
-    			context = args[0];
-    			if (args[1].startsWith("--watch")) {
-    				watch = true;
-    			}
-    			break;
-    		case 3 : 
-    			context = args[0];
-    			if (args[1].startsWith("--watch")) {
-    				watch = true;
-    			}
-    			arg2 = args[2];
-    			if (arg2.startsWith("--stat_port=")) {
-    				portStats = Integer.parseInt(arg2.substring(12));
-    			}
-    			break;
-    		case 4 : 
-    			context = args[0];
-    			if (args[1].startsWith("--watch")) {
-    				watch = true;
-    			}
-    			arg2 = args[2];
-    			if (arg2.startsWith("--stat_port=")) {
-    				portStats = Integer.parseInt(arg2.substring(12));
-    			}
-    			String arg3 = (String)args[3];
-    			if (arg3.startsWith("--trace_port=")) {
-    				portTraces = Integer.parseInt(arg3.substring(13));
-    			}
-    			break;
-    		default:
-    			//do nothing
-    			break;
+    	for (String arg : args) {
+    		<%=process.getName() %>.evalParam(arg);
     	}
-
 		if (context!=null) {
 			System.out.println("tsInfo>  Running process with context: "+context+" (./tUser/"+context+".java)");
 		}
@@ -149,6 +109,18 @@
         }
 %>
 	}
+	
+	public static void evalParam(String arg) {
+		if (arg.startsWith("--watch")) {
+    		watch = true;
+    	} else if (arg.startsWith("--stat_port=")) {
+    		portStats = Integer.parseInt(arg.substring(12));
+    	} else if (arg.startsWith("--trace_port=")) {
+    		portTraces = Integer.parseInt(arg.substring(13));
+    	} else {
+    		context = arg;
+    	}
+	}
 
 <%
         if (stats) {
@@ -192,9 +164,11 @@
         private long currentTime = 0;
 		
 		public void startThreadStat(int portStats) throws java.io.IOException, java.net.UnknownHostException {
+			 System.out.println("Connecting to Stat Socket on port "+portStats+"...");
 			 s = new java.net.Socket("localhost",portStats);
 			 startTime = java.util.Calendar.getInstance().getTimeInMillis();
 			 pred = new java.io.PrintWriter(new java.io.BufferedWriter(new java.io.OutputStreamWriter(s.getOutputStream())), true);
+			 System.out.println("Connected to Stat Socket.");
 			 Thread t = new Thread(this);
 			 t.start();
 			 
@@ -275,8 +249,10 @@
         private String str = "";
 		
 		public void startThreadTrace(int portTraces) throws java.io.IOException, java.net.UnknownHostException {
+			 System.out.println("Connecting to Trace Socket on port "+portTraces+"...");
 			 s = new java.net.Socket("localhost",portTraces);
 			 pred = new java.io.PrintWriter(new java.io.BufferedWriter(new java.io.OutputStreamWriter(s.getOutputStream())), true);
+			 System.out.println("Connected to Trace Socket.");
 			 Thread t = new Thread(this);
 			 t.start();
 			 
@@ -306,7 +282,7 @@
 			bean.setNbLine(bean.getNbLine()+1);
 			processTraces.put(componentId, bean);
 			
-			String str = bean.getComponentId() + "|" + bean.getNbLine() + "|" + datas;
+			str = bean.getComponentId() + "|" + bean.getNbLine() + "|" + datas;
             pred.println(str); // envoi d'un message
 		}
 	}
