@@ -65,7 +65,7 @@ public interface IRepositoryFactory {
 
     public void initialize();
 
-    public void logOnProject(Project project) throws PersistenceException, LoginException;
+    public void logOnProject(Project project) throws LoginException, PersistenceException;
 
     public String getNextId();
 
@@ -199,8 +199,9 @@ public interface IRepositoryFactory {
      * DOC mhelleboid Comment method "cancel".
      * 
      * @param property
+     * @throws PersistenceException 
      */
-    public Property reload(Property property);
+    public Property reload(Property property) throws PersistenceException;
 
     public RootContainer<String, IRepositoryObject> getBusinessProcess() throws PersistenceException;
 

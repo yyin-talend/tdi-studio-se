@@ -30,6 +30,7 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.talend.commons.exception.BusinessException;
+import org.talend.commons.exception.MessageBoxExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.swt.dialogs.ErrorDialogWidthDetailArea;
 import org.talend.core.model.properties.Property;
@@ -115,15 +116,20 @@ public abstract class RepositoryWizard extends Wizard {
      * @param IRepositoryObject
      */
     public boolean performCancel() {
-        reload();
+        try {
+            reload();
+        } catch (PersistenceException e) {
+            MessageBoxExceptionHandler.process(e);
+        }
         closeLockStrategy();
         return true;
     }
 
     /**
      * DOC mhelleboid Comment method "reload".
+     * @throws PersistenceException 
      */
-    private void reload() {
+    private void reload() throws PersistenceException {
         if (repositoryObject != null) {
             IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
             Property property = factory.reload(repositoryObject.getProperty());

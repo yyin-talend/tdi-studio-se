@@ -188,6 +188,7 @@ public class LoginDialog extends TitleAreaDialog {
             ProxyRepositoryFactory.getInstance().logOnProject(project);
         } catch (PersistenceException e) {
             MessageBoxExceptionHandler.process(e, getShell());
+            return;
         } catch (LoginException e) {
             setErrorMessage(e.getMessage());
             return;

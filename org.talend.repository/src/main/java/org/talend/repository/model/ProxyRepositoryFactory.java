@@ -615,7 +615,7 @@ public class ProxyRepositoryFactory implements IProxyRepositoryFactory {
      * 
      * @see org.talend.repository.model.IProxyRepositoryFactory#reload(org.talend.core.model.properties.Property)
      */
-    public Property reload(Property property) {
+    public Property reload(Property property) throws PersistenceException {
         return this.repositoryFactoryFromProvider.reload(property);
     }
 
