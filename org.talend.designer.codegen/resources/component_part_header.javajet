@@ -50,7 +50,7 @@ start_Hash.put("<%=node.getUniqueName() %>", java.util.Calendar.getInstance().ge
 	runStat.updateStat("<%=node.getUniqueName() %>",0, 0); 
 <%
 	}
-<%
+
 	}
 %>
 
