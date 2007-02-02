@@ -185,7 +185,7 @@ public final class PerlUtils {
         Bundle b = Platform.getBundle(IComponentsFactory.COMPONENTS_LOCATION);
         URL url = null;
         try {
-            url = FileLocator.toFileURL(FileLocator.find(b, new Path(IComponentsFactory.COMPONENTS_DIRECTORY), null));
+            url = FileLocator.toFileURL(FileLocator.find(b, new Path(IComponentsFactory.COMPONENTS_INNER_FOLDER), null));
             return new Path(url.getFile());
         } catch (IOException e) {
             throw new CoreException(new Status(Status.ERROR, RunProcessPlugin.PLUGIN_ID, Status.OK, Messages
