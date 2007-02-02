@@ -1,0 +1,118 @@
+<%@ jet 
+package="org.talend.designer.codegen.translators" 
+imports="
+    org.talend.core.model.process.INode 
+    org.talend.core.model.process.ElementParameterParser 
+    org.talend.core.model.metadata.IMetadataTable 
+    org.talend.core.model.metadata.IMetadataColumn
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    java.util.List
+" 
+class="MysqlInputBegin" 
+%>
+
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+boolean stats = codeGenArgument.isStatistics();
+	
+List<IMetadataTable> metadatas = node.getMetadataList();
+if ((metadatas!=null)&&(metadatas.size()>0)) {
+    IMetadataTable metadata = metadatas.get(0);
+    if (metadata!=null) {
+        String cid = metadata.getTableName();
+        int nbFields = metadata.getListColumns().size();
+
+        String dbhost = ElementParameterParser.getValue(node, "__HOST__");
+        String dbport = ElementParameterParser.getValue(node, "__PORT__");
+        String dbname = ElementParameterParser.getValue(node, "__DBNAME__");
+        String dbuser = ElementParameterParser.getValue(node, "__USER__");
+        String dbpass = ElementParameterParser.getValue(node, "__PASS__");
+        String encoding = ElementParameterParser.getValue(
+            node,
+            "__ENCODING__"
+        );
+        String query = ElementParameterParser.getValue(node, "__QUERY__");
+%>
+
+use DBI;
+
+my %desc_<%=cid %> = (
+    dbhost        => <%=dbhost %>,
+    dbport        => <%=dbport %>,
+    dbname        => <%=dbname %>,
+    dbuser        => <%=dbuser %>,
+    dbpass        => <%=dbpass %>,
+    encoding      => <%=encoding %>,
+    query         => <%=query %>,
+    schema        => [
+<%
+        for (IMetadataColumn column: metadata.getListColumns()) {
+%>
+    	{
+            name    => '<%=column.getLabel() %>',
+            key     => <%=column.isKey() %>,
+            type    => '<%=column.getType() %>',
+            len     => <%=column.getLength() %>,
+            null    => <%=column.isNullable() %>,
+            default => '<%=column.getDefault() %>',
+            comment => '<%=column.getComment() %>',
+        },
+<%
+    }
+%>
+    ],
+);
+
+my $nb_line_<%=cid%> = 0;
+
+<%
+        if (stats) {
+%>
+UpdateStat('<%=cid %>', 0);
+<%
+        }
+%>
+
+my $dbh_<%=cid %> = DBI->connect(
+    sprintf(
+        'DBI:mysql:database=%s;host=%s;port=%s',
+        <%=dbname %>,
+        <%=dbhost %>,
+        <%=dbport %>,
+    ),
+    <%=dbuser %>,
+    <%=dbpass %>,
+)
+    or die "can't connect to database";
+
+my $sth_<%=cid %>;
+my $query;
+
+if ($desc_<%=cid %>{encoding} =~ m/^utf-?8$/i) {
+    $query = 'set names "UTF8"';
+    $sth_<%=cid %> = $dbh_<%=cid %>->prepare($query);
+    $sth_<%=cid %>->execute();
+    $sth_<%=cid %>->finish();
+}
+
+$sth_<%=cid %> = $dbh_<%=cid %>->prepare(
+    <%=query%>
+);
+
+$sth_<%=cid %>->execute()
+    or die "can't execute input query";
+
+if ($_context{StoreSQLQuery}) {
+    $_globals{<%=cid %>}{QUERY} = $desc_<%=cid %>{query};
+}
+
+# fetch the N first columns (defined by component schema) from the SQL
+# result
+while (my @<%=cid %> = ($sth_<%=cid %>->fetchrow_array())[0 .. <%=nbFields - 1%>]) {
+    $nb_line_<%=cid%>++;
+<%
+    }
+}
+%>
+
