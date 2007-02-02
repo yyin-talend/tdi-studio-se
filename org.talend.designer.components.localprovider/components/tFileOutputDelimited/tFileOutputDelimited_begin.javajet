@@ -23,28 +23,22 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     if (metadata!=null) {
         String cid = metadata.getTableName();
 
-        String filename = ElementParameterParser.getValue(
+        String filename = ElementParameterParser.getValueWithUIFieldKey(
             node,
-            "__FILENAME__"
+            "__FILENAME__",
+            "FILENAME"
         );
         
-        String rowSeparator = ElementParameterParser.getValue(
+        String fieldSeparator = ElementParameterParser.getValueWithUIFieldKey(
             node,
-            "__ROWSEPARATOR__"
-        );
-
-        String fieldSeparator = ElementParameterParser.getValue(
-            node,
-            "__FIELDSEPARATOR__"
+            "__FIELDSEPARATOR__",
+            "FIELDSEPARATOR"
         );
 %>
 
 		final String OUT_DELIM_<%=cid %> = <%=fieldSeparator %>;
         
-        <% String fileNameFieldKey = CodeGenerationUtils.buildProblemKey(cid, "FILENAME"); %>
-        <%= CodeGenerationUtils.buildStartFieldKey(fileNameFieldKey) %>
         java.io.BufferedWriter out<%=cid %> = new java.io.BufferedWriter(new java.io.FileWriter(<%=filename %>));
-        <%= CodeGenerationUtils.buildEndFieldKey(fileNameFieldKey) %>
 <%
     }
 }

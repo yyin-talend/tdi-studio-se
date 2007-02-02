@@ -233,7 +233,7 @@ public class TMapperMainJavajet {
                         JavaGenerationManager.PROBLEM_KEY_FIELD.METADATA_COLUMN.toString(), varsTableName, varsColumnName);
                 
                 if (writeCommentedFieldKeys) {
-                    sb.append(cr).append(CodeGenerationUtils.buildStartFieldKey(key));
+                    sb.append(cr).append(CodeGenerationUtils.buildJavaStartFieldKey(key));
                 }
 
                 String expression = gm.indent(indent) + gm.getGeneratedCodeTableColumnVariable(varsTableName, varsColumnName) + " = "
@@ -241,7 +241,7 @@ public class TMapperMainJavajet {
                 sb.append(cr).append(expression);
 
                 if (writeCommentedFieldKeys) {
-                    sb.append(cr).append(CodeGenerationUtils.buildEndFieldKey(key));
+                    sb.append(cr).append(CodeGenerationUtils.buildJavaEndFieldKey(key));
                 }
                 
             }
@@ -404,7 +404,7 @@ public class TMapperMainJavajet {
                     String key = CodeGenerationUtils.buildProblemKey(uniqueNameComponent,
                             JavaGenerationManager.PROBLEM_KEY_FIELD.FILTER.toString(), outputTableName, null);
                     if (writeCommentedFieldKeys) {
-                        sb.append(CodeGenerationUtils.buildStartFieldKey(key));
+                        sb.append("\n").append(CodeGenerationUtils.buildJavaStartFieldKey(key));
                     }
 
                     String ifConditions = gm.indent(indent) + "if( ";
@@ -436,7 +436,7 @@ public class TMapperMainJavajet {
                     sb.append(cr).append(ifConditions);
 
                     if (writeCommentedFieldKeys) {
-                        sb.append(CodeGenerationUtils.buildEndFieldKey(key));
+                        sb.append("\n").append(CodeGenerationUtils.buildJavaEndFieldKey(key));
                     }
 
                     indent++;
@@ -458,7 +458,7 @@ public class TMapperMainJavajet {
                         String key = CodeGenerationUtils.buildProblemKey(uniqueNameComponent,
                                 JavaGenerationManager.PROBLEM_KEY_FIELD.METADATA_COLUMN.toString(), outputTableName, outputColumnName);
                         if (writeCommentedFieldKeys) {
-                            sb.append(CodeGenerationUtils.buildStartFieldKey(key));
+                            sb.append("\n").append(CodeGenerationUtils.buildJavaStartFieldKey(key));
                         }
 
                         String expression = gm.indent(indent)
@@ -468,7 +468,7 @@ public class TMapperMainJavajet {
                         sb.append(cr).append(expression);
 
                         if (writeCommentedFieldKeys) {
-                            sb.append(CodeGenerationUtils.buildEndFieldKey(key));
+                            sb.append("\n").append(CodeGenerationUtils.buildJavaEndFieldKey(key));
                         }
                         
                     } // for entries

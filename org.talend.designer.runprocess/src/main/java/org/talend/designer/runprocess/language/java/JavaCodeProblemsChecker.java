@@ -37,12 +37,12 @@ import org.eclipse.jdt.core.IProblemRequestor;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.core.WorkingCopyOwner;
 import org.eclipse.jdt.core.compiler.IProblem;
-import org.eclipse.jdt.internal.core.BecomeWorkingCopyOperation;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
 import org.talend.commons.exception.ExceptionHandler;
+import org.talend.commons.utils.generation.CodeGenerationUtils;
 import org.talend.core.language.CodeProblemsChecker;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.Problem;
@@ -134,111 +134,10 @@ public class JavaCodeProblemsChecker extends CodeProblemsChecker {
 
             final String code = retrieveCode(process, selectedNodeName, nodeConfigurer);
 
-            System.out.println(code);
+            // System.out.println(code);
 
             // create requestor for accumulating discovered problems
-
-            /**
-             * 
-             */
-            class MyProblemRequestor implements IProblemRequestor {
-
-                boolean reportProblems;
-
-                Set alreadyAdded = new HashSet();
-
-                public void acceptProblem(IProblem problem) {
-                    String keyAlreadyAdded = problem.getMessage() + problem.getSourceLineNumber();
-                    if (reportProblems && problem.isError() && !alreadyAdded.contains(keyAlreadyAdded)) {
-                        System.out.println(problem.getID() + ": " + problem.getMessage());
-                        char[] charArray = code.toCharArray();
-
-                        String source = String.copyValueOf(charArray, problem.getSourceStart(), problem.getSourceEnd()
-                                - problem.getSourceStart() + 1);
-
-                        System.out.println("source=" + source);
-
-                        String key = extractKey(charArray, problem.getSourceStart());
-                        DetailedProblem detailedProblem = new DetailedProblem(problem, key, source);
-                        iproblems.add(detailedProblem);
-                        alreadyAdded.add(keyAlreadyAdded);
-                    }
-
-                }
-
-                private String extractKey(char[] contents, int start) {
-
-                    Perl5Compiler compiler = new Perl5Compiler();
-                    Perl5Matcher matcher = new Perl5Matcher();
-                    String key = null;
-                    String fieldType = null;
-                    Pattern pattern = null;
-                    try {
-                        pattern = compiler.compile(".*//\\s*(Start field|End field)\\s*([\\w:]+)\\s*$");
-                    } catch (MalformedPatternException e) {
-                        ExceptionHandler.process(e);
-                        return null;
-                    }
-
-                    // search previous cr
-                    int indexStartOfLine = -1;
-                    int indexEndOfLine = -1;
-
-                    for (int i = start; i >= 0; i--) {
-                        if (contents[i] == '\n') {
-                            if (indexEndOfLine == -1) {
-                                indexEndOfLine = i;
-                            } else if (indexStartOfLine == -1) {
-                                indexStartOfLine = i + 1;
-                            }
-                        }
-
-                        if (indexStartOfLine != -1 && indexEndOfLine != -1) {
-                            String line = String.copyValueOf(contents, indexStartOfLine, indexEndOfLine - indexStartOfLine);
-                            if (matcher.matches(line, pattern)) {
-                                MatchResult matchResult = matcher.getMatch();
-                                fieldType = matchResult.group(1);
-                                if (fieldType.equals("End field")) {
-                                    // error doesn't come from field
-                                    break;
-                                }
-
-                                key = matchResult.group(2);
-                                break;
-                            }
-
-                            indexEndOfLine = indexStartOfLine - 1;
-                            indexStartOfLine = -1;
-
-                        }
-
-                    }
-                    return key;
-                }
-
-                public void beginReporting() {
-                }
-
-                public void endReporting() {
-                }
-
-                public boolean isActive() {
-                    return true;
-                } // will detect problems if active
-
-                /**
-                 * Sets the reportProblems.
-                 * 
-                 * @param reportProblems the reportProblems to set
-                 */
-                public void setReportProblems(boolean reportProblems) {
-                    this.reportProblems = reportProblems;
-                }
-
-            }
-            ;
-
-            MyProblemRequestor problemRequestor = new MyProblemRequestor();
+            MyProblemRequestor problemRequestor = new MyProblemRequestor(code, iproblems);
 
             // use working copy to hold source with error
             org.eclipse.jdt.core.ICompilationUnit workingCopy = null;
@@ -288,6 +187,125 @@ public class JavaCodeProblemsChecker extends CodeProblemsChecker {
             }
         }
         return problems;
+    }
+
+    /**
+     * 
+     */
+    class MyProblemRequestor implements IProblemRequestor {
+
+        boolean reportProblems;
+
+        Set alreadyAdded = new HashSet();
+
+        String code;
+
+        private ArrayList<DetailedProblem> iproblems;
+
+        /**
+         * DOC amaumont MyProblemRequestor constructor comment.
+         * 
+         * @param code
+         * @param iproblems
+         */
+        public MyProblemRequestor(String code, ArrayList<DetailedProblem> iproblems) {
+            super();
+            this.code = code;
+            this.iproblems = iproblems;
+        }
+
+        public void acceptProblem(IProblem problem) {
+            String keyAlreadyAdded = problem.getMessage() + problem.getSourceLineNumber();
+            if (reportProblems && problem.isError() && !alreadyAdded.contains(keyAlreadyAdded)) {
+                // System.out.println(problem.getID() + ": " + problem.getMessage());
+                char[] charArray = this.code.toCharArray();
+
+                String source = String.copyValueOf(charArray, problem.getSourceStart(), problem.getSourceEnd() - problem.getSourceStart()
+                        + 1);
+
+                // System.out.println("source=" + source);
+
+                // String key = extractKey(charArray, problem.getSourceStart());
+                String key = extractKey(charArray, problem.getSourceEnd());
+                DetailedProblem detailedProblem = new DetailedProblem(problem, key, source);
+                iproblems.add(detailedProblem);
+                alreadyAdded.add(keyAlreadyAdded);
+            }
+
+        }
+
+        private String extractKey(char[] contents, int start) {
+
+            Perl5Compiler compiler = new Perl5Compiler();
+            Perl5Matcher matcher = new Perl5Matcher();
+            String key = null;
+            String fieldType = null;
+            Pattern pattern = null;
+            try {
+                // exemple of matching string :                 /** Start field value1:value2:value3 */
+                // other exemple of matching string :           /**     End field xxx:yyyy:zzzz:mmmm    */
+                pattern = compiler.compile("/\\*\\*\\s*(" + CodeGenerationUtils.START_FIELD + "|" + CodeGenerationUtils.END_FIELD
+                        + ")\\s*([\\w:]+)\\s*\\*/$", Perl5Compiler.MULTILINE_MASK);
+            } catch (MalformedPatternException e) {
+                ExceptionHandler.process(e);
+                return null;
+            }
+
+            String firstStringToSearch = "*/";
+            int sizeFirstStringToSearch = firstStringToSearch.length();
+
+            for (int i = start + sizeFirstStringToSearch; i < contents.length; i++) {
+
+                boolean parseWithRegExp = String.copyValueOf(contents, i + 1 - sizeFirstStringToSearch, sizeFirstStringToSearch).equals(
+                        firstStringToSearch);
+
+                if (parseWithRegExp) {
+                    String stringToParse = String.copyValueOf(contents, start, i - start + 1);
+                    if (matcher.contains(stringToParse, pattern)) {
+                        MatchResult matchResult = matcher.getMatch();
+                        fieldType = matchResult.group(1);
+                        if (fieldType.equals(CodeGenerationUtils.START_FIELD)) {
+                            // error doesn't come from UI field
+                            break;
+                        }
+
+                        key = matchResult.group(2);
+                        break;
+                    }
+                }
+            }
+
+            return key;
+        }
+
+        public void beginReporting() {
+        }
+
+        public void endReporting() {
+        }
+
+        public boolean isActive() {
+            return true;
+        } // will detect problems if active
+
+        /**
+         * Sets the reportProblems.
+         * 
+         * @param reportProblems the reportProblems to set
+         */
+        public void setReportProblems(boolean reportProblems) {
+            this.reportProblems = reportProblems;
+        }
+
+    };
+
+    public static void main(String[] args) {
+        JavaCodeProblemsChecker checker = new JavaCodeProblemsChecker();
+
+        String string = "/** Start field xxx:hhhh:gggg */row1.fff /** End field xxx:hhhh:gggg */";
+        MyProblemRequestor requestor = checker.new MyProblemRequestor(string, null);
+
+        requestor.extractKey(string.toCharArray(), 36);
     }
 
 }

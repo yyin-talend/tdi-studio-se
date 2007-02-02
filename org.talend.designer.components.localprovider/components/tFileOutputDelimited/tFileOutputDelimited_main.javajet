@@ -24,19 +24,10 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     if (metadata!=null) {
         String cid = metadata.getTableName();
 
-        String filename = ElementParameterParser.getValue(
+        String rowSeparator = ElementParameterParser.getValueWithUIFieldKey(
             node,
-            "__FILENAME__"
-        );
-        
-        String rowSeparator = ElementParameterParser.getValue(
-            node,
-            "__ROWSEPARATOR__"
-        );
-
-        String fieldSeparator = ElementParameterParser.getValue(
-            node,
-            "__FIELDSEPARATOR__"
+            "__ROWSEPARATOR__",
+            "ROWSEPARATOR"
         );
 %>
 

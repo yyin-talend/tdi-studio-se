@@ -61,14 +61,14 @@ public class JavaGenerationManager extends GenerationManager {
             String key = CodeGenerationUtils.buildProblemKey(uniqueNameComponent,
                     JavaGenerationManager.PROBLEM_KEY_FIELD.METADATA_COLUMN.toString(), name, keysNames[i]);
             if (writeCommentedFieldKeys) {
-                sb.append(CodeGenerationUtils.buildStartFieldKey(key));
+                sb.append("\n").append(CodeGenerationUtils.buildJavaStartFieldKey(key));
             }
 
             String expression = indent(indent) + name + "HashKey." + keysNames[i] + " = " + keysValues[i] + ";";
             sb.append("\n").append(expression);
 
             if (writeCommentedFieldKeys) {
-                sb.append(CodeGenerationUtils.buildEndFieldKey(key));
+                sb.append("\n").append(CodeGenerationUtils.buildJavaEndFieldKey(key));
             }
         }
         sb.append("\n" + indent(indent) + name + "HashKey.hashCodeDirty = true;");

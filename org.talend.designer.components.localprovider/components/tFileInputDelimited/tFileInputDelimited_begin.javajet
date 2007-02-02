@@ -26,14 +26,13 @@
 			String cid = metadata.getTableName();
 %>
 
-        final String IN_DELIM_<%=cid %> = <%=(((String)ElementParameterParser.getValue(node, "__FIELDSEPARATOR__")).compareTo("*")==0)?"\\*":ElementParameterParser.getValue(node, "__FIELDSEPARATOR__") %>;
+        final String IN_DELIM_<%=cid %> = <%=
+        	(((String)ElementParameterParser.getValue(node, "__FIELDSEPARATOR__")).compareTo("*")==0)
+        	? "\\*"
+        	: ElementParameterParser.getValueWithUIFieldKey(node, "__FIELDSEPARATOR__", "FIELDSEPARATOR") %>;
         java.io.BufferedReader in<%=cid %> = null;
         
-        <% String fileNameFieldKey = CodeGenerationUtils.buildProblemKey(cid, "FILENAME"); %>
-        
-        <%= CodeGenerationUtils.buildStartFieldKey(fileNameFieldKey) %>
-        in<%=cid %> = new java.io.BufferedReader(new java.io.FileReader(<%=ElementParameterParser.getValue(node, "__FILENAME__") %>));
-        <%= CodeGenerationUtils.buildEndFieldKey(fileNameFieldKey) %>
+        in<%=cid %> = new java.io.BufferedReader(new java.io.FileReader(<%=ElementParameterParser.getValueWithUIFieldKey(node, "__FILENAME__", "FILENAME") %>));
 
         String str;
         java.util.StringTokenizer strToken;
