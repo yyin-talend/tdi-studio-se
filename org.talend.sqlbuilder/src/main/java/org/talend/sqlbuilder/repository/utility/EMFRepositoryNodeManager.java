@@ -32,6 +32,7 @@ import java.util.Map;
 import org.talend.core.model.metadata.IMetadataConnection;
 import org.talend.core.model.metadata.builder.ConvertionHelper;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
+import org.talend.core.model.metadata.builder.connection.MetadataColumn;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.builder.connection.QueriesConnection;
 import org.talend.core.model.metadata.builder.connection.Query;
@@ -46,7 +47,7 @@ import org.talend.sqlbuilder.dbstructure.DBTreeProvider.MetadataColumnRepository
 import org.talend.sqlbuilder.dbstructure.DBTreeProvider.MetadataTableRepositoryObject;
 
 /**
- * DOC qzhang class global comment. Detailled comment <br/>
+ * qzhang class global comment. Detailled comment <br/>
  * 
  * $Id: talend-code-templates.xml 1 2006-09-29 17:06:40 +0000 (Fri, 29 Sep 2006) nrousseau $
  * 
@@ -58,7 +59,7 @@ public class EMFRepositoryNodeManager {
     private SQLBuilderRepositoryNodeManager rnmanager = new SQLBuilderRepositoryNodeManager();
 
     /**
-     * DOC dev Comment method "getQueryByLabel".
+     * dev Comment method "getQueryByLabel".
      * 
      * @param node all repository node Type
      * @param label search query label
@@ -88,7 +89,7 @@ public class EMFRepositoryNodeManager {
     }
 
     @SuppressWarnings("unchecked")
-    public List<MetadataTable> getTables(List<RepositoryNode> nodes) {
+    public List<MetadataTable> getTables(List<RepositoryNode> nodes, List<MetadataColumn> selectedColumns) {
         List<MetadataTable> tables = new ArrayList<MetadataTable>();
         IMetadataConnection iMetadataConnection = null;
         RepositoryNode root = null;
@@ -101,19 +102,29 @@ public class EMFRepositoryNodeManager {
                 for (MetadataTable table : (List<MetadataTable>) connection.getTables()) {
                     if (!tables.contains(table)) {
                         tables.add(table);
+                        selectedColumns.addAll(table.getColumns());
                     }
                 }
+                // if database is selected , It does not need to check others.
+                break;
             } else if (type == RepositoryNodeType.TABLE) {
                 MetadataTable table = ((MetadataTableRepositoryObject) node.getObject()).getTable();
                 if (!tables.contains(table)) {
                     tables.add(table);
+                    selectedColumns.addAll(table.getColumns());
                 }
                 if (root == null) {
                     root = SQLBuilderRepositoryNodeManager.getRoot(node);
                 }
 
             } else if (type == RepositoryNodeType.COLUMN) {
-                MetadataTable table = ((MetadataColumnRepositoryObject) node.getObject()).getColumn().getTable();
+
+                MetadataColumn column = ((MetadataColumnRepositoryObject) node.getObject()).getColumn();
+                if (!selectedColumns.contains(column)) {
+                    selectedColumns.add(column);
+                }
+
+                MetadataTable table = column.getTable();
                 if (!tables.contains(table)) {
                     tables.add(table);
                 }

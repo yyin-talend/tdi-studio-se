@@ -37,7 +37,7 @@ import org.talend.sqlbuilder.repository.utility.EMFRepositoryNodeManager;
  * 
  */
 public class CreateTableCommand extends Command {
-    
+
     protected List<MetadataTable> metaTables;
 
     private List<Table> tables;
@@ -68,7 +68,7 @@ public class CreateTableCommand extends Command {
         for (MetadataTable metadataTable : metaTables) {
             if (!tableNames.contains(metadataTable.getSourceName())) {
                 Table table = new Table();
-                table.setMetadataTable(metadataTable);
+                table.setMetadataTable(metadataTable, null);
                 table.setErDiagram(erDiagram);
                 erDiagram.addTable(table);
             }

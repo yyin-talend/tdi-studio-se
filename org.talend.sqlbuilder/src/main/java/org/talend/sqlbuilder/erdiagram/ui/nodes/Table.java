@@ -76,9 +76,11 @@ public class Table extends Element {
     /**
      * Form the columns within table depends on the metadata columns in metadata table.
      * 
-     * DOC yzhang Comment method "formColumns".
+     * yzhang Comment method "formColumns". If null, means select all column.
+     * 
+     * @param selectedColumns
      */
-    private void formColumns() {
+    private void formColumns(List<MetadataColumn> selectedColumns) {
         EList metadataColumns = metadataTable.getColumns();
         Column col = new Column();
         col.setElementName("*");
@@ -90,7 +92,12 @@ public class Table extends Element {
             MetadataColumn metadataColumn = (MetadataColumn) iterator.next();
             Column column = new Column();
             column.setMetadataColumn(metadataColumn);
-            column.setSelected(true);
+            if (selectedColumns == null) {
+                column.setSelected(true);
+            } else if (selectedColumns.contains(metadataColumn)) {
+                column.setSelected(true);
+            }
+
             column.setTable(this);
             addColumn(column);
         }
@@ -117,9 +124,16 @@ public class Table extends Element {
         return metadataTable.getSourceName();
     }
 
-    public void setMetadataTable(MetadataTable metadataTable) {
+    /**
+     * Sets the metadataTable for this table. The selectedColumns contains the selected columns. if selectedColumns is
+     * null, means select all.
+     * 
+     * @param metadataTable
+     * @param selectedColumns
+     */
+    public void setMetadataTable(MetadataTable metadataTable, List<MetadataColumn> selectedColumns) {
         this.metadataTable = metadataTable;
-        formColumns();
+        formColumns(selectedColumns);
         size.height = 17;
         size.width = this.metadataTable.getSourceName().length() * 7 + 6;
         for (Object object : columns) {

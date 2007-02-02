@@ -30,6 +30,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
+import org.talend.core.model.metadata.builder.connection.MetadataColumn;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.repository.model.RepositoryNode;
@@ -57,6 +58,7 @@ public class ErDiagramComposite extends Composite {
     private ErdiagramDiagramEditor editor;
 
     private EMFRepositoryNodeManager nodeManager = new EMFRepositoryNodeManager();
+
     /**
      * DOC admin ErDiagramComposite constructor comment.
      * 
@@ -96,12 +98,14 @@ public class ErDiagramComposite extends Composite {
     private ErDiagram createErDiagram() {
         ErDiagram erDiagram = new ErDiagram();
         erDiagram.setNodeManager(nodeManager);
-        List<MetadataTable> tables = nodeManager.getTables(getNodes());
+        List<MetadataColumn> selectedColumns = new ArrayList<MetadataColumn>();
+        List<MetadataTable> tables = nodeManager.getTables(getNodes(),selectedColumns);
+
         erDiagram.setMetadataTables(tables);
         List<String[]> fks = nodeManager.getPKFromTables(tables);
         for (MetadataTable metadataTable : tables) {
             Table table = new Table();
-            table.setMetadataTable(metadataTable);
+            table.setMetadataTable(metadataTable,selectedColumns);
             table.setErDiagram(erDiagram);
             erDiagram.addTable(table);
         }
@@ -212,5 +216,5 @@ public class ErDiagramComposite extends Composite {
         this.nodes = nodes;
         addErDiagramEditor();
     }
-    
+
 }
