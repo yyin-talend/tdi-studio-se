@@ -23,32 +23,27 @@ package org.talend.designer.components.model;
 
 import java.io.File;
 import java.io.FileFilter;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
-import javax.xml.parsers.ParserConfigurationException;
-
 import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.osgi.framework.Bundle;
 import org.talend.commons.exception.BusinessException;
 import org.talend.commons.exception.ExceptionHandler;
-import org.talend.commons.xml.XSDValidator;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
-import org.talend.core.model.ModelPlugin;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IComponentsFactory;
 import org.talend.core.model.temp.ECodeLanguage;
 import org.talend.designer.core.model.components.EmfComponent;
-import org.xml.sax.SAXException;
 
 /**
  * Component factory that look for each component and load their information. <br/>
@@ -57,9 +52,7 @@ import org.xml.sax.SAXException;
  */
 public class ComponentsFactory implements IComponentsFactory {
 
-    private static final Bundle XSD_CONTAINER_BUNDLE = Platform.getBundle(ModelPlugin.MODEL_PLUGIN_ID);
-
-    private static final String XSD_PATH = "model/Component.xsd";
+    private static Logger log = Logger.getLogger(ComponentsFactory.class);
 
     private static List<IComponent> componentList = null;
 
@@ -67,62 +60,83 @@ public class ComponentsFactory implements IComponentsFactory {
     }
 
     public void init() {
-        File dir;
-        File[] childDirectories, childXmlFiles;
+        long startTime = System.currentTimeMillis();
         componentList = new ArrayList<IComponent>();
-        Bundle b = Platform.getBundle(IComponentsFactory.COMPONENTS_LOCATION);
 
-        URL url = null;
-        try {
-            url = FileLocator.toFileURL(FileLocator.find(b, new Path(IComponentsFactory.COMPONENTS_DIRECTORY), null));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        // 1. Load system components:
+        loadComponentsFromFolder(IComponentsFactory.COMPONENTS_INNER_FOLDER);
+        String userPath = IComponentsFactory.COMPONENTS_INNER_FOLDER + File.separatorChar
+                + IComponentsFactory.COMPONENTS_USER_INNER_FOLDER;
+        // 2. Retrieve user components from file system:
+        ComponentsRetriever.retrieveComponents(getComponentsLocation(userPath));
+        // 3. Load user components:
+        loadComponentsFromFolder(userPath);
 
-        dir = new File(url.getPath());
+        log.debug(componentList.size() + " components loaded in " + (System.currentTimeMillis() - startTime) + " ms");
+    }
 
-        FilenameFilter filter = new FilenameFilter() {
-
-            public boolean accept(final File dir, final String name) {
-                String pattern = dir.getName() + "_" + getCodeLanguageSuffix() + ".xml";
-                return name.equals(pattern);
-            }
-        };
+    private void loadComponentsFromFolder(String pathSource) {
+        File source = getComponentsLocation(pathSource);
+        File[] childDirectories;
 
         FileFilter fileFilter = new FileFilter() {
 
             public boolean accept(final File file) {
-                return file.isDirectory();
+                return file.isDirectory() && file.getName().charAt(0) != '.'
+                        && !file.getName().equals(IComponentsFactory.COMPONENTS_USER_INNER_FOLDER);
             }
 
         };
-        childDirectories = dir.listFiles(fileFilter);
+        childDirectories = source.listFiles(fileFilter);
 
         if (childDirectories != null) {
-            for (int i = 0; i < childDirectories.length; i++) {
-                childXmlFiles = childDirectories[i].listFiles(filter);
-                if (childXmlFiles != null && childXmlFiles.length > 0) {
-                    try {
-                        checkFiles(childDirectories[i]);
-                        for (int j = 0; j < childXmlFiles.length; j++) {
-                            checkXSD(childXmlFiles[j]);
-                            EmfComponent currentComp = new EmfComponent(childXmlFiles[j]);
-                            currentComp.setResourceBundle(getComponentResourceBundle(currentComp));
-                            loadIcons(childDirectories[i], currentComp);
-                            componentList.add(currentComp);
-                        }
-                    } catch (BusinessException e) {
-                        BusinessException ex = new BusinessException("Cannot load component \"" + childDirectories[i].getName()
-                                + "\": " + e.getMessage(), e);
-                        ExceptionHandler.process(ex, Level.WARN);
+            for (File currentFolder : childDirectories) {
+                try {
+                    ComponentFileChecker.checkComponentFolder(currentFolder, getCodeLanguageSuffix());
+                    File xmlMainFile = new File(currentFolder, ComponentFilesNaming.getInstance().getMainXMLFileName(
+                            currentFolder.getName(), getCodeLanguageSuffix()));
+                    EmfComponent currentComp = new EmfComponent(xmlMainFile, pathSource);
+
+                    if (componentList.contains(currentComp)) {
+                        log.warn("Component " + currentComp.getName() + " already exists. Cannot load user version.");
+                    } else {
+                        currentComp.setResourceBundle(getComponentResourceBundle(currentComp, pathSource));
+                        loadIcons(currentFolder, currentComp);
+                        componentList.add(currentComp);
                     }
+                } catch (BusinessException e) {
+                    BusinessException ex = new BusinessException("Cannot load component \"" + currentFolder.getName() + "\": "
+                            + e.getMessage(), e);
+                    ExceptionHandler.process(ex, Level.WARN);
                 }
             }
         }
     }
 
-    private ResourceBundle getComponentResourceBundle(IComponent currentComp) {
-        String label = ComponentFilesNaming.getBundleName(currentComp.getName());
+    /**
+     * DOC smallet Comment method "checkComponentFolder".
+     * 
+     * @param currentFolder
+     * @return
+     * @throws BusinessException
+     */
+
+    private File getComponentsLocation(String folder) {
+        Bundle b = Platform.getBundle(IComponentsFactory.COMPONENTS_LOCATION);
+
+        URL url = null;
+        try {
+            url = FileLocator.toFileURL(FileLocator.find(b, new Path(folder), null));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        File dir = new File(url.getPath());
+        return dir;
+    }
+
+    private ResourceBundle getComponentResourceBundle(IComponent currentComp, String source) {
+        String label = ComponentFilesNaming.getInstance().getBundleName(currentComp.getName(), source);
         // String pluginFullName = currentComp.getPluginFullName();
         // System.out.println(pluginFullName);
         // Bundle bundle = Platform.getBundle(pluginFullName);
@@ -131,35 +145,11 @@ public class ComponentsFactory implements IComponentsFactory {
         return ResourceBundle.getBundle(label);
     }
 
-    private void checkXSD(File file) throws BusinessException {
-        Path path = new Path(XSD_PATH);
-        try {
-            URL url = FileLocator.toFileURL(FileLocator.find(XSD_CONTAINER_BUNDLE, path, null));
-            File schema = new File(url.getPath());
-            XSDValidator.checkXSD(file, schema);
-        } catch (IOException e) {
-            throw new BusinessException("Cannot find xsd (" + path.lastSegment() + ")", e);
-        } catch (SAXException e) {
-            throw new BusinessException("Does not match xsd (" + path.lastSegment() + ")", e);
-        } catch (ParserConfigurationException e) {
-            throw new BusinessException("Cannot check xsd (" + path.lastSegment() + ")", e);
-        }
-    }
-
     private String getCodeLanguageSuffix() {
         RepositoryContext repositoryContext = (RepositoryContext) CorePlugin.getContext().getProperty(
                 Context.REPOSITORY_CONTEXT_KEY);
         ECodeLanguage codeLanguage = repositoryContext.getProject().getLanguage();
         return codeLanguage.getName();
-    }
-
-    private void checkFiles(File folder) throws BusinessException {
-        for (String currentFileToCheck : ComponentFilesNaming.getRequiredFilesNames(folder.getName(), getCodeLanguageSuffix())) {
-            File file = new File(folder, currentFileToCheck);
-            if (!file.exists()) {
-                throw new BusinessException("Cannot find file \"" + file.getName() + "\"");
-            }
-        }
     }
 
     private void loadIcons(File folder, IComponent component) {

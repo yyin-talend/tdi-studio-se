@@ -2,8 +2,18 @@
 <?eclipse version="3.2"?>
 <plugin>
    <extension
-         point="org.talend.core.components_provider"> 
-      <ComponentsFactory class="org.talend.designer.components.model.ComponentsFactory"/>
+         point="org.talend.core.service">
+      <Service
+            class="org.talend.designer.components.model.ComponentsService"
+            serviceId="ComponentsService"/>
+   </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            category="org.talend.core.prefs"
+            class="org.talend.designer.components.ui.ComponentsPreferencePage"
+            id="org.talend.designer.components.localprovider.page1"
+            name="%components"/>
    </extension>
 
 </plugin>

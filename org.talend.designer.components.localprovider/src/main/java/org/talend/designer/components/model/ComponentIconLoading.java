@@ -59,16 +59,16 @@ public class ComponentIconLoading {
 
     public ImageDescriptor getImage32() {
         if (image32 == null) {
-            image32 = getImage(ComponentFilesNaming.getIcon32FileName(folder.getName()));
+            image32 = getImage(ComponentFilesNaming.getInstance().getIcon32FileName(folder.getName()));
         }
         return image32;
     }
 
     public ImageDescriptor getImage24() {
         if (image24 == null) {
-            File file24 = new File(ComponentFilesNaming.getIcon24FileName(folder.getName()));
+            File file24 = new File(ComponentFilesNaming.getInstance().getIcon24FileName(folder.getName()));
             if (file24.exists()) {
-                image24 = getImage(ComponentFilesNaming.getIcon24FileName(folder.getName()));
+                image24 = getImage(ComponentFilesNaming.getInstance().getIcon24FileName(folder.getName()));
             } else {
                 image24 = getImage32(); // Temp code
                 // image24 = ImageDescriptor.createFromImageData(image32.getImageData().scaledTo(24, 24));
@@ -79,9 +79,9 @@ public class ComponentIconLoading {
 
     public ImageDescriptor getImage16() {
         if (image16 == null) {
-            File file16 = new File(folder, ComponentFilesNaming.getIcon16FileName(folder.getName()));
+            File file16 = new File(folder, ComponentFilesNaming.getInstance().getIcon16FileName(folder.getName()));
             if (file16.exists()) {
-                image16 = getImage(ComponentFilesNaming.getIcon16FileName(folder.getName()));
+                image16 = getImage(ComponentFilesNaming.getInstance().getIcon16FileName(folder.getName()));
             } else {
                 image16 = ImageDescriptor.createFromImageData(image32.getImageData().scaledTo(16, 16));
             }

@@ -21,10 +21,12 @@
 // ============================================================================
 package org.talend.designer.components.model;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.talend.core.model.components.IComponentsFactory;
+import org.talend.core.model.components.IComponent;
+import org.talend.core.model.components.IComponentFileNaming;
 import org.talend.core.model.temp.ECodePart;
 
 /**
@@ -33,52 +35,55 @@ import org.talend.core.model.temp.ECodePart;
  * $Id: talend.epf 1 2006-09-29 17:06:40 +0000 (ven., 29 sept. 2006) nrousseau $
  * 
  */
-public class ComponentFilesNaming {
+public final class ComponentFilesNaming implements IComponentFileNaming {
 
-    public static List<String> getRequiredFilesNames(String componentName, String languageSuffix) {
+    private static ComponentFilesNaming singleton;
+
+    private ComponentFilesNaming() {
+
+    }
+
+    public static ComponentFilesNaming getInstance() {
+        if (singleton == null) {
+            singleton = new ComponentFilesNaming();
+        }
+        return singleton;
+    }
+
+    public List<String> getRequiredFilesNames(String componentName, String languageSuffix) {
         List<String> toReturn = new ArrayList<String>();
         toReturn.add(getMainXMLFileName(componentName, languageSuffix));
         toReturn.add(getPropertiesFileName(componentName));
         toReturn.add(getIcon32FileName(componentName));
-        // toReturn.add(getBeginJetFileName(componentName, languageSuffix));
-        // toReturn.add(getMainJetFileName(componentName, languageSuffix));
-        // toReturn.add(getEndJetFileName(componentName, languageSuffix));
         return toReturn;
     }
 
-    public static String getMainXMLFileName(String componentName, String languageSuffix) {
+    public String getMainXMLFileName(String componentName, String languageSuffix) {
         return componentName + "_" + languageSuffix + ".xml";
     }
 
-    public static String getPropertiesFileName(String componentName) {
+    public String getPropertiesFileName(String componentName) {
         return componentName + "_messages.properties";
     }
 
-    public static String getBundleName(String componentName) {
-        return IComponentsFactory.COMPONENTS_DIRECTORY + "." + componentName + "." + componentName + "_messages";
+    public String getBundleName(String componentName, String source) {
+        String baseName = source.replace(File.separatorChar, '.');
+        return baseName + "." + componentName + "." + componentName + "_messages";
     }
 
-    public static String getBeginJetFileName(String componentName, String languageSuffix) {
-        return componentName + "_" + ECodePart.BEGIN + "." + languageSuffix + "jet";
+    public String getJetFileName(IComponent component, String languageSuffix, ECodePart codePart) {
+        return component.getName() + "_" + codePart + "." + languageSuffix + "jet";
     }
 
-    public static String getMainJetFileName(String componentName, String languageSuffix) {
-        return componentName + "_" + ECodePart.MAIN + "." + languageSuffix + "jet";
-    }
-
-    public static String getEndJetFileName(String componentName, String languageSuffix) {
-        return componentName + "_" + ECodePart.END + "." + languageSuffix + "jet";
-    }
-
-    public static String getIcon32FileName(String componentName) {
+    public String getIcon32FileName(String componentName) {
         return componentName + "_icon32.png";
     }
 
-    public static String getIcon24FileName(String componentName) {
+    public String getIcon24FileName(String componentName) {
         return componentName + "_icon24.png";
     }
 
-    public static String getIcon16FileName(String componentName) {
+    public String getIcon16FileName(String componentName) {
         return componentName + "_icon16.png";
     }
 }
