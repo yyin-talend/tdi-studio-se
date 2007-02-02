@@ -36,10 +36,6 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.talend.commons.exception.BusinessException;
-import org.talend.commons.exception.PersistenceException;
-import org.talend.commons.utils.data.container.Content;
-import org.talend.commons.utils.data.container.ContentList;
-import org.talend.commons.utils.data.container.RootContainer;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
@@ -57,10 +53,8 @@ import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.ElementParameterParser;
 import org.talend.core.model.process.IElementParameterDefaultValue;
 import org.talend.core.model.process.INode;
-import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.model.temp.ECodeLanguage;
 import org.talend.designer.codegen.perlmodule.ModuleNeeded;
-import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.utils.emf.component.COLUMNType;
 import org.talend.designer.core.model.utils.emf.component.COMPONENTType;
@@ -78,8 +72,6 @@ import org.talend.designer.core.model.utils.emf.component.TEMPLATESType;
 import org.talend.designer.core.model.utils.emf.component.TEMPLATEType;
 import org.talend.designer.core.model.utils.emf.component.util.ComponentResourceFactoryImpl;
 import org.talend.repository.model.ComponentsFactoryProvider;
-import org.talend.repository.model.ERepositoryStatus;
-import org.talend.repository.model.IProxyRepositoryFactory;
 
 /**
  * 
@@ -118,8 +110,11 @@ public class EmfComponent implements IComponent {
 
     private ResourceBundle resourceBundle;
 
-    public EmfComponent(File file) throws BusinessException {
+    private String pathSource;
+
+    public EmfComponent(File file, String pathSource) throws BusinessException {
         this.file = file;
+        this.pathSource = pathSource;
         load();
         codeLanguage = ((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY)).getProject()
                 .getLanguage();
@@ -447,8 +442,9 @@ public class EmfComponent implements IComponent {
         param.setShow(false);
         listParam.add(param);
     }
-    
-    private void createSpecificParametersFromType(final List<ElementParameter> listParam, final PARAMETERType xmlParam, final INode node, final EParameterFieldType type) {
+
+    private void createSpecificParametersFromType(final List<ElementParameter> listParam, final PARAMETERType xmlParam,
+            final INode node, final EParameterFieldType type) {
         if (type == EParameterFieldType.PROPERTY_TYPE) {
             ElementParameter newParam = new ElementParameter(node);
             newParam.setCategory(EComponentCategory.PROPERTY);
@@ -590,7 +586,7 @@ public class EmfComponent implements IComponent {
             xmlParam = (PARAMETERType) listXmlParam.get(i);
             EParameterFieldType type = EParameterFieldType.getFieldTypeByName(xmlParam.getFIELD());
             createSpecificParametersFromType(listParam, xmlParam, node, type);
-            
+
             param = new ElementParameter(node);
             param.setName(xmlParam.getNAME());
             param.setDisplayName(getTranslatedValue(xmlParam.getNAME() + "." + PROP_NAME));
@@ -1073,6 +1069,44 @@ public class EmfComponent implements IComponent {
      */
     public void setIcon32(ImageDescriptor icon32) {
         this.icon32 = icon32;
+    }
+
+    public String getPathSource() {
+        return this.pathSource;
+    }
+
+    public void setPathSource(String pathSource) {
+        this.pathSource = pathSource;
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((this.getName() == null) ? 0 : this.getName().hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final EmfComponent other = (EmfComponent) obj;
+        if (this.getName() == null) {
+            if (other.getName() != null) {
+                return false;
+            }
+        } else if (!this.getName().equals(other.getName())) {
+            return false;
+        }
+        return true;
     }
 
 }
