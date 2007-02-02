@@ -169,9 +169,9 @@ public class ErDiagramComposite extends Composite {
         }
         sql = getSelectStatement(tables, columns, wheres);
         if (sql.endsWith(",")) {
-            return sql.substring(0, sql.length() - 1) + ";";
+            return sql.substring(0, sql.length() - 1);
         } else if (sql.endsWith("and ")) {
-            return sql.substring(0, sql.length() - 4) + ";";
+            return sql.substring(0, sql.length() - 4);
         }
         return "";
 
