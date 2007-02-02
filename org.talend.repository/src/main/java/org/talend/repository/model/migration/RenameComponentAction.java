@@ -89,7 +89,10 @@ public class RenameComponentAction {
     private static void replaceInNodeParameterValue(NodeType node, String oldName, String newName) {
         for (Object o : node.getElementParameter()) {
             ElementParameterType t = (ElementParameterType) o;
-            t.setValue(t.getValue().replaceAll(oldName, newName));
+            String value = t.getValue();
+            if (value != null) {
+				t.setValue(value.replaceAll(oldName, newName));
+			}
         }
     }
 
