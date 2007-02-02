@@ -31,6 +31,7 @@ public class TemplateUtil {
 
     public static final String RESOURCES_DIRECTORY = "resources";
 
+    // TODO SML Replace by File.separator
     public static final String DIR_SEP = "/";
 
     public static final String EXT_SEP = ".";

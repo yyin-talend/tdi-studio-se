@@ -32,6 +32,7 @@ import org.eclipse.emf.codegen.jet.JETException;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
+import org.talend.core.model.components.IComponentFileNaming;
 import org.talend.core.model.components.IComponentsFactory;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.IConnection;
@@ -51,6 +52,7 @@ import org.talend.designer.codegen.config.TemplateUtil;
 import org.talend.designer.codegen.exception.CodeGeneratorException;
 import org.talend.designer.codegen.model.CodeGeneratorEmittersPoolFactory;
 import org.talend.designer.codegen.proxy.JetProxy;
+import org.talend.repository.model.ComponentsFactoryProvider;
 
 /**
  * CodeGenerator.
@@ -391,9 +393,13 @@ public class CodeGenerator implements ICodeGenerator {
         StringBuffer content = new StringBuffer();
         try {
             content.append(generateTypedComponentCode(EInternalTemplate.PART_HEADER, node, part));
-            jetBean.setTemplateRelativeUri(IComponentsFactory.COMPONENTS_DIRECTORY + TemplateUtil.DIR_SEP + node.getComponent().getName()
-                    + TemplateUtil.DIR_SEP + node.getComponent().getName() + "_" + part + TemplateUtil.EXT_SEP + language.getExtension()
-                    + TemplateUtil.TEMPLATE_EXT);
+            
+            IComponentFileNaming componentFileNaming = ComponentsFactoryProvider.getFileNamingInstance();
+            String templateURI = node.getComponent().getPathSource() + TemplateUtil.DIR_SEP + node.getComponent().getName()
+                    + TemplateUtil.DIR_SEP
+                    + componentFileNaming.getJetFileName(node.getComponent(), language.getExtension(), part);
+
+            jetBean.setTemplateRelativeUri(templateURI);
             JetProxy proxy = new JetProxy(jetBean);
             content.append(proxy.generate());
             content.append(generateTypedComponentCode(EInternalTemplate.PART_FOOTER, node, part));
