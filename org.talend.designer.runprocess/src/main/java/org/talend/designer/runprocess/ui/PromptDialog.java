@@ -118,7 +118,7 @@ public class PromptDialog extends Dialog {
                 });
 
                 if (parameter.getComment() != null) {
-                    if (!parameter.getComment().equals("")) {
+                    if (!parameter.getComment().equals("")) { //$NON-NLS-1$
                         label.setToolTipText(parameter.getComment());
                         text.setToolTipText(parameter.getComment());
                     }
@@ -172,7 +172,7 @@ public class PromptDialog extends Dialog {
         Point dialogSize = new Point(X_POSITION, (height * nbParams) + Y_POSITION);
         setSize(newShell, dialogSize);
 
-        newShell.setText(Messages.getString("PromptDialog.title", context.getName()));
+        newShell.setText(Messages.getString("PromptDialog.title", context.getName())); //$NON-NLS-1$
 
     }
 }

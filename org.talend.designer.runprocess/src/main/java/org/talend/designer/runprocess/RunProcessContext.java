@@ -181,7 +181,7 @@ public class RunProcessContext {
 	// Added by ftang
 	public void switchTime() {
 		// TODO should do something here.
-		firePropertyChange(PROR_SWITCH_TIME, "true", "false");
+		firePropertyChange(PROR_SWITCH_TIME, "true", "false"); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 
 	// Ends
@@ -408,7 +408,7 @@ public class RunProcessContext {
 			message.append(e.getCause().getMessage());
 			message.append("]"); //$NON-NLS-1$
 		}
-		message.append("\n");
+		message.append("\n"); //$NON-NLS-1$
 
 		ProcessMessage processMsg = new ProcessMessage(MsgType.CORE_ERR,
 				message.toString());

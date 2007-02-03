@@ -168,9 +168,9 @@ public class ProcessComposite2 extends Composite {
         execHeader.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
         debugBtn = new Button(execHeader, SWT.PUSH);
-        debugBtn.setText(Messages.getString("ProcessComposite.debug"));
-        debugBtn.setToolTipText(Messages.getString("ProcessComposite.debugHint"));
-        debugBtn.setImage(RunProcessPlugin.imageDescriptorFromPlugin(RunProcessPlugin.PLUGIN_ID, "icons/process_debug.gif")
+        debugBtn.setText(Messages.getString("ProcessComposite.debug")); //$NON-NLS-1$
+        debugBtn.setToolTipText(Messages.getString("ProcessComposite.debugHint")); //$NON-NLS-1$
+        debugBtn.setImage(RunProcessPlugin.imageDescriptorFromPlugin(RunProcessPlugin.PLUGIN_ID, "icons/process_debug.gif") //$NON-NLS-1$
                 .createImage());
         FormData formData = new FormData();
         formData.top = new FormAttachment(0, 15);
@@ -231,7 +231,7 @@ public class ProcessComposite2 extends Composite {
         watchBtn.setLayoutData(formData);
 
         Group statisticsComposite = new Group(execHeader, SWT.NONE);
-        statisticsComposite.setText("Stats && Traces");
+        statisticsComposite.setText(Messages.getString("ProcessComposite2.statsComposite")); //$NON-NLS-1$
         layout = new GridLayout(3, false);
         layout.marginWidth = 0;
         statisticsComposite.setLayout(layout);
@@ -268,7 +268,7 @@ public class ProcessComposite2 extends Composite {
         data.minimumHeight = MINIMUM_HEIGHT;
         data.minimumWidth = MINIMUM_WIDTH;
         consoleText.setLayoutData(data);
-        Font font = new Font(parent.getDisplay(), "courier", 8, SWT.NONE);
+        Font font = new Font(parent.getDisplay(), "courier", 8, SWT.NONE); //$NON-NLS-1$
         consoleText.setFont(font);
 
         execScroll.setMinSize(execContent.computeSize(SWT.DEFAULT, SWT.DEFAULT));
@@ -491,7 +491,7 @@ public class ProcessComposite2 extends Composite {
 
                 public void run(IProgressMonitor monitor) {
                     Processor processor = new Processor(processContext.getProcess());
-                    monitor.beginTask("Launching debugger", IProgressMonitor.UNKNOWN);
+                    monitor.beginTask("Launching debugger", IProgressMonitor.UNKNOWN); //$NON-NLS-1$
                     try {
                         ILaunchConfiguration config = processor.debug(context);
                         if (config != null) {
@@ -499,15 +499,14 @@ public class ProcessComposite2 extends Composite {
                             // DebugInNewWindowListener());
                             DebugUITools.launch(config, ILaunchManager.DEBUG_MODE);
                         } else {
-                            MessageDialog.openInformation(getShell(), Messages.getString("ProcessDebugDialog.errorTitle"),
+                            MessageDialog.openInformation(getShell(), Messages.getString("ProcessDebugDialog.errorTitle"), //$NON-NLS-1$
                                     Messages.getString("ProcessDebugDialog.errortext")); //$NON-NLS-1$ //$NON-NLS-2$
                         }
                     } catch (ProcessorException e) {
                         IStatus status = new Status(IStatus.ERROR, RunProcessPlugin.PLUGIN_ID, IStatus.OK,
                                 "Debug launch failed.", e); //$NON-NLS-1$
                         RunProcessPlugin.getDefault().getLog().log(status);
-                        MessageDialog.openError(getShell(), Messages.getString("ProcessDebugDialog.errorTitle"), Messages
-                                .getString("ProcessDebugDialog.errorText")); //$NON-NLS-1$ //$NON-NLS-2$
+                        MessageDialog.openError(getShell(), Messages.getString("ProcessDebugDialog.errorTitle"), ""); //$NON-NLS-1$ //$NON-NLS-2$
                     } finally {
                         monitor.done();
                     }

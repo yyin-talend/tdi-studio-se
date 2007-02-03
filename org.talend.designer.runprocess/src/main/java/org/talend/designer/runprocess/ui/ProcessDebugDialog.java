@@ -122,7 +122,7 @@ public class ProcessDebugDialog extends Dialog {
 
                 public void run(IProgressMonitor monitor) {
                     Processor processor = new Processor(process);
-                    monitor.beginTask("Launching debugger", IProgressMonitor.UNKNOWN);
+                    monitor.beginTask("Launching debugger", IProgressMonitor.UNKNOWN); //$NON-NLS-1$
                     try {
                         ILaunchConfiguration config = processor.debug(context);
                         if (config != null) {
@@ -131,15 +131,15 @@ public class ProcessDebugDialog extends Dialog {
                             DebugUITools.launch(config, ILaunchManager.DEBUG_MODE);
                         } else {
                             MessageDialog.openInformation(getShell(), Messages
-                                    .getString("ProcessDebugDialog.errorTitle"), Messages
+                                    .getString("ProcessDebugDialog.errorTitle"), Messages //$NON-NLS-1$
                                     .getString("ProcessDebugDialog.errortext")); //$NON-NLS-1$ //$NON-NLS-2$
                         }
                     } catch (ProcessorException e) {
                         IStatus status = new Status(IStatus.ERROR, RunProcessPlugin.PLUGIN_ID, IStatus.OK,
                                 "Debug launch failed.", e); //$NON-NLS-1$
                         RunProcessPlugin.getDefault().getLog().log(status);
-                        MessageDialog.openError(getShell(), Messages.getString("ProcessDebugDialog.errorTitle"),
-                                Messages.getString("ProcessDebugDialog.errorText")); //$NON-NLS-1$ //$NON-NLS-2$
+                        MessageDialog.openError(getShell(), Messages.getString("ProcessDebugDialog.errorTitle"), //$NON-NLS-1$
+                                ""); //$NON-NLS-1$
                     } finally {
                         monitor.done();
                     }

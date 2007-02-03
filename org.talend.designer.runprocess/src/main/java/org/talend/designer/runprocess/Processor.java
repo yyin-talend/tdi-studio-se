@@ -134,9 +134,9 @@ public class Processor {
             // Added by ftang
 
             try {
-                moduleDirectoryOption = "-I" + PerlUtils.getPerlModuleDirectoryPath().toOSString();
+                moduleDirectoryOption = "-I" + PerlUtils.getPerlModuleDirectoryPath().toOSString(); //$NON-NLS-1$
             } catch (CoreException e) {
-                throw new ProcessorException(Messages.getString("Processor.perlModuleDirectoryNotFound"));
+                throw new ProcessorException(Messages.getString("Processor.perlModuleDirectoryNotFound")); //$NON-NLS-1$
             }
             //$NON-NLS-1$ } // Ends
         }
@@ -358,7 +358,7 @@ public class Processor {
 
     public static void logCommandLine(String[] cmd, Level level) {
         StringBuffer sb = new StringBuffer();
-        sb.append("Command line:");
+        sb.append("Command line:"); //$NON-NLS-1$
         for (String s : cmd) {
             sb.append(' ').append(s);
         }

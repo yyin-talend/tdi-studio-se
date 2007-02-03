@@ -206,7 +206,7 @@ public class ProcessContextComposite extends Composite {
 
         int nbValues = 0;
         if (context == null) {
-            throw new IllegalArgumentException("Context is null");
+            throw new IllegalArgumentException("Context is null"); //$NON-NLS-1$
         }
         // Prompt for context values ?
         for (IContextParameter parameter : context.getContextParameterList()) {
