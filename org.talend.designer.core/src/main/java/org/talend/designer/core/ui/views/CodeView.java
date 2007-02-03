@@ -91,7 +91,7 @@ public class CodeView extends ViewPart implements ISelectionListener {
 
     private INode generatingNode = null;
 
-    public static final String ID = "org.talend.designer.core.codeView";
+    public static final String ID = "org.talend.designer.core.codeView"; //$NON-NLS-1$
 
     IAction viewStartAction = new Action() {
 

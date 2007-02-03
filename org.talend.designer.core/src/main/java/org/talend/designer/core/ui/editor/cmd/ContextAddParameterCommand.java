@@ -30,6 +30,7 @@ import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IContextManager;
 import org.talend.core.model.process.IContextParameter;
+import org.talend.designer.core.i18n.Messages;
 
 /**
  * Command that will add a new parameter in all contexts. <br/>
@@ -46,12 +47,12 @@ public class ContextAddParameterCommand extends Command {
     public ContextAddParameterCommand(IContextManager contextManager, IContextParameter contextParam) {
         this.contextManager = contextManager;
         this.contextParam = contextParam;
-        this.setLabel("Add Parameter");
+        this.setLabel(Messages.getString("ContextAddParameterCommand.label")); //$NON-NLS-1$
     }
 
     private void refreshPropertyView() {
         IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-        IViewPart view = page.findView("org.eclipse.ui.views.PropertySheet");
+        IViewPart view = page.findView("org.eclipse.ui.views.PropertySheet"); //$NON-NLS-1$
         PropertySheet sheet = (PropertySheet) view;
         TabbedPropertySheetPage tabbedPropertySheetPage = (TabbedPropertySheetPage) sheet.getCurrentPage();
         tabbedPropertySheetPage.refresh();

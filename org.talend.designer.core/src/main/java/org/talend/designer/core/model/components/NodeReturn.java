@@ -59,7 +59,7 @@ public class NodeReturn implements INodeReturn {
      * @see org.talend.designer.core.model.components.INodeReturn#setAvailability(java.lang.String)
      */
     public void setAvailability(final String availability) {
-        this.availability = Messages.getString("NodeReturn.Availability." + availability);
+        this.availability = Messages.getString("NodeReturn.Availability." + availability); //$NON-NLS-1$
     }
 
     /*
@@ -78,7 +78,7 @@ public class NodeReturn implements INodeReturn {
      */
     public void setVarName(final String variableName, ECodeLanguage language) {
         if (language.equals(ECodeLanguage.PERL)) {
-            this.varName = "$_globals{__UNIQUE_NAME__}{" + variableName + "}";
+            this.varName = "$_globals{__UNIQUE_NAME__}{" + variableName + "}"; //$NON-NLS-1$ //$NON-NLS-2$
         }
     }
 

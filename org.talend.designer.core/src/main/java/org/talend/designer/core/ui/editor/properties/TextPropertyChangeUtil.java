@@ -111,11 +111,11 @@ public class TextPropertyChangeUtil {
         final Runnable applyProperty = new Runnable() {
 
             public void run() {
-                TimeMeasure.begin("PropertyChangeCommand()");
+                TimeMeasure.begin("PropertyChangeCommand()"); //$NON-NLS-1$
 
                 Command cmd = new PropertyChangeCommand(textElement.getElement(), textElement.getPropertyName(), currentText);
                 cmdStack.execute(cmd);
-                TimeMeasure.end("PropertyChangeCommand()");
+                TimeMeasure.end("PropertyChangeCommand()"); //$NON-NLS-1$
             }
         };
 

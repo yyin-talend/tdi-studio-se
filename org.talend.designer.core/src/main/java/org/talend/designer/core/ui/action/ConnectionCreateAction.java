@@ -63,7 +63,7 @@ public class ConnectionCreateAction extends SelectionAction {
 
     private List<Object> listArgs;
 
-    private static final String NEW_OUTPUT = "*New Output*";
+    private static final String NEW_OUTPUT = "*New Output*"; //$NON-NLS-1$
 
     /**
      * Define the type of the connection and the workbench part who will manage the connection.
@@ -87,7 +87,7 @@ public class ConnectionCreateAction extends SelectionAction {
      * 
      * @return true/false
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked") //$NON-NLS-1$
     private boolean canPerformAction() {
         if (getSelectedObjects().isEmpty()) {
             return false;
@@ -202,7 +202,7 @@ public class ConnectionCreateAction extends SelectionAction {
                     } else {
                         String message = Messages.getString(
                                 "ConnectionCreateAction.errorCreateConnectionName", connectionName); //$NON-NLS-1$
-                        MessageDialog.openError(getWorkbenchPart().getSite().getShell(), "Error", message);
+                        MessageDialog.openError(getWorkbenchPart().getSite().getShell(), Messages.getString("ConnectionCreateAction.error"), message); //$NON-NLS-1$
                     }
                 }
 

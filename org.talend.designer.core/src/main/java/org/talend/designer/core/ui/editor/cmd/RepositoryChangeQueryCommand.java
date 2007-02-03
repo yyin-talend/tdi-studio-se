@@ -71,13 +71,13 @@ public class RepositoryChangeQueryCommand extends Command {
 
     private void refreshPropertyView() {
         IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-        IViewPart view = page.findView("org.eclipse.ui.views.PropertySheet");
+        IViewPart view = page.findView("org.eclipse.ui.views.PropertySheet"); //$NON-NLS-1$
         PropertySheet sheet = (PropertySheet) view;
         TabbedPropertySheetPage tabbedPropertySheetPage = (TabbedPropertySheetPage) sheet.getCurrentPage();
         tabbedPropertySheetPage.refresh();
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked") //$NON-NLS-1$
     @Override
     public void execute() {
         // Force redraw of Commponents propoerties
@@ -104,7 +104,7 @@ public class RepositoryChangeQueryCommand extends Command {
         refreshPropertyView();
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked") //$NON-NLS-1$
     @Override
     public void undo() {
 //      Force redraw of Commponents propoerties
@@ -144,9 +144,9 @@ public class RepositoryChangeQueryCommand extends Command {
      * @return
      */
     private String convertSQL(String sql) {
-        if (sql.startsWith("'")) {
+        if (sql.startsWith("'")) { //$NON-NLS-1$
             return sql;
         }
-        return "'" + sql + "'";
+        return "'" + sql + "'"; //$NON-NLS-1$ //$NON-NLS-2$
     }
 }

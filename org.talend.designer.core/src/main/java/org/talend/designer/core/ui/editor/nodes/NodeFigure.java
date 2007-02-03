@@ -56,7 +56,7 @@ public class NodeFigure extends Figure {
     }
 
     public void setHint(String hintText) {
-        if (hintText.equals("")) {
+        if (hintText.equals("")) { //$NON-NLS-1$
             setToolTip(null);
         } else {
             hint.setText(hintText);

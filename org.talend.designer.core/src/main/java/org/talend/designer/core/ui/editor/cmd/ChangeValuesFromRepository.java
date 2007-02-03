@@ -76,7 +76,7 @@ public class ChangeValuesFromRepository extends Command {
 
     private void refreshPropertyView() {
         IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-        IViewPart view = page.findView("org.eclipse.ui.views.PropertySheet");
+        IViewPart view = page.findView("org.eclipse.ui.views.PropertySheet"); //$NON-NLS-1$
         PropertySheet sheet = (PropertySheet) view;
         TabbedPropertySheetPage tabbedPropertySheetPage = (TabbedPropertySheetPage) sheet.getCurrentPage();
         tabbedPropertySheetPage.refresh();
@@ -102,7 +102,7 @@ public class ChangeValuesFromRepository extends Command {
                         oldValues.put(param.getName(), param.getValue());
 
                         if (param.getField().equals(EParameterFieldType.CLOSED_LIST)
-                                && param.getRepositoryValue().equals("TYPE")) {
+                                && param.getRepositoryValue().equals("TYPE")) { //$NON-NLS-1$
                             boolean found = false;
                             String[] list = param.getListRepositoryItems();
                             for (int i = 0; (i < list.length) && (!found); i++) {
@@ -117,12 +117,12 @@ public class ChangeValuesFromRepository extends Command {
                         param.setRepositoryValueUsed(true);
                     } else {
                         if (param.getField().equals(EParameterFieldType.TABLE)
-                                && param.getRepositoryValue().equals("XML_MAPPING")) {
+                                && param.getRepositoryValue().equals("XML_MAPPING")) { //$NON-NLS-1$
 
                             List<Map<String, Object>> table = (List<Map<String, Object>>) elem
                                     .getPropertyValue(param.getName());
                             IMetadataTable metaTable = ((Node) elem).getMetadataList().get(0);
-                            RepositoryToComponentProperty.getTableXmlFileValue(connection, "XML_MAPPING", param,
+                            RepositoryToComponentProperty.getTableXmlFileValue(connection, "XML_MAPPING", param, //$NON-NLS-1$
                                     table, metaTable);
                             param.setRepositoryValueUsed(true);
                         }

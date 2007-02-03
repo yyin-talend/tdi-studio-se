@@ -28,6 +28,7 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.INode;
+import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.editor.cmd.ChangeConnectionStatusCommand;
 import org.talend.designer.core.ui.editor.connections.ConnLabelEditPart;
 import org.talend.designer.core.ui.editor.connections.Connection;
@@ -43,9 +44,9 @@ public class ConnectionSetAsMainRef extends SelectionAction {
 
     public static final String ID = "org.talend.designer.core.ui.editor.action.ConnectionSetAsMainRef"; //$NON-NLS-1$
 
-    private static final String TEXT_SET_MAIN = "Set this connection as Main";
+    private static final String TEXT_SET_MAIN = Messages.getString("ConnectionSetAsMainRef.mainLabel"); //$NON-NLS-1$
 
-    private static final String TEXT_SET_REF = "Set this connection as Lookup";
+    private static final String TEXT_SET_REF = Messages.getString("ConnectionSetAsMainRef.lookupLabel"); //$NON-NLS-1$
 
     Connection connection;
 

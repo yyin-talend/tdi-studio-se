@@ -31,13 +31,13 @@ import org.talend.designer.core.i18n.Messages;
  */
 public enum EParameterName {
     NAME(Messages.getString("EParameterName.0")), //$NON-NLS-1$
-    UNIQUE_NAME("Unique Name"),
-    TRANSLATED_UNIQUE_NAME("Translated Unique Name"),
+    UNIQUE_NAME("Unique Name"), //$NON-NLS-1$
+    TRANSLATED_UNIQUE_NAME("Translated Unique Name"), //$NON-NLS-1$
     AUTHOR(Messages.getString("EParameterName.1")), //$NON-NLS-1$
     PURPOSE(Messages.getString("EParameterName.2")), //$NON-NLS-1$
-    HELP("Help"),
-    START("Start"),
-    STARTABLE("Startable"),
+    HELP("Help"), //$NON-NLS-1$
+    START("Start"), //$NON-NLS-1$
+    STARTABLE("Startable"), //$NON-NLS-1$
     STATUS(Messages.getString("EParameterName.3")), //$NON-NLS-1$
     DESCRIPTION(Messages.getString("EParameterName.4")), //$NON-NLS-1$
     VERSION(Messages.getString("EParameterName.5")), //$NON-NLS-1$
@@ -56,23 +56,23 @@ public enum EParameterName {
     LOG_TO_FILE(Messages.getString("EParameterName.18")), //$NON-NLS-1$
     LOG_TO_DB(Messages.getString("EParameterName.19")), //$NON-NLS-1$
     LOG_TO_STDOUT(Messages.getString("EParameterName.20")), //$NON-NLS-1$
-    SCHEMA_TYPE("Schema Type"),
-    REPOSITORY_SCHEMA_TYPE("Repository"),
-    QUERYSTORE_TYPE("Query Type"),
-    REPOSITORY_QUERYSTORE_TYPE("Repository"),
-    PROPERTY_TYPE("Property Type"),
-    REPOSITORY_PROPERTY_TYPE("Repository"),
-    CONDITION("Condition"),
-    COMPONENT_NAME("Component Name"),
-    TRANSLATED_COMPONENT_NAME("Translated Component Name"),
+    SCHEMA_TYPE("Schema Type"), //$NON-NLS-1$
+    REPOSITORY_SCHEMA_TYPE("Repository"), //$NON-NLS-1$
+    QUERYSTORE_TYPE("Query Type"), //$NON-NLS-1$
+    REPOSITORY_QUERYSTORE_TYPE("Repository"), //$NON-NLS-1$
+    PROPERTY_TYPE("Property Type"), //$NON-NLS-1$
+    REPOSITORY_PROPERTY_TYPE("Repository"), //$NON-NLS-1$
+    CONDITION("Condition"), //$NON-NLS-1$
+    COMPONENT_NAME("Component Name"), //$NON-NLS-1$
+    TRANSLATED_COMPONENT_NAME("Translated Component Name"), //$NON-NLS-1$
     UPDATE_COMPONENTS("Update components"), //$NON-NLS-1$  Hidden parameter so no translation needed
-    PROCESS_TYPE("Generate Code"),
-    PROCESS_TYPE_PROCESS("Process"),
-    PROCESS_TYPE_CONTEXT("Context"),
-    PREVIEW("Preview"),
-    COLUMN_LIST("Column list"),
-    PREV_COLUMN_LIST("Prev. Comp. Column list"),
-    TSTATCATCHER_STATS("tStatCatcher Statistics"),
+    PROCESS_TYPE("Generate Code"), //$NON-NLS-1$
+    PROCESS_TYPE_PROCESS("Process"), //$NON-NLS-1$
+    PROCESS_TYPE_CONTEXT("Context"), //$NON-NLS-1$
+    PREVIEW("Preview"), //$NON-NLS-1$
+    COLUMN_LIST("Column list"), //$NON-NLS-1$
+    PREV_COLUMN_LIST("Prev. Comp. Column list"), //$NON-NLS-1$
+    TSTATCATCHER_STATS("tStatCatcher Statistics"), //$NON-NLS-1$
     COMP_DEFAULT_FILE_DIR("COMP_DEFAULT_FILE_DIR"); //$NON-NLS-1$  Hidden parameter so no translation needed
 
     private String displayName;

@@ -49,13 +49,13 @@ public final class Expression {
 
 	private boolean valid;
 
-	private static final String AND = "and";
+	private static final String AND = "and"; //$NON-NLS-1$
 
-	private static final String OR = "or";
+	private static final String OR = "or"; //$NON-NLS-1$
 
-	private static final String EQUALS = "==";
+	private static final String EQUALS = "=="; //$NON-NLS-1$
 
-	private static final String NOT_EQUALS = "!=";
+	private static final String NOT_EQUALS = "!="; //$NON-NLS-1$
 
 	private Expression(String expressionString) {
 		this.expressionString = expressionString;
@@ -103,15 +103,15 @@ public final class Expression {
 
 	public static boolean evaluate(final String string,
 			List<? extends IElementParameter> listParam) {
-		if (string.contains("(")
+		if (string.contains("(") //$NON-NLS-1$
 				&& (isThereCondition(string, AND) || isThereCondition(string,
 						OR))) {
 			return evaluateExpression(new Expression(string), listParam)
 					.isValid();
 		} else {
 			String newValue; // remove brackets
-			newValue = string.replace("(", "");
-			newValue = newValue.replace(")", "");
+			newValue = string.replace("(", ""); //$NON-NLS-1$ //$NON-NLS-2$
+			newValue = newValue.replace(")", ""); //$NON-NLS-1$ //$NON-NLS-2$
 			return evaluateSimpleExpression(newValue, listParam);
 		}
 
@@ -119,11 +119,11 @@ public final class Expression {
 
 	public static boolean isThereCondition(String expression, String condition) {
 		// example for the reg exp: (.*)[')][ ]*or[ ]*[\w(](.*)
-		if (expression.matches("(.*)[')][ ]*" + condition + "[ ]*[\\w(](.*)")) {
+		if (expression.matches("(.*)[')][ ]*" + condition + "[ ]*[\\w(](.*)")) { //$NON-NLS-1$ //$NON-NLS-2$
 			return true;
 		}
-		if (expression.matches("(.*)[')][ ]*" + condition.toUpperCase()
-				+ "[ ]*[\\w(](.*)")) {
+		if (expression.matches("(.*)[')][ ]*" + condition.toUpperCase() //$NON-NLS-1$
+				+ "[ ]*[\\w(](.*)")) { //$NON-NLS-1$
 			return true;
 		}
 		return false;
@@ -146,10 +146,10 @@ public final class Expression {
 
 		for (int i = 0; i < strings.length; i++) {
 			String string = strings[i].trim();
-			if (string.contains("'")) { // value
+			if (string.contains("'")) { // value //$NON-NLS-1$
 				variableValue = string;
 				variableValue = variableValue.substring(1, string
-						.lastIndexOf("'"));
+						.lastIndexOf("'")); //$NON-NLS-1$
 			} else {
 				variableName = string;
 			}
@@ -239,8 +239,8 @@ public final class Expression {
 						}
 					} else {
 						String newValue; // remove brackets
-						newValue = string.replace("(", "");
-						newValue = newValue.replace(")", "");
+						newValue = string.replace("(", ""); //$NON-NLS-1$ //$NON-NLS-2$
+						newValue = newValue.replace(")", ""); //$NON-NLS-1$ //$NON-NLS-2$
 						expression.setExpressionString(newValue);
 						expression.setValid(evaluateSimpleExpression(newValue,
 								listParam));
@@ -279,7 +279,7 @@ public final class Expression {
 						.trim();
 				Expression rightExpression = new Expression(rightString);
 				expression.setRightExpression(rightExpression);
-				if (rightString.contains("(")
+				if (rightString.contains("(") //$NON-NLS-1$
 						|| isThereCondition(rightString, AND)
 						|| isThereCondition(rightString, OR)) {
 					evaluateExpression(rightExpression, listParam);

@@ -51,7 +51,7 @@ public class ConnTextEditPolicy extends DirectEditPolicy {
         if (!((Node) connec.getSource()).getProcess().checkValidConnectionName(labelText)) {
             String message = Messages.getString(
                     "ConnectionCreateAction.errorCreateConnectionName", labelText); //$NON-NLS-1$
-            MessageDialog.openError(getHost().getViewer().getControl().getShell(), "Error", message);
+            MessageDialog.openError(getHost().getViewer().getControl().getShell(), Messages.getString("ConnTextEditPolicy.ErrorTitle"), message); //$NON-NLS-1$
             return null;
         }
         ChangeConnTextCommand command = new ChangeConnTextCommand((Connection) labelPart.getParent().getModel(),

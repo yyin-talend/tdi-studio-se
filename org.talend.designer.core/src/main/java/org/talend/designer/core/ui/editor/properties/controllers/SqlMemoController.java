@@ -68,7 +68,7 @@ import org.talend.sqlbuilder.util.ConnectionParameters;
  */
 public class SqlMemoController extends AbstractElementPropertySectionController {
 
-    private static final String SQLEDITOR = "SQLEDITOR";
+    private static final String SQLEDITOR = "SQLEDITOR"; //$NON-NLS-1$
 
     /**
      * DOC yzhang SqlMemoController constructor comment.
@@ -168,26 +168,26 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
         // boolean status = true;
         if (repositoryType.equals(EmfComponent.BUILTIN)) {
 
-            String userName = getValueFromRepositoryName("USERNAME");
+            String userName = getValueFromRepositoryName("USERNAME"); //$NON-NLS-1$
 
             connParameters.setUserName(userName);
 
-            String password = (String) getValueFromRepositoryName("PASSWORD");
+            String password = (String) getValueFromRepositoryName("PASSWORD"); //$NON-NLS-1$
             connParameters.setPassword(password);
 
-            String host = (String) getValueFromRepositoryName("SERVER_NAME");
+            String host = (String) getValueFromRepositoryName("SERVER_NAME"); //$NON-NLS-1$
             connParameters.setHost(host);
 
-            String port = (String) getValueFromRepositoryName("PORT");
+            String port = (String) getValueFromRepositoryName("PORT"); //$NON-NLS-1$
             connParameters.setPort(port);
 
-            String dbName = getValueFromRepositoryName("SID");
+            String dbName = getValueFromRepositoryName("SID"); //$NON-NLS-1$
             connParameters.setDbName(dbName);
 
-            String type = getRepositoryItemFromRepositoryName("TYPE");
+            String type = getRepositoryItemFromRepositoryName("TYPE"); //$NON-NLS-1$
             connParameters.setDbType(type);
             connParameters.setQuery(query);
-            String schema = getValueFromRepositoryName("SCHEMA");
+            String schema = getValueFromRepositoryName("SCHEMA"); //$NON-NLS-1$
             connParameters.setSchema(schema);
             OpenSQLBuilderDialogJob openDialogJob = new OpenSQLBuilderDialogJob(connParameters, composite, elem,
                     propertyName, getCommandStack());
@@ -201,7 +201,7 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
             // connParameters.setRepositoryNodeBuiltIn(
             // manager.getRepositoryNodeByBuildIn(null, connParameters));
         } else if (repositoryType.equals(EmfComponent.REPOSITORY)) {
-            String repositoryName = "";
+            String repositoryName = ""; //$NON-NLS-1$
             for (IElementParameter param : (List<IElementParameter>) elem.getElementParameters()) {
                 // System.out.println(param.toString());
                 if (param.getName().equals(EParameterName.REPOSITORY_PROPERTY_TYPE.getName())) {
@@ -219,8 +219,8 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
 
             // When no repository avaiable on "Repository" mode, open a MessageDialog.
             if (repositoryName == null || repositoryName.length() == 0) {
-                MessageDialog.openError(composite.getShell(), Messages.getString("NoRepositoryDialog.Title"), Messages
-                        .getString("NoRepositoryDialog.Text"));
+                MessageDialog.openError(composite.getShell(), Messages.getString("NoRepositoryDialog.Title"), Messages //$NON-NLS-1$
+                        .getString("NoRepositoryDialog.Text")); //$NON-NLS-1$
                 return null;
             }
             connParameters.setRepositoryName(repositoryName);
@@ -248,10 +248,10 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
      */
     private String removeStrInQuery(String input) {
         String out = removeSlash(input);
-        if (out.startsWith("'")) {
+        if (out.startsWith("'")) { //$NON-NLS-1$
             out = out.substring(1, out.length());
         }
-        if (out.endsWith("'")) {
+        if (out.endsWith("'")) { //$NON-NLS-1$
             out = out.substring(0, out.length() - 1);
         }
         return out;
@@ -263,8 +263,8 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
      * @return
      */
     private String addStrInQuery(String input) {
-        String out = input.replaceAll("'", "\\\\\'");
-        out = "'" + out + "'";
+        String out = input.replaceAll("'", "\\\\\'"); //$NON-NLS-1$ //$NON-NLS-2$
+        out = "'" + out + "'"; //$NON-NLS-1$ //$NON-NLS-2$
         return out;
     }
 
@@ -274,7 +274,7 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
      * @return
      */
     private String removeSlash(String input) {
-        String out = input.replaceAll("\\\\", "");
+        String out = input.replaceAll("\\\\", ""); //$NON-NLS-1$ //$NON-NLS-2$
         return out;
     }
 
@@ -319,8 +319,8 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
 
             public Control createControl(final Composite parent, final int style) {
                 ColorManager colorManager = new ColorManager(CorePlugin.getDefault().getPreferenceStore());
-                ColorStyledText colorText = new ColorStyledText(parent, style, colorManager, "tsql");
-                Font font = new Font(parent.getDisplay(), "courier", 8, SWT.NONE);
+                ColorStyledText colorText = new ColorStyledText(parent, style, colorManager, "tsql"); //$NON-NLS-1$
+                Font font = new Font(parent.getDisplay(), "courier", 8, SWT.NONE); //$NON-NLS-1$
                 colorText.setFont(font);
                 return colorText;
             }

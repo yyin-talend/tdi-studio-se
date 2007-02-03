@@ -50,15 +50,15 @@ import org.talend.repository.model.IRepositoryService;
  */
 public class DesignerPlugin extends AbstractUIPlugin {
 
-    public static final String ID = "org.talend.designer.core";
+    public static final String ID = "org.talend.designer.core"; //$NON-NLS-1$
 
     private static DesignerPlugin plugin;
 
     public DesignerPlugin() {
         plugin = this;
-        Modes.getMode("perl.xml");
-        Modes.getMode("tsql.xml");
-        Modes.getMode("java.xml");
+        Modes.getMode("perl.xml"); //$NON-NLS-1$
+        Modes.getMode("tsql.xml"); //$NON-NLS-1$
+        Modes.getMode("java.xml"); //$NON-NLS-1$
         /*
          * // plugins list IExtensionRegistry extensionRegistry = Platform.getExtensionRegistry(); String[] namespaces =
          * extensionRegistry.getNamespaces(); System.out.println("Liste des plugins talend:"); for (int i = 0; i <
@@ -133,7 +133,7 @@ public class DesignerPlugin extends AbstractUIPlugin {
      * @return the image descriptor
      */
     public static ImageDescriptor getImageDescriptor(final String path) {
-        return AbstractUIPlugin.imageDescriptorFromPlugin("org.talend.designer.core", path);
+        return AbstractUIPlugin.imageDescriptorFromPlugin("org.talend.designer.core", path); //$NON-NLS-1$
     }
 
 }

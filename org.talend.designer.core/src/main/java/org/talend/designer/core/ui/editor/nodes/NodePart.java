@@ -85,7 +85,7 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
      * 
      * @see org.eclipse.gef.editparts.AbstractEditPart#setSelected(int)
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked") //$NON-NLS-1$
     public void setSelected(final int value) {
         if (value == SELECTED) {
             super.setSelected(SELECTED_PRIMARY);
@@ -96,7 +96,7 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
         String helpLink = (String) ((Node) getModel()).getPropertyValue(EParameterName.HELP.getName());
         PlatformUI.getWorkbench().getHelpSystem().setHelp(ctrl, helpLink);
         IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-        IViewPart view = page.findView("org.eclipse.help.ui.HelpView");
+        IViewPart view = page.findView("org.eclipse.help.ui.HelpView"); //$NON-NLS-1$
         if (view != null) {
             PlatformUI.getWorkbench().getHelpSystem().displayHelp(helpLink);
         }
@@ -181,7 +181,7 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
      * 
      * @see org.eclipse.gef.editparts.AbstractEditPart#refreshVisuals()
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked") //$NON-NLS-1$
     protected void refreshVisuals() {
         if (nodeContainerPart == null) {
             findNodeContainerPart();
@@ -291,7 +291,7 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
             if (((Node) getModel()).isSetShowHint()) {
                 ((NodeFigure) figure).setHint(((Node) getModel()).getShowHintText());
             } else {
-                ((NodeFigure) figure).setHint("");
+                ((NodeFigure) figure).setHint(""); //$NON-NLS-1$
             }
         }
     }
@@ -338,7 +338,7 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
     @Override
     public void performRequest(Request req) {
         Node node = (Node) getModel();
-        if (req.getType().equals("open")) {
+        if (req.getType().equals("open")) { //$NON-NLS-1$
             IExternalNode externalNode = ExternalUtilities.getExternalNodeReadyToOpen(node);
 
             IWorkbenchPart part = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
@@ -355,7 +355,7 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
                 IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
                 String processName = (String) node.getPropertyValue(EParameterName.PROCESS_TYPE_PROCESS.getName());
                 if (processName != null) {
-                    processName = processName.replace("'", "");
+                    processName = processName.replace("'", ""); //$NON-NLS-1$ //$NON-NLS-2$
                     try {
                         IProxyRepositoryFactory factory = DesignerPlugin.getDefault().getProxyRepositoryFactory();
                         IRepositoryObject selectedProcess = null;
@@ -394,7 +394,7 @@ public class NodePart extends AbstractGraphicalEditPart implements PropertyChang
                     }
                 } else {
                     try {
-                        page.showView("org.eclipse.ui.views.PropertySheet");
+                        page.showView("org.eclipse.ui.views.PropertySheet"); //$NON-NLS-1$
                     } catch (PartInitException e) {
                         e.printStackTrace();
                     }

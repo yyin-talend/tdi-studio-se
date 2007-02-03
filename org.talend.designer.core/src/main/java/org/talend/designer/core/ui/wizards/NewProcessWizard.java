@@ -74,7 +74,7 @@ public class NewProcessWizard extends Wizard {
         this.property.setAuthor(((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY))
                 .getUser());
         this.property.setVersion(VersionUtils.DEFAULT_VERSION);
-        this.property.setStatusCode("");
+        this.property.setStatusCode(""); //$NON-NLS-1$
 
         processItem = PropertiesFactory.eINSTANCE.createProcessItem();
 
@@ -90,7 +90,7 @@ public class NewProcessWizard extends Wizard {
     public void addPages() {
         mainPage = new NewProcessWizardPage(property, path);
         addPage(mainPage);
-        setWindowTitle(Messages.getString("NewProcessWizard.windowTitle"));
+        setWindowTitle(Messages.getString("NewProcessWizard.windowTitle")); //$NON-NLS-1$
     }
 
     /**
@@ -109,7 +109,7 @@ public class NewProcessWizard extends Wizard {
 
             repositoryFactory.create(processItem, mainPage.getDestinationPath());
         } catch (PersistenceException e) {
-            MessageDialog.openError(getShell(), Messages.getString("NewProcessWizard.failureTitle"), Messages
+            MessageDialog.openError(getShell(), Messages.getString("NewProcessWizard.failureTitle"), Messages //$NON-NLS-1$
                     .getString("NewProcessWizard.failureText")); //$NON-NLS-1$ //$NON-NLS-2$
             ExceptionHandler.process(e);
         }

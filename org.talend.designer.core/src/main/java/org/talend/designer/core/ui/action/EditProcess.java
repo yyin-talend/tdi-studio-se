@@ -34,6 +34,7 @@ import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.designer.core.DesignerPlugin;
+import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.MultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.ProcessEditorInput;
 import org.talend.repository.model.IProxyRepositoryFactory;
@@ -49,9 +50,9 @@ import org.talend.repository.ui.actions.AContextualAction;
  */
 public class EditProcess extends AContextualAction {
 
-    private static final String EDIT_LABEL = "Edit job";
+    private static final String EDIT_LABEL = Messages.getString("EditProcess.editJob"); //$NON-NLS-1$
 
-    private static final String OPEN_LABEL = "Open job";
+    private static final String OPEN_LABEL = Messages.getString("EditProcess.openJob"); //$NON-NLS-1$
 
     public EditProcess() {
         super();

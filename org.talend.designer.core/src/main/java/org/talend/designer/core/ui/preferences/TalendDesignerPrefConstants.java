@@ -30,14 +30,14 @@ package org.talend.designer.core.ui.preferences;
 public class TalendDesignerPrefConstants {
 
     /** Default label used for the components. */
-    public static final String DEFAULT_LABEL = "defaultLabel";
+    public static final String DEFAULT_LABEL = "defaultLabel"; //$NON-NLS-1$
 
     /** Default label used for the components. */
-    public static final String DEFAULT_HINT = "defaultHint";
+    public static final String DEFAULT_HINT = "defaultHint"; //$NON-NLS-1$
 
     /** Default label used for the components. */
-    public static final String DEFAULT_HINT_USED = "hintUsed";
+    public static final String DEFAULT_HINT_USED = "hintUsed"; //$NON-NLS-1$
     
     /** Default label used for the components. */
-    public static final String DEFAULT_DISPLAY = "displayTechnicalComponents";
+    public static final String DEFAULT_DISPLAY = "displayTechnicalComponents"; //$NON-NLS-1$
 }

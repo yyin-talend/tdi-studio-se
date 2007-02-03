@@ -46,7 +46,7 @@ public class NodeGraphicalEditPolicy extends GraphicalNodeEditPolicy {
         return cmd;
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked") //$NON-NLS-1$
     protected Command getConnectionCreateCommand(CreateConnectionRequest request) {
         Node source = (Node) getHost().getModel();
         if (source.isReadOnly()) {

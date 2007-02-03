@@ -113,7 +113,7 @@ public class ContextProcessSection extends AbstractPropertySection {
 
     private static final String DEFAULT_CONTEXT = "defaultContext"; //$NON-NLS-1$
 
-    private static final String MENU_TABLE = "menuTable";
+    private static final String MENU_TABLE = Messages.getString("ContextProcessSection.1"); //$NON-NLS-1$
 
     private static final String ASK_CONFIRMATION = Messages.getString("ContextProcessSection.2"); //$NON-NLS-1$
 
@@ -205,7 +205,7 @@ public class ContextProcessSection extends AbstractPropertySection {
             if (tableItems.length == 1) {
                 menuItem = new MenuItem(menuTable, SWT.PUSH);
                 menuItem.setText(Messages.getString("ContextProcessSection.22") //$NON-NLS-1$ 
-                        + tableItems[0].getText(1) + ")"); //$NON-NLS-2$
+                        + tableItems[0].getText(1) + Messages.getString("ContextProcessSection.0")); //$NON-NLS-2$ //$NON-NLS-1$
                 menuItem.addListener(SWT.Selection, new Listener() {
 
                     public void handleEvent(final Event event) {
@@ -337,8 +337,8 @@ public class ContextProcessSection extends AbstractPropertySection {
                 if (!returnValue.equals("") && Pattern.matches(RepositoryConstants.CODE_ITEM_PATTERN, returnValue)) { //$NON-NLS-1$
                     createContext(returnValue);
                 } else {
-                    MessageDialog.openWarning(new Shell(), Messages.getString("ContextProcessSection.14"), Messages
-                            .getString("ContextProcessSection.15"));
+                    MessageDialog.openWarning(new Shell(), Messages.getString(Messages.getString("ContextProcessSection.50")), Messages //$NON-NLS-1$
+                            .getString(Messages.getString("ContextProcessSection.51"))); //$NON-NLS-1$
                 }
             }
         }
@@ -356,8 +356,8 @@ public class ContextProcessSection extends AbstractPropertySection {
                     String contextName = tabFolder.getSelection().getText();
                     renameContext(contextName, newName);
                 } else {
-                    MessageDialog.openWarning(new Shell(), Messages.getString("ContextProcessSection.14"), Messages
-                            .getString("ContextProcessSection.15"));
+                    MessageDialog.openWarning(new Shell(), Messages.getString(Messages.getString("ContextProcessSection.52")), Messages //$NON-NLS-1$
+                            .getString(Messages.getString("ContextProcessSection.53"))); //$NON-NLS-1$
                 }
             }
         }
@@ -408,7 +408,7 @@ public class ContextProcessSection extends AbstractPropertySection {
 
     private boolean renameParameter(final String oldParamName, final String newParamName) {
         if (!process.getContextManager().checkValidParameterName(newParamName)) {
-            MessageDialog.openError(composite.getShell(), "Error", "Parameter name is not valid.");
+            MessageDialog.openError(composite.getShell(), Messages.getString("ContextProcessSection.errorTitle"), Messages.getString("ContextProcessSection.ParameterNameIsNotValid")); //$NON-NLS-1$ //$NON-NLS-2$
             return false;
         }
 
@@ -530,10 +530,10 @@ public class ContextProcessSection extends AbstractPropertySection {
         Composite buttonParameterComposite = getWidgetFactory().createComposite(buttonComposite);
         buttonParameterComposite.setLayout(new GridLayout(3, false));
         buttonParameterComposite.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_CENTER | GridData.GRAB_HORIZONTAL));
-        CLabel label = getWidgetFactory().createCLabel(buttonParameterComposite, "Parameters:");
+        CLabel label = getWidgetFactory().createCLabel(buttonParameterComposite, Messages.getString("ContextProcessSection.parametersLabel")); //$NON-NLS-1$
         label.setAlignment(SWT.RIGHT);
         Button addParameter = new Button(buttonParameterComposite, SWT.None);
-        addParameter.setText("Add");
+        addParameter.setText(Messages.getString("ContextProcessSection.addParameterLabel")); //$NON-NLS-1$
         addParameter.addListener(SWT.Selection, new Listener() {
 
             public void handleEvent(final Event event) {
@@ -542,25 +542,25 @@ public class ContextProcessSection extends AbstractPropertySection {
         });
         addParameter.setEnabled(!process.isReadOnly());
         final Button removeParameter = new Button(buttonParameterComposite, SWT.None);
-        removeParameter.setText("Remove");
+        removeParameter.setText(Messages.getString("ContextProcessSection.removeParameterLabel")); //$NON-NLS-1$
         removeButtons.put(context, removeParameter);
         removeParameter.setEnabled(false);
 
         Composite buttonContextComposite = getWidgetFactory().createComposite(buttonComposite);
         buttonContextComposite.setLayout(new GridLayout(4, false));
         buttonContextComposite.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_END | GridData.GRAB_HORIZONTAL));
-        label = getWidgetFactory().createCLabel(buttonContextComposite, "Context:");
+        label = getWidgetFactory().createCLabel(buttonContextComposite, Messages.getString("ContextProcessSection.contextLabel")); //$NON-NLS-1$
         label.setAlignment(SWT.RIGHT);
         Button copyContext = new Button(buttonContextComposite, SWT.None);
-        copyContext.setText("Copy");
+        copyContext.setText(Messages.getString("ContextProcessSection.copyLabel")); //$NON-NLS-1$
         copyContext.addListener(SWT.Selection, copyContextListener);
         copyContext.setEnabled(!process.isReadOnly());
         Button renameContext = new Button(buttonContextComposite, SWT.None);
-        renameContext.setText("Rename");
+        renameContext.setText(Messages.getString("ContextProcessSection.renameLabel")); //$NON-NLS-1$
         renameContext.addListener(SWT.Selection, renameContextListener);
         renameContext.setEnabled(!process.isReadOnly());
         final Button removeContext = new Button(buttonContextComposite, SWT.None);
-        removeContext.setText("Remove");
+        removeContext.setText(Messages.getString("ContextProcessSection.removeLabel")); //$NON-NLS-1$
         removeContext.addListener(SWT.Selection, removeContextListener);
         removeContext.setEnabled(!process.isReadOnly());
 
@@ -778,7 +778,7 @@ public class ContextProcessSection extends AbstractPropertySection {
         column.setCellEditor(new TextCellEditor(table), setDirtyValueAdapter);
 
         column = new TableViewerCreatorColumn(tableViewerCreator);
-        column.setTitle("Script code");
+        column.setTitle(Messages.getString("ContextProcessSection.scriptCodeColumnTitle")); //$NON-NLS-1$
         column.setBeanPropertyAccessors(new IBeanPropertyAccessors<IContextParameter, String>() {
 
             public String get(IContextParameter bean) {

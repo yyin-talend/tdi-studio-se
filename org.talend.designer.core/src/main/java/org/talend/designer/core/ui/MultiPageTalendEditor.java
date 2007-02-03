@@ -151,8 +151,8 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
         IRunProcessService service = DesignerPlugin.getDefault().getRunProcessService();
         IProcessor processor = service.createCodeProcessor(process, getCurrentLang(), true);
 
-        if (processor.getProcessorType().equals("javaProcessor")) {
-            processor.setProcessorStates("edit");
+        if (processor.getProcessorType().equals("javaProcessor")) { //$NON-NLS-1$
+            processor.setProcessorStates("edit"); //$NON-NLS-1$
             if (codeEditor instanceof ISyntaxCheckableEditor) {
                 processor.addSyntaxCheckableEditor((ISyntaxCheckableEditor) codeEditor);
             }
@@ -165,7 +165,7 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
             if (!codeFile.exists()) {
                 // Create empty one
                 try {
-                    codeFile.create(new ByteArrayInputStream("".getBytes()), true, null);
+                    codeFile.create(new ByteArrayInputStream("".getBytes()), true, null); //$NON-NLS-1$
                 } catch (CoreException e) {
                     // Do nothing.
                 }
@@ -247,8 +247,8 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
         IRunProcessService service = DesignerPlugin.getDefault().getRunProcessService();
         IProcessor processor = service.createCodeProcessor(process, getCurrentLang(), true);
 
-        if (processor.getProcessorType().equals("javaProcessor")) {
-            processor.setProcessorStates("edit");
+        if (processor.getProcessorType().equals("javaProcessor")) { //$NON-NLS-1$
+            processor.setProcessorStates("edit"); //$NON-NLS-1$
             if (codeEditor instanceof ISyntaxCheckableEditor) {
                 processor.addSyntaxCheckableEditor((ISyntaxCheckableEditor) codeEditor);
             }
@@ -344,8 +344,8 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
             IRunProcessService service = DesignerPlugin.getDefault().getRunProcessService();
             IProcessor plProcessor = service.createCodeProcessor(process, getCurrentLang(), true);
 
-            if (plProcessor.getProcessorType().equals("javaProcessor")) {
-                plProcessor.setProcessorStates("edit");
+            if (plProcessor.getProcessorType().equals("javaProcessor")) { //$NON-NLS-1$
+                plProcessor.setProcessorStates("edit"); //$NON-NLS-1$
                 if (codeEditor instanceof ISyntaxCheckableEditor) {
                     plProcessor.addSyntaxCheckableEditor((ISyntaxCheckableEditor) codeEditor);
                 }
@@ -415,7 +415,7 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
             if (codeEditor instanceof TalendJavaEditor) {
                 ((TalendJavaEditor) codeEditor).validateSyntax();
             }
-            int lineNumber = processor.getLineNumber("[" + nodeName + " main ] start") - shift;
+            int lineNumber = processor.getLineNumber("[" + nodeName + " main ] start") - shift; //$NON-NLS-1$ //$NON-NLS-2$
             IDocument document = codeEditor.getDocumentProvider().getDocument(codeEditor.getEditorInput());
             try {
                 int start = document.getLineOffset(lineNumber);
@@ -442,7 +442,7 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
                 nodeName = null;
             }
             if (node.getComponent().getMultipleComponentManager() != null) {
-                nodeName += "_" + node.getComponent().getMultipleComponentManager().getInput().getName();
+                nodeName += "_" + node.getComponent().getMultipleComponentManager().getInput().getName(); //$NON-NLS-1$
             }
         }
         return nodeName;

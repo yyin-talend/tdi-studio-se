@@ -402,6 +402,6 @@ public class ElementParameter implements IElementParameter {
 
     @Override
     public String toString() {
-        return name + ": " + value.toString();
+        return name + ": " + value.toString(); //$NON-NLS-1$
     }
 }

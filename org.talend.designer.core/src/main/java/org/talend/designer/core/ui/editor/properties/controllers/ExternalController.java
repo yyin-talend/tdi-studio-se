@@ -40,6 +40,7 @@ import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.talend.core.CorePlugin;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.IExternalNode;
+import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.ExternalUtilities;
 import org.talend.designer.core.ui.editor.cmd.ExternalNodeChangeCommand;
 import org.talend.designer.core.ui.editor.nodes.Node;
@@ -77,8 +78,8 @@ public class ExternalController extends AbstractElementPropertySectionController
 
         if (externalNode == null) {
             MessageBox mBox = new MessageBox(composite.getShell(), SWT.ICON_ERROR);
-            mBox.setText("Error");
-            mBox.setMessage("Component plugin not found: " + node.getPluginFullName());
+            mBox.setText("Error"); //$NON-NLS-1$
+            mBox.setMessage("Component plugin not found: " + node.getPluginFullName()); //$NON-NLS-1$
             mBox.open();
         } else {
             if (externalNode.open(composite.getDisplay()) == SWT.OK) {

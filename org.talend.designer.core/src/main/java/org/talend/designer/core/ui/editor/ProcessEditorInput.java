@@ -42,6 +42,7 @@ import org.talend.core.context.RepositoryContext;
 import org.talend.core.model.general.Project;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.designer.core.DesignerPlugin;
+import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.repository.editor.RepositoryEditorInput;
@@ -126,7 +127,7 @@ public class ProcessEditorInput extends RepositoryEditorInput {
         Project project = ((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY)).getProject();
         IProject fsProject = ResourceModelUtils.getProject(project);
         IFolder folder = ResourceUtils.getFolder(fsProject, TEMP_DIRECTORY, true);
-        return ResourceUtils.getFile(folder, "tempProcess" + id, false);
+        return ResourceUtils.getFile(folder, "tempProcess" + id, false); //$NON-NLS-1$
     }
 
     public Process getLoadedProcess() {
@@ -137,7 +138,7 @@ public class ProcessEditorInput extends RepositoryEditorInput {
         // PTODO SML Removed null test on monitor after assure that in can't be
         try {
             if (monitor != null) {
-                monitor.beginTask("Saving process ...", 100);
+                monitor.beginTask(Messages.getString("ProcessEditorInput.monitorBeginText"), 100); //$NON-NLS-1$
             }
             ProcessType processType = loadedProcess.saveXmlFile(getFile());
             if (monitor != null) {

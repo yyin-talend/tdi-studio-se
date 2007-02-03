@@ -51,7 +51,7 @@ public class DeleteNodeContainerCommand extends Command {
         setLabel(Messages.getString("DeleteNodeCommand.0")); //$NON-NLS-1$
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked") //$NON-NLS-1$
     public void execute() {
         process.setActivate(false);
 
@@ -95,7 +95,7 @@ public class DeleteNodeContainerCommand extends Command {
         process.checkProcess();
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked") //$NON-NLS-1$
     public void undo() {
         process.setActivate(false);
         for (Node node : nodeList) {

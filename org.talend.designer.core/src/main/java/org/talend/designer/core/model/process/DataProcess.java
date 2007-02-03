@@ -52,7 +52,7 @@ import org.talend.repository.model.ExternalNodesFactory;
  */
 public class DataProcess {
 
-    private static final String HASH_COMPONENT_NAME = "tHash";
+    private static final String HASH_COMPONENT_NAME = "tHash"; //$NON-NLS-1$
 
     private static Map<Node, INode> buildCheckMap = null;
 
@@ -70,7 +70,7 @@ public class DataProcess {
     }
 
     // should only be called by a starting node
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked") //$NON-NLS-1$
     private static INode buildfromNode(final Node graphicalNode) {
         if (buildCheckMap.containsKey(graphicalNode)) {
             return buildCheckMap.get(graphicalNode);
@@ -136,7 +136,7 @@ public class DataProcess {
      * @param multipleComponentManager
      * @return
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked") //$NON-NLS-1$
     private static AbstractNode addMultipleNode(Node graphicalNode, IMultipleComponentManager multipleComponentManager) {
         AbstractNode dataNode;
         // prepare all the nodes
@@ -222,7 +222,7 @@ public class DataProcess {
 
                 switch (curConnec.getConnectionType()) {
                 case FLOW_MAIN:
-                    dataConnec.setName("row_" + itemsMap.get(curItem).getUniqueName());
+                    dataConnec.setName("row_" + itemsMap.get(curItem).getUniqueName()); //$NON-NLS-1$
                     break;
                 case RUN_BEFORE:
                 case RUN_AFTER:
@@ -260,7 +260,7 @@ public class DataProcess {
                 }
                 dataConnec.setSource(nodeSource);
                 dataConnec.setTarget(nodeTarget);
-                dataConnec.setCondition("");
+                dataConnec.setCondition(""); //$NON-NLS-1$
                 outgoingConnections = (List<IConnection>) nodeSource.getOutgoingConnections();
                 outgoingConnections.add(dataConnec);
                 incomingConnections = (List<IConnection>) nodeTarget.getIncomingConnections();
@@ -282,7 +282,7 @@ public class DataProcess {
         List<IMultipleComponentItem> itemList = multipleComponentManager.getItemList();
 
         for (IMultipleComponentItem curItem : itemList) {
-            String uniqueName = graphicalNode.getUniqueName() + "_" + curItem.getName();
+            String uniqueName = graphicalNode.getUniqueName() + "_" + curItem.getName(); //$NON-NLS-1$
             IComponent component = ComponentsFactoryProvider.getInstance().get(curItem.getComponent());
             if (component == null) {
                 continue;
@@ -326,7 +326,7 @@ public class DataProcess {
                 }
             }
             if (param.getSourceComponent() != null) { // target.value = source.value
-                if (param.getSourceComponent().equals("self")) {
+                if (param.getSourceComponent().equals("self")) { //$NON-NLS-1$
                     sourceNode = graphicalNode;
                 } else {
                     for (int i = 0; i < itemList.size() && !sourceFound; i++) {
@@ -378,7 +378,7 @@ public class DataProcess {
         }
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked") //$NON-NLS-1$
     private static void checkFlowRefLink(final Node graphicalNode) {
         if (checkRefList.contains(graphicalNode)) {
             return;
@@ -404,7 +404,7 @@ public class DataProcess {
                 dataConnec.setActivate(connection.isActivate());
                 dataConnec.setLineStyle(EConnectionType.RUN_AFTER);
                 dataConnec.setMetadataTable(subDataNodeStartSource.getMetadataList().get(0));
-                dataConnec.setName("after_" + subDataNodeStartSource.getUniqueName());
+                dataConnec.setName("after_" + subDataNodeStartSource.getUniqueName()); //$NON-NLS-1$
                 dataConnec.setSource(subDataNodeStartSource);
                 dataConnec.setTarget(subDataNodeStartTarget);
                 List<IConnection> outgoingConnections = (List<IConnection>) subDataNodeStartSource
@@ -416,7 +416,7 @@ public class DataProcess {
 
                 // add a new hash node
                 // (to replace by a Node maybe that will take the informations of an IComponent)
-                String uniqueName = HASH_COMPONENT_NAME + "_" + connection.getName();
+                String uniqueName = HASH_COMPONENT_NAME + "_" + connection.getName(); //$NON-NLS-1$
                 IComponent component = ComponentsFactoryProvider.getInstance().get(HASH_COMPONENT_NAME);
                 if (component == null) {
                     continue;

@@ -41,6 +41,7 @@ import org.talend.core.model.metadata.MetadataTool;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.INode;
+import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.ui.editor.connections.Connection;
@@ -94,7 +95,7 @@ public class ChangeMetadataCommand extends Command {
         oldOutputMetadata = currentOutputMetadata.clone();
         this.newOutputMetadata = newOutputMetadata;
         initializeContainer();
-        setLabel("Change Metadata values");
+        setLabel(Messages.getString("ChangeMetadataCommand.changeMetadataValues")); //$NON-NLS-1$
     }
 
     public ChangeMetadataCommand(Node node, IMetadataTable currentOutputMetadata, IMetadataTable newOutputMetadata) {
@@ -110,7 +111,7 @@ public class ChangeMetadataCommand extends Command {
         oldOutputMetadata = currentOutputMetadata.clone();
         this.newOutputMetadata = newOutputMetadata;
         initializeContainer();
-        setLabel("Change Metadata values");
+        setLabel(Messages.getString("ChangeMetadataCommand.changeMetadataValues")); //$NON-NLS-1$
     }
 
     protected void setRepositoryMode(boolean repositoryMode) {
@@ -157,7 +158,7 @@ public class ChangeMetadataCommand extends Command {
             if (returnIfNull != null) {
                 return returnIfNull;
             }
-            propagate = MessageDialog.openQuestion(new Shell(), "Propagate", "Would you like to propagate changes ?");
+            propagate = MessageDialog.openQuestion(new Shell(), Messages.getString("ChangeMetadataCommand.messageDialog.propagate"), Messages.getString("ChangeMetadataCommand.messageDialog.questionMessage")); //$NON-NLS-1$ //$NON-NLS-2$
         }
         return propagate;
     }
@@ -168,7 +169,7 @@ public class ChangeMetadataCommand extends Command {
     
     protected void updateColumnList(IMetadataTable oldTable, IMetadataTable newTable) {
         IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-        IViewPart view = page.findView("org.eclipse.ui.views.PropertySheet");
+        IViewPart view = page.findView("org.eclipse.ui.views.PropertySheet"); //$NON-NLS-1$
         PropertySheet sheet = (PropertySheet) view;
         TabbedPropertySheetPage tabbedPropertySheetPage = (TabbedPropertySheetPage) sheet.getCurrentPage();
         ISection[] sections = tabbedPropertySheetPage.getCurrentTab().getSections();

@@ -22,6 +22,7 @@
 package org.talend.designer.core.ui.editor.cmd;
 
 import org.eclipse.gef.commands.Command;
+import org.talend.designer.core.i18n.Messages;
 
 /**
  * DOC smallet class global comment. Detailled comment <br/>
@@ -36,7 +37,7 @@ public class CreateProcessCommand extends Command {
      */
     public CreateProcessCommand() {
         super();
-        setLabel("Create job");
+        setLabel(Messages.getString("CreateProcessCommand.createJob")); //$NON-NLS-1$
     }
 
     /*

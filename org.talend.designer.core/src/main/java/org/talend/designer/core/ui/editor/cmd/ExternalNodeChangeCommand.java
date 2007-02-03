@@ -39,6 +39,7 @@ import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IExternalNode;
 import org.talend.core.model.process.INodeConnector;
+import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.ui.editor.connections.Connection;
@@ -73,7 +74,7 @@ public class ExternalNodeChangeCommand extends Command {
 
     private Boolean propagate;
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked") //$NON-NLS-1$
     public ExternalNodeChangeCommand(Node node, IExternalNode externalNode) {
         this.node = node;
 
@@ -121,12 +122,12 @@ public class ExternalNodeChangeCommand extends Command {
             }
         }
 
-        setLabel("Modification from " + node.getUniqueName());
+        setLabel(Messages.getString("ExternalNodeChangeCommand.modifaicationFrom") + node.getUniqueName()); //$NON-NLS-1$
     }
 
     private void refreshSectionsPropertyView() {
         IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-        IViewPart view = page.findView("org.eclipse.ui.views.PropertySheet");
+        IViewPart view = page.findView("org.eclipse.ui.views.PropertySheet"); //$NON-NLS-1$
         PropertySheet sheet = (PropertySheet) view;
         TabbedPropertySheetPage tabbedPropertySheetPage = (TabbedPropertySheetPage) sheet.getCurrentPage();
         ISection[] sections = tabbedPropertySheetPage.getCurrentTab().getSections();
@@ -152,7 +153,7 @@ public class ExternalNodeChangeCommand extends Command {
 
     private boolean getPropagate() {
         if (propagate == null) {
-            propagate = MessageDialog.openQuestion(new Shell(), "Propagate", "Would you like to propagate changes ?");
+            propagate = MessageDialog.openQuestion(new Shell(), Messages.getString("ExternalNodeChangeCommand.propagate"), Messages.getString("ExternalNodeChangeCommand.propagateMessage")); //$NON-NLS-1$ //$NON-NLS-2$
         }
         return propagate;
     }

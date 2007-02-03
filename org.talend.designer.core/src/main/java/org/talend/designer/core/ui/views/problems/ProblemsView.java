@@ -47,6 +47,7 @@ import org.talend.commons.ui.image.ImageProvider;
 import org.talend.commons.utils.data.container.MapList;
 import org.talend.core.model.process.Problem;
 import org.talend.core.model.process.Problem.ProblemStatus;
+import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.MultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.nodes.NodePart;
@@ -68,9 +69,9 @@ public class ProblemsView extends ViewPart {
 
     private Image warningImage;
 
-    private static final String ERRORS_TEXT = "Errors";
+    private static final String ERRORS_TEXT = Messages.getString("ProblemsView.errorTitle"); //$NON-NLS-1$
 
-    private static final String WARNINGS_TEXT = "Warnings";
+    private static final String WARNINGS_TEXT = Messages.getString("ProblemsView.waringTitle"); //$NON-NLS-1$
 
     public ProblemsView() {
 
@@ -80,7 +81,7 @@ public class ProblemsView extends ViewPart {
         warningImage = ImageProvider.getImage(EImage.WARNING_SMALL);
         errorImage = ImageProvider.getImage(EImage.ERROR_SMALL);
 
-        setPartName("");
+        setPartName(""); //$NON-NLS-1$
     }
 
     @Override
@@ -119,26 +120,26 @@ public class ProblemsView extends ViewPart {
             }
         });
         TreeColumn column1 = new TreeColumn(tree, SWT.LEFT);
-        column1.setText("Name");
+        column1.setText(Messages.getString("ProblemsView.name")); //$NON-NLS-1$
         column1.setWidth(200);
         column1.setResizable(true);
         TreeColumn column2 = new TreeColumn(tree, SWT.CENTER);
-        column2.setText("Description");
+        column2.setText(Messages.getString("ProblemsView.description")); //$NON-NLS-1$
         column2.setWidth(400);
         column2.setAlignment(SWT.LEFT);
         column2.setResizable(true);
 
         warningItem = new TreeItem(tree, SWT.NONE);
-        warningItem.setText(new String[] { WARNINGS_TEXT + " (0)", "" });
+        warningItem.setText(new String[] { WARNINGS_TEXT + " (0)", "" }); //$NON-NLS-1$ //$NON-NLS-2$
         warningItem.setImage(ImageProvider.getImage(EImage.HIERARCHY_ICON));
         errorItem = new TreeItem(tree, SWT.NONE);
         errorItem.setImage(ImageProvider.getImage(EImage.HIERARCHY_ICON));
-        errorItem.setText(new String[] { ERRORS_TEXT + " (0)", "" });
+        errorItem.setText(new String[] { ERRORS_TEXT + " (0)", "" }); //$NON-NLS-1$ //$NON-NLS-2$
 
         Problems.recheckCurrentProblems(this);
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked")//$NON-NLS-1$
     private void selectInEditor(Node node) {
         IEditorPart editorPart = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
 
@@ -165,19 +166,19 @@ public class ProblemsView extends ViewPart {
             treeItems[i].dispose();
         }
         errorsMap.clear();
-        errorItem.setText(new String[] { ERRORS_TEXT + " (0)", "" });
+        errorItem.setText(new String[] { ERRORS_TEXT + " (0)", "" }); //$NON-NLS-1$ //$NON-NLS-2$
 
         treeItems = warningItem.getItems();
         for (int i = 0; i < treeItems.length; i++) {
             treeItems[i].dispose();
         }
         warningsMap.clear();
-        warningItem.setText(new String[] { WARNINGS_TEXT + " (0)", "" });
+        warningItem.setText(new String[] { WARNINGS_TEXT + " (0)", "" }); //$NON-NLS-1$ //$NON-NLS-2$
     }
-    
-    
+
     /**
      * DOC retset problemsTree with the new problems.
+     * 
      * @param problems the new problems
      */
     public void setProblems(MapList<ProblemStatus, Problem> problems) {
@@ -206,7 +207,7 @@ public class ProblemsView extends ViewPart {
 
             errorsMap.put(problem, subItem);
             nbItems = errorsMap.size();
-            errorItem.setText(new String[] { ERRORS_TEXT + " (" + nbItems + ")", "" });
+            errorItem.setText(new String[] { ERRORS_TEXT + " (" + nbItems + ")", "" }); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
             break;
         case WARNING:
@@ -216,7 +217,7 @@ public class ProblemsView extends ViewPart {
 
             warningsMap.put(problem, subItem);
             nbItems = warningsMap.size();
-            warningItem.setText(new String[] { WARNINGS_TEXT + " (" + nbItems + ")", "" });
+            warningItem.setText(new String[] { WARNINGS_TEXT + " (" + nbItems + ")", "" }); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
             break;
         default:
         }
@@ -244,7 +245,7 @@ public class ProblemsView extends ViewPart {
             }
 
             nbItems = errorsMap.size();
-            errorItem.setText(new String[] { ERRORS_TEXT + " (" + nbItems + ")", "" });
+            errorItem.setText(new String[] { ERRORS_TEXT + " (" + nbItems + ")", "" }); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
             break;
         case WARNING:
             setProblems = warningsMap.keySet();
@@ -262,7 +263,7 @@ public class ProblemsView extends ViewPart {
             }
 
             nbItems = warningsMap.size();
-            warningItem.setText(new String[] { WARNINGS_TEXT + " (" + nbItems + ")", "" });
+            warningItem.setText(new String[] { WARNINGS_TEXT + " (" + nbItems + ")", "" }); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
             break;
         default:
         }
@@ -297,10 +298,11 @@ public class ProblemsView extends ViewPart {
     }
 
     public void setPartName(String title) {
-        if (title.equals("")) {
-            super.setPartName("Problems");
-        } else {
-            super.setPartName("Problems (" + title + ")");
+        String viewName = Messages.getString("ProblemsView.problems.defaultTitle"); //$NON-NLS-1$
+
+        if (!title.equals("")) { //$NON-NLS-1$
+            viewName = viewName + "(" + title + ")"; //$NON-NLS-1$ //$NON-NLS-2$
         }
+        super.setPartName(viewName);
     }
 }

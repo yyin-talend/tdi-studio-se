@@ -38,7 +38,7 @@ import org.eclipse.gef.editparts.ScalableFreeformRootEditPart;
  */
 public class TalendScalableFreeformRootEditPart extends ScalableFreeformRootEditPart {
 
-    public static final String PROCESS_BACKGROUND_LAYER = "processBackgroundLayer";
+    public static final String PROCESS_BACKGROUND_LAYER = "processBackgroundLayer"; //$NON-NLS-1$
 
     @Override
     protected LayeredPane createPrintableLayers() {

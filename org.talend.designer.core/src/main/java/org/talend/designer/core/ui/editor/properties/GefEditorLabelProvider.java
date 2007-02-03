@@ -120,7 +120,7 @@ public class GefEditorLabelProvider extends LabelProvider {
     public String getText(Object objects) {
         Node node;
         if (objects == null || objects.equals(StructuredSelection.EMPTY)) {
-            return "No items selected";
+            return "No items selected"; //$NON-NLS-1$
         }
         if (!(objects instanceof IStructuredSelection)) {
             return null;
@@ -128,7 +128,7 @@ public class GefEditorLabelProvider extends LabelProvider {
         final boolean[] multiple = { false };
         Object object = getObject(objects, multiple);
         if (object == null/* || ((IStructuredSelection) objects).size() > 1 */) {
-            return "No items selected";
+            return "No items selected"; //$NON-NLS-1$
         } else {
             if (object instanceof NodeContainerPart) {
                 NodeContainerPart nContainer = (NodeContainerPart) object;
@@ -170,7 +170,7 @@ public class GefEditorLabelProvider extends LabelProvider {
             }
             String name = node.getComponent().getTranslatedName();
             if (!node.getComponent().getTranslatedName().equals(node.getComponent().getName())) {
-                name += " (" + node.getComponent().getName() + ")";
+                name += " (" + node.getComponent().getName() + ")"; //$NON-NLS-1$ //$NON-NLS-2$
             }
             return name;
         }

@@ -94,7 +94,7 @@ public class PropertiesTableEditorModel<B> extends ExtendedTableModel<B> {
                     if (columnArrayList.length != 0) {
                         tmpParam.setDefaultClosedListValue(columnArrayList[0]);
                     } else {
-                        tmpParam.setDefaultClosedListValue("");
+                        tmpParam.setDefaultClosedListValue(""); //$NON-NLS-1$
                     }
                 }
                 if (tmpParam.getField() == EParameterFieldType.PREV_COLUMN_LIST) {
@@ -105,7 +105,7 @@ public class PropertiesTableEditorModel<B> extends ExtendedTableModel<B> {
                     if (prevColumnArrayList.length != 0) {
                         tmpParam.setDefaultClosedListValue(prevColumnArrayList[0]);
                     } else {
-                        tmpParam.setDefaultClosedListValue("");
+                        tmpParam.setDefaultClosedListValue(""); //$NON-NLS-1$
                     }
                 }
             }
@@ -136,8 +136,8 @@ public class PropertiesTableEditorModel<B> extends ExtendedTableModel<B> {
             line.put(items[0], tmpParam.getValue());
             break;
         default: // TEXT
-            if ((tmpParam.getValue() == null) || (tmpParam.getValue().equals(""))) {
-                line.put(items[0], new String("'newLine'"));
+            if ((tmpParam.getValue() == null) || (tmpParam.getValue().equals(""))) { //$NON-NLS-1$
+                line.put(items[0], new String("'newLine'")); //$NON-NLS-1$
             } else {
                 line.put(items[0], tmpParam.getValue());
             }

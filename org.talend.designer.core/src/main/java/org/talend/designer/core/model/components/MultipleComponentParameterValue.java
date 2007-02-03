@@ -44,7 +44,7 @@ public class MultipleComponentParameterValue implements IMultipleComponentParame
     String targetValue;
 
     public MultipleComponentParameterValue(String target, String value) {
-        StringTokenizer token = new StringTokenizer(target, ".");
+        StringTokenizer token = new StringTokenizer(target, "."); //$NON-NLS-1$
         targetComponent = token.nextToken();
         targetValue = token.nextToken();
 

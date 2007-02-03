@@ -32,6 +32,7 @@ import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IContextManager;
 import org.talend.core.model.process.IContextParameter;
+import org.talend.designer.core.i18n.Messages;
 
 /**
  * Command that will modify a context.
@@ -53,12 +54,12 @@ public class ContextModifyCommand extends Command {
         this.contextManager = contextManager;
         this.oldContext = oldContext;
         this.currentContext = newContext;
-        setLabel("Modify Context");
+        setLabel(Messages.getString("ContextModifyCommand.label")); //$NON-NLS-1$
     }
 
     private void refreshPropertyView() {
         IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-        IViewPart view = page.findView("org.eclipse.ui.views.PropertySheet");
+        IViewPart view = page.findView("org.eclipse.ui.views.PropertySheet"); //$NON-NLS-1$
         PropertySheet sheet = (PropertySheet) view;
         TabbedPropertySheetPage tabbedPropertySheetPage = (TabbedPropertySheetPage) sheet.getCurrentPage();
         tabbedPropertySheetPage.refresh();

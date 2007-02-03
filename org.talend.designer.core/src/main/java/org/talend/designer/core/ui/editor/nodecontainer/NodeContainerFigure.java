@@ -73,7 +73,7 @@ public class NodeContainerFigure extends Figure {
 
     private Point errorLocation = new Point();
 
-    private static final String BREAKPOINT_IMAGE = "icons/breakpoint.png";
+    private static final String BREAKPOINT_IMAGE = "icons/breakpoint.png"; //$NON-NLS-1$
 
     public NodeContainerFigure(NodeContainer nodeContainer) {
         this.nodeContainer = nodeContainer;
@@ -137,21 +137,21 @@ public class NodeContainerFigure extends Figure {
         if (errorFigure.isVisible() || warningFigure.isVisible()) {
             List<String> problemsList;
 
-            String text = "<b>" + nodeContainer.getNode().getUniqueName() + "</b><br><br>";
+            String text = "<b>" + nodeContainer.getNode().getUniqueName() + "</b><br><br>"; //$NON-NLS-1$ //$NON-NLS-2$
 
             if ((status & Process.WARNING_STATUS) != 0) {
-                text += "<i>Warnings:</i><br>";
+                text += "<i>Warnings:</i><br>"; //$NON-NLS-1$
 
                 problemsList = Problems.getStatusList(ProblemStatus.WARNING, nodeContainer.getNode());
                 for (String str : problemsList) {
-                    text += "\t- " + str + "<br>";
+                    text += "\t- " + str + "<br>"; //$NON-NLS-1$ //$NON-NLS-2$
                 }
             }
             if ((status & Process.ERROR_STATUS) != 0) {
-                text += "<i>Errors:</i><br>";
+                text += "<i>Errors:</i><br>"; //$NON-NLS-1$
                 problemsList = Problems.getStatusList(ProblemStatus.ERROR, nodeContainer.getNode());
                 for (String str : problemsList) {
-                    text += "\t- " + str + "<br>";
+                    text += "\t- " + str + "<br>"; //$NON-NLS-1$ //$NON-NLS-2$
                 }
             }
             htmlStatusHint.setText(text);

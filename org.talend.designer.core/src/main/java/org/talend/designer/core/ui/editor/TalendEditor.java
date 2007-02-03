@@ -104,6 +104,7 @@ import org.eclipse.ui.views.properties.tabbed.ITabbedPropertySheetPageContributo
 import org.talend.core.model.components.IComponentsFactory;
 import org.talend.core.model.properties.Property;
 import org.talend.designer.core.DesignerPlugin;
+import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.action.GEFDeleteAction;
 import org.talend.designer.core.ui.action.NodesCopyAction;
@@ -236,7 +237,7 @@ public class TalendEditor extends GraphicalEditorWithFlyoutPalette implements IT
         return sharedKeyHandler;
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked") //$NON-NLS-1$
     public List<String> getActions() {
         return getSelectionActions();
     }
@@ -407,7 +408,7 @@ public class TalendEditor extends GraphicalEditorWithFlyoutPalette implements IT
     // Abstract methods from EditorPart
 
     public void doSave(IProgressMonitor monitor) {
-        monitor.beginTask("Saving process ...", 100);
+        monitor.beginTask(Messages.getString("TalendEditor.monitorBeginText"), 100); //$NON-NLS-1$
         monitor.worked(10);
 
         try {

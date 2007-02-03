@@ -41,6 +41,6 @@ public class JavaMemoController extends AbstractLanguageMemoController {
      * @see org.talend.designer.core.ui.editor.properties.controllers.AbstractLanguageMemoController#setLanguage()
      */
     protected void setLanguage() {
-        this.setCurrentLanguage("java");
+        this.setCurrentLanguage("java"); //$NON-NLS-1$
     }
 }

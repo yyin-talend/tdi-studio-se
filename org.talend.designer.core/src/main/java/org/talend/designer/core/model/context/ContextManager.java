@@ -126,7 +126,7 @@ public class ContextManager implements IContextManager {
         switch (language) {
         case PERL:
             try {
-                pattern = compiler.compile("^[A-Za-z_][A-Za-z0-9_]*$");
+                pattern = compiler.compile("^[A-Za-z_][A-Za-z0-9_]*$"); //$NON-NLS-1$
                 if (!matcher.matches(contextName, pattern)) {
                     return false;
                 }

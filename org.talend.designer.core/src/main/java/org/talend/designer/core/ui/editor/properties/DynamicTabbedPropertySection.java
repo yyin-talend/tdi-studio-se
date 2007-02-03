@@ -78,6 +78,7 @@ import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.designer.core.DesignerPlugin;
+import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
@@ -201,7 +202,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                 if (factory.getStatus(process) != ERepositoryStatus.DELETED) {
                     String path = object.getParent().getPath().toString();
                     String name;
-                    if (path.equals("")) {
+                    if (path.equals("")) { //$NON-NLS-1$
                         name = IPath.SEPARATOR + process.getLabel();
                     } else {
                         name = IPath.SEPARATOR + path + IPath.SEPARATOR + process.getLabel();
@@ -209,7 +210,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
 
                     processNameList.add(name);
                     processMap.put(name, process);
-                    processValueList.add("'" + process.getLabel() + "'");
+                    processValueList.add("'" + process.getLabel() + "'"); //$NON-NLS-1$ //$NON-NLS-2$
                 }
             }
         } catch (PersistenceException e) {
@@ -223,7 +224,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
             if (param.getName().equals(EParameterName.PROCESS_TYPE_PROCESS.getName())) {
                 param.setListItemsDisplayName(processTableNameList);
                 param.setListItemsValue(processTableValueList);
-                if (param.getValue().equals("NO_PROCESS")) {
+                if (param.getValue().equals("NO_PROCESS")) { //$NON-NLS-1$
                     if (!processMap.keySet().contains(param.getValue())) {
                         if (processTableNameList.length > 0) {
                             elem.setPropertyValue(EParameterName.PROCESS_TYPE_PROCESS.getName(),
@@ -263,7 +264,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
             List<IRepositoryObject> list = factory.getAll(ERepositoryObjectType.PROCESS);
 
             for (IRepositoryObject process : list) {
-                String id = "'" + process.getLabel() + "'";
+                String id = "'" + process.getLabel() + "'"; //$NON-NLS-1$ //$NON-NLS-2$
                 if (selectedProcess.equals(id)) {
                     if (process.getProperty().getItem() instanceof ProcessItem) {
                         ProcessItem processItem = (ProcessItem) process.getProperty().getItem();
@@ -272,7 +273,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                             if (o instanceof ContextType) {
                                 ContextType context = (ContextType) o;
                                 contextNameList.add(context.getName());
-                                contextValueList.add("'" + context.getName() + "'");
+                                contextValueList.add("'" + context.getName() + "'"); //$NON-NLS-1$ //$NON-NLS-2$
                             }
                         }
                     }
@@ -305,8 +306,8 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
         String aliasName = repositoryObjectType.getAlias();
         Connection connection = (Connection) connectionItem.getConnection();
         if (connection instanceof DatabaseConnection) {
-            String currentDbType = (String) RepositoryToComponentProperty.getValue(connection, "TYPE");
-            aliasName += " (" + currentDbType + ")";
+            String currentDbType = (String) RepositoryToComponentProperty.getValue(connection, "TYPE"); //$NON-NLS-1$
+            aliasName += " (" + currentDbType + ")"; //$NON-NLS-1$ //$NON-NLS-2$
         }
         return aliasName;
     }
@@ -314,7 +315,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
     /**
      * DOC ftang Comment method "updateRepositoryList".
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked") //$NON-NLS-1$
     public void updateRepositoryList() {
         IProxyRepositoryFactory factory = DesignerPlugin.getDefault().getProxyRepositoryFactory();
         List<ConnectionItem> metadataConnectionsItem = null;
@@ -342,15 +343,15 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
             for (ConnectionItem connectionItem : metadataConnectionsItem) {
                 Connection connection = (Connection) connectionItem.getConnection();
                 if (!connection.isReadOnly()) {
-                    repositoryConnectionItemMap.put(connectionItem.getProperty().getId() + "", connectionItem);
+                    repositoryConnectionItemMap.put(connectionItem.getProperty().getId() + "", connectionItem); //$NON-NLS-1$
                     for (Object tableObj : connection.getTables()) {
                         org.talend.core.model.metadata.builder.connection.MetadataTable table;
                         table = (org.talend.core.model.metadata.builder.connection.MetadataTable) tableObj;
                         if (factory.getStatus(connectionItem) != ERepositoryStatus.DELETED) {
                             if (!factory.isDeleted(table)) {
-                                String name = getRepositoryAliasName(connectionItem) + ":"
-                                        + connectionItem.getProperty().getLabel() + " - " + table.getLabel();
-                                String value = connectionItem.getProperty().getId() + " - " + table.getLabel();
+                                String name = getRepositoryAliasName(connectionItem) + ":" //$NON-NLS-1$
+                                        + connectionItem.getProperty().getLabel() + " - " + table.getLabel(); //$NON-NLS-1$
+                                String value = connectionItem.getProperty().getId() + " - " + table.getLabel(); //$NON-NLS-1$
                                 repositoryTableMap.put(value, ConvertionHelper.convert(table));
                                 tableNamesList.add(name);
                                 tableValuesList.add(value);
@@ -366,9 +367,9 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                         QueriesConnection connection2 = qcs.get(0);
                         List<Query> qs = connection2.getQuery();
                         for (Query query : qs) {
-                            String name = getRepositoryAliasName(connectionItem) + ":"
-                                    + connectionItem.getProperty().getLabel() + " - " + query.getLabel();
-                            String value = connectionItem.getProperty().getId() + " - " + query.getLabel();
+                            String name = getRepositoryAliasName(connectionItem) + ":" //$NON-NLS-1$
+                                    + connectionItem.getProperty().getLabel() + " - " + query.getLabel(); //$NON-NLS-1$
+                            String value = connectionItem.getProperty().getId() + " - " + query.getLabel(); //$NON-NLS-1$
                             repositoryQueryStoreMap.put(value, query);
                             queryStoreNameList.add(name);
                             queryStoreValuesList.add(value);
@@ -416,29 +417,29 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                     for (String key : repositoryConnectionItemMap.keySet()) {
                         ConnectionItem connectionItem = repositoryConnectionItemMap.get(key);
                         Connection connection = (Connection) connectionItem.getConnection();
-                        String name = getRepositoryAliasName(connectionItem) + ":"
+                        String name = getRepositoryAliasName(connectionItem) + ":" //$NON-NLS-1$
                                 + connectionItem.getProperty().getLabel();
-                        if ((connection instanceof DelimitedFileConnection) && (repositoryValue.equals("DELIMITED"))) {
+                        if ((connection instanceof DelimitedFileConnection) && (repositoryValue.equals("DELIMITED"))) { //$NON-NLS-1$
                             connectionNamesList.add(name);
                             connectionValuesList.add(key);
                         }
-                        if ((connection instanceof PositionalFileConnection) && (repositoryValue.equals("POSITIONAL"))) {
+                        if ((connection instanceof PositionalFileConnection) && (repositoryValue.equals("POSITIONAL"))) { //$NON-NLS-1$
                             connectionNamesList.add(name);
                             connectionValuesList.add(key);
                         }
-                        if ((connection instanceof RegexpFileConnection) && (repositoryValue.equals("REGEX"))) {
+                        if ((connection instanceof RegexpFileConnection) && (repositoryValue.equals("REGEX"))) { //$NON-NLS-1$
                             connectionNamesList.add(name);
                             connectionValuesList.add(key);
                         }
-                        if ((connection instanceof XmlFileConnection) && (repositoryValue.equals("XML"))) {
+                        if ((connection instanceof XmlFileConnection) && (repositoryValue.equals("XML"))) { //$NON-NLS-1$
                             connectionNamesList.add(name);
                             connectionValuesList.add(key);
                         }
 
-                        if ((connection instanceof DatabaseConnection) && (repositoryValue.startsWith("DATABASE"))) {
-                            String currentDbType = (String) RepositoryToComponentProperty.getValue(connection, "TYPE");
-                            if (repositoryValue.contains(":")) { // database is specified
-                                String neededDbType = repositoryValue.substring(repositoryValue.indexOf(":") + 1);
+                        if ((connection instanceof DatabaseConnection) && (repositoryValue.startsWith("DATABASE"))) { //$NON-NLS-1$
+                            String currentDbType = (String) RepositoryToComponentProperty.getValue(connection, "TYPE"); //$NON-NLS-1$
+                            if (repositoryValue.contains(":")) { // database is specified //$NON-NLS-1$
+                                String neededDbType = repositoryValue.substring(repositoryValue.indexOf(":") + 1); //$NON-NLS-1$
                                 if (neededDbType.equals(currentDbType)) {
                                     connectionNamesList.add(name);
                                     connectionValuesList.add(key);
@@ -534,7 +535,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
         if (oldProcessType != null) {
             String[] list = elem.getElementParameter(EParameterName.PROCESS_TYPE_PROCESS.getName())
                     .getListItemsDisplayName();
-            if ((oldProcessType.equals("NO_PROCESS") || (list.length == 0))) {
+            if ((oldProcessType.equals("NO_PROCESS") || (list.length == 0))) { //$NON-NLS-1$
                 updateProcessList();
                 updateContextList();
                 if (elem instanceof Node) {
@@ -689,7 +690,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                         // editionControlHelper.unregister(t);
                         Object value = elem.getPropertyValue(param.getName());
                         if (value == null) {
-                            t.setText("");
+                            t.setText(""); //$NON-NLS-1$
                         } else {
                             if (!value.equals(t.getText())) {
                                 t.setText((String) value);
@@ -710,7 +711,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                         // editionControlHelper.unregister(t);
                         String value = (String) elem.getPropertyValue(param.getName());
                         if (value == null) {
-                            t.setText("");
+                            t.setText(""); //$NON-NLS-1$
                         } else {
                             if (!value.equals(t.getText())) {
                                 t.setText(value);
@@ -1036,7 +1037,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
     /**
      * DOC yzhang Comment method "updateColumnList".
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked") //$NON-NLS-1$
     public void updateColumnList(List<ColumnNameChanged> columnsChanged) {
         List<String> columnList = getColumnList();
         List<String> prevColumnList = getPrevColumnList();
@@ -1093,7 +1094,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                             if (curColumnNameList.length > 0) {
                                 tmpParam.setDefaultClosedListValue(curColumnNameList[0]);
                             } else {
-                                tmpParam.setDefaultClosedListValue("");
+                                tmpParam.setDefaultClosedListValue(""); //$NON-NLS-1$
                             }
                             // j + 1 because first column is masked
                             TableViewerCreatorColumn column = (TableViewerCreatorColumn) colList.get(j + 1);
@@ -1171,7 +1172,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                     paramValues.clear();
                     paramValues.addAll(newParamValues);
 
-                    if (param.isRepositoryValueUsed() && param.getRepositoryValue().equals("XML_MAPPING")) {
+                    if (param.isRepositoryValueUsed() && param.getRepositoryValue().equals("XML_MAPPING")) { //$NON-NLS-1$
                         String connectionSelected = (String) elem
                                 .getPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE.getName());
                         List<Map<String, Object>> table = (List<Map<String, Object>>) elem.getPropertyValue(param
@@ -1179,7 +1180,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                         IMetadataTable metaTable = ((Node) elem).getMetadataList().get(0);
                         RepositoryToComponentProperty.getTableXmlFileValue(
 
-                        this.repositoryConnectionItemMap.get(connectionSelected).getConnection(), "XML_MAPPING", param,
+                        this.repositoryConnectionItemMap.get(connectionSelected).getConnection(), "XML_MAPPING", param, //$NON-NLS-1$
                                 table, metaTable);
                     }
                 }
@@ -1261,8 +1262,8 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
             line.put(items[0], tmpParam.getValue());
             break;
         default: // TEXT
-            if ((tmpParam.getValue() == null) || (tmpParam.getValue().equals(""))) {
-                line.put(items[0], new String("'newLine'"));
+            if ((tmpParam.getValue() == null) || (tmpParam.getValue().equals(""))) { //$NON-NLS-1$
+                line.put(items[0], new String("'newLine'")); //$NON-NLS-1$
             } else {
                 line.put(items[0], tmpParam.getValue());
             }

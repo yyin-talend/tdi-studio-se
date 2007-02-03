@@ -37,7 +37,7 @@ public class PerlMemoController extends AbstractLanguageMemoController {
 
     @Override
     protected void setLanguage() {
-        this.setCurrentLanguage("perl");
+        this.setCurrentLanguage("perl"); //$NON-NLS-1$
     }
 
 }

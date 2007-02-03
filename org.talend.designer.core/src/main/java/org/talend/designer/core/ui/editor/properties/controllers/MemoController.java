@@ -100,7 +100,7 @@ public class MemoController extends AbstractElementPropertySectionController {
         text.getParent().setSize(subComposite.getSize().x, text.getLineHeight() * nbLines);
         cLayout.setBackground(subComposite.getBackground());
         text.setEnabled(!param.isReadOnly());
-        Font font = new Font(subComposite.getDisplay(), "courier", 8, SWT.NONE);
+        Font font = new Font(subComposite.getDisplay(), "courier", 8, SWT.NONE); //$NON-NLS-1$
         text.setFont(font);
         if (elem instanceof Node) {
             text.setToolTipText(VARIABLE_TOOLTIP + param.getVariableName());

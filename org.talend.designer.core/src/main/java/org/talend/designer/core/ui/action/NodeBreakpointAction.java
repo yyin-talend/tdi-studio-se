@@ -31,6 +31,7 @@ import org.talend.core.context.Context;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
 import org.talend.designer.core.DesignerPlugin;
+import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.nodes.NodePart;
 import org.talend.designer.core.ui.editor.process.Process;
@@ -58,7 +59,7 @@ public class NodeBreakpointAction extends SelectionAction {
     public NodeBreakpointAction(IWorkbenchPart part) {
         super(part);
         setId(ID);
-        setImageDescriptor(DesignerPlugin.getImageDescriptor("icons/breakpoint.png"));
+        setImageDescriptor(DesignerPlugin.getImageDescriptor("icons/breakpoint.png")); //$NON-NLS-1$
     }
 
     /*
@@ -102,9 +103,9 @@ public class NodeBreakpointAction extends SelectionAction {
             process = (IProcess) ((ProcessPart) parentPart).getModel();
 
             if (CorePlugin.getContext().getBreakpointNodes(process).contains(node)) {
-                setText("Remove breakpoint");
+                setText(Messages.getString("NodeBreakpointAction.removeBreakpoint")); //$NON-NLS-1$
             } else {
-                setText("Add breakpoint");
+                setText(Messages.getString("NodeBreakpointAction.addBreakPoint")); //$NON-NLS-1$
             }
             return true;
         }

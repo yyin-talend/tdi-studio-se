@@ -81,7 +81,7 @@ public class ActiveProcessTracker implements IPartListener {
             IRunProcessService service = DesignerPlugin.getDefault().getRunProcessService();
             service.setActiveProcess(process);
 
-            Problems.setTitle("Job " + process.getProperty().getLabel());
+            Problems.setTitle("Job " + process.getProperty().getLabel()); //$NON-NLS-1$
             Problems.switchToCurProblemView();
         }
     }
@@ -101,7 +101,7 @@ public class ActiveProcessTracker implements IPartListener {
             service.removeProcess(process);
 
             if (currentProcess == process) {
-                Problems.setTitle("");
+                Problems.setTitle(""); //$NON-NLS-1$
                 Problems.clearAll();
             }
         }

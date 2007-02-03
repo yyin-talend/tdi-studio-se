@@ -86,9 +86,9 @@ public class ConnectionTraceFigure extends Figure {
             String lineNumber = dataWithoutRowName.substring(0, sepIndex);
             SimpleHtmlFigure titleFigure;
             titleFigure = new SimpleHtmlFigure();
-            titleFigure.setText("");
-            titleFigure.setText("<font color='#0000FF'> <b> " + connection.getConnectionLabel().getLabelText()
-                    + "</b></font>            <font color='#808080'>Current row : " + lineNumber + "</font>");
+            titleFigure.setText(""); //$NON-NLS-1$
+            titleFigure.setText("<font color='#0000FF'> <b> " + connection.getConnectionLabel().getLabelText() //$NON-NLS-1$
+                    + "</b></font>            <font color='#808080'>Current row : " + lineNumber + "</font>"); //$NON-NLS-1$ //$NON-NLS-2$
             if (tooltip != null) {
                 titleFigure.setBackgroundColor(ColorConstants.white);
                 titleFigure.setOpaque(true);
@@ -107,9 +107,9 @@ public class ConnectionTraceFigure extends Figure {
                 String str = st.nextToken();
                 int valueStart = str.indexOf(FIELD_EQUAL);
                 if (valueStart != -1) {
-                    String formatedVariable = "<font color='#000000'>  <b>" + str.substring(0, valueStart)
-                            + "</b></font>";
-                    String formatedValue = "<font color='#FF8040'> <b>" + str.substring(valueStart + 1) + "</b></font>";
+                    String formatedVariable = "<font color='#000000'>  <b>" + str.substring(0, valueStart) //$NON-NLS-1$
+                            + "</b></font>"; //$NON-NLS-1$
+                    String formatedValue = "<font color='#FF8040'> <b>" + str.substring(valueStart + 1) + "</b></font>"; //$NON-NLS-1$ //$NON-NLS-2$
                     SimpleHtmlFigure var = new SimpleHtmlFigure();
                     var.setText(formatedVariable);
                     SimpleHtmlFigure value = new SimpleHtmlFigure();
@@ -129,7 +129,7 @@ public class ConnectionTraceFigure extends Figure {
                     size.expand(0, varSize.height);
                 } else {
                     noVarNameDefined = true;
-                    String formatedValue = "<font color='#FF8040'> <b>" + str + "</b></font>";
+                    String formatedValue = "<font color='#FF8040'> <b>" + str + "</b></font>"; //$NON-NLS-1$ //$NON-NLS-2$
                     SimpleHtmlFigure value = new SimpleHtmlFigure();
                     value.setText(formatedValue);
                     Dimension valueSize = value.getPreferredSize();
@@ -168,9 +168,9 @@ public class ConnectionTraceFigure extends Figure {
                 String str = st.nextToken();
                 int valueStart = str.indexOf(FIELD_EQUAL);
                 if (valueStart != -1) {
-                    String formatedVariable = "<font color='#000000'>  <b>" + str.substring(0, valueStart)
-                            + "</b></font>";
-                    String formatedValue = "<font color='#FF8040'> <b>" + str.substring(valueStart + 1) + "</b></font>";
+                    String formatedVariable = "<font color='#000000'>  <b>" + str.substring(0, valueStart) //$NON-NLS-1$
+                            + "</b></font>"; //$NON-NLS-1$
+                    String formatedValue = "<font color='#FF8040'> <b>" + str.substring(valueStart + 1) + "</b></font>"; //$NON-NLS-1$ //$NON-NLS-2$
                     SimpleHtmlFigure var = new SimpleHtmlFigure();
                     var.setText(formatedVariable);
                     SimpleHtmlFigure value = new SimpleHtmlFigure();
@@ -192,7 +192,7 @@ public class ConnectionTraceFigure extends Figure {
                     variableFigure.add(value);
                     add(variableFigure);
                 } else {
-                    String formatedValue = "<font color='#FF8040'> <b> " + str + "</b></font>";
+                    String formatedValue = "<font color='#FF8040'> <b> " + str + "</b></font>"; //$NON-NLS-1$ //$NON-NLS-2$
                     SimpleHtmlFigure value = new SimpleHtmlFigure();
                     value.setText(formatedValue);
 

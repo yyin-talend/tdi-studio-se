@@ -38,7 +38,7 @@ public class ShowDesignerPageAction extends Action {
 
     public ShowDesignerPageAction() {
         super();
-        this.setActionDefinitionId("showEditorDesignerPage");
+        this.setActionDefinitionId("showEditorDesignerPage"); //$NON-NLS-1$
     }
 
     @Override

@@ -54,7 +54,7 @@ public class MoveNodeCommand extends Command {
         setLabel(Messages.getString("MoveNodeCommand.0")); //$NON-NLS-1$
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked") //$NON-NLS-1$
     @Override
     public boolean canExecute() {
         for (Node currentNode : (List<Node>) node.getProcess().getGraphicalNodes()) {

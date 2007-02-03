@@ -134,6 +134,6 @@ public class NodeReturnsTreeEditPart extends AbstractTreeEditPart {
      */
     protected void refreshVisuals() {
         INodeReturn nr = ((INodeReturn) getModel());
-        setWidgetText(nr.getDisplayName() + " - " + nr.getName() + " (" + nr.getAvailability() + ")");
+        setWidgetText(nr.getDisplayName() + " - " + nr.getName() + " (" + nr.getAvailability() + ")"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
 }

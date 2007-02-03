@@ -104,7 +104,7 @@ public class Node extends Element implements INode {
 
     public static final String TRACE_DATA = "traceData"; //$NON-NLS-1$
 
-    public static final String UPDATE_STATUS = "addStatus";
+    public static final String UPDATE_STATUS = "addStatus"; //$NON-NLS-1$
 
     protected Point location = new Point(0, 0);
 
@@ -591,7 +591,7 @@ public class Node extends Element implements INode {
         return this.activate;
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked") //$NON-NLS-1$
     public void setActivate(final boolean activate) {
         this.activate = activate;
         nodeLabel.setActivate(activate);
@@ -775,7 +775,7 @@ public class Node extends Element implements INode {
         return currentStatus;
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked") //$NON-NLS-1$
     private void checkParameters() {
         for (IElementParameter param : this.getElementParameters()) {
             // if the parameter is required but empty, an error will be added
@@ -786,8 +786,8 @@ public class Node extends Element implements INode {
                 case TABLE:
                     List<Map<String, String>> tableValues = (List<Map<String, String>>) param.getValue();
                     if (tableValues.size() == 0) {
-                        String errorMessage = "Parameter (" + param.getDisplayName()
-                                + ") must have at least one value.";
+                        String errorMessage = "Parameter (" + param.getDisplayName() //$NON-NLS-1$
+                                + ") must have at least one value."; //$NON-NLS-1$
                         Problems.add(ProblemStatus.ERROR, this, errorMessage);
                     }
                     break;
@@ -798,9 +798,9 @@ public class Node extends Element implements INode {
                 case CLOSED_LIST:
                     if (param.getListItemsValue().length != 0) {
                         value = (String) param.getValue();
-                        if (value.equals("")) {
-                            String errorMessage = "Parameter (" + param.getDisplayName()
-                                    + ") is empty but is required.";
+                        if (value.equals("")) { //$NON-NLS-1$
+                            String errorMessage = "Parameter (" + param.getDisplayName() //$NON-NLS-1$
+                                    + ") is empty but is required."; //$NON-NLS-1$
                             Problems.add(ProblemStatus.ERROR, this, errorMessage);
                         } else {
                             boolean found = false;
@@ -810,8 +810,8 @@ public class Node extends Element implements INode {
                                 }
                             }
                             if (!found) {
-                                String errorMessage = "Parameter (" + param.getDisplayName() + ") has a value ("
-                                        + value + ") that doesn't exist anymore.";
+                                String errorMessage = "Parameter (" + param.getDisplayName() + ") has a value (" //$NON-NLS-1$ //$NON-NLS-2$
+                                        + value + ") that doesn't exist anymore."; //$NON-NLS-1$
                                 Problems.add(ProblemStatus.ERROR, this, errorMessage);
                             }
                         }
@@ -819,8 +819,8 @@ public class Node extends Element implements INode {
                     break;
                 default:
                     value = (String) param.getValue();
-                    if (value.equals("")) {
-                        String errorMessage = "Parameter (" + param.getDisplayName() + ") is empty but is required.";
+                    if (value.equals("")) { //$NON-NLS-1$
+                        String errorMessage = "Parameter (" + param.getDisplayName() + ") is empty but is required."; //$NON-NLS-1$ //$NON-NLS-2$
                         Problems.add(ProblemStatus.ERROR, this, errorMessage);
                     }
                 }
@@ -866,7 +866,7 @@ public class Node extends Element implements INode {
             return null;
         }
         if (componentImportNeeds.getStatus() == ModuleStatus.NOT_INSTALLED && componentImportNeeds.isRequired()) {
-            return new Problem(this, "Module " + componentImportNeeds.getModuleName() + " required",
+            return new Problem(this, "Module " + componentImportNeeds.getModuleName() + " required", //$NON-NLS-1$ //$NON-NLS-2$
                     ProblemStatus.ERROR);
         }
 
@@ -878,12 +878,12 @@ public class Node extends Element implements INode {
         if (!(Boolean) getPropertyValue(EParameterName.STARTABLE.getName())) {
             if ((getCurrentActiveLinksNbInput(EConnectionType.FLOW_MAIN) == 0)
                     && (getConnectorFromType(EConnectionType.FLOW_MAIN).getMinLinkInput() == 0)) {
-                String errorMessage = "This component should have input link(s).";
+                String errorMessage = "This component should have input link(s)."; //$NON-NLS-1$
                 Problems.add(ProblemStatus.WARNING, this, errorMessage);
             }
             if ((getCurrentActiveLinksNbInput(EConnectionType.FLOW_MAIN) == 0)
                     && (getCurrentActiveLinksNbInput(EConnectionType.FLOW_REF) > 0)) {
-                String errorMessage = "This component should have at least a Row Main link.";
+                String errorMessage = "This component should have at least a Row Main link."; //$NON-NLS-1$
                 Problems.add(ProblemStatus.WARNING, this, errorMessage);
             }
         }
@@ -893,7 +893,7 @@ public class Node extends Element implements INode {
             if ((getCurrentActiveLinksNbOutput(EConnectionType.FLOW_MAIN) == 0)
                     && (getCurrentActiveLinksNbOutput(EConnectionType.FLOW_REF) == 0)
                     && (getCurrentActiveLinksNbOutput(EConnectionType.ITERATE) == 0)) {
-                String errorMessage = "This component should have outputs linked.";
+                String errorMessage = "This component should have outputs linked."; //$NON-NLS-1$
                 Problems.add(ProblemStatus.WARNING, this, errorMessage);
             }
         }
@@ -902,7 +902,7 @@ public class Node extends Element implements INode {
         if (!isSubProcessStart() || (!(Boolean) getPropertyValue(EParameterName.STARTABLE.getName()))) {
             if ((getCurrentActiveLinksNbOutput(EConnectionType.RUN_AFTER) > 0)
                     || (getCurrentActiveLinksNbOutput(EConnectionType.RUN_BEFORE) > 0)) {
-                String errorMessage = "A component that is not a sub process start can not have any link run after / run before in output.";
+                String errorMessage = "A component that is not a sub process start can not have any link run after / run before in output."; //$NON-NLS-1$
                 Problems.add(ProblemStatus.ERROR, this, errorMessage);
             }
         }
@@ -914,7 +914,7 @@ public class Node extends Element implements INode {
                     || (getCurrentActiveLinksNbInput(EConnectionType.RUN_IF) > 0)
                     || (getCurrentActiveLinksNbInput(EConnectionType.RUN_IF_OK) > 0)
                     || (getCurrentActiveLinksNbInput(EConnectionType.RUN_IF_ERROR) > 0)) {
-                String errorMessage = "A component that is not a sub process start can only have a data link or iterate link in input.";
+                String errorMessage = "A component that is not a sub process start can only have a data link or iterate link in input."; //$NON-NLS-1$
                 Problems.add(ProblemStatus.ERROR, this, errorMessage);
             }
         }
@@ -935,33 +935,33 @@ public class Node extends Element implements INode {
                 curLinkIn = getConnectorFromType(type).getCurLinkNbInput();
                 String typeName = EDesignerConnection.getConnection(type).getMenuName();
                 if (type == EConnectionType.FLOW_MAIN) {
-                    typeName = "Row";
+                    typeName = "Row"; //$NON-NLS-1$
                 }
 
                 if (nbMaxOut != -1) {
                     if (curLinkOut > nbMaxOut) {
-                        String errorMessage = "This component has too much \"" + typeName + "\" type outputs.";
+                        String errorMessage = "This component has too much \"" + typeName + "\" type outputs."; //$NON-NLS-1$ //$NON-NLS-2$
                         Problems.add(ProblemStatus.WARNING, this, errorMessage);
                     }
                 }
 
                 if (nbMaxIn != -1) {
                     if (curLinkIn > nbMaxIn) {
-                        String errorMessage = "This component has too much \"" + typeName + "\" type inputs.";
+                        String errorMessage = "This component has too much \"" + typeName + "\" type inputs."; //$NON-NLS-1$ //$NON-NLS-2$
                         Problems.add(ProblemStatus.WARNING, this, errorMessage);
                     }
                 }
 
                 if (nbMinOut != 0) {
                     if (curLinkOut < nbMinOut) {
-                        String errorMessage = "This component has not enough \"" + typeName + "\" type outputs.";
+                        String errorMessage = "This component has not enough \"" + typeName + "\" type outputs."; //$NON-NLS-1$ //$NON-NLS-2$
                         Problems.add(ProblemStatus.WARNING, this, errorMessage);
                     }
                 }
 
                 if (nbMinIn != 0) {
                     if (curLinkIn < nbMinIn) {
-                        String errorMessage = "This component has not enough \"" + typeName + "\" type inputs.";
+                        String errorMessage = "This component has not enough \"" + typeName + "\" type inputs."; //$NON-NLS-1$ //$NON-NLS-2$
                         Problems.add(ProblemStatus.WARNING, this, errorMessage);
                     }
                 }
@@ -981,7 +981,7 @@ public class Node extends Element implements INode {
             if (canEditSchema) {
                 if (getConnectorFromType(EConnectionType.FLOW_MAIN).getMaxLinkInput() == 0) {
                     if (metadataList.get(0).getListColumns().size() == 0) {
-                        String errorMessage = "No schema has been defined yet.";
+                        String errorMessage = "No schema has been defined yet."; //$NON-NLS-1$
                         Problems.add(ProblemStatus.ERROR, this, errorMessage);
                         noSchema = true;
                     }
@@ -990,7 +990,7 @@ public class Node extends Element implements INode {
                 if (getCurrentActiveLinksNbInput(EConnectionType.FLOW_MAIN) == 0) {
                     if ((getCurrentActiveLinksNbOutput(EConnectionType.FLOW_MAIN) > 0)
                             || (getCurrentActiveLinksNbOutput(EConnectionType.FLOW_REF) > 0)) {
-                        String errorMessage = "If this component has output, there must be an input link to propagate the data.";
+                        String errorMessage = "If this component has output, there must be an input link to propagate the data."; //$NON-NLS-1$
                         Problems.add(ProblemStatus.ERROR, this, errorMessage);
                     }
                 }
@@ -1003,8 +1003,8 @@ public class Node extends Element implements INode {
                 if (metadataList != null) {
                     for (IMetadataTable meta : metadataList) {
                         if (meta.getListColumns().size() == 0) {
-                            String errorMessage = "The output schema/link named \"" + meta.getTableName()
-                                    + "\" has no column defined, please check it.";
+                            String errorMessage = "The output schema/link named \"" + meta.getTableName() //$NON-NLS-1$
+                                    + "\" has no column defined, please check it."; //$NON-NLS-1$
                             Problems.add(ProblemStatus.ERROR, this, errorMessage);
                         }
                     }
@@ -1066,8 +1066,8 @@ public class Node extends Element implements INode {
                 }
 
                 if (!equal) {
-                    String errorMessage = "The schema in the input link \"" + inputMeta.getTableName()
-                            + "\" is different from the schema defined in the component.";
+                    String errorMessage = "The schema in the input link \"" + inputMeta.getTableName() //$NON-NLS-1$
+                            + "\" is different from the schema defined in the component."; //$NON-NLS-1$
                     Problems.add(ProblemStatus.ERROR, this, errorMessage);
                 }
             }
@@ -1167,7 +1167,7 @@ public class Node extends Element implements INode {
 
     @Override
     public String toString() {
-        return component.getTranslatedName() + "/" + getLabel();
+        return component.getTranslatedName() + "/" + getLabel(); //$NON-NLS-1$
     }
 
     /*
@@ -1177,14 +1177,14 @@ public class Node extends Element implements INode {
      * java.lang.String)
      */
     public void metadataInputChanged(IODataComponent dataComponent, String connectionToApply) {
-        log.trace("InputChanged : Node=" + this + ", IOData=[" + dataComponent + "] on " + connectionToApply);
+        log.trace("InputChanged : Node=" + this + ", IOData=[" + dataComponent + "] on " + connectionToApply); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         if (externalNode != null) {
             externalNode.metadataInputChanged(dataComponent, connectionToApply);
         }
     }
 
     public void metadataOutputChanged(IODataComponent dataComponent, String connectionToApply) {
-        log.trace("OutputChanged : Node=" + this + ", IOData=[" + dataComponent + "] on " + connectionToApply);
+        log.trace("OutputChanged : Node=" + this + ", IOData=[" + dataComponent + "] on " + connectionToApply); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         if (externalNode != null) {
             externalNode.metadataOutputChanged(dataComponent, connectionToApply);
         }

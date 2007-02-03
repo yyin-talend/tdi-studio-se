@@ -34,6 +34,7 @@ import org.eclipse.ui.PlatformUI;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.EParameterFieldType;
+import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.ElementParameter;
 import org.talend.designer.core.ui.MultiPageTalendEditor;
@@ -65,17 +66,17 @@ public class NodesPasteCommand extends Command {
     public NodesPasteCommand(List<NodePart> nodeParts, Process process) {
         this.process = process;
         this.nodeParts = nodeParts;
-        setLabel("Paste");
+        setLabel(Messages.getString("NodesPasteCommand.label")); //$NON-NLS-1$
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked") //$NON-NLS-1$
     private String createNewConnectionName(String oldName) {
         String newName = new String(oldName);
 
         for (Node node : (List<Node>) process.getGraphicalNodes()) {
             for (Connection connection : (List<Connection>) node.getOutgoingConnections()) {
                 if (connection.getName().equals(newName)) {
-                    newName = createNewConnectionName("copyOf" + newName);
+                    newName = createNewConnectionName("copyOf" + newName); //$NON-NLS-1$
                 }
             }
         }
@@ -90,7 +91,7 @@ public class NodesPasteCommand extends Command {
      * @param location
      * @return
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked") //$NON-NLS-1$
     private Point findLocationForNode(final Point location) {
         Point newLocation = new Point(location);
         for (Node node : (List<Node>) process.getGraphicalNodes()) {
@@ -103,7 +104,7 @@ public class NodesPasteCommand extends Command {
         return newLocation;
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked") //$NON-NLS-1$
     private void createNodeContainerList() {
         nodeContainerList = new ArrayList<NodeContainer>();
         Map<String, String> oldNameTonewNameMap = new HashMap<String, String>();
@@ -215,7 +216,7 @@ public class NodesPasteCommand extends Command {
         }
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked") //$NON-NLS-1$
     @Override
     public void execute() {
         // create the node container list to paste
@@ -253,7 +254,7 @@ public class NodesPasteCommand extends Command {
         process.checkProcess();
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked") //$NON-NLS-1$
     @Override
     public void undo() {
         // remove the current selection

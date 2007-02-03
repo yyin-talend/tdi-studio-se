@@ -39,9 +39,9 @@ public class NodeLabel extends Element {
 
     public static final String LOCATION = "nodeLabelLocation"; //$NON-NLS-1$
 
-    public static final String OFFSET_CHANGE = "offsetChange";
+    public static final String OFFSET_CHANGE = "offsetChange"; //$NON-NLS-1$
 
-    public static final String TEXT_CHANGE = "textChange";
+    public static final String TEXT_CHANGE = "textChange"; //$NON-NLS-1$
 
     private static final long serialVersionUID = 1L;
 

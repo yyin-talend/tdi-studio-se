@@ -202,7 +202,7 @@ public class PropertiesTableEditorView<B> extends AbstractDataTableEditorView<B>
                 case CHECK:
                     column.setTableEditorContent(new CheckboxTableEditorContent(param.isRepositoryValueUsed()
                             || param.isReadOnly()));
-                    column.setDisplayedValue("");
+                    column.setDisplayedValue(""); //$NON-NLS-1$
                     break;
                 default: // TEXT
                     TextCellEditorWithProposal textCellEditor = new TextCellEditorWithProposal(table, column);
@@ -221,7 +221,7 @@ public class PropertiesTableEditorView<B> extends AbstractDataTableEditorView<B>
                     public Object get(B bean) {
                         Object value = ((Map<String, Object>) bean).get(items[curCol]);
                         if (value == null) {
-                            return "";
+                            return ""; //$NON-NLS-1$
                         }
                         if (itemsValue[curCol] instanceof IElementParameter) {
                             IElementParameter tmpParam = (IElementParameter) itemsValue[curCol];

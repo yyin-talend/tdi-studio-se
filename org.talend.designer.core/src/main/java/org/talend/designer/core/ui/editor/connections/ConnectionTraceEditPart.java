@@ -121,7 +121,7 @@ public class ConnectionTraceEditPart extends AbstractGraphicalEditPart implement
         String connectionName = ((Connection) connectionPart.getModel()).getConnectionLabel().getLabelText();
         Point offset = ((Connection) connectionPart.getModel()).getConnectionLabel().getOffset();
 
-        ConnectionTraceConstraint constraint = new ConnectionTraceConstraint(connectionName, size, "center", offset,
+        ConnectionTraceConstraint constraint = new ConnectionTraceConstraint(connectionName, size, "center", offset, //$NON-NLS-1$
                 (PolylineConnection) connectionPart.getFigure());
 
         connectionPart.setLayoutConstraint(this, getFigure(), constraint);

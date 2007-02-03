@@ -98,7 +98,7 @@ public class ImageController extends AbstractElementPropertySectionController {
 
             });
 
-            CLabel labelLabel = getWidgetFactory().createCLabel(subComposite, param.getDisplayName() + " :");
+            CLabel labelLabel = getWidgetFactory().createCLabel(subComposite, param.getDisplayName() + " :"); //$NON-NLS-1$
             FormData formDataLabel = new FormData();
             labelLabel.setVisible(true);
             if (numInRow != 1) {

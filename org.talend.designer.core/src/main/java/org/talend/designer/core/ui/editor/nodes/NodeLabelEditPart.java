@@ -230,7 +230,7 @@ public class NodeLabelEditPart extends AbstractGraphicalEditPart implements Prop
      * 
      * @see org.eclipse.gef.editparts.AbstractEditPart#setSelected(int)
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked") //$NON-NLS-1$
     public void setSelected(final int value) {
         if (value != SELECTED_NONE) {
             List<EditPart> listEditParts = (List<EditPart>) this.getViewer().getSelectedEditParts();

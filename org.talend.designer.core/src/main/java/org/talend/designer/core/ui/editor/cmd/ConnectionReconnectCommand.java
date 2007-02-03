@@ -244,7 +244,7 @@ public class ConnectionReconnectCommand extends Command {
                 boolean builtInNewSource = newSource.getConnectorFromType(EConnectionType.FLOW_MAIN).isBuiltIn();
                 boolean builtInOldSource = oldSource.getConnectorFromType(EConnectionType.FLOW_MAIN).isBuiltIn();
                 if ((!builtInNewSource) && (!builtInOldSource)) {
-                    oldSource.getMetadataList().get(0).setDescription("");
+                    oldSource.getMetadataList().get(0).setDescription(""); //$NON-NLS-1$
                     oldSource.getMetadataList().get(0).setListColumns(new ArrayList<IMetadataColumn>());
                     newSource.getMetadataList().get(0).setDescription(oldMetadataTable.getDescription());
                     newSource.getMetadataList().get(0).setListColumns(oldMetadataTable.getListColumns());
@@ -264,7 +264,7 @@ public class ConnectionReconnectCommand extends Command {
                         connection.setMetaName(newSource.getUniqueName());
                     }
                     if (!builtInOldSource) {
-                        oldSource.getMetadataList().get(0).setDescription("");
+                        oldSource.getMetadataList().get(0).setDescription(""); //$NON-NLS-1$
                         oldSource.getMetadataList().get(0).setListColumns(new ArrayList<IMetadataColumn>());
                         IMetadataTable meta = oldMetadataTable.clone();
                         meta.setTableName(connection.getName());
@@ -325,14 +325,14 @@ public class ConnectionReconnectCommand extends Command {
                 boolean builtInNewSource = newSource.getConnectorFromType(EConnectionType.FLOW_MAIN).isBuiltIn();
                 boolean builtInOldSource = oldSource.getConnectorFromType(EConnectionType.FLOW_MAIN).isBuiltIn();
                 if ((!builtInNewSource) && (!builtInOldSource)) {
-                    newSource.getMetadataList().get(0).setDescription("");
+                    newSource.getMetadataList().get(0).setDescription(""); //$NON-NLS-1$
                     newSource.getMetadataList().get(0).setListColumns(new ArrayList<IMetadataColumn>());
                     oldSource.getMetadataList().get(0).setDescription(oldMetadataTable.getDescription());
                     oldSource.getMetadataList().get(0).setListColumns(oldMetadataTable.getListColumns());
                     connection.setMetaName(oldSource.getUniqueName());
                 } else {
                     if (!builtInNewSource) {
-                        newSource.getMetadataList().get(0).setDescription("");
+                        newSource.getMetadataList().get(0).setDescription(""); //$NON-NLS-1$
                         newSource.getMetadataList().get(0).setListColumns(new ArrayList<IMetadataColumn>());
                         oldSource.getMetadataList().add(oldMetadataTable);
                         connection.setMetaName(oldMetadataTable.getTableName());

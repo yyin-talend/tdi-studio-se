@@ -55,9 +55,9 @@ public class Problems {
 
     private static IProcess currentProcess = null;
 
-    private static String currentTitle = "";
+    private static String currentTitle = ""; //$NON-NLS-1$
 
-    private static String newTitle = "";
+    private static String newTitle = ""; //$NON-NLS-1$
 
     public static void clearAll() {
         for (List<Problem> problemList : currentProblems.values()) {
@@ -196,7 +196,7 @@ public class Problems {
      */
     public static void switchToCurProblemView() {
         IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-        IViewPart view = page.findView("org.talend.designer.core.ui.views.ProblemsView");
+        IViewPart view = page.findView("org.talend.designer.core.ui.views.ProblemsView"); //$NON-NLS-1$
         if (view instanceof ProblemsView) {
             ProblemsView problemsView = (ProblemsView) view;
             if (problemsView == null) {
@@ -212,7 +212,7 @@ public class Problems {
 
     public static void refreshView() {
         IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-        IViewPart view = page.findView("org.talend.designer.core.ui.views.ProblemsView");
+        IViewPart view = page.findView("org.talend.designer.core.ui.views.ProblemsView"); //$NON-NLS-1$
         if (view instanceof ProblemsView) {
             ProblemsView problemsView = (ProblemsView) view;
             refreshView(problemsView);

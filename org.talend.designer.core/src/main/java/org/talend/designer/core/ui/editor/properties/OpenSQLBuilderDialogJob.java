@@ -67,7 +67,7 @@ public class OpenSQLBuilderDialogJob extends Job {
 	 */
 	public OpenSQLBuilderDialogJob(ConnectionParameters connectionParameters, Composite composite
 			, Element elem, String propertyName, CommandStack commandStack) {
-		super("Open SQLBuilder Dialog");
+		super(Messages.getString("OpenSQLBuilderDialogJob.openSqlbuilderDialog")); //$NON-NLS-1$
 		this.connectionParameters = connectionParameters;
 		
 		this.composite = composite;
@@ -80,7 +80,7 @@ public class OpenSQLBuilderDialogJob extends Job {
 	 * DOC dev OpenDialogJob constructor comment.
 	 */
 	public OpenSQLBuilderDialogJob(ConnectionParameters connectionParameters) {
-		super("Open SQLBuilder Dialog");
+		super(Messages.getString("OpenSQLBuilderDialogJob.openSqlbuilderDialog")); //$NON-NLS-1$
 		this.connectionParameters = connectionParameters;
 	}
 	/* (non-Javadoc)
@@ -102,7 +102,7 @@ public class OpenSQLBuilderDialogJob extends Job {
 	                    	if (!composite.isDisposed()) {
 	                    		  String sql = connectionParameters.getQuery();
 	                              Command cmd = new PropertyChangeCommand(elem, propertyName,
-	                                      "'" + sql + "'");
+	                                      "'" + sql + "'"); //$NON-NLS-1$ //$NON-NLS-2$
 	                              commandStack.execute(cmd);
 	                    	}
 	                    }
@@ -113,7 +113,7 @@ public class OpenSQLBuilderDialogJob extends Job {
 				Display.getDefault().asyncExec(new Runnable() {
 					public void run() {
 						String pid = SqlBuilderPlugin.PLUGIN_ID;
-		            	String mainMsg = Messages.getString("ConnectionError.Message");
+		            	String mainMsg = Messages.getString("ConnectionError.Message"); //$NON-NLS-1$
 		            	new ErrorDialogWidthDetailArea(composite.getShell(), pid, mainMsg, connectionParameters.getConnectionComment());
 					}
 				});
@@ -121,11 +121,11 @@ public class OpenSQLBuilderDialogJob extends Job {
 			}
 		} catch (InterruptedException ie) {
 			loginProgress.cleanUp();
-            return new Status(IStatus.CANCEL, id, IStatus.CANCEL, "Progress.OpenSqlBuilderDialog.Cancelled", null);
+            return new Status(IStatus.CANCEL, id, IStatus.CANCEL, "Progress.OpenSqlBuilderDialog.Cancelled", null); //$NON-NLS-1$
 		} catch (Exception e) {
 			loginProgress.cleanUp();
-            return new Status(IStatus.ERROR, id, IStatus.CANCEL, "Progress.OpenSqlBuilderDialog.Error", e);
+            return new Status(IStatus.ERROR, id, IStatus.CANCEL, "Progress.OpenSqlBuilderDialog.Error", e); //$NON-NLS-1$
 		}
-		return new Status(IStatus.OK, id, IStatus.OK, "tested ok ", null);
+		return new Status(IStatus.OK, id, IStatus.OK, "tested ok ", null); //$NON-NLS-1$
 	}
 }

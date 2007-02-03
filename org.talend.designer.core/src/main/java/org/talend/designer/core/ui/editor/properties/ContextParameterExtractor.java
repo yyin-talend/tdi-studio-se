@@ -95,7 +95,7 @@ public final class ContextParameterExtractor {
     }
 
     private static IContextParameter buildParameterFrom(final Control text, final IContextManager manager) {
-        String nameProposal = "";
+        String nameProposal = ""; //$NON-NLS-1$
         if (text instanceof Text) {
             nameProposal = ((Text) text).getSelectionText();
             if (nameProposal.length() == 0) {
@@ -114,10 +114,10 @@ public final class ContextParameterExtractor {
         if (manager.checkValidParameterName(nameProposal)) {
             parameter.setName(nameProposal);
         } else {
-            parameter.setName("");
+            parameter.setName(""); //$NON-NLS-1$
         }
         parameter.setType(EMetadataType.STRING);
-        parameter.setPrompt(nameProposal + "?");
+        parameter.setPrompt(nameProposal + "?"); //$NON-NLS-1$
         parameter.setValue(nameProposal);
         return parameter;
     }

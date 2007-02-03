@@ -192,7 +192,7 @@ public class ContextParameterPage extends WizardPage {
                             .getString("ContextParameterPage.nameExists"), null); //$NON-NLS-1$
                 } else if (!contextManager.checkValidParameterName(nameText.getText())) {
                     nameStatus = new Status(IStatus.ERROR, DesignerPlugin.ID, IStatus.OK,
-                            "Parameter name is not valid.", null);
+                            "Parameter name is not valid.", null); //$NON-NLS-1$
                 } else {
                     nameStatus = createOkStatus();
                 }

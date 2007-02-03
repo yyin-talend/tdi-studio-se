@@ -28,6 +28,7 @@ import org.eclipse.gef.ui.actions.SelectionAction;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.actions.ActionFactory;
+import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.editor.TalendEditor;
 import org.talend.designer.core.ui.editor.cmd.NodesPasteCommand;
 import org.talend.designer.core.ui.editor.nodes.NodePart;
@@ -48,7 +49,7 @@ public class NodesPasteAction extends SelectionAction {
     public NodesPasteAction(IWorkbenchPart part) {
         super(part);
         setId(ActionFactory.PASTE.getId());
-        setText("Paste");
+        setText(Messages.getString("NodesPasteAction.paste")); //$NON-NLS-1$
         ISharedImages sharedImages = part.getSite().getWorkbenchWindow().getWorkbench().getSharedImages();
         setImageDescriptor(sharedImages.getImageDescriptor(ISharedImages.IMG_TOOL_PASTE));
         setDisabledImageDescriptor(sharedImages.getImageDescriptor(ISharedImages.IMG_TOOL_PASTE_DISABLED));
@@ -77,7 +78,7 @@ public class NodesPasteAction extends SelectionAction {
         return true;
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked") //$NON-NLS-1$
     public void run() {
         List<NodePart> nodeParts = (List<NodePart>) Clipboard.getDefault().getContents();
         TalendEditor editor = (TalendEditor) this.getWorkbenchPart();

@@ -148,7 +148,7 @@ public class ConnLabelEditPart extends AbstractGraphicalEditPart implements Prop
         figure.setText(text);
         ConnectionPart parent = (ConnectionPart) getParent();
         PolylineConnection connFigure = (PolylineConnection) parent.getFigure();
-        ConnLabelConstraint constraint = new ConnLabelConstraint(text, "center", offset, connFigure);
+        ConnLabelConstraint constraint = new ConnLabelConstraint(text, "center", offset, connFigure); //$NON-NLS-1$
         parent.setLayoutConstraint(this, getFigure(), constraint);
     }
 

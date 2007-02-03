@@ -45,6 +45,7 @@ import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.ui.metadata.dialog.MetadataDialog;
+import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.editor.cmd.ChangeMetadataCommand;
 import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.nodes.Node;
@@ -130,7 +131,7 @@ public class SchemaController extends AbstractElementPropertySectionController {
                 metaDialog = new MetadataDialog(composite.getShell(), outputMetaCopy, node.getUniqueName(),
                         getCommandStack());
             }
-            metaDialog.setText("Schema of " + node.getLabel());
+            metaDialog.setText(Messages.getString("SchemaController.schemaOf") + node.getLabel()); //$NON-NLS-1$
             metaDialog.setInputReadOnly(inputReadOnly);
             metaDialog.setOutputReadOnly(outputReadOnly);
 
@@ -214,8 +215,8 @@ public class SchemaController extends AbstractElementPropertySectionController {
                 }
             }
             if (flowMainInput) {
-                resetBtn = getWidgetFactory().createButton(subComposite, "Sync columns", SWT.PUSH);
-                resetBtn.setToolTipText("This will take automatically the columns of the previous component");
+                resetBtn = getWidgetFactory().createButton(subComposite, Messages.getString("SchemaController.syncColumns"), SWT.PUSH); //$NON-NLS-1$
+                resetBtn.setToolTipText(Messages.getString("SchemaController.resetButton.tooltip")); //$NON-NLS-1$
 
                 Point resetBtnSize = resetBtn.computeSize(SWT.DEFAULT, SWT.DEFAULT);
 
@@ -238,7 +239,7 @@ public class SchemaController extends AbstractElementPropertySectionController {
             }
         }
 
-        CLabel labelLabel = getWidgetFactory().createCLabel(subComposite, "Edit schema");
+        CLabel labelLabel = getWidgetFactory().createCLabel(subComposite, Messages.getString("SchemaController.editSchema")); //$NON-NLS-1$
         data = new FormData();
         data.left = new FormAttachment(lastControl, 0);
         data.right = new FormAttachment(lastControl, labelLabel.computeSize(SWT.DEFAULT, SWT.DEFAULT).x
@@ -289,7 +290,7 @@ public class SchemaController extends AbstractElementPropertySectionController {
             if (e.getSource() != null && e.getSource() instanceof Button) {
                 inputButton = (Button) e.getSource();
             } else {
-                throw new RuntimeException("Unexpected exception.");
+                throw new RuntimeException("Unexpected exception."); //$NON-NLS-1$
             }
             Command cmd = createCommand();
             if (cmd != null) {

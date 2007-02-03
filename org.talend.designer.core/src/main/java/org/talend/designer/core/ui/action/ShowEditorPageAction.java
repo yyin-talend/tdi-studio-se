@@ -38,7 +38,7 @@ public class ShowEditorPageAction extends Action {
 
     public ShowEditorPageAction() {
         super();
-        this.setActionDefinitionId("showEditorCodePage");
+        this.setActionDefinitionId("showEditorCodePage"); //$NON-NLS-1$
     }
 
     @Override

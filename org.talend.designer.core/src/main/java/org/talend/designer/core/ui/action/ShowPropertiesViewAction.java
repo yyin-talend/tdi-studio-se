@@ -33,12 +33,12 @@ public class ShowPropertiesViewAction extends AbstractShowViewAction {
 
     @Override
     public String getDefinitionId() {
-        return "showPropertiesView";
+        return "showPropertiesView"; //$NON-NLS-1$
     }
 
     @Override
     public String getViewId() {
-        return "org.eclipse.ui.views.PropertySheet";
+        return "org.eclipse.ui.views.PropertySheet"; //$NON-NLS-1$
     }
 
 }

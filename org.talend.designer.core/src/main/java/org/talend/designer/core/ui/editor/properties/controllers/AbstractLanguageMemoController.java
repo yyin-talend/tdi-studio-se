@@ -93,7 +93,7 @@ public abstract class AbstractLanguageMemoController extends AbstractElementProp
             public Control createControl(final Composite parent, final int style) {
                 ColorManager colorManager = new ColorManager(CorePlugin.getDefault().getPreferenceStore());
                 ColorStyledText colorText = new ColorStyledText(parent, style, colorManager, language);
-                Font font = new Font(parent.getDisplay(), "courier", 8, SWT.NONE);
+                Font font = new Font(parent.getDisplay(), "courier", 8, SWT.NONE); //$NON-NLS-1$
                 colorText.setFont(font);
                 return colorText;
             }

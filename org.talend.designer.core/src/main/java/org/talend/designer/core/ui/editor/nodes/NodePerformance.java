@@ -44,7 +44,7 @@ public class NodePerformance extends Element {
 
     private NodeContainer nodeContainer;
 
-    private String label = "";
+    private String label = ""; //$NON-NLS-1$
 
     private Dimension size = new Dimension();
 
@@ -67,8 +67,8 @@ public class NodePerformance extends Element {
         IPerformanceData perf = service.createPerformanceData(data);
 
         if (IPerformanceData.ACTION_PERF.equals(perf.getAction())) {
-            final String perfPattern = "<font color=''#4477BB''>" + "{0, number,#} rows - {1,number,#.##}s<br>"
-                    + "<b>{2,number,#.##} rows/s</b>" + "</font>";
+            final String perfPattern = "<font color=''#4477BB''>" + "{0, number,#} rows - {1,number,#.##}s<br>" //$NON-NLS-1$ //$NON-NLS-2$
+                    + "<b>{2,number,#.##} rows/s</b>" + "</font>"; //$NON-NLS-1$ //$NON-NLS-2$
             long lineCount = perf.getLineCount();
             long processingTime = perf.getProcessingTime();
             double avg = processingTime > 0 ? (double) lineCount * 1000d / (double) processingTime : 0d;
@@ -76,11 +76,11 @@ public class NodePerformance extends Element {
             html.append(mf.format(new Object[] { new Long(lineCount), new Double((double) processingTime / 1000d),
                     new Double(avg) }));
         } else if (IPerformanceData.ACTION_START.equals(perf.getAction())) {
-            final String perfPattern = "<font color='#AA3322'>" + "<i>Starting</i>" + "</font>";
+            final String perfPattern = "<font color='#AA3322'>" + "<i>Starting</i>" + "</font>"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
             html.append(perfPattern);
         } else if (IPerformanceData.ACTION_STOP.equals(perf.getAction())) {
-            final String perfPattern = "<font color=''#229922''>" + "{0, number,#} rows in {1,number,#.##}s<br>"
-                    + "<i>{2,number,#.##} rows/s</i>" + "</font>";
+            final String perfPattern = "<font color=''#229922''>" + "{0, number,#} rows in {1,number,#.##}s<br>" //$NON-NLS-1$ //$NON-NLS-2$
+                    + "<i>{2,number,#.##} rows/s</i>" + "</font>"; //$NON-NLS-1$ //$NON-NLS-2$
             long lineCount = perf.getLineCount();
             long processingTime = perf.getProcessingTime();
             double avg = processingTime > 0 ? (double) lineCount * 1000d / (double) processingTime : 0d;

@@ -131,7 +131,7 @@ public class Process extends Element implements IProcess {
     // properties
     public static final String NODES = "nodes"; //$NON-NLS-1$
 
-    public static final String DEFAULT_CONNECTION_NAME = "row";
+    public static final String DEFAULT_CONNECTION_NAME = Messages.getString("Process.1"); //$NON-NLS-1$
 
     protected List<Node> nodes = new ArrayList<Node>();
 
@@ -193,7 +193,7 @@ public class Process extends Element implements IProcess {
             setAuthor(property.getAuthor());
             setStatusCode(property.getStatusCode());
             if (getStatusCode() == null) {
-                setStatusCode("");
+                setStatusCode(""); //$NON-NLS-1$
             }
             initDone = true;
         }
@@ -493,7 +493,7 @@ public class Process extends Element implements IProcess {
                 for (Object tableObj : connection.getTables()) {
                     MetadataTable table = (MetadataTable) tableObj;
                     if (!factory.isDeleted(table)) {
-                        String name = connectionItem.getProperty().getId() + " - " + table.getLabel();
+                        String name = connectionItem.getProperty().getId() + " - " + table.getLabel(); //$NON-NLS-1$
                         if (name.equals(metaRepositoryName)) {
                             metaToReturn = ConvertionHelper.convert(table);
                         }
@@ -505,7 +505,7 @@ public class Process extends Element implements IProcess {
         return metaToReturn;
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked") //$NON-NLS-1$
     private void saveElementParameters(TalendFileFactory fileFact, List<? extends IElementParameter> paramList,
             EList listParamType, ProcessType process) {
         IElementParameter param;
@@ -522,14 +522,14 @@ public class Process extends Element implements IProcess {
                 }
                 JobType jType = fileFact.createJobType();
                 String jobName;
-                jobName = ((String) param.getValue()).replace("'", "");
+                jobName = ((String) param.getValue()).replace("'", ""); //$NON-NLS-1$ //$NON-NLS-2$
                 jType.setName(jobName);
-                String contextName = "";
+                String contextName = ""; //$NON-NLS-1$
                 boolean found = false;
                 for (int i = 0; i < paramList.size() && !found; i++) {
                     IElementParameter contextParam = paramList.get(i);
                     if (contextParam.getName().equals(EParameterName.PROCESS_TYPE_CONTEXT.getName())) {
-                        contextName = ((String) contextParam.getValue()).replace("'", "");
+                        contextName = ((String) contextParam.getValue()).replace("'", ""); //$NON-NLS-1$ //$NON-NLS-2$
                         found = true;
                     }
                 }
@@ -549,11 +549,11 @@ public class Process extends Element implements IProcess {
                             ElementValueType elementValue = fileFact.createElementValueType();
                             elementValue.setElementRef(param.getListItemsDisplayCodeName()[i]);
                             Object o = currentLine.get(param.getListItemsDisplayCodeName()[i]);
-                            String strValue = "";
+                            String strValue = ""; //$NON-NLS-1$
                             if (o instanceof Integer) {
                                 IElementParameter tmpParam = (IElementParameter) param.getListItemsValue()[i];
                                 if (tmpParam.getListItemsValue().length == 0) {
-                                    strValue = "";
+                                    strValue = ""; //$NON-NLS-1$
                                 } else {
                                     strValue = (String) tmpParam.getListItemsValue()[(Integer) o];
                                 }
@@ -572,7 +572,7 @@ public class Process extends Element implements IProcess {
                     }
                 } else {
                     if (value == null) {
-                        pType.setValue("");
+                        pType.setValue(""); //$NON-NLS-1$
                     } else {
                         if (value instanceof Boolean) {
                             pType.setValue((String) ((Boolean) value).toString());
@@ -588,7 +588,7 @@ public class Process extends Element implements IProcess {
         }
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked") //$NON-NLS-1$
     private void loadElementParameters(Element elemParam, EList listParamType) {
         ElementParameterType pType;
 
@@ -751,7 +751,7 @@ public class Process extends Element implements IProcess {
         res.getContents().add(xmlDoc);
 
         HashMap options = new HashMap(1);
-        options.put(XMLResource.OPTION_ENCODING, "UTF-8");
+        options.put(XMLResource.OPTION_ENCODING, "UTF-8"); //$NON-NLS-1$
 
         res.save(options);
 
@@ -859,7 +859,7 @@ public class Process extends Element implements IProcess {
         }
 
         if (!uploadedNodeNames.isEmpty()) {
-            throw new PersistenceException("There are some components unloaded");
+            throw new PersistenceException(Messages.getString("Process.componentsUnloaded")); //$NON-NLS-1$
         }
     }
 
@@ -874,9 +874,9 @@ public class Process extends Element implements IProcess {
         }
         StringBuilder sb = new StringBuilder();
         if (uploadedNodeNames.size() == 1) {
-            sb.append(Messages.getString("Process.component.notloaded"));
+            sb.append(Messages.getString("Process.component.notloaded")); //$NON-NLS-1$
         } else {
-            sb.append(Messages.getString("Process.components.notloaded"));
+            sb.append(Messages.getString("Process.components.notloaded")); //$NON-NLS-1$
         }
         PersistenceException ex = new PersistenceException(sb.toString());
         throw ex;
@@ -942,8 +942,8 @@ public class Process extends Element implements IProcess {
                                 MessageBox mBox = new MessageBox(shell, SWT.YES | SWT.NO | SWT.ICON_QUESTION);
                                 String message = "The metadata used in the component " + uniqueName
                                         + " has been modified.";
-                                message += "\nDo you want to upgrade it from the repository?";
-                                mBox.setText("Metadata modification detected");
+                                message += Messages.getString("Process.IfToUpgrade"); //$NON-NLS-1$
+                                mBox.setText(Messages.getString("Process.metadataModificationDetected")); //$NON-NLS-1$
                                 mBox.setMessage(message);
                                 int value = mBox.open();
                                 if (value == SWT.YES) {
@@ -966,7 +966,7 @@ public class Process extends Element implements IProcess {
                             MessageBox mBox = new MessageBox(shell);
                             String message = "The repository item used in the component " + node.getUniqueName()
                                     + " has not been found,";
-                            message += "\nthe schema will now change to Built-In";
+                            message += Messages.getString("Process.schemaChangeToBuilt-in"); //$NON-NLS-1$
                             mBox.setMessage(message);
                             mBox.open();
                             node.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), EmfComponent.BUILTIN);
@@ -983,7 +983,7 @@ public class Process extends Element implements IProcess {
 
     private void refreshPropertyView() {
         IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-        IViewPart view = page.findView("org.eclipse.ui.views.PropertySheet");
+        IViewPart view = page.findView("org.eclipse.ui.views.PropertySheet"); //$NON-NLS-1$
         PropertySheet sheet = (PropertySheet) view;
         TabbedPropertySheetPage tabbedPropertySheetPage = (TabbedPropertySheetPage) sheet.getCurrentPage();
         tabbedPropertySheetPage.refresh();
@@ -1012,7 +1012,7 @@ public class Process extends Element implements IProcess {
                 org.talend.core.model.metadata.builder.connection.Connection tmpRepositoryConnection = null;
                 if (metadataConnectionsItem != null) {
                     for (ConnectionItem connectionItem : metadataConnectionsItem) {
-                        String value = connectionItem.getProperty().getId() + "";
+                        String value = connectionItem.getProperty().getId() + ""; //$NON-NLS-1$
                         if (value.equals((String) node.getPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE
                                 .getName()))) {
                             tmpRepositoryConnection = (org.talend.core.model.metadata.builder.connection.Connection) connectionItem
@@ -1033,7 +1033,7 @@ public class Process extends Element implements IProcess {
 
                             if (objectValue != null) {
                                 if (param.getField().equals(EParameterFieldType.CLOSED_LIST)
-                                        && param.getRepositoryValue().equals("TYPE")) {
+                                        && param.getRepositoryValue().equals("TYPE")) { //$NON-NLS-1$
                                     boolean found = false;
                                     String[] list = param.getListRepositoryItems();
                                     for (int i = 0; (i < list.length) && (!found); i++) {
@@ -1060,9 +1060,9 @@ public class Process extends Element implements IProcess {
                             public void run() {
                                 String message = "The properties used in the component " + node.getUniqueName()
                                         + " has been modified.";
-                                message += "\nDo you want to upgrade it from the repository?";
+                                message += Messages.getString("Process.IfToUpgrade"); //$NON-NLS-1$
                                 MessageBox mBox = new MessageBox(shell, SWT.YES | SWT.NO | SWT.ICON_QUESTION);
-                                mBox.setText("Property modification detected");
+                                mBox.setText(Messages.getString("Process.propertyModificationDetected")); //$NON-NLS-1$
                                 mBox.setMessage(message);
                                 int value = mBox.open();
                                 if (value == SWT.YES) {
@@ -1075,7 +1075,7 @@ public class Process extends Element implements IProcess {
                                                     repositoryConnection, repositoryValue);
                                             if (objectValue != null) {
                                                 if (param.getField().equals(EParameterFieldType.CLOSED_LIST)
-                                                        && param.getRepositoryValue().equals("TYPE")) {
+                                                        && param.getRepositoryValue().equals("TYPE")) { //$NON-NLS-1$
                                                     boolean found = false;
                                                     String[] list = param.getListRepositoryItems();
                                                     for (int i = 0; (i < list.length) && (!found); i++) {
@@ -1124,7 +1124,7 @@ public class Process extends Element implements IProcess {
                             MessageBox mBox = new MessageBox(shell);
                             String message = "The repository item used in the component " + node.getUniqueName()
                                     + " has not been found,";
-                            message += "\nthe properties will now change to Built-In";
+                            message += Messages.getString("Process.propertyChangeToBuild-in"); //$NON-NLS-1$
                             mBox.setMessage(message);
                             mBox.open();
                             node.setPropertyValue(EParameterName.PROPERTY_TYPE.getName(), EmfComponent.BUILTIN);
@@ -1243,7 +1243,7 @@ public class Process extends Element implements IProcess {
         return readOnlyLocal;
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked") //$NON-NLS-1$
     public void setReadOnly(boolean readOnly) {
         this.readOnly = readOnly;
 
@@ -1424,7 +1424,7 @@ public class Process extends Element implements IProcess {
         switch (processLanguage) {
         case PERL:
             try {
-                pattern = compiler.compile("^[A-Za-z_][A-Za-z0-9_]*$");
+                pattern = compiler.compile("^[A-Za-z_][A-Za-z0-9_]*$"); //$NON-NLS-1$
                 if (!matcher.matches(connectionName, pattern)) {
                     return false;
                 }
@@ -1454,7 +1454,7 @@ public class Process extends Element implements IProcess {
      */
     public String generateUniqueConnectionName(String baseName) {
         if (baseName == null) {
-            throw new IllegalArgumentException("baseName can't be null");
+            throw new IllegalArgumentException("baseName can't be null"); //$NON-NLS-1$
         }
         String uniqueName = baseName + 1;
 
@@ -1475,7 +1475,7 @@ public class Process extends Element implements IProcess {
             if (checkValidConnectionName(uniqueConnectionName)) {
                 uniqueConnectionNameList.add(uniqueConnectionName);
             } else {
-                throw new IllegalArgumentException("The name of the connection is not valid: " + uniqueConnectionName);
+                throw new IllegalArgumentException("The name of the connection is not valid: " + uniqueConnectionName); //$NON-NLS-1$
             }
         }
     }
@@ -1489,9 +1489,9 @@ public class Process extends Element implements IProcess {
     public String generateUniqueNodeName(INode node) {
         String baseName = node.getComponent().getName();
         if (baseName == null) {
-            throw new IllegalArgumentException("Component name can't be null");
+            throw new IllegalArgumentException("Component name can't be null"); //$NON-NLS-1$
         }
-        String uniqueName = baseName + "_" + 1;
+        String uniqueName = baseName + "_" + 1; //$NON-NLS-1$
 
         int counter = 1;
         boolean exists = true;
@@ -1500,7 +1500,7 @@ public class Process extends Element implements IProcess {
             if (!exists) {
                 break;
             }
-            uniqueName = baseName + "_" + counter++;
+            uniqueName = baseName + "_" + counter++; //$NON-NLS-1$
         }
         return uniqueName;
     }
@@ -1518,12 +1518,12 @@ public class Process extends Element implements IProcess {
     }
 
     public void removeUniqueNodeName(final String uniqueName) {
-        if (!uniqueName.equals("")) {
+        if (!uniqueName.equals("")) { //$NON-NLS-1$
             uniqueNodeNameList.remove(uniqueName);
         }
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked") //$NON-NLS-1$
     private void setActivate(Node node, boolean active, Node activateNode) {
         Node mainSubProcess = node.getSubProcessStartNode(false);
 
@@ -1678,7 +1678,7 @@ public class Process extends Element implements IProcess {
     }
 
     public String toString() {
-        return "Process:" + getLabel();
+        return "Process:" + getLabel(); //$NON-NLS-1$
     }
 
     public ERepositoryObjectType getType() {

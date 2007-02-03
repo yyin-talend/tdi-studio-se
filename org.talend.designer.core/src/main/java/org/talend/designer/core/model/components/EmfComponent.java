@@ -100,11 +100,11 @@ public class EmfComponent implements IComponent {
 
     public static final String REPOSITORY = "REPOSITORY"; //$NON-NLS-1$
 
-    private static final String TEXT_BUILTIN = "Built-In";
+    private static final String TEXT_BUILTIN = "Built-In"; //$NON-NLS-1$
 
-    private static final String TEXT_REPOSITORY = "Repository";
+    private static final String TEXT_REPOSITORY = "Repository"; //$NON-NLS-1$
 
-    private static final String TSTATCATCHER_NAME = "tStatCatcher";
+    private static final String TSTATCATCHER_NAME = "tStatCatcher"; //$NON-NLS-1$
 
     private IMultipleComponentManager multipleComponentManager;
 
@@ -158,7 +158,7 @@ public class EmfComponent implements IComponent {
                 isLoaded = true;
             } catch (Exception e) {
                 isLoaded = false;
-                throw new BusinessException("Cannot load component " + file.getName(), e);
+                throw new BusinessException("Cannot load component " + file.getName(), e); //$NON-NLS-1$
             }
         }
     }
@@ -183,28 +183,28 @@ public class EmfComponent implements IComponent {
         listReturn = new ArrayList<NodeReturn>();
         // ****************** add standard returns ******************
         nodeRet = new NodeReturn();
-        nodeRet.setAvailability("AFTER");
-        nodeRet.setVarName("ERROR_MESSAGE", codeLanguage);
-        nodeRet.setDisplayName("Error Message");
-        nodeRet.setName("ERROR_MESSAGE");
-        nodeRet.setType(EMetadataType.getTypeByName("STRING"));
+        nodeRet.setAvailability("AFTER"); //$NON-NLS-1$
+        nodeRet.setVarName("ERROR_MESSAGE", codeLanguage); //$NON-NLS-1$
+        nodeRet.setDisplayName("Error Message"); //$NON-NLS-1$
+        nodeRet.setName("ERROR_MESSAGE"); //$NON-NLS-1$
+        nodeRet.setType(EMetadataType.getTypeByName("STRING")); //$NON-NLS-1$
         listReturn.add(nodeRet);
 
         if (codeLanguage.equals(ECodeLanguage.PERL)) {
             nodeRet = new NodeReturn();
-            nodeRet.setAvailability("AFTER");
-            nodeRet.setVarName("PERL_ERROR_MESSAGE", codeLanguage);
-            nodeRet.setDisplayName("Perl Error Message");
-            nodeRet.setName("PERL_ERROR_MESSAGE");
-            nodeRet.setType(EMetadataType.getTypeByName("STRING"));
+            nodeRet.setAvailability("AFTER"); //$NON-NLS-1$
+            nodeRet.setVarName("PERL_ERROR_MESSAGE", codeLanguage); //$NON-NLS-1$
+            nodeRet.setDisplayName("Perl Error Message"); //$NON-NLS-1$
+            nodeRet.setName("PERL_ERROR_MESSAGE"); //$NON-NLS-1$
+            nodeRet.setType(EMetadataType.getTypeByName("STRING")); //$NON-NLS-1$
             listReturn.add(nodeRet);
 
             nodeRet = new NodeReturn();
-            nodeRet.setAvailability("AFTER");
-            nodeRet.setVarName("PERL_ERROR_CODE", codeLanguage);
-            nodeRet.setDisplayName("Perl Error Code");
-            nodeRet.setName("PERL_ERROR_CODE");
-            nodeRet.setType(EMetadataType.getTypeByName("STRING"));
+            nodeRet.setAvailability("AFTER"); //$NON-NLS-1$
+            nodeRet.setVarName("PERL_ERROR_CODE", codeLanguage); //$NON-NLS-1$
+            nodeRet.setDisplayName("Perl Error Code"); //$NON-NLS-1$
+            nodeRet.setName("PERL_ERROR_CODE"); //$NON-NLS-1$
+            nodeRet.setType(EMetadataType.getTypeByName("STRING")); //$NON-NLS-1$
             listReturn.add(nodeRet);
         }
         // ****************** end of standard returns ******************
@@ -215,7 +215,7 @@ public class EmfComponent implements IComponent {
             nodeRet = new NodeReturn();
             nodeRet.setAvailability(retType.getAVAILABILITY());
             nodeRet.setVarName(retType.getNAME(), codeLanguage);
-            nodeRet.setDisplayName(getTranslatedValue(retType.getNAME() + "." + PROP_NAME));
+            nodeRet.setDisplayName(getTranslatedValue(retType.getNAME() + "." + PROP_NAME)); //$NON-NLS-1$
             nodeRet.setName(retType.getNAME());
             nodeRet.setType(EMetadataType.getTypeByName(retType.getTYPE()));
             listReturn.add(nodeRet);
@@ -283,7 +283,7 @@ public class EmfComponent implements IComponent {
 
         param = new ElementParameter(node);
         param.setName(EParameterName.UNIQUE_NAME.getName());
-        param.setValue("");
+        param.setValue(""); //$NON-NLS-1$
         param.setDisplayName(EParameterName.UNIQUE_NAME.getDisplayName());
         param.setField(EParameterFieldType.TEXT);
         param.setCategory(EComponentCategory.MAIN);
@@ -470,7 +470,7 @@ public class EmfComponent implements IComponent {
             newParam.setListItemsValue(new String[] {});
             newParam.setNumRow(xmlParam.getNUMROW());
             newParam.setField(EParameterFieldType.CLOSED_LIST);
-            newParam.setValue("");
+            newParam.setValue(""); //$NON-NLS-1$
             newParam.setShow(false);
             newParam.setRequired(true);
             listParam.add(newParam);
@@ -501,7 +501,7 @@ public class EmfComponent implements IComponent {
             newParam.setListItemsValue(new String[] {});
             newParam.setNumRow(xmlParam.getNUMROW());
             newParam.setField(EParameterFieldType.CLOSED_LIST);
-            newParam.setValue("");
+            newParam.setValue(""); //$NON-NLS-1$
             newParam.setShow(false);
             newParam.setRequired(true);
             newParam.setShowIf(xmlParam.getSHOWIF());
@@ -534,7 +534,7 @@ public class EmfComponent implements IComponent {
             newParam.setListItemsValue(new String[] {});
             newParam.setNumRow(xmlParam.getNUMROW());
             newParam.setField(EParameterFieldType.CLOSED_LIST);
-            newParam.setValue("");
+            newParam.setValue(""); //$NON-NLS-1$
             newParam.setShow(false);
             newParam.setRequired(true);
             newParam.setShowIf(xmlParam.getSHOWIF());
@@ -549,7 +549,7 @@ public class EmfComponent implements IComponent {
             newParam.setDisplayName(EParameterName.PROCESS_TYPE_PROCESS.getDisplayName());
             newParam.setListItemsDisplayName(new String[] {});
             newParam.setListItemsValue(new String[] {});
-            newParam.setValue("NO_PROCESS");
+            newParam.setValue("NO_PROCESS"); //$NON-NLS-1$
             newParam.setNumRow(xmlParam.getNUMROW());
             newParam.setField(EParameterFieldType.CLOSED_LIST);
             if (xmlParam.isSetSHOW()) {
@@ -566,7 +566,7 @@ public class EmfComponent implements IComponent {
             newParam.setListItemsValue(new String[] {});
             newParam.setNumRow(xmlParam.getNUMROW());
             newParam.setField(EParameterFieldType.CLOSED_LIST);
-            newParam.setValue("");
+            newParam.setValue(""); //$NON-NLS-1$
             if (xmlParam.isSetSHOW()) {
                 newParam.setShow(xmlParam.isSHOW());
             }
@@ -575,7 +575,7 @@ public class EmfComponent implements IComponent {
         }
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked") //$NON-NLS-1$
     private void addPropertyParameters(final List<ElementParameter> listParam, final INode node) {
         EList listXmlParam;
         PARAMETERType xmlParam;
@@ -589,7 +589,7 @@ public class EmfComponent implements IComponent {
 
             param = new ElementParameter(node);
             param.setName(xmlParam.getNAME());
-            param.setDisplayName(getTranslatedValue(xmlParam.getNAME() + "." + PROP_NAME));
+            param.setDisplayName(getTranslatedValue(xmlParam.getNAME() + "." + PROP_NAME)); //$NON-NLS-1$
             param.setField(type);
             param.setNumRow(xmlParam.getNUMROW());
             if (xmlParam.isSetREADONLY()) {
@@ -625,9 +625,9 @@ public class EmfComponent implements IComponent {
                 break;
             case PROCESS_TYPE:
                 param.setDisplayName(EParameterName.PROCESS_TYPE.getDisplayName());
-                param.setValue(""); // TODO to change ?
+                param.setValue(""); // TODO to change ? //$NON-NLS-1$
             default:
-                param.setValue("");
+                param.setValue(""); //$NON-NLS-1$
             }
 
             if (!param.getField().equals(EParameterFieldType.TABLE) && !param.getField().equals(EParameterFieldType.CLOSED_LIST)) {
@@ -735,17 +735,17 @@ public class EmfComponent implements IComponent {
             int currentItem = k;
             if (param.isBasedOnSchema()) {
                 if (k == 0) {
-                    listItemsDisplayCodeValue[k] = "SCHEMA_COLUMN";
-                    listItemsDisplayValue[k] = "Column";
-                    listField[k] = "";
-                    listRepositoryItem[k] = "";
+                    listItemsDisplayCodeValue[k] = "SCHEMA_COLUMN"; //$NON-NLS-1$
+                    listItemsDisplayValue[k] = "Column"; //$NON-NLS-1$
+                    listField[k] = ""; //$NON-NLS-1$
+                    listRepositoryItem[k] = ""; //$NON-NLS-1$
                     listItemsShowIf[k] = null;
                     listItemsNotShowIf[k] = null;
                     newParam = new ElementParameter(node);
-                    newParam.setName("SCHEMA_COLUMN");
-                    newParam.setDisplayName("");
+                    newParam.setName("SCHEMA_COLUMN"); //$NON-NLS-1$
+                    newParam.setDisplayName(""); //$NON-NLS-1$
                     newParam.setField(EParameterFieldType.TEXT);
-                    newParam.setValue("");
+                    newParam.setValue(""); //$NON-NLS-1$
                     listItemsValue[k] = newParam;
                     continue;
                 } else {
@@ -754,20 +754,20 @@ public class EmfComponent implements IComponent {
             }
             item = (ITEMType) items.getITEM().get(currentItem);
             listItemsDisplayCodeValue[k] = item.getNAME();
-            listItemsDisplayValue[k] = getTranslatedValue(paramName + ".ITEM." + item.getNAME());
+            listItemsDisplayValue[k] = getTranslatedValue(paramName + ".ITEM." + item.getNAME()); //$NON-NLS-1$
             if (type != EParameterFieldType.TABLE) {
                 listItemsValue[k] = item.getVALUE();
             } else {
                 EParameterFieldType currentField = EParameterFieldType.getFieldTypeByName(item.getFIELD());
                 newParam = new ElementParameter(node);
                 newParam.setName(item.getNAME());
-                newParam.setDisplayName("");
+                newParam.setDisplayName(""); //$NON-NLS-1$
                 newParam.setField(currentField);
                 switch (currentField) {
                 case CLOSED_LIST:
                 case COLUMN_LIST:
                 case PREV_COLUMN_LIST:
-                    addItemsPropertyParameters(paramName + ".ITEM." + item.getNAME(), item.getITEMS(), newParam, currentField,
+                    addItemsPropertyParameters(paramName + ".ITEM." + item.getNAME(), item.getITEMS(), newParam, currentField, //$NON-NLS-1$
                             node);
                     break;
                 case CHECK:
@@ -792,7 +792,7 @@ public class EmfComponent implements IComponent {
         param.setListItemsShowIf(listItemsShowIf);
         param.setListItemsNotShowIf(listItemsNotShowIf);
         if (type != EParameterFieldType.TABLE) {
-            Object defaultValue = "";
+            Object defaultValue = ""; //$NON-NLS-1$
             if (items != null) {
                 if (items.getDEFAULT() != null) {
                     boolean found = false;
@@ -928,9 +928,9 @@ public class EmfComponent implements IComponent {
             for (int i = 0; i < emfImportList.size(); i++) {
                 IMPORTType importType = (IMPORTType) emfImportList.get(i);
 
-                String msg = getTranslatedValue(importType.getNAME() + ".INFO");
+                String msg = getTranslatedValue(importType.getNAME() + ".INFO"); //$NON-NLS-1$
                 if (msg.startsWith(Messages.KEY_NOT_FOUND_PREFIX)) {
-                    msg = Messages.getString("modules.required");
+                    msg = Messages.getString("modules.required"); //$NON-NLS-1$
                 }
 
                 ModuleNeeded componentImportNeeds = new ModuleNeeded(this, importType.getMODULE(), msg, importType.isREQUIRED());

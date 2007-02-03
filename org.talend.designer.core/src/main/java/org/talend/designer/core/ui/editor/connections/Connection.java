@@ -90,7 +90,7 @@ public class Connection extends Element implements IConnection {
             IElementParameter param = new ElementParameter(this);
             param.setField(EParameterFieldType.MEMO_PERL);
             param.setCategory(EComponentCategory.MAIN);
-            param.setValue("");
+            param.setValue(""); //$NON-NLS-1$
             param.setNbLines(5);
             param.setName(EParameterName.CONDITION.getName());
             param.setDisplayName(EParameterName.CONDITION.getDisplayName());
@@ -102,7 +102,7 @@ public class Connection extends Element implements IConnection {
 
     @Override
     public String toString() {
-        return "Name=" + getName() + ", Table=" + getMetadataTable();
+        return "Name=" + getName() + ", Table=" + getMetadataTable(); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     /**
@@ -126,10 +126,10 @@ public class Connection extends Element implements IConnection {
 
         labelText = name;
         if (getLineStyle().equals(EConnectionType.FLOW_MAIN)) {
-            labelText += " (" + EDesignerConnection.FLOW_MAIN.getLinkName() + ")";
+            labelText += " (" + EDesignerConnection.FLOW_MAIN.getLinkName() + ")"; //$NON-NLS-1$ //$NON-NLS-2$
         }
         if (getLineStyle().equals(EConnectionType.FLOW_REF)) {
-            labelText += " (" + EDesignerConnection.FLOW_REF.getLinkName() + ")";
+            labelText += " (" + EDesignerConnection.FLOW_REF.getLinkName() + ")"; //$NON-NLS-1$ //$NON-NLS-2$
         }
         if (label == null) {
             label = new ConnectionLabel(labelText, this);

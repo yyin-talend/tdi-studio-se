@@ -27,6 +27,7 @@ import org.eclipse.jface.preference.StringFieldEditor;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.talend.designer.core.DesignerPlugin;
+import org.talend.designer.core.i18n.Messages;
 
 /**
  * This class represents a preference page that is contributed to the Preferences dialog. By subclassing
@@ -60,14 +61,14 @@ public class DesignerPreferencePage extends FieldEditorPreferencePage implements
         BooleanFieldEditor showHint;
         BooleanFieldEditor displayComponent;
 
-        labelField = new StringFieldEditor(TalendDesignerPrefConstants.DEFAULT_LABEL, "Components default label",
+        labelField = new StringFieldEditor(TalendDesignerPrefConstants.DEFAULT_LABEL, Messages.getString("DesignerPreferencePage.component.defaultLabel"), //$NON-NLS-1$
                 getFieldEditorParent());
-        hintField = new StringFieldEditor(TalendDesignerPrefConstants.DEFAULT_HINT, "Components default hint",
+        hintField = new StringFieldEditor(TalendDesignerPrefConstants.DEFAULT_HINT, Messages.getString("DesignerPreferencePage.component.defaultHint"), //$NON-NLS-1$
                 getFieldEditorParent());
-        showHint = new BooleanFieldEditor(TalendDesignerPrefConstants.DEFAULT_HINT_USED, "Components hint showed",
+        showHint = new BooleanFieldEditor(TalendDesignerPrefConstants.DEFAULT_HINT_USED, Messages.getString("DesignerPreferencePage.hintShowed"), //$NON-NLS-1$
                 getFieldEditorParent());
         displayComponent = new BooleanFieldEditor(TalendDesignerPrefConstants.DEFAULT_DISPLAY,
-                "Display hidden components(need restart)", getFieldEditorParent());
+                Messages.getString("DesignerPreferencePage.display.hiddenComponents"), getFieldEditorParent()); //$NON-NLS-1$
 
         System.out.println(DesignerPlugin.getDefault().getPreferenceStore().getBoolean(
                 TalendDesignerPrefConstants.DEFAULT_HINT_USED));

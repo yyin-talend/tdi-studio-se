@@ -35,6 +35,7 @@ import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
 import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IContextManager;
+import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.editor.properties.process.ContextProcessSection;
 
 /**
@@ -70,12 +71,12 @@ public class ContextAddCommand extends Command {
 
         contextManager = section.getProcess().getContextManager();
         listContext = contextManager.getListContext();
-        setLabel("Add new Context");
+        setLabel(Messages.getString("ContextAddCommand.label")); //$NON-NLS-1$
     }
 
     private void refreshPropertyView() {
         IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-        IViewPart view = page.findView("org.eclipse.ui.views.PropertySheet");
+        IViewPart view = page.findView("org.eclipse.ui.views.PropertySheet"); //$NON-NLS-1$
         PropertySheet sheet = (PropertySheet) view;
         TabbedPropertySheetPage tabbedPropertySheetPage = (TabbedPropertySheetPage) sheet.getCurrentPage();
         tabbedPropertySheetPage.refresh();

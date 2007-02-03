@@ -28,6 +28,7 @@ import org.eclipse.gef.ui.actions.SelectionAction;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.actions.ActionFactory;
+import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.editor.nodes.NodePart;
 
 /**
@@ -50,7 +51,7 @@ public class NodesCopyAction extends SelectionAction {
     public NodesCopyAction(IWorkbenchPart part) {
         super(part);
         setId(ActionFactory.COPY.getId());
-        setText("Copy");
+        setText(Messages.getString("NodesCopyAction.label")); //$NON-NLS-1$
         ISharedImages sharedImages = part.getSite().getWorkbenchWindow().getWorkbench().getSharedImages();
         setImageDescriptor(sharedImages.getImageDescriptor(ISharedImages.IMG_TOOL_COPY));
         setDisabledImageDescriptor(sharedImages.getImageDescriptor(ISharedImages.IMG_TOOL_COPY_DISABLED));

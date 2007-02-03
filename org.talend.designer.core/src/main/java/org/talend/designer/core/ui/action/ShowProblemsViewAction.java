@@ -33,12 +33,12 @@ public class ShowProblemsViewAction extends AbstractShowViewAction {
 
     @Override
     public String getDefinitionId() {
-        return "showProblemsView";
+        return "showProblemsView"; //$NON-NLS-1$
     }
 
     @Override
     public String getViewId() {
-        return "org.talend.designer.core.ui.views.ProblemsView";
+        return "org.talend.designer.core.ui.views.ProblemsView"; //$NON-NLS-1$
     }
 
 }

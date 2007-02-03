@@ -103,8 +103,8 @@ public class MainConnectionSection extends DynamicTabbedPropertySection {
             data.width = 300; // to correct bug of table growing indefinitly
 
             IMetadataTable outputMetaTable = ((Connection) elem).getMetadataTable();
-            metadataTableEditor = new MetadataTableEditor(outputMetaTable, "Schema from "
-                    + ((Connection) elem).getSource().getElementName() + " output ");
+            metadataTableEditor = new MetadataTableEditor(outputMetaTable, "Schema from " //$NON-NLS-1$
+                    + ((Connection) elem).getSource().getElementName() + " output "); //$NON-NLS-1$
             metadataTableEditorView = new MetadataTableEditorView(composite, SWT.NONE, metadataTableEditor, true, false);
 
             Composite compositeEditorView = metadataTableEditorView.getMainComposite();

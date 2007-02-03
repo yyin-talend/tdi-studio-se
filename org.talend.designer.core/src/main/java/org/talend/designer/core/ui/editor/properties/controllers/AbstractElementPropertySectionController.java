@@ -69,6 +69,7 @@ import org.talend.core.model.process.Problem.ProblemStatus;
 import org.talend.core.model.temp.ECodeLanguage;
 import org.talend.core.ui.proposal.ProcessProposalUtils;
 import org.talend.designer.core.DesignerPlugin;
+import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.MultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.TalendEditor;
 import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
@@ -100,7 +101,7 @@ public abstract class AbstractElementPropertySectionController implements Proper
 
     protected EditionControlHelper editionControlHelper;
 
-    protected static final String VARIABLE_TOOLTIP = "The variable attached to this parameter is : ";
+    protected static final String VARIABLE_TOOLTIP = Messages.getString("AbstractElementPropertySectionController.variableTooltip"); //$NON-NLS-1$
 
     protected static final String NAME = "NAME"; //$NON-NLS-1$
 
@@ -358,7 +359,7 @@ public abstract class AbstractElementPropertySectionController implements Proper
             boolean isRequired = elem.getElementParameter(getParameterName(control)).isRequired();
             if (problems != null) {
                 if (isRequired && (valueFinal == null || valueFinal.trim().length() == 0)) {
-                    problems.add(new Problem(null, "This field is required.", ProblemStatus.ERROR));
+                    problems.add(new Problem(null, "This field is required.", ProblemStatus.ERROR)); //$NON-NLS-1$
                 }
             }
 
@@ -374,10 +375,10 @@ public abstract class AbstractElementPropertySectionController implements Proper
 
                 control.setBackground(bgColorError);
                 control.setForeground(fgColorError);
-                String tooltip = "Syntax error(s): ";
+                String tooltip = "Syntax error(s): "; //$NON-NLS-1$
 
                 for (Problem problem : problems) {
-                    tooltip += "\n" + problem.getDescription();
+                    tooltip += "\n" + problem.getDescription(); //$NON-NLS-1$
                 }
                 control.setToolTipText(tooltip);
             } else {
@@ -513,8 +514,8 @@ public abstract class AbstractElementPropertySectionController implements Proper
     private String getParameterName(Control control) {
         String name = (String) hashCurControls.getKey(control);
         if (name == null) {
-            throw new IllegalStateException("parameterName shouldn't be null or you call this method too early ! (control value : '"
-                    + ControlUtils.getText(control) + "')");
+            throw new IllegalStateException("parameterName shouldn't be null or you call this method too early ! (control value : '" //$NON-NLS-1$
+                    + ControlUtils.getText(control) + "')"); //$NON-NLS-1$
         }
         return name;
     }
@@ -645,7 +646,7 @@ public abstract class AbstractElementPropertySectionController implements Proper
                         if (event.getCommand() instanceof IExtendedTableCommand) {
 
                             IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-                            IViewPart view = page.findView("org.eclipse.ui.views.PropertySheet");
+                            IViewPart view = page.findView("org.eclipse.ui.views.PropertySheet"); //$NON-NLS-1$
                             PropertySheet sheet = (PropertySheet) view;
                             TabbedPropertySheetPage tabbedPropertySheetPage = (TabbedPropertySheetPage) sheet.getCurrentPage();
                             tabbedPropertySheetPage.refresh();
