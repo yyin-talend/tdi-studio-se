@@ -21,7 +21,6 @@
 // ============================================================================
 package org.talend.sqlbuilder.dbstructure.nodes;
 
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -147,16 +146,15 @@ public class CatalogNode extends AbstractNode {
 
             ITableInfo[] tables = null;
             // String[] tableTypes = psessionNode.getMetaData().getTableTypes();
-            String[] tableTypes = { "TABLE", "VIEW" };
+            String[] tableTypes = { "TABLE", "VIEW", "SYNONYM" };
 
             try {
                 tables = psessionNode.getMetaData().getTables(null, getSchemaName(), "%", tableTypes);
+
             } catch (Throwable e) {
                 SqlBuilderPlugin.log("Loading all tables at once is not supported", e);
             }
 
-            // for (int i = 0; i < tableTypes.length; ++i) {
-            // }
             TableFolderNode node = new TableFolderNode(this, "TABLE", psessionNode, tables);
             pchildNames.add(node.getLabelText());
             if (!isExcludedByFilter(node.getLabelText())) {

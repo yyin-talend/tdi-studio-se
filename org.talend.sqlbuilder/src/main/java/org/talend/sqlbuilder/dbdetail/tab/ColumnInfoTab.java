@@ -21,13 +21,19 @@
 // ============================================================================
 package org.talend.sqlbuilder.dbdetail.tab;
 
+import java.sql.Connection;
 import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 
+import net.sourceforge.squirrel_sql.fw.sql.ITableInfo;
+
+import org.talend.core.model.metadata.builder.database.ExtractMetaDataFromDataBase;
 import org.talend.sqlbuilder.Messages;
 import org.talend.sqlbuilder.dataset.dataset.DataSet;
 import org.talend.sqlbuilder.dbstructure.nodes.INode;
 import org.talend.sqlbuilder.dbstructure.nodes.TableNode;
-
+import org.talend.sqlbuilder.sessiontree.model.SessionTreeNode;
 
 /**
  * @author Davy Vanherbergen
@@ -35,16 +41,14 @@ import org.talend.sqlbuilder.dbstructure.nodes.TableNode;
  */
 public class ColumnInfoTab extends AbstractDataSetTab {
 
-    
-    
     public String getLabelText() {
         return Messages.getString("DatabaseDetailView.Tab.ColumnInfo");
     }
- 
-    public DataSet getDataSet() throws Exception {                
-        
+
+    public DataSet getDataSet() throws Exception {
+
         INode node = getNode();
-        
+
         if (node == null) {
             return null;
         }
@@ -54,21 +58,61 @@ public class ColumnInfoTab extends AbstractDataSetTab {
 
         if (node instanceof TableNode) {
             TableNode tableNode = (TableNode) node;
+            ITableInfo ti = tableNode.getTableInfo();
             if (tableNode.getTableInfo() == null) {
                 return null;
             }
+            ResultSet resultSet = null;
+            SessionTreeNode treeNode = node.getSession();
 
-            ResultSet resultSet = node.getSession().getMetaData().getColumns(tableNode.getTableInfo());
-            DataSet dataSet = new DataSet(null, resultSet, new int[] { 4, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18 });
+            // For synonym table, should get the corresponding table.
+            if (ti.getType().equals("SYNONYM")) {
+
+                String realTableName = ExtractMetaDataFromDataBase.getTableNameBySynonym(treeNode
+                        .getInteractiveConnection().getConnection(), ti.getSimpleName());
+
+                resultSet = treeNode.getMetaData().getJDBCMetaData().getColumns(ti.getCatalogName(),
+                        ti.getSchemaName(), realTableName, "%");
+
+            } else {
+
+                resultSet = node.getSession().getMetaData().getColumns(tableNode.getTableInfo());
+            }
+
+            DataSet dataSet = new DataSet(null, resultSet, new int[] { 4, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15, 16, 17,
+                    18 });
             resultSet.close();
             return dataSet;
         }
-        
+
         return null;
     }
 
     public String getStatusMessage() {
         return Messages.getString("DatabaseDetailView.Tab.ColumnInfo.status") + " " + getNode().getQualifiedName();
     }
-    
+
+    /**
+     * Gets table name base on synonym.
+     * 
+     * @param conn Connection
+     * @param name synonym
+     * @return a string representing real table name
+     */
+    public String getTableNameBySynonym(Connection conn, String name) {
+        try {
+            // This query is used for getting real table name from system tables, it is  used only for Oracle.
+            String sql = "select TABLE_NAME from USER_SYNONYMS where SYNONYM_NAME = '" + name + "'";
+            Statement sta;
+            sta = conn.createStatement();
+            ResultSet resultSet = sta.executeQuery(sql);
+            while (resultSet.next()) {
+                return resultSet.getString("TABLE_NAME");
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return null;
+    }
+
 }

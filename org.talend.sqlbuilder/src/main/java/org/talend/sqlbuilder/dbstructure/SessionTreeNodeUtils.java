@@ -128,7 +128,7 @@ public class SessionTreeNodeUtils {
             alias.setUserName(userName);
             alias.setPassword(password);
             alias.setSchemaFilterExpression(databaseName);
-            alias.setFolderFilterExpression("Tables,Views");
+           alias.setFolderFilterExpression("Tables,Views,Synonyms");
         } catch (Exception e) {
              SqlBuilderPlugin.log(e.getMessage(), e);
         }

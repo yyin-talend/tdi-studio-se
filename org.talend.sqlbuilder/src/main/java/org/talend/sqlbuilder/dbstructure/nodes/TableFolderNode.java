@@ -67,6 +67,9 @@ public class TableFolderNode extends AbstractFolderNode {
         }
         if (pname.equals("Table")) {
             pname = Messages.getString("DatabaseStructureView.table");
+        }if(pname.equals("Synonym"))
+        {
+            pname = Messages.getString("DatabaseStructureView.synonym");
         }
     }
 

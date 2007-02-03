@@ -853,7 +853,7 @@ public class SQLBuilderRepositoryNodeManager {
         List<MetadataTable> metadataTables = new ArrayList<MetadataTable>();
         ResultSet rsTables = null;
         try {
-            String[] tableTypes = { "TABLE", "VIEW" };
+            String[] tableTypes = { "TABLE", "VIEW", "SYNONYM" };
 
             rsTables = dbMetaData.getTables(null, ExtractMetaDataUtils.schema, null, tableTypes);
             while (rsTables.next()) {
