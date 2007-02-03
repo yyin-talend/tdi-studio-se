@@ -505,7 +505,7 @@ public class Process extends Element implements IProcess {
         return metaToReturn;
     }
 
-    @SuppressWarnings("unchecked") //$NON-NLS-1$
+    @SuppressWarnings("unchecked")//$NON-NLS-1$
     private void saveElementParameters(TalendFileFactory fileFact, List<? extends IElementParameter> paramList,
             EList listParamType, ProcessType process) {
         IElementParameter param;
@@ -588,7 +588,7 @@ public class Process extends Element implements IProcess {
         }
     }
 
-    @SuppressWarnings("unchecked") //$NON-NLS-1$
+    @SuppressWarnings("unchecked")//$NON-NLS-1$
     private void loadElementParameters(Element elemParam, EList listParamType) {
         ElementParameterType pType;
 
@@ -940,9 +940,7 @@ public class Process extends Element implements IProcess {
 
                             public void run() {
                                 MessageBox mBox = new MessageBox(shell, SWT.YES | SWT.NO | SWT.ICON_QUESTION);
-                                String message = "The metadata used in the component " + uniqueName
-                                        + " has been modified.";
-                                message += Messages.getString("Process.IfToUpgrade"); //$NON-NLS-1$
+                                String message = Messages.getString("Process.IfToUpgradeMetadata", uniqueName); //$NON-NLS-1$
                                 mBox.setText(Messages.getString("Process.metadataModificationDetected")); //$NON-NLS-1$
                                 mBox.setMessage(message);
                                 int value = mBox.open();
@@ -964,9 +962,7 @@ public class Process extends Element implements IProcess {
 
                         public void run() {
                             MessageBox mBox = new MessageBox(shell);
-                            String message = "The repository item used in the component " + node.getUniqueName()
-                                    + " has not been found,";
-                            message += Messages.getString("Process.schemaChangeToBuilt-in"); //$NON-NLS-1$
+                            String message = Messages.getString("Process.schemaChangeToBuilt-in", node.getUniqueName()); //$NON-NLS-1$
                             mBox.setMessage(message);
                             mBox.open();
                             node.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), EmfComponent.BUILTIN);
@@ -1058,9 +1054,7 @@ public class Process extends Element implements IProcess {
                         shell.getDisplay().asyncExec(new Runnable() {
 
                             public void run() {
-                                String message = "The properties used in the component " + node.getUniqueName()
-                                        + " has been modified.";
-                                message += Messages.getString("Process.IfToUpgrade"); //$NON-NLS-1$
+                                String message = Messages.getString("Process.IfToUpgradeProperty", node.getUniqueName()); //$NON-NLS-1$
                                 MessageBox mBox = new MessageBox(shell, SWT.YES | SWT.NO | SWT.ICON_QUESTION);
                                 mBox.setText(Messages.getString("Process.propertyModificationDetected")); //$NON-NLS-1$
                                 mBox.setMessage(message);
@@ -1122,9 +1116,8 @@ public class Process extends Element implements IProcess {
 
                         public void run() {
                             MessageBox mBox = new MessageBox(shell);
-                            String message = "The repository item used in the component " + node.getUniqueName()
-                                    + " has not been found,";
-                            message += Messages.getString("Process.propertyChangeToBuild-in"); //$NON-NLS-1$
+                            String message = Messages.getString(
+                                    "Process.propertyChangeToBuild-in", node.getUniqueName()); //$NON-NLS-1$
                             mBox.setMessage(message);
                             mBox.open();
                             node.setPropertyValue(EParameterName.PROPERTY_TYPE.getName(), EmfComponent.BUILTIN);
@@ -1243,7 +1236,7 @@ public class Process extends Element implements IProcess {
         return readOnlyLocal;
     }
 
-    @SuppressWarnings("unchecked") //$NON-NLS-1$
+    @SuppressWarnings("unchecked")//$NON-NLS-1$
     public void setReadOnly(boolean readOnly) {
         this.readOnly = readOnly;
 
@@ -1523,7 +1516,7 @@ public class Process extends Element implements IProcess {
         }
     }
 
-    @SuppressWarnings("unchecked") //$NON-NLS-1$
+    @SuppressWarnings("unchecked")//$NON-NLS-1$
     private void setActivate(Node node, boolean active, Node activateNode) {
         Node mainSubProcess = node.getSubProcessStartNode(false);
 

@@ -198,7 +198,6 @@ public class ColumnListController extends AbstractElementPropertySectionControll
     @Override
     public Control createControl(final Composite subComposite, final IElementParameter param, final int numInRow,
             final int nbInRow, final int top, final Control lastControl) {
-        CCombo combo;
 
         if (param.getField() == EParameterFieldType.COLUMN_LIST) {
             param.setDisplayName(EParameterName.COLUMN_LIST.getDisplayName());
@@ -232,7 +231,7 @@ public class ColumnListController extends AbstractElementPropertySectionControll
         }
 
         Control cLayout = dField.getLayoutControl();
-        combo = (CCombo) dField.getControl();
+        CCombo combo = (CCombo) dField.getControl();
         FormData data;
         combo.setEditable(false);
         cLayout.setBackground(subComposite.getBackground());
@@ -319,4 +318,27 @@ public class ColumnListController extends AbstractElementPropertySectionControll
         }
     };
 
+    @Override
+    public void refresh(IElementParameter param, boolean check) {
+        CCombo combo = (CCombo) hashCurControls.get(param.getName());
+        Object value = param.getValue();
+
+        if (value instanceof String) {
+            String strValue = (String) value; //$NON-NLS-1$
+            int nbInList = 0, nbMax = param.getListItemsValue().length;
+            String name = (String) elem.getPropertyValue(param.getName());
+            while (strValue.equals(new String("")) && nbInList < nbMax) { //$NON-NLS-1$
+                if (name.equals(param.getListItemsValue()[nbInList])) {
+                    strValue = param.getListItemsDisplayName()[nbInList];
+                }
+                nbInList++;
+            }
+            String[] paramItems = param.getListItemsDisplayName();
+            String[] comboItems = combo.getItems();
+            if (!paramItems.equals(comboItems)) {
+                combo.setItems(paramItems);
+            }
+            combo.setText(strValue);
+        }
+    }
 }

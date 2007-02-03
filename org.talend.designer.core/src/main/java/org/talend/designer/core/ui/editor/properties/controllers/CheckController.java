@@ -39,6 +39,7 @@ import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.designer.core.i18n.Messages;
@@ -57,7 +58,7 @@ import org.talend.designer.core.ui.editor.properties.DynamicTabbedPropertySectio
 public class CheckController extends AbstractElementPropertySectionController {
 
     private SelectionEvent e;
-
+    
     /**
      * DOC yzhang CheckController constructor comment.
      * 
@@ -115,8 +116,6 @@ public class CheckController extends AbstractElementPropertySectionController {
     @Override
     public Control createControl(final Composite subComposite, final IElementParameter param, final int numInRow,
             final int nbInRow, final int top, final Control lastControl) {
-        Button checkBtn;
-
         final DecoratedField dField = new DecoratedField(subComposite, SWT.BORDER, new IControlCreator() {
 
             public Control createControl(Composite parent, int style) {
@@ -133,7 +132,7 @@ public class CheckController extends AbstractElementPropertySectionController {
 
         Control cLayout = dField.getLayoutControl();
         cLayout.setBackground(subComposite.getBackground());
-        checkBtn = (Button) dField.getControl();
+        Button checkBtn = (Button) dField.getControl();
 
         FormData data = new FormData();
         data.top = new FormAttachment(0, top);
@@ -175,5 +174,14 @@ public class CheckController extends AbstractElementPropertySectionController {
             }
         }
     };
-
+    
+    @Override
+    public void refresh(IElementParameter param, boolean checkErrorsWhenViewRefreshed) {
+        Button checkBtn = (Button) hashCurControls.get(param.getName());
+        Object value = param.getValue();
+        if (checkBtn == null) {
+            return;
+        }
+        checkBtn.setSelection((Boolean) value);
+    }
 }

@@ -50,7 +50,7 @@ import org.talend.designer.core.ui.editor.properties.DynamicTabbedPropertySectio
  * 
  */
 public class MemoController extends AbstractElementPropertySectionController {
-    
+
     /**
      * DOC dev MemoController constructor comment.
      * 
@@ -79,7 +79,6 @@ public class MemoController extends AbstractElementPropertySectionController {
     @Override
     public Control createControl(final Composite subComposite, final IElementParameter param, final int numInRow,
             final int nbInRow, final int top, final Control lastControl) {
-        Text text;
         int nbLines = param.getNbLines();
 
         DecoratedField dField = new DecoratedField(subComposite, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL | SWT.H_SCROLL,
@@ -90,7 +89,7 @@ public class MemoController extends AbstractElementPropertySectionController {
             dField.addFieldDecoration(decoration, SWT.RIGHT | SWT.TOP, false);
         }
         Control cLayout = dField.getLayoutControl();
-        text = (Text) dField.getControl();
+        Text text = (Text) dField.getControl();
 
         editionControlHelper.register(param.getName(), text, true);
 
@@ -161,4 +160,19 @@ public class MemoController extends AbstractElementPropertySectionController {
 
     }
 
+    @Override
+    public void refresh(IElementParameter param, boolean checkErrorsWhenViewRefreshed) {
+        Text text = (Text) hashCurControls.get(param.getName());
+        Object value = param.getValue();
+        if (value == null) {
+            text.setText(""); //$NON-NLS-1$
+        } else {
+            if (!value.equals(text.getText())) {
+                text.setText((String) value);
+            }
+        }
+        if (checkErrorsWhenViewRefreshed) {
+            checkErrorsForPropertiesOnly(text);
+        }
+    }
 }

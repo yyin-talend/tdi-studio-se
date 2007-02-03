@@ -30,8 +30,6 @@ import java.util.Map;
 import org.apache.commons.collections.BidiMap;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.commands.CommandStack;
-import org.eclipse.gef.commands.CommandStackEvent;
-import org.eclipse.gef.commands.CommandStackEventListener;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DropTarget;
@@ -47,13 +45,7 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.ui.IViewPart;
-import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.views.properties.PropertySheet;
-import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetWidgetFactory;
-import org.talend.commons.ui.swt.advanced.dataeditor.commands.IExtendedTableCommand;
 import org.talend.commons.ui.swt.proposal.ContentProposalAdapterExtended;
 import org.talend.commons.ui.utils.ControlUtils;
 import org.talend.commons.ui.utils.TypedTextCommandExecutor;
@@ -76,6 +68,7 @@ import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.editor.properties.ContextParameterExtractor;
 import org.talend.designer.core.ui.editor.properties.DynamicTabbedPropertySection;
+import org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController.CheckErrorsHelper.ControlProperties;
 import org.talend.designer.runprocess.IRunProcessService;
 
 /**
@@ -134,8 +127,8 @@ public abstract class AbstractElementPropertySectionController implements Proper
      * @return. The control created by this method will be the paramenter of next be called createControl method for
      * position calculate.
      */
-    public abstract Control createControl(final Composite subComposite, final IElementParameter param, final int numInRow,
-            final int nbInRow, final int top, final Control lastControl);
+    public abstract Control createControl(final Composite subComposite, final IElementParameter param,
+            final int numInRow, final int nbInRow, final int top, final Control lastControl);
 
     /**
      * DOC yzhang Comment method "createCommand".
@@ -165,7 +158,7 @@ public abstract class AbstractElementPropertySectionController implements Proper
         part = dtp.getPart();
         section = dtp.getSection();
         composite = dtp.getComposite();
-
+        
         editionControlHelper = new EditionControlHelper();
         elem.addPropertyChangeListener(this);
     }
@@ -250,6 +243,8 @@ public abstract class AbstractElementPropertySectionController implements Proper
 
     }
 
+    private static Map<Control, ControlProperties> controlToProp = new HashMap<Control, ControlProperties>();
+
     /**
      * 
      * DOC amaumont DynamicTabbedPropertySection class global comment. Detailled comment <br/>
@@ -259,8 +254,6 @@ public abstract class AbstractElementPropertySectionController implements Proper
      * 
      */
     class CheckErrorsHelper {
-
-        private Map<Control, ControlProperties> controlToProp = new HashMap<Control, ControlProperties>();
 
         /**
          * DOC amaumont CheckSyntaxHelper constructor comment.
@@ -327,7 +320,7 @@ public abstract class AbstractElementPropertySectionController implements Proper
         public void checkErrors(final Control control) {
 
             IElementParameter elementParameter = elem.getElementParameter(getParameterName(control));
-            
+
             boolean isReadonly = elementParameter.isReadOnly();
             if (isReadonly) {
                 return;
@@ -359,7 +352,7 @@ public abstract class AbstractElementPropertySectionController implements Proper
             boolean isRequired = elem.getElementParameter(getParameterName(control)).isRequired();
             if (problems != null) {
                 if (isRequired && (valueFinal == null || valueFinal.trim().length() == 0)) {
-                    problems.add(new Problem(null, "This field is required.", ProblemStatus.ERROR)); //$NON-NLS-1$
+                    problems.add(new Problem(null, Messages.getString("AbstractElementPropertySectionController.fieldRequired"), ProblemStatus.ERROR)); //$NON-NLS-1$
                 }
             }
 
@@ -375,7 +368,7 @@ public abstract class AbstractElementPropertySectionController implements Proper
 
                 control.setBackground(bgColorError);
                 control.setForeground(fgColorError);
-                String tooltip = "Syntax error(s): "; //$NON-NLS-1$
+                String tooltip = Messages.getString("AbstractElementPropertySectionController.syntaxError"); //$NON-NLS-1$
 
                 for (Problem problem : problems) {
                     tooltip += "\n" + problem.getDescription(); //$NON-NLS-1$
@@ -411,13 +404,11 @@ public abstract class AbstractElementPropertySectionController implements Proper
          */
         class ControlProperties {
 
-            public Color originalBgColor;
+            private Color originalBgColor;
 
-            public Color originalFgColor;
+            private Color originalFgColor;
 
-            public String originalToolTip;
-
-            public Problem previousProblem;
+            private String originalToolTip;
 
             /**
              * DOC amaumont ControlProperties constructor comment.
@@ -425,7 +416,6 @@ public abstract class AbstractElementPropertySectionController implements Proper
             public ControlProperties() {
                 super();
             }
-
         }
 
     }
@@ -624,42 +614,11 @@ public abstract class AbstractElementPropertySectionController implements Proper
      * 
      * @param control must be or extends <code>Text</code> or <code>StyledText</code>
      */
-    private void checkErrorsForPropertiesOnly(Control control) {
+    protected void checkErrorsForPropertiesOnly(Control control) {
         if (this.section == EComponentCategory.PROPERTY) {
             editionControlHelper.checkErrors(control);
         }
     }
 
-    /**
-     * DOC amaumont Comment method "registerListenerForRefreshingSection".
-     */
-    private void registerListenerForRefreshingSection() {
-
-        CommandStackEventListener commandStackEventListener = DynamicTabbedPropertySection.getCommandStackEventListener();
-        if (commandStackEventListener == null) {
-
-            commandStackEventListener = new CommandStackEventListener() {
-
-                public void stackChanged(CommandStackEvent event) {
-                    int detail = event.getDetail();
-                    if (0 != (detail & CommandStack.POST_UNDO) || 0 != (detail & CommandStack.POST_REDO)) {
-                        if (event.getCommand() instanceof IExtendedTableCommand) {
-
-                            IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-                            IViewPart view = page.findView("org.eclipse.ui.views.PropertySheet"); //$NON-NLS-1$
-                            PropertySheet sheet = (PropertySheet) view;
-                            TabbedPropertySheetPage tabbedPropertySheetPage = (TabbedPropertySheetPage) sheet.getCurrentPage();
-                            tabbedPropertySheetPage.refresh();
-
-                        }
-                    }
-
-                }
-
-            };
-
-            getCommandStack().addCommandStackEventListener(DynamicTabbedPropertySection.getCommandStackEventListener());
-        }
-    }
-
+    public abstract void refresh(IElementParameter param, boolean check);
 }

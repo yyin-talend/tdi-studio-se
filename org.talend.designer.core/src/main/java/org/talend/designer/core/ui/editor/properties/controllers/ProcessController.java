@@ -130,4 +130,8 @@ public class ProcessController extends AbstractElementPropertySectionController 
         }
     };
 
+    @Override
+    public void refresh(IElementParameter param, boolean check) {
+    }
+
 }

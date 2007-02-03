@@ -85,7 +85,6 @@ public abstract class AbstractLanguageMemoController extends AbstractElementProp
     public Control createControl(final Composite subComposite, final IElementParameter param, final int numInRow,
             final int nbInRow, final int top, final Control lastControl) {
 
-        ColorStyledText text;
         int nbLines = param.getNbLines();
 
         IControlCreator txtCtrl = new IControlCreator() {
@@ -110,7 +109,7 @@ public abstract class AbstractLanguageMemoController extends AbstractElementProp
             dField.addFieldDecoration(decoration, SWT.RIGHT | SWT.TOP, false);
         }
         Control cLayout = dField.getLayoutControl();
-        text = (ColorStyledText) dField.getControl();
+        ColorStyledText text = (ColorStyledText) dField.getControl();
 
         editionControlHelper.register(param.getName(), text, true);
 
@@ -186,5 +185,23 @@ public abstract class AbstractLanguageMemoController extends AbstractElementProp
 
     protected void setCurrentLanguage(String language) {
         this.language = language;
+    }
+
+    @Override
+    public void refresh(IElementParameter param, boolean checkErrorsWhenViewRefreshed) {
+        ColorStyledText text = (ColorStyledText) hashCurControls.get(param.getName());
+        Object value = param.getValue();
+        boolean valueChanged = false;
+        if (value == null) {
+            text.setText(""); //$NON-NLS-1$
+        } else {
+            if (!value.equals(text.getText())) {
+                text.setText((String) value);
+                valueChanged = true;
+            }
+        }
+        if (checkErrorsWhenViewRefreshed || valueChanged) {
+            checkErrorsForPropertiesOnly(text);
+        }
     }
 }

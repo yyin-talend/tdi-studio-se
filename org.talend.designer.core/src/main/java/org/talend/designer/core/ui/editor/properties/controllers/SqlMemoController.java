@@ -44,6 +44,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.progress.IWorkbenchSiteProgressService;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.talend.commons.ui.swt.colorstyledtext.ColorManager;
@@ -243,6 +244,7 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
 
     /**
      * DOC ftang Comment method "removeStrInQuery".
+     * 
      * @param input
      * @return
      */
@@ -259,6 +261,7 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
 
     /**
      * DOC ftang Comment method "addStrInQuery".
+     * 
      * @param input
      * @return
      */
@@ -270,6 +273,7 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
 
     /**
      * DOC ftang Comment method "removeSlash".
+     * 
      * @param input
      * @return
      */
@@ -397,4 +401,24 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
         return null;
     }
 
+    @Override
+    public void refresh(IElementParameter param, boolean checkErrorsWhenViewRefreshed) {
+        ColorStyledText labelText = (ColorStyledText) hashCurControls.get(param.getName());
+        Object value = param.getValue();
+        if (labelText == null) {
+            return;
+        }
+        boolean valueChanged = false;
+        if (value == null) {
+            labelText.setText(""); //$NON-NLS-1$
+        } else {
+            if (!value.equals(labelText.getText())) {
+                labelText.setText((String) value);
+                valueChanged = true;
+            }
+        }
+        if (checkErrorsWhenViewRefreshed || valueChanged) {
+            checkErrorsForPropertiesOnly(labelText);
+        }
+    }
 }

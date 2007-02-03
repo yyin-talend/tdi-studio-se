@@ -86,7 +86,6 @@ public class VersionController extends AbstractElementPropertySectionController 
     public Control createControl(final Composite subComposite, final IElementParameter param, final int numInRow,
             final int nbInRow, final int top, final Control lastControl) {
         Button btnUp, btnDown;
-        Text labelText;
 
         btnUp = getWidgetFactory().createButton(subComposite, "M", SWT.PUSH); //$NON-NLS-1$
         btnUp.setData(NAME, VER_MAJ);
@@ -109,8 +108,10 @@ public class VersionController extends AbstractElementPropertySectionController 
         btnDown.addSelectionListener(listenerSelection);
 
         data = new FormData();
-        data.left = new FormAttachment(((numInRow * MAX_PERCENT) / nbInRow), -((btnSize.x * 2) + ITabbedPropertyConstants.HSPACE));
-        data.right = new FormAttachment(((numInRow * MAX_PERCENT) / nbInRow), -(btnSize.x + ITabbedPropertyConstants.HSPACE));
+        data.left = new FormAttachment(((numInRow * MAX_PERCENT) / nbInRow),
+                -((btnSize.x * 2) + ITabbedPropertyConstants.HSPACE));
+        data.right = new FormAttachment(((numInRow * MAX_PERCENT) / nbInRow),
+                -(btnSize.x + ITabbedPropertyConstants.HSPACE));
         data.top = new FormAttachment(0, top);
         data.height = btnSize.y;
         btnUp.setLayoutData(data);
@@ -124,7 +125,7 @@ public class VersionController extends AbstractElementPropertySectionController 
 
         Control cLayout = dField.getLayoutControl();
 
-        labelText = (Text) dField.getControl();
+        Text labelText = (Text) dField.getControl();
         cLayout.setBackground(subComposite.getBackground());
         labelText.setEditable(false);
         if (elem instanceof Node) {
@@ -197,4 +198,22 @@ public class VersionController extends AbstractElementPropertySectionController 
 
     };
 
+    @Override
+    public void refresh(IElementParameter param, boolean checkErrorsWhenViewRefreshed) {
+        Text labelText = (Text) hashCurControls.get(param.getName());
+        Object value = param.getValue();
+        if (labelText == null) {
+            return;
+        }
+        if (value == null) {
+            labelText.setText(""); //$NON-NLS-1$
+        } else {
+            if (!value.equals(labelText.getText())) {
+                labelText.setText((String) value);
+            }
+        }
+        if (checkErrorsWhenViewRefreshed) {
+            checkErrorsForPropertiesOnly(labelText);
+        }
+    }
 }

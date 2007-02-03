@@ -145,7 +145,7 @@ public class ComboController extends AbstractElementPropertySectionController {
                         } else if (name.equals(EParameterName.REPOSITORY_QUERYSTORE_TYPE.getName())) {
                             this.dynamicTabbedPropertySection.updateRepositoryList();
                             if (elem instanceof Node) {
-                                Map<String,Query> repositoryQueryStoreMap = this.dynamicTabbedPropertySection
+                                Map<String, Query> repositoryQueryStoreMap = this.dynamicTabbedPropertySection
                                         .getRepositoryQueryStoreMap();
                                 if (repositoryQueryStoreMap.containsKey(value)) {
                                     Query query = repositoryQueryStoreMap.get(value);
@@ -204,9 +204,9 @@ public class ComboController extends AbstractElementPropertySectionController {
                                 Query repositoryQuery = null;
                                 querySelected = (String) elem
                                         .getPropertyValue(EParameterName.REPOSITORY_QUERYSTORE_TYPE.getName());
-                                
-                                
-                                Map<String, Query> repositoryQueryStoreMap = this.dynamicTabbedPropertySection.getRepositoryQueryStoreMap();
+
+                                Map<String, Query> repositoryQueryStoreMap = this.dynamicTabbedPropertySection
+                                        .getRepositoryQueryStoreMap();
                                 if (repositoryQueryStoreMap.containsKey(querySelected)) {
                                     repositoryQuery = repositoryQueryStoreMap.get(querySelected);
                                 }
@@ -239,8 +239,6 @@ public class ComboController extends AbstractElementPropertySectionController {
     @Override
     public Control createControl(final Composite subComposite, final IElementParameter param, final int numInRow,
             final int nbInRow, final int top, final Control lastControl) {
-        CCombo combo;
-
         IControlCreator cbCtrl = new IControlCreator() {
 
             public Control createControl(final Composite parent, final int style) {
@@ -262,7 +260,7 @@ public class ComboController extends AbstractElementPropertySectionController {
         }
 
         Control cLayout = dField.getLayoutControl();
-        combo = (CCombo) dField.getControl();
+        CCombo combo = (CCombo) dField.getControl();
         FormData data;
         String[] originalList = param.getListItemsDisplayName();
         List<String> stringToDisplay = new ArrayList<String>();
@@ -354,9 +352,10 @@ public class ComboController extends AbstractElementPropertySectionController {
             }
         }
     };
-    
+
     /**
      * DOC ftang Comment method "getQueryTextElementParameter".
+     * 
      * @param elem
      * @return
      */
@@ -367,5 +366,33 @@ public class ComboController extends AbstractElementPropertySectionController {
             }
         }
         return null;
+    }
+
+    @Override
+    public void refresh(IElementParameter param, boolean check) {
+        CCombo combo = (CCombo) hashCurControls.get(param.getName());
+        
+        if (combo == null) {
+            return;
+        }
+        Object value = param.getValue();
+
+        if (value instanceof String) {
+            String strValue = ""; //$NON-NLS-1$
+            int nbInList = 0, nbMax = param.getListItemsValue().length;
+            String name = (String) value;
+            while (strValue.equals(new String("")) && nbInList < nbMax) { //$NON-NLS-1$
+                if (name.equals(param.getListItemsValue()[nbInList])) {
+                    strValue = param.getListItemsDisplayName()[nbInList];
+                }
+                nbInList++;
+            }
+            String[] paramItems = param.getListItemsDisplayName();
+            String[] comboItems = combo.getItems();
+            if (!paramItems.equals(comboItems)) {
+                combo.setItems(paramItems);
+            }
+            combo.setText(strValue);
+        }
     }
 }

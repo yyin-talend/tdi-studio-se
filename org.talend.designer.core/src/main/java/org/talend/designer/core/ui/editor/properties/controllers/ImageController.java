@@ -135,4 +135,9 @@ public class ImageController extends AbstractElementPropertySectionController {
 
     }
 
+
+    @Override
+    public void refresh(IElementParameter param, boolean check) {
+    }
+
 }

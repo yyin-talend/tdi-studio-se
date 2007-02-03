@@ -23,7 +23,6 @@ package org.talend.designer.core.ui.editor.properties;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -31,24 +30,27 @@ import org.apache.commons.collections.BidiMap;
 import org.apache.commons.collections.bidimap.DualHashBidiMap;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.gef.EditPart;
+import org.eclipse.gef.commands.CommandStack;
+import org.eclipse.gef.commands.CommandStackEvent;
 import org.eclipse.gef.commands.CommandStackEventListener;
 import org.eclipse.jface.util.Assert;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.layout.FormLayout;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.IViewPart;
+import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.views.properties.PropertySheet;
 import org.eclipse.ui.views.properties.tabbed.AbstractPropertySection;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
-import org.talend.commons.ui.swt.colorstyledtext.ColorStyledText;
+import org.talend.commons.ui.swt.advanced.dataeditor.commands.IExtendedTableCommand;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumn;
 import org.talend.commons.utils.data.container.Content;
@@ -83,6 +85,7 @@ import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
 import org.talend.designer.core.ui.MultiPageTalendEditor;
+import org.talend.designer.core.ui.editor.TalendEditor;
 import org.talend.designer.core.ui.editor.connections.ConnectionLabel;
 import org.talend.designer.core.ui.editor.nodecontainer.NodeContainerPart;
 import org.talend.designer.core.ui.editor.nodes.Node;
@@ -129,19 +132,12 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
 
     private String oldPropertyType;
 
-    private static CommandStackEventListener commandStackEventListener;
-
     private Map<String, Query> repositoryQueryStoreMap;
 
     private String oldQueryStoreType;
+    
+    private static CommandStackEventListener commandStackEventListener;
 
-    public static CommandStackEventListener getCommandStackEventListener() {
-        return commandStackEventListener;
-    }
-
-    public static void setCommandStackEventListener(CommandStackEventListener cel) {
-        commandStackEventListener = cel;
-    }
 
     /**
      * DOC ftang Comment method "showSchemaRepositoryList".
@@ -325,7 +321,6 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
         String[] repositoryConnectionValueList = new String[] {};
         String[] repositoryQueryNameList = new String[] {};
         String[] repositoryQueryValueList = new String[] {};
-
         try {
             metadataConnectionsItem = factory.getMetadataConnectionsItem();
         } catch (PersistenceException e) {
@@ -339,7 +334,6 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
             List<String> tableValuesList = new ArrayList<String>();
             List<String> queryStoreNameList = new ArrayList<String>();
             List<String> queryStoreValuesList = new ArrayList<String>();
-
             for (ConnectionItem connectionItem : metadataConnectionsItem) {
                 Connection connection = (Connection) connectionItem.getConnection();
                 if (!connection.isReadOnly()) {
@@ -361,7 +355,6 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                 }
                 if (connection instanceof DatabaseConnection && !connection.isReadOnly()) {
                     DatabaseConnection dbConnection = (DatabaseConnection) connection;
-
                     List<QueriesConnection> qcs = dbConnection.getQueries();
                     if (!qcs.isEmpty()) {
                         QueriesConnection connection2 = qcs.get(0);
@@ -382,11 +375,9 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
             repositoryQueryNameList = (String[]) queryStoreNameList.toArray(new String[0]);
             repositoryQueryValueList = (String[]) queryStoreValuesList.toArray(new String[0]);
         }
-
         for (int i = 0; i < elem.getElementParameters().size(); i++) {
             IElementParameter param = elem.getElementParameters().get(i);
             if (param.getName().equals(EParameterName.REPOSITORY_SCHEMA_TYPE.getName())) {
-
                 param.setListItemsDisplayName(repositoryTableNameList);
                 param.setListItemsValue(repositoryTableValueList);
                 if (!repositoryTableMap.keySet().contains(param.getValue())) {
@@ -397,7 +388,6 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                 }
             }
             if (param.getName().equals(EParameterName.REPOSITORY_QUERYSTORE_TYPE.getName())) {
-
                 param.setListItemsDisplayName(repositoryQueryNameList);
                 param.setListItemsValue(repositoryQueryValueList);
                 if (!repositoryQueryStoreMap.keySet().contains(param.getValue())) {
@@ -408,7 +398,6 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                 }
             }
             if (param.getName().equals(EParameterName.REPOSITORY_PROPERTY_TYPE.getName())) {
-
                 String repositoryValue = elem.getElementParameter(EParameterName.PROPERTY_TYPE.getName())
                         .getRepositoryValue();
                 if (repositoryValue != null) {
@@ -435,7 +424,6 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                             connectionNamesList.add(name);
                             connectionValuesList.add(key);
                         }
-
                         if ((connection instanceof DatabaseConnection) && (repositoryValue.startsWith("DATABASE"))) { //$NON-NLS-1$
                             String currentDbType = (String) RepositoryToComponentProperty.getValue(connection, "TYPE"); //$NON-NLS-1$
                             if (repositoryValue.contains(":")) { // database is specified //$NON-NLS-1$
@@ -449,7 +437,6 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                                 connectionValuesList.add(key);
                             }
                         }
-
                     }
                     repositoryConnectionNameList = (String[]) connectionNamesList.toArray(new String[0]);
                     repositoryConnectionValueList = (String[]) connectionValuesList.toArray(new String[0]);
@@ -464,7 +451,6 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                     repositoryConnectionNameList = (String[]) connectionStringList.toArray(new String[0]);
                     repositoryConnectionValueList = (String[]) connectionValuesList.toArray(new String[0]);
                 }
-
                 param.setListItemsDisplayName(repositoryConnectionNameList);
                 param.setListItemsValue(repositoryConnectionValueList);
                 if (!repositoryConnectionItemMap.keySet().contains(param.getValue())) {
@@ -495,6 +481,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
      * Initialize all components for the defined section for this node.
      */
     public void addComponents() {
+        registerListenerForRefreshingSection();
         checkErrorsWhenViewRefreshed = true;
 
         int heightSize = 0, maxRowSize = 0, nbInRow, numInRow;
@@ -621,20 +608,11 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
         composite.setLayout(layout);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.eclipse.ui.views.properties.tabbed.AbstractPropertySection#refresh()
-     */
     public void refresh() {
-        Object object;
-        Iterator<? extends IElementParameter> it;
-        IElementParameter param;
         if (elem == null) {
             return;
         }
         List<? extends IElementParameter> listParam = elem.getElementParameters();
-        it = listParam.iterator();
 
         if (oldSchemaType != null) {
             String newSchemaType = (String) elem.getPropertyValue(EParameterName.SCHEMA_TYPE.getName());
@@ -677,86 +655,13 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
             }
         }
 
-        while (it.hasNext()) {
-            param = it.next();
-            if (param.getCategory() == section) {
-                if (hashCurControls.containsKey(param.getName())) {
-                    object = hashCurControls.get(param.getName());
-                    if ((param.getField() == EParameterFieldType.TEXT)
-                            || (param.getField() == EParameterFieldType.MEMO)
-                            || (param.getField() == EParameterFieldType.FILE)
-                            || (param.getField() == EParameterFieldType.DIRECTORY)) {
-                        Text t = (Text) object;
-                        // editionControlHelper.unregister(t);
-                        Object value = elem.getPropertyValue(param.getName());
-                        if (value == null) {
-                            t.setText(""); //$NON-NLS-1$
-                        } else {
-                            if (!value.equals(t.getText())) {
-                                t.setText((String) value);
-                            }
-                        }
-                        if (checkErrorsWhenViewRefreshed) {
-                            // TODO: need to be modify with this method.
-                            // checkErrorsForPropertiesOnly(t);
-                        }
-                    }
-                    if (param.getField() == EParameterFieldType.VERSION) {
-                        Text t = (Text) object;
-                        t.setText((String) elem.getPropertyValue(param.getName()));
-                    }
-                    if ((param.getField() == EParameterFieldType.MEMO_SQL)
-                            || (param.getField() == EParameterFieldType.MEMO_PERL)) {
-                        ColorStyledText t = (ColorStyledText) object;
-                        // editionControlHelper.unregister(t);
-                        String value = (String) elem.getPropertyValue(param.getName());
-                        if (value == null) {
-                            t.setText(""); //$NON-NLS-1$
-                        } else {
-                            if (!value.equals(t.getText())) {
-                                t.setText(value);
-                            }
-                        }
-                        if (checkErrorsWhenViewRefreshed) {
-                            // TODO: need to be modify with this method.
-                            // checkErrorsForPropertiesOnly(t);
-                        }
-                    }
-                    if (param.getField() == EParameterFieldType.CLOSED_LIST
-                            || param.getField() == EParameterFieldType.COLUMN_LIST
-                            || param.getField() == EParameterFieldType.PREV_COLUMN_LIST) {
-                        CCombo c = (CCombo) object;
-                        String value = new String(""); //$NON-NLS-1$
-                        int nbInList = 0, nbMax = param.getListItemsValue().length;
-                        String name = (String) elem.getPropertyValue(param.getName());
-                        while (value.equals(new String("")) && nbInList < nbMax) { //$NON-NLS-1$
-                            if (name.equals(param.getListItemsValue()[nbInList])) {
-                                value = param.getListItemsDisplayName()[nbInList];
-                            }
-                            nbInList++;
-                        }
-                        String[] paramItems = param.getListItemsDisplayName();
-                        String[] comboItems = c.getItems();
-                        if (!paramItems.equals(comboItems)) {
-                            c.setItems(paramItems);
-                        }
-                        c.setText(value);
-                    }
-                    if (param.getField() == EParameterFieldType.CHECK) {
-                        Button b = (Button) object;
-                        // TODO: need to be modify with this method.
-                        // b.removeSelectionListener(listenerSelection);
-                        b.setSelection((Boolean) elem.getPropertyValue(param.getName()));
-                        // TODO: need to be modify with this method.
-                        // b.addSelectionListener(listenerSelection);
-                    }
-                    if (param.getField() == EParameterFieldType.TABLE) {
-                        TableViewerCreator tableViewerCreator = (TableViewerCreator) object;
-                        updateColumnList(null);
-                        if (!tableViewerCreator.getInputList().equals(param.getValue())) {
-                            tableViewerCreator.init((List) param.getValue());
-                        }
-                        tableViewerCreator.getTableViewer().refresh();
+        for (int i = 0; i < listParam.size(); i++) {
+            if (listParam.get(i).getCategory() == section) {
+                if (listParam.get(i).isShow(listParam)) {
+                    AbstractElementPropertySectionController controller = generator.getController(listParam.get(i)
+                            .getField(), this);
+                    if (controller != null) {
+                        controller.refresh(listParam.get(i), checkErrorsWhenViewRefreshed);
                     }
                 }
             }
@@ -765,16 +670,6 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
         checkErrorsWhenViewRefreshed = false;
     }
 
-    /**
-     * DOC amaumont Comment method "checkErrors".
-     * 
-     * @param control must be or extends <code>Text</code> or <code>StyledText</code>
-     */
-    // private void checkErrorsForPropertiesOnly(Control control) {
-    // if (this.section == EComponentCategory.PROPERTY) {
-    // editionControlHelper.checkErrors(control);
-    // }
-    // }
     // private ISelection lastSelection;
     /*
      * @Override (non-Javadoc)
@@ -949,90 +844,6 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
     public Map<String, Query> getRepositoryQueryStoreMap() {
         return repositoryQueryStoreMap;
     }
-
-    // protected Control addQueryStoreType(final Composite subComposite, final IElementParameter param,
-    // final int numInRow, final int nbInRow, final int top, final Control lastControl) {
-    //    
-    // FormData data;
-    // Control lastControlUsed;
-    // Button resetBtn = null;
-    //    
-    // Point btnSize;
-    //    
-    // Button btn;
-    // btn = getWidgetFactory().createButton(subComposite, "", SWT.PUSH); //$NON-NLS-1$
-    // btnSize = btn.computeSize(SWT.DEFAULT, SWT.DEFAULT);
-    //    
-    // btn.setImage(CorePlugin.getImageDescriptor(DOTS_BUTTON).createImage());
-    //    
-    // btn.addSelectionListener(listenerSelection);
-    // btn.setData(NAME, SCHEMA);
-    // btn.setData(PROPERTY, param.getName());
-    //    
-    // lastControlUsed = btn;
-    //    
-    // if (elem instanceof Node) {
-    // Node node = (Node) elem;
-    // boolean flowMainInput = false;
-    // for (IConnection connec : node.getIncomingConnections()) {
-    // if (connec.getLineStyle().equals(EConnectionType.FLOW_MAIN)) {
-    // flowMainInput = true;
-    // }
-    // }
-    // if (flowMainInput) {
-    // resetBtn = getWidgetFactory().createButton(subComposite, "Sync columns", SWT.PUSH);
-    // resetBtn.setToolTipText("This will take automatically the columns of the previous component");
-    //    
-    // Point resetBtnSize = resetBtn.computeSize(SWT.DEFAULT, SWT.DEFAULT);
-    //    
-    // resetBtn.addSelectionListener(listenerSelection);
-    // data = new FormData();
-    // data.left = new FormAttachment(btn, 0);
-    // data.right = new FormAttachment(btn, resetBtnSize.x + ITabbedPropertyConstants.HSPACE, SWT.RIGHT);
-    // data.top = new FormAttachment(0, top);
-    // data.height = resetBtnSize.y;
-    // resetBtn.setLayoutData(data);
-    // resetBtn.setData(NAME, RESET_COLUMNS);
-    // resetBtn.setData(PROPERTY, param.getName());
-    // resetBtn.setEnabled(!param.isReadOnly());
-    //    
-    // if (resetBtnSize.y > btnSize.y) {
-    // btnSize.y = resetBtnSize.y;
-    // }
-    //    
-    // lastControlUsed = btn;
-    // }
-    // }
-    //    
-    // CLabel labelLabel = getWidgetFactory().createCLabel(subComposite, "Edit schema");
-    // data = new FormData();
-    // data.left = new FormAttachment(lastControl, 0);
-    // data.right = new FormAttachment(lastControl, labelLabel.computeSize(SWT.DEFAULT, SWT.DEFAULT).x
-    // + (ITabbedPropertyConstants.HSPACE * 2), SWT.RIGHT);
-    // if (resetBtn != null) {
-    // data.top = new FormAttachment(resetBtn, 0, SWT.CENTER);
-    // } else {
-    // data.top = new FormAttachment(0, top);
-    // }
-    // labelLabel.setLayoutData(data);
-    // if (numInRow != 1) {
-    // labelLabel.setAlignment(SWT.RIGHT);
-    // }
-    //    
-    // data = new FormData();
-    // data.left = new FormAttachment(labelLabel, 0);
-    // data.right = new FormAttachment(labelLabel, STANDARD_BUTTON_WIDTH, SWT.RIGHT);
-    // if (resetBtn != null) {
-    // data.top = new FormAttachment(resetBtn, 0, SWT.CENTER);
-    // } else {
-    // data.top = new FormAttachment(0, top);
-    // }
-    // data.height = STANDARD_HEIGHT - 2;
-    // btn.setLayoutData(data);
-    //    
-    // curRowSize = btnSize.y + ITabbedPropertyConstants.VSPACE;
-    // return lastControlUsed;
-    // }
 
     /**
      * DOC yzhang Comment method "updateColumnList".
@@ -1283,5 +1094,46 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
             }
         }
         return line;
+    }
+    
+    /**
+     * Get the command stack of the Gef editor.
+     * 
+     * @return
+     */
+    protected CommandStack getCommandStack() {
+        TalendEditor talendEditor = part.getTalendEditor();
+        Object adapter = talendEditor.getAdapter(CommandStack.class);
+        return (CommandStack) adapter;
+    }
+
+    /**
+     * DOC amaumont Comment method "registerListenerForRefreshingSection".
+     */
+    private void registerListenerForRefreshingSection() {
+        if (commandStackEventListener == null) {
+
+            DynamicTabbedPropertySection.commandStackEventListener = new CommandStackEventListener() {
+
+                public void stackChanged(CommandStackEvent event) {
+                    int detail = event.getDetail();
+                    if (0 != (detail & CommandStack.POST_UNDO) || 0 != (detail & CommandStack.POST_REDO)) {
+                        if (event.getCommand() instanceof IExtendedTableCommand) {
+
+                            IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+                            IViewPart view = page.findView("org.eclipse.ui.views.PropertySheet"); //$NON-NLS-1$
+                            PropertySheet sheet = (PropertySheet) view;
+                            TabbedPropertySheetPage tabbedPropertySheetPage = (TabbedPropertySheetPage) sheet
+                                    .getCurrentPage();
+                            tabbedPropertySheetPage.refresh();
+
+                        }
+                    }
+
+                }
+
+            };
+            getCommandStack().addCommandStackEventListener(DynamicTabbedPropertySection.commandStackEventListener);
+        }
     }
 }

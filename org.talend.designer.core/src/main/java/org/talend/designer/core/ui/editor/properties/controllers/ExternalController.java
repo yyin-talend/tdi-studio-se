@@ -186,4 +186,10 @@ public class ExternalController extends AbstractElementPropertySectionController
 
     };
 
+    @Override
+    public void refresh(IElementParameter param, boolean check) {
+        // TODO Auto-generated method stub
+        
+    }
+
 }

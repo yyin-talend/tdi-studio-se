@@ -35,7 +35,9 @@ import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
+import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.designer.core.ui.editor.properties.DynamicTabbedPropertySection;
 import org.talend.designer.core.ui.editor.properties.macrowidgets.tableeditor.PropertiesTableEditorModel;
@@ -167,6 +169,18 @@ public class TableController extends AbstractElementPropertySectionController {
 
     }
 
+    @Override
+    public void refresh(IElementParameter param, boolean check) {
+        TableViewerCreator tableViewerCreator = (TableViewerCreator) hashCurControls.get(param.getName());
+        Object value = param.getValue();
+        if (value instanceof List) {
+            dynamicTabbedPropertySection.updateColumnList(null);
+            if (!tableViewerCreator.getInputList().equals(value)) {
+                tableViewerCreator.init((List) value);
+            }
+            tableViewerCreator.getTableViewer().refresh();
+        }
+    }
     // /**
     // * DOC ftang Comment method "copyTableValue".
     // *

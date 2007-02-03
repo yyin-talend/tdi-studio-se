@@ -1,4 +1,4 @@
-#Sat Feb 03 14:32:12 CST 2007
+#Sat Feb 03 15:21:43 CST 2007
 eclipse.preferences.version=1
 encoding//src/main/java/org/talend/designer/core/model/components/EmfComponent.java=UTF-8
 encoding//src/main/java/org/talend/designer/core/model/process/DataProcess.java=UTF-8
@@ -7,6 +7,7 @@ encoding//src/main/java/org/talend/designer/core/ui/editor/TalendEditorPaletteFa
 encoding//src/main/java/org/talend/designer/core/ui/editor/TalendGridLayer.java=UTF-8
 encoding//src/main/java/org/talend/designer/core/ui/editor/TalendPerlEditor.java=UTF-8
 encoding//src/main/java/org/talend/designer/core/ui/editor/process/Process.java=UTF-8
+encoding//src/main/java/org/talend/designer/core/ui/editor/properties/controllers/messages.properties=8859_1
 encoding//src/main/java/org/talend/designer/core/ui/preferences/DesignerPreferencePage.java=UTF-8
 encoding//src/main/java/org/talend/designer/core/ui/preferences/PreferenceInitializer.java=UTF-8
 encoding//src/main/java/org/talend/designer/core/ui/preferences/TalendDesignerPrefConstants.java=UTF-8

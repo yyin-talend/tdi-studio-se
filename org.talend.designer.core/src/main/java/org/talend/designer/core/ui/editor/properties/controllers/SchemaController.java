@@ -298,4 +298,8 @@ public class SchemaController extends AbstractElementPropertySectionController {
             }
         }
     };
+
+    @Override
+    public void refresh(IElementParameter param, boolean check) {
+    }
 }

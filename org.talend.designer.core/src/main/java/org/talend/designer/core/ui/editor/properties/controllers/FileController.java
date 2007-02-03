@@ -105,8 +105,6 @@ public class FileController extends AbstractElementPropertySectionController {
     public Control createControl(final Composite subComposite, final IElementParameter param, final int numInRow,
             final int nbInRow, final int top, final Control lastControl) {
 
-        Text labelText;
-
         btnEdit = getWidgetFactory().createButton(subComposite, "", SWT.PUSH); //$NON-NLS-1$
         FormData data;
 
@@ -137,7 +135,7 @@ public class FileController extends AbstractElementPropertySectionController {
         }
 
         Control cLayout = dField.getLayoutControl();
-        labelText = (Text) dField.getControl();
+        Text labelText = (Text) dField.getControl();
         cLayout.setBackground(subComposite.getBackground());
         labelText.setEditable(!param.isReadOnly());
 
@@ -218,4 +216,25 @@ public class FileController extends AbstractElementPropertySectionController {
         }
 
     };
+
+    @Override
+    public void refresh(IElementParameter param, boolean checkErrorsWhenViewRefreshed) {
+        Text labelText = (Text) hashCurControls.get(param.getName());
+        Object value = param.getValue();
+        if (labelText == null) {
+            return;
+        }
+        boolean valueChanged = false;
+        if (value == null) {
+            labelText.setText(""); //$NON-NLS-1$
+        } else {
+            if (!value.equals(labelText.getText())) {
+                labelText.setText((String) value);
+                valueChanged = true;
+            }
+        }
+        if (checkErrorsWhenViewRefreshed || valueChanged) {
+            checkErrorsForPropertiesOnly(labelText);
+        }
+    }
 }

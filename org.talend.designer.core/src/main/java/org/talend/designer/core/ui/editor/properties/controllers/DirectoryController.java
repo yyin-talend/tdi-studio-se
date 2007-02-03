@@ -25,7 +25,6 @@ import java.beans.PropertyChangeEvent;
 
 import org.eclipse.core.runtime.Path;
 import org.eclipse.gef.commands.Command;
-import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.jface.fieldassist.DecoratedField;
 import org.eclipse.jface.fieldassist.FieldDecoration;
 import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
@@ -62,7 +61,6 @@ public class DirectoryController extends AbstractElementPropertySectionControlle
     private static final String DIRECTORY = "DIRECTORY"; //$NON-NLS-1$
 
     private Button btnEdit;
-
 
     /**
      * DOC yzhang DirectoryController constructor comment.
@@ -116,8 +114,6 @@ public class DirectoryController extends AbstractElementPropertySectionControlle
     public Control createControl(final Composite subComposite, final IElementParameter param, final int numInRow,
             final int nbInRow, final int top, final Control lastControl) {
 
-        Text labelText;
-
         btnEdit = getWidgetFactory().createButton(subComposite, "", SWT.PUSH); //$NON-NLS-1$
         FormData data;
 
@@ -142,7 +138,7 @@ public class DirectoryController extends AbstractElementPropertySectionControlle
         }
 
         Control cLayout = dField.getLayoutControl();
-        labelText = (Text) dField.getControl();
+        Text labelText = (Text) dField.getControl();
 
         cLayout.setBackground(subComposite.getBackground());
         labelText.setEditable(!param.isReadOnly());
@@ -215,4 +211,24 @@ public class DirectoryController extends AbstractElementPropertySectionControlle
 
     };
 
+    @Override
+    public void refresh(IElementParameter param, boolean checkErrorsWhenViewRefreshed) {
+        Text labelText = (Text) hashCurControls.get(param.getName());
+        Object value = param.getValue();
+        if (labelText == null) {
+            return;
+        }
+        boolean valueChanged = false;
+        if (value == null) {
+            labelText.setText(""); //$NON-NLS-1$
+        } else {
+            if (!value.equals(labelText.getText())) {
+                labelText.setText((String) value);
+                valueChanged = true;
+            }
+        }
+        if (checkErrorsWhenViewRefreshed || valueChanged) {
+            checkErrorsForPropertiesOnly(labelText);
+        }
+    }
 }

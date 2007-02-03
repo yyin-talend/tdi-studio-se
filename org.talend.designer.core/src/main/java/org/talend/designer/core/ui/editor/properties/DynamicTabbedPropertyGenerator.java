@@ -80,14 +80,16 @@ public class DynamicTabbedPropertyGenerator {
             try {
                 String controllerName = element.getAttribute("mapping"); //$NON-NLS-1$
                 EParameterFieldType key = EParameterFieldType.getFieldTypeByName(controllerName);
+                if (!controllers.containsKey(key)) {
                 if (!controllerName.equals(key.toString())) {
                     throw new RuntimeException("Mapping attribute " + controllerName //$NON-NLS-1$
                             + " not included in eumn EParameterFieldType"); //$NON-NLS-1$
                 }
-                IControllerGenerator generator = (IControllerGenerator) element.createExecutableExtension("class"); //$NON-NLS-1$
-                generator.setDynamicTabbedPropertySection(dtp);
-                AbstractElementPropertySectionController controller = generator.generate();
-                controllers.put(key, controller);
+                    IControllerGenerator generator = (IControllerGenerator) element.createExecutableExtension("class"); //$NON-NLS-1$
+                    generator.setDynamicTabbedPropertySection(dtp);
+                    AbstractElementPropertySectionController controller = generator.generate();
+                    controllers.put(key, controller);
+                }
             } catch (CoreException e) {
                 ExceptionHandler.process(e);
             }
