@@ -68,7 +68,6 @@ import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.editor.properties.ContextParameterExtractor;
 import org.talend.designer.core.ui.editor.properties.DynamicTabbedPropertySection;
-import org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController.CheckErrorsHelper.ControlProperties;
 import org.talend.designer.runprocess.IRunProcessService;
 
 /**
@@ -94,7 +93,8 @@ public abstract class AbstractElementPropertySectionController implements Proper
 
     protected EditionControlHelper editionControlHelper;
 
-    protected static final String VARIABLE_TOOLTIP = Messages.getString("AbstractElementPropertySectionController.variableTooltip"); //$NON-NLS-1$
+    protected static final String VARIABLE_TOOLTIP = Messages
+            .getString("AbstractElementPropertySectionController.variableTooltip"); //$NON-NLS-1$
 
     protected static final String NAME = "NAME"; //$NON-NLS-1$
 
@@ -158,7 +158,7 @@ public abstract class AbstractElementPropertySectionController implements Proper
         part = dtp.getPart();
         section = dtp.getSection();
         composite = dtp.getComposite();
-        
+
         editionControlHelper = new EditionControlHelper();
         elem.addPropertyChangeListener(this);
     }
@@ -352,7 +352,8 @@ public abstract class AbstractElementPropertySectionController implements Proper
             boolean isRequired = elem.getElementParameter(getParameterName(control)).isRequired();
             if (problems != null) {
                 if (isRequired && (valueFinal == null || valueFinal.trim().length() == 0)) {
-                    problems.add(new Problem(null, Messages.getString("AbstractElementPropertySectionController.fieldRequired"), ProblemStatus.ERROR)); //$NON-NLS-1$
+                    problems.add(new Problem(null, Messages
+                            .getString("AbstractElementPropertySectionController.fieldRequired"), ProblemStatus.ERROR)); //$NON-NLS-1$
                 }
             }
 
@@ -394,30 +395,29 @@ public abstract class AbstractElementPropertySectionController implements Proper
                 controlToProp.remove(control);
             }
         }
+    }
+
+    /**
+     * 
+     * Container of original properties of Control. <br/>
+     * 
+     * $Id: DynamicTabbedPropertySection.java 865 2006-12-06 06:14:57 +0000 (星期三, 06 十二月 2006) bqian $
+     * 
+     */
+    class ControlProperties {
+
+        private Color originalBgColor;
+
+        private Color originalFgColor;
+
+        private String originalToolTip;
 
         /**
-         * 
-         * Container of original properties of Control. <br/>
-         * 
-         * $Id: DynamicTabbedPropertySection.java 865 2006-12-06 06:14:57 +0000 (星期三, 06 十二月 2006) bqian $
-         * 
+         * DOC amaumont ControlProperties constructor comment.
          */
-        class ControlProperties {
-
-            private Color originalBgColor;
-
-            private Color originalFgColor;
-
-            private String originalToolTip;
-
-            /**
-             * DOC amaumont ControlProperties constructor comment.
-             */
-            public ControlProperties() {
-                super();
-            }
+        public ControlProperties() {
+            super();
         }
-
     }
 
     /**
@@ -504,8 +504,9 @@ public abstract class AbstractElementPropertySectionController implements Proper
     private String getParameterName(Control control) {
         String name = (String) hashCurControls.getKey(control);
         if (name == null) {
-            throw new IllegalStateException("parameterName shouldn't be null or you call this method too early ! (control value : '" //$NON-NLS-1$
-                    + ControlUtils.getText(control) + "')"); //$NON-NLS-1$
+            throw new IllegalStateException(
+                    "parameterName shouldn't be null or you call this method too early ! (control value : '" //$NON-NLS-1$
+                            + ControlUtils.getText(control) + "')"); //$NON-NLS-1$
         }
         return name;
     }
