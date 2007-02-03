@@ -58,7 +58,6 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.views.properties.PropertySheet;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 import org.talend.commons.exception.PersistenceException;
-import org.talend.core.CorePlugin;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.metadata.EMetadataType;
@@ -84,7 +83,6 @@ import org.talend.core.model.properties.User;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.model.temp.ECodeLanguage;
-import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
@@ -113,6 +111,7 @@ import org.talend.designer.core.ui.editor.connections.Connection;
 import org.talend.designer.core.ui.editor.nodecontainer.NodeContainer;
 import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.nodes.Node.Data;
+import org.talend.designer.core.ui.preferences.TalendDesignerPrefConstants;
 import org.talend.designer.core.ui.views.problems.Problems;
 import org.talend.repository.model.ComponentsFactoryProvider;
 import org.talend.repository.model.IProxyRepositoryFactory;
@@ -379,8 +378,8 @@ public class Process extends Element implements IProcess {
         param.setDisplayName(EParameterName.COMP_DEFAULT_FILE_DIR.getDisplayName());
         param.setNumRow(99);
         param.setShow(false);
-        param.setValue(CorePlugin.getDefault().getPluginPreferences().getString(
-                ITalendCorePrefConstants.COMP_DEFAULT_FILE_DIR));
+        param.setValue(DesignerPlugin.getDefault().getPluginPreferences().getString(
+                TalendDesignerPrefConstants.COMP_DEFAULT_FILE_DIR));
         addElementParameter(param);
     }
 
@@ -1054,7 +1053,8 @@ public class Process extends Element implements IProcess {
                         shell.getDisplay().asyncExec(new Runnable() {
 
                             public void run() {
-                                String message = Messages.getString("Process.IfToUpgradeProperty", node.getUniqueName()); //$NON-NLS-1$
+                                String message = Messages
+                                        .getString("Process.IfToUpgradeProperty", node.getUniqueName()); //$NON-NLS-1$
                                 MessageBox mBox = new MessageBox(shell, SWT.YES | SWT.NO | SWT.ICON_QUESTION);
                                 mBox.setText(Messages.getString("Process.propertyModificationDetected")); //$NON-NLS-1$
                                 mBox.setMessage(message);

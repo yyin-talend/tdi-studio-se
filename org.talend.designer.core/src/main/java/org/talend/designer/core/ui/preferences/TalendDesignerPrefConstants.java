@@ -40,4 +40,7 @@ public class TalendDesignerPrefConstants {
     
     /** Default label used for the components. */
     public static final String DEFAULT_DISPLAY = "displayTechnicalComponents"; //$NON-NLS-1$
+    
+    /** Path used for components for the default file directory. */
+    public static final String COMP_DEFAULT_FILE_DIR = "compFileDir"; //$NON-NLS-1$
 }

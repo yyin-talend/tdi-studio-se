@@ -22,6 +22,7 @@
 package org.talend.designer.core.ui.preferences;
 
 import org.eclipse.jface.preference.BooleanFieldEditor;
+import org.eclipse.jface.preference.DirectoryFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.StringFieldEditor;
 import org.eclipse.ui.IWorkbench;
@@ -79,6 +80,11 @@ public class DesignerPreferencePage extends FieldEditorPreferencePage implements
         addField(hintField);
         addField(showHint);
         addField(displayComponent);
+        
+        DirectoryFieldEditor compDefaultFileDir = new DirectoryFieldEditor(TalendDesignerPrefConstants.COMP_DEFAULT_FILE_DIR,
+                Messages.getString("DesignerPreferencePage.defaultFilePathDirectory"), getFieldEditorParent()); //$NON-NLS-1$
+        addField(compDefaultFileDir);
+
     }
 
     public void init(IWorkbench workbench) {

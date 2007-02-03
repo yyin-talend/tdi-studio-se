@@ -21,6 +21,7 @@
 // ============================================================================
 package org.talend.designer.core.ui.preferences;
 
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
 import org.eclipse.gef.ui.palette.FlyoutPaletteComposite;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -48,6 +49,7 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
         store.setDefault(TalendDesignerPrefConstants.DEFAULT_HINT_USED, false);
         store.setDefault(TalendDesignerPrefConstants.DEFAULT_DISPLAY, false);
         store.setDefault(TalendEditorPaletteFactory.PALETTE_STATE, FlyoutPaletteComposite.STATE_PINNED_OPEN);
+        store.setDefault(TalendDesignerPrefConstants.COMP_DEFAULT_FILE_DIR, Platform.getLocation().toOSString());
     }
 
 }
