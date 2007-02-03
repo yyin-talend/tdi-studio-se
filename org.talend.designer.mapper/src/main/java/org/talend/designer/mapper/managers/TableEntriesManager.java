@@ -115,7 +115,8 @@ public class TableEntriesManager {
      */
     public void addTableEntry(ITableEntry dataMapTableEntry, Integer index) {
         if (dataMapTableEntry == null) {
-            throw new IllegalArgumentException(Messages.getString("TableEntriesManager.exceptionMessage.dataMapTableEntryCannotNull")); //$NON-NLS-1$
+            throw new IllegalArgumentException(Messages
+                    .getString("TableEntriesManager.exceptionMessage.dataMapTableEntryCannotNull")); //$NON-NLS-1$
         }
         add(dataMapTableEntry);
         AbstractDataMapTable dataMapTable = dataMapTableEntry.getParent();
@@ -132,7 +133,9 @@ public class TableEntriesManager {
                 ((OutputTable) dataMapTable).addFilterEntry((FilterTableEntry) dataMapTableEntry, index);
             }
         } else {
-            throw new IllegalArgumentException("Type '" + dataMapTableEntry.getClass() + "' is not a valid type");
+            String exceptionMessage = Messages.getString("TableEntriesManager.exceptionMessage.typeIsNotValid", dataMapTableEntry
+                    .getClass().toString());
+            throw new IllegalArgumentException(exceptionMessage);
         }
         // TableEntriesManagerEvent event = new TableEntriesManagerEvent(EVENT_TYPE.ADD);
         // event.entry = dataMapTableEntry;
@@ -161,7 +164,10 @@ public class TableEntriesManager {
                     ((OutputTable) dataMapTable).removeFilterEntry((FilterTableEntry) dataMapTableEntry);
                 }
             } else {
-                throw new IllegalArgumentException("Type '" + dataMapTableEntry.getClass() + "' is not a valid type");
+                String exceptionMessage = Messages.getString("TableEntriesManager.exceptionMessage.typeIsNotValid",
+                        dataMapTableEntry.getClass().toString());
+
+                throw new IllegalArgumentException(exceptionMessage);
             }
         }
     }

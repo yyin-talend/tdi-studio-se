@@ -24,14 +24,15 @@ package org.talend.designer.mapper.i18n;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
+import org.talend.commons.i18n.MessagesCore;
+
 /**
- *  class global comment. Detailled comment
- * <br/>
- *
+ * class global comment. Detailled comment <br/>
+ * 
  * $Id: Messages.java 2007-2-3下午03:03:12 bqian $
- *
+ * 
  */
-public class Messages {
+public class Messages extends MessagesCore {
 
     private static final String BUNDLE_NAME = "messages"; //$NON-NLS-1$
 
@@ -40,11 +41,26 @@ public class Messages {
     private Messages() {
     }
 
-    public static String getString(String key) {
-        try {
-            return RESOURCE_BUNDLE.getString(key);
-        } catch (MissingResourceException e) {
-            return '!' + key + '!';
-        }
+    /**
+     * Returns the i18n formatted message for <i>key</i> in the class bundle.
+     * 
+     * @param key - the key for the desired string
+     * @return the string for the given key in the class resource bundle
+     * @see MessagesCore#getString(String, ResourceBundle)
+     */
+    public static String getString(final String key) {
+        return getString(key, RESOURCE_BUNDLE);
+    }
+
+    /**
+     * Returns the i18n formatted message for <i>key</i> and <i>args</i> in the specified bundle.
+     * 
+     * @param key - the key for the desired string
+     * @param args - arg to include in the string
+     * @return the string for the given key in the given resource bundle
+     * @see MessagesCore#getString(String, ResourceBundle, Object[])
+     */
+    public static String getString(final String key, final Object... args) {
+        return getString(key, RESOURCE_BUNDLE, args);
     }
 }
