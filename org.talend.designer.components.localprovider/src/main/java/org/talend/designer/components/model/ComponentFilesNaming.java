@@ -59,31 +59,31 @@ public final class ComponentFilesNaming implements IComponentFileNaming {
     }
 
     public String getMainXMLFileName(String componentName, String languageSuffix) {
-        return componentName + "_" + languageSuffix + ".xml";
+        return componentName + "_" + languageSuffix + ".xml"; //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     public String getPropertiesFileName(String componentName) {
-        return componentName + "_messages.properties";
+        return componentName + "_messages.properties"; //$NON-NLS-1$
     }
 
     public String getBundleName(String componentName, String source) {
         String baseName = source.replace(File.separatorChar, '.');
-        return baseName + "." + componentName + "." + componentName + "_messages";
+        return baseName + "." + componentName + "." + componentName + "_messages"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
 
     public String getJetFileName(IComponent component, String languageSuffix, ECodePart codePart) {
-        return component.getName() + "_" + codePart + "." + languageSuffix + "jet";
+        return component.getName() + "_" + codePart + "." + languageSuffix + "jet"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
 
     public String getIcon32FileName(String componentName) {
-        return componentName + "_icon32.png";
+        return componentName + "_icon32.png"; //$NON-NLS-1$
     }
 
     public String getIcon24FileName(String componentName) {
-        return componentName + "_icon24.png";
+        return componentName + "_icon24.png"; //$NON-NLS-1$
     }
 
     public String getIcon16FileName(String componentName) {
-        return componentName + "_icon16.png";
+        return componentName + "_icon16.png"; //$NON-NLS-1$
     }
 }

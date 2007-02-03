@@ -72,7 +72,7 @@ public class ComponentsFactory implements IComponentsFactory {
         // 3. Load user components:
         loadComponentsFromFolder(userPath);
 
-        log.debug(componentList.size() + " components loaded in " + (System.currentTimeMillis() - startTime) + " ms");
+        log.debug(componentList.size() + " components loaded in " + (System.currentTimeMillis() - startTime) + " ms"); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     private void loadComponentsFromFolder(String pathSource) {
@@ -98,14 +98,14 @@ public class ComponentsFactory implements IComponentsFactory {
                     EmfComponent currentComp = new EmfComponent(xmlMainFile, pathSource);
 
                     if (componentList.contains(currentComp)) {
-                        log.warn("Component " + currentComp.getName() + " already exists. Cannot load user version.");
+                        log.warn("Component " + currentComp.getName() + " already exists. Cannot load user version."); //$NON-NLS-1$ //$NON-NLS-2$
                     } else {
                         currentComp.setResourceBundle(getComponentResourceBundle(currentComp, pathSource));
                         loadIcons(currentFolder, currentComp);
                         componentList.add(currentComp);
                     }
                 } catch (BusinessException e) {
-                    BusinessException ex = new BusinessException("Cannot load component \"" + currentFolder.getName() + "\": "
+                    BusinessException ex = new BusinessException("Cannot load component \"" + currentFolder.getName() + "\": " //$NON-NLS-1$ //$NON-NLS-2$
                             + e.getMessage(), e);
                     ExceptionHandler.process(ex, Level.WARN);
                 }

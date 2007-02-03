@@ -46,7 +46,7 @@ public class ComponentFileChecker {
 
     private static final Bundle XSD_CONTAINER_BUNDLE = Platform.getBundle(ModelPlugin.MODEL_PLUGIN_ID);
 
-    private static final String XSD_PATH = "model/Component.xsd";
+    private static final String XSD_PATH = "model/Component.xsd"; //$NON-NLS-1$
 
     public static void checkComponentFolder(File currentFolder, String languageSuffix) throws BusinessException {
         checkFiles(currentFolder, languageSuffix);
@@ -62,11 +62,11 @@ public class ComponentFileChecker {
             File schema = new File(url.getPath());
             XSDValidator.checkXSD(file, schema);
         } catch (IOException e) {
-            throw new BusinessException("Cannot find xsd (" + path.lastSegment() + ")", e);
+            throw new BusinessException("Cannot find xsd (" + path.lastSegment() + ")", e); //$NON-NLS-1$ //$NON-NLS-2$
         } catch (SAXException e) {
-            throw new BusinessException("Does not match xsd (" + path.lastSegment() + ")", e);
+            throw new BusinessException("Does not match xsd (" + path.lastSegment() + ")", e); //$NON-NLS-1$ //$NON-NLS-2$
         } catch (ParserConfigurationException e) {
-            throw new BusinessException("Cannot check xsd (" + path.lastSegment() + ")", e);
+            throw new BusinessException("Cannot check xsd (" + path.lastSegment() + ")", e); //$NON-NLS-1$ //$NON-NLS-2$
         }
     }
 
@@ -75,7 +75,7 @@ public class ComponentFileChecker {
                 languageSuffix)) {
             File file = new File(folder, currentFileToCheck);
             if (!file.exists()) {
-                throw new BusinessException("Cannot find file \"" + file.getName() + "\"");
+                throw new BusinessException("Cannot find file \"" + file.getName() + "\""); //$NON-NLS-1$ //$NON-NLS-2$
             }
         }
     }

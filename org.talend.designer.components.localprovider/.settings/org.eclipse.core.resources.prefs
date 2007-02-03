@@ -1,4 +1,5 @@
-#Fri Feb 02 17:53:35 CET 2007
+#Sat Feb 03 11:36:32 CST 2007
 eclipse.preferences.version=1
+encoding//src/main/java/messages.properties=8859_1
 encoding//src/main/java/org/talend/designer/components/model/ComponentsFactory.java=UTF-8
 encoding//src/main/java/org/talend/designer/components/ui/ComponentsPreferencePage.java=UTF-8

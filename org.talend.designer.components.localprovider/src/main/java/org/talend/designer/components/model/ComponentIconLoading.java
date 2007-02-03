@@ -95,7 +95,7 @@ public class ComponentIconLoading {
             url = new URL(folder.toURL() + name);
             return ImageDescriptor.createFromURL(url);
         } catch (MalformedURLException e) {
-            ExceptionHandler.process(new SystemException("Cannot load component icon " + name, e));
+            ExceptionHandler.process(new SystemException("Cannot load component icon " + name, e)); //$NON-NLS-1$
             return ImageProvider.getImageDesc(EImage.DEFAULT_IMAGE);
         }
     }

@@ -26,6 +26,7 @@ import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.talend.designer.components.Activator;
+import org.talend.designer.components.i18n.Messages;
 
 /**
  * This class represents a preference page that is contributed to the Preferences dialog. By subclassing
@@ -37,7 +38,7 @@ import org.talend.designer.components.Activator;
  */
 public class ComponentsPreferencePage extends FieldEditorPreferencePage implements IWorkbenchPreferencePage {
 
-    public static final String USER_COMPONENTS_FOLDER = "USER_COMPONENTS_FOLDER";
+    public static final String USER_COMPONENTS_FOLDER = "USER_COMPONENTS_FOLDER"; //$NON-NLS-1$
 
     public ComponentsPreferencePage() {
         super(GRID);
@@ -51,7 +52,7 @@ public class ComponentsPreferencePage extends FieldEditorPreferencePage implemen
     }
 
     public void createFieldEditors() {
-        DirectoryFieldEditor filePathTemp = new DirectoryFieldEditor(USER_COMPONENTS_FOLDER, "User components folder:",
+        DirectoryFieldEditor filePathTemp = new DirectoryFieldEditor(USER_COMPONENTS_FOLDER, Messages.getString("ComponentsPreferencePage.directoryFieldLabel"), //$NON-NLS-1$
                 getFieldEditorParent());
         addField(filePathTemp);
     }
