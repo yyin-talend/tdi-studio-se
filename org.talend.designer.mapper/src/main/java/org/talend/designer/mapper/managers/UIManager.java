@@ -72,6 +72,7 @@ import org.talend.core.model.process.IProcess;
 import org.talend.core.ui.metadata.editor.MetadataTableEditorView;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.mapper.external.data.ExternalMapperUiProperties;
+import org.talend.designer.mapper.i18n.Messages;
 import org.talend.designer.mapper.language.LanguageProvider;
 import org.talend.designer.mapper.model.table.AbstractDataMapTable;
 import org.talend.designer.mapper.model.table.AbstractInOutTable;
@@ -234,7 +235,10 @@ public class UIManager {
                 // init actions listeners for list which contains metadata
                 metadataTableEditor.addAfterOperationListListener(new IListenableListListener() {
 
-                    @SuppressWarnings("unchecked")
+                    /**
+                     * DOC acer Comment method "handleEvent".
+                     * @param event
+                     */
                     public void handleEvent(ListenableListEvent event) {
 
                         DataMapTableView view = mapperManager.retrieveAbstractDataMapTableView(abstractDataMapTable);
@@ -260,7 +264,7 @@ public class UIManager {
                                 }
 
                             } else {
-                                throw new IllegalStateException("Case not found");
+                                throw new IllegalStateException(Messages.getString("UIManager.1")); //$NON-NLS-1$
                             }
                             refreshBackground(false, false);
                             if (event.index != null) {
@@ -530,7 +534,7 @@ public class UIManager {
             return -mapperUI.getScollbarSelectionZoneOutputs();
 
         default:
-            throw new RuntimeException("The zone " + zone + " does'nt exist !");
+            throw new RuntimeException(Messages.getString("UIManager.2") + zone + Messages.getString("UIManager.3")); //$NON-NLS-1$ //$NON-NLS-2$
         }
     }
 
@@ -544,7 +548,7 @@ public class UIManager {
             return mapperUI.getScollbarZoneOutputs();
 
         default:
-            throw new RuntimeException("The zone " + zone + " does'nt exist !");
+            throw new RuntimeException("The zone " + zone + " does'nt exist !"); //$NON-NLS-1$ //$NON-NLS-2$
         }
     }
 
@@ -686,7 +690,7 @@ public class UIManager {
      * @param isFilterTableSelected TODO
      * @param forceResetHighlightLinksForOtherTables TODO
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked") //$NON-NLS-1$
     public void selectLinks(DataMapTableView dataMapTableView, List<ITableEntry> selectedMetadataTableEntries,
             boolean isFilterTableSelected, boolean forceResetHighlightLinksForOtherTables) {
 
@@ -833,7 +837,7 @@ public class UIManager {
      * @param selection
      * @return
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked") //$NON-NLS-1$
     public List<ITableEntry> extractSelectedTableEntries(ISelection selection) {
         StructuredSelection currentSelection = (StructuredSelection) selection;
         return (List<ITableEntry>) currentSelection.toList();
@@ -920,7 +924,7 @@ public class UIManager {
     /**
      * DOC amaumont Comment method "processAllExpressions".
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked") //$NON-NLS-1$
     public void parseAllExpressionsForAllTables() {
         List<DataMapTableView> tablesView = tableManager.getInputsTablesView();
         tablesView.addAll(tableManager.getVarsTablesView());
@@ -935,7 +939,7 @@ public class UIManager {
      * 
      * @param newLinksMustHaveSelectedState TODO
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked") //$NON-NLS-1$
     public void parseAllExpressions(DataMapTableView dataMapTableView, boolean newLinksMustHaveSelectedState) {
         List<IColumnEntry> columnsEntriesList = dataMapTableView.getDataMapTable().getColumnEntries();
         parseAllExpressions(columnsEntriesList, newLinksMustHaveSelectedState);
@@ -1158,8 +1162,8 @@ public class UIManager {
                 public void run() {
 
                     TableViewerCreator tableViewerCreatorForColumns = dataMapTableView.getTableViewerCreatorForColumns();
-                    boolean propagate = MessageDialog.openQuestion(tableViewerCreatorForColumns.getTable().getShell(), "Propagate",
-                            "Propagate changes to all related expressions in order to keep the links valid ?");
+                    boolean propagate = MessageDialog.openQuestion(tableViewerCreatorForColumns.getTable().getShell(), Messages.getString("UIManager.propagateTitle"), //$NON-NLS-1$
+                            Messages.getString("UIManager.propagateMessage")); //$NON-NLS-1$
                     if (propagate) {
                         TableEntryLocation previousLocation = new TableEntryLocation(currentModifiedITableEntry.getParentName(),
                                 previousColumnName);
@@ -1267,13 +1271,13 @@ public class UIManager {
      */
     public String openNewOutputCreationDialog() {
         final IProcess process = mapperManager.getComponent().getProcess();
-        String outputName = process.generateUniqueConnectionName("newOutput");
-        InputDialog id = new InputDialog(getMapperContainer().getShell(), "Add a new output table", //$NON-NLS-1$
-                "Type a valid output table name :", outputName, new IInputValidator() {
+        String outputName = process.generateUniqueConnectionName("newOutput"); //$NON-NLS-1$
+        InputDialog id = new InputDialog(getMapperContainer().getShell(), Messages.getString("UIManager.addNewOutputTable"), //$NON-NLS-1$
+                Messages.getString("UIManager.typeTableName"), outputName, new IInputValidator() { //$NON-NLS-1$
 
                     public String isValid(String newText) {
                         if (!process.checkValidConnectionName(newText)) {
-                            return "The name of this connection/table is not valid or already exists";
+                            return Messages.getString("UIManager.tableNameIsNotValid"); //$NON-NLS-1$
                         }
                         return null;
                     }
@@ -1298,9 +1302,9 @@ public class UIManager {
             public void run() {
 
                 if (hasInvalidInputExpressionKeys(inputDataMapTableView)) {
-                    if (MessageDialog.openConfirm(inputDataMapTableView.getShell(), "Remove invalid keys",
-                            "Press [Ok] to remove invalid keys of the input table '" + inputDataMapTableView.getDataMapTable().getName()
-                                    + "'")) {
+                    if (MessageDialog.openConfirm(inputDataMapTableView.getShell(), Messages.getString("UIManager.removeInvalidKeys"), //$NON-NLS-1$
+                            Messages.getString("UIManager.comfirmToRemoveTableKeys") + inputDataMapTableView.getDataMapTable().getName() //$NON-NLS-1$
+                                    + "'")) { //$NON-NLS-1$
                         removeInvalidInputKeys(inputDataMapTableView);
                     }
                     refreshInOutTableAndMetaTable(inputDataMapTableView);
@@ -1325,7 +1329,7 @@ public class UIManager {
         } else if (zone == Zone.VARS) {
             return getTablesZoneViewVars();
         } else {
-            throw new IllegalArgumentException("Case not found");
+            throw new IllegalArgumentException("Case not found"); //$NON-NLS-1$
         }
     }
 
@@ -1546,7 +1550,7 @@ public class UIManager {
             tablesZoneView = getTablesZoneViewOutputs();
             tablesView = mapperManager.getOutputsTablesView();
         } else {
-            throw new RuntimeException("Case not found:" + zone);
+            throw new RuntimeException("Case not found:" + zone); //$NON-NLS-1$
         }
 
         Layout layout = tablesZoneView.getLayout();

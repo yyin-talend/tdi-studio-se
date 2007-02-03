@@ -42,6 +42,7 @@ import org.talend.designer.mapper.external.connection.IOConnection;
 import org.talend.designer.mapper.external.converter.ExternalDataConverter;
 import org.talend.designer.mapper.external.data.ExternalMapperData;
 import org.talend.designer.mapper.external.data.ExternalMapperUiProperties;
+import org.talend.designer.mapper.i18n.Messages;
 import org.talend.designer.mapper.language.LanguageProvider;
 import org.talend.designer.mapper.managers.MapperManager;
 import org.talend.designer.mapper.model.MapperModel;
@@ -108,7 +109,7 @@ public class MapperMain {
         // Shell shell = new Shell(display);
         // shell.setImage(ImageProviderMapper.getImage(ImageInfo.MAPPER_ICON));
         shell.setImage(createImage);
-        shell.setText("Talend Open Studio - tMap - " + connector.getUniqueName());
+        shell.setText(Messages.getString("MapperMain.title") + connector.getUniqueName()); //$NON-NLS-1$
         ExternalMapperUiProperties uiProperties = mapperManager.getUiManager().getUiProperties();
         Rectangle boundsMapper = uiProperties.getBoundsMapper();
         if (uiProperties.isShellMaximized()) {

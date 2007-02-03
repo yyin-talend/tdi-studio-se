@@ -45,6 +45,7 @@ import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.mapper.Activator;
 import org.talend.designer.mapper.MapperComponent;
 import org.talend.designer.mapper.external.data.ExternalMapperData;
+import org.talend.designer.mapper.i18n.Messages;
 import org.talend.designer.mapper.language.LanguageProvider;
 import org.talend.designer.mapper.language.generation.GenerationManager;
 import org.talend.designer.mapper.language.generation.JavaGenerationManager;
@@ -81,7 +82,7 @@ import org.talend.repository.model.RepositoryConstants;
  */
 public class MapperManager {
 
-    public static final String MAPPER_MODEL_DATA = "MAPPER_MODEL_DATA";
+    public static final String MAPPER_MODEL_DATA = "MAPPER_MODEL_DATA"; //$NON-NLS-1$
 
     private TableEntriesManager tableEntriesManager;
 
@@ -245,7 +246,7 @@ public class MapperManager {
         } else if (currentLink.getPointLinkDescriptor2().getTableEntry() == entryCauseOfChange) {
             sourceIsCauseOfChange = false;
         } else {
-            throw new IllegalArgumentException("The entryCauseOfChange must be the source or the target of the link");
+            throw new IllegalArgumentException(Messages.getString("MapperManager.exceptionMessage.mustBeSourceOrTarget")); //$NON-NLS-1$
         }
 
         if (sourceIsCauseOfChange) {
@@ -410,7 +411,7 @@ public class MapperManager {
         } else if (dataMapTableView.getZone() == Zone.OUTPUTS) {
             dataMapTableEntry = new OutputColumnTableEntry(abstractDataMapTable, metadataColumn);
         } else {
-            throw new IllegalArgumentException("Use other signature method to add entry");
+            throw new IllegalArgumentException(Messages.getString("MapperManager.exceptionMessage.useOtherSignature")); //$NON-NLS-1$
         }
         tableEntriesManager.addTableEntry(dataMapTableEntry, index);
         return dataMapTableEntry;
@@ -434,7 +435,7 @@ public class MapperManager {
         if (dataMapTableView.getZone() == Zone.VARS) {
             dataMapTableEntry = new VarTableEntry(abstractDataMapTable, name, null, type);
         } else {
-            throw new IllegalArgumentException("Use other signature method to add entry");
+            throw new IllegalArgumentException(Messages.getString("MapperManager.exceptionMessage.useOtherSignature")); //$NON-NLS-1$
         }
 
         AddVarEntryCommand varEntryCommand = new AddVarEntryCommand(tableEntriesManager, dataMapTableEntry, index);
@@ -501,8 +502,8 @@ public class MapperManager {
 
         if (currentSelectedDataMapTableView != null) {
             String tableName = currentSelectedDataMapTableView.getDataMapTable().getName();
-            if (MessageDialog.openConfirm(currentSelectedDataMapTableView.getShell(), "Remove output table",
-                    "Are you sure you want to remove the output table '" + tableName + "' ?")) {
+            if (MessageDialog.openConfirm(currentSelectedDataMapTableView.getShell(), Messages.getString("MapperManager.removeOutputTableTitle"), //$NON-NLS-1$
+                    Messages.getString("MapperManager.removeOutputTableTitleMessage") + tableName + "' ?")) { //$NON-NLS-1$ //$NON-NLS-2$
                 IProcess process = mapperComponent.getProcess();
                 uiManager.removeOutputTableView(currentSelectedDataMapTableView);
                 uiManager.updateToolbarButtonsStates(Zone.OUTPUTS);
@@ -566,7 +567,7 @@ public class MapperManager {
             if (!exists) {
                 break;
             }
-            tableEntryLocation.columnName = proposedLocation.columnName + "_" + counter++;
+            tableEntryLocation.columnName = proposedLocation.columnName + "_" + counter++; //$NON-NLS-1$
         }
         return tableEntryLocation;
     }
@@ -657,8 +658,8 @@ public class MapperManager {
      * @return
      */
     private String getPreviewFileName() {
-        return mapperComponent.getProcess().getId() + "-" + mapperComponent.getUniqueName() + "-" + EParameterName.PREVIEW.getName()
-                + ".bmp";
+        return mapperComponent.getProcess().getId() + "-" + mapperComponent.getUniqueName() + "-" + EParameterName.PREVIEW.getName() //$NON-NLS-1$ //$NON-NLS-2$
+                + ".bmp"; //$NON-NLS-1$
     }
 
     public void updateEmfParameters(String... parametersToUpdate) {
@@ -674,7 +675,7 @@ public class MapperManager {
                 // set preview path to PREVIEW parameter
                 if (EParameterName.PREVIEW.getName().equals(parameter.getName())) {
                     String previewFileName = getPreviewFileName();
-                    parameter.setValue(previewFileName == null ? "" : previewFileName);
+                    parameter.setValue(previewFileName == null ? "" : previewFileName); //$NON-NLS-1$
                 }
             }
         }

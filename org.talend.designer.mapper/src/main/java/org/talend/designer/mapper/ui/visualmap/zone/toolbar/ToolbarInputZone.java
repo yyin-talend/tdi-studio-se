@@ -22,6 +22,7 @@
 package org.talend.designer.mapper.ui.visualmap.zone.toolbar;
 
 import org.eclipse.swt.widgets.Composite;
+import org.talend.designer.mapper.i18n.Messages;
 import org.talend.designer.mapper.managers.MapperManager;
 import org.talend.designer.mapper.ui.visualmap.zone.Zone;
 
@@ -33,13 +34,13 @@ import org.talend.designer.mapper.ui.visualmap.zone.Zone;
  */
 public class ToolbarInputZone extends ToolbarZone {
 
-    public static final String MINIMIZE_TOOLTIP = "Minimize all input tables";
+    public static final String MINIMIZE_TOOLTIP = Messages.getString("ToolbarInputZone.minimizeTooltip"); //$NON-NLS-1$
 
-    public static final String RESTORE_TOOLTIP = "Restore all input tables";
+    public static final String RESTORE_TOOLTIP = Messages.getString("ToolbarInputZone.restoreTooltip"); //$NON-NLS-1$
 
-    private static final String MOVE_UP_TOOLTIP = "Move up selected input lookup table";
+    private static final String MOVE_UP_TOOLTIP = Messages.getString("ToolbarInputZone.moveupTooltip"); //$NON-NLS-1$
 
-    private static final String MOVE_DOWN_TOOLTIP = "Move down selected output lookup table";
+    private static final String MOVE_DOWN_TOOLTIP = Messages.getString("ToolbarInputZone.movedownTooltip"); //$NON-NLS-1$
     
 
     /**

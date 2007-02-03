@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.talend.designer.mapper.external.data.ExternalMapperTableEntry;
+import org.talend.designer.mapper.i18n.Messages;
 import org.talend.designer.mapper.language.ILanguage;
 import org.talend.designer.mapper.model.tableentry.TableEntryLocation;
 import org.talend.designer.mapper.utils.DataMapExpressionParser;
@@ -104,7 +105,7 @@ public class PerlGenerationManager extends GenerationManager {
                     new TableType[] { TableType.INPUT, TableType.VARS });
 
             if (lstSize > 1) {
-                stringBuilder.append(" ( " + constraintExpressionToWrite + " ) ");
+                stringBuilder.append(" ( " + constraintExpressionToWrite + " ) "); //$NON-NLS-1$ //$NON-NLS-2$
             } else {
                 stringBuilder.append(constraintExpressionToWrite);
             }
@@ -123,7 +124,7 @@ public class PerlGenerationManager extends GenerationManager {
      * @return
      */
     public String buildNewArrayDeclaration(String name, int indent) {
-        return "my @" + name + " = ();";
+        return "my @" + name + " = ();"; //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     /**
@@ -133,12 +134,12 @@ public class PerlGenerationManager extends GenerationManager {
      * @return
      */
     public String buildNewArrayDeclarationWithKeyValue(String name, String[] keysValues, int indent) {
-        String string = "";
-        string += "my @" + name + " = @{ $tHash_" + name + "";
+        String string = ""; //$NON-NLS-1$
+        string += "my @" + name + " = @{ $tHash_" + name + ""; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         for (int i = 0; i < keysValues.length; i++) {
-            string += "{ " + keysValues[i] + " }";
+            string += "{ " + keysValues[i] + " }"; //$NON-NLS-1$ //$NON-NLS-2$
         }
-        string += "};";
+        string += "};"; //$NON-NLS-1$
         return string;
     }
 

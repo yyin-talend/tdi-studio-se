@@ -219,7 +219,7 @@ public class DropContextAnalyzer {
     /**
      * .
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked") //$NON-NLS-1$
     private void analyzeCursorOverExpressionCell() {
         Point pointCursor = currentTableTarget.toControl(event.x, event.y);
         DataMapTableView dataMapTableView = mapperManager.retrieveDataMapTableView(currentTableTarget);
@@ -373,9 +373,9 @@ public class DropContextAnalyzer {
      */
     @Override
     public String toString() {
-        return "\nDropContextAnalyzer instance:" + "\n isTargetEntryValid=" + isDropValid + "\n insertionIndicatorVisible="
-                + insertionEntryMode + "\n mapOneToOne=" + mapOneToOneMode + "\n overwriteExpression=" + overwriteExpression
-                + "\n isCursorOverExpressionColumn=" + isCursorOverExpressionCell;
+        return "\nDropContextAnalyzer instance:" + "\n isTargetEntryValid=" + isDropValid + "\n insertionIndicatorVisible=" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                + insertionEntryMode + "\n mapOneToOne=" + mapOneToOneMode + "\n overwriteExpression=" + overwriteExpression //$NON-NLS-1$ //$NON-NLS-2$
+                + "\n isCursorOverExpressionColumn=" + isCursorOverExpressionCell; //$NON-NLS-1$
     }
 
     public boolean isMapOneToOneAuthorized() {

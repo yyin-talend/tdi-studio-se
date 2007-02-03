@@ -27,6 +27,7 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.ToolItem;
 import org.talend.commons.ui.image.EImage;
+import org.talend.designer.mapper.i18n.Messages;
 import org.talend.designer.mapper.managers.MapperManager;
 import org.talend.designer.mapper.ui.visualmap.zone.Zone;
 
@@ -44,13 +45,13 @@ public class ToolbarOutputZone extends ToolbarZone {
 
     private ToolItem guessItem;
 
-    public static final String MINIMIZE_TOOLTIP = "Minimize all output tables";
+    public static final String MINIMIZE_TOOLTIP = Messages.getString("ToolbarOutputZone.minimizeTooltip"); //$NON-NLS-1$
 
-    public static final String RESTORE_TOOLTIP = "Restore all output tables";
+    public static final String RESTORE_TOOLTIP = Messages.getString("ToolbarOutputZone.restorTooltip"); //$NON-NLS-1$
 
-    private static final String MOVE_UP_TOOLTIP = "Move up selected output table";
+    private static final String MOVE_UP_TOOLTIP = Messages.getString("ToolbarOutputZone.moveupTooltip"); //$NON-NLS-1$
 
-    private static final String MOVE_DOWN_TOOLTIP = "Move down selected output table";
+    private static final String MOVE_DOWN_TOOLTIP = Messages.getString("ToolbarOutputZone.movedownTooltip"); //$NON-NLS-1$
     
     /**
      * DOC amaumont MatadataToolbarEditor constructor comment.
@@ -72,7 +73,7 @@ public class ToolbarOutputZone extends ToolbarZone {
     private void createComponents() {
 
         addOutputItem = new ToolItem(getToolBarActions(), SWT.PUSH);
-        addOutputItem.setToolTipText("Add output table");
+        addOutputItem.setToolTipText(Messages.getString("ToolbarOutputZone.widgetTooltip.addOutputTable")); //$NON-NLS-1$
         addOutputItem.setImage(org.talend.commons.ui.image.ImageProvider.getImage(org.talend.commons.ui.image.ImageProvider
                 .getImageDesc(EImage.ADD_ICON)));
 
@@ -80,15 +81,15 @@ public class ToolbarOutputZone extends ToolbarZone {
         removeOutputItem.setEnabled(false);
         removeOutputItem.setImage(org.talend.commons.ui.image.ImageProvider.getImage(org.talend.commons.ui.image.ImageProvider
                 .getImageDesc(EImage.MINUS_ICON)));
-        removeOutputItem.setToolTipText("Remove selected output table");
+        removeOutputItem.setToolTipText(Messages.getString("ToolbarOutputZone.widgetTooltip.removeOutputTable")); //$NON-NLS-1$
 
         addCommonsComponents();
         
         new ToolItem(getToolBarActions(), SWT.SEPARATOR);
         
         guessItem = new ToolItem(getToolBarActions(), SWT.PUSH);
-        guessItem.setToolTipText("Map automatically inputs and outputs (for empty expressions only)");
-        guessItem.setText("Auto map!");
+        guessItem.setToolTipText(Messages.getString("ToolbarOutputZone.widgetTooltip.mapInputAndOutput")); //$NON-NLS-1$
+        guessItem.setText(Messages.getString("ToolbarOutputZone.widgetText.autoMap")); //$NON-NLS-1$
         
     }
 

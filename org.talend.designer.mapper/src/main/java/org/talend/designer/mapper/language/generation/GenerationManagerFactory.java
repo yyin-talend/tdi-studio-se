@@ -49,7 +49,7 @@ public class GenerationManagerFactory {
         } else if (language instanceof JavaLanguage) {
             gen = new JavaGenerationManager(language);
         } else {
-            throw new IllegalArgumentException("Case not found !");
+            throw new IllegalArgumentException("Case not found !"); //$NON-NLS-1$
         }
         return gen;
     }

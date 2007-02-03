@@ -33,7 +33,7 @@ import org.talend.core.model.temp.ECodeLanguage;
  */
 public abstract class AbstractLanguage implements ILanguage {
 
-    public static final String CARRIAGE_RETURN = "\n";
+    public static final String CARRIAGE_RETURN = "\n"; //$NON-NLS-1$
 
     private ECodeLanguage codeLanguage;
 

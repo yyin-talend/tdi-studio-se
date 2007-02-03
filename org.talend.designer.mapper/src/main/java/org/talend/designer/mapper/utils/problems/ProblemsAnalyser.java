@@ -122,7 +122,7 @@ public class ProblemsAnalyser {
             }
 
             if (!atLeastOneExpressionFilled) {
-                addProblem(new Problem(null, "The lookup table '" + table.getName() + "' should have at least one expression key filled. ",
+                addProblem(new Problem(null, "The lookup table '" + table.getName() + "' should have at least one expression key filled. ", //$NON-NLS-1$ //$NON-NLS-2$
                         ProblemStatus.WARNING));
             }
 
@@ -149,13 +149,13 @@ public class ProblemsAnalyser {
                 InputColumnTableEntry inputEntry = (InputColumnTableEntry) entry;
                 String columnName = entry.getName();
                 if (mapperManager.checkEntryHasInvalidUncheckedKey(inputEntry)) {
-                    String description = "Key of " + currentLanguage.getLocation(tableName, columnName)
-                            + " input entry should be checked or expression should be removed. ";
+                    String description = "Key of " + currentLanguage.getLocation(tableName, columnName) //$NON-NLS-1$
+                            + " input entry should be checked or expression should be removed. "; //$NON-NLS-1$
                     addProblem(new Problem(null, description, ProblemStatus.WARNING));
                 }
                 if (mapperManager.checkEntryHasInvalidCheckedKey(inputEntry)) {
-                    String description = "Key of " + currentLanguage.getLocation(tableName, columnName)
-                            + " input entry should be unchecked or expression should be filled. ";
+                    String description = "Key of " + currentLanguage.getLocation(tableName, columnName) //$NON-NLS-1$
+                            + " input entry should be unchecked or expression should be filled. "; //$NON-NLS-1$
                     addProblem(new Problem(null, description, ProblemStatus.WARNING));
                 }
             }
@@ -189,10 +189,10 @@ public class ProblemsAnalyser {
                     }
                     if (problems != null) {
                         String location = currentLanguage.getLocation(table.getName(), entry.getName());
-                        String prefix = "Expression of " + location + " is invalid : ";
+                        String prefix = "Expression of " + location + " is invalid : "; //$NON-NLS-1$ //$NON-NLS-2$
                         for (Problem problem : problems) {
                             if (!problem.getDescription().startsWith(prefix)) {
-                                String description = prefix + problem.getDescription() + ".";
+                                String description = prefix + problem.getDescription() + "."; //$NON-NLS-1$
                                 problem.setDescription(description);
                             }
                             addProblem(problem);
@@ -201,7 +201,7 @@ public class ProblemsAnalyser {
                 } // for (ExternalMapperTableEntry entry : metadataTableEntries) {
             }
             if (table.getConstraintTableEntries() != null) {
-                String prefix = "Filter invalid in table " + table.getName() + " : ";
+                String prefix = "Filter invalid in table " + table.getName() + " : "; //$NON-NLS-1$ //$NON-NLS-2$
                 for (ExternalMapperTableEntry entry : table.getConstraintTableEntries()) {
 
                     List<Problem> problems = null;
@@ -215,7 +215,7 @@ public class ProblemsAnalyser {
                     if (problems != null) {
                         for (Problem problem : problems) {
                             if (!problem.getDescription().startsWith(prefix)) {
-                                String description = prefix + problem.getDescription() + ".";
+                                String description = prefix + problem.getDescription() + "."; //$NON-NLS-1$
                                 problem.setDescription(description);
                             }
                             addProblem(problem);

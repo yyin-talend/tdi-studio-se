@@ -482,7 +482,7 @@ public class CompleteDropTargetListener extends DefaultDropTargetListener {
      * @param metadataColumnsBeingAdded
      * @param metadataEditorEvent
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked") //$NON-NLS-1$
     private void updateExpressionsOfInsertedEntries(ILanguage currentLanguage, MetadataTableEditorView metadataEditorView,
             int currentIndex, ArrayList<ITableEntry> sourceEntriesOfEntriesBeingAdded, boolean targetTableIsConstraintsTable,
             TableViewerCreator tableViewerCreatorTarget, ArrayList<IMetadataColumn> metadataColumnsBeingAdded
@@ -517,7 +517,7 @@ public class CompleteDropTargetListener extends DefaultDropTargetListener {
                 }
 
                 if (location != null) {
-                    dataMapTableEntry.setExpression(location + " ");
+                    dataMapTableEntry.setExpression(location + " "); //$NON-NLS-1$
                 }
             }
         }
@@ -531,12 +531,12 @@ public class CompleteDropTargetListener extends DefaultDropTargetListener {
 
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked") //$NON-NLS-1$
     private ITableEntry getNextEntryTarget(ITableEntry currentEntryTarget, TableViewerCreator tableViewerCreatorTarget) {
         // mapperManager.get
         // currentEntryTarget.getParent()
         if (currentEntryTarget == null) {
-            throw new IllegalArgumentException("currentEntryTarget should'nt be null");
+            throw new IllegalArgumentException("currentEntryTarget should'nt be null"); //$NON-NLS-1$
         }
         List<ITableEntry> tableEntries = tableViewerCreatorTarget.getInputList();
         int indexCurrentEntryTarget = tableEntries.indexOf(currentEntryTarget);
@@ -590,7 +590,7 @@ public class CompleteDropTargetListener extends DefaultDropTargetListener {
 
         dataMapTableEntry = mapperManager.addNewVarEntry(dataMapTableViewTarget, columnName, currentIndex++, type);
         String location = currentLanguage.getLocation(tableEntrySource.getParentName(), tableEntrySource.getName());
-        dataMapTableEntry.setExpression(location + " ");
+        dataMapTableEntry.setExpression(location + " "); //$NON-NLS-1$
         return currentIndex;
     }
 
@@ -607,22 +607,22 @@ public class CompleteDropTargetListener extends DefaultDropTargetListener {
         }
         String expressionToWrite = null;
         if (overwriteExpression) {
-            expressionToWrite = expression + "  ";
+            expressionToWrite = expression + "  "; //$NON-NLS-1$
         } else {
             String currentTargetExpression = entryTarget.getExpression();
             if (currentTargetExpression == null) {
-                currentTargetExpression = "";
+                currentTargetExpression = ""; //$NON-NLS-1$
             }
-            String space = "";
-            boolean isEmpty = "".equals(currentTargetExpression.trim());
-            if (currentTargetExpression.endsWith("  ")) {
-                space = "";
-            } else if (!isEmpty && currentTargetExpression.endsWith(" ")) {
-                space = " ";
+            String space = ""; //$NON-NLS-1$
+            boolean isEmpty = "".equals(currentTargetExpression.trim()); //$NON-NLS-1$
+            if (currentTargetExpression.endsWith("  ")) { //$NON-NLS-1$
+                space = ""; //$NON-NLS-1$
+            } else if (!isEmpty && currentTargetExpression.endsWith(" ")) { //$NON-NLS-1$
+                space = " "; //$NON-NLS-1$
             } else if (!isEmpty) {
-                space = "  ";
+                space = "  "; //$NON-NLS-1$
             }
-            expressionToWrite = currentTargetExpression + space + expression + " ";
+            expressionToWrite = currentTargetExpression + space + expression + " "; //$NON-NLS-1$
         }
         entryTarget.setExpression(expressionToWrite);
 

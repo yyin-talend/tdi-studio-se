@@ -94,6 +94,7 @@ import org.talend.commons.utils.threading.ExecutionLimiter;
 import org.talend.core.model.process.Problem;
 import org.talend.core.ui.proposal.ProcessProposalProvider;
 import org.talend.designer.mapper.MapperMain;
+import org.talend.designer.mapper.i18n.Messages;
 import org.talend.designer.mapper.managers.MapperManager;
 import org.talend.designer.mapper.managers.UIManager;
 import org.talend.designer.mapper.model.table.AbstractDataMapTable;
@@ -196,11 +197,11 @@ public abstract class DataMapTableView extends Composite {
 
     private static final int HEADER_HEIGHT = 23;
 
-    public static final String ID_NAME_COLUMN = "ID_NAME_COLUMN";
+    public static final String ID_NAME_COLUMN = "ID_NAME_COLUMN"; //$NON-NLS-1$
 
-    public static final String ID_EXPRESSION_COLUMN = "ID_EXPRESSION_COLUMN";
+    public static final String ID_EXPRESSION_COLUMN = "ID_EXPRESSION_COLUMN"; //$NON-NLS-1$
 
-    public static final String COLUMN_NAME = "Column";
+    public static final String COLUMN_NAME = "Column"; //$NON-NLS-1$
 
     protected GridData tableForConstraintsGridData;
 
@@ -543,17 +544,17 @@ public abstract class DataMapTableView extends Composite {
                     String toolTip = null;
                     if (tableEntry.getProblems() != null) {
                         List<Problem> problems = tableEntry.getProblems();
-                        toolTip = "";
+                        toolTip = ""; //$NON-NLS-1$
                         for (Problem problem : problems) {
-                            String description = problem.getDescription().replaceAll("[\r\n\t]", "");
-                            toolTip += description + "\n";
+                            String description = problem.getDescription().replaceAll("[\r\n\t]", ""); //$NON-NLS-1$ //$NON-NLS-2$
+                            toolTip += description + "\n"; //$NON-NLS-1$
                         }
                     }
 
                     String tableToolTip = table.getToolTipText();
                     if (!WindowSystem.isGTK()
                             || WindowSystem.isGTK()
-                            && ((tableToolTip == null || tableToolTip.equals("")) && toolTip != null || tableToolTip != null
+                            && ((tableToolTip == null || tableToolTip.equals("")) && toolTip != null || tableToolTip != null //$NON-NLS-1$
                                     && toolTip == null || toolTip != null && !toolTip.equals(tableToolTip))) {
                         setTableToolTipText(table, tableColumn, tableEntry, toolTip);
                     }
@@ -905,7 +906,7 @@ public abstract class DataMapTableView extends Composite {
     protected void createFiltersToolItems() {
 
         ToolItem addFilterButton = new ToolItem(toolBarActions, SWT.PUSH);
-        addFilterButton.setToolTipText("Add filter row");
+        addFilterButton.setToolTipText(Messages.getString("DataMapTableView.buttonTooltip.addFilterRow")); //$NON-NLS-1$
         addFilterButton.setImage(ImageProviderMapper.getImage(ImageInfo.ADD_FILTER_ICON));
 
         // /////////////////////////////////////////////////////////////////
@@ -924,7 +925,7 @@ public abstract class DataMapTableView extends Composite {
                     if (selection.length > 0) {
                         index = selection[selection.length - 1] + 1;
                     }
-                    mapperManager.addNewFilterEntry(DataMapTableView.this, "newFilter" + ++constraintCounter, index);
+                    mapperManager.addNewFilterEntry(DataMapTableView.this, "newFilter" + ++constraintCounter, index); //$NON-NLS-1$
                     updateGridDataHeightForTableConstraints();
                     DataMapTableView.this.changeSize(DataMapTableView.this.getPreferredSize(false, true, true), true, true);
                     tableViewerCreatorForFilters.getTableViewer().refresh();
@@ -939,7 +940,7 @@ public abstract class DataMapTableView extends Composite {
         // /////////////////////////////////////////////////////////////////
 
         final ToolItem rejectFilterCheck = new ToolItem(toolBarActions, SWT.CHECK);
-        rejectFilterCheck.setToolTipText("Enable/disable output reject");
+        rejectFilterCheck.setToolTipText(Messages.getString("DataMapTableView.widgetTooltip.enableOutputReject")); //$NON-NLS-1$
         boolean isReject = ((OutputTable) abstractDataMapTable).isReject();
         // Image image = ImageProviderMapper.getImage(isReject ? ImageInfo.CHECKED_ICON : ImageInfo.UNCHECKED_ICON);
         Image image = ImageProviderMapper.getImage(isReject ? ImageInfo.REJECT_FILTER_ICON : ImageInfo.REJECT_FILTER_ICON);
@@ -983,7 +984,7 @@ public abstract class DataMapTableView extends Composite {
 
         // // /////////////////////////////////////////////////////////////////
         final ToolItem rejectInnerJoinFilterCheck = new ToolItem(toolBarActions, SWT.CHECK);
-        rejectInnerJoinFilterCheck.setToolTipText("Enable/disable lookup inner join reject");
+        rejectInnerJoinFilterCheck.setToolTipText(Messages.getString("DataMapTableView.widgetTooltip.enableLookupInnerJoin")); //$NON-NLS-1$
         boolean isRejectInnerJoin = ((OutputTable) abstractDataMapTable).isRejectInnerJoin();
         // image = ImageProviderMapper.getImage(isRejectInnerJoin ? ImageInfo.CHECKED_ICON : ImageInfo.UNCHECKED_ICON);
         image = ImageProviderMapper.getImage(isRejectInnerJoin ? ImageInfo.REJECT_LOOKUP_ICON : ImageInfo.REJECT_LOOKUP_ICON);
@@ -1059,12 +1060,12 @@ public abstract class DataMapTableView extends Composite {
             abstractDataMapTable.setMinimized(true);
             minimizeButton.setSelection(true);
             minimizeButton.setImage(ImageProviderMapper.getImage(ImageInfo.RESTORE_ICON));
-            minimizeButton.setToolTipText("Restore");
+            minimizeButton.setToolTipText(Messages.getString("DataMapTableView.buttonTooltip.restore")); //$NON-NLS-1$
         } else {
             abstractDataMapTable.setMinimized(false);
             minimizeButton.setSelection(false);
             minimizeButton.setImage(ImageProviderMapper.getImage(ImageInfo.MINIMIZE_ICON));
-            minimizeButton.setToolTipText("Minimize");
+            minimizeButton.setToolTipText(Messages.getString("DataMapTableView.buttonTooltip.minimize")); //$NON-NLS-1$
         }
     }
 
@@ -1171,24 +1172,24 @@ public abstract class DataMapTableView extends Composite {
                                     if (selection.x - 1 > 0) {
                                         char previousChar = mapperColorStyledText.getText().charAt(selection.x - 1);
                                         if (previousChar == '\n') {
-                                            mapperColorStyledText.replaceTextRangeWithoutNotifyListeners(selection.x - 2, 2, "");
+                                            mapperColorStyledText.replaceTextRangeWithoutNotifyListeners(selection.x - 2, 2, ""); //$NON-NLS-1$
                                         } else {
-                                            mapperColorStyledText.replaceTextRangeWithoutNotifyListeners(selection.x - 1, 1, "");
+                                            mapperColorStyledText.replaceTextRangeWithoutNotifyListeners(selection.x - 1, 1, ""); //$NON-NLS-1$
                                         }
                                     }
                                 } else {
                                     if (selection.x < mapperColorStyledText.getText().length()) {
                                         char nextChar = mapperColorStyledText.getText().charAt(selection.x);
                                         if (nextChar == '\r') {
-                                            mapperColorStyledText.replaceTextRangeWithoutNotifyListeners(selection.x, 2, "");
+                                            mapperColorStyledText.replaceTextRangeWithoutNotifyListeners(selection.x, 2, ""); //$NON-NLS-1$
                                         } else {
-                                            mapperColorStyledText.replaceTextRangeWithoutNotifyListeners(selection.x, 1, "");
+                                            mapperColorStyledText.replaceTextRangeWithoutNotifyListeners(selection.x, 1, ""); //$NON-NLS-1$
                                         }
                                     }
                                 }
 
                             } else {
-                                mapperColorStyledText.replaceTextRangeWithoutNotifyListeners(selection.x, selection.y - selection.x, "");
+                                mapperColorStyledText.replaceTextRangeWithoutNotifyListeners(selection.x, selection.y - selection.x, ""); //$NON-NLS-1$
                                 highlightLineAndSetSelectionOfStyledText(expressionTextEditor);
                             }
                         } else {
@@ -1391,7 +1392,7 @@ public abstract class DataMapTableView extends Composite {
                 StyledTextHandler styledTextHandler = mapperManager.getUiManager().getTabFolderEditors().getStyledTextHandler();
                 styledTextHandler.setCurrentEntry(currentModifiedEntry);
                 styledTextHandler.getStyledText().setText(
-                        currentModifiedEntry.getExpression() == null ? "" : currentModifiedEntry.getExpression());
+                        currentModifiedEntry.getExpression() == null ? "" : currentModifiedEntry.getExpression()); //$NON-NLS-1$
             }
 
             public void focusLost(FocusEvent e) {
@@ -1420,7 +1421,7 @@ public abstract class DataMapTableView extends Composite {
 
             @Override
             public String getColumnText(CellEditor cellEditor, Object cellEditorTypedValue) {
-                return super.getColumnText(cellEditor, cellEditorTypedValue).replaceAll("[\r\n\t]+", " ... ");
+                return super.getColumnText(cellEditor, cellEditorTypedValue).replaceAll("[\r\n\t]+", " ... "); //$NON-NLS-1$ //$NON-NLS-2$
             }
 
             @Override
@@ -1442,7 +1443,7 @@ public abstract class DataMapTableView extends Composite {
         int minHeight = itemHeight + 3;
         int maxHeight = 2 * itemHeight + 4;
         int newHeight = 0;
-        if ((text.contains("\n") || text.contains("\r")) && currentBounds.y + maxHeight < currentTable.getBounds().height) {
+        if ((text.contains("\n") || text.contains("\r")) && currentBounds.y + maxHeight < currentTable.getBounds().height) { //$NON-NLS-1$ //$NON-NLS-2$
             newHeight = maxHeight;
         } else {
             newHeight = minHeight;

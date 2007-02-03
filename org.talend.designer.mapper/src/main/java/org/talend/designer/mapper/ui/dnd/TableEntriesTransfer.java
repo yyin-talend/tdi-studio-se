@@ -34,7 +34,7 @@ public class TableEntriesTransfer extends ByteArrayTransfer {
 
     private DraggedData draggedData;
 
-    private static final String MAPPER_TABLE_ENTRIES_TYPE_NAME = "MAPPER_TABLE_ENTRIES";
+    private static final String MAPPER_TABLE_ENTRIES_TYPE_NAME = "MAPPER_TABLE_ENTRIES"; //$NON-NLS-1$
 
     private static final int MAPPER_TABLE_ENTRIES_ID = registerType(MAPPER_TABLE_ENTRIES_TYPE_NAME);
 

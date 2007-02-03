@@ -30,6 +30,7 @@ import org.apache.oro.text.regex.Perl5Compiler;
 import org.apache.oro.text.regex.Perl5Matcher;
 import org.talend.designer.mapper.external.data.ExternalMapperTable;
 import org.talend.designer.mapper.external.data.ExternalMapperTableEntry;
+import org.talend.designer.mapper.i18n.Messages;
 import org.talend.designer.mapper.managers.MapperManager;
 import org.talend.designer.mapper.model.tableentry.IColumnEntry;
 import org.talend.designer.mapper.model.tableentry.ITableEntry;
@@ -45,9 +46,9 @@ public class VarsTable extends AbstractDataMapTable {
 
     private static final PatternCompiler COMPILER = new Perl5Compiler();
 
-    public static final String PREFIX_VARS_TABLE_NAME = "Var";
+    public static final String PREFIX_VARS_TABLE_NAME = "Var"; //$NON-NLS-1$
 
-    public static final String VALID_PATTERN_COLUMN_NAME = "^[a-zA-Z_][a-zA-Z_0-9]*$";
+    public static final String VALID_PATTERN_COLUMN_NAME = "^[a-zA-Z_][a-zA-Z_0-9]*$"; //$NON-NLS-1$
 
     public VarsTable(MapperManager mapperManager, String name) {
         super(mapperManager, name);
@@ -77,7 +78,7 @@ public class VarsTable extends AbstractDataMapTable {
      */
     public String findUniqueColumnName(String baseName) {
         if (baseName == null) {
-            throw new IllegalArgumentException("baseName can't be null");
+            throw new IllegalArgumentException(Messages.getString("VarsTable.baseNameCannotNull")); //$NON-NLS-1$
         }
         String uniqueName = baseName + 1;
 
@@ -113,7 +114,7 @@ public class VarsTable extends AbstractDataMapTable {
         Pattern pattern;
 
         try {
-            pattern = compiler.compile("^[A-Za-z_][A-Za-z0-9_]*$");
+            pattern = compiler.compile("^[A-Za-z_][A-Za-z0-9_]*$"); //$NON-NLS-1$
             if (!matcher.matches(connectionName, pattern)) {
                 return false;
             }
@@ -133,7 +134,7 @@ public class VarsTable extends AbstractDataMapTable {
      */
     public String validateColumnName(String columnName, int beanPosition) {
         if (columnName == null) {
-            return "Error: Column name is null";
+            return Messages.getString("VarsTable.columnNameIsNull"); //$NON-NLS-1$
         }
         Pattern validPatternColumnNameRegexp = null;
         if (validPatternColumnNameRegexp == null) {
@@ -147,13 +148,13 @@ public class VarsTable extends AbstractDataMapTable {
         boolean match = matcher.matches(columnName, validPatternColumnNameRegexp);
         // System.out.println(columnName + " -> "+ match);
         if (!match) {
-            return "The column name '" + columnName + "' is invalid.";
+            return Messages.getString("VarsTable.columnNameTip") + columnName + Messages.getString("VarsTable.invalidTip"); //$NON-NLS-1$ //$NON-NLS-2$
         }
 
         int lstSize = dataMapTableEntries.size();
         for (int i = 0; i < lstSize; i++) {
             if (columnName.equals(dataMapTableEntries.get(i).getName()) && i != beanPosition) {
-                return "The column name '" + columnName + "' already exists.";
+                return Messages.getString("VarsTable.columnNameTip") + columnName + Messages.getString("VarsTable.existTip"); //$NON-NLS-1$ //$NON-NLS-2$
             }
 
         }

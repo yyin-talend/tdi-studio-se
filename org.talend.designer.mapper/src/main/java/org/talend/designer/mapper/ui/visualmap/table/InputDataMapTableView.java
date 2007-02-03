@@ -31,6 +31,7 @@ import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumn;
 import org.talend.commons.ui.ws.WindowSystem;
 import org.talend.commons.utils.data.bean.IBeanPropertyAccessors;
+import org.talend.designer.mapper.i18n.Messages;
 import org.talend.designer.mapper.managers.MapperManager;
 import org.talend.designer.mapper.model.table.InputTable;
 import org.talend.designer.mapper.model.tableentry.InputColumnTableEntry;
@@ -57,7 +58,7 @@ public class InputDataMapTableView extends DataMapTableView {
         if (!isMainConnection) {
 
             column = new TableViewerCreatorColumn(tableViewerCreatorForColumns);
-            column.setTitle("Expr. key");
+            column.setTitle(Messages.getString("InputDataMapTableView.columnTitle.Expr")); //$NON-NLS-1$
             column.setId(DataMapTableView.ID_EXPRESSION_COLUMN);
             column.setBeanPropertyAccessors(new IBeanPropertyAccessors<InputColumnTableEntry, String>() {
 
@@ -72,7 +73,7 @@ public class InputDataMapTableView extends DataMapTableView {
 
             });
             column.setModifiable(true);
-            column.setDefaultInternalValue("");
+            column.setDefaultInternalValue(""); //$NON-NLS-1$
             createExpressionCellEditor(tableViewerCreatorForColumns, column, new Zone[] { Zone.INPUTS }, false);
             column.setWeight(COLUMN_EXPRESSION_SIZE_WEIGHT);
         }
@@ -114,7 +115,7 @@ public class InputDataMapTableView extends DataMapTableView {
         if (!getInputTable().isMainConnection()) {
 
             final ToolItem rejectConstraintCheck = new ToolItem(toolBarActions, SWT.CHECK);
-            rejectConstraintCheck.setToolTipText("Reject main row if this lookup row doesn't exist");
+            rejectConstraintCheck.setToolTipText(Messages.getString("InputDataMapTableView.widgetTooltip.rejectMainRow")); //$NON-NLS-1$
             boolean isInnerJoin = getInputTable().isInnerJoin();
             // Image image = ImageProviderMapper.getImage(isInnerJoin ? ImageInfo.CHECKED_ICON :
             // ImageInfo.UNCHECKED_ICON);
@@ -127,7 +128,7 @@ public class InputDataMapTableView extends DataMapTableView {
                 rejectConstraintCheck.setHotImage(image);
             }
             rejectConstraintCheck.setSelection(isInnerJoin);
-            rejectConstraintCheck.setText("Inner join");
+            rejectConstraintCheck.setText(Messages.getString("InputDataMapTableView.widgetTooltip.innerJoin")); //$NON-NLS-1$
 
             rejectConstraintCheck.addSelectionListener(new SelectionListener() {
 

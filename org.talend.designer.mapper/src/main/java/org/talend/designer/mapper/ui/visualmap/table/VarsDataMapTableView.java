@@ -50,6 +50,7 @@ import org.talend.commons.utils.data.list.IListenableListListener;
 import org.talend.commons.utils.data.list.ListenableListEvent;
 import org.talend.core.model.metadata.MetadataTalendType;
 import org.talend.core.model.temp.ECodeLanguage;
+import org.talend.designer.mapper.i18n.Messages;
 import org.talend.designer.mapper.language.LanguageProvider;
 import org.talend.designer.mapper.managers.MapperManager;
 import org.talend.designer.mapper.managers.UIManager;
@@ -118,7 +119,7 @@ public class VarsDataMapTableView extends DataMapTableView {
         ECodeLanguage codeLanguage = LanguageProvider.getCurrentLanguage().getCodeLanguage();
 
         TableViewerCreatorColumn column = new TableViewerCreatorColumn(tableViewerCreatorForColumns);
-        column.setTitle("Expression");
+        column.setTitle(Messages.getString("VarsDataMapTableView.columnTitle.expression")); //$NON-NLS-1$
         column.setId(DataMapTableView.ID_EXPRESSION_COLUMN);
         column.setBeanPropertyAccessors(new IBeanPropertyAccessors<VarTableEntry, String>() {
 
@@ -133,7 +134,7 @@ public class VarsDataMapTableView extends DataMapTableView {
 
         });
         column.setModifiable(true);
-        column.setDefaultInternalValue("");
+        column.setDefaultInternalValue(""); //$NON-NLS-1$
         createExpressionCellEditor(tableViewerCreatorForColumns, column, new Zone[] { Zone.INPUTS, Zone.VARS }, false);
         if (codeLanguage == ECodeLanguage.JAVA) {
             column.setWeight(40);
@@ -179,7 +180,7 @@ public class VarsDataMapTableView extends DataMapTableView {
             CellEditorValueAdapter comboValueAdapter = CellEditorValueAdapterFactory.getComboAdapter();
 
             column = new TableViewerCreatorColumn(tableViewerCreatorForColumns);
-            column.setTitle("Type");
+            column.setTitle(Messages.getString("VarsDataMapTableView.columnTitle.type")); //$NON-NLS-1$
             column.setBeanPropertyAccessors(new IBeanPropertyAccessors<VarTableEntry, String>() {
 
                 public String get(VarTableEntry bean) {
@@ -199,7 +200,7 @@ public class VarsDataMapTableView extends DataMapTableView {
         }
 
         column = new TableViewerCreatorColumn(tableViewerCreatorForColumns);
-        column.setTitle("Variable");
+        column.setTitle(Messages.getString("VarsDataMapTableView.columnTitle.variable")); //$NON-NLS-1$
         column.setId(DataMapTableView.ID_NAME_COLUMN);
         column.setBeanPropertyAccessors(new IBeanPropertyAccessors<VarTableEntry, String>() {
 
@@ -297,7 +298,7 @@ public class VarsDataMapTableView extends DataMapTableView {
 
         // /////////////////////////////////////////////////////////////////
         ToolItem addEntryItem = new ToolItem(toolBarActions, SWT.PUSH);
-        addEntryItem.setToolTipText("Add variable");
+        addEntryItem.setToolTipText(Messages.getString("VarsDataMapTableView.entryItemTooltip.addVariable")); //$NON-NLS-1$
         addEntryItem.setImage(org.talend.commons.ui.image.ImageProvider.getImage(org.talend.commons.ui.image.ImageProvider
                 .getImageDesc(EImage.ADD_ICON)));
 
@@ -317,11 +318,11 @@ public class VarsDataMapTableView extends DataMapTableView {
                 AbstractDataMapTable dataMapTable = VarsDataMapTableView.this.getDataMapTable();
                 String varName = null;
                 if (dataMapTable instanceof VarsTable) {
-                    varName = ((VarsTable) dataMapTable).findUniqueColumnName("var");
+                    varName = ((VarsTable) dataMapTable).findUniqueColumnName("var"); //$NON-NLS-1$
                 } else {
-                    throw new UnsupportedOperationException("Can't create new column, case not found");
+                    throw new UnsupportedOperationException(Messages.getString("VarsDataMapTableView.exceptionMessage.caseNotFound")); //$NON-NLS-1$
                 }
-                mapperManager.addNewVarEntry(VarsDataMapTableView.this, varName, indexInsert, "String");
+                mapperManager.addNewVarEntry(VarsDataMapTableView.this, varName, indexInsert, "String"); //$NON-NLS-1$
                 VarsDataMapTableView.this.changeSize(VarsDataMapTableView.this.getPreferredSize(true, true, false), true, true);
                 changeMinimizeState(false);
                 tableViewerCreatorForColumns.getTableViewer().refresh();
@@ -340,7 +341,7 @@ public class VarsDataMapTableView extends DataMapTableView {
         removeEntryItem.setEnabled(false);
         removeEntryItem.setImage(org.talend.commons.ui.image.ImageProvider.getImage(org.talend.commons.ui.image.ImageProvider
                 .getImageDesc(EImage.MINUS_ICON)));
-        removeEntryItem.setToolTipText("Remove selected variable(s)");
+        removeEntryItem.setToolTipText(Messages.getString("VarsDataMapTableView.entryItemTooltip.removeVariable")); //$NON-NLS-1$
 
         removeEntryItem.addSelectionListener(new SelectionListener() {
 
@@ -369,7 +370,7 @@ public class VarsDataMapTableView extends DataMapTableView {
         moveUpEntryItem = new ToolItem(toolBarActions, SWT.PUSH);
         moveUpEntryItem.setEnabled(false);
         moveUpEntryItem.setImage(ImageProvider.getImage(EImage.UP_ICON));
-        moveUpEntryItem.setToolTipText("Move up selected variable(s)");
+        moveUpEntryItem.setToolTipText(Messages.getString("VarsDataMapTableView.entryItemTooltip.moveUpVariable")); //$NON-NLS-1$
 
         moveUpEntryItem.addSelectionListener(new SelectionListener() {
 
@@ -391,7 +392,7 @@ public class VarsDataMapTableView extends DataMapTableView {
         moveDownEntryItem = new ToolItem(toolBarActions, SWT.PUSH);
         moveDownEntryItem.setEnabled(false);
         moveDownEntryItem.setImage(ImageProvider.getImage(EImage.DOWN_ICON));
-        moveDownEntryItem.setToolTipText("Move down selected variable(s)");
+        moveDownEntryItem.setToolTipText(Messages.getString("VarsDataMapTableView.entryItemTooltip.movedownVariable")); //$NON-NLS-1$
 
         moveDownEntryItem.addSelectionListener(new SelectionListener() {
 

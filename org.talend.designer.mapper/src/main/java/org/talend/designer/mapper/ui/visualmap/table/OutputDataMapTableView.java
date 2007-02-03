@@ -47,6 +47,7 @@ import org.talend.commons.ui.swt.tableviewer.behavior.TableCellValueModifiedEven
 import org.talend.commons.ui.swt.tableviewer.tableeditor.ButtonPushImageTableEditorContent;
 import org.talend.commons.ui.ws.WindowSystem;
 import org.talend.commons.utils.data.bean.IBeanPropertyAccessors;
+import org.talend.designer.mapper.i18n.Messages;
 import org.talend.designer.mapper.managers.MapperManager;
 import org.talend.designer.mapper.managers.UIManager;
 import org.talend.designer.mapper.model.table.AbstractDataMapTable;
@@ -75,7 +76,7 @@ public class OutputDataMapTableView extends DataMapTableView {
     @Override
     public void initColumnsOfTableColumns(final TableViewerCreator tableViewerCreatorForColumns) {
         TableViewerCreatorColumn column = new TableViewerCreatorColumn(tableViewerCreatorForColumns);
-        column.setTitle("Expression");
+        column.setTitle(Messages.getString("OutputDataMapTableView.columnTitle.expression")); //$NON-NLS-1$
         column.setId(DataMapTableView.ID_EXPRESSION_COLUMN);
         column.setBeanPropertyAccessors(new IBeanPropertyAccessors<OutputColumnTableEntry, String>() {
 
@@ -91,7 +92,7 @@ public class OutputDataMapTableView extends DataMapTableView {
 
         });
         column.setModifiable(true);
-        column.setDefaultInternalValue("");
+        column.setDefaultInternalValue(""); //$NON-NLS-1$
         createExpressionCellEditor(tableViewerCreatorForColumns, column, new Zone[] { Zone.INPUTS, Zone.VARS }, false);
         column.setWeight(COLUMN_EXPRESSION_SIZE_WEIGHT);
 
@@ -240,7 +241,7 @@ public class OutputDataMapTableView extends DataMapTableView {
 
     public void createFiltersColumns(final TableViewerCreator<FilterTableEntry> tableViewerCreatorForFilters) {
         TableViewerCreatorColumn column = new TableViewerCreatorColumn(tableViewerCreatorForFilters);
-        column.setTitle("Filters conditions (AND)");
+        column.setTitle(Messages.getString("OutputDataMapTableView.columnTitle.filterCondition")); //$NON-NLS-1$
         column.setId(DataMapTableView.ID_EXPRESSION_COLUMN);
         column.setBeanPropertyAccessors(new IBeanPropertyAccessors<FilterTableEntry, String>() {
 
@@ -255,7 +256,7 @@ public class OutputDataMapTableView extends DataMapTableView {
 
         });
         column.setModifiable(true);
-        column.setDefaultInternalValue("");
+        column.setDefaultInternalValue(""); //$NON-NLS-1$
         createExpressionCellEditor(tableViewerCreatorForFilters, column, new Zone[] { Zone.INPUTS, Zone.VARS }, true);
         column.setWeight(99);
         column.setMoveable(false);
@@ -263,8 +264,8 @@ public class OutputDataMapTableView extends DataMapTableView {
 
         // Column with remove button
         column = new TableViewerCreatorColumn(tableViewerCreatorForFilters);
-        column.setTitle("");
-        column.setDefaultDisplayedValue("");
+        column.setTitle(""); //$NON-NLS-1$
+        column.setDefaultDisplayedValue(""); //$NON-NLS-1$
         column.setWidth(16);
         column.setMoveable(false);
         column.setResizable(false);

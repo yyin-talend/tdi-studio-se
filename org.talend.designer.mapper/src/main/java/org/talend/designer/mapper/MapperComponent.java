@@ -140,7 +140,7 @@ public class MapperComponent extends AbstractExternalNode {
     /**
      * Sort outgoingConnections for code generation as visible output zone of tMap.
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked") //$NON-NLS-1$
     private void sortOutputsConnectionsLikeVisualOrder() {
         List<IConnection> outgoingConnections = (List<IConnection>) getOutgoingConnections();
         Map<String, IConnection> connectionNameToOutgoingConnection = new HashMap<String, IConnection>();
@@ -198,7 +198,7 @@ public class MapperComponent extends AbstractExternalNode {
         } catch (SystemException e) {
             ExceptionHandler.process(e);
         }
-        return "";
+        return ""; //$NON-NLS-1$
     }
 
     /*

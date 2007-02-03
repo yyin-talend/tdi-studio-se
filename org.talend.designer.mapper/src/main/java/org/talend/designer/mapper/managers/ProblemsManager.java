@@ -59,7 +59,7 @@ import org.talend.designer.mapper.ui.visualmap.zone.Zone;
  */
 public class ProblemsManager {
 
-    private static final String EMPTY_STRING = "";
+    private static final String EMPTY_STRING = ""; //$NON-NLS-1$
 
     private MapperManager mapperManager;
 
@@ -129,7 +129,7 @@ public class ProblemsManager {
                     processExternalNode.setMetadataList(metadataListOut);
 
                 } else {
-                    throw new IllegalArgumentException("Should be same instance...");
+                    throw new IllegalArgumentException("Should be same instance..."); //$NON-NLS-1$
                 }
 
             }
@@ -212,7 +212,7 @@ public class ProblemsManager {
      * 
      * @param forceRefreshData TODO
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked") //$NON-NLS-1$
     public void checkProblemsForAllEntries(DataMapTableView dataMapTableView, boolean forceRefreshData) {
         if (forceRefreshData) {
             mapperManager.getComponent().refreshMapperConnectorData();

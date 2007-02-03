@@ -61,9 +61,9 @@ public abstract class AbstractDataMapTable {
         this.mapperManager = mapperManager;
         this.name = name;
         if (name == null) {
-            throw new IllegalArgumentException("Name's AbstractDataMapTable can't be null");
+            throw new IllegalArgumentException("Name's AbstractDataMapTable can't be null"); //$NON-NLS-1$
         }
-        this.tableColumnsEntriesModel = new ExtendedTableModel<IColumnEntry>(name + " : model for Columns", dataMapTableEntries);
+        this.tableColumnsEntriesModel = new ExtendedTableModel<IColumnEntry>(name + " : model for Columns", dataMapTableEntries); //$NON-NLS-1$
 
     }
 

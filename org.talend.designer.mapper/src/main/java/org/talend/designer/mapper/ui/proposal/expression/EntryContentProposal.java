@@ -62,7 +62,7 @@ public class EntryContentProposal implements IContentProposal {
      * @see org.eclipse.jface.fieldassist.IContentProposal#getContent()
      */
     public String getContent() {
-        content = language.getLocation(entry.getParentName(), entry.getName()) + " ";
+        content = language.getLocation(entry.getParentName(), entry.getName()) + " "; //$NON-NLS-1$
         return content;
     }
 
@@ -112,7 +112,7 @@ public class EntryContentProposal implements IContentProposal {
             sb.append(format(entry.getExpression()));
             sb.append(AbstractLanguage.CARRIAGE_RETURN);
         } else if (entry instanceof VarTableEntry) {
-            sb.append("Variable '").append(entry.getName()).append("' :");
+            sb.append("Variable '").append(entry.getName()).append("' :"); //$NON-NLS-2$
             sb.append(AbstractLanguage.CARRIAGE_RETURN);
             sb.append(" - Expression key :");
             sb.append(AbstractLanguage.CARRIAGE_RETURN);
@@ -123,7 +123,7 @@ public class EntryContentProposal implements IContentProposal {
 
     public String format(Object object) {
         if (object == null) {
-            return "";
+            return ""; //$NON-NLS-1$
         }
         return String.valueOf(object);
     }

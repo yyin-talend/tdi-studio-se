@@ -60,7 +60,7 @@ public class TableEntryLocation {
     }
 
     public String toString() {
-        return "{tableName=" + this.tableName + ", columnName=" + this.columnName + "}";
+        return "{tableName=" + this.tableName + ", columnName=" + this.columnName + "}"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
 
     public static TableEntryLocation getNewInstance(ITableEntry dataMapTableEntry) {

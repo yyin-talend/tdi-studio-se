@@ -30,6 +30,7 @@ import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.talend.designer.mapper.i18n.Messages;
 import org.talend.designer.mapper.managers.MapperManager;
 import org.talend.designer.mapper.managers.UIManager;
 
@@ -70,7 +71,7 @@ public class FooterComposite extends Composite {
         this.setLayout(formLayout);
 
         Button okButton = new Button(this, SWT.NONE);
-        okButton.setText("Ok");
+        okButton.setText(Messages.getString("FooterComposite.button.OK")); //$NON-NLS-1$
         FormData okFormData = new FormData();
         okButton.setLayoutData(okFormData);
         okButton.addSelectionListener(new SelectionListener() {
@@ -103,7 +104,7 @@ public class FooterComposite extends Composite {
         // });
 
         Button cancelButton = new Button(this, SWT.NONE);
-        cancelButton.setText("Cancel");
+        cancelButton.setText(Messages.getString("FooterComposite.button.Cancel")); //$NON-NLS-1$
         cancelButton.addSelectionListener(new SelectionListener() {
 
             public void widgetDefaultSelected(SelectionEvent e) {

@@ -61,21 +61,21 @@ public class JavaGenerationManager extends GenerationManager {
             String key = CodeGenerationUtils.buildProblemKey(uniqueNameComponent,
                     JavaGenerationManager.PROBLEM_KEY_FIELD.METADATA_COLUMN.toString(), name, keysNames[i]);
             if (writeCommentedFieldKeys) {
-                sb.append("\n").append(CodeGenerationUtils.buildJavaStartFieldKey(key));
+                sb.append("\n").append(CodeGenerationUtils.buildJavaStartFieldKey(key)); //$NON-NLS-1$
             }
 
-            String expression = indent(indent) + name + "HashKey." + keysNames[i] + " = " + keysValues[i] + ";";
-            sb.append("\n").append(expression);
+            String expression = indent(indent) + name + "HashKey." + keysNames[i] + " = " + keysValues[i] + ";"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            sb.append("\n").append(expression); //$NON-NLS-1$
 
             if (writeCommentedFieldKeys) {
-                sb.append("\n").append(CodeGenerationUtils.buildJavaEndFieldKey(key));
+                sb.append("\n").append(CodeGenerationUtils.buildJavaEndFieldKey(key)); //$NON-NLS-1$
             }
         }
-        sb.append("\n" + indent(indent) + name + "HashKey.hashCodeDirty = true;");
-        String className = name + "Struct";
-        sb.append("\n" + indent(indent) + className + " " + name + "FromHash = (" + className + ") tHash_" + name + ".get( " + name
-                + "HashKey );");
-        sb.append("\n");
+        sb.append("\n" + indent(indent) + name + "HashKey.hashCodeDirty = true;"); //$NON-NLS-1$ //$NON-NLS-2$
+        String className = name + "Struct"; //$NON-NLS-1$
+        sb.append("\n" + indent(indent) + className + " " + name + "FromHash = (" + className + ") tHash_" + name + ".get( " + name //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+                + "HashKey );"); //$NON-NLS-1$
+        sb.append("\n"); //$NON-NLS-1$
         return sb.toString();
     }
 
@@ -103,7 +103,7 @@ public class JavaGenerationManager extends GenerationManager {
             }
 
             if (lstSize > 1) {
-                stringBuilder.append(" ( " + constraintExpression + " ) ");
+                stringBuilder.append(" ( " + constraintExpression + " ) "); //$NON-NLS-1$ //$NON-NLS-2$
             } else {
                 stringBuilder.append(constraintExpression);
             }

@@ -28,6 +28,7 @@ import org.talend.core.language.ICodeProblemsChecker;
 import org.talend.core.model.process.Problem;
 import org.talend.core.model.process.Problem.ProblemStatus;
 import org.talend.core.model.temp.ECodeLanguage;
+import org.talend.designer.mapper.i18n.Messages;
 import org.talend.designer.mapper.language.ILanguage;
 import org.talend.designer.mapper.language.LanguageProvider;
 import org.talend.designer.mapper.language.generation.JavaGenerationManager;
@@ -72,7 +73,7 @@ public abstract class TableEntry implements ITableEntry {
         this.parent = abstractDataMapTable;
         this.name = name;
         if (this.name == null) {
-            throw new IllegalArgumentException("Name of the TableEntry must not be null !");
+            throw new IllegalArgumentException("Name of the TableEntry must not be null !"); //$NON-NLS-1$
         }
         this.expression = expression;
     }
@@ -105,7 +106,7 @@ public abstract class TableEntry implements ITableEntry {
         if (parent != null) {
             return parent.getName();
         } else {
-            throw new IllegalStateException("parent null");
+            throw new IllegalStateException("parent null"); //$NON-NLS-1$
         }
     }
 

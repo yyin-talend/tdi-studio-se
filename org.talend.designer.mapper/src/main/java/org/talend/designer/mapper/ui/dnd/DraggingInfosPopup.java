@@ -33,6 +33,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.talend.commons.ui.ws.WindowSystem;
+import org.talend.designer.mapper.i18n.Messages;
 
 /**
  * DOC amaumont class global comment. Detailled comment <br/>
@@ -304,11 +305,11 @@ public final class DraggingInfosPopup {
      * @param countEntries
      */
     public void setCountDraggingEntries(int countEntries) {
-        String entries = " entries";
+        String entries = " entries"; //$NON-NLS-1$
         if (countEntries <= 1) {
-            entries = " entry";
+            entries = " entry"; //$NON-NLS-1$
         }
-        popup.setCountEntriesText("Dragging " + countEntries + entries + ".");
+        popup.setCountEntriesText("Dragging " + countEntries + entries + "."); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     /**
@@ -341,11 +342,11 @@ public final class DraggingInfosPopup {
     public void setMapOneToOneMode(boolean isMapOneToOne, boolean mapOneToOneAuthorized) {
         String mode = null;
         if (isMapOneToOne && mapOneToOneAuthorized) {
-            mode = " > Each source entry " + (this.outputToOutputMode ? "expression " : "") + "to each target expression";
+            mode = " > Each source entry " + (this.outputToOutputMode ? "expression " : "") + "to each target expression"; //$NON-NLS-3$
             this.mapOneToOne = isMapOneToOne;
         } else {
             mode = " > All source entries "
-                    + (this.outputToOutputMode ? "expression " : "")
+                    + (this.outputToOutputMode ? "expression " : "") //$NON-NLS-2$
                     + "to a single one "
                     + (mapOneToOneAuthorized && !WindowSystem.isGTK() ? "target expression (Shift key to change mapping)"
                             : "target expression");
@@ -376,7 +377,7 @@ public final class DraggingInfosPopup {
 
     public void setInsertionEntryContext(boolean insertionEntryMode) {
         this.insertionEntryContext = insertionEntryMode;
-        String newText = "null";
+        String newText = "null"; //$NON-NLS-1$
         if (this.insertionEntryContext && !this.mapOneToOne) {
             newText = " > Insert all selected entries";
         } else if (this.insertionEntryContext && this.mapOneToOne) {
@@ -416,11 +417,11 @@ public final class DraggingInfosPopup {
     }
 
     public void setDropInvalid(boolean isDropInvalid, boolean isInvalidKeyPressed) {
-        String newText = "null";
+        String newText = "null"; //$NON-NLS-1$
         if (isDropInvalid) {
             if (WindowSystem.isGTK()) {
                 newText = "\n<< Drop invalid >>\n"
-                        + (isInvalidKeyPressed ? "Press both Shift and Ctrl keys to map one to one and overwrite" : "");
+                        + (isInvalidKeyPressed ? "Press both Shift and Ctrl keys to map one to one and overwrite" : ""); //$NON-NLS-2$
             }
         }
         if (WindowSystem.isGTK()) {

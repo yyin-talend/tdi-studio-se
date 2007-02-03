@@ -116,7 +116,7 @@ public class GenerationManager {
     }
 
     public String indent(final int i) {
-        return StringUtils.repeat("  ", i);
+        return StringUtils.repeat("  ", i); //$NON-NLS-1$
     }
 
     /**

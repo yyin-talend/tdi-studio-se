@@ -29,6 +29,7 @@ import java.util.Map;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 import org.talend.commons.ui.swt.extended.table.IExtendedControlEventType;
+import org.talend.designer.mapper.i18n.Messages;
 import org.talend.designer.mapper.model.table.AbstractDataMapTable;
 import org.talend.designer.mapper.model.table.OutputTable;
 import org.talend.designer.mapper.model.tableentry.FilterTableEntry;
@@ -114,7 +115,7 @@ public class TableEntriesManager {
      */
     public void addTableEntry(ITableEntry dataMapTableEntry, Integer index) {
         if (dataMapTableEntry == null) {
-            throw new IllegalArgumentException("dataMapTableEntry can't be null.");
+            throw new IllegalArgumentException(Messages.getString("TableEntriesManager.exceptionMessage.dataMapTableEntryCannotNull")); //$NON-NLS-1$
         }
         add(dataMapTableEntry);
         AbstractDataMapTable dataMapTable = dataMapTableEntry.getParent();
@@ -198,7 +199,7 @@ public class TableEntriesManager {
         } else if (dataMapTableEntry instanceof FilterTableEntry) {
             tableItems = dataMapTableView.getTableViewerCreatorForFilters().getTable().getItems();
         } else {
-            throw new IllegalArgumentException("case not found");
+            throw new IllegalArgumentException(Messages.getString("TableEntriesManager.exceptionMessage.caseNotFound")); //$NON-NLS-1$
         }
         TableItem tableItem = null;
         for (int i = 0; i < tableItems.length; i++) {
@@ -233,7 +234,7 @@ public class TableEntriesManager {
         // TableEntriesManager.buildLocation(dataMapTableEntry);
         ITableEntry entry = tableEntries.get(tableEntryLocationKey);
         if (entry != dataMapTableEntry) {
-            throw new IllegalStateException("tableEntries are not the same !");
+            throw new IllegalStateException(Messages.getString("TableEntriesManager.exceptionMessage.tableEntriesNotSame")); //$NON-NLS-1$
         }
         tableEntries.remove(tableEntryLocationKey);
         tableEntryLocationKey.columnName = newColumnName;

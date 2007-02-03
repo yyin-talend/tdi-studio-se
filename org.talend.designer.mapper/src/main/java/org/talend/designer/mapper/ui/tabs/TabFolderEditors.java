@@ -39,6 +39,7 @@ import org.talend.core.context.RepositoryContext;
 import org.talend.core.model.temp.ECodeLanguage;
 import org.talend.core.ui.metadata.editor.MetadataTableEditorView;
 import org.talend.designer.mapper.MapperMain;
+import org.talend.designer.mapper.i18n.Messages;
 import org.talend.designer.mapper.managers.MapperManager;
 
 /**
@@ -82,7 +83,7 @@ public class TabFolderEditors extends CTabFolder {
         // item.setControl(metaDatasDescriptorView3);
 
         CTabItem item = new CTabItem(tabFolderEditors, SWT.BORDER);
-        item.setText("Schema editor");
+        item.setText(Messages.getString("TabFolderEditors.schemaEditor")); //$NON-NLS-1$
 
         SashForm inOutMetaEditorContainer = new SashForm(tabFolderEditors, SWT.SMOOTH | SWT.HORIZONTAL | SWT.SHADOW_OUT);
         inOutMetaEditorContainer.setLayout(new RowLayout(SWT.HORIZONTAL));
@@ -97,7 +98,7 @@ public class TabFolderEditors extends CTabFolder {
         outputMetaEditor.getExtendedTableViewer().setCommandStack(commandStack);
 
         item = new CTabItem(tabFolderEditors, SWT.BORDER);
-        item.setText("Expression editor");
+        item.setText(Messages.getString("TabFolderEditors.expressionEditor")); //$NON-NLS-1$
 
         StyledText styledText = createStyledText(item);
 
