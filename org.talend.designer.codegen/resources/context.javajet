@@ -1,18 +1,24 @@
 <%@ jet 
 	package="org.talend.designer.codegen.translators" 
 	imports="
-		org.talend.core.model.process.IContextParameter 
+		org.talend.core.model.process.IContextParameter
+		org.talend.designer.codegen.config.CodeGeneratorArgument 
 		java.util.List
 	" 
 	class="Context" 
 %>
-
-public static class Context {
 <%
-	List<IContextParameter> parameterList = (List<IContextParameter>) argument;
+	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+	List<IContextParameter> parameterList = (List<IContextParameter>) codeGenArgument.getArgument();
+%>
+package <%=codeGenArgument.getCurrentProjectName().toLowerCase() + "." + codeGenArgument.getJobName().toLowerCase() +".contexts" %>;
+
+
+public class <%=codeGenArgument.getContextName() %> {
+<%
 	for (IContextParameter parameter : parameterList) {
 %>
-	public final <%=parameter.getType() %> <%=parameter.getName() %> = <%=parameter.getValue() %>; 
+	public static <%=parameter.getType().getDisplayName() %> <%=parameter.getName() %> = "<%=parameter.getValue() %>"; 
 <%
 	}
 %>

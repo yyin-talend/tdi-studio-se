@@ -18,8 +18,6 @@
 	boolean stats = codeGenArgument.isStatistics();
 	boolean trace = codeGenArgument.isTrace();
 %>
-
-	public static String context = null;
     public static boolean watch = false;
     public static int portStats = 3334;
     public static int portTraces = 4334;
@@ -28,9 +26,9 @@
     	for (String arg : args) {
     		<%=process.getName() %>.evalParam(arg);
     	}
-		if (context!=null) {
-			System.out.println("tsInfo>  Running process with context: "+context+" (./tUser/"+context+".java)");
-		}
+		<% if (codeGenArgument.getContextName()!=null) { %>
+			System.out.println("tsInfo>  Running process with context: "+"<%=codeGenArgument.getContextName() %>"+" (./contexts/"+"<%=codeGenArgument.getContextName() %>"+".java)");
+		<% } %>
 
 <%
 		if (stats) {
@@ -117,8 +115,6 @@
     		portStats = Integer.parseInt(arg.substring(12));
     	} else if (arg.startsWith("--trace_port=")) {
     		portTraces = Integer.parseInt(arg.substring(13));
-    	} else {
-    		context = arg;
     	}
 	}
 

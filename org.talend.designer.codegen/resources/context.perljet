@@ -6,9 +6,9 @@
 	" 
 	class="Context" 
 %>
-
 <%
-	List<IContextParameter> parameterList = (List<IContextParameter>) argument;
+	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+	List<IContextParameter> parameterList = (List<IContextParameter>) codeGenArgument.getArgument();
 	for (IContextParameter parameter : parameterList) {
 %>
 $_context{<%=parameter.getName() %>} = <%=parameter.getValue() %>;

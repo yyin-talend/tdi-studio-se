@@ -198,8 +198,15 @@ public class CodeGenerator implements ICodeGenerator {
                 designerContext = process.getContextManager().getDefaultContext();
             }
             List<IContextParameter> listParameters = designerContext.getContextParameterList();
+            
             if (listParameters != null) {
-                JetBean jetBean = initializeJetBean(listParameters);
+                CodeGeneratorArgument codeGenArgument = new CodeGeneratorArgument();
+                codeGenArgument.setNode(listParameters);
+                codeGenArgument.setContextName(contextName);
+                codeGenArgument.setCurrentProjectName(currentProjectName);
+                codeGenArgument.setJobName(jobName);
+                
+                JetBean jetBean = initializeJetBean(codeGenArgument);
 
                 jetBean.setTemplateRelativeUri(TemplateUtil.RESOURCES_DIRECTORY + TemplateUtil.DIR_SEP + EInternalTemplate.CONTEXT
                         + TemplateUtil.EXT_SEP + language.getExtension() + TemplateUtil.TEMPLATE_EXT);

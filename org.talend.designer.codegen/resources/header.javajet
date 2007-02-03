@@ -39,6 +39,10 @@
 %> 
 package <%= packageName %>;
 
+<% if (codeGenArgument.getContextName()!=null) { %>
+import <%= packageName %>.contexts.<%=codeGenArgument.getContextName() %>;
+<% } %>
+
 <%
     if (stats) {
 %>
@@ -111,6 +115,8 @@ import java.util.Date;
             return s;
         }
     }
+    
+    private static <%=codeGenArgument.getContextName() %> context;
 
 private static final String jobName = "<%=codeGenArgument.getJobName() %>";
 private static String currentComponent = "";
