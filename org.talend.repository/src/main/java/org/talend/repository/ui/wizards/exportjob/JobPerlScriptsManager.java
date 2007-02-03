@@ -252,7 +252,7 @@ public class JobPerlScriptsManager extends JobScriptsManager {
     private IResource[] getAllPerlFiles() {
         if (resouces == null) {
             try {
-                IProject perlProject = RepositoryPlugin.getDefault().getRunProcessService().getProject();
+                IProject perlProject = RepositoryPlugin.getDefault().getRunProcessService().getPerlProject();
                 resouces = perlProject.members();
             } catch (Exception e) {
                 ExceptionHandler.process(e);

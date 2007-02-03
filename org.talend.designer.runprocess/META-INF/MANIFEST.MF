@@ -6,20 +6,22 @@ Bundle-Version: 1.2.0.qualifier
 Bundle-Activator: org.talend.designer.runprocess.RunProcessPlugin
 Bundle-Vendor: .Talend SA.
 Bundle-Localization: plugin
-Require-Bundle: org.eclipse.ui,
+Require-Bundle: org.junit,
+ org.eclipse.ui,
+ org.epic.debug,
+ org.eclipse.debug.ui,
+ org.eclipse.emf.ecore,
+ org.eclipse.debug.core,
+ org.eclipse.emf.codegen,
  org.eclipse.core.runtime,
+ org.eclipse.core.resources,
  org.talend.core,
  org.talend.commons,
- org.eclipse.emf.codegen,
- org.junit,
- org.eclipse.core.resources,
- org.eclipse.debug.core,
- org.eclipse.debug.ui,
- org.epic.debug,
- org.eclipse.emf.ecore,
  org.talend.libraries,
+ org.talend.designer.core,
  org.eclipse.jdt.core,
- org.talend.designer.core
+ org.eclipse.jdt.debug,
+ org.eclipse.jdt.launching
 Eclipse-LazyStart: true
 Export-Package: org.talend.designer.runprocess,
  org.talend.designer.runprocess.data,

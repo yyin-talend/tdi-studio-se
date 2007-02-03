@@ -55,8 +55,16 @@ public class CodeGeneratorService implements ICodeGeneratorService {
      * 
      * @see org.talend.designer.codegen.ICodeGeneratorService#getRoutineSynchronizer()
      */
-    public IRoutineSynchronizer createRoutineSynchronizer() {
-        return new RoutineSynchronizer();
+    public IRoutineSynchronizer createPerlRoutineSynchronizer() {
+        return new PerlRoutineSynchronizer();
+    }
+
+    /* (non-Javadoc)
+     * @see org.talend.designer.codegen.ICodeGeneratorService#createJavaRoutineSynchronizer()
+     */
+    public IRoutineSynchronizer createJavaRoutineSynchronizer() {
+        // TODO Auto-generated method stub
+        return new JavaRoutineSynchronizer();
     }
 
 }

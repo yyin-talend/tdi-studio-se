@@ -128,18 +128,26 @@ public class RunProcessService implements IRunProcessService {
         return new PerformanceData(data);
     }
 
-    /**
-     * DOC qian Gets the perl project.
-     * 
-     * @return IProject
-     * @throws CoreException
-     */
-    public IProject getProject() throws CoreException {
-        return PerlUtils.getProject();
-    }
-
     public String getRoutineFilenameExt() {
         return PerlUtils.ROUTINE_FILENAME_EXT;
     }
 
+    /*
+     * Get perl project.
+     * 
+     * @see org.talend.designer.runprocess.IRunProcessService#getPerlProject()
+     */
+    public IProject getPerlProject() throws CoreException {
+        return PerlUtils.getProject();
+    }
+
+    /*
+     * Get java poject.
+     * 
+     * @see org.talend.designer.runprocess.IRunProcessService#getJavaProject()
+     */
+    public IProject getJavaProject() throws CoreException {
+        // return JavaProcessor.getProcessorProject();
+        return null;
+    }
 }

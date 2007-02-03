@@ -28,14 +28,16 @@ import java.io.InputStream;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationType;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.core.ILaunchManager;
-import org.eclipse.jdt.internal.compiler.ast.JavadocReturnStatement;
+import org.eclipse.jdt.launching.IJavaLaunchConfigurationConstants;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.CorePlugin;
@@ -47,6 +49,7 @@ import org.talend.core.model.temp.ECodeLanguage;
 import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.designer.runprocess.i18n.Messages;
 import org.talend.designer.runprocess.java.JavaProcessor;
+import org.talend.designer.runprocess.java.JavaProcessorEditStates;
 import org.talend.designer.runprocess.java.JavaProcessorRuntimeStates;
 import org.talend.designer.runprocess.perl.PerlProcessor;
 import org.talend.designer.runprocess.perl.PerlUtils;
@@ -152,38 +155,62 @@ public class Processor {
      * @param context Context to be used.
      * @return The configuration to be launched in debug mode.
      * @throws ProcessorException Process failed.
+     * @throws CoreException
+     * @throws ProcessorException
      */
     public ILaunchConfiguration debug(final IContext context) throws ProcessorException {
         IProcessor concreteProcessor = ProcessorUtilities.getProcessor(process, context);
         this.processor = concreteProcessor;
 
-        concreteProcessor.generateCode(context, false, false, true);
-
-        // Create LaunchConfiguration
-        ILaunchManager launchManager = DebugPlugin.getDefault().getLaunchManager();
-        String projectName = concreteProcessor.getCodeProject().getName();
-        ILaunchConfigurationType[] configType = launchManager.getLaunchConfigurationTypes();
-        ILaunchConfigurationType type = null;
-        for (int i = 0; type == null && i < configType.length; i++) {
-            if (PerlUtils.PERL_LAUNCHCONFIGURATION.equals(configType[i].getIdentifier())) {
-                type = configType[i];
-            }
-        }
-
         ILaunchConfiguration config = null;
-        if (type != null) {
-            try {
-                ILaunchConfigurationWorkingCopy wc = type.newInstance(null, launchManager
-                        .generateUniqueLaunchConfigurationNameFrom(concreteProcessor.getCodePath().lastSegment()));
-                wc.setAttribute(PerlUtils.ATTR_STARTUP_FILE, concreteProcessor.getCodePath().toOSString());
-                wc.setAttribute(PerlUtils.ATTR_PROJECT_NAME, projectName);
-                wc.setAttribute(PerlUtils.ATTR_WORKING_DIRECTORY, (String) null);
-                wc.setAttribute(PerlUtils.ATTR_PROGRAM_PARAMETERS, CTX_ARG + concreteProcessor.getContextPath().toOSString());
 
+        if (concreteProcessor instanceof PerlProcessor) {
+            concreteProcessor.generateCode(context, false, false, true);
+            // Create LaunchConfiguration
+            ILaunchManager launchManager = DebugPlugin.getDefault().getLaunchManager();
+            String projectName = concreteProcessor.getCodeProject().getName();
+            ILaunchConfigurationType[] configType = launchManager.getLaunchConfigurationTypes();
+            ILaunchConfigurationType type = null;
+            for (int i = 0; type == null && i < configType.length; i++) {
+                if (PerlUtils.PERL_LAUNCHCONFIGURATION.equals(configType[i].getIdentifier())) {
+                    type = configType[i];
+                }
+            }
+
+            if (type != null) {
+                try {
+                    ILaunchConfigurationWorkingCopy wc = type.newInstance(null, launchManager
+                            .generateUniqueLaunchConfigurationNameFrom(concreteProcessor.getCodePath().lastSegment()));
+                    wc.setAttribute(PerlUtils.ATTR_STARTUP_FILE, concreteProcessor.getCodePath().toOSString());
+                    wc.setAttribute(PerlUtils.ATTR_PROJECT_NAME, projectName);
+                    wc.setAttribute(PerlUtils.ATTR_WORKING_DIRECTORY, (String) null);
+                    wc.setAttribute(PerlUtils.ATTR_PROGRAM_PARAMETERS, CTX_ARG + concreteProcessor.getContextPath().toOSString());
+
+                    config = wc.doSave();
+                } catch (CoreException ce) {
+                    throw new ProcessorException(ce);
+                }
+            }
+        } else if (concreteProcessor instanceof JavaProcessor) {
+            try {
+                new JavaProcessorEditStates((JavaProcessor) concreteProcessor);
+                concreteProcessor.generateCode(context, false, false, true);
+
+                IProject project = concreteProcessor.getCodeProject();
+                ILaunchManager manager = DebugPlugin.getDefault().getLaunchManager();
+                ILaunchConfigurationType type = manager
+                        .getLaunchConfigurationType(IJavaLaunchConfigurationConstants.ID_JAVA_APPLICATION);
+
+                ILaunchConfigurationWorkingCopy wc = type.newInstance(null, manager
+                        .generateUniqueLaunchConfigurationNameFrom(concreteProcessor.getCodePath().lastSegment()));
+                wc.setAttribute(IJavaLaunchConfigurationConstants.ATTR_PROJECT_NAME, project.getName());
+                wc.setAttribute(IJavaLaunchConfigurationConstants.ATTR_MAIN_TYPE_NAME, concreteProcessor.getTypeName());
+                wc.setAttribute(IJavaLaunchConfigurationConstants.ATTR_STOP_IN_MAIN, true);
                 config = wc.doSave();
             } catch (CoreException ce) {
                 throw new ProcessorException(ce);
             }
+
         }
         return config;
     }

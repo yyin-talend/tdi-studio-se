@@ -45,7 +45,7 @@ import org.talend.repository.model.IProxyRepositoryFactory;
  * $Id: talend.epf 1 2006-09-29 17:06:40 +0000 (ven., 29 sept. 2006) nrousseau $
  * 
  */
-public class RoutineSynchronizer implements IRoutineSynchronizer {
+public class PerlRoutineSynchronizer implements IRoutineSynchronizer {
 
     public void syncAllRoutines() throws SystemException {
         IProxyRepositoryFactory repositoryFactory = CodeGeneratorActivator.getDefault().getRepositoryService()
@@ -68,7 +68,7 @@ public class RoutineSynchronizer implements IRoutineSynchronizer {
         try {
             IRunProcessService service = CodeGeneratorActivator.getDefault().getRunProcessService();
             IProject perlProject;
-            perlProject = service.getProject();
+            perlProject = service.getPerlProject();
             Project project = ((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY))
                     .getProject();
             IFile file = perlProject.getFile(project.getTechnicalLabel() + "__" + routineItem.getProperty().getLabel()

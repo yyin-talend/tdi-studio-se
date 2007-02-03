@@ -48,7 +48,7 @@ public abstract class AbstractRoutineAction extends AContextualAction {
     protected void openRoutineEditor(RoutineItem routineItem) throws SystemException, PartInitException {
         ICodeGeneratorService service = (ICodeGeneratorService) GlobalServiceRegister.getDefault().getService(
                 ICodeGeneratorService.class);
-        IFile file = service.createRoutineSynchronizer().syncRoutine(routineItem);
+        IFile file = service.createPerlRoutineSynchronizer().syncRoutine(routineItem);
         RepositoryEditorInput input = new RepositoryEditorInput(file, routineItem);
 
         getActivePage().openEditor(input, "org.talend.designer.core.ui.editor.StandAloneTalendPerlEditor");

@@ -55,11 +55,11 @@ import org.talend.core.model.general.Project;
 import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
+import org.talend.core.model.temp.ECodeLanguage;
 import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.designer.codegen.ICodeGenerator;
 import org.talend.designer.codegen.ICodeGeneratorService;
 import org.talend.designer.core.ISyntaxCheckableEditor;
-import org.talend.designer.runprocess.IJavaProcessorStates;
 import org.talend.designer.runprocess.IProcessor;
 import org.talend.designer.runprocess.Processor;
 import org.talend.designer.runprocess.ProcessorException;
@@ -130,7 +130,7 @@ public class PerlProcessor implements IProcessor {
 
             ICodeGenerator codeGen;
             ICodeGeneratorService service = RunProcessPlugin.getDefault().getCodeGeneratorService();
-            service.createRoutineSynchronizer().syncAllRoutines();
+            service.createPerlRoutineSynchronizer().syncAllRoutines();
             if (perlProperties) {
                 String perlInterpreter = getPerlInterpreter();
                 String perlLib = getPerlLib();
@@ -168,7 +168,7 @@ public class PerlProcessor implements IProcessor {
                 String[] nodeNames = new String[breakpointNodes.size()];
                 int pos = 0;
                 for (INode node : breakpointNodes) {
-                    nodeNames[pos++] = node.getUniqueName();
+                    nodeNames[pos++] = "["+node.getUniqueName()+" main ] start";
                 }
                 int[] lineNumbers = getLineNumbers(codeFile, nodeNames);
                 setBreakpoints(codeFile, lineNumbers);
@@ -182,7 +182,7 @@ public class PerlProcessor implements IProcessor {
                 contextFile.setContents(contextStream, true, false, null);
             }
 
-            service.createRoutineSynchronizer().syncAllRoutines();
+            service.createPerlRoutineSynchronizer().syncAllRoutines();
         } catch (CoreException e1) {
             throw new ProcessorException(Messages.getString("Processor.tempFailed"), e1); //$NON-NLS-1$
         } catch (SystemException e) {
@@ -273,7 +273,8 @@ public class PerlProcessor implements IProcessor {
         // List of code's lines searched in the file
         List<String> searchedLines = new ArrayList<String>();
         for (String node : nodes) {
-            searchedLines.add("[" + node + " main ] start");
+            // searchedLines.add("[" + node + " main ] start");
+            searchedLines.add(node);
         }
 
         LineNumberReader lineReader = new LineNumberReader(new InputStreamReader(file.getContents()));
@@ -406,7 +407,7 @@ public class PerlProcessor implements IProcessor {
      * @see org.talend.designer.runprocess.IProcessor#getProcessorType()
      */
     public String getProcessorType() {
-        return PROCESSOR_TYPE;
+         return ECodeLanguage.PERL.getName();
     }
 
     /*
@@ -456,4 +457,13 @@ public class PerlProcessor implements IProcessor {
         }
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.runprocess.IProcessor#getTypeName()
+     */
+    public String getTypeName() {
+
+        return null;
+    }
 }

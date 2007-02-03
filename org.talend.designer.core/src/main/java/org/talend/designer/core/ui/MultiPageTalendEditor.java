@@ -400,20 +400,26 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
     /**
      * Move Cursor to Selected Node.
      * 
-     * @param plProcessor
+     * @param processor
      */
-    private void moveCursorToSelectedComponent(IProcessor plProcessor) {
+    private void moveCursorToSelectedComponent(IProcessor processor) {
         String nodeName = getSelectedNodeName();
+        int shift = 0;
+        if (processor.getProcessorType().equals(ECodeLanguage.JAVA.getName())) {
+            shift = 2;
+        } else if (processor.getProcessorType().equals(ECodeLanguage.PERL.getName())) {
+            shift = 1;
+        }
 
         if (nodeName != null) {
             if (codeEditor instanceof TalendJavaEditor) {
                 ((TalendJavaEditor) codeEditor).validateSyntax();
             }
-            int lineNumber = plProcessor.getLineNumber(nodeName) - 1;
+            int lineNumber = processor.getLineNumber("[" + nodeName + " main ] start") - shift;
             IDocument document = codeEditor.getDocumentProvider().getDocument(codeEditor.getEditorInput());
             try {
                 int start = document.getLineOffset(lineNumber);
-                int end = start + document.getLineLength(lineNumber) - 1;
+                int end = start + document.getLineLength(lineNumber) - shift;
                 codeEditor.selectAndReveal(start, end - start);
             } catch (BadLocationException e) {
                 codeEditor.selectAndReveal(0, 0);
