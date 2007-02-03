@@ -25,12 +25,14 @@ import java.io.IOException;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.emf.common.util.EList;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.designer.core.model.utils.emf.talendfile.ConnectionType;
 import org.talend.designer.core.model.utils.emf.talendfile.ElementParameterType;
+import org.talend.designer.core.model.utils.emf.talendfile.MetadataType;
 import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
 import org.talend.repository.model.ProxyRepositoryFactory;
 
@@ -74,6 +76,15 @@ public class RenameComponentAction {
         for (Object o : item.getProcess().getNode()) {
             NodeType nt = (NodeType) o;
             replaceInNodeParameterValue(nt, oldName, newName);
+            EList metaList = nt.getMetadata();
+            if (metaList != null) {
+                if (!metaList.isEmpty()) {
+                    MetadataType firstMeta = (MetadataType) metaList.get(0);
+                    if (firstMeta.getName().equals(oldName)) {
+                        firstMeta.setName(newName);
+                    }
+                }
+            }
         }
         for (Object o : item.getProcess().getConnection()) {
             ConnectionType currentConnection = (ConnectionType) o;
@@ -83,6 +94,9 @@ public class RenameComponentAction {
             if (currentConnection.getTarget().equals(oldName)) {
                 currentConnection.setTarget(newName);
             }
+            if (currentConnection.getMetaname().equals(oldName)) {
+                currentConnection.setMetaname(newName);
+            }
         }
     }
 
@@ -91,8 +105,8 @@ public class RenameComponentAction {
             ElementParameterType t = (ElementParameterType) o;
             String value = t.getValue();
             if (value != null) {
-				t.setValue(value.replaceAll(oldName, newName));
-			}
+                t.setValue(value.replaceAll(oldName, newName));
+            }
         }
     }
 
