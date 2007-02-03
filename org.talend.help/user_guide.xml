@@ -2,10 +2,17 @@
 <?NLS TYPE="org.eclipse.help.toc"?>
 
 <toc label="User Guide">
-    <topic label="Tutorial" href="http://www.talend.com/beta/training/tutorials/index.html" />
+    <topic label="Online ressources">
+   	    <topic label="Installation Guide" href="http://talendforge.org/wiki/doku.php?id=doc:installation_guide"/>
+    	<topic label="Tutorial" href="http://www.talend.com/tos/tutorials/menu.php" />
+    	<topic label="Forum" href="http://talendforge.org/forum/" />
+    	<topic label="Bugtracker" href="http://talendforge.org/bugs/my_view_page.php" />
+    </topic>
+
     <topic label="Perl" href="guide/perl/perlfunc.html">
     	<anchor id="per_function"/>
     </topic>
+
     <topic label="Components">
         <topic label="DBInput" href="guide/components/DBInput.html"/>
         <topic label="DBOutput" href="guide/components/DBOutput.html"/>
