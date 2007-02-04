@@ -1,7 +1,8 @@
 <%@ jet 
 	package="org.talend.designer.codegen.translators" 
 	imports="
-		org.talend.core.model.process.IContextParameter 
+		org.talend.core.model.process.IContextParameter
+		org.talend.designer.codegen.config.CodeGeneratorArgument
 		java.util.List
 	" 
 	class="Context" 
