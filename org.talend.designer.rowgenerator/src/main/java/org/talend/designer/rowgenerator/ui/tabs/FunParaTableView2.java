@@ -4,8 +4,15 @@ import java.util.List;
 
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TextCellEditor;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.TableEditor;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.TableItem;
 import org.talend.commons.ui.swt.advanced.dataeditor.AbstractDataTableEditorView;
 import org.talend.commons.ui.swt.advanced.dataeditor.ExtendedToolbarView;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
@@ -118,52 +125,59 @@ public class FunParaTableView2 extends AbstractDataTableEditorView<Parameter> {
 	}
 
 	private void updateData(List<Parameter> params) {
-		Table table = this.getTable();
-		TableViewer viewer = this.getTableViewerCreator().getTableViewer();
+		final Table table = this.getTable();
+		final TableViewer viewer = this.getTableViewerCreator().getTableViewer();
+		final TableEditor editor = new TableEditor(table);
+        // The editor must have the same size as the cell and must
+        // not be any smaller than 50 pixels.
+        editor.horizontalAlignment = SWT.LEFT;
+        editor.grabHorizontal = true;
+        editor.minimumWidth = 50;
+        // editing the second column
+        final int eDITABLECOLUMN = 2;
+		table.addSelectionListener(new SelectionAdapter() {
+
+            public void widgetSelected(SelectionEvent e) {
+                // Clean up any previous editor control
+                Control oldEditor = editor.getEditor();
+                if (oldEditor != null) {
+                    oldEditor.dispose();
+                }
+                // Identify the selected row
+                TableItem item = (TableItem) e.item;
+                if (item == null) {
+                    return;
+                }
+                Parameter param = (Parameter) item.getData();
+
+                if (param instanceof ListParameter) {
+                    createCombo((ListParameter) param, item);
+                }
+                viewer.refresh(param);
+            }
+
+            private void createCombo(final ListParameter list, TableItem item) {
+                // The control that will be the editor must be a child of the
+                // Table
+                final Combo combo = new Combo(table, SWT.PUSH);
+                combo.setItems(list.getValues());
+
+                combo.setFocus();
+                editor.setEditor(combo, item, eDITABLECOLUMN);
+                combo.setText(list.getValue());
+                combo.addSelectionListener(new SelectionAdapter() {
+
+                    public void widgetSelected(SelectionEvent e) {
+                        list.setValue(combo.getText());
+                        viewer.refresh(list);
+                    }
+
+                });
+
+            }
+
+        });
 		
-//		table.addSelectionListener(new SelectionAdapter() {
-//
-//            public void widgetSelected(SelectionEvent e) {
-//                // Clean up any previous editor control
-//                Control oldEditor = editor.getEditor();
-//                if (oldEditor != null) {
-//                    oldEditor.dispose();
-//                }
-//                // Identify the selected row
-//                TableItem item = (TableItem) e.item;
-//                if (item == null) {
-//                    return;
-//                }
-//                Parameter param = (Parameter) item.getData();
-//
-//                if (param instanceof ListParameter) {
-//                    createCombo((ListParameter) param, item);
-//                }
-//                viewer.refresh(param);
-//            }
-//
-//            private void createCombo(final ListParameter list, TableItem item) {
-//                // The control that will be the editor must be a child of the
-//                // Table
-//                final Combo combo = new Combo(table, SWT.PUSH);
-//                combo.setItems(list.getValues());
-//
-//                combo.setFocus();
-//                editor.setEditor(combo, item, eDITABLECOLUMN);
-//                combo.setText(list.getValue());
-//                combo.addSelectionListener(new SelectionAdapter() {
-//
-//                    public void widgetSelected(SelectionEvent e) {
-//                        list.setValue(combo.getText());
-//                        viewer.refresh(list);
-//                    }
-//
-//                });
-//
-//            }
-//
-//        });
-//		
 		while (table.getItemCount() > params.size()) {
 			table.getItem(table.getItemCount() - 1).dispose();
 		}
