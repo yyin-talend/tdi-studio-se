@@ -141,6 +141,7 @@ public class UIManager {
     private void reductAllData() {
         List<Map<String, Object>> eps = this.getMapperManager().getOrginEP();
         this.getMapperManager().getRowGeneratorComponent().setTableElementParameter(eps);
+        this.getMapperManager().getRowGeneratorComponent().setNumber(this.getMapperManager().getOrginNumber());
     }
 
     /**

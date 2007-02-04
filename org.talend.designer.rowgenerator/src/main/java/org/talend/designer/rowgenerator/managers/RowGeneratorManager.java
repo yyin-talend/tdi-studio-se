@@ -37,63 +37,75 @@ import org.talend.designer.rowgenerator.RowGeneratorComponent;
  */
 public class RowGeneratorManager {
 
-    private static List<Map<String, Object>> orginEP = new ArrayList<Map<String, Object>>();
+	private static List<Map<String, Object>> orginEP = new ArrayList<Map<String, Object>>();
 
-    private RowGeneratorComponent rowGeneratorComponent;
+	private static String orginNumber = "10";
 
-    private UIManager uiManager;
+	private RowGeneratorComponent rowGeneratorComponent;
 
-    private CommandStack commandStack;
+	private UIManager uiManager;
 
-    /**
-     * qzhang RowGeneratorManager constructor comment.
-     */
-    public RowGeneratorManager(RowGeneratorComponent rowGeneratorComponent) {
-        this.rowGeneratorComponent = rowGeneratorComponent;
-        this.uiManager = new UIManager(this);
-        orginEP.clear();
-        initOrginEP();
-    }
+	private CommandStack commandStack;
 
-    /**
-     *  qzhang Comment method "initOrginEP".
-     */
-    @SuppressWarnings("unchecked")
-    private void initOrginEP() {
-        List<Map<String, Object>> lines = rowGeneratorComponent.getMapList();
-        for (Map<String, Object> map : lines) {
-            Map<String, Object> newMap = new HashMap<String, Object>();
-            newMap.putAll(map);
-            orginEP.add(newMap);
-        }
-    }
+	/**
+	 * qzhang RowGeneratorManager constructor comment.
+	 */
+	public RowGeneratorManager(RowGeneratorComponent rowGeneratorComponent) {
+		this.rowGeneratorComponent = rowGeneratorComponent;
+		this.uiManager = new UIManager(this);
+		orginEP.clear();
+		initOrginEP();
+	}
 
-    public UIManager getUiManager() {
-        return this.uiManager;
-    }
+	/**
+	 * qzhang Comment method "initOrginEP".
+	 */
+	@SuppressWarnings("unchecked")
+	private void initOrginEP() {
+		List<Map<String, Object>> lines = rowGeneratorComponent.getMapList();
+		for (Map<String, Object> map : lines) {
+			Map<String, Object> newMap = new HashMap<String, Object>();
+			newMap.putAll(map);
+			orginEP.add(newMap);
+		}
+		orginNumber = rowGeneratorComponent.getNumber();
+	}
 
-    public void setUiManager(UIManager uiManager) {
-        this.uiManager = uiManager;
-    }
+	public UIManager getUiManager() {
+		return this.uiManager;
+	}
 
-    public CommandStack getCommandStack() {
-        return this.commandStack;
-    }
+	public void setUiManager(UIManager uiManager) {
+		this.uiManager = uiManager;
+	}
 
-    public void setCommandStack(CommandStack commandStack) {
-        this.commandStack = commandStack;
-    }
+	public CommandStack getCommandStack() {
+		return this.commandStack;
+	}
 
-    public RowGeneratorComponent getRowGeneratorComponent() {
-        return this.rowGeneratorComponent;
-    }
+	public void setCommandStack(CommandStack commandStack) {
+		this.commandStack = commandStack;
+	}
 
-    public void setRowGeneratorComponent(RowGeneratorComponent rowGeneratorComponent) {
-        this.rowGeneratorComponent = rowGeneratorComponent;
-    }
-    
-   public List<Map<String, Object>> getOrginEP() {
-       return orginEP;
-   }
+	public RowGeneratorComponent getRowGeneratorComponent() {
+		return this.rowGeneratorComponent;
+	}
+
+	public void setRowGeneratorComponent(
+			RowGeneratorComponent rowGeneratorComponent) {
+		this.rowGeneratorComponent = rowGeneratorComponent;
+	}
+
+	public List<Map<String, Object>> getOrginEP() {
+		return orginEP;
+	}
+
+	public String getOrginNumber() {
+		return orginNumber;
+	}
+
+	public void setOrginNumber(String orginNumber) {
+		RowGeneratorManager.orginNumber = orginNumber;
+	}
 
 }

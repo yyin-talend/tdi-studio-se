@@ -43,7 +43,6 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
-import org.talend.commons.ui.ws.WindowSystem;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataColumn;
@@ -126,12 +125,14 @@ public class RowGeneratorUI {
         mainSashForm.setLayoutData(mainSashFormGridData);
 
         datasFlowViewSashForm = new SashForm(mainSashForm, SWT.SMOOTH | SWT.HORIZONTAL | SWT.BORDER);
-        datasFlowViewSashForm.setBackgroundMode(SWT.INHERIT_FORCE);
         datasFlowViewSashForm.setLayoutData(mainSashFormGridData);
+        datasFlowViewSashForm.setBackgroundMode(SWT.INHERIT_FORCE);
 
-        if (WindowSystem.isGTK()) {
-            datasFlowViewSashForm.setBackground(display.getSystemColor(SWT.COLOR_DARK_GRAY));
-        }
+        initBackgroundComponents();
+        
+//        if (WindowSystem.isGTK()) {
+//            datasFlowViewSashForm.setBackground(display.getSystemColor(SWT.COLOR_DARK_GRAY));
+//        }
         /* Create Schema Table Editor */
         createSchemaComposite();
 
@@ -177,6 +178,10 @@ public class RowGeneratorUI {
         });
     }
 
+    private void initBackgroundComponents() {
+    	
+    }
+    
     private IMetadataTable outputMetaTable;
 
     /**

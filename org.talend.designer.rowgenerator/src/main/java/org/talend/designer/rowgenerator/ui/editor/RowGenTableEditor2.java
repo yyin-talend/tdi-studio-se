@@ -90,23 +90,23 @@ public class RowGenTableEditor2 extends AbstractDataTableEditorView<IMetadataCol
         super(parentComposite, mainCompositeStyle);
     }
 
-    @SuppressWarnings("unchecked")
-    public void saveOneColData(MetadataColumnExt bean) {
-        if (bean != null && bean.getFunction() != null && rGcomponent != null) {
-            String newValue = "sub{";
-            newValue += bean.getFunction().getName() + "(";
-            for (Parameter pa : (List<Parameter>) bean.getFunction().getParameters()) {
-                newValue += pa.getValue() + ",";
-            }
-            newValue = newValue.substring(0, newValue.length() - 1);
-            newValue += ")}";
-            if (bean.getFunction().getName() == null || "".equals(bean.getFunction().getName())) {
-                newValue = "";
-            }
-            rGcomponent.setColumnValue(bean.getLabel(), newValue);
-        }
-        
-    }
+//    @SuppressWarnings("unchecked")
+//    public void saveOneColData(MetadataColumnExt bean) {
+//        if (bean != null && bean.getFunction() != null && rGcomponent != null) {
+//            String newValue = "sub{";
+//            newValue += bean.getFunction().getName() + "(";
+//            for (Parameter pa : (List<Parameter>) bean.getFunction().getParameters()) {
+//                newValue += pa.getValue() + ",";
+//            }
+//            newValue = newValue.substring(0, newValue.length() - 1);
+//            newValue += ")}";
+//            if (bean.getFunction().getName() == null || "".equals(bean.getFunction().getName())) {
+//                newValue = "";
+//            }
+//            rGcomponent.setColumnValue(bean.getLabel(), newValue);
+//        }
+//        
+//    }
 
     @Override
     protected void createColumns(TableViewerCreator<IMetadataColumn> tableViewerCreator, Table table) {
@@ -126,7 +126,7 @@ public class RowGenTableEditor2 extends AbstractDataTableEditorView<IMetadataCol
             public String get(MetadataColumnExt bean) {
                 if (bean.getFunction() != null) {
                     functComboBox.setItems(bean.getArrayFunctions());
-                    saveOneColData(bean);
+//                    saveOneColData(bean);
                     return bean.getFunction().getName();
                 }
                 return "";
@@ -134,7 +134,7 @@ public class RowGenTableEditor2 extends AbstractDataTableEditorView<IMetadataCol
 
             public void set(MetadataColumnExt bean, String value) {
                 bean.setFunction(RowGenTableEditor2.this.getFunnctionByName(bean.getTalendType(), value));
-                saveOneColData(bean);
+//                saveOneColData(bean);
             }
 
         });
@@ -148,13 +148,13 @@ public class RowGenTableEditor2 extends AbstractDataTableEditorView<IMetadataCol
 
             public String get(MetadataColumnExt bean) {
                 if (bean.getFunction() != null) {
-                    saveOneColData(bean);
+//                    saveOneColData(bean);
                 }
                 return bean.getParameter();
             }
 
             public void set(MetadataColumnExt bean, String value) {
-                saveOneColData(bean);
+//                saveOneColData(bean);
             }
 
         });
@@ -341,7 +341,7 @@ public class RowGenTableEditor2 extends AbstractDataTableEditorView<IMetadataCol
             public void set(MetadataColumnExt bean, String value) {
                 bean.setTalendType(value);
                 bean.setFunction(RowGenTableEditor2.this.getFunction(bean, value));
-                saveOneColData(bean);
+//                saveOneColData(bean);
             }
 
         });

@@ -55,7 +55,7 @@ public class TabFolderEditors extends CTabFolder {
 
     protected int lastSelectedTab;
 
-    private FunParaTableView inputParameterEditor;
+    private FunParaTableView2 inputParameterEditor;
 
     public static final int INDEX_TAB_METADATA_EDITOR = 0;
 
@@ -215,12 +215,12 @@ public class TabFolderEditors extends CTabFolder {
      * @param inEditorContainer
      */
     protected void createTableView(Composite inEditorContainer) {
-        inputParameterEditor = new FunParaTableView(inEditorContainer, SWT.BORDER, genTableEditor2);
+        inputParameterEditor = new FunParaTableView2(inEditorContainer, SWT.BORDER, genTableEditor2);
         inEditorContainer.setData(inputParameterEditor);
         inputParameterEditor.setTitle("");
     }
 
-    public FunParaTableView getParameterEditor() {
+    public FunParaTableView2 getParameterEditor() {
         return this.inputParameterEditor;
     }
 
