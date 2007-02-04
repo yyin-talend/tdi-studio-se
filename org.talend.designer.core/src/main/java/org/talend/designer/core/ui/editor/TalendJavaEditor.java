@@ -21,6 +21,10 @@
 // ============================================================================
 package org.talend.designer.core.ui.editor;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jdt.internal.ui.JavaPlugin;
 import org.eclipse.jdt.internal.ui.javaeditor.CompilationUnitEditor;
@@ -31,7 +35,9 @@ import org.eclipse.jdt.internal.ui.text.JavaReconciler;
 import org.eclipse.jface.text.IDocumentExtension3;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.ui.part.EditorPart;
 import org.talend.designer.core.ISyntaxCheckableEditor;
+import org.talend.designer.core.ui.MultiPageTalendEditor;
 
 /**
  * DOC yzhang class global comment. Detailled comment <br/>
@@ -46,6 +52,10 @@ public class TalendJavaEditor extends CompilationUnitEditor implements ISyntaxCh
     private static org.eclipse.jdt.core.ICompilationUnit workingCopy;
 
     private boolean disposed = false;
+
+    private List<MultiPageTalendEditor> editPartListener = new ArrayList<MultiPageTalendEditor>();
+
+    private static boolean isLatestCodeInFile;
 
     /**
      * DOC amaumont TalendJavaEditor constructor comment.
@@ -111,6 +121,7 @@ public class TalendJavaEditor extends CompilationUnitEditor implements ISyntaxCh
             selectAndReveal(0, 0);
             javaSourceViewer.doOperation(ISourceViewer.FORMAT);
             doSave(null);
+            TalendJavaEditor.isLatestCodeInFile = false;
         }
         setFocus();
     }
@@ -146,16 +157,46 @@ public class TalendJavaEditor extends CompilationUnitEditor implements ISyntaxCh
     public boolean isDisposed() {
         return this.disposed;
     }
-    
+
     /**
      * Getter for unit.
+     * 
      * @return the unit
      */
     public org.eclipse.jdt.core.ICompilationUnit getUnit() {
         return unit;
     }
 
+    /**
+     * Add editor part to this editor.
+     * 
+     * yzhang Comment method "addEditPart".
+     * 
+     * @param editPart
+     */
+    public void addEditorPart(MultiPageTalendEditor editPart) {
+        if (!this.editPartListener.contains(editPart)) {
+            this.editPartListener.add(editPart);
+        }
+    }
 
-    
-    
+    public void removeEditorPart(MultiPageTalendEditor editPart) {
+        this.editPartListener.remove(editPart);
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.jdt.internal.ui.javaeditor.CompilationUnitEditor#doSave(org.eclipse.core.runtime.IProgressMonitor)
+     */
+    @Override
+    public void doSave(IProgressMonitor progressMonitor) {
+        if (!isLatestCodeInFile) {
+            TalendJavaEditor.isLatestCodeInFile = true;
+            for (MultiPageTalendEditor element : this.editPartListener) {
+                element.codeSync();
+            }
+        }
+        super.doSave(progressMonitor);
+    }
 }

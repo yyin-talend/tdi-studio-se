@@ -157,6 +157,9 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
                 processor.addSyntaxCheckableEditor((ISyntaxCheckableEditor) codeEditor);
             }
         }
+        if (codeEditor instanceof TalendJavaEditor) {
+            ((TalendJavaEditor) codeEditor).addEditorPart(this);
+        }
 
         try {
             processor.initPaths(process.getContextManager().getDefaultContext());
@@ -194,7 +197,8 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
      * @return the current generating code language
      */
     private ECodeLanguage getCurrentLang() {
-        return ((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY)).getProject().getLanguage();
+        return ((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY)).getProject()
+                .getLanguage();
     }
 
     /**
@@ -212,6 +216,11 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
      */
     public void dispose() {
         ResourcesPlugin.getWorkspace().removeResourceChangeListener(this);
+        codeSync();
+        if (this.codeEditor instanceof TalendJavaEditor) {
+            ((TalendJavaEditor) codeEditor).removeEditorPart(this);
+        }
+
         // MultieditPlugin.getDefault().getPreferenceStore().removePropertyChangeListener(
         // (org.eclipse.jface.util.IPropertyChangeListener) this);
         super.dispose();
@@ -239,10 +248,20 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
      * Saves the multi-page editor's document.
      */
     public void doSave(final IProgressMonitor monitor) {
+        if (!isDirty()) {
+            return;
+        }
         getTalendEditor().getProperty().eAdapters().remove(dirtyListener);
         getEditor(0).doSave(monitor);
         getTalendEditor().getProperty().eAdapters().add(dirtyListener);
 
+        codeSync();
+
+        propertyIsDirty = false;
+        firePropertyChange(IEditorPart.PROP_DIRTY);
+    }
+
+    public void codeSync() {
         IProcess process = designerEditor.getProcess();
         IRunProcessService service = DesignerPlugin.getDefault().getRunProcessService();
         IProcessor processor = service.createCodeProcessor(process, getCurrentLang(), true);
@@ -255,19 +274,11 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
         }
 
         try {
-            // plProcessor.generateCode(process.getContextManager().getDefaultContext(), false, false, true,
-            // true);//Old
             processor.generateCode(process.getContextManager().getDefaultContext(), false, false, true);
 
         } catch (ProcessorException pe) {
             MessageBoxExceptionHandler.process(pe);
-            // ErrorDialog.openError(getSite().getShell(), Messages.getString("MultiPageTalendEditor.3"),
-            // //$NON-NLS-1$
-            // pe.getMessage(), null);
         }
-
-        propertyIsDirty = false;
-        firePropertyChange(IEditorPart.PROP_DIRTY);
     }
 
     /**
@@ -349,6 +360,9 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
                 if (codeEditor instanceof ISyntaxCheckableEditor) {
                     plProcessor.addSyntaxCheckableEditor((ISyntaxCheckableEditor) codeEditor);
                 }
+            }
+            if (codeEditor instanceof TalendJavaEditor) {
+                ((TalendJavaEditor) codeEditor).addEditorPart(this);
             }
 
             try {
@@ -486,7 +500,8 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
                 public void run() {
                     IWorkbenchPage[] pages = getSite().getWorkbenchWindow().getPages();
                     for (int i = 0; i < pages.length; i++) {
-                        if (((FileEditorInput) designerEditor.getEditorInput()).getFile().getProject().equals(event.getResource())) {
+                        if (((FileEditorInput) designerEditor.getEditorInput()).getFile().getProject().equals(
+                                event.getResource())) {
                             IEditorPart editorPart = pages[i].findEditor(designerEditor.getEditorInput());
                             pages[i].closeEditor(editorPart, true);
                         }
