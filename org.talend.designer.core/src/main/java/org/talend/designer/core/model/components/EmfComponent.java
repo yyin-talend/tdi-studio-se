@@ -72,6 +72,7 @@ import org.talend.designer.core.model.utils.emf.component.TEMPLATESType;
 import org.talend.designer.core.model.utils.emf.component.TEMPLATEType;
 import org.talend.designer.core.model.utils.emf.component.util.ComponentResourceFactoryImpl;
 import org.talend.repository.model.ComponentsFactoryProvider;
+import org.talend.repository.model.ExternalNodesFactory;
 
 /**
  * 
@@ -116,8 +117,8 @@ public class EmfComponent implements IComponent {
         this.file = file;
         this.pathSource = pathSource;
         load();
-        codeLanguage = ((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY)).getProject()
-                .getLanguage();
+        codeLanguage = ((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY))
+                .getProject().getLanguage();
     }
 
     public ResourceBundle getResourceBundle() {
@@ -154,6 +155,11 @@ public class EmfComponent implements IComponent {
                 compType = (COMPONENTType) xmlDoc.eContents().get(0);
 
                 loadMultipleComponentManagerFromTemplates();
+
+                // just load the externalNode plugin to check if the plugin exists.
+                if (compType.getHEADER().getEXTENSION() != null) {
+                    ExternalNodesFactory.getInstance(this.getPluginFullName());
+                }
 
                 isLoaded = true;
             } catch (Exception e) {
@@ -575,7 +581,7 @@ public class EmfComponent implements IComponent {
         }
     }
 
-    @SuppressWarnings("unchecked") //$NON-NLS-1$
+    @SuppressWarnings("unchecked")//$NON-NLS-1$
     private void addPropertyParameters(final List<ElementParameter> listParam, final INode node) {
         EList listXmlParam;
         PARAMETERType xmlParam;
@@ -630,14 +636,17 @@ public class EmfComponent implements IComponent {
                 param.setValue(""); //$NON-NLS-1$
             }
 
-            if (!param.getField().equals(EParameterFieldType.TABLE) && !param.getField().equals(EParameterFieldType.CLOSED_LIST)) {
+            if (!param.getField().equals(EParameterFieldType.TABLE)
+                    && !param.getField().equals(EParameterFieldType.CLOSED_LIST)) {
                 List<DEFAULTType> listDefault = xmlParam.getDEFAULT();
                 for (DEFAULTType defaultType : listDefault) {
                     IElementParameterDefaultValue defaultValue = new ElementParameterDefaultValue();
 
                     if (node.getProcess() != null) {
-                        defaultValue.setDefaultValue(ElementParameterParser.parse(node.getProcess(), defaultType.getValue()));
-                        if (param.getField() == EParameterFieldType.FILE || param.getField() == EParameterFieldType.DIRECTORY) {
+                        defaultValue.setDefaultValue(ElementParameterParser.parse(node.getProcess(), defaultType
+                                .getValue()));
+                        if (param.getField() == EParameterFieldType.FILE
+                                || param.getField() == EParameterFieldType.DIRECTORY) {
                             IPath path = Path.fromOSString(defaultValue.getDefaultValue());
                             defaultValue.setDefaultValue(path.toOSString());
                         }
@@ -707,8 +716,8 @@ public class EmfComponent implements IComponent {
         }
     }
 
-    public void addItemsPropertyParameters(String paramName, ITEMSType items, ElementParameter param, EParameterFieldType type,
-            INode node) {
+    public void addItemsPropertyParameters(String paramName, ITEMSType items, ElementParameter param,
+            EParameterFieldType type, INode node) {
         ITEMType item;
         ElementParameter newParam;
 
@@ -767,7 +776,8 @@ public class EmfComponent implements IComponent {
                 case CLOSED_LIST:
                 case COLUMN_LIST:
                 case PREV_COLUMN_LIST:
-                    addItemsPropertyParameters(paramName + ".ITEM." + item.getNAME(), item.getITEMS(), newParam, currentField, //$NON-NLS-1$
+                    addItemsPropertyParameters(
+                            paramName + ".ITEM." + item.getNAME(), item.getITEMS(), newParam, currentField, //$NON-NLS-1$
                             node);
                     break;
                 case CHECK:
@@ -933,7 +943,8 @@ public class EmfComponent implements IComponent {
                     msg = Messages.getString("modules.required"); //$NON-NLS-1$
                 }
 
-                ModuleNeeded componentImportNeeds = new ModuleNeeded(this, importType.getMODULE(), msg, importType.isREQUIRED());
+                ModuleNeeded componentImportNeeds = new ModuleNeeded(this, importType.getMODULE(), msg, importType
+                        .isREQUIRED());
 
                 componentImportNeedsList.add(componentImportNeeds);
             }
