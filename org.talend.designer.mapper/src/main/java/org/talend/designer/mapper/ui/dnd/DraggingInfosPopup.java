@@ -158,10 +158,8 @@ public final class DraggingInfosPopup {
             // to get round refresh problem
             if (isVisible != isVisible) {
                 setVisible(isVisible);
-                // System.out.println("Adjust setVisible");
             } else {
                 mapperShell.redraw(boundsToRedraw.x, boundsToRedraw.y, boundsToRedraw.width, boundsToRedraw.height, false);
-                // System.out.println("Adjust redraw");
             }
         }
 
@@ -187,7 +185,6 @@ public final class DraggingInfosPopup {
          */
         public void setCountEntriesText(String text) {
             if (!text.equals(labelEntries.getText())) {
-                // System.out.println("setCountEntriesText");
                 labelEntries.setText(text);
                 adjustBounds();
             }
@@ -200,7 +197,6 @@ public final class DraggingInfosPopup {
          */
         public void setWriteModeText(String text) {
             if (!text.equals(labelWriteMode.getText())) {
-                // System.out.println("setWriteModeText");
                 labelWriteMode.setText(text);
                 adjustBounds();
             }
@@ -213,7 +209,6 @@ public final class DraggingInfosPopup {
          */
         public void setMappingModeText(String text) {
             if (!text.equals(labelMappingMode.getText())) {
-                // System.out.println("setMappingModeText");
                 labelMappingMode.setText(text);
                 adjustBounds();
             }
@@ -226,7 +221,6 @@ public final class DraggingInfosPopup {
          */
         public void setInsertionEntryText(String text) {
             if (!text.equals(labelInsertionEntryMode.getText())) {
-                // System.out.println("setInsertionEntryText");
                 labelInsertionEntryMode.setText(text);
                 adjustBounds();
             }
@@ -248,9 +242,8 @@ public final class DraggingInfosPopup {
             return mainComposite.computeSize(SWT.DEFAULT, SWT.DEFAULT);
         }
 
-        public void setLabelsVisible(boolean boolLabelWriteMode, boolean boolLabelMappingMode, boolean boolLabelInsertionEntryMode,
-                boolean boolDropInvalid) {
-            // System.out.println("setLabelsVisible");
+        public void setLabelsVisible(boolean boolLabelWriteMode, boolean boolLabelMappingMode,
+                boolean boolLabelInsertionEntryMode, boolean boolDropInvalid) {
             ((RowData) labelWriteMode.getLayoutData()).exclude = !boolLabelWriteMode;
             ((RowData) labelMappingMode.getLayoutData()).exclude = !boolLabelMappingMode;
             ((RowData) labelInsertionEntryMode.getLayoutData()).exclude = !boolLabelInsertionEntryMode;
@@ -305,11 +298,13 @@ public final class DraggingInfosPopup {
      * @param countEntries
      */
     public void setCountDraggingEntries(int countEntries) {
-        String entries = " entries"; //$NON-NLS-1$
+        String text = null;
         if (countEntries <= 1) {
-            entries = " entry"; //$NON-NLS-1$
+            text = Messages.getString("DraggingInfosPopup.draggingEntry", countEntries); //$NON-NLS-1$
+        } else {
+            text = Messages.getString("DraggingInfosPopup.draggingEntries", countEntries);//$NON-NLS-1$
         }
-        popup.setCountEntriesText("Dragging " + countEntries + entries + "."); //$NON-NLS-1$ //$NON-NLS-2$
+        popup.setCountEntriesText(text);
     }
 
     /**
@@ -320,12 +315,12 @@ public final class DraggingInfosPopup {
     public void setOverwriteMode(boolean overwrite) {
         String mode = null;
         if (overwrite) {
-            mode = " > Overwrite mode";
+            mode = Messages.getString("DraggingInfosPopup.overwriteMode"); //$NON-NLS-1$
         } else {
             if (WindowSystem.isGTK()) {
-                mode = " > Append mode";
+                mode = Messages.getString("DraggingInfosPopup.appendMode"); //$NON-NLS-1$
             } else {
-                mode = " > Append mode (Ctrl key to overwrite)";
+                mode = Messages.getString("DraggingInfosPopup.appendModeToOverwrite"); //$NON-NLS-1$
             }
         }
         popup.setWriteModeText(mode);
@@ -342,14 +337,29 @@ public final class DraggingInfosPopup {
     public void setMapOneToOneMode(boolean isMapOneToOne, boolean mapOneToOneAuthorized) {
         String mode = null;
         if (isMapOneToOne && mapOneToOneAuthorized) {
-            mode = " > Each source entry " + (this.outputToOutputMode ? "expression " : "") + "to each target expression"; //$NON-NLS-3$
+            if (outputToOutputMode) {
+                mode = Messages.getString("DraggingInfosPopup.eachSourceEntryExpressionToEachTargetExpression"); //$NON-NLS-1$
+            } else {
+                mode = Messages.getString("DraggingInfosPopup.eachSourceEntryToEachTargetExpression"); //$NON-NLS-1$
+            }
             this.mapOneToOne = isMapOneToOne;
         } else {
-            mode = " > All source entries "
-                    + (this.outputToOutputMode ? "expression " : "") //$NON-NLS-2$
-                    + "to a single one "
-                    + (mapOneToOneAuthorized && !WindowSystem.isGTK() ? "target expression (Shift key to change mapping)"
-                            : "target expression");
+            if (outputToOutputMode) {
+                if (mapOneToOneAuthorized && !WindowSystem.isGTK()) {
+                    mode = Messages
+                            .getString("DraggingInfosPopup.allSourceEntriesExpressionToASingleOneTargetExpressionShiftKey"); //$NON-NLS-1$
+                } else {
+                    mode = Messages.getString("DraggingInfosPopup.allSourceEntriesExpressionToASingleOneTargetExpression"); //$NON-NLS-1$
+                }
+
+            } else {
+                if (mapOneToOneAuthorized && !WindowSystem.isGTK()) {
+                    mode = Messages.getString("DraggingInfosPopup.allSourceEntriesToASingleOneTargetExpressionShiftKey"); //$NON-NLS-1$
+                } else {
+                    mode = Messages.getString("DraggingInfosPopup.allSourceEntriesToASingleOneTargetExpression"); //$NON-NLS-1$
+                }
+            }
+
             this.mapOneToOne = false;
         }
         popup.setMappingModeText(mode);
@@ -379,9 +389,9 @@ public final class DraggingInfosPopup {
         this.insertionEntryContext = insertionEntryMode;
         String newText = "null"; //$NON-NLS-1$
         if (this.insertionEntryContext && !this.mapOneToOne) {
-            newText = " > Insert all selected entries";
+            newText = Messages.getString("DraggingInfosPopup.insertAllSelectedEntries"); //$NON-NLS-1$
         } else if (this.insertionEntryContext && this.mapOneToOne) {
-            newText = " > Insert remaining entries";
+            newText = Messages.getString("DraggingInfosPopup.insertRemainingEntries"); //$NON-NLS-1$
         }
         if (!popup.labelInsertionEntryMode.getText().equals(newText)) {
             popup.setInsertionEntryText(newText);
@@ -420,8 +430,11 @@ public final class DraggingInfosPopup {
         String newText = "null"; //$NON-NLS-1$
         if (isDropInvalid) {
             if (WindowSystem.isGTK()) {
-                newText = "\n<< Drop invalid >>\n"
-                        + (isInvalidKeyPressed ? "Press both Shift and Ctrl keys to map one to one and overwrite" : ""); //$NON-NLS-2$
+                if (isInvalidKeyPressed) {
+                    newText = Messages.getString("DraggingInfosPopup.dropInvalidWithKey"); //$NON-NLS-1$
+                } else {
+                    newText = Messages.getString("DraggingInfosPopup.dropInvalid"); //$NON-NLS-1$
+                }
             }
         }
         if (WindowSystem.isGTK()) {
@@ -435,5 +448,4 @@ public final class DraggingInfosPopup {
             updateVisibleLabels();
         }
     }
-
 }

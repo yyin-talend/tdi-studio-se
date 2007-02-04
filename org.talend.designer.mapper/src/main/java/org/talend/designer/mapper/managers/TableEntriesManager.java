@@ -133,7 +133,7 @@ public class TableEntriesManager {
                 ((OutputTable) dataMapTable).addFilterEntry((FilterTableEntry) dataMapTableEntry, index);
             }
         } else {
-            String exceptionMessage = Messages.getString("TableEntriesManager.exceptionMessage.typeIsNotValid", dataMapTableEntry
+            String exceptionMessage = Messages.getString("TableEntriesManager.exceptionMessage.typeIsNotValid", dataMapTableEntry //$NON-NLS-1$
                     .getClass().toString());
             throw new IllegalArgumentException(exceptionMessage);
         }
@@ -164,7 +164,7 @@ public class TableEntriesManager {
                     ((OutputTable) dataMapTable).removeFilterEntry((FilterTableEntry) dataMapTableEntry);
                 }
             } else {
-                String exceptionMessage = Messages.getString("TableEntriesManager.exceptionMessage.typeIsNotValid",
+                String exceptionMessage = Messages.getString("TableEntriesManager.exceptionMessage.typeIsNotValid", //$NON-NLS-1$
                         dataMapTableEntry.getClass().toString());
 
                 throw new IllegalArgumentException(exceptionMessage);
