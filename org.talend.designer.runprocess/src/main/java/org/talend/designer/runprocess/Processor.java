@@ -358,7 +358,7 @@ public class Processor {
 
     public static void logCommandLine(String[] cmd, Level level) {
         StringBuffer sb = new StringBuffer();
-        sb.append("Command line:"); //$NON-NLS-1$
+        sb.append(Messages.getString("Processor.commandLineLog"));  //$NON-NLS-1$
         for (String s : cmd) {
             sb.append(' ').append(s);
         }

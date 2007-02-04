@@ -76,7 +76,7 @@ public class ShadowConnection implements IConnection {
      * @see org.talend.core.model.process.IConnection#getName()
      */
     public String getName() {
-        return "Row";
+        return "Row"; //$NON-NLS-1$
     }
 
     /*

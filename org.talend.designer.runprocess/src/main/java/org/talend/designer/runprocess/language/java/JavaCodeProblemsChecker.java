@@ -54,6 +54,7 @@ import org.talend.designer.core.ui.editor.DetailedProblem;
 import org.talend.designer.core.ui.editor.TalendEditor;
 import org.talend.designer.core.ui.editor.TalendJavaEditor;
 import org.talend.designer.runprocess.RunProcessPlugin;
+import org.talend.designer.runprocess.i18n.Messages;
 
 /**
  * Check syntax of Java expressions.
@@ -122,7 +123,8 @@ public class JavaCodeProblemsChecker extends CodeProblemsChecker {
             TalendEditor talendEditor = multiPageTalendEditor.getTalendEditor();
             // TalendJavaEditor.getProblems();
             TalendJavaEditor codeEditor = (TalendJavaEditor) multiPageTalendEditor.getCodeEditor();
-            org.eclipse.jdt.core.ICompilationUnit compilationUnit = (org.eclipse.jdt.core.ICompilationUnit) codeEditor.getUnit();
+            org.eclipse.jdt.core.ICompilationUnit compilationUnit = (org.eclipse.jdt.core.ICompilationUnit) codeEditor
+                    .getUnit();
 
             IProcess process = talendEditor.getProcess();
 
@@ -145,11 +147,12 @@ public class JavaCodeProblemsChecker extends CodeProblemsChecker {
                 try {
                     WorkingCopyOwner workingCopyOwner = new WorkingCopyOwner() {
                     };
-                    workingCopy = ((org.eclipse.jdt.core.ICompilationUnit) compilationUnit).getWorkingCopy(workingCopyOwner,
-                            problemRequestor, null);
+                    workingCopy = ((org.eclipse.jdt.core.ICompilationUnit) compilationUnit).getWorkingCopy(
+                            workingCopyOwner, problemRequestor, null);
                     problemRequestor.setReportProblems(true);
                     ((IOpenable) workingCopy).getBuffer().setContents(code);
-                    ((org.eclipse.jdt.core.ICompilationUnit) workingCopy).reconcile(ICompilationUnit.NO_AST, true, null, null);
+                    ((org.eclipse.jdt.core.ICompilationUnit) workingCopy).reconcile(ICompilationUnit.NO_AST, true,
+                            null, null);
                     problemRequestor.setReportProblems(false);
                 } finally {
                     if (workingCopy != null) {
@@ -178,8 +181,8 @@ public class JavaCodeProblemsChecker extends CodeProblemsChecker {
             problems = new ArrayList<Problem>();
             for (DetailedProblem problemWithLine : list) {
                 Problem talendProblem = new Problem();
-                talendProblem.setDescription("Error on '" + problemWithLine.getSource() + "'  =>  "
-                        + problemWithLine.getJdtProblem().getMessage());
+                talendProblem.setDescription(Messages.getString("JavaCodeProblemsChecker.processDetailError", //$NON-NLS-1$
+                        new Object[] { problemWithLine.getSource(), problemWithLine.getJdtProblem().getMessage() }));
                 talendProblem.setStatus(Problem.ProblemStatus.ERROR);
                 talendProblem.setAction(Problem.ProblemAction.ADDED);
                 talendProblem.setKey(problemWithLine.getKey());
@@ -220,8 +223,8 @@ public class JavaCodeProblemsChecker extends CodeProblemsChecker {
                 // System.out.println(problem.getID() + ": " + problem.getMessage());
                 char[] charArray = this.code.toCharArray();
 
-                String source = String.copyValueOf(charArray, problem.getSourceStart(), problem.getSourceEnd() - problem.getSourceStart()
-                        + 1);
+                String source = String.copyValueOf(charArray, problem.getSourceStart(), problem.getSourceEnd()
+                        - problem.getSourceStart() + 1);
 
                 // System.out.println("source=" + source);
 
@@ -242,22 +245,22 @@ public class JavaCodeProblemsChecker extends CodeProblemsChecker {
             String fieldType = null;
             Pattern pattern = null;
             try {
-                // exemple of matching string :                 /** Start field value1:value2:value3 */
-                // other exemple of matching string :           /**     End field xxx:yyyy:zzzz:mmmm    */
-                pattern = compiler.compile("/\\*\\*\\s*(" + CodeGenerationUtils.START_FIELD + "|" + CodeGenerationUtils.END_FIELD
-                        + ")\\s*([\\w:]+)\\s*\\*/$", Perl5Compiler.MULTILINE_MASK);
+                // exemple of matching string : /** Start field value1:value2:value3 */
+                // other exemple of matching string : /** End field xxx:yyyy:zzzz:mmmm */
+                pattern = compiler.compile("/\\*\\*\\s*(" + CodeGenerationUtils.START_FIELD + "|" //$NON-NLS-1$ //$NON-NLS-2$
+                        + CodeGenerationUtils.END_FIELD + ")\\s*([\\w:]+)\\s*\\*/$", Perl5Compiler.MULTILINE_MASK); //$NON-NLS-1$
             } catch (MalformedPatternException e) {
                 ExceptionHandler.process(e);
                 return null;
             }
 
-            String firstStringToSearch = "*/";
+            String firstStringToSearch = "*/"; //$NON-NLS-1$
             int sizeFirstStringToSearch = firstStringToSearch.length();
 
             for (int i = start + sizeFirstStringToSearch; i < contents.length; i++) {
 
-                boolean parseWithRegExp = String.copyValueOf(contents, i + 1 - sizeFirstStringToSearch, sizeFirstStringToSearch).equals(
-                        firstStringToSearch);
+                boolean parseWithRegExp = String.copyValueOf(contents, i + 1 - sizeFirstStringToSearch,
+                        sizeFirstStringToSearch).equals(firstStringToSearch);
 
                 if (parseWithRegExp) {
                     String stringToParse = String.copyValueOf(contents, start, i - start + 1);
@@ -302,7 +305,7 @@ public class JavaCodeProblemsChecker extends CodeProblemsChecker {
     public static void main(String[] args) {
         JavaCodeProblemsChecker checker = new JavaCodeProblemsChecker();
 
-        String string = "/** Start field xxx:hhhh:gggg */row1.fff /** End field xxx:hhhh:gggg */";
+        String string = "/** Start field xxx:hhhh:gggg */row1.fff /** End field xxx:hhhh:gggg */"; //$NON-NLS-1$
         MyProblemRequestor requestor = checker.new MyProblemRequestor(string, null);
 
         requestor.extractKey(string.toCharArray(), 36);

@@ -34,10 +34,10 @@ public class FileInputRegExpNode extends FileInputNode {
      */
     public FileInputRegExpNode(String filename, String rowSep, String regex, int limitRows, int headerRows,
             int footerRows, boolean removeEmptyRow) {
-        super("tFileInputRegex");
+        super("tFileInputRegex"); //$NON-NLS-1$
 
-        String[] paramNames = new String[] { "FILENAME", "ROWSEPARATOR", "REGEX", "LIMIT", "HEADER", "FOOTER",
-                "REMOVE_EMPTY_ROW" };
+        String[] paramNames = new String[] { "FILENAME", "ROWSEPARATOR", "REGEX", "LIMIT", "HEADER", "FOOTER", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
+                "REMOVE_EMPTY_ROW" }; //$NON-NLS-1$
         String[] paramValues = new String[] { filename, rowSep, regex, Integer.toString(limitRows),
                 Integer.toString(headerRows), Integer.toString(footerRows), Boolean.toString(removeEmptyRow) };
 

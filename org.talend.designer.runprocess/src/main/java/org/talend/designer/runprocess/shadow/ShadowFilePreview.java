@@ -52,7 +52,7 @@ public class ShadowFilePreview implements IPreview {
      * @see org.talend.repository.preview.filedelimited.IFileDelimitedPreview#
      *      preview(org.talend.repository.preview.filedelimited.ProcessDescription)
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked") //$NON-NLS-1$
     public XmlArray preview(IProcessDescription description, String type) throws CoreException {
         XmlArray res = null;
         

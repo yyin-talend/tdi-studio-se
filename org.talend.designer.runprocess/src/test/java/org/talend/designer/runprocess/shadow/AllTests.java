@@ -39,7 +39,7 @@ public final class AllTests {
     }
 
     public static Test suite() {
-        TestSuite suite = new TestSuite("Test for org.talend.designer.runprocess.shadow");
+        TestSuite suite = new TestSuite("Test for org.talend.designer.runprocess.shadow"); //$NON-NLS-1$
         // $JUnit-BEGIN$
         suite.addTestSuite(ShadowProcessTest.class);
         // $JUnit-END$

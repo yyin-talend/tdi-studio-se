@@ -49,7 +49,7 @@ public class ShadowProcessTest extends TestCase {
      */
     @Override
     protected void setUp() throws Exception {
-        Project project = new Project("ShadowProcessTest");
+        Project project = new Project("ShadowProcessTest"); //$NON-NLS-1$
         project.setLanguage(ECodeLanguage.PERL);
 
         RepositoryContext repositoryContext = (RepositoryContext) CorePlugin.getContext()
@@ -61,10 +61,10 @@ public class ShadowProcessTest extends TestCase {
     /**
      * Test method for {@link org.talend.designer.runprocess.shadow.ShadowProcess#run()}.
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked") //$NON-NLS-1$
     public void testRun() {
 
-        System.out.print("Waiting for JET to initialize.");
+        System.out.print("Waiting for JET to initialize."); //$NON-NLS-1$
         // CodeGeneratorPlugin.getDefault().initialize(ECodeLanguage.PERL);
         // synchronized(this) {
         // try {
@@ -77,7 +77,7 @@ public class ShadowProcessTest extends TestCase {
         // // Do nohting
         // }
         // }
-        System.out.println("\nJet is normally up.");
+        System.out.println("\nJet is normally up."); //$NON-NLS-1$
 
         try {
 //            ProcessDescription desc = new ProcessDescription();
@@ -91,7 +91,7 @@ public class ShadowProcessTest extends TestCase {
 //            assertEquals("Wrong row count.", array.getRows().size(), ROW_COUNT);
 //            assertEquals("Wrong col count.", array.getRows().get(0).getFields().size(), FIELDS_COUNT);
         } catch (Exception pe) {
-            System.out.println("Be carefull of preferences : PERL interpreter.");
+            System.out.println("Be carefull of preferences : PERL interpreter."); //$NON-NLS-1$
 
             pe.printStackTrace();
             fail(pe.getMessage());

@@ -51,7 +51,7 @@ import org.talend.core.model.repository.RepositoryObject;
  */
 public class FileinToXmlProcess<K extends FileInputNode> extends RepositoryObject implements IProcess {
 
-    private String name = "FileinToXml";
+    private String name = "FileinToXml"; //$NON-NLS-1$
 
     private IContextManager contextManager;
 
@@ -78,7 +78,7 @@ public class FileinToXmlProcess<K extends FileInputNode> extends RepositoryObjec
     }
 
     public String getTechnicalName() {
-        return "FileinToXml";
+        return "FileinToXml"; //$NON-NLS-1$
     }
 
     /*
@@ -116,7 +116,7 @@ public class FileinToXmlProcess<K extends FileInputNode> extends RepositoryObjec
      * @see org.talend.core.model.repository.IRepositoryProcess#getId()
      */
     public String getId() {
-        return "";
+        return ""; //$NON-NLS-1$
     }
 
     /*
@@ -242,7 +242,7 @@ public class FileinToXmlProcess<K extends FileInputNode> extends RepositoryObjec
      * @see org.talend.core.model.repository.IRepositoryObject#getComment()
      */
     public String getComment() {
-        return "";
+        return ""; //$NON-NLS-1$
     }
 
     /*

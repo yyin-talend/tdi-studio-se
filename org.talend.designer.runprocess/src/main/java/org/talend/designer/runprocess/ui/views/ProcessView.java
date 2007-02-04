@@ -144,14 +144,14 @@ public class ProcessView extends ViewPart {
         FocusListener fl = new FocusListener() {
 
             public void focusGained(FocusEvent e) {
-                log.trace("Run process gain focus");
+                log.trace(Messages.getString("ProcessView.gainFocusLog")); //$NON-NLS-1$
                 IContextService contextService = (IContextService) RunProcessPlugin.getDefault().getWorkbench().getAdapter(
                         IContextService.class);
-                ca = contextService.activateContext("talend.runProcess");
+                ca = contextService.activateContext("talend.runProcess"); //$NON-NLS-1$
             }
 
             public void focusLost(FocusEvent e) {
-                log.trace("Run process lost focus");
+                log.trace(Messages.getString("ProcessView.lostFocusLog")); //$NON-NLS-1$
                 if (ca != null) {
                     IContextService contextService = (IContextService) RunProcessPlugin.getDefault().getWorkbench().getAdapter(
                             IContextService.class);
@@ -241,7 +241,7 @@ public class ProcessView extends ViewPart {
          */
         public RunAction() {
             super();
-            this.setActionDefinitionId("runProcess");
+            this.setActionDefinitionId("runProcess"); //$NON-NLS-1$
         }
 
         @Override
@@ -249,7 +249,7 @@ public class ProcessView extends ViewPart {
             IWorkbench workbench = PlatformUI.getWorkbench();
             IWorkbenchPage page = workbench.getActiveWorkbenchWindow().getActivePage();
             try {
-                page.showView("org.talend.designer.runprocess.ui.views.processview");
+                page.showView("org.talend.designer.runprocess.ui.views.processview"); //$NON-NLS-1$
             } catch (PartInitException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
@@ -275,7 +275,7 @@ public class ProcessView extends ViewPart {
          */
         public DebugAction() {
             super();
-            this.setActionDefinitionId("debugProcess");
+            this.setActionDefinitionId("debugProcess"); //$NON-NLS-1$
         }
 
         @Override
@@ -300,7 +300,7 @@ public class ProcessView extends ViewPart {
          */
         public KillAction() {
             super();
-            this.setActionDefinitionId("killProcess");
+            this.setActionDefinitionId("killProcess"); //$NON-NLS-1$
         }
 
         @Override

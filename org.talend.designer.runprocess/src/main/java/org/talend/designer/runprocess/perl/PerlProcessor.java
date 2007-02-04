@@ -74,7 +74,7 @@ import org.talend.designer.runprocess.i18n.Messages;
  */
 public class PerlProcessor implements IProcessor {
 
-    public static final String PROCESSOR_TYPE = "perlProcessor";
+    public static final String PROCESSOR_TYPE = "perlProcessor"; //$NON-NLS-1$
 
     /** Process to be turned in PERL code. */
     private IProcess process;
@@ -108,12 +108,12 @@ public class PerlProcessor implements IProcessor {
         try {
             perlProject = PerlUtils.getProject();
         } catch (CoreException e1) {
-            throw new ProcessorException("Perl project not found.");
+            throw new ProcessorException(Messages.getString("PerlProcessor.notFoundedPerlProject")); //$NON-NLS-1$
         }
         RepositoryContext repositoryContext = (RepositoryContext) CorePlugin.getContext().getProperty(
                 Context.REPOSITORY_CONTEXT_KEY);
         Project project = repositoryContext.getProject();
-        String filePrefix = project.getTechnicalLabel() + ".";
+        String filePrefix = project.getTechnicalLabel() + "."; //$NON-NLS-1$
         filePrefix += Messages.getString("Processor.fileSuffix"); //$NON-NLS-1$
         filePrefix += filenameFromLabel ? escapeFilename(process.getLabel()) : process.getId();
         codePath = new Path(filePrefix + Messages.getString("Processor.perlExt")); //$NON-NLS-1$
@@ -144,8 +144,8 @@ public class PerlProcessor implements IProcessor {
                 codeGen = service.createCodeGenerator(process, statistics, trace);
             }
 
-            String processCode = "";
-            String processContext = "";
+            String processCode = ""; //$NON-NLS-1$
+            String processContext = ""; //$NON-NLS-1$
             try {
                 processCode = codeGen.generateProcessCode();
                 processContext = codeGen.generateContextCode(context);
@@ -168,7 +168,7 @@ public class PerlProcessor implements IProcessor {
                 String[] nodeNames = new String[breakpointNodes.size()];
                 int pos = 0;
                 for (INode node : breakpointNodes) {
-                    nodeNames[pos++] = "["+node.getUniqueName()+" main ] start";
+                    nodeNames[pos++] = "["+node.getUniqueName()+" main ] start"; //$NON-NLS-1$ //$NON-NLS-2$
                 }
                 int[] lineNumbers = getLineNumbers(codeFile, nodeNames);
                 setBreakpoints(codeFile, lineNumbers);
@@ -303,7 +303,7 @@ public class PerlProcessor implements IProcessor {
                 line = lineReader.readLine();
             }
         } catch (IOException ioe) {
-            IStatus status = new Status(IStatus.ERROR, "", IStatus.OK, "Source code read failure.", ioe);
+            IStatus status = new Status(IStatus.ERROR, "", IStatus.OK, "Source code read failure.", ioe); //$NON-NLS-1$ //$NON-NLS-2$
             throw new CoreException(status);
         }
 
@@ -351,36 +351,36 @@ public class PerlProcessor implements IProcessor {
      * @throws CoreException Breakpoint addition failed.
      */
     private static void setBreakpoints(IFile codeFile, int[] lineNumbers) throws CoreException {
-        final String perlBrekPointMarker = "org.epic.debug.perlLineBreakpointMarker";
+        final String perlBrekPointMarker = "org.epic.debug.perlLineBreakpointMarker"; //$NON-NLS-1$
         codeFile.deleteMarkers(perlBrekPointMarker, true, IResource.DEPTH_ZERO);
 
         IExtensionRegistry registry = Platform.getExtensionRegistry();
-        IConfigurationElement[] configElems = registry.getConfigurationElementsFor("org.eclipse.debug.core.breakpoints");
+        IConfigurationElement[] configElems = registry.getConfigurationElementsFor("org.eclipse.debug.core.breakpoints"); //$NON-NLS-1$
         IConfigurationElement perlBreakConfigElem = null;
         for (IConfigurationElement elem : configElems) {
-            if (elem.getAttribute("id").equals("perlLineBreakpoint")) {
+            if (elem.getAttribute("id").equals("perlLineBreakpoint")) { //$NON-NLS-1$ //$NON-NLS-2$
                 perlBreakConfigElem = elem;
             }
         }
         if (perlBreakConfigElem == null) {
             IStatus status = new Status(IStatus.ERROR, RunProcessPlugin.PLUGIN_ID, IStatus.OK,
-                    "Breakpoint implementation not found.", null);
+                    "Breakpoint implementation not found.", null); //$NON-NLS-1$
             throw new CoreException(status);
         }
 
         IBreakpointManager breakpointManager = DebugPlugin.getDefault().getBreakpointManager();
         for (int line : lineNumbers) {
             IMarker breakMarker = codeFile.createMarker(perlBrekPointMarker);
-            breakMarker.setAttribute(IBreakpoint.ID, "perlBreak" + line);
+            breakMarker.setAttribute(IBreakpoint.ID, "perlBreak" + line); //$NON-NLS-1$
             breakMarker.setAttribute(IMarker.LINE_NUMBER, new Integer(line));
             breakMarker.setAttribute(IMarker.CHAR_START, new Integer(-1));
             breakMarker.setAttribute(IMarker.CHAR_END, new Integer(-1));
-            breakMarker.setAttribute("PerlDebug_INVALID_POS", Boolean.FALSE);
+            breakMarker.setAttribute("PerlDebug_INVALID_POS", Boolean.FALSE); //$NON-NLS-1$
             breakMarker.setAttribute(IBreakpoint.PERSISTED, Boolean.TRUE);
             breakMarker.setAttribute(IBreakpoint.ENABLED, Boolean.TRUE);
             breakMarker.setAttribute(IBreakpoint.REGISTERED, Boolean.TRUE);
 
-            IBreakpoint breakpoint = (IBreakpoint) perlBreakConfigElem.createExecutableExtension("class");
+            IBreakpoint breakpoint = (IBreakpoint) perlBreakConfigElem.createExecutableExtension("class"); //$NON-NLS-1$
             breakpoint.setMarker(breakMarker);
             breakpointManager.addBreakpoint(breakpoint);
         }

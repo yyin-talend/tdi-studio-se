@@ -100,7 +100,7 @@ public abstract class ShadowNode implements INode {
      * 
      * @see org.talend.core.model.process.INode#setElementParameters(java.util.List)
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked") //$NON-NLS-1$
     public void setElementParameters(List<? extends IElementParameter> newParameters) {
         this.parameters = (List<IElementParameter>) newParameters;
     }

@@ -67,21 +67,21 @@ import org.w3c.dom.Document;
  */
 public final class PerlUtils {
 
-    public static final String PERL_PROJECT_NAME = ".Perl";
+    public static final String PERL_PROJECT_NAME = ".Perl"; //$NON-NLS-1$
 
-    private static final String PERL_NATURE = "org.epic.perleditor.perlnature";
+    private static final String PERL_NATURE = "org.epic.perleditor.perlnature"; //$NON-NLS-1$
 
-    public static final String PERL_LAUNCHCONFIGURATION = "org.epic.debug.launchConfigurationPerl";
+    public static final String PERL_LAUNCHCONFIGURATION = "org.epic.debug.launchConfigurationPerl"; //$NON-NLS-1$
 
-    public static final String ATTR_PROJECT_NAME = "ATTR_PROJECT_NAME";
+    public static final String ATTR_PROJECT_NAME = "ATTR_PROJECT_NAME"; //$NON-NLS-1$
 
-    public static final String ATTR_STARTUP_FILE = "ATTR_STARTUP_FILE";
+    public static final String ATTR_STARTUP_FILE = "ATTR_STARTUP_FILE"; //$NON-NLS-1$
 
-    public static final String ATTR_WORKING_DIRECTORY = "ATTR_WORKING_DIRECTORY";
+    public static final String ATTR_WORKING_DIRECTORY = "ATTR_WORKING_DIRECTORY"; //$NON-NLS-1$
 
-    public static final String ATTR_PROGRAM_PARAMETERS = "ATTR_PROGRAM_PARAMETERS";
+    public static final String ATTR_PROGRAM_PARAMETERS = "ATTR_PROGRAM_PARAMETERS"; //$NON-NLS-1$
 
-    public static final String ROUTINE_FILENAME_EXT = ".pm";
+    public static final String ROUTINE_FILENAME_EXT = ".pm"; //$NON-NLS-1$
 
     /**
      * Constructs a new PerlUtils.
@@ -96,7 +96,7 @@ public final class PerlUtils {
 
         // Does the perl nature exists in the environment
         IExtensionRegistry registry = Platform.getExtensionRegistry();
-        IExtension nature = registry.getExtension("org.eclipse.core.resources.natures", PERL_NATURE);
+        IExtension nature = registry.getExtension("org.eclipse.core.resources.natures", PERL_NATURE); //$NON-NLS-1$
 
         if (!prj.exists()) {
             final IWorkspace workspace = ResourcesPlugin.getWorkspace();
@@ -124,10 +124,10 @@ public final class PerlUtils {
     }
 
     public static IPath getPerlModulePath() throws CoreException {
-        Bundle perlLibBundle = Platform.getBundle("org.talend.designer.codegen.perlmodule");
+        Bundle perlLibBundle = Platform.getBundle("org.talend.designer.codegen.perlmodule"); //$NON-NLS-1$
         try {
             if (!(perlLibBundle == null)) {
-                URL entry = perlLibBundle.getEntry("perl");
+                URL entry = perlLibBundle.getEntry("perl"); //$NON-NLS-1$
                 URL url = FileLocator.resolve(entry);
                 return new Path(url.getFile());
             }
@@ -135,7 +135,7 @@ public final class PerlUtils {
         }
 
         throw new CoreException(new Status(Status.ERROR, RunProcessPlugin.PLUGIN_ID, Status.OK,
-                "Perl Module Plugin not found.", null));
+                "Perl Module Plugin not found.", null)); //$NON-NLS-1$
     }
 
     private static void writePerlIncludes(IProject prj, String[] includeEntries) throws CoreException {
@@ -143,21 +143,21 @@ public final class PerlUtils {
         try {
             DocumentBuilder builder = factory.newDocumentBuilder();
             Document document = builder.newDocument();
-            org.w3c.dom.Element xmlRoot = document.createElement("includepath");
+            org.w3c.dom.Element xmlRoot = document.createElement("includepath"); //$NON-NLS-1$
             document.appendChild(xmlRoot);
             for (int i = 0; i < includeEntries.length; i++) {
-                org.w3c.dom.Element entry = document.createElement("includepathentry");
-                entry.setAttribute("path", includeEntries[i]);
+                org.w3c.dom.Element entry = document.createElement("includepathentry"); //$NON-NLS-1$
+                entry.setAttribute("path", includeEntries[i]); //$NON-NLS-1$
                 xmlRoot.appendChild(entry);
             }
-            String file = prj.getLocation().toString() + File.separator + ".includepath";
+            String file = prj.getLocation().toString() + File.separator + ".includepath"; //$NON-NLS-1$
             OutputStream out = null;
             try {
                 out = new FileOutputStream(file);
                 TransformerFactory tFactory = TransformerFactory.newInstance();
                 Transformer transformer = tFactory.newTransformer();
                 DOMSource source = new DOMSource(document);
-                transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+                transformer.setOutputProperty(OutputKeys.INDENT, "yes"); //$NON-NLS-1$
                 StreamResult result = new StreamResult(out);
                 transformer.transform(source, result);
             } catch (TransformerException te) {
@@ -168,10 +168,10 @@ public final class PerlUtils {
             }
         } catch (ParserConfigurationException pce) {
             throw new CoreException(new Status(Status.ERROR, RunProcessPlugin.PLUGIN_ID, Status.OK,
-                    "Perl Module include failure.", pce));
+                    "Perl Module include failure.", pce)); //$NON-NLS-1$
         } catch (IOException ioe) {
             throw new CoreException(new Status(Status.ERROR, RunProcessPlugin.PLUGIN_ID, Status.OK,
-                    "Perl Module include failure.", ioe));
+                    "Perl Module include failure.", ioe)); //$NON-NLS-1$
         }
     }
 
@@ -185,11 +185,12 @@ public final class PerlUtils {
         Bundle b = Platform.getBundle(IComponentsFactory.COMPONENTS_LOCATION);
         URL url = null;
         try {
-            url = FileLocator.toFileURL(FileLocator.find(b, new Path(IComponentsFactory.COMPONENTS_INNER_FOLDER), null));
+            url = FileLocator
+                    .toFileURL(FileLocator.find(b, new Path(IComponentsFactory.COMPONENTS_INNER_FOLDER), null));
             return new Path(url.getFile());
         } catch (IOException e) {
-            throw new CoreException(new Status(Status.ERROR, RunProcessPlugin.PLUGIN_ID, Status.OK, Messages
-                    .getString("Processor.desiginerCorePluginNotFound"), null));
+            throw new CoreException(new Status(Status.ERROR, RunProcessPlugin.PLUGIN_ID, Status.OK,
+                    "Designer Core Plugin not found.", null)); //$NON-NLS-1$
         }
     }
 }

@@ -37,18 +37,18 @@ public class FileOutputXmlNode extends ShadowNode {
      * Constructs a new FileOutputXmlNode.
      */
     public FileOutputXmlNode(String filename, String encoding) {
-        super("tFileOutputXML");
+        super("tFileOutputXML"); //$NON-NLS-1$
         
         List<Map<String, String>> rootTags = new ArrayList<Map<String, String>>();
 
-        TextElementParameter param1 = new TextElementParameter("FILENAME", filename);
-        TextElementParameter param2 = new TextElementParameter("ENCODING", encoding);
-        ObjectElementParameter param3 = new ObjectElementParameter("ROOT_TAGS", rootTags);
-        TextElementParameter param4 = new TextElementParameter("ROW_TAG", "row");
-        TextElementParameter param5 = new TextElementParameter("COLNAME_AS_TAGNAME", "false");
-        TextElementParameter param6 = new TextElementParameter("FIELD_TAG", "field");
-        TextElementParameter param7 = new TextElementParameter("SPLIT", "false");
-        TextElementParameter param8 = new TextElementParameter("SPLIT_EVERY", "1000");
+        TextElementParameter param1 = new TextElementParameter("FILENAME", filename); //$NON-NLS-1$
+        TextElementParameter param2 = new TextElementParameter("ENCODING", encoding); //$NON-NLS-1$
+        ObjectElementParameter param3 = new ObjectElementParameter("ROOT_TAGS", rootTags); //$NON-NLS-1$
+        TextElementParameter param4 = new TextElementParameter("ROW_TAG", "row"); //$NON-NLS-1$ //$NON-NLS-2$
+        TextElementParameter param5 = new TextElementParameter("COLNAME_AS_TAGNAME", "false"); //$NON-NLS-1$ //$NON-NLS-2$
+        TextElementParameter param6 = new TextElementParameter("FIELD_TAG", "field"); //$NON-NLS-1$ //$NON-NLS-2$
+        TextElementParameter param7 = new TextElementParameter("SPLIT", "false"); //$NON-NLS-1$ //$NON-NLS-2$
+        TextElementParameter param8 = new TextElementParameter("SPLIT_EVERY", "1000"); //$NON-NLS-1$ //$NON-NLS-2$
         //TextElementParameter param9 = new TextElementParameter("SCHEMA", null);
         addParameter(param1);
         addParameter(param2);

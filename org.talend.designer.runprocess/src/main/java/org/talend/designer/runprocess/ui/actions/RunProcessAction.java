@@ -44,10 +44,10 @@ public class RunProcessAction extends Action implements IWorkbenchWindowActionDe
 
     public RunProcessAction() {
         super();
-        this.setText(Messages.getString("ProcessComposite.exec"));
-        this.setToolTipText(Messages.getString("ProcessComposite.execHint"));
+        this.setText(Messages.getString("ProcessComposite.exec")); //$NON-NLS-1$
+        this.setToolTipText(Messages.getString("ProcessComposite.execHint")); //$NON-NLS-1$
         this.setImageDescriptor(ImageProvider.getImageDesc(ERunprocessImages.RUN_PROCESS_ACTION));
-        this.setActionDefinitionId("showAndRunProcess");
+        this.setActionDefinitionId("showAndRunProcess"); //$NON-NLS-1$
     }
 
     @Override

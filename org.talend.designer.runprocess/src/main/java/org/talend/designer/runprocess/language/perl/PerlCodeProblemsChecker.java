@@ -36,6 +36,7 @@ import org.talend.core.model.process.Problem.ProblemStatus;
 import org.talend.designer.codegen.IAloneProcessNodeConfigurer;
 import org.talend.designer.runprocess.Processor;
 import org.talend.designer.runprocess.ProcessorException;
+import org.talend.designer.runprocess.i18n.Messages;
 import org.talend.designer.runprocess.perl.PerlProcessor;
 
 /**
@@ -52,17 +53,17 @@ public class PerlCodeProblemsChecker extends CodeProblemsChecker {
 
     private static File tempFile;
 
-    public static final String STRING1_EXPRESSION = "-e";
+    public static final String STRING1_EXPRESSION = "-e"; //$NON-NLS-1$
 
-    public static final String STRING1_PREFIX = " at ";
+    public static final String STRING1_PREFIX = " at "; //$NON-NLS-1$
 
-    public static final String STRING1_SUFFIX = " line ";
+    public static final String STRING1_SUFFIX = " line "; //$NON-NLS-1$
 
     public static final String STRING1_SUFFIX_PREFIX = STRING1_PREFIX + STRING1_SUFFIX;
 
-    public static final String STRING2_SUFFIX = " had compilation errors";
+    public static final String STRING2_SUFFIX = " had compilation errors"; //$NON-NLS-1$
 
-    public static final String STRING2_REPLACED = "=> expression had compilation errors";
+    public static final String STRING2_REPLACED = "=> expression had compilation errors"; //$NON-NLS-1$
 
     public static final int PERL_STATUS_OK = 0;
 
@@ -87,7 +88,7 @@ public class PerlCodeProblemsChecker extends CodeProblemsChecker {
     private File getTempFile() {
         if (tempFile == null || !tempFile.exists()) {
             try {
-                tempFile = File.createTempFile("perlSyntaxChecker", ".tmp");
+                tempFile = File.createTempFile("perlSyntaxChecker", ".tmp"); //$NON-NLS-1$ //$NON-NLS-2$
                 tempFile.deleteOnExit();
                 return tempFile;
             } catch (IOException e) {
@@ -139,7 +140,7 @@ public class PerlCodeProblemsChecker extends CodeProblemsChecker {
             }
 
         } else {
-            stdErr = "Perl response status unknown:\n" + err.toString();
+            stdErr = Messages.getString("PerlCodeProblemsChecker.unknowPerlStatus") + err.toString(); //$NON-NLS-1$
         }
 
         if (stdErr != null) {
@@ -174,7 +175,8 @@ public class PerlCodeProblemsChecker extends CodeProblemsChecker {
      * @return
      */
     private String replaceStdErrStringForExpression(String stdErr) {
-        stdErr = StringUtils.replace(stdErr, STRING1_PREFIX + STRING1_EXPRESSION + STRING1_SUFFIX, STRING1_SUFFIX_PREFIX);
+        stdErr = StringUtils.replace(stdErr, STRING1_PREFIX + STRING1_EXPRESSION + STRING1_SUFFIX,
+                STRING1_SUFFIX_PREFIX);
         stdErr = StringUtils.replace(stdErr, STRING1_EXPRESSION + STRING2_SUFFIX, STRING2_REPLACED);
         return stdErr;
     }
@@ -191,22 +193,22 @@ public class PerlCodeProblemsChecker extends CodeProblemsChecker {
         int status = -1;
 
         // System.out.println("expression='"+ expression + "'");
-        String expressionEscaped = StringUtils.replace(expression, "\"", "\\\"");
+        String expressionEscaped = StringUtils.replace(expression, "\"", "\\\""); //$NON-NLS-1$ //$NON-NLS-2$
         for (int i = expression.length(); i > 0; i--) {
             String chara = expression.substring(i - 1, i);
-            if (!chara.equals("\\")) {
+            if (!chara.equals("\\")) { //$NON-NLS-1$
                 if (i % 2 == 0 && i < expression.length()) {
-                    expressionEscaped = expressionEscaped + "\\";
+                    expressionEscaped = expressionEscaped + "\\"; //$NON-NLS-1$
                     break;
                 }
                 break;
             }
         }
 
-        String expressionEscapedQuoted = "\"" + expressionEscaped + "\"";
+        String expressionEscapedQuoted = "\"" + expressionEscaped + "\""; //$NON-NLS-1$ //$NON-NLS-2$
         // System.out.println(expressionEscapedQuoted);
         try {
-            status = PerlProcessor.exec(out, err, null, null, Level.TRACE, "-ce", expressionEscapedQuoted, "", -1, -1,
+            status = PerlProcessor.exec(out, err, null, null, Level.TRACE, "-ce", expressionEscapedQuoted, "", -1, -1, //$NON-NLS-1$ //$NON-NLS-2$
                     new String[0]);
         } catch (ProcessorException e) {
             ExceptionHandler.process(e);
@@ -237,12 +239,13 @@ public class PerlCodeProblemsChecker extends CodeProblemsChecker {
                 throw new RuntimeException(e);
             }
         } else {
-            throw new RuntimeException("File is not writable");
+            throw new RuntimeException("File is not writable"); //$NON-NLS-1$
         }
 
         // System.out.println(expression);
         try {
-            status = PerlProcessor.exec(out, err, null, null, Level.TRACE, "-c", file.getAbsolutePath(), "", -1, -1,
+            status = PerlProcessor.exec(out, err, null, null, 
+                    Level.TRACE, "-c", file.getAbsolutePath(), "", -1, -1, //$NON-NLS-1$ //$NON-NLS-2$
                     new String[0]);
         } catch (ProcessorException e) {
             ExceptionHandler.process(e);
@@ -257,7 +260,7 @@ public class PerlCodeProblemsChecker extends CodeProblemsChecker {
      * @see org.talend.core.language.ICodeProblemsChecker#checkProblems()
      */
     public List<Problem> checkProblems(IAloneProcessNodeConfigurer nodeConfigurer) {
-        throw new UnsupportedOperationException("use checkProblemsForExpression()");
+        throw new UnsupportedOperationException("use checkProblemsForExpression()"); //$NON-NLS-1$
     }
 
 }

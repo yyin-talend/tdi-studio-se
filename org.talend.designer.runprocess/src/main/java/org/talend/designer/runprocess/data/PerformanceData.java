@@ -95,7 +95,7 @@ public final class PerformanceData implements IPerformanceData {
         if (data == null) {
             return ACTION_CLEAR;
         }
-        if (data.equals("")) {
+        if (data.equals("")) { //$NON-NLS-1$
             return ACTION_CLEAR;
         }
         int sepIndex1 = data.indexOf(FIELD_SEP);

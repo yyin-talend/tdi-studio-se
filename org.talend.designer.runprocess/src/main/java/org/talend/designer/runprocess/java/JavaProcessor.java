@@ -95,16 +95,16 @@ import org.talend.designer.runprocess.i18n.Messages;
  */
 public class JavaProcessor implements IProcessor {
 
-    public static final String JAVA_LAUNCHCONFIGURATION = "org.talend.designer.runprocess.launchConfigurationJava";
+    public static final String JAVA_LAUNCHCONFIGURATION = "org.talend.designer.runprocess.launchConfigurationJava"; //$NON-NLS-1$
 
-    public static final String PROCESSOR_TYPE = "javaProcessor";
+    public static final String PROCESSOR_TYPE = "javaProcessor"; //$NON-NLS-1$
 
     /** added by rxl. */
-    public static final String JAVATIP = "//The function of generating Java code haven't achive yet"
-            + System.getProperty("line.separator") + "public class JavaTest extends Test {}";
+    public static final String JAVATIP = "//The function of generating Java code haven't achive yet" //$NON-NLS-1$
+            + System.getProperty("line.separator") + "public class JavaTest extends Test {}"; //$NON-NLS-1$ //$NON-NLS-2$
 
     /** Java project name. */
-    private static final String JAVA_PROJECT_NAME = ".Java";
+    private static final String JAVA_PROJECT_NAME = ".Java"; //$NON-NLS-1$
 
     /** Process to be turned in JAVA code. */
     private IProcess process;
@@ -170,7 +170,7 @@ public class JavaProcessor implements IProcessor {
         try {
             this.project = getProcessorProject();
         } catch (CoreException e1) {
-            throw new ProcessorException("Java project not found.");
+            throw new ProcessorException(Messages.getString("JavaProcessor.notFoundedProjectException")); //$NON-NLS-1$
         }
         RepositoryContext repositoryContext = (RepositoryContext) CorePlugin.getContext().getProperty(
                 Context.REPOSITORY_CONTEXT_KEY);
@@ -185,22 +185,22 @@ public class JavaProcessor implements IProcessor {
         try {
             IPackageFragment projectPackage = getProjectPackage(projectFolderName);
             IPackageFragment jobPackage = getProjectPackage(projectPackage, jobFolderName);
-            IPackageFragment contextPackage = getProjectPackage(jobPackage, "contexts");
+            IPackageFragment contextPackage = getProjectPackage(jobPackage, "contexts"); //$NON-NLS-1$
 
-            this.srcCodePath = jobPackage.getPath().append(fileName + ".java");
+            this.srcCodePath = jobPackage.getPath().append(fileName + ".java"); //$NON-NLS-1$
             this.srcCodePath = this.srcCodePath.removeFirstSegments(1);
             this.compliedCodePath = this.srcCodePath.removeLastSegments(1).append(fileName);
-            this.compliedCodePath = new Path("classes").append(this.compliedCodePath.removeFirstSegments(1));
+            this.compliedCodePath = new Path("classes").append(this.compliedCodePath.removeFirstSegments(1)); //$NON-NLS-1$
 
             this.typeName = jobPackage.getPath().append(fileName).removeFirstSegments(2).toString().replace('/', '.');
 
-            this.srcContextPath = contextPackage.getPath().append(escapeFilename(context.getName()) + ".java");
+            this.srcContextPath = contextPackage.getPath().append(escapeFilename(context.getName()) + ".java"); //$NON-NLS-1$
             this.srcContextPath = this.srcContextPath.removeFirstSegments(1);
             this.compliedContextPath = this.srcContextPath.removeLastSegments(1).append(fileName);
-            this.compliedContextPath = new Path("classes").append(this.compliedContextPath.removeFirstSegments(1));
+            this.compliedContextPath = new Path("classes").append(this.compliedContextPath.removeFirstSegments(1)); //$NON-NLS-1$
 
         } catch (CoreException e) {
-            throw new ProcessorException("Folder within .Java project not founded");
+            throw new ProcessorException(Messages.getString("JavaProcessor.notFoundedFolderException")); //$NON-NLS-1$
         }
 
     }
@@ -225,8 +225,8 @@ public class JavaProcessor implements IProcessor {
             // FIXME:need to be used after routine synchronizer implemented.
             // service.createJavaRoutineSynchronizer().syncAllRoutines();
             if (javaProperties) {
-                String javaInterpreter = "";// getPerlInterpreter();
-                String javaLib = "";// getPerlLib();
+                String javaInterpreter = "";// getPerlInterpreter(); //$NON-NLS-1$
+                String javaLib = "";// getPerlLib(); //$NON-NLS-1$
                 String currentJavaProject = project.getTechnicalLabel();
                 String javaContext = getContextPath().toOSString();
 
@@ -236,8 +236,8 @@ public class JavaProcessor implements IProcessor {
                 codeGen = service.createCodeGenerator(process, statistics, trace);
             }
 
-            String processCode = "";
-            String processContext = "false";
+            String processCode = ""; //$NON-NLS-1$
+            String processContext = "false"; //$NON-NLS-1$
             try {
                 processCode = codeGen.generateProcessCode();
                 processContext = codeGen.generateContextCode(context);
@@ -281,7 +281,7 @@ public class JavaProcessor implements IProcessor {
                 String[] nodeNames = new String[breakpointNodes.size()];
                 int pos = 0;
                 for (INode node : breakpointNodes) {
-                    nodeNames[pos++] = "[" + node.getUniqueName() + " main ] start";
+                    nodeNames[pos++] = "[" + node.getUniqueName() + " main ] start"; //$NON-NLS-1$ //$NON-NLS-2$
                 }
                 int[] lineNumbers = getLineNumbers(codeFile, nodeNames);
                 setBreakpoints(codeFile, typeName, lineNumbers);
@@ -400,7 +400,7 @@ public class JavaProcessor implements IProcessor {
                 line = lineReader.readLine();
             }
         } catch (IOException ioe) {
-            IStatus status = new Status(IStatus.ERROR, "", IStatus.OK, "Source code read failure.", ioe);
+            IStatus status = new Status(IStatus.ERROR, "", IStatus.OK, "Source code read failure.", ioe); //$NON-NLS-1$ //$NON-NLS-2$
             throw new CoreException(status);
         }
 
@@ -448,7 +448,7 @@ public class JavaProcessor implements IProcessor {
      * @throws CoreException Breakpoint addition failed.
      */
     private static void setBreakpoints(IFile codeFile, String typeName, int[] lines) throws CoreException {
-        final String javaLineBrekPointMarker = "org.eclipse.jdt.debug.javaLineBreakpointMarker";
+        final String javaLineBrekPointMarker = "org.eclipse.jdt.debug.javaLineBreakpointMarker"; //$NON-NLS-1$
         codeFile.deleteMarkers(javaLineBrekPointMarker, true, IResource.DEPTH_ZERO);
 
         for (int lineNumber = 0; lineNumber < lines.length; lineNumber++) {
@@ -507,7 +507,7 @@ public class JavaProcessor implements IProcessor {
 
         // Does the java nature exists in the environment
         IExtensionRegistry registry = Platform.getExtensionRegistry();
-        IExtension nature = registry.getExtension("org.eclipse.core.resources.natures", JavaCore.NATURE_ID);
+        IExtension nature = registry.getExtension("org.eclipse.core.resources.natures", JavaCore.NATURE_ID); //$NON-NLS-1$
 
         if (!prj.exists()) {
             final IWorkspace workspace = ResourcesPlugin.getWorkspace();
@@ -531,8 +531,8 @@ public class JavaProcessor implements IProcessor {
         }
         javaProject = JavaCore.create(prj);
 
-        IClasspathEntry jreClasspathEntry = JavaCore.newContainerEntry(new Path("org.eclipse.jdt.launching.JRE_CONTAINER"));
-        IClasspathEntry classpathEntry = JavaCore.newSourceEntry(javaProject.getPath().append("src"));
+        IClasspathEntry jreClasspathEntry = JavaCore.newContainerEntry(new Path("org.eclipse.jdt.launching.JRE_CONTAINER")); //$NON-NLS-1$
+        IClasspathEntry classpathEntry = JavaCore.newSourceEntry(javaProject.getPath().append("src")); //$NON-NLS-1$
 
         List classpath = new ArrayList();
         classpath.add(jreClasspathEntry);
@@ -540,18 +540,18 @@ public class JavaProcessor implements IProcessor {
 
         IClasspathEntry[] classpathEntryArray = (IClasspathEntry[]) classpath.toArray(new IClasspathEntry[classpath.size()]);
 
-        IFolder runtimeFolder = prj.getFolder(new Path("classes"));
+        IFolder runtimeFolder = prj.getFolder(new Path("classes")); //$NON-NLS-1$
         if (!runtimeFolder.exists()) {
             runtimeFolder.create(false, true, null);
         }
 
-        IFolder sourceFolder = prj.getFolder(new Path("src"));
+        IFolder sourceFolder = prj.getFolder(new Path("src")); //$NON-NLS-1$
         if (!sourceFolder.exists()) {
             sourceFolder.create(false, true, null);
         }
 
         javaProject.setRawClasspath(classpathEntryArray, null);
-        javaProject.setOutputLocation(javaProject.getPath().append("classes"), null);
+        javaProject.setOutputLocation(javaProject.getPath().append("classes"), null); //$NON-NLS-1$
 
         return prj;
 
@@ -568,7 +568,7 @@ public class JavaProcessor implements IProcessor {
      */
     private IPackageFragment getProjectPackage(String packageName) throws JavaModelException {
 
-        IPackageFragmentRoot root = this.javaProject.getPackageFragmentRoot(this.javaProject.getProject().getFolder("src"));
+        IPackageFragmentRoot root = this.javaProject.getPackageFragmentRoot(this.javaProject.getProject().getFolder("src")); //$NON-NLS-1$
         IPackageFragment leave = root.getPackageFragment(packageName);
         if (!leave.exists()) {
             root.createPackageFragment(packageName, false, null);
@@ -652,16 +652,16 @@ public class JavaProcessor implements IProcessor {
     }
 
     public String[] getCommandLine() {
-        IFolder classesFolder = this.javaProject.getProject().getFolder("classes");
+        IFolder classesFolder = this.javaProject.getProject().getFolder("classes"); //$NON-NLS-1$
         IPath projectFolderPath = classesFolder.getFullPath().removeFirstSegments(1);
         IPath classPath = getCodePath().removeFirstSegments(1);
 
         // String command = "\"C:\\Program Files\\Java\\jdk1.5.0_10\\bin\\java\"";
-        String command = "java";
+        String command = "java"; //$NON-NLS-1$
         String projectPath = getCodeProject().getLocation().append(projectFolderPath).toOSString();
         String packages = classPath.toString().replace('/', '.');
 
-        return new String[] { command, "-cp", projectPath, packages };
+        return new String[] { command, "-cp", projectPath, packages }; //$NON-NLS-1$
     }
 
     /*
@@ -679,9 +679,9 @@ public class JavaProcessor implements IProcessor {
      * @see org.talend.designer.runprocess.IProcessor#getProcessorStates()
      */
     public void setProcessorStates(String states) {
-        if (states.equals("runtime")) {
+        if (states.equals("runtime")) { //$NON-NLS-1$
             new JavaProcessorRuntimeStates(this);
-        } else if (states.equals("edit")) {
+        } else if (states.equals("edit")) { //$NON-NLS-1$
             new JavaProcessorEditStates(this);
         }
 

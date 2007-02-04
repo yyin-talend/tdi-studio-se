@@ -33,12 +33,12 @@ public class ShowRunProcessViewAction extends AbstractShowViewAction {
 
     @Override
     public String getDefinitionId() {
-        return "showRunProcessView";
+        return "showRunProcessView"; //$NON-NLS-1$
     }
 
     @Override
     public String getViewId() {
-        return "org.talend.designer.runprocess.ui.views.processview";
+        return "org.talend.designer.runprocess.ui.views.processview"; //$NON-NLS-1$
     }
 
 }

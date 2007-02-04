@@ -51,7 +51,7 @@ public class SyntaxCheckerFactory {
         } else if (codeLanguage == ECodeLanguage.JAVA) {
             return (ICodeProblemsChecker) new JavaCodeProblemsChecker();
         } else {
-            throw new IllegalArgumentException("Syntax checker not found for this language: " + codeLanguage.getName());
+            throw new IllegalArgumentException("Syntax checker not found for this language: " + codeLanguage.getName()); //$NON-NLS-1$
         }
     }
     
