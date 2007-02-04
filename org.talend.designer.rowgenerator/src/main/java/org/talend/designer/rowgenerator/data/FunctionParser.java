@@ -49,23 +49,23 @@ public class FunctionParser {
     /**
      * 
      */
-    private static final String FUNCTION_PARAMETERS_REGEX = "\\{param\\}(\\s)*(.*)";
+    private static final String FUNCTION_PARAMETERS_REGEX = "\\{param\\}(\\s)*(.*)"; //$NON-NLS-1$
 
     /**
      * 
      */
-    private static final String FUNCTION_NAME_REGEX = "sub(\\s)*(.*)";
+    private static final String FUNCTION_NAME_REGEX = "sub(\\s)*(.*)"; //$NON-NLS-1$
 
     /**
      * 
      */
-    private static final String FUNCTION_TYPE_REGEX = "\\{talendTypes\\}(\\s)*(.*)";
+    private static final String FUNCTION_TYPE_REGEX = "\\{talendTypes\\}(\\s)*(.*)"; //$NON-NLS-1$
 
-    public static final String EMPTY_STRING = "";
+    public static final String EMPTY_STRING = ""; //$NON-NLS-1$
 
-    private static final String FUNCTION_DESCRIPTION_REGEX = "##(\\s)*((\\r)*\\n)#(\\s)*(.*)";
+    private static final String FUNCTION_DESCRIPTION_REGEX = "##(\\s)*((\\r)*\\n)#(\\s)*(.*)"; //$NON-NLS-1$
 
-    public static final String FUNCTION_REGEX = "##(\\s)*(.*(\\r)*\\n)+?(sub)(\\s)+([^\\s]+)";
+    public static final String FUNCTION_REGEX = "##(\\s)*(.*(\\r)*\\n)+?(sub)(\\s)+([^\\s]+)"; //$NON-NLS-1$
 
     /**
      * @uml.property name="file"
@@ -252,7 +252,7 @@ public class FunctionParser {
      * @return
      */
     private String[] parseGroupNeeded(String strFile) {
-        Pattern regex = Pattern.compile("##(\\s)*(.*(\\r)*\\n)+?(sub)(\\s)+([^\\s]+)", Pattern.CANON_EQ);
+        Pattern regex = Pattern.compile("##(\\s)*(.*(\\r)*\\n)+?(sub)(\\s)+([^\\s]+)", Pattern.CANON_EQ); //$NON-NLS-1$
         Matcher matcher = regex.matcher(strFile);
 
         List<String> list1 = new ArrayList<String>();
@@ -307,10 +307,10 @@ public class FunctionParser {
     }
 
     public static void main(String[] args) {
-        File f = new File("c:/String.pm");
-        File f1 = new File("c:/Date.pm");
-        File f2 = new File("c:/Numeric.pm");
-        File f3 = new File("c:/Misc.pm");
+        File f = new File("c:/String.pm"); //$NON-NLS-1$
+        File f1 = new File("c:/Date.pm"); //$NON-NLS-1$
+        File f2 = new File("c:/Numeric.pm"); //$NON-NLS-1$
+        File f3 = new File("c:/Misc.pm"); //$NON-NLS-1$
         FunctionParser p = new FunctionParser(new File[] { f, f1, f2, f3 });
         p.parse();
         List<TalendType> list = p.getList();

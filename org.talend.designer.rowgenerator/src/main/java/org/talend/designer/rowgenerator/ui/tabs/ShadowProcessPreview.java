@@ -127,7 +127,7 @@ public class ShadowProcessPreview {
     private void clearTablePreview() {
         table.clearAll();
         for (int i = 0; i < table.getColumnCount(); i++) {
-            table.getColumn(i).setText("");
+            table.getColumn(i).setText(""); //$NON-NLS-1$
             table.getColumn(i).setWidth(0);
         }
     }
@@ -184,7 +184,7 @@ public class ShadowProcessPreview {
         String[] cols = new String[columns.size() + 1];
         for (int i = 0; i < cols.length; i++) {
             if (i == 0) {
-                cols[i] = "";
+                cols[i] = ""; //$NON-NLS-1$
             } else {
                 cols[i] = columns.get(i - 1).getLabel();
             }

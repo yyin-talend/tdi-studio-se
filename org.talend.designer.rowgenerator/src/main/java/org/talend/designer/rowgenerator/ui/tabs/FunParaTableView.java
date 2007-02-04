@@ -48,6 +48,7 @@ import org.eclipse.swt.widgets.TableItem;
 import org.talend.designer.rowgenerator.data.Function;
 import org.talend.designer.rowgenerator.data.ListParameter;
 import org.talend.designer.rowgenerator.data.Parameter;
+import org.talend.designer.rowgenerator.i18n.Messages;
 import org.talend.designer.rowgenerator.ui.editor.RowGenTableEditor2;
 
 /**
@@ -58,11 +59,11 @@ import org.talend.designer.rowgenerator.ui.editor.RowGenTableEditor2;
  */
 public class FunParaTableView {
 
-    private static final String NAME_PROPERTY = "Parameter";
+    private static final String NAME_PROPERTY = "Parameter"; //$NON-NLS-1$
 
-    private static final String VALUE_PROPERTY = "Value";
+    private static final String VALUE_PROPERTY = "Value"; //$NON-NLS-1$
 
-    private static final String COMMENT_PROPERTY = "Comment";
+    private static final String COMMENT_PROPERTY = "Comment"; //$NON-NLS-1$
 
     private Table table;
 
@@ -292,12 +293,12 @@ public class FunParaTableView {
         TableColumn column = new TableColumn(table, SWT.NONE);
         column.setWidth(100);
         column.setResizable(true);
-        column.setText("Parameter");
+        column.setText(Messages.getString("FunParaTableView.Parameter.TitleText")); //$NON-NLS-1$
         column = new TableColumn(table, SWT.NONE);
         column.setWidth(100);
-        column.setText("Value");
+        column.setText(Messages.getString("FunParaTableView.Value.TitleText")); //$NON-NLS-1$
         column = new TableColumn(table, SWT.NONE);
-        column.setText("Comment");
+        column.setText(Messages.getString("FunParaTableView.Comment.TitleText")); //$NON-NLS-1$
         column.setWidth(200);
 
         table.setHeaderVisible(true);
@@ -306,7 +307,7 @@ public class FunParaTableView {
 
     // private ComboBoxCellEditor valueCombox;
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked") //$NON-NLS-1$
     public void update(Function function) {
         setTitle(function.getDescription());
         updateData(function.getParameters());

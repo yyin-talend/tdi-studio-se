@@ -23,6 +23,8 @@ package org.talend.designer.rowgenerator.data;
 
 import java.util.List;
 
+import org.talend.designer.rowgenerator.i18n.Messages;
+
 /**
  * class global comment. Detailled comment <br/> $Id: TalendType.java,v 1.3 2007/01/31 05:20:52 pub Exp $
  */
@@ -31,7 +33,7 @@ public class TalendType {
     /**
      * @uml.property name="name"
      */
-    private String name = "";
+    private String name = ""; //$NON-NLS-1$
 
     /**
      * Getter of the property <tt>name</tt>.
@@ -92,7 +94,7 @@ public class TalendType {
      * @see java.util.List#toArray()
      * @uml.property name="functions"
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked") //$NON-NLS-1$
     public Function[] functionsToArray() {
         return (Function[]) this.functions.toArray(new Function[this.functions.size()]);
     }
@@ -107,7 +109,7 @@ public class TalendType {
      * @see java.util.List#add(Object)
      * @uml.property name="functions"
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked") //$NON-NLS-1$
     public boolean addFunctions(Function function) {
         return this.functions.add(function);
     }
@@ -126,12 +128,12 @@ public class TalendType {
 
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("Type name " + name).append("\n").append("    ");
+        sb.append(Messages.getString("TalendType.TypeName", name)).append("\n").append("    "); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         Function[] f = functionsToArray();
 
         for (int i = 0; i < f.length; i++) {
             Function function = f[i];
-            sb.append(function).append("\n").append("    ");
+            sb.append(function).append("\n").append("    "); //$NON-NLS-1$ //$NON-NLS-2$
         }
         return sb.toString();
     }

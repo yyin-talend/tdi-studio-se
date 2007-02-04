@@ -74,12 +74,12 @@ public class MetadataColumnExt extends MetadataColumn {
         this.function = function;
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked") //$NON-NLS-1$
     public String getParameter() {
-        String currentPara = "";
+        String currentPara = ""; //$NON-NLS-1$
         if (this.function != null) {
             for (Parameter para : (List<Parameter>) function.getParameters()) {
-                currentPara += para.getName() + "=>" + para.getValue() + " ; ";
+                currentPara += para.getName() + "=>" + para.getValue() + " ; "; //$NON-NLS-1$ //$NON-NLS-2$
             }
         }
         return currentPara;

@@ -155,18 +155,18 @@ public class UIManager {
         return this.mapperManager;
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked") //$NON-NLS-1$
     protected void saveOneColData(MetadataColumnExt bean) {
         if (bean != null && bean.getFunction() != null && mapperManager.getRowGeneratorComponent() != null) {
-            String newValue = "sub{";
-            newValue += bean.getFunction().getName() + "(";
+            String newValue = "sub{"; //$NON-NLS-1$
+            newValue += bean.getFunction().getName() + "("; //$NON-NLS-1$
             for (Parameter pa : (List<Parameter>) bean.getFunction().getParameters()) {
-                newValue += pa.getValue() + ",";
+                newValue += pa.getValue() + ","; //$NON-NLS-1$
             }
             newValue = newValue.substring(0, newValue.length() - 1);
-            newValue += ")}";
-            if (bean.getFunction().getName() == null || "".equals(bean.getFunction().getName())) {
-                newValue = "";
+            newValue += ")}"; //$NON-NLS-1$
+            if (bean.getFunction().getName() == null || "".equals(bean.getFunction().getName())) { //$NON-NLS-1$
+                newValue = ""; //$NON-NLS-1$
             }
             mapperManager.getRowGeneratorComponent().setColumnValue(bean.getLabel(), newValue);
         }

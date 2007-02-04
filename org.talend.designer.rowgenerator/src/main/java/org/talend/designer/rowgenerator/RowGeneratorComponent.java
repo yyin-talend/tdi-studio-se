@@ -57,9 +57,9 @@ import org.talend.designer.rowgenerator.utils.problems.ProblemsAnalyser;
  */
 public class RowGeneratorComponent extends AbstractExternalNode {
 
-    public static final String COLUMN_NAME = "SCHEMA_COLUMN";
+    public static final String COLUMN_NAME = "SCHEMA_COLUMN"; //$NON-NLS-1$
 
-    public static final String ARRAY = "ARRAY";
+    public static final String ARRAY = "ARRAY"; //$NON-NLS-1$
 
     private RowGenMain rowGeneratorMain;
 
@@ -153,7 +153,7 @@ public class RowGeneratorComponent extends AbstractExternalNode {
         } catch (SystemException e) {
             ExceptionHandler.process(e);
         }
-        return "";
+        return ""; //$NON-NLS-1$
     }
 
     /*
@@ -254,13 +254,13 @@ public class RowGeneratorComponent extends AbstractExternalNode {
         return new Boolean(true);
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked")//$NON-NLS-1$
     public String getNumber() {
         boolean end = false;
         List<IElementParameter> eps = (List<IElementParameter>) this.getElementParameters();
         for (int i = 0; i < eps.size() && !end; i++) {
             IElementParameter parameter = eps.get(i);
-            if ("__NB_ROWS__".indexOf(parameter.getVariableName()) != -1) {
+            if ("__NB_ROWS__".indexOf(parameter.getVariableName()) != -1) { //$NON-NLS-1$
                 this.number = (String) parameter.getValue();
                 end = true;
             }
@@ -268,23 +268,23 @@ public class RowGeneratorComponent extends AbstractExternalNode {
         return this.number;
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked")//$NON-NLS-1$
     public void setNumber(String number) {
         this.number = number;
         List<IElementParameter> eps = (List<IElementParameter>) this.getElementParameters();
         boolean end = false;
         for (int i = 0; i < eps.size() && !end; i++) {
             IElementParameter parameter = eps.get(i);
-            if ("__NB_ROWS__".indexOf(parameter.getVariableName()) != -1) {
+            if ("__NB_ROWS__".indexOf(parameter.getVariableName()) != -1) { //$NON-NLS-1$
                 parameter.setValue(this.number);
                 end = true;
             }
         }
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked")//$NON-NLS-1$
     public List<Map<String, Object>> getMapList() {
-        List<Map<String, Object>> map = new ArrayList<Map<String,Object>>();
+        List<Map<String, Object>> map = new ArrayList<Map<String, Object>>();
         List<IElementParameter> eps = (List<IElementParameter>) this.getElementParameters();
         boolean end = false;
         for (int i = 0; i < eps.size() && !end; i++) {
@@ -333,7 +333,7 @@ public class RowGeneratorComponent extends AbstractExternalNode {
     }
 
     public String getColumnValue(IMetadataColumn ext) {
-        String arrayValue = "";
+        String arrayValue = ""; //$NON-NLS-1$
         List<Map<String, Object>> map = getMapList();
         for (int i = 0; i < map.size(); i++) {
             Map<String, Object> line = map.get(i);
@@ -344,7 +344,7 @@ public class RowGeneratorComponent extends AbstractExternalNode {
         return arrayValue;
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked")//$NON-NLS-1$
     public void setTableElementParameter(List<Map<String, Object>> epsl) {
         List<IElementParameter> eps = (List<IElementParameter>) this.getElementParameters();
         boolean end = false;

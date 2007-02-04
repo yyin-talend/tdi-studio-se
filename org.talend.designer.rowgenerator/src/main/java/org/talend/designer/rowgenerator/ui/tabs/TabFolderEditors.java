@@ -41,6 +41,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
 import org.talend.designer.rowgenerator.RowGeneratorComponent;
+import org.talend.designer.rowgenerator.i18n.Messages;
 import org.talend.designer.rowgenerator.ui.RowGeneratorUI;
 import org.talend.designer.rowgenerator.ui.editor.RowGenTableEditor2;
 
@@ -94,7 +95,7 @@ public class TabFolderEditors extends CTabFolder {
     private void createComponents() {
 
         CTabItem item = new CTabItem(tabFolderEditors, SWT.BORDER);
-        item.setText("Function parameters");
+        item.setText(Messages.getString("TabFolderEditors.FunParamTab.TitleText")); //$NON-NLS-1$
         SashForm inOutMetaEditorContainer = new SashForm(tabFolderEditors, SWT.SMOOTH | SWT.HORIZONTAL | SWT.SHADOW_OUT);
         inOutMetaEditorContainer.setLayout(new RowLayout(SWT.HORIZONTAL));
         item.setControl(inOutMetaEditorContainer);
@@ -102,7 +103,7 @@ public class TabFolderEditors extends CTabFolder {
         createTableView(inOutMetaEditorContainer);
 
         item = new CTabItem(tabFolderEditors, SWT.BORDER);
-        item.setText("Preview");
+        item.setText(Messages.getString("TabFolderEditors.PreviewTab.TitleText")); //$NON-NLS-1$
         Composite composite = new Composite(tabFolderEditors, SWT.BORDER);
         GridLayout gridLayout = new GridLayout();
         gridLayout.numColumns = 1;
@@ -167,11 +168,11 @@ public class TabFolderEditors extends CTabFolder {
 
         Label rowNum = new Label(header, SWT.NONE);
         rowNum.getBounds().height = HEIGHT_BUTTON_PIXEL;
-        rowNum.setText("Number of Rows");
+        rowNum.setText(Messages.getString("TabFolderEditors.RowNum.LabelText")); //$NON-NLS-1$
         rowNum.setAlignment(SWT.CENTER);
 
         refreshButton = new Button(header, SWT.NONE);
-        refreshButton.setText("Preview");
+        refreshButton.setText(Messages.getString("TabFolderEditors.PreviewButton.Label")); //$NON-NLS-1$
         refreshButton.setSize(WIDTH_BUTTON_PIXEL, HEIGHT_BUTTON_PIXEL);
         processPreview = new ShadowProcessPreview(previewHeader, width, height - 10);
         processPreview.newTablePreview();
@@ -179,11 +180,11 @@ public class TabFolderEditors extends CTabFolder {
         refreshButton.addSelectionListener(new SelectionAdapter() {
 
             public void widgetSelected(final SelectionEvent e) {
-                if (!refreshButton.getText().equals("wait")) {
-                    refreshButton.setText("wait");
+                if (!refreshButton.getText().equals(Messages.getString("TabFolderEditors.WaitButton.Label"))) { //$NON-NLS-1$
+                    refreshButton.setText(Messages.getString("TabFolderEditors.WaitButton.Label")); //$NON-NLS-1$
                     refreshPreview(rowText.getText());
                 } else {
-                    refreshButton.setText("Preview");
+                    refreshButton.setText(Messages.getString("TabFolderEditors.PreviewButton.Label")); //$NON-NLS-1$
                 }
             }
         });
@@ -217,7 +218,7 @@ public class TabFolderEditors extends CTabFolder {
     protected void createTableView(Composite inEditorContainer) {
         inputParameterEditor = new FunParaTableView2(inEditorContainer, SWT.BORDER, genTableEditor2);
         inEditorContainer.setData(inputParameterEditor);
-        inputParameterEditor.setTitle("");
+        inputParameterEditor.setTitle(""); //$NON-NLS-1$
     }
 
     public FunParaTableView2 getParameterEditor() {

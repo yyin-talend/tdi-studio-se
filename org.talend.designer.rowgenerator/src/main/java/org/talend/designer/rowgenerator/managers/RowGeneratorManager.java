@@ -39,7 +39,7 @@ public class RowGeneratorManager {
 
 	private static List<Map<String, Object>> orginEP = new ArrayList<Map<String, Object>>();
 
-	private static String orginNumber = "10";
+	private static String orginNumber = "10"; //$NON-NLS-1$
 
 	private RowGeneratorComponent rowGeneratorComponent;
 
@@ -60,7 +60,7 @@ public class RowGeneratorManager {
 	/**
 	 * qzhang Comment method "initOrginEP".
 	 */
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("unchecked") //$NON-NLS-1$
 	private void initOrginEP() {
 		List<Map<String, Object>> lines = rowGeneratorComponent.getMapList();
 		for (Map<String, Object> map : lines) {

@@ -48,7 +48,7 @@ public class FunctionManager {
      * @param name is TalendType name.
      * @return
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked") //$NON-NLS-1$
     public List<Function> getFunctionByName(String name) {
         List<Function> funtions = null;
 

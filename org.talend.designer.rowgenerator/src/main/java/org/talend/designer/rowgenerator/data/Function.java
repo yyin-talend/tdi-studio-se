@@ -24,6 +24,8 @@ package org.talend.designer.rowgenerator.data;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.talend.designer.rowgenerator.i18n.Messages;
+
 /**
  * class global comment. Detailled comment <br/> $Id: Function.java,v 1.10 2007/02/02 08:07:02 pub Exp $
  */
@@ -34,7 +36,7 @@ public class Function implements Cloneable {
      * 
      * @see java.lang.Object#clone()
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked")//$NON-NLS-1$
     @Override
     public Object clone() {
         Function fun = new Function();
@@ -82,7 +84,7 @@ public class Function implements Cloneable {
         return fun;
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked")//$NON-NLS-1$
     public Function clone(String[] parameters) {
         Function function = (Function) clone();
         if (parameters != null) {
@@ -159,7 +161,7 @@ public class Function implements Cloneable {
     /**
      * @uml.property name="name"
      */
-    private String name = "";
+    private String name = ""; //$NON-NLS-1$
 
     /**
      * Getter of the property <tt>name</tt>.
@@ -184,7 +186,7 @@ public class Function implements Cloneable {
     /**
      * @uml.property name="preview"
      */
-    private String preview = "";
+    private String preview = ""; //$NON-NLS-1$
 
     /**
      * Getter of the property <tt>preview</tt>.
@@ -209,7 +211,7 @@ public class Function implements Cloneable {
     /**
      * @uml.property name="description"
      */
-    private String description = "";
+    private String description = ""; //$NON-NLS-1$
 
     /**
      * Getter of the property <tt>description</tt>.
@@ -254,7 +256,7 @@ public class Function implements Cloneable {
      * @see java.util.Collection#toArray()
      * @uml.property name="parameters"
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked")//$NON-NLS-1$
     public Parameter[] parametersToArray() {
         return (Parameter[]) this.parameters.toArray(new Parameter[this.parameters.size()]);
     }
@@ -271,12 +273,13 @@ public class Function implements Cloneable {
 
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("Function name " + name).append("   " + this.getDescription()).append("\n").append("    ");
+        sb.append(Messages.getString("Function.FunctionName", name))
+        .append("   " + this.getDescription()).append("\n").append("    "); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
         Parameter[] p = this.parametersToArray();
 
         for (int i = 0; i < p.length; i++) {
             Parameter para = p[i];
-            sb.append(para).append("\n").append("    ");
+            sb.append(para).append("\n").append("    "); //$NON-NLS-1$ //$NON-NLS-2$
         }
         return sb.toString();
     }

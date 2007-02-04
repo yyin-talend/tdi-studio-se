@@ -21,6 +21,8 @@
 // ============================================================================
 package org.talend.designer.rowgenerator.data;
 
+import org.talend.designer.rowgenerator.i18n.Messages;
+
 /**
  * class global comment. Detailled comment <br/> $Id: Parameter.java,v 1.4 2007/02/02 03:04:21 pub Exp $
  */
@@ -29,7 +31,7 @@ public abstract class Parameter {
     /**
      * @uml.property name="name"
      */
-    protected String name = "";
+    protected String name = ""; //$NON-NLS-1$
 
     /**
      * Getter of the property <tt>name</tt>.
@@ -54,7 +56,7 @@ public abstract class Parameter {
     /**
      * @uml.property name="value"
      */
-    protected String value = "";
+    protected String value = ""; //$NON-NLS-1$
 
     /**
      * Getter of the property <tt>value</tt>.
@@ -79,7 +81,7 @@ public abstract class Parameter {
     /**
      * @uml.property name="comment"
      */
-    protected String comment = "";
+    protected String comment = ""; //$NON-NLS-1$
 
     /**
      * Getter of the property <tt>comment</tt>.
@@ -143,9 +145,10 @@ public abstract class Parameter {
 
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("Parameter name " + name).append("      value :" + this.getValue()).append(
-                "      comment :" + this.getComment()).append("      value :" + this.getValue()).append(
-                "      type :" + this.getType());
+        sb      .append(Messages.getString("Parameter.Name") + name)
+                .append(Messages.getString("Parameter.Value") + this.getValue())
+                .append(Messages.getString("Parameter.Comment") + this.getComment())
+                .append(Messages.getString("Parameter.Type") + this.getType()); 
 
         return sb.toString();
     }

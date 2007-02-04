@@ -48,6 +48,7 @@ import org.talend.core.model.temp.ECodeLanguage;
 import org.talend.designer.rowgenerator.RowGeneratorComponent;
 import org.talend.designer.rowgenerator.RowGeneratorPlugin;
 import org.talend.designer.rowgenerator.data.Parameter;
+import org.talend.designer.rowgenerator.i18n.Messages;
 import org.talend.designer.rowgenerator.ui.editor.MetadataColumnExt;
 import org.talend.designer.runprocess.IProcessor;
 import org.talend.designer.runprocess.IRunProcessService;
@@ -61,7 +62,7 @@ import org.talend.designer.runprocess.Processor;
  */
 public class RowGenPreivewCodeMain {
 
-	public static final String PREVIEW = "Preview";
+	public static final String PREVIEW = "Preview"; //$NON-NLS-1$
 
 	private boolean running;
 
@@ -91,8 +92,8 @@ public class RowGenPreivewCodeMain {
 		initPerlArray();
 		this.component.setNumber(number);
 		Property property = PropertiesFactory.eINSTANCE.createProperty();
-		property.setLabel(PREVIEW + "RowGenerator");
-		property.setId(PREVIEW + "RowGenerator");
+		property.setLabel(PREVIEW + "RowGenerator"); //$NON-NLS-1$
+		property.setId(PREVIEW + "RowGenerator"); //$NON-NLS-1$
 		proc = new RowGenProcess(property, component);
 	}
 
@@ -122,20 +123,20 @@ public class RowGenPreivewCodeMain {
 		}
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("unchecked") //$NON-NLS-1$
 	public String getOneColData(MetadataColumnExt bean) {
 		if (bean != null && bean.getFunction() != null) {
-			String newValue = "sub{";
-			newValue += bean.getFunction().getName() + "(";
+			String newValue = "sub{"; //$NON-NLS-1$
+			newValue += bean.getFunction().getName() + "("; //$NON-NLS-1$
 			for (Parameter pa : (List<Parameter>) bean.getFunction()
 					.getParameters()) {
-				newValue += pa.getValue() + ",";
+				newValue += pa.getValue() + ","; //$NON-NLS-1$
 			}
 			newValue = newValue.substring(0, newValue.length() - 1);
-			newValue += ")}";
+			newValue += ")}"; //$NON-NLS-1$
 			if (bean.getFunction().getName() == null
-					|| "".equals(bean.getFunction().getName())) {
-				newValue = "";
+					|| "".equals(bean.getFunction().getName())) { //$NON-NLS-1$
+				newValue = ""; //$NON-NLS-1$
 			}
 			return newValue;
 		}
@@ -145,7 +146,7 @@ public class RowGenPreivewCodeMain {
 	/**
 	 * qzhang Comment method "getCodeGen".
 	 */
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("unchecked") //$NON-NLS-1$
 	protected void getCodeGen() {
 		getProcess();
 		RepositoryContext repositoryContext = (RepositoryContext) CorePlugin
@@ -216,7 +217,7 @@ public class RowGenPreivewCodeMain {
 							if (len > 0) {
 								byte[] data = new byte[len];
 								is.read(data);
-								String mainMsg = "Perl Run Error!";
+								String mainMsg = Messages.getString("RowGenPreivewCodeMain.PerlRun.Error"); //$NON-NLS-1$
 								new ErrorDialogWidthDetailArea(Display
 										.getCurrent().getActiveShell(),
 										RowGeneratorPlugin.PLUGIN_ID, mainMsg,
@@ -228,7 +229,7 @@ public class RowGenPreivewCodeMain {
 						}
 					} finally {
 						monitor.done();
-						refresh.setText("Preview");
+						refresh.setText(Messages.getString("RowGenPreivewCodeMain.PreviewBtn.Text")); //$NON-NLS-1$
 					}
 				}
 			}, null);
@@ -247,12 +248,12 @@ public class RowGenPreivewCodeMain {
 	 * @return
 	 */
 	protected void convert(String string) {
-		string = string.replaceAll("\r", "");
-		String[] rows = string.split("\n");
+		string = string.replaceAll("\r", ""); //$NON-NLS-1$ //$NON-NLS-2$
+		String[] rows = string.split("\n"); //$NON-NLS-1$
 		for (int i = 0; i < rows.length; i++) {
 			char[] cs = rows[i].toCharArray();
 			List<String> cols = new ArrayList<String>();
-			cols.add("" + (i + 1));
+			cols.add("" + (i + 1)); //$NON-NLS-1$
 			StringBuffer col = new StringBuffer();
 			for (int j = 0; j < cs.length; j++) {
 				if (cs[j] == '|') {

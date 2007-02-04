@@ -37,6 +37,7 @@ import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataColumn;
 import org.talend.core.model.metadata.editor.MetadataTableEditor;
 import org.talend.core.model.temp.ECodeLanguage;
+import org.talend.designer.rowgenerator.i18n.Messages;
 import org.talend.designer.rowgenerator.ui.RowGeneratorUI;
 
 /**
@@ -53,7 +54,7 @@ public class MetadataTableEditorExt extends MetadataTableEditor {
 
     private static Pattern validPatternColumnNameRegexp = null;
 
-    private static final String VALID_PATTERN_COLUMN_NAME = "^[a-zA-Z_][a-zA-Z_0-9]*$";
+    private static final String VALID_PATTERN_COLUMN_NAME = "^[a-zA-Z_][a-zA-Z_0-9]*$"; //$NON-NLS-1$
 
     private IMetadataTable metadataTable;
 
@@ -102,7 +103,7 @@ public class MetadataTableEditorExt extends MetadataTableEditor {
 
     public String validateColumnName(String columnName, int beanPosition) {
         if (columnName == null) {
-            return "Error: Column name is null";
+            return Messages.getString("MetadataTableEditorExt.ColumnName.BeNull"); //$NON-NLS-1$
         }
         validPatternColumnNameRegexp = null;
         if (validPatternColumnNameRegexp == null) {
@@ -116,13 +117,13 @@ public class MetadataTableEditorExt extends MetadataTableEditor {
         boolean match = matcher.matches(columnName, validPatternColumnNameRegexp);
 
         if (!match) {
-            return "The column name '" + columnName + "' is invalid.";
+            return Messages.getString("MetadataTableEditorExt.ColumnName.NotValid", columnName); //$NON-NLS-1$
         }
 
         int lstSize = getBeansList().size();
         for (int i = 0; i < lstSize; i++) {
             if (columnName.equals(getBeansList().get(i).getLabel()) && i != beanPosition) {
-                return "The column name '" + columnName + "' already exists.";
+                return Messages.getString("MetadataTableEditorExt.ColumnName.Exist", columnName); //$NON-NLS-1$
             }
 
         }
@@ -130,7 +131,7 @@ public class MetadataTableEditorExt extends MetadataTableEditor {
     }
 
     public String getNextGeneratedColumnName() {
-        return getNextGeneratedColumnName("newColumn");
+        return getNextGeneratedColumnName("newColumn"); //$NON-NLS-1$
     }
 
     public String getNextGeneratedColumnName(String oldColumnName) {
@@ -160,8 +161,8 @@ public class MetadataTableEditorExt extends MetadataTableEditor {
                 Context.REPOSITORY_CONTEXT_KEY);
         ECodeLanguage codeLanguage = repositoryContext.getProject().getLanguage();
         if (codeLanguage == ECodeLanguage.JAVA) {
-            metadataColumn.setType("String");
-            metadataColumn.setTalendType("String");
+            metadataColumn.setType("String"); //$NON-NLS-1$
+            metadataColumn.setTalendType("String"); //$NON-NLS-1$
         }
         MetadataColumnExt ext = new MetadataColumnExt(metadataColumn);
         return ext;

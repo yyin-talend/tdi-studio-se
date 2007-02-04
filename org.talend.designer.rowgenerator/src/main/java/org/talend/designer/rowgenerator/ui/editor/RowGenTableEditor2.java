@@ -55,6 +55,7 @@ import org.talend.designer.rowgenerator.RowGeneratorComponent;
 import org.talend.designer.rowgenerator.data.Function;
 import org.talend.designer.rowgenerator.data.FunctionManager;
 import org.talend.designer.rowgenerator.data.Parameter;
+import org.talend.designer.rowgenerator.i18n.Messages;
 
 /**
  * qzhang class global comment. Detailled comment <br/>
@@ -64,9 +65,9 @@ import org.talend.designer.rowgenerator.data.Parameter;
  */
 public class RowGenTableEditor2 extends AbstractDataTableEditorView<IMetadataColumn> {
 
-    private static final String ID_COLUMN_NAME = "ID_COLUMN_NAME";
+    private static final String ID_COLUMN_NAME = "ID_COLUMN_NAME"; //$NON-NLS-1$
 
-    private static final String ID_COLUMN_KEY = "ID_COLUMN_KEY";
+    private static final String ID_COLUMN_KEY = "ID_COLUMN_KEY"; //$NON-NLS-1$
 
     private RowGeneratorComponent rGcomponent;
 
@@ -115,12 +116,12 @@ public class RowGenTableEditor2 extends AbstractDataTableEditorView<IMetadataCol
         orignAllColumns(tableViewerCreator);
 
         // ///////////////////////////////////////////////////////////////////////
-        comboValueAdapter = CellEditorValueAdapterFactory.getComboAdapter("String");
+        comboValueAdapter = CellEditorValueAdapterFactory.getComboAdapter("String"); //$NON-NLS-1$
         column = new TableViewerCreatorColumn(tableViewerCreator);
         final ComboBoxCellEditor functComboBox = new ComboBoxCellEditor();
         functComboBox.create(tableViewerCreator.getTable());
         column.setCellEditor(functComboBox, comboValueAdapter);
-        column.setTitle("Functions");
+        column.setTitle(Messages.getString("RowGenTableEditor2.Fuctions.TitleText")); //$NON-NLS-1$
         column.setBeanPropertyAccessors(new IBeanPropertyAccessors<MetadataColumnExt, String>() {
 
             public String get(MetadataColumnExt bean) {
@@ -129,7 +130,7 @@ public class RowGenTableEditor2 extends AbstractDataTableEditorView<IMetadataCol
 //                    saveOneColData(bean);
                     return bean.getFunction().getName();
                 }
-                return "";
+                return ""; //$NON-NLS-1$
             }
 
             public void set(MetadataColumnExt bean, String value) {
@@ -143,7 +144,7 @@ public class RowGenTableEditor2 extends AbstractDataTableEditorView<IMetadataCol
         column.setMinimumWidth(30);
         // ////////////////////////////////////////////////////////////////////////////
         column = new TableViewerCreatorColumn(tableViewerCreator);
-        column.setTitle("Parameters");
+        column.setTitle(Messages.getString("RowGenTableEditor2.Parameters.TitleText")); //$NON-NLS-1$
         column.setBeanPropertyAccessors(new IBeanPropertyAccessors<MetadataColumnExt, String>() {
 
             public String get(MetadataColumnExt bean) {
@@ -181,12 +182,12 @@ public class RowGenTableEditor2 extends AbstractDataTableEditorView<IMetadataCol
 
         // ////////////////////////////////////////////////////////////////////////////
         column = new TableViewerCreatorColumn(tableViewerCreator);
-        column.setTitle("Preview");
+        column.setTitle(Messages.getString("RowGenTableEditor2.Preview.TitleText")); //$NON-NLS-1$
         column.setBeanPropertyAccessors(new IBeanPropertyAccessors<MetadataColumnExt, String>() {
 
             public String get(MetadataColumnExt bean) {
                 if (bean.getFunction() == null) {
-                    return "";
+                    return ""; //$NON-NLS-1$
                 }
                 return bean.getFunction().getPreview();
             }
@@ -209,7 +210,7 @@ public class RowGenTableEditor2 extends AbstractDataTableEditorView<IMetadataCol
      * @param value
      * @return
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked") //$NON-NLS-1$
     protected Function getFunnctionByName(String talendType, String value) {
         Function func = null;
         for (Function fun : FunctionManager.getInstance().getFunctionByName(talendType)) {
@@ -232,7 +233,7 @@ public class RowGenTableEditor2 extends AbstractDataTableEditorView<IMetadataCol
                 Context.REPOSITORY_CONTEXT_KEY);
         ECodeLanguage codeLanguage = repositoryContext.getProject().getLanguage();
         if (codeLanguage == ECodeLanguage.JAVA) {
-            comboValueAdapter = CellEditorValueAdapterFactory.getComboAdapter("String");
+            comboValueAdapter = CellEditorValueAdapterFactory.getComboAdapter("String"); //$NON-NLS-1$
             dbms = MetadataTalendType.LANGUAGE_JAVA;
         } else {
             comboValueAdapter = CellEditorValueAdapterFactory.getComboAdapter();
@@ -255,15 +256,15 @@ public class RowGenTableEditor2 extends AbstractDataTableEditorView<IMetadataCol
         // //////////////////////////////////////////////////////////////////////////////////////
 
         TableViewerCreatorColumn column = new TableViewerCreatorColumn(tableViewerCreator);
-        column.setTitle("");
-        column.setDefaultInternalValue("");
+        column.setTitle(""); //$NON-NLS-1$
+        column.setDefaultInternalValue(""); //$NON-NLS-1$
         column.setWidth(15);
 
         // //////////////////////////////////////////////////////////////////////////////////////
 
         column = new TableViewerCreatorColumn(tableViewerCreator);
         column.setId(ID_COLUMN_NAME);
-        column.setTitle("Column");
+        column.setTitle(Messages.getString("RowGenTableEditor2.Column.TitleText")); //$NON-NLS-1$
         column.setBeanPropertyAccessors(new IBeanPropertyAccessors<IMetadataColumn, String>() {
 
             public String get(IMetadataColumn bean) {
@@ -310,7 +311,7 @@ public class RowGenTableEditor2 extends AbstractDataTableEditorView<IMetadataCol
         // //////////////////////////////////////////////////////////////////////////////////////
 
         column = new TableViewerCreatorColumn(tableViewerCreator);
-        column.setTitle("Key");
+        column.setTitle(Messages.getString("RowGenTableEditor2.Key.TitleText")); //$NON-NLS-1$
         column.setId(ID_COLUMN_KEY);
         column.setBeanPropertyAccessors(new IBeanPropertyAccessors<IMetadataColumn, Boolean>() {
 
@@ -324,14 +325,14 @@ public class RowGenTableEditor2 extends AbstractDataTableEditorView<IMetadataCol
 
         });
         column.setWidth(35);
-        column.setDisplayedValue("");
+        column.setDisplayedValue(""); //$NON-NLS-1$
         CheckboxTableEditorContent checkboxTableEditorContent = new CheckboxTableEditorContent(isReadOnly());
         column.setTableEditorContent(checkboxTableEditorContent);
 
         // //////////////////////////////////////////////////////////////////////////////////////
 
         column = new TableViewerCreatorColumn(tableViewerCreator);
-        column.setTitle("Type");
+        column.setTitle(Messages.getString("RowGenTableEditor2.Type.TitleText")); //$NON-NLS-1$
         column.setBeanPropertyAccessors(new IBeanPropertyAccessors<MetadataColumnExt, String>() {
 
             public String get(MetadataColumnExt bean) {
@@ -365,7 +366,7 @@ public class RowGenTableEditor2 extends AbstractDataTableEditorView<IMetadataCol
             CellEditorValueAdapter positiveIntValueAdapter) {
         TableViewerCreatorColumn column;
         column = new TableViewerCreatorColumn(tableViewerCreator);
-        column.setTitle("Length");
+        column.setTitle(Messages.getString("RowGenTableEditor2.Length.TitleText")); //$NON-NLS-1$
         column.setBeanPropertyAccessors(new IBeanPropertyAccessors<IMetadataColumn, Integer>() {
 
             public Integer get(IMetadataColumn bean) {
@@ -384,7 +385,7 @@ public class RowGenTableEditor2 extends AbstractDataTableEditorView<IMetadataCol
         // //////////////////////////////////////////////////////////////////////////////////////
 
         column = new TableViewerCreatorColumn(tableViewerCreator);
-        column.setTitle("Precision");
+        column.setTitle(Messages.getString("RowGenTableEditor2.Precision.TitleText")); //$NON-NLS-1$
         column.setBeanPropertyAccessors(new IBeanPropertyAccessors<IMetadataColumn, Integer>() {
 
             public Integer get(IMetadataColumn bean) {
@@ -403,7 +404,7 @@ public class RowGenTableEditor2 extends AbstractDataTableEditorView<IMetadataCol
         // //////////////////////////////////////////////////////////////////////////////////////
 
         column = new TableViewerCreatorColumn(tableViewerCreator);
-        column.setTitle("Nullable");
+        column.setTitle(Messages.getString("RowGenTableEditor2.Nullable.TitleText")); //$NON-NLS-1$
         column.setBeanPropertyAccessors(new IBeanPropertyAccessors<IMetadataColumn, Boolean>() {
 
             public Boolean get(IMetadataColumn bean) {
@@ -417,13 +418,13 @@ public class RowGenTableEditor2 extends AbstractDataTableEditorView<IMetadataCol
         });
         column.setModifiable(!isReadOnly());
         column.setWidth(56);
-        column.setDisplayedValue("");
+        column.setDisplayedValue(""); //$NON-NLS-1$
         column.setTableEditorContent(new CheckboxTableEditorContent(isReadOnly()));
 
         // //////////////////////////////////////////////////////////////////////////////////////
 
         column = new TableViewerCreatorColumn(tableViewerCreator);
-        column.setTitle("Comment");
+        column.setTitle(Messages.getString("RowGenTableEditor2.Comment.TitleText")); //$NON-NLS-1$
         column.setBeanPropertyAccessors(new IBeanPropertyAccessors<IMetadataColumn, String>() {
 
             public String get(IMetadataColumn bean) {
@@ -441,14 +442,14 @@ public class RowGenTableEditor2 extends AbstractDataTableEditorView<IMetadataCol
         column.setCellEditor(new TextCellEditor(tableViewerCreator.getTable()));
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked") //$NON-NLS-1$
     private Function getFunction(MetadataColumnExt bean, String talendType) {
         Function currentFun = new Function();
         List<Function> functions = FunctionManager.getInstance().getFunctionByName(talendType);
         String[] arrayTalendFunctions2 = new String[functions.size()];
         if (functions.isEmpty()) {
-            currentFun.setDescription("");
-            currentFun.setPreview("");
+            currentFun.setDescription(""); //$NON-NLS-1$
+            currentFun.setPreview(""); //$NON-NLS-1$
             currentFun.setParameters(new ArrayList<Parameter>());
             bean.setArrayFunctions(arrayTalendFunctions2);
         } else {

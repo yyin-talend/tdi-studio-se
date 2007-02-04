@@ -51,6 +51,7 @@ import org.talend.designer.rowgenerator.data.Function;
 import org.talend.designer.rowgenerator.data.FunctionManager;
 import org.talend.designer.rowgenerator.data.Parameter;
 import org.talend.designer.rowgenerator.external.data.ExternalRowGeneratorUiProperties;
+import org.talend.designer.rowgenerator.i18n.Messages;
 import org.talend.designer.rowgenerator.managers.RowGeneratorManager;
 import org.talend.designer.rowgenerator.managers.UIManager;
 import org.talend.designer.rowgenerator.ui.editor.MetadataColumnExt;
@@ -106,7 +107,7 @@ public class RowGeneratorUI {
     }
 
     /**
-     *  qzhang Comment method "init".
+     * qzhang Comment method "init".
      */
     public void init() {
         final UIManager uiManager = generatorManager.getUiManager();
@@ -129,10 +130,10 @@ public class RowGeneratorUI {
         datasFlowViewSashForm.setBackgroundMode(SWT.INHERIT_FORCE);
 
         initBackgroundComponents();
-        
-//        if (WindowSystem.isGTK()) {
-//            datasFlowViewSashForm.setBackground(display.getSystemColor(SWT.COLOR_DARK_GRAY));
-//        }
+
+        // if (WindowSystem.isGTK()) {
+        // datasFlowViewSashForm.setBackground(display.getSystemColor(SWT.COLOR_DARK_GRAY));
+        // }
         /* Create Schema Table Editor */
         createSchemaComposite();
 
@@ -149,7 +150,7 @@ public class RowGeneratorUI {
              * 
              * @see org.eclipse.swt.events.SelectionAdapter#widgetSelected(org.eclipse.swt.events.SelectionEvent)
              */
-            @SuppressWarnings("unchecked")
+            @SuppressWarnings("unchecked")//$NON-NLS-1$
             @Override
             public void widgetSelected(SelectionEvent e) {
                 Table table = (Table) e.getSource();
@@ -179,9 +180,9 @@ public class RowGeneratorUI {
     }
 
     private void initBackgroundComponents() {
-    	
+
     }
-    
+
     private IMetadataTable outputMetaTable;
 
     /**
@@ -190,12 +191,12 @@ public class RowGeneratorUI {
     private void createSchemaComposite() {
         outputMetaTable = externalNode.getMetadataList().get(0);
         convert(outputMetaTable);
-        metadataTableEditor = new MetadataTableEditorExt(outputMetaTable, "");
+        metadataTableEditor = new MetadataTableEditorExt(outputMetaTable, ""); //$NON-NLS-1$
         metadataTableEditor.setRowGenUI(this);
         dataTableView = new RowGenTableEditor2(datasFlowViewSashForm, SWT.BORDER, metadataTableEditor, inputReadOnly,
                 !inputReadOnly, externalNode);
         dataTableView.getExtendedTableViewer().setCommandStack(generatorManager.getCommandStack());
-        dataTableView.setTitle("Schema");
+        dataTableView.setTitle(Messages.getString("RowGeneratorUI.SchemaTitle.Text")); //$NON-NLS-1$
         // resize all the columns but not the table
         for (int i = 0; i < dataTableView.getTable().getColumnCount(); i++) {
             dataTableView.getTable().getColumn(i).pack();
@@ -229,7 +230,7 @@ public class RowGeneratorUI {
         outputMetaTable2.setListColumns(exts);
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked")//$NON-NLS-1$
     private Function getFunction(MetadataColumnExt bean, String talendType) {
         String value = externalNode.getColumnValue(bean);
         List<Function> functions = FunctionManager.getInstance().getFunctionByName(talendType);
@@ -238,8 +239,8 @@ public class RowGeneratorUI {
             currentFun = new Function();
             String[] arrayTalendFunctions2 = new String[functions.size()];
             if (functions.isEmpty()) {
-                currentFun.setDescription("");
-                currentFun.setPreview("");
+                currentFun.setDescription(""); //$NON-NLS-1$
+                currentFun.setPreview(""); //$NON-NLS-1$
                 currentFun.setParameters(new ArrayList<Parameter>());
                 bean.setArrayFunctions(arrayTalendFunctions2);
             } else {
@@ -255,19 +256,20 @@ public class RowGeneratorUI {
     }
 
     /**
-     *  qzhang Comment method "isAvailableSubValue".
+     * qzhang Comment method "isAvailableSubValue".
      * 
      * @param value
      * @return
      */
     private Function getAvailableFunFromValue(String value, List<Function> funs) {
         Function currentFun = null;
-        if (value != null && !"".equals(value) && value.startsWith("sub{") && value.endsWith("}")) {
+        if (value != null && !"".equals(value) 
+                && value.startsWith("sub{") && value.endsWith("}")) { //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
             for (Function function : funs) {
                 int indexOf = value.indexOf(function.getName());
                 if (indexOf != -1) {
                     String para = value.substring(indexOf + function.getName().length() + 1, value.length() - 2);
-                    String[] ps = para.split(",");
+                    String[] ps = para.split(","); //$NON-NLS-1$
                     if (ps.length == function.getParameters().size()) {
                         currentFun = (Function) function.clone(ps);
                     }
@@ -278,7 +280,7 @@ public class RowGeneratorUI {
     }
 
     /**
-     *  qzhang Comment method "addKeyListener".
+     * qzhang Comment method "addKeyListener".
      * 
      * @param uiManager
      * @param display
@@ -307,7 +309,7 @@ public class RowGeneratorUI {
     }
 
     /**
-     *  qzhang Comment method "addParentListeners".
+     * qzhang Comment method "addParentListeners".
      * 
      * @param uiManager
      * @param uiProperties
@@ -357,7 +359,7 @@ public class RowGeneratorUI {
     }
 
     /**
-     *  qzhang Comment method "updateBackground".
+     * qzhang Comment method "updateBackground".
      * 
      * @param b
      * @param c
@@ -367,7 +369,7 @@ public class RowGeneratorUI {
     }
 
     /**
-     *  qzhang Comment method "release".
+     * qzhang Comment method "release".
      */
     protected void release() {
         if (threadToEvaluatePerformance != null) {

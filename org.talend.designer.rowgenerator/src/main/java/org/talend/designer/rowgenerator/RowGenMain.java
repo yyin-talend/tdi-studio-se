@@ -33,6 +33,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.designer.rowgenerator.external.data.ExternalRowGeneratorUiProperties;
+import org.talend.designer.rowgenerator.i18n.Messages;
 import org.talend.designer.rowgenerator.managers.RowGeneratorManager;
 import org.talend.designer.rowgenerator.ui.RowGeneratorUI;
 
@@ -114,7 +115,7 @@ public class RowGenMain {
         ImageDescriptor imageDescriptor = component.getIcon32();
         Image createImage = imageDescriptor.createImage();
         shell.setImage(createImage);
-        shell.setText("Talend Open Studio - tRowGenerator - " + connector.getUniqueName());
+        shell.setText(Messages.getString("RowGenMain.MainShellText", connector.getUniqueName())); //$NON-NLS-1$
         ExternalRowGeneratorUiProperties uiProperties = new ExternalRowGeneratorUiProperties();
         generatorManager.getUiManager().setUiProperties(uiProperties);
         Rectangle boundsMapper = uiProperties.getBoundsMapper();

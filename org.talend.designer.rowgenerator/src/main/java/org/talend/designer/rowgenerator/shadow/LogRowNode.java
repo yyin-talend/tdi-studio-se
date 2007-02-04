@@ -73,7 +73,7 @@ public class LogRowNode implements INode {
 
         IComponentsFactory compFac = RowGeneratorPlugin.getDefault().getRepositoryService().getComponentsFactory();
         setComponent(compFac.get(componentName));
-        TextElementParameter param = new TextElementParameter("FIELDSEPARATOR", "\'|\'");
+        TextElementParameter param = new TextElementParameter("FIELDSEPARATOR", "\'|\'"); //$NON-NLS-1$ //$NON-NLS-2$
         this.addParameter(param);
     }
 
@@ -184,7 +184,7 @@ public class LogRowNode implements INode {
      * 
      * @see org.talend.core.model.process.IElement#setElementParameters(java.util.List)
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked") //$NON-NLS-1$
     public void setElementParameters(List<? extends IElementParameter> elementsParameters) {
         this.parameters = (List<IElementParameter>) elementsParameters;
     }

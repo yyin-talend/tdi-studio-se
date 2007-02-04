@@ -38,13 +38,13 @@ public class ParameterFactory {
     /**
      * 
      */
-    private static final String PARAMETER_TYPE_REGEX = "(^[^\\s^\\(]+)(\\s|\\()";
+    private static final String PARAMETER_TYPE_REGEX = "(^[^\\s^\\(]+)(\\s|\\()"; //$NON-NLS-1$
 
-    public static final String PARAMETER_TYPE_STRING = "string";
+    public static final String PARAMETER_TYPE_STRING = "string"; //$NON-NLS-1$
 
-    public static final String PARAMETER_TYPE_INT = "int";
+    public static final String PARAMETER_TYPE_INT = "int"; //$NON-NLS-1$
 
-    public  static final  String PARAMETER_TYPE_LIST = "list";
+    public  static final  String PARAMETER_TYPE_LIST = "list"; //$NON-NLS-1$
 
     /**
      * qzhang Comment method "getParameter". <br/>.
@@ -61,14 +61,14 @@ public class ParameterFactory {
         string = string.replaceFirst(type, FunctionParser.EMPTY_STRING).trim();
         String value = null;
         // get Value
-        if (string.startsWith("(")) {
-            int end = string.indexOf(")");
+        if (string.startsWith("(")) { //$NON-NLS-1$
+            int end = string.indexOf(")"); //$NON-NLS-1$
             value = string.substring(1, end);
             string = string.substring(end + 1).trim();
             setDefaultValue(p, value);
         }
 
-        String[] s = string.split(":");
+        String[] s = string.split(":"); //$NON-NLS-1$
         if (s != null && s.length != 0) {
             if (s[0] != null) {
                 p.setName(s[0]);
@@ -90,7 +90,7 @@ public class ParameterFactory {
     private void setDefaultValue(Parameter p, String value) {
         if (p instanceof ListParameter) {
             ListParameter lp = (ListParameter) p;
-            String[] values = value.split(",");
+            String[] values = value.split(","); //$NON-NLS-1$
             lp.setValues(values);
             if (values.length > 0) {
                 lp.setValue(values[0]);
@@ -136,8 +136,8 @@ public class ParameterFactory {
     public static void main(String[] args) {
         String string = "string(\'2007-01-01\') min : minimum date";
 
-        String type = "string";
-        string = string.replaceFirst(type, "");
+        String type = "string"; //$NON-NLS-1$
+        string = string.replaceFirst(type, ""); //$NON-NLS-1$
         System.out.println(string);
     }
 }

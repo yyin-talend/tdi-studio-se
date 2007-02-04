@@ -39,6 +39,7 @@ import org.talend.core.model.properties.User;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.designer.rowgenerator.RowGeneratorComponent;
+import org.talend.designer.rowgenerator.i18n.Messages;
 
 /**
  * qzhang class global comment. Detailled comment <br/>
@@ -48,7 +49,7 @@ import org.talend.designer.rowgenerator.RowGeneratorComponent;
  */
 public class RowGenProcess extends Element implements IProcess {
 
-    private static final String LOGROW = "tLogRow";
+    private static final String LOGROW = "tLogRow"; //$NON-NLS-1$
 
     // properties
 
@@ -58,8 +59,8 @@ public class RowGenProcess extends Element implements IProcess {
 
     private boolean activate = true;
 
-    private String name = new String("RowGenPreviewProcess");
-    
+    private String name = new String("RowGenPreviewProcess"); //$NON-NLS-1$
+
     // list where is stored each unique name for the connections
     private List<String> uniqueConnectionNameList = new ArrayList<String>();
 
@@ -133,7 +134,7 @@ public class RowGenProcess extends Element implements IProcess {
             setAuthor(property.getAuthor());
             setStatusCode(property.getStatusCode());
             if (getStatusCode() == null) {
-                setStatusCode("");
+                setStatusCode(""); //$NON-NLS-1$
             }
             initDone = true;
         }
@@ -251,7 +252,7 @@ public class RowGenProcess extends Element implements IProcess {
         this.setReadOnly(false);
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked")//$NON-NLS-1$
     public void setReadOnly(boolean readOnly) {
         this.readOnly = readOnly;
     }
@@ -388,7 +389,7 @@ public class RowGenProcess extends Element implements IProcess {
      */
     public String generateUniqueConnectionName(String baseName) {
         if (baseName == null) {
-            throw new IllegalArgumentException("baseName can't be null");
+            throw new IllegalArgumentException(Messages.getString("RowGenProcess.BeseName.BeNull")); //$NON-NLS-1$
         }
         String uniqueName = baseName + 1;
 
@@ -409,7 +410,8 @@ public class RowGenProcess extends Element implements IProcess {
             if (checkValidConnectionName(uniqueConnectionName)) {
                 uniqueConnectionNameList.add(uniqueConnectionName);
             } else {
-                throw new IllegalArgumentException("The name of the connection is not valid: " + uniqueConnectionName);
+                throw new IllegalArgumentException(
+                        Messages.getString("RowGenProcess.ConnectionName.NotValid") + uniqueConnectionName); //$NON-NLS-1$
             }
         }
     }
@@ -423,9 +425,9 @@ public class RowGenProcess extends Element implements IProcess {
     public String generateUniqueNodeName(INode node) {
         String baseName = node.getComponent().getName();
         if (baseName == null) {
-            throw new IllegalArgumentException("Component name can't be null");
+            throw new IllegalArgumentException(Messages.getString("RowGenProcess.ComponentName.BeNull")); //$NON-NLS-1$
         }
-        String uniqueName = baseName + "_" + 1;
+        String uniqueName = baseName + "_" + 1; //$NON-NLS-1$
 
         int counter = 1;
         boolean exists = true;
@@ -434,7 +436,7 @@ public class RowGenProcess extends Element implements IProcess {
             if (!exists) {
                 break;
             }
-            uniqueName = baseName + "_" + counter++;
+            uniqueName = baseName + "_" + counter++; //$NON-NLS-1$
         }
         return uniqueName;
     }
@@ -452,7 +454,7 @@ public class RowGenProcess extends Element implements IProcess {
     }
 
     public void removeUniqueNodeName(final String uniqueName) {
-        if (!uniqueName.equals("")) {
+        if (!uniqueName.equals("")) { //$NON-NLS-1$
             uniqueNodeNameList.remove(uniqueName);
         }
     }
@@ -464,7 +466,7 @@ public class RowGenProcess extends Element implements IProcess {
      */
 
     public String toString() {
-        return "Process:" + getLabel();
+        return "Process:" + getLabel(); //$NON-NLS-1$
     }
 
     public ERepositoryObjectType getType() {
@@ -531,7 +533,9 @@ public class RowGenProcess extends Element implements IProcess {
         return new ArrayList<INode>();
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.core.model.process.Element#getElementName()
      */
     @Override

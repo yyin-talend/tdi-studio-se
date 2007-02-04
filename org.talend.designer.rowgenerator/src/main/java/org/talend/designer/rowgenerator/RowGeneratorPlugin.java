@@ -38,7 +38,7 @@ import org.talend.repository.model.IRepositoryService;
 public class RowGeneratorPlugin extends Plugin {
 
     // The plug-in ID
-    public static final String PLUGIN_ID = "org.talend.designer.rowgenerator";
+    public static final String PLUGIN_ID = "org.talend.designer.rowgenerator"; //$NON-NLS-1$
 
     // The shared instance
     private static RowGeneratorPlugin plugin;
