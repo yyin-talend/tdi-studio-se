@@ -196,7 +196,7 @@ public class RowGenPreivewCodeMain {
 				public void run(final IProgressMonitor monitor) {
 					monitor
 							.beginTask(
-									"Process tRowGenerator generate...", IProgressMonitor.UNKNOWN); //$NON-NLS-1$
+									Messages.getString("RowGenPreivewCodeMain.Process.Generate"), IProgressMonitor.UNKNOWN); //$NON-NLS-1$
 					try {
 						try {
 							process = runPreviewCode();

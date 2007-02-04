@@ -286,6 +286,9 @@ public class RowGeneratorComponent extends AbstractExternalNode {
     public List<Map<String, Object>> getMapList() {
         List<Map<String, Object>> map = new ArrayList<Map<String, Object>>();
         List<IElementParameter> eps = (List<IElementParameter>) this.getElementParameters();
+        if (eps == null) {
+            return map;
+        }
         boolean end = false;
         for (int i = 0; i < eps.size() && !end; i++) {
             IElementParameter parameter = eps.get(i);
