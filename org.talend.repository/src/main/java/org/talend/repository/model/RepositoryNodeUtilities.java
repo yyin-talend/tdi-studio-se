@@ -23,6 +23,7 @@ package org.talend.repository.model;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNode.ENodeType;
 
@@ -39,10 +40,10 @@ public class RepositoryNodeUtilities {
             return null;
         }
         if (node.isBin()) {
-            return new Path("bin");
+            return new Path("bin"); //$NON-NLS-1$
         }
         if (node.getType() == ENodeType.STABLE_SYSTEM_FOLDER || node.getType() == ENodeType.SYSTEM_FOLDER) {
-            return new Path("");
+            return new Path(""); //$NON-NLS-1$
         }
         if (node.getType() == ENodeType.SIMPLE_FOLDER) {
             String label = node.getObject().getProperty().getLabel();

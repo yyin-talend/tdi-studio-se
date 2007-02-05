@@ -37,7 +37,7 @@ public class LicenseManagement {
     private static final double LICENSE_VALIDATION_DONE = 2;
 
     public static void acceptLicense() throws BusinessException {
-        PlatformUI.getPreferenceStore().setValue("LICENSE_VALIDATION_DONE", 1);
+        PlatformUI.getPreferenceStore().setValue("LICENSE_VALIDATION_DONE", 1); //$NON-NLS-1$
     }
 
     /**
@@ -47,7 +47,7 @@ public class LicenseManagement {
     public static boolean isLicenseValidated() {
         initPreferenceStore();
         IPreferenceStore prefStore = PlatformUI.getPreferenceStore();
-        if (prefStore.getInt("LICENSE_VALIDATION_DONE") != 1) {
+        if (prefStore.getInt("LICENSE_VALIDATION_DONE") != 1) { //$NON-NLS-1$
             return false;
         }
         return true;
@@ -59,8 +59,8 @@ public class LicenseManagement {
      */
     private static void initPreferenceStore() {
         IPreferenceStore prefStore = PlatformUI.getPreferenceStore();
-        if (prefStore.getDefaultInt("LICENSE_VALIDATION_DONE") == 0) {
-            prefStore.setDefault("LICENSE_VALIDATION_DONE", LICENSE_VALIDATION_DONE);
+        if (prefStore.getDefaultInt("LICENSE_VALIDATION_DONE") == 0) { //$NON-NLS-1$
+            prefStore.setDefault("LICENSE_VALIDATION_DONE", LICENSE_VALIDATION_DONE); //$NON-NLS-1$
         }
     }
 }

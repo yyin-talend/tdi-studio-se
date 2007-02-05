@@ -34,6 +34,7 @@ import org.talend.designer.core.model.utils.emf.talendfile.ConnectionType;
 import org.talend.designer.core.model.utils.emf.talendfile.ElementParameterType;
 import org.talend.designer.core.model.utils.emf.talendfile.MetadataType;
 import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
+import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.ProxyRepositoryFactory;
 
 /**
@@ -113,7 +114,7 @@ public class RenameComponentAction {
     private static String getNodeUniqueName(NodeType node) {
         for (Object o : node.getElementParameter()) {
             ElementParameterType t = (ElementParameterType) o;
-            if (t.getName().equals("UNIQUE_NAME")) {
+            if (t.getName().equals("UNIQUE_NAME")) { //$NON-NLS-1$
                 return t.getValue();
             }
         }

@@ -36,9 +36,9 @@ import org.eclipse.emf.common.util.URI;
  */
 public class URIHelper {
 
-    private static final String RESOURCE = "resource";
+    private static final String RESOURCE = "resource"; //$NON-NLS-1$
 
-    private static final String PLATFORM = "platform";
+    private static final String PLATFORM = "platform"; //$NON-NLS-1$
 
     public static IFile getFile(URI uri) {
         IPath path = convert(uri);

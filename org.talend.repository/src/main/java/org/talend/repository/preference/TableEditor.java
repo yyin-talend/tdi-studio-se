@@ -50,6 +50,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.Widget;
+import org.talend.repository.i18n.Messages;
 
 /**
  * DOC tguiu class global comment. Detailled comment <br/>
@@ -209,7 +210,7 @@ public abstract class TableEditor extends FieldEditor {
     protected void doLoad() {
         if (viewer != null) {
             String s = getPreferenceStore().getString(getPreferenceName());
-            if (s != null && !"".equals(s)) {
+            if (s != null && !"".equals(s)) { //$NON-NLS-1$
                 for (String tmp : readString(s)) {
                     list.add(tmp);
                 }
@@ -225,7 +226,7 @@ public abstract class TableEditor extends FieldEditor {
         if (viewer != null) {
             list.clear();
             String s = getPreferenceStore().getDefaultString(getPreferenceName());
-            if (s != null && !"".equals(s)) {
+            if (s != null && !"".equals(s)) { //$NON-NLS-1$
                 for (String tmp : readString(s)) {
                     list.add(tmp);
                 }

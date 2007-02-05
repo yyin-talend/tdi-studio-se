@@ -64,16 +64,16 @@ public class StatusPreferencePage extends FieldEditorPreferencePage implements I
         } catch (PersistenceException e) {
             String detailError = e.getMessage();
             new ErrorDialogWidthDetailArea(new Shell(), RepositoryPlugin.PLUGIN_ID, Messages
-                    .getString("CommonWizard.persistenceException"), detailError);
-            log.error(Messages.getString("CommonWizard.persistenceException") + "\n" + detailError);
+                    .getString("CommonWizard.persistenceException"), detailError); //$NON-NLS-1$
+            log.error(Messages.getString("CommonWizard.persistenceException") + "\n" + detailError); //$NON-NLS-1$ //$NON-NLS-2$
         }
         return preferenceStore;
     }
 
     @Override
     protected void createFieldEditors() {
-        addField(new StatusEditor(Status.TECHNICAL_STATUS, "Technical status", getFieldEditorParent()));
-        addField(new StatusEditor(Status.DOCUMENTATION_STATUS, "Documentation status", getFieldEditorParent()));
+        addField(new StatusEditor(Status.TECHNICAL_STATUS, "Technical status", getFieldEditorParent())); //$NON-NLS-1$
+        addField(new StatusEditor(Status.DOCUMENTATION_STATUS, "Documentation status", getFieldEditorParent())); //$NON-NLS-1$
     }
 
     @Override

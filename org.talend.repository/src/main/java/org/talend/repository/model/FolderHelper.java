@@ -40,6 +40,7 @@ import org.talend.core.model.properties.Project;
 import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.properties.User;
+import org.talend.repository.i18n.Messages;
 
 /**
  * This helper class contains a set of methods to perform basic operations on FolderItem objects.
@@ -156,7 +157,7 @@ public abstract class FolderHelper {
 
     public Set<IPath> listFolders() {
         HashSet<IPath> folders = new HashSet<IPath>();
-        list(folders, project.getFolders(), new Path(""));
+        list(folders, project.getFolders(), new Path("")); //$NON-NLS-1$
         return folders;
     }
 

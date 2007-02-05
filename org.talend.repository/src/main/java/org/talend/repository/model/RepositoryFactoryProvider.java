@@ -29,6 +29,7 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.talend.commons.utils.workbench.extensions.ExtensionImplementationProviders;
 import org.talend.commons.utils.workbench.extensions.ExtensionPointImpl;
 import org.talend.commons.utils.workbench.extensions.ISimpleExtensionPoint;
+import org.talend.repository.i18n.Messages;
 
 /**
  * Provides, using extension points, implementation of many factories.
@@ -43,8 +44,8 @@ public class RepositoryFactoryProvider {
 
     private static List<IRepositoryFactory> list = null;
 
-    public static final ISimpleExtensionPoint REPOSITORY_PROVIDER = new ExtensionPointImpl("org.talend.core.repository_provider",
-            "RepositoryFactory", 1, -1);
+    public static final ISimpleExtensionPoint REPOSITORY_PROVIDER = new ExtensionPointImpl("org.talend.core.repository_provider", //$NON-NLS-1$
+            "RepositoryFactory", 1, -1); //$NON-NLS-1$
 
     public static List<IRepositoryFactory> getAvailableRepositories() {
         if (list == null) {
@@ -53,15 +54,15 @@ public class RepositoryFactoryProvider {
 
             for (IConfigurationElement current : extension) {
                 try {
-                    IRepositoryFactory currentAction = (IRepositoryFactory) current.createExecutableExtension("class");
-                    currentAction.setId(current.getAttribute("id"));
-                    currentAction.setName(current.getAttribute("name"));
-                    currentAction.setAuthenticationNeeded(new Boolean(current.getAttribute("authenticationNeeded")));
+                    IRepositoryFactory currentAction = (IRepositoryFactory) current.createExecutableExtension("class"); //$NON-NLS-1$
+                    currentAction.setId(current.getAttribute("id")); //$NON-NLS-1$
+                    currentAction.setName(current.getAttribute("name")); //$NON-NLS-1$
+                    currentAction.setAuthenticationNeeded(new Boolean(current.getAttribute("authenticationNeeded"))); //$NON-NLS-1$
 
                     // Getting dynamic login fields:
-                    for (IConfigurationElement currentLoginField : current.getChildren("loginField")) {
-                        DynamicFieldBean key = new DynamicFieldBean(currentLoginField.getAttribute("id"), currentLoginField
-                                .getAttribute("name"), new Boolean(currentLoginField.getAttribute("required")));
+                    for (IConfigurationElement currentLoginField : current.getChildren("loginField")) { //$NON-NLS-1$
+                        DynamicFieldBean key = new DynamicFieldBean(currentLoginField.getAttribute("id"), currentLoginField //$NON-NLS-1$
+                                .getAttribute("name"), new Boolean(currentLoginField.getAttribute("required"))); //$NON-NLS-1$ //$NON-NLS-2$
                         currentAction.getFields().add(key);
                     }
 

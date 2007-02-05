@@ -28,6 +28,7 @@ import org.eclipse.jface.util.IPropertyChangeListener;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.core.model.properties.Status;
 import org.talend.core.model.properties.helper.StatusHelper;
+import org.talend.repository.i18n.Messages;
 
 /**
  * DOC tguiu class global comment. Detailled comment Implementation for local repository remote implementation will
@@ -65,10 +66,10 @@ public class RepositoryPreferenceStore implements IPersistentPreferenceStore {
     public void load() throws PersistenceException {
         initialTechStatusList = StatusHelper.flat(factory.getTechnicalStatus());
         techStatusList = initialTechStatusList;
-        defaultTechnicalStatusList = "DEV development;TEST testing;PROD production";
+        defaultTechnicalStatusList = "DEV development;TEST testing;PROD production"; //$NON-NLS-1$
         initialDocStatusList = StatusHelper.flat(factory.getDocumentationStatus());
         docStatusList = initialDocStatusList;
-        defaultDocumentationStatusList = "1ER 1er lecture;2EM 2eme lecture;VAL validée";
+        defaultDocumentationStatusList = "1ER 1er lecture;2EM 2eme lecture;VAL validée"; //$NON-NLS-1$
     }
 
     public void setValue(String name, String value) {

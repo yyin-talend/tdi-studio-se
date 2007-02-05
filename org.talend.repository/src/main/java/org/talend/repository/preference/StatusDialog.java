@@ -37,6 +37,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
+import org.talend.repository.i18n.Messages;
 
 /**
  * DOC tguiu class global comment. Detailled comment <br/>
@@ -70,8 +71,8 @@ public class StatusDialog extends Dialog {
     public StatusDialog(Shell parentShell, List existingCodes, String initialCode, String initialLabel) {
         super(parentShell);
         this.existingCodes = existingCodes == null ? Collections.EMPTY_LIST : existingCodes;
-        code = initialCode == null ? "" : initialCode;
-        label = initialLabel == null ? "" : initialLabel;
+        code = initialCode == null ? "" : initialCode; //$NON-NLS-1$
+        label = initialLabel == null ? "" : initialLabel; //$NON-NLS-1$
     }
 
     @Override
@@ -80,8 +81,8 @@ public class StatusDialog extends Dialog {
             code = codeText.getText();
             label = labelText.getText();
         } else {
-            code = "";
-            label = "";
+            code = ""; //$NON-NLS-1$
+            label = ""; //$NON-NLS-1$
         }
         super.buttonPressed(buttonId);
     }
@@ -90,9 +91,9 @@ public class StatusDialog extends Dialog {
     protected void configureShell(Shell shell) {
         super.configureShell(shell);
         if (creation) {
-            shell.setText("Create new status");
+            shell.setText(Messages.getString("StatusDialog.shellText.createNewStatus")); //$NON-NLS-1$
         } else {
-            shell.setText("Edit status");
+            shell.setText(Messages.getString("StatusDialog.shellText.editStatus")); //$NON-NLS-1$
         }
     }
 
@@ -140,7 +141,7 @@ public class StatusDialog extends Dialog {
         layout.numColumns = 3;
         composite.setLayout(layout);
         Label label1 = new Label(composite, SWT.None);
-        label1.setText("Code:");
+        label1.setText(Messages.getString("StatusDialog.labelText.code")); //$NON-NLS-1$
         // label.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_BEGINNING));
         GridData data = new GridData(GridData.GRAB_VERTICAL | GridData.HORIZONTAL_ALIGN_FILL | GridData.VERTICAL_ALIGN_CENTER);
         label1.setLayoutData(data);
@@ -160,7 +161,7 @@ public class StatusDialog extends Dialog {
         label1.setLayoutData(data);
 
         label1 = new Label(composite, SWT.WRAP);
-        label1.setText("Label:");
+        label1.setText(Messages.getString("StatusDialog.labelText.label")); //$NON-NLS-1$
         label1.setFont(parent.getFont());
         labelText = new Text(composite, SWT.SINGLE | SWT.BORDER);
         data = new GridData(GridData.GRAB_HORIZONTAL | GridData.HORIZONTAL_ALIGN_FILL);
@@ -187,11 +188,11 @@ public class StatusDialog extends Dialog {
     protected void validateInput() {
         String errorMessage = null;
         if (creation && codeText.getText().length() != 3) {
-            errorMessage = "Code must have 3 letters.";
+            errorMessage = Messages.getString("StatusDialog.errorMessage.codeLetters"); //$NON-NLS-1$
         } else if (creation && existingCodes.contains(codeText.getText())) {
-            errorMessage = "This code is already used";
-        } else if (labelText.getText().equals("")) {
-            errorMessage = "Label cannot be empty.";
+            errorMessage = Messages.getString("StatusDialog.errorMessage.codeUsed"); //$NON-NLS-1$
+        } else if (labelText.getText().equals("")) { //$NON-NLS-1$
+            errorMessage = "Label cannot be empty."; //$NON-NLS-1$
         }
         setErrorMessage(errorMessage);
     }

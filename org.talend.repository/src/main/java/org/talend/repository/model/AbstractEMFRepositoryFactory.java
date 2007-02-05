@@ -46,6 +46,7 @@ import org.talend.core.model.properties.RoutineItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.designer.codegen.perlmodule.IPerlModuleService;
+import org.talend.repository.i18n.Messages;
 
 /**
  * DOC smallet class global comment. Detailled comment <br/>
@@ -199,7 +200,7 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
      */
     private void setPropNewName(Property copiedProperty) throws PersistenceException {
         String originalLabel = copiedProperty.getLabel();
-        String add1 = "Copy_of_";
+        String add1 = "Copy_of_"; //$NON-NLS-1$
         String initialTry = add1 + originalLabel;
         copiedProperty.setLabel(initialTry);
         if (isNameAvailable(copiedProperty.getItem(), null)) {
@@ -207,7 +208,7 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
         } else {
             int i = 2;
             while (!isNameAvailable(copiedProperty.getItem(), null)) {
-                String nextTry = initialTry + "_(" + (i++) + ")";
+                String nextTry = initialTry + "_(" + (i++) + ")"; //$NON-NLS-1$ //$NON-NLS-2$
                 copiedProperty.setLabel(nextTry);
             }
         }
@@ -237,9 +238,9 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
             Property property = PropertiesFactory.eINSTANCE.createProperty();
             property.setId(getNextId());
     
-            String[] fragments = url.toString().split("/");
+            String[] fragments = url.toString().split("/"); //$NON-NLS-1$
             String label = fragments[fragments.length - 1];
-            String[] tmp = label.split("\\.");
+            String[] tmp = label.split("\\."); //$NON-NLS-1$
             property.setLabel(tmp[0]);
     
             ByteArray byteArray = PropertiesFactory.eINSTANCE.createByteArray();

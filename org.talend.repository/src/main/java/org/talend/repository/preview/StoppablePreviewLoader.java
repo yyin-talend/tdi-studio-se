@@ -94,7 +94,7 @@ public abstract class StoppablePreviewLoader<R> {
         infoLabel.getDisplay().syncExec(new Runnable() {
 
             public void run() {
-                previewHandler.launchPreview(processDescription, "FILE_XML");
+                previewHandler.launchPreview(processDescription, "FILE_XML"); //$NON-NLS-1$
             }
 
         });
