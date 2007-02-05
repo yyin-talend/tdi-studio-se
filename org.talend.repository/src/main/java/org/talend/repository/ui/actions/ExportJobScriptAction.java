@@ -21,14 +21,13 @@
 // ============================================================================
 package org.talend.repository.ui.actions;
 
+import java.util.List;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbench;
-import org.eclipse.ui.internal.IWorkbenchGraphicConstants;
-import org.eclipse.ui.internal.WorkbenchImages;
 import org.talend.commons.ui.image.EImage;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.model.repository.ERepositoryObjectType;
@@ -54,16 +53,12 @@ public final class ExportJobScriptAction extends AContextualAction {
      */
     public void init(TreeViewer viewer, IStructuredSelection selection) {
         boolean canWork = true;
-        if (selection.size() == 1) {
-            RepositoryNode node = (RepositoryNode) selection.getFirstElement();
-            if (node.getObjectType() != ERepositoryObjectType.PROCESS) {
+        List<RepositoryNode> nodes = (List<RepositoryNode>) selection.toList();
+        for (RepositoryNode node : nodes) {
+            if (node.getProperties(EProperties.CONTENT_TYPE) != ERepositoryObjectType.PROCESS) {
                 canWork = false;
+                break;
             }
-            if (node.getChildren().size() > 0) {
-                canWork = false;
-            }
-        } else {
-            canWork = false;
         }
         setEnabled(canWork);
     }

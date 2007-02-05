@@ -22,38 +22,11 @@
 package org.talend.repository.ui.wizards.exportjob;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.PrintWriter;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
-import org.eclipse.core.internal.resources.Workspace;
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.FileLocator;
-import org.eclipse.emf.common.util.EList;
-import org.eclipse.jface.preference.IPreferenceStore;
-import org.talend.commons.exception.ExceptionHandler;
-import org.talend.commons.exception.PersistenceException;
-import org.talend.core.CorePlugin;
-import org.talend.core.context.Context;
-import org.talend.core.context.RepositoryContext;
-import org.talend.core.model.general.Project;
 import org.talend.core.model.properties.ProcessItem;
-import org.talend.core.model.properties.RoutineItem;
-import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.model.repository.IRepositoryObject;
-import org.talend.core.prefs.ITalendCorePrefConstants;
-import org.talend.designer.codegen.perlmodule.IPerlModuleService;
-import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
-import org.talend.designer.core.model.utils.emf.talendfile.JobType;
-import org.talend.designer.runprocess.ProcessorUtilities;
-import org.talend.repository.RepositoryPlugin;
-import org.talend.repository.model.ProxyRepositoryFactory;
+import org.talend.repository.ui.wizards.exportjob.JobScriptsExportWizardPage.ExportChoice;
 
 /**
  * Manages the job scripts to be exported. <br/>
@@ -64,7 +37,6 @@ import org.talend.repository.model.ProxyRepositoryFactory;
 public abstract class JobScriptsManager {
 
     protected String[] launcherPerlScriptFile = { "run.sh", "run.bat" };
-
     /**
      * qian Gets the export resources.
      * 
@@ -77,12 +49,13 @@ public abstract class JobScriptsManager {
      * @param needContext
      * @return
      */
-    public abstract List<URL> getExportResources(ProcessItem[] process, boolean needLauncher, boolean needSystemRoutine,
-            boolean needUserRoutine, boolean needModel, boolean needJob, boolean needContext, boolean needGenerateCode,
-            String contextName);
+
+    public abstract List<ExportFileResource> getExportResources(ExportFileResource[] process,
+            Map<ExportChoice, Boolean> exportChoiceMap, String contextName, String launcher);
 
     protected String getTmpFolder() {
         String tmpFold = System.getProperty("user.dir");
+        tmpFold = tmpFold + "/talendExporter";
         return tmpFold;
     }
 
@@ -91,13 +64,26 @@ public abstract class JobScriptsManager {
      */
     public void deleteTempFiles() {
         String tmpFold = getTmpFolder();
-        for (int i = 0; i < launcherPerlScriptFile.length; i++) {
-            String fileName = launcherPerlScriptFile[i];
-            File file = new File(tmpFold, fileName);
-            if (file.exists()) {
-                file.delete();
+        deleteDirectory(new File(tmpFold));
+    }
+
+    public void deleteDirectory(File dir) {
+        File[] entries = dir.listFiles();
+        int sz = entries.length;
+        for (int i = 0; i < sz; i++) {
+            if (entries[i].isDirectory()) {
+                deleteDirectory(entries[i]);
+            } else {
+                entries[i].delete();
             }
         }
+        dir.delete();
+    }
+
+    public boolean existTempFile() {
+        String tmpFold = getTmpFolder();
+        File f = new File(tmpFold);
+        return f.exists();
     }
 
     /**
@@ -105,7 +91,7 @@ public abstract class JobScriptsManager {
      * 
      * @return
      */
-    public abstract String getLauncher();
+    public abstract String[] getLauncher();
 
     /**
      * 

@@ -23,13 +23,15 @@ package org.talend.repository.ui.wizards.exportjob;
 
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
-import java.net.URL;
 import java.util.ArrayList;
+import java.util.EnumMap;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.IDialogSettings;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
@@ -49,7 +51,10 @@ import org.talend.core.context.RepositoryContext;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.model.temp.ECodeLanguage;
+import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.RepositoryNode;
+import org.talend.repository.model.RepositoryNode.ENodeType;
+import org.talend.repository.model.RepositoryNode.EProperties;
 
 /**
  * Page of the Job Scripts Export Wizard. <br/>
@@ -72,13 +77,15 @@ public class JobScriptsExportWizardPage extends WizardFileSystemResourceExportPa
 
     private Button contextButton;
 
-    private ProcessItem[] process;
+    private Button sourceButton;
+
+    private ExportFileResource[] process;
 
     private Combo contextCombo;
 
-    private JobScriptsManager manager;
+    private Combo launcherCombo;
 
-    private Text laucherText;
+    private JobScriptsManager manager;
 
     private Button genCodeButton;
 
@@ -97,7 +104,27 @@ public class JobScriptsExportWizardPage extends WizardFileSystemResourceExportPa
 
     public final static String STORE_GENERATECODE_ID = "JobScriptsExportWizardPage.STORE_GENERATECODE_ID"; //$NON-NLS-1$
 
+    public static final String STORE_SOURCE_ID = "JobScriptsExportWizardPage.STORE_SOURCE_ID"; //$NON-NLS-1$
+
     private static final String STORE_DESTINATION_NAMES_ID = "JobScriptsExportWizardPage.STORE_DESTINATION_NAMES_ID"; //$NON-NLS-1$
+
+    /**
+     * 
+     * DOC Represent exportchoice <br/>
+     * 
+     * $Id: JobScriptsExportWizardPage.java 1 2007-1-31下午06:14:19 +0000 ylv $
+     * 
+     */
+    public enum ExportChoice {
+        needLauncher,
+        needSystemRoutine,
+        needUserRoutine,
+        needModel,
+        needJob,
+        needSource,
+        needContext,
+        needGenerateCode
+    }
 
     /**
      * Create an instance of this class.
@@ -109,18 +136,43 @@ public class JobScriptsExportWizardPage extends WizardFileSystemResourceExportPa
         manager = createJobScriptsManager();
         RepositoryNode[] nodes = (RepositoryNode[]) selection.toList().toArray(new RepositoryNode[selection.size()]);
 
-        List<ProcessItem> list = new ArrayList<ProcessItem>();
+        List<ExportFileResource> list = new ArrayList<ExportFileResource>();
         for (int i = 0; i < nodes.length; i++) {
             RepositoryNode node = nodes[i];
-            IRepositoryObject repositoryObject = node.getObject();
-
-            if (repositoryObject.getProperty().getItem() instanceof ProcessItem) {
-                ProcessItem process = (ProcessItem) repositoryObject.getProperty().getItem();
-                list.add(process);
+            if (node.getType() == ENodeType.SYSTEM_FOLDER || node.getType() == ENodeType.SIMPLE_FOLDER) {
+                addTreeNode(node, node.getProperties(EProperties.LABEL).toString(), list);
+            }
+            if (node.getType() == ENodeType.REPOSITORY_ELEMENT) {
+                IRepositoryObject repositoryObject = node.getObject();
+                if (repositoryObject.getProperty().getItem() instanceof ProcessItem) {
+                    ProcessItem processItem = (ProcessItem) repositoryObject.getProperty().getItem();
+                    ExportFileResource resource = new ExportFileResource(processItem, processItem.getProperty().getLabel());
+                    list.add(resource);
+                }
             }
         }
 
-        process = list.toArray(new ProcessItem[list.size()]);
+        process = list.toArray(new ExportFileResource[list.size()]);
+
+    }
+
+    private void addTreeNode(RepositoryNode node, String path, List<ExportFileResource> list) {
+        if (node != null && node.getType() == ENodeType.REPOSITORY_ELEMENT) {
+            IRepositoryObject repositoryObject = node.getObject();
+            if (repositoryObject.getProperty().getItem() instanceof ProcessItem) {
+                ProcessItem processItem = (ProcessItem) repositoryObject.getProperty().getItem();
+                ExportFileResource resource = new ExportFileResource(processItem, path);
+                list.add(resource);
+            }
+        }
+        Object[] nodes = node.getChildren().toArray();
+        if (nodes.length <= 0) {
+            return;
+        }
+        for (int i = 0; i < nodes.length; i++) {
+            addTreeNode((RepositoryNode) nodes[i], path + "/" //$NON-NLS-1$
+                    + ((RepositoryNode) nodes[i]).getProperties(EProperties.LABEL).toString(), list);
+        }
 
     }
 
@@ -134,7 +186,7 @@ public class JobScriptsExportWizardPage extends WizardFileSystemResourceExportPa
             return new JobPerlScriptsManager();
         case JAVA:
             // return new JobJavaScriptsManager();
-            throw new RuntimeException("The java exporter has not been implemented yet.");
+            throw new RuntimeException(Messages.getString("JobScriptsExportWizardPage.JavaExporterNotImplemented")); //$NON-NLS-1$
         default:
             return new JobPerlScriptsManager();
         }
@@ -142,14 +194,13 @@ public class JobScriptsExportWizardPage extends WizardFileSystemResourceExportPa
     }
 
     /**
-     * Create an instance of this class
+     * Create an instance of this class.
      * 
      * @param selection the selection
      */
     public JobScriptsExportWizardPage(IStructuredSelection selection) {
         this("jobscriptsExportPage1", selection); //$NON-NLS-1$
-        setTitle(DataTransferMessages.ArchiveExport_exportTitle);
-        setDescription("Export job scripts to an archive file on the local file system.");
+        setDescription(Messages.getString("JobScriptsExportWizardPage.ExportJob")); //$NON-NLS-1$
     }
 
     /**
@@ -223,26 +274,27 @@ public class JobScriptsExportWizardPage extends WizardFileSystemResourceExportPa
     protected void createOptions(Composite optionsGroup, Font font) {
         // create directory structure radios
         shellLauncherButton = new Button(optionsGroup, SWT.CHECK | SWT.LEFT);
-        shellLauncherButton.setText("Shell launcher");
+        shellLauncherButton.setText(Messages.getString("JobScriptsExportWizardPage.shellLauncher")); //$NON-NLS-1$
         shellLauncherButton.setSelection(true);
         shellLauncherButton.setFont(font);
 
-        laucherText = new Text(optionsGroup, SWT.BORDER);
-        laucherText.setEditable(false);
+        launcherCombo = new Combo(optionsGroup, SWT.PUSH);
+        // laucherText = new Text(optionsGroup, SWT.BORDER);
+        // laucherText.setEditable(false);
 
         // create directory structure radios
         systemRoutineButton = new Button(optionsGroup, SWT.CHECK | SWT.LEFT);
-        systemRoutineButton.setText("System Routines");
+        systemRoutineButton.setText(Messages.getString("JobScriptsExportWizardPage.systemRoutines")); //$NON-NLS-1$
         systemRoutineButton.setSelection(true);
         systemRoutineButton.setFont(font);
 
         userRoutineButton = new Button(optionsGroup, SWT.CHECK | SWT.LEFT);
-        userRoutineButton.setText("User Routines");
+        userRoutineButton.setText(Messages.getString("JobScriptsExportWizardPage.userRoutines")); //$NON-NLS-1$
         userRoutineButton.setSelection(true);
         userRoutineButton.setFont(font);
 
         modelButton = new Button(optionsGroup, SWT.CHECK | SWT.LEFT);
-        modelButton.setText("Required talend Perl modules");
+        modelButton.setText(Messages.getString("JobScriptsExportWizardPage.requiredTalendPerlModules")); //$NON-NLS-1$
         modelButton.setSelection(true);
         modelButton.setFont(font);
         GridData gd = new GridData(GridData.FILL_HORIZONTAL);
@@ -250,22 +302,30 @@ public class JobScriptsExportWizardPage extends WizardFileSystemResourceExportPa
         modelButton.setLayoutData(gd);
 
         jobButton = new Button(optionsGroup, SWT.CHECK | SWT.LEFT);
-        jobButton.setText("Job Perl scripts");
+        jobButton.setText(Messages.getString("JobScriptsExportWizardPage.jobPerlScripts")); //$NON-NLS-1$
         jobButton.setSelection(true);
         jobButton.setFont(font);
         gd = new GridData(GridData.FILL_HORIZONTAL);
         gd.horizontalSpan = 2;
         jobButton.setLayoutData(gd);
 
+        sourceButton = new Button(optionsGroup, SWT.CHECK | SWT.LEFT);
+        sourceButton.setText(Messages.getString("JobScriptsExportWizardPage.sourceFiles")); //$NON-NLS-1$
+        sourceButton.setSelection(true);
+        sourceButton.setFont(font);
+        gd = new GridData(GridData.FILL_HORIZONTAL);
+        gd.horizontalSpan = 2;
+        sourceButton.setLayoutData(gd);
+
         contextButton = new Button(optionsGroup, SWT.CHECK | SWT.LEFT);
-        contextButton.setText("Context perl scripts");
+        contextButton.setText(Messages.getString("JobScriptsExportWizardPage.contextPerlScripts")); //$NON-NLS-1$
         contextButton.setSelection(true);
         contextButton.setFont(font);
 
         contextCombo = new Combo(optionsGroup, SWT.PUSH);
 
         genCodeButton = new Button(optionsGroup, SWT.CHECK | SWT.LEFT);
-        genCodeButton.setText("Generate Perl Files");
+        genCodeButton.setText(Messages.getString("JobScriptsExportWizardPage.generatePerlFiles")); //$NON-NLS-1$
         genCodeButton.setSelection(true);
         genCodeButton.setFont(font);
 
@@ -346,7 +406,7 @@ public class JobScriptsExportWizardPage extends WizardFileSystemResourceExportPa
 
         IStatus status = op.getStatus();
         if (!status.isOK()) {
-            ErrorDialog.openError(getContainer().getShell(), DataTransferMessages.DataTransfer_exportProblems, null, // no
+            ErrorDialog.openError(getContainer().getShell(), "", null, // no
                     // special
                     // message
                     status);
@@ -363,21 +423,43 @@ public class JobScriptsExportWizardPage extends WizardFileSystemResourceExportPa
      * @returns boolean
      */
     public boolean finish() {
-        List<URL> resourcesToExport = null;// getWhiteCheckedResources();
-        resourcesToExport = getExportResources();
+
+        Map<ExportChoice, Boolean> exportChoiceMap = getExportChoiceMap();
+        boolean canExport = false;
+        for (ExportChoice choice : ExportChoice.values()) {
+            if (choice.equals(ExportChoice.needGenerateCode)) {
+                continue;
+            }
+            canExport = exportChoiceMap.get(choice);
+            if (canExport) {
+                break;
+            }
+        }
+        if (!canExport) {
+            MessageDialog.openInformation(getContainer().getShell(), Messages
+                    .getString("JobScriptsExportWizardPage.exportResourceError"), //$NON-NLS-1$
+                    Messages.getString("JobScriptsExportWizardPage.chooseResource")); //$NON-NLS-1$
+            return false;
+        }
 
         if (!ensureTargetIsValid()) {
             return false;
         }
 
+        List<ExportFileResource> resourcesToExport = getExportResources();
+
         // Save dirty editors if possible but do not stop if not all are saved
         saveDirtyEditors();
         // about to invoke the operation so save our state
         saveWidgetValues();
-
-        boolean ok = executeExportOperation(new ArchiveFileExportOperationFullPath(resourcesToExport, getDestinationValue(),
-                process[0].getProperty().getLabel()));
-        manager.deleteTempFiles();
+        // boolean ok =executeExportOperation(new ArchiveFileExportOperationFullPath(process));
+        boolean ok = executeExportOperation(new ArchiveFileExportOperationFullPath(resourcesToExport, getDestinationValue())); // path
+        // can
+        // like
+        // name/name
+        if (manager.existTempFile()) {
+            manager.deleteTempFiles();
+        }
         return ok;
     }
 
@@ -386,24 +468,22 @@ public class JobScriptsExportWizardPage extends WizardFileSystemResourceExportPa
      * 
      * @return a collection of resources currently selected for export (element type: <code>IResource</code>)
      */
-    protected List<URL> getExportResources() {
-
-        boolean needLauncher = shellLauncherButton.getSelection();
-        boolean needSystemRoutine = systemRoutineButton.getSelection();
-        boolean needUserRoutine = userRoutineButton.getSelection();
-        boolean needModel = modelButton.getSelection();
-        boolean needJob = jobButton.getSelection();
-        boolean needContext = contextButton.getSelection();
-        boolean needGenerateCode = genCodeButton.getSelection();
-        return manager.getExportResources(process, needLauncher, needSystemRoutine, needUserRoutine, needModel, needJob,
-                needContext, needGenerateCode, contextCombo.getText());
+    protected List<ExportFileResource> getExportResources() {
+        Map<ExportChoice, Boolean> exportChoiceMap = getExportChoiceMap();
+        return manager.getExportResources(process, exportChoiceMap, contextCombo.getText(), launcherCombo.getText());
     }
 
-    /**
-     * Answer the string to display in the receiver as the destination type
-     */
-    protected String getDestinationLabel() {
-        return DataTransferMessages.ArchiveExport_destinationLabel;
+    private Map<ExportChoice, Boolean> getExportChoiceMap() {
+        Map<ExportChoice, Boolean> exportChoiceMap = new EnumMap<ExportChoice, Boolean>(ExportChoice.class);
+        exportChoiceMap.put(ExportChoice.needLauncher, shellLauncherButton.getSelection());
+        exportChoiceMap.put(ExportChoice.needSystemRoutine, systemRoutineButton.getSelection());
+        exportChoiceMap.put(ExportChoice.needUserRoutine, userRoutineButton.getSelection());
+        exportChoiceMap.put(ExportChoice.needModel, modelButton.getSelection());
+        exportChoiceMap.put(ExportChoice.needJob, jobButton.getSelection());
+        exportChoiceMap.put(ExportChoice.needSource, sourceButton.getSelection());
+        exportChoiceMap.put(ExportChoice.needContext, contextButton.getSelection());
+        exportChoiceMap.put(ExportChoice.needGenerateCode, genCodeButton.getSelection());
+        return exportChoiceMap;
     }
 
     /**
@@ -444,12 +524,12 @@ public class JobScriptsExportWizardPage extends WizardFileSystemResourceExportPa
     }
 
     /**
-     * Open an appropriate destination browser so that the user can specify a source to import from
+     * Open an appropriate destination browser so that the user can specify a source to import from.
      */
     protected void handleDestinationBrowseButtonPressed() {
         FileDialog dialog = new FileDialog(getContainer().getShell(), SWT.SAVE);
         dialog.setFilterExtensions(new String[] { "*.zip", "*.*" }); //$NON-NLS-1$ //$NON-NLS-2$
-        dialog.setText(DataTransferMessages.ArchiveExport_selectDestinationTitle);
+        dialog.setText("");
         String currentSourceString = getDestinationValue();
         int lastSeparatorIndex = currentSourceString.lastIndexOf(File.separator);
         if (lastSeparatorIndex != -1) {
@@ -477,12 +557,12 @@ public class JobScriptsExportWizardPage extends WizardFileSystemResourceExportPa
 
             directoryNames = addToHistory(directoryNames, getDestinationValue());
             settings.put(STORE_DESTINATION_NAMES_ID, directoryNames);
-
             settings.put(STORE_SHELL_LAUNCHER_ID, shellLauncherButton.getSelection());
             settings.put(STORE_SYSTEM_ROUTINE_ID, systemRoutineButton.getSelection());
             settings.put(STORE_USER_ROUTINE_ID, userRoutineButton.getSelection());
             settings.put(STORE_MODEL_ID, modelButton.getSelection());
             settings.put(STORE_JOB_ID, jobButton.getSelection());
+            settings.put(STORE_SOURCE_ID, sourceButton.getSelection());
             settings.put(STORE_CONTEXT_ID, contextButton.getSelection());
             settings.put(STORE_GENERATECODE_ID, genCodeButton.getSelection());
         }
@@ -508,17 +588,21 @@ public class JobScriptsExportWizardPage extends WizardFileSystemResourceExportPa
             userRoutineButton.setSelection(settings.getBoolean(STORE_USER_ROUTINE_ID));
             modelButton.setSelection(settings.getBoolean(STORE_MODEL_ID));
             jobButton.setSelection(settings.getBoolean(STORE_JOB_ID));
+            sourceButton.setSelection(settings.getBoolean(STORE_SOURCE_ID));
             contextButton.setSelection(settings.getBoolean(STORE_CONTEXT_ID));
             genCodeButton.setSelection(settings.getBoolean(STORE_GENERATECODE_ID));
         }
 
-        laucherText.setText(manager.getLauncher());
-
-        List<String> contextNames = manager.getJobContexts(process[0]);
-
-        contextCombo.setItems(contextNames.toArray(new String[contextNames.size()]));
-        if (contextNames.size() > 0) {
-            contextCombo.select(0);
+        launcherCombo.setItems(manager.getLauncher());
+        if (manager.getLauncher().length > 0) {
+            launcherCombo.select(0);
+        }
+        if (process.length > 0) {
+            List<String> contextNames = manager.getJobContexts(process[0].getProcess());
+            contextCombo.setItems(contextNames.toArray(new String[contextNames.size()]));
+            if (contextNames.size() > 0) {
+                contextCombo.select(0);
+            }
         }
 
     }
@@ -529,6 +613,6 @@ public class JobScriptsExportWizardPage extends WizardFileSystemResourceExportPa
      * @see org.eclipse.ui.wizards.datatransfer.WizardFileSystemResourceExportPage1#destinationEmptyMessage()
      */
     protected String destinationEmptyMessage() {
-        return DataTransferMessages.ArchiveExport_destinationEmpty;
+        return "";
     }
 }

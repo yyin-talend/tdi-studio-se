@@ -44,6 +44,7 @@ import org.eclipse.osgi.util.NLS;
 import org.eclipse.ui.internal.ide.IDEWorkbenchPlugin;
 import org.eclipse.ui.internal.wizards.datatransfer.DataTransferMessages;
 import org.talend.commons.exception.ExceptionHandler;
+import org.talend.core.model.properties.ProcessItem;
 
 /**
  * Operation for exporting a resource and its children to a new .zip or .tar.gz file.
@@ -58,8 +59,6 @@ public class ArchiveFileExportOperationFullPath implements IRunnableWithProgress
 
     private IProgressMonitor monitor;
 
-    private List resourcesToExport;
-
     private List errorTable = new ArrayList(1); // IStatus
 
     private boolean useCompression = true;
@@ -71,6 +70,8 @@ public class ArchiveFileExportOperationFullPath implements IRunnableWithProgress
     private String rootName;
 
     private String regEx = ".*.pl$|.*.pm$|.*.bat$|.*.sh$";
+
+    private List<ExportFileResource> resourcesListToExport;
 
     /**
      * Create an instance of this class. Use this constructor if you wish to recursively export a single resource.
@@ -91,14 +92,15 @@ public class ArchiveFileExportOperationFullPath implements IRunnableWithProgress
      * @param resources java.util.Vector
      * @param filename java.lang.String
      */
-    public ArchiveFileExportOperationFullPath(List resources, String filename, String rootname) {
-        this(filename);
-        resourcesToExport = resources;
-        rootName = rootname;
+
+
+    public ArchiveFileExportOperationFullPath(List<ExportFileResource> resourcesListToExport, String destinationValue) {
+        this(destinationValue);
+        this.resourcesListToExport = resourcesListToExport;
     }
 
     /**
-     * Add a new entry to the error table with the passed information
+     * Add a new entry to the error table with the passed information.
      */
     protected void addError(String message, Throwable e) {
         ExceptionHandler.process(e);
@@ -131,15 +133,16 @@ public class ArchiveFileExportOperationFullPath implements IRunnableWithProgress
     }
 
     /**
-     * Answer a boolean indicating the number of file resources that were specified for export
+     * Answer a boolean indicating the number of file resources that were specified for export.
      * 
      * @return int
      */
     protected int countSelectedResources() throws CoreException {
         int result = 0;
-        Iterator resources = resourcesToExport.iterator();
-        while (resources.hasNext()) {
-            result += countChildrenOf(((URL) resources.next()).getPath());
+        for (ExportFileResource fileList : resourcesListToExport) {
+            for (URL filePath : fileList.getProcessResouces()) {
+                result += countChildrenOf(filePath.getPath());
+            }
         }
 
         return result;
@@ -155,7 +158,7 @@ public class ArchiveFileExportOperationFullPath implements IRunnableWithProgress
     }
 
     /**
-     * Export the passed resource to the destination .zip
+     * Export the passed resource to the destination .zip.
      * 
      * @param exportResource org.eclipse.core.resources.IResource
      * @param leadupDepth the number of resource levels to be included in the path including the resourse itself.
@@ -164,7 +167,7 @@ public class ArchiveFileExportOperationFullPath implements IRunnableWithProgress
         // if (!exportResource.isAccessible()) {
         // return;
         // }
-        
+
         File file = new File(exportResource);
         if (file.isFile()) {
 
@@ -224,19 +227,20 @@ public class ArchiveFileExportOperationFullPath implements IRunnableWithProgress
     }
 
     /**
-     * Export the resources contained in the previously-defined resourcesToExport collection
+     * Export the resources contained in the previously-defined resourcesToExport collection.
      */
     protected void exportSpecifiedResources() throws InterruptedException {
-        Iterator resources = resourcesToExport.iterator();
-
-        while (resources.hasNext()) {
-            String currentResource = ((URL) resources.next()).getPath();
-            exportResource(currentResource);
+        for (ExportFileResource fileResource : resourcesListToExport) {
+            this.rootName = fileResource.getDirectoryName();
+            for (URL url : fileResource.getProcessResouces()) {
+                String currentResource = url.getPath();
+                exportResource(currentResource);
+            }
         }
     }
 
     /**
-     * Answer the error table
+     * Answer the error table.
      * 
      * @return Vector of IStatus
      */
@@ -259,7 +263,7 @@ public class ArchiveFileExportOperationFullPath implements IRunnableWithProgress
     }
 
     /**
-     * Initialize this operation
+     * Initialize this operation.
      * 
      * @exception java.io.IOException
      */
@@ -272,7 +276,7 @@ public class ArchiveFileExportOperationFullPath implements IRunnableWithProgress
     }
 
     /**
-     * Answer a boolean indicating whether the passed child is a descendent of one or more members of the passed
+     * Answer a boolean indicating whether the passed child is a descendent of one or more members of the passed.
      * resources collection
      * 
      * @return boolean
@@ -293,7 +297,7 @@ public class ArchiveFileExportOperationFullPath implements IRunnableWithProgress
     }
 
     /**
-     * Export the resources that were previously specified for export (or if a single resource was specified then export
+     * Export the resources that were previously specified for export (or if a single resource was specified then export.
      * it recursively)
      */
     public void run(IProgressMonitor progressMonitor) throws InvocationTargetException, InterruptedException {
@@ -309,7 +313,7 @@ public class ArchiveFileExportOperationFullPath implements IRunnableWithProgress
             // ie.- a single resource for recursive export was specified
             int totalWork = IProgressMonitor.UNKNOWN;
             try {
-                if (resourcesToExport == null) {
+                if (resourcesListToExport == null) {
                     // FIXME here nerver happen
                     // totalWork = countChildrenOf(resource);
                 } else {
@@ -319,7 +323,7 @@ public class ArchiveFileExportOperationFullPath implements IRunnableWithProgress
                 // Should not happen
             }
             monitor.beginTask(DataTransferMessages.DataTransfer_exportingTitle, totalWork);
-            if (resourcesToExport == null) {
+            if (resourcesListToExport == null) {
                 // FIXME here nerver happen
                 // exportResource(resource);
             } else {
@@ -339,7 +343,7 @@ public class ArchiveFileExportOperationFullPath implements IRunnableWithProgress
     }
 
     /**
-     * Set this boolean indicating whether each exported resource's path should include containment hierarchies as
+     * Set this boolean indicating whether each exported resource's path should include containment hierarchies as.
      * dictated by its parents
      * 
      * @param value boolean
@@ -349,7 +353,7 @@ public class ArchiveFileExportOperationFullPath implements IRunnableWithProgress
     }
 
     /**
-     * Set this boolean indicating whether exported resources should be compressed (as opposed to simply being stored)
+     * Set this boolean indicating whether exported resources should be compressed (as opposed to simply being stored).
      * 
      * @param value boolean
      */

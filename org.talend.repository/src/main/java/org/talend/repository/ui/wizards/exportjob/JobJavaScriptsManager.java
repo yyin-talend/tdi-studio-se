@@ -24,8 +24,10 @@ package org.talend.repository.ui.wizards.exportjob;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.talend.core.model.properties.ProcessItem;
+import org.talend.repository.ui.wizards.exportjob.JobScriptsExportWizardPage.ExportChoice;
 
 /**
  * Manages the job scripts to be exported. <br/>
@@ -42,11 +44,10 @@ public class JobJavaScriptsManager extends JobScriptsManager {
      * boolean, boolean, boolean, boolean, boolean, boolean, boolean, java.lang.String)
      */
     @Override
-    public List<URL> getExportResources(ProcessItem[] process, boolean needLauncher, boolean needSystemRoutine,
-            boolean needUserRoutine, boolean needModel, boolean needJob, boolean needContext, boolean needGenerateCode,
-            String contextName) {
+    public List<ExportFileResource> getExportResources(ExportFileResource[] process,
+            Map<ExportChoice, Boolean> exportChoiceMap, String contextName, String launcher) {
 
-        return new ArrayList<URL>();
+        return new ArrayList<ExportFileResource>();
     }
 
     /*
@@ -66,9 +67,9 @@ public class JobJavaScriptsManager extends JobScriptsManager {
      * @see org.talend.repository.ui.wizards.exportjob.JobScriptsManager#getLauncher()
      */
     @Override
-    public String getLauncher() {
+    public String[] getLauncher() {
+        return null;
         // TODO Auto-generated method stub
-        return "";
     }
 
 }

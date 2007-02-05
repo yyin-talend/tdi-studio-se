@@ -19,6 +19,7 @@
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 // ============================================================================
+
 package org.talend.repository.ui.wizards.exportjob;
 
 import java.util.List;
@@ -37,13 +38,13 @@ import org.eclipse.ui.internal.wizards.datatransfer.DataTransferMessages;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 
 /**
- * Job scripts export wizard.
- * <br/>
- *
+ * Job scripts export wizard. <br/>
+ * 
  * $Id: JobScriptsExportWizard.java 1 2006-12-13 下午03:13:18 bqian
- *
+ * 
  */
 public class JobScriptsExportWizard extends Wizard implements IExportWizard {
+
     private IStructuredSelection selection;
 
     private JobScriptsExportWizardPage mainPage;
@@ -52,26 +53,24 @@ public class JobScriptsExportWizard extends Wizard implements IExportWizard {
      * Creates a wizard for exporting workspace resources to a zip file.
      */
     public JobScriptsExportWizard() {
-        AbstractUIPlugin plugin = (AbstractUIPlugin) Platform
-                .getPlugin(PlatformUI.PLUGIN_ID);
+        AbstractUIPlugin plugin = (AbstractUIPlugin) Platform.getPlugin(PlatformUI.PLUGIN_ID);
         IDialogSettings workbenchSettings = plugin.getDialogSettings();
-        IDialogSettings section = workbenchSettings
-                .getSection("JobScriptsExportWizard");//$NON-NLS-1$
+        IDialogSettings section = workbenchSettings.getSection("JobScriptsExportWizard"); //$NON-NLS-1$
         if (section == null) {
-            section = workbenchSettings.addNewSection("JobScriptsExportWizard");//$NON-NLS-1$
+            section = workbenchSettings.addNewSection("JobScriptsExportWizard"); //$NON-NLS-1$
             section.put(JobScriptsExportWizardPage.STORE_SHELL_LAUNCHER_ID, true);
             section.put(JobScriptsExportWizardPage.STORE_SYSTEM_ROUTINE_ID, true);
             section.put(JobScriptsExportWizardPage.STORE_USER_ROUTINE_ID, true);
             section.put(JobScriptsExportWizardPage.STORE_MODEL_ID, true);
-            section.put(JobScriptsExportWizardPage.STORE_JOB_ID,true);
+            section.put(JobScriptsExportWizardPage.STORE_JOB_ID, true);
             section.put(JobScriptsExportWizardPage.STORE_CONTEXT_ID, true);
             section.put(JobScriptsExportWizardPage.STORE_GENERATECODE_ID, true);
         }
         setDialogSettings(section);
     }
 
-    /* (non-Javadoc)
-     * Method declared on IWizard.
+    /*
+     * (non-Javadoc) Method declared on IWizard.
      */
     public void addPages() {
         super.addPages();
@@ -79,8 +78,8 @@ public class JobScriptsExportWizard extends Wizard implements IExportWizard {
         addPage(mainPage);
     }
 
-    /* (non-Javadoc)
-     * Method declared on IWorkbenchWizard.
+    /*
+     * (non-Javadoc) Method declared on IWorkbenchWizard.
      */
     public void init(IWorkbench workbench, IStructuredSelection currentSelection) {
         this.selection = currentSelection;
@@ -94,8 +93,8 @@ public class JobScriptsExportWizard extends Wizard implements IExportWizard {
         setNeedsProgressMonitor(true);
     }
 
-    /* (non-Javadoc)
-     * Method declared on IWizard.
+    /*
+     * (non-Javadoc) Method declared on IWizard.
      */
     public boolean performFinish() {
         return mainPage.finish();
