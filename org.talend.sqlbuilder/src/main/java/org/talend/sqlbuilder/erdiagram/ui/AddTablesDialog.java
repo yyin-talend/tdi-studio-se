@@ -118,16 +118,14 @@ public class AddTablesDialog extends Dialog {
     public List<MetadataTable> getTables() {
         return selectedTables;
     }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.eclipse.jface.dialogs.Dialog#close()
+    
+    /* （非 Javadoc）
+     * @see org.eclipse.jface.dialogs.Dialog#okPressed()
      */
     @Override
-    public boolean close() {
+    protected void okPressed() {
         setTables();
-        return super.close();
+        super.okPressed();
     }
 
     /**
