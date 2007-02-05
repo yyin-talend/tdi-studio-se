@@ -22,13 +22,11 @@
 package org.talend.designer.components.model;
 
 import java.io.File;
-import java.io.FileFilter;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.talend.core.CorePlugin;
+import org.talend.commons.exception.ExceptionHandler;
+import org.talend.commons.utils.io.FilesUtils;
 import org.talend.designer.components.Activator;
 import org.talend.designer.components.ui.ComponentsPreferencePage;
 
@@ -42,72 +40,20 @@ public class ComponentsRetriever {
 
     public static void retrieveComponents(File target) {
         File externalComponentsLocation = getExternalComponentsLocation();
-        try {
-            copyFolder(externalComponentsLocation, target, true);
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (Exception e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-    }
-
-    public static void copyFolder(File source, File target, boolean emptyTargetBeforeCopy) throws IOException {
-        if (emptyTargetBeforeCopy) {
-            emptyFolder(target);
-        }
-
-        FileFilter folderFilter = new FileFilter() {
-
-            public boolean accept(File pathname) {
-                return pathname.isDirectory();
+        if (externalComponentsLocation != null) {
+            try {
+                FilesUtils.copyFolder(externalComponentsLocation, target, true);
+            } catch (IOException e) {
+                ExceptionHandler.process(e);
+                // } catch (Exception e) {
+                // ExceptionHandler.process(e);
             }
-
-        };
-        FileFilter fileFilter = new FileFilter() {
-
-            public boolean accept(File pathname) {
-                return !pathname.isDirectory();
-            }
-
-        };
-
-        for (File current : source.listFiles(folderFilter)) {
-            File newFolder = new File(target, current.getName());
-            newFolder.mkdir();
-            copyFolder(current, newFolder, emptyTargetBeforeCopy);
         }
-
-        for (File current : source.listFiles(fileFilter)) {
-            File out = new File(target, current.getName());
-            copyFile(current, out);
-        }
-    }
-
-    private static void emptyFolder(File toEmpty) {
-        for (File current : toEmpty.listFiles()) {
-            if (current.isDirectory()) {
-                emptyFolder(current);
-            }
-            current.delete();
-        }
-    }
-
-    public static void copyFile(File source, File target) throws IOException {
-        FileInputStream fis = new FileInputStream(source);
-        FileOutputStream fos = new FileOutputStream(target);
-        byte[] buf = new byte[1024];
-        int i = 0;
-        while ((i = fis.read(buf)) != -1) {
-            fos.write(buf, 0, i);
-        }
-        fis.close();
-        fos.close();
     }
 
     private static File getExternalComponentsLocation() {
         IPreferenceStore prefStore = Activator.getDefault().getPreferenceStore();
-        return new File(prefStore.getString(ComponentsPreferencePage.USER_COMPONENTS_FOLDER));
+        String path = prefStore.getString(ComponentsPreferencePage.USER_COMPONENTS_FOLDER);
+        return (path == null || path.length() == 0 ? null : new File(path));
     }
 }
