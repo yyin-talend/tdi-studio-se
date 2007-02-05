@@ -89,6 +89,10 @@ public final class CodeGeneratorEmittersPoolFactory {
      * initialization of the pool.
      */
     public static void initialize() {
+        IComponentsFactory componentsFactory = ComponentsFactoryProvider.getInstance();
+        componentsFactory.init();
+
+        long startTime = System.currentTimeMillis();
         RepositoryContext repositoryContext = (RepositoryContext) CorePlugin.getContext().getProperty(
                 Context.REPOSITORY_CONTEXT_KEY);
         ECodeLanguage codeLanguage = repositoryContext.getProject().getLanguage();
@@ -103,9 +107,6 @@ public final class CodeGeneratorEmittersPoolFactory {
             jetBeans.add(jetBean);
         }
 
-        IComponentsFactory componentsFactory = ComponentsFactoryProvider.getInstance();
-
-        componentsFactory.init();
         List<IComponent> components = componentsFactory.getComponents();
         if (components != null) {
             ECodePart codePart = ECodePart.MAIN;
@@ -115,6 +116,7 @@ public final class CodeGeneratorEmittersPoolFactory {
         }
         initializeEmittersPool(jetBeans);
         initialized = true;
+        log.trace("Components compiled in " + (System.currentTimeMillis() - startTime) + " ms");
     }
 
     /**
