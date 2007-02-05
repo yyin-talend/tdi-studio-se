@@ -49,9 +49,9 @@ public class DataStringConnection {
         String sid = "([\\w\\.\\-_]{0,})"; //$NON-NLS-1$
         String fileMdb = "([\\w\\.\\-_]{0,}).mdb"; //$NON-NLS-1$
 
-        dataConnection = new DataConnection[6];
+        dataConnection = new DataConnection[9];
 
-        defaultTable = new String[6];
+        defaultTable = new String[9];
 
         dataConnection[0] = new DataConnection("MySQL", "jdbc:mysql://<host>:<port>/<sid>", "jdbc:mysql://" + host + ":" + port //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
                 + "/" + sid, "3306"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -73,9 +73,16 @@ public class DataStringConnection {
         dataConnection[5] = new DataConnection("Microsoft SQL Server (Odbc driver)", "jdbc:odbc:<datasource>", "jdbc:odbc:" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 + word);
 
+        dataConnection[6] = new DataConnection("IBM DB2", "jdbc:db2://<host>:<port>/<sid>", "jdbc:db2://" + host +
+                ":" + port + "/" + sid, "50000");
+
+        dataConnection[7] = new DataConnection("Sybase ASE", "jdbc:sybase:Tds:<host>:<port>/<sid>", "jdbc:sybase:Tds:" + host + ":" + port
+                + "/" + sid, "5001");
+
+        dataConnection[8] = new DataConnection("Sybase IQ", "jdbc:sybase:Tds:<host>:<port>/<sid>", "jdbc:sybase:Tds:" + host + ":" + port
+                + "/" + sid, "2638");
+
         // TODO CAN : reactivate this Connections when PerlModule can connect with this Databases.
-        // dataConnection[2] = new DataConnection("Odbc/Jdbc", "jdbc:odbc:<datasource>", "jdbc:odbc:" + word);
-        //        
         // dataConnection[3] = new DataConnection("Oracle Thin", "jdbc:oracle:thin:@<host>:<port>:<sid>",
         // "jdbc:oracle:thin:@" + host + ":"
         // + port + ":" + sid, "1521");
@@ -83,10 +90,6 @@ public class DataStringConnection {
         // dataConnection[4] = new DataConnection("Oracle Oci", "jdbc:oracle:oci:@<host>:<port>:<sid>",
         // "jdbc:oracle:oci:@" + host + ":"
         // + port + ":" + sid, "1521");
-        //
-        // dataConnection[5] = new DataConnection("IBM DB2", "jdbc:db2://<host>:<port>/<sid>", "jdbc:db2://" + host +
-        // ":" + port + "/" + sid, "50000");
-        //
         // dataConnection[6] = new DataConnection("Sybase", "jdbc:sybase:Tds:<host>:<port>/<sid>", "jdbc:sybase:Tds:" +
         // host + ":" + port
         // + "/" + sid, "2048");
