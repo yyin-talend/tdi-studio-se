@@ -72,7 +72,7 @@ public class ComponentsFactory implements IComponentsFactory {
         // 3. Load user components:
         loadComponentsFromFolder(userPath);
 
-        log.debug(componentList.size() + " components loaded in " + (System.currentTimeMillis() - startTime) + " ms"); //$NON-NLS-1$ //$NON-NLS-2$
+        log.trace(componentList.size() + " components loaded in " + (System.currentTimeMillis() - startTime) + " ms");  //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     private void loadComponentsFromFolder(String pathSource) {
