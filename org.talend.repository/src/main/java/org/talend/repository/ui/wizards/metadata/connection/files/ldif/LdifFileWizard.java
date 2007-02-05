@@ -81,7 +81,7 @@ public class LdifFileWizard extends RepositoryWizard implements INewWizard {
      * @param selection
      * @param strings
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked") //$NON-NLS-1$
     public LdifFileWizard(IWorkbench workbench, boolean creation, ISelection selection, String[] existingNames) {
         super(workbench, creation);
         this.selection = selection;
@@ -97,7 +97,7 @@ public class LdifFileWizard extends RepositoryWizard implements INewWizard {
             pathToSave = RepositoryNodeUtilities.getPath(node);
             break;
         case SYSTEM_FOLDER:
-            pathToSave = new Path("");
+            pathToSave = new Path(""); //$NON-NLS-1$
             break;
         }
 
@@ -114,7 +114,7 @@ public class LdifFileWizard extends RepositoryWizard implements INewWizard {
                     .setAuthor(((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY))
                             .getUser());
             connectionProperty.setVersion(VersionUtils.DEFAULT_VERSION);
-            connectionProperty.setStatusCode("");
+            connectionProperty.setStatusCode(""); //$NON-NLS-1$
 
             connectionItem = PropertiesFactory.eINSTANCE.createLdifFileConnectionItem();
             connectionItem.setProperty(connectionProperty);
@@ -143,27 +143,27 @@ public class LdifFileWizard extends RepositoryWizard implements INewWizard {
         ldifFileWizardPage2 = new LdifFileWizardPage(2, connectionItem, isRepositoryObjectEditable(), existingNames);
 
         if (creation) {
-            setWindowTitle(Messages.getString("LdifFileWizard.windowTitleCreate"));
+            setWindowTitle(Messages.getString("LdifFileWizard.windowTitleCreate")); //$NON-NLS-1$
 
-            ldifFileWizardPage0.setTitle(Messages.getString("FileWizardPage.titleCreate") + " 1 "
-                    + Messages.getString("FileWizardPage.of") + " 4");
-            ldifFileWizardPage0.setDescription(Messages.getString("FileWizardPage.descriptionCreateStep0"));
+            ldifFileWizardPage0.setTitle(Messages.getString("FileWizardPage.titleCreate") + " 1 " //$NON-NLS-1$ //$NON-NLS-2$
+                    + Messages.getString("FileWizardPage.of") + " 4"); //$NON-NLS-1$ //$NON-NLS-2$
+            ldifFileWizardPage0.setDescription(Messages.getString("FileWizardPage.descriptionCreateStep0")); //$NON-NLS-1$
             addPage(ldifFileWizardPage0);
 
-            ldifFileWizardPage1.setTitle(Messages.getString("FileWizardPage.titleCreate") + " 2 "
-                    + Messages.getString("FileWizardPage.of") + " 4");
-            ldifFileWizardPage1.setDescription(Messages.getString("FileWizardPage.descriptionCreateStep1"));
+            ldifFileWizardPage1.setTitle(Messages.getString("FileWizardPage.titleCreate") + " 2 " //$NON-NLS-1$ //$NON-NLS-2$
+                    + Messages.getString("FileWizardPage.of") + " 4"); //$NON-NLS-1$ //$NON-NLS-2$
+            ldifFileWizardPage1.setDescription(Messages.getString("FileWizardPage.descriptionCreateStep1")); //$NON-NLS-1$
             addPage(ldifFileWizardPage1);
 
-            ldifFileWizardPage2.setTitle(Messages.getString("FileWizardPage.titleCreate") + " 3 "
-                    + Messages.getString("FileWizardPage.of") + " 4");
-            ldifFileWizardPage2.setDescription(Messages.getString("FileWizardPage.descriptionCreateStep2"));
+            ldifFileWizardPage2.setTitle(Messages.getString("FileWizardPage.titleCreate") + " 3 " //$NON-NLS-1$ //$NON-NLS-2$
+                    + Messages.getString("FileWizardPage.of") + " 4"); //$NON-NLS-1$ //$NON-NLS-2$
+            ldifFileWizardPage2.setDescription(Messages.getString("FileWizardPage.descriptionCreateStep2")); //$NON-NLS-1$
             addPage(ldifFileWizardPage2);
 
             ldifFileWizardPage3 = new LdifFileWizardPage(3, connectionItem, isRepositoryObjectEditable(), null);
-            ldifFileWizardPage3.setTitle(Messages.getString("FileWizardPage.titleCreate") + " 4 "
-                    + Messages.getString("FileWizardPage.of") + " 4");
-            ldifFileWizardPage3.setDescription(Messages.getString("FileWizardPage.descriptionCreateStep3"));
+            ldifFileWizardPage3.setTitle(Messages.getString("FileWizardPage.titleCreate") + " 4 " //$NON-NLS-1$ //$NON-NLS-2$
+                    + Messages.getString("FileWizardPage.of") + " 4"); //$NON-NLS-1$ //$NON-NLS-2$
+            ldifFileWizardPage3.setDescription(Messages.getString("FileWizardPage.descriptionCreateStep3")); //$NON-NLS-1$
             addPage(ldifFileWizardPage3);
 
             // ldifFileWizardPage0.setPageComplete(false);
@@ -172,21 +172,21 @@ public class LdifFileWizard extends RepositoryWizard implements INewWizard {
             ldifFileWizardPage3.setPageComplete(false);
             
         } else {
-            setWindowTitle(Messages.getString("LdifFileWizard.windowTitleUpdate"));
+            setWindowTitle(Messages.getString("LdifFileWizard.windowTitleUpdate")); //$NON-NLS-1$
 
-            ldifFileWizardPage0.setTitle(Messages.getString("FileWizardPage.titleUpdate") + " 1 "
-                    + Messages.getString("FileWizardPage.of") + " 3");
-            ldifFileWizardPage0.setDescription(Messages.getString("FileWizardPage.descriptionUpdateStep0"));
+            ldifFileWizardPage0.setTitle(Messages.getString("FileWizardPage.titleUpdate") + " 1 " //$NON-NLS-1$ //$NON-NLS-2$
+                    + Messages.getString("FileWizardPage.of") + " 3"); //$NON-NLS-1$ //$NON-NLS-2$
+            ldifFileWizardPage0.setDescription(Messages.getString("FileWizardPage.descriptionUpdateStep0")); //$NON-NLS-1$
             addPage(ldifFileWizardPage0);
 
-            ldifFileWizardPage1.setTitle(Messages.getString("FileWizardPage.titleUpdate") + " 2 "
-                    + Messages.getString("FileWizardPage.of") + " 3");
-            ldifFileWizardPage1.setDescription(Messages.getString("FileWizardPage.descriptionUpdateStep1"));
+            ldifFileWizardPage1.setTitle(Messages.getString("FileWizardPage.titleUpdate") + " 2 " //$NON-NLS-1$ //$NON-NLS-2$
+                    + Messages.getString("FileWizardPage.of") + " 3"); //$NON-NLS-1$ //$NON-NLS-2$
+            ldifFileWizardPage1.setDescription(Messages.getString("FileWizardPage.descriptionUpdateStep1")); //$NON-NLS-1$
             addPage(ldifFileWizardPage1);
 
-            ldifFileWizardPage2.setTitle(Messages.getString("FileWizardPage.titleUpdate") + " 3 "
-                    + Messages.getString("FileWizardPage.of") + " 3");
-            ldifFileWizardPage2.setDescription(Messages.getString("FileWizardPage.descriptionUpdateStep2"));
+            ldifFileWizardPage2.setTitle(Messages.getString("FileWizardPage.titleUpdate") + " 3 " //$NON-NLS-1$ //$NON-NLS-2$
+                    + Messages.getString("FileWizardPage.of") + " 3"); //$NON-NLS-1$ //$NON-NLS-2$
+            ldifFileWizardPage2.setDescription(Messages.getString("FileWizardPage.descriptionUpdateStep2")); //$NON-NLS-1$
             addPage(ldifFileWizardPage2);
 
             ldifFileWizardPage1.setPageComplete(true);
@@ -220,9 +220,9 @@ public class LdifFileWizard extends RepositoryWizard implements INewWizard {
                 }
             } catch (PersistenceException e) {
                 String detailError = e.toString();
-                new ErrorDialogWidthDetailArea(getShell(), PID, Messages.getString("CommonWizard.persistenceException"),
+                new ErrorDialogWidthDetailArea(getShell(), PID, Messages.getString("CommonWizard.persistenceException"), //$NON-NLS-1$
                         detailError);
-                log.error(Messages.getString("CommonWizard.persistenceException") + "\n" + detailError);
+                log.error(Messages.getString("CommonWizard.persistenceException") + "\n" + detailError); //$NON-NLS-1$ //$NON-NLS-2$
                 return false;
             }
             return true;

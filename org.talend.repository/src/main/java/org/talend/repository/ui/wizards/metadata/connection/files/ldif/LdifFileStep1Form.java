@@ -111,7 +111,7 @@ public class LdifFileStep1Form extends AbstractLdifFileStepForm {
         serverCombo.clearSelection();
 
         if (getConnection().getFilePath() != null) {
-            fileField.setText(getConnection().getFilePath().replace("\\\\", "\\"));
+            fileField.setText(getConnection().getFilePath().replace("\\\\", "\\")); //$NON-NLS-1$ //$NON-NLS-2$
         }
 
         // init the fileViewer
@@ -127,26 +127,26 @@ public class LdifFileStep1Form extends AbstractLdifFileStepForm {
         readOnly = isReadOnly();
         serverCombo.setReadOnly(isReadOnly());
         fileField.setReadOnly(isReadOnly());
-        updateStatus(IStatus.OK, "");
+        updateStatus(IStatus.OK, ""); //$NON-NLS-1$
 
     }
 
     protected void addFields() {
         // Group File Location
-        Group group = Form.createGroup(this, 1, Messages.getString("FileStep2.groupDelimitedFileSettings"), 120);
+        Group group = Form.createGroup(this, 1, Messages.getString("FileStep2.groupDelimitedFileSettings"), 120); //$NON-NLS-1$
         Composite compositeFileLocation = Form.startNewDimensionnedGridLayout(group, 3, WIDTH_GRIDDATA_PIXEL, 120);
 
         // server Combo
-        String[] serverLocation = { "Localhost 127.0.0.1" };
-        serverCombo = new LabelledCombo(compositeFileLocation, Messages.getString("FileStep1.server"), Messages
-                .getString("FileStep1.serverTip"), serverLocation, 2, true, SWT.NONE);
+        String[] serverLocation = { "Localhost 127.0.0.1" }; //$NON-NLS-1$
+        serverCombo = new LabelledCombo(compositeFileLocation, Messages.getString("FileStep1.server"), Messages //$NON-NLS-1$
+                .getString("FileStep1.serverTip"), serverLocation, 2, true, SWT.NONE); //$NON-NLS-1$
 
         // file Field
-        String[] extensions = { "*.ldif", "*.txt", "*.*", "*" };
-        fileField = new LabelledFileField(compositeFileLocation, Messages.getString("FileStep1.filepath"), extensions);
+        String[] extensions = { "*.ldif", "*.txt", "*.*", "*" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+        fileField = new LabelledFileField(compositeFileLocation, Messages.getString("FileStep1.filepath"), extensions); //$NON-NLS-1$
 
         // Group File Viewer
-        group = Form.createGroup(this, 1, Messages.getString("FileStep1.groupFileViewer"), 150);
+        group = Form.createGroup(this, 1, Messages.getString("FileStep1.groupFileViewer"), 150); //$NON-NLS-1$
         Composite compositeFileViewer = Form.startNewDimensionnedGridLayout(group, 1, WIDTH_GRIDDATA_PIXEL, 150);
 
         fileViewerText = new Text(compositeFileViewer, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
@@ -154,17 +154,17 @@ public class LdifFileStep1Form extends AbstractLdifFileStepForm {
         gridData.minimumWidth = WIDTH_GRIDDATA_PIXEL;
         gridData.minimumHeight = 150;
         fileViewerText.setLayoutData(gridData);
-        fileViewerText.setToolTipText(Messages.getString("FileStep1.fileViewerTip1") + " " + MAXIMUM_ROWS_TO_PREVIEW + " "
-                + Messages.getString("FileStep1.fileViewerTip2"));
+        fileViewerText.setToolTipText(Messages.getString("FileStep1.fileViewerTip1") + " " + MAXIMUM_ROWS_TO_PREVIEW + " " //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                + Messages.getString("FileStep1.fileViewerTip2")); //$NON-NLS-1$
         fileViewerText.setEditable(false);
-        fileViewerText.setText(Messages.getString("FileStep1.fileViewerAlert"));
+        fileViewerText.setText(Messages.getString("FileStep1.fileViewerAlert")); //$NON-NLS-1$
 
         if (!isInWizard()) {
             // Composite BottomButton
             Composite compositeBottomButton = Form.startNewGridLayout(this, 2, false, SWT.CENTER, SWT.CENTER);
 
             // Button Cancel
-            cancelButton = new UtilsButton(compositeBottomButton, Messages.getString("CommonWizard.cancel"), WIDTH_BUTTON_PIXEL,
+            cancelButton = new UtilsButton(compositeBottomButton, Messages.getString("CommonWizard.cancel"), WIDTH_BUTTON_PIXEL, //$NON-NLS-1$
                     HEIGHT_BUTTON_PIXEL);
             // nextButton = new UtilsButton(compositeBottomButton, Messages.getString("CommonWizard.next"),
             // WIDTH_BUTTON_PIXEL, HEIGHT_BUTTON_PIXEL);
@@ -204,7 +204,7 @@ public class LdifFileStep1Form extends AbstractLdifFileStepForm {
 
             public void modifyText(final ModifyEvent e) {
                 getConnection().setFilePath(fileField.getText());
-                fileViewerText.setText(Messages.getString("FileStep1.fileViewerProgress"));
+                fileViewerText.setText(Messages.getString("FileStep1.fileViewerProgress")); //$NON-NLS-1$
                 checkFilePathAndManageIt();
             }
         });
@@ -216,13 +216,13 @@ public class LdifFileStep1Form extends AbstractLdifFileStepForm {
     private void checkFilePathAndManageIt() {
         updateStatus(IStatus.OK, null);
         filePathIsDone = false;
-        if (fileField.getText() == "") {
-            fileViewerText.setText(Messages.getString("FileStep1.fileViewerTip1") + " " + MAXIMUM_ROWS_TO_PREVIEW + " "
-                    + Messages.getString("FileStep1.fileViewerTip2"));
+        if (fileField.getText() == "") { //$NON-NLS-1$
+            fileViewerText.setText(Messages.getString("FileStep1.fileViewerTip1") + " " + MAXIMUM_ROWS_TO_PREVIEW + " " //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                    + Messages.getString("FileStep1.fileViewerTip2")); //$NON-NLS-1$
         } else {
-            fileViewerText.setText(Messages.getString("FileStep1.fileViewerProgress"));
+            fileViewerText.setText(Messages.getString("FileStep1.fileViewerProgress")); //$NON-NLS-1$
 
-            StringBuffer previewRows = new StringBuffer("");
+            StringBuffer previewRows = new StringBuffer(""); //$NON-NLS-1$
             BufferedReader in = null;
 
             try {
@@ -240,37 +240,37 @@ public class LdifFileStep1Form extends AbstractLdifFileStepForm {
 
                 while (((str = in.readLine()) != null) && (numberLine <= MAXIMUM_ROWS_TO_PREVIEW)) {
                     numberLine++;
-                    previewRows.append(str + "\n");
+                    previewRows.append(str + "\n"); //$NON-NLS-1$
                 }
                 
                 // show lines
                 fileViewerText.setText(new String(previewRows));
                 filePathIsDone = true;
             } catch (Exception e) {
-                String msgError = Messages.getString("FileStep1.filepath") + " \"" + fileField.getText().replace("\\\\", "\\")
-                        + "\"\n";
+                String msgError = Messages.getString("FileStep1.filepath") + " \"" + fileField.getText().replace("\\\\", "\\") //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+                        + "\"\n"; //$NON-NLS-1$
                 if (e instanceof FileNotFoundException) {
-                    msgError = msgError + Messages.getString("FileStep1.fileNotFoundException");
+                    msgError = msgError + Messages.getString("FileStep1.fileNotFoundException"); //$NON-NLS-1$
                 } else if (e instanceof EOFException) {
-                    msgError = msgError + Messages.getString("FileStep1.eofException");
+                    msgError = msgError + Messages.getString("FileStep1.eofException"); //$NON-NLS-1$
                 } else if (e instanceof IOException) {
-                    msgError = msgError + Messages.getString("FileStep1.fileLocked");
+                    msgError = msgError + Messages.getString("FileStep1.fileLocked"); //$NON-NLS-1$
                 } else {
-                    msgError = msgError + Messages.getString("FileStep1.noExist");
+                    msgError = msgError + Messages.getString("FileStep1.noExist"); //$NON-NLS-1$
                 }
                 fileViewerText.setText(msgError);
                 if (!isReadOnly()) {
                     updateStatus(IStatus.ERROR, msgError);
                 }
-                log.error(msgError + " " + e.getMessage());
+                log.error(msgError + " " + e.getMessage()); //$NON-NLS-1$
             } finally {
-                String msgError = Messages.getString("FileStep1.filepath") + " \"" + fileViewerText.getText().replace("\\\\", "\\") + "\"\n";
+                String msgError = Messages.getString("FileStep1.filepath") + " \"" + fileViewerText.getText().replace("\\\\", "\\") + "\"\n"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
                 try {
                     if (in != null) {
                         in.close();
                     }
                 } catch (IOException e) {
-                    msgError = msgError + Messages.getString("FileStep1.fileLocked");
+                    msgError = msgError + Messages.getString("FileStep1.fileLocked"); //$NON-NLS-1$
                 }
             }
             checkFieldsValue();
@@ -286,21 +286,21 @@ public class LdifFileStep1Form extends AbstractLdifFileStepForm {
         // The fields
         serverCombo.setEnabled(true);
 
-        if (serverCombo.getText() == "") {
+        if (serverCombo.getText() == "") { //$NON-NLS-1$
             fileField.setEditable(false);
-            updateStatus(IStatus.ERROR, Messages.getString("FileStep1.serverAlert"));
+            updateStatus(IStatus.ERROR, Messages.getString("FileStep1.serverAlert")); //$NON-NLS-1$
             return false;
         } else {
             fileField.setEditable(true);
         }
 
-        if (fileField.getText() == "") {
-            updateStatus(IStatus.ERROR, Messages.getString("FileStep1.filepathAlert"));
+        if (fileField.getText() == "") { //$NON-NLS-1$
+            updateStatus(IStatus.ERROR, Messages.getString("FileStep1.filepathAlert")); //$NON-NLS-1$
             return false;
         }
 
         if (!filePathIsDone) {
-            updateStatus(IStatus.ERROR, Messages.getString("FileStep1.fileIncomplete"));
+            updateStatus(IStatus.ERROR, Messages.getString("FileStep1.fileIncomplete")); //$NON-NLS-1$
             return false;
         }
 

@@ -81,7 +81,7 @@ public class RegexpFileWizard extends RepositoryWizard implements INewWizard {
      * @param selection
      * @param strings
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked") //$NON-NLS-1$
     public RegexpFileWizard(IWorkbench workbench, boolean creation, ISelection selection, String[] existingNames) {
         super(workbench, creation);
         this.selection = selection;
@@ -97,7 +97,7 @@ public class RegexpFileWizard extends RepositoryWizard implements INewWizard {
             pathToSave = RepositoryNodeUtilities.getPath(node);
             break;
         case SYSTEM_FOLDER:
-            pathToSave = new Path("");
+            pathToSave = new Path(""); //$NON-NLS-1$
             break;
         }
 
@@ -114,7 +114,7 @@ public class RegexpFileWizard extends RepositoryWizard implements INewWizard {
                     .setAuthor(((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY))
                             .getUser());
             connectionProperty.setVersion(VersionUtils.DEFAULT_VERSION);
-            connectionProperty.setStatusCode("");
+            connectionProperty.setStatusCode(""); //$NON-NLS-1$
 
             connectionItem = PropertiesFactory.eINSTANCE.createRegExFileConnectionItem();
             connectionItem.setProperty(connectionProperty);
@@ -143,27 +143,27 @@ public class RegexpFileWizard extends RepositoryWizard implements INewWizard {
         regexpFileWizardPage2 = new RegexpFileWizardPage(2, connectionItem, isRepositoryObjectEditable(), existingNames);
 
         if (creation) {
-            setWindowTitle(Messages.getString("RegexpFileWizard.windowTitleCreate"));
+            setWindowTitle(Messages.getString("RegexpFileWizard.windowTitleCreate")); //$NON-NLS-1$
 
-            regexpFileWizardPage0.setTitle(Messages.getString("FileWizardPage.titleCreate") + " 1 "
-                    + Messages.getString("FileWizardPage.of") + " 4");
-            regexpFileWizardPage0.setDescription(Messages.getString("FileWizardPage.descriptionCreateStep0"));
+            regexpFileWizardPage0.setTitle(Messages.getString("FileWizardPage.titleCreate") + " 1 " //$NON-NLS-1$ //$NON-NLS-2$
+                    + Messages.getString("FileWizardPage.of") + " 4"); //$NON-NLS-1$ //$NON-NLS-2$
+            regexpFileWizardPage0.setDescription(Messages.getString("FileWizardPage.descriptionCreateStep0")); //$NON-NLS-1$
             addPage(regexpFileWizardPage0);
 
-            regexpFileWizardPage1.setTitle(Messages.getString("FileWizardPage.titleCreate") + " 2 "
-                    + Messages.getString("FileWizardPage.of") + " 4");
-            regexpFileWizardPage1.setDescription(Messages.getString("FileWizardPage.descriptionCreateStep1"));
+            regexpFileWizardPage1.setTitle(Messages.getString("FileWizardPage.titleCreate") + " 2 " //$NON-NLS-1$ //$NON-NLS-2$
+                    + Messages.getString("FileWizardPage.of") + " 4"); //$NON-NLS-1$ //$NON-NLS-2$
+            regexpFileWizardPage1.setDescription(Messages.getString("FileWizardPage.descriptionCreateStep1")); //$NON-NLS-1$
             addPage(regexpFileWizardPage1);
 
-            regexpFileWizardPage2.setTitle(Messages.getString("FileWizardPage.titleCreate") + " 3 "
-                    + Messages.getString("FileWizardPage.of") + " 4");
-            regexpFileWizardPage2.setDescription(Messages.getString("FileWizardPage.descriptionCreateStep2"));
+            regexpFileWizardPage2.setTitle(Messages.getString("FileWizardPage.titleCreate") + " 3 " //$NON-NLS-1$ //$NON-NLS-2$
+                    + Messages.getString("FileWizardPage.of") + " 4"); //$NON-NLS-1$ //$NON-NLS-2$
+            regexpFileWizardPage2.setDescription(Messages.getString("FileWizardPage.descriptionCreateStep2")); //$NON-NLS-1$
             addPage(regexpFileWizardPage2);
 
             regexpFileWizardPage3 = new RegexpFileWizardPage(3, connectionItem, isRepositoryObjectEditable(), null);
-            regexpFileWizardPage3.setTitle(Messages.getString("FileWizardPage.titleCreate") + " 4 "
-                    + Messages.getString("FileWizardPage.of") + " 4");
-            regexpFileWizardPage3.setDescription(Messages.getString("FileWizardPage.descriptionCreateStep3"));
+            regexpFileWizardPage3.setTitle(Messages.getString("FileWizardPage.titleCreate") + " 4 " //$NON-NLS-1$ //$NON-NLS-2$
+                    + Messages.getString("FileWizardPage.of") + " 4"); //$NON-NLS-1$ //$NON-NLS-2$
+            regexpFileWizardPage3.setDescription(Messages.getString("FileWizardPage.descriptionCreateStep3")); //$NON-NLS-1$
             addPage(regexpFileWizardPage3);
 
             regexpFileWizardPage1.setPageComplete(false);
@@ -171,21 +171,21 @@ public class RegexpFileWizard extends RepositoryWizard implements INewWizard {
             regexpFileWizardPage3.setPageComplete(false);
 
         } else {
-            setWindowTitle(Messages.getString("RegexpFileWizard.windowTitleUpdate"));
+            setWindowTitle(Messages.getString("RegexpFileWizard.windowTitleUpdate")); //$NON-NLS-1$
 
-            regexpFileWizardPage0.setTitle(Messages.getString("FileWizardPage.titleUpdate") + " 1 "
-                    + Messages.getString("FileWizardPage.of") + " 3");
-            regexpFileWizardPage0.setDescription(Messages.getString("FileWizardPage.descriptionUpdateStep0"));
+            regexpFileWizardPage0.setTitle(Messages.getString("FileWizardPage.titleUpdate") + " 1 " //$NON-NLS-1$ //$NON-NLS-2$
+                    + Messages.getString("FileWizardPage.of") + " 3"); //$NON-NLS-1$ //$NON-NLS-2$
+            regexpFileWizardPage0.setDescription(Messages.getString("FileWizardPage.descriptionUpdateStep0")); //$NON-NLS-1$
             addPage(regexpFileWizardPage0);
 
-            regexpFileWizardPage1.setTitle(Messages.getString("FileWizardPage.titleUpdate") + " 2 "
-                    + Messages.getString("FileWizardPage.of") + " 3");
-            regexpFileWizardPage1.setDescription(Messages.getString("FileWizardPage.descriptionUpdateStep1"));
+            regexpFileWizardPage1.setTitle(Messages.getString("FileWizardPage.titleUpdate") + " 2 " //$NON-NLS-1$ //$NON-NLS-2$
+                    + Messages.getString("FileWizardPage.of") + " 3"); //$NON-NLS-1$ //$NON-NLS-2$
+            regexpFileWizardPage1.setDescription(Messages.getString("FileWizardPage.descriptionUpdateStep1")); //$NON-NLS-1$
             addPage(regexpFileWizardPage1);
 
-            regexpFileWizardPage2.setTitle(Messages.getString("FileWizardPage.titleUpdate") + " 3 "
-                    + Messages.getString("FileWizardPage.of") + " 3");
-            regexpFileWizardPage2.setDescription(Messages.getString("FileWizardPage.descriptionUpdateStep2"));
+            regexpFileWizardPage2.setTitle(Messages.getString("FileWizardPage.titleUpdate") + " 3 " //$NON-NLS-1$ //$NON-NLS-2$
+                    + Messages.getString("FileWizardPage.of") + " 3"); //$NON-NLS-1$ //$NON-NLS-2$
+            regexpFileWizardPage2.setDescription(Messages.getString("FileWizardPage.descriptionUpdateStep2")); //$NON-NLS-1$
             addPage(regexpFileWizardPage2);
 
             regexpFileWizardPage1.setPageComplete(true);
@@ -219,9 +219,9 @@ public class RegexpFileWizard extends RepositoryWizard implements INewWizard {
                 }
             } catch (PersistenceException e) {
                 String detailError = e.toString();
-                new ErrorDialogWidthDetailArea(getShell(), PID, Messages.getString("CommonWizard.persistenceException"),
+                new ErrorDialogWidthDetailArea(getShell(), PID, Messages.getString("CommonWizard.persistenceException"), //$NON-NLS-1$
                         detailError);
-                log.error(Messages.getString("CommonWizard.persistenceException") + "\n" + detailError);
+                log.error(Messages.getString("CommonWizard.persistenceException") + "\n" + detailError); //$NON-NLS-1$ //$NON-NLS-2$
                 return false;
             }
             return true;
