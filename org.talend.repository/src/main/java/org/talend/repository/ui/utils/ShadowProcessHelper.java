@@ -42,6 +42,7 @@ import org.talend.core.model.metadata.builder.connection.SchemaTarget;
 import org.talend.core.model.metadata.builder.connection.XmlFileConnection;
 import org.talend.core.model.metadata.builder.connection.XmlXPathLoopDescriptor;
 import org.talend.core.utils.XmlArray;
+import org.talend.repository.i18n.Messages;
 import org.talend.repository.preview.IPreview;
 import org.talend.repository.preview.AsynchronousPreviewHandler;
 import org.talend.repository.preview.ProcessDescription;
@@ -71,29 +72,29 @@ public class ShadowProcessHelper {
 
         processDescription.setServer(connection.getServer());
         processDescription.setFilepath(connection.getFilePath());
-        processDescription.setFieldSeparator("\"" + connection.getFieldSeparatorValue() + "\"");
-        processDescription.setRowSeparator("\"" + connection.getRowSeparatorValue() + "\"");
+        processDescription.setFieldSeparator("\"" + connection.getFieldSeparatorValue() + "\""); //$NON-NLS-1$ //$NON-NLS-2$
+        processDescription.setRowSeparator("\"" + connection.getRowSeparatorValue() + "\""); //$NON-NLS-1$ //$NON-NLS-2$
 
-        processDescription.setPattern("'" + connection.getFieldSeparatorValue() + "'");
+        processDescription.setPattern("'" + connection.getFieldSeparatorValue() + "'"); //$NON-NLS-1$ //$NON-NLS-2$
 
         processDescription.setHeaderRow(connection.getHeaderValue());
         processDescription.setFooterRow(connection.getFooterValue());
         processDescription.setLimitRows(connection.getLimitValue());
 
-        if (connection.getEscapeChar() != null && !connection.getEscapeChar().equals("") && !connection.getEscapeChar().equals("Empty")) {
-            processDescription.setEscapeCharacter("'" + connection.getEscapeChar() + "'");
+        if (connection.getEscapeChar() != null && !connection.getEscapeChar().equals("") && !connection.getEscapeChar().equals("Empty")) { //$NON-NLS-1$ //$NON-NLS-2$
+            processDescription.setEscapeCharacter("'" + connection.getEscapeChar() + "'"); //$NON-NLS-1$ //$NON-NLS-2$
         } else {
-            processDescription.setEscapeCharacter("''");
+            processDescription.setEscapeCharacter("''"); //$NON-NLS-1$
         }
-        if (connection.getTextEnclosure() != null && !connection.getTextEnclosure().equals("")
-                && !connection.getTextEnclosure().equals("Empty")) {
-            processDescription.setTextEnclosure("'" + connection.getTextEnclosure() + "'");
+        if (connection.getTextEnclosure() != null && !connection.getTextEnclosure().equals("") //$NON-NLS-1$
+                && !connection.getTextEnclosure().equals("Empty")) { //$NON-NLS-1$
+            processDescription.setTextEnclosure("'" + connection.getTextEnclosure() + "'"); //$NON-NLS-1$ //$NON-NLS-2$
         } else {
-            processDescription.setTextEnclosure("''");
+            processDescription.setTextEnclosure("''"); //$NON-NLS-1$
         }
 
         processDescription.setRemoveEmptyRow(connection.isRemoveEmptyRow());
-        processDescription.setEncoding("\"" + connection.getEncoding() + "\"");
+        processDescription.setEncoding("\"" + connection.getEncoding() + "\""); //$NON-NLS-1$ //$NON-NLS-2$
         return processDescription;
     }
 
@@ -109,11 +110,11 @@ public class ShadowProcessHelper {
     public static ProcessDescription getProcessDescription(final XmlFileConnection connection) {
         ProcessDescription processDescription = new ProcessDescription();
         processDescription.setFilepath(connection.getXmlFilePath());
-        processDescription.setLoopQuery("'" + ((XmlXPathLoopDescriptor) connection.getSchema().get(0)).getAbsoluteXPathQuery() + "'");
+        processDescription.setLoopQuery("'" + ((XmlXPathLoopDescriptor) connection.getSchema().get(0)).getAbsoluteXPathQuery() + "'"); //$NON-NLS-1$ //$NON-NLS-2$
         if (((XmlXPathLoopDescriptor) connection.getSchema().get(0)).getLimitBoucle() != null
-                && !("").equals(((XmlXPathLoopDescriptor) connection.getSchema().get(0)).getLimitBoucle())
+                && !("").equals(((XmlXPathLoopDescriptor) connection.getSchema().get(0)).getLimitBoucle()) //$NON-NLS-1$
                 && (((XmlXPathLoopDescriptor) connection.getSchema().get(0)).getLimitBoucle().intValue()) != 0) {
-            processDescription.setLoopLimit("'" + ((XmlXPathLoopDescriptor) connection.getSchema().get(0)).getLimitBoucle() + "'");
+            processDescription.setLoopLimit("'" + ((XmlXPathLoopDescriptor) connection.getSchema().get(0)).getLimitBoucle() + "'"); //$NON-NLS-1$ //$NON-NLS-2$
         }
 
         List<Map<String, String>> mapping = new ArrayList<Map<String, String>>();
@@ -125,15 +126,15 @@ public class ShadowProcessHelper {
             while (iterate.hasNext()) {
                 SchemaTarget schemaTarget = iterate.next();
                 Map<String, String> lineMapping = new HashMap<String, String>();
-                lineMapping.put("QUERY", "'" + schemaTarget.getRelativeXPathQuery() + "'");
+                lineMapping.put("QUERY", "'" + schemaTarget.getRelativeXPathQuery() + "'"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 mapping.add(lineMapping);
             }
         }
         processDescription.setMapping(mapping);
-        if (connection.getEncoding() != null && !("").equals(connection.getEncoding())) {
-            processDescription.setEncoding("'" + connection.getEncoding() + "'");
+        if (connection.getEncoding() != null && !("").equals(connection.getEncoding())) { //$NON-NLS-1$
+            processDescription.setEncoding("'" + connection.getEncoding() + "'"); //$NON-NLS-1$ //$NON-NLS-2$
         } else {
-            processDescription.setEncoding("'UTF-8'");
+            processDescription.setEncoding("'UTF-8'"); //$NON-NLS-1$
         }
 
         return processDescription;
@@ -158,12 +159,12 @@ public class ShadowProcessHelper {
         List<IMetadataColumn> schema = new ArrayList<IMetadataColumn>();
 
         IMetadataColumn iMetadataDn = new MetadataColumn();
-        iMetadataDn.setLabel("dn");
+        iMetadataDn.setLabel(Messages.getString("ShadowProcessHelper.iMetadataDn.label")); //$NON-NLS-1$
         iMetadataDn.setKey(false);
         iMetadataDn.setLength(0);
         iMetadataDn.setNullable(false);
-        iMetadataDn.setType("String");
-        iMetadataDn.setTalendType("String");
+        iMetadataDn.setType("String"); //$NON-NLS-1$
+        iMetadataDn.setTalendType("String"); //$NON-NLS-1$
 
         schema.add(iMetadataDn);
 
@@ -177,13 +178,13 @@ public class ShadowProcessHelper {
                 iMetadataColumn.setKey(false);
                 iMetadataColumn.setLength(0);
                 iMetadataColumn.setNullable(false);
-                iMetadataColumn.setType("String");
-                iMetadataColumn.setTalendType("String");
+                iMetadataColumn.setType("String"); //$NON-NLS-1$
+                iMetadataColumn.setTalendType("String"); //$NON-NLS-1$
 
                 schema.add(iMetadataColumn);
             }
         }
-        table.setTableName("ldif");
+        table.setTableName(Messages.getString("ShadowProcessHelper.tableName.ldif")); //$NON-NLS-1$
         table.setListColumns(schema);
         tableSchema.add(table);
         processDescription.setSchema(tableSchema);
@@ -231,15 +232,15 @@ public class ShadowProcessHelper {
         IExtensionRegistry registry = Platform.getExtensionRegistry();
 
         // use the org.talend.repository.filepreview_provider
-        IConfigurationElement[] configurationElements = registry.getConfigurationElementsFor("org.talend.core.filepreview_provider");
+        IConfigurationElement[] configurationElements = registry.getConfigurationElementsFor("org.talend.core.filepreview_provider"); //$NON-NLS-1$
 
         IPreview preview = null;
         if (configurationElements.length > 0) {
-            preview = (IPreview) configurationElements[0].createExecutableExtension("class");
+            preview = (IPreview) configurationElements[0].createExecutableExtension("class"); //$NON-NLS-1$
         }
         if (preview == null) {
-            log.error("\nThe ShadowProcess use to extract data or metadata on a File don't run."
-                    + "\nConfigurationElementsFor(\"org.talend.repository.filepreview_provider\").length == 0 ??");
+            log.error(Messages.getString("ShadowProcessHelper.logError.previewIsNull01") //$NON-NLS-1$
+                    + Messages.getString("ShadowProcessHelper.logError.previewIsNull02")); //$NON-NLS-1$
         }
         
         return preview;

@@ -50,6 +50,7 @@ import org.talend.commons.utils.data.list.ListenableListEvent;
 import org.talend.core.model.metadata.builder.connection.SchemaTarget;
 import org.talend.core.model.targetschema.editor.XmlExtractorFieldModel;
 import org.talend.core.model.targetschema.editor.XmlExtractorLoopModel;
+import org.talend.repository.i18n.Messages;
 
 /**
  * DOC amaumont class global comment. Detailled comment <br/> TGU same purpose as TargetSchemaTableEditorView but uses
@@ -60,7 +61,7 @@ import org.talend.core.model.targetschema.editor.XmlExtractorLoopModel;
  */
 public class ExtractionFieldsWithXPathEditorView extends AbstractDataTableEditorView<SchemaTarget> {
 
-    public static final String ID_COLUMN_NAME = "ID_COLUMN_NAME";
+    public static final String ID_COLUMN_NAME = "ID_COLUMN_NAME"; //$NON-NLS-1$
 
     private TextCellEditorWithProposal xPathCellEditor;
 
@@ -154,7 +155,7 @@ public class ExtractionFieldsWithXPathEditorView extends AbstractDataTableEditor
                 if (value != null) {
                     return String.valueOf(value);
                 }
-                return "";
+                return ""; //$NON-NLS-1$
             }
         };
 
@@ -162,8 +163,8 @@ public class ExtractionFieldsWithXPathEditorView extends AbstractDataTableEditor
 
         // column for mouse selection
         TableViewerCreatorColumn column = new TableViewerCreatorColumn(tableViewerCreator);
-        column.setTitle("");
-        column.setDefaultInternalValue("");
+        column.setTitle(""); //$NON-NLS-1$
+        column.setDefaultInternalValue(""); //$NON-NLS-1$
         column.setWidth(15);
 
         // //////////////////////////////////////////////////////////////////////////////////////
@@ -171,7 +172,7 @@ public class ExtractionFieldsWithXPathEditorView extends AbstractDataTableEditor
 
         column = new TableViewerCreatorColumn(tableViewerCreator);
         xPathColumn = column;
-        column.setTitle("Relative or absolute XPath expression");
+        column.setTitle(Messages.getString("ExtractionFieldsWithXPathEditorView.columnTitle.xPath")); //$NON-NLS-1$
         column.setBeanPropertyAccessors(new IBeanPropertyAccessors<SchemaTarget, String>() {
 
             public String get(SchemaTarget bean) {
@@ -200,10 +201,10 @@ public class ExtractionFieldsWithXPathEditorView extends AbstractDataTableEditor
                 String value = null;
                 if (newValue.trim().length() == 0) {
                     return null;
-                } else if (newValue.trim().startsWith("/")) {
+                } else if (newValue.trim().startsWith("/")) { //$NON-NLS-1$
                     value = newValue;
                 } else {
-                    value = currentLoopXPath + "/" + newValue;
+                    value = currentLoopXPath + "/" + newValue; //$NON-NLS-1$
                 }
                 return linker.validateXPathExpression(value);
             }
@@ -212,13 +213,13 @@ public class ExtractionFieldsWithXPathEditorView extends AbstractDataTableEditor
         column.setModifiable(true);
         column.setWeight(30);
         column.setMinimumWidth(50);
-        column.setDefaultInternalValue("");
+        column.setDefaultInternalValue(""); //$NON-NLS-1$
         // //////////////////////////////////////////////////////////////////////////////////////
 
         // //////////////////////////////////////////////////////////////////////////////////////
         // Tag Name
         column = new TableViewerCreatorColumn(tableViewerCreator);
-        column.setTitle("Tag Name");
+        column.setTitle(Messages.getString("ExtractionFieldsWithXPathEditorView.columnTitle.tagName")); //$NON-NLS-1$
         column.setBeanPropertyAccessors(new IBeanPropertyAccessors<SchemaTarget, String>() {
 
             public String get(SchemaTarget bean) {
@@ -234,7 +235,7 @@ public class ExtractionFieldsWithXPathEditorView extends AbstractDataTableEditor
         column.setWeight(10);
         column.setMinimumWidth(50);
         column.setCellEditor(new TextCellEditor(table));
-        column.setDefaultInternalValue("");
+        column.setDefaultInternalValue(""); //$NON-NLS-1$
 
     }
 
