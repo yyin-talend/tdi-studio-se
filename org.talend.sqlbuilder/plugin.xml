@@ -52,6 +52,6 @@
             class="org.talend.sqlbuilder.actions.EditQueriesAction"
             id="org.talend.sqlbuilder.EditQueries"
             level="12"
-            name="Edit queries"/>
+            name="%editQueries"/>
    </extension>
 </plugin>
