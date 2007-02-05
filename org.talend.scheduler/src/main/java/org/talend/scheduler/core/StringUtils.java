@@ -39,11 +39,11 @@ public class StringUtils {
      * @return
      */
     public static String format(String string) {
-        if (string == null || string.trim().length() == 0 || string.equals("*")) {
+        if (string == null || string.trim().length() == 0 || string.equals("*")) { //$NON-NLS-1$
             return string;
         }
 
-        String delimiter = ",";
+        String delimiter = ","; //$NON-NLS-1$
 
         List<StringBuffer> sections = new ArrayList<StringBuffer>();
         String[] days = string.split(delimiter);
@@ -67,7 +67,7 @@ public class StringUtils {
             String[] sectionDays = section.toString().split(delimiter);
             if (sectionDays.length > 2) {
                 sb.append(sectionDays[0]);
-                sb.append("-");
+                sb.append("-"); //$NON-NLS-1$
                 sb.append(sectionDays[sectionDays.length - 1]);
             } else {
                 sb.append(section);

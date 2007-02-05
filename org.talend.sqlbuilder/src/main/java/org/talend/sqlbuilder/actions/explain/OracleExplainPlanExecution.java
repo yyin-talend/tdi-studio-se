@@ -86,19 +86,19 @@ public class OracleExplainPlanExecution extends AbstractSQLExecution {
 	            if (columnIndex == 1) {
 	                int cost = en.getCost();
 	                if (cost != -1) {
-	                	return "" + cost;
+	                	return "" + cost; //$NON-NLS-1$
 	                } else {
-	                	return "";
+	                	return ""; //$NON-NLS-1$
 	                }
 	            } else if (columnIndex == 2) {
 	                int card = en.getCardinality();
 	                if (card != -1) {
-	                	return "" + card;
+	                	return "" + card; //$NON-NLS-1$
 	                } else {
-	                	return "";
+	                	return ""; //$NON-NLS-1$
 	                }
 	            }
-	            return "";
+	            return ""; //$NON-NLS-1$
 	        }
 	    }
     private PreparedStatement prepStmt;
@@ -118,14 +118,14 @@ public class OracleExplainPlanExecution extends AbstractSQLExecution {
 	       sqlResult.setSqlStatement(sqlStatement);
 
 	        // set initial message
-	        setProgressMessage(Messages.getString("SQLResultsView.ConnectionWait"));
+	        setProgressMessage(Messages.getString("SQLResultsView.ConnectionWait")); //$NON-NLS-1$
 	}
 	
 	   private void displayResults(final ExplainNode node) {
 
 		   Display.getDefault().asyncExec(new Runnable() {
 
-	            @SuppressWarnings("deprecation")
+	            @SuppressWarnings("deprecation") //$NON-NLS-1$
 				public void run() {
 
 	                clearCanvas();
@@ -150,11 +150,11 @@ public class OracleExplainPlanExecution extends AbstractSQLExecution {
 	                    table.setLinesVisible(true);
 	                    table.setHeaderVisible(true);
 	                    TableColumn tc = new TableColumn(table, SWT.NULL);
-	                    tc.setText("");
+	                    tc.setText(""); //$NON-NLS-1$
 	                    tc = new TableColumn(table, SWT.NULL);
-	                    tc.setText("Cost");
+	                    tc.setText(Messages.getString("OracleExplainPlanExecution.tableColumnText1")); //$NON-NLS-1$
 	                    tc = new TableColumn(table, SWT.NULL);
-	                    tc.setText("Cardinality");
+	                    tc.setText(Messages.getString("OracleExplainPlanExecution.tableColumnText2")); //$NON-NLS-1$
 	                    TableLayout tableLayout = new TableLayout();
 	                    tableLayout.addColumnData(new ColumnWeightData(6, 150, true));
 	                    tableLayout.addColumnData(new ColumnWeightData(1, 50, true));
@@ -231,7 +231,7 @@ public class OracleExplainPlanExecution extends AbstractSQLExecution {
                                         }
                                     }
                                 } catch (Exception e1) {
-                                    SqlBuilderPlugin.log("Error refreshing", e1);
+                                    SqlBuilderPlugin.log(Messages.getString("OracleExplainPlanExecution.logMessage1"), e1); //$NON-NLS-1$
                                 }
 
                                 break;
@@ -252,7 +252,7 @@ public class OracleExplainPlanExecution extends AbstractSQLExecution {
 	                    errorLabel.setText(message);
 	                    errorLabel.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false));
 
-	                    SqlBuilderPlugin.log("Error creating explain tab", e);
+	                    SqlBuilderPlugin.log(Messages.getString("OracleExplainPlanExecution.logMessage2"), e); //$NON-NLS-1$
 	                }
 
 	                composite.layout();
@@ -263,7 +263,7 @@ public class OracleExplainPlanExecution extends AbstractSQLExecution {
 	    }
 
 
-	    @SuppressWarnings("unchecked")
+	    @SuppressWarnings("unchecked") //$NON-NLS-1$
 		protected void doExecution() throws Exception {
 
 	        try {
@@ -274,7 +274,7 @@ public class OracleExplainPlanExecution extends AbstractSQLExecution {
 
 	            stmt = connection.createStatement();
 	            String idp = Integer.toHexString(new Random().nextInt()).toUpperCase();
-	            stmt.execute("delete plan_table where statement_id='" + idp + "'");
+	            stmt.execute("delete plan_table where statement_id='" + idp + "'"); //$NON-NLS-1$ //$NON-NLS-2$
 	            stmt.close();
 	            stmt = null;
 
@@ -283,7 +283,7 @@ public class OracleExplainPlanExecution extends AbstractSQLExecution {
 	            }
 
 	            stmt = connection.createStatement();
-	            stmt.execute("EXPLAIN PLAN SET statement_id = '" + idp + "' FOR " + sqlStatement);
+	            stmt.execute("EXPLAIN PLAN SET statement_id = '" + idp + "' FOR " + sqlStatement); //$NON-NLS-1$ //$NON-NLS-2$
 	            stmt.close();
 	            stmt = null;
 
@@ -291,10 +291,10 @@ public class OracleExplainPlanExecution extends AbstractSQLExecution {
 	                return;
 	            }
 
-	            prepStmt = connection.prepareStatement("select "
-	                    + "object_type,operation,options,object_owner,object_name,optimizer,cardinality ,cost,id,parent_id "
-	                    + " from " + " plan_table " + " start with id = 0 and statement_id=? "
-	                    + " connect by prior id=parent_id and statement_id=?");
+	            prepStmt = connection.prepareStatement("select " //$NON-NLS-1$
+	                    + "object_type,operation,options,object_owner,object_name,optimizer,cardinality ,cost,id,parent_id " //$NON-NLS-1$
+	                    + " from " + " plan_table " + " start with id = 0 and statement_id=? " //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+	                    + " connect by prior id=parent_id and statement_id=?"); //$NON-NLS-1$
 	            prepStmt.setString(1, idp);
 	            prepStmt.setString(2, idp);
 	            ResultSet rs = prepStmt.executeQuery();
@@ -305,23 +305,23 @@ public class OracleExplainPlanExecution extends AbstractSQLExecution {
 
 	            HashMap mp = new HashMap();
 	            while (rs.next()) {
-	                String objectType = rs.getString("object_type");
-	                String operation = rs.getString("operation");
-	                String options = rs.getString("options");
-	                String objectOwner = rs.getString("object_owner");
-	                String objectName = rs.getString("object_name");
-	                String optimizer = rs.getString("optimizer");
-	                int cardinality = rs.getInt("cardinality");
+	                String objectType = rs.getString("object_type"); //$NON-NLS-1$
+	                String operation = rs.getString("operation"); //$NON-NLS-1$
+	                String options = rs.getString("options"); //$NON-NLS-1$
+	                String objectOwner = rs.getString("object_owner"); //$NON-NLS-1$
+	                String objectName = rs.getString("object_name"); //$NON-NLS-1$
+	                String optimizer = rs.getString("optimizer"); //$NON-NLS-1$
+	                int cardinality = rs.getInt("cardinality"); //$NON-NLS-1$
 	                if (rs.wasNull()) {
 	                    cardinality = -1;
 	                }
 
-	                int cost = rs.getInt("cost");
+	                int cost = rs.getInt("cost"); //$NON-NLS-1$
 	                if (rs.wasNull()) {
 	                	cost = -1;
 	                }
-	                int parentID = rs.getInt("parent_id");
-	                int id = rs.getInt("id");
+	                int parentID = rs.getInt("parent_id"); //$NON-NLS-1$
+	                int id = rs.getInt("id"); //$NON-NLS-1$
 	                ExplainNode nd = null;
 	                if (id == 0) {
 	                    ExplainNode dummy = new ExplainNode(null);
@@ -365,7 +365,7 @@ public class OracleExplainPlanExecution extends AbstractSQLExecution {
 	                    stmt.close();
 	                    stmt = null;
 	                } catch (Exception e1) {
-	                    SqlBuilderPlugin.log("Error closing statement.", e);
+	                    SqlBuilderPlugin.log(Messages.getString("OracleExplainPlanExecution.logMessage3"), e); //$NON-NLS-1$
 	                }
 	            }
 
@@ -374,7 +374,7 @@ public class OracleExplainPlanExecution extends AbstractSQLExecution {
 	                    prepStmt.close();
 	                    prepStmt = null;
 	                } catch (Exception e1) {
-	                    SqlBuilderPlugin.log("Error closing statement.", e);
+	                    SqlBuilderPlugin.log(Messages.getString("OracleExplainPlanExecution.logMessage3"), e); //$NON-NLS-1$
 	                }
 	            }
 	            throw e;
@@ -393,13 +393,13 @@ public class OracleExplainPlanExecution extends AbstractSQLExecution {
 	                stmt.cancel();
 	            } catch (Exception e) {
 	                t = e;
-	                SqlBuilderPlugin.log("Error cancelling statement.", e);
+	                SqlBuilderPlugin.log(Messages.getString("OracleExplainPlanExecution.logMessage4"), e); //$NON-NLS-1$
 	            }
 	            try {
 	                stmt.close();
 	                stmt = null;
 	            } catch (Exception e) {
-	                SqlBuilderPlugin.log("Error closing statement.", e);
+	                SqlBuilderPlugin.log(Messages.getString("OracleExplainPlanExecution.logMessage3"), e); //$NON-NLS-1$
 	            }
 	        }
 
@@ -409,13 +409,13 @@ public class OracleExplainPlanExecution extends AbstractSQLExecution {
 	                prepStmt.cancel();
 	            } catch (Exception e) {
 	                t = e;
-	                SqlBuilderPlugin.log("Error cancelling statement.", e);
+	                SqlBuilderPlugin.log(Messages.getString("OracleExplainPlanExecution.logMessage4"), e); //$NON-NLS-1$
 	            }
 	            try {
 	                prepStmt.close();
 	                prepStmt = null;
 	            } catch (Exception e) {
-	                SqlBuilderPlugin.log("Error closing statement.", e);
+	                SqlBuilderPlugin.log(Messages.getString("OracleExplainPlanExecution.logMessage3"), e); //$NON-NLS-1$
 	            }
 	        }
 

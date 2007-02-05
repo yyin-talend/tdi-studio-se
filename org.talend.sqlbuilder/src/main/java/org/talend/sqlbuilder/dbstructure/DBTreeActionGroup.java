@@ -37,6 +37,7 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.ui.actions.ActionGroup;
+import org.talend.sqlbuilder.Messages;
 import org.talend.sqlbuilder.SqlBuilderPlugin;
 import org.talend.sqlbuilder.dbstructure.actions.AbstractDBTreeContextAction;
 import org.talend.sqlbuilder.dbstructure.nodes.INode;
@@ -76,7 +77,7 @@ public class DBTreeActionGroup extends ActionGroup {
      * @param menu MenuManager.
      * @see org.eclipse.ui.actions.ActionGroup#fillContextMenu(org.eclipse.jface.action.IMenuManager)
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked") //$NON-NLS-1$
     public void fillContextMenu(IMenuManager menu) {
 
         // find our target node..
@@ -120,7 +121,7 @@ public class DBTreeActionGroup extends ActionGroup {
      * @param nodes currently selected nodes
      * @return array of actions
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked") //$NON-NLS-1$
     private IAction[] getContextActions(INode[] nodes) {
 
         String databaseProductName = nodes[0].getSession().getRoot().getDatabaseProductName().toLowerCase().trim();
@@ -129,7 +130,7 @@ public class DBTreeActionGroup extends ActionGroup {
         List actions = new ArrayList();
 
         IExtensionRegistry registry = Platform.getExtensionRegistry();
-        IExtensionPoint point = registry.getExtensionPoint("net.sourceforge.sqlexplorer", "nodeContextAction");
+        IExtensionPoint point = registry.getExtensionPoint("net.sourceforge.sqlexplorer", "nodeContextAction"); //$NON-NLS-1$ //$NON-NLS-2$
         IExtension[] extensions = point.getExtensions();
 
         for (int i = 0; i < extensions.length; i++) {
@@ -144,10 +145,10 @@ public class DBTreeActionGroup extends ActionGroup {
                     boolean isValidProduct = false;
                     boolean isValidNodeType = false;
 
-                    String id = ces[j].getAttribute("id");
-                    String[] validProducts = ces[j].getAttribute("database-product-name").split(",");
-                    String[] validNodeTypes = ces[j].getAttribute("node-type").split(",");
-                    String imagePath = ces[j].getAttribute("icon");
+                    String id = ces[j].getAttribute("id"); //$NON-NLS-1$
+                    String[] validProducts = ces[j].getAttribute("database-product-name").split(","); //$NON-NLS-1$ //$NON-NLS-2$
+                    String[] validNodeTypes = ces[j].getAttribute("node-type").split(","); //$NON-NLS-1$ //$NON-NLS-2$
+                    String imagePath = ces[j].getAttribute("icon"); //$NON-NLS-1$
 
                     // check if action is valid for current database product
                     for (int k = 0; k < validProducts.length; k++) {
@@ -158,12 +159,12 @@ public class DBTreeActionGroup extends ActionGroup {
                             continue;
                         }
 
-                        if (product.equals("*")) {
+                        if (product.equals("*")) { //$NON-NLS-1$
                             isValidProduct = true;
                             break;
                         }
 
-                        String regex = TextUtil.replaceChar(product, '*', ".*");
+                        String regex = TextUtil.replaceChar(product, '*', ".*"); //$NON-NLS-1$
                         if (databaseProductName.matches(regex)) {
                             isValidProduct = true;
                             break;
@@ -184,12 +185,12 @@ public class DBTreeActionGroup extends ActionGroup {
                             continue;
                         }
 
-                        if (type.equals("*")) {
+                        if (type.equals("*")) { //$NON-NLS-1$
                             isValidNodeType = true;
                             break;
                         }
 
-                        String regex = TextUtil.replaceChar(type, '*', ".*");
+                        String regex = TextUtil.replaceChar(type, '*', ".*"); //$NON-NLS-1$
                         if (nodeType.matches(regex)) {
                             isValidNodeType = true;
                             break;
@@ -202,7 +203,7 @@ public class DBTreeActionGroup extends ActionGroup {
                     }
 
                     // check if the action thinks it is suitable..
-                    AbstractDBTreeContextAction action = (AbstractDBTreeContextAction) ces[j].createExecutableExtension("class");
+                    AbstractDBTreeContextAction action = (AbstractDBTreeContextAction) ces[j].createExecutableExtension("class"); //$NON-NLS-1$
                     action.setSelectedNodes(nodes);
                     action.setTreeViewer(pTreeViewer);
                     action.setView(pView);
@@ -218,7 +219,7 @@ public class DBTreeActionGroup extends ActionGroup {
                     }
 
                 } catch (Throwable ex) {
-                    SqlBuilderPlugin.log("Could not create menu action", ex);
+                    SqlBuilderPlugin.log(Messages.getString("DBTreeActionGroup.logMessage"), ex); //$NON-NLS-1$
                 }
             }
         }

@@ -102,17 +102,17 @@ public class SQLPropertyDialog extends TitleAreaDialog {
         container.setLayout(gridLayout);
         container.setLayoutData(new GridData(GridData.FILL_BOTH));
 
-        this.setTitle(Messages.getString("SQLEditor.Actions.SaveSQL"));
-        this.setMessage(Messages.getString("SQLEditor.Actions.InputMessage"), IMessageProvider.INFORMATION);
+        this.setTitle(Messages.getString("SQLEditor.Actions.SaveSQL")); //$NON-NLS-1$
+        this.setMessage(Messages.getString("SQLEditor.Actions.InputMessage"), IMessageProvider.INFORMATION); //$NON-NLS-1$
 
         final Label nameLabel = new Label(container, SWT.NONE);
-        nameLabel.setText(Messages.getString("SQLEditor.SQLPropertyDialog.Name"));
+        nameLabel.setText(Messages.getString("SQLEditor.SQLPropertyDialog.Name")); //$NON-NLS-1$
 
         nameText = new Text(container, SWT.BORDER);
         nameText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 
         final Label commentLabel = new Label(container, SWT.NONE);
-        commentLabel.setText(Messages.getString("SQLEditor.SQLPropertyDialog.Comment"));
+        commentLabel.setText(Messages.getString("SQLEditor.SQLPropertyDialog.Comment")); //$NON-NLS-1$
 
         commentText = new Text(container, SWT.BORDER);
         commentText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
@@ -130,7 +130,7 @@ public class SQLPropertyDialog extends TitleAreaDialog {
 
         if (query == null) {
             query = ConnectionFactory.eINSTANCE.createQuery();
-            query.setValue("");
+            query.setValue(""); //$NON-NLS-1$
         }
         query.setComment(this.commentText.getText());
         query.setLabel(this.nameText.getText());
@@ -147,7 +147,7 @@ public class SQLPropertyDialog extends TitleAreaDialog {
      * @param parent
      */
     protected void createButtonsForButtonBar(Composite parent) {
-        createButton(parent, IDialogConstants.OK_ID, Messages.getString("SQLEditor.Actions.SaveMessage"), true);
+        createButton(parent, IDialogConstants.OK_ID, Messages.getString("SQLEditor.Actions.SaveMessage"), true); //$NON-NLS-1$
         getButton(IDialogConstants.OK_ID).setEnabled(false);
         createButton(parent, IDialogConstants.CANCEL_ID, IDialogConstants.CANCEL_LABEL, false);
     }
@@ -204,7 +204,7 @@ public class SQLPropertyDialog extends TitleAreaDialog {
                 String result = validate(nameText.getText());
                 if (result == null) {
                     SQLPropertyDialog.this.getButton(IDialogConstants.OK_ID).setEnabled(true);
-                    SQLPropertyDialog.this.setMessage(Messages.getString("SQLEditor.Actions.InputMessage"),
+                    SQLPropertyDialog.this.setMessage(Messages.getString("SQLEditor.Actions.InputMessage"), //$NON-NLS-1$
                             IMessageProvider.INFORMATION);
                 } else {
                     SQLPropertyDialog.this.setMessage(result, IMessageProvider.ERROR);
@@ -220,10 +220,10 @@ public class SQLPropertyDialog extends TitleAreaDialog {
              */
             private String validate(String text) {
                 if (nameText.getText().length() == 0) {
-                    return Messages.getString("SQLEditor.Actions.EmptyNameMessage");
+                    return Messages.getString("SQLEditor.Actions.EmptyNameMessage"); //$NON-NLS-1$
                 } else if (names.contains(text)) {
                     // Checks if name is existing.
-                    return Messages.getString("SQLEditor.Actions.DuplicateNameMessage");
+                    return Messages.getString("SQLEditor.Actions.DuplicateNameMessage"); //$NON-NLS-1$
                 }
                 return null;
             }
@@ -238,7 +238,7 @@ public class SQLPropertyDialog extends TitleAreaDialog {
              */
             public void modifyText(ModifyEvent e) {
                 if (commentText.getText().length() == 0) {
-                    SQLPropertyDialog.this.setMessage(Messages.getString("SQLEditor.Actions.EmptyCommentMessage"),
+                    SQLPropertyDialog.this.setMessage(Messages.getString("SQLEditor.Actions.EmptyCommentMessage"), //$NON-NLS-1$
                             IMessageProvider.INFORMATION);
                 }
             }

@@ -241,7 +241,7 @@ public class MonthGroup extends Group implements IWidgetEnableListener {
         for (int i = 0; i < monthArrays.length; i++) {
             String month = monthArrays[i];
             if (month.indexOf("-") != -1) { //$NON-NLS-1$
-                for (int j = Integer.valueOf(month.split("-")[0]); j <= Integer.valueOf(month.split("-")[1]); j++) {
+                for (int j = Integer.valueOf(month.split("-")[0]); j <= Integer.valueOf(month.split("-")[1]); j++) { //$NON-NLS-1$ //$NON-NLS-2$
                     if (j < 1 || j > 12) {
                         continue;
                     }

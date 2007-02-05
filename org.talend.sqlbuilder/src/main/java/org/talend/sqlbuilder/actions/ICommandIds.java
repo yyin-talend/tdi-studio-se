@@ -30,7 +30,7 @@ package org.talend.sqlbuilder.actions;
  */
 public interface ICommandIds {
 
-    public static final String EXEC_SQL = "org.talend.sqlbuilder.actions.ExecSQLAction";
+    public static final String EXEC_SQL = "org.talend.sqlbuilder.actions.ExecSQLAction"; //$NON-NLS-1$
     
     
     /**

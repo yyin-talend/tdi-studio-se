@@ -88,7 +88,7 @@ public class ErdiagramDiagramEditor extends GraphicalEditor {
         return sharedKeyHandler;
     }
     
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked") //$NON-NLS-1$
     protected void configureGraphicalViewer() {
         super.configureGraphicalViewer();
         ScrollingGraphicalViewer viewer = (ScrollingGraphicalViewer) getGraphicalViewer();

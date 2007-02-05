@@ -42,7 +42,7 @@ import org.talend.sqlbuilder.sessiontree.model.SessionTreeNode;
 public class ColumnInfoTab extends AbstractDataSetTab {
 
     public String getLabelText() {
-        return Messages.getString("DatabaseDetailView.Tab.ColumnInfo");
+        return Messages.getString("DatabaseDetailView.Tab.ColumnInfo"); //$NON-NLS-1$
     }
 
     public DataSet getDataSet() throws Exception {
@@ -66,13 +66,13 @@ public class ColumnInfoTab extends AbstractDataSetTab {
             SessionTreeNode treeNode = node.getSession();
 
             // For synonym table, should get the corresponding table.
-            if (ti.getType().equals("SYNONYM")) {
+            if (ti.getType().equals("SYNONYM")) { //$NON-NLS-1$
 
                 String realTableName = ExtractMetaDataFromDataBase.getTableNameBySynonym(treeNode
                         .getInteractiveConnection().getConnection(), ti.getSimpleName());
 
                 resultSet = treeNode.getMetaData().getJDBCMetaData().getColumns(ti.getCatalogName(),
-                        ti.getSchemaName(), realTableName, "%");
+                        ti.getSchemaName(), realTableName, "%"); //$NON-NLS-1$
 
             } else {
 
@@ -89,7 +89,7 @@ public class ColumnInfoTab extends AbstractDataSetTab {
     }
 
     public String getStatusMessage() {
-        return Messages.getString("DatabaseDetailView.Tab.ColumnInfo.status") + " " + getNode().getQualifiedName();
+        return Messages.getString("DatabaseDetailView.Tab.ColumnInfo.status") + " " + getNode().getQualifiedName(); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     /**
@@ -102,12 +102,12 @@ public class ColumnInfoTab extends AbstractDataSetTab {
     public String getTableNameBySynonym(Connection conn, String name) {
         try {
             // This query is used for getting real table name from system tables, it is  used only for Oracle.
-            String sql = "select TABLE_NAME from USER_SYNONYMS where SYNONYM_NAME = '" + name + "'";
+            String sql = "select TABLE_NAME from USER_SYNONYMS where SYNONYM_NAME = '" + name + "'"; //$NON-NLS-1$ //$NON-NLS-2$
             Statement sta;
             sta = conn.createStatement();
             ResultSet resultSet = sta.executeQuery(sql);
             while (resultSet.next()) {
-                return resultSet.getString("TABLE_NAME");
+                return resultSet.getString("TABLE_NAME"); //$NON-NLS-1$
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);

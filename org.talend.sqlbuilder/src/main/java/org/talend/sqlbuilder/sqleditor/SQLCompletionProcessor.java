@@ -177,7 +177,7 @@ class ICompletionProposalComparator implements Comparator {
  */
 public class SQLCompletionProcessor implements IContentAssistProcessor {
 
-	static String sep = System.getProperty("line.separator");
+	static String sep = System.getProperty("line.separator"); //$NON-NLS-1$
 
 	private Image catalogImage;
 
@@ -197,11 +197,11 @@ public class SQLCompletionProcessor implements IContentAssistProcessor {
 		this.dictionary = dictionary;
 
 		try {
-			colImage = ImageUtil.getImage("Images.ColumnIcon");
-			tableImage = ImageUtil.getImage("Images.TableIcon");
-			viewImage = ImageUtil.getImage("Images.TableIcon");
-			keywordImage = ImageUtil.getImage("Images.TableIcon");
-			catalogImage = ImageUtil.getImage("Images.DatabaseNodeIcon");
+			colImage = ImageUtil.getImage("Images.ColumnIcon"); //$NON-NLS-1$
+			tableImage = ImageUtil.getImage("Images.TableIcon"); //$NON-NLS-1$
+			viewImage = ImageUtil.getImage("Images.TableIcon"); //$NON-NLS-1$
+			keywordImage = ImageUtil.getImage("Images.TableIcon"); //$NON-NLS-1$
+			catalogImage = ImageUtil.getImage("Images.DatabaseNodeIcon"); //$NON-NLS-1$
 		} catch (Throwable e) {
 			SQLExplorerPlugin.error("Error creating images", e); //$NON-NLS-1$
 		}
@@ -211,7 +211,7 @@ public class SQLCompletionProcessor implements IContentAssistProcessor {
 	 * @see org.eclipse.jface.text.contentassist.IContentAssistProcessor#computeCompletionProposals(org.eclipse.jface.text.ITextViewer,
 	 *      int)
 	 */
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("unchecked") //$NON-NLS-1$
 	public ICompletionProposal[] computeCompletionProposals(ITextViewer viewer,
 			int documentOffset) {
 		if (dictionary == null) {
@@ -220,7 +220,7 @@ public class SQLCompletionProcessor implements IContentAssistProcessor {
 		String text = viewer.getDocument().get();
 		String string = text.substring(0, documentOffset);
 
-		if (string.equals("")) {
+		if (string.equals("")) { //$NON-NLS-1$
 			//$NON-NLS-1$
 			return null;
 		}
@@ -240,7 +240,7 @@ public class SQLCompletionProcessor implements IContentAssistProcessor {
 		}
 		string = string.substring(position + 1);
 		// JFaceDbcPlugin.error("String: "+string,new Exception());
-		if (string == null || string.equals("")) {
+		if (string == null || string.equals("")) { //$NON-NLS-1$
 			return null;
 		}
 		string = string.toLowerCase();
@@ -259,11 +259,11 @@ public class SQLCompletionProcessor implements IContentAssistProcessor {
 			if (name == null) {
 				return null;
 			}
-			int otherDot = name.lastIndexOf(".");
+			int otherDot = name.lastIndexOf("."); //$NON-NLS-1$
 			if (otherDot != -1) {
 				name = name.substring(otherDot + 1);
 			}
-			if (name == null || name.equals("")) {
+			if (name == null || name.equals("")) { //$NON-NLS-1$
 				return null;
 			}
 			TreeSet st = (TreeSet) dictionary.getColumnListByTableName(name);
@@ -302,13 +302,13 @@ public class SQLCompletionProcessor implements IContentAssistProcessor {
 			return inputNotContainDot(documentOffset, string, length);
 		} else if (dotIndex != -1) {
 			String firstPart = string.substring(0, dotIndex);
-			int otherDot = firstPart.indexOf(".");
+			int otherDot = firstPart.indexOf("."); //$NON-NLS-1$
 			if (otherDot != -1) {
 				firstPart = firstPart.substring(otherDot + 1);
 			}
 			String lastPart = string.substring(dotIndex + 1);
-			if (lastPart == null || firstPart == null || lastPart.equals("")
-					|| firstPart.equals("")) {
+			if (lastPart == null || firstPart == null || lastPart.equals("") //$NON-NLS-1$
+					|| firstPart.equals("")) { //$NON-NLS-1$
 				return null;
 			}
 			TreeSet st = (TreeSet) dictionary
@@ -353,7 +353,7 @@ public class SQLCompletionProcessor implements IContentAssistProcessor {
 	 * @param node
 	 * @return
 	 */
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("unchecked") //$NON-NLS-1$
 	private ICompletionProposal[] getProposalsByNode2(int documentOffset, String lastPart, INode node) {
 		String[] proposalsString = dictionary.matchTablePrefix(lastPart
 				.toLowerCase());
@@ -398,15 +398,15 @@ public class SQLCompletionProcessor implements IContentAssistProcessor {
 	 * @param node
 	 * @return
 	 */
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("unchecked") //$NON-NLS-1$
 	private ICompletionProposal[] getProposalsByNode(int documentOffset, INode node) {
 		Object[] children = (Object[]) node.getChildNodes();
 		ArrayList propList = new ArrayList();
 		if (children != null) {
 			for (int i = 0; i < children.length; i++) {
 				String childName = children[i].toString().toLowerCase();
-				if (childName.equals("table")
-						|| childName.equals("view")) {
+				if (childName.equals("table") //$NON-NLS-1$
+						|| childName.equals("view")) { //$NON-NLS-1$
 					Object[] tables = (Object[]) ((INode) children[i])
 							.getChildNodes();
 					if (tables != null) {
@@ -450,7 +450,7 @@ public class SQLCompletionProcessor implements IContentAssistProcessor {
 	 * @param length
 	 * @return
 	 */
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("unchecked") //$NON-NLS-1$
 	private ICompletionProposal[] inputNotContainDot(int documentOffset, String string, int length) {
 		// The string does not contain "."
 		String[] keywordProposal = Dictionary.matchKeywordsPrefix(string);
@@ -518,11 +518,11 @@ public class SQLCompletionProcessor implements IContentAssistProcessor {
 
 	public void dispose() {
 
-		ImageUtil.disposeImage("Images.ColumnIcon");
-		ImageUtil.disposeImage("Images.TableIcon");
-		ImageUtil.disposeImage("Images.TableIcon");
-		ImageUtil.disposeImage("Images.TableIcon");
-		ImageUtil.disposeImage("Images.DatabaseNodeIcon");
+		ImageUtil.disposeImage("Images.ColumnIcon"); //$NON-NLS-1$
+		ImageUtil.disposeImage("Images.TableIcon"); //$NON-NLS-1$
+		ImageUtil.disposeImage("Images.TableIcon"); //$NON-NLS-1$
+		ImageUtil.disposeImage("Images.TableIcon"); //$NON-NLS-1$
+		ImageUtil.disposeImage("Images.DatabaseNodeIcon"); //$NON-NLS-1$
 
 	}
 

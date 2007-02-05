@@ -62,7 +62,7 @@ public class DataSetRow {
         if (tmp != null) {
             return tmp;
         }
-        return "<null>";
+        return "<null>"; //$NON-NLS-1$
     }
     
 

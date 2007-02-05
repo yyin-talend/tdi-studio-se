@@ -125,7 +125,7 @@ public class DataSetTableLabelProvider implements ITableLabelProvider {
 
             return tmp.toString();
         }
-        return "<null>";
+        return "<null>"; //$NON-NLS-1$
 
     }
 

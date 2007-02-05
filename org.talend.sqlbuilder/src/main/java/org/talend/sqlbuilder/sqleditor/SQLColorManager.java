@@ -59,7 +59,7 @@ public class SQLColorManager implements IColorManager, IColorManagerExtension {
 	/*
 	 * @see IColorManager#getColor(RGB)
 	 */
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("unchecked") //$NON-NLS-1$
 	public Color getColor(RGB rgb) {
 
 		if (rgb == null) {
@@ -108,7 +108,7 @@ public class SQLColorManager implements IColorManager, IColorManagerExtension {
 	/*
 	 * @see IColorManagerExtension#bindColor(String, RGB)
 	 */
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("unchecked") //$NON-NLS-1$
 	public void bindColor(String key, RGB rgb) {
 		Object value = fKeyTable.get(key);
 		if (value != null) {

@@ -30,6 +30,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchPart;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
+import org.talend.sqlbuilder.Messages;
 import org.talend.sqlbuilder.erdiagram.ui.AddTablesDialog;
 import org.talend.sqlbuilder.erdiagram.ui.ErDiagramComposite;
 import org.talend.sqlbuilder.erdiagram.ui.commands.CreateTableCommand;
@@ -45,7 +46,7 @@ import org.talend.sqlbuilder.repository.utility.SQLBuilderRepositoryNodeManager;
  */
 public class TableAddAction extends SelectionAction {
 
-    public static final String TABLE_ADD = "Add Tables";
+    public static final String TABLE_ADD = Messages.getString("TableAddAction.textAddTables"); //$NON-NLS-1$
 
     private IWorkbenchPart part;
 
@@ -86,7 +87,7 @@ public class TableAddAction extends SelectionAction {
      * 
      * @see org.eclipse.jface.action.Action#run()
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked") //$NON-NLS-1$
     @Override
     public void run() {
         ErdiagramDiagramEditor erdiagramDiagramEditor = (ErdiagramDiagramEditor) part;

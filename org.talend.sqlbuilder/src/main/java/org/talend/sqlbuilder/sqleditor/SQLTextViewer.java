@@ -146,7 +146,7 @@ public class SQLTextViewer extends SourceViewer {
                         try {
                             contentAssistant.uninstall();
                         } catch (Exception e) {
-                            SqlBuilderPlugin.log("", e);
+                            SqlBuilderPlugin.log("", e); //$NON-NLS-1$
                         }
                     }
                 }
@@ -179,7 +179,7 @@ public class SQLTextViewer extends SourceViewer {
 
                 public String getHoverInfo(ITextViewer textViewer, IRegion hoverRegion) {
                     //
-                    return "";
+                    return ""; //$NON-NLS-1$
                 }
 
 
@@ -282,7 +282,7 @@ public class SQLTextViewer extends SourceViewer {
      * 
      */
     public void clearText() {
-        getTextWidget().setText("");
+        getTextWidget().setText(""); //$NON-NLS-1$
     }
 
 

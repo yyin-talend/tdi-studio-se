@@ -40,7 +40,7 @@ import org.talend.sqlbuilder.SqlBuilderPlugin;
  */
 public class CopyColumnNameAction extends AbstractDataSetTableContextAction {
 
-    private static final ImageDescriptor IMAGE = ImageUtil.getDescriptor("Images.ExportToClipBoardIcon");
+    private static final ImageDescriptor IMAGE = ImageUtil.getDescriptor("Images.ExportToClipBoardIcon"); //$NON-NLS-1$
 
 
     /*
@@ -49,7 +49,7 @@ public class CopyColumnNameAction extends AbstractDataSetTableContextAction {
      * @see org.eclipse.jface.action.IAction#getText()
      */
     public String getText() {
-        return Messages.getString("DataSetTable.Actions.CopyColumnName");
+        return Messages.getString("DataSetTable.Actions.CopyColumnName"); //$NON-NLS-1$
     }
 
 
@@ -87,7 +87,7 @@ public class CopyColumnNameAction extends AbstractDataSetTableContextAction {
             clipBoard.setContents(new Object[] {column.getText()}, new Transfer[] {textTransfer});
 
         } catch (Exception e) {
-            SqlBuilderPlugin.log("Error exporting cell to clipboard ", e);
+            SqlBuilderPlugin.log(org.talend.sqlbuilder.Messages.getString("CopyColumnNameAction.logMessage"), e); //$NON-NLS-1$
         }
     }
 

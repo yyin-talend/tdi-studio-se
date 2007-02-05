@@ -39,9 +39,9 @@ public class ErDiagram extends Element {
 
     private EMFRepositoryNodeManager nodeManager;
     
-    public static final String PROP_TABLES = "tables";
+    public static final String PROP_TABLES = "tables"; //$NON-NLS-1$
 
-    public static final String PROP_RELATIONS = "relation";
+    public static final String PROP_RELATIONS = "relation"; //$NON-NLS-1$
 
     private List<Table> tables;
 
@@ -78,17 +78,17 @@ public class ErDiagram extends Element {
         return this.tables;
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked") //$NON-NLS-1$
     public void addTable(Table table) {
         this.tables.add(table);
         for (Column column : (List<Column>) table.getColumns()) {
-            allColumns.put(table.getElementName() + "." + column.getElementName(), column);
+            allColumns.put(table.getElementName() + "." + column.getElementName(), column); //$NON-NLS-1$
         }
         
         fireStructureChange(PROP_TABLES, this.tables);
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked") //$NON-NLS-1$
     public void removeTable(Table table) {
         this.tables.remove(table);
         fireStructureChange(PROP_TABLES, this.tables);

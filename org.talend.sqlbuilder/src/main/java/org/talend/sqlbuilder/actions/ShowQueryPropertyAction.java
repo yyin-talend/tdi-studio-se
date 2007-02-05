@@ -54,7 +54,7 @@ public class ShowQueryPropertyAction extends SelectionProviderAction {
      * @param text
      */
     public ShowQueryPropertyAction(ISelectionProvider provider, ISQLBuilderDialog d) {
-        super(provider, Messages.getString("DBStructureComposite.Property"));
+        super(provider, Messages.getString("DBStructureComposite.Property")); //$NON-NLS-1$
         dialog = d;
     }
 

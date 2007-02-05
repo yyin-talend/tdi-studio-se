@@ -43,7 +43,7 @@ import org.talend.sqlbuilder.util.ImageUtil;
  */
 public class OpenFileAction extends  AbstractEditorAction {
 
-    private ImageDescriptor img = ImageUtil.getDescriptor("Images.OpenFileIcon");
+    private ImageDescriptor img = ImageUtil.getDescriptor("Images.OpenFileIcon"); //$NON-NLS-1$
 
 
     /* (non-Javadoc)
@@ -67,7 +67,7 @@ public class OpenFileAction extends  AbstractEditorAction {
 
        FileDialog dlg = new FileDialog(editor.getShell(), SWT.OPEN | SWT.MULTI);
 
-        dlg.setFilterExtensions(new String[] {"*.sql;*.txt;*.*"});
+        dlg.setFilterExtensions(new String[] {"*.sql;*.txt;*.*"}); //$NON-NLS-1$
 
         String path = dlg.open();
         if (path != null) {
@@ -98,7 +98,7 @@ public class OpenFileAction extends  AbstractEditorAction {
 
             for (int i = 0; i < files.length; i++) {
 
-                String path = "";
+                String path = ""; //$NON-NLS-1$
                 if (filePath != null) {
                     path += filePath + File.separator;
                 }
@@ -119,7 +119,7 @@ public class OpenFileAction extends  AbstractEditorAction {
             editor.setEditorContent(all.toString());
 
         } catch (Throwable e) {
-            SqlBuilderPlugin.log("Error loading document", e);
+            SqlBuilderPlugin.log(Messages.getString("OpenFileAction.logTextErrorLoadingDoc"), e); //$NON-NLS-1$
 
         } finally {
             try {
@@ -135,7 +135,7 @@ public class OpenFileAction extends  AbstractEditorAction {
      * @see org.talend.sqlbuilder.actions.AbstractEditorAction#getToolTipText()
      */
     public String getToolTipText() {
-        return Messages.getString("Open_2"); 
+        return Messages.getString("Open_2");  //$NON-NLS-1$
     }
 
     /* (non-Javadoc)

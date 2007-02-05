@@ -35,18 +35,18 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 				.getPreferenceStore();
 
 		// for PassPolicy Preference
-		store.setDefault(IConstants.CLIP_EXPORT_SEPARATOR, "|");
-		store.setDefault(IConstants.DATASETRESULT_DATE_FORMAT, "yyyy-MM-dd");
+		store.setDefault(IConstants.CLIP_EXPORT_SEPARATOR, "|"); //$NON-NLS-1$
+		store.setDefault(IConstants.DATASETRESULT_DATE_FORMAT, "yyyy-MM-dd"); //$NON-NLS-1$
 		store.setDefault(IConstants.DATASETRESULT_FORMAT_DATES, true);
 		store.setDefault(IConstants.SQL_ASSIST, false);
 
-		store.setDefault(IConstants.LINE_DELIMITER, "\n");
+		store.setDefault(IConstants.LINE_DELIMITER, "\n"); //$NON-NLS-1$
 
-		store.setDefault(IConstants.COMMENT_DELIMITER, "#");
+		store.setDefault(IConstants.COMMENT_DELIMITER, "#"); //$NON-NLS-1$
 
-		store.setDefault(IConstants.ALTERNATE_DELIMITER, "");
+		store.setDefault(IConstants.ALTERNATE_DELIMITER, ""); //$NON-NLS-1$
 		
-		store.setDefault(IConstants.QUERY_DELIMITER, ";");
+		store.setDefault(IConstants.QUERY_DELIMITER, ";"); //$NON-NLS-1$
 
 		store.setDefault(IConstants.WARN_RESEULTS, 5000);
 	}

@@ -33,6 +33,7 @@ import org.eclipse.jface.text.rules.IToken;
 import org.eclipse.jface.text.rules.IWordDetector;
 import org.eclipse.jface.text.rules.Token;
 import org.eclipse.jface.util.Assert;
+import org.talend.sqlbuilder.Messages;
 import org.talend.sqlbuilder.SqlBuilderPlugin;
 import org.talend.sqlbuilder.dbstructure.nodes.TableNode;
 import org.talend.sqlbuilder.sessiontree.model.utility.Dictionary;
@@ -91,7 +92,7 @@ public class UnsignedWordRule implements IRule {
 
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("unchecked") //$NON-NLS-1$
 	public void addWord(String word, IToken token) {
 		Assert.isNotNull(word);
 		Assert.isNotNull(token);
@@ -108,7 +109,7 @@ public class UnsignedWordRule implements IRule {
 		fColumn = column;
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("unchecked") //$NON-NLS-1$
 	public IToken evaluate(ICharacterScanner scanner) {
 		int c = scanner.read();
 		if (fDetector.isWordStart((char) c)) {
@@ -141,7 +142,7 @@ public class UnsignedWordRule implements IRule {
 									ls = (ArrayList) nd.getColumnNames();
 								} catch (Throwable e) {
 									SqlBuilderPlugin.log(
-											"Error getting columns names", e);
+											Messages.getString("UnsignedWordRule.logMessage"), e); //$NON-NLS-1$
 								}
 								if (ls != null) {
 									TreeSet colTree = (TreeSet) dictionary

@@ -33,70 +33,70 @@ package org.talend.sqlbuilder;
  */
 public interface IConstants {
 
-    String AUTO_COMMIT = "SQLEditor.AutoCommit";
+    String AUTO_COMMIT = "SQLEditor.AutoCommit"; //$NON-NLS-1$
 
-    String AUTO_OPEN_EDITOR = "SQLEditor.AutoOpenEditor";
+    String AUTO_OPEN_EDITOR = "SQLEditor.AutoOpenEditor"; //$NON-NLS-1$
 
-    String CLIP_EXPORT_COLUMNS = "SQLEditor.ClipExportColumns";
+    String CLIP_EXPORT_COLUMNS = "SQLEditor.ClipExportColumns"; //$NON-NLS-1$
 
-    String CLIP_EXPORT_SEPARATOR = "SQLEditor.ClipExportSeparator";
+    String CLIP_EXPORT_SEPARATOR = "SQLEditor.ClipExportSeparator"; //$NON-NLS-1$
 
-    String COMMIT_ON_CLOSE = "SQLEditor.CommitOnClose";
+    String COMMIT_ON_CLOSE = "SQLEditor.CommitOnClose"; //$NON-NLS-1$
 
-    String DATASETRESULT_DATE_FORMAT = "DataSetResult.DateFormat";
+    String DATASETRESULT_DATE_FORMAT = "DataSetResult.DateFormat"; //$NON-NLS-1$
 
-    String DATASETRESULT_FORMAT_DATES = "DataSetResult.FormatDates";
+    String DATASETRESULT_FORMAT_DATES = "DataSetResult.FormatDates"; //$NON-NLS-1$
 
-    String DEFAULT_DRIVER = "Drivers.DefaultDriverName";
+    String DEFAULT_DRIVER = "Drivers.DefaultDriverName"; //$NON-NLS-1$
 
-    String FONT = "SQLEditor.Font";
+    String FONT = "SQLEditor.Font"; //$NON-NLS-1$
 
-    String HISTORY_AUTOSAVE_AFTER = "SQLHistory.AutoSaveAfterXXStatements";
+    String HISTORY_AUTOSAVE_AFTER = "SQLHistory.AutoSaveAfterXXStatements"; //$NON-NLS-1$
 
-    String INTERACTIVE_QUERY_TIMEOUT = "InteractiveConnection.QueryTimeOutSeconds";
+    String INTERACTIVE_QUERY_TIMEOUT = "InteractiveConnection.QueryTimeOutSeconds"; //$NON-NLS-1$
 
     //String MAX_SQL_ROWS = "SQLEditor.MaxSQLRows";
     
-    String MAX_SQL_ROWS = "100";
+    String MAX_SQL_ROWS = "100"; //$NON-NLS-1$
 
-    String PRE_ROW_COUNT = "SQLEditor.PreRowCount";
+    String PRE_ROW_COUNT = "SQLEditor.PreRowCount"; //$NON-NLS-1$
 
-    String SQL_ALT_QRY_DELIMITER = "SQLEditor.AltQueryDelimiter";
+    String SQL_ALT_QRY_DELIMITER = "SQLEditor.AltQueryDelimiter"; //$NON-NLS-1$
 
-    String SQL_ASSIST = "SQLEditor.Assist";
+    String SQL_ASSIST = "SQLEditor.Assist"; //$NON-NLS-1$
 
     /** The color key for database tables column names. */
-    String SQL_COLUMS = "SQLEditor.ColumnsColor";
-    String SQL_COMMENT_DELIMITER = "SQLEditor.CommentDelimiter";
+    String SQL_COLUMS = "SQLEditor.ColumnsColor"; //$NON-NLS-1$
+    String SQL_COMMENT_DELIMITER = "SQLEditor.CommentDelimiter"; //$NON-NLS-1$
 
     /**
      * The color key for everthing in SQL code for which no other color is
      * specified.
      */
-    String SQL_DEFAULT = "SQLEditor.DefaultColor";
+    String SQL_DEFAULT = "SQLEditor.DefaultColor"; //$NON-NLS-1$
 
     /** The color key for SQL keywords in Java code. */
-    String SQL_KEYWORD = "SQLEditor.KeywordColor";
+    String SQL_KEYWORD = "SQLEditor.KeywordColor"; //$NON-NLS-1$
 
     /** The color key for multi-line comments in Java code. */
-    String SQL_MULTILINE_COMMENT = "SQLEditor.MultiLineCommentColor";
+    String SQL_MULTILINE_COMMENT = "SQLEditor.MultiLineCommentColor"; //$NON-NLS-1$
 
-    String SQL_QRY_DELIMITER = "SQLEditor.QueryDelimiter";
+    String SQL_QRY_DELIMITER = "SQLEditor.QueryDelimiter"; //$NON-NLS-1$
 
     /** The color key for single-line comments in Java code. */
-    String SQL_SINGLE_LINE_COMMENT = "SQLEditor.SingleLineCommentColor";
+    String SQL_SINGLE_LINE_COMMENT = "SQLEditor.SingleLineCommentColor"; //$NON-NLS-1$
 
     /** The color key for string and character literals in Java code. */
-    String SQL_STRING = "SQLEditor.StringColor";
+    String SQL_STRING = "SQLEditor.StringColor"; //$NON-NLS-1$
 
     /** The color key for database tables names. */
-    String SQL_TABLE = "SQLEditor.TableColor";
+    String SQL_TABLE = "SQLEditor.TableColor"; //$NON-NLS-1$
 
-    String WARN_IF_LARGE_LIMIT = "SQLEditor.WarnIfLargeLimit";
+    String WARN_IF_LARGE_LIMIT = "SQLEditor.WarnIfLargeLimit"; //$NON-NLS-1$
 
-    String WARN_LIMIT = "SQLEditor.WarnLimit";
+    String WARN_LIMIT = "SQLEditor.WarnLimit"; //$NON-NLS-1$
     
-    String WORD_WRAP = "SQLEditor.AutoWrap";
+    String WORD_WRAP = "SQLEditor.AutoWrap"; //$NON-NLS-1$
     
     public static final String BUILTIN = "BUILT_IN"; //$NON-NLS-1$
 
@@ -104,15 +104,15 @@ public interface IConstants {
     
     
     
-    String QUERY_DELIMITER = "SQLEditor.QueryDelimiter";
+    String QUERY_DELIMITER = "SQLEditor.QueryDelimiter"; //$NON-NLS-1$
     
-    String ALTERNATE_DELIMITER = "SQLEditor.QueryDelimiter";
+    String ALTERNATE_DELIMITER = "SQLEditor.QueryDelimiter"; //$NON-NLS-1$
     
-    String COMMENT_DELIMITER = "SQLEditor.CommentDelimiter";
+    String COMMENT_DELIMITER = "SQLEditor.CommentDelimiter"; //$NON-NLS-1$
     
-    String LINE_DELIMITER = "SQLEditor.LineDelimiter";
+    String LINE_DELIMITER = "SQLEditor.LineDelimiter"; //$NON-NLS-1$
     
-    String WARN_RESEULTS = "SQLEditor.WarnResults";
+    String WARN_RESEULTS = "SQLEditor.WarnResults"; //$NON-NLS-1$
     
     /**
      * DOC dev Comment method "unUse".

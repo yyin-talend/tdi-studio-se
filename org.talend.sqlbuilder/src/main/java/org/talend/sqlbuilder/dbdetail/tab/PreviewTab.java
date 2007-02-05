@@ -40,7 +40,7 @@ public class PreviewTab extends AbstractDataSetTab {
     
     
     public String getLabelText() {
-        return Messages.getString("DatabaseDetailView.Tab.Preview");
+        return Messages.getString("DatabaseDetailView.Tab.Preview"); //$NON-NLS-1$
     }
  
     public DataSet getDataSet() throws Exception {                
@@ -65,7 +65,7 @@ public class PreviewTab extends AbstractDataSetTab {
             
             Statement statement = tableNode.getSession().getInteractiveConnection().createStatement();
             statement.setMaxRows(maxResults);
-            statement.execute("select * from " + tableNode.getQualifiedName());
+            statement.execute("select * from " + tableNode.getQualifiedName()); //$NON-NLS-1$
             ResultSet resultSet = statement.getResultSet();
             
               
@@ -81,6 +81,6 @@ public class PreviewTab extends AbstractDataSetTab {
     
     
     public String getStatusMessage() {
-        return Messages.getString("DatabaseDetailView.Tab.Preview.status") + " " + getNode().getQualifiedName();
+        return Messages.getString("DatabaseDetailView.Tab.Preview.status") + " " + getNode().getQualifiedName(); //$NON-NLS-1$ //$NON-NLS-2$
     }
 }

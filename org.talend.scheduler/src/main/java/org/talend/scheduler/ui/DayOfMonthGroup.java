@@ -104,7 +104,7 @@ public class DayOfMonthGroup extends Group implements IWidgetEnableListener {
     /**
      * Displays days.
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked") //$NON-NLS-1$
     private void displayDays() {
         Collections.sort(days, new Comparator() {
 
@@ -289,8 +289,8 @@ public class DayOfMonthGroup extends Group implements IWidgetEnableListener {
         String[] daysTmp = dayString.split(","); //$NON-NLS-1$
         for (int i = 0; i < daysTmp.length; i++) {
             String day = daysTmp[i];
-            if (day.indexOf("-") != -1) {
-                for (int j = Integer.valueOf(day.split("-")[0]); j <= Integer.valueOf(day.split("-")[1]); j++) {
+            if (day.indexOf("-") != -1) { //$NON-NLS-1$
+                for (int j = Integer.valueOf(day.split("-")[0]); j <= Integer.valueOf(day.split("-")[1]); j++) { //$NON-NLS-1$ //$NON-NLS-2$
 
                     if (j < 1 || j > DAY_SIZE) {
                         continue;

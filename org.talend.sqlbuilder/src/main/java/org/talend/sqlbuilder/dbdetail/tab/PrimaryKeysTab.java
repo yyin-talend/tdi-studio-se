@@ -39,7 +39,7 @@ import org.talend.sqlbuilder.sessiontree.model.SessionTreeNode;
 public class PrimaryKeysTab extends AbstractDataSetTab {
 
     public String getLabelText() {
-        return Messages.getString("DatabaseDetailView.Tab.PrimaryKeys");
+        return Messages.getString("DatabaseDetailView.Tab.PrimaryKeys"); //$NON-NLS-1$
     }
 
     public DataSet getDataSet() throws Exception {
@@ -64,7 +64,7 @@ public class PrimaryKeysTab extends AbstractDataSetTab {
             SessionTreeNode treeNode = node.getSession();
 
             // For synonym table, should get the corresponding table name .
-            if (ti.getType().equals("SYNONYM")) {
+            if (ti.getType().equals("SYNONYM")) { //$NON-NLS-1$
 
                 String realTableName = ExtractMetaDataFromDataBase.getTableNameBySynonym(treeNode
                         .getInteractiveConnection().getConnection(), ti.getSimpleName());
@@ -85,6 +85,6 @@ public class PrimaryKeysTab extends AbstractDataSetTab {
     }
 
     public String getStatusMessage() {
-        return Messages.getString("DatabaseDetailView.Tab.ColumnInfo.status") + " " + getNode().getQualifiedName();
+        return Messages.getString("DatabaseDetailView.Tab.ColumnInfo.status") + " " + getNode().getQualifiedName(); //$NON-NLS-1$ //$NON-NLS-2$
     }
 }

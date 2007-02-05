@@ -39,7 +39,7 @@ import org.talend.sqlbuilder.SqlBuilderPlugin;
  */
 public class CopyCellAction extends AbstractDataSetTableContextAction {
 
-    private static final ImageDescriptor IMAGE = ImageUtil.getDescriptor("Images.ExportToClipBoardIcon");
+    private static final ImageDescriptor IMAGE = ImageUtil.getDescriptor("Images.ExportToClipBoardIcon"); //$NON-NLS-1$
 
 
     /*
@@ -48,7 +48,7 @@ public class CopyCellAction extends AbstractDataSetTableContextAction {
      * @see org.eclipse.jface.action.IAction#getText()
      */
     public String getText() {
-        return Messages.getString("DataSetTable.Actions.CopyCell");
+        return Messages.getString("DataSetTable.Actions.CopyCell"); //$NON-NLS-1$
     }
 
 
@@ -85,7 +85,7 @@ public class CopyCellAction extends AbstractDataSetTableContextAction {
             clipBoard.setContents(new Object[] {items[0].getText(columnIndex)}, new Transfer[] {textTransfer});
 
         } catch (Exception e) {
-            SqlBuilderPlugin.log("Error exporting cell to clipboard ", e);
+            SqlBuilderPlugin.log(org.talend.sqlbuilder.Messages.getString("CopyCellAction.logMessage"), e); //$NON-NLS-1$
         }
     }
 

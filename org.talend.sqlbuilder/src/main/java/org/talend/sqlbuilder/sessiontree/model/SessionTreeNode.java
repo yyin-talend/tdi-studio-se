@@ -40,6 +40,7 @@ import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNode.EProperties;
+import org.talend.sqlbuilder.Messages;
 import org.talend.sqlbuilder.SqlBuilderPlugin;
 import org.talend.sqlbuilder.dbdetail.DetailTabManager;
 import org.talend.sqlbuilder.dbstructure.DatabaseModel;
@@ -164,7 +165,7 @@ public class SessionTreeNode implements ISessionTreeNode {
     /**
      * @param n SessionTreeNode.
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked") //$NON-NLS-1$
     public void add(ISessionTreeNode n) {
         ls.add(n);
     }
@@ -213,12 +214,12 @@ public class SessionTreeNode implements ISessionTreeNode {
         try {
             interactiveConnection.close();
         } catch (Throwable e) {
-            SqlBuilderPlugin.log("Error closing interactive database connection", e);
+            SqlBuilderPlugin.log(Messages.getString("SessionTreeNode.logMessage1"), e); //$NON-NLS-1$
         }
         try {
             backgroundConnection.close();
         } catch (Throwable e) {
-            SqlBuilderPlugin.log("Error closing background database connection", e);
+            SqlBuilderPlugin.log(Messages.getString("SessionTreeNode.logMessage2"), e); //$NON-NLS-1$
         }
 
     }
@@ -226,7 +227,7 @@ public class SessionTreeNode implements ISessionTreeNode {
     /**
      * Commit.
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked") //$NON-NLS-1$
     public synchronized void commit() {
         try {
 
@@ -240,7 +241,7 @@ public class SessionTreeNode implements ISessionTreeNode {
             }
 
         } catch (Throwable e) {
-            SqlBuilderPlugin.log("Error committing ", e);
+            SqlBuilderPlugin.log(Messages.getString("SessionTreeNode.logMessage3"), e); //$NON-NLS-1$
         }
 
     }
@@ -256,7 +257,7 @@ public class SessionTreeNode implements ISessionTreeNode {
      * @return Catalog.
      */
     public String getCatalog() {
-        String cat = "";
+        String cat = ""; //$NON-NLS-1$
         try {
             cat = interactiveConnection.getCatalog();
         } catch (Throwable e) {
@@ -366,7 +367,7 @@ public class SessionTreeNode implements ISessionTreeNode {
     /**
      * @return QueuedConnectionNumber
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked") //$NON-NLS-1$
     public synchronized Integer getQueuedConnectionNumber() {
 
         Integer number = new Integer(nextConnectionNumber);
@@ -430,7 +431,7 @@ public class SessionTreeNode implements ISessionTreeNode {
                         break;
                     }
                 } catch (Exception e) {
-                    SqlBuilderPlugin.log("Couldn't perform commit/rollback or catalog change.", e);
+                    SqlBuilderPlugin.log(Messages.getString("SessionTreeNode.logMessage4"), e); //$NON-NLS-1$
                 }
             }
 
@@ -451,7 +452,7 @@ public class SessionTreeNode implements ISessionTreeNode {
     /**
      * rollback.
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked") //$NON-NLS-1$
     public synchronized void rollback() {
         try {
 
@@ -465,7 +466,7 @@ public class SessionTreeNode implements ISessionTreeNode {
             }
 
         } catch (Throwable e) {
-            SqlBuilderPlugin.log("Error rollbacking ", e);
+            SqlBuilderPlugin.log(Messages.getString("SessionTreeNode.logMessage5"), e); //$NON-NLS-1$
 
         }
     }
@@ -474,7 +475,7 @@ public class SessionTreeNode implements ISessionTreeNode {
      * @param cat Catalog.
      * @exception SQLException SQLException.
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked") //$NON-NLS-1$
     public synchronized void setCatalog(String cat) throws SQLException {
 
         interactiveConnection.setCatalog(cat);
@@ -509,8 +510,8 @@ public class SessionTreeNode implements ISessionTreeNode {
             return alias.getName();
 
         } catch (java.lang.Throwable e) {
-            SqlBuilderPlugin.log("Error getting the alias name ", e);
-            return "";
+            SqlBuilderPlugin.log(Messages.getString("SessionTreeNode.logMessage6"), e); //$NON-NLS-1$
+            return ""; //$NON-NLS-1$
         }
     }
 

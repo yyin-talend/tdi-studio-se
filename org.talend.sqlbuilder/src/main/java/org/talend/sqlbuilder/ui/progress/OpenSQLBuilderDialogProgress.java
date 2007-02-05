@@ -57,8 +57,8 @@ public class OpenSQLBuilderDialogProgress implements IRunnableWithProgress {
 	 */
 	public void run(IProgressMonitor monitor) throws InvocationTargetException,
 			InterruptedException {
-		monitor.setTaskName(Messages.getString("OpenDialogJob.Waitdatabase"));
-        monitor.beginTask(Messages.getString("OpenDialogJob.Waitdatabase"), IProgressMonitor.UNKNOWN);
+		monitor.setTaskName(Messages.getString("OpenDialogJob.Waitdatabase")); //$NON-NLS-1$
+        monitor.beginTask(Messages.getString("OpenDialogJob.Waitdatabase"), IProgressMonitor.UNKNOWN); //$NON-NLS-1$
         try {
         	repositoryNode = manager.getRepositoryNodeByBuildIn(null, connectionParameters);
             connectionParameters.setRepositoryNodeBuiltIn(repositoryNode);
@@ -86,13 +86,13 @@ public class OpenSQLBuilderDialogProgress implements IRunnableWithProgress {
             // check for cancellation by user
             if (monitor.isCanceled()) {
                 monitor.done();
-                throw new InterruptedException("Open SqlBuilderDialog cancelled.");
+                throw new InterruptedException(Messages.getString("OpenSQLBuilderDialogProgress.exceptionMessage")); //$NON-NLS-1$
             }
             monitor.done();
             
             
         } catch (Throwable e) {
-        	SqlBuilderPlugin.log("Open Dialog Job In Built-In Mode: Failure!", e);
+        	SqlBuilderPlugin.log(Messages.getString("OpenSQLBuilderDialogProgress.logMessage"), e); //$NON-NLS-1$
         } finally {
             monitor.done();
         }

@@ -54,7 +54,7 @@ public class DeleteTableCommand extends Command {
         for (Table table : tables) {
             for (Object obj : table.getColumns()) {
                 if (obj instanceof Column) {
-                    if (!((Column) obj).getElementName().equals("*")) {
+                    if (!((Column) obj).getElementName().equals("*")) { //$NON-NLS-1$
                         columns.add((Column) obj);
                     }
                 }

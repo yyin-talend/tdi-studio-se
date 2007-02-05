@@ -179,7 +179,7 @@ public class DataSet {
      *            null if all columns should be included.
      * @throws Exception if the dataset could not be created
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked") //$NON-NLS-1$
     private void initialize(String[] columnLabels, ResultSet resultSet, int[] relevantIndeces) throws Exception {
 
         ResultSetMetaData metadata = resultSet.getMetaData();
@@ -302,7 +302,7 @@ public class DataSet {
      * @param columnIndex primary sort column index
      * @param sortDirection SWT.UP | SWT.DOWN
      */    
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("unchecked") //$NON-NLS-1$
     public void sort(int columnIndex, int sortDirection) {
     	
     	if (psorter == null) {

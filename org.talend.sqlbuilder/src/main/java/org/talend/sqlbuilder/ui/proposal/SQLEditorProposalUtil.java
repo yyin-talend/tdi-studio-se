@@ -35,6 +35,7 @@ import org.talend.commons.ui.swt.colorstyledtext.jedit.Mode;
 import org.talend.commons.ui.swt.colorstyledtext.jedit.Modes;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.sqlbuilder.IConstants;
+import org.talend.sqlbuilder.Messages;
 import org.talend.sqlbuilder.SqlBuilderPlugin;
 import org.talend.sqlbuilder.repository.utility.SQLBuilderRepositoryNodeManager;
 import org.talend.sqlbuilder.util.QueryTokenizer;
@@ -105,19 +106,19 @@ public class SQLEditorProposalUtil {
             int indexOfFrom = -1;
             int indexOfWhere = -1;
 
-            indexOfFrom = getIndex(currentSql, "from");
-            indexOfWhere = getIndex(currentSql, "where");
+            indexOfFrom = getIndex(currentSql, "from"); //$NON-NLS-1$
+            indexOfWhere = getIndex(currentSql, "where"); //$NON-NLS-1$
 
             // Checks if string between "from" and "where".
             if ((indexOfFrom != -1) && (indexOfWhere != -1)) {
                 String strBetweenFromAndWhere = currentSql.substring(indexOfFrom + 4, indexOfWhere).trim();
-                String[] splitArray = strBetweenFromAndWhere.split(",");
+                String[] splitArray = strBetweenFromAndWhere.split(","); //$NON-NLS-1$
                 handleStrBetweenFromAndWhere(splitArray);
             }
 
             if (queryStrings.isEmpty() || (curSql[1].length() == 0 && curSql[0].length() == 0)) {
                 for (String string : allString) {
-                    proposals.add(createAllProposal("", string));
+                    proposals.add(createAllProposal("", string)); //$NON-NLS-1$
                 }
             } else {
                 while (!queryStrings.isEmpty()) {
@@ -125,7 +126,7 @@ public class SQLEditorProposalUtil {
                 }
             }
         } catch (Exception e) {
-            SqlBuilderPlugin.log("Create Proposal Failure: ", e);
+            SqlBuilderPlugin.log(Messages.getString("SQLEditorProposalUtil.logMessage1"), e); //$NON-NLS-1$
         }
         IContentProposal[] res = new IContentProposal[proposals.size()];
         res = proposals.toArray(res);
@@ -140,7 +141,7 @@ public class SQLEditorProposalUtil {
      */
     private void handleStrBetweenFromAndWhere(String[] splitArray) {
         for (String string : splitArray) {
-            int indexOfWhiteSpace = string.trim().indexOf(" ");
+            int indexOfWhiteSpace = string.trim().indexOf(" "); //$NON-NLS-1$
             // Checks if has white space, that mean has alias.
             if (indexOfWhiteSpace != -1) {
                 handleAliasBetweenFromAndWhere(string, indexOfWhiteSpace);
@@ -179,33 +180,33 @@ public class SQLEditorProposalUtil {
             String str = (String) object;
             if (isTable(str, originalStr)) {
 
-                String tempStr = "";
-                if (originalStr.endsWith("\"")) {
-                    tempStr = str.replace(originalStr.replaceAll("\"", ""), aliasStr);
+                String tempStr = ""; //$NON-NLS-1$
+                if (originalStr.endsWith("\"")) { //$NON-NLS-1$
+                    tempStr = str.replace(originalStr.replaceAll("\"", ""), aliasStr); //$NON-NLS-1$ //$NON-NLS-2$
                 } else {
                     tempStr = str.replace(originalStr, aliasStr);
                 }
-                needChangedList.add("alias: " + tempStr + "\n" + "Description: This is alias of " + str);
+                needChangedList.add("alias: " + tempStr + "\n" + "Description: This is alias of " + str); //$NON-NLS-2$
 
                 // Sets key and values into tablesAndColums.
-                String newElement = "";
+                String newElement = ""; //$NON-NLS-1$
                 List<String> newColumnList = new ArrayList<String>();
                 Set<String> keySet = tableAndColumns.keySet();
                 for (Iterator iter = keySet.iterator(); iter.hasNext();) {
                     String key = (String) iter.next();
                     String element = key;
                     element = handleKeyStr(element);
-                    if (element.equals(originalStr.replaceAll("\"", ""))) {
+                    if (element.equals(originalStr.replaceAll("\"", ""))) { //$NON-NLS-1$ //$NON-NLS-2$
                         newElement = tempStr;
                         List<String> columnList = tableAndColumns.get(key);
                         for (String string2 : columnList) {
                             if (string2.indexOf(originalStr) != -1) {
-                                newColumnList.add(string2.replaceFirst(originalStr.replaceAll("\"", ""), aliasStr));
+                                newColumnList.add(string2.replaceFirst(originalStr.replaceAll("\"", ""), aliasStr)); //$NON-NLS-1$ //$NON-NLS-2$
                             }
                         }
                     }
                 }
-                if (!newElement.equals("") && (newColumnList.size() != 0)) {
+                if (!newElement.equals("") && (newColumnList.size() != 0)) { //$NON-NLS-1$
                     this.tableAndColumns.put(newElement, newColumnList);
                 }
             }
@@ -219,10 +220,10 @@ public class SQLEditorProposalUtil {
      * @return
      */
     private String handleKeyStr(String element) {
-        element = element.substring(element.indexOf(".") + 1);
-        element = element.startsWith("\"") || element.startsWith("'") ? element.substring(1) : element;
+        element = element.substring(element.indexOf(".") + 1); //$NON-NLS-1$
+        element = element.startsWith("\"") || element.startsWith("'") ? element.substring(1) : element; //$NON-NLS-1$ //$NON-NLS-2$
         int elementLength = element.length();
-        element = element.endsWith("\"") || element.endsWith("'") ? element.substring(0, elementLength - 1) : element;
+        element = element.endsWith("\"") || element.endsWith("'") ? element.substring(0, elementLength - 1) : element; //$NON-NLS-1$ //$NON-NLS-2$
         return element;
     }
 
@@ -253,14 +254,14 @@ public class SQLEditorProposalUtil {
      * @return
      */
     private boolean isTable(String str, String originalStr) {
-        int firstindexOf = str.indexOf(".");
-        int lastIndexOf = str.lastIndexOf(".");
+        int firstindexOf = str.indexOf("."); //$NON-NLS-1$
+        int lastIndexOf = str.lastIndexOf("."); //$NON-NLS-1$
         if (firstindexOf == -1 || firstindexOf != lastIndexOf) {
             return false;
         }
         String tableName = str.substring(firstindexOf + 1);
 
-        return tableName.replaceAll("\"", "").equals(originalStr.replaceAll("\"", ""));
+        return tableName.replaceAll("\"", "").equals(originalStr.replaceAll("\"", "")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
     }
 
     /**
@@ -271,15 +272,15 @@ public class SQLEditorProposalUtil {
     private void findAlias(String currentSql) {
 
         // in case of : alias1.columnname1, alias2.columnname2
-        String str1 = currentSql.replaceAll(",", " ");
-        String[] splitStr1 = str1.split(" ");
+        String str1 = currentSql.replaceAll(",", " "); //$NON-NLS-1$ //$NON-NLS-2$
+        String[] splitStr1 = str1.split(" "); //$NON-NLS-1$
         if (splitStr1 == null || splitStr1.length == 0) {
             return;
         }
         for (String string : splitStr1) {
 
-            int firstIndexOfDot = string.indexOf(".");
-            int lastIndexOfDot = string.lastIndexOf(".");
+            int firstIndexOfDot = string.indexOf("."); //$NON-NLS-1$
+            int lastIndexOfDot = string.lastIndexOf("."); //$NON-NLS-1$
 
             if (firstIndexOfDot != -1 && lastIndexOfDot == firstIndexOfDot) {
                 String aliasStr = string.substring(0, firstIndexOfDot).trim();
@@ -322,11 +323,11 @@ public class SQLEditorProposalUtil {
      * @return
      */
     private boolean isExisting(String str) {
-        String compareStr1 = "'" + str + "'";
-        String compareStr2 = "\"" + str + "\"";
+        String compareStr1 = "'" + str + "'"; //$NON-NLS-1$ //$NON-NLS-2$
+        String compareStr2 = "\"" + str + "\""; //$NON-NLS-1$ //$NON-NLS-2$
         for (int i = 0; i < allString.size(); i++) {
             String strFromAllString = allString.get(i);
-            if (this.dbType.equals("PostgreSQL") && strFromAllString.indexOf(str + ".") != -1) {
+            if (this.dbType.equals("PostgreSQL") && strFromAllString.indexOf(str + ".") != -1) { //$NON-NLS-1$ //$NON-NLS-2$
                 return true;
             } else if (strFromAllString.equalsIgnoreCase(str) || strFromAllString.indexOf(compareStr1) != -1
                     || strFromAllString.indexOf(compareStr2) != -1) {
@@ -354,14 +355,14 @@ public class SQLEditorProposalUtil {
         while (qt.hasQuery()) {
             String querySql = qt.nextQuery();
             // ignore commented lines.
-            if (!querySql.startsWith("--")) {
+            if (!querySql.startsWith("--")) { //$NON-NLS-1$
                 queryStringsTmp.add(querySql);
             }
         }
         List<String> queryStrings = new ArrayList<String>();
         while (!queryStringsTmp.isEmpty()) {
             String temp = (String) queryStringsTmp.remove(0);
-            String querySql = temp.replaceAll("\n", "");
+            String querySql = temp.replaceAll("\n", ""); //$NON-NLS-1$ //$NON-NLS-2$
             queryStrings.add(querySql);
         }
         return queryStrings;
@@ -378,22 +379,22 @@ public class SQLEditorProposalUtil {
         String before = content.substring(0, position);
         String after = content.substring(position);
         if (before != null && before.trim().length() != 0) {
-            if (before.lastIndexOf(";") == -1) {
-                curSql[0] = before.replaceAll("\n", "");
+            if (before.lastIndexOf(";") == -1) { //$NON-NLS-1$
+                curSql[0] = before.replaceAll("\n", ""); //$NON-NLS-1$ //$NON-NLS-2$
             } else {
-                curSql[0] = before.substring(before.lastIndexOf(";") + 1, position).replaceAll("\n", "");
+                curSql[0] = before.substring(before.lastIndexOf(";") + 1, position).replaceAll("\n", ""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
             }
         } else {
-            curSql[0] = "";
+            curSql[0] = ""; //$NON-NLS-1$
         }
         if (after != null && after.trim().length() != 0) {
-            if (after.lastIndexOf(";") == -1) {
-                curSql[1] = after.replaceAll("\n", "");
+            if (after.lastIndexOf(";") == -1) { //$NON-NLS-1$
+                curSql[1] = after.replaceAll("\n", ""); //$NON-NLS-1$ //$NON-NLS-2$
             } else {
-                curSql[1] = after.substring(0, after.indexOf(";")).replaceAll("\n", "");
+                curSql[1] = after.substring(0, after.indexOf(";")).replaceAll("\n", ""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
             }
         } else {
-            curSql[1] = "";
+            curSql[1] = ""; //$NON-NLS-1$
         }
 
         return curSql;
@@ -405,8 +406,8 @@ public class SQLEditorProposalUtil {
      * @return all Key words of SQL.
      */
     private String[] getAllKeywords() {
-        Mode mode = Modes.getMode(languageMode + ".xml");
-        String[] keywords = mode.getDefaultRuleSet().getKeywords().get("KEYWORD1");
+        Mode mode = Modes.getMode(languageMode + ".xml"); //$NON-NLS-1$
+        String[] keywords = mode.getDefaultRuleSet().getKeywords().get("KEYWORD1"); //$NON-NLS-1$
         return keywords;
     }
 
@@ -449,9 +450,9 @@ public class SQLEditorProposalUtil {
     private void hasSQLQueryProposal(List<String> queryStrings, String[] curSql) {
         String querySql = (String) queryStrings.remove(0);
         if ((curSql[0] + curSql[1]).trim().startsWith(querySql.trim())) {
-            String hasInput = "";
-            int seqIndex = curSql[0].lastIndexOf(" ");
-            int dotIndex = curSql[0].lastIndexOf(".");
+            String hasInput = ""; //$NON-NLS-1$
+            int seqIndex = curSql[0].lastIndexOf(" "); //$NON-NLS-1$
+            int dotIndex = curSql[0].lastIndexOf("."); //$NON-NLS-1$
             List<String> list = new ArrayList<String>();
             if (seqIndex > -1 && dotIndex > seqIndex + 1) {
                 String tableName = curSql[0].substring(seqIndex, dotIndex).trim();
@@ -480,19 +481,19 @@ public class SQLEditorProposalUtil {
      */
     private void createProposal(String hasInput, List<String> list) {
         if (list != null) {
-            String newHasInput = hasInput.replaceAll("\"", "");
-            int hasIndex = newHasInput.indexOf(".");
+            String newHasInput = hasInput.replaceAll("\"", ""); //$NON-NLS-1$ //$NON-NLS-2$
+            int hasIndex = newHasInput.indexOf("."); //$NON-NLS-1$
             for (String string : list) {
-                int index = string.indexOf(".");
-                int index2 = string.lastIndexOf(".");
-                String tmp2 = "";
-                String column = "";
+                int index = string.indexOf("."); //$NON-NLS-1$
+                int index2 = string.lastIndexOf("."); //$NON-NLS-1$
+                String tmp2 = ""; //$NON-NLS-1$
+                String column = ""; //$NON-NLS-1$
                 if (index > -1) {
-                    tmp2 = string.substring(index + 2, string.length() - 1).replaceAll("\"", "");
+                    tmp2 = string.substring(index + 2, string.length() - 1).replaceAll("\"", ""); //$NON-NLS-1$ //$NON-NLS-2$
                     if (index2 > index) {
-                        column = string.substring(index2 + 2, string.length() - 1).replaceAll("\"", "");
+                        column = string.substring(index2 + 2, string.length() - 1).replaceAll("\"", ""); //$NON-NLS-1$ //$NON-NLS-2$
                         if (hasIndex == -1) {
-                            tmp2 = "";
+                            tmp2 = ""; //$NON-NLS-1$
                         }
                     }
                 } else {
@@ -500,9 +501,9 @@ public class SQLEditorProposalUtil {
                 }
                 int index3 = string.indexOf("alias: ");
                 if (index3 != -1) {
-                    String string2 = string.substring(index3 + 7, string.indexOf("\n"));
-                    index = string2.indexOf(".");
-                    tmp2 = string2.substring(index + 2, string2.length() - 1).replaceAll("\"", "");
+                    String string2 = string.substring(index3 + 7, string.indexOf("\n")); //$NON-NLS-1$
+                    index = string2.indexOf("."); //$NON-NLS-1$
+                    tmp2 = string2.substring(index + 2, string2.length() - 1).replaceAll("\"", ""); //$NON-NLS-1$ //$NON-NLS-2$
                 }
                 if (tmp2.toLowerCase().startsWith(newHasInput.toLowerCase())
                         || column.toLowerCase().startsWith(newHasInput.toLowerCase())) {
@@ -534,9 +535,9 @@ public class SQLEditorProposalUtil {
         Set<String> alltablenames = tableAndColumns.keySet();
         Map<String, String> tables = new HashMap<String, String>();
         for (String string : alltablenames) {
-            tables.put(string.substring(string.indexOf(".") + 2, string.length() - 1), string);
+            tables.put(string.substring(string.indexOf(".") + 2, string.length() - 1), string); //$NON-NLS-1$
         }
-        List<String> columns = tableAndColumns.get(tables.get(tableName.replaceAll("\"", "").trim()));
+        List<String> columns = tableAndColumns.get(tables.get(tableName.replaceAll("\"", "").trim())); //$NON-NLS-1$ //$NON-NLS-2$
         return columns;
     }
 }

@@ -39,15 +39,15 @@ import org.talend.core.model.metadata.builder.connection.MetadataTable;
  */
 public class Table extends Element {
 
-    public static final String PROP_ERDIAGRAM = "erDiagram";
+    public static final String PROP_ERDIAGRAM = "erDiagram"; //$NON-NLS-1$
 
-    public static final String PROP_SIZE = "size";
+    public static final String PROP_SIZE = "size"; //$NON-NLS-1$
 
-    public static final String PROP_NAME = "name";
+    public static final String PROP_NAME = "name"; //$NON-NLS-1$
 
-    public static final String PROP_COLUMNS = "columns";
+    public static final String PROP_COLUMNS = "columns"; //$NON-NLS-1$
 
-    public static final String PROP_LOCATION = "location";
+    public static final String PROP_LOCATION = "location"; //$NON-NLS-1$
 
     private static final long serialVersionUID = 1L;
 
@@ -83,7 +83,7 @@ public class Table extends Element {
     private void formColumns(List<MetadataColumn> selectedColumns) {
         EList metadataColumns = metadataTable.getColumns();
         Column col = new Column();
-        col.setElementName("*");
+        col.setElementName("*"); //$NON-NLS-1$
         col.setSelected(true);
         col.setTable(this);
         addColumn(col);
@@ -109,7 +109,7 @@ public class Table extends Element {
      * 
      * @param column
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked") //$NON-NLS-1$
     private void addColumn(Object column) {
         columns.add(column);
     }

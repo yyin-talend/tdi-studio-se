@@ -27,6 +27,7 @@ import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.metadata.builder.connection.Query;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.ui.utils.DataStringConnection;
+import org.talend.sqlbuilder.Messages;
 import org.talend.sqlbuilder.repository.utility.SQLBuilderRepositoryNodeManager;
 
 /**
@@ -73,11 +74,11 @@ public class ConnectionParameters {
 
     static {
         try {
-            hashTable.put("MySQL", "MySQL");
-            hashTable.put("PostgreSQL", "PostgreSQL");
-            hashTable.put("Oracle", "Oracle with SID");
-            hashTable.put("Generic ODBC", "Generic ODBC");
-            hashTable.put("Microsoft SQL (Odbc driver)", "Microsoft SQL Server (Odbc driver)");
+            hashTable.put("MySQL", "MySQL"); //$NON-NLS-1$ //$NON-NLS-2$
+            hashTable.put("PostgreSQL", "PostgreSQL"); //$NON-NLS-1$ //$NON-NLS-2$
+            hashTable.put("Oracle", "Oracle with SID"); //$NON-NLS-1$ //$NON-NLS-2$
+            hashTable.put("Generic ODBC", "Generic ODBC"); //$NON-NLS-1$ //$NON-NLS-2$
+            hashTable.put("Microsoft SQL (Odbc driver)", "Microsoft SQL Server (Odbc driver)"); //$NON-NLS-1$ //$NON-NLS-2$
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -239,7 +240,7 @@ public class ConnectionParameters {
      */
     public void setDbName(String dbName) {
         this.dbName = trimInvertedComma(dbName);
-        if (this.datasource == null || this.datasource.equals("")) {
+        if (this.datasource == null || this.datasource.equals("")) { //$NON-NLS-1$
             this.datasource = this.dbName;
         }
     }
@@ -360,7 +361,7 @@ public class ConnectionParameters {
      */
     private String trimInvertedComma(String input) {
 
-        String out = input.replaceAll("\'", "");
+        String out = input.replaceAll("\'", ""); //$NON-NLS-1$ //$NON-NLS-2$
         return out;
     }
 
@@ -371,7 +372,7 @@ public class ConnectionParameters {
      */
     public String getURL() {
         if (isRepository()) {
-            throw new RuntimeException("This is a repository , should not call this method.");
+            throw new RuntimeException(Messages.getString("ConnectionParameters.exceptionMessage")); //$NON-NLS-1$
         }
         DataStringConnection urlDataStringConnection = new DataStringConnection();
         int dbIndex = urlDataStringConnection.getIndexOfLabel(dbType);
@@ -398,7 +399,7 @@ public class ConnectionParameters {
      * @return
      */
     public String getSelectedComponentName() {
-        return selectedComponentName != null ? selectedComponentName : "";
+        return selectedComponentName != null ? selectedComponentName : ""; //$NON-NLS-1$
     }
 
     /**

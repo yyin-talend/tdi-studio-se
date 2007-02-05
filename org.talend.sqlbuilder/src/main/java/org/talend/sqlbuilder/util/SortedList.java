@@ -25,6 +25,8 @@ import java.util.AbstractList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.Iterator;
+
+import org.talend.sqlbuilder.Messages;
 /**
  * 
  * DOC dev  class global comment. Detailled comment
@@ -33,7 +35,7 @@ import java.util.Iterator;
  * $Id: SortedList.java,v 1.2 2006/10/26 21:42:08 qiang.zhang Exp $
  *
  */
-@SuppressWarnings("unchecked")
+@SuppressWarnings("unchecked") //$NON-NLS-1$
 public class SortedList extends AbstractList {
 
     protected int psize;
@@ -153,7 +155,7 @@ public class SortedList extends AbstractList {
      */
     public Object remove(int index) {
         if (index >= psize || index < 0) {
-        	throw new ArrayIndexOutOfBoundsException("index greater then size or below zero for remove " + index); 
+        	throw new ArrayIndexOutOfBoundsException(Messages.getString("SortedList.exceptionMessage") + index);  //$NON-NLS-1$
         }
 
         Object data = pdata[index];

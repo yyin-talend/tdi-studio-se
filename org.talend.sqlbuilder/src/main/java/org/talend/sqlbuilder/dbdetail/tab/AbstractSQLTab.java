@@ -28,6 +28,7 @@ import java.sql.Statement;
 import net.sourceforge.squirrel_sql.fw.sql.SQLConnection;
 
 import org.talend.sqlbuilder.IConstants;
+import org.talend.sqlbuilder.Messages;
 import org.talend.sqlbuilder.SqlBuilderPlugin;
 import org.talend.sqlbuilder.dataset.dataset.DataSet;
 
@@ -90,7 +91,7 @@ public abstract class AbstractSQLTab extends AbstractDataSetTab {
             
         } catch (Exception e) {
             
-            SqlBuilderPlugin.log("Couldn't load source for: " + getNode().getName(), e);
+            SqlBuilderPlugin.log(Messages.getString("AbstractSQLTab.logMessage1") + getNode().getName(), e); //$NON-NLS-1$
             
         } finally {
             
@@ -98,14 +99,14 @@ public abstract class AbstractSQLTab extends AbstractDataSetTab {
                 try {
                     stmt.close();
                 } catch (Exception e) {
-                    SqlBuilderPlugin.log("Error closing statement", e);
+                    SqlBuilderPlugin.log(Messages.getString("AbstractSQLTab.logMessage2"), e); //$NON-NLS-1$
                 }
             }
             if (pStmt != null) {
                 try {
                     pStmt.close();
                 } catch (Exception e) {
-                    SqlBuilderPlugin.log("Error closing statement", e);
+                    SqlBuilderPlugin.log(Messages.getString("AbstractSQLTab.logMessage2"), e); //$NON-NLS-1$
                 }
             }         
         }

@@ -88,19 +88,19 @@ public class DB2ExplainPlanExecution extends AbstractSQLExecution {
             if (columnIndex == 1) {
                 int cost = en.getCost();
                 if (cost != -1) {
-                    return "" + cost;
+                    return "" + cost; //$NON-NLS-1$
                 } else {
-                    return "";
+                    return ""; //$NON-NLS-1$
                 }
             } else if (columnIndex == 2) {
                 int card = en.getCardinality();
                 if (card != -1) {
-                    return "" + card;
+                    return "" + card; //$NON-NLS-1$
                 } else {
-                    return "";
+                    return ""; //$NON-NLS-1$
                 }
             }
-            return "";
+            return ""; //$NON-NLS-1$
         }
     }
 	
@@ -121,14 +121,14 @@ public class DB2ExplainPlanExecution extends AbstractSQLExecution {
         sqlResult.setSqlStatement(sqlStatement);
         
 //      set initial message
-        setProgressMessage(Messages.getString("SQLResultsView.ConnectionWait"));
+        setProgressMessage(Messages.getString("SQLResultsView.ConnectionWait")); //$NON-NLS-1$
 	}
 	
 	private void displayResults(final ExplainNode node) {
 
 		 Display.getDefault().asyncExec(new Runnable() {
 
-            @SuppressWarnings("deprecation")
+            @SuppressWarnings("deprecation") //$NON-NLS-1$
 			public void run() {
 
                 clearCanvas();
@@ -153,11 +153,11 @@ public class DB2ExplainPlanExecution extends AbstractSQLExecution {
                     table.setLinesVisible(true);
                     table.setHeaderVisible(true);
                     TableColumn tc = new TableColumn(table, SWT.NULL);
-                    tc.setText("");
+                    tc.setText(""); //$NON-NLS-1$
                     tc = new TableColumn(table, SWT.NULL);
-                    tc.setText("Cost");
+                    tc.setText(Messages.getString("DB2ExplainPlanExecution.tableColumnText1")); //$NON-NLS-1$
                     tc = new TableColumn(table, SWT.NULL);
-                    tc.setText("Cardinality");
+                    tc.setText(Messages.getString("DB2ExplainPlanExecution.tableColumnText2")); //$NON-NLS-1$
                     TableLayout tableLayout = new TableLayout();
                     tableLayout.addColumnData(new ColumnWeightData(6, 150, true));
                     tableLayout.addColumnData(new ColumnWeightData(1, 50, true));
@@ -234,7 +234,7 @@ public class DB2ExplainPlanExecution extends AbstractSQLExecution {
                                         }
                                     }
                                 } catch (Exception e1) {
-                                    SqlBuilderPlugin.log("Error refreshing", e1);
+                                    SqlBuilderPlugin.log(Messages.getString("DB2ExplainPlanExecution.logMessageError1"), e1); //$NON-NLS-1$
                                 }
 
                                 break;
@@ -256,7 +256,7 @@ public class DB2ExplainPlanExecution extends AbstractSQLExecution {
                     errorLabel.setText(message);
                     errorLabel.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false));
 
-                    SqlBuilderPlugin.log("Error creating explain tab", e);
+                    SqlBuilderPlugin.log(Messages.getString("DB2ExplainPlanExecution.logMessageError2"), e); //$NON-NLS-1$
                 }
 
                 composite.layout();
@@ -267,17 +267,17 @@ public class DB2ExplainPlanExecution extends AbstractSQLExecution {
     }
 
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked") //$NON-NLS-1$
 	protected void doExecution() throws Exception {
 
         try {
 
-            setProgressMessage(Messages.getString("SQLResultsView.Executing"));
+            setProgressMessage(Messages.getString("SQLResultsView.Executing")); //$NON-NLS-1$
 
             int idp = new Random().nextInt(1000);
 
             prepStmt = connection.prepareStatement(
-                    "delete from SYSTOOLS.explain_statement where queryno = ? ");
+                    "delete from SYSTOOLS.explain_statement where queryno = ? "); //$NON-NLS-1$
             prepStmt.setInt(1, idp);
             prepStmt.executeUpdate();
             prepStmt.close();
@@ -288,7 +288,7 @@ public class DB2ExplainPlanExecution extends AbstractSQLExecution {
             }
             
             stmt = connection.createStatement();
-            stmt.execute("EXPLAIN PLAN SET queryno = " + idp + " FOR " + sqlStatement);
+            stmt.execute("EXPLAIN PLAN SET queryno = " + idp + " FOR " + sqlStatement); //$NON-NLS-1$ //$NON-NLS-2$
             stmt.close();
             stmt = null;
 
@@ -297,16 +297,16 @@ public class DB2ExplainPlanExecution extends AbstractSQLExecution {
             }
             
             prepStmt = connection.prepareStatement(
-                    "SELECT O.Operator_ID as id, S2.Target_ID as parent_id, O.Operator_Type, "
-                            + "S.OBJECT_SCHEMA, EOB.OBJECT_TYPE, S.Object_Name, O.CPU_COST,  "
-                            + "CAST(O.Total_Cost AS INTEGER) Cost FROM SYSTOOLS.EXPLAIN_OPERATOR O "
-                            + "LEFT OUTER JOIN SYSTOOLS.EXPLAIN_STREAM S2 ON O.Operator_ID=S2.Source_ID "
-                            + "LEFT OUTER JOIN SYSTOOLS.EXPLAIN_STREAM S  ON O.Operator_ID = S.Target_ID "
-                            + "AND O.Explain_Time = S.Explain_Time AND S.Object_Name IS NOT NULL "
-                            + "LEFT OUTER JOIN SYSTOOLS.explain_object EOB ON O.Explain_Time = EOB.Explain_Time     "
-                            + "AND S.OBJECT_NAME = EOB.OBJECT_NAME "
-                            + "where o.explain_time =  (select max(explain_time) from SYSTOOLS.explain_statement where queryno = ?) "
-                            + "ORDER BY O.Operator_ID ASC, S2.TARGET_ID ASC ");
+                    "SELECT O.Operator_ID as id, S2.Target_ID as parent_id, O.Operator_Type, " //$NON-NLS-1$
+                            + "S.OBJECT_SCHEMA, EOB.OBJECT_TYPE, S.Object_Name, O.CPU_COST,  " //$NON-NLS-1$
+                            + "CAST(O.Total_Cost AS INTEGER) Cost FROM SYSTOOLS.EXPLAIN_OPERATOR O " //$NON-NLS-1$
+                            + "LEFT OUTER JOIN SYSTOOLS.EXPLAIN_STREAM S2 ON O.Operator_ID=S2.Source_ID " //$NON-NLS-1$
+                            + "LEFT OUTER JOIN SYSTOOLS.EXPLAIN_STREAM S  ON O.Operator_ID = S.Target_ID " //$NON-NLS-1$
+                            + "AND O.Explain_Time = S.Explain_Time AND S.Object_Name IS NOT NULL " //$NON-NLS-1$
+                            + "LEFT OUTER JOIN SYSTOOLS.explain_object EOB ON O.Explain_Time = EOB.Explain_Time     " //$NON-NLS-1$
+                            + "AND S.OBJECT_NAME = EOB.OBJECT_NAME " //$NON-NLS-1$
+                            + "where o.explain_time =  (select max(explain_time) from SYSTOOLS.explain_statement where queryno = ?) " //$NON-NLS-1$
+                            + "ORDER BY O.Operator_ID ASC, S2.TARGET_ID ASC "); //$NON-NLS-1$
             prepStmt.setInt(1, idp);
             ResultSet rs = prepStmt.executeQuery();
 
@@ -320,27 +320,27 @@ public class DB2ExplainPlanExecution extends AbstractSQLExecution {
             int lastId = -1;
 
             while (rs.next()) {
-                String objectType = rs.getString("object_type");
-                String operation = rs.getString("operator_type");
+                String objectType = rs.getString("object_type"); //$NON-NLS-1$
+                String operation = rs.getString("operator_type"); //$NON-NLS-1$
                 String options = null;
-                String objectOwner = rs.getString("object_schema");
-                String objectName = rs.getString("object_name");
+                String objectOwner = rs.getString("object_schema"); //$NON-NLS-1$
+                String objectName = rs.getString("object_name"); //$NON-NLS-1$
                 String optimizer = null;
-                int cardinality = rs.getInt("cpu_cost");
+                int cardinality = rs.getInt("cpu_cost"); //$NON-NLS-1$
                 if (rs.wasNull()) {
                     cardinality = -1;
                 }
 
-                int cost = rs.getInt("cost");
+                int cost = rs.getInt("cost"); //$NON-NLS-1$
                 if (rs.wasNull()) {
                 	cost = -1;
                 	
                 }
-                int parentID = rs.getInt("parent_id");
+                int parentID = rs.getInt("parent_id"); //$NON-NLS-1$
                 if (rs.wasNull()) {
                     parentID = -1;
                 }
-                int id = rs.getInt("id");
+                int id = rs.getInt("id"); //$NON-NLS-1$
 
                 if (id != lastId) {
 
@@ -379,7 +379,7 @@ public class DB2ExplainPlanExecution extends AbstractSQLExecution {
                     stmt.close();
                     stmt = null;
                 } catch (Exception e1) {
-                	SqlBuilderPlugin.log("Error closing statement.", e);
+                	SqlBuilderPlugin.log(Messages.getString("DB2ExplainPlanExecution.logMessageError3"), e); //$NON-NLS-1$
                 }
             }
 
@@ -388,7 +388,7 @@ public class DB2ExplainPlanExecution extends AbstractSQLExecution {
                     prepStmt.close();
                     prepStmt = null;
                 } catch (Exception e1) {
-                	SqlBuilderPlugin.log("Error closing statement.", e);
+                	SqlBuilderPlugin.log(Messages.getString("DB2ExplainPlanExecution.logMessageError3"), e); //$NON-NLS-1$
                 }
             }
             throw e;
@@ -407,13 +407,13 @@ public class DB2ExplainPlanExecution extends AbstractSQLExecution {
                 stmt.cancel();
             } catch (Exception e) {
                 t = e;
-                SqlBuilderPlugin.log("Error cancelling statement.", e);
+                SqlBuilderPlugin.log(Messages.getString("DB2ExplainPlanExecution.logMessageError4"), e); //$NON-NLS-1$
             }
             try {
                 stmt.close();
                 stmt = null;
             } catch (Exception e) {
-            	SqlBuilderPlugin.log("Error closing statement.", e);
+            	SqlBuilderPlugin.log(Messages.getString("DB2ExplainPlanExecution.logMessageError3"), e); //$NON-NLS-1$
             }
         }
 
@@ -423,13 +423,13 @@ public class DB2ExplainPlanExecution extends AbstractSQLExecution {
                 prepStmt.cancel();
             } catch (Exception e) {
                 t = e;
-                SqlBuilderPlugin.log("Error cancelling statement.", e);
+                SqlBuilderPlugin.log(Messages.getString("DB2ExplainPlanExecution.logMessageError4"), e); //$NON-NLS-1$
             }
             try {
                 prepStmt.close();
                 prepStmt = null;
             } catch (Exception e) {
-            	SqlBuilderPlugin.log("Error closing statement.", e);
+            	SqlBuilderPlugin.log(Messages.getString("DB2ExplainPlanExecution.logMessageError3"), e); //$NON-NLS-1$
             }
         }
 

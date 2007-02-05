@@ -34,7 +34,7 @@ import org.talend.sqlbuilder.util.ImageUtil;
  */
 public class SaveFileAsAction extends AbstractEditorAction {
 
-    private ImageDescriptor image = ImageUtil.getDescriptor("Images.SaveFileAsIcon");
+    private ImageDescriptor image = ImageUtil.getDescriptor("Images.SaveFileAsIcon"); //$NON-NLS-1$
 
 
     /* (non-Javadoc)
@@ -49,7 +49,7 @@ public class SaveFileAsAction extends AbstractEditorAction {
      * @see org.talend.sqlbuilder.actions.AbstractEditorAction#getText()
      */
     public String getText() {
-        return Messages.getString("SQLEditor.Actions.SaveAs");
+        return Messages.getString("SQLEditor.Actions.SaveAs"); //$NON-NLS-1$
     }
 
 

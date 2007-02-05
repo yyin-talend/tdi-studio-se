@@ -24,6 +24,7 @@ package org.talend.sqlbuilder.erdiagram.ui.commands;
 import java.util.List;
 
 import org.eclipse.gef.commands.Command;
+import org.talend.sqlbuilder.Messages;
 import org.talend.sqlbuilder.erdiagram.ui.nodes.Relation;
 
 /**
@@ -38,7 +39,7 @@ public class RelationDeleteCommand extends Command {
 	private List<Relation> relations;
 	public RelationDeleteCommand(List<Relation> relations) {
 		this.relations = relations;
-        setLabel("RelationDeleteCommand");
+        setLabel(Messages.getString("RelationDeleteCommand.label")); //$NON-NLS-1$
 	}
     public void execute() {
         for (Relation rel : relations) {

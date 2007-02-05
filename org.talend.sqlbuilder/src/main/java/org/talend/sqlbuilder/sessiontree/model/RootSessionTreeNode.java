@@ -40,7 +40,7 @@ public class RootSessionTreeNode implements ISessionTreeNode {
     /**
      * @return SessionTreeNode[]
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked") //$NON-NLS-1$
     public SessionTreeNode[] getSessionTreeNodes() {
         return (SessionTreeNode[]) ls.toArray(new SessionTreeNode[0]);
     }
@@ -67,18 +67,18 @@ public class RootSessionTreeNode implements ISessionTreeNode {
     public String toString() {
         int sz = ls.size();
         if (sz == 0) {
-            return Messages.getString("No_Active_Sessions_1"); //$NON-NLS-1$
+            return ""; //$NON-NLS-1$
         } else if (sz == 1) {
-            return Messages.getString("1_Active_Session_2"); //$NON-NLS-1$
+            return ""; //$NON-NLS-1$
         } else {
-            return "" + ls.size() + Messages.getString("_Active_Sessions_4"); //$NON-NLS-1$ //$NON-NLS-2$
+            return "" + ls.size() + ""; //$NON-NLS-1$ //$NON-NLS-2$
         }
     }
     
     /**
      * @param node SessionTreeNode.
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked") //$NON-NLS-1$
     public void add(ISessionTreeNode node) {
         ls.add(node);
     }

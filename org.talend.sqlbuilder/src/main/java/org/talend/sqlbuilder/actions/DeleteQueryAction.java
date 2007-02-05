@@ -50,7 +50,7 @@ public class DeleteQueryAction extends SelectionProviderAction {
      * DOC qianbing DeleteQueryAction constructor comment.
      */
     public DeleteQueryAction(ISelectionProvider provider, ISQLBuilderDialog d) {
-        super(provider, Messages.getString("DBStructureComposite.DeleteQuery"));
+        super(provider, Messages.getString("DBStructureComposite.DeleteQuery")); //$NON-NLS-1$
         dialog = d;
     }
 

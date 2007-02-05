@@ -35,6 +35,7 @@ import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.properties.DatabaseConnectionItem;
 import org.talend.repository.model.RepositoryNode;
+import org.talend.sqlbuilder.Messages;
 import org.talend.sqlbuilder.repository.utility.SQLBuilderRepositoryNodeManager;
 
 /**
@@ -73,7 +74,7 @@ public class AddTablesDialog extends Dialog {
     protected void configureShell(Shell newShell) {
         // TODO Auto-generated method stub
         super.configureShell(newShell);
-        newShell.setText("Add Tables");
+        newShell.setText(Messages.getString("AddTablesDialog.textAddTables")); //$NON-NLS-1$
     }
 
     /*
@@ -107,7 +108,7 @@ public class AddTablesDialog extends Dialog {
         return this.rootNode;
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked") //$NON-NLS-1$
     public void setRootNode(RepositoryNode rootNode) {
         this.rootNode = rootNode;
         DatabaseConnectionItem item = SQLBuilderRepositoryNodeManager.getItem(getRootNode());

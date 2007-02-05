@@ -44,6 +44,7 @@ import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.builder.connection.impl.MetadataColumnImpl;
 import org.talend.core.model.metadata.builder.database.ExtractMetaDataFromDataBase;
 import org.talend.repository.model.RepositoryNode;
+import org.talend.sqlbuilder.Messages;
 import org.talend.sqlbuilder.SqlBuilderPlugin;
 import org.talend.sqlbuilder.dbstructure.RepositoryNodeType;
 import org.talend.sqlbuilder.dbstructure.DBTreeProvider.MetadataTableRepositoryObject;
@@ -95,7 +96,7 @@ public class TableNode extends AbstractNode {
         psessionNode = sessionNode;
         pparent = parent;
         pname = name;
-        pimageKey = "Images.TableNodeIcon";
+        pimageKey = "Images.TableNodeIcon"; //$NON-NLS-1$
     }
 
     /**
@@ -145,7 +146,7 @@ public class TableNode extends AbstractNode {
     /**
      * @return List of column names for this table.
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked") //$NON-NLS-1$
     public List getColumnNames() {
 
         if (pcolumnNames == null) {
@@ -158,7 +159,7 @@ public class TableNode extends AbstractNode {
                 }
 
             } catch (Exception e) {
-                SqlBuilderPlugin.log("Could not load column names", e);
+                SqlBuilderPlugin.log(Messages.getString("TableNode.logMessage1"), e); //$NON-NLS-1$
             }
 
         }
@@ -169,7 +170,7 @@ public class TableNode extends AbstractNode {
     /**
      * @return List of column names for this table.
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked") //$NON-NLS-1$
     public List getForeignKeyNames() {
 
         if (pforeignKeyNames == null) {
@@ -182,7 +183,7 @@ public class TableNode extends AbstractNode {
                 }
 
             } catch (Exception e) {
-                SqlBuilderPlugin.log("Could not load foreign key names", e);
+                SqlBuilderPlugin.log(Messages.getString("TableNode.logMessage2"), e); //$NON-NLS-1$
             }
 
         }
@@ -193,7 +194,7 @@ public class TableNode extends AbstractNode {
     /**
      * @return List of column names for this table.
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked") //$NON-NLS-1$
     public List getPrimaryKeyNames() {
 
         if (pprimaryKeyNames == null) {
@@ -210,7 +211,7 @@ public class TableNode extends AbstractNode {
                 }
 
             } catch (Exception e) {
-                SqlBuilderPlugin.log("Could not load primary key names", e);
+                SqlBuilderPlugin.log(Messages.getString("TableNode.logMessage3"), e); //$NON-NLS-1$
             }
 
         }
@@ -278,7 +279,7 @@ public class TableNode extends AbstractNode {
      */
     public boolean isSynonym() {
 
-        return ptableInfo.getType().equalsIgnoreCase("SYNONYM");
+        return ptableInfo.getType().equalsIgnoreCase("SYNONYM"); //$NON-NLS-1$
     }
 
     /**
@@ -286,7 +287,7 @@ public class TableNode extends AbstractNode {
      */
     public boolean isTable() {
 
-        return ptableInfo.getType().equalsIgnoreCase("TABLE");
+        return ptableInfo.getType().equalsIgnoreCase("TABLE"); //$NON-NLS-1$
     }
 
     /**
@@ -294,7 +295,7 @@ public class TableNode extends AbstractNode {
      */
     public boolean isView() {
 
-        return ptableInfo.getType().equalsIgnoreCase("VIEW");
+        return ptableInfo.getType().equalsIgnoreCase("VIEW"); //$NON-NLS-1$
     }
 
     /**
@@ -322,7 +323,7 @@ public class TableNode extends AbstractNode {
             }
 
         } catch (Exception e) {
-            SqlBuilderPlugin.log("Could not create child nodes for " + getName(), e);
+            SqlBuilderPlugin.log(Messages.getString("TableNode.logMessage4") + getName(), e); //$NON-NLS-1$
         }
 
     }
@@ -499,7 +500,7 @@ public class TableNode extends AbstractNode {
     public static INode convert2ColumnNode(TableNode tableNode, MetadataColumnImpl column) {
         ColumnNode columnNode = null;
         try {
-            columnNode = new ColumnNode(tableNode, "", tableNode.psessionNode, tableNode, true);
+            columnNode = new ColumnNode(tableNode, "", tableNode.psessionNode, tableNode, true); //$NON-NLS-1$
             columnNode.setFromRepository(true);
         } catch (Exception e) {
             SqlBuilderPlugin.log(e.getMessage(), e);
@@ -516,7 +517,7 @@ public class TableNode extends AbstractNode {
      * @return columns
      * @exception
      */
-    @SuppressWarnings("deprecation")
+    @SuppressWarnings("deprecation") //$NON-NLS-1$
     public static EList getColumns(RepositoryNode repositoryNode) {
         return getMetadataTable(repositoryNode).getColumns();
     }
@@ -528,11 +529,11 @@ public class TableNode extends AbstractNode {
      * @return columns
      * @exception
      */
-    @SuppressWarnings("deprecation")
+    @SuppressWarnings("deprecation") //$NON-NLS-1$
     public static MetadataTable getMetadataTable(RepositoryNode repositoryNode) {
         RepositoryNodeType type = SQLBuilderRepositoryNodeManager.getRepositoryType(repositoryNode);
         if (type != RepositoryNodeType.TABLE) {
-            throw new RuntimeException("Only Table will call this.");
+            throw new RuntimeException(Messages.getString("TableNode.exceptionMessage")); //$NON-NLS-1$
         }
         MetadataTableRepositoryObject tableObject = (MetadataTableRepositoryObject) repositoryNode.getObject();
         return tableObject.getTable();
@@ -545,7 +546,7 @@ public class TableNode extends AbstractNode {
     public Color getBackground() {
         if (getLabelText().equals(getSourceName())) {
             return super.getBackground();
-        } else if (getLabelAtColumn(1) == null || getLabelAtColumn(1).trim().equals("")) {
+        } else if (getLabelAtColumn(1) == null || getLabelAtColumn(1).trim().equals("")) { //$NON-NLS-1$
             return Display.getDefault().getSystemColor(SWT.COLOR_GRAY);
         } else {
             return Display.getDefault().getSystemColor(SWT.COLOR_RED);

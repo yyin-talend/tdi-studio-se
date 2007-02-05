@@ -57,7 +57,7 @@ public class QueryTokenizer {
             pquerySeparator = querySeparator.substring(0, 1);
         } else {
             // failsave..
-            pquerySeparator = ";";
+            pquerySeparator = ";"; //$NON-NLS-1$
         }
         
         if (alternateSeparator != null && alternateSeparator.trim().length() > 0) {
@@ -76,7 +76,7 @@ public class QueryTokenizer {
             psQuerys = prepareSQL(sql);
             psNextQuery = parse();
         } else {
-            psQuerys = "";
+            psQuerys = ""; //$NON-NLS-1$
         }
     }
 
@@ -187,7 +187,7 @@ public class QueryTokenizer {
                 }
             } else {
                 String sNextQuery = psQuerys;
-                psQuerys = "";
+                psQuerys = ""; //$NON-NLS-1$
                 if (psolComment != null && sNextQuery.startsWith(psolComment)) {
                     return parse();
                 }
@@ -205,7 +205,7 @@ public class QueryTokenizer {
     private String prepareSQL(String sql) {
         StringBuffer results = new StringBuffer(1024);
 
-        for (StringTokenizer tok = new StringTokenizer(sql.trim(), "\n", false); tok.hasMoreTokens();) {
+        for (StringTokenizer tok = new StringTokenizer(sql.trim(), "\n", false); tok.hasMoreTokens();) { //$NON-NLS-1$
             String line = tok.nextToken();
             if (!line.startsWith(psolComment)) {
                 results.append(line).append('\n');

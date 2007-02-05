@@ -31,6 +31,7 @@ import org.eclipse.swt.custom.BusyIndicator;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
+import org.talend.sqlbuilder.Messages;
 import org.talend.sqlbuilder.SqlBuilderPlugin;
 
 /**
@@ -110,7 +111,7 @@ public class UIUtils {
                         try {
                             operation.run(monitor);
                         } catch (Exception e) {
-                            SqlBuilderPlugin.log("error occurs", e);
+                            SqlBuilderPlugin.log(Messages.getString("UIUtils.logMessage1"), e); //$NON-NLS-1$
                         }
                     }
                 };
@@ -128,7 +129,7 @@ public class UIUtils {
                 try {
                     ModalContext.run(progress, fork, monitor, shell.getDisplay());
                 } catch (Exception e) {
-                    SqlBuilderPlugin.log("something errors with the runnable process", e);
+                    SqlBuilderPlugin.log(Messages.getString("UIUtils.logMessage2"), e); //$NON-NLS-1$
                 }
             }
         };

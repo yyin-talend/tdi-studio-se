@@ -54,21 +54,21 @@ import org.talend.sqlbuilder.util.QueryTokenizer;
  */
 public class OracleExplainPlanAction extends AbstractEditorAction {
 
-	private ImageDescriptor img = ImageUtil.getDescriptor("Images.Explain");
+	private ImageDescriptor img = ImageUtil.getDescriptor("Images.Explain"); //$NON-NLS-1$
 	
-	static String createPlanTableScript = "CREATE TABLE PLAN_TABLE ("
-        + "  STATEMENT_ID                    VARCHAR2(30)," + " TIMESTAMP                       DATE,"
-        + "  REMARKS                         VARCHAR2(80)," + "  OPERATION                       VARCHAR2(30),"
-        + "  OPTIONS                         VARCHAR2(30)," + "  OBJECT_NODE                     VARCHAR2(128),"
-        + "  OBJECT_OWNER                    VARCHAR2(30)," + "  OBJECT_NAME                     VARCHAR2(30),"
-        + "  OBJECT_INSTANCE                 NUMBER(38)," + "  OBJECT_TYPE                     VARCHAR2(30),"
-        + "  OPTIMIZER                       VARCHAR2(255)," + "  SEARCH_COLUMNS                  NUMBER,"
-        + "  ID                              NUMBER(38)," + "  PARENT_ID                       NUMBER(38),"
-        + "  POSITION                        NUMBER(38)," + "  COST                            NUMBER(38),"
-        + "  CARDINALITY                     NUMBER(38)," + "  BYTES                           NUMBER(38),"
-        + "  OTHER_TAG                       VARCHAR2(255)," + "  PARTITION_START                 VARCHAR2(255),"
-        + "  PARTITION_STOP                  VARCHAR2(255)," + "  PARTITION_ID                    NUMBER(38),"
-        + "  OTHER                           LONG," + "  DISTRIBUTION                    VARCHAR2(30)" + ")";
+	static String createPlanTableScript = "CREATE TABLE PLAN_TABLE (" //$NON-NLS-1$
+        + "  STATEMENT_ID                    VARCHAR2(30)," + " TIMESTAMP                       DATE," //$NON-NLS-1$ //$NON-NLS-2$
+        + "  REMARKS                         VARCHAR2(80)," + "  OPERATION                       VARCHAR2(30)," //$NON-NLS-1$ //$NON-NLS-2$
+        + "  OPTIONS                         VARCHAR2(30)," + "  OBJECT_NODE                     VARCHAR2(128)," //$NON-NLS-1$ //$NON-NLS-2$
+        + "  OBJECT_OWNER                    VARCHAR2(30)," + "  OBJECT_NAME                     VARCHAR2(30)," //$NON-NLS-1$ //$NON-NLS-2$
+        + "  OBJECT_INSTANCE                 NUMBER(38)," + "  OBJECT_TYPE                     VARCHAR2(30)," //$NON-NLS-1$ //$NON-NLS-2$
+        + "  OPTIMIZER                       VARCHAR2(255)," + "  SEARCH_COLUMNS                  NUMBER," //$NON-NLS-1$ //$NON-NLS-2$
+        + "  ID                              NUMBER(38)," + "  PARENT_ID                       NUMBER(38)," //$NON-NLS-1$ //$NON-NLS-2$
+        + "  POSITION                        NUMBER(38)," + "  COST                            NUMBER(38)," //$NON-NLS-1$ //$NON-NLS-2$
+        + "  CARDINALITY                     NUMBER(38)," + "  BYTES                           NUMBER(38)," //$NON-NLS-1$ //$NON-NLS-2$
+        + "  OTHER_TAG                       VARCHAR2(255)," + "  PARTITION_START                 VARCHAR2(255)," //$NON-NLS-1$ //$NON-NLS-2$
+        + "  PARTITION_STOP                  VARCHAR2(255)," + "  PARTITION_ID                    NUMBER(38)," //$NON-NLS-1$ //$NON-NLS-2$
+        + "  OTHER                           LONG," + "  DISTRIBUTION                    VARCHAR2(30)" + ")"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
 
 	private ISQLEditor editor;
@@ -88,13 +88,13 @@ public class OracleExplainPlanAction extends AbstractEditorAction {
 	 */
 	@Override
 	public String getText() {
-		return Messages.getString("oracle.editor.actions.explain");
+		return Messages.getString("oracle.editor.actions.explain"); //$NON-NLS-1$
 	}
 
 	/* (non-Javadoc)
 	 * @see org.talend.sqlbuilder.actions.AbstractEditorAction#run()
 	 */
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("unchecked") //$NON-NLS-1$
 	@Override
 	public void run() {
 
@@ -106,7 +106,7 @@ public class OracleExplainPlanAction extends AbstractEditorAction {
             runNode = nodeManager.getSessionTreeNode(node);
         } catch (Exception e) {
             MessageDialog.openError(null, Messages.getString("AbstractSQLExecution.Executing.Error"), e.getMessage()); //$NON-NLS-1$
-            SqlBuilderPlugin.log("Gets SessionTreeNode failed", e);
+            SqlBuilderPlugin.log(Messages.getString("OracleExplainPlanAction.logMessage1"), e); //$NON-NLS-1$
             return;
         }
         Preferences prefs = SqlBuilderPlugin.getDefault().getPluginPreferences();
@@ -121,7 +121,7 @@ public class OracleExplainPlanAction extends AbstractEditorAction {
         while (qt.hasQuery()) {
             final String querySql = qt.nextQuery();
             // ignore commented lines.
-            if (!querySql.startsWith("--")) {
+            if (!querySql.startsWith("--")) { //$NON-NLS-1$
                 queryStrings.add(querySql);
             }
         }
@@ -132,18 +132,18 @@ public class OracleExplainPlanAction extends AbstractEditorAction {
             boolean createPlanTable = false;
             boolean notFoundTable = true;
             try {
-                ResultSet rs = st.executeQuery("select statement_id from plan_table");
+                ResultSet rs = st.executeQuery("select statement_id from plan_table"); //$NON-NLS-1$
                 notFoundTable = false;
                 rs.close();
             } catch (Throwable e) {
                 createPlanTable = MessageDialog.openQuestion(null,
-                        Messages.getString("oracle.editor.actions.explain.notFound.Title"),
-                        Messages.getString("oracle.editor.actions.explain.notFound"));
+                        Messages.getString("oracle.editor.actions.explain.notFound.Title"), //$NON-NLS-1$
+                        Messages.getString("oracle.editor.actions.explain.notFound")); //$NON-NLS-1$
             } finally {
                 try {
                     st.close();
                 } catch (Throwable e) {
-                	SqlBuilderPlugin.log("Error creating the plan table", e);
+                	SqlBuilderPlugin.log(Messages.getString("OracleExplainPlanAction.logMessage2"), e); //$NON-NLS-1$
                 }
             }
             if (notFoundTable && !createPlanTable) {
@@ -163,26 +163,26 @@ public class OracleExplainPlanAction extends AbstractEditorAction {
                     }
 
                 } catch (Throwable e) {
-                    SqlBuilderPlugin.log("Error creating the plan table", e);
+                    SqlBuilderPlugin.log(Messages.getString("OracleExplainPlanAction.logMessage2"), e); //$NON-NLS-1$
                     MessageDialog.openError(null,
-                            Messages.getString("oracle.editor.actions.explain.createError.Title"),
-                            Messages.getString("oracle.editor.actions.explain.createError"));
+                            Messages.getString("oracle.editor.actions.explain.createError.Title"), //$NON-NLS-1$
+                            Messages.getString("oracle.editor.actions.explain.createError")); //$NON-NLS-1$
                     try {
                         st.close();
                     } catch (Throwable e1) {
-                        SqlBuilderPlugin.log("Error in statement close", e1);
+                        SqlBuilderPlugin.log(Messages.getString("OracleExplainPlanAction.logMessage3"), e1); //$NON-NLS-1$
                     }
                     return;
                 }
                 try {
                     st.close();
                 } catch (Throwable e) {
-                    SqlBuilderPlugin.log("Error in statement close", e);
+                    SqlBuilderPlugin.log(Messages.getString("OracleExplainPlanAction.logMessage3"), e); //$NON-NLS-1$
                 }
             }
 
         } catch (Exception e) {
-            SqlBuilderPlugin.log("Create Explain Failure: ", e);
+            SqlBuilderPlugin.log(Messages.getString("OracleExplainPlanAction.logMessage4"), e); //$NON-NLS-1$
         }
 
         // execute explain plan for all statements
@@ -198,7 +198,7 @@ public class OracleExplainPlanAction extends AbstractEditorAction {
             }
 
         } catch (Exception e) {
-            SqlBuilderPlugin.log("Error creating sql execution tab", e);
+            SqlBuilderPlugin.log(Messages.getString("OracleExplainPlanAction.logMessage5"), e); //$NON-NLS-1$
         }
 	}
 

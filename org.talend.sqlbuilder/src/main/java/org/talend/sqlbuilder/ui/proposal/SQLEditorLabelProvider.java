@@ -37,7 +37,7 @@ import org.talend.sqlbuilder.util.ImageUtil;
  */
 public class SQLEditorLabelProvider implements ILabelProvider {
 
-    private   ImageDescriptor sqlEditor = ImageUtil.getDescriptor("Images.SqlEditorIcon");
+    private   ImageDescriptor sqlEditor = ImageUtil.getDescriptor("Images.SqlEditorIcon"); //$NON-NLS-1$
     
     /**
      * DOC dev SQLEditorLabelProvider constructor comment.
@@ -68,7 +68,7 @@ public class SQLEditorLabelProvider implements ILabelProvider {
         if (element instanceof SQLEditorAllProposal) {
             return ((SQLEditorAllProposal) element).getLabel();
         }
-        return "";
+        return ""; //$NON-NLS-1$
     }
 
     /* (non-Javadoc)

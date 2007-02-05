@@ -56,14 +56,14 @@ public class SQLEditorAllProposal implements IContentProposal {
         super();
         this.allString = allString;
         setImages();
-        if (!dbType.equals("PostgreSQL")) {
+        if (!dbType.equals("PostgreSQL")) { //$NON-NLS-1$
             hasString = initHasString(hasString);
-            label = label.replaceAll("\"", "");
+            label = label.replaceAll("\"", ""); //$NON-NLS-1$ //$NON-NLS-2$
         } else {
             hasString = initHasStringForPostgres(hasString);
         }
         hasString = label.substring(0, hasString.length());
-        label = label.replaceAll("\"", "");
+        label = label.replaceAll("\"", ""); //$NON-NLS-1$ //$NON-NLS-2$
         String tmp = initLabel(dbType);
         contents[0] = contents[0].substring(0, contents[0].length() - hasString.length()) + hasString;
         content = contents[0];
@@ -74,25 +74,25 @@ public class SQLEditorAllProposal implements IContentProposal {
     }
 
     private void setImages() {
-        if (this.allString.indexOf(".") != -1) {
-            if (this.allString.indexOf(".") == this.allString.lastIndexOf(".")) {
-                image = ImageUtil.getImage("Images.TableIcon");
+        if (this.allString.indexOf(".") != -1) { //$NON-NLS-1$
+            if (this.allString.indexOf(".") == this.allString.lastIndexOf(".")) { //$NON-NLS-1$ //$NON-NLS-2$
+                image = ImageUtil.getImage("Images.TableIcon"); //$NON-NLS-1$
             } else {
-                image = ImageUtil.getImage("Images.ColumnIcon");
+                image = ImageUtil.getImage("Images.ColumnIcon"); //$NON-NLS-1$
             }
         }
-        if (allString.indexOf("alias: ") != -1) {
-            image = ImageUtil.getImage("Image.sqlAliasIcon");
-            this.allString = this.allString.substring(0, this.allString.indexOf("\n"));
+        if (allString.indexOf("alias: ") != -1) { 
+            image = ImageUtil.getImage("Image.sqlAliasIcon"); //$NON-NLS-1$
+            this.allString = this.allString.substring(0, this.allString.indexOf("\n")); //$NON-NLS-1$
         }
 
     }
 
     private String initHasStringForPostgres(String hasString) {
         label = allString;
-        int index = label.indexOf(".");
-        int index2 = label.lastIndexOf(".");
-        String qualityName = "";
+        int index = label.indexOf("."); //$NON-NLS-1$
+        int index2 = label.lastIndexOf("."); //$NON-NLS-1$
+        String qualityName = ""; //$NON-NLS-1$
         if (index > -1) {
             qualityName = label.substring(index + 1, label.length());
             if (index == index2) {
@@ -108,26 +108,26 @@ public class SQLEditorAllProposal implements IContentProposal {
     private String getColumnHasString(String hasString, String qualityName) {
         int index3;
 
-        String newQualityName = qualityName.replaceAll("\"", "");
-        int hasX = hasString.lastIndexOf("\"");
+        String newQualityName = qualityName.replaceAll("\"", ""); //$NON-NLS-1$ //$NON-NLS-2$
+        int hasX = hasString.lastIndexOf("\""); //$NON-NLS-1$
 
         if (hasX != -1) {
-            String newQualityName2 = qualityName.replaceFirst("\"", "");
-            newQualityName2 = newQualityName2.replaceFirst("\"", "");
-            if (hasString.indexOf("\"") == newQualityName2.indexOf("\"")) {
-                index3 = newQualityName2.indexOf(".");
+            String newQualityName2 = qualityName.replaceFirst("\"", ""); //$NON-NLS-1$ //$NON-NLS-2$
+            newQualityName2 = newQualityName2.replaceFirst("\"", ""); //$NON-NLS-1$ //$NON-NLS-2$
+            if (hasString.indexOf("\"") == newQualityName2.indexOf("\"")) { //$NON-NLS-1$ //$NON-NLS-2$
+                index3 = newQualityName2.indexOf("."); //$NON-NLS-1$
             } else {
-                index3 = qualityName.indexOf(".");
+                index3 = qualityName.indexOf("."); //$NON-NLS-1$
             }
         } else {
-            index3 = newQualityName.indexOf(".");
+            index3 = newQualityName.indexOf("."); //$NON-NLS-1$
         }
 
-        String newHasString = hasString.replaceAll("\"", "");
-        if (!"".equals(hasString)
+        String newHasString = hasString.replaceAll("\"", ""); //$NON-NLS-1$ //$NON-NLS-2$
+        if (!"".equals(hasString) //$NON-NLS-1$
                 && (qualityName.toLowerCase().startsWith(hasString.toLowerCase()) || newQualityName.toLowerCase()
                         .startsWith(newHasString.toLowerCase()))) {
-            if (hasString.indexOf(".") > -1) {
+            if (hasString.indexOf(".") > -1) { //$NON-NLS-1$
                 hasString = hasString.substring(index3 + 1);
             }
         }
@@ -142,9 +142,9 @@ public class SQLEditorAllProposal implements IContentProposal {
      */
     private String initLabel(String dbType) {
         String tmp = label;
-        int index = allString.indexOf(".");
-        if (index > -1 && dbType.equals("PostgreSQL")) {
-            tmp = "\"" + label + "\"";
+        int index = allString.indexOf("."); //$NON-NLS-1$
+        if (index > -1 && dbType.equals("PostgreSQL")) { //$NON-NLS-1$
+            tmp = "\"" + label + "\""; //$NON-NLS-1$ //$NON-NLS-2$
         } else {
             tmp = label;
         }
@@ -160,28 +160,28 @@ public class SQLEditorAllProposal implements IContentProposal {
      */
     protected String initHasString(String hasString) {
         label = allString;
-        int index = label.indexOf(".");
-        int index2 = label.lastIndexOf(".");
-        String qualityName = "";
+        int index = label.indexOf("."); //$NON-NLS-1$
+        int index2 = label.lastIndexOf("."); //$NON-NLS-1$
+        String qualityName = ""; //$NON-NLS-1$
         if (index > -1) {
             qualityName = label.substring(index + 1, label.length());
             // if (!dbType.equals("PostgreSQL")) {
-            qualityName = qualityName.replaceAll("\"", "");
+            qualityName = qualityName.replaceAll("\"", ""); //$NON-NLS-1$ //$NON-NLS-2$
             // }
 
             if (index == index2) {
                 label = qualityName;
             } else {
                 int index3;
-                String newHasString = hasString.replaceAll("\"", "");
+                String newHasString = hasString.replaceAll("\"", ""); //$NON-NLS-1$ //$NON-NLS-2$
 
-                String newQualityName = qualityName.replaceAll("\"", "");
-                index3 = qualityName.indexOf(".");
+                String newQualityName = qualityName.replaceAll("\"", ""); //$NON-NLS-1$ //$NON-NLS-2$
+                index3 = qualityName.indexOf("."); //$NON-NLS-1$
 
-                if (!"".equals(hasString)
+                if (!"".equals(hasString) //$NON-NLS-1$
                         && (qualityName.toLowerCase().startsWith(hasString.toLowerCase()) || newQualityName
                                 .toLowerCase().startsWith(newHasString.toLowerCase()))) {
-                    if (hasString.indexOf(".") > -1) {
+                    if (hasString.indexOf(".") > -1) { //$NON-NLS-1$
                         hasString = hasString.substring(index3 + 1);
                     }
                 }

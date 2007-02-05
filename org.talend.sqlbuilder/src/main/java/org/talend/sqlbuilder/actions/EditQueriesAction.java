@@ -32,6 +32,7 @@ import org.talend.repository.model.IRepositoryService;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.ui.actions.AContextualAction;
 import org.talend.repository.ui.views.IRepositoryView;
+import org.talend.sqlbuilder.Messages;
 import org.talend.sqlbuilder.ui.SQLBuilderDialog;
 import org.talend.sqlbuilder.util.ConnectionParameters;
 
@@ -53,7 +54,7 @@ public class EditQueriesAction extends AContextualAction {
         Shell parentShell = new Shell(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView(
                 IRepositoryView.VIEW_ID).getSite().getShell().getDisplay());
         SQLBuilderDialog dial = new SQLBuilderDialog(parentShell);
-        connParameters.setQuery("");
+        connParameters.setQuery(""); //$NON-NLS-1$
         dial.setConnParameters(connParameters);
         dial.open();
 
@@ -73,9 +74,9 @@ public class EditQueriesAction extends AContextualAction {
                             IRepositoryService.class);
                     IProxyRepositoryFactory repFactory = service.getProxyRepositoryFactory();
                     if (repFactory.isPotentiallyEditable(node.getObject())) {
-                        this.setText("Edit queries");
+                        this.setText(Messages.getString("EditQueriesAction.textEditQueries")); //$NON-NLS-1$
                     } else {
-                        this.setText("Open queries");
+                        this.setText(Messages.getString("EditQueriesAction.textOpenQueries")); //$NON-NLS-1$
                     }
                 }
                 break;

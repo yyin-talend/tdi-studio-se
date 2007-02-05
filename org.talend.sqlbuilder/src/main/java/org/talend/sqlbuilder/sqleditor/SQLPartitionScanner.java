@@ -100,7 +100,7 @@ public class SQLPartitionScanner extends RuleBasedPartitionScanner {
 	/**
 	 * Creates the partitioner and sets up the appropriate rules.
 	 */
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("unchecked") //$NON-NLS-1$
 	public SQLPartitionScanner() {
 		super();
 

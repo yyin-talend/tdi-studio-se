@@ -68,7 +68,7 @@ public class DBDetailsComposite extends Composite {
             Label label = new Label(panel, SWT.FILL | SWT.WRAP);
             if (message == null) {
                 // add default message
-                message = Messages.getString("DatabaseDetailView.NoSelection");
+                message = Messages.getString("DatabaseDetailView.NoSelection"); //$NON-NLS-1$
             }
             label.setText(message);
         } else {

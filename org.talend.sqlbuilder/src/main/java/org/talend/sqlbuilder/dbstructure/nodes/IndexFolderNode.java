@@ -56,14 +56,14 @@ public class IndexFolderNode extends AbstractFolderNode {
         ptableInfo = tableInfo;
         psessionNode = parent.getSession();
         pparent = parent;
-        pname = Messages.getString("DatabaseStructureView.node.Indexes");
+        pname = Messages.getString("DatabaseStructureView.node.Indexes"); //$NON-NLS-1$
     }
 
 
     /**
      * @return List of column names for this table.
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked") //$NON-NLS-1$
     public List getIndexNames() {
 
         List indexNames = new ArrayList();
@@ -78,7 +78,7 @@ public class IndexFolderNode extends AbstractFolderNode {
             }
 
         } catch (Exception e) {
-            SqlBuilderPlugin.log("Could not load index names", e);
+            SqlBuilderPlugin.log(Messages.getString("IndexFolderNode.logMessage1"), e); //$NON-NLS-1$
         }
         return indexNames;
     }
@@ -97,7 +97,7 @@ public class IndexFolderNode extends AbstractFolderNode {
      */
     public String getQualifiedName() {
 
-        return getParent().getQualifiedName() + "." + getType();
+        return getParent().getQualifiedName() + "." + getType(); //$NON-NLS-1$
     }
 
 
@@ -108,7 +108,7 @@ public class IndexFolderNode extends AbstractFolderNode {
      */
     public String getType() {
 
-        return "index_folder";
+        return "index_folder"; //$NON-NLS-1$
     }
 
 
@@ -125,7 +125,7 @@ public class IndexFolderNode extends AbstractFolderNode {
                 addChildNode(new IndexNode(this, (String) it.next(), psessionNode, (TableNode) getParent()));
             }
         } catch (Exception e) {
-            SqlBuilderPlugin.log("Could not create child nodes for " + getName(), e);
+            SqlBuilderPlugin.log(Messages.getString("IndexFolderNode.logMessage2") + getName(), e); //$NON-NLS-1$
         }
     }
 

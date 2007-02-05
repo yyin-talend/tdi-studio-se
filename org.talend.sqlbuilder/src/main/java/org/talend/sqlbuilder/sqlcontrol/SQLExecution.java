@@ -60,7 +60,7 @@ public class SQLExecution extends AbstractSQLExecution {
         sqlResult.setSqlStatement(sqlStatement);
         
         // set initial message
-        setProgressMessage(Messages.getString("SQLResultsView.ConnectionWait"));
+        setProgressMessage(Messages.getString("SQLResultsView.ConnectionWait")); //$NON-NLS-1$
         
     }
 
@@ -80,13 +80,13 @@ public class SQLExecution extends AbstractSQLExecution {
 
                 try {
                     int resultCount = sqlResult.getDataSet().getRows().length;
-                    String statusMessage = Messages.getString("SQLResultsView.Time.Prefix") + " "
-                            + sqlResult.getExecutionTimeMillis() + " "
-                            + Messages.getString("SQLResultsView.Time.Postfix");
+                    String statusMessage = Messages.getString("SQLResultsView.Time.Prefix") + " " //$NON-NLS-1$ //$NON-NLS-2$
+                            + sqlResult.getExecutionTimeMillis() + " " //$NON-NLS-1$
+                            + Messages.getString("SQLResultsView.Time.Postfix"); //$NON-NLS-1$
                     
                     if (resultCount > 0) {
-                        statusMessage = statusMessage + "  " 
-                        + Messages.getString("SQLResultsView.Count.Prefix") + " " + resultCount;
+                        statusMessage = statusMessage + "  "  //$NON-NLS-1$
+                        + Messages.getString("SQLResultsView.Count.Prefix") + " " + resultCount; //$NON-NLS-1$ //$NON-NLS-2$
                     }
                     new DataSetTable(composite, sqlResult.getDataSet(), statusMessage);
 
@@ -100,14 +100,14 @@ public class SQLExecution extends AbstractSQLExecution {
                     errorLabel.setText(message);
                     errorLabel.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false));
 
-                    SqlBuilderPlugin.log("Error creating result tab", e);
+                    SqlBuilderPlugin.log(Messages.getString("SQLExecution.logMessage1"), e); //$NON-NLS-1$
                 }
 
                 composite.layout();
                 composite.redraw();
 
                 // reset to start message in case F5 will be used
-                setProgressMessage(Messages.getString("SQLResultsView.ConnectionWait"));
+                setProgressMessage(Messages.getString("SQLResultsView.ConnectionWait")); //$NON-NLS-1$
             };
         });
     }
@@ -122,7 +122,7 @@ public class SQLExecution extends AbstractSQLExecution {
             try {
                 stmt.close();
             } catch (Exception e) {
-                SqlBuilderPlugin.log("Error closing statement.", e);
+                SqlBuilderPlugin.log(Messages.getString("SQLExecution.logMessage2"), e); //$NON-NLS-1$
             }
         }
         stmt = null;
@@ -137,7 +137,7 @@ public class SQLExecution extends AbstractSQLExecution {
             
             stmt = connection.createStatement();
             
-            setProgressMessage(Messages.getString("SQLResultsView.Executing"));
+            setProgressMessage(Messages.getString("SQLResultsView.Executing")); //$NON-NLS-1$
             
             stmt.setMaxRows(maxRows);
 
@@ -229,12 +229,12 @@ public class SQLExecution extends AbstractSQLExecution {
             try {
                 stmt.cancel();
             } catch (Exception e) {
-                SqlBuilderPlugin.log("Error cancelling statement.", e);
+                SqlBuilderPlugin.log(Messages.getString("SQLExecution.logMessage3"), e); //$NON-NLS-1$
             }
             try {
                 closeStatement();
             } catch (Exception e) {
-                SqlBuilderPlugin.log("Error closing statement.", e);
+                SqlBuilderPlugin.log(Messages.getString("SQLExecution.logMessage4"), e); //$NON-NLS-1$
             }
         }
 

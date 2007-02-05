@@ -35,7 +35,7 @@ import org.talend.sqlbuilder.dbstructure.nodes.TableNode;
 public class RowCountTab extends AbstractDataSetTab {
 
     public String getLabelText() {
-        return Messages.getString("DatabaseDetailView.Tab.RowCount");
+        return Messages.getString("DatabaseDetailView.Tab.RowCount"); //$NON-NLS-1$
     }
 
     public DataSet getDataSet() throws Exception {       
@@ -54,10 +54,10 @@ public class RowCountTab extends AbstractDataSetTab {
             nodeName = tableNode.getQualifiedName();
         }
         
-        return new DataSet(null, "select count(*) from " + nodeName, null, getNode().getSession().getInteractiveConnection());
+        return new DataSet(null, "select count(*) from " + nodeName, null, getNode().getSession().getInteractiveConnection()); //$NON-NLS-1$
     }
  
     public String getStatusMessage() {
-        return Messages.getString("DatabaseDetailView.Tab.RowCount.status") + " " + getNode().getQualifiedName();
+        return Messages.getString("DatabaseDetailView.Tab.RowCount.status") + " " + getNode().getQualifiedName(); //$NON-NLS-1$ //$NON-NLS-2$
     }
 }

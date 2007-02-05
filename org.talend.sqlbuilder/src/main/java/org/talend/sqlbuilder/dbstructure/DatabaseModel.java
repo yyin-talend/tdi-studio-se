@@ -53,7 +53,7 @@ public class DatabaseModel implements INode {
      */
     public DatabaseModel(SessionTreeNode sessionNode) {
 
-        pRoot = new DatabaseNode(Messages.getString("Database_1"), sessionNode);
+        pRoot = new DatabaseNode(Messages.getString("Database_1"), sessionNode); //$NON-NLS-1$
 
     }
 

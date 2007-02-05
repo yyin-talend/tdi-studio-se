@@ -56,6 +56,7 @@ import org.talend.repository.model.RepositoryNode.ENodeType;
 import org.talend.repository.model.RepositoryNode.EProperties;
 import org.talend.repository.ui.views.RepositoryContentProvider;
 import org.talend.repository.ui.views.RepositoryView;
+import org.talend.sqlbuilder.Messages;
 import org.talend.sqlbuilder.SqlBuilderPlugin;
 import org.talend.sqlbuilder.repository.utility.SQLBuilderRepositoryNodeManager;
 import org.talend.sqlbuilder.util.ConnectionParameters;
@@ -69,19 +70,19 @@ import org.talend.sqlbuilder.util.ImageUtil;
  */
 public class DBTreeProvider extends LabelProvider implements ITableLabelProvider, ITreeContentProvider,
 ITableColorProvider {
-    private static final String IMAGES_CLOSED_FOLDER = "Images.closedFolder";
-	private static final String BUILT_IN = "Built-In";
-	private static final String IMAGES_DATABASE_ICON = "Images.DatabaseIcon";
-	private static final String IMAGES_CONNECTION_ICON = "Images.ConnectionIcon";
-	private static final String IMAGES_APPEND_TO_EDITOR = "Images.AppendToEditor";
-	private static final String IMAGES_SQL_EDITOR_ICON = "Images.SqlEditorIcon";
-	private static final String IMAGES_TABLE_NODE_ICON = "Images.TableNodeIcon";
-	private static final String IMAGES_COLUMN_NODE_ICON = "Images.ColumnNodeIcon";
-	private static final String IMAGES_REFRESH_ICON = "Images.RefreshIcon";
-	private static final String IMAGES_RED_ICON = "Images.RedIcon";
-	private static final String IMAGES_GRAY_ICON = "Images.GrayIcon";
-	public static final String COLOR_GRAY = "COLOR_GRAY";
-	public static final String COLOR_RED = "COLOR_RED";
+    private static final String IMAGES_CLOSED_FOLDER = "Images.closedFolder"; //$NON-NLS-1$
+	private static final String BUILT_IN = "Built-In"; //$NON-NLS-1$
+	private static final String IMAGES_DATABASE_ICON = "Images.DatabaseIcon"; //$NON-NLS-1$
+	private static final String IMAGES_CONNECTION_ICON = "Images.ConnectionIcon"; //$NON-NLS-1$
+	private static final String IMAGES_APPEND_TO_EDITOR = "Images.AppendToEditor"; //$NON-NLS-1$
+	private static final String IMAGES_SQL_EDITOR_ICON = "Images.SqlEditorIcon"; //$NON-NLS-1$
+	private static final String IMAGES_TABLE_NODE_ICON = "Images.TableNodeIcon"; //$NON-NLS-1$
+	private static final String IMAGES_COLUMN_NODE_ICON = "Images.ColumnNodeIcon"; //$NON-NLS-1$
+	private static final String IMAGES_REFRESH_ICON = "Images.RefreshIcon"; //$NON-NLS-1$
+	private static final String IMAGES_RED_ICON = "Images.RedIcon"; //$NON-NLS-1$
+	private static final String IMAGES_GRAY_ICON = "Images.GrayIcon"; //$NON-NLS-1$
+	public static final String COLOR_GRAY = "COLOR_GRAY"; //$NON-NLS-1$
+	public static final String COLOR_RED = "COLOR_RED"; //$NON-NLS-1$
 	private SQLBuilderRepositoryNodeManager repositoryNodeManager = new SQLBuilderRepositoryNodeManager();
     private RepositoryContentProvider repositoryContentProvider;
     private ConnectionParameters connectionParameters;
@@ -129,7 +130,7 @@ ITableColorProvider {
         return null;
     }
     
-    @SuppressWarnings("static-access")
+    @SuppressWarnings("static-access") //$NON-NLS-1$
     public Object[] getChildren(Object parentElement) {
         if (isRefresh) {
             RepositoryNode repositoryNode = (RepositoryNode) parentElement;
@@ -198,7 +199,7 @@ ITableColorProvider {
 		try {
 			container = factory.getMetadataConnection();
 		} catch (PersistenceException e) {
-		    SqlBuilderPlugin.log("PersistenceException: ", e);
+		    SqlBuilderPlugin.log(Messages.getString("DBTreeProvider.logMessage"), e); //$NON-NLS-1$
         }
     	return container;
     }
@@ -240,7 +241,7 @@ ITableColorProvider {
         } else {
         	connectionRepositoryObject.setRepositoryName(repositoryObject.getLabel());
         }
-        connectionRepositoryObject.setSourceName((sid == null || sid.trim().equals("")) ? connection.getDatasourceName() : sid);
+        connectionRepositoryObject.setSourceName((sid == null || sid.trim().equals("")) ? connection.getDatasourceName() : sid); //$NON-NLS-1$
         if (!isBuildIn) {
         connectionRepositoryObject.setImage(IMAGES_CONNECTION_ICON);
         } else {
@@ -290,7 +291,7 @@ ITableColorProvider {
             QueriesConnectionRepositoryObject repositoryObject 
             	= new QueriesConnectionRepositoryObject(repObj, queriesConnection); 
             repositoryObject.setImage(IMAGES_APPEND_TO_EDITOR);
-            repositoryObject.setSourceName("Stored Queries");
+            repositoryObject.setSourceName(Messages.getString("DBTreeProvider.sourceName")); //$NON-NLS-1$
             RepositoryNode queriesConnectionNode = new RepositoryNode(repositoryObject, node, ENodeType.REPOSITORY_ELEMENT);
             queriesConnectionNode.setProperties(EProperties.CONTENT_TYPE, RepositoryNodeType.QUERIESCONNECTION);
             node.getChildren().add(queriesConnectionNode);
@@ -360,7 +361,7 @@ ITableColorProvider {
         if (modelObj.getColumn().isDivergency() && !isBuildIn) {
         	modelObj.setColor(COLOR_RED);
         }
-        if (modelObj.getRepositoryName() == null || modelObj.getRepositoryName().trim().equals("")) {
+        if (modelObj.getRepositoryName() == null || modelObj.getRepositoryName().trim().equals("")) { //$NON-NLS-1$
         	modelObj.setColor(COLOR_GRAY);
         }
         modelObj.setBuildIn(isBuildIn);
@@ -391,7 +392,7 @@ ITableColorProvider {
         if (modelObj.getTable().isDivergency() && !isBuildIn && !modelObj.getTable().isSynchronised()) {
         	modelObj.setColor(COLOR_RED);
         }
-        if (modelObj.getRepositoryName() == null || modelObj.getRepositoryName().trim().equals("")) {
+        if (modelObj.getRepositoryName() == null || modelObj.getRepositoryName().trim().equals("")) { //$NON-NLS-1$
         	modelObj.setColor(COLOR_GRAY);
         }
         modelObj.setBuildIn(isBuildIn);

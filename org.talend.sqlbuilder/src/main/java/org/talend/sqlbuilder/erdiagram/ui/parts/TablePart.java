@@ -174,7 +174,7 @@ public class TablePart extends AbstractGraphicalEditPart implements PropertyChan
 
         protected void createContents() {
             tableName = new Label();
-            Font erFont = new Font(null, "Arial", 9, SWT.BOLD);
+            Font erFont = new Font(null, "Arial", 9, SWT.BOLD); //$NON-NLS-1$
             tableName.setFont(erFont);
             tableName.setForegroundColor(ColorConstants.white);
             tableName.setText(((Table) getModel()).getElementName());
@@ -190,7 +190,7 @@ public class TablePart extends AbstractGraphicalEditPart implements PropertyChan
 
             this.tableName = new Label();
             tableName.setText(((Table) getModel()).getElementName());
-            Font erFont = new Font(null, "Arial", 9, SWT.BOLD);
+            Font erFont = new Font(null, "Arial", 9, SWT.BOLD); //$NON-NLS-1$
             tableName.setFont(erFont);
             tableName.setForegroundColor(ColorConstants.white);
             add(tableName, 0);

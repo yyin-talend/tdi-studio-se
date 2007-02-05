@@ -27,6 +27,7 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 import org.talend.commons.exception.ExceptionHandler;
+import org.talend.scheduler.i18n.Messages;
 
 /**
  * The activator class controls the plug-in life cycle.
@@ -34,7 +35,7 @@ import org.talend.commons.exception.ExceptionHandler;
 public class SchedulerPlugin extends AbstractUIPlugin {
 
     // The plug-in ID
-    public static final String PLUGIN_ID = "org.talend.scheduler";
+    public static final String PLUGIN_ID = "org.talend.scheduler"; //$NON-NLS-1$
 
     // The shared instance
     private static SchedulerPlugin plugin;

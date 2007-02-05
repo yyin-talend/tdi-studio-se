@@ -43,6 +43,7 @@ import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNode.EProperties;
+import org.talend.sqlbuilder.Messages;
 import org.talend.sqlbuilder.SqlBuilderPlugin;
 import org.talend.sqlbuilder.dbstructure.DBTreeProvider;
 import org.talend.sqlbuilder.dbstructure.RepositoryNodeType;
@@ -73,7 +74,7 @@ public class MetadataRefreshAction extends SelectionProviderAction {
 	 * @param selectionProvider
 	 */
 	public MetadataRefreshAction(ISelectionProvider selectionProvider, ISQLBuilderDialog d) {
-		super(selectionProvider, "");
+		super(selectionProvider, ""); //$NON-NLS-1$
 		this.selectionProvider = selectionProvider;
 		columnNodes = new ArrayList<MetadataColumn>();
 		repositorynodes = new ArrayList<RepositoryNode>();
@@ -116,7 +117,7 @@ public class MetadataRefreshAction extends SelectionProviderAction {
 	 * 
 	 * @return
 	 */
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("unchecked") //$NON-NLS-1$
 	private DatabaseConnectionItem getItem(RepositoryNode node) {
 		IRepositoryObject repositoryObject = node.getObject();
 		DatabaseConnectionItem item = (DatabaseConnectionItem) repositoryObject
@@ -134,7 +135,7 @@ public class MetadataRefreshAction extends SelectionProviderAction {
 	 * @param item
 	 *            selected DatabaseConnectionItem
 	 */
-	@SuppressWarnings({ "static-access", "unchecked" })
+	@SuppressWarnings({ "static-access", "unchecked" }) //$NON-NLS-1$ //$NON-NLS-2$
 	private void saveMetadataColumn(MetadataTable tableNode,
 			MetadataColumn columnNode, DatabaseConnectionItem item) {
 		DatabaseConnection connection = (DatabaseConnection) item
@@ -160,7 +161,7 @@ public class MetadataRefreshAction extends SelectionProviderAction {
 	 * @param connection
 	 *            selected DatabaseConnection
 	 */
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("unchecked") //$NON-NLS-1$
 	private void modifyMetadataColumn(MetadataTable tableNode,
 			MetadataColumn columnNode, DatabaseConnection connection) {
 		IMetadataConnection iMetadataConnection = ConvertionHelper
@@ -173,7 +174,7 @@ public class MetadataRefreshAction extends SelectionProviderAction {
 		while (iterate.hasNext()) {
 			MetadataColumn metadataColumn = (MetadataColumn) iterate.next();
 			if (metadataColumn.getLabel().equals(columnNode.getOriginalField())) {
-				if (columnNode.getLabel().equals("")) {
+				if (columnNode.getLabel().equals("")) { //$NON-NLS-1$
 					columnNode.setLabel(columnNode.getOriginalField());
 				}
 				columnNode.setComment(metadataColumn.getComment());
@@ -220,7 +221,7 @@ public class MetadataRefreshAction extends SelectionProviderAction {
 		try {
 			factory.save(item);
 		} catch (PersistenceException e) {
-			SqlBuilderPlugin.log("SaveMetaData Exception: ", e);
+			SqlBuilderPlugin.log(Messages.getString("MetadataRefreshAction.persistenceExceptionMessage"), e); //$NON-NLS-1$
 		}
 	}
 
@@ -251,7 +252,7 @@ public class MetadataRefreshAction extends SelectionProviderAction {
 	 */
 	@Override
 	public String getText() {
-		return "Synchronize";
+		return Messages.getString("MetadataRefreshAction.textSynchronize"); //$NON-NLS-1$
 	}
 
 	/*
@@ -261,7 +262,7 @@ public class MetadataRefreshAction extends SelectionProviderAction {
 	 */
 	@Override
 	public String getToolTipText() {
-		return "Synchronize";
+		return Messages.getString("MetadataRefreshAction.textSynchronize"); //$NON-NLS-1$
 	}
 
 	/**
@@ -284,7 +285,7 @@ public class MetadataRefreshAction extends SelectionProviderAction {
 
 			MetadataColumn col = ((DBTreeProvider.MetadataColumnRepositoryObject) ((RepositoryNode) object)
 					.getObject()).getColumn();
-			if (col.getLabel().equals("")) {
+			if (col.getLabel().equals("")) { //$NON-NLS-1$
 				this.setEnabled(false);
 				return;
 			}

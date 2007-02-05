@@ -40,13 +40,13 @@ public class Column extends Element {
      */
     private static final long serialVersionUID = 0L;
 
-    public static final String PROP_SELECTED = "selected";
+    public static final String PROP_SELECTED = "selected"; //$NON-NLS-1$
 
-    public static final String PROP_TALBE = "table";
+    public static final String PROP_TALBE = "table"; //$NON-NLS-1$
 
-    public static final String PROP_INPUTS = "INPUTS";
+    public static final String PROP_INPUTS = "INPUTS"; //$NON-NLS-1$
 
-    public static final String PROP_OUTPUTS = "OUTPUTS";
+    public static final String PROP_OUTPUTS = "OUTPUTS"; //$NON-NLS-1$
 
     private Table table;
 

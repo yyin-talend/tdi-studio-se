@@ -45,7 +45,7 @@ import org.talend.sqlbuilder.sqleditor.SQLCodeScanner;
 public class Dictionary {
 
     // TODO check if we need to add more types or remove restriction completely?
-    private static final String[] SUPPORTED_CONTENT_ASSIST_TYPES = new String[] {"TABLE_FOLDER", "TABLE_TYPE", "VIEW_FOLDER", "VIEW_TYPE"};
+    private static final String[] SUPPORTED_CONTENT_ASSIST_TYPES = new String[] {"TABLE_FOLDER", "TABLE_TYPE", "VIEW_FOLDER", "VIEW_TYPE"}; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 
     public Dictionary() {
 
@@ -80,7 +80,7 @@ public class Dictionary {
      * @param key key
      * @param value value
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked") //$NON-NLS-1$
     public void putTableName(String key, Object value) {
 
         tree.put(key.toLowerCase(), value);
@@ -91,7 +91,7 @@ public class Dictionary {
      * @param key key
      * @param value value.
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked") //$NON-NLS-1$
     public void putCatalogSchemaName(String key, Object value) {
 
         catalogSchemaTree.put(key.toLowerCase(), value);
@@ -102,7 +102,7 @@ public class Dictionary {
      * @param key key
      * @param value value.
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked") //$NON-NLS-1$
     public void putExternalObjectName(String key, Object value) {
 
         externalObjectTree.put(key.toLowerCase(), value);
@@ -140,7 +140,7 @@ public class Dictionary {
      * @param key key.
      * @param value value.
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked") //$NON-NLS-1$
     public void putColumnsByTableName(String key, Object value) {
         colMap.put(key.toLowerCase(), value);
     }
@@ -294,7 +294,7 @@ public class Dictionary {
 
             // check for cancellation by user
             if (monitor.isCanceled()) {
-                throw new InterruptedException(Messages.getString("Progress.Dictionary.Cancelled"));
+                throw new InterruptedException(Messages.getString("Progress.Dictionary.Cancelled")); //$NON-NLS-1$
             }
 
             INode[] children = dbNode.getChildNodes();
@@ -310,7 +310,7 @@ public class Dictionary {
 
                 // check for cancellation by user
                 if (monitor.isCanceled()) {
-                    throw new InterruptedException(Messages.getString("Progress.Dictionary.Cancelled"));
+                    throw new InterruptedException(Messages.getString("Progress.Dictionary.Cancelled")); //$NON-NLS-1$
                 }
 
                 INode node = (INode) children[i];
@@ -339,7 +339,7 @@ public class Dictionary {
      * @param monitor ProgressMonitor displayed whilst loading
      * @throws InterruptedException If user cancelled loading
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked") //$NON-NLS-1$
     private void loadSchemaCatalog(INode iNode, IProgressMonitor monitor) throws InterruptedException {
 
 //        if (logger.isDebugEnabled()) {
@@ -348,7 +348,7 @@ public class Dictionary {
 
         // check for cancellation by user
         if (monitor.isCanceled()) {
-            throw new InterruptedException(Messages.getString("Progress.Dictionary.Cancelled"));
+            throw new InterruptedException(Messages.getString("Progress.Dictionary.Cancelled")); //$NON-NLS-1$
         }
 
         putCatalogSchemaName(iNode.toString(), iNode);
@@ -360,7 +360,7 @@ public class Dictionary {
 
             // check for cancellation by user
             if (monitor.isCanceled()) {
-                throw new InterruptedException(Messages.getString("Progress.Dictionary.Cancelled"));
+                throw new InterruptedException(Messages.getString("Progress.Dictionary.Cancelled")); //$NON-NLS-1$
             }
 
             // divide work equally between type nodes
@@ -391,7 +391,7 @@ public class Dictionary {
 
                 // check for cancellation by user
                 if (monitor.isCanceled()) {
-                    throw new InterruptedException(Messages.getString("Progress.Dictionary.Cancelled"));
+                    throw new InterruptedException(Messages.getString("Progress.Dictionary.Cancelled")); //$NON-NLS-1$
                 }
 
                 INode[] tableNodes = typeNode.getChildNodes();
@@ -399,7 +399,7 @@ public class Dictionary {
 
                     // check for cancellation by user
                     if (monitor.isCanceled()) {
-                        throw new InterruptedException(Messages.getString("Progress.Dictionary.Cancelled"));
+                        throw new InterruptedException(Messages.getString("Progress.Dictionary.Cancelled")); //$NON-NLS-1$
                     }
 
                     int tableNodeWorkUnit = typeNodeWorkUnit / tableNodes.length;
@@ -426,7 +426,7 @@ public class Dictionary {
 
                             // check for cancellation by user
                             if (monitor.isCanceled()) {
-                                throw new InterruptedException(Messages.getString("Progress.Dictionary.Cancelled"));
+                                throw new InterruptedException(Messages.getString("Progress.Dictionary.Cancelled")); //$NON-NLS-1$
                             }
                         }
 

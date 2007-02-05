@@ -111,7 +111,7 @@ public class DetailTabManager {
             // no detail found..
 
             Label label = new Label(composite, SWT.FILL | SWT.WRAP);
-            label.setText(Messages.getString("DatabaseDetailView.Tab.Unavailable") + " " + node.getLabelText());
+            label.setText(Messages.getString("DatabaseDetailView.Tab.Unavailable") + " " + node.getLabelText()); //$NON-NLS-1$ //$NON-NLS-2$
             //label.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false));
 
             return;
@@ -199,7 +199,7 @@ public class DetailTabManager {
      * @param node for which to find tabs.
      * @return List of tabs
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked") //$NON-NLS-1$
     private static List createTabs(INode node) {
 
 //        if (CONSTANT_LOGGER.isDebugEnabled()) {
@@ -360,7 +360,7 @@ public class DetailTabManager {
      * @param node INode for which to retrieve tabs.
      * @return List of tabs.
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked") //$NON-NLS-1$
     private static List getTabs(INode node) {
 
 //        if (CONSTANT_LOGGER.isDebugEnabled()) {

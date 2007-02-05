@@ -167,7 +167,7 @@ public class HoursMinutesGroup extends Group implements IWidgetEnableListener {
                     }
                 }
                 if (start == 0 && end == 23) {
-                    cronRunningHours = "*";
+                    cronRunningHours = "*"; //$NON-NLS-1$
                 } else {
                     if (!firstFlag && start >= end) {
 
@@ -185,7 +185,7 @@ public class HoursMinutesGroup extends Group implements IWidgetEnableListener {
                             segmentFlag = false;
                             cronRunningHours += start + "-" + end; //$NON-NLS-1$
                         } else {
-                            cronRunningHours += "," + start + "-" + end;
+                            cronRunningHours += "," + start + "-" + end; //$NON-NLS-1$ //$NON-NLS-2$
                         } //$NON-NLS-1$ //$NON-NLS-2$
                         firstFlag = true;
                     }

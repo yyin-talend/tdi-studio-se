@@ -73,14 +73,14 @@ public abstract class AbstractSourceTab extends AbstractTab {
         if (pSource != null) {
             pViewer.setText(pSource);
         } else {
-            pViewer.setText("");
+            pViewer.setText(""); //$NON-NLS-1$
         }
         pViewer.setLayoutData(gridData);
         
         // add status bar labels
         String info = getStatusMessage();
         if (info == null) {
-            info = "";
+            info = ""; //$NON-NLS-1$
         }
         Label infoLabel = new Label(composite, SWT.NULL);
         infoLabel.setText(info);
@@ -88,7 +88,7 @@ public abstract class AbstractSourceTab extends AbstractTab {
     }
 
     public String getLabelText() {
-        return Messages.getString("DatabaseDetailView.Tab.Source");
+        return Messages.getString("DatabaseDetailView.Tab.Source"); //$NON-NLS-1$
     }
 
     public abstract String getSource();
@@ -99,7 +99,7 @@ public abstract class AbstractSourceTab extends AbstractTab {
     }
     
     public String getStatusMessage() {
-        return Messages.getString("DatabaseDetailView.Tab.SourceFor") + " " + getNode().getQualifiedName();
+        return Messages.getString("DatabaseDetailView.Tab.SourceFor") + " " + getNode().getQualifiedName(); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
 }

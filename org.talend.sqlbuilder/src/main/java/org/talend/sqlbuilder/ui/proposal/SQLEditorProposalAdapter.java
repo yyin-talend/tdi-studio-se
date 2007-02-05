@@ -61,6 +61,7 @@ import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
 import org.talend.commons.ui.swt.proposal.IContentProposalExtendedListener;
 import org.talend.commons.ui.swt.proposal.IControlContentAdapterExtended;
+import org.talend.sqlbuilder.Messages;
 import org.talend.sqlbuilder.SqlBuilderPlugin;
 
 /**
@@ -309,7 +310,7 @@ public class SQLEditorProposalAdapter {
                             try {
                                 Thread.sleep(5);
                             } catch (InterruptedException e1) {
-                                SqlBuilderPlugin.log("PopupCloserListener Failure", e1);
+                                SqlBuilderPlugin.log(Messages.getString("SQLEditorProposalAdapter.logMessage"), e1); //$NON-NLS-1$
                             }
                             control.getDisplay().asyncExec(new Runnable() {
 
@@ -1224,7 +1225,7 @@ public class SQLEditorProposalAdapter {
          * @param filterString
          * @return
          */
-        @SuppressWarnings("unchecked")
+        @SuppressWarnings("unchecked") //$NON-NLS-1$
 		private IContentProposal[] filterProposals(
 				IContentProposal[] contentProposals, String filterString) {
             if (filterString.length() == 0) {

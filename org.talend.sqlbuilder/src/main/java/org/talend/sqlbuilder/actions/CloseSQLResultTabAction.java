@@ -43,7 +43,7 @@ import org.talend.sqlbuilder.SqlBuilderPlugin;
  *
  */
 public class CloseSQLResultTabAction extends Action {
-    private ImageDescriptor img = getDescriptor(Messages.getString("Images.CloseIcon"));
+    private ImageDescriptor img = getDescriptor(Messages.getString("Images.CloseIcon")); //$NON-NLS-1$
     /**
      * Holds a reference to the TableItem we should close.
      */
@@ -80,7 +80,7 @@ public class CloseSQLResultTabAction extends Action {
     
     private ImageDescriptor getDescriptor(String path) {
         if (path == null || path.trim().length() == 0) {
-            SqlBuilderPlugin.log("Missing image path for " + path, null);
+            SqlBuilderPlugin.log(Messages.getString("CloseSQLResultTabAction.logMessageMissingImagePath") + path, null); //$NON-NLS-1$
             return null;
         }
 

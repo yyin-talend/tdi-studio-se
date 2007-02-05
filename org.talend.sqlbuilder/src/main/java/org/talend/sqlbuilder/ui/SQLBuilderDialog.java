@@ -182,7 +182,7 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog, IRepo
     public SQLBuilderDialog(Shell parentShell) {
         super(parentShell);
         setShellStyle(SWT.DIALOG_TRIM | SWT.RESIZE | SWT.RESIZE | SWT.MIN | SWT.MAX);
-        parentShell.setImage(ImageUtil.getImage("Images.title"));
+        parentShell.setImage(ImageUtil.getImage("Images.title")); //$NON-NLS-1$
         SqlBuilderPlugin.getDefault().getRepositoryService().registerRepositoryChangedListener(this);
     }
 
@@ -389,7 +389,7 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog, IRepo
      * @see org.eclipse.jface.dialogs.Dialog#okPressed()
      */
     public void okPressed() {
-        String sql = "";
+        String sql = ""; //$NON-NLS-1$
         // sql = editorComposite.getDefaultTabSql();
         sql = editorComposite.getCurrentTabSql();
 
@@ -433,7 +433,7 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog, IRepo
             IRunnableWithProgress progress = new IRunnableWithProgress() {
 
                 public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-                    monitor.beginTask("", IProgressMonitor.UNKNOWN);
+                    monitor.beginTask("", IProgressMonitor.UNKNOWN); //$NON-NLS-1$
 
                     try {
                         INode node = null;

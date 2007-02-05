@@ -54,7 +54,7 @@ public final class URLUtil {
         try {
             url = new URL(baseURL, s);
         } catch (Throwable e) {
-        	SqlBuilderPlugin.log("", e);
+        	SqlBuilderPlugin.log("", e); //$NON-NLS-1$
         }
         return url;
     }
@@ -68,7 +68,7 @@ public final class URLUtil {
     private static  void init() {
         SqlBuilderPlugin defaultPlugin = SqlBuilderPlugin.getDefault();
 
-        baseURL = defaultPlugin.getBundle().getEntry("/");
+        baseURL = defaultPlugin.getBundle().getEntry("/"); //$NON-NLS-1$
         initialized = true;
     }
 
@@ -88,7 +88,7 @@ public final class URLUtil {
         
         try {
         	Bundle bundle = Platform.getBundle(yourPluginId);
-            URL baseUrl = bundle.getEntry("/");
+            URL baseUrl = bundle.getEntry("/"); //$NON-NLS-1$
             url = new URL(baseUrl, filePath);
         } catch (Exception e) {
             SqlBuilderPlugin.log(e.getMessage(), e);

@@ -57,12 +57,12 @@ public class ColumnNode extends AbstractNode {
         pparentTable = parentTable;
         psessionNode = session;
         pname = name;
-        pimageKey = "Images.ColumnNodeIcon";
+        pimageKey = "Images.ColumnNodeIcon"; //$NON-NLS-1$
 
         if (showKeyLabels) {
         if (pparentTable.getPrimaryKeyNames().contains(pname)) {
             pisPrimaryKey = true;
-            pimageKey = "Images.PrimaryKeyIcon";
+            pimageKey = "Images.PrimaryKeyIcon"; //$NON-NLS-1$
         }
         // this has been disabled for now.
         // foreign key determination turns out to be a real performance hog for oracle
@@ -141,7 +141,7 @@ public class ColumnNode extends AbstractNode {
      */
     public String getQualifiedName() {
 
-        return pparentTable.getName() + "." + pname;
+        return pparentTable.getName() + "." + pname; //$NON-NLS-1$
     }
 
     /**
@@ -157,7 +157,7 @@ public class ColumnNode extends AbstractNode {
      */
     public String getUniqueIdentifier() {
 
-        return pparentTable.getQualifiedName() + "." + pname;
+        return pparentTable.getQualifiedName() + "." + pname; //$NON-NLS-1$
     }
     
     /**
@@ -206,7 +206,7 @@ public class ColumnNode extends AbstractNode {
     public Color getBackground() {
         if (getLabelAtColumn(0).equals(getSourceName()) && isSameToColumn) {
             return super.getBackground();
-        } else if (getLabelAtColumn(1) == null || getLabelAtColumn(1).trim().equals("")) {
+        } else if (getLabelAtColumn(1) == null || getLabelAtColumn(1).trim().equals("")) { //$NON-NLS-1$
             return Display.getDefault().getSystemColor(SWT.COLOR_GRAY);
         } else {
             return Display.getDefault().getSystemColor(SWT.COLOR_RED);

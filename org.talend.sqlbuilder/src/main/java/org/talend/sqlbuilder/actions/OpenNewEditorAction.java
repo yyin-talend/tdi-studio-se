@@ -62,9 +62,9 @@ public class OpenNewEditorAction extends SelectionProviderAction {
      */
     public OpenNewEditorAction(ISelectionProvider selectionProvider, ISQLBuilderDialog dialog,
             ConnectionParameters connParam, boolean isDefaultEditor) {
-        super(selectionProvider, "New Editor");
+        super(selectionProvider, Messages.getString("OpenNewEditorAction.textNewEditor")); //$NON-NLS-1$
         setText(Messages.getString("DBStructureComposite.NewEditor")); //$NON-NLS-1$
-        setToolTipText(Messages.getString("DBStructureComposite.NewEditor"));
+        setToolTipText(Messages.getString("DBStructureComposite.NewEditor")); //$NON-NLS-1$
         this.dialog = dialog;
         this.selectionProvider = selectionProvider;
         this.connParam = connParam;
@@ -72,7 +72,7 @@ public class OpenNewEditorAction extends SelectionProviderAction {
         init();
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked") //$NON-NLS-1$
     public void init() {
         RepositoryNode[] selectedNodes = (RepositoryNode[]) ((IStructuredSelection) selectionProvider.getSelection())
                 .toList().toArray(new RepositoryNode[] {});

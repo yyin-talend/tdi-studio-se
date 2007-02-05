@@ -26,6 +26,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.talend.scheduler.i18n.Messages;
+
 /**
  * 
  * A Task encapulates the task properties. <br/>
@@ -37,7 +39,7 @@ public class ScheduleTask {
 
     private static final int TASK_FIELD_NUMBER = 6;
 
-    private static final String SPACE = " ";
+    private static final String SPACE = " "; //$NON-NLS-1$
 
     String day;
 
@@ -139,20 +141,20 @@ public class ScheduleTask {
      */
     public void setPlainCommand(String plainCommand) throws SchedulerException {
         if (plainCommand.indexOf(SPACE) == -1) {
-            throw new SchedulerException("The 'Custom crontab entry' format is wrong!");
+            throw new SchedulerException(Messages.getString("ScheduleTask.scheCustomFormatWrong")); //$NON-NLS-1$
         }
 
         String[] strs = plainCommand.split(SPACE);
         List<String> list = new ArrayList<String>();
         for (String string : strs) {
-            if (string == null || string.trim().equals("")) {
+            if (string == null || string.trim().equals("")) { //$NON-NLS-1$
                 continue;
             }
             list.add(string);
         }
 
         if (list.size() < TASK_FIELD_NUMBER) {
-            throw new SchedulerException("The 'Custom crontab entry' format is wrong!");
+            throw new SchedulerException(Messages.getString("ScheduleTask.scheCustomFormatWrong")); //$NON-NLS-1$
         }
 
         String minuteTmp = list.get(0);
@@ -192,7 +194,7 @@ public class ScheduleTask {
 
         for (int i = 0; i < TASK_FIELD_NUMBER - 1; i++) {
             plainCommand = plainCommand.trim();
-            plainCommand = plainCommand.substring(plainCommand.indexOf(" "));
+            plainCommand = plainCommand.substring(plainCommand.indexOf(" ")); //$NON-NLS-1$
         }
         return plainCommand.trim();
     }
@@ -212,7 +214,7 @@ public class ScheduleTask {
             return true;
         }
 
-        throw new SchedulerException("The 'Custom crontab entry' format is wrong! -- " + detail);
+        throw new SchedulerException(Messages.getString("ScheduleTask.scheCustomFormatWrong2") + detail); //$NON-NLS-1$
 
     }
 

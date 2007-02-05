@@ -47,7 +47,7 @@ import org.talend.sqlbuilder.util.UIUtils;
  */
 public class ExecSQLAction extends AbstractEditorAction {
 
-    private ImageDescriptor img = ImageUtil.getDescriptor("Images.ExecSQLIcon");
+    private ImageDescriptor img = ImageUtil.getDescriptor("Images.ExecSQLIcon"); //$NON-NLS-1$
 
     private IResultDisplayer resultViewer = null;
 
@@ -83,7 +83,7 @@ public class ExecSQLAction extends AbstractEditorAction {
      * @see org.talend.sqlbuilder.actions.AbstractEditorAction#getText()
      */
     public String getText() {
-        return Messages.getString("SQLEditor.Actions.Execute");
+        return Messages.getString("SQLEditor.Actions.Execute"); //$NON-NLS-1$
     }
 
     /*
@@ -92,7 +92,7 @@ public class ExecSQLAction extends AbstractEditorAction {
      * @see org.talend.sqlbuilder.actions.AbstractEditorAction#getToolTipText()
      */
     public String getToolTipText() {
-        return Messages.getString("SQLEditor.Actions.Execute.ToolTip");
+        return Messages.getString("SQLEditor.Actions.Execute.ToolTip"); //$NON-NLS-1$
     }
 
     /*
@@ -110,11 +110,11 @@ public class ExecSQLAction extends AbstractEditorAction {
                     maxresults = Integer.parseInt(tmp);
                 }
                 if (maxresults < 0) {
-                    new Exception(Messages.getString("SQLEditor.LimitRows.Error"));
+                    new Exception(Messages.getString("SQLEditor.LimitRows.Error")); //$NON-NLS-1$
                 }
             }
         } catch (final Exception e) {
-            UIUtils.openErrorDialog(Messages.getString("SQLEditor.Error.InvalidRowLimit.Title"), e);
+            UIUtils.openErrorDialog(Messages.getString("SQLEditor.Error.InvalidRowLimit.Title"), e); //$NON-NLS-1$
             return;
         }
         try {
@@ -124,8 +124,8 @@ public class ExecSQLAction extends AbstractEditorAction {
 
                     public void run() {
                         boolean okToExecute = MessageDialog.openConfirm(Display.getDefault().getShells()[0], Messages
-                                .getString("SQLEditor.LimitRows.ConfirmNoLimit.Title"), Messages
-                                .getString("SQLEditor.LimitRows.ConfirmNoLimit.Message"));
+                                .getString("SQLEditor.LimitRows.ConfirmNoLimit.Title"), Messages //$NON-NLS-1$
+                                .getString("SQLEditor.LimitRows.ConfirmNoLimit.Message")); //$NON-NLS-1$
                         if (okToExecute) {
                             ExecSQLAction.this.run(largeResults);
                         }
@@ -135,7 +135,7 @@ public class ExecSQLAction extends AbstractEditorAction {
                 run(maxresults);
             }
         } catch (final Exception e) {
-            UIUtils.openErrorDialog(Messages.getString("SQLResultsView.Error.Title"), e);
+            UIUtils.openErrorDialog(Messages.getString("SQLResultsView.Error.Title"), e); //$NON-NLS-1$
         }
     }
 
@@ -152,7 +152,7 @@ public class ExecSQLAction extends AbstractEditorAction {
             runNode = nodeManager.getSessionTreeNode(node);
         } catch (Exception e) {
             MessageDialog.openError(null, Messages.getString("AbstractSQLExecution.Executing.Error"), e.getMessage()); //$NON-NLS-1$
-            SqlBuilderPlugin.log("Gets SessionTreeNode failed", e);
+            SqlBuilderPlugin.log(Messages.getString("ExecSQLAction.logMessageGetSessionTreeNodeFail"), e); //$NON-NLS-1$
             return;
         }
         
@@ -163,7 +163,7 @@ public class ExecSQLAction extends AbstractEditorAction {
         while (qt.hasQuery()) {
             String querySql = qt.nextQuery();
             // ignore commented lines.
-            if (!querySql.startsWith("--")) {
+            if (!querySql.startsWith("--")) { //$NON-NLS-1$
                 queryStrings.add(querySql);
             }
         }
@@ -178,7 +178,7 @@ public class ExecSQLAction extends AbstractEditorAction {
                 }
             }
         } catch (Exception e) {
-            SqlBuilderPlugin.log("Error creating sql execution tab", e);
+            SqlBuilderPlugin.log(Messages.getString("ExecSQLAction.logMessageErrorCreatingSqlTab"), e); //$NON-NLS-1$
         }
     }
 

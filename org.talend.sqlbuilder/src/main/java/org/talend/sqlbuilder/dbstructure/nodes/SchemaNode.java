@@ -32,6 +32,7 @@ import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
+import org.talend.sqlbuilder.Messages;
 import org.talend.sqlbuilder.SqlBuilderPlugin;
 import org.talend.sqlbuilder.sessiontree.model.SessionTreeNode;
 import org.talend.sqlbuilder.util.ImageUtil;
@@ -65,19 +66,19 @@ public class SchemaNode extends AbstractNode {
         pparent = parent;
         pname = name;
 
-        pimageKey = "Images.SchemaNodeIcon";
+        pimageKey = "Images.SchemaNodeIcon"; //$NON-NLS-1$
     }
 
     /**
      * Add Extension nodes.
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked") //$NON-NLS-1$
     private void addExtensionNodes() {
 
         String databaseProductName = getSession().getRoot().getDatabaseProductName().toLowerCase().trim();
 
         IExtensionRegistry registry = Platform.getExtensionRegistry();
-        IExtensionPoint point = registry.getExtensionPoint("net.sourceforge.sqlexplorer", "node");
+        IExtensionPoint point = registry.getExtensionPoint("net.sourceforge.sqlexplorer", "node"); //$NON-NLS-1$ //$NON-NLS-2$
         IExtension[] extensions = point.getExtensions();
 
         for (int i = 0; i < extensions.length; i++) {
@@ -91,13 +92,13 @@ public class SchemaNode extends AbstractNode {
 
                     // include only nodes that are attachted to the schema
                     // node..
-                    String parent = ces[j].getAttribute("parent-node");
-                    if (parent.indexOf("schema") == -1) {
+                    String parent = ces[j].getAttribute("parent-node"); //$NON-NLS-1$
+                    if (parent.indexOf("schema") == -1) { //$NON-NLS-1$
                         continue;
                     }
 
                     boolean isValidProduct = false;
-                    String[] validProducts = ces[j].getAttribute("database-product-name").split(",");
+                    String[] validProducts = ces[j].getAttribute("database-product-name").split(","); //$NON-NLS-1$ //$NON-NLS-2$
 
                     // include only nodes valid for this database
                     for (int k = 0; k < validProducts.length; k++) {
@@ -108,12 +109,12 @@ public class SchemaNode extends AbstractNode {
                             continue;
                         }
 
-                        if (product.equals("*")) {
+                        if (product.equals("*")) { //$NON-NLS-1$
                             isValidProduct = true;
                             break;
                         }
 
-                        String regex = TextUtil.replaceChar(product, '*', ".*");
+                        String regex = TextUtil.replaceChar(product, '*', ".*"); //$NON-NLS-1$
                         if (databaseProductName.matches(regex)) {
                             isValidProduct = true;
                             break;
@@ -125,11 +126,11 @@ public class SchemaNode extends AbstractNode {
                         continue;
                     }
 
-                    String imagePath = ces[j].getAttribute("icon");
-                    String id = ces[j].getAttribute("id");
-                    String type = ces[j].getAttribute("table-type").trim();
+                    String imagePath = ces[j].getAttribute("icon"); //$NON-NLS-1$
+                    String id = ces[j].getAttribute("id"); //$NON-NLS-1$
+                    String type = ces[j].getAttribute("table-type").trim(); //$NON-NLS-1$
 
-                    AbstractNode childNode = (AbstractNode) ces[j].createExecutableExtension("class");
+                    AbstractNode childNode = (AbstractNode) ces[j].createExecutableExtension("class"); //$NON-NLS-1$
                     childNode.setParent(this);
                     childNode.setSession(psessionNode);
                     childNode.setType(type);
@@ -145,7 +146,7 @@ public class SchemaNode extends AbstractNode {
                     }
 
                 } catch (Throwable ex) {
-                    SqlBuilderPlugin.log("Could not create child node", ex);
+                    SqlBuilderPlugin.log(Messages.getString("SchemaNode.logMessage1"), ex); //$NON-NLS-1$
                 }
             }
         }
@@ -164,7 +165,7 @@ public class SchemaNode extends AbstractNode {
         String databaseProductName = getSession().getRoot().getDatabaseProductName().toLowerCase().trim();
 
         IExtensionRegistry registry = Platform.getExtensionRegistry();
-        IExtensionPoint point = registry.getExtensionPoint("net.sourceforge.sqlexplorer", "node");
+        IExtensionPoint point = registry.getExtensionPoint("net.sourceforge.sqlexplorer", "node"); //$NON-NLS-1$ //$NON-NLS-2$
         IExtension[] extensions = point.getExtensions();
 
         for (int i = 0; i < extensions.length; i++) {
@@ -178,13 +179,13 @@ public class SchemaNode extends AbstractNode {
 
                     // include only nodes that are attachted to the schema
                     // node..
-                    String parent = ces[j].getAttribute("parent-node");
-                    if (parent.indexOf("schema") == -1) {
+                    String parent = ces[j].getAttribute("parent-node"); //$NON-NLS-1$
+                    if (parent.indexOf("schema") == -1) { //$NON-NLS-1$
                         continue;
                     }
 
                     boolean isValidProduct = false;
-                    String[] validProducts = ces[j].getAttribute("database-product-name").split(",");
+                    String[] validProducts = ces[j].getAttribute("database-product-name").split(","); //$NON-NLS-1$ //$NON-NLS-2$
 
                     // include only nodes valid for this database
                     for (int k = 0; k < validProducts.length; k++) {
@@ -195,12 +196,12 @@ public class SchemaNode extends AbstractNode {
                             continue;
                         }
 
-                        if (product.equals("*")) {
+                        if (product.equals("*")) { //$NON-NLS-1$
                             isValidProduct = true;
                             break;
                         }
 
-                        String regex = TextUtil.replaceChar(product, '*', ".*");
+                        String regex = TextUtil.replaceChar(product, '*', ".*"); //$NON-NLS-1$
                         if (databaseProductName.matches(regex)) {
                             isValidProduct = true;
                             break;
@@ -213,19 +214,19 @@ public class SchemaNode extends AbstractNode {
                     }
 
                     // check if it is the correct type
-                    String type = ces[j].getAttribute("table-type").trim();
+                    String type = ces[j].getAttribute("table-type").trim(); //$NON-NLS-1$
                     if (!type.equalsIgnoreCase(tableType)) {
                         continue;
                     }
 
-                    AbstractNode childNode = (AbstractNode) ces[j].createExecutableExtension("class");
+                    AbstractNode childNode = (AbstractNode) ces[j].createExecutableExtension("class"); //$NON-NLS-1$
                     childNode.setParent(this);
                     childNode.setSession(psessionNode);
 
                     return childNode;
 
                 } catch (Throwable ex) {
-                    SqlBuilderPlugin.log("Could not create child node", ex);
+                    SqlBuilderPlugin.log(Messages.getString("SchemaNode.logMessage2"), ex); //$NON-NLS-1$
                 }
             }
         }
@@ -236,7 +237,7 @@ public class SchemaNode extends AbstractNode {
     /**
      * @return ChildNames.
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked") //$NON-NLS-1$
     public String[] getChildNames() {
 
         if (pchildNames.size() == 0) {
@@ -278,7 +279,7 @@ public class SchemaNode extends AbstractNode {
         if (pfilteredNames == null) {
             String filter = ((SQLAlias) getSession().getAlias()).getFolderFilterExpression();
             if (filter != null) {
-                pfilteredNames = filter.split(",");
+                pfilteredNames = filter.split(","); //$NON-NLS-1$
             }
         }
         if (pfilteredNames == null || pfilteredNames.length == 0) {
@@ -303,7 +304,7 @@ public class SchemaNode extends AbstractNode {
     /**
      * LoadChildren.
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked") //$NON-NLS-1$
     public void loadChildren() {
 
         pchildNames = new ArrayList();
@@ -314,9 +315,9 @@ public class SchemaNode extends AbstractNode {
             String[] tableTypes = psessionNode.getMetaData().getTableTypes();
 
             try {
-                tables = psessionNode.getMetaData().getTables(pname, pname, "%", tableTypes);
+                tables = psessionNode.getMetaData().getTables(pname, pname, "%", tableTypes); //$NON-NLS-1$
             } catch (Throwable e) {
-                SqlBuilderPlugin.log("Loading all tables at once is not supported", e);
+                SqlBuilderPlugin.log(Messages.getString("SchemaNode.logMessage3"), e); //$NON-NLS-1$
             }
 
             for (int i = 0; i < tableTypes.length; ++i) {
@@ -342,7 +343,7 @@ public class SchemaNode extends AbstractNode {
 
         } catch (Throwable e) {
 
-            SqlBuilderPlugin.log("Could not load child nodes for " + pname, e);
+            SqlBuilderPlugin.log(Messages.getString("SchemaNode.logMessage4") + pname, e); //$NON-NLS-1$
         }
 
     }

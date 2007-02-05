@@ -65,7 +65,7 @@ public class RelationCreateCommand extends Command {
     @Override
     public boolean canExecute() {
         if (target != null) {
-            if (source.equals(target) || target.getElementName().equals("*")
+            if (source.equals(target) || target.getElementName().equals("*") //$NON-NLS-1$
                     || source.getTable().equals(target.getTable())) {
                 return false;
             }

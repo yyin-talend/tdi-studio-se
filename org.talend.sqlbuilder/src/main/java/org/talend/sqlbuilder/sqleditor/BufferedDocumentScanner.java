@@ -25,6 +25,7 @@ import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.rules.ICharacterScanner;
 import org.eclipse.jface.util.Assert;
+import org.talend.sqlbuilder.Messages;
 import org.talend.sqlbuilder.SqlBuilderPlugin;
 
 /**
@@ -94,7 +95,7 @@ public final class BufferedDocumentScanner implements ICharacterScanner {
 			content.getChars(0, fBufferLength, fBuffer, 0);
 
 		} catch (BadLocationException e) {
-			SqlBuilderPlugin.log("BadLocationException:", e);
+			SqlBuilderPlugin.log(Messages.getString("BufferedDocumentScanner.logMessage"), e); //$NON-NLS-1$
 		}
 	}
 
@@ -172,7 +173,7 @@ public final class BufferedDocumentScanner implements ICharacterScanner {
 			return offset - start;
 
 		} catch (BadLocationException e) {
-			SqlBuilderPlugin.log("BadLocationException:", e);
+			SqlBuilderPlugin.log(Messages.getString("BufferedDocumentScanner.logMessage"), e); //$NON-NLS-1$
 		}
 
 		return -1;

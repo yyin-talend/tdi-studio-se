@@ -46,6 +46,7 @@ import org.talend.designer.runprocess.perl.PerlUtils;
 import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.scheduler.SchedulerPlugin;
+import org.talend.scheduler.i18n.Messages;
 
 /**
  * This class is responsible for keeping synchronous with project,job and context in comboxes, according to these 3
@@ -162,7 +163,7 @@ public class TalendJobManager {
             if (factory.getStatus(process) != ERepositoryStatus.DELETED) {
                 String path = object.getParent().getPath().toString();
                 String name;
-                if (path.equals("")) {
+                if (path.equals("")) { //$NON-NLS-1$
                     name = IPath.SEPARATOR + process.getLabel();
                 } else {
                     name = IPath.SEPARATOR + path + IPath.SEPARATOR + process.getLabel();
@@ -259,16 +260,16 @@ public class TalendJobManager {
      * @throws ProcessorException
      */
     public String getCommandByTalendJob(String project, String jobName, String context) throws ProcessorException {
-        project = project.replace("/", "");
-        jobName = jobName.replace("/", "");
-        context = context.replace("/", "");
-        String contextArg = "--context=";
+        project = project.replace("/", ""); //$NON-NLS-1$ //$NON-NLS-2$
+        jobName = jobName.replace("/", ""); //$NON-NLS-1$ //$NON-NLS-2$
+        context = context.replace("/", ""); //$NON-NLS-1$ //$NON-NLS-2$
+        String contextArg = Messages.getString("TalendJobManager.conetextArg"); //$NON-NLS-1$
 
-        String projectSeparator = ".job";
+        String projectSeparator = ".job"; //$NON-NLS-1$
 
-        String wordSeparator = "_";
+        String wordSeparator = "_"; //$NON-NLS-1$
 
-        String perlExt = ".pl";
+        String perlExt = ".pl"; //$NON-NLS-1$
         IPreferenceStore prefStore = CorePlugin.getDefault().getPreferenceStore();
         String perlInterpreter = prefStore.getString(ITalendCorePrefConstants.PERL_INTERPRETER);
         if (perlInterpreter == null || perlInterpreter.length() == 0) {
@@ -294,11 +295,11 @@ public class TalendJobManager {
 
         String contextCode = project + projectSeparator + wordSeparator + jobName + wordSeparator + context + perlExt;
 
-        String[] cmd = new String[] { perlInterpreter, perlLibOption, exePath + "/" + perlCode,
-                contextArg + exePath + "/" + contextCode };
+        String[] cmd = new String[] { perlInterpreter, perlLibOption, exePath + "/" + perlCode, //$NON-NLS-1$
+                contextArg + exePath + "/" + contextCode }; //$NON-NLS-1$
 
         StringBuffer sb = new StringBuffer();
-        sb.append("");
+        sb.append(""); //$NON-NLS-1$
         for (String s : cmd) {
             sb.append(' ').append(s);
         }
@@ -314,7 +315,7 @@ public class TalendJobManager {
      */
     private String checkString(String str) {
         if (str == null || str.length() == 0) {
-            return "";
+            return ""; //$NON-NLS-1$
         }
         return str;
     }

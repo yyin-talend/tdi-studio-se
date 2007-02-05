@@ -35,13 +35,13 @@ import org.talend.sqlbuilder.util.ImageUtil;
  */
 public class ClearTextAction extends AbstractEditorAction {
 
-    private ImageDescriptor img = ImageUtil.getDescriptor("Images.ClearTextIcon");
+    private ImageDescriptor img = ImageUtil.getDescriptor("Images.ClearTextIcon"); //$NON-NLS-1$
 
     /* (non-Javadoc)
      * @see org.talend.sqlbuilder.actions.AbstractEditorAction#getText()
      */
     public String getText() {
-        return Messages.getString("Clear_1");
+        return Messages.getString("Clear_1"); //$NON-NLS-1$
     }
 
     /* (non-Javadoc)
@@ -60,7 +60,7 @@ public class ClearTextAction extends AbstractEditorAction {
      * @see org.talend.sqlbuilder.actions.AbstractEditorAction#getToolTipText()
      */
     public String getToolTipText() {
-        return Messages.getString("Clear_2");
+        return Messages.getString("Clear_2"); //$NON-NLS-1$
     }
 
     /* (non-Javadoc)

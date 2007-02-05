@@ -124,8 +124,8 @@ public class SQLBuilderEditorComposite extends Composite implements ISQLEditor {
 
 	private boolean ifLimit = true;
 
-	public static final String[] SUPPORTED_FILETYPES = new String[] { "*.txt",
-			"*.sql", "*.*" };
+	public static final String[] SUPPORTED_FILETYPES = new String[] { "*.txt", //$NON-NLS-1$
+			"*.sql", "*.*" }; //$NON-NLS-1$ //$NON-NLS-2$
 
 	private Text maxResultText;
 
@@ -137,7 +137,7 @@ public class SQLBuilderEditorComposite extends Composite implements ISQLEditor {
 
 	private boolean isDefaultEditor;
 
-	private final String language = "tsql";
+	private final String language = "tsql"; //$NON-NLS-1$
 
 	private ISQLBuilderDialog dialog;
 
@@ -215,7 +215,7 @@ public class SQLBuilderEditorComposite extends Composite implements ISQLEditor {
 				.getPreferenceStore());
 		colorText = new ColorStyledText(parent, SWT.BORDER | SWT.V_SCROLL
 				| SWT.H_SCROLL, colorManager, language);
-		Font font = new Font(parent.getDisplay(), "courier", 10, SWT.NONE);
+		Font font = new Font(parent.getDisplay(), "courier", 10, SWT.NONE); //$NON-NLS-1$
 		colorText.setFont(font);
 
 		GridData gd = new GridData(GridData.FILL_BOTH);
@@ -241,7 +241,7 @@ public class SQLBuilderEditorComposite extends Composite implements ISQLEditor {
 	private void createEditorProposal() {
 		try {
 			// create KeyStroke use Ctrl+Space
-			KeyStroke keyStroke = KeyStroke.getInstance("Ctrl+Space");
+			KeyStroke keyStroke = KeyStroke.getInstance("Ctrl+Space"); //$NON-NLS-1$
 			IControlContentAdapter controlContentAdapter = new StyledTextContentAdapter();
 			IContentProposalProvider contentProposalProvider = new SQLEditorProposalProvider(
 					repositoryNode, language);
@@ -259,7 +259,7 @@ public class SQLBuilderEditorComposite extends Composite implements ISQLEditor {
 			contentProposalAdapter.setAutoActivationDelay(10);
 			contentProposalAdapter.setPopupSize(new Point(300, 200));
 		} catch (Exception e) {
-			SqlBuilderPlugin.log("Create SQL Editor Proposal Failure", e);
+			SqlBuilderPlugin.log(Messages.getString("SQLBuilderEditorComposite.logMessage"), e); //$NON-NLS-1$
 		}
 	}
 
@@ -311,7 +311,7 @@ public class SQLBuilderEditorComposite extends Composite implements ISQLEditor {
 
 		final Button limitResults = new Button(statusBar, SWT.CHECK);
 
-		limitResults.setText(Messages.getString("SQL_Limit_Rows_2"));
+		limitResults.setText(Messages.getString("SQL_Limit_Rows_2")); //$NON-NLS-1$
 		limitResults.setSelection(true);
 		limitResults.setLayoutData(c2Grid);
 
@@ -389,11 +389,11 @@ public class SQLBuilderEditorComposite extends Composite implements ISQLEditor {
 	public AbstractEditorAction addExplainPlanAction(RepositoryNode node) {
 		
 		if (SQLBuilderRepositoryNodeManager.getDbTypeFromRepositoryNode(
-				node).startsWith("Oracle")) {
+				node).startsWith("Oracle")) { //$NON-NLS-1$
 			return new OracleExplainPlanAction(
 					SQLResultComposite.getInstance(), this);
 		} else if (SQLBuilderRepositoryNodeManager.getDbTypeFromRepositoryNode(
-				node).startsWith("IBM DB2")) {
+				node).startsWith("IBM DB2")) { //$NON-NLS-1$
 			return new DB2ExplainPlanAction(
 					SQLResultComposite.getInstance(), this);
 		}
@@ -487,7 +487,7 @@ public class SQLBuilderEditorComposite extends Composite implements ISQLEditor {
 	 * @see org.talend.sqlbuilder.ui.editor.ISQLEditor#setRepositoryNode(org.talend.repository.model.RepositoryNode)
 	 */
 	public void setRepositoryNode(RepositoryNode node) {
-		Assert.isNotNull(node, "this node can not be null");
+		Assert.isNotNull(node, Messages.getString("SQLBuilderEditorComposite.assertMessage")); //$NON-NLS-1$
 		this.repositoryNode = node;
 		this.setEditorTitle(this.repositoryNode);
 		sessionSwitcher.refreshSelectedRepository();
@@ -502,19 +502,19 @@ public class SQLBuilderEditorComposite extends Composite implements ISQLEditor {
 	private void setEditorTitle(RepositoryNode node) {
 		String dbName = SQLBuilderRepositoryNodeManager
 				.getDatabaseNameByRepositoryNode(node);
-		String title = "";
+		String title = ""; //$NON-NLS-1$
 		String repositoryName = getRepositoryName();
 		String selectedComponentName = connParam.getSelectedComponentName();
 		if (this.isDefaultEditor
 				&& (selectedComponentName != null && selectedComponentName
 						.length() != 0)) {
-			title = selectedComponentName + ".";
+			title = selectedComponentName + "."; //$NON-NLS-1$
 		}
-		title = title + dbName + "(" + repositoryName + ").sql";
+		title = title + dbName + "(" + repositoryName + ").sql"; //$NON-NLS-1$ //$NON-NLS-2$
 		if (connParam.getQueryObject() != null) {
-			title = "Query: " + connParam.getQueryObject().getLabel();
+			title = Messages.getString("SQLBuilderEditorComposite.titleQuery") + connParam.getQueryObject().getLabel(); //$NON-NLS-1$
 		} else if (dialog.getConnParameters().getQueryObject() != null) {
-            title = "Query: " + dialog.getConnParameters().getQueryObject().getLabel();
+            title = Messages.getString("SQLBuilderEditorComposite.titleQuery") + dialog.getConnParameters().getQueryObject().getLabel(); //$NON-NLS-1$
         }
 		tabItem.setText(title);
 	}
@@ -526,7 +526,7 @@ public class SQLBuilderEditorComposite extends Composite implements ISQLEditor {
 	 */
 	public String getRepositoryName() {
 		if (repositoryNode == null) {
-			return "";
+			return ""; //$NON-NLS-1$
 		}
 		String repositoryName = ((SqlBuilderRepositoryObject) repositoryNode
 				.getObject()).getRepositoryName();
@@ -560,7 +560,7 @@ public class SQLBuilderEditorComposite extends Composite implements ISQLEditor {
 	 */
 	public void doSaveAs() {
 		FileDialog fileDialog = new FileDialog(this.getShell(), SWT.SAVE);
-		fileDialog.setText(Messages.getString("SQLEditor.SaveAsDialog.Title"));
+		fileDialog.setText(Messages.getString("SQLEditor.SaveAsDialog.Title")); //$NON-NLS-1$
 		fileDialog.setFilterExtensions(SUPPORTED_FILETYPES);
 		fileDialog.setFilterNames(SUPPORTED_FILETYPES);
 		fileDialog.setFileName(tabItem.getText());
@@ -586,7 +586,7 @@ public class SQLBuilderEditorComposite extends Composite implements ISQLEditor {
 		} catch (Exception e) {
 
 			UIUtils.openErrorDialog(Messages
-					.getString("SQLEditor.SaveAsDialog.Error"), e);
+					.getString("SQLEditor.SaveAsDialog.Error"), e); //$NON-NLS-1$
 		} finally {
 			if (writer != null) {
 				try {
@@ -605,7 +605,7 @@ public class SQLBuilderEditorComposite extends Composite implements ISQLEditor {
 	 * @see org.talend.sqlbuilder.ui.editor.ISQLEditor#clearText()
 	 */
 	public void clearText() {
-		this.colorText.setText("");
+		this.colorText.setText(""); //$NON-NLS-1$
 	}
 
 	/*

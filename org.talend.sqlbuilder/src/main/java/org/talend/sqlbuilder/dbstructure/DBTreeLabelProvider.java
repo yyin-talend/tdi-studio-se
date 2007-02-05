@@ -42,9 +42,9 @@ public class DBTreeLabelProvider extends LabelProvider implements ITableLabelPro
         ITableColorProvider {
 
     // For Label Provider
-    private Image pDefaultNodeImage = ImageUtil.getImage("Images.DefaultNodeIcon");
+    private Image pDefaultNodeImage = ImageUtil.getImage("Images.DefaultNodeIcon"); //$NON-NLS-1$
 
-    private Image pDefaultParentNodeImage = ImageUtil.getImage("Images.DefaultParentNodeIcon");
+    private Image pDefaultParentNodeImage = ImageUtil.getImage("Images.DefaultParentNodeIcon"); //$NON-NLS-1$
     
     /**
      * dispose.
@@ -52,8 +52,8 @@ public class DBTreeLabelProvider extends LabelProvider implements ITableLabelPro
     public void dispose() {
 
         super.dispose();
-        ImageUtil.disposeImage("Images.DefaultNodeIcon");
-        ImageUtil.disposeImage("Images.DefaultParentNodeIcon");
+        ImageUtil.disposeImage("Images.DefaultNodeIcon"); //$NON-NLS-1$
+        ImageUtil.disposeImage("Images.DefaultParentNodeIcon"); //$NON-NLS-1$
 
     }
 

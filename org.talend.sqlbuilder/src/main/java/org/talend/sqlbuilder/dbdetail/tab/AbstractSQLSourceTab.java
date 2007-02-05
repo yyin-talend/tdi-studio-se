@@ -25,6 +25,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
+import org.talend.sqlbuilder.Messages;
 import org.talend.sqlbuilder.SqlBuilderPlugin;
 
 import net.sourceforge.sqlexplorer.IConstants;
@@ -84,7 +85,7 @@ public abstract class AbstractSQLSourceTab extends AbstractSourceTab {
                 rs = pStmt.executeQuery();
             }
         
-            source = "";
+            source = ""; //$NON-NLS-1$
             while (rs.next()) {
                 
                 source = source + rs.getString(1);
@@ -94,7 +95,7 @@ public abstract class AbstractSQLSourceTab extends AbstractSourceTab {
             
         } catch (Exception e) {
             
-            SqlBuilderPlugin.log("Couldn't load source for: " + getNode().getName(), e);
+            SqlBuilderPlugin.log(Messages.getString("AbstractSQLSourceTab.logMessage1") + getNode().getName(), e); //$NON-NLS-1$
             
         } finally {
             
@@ -102,14 +103,14 @@ public abstract class AbstractSQLSourceTab extends AbstractSourceTab {
                 try {
                     stmt.close();
                 } catch (Exception e) {
-                    SqlBuilderPlugin.log("Error closing statement", e);
+                    SqlBuilderPlugin.log(Messages.getString("AbstractSQLSourceTab.logMessage2"), e); //$NON-NLS-1$
                 }
             }
             if (pStmt != null) {
                 try {
                     pStmt.close();
                 } catch (Exception e) {
-                    SqlBuilderPlugin.log("Error closing statement", e);
+                    SqlBuilderPlugin.log(Messages.getString("AbstractSQLSourceTab.logMessage2"), e); //$NON-NLS-1$
                 }
             }         
         }

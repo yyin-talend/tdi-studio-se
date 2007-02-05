@@ -54,7 +54,7 @@ public class SQLEditorSessionSwitcher extends ControlContribution {
      */
     public SQLEditorSessionSwitcher(ISQLEditor editor) {
 
-        super("org.talend.sqlbuilder.sessionswitcher");
+        super("org.talend.sqlbuilder.sessionswitcher"); //$NON-NLS-1$
 
         this.editor = editor;
     }
@@ -69,7 +69,7 @@ public class SQLEditorSessionSwitcher extends ControlContribution {
     protected Control createControl(Composite parent) {
 
         sessionCombo = new Combo(parent, SWT.READ_ONLY);
-        sessionCombo.setToolTipText(Messages.getString("SQLEditor.Actions.ChooseSession.ToolTip"));
+        sessionCombo.setToolTipText(Messages.getString("SQLEditor.Actions.ChooseSession.ToolTip")); //$NON-NLS-1$
 
         List<String> repositoryNameList = nodeManager.getALLReposotoryNodeNames();
         sessionCombo.setItems(repositoryNameList.toArray(new String[repositoryNameList.size()]));

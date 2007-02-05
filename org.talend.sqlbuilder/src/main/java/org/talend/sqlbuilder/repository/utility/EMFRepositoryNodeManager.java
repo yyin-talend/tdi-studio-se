@@ -41,6 +41,7 @@ import org.talend.core.model.properties.DatabaseConnectionItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNode.EProperties;
+import org.talend.sqlbuilder.Messages;
 import org.talend.sqlbuilder.SqlBuilderPlugin;
 import org.talend.sqlbuilder.dbstructure.RepositoryNodeType;
 import org.talend.sqlbuilder.dbstructure.DBTreeProvider.MetadataColumnRepositoryObject;
@@ -65,7 +66,7 @@ public class EMFRepositoryNodeManager {
      * @param label search query label
      * @return
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked") //$NON-NLS-1$
     public static Query getQueryByLabel(RepositoryNode node, String label) {
         RepositoryNode root = null;
         if (node.getObjectType().equals(ERepositoryObjectType.METADATA_CON_QUERY)) {
@@ -88,7 +89,7 @@ public class EMFRepositoryNodeManager {
         return null;
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked") //$NON-NLS-1$
     public List<MetadataTable> getTables(List<RepositoryNode> nodes, List<MetadataColumn> selectedColumns) {
         List<MetadataTable> tables = new ArrayList<MetadataTable>();
         IMetadataConnection iMetadataConnection = null;
@@ -144,12 +145,12 @@ public class EMFRepositoryNodeManager {
 
     public List<String[]> getPKFromTables(List<MetadataTable> tables) {
         List<String[]> fks = new ArrayList<String[]>();
-        String fk = "";
-        String pk = "";
+        String fk = ""; //$NON-NLS-1$
+        String pk = ""; //$NON-NLS-1$
         for (MetadataTable table : tables) {
             try {
                 if (dbMetaData != null) {
-                    ResultSet resultSet = dbMetaData.getExportedKeys("", ExtractMetaDataUtils.schema, table.getSourceName());
+                    ResultSet resultSet = dbMetaData.getExportedKeys("", ExtractMetaDataUtils.schema, table.getSourceName()); //$NON-NLS-1$
                     ResultSetMetaData metadata = resultSet.getMetaData();
                     int[] relevantIndeces = new int[metadata.getColumnCount()];
                     for (int i = 1; i <= metadata.getColumnCount(); i++) {
@@ -159,28 +160,28 @@ public class EMFRepositoryNodeManager {
                     while (resultSet.next()) {
                         for (int i = 0; i < relevantIndeces.length; i++) {
                             String key = metadata.getColumnName(relevantIndeces[i]);
-                            if (key.equals("FKCOLUMN_NAME")) {
+                            if (key.equals("FKCOLUMN_NAME")) { //$NON-NLS-1$
                                 fk += resultSet.getString(relevantIndeces[i]);
-                            } else if (key.equals("FKTABLE_NAME")) {
-                                fk = resultSet.getString(relevantIndeces[i]) + ".";
-                            } else if (key.equals("PKCOLUMN_NAME")) {
-                                pk = table.getSourceName() + "." + resultSet.getString(relevantIndeces[i]);
+                            } else if (key.equals("FKTABLE_NAME")) { //$NON-NLS-1$
+                                fk = resultSet.getString(relevantIndeces[i]) + "."; //$NON-NLS-1$
+                            } else if (key.equals("PKCOLUMN_NAME")) { //$NON-NLS-1$
+                                pk = table.getSourceName() + "." + resultSet.getString(relevantIndeces[i]); //$NON-NLS-1$
                             }
                         }
-                        if (!"".equals(fk) && !"".equals(pk)) {
+                        if (!"".equals(fk) && !"".equals(pk)) { //$NON-NLS-1$ //$NON-NLS-2$
                             String[] strs = new String[2];
                             strs[0] = pk;
                             strs[1] = fk;
                             fks.add(strs);
-                            fk = "";
-                            pk = "";
+                            fk = ""; //$NON-NLS-1$
+                            pk = ""; //$NON-NLS-1$
                         }
                     }
                     resultSet.close();
                 }
 
             } catch (Exception e) {
-                SqlBuilderPlugin.log("EMFRepositoryNodeManager.getPKFromTables()", e);
+                SqlBuilderPlugin.log(Messages.getString("EMFRepositoryNodeManager.logMessage"), e); //$NON-NLS-1$
             }
         }
         return fks;

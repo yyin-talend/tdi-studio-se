@@ -25,6 +25,7 @@ import java.sql.ResultSet;
 import java.util.Comparator;
 
 
+import org.talend.sqlbuilder.Messages;
 import org.talend.sqlbuilder.SqlBuilderPlugin;
 import org.talend.sqlbuilder.sessiontree.model.SessionTreeNode;
 
@@ -46,7 +47,7 @@ public class IndexNode extends AbstractNode {
         pparent = node;
         psessionNode = session;
         pname = name;
-        pimageKey = "Images.IndexIcon";
+        pimageKey = "Images.IndexIcon"; //$NON-NLS-1$
     }
 
     /**
@@ -63,7 +64,7 @@ public class IndexNode extends AbstractNode {
      */
     public String getQualifiedName() {
 
-        return pparent.getParent().getName() + "." + pname;
+        return pparent.getParent().getName() + "." + pname; //$NON-NLS-1$
     }
 
     /**
@@ -71,7 +72,7 @@ public class IndexNode extends AbstractNode {
      */
     public String getType() {
 
-        return "index";
+        return "index"; //$NON-NLS-1$
     }
 
 
@@ -80,7 +81,7 @@ public class IndexNode extends AbstractNode {
      */
     public String getUniqueIdentifier() {
 
-        return pparent.getParent().getQualifiedName() + "." + pname;
+        return pparent.getParent().getQualifiedName() + "." + pname; //$NON-NLS-1$
     }
 
 
@@ -99,17 +100,17 @@ public class IndexNode extends AbstractNode {
                                 
                 if (indexName != null && indexName.equalsIgnoreCase(pname)) {
                     ColumnNode col = new ColumnNode(this, columnName, psessionNode, pparentTable, true);
-                    if (sort == null || sort.equalsIgnoreCase("A")) {
-                        col.setLabelDecoration("ASC");
+                    if (sort == null || sort.equalsIgnoreCase("A")) { //$NON-NLS-1$
+                        col.setLabelDecoration("ASC"); //$NON-NLS-1$
                     } else {
-                        col.setLabelDecoration("DESC");
+                        col.setLabelDecoration("DESC"); //$NON-NLS-1$
                     }
                     addChildNode(col);
                 }
             }
 
         } catch (Exception e) {
-            SqlBuilderPlugin.log("Could not load column names", e);
+            SqlBuilderPlugin.log(Messages.getString("IndexNode.logMessage"), e); //$NON-NLS-1$
         }
 
     }

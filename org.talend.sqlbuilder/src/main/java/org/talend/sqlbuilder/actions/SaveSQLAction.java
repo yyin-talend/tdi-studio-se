@@ -36,7 +36,7 @@ import org.talend.sqlbuilder.util.ImageUtil;
  */
 public class SaveSQLAction extends AbstractEditorAction {
 
-    private ImageDescriptor image = ImageUtil.getDescriptor("Images.SaveSQLIcon");
+    private ImageDescriptor image = ImageUtil.getDescriptor("Images.SaveSQLIcon"); //$NON-NLS-1$
 
     private RepositoryNode repositoryNode;
 
@@ -65,7 +65,7 @@ public class SaveSQLAction extends AbstractEditorAction {
      * @see org.talend.sqlbuilder.actions.AbstractEditorAction#getText()
      */
     public String getText() {
-        return Messages.getString("SQLEditor.Actions.SaveSQL");
+        return Messages.getString("SQLEditor.Actions.SaveSQL"); //$NON-NLS-1$
     }
 
     /*

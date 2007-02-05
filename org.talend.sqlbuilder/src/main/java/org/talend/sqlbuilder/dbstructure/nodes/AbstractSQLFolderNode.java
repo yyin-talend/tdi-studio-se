@@ -28,6 +28,7 @@ import java.sql.Statement;
 import net.sourceforge.sqlexplorer.IConstants;
 import net.sourceforge.squirrel_sql.fw.sql.SQLConnection;
 
+import org.talend.sqlbuilder.Messages;
 import org.talend.sqlbuilder.SqlBuilderPlugin;
 
 /**
@@ -115,7 +116,7 @@ public abstract class AbstractSQLFolderNode extends AbstractFolderNode {
 
         } catch (Exception e) {
 
-            SqlBuilderPlugin.log("Couldn't load children for: " + getName(), e);
+            SqlBuilderPlugin.log(Messages.getString("AbstractSQLFolderNode.logMessage1") + getName(), e); //$NON-NLS-1$
 
         } finally {
 
@@ -123,14 +124,14 @@ public abstract class AbstractSQLFolderNode extends AbstractFolderNode {
                 try {
                     stmt.close();
                 } catch (Exception e) {
-                    SqlBuilderPlugin.log("Error closing statement", e);
+                    SqlBuilderPlugin.log(Messages.getString("AbstractSQLFolderNode.logMessage2"), e); //$NON-NLS-1$
                 }
             }
             if (pStmt != null) {
                 try {
                     pStmt.close();
                 } catch (Exception e) {
-                    SqlBuilderPlugin.log("Error closing statement", e);
+                    SqlBuilderPlugin.log(Messages.getString("AbstractSQLFolderNode.logMessage2"), e); //$NON-NLS-1$
                 }
             }
         }

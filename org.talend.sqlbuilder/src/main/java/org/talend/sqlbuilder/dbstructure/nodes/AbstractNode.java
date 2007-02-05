@@ -29,6 +29,7 @@ import java.util.Iterator;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
+import org.talend.sqlbuilder.Messages;
 import org.talend.sqlbuilder.SqlBuilderPlugin;
 import org.talend.sqlbuilder.sessiontree.model.SessionTreeNode;
 import org.talend.sqlbuilder.util.ImageUtil;
@@ -49,7 +50,7 @@ public abstract class AbstractNode implements INode {
 
     protected Image pimage;
 
-    protected String pimageKey = "Images.DefaultNodeImage";
+    protected String pimageKey = "Images.DefaultNodeImage"; //$NON-NLS-1$
 
     private boolean pisExpanded = false;
 
@@ -67,7 +68,7 @@ public abstract class AbstractNode implements INode {
      * DOC dev Comment method "addChildNode".
      * @param childNode ChildNode
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked") //$NON-NLS-1$
     public final void addChildNode(INode childNode) {
 
         pchildren.add(childNode);
@@ -124,7 +125,7 @@ public abstract class AbstractNode implements INode {
      * @return All child nodes of this node.
      * @see net.sourceforge.sqlexplorer.db.INode#getChildren()
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked") //$NON-NLS-1$
     public INode[] getChildNodes() {
 
         if (!pchildrenLoaded) {
@@ -229,7 +230,7 @@ public abstract class AbstractNode implements INode {
     public String getName() {
 
         if (pname == null) {
-            return "<null>";
+            return "<null>"; //$NON-NLS-1$
         }
         return pname;
     }
@@ -261,7 +262,7 @@ public abstract class AbstractNode implements INode {
     public String getSchemaOrCatalogName() {
 
         INode node = this;
-        while (!(node.getType().equalsIgnoreCase("schema") || node.getType().equalsIgnoreCase("catalog"))) {
+        while (!(node.getType().equalsIgnoreCase("schema") || node.getType().equalsIgnoreCase("catalog"))) { //$NON-NLS-1$ //$NON-NLS-2$
             node = node.getParent();
             if (node == null) {
                 return null;
@@ -297,7 +298,7 @@ public abstract class AbstractNode implements INode {
      */
     public String getUniqueIdentifier() {
 
-        return getParent().getQualifiedName() + "." + getQualifiedName();
+        return getParent().getQualifiedName() + "." + getQualifiedName(); //$NON-NLS-1$
     }
 
 
@@ -377,11 +378,11 @@ public abstract class AbstractNode implements INode {
 
             } catch (AbstractMethodError e) {
 
-                SqlBuilderPlugin.log("Could not load child nodes for " + pname, e);
+                SqlBuilderPlugin.log(Messages.getString("AbstractNode.logMessage") + pname, e); //$NON-NLS-1$
 
             } catch (Throwable e) {
 
-                SqlBuilderPlugin.log("Could not load child nodes for " + pname, e);
+                SqlBuilderPlugin.log(Messages.getString("AbstractNode.logMessage") + pname, e); //$NON-NLS-1$
 
             }
         }

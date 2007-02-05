@@ -39,7 +39,7 @@ import org.talend.sqlbuilder.sessiontree.model.SessionTreeNode;
 public class IndexesTab extends AbstractDataSetTab {
 
     public String getLabelText() {
-        return Messages.getString("DatabaseDetailView.Tab.Indexes");
+        return Messages.getString("DatabaseDetailView.Tab.Indexes"); //$NON-NLS-1$
     }
 
     public DataSet getDataSet() throws Exception {
@@ -63,7 +63,7 @@ public class IndexesTab extends AbstractDataSetTab {
             SessionTreeNode treeNode = node.getSession();
 
             // For synonym table, should get the corresponding table.
-            if (ti.getType().equals("SYNONYM")) {
+            if (ti.getType().equals("SYNONYM")) { //$NON-NLS-1$
 
                 String realTableName = ExtractMetaDataFromDataBase.getTableNameBySynonym(treeNode
                         .getInteractiveConnection().getConnection(), ti.getSimpleName());
@@ -85,6 +85,6 @@ public class IndexesTab extends AbstractDataSetTab {
     }
 
     public String getStatusMessage() {
-        return Messages.getString("DatabaseDetailView.Tab.Indexes.status") + " " + getNode().getQualifiedName();
+        return Messages.getString("DatabaseDetailView.Tab.Indexes.status") + " " + getNode().getQualifiedName(); //$NON-NLS-1$ //$NON-NLS-2$
     }
 }

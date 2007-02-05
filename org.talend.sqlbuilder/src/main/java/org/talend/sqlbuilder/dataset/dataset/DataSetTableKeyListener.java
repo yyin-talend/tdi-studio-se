@@ -133,7 +133,7 @@ public class DataSetTableKeyListener implements KeyListener {
                 clipBoard.setContents(new Object[] { items[0].getText(columnIndex) }, new Transfer[] { textTransfer });
 
             } catch (Exception ex) {
-                SqlBuilderPlugin.log("Error exporting cell to clipboard ", ex);
+                SqlBuilderPlugin.log(Messages.getString("DataSetTableKeyListener.logMessage1"), ex); //$NON-NLS-1$
             }
             break;
 
@@ -175,7 +175,7 @@ public class DataSetTableKeyListener implements KeyListener {
                     }
                 }
             } catch (Exception e1) {
-                SqlBuilderPlugin.log("Error refreshing", e1);
+                SqlBuilderPlugin.log(Messages.getString("DataSetTableKeyListener.logMessage2"), e1); //$NON-NLS-1$
             }
 
             break;
@@ -224,7 +224,7 @@ public class DataSetTableKeyListener implements KeyListener {
 
         // add 'find:' label
         Label label = new Label(ppopup, SWT.NULL);
-        label.setText(Messages.getString("DataSetTable.PopUp.Find"));
+        label.setText(Messages.getString("DataSetTable.PopUp.Find")); //$NON-NLS-1$
         label.setBackground(pparent.getDisplay().getSystemColor(SWT.COLOR_INFO_BACKGROUND));
         
         // add input field for search text
@@ -327,7 +327,7 @@ public class DataSetTableKeyListener implements KeyListener {
         }
         
         if (text == null) {
-            text = "";
+            text = ""; //$NON-NLS-1$
         }
         
         

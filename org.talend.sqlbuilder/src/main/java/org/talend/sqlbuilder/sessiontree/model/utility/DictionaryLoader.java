@@ -39,7 +39,7 @@ import org.talend.sqlbuilder.sessiontree.model.SessionTreeNode;
  */
 public class DictionaryLoader extends Job {
 
-    private static final String ID = "net.sourceforge.sqlexplorer";
+    private static final String ID = "net.sourceforge.sqlexplorer"; //$NON-NLS-1$
     
     /**
      * Hidden constructor.
@@ -53,7 +53,7 @@ public class DictionaryLoader extends Job {
      * @param sessionNode SessionTreeNode
      */
     public DictionaryLoader(SessionTreeNode sessionNode) {
-        super(Messages.getString("Progress.Dictionary.Title"));
+        super(Messages.getString("Progress.Dictionary.Title")); //$NON-NLS-1$
     }
     
     /**
@@ -64,9 +64,9 @@ public class DictionaryLoader extends Job {
     protected IStatus run(IProgressMonitor monitor) {
         
         // check if we can persisted dictionary 
-        monitor.setTaskName(Messages.getString("Progress.Dictionary.Scanning"));
+        monitor.setTaskName(Messages.getString("Progress.Dictionary.Scanning")); //$NON-NLS-1$
 
-        return new Status(IStatus.OK, ID, IStatus.OK, "tested ok ", null);
+        return new Status(IStatus.OK, ID, IStatus.OK, Messages.getString("DictionaryLoader.teseedOk"), null); //$NON-NLS-1$
     }
 
 }

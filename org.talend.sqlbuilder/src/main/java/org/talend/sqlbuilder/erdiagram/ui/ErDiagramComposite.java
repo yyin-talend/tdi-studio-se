@@ -73,7 +73,7 @@ public class ErDiagramComposite extends Composite {
     /**
      * DOC admin Comment method "addErDiagramEditor".
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked") //$NON-NLS-1$
     private void addErDiagramEditor() {
         GridData gridData = new GridData(GridData.FILL_BOTH);
         this.setLayoutData(gridData);
@@ -119,9 +119,9 @@ public class ErDiagramComposite extends Composite {
         return connection.getDatabaseType();
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked") //$NON-NLS-1$
     public String getSqlStatement() {
-        String sql = "";
+        String sql = ""; //$NON-NLS-1$
         List<String> tables = new ArrayList<String>();
         List<String> columns = new ArrayList<String>();
         List<String> wheres = new ArrayList<String>();
@@ -132,8 +132,8 @@ public class ErDiagramComposite extends Composite {
                     if (object instanceof TablePart) {
                         TablePart tablePart = (TablePart) object;
                         Table table = (Table) tablePart.getModel();
-                        if (getCurrentDbType().equals("PostgreSQL")) {
-                            tables.add("\"" + table.getElementName() + "\"");
+                        if (getCurrentDbType().equals("PostgreSQL")) { //$NON-NLS-1$
+                            tables.add("\"" + table.getElementName() + "\""); //$NON-NLS-1$ //$NON-NLS-2$
                         } else {
                             tables.add(table.getElementName());
                         }
@@ -142,23 +142,23 @@ public class ErDiagramComposite extends Composite {
                                 ColumnPart columnPart = (ColumnPart) obj;
                                 Column column = (Column) columnPart.getModel();
                                 CheckBox isSelected = columnPart.getPrimativeFigure().getFigureCustomColumnIsSelectedFigure();
-                                if (isSelected != null && isSelected.isSelected() && !column.getElementName().equals("*")) {
-                                    if (getCurrentDbType().equals("PostgreSQL")) {
-                                        columns.add("\"" + table.getElementName() + "\".\"" + column.getElementName() + "\"");
+                                if (isSelected != null && isSelected.isSelected() && !column.getElementName().equals("*")) { //$NON-NLS-1$
+                                    if (getCurrentDbType().equals("PostgreSQL")) { //$NON-NLS-1$
+                                        columns.add("\"" + table.getElementName() + "\".\"" + column.getElementName() + "\""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                                     } else {
-                                        columns.add(table.getElementName() + "." + column.getElementName());
+                                        columns.add(table.getElementName() + "." + column.getElementName()); //$NON-NLS-1$
                                     }
                                 }
                                 for (Relation rel : (List<Relation>) column.getOutputs()) {
                                     Column source = rel.getSource();
                                     Column target = rel.getTarget();
-                                    if (getCurrentDbType().equals("PostgreSQL")) {
-                                        wheres.add("\"" + source.getTable().getElementName() + "\".\"" + source.getElementName()
-                                                + "\"=\"" + target.getTable().getElementName() + "\".\""
-                                                + target.getElementName() + "\"");
+                                    if (getCurrentDbType().equals("PostgreSQL")) { //$NON-NLS-1$
+                                        wheres.add("\"" + source.getTable().getElementName() + "\".\"" + source.getElementName() //$NON-NLS-1$ //$NON-NLS-2$
+                                                + "\"=\"" + target.getTable().getElementName() + "\".\"" //$NON-NLS-1$ //$NON-NLS-2$
+                                                + target.getElementName() + "\""); //$NON-NLS-1$
                                     } else {
-                                        wheres.add(source.getTable().getElementName() + "." + source.getElementName() + "="
-                                                + target.getTable().getElementName() + "." + target.getElementName());
+                                        wheres.add(source.getTable().getElementName() + "." + source.getElementName() + "=" //$NON-NLS-1$ //$NON-NLS-2$
+                                                + target.getTable().getElementName() + "." + target.getElementName()); //$NON-NLS-1$
                                     }
                                 }
                             }
@@ -168,12 +168,12 @@ public class ErDiagramComposite extends Composite {
             }
         }
         sql = getSelectStatement(tables, columns, wheres);
-        if (sql.endsWith(",")) {
+        if (sql.endsWith(",")) { //$NON-NLS-1$
             return sql.substring(0, sql.length() - 1);
-        } else if (sql.endsWith("and ")) {
+        } else if (sql.endsWith("and ")) { //$NON-NLS-1$
             return sql.substring(0, sql.length() - 4);
         }
-        return "";
+        return ""; //$NON-NLS-1$
 
     }
 
@@ -186,22 +186,22 @@ public class ErDiagramComposite extends Composite {
      * @return
      */
     private String getSelectStatement(List<String> tables, List<String> columns, List<String> wheres) {
-        String sql = "";
+        String sql = ""; //$NON-NLS-1$
         if (tables.isEmpty() || columns.isEmpty()) {
             return sql;
         }
-        sql = "select ";
+        sql = "select "; //$NON-NLS-1$
         for (String string : columns) {
-            sql = sql + string + ",";
+            sql = sql + string + ","; //$NON-NLS-1$
         }
-        sql = sql.substring(0, sql.length() - 1) + " \nfrom ";
+        sql = sql.substring(0, sql.length() - 1) + " \nfrom "; //$NON-NLS-1$
         for (String string : tables) {
-            sql = sql + string + ",";
+            sql = sql + string + ","; //$NON-NLS-1$
         }
         if (!wheres.isEmpty()) {
-            sql = sql.substring(0, sql.length() - 1) + " \nwhere ";
+            sql = sql.substring(0, sql.length() - 1) + " \nwhere "; //$NON-NLS-1$
             for (String string : wheres) {
-                sql = sql + string + " and ";
+                sql = sql + string + " and "; //$NON-NLS-1$
             }
         }
 

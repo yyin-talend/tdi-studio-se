@@ -48,7 +48,7 @@ public class ImageUtil {
      * image it will be disposed of.
      * 
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked") //$NON-NLS-1$
 	public static void disposeImage(String propertyName) {
 
         try {
@@ -74,7 +74,7 @@ public class ImageUtil {
             pimageCount.put(propertyName, handleCount);
 
         } catch (Throwable e) {
-            SqlBuilderPlugin.log("Error disposing images", e);
+            SqlBuilderPlugin.log(Messages.getString("ImageUtil.logMessage1"), e); //$NON-NLS-1$
         }
     }
 
@@ -98,7 +98,7 @@ public class ImageUtil {
             String path = Messages.getString(propertyName);
 
             if (path == null || path.trim().length() == 0) {
-                SqlBuilderPlugin.log("Missing image path for " + propertyName, null);
+                SqlBuilderPlugin.log(Messages.getString("ImageUtil.logMessage2") + propertyName, null); //$NON-NLS-1$
                 return null;
             }
 
@@ -107,7 +107,7 @@ public class ImageUtil {
             return ImageDescriptor.createFromURL(url);
 
         } catch (Exception e) {
-            SqlBuilderPlugin.log("Couldn't create image for " + propertyName, e);
+            SqlBuilderPlugin.log(Messages.getString("ImageUtil.logMessage3") + propertyName, e); //$NON-NLS-1$
             return null;
         }
 
@@ -120,7 +120,7 @@ public class ImageUtil {
      * 
      * @param propertyName
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked") //$NON-NLS-1$
 	public static Image getImage(String propertyName) {
 
         Image image = (Image) pimages.get(propertyName);
@@ -162,7 +162,7 @@ public class ImageUtil {
             return ImageDescriptor.createFromURL(url);
 
         } catch (Exception e) {
-            SqlBuilderPlugin.log("Couldn't create image for " + fragmentId + ": " + path, e);
+            SqlBuilderPlugin.log(Messages.getString("ImageUtil.logMessage3") + fragmentId + ": " + path, e); //$NON-NLS-1$ //$NON-NLS-2$
             return null;
         }
         
@@ -185,7 +185,7 @@ public class ImageUtil {
             return descriptor.createImage();
 
         } catch (Exception e) {
-            SqlBuilderPlugin.log("Couldn't create image for " + fragmentId + ": " + path, e);
+            SqlBuilderPlugin.log(Messages.getString("ImageUtil.logMessage3") + fragmentId + ": " + path, e); //$NON-NLS-1$ //$NON-NLS-2$
             return null;
         }
     }

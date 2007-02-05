@@ -36,6 +36,7 @@ import net.sourceforge.squirrel_sql.fw.sql.SQLConnection;
 
 import org.talend.core.model.metadata.builder.database.ExtractMetaDataUtils;
 import org.talend.repository.model.RepositoryNode;
+import org.talend.sqlbuilder.Messages;
 import org.talend.sqlbuilder.SqlBuilderPlugin;
 import org.talend.sqlbuilder.dbstructure.nodes.INode;
 import org.talend.sqlbuilder.sessiontree.model.SessionTreeModel;
@@ -106,7 +107,7 @@ public class SessionTreeNodeUtils {
         ISQLAlias alias = createSQLAlias(name, url, userName, password, databaseName);
         SessionTreeModel stm = new SessionTreeModel();
         SessionTreeNode session;
-        session = stm.createSessionTreeNode(new SQLConnection[] { connection, connection }, alias, null, "root",
+        session = stm.createSessionTreeNode(new SQLConnection[] { connection, connection }, alias, null, "root", //$NON-NLS-1$
                 repositoryNode);
         return session;
     }
@@ -162,7 +163,7 @@ public class SessionTreeNodeUtils {
             try {
                 connection.close();
             } catch (Exception e) {
-                SqlBuilderPlugin.log("close database connection", e);
+                SqlBuilderPlugin.log(Messages.getString("SessionTreeNodeUtils.logMessage"), e); //$NON-NLS-1$
             }
         }
         connections.clear();

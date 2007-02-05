@@ -41,8 +41,8 @@ public abstract class AbstractFolderNode extends AbstractNode {
 
     public AbstractFolderNode() {
 
-        pimageKey = "Images.closedFolder";
-        pexpandedImageKey = "Images.OpenFolder";
+        pimageKey = "Images.closedFolder"; //$NON-NLS-1$
+        pexpandedImageKey = "Images.OpenFolder"; //$NON-NLS-1$
     }
 
 
@@ -84,7 +84,7 @@ public abstract class AbstractFolderNode extends AbstractNode {
         if (pfilterExpressions == null) {
             String filter = ((SQLAlias) getSession().getAlias()).getNameFilterExpression();
             if (filter != null) {
-                pfilterExpressions = filter.split(",");
+                pfilterExpressions = filter.split(","); //$NON-NLS-1$
             }
         }
         if (pfilterExpressions == null || pfilterExpressions.length == 0) {
@@ -95,8 +95,8 @@ public abstract class AbstractFolderNode extends AbstractNode {
         for (int i = 0; i < pfilterExpressions.length; i++) {
 
             String regex = pfilterExpressions[i].trim();
-            regex = TextUtil.replaceChar(regex, '?', ".");
-            regex = TextUtil.replaceChar(regex, '*', ".*");
+            regex = TextUtil.replaceChar(regex, '?', "."); //$NON-NLS-1$
+            regex = TextUtil.replaceChar(regex, '*', ".*"); //$NON-NLS-1$
 
             if (regex.length() != 0 && name.matches(regex)) {
                 // we have a match, exclude node..

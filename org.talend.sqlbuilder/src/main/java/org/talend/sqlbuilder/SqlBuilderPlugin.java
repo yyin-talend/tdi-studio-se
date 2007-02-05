@@ -35,7 +35,7 @@ import org.talend.repository.model.IRepositoryService;
 public class SqlBuilderPlugin extends AbstractUIPlugin {
 
     // The plug-in ID
-    public static final String PLUGIN_ID = "org.talend.sqlbuilder";
+    public static final String PLUGIN_ID = "org.talend.sqlbuilder"; //$NON-NLS-1$
 
     // The shared instance
     private static SqlBuilderPlugin plugin;

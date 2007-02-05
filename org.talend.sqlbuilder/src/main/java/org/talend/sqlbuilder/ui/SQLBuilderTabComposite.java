@@ -34,6 +34,7 @@ import org.eclipse.swt.widgets.Control;
 import org.talend.core.model.metadata.builder.connection.Query;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNode.EProperties;
+import org.talend.sqlbuilder.Messages;
 import org.talend.sqlbuilder.SqlBuilderPlugin;
 import org.talend.sqlbuilder.dbstructure.RepositoryNodeType;
 import org.talend.sqlbuilder.dbstructure.DBTreeProvider.QueryRepositoryObject;
@@ -70,7 +71,7 @@ public class SQLBuilderTabComposite extends Composite {
     public void openNewEditor(RepositoryNode node, List<String> repositories, ConnectionParameters connParam,
             boolean isDefaultEditor) {
 
-        Assert.isNotNull(node, "SessionTreeNode should not be null");
+        Assert.isNotNull(node, Messages.getString("SQLBuilderTabComposite.assertMessage")); //$NON-NLS-1$
         createTabFolder();
         try {
             createTabItem(node, connParam, isDefaultEditor);
@@ -93,7 +94,7 @@ public class SQLBuilderTabComposite extends Composite {
             // create tab folder for different sessions
             tabFolder = new CTabFolder(this, SWT.NULL | SWT.BORDER);
             tabFolder.setSimple(false);
-            tabFolder.setToolTipText("SQL editor");
+            tabFolder.setToolTipText(Messages.getString("SQLBuilderTabComposite.toolTipText")); //$NON-NLS-1$
             this.layout();
             this.redraw();
         }
@@ -129,7 +130,7 @@ public class SQLBuilderTabComposite extends Composite {
                 if ((RepositoryNodeType) node.getProperties(EProperties.CONTENT_TYPE) == RepositoryNodeType.QUERY) {
                     Query query = ((QueryRepositoryObject) node.getObject()).getQuery();
                     if (query2 != null && query.getLabel().equals(query2.getLabel())) {
-                        if ("".equals(editorComposite.getEditorContent())) {
+                        if ("".equals(editorComposite.getEditorContent())) { //$NON-NLS-1$
                             editorComposite.setEditorContent(query.getValue());
                         }
                         tabFolder.setSelection(i);
@@ -141,7 +142,7 @@ public class SQLBuilderTabComposite extends Composite {
                     String repositoryName = connParam.getRepositoryName();
                     if (editorComposite.getConnParam().getQuery().equals(queryString)
                             && editorComposite.getConnParam().getRepositoryName().equals(repositoryName)) {
-                        if ("".equals(editorComposite.getEditorContent())) {
+                        if ("".equals(editorComposite.getEditorContent())) { //$NON-NLS-1$
                             editorComposite.setEditorContent(queryString);
                         } 
                         tabFolder.setSelection(i);

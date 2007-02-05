@@ -54,7 +54,7 @@ public class EditTableCommand extends Command {
         setLabel("MoveNodeCommand.0"); //$NON-NLS-1$
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked") //$NON-NLS-1$
     @Override
     public boolean canExecute() {
         for (Table currentNode : (List<Table>) node.getErDiagram().getTables()) {

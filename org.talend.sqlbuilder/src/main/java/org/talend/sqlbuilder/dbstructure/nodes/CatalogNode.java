@@ -34,6 +34,7 @@ import org.eclipse.swt.widgets.Display;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.ui.images.CoreImageProvider;
+import org.talend.sqlbuilder.Messages;
 import org.talend.sqlbuilder.SqlBuilderPlugin;
 import org.talend.sqlbuilder.sessiontree.model.SessionTreeNode;
 
@@ -62,13 +63,13 @@ public class CatalogNode extends AbstractNode {
         pparent = parent;
         pname = name;
 
-        pimageKey = "Images.CatalogNodeIcon";
+        pimageKey = "Images.CatalogNodeIcon"; //$NON-NLS-1$
     }
 
     /**
      * @return ChildNames.
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked") //$NON-NLS-1$
     public String[] getChildNames() {
 
         if (pchildNames.size() == 0) {
@@ -107,7 +108,7 @@ public class CatalogNode extends AbstractNode {
         if (pfilteredNames == null) {
             String filter = ((SQLAlias) getSession().getAlias()).getFolderFilterExpression();
             if (filter != null) {
-                pfilteredNames = filter.split(",");
+                pfilteredNames = filter.split(","); //$NON-NLS-1$
             }
         }
         if (pfilteredNames == null || pfilteredNames.length == 0) {
@@ -131,7 +132,7 @@ public class CatalogNode extends AbstractNode {
     /**
      * LoadChildren.
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked") //$NON-NLS-1$
     public void loadChildren() {
 
         if (psessionNode.getInteractiveConnection() == null) {
@@ -149,10 +150,10 @@ public class CatalogNode extends AbstractNode {
             String[] tableTypes = { "TABLE", "VIEW", "SYNONYM" };
 
             try {
-                tables = psessionNode.getMetaData().getTables(null, getSchemaName(), "%", tableTypes);
+                tables = psessionNode.getMetaData().getTables(null, getSchemaName(), "%", tableTypes); //$NON-NLS-1$
 
             } catch (Throwable e) {
-                SqlBuilderPlugin.log("Loading all tables at once is not supported", e);
+                SqlBuilderPlugin.log(Messages.getString("CatalogNode.logMessage1"), e); //$NON-NLS-1$
             }
 
             TableFolderNode node = new TableFolderNode(this, "TABLE", psessionNode, tables);
@@ -162,7 +163,7 @@ public class CatalogNode extends AbstractNode {
             }
 
         } catch (Throwable e) {
-            SqlBuilderPlugin.log("Could not load childnodes for " + pname, e);
+            SqlBuilderPlugin.log(Messages.getString("CatalogNode.logMessage2") + pname, e); //$NON-NLS-1$
         }
     }
 
@@ -180,9 +181,9 @@ public class CatalogNode extends AbstractNode {
     @Override
     public String getLabelAtColumn(int columnIndex) {
         if (columnIndex == 0) {
-            if (getSchemaName() != null && !getSchemaName().trim().equals("") && getLabelText() != null
-                    && !getLabelText().trim().equals("")) {
-                return getLabelText() + "." + getSchemaName();
+            if (getSchemaName() != null && !getSchemaName().trim().equals("") && getLabelText() != null //$NON-NLS-1$
+                    && !getLabelText().trim().equals("")) { //$NON-NLS-1$
+                return getLabelText() + "." + getSchemaName(); //$NON-NLS-1$
             } else {
                 return getLabelText();
             }
@@ -213,7 +214,7 @@ public class CatalogNode extends AbstractNode {
      */
     @Override
     public Color getBackground() {
-        if (getLabelText() == null || getLabelText().trim().equals("")) {
+        if (getLabelText() == null || getLabelText().trim().equals("")) { //$NON-NLS-1$
             return Display.getDefault().getSystemColor(SWT.COLOR_RED);
         } else {
             return super.getBackground();
@@ -225,7 +226,7 @@ public class CatalogNode extends AbstractNode {
      */
     @Override
     public Color getForeground() {
-        if (getLabelText() == null || getLabelText().trim().equals("")) {
+        if (getLabelText() == null || getLabelText().trim().equals("")) { //$NON-NLS-1$
             return Display.getDefault().getSystemColor(SWT.COLOR_WHITE);
         } else {
             return super.getBackground();

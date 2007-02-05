@@ -36,11 +36,11 @@ public class Relation extends Element {
 
     private static final long serialVersionUID = 0L;
 
-    public static final String PROP_SOURCE = "source";
+    public static final String PROP_SOURCE = "source"; //$NON-NLS-1$
 
-    public static final String PROP_TARGET = "target";
+    public static final String PROP_TARGET = "target"; //$NON-NLS-1$
     
-    public static final String PROP_ENDPOINTS = "endPoints";
+    public static final String PROP_ENDPOINTS = "endPoints"; //$NON-NLS-1$
 
     private Column source;
 

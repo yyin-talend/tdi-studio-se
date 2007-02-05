@@ -66,7 +66,7 @@ public abstract class AbstractDataSetTab extends AbstractTab {
                          
             
         } catch (Exception e) {
-            SqlBuilderPlugin.log("DataSetTab Exception", e);
+            SqlBuilderPlugin.log(Messages.getString("AbstractDataSetTab.logMessage1"), e); //$NON-NLS-1$
             // couldn't get results.. clean mess up
             Control[] controls = composite.getChildren();
             for (int i = 0; i < controls.length; i++) {
@@ -75,10 +75,10 @@ public abstract class AbstractDataSetTab extends AbstractTab {
             
             // and show error message
             Label label = new Label(composite, SWT.FILL);
-            label.setText(Messages.getString("DatabaseDetailView.Tab.Unavailable") + " " + e.getMessage());
+            label.setText(Messages.getString("DatabaseDetailView.Tab.Unavailable") + " " + e.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$
             label.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false));    
             
-            SqlBuilderPlugin.log("Error creating ResultSetTab:", e);
+            SqlBuilderPlugin.log(Messages.getString("AbstractDataSetTab.logMessage2"), e); //$NON-NLS-1$
             
         }
         

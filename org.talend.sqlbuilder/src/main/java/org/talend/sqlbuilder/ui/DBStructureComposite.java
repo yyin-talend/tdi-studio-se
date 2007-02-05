@@ -210,7 +210,7 @@ public class DBStructureComposite extends Composite {
         List<RepositoryNode> list = repositoryNodeManager.getAllDisplayedConnection();
 
         if (list.isEmpty()) {
-            throw new RuntimeException("This repository list should not be empty.");
+            throw new RuntimeException(Messages.getString("DBStructureComposite.exceptionMessage")); //$NON-NLS-1$
         }
         RepositoryNode node = list.get(0);
 
@@ -332,7 +332,7 @@ public class DBStructureComposite extends Composite {
 
         openNewEditorAction = new OpenNewEditorAction(treeViewer, builderDialog, builderDialog.getConnParameters(), false);
 
-        refreshConnectionAction = new RefreshConnectionAction(treeViewer, Messages.getString("DBStructureComposite.Refresh"));
+        refreshConnectionAction = new RefreshConnectionAction(treeViewer, Messages.getString("DBStructureComposite.Refresh")); //$NON-NLS-1$
 
         metadataRefreshAction = new MetadataRefreshAction(treeViewer, builderDialog);
 
@@ -467,8 +467,8 @@ public class DBStructureComposite extends Composite {
 
         @Override
         public void run() {
-            if (!MessageDialog.openConfirm(getShell(), Messages.getString("DBStructureComposite.Refresh"), Messages
-                    .getString("DBStructureComposite.TakeALongTime"))) { //$NON-NLS-2$
+            if (!MessageDialog.openConfirm(getShell(), Messages.getString("DBStructureComposite.Refresh"), Messages //$NON-NLS-1$
+                    .getString("DBStructureComposite.TakeALongTime"))) { //$NON-NLS-2$ //$NON-NLS-1$
                 return;
             }
             final IRunnableWithProgress r = new IRunnableWithProgress() {
@@ -532,7 +532,7 @@ public class DBStructureComposite extends Composite {
         protected RefreshConnectionAction(ISelectionProvider provider, String text) {
             super(provider, text);
             setImageDescriptor(ImageProvider.getImageDesc(EImage.REFRESH_ICON));
-            setToolTipText(Messages.getString("Refresh"));
+            setToolTipText(Messages.getString("Refresh")); //$NON-NLS-1$
             init();
         }
 
@@ -550,7 +550,7 @@ public class DBStructureComposite extends Composite {
             }
             boolean flag = false;
             for (Object object : selection.toList()) {
-                if (!"".equals(((RepositoryNode) object).getObject().getLabel())) {
+                if (!"".equals(((RepositoryNode) object).getObject().getLabel())) { //$NON-NLS-1$
                     flag = true;
                 }
             }
@@ -562,9 +562,9 @@ public class DBStructureComposite extends Composite {
             final IStructuredSelection selection = (IStructuredSelection) treeViewer.getSelection();
             final IRunnableWithProgress r = new IRunnableWithProgress() {
 
-                @SuppressWarnings("unchecked")
+                @SuppressWarnings("unchecked") //$NON-NLS-1$
                 public void run(final IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-                    monitor.beginTask(Messages.getString("DBStructureComposite.RefreshConnections"), -1);
+                    monitor.beginTask(Messages.getString("DBStructureComposite.RefreshConnections"), -1); //$NON-NLS-1$
                     try {
                         RepositoryNode[] nodes = (RepositoryNode[]) selection.toList().toArray(new RepositoryNode[] {});
 
@@ -579,7 +579,7 @@ public class DBStructureComposite extends Composite {
                         if (node.getProperties(EProperties.CONTENT_TYPE) == RepositoryNodeType.FOLDER) {
                             refreshChildren(node);
                         }
-                        if ("".equals(node.getObject().getLabel())) {
+                        if ("".equals(node.getObject().getLabel())) { //$NON-NLS-1$
                             continue;
                         }
                         node = repositoryNodeManager.getRepositoryNodeFromDB(node);

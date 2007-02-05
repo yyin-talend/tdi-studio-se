@@ -74,7 +74,7 @@ public class DataSetTableActionGroup extends ActionGroup {
     public void fillContextMenu(IMenuManager menu) {
         
         IExtensionRegistry registry = Platform.getExtensionRegistry();
-        IExtensionPoint point = registry.getExtensionPoint("net.sourceforge.sqlexplorer", "dataSetTableContextAction");
+        IExtensionPoint point = registry.getExtensionPoint("net.sourceforge.sqlexplorer", "dataSetTableContextAction"); //$NON-NLS-1$ //$NON-NLS-2$
         IExtension[] extensions = point.getExtensions();
 
         // add basic actions
@@ -102,7 +102,7 @@ public class DataSetTableActionGroup extends ActionGroup {
                     }
                         
                 } catch (Throwable ex) {
-                    SqlBuilderPlugin.log("Could not create menu action", ex);
+                    SqlBuilderPlugin.log(Messages.getString("DataSetTableActionGroup.logMessage1"), ex); //$NON-NLS-1$
                 }
             }
         }
@@ -112,7 +112,7 @@ public class DataSetTableActionGroup extends ActionGroup {
         // add export options
         
         
-        MenuManager subMenu = new MenuManager(Messages.getString("DataSetTable.Actions.ExportSubMenu"));    
+        MenuManager subMenu = new MenuManager(Messages.getString("DataSetTable.Actions.ExportSubMenu"));     //$NON-NLS-1$
 
         for (int i = 0; i < extensions.length; i++) {
 
@@ -137,7 +137,7 @@ public class DataSetTableActionGroup extends ActionGroup {
                     }
                         
                 } catch (Throwable ex) {
-                    SqlBuilderPlugin.log("Could not create menu action", ex);
+                    SqlBuilderPlugin.log(Messages.getString("DataSetTableActionGroup.logMessage1"), ex); //$NON-NLS-1$
                 }
             }
         }

@@ -36,6 +36,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.talend.repository.model.RepositoryNode;
+import org.talend.sqlbuilder.Messages;
 
 /**
  * DOC qzhang class global comment. Detailled comment <br/>
@@ -74,7 +75,7 @@ public class ErDiagramDialog extends Dialog {
     protected void configureShell(Shell newShell) {
         // TODO Auto-generated method stub
         super.configureShell(newShell);
-        newShell.setText("Generate Select Statement");
+        newShell.setText(Messages.getString("ErDiagramDialog.textGenerateSelectStatement")); //$NON-NLS-1$
     }
 
     /*
@@ -82,7 +83,7 @@ public class ErDiagramDialog extends Dialog {
      * 
      * @see org.eclipse.jface.dialogs.Dialog#createDialogArea(org.eclipse.swt.widgets.Composite)
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked") //$NON-NLS-1$
     @Override
     protected Control createDialogArea(Composite parent) {
         // create a composite with standard margins and spacing

@@ -320,7 +320,7 @@ public class DisplayResultComposite extends Composite implements IResultChangedL
      * @throws SchedulerException e
      */
     private void checkPlainCommand() throws SchedulerException {
-        if (txtCustom.getText() == null || txtCustom.getText().trim().equals("")) {
+        if (txtCustom.getText() == null || txtCustom.getText().trim().equals("")) { //$NON-NLS-1$
             throw new SchedulerException(Messages.getString("DisplayResultComposite.customCronTabEmptyPrompt")); //$NON-NLS-1$
         }
     }

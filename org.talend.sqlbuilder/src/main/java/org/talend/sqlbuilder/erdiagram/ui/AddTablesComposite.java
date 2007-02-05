@@ -35,6 +35,7 @@ import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.properties.DatabaseConnectionItem;
 import org.talend.repository.model.RepositoryNode;
+import org.talend.sqlbuilder.Messages;
 import org.talend.sqlbuilder.repository.utility.SQLBuilderRepositoryNodeManager;
 
 /**
@@ -94,7 +95,7 @@ public class AddTablesComposite extends Composite {
 
     private void createTabItem() {
         CTabItem tabItem = new CTabItem(tabFolder, SWT.NULL);
-        tabItem.setText("Tables");
+        tabItem.setText(Messages.getString("AddTablesComposite.textTables")); //$NON-NLS-1$
         tabItem.setControl(createTableList());
         tabFolder.layout();
         tabFolder.redraw();
@@ -103,7 +104,7 @@ public class AddTablesComposite extends Composite {
     /**
      * DOC admin Comment method "createTableList".
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked") //$NON-NLS-1$
     private Composite createTableList() {
         Composite div1 = new Composite(tabFolder, SWT.NONE);
         div1.setLayout(new GridLayout());

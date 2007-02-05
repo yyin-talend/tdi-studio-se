@@ -30,6 +30,7 @@ import net.sourceforge.sqlexplorer.SQLAlias;
 import org.eclipse.swt.graphics.Image;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.ui.images.CoreImageProvider;
+import org.talend.sqlbuilder.Messages;
 import org.talend.sqlbuilder.SqlBuilderPlugin;
 import org.talend.sqlbuilder.sessiontree.model.SessionTreeNode;
 
@@ -45,7 +46,7 @@ public class DatabaseNode extends AbstractNode {
 
     private List pchildNames = new ArrayList();
 
-    private String pdatabaseProductName = "";
+    private String pdatabaseProductName = ""; //$NON-NLS-1$
 
     private boolean psupportsCatalogs = false;
 
@@ -62,14 +63,14 @@ public class DatabaseNode extends AbstractNode {
         pname = name;
         psessionNode = session;
         palias = (SQLAlias) psessionNode.getAlias();
-        pimageKey = "Images.DatabaseIcon";
+        pimageKey = "Images.DatabaseIcon"; //$NON-NLS-1$
     }
 
 
     /**
      * @return List of catalog nodes
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked") //$NON-NLS-1$
     public List getCatalogs() {
 
         ArrayList catalogs = new ArrayList();
@@ -88,7 +89,7 @@ public class DatabaseNode extends AbstractNode {
     /**
      * @return ChildNames.
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked") //$NON-NLS-1$
     public String[] getChildNames() {
 
         if (pchildNames.size() == 0) {
@@ -116,7 +117,7 @@ public class DatabaseNode extends AbstractNode {
     /**
      * @return List of all database schemas
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked") //$NON-NLS-1$
     public List getSchemas() {
 
         ArrayList schemas = new ArrayList();
@@ -140,7 +141,7 @@ public class DatabaseNode extends AbstractNode {
      */
     public String getType() {
 
-        return "database";
+        return "database"; //$NON-NLS-1$
     }
 
     /**
@@ -157,11 +158,11 @@ public class DatabaseNode extends AbstractNode {
      * whether a comma separated list of regular expression filters has been
      * set.
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked") //$NON-NLS-1$
     public void loadChildren() {
 
         if (psessionNode.getInteractiveConnection() == null) {
-            addChildNode(new CatalogNode(this, "", psessionNode));
+            addChildNode(new CatalogNode(this, "", psessionNode)); //$NON-NLS-1$
             return;
         }
         
@@ -196,7 +197,7 @@ public class DatabaseNode extends AbstractNode {
             
 
         } catch (Exception e) {
-            SqlBuilderPlugin.log("Error loading children", e);
+            SqlBuilderPlugin.log(Messages.getString("DatabaseNode.logMessage"), e); //$NON-NLS-1$
         }
 
     }

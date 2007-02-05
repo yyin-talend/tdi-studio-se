@@ -45,14 +45,14 @@ import org.talend.sqlbuilder.SqlBuilderPlugin;
  */
 public class ExportCSVAction extends AbstractDataSetTableContextAction {
 
-    private static final ImageDescriptor IMAGE = ImageUtil.getDescriptor("Images.ExportIcon");
+    private static final ImageDescriptor IMAGE = ImageUtil.getDescriptor("Images.ExportIcon"); //$NON-NLS-1$
 
 
     /**
      * Return the text that will be displayed in the context popup menu for this action. 
      */
     public String getText() {
-        return Messages.getString("DataSetTable.Actions.Export.CSV");
+        return Messages.getString("DataSetTable.Actions.Export.CSV"); //$NON-NLS-1$
     }
 
     /**
@@ -69,7 +69,7 @@ public class ExportCSVAction extends AbstractDataSetTableContextAction {
 
         // get filename
         FileDialog fileDialog = new FileDialog(ptable.getShell(), SWT.SAVE);        
-        String[] filterExtensions = new String[] {"*.csv"};
+        String[] filterExtensions = new String[] {"*.csv"}; //$NON-NLS-1$
         fileDialog.setFilterExtensions(filterExtensions);       
         
         final String fileName = fileDialog.open();
@@ -94,7 +94,7 @@ public class ExportCSVAction extends AbstractDataSetTableContextAction {
                     
                     file.createNewFile();
                     BufferedWriter writer = new BufferedWriter(new FileWriter(file));
-                    StringBuffer buffer = new StringBuffer("");
+                    StringBuffer buffer = new StringBuffer(""); //$NON-NLS-1$
                     
                     // get column header and separator preferences
                     String columnSeparator = SqlBuilderPlugin.getDefault().getPreferenceStore().getString(IConstants.CLIP_EXPORT_SEPARATOR);
@@ -125,7 +125,7 @@ public class ExportCSVAction extends AbstractDataSetTableContextAction {
                     int columnCount = ptable.getColumnCount();
                     for (int i = 0; i < items.length; i++) {
                                            
-                        buffer = new StringBuffer("");
+                        buffer = new StringBuffer(""); //$NON-NLS-1$
                         
                         for (int j = 0; j < columnCount; j++) {
                             buffer.append(items[i].getText(j));
@@ -142,7 +142,7 @@ public class ExportCSVAction extends AbstractDataSetTableContextAction {
                     ptable.getShell().getDisplay().asyncExec(new Runnable() {
 
                         public void run() {
-                            MessageDialog.openError(ptable.getShell(), Messages.getString("SQLResultsView.Error.Export.Title"), e
+                            MessageDialog.openError(ptable.getShell(), Messages.getString("SQLResultsView.Error.Export.Title"), e //$NON-NLS-1$
                                     .getMessage());
                         }
                     });

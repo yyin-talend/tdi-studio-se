@@ -46,7 +46,7 @@ import org.talend.sqlbuilder.SqlBuilderPlugin;
  */
 public class ExportXLSAction extends AbstractDataSetTableContextAction {
 
-    private static final ImageDescriptor IMAGE = ImageUtil.getDescriptor("Images.ExportIcon");
+    private static final ImageDescriptor IMAGE = ImageUtil.getDescriptor("Images.ExportIcon"); //$NON-NLS-1$
 
     /*
      * (non-Javadoc)
@@ -54,7 +54,7 @@ public class ExportXLSAction extends AbstractDataSetTableContextAction {
      * @see org.eclipse.jface.action.IAction#getText()
      */
     public String getText() {
-        return Messages.getString("DataSetTable.Actions.Export.XLS");
+        return Messages.getString("DataSetTable.Actions.Export.XLS"); //$NON-NLS-1$
     }
 
     /*
@@ -74,7 +74,7 @@ public class ExportXLSAction extends AbstractDataSetTableContextAction {
     public void run() {
 
         FileDialog fileDialog = new FileDialog(ptable.getShell(), SWT.SAVE);
-        String[] filterExtensions = new String[] { "*.xls" };
+        String[] filterExtensions = new String[] { "*.xls" }; //$NON-NLS-1$
         fileDialog.setFilterExtensions(filterExtensions);
 
         final String fileName = fileDialog.open();
@@ -97,7 +97,7 @@ public class ExportXLSAction extends AbstractDataSetTableContextAction {
 
                     file.createNewFile();
                     BufferedWriter writer = new BufferedWriter(new FileWriter(file));
-                    StringBuffer buffer = new StringBuffer("");
+                    StringBuffer buffer = new StringBuffer(""); //$NON-NLS-1$
 
                     // get preferences
                     boolean includeColumnNames = SqlBuilderPlugin.getDefault().getPreferenceStore().getBoolean(
@@ -110,20 +110,20 @@ public class ExportXLSAction extends AbstractDataSetTableContextAction {
                         return;
                     }
 
-                    writer.write("<table>");
+                    writer.write("<table>"); //$NON-NLS-1$
                     writer.newLine();
 
                     // export column names
                     if (includeColumnNames) {
 
-                        buffer.append("<tr>");
+                        buffer.append("<tr>"); //$NON-NLS-1$
                         String[] columnNames = dataSet.getColumnLabels();
                         for (int i = 0; i < columnNames.length; i++) {
-                            buffer.append("<th>");
+                            buffer.append("<th>"); //$NON-NLS-1$
                             buffer.append(columnNames[i]);
-                            buffer.append("</th>");
+                            buffer.append("</th>"); //$NON-NLS-1$
                         }
-                        buffer.append("</tr>");
+                        buffer.append("</tr>"); //$NON-NLS-1$
                         writer.write(buffer.toString());
                         writer.newLine();
                     }
@@ -132,21 +132,21 @@ public class ExportXLSAction extends AbstractDataSetTableContextAction {
                     int columnCount = ptable.getColumnCount();
                     for (int i = 0; i < items.length; i++) {
 
-                        buffer = new StringBuffer("<tr>");
+                        buffer = new StringBuffer("<tr>"); //$NON-NLS-1$
 
                         for (int j = 0; j < columnCount; j++) {
-                            buffer.append("<td>");
+                            buffer.append("<td>"); //$NON-NLS-1$
                             buffer.append(items[i].getText(j));
-                            buffer.append("</td>");
+                            buffer.append("</td>"); //$NON-NLS-1$
                         }
 
-                        buffer.append("</tr>");
+                        buffer.append("</tr>"); //$NON-NLS-1$
 
                         writer.write(buffer.toString());
                         writer.newLine();
                     }
 
-                    writer.write("</table>");
+                    writer.write("</table>"); //$NON-NLS-1$
                     writer.newLine();
 
                     writer.close();
@@ -156,8 +156,8 @@ public class ExportXLSAction extends AbstractDataSetTableContextAction {
 
                         public void run() {
                             MessageDialog.openError(ptable.getShell(), Messages
-                                    .getString("SQLResultsView.Error.Export.Title"), e.getMessage());
-                            SqlBuilderPlugin.log(Messages.getString("SQLResultsView.Error.Export.Title"), e);
+                                    .getString("SQLResultsView.Error.Export.Title"), e.getMessage()); //$NON-NLS-1$
+                            SqlBuilderPlugin.log(Messages.getString("SQLResultsView.Error.Export.Title"), e); //$NON-NLS-1$
                         }
                     });
                 }

@@ -49,7 +49,7 @@ public class ColumnFolderNode extends AbstractFolderNode {
 
         psessionNode = parent.getSession();
         pparent = parent;
-        pname = Messages.getString("DatabaseStructureView.node.Columns");
+        pname = Messages.getString("DatabaseStructureView.node.Columns"); //$NON-NLS-1$
     }
 
 
@@ -102,7 +102,7 @@ public class ColumnFolderNode extends AbstractFolderNode {
      */
     public String getQualifiedName() {
 
-        return getParent().getQualifiedName() + "." + getType();
+        return getParent().getQualifiedName() + "." + getType(); //$NON-NLS-1$
     }
 
 
@@ -113,7 +113,7 @@ public class ColumnFolderNode extends AbstractFolderNode {
      */
     public String getType() {
 
-        return "column_folder";
+        return "column_folder"; //$NON-NLS-1$
     }
 
 
@@ -130,7 +130,7 @@ public class ColumnFolderNode extends AbstractFolderNode {
                 addChildNode(new ColumnNode(this, (String) it.next(), psessionNode, (TableNode) pparent, true));
             }
         } catch (Exception e) {
-            SqlBuilderPlugin.log("Could not create child nodes for " + getName(), e);
+            SqlBuilderPlugin.log(Messages.getString("ColumnFolderNode.logMessage") + getName(), e); //$NON-NLS-1$
         }
     }
 

@@ -46,7 +46,7 @@ import org.talend.sqlbuilder.SqlBuilderPlugin;
  */
 public class ExportHTMLAction extends AbstractDataSetTableContextAction {
 
-    private static final ImageDescriptor IMAGE = ImageUtil.getDescriptor("Images.ExportIcon");
+    private static final ImageDescriptor IMAGE = ImageUtil.getDescriptor("Images.ExportIcon"); //$NON-NLS-1$
 
 
     /*
@@ -55,7 +55,7 @@ public class ExportHTMLAction extends AbstractDataSetTableContextAction {
      * @see org.eclipse.jface.action.IAction#getText()
      */
     public String getText() {
-        return Messages.getString("DataSetTable.Actions.Export.HTML");
+        return Messages.getString("DataSetTable.Actions.Export.HTML"); //$NON-NLS-1$
     }
 
 
@@ -76,7 +76,7 @@ public class ExportHTMLAction extends AbstractDataSetTableContextAction {
     public void run() {
 
         FileDialog fileDialog = new FileDialog(ptable.getShell(), SWT.SAVE);        
-        String[] filterExtensions = new String[] {"*.htm", "*.html"};
+        String[] filterExtensions = new String[] {"*.htm", "*.html"}; //$NON-NLS-1$ //$NON-NLS-2$
         fileDialog.setFilterExtensions(filterExtensions);       
         
         final String fileName = fileDialog.open();
@@ -99,7 +99,7 @@ public class ExportHTMLAction extends AbstractDataSetTableContextAction {
                     
                     file.createNewFile();
                     BufferedWriter writer = new BufferedWriter(new FileWriter(file));
-                    StringBuffer buffer = new StringBuffer("");
+                    StringBuffer buffer = new StringBuffer(""); //$NON-NLS-1$
                     
                     // get preferences
                     boolean includeColumnNames = SqlBuilderPlugin.getDefault().getPreferenceStore().getBoolean(
@@ -112,30 +112,30 @@ public class ExportHTMLAction extends AbstractDataSetTableContextAction {
                         return;
                     }
                     
-                    writer.write("<html>");
+                    writer.write("<html>"); //$NON-NLS-1$
                     writer.newLine();
                     
-                    writer.write("<style>");
-                    writer.write("TABLE {border-collapse: collapse;}");
-                    writer.write("TH {background-color: rgb(240, 244, 245);}");
-                    writer.write("TH, TD {border: 1px solid #D1D6D4;font-size: 10px;font-family: Verdana, Arial, Helvetica, sans-serif;}");
-                    writer.write(".right {text-align: right;}");
-                    writer.write("</style>");
-                    writer.write("</head>");
-                    writer.write("<table>");
+                    writer.write("<style>"); //$NON-NLS-1$
+                    writer.write("TABLE {border-collapse: collapse;}"); //$NON-NLS-1$
+                    writer.write("TH {background-color: rgb(240, 244, 245);}"); //$NON-NLS-1$
+                    writer.write("TH, TD {border: 1px solid #D1D6D4;font-size: 10px;font-family: Verdana, Arial, Helvetica, sans-serif;}"); //$NON-NLS-1$
+                    writer.write(".right {text-align: right;}"); //$NON-NLS-1$
+                    writer.write("</style>"); //$NON-NLS-1$
+                    writer.write("</head>"); //$NON-NLS-1$
+                    writer.write("<table>"); //$NON-NLS-1$
                     writer.newLine();
                     
                     // export column names
                     if (includeColumnNames) {
                         
-                        buffer.append("<tr>");
+                        buffer.append("<tr>"); //$NON-NLS-1$
                         String[] columnNames = dataSet.getColumnLabels();
                         for (int i = 0; i < columnNames.length; i++) {
-                            buffer.append("<th>");
+                            buffer.append("<th>"); //$NON-NLS-1$
                             buffer.append(columnNames[i]);
-                            buffer.append("</th>");
+                            buffer.append("</th>"); //$NON-NLS-1$
                         }
-                        buffer.append("</tr>");
+                        buffer.append("</tr>"); //$NON-NLS-1$
                         writer.write(buffer.toString());
                         writer.newLine();
                     }
@@ -146,31 +146,31 @@ public class ExportHTMLAction extends AbstractDataSetTableContextAction {
                     int columnCount = ptable.getColumnCount();
                     for (int i = 0; i < items.length; i++) {
                                            
-                        buffer = new StringBuffer("<tr>");
+                        buffer = new StringBuffer("<tr>"); //$NON-NLS-1$
                         
                         for (int j = 0; j < columnCount; j++) {
                     
                             if (set.getColumnTypes()[j] == DataSet.TYPE_DOUBLE 
                                     || set.getColumnTypes()[j] == DataSet.TYPE_INTEGER) {
                                 // right align numbers
-                                buffer.append("<td class=\"right\">");    
+                                buffer.append("<td class=\"right\">");     //$NON-NLS-1$
                             } else {
-                                buffer.append("<td>");
+                                buffer.append("<td>"); //$NON-NLS-1$
                             }
                             
                             buffer.append(items[i].getText(j));
-                            buffer.append("</td>");
+                            buffer.append("</td>"); //$NON-NLS-1$
                         }
                         
-                        buffer.append("</tr>");
+                        buffer.append("</tr>"); //$NON-NLS-1$
                         
                         writer.write(buffer.toString());
                         writer.newLine();
                     }
 
-                    writer.write("</table>");
+                    writer.write("</table>"); //$NON-NLS-1$
                     writer.newLine();
-                    writer.write("</html>");
+                    writer.write("</html>"); //$NON-NLS-1$
                     writer.newLine();
                     
                     writer.close();
@@ -180,9 +180,9 @@ public class ExportHTMLAction extends AbstractDataSetTableContextAction {
                     ptable.getShell().getDisplay().asyncExec(new Runnable() {
 
                         public void run() {
-                            MessageDialog.openError(ptable.getShell(), Messages.getString("SQLResultsView.Error.Export.Title"), e
+                            MessageDialog.openError(ptable.getShell(), Messages.getString("SQLResultsView.Error.Export.Title"), e //$NON-NLS-1$
                                     .getMessage());
-                            SqlBuilderPlugin.log(Messages.getString("SQLResultsView.Error.Export.Title"), e);
+                            SqlBuilderPlugin.log(Messages.getString("SQLResultsView.Error.Export.Title"), e); //$NON-NLS-1$
                         }
                     });
                 }

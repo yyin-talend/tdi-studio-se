@@ -41,7 +41,7 @@ import org.talend.sqlbuilder.util.ImageUtil;
  */
 public class CopyTableAction extends AbstractDataSetTableContextAction {
 
-    private static final ImageDescriptor IMAGE = ImageUtil.getDescriptor("Images.CopyIcon");
+    private static final ImageDescriptor IMAGE = ImageUtil.getDescriptor("Images.CopyIcon"); //$NON-NLS-1$
     
     /*
      * (non-Javadoc)
@@ -49,7 +49,7 @@ public class CopyTableAction extends AbstractDataSetTableContextAction {
      * @see org.eclipse.jface.action.IAction#getText()
      */
     public String getText() {
-        return Messages.getString("DataSetTable.Actions.CopyToClipboard");
+        return Messages.getString("DataSetTable.Actions.CopyToClipboard"); //$NON-NLS-1$
     }
 
 
@@ -78,10 +78,10 @@ public class CopyTableAction extends AbstractDataSetTableContextAction {
                     // create clipboard
                     Clipboard clipBoard = new Clipboard(Display.getCurrent());
                     TextTransfer textTransfer = TextTransfer.getInstance();
-                    StringBuffer buffer = new StringBuffer("");
+                    StringBuffer buffer = new StringBuffer(""); //$NON-NLS-1$
                     
                     // get preferences
-                    String lineSeparator = System.getProperty("line.separator");
+                    String lineSeparator = System.getProperty("line.separator"); //$NON-NLS-1$
                     String columnSeparator = SqlBuilderPlugin.getDefault().getPreferenceStore().getString(IConstants.CLIP_EXPORT_SEPARATOR);
                     boolean includeColumnNames = SqlBuilderPlugin.getDefault().getPreferenceStore().getBoolean(
                             IConstants.CLIP_EXPORT_COLUMNS);
@@ -120,7 +120,7 @@ public class CopyTableAction extends AbstractDataSetTableContextAction {
                     clipBoard.setContents(new Object[] {buffer.toString()}, new Transfer[] {textTransfer});
 
                 } catch (Exception e) {
-                    SqlBuilderPlugin.log("Error exporting to clipboard ", e);
+                    SqlBuilderPlugin.log(Messages.getString("CopyTableAction.logMessage"), e); //$NON-NLS-1$
                 }
             }
         });

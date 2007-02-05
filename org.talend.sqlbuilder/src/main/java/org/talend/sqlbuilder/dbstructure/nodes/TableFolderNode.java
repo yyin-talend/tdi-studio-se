@@ -55,21 +55,21 @@ public class TableFolderNode extends AbstractFolderNode {
         porigName = name;
 
         // cleanup the names a little
-        String[] words = porigName.split(" ");
-        pname = "";
+        String[] words = porigName.split(" "); //$NON-NLS-1$
+        pname = ""; //$NON-NLS-1$
         for (int i = 0; i < words.length; i++) {
-            pname = pname + words[i].substring(0, 1).toUpperCase() + words[i].substring(1).toLowerCase() + " ";
+            pname = pname + words[i].substring(0, 1).toUpperCase() + words[i].substring(1).toLowerCase() + " "; //$NON-NLS-1$
         }
         pname = pname.trim();
 
         if (pname.equals("View")) {
-            pname = Messages.getString("DatabaseStructureView.view");
+            pname = Messages.getString("DatabaseStructureView.view"); //$NON-NLS-1$
         }
         if (pname.equals("Table")) {
-            pname = Messages.getString("DatabaseStructureView.table");
+            pname = Messages.getString("DatabaseStructureView.table"); //$NON-NLS-1$
         }if(pname.equals("Synonym"))
         {
-            pname = Messages.getString("DatabaseStructureView.synonym");
+            pname = Messages.getString("DatabaseStructureView.synonym"); //$NON-NLS-1$
         }
     }
 
@@ -99,7 +99,7 @@ public class TableFolderNode extends AbstractFolderNode {
      */
     public String getType() {
 
-        return porigName + "_FOLDER";
+        return porigName + "_FOLDER"; //$NON-NLS-1$
     }
 
 
@@ -120,7 +120,7 @@ public class TableFolderNode extends AbstractFolderNode {
             }
 
         } catch (Throwable e) {
-            SqlBuilderPlugin.log("Could not load child nodes for " + pname, e);
+            SqlBuilderPlugin.log(Messages.getString("TableFolderNode.logMessage") + pname, e); //$NON-NLS-1$
         }
     }
 

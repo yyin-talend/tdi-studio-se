@@ -258,7 +258,7 @@ public class ColumnPart extends AbstractGraphicalEditPart implements PropertyCha
         private void createContents() {
 
             Column column = (Column) getModel();
-            if (!column.getElementName().equals("*")) {
+            if (!column.getElementName().equals("*")) { //$NON-NLS-1$
                 isSelected = new CheckBox();
                 isSelected.setSelected(column.isSelected());
                 setFigureCustomColumnIsSelectedFigure(isSelected);
@@ -268,7 +268,7 @@ public class ColumnPart extends AbstractGraphicalEditPart implements PropertyCha
             columnName = new Label();
 
             columnName.setText(column.getElementName());
-            Font erFont = new Font(null, "Arial", 7, SWT.BOLD);
+            Font erFont = new Font(null, "Arial", 7, SWT.BOLD); //$NON-NLS-1$
             columnName.setFont(erFont);
             columnName.setForegroundColor(ColorConstants.black);
             setFigureCustomColumnNameFigure(columnName);

@@ -65,7 +65,7 @@ public class MyURLClassLoader extends URLClassLoader {
     }
 
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked") //$NON-NLS-1$
 	public Class[] getAssignableClasses(Class type) throws IOException {
         List classes = new ArrayList();
         URL[] urls = getURLs();
@@ -106,7 +106,7 @@ public class MyURLClassLoader extends URLClassLoader {
     /* (non-Javadoc)
      * @see java.net.URLClassLoader#findClass(java.lang.String)
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked") //$NON-NLS-1$
 	protected synchronized Class findCslass(String className) throws ClassNotFoundException {
         Class cls = (Class) pclasses.get(className);
         if (cls == null) {

@@ -806,7 +806,7 @@ public class SQLCodeScanner extends AbstractSQLScanner {
 	/*
 	 * @see AbstractJavaScanner#createRules()
 	 */
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("unchecked") //$NON-NLS-1$
 	protected synchronized List createRules() {
 
 		List rules = new ArrayList();

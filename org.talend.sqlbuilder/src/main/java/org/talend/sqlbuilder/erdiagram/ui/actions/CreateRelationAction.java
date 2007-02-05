@@ -45,7 +45,7 @@ public class CreateRelationAction extends SelectionAction {
 
     private IWorkbenchPart part;
 
-    private static final String NEW_RELATION = "Equal";
+    private static final String NEW_RELATION = "Equal"; 
 
     public static final String ID = "org.talend.sqlbuider.erdiagram.ui.actions.CreateRelationAction"; //$NON-NLS-1$
 
@@ -71,7 +71,7 @@ public class CreateRelationAction extends SelectionAction {
                 return false;
             }
             Column col = (Column) columnPart.getModel();
-            if (col.getElementName().equals("*")) {
+            if (col.getElementName().equals("*")) { //$NON-NLS-1$
                 return false;
             }
             return true;

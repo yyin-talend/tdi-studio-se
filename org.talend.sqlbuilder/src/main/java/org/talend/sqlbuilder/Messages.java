@@ -29,7 +29,7 @@ import java.util.ResourceBundle;
  */
 public class Messages {
 
-    private static ResourceBundle resourceBundle = ResourceBundle.getBundle("messages");
+    private static ResourceBundle resourceBundle = ResourceBundle.getBundle("messages"); //$NON-NLS-1$
 
     public static String getString(String key) {
         try {

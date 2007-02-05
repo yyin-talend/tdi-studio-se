@@ -77,17 +77,17 @@ public class ColorUtilities {
      */
     public static String getSelectStatement(List<String> tables, List<String> columns, List<String> wheres) {
         String sql;
-        sql = "select ";
+        sql = "select "; //$NON-NLS-1$
         for (String string : columns) {
-            sql = sql + string + ",";
+            sql = sql + string + ","; //$NON-NLS-1$
         }
-        sql = sql.substring(0, sql.length() - 1) + " from ";
+        sql = sql.substring(0, sql.length() - 1) + " from "; //$NON-NLS-1$
         for (String string : tables) {
-            sql = sql + string + ",";
+            sql = sql + string + ","; //$NON-NLS-1$
         }
-        sql = sql.substring(0, sql.length() - 1) + " where ";
+        sql = sql.substring(0, sql.length() - 1) + " where "; //$NON-NLS-1$
         for (String string : wheres) {
-            sql = sql + string + ",";
+            sql = sql + string + ","; //$NON-NLS-1$
         }
         return sql;
     }

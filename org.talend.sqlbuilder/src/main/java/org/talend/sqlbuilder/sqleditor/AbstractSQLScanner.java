@@ -95,7 +95,7 @@ public abstract class AbstractSQLScanner extends BufferedRuleBasedScanner {
 		initializeRules();
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("unchecked") //$NON-NLS-1$
 	private void addToken(final String colorKey, final String styleKey) {
 		final RGB rgb = PreferenceConverter
 				.getColor(fPreferenceStore, colorKey);
@@ -114,7 +114,7 @@ public abstract class AbstractSQLScanner extends BufferedRuleBasedScanner {
 		return (Token) fTokenMap.get(key);
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("unchecked") //$NON-NLS-1$
 	private void initializeRules() {
 		final List rules = createRules();
 		if (rules != null) {

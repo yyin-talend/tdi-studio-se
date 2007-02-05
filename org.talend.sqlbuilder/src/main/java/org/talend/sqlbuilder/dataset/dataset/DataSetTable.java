@@ -80,7 +80,7 @@ public class DataSetTable {
         int[] columnTypes = dataSet.getColumnTypes();
         if (columnLabels == null || columnTypes == null || columnLabels.length == 0 || columnTypes.length == 0
                 || columnTypes.length != columnLabels.length) {
-            throw new Exception("Invalid columnLabel or columnTypes in DataSet ");
+            throw new Exception(Messages.getString("DataSetTable.invalidExcepitonMessage")); //$NON-NLS-1$
         }
         
         // create table structure
@@ -155,7 +155,7 @@ public class DataSetTable {
         infoLabel.setText(info);
         infoLabel.setLayoutData(new GridData(SWT.LEFT, SWT.NULL, true, false));        
         final Label positionLabel = new Label(composite, SWT.NULL);
-        positionLabel.setText("");
+        positionLabel.setText(""); //$NON-NLS-1$
         positionLabel.setLayoutData(new GridData(SWT.RIGHT, SWT.NULL, true, false));       
          
         // create a TableCursor to navigate around the table
@@ -172,8 +172,8 @@ public class DataSetTable {
                 cursor.setVisible(true);
                 
                 // update label with row/column position
-                positionLabel.setText(Messages.getString("DatabaseDetailView.Tab.RowPrefix") + " "
-                        + (table.indexOf(cursor.getRow()) + 1) + Messages.getString("DatabaseDetailView.Tab.ColumnPrefix") + " "
+                positionLabel.setText(Messages.getString("DatabaseDetailView.Tab.RowPrefix") + " " //$NON-NLS-1$ //$NON-NLS-2$
+                        + (table.indexOf(cursor.getRow()) + 1) + Messages.getString("DatabaseDetailView.Tab.ColumnPrefix") + " " //$NON-NLS-1$ //$NON-NLS-2$
                         + (cursor.getColumn() + 1));                
                 positionLabel.getParent().layout();
                 positionLabel.redraw();

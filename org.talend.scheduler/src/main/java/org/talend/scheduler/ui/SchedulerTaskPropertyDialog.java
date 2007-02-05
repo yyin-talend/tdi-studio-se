@@ -492,7 +492,7 @@ public class SchedulerTaskPropertyDialog extends Dialog {
 
                 public void modifyText(ModifyEvent e) {
                     String jobName = jobCombo.getText();
-                    jobName = jobName.substring(jobName.lastIndexOf("/") + 1);
+                    jobName = jobName.substring(jobName.lastIndexOf("/") + 1); //$NON-NLS-1$
 
                     List<String> contextList = jobManager.updateContextList(jobName);
 
@@ -543,7 +543,7 @@ public class SchedulerTaskPropertyDialog extends Dialog {
                 jobCombo.select(0);
 
                 String selectedJobName = jobItems[0];
-                selectedJobName = selectedJobName.substring(selectedJobName.lastIndexOf("/") + 1);
+                selectedJobName = selectedJobName.substring(selectedJobName.lastIndexOf("/") + 1); //$NON-NLS-1$
                 // change context's value
                 List<String> contextList = jobManager.updateContextList(selectedJobName);
                 contextCombo.setItems(contextList.toArray(new String[contextList.size()]));
@@ -560,7 +560,7 @@ public class SchedulerTaskPropertyDialog extends Dialog {
 
                 jobCombo.setText(selectedJobName);
 
-                selectedJobName = selectedJobName.substring(selectedJobName.lastIndexOf("/") + 1);
+                selectedJobName = selectedJobName.substring(selectedJobName.lastIndexOf("/") + 1); //$NON-NLS-1$
 
                 // change context's value
                 List<String> contextList = jobManager.updateContextList(selectedJobName);

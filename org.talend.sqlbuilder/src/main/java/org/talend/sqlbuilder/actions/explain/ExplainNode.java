@@ -47,7 +47,7 @@ public class ExplainNode {
     }
 
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked") //$NON-NLS-1$
 	public void add(ExplainNode nd) {
 
         ls.add(nd);
@@ -63,7 +63,7 @@ public class ExplainNode {
     }
 
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked") //$NON-NLS-1$
 	public ExplainNode[] getChildren() {
 
         return (ExplainNode[]) ls.toArray(new ExplainNode[ls.size()]);
@@ -170,19 +170,19 @@ public class ExplainNode {
 
         StringBuffer sb = new StringBuffer(50);
         if (objectType != null) {
-            sb.append(objectType).append(" ");
+            sb.append(objectType).append(" "); //$NON-NLS-1$
         }
         if (operation != null) {
-            sb.append(operation).append(" ");
+            sb.append(operation).append(" "); //$NON-NLS-1$
         }
         if (options != null) {
-            sb.append(options).append(" ");
+            sb.append(options).append(" "); //$NON-NLS-1$
         }
         if (objectOwner != null && objectName != null) {
-            sb.append(objectOwner + "." + objectName).append(" ");
+            sb.append(objectOwner + "." + objectName).append(" "); //$NON-NLS-1$ //$NON-NLS-2$
         }
         if (optimizer != null) {
-            sb.append("[" + optimizer + "]");
+            sb.append("[" + optimizer + "]"); //$NON-NLS-1$ //$NON-NLS-2$
         }
         return sb.toString();
     }
