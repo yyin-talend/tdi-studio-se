@@ -26,6 +26,7 @@ import org.apache.oro.text.regex.MatchResult;
 import org.apache.oro.text.regex.Pattern;
 import org.apache.oro.text.regex.Perl5Compiler;
 import org.apache.oro.text.regex.Perl5Matcher;
+import org.talend.repository.i18n.Messages;
 
 /**
  * @author ocarbone
@@ -42,34 +43,34 @@ public class DataStringConnection {
     private int selectionIndex;
 
     public DataStringConnection() {
-        String host = "(\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.|[\\w\\.\\-_]{0,})";
-        String port = "(\\d{0,5})";
-        String word = "([\\w\\.\\-_]{0,})";
-        String sid = "([\\w\\.\\-_]{0,})";
-        String fileMdb = "([\\w\\.\\-_]{0,}).mdb";
+        String host = "(\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.|[\\w\\.\\-_]{0,})"; //$NON-NLS-1$
+        String port = "(\\d{0,5})"; //$NON-NLS-1$
+        String word = "([\\w\\.\\-_]{0,})"; //$NON-NLS-1$
+        String sid = "([\\w\\.\\-_]{0,})"; //$NON-NLS-1$
+        String fileMdb = "([\\w\\.\\-_]{0,}).mdb"; //$NON-NLS-1$
 
         dataConnection = new DataConnection[6];
 
         defaultTable = new String[6];
 
-        dataConnection[0] = new DataConnection("MySQL", "jdbc:mysql://<host>:<port>/<sid>", "jdbc:mysql://" + host + ":" + port
-                + "/" + sid, "3306");
+        dataConnection[0] = new DataConnection("MySQL", "jdbc:mysql://<host>:<port>/<sid>", "jdbc:mysql://" + host + ":" + port //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+                + "/" + sid, "3306"); //$NON-NLS-1$ //$NON-NLS-2$
 
-        dataConnection[1] = new DataConnection("PostgreSQL", "jdbc:postgresql://<host>:<port>/<sid>", "jdbc:postgresql://" + host
-                + ":" + port + "/" + sid, "5432");
+        dataConnection[1] = new DataConnection("PostgreSQL", "jdbc:postgresql://<host>:<port>/<sid>", "jdbc:postgresql://" + host //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                + ":" + port + "/" + sid, "5432"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
-        dataConnection[2] = new DataConnection("Oracle with SID", "jdbc:oracle:thin:@<host>:<port>:<sid>", "jdbc:oracle:thin:@"
-                + host + ":" + port + ":" + sid, "1521");
+        dataConnection[2] = new DataConnection("Oracle with SID", "jdbc:oracle:thin:@<host>:<port>:<sid>", "jdbc:oracle:thin:@" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                + host + ":" + port + ":" + sid, "1521"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
         dataConnection[3] = new DataConnection(
-                "Oracle with service name",
-                "jdbc:oracle:thin:@(description=(address=(protocol=tcp)(host=<host>)(port=<port>))(connect_data=(service_name=<service_name>)))",
-                "jdbc:oracle:thin:@\\(description=\\(address=\\(protocol=tcp\\)\\(host=" + host + "\\)\\(port=" + port
-                        + "\\)\\)\\(connect_data=\\(service_name=" + sid + "\\)\\)\\)", "1521");
+                "Oracle with service name", //$NON-NLS-1$
+                "jdbc:oracle:thin:@(description=(address=(protocol=tcp)(host=<host>)(port=<port>))(connect_data=(service_name=<service_name>)))", //$NON-NLS-1$
+                "jdbc:oracle:thin:@\\(description=\\(address=\\(protocol=tcp\\)\\(host=" + host + "\\)\\(port=" + port //$NON-NLS-1$ //$NON-NLS-2$
+                        + "\\)\\)\\(connect_data=\\(service_name=" + sid + "\\)\\)\\)", "1521"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
-        dataConnection[4] = new DataConnection("Generic ODBC", "jdbc:odbc:<datasource>", "jdbc:odbc:" + word);
+        dataConnection[4] = new DataConnection("Generic ODBC", "jdbc:odbc:<datasource>", "jdbc:odbc:" + word); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
-        dataConnection[5] = new DataConnection("Microsoft SQL Server (Odbc driver)", "jdbc:odbc:<datasource>", "jdbc:odbc:"
+        dataConnection[5] = new DataConnection("Microsoft SQL Server (Odbc driver)", "jdbc:odbc:<datasource>", "jdbc:odbc:" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 + word);
 
         // TODO CAN : reactivate this Connections when PerlModule can connect with this Databases.
@@ -125,19 +126,19 @@ public class DataStringConnection {
             final String port, final String sid, final String filename, final String datasource) {
         String s = getStringConnectionTemplate();
         if (s == null) {
-            return "";
+            return ""; //$NON-NLS-1$
         }
-        s = getStringReplace(s, "<login>", login);
-        s = getStringReplace(s, "<password>", password);
-        s = getStringReplace(s, "<host>", host);
-        s = getStringReplace(s, "<login>", login);
-        s = getStringReplace(s, "<password>", password);
-        s = getStringReplace(s, "<port>", port);
-        s = getStringReplace(s, "<sid>", sid);
-        s = getStringReplace(s, "<service_name>", sid);
-        s = getStringReplace(s, "<datasource>", datasource);
+        s = getStringReplace(s, "<login>", login); //$NON-NLS-1$
+        s = getStringReplace(s, "<password>", password); //$NON-NLS-1$
+        s = getStringReplace(s, "<host>", host); //$NON-NLS-1$
+        s = getStringReplace(s, "<login>", login); //$NON-NLS-1$
+        s = getStringReplace(s, "<password>", password); //$NON-NLS-1$
+        s = getStringReplace(s, "<port>", port); //$NON-NLS-1$
+        s = getStringReplace(s, "<sid>", sid); //$NON-NLS-1$
+        s = getStringReplace(s, "<service_name>", sid); //$NON-NLS-1$
+        s = getStringReplace(s, "<datasource>", datasource); //$NON-NLS-1$
         // PTODO OCA : if needed, adapt the file separator to all OS (not only backslashes)
-        s = getStringReplace(s, "<filename>", filename);
+        s = getStringReplace(s, "<filename>", filename); //$NON-NLS-1$
 
         return s;
     }
@@ -184,9 +185,9 @@ public class DataStringConnection {
      */
     public String[] getAnalyse(final String stringConnection) {
         Integer selectionIndex = getSelectionIndex();
-        String[] s = { selectionIndex.toString(), "", "", "" };
+        String[] s = { selectionIndex.toString(), "", "", "" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         String regex = getRegex();
-        if (stringConnection == "") {
+        if (stringConnection == "") { //$NON-NLS-1$
             return s;
         }
 
@@ -229,10 +230,10 @@ public class DataStringConnection {
         String startStringConnection;
         String startTemplateString;
         for (int i = 0; i < dataConnection.length; i++) {
-            startTemplateString = dataConnection[i].getString().substring(0, dataConnection[i].getString().indexOf("<"));
+            startTemplateString = dataConnection[i].getString().substring(0, dataConnection[i].getString().indexOf("<")); //$NON-NLS-1$
             if (startTemplateString.length() <= stringConnection.length()) {
                 startStringConnection = stringConnection.substring(0, startTemplateString.length());
-                if (stringConnection.contains("(description=(address=(protocol=tcp)")) {
+                if (stringConnection.contains("(description=(address=(protocol=tcp)")) { //$NON-NLS-1$
                     return 3;
                 } else if (startTemplateString.equals(startStringConnection)) {
                     return i;
@@ -283,7 +284,7 @@ public class DataStringConnection {
         if (selectionIndex < 0) {
             return false;
         }
-        return getStringConnectionTemplate().substring(0, 12).equals("jdbc:oracle:")
-                || getStringConnectionTemplate().substring(0, 15).equals("jdbc:postgresql");
+        return getStringConnectionTemplate().substring(0, 12).equals("jdbc:oracle:") //$NON-NLS-1$
+                || getStringConnectionTemplate().substring(0, 15).equals("jdbc:postgresql"); //$NON-NLS-1$
     }
 }

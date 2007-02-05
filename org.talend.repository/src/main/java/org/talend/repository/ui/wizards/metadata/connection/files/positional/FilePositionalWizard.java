@@ -81,7 +81,7 @@ public class FilePositionalWizard extends RepositoryWizard implements INewWizard
      * @param selection
      * @param strings
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked") //$NON-NLS-1$
     public FilePositionalWizard(IWorkbench workbench, boolean creation, ISelection selection, String[] existingNames) {
         super(workbench, creation);
         this.selection = selection;
@@ -99,7 +99,7 @@ public class FilePositionalWizard extends RepositoryWizard implements INewWizard
             pathToSave = RepositoryNodeUtilities.getPath(node);
             break;
         case SYSTEM_FOLDER:
-            pathToSave = new Path("");
+            pathToSave = new Path(""); //$NON-NLS-1$
             break;
         }
 
@@ -116,7 +116,7 @@ public class FilePositionalWizard extends RepositoryWizard implements INewWizard
                     .setAuthor(((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY))
                             .getUser());
             connectionProperty.setVersion(VersionUtils.DEFAULT_VERSION);
-            connectionProperty.setStatusCode("");
+            connectionProperty.setStatusCode(""); //$NON-NLS-1$
 
             connectionItem = PropertiesFactory.eINSTANCE.createPositionalFileConnectionItem();
             connectionItem.setProperty(connectionProperty);
@@ -145,27 +145,27 @@ public class FilePositionalWizard extends RepositoryWizard implements INewWizard
         fileWizardPage2 = new FilePositionalWizardPage(2, connectionItem, isRepositoryObjectEditable(), existingNames);
 
         if (creation) {
-            setWindowTitle(Messages.getString("FileWizard.windowTitleCreate"));
+            setWindowTitle(Messages.getString("FileWizard.windowTitleCreate")); //$NON-NLS-1$
 
-            fileWizardPage0.setTitle(Messages.getString("FileWizardPage.titleCreate") + " 1 "
-                    + Messages.getString("FileWizardPage.of") + " 4");
-            fileWizardPage0.setDescription(Messages.getString("FileWizardPage.descriptionCreateStep0"));
+            fileWizardPage0.setTitle(Messages.getString("FileWizardPage.titleCreate") + " 1 " //$NON-NLS-1$ //$NON-NLS-2$
+                    + Messages.getString("FileWizardPage.of") + " 4"); //$NON-NLS-1$ //$NON-NLS-2$
+            fileWizardPage0.setDescription(Messages.getString("FileWizardPage.descriptionCreateStep0")); //$NON-NLS-1$
             addPage(fileWizardPage0);
 
-            fileWizardPage1.setTitle(Messages.getString("FileWizardPage.titleCreate") + " 2 "
-                    + Messages.getString("FileWizardPage.of") + " 4");
-            fileWizardPage1.setDescription(Messages.getString("FileWizardPage.descriptionCreateStep1"));
+            fileWizardPage1.setTitle(Messages.getString("FileWizardPage.titleCreate") + " 2 " //$NON-NLS-1$ //$NON-NLS-2$
+                    + Messages.getString("FileWizardPage.of") + " 4"); //$NON-NLS-1$ //$NON-NLS-2$
+            fileWizardPage1.setDescription(Messages.getString("FileWizardPage.descriptionCreateStep1")); //$NON-NLS-1$
             addPage(fileWizardPage1);
 
-            fileWizardPage2.setTitle(Messages.getString("FileWizardPage.titleCreate") + " 3 "
-                    + Messages.getString("FileWizardPage.of") + " 4");
-            fileWizardPage2.setDescription(Messages.getString("FileWizardPage.descriptionCreateStep2"));
+            fileWizardPage2.setTitle(Messages.getString("FileWizardPage.titleCreate") + " 3 " //$NON-NLS-1$ //$NON-NLS-2$
+                    + Messages.getString("FileWizardPage.of") + " 4"); //$NON-NLS-1$ //$NON-NLS-2$
+            fileWizardPage2.setDescription(Messages.getString("FileWizardPage.descriptionCreateStep2")); //$NON-NLS-1$
             addPage(fileWizardPage2);
 
             fileWizardPage3 = new FilePositionalWizardPage(3, connectionItem, isRepositoryObjectEditable(), null);
-            fileWizardPage3.setDescription(Messages.getString("FileWizardPage.descriptionCreateStep3"));
-            fileWizardPage3.setTitle(Messages.getString("FileWizardPage.titleCreate") + " 4 "
-                    + Messages.getString("FileWizardPage.of") + " 4");
+            fileWizardPage3.setDescription(Messages.getString("FileWizardPage.descriptionCreateStep3")); //$NON-NLS-1$
+            fileWizardPage3.setTitle(Messages.getString("FileWizardPage.titleCreate") + " 4 " //$NON-NLS-1$ //$NON-NLS-2$
+                    + Messages.getString("FileWizardPage.of") + " 4"); //$NON-NLS-1$ //$NON-NLS-2$
             addPage(fileWizardPage3);
 
             fileWizardPage1.setPageComplete(false);
@@ -173,21 +173,21 @@ public class FilePositionalWizard extends RepositoryWizard implements INewWizard
             fileWizardPage3.setPageComplete(false);
 
         } else {
-            setWindowTitle(Messages.getString("FileWizard.windowTitleUpdate"));
+            setWindowTitle(Messages.getString("FileWizard.windowTitleUpdate")); //$NON-NLS-1$
 
-            fileWizardPage0.setTitle(Messages.getString("FileWizardPage.titleUpdate") + " 1 "
-                    + Messages.getString("FileWizardPage.of") + " 3");
-            fileWizardPage0.setDescription(Messages.getString("FileWizardPage.descriptionUpdateStep0"));
+            fileWizardPage0.setTitle(Messages.getString("FileWizardPage.titleUpdate") + " 1 " //$NON-NLS-1$ //$NON-NLS-2$
+                    + Messages.getString("FileWizardPage.of") + " 3"); //$NON-NLS-1$ //$NON-NLS-2$
+            fileWizardPage0.setDescription(Messages.getString("FileWizardPage.descriptionUpdateStep0")); //$NON-NLS-1$
             addPage(fileWizardPage0);
 
-            fileWizardPage1.setTitle(Messages.getString("FileWizardPage.titleUpdate") + " 2 "
-                    + Messages.getString("FileWizardPage.of") + " 3");
-            fileWizardPage1.setDescription(Messages.getString("FileWizardPage.descriptionUpdateStep1"));
+            fileWizardPage1.setTitle(Messages.getString("FileWizardPage.titleUpdate") + " 2 " //$NON-NLS-1$ //$NON-NLS-2$
+                    + Messages.getString("FileWizardPage.of") + " 3"); //$NON-NLS-1$ //$NON-NLS-2$
+            fileWizardPage1.setDescription(Messages.getString("FileWizardPage.descriptionUpdateStep1")); //$NON-NLS-1$
             addPage(fileWizardPage1);
 
-            fileWizardPage2.setTitle(Messages.getString("FileWizardPage.titleUpdate") + " 3 "
-                    + Messages.getString("FileWizardPage.of") + " 3");
-            fileWizardPage2.setDescription(Messages.getString("FileWizardPage.descriptionUpdateStep2"));
+            fileWizardPage2.setTitle(Messages.getString("FileWizardPage.titleUpdate") + " 3 " //$NON-NLS-1$ //$NON-NLS-2$
+                    + Messages.getString("FileWizardPage.of") + " 3"); //$NON-NLS-1$ //$NON-NLS-2$
+            fileWizardPage2.setDescription(Messages.getString("FileWizardPage.descriptionUpdateStep2")); //$NON-NLS-1$
             addPage(fileWizardPage2);
 
             fileWizardPage1.setPageComplete(true);
@@ -220,9 +220,9 @@ public class FilePositionalWizard extends RepositoryWizard implements INewWizard
                 }
             } catch (PersistenceException e) {
                 String detailError = e.toString();
-                new ErrorDialogWidthDetailArea(getShell(), PID, Messages.getString("CommonWizard.persistenceException"),
+                new ErrorDialogWidthDetailArea(getShell(), PID, Messages.getString("CommonWizard.persistenceException"), //$NON-NLS-1$
                         detailError);
-                log.error(Messages.getString("CommonWizard.persistenceException") + "\n" + detailError);
+                log.error(Messages.getString("CommonWizard.persistenceException") + "\n" + detailError); //$NON-NLS-1$ //$NON-NLS-2$
                 return false;
             }
             return true;

@@ -144,10 +144,10 @@ public class DatabaseForm extends AbstractForm {
         nullCharText.setText(getConnection().getNullChar());
 
         // PTODO !StandBy! (use width SQL Editor): to define the values of SQL Syntax (need by SQL Editor)
-        getConnection().setSqlSynthax(Messages.getString("DatabaseForm.sqlSyntax"));
+        getConnection().setSqlSynthax(Messages.getString("DatabaseForm.sqlSyntax")); //$NON-NLS-1$
         sqlSyntaxCombo.select(getSqlSyntaxIndex(getConnection().getSqlSynthax()));
 
-        updateStatus(IStatus.OK, "");
+        updateStatus(IStatus.OK, ""); //$NON-NLS-1$
     }
 
     /**
@@ -189,7 +189,7 @@ public class DatabaseForm extends AbstractForm {
         int width = getSize().x;
 
         // Group Database Settings
-        Group group = Form.createGroup(this, 1, Messages.getString("DatabaseForm.groupDatabaseSettings"), 330);
+        Group group = Form.createGroup(this, 1, Messages.getString("DatabaseForm.groupDatabaseSettings"), 330); //$NON-NLS-1$
         Composite compositeGroupDbSettings = Form.startNewGridLayout(group, 1);
         compositeDbSettings = Form.startNewDimensionnedGridLayout(compositeGroupDbSettings, 3, width, 250);
 
@@ -197,48 +197,48 @@ public class DatabaseForm extends AbstractForm {
 
         // Database Type Combo
         urlDataStringConnection = new DataStringConnection();
-        dbTypeCombo = new LabelledCombo(compositeDbSettings, Messages.getString("DatabaseForm.dbType"), Messages
-                .getString("DatabaseForm.dbTypeTip"), urlDataStringConnection.getItem(), 2, true);
+        dbTypeCombo = new LabelledCombo(compositeDbSettings, Messages.getString("DatabaseForm.dbType"), Messages //$NON-NLS-1$
+                .getString("DatabaseForm.dbTypeTip"), urlDataStringConnection.getItem(), 2, true); //$NON-NLS-1$
 
         // Field connectionString
         urlDataStringConnection.setSelectionIndex(dbTypeCombo.getSelectionIndex());
-        urlConnectionStringText = new LabelledText(compositeDbSettings, Messages.getString("DatabaseForm.stringConnection"), 2);
+        urlConnectionStringText = new LabelledText(compositeDbSettings, Messages.getString("DatabaseForm.stringConnection"), 2); //$NON-NLS-1$
         urlConnectionStringText.setEditable(false);
 
         // Field login & password
-        usernameText = new LabelledText(compositeDbSettings, Messages.getString("DatabaseForm.login"), 2);
-        passwordText = new LabelledText(compositeDbSettings, Messages.getString("DatabaseForm.password"), 2, SWT.BORDER
+        usernameText = new LabelledText(compositeDbSettings, Messages.getString("DatabaseForm.login"), 2); //$NON-NLS-1$
+        passwordText = new LabelledText(compositeDbSettings, Messages.getString("DatabaseForm.password"), 2, SWT.BORDER //$NON-NLS-1$
                 | SWT.SINGLE | SWT.PASSWORD);
 
         // Another fields
-        serverText = new LabelledText(compositeDbSettings, Messages.getString("DatabaseForm.server"), 2);
-        portText = new LabelledText(compositeDbSettings, Messages.getString("DatabaseForm.port"), 2);
+        serverText = new LabelledText(compositeDbSettings, Messages.getString("DatabaseForm.server"), 2); //$NON-NLS-1$
+        portText = new LabelledText(compositeDbSettings, Messages.getString("DatabaseForm.port"), 2); //$NON-NLS-1$
         portText.setTextLimit(5);
-        sidOrDatabaseText = new LabelledText(compositeDbSettings, Messages.getString("DatabaseForm.database"), 2);
-        schemaText = new LabelledText(compositeDbSettings, Messages.getString("DatabaseForm.schema"), 2);
-        datasourceText = new LabelledText(compositeDbSettings, Messages.getString("DatabaseForm.dataSource"), 2);
+        sidOrDatabaseText = new LabelledText(compositeDbSettings, Messages.getString("DatabaseForm.database"), 2); //$NON-NLS-1$
+        schemaText = new LabelledText(compositeDbSettings, Messages.getString("DatabaseForm.schema"), 2); //$NON-NLS-1$
+        datasourceText = new LabelledText(compositeDbSettings, Messages.getString("DatabaseForm.dataSource"), 2); //$NON-NLS-1$
 
-        String[] extensions = { "*.mdb" };
-        fileField = new LabelledFileField(compositeDbSettings, Messages.getString("DatabaseForm.mdbFile"), extensions);
+        String[] extensions = { "*.mdb" }; //$NON-NLS-1$
+        fileField = new LabelledFileField(compositeDbSettings, Messages.getString("DatabaseForm.mdbFile"), extensions); //$NON-NLS-1$
 
         // Button Check
         Composite compositeCheckButton = Form.startNewGridLayout(compositeGroupDbSettings, 1, false, SWT.CENTER, SWT.CENTER);
-        checkButton = new UtilsButton(compositeCheckButton, Messages.getString("DatabaseForm.check"), WIDTH_BUTTON_PIXEL,
+        checkButton = new UtilsButton(compositeCheckButton, Messages.getString("DatabaseForm.check"), WIDTH_BUTTON_PIXEL, //$NON-NLS-1$
                 HEIGHT_BUTTON_PIXEL);
         checkButton.setEnabled(false);
 
         // Group Database Properties
-        Group group1 = Form.createGroup(this, 1, Messages.getString("DatabaseForm.groupDatabaseProperties"), 70);
+        Group group1 = Form.createGroup(this, 1, Messages.getString("DatabaseForm.groupDatabaseProperties"), 70); //$NON-NLS-1$
         // Composite compositeGroupDbProperties = Form.startNewGridLayout(group1, 4, false, SWT.LEFT, SWT.CENTER);
         Composite compositeGroupDbProperties = Form.startNewDimensionnedGridLayout(group1, 4, width, 70);
 
         // PTODO !StandBy! (use width SQL Editor): to define the values of SQL Syntax (need by SQL Editor)
-        String[] item = { "SQL 92" };
-        sqlSyntaxCombo = new LabelledCombo(compositeGroupDbProperties, Messages.getString("DatabaseForm.sqlSyntax"), null, item,
+        String[] item = { "SQL 92" }; //$NON-NLS-1$
+        sqlSyntaxCombo = new LabelledCombo(compositeGroupDbProperties, Messages.getString("DatabaseForm.sqlSyntax"), null, item, //$NON-NLS-1$
                 3);
 
-        stringQuoteText = new LabelledText(compositeGroupDbProperties, Messages.getString("DatabaseForm.stringQuote"), false);
-        nullCharText = new LabelledText(compositeGroupDbProperties, Messages.getString("DatabaseForm.nullChar"), false);
+        stringQuoteText = new LabelledText(compositeGroupDbProperties, Messages.getString("DatabaseForm.stringQuote"), false); //$NON-NLS-1$
+        nullCharText = new LabelledText(compositeGroupDbProperties, Messages.getString("DatabaseForm.nullChar"), false); //$NON-NLS-1$
     }
 
     /**
@@ -268,16 +268,16 @@ public class DatabaseForm extends AbstractForm {
             if (!isReadOnly()) {
                 updateStatus(IStatus.OK, null);
             }
-            MessageDialog.openInformation(getShell(), Messages.getString("DatabaseForm.checkConnectionTitle"), "\""
-                    + connectionItem.getProperty().getLabel() + "\" " + Messages.getString("DatabaseForm.checkIsDone"));
+            MessageDialog.openInformation(getShell(), Messages.getString("DatabaseForm.checkConnectionTitle"), "\"" //$NON-NLS-1$ //$NON-NLS-2$
+                    + connectionItem.getProperty().getLabel() + "\" " + Messages.getString("DatabaseForm.checkIsDone")); //$NON-NLS-1$ //$NON-NLS-2$
             if (!isReadOnly()) {
                 setPropertiesFormEditable(true);
             }
         } else {
-            String mainMsg = Messages.getString("DatabaseForm.checkFailure") + " "
-                    + Messages.getString("DatabaseForm.checkFailureTip");
+            String mainMsg = Messages.getString("DatabaseForm.checkFailure") + " " //$NON-NLS-1$ //$NON-NLS-2$
+                    + Messages.getString("DatabaseForm.checkFailureTip"); //$NON-NLS-1$
             if (!isReadOnly()) {
-                updateStatus(IStatus.WARNING, Messages.getString("DatabaseForm.checkFailure") + mainMsg);
+                updateStatus(IStatus.WARNING, Messages.getString("DatabaseForm.checkFailure") + mainMsg); //$NON-NLS-1$
             }
             new ErrorDialogWidthDetailArea(getShell(), PID, mainMsg, managerConnection.getMessageException());
         }
@@ -295,7 +295,7 @@ public class DatabaseForm extends AbstractForm {
                     setPropertiesFormEditable(false);
                     urlConnectionStringText.setEditable(true);
                 } else {
-                    updateStatus(IStatus.ERROR, Messages.getString("DatabaseForm.dbTypeAlert"));
+                    updateStatus(IStatus.ERROR, Messages.getString("DatabaseForm.dbTypeAlert")); //$NON-NLS-1$
                 }
             }
         });
@@ -305,7 +305,7 @@ public class DatabaseForm extends AbstractForm {
             public void modifyText(final ModifyEvent e) {
                 if (urlConnectionStringText.getEditable()) {
                     if (!databaseSettingIsValide) {
-                        updateStatus(IStatus.INFO, Messages.getString("DatabaseForm.checkInformation"));
+                        updateStatus(IStatus.INFO, Messages.getString("DatabaseForm.checkInformation")); //$NON-NLS-1$
                     }
                     databaseSettingIsValide = false;
                     checkButton.setEnabled(true);
@@ -317,15 +317,15 @@ public class DatabaseForm extends AbstractForm {
                         dbTypeCombo.forceFocus();
                     }
 
-                    if (s[1] != "") {
+                    if (s[1] != "") { //$NON-NLS-1$
                         serverText.setText(s[1]);
                         getConnection().setServerName(s[1]);
                     }
-                    if (s[2] != "") {
+                    if (s[2] != "") { //$NON-NLS-1$
                         portText.setText(s[2]);
                         getConnection().setPort(s[2]);
                     }
-                    if (s[3] != "") {
+                    if (s[3] != "") { //$NON-NLS-1$
                         sidOrDatabaseText.setText(s[3]);
                         getConnection().setSID(s[3]);
                     }
@@ -495,7 +495,7 @@ public class DatabaseForm extends AbstractForm {
                 if (dbTypeCombo.getSelectionIndex() == -1) {
                     dbTypeCombo.forceFocus();
                 } else {
-                    if (urlDataStringConnection.getStringConnectionTemplate().contains("<filename>")) {
+                    if (urlDataStringConnection.getStringConnectionTemplate().contains("<filename>")) { //$NON-NLS-1$
                         setPropertiesFormEditable(true);
                         urlConnectionStringText.setEditable(false);
                     }
@@ -570,7 +570,7 @@ public class DatabaseForm extends AbstractForm {
         setPropertiesFormEditable(false);
 
         if (dbTypeCombo.getSelectionIndex() < 0) {
-            updateStatus(IStatus.ERROR, Messages.getString("DatabaseForm.dbTypeAlert"));
+            updateStatus(IStatus.ERROR, Messages.getString("DatabaseForm.dbTypeAlert")); //$NON-NLS-1$
             return false;
         }
 
@@ -579,45 +579,45 @@ public class DatabaseForm extends AbstractForm {
 
         // Another fields depend on DbType
         String s = urlDataStringConnection.getStringConnectionTemplate();
-        if (s.contains("<host>") && serverText.getCharCount() == 0) {
-            updateStatus(IStatus.WARNING, Messages.getString("DatabaseForm.serverAlert"));
+        if (s.contains("<host>") && serverText.getCharCount() == 0) { //$NON-NLS-1$
+            updateStatus(IStatus.WARNING, Messages.getString("DatabaseForm.serverAlert")); //$NON-NLS-1$
             return false;
         }
-        if (s.contains("<port>") && portText.getCharCount() == 0) {
-            updateStatus(IStatus.WARNING, Messages.getString("DatabaseForm.portAlert"));
+        if (s.contains("<port>") && portText.getCharCount() == 0) { //$NON-NLS-1$
+            updateStatus(IStatus.WARNING, Messages.getString("DatabaseForm.portAlert")); //$NON-NLS-1$
             return false;
         }
-        if ((s.contains("<sid>") || s.contains("<service_name>")) && sidOrDatabaseText.getCharCount() == 0) {
-            updateStatus(IStatus.WARNING, Messages.getString("DatabaseForm.sidAlert"));
+        if ((s.contains("<sid>") || s.contains("<service_name>")) && sidOrDatabaseText.getCharCount() == 0) { //$NON-NLS-1$ //$NON-NLS-2$
+            updateStatus(IStatus.WARNING, Messages.getString("DatabaseForm.sidAlert")); //$NON-NLS-1$
             return false;
         }
-        if (s.contains("<filename>") && fileField.getText() == "") {
-            updateStatus(IStatus.WARNING, Messages.getString("DatabaseForm.filenameAlert"));
+        if (s.contains("<filename>") && fileField.getText() == "") { //$NON-NLS-1$ //$NON-NLS-2$
+            updateStatus(IStatus.WARNING, Messages.getString("DatabaseForm.filenameAlert")); //$NON-NLS-1$
             return false;
         }
-        if (s.contains("<datasource>") && datasourceText.getText() == "") {
-            updateStatus(IStatus.WARNING, Messages.getString("DatabaseForm.dataSourceAlert"));
+        if (s.contains("<datasource>") && datasourceText.getText() == "") { //$NON-NLS-1$ //$NON-NLS-2$
+            updateStatus(IStatus.WARNING, Messages.getString("DatabaseForm.dataSourceAlert")); //$NON-NLS-1$
             return false;
         }
         if (urlDataStringConnection.isSchemaNeeded() && schemaText.getCharCount() == 0) {
-            updateStatus(IStatus.WARNING, Messages.getString("DatabaseForm.schemaAlert"));
+            updateStatus(IStatus.WARNING, Messages.getString("DatabaseForm.schemaAlert")); //$NON-NLS-1$
             return false;
         }
 
         if (!databaseSettingIsValide) {
-            updateStatus(IStatus.INFO, Messages.getString("DatabaseForm.checkInformation"));
+            updateStatus(IStatus.INFO, Messages.getString("DatabaseForm.checkInformation")); //$NON-NLS-1$
             return false;
         }
         if (sqlSyntaxCombo.getSelectionIndex() == -1) {
-            updateStatus(IStatus.WARNING, Messages.getString("DatabaseForm.sqlSyntaxCombo"));
+            updateStatus(IStatus.WARNING, Messages.getString("DatabaseForm.sqlSyntaxCombo")); //$NON-NLS-1$
             return false;
         }
         if (nullCharText.getCharCount() == 0) {
-            updateStatus(IStatus.WARNING, Messages.getString("DatabaseForm.nullCharAlert"));
+            updateStatus(IStatus.WARNING, Messages.getString("DatabaseForm.nullCharAlert")); //$NON-NLS-1$
             return false;
         }
         if (stringQuoteText.getCharCount() == 0) {
-            updateStatus(IStatus.WARNING, Messages.getString("DatabaseForm.stringQuoteAlert"));
+            updateStatus(IStatus.WARNING, Messages.getString("DatabaseForm.stringQuoteAlert")); //$NON-NLS-1$
             return false;
         }
         updateStatus(IStatus.OK, null);
@@ -645,14 +645,14 @@ public class DatabaseForm extends AbstractForm {
     private void setPropertiesFormEditable(boolean visible) {
         // update the UI label
         if (urlDataStringConnection.isSchemaNeeded()) {
-            if (urlDataStringConnection.getStringConnectionTemplate().contains("(description=(address=(protocol=tcp)")) {
-                sidOrDatabaseText.setLabelText(Messages.getString("DatabaseForm.service_name"));
+            if (urlDataStringConnection.getStringConnectionTemplate().contains("(description=(address=(protocol=tcp)")) { //$NON-NLS-1$
+                sidOrDatabaseText.setLabelText(Messages.getString("DatabaseForm.service_name")); //$NON-NLS-1$
                 sidOrDatabaseText.setLabelWidth(65);
             } else {
-                sidOrDatabaseText.setLabelText(Messages.getString("DatabaseForm.sid"));
+                sidOrDatabaseText.setLabelText(Messages.getString("DatabaseForm.sid")); //$NON-NLS-1$
             }
         } else {
-            sidOrDatabaseText.setLabelText(Messages.getString("DatabaseForm.database"));
+            sidOrDatabaseText.setLabelText(Messages.getString("DatabaseForm.database")); //$NON-NLS-1$
         }
 
         // update the UI Fields
@@ -670,19 +670,19 @@ public class DatabaseForm extends AbstractForm {
         } else {
             String s = urlDataStringConnection.getStringConnectionTemplate();
             urlConnectionStringText.setEditable(!visible);
-            if (s.contains("<host>")) {
+            if (s.contains("<host>")) { //$NON-NLS-1$
                 serverText.setEditable(visible);
             }
-            if (s.contains("<port>")) {
+            if (s.contains("<port>")) { //$NON-NLS-1$
                 portText.setEditable(visible);
             }
-            if (s.contains("<sid>") || s.contains("<service_name>")) {
+            if (s.contains("<sid>") || s.contains("<service_name>")) { //$NON-NLS-1$ //$NON-NLS-2$
                 sidOrDatabaseText.setEditable(visible);
             }
-            if (s.contains("<filename>")) {
+            if (s.contains("<filename>")) { //$NON-NLS-1$
                 fileField.setEditable(visible);
             }
-            if (s.contains("<datasource>")) {
+            if (s.contains("<datasource>")) { //$NON-NLS-1$
                 datasourceText.setEditable(visible);
             }
             if (urlDataStringConnection.isSchemaNeeded()) {
@@ -700,7 +700,7 @@ public class DatabaseForm extends AbstractForm {
     public void setVisible(boolean visible) {
         super.setVisible(visible);
         updateCheckButton();
-        if (urlConnectionStringText.getText().equals("")) {
+        if (urlConnectionStringText.getText().equals("")) { //$NON-NLS-1$
             urlConnectionStringText.setText(getStringConnection());
         }
         setPropertiesFormEditable((urlDataStringConnection.getIndexOfLabel(getConnection().getDatabaseType()) > -1));

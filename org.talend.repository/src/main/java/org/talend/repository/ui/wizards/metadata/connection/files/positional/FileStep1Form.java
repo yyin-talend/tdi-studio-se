@@ -170,26 +170,26 @@ public class FileStep1Form extends AbstractPositionalFileStepForm {
         int heightViewer = 150;
 
         // Group File Location
-        Group groupFileViewer = Form.createGroup(this, 1, Messages.getString("FileStep1.groupFileLocationSettings"), 95);
+        Group groupFileViewer = Form.createGroup(this, 1, Messages.getString("FileStep1.groupFileLocationSettings"), 95); //$NON-NLS-1$
         Composite compositeFileLocation = Form.startNewDimensionnedGridLayout(groupFileViewer, 3, WIDTH_GRIDDATA_PIXEL, 95);
 
         // server Combo
-        String[] serverLocation = { "Localhost 127.0.0.1" };
-        serverCombo = new LabelledCombo(compositeFileLocation, Messages.getString("FileStep1.server"), Messages
-                .getString("FileStep1.serverTip"), serverLocation, 2, true, SWT.NONE);
+        String[] serverLocation = { "Localhost 127.0.0.1" }; //$NON-NLS-1$
+        serverCombo = new LabelledCombo(compositeFileLocation, Messages.getString("FileStep1.server"), Messages //$NON-NLS-1$
+                .getString("FileStep1.serverTip"), serverLocation, 2, true, SWT.NONE); //$NON-NLS-1$
 
         // file Field
-        String[] extensions = { "*.txt", "*.*", "*" };
-        fileField = new LabelledFileField(compositeFileLocation, Messages.getString("FileStep1.filepath"), extensions);
+        String[] extensions = { "*.txt", "*.*", "*" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        fileField = new LabelledFileField(compositeFileLocation, Messages.getString("FileStep1.filepath"), extensions); //$NON-NLS-1$
 
         // file format Combo
         String[] fileFormat = { FileFormat.WINDOWS_LITERAL.getName(), FileFormat.UNIX_LITERAL.getName(),
                 FileFormat.MAC_LITERAL.getName() };
-        fileFormatCombo = new LabelledCombo(compositeFileLocation, Messages.getString("FileStep1.format"), Messages
-                .getString("FileStep1.formatTip"), fileFormat, 2);
+        fileFormatCombo = new LabelledCombo(compositeFileLocation, Messages.getString("FileStep1.format"), Messages //$NON-NLS-1$
+                .getString("FileStep1.formatTip"), fileFormat, 2); //$NON-NLS-1$
 
         // Group File Viewer
-        groupFileViewer = Form.createGroup(this, 1, Messages.getString("FileStep1.groupFileViewer"), heightViewer + 80);
+        groupFileViewer = Form.createGroup(this, 1, Messages.getString("FileStep1.groupFileViewer"), heightViewer + 80); //$NON-NLS-1$
 
         Composite compositeBorderFileViewer = new Composite(groupFileViewer, SWT.BORDER);
         compositeBorderFileViewer.setLayout(new GridLayout());
@@ -218,19 +218,19 @@ public class FileStep1Form extends AbstractPositionalFileStepForm {
 
         // Field fieldSeparatorText
         Composite compositeFieldSeparator = Form.startNewDimensionnedGridLayout(groupFileViewer, 2, WIDTH_GRIDDATA_PIXEL, 50);
-        fieldSeparatorText = new LabelledText(compositeFieldSeparator, Messages.getString("FileStep2.fieldSeparator"), 1, true,
+        fieldSeparatorText = new LabelledText(compositeFieldSeparator, Messages.getString("FileStep2.fieldSeparator"), 1, true, //$NON-NLS-1$
                 SWT.RIGHT);
-        fieldSeparatorText.setToolTipText(Messages.getString("FileStep2.fieldSeparatorPositionalTip"));
+        fieldSeparatorText.setToolTipText(Messages.getString("FileStep2.fieldSeparatorPositionalTip")); //$NON-NLS-1$
 
-        fieldPositionText = new LabelledText(compositeFieldSeparator, Messages.getString("FileStep2.fieldPosition"), 1, true,
+        fieldPositionText = new LabelledText(compositeFieldSeparator, Messages.getString("FileStep2.fieldPosition"), 1, true, //$NON-NLS-1$
                 SWT.RIGHT);
-        fieldPositionText.setToolTipText(Messages.getString("FileStep2.fieldPositionTip"));
+        fieldPositionText.setToolTipText(Messages.getString("FileStep2.fieldPositionTip")); //$NON-NLS-1$
 
         if (!isInWizard()) {
             // Composite BottomButton
             Composite compositeBottomButton = Form.startNewGridLayout(this, 2, false, SWT.CENTER, SWT.CENTER);
             // Button Cancel
-            cancelButton = new UtilsButton(compositeBottomButton, Messages.getString("CommonWizard.Cancel"), WIDTH_BUTTON_PIXEL,
+            cancelButton = new UtilsButton(compositeBottomButton, Messages.getString("CommonWizard.Cancel"), WIDTH_BUTTON_PIXEL, //$NON-NLS-1$
                     HEIGHT_BUTTON_PIXEL);
             // nextButton = new UtilsButton(compositeBottomButton, "Next", WIDTH_BUTTON_PIXEL, HEIGHT_BUTTON_PIXEL);
         }
@@ -313,9 +313,9 @@ public class FileStep1Form extends AbstractPositionalFileStepForm {
                 // if necessary, adapt the rowSeparator to the file format
                 if (getConnection().getRowSeparatorType() == RowSeparator.STANDART_EOL_LITERAL) {
                     if (getConnection().getFormat().toString().equals(FileFormat.MAC_LITERAL.getName())) {
-                        getConnection().setRowSeparatorValue("\\r");
+                        getConnection().setRowSeparatorValue("\\r"); //$NON-NLS-1$
                     } else {
-                        getConnection().setRowSeparatorValue("\\n");
+                        getConnection().setRowSeparatorValue("\\n"); //$NON-NLS-1$
                     }
                 }
                 checkFilePathAndManageIt(false);
@@ -329,11 +329,11 @@ public class FileStep1Form extends AbstractPositionalFileStepForm {
 
                 String value = filePositionalViewer.getFieldSeparatorValue().getText();
                 String valueToField = value;
-                if (fieldSeparatorText.getText().contains("*")) {
-                    if (value.equals("")) {
-                        valueToField = "*";
+                if (fieldSeparatorText.getText().contains("*")) { //$NON-NLS-1$
+                    if (value.equals("")) { //$NON-NLS-1$
+                        valueToField = "*"; //$NON-NLS-1$
                     } else {
-                        valueToField = value + ",*";
+                        valueToField = value + ",*"; //$NON-NLS-1$
                     }
                 }
 
@@ -427,10 +427,10 @@ public class FileStep1Form extends AbstractPositionalFileStepForm {
                         filePositionalViewer.setPositionValue(value);
                         fieldSeparatorText.setEditable(true);
                         value = filePositionalViewer.getSeparatorValue();
-                        if (fieldSeparatorText.getText().equals("")) {
-                            fieldSeparatorText.setText("*");
-                        } else if (fieldSeparatorText.getText().contains("*")) {
-                            fieldSeparatorText.setText(value + ",*");
+                        if (fieldSeparatorText.getText().equals("")) { //$NON-NLS-1$
+                            fieldSeparatorText.setText("*"); //$NON-NLS-1$
+                        } else if (fieldSeparatorText.getText().contains("*")) { //$NON-NLS-1$
+                            fieldSeparatorText.setText(value + ",*"); //$NON-NLS-1$
                         } else {
                             fieldSeparatorText.setText(value);
                         }
@@ -457,13 +457,13 @@ public class FileStep1Form extends AbstractPositionalFileStepForm {
     private void checkFilePathAndManageIt(boolean isNewFile) {
 
         filePathIsDone = false;
-        if (fileField.getText() == "") {
-            filePositionalViewer.setText("\n" + Messages.getString("FileStep1.fileViewerTip1") + " " + MAXIMUM_ROWS_TO_PREVIEW
-                    + " " + Messages.getString("FileStep1.fileViewerTip2"));
+        if (fileField.getText() == "") { //$NON-NLS-1$
+            filePositionalViewer.setText("\n" + Messages.getString("FileStep1.fileViewerTip1") + " " + MAXIMUM_ROWS_TO_PREVIEW //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                    + " " + Messages.getString("FileStep1.fileViewerTip2")); //$NON-NLS-1$ //$NON-NLS-2$
         } else {
-            filePositionalViewer.setText("\n" + Messages.getString("FileStep1.fileViewerProgress"));
+            filePositionalViewer.setText("\n" + Messages.getString("FileStep1.fileViewerProgress")); //$NON-NLS-1$ //$NON-NLS-2$
 
-            StringBuffer previewRows = new StringBuffer("");
+            StringBuffer previewRows = new StringBuffer(""); //$NON-NLS-1$
             BufferedReader in = null;
 
             try {
@@ -482,42 +482,42 @@ public class FileStep1Form extends AbstractPositionalFileStepForm {
                 while (((str = in.readLine()) != null) && (numberLine <= MAXIMUM_ROWS_TO_PREVIEW)) {
                     numberLine++;
                     // replace Tabulation by a CaretChar
-                    previewRows.append(str.replaceAll("\t", "\u25A1") + "\n");
+                    previewRows.append(str.replaceAll("\t", "\u25A1") + "\n"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 }
 
                 // show lines
                 filePositionalViewer.setText(new String(previewRows));
                 filePathIsDone = true;
                 if (isNewFile) {
-                    fieldSeparatorText.setText("*");
-                    filePositionalViewer.setSeparatorValue("*", true);
-                    getConnection().setFieldSeparatorValue("*");
+                    fieldSeparatorText.setText("*"); //$NON-NLS-1$
+                    filePositionalViewer.setSeparatorValue("*", true); //$NON-NLS-1$
+                    getConnection().setFieldSeparatorValue("*"); //$NON-NLS-1$
                 }
 
             } catch (Exception e) {
-                String msgError = Messages.getString("FileStep1.filepath") + " \"" + fileField.getText().replace("\\\\", "\\")
-                        + "\"\n";
+                String msgError = Messages.getString("FileStep1.filepath") + " \"" + fileField.getText().replace("\\\\", "\\") //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+                        + "\"\n"; //$NON-NLS-1$
                 if (e instanceof FileNotFoundException) {
-                    msgError = msgError + Messages.getString("FileStep1.fileNotFoundException");
+                    msgError = msgError + Messages.getString("FileStep1.fileNotFoundException"); //$NON-NLS-1$
                 } else if (e instanceof EOFException) {
-                    msgError = msgError + Messages.getString("FileStep1.eofException");
+                    msgError = msgError + Messages.getString("FileStep1.eofException"); //$NON-NLS-1$
                 } else if (e instanceof IOException) {
-                    msgError = msgError + Messages.getString("FileStep1.fileLocked");
+                    msgError = msgError + Messages.getString("FileStep1.fileLocked"); //$NON-NLS-1$
                 } else {
-                    msgError = Messages.getString("FileStep1.filepath") + " \"" + fileField.getText().replace("\\\\", "\\")
-                            + "\" " + Messages.getString("FileStep1.noExist");
+                    msgError = Messages.getString("FileStep1.filepath") + " \"" + fileField.getText().replace("\\\\", "\\") //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+                            + "\" " + Messages.getString("FileStep1.noExist"); //$NON-NLS-1$ //$NON-NLS-2$
                 }
-                filePositionalViewer.setText("\n" + msgError);
+                filePositionalViewer.setText("\n" + msgError); //$NON-NLS-1$
                 updateStatus(IStatus.ERROR, msgError);
-                log.error(msgError + " " + e.getMessage());
+                log.error(msgError + " " + e.getMessage()); //$NON-NLS-1$
             } finally {
-                String msgError = Messages.getString("FileStep1.filepath") + " \"" + fileField.getText().replace("\\\\", "\\") + "\"\n";
+                String msgError = Messages.getString("FileStep1.filepath") + " \"" + fileField.getText().replace("\\\\", "\\") + "\"\n"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
                 try {
                     if (in != null) {
                         in.close();
                     }
                 } catch (IOException e) {
-                    msgError = msgError + Messages.getString("FileStep1.fileLocked");
+                    msgError = msgError + Messages.getString("FileStep1.fileLocked"); //$NON-NLS-1$
                 }
             }
 
@@ -547,26 +547,26 @@ public class FileStep1Form extends AbstractPositionalFileStepForm {
         // The fields
         serverCombo.setEnabled(true);
 
-        if (serverCombo.getText() == "") {
+        if (serverCombo.getText() == "") { //$NON-NLS-1$
             fileField.setEditable(false);
             fileFormatCombo.setEnabled(false);
-            updateStatus(IStatus.ERROR, Messages.getString("FileStep1.serverAlert"));
+            updateStatus(IStatus.ERROR, Messages.getString("FileStep1.serverAlert")); //$NON-NLS-1$
             return false;
         } else {
             fileField.setEditable(true);
             fileFormatCombo.setEnabled(true);
         }
 
-        if (fileField.getText() == "") {
-            updateStatus(IStatus.ERROR, Messages.getString("FileStep1.filepathAlert"));
+        if (fileField.getText() == "") { //$NON-NLS-1$
+            updateStatus(IStatus.ERROR, Messages.getString("FileStep1.filepathAlert")); //$NON-NLS-1$
             return false;
         }
 
         if (!filePathIsDone) {
-            updateStatus(IStatus.ERROR, Messages.getString("FileStep1.fileIncomplete"));
+            updateStatus(IStatus.ERROR, Messages.getString("FileStep1.fileIncomplete")); //$NON-NLS-1$
             return false;
         } else if (fileFormatCombo.getSelectionIndex() < 0) {
-            updateStatus(IStatus.ERROR, Messages.getString("FileStep1.formatAlert"));
+            updateStatus(IStatus.ERROR, Messages.getString("FileStep1.formatAlert")); //$NON-NLS-1$
             return false;
         }
 
@@ -587,22 +587,22 @@ public class FileStep1Form extends AbstractPositionalFileStepForm {
     protected boolean checkFieldSeparatorValue() {
         if (fieldSeparatorText.getText().length() <= 1) {
             // fieldSeparatorText can't be empty
-            if (fieldSeparatorText.getText().equals("") || fieldSeparatorText.getText().equals("0")) {
-                updateStatus(IStatus.ERROR, Messages.getString("FileStep2.fieldSeparatorAlert"));
+            if (fieldSeparatorText.getText().equals("") || fieldSeparatorText.getText().equals("0")) { //$NON-NLS-1$ //$NON-NLS-2$
+                updateStatus(IStatus.ERROR, Messages.getString("FileStep2.fieldSeparatorAlert")); //$NON-NLS-1$
                 return false;
-            } else if (fieldSeparatorText.getText().equals(",")) {
+            } else if (fieldSeparatorText.getText().equals(",")) { //$NON-NLS-1$
                 // fieldSeparatorText can't be just a comma
-                updateStatus(IStatus.ERROR, Messages.getString("FileStep2.fieldSeparatorNotFinishByComma"));
+                updateStatus(IStatus.ERROR, Messages.getString("FileStep2.fieldSeparatorNotFinishByComma")); //$NON-NLS-1$
                 return false;
             }
         } else if ((fieldSeparatorText.getText().substring(fieldSeparatorText.getText().length() - 1,
-                fieldSeparatorText.getText().length()).equals(","))) {
+                fieldSeparatorText.getText().length()).equals(","))) { //$NON-NLS-1$
             // fieldSeparatorText can't finish by comma
-            updateStatus(IStatus.ERROR, Messages.getString("FileStep2.fieldSeparatorNotFinishByComma"));
+            updateStatus(IStatus.ERROR, Messages.getString("FileStep2.fieldSeparatorNotFinishByComma")); //$NON-NLS-1$
             return false;
         } else if (!fieldSeparatorText.getText().equals(getValidateFieldSeparator(fieldSeparatorText.getText()))) {
             // fieldSeparatorText is not valide
-            updateStatus(IStatus.ERROR, Messages.getString("FileStep2.fieldSeparatorAlert"));
+            updateStatus(IStatus.ERROR, Messages.getString("FileStep2.fieldSeparatorAlert")); //$NON-NLS-1$
             return false;
         }
 
@@ -618,24 +618,24 @@ public class FileStep1Form extends AbstractPositionalFileStepForm {
     protected boolean checkFieldPositionValue() {
         if (fieldPositionText.getText().length() <= 1) {
             // fieldPositionText can't be empty
-            if (fieldPositionText.getText().equals("")) {
-                updateStatus(IStatus.ERROR, Messages.getString("FileStep2.fieldPositionAlert"));
+            if (fieldPositionText.getText().equals("")) { //$NON-NLS-1$
+                updateStatus(IStatus.ERROR, Messages.getString("FileStep2.fieldPositionAlert")); //$NON-NLS-1$
                 return false;
-            } else if (fieldPositionText.getText().equals(",")) {
+            } else if (fieldPositionText.getText().equals(",")) { //$NON-NLS-1$
                 // fieldPositionText can't be just a comma
-                updateStatus(IStatus.ERROR, Messages.getString("FileStep2.fieldPositionNotFinishByComma"));
+                updateStatus(IStatus.ERROR, Messages.getString("FileStep2.fieldPositionNotFinishByComma")); //$NON-NLS-1$
                 return false;
             }
         } else if (fieldPositionText.getText().substring(fieldPositionText.getText().length() - 1,
-                fieldPositionText.getText().length()).equals(",")) {
+                fieldPositionText.getText().length()).equals(",")) { //$NON-NLS-1$
             // fieldPositionText can't finish by comma
-            updateStatus(IStatus.ERROR, Messages.getString("FileStep2.fieldPositionNotFinishByComma"));
+            updateStatus(IStatus.ERROR, Messages.getString("FileStep2.fieldPositionNotFinishByComma")); //$NON-NLS-1$
             return false;
         }
 
         if (!fieldPositionText.getText().equals(getValidateFieldPosition(fieldPositionText.getText()))) {
             // fieldPositionText is not valide
-            updateStatus(IStatus.ERROR, Messages.getString("FileStep2.fieldPositionNotValidate"));
+            updateStatus(IStatus.ERROR, Messages.getString("FileStep2.fieldPositionNotValidate")); //$NON-NLS-1$
             return false;
         }
 

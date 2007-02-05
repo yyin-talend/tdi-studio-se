@@ -110,20 +110,20 @@ public class FileStep3Form extends AbstractPositionalFileStepForm {
     protected void runShadowProcess() {
 
         // if no file, the process don't be executed
-        if (getConnection().getFilePath() == null || getConnection().getFilePath().equals("")) {
-            informationLabel.setText("   " + Messages.getString("FileStep3.filepathAlert")
-                    + "                                                                              ");
+        if (getConnection().getFilePath() == null || getConnection().getFilePath().equals("")) { //$NON-NLS-1$
+            informationLabel.setText("   " + Messages.getString("FileStep3.filepathAlert") //$NON-NLS-1$ //$NON-NLS-2$
+                    + "                                                                              "); //$NON-NLS-1$
             return;
         }
 
         try {
-            informationLabel.setText("   " + Messages.getString("FileStep3.guessProgress"));
+            informationLabel.setText("   " + Messages.getString("FileStep3.guessProgress")); //$NON-NLS-1$ //$NON-NLS-2$
 
             // get the XmlArray width an adapt ProcessDescription
-            XmlArray xmlArray = ShadowProcessHelper.getXmlArray(getProcessDescription(), "FILE_POSITIONAL");
+            XmlArray xmlArray = ShadowProcessHelper.getXmlArray(getProcessDescription(), "FILE_POSITIONAL"); //$NON-NLS-1$
 
             if (xmlArray == null) {
-                informationLabel.setText("   " + Messages.getString("FileStep3.guessFailure"));
+                informationLabel.setText("   " + Messages.getString("FileStep3.guessFailure")); //$NON-NLS-1$ //$NON-NLS-2$
 
             } else {
                 refreshMetaDataTable(xmlArray);
@@ -131,12 +131,12 @@ public class FileStep3Form extends AbstractPositionalFileStepForm {
 
         } catch (CoreException e) {
             if (getParent().getChildren().length == 1) {
-                new ErrorDialogWidthDetailArea(getShell(), PID, Messages.getString("FileStep3.guessFailureTip") + "\n"
-                        + Messages.getString("FileStep3.guessFailureTip2"), e.getMessage());
+                new ErrorDialogWidthDetailArea(getShell(), PID, Messages.getString("FileStep3.guessFailureTip") + "\n" //$NON-NLS-1$ //$NON-NLS-2$
+                        + Messages.getString("FileStep3.guessFailureTip2"), e.getMessage()); //$NON-NLS-1$
             } else {
-                new ErrorDialogWidthDetailArea(getShell(), PID, Messages.getString("FileStep3.guessFailureTip"), e.getMessage());
+                new ErrorDialogWidthDetailArea(getShell(), PID, Messages.getString("FileStep3.guessFailureTip"), e.getMessage()); //$NON-NLS-1$
             }
-            log.error(Messages.getString("FileStep3.guessFailure") + " " + e.getMessage());
+            log.error(Messages.getString("FileStep3.guessFailure") + " " + e.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$
         }
         checkFieldsValue();
     }
@@ -169,34 +169,34 @@ public class FileStep3Form extends AbstractPositionalFileStepForm {
 
         // Header Fields
         Composite mainComposite = Form.startNewDimensionnedGridLayout(this, 2, WIDTH_GRIDDATA_PIXEL, 60);
-        metadataNameText = new LabelledText(mainComposite, Messages.getString("FileStep3.metadataName"));
-        metadataCommentText = new LabelledText(mainComposite, Messages.getString("FileStep3.metadataComment"));
+        metadataNameText = new LabelledText(mainComposite, Messages.getString("FileStep3.metadataName")); //$NON-NLS-1$
+        metadataCommentText = new LabelledText(mainComposite, Messages.getString("FileStep3.metadataComment")); //$NON-NLS-1$
 
         // Group MetaData
-        Group groupMetaData = Form.createGroup(this, 1, Messages.getString("FileStep3.groupMetadata"), 280);
+        Group groupMetaData = Form.createGroup(this, 1, Messages.getString("FileStep3.groupMetadata"), 280); //$NON-NLS-1$
         Composite compositeMetaData = Form.startNewGridLayout(groupMetaData, 1);
 
         // Composite Guess
         Composite compositeGuessButton = Form.startNewDimensionnedGridLayout(compositeMetaData, 2, WIDTH_GRIDDATA_PIXEL, 40);
         informationLabel = new Label(compositeGuessButton, SWT.NONE);
-        informationLabel.setText(Messages.getString("FileStep3.informationLabel") + "                                                  ");
+        informationLabel.setText(Messages.getString("FileStep3.informationLabel") + "                                                  "); //$NON-NLS-1$ //$NON-NLS-2$
         informationLabel.setSize(500, HEIGHT_BUTTON_PIXEL);
 
-        guessButton = new UtilsButton(compositeGuessButton, Messages.getString("FileStep3.guess"), WIDTH_BUTTON_PIXEL,
+        guessButton = new UtilsButton(compositeGuessButton, Messages.getString("FileStep3.guess"), WIDTH_BUTTON_PIXEL, //$NON-NLS-1$
                 HEIGHT_BUTTON_PIXEL);
-        guessButton.setToolTipText(Messages.getString("FileStep3.guessTip"));
+        guessButton.setToolTipText(Messages.getString("FileStep3.guessTip")); //$NON-NLS-1$
 
         // Composite MetadataTableEditorView
         Composite compositeTable = Form.startNewDimensionnedGridLayout(compositeMetaData, 1, WIDTH_GRIDDATA_PIXEL, 200);
         compositeTable.setLayout(new FillLayout());
-        metadataEditor = new MetadataEmfTableEditor(Messages.getString("FileStep3.metadataDescription"));
+        metadataEditor = new MetadataEmfTableEditor(Messages.getString("FileStep3.metadataDescription")); //$NON-NLS-1$
         tableEditorView = new MetadataEmfTableEditorView(compositeTable, SWT.NONE, false);
 
         // Bottom Button
         Composite compositeBottomButton = Form.startNewGridLayout(this, 2, false, SWT.CENTER, SWT.CENTER);
         if (!isInWizard()) {
             // Button Cancel
-            cancelButton = new UtilsButton(compositeBottomButton, Messages.getString("CommonWizard.cancel"), WIDTH_BUTTON_PIXEL,
+            cancelButton = new UtilsButton(compositeBottomButton, Messages.getString("CommonWizard.cancel"), WIDTH_BUTTON_PIXEL, //$NON-NLS-1$
                     HEIGHT_BUTTON_PIXEL);
         }
         addUtilsButtonListeners();
@@ -219,7 +219,7 @@ public class FileStep3Form extends AbstractPositionalFileStepForm {
 
             public void keyPressed(KeyEvent e) {
                 if ((!Character.isIdentifierIgnorable(e.character))
-                        && (!Pattern.matches(RepositoryConstants.REPOSITORY_ITEM_PATTERN, "" + e.character))) {
+                        && (!Pattern.matches(RepositoryConstants.REPOSITORY_ITEM_PATTERN, "" + e.character))) { //$NON-NLS-1$
                     e.doit = false;
                 }
             }
@@ -258,8 +258,8 @@ public class FileStep3Form extends AbstractPositionalFileStepForm {
 
                     if (!guessButton.getEnabled()) {
                         guessButton.setEnabled(true);
-                        if (MessageDialog.openConfirm(getShell(), Messages.getString("FileStep3.guessConfirmation"), Messages
-                                .getString("FileStep3.guessConfirmationMessage"))) {
+                        if (MessageDialog.openConfirm(getShell(), Messages.getString("FileStep3.guessConfirmation"), Messages //$NON-NLS-1$
+                                .getString("FileStep3.guessConfirmationMessage"))) { //$NON-NLS-1$
                             runShadowProcess();
                         }
                     } else {
@@ -328,7 +328,7 @@ public class FileStep3Form extends AbstractPositionalFileStepForm {
      * @param xmlArray
      */
     public void refreshMetaDataTable(final XmlArray xmlArray) {
-        informationLabel.setText("   " + Messages.getString("FileStep3.guessIsDone"));
+        informationLabel.setText("   " + Messages.getString("FileStep3.guessIsDone")); //$NON-NLS-1$ //$NON-NLS-2$
 
         // clear all items
         tableEditorView.getMetadataEditor().removeAll();
@@ -346,10 +346,10 @@ public class FileStep3Form extends AbstractPositionalFileStepForm {
         // the first rows is used to define the label of any metadata
         String[] label = new String[numberOfCol];
         for (int i = 0; i < numberOfCol; i++) {
-            label[i] = Messages.getString("FileStep3.column") + i;
+            label[i] = Messages.getString("FileStep3.column") + i; //$NON-NLS-1$
             if (firstRowToExtractMetadata == 1) {
                 String value = fields.get(i).getValue();
-                if (!value.equals("")) {
+                if (!value.equals("")) { //$NON-NLS-1$
                     label[i] = value;
                 }
             }
@@ -366,7 +366,7 @@ public class FileStep3Form extends AbstractPositionalFileStepForm {
                 globalType = DataTypeHelper.getTalendTypeOfValue(xmlRows.get(current).getFields().get(i).getValue());
                 current++;
                 if (current == xmlRows.size()) {
-                    globalType = "String";
+                    globalType = "String"; //$NON-NLS-1$
                 }
             }
             // for another lines
@@ -374,7 +374,7 @@ public class FileStep3Form extends AbstractPositionalFileStepForm {
                 fields = xmlRows.get(f).getFields();
                 if (fields.size() > i) {
                     String value = fields.get(i).getValue();
-                    if (!value.equals("")) {
+                    if (!value.equals("")) { //$NON-NLS-1$
                         if (!DataTypeHelper.getTalendTypeOfValue(value).equals(globalType)) {
                             globalType = DataTypeHelper.getCommonType(globalType, DataTypeHelper.getTalendTypeOfValue(value));
                         }
@@ -395,10 +395,10 @@ public class FileStep3Form extends AbstractPositionalFileStepForm {
 
             // define the metadataColumn to field i
             MetadataColumn metadataColumn = ConnectionFactory.eINSTANCE.createMetadataColumn();
-            String talendType = MetadataTalendType.loadTalendType(globalType, "TALENDDEFAULT", false);
+            String talendType = MetadataTalendType.loadTalendType(globalType, "TALENDDEFAULT", false); //$NON-NLS-1$
             metadataColumn.setTalendType(talendType);
             metadataColumn.setLength(lengthValue);
-            if (globalType.equals("FLOAT") || globalType.equals("DOUBLE")) {
+            if (globalType.equals("FLOAT") || globalType.equals("DOUBLE")) { //$NON-NLS-1$ //$NON-NLS-2$
                 metadataColumn.setPrecision(precisionValue);
             } else {
                 metadataColumn.setPrecision(0);
@@ -409,7 +409,7 @@ public class FileStep3Form extends AbstractPositionalFileStepForm {
         }
         checkFieldsValue();
         tableEditorView.getTableViewerCreator().layout();
-        informationLabel.setText(Messages.getString("FileStep3.guessTip"));
+        informationLabel.setText(Messages.getString("FileStep3.guessTip")); //$NON-NLS-1$
     }
 
     /**
@@ -420,14 +420,14 @@ public class FileStep3Form extends AbstractPositionalFileStepForm {
     protected boolean checkFieldsValue() {
         if (metadataNameText.getCharCount() == 0) {
             metadataNameText.forceFocus();
-            updateStatus(IStatus.ERROR, Messages.getString("FileStep1.nameAlert"));
+            updateStatus(IStatus.ERROR, Messages.getString("FileStep1.nameAlert")); //$NON-NLS-1$
             return false;
         } else if (!Pattern.matches(RepositoryConstants.REPOSITORY_ITEM_PATTERN, metadataNameText.getText())) {
             metadataNameText.forceFocus();
-            updateStatus(IStatus.ERROR, Messages.getString("FileStep1.nameAlertIllegalChar"));
+            updateStatus(IStatus.ERROR, Messages.getString("FileStep1.nameAlertIllegalChar")); //$NON-NLS-1$
             return false;
         } else if (isNameAllowed(metadataNameText.getText())) {
-            updateStatus(IStatus.ERROR, Messages.getString("CommonWizard.nameAlreadyExist"));
+            updateStatus(IStatus.ERROR, Messages.getString("CommonWizard.nameAlreadyExist")); //$NON-NLS-1$
             return false;
         }
 
@@ -435,7 +435,7 @@ public class FileStep3Form extends AbstractPositionalFileStepForm {
             updateStatus(IStatus.OK, null);
             return true;
         }
-        updateStatus(IStatus.ERROR, Messages.getString("FileStep3.itemAlert"));
+        updateStatus(IStatus.ERROR, Messages.getString("FileStep3.itemAlert")); //$NON-NLS-1$
         return false;
     }
 
@@ -448,7 +448,7 @@ public class FileStep3Form extends AbstractPositionalFileStepForm {
     public void setVisible(boolean visible) {
         super.setVisible(visible);
         if (super.isVisible()) {
-            if (getConnection().getFilePath() != null && (!getConnection().getFilePath().equals(""))
+            if (getConnection().getFilePath() != null && (!getConnection().getFilePath().equals("")) //$NON-NLS-1$
                     && (tableEditorView.getMetadataEditor().getBeanCount() <= 0)) {
                 runShadowProcess();
             }
