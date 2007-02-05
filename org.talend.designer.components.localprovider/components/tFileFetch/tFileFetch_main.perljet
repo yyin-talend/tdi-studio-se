@@ -1,0 +1,69 @@
+<%@ jet 
+package="org.talend.designer.codegen.translators" 
+imports="
+    org.talend.core.model.process.INode 
+    org.talend.core.model.metadata.IMetadataTable 
+    org.talend.core.model.process.ElementParameterParser
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    java.util.List
+    java.util.Map
+"
+class="FileFetchMain"
+%>
+
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+boolean stats = codeGenArgument.isStatistics();
+
+List<IMetadataTable> metadatas = node.getMetadataList();
+if ((metadatas!=null)&&(metadatas.size()>0)) {
+    IMetadataTable metadata = metadatas.get(0);
+    if (metadata!=null) {
+        String cid = metadata.getTableName();
+
+        String directory = ElementParameterParser.getValue(
+            node,
+            "__DIRECTORY__"
+        );
+        String uri = ElementParameterParser.getValue(
+            node,
+            "__URI__"
+        );
+        String filename = ElementParameterParser.getValue(
+            node,
+            "__FILENAME__"
+        );
+%>
+
+# keep all "my" variables local to the block, thus we can use several
+# tFileFetch components in the same process
+{
+    my $ff = File::Fetch->new(uri => <%=uri %>);
+    my $where = $ff->fetch(
+<%
+        if (!directory.equals("")) {
+%>
+        to => <%=directory %>,
+<%
+        }
+%>
+    )
+        or die $ff->error;
+
+<%
+        if (!filename.equals("")) {
+%>
+    my $dirname = dirname $where;
+    rename $where, File::Spec->catfile($dirname, <%=filename %>);
+<%
+        }
+%>
+    
+
+} # block end
+
+<%
+    }
+}
+%>
