@@ -53,6 +53,10 @@ import org.talend.core.model.properties.ProcessItem;
  */
 public class ArchiveFileExportOperationFullPath implements IRunnableWithProgress {
 
+    private static final String SEPARATOR = "/";
+
+    private static final String JOB_SOURCE_FOLDER_NAME = "src";
+
     private IFileExporterFullPath exporter;
 
     private String destinationFilename;
@@ -70,6 +74,8 @@ public class ArchiveFileExportOperationFullPath implements IRunnableWithProgress
     private String rootName;
 
     private String regEx = ".*.pl$|.*.pm$|.*.bat$|.*.sh$";
+
+    private String jobSourceNameRegEx = ".*.properties$|.*.item$";
 
     private List<ExportFileResource> resourcesListToExport;
 
@@ -92,7 +98,6 @@ public class ArchiveFileExportOperationFullPath implements IRunnableWithProgress
      * @param resources java.util.Vector
      * @param filename java.lang.String
      */
-
 
     public ArchiveFileExportOperationFullPath(List<ExportFileResource> resourcesListToExport, String destinationValue) {
         this(destinationValue);
@@ -178,7 +183,7 @@ public class ArchiveFileExportOperationFullPath implements IRunnableWithProgress
 
             if (createLeadupStructure) {
                 if (rootName != null && !"".equals(destinationName)) {
-                    destinationName = rootName + "/" + destinationName;
+                    destinationName = rootName + SEPARATOR + destinationName;
                 }
 
             }
@@ -220,7 +225,7 @@ public class ArchiveFileExportOperationFullPath implements IRunnableWithProgress
             }
 
             for (int i = 0; i < children.length; i++) {
-                exportResource(directory + file.getName() + "/", children[i].getPath(), leadupDepth + 1);
+                exportResource(directory + file.getName() + SEPARATOR, children[i].getPath(), leadupDepth + 1);
             }
 
         }
@@ -234,7 +239,11 @@ public class ArchiveFileExportOperationFullPath implements IRunnableWithProgress
             this.rootName = fileResource.getDirectoryName();
             for (URL url : fileResource.getProcessResouces()) {
                 String currentResource = url.getPath();
-                exportResource(currentResource);
+                if (Pattern.matches(jobSourceNameRegEx, currentResource)) {
+                    exportResource(JOB_SOURCE_FOLDER_NAME + SEPARATOR, currentResource, 1);
+                } else {
+                    exportResource(currentResource);
+                }
             }
         }
     }
@@ -297,8 +306,8 @@ public class ArchiveFileExportOperationFullPath implements IRunnableWithProgress
     }
 
     /**
-     * Export the resources that were previously specified for export (or if a single resource was specified then export.
-     * it recursively)
+     * Export the resources that were previously specified for export (or if a single resource was specified then
+     * export. it recursively)
      */
     public void run(IProgressMonitor progressMonitor) throws InvocationTargetException, InterruptedException {
         this.monitor = progressMonitor;
