@@ -187,7 +187,7 @@
          arch="ia64_32"
          download-size="0"
          install-size="0"
-         version="1.0.0.v20060603"
+         version="0.0.0"
          fragment="true"
          unpack="false"/>
 
@@ -197,7 +197,7 @@
          arch="PA_RISC"
          download-size="0"
          install-size="0"
-         version="1.0.0.v20060603"
+         version="0.0.0"
          fragment="true"
          unpack="false"/>
 
@@ -207,7 +207,7 @@
          arch="x86_64"
          download-size="0"
          install-size="0"
-         version="1.0.0.v20060603"
+         version="0.0.0"
          fragment="true"
          unpack="false"/>
 
@@ -217,7 +217,7 @@
          arch="x86"
          download-size="0"
          install-size="0"
-         version="1.0.0.v20060603"
+         version="0.0.0"
          fragment="true"
          unpack="false"/>
 
@@ -226,7 +226,7 @@
          os="macosx"
          download-size="0"
          install-size="0"
-         version="1.0.0.v20060603"
+         version="0.0.0"
          fragment="true"
          unpack="false"/>
 
@@ -237,7 +237,7 @@
          arch="x86"
          download-size="0"
          install-size="0"
-         version="1.0.0.v20060603"
+         version="0.0.0"
          fragment="true"
          unpack="false"/>
 
@@ -247,7 +247,7 @@
          arch="x86"
          download-size="0"
          install-size="0"
-         version="1.0.0.v20060603"
+         version="0.0.0"
          fragment="true"
          unpack="false"/>
 
@@ -255,7 +255,7 @@
          id="org.eclipse.core.filesystem"
          download-size="0"
          install-size="0"
-         version="1.0.0.v20060603"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
@@ -263,7 +263,7 @@
          ws="win32"
          download-size="0"
          install-size="0"
-         version="3.2.0.I20060605-1400"
+         version="0.0.0"
          fragment="true"
          unpack="false"/>
 
@@ -272,7 +272,7 @@
          os="linux"
          download-size="0"
          install-size="0"
-         version="3.2.0.v20060605"
+         version="0.0.0"
          fragment="true"
          unpack="false"/>
 
@@ -281,7 +281,7 @@
          os="win32"
          download-size="0"
          install-size="0"
-         version="3.2.0.v20060605"
+         version="0.0.0"
          fragment="true"
          unpack="false"/>
 
@@ -289,7 +289,7 @@
          id="org.eclipse.update.core"
          download-size="0"
          install-size="0"
-         version="3.2.0.v20060605"
+         version="0.0.0""
          unpack="false"/>
 
    <plugin
@@ -329,6 +329,13 @@
 
    <plugin
          id="org.eclipse.search"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.talend.designer.rowgenerator"
          download-size="0"
          install-size="0"
          version="0.0.0"
