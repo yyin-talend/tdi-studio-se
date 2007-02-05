@@ -50,6 +50,8 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.preferences.DefaultScope;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.IBreakpointManager;
 import org.eclipse.debug.core.model.IBreakpoint;
@@ -230,8 +232,8 @@ public class JavaProcessor implements IProcessor {
                 String currentJavaProject = project.getTechnicalLabel();
                 String javaContext = getContextPath().toOSString();
 
-                codeGen = service.createCodeGenerator(process, statistics, trace, javaInterpreter, javaLib, javaContext,
-                        currentJavaProject);
+                codeGen = service.createCodeGenerator(process, statistics, trace, javaInterpreter, javaLib,
+                        javaContext, currentJavaProject);
             } else {
                 codeGen = service.createCodeGenerator(process, statistics, trace);
             }
@@ -531,14 +533,16 @@ public class JavaProcessor implements IProcessor {
         }
         javaProject = JavaCore.create(prj);
 
-        IClasspathEntry jreClasspathEntry = JavaCore.newContainerEntry(new Path("org.eclipse.jdt.launching.JRE_CONTAINER")); //$NON-NLS-1$
+        IClasspathEntry jreClasspathEntry = JavaCore.newContainerEntry(new Path(
+                "org.eclipse.jdt.launching.JRE_CONTAINER")); //$NON-NLS-1$
         IClasspathEntry classpathEntry = JavaCore.newSourceEntry(javaProject.getPath().append("src")); //$NON-NLS-1$
 
         List classpath = new ArrayList();
         classpath.add(jreClasspathEntry);
         classpath.add(classpathEntry);
 
-        IClasspathEntry[] classpathEntryArray = (IClasspathEntry[]) classpath.toArray(new IClasspathEntry[classpath.size()]);
+        IClasspathEntry[] classpathEntryArray = (IClasspathEntry[]) classpath.toArray(new IClasspathEntry[classpath
+                .size()]);
 
         IFolder runtimeFolder = prj.getFolder(new Path("classes")); //$NON-NLS-1$
         if (!runtimeFolder.exists()) {
@@ -568,7 +572,8 @@ public class JavaProcessor implements IProcessor {
      */
     private IPackageFragment getProjectPackage(String packageName) throws JavaModelException {
 
-        IPackageFragmentRoot root = this.javaProject.getPackageFragmentRoot(this.javaProject.getProject().getFolder("src")); //$NON-NLS-1$
+        IPackageFragmentRoot root = this.javaProject.getPackageFragmentRoot(this.javaProject.getProject().getFolder(
+                "src")); //$NON-NLS-1$
         IPackageFragment leave = root.getPackageFragment(packageName);
         if (!leave.exists()) {
             root.createPackageFragment(packageName, false, null);
@@ -589,7 +594,8 @@ public class JavaProcessor implements IProcessor {
      * @return The required job package.
      * @throws JavaModelException
      */
-    private IPackageFragment getProjectPackage(IPackageFragment projectPackage, String jobName) throws JavaModelException {
+    private IPackageFragment getProjectPackage(IPackageFragment projectPackage, String jobName)
+            throws JavaModelException {
 
         IPackageFragmentRoot root = this.javaProject.getPackageFragmentRoot(projectPackage.getResource());
         IPackageFragment leave = root.getPackageFragment(jobName);
@@ -656,8 +662,13 @@ public class JavaProcessor implements IProcessor {
         IPath projectFolderPath = classesFolder.getFullPath().removeFirstSegments(1);
         IPath classPath = getCodePath().removeFirstSegments(1);
 
-        // String command = "\"C:\\Program Files\\Java\\jdk1.5.0_10\\bin\\java\"";
-        String command = "java"; //$NON-NLS-1$
+        String command = null;
+        IPreferenceStore store = CorePlugin.getDefault().getPreferenceStore();
+        if (store != null) {
+            command = store.getString(ITalendCorePrefConstants.JAVA_INTERPRETER);
+        } else {
+            command = "java"; //$NON-NLS-1$
+        }
         String projectPath = getCodeProject().getLocation().append(projectFolderPath).toOSString();
         String packages = classPath.toString().replace('/', '.');
 
