@@ -79,6 +79,10 @@ public class ConnectionParameters {
             hashTable.put("Oracle", "Oracle with SID"); //$NON-NLS-1$ //$NON-NLS-2$
             hashTable.put("Generic ODBC", "Generic ODBC"); //$NON-NLS-1$ //$NON-NLS-2$
             hashTable.put("Microsoft SQL (Odbc driver)", "Microsoft SQL Server (Odbc driver)"); //$NON-NLS-1$ //$NON-NLS-2$
+            hashTable.put("IBM DB2", "IBM DB2"); //$NON-NLS-1$ //$NON-NLS-2$
+            hashTable.put("Sybase ASE", "Sybase ASE"); //$NON-NLS-1$ //$NON-NLS-2$
+            hashTable.put("Sybase IQ", "Sybase IQ"); //$NON-NLS-1$ //$NON-NLS-2$
+
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
