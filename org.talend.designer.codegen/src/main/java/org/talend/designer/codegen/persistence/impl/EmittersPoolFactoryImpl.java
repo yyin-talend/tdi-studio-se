@@ -10,6 +10,7 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.impl.EFactoryImpl;
 import org.eclipse.emf.ecore.plugin.EcorePlugin;
+import org.talend.designer.codegen.i18n.Messages;
 import org.talend.designer.codegen.persistence.DocumentRoot;
 import org.talend.designer.codegen.persistence.EmittersPoolFactory;
 import org.talend.designer.codegen.persistence.EmittersPoolPackage;
@@ -61,7 +62,7 @@ public class EmittersPoolFactoryImpl extends EFactoryImpl implements EmittersPoo
         case EmittersPoolPackage.POOL_TYPE:
             return createPoolType();
         default:
-            throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
+            throw new IllegalArgumentException(Messages.getString("EmittersPoolFactoryImpl.Class.IllegalArg", eClass.getName())); //$NON-NLS-1$
         }
     }
 

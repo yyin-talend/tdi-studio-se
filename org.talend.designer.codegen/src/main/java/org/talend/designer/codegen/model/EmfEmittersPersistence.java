@@ -36,6 +36,7 @@ import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.talend.commons.exception.BusinessException;
 import org.talend.designer.codegen.config.LightJetBean;
+import org.talend.designer.codegen.i18n.Messages;
 import org.talend.designer.codegen.persistence.DocumentRoot;
 import org.talend.designer.codegen.persistence.EmittersPoolFactory;
 import org.talend.designer.codegen.persistence.EmittersPoolPackage;
@@ -98,7 +99,7 @@ public class EmfEmittersPersistence {
         try {
             poolAsBytes = loadEmfPoolFactory(persistantFile);
         } catch (IOException e) {
-            log.info("Code Generation Datas missing. Starting Full Code Generation.");
+            log.info(Messages.getString("EmfEmittersPersistence.CodeGen.DataMissing")); //$NON-NLS-1$
             // Nothing to do if persistent file not found
             return emittersToReturn;
         }

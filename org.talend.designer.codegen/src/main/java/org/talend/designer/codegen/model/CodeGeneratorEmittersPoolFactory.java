@@ -60,6 +60,7 @@ import org.talend.designer.codegen.config.JetBean;
 import org.talend.designer.codegen.config.LightJetBean;
 import org.talend.designer.codegen.config.TalendJetEmitter;
 import org.talend.designer.codegen.config.TemplateUtil;
+import org.talend.designer.codegen.i18n.Messages;
 import org.talend.repository.model.ComponentsFactoryProvider;
 import org.talend.repository.model.ExternalNodesFactory;
 
@@ -223,7 +224,7 @@ public final class CodeGeneratorEmittersPoolFactory {
         try {
             EmfEmittersPersistenceFactory.getInstance().saveEmittersPool(extractEmfPersistenData(alreadyCompiledEmitters));
         } catch (BusinessException e) {
-            log.error("Persitent data cannot be saved : " + e.getMessage(), e);
+            log.error(Messages.getString("CodeGeneratorEmittersPoolFactory.PersitentData.Error") + e.getMessage(), e); //$NON-NLS-1$
         }
     }
 
@@ -291,11 +292,10 @@ public final class CodeGeneratorEmittersPoolFactory {
                             toReturn.add(unit);
                         }
                     } catch (MalformedURLException e) {
-                        log.error("JETEmitters Project not present, full reinitialize is needed");
+                        log.error(Messages.getString("CodeGeneratorEmittersPoolFactory.JETEmitters.NoPresent")); //$NON-NLS-1$
                         throw new BusinessException(e);
                     } catch (ClassNotFoundException e) {
-                        log.info("Template still present, but class " + unit.getClassName()
-                                + " has disapeared from workspace. This unit needs to be recompiled.");
+                        log.info(Messages.getString("CodeGeneratorEmittersPoolFactory.Class.NotFound", unit.getClassName()));
                     }
 
                 }

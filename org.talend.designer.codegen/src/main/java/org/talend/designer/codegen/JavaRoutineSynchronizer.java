@@ -24,6 +24,7 @@ package org.talend.designer.codegen;
 import org.eclipse.core.resources.IFile;
 import org.talend.commons.exception.SystemException;
 import org.talend.core.model.properties.RoutineItem;
+import org.talend.designer.codegen.i18n.Messages;
 
 import com.sun.org.apache.xml.internal.utils.UnImplNode;
 
@@ -46,7 +47,7 @@ public class JavaRoutineSynchronizer implements IRoutineSynchronizer {
     public void syncAllRoutines() throws SystemException {
         // TODO operation need to be done as perl done.
         throw new UnsupportedOperationException(
-                "method not implemented: org.talend.designer.codegen.JavaRoutineSynchronizer line:49");
+                Messages.getString("JavaRoutineSynchronizer.UnsupportedOperation.Exception1")); //$NON-NLS-1$
 
     }
 
@@ -58,7 +59,7 @@ public class JavaRoutineSynchronizer implements IRoutineSynchronizer {
     public IFile syncRoutine(RoutineItem routineItem) throws SystemException {
         // TODO operation need to be done as perl done.
         throw new UnsupportedOperationException(
-                "method not implemented: org.talend.designer.codegen.JavaRoutineSynchronizer line:58");
+                Messages.getString("JavaRoutineSynchronizer.UnsupportedOperation.Exception2")); //$NON-NLS-1$
 
         // return null;
     }

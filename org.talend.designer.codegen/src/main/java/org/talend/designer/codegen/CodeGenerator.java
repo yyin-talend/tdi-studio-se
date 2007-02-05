@@ -50,6 +50,7 @@ import org.talend.designer.codegen.config.NodesTree;
 import org.talend.designer.codegen.config.SubTreeArgument;
 import org.talend.designer.codegen.config.TemplateUtil;
 import org.talend.designer.codegen.exception.CodeGeneratorException;
+import org.talend.designer.codegen.i18n.Messages;
 import org.talend.designer.codegen.model.CodeGeneratorEmittersPoolFactory;
 import org.talend.designer.codegen.proxy.JetProxy;
 import org.talend.repository.model.ComponentsFactoryProvider;
@@ -157,7 +158,7 @@ public class CodeGenerator implements ICodeGenerator {
             throw new CodeGeneratorException(e);
         }
         if ((endTimer - startTimer) > INIT_TIMEOUT) {
-            throw new CodeGeneratorException("JET initialisation Time Out");
+            throw new CodeGeneratorException(Messages.getString("CodeGenerator.JET.TimeOut")); //$NON-NLS-1$
         } else {
             if ((processTree.getSubTrees() != null) && (processTree.getSubTrees().size() > 0)) {
 
@@ -505,7 +506,7 @@ public class CodeGenerator implements ICodeGenerator {
                     componentsCode = new StringBuffer();
                 }
             } else {
-                throw new TypeNotPresentException("Node not found in current process", null);
+                throw new TypeNotPresentException(Messages.getString("CodeGenerator.Node.NotFound"), null); //$NON-NLS-1$
             }
         }
         return componentsCode.toString();
