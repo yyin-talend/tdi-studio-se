@@ -114,10 +114,10 @@ public class PerlProcessor implements IProcessor {
                 Context.REPOSITORY_CONTEXT_KEY);
         Project project = repositoryContext.getProject();
         String filePrefix = project.getTechnicalLabel() + "."; //$NON-NLS-1$
-        filePrefix += Messages.getString("Processor.fileSuffix"); //$NON-NLS-1$
+        filePrefix += "job_"; //$NON-NLS-1$
         filePrefix += filenameFromLabel ? escapeFilename(process.getLabel()) : process.getId();
-        codePath = new Path(filePrefix + Messages.getString("Processor.perlExt")); //$NON-NLS-1$
-        contextPath = new Path(filePrefix + "_" + escapeFilename(context.getName()) + Messages.getString("Processor.perlExt")); //$NON-NLS-1$ //$NON-NLS-2$
+        codePath = new Path(filePrefix + ".pl"); //$NON-NLS-1$
+        contextPath = new Path(filePrefix + "_" + escapeFilename(context.getName()) +".pl"); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     public void generateCode(IContext context, boolean statistics, boolean trace, boolean perlProperties)

@@ -131,14 +131,14 @@ public class ProcessDebugDialog extends Dialog {
                             DebugUITools.launch(config, ILaunchManager.DEBUG_MODE);
                         } else {
                             MessageDialog.openInformation(getShell(), Messages
-                                    .getString("ProcessDebugDialog.errorTitle"), Messages //$NON-NLS-1$
+                                    .getString("ProcessDebugDialog.debugBtn"), Messages //$NON-NLS-1$
                                     .getString("ProcessDebugDialog.errortext")); //$NON-NLS-1$ //$NON-NLS-2$
                         }
                     } catch (ProcessorException e) {
                         IStatus status = new Status(IStatus.ERROR, RunProcessPlugin.PLUGIN_ID, IStatus.OK,
                                 "Debug launch failed.", e); //$NON-NLS-1$
                         RunProcessPlugin.getDefault().getLog().log(status);
-                        MessageDialog.openError(getShell(), Messages.getString("ProcessDebugDialog.errorTitle"), //$NON-NLS-1$
+                        MessageDialog.openError(getShell(), Messages.getString("ProcessDebugDialog.debugBtn"), //$NON-NLS-1$
                                 ""); //$NON-NLS-1$
                     } finally {
                         monitor.done();

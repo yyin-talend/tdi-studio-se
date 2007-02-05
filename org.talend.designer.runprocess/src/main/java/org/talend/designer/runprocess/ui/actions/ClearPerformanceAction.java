@@ -42,7 +42,7 @@ public class ClearPerformanceAction extends Action {
      * Constructs a new ClearPerformanceAction.
      */
     public ClearPerformanceAction() {
-        super("Clean performance tracking");
+        super("Clean performance tracking"); //$NON-NLS-1$
 
         setEnabled(false);
     }

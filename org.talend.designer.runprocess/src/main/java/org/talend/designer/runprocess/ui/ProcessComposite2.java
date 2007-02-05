@@ -168,7 +168,7 @@ public class ProcessComposite2 extends Composite {
         execHeader.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
         debugBtn = new Button(execHeader, SWT.PUSH);
-        debugBtn.setText(Messages.getString("ProcessComposite.debug")); //$NON-NLS-1$
+        debugBtn.setText(Messages.getString("ProcessDebugDialog.debugBtn")); //$NON-NLS-1$
         debugBtn.setToolTipText(Messages.getString("ProcessComposite.debugHint")); //$NON-NLS-1$
         debugBtn.setImage(RunProcessPlugin.imageDescriptorFromPlugin(RunProcessPlugin.PLUGIN_ID, "icons/process_debug.gif") //$NON-NLS-1$
                 .createImage());
@@ -499,14 +499,14 @@ public class ProcessComposite2 extends Composite {
                             // DebugInNewWindowListener());
                             DebugUITools.launch(config, ILaunchManager.DEBUG_MODE);
                         } else {
-                            MessageDialog.openInformation(getShell(), Messages.getString("ProcessDebugDialog.errorTitle"), //$NON-NLS-1$
+                            MessageDialog.openInformation(getShell(), Messages.getString("ProcessDebugDialog.debugBtn"), //$NON-NLS-1$
                                     Messages.getString("ProcessDebugDialog.errortext")); //$NON-NLS-1$ //$NON-NLS-2$
                         }
                     } catch (ProcessorException e) {
                         IStatus status = new Status(IStatus.ERROR, RunProcessPlugin.PLUGIN_ID, IStatus.OK,
                                 "Debug launch failed.", e); //$NON-NLS-1$
                         RunProcessPlugin.getDefault().getLog().log(status);
-                        MessageDialog.openError(getShell(), Messages.getString("ProcessDebugDialog.errorTitle"), ""); //$NON-NLS-1$ //$NON-NLS-2$
+                        MessageDialog.openError(getShell(), Messages.getString("ProcessDebugDialog.debugBtn"), ""); //$NON-NLS-1$ //$NON-NLS-2$
                     } finally {
                         monitor.done();
                     }

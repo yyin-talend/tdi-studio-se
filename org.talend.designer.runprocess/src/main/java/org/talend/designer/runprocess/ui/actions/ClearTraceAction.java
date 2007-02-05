@@ -43,7 +43,7 @@ public class ClearTraceAction extends Action {
      * Constructs a new ClearTraceAction.
      */
     public ClearTraceAction() {
-        super("Clean trace tracking");
+        super("Clean trace tracking"); //$NON-NLS-1$
 
         setEnabled(false);
     }
