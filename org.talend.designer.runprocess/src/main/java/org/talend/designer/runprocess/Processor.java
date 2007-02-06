@@ -31,7 +31,6 @@ import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationType;
@@ -106,7 +105,8 @@ public class Processor {
      */
     // public Process run(final IContext context, int statisticsPort, int tracePort, int swatchPort) throws
     // ProcessorException { //Old
-    public Process run(final IContext context, int statisticsPort, int tracePort, String watchParam) throws ProcessorException {
+    public Process run(final IContext context, int statisticsPort, int tracePort, String watchParam)
+            throws ProcessorException {
         IProcessor concreteProcessor = ProcessorUtilities.getProcessor(process, context);
         processor = concreteProcessor;
         if (concreteProcessor instanceof JavaProcessor) {
@@ -117,7 +117,8 @@ public class Processor {
         concreteProcessor.generateCode(context, statisticsPort != NO_STATISTICS, tracePort != NO_TRACES, true);
 
         IPath absCodePath = concreteProcessor.getCodeProject().getLocation().append(concreteProcessor.getCodePath());
-        IPath absContextPath = concreteProcessor.getCodeProject().getLocation().append(concreteProcessor.getContextPath());
+        IPath absContextPath = concreteProcessor.getCodeProject().getLocation().append(
+                concreteProcessor.getContextPath());
 
         String libOption = null, libCtxOption = null, moduleDirectoryOption = null;
 
@@ -142,11 +143,11 @@ public class Processor {
         }
 
         if (watchParam == null) {
-            return exec(absCodePath, absContextPath, Level.INFO, libOption, libCtxOption, moduleDirectoryOption, statisticsPort,
-                    tracePort);
+            return exec(absCodePath, absContextPath, Level.INFO, libOption, libCtxOption, moduleDirectoryOption,
+                    statisticsPort, tracePort);
         }
-        return exec(absCodePath, absContextPath, Level.INFO, libOption, libCtxOption, moduleDirectoryOption, statisticsPort,
-                tracePort, watchParam);
+        return exec(absCodePath, absContextPath, Level.INFO, libOption, libCtxOption, moduleDirectoryOption,
+                statisticsPort, tracePort, watchParam);
     }
 
     /**
@@ -184,7 +185,8 @@ public class Processor {
                     wc.setAttribute(PerlUtils.ATTR_STARTUP_FILE, concreteProcessor.getCodePath().toOSString());
                     wc.setAttribute(PerlUtils.ATTR_PROJECT_NAME, projectName);
                     wc.setAttribute(PerlUtils.ATTR_WORKING_DIRECTORY, (String) null);
-                    wc.setAttribute(PerlUtils.ATTR_PROGRAM_PARAMETERS, CTX_ARG + concreteProcessor.getContextPath().toOSString());
+                    wc.setAttribute(PerlUtils.ATTR_PROGRAM_PARAMETERS, CTX_ARG
+                            + concreteProcessor.getContextPath().toOSString());
 
                     config = wc.doSave();
                 } catch (CoreException ce) {
@@ -229,8 +231,8 @@ public class Processor {
             String perlInterpreterLibCtxOption, String perlModuleDirectoryOption, int statOption, int traceOption,
             String... codeOptions) throws ProcessorException {
 
-        String[] cmd = getCommandLine(absCodePath, absContextPath, perlInterpreterLibOption, perlInterpreterLibCtxOption,
-                perlModuleDirectoryOption, statOption, traceOption, codeOptions);
+        String[] cmd = getCommandLine(absCodePath, absContextPath, perlInterpreterLibOption,
+                perlInterpreterLibCtxOption, perlModuleDirectoryOption, statOption, traceOption, codeOptions);
 
         logCommandLine(cmd, level);
         try {
@@ -324,23 +326,28 @@ public class Processor {
         // Ends.
 
         String[] cmd = new String[] { interpreter };
-
-        if (perlInterpreterLibOption != null && perlInterpreterLibOption.length() > 0) {
-            cmd = (String[]) ArrayUtils.add(cmd, perlInterpreterLibOption);
-        }
-        if (perlInterpreterLibCtxOption != null && perlInterpreterLibCtxOption.length() > 0) {
-            cmd = (String[]) ArrayUtils.add(cmd, perlInterpreterLibCtxOption);
-        }
-        // Added by ftang.
-        if (perlModuleDirectoryOption != null && perlModuleDirectoryOption.length() > 0) {
-            cmd = (String[]) ArrayUtils.add(cmd, perlModuleDirectoryOption);
-        }
-        // Ends.
-        if (absCodePath != null) {
-            cmd = (String[]) ArrayUtils.add(cmd, absCodePath.toOSString());
-        }
-        if (absContextPath != null) {
-            cmd = (String[]) ArrayUtils.add(cmd, CTX_ARG + absContextPath.toOSString());
+        if (((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY)).getProject()
+                .getLanguage() == ECodeLanguage.PERL) {
+            // FIXME Code to move in PerlProcessor
+            if (perlInterpreterLibOption != null && perlInterpreterLibOption.length() > 0) {
+                cmd = (String[]) ArrayUtils.add(cmd, perlInterpreterLibOption);
+            }
+            if (perlInterpreterLibCtxOption != null && perlInterpreterLibCtxOption.length() > 0) {
+                cmd = (String[]) ArrayUtils.add(cmd, perlInterpreterLibCtxOption);
+            }
+            // Added by ftang.
+            if (perlModuleDirectoryOption != null && perlModuleDirectoryOption.length() > 0) {
+                cmd = (String[]) ArrayUtils.add(cmd, perlModuleDirectoryOption);
+            }
+            // Ends.
+            if (absCodePath != null) {
+                cmd = (String[]) ArrayUtils.add(cmd, absCodePath.toOSString());
+            }
+            if (absContextPath != null) {
+                cmd = (String[]) ArrayUtils.add(cmd, CTX_ARG + absContextPath.toOSString());
+            }
+        } else {
+            cmd = ((JavaProcessor) processor).getCommandLine();
         }
         cmd = (String[]) ArrayUtils.addAll(cmd, codeOptions);
         if (statOption != -1) {
@@ -349,16 +356,12 @@ public class Processor {
         if (traceOption != -1) {
             cmd = (String[]) ArrayUtils.add(cmd, TRACE_PORT_ARG + traceOption);
         }
-
-        if (processor instanceof JavaProcessor) {
-            cmd = ((JavaProcessor) processor).getCommandLine();
-        }
         return cmd;
     }
 
     public static void logCommandLine(String[] cmd, Level level) {
         StringBuffer sb = new StringBuffer();
-        sb.append(Messages.getString("Processor.commandLineLog"));  //$NON-NLS-1$
+        sb.append(Messages.getString("Processor.commandLineLog")); //$NON-NLS-1$
         for (String s : cmd) {
             sb.append(' ').append(s);
         }

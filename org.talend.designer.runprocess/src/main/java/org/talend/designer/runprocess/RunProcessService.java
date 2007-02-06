@@ -147,7 +147,6 @@ public class RunProcessService implements IRunProcessService {
      * @see org.talend.designer.runprocess.IRunProcessService#getJavaProject()
      */
     public IProject getJavaProject() throws CoreException {
-        // return JavaProcessor.getProcessorProject();
-        return null;
+        return JavaProcessor.getProcessorProject();
     }
 }
