@@ -21,13 +21,15 @@
 // ============================================================================
 package org.talend.repository;
 
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
-import org.talend.commons.exception.ExceptionHandler;
+import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.context.Context;
+import org.talend.core.context.RepositoryContext;
+import org.talend.core.model.temp.ECodeLanguage;
+import org.talend.designer.codegen.IModuleService;
+import org.talend.designer.codegen.javamodule.IJavaModuleService;
 import org.talend.designer.codegen.perlmodule.IPerlModuleService;
 import org.talend.designer.core.IDesignerCoreService;
 import org.talend.designer.runprocess.IRunProcessService;
@@ -87,8 +89,15 @@ public class RepositoryPlugin extends AbstractUIPlugin {
         return this.userContext;
     }
 
-    public IPerlModuleService getPerlModuleService() {
-        return (IPerlModuleService) GlobalServiceRegister.getDefault().getService(IPerlModuleService.class);
+    public IModuleService getModuleService() {
+        Class toEval = null;
+        if (((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY)).getProject()
+                .getLanguage().equals(ECodeLanguage.JAVA)) {
+            toEval = IJavaModuleService.class;
+        } else {
+            toEval = IPerlModuleService.class;
+        }
+        return (IModuleService) GlobalServiceRegister.getDefault().getService(toEval);
     }
 
     public IDesignerCoreService getDesignerCoreService() {
@@ -98,7 +107,7 @@ public class RepositoryPlugin extends AbstractUIPlugin {
     public IRepositoryService getRepositoryService() {
         return (IRepositoryService) GlobalServiceRegister.getDefault().getService(IRepositoryService.class);
     }
-    
+
     public IRunProcessService getRunProcessService() {
         return (IRunProcessService) GlobalServiceRegister.getDefault().getService(IRunProcessService.class);
     }

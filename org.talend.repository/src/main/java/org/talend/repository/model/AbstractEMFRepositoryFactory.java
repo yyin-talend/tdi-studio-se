@@ -34,7 +34,10 @@ import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.utils.data.container.Container;
 import org.talend.commons.utils.data.container.RootContainer;
+import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
+import org.talend.core.context.Context;
+import org.talend.core.context.RepositoryContext;
 import org.talend.core.model.general.Project;
 import org.talend.core.model.properties.ByteArray;
 import org.talend.core.model.properties.FolderItem;
@@ -45,6 +48,9 @@ import org.talend.core.model.properties.Property;
 import org.talend.core.model.properties.RoutineItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.core.model.temp.ECodeLanguage;
+import org.talend.designer.codegen.IModuleService;
+import org.talend.designer.codegen.javamodule.IJavaModuleService;
 import org.talend.designer.codegen.perlmodule.IPerlModuleService;
 import org.talend.repository.i18n.Messages;
 
@@ -215,7 +221,15 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
     }
 
     protected void createSystemRoutines() throws PersistenceException {
-        IPerlModuleService service = (IPerlModuleService) GlobalServiceRegister.getDefault().getService(IPerlModuleService.class);
+        Class toEval = null;
+        if (((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY)).getProject()
+                .getLanguage().equals(ECodeLanguage.JAVA)) {
+            toEval = IJavaModuleService.class;
+        } else {
+            toEval = IPerlModuleService.class;
+        }
+        IModuleService service = (IModuleService) GlobalServiceRegister.getDefault().getService(toEval);
+        
         List<URL> routines = service.getBuiltInRoutines();
         Path path = new Path(RepositoryConstants.SYSTEM_DIRECTORY);
         for (URL url : routines) {

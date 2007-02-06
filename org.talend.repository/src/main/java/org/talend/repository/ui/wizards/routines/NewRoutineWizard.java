@@ -39,6 +39,9 @@ import org.talend.core.model.properties.ByteArray;
 import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.properties.RoutineItem;
+import org.talend.core.model.temp.ECodeLanguage;
+import org.talend.designer.codegen.IModuleService;
+import org.talend.designer.codegen.javamodule.IJavaModuleService;
 import org.talend.designer.codegen.perlmodule.IPerlModuleService;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IProxyRepositoryFactory;
@@ -82,8 +85,17 @@ public class NewRoutineWizard extends Wizard {
         routineItem = PropertiesFactory.eINSTANCE.createRoutineItem();
 
         routineItem.setProperty(property);
-
-        IPerlModuleService service = (IPerlModuleService) GlobalServiceRegister.getDefault().getService(IPerlModuleService.class);
+       
+        Class toEval = null;
+        if (((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY)).getProject()
+                .getLanguage().equals(ECodeLanguage.JAVA)) {
+            toEval = IJavaModuleService.class;
+        } else {
+            toEval = IPerlModuleService.class;
+        }
+        IModuleService service = (IModuleService) GlobalServiceRegister.getDefault().getService(toEval);
+        
+        
         URL url = service.getRoutineTemplate();
         ByteArray byteArray = PropertiesFactory.eINSTANCE.createByteArray();
         InputStream stream = null;

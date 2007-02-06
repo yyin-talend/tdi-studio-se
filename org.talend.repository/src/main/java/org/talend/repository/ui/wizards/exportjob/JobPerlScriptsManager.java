@@ -53,7 +53,7 @@ import org.talend.core.model.properties.RoutineItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.prefs.ITalendCorePrefConstants;
-import org.talend.designer.codegen.perlmodule.IPerlModuleService;
+import org.talend.designer.codegen.IModuleService;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
 import org.talend.designer.core.model.utils.emf.talendfile.JobType;
 import org.talend.designer.runprocess.ProcessorUtilities;
@@ -433,8 +433,8 @@ public class JobPerlScriptsManager extends JobScriptsManager {
         List<URL> list = null;
         if (needModel) {
             try {
-                IPerlModuleService service = RepositoryPlugin.getDefault().getPerlModuleService();
-                list = service.getPerlModule();
+                IModuleService service = RepositoryPlugin.getDefault().getModuleService();
+                list = service.getModule();
             } catch (Exception e) {
                 ExceptionHandler.process(e);
             }

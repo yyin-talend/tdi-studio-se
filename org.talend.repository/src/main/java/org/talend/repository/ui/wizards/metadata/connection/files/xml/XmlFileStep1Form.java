@@ -55,9 +55,15 @@ import org.talend.commons.ui.swt.formtools.LabelledFileField;
 import org.talend.commons.ui.swt.formtools.LabelledText;
 import org.talend.commons.ui.swt.formtools.UtilsButton;
 import org.talend.commons.utils.encoding.CharsetToolkit;
+import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
+import org.talend.core.context.Context;
+import org.talend.core.context.RepositoryContext;
 import org.talend.core.model.metadata.EMetadataEncoding;
 import org.talend.core.model.properties.ConnectionItem;
+import org.talend.core.model.temp.ECodeLanguage;
+import org.talend.designer.codegen.IModuleService;
+import org.talend.designer.codegen.javamodule.IJavaModuleService;
 import org.talend.designer.codegen.perlmodule.IPerlModuleService;
 import org.talend.designer.codegen.perlmodule.ModuleNeeded.ModuleStatus;
 import org.talend.repository.i18n.Messages;
@@ -361,11 +367,17 @@ public class XmlFileStep1Form extends AbstractXmlFileStepForm {
             } else {
                 encodingCombo.select(0);
             }
-
-            IPerlModuleService perlModuleService = (IPerlModuleService) GlobalServiceRegister.getDefault().getService(
-                    IPerlModuleService.class);
+            
+            Class toEval = null;
+            if (((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY)).getProject()
+                    .getLanguage().equals(ECodeLanguage.JAVA)) {
+                toEval = IJavaModuleService.class;
+            } else {
+                toEval = IPerlModuleService.class;
+            }
+            IModuleService moduleService = (IModuleService) GlobalServiceRegister.getDefault().getService(toEval);
             try {
-                ModuleStatus status = perlModuleService.getModuleStatus("XML::LibXML"); //$NON-NLS-1$
+                ModuleStatus status = moduleService.getModuleStatus("XML::LibXML"); //$NON-NLS-1$
                 if (!("INSTALLED").equals(status.name())) { //$NON-NLS-1$
                     new ErrorDialogWidthDetailArea(getShell(), PID, Messages.getString("FileStep.moduleFailure")+" XML::Lib "+Messages.getString("FileStep.moduleFailureEnd"), //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                             Messages.getString("FileStep.moduleDetailMessage")); //$NON-NLS-1$
