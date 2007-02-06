@@ -28,6 +28,7 @@ import org.talend.core.GlobalServiceRegister;
 import org.talend.core.model.properties.RoutineItem;
 import org.talend.designer.codegen.ICodeGeneratorService;
 import org.talend.repository.editor.RepositoryEditorInput;
+import org.talend.repository.i18n.Messages;
 import org.talend.repository.ui.actions.AContextualAction;
 
 /**
@@ -51,6 +52,6 @@ public abstract class AbstractRoutineAction extends AContextualAction {
         IFile file = service.createPerlRoutineSynchronizer().syncRoutine(routineItem);
         RepositoryEditorInput input = new RepositoryEditorInput(file, routineItem);
 
-        getActivePage().openEditor(input, "org.talend.designer.core.ui.editor.StandAloneTalendPerlEditor");
+        getActivePage().openEditor(input, "org.talend.designer.core.ui.editor.StandAloneTalendPerlEditor"); //$NON-NLS-1$
     }
 }

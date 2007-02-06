@@ -33,6 +33,8 @@ import javax.naming.directory.Attributes;
 import javax.naming.directory.BasicAttribute;
 import javax.naming.directory.BasicAttributes;
 
+import org.talend.repository.i18n.Messages;
+
 /**
  * @author cantoine.
  * 
@@ -67,10 +69,10 @@ public class LDIFReader {
             try {
                 url = new URL(value);
             } catch (MalformedURLException ex) {
-                throw new IOException(String.valueOf(ex) + ": Cannot construct url " + value);
+                throw new IOException(String.valueOf(ex) + Messages.getString("LDIFReader.ioException.cannotConstrauctURL") + value); //$NON-NLS-1$
             }
-            if (!url.getProtocol().equalsIgnoreCase("file")) {
-                throw new IOException("Protocol not supported: " + url.getProtocol());
+            if (!url.getProtocol().equalsIgnoreCase("file")) { //$NON-NLS-1$
+                throw new IOException(Messages.getString("LDIFReader.ioException.protocolNotSupported") + url.getProtocol()); //$NON-NLS-1$
             }
             File file = new File(url.getFile());
             byte[] b = new byte[(int) file.length()];
@@ -78,7 +80,7 @@ public class LDIFReader {
             fi.read(b);
             vals.add(b);
         } else {
-            throw new IOException("Unknown type.");
+            throw new IOException(Messages.getString("LDIFReader.ioException.unknow")); //$NON-NLS-1$
         }
         entry.put(vals);
     }
@@ -150,7 +152,7 @@ public class LDIFReader {
                         return entry;
                     }
                 } else {
-                    int pos = line.indexOf(":");
+                    int pos = line.indexOf(":"); //$NON-NLS-1$
                     if (pos == -1) {
                         lastDN = null;
                     }

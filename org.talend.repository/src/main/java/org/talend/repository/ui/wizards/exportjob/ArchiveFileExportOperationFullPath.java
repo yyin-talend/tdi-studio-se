@@ -45,6 +45,7 @@ import org.eclipse.ui.internal.ide.IDEWorkbenchPlugin;
 import org.eclipse.ui.internal.wizards.datatransfer.DataTransferMessages;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.model.properties.ProcessItem;
+import org.talend.repository.i18n.Messages;
 
 /**
  * Operation for exporting a resource and its children to a new .zip or .tar.gz file.
@@ -53,9 +54,9 @@ import org.talend.core.model.properties.ProcessItem;
  */
 public class ArchiveFileExportOperationFullPath implements IRunnableWithProgress {
 
-    private static final String SEPARATOR = "/";
+    private static final String SEPARATOR = "/"; //$NON-NLS-1$
 
-    private static final String JOB_SOURCE_FOLDER_NAME = "src";
+    private static final String JOB_SOURCE_FOLDER_NAME = "src"; //$NON-NLS-1$
 
     private IFileExporterFullPath exporter;
 
@@ -73,9 +74,9 @@ public class ArchiveFileExportOperationFullPath implements IRunnableWithProgress
 
     private String rootName;
 
-    private String regEx = ".*.pl$|.*.pm$|.*.bat$|.*.sh$";
+    private String regEx = ".*.pl$|.*.pm$|.*.bat$|.*.sh$"; //$NON-NLS-1$
 
-    private String jobSourceNameRegEx = ".*.properties$|.*.item$";
+    private String jobSourceNameRegEx = ".*.properties$|.*.item$"; //$NON-NLS-1$
 
     private List<ExportFileResource> resourcesListToExport;
 
@@ -159,7 +160,7 @@ public class ArchiveFileExportOperationFullPath implements IRunnableWithProgress
      * @param exportResource org.eclipse.core.resources.IResource
      */
     protected void exportResource(String exportResource) throws InterruptedException {
-        exportResource("", exportResource, 1);
+        exportResource("", exportResource, 1); //$NON-NLS-1$
     }
 
     /**
@@ -177,12 +178,12 @@ public class ArchiveFileExportOperationFullPath implements IRunnableWithProgress
         if (file.isFile()) {
 
             String destinationName = file.getName();
-            if (!"".equals(directory)) {
+            if (!"".equals(directory)) { //$NON-NLS-1$
                 destinationName = directory + file.getName();
             }
 
             if (createLeadupStructure) {
-                if (rootName != null && !"".equals(destinationName)) {
+                if (rootName != null && !"".equals(destinationName)) { //$NON-NLS-1$
                     destinationName = rootName + SEPARATOR + destinationName;
                 }
 
@@ -193,9 +194,9 @@ public class ArchiveFileExportOperationFullPath implements IRunnableWithProgress
             try {
                 exporter.write(exportResource, destinationName);
             } catch (IOException e) {
-                addError(NLS.bind(DataTransferMessages.DataTransfer_errorExporting, exportResource, e.getMessage()), e);
+                addError(NLS.bind("", exportResource, e.getMessage()), e); //$NON-NLS-1$
             } catch (CoreException e) {
-                addError(NLS.bind(DataTransferMessages.DataTransfer_errorExporting, exportResource, e.getMessage()), e);
+                addError(NLS.bind("", exportResource, e.getMessage()), e); //$NON-NLS-1$
             }
 
             monitor.worked(1);
@@ -221,7 +222,7 @@ public class ArchiveFileExportOperationFullPath implements IRunnableWithProgress
                 });
             } catch (Exception e) {
                 // this should never happen because an #isAccessible check is done before #members is invoked
-                addError(NLS.bind(DataTransferMessages.DataTransfer_errorExporting, exportResource), e);
+                addError(NLS.bind("", exportResource), e); //$NON-NLS-1$
             }
 
             for (int i = 0; i < children.length; i++) {
@@ -268,7 +269,7 @@ public class ArchiveFileExportOperationFullPath implements IRunnableWithProgress
         IStatus[] errors = new IStatus[errorTable.size()];
         errorTable.toArray(errors);
         return new MultiStatus(IDEWorkbenchPlugin.IDE_WORKBENCH, IStatus.OK, errors,
-                DataTransferMessages.FileSystemExportOperation_problemsExporting, null);
+                "", null); //$NON-NLS-1$
     }
 
     /**
@@ -315,7 +316,7 @@ public class ArchiveFileExportOperationFullPath implements IRunnableWithProgress
         try {
             initialize();
         } catch (IOException e) {
-            throw new InvocationTargetException(e, NLS.bind(DataTransferMessages.ZipExport_cannotOpen, e.getMessage()));
+            throw new InvocationTargetException(e, NLS.bind("", e.getMessage())); //$NON-NLS-1$
         }
 
         try {
@@ -331,7 +332,7 @@ public class ArchiveFileExportOperationFullPath implements IRunnableWithProgress
             } catch (CoreException e) {
                 // Should not happen
             }
-            monitor.beginTask(DataTransferMessages.DataTransfer_exportingTitle, totalWork);
+            monitor.beginTask("", totalWork); //$NON-NLS-1$
             if (resourcesListToExport == null) {
                 // FIXME here nerver happen
                 // exportResource(resource);
@@ -343,7 +344,7 @@ public class ArchiveFileExportOperationFullPath implements IRunnableWithProgress
             try {
                 exporter.finished();
             } catch (IOException e) {
-                throw new InvocationTargetException(e, NLS.bind(DataTransferMessages.ZipExport_cannotClose, e
+                throw new InvocationTargetException(e, NLS.bind("", e //$NON-NLS-1$
                         .getMessage()));
             }
         } finally {

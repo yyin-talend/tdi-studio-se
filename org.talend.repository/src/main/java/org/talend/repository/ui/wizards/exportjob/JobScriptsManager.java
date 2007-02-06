@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.talend.core.model.properties.ProcessItem;
+import org.talend.repository.i18n.Messages;
 import org.talend.repository.ui.wizards.exportjob.JobScriptsExportWizardPage.ExportChoice;
 
 /**
@@ -36,7 +37,7 @@ import org.talend.repository.ui.wizards.exportjob.JobScriptsExportWizardPage.Exp
  */
 public abstract class JobScriptsManager {
 
-    protected String[] launcherPerlScriptFile = { "run.sh", "run.bat" };
+    protected String[] launcherPerlScriptFile = { "run.sh", "run.bat" }; //$NON-NLS-1$ //$NON-NLS-2$
     /**
      * qian Gets the export resources.
      * 
@@ -54,8 +55,8 @@ public abstract class JobScriptsManager {
             Map<ExportChoice, Boolean> exportChoiceMap, String contextName, String launcher);
 
     protected String getTmpFolder() {
-        String tmpFold = System.getProperty("user.dir");
-        tmpFold = tmpFold + "/talendExporter";
+        String tmpFold = System.getProperty("user.dir"); //$NON-NLS-1$
+        tmpFold = tmpFold + "/talendExporter"; //$NON-NLS-1$
         return tmpFold;
     }
 
@@ -120,7 +121,7 @@ public abstract class JobScriptsManager {
      * @return
      */
     protected String escapeSpace(String name) {
-        return name != null ? name.replace(" ", "") : "";
+        return name != null ? name.replace(" ", "") : ""; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
     }
 }

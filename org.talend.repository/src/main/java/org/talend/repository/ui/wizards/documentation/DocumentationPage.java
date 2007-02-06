@@ -42,6 +42,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.repository.i18n.Messages;
 import org.talend.repository.ui.wizards.PropertiesWizardPage;
 
 /**
@@ -69,7 +70,7 @@ public class DocumentationPage extends PropertiesWizardPage {
     public DocumentationPage(Property property, IPath destinationPath) {
         super("DocumentationCreatePage", property, destinationPath);
 
-        setTitle("Documentation");
+        setTitle(Messages.getString("DocumentationPage.thisTitle.document")); //$NON-NLS-1$
         this.filenameStatus = createOkStatus();
     }
 
@@ -87,7 +88,7 @@ public class DocumentationPage extends PropertiesWizardPage {
 
         // Source file
         Label filenameLab = new Label(container, SWT.NONE);
-        filenameLab.setText("Source document file");
+        filenameLab.setText(Messages.getString("DocumentationPage.fileNameTabText.sourcDocFile")); //$NON-NLS-1$
 
         Composite filenameContainer = new Composite(container, SWT.NONE);
         data = new GridData(GridData.FILL_HORIZONTAL);
@@ -106,7 +107,7 @@ public class DocumentationPage extends PropertiesWizardPage {
 
         // Original Name
         Label originalNameLab = new Label(container, SWT.NONE);
-        originalNameLab.setText("Original Name");
+        originalNameLab.setText(Messages.getString("DocumentationPage.originalNameLabText.orgName")); //$NON-NLS-1$
 
         originalFilenameText = new Text(container, SWT.BORDER);
         data = new GridData(GridData.FILL_HORIZONTAL);
@@ -116,7 +117,7 @@ public class DocumentationPage extends PropertiesWizardPage {
         originalFilenameText.setEnabled(false);
 
         browseBtn = new Button(filenameContainer, SWT.PUSH);
-        browseBtn.setText("Browse...");
+        browseBtn.setText(Messages.getString("DocumentationPage.browseBtnText.browse")); //$NON-NLS-1$
 
         setControl(container);
         updateContent();
@@ -183,7 +184,7 @@ public class DocumentationPage extends PropertiesWizardPage {
             public void widgetSelected(SelectionEvent e) {
                 FileDialog dlg = new FileDialog(getShell(), SWT.OPEN);
                 String filename = dlg.open();
-                filenameText.setText((filename != null ? filename : ""));
+                filenameText.setText((filename != null ? filename : "")); //$NON-NLS-1$
             }
         });
     }

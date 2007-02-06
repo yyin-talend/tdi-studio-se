@@ -25,6 +25,7 @@ import org.eclipse.jface.dialogs.IDialogPage;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.widgets.Composite;
 import org.talend.core.model.properties.ConnectionItem;
+import org.talend.repository.i18n.Messages;
 import org.talend.repository.ui.swt.utils.AbstractForm;
 
 /**
@@ -79,7 +80,7 @@ public class DatabaseWizardPage extends WizardPage {
         };
         databaseForm.setListener(listener);
         setControl(databaseForm);
-        if (connectionItem.getProperty().getLabel() != null && !connectionItem.getProperty().getLabel().equals("")) {
+        if (connectionItem.getProperty().getLabel() != null && !connectionItem.getProperty().getLabel().equals("")) { //$NON-NLS-1$
             databaseForm.checkFieldsValue();
         }
     }

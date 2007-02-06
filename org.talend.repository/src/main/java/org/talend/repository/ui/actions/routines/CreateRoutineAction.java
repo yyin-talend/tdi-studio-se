@@ -36,6 +36,7 @@ import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.ui.images.BusinessImageProvider;
 import org.talend.core.ui.images.ECoreImage;
+import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNodeUtilities;
 import org.talend.repository.model.RepositoryNode.EProperties;
@@ -52,8 +53,8 @@ public class CreateRoutineAction extends AbstractRoutineAction {
     public CreateRoutineAction() {
         super();
 
-        setText("Create routine");
-        setToolTipText("Create routine");
+        setText(Messages.getString("CreateRoutineAction.text.createRoutine")); //$NON-NLS-1$
+        setToolTipText(Messages.getString("CreateRoutineAction.toolTipText.createRoutine")); //$NON-NLS-1$
 
         Image folderImg = ImageProvider.getImage(ECoreImage.ROUTINE_ICON);
         this.setImageDescriptor(BusinessImageProvider.getImageWithNew(folderImg));

@@ -30,6 +30,7 @@ import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.model.properties.RoutineItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.ui.images.ECoreImage;
+import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNode.ENodeType;
 
@@ -44,8 +45,8 @@ public class EditRoutineAction extends AbstractRoutineAction {
     public EditRoutineAction() {
         super();
 
-        setText("Edit routine");
-        setToolTipText("Edit routine");
+        setText(Messages.getString("EditRoutineAction.text.editRoutine")); //$NON-NLS-1$
+        setToolTipText(Messages.getString("EditRoutineAction.toolTipText.editRoutine")); //$NON-NLS-1$
         setImageDescriptor(ImageProvider.getImageDesc(ECoreImage.ROUTINE_ICON));
     }
 

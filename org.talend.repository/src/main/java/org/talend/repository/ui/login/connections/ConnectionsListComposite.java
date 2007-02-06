@@ -52,6 +52,7 @@ import org.talend.commons.utils.data.bean.IBeanPropertyAccessors;
 import org.talend.core.CorePlugin;
 import org.talend.core.model.general.ConnectionBean;
 import org.talend.core.prefs.PreferenceManipulator;
+import org.talend.repository.i18n.Messages;
 
 /**
  * DOC smallet class global comment. Detailled comment <br/>
@@ -103,7 +104,7 @@ public class ConnectionsListComposite extends Composite {
         formBody.setLayout(formLayout);
 
         Group group = new Group(formBody, SWT.NONE);
-        group.setText("Connections");
+        group.setText(Messages.getString("ConnectionsListComposite.groupText.connection")); //$NON-NLS-1$
         group.setBackground(new Color(null, 255, 255, 255));
         FormData data = new FormData();
         data.left = new FormAttachment(0, ConnectionsDialog.HSPACE);
@@ -131,7 +132,7 @@ public class ConnectionsListComposite extends Composite {
             @Override
             protected void createColumns(TableViewerCreator<ConnectionBean> tableViewerCreator, Table table) {
                 TableViewerCreatorColumn nameColumn = new TableViewerCreatorColumn(tableViewerCreator);
-                nameColumn.setTitle("Name");
+                nameColumn.setTitle(Messages.getString("ConnectionsListComposite.nameColumnTitle.name")); //$NON-NLS-1$
                 nameColumn.setBeanPropertyAccessors(new IBeanPropertyAccessors<ConnectionBean, String>() {
 
                     public String get(ConnectionBean bean) {
@@ -149,7 +150,7 @@ public class ConnectionsListComposite extends Composite {
                 nameColumn.setCellEditor(new TextCellEditor(tableViewerCreator.getTable()));
 
                 TableViewerCreatorColumn comleteColumn = new TableViewerCreatorColumn(tableViewerCreator);
-                comleteColumn.setTitle("Complete");
+                comleteColumn.setTitle(Messages.getString("ConnectionsListComposite.comleteColumnTitle.complete")); //$NON-NLS-1$
                 comleteColumn.setBeanPropertyAccessors(new IBeanPropertyAccessors<ConnectionBean, Boolean>() {
 
                     public Boolean get(ConnectionBean bean) {
@@ -164,7 +165,7 @@ public class ConnectionsListComposite extends Composite {
                 comleteColumn.setWeight(5);
                 comleteColumn.setModifiable(false);
                 comleteColumn.setMinimumWidth(5);
-                comleteColumn.setDisplayedValue("");
+                comleteColumn.setDisplayedValue(""); //$NON-NLS-1$
                 CheckboxTableEditorContent checkboxTableEditorContent = new CheckboxTableEditorContent(true);
                 comleteColumn.setTableEditorContent(checkboxTableEditorContent);
             }

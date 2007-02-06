@@ -42,6 +42,7 @@ import org.talend.commons.ui.image.EImage;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.repository.RepositoryPlugin;
+import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.RepositoryConstants;
 import org.talend.repository.model.RepositoryNodeUtilities;
 import org.talend.repository.ui.views.RepositoryView;
@@ -87,14 +88,14 @@ public class NameSection extends AbstractSection {
             }
         });
 
-        CLabel labelLabel = getWidgetFactory().createCLabel(composite, "Name");
+        CLabel labelLabel = getWidgetFactory().createCLabel(composite, Messages.getString("NameSection.0")); //$NON-NLS-1$
         data = new FormData();
         data.left = new FormAttachment(0, 0);
         data.right = new FormAttachment(nameText, -ITabbedPropertyConstants.HSPACE);
         data.top = new FormAttachment(nameText, 0, SWT.CENTER);
         labelLabel.setLayoutData(data);
 
-        errorLabel = getWidgetFactory().createCLabel(composite, "");
+        errorLabel = getWidgetFactory().createCLabel(composite, ""); //$NON-NLS-1$
         data = new FormData();
         data.left = new FormAttachment(nameText, ITabbedPropertyConstants.HSPACE * 3);
         data.right = new FormAttachment(100, 0);
@@ -113,11 +114,11 @@ public class NameSection extends AbstractSection {
 
         String text = nameText.getText();
         if (text.length() == 0) {
-            return createStatus(IStatus.ERROR, "Name is empty.");
+            return createStatus(IStatus.ERROR, Messages.getString("NameSection.2")); //$NON-NLS-1$
         } else if (!Pattern.matches(RepositoryConstants.getPattern(getType()), text)) {
-            return createStatus(IStatus.ERROR, "Name contains incorrect characters.");
+            return createStatus(IStatus.ERROR, Messages.getString("NameSection.3")); //$NON-NLS-1$
         } else if (!isValid(text)) {
-            return createStatus(IStatus.ERROR, "Item with the same name already exists.");
+            return createStatus(IStatus.ERROR, Messages.getString("NameSection.4")); //$NON-NLS-1$
         } else {
             return createOkStatus();
         }
@@ -142,7 +143,7 @@ public class NameSection extends AbstractSection {
 
     @Override
     public void refresh() {
-        nameText.setText(getName() != null ? getName().toString() : "");
+        nameText.setText(getName() != null ? getName().toString() : Messages.getString("NameSection.5")); //$NON-NLS-1$
     }
 
     protected String getName() {

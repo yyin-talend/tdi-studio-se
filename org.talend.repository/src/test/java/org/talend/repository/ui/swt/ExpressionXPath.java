@@ -32,6 +32,7 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
+import org.talend.repository.i18n.Messages;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
@@ -47,10 +48,10 @@ public class ExpressionXPath {
       DocumentBuilderFactory fabriqueDOM = 
                                     DocumentBuilderFactory.newInstance();
       DocumentBuilder analyseur = fabriqueDOM.newDocumentBuilder();
-      Document document = analyseur.parse(new File("C:\\test.xml"));
+      Document document = analyseur.parse(new File("C:\\test.xml")); //$NON-NLS-1$
       XPathFactory fabriqueXPath = XPathFactory.newInstance();
       XPath xpath = fabriqueXPath.newXPath();
-      String expression = "//bills/bill/line[@id='38']";
+      String expression = "//bills/bill/line[@id='38']"; //$NON-NLS-1$
       
 //      line[@id='38']
       
@@ -101,7 +102,7 @@ public class ExpressionXPath {
         valeur = noeud.getTextContent();
     }
 
-    System.out.println(nom + " (" + type + ") = '" + valeur + "'");
+    System.out.println(nom + " (" + type + ") = '" + valeur + "'"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
   }
   
 }

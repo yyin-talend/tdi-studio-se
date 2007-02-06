@@ -37,6 +37,7 @@ import org.talend.commons.utils.data.bean.IBeanPropertyAccessors;
 import org.talend.commons.utils.data.list.ListenableListEvent;
 import org.talend.core.model.metadata.builder.connection.XmlXPathLoopDescriptor;
 import org.talend.core.model.targetschema.editor.XmlExtractorLoopModel;
+import org.talend.repository.i18n.Messages;
 
 /**
  * DOC amaumont class global comment. Detailled comment <br/> TGU same purpose as TargetSchemaTableEditorView but uses
@@ -47,7 +48,7 @@ import org.talend.core.model.targetschema.editor.XmlExtractorLoopModel;
  */
 public class ExtractionLoopWithXPathEditorView extends AbstractDataTableEditorView<XmlXPathLoopDescriptor> {
 
-    public static final String ID_COLUMN_NAME = "ID_COLUMN_NAME";
+    public static final String ID_COLUMN_NAME = "ID_COLUMN_NAME"; //$NON-NLS-1$
 
     private TextCellEditorWithProposal xPathCellEditor;
 
@@ -136,7 +137,7 @@ public class ExtractionLoopWithXPathEditorView extends AbstractDataTableEditorVi
                 if (value != null) {
                     return String.valueOf(value);
                 }
-                return "";
+                return ""; //$NON-NLS-1$
             }
         };
 
@@ -144,8 +145,8 @@ public class ExtractionLoopWithXPathEditorView extends AbstractDataTableEditorVi
 
         // column for mouse selection
         TableViewerCreatorColumn column = new TableViewerCreatorColumn(tableViewerCreator);
-        column.setTitle("");
-        column.setDefaultInternalValue("");
+        column.setTitle(""); //$NON-NLS-1$
+        column.setDefaultInternalValue(""); //$NON-NLS-1$
         column.setWidth(15);
 
         // //////////////////////////////////////////////////////////////////////////////////////
@@ -153,7 +154,7 @@ public class ExtractionLoopWithXPathEditorView extends AbstractDataTableEditorVi
 
         column = new TableViewerCreatorColumn(tableViewerCreator);
         xPathColumn = column;
-        column.setTitle("Absolute XPath expression");
+        column.setTitle(Messages.getString("ExtractionLoopWithXPathEditorView.xPathColumnTitle.absXpathExpression")); //$NON-NLS-1$
         column.setBeanPropertyAccessors(new IBeanPropertyAccessors<XmlXPathLoopDescriptor, String>() {
 
             public String get(XmlXPathLoopDescriptor bean) {
@@ -184,13 +185,13 @@ public class ExtractionLoopWithXPathEditorView extends AbstractDataTableEditorVi
         column.setModifiable(true);
         column.setWeight(30);
         column.setMinimumWidth(50);
-        column.setDefaultInternalValue("");
+        column.setDefaultInternalValue(""); //$NON-NLS-1$
         // //////////////////////////////////////////////////////////////////////////////////////
 
         // //////////////////////////////////////////////////////////////////////////////////////
         // Loop limit
         column = new TableViewerCreatorColumn(tableViewerCreator);
-        column.setTitle("Loop limit");
+        column.setTitle("Loop limit"); //$NON-NLS-1$
         column.setBeanPropertyAccessors(new IBeanPropertyAccessors<XmlXPathLoopDescriptor, Integer>() {
 
             public Integer get(XmlXPathLoopDescriptor bean) {

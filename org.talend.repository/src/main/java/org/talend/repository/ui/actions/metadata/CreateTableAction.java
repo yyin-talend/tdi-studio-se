@@ -73,9 +73,9 @@ public class CreateTableAction extends AbstractCreateAction {
 
     protected static final String PID = RepositoryPlugin.PLUGIN_ID;
 
-    protected static final String CREATE_LABEL = Messages.getString("CreateTableAction.action.createTitle");
+    protected static final String CREATE_LABEL = Messages.getString("CreateTableAction.action.createTitle"); //$NON-NLS-1$
 
-    protected static final String EDIT_LABEL = Messages.getString("CreateTableAction.action.editTitle");
+    protected static final String EDIT_LABEL = Messages.getString("CreateTableAction.action.editTitle"); //$NON-NLS-1$
 
     protected static final int WIZARD_WIDTH = 800;
 
@@ -140,7 +140,7 @@ public class CreateTableAction extends AbstractCreateAction {
      * @param selection
      * @return
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked") //$NON-NLS-1$
     private void createFilePositionalTableWizard(IStructuredSelection selection) {
         Object obj = ((IStructuredSelection) selection).getFirstElement();
         RepositoryNode node = (RepositoryNode) obj;
@@ -191,7 +191,7 @@ public class CreateTableAction extends AbstractCreateAction {
      * @param selection
      * @return
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked") //$NON-NLS-1$
     private void createFileRegexpTableWizard(IStructuredSelection selection) {
         Object obj = ((IStructuredSelection) selection).getFirstElement();
         RepositoryNode node = (RepositoryNode) obj;
@@ -240,7 +240,7 @@ public class CreateTableAction extends AbstractCreateAction {
      * @param selection
      * @return
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked") //$NON-NLS-1$
     private void createFileXmlTableWizard(IStructuredSelection selection) {
         Object obj = ((IStructuredSelection) selection).getFirstElement();
         RepositoryNode node = (RepositoryNode) obj;
@@ -289,7 +289,7 @@ public class CreateTableAction extends AbstractCreateAction {
      * @param selection
      * @return
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked") //$NON-NLS-1$
     private void createFileDelimitedTableWizard(IStructuredSelection selection) {
         Object obj = ((IStructuredSelection) selection).getFirstElement();
         RepositoryNode node = (RepositoryNode) obj;
@@ -339,7 +339,7 @@ public class CreateTableAction extends AbstractCreateAction {
      * @param selection
      * @return
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked") //$NON-NLS-1$
     private void createFileLdifTableWizard(IStructuredSelection selection) {
         Object obj = ((IStructuredSelection) selection).getFirstElement();
         RepositoryNode node = (RepositoryNode) obj;
@@ -389,7 +389,7 @@ public class CreateTableAction extends AbstractCreateAction {
      * @param selection
      * @return
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked") //$NON-NLS-1$
     private void createDatabaseTableWizard(IStructuredSelection selection) {
         Object obj = ((IStructuredSelection) selection).getFirstElement();
         RepositoryNode node = (RepositoryNode) obj;
@@ -535,7 +535,7 @@ public class CreateTableAction extends AbstractCreateAction {
                 String indiceString = string.substring(indiceIndex, string.length());
                 string = string.substring(0, indiceIndex) + (Integer.parseInt(indiceString) + 1);
             } catch (Exception e) {
-                string = string + "1";
+                string = string + "1"; //$NON-NLS-1$
             }
         }
         return string;

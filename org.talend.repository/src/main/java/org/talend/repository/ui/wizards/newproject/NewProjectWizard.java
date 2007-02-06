@@ -69,7 +69,7 @@ public class NewProjectWizard extends Wizard {
     public void addPages() {
         mainPage = new NewProjectWizardPage();
         addPage(mainPage);
-        setWindowTitle(Messages.getString("NewProjectWizard.windowTitle"));
+        setWindowTitle(Messages.getString("NewProjectWizard.windowTitle")); //$NON-NLS-1$
     }
 
     /**
@@ -85,7 +85,7 @@ public class NewProjectWizard extends Wizard {
                     .getCodeLanguage(mainPage.getLanguage()), repositoryContext.getUser());
             return true;
         } catch (PersistenceException e) {
-            MessageDialog.openError(getShell(), Messages.getString("NewProjectWizard.failureTitle"), Messages
+            MessageDialog.openError(getShell(), Messages.getString("NewProjectWizard.failureTitle"), Messages //$NON-NLS-1$
                     .getString("NewProjectWizard.failureText")); //$NON-NLS-1$ //$NON-NLS-2$
             MessageBoxExceptionHandler.process(e);
             return false;

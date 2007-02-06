@@ -153,20 +153,20 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
         initDragAndDrop();
         hookDoubleClickAction();
 
-        setPartName(Messages.getString("repository.title", ((RepositoryContext) CorePlugin.getContext().getProperty(
+        setPartName(Messages.getString("repository.title", ((RepositoryContext) CorePlugin.getContext().getProperty( //$NON-NLS-1$
                 Context.REPOSITORY_CONTEXT_KEY)).getProject()));
 
         viewer.getTree().addFocusListener(new FocusListener() {
 
             public void focusGained(FocusEvent e) {
-                log.trace("Repository gain focus");
+                log.trace("Repository gain focus"); //$NON-NLS-1$
                 IContextService contextService = (IContextService) RepositoryPlugin.getDefault().getWorkbench().getAdapter(
                         IContextService.class);
-                ca = contextService.activateContext("talend.repository");
+                ca = contextService.activateContext("talend.repository"); //$NON-NLS-1$
             }
 
             public void focusLost(FocusEvent e) {
-                log.trace("Repository lost focus");
+                log.trace("Repository lost focus"); //$NON-NLS-1$
                 if (ca != null) {
                     IContextService contextService = (IContextService) RepositoryPlugin.getDefault().getWorkbench().getAdapter(
                             IContextService.class);
@@ -294,7 +294,7 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
     }
 
     private void hookContextMenu() {
-        MenuManager menuMgr = new MenuManager("#PopupMenu");
+        MenuManager menuMgr = new MenuManager("#PopupMenu"); //$NON-NLS-1$
         menuMgr.setRemoveAllWhenShown(true);
 
         menuMgr.addMenuListener(new IMenuListener() {

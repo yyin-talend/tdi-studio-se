@@ -406,7 +406,7 @@ public class JobScriptsExportWizardPage extends WizardFileSystemResourceExportPa
 
         IStatus status = op.getStatus();
         if (!status.isOK()) {
-            ErrorDialog.openError(getContainer().getShell(), "", null, // no
+            ErrorDialog.openError(getContainer().getShell(), "", null, // no //$NON-NLS-1$
                     // special
                     // message
                     status);
@@ -529,7 +529,7 @@ public class JobScriptsExportWizardPage extends WizardFileSystemResourceExportPa
     protected void handleDestinationBrowseButtonPressed() {
         FileDialog dialog = new FileDialog(getContainer().getShell(), SWT.SAVE);
         dialog.setFilterExtensions(new String[] { "*.zip", "*.*" }); //$NON-NLS-1$ //$NON-NLS-2$
-        dialog.setText("");
+        dialog.setText(""); //$NON-NLS-1$
         String currentSourceString = getDestinationValue();
         int lastSeparatorIndex = currentSourceString.lastIndexOf(File.separator);
         if (lastSeparatorIndex != -1) {
@@ -613,6 +613,6 @@ public class JobScriptsExportWizardPage extends WizardFileSystemResourceExportPa
      * @see org.eclipse.ui.wizards.datatransfer.WizardFileSystemResourceExportPage1#destinationEmptyMessage()
      */
     protected String destinationEmptyMessage() {
-        return "";
+        return ""; //$NON-NLS-1$
     }
 }

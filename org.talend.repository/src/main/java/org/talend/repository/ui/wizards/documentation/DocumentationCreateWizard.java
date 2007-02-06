@@ -37,6 +37,7 @@ import org.talend.core.model.properties.DocumentationItem;
 import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.Property;
 import org.talend.core.ui.images.ECoreImage;
+import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.ui.wizards.RepositoryWizard;
@@ -72,14 +73,14 @@ public class DocumentationCreateWizard extends RepositoryWizard implements IDocu
 
         pathToSave = destinationPath;
 
-        setWindowTitle("New Documentation");
+        setWindowTitle(Messages.getString("DocumentationCreateWizard.windowTitle")); //$NON-NLS-1$
         setDefaultPageImageDescriptor(ImageProvider.getImageDesc(ECoreImage.DOCUMENTATION_WIZ));
         setNeedsProgressMonitor(true);
 
         property = PropertiesFactory.eINSTANCE.createProperty();
         property.setAuthor(((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY)).getUser());
         property.setVersion(VersionUtils.DEFAULT_VERSION);
-        property.setStatusCode("");
+        property.setStatusCode(""); //$NON-NLS-1$
 
         documentationItem = PropertiesFactory.eINSTANCE.createDocumentationItem();
         documentationItem.setProperty(property);
@@ -93,7 +94,7 @@ public class DocumentationCreateWizard extends RepositoryWizard implements IDocu
     @Override
     public void addPages() {
         mainPage = new DocumentationPage(property, pathToSave);
-        mainPage.setDescription("Create a new Documentation");
+        mainPage.setDescription(Messages.getString("DocumentationCreateWizard.mainPageDescription")); //$NON-NLS-1$
         mainPage.setUpdate(false);
         addPage(mainPage);
 
@@ -157,7 +158,7 @@ public class DocumentationCreateWizard extends RepositoryWizard implements IDocu
         // do nothing
     }
 
-    public static final String DEFAULT_FILENAME_EXT = "doc";
+    public static final String DEFAULT_FILENAME_EXT = "doc"; //$NON-NLS-1$
 
     /**
      * Getter for docOriginalExtension.
@@ -170,7 +171,7 @@ public class DocumentationCreateWizard extends RepositoryWizard implements IDocu
         } else {
             this.docOriginalExtension = DEFAULT_FILENAME_EXT;
         }
-        return "." + this.docOriginalExtension;
+        return "." + this.docOriginalExtension; //$NON-NLS-1$
     }
 
     /**

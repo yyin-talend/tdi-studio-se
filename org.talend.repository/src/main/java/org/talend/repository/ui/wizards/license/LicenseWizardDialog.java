@@ -57,7 +57,7 @@ public final class LicenseWizardDialog extends WizardDialog {
         super.createButtonsForButtonBar(parent);
         Button button = getButton(IDialogConstants.FINISH_ID);
         if (button != null) {
-            button.setText(Messages.getString("LicenseWizard.accept"));
+            button.setText(Messages.getString("LicenseWizard.accept")); //$NON-NLS-1$
             GridData data = new GridData(300, 23);
             button.setLayoutData(data);
         }

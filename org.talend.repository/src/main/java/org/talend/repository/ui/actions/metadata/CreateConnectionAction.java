@@ -124,7 +124,7 @@ public class CreateConnectionAction extends AbstractCreateAction {
             creation = true;
             break;
         case SYSTEM_FOLDER:
-            pathToSave = new Path("");
+            pathToSave = new Path(""); //$NON-NLS-1$
             connection = ConnectionFactory.eINSTANCE.createDatabaseConnection();
             creation = true;
             break;

@@ -72,7 +72,7 @@ public class FolderWizard extends Wizard {
     public void addPages() {
         mainPage = new FolderWizardPage(defaultLabel);
         addPage(mainPage);
-        setWindowTitle(Messages.getString("NewFolderWizard.windowTitle"));
+        setWindowTitle(Messages.getString("NewFolderWizard.windowTitle")); //$NON-NLS-1$
     }
 
     /**
@@ -89,7 +89,7 @@ public class FolderWizard extends Wizard {
             }
             return true;
         } catch (PersistenceException e) {
-            MessageDialog.openError(getShell(), Messages.getString("NewFolderWizard.failureTitle"), Messages
+            MessageDialog.openError(getShell(), Messages.getString("NewFolderWizard.failureTitle"), Messages //$NON-NLS-1$
                     .getString("NewFolderWizard.failureText")); //$NON-NLS-1$ //$NON-NLS-2$
             ExceptionHandler.process(e);
             return false;

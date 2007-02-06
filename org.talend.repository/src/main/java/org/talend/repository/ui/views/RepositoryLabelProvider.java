@@ -36,6 +36,7 @@ import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.ui.images.CoreImageProvider;
 import org.talend.core.ui.images.ECoreImage;
+import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
@@ -75,13 +76,13 @@ public class RepositoryLabelProvider extends LabelProvider implements IColorProv
             string.append(object.getLabel());
             // PTODO SML [FOLDERS++] temp code
             if (object.getType() != ERepositoryObjectType.FOLDER) {
-                string.append(" " + object.getVersion());
+                string.append(" " + object.getVersion()); //$NON-NLS-1$
             }
 
             IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
             try {
                 if (factory.getStatus(object) == ERepositoryStatus.DELETED) {
-                    string.append(" (" + factory.getOldPath(object) + ")");
+                    string.append(" (" + factory.getOldPath(object) + ")"); //$NON-NLS-1$ //$NON-NLS-2$
                 }
             } catch (PersistenceException e) {
                 ExceptionHandler.process(e);

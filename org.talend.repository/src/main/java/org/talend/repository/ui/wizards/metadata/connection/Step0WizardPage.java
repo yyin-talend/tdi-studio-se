@@ -27,6 +27,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.repository.i18n.Messages;
 import org.talend.repository.ui.wizards.PropertiesWizardPage;
 
 /**
@@ -41,11 +42,11 @@ public class Step0WizardPage extends PropertiesWizardPage {
 
     public Step0WizardPage(Property property, IPath destinationPath, ERepositoryObjectType type, boolean readOnly,
             boolean editPath) {
-        super("WizardPage", property, destinationPath, readOnly, editPath);
+        super("WizardPage", property, destinationPath, readOnly, editPath); //$NON-NLS-1$
         this.type = type;
 
-        setTitle("title");
-        setDescription("desc");
+        setTitle(Messages.getString("Step0WizardPage.title")); //$NON-NLS-1$
+        setDescription(Messages.getString("Step0WizardPage.description")); //$NON-NLS-1$
     }
 
     /*

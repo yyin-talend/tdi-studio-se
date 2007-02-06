@@ -142,7 +142,7 @@ public class LoginDialog extends TitleAreaDialog {
             }
         } catch (BusinessException e) {
             ErrorDialogWidthDetailArea errorDialog = new ErrorDialogWidthDetailArea(getShell(), RepositoryPlugin.PLUGIN_ID,
-                    Messages.getString("RegisterWizardPage.serverCommunicationProblem"), e.getMessage());
+                    Messages.getString("RegisterWizardPage.serverCommunicationProblem"), e.getMessage()); //$NON-NLS-1$
         }
 
         loginComposite = new LoginComposite(container, SWT.NONE, this);

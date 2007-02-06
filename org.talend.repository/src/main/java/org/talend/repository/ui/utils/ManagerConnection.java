@@ -115,7 +115,7 @@ public class ManagerConnection {
             isValide = testConnection.getResult();
             messageException = testConnection.getMessageException();
         } catch (Exception e) {
-            log.error(Messages.getString("CommonWizard.exception") + "\n" + e.toString());
+            log.error(Messages.getString("CommonWizard.exception") + "\n" + e.toString()); //$NON-NLS-1$ //$NON-NLS-2$
         }
         return isValide;
     }
@@ -134,7 +134,7 @@ public class ManagerConnection {
             isValide = testConnection.getResult();
             messageException = testConnection.getMessageException();
         } catch (Exception e) {
-            log.error(Messages.getString("CommonWizard.exception") + "\n" + e.toString());
+            log.error(Messages.getString("CommonWizard.exception") + "\n" + e.toString()); //$NON-NLS-1$ //$NON-NLS-2$
         }
         return isValide;
     }

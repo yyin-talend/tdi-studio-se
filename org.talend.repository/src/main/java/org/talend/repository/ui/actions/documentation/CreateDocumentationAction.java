@@ -34,6 +34,7 @@ import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.ui.images.BusinessImageProvider;
 import org.talend.core.ui.images.CoreImageProvider;
 import org.talend.core.ui.images.ECoreImage;
+import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNodeUtilities;
 import org.talend.repository.model.RepositoryNode.ENodeType;
@@ -55,8 +56,8 @@ public class CreateDocumentationAction extends AContextualAction {
     public CreateDocumentationAction() {
         super();
 
-        setText("Add documentation");
-        setToolTipText("Add a new documentation item");
+        setText(Messages.getString("CreateDocumentationAction.createDocActionText.addDoc")); //$NON-NLS-1$
+        setToolTipText(Messages.getString("CreateDocumentationAction.createDocActionTipText.addDocItem")); //$NON-NLS-1$
         Image folderImg = ImageProvider.getImage(ECoreImage.DOCUMENTATION_ICON);
         this.setImageDescriptor(BusinessImageProvider.getImageWithNew(folderImg));
     }
@@ -108,7 +109,7 @@ public class CreateDocumentationAction extends AContextualAction {
         if (node.getType() == ENodeType.SIMPLE_FOLDER || node.getType() == ENodeType.SYSTEM_FOLDER) {
             path = RepositoryNodeUtilities.getPath(node);
         } else {
-            path = new Path("");
+            path = new Path(""); //$NON-NLS-1$
         }
         return path;
     }

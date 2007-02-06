@@ -40,9 +40,9 @@ public class RegisterWizard extends Wizard {
 
     private boolean proxyEnabled = false;
 
-    private String proxyHost = "";
+    private String proxyHost = ""; //$NON-NLS-1$
 
-    private String proxyPort = "";
+    private String proxyPort = ""; //$NON-NLS-1$
 
     /**
      * Constructs a new RegisterWizard.
@@ -63,7 +63,7 @@ public class RegisterWizard extends Wizard {
     public void addPages() {
         mainPage = new RegisterWizardPage();
         addPage(mainPage);
-        setWindowTitle(Messages.getString("RegisterWizard.windowTitle", BrandingService.getInstance().getFullProductName()));
+        setWindowTitle(Messages.getString("RegisterWizard.windowTitle", BrandingService.getInstance().getFullProductName())); //$NON-NLS-1$
     }
 
     /**

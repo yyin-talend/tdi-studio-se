@@ -54,7 +54,7 @@ public class LicenseWizard extends Wizard {
     public void addPages() {
         mainPage = new LicenseWizardPage();
         addPage(mainPage);
-        setWindowTitle(Messages.getString("LicenseWizard.windowTitle"));
+        setWindowTitle(Messages.getString("LicenseWizard.windowTitle")); //$NON-NLS-1$
         
     }
 

@@ -23,6 +23,7 @@ package org.talend.repository.ui.wizards.metadata.connection.files.xml.dnd;
 
 import org.eclipse.swt.dnd.ByteArrayTransfer;
 import org.eclipse.swt.dnd.TransferData;
+import org.talend.repository.i18n.Messages;
 
 /**
  * DOC amaumont class global comment. Detailled comment <br/>
@@ -34,7 +35,7 @@ public class XPathTransfer extends ByteArrayTransfer {
 
     private XmlToSchemaDraggedData draggedData;
 
-    private static final String XML_NODE_TO_XPATH_TYPE_NAME = "XML_NODE_TO_XPATH_ENTRIES";
+    private static final String XML_NODE_TO_XPATH_TYPE_NAME = "XML_NODE_TO_XPATH_ENTRIES"; //$NON-NLS-1$
 
     private static final int XML_NODE_TO_XPATH_ENTRIES_ID = registerType(XML_NODE_TO_XPATH_TYPE_NAME);
 

@@ -138,7 +138,7 @@ public class RegisterWizardPage extends WizardPage {
     private String[] initiateCountryList() {
         SortedSet<String> countryList = new TreeSet<String>();
         for (Locale locale : Locale.getAvailableLocales()) {
-            if (locale.getDisplayCountry().compareTo("") != 0) {
+            if (locale.getDisplayCountry().compareTo("") != 0) { //$NON-NLS-1$
                 countryList.add(locale.getDisplayCountry());
             }
         }
@@ -229,7 +229,7 @@ public class RegisterWizardPage extends WizardPage {
 
     protected void createHttpProxy(Composite composite, int columnSpan) {
         Group group = new Group(composite, SWT.NONE);
-        group.setText(Messages.getString("RegisterWizardPage.proxyGroup"));
+        group.setText(Messages.getString("RegisterWizardPage.proxyGroup")); //$NON-NLS-1$
         GridLayout layout = new GridLayout();
         layout.numColumns = 2;
         group.setLayout(layout);
@@ -238,19 +238,19 @@ public class RegisterWizardPage extends WizardPage {
         group.setLayoutData(gd);
 
         enableHttpProxy = new Button(group, SWT.CHECK);
-        enableHttpProxy.setText(Messages.getString("RegisterWizardPage.enableHttpProxy"));
+        enableHttpProxy.setText(Messages.getString("RegisterWizardPage.enableHttpProxy")); //$NON-NLS-1$
         gd = new GridData();
         gd.horizontalSpan = 2;
         enableHttpProxy.setLayoutData(gd);
 
         httpProxyHostLabel = new Label(group, SWT.NONE);
-        httpProxyHostLabel.setText(Messages.getString("RegisterWizardPage.httpProxyHost"));
+        httpProxyHostLabel.setText(Messages.getString("RegisterWizardPage.httpProxyHost")); //$NON-NLS-1$
 
         httpProxyHostText = new Text(group, SWT.SINGLE | SWT.BORDER);
         httpProxyHostText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
         httpProxyPortLabel = new Label(group, SWT.NONE);
-        httpProxyPortLabel.setText(Messages.getString("RegisterWizardPage.httpProxyPort"));
+        httpProxyPortLabel.setText(Messages.getString("RegisterWizardPage.httpProxyPort")); //$NON-NLS-1$
 
         httpProxyPortText = new Text(group, SWT.SINGLE | SWT.BORDER);
         httpProxyPortText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
@@ -275,7 +275,7 @@ public class RegisterWizardPage extends WizardPage {
                 } catch (NumberFormatException nfe) {
                 }
                 setPageComplete(false);
-                setErrorMessage(Messages.getString("RegisterWizardPage.invalidPort"));
+                setErrorMessage(Messages.getString("RegisterWizardPage.invalidPort")); //$NON-NLS-1$
             }
         });
 

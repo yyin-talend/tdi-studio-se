@@ -41,6 +41,7 @@ import org.talend.core.model.general.Project;
 import org.talend.core.model.properties.DocumentationItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.ui.images.ECoreImage;
+import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.RepositoryConstants;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.ResourceModelUtils;
@@ -61,8 +62,8 @@ public class OpenDocumentationAction extends AContextualAction {
     public OpenDocumentationAction() {
         super();
 
-        setText("Open documentation");
-        setToolTipText("Open documentation");
+        setText(Messages.getString("OpenDocumentationAction.openDocAction.openDoc")); //$NON-NLS-1$
+        setToolTipText(Messages.getString("OpenDocumentationAction.openDocAcitonTipText.openDoc")); //$NON-NLS-1$
         setImageDescriptor(ImageProvider.getImageDesc(ECoreImage.DOCUMENTATION_ICON));
     }
 
@@ -102,7 +103,7 @@ public class OpenDocumentationAction extends AContextualAction {
             try {
                 IProject fsProject = ResourceModelUtils.getProject(project);
                 IFolder tmpFolder = ResourceUtils.getFolder(fsProject, RepositoryConstants.TEMP_DIRECTORY, true);
-                String tmpFilename = "DOC" + documentationItem.getProperty().getId();
+                String tmpFilename = "DOC" + documentationItem.getProperty().getId(); //$NON-NLS-1$
                 IFile fileTmp = tmpFolder.getFile(tmpFilename);
                 File file = fileTmp.getLocation().toFile();
                 documentationItem.getContent().setInnerContentToFile(file);

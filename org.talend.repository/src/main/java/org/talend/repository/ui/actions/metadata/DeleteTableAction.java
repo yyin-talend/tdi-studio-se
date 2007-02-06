@@ -56,13 +56,13 @@ import org.talend.repository.ui.views.RepositoryContentProvider.MetadataTableRep
  */
 public class DeleteTableAction extends AContextualAction {
 
-    private static final String DELETE_LOGICAL_TITLE = Messages.getString("DeleteAction.action.logicalTitle");
+    private static final String DELETE_LOGICAL_TITLE = Messages.getString("DeleteAction.action.logicalTitle"); //$NON-NLS-1$
 
-    private static final String DELETE_FOREVER_TITLE = Messages.getString("DeleteAction.action.foreverTitle");
+    private static final String DELETE_FOREVER_TITLE = Messages.getString("DeleteAction.action.foreverTitle"); //$NON-NLS-1$
 
-    private static final String DELETE_LOGICAL_TOOLTIP = Messages.getString("DeleteAction.action.logicalToolTipText");
+    private static final String DELETE_LOGICAL_TOOLTIP = Messages.getString("DeleteAction.action.logicalToolTipText"); //$NON-NLS-1$
 
-    private static final String DELETE_FOREVER_TOOLTIP = Messages.getString("DeleteAction.action.logicalToolTipText");
+    private static final String DELETE_FOREVER_TOOLTIP = Messages.getString("DeleteAction.action.logicalToolTipText"); //$NON-NLS-1$
 
     public DeleteTableAction() {
         super();
@@ -90,9 +90,9 @@ public class DeleteTableAction extends AContextualAction {
                         MetadataTable metadataTable = ((MetadataTableRepositoryObject) node.getObject()).getTable();
                         if (TableHelper.isDeleted(metadataTable)) {
                             if (confirm == null) {
-                                String title = Messages.getString("DeleteAction.dialog.title");
-                                String message = Messages.getString("DeleteAction.dialog.message1") + "\n"
-                                        + Messages.getString("DeleteAction.dialog.message2");
+                                String title = Messages.getString("DeleteAction.dialog.title"); //$NON-NLS-1$
+                                String message = Messages.getString("DeleteAction.dialog.message1") + "\n" //$NON-NLS-1$ //$NON-NLS-2$
+                                        + Messages.getString("DeleteAction.dialog.message2"); //$NON-NLS-1$
                                 confirm = (MessageDialog.openQuestion(new Shell(), title, message));
                             }
                             if (confirm) {

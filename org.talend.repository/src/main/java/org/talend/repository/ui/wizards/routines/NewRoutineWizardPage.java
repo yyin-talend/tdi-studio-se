@@ -27,6 +27,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.repository.i18n.Messages;
 import org.talend.repository.ui.wizards.PropertiesWizardPage;
 
 /**
@@ -46,7 +47,7 @@ public class NewRoutineWizardPage extends PropertiesWizardPage {
     public NewRoutineWizardPage(Property property, IPath destinationPath) {
         super("WizardPage", property, destinationPath); //$NON-NLS-1$
 
-        setTitle("New routine");
+        setTitle(Messages.getString("NewRoutineWizardPage.title")); //$NON-NLS-1$
         setDescription(DESC);
     }
 

@@ -80,7 +80,7 @@ public class NewRoutineWizard extends Wizard {
         this.property.setAuthor(((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY))
                 .getUser());
         this.property.setVersion(VersionUtils.DEFAULT_VERSION);
-        this.property.setStatusCode("");
+        this.property.setStatusCode(""); //$NON-NLS-1$
 
         routineItem = PropertiesFactory.eINSTANCE.createRoutineItem();
 
@@ -120,7 +120,7 @@ public class NewRoutineWizard extends Wizard {
     public void addPages() {
         mainPage = new NewRoutineWizardPage(property, path);
         addPage(mainPage);
-        setWindowTitle("New routine");
+        setWindowTitle(Messages.getString("NewRoutineWizard.title")); //$NON-NLS-1$
     }
 
     /**
@@ -133,8 +133,7 @@ public class NewRoutineWizard extends Wizard {
             property.setId(repositoryFactory.getNextId());
             repositoryFactory.create(routineItem, mainPage.getDestinationPath());
         } catch (PersistenceException e) {
-            MessageDialog.openError(getShell(), Messages.getString("NewProcessWizard.failureTitle"), Messages
-                    .getString("NewProcessWizard.failureText")); //$NON-NLS-1$ //$NON-NLS-2$
+            MessageDialog.openError(getShell(), Messages.getString("NewProcessWizard.failureTitle"), ""); //$NON-NLS-1$ //$NON-NLS-2$
             ExceptionHandler.process(e);
         }
 

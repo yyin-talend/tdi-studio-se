@@ -70,7 +70,7 @@ public class TreePopulator {
     public void populateTree(String filePath, ATreeNode treeNode) {
             availableXmlTree.removeAll();
         xPathToTreeItem.clear();
-        if (filePath != null && !filePath.equals("")) {
+        if (filePath != null && !filePath.equals("")) { //$NON-NLS-1$
             int numberOfElement = MAXIMUM_ROWS_TO_PREVIEW;
             try {
                 treeNode = SchemaPopulationUtil.getSchemaTree(filePath, true, numberOfElement);
@@ -82,11 +82,11 @@ public class TreePopulator {
                 ExceptionHandler.process(e);
             }
             if (treeNode == null || treeNode.getChildren().length == 0) {
-                OdaException ex = new OdaException(Messages.getString("dataset.error.populateXMLTree"));
+                OdaException ex = new OdaException(Messages.getString("dataset.error.populateXMLTree")); //$NON-NLS-1$
                 ExceptionHandler.process(ex);
             } else {
                 Object[] childs = treeNode.getChildren();
-                populateTreeItems(availableXmlTree, childs, 0, "");
+                populateTreeItems(availableXmlTree, childs, 0, ""); //$NON-NLS-1$
                 this.filePath = filePath;
             }
         }
@@ -115,12 +115,12 @@ public class TreePopulator {
                 treeItem.setData(treeNode);
                 int type = treeNode.getType();
                 if (type == ATreeNode.ATTRIBUTE_TYPE) {
-                    treeItem.setText("@" + treeNode.getValue().toString());
+                    treeItem.setText("@" + treeNode.getValue().toString()); //$NON-NLS-1$
                 } else {
                     treeItem.setText(treeNode.getValue().toString());
                 }
 
-                String currentXPath = parentXPath + "/" + treeItem.getText();
+                String currentXPath = parentXPath + "/" + treeItem.getText(); //$NON-NLS-1$
                 xPathToTreeItem.put(currentXPath, treeItem);
 
                 if (treeNode.getChildren() != null && treeNode.getChildren().length > 0) {

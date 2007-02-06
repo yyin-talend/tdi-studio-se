@@ -32,6 +32,7 @@ import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.model.properties.DocumentationItem;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.ui.images.ECoreImage;
+import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.ui.wizards.RepositoryWizard;
@@ -61,7 +62,7 @@ public class DocumentationUpdateWizard extends RepositoryWizard implements IDocu
 
         this.repositoryObject = object;
 
-        setWindowTitle("Update Documentation");
+        setWindowTitle(Messages.getString("DocumentationUpdateWizard.windowTitle")); //$NON-NLS-1$
         setDefaultPageImageDescriptor(ImageProvider.getImageDesc(ECoreImage.DOCUMENTATION_WIZ));
         setNeedsProgressMonitor(false);
         initLockStrategy();
@@ -75,7 +76,7 @@ public class DocumentationUpdateWizard extends RepositoryWizard implements IDocu
     @Override
     public void addPages() {
         mainPage = new DocumentationPage(documentationItem.getProperty(), pathToSave);
-        mainPage.setDescription("Update the Documentation");
+        mainPage.setDescription(Messages.getString("DocumentationUpdateWizard.mainPageDescription")); //$NON-NLS-1$
         mainPage.setUpdate(true);
         mainPage.setEditPath(false);
         addPage(mainPage);
@@ -160,9 +161,9 @@ public class DocumentationUpdateWizard extends RepositoryWizard implements IDocu
      */
     public String getDocOriginalExtension() {
         if (getDocFilePath() != null) {
-            return "." + getDocFilePath().getFileExtension();
+            return "." + getDocFilePath().getFileExtension(); //$NON-NLS-1$
         } else {
-            return "." + documentationItem.getExtension();
+            return "." + documentationItem.getExtension(); //$NON-NLS-1$
         }
     }
 
@@ -184,7 +185,7 @@ public class DocumentationUpdateWizard extends RepositoryWizard implements IDocu
         if (getDocFilePath() != null) {
             return getDocFilePath().lastSegment();
         } else {
-            return documentationItem.getName() + "." + documentationItem.getExtension();
+            return documentationItem.getName() + "." + documentationItem.getExtension(); //$NON-NLS-1$
         }
     }
 

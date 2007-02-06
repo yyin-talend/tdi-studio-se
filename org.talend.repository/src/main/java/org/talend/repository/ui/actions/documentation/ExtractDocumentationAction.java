@@ -34,6 +34,7 @@ import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.model.properties.DocumentationItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.ui.images.ECoreImage;
+import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNode.ENodeType;
 import org.talend.repository.ui.actions.AContextualAction;
@@ -52,8 +53,8 @@ public class ExtractDocumentationAction extends AContextualAction {
     public ExtractDocumentationAction() {
         super();
 
-        setText("Save as...");
-        setToolTipText("Extract documentation to the file system");
+        setText(Messages.getString("ExtractDocumentationAction.text.saveAs")); //$NON-NLS-1$
+        setToolTipText(Messages.getString("ExtractDocumentationAction.toolTipText.extractDoctoFileSys")); //$NON-NLS-1$
         setImageDescriptor(ImageProvider.getImageDesc(ECoreImage.DOCUMENTATION_ICON));
     }
 
@@ -85,7 +86,7 @@ public class ExtractDocumentationAction extends AContextualAction {
         FileDialog fileDlg = new FileDialog(Display.getCurrent().getActiveShell(), SWT.SAVE);
         String initialFileName = documentationItem.getName();
         if (documentationItem.getExtension() != null) {
-            initialFileName = initialFileName + "." + documentationItem.getExtension();
+            initialFileName = initialFileName + "." + documentationItem.getExtension(); //$NON-NLS-1$
         }
         fileDlg.setFileName(initialFileName);
         String filename = fileDlg.open();

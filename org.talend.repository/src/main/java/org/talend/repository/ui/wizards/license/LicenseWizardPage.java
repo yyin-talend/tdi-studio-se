@@ -106,17 +106,17 @@ public class LicenseWizardPage extends WizardPage {
      * @throws IOException
      */
     private String getLicense() {
-        String license = "";
+        String license = ""; //$NON-NLS-1$
         try {
             final Bundle b = Platform.getBundle(RepositoryPlugin.PLUGIN_ID);
-            final URL url = FileLocator.toFileURL(FileLocator.find(b, new Path("resources/license.txt"), null));
+            final URL url = FileLocator.toFileURL(FileLocator.find(b, new Path("resources/license.txt"), null)); //$NON-NLS-1$
 
             FileReader fileReader = new FileReader(new File(url.getPath()));
             BufferedReader in = new BufferedReader(fileReader);
 
-            String licenseLine = "";
+            String licenseLine = ""; //$NON-NLS-1$
             while ((licenseLine = in.readLine()) != null) {
-                license += licenseLine + "\n";
+                license += licenseLine + "\n"; //$NON-NLS-1$
             }
 
         } catch (FileNotFoundException e) {

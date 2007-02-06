@@ -29,6 +29,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
+import org.talend.repository.i18n.Messages;
 
 /**
  * DOC mhelleboid class global comment. Detailled comment <br/>
@@ -67,7 +68,7 @@ public class DescriptionSection extends AbstractSection {
         descriptionText.setLayoutData(data);
         addFocusListener(descriptionText);
 
-        CLabel labelLabel = getWidgetFactory().createCLabel(composite, "Description");
+        CLabel labelLabel = getWidgetFactory().createCLabel(composite, Messages.getString("DescriptionSection.0")); //$NON-NLS-1$
         data = new FormData();
         data.left = new FormAttachment(0, 0);
         data.right = new FormAttachment(descriptionText, -ITabbedPropertyConstants.HSPACE);
@@ -79,7 +80,7 @@ public class DescriptionSection extends AbstractSection {
 
     @Override
     public void refresh() {
-        descriptionText.setText(getDescription() != null ? getDescription().toString() : "");
+        descriptionText.setText(getDescription() != null ? getDescription().toString() : ""); //$NON-NLS-1$
     }
 
     protected String getDescription() {

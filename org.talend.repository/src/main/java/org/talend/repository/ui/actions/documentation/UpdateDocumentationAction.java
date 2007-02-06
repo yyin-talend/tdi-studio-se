@@ -30,6 +30,7 @@ import org.eclipse.ui.PlatformUI;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.ui.images.ECoreImage;
+import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
@@ -52,8 +53,8 @@ public class UpdateDocumentationAction extends AContextualAction {
     public UpdateDocumentationAction() {
         super();
 
-        setText("Update documentation...");
-        setToolTipText("Update documentation");
+        setText(Messages.getString("UpdateDocumentationAction.updateDocActionText.updateDoc")); //$NON-NLS-1$
+        setToolTipText(Messages.getString("UpdateDocumentationAction.updateDocActionTipText.updateDoc")); //$NON-NLS-1$
         setImageDescriptor(ImageProvider.getImageDesc(ECoreImage.DOCUMENTATION_ICON));
     }
 
