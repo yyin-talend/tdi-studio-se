@@ -15,7 +15,7 @@
             class="org.talend.designer.runprocess.ui.views.ProcessView"
             icon="icons/process_view.gif"
             id="org.talend.designer.runprocess.ui.views.processview"
-            name="%ProcessView.label"/>
+            name="%runJobAction.title"/>
    </extension>
    <extension
          point="org.eclipse.ui.commands">
