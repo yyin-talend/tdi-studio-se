@@ -41,7 +41,10 @@ import org.eclipse.swt.graphics.RGB;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PlatformUI;
 import org.talend.commons.exception.ExceptionHandler;
+import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
+import org.talend.core.context.Context;
+import org.talend.core.context.RepositoryContext;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IComponentsFactory;
 import org.talend.core.model.components.IODataComponent;
@@ -61,6 +64,9 @@ import org.talend.core.model.process.INodeReturn;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.Problem;
 import org.talend.core.model.process.Problem.ProblemStatus;
+import org.talend.core.model.temp.ECodeLanguage;
+import org.talend.designer.codegen.IModuleService;
+import org.talend.designer.codegen.javamodule.IJavaModuleService;
 import org.talend.designer.codegen.perlmodule.IPerlModuleService;
 import org.talend.designer.codegen.perlmodule.ModuleNeeded;
 import org.talend.designer.codegen.perlmodule.ModuleNeeded.ModuleStatus;
@@ -850,9 +856,17 @@ public class Node extends Element implements INode {
 
     private void checkModules() {
         // List<ModuleNeeded> list = ModulesNeededProvider.getModulesNeeded(getComponentName());
-        IPerlModuleService perlModuleService = (IPerlModuleService) GlobalServiceRegister.getDefault().getService(
-                IPerlModuleService.class);
-        List<ModuleNeeded> list = perlModuleService.getModulesNeeded(component.getName());
+        
+        Class toEval = null;
+        if (((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY)).getProject()
+                .getLanguage().equals(ECodeLanguage.JAVA)) {
+            toEval = IJavaModuleService.class;
+        } else {
+            toEval = IPerlModuleService.class;
+        }
+        IModuleService moduleService = (IModuleService) GlobalServiceRegister.getDefault().getService(toEval);
+        
+        List<ModuleNeeded> list = moduleService.getModulesNeeded(component.getName());
         for (ModuleNeeded current : list) {
             Problem problem = getProblem(current);
             if (problem != null) {
