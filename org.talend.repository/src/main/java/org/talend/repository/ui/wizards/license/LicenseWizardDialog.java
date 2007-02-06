@@ -30,17 +30,17 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
 import org.talend.repository.i18n.Messages;
 
-
 /**
- * DOC mhirt  class global comment. Detailled comment
- * <br/>
- *
+ * DOC mhirt class global comment. Detailled comment <br/>
+ * 
  * $Id$
- *
+ * 
  */
 public final class LicenseWizardDialog extends WizardDialog {
+
     /**
      * DOC mhirt LicenseWizardDialog constructor comment.
+     * 
      * @param parentShell
      * @param newWizard
      */
@@ -49,7 +49,9 @@ public final class LicenseWizardDialog extends WizardDialog {
         // TODO Auto-generated constructor stub
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.eclipse.jface.wizard.WizardDialog#createButtonsForButtonBar(org.eclipse.swt.widgets.Composite)
      */
     @Override
@@ -58,9 +60,14 @@ public final class LicenseWizardDialog extends WizardDialog {
         Button button = getButton(IDialogConstants.FINISH_ID);
         if (button != null) {
             button.setText(Messages.getString("LicenseWizard.accept")); //$NON-NLS-1$
-            GridData data = new GridData(300, 23);
+            GridData data = new GridData(250, 23);
             button.setLayoutData(data);
         }
+        Button buttonCancle = getButton(IDialogConstants.CANCEL_ID);
+        if (buttonCancle != null) {
+            buttonCancle.setText(Messages.getString("LicenseWizard.btnCancle")); //$NON-NLS-1$
+            GridData data = new GridData(-1, 23);
+            buttonCancle.setLayoutData(data);
+        }
     }
-    
 }
