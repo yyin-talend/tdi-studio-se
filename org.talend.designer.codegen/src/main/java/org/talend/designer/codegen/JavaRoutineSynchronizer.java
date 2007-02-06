@@ -21,12 +21,25 @@
 // ============================================================================
 package org.talend.designer.codegen;
 
-import org.eclipse.core.resources.IFile;
-import org.talend.commons.exception.SystemException;
-import org.talend.core.model.properties.RoutineItem;
-import org.talend.designer.codegen.i18n.Messages;
+import java.io.IOException;
+import java.util.List;
 
-import com.sun.org.apache.xml.internal.utils.UnImplNode;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.CoreException;
+import org.talend.commons.exception.PersistenceException;
+import org.talend.commons.exception.SystemException;
+import org.talend.commons.utils.generation.JavaUtils;
+import org.talend.core.CorePlugin;
+import org.talend.core.context.Context;
+import org.talend.core.context.RepositoryContext;
+import org.talend.core.model.general.Project;
+import org.talend.core.model.properties.RoutineItem;
+import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.designer.runprocess.IRunProcessService;
+import org.talend.repository.model.IProxyRepositoryFactory;
 
 /**
  * Routine synchronizer of java project.
@@ -45,10 +58,20 @@ public class JavaRoutineSynchronizer implements IRoutineSynchronizer {
      * @see org.talend.designer.codegen.IRoutineSynchronizer#syncAllRoutines()
      */
     public void syncAllRoutines() throws SystemException {
-        // TODO operation need to be done as perl done.
-        throw new UnsupportedOperationException(
-                Messages.getString("JavaRoutineSynchronizer.UnsupportedOperation.Exception1")); //$NON-NLS-1$
+        IProxyRepositoryFactory repositoryFactory = CodeGeneratorActivator.getDefault().getRepositoryService()
+                .getProxyRepositoryFactory();
 
+        List<IRepositoryObject> routines;
+        try {
+            routines = repositoryFactory.getAll(ERepositoryObjectType.ROUTINES);
+        } catch (PersistenceException e) {
+            throw new SystemException(e);
+        }
+
+        for (IRepositoryObject routine : routines) {
+            RoutineItem routineItem = (RoutineItem) routine.getProperty().getItem();
+            syncRoutine(routineItem);
+        }
     }
 
     /*
@@ -57,10 +80,30 @@ public class JavaRoutineSynchronizer implements IRoutineSynchronizer {
      * @see org.talend.designer.codegen.IRoutineSynchronizer#syncRoutine(org.talend.core.model.properties.RoutineItem)
      */
     public IFile syncRoutine(RoutineItem routineItem) throws SystemException {
-        // TODO operation need to be done as perl done.
-        throw new UnsupportedOperationException(
-                Messages.getString("JavaRoutineSynchronizer.UnsupportedOperation.Exception2")); //$NON-NLS-1$
+        try {
+            IRunProcessService service = CodeGeneratorActivator.getDefault().getRunProcessService();
+            IProject javaProject;
+            javaProject = service.getJavaProject();
+            Project project = ((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY))
+                    .getProject();
+            IFolder rep = javaProject.getFolder(JavaUtils.JAVA_SRC_DIRECTORY + "/"
+                    + project.getTechnicalLabel().toLowerCase() + "/" + JavaUtils.JAVA_ROUTINES_DIRECTORY);
+            if (!rep.exists()) {
+                rep.create(true, true, null);
+            }
+            IFile file = javaProject.getFile(JavaUtils.JAVA_SRC_DIRECTORY + "/"
+                    + project.getTechnicalLabel().toLowerCase() + "/" + JavaUtils.JAVA_ROUTINES_DIRECTORY + "/"
+                    + routineItem.getProperty().getLabel() + JavaUtils.JAVA_EXTENSION);
 
-        // return null;
+            routineItem.getContent().setInnerContentToFile(file.getLocation().toFile());
+            if (!file.exists()) {
+                file.refreshLocal(1, null);
+            }
+            return file;
+        } catch (CoreException e) {
+            throw new SystemException(e);
+        } catch (IOException e) {
+            throw new SystemException(e);
+        }
     }
 }
