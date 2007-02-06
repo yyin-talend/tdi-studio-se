@@ -22,8 +22,8 @@
 package org.talend.designer.mapper.language;
 
 import org.talend.commons.utils.data.text.StringHelper;
+import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.ICodeProblemsChecker;
-import org.talend.core.model.temp.ECodeLanguage;
 
 /**
  * DOC amaumont class global comment. Detailled comment <br/>

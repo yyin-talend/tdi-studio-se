@@ -36,7 +36,7 @@ import org.talend.commons.ui.swt.colorstyledtext.ColorManager;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
-import org.talend.core.model.temp.ECodeLanguage;
+import org.talend.core.language.ECodeLanguage;
 import org.talend.core.ui.metadata.editor.MetadataTableEditorView;
 import org.talend.designer.mapper.MapperMain;
 import org.talend.designer.mapper.i18n.Messages;

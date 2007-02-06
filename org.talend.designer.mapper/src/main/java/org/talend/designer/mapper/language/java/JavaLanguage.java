@@ -21,8 +21,8 @@
 // ============================================================================
 package org.talend.designer.mapper.language.java;
 
+import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.ICodeProblemsChecker;
-import org.talend.core.model.temp.ECodeLanguage;
 import org.talend.designer.mapper.Activator;
 import org.talend.designer.mapper.language.AbstractLanguage;
 import org.talend.designer.runprocess.IRunProcessService;

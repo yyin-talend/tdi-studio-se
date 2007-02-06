@@ -48,8 +48,8 @@ import org.talend.commons.ui.swt.tableviewer.selection.LineSelectionEvent;
 import org.talend.commons.utils.data.bean.IBeanPropertyAccessors;
 import org.talend.commons.utils.data.list.IListenableListListener;
 import org.talend.commons.utils.data.list.ListenableListEvent;
+import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.metadata.MetadataTalendType;
-import org.talend.core.model.temp.ECodeLanguage;
 import org.talend.designer.mapper.i18n.Messages;
 import org.talend.designer.mapper.language.LanguageProvider;
 import org.talend.designer.mapper.managers.MapperManager;
@@ -144,31 +144,9 @@ public class VarsDataMapTableView extends DataMapTableView {
 
         if (codeLanguage == ECodeLanguage.JAVA) {
 
-//            column = new TableViewerCreatorColumn(tableViewerCreatorForColumns);
-//            column.setTitle("Nullable");
-//            column.setBeanPropertyAccessors(new IBeanPropertyAccessors<VarTableEntry, Boolean>() {
-//                
-//                public Boolean get(VarTableEntry bean) {
-//                    return bean.isNullable() ? Boolean.TRUE : Boolean.FALSE;
-//                }
-//                
-//                public void set(VarTableEntry bean, Boolean value) {
-//                    bean.setNullable(value.booleanValue());
-//                }
-//                
-//            });
-//            column.setModifiable(true);
-//            column.setWidth(12);
-//            column.setDisplayedValue("");
-//            column.setResizable(false);
-//            CheckboxTableEditorContent checkboxTableEditorContent = new CheckboxTableEditorContent();
-//            checkboxTableEditorContent.setToolTipText("Nullable");
-//            column.setTableEditorContent(checkboxTableEditorContent);
-//            column.setToolTipHeader("Nullable");
-            
             String[] arrayTalendTypes = new String[0];
             try {
-                arrayTalendTypes = MetadataTalendType.loadTalendTypes(MetadataTalendType.LANGUAGE_JAVA, false);
+                arrayTalendTypes = MetadataTalendType.getTalendTypes();
             } catch (NoClassDefFoundError e) {
                 // shouln't be happend
                 e.printStackTrace();
@@ -196,7 +174,7 @@ public class VarsDataMapTableView extends DataMapTableView {
             column.setModifiable(true);
             column.setWeight(10);
             column.setCellEditor(new ComboBoxCellEditor(tableViewerCreatorForColumns.getTable(), arrayTalendTypes), comboValueAdapter);
-            
+
         }
 
         column = new TableViewerCreatorColumn(tableViewerCreatorForColumns);

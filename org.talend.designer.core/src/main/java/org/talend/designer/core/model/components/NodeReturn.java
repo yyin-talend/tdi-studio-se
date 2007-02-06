@@ -21,9 +21,9 @@
 // ============================================================================
 package org.talend.designer.core.model.components;
 
+import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.metadata.EMetadataType;
 import org.talend.core.model.process.INodeReturn;
-import org.talend.core.model.temp.ECodeLanguage;
 import org.talend.designer.core.i18n.Messages;
 
 /**

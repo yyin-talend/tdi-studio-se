@@ -21,8 +21,8 @@
 // ============================================================================
 package org.talend.designer.runprocess.language;
 
+import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.ICodeProblemsChecker;
-import org.talend.core.model.temp.ECodeLanguage;
 import org.talend.designer.runprocess.language.java.JavaCodeProblemsChecker;
 import org.talend.designer.runprocess.language.perl.PerlCodeProblemsChecker;
 

@@ -42,6 +42,7 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
 import org.talend.commons.exception.ExceptionHandler;
+import org.talend.commons.ui.swt.proposal.ProposalUtils;
 import org.talend.commons.utils.generation.CodeGenerationUtils;
 import org.talend.core.language.CodeProblemsChecker;
 import org.talend.core.model.process.IProcess;
@@ -126,6 +127,8 @@ public class JavaCodeProblemsChecker extends CodeProblemsChecker {
             org.eclipse.jdt.core.ICompilationUnit compilationUnit = (org.eclipse.jdt.core.ICompilationUnit) codeEditor
                     .getUnit();
 
+            ProposalUtils.initializeJavaProposal(compilationUnit);
+            
             IProcess process = talendEditor.getProcess();
 
             String selectedNodeName = multiPageTalendEditor.getSelectedNodeName();

@@ -24,7 +24,7 @@ package org.talend.designer.mapper.language;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
-import org.talend.core.model.temp.ECodeLanguage;
+import org.talend.core.language.ECodeLanguage;
 import org.talend.designer.mapper.MapperMain;
 import org.talend.designer.mapper.language.java.JavaLanguage;
 import org.talend.designer.mapper.language.perl.PerlLanguage;

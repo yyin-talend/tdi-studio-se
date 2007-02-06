@@ -22,7 +22,7 @@
 package org.talend.designer.core.ui.editor;
 
 import org.eclipse.ui.texteditor.AbstractDecoratedTextEditor;
-import org.talend.core.model.temp.ECodeLanguage;
+import org.talend.core.language.ECodeLanguage;
 
 /**
  * DOC Administrator class global comment. Detailled comment <br/>

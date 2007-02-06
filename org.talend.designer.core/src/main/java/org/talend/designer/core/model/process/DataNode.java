@@ -27,12 +27,12 @@ import java.util.List;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
+import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IODataComponent;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataTable;
 import org.talend.core.model.process.AbstractNode;
-import org.talend.core.model.temp.ECodeLanguage;
 
 /**
  * Virtual node that will be used for the generated code.

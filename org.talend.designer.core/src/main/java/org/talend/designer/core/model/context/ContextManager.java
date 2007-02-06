@@ -28,11 +28,11 @@ import org.apache.oro.text.regex.MalformedPatternException;
 import org.apache.oro.text.regex.Pattern;
 import org.apache.oro.text.regex.Perl5Compiler;
 import org.apache.oro.text.regex.Perl5Matcher;
+import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IContextListener;
 import org.talend.core.model.process.IContextManager;
 import org.talend.core.model.process.IContextParameter;
-import org.talend.core.model.temp.ECodeLanguage;
 
 /**
  * DOC nrousseau class global comment. Detailled comment <br/>

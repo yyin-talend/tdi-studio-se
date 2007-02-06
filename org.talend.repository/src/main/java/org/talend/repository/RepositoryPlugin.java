@@ -27,7 +27,7 @@ import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
-import org.talend.core.model.temp.ECodeLanguage;
+import org.talend.core.language.ECodeLanguage;
 import org.talend.designer.codegen.IModuleService;
 import org.talend.designer.codegen.javamodule.IJavaModuleService;
 import org.talend.designer.codegen.perlmodule.IPerlModuleService;

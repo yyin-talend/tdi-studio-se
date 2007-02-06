@@ -2,7 +2,7 @@
 <!DOCTYPE mapping PUBLIC "-//EXOLAB/Castor Object Mapping DTD Version 1.0//EN" "http://castor.exolab.org/mapping.dtd">
 
 <mapping>
-<description>A mapping file for our Address Book application</description>
+<description>A mapping file for external data's mapper</description>
 
 <class name="org.talend.designer.mapper.external.data.ExternalMapperTable">
   <field name="constraintTableEntries" type="org.talend.designer.mapper.external.data.ExternalMapperTableEntry" collection="collection" />

@@ -29,10 +29,8 @@ import org.apache.commons.collections.FastHashMap;
 import org.apache.commons.collections.keyvalue.MultiKey;
 import org.apache.commons.collections.map.HashedMap;
 import org.apache.commons.collections.map.MultiKeyMap;
-import org.apache.commons.collections.map.ReusableMultiKeyMap;
 import org.junit.Before;
 import org.junit.Test;
-import org.talend.commons.utils.data.map.ReusableMultiKey;
 import org.talend.commons.utils.time.TimeMeasure;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.MetadataColumn;
@@ -481,8 +479,8 @@ public class PerformanceJavaTHash {
         System.out.println("\nWithMultiKey :");
         executor.executeWithMultiKey();
 
-        System.out.println("\nWith reuse :");
-        executor.executeWithReuse();
+//        System.out.println("\nWith reuse :");
+//        executor.executeWithReuse();
 
     }
 
@@ -527,41 +525,41 @@ public class PerformanceJavaTHash {
             this.nIterations = nIterations;
         }
 
-        public void executeWithReuse() {
-            ReusableMultiKeyMap tHash = new ReusableMultiKeyMap();
-
-            TimeMeasure.measureActive = true;
-
-            int lstSize = nIterations;
-            TimeMeasure.begin("loading");
-            for (int i = 0; i < lstSize; i++) {
-                RowStruct row = (RowStruct) rowsLookup.get(i);
-
-                ReusableMultiKey multiKey = new ReusableMultiKey(getKeysFromRow(row));
-
-                tHash.put(multiKey, row);
-            }
-            TimeMeasure.end("loading");
-
-            TimeMeasure.begin("reading");
-            int nRowsFound = 0;
-            ReusableMultiKey multiKey = new ReusableMultiKey();
-            for (int i = 0; i < lstSize; i++) {
-
-                multiKey.setKeys(getKeysFromIndex(i));
-
-                RowStruct row = (RowStruct) tHash.get(multiKey);
-                if (row != null) {
-                    nRowsFound++;
-                }
-                // System.out.println(row.name);
-            }
-            TimeMeasure.end("reading");
-            tHash.clear();
-
-            System.out.println("nRowsFound=" + nRowsFound);
-
-        }
+//        public void executeWithReuse() {
+//            ReusableMultiKeyMap tHash = new ReusableMultiKeyMap();
+//
+//            TimeMeasure.measureActive = true;
+//
+//            int lstSize = nIterations;
+//            TimeMeasure.begin("loading");
+//            for (int i = 0; i < lstSize; i++) {
+//                RowStruct row = (RowStruct) rowsLookup.get(i);
+//
+//                ReusableMultiKey multiKey = new ReusableMultiKey(getKeysFromRow(row));
+//
+//                tHash.put(multiKey, row);
+//            }
+//            TimeMeasure.end("loading");
+//
+//            TimeMeasure.begin("reading");
+//            int nRowsFound = 0;
+//            ReusableMultiKey multiKey = new ReusableMultiKey();
+//            for (int i = 0; i < lstSize; i++) {
+//
+//                multiKey.setKeys(getKeysFromIndex(i));
+//
+//                RowStruct row = (RowStruct) tHash.get(multiKey);
+//                if (row != null) {
+//                    nRowsFound++;
+//                }
+//                // System.out.println(row.name);
+//            }
+//            TimeMeasure.end("reading");
+//            tHash.clear();
+//
+//            System.out.println("nRowsFound=" + nRowsFound);
+//
+//        }
 
         public void executeWithMultiKey() {
             MultiKeyMap tHash = new MultiKeyMap();

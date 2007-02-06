@@ -27,6 +27,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.talend.commons.utils.generation.CodeGenerationUtils;
+import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.ICodeProblemsChecker;
 import org.talend.core.model.components.IODataComponent;
 import org.talend.core.model.components.IODataComponentContainer;
@@ -38,7 +39,6 @@ import org.talend.core.model.process.IExternalNode;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.Problem;
 import org.talend.core.model.process.Problem.ProblemStatus;
-import org.talend.core.model.temp.ECodeLanguage;
 import org.talend.designer.codegen.IAloneProcessNodeConfigurer;
 import org.talend.designer.mapper.external.data.ExternalMapperData;
 import org.talend.designer.mapper.language.ILanguage;

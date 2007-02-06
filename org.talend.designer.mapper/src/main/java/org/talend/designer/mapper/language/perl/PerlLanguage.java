@@ -21,7 +21,7 @@
 // ============================================================================
 package org.talend.designer.mapper.language.perl;
 
-import org.talend.core.model.temp.ECodeLanguage;
+import org.talend.core.language.ECodeLanguage;
 import org.talend.designer.mapper.Activator;
 import org.talend.designer.mapper.language.AbstractLanguage;
 import org.talend.designer.runprocess.IRunProcessService;
