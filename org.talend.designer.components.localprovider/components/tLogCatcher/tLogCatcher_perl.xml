@@ -44,8 +44,10 @@ COMPATIBILITY="ALL"
 <!-- ); -->
     <PARAMETER NAME="SCHEMA" FIELD="SCHEMA_TYPE" REQUIRED="true" NUM_ROW="1" READONLY="true">
       <TABLE>
-        <COLUMN NAME="moment" TYPE="String" LENGTH="10"/>
+        <COLUMN NAME="moment" TYPE="Day"/>
         <COLUMN NAME="pid" TYPE="int" LENGTH="10"/>
+        <COLUMN NAME="master_pid" TYPE="int" LENGTH="10"/>
+        <COLUMN NAME="project" TYPE="String" LENGTH="50"/>
         <COLUMN NAME="job" TYPE="String" LENGTH="50"/>
         <COLUMN NAME="context" TYPE="String" LENGTH="50"/>
         <COLUMN NAME="priority" TYPE="int" LENGTH="3"/>

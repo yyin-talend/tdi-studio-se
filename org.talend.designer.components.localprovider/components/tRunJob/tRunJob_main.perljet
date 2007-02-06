@@ -58,6 +58,7 @@ my @arguments = (
     '-I "<%=libPath %>"',
     '-I "<%=runtimeFilePath %>"',
     '"<%=runtimeFilePath %>/<%=currentProjectName %>.job_'.<%=process %>.'.pl"',
+    '--master_pid='.(defined $opt{master_pid} ? $opt{master_pid} : $$),
     '--context="<%=runtimeFilePath %>/<%=currentProjectName %>.job_'.<%=process %>.'_'.<%=context %>.'.pl"',
 );
 

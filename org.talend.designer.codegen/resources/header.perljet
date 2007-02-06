@@ -66,13 +66,14 @@ use Time::HiRes qw/gettimeofday tv_interval/;
 my %opt = ();
 GetOptions(
     \%opt,
-    qw/context=s stat_port=i trace_port=i watch/
+    qw/context=s stat_port=i trace_port=i watch master_pid=i/
 );
 
 our %_context;
 our %_globals;
 
 $_globals{job_name} = '<%=codeGenArgument.getJobName() %>';
+$_globals{project_name} = '<%=codeGenArgument.getCurrentProjectName() %>';
 $_globals{start} = [gettimeofday];
 
 <%

@@ -54,8 +54,10 @@ if (not grep /^$params{type}$/, @catched_types) {
 my @<%=cid %> = (
     getDate('CCYY-MM-DD hh:mm:ss'),
     $$,
-    '<%=codeGenArgument.getJobName() %>',
-    '<%=codeGenArgument.getContextName() %>',
+    (defined $opt{master_pid} ? $opt{master_pid} : $$),
+    $_globals{project_name},
+    $_globals{job_name},
+    $opt{context},
     $params{priority},
     $params{type},
     $params{origin},

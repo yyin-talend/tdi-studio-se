@@ -39,6 +39,8 @@
       <TABLE>
         <COLUMN NAME="moment" TYPE="Day"/>
         <COLUMN NAME="pid" TYPE="int" LENGTH="10"/>
+        <COLUMN NAME="master_pid" TYPE="int" LENGTH="10"/>
+        <COLUMN NAME="project" TYPE="String" LENGTH="50"/>
         <COLUMN NAME="job" TYPE="String" LENGTH="50"/>
         <COLUMN NAME="context" TYPE="String" LENGTH="50"/>
         <COLUMN NAME="origin" TYPE="String" LENGTH="255"/>
