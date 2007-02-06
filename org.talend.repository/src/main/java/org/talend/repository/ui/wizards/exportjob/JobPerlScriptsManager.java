@@ -58,6 +58,7 @@ import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
 import org.talend.designer.core.model.utils.emf.talendfile.JobType;
 import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.repository.RepositoryPlugin;
+import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.ResourceModelUtils;
 import org.talend.repository.ui.wizards.exportjob.JobScriptsExportWizardPage.ExportChoice;
@@ -70,7 +71,7 @@ import org.talend.repository.ui.wizards.exportjob.JobScriptsExportWizardPage.Exp
  */
 public class JobPerlScriptsManager extends JobScriptsManager {
 
-    private static final String ALL_PERL_INTERPRETERS = "All";
+    private static final String ALL_PERL_INTERPRETERS = "All"; //$NON-NLS-1$
 
     /**
      * qian Gets the export resources.
@@ -109,10 +110,10 @@ public class JobPerlScriptsManager extends JobScriptsManager {
         List<String> list = new ArrayList<String>();
         if (needChoice) {
             try {
-                String name = processItem.getProperty().getLabel() + "_" + processItem.getProperty().getVersion();
-                name = name != null ? name.replace(" ", "") : "";
-                list.add(name + ".item");
-                list.add(name + ".properties");
+                String name = processItem.getProperty().getLabel() + "_" + processItem.getProperty().getVersion(); //$NON-NLS-1$
+                name = name != null ? name.replace(" ", "") : ""; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                list.add(name + ".item"); //$NON-NLS-1$
+                list.add(name + ".properties"); //$NON-NLS-1$
             } catch (Exception e) {
                 ExceptionHandler.process(e);
             }
@@ -189,7 +190,7 @@ public class JobPerlScriptsManager extends JobScriptsManager {
         PrintWriter pw = null;
         try {
 
-            File file = new File(tmpFold, process.getProperty().getLabel() + "_" + fileName);
+            File file = new File(tmpFold, process.getProperty().getLabel() + "_" + fileName); //$NON-NLS-1$
             file.createNewFile();
             pw = new PrintWriter(new FileOutputStream(file));
             pw.print(cmdPrimary);
@@ -227,13 +228,13 @@ public class JobPerlScriptsManager extends JobScriptsManager {
 
     // FIXME to reuse the exstentent code of this implementation
     private String getCommandByTalendJob(String project, String jobName, String context, String perlInterpreter) {
-        String contextArg = "--context=";
+        String contextArg = "--context="; //$NON-NLS-1$
 
-        String projectSeparator = ".job";
+        String projectSeparator = ".job"; //$NON-NLS-1$
 
-        String wordSeparator = "_";
+        String wordSeparator = "_"; //$NON-NLS-1$
 
-        String perlExt = ".pl";
+        String perlExt = ".pl"; //$NON-NLS-1$
 
         if (perlInterpreter == null || perlInterpreter.length() == 0) {
             // throw new
@@ -248,7 +249,7 @@ public class JobPerlScriptsManager extends JobScriptsManager {
         String[] cmd = new String[] { perlInterpreter, perlCode, contextArg + contextCode };
 
         StringBuffer sb = new StringBuffer();
-        sb.append("");
+        sb.append(""); //$NON-NLS-1$
         for (String s : cmd) {
             sb.append(s).append(' ');
         }
@@ -383,7 +384,7 @@ public class JobPerlScriptsManager extends JobScriptsManager {
                 RoutineItem routine = (RoutineItem) routines.get(i).getProperty().getItem();
                 if (routine.isBuiltIn() == isBuildin) {
                     String name = routine.getProperty().getLabel();
-                    name = projectName + "__" + name + ".pm";
+                    name = projectName + "__" + name + ".pm"; //$NON-NLS-1$ //$NON-NLS-2$
                     list.add(name);
                 }
             }
@@ -417,7 +418,7 @@ public class JobPerlScriptsManager extends JobScriptsManager {
         Project project = repositoryContext.getProject();
 
         String name = project.getLabel();
-        name = name.replaceAll(" ", "_");
+        name = name.replaceAll(" ", "_"); //$NON-NLS-1$ //$NON-NLS-2$
         name = name.toUpperCase();
 
         return name;
@@ -458,7 +459,7 @@ public class JobPerlScriptsManager extends JobScriptsManager {
             String projectName = getCurrentProjectName();
             try {
                 String name = escapeFileNameSpace(process);
-                name = projectName + ".job_" + name + ".pl";
+                name = projectName + ".job_" + name + ".pl"; //$NON-NLS-1$ //$NON-NLS-2$
                 list.add(name);
             } catch (Exception e) {
                 ExceptionHandler.process(e);
@@ -506,9 +507,9 @@ public class JobPerlScriptsManager extends JobScriptsManager {
             }
 
             String processName = escapeSpace(processLabel);
-            String jobScriptName = projectName + ".job_" + processName + ".pl";
+            String jobScriptName = projectName + ".job_" + processName + ".pl"; //$NON-NLS-1$ //$NON-NLS-2$
             String contextName = escapeSpace(jType.getContext());
-            String contextFullName = projectName + ".job_" + processName + "_" + contextName + ".pl";
+            String contextFullName = projectName + ".job_" + processName + "_" + contextName + ".pl"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
             addToList(list, jobScriptName);
             addToList(list, contextFullName);
@@ -548,7 +549,7 @@ public class JobPerlScriptsManager extends JobScriptsManager {
             for (Iterator<String> iter = contexts.iterator(); iter.hasNext();) {
                 String contextName = iter.next();
                 contextName = escapeSpace(contextName);
-                String contextFullName = projectName + ".job_" + processName + "_" + contextName + ".pl";
+                String contextFullName = projectName + ".job_" + processName + "_" + contextName + ".pl"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 list.add(contextFullName);
             }
         }

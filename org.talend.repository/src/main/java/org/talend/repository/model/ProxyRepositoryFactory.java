@@ -53,6 +53,7 @@ import org.talend.core.model.repository.Folder;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.model.temp.ECodeLanguage;
 import org.talend.repository.exception.LoginException;
+import org.talend.repository.i18n.Messages;
 import org.talend.repository.ui.views.RepositoryContentProvider.MetadataTableRepositoryObject;
 
 /**
@@ -114,7 +115,10 @@ public class ProxyRepositoryFactory implements IProxyRepositoryFactory {
 
     private void checkFileName(String fileName, String pattern) {
         if (!Pattern.matches(pattern, fileName)) {
-            throw new IllegalArgumentException("Label " + fileName + " does not match pattern " + pattern);
+            // i18n
+            // throw new IllegalArgumentException("Label " + fileName + " does not match pattern " + pattern);
+            throw new IllegalArgumentException(Messages.getString(
+                    "ProxyRepositoryFactory.illegalArgumentException.labelNotMatchPattern", new String[] { fileName, pattern })); //$NON-NLS-1$
         }
     }
 
@@ -122,7 +126,10 @@ public class ProxyRepositoryFactory implements IProxyRepositoryFactory {
         String fileName = item.getProperty().getLabel();
         checkFileName(fileName, pattern);
         if (!this.repositoryFactoryFromProvider.isNameAvailable(item, null)) {
-            throw new IllegalArgumentException("Label " + fileName + " is already in use");
+            // i18n
+            // throw new IllegalArgumentException("Label " + fileName + " is already in use");
+            throw new IllegalArgumentException(Messages.getString(
+                    "ProxyRepositoryFactory.illegalArgumentException.labeAlreadyInUse", new String[] { fileName })); //$NON-NLS-1$
         }
     }
 
@@ -131,7 +138,10 @@ public class ProxyRepositoryFactory implements IProxyRepositoryFactory {
         String fileName = label;
         checkFileName(fileName, pattern);
         if (!this.repositoryFactoryFromProvider.isPathValid(type, path, label)) {
-            throw new IllegalArgumentException("Label " + fileName + " is already in use");
+            // i18n
+            // throw new IllegalArgumentException("Label " + fileName + " is already in use");
+            throw new IllegalArgumentException(Messages.getString(
+                    "ProxyRepositoryFactory.illegalArgumentException.labeAlreadyInUse", new String[] { fileName })); //$NON-NLS-1$
         }
     }
 
@@ -264,7 +274,11 @@ public class ProxyRepositoryFactory implements IProxyRepositoryFactory {
      */
     public String getNextId() {
         String nextId = this.repositoryFactoryFromProvider.getNextId();
-        log.trace("New ID generated on project [" + getRepositoryContext().getProject() + "] = " + nextId);
+
+        // i18n
+        // log.trace("New ID generated on project [" + getRepositoryContext().getProject() + "] = " + nextId);
+        String str[] = new String[] { getRepositoryContext().getProject() + "", nextId + "" };//$NON-NLS-1$
+        log.trace(Messages.getString("ProxyRepositoryFactory.log.newIdGenerated", str)); //$NON-NLS-1$
         return nextId;
     }
 
@@ -318,7 +332,10 @@ public class ProxyRepositoryFactory implements IProxyRepositoryFactory {
      */
     public void deleteObjectLogical(IRepositoryObject objToDelete) throws PersistenceException {
         this.repositoryFactoryFromProvider.deleteObjectLogical(objToDelete);
-        log.debug("Logical deletion [" + objToDelete + "] by " + getRepositoryContext().getUser() + ".");
+        // i18n
+        // log.debug("Logical deletion [" + objToDelete + "] by " + getRepositoryContext().getUser() + ".");
+        String str[] = new String[] { objToDelete + "", getRepositoryContext().getUser() + "" };//$NON-NLS-1$
+        log.debug(Messages.getString("ProxyRepositoryFactory.log.logicalDeletion", str)); //$NON-NLS-1$
     }
 
     /*
@@ -328,7 +345,10 @@ public class ProxyRepositoryFactory implements IProxyRepositoryFactory {
      */
     public void deleteObjectPhysical(IRepositoryObject objToDelete) throws PersistenceException {
         this.repositoryFactoryFromProvider.deleteObjectPhysical(objToDelete);
-        log.info("Physical deletion [" + objToDelete + "] by " + getRepositoryContext().getUser() + ".");
+        // i18n
+        // log.info("Physical deletion [" + objToDelete + "] by " + getRepositoryContext().getUser() + ".");
+        String str[] = new String[] { objToDelete.toString(), getRepositoryContext().getUser().toString() };
+        log.info(Messages.getString("ProxyRepositoryFactory.log.physicalDeletion", str)); //$NON-NLS-1$
     }
 
     /*
@@ -339,7 +359,12 @@ public class ProxyRepositoryFactory implements IProxyRepositoryFactory {
      */
     public void restoreObject(IRepositoryObject objToRestore, IPath path) throws PersistenceException {
         this.repositoryFactoryFromProvider.restoreObject(objToRestore, path);
-        log.debug("Restoration [" + objToRestore + "] by " + getRepositoryContext().getUser() + " to \"/" + path + "\".");
+
+        // i18n
+        // log.debug("Restoration [" + objToRestore + "] by " + getRepositoryContext().getUser() + " to \"/" + path +
+        // "\".");
+        String str[] = new String[] { objToRestore + "", getRepositoryContext().getUser() + "", path + "" };//$NON-NLS-1$
+        log.debug(Messages.getString("ProxyRepositoryFactory.log.Restoration", str)); //$NON-NLS-1$
     }
 
     /*
@@ -367,14 +392,18 @@ public class ProxyRepositoryFactory implements IProxyRepositoryFactory {
         checkDisponibilite(objToMove);
         checkFileNameAndPath(objToMove.getProperty().getItem(), RepositoryConstants.getPattern(objToMove.getType()), path, false);
         this.repositoryFactoryFromProvider.moveObject(objToMove, path);
-        log.debug("Move [" + objToMove + "] to \"" + path + "\".");
+
+        // i18n
+        // log.debug("Move [" + objToMove + "] to \"" + path + "\".");
+        String str[] = new String[] { objToMove + "", path + "" };
+        log.debug(Messages.getString("ProxyRepositoryFactory.log.move", str)); //$NON-NLS-1$
         unlock(getItem(objToMove));
     }
 
     // TODO SML Renommer et finir la m�thode et la plugger dans toutes les m�thodes
     private void checkDisponibilite(IRepositoryObject objToMove) throws BusinessException {
         if (!isEditableAndLockIfPossible(objToMove)) {
-            throw new BusinessException("Item non modifiable par vous !!");
+            throw new BusinessException(Messages.getString("ProxyRepositoryFactory.bussinessException.itemNonModifiable")); //$NON-NLS-1$
         }
     }
 
@@ -431,7 +460,10 @@ public class ProxyRepositoryFactory implements IProxyRepositoryFactory {
     public void lock(Item item) throws PersistenceException, BusinessException {
         if (getStatus(item).isPotentiallyEditable()) {
             this.repositoryFactoryFromProvider.lock(item);
-            log.debug("Lock [" + item + "] by \"" + getRepositoryContext().getUser() + "\".");
+            // i18n
+            // log.debug("Lock [" + item + "] by \"" + getRepositoryContext().getUser() + "\".");
+            String str[] = new String[] { item.toString(), getRepositoryContext().getUser().toString() };
+            log.debug(Messages.getString("ProxyRepositoryFactory.log.lock", str)); //$NON-NLS-1$
         }
     }
 
@@ -476,12 +508,12 @@ public class ProxyRepositoryFactory implements IProxyRepositoryFactory {
         Project project = getRepositoryContext().getProject();
         EList list = project.getEmfProject().getFolders();
 
-        String[] split = ERepositoryObjectType.getFolderName(type).split("/");
+        String[] split = ERepositoryObjectType.getFolderName(type).split("/"); //$NON-NLS-1$
         String labelType = split[split.length - 1];
 
         for (Object current : list) {
             FolderItem folderItem = (FolderItem) current;
-            addChildren(toReturn, folderItem, labelType, "");
+            addChildren(toReturn, folderItem, labelType, ""); //$NON-NLS-1$
         }
         return toReturn;
     }
@@ -489,14 +521,14 @@ public class ProxyRepositoryFactory implements IProxyRepositoryFactory {
     private void addChildren(List<String> target, FolderItem source, String type, String path) {
         if (source.getType() == FolderType.FOLDER_LITERAL) {
             // FIXME mhelleboid Related to bug 364
-            if (source.getProperty().getLabel().equals(".settings")) {
+            if (source.getProperty().getLabel().equals(".settings")) { //$NON-NLS-1$
                 return;
             }
             target.add(path + source.getProperty().getLabel());
 
             for (Object current : source.getChildren()) {
                 if (current instanceof FolderItem) {
-                    addChildren(target, (FolderItem) current, type, path + source.getProperty().getLabel() + "/");
+                    addChildren(target, (FolderItem) current, type, path + source.getProperty().getLabel() + "/"); //$NON-NLS-1$
                 }
             }
         }
@@ -645,7 +677,11 @@ public class ProxyRepositoryFactory implements IProxyRepositoryFactory {
             Date modificationDate = obj.getProperty().getModificationDate();
             if (modificationDate == null || commitDate == null || modificationDate.before(commitDate)) {
                 this.repositoryFactoryFromProvider.unlock(obj);
-                log.debug("Unlock [" + obj + "] by \"" + getRepositoryContext().getUser() + "\".");
+
+                // i18n
+                // log.debug("Unlock [" + obj + "] by \"" + getRepositoryContext().getUser() + "\".");
+                String str[] = new String[] { obj.toString(), getRepositoryContext().getUser().toString() };
+                log.debug(Messages.getString("ProxyRepositoryFactory.log.unlock", str)); //$NON-NLS-1$
             }
         }
     }
@@ -684,7 +720,11 @@ public class ProxyRepositoryFactory implements IProxyRepositoryFactory {
     public void logOnProject(Project project) throws PersistenceException, LoginException {
         getRepositoryContext().setProject(project);
         this.repositoryFactoryFromProvider.logOnProject(project);
-        log.info(getRepositoryContext().getUser() + " logged on " + getRepositoryContext().getProject());
+
+        // i18n
+        // log.info(getRepositoryContext().getUser() + " logged on " + getRepositoryContext().getProject());
+        String str[] = new String[] { getRepositoryContext().getUser() + "", getRepositoryContext().getProject() + "" }; //$NON-NLS-1$        
+        log.info(Messages.getString("ProxyRepositoryFactory.log.loggedOn", str)); //$NON-NLS-1$
 
         IMigrationToolService service = (IMigrationToolService) GlobalServiceRegister.getDefault().getService(
                 IMigrationToolService.class);

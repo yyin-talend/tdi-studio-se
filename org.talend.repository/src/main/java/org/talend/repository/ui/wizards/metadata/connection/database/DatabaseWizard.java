@@ -91,7 +91,7 @@ public class DatabaseWizard extends RepositoryWizard implements INewWizard {
             pathToSave = RepositoryNodeUtilities.getPath(node);
             break;
         case SYSTEM_FOLDER:
-            pathToSave = new Path("");
+            pathToSave = new Path(""); //$NON-NLS-1$
             break;
         }
 
@@ -104,7 +104,7 @@ public class DatabaseWizard extends RepositoryWizard implements INewWizard {
                     .setAuthor(((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY))
                             .getUser());
             connectionProperty.setVersion(VersionUtils.DEFAULT_VERSION);
-            connectionProperty.setStatusCode("");
+            connectionProperty.setStatusCode(""); //$NON-NLS-1$
 
             connectionItem = PropertiesFactory.eINSTANCE.createDatabaseConnectionItem();
             connectionItem.setProperty(connectionProperty);
@@ -127,7 +127,7 @@ public class DatabaseWizard extends RepositoryWizard implements INewWizard {
      * Adding the page to the wizard and set Title, Description and PageComplete.
      */
     public void addPages() {
-        setWindowTitle(Messages.getString("DatabaseWizard.windowTitle"));
+        setWindowTitle(Messages.getString("DatabaseWizard.windowTitle")); //$NON-NLS-1$
         setDefaultPageImageDescriptor(ImageProvider.getImageDesc(ECoreImage.METADATA_CONNECTION_WIZ));
 
         propertiesWizardPage = new Step0WizardPage(connectionProperty, pathToSave, ERepositoryObjectType.METADATA_CONNECTIONS,
@@ -135,20 +135,20 @@ public class DatabaseWizard extends RepositoryWizard implements INewWizard {
         databaseWizardPage = new DatabaseWizardPage(connectionItem, isRepositoryObjectEditable(), existingNames);
 
         if (creation) {
-            propertiesWizardPage.setTitle(Messages.getString("DatabaseWizardPage.titleCreate.0"));
-            propertiesWizardPage.setDescription(Messages.getString("DatabaseWizardPage.descriptionCreate.0"));
+            propertiesWizardPage.setTitle(Messages.getString("DatabaseWizardPage.titleCreate.0")); //$NON-NLS-1$
+            propertiesWizardPage.setDescription(Messages.getString("DatabaseWizardPage.descriptionCreate.0")); //$NON-NLS-1$
             propertiesWizardPage.setPageComplete(false);
 
-            databaseWizardPage.setTitle(Messages.getString("DatabaseWizardPage.titleCreate.1"));
-            databaseWizardPage.setDescription(Messages.getString("DatabaseWizardPage.descriptionCreate.1"));
+            databaseWizardPage.setTitle(Messages.getString("DatabaseWizardPage.titleCreate.1")); //$NON-NLS-1$
+            databaseWizardPage.setDescription(Messages.getString("DatabaseWizardPage.descriptionCreate.1")); //$NON-NLS-1$
             databaseWizardPage.setPageComplete(false);
         } else {
-            propertiesWizardPage.setTitle(Messages.getString("DatabaseWizardPage.titleUpdate.0"));
-            propertiesWizardPage.setDescription(Messages.getString("DatabaseWizardPage.descriptionUpdate.0"));
+            propertiesWizardPage.setTitle(Messages.getString("DatabaseWizardPage.titleUpdate.0")); //$NON-NLS-1$
+            propertiesWizardPage.setDescription(Messages.getString("DatabaseWizardPage.descriptionUpdate.0")); //$NON-NLS-1$
             propertiesWizardPage.setPageComplete(isRepositoryObjectEditable());
 
-            databaseWizardPage.setTitle(Messages.getString("DatabaseWizardPage.titleUpdate.1"));
-            databaseWizardPage.setDescription(Messages.getString("DatabaseWizardPage.descriptionUpdate.1"));
+            databaseWizardPage.setTitle(Messages.getString("DatabaseWizardPage.titleUpdate.1")); //$NON-NLS-1$
+            databaseWizardPage.setDescription(Messages.getString("DatabaseWizardPage.descriptionUpdate.1")); //$NON-NLS-1$
             databaseWizardPage.setPageComplete(isRepositoryObjectEditable());
         }
         addPage(propertiesWizardPage);
@@ -173,9 +173,9 @@ public class DatabaseWizard extends RepositoryWizard implements INewWizard {
                 }
             } catch (PersistenceException e) {
                 String detailError = e.toString();
-                new ErrorDialogWidthDetailArea(getShell(), PID, Messages.getString("CommonWizard.persistenceException"),
+                new ErrorDialogWidthDetailArea(getShell(), PID, Messages.getString("CommonWizard.persistenceException"), //$NON-NLS-1$
                         detailError);
-                log.error(Messages.getString("CommonWizard.persistenceException") + "\n" + detailError);
+                log.error(Messages.getString("CommonWizard.persistenceException") + "\n" + detailError); //$NON-NLS-1$ //$NON-NLS-2$
                 return false;
             }
             RepositoryPlugin.getDefault().getRepositoryService().repositoryChanged(new RepositoryElementDelta(repositoryObject));

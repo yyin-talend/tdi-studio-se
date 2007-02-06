@@ -138,7 +138,7 @@ public class LoginComposite extends Composite {
         formBody.setLayout(layout);
 
         // Connections listbox:
-        toolkit.createLabel(formBody, Messages.getString("LoginComposite.connections"));
+        toolkit.createLabel(formBody, Messages.getString("LoginComposite.connections")); //$NON-NLS-1$
         connectionsViewer = new ComboViewer(formBody, SWT.BORDER | SWT.READ_ONLY);
         toolkit.adapt(connectionsViewer.getCombo());
         GridData conGrid = new GridData(GridData.FILL_HORIZONTAL);
@@ -148,29 +148,29 @@ public class LoginComposite extends Composite {
         connectionsViewer.setLabelProvider(new ConnectionLabelProvider());
 
         manageConnectionsButton = toolkit.createButton(formBody, null, SWT.PUSH);
-        manageConnectionsButton.setToolTipText(Messages.getString("LoginComposite.manageConnectionsToolTipHint"));
+        manageConnectionsButton.setToolTipText(Messages.getString("LoginComposite.manageConnectionsToolTipHint")); //$NON-NLS-1$
         manageConnectionsButton.setImage(ImageProvider.getImage(EImage.THREE_DOTS_ICON));
         GridData checkGrid = new GridData(SWT.BORDER | SWT.RIGHT);
         checkGrid.verticalSpan = 1;
         manageConnectionsButton.setLayoutData(checkGrid);
 
         // Username:
-        toolkit.createLabel(formBody, Messages.getString("connections.form.field.username"));
-        user = toolkit.createText(formBody, "", SWT.BORDER);
+        toolkit.createLabel(formBody, Messages.getString("connections.form.field.username")); //$NON-NLS-1$
+        user = toolkit.createText(formBody, "", SWT.BORDER); //$NON-NLS-1$
         GridData userGrid2 = new GridData(GridData.FILL_HORIZONTAL);
         userGrid2.horizontalSpan = 2;
         user.setLayoutData(userGrid2);
         user.setEnabled(false);
 
         // Password:
-        toolkit.createLabel(formBody, Messages.getString("connections.form.field.password"));
-        passwordText = toolkit.createText(formBody, "", SWT.PASSWORD | SWT.BORDER);
+        toolkit.createLabel(formBody, Messages.getString("connections.form.field.password")); //$NON-NLS-1$
+        passwordText = toolkit.createText(formBody, "", SWT.PASSWORD | SWT.BORDER); //$NON-NLS-1$
         GridData passwordGrid = new GridData(GridData.FILL_HORIZONTAL);
         passwordGrid.horizontalSpan = 2;
         passwordText.setLayoutData(passwordGrid);
 
         // Project
-        toolkit.createLabel(formBody, Messages.getString("LoginComposite.project"));
+        toolkit.createLabel(formBody, Messages.getString("LoginComposite.project")); //$NON-NLS-1$
         projectViewer = new ComboViewer(formBody, SWT.BORDER | SWT.READ_ONLY);
         toolkit.adapt(projectViewer.getCombo());
         GridData projectGrid = new GridData(GridData.FILL_HORIZONTAL);
@@ -181,7 +181,7 @@ public class LoginComposite extends Composite {
 
         // Fill projects
         fillProjectsBtn = toolkit.createButton(formBody, null, SWT.PUSH);
-        fillProjectsBtn.setToolTipText(Messages.getString("LoginComposite.refresh"));
+        fillProjectsBtn.setToolTipText(Messages.getString("LoginComposite.refresh")); //$NON-NLS-1$
         fillProjectsBtn.setImage(ImageProvider.getImage(EImage.REFRESH_ICON));
         GridData fillGrid = new GridData();
         fillGrid.horizontalSpan = 1;
@@ -196,8 +196,8 @@ public class LoginComposite extends Composite {
         bottomButtons.setLayout(new FormLayout());
 
         newProjectButton = toolkit.createButton(bottomButtons, null, SWT.PUSH);
-        newProjectButton.setText(Messages.getString("LoginComposite.newProject"));
-        newProjectButton.setToolTipText("Create a new project");
+        newProjectButton.setText(Messages.getString("LoginComposite.newProject")); //$NON-NLS-1$
+        newProjectButton.setToolTipText("Create a new project"); //$NON-NLS-1$
         newProjectButton.setImage(ImageProvider.getImage(ERepositoryImages.NEW_PROJECT_ACTION));
         FormData formData = new FormData();
         formData.left = new FormAttachment(0);
@@ -472,12 +472,12 @@ public class LoginComposite extends Composite {
         } catch (PersistenceException e) {
             projects = new Project[0];
 
-            dialog.setErrorMessage(Messages.getString("LoginComposite.refreshFailure1") + e.getMessage()
-                    + Messages.getString("LoginComposite.refreshFailure2"));
+            dialog.setErrorMessage(Messages.getString("LoginComposite.refreshFailure1") + e.getMessage() //$NON-NLS-1$
+                    + Messages.getString("LoginComposite.refreshFailure2")); //$NON-NLS-1$
         } catch (BusinessException e) {
             projects = new Project[0];
 
-            MessageDialog.openError(getShell(), "Enable to retrieve projects", "Enable to retrieve projects:\n" + e.getMessage());
+            MessageDialog.openError(getShell(), "Enable to retrieve projects", "Enable to retrieve projects:\n" + e.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$
         }
         projectViewer.setInput(projects);
 
@@ -573,9 +573,9 @@ public class LoginComposite extends Composite {
         @Override
         public String getText(Object element) {
             Project prj = (Project) element;
-            String toReturn = prj.getLabel() + " - " + prj.getLanguage().getName();
+            String toReturn = prj.getLabel() + " - " + prj.getLanguage().getName(); //$NON-NLS-1$
             if (!prj.isLocal() && !isAuthenticationNeeded()) {
-                toReturn += " (remote project in offline mode)";
+                toReturn += " (remote project in offline mode)"; //$NON-NLS-1$
             }
             return toReturn;
         }
@@ -599,7 +599,7 @@ public class LoginComposite extends Composite {
             if (prj.isComplete()) {
                 return prj.getName();
             } else {
-                return prj.getName() + " (" + Messages.getString("connections.form.field.imcomplete") + ")";
+                return prj.getName() + " (" + Messages.getString("connections.form.field.imcomplete") + ")"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
             }
         }
     }
@@ -608,7 +608,7 @@ public class LoginComposite extends Composite {
      * clear login values.
      */
     private void unpopulateRemoteLoginElements() {
-        passwordText.setText("");
+        passwordText.setText(""); //$NON-NLS-1$
         passwordText.setEnabled(false);
         passwordText.setEditable(false);
         passwordText.setBackground(GREY_COLOR);
@@ -639,20 +639,20 @@ public class LoginComposite extends Composite {
         boolean serverIsLocal = !isAuthenticationNeeded();
         if (valid && getConnection() == null) {
             valid = false;
-            errorMsg = Messages.getString("LoginComposite.connectionEmpty");
+            errorMsg = Messages.getString("LoginComposite.connectionEmpty"); //$NON-NLS-1$
         } else if (valid && !getConnection().isComplete()) {
             valid = false;
-            errorMsg = Messages.getString("LoginComposite.connectionIncomplete");
+            errorMsg = Messages.getString("LoginComposite.connectionIncomplete"); //$NON-NLS-1$
         } else if (valid && !serverIsLocal && user.getText().length() == 0) {
             valid = false;
-            errorMsg = Messages.getString("LoginComposite.usernameEmpty");
+            errorMsg = Messages.getString("LoginComposite.usernameEmpty"); //$NON-NLS-1$
         } else if (valid && !Pattern.matches(RepositoryConstants.MAIL_PATTERN, getUser().getLogin())) {
             valid = false;
-            errorMsg = Messages.getString("LoginComposite.usernameMail");
+            errorMsg = Messages.getString("LoginComposite.usernameMail"); //$NON-NLS-1$
         }
         if (valid && !serverIsLocal && passwordText.getText().length() == 0) {
             valid = false;
-            errorMsg = Messages.getString("LoginComposite.passwordEmpty");
+            errorMsg = Messages.getString("LoginComposite.passwordEmpty"); //$NON-NLS-1$
         }
 
         if (!valid) {
@@ -672,7 +672,7 @@ public class LoginComposite extends Composite {
         boolean valid = true;
         if (projectViewer.getCombo().getText().length() == 0) {
             valid = false;
-            errorMsg = Messages.getString("LoginComposite.projectEmpty");
+            errorMsg = Messages.getString("LoginComposite.projectEmpty"); //$NON-NLS-1$
         }
 
         if (!valid) {

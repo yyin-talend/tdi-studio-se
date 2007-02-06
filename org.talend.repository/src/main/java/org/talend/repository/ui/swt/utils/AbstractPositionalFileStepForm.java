@@ -30,6 +30,7 @@ import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.builder.connection.PositionalFileConnection;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.prefs.ITalendCorePrefConstants;
+import org.talend.repository.i18n.Messages;
 
 /**
  * DOC tguiu class global comment. Detailled comment <br/>
@@ -88,27 +89,27 @@ public abstract class AbstractPositionalFileStepForm extends AbstractForm {
      */
     protected String getValidateFieldPosition(String value) {
         // Character must be number or comma
-        String newValue = "";
-        if (!"".equals(value)) {
+        String newValue = ""; //$NON-NLS-1$
+        if (!"".equals(value)) { //$NON-NLS-1$
             for (int f = 0; f < value.length(); f++) {
                 char c = value.charAt(f);
-                String s1 = "" + value.charAt(f);
-                if (Character.isDigit(c) || (s1.equals(","))) {
+                String s1 = "" + value.charAt(f); //$NON-NLS-1$
+                if (Character.isDigit(c) || (s1.equals(","))) { //$NON-NLS-1$
                     newValue = newValue + s1;
                 }
             }
             // Character must be sorted
-            String[] newValues = newValue.split(",");
+            String[] newValues = newValue.split(","); //$NON-NLS-1$
             Integer[] newIntValues = new Integer[newValues.length];
             for (int f = 0; f < newValues.length; f++) {
                 newIntValues[f] = new Integer(newValues[f]);
             }
             Arrays.sort(newIntValues);
-            newValue = "";
+            newValue = ""; //$NON-NLS-1$
             for (int f = 0; f < newIntValues.length; f++) {
-                newValue = newValue + new String("" + newIntValues[f]);
+                newValue = newValue + new String("" + newIntValues[f]); //$NON-NLS-1$
                 if (f < newIntValues.length - 1) {
-                    newValue = newValue + ",";
+                    newValue = newValue + ","; //$NON-NLS-1$
                 }
             }
         }
@@ -128,11 +129,11 @@ public abstract class AbstractPositionalFileStepForm extends AbstractForm {
             // Check unique comma
             if ((character) == Character.valueOf(',')) {
                 if (position > 0) {
-                    if (string.substring(position - 1, position).equals(",")) {
+                    if (string.substring(position - 1, position).equals(",")) { //$NON-NLS-1$
                         return false;
                     }
                     if (position + 1 < string.length()) {
-                        if (string.substring(position, position + 1).equals(",")) {
+                        if (string.substring(position, position + 1).equals(",")) { //$NON-NLS-1$
                             return false;
                         }
                     }
@@ -155,10 +156,10 @@ public abstract class AbstractPositionalFileStepForm extends AbstractForm {
      * @return boolean
      */
     protected boolean charIsAcceptedOnFieldSeparator(final String string, final char character, final int position) {
-        if (string.lastIndexOf("*") > -1) {
+        if (string.lastIndexOf("*") > -1) { //$NON-NLS-1$
             if ((Character.isDigit(character) || character == Character.valueOf(','))) {
                 // after *, nothing must be insered
-                if (string.lastIndexOf("*") < position) {
+                if (string.lastIndexOf("*") < position) { //$NON-NLS-1$
                     return false;
                 }
             }
@@ -167,11 +168,11 @@ public abstract class AbstractPositionalFileStepForm extends AbstractForm {
             // Check unique comma
             if ((character) == Character.valueOf(',')) {
                 if (position > 0) {
-                    if (string.substring(position - 1, position).equals(",")) {
+                    if (string.substring(position - 1, position).equals(",")) { //$NON-NLS-1$
                         return false;
                     }
                     if (position + 1 < string.length()) {
-                        if (string.substring(position, position + 1).equals(",")) {
+                        if (string.substring(position, position + 1).equals(",")) { //$NON-NLS-1$
                             return false;
                         }
                     }
@@ -181,7 +182,7 @@ public abstract class AbstractPositionalFileStepForm extends AbstractForm {
             }
         } else if ((character) == Character.valueOf('*')) {
             // Check unique *
-            if (string.lastIndexOf("*") > 0) {
+            if (string.lastIndexOf("*") > 0) { //$NON-NLS-1$
                 return false;
             }
             // Check * is in the last position
@@ -204,30 +205,30 @@ public abstract class AbstractPositionalFileStepForm extends AbstractForm {
      */
     protected String getValidateFieldSeparator(String value) {
         // if needed delete last comma
-        if (value.lastIndexOf(",") == value.length() - 1) {
+        if (value.lastIndexOf(",") == value.length() - 1) { //$NON-NLS-1$
             value = value.substring(0, value.length() - 1);
         }
 
         // Each Character must be integer comma or *
-        if (!"".equals(value)) {
-            String val = "";
+        if (!"".equals(value)) { //$NON-NLS-1$
+            String val = ""; //$NON-NLS-1$
             for (int f = 0; f < value.length(); f++) {
                 char c = value.charAt(f);
-                String s1 = "" + value.charAt(f);
-                if (Character.isDigit(c) || (s1.equals(",")) || (s1.equals("*"))) {
+                String s1 = "" + value.charAt(f); //$NON-NLS-1$
+                if (Character.isDigit(c) || (s1.equals(",")) || (s1.equals("*"))) { //$NON-NLS-1$ //$NON-NLS-2$
                     val = val + s1;
                 }
             }
             value = val;
         }
         // if needed add comma before *
-        if ((value.lastIndexOf("*") > -1) && (!value.equals("*"))) {
-            if (!value.substring((value.lastIndexOf("*") - 1), value.lastIndexOf("*")).equals(",")) {
-                value = value.substring(0, value.lastIndexOf("*")) + ",*";
+        if ((value.lastIndexOf("*") > -1) && (!value.equals("*"))) { //$NON-NLS-1$ //$NON-NLS-2$
+            if (!value.substring((value.lastIndexOf("*") - 1), value.lastIndexOf("*")).equals(",")) { //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                value = value.substring(0, value.lastIndexOf("*")) + ",*"; //$NON-NLS-1$ //$NON-NLS-2$
             }
             // Character * must be the last char
-            if ((value.lastIndexOf("*") < value.length() - 1)) {
-                value = value.substring(0, value.lastIndexOf("*"));
+            if ((value.lastIndexOf("*") < value.length() - 1)) { //$NON-NLS-1$
+                value = value.substring(0, value.lastIndexOf("*")); //$NON-NLS-1$
             }
         }
         return value;

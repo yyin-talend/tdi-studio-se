@@ -154,7 +154,7 @@ public class SelectorTableForm extends AbstractForm {
 
         // Group Table Settings
         Group groupTableSettings = Form.createGroup(rightComposite, 1,
-                Messages.getString("SelectorTableForm.groupTableSettings"), tableSettingsCompositeHeight);
+                Messages.getString("SelectorTableForm.groupTableSettings"), tableSettingsCompositeHeight); //$NON-NLS-1$
 
         // Composite TableSettings
         Composite compositeTableSettings = Form.startNewDimensionnedGridLayout(groupTableSettings, 1, rightCompositeWidth,
@@ -191,15 +191,15 @@ public class SelectorTableForm extends AbstractForm {
 
         // table.setHeaderVisible(true);
         TableColumn tableName = new TableColumn(table, SWT.NONE);
-        tableName.setText(Messages.getString("SelectorTableForm.TableName"));
+        tableName.setText(Messages.getString("SelectorTableForm.TableName")); //$NON-NLS-1$
         tableName.setWidth(300);
 
         TableColumn nbColumns = new TableColumn(table, SWT.RIGHT);
-        nbColumns.setText(Messages.getString("SelectorTableForm.ColumnNumber"));
+        nbColumns.setText(Messages.getString("SelectorTableForm.ColumnNumber")); //$NON-NLS-1$
         nbColumns.setWidth(200);
 
         TableColumn creationStatus = new TableColumn(table, SWT.RIGHT);
-        creationStatus.setText(Messages.getString("SelectorTableForm.CreationStatus"));
+        creationStatus.setText(Messages.getString("SelectorTableForm.CreationStatus")); //$NON-NLS-1$
         creationStatus.setWidth(200);
 
         scrolledCompositeFileViewer.setContent(table);
@@ -211,16 +211,16 @@ public class SelectorTableForm extends AbstractForm {
 
         // Button Create Table
         selectAllTablesButton = new UtilsButton(compositeRetreiveSchemaButton, Messages
-                .getString("SelectorTableForm.selectAllTables"), WIDTH_BUTTON_PIXEL, HEIGHT_BUTTON_PIXEL);
+                .getString("SelectorTableForm.selectAllTables"), WIDTH_BUTTON_PIXEL, HEIGHT_BUTTON_PIXEL); //$NON-NLS-1$
 
         selectNoneTablesButton = new UtilsButton(compositeRetreiveSchemaButton, Messages
-                .getString("SelectorTableForm.selectNoneTables"), WIDTH_BUTTON_PIXEL, HEIGHT_BUTTON_PIXEL);
+                .getString("SelectorTableForm.selectNoneTables"), WIDTH_BUTTON_PIXEL, HEIGHT_BUTTON_PIXEL); //$NON-NLS-1$
 
         // Button Check Connection
         checkConnectionButton = new UtilsButton(compositeRetreiveSchemaButton, Messages
-                .getString("DatabaseTableForm.checkConnection"), WIDTH_BUTTON_PIXEL, HEIGHT_BUTTON_PIXEL);
+                .getString("DatabaseTableForm.checkConnection"), WIDTH_BUTTON_PIXEL, HEIGHT_BUTTON_PIXEL); //$NON-NLS-1$
 
-        metadataEditor = new MetadataEmfTableEditor(Messages.getString("DatabaseTableForm.metadataDescription"));
+        metadataEditor = new MetadataEmfTableEditor(Messages.getString("DatabaseTableForm.metadataDescription")); //$NON-NLS-1$
         addUtilsButtonListeners();
     }
 
@@ -259,7 +259,7 @@ public class SelectorTableForm extends AbstractForm {
                         TableItem tableItem = tableItems[i];
                         table.setEnabled(true);
                         if (!tableItem.getChecked()) {
-                            tableItem.setText(2, Messages.getString("SelectorTableForm.Pending"));
+                            tableItem.setText(2, Messages.getString("SelectorTableForm.Pending")); //$NON-NLS-1$
                             refreshTable(tableItem, size);
                         } else {
                             updateStatus(IStatus.OK, null);
@@ -286,8 +286,8 @@ public class SelectorTableForm extends AbstractForm {
                         table.setEnabled(true);
                         if (tableItem.getChecked()) {
                             deleteTable(tableItem);
-                            tableItem.setText(1, "");
-                            tableItem.setText(2, "");
+                            tableItem.setText(1, ""); //$NON-NLS-1$
+                            tableItem.setText(2, ""); //$NON-NLS-1$
                         }
                         tableItem.setChecked(false);
                     }
@@ -313,8 +313,8 @@ public class SelectorTableForm extends AbstractForm {
                         } else {
                             tableItems.remove(tableItem);
                             deleteTable(tableItem);
-                            tableItem.setText(1, "");
-                            tableItem.setText(2, "");
+                            tableItem.setText(1, ""); //$NON-NLS-1$
+                            tableItem.setText(2, ""); //$NON-NLS-1$
                         }
                     }
                 } else {
@@ -346,8 +346,8 @@ public class SelectorTableForm extends AbstractForm {
                 // connection is done but any table exist
 
                 if (displayMessageBox) {
-                    MessageDialog.openInformation(getShell(), Messages.getString("DatabaseTableForm.checkConnection"), Messages
-                            .getString("DatabaseTableForm.tableNoExist"));
+                    MessageDialog.openInformation(getShell(), Messages.getString("DatabaseTableForm.checkConnection"), Messages //$NON-NLS-1$
+                            .getString("DatabaseTableForm.tableNoExist")); //$NON-NLS-1$
                 }
             } else {
                 // connection is done and tables exist
@@ -361,13 +361,13 @@ public class SelectorTableForm extends AbstractForm {
                     }
                 }
                 if (displayMessageBox) {
-                    String msg = Messages.getString("DatabaseTableForm.connectionIsDone");
-                    MessageDialog.openInformation(getShell(), Messages.getString("DatabaseTableForm.checkConnection"), msg);
+                    String msg = Messages.getString("DatabaseTableForm.connectionIsDone"); //$NON-NLS-1$
+                    MessageDialog.openInformation(getShell(), Messages.getString("DatabaseTableForm.checkConnection"), msg); //$NON-NLS-1$
                 }
             }
         } else if (displayMessageBox) {
             // connection failure
-            new ErrorDialogWidthDetailArea(getShell(), PID, Messages.getString("DatabaseTableForm.connectionFailureTip"),
+            new ErrorDialogWidthDetailArea(getShell(), PID, Messages.getString("DatabaseTableForm.connectionFailureTip"), //$NON-NLS-1$
                     managerConnection.getMessageException());
         }
     }
@@ -385,16 +385,16 @@ public class SelectorTableForm extends AbstractForm {
         boolean checkConnectionIsDone = managerConnection.check(iMetadataConnection);
 
         if (!checkConnectionIsDone) {
-            updateStatus(IStatus.WARNING, Messages.getString("DatabaseTableForm.connectionFailure"));
-            new ErrorDialogWidthDetailArea(getShell(), PID, Messages.getString("DatabaseTableForm.connectionFailure"),
+            updateStatus(IStatus.WARNING, Messages.getString("DatabaseTableForm.connectionFailure")); //$NON-NLS-1$
+            new ErrorDialogWidthDetailArea(getShell(), PID, Messages.getString("DatabaseTableForm.connectionFailure"), //$NON-NLS-1$
                     managerConnection.getMessageException());
         } else {
             List<MetadataColumn> metadataColumns = new ArrayList<MetadataColumn>();
             metadataColumns = ExtractMetaDataFromDataBase
                     .returnMetadataColumnsFormTable(iMetadataConnection, tableItem.getText());
 
-            tableItem.setText(1, "" + metadataColumns.size());
-            tableItem.setText(2, Messages.getString("SelectorTableForm.Success"));
+            tableItem.setText(1, "" + metadataColumns.size()); //$NON-NLS-1$
+            tableItem.setText(2, Messages.getString("SelectorTableForm.Success")); //$NON-NLS-1$
 
             IProxyRepositoryFactory factory = ProxyRepositoryFactory
                     .getInstance();

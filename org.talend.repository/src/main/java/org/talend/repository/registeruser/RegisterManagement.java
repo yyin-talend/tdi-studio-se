@@ -31,6 +31,7 @@ import org.talend.core.model.general.ConnectionBean;
 import org.talend.core.prefs.CorePreferenceInitializer;
 import org.talend.core.prefs.PreferenceManipulator;
 import org.talend.core.ui.branding.BrandingService;
+import org.talend.repository.i18n.Messages;
 import org.talend.repository.registeruser.proxy.RegisterUserPortTypeProxy;
 
 /**
@@ -53,20 +54,20 @@ public class RegisterManagement {
         // if proxy is enabled
         if (isProxyEnabled) {
             // get parameter and put them in System.properties.
-            System.setProperty("http.proxyHost", proxyHost);
-            System.setProperty("http.proxyPort", proxyPort);
+            System.setProperty("http.proxyHost", proxyHost); //$NON-NLS-1$
+            System.setProperty("http.proxyPort", proxyPort); //$NON-NLS-1$
 
             // override automatic update parameters
             CorePreferenceInitializer.setProxy(proxyHost, proxyPort);
         }
 
         RegisterUserPortTypeProxy proxy = new RegisterUserPortTypeProxy();
-        proxy.setEndpoint("http://www.talend.com/TalendRegisterWS/registerws.php");
+        proxy.setEndpoint("http://www.talend.com/TalendRegisterWS/registerws.php"); //$NON-NLS-1$
         try {
             result = proxy.registerUserWithProductName(email, country, designerVersion, BrandingService.getInstance()
                     .getShortProductName());
             if (result) {
-                PlatformUI.getPreferenceStore().setValue("REGISTRATION_DONE", 1);
+                PlatformUI.getPreferenceStore().setValue("REGISTRATION_DONE", 1); //$NON-NLS-1$
                 PreferenceManipulator prefManipulator = new PreferenceManipulator(CorePlugin.getDefault()
                         .getPreferenceStore());
                 // prefManipulator.addUser(email);
@@ -96,7 +97,7 @@ public class RegisterManagement {
     public static boolean isProductRegistered() {
         initPreferenceStore();
         IPreferenceStore prefStore = PlatformUI.getPreferenceStore();
-        if ((prefStore.getInt("REGISTRATION_TRIES") > 1) && ((prefStore.getInt("REGISTRATION_DONE") != 1))) {
+        if ((prefStore.getInt("REGISTRATION_TRIES") > 1) && ((prefStore.getInt("REGISTRATION_DONE") != 1))) { //$NON-NLS-1$ //$NON-NLS-2$
             return false;
         }
         return true;
@@ -109,11 +110,11 @@ public class RegisterManagement {
      */
     private static void initPreferenceStore() {
         IPreferenceStore prefStore = PlatformUI.getPreferenceStore();
-        if (prefStore.getDefaultInt("REGISTRATION_TRIES") == 0) {
-            prefStore.setDefault("REGISTRATION_TRIES", REGISTRATION_MAX_TRIES);
+        if (prefStore.getDefaultInt("REGISTRATION_TRIES") == 0) { //$NON-NLS-1$
+            prefStore.setDefault("REGISTRATION_TRIES", REGISTRATION_MAX_TRIES); //$NON-NLS-1$
         }
-        if (prefStore.getDefaultInt("REGISTRATION_DONE") == 0) {
-            prefStore.setDefault("REGISTRATION_DONE", REGISTRATION_DONE);
+        if (prefStore.getDefaultInt("REGISTRATION_DONE") == 0) { //$NON-NLS-1$
+            prefStore.setDefault("REGISTRATION_DONE", REGISTRATION_DONE); //$NON-NLS-1$
         }
     }
 
@@ -122,7 +123,7 @@ public class RegisterManagement {
      */
     public static void decrementTry() {
         IPreferenceStore prefStore = PlatformUI.getPreferenceStore();
-        prefStore.setValue("REGISTRATION_TRIES", prefStore.getInt("REGISTRATION_TRIES") - 1);
+        prefStore.setValue("REGISTRATION_TRIES", prefStore.getInt("REGISTRATION_TRIES") - 1); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     // public static void main(String[] args) {

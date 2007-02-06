@@ -41,6 +41,7 @@ import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
+import org.talend.repository.i18n.Messages;
 
 /**
  * DOC cantoine. GraphicRule : This Class represent the Graphic rule who represent the Position of the PositionalText in
@@ -98,7 +99,7 @@ public class GraphicRule extends ScrolledComposite {
                     for (int i = 0; i < width; i++) {
                         if (i % fontWidth == 0) {
                             if (uniteRAZ == 5) {
-                                String num = "" + unite;
+                                String num = "" + unite; //$NON-NLS-1$
                                 if (num.length() < 2) {
                                     gc.drawText(num, i - 2 + decalTextScreen, -1);
                                 } else if (num.length() < 3) {
@@ -212,7 +213,7 @@ public class GraphicRule extends ScrolledComposite {
                     GC gc = e.gc;
                     int posX = Math.round(((Canvas) e.widget).getLocation().x / fontWidth) + 1;
                     // int posX = ((((Canvas) e.widget).getLocation().x) + decalTextScreen) / fontWidth;
-                    String position = "" + posX;
+                    String position = "" + posX; //$NON-NLS-1$
 
                     if (position.length() < 2) {
                         gc.drawText(position, 3, 0);
@@ -220,10 +221,10 @@ public class GraphicRule extends ScrolledComposite {
                         gc.drawText(position, 0, 0);
                     } else if (position.length() < 4) {
                         posX++;
-                        position = "" + posX;
+                        position = "" + posX; //$NON-NLS-1$
                         gc.drawText(position, 0, 0);
                     } else {
-                        gc.drawText("...", 0, 0);
+                        gc.drawText("...", 0, 0); //$NON-NLS-1$
                     }
 
                     gc.dispose();
@@ -307,9 +308,9 @@ public class GraphicRule extends ScrolledComposite {
                     gc.setForeground(bleu);
                     bleu.dispose();
 
-                    gc.drawText("<", posIntInitial - posIntInitial, 4);
+                    gc.drawText("<", posIntInitial - posIntInitial, 4); //$NON-NLS-1$
 
-                    gc.drawText(">", posInt - 7 - posIntInitial, 4);
+                    gc.drawText(">", posInt - 7 - posIntInitial, 4); //$NON-NLS-1$
 
                     gc.drawText(interval, (posInt / 2) - (posIntInitial / 2), 0);
 
@@ -353,8 +354,8 @@ public class GraphicRule extends ScrolledComposite {
      */
     public static void drawHorizontalRule(String fieldValue, String intervalValue) {
 
-        String[] valueSeparator = fieldValue.split(",");
-        String[] intervalSeparator = intervalValue.split(",");
+        String[] valueSeparator = fieldValue.split(","); //$NON-NLS-1$
+        String[] intervalSeparator = intervalValue.split(","); //$NON-NLS-1$
 
         int oldInit = 0;
         if (listHorizontalMarker != null && !listHorizontalMarker.isEmpty()) {
@@ -366,7 +367,7 @@ public class GraphicRule extends ScrolledComposite {
         }
         listHorizontalMarker.clear();
 
-        if (fieldValue != null && !fieldValue.equals("") && intervalValue != null && !intervalValue.equals("")) {
+        if (fieldValue != null && !fieldValue.equals("") && intervalValue != null && !intervalValue.equals("")) { //$NON-NLS-1$ //$NON-NLS-2$
             for (int i = 0; i < valueSeparator.length; i++) {
 
                 int position = new Integer(valueSeparator[i]).intValue();

@@ -61,7 +61,7 @@ public class DatabaseTableWizard extends RepositoryWizard implements INewWizard 
      * @param metadataTable
      * @param existingNames
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked") //$NON-NLS-1$
     public DatabaseTableWizard(IWorkbench workbench, boolean creation, ConnectionItem connectionItem, MetadataTable metadataTable,
             String[] existingNames) {
         super(workbench, creation);
@@ -80,30 +80,30 @@ public class DatabaseTableWizard extends RepositoryWizard implements INewWizard 
      */
 
     public void addPages() {
-        setWindowTitle(Messages.getString("TableWizard.windowTitle"));
+        setWindowTitle(Messages.getString("TableWizard.windowTitle")); //$NON-NLS-1$
 
         selectorWizardPage = new SelectorTableWizardPage(connectionItem, metadataTable, isRepositoryObjectEditable());
 
         tableWizardpage = new DatabaseTableWizardPage(connectionItem, metadataTable, isRepositoryObjectEditable());
 
         if (creation) {
-            selectorWizardPage.setTitle(Messages.getString("TableWizardPage.titleCreate") + " \"" + connectionItem.getProperty().getLabel()
-                    + "\"");
-            selectorWizardPage.setDescription(Messages.getString("TableWizardPage.descriptionCreate"));
+            selectorWizardPage.setTitle(Messages.getString("TableWizardPage.titleCreate") + " \"" + connectionItem.getProperty().getLabel() //$NON-NLS-1$ //$NON-NLS-2$
+                    + "\""); //$NON-NLS-1$
+            selectorWizardPage.setDescription(Messages.getString("TableWizardPage.descriptionCreate")); //$NON-NLS-1$
             selectorWizardPage.setPageComplete(true);
 
-            tableWizardpage.setTitle(Messages.getString("TableWizardPage.titleCreate") + " \"" + connectionItem.getProperty().getLabel()
-                    + "\"");
-            tableWizardpage.setDescription(Messages.getString("TableWizardPage.descriptionCreate"));
+            tableWizardpage.setTitle(Messages.getString("TableWizardPage.titleCreate") + " \"" + connectionItem.getProperty().getLabel() //$NON-NLS-1$ //$NON-NLS-2$
+                    + "\""); //$NON-NLS-1$
+            tableWizardpage.setDescription(Messages.getString("TableWizardPage.descriptionCreate")); //$NON-NLS-1$
             tableWizardpage.setPageComplete(false);
 
             addPage(selectorWizardPage);
             addPage(tableWizardpage);
 
         } else {
-            tableWizardpage.setTitle(Messages.getString("TableWizardPage.titleUpdate") + " \"" + connectionItem.getProperty().getLabel()
-                    + "\"");
-            tableWizardpage.setDescription(Messages.getString("TableWizardPage.descriptionUpdate"));
+            tableWizardpage.setTitle(Messages.getString("TableWizardPage.titleUpdate") + " \"" + connectionItem.getProperty().getLabel() //$NON-NLS-1$ //$NON-NLS-2$
+                    + "\""); //$NON-NLS-1$
+            tableWizardpage.setDescription(Messages.getString("TableWizardPage.descriptionUpdate")); //$NON-NLS-1$
             tableWizardpage.setPageComplete(false);
             addPage(tableWizardpage);
         }
@@ -143,8 +143,8 @@ public class DatabaseTableWizard extends RepositoryWizard implements INewWizard 
             factory.save(repositoryObject.getProperty().getItem());
         } catch (PersistenceException e) {
             String detailError = e.toString();
-            new ErrorDialogWidthDetailArea(getShell(), PID, Messages.getString("CommonWizard.persistenceException"), detailError);
-            log.error(Messages.getString("CommonWizard.persistenceException") + "\n" + detailError);
+            new ErrorDialogWidthDetailArea(getShell(), PID, Messages.getString("CommonWizard.persistenceException"), detailError); //$NON-NLS-1$
+            log.error(Messages.getString("CommonWizard.persistenceException") + "\n" + detailError); //$NON-NLS-1$ //$NON-NLS-2$
         }
     }
 

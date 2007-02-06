@@ -49,6 +49,7 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
 import org.talend.commons.ui.image.EImage;
 import org.talend.commons.ui.image.ImageProvider;
+import org.talend.repository.i18n.Messages;
 import org.talend.repository.ui.swt.filepositionalviewer.GraphicRule.PositionMarkerEditor;
 
 /**
@@ -205,15 +206,15 @@ public class FilePositionalViewer extends Composite {
             cleanAllMarkers();
         }
 
-        if (s != null && !s.equals("") && !s.equals("*")) {
+        if (s != null && !s.equals("") && !s.equals("*")) { //$NON-NLS-1$ //$NON-NLS-2$
 
-            if (s.contains(",*")) {
+            if (s.contains(",*")) { //$NON-NLS-1$
                 s = s.substring(0, s.length() - 2);
-            } else if (s.endsWith("*")) {
+            } else if (s.endsWith("*")) { //$NON-NLS-1$
                 s = s.substring(0, s.length() - 1);
             }
 
-            String[] drawLine = s.split(",");
+            String[] drawLine = s.split(","); //$NON-NLS-1$
             int oldToPrint = 0;
             for (int i = 0; i < drawLine.length; i++) {
                 int lineToPrint = (new Integer(drawLine[i]).intValue()) + oldToPrint;
@@ -235,10 +236,10 @@ public class FilePositionalViewer extends Composite {
         fieldPositionText = s;
         cleanAllMarkers();
 
-        if (s != null & !s.equals("")) {
+        if (s != null & !s.equals("")) { //$NON-NLS-1$
             fieldPositionText = s;
-            if (s != null & !s.equals("")) {
-                String[] drawLine = s.split(",");
+            if (s != null & !s.equals("")) { //$NON-NLS-1$
+                String[] drawLine = s.split(","); //$NON-NLS-1$
                 for (int i = 0; i < drawLine.length; i++) {
                     drawVerticalMarker(adjustPositionWithPixel(new Integer(drawLine[i]).intValue()));
                     GraphicRule.drawGraphicRule(adjustPositionWithPixel(new Integer(drawLine[i]).intValue()));
@@ -297,7 +298,7 @@ public class FilePositionalViewer extends Composite {
         vm.setBounds(posX, 0, 1, text.getBounds().height);
         vm.setPosX(posX);
         vm.moveAbove(text);
-        vm.setToolTipText("" + calculatePositionByPixel(posX));
+        vm.setToolTipText("" + calculatePositionByPixel(posX)); //$NON-NLS-1$
         listVerticalMarker.add(vm);
 
         positionBarre.put(posX, calculatePositionByPixel(posX));
@@ -311,7 +312,7 @@ public class FilePositionalViewer extends Composite {
         om.setBounds(posX - 5, 0, 10, 10);
         om.setPosX(posX);
         om.moveAbove(text);
-        om.setToolTipText("" + calculatePositionByPixel(posX));
+        om.setToolTipText("" + calculatePositionByPixel(posX)); //$NON-NLS-1$
         listTopMarkerEditor.add(om);
     }
 
@@ -361,7 +362,7 @@ public class FilePositionalViewer extends Composite {
         vm.setBounds(posX, 0, 1, text.getBounds().height);
         vm.setPosX(posX);
         vm.moveAbove(text);
-        vm.setToolTipText("" + calculatePositionByPixel(posX));
+        vm.setToolTipText("" + calculatePositionByPixel(posX)); //$NON-NLS-1$
 
         GraphicRule.drawGraphicRule(posX);
 
@@ -393,12 +394,12 @@ public class FilePositionalViewer extends Composite {
         om.setBounds(posX - 5, 0, 10, 10);
         om.setPosX(posX);
         om.moveAbove(text);
-        om.setToolTipText("" + calculatePositionByPixel(posX));
+        om.setToolTipText("" + calculatePositionByPixel(posX)); //$NON-NLS-1$
     }
 
     protected String calculateRegExp() {
 
-        String regExp = "";
+        String regExp = ""; //$NON-NLS-1$
         if (positionBarre != null && !positionBarre.isEmpty()) {
             Set cles = positionBarre.keySet();
             Iterator iterator = cles.iterator();
@@ -407,10 +408,10 @@ public class FilePositionalViewer extends Composite {
             while (iterator.hasNext()) {
                 Integer i = (Integer) iterator.next();
                 toAdd = positionBarre.get(i) - toSubstract;
-                if (regExp.equals("")) {
+                if (regExp.equals("")) { //$NON-NLS-1$
                     regExp += toAdd;
                 } else {
-                    regExp += "," + toAdd;
+                    regExp += "," + toAdd; //$NON-NLS-1$
                 }
                 toSubstract = positionBarre.get(i);
             }
@@ -420,16 +421,16 @@ public class FilePositionalViewer extends Composite {
 
     public String calculatePositionX() {
 
-        String posX = "";
+        String posX = ""; //$NON-NLS-1$
         if (positionBarre != null && !positionBarre.isEmpty()) {
             Set cles = positionBarre.keySet();
             Iterator iterator = cles.iterator();
             while (iterator.hasNext()) {
                 Integer i = (Integer) iterator.next();
-                if (posX.equals("")) {
+                if (posX.equals("")) { //$NON-NLS-1$
                     posX += positionBarre.get(i);
                 } else {
-                    posX += "," + positionBarre.get(i);
+                    posX += "," + positionBarre.get(i); //$NON-NLS-1$
                 }
             }
         }

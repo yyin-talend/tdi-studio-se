@@ -41,7 +41,7 @@ import org.talend.repository.preview.ProcessDescription;
 /**
  * Create SWT Table to show the content of a file. <br/>
  * 
- * $Id: ShadowProcessPreview.java 1094 2006-12-19 11:43:50Z amaumont $
+ * $Id:ShadowProcessPreview.java 1185 2006-12-22 10:43:29 +0000 (星期五, 22 十二月 2006) amaumont $
  * 
  */
 public class ShadowProcessPreview {
@@ -150,20 +150,20 @@ public class ShadowProcessPreview {
         for (int i = 0; i < numbersOfColumns; i++) {
             if (firstRowIsLabel) {
                 if (numbersOfColumns <= firstRowFields.size()) {
-                    if (firstRowFields.get(i).getValue() != null && !("").equals(firstRowFields.get(i).getValue())) {
+                    if (firstRowFields.get(i).getValue() != null && !("").equals(firstRowFields.get(i).getValue())) { //$NON-NLS-1$
                         title[i] = firstRowFields.get(i).getValue();
                     } else {
-                        title[i] = Messages.getString("DelimitedFilePreview.column") + " " + i;
+                        title[i] = Messages.getString("DelimitedFilePreview.column") + " " + i; //$NON-NLS-1$ //$NON-NLS-2$
                     }
                 } else {
                     if (i < firstRowFields.size()) {
                         title[i] = firstRowFields.get(i).getValue();
                     } else {
-                        title[i] = Messages.getString("DelimitedFilePreview.column") + " " + i;
+                        title[i] = Messages.getString("DelimitedFilePreview.column") + " " + i; //$NON-NLS-1$ //$NON-NLS-2$
                     }
                 }
             } else {
-                title[i] = Messages.getString("DelimitedFilePreview.column") + " " + i;
+                title[i] = Messages.getString("DelimitedFilePreview.column") + " " + i; //$NON-NLS-1$ //$NON-NLS-2$
             }
         }
         this.header = title;
@@ -210,20 +210,20 @@ public class ShadowProcessPreview {
         for (int i = 0; i < numbersOfColumns; i++) {
             if (firstRowIsLabel) {
                 if (numbersOfColumns <= firstRowFields.size()) {
-                    if (firstRowFields.get(i).getValue() != null && !("").equals(firstRowFields.get(i).getValue())) {
+                    if (firstRowFields.get(i).getValue() != null && !("").equals(firstRowFields.get(i).getValue())) { //$NON-NLS-1$
                         title[i] = firstRowFields.get(i).getValue();
                     } else {
-                        title[i] = Messages.getString("DelimitedFilePreview.column") + " " + i;
+                        title[i] = Messages.getString("DelimitedFilePreview.column") + " " + i; //$NON-NLS-1$ //$NON-NLS-2$
                     }
                 } else {
                     if (i < firstRowFields.size()) {
                         title[i] = firstRowFields.get(i).getValue();
                     } else {
-                        title[i] = Messages.getString("DelimitedFilePreview.column") + " " + i;
+                        title[i] = Messages.getString("DelimitedFilePreview.column") + " " + i; //$NON-NLS-1$ //$NON-NLS-2$
                     }
                 }
             } else {
-                title[i] = "" + processDescription.getSchema().get(0).getListColumns().get(i);
+                title[i] = "" + processDescription.getSchema().get(0).getListColumns().get(i); //$NON-NLS-1$
             }
         }
         this.header = title;
@@ -270,23 +270,23 @@ public class ShadowProcessPreview {
         for (int i = 0; i < numbersOfColumns; i++) {
             if (firstRowIsLabel) {
                 if (numbersOfColumns <= firstRowFields.size()) {
-                    if (firstRowFields.get(i).getValue() != null && !("").equals(firstRowFields.get(i).getValue())) {
+                    if (firstRowFields.get(i).getValue() != null && !("").equals(firstRowFields.get(i).getValue())) { //$NON-NLS-1$
                         title[i] = firstRowFields.get(i).getValue();
                     } else {
-                        title[i] = Messages.getString("DelimitedFilePreview.column") + " " + i;
+                        title[i] = Messages.getString("DelimitedFilePreview.column") + " " + i; //$NON-NLS-1$ //$NON-NLS-2$
                     }
                 } else {
                     if (i < firstRowFields.size()) {
                         title[i] = firstRowFields.get(i).getValue();
                     } else {
-                        title[i] = Messages.getString("DelimitedFilePreview.column") + " " + i;
+                        title[i] = Messages.getString("DelimitedFilePreview.column") + " " + i; //$NON-NLS-1$ //$NON-NLS-2$
                     }
                 }
             } else {
-                if(schemaTarget.get(i).getTagName()!=null && !schemaTarget.get(i).getTagName().equals("")){
-                    title[i] = "" + schemaTarget.get(i).getTagName();    
+                if(schemaTarget.get(i).getTagName()!=null && !schemaTarget.get(i).getTagName().equals("")){ //$NON-NLS-1$
+                    title[i] = "" + schemaTarget.get(i).getTagName();     //$NON-NLS-1$
                 }else{
-                    title[i] = Messages.getString("DelimitedFilePreview.column") + " " + i;
+                    title[i] = Messages.getString("DelimitedFilePreview.column") + " " + i; //$NON-NLS-1$ //$NON-NLS-2$
                 }
             }
         }
@@ -404,7 +404,7 @@ public class ShadowProcessPreview {
     public void clearTablePreview() {
         table.clearAll();
         for (int i = 0; i < table.getColumnCount(); i++) {
-            table.getColumn(i).setText("");
+            table.getColumn(i).setText(""); //$NON-NLS-1$
             table.getColumn(i).setWidth(0);
         }
     }

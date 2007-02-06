@@ -33,6 +33,7 @@ import org.eclipse.jface.fieldassist.IContentProposalProvider;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.ui.swt.proposal.xpath.XPathContentProposal;
 import org.talend.commons.xml.NodeRetriever;
+import org.talend.repository.i18n.Messages;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
@@ -44,11 +45,11 @@ import org.w3c.dom.NodeList;
  */
 public class XPathProposalProvider implements IContentProposalProvider {
 
-    public static final String EMPTY_STRING = "";
+    public static final String EMPTY_STRING = ""; //$NON-NLS-1$
 
-    public static final String SLASH = "/";
+    public static final String SLASH = "/"; //$NON-NLS-1$
 
-    private static final String PIPE = "|";
+    private static final String PIPE = "|"; //$NON-NLS-1$
 
     private IContentProposalProvider[] otherContentProposalProviders;
 
@@ -209,7 +210,7 @@ public class XPathProposalProvider implements IContentProposalProvider {
                                 String nodeName = node.getNodeName();
                                 String absoluteXPathFromNode = NodeRetriever.getAbsoluteXPathFromNode(node);
                                 if ((currentWord.length() > 0 && nodeName.startsWith(currentWord) || currentWord.length() == 0 || currentWord
-                                        .equals("/"))
+                                        .equals("/")) //$NON-NLS-1$
                                         && !alreadyAdded.contains(absoluteXPathFromNode)) {
                                     XPathContentProposal contentProposal = new XPathContentProposal(node);
                                     if (isRelativeTable && isRelativeExpression) {
@@ -273,7 +274,7 @@ public class XPathProposalProvider implements IContentProposalProvider {
                     String nodeName = node.getNodeName();
                     String absoluteXPathFromNode = NodeRetriever.getAbsoluteXPathFromNode(node);
                     if ((currentWord.length() > 0 && nodeName.startsWith(currentWord) || currentWord.length() == 0 || currentWord
-                            .equals("/"))
+                            .equals("/")) //$NON-NLS-1$
                             && !alreadyAdded.contains(absoluteXPathFromNode)) {
                         // System.out.println(absoluteXPathFromNode);
                         XPathContentProposal contentProposal = new XPathContentProposal(node);
@@ -313,7 +314,7 @@ public class XPathProposalProvider implements IContentProposalProvider {
 
                 currentExpr = currentExpr.trim().substring(0, currentExpr.length() - 1);
 
-            } while (currentExpr.trim().endsWith("/"));
+            } while (currentExpr.trim().endsWith("/")); //$NON-NLS-1$
         }
 
         return currentExpr;

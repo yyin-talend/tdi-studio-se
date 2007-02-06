@@ -22,6 +22,8 @@
 
 package org.talend.repository.registeruser.proxy;
 
+import org.talend.repository.i18n.Messages;
+
 /**
  * DOC mhirt class global comment. Detailled comment <br/>
  * 
@@ -53,47 +55,47 @@ public class RegisterUserBindingStub extends org.apache.axis.client.Stub impleme
         org.apache.axis.description.OperationDesc oper;
         org.apache.axis.description.ParameterDesc param;
         oper = new org.apache.axis.description.OperationDesc();
-        oper.setName("IRegisterUser");
-        param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "email"),
+        oper.setName("IRegisterUser"); //$NON-NLS-1$
+        param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "email"), //$NON-NLS-1$ //$NON-NLS-2$
                 org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName(
-                        "http://www.w3.org/2001/XMLSchema", "string"), java.lang.String.class, false, false);
+                        "http://www.w3.org/2001/XMLSchema", "string"), java.lang.String.class, false, false); //$NON-NLS-1$ //$NON-NLS-2$
         oper.addParameter(param);
-        param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "country"),
+        param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "country"), //$NON-NLS-1$ //$NON-NLS-2$
                 org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName(
-                        "http://www.w3.org/2001/XMLSchema", "string"), java.lang.String.class, false, false);
+                        "http://www.w3.org/2001/XMLSchema", "string"), java.lang.String.class, false, false); //$NON-NLS-1$ //$NON-NLS-2$
         oper.addParameter(param);
-        param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "designerversion"),
+        param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "designerversion"), //$NON-NLS-1$ //$NON-NLS-2$
                 org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName(
-                        "http://www.w3.org/2001/XMLSchema", "string"), java.lang.String.class, false, false);
+                        "http://www.w3.org/2001/XMLSchema", "string"), java.lang.String.class, false, false); //$NON-NLS-1$ //$NON-NLS-2$
         oper.addParameter(param);
-        oper.setReturnType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "boolean"));
+        oper.setReturnType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "boolean")); //$NON-NLS-1$ //$NON-NLS-2$
         oper.setReturnClass(boolean.class);
-        oper.setReturnQName(new javax.xml.namespace.QName("", "result"));
+        oper.setReturnQName(new javax.xml.namespace.QName("", "result")); //$NON-NLS-1$ //$NON-NLS-2$
         oper.setStyle(org.apache.axis.constants.Style.RPC);
         oper.setUse(org.apache.axis.constants.Use.ENCODED);
         operations[0] = oper;
 
         oper = new org.apache.axis.description.OperationDesc();
-        oper.setName("RegisterUserWithProductName");
-        param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "email"),
+        oper.setName("RegisterUserWithProductName"); //$NON-NLS-1$
+        param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "email"), //$NON-NLS-1$ //$NON-NLS-2$
                 org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName(
-                        "http://www.w3.org/2001/XMLSchema", "string"), java.lang.String.class, false, false);
+                        "http://www.w3.org/2001/XMLSchema", "string"), java.lang.String.class, false, false); //$NON-NLS-1$ //$NON-NLS-2$
         oper.addParameter(param);
-        param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "country"),
+        param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "country"), //$NON-NLS-1$ //$NON-NLS-2$
                 org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName(
-                        "http://www.w3.org/2001/XMLSchema", "string"), java.lang.String.class, false, false);
+                        "http://www.w3.org/2001/XMLSchema", "string"), java.lang.String.class, false, false); //$NON-NLS-1$ //$NON-NLS-2$
         oper.addParameter(param);
-        param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "designerversion"),
+        param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "designerversion"), //$NON-NLS-1$ //$NON-NLS-2$
                 org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName(
-                        "http://www.w3.org/2001/XMLSchema", "string"), java.lang.String.class, false, false);
+                        "http://www.w3.org/2001/XMLSchema", "string"), java.lang.String.class, false, false); //$NON-NLS-1$ //$NON-NLS-2$
         oper.addParameter(param);
-        param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "productname"),
+        param = new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "productname"), //$NON-NLS-1$ //$NON-NLS-2$
                 org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName(
-                        "http://www.w3.org/2001/XMLSchema", "string"), java.lang.String.class, false, false);
+                        "http://www.w3.org/2001/XMLSchema", "string"), java.lang.String.class, false, false); //$NON-NLS-1$ //$NON-NLS-2$
         oper.addParameter(param);
-        oper.setReturnType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "boolean"));
+        oper.setReturnType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "boolean")); //$NON-NLS-1$ //$NON-NLS-2$
         oper.setReturnClass(boolean.class);
-        oper.setReturnQName(new javax.xml.namespace.QName("", "result"));
+        oper.setReturnQName(new javax.xml.namespace.QName("", "result")); //$NON-NLS-1$ //$NON-NLS-2$
         oper.setStyle(org.apache.axis.constants.Style.RPC);
         oper.setUse(org.apache.axis.constants.Use.ENCODED);
         operations[1] = oper;
@@ -116,7 +118,7 @@ public class RegisterUserBindingStub extends org.apache.axis.client.Stub impleme
         } else {
             super.service = service;
         }
-        ((org.apache.axis.client.Service) super.service).setTypeMappingVersion("1.2");
+        ((org.apache.axis.client.Service) super.service).setTypeMappingVersion("1.2"); //$NON-NLS-1$
     }
 
     protected org.apache.axis.client.Call createCall() throws java.rmi.RemoteException {
@@ -147,7 +149,7 @@ public class RegisterUserBindingStub extends org.apache.axis.client.Stub impleme
             }
             return call;
         } catch (java.lang.Throwable t) {
-            throw new org.apache.axis.AxisFault("Failure trying to get the Call object", t);
+            throw new org.apache.axis.AxisFault("Failure trying to get the Call object", t); //$NON-NLS-1$
         }
     }
 
@@ -159,10 +161,10 @@ public class RegisterUserBindingStub extends org.apache.axis.client.Stub impleme
         org.apache.axis.client.Call call = createCall();
         call.setOperation(operations[0]);
         call.setUseSOAPAction(true);
-        call.setSOAPActionURI("http://www.talend.com/TalendRegisterWS/registerws.php/IRegisterUser");
+        call.setSOAPActionURI("http://www.talend.com/TalendRegisterWS/registerws.php/IRegisterUser"); //$NON-NLS-1$
         call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
-        call.setOperationName(new javax.xml.namespace.QName("http://www.talend.com/TalendRegisterWS/wsdl",
-                "IRegisterUser"));
+        call.setOperationName(new javax.xml.namespace.QName("http://www.talend.com/TalendRegisterWS/wsdl", //$NON-NLS-1$
+                "IRegisterUser")); //$NON-NLS-1$
 
         setRequestHeaders(call);
         setAttachments(call);
@@ -193,10 +195,10 @@ public class RegisterUserBindingStub extends org.apache.axis.client.Stub impleme
         org.apache.axis.client.Call call = createCall();
         call.setOperation(operations[1]);
         call.setUseSOAPAction(true);
-        call.setSOAPActionURI("http://www.talend.com/TalendRegisterWS/registerws.php/RegisterUserWithProductName");
+        call.setSOAPActionURI("http://www.talend.com/TalendRegisterWS/registerws.php/RegisterUserWithProductName"); //$NON-NLS-1$
         call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
-        call.setOperationName(new javax.xml.namespace.QName("http://www.talend.com/TalendRegisterWS/wsdl",
-                "RegisterUserWithProductName"));
+        call.setOperationName(new javax.xml.namespace.QName("http://www.talend.com/TalendRegisterWS/wsdl", //$NON-NLS-1$
+                "RegisterUserWithProductName")); //$NON-NLS-1$
 
         setRequestHeaders(call);
         setAttachments(call);

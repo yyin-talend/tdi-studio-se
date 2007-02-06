@@ -124,63 +124,63 @@ public class ConnectionFormComposite extends Composite {
         data.top = new FormAttachment(0, ConnectionsDialog.VSPACE);
         repositoryCombo.getControl().setLayoutData(data);
 
-        Label repositoryLabel = toolkit.createLabel(formBody, Messages.getString("connections.form.field.repository"));
+        Label repositoryLabel = toolkit.createLabel(formBody, Messages.getString("connections.form.field.repository")); //$NON-NLS-1$
         data = new FormData();
         data.left = new FormAttachment(0, ConnectionsDialog.HSPACE);
         data.bottom = new FormAttachment(repositoryCombo.getControl(), 0, SWT.BOTTOM);
         repositoryLabel.setLayoutData(data);
 
         // Name
-        nameText = toolkit.createText(formBody, "", SWT.BORDER);
+        nameText = toolkit.createText(formBody, "", SWT.BORDER); //$NON-NLS-1$
         data = new FormData();
         data.left = new FormAttachment(0, ConnectionsDialog.STANDARD_LABEL_WIDTH);
         data.right = new FormAttachment(100, -ConnectionsDialog.HSPACE);
         data.top = new FormAttachment(repositoryCombo.getControl(), ConnectionsDialog.VSPACE);
         nameText.setLayoutData(data);
 
-        Label nameLabel = toolkit.createLabel(formBody, Messages.getString("connections.form.field.name"));
+        Label nameLabel = toolkit.createLabel(formBody, Messages.getString("connections.form.field.name")); //$NON-NLS-1$
         data = new FormData();
         data.left = new FormAttachment(0, ConnectionsDialog.HSPACE);
         data.bottom = new FormAttachment(nameText, 0, SWT.BOTTOM);
         nameLabel.setLayoutData(data);
 
         // Comment
-        descriptionText = toolkit.createText(formBody, "", SWT.BORDER);
+        descriptionText = toolkit.createText(formBody, "", SWT.BORDER); //$NON-NLS-1$
         data = new FormData();
         data.left = new FormAttachment(0, ConnectionsDialog.STANDARD_LABEL_WIDTH);
         data.right = new FormAttachment(100, -ConnectionsDialog.HSPACE);
         data.top = new FormAttachment(nameText, ConnectionsDialog.VSPACE);
         descriptionText.setLayoutData(data);
 
-        Label descriptionLabel = toolkit.createLabel(formBody, Messages.getString("connections.form.field.description"));
+        Label descriptionLabel = toolkit.createLabel(formBody, Messages.getString("connections.form.field.description")); //$NON-NLS-1$
         data = new FormData();
         data.left = new FormAttachment(0, ConnectionsDialog.HSPACE);
         data.bottom = new FormAttachment(descriptionText, 0, SWT.BOTTOM);
         descriptionLabel.setLayoutData(data);
 
         // User
-        userText = toolkit.createText(formBody, "", SWT.BORDER);
+        userText = toolkit.createText(formBody, "", SWT.BORDER); //$NON-NLS-1$
         data = new FormData();
         data.left = new FormAttachment(0, ConnectionsDialog.STANDARD_LABEL_WIDTH);
         data.right = new FormAttachment(100, -ConnectionsDialog.HSPACE);
         data.top = new FormAttachment(descriptionText, ConnectionsDialog.VSPACE);
         userText.setLayoutData(data);
 
-        Label userLabel = toolkit.createLabel(formBody, Messages.getString("connections.form.field.username"));
+        Label userLabel = toolkit.createLabel(formBody, Messages.getString("connections.form.field.username")); //$NON-NLS-1$
         data = new FormData();
         data.left = new FormAttachment(0, ConnectionsDialog.HSPACE);
         data.bottom = new FormAttachment(userText, 0, SWT.BOTTOM);
         userLabel.setLayoutData(data);
 
         // Password
-        passwordText = toolkit.createText(formBody, "", SWT.PASSWORD | SWT.BORDER);
+        passwordText = toolkit.createText(formBody, "", SWT.PASSWORD | SWT.BORDER); //$NON-NLS-1$
         data = new FormData();
         data.left = new FormAttachment(0, ConnectionsDialog.STANDARD_LABEL_WIDTH);
         data.right = new FormAttachment(100, -ConnectionsDialog.HSPACE);
         data.top = new FormAttachment(userText, ConnectionsDialog.VSPACE);
         passwordText.setLayoutData(data);
 
-        Label passwordLabel = toolkit.createLabel(formBody, Messages.getString("connections.form.field.password"));
+        Label passwordLabel = toolkit.createLabel(formBody, Messages.getString("connections.form.field.password")); //$NON-NLS-1$
         data = new FormData();
         data.left = new FormAttachment(0, ConnectionsDialog.HSPACE);
         data.bottom = new FormAttachment(passwordText, 0, SWT.BOTTOM);
@@ -194,7 +194,7 @@ public class ConnectionFormComposite extends Composite {
             dynamicRequiredControls.put(current, listRequired);
             Control baseControl = passwordLabel;
             for (DynamicFieldBean currentField : current.getFields()) {
-                Text text = toolkit.createText(formBody, "", SWT.BORDER);
+                Text text = toolkit.createText(formBody, "", SWT.BORDER); //$NON-NLS-1$
                 data = new FormData();
                 data.left = new FormAttachment(0, ConnectionsDialog.STANDARD_LABEL_WIDTH);
                 data.right = new FormAttachment(100, -ConnectionsDialog.HSPACE);
@@ -233,21 +233,21 @@ public class ConnectionFormComposite extends Composite {
         boolean valid = true;
         if (valid && getRepository() == null) {
             valid = false;
-            errorMsg = Messages.getString("connections.form.emptyField.repository");
+            errorMsg = Messages.getString("connections.form.emptyField.repository"); //$NON-NLS-1$
         } else if (valid && getName().length() == 0) {
             valid = false;
-            errorMsg = Messages.getString("connections.form.emptyField.connname");
+            errorMsg = Messages.getString("connections.form.emptyField.connname"); //$NON-NLS-1$
         } else if (valid && getUser().length() == 0) {
             valid = false;
-            errorMsg = Messages.getString("connections.form.emptyField.username");
+            errorMsg = Messages.getString("connections.form.emptyField.username"); //$NON-NLS-1$
         } else if (valid && !Pattern.matches(RepositoryConstants.MAIL_PATTERN, getUser())) {
             valid = false;
-            errorMsg = Messages.getString("connections.form.malformedField.username");
+            errorMsg = Messages.getString("connections.form.malformedField.username"); //$NON-NLS-1$
         } else {
             for (LabelText current : dynamicRequiredControls.get(getRepository()).values()) {
                 if (valid && current.getText().length() == 0) {
                     valid = false;
-                    errorMsg = Messages.getString("connections.form.dynamicFieldEmpty", current.getLabel());
+                    errorMsg = Messages.getString("connections.form.dynamicFieldEmpty", current.getLabel()); //$NON-NLS-1$
                 }
             }
         }
@@ -291,7 +291,7 @@ public class ConnectionFormComposite extends Composite {
                     passwordText.setEditable(true);
                     passwordText.setBackground(LoginComposite.WHITE_COLOR);
                 } else {
-                    passwordText.setText("");
+                    passwordText.setText(""); //$NON-NLS-1$
                     passwordText.setEnabled(false);
                     passwordText.setEditable(false);
                     passwordText.setBackground(LoginComposite.GREY_COLOR);
@@ -403,13 +403,13 @@ public class ConnectionFormComposite extends Composite {
                 for (String fieldKey : map.keySet()) {
                     LabelText current = map.get(fieldKey);
                     String string = connection.getDynamicFields().get(fieldKey);
-                    current.setText(string == null ? "" : string);
+                    current.setText(string == null ? "" : string); //$NON-NLS-1$
                 }
             }
-            nameText.setText((connection.getName() == null ? "" : connection.getName()));
-            descriptionText.setText((connection.getDescription() == null ? "" : connection.getDescription()));
-            userText.setText((connection.getUser() == null ? "" : connection.getUser()));
-            passwordText.setText((connection.getPassword() == null ? "" : connection.getPassword()));
+            nameText.setText((connection.getName() == null ? "" : connection.getName())); //$NON-NLS-1$
+            descriptionText.setText((connection.getDescription() == null ? "" : connection.getDescription())); //$NON-NLS-1$
+            userText.setText((connection.getUser() == null ? "" : connection.getUser())); //$NON-NLS-1$
+            passwordText.setText((connection.getPassword() == null ? "" : connection.getPassword())); //$NON-NLS-1$
             addListeners();
         }
     }
