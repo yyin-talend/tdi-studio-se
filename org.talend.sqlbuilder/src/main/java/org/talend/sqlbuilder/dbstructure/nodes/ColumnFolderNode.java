@@ -130,7 +130,7 @@ public class ColumnFolderNode extends AbstractFolderNode {
                 addChildNode(new ColumnNode(this, (String) it.next(), psessionNode, (TableNode) pparent, true));
             }
         } catch (Exception e) {
-            SqlBuilderPlugin.log(Messages.getString("ColumnFolderNode.logMessage") + getName(), e); //$NON-NLS-1$
+            SqlBuilderPlugin.log(Messages.getString("ColumnFolderNode.logMessage", getName()), e); //$NON-NLS-1$
         }
     }
 

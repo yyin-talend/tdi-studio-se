@@ -69,7 +69,7 @@ public class CatalogNode extends AbstractNode {
     /**
      * @return ChildNames.
      */
-    @SuppressWarnings("unchecked") //$NON-NLS-1$
+    @SuppressWarnings("unchecked")//$NON-NLS-1$
     public String[] getChildNames() {
 
         if (pchildNames.size() == 0) {
@@ -132,7 +132,7 @@ public class CatalogNode extends AbstractNode {
     /**
      * LoadChildren.
      */
-    @SuppressWarnings("unchecked") //$NON-NLS-1$
+    @SuppressWarnings("unchecked")//$NON-NLS-1$
     public void loadChildren() {
 
         if (psessionNode.getInteractiveConnection() == null) {
@@ -163,7 +163,7 @@ public class CatalogNode extends AbstractNode {
             }
 
         } catch (Throwable e) {
-            SqlBuilderPlugin.log(Messages.getString("CatalogNode.logMessage2") + pname, e); //$NON-NLS-1$
+            SqlBuilderPlugin.log(Messages.getString("CatalogNode.logMessage2", pname), e); //$NON-NLS-1$
         }
     }
 

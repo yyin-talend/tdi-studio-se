@@ -35,8 +35,7 @@ import org.talend.sqlbuilder.sessiontree.model.SessionTreeNode;
 import org.talend.sqlbuilder.util.ImageUtil;
 
 /**
- * Abstract implementation of INode. Extend this class to create your own node
- * types.
+ * Abstract implementation of INode. Extend this class to create your own node types.
  * 
  * @author Davy Vanherbergen
  */
@@ -61,14 +60,15 @@ public abstract class AbstractNode implements INode {
     protected SessionTreeNode psessionNode;
 
     protected String ptype;
-    
+
     protected String prepositoryName;
 
     /**
      * DOC dev Comment method "addChildNode".
+     * 
      * @param childNode ChildNode
      */
-    @SuppressWarnings("unchecked") //$NON-NLS-1$
+    @SuppressWarnings("unchecked")//$NON-NLS-1$
     public final void addChildNode(INode childNode) {
 
         pchildren.add(childNode);
@@ -76,6 +76,7 @@ public abstract class AbstractNode implements INode {
 
     /**
      * getRepositoryName.
+     * 
      * @param
      * @return the repository name.
      * @exception
@@ -86,6 +87,7 @@ public abstract class AbstractNode implements INode {
 
     /**
      * setRepositoryName.
+     * 
      * @param repositoryName repositoryName.
      * @return
      * @exception
@@ -94,17 +96,14 @@ public abstract class AbstractNode implements INode {
         prepositoryName = repositoryName;
     }
 
-
     /**
      * @param composite Composite
      */
     public void fillDetailComposite(Composite composite) {
     }
 
-
     /**
-     * Get an iterator to all child nodes. If child nodes haven't been loaded
-     * yet, loading is triggered.
+     * Get an iterator to all child nodes. If child nodes haven't been loaded yet, loading is triggered.
      * 
      * @return Iterator of child elements
      */
@@ -117,15 +116,13 @@ public abstract class AbstractNode implements INode {
         return pchildren.iterator();
     }
 
-
     /**
-     * Get all the children of this node. If child nodes haven't been loaded
-     * yet, loading is triggered.
+     * Get all the children of this node. If child nodes haven't been loaded yet, loading is triggered.
      * 
      * @return All child nodes of this node.
      * @see net.sourceforge.sqlexplorer.db.INode#getChildren()
      */
-    @SuppressWarnings("unchecked") //$NON-NLS-1$
+    @SuppressWarnings("unchecked")//$NON-NLS-1$
     public INode[] getChildNodes() {
 
         if (!pchildrenLoaded) {
@@ -143,9 +140,9 @@ public abstract class AbstractNode implements INode {
         return (INode[]) pchildren.toArray(new INode[] {});
     }
 
-
     /**
      * Override this method to implement custom sorting of child nodes.
+     * 
      * @return Comparator.
      */
     public Comparator getComparator() {
@@ -170,10 +167,8 @@ public abstract class AbstractNode implements INode {
         };
     }
 
-
     /**
-     * Override this method to change the image that is displayed for this node
-     * in the database structure outline.
+     * Override this method to change the image that is displayed for this node in the database structure outline.
      * 
      * @return Image
      */
@@ -185,10 +180,8 @@ public abstract class AbstractNode implements INode {
         return ImageUtil.getImage(pexpandedImageKey);
     }
 
-
     /**
-     * Override this method to change the image that is displayed for this node
-     * in the database structure outline.
+     * Override this method to change the image that is displayed for this node in the database structure outline.
      * 
      * @return Image
      */
@@ -211,10 +204,8 @@ public abstract class AbstractNode implements INode {
         return null;
     }
 
-
     /**
-     * Override this method to change the text that is displayed in the database
-     * structure outline for this node.
+     * Override this method to change the text that is displayed in the database structure outline for this node.
      * 
      * @return LabelText.
      */
@@ -222,7 +213,6 @@ public abstract class AbstractNode implements INode {
 
         return getName();
     }
-
 
     /**
      * @return simple name for this node.
@@ -235,7 +225,6 @@ public abstract class AbstractNode implements INode {
         return pname;
     }
 
-
     /**
      * Get the parent of this node.
      * 
@@ -246,7 +235,6 @@ public abstract class AbstractNode implements INode {
 
         return pparent;
     }
-
 
     /**
      * @return QualifiedName
@@ -271,7 +259,6 @@ public abstract class AbstractNode implements INode {
         return node.getName();
     }
 
-
     /**
      * @return SessionTreeNode for this node.
      */
@@ -288,10 +275,9 @@ public abstract class AbstractNode implements INode {
         return ptype;
     }
 
-
     /**
-     * Implement this method to return a unique identifier for this node. It is
-     * used to identify the node in the detail cache.
+     * Implement this method to return a unique identifier for this node. It is used to identify the node in the detail
+     * cache.
      * 
      * @return UniqueIdentifier
      * @see org.talend.sqlbuilder.dbstructure.nodes.INode#getUniqueIdentifier()
@@ -301,11 +287,9 @@ public abstract class AbstractNode implements INode {
         return getParent().getQualifiedName() + "." + getQualifiedName(); //$NON-NLS-1$
     }
 
-
     /**
-     * Checks if this node has children. If child nodes haven't been loaded yet,
-     * this method always returns true. This defers the loading of metadata used
-     * in the database structure outline until it is actually required.
+     * Checks if this node has children. If child nodes haven't been loaded yet, this method always returns true. This
+     * defers the loading of metadata used in the database structure outline until it is actually required.
      * 
      * @return true if this node has children.
      */
@@ -322,7 +306,6 @@ public abstract class AbstractNode implements INode {
         return true;
     }
 
-
     /**
      * Initialize this node.
      * 
@@ -337,11 +320,9 @@ public abstract class AbstractNode implements INode {
         psessionNode = sessionNode;
     }
 
-
     /**
-     * Returns true. Override this method to return false if your node cannot
-     * have any children. This will avoid the twistie being displayed in the
-     * database structure outline for nodes that cannot have children.
+     * Returns true. Override this method to return false if your node cannot have any children. This will avoid the
+     * twistie being displayed in the database structure outline for nodes that cannot have children.
      * 
      * @return isEndNode
      * @see org.talend.sqlbuilder.dbstructure.nodes.INode#isEndNode()
@@ -359,7 +340,6 @@ public abstract class AbstractNode implements INode {
         return pisExpanded;
     }
 
-
     /**
      * Loads all the children for this node if they haven't been loaded yet.
      */
@@ -369,36 +349,33 @@ public abstract class AbstractNode implements INode {
 
             try {
 
-//                if (LOGGER.isDebugEnabled()) {
-//                    LOGGER.debug("Loading child nodes for " + pname);
-//                }
+                // if (LOGGER.isDebugEnabled()) {
+                // LOGGER.debug("Loading child nodes for " + pname);
+                // }
 
                 loadChildren();
                 pchildrenLoaded = true;
 
             } catch (AbstractMethodError e) {
 
-                SqlBuilderPlugin.log(Messages.getString("AbstractNode.logMessage") + pname, e); //$NON-NLS-1$
+                SqlBuilderPlugin.log(Messages.getString("AbstractNode.logMessage", pname), e); //$NON-NLS-1$
 
             } catch (Throwable e) {
 
-                SqlBuilderPlugin.log(Messages.getString("AbstractNode.logMessage") + pname, e); //$NON-NLS-1$
+                SqlBuilderPlugin.log(Messages.getString("AbstractNode.logMessage", pname), e); //$NON-NLS-1$
 
             }
         }
     }
 
-
     /**
-     * Load all the children of this node here. Do not call this method, but use
-     * load() instead.
+     * Load all the children of this node here. Do not call this method, but use load() instead.
      */
     public abstract void loadChildren();
 
-
     /**
-     * Refresh. This will clear the nodes' children and reload them. It will
-     * also update the dictionary for this node & descendants
+     * Refresh. This will clear the nodes' children and reload them. It will also update the dictionary for this node &
+     * descendants
      */
     public final void refresh() {
 
@@ -417,13 +394,12 @@ public abstract class AbstractNode implements INode {
     }
 
     /**
-     * @param image image 
+     * @param image image
      */
     public void setImage(Image image) {
 
         pimage = image;
     }
-
 
     /**
      * Set parent node for this node.
@@ -434,7 +410,6 @@ public abstract class AbstractNode implements INode {
 
         pparent = parent;
     }
-
 
     /**
      * Set sessiontreenode for this node.
@@ -458,6 +433,7 @@ public abstract class AbstractNode implements INode {
 
     /**
      * override the toString().
+     * 
      * @return String.
      */
     public String toString() {
@@ -465,7 +441,6 @@ public abstract class AbstractNode implements INode {
         return getName();
     }
 
-    
     /**
      * Default label text is "".
      * 
@@ -480,7 +455,7 @@ public abstract class AbstractNode implements INode {
         }
         return null;
     }
-    
+
     /**
      * clear all the child nodes.
      */
@@ -490,6 +465,7 @@ public abstract class AbstractNode implements INode {
 
     /**
      * Get the image of the column.
+     * 
      * @param columnIndex columnIndex.
      * @return Image.
      */
@@ -514,6 +490,4 @@ public abstract class AbstractNode implements INode {
         return null;
     }
 
-
-    
 }

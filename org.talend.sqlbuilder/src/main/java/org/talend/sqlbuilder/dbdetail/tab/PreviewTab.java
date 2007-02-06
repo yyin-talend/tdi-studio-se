@@ -37,16 +37,14 @@ import org.talend.sqlbuilder.dbstructure.nodes.TableNode;
  */
 public class PreviewTab extends AbstractDataSetTab {
 
-    
-    
     public String getLabelText() {
         return Messages.getString("DatabaseDetailView.Tab.Preview"); //$NON-NLS-1$
     }
- 
-    public DataSet getDataSet() throws Exception {                
-        
+
+    public DataSet getDataSet() throws Exception {
+
         INode node = getNode();
-        
+
         if (node == null) {
             return null;
         }
@@ -62,25 +60,23 @@ public class PreviewTab extends AbstractDataSetTab {
             if (maxResults == 0) {
                 maxResults = 50;
             }
-            
+
             Statement statement = tableNode.getSession().getInteractiveConnection().createStatement();
             statement.setMaxRows(maxResults);
             statement.execute("select * from " + tableNode.getQualifiedName()); //$NON-NLS-1$
             ResultSet resultSet = statement.getResultSet();
-            
-              
+
             DataSet dataSet = new DataSet(null, resultSet, null);
-            
-            statement.close();            
+
+            statement.close();
             resultSet.close();
             return dataSet;
         }
-        
+
         return null;
     }
-    
-    
+
     public String getStatusMessage() {
-        return Messages.getString("DatabaseDetailView.Tab.Preview.status") + " " + getNode().getQualifiedName(); //$NON-NLS-1$ //$NON-NLS-2$
+        return Messages.getString("DatabaseDetailView.Tab.Preview.status", getNode().getQualifiedName()); //$NON-NLS-1$
     }
 }

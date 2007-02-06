@@ -89,7 +89,7 @@ public class ColumnInfoTab extends AbstractDataSetTab {
     }
 
     public String getStatusMessage() {
-        return Messages.getString("DatabaseDetailView.Tab.ColumnInfo.status") + " " + getNode().getQualifiedName(); //$NON-NLS-1$ //$NON-NLS-2$
+        return Messages.getString("DatabaseDetailView.Tab.ColumnInfo.status", getNode().getQualifiedName()); //$NON-NLS-1$
     }
 
     /**
@@ -101,7 +101,7 @@ public class ColumnInfoTab extends AbstractDataSetTab {
      */
     public String getTableNameBySynonym(Connection conn, String name) {
         try {
-            // This query is used for getting real table name from system tables, it is  used only for Oracle.
+            // This query is used for getting real table name from system tables, it is used only for Oracle.
             String sql = "select TABLE_NAME from USER_SYNONYMS where SYNONYM_NAME = '" + name + "'"; //$NON-NLS-1$ //$NON-NLS-2$
             Statement sta;
             sta = conn.createStatement();

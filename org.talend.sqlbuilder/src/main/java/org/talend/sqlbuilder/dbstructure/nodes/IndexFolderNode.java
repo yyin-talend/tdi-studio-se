@@ -125,7 +125,7 @@ public class IndexFolderNode extends AbstractFolderNode {
                 addChildNode(new IndexNode(this, (String) it.next(), psessionNode, (TableNode) getParent()));
             }
         } catch (Exception e) {
-            SqlBuilderPlugin.log(Messages.getString("IndexFolderNode.logMessage2") + getName(), e); //$NON-NLS-1$
+            SqlBuilderPlugin.log(Messages.getString("IndexFolderNode.logMessage2", getName()), e); //$NON-NLS-1$
         }
     }
 

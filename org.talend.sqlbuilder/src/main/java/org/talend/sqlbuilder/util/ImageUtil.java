@@ -98,7 +98,7 @@ public class ImageUtil {
             String path = Messages.getString(propertyName);
 
             if (path == null || path.trim().length() == 0) {
-                SqlBuilderPlugin.log(Messages.getString("ImageUtil.logMessage2") + propertyName, null); //$NON-NLS-1$
+                SqlBuilderPlugin.log(Messages.getString("ImageUtil.logMessage2", propertyName), null); //$NON-NLS-1$
                 return null;
             }
 
@@ -107,7 +107,7 @@ public class ImageUtil {
             return ImageDescriptor.createFromURL(url);
 
         } catch (Exception e) {
-            SqlBuilderPlugin.log(Messages.getString("ImageUtil.logMessage3") + propertyName, e); //$NON-NLS-1$
+            SqlBuilderPlugin.log(Messages.getString("ImageUtil.logMessage3", propertyName), e); //$NON-NLS-1$
             return null;
         }
 
