@@ -2,6 +2,7 @@ package org.talend.designer.business.diagram.custom;
 
 import org.eclipse.core.runtime.Plugin;
 import org.osgi.framework.BundleContext;
+import org.talend.designer.business.diagram.i18n.Messages;
 
 /**
  * The activator class controls the plug-in life cycle
@@ -9,7 +10,7 @@ import org.osgi.framework.BundleContext;
 public class Activator extends Plugin {
 
     // The plug-in ID
-    public static final String PLUGIN_ID = "org.talend.designer.business.diagram.custom";
+    public static final String PLUGIN_ID = "org.talend.designer.business.diagram.custom"; //$NON-NLS-1$
 
     // The shared instance
     private static Activator plugin;

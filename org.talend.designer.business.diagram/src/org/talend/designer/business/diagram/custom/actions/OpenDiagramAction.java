@@ -32,6 +32,7 @@ import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.model.repository.RepositoryObject;
 import org.talend.core.ui.images.ECoreImage;
+import org.talend.designer.business.diagram.i18n.Messages;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNode.EProperties;
 import org.talend.repository.ui.actions.AContextualAction;
@@ -47,7 +48,7 @@ public class OpenDiagramAction extends AContextualAction {
     public OpenDiagramAction() {
         super();
         setImageDescriptor(ImageProvider.getImageDesc(ECoreImage.BUSINESS_PROCESS_ICON));
-        setText("Edit Business Model");
+        setText(Messages.getString("OpenDiagramAction.EditBusinessModel")); //$NON-NLS-1$
     }
 
     /*

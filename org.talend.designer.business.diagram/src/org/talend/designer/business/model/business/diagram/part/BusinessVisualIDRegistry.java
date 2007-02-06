@@ -6,6 +6,7 @@ import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.gmf.runtime.notation.Diagram;
 import org.eclipse.gmf.runtime.notation.View;
+import org.talend.designer.business.diagram.i18n.Messages;
 import org.talend.designer.business.model.business.ActionBusinessItem;
 import org.talend.designer.business.model.business.BusinessItemRelationship;
 import org.talend.designer.business.model.business.BusinessPackage;
@@ -88,7 +89,7 @@ public class BusinessVisualIDRegistry {
             return Integer.parseInt(type);
         } catch (NumberFormatException e) {
             if (Boolean.TRUE.toString().equalsIgnoreCase(Platform.getDebugOption(DEBUG_KEY))) {
-                BusinessDiagramEditorPlugin.getInstance().logError("Unable to parse view type as a visualID number: " + type);
+                BusinessDiagramEditorPlugin.getInstance().logError(Messages.getString("BusinessVisualIDRegistry.ParseError") + type); //$NON-NLS-1$
             }
         }
         return -1;

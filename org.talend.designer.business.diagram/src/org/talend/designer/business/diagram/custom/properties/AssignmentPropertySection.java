@@ -60,6 +60,7 @@ import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 import org.talend.designer.business.diagram.custom.actions.EditAction;
 import org.talend.designer.business.diagram.custom.util.EmfPropertyHelper;
 import org.talend.designer.business.diagram.custom.util.KeyHelper;
+import org.talend.designer.business.diagram.i18n.Messages;
 import org.talend.designer.business.model.business.BusinessAssignment;
 import org.talend.designer.business.model.business.BusinessFactory;
 import org.talend.designer.business.model.business.BusinessPackage;
@@ -105,7 +106,7 @@ public class AssignmentPropertySection extends AbstractModelerPropertySection {
         table.setHeaderVisible(true);
         table.setLinesVisible(true);
 
-        final String[] columnProperties = new String[] { "Type", "Name", "Comment" };
+        final String[] columnProperties = new String[] { Messages.getString("AssignmentPropertySection.Type"), Messages.getString("AssignmentPropertySection.Name"), Messages.getString("AssignmentPropertySection.Comment") }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
         TableColumn column1 = new TableColumn(table, SWT.NONE);
         tableLayout.addColumnData(new ColumnPixelData(125, true));
@@ -280,7 +281,7 @@ public class AssignmentPropertySection extends AbstractModelerPropertySection {
                 EStructuralFeature structuralFeature = BusinessPackage.eINSTANCE.getBusinessAssignment_Comment();
 
                 EditAction editAction = new EditAction(eObject, adapterFactory, structuralFeature);
-                editAction.setText("&Edit");
+                editAction.setText(Messages.getString("AssignmentPropertySection.Edit")); //$NON-NLS-1$
                 return editAction;
             }
         }

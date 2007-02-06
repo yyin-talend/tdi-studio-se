@@ -28,6 +28,7 @@ import org.eclipse.emf.transaction.TransactionalEditingDomain;
 import org.eclipse.gmf.runtime.common.core.command.CommandResult;
 import org.eclipse.gmf.runtime.emf.commands.core.command.AbstractTransactionalCommand;
 import org.talend.designer.business.diagram.custom.util.RepositoryHelper;
+import org.talend.designer.business.diagram.i18n.Messages;
 import org.talend.designer.business.model.business.BusinessAssignment;
 import org.talend.designer.business.model.business.BusinessFactory;
 import org.talend.designer.business.model.business.BusinessItem;
@@ -48,7 +49,7 @@ public class CreateAssignmentCommand extends AbstractTransactionalCommand {
      * @param affectedFiles
      */
     public CreateAssignmentCommand(TransactionalEditingDomain domain) {
-        super(domain, "Create assignement", null);
+        super(domain, Messages.getString("CreateAssignmentCommand.CreateAssignement"), null); //$NON-NLS-1$
     }
 
     /**
@@ -85,7 +86,7 @@ public class CreateAssignmentCommand extends AbstractTransactionalCommand {
         // PTODO MHE check if talenditem already exists
 
         if (talendItem == null) {
-            return CommandResult.newErrorCommandResult("Cannot Assign.");
+            return CommandResult.newErrorCommandResult(Messages.getString("CreateAssignmentCommand.CannotAssign")); //$NON-NLS-1$
         }
 
         Repository repository = businessItem.getBusinessProcess().getLocalRepositoryCopy();

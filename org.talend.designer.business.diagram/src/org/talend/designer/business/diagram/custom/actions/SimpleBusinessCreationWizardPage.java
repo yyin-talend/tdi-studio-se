@@ -28,14 +28,15 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.designer.business.diagram.i18n.Messages;
 import org.talend.repository.ui.wizards.PropertiesWizardPage;
 
 public class SimpleBusinessCreationWizardPage extends PropertiesWizardPage {
 
     public SimpleBusinessCreationWizardPage(Property property, IPath destinationPath) {
-        super("BusinessProcessCreatePage", property, destinationPath);
+        super(Messages.getString("SimpleBusinessCreationWizardPage.0"), property, destinationPath); //$NON-NLS-1$
 
-        setTitle("New Business Model");
+        setTitle(Messages.getString("SimpleBusinessCreationWizardPage.1")); //$NON-NLS-1$
     }
 
     public void createControl(Composite parent) {

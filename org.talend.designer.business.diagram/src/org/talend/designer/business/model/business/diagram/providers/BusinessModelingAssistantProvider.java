@@ -21,6 +21,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.dialogs.ElementListSelectionDialog;
 import org.talend.designer.business.diagram.custom.edit.parts.BusinessItemShapeEditPart;
+import org.talend.designer.business.diagram.i18n.Messages;
 import org.talend.designer.business.model.business.diagram.edit.parts.BusinessProcessEditPart;
 import org.talend.designer.business.model.business.diagram.part.BusinessDiagramEditorPlugin;
 
@@ -172,8 +173,8 @@ public class BusinessModelingAssistantProvider extends ModelingAssistantProvider
         ILabelProvider labelProvider = new AdapterFactoryLabelProvider(BusinessDiagramEditorPlugin.getInstance()
                 .getItemProvidersAdapterFactory());
         ElementListSelectionDialog dialog = new ElementListSelectionDialog(shell, labelProvider);
-        dialog.setMessage("Available domain model elements:");
-        dialog.setTitle("Select domain model element");
+        dialog.setMessage(Messages.getString("BusinessModelingAssistantProvider.AvaiableDomainModelElements")); //$NON-NLS-1$
+        dialog.setTitle(Messages.getString("BusinessModelingAssistantProvider.SelectDomainModelElement")); //$NON-NLS-1$
         dialog.setMultipleSelection(false);
         dialog.setElements(elements);
         EObject selected = null;

@@ -26,6 +26,7 @@ import org.talend.commons.ui.image.EImage;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.designer.business.diagram.custom.edit.parts.BusinessItemShapeEditPart;
+import org.talend.designer.business.diagram.i18n.Messages;
 import org.talend.designer.business.model.business.BusinessAssignment;
 import org.talend.designer.business.model.business.BusinessItem;
 import org.talend.designer.business.model.business.BusinessProcess;
@@ -47,7 +48,7 @@ public class FindAssignmentAction extends AContextualAction {
     public FindAssignmentAction() {
         super();
         this.setImageDescriptor(ImageProvider.getImageDesc(EImage.IMPORT_ICON));
-        this.setText("Find Assignments");
+        this.setText(Messages.getString("FindAssignmentAction.FindAssignments")); //$NON-NLS-1$
     }
 
     /*

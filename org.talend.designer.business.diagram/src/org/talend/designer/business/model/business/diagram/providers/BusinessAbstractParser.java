@@ -18,6 +18,7 @@ import org.eclipse.gmf.runtime.common.ui.services.parser.ParserEditStatus;
 import org.eclipse.gmf.runtime.emf.type.core.commands.SetValueCommand;
 import org.eclipse.gmf.runtime.emf.type.core.requests.SetRequest;
 import org.eclipse.jface.text.contentassist.IContentAssistProcessor;
+import org.talend.designer.business.diagram.i18n.Messages;
 import org.talend.designer.business.model.business.diagram.part.BusinessDiagramEditorPlugin;
 
 /**
@@ -129,7 +130,7 @@ public abstract class BusinessAbstractParser implements IParser {
         ParsePosition pos = new ParsePosition(0);
         Object[] values = getEditProcessor().parse(editString, pos);
         if (values == null) {
-            return new ParserEditStatus(BusinessDiagramEditorPlugin.ID, IParserEditStatus.UNEDITABLE, "Invalid input at "
+            return new ParserEditStatus(BusinessDiagramEditorPlugin.ID, IParserEditStatus.UNEDITABLE, Messages.getString("BusinessAbstractParser.InvalidInputAt") //$NON-NLS-1$
                     + pos.getErrorIndex());
         }
         return validateNewValues(values);
@@ -206,7 +207,7 @@ public abstract class BusinessAbstractParser implements IParser {
                 } else if (value instanceof String) {
                     value = Boolean.valueOf((String) value);
                 } else {
-                    value = new InvalidValue("Value of type Boolean is expected");
+                    value = new InvalidValue(Messages.getString("BusinessAbstractParser.ValueOfBooleanIsExpected")); //$NON-NLS-1$
                 }
             } else if (Character.TYPE.equals(iClass)) {
                 if (value instanceof Character) {
@@ -219,7 +220,7 @@ public abstract class BusinessAbstractParser implements IParser {
                         value = new Character(s.charAt(0));
                     }
                 } else {
-                    value = new InvalidValue("Value of type Character is expected");
+                    value = new InvalidValue(Messages.getString("BusinessAbstractParser.ValueOfTypeCharacterIsExpected")); //$NON-NLS-1$
                 }
             } else if (Byte.TYPE.equals(iClass)) {
                 if (value instanceof Byte) {
@@ -234,11 +235,11 @@ public abstract class BusinessAbstractParser implements IParser {
                         try {
                             value = Byte.valueOf(s);
                         } catch (NumberFormatException nfe) {
-                            value = new InvalidValue("String value does not convert to Byte value");
+                            value = new InvalidValue(Messages.getString("BusinessAbstractParser.StringValueDoesNotConvertToByteValue")); //$NON-NLS-1$
                         }
                     }
                 } else {
-                    value = new InvalidValue("Value of type Byte is expected");
+                    value = new InvalidValue(Messages.getString("BusinessAbstractParser.ValueOfTypeByteIsExpected")); //$NON-NLS-1$
                 }
             } else if (Short.TYPE.equals(iClass)) {
                 if (value instanceof Short) {
@@ -253,11 +254,11 @@ public abstract class BusinessAbstractParser implements IParser {
                         try {
                             value = Short.valueOf(s);
                         } catch (NumberFormatException nfe) {
-                            value = new InvalidValue("String value does not convert to Short value");
+                            value = new InvalidValue(Messages.getString("BusinessAbstractParser.StringShortConverError")); //$NON-NLS-1$
                         }
                     }
                 } else {
-                    value = new InvalidValue("Value of type Short is expected");
+                    value = new InvalidValue(Messages.getString("BusinessAbstractParser.ValueOfShortIsExpected")); //$NON-NLS-1$
                 }
             } else if (Integer.TYPE.equals(iClass)) {
                 if (value instanceof Integer) {
@@ -272,11 +273,11 @@ public abstract class BusinessAbstractParser implements IParser {
                         try {
                             value = Integer.valueOf(s);
                         } catch (NumberFormatException nfe) {
-                            value = new InvalidValue("String value does not convert to Integer value");
+                            value = new InvalidValue(Messages.getString("BusinessAbstractParser.StringIntegerConvertError")); //$NON-NLS-1$
                         }
                     }
                 } else {
-                    value = new InvalidValue("Value of type Integer is expected");
+                    value = new InvalidValue(Messages.getString("BusinessAbstractParser.ValueOfIntegerIsExpected")); //$NON-NLS-1$
                 }
             } else if (Long.TYPE.equals(iClass)) {
                 if (value instanceof Long) {
@@ -291,11 +292,11 @@ public abstract class BusinessAbstractParser implements IParser {
                         try {
                             value = Long.valueOf(s);
                         } catch (NumberFormatException nfe) {
-                            value = new InvalidValue("String value does not convert to Long value");
+                            value = new InvalidValue(Messages.getString("BusinessAbstractParser.StringLongConverError")); //$NON-NLS-1$
                         }
                     }
                 } else {
-                    value = new InvalidValue("Value of type Long is expected");
+                    value = new InvalidValue(Messages.getString("BusinessAbstractParser.ValueOfLongIsExpected")); //$NON-NLS-1$
                 }
             } else if (Float.TYPE.equals(iClass)) {
                 if (value instanceof Float) {
@@ -310,11 +311,11 @@ public abstract class BusinessAbstractParser implements IParser {
                         try {
                             value = Float.valueOf(s);
                         } catch (NumberFormatException nfe) {
-                            value = new InvalidValue("String value does not convert to Float value");
+                            value = new InvalidValue(Messages.getString("BusinessAbstractParser.StringFloatConvertError")); //$NON-NLS-1$
                         }
                     }
                 } else {
-                    value = new InvalidValue("Value of type Float is expected");
+                    value = new InvalidValue(Messages.getString("BusinessAbstractParser.ValueOfFloatIsExpected")); //$NON-NLS-1$
                 }
             } else if (Double.TYPE.equals(iClass)) {
                 if (value instanceof Double) {
@@ -329,22 +330,22 @@ public abstract class BusinessAbstractParser implements IParser {
                         try {
                             value = Double.valueOf(s);
                         } catch (NumberFormatException nfe) {
-                            value = new InvalidValue("String value does not convert to Double value");
+                            value = new InvalidValue(Messages.getString("BusinessAbstractParser.StringDoubleConvertError")); //$NON-NLS-1$
                         }
                     }
                 } else {
-                    value = new InvalidValue("Value of type Double is expected");
+                    value = new InvalidValue(Messages.getString("BusinessAbstractParser.ValueOfDoubleIsExpected")); //$NON-NLS-1$
                 }
             } else if (type instanceof EEnum) {
                 if (value instanceof String) {
                     EEnumLiteral literal = ((EEnum) type).getEEnumLiteralByLiteral((String) value);
                     if (literal == null) {
-                        value = new InvalidValue("Unknown literal: " + value);
+                        value = new InvalidValue(Messages.getString("BusinessAbstractParser.UnknownLiteral") + value); //$NON-NLS-1$
                     } else {
                         value = literal.getInstance();
                     }
                 } else {
-                    value = new InvalidValue("Value of type String is expected");
+                    value = new InvalidValue(Messages.getString("BusinessAbstractParser.ValueOfTypeStringIsExpected")); //$NON-NLS-1$
                 }
             }
         }

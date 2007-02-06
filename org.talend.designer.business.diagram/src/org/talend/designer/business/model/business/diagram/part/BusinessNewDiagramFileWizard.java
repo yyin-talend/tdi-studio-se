@@ -43,6 +43,7 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.dialogs.WizardNewFileCreationPage;
 import org.eclipse.ui.ide.IDE;
+import org.talend.designer.business.diagram.i18n.Messages;
 import org.talend.designer.business.model.business.diagram.edit.parts.BusinessProcessEditPart;
 
 /**
@@ -102,7 +103,7 @@ public class BusinessNewDiagramFileWizard extends Wizard {
      * @generated
      */
     public void addPages() {
-        myFileCreationPage = new WizardNewFileCreationPage("Initialize new Ecore diagram file", mySelection) {
+        myFileCreationPage = new WizardNewFileCreationPage(Messages.getString("BusinessNewDiagramFileWizard.IntialNewEcoreDiagramFile"), mySelection) { //$NON-NLS-1$
 
             public void createControl(Composite parent) {
                 super.createControl(parent);
@@ -118,8 +119,8 @@ public class BusinessNewDiagramFileWizard extends Wizard {
             }
 
         };
-        myFileCreationPage.setTitle("Diagram file");
-        myFileCreationPage.setDescription("Create new diagram based on " + BusinessProcessEditPart.MODEL_ID + " model content");
+        myFileCreationPage.setTitle(Messages.getString("BusinessNewDiagramFileWizard.DiagramFile")); //$NON-NLS-1$
+        myFileCreationPage.setDescription(Messages.getString("BusinessNewDiagramFileWizard.CreateNewDiagram") + BusinessProcessEditPart.MODEL_ID + ""); //$NON-NLS-1$ //$NON-NLS-2$
         addPage(myFileCreationPage);
         addPage(new RootElementSelectorPage());
     }
@@ -183,9 +184,9 @@ public class BusinessNewDiagramFileWizard extends Wizard {
          * @generated
          */
         protected RootElementSelectorPage() {
-            super("Select diagram root element");
-            setTitle("Diagram root element");
-            setDescription("Select semantic model element to be depicted on diagram");
+            super(Messages.getString("BusinessNewDiagramFileWizard.SelectRootElement")); //$NON-NLS-1$
+            setTitle(Messages.getString("BusinessNewDiagramFileWizard.DiagramRootElement")); //$NON-NLS-1$
+            setDescription(Messages.getString("BusinessNewDiagramFileWizard.SelectSemanticModelElement")); //$NON-NLS-1$
         }
 
         /**
@@ -213,7 +214,7 @@ public class BusinessNewDiagramFileWizard extends Wizard {
             panel.setLayout(layout);
 
             Label label = new Label(panel, SWT.NONE);
-            label.setText("Select diagram root element:");
+            label.setText(Messages.getString("BusinessNewDiagramFileWizard.SelectDiagramRootElement")); //$NON-NLS-1$
             label.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING));
 
             TreeViewer treeViewer = new TreeViewer(panel, SWT.SINGLE | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
@@ -249,13 +250,13 @@ public class BusinessNewDiagramFileWizard extends Wizard {
          */
         private boolean validatePage() {
             if (myDiagramRoot == null) {
-                setErrorMessage("No diagram root element selected");
+                setErrorMessage(Messages.getString("BusinessNewDiagramFileWizard.NoDiagramRootElementSelectedError")); //$NON-NLS-1$
                 return false;
             }
             boolean result = ViewService.getInstance().provides(
                     new CreateDiagramViewOperation(new EObjectAdapter(myDiagramRoot), BusinessProcessEditPart.MODEL_ID,
                             BusinessDiagramEditorPlugin.DIAGRAM_PREFERENCES_HINT));
-            setErrorMessage(result ? null : "Invalid diagram root element was selected");
+            setErrorMessage(result ? null : Messages.getString("BusinessNewDiagramFileWizard.InvalidDiagramRootElementSelected")); //$NON-NLS-1$
             return result;
         }
 

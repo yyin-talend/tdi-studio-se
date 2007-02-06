@@ -41,6 +41,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.talend.designer.business.diagram.custom.util.EmfPropertyHelper;
 import org.talend.designer.business.diagram.custom.util.ShellUtil;
+import org.talend.designer.business.diagram.i18n.Messages;
 
 public class EditAction extends Action {
 
@@ -125,7 +126,7 @@ public class EditAction extends Action {
          */
         protected void configureShell(Shell shell) {
             super.configureShell(shell);
-            shell.setText("Edit " + getPropertyLabel());
+            shell.setText(Messages.getString("EditAction.Edit") + getPropertyLabel()); //$NON-NLS-1$
         }
 
         /*
@@ -161,7 +162,7 @@ public class EditAction extends Action {
 
             propertyLabel = new Label(propertyComposite, SWT.LEFT);
             propertyLabel.setBackground(propertyComposite.getBackground());
-            propertyLabel.setText(getPropertyLabel() + " : ");
+            propertyLabel.setText(getPropertyLabel() + " : "); //$NON-NLS-1$
 
             propertyText = new Text(propertyComposite, SWT.SINGLE | SWT.BORDER);
             propertyText.addModifyListener(new ModifyListener() {

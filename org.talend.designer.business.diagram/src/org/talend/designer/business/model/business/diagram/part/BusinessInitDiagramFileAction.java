@@ -19,6 +19,7 @@ import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
+import org.talend.designer.business.diagram.i18n.Messages;
 import org.talend.designer.business.model.business.diagram.edit.parts.BusinessProcessEditPart;
 
 /**
@@ -76,10 +77,10 @@ public class BusinessInitDiagramFileAction implements IObjectActionDelegate {
             diagramRoot = (EObject) resource.getContents().get(0);
         } catch (WrappedException ex) {
             BusinessDiagramEditorPlugin.getInstance().logError(
-                    "Unable to load resource: " + mySelectedModelFile.getFullPath().toString(), ex); //$NON-NLS-1$
+                    Messages.getString("BusinessInitDiagramFileAction.UnableToLoadResource") + mySelectedModelFile.getFullPath().toString(), ex); //$NON-NLS-1$
         }
         if (diagramRoot == null) {
-            MessageDialog.openError(myPart.getSite().getShell(), "Error", "Model file loading failed");
+            MessageDialog.openError(myPart.getSite().getShell(), Messages.getString("BusinessInitDiagramFileAction.Error"), Messages.getString("BusinessInitDiagramFileAction.LoadFaild")); //$NON-NLS-1$ //$NON-NLS-2$
             return;
         }
         Wizard wizard = new BusinessNewDiagramFileWizard(mySelectedModelFile, myPart.getSite().getPage(), mySelection,
@@ -91,7 +92,7 @@ public class BusinessInitDiagramFileAction implements IObjectActionDelegate {
         }
         wizard.setDialogSettings(initDiagramFileSettings);
         wizard.setForcePreviousAndNextButtons(false);
-        wizard.setWindowTitle("Initialize new " + BusinessProcessEditPart.MODEL_ID + " diagram file");
+        wizard.setWindowTitle(Messages.getString("BusinessInitDiagramFileAction.IntialNew") + BusinessProcessEditPart.MODEL_ID + Messages.getString("BusinessInitDiagramFileAction.DiagramFile")); //$NON-NLS-1$ //$NON-NLS-2$
 
         WizardDialog dialog = new WizardDialog(myPart.getSite().getShell(), wizard);
         dialog.create();

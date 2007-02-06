@@ -29,6 +29,7 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.edit.provider.IItemPropertyDescriptor;
 import org.eclipse.emf.edit.provider.IItemPropertySource;
+import org.talend.designer.business.diagram.i18n.Messages;
 
 /**
  * DOC mhelleboid class global comment. Detailled comment <br/>
@@ -80,7 +81,7 @@ public class EmfPropertyHelper {
      * @return
      */
     public static String getValue(IItemPropertyDescriptor itemPropertyDescriptor, Object eObject) {
-        String value = "";
+        String value = ""; //$NON-NLS-1$
         Object propertyValue = itemPropertyDescriptor.getPropertyValue(eObject);
         if (propertyValue instanceof IItemPropertySource) {
             IItemPropertySource propertyValueWrapper = (IItemPropertySource) propertyValue;

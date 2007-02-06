@@ -11,6 +11,7 @@ import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.ui.images.BusinessImageProvider;
 import org.talend.core.ui.images.ECoreImage;
+import org.talend.designer.business.diagram.i18n.Messages;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNodeUtilities;
 import org.talend.repository.model.RepositoryNode.ENodeType;
@@ -31,7 +32,7 @@ public class CreateDiagramAction extends AContextualAction {
         super();
         Image folderImg = ImageProvider.getImage(ECoreImage.BUSINESS_PROCESS_ICON);
         this.setImageDescriptor(BusinessImageProvider.getImageWithNew(folderImg));
-        setText("Create Business Model");
+        setText(Messages.getString("CreateDiagramAction.CreateBusinessModel")); //$NON-NLS-1$
     }
 
     public void run() {
@@ -79,7 +80,7 @@ public class CreateDiagramAction extends AContextualAction {
         if (repositoryNode.getType() == ENodeType.SIMPLE_FOLDER || repositoryNode.getType() == ENodeType.SYSTEM_FOLDER) {
             path = RepositoryNodeUtilities.getPath(repositoryNode);
         } else {
-            path = new Path("");
+            path = new Path(""); //$NON-NLS-1$
         }
         return path;
     }

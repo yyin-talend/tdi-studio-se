@@ -31,6 +31,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.TransferData;
 import org.talend.designer.business.diagram.custom.util.GmfPropertiesViewHelper;
+import org.talend.designer.business.diagram.i18n.Messages;
 
 /**
  * DOC mhelleboid class global comment. Detailled comment <br/>
@@ -40,7 +41,7 @@ import org.talend.designer.business.diagram.custom.util.GmfPropertiesViewHelper;
  */
 public class BusinessDiagramDropTargetListener extends DiagramDropTargetListener {
 
-    private static final String ASSIGNMENT_TAB_ID = "org.talend.designer.business.diagram.properties.AssignmentTab";
+    private static final String ASSIGNMENT_TAB_ID = "org.talend.designer.business.diagram.properties.AssignmentTab"; //$NON-NLS-1$
 
     /**
      * DOC mhelleboid BusinessDiagramDropTargetListener constructor comment.

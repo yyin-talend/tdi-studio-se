@@ -10,6 +10,7 @@ import org.eclipse.gmf.runtime.diagram.ui.resources.editor.util.DiagramFileCreat
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchWindow;
+import org.talend.designer.business.diagram.i18n.Messages;
 import org.talend.designer.business.model.business.diagram.edit.parts.BusinessProcessEditPart;
 
 /**
@@ -22,8 +23,8 @@ public class BusinessCreationWizardPage extends EditorWizardPage {
      */
     public BusinessCreationWizardPage(IWorkbench workbench, IStructuredSelection selection) {
         super("CreationWizardPage", workbench, selection); //$NON-NLS-1$
-        setTitle("Create Business Diagram");
-        setDescription("Create a new Business diagram.");
+        setTitle(Messages.getString("BusinessCreationWizardPage.CreateBusinessDiagram")); //$NON-NLS-1$
+        setDescription(Messages.getString("BusinessCreationWizardPage.CreatenewBusinessDiagram")); //$NON-NLS-1$
     }
 
     /**

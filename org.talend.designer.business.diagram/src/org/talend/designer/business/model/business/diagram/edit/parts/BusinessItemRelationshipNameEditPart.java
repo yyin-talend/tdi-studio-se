@@ -42,6 +42,7 @@ import org.eclipse.swt.accessibility.AccessibleEvent;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Image;
+import org.talend.designer.business.diagram.i18n.Messages;
 import org.talend.designer.business.model.business.diagram.edit.policies.BusinessTextSelectionEditPolicy;
 import org.talend.designer.business.model.business.diagram.part.BusinessVisualIDRegistry;
 import org.talend.designer.business.model.business.diagram.providers.BusinessElementTypes;
@@ -546,7 +547,7 @@ public class BusinessItemRelationshipNameEditPart extends LabelEditPart implemen
          */
         public BusinessItemRelationshipNameFigure() {
 
-            this.setText("");
+            this.setText(Messages.getString("BusinessItemRelationshipNameEditPart.0")); //$NON-NLS-1$
             createContents();
         }
 

@@ -36,6 +36,7 @@ import org.talend.core.model.properties.BusinessProcessItem;
 import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.Property;
 import org.talend.core.ui.images.ECoreImage;
+import org.talend.designer.business.diagram.i18n.Messages;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.ui.wizards.RepositoryWizard;
@@ -58,12 +59,12 @@ public class SimpleBusinessCreationWizard extends RepositoryWizard {
         property = PropertiesFactory.eINSTANCE.createProperty();
         property.setAuthor(((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY)).getUser());
         property.setVersion(VersionUtils.DEFAULT_VERSION);
-        property.setStatusCode("");
+        property.setStatusCode(""); //$NON-NLS-1$
 
         businessProcessItem = PropertiesFactory.eINSTANCE.createBusinessProcessItem();
         businessProcessItem.setProperty(property);
 
-        setWindowTitle("New Business Model");
+        setWindowTitle(Messages.getString("SimpleBusinessCreationWizard.NewBusinessModel")); //$NON-NLS-1$
         setDefaultPageImageDescriptor(ImageProvider.getImageDesc(ECoreImage.BUSINESS_PROCESS_WIZ));
     }
 
