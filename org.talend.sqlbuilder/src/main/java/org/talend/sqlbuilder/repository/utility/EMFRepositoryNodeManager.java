@@ -25,9 +25,7 @@ import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.talend.core.model.metadata.IMetadataConnection;
 import org.talend.core.model.metadata.builder.ConvertionHelper;
@@ -66,7 +64,7 @@ public class EMFRepositoryNodeManager {
      * @param label search query label
      * @return
      */
-    @SuppressWarnings("unchecked") //$NON-NLS-1$
+    @SuppressWarnings("unchecked")//$NON-NLS-1$
     public static Query getQueryByLabel(RepositoryNode node, String label) {
         RepositoryNode root = null;
         if (node.getObjectType().equals(ERepositoryObjectType.METADATA_CON_QUERY)) {
@@ -89,7 +87,7 @@ public class EMFRepositoryNodeManager {
         return null;
     }
 
-    @SuppressWarnings("unchecked") //$NON-NLS-1$
+    @SuppressWarnings("unchecked")//$NON-NLS-1$
     public List<MetadataTable> getTables(List<RepositoryNode> nodes, List<MetadataColumn> selectedColumns) {
         List<MetadataTable> tables = new ArrayList<MetadataTable>();
         IMetadataConnection iMetadataConnection = null;
@@ -133,12 +131,12 @@ public class EMFRepositoryNodeManager {
                     root = SQLBuilderRepositoryNodeManager.getRoot(node);
                 }
             }
-            if (root != null) {
-                iMetadataConnection = ConvertionHelper.convert((DatabaseConnection) SQLBuilderRepositoryNodeManager.getItem(root)
-                        .getConnection());
-                dbMetaData = rnmanager.getDatabaseMetaData(iMetadataConnection);
-            }
 
+        }
+        if (root != null) {
+            iMetadataConnection = ConvertionHelper.convert((DatabaseConnection) SQLBuilderRepositoryNodeManager.getItem(root)
+                    .getConnection());
+            dbMetaData = rnmanager.getDatabaseMetaData(iMetadataConnection);
         }
         return tables;
     }

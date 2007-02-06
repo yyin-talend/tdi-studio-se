@@ -30,7 +30,7 @@ import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.sqlbuilder.repository.utility.EMFRepositoryNodeManager;
 
 /**
- * DOC qzhang class global comment. Detailled comment <br/>
+ *  qzhang class global comment. Detailled comment <br/>
  * 
  * $Id: talend.epf 1 2006-09-29 17:06:40 +0000 (ææäº, 29 ä¹æ 2006) nrousseau $
  * 
@@ -38,7 +38,7 @@ import org.talend.sqlbuilder.repository.utility.EMFRepositoryNodeManager;
 public class ErDiagram extends Element {
 
     private EMFRepositoryNodeManager nodeManager;
-    
+
     public static final String PROP_TABLES = "tables"; //$NON-NLS-1$
 
     public static final String PROP_RELATIONS = "relation"; //$NON-NLS-1$
@@ -47,12 +47,10 @@ public class ErDiagram extends Element {
 
     private List<String[]> relations;
 
-    private static Map<String, Column> allColumns = new HashMap<String, Column>();
-
     private List<MetadataTable> metadataTables;
-    
+
     /**
-     * DOC admin ErDiagram constructor comment.
+     *  admin ErDiagram constructor comment.
      */
     public ErDiagram() {
         tables = new ArrayList<Table>();
@@ -64,13 +62,12 @@ public class ErDiagram extends Element {
     private static final long serialVersionUID = 10000L;
 
     /*
-     * (non-Javadoc)
+     * (non-Java)
      * 
      * @see org.talend.sqlbuider.erdiagram.ui.editor.nodes.Element#getElementName()
      */
     @Override
     public String getElementName() {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -78,17 +75,14 @@ public class ErDiagram extends Element {
         return this.tables;
     }
 
-    @SuppressWarnings("unchecked") //$NON-NLS-1$
+    @SuppressWarnings("unchecked")//$NON-NLS-1$
     public void addTable(Table table) {
         this.tables.add(table);
-        for (Column column : (List<Column>) table.getColumns()) {
-            allColumns.put(table.getElementName() + "." + column.getElementName(), column); //$NON-NLS-1$
-        }
-        
+
         fireStructureChange(PROP_TABLES, this.tables);
     }
 
-    @SuppressWarnings("unchecked") //$NON-NLS-1$
+    @SuppressWarnings("unchecked")//$NON-NLS-1$
     public void removeTable(Table table) {
         this.tables.remove(table);
         fireStructureChange(PROP_TABLES, this.tables);
@@ -98,8 +92,17 @@ public class ErDiagram extends Element {
         return this.relations;
     }
 
+    @SuppressWarnings("unchecked")
     public void setRelations(List<String[]> relations) {
         this.relations = relations;
+
+        Map<String, Column> allColumns = new HashMap<String, Column>();
+        for (Table table : tables) {
+            for (Column column : (List<Column>) table.getColumns()) {
+                allColumns.put(table.getElementName() + "." + column.getElementName(), column); //$NON-NLS-1$
+            }
+        }
+
         for (String[] strings : relations) {
             String pk = strings[0];
             String fk = strings[1];
@@ -109,22 +112,18 @@ public class ErDiagram extends Element {
         }
     }
 
-    
     public List<MetadataTable> getMetadataTables() {
         return this.metadataTables;
     }
 
-    
     public void setMetadataTables(List<MetadataTable> metadataTables) {
         this.metadataTables = metadataTables;
     }
 
-    
     public EMFRepositoryNodeManager getNodeManager() {
         return this.nodeManager;
     }
 
-    
     public void setNodeManager(EMFRepositoryNodeManager nodeManager) {
         this.nodeManager = nodeManager;
     }
