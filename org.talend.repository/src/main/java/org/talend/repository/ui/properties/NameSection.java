@@ -143,7 +143,7 @@ public class NameSection extends AbstractSection {
 
     @Override
     public void refresh() {
-        nameText.setText(getName() != null ? getName().toString() : Messages.getString("NameSection.5")); //$NON-NLS-1$
+        nameText.setText(getName() != null ? getName().toString() : ""); //$NON-NLS-1$
     }
 
     protected String getName() {
