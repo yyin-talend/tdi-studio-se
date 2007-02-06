@@ -35,19 +35,19 @@ import org.talend.help.Activator;
 public enum EImage implements IImage {
     
     DEFAULT_IMAGE,
-    ENTER_BACKIMAGE("/icons/e_back2.gif"),
-    OUT_BACKIMAGE("/icons/e_back.gif"),
-    DISABLE_BACKIMAGE("/icons/back.gif"),
-    ENTER_FORWARDIMAGE("/icons/e_forward2.gif"),
-    OUT_FORWARDIMAGE("/icons/e_forward.gif"),
-    DISABLE_FORWARDIMAGE("/icons/forward.gif"),
+    ENTER_BACKIMAGE("/icons/e_back2.gif"), //$NON-NLS-1$
+    OUT_BACKIMAGE("/icons/e_back.gif"), //$NON-NLS-1$
+    DISABLE_BACKIMAGE("/icons/back.gif"), //$NON-NLS-1$
+    ENTER_FORWARDIMAGE("/icons/e_forward2.gif"), //$NON-NLS-1$
+    OUT_FORWARDIMAGE("/icons/e_forward.gif"), //$NON-NLS-1$
+    DISABLE_FORWARDIMAGE("/icons/forward.gif"), //$NON-NLS-1$
     
-    WARNING_ICON("/icons/warning.gif");
+    WARNING_ICON("/icons/warning.gif"); //$NON-NLS-1$
     
     private String path;
 
     EImage() {
-        this.path = "/icons/unknow.gif";
+        this.path = "/icons/unknow.gif"; //$NON-NLS-1$
     }
 
     EImage(String path) {

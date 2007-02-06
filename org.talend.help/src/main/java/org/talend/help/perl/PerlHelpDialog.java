@@ -29,6 +29,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
+import org.talend.help.i18n.Messages;
 import org.talend.help.perl.ui.PerlHelpComposite;
 
 /**
@@ -63,14 +64,14 @@ public class PerlHelpDialog extends TitleAreaDialog {
     protected Control createDialogArea(Composite parent) {
         Composite composite = (Composite) super.createDialogArea(parent);
         createDialogAreaContent(composite);
-        super.setMessage("Perl Help");
+        super.setMessage(Messages.getString("PerlHelpDialog.perlHelpTitle")); //$NON-NLS-1$
         return composite;
     }
 
     private static final int HEIGHT_DIALOG = 350;
-    
+
     private static final int WIDTH_DIALOG = 600;
-    
+
     private void createDialogAreaContent(Composite parent) {
         PerlHelpComposite perlHelpComposite = new PerlHelpComposite(parent, SWT.BORDER);
         GridData gd = new GridData(GridData.FILL_BOTH);

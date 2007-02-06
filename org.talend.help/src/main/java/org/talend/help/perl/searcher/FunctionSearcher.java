@@ -25,13 +25,13 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.custom.BusyIndicator;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Text;
+import org.talend.help.PerlHelpConstant;
+import org.talend.help.i18n.Messages;
 import org.talend.help.perl.model.EProperty;
 import org.talend.help.perl.model.EType;
 import org.talend.help.perl.model.Node;
-import org.talend.help.perl.ui.BackForwardBar;
+import org.talend.help.perl.ui.PerlHelpComposite;
 
 /**
  * DOC Administrator class global comment. Detailled comment <br/>
@@ -41,8 +41,8 @@ import org.talend.help.perl.ui.BackForwardBar;
  */
 public class FunctionSearcher extends Searcher {
 
-    public FunctionSearcher(TreeViewer viewer, Button btn, Text text, BackForwardBar bar) {
-        super(viewer, btn, text, bar);
+    public FunctionSearcher(TreeViewer viewer, PerlHelpComposite perHelpComp) {
+        super(viewer, perHelpComp);
     }
 
     /*
@@ -52,7 +52,7 @@ public class FunctionSearcher extends Searcher {
      */
     public void processSearch() {
         currentNode = null;
-        if (LABEL_NEXT.equals(searchBtn.getText())) {
+        if (PerlHelpConstant.NEXT_ACTIONTYPE == perlHelpComposite.getActionType()) {
             TreeSelection selection = (TreeSelection) treeViewer.getSelection();
             currentNode = (Node) selection.getFirstElement();
             if (!isEndOfSearch(currentNode)) {
@@ -61,7 +61,7 @@ public class FunctionSearcher extends Searcher {
                 // currentNode = repeatToStart();
             }
         } else {
-            if ("".equals(searchText.getText())) {
+            if ("".equals(searchText.getText())) { //$NON-NLS-1$
                 return;
             }
             currentNode = (Node) treeViewer.getInput();
@@ -75,7 +75,8 @@ public class FunctionSearcher extends Searcher {
                 bfBar.clearHistory();
             }
             if (currentNode != null) {
-                searchBtn.setText(LABEL_NEXT);
+                searchBtn.setText(Messages.getString("PlainSearcher.nextButton")); //$NON-NLS-1$
+                perlHelpComposite.setActionType(PerlHelpConstant.NEXT_ACTIONTYPE);
             }
         }
         treeViewer.setExpandedElements(getNodeArray(currentNode));

@@ -28,14 +28,14 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.custom.BusyIndicator;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Text;
+import org.talend.help.PerlHelpConstant;
+import org.talend.help.i18n.Messages;
 import org.talend.help.perl.model.EProperty;
 import org.talend.help.perl.model.EType;
 import org.talend.help.perl.model.Node;
 import org.talend.help.perl.reader.DocParser;
-import org.talend.help.perl.ui.BackForwardBar;
+import org.talend.help.perl.ui.PerlHelpComposite;
 
 /**
  * DOC Administrator class global comment. Detailled comment <br/>
@@ -48,8 +48,8 @@ public class PlainSearcher extends Searcher {
     /**
      * DOC Administrator PlainSearcher constructor comment.
      */
-    public PlainSearcher(TreeViewer viewer, Button btn, Text text, BackForwardBar bar) {
-        super(viewer, btn, text, bar);
+    public PlainSearcher(TreeViewer viewer, PerlHelpComposite perHelpComp) {
+        super(viewer, perHelpComp);
     }
 
     /*
@@ -59,7 +59,7 @@ public class PlainSearcher extends Searcher {
      */
     public void processSearch() {
         currentNode = null;
-        if (LABEL_NEXT.equals(searchBtn.getText())) {
+        if (PerlHelpConstant.NEXT_ACTIONTYPE == perlHelpComposite.getActionType()) {
             TreeSelection selection = (TreeSelection) treeViewer.getSelection();
             currentNode = (Node) selection.getFirstElement();
             if (!isEndOfSearch(currentNode)) {
@@ -68,7 +68,7 @@ public class PlainSearcher extends Searcher {
                 // currentNode = repeatToStart();
             }
         } else {
-            if ("".equals(searchText.getText())) {
+            if ("".equals(searchText.getText())) { //$NON-NLS-1$
                 return;
             }
             currentNode = (Node) treeViewer.getInput();
@@ -82,7 +82,8 @@ public class PlainSearcher extends Searcher {
                 bfBar.clearHistory();
             }
             if (currentNode != null) {
-                searchBtn.setText(LABEL_NEXT);
+                searchBtn.setText(Messages.getString("PlainSearcher.nextButton")); //$NON-NLS-1$
+                perlHelpComposite.setActionType(PerlHelpConstant.NEXT_ACTIONTYPE);
             }
         }
         treeViewer.setExpandedElements(getNodeArray(currentNode));
@@ -175,15 +176,15 @@ public class PlainSearcher extends Searcher {
         setMatchTextFlag(false);
     }
 
-    private static final String HEAD_REGEX = ">(([^>^<])*)(";
+    private static final String HEAD_REGEX = ">(([^>^<])*)("; //$NON-NLS-1$
 
-    private static final String TAIL_REGEX = ")+(([^>^<])*)<";
+    private static final String TAIL_REGEX = ")+(([^>^<])*)<"; //$NON-NLS-1$
 
-    private static final String HEAD_REPLACE = ">$1<span style=\"background:#ff9000\">$3";
+    private static final String HEAD_REPLACE = ">$1<span style=\"background:#ff9000\">$3"; //$NON-NLS-1$
 
-    private static final String TAIL_REPLACE = "</span>$4<";
+    private static final String TAIL_REPLACE = "</span>$4<"; //$NON-NLS-1$
 
-    private String defaultStr = "";
+    private String defaultStr = ""; //$NON-NLS-1$
 
     private Pattern pattern;
 

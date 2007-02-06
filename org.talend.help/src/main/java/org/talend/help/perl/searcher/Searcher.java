@@ -33,9 +33,11 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.PlatformUI;
+import org.talend.help.i18n.Messages;
 import org.talend.help.perl.model.EType;
 import org.talend.help.perl.model.Node;
 import org.talend.help.perl.ui.BackForwardBar;
+import org.talend.help.perl.ui.PerlHelpComposite;
 
 /**
  * DOC . Detailled comment <br/>
@@ -55,11 +57,9 @@ public abstract class Searcher {
 
     protected static Node currentNode = null;
 
-    protected static final String LABEL_NEXT = "next";
-
     protected boolean matchTextFlag = false;
 
-    protected String currentPageContent = "";
+    protected String currentPageContent = ""; //$NON-NLS-1$
 
     protected boolean funcSearchFlag = true;
 
@@ -69,11 +69,14 @@ public abstract class Searcher {
 
     protected Node nextSiblingNode = null;
 
-    public Searcher(TreeViewer viewer, Button btn, Text text, BackForwardBar bar) {
+    protected PerlHelpComposite perlHelpComposite;
+
+    public Searcher(TreeViewer viewer, PerlHelpComposite perlHelpComp) {
         this.treeViewer = viewer;
-        this.searchBtn = btn;
-        this.searchText = text;
-        this.bfBar = bar;
+        this.perlHelpComposite = perlHelpComp;
+        this.searchBtn = perlHelpComp.getSearchButton();
+        this.searchText = perlHelpComp.getSearchText();
+        this.bfBar = perlHelpComp.getBackForwardBar();
     }
 
     /**
@@ -166,7 +169,7 @@ public abstract class Searcher {
      * @return the string with highLine tag
      */
     protected String getHighLightStr(String htmlFileContent, String searchStr) {
-        return "";
+        return ""; //$NON-NLS-1$
     }
 
     public void clearSearchCache() {
@@ -179,7 +182,8 @@ public abstract class Searcher {
 
     public static void openError(Exception e1) {
         Display workbenchDisplay = PlatformUI.getWorkbench().getDisplay();
-        ErrorDialog.openError(workbenchDisplay.getActiveShell(), "Error occured", e1.getMessage(), null);
+        ErrorDialog.openError(workbenchDisplay.getActiveShell(),
+                Messages.getString("Searcher.occuredError"), e1.getMessage(), null); //$NON-NLS-1$
     }
 
     /**

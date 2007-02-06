@@ -46,9 +46,9 @@ import org.xml.sax.helpers.DefaultHandler;
  */
 public class IndexParser extends DefaultHandler {
 
-    private static final String PATH = "guide/perl/perl_func_list.xml";
+    private static final String PATH = "guide/perl/perl_func_list.xml"; //$NON-NLS-1$
 
-    public static final String FILE = "/home/wiu/work/talend/workspace-talend-svn/org.talend.help/" + PATH;
+    public static final String FILE = "/home/wiu/work/talend/workspace-talend-svn/org.talend.help/" + PATH; //$NON-NLS-1$
 
     private Node root;
 
@@ -97,7 +97,7 @@ public class IndexParser extends DefaultHandler {
             } else {
                 Node node = new Node(type, current.peek());
                 current.push(node);
-                String value = attributes.getValue("name");
+                String value = attributes.getValue("name"); //$NON-NLS-1$
                 if (value != null) {
                     node.getProperties().put(EProperty.LABEL, value);
                 }

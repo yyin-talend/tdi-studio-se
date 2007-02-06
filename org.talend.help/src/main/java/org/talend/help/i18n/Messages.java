@@ -19,45 +19,33 @@
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 // ============================================================================
-package org.talend.help.perl.model;
+
+package org.talend.help.i18n;
+
+import java.util.MissingResourceException;
+import java.util.ResourceBundle;
 
 /**
- * EType.java.
- * 
+ * External Message.
+ * <br/>
+ *
+ * $Id: talend-code-templates.xml 1 2006-09-29 17:06:40 +0000 (ÐÇÆÚÎå, 29 ¾ÅÔÂ 2006) nrousseau $
+ *
  */
-public enum EType {
-    ROOT("help"), //$NON-NLS-1$
-    FAMILY("family"), //$NON-NLS-1$
-    CATEGORY("category"), //$NON-NLS-1$
-    FUNCTION("function"), //$NON-NLS-1$
-    ANCHOR("anchor"); //$NON-NLS-1$
+public final class Messages {
 
-    private final String elementName;
+    private static final String BUNDLE_NAME = "messages"; //$NON-NLS-1$
 
-    EType(String name) {
-        elementName = name;
+    private static final ResourceBundle RESOURCE_BUNDLE = ResourceBundle.getBundle(BUNDLE_NAME);
+
+    private Messages() {
     }
 
-    public String getElementName() {
-        return elementName;
-    }
-
-    public static final EType find(String name) {
-        if (name.equals(ROOT.elementName)) {
-            return ROOT;
+    public static String getString(String key) {
+        try {
+            return RESOURCE_BUNDLE.getString(key);
+        } catch (MissingResourceException e) {
+            return '!' + key + '!';
         }
-        if (name.equals(FAMILY.elementName)) {
-            return FAMILY;
-        }
-        if (name.equals(CATEGORY.elementName)) {
-            return CATEGORY;
-        }
-        if (name.equals(FUNCTION.elementName)) {
-            return FUNCTION;
-        }
-        if (name.equals(ANCHOR.elementName)) {
-            return ANCHOR;
-        }
-        return null;
     }
 }

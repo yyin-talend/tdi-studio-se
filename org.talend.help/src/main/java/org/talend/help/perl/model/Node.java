@@ -98,7 +98,7 @@ public class Node {
     }
 
     public String toString() {
-        return "[Node] " + type.getElementName();
+        return "[Node] " + type.getElementName(); //$NON-NLS-1$
     }
 
     /**

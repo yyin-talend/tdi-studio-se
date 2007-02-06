@@ -58,6 +58,8 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Sash;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.PlatformUI;
+import org.talend.help.PerlHelpConstant;
+import org.talend.help.i18n.Messages;
 import org.talend.help.perl.model.EProperty;
 import org.talend.help.perl.model.EType;
 import org.talend.help.perl.model.Node;
@@ -86,9 +88,7 @@ public class PerlHelpComposite extends Composite {
         @Override
         public boolean select(Viewer viewer, Object parentElement, Object element) {
             Node node = (Node) element;
-            String searchStr = searchButton.getText();
-            boolean flag = (LABEL_BLANK.equals(searchStr) || LABEL_SEARCH.equals(searchStr)) ? true : node
-                    .isSearchMatchFlag();
+            boolean flag = (PerlHelpConstant.SEARCH_ACTIONTYPE == getActionType()) ? true : node.isSearchMatchFlag();
             return flag;
         }
     }
@@ -99,13 +99,13 @@ public class PerlHelpComposite extends Composite {
 
     private Button searchButton;
 
-    private static final String LABEL_SEARCH = "search";
+    private static final String LABEL_BLANK = ""; //$NON-NLS-1$
 
-    private static final String LABEL_BLANK = "";
+    private int actionType = PerlHelpConstant.SEARCH_ACTIONTYPE;
 
-    private static final String HEADTAG_HTML = "<html><head></head><body>";
+    private static final String HEADTAG_HTML = "<html><head></head><body>"; //$NON-NLS-1$
 
-    private static final String TAILTAG_HTML = "</body></html>";
+    private static final String TAILTAG_HTML = "</body></html>"; //$NON-NLS-1$
 
     private Searcher searcher = null;
 
@@ -147,11 +147,11 @@ public class PerlHelpComposite extends Composite {
         Composite searchRadioComp = new Composite(parentComp, SWT.None);
         searchRadioComp.setLayout(new RowLayout());
         funcBtn = new Button(searchRadioComp, SWT.RADIO);
-        funcBtn.setText("Function");
+        funcBtn.setText(Messages.getString("PerlHelpComposite.functionButton")); //$NON-NLS-1$
         funcBtn.setSelection(true);
         funcBtn.addSelectionListener(new RadioSelection());
         plainBtn = new Button(searchRadioComp, SWT.RADIO);
-        plainBtn.setText("Plain Text");
+        plainBtn.setText(Messages.getString("PerlHelpComposite.plainTextButton")); //$NON-NLS-1$
         plainBtn.addSelectionListener(new RadioSelection());
         return searchRadioComp;
     }
@@ -170,7 +170,7 @@ public class PerlHelpComposite extends Composite {
         GridData buttonGd = new GridData();
         // buttonGd.horizontalSpan = 1;
         searchButton.setLayoutData(buttonGd);
-        searchButton.setText(LABEL_SEARCH);
+        searchButton.setText(Messages.getString("PerlHelpComposite.searchText")); //$NON-NLS-1$
         backForwardBar = new BackForwardBar(searchTextComp);
         creatSearchRadioComp(treeComposite).setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
         viewer = new TreeViewer(treeComposite, SWT.SINGLE | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
@@ -190,7 +190,7 @@ public class PerlHelpComposite extends Composite {
                     Node anchorNode = node.getChildren().get(0);
                     String anchor = anchorNode.getProperties().get(EProperty.VALUE);
                     String htmlContent;
-                    String midContent = "";
+                    String midContent = ""; //$NON-NLS-1$
                     try {
                         midContent = DocParser.getInstance().getDoc(anchor);
                     } catch (IOException e) {
@@ -213,8 +213,8 @@ public class PerlHelpComposite extends Composite {
                     }
                     return;
                 }
-                htmlBrowser.setText("");
-                setFLText("");
+                htmlBrowser.setText(""); //$NON-NLS-1$
+                setFLText(""); //$NON-NLS-1$
             }
         });
         try {
@@ -236,24 +236,38 @@ public class PerlHelpComposite extends Composite {
             }
         });
         this.getShell().setDefaultButton(searchButton);
-        funcSearcher = new FunctionSearcher(viewer, searchButton, searchText, backForwardBar);
-        plainSearcher = new PlainSearcher(viewer, searchButton, searchText, backForwardBar);
+        funcSearcher = new FunctionSearcher(viewer, this);
+        plainSearcher = new PlainSearcher(viewer, this);
         searcher = funcSearcher;
         return treeComposite;
+    }
+
+    public BackForwardBar getBackForwardBar() {
+        return this.backForwardBar;
+    }
+
+    public Button getSearchButton() {
+        return this.searchButton;
+    }
+
+    public Text getSearchText() {
+        return this.searchText;
     }
 
     /**
      * reset the search result.
      */
     private void searcherReset() {
-        searchButton.setText(LABEL_SEARCH);
+        searchButton.setText(Messages.getString("PerlHelpComposite.searchText")); //$NON-NLS-1$
+        this.setActionType(PerlHelpConstant.SEARCH_ACTIONTYPE);
         searcher.setMatchTextFlag(false);
         searcher.clearSearchCache();
     }
 
     private static void openError(Exception e1) {
         Display workbenchDisplay = PlatformUI.getWorkbench().getDisplay();
-        ErrorDialog.openError(workbenchDisplay.getActiveShell(), "Error occured", e1.getMessage(), null);
+        ErrorDialog.openError(workbenchDisplay.getActiveShell(),
+                Messages.getString("Searcher.occuredError"), e1.getMessage(), null); //$NON-NLS-1$
     }
 
     private void init() {
@@ -306,7 +320,7 @@ public class PerlHelpComposite extends Composite {
         GridLayout layout = new GridLayout();
         rightComp.setLayout(layout);
         htmlBrowser = new Browser(rightComp, SWT.BORDER);
-        htmlBrowser.setText("");
+        htmlBrowser.setText(""); //$NON-NLS-1$
         htmlBrowser.setLayoutData(new GridData(GridData.FILL_BOTH));
         backForwardBar.setBrowser(htmlBrowser);
         creatFLCopyComp(rightComp).setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
@@ -321,22 +335,22 @@ public class PerlHelpComposite extends Composite {
         GridLayout layout = new GridLayout(3, false);
         flCopyComp.setLayout(layout);
         Label codeLabel = new Label(flCopyComp, SWT.None);
-        codeLabel.setText("Code:");
+        codeLabel.setText(Messages.getString("PerlHelpComposite.codeKey")); //$NON-NLS-1$
         codeLabel.setLayoutData(new GridData());
         flText = new Text(flCopyComp, SWT.BORDER);
-        flText.setText("");
+        flText.setText(""); //$NON-NLS-1$
         GridData textGD = new GridData();
         textGD.widthHint = 180;
         flText.setLayoutData(textGD);
         Button copyBtn = new Button(flCopyComp, SWT.None);
-        copyBtn.setText("Copy");
+        copyBtn.setText(Messages.getString("PerlHelpComposite.copy")); //$NON-NLS-1$
         copyBtn.setLayoutData(new GridData());
         copyBtn.addSelectionListener(new SelectionAdapter() {
 
             public void widgetSelected(SelectionEvent e) {
                 Clipboard clipboard = new Clipboard(null);
                 String plainText = flText.getText();
-                String rtfText = "{\\rtf1\\b " + plainText + "}";
+                String rtfText = "{\\rtf1\\b " + plainText + "}"; //$NON-NLS-1$ //$NON-NLS-2$
                 TextTransfer textTransfer = TextTransfer.getInstance();
                 RTFTransfer rftTransfer = RTFTransfer.getInstance();
                 clipboard
@@ -347,7 +361,7 @@ public class PerlHelpComposite extends Composite {
         return flCopyComp;
     }
 
-    private static final String TEXT_REGEX = "<a name=.*>(.*)</a>";
+    private static final String TEXT_REGEX = "<a name=.*>(.*)</a>"; //$NON-NLS-1$
 
     /**
      * get the first line text content according the content of html page.
@@ -355,13 +369,13 @@ public class PerlHelpComposite extends Composite {
      * @param htmlContent the content of html page
      */
     private void setFLText(String htmlContent) {
-        if ("".equals(htmlContent)) {
-            flText.setText("");
+        if ("".equals(htmlContent)) { //$NON-NLS-1$
+            flText.setText(""); //$NON-NLS-1$
         } else {
             Matcher matcher = Pattern.compile(TEXT_REGEX).matcher(htmlContent);
             matcher.find();
             String tempText = matcher.group(0);
-            String textStr = tempText.replaceAll(TEXT_REGEX, "$1");
+            String textStr = tempText.replaceAll(TEXT_REGEX, "$1"); //$NON-NLS-1$
             flText.setText(textStr);
         }
 
@@ -372,6 +386,24 @@ public class PerlHelpComposite extends Composite {
         htmlBrowser = null;
         searchText = null;
         super.dispose();
+    }
+
+    /**
+     * Sets the actionType.
+     * 
+     * @param actionType the actionType to set
+     */
+    public void setActionType(int actionType) {
+        this.actionType = actionType;
+    }
+
+    /**
+     * Getter for actionType.
+     * 
+     * @return the actionType
+     */
+    public int getActionType() {
+        return actionType;
     }
 
 }

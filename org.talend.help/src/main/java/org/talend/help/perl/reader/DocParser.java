@@ -38,9 +38,9 @@ public class DocParser {
     
     private static DocParser docParse = new DocParser();
 
-    private static final String PATH = "guide/perl/perlfunc.html";
+    private static final String PATH = "guide/perl/perlfunc.html"; //$NON-NLS-1$
 
-    public static final String FILE = "/home/wiu/work/talend/workspace-talend-svn/org.talend.help/" + PATH;
+    public static final String FILE = "/home/wiu/work/talend/workspace-talend-svn/org.talend.help/" + PATH; //$NON-NLS-1$
 
     public static DocParser getInstance() {
         return docParse;
@@ -57,9 +57,9 @@ public class DocParser {
 
     public String getDoc(InputStream in, String anchor) throws IOException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-        String li = "</li>";
+        String li = "</li>"; //$NON-NLS-1$
         StringBuffer buf = null;
-        String anchorString = "<dt><strong><a name=\"" + anchor + "\">";
+        String anchorString = "<dt><strong><a name=\"" + anchor + "\">"; //$NON-NLS-1$ //$NON-NLS-2$
         String line = null;
         while ((line = reader.readLine()) != null) {
             if (line.indexOf(anchorString) != -1) {
@@ -68,14 +68,14 @@ public class DocParser {
             if (buf != null) {
                 int index = line.indexOf(li);
                 if (index == -1) {
-                    buf.append(line).append("\n");
+                    buf.append(line).append("\n"); //$NON-NLS-1$
                 } else {
                     buf.append(line.substring(0, index));
                     break;
                 }
             }
         }
-        return buf == null ? "" : buf.toString();
+        return buf == null ? "" : buf.toString(); //$NON-NLS-1$
     }
 
 }
