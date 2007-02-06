@@ -258,6 +258,9 @@ public class RowGeneratorComponent extends AbstractExternalNode {
     public String getNumber() {
         boolean end = false;
         List<IElementParameter> eps = (List<IElementParameter>) this.getElementParameters();
+        if (eps == null) {
+            return "10";
+        }
         for (int i = 0; i < eps.size() && !end; i++) {
             IElementParameter parameter = eps.get(i);
             if ("__NB_ROWS__".indexOf(parameter.getVariableName()) != -1) { //$NON-NLS-1$
