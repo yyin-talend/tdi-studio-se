@@ -65,7 +65,7 @@ boolean stat = codeGenArgument.isStatistics();
 				}
 			}
 		}
-		if (!node.isSubProcessStart()) {
+		if ((!node.isSubProcessStart())&&(node.getComponent().isDataAutoPropagated())) {
 			if (inputColName!=null) {
 				if ((metadatas != null) && (metadatas.size() > 0)) {
 					IMetadataTable metadata = metadatas.get(0);
