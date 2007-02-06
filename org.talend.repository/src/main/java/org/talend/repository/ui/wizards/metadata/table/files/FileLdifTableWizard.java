@@ -56,7 +56,7 @@ public class FileLdifTableWizard extends RepositoryWizard implements INewWizard 
      * 
      * @param ISelection
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked") //$NON-NLS-1$
     public FileLdifTableWizard(IWorkbench workbench, boolean creation, ConnectionItem connectionItem, MetadataTable metadataTable) {
         super(workbench, creation);
         this.connectionItem = connectionItem;
@@ -72,17 +72,17 @@ public class FileLdifTableWizard extends RepositoryWizard implements INewWizard 
      */
 
     public void addPages() {
-        setWindowTitle(Messages.getString("SchemaWizard.windowTitle"));
+        setWindowTitle(Messages.getString("SchemaWizard.windowTitle")); //$NON-NLS-1$
 
         tableWizardpage = new FileTableWizardPage(connectionItem, metadataTable, isRepositoryObjectEditable());
 
         if (creation) {
-            tableWizardpage.setTitle(Messages.getString("FileTableWizardPage.titleCreate", connectionItem.getProperty().getLabel()));
-            tableWizardpage.setDescription(Messages.getString("FileTableWizardPage.descriptionCreate"));
+            tableWizardpage.setTitle(Messages.getString("FileTableWizardPage.titleCreate", connectionItem.getProperty().getLabel())); //$NON-NLS-1$
+            tableWizardpage.setDescription(Messages.getString("FileTableWizardPage.descriptionCreate")); //$NON-NLS-1$
             tableWizardpage.setPageComplete(false);
         } else {
-            tableWizardpage.setTitle(Messages.getString("FileTableWizardPage.titleUpdate", metadataTable.getLabel()));
-            tableWizardpage.setDescription(Messages.getString("FileTableWizardPage.descriptionUpdate"));
+            tableWizardpage.setTitle(Messages.getString("FileTableWizardPage.titleUpdate", metadataTable.getLabel())); //$NON-NLS-1$
+            tableWizardpage.setDescription(Messages.getString("FileTableWizardPage.descriptionUpdate")); //$NON-NLS-1$
             tableWizardpage.setPageComplete(isRepositoryObjectEditable());
         }
         addPage(tableWizardpage);
@@ -100,8 +100,8 @@ public class FileLdifTableWizard extends RepositoryWizard implements INewWizard 
                 closeLockStrategy();
             } catch (PersistenceException e) {
                 String detailError = e.toString();
-                new ErrorDialogWidthDetailArea(getShell(), PID, Messages.getString("CommonWizard.persistenceException"), detailError);
-                log.error(Messages.getString("CommonWizard.persistenceException") + "\n" + detailError);
+                new ErrorDialogWidthDetailArea(getShell(), PID, Messages.getString("CommonWizard.persistenceException"), detailError); //$NON-NLS-1$
+                log.error(Messages.getString("CommonWizard.persistenceException") + "\n" + detailError); //$NON-NLS-1$ //$NON-NLS-2$
             }
             return true;
         } else {

@@ -47,8 +47,8 @@ public class EmptyRecycleBinAction extends AContextualAction {
 
     public EmptyRecycleBinAction() {
         super();
-        this.setText(Messages.getString("EmptyRecycleBinAction.action.title"));
-        this.setToolTipText(Messages.getString("EmptyRecycleBinAction.action.toolTipText"));
+        this.setText(Messages.getString("EmptyRecycleBinAction.action.title")); //$NON-NLS-1$
+        this.setToolTipText(Messages.getString("EmptyRecycleBinAction.action.toolTipText")); //$NON-NLS-1$
         this.setImageDescriptor(ImageProvider.getImageDesc(ECoreImage.RECYCLE_BIN_EMPTY_ICON));
     }
 
@@ -57,9 +57,9 @@ public class EmptyRecycleBinAction extends AContextualAction {
         Object obj = ((IStructuredSelection) selection).getFirstElement();
         RepositoryNode node = (RepositoryNode) obj;
 
-        String title = Messages.getString("EmptyRecycleBinAction.dialog.title");
-        String message = Messages.getString("EmptyRecycleBinAction.dialog.message1") + "\n"
-                + Messages.getString("EmptyRecycleBinAction.dialog.message2");
+        String title = Messages.getString("EmptyRecycleBinAction.dialog.title"); //$NON-NLS-1$
+        String message = Messages.getString("EmptyRecycleBinAction.dialog.message1") + "\n" //$NON-NLS-1$ //$NON-NLS-2$
+                + Messages.getString("EmptyRecycleBinAction.dialog.message2"); //$NON-NLS-1$
         if (!(MessageDialog.openQuestion(new Shell(), title, message))) {
             return;
         }

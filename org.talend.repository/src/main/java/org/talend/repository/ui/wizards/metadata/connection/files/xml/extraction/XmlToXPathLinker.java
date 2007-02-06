@@ -75,6 +75,7 @@ import org.talend.core.model.metadata.builder.connection.SchemaTarget;
 import org.talend.core.model.metadata.builder.connection.XmlXPathLoopDescriptor;
 import org.talend.core.model.targetschema.editor.XmlExtractorFieldModel;
 import org.talend.core.model.targetschema.editor.XmlExtractorLoopModel;
+import org.talend.repository.i18n.Messages;
 import org.talend.repository.ui.wizards.metadata.connection.files.xml.TreePopulator;
 import org.talend.repository.ui.wizards.metadata.connection.files.xml.dnd.XmlToSchemaDragAndDropHandler;
 import org.w3c.dom.Node;
@@ -200,7 +201,7 @@ public class XmlToXPathLinker extends TreeToTablesLinker<Object, Object> {
 
                 monitorWrap = new EventLoopProgressMonitor(monitor);
 
-                String taskName = "Loop links creation ...";
+                String taskName = Messages.getString("XmlToXPathLinker.0"); //$NON-NLS-1$
                 int totalWork = loopTableItems.length + fieldsTableItems.length;
 
                 monitorWrap.beginTask(taskName, totalWork); //$NON-NLS-1$
@@ -246,7 +247,7 @@ public class XmlToXPathLinker extends TreeToTablesLinker<Object, Object> {
      */
     private void createFieldsLinkWithProgressMonitor(IProgressMonitor monitorWrap, int totalWork, List<SchemaTarget> schemaTargetList,
             int startTableItem, int tableItemLength) {
-        monitorWrap.beginTask("Fields links creation ...", totalWork);
+        monitorWrap.beginTask(Messages.getString("XmlToXPathLinker.beginTask.fieldLinksCreation"), totalWork); //$NON-NLS-1$
 
         TableItem[] fieldsTableItems = fieldsTableEditorView.getTable().getItems();
 
@@ -595,7 +596,7 @@ public class XmlToXPathLinker extends TreeToTablesLinker<Object, Object> {
         boolean breakAll = false;
 
         boolean expressionIsAbsolute = false;
-        if (relativeXpathPrm.trim().startsWith("/")) {
+        if (relativeXpathPrm.trim().startsWith("/")) { //$NON-NLS-1$
             expressionIsAbsolute = true;
         }
 
@@ -683,15 +684,15 @@ public class XmlToXPathLinker extends TreeToTablesLinker<Object, Object> {
             String expression = null;
 
             if (relativeXpath == null) {
-                relativeXpath = "";
+                relativeXpath = ""; //$NON-NLS-1$
             }
 
             String currentLoopXPath = getCurrentLoopXPath();
 
-            if (relativeXpath.trim().startsWith("/")) {
+            if (relativeXpath.trim().startsWith("/")) { //$NON-NLS-1$
                 expression = relativeXpath;
             } else {
-                expression = currentLoopXPath + "/" + relativeXpath;
+                expression = currentLoopXPath + "/" + relativeXpath; //$NON-NLS-1$
             }
 
             NodeList nodeList = null;
@@ -754,7 +755,7 @@ public class XmlToXPathLinker extends TreeToTablesLinker<Object, Object> {
         return this.loopTableEditorView;
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked") //$NON-NLS-1$
     public void updateLinksStyleAndControlsSelection(Control currentControl) {
 
         boolean selectedControlIsTable = false;
@@ -763,7 +764,7 @@ public class XmlToXPathLinker extends TreeToTablesLinker<Object, Object> {
         } else if (currentControl instanceof Tree) {
             selectedControlIsTable = false;
         } else {
-            throw new IllegalArgumentException("This type of currentControl is unsupported");
+            throw new IllegalArgumentException(Messages.getString("XmlToXPathLinker.illegalArgumentException")); //$NON-NLS-1$
         }
 
         HashSet selectedItems = new HashSet();
@@ -925,7 +926,7 @@ public class XmlToXPathLinker extends TreeToTablesLinker<Object, Object> {
         try {
             xpath.compile(xpathExpression);
         } catch (Exception e) {
-            return "The current XPath expression is invalid";
+            return Messages.getString("XmlToXPathLinker.exceptionReturn.xPathInvalid"); //$NON-NLS-1$
         }
         return null;
     }

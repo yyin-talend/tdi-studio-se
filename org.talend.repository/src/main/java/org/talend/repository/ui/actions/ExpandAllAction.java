@@ -37,9 +37,9 @@ import org.talend.repository.ui.views.IRepositoryView;
  */
 public class ExpandAllAction extends AContextualAction {
 
-    private static final String MOVE_TITLE = Messages.getString("ExpandAction.action.title");
+    private static final String MOVE_TITLE = Messages.getString("ExpandAction.action.title"); //$NON-NLS-1$
 
-    private static final String MOVE_TOOLTIP = Messages.getString("ExpandAction.action.toolTipText");
+    private static final String MOVE_TOOLTIP = Messages.getString("ExpandAction.action.toolTipText"); //$NON-NLS-1$
 
     public ExpandAllAction() {
         super();

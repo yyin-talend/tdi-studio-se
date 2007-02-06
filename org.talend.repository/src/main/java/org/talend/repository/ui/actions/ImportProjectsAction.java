@@ -32,6 +32,7 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 import org.eclipse.ui.wizards.datatransfer.ExternalProjectImportWizard;
 import org.talend.commons.ui.image.ImageProvider;
+import org.talend.repository.i18n.Messages;
 import org.talend.repository.ui.ERepositoryImages;
 
 /**
@@ -42,11 +43,11 @@ import org.talend.repository.ui.ERepositoryImages;
  */
 public final class ImportProjectsAction extends Action implements IWorkbenchWindowActionDelegate {
 
-    private static final String ACTION_TITLE = "Import projects";
+    private static final String ACTION_TITLE = "Import projects"; //$NON-NLS-1$
 
-    private static final String ACTION_TOOLTIP = "Import existing Talend projects";
+    private static final String ACTION_TOOLTIP = "Import existing Talend projects"; //$NON-NLS-1$
 
-    private static final String STORE_COPY_PROJECT = "WizardProjectsImportPage.STORE_COPY_PROJECT_ID";
+    private static final String STORE_COPY_PROJECT = "WizardProjectsImportPage.STORE_COPY_PROJECT_ID"; //$NON-NLS-1$
 
     private static ImportProjectsAction singleton;
 

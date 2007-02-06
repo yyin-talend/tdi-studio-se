@@ -41,6 +41,7 @@ import org.talend.core.model.properties.Property;
 import org.talend.core.model.properties.User;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryNode;
@@ -249,7 +250,7 @@ public abstract class AbstractSection extends AbstractPropertySection {
          * @see org.talend.core.model.repository.IRepositoryObject#getDescription()
          */
         public String getDescription() {
-            return "";
+            return ""; //$NON-NLS-1$
         }
 
         /*
@@ -258,7 +259,7 @@ public abstract class AbstractSection extends AbstractPropertySection {
          * @see org.talend.core.model.repository.IRepositoryObject#getId()
          */
         public String getId() {
-            return "";
+            return ""; //$NON-NLS-1$
         }
 
         /*
@@ -267,7 +268,7 @@ public abstract class AbstractSection extends AbstractPropertySection {
          * @see org.talend.core.model.repository.IRepositoryObject#getLabel()
          */
         public String getLabel() {
-            return "";
+            return ""; //$NON-NLS-1$
         }
 
         /*
@@ -297,7 +298,7 @@ public abstract class AbstractSection extends AbstractPropertySection {
          * @see org.talend.core.model.repository.IRepositoryObject#getPurpose()
          */
         public String getPurpose() {
-            return "";
+            return ""; //$NON-NLS-1$
         }
 
         /*
@@ -306,7 +307,7 @@ public abstract class AbstractSection extends AbstractPropertySection {
          * @see org.talend.core.model.repository.IRepositoryObject#getStatusCode()
          */
         public String getStatusCode() {
-            return "";
+            return ""; //$NON-NLS-1$
         }
 
         /*
@@ -324,7 +325,7 @@ public abstract class AbstractSection extends AbstractPropertySection {
          * @see org.talend.core.model.repository.IRepositoryObject#getVersion()
          */
         public String getVersion() {
-            return "";
+            return ""; //$NON-NLS-1$
         }
 
         /*

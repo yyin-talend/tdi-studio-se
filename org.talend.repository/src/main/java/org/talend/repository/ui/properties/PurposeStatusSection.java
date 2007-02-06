@@ -38,6 +38,7 @@ import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.properties.Status;
+import org.talend.repository.i18n.Messages;
 
 /**
  * DOC mhelleboid class global comment. Detailled comment <br/>
@@ -122,9 +123,9 @@ public class PurposeStatusSection extends AbstractSection {
 
     @Override
     public void refresh() {
-        purposeText.setText(getPurpose() != null ? getPurpose().toString() : "");
+        purposeText.setText(getPurpose() != null ? getPurpose().toString() : ""); //$NON-NLS-1$
         // enableListener = false;
-        statusText.setText(getStatus() != null ? getStatus().toString() : "");
+        statusText.setText(getStatus() != null ? getStatus().toString() : ""); //$NON-NLS-1$
         // enableListener = true;
     }
 
@@ -134,8 +135,8 @@ public class PurposeStatusSection extends AbstractSection {
 
     protected String getStatus() {
         String statusCode = getObject().getStatusCode();
-        if (statusCode == null || "".equals(statusCode)) {
-            return "";
+        if (statusCode == null || "".equals(statusCode)) { //$NON-NLS-1$
+            return ""; //$NON-NLS-1$
         }
         return statusHelper.getStatusLabel(statusCode);
     }

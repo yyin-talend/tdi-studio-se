@@ -35,6 +35,7 @@ import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ItemState;
 import org.talend.core.model.properties.Property;
+import org.talend.repository.i18n.Messages;
 
 /**
  * DOC mhelleboid class global comment. Detailled comment <br/>
@@ -120,9 +121,9 @@ public class DateSection extends AbstractSection {
 
     @Override
     public void refresh() {
-        creationDate.setText(getCreationDate() != null ? FORMATTER.format(getCreationDate()) : "");
-        modificationDate.setText(getModificationDate() != null ? FORMATTER.format(getModificationDate()) : "");
-        commitDate.setText(getCommitDate() != null ? FORMATTER.format(getCommitDate()) : "");
+        creationDate.setText(getCreationDate() != null ? FORMATTER.format(getCreationDate()) : ""); //$NON-NLS-1$
+        modificationDate.setText(getModificationDate() != null ? FORMATTER.format(getModificationDate()) : ""); //$NON-NLS-1$
+        commitDate.setText(getCommitDate() != null ? FORMATTER.format(getCommitDate()) : ""); //$NON-NLS-1$
         
         commitLabel.setVisible(getCommitDate() != null);
         commitDate.setVisible(getCommitDate() != null);

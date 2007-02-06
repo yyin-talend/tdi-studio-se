@@ -27,6 +27,7 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.talend.commons.ui.image.EImage;
 import org.talend.commons.ui.image.ImageProvider;
+import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.actions.CopyObjectAction;
 
@@ -42,9 +43,9 @@ public class CopyAction extends AContextualAction {
 
     public CopyAction() {
         super();
-        this.setText("Copy");
+        this.setText(Messages.getString("CopyAction.thisText.copy")); //$NON-NLS-1$
         this.setImageDescriptor(ImageProvider.getImageDesc(EImage.COPY_ICON));
-        this.setActionDefinitionId("copyItem");
+        this.setActionDefinitionId("copyItem"); //$NON-NLS-1$
         singleton = this;
     }
 

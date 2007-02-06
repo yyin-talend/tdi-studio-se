@@ -49,6 +49,7 @@ import org.talend.commons.ui.swt.tableviewer.TableViewerCreatorColumn;
 import org.talend.commons.ui.utils.TableUtils;
 import org.talend.core.model.metadata.builder.connection.SchemaTarget;
 import org.talend.core.model.metadata.builder.connection.XmlXPathLoopDescriptor;
+import org.talend.repository.i18n.Messages;
 import org.talend.repository.ui.wizards.metadata.connection.files.xml.extraction.ExtractionFieldsWithXPathEditorView;
 import org.talend.repository.ui.wizards.metadata.connection.files.xml.extraction.ExtractionLoopWithXPathEditorView;
 import org.talend.repository.ui.wizards.metadata.connection.files.xml.extraction.XmlToXPathLinker;
@@ -287,14 +288,14 @@ public class XmlToSchemaDragAndDropHandler {
                         String loopPath = loopXpathNodes.get(0);
                         String relativeXPath = XPathPopulationUtil.populateColumnPath(loopPath, entry.getAbsoluteXPath());
 
-                        if (relativeXPath.startsWith("/")) {
+                        if (relativeXPath.startsWith("/")) { //$NON-NLS-1$
                             relativeXPath = relativeXPath.substring(1);
                         }
-                        if (relativeXPath.endsWith("../")) {
+                        if (relativeXPath.endsWith("../")) { //$NON-NLS-1$
                             relativeXPath = relativeXPath.substring(0, relativeXPath.length() - 1);
                         }
-                        if (relativeXPath.trim().equals("")) {
-                            relativeXPath = ".";
+                        if (relativeXPath.trim().equals("")) { //$NON-NLS-1$
+                            relativeXPath = "."; //$NON-NLS-1$
                         }
 
                         SchemaTarget newTargetEntry = linker.getNewSchemaTargetEntry(relativeXPath);
@@ -323,9 +324,9 @@ public class XmlToSchemaDragAndDropHandler {
     }
 
     public static void main(String[] args) {
-        String relativePath = XPathPopulationUtil.populateColumnPath("/doc/members/member/returns", "/doc/members");
+        String relativePath = XPathPopulationUtil.populateColumnPath("/doc/members/member/returns", "/doc/members"); //$NON-NLS-1$ //$NON-NLS-2$
         //System.out.println(relativePath);
-        relativePath = XPathPopulationUtil.populateColumnPath("/doc/members/member/returns/see/@cref", "/doc/members/member/summary/@name");
+        relativePath = XPathPopulationUtil.populateColumnPath("/doc/members/member/returns/see/@cref", "/doc/members/member/summary/@name"); //$NON-NLS-1$ //$NON-NLS-2$
         //System.out.println(relativePath);
     }
 }

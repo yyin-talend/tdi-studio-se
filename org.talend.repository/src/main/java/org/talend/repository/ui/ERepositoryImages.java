@@ -23,6 +23,7 @@ package org.talend.repository.ui;
 
 import org.talend.commons.ui.image.IImage;
 import org.talend.repository.RepositoryPlugin;
+import org.talend.repository.i18n.Messages;
 
 /**
  * DOC smallet class global comment. Detailled comment <br/>
@@ -31,8 +32,8 @@ import org.talend.repository.RepositoryPlugin;
  * 
  */
 public enum ERepositoryImages implements IImage {
-    IMPORT_PROJECTS_ACTION("/icons/import_projects_action.gif"),
-    NEW_PROJECT_ACTION("/icons/newProject.png");
+    IMPORT_PROJECTS_ACTION("/icons/import_projects_action.gif"), //$NON-NLS-1$
+    NEW_PROJECT_ACTION("/icons/newProject.png"); //$NON-NLS-1$
 
     private String path;
 

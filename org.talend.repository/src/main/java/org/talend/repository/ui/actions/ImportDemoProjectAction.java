@@ -44,6 +44,7 @@ import org.osgi.framework.Bundle;
 import org.talend.commons.exception.MessageBoxExceptionHandler;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.repository.RepositoryPlugin;
+import org.talend.repository.i18n.Messages;
 import org.talend.repository.ui.ERepositoryImages;
 
 /**
@@ -54,9 +55,9 @@ import org.talend.repository.ui.ERepositoryImages;
  */
 public final class ImportDemoProjectAction extends Action {
 
-    private static final String ACTION_TITLE = "Import demo";
+    private static final String ACTION_TITLE = "Import demo"; //$NON-NLS-1$
 
-    private static final String ACTION_TOOLTIP = "Import demo project";
+    private static final String ACTION_TOOLTIP = "Import demo project"; //$NON-NLS-1$
 
     private static ImportDemoProjectAction singleton;
 
@@ -79,7 +80,7 @@ public final class ImportDemoProjectAction extends Action {
     public void run() {
         try {
             Bundle bundle = Platform.getBundle(RepositoryPlugin.PLUGIN_ID);
-            URL url = FileLocator.resolve(bundle.getEntry("resources/TALENDDEMOS.zip"));
+            URL url = FileLocator.resolve(bundle.getEntry("resources/TALENDDEMOS.zip")); //$NON-NLS-1$
             String archiveFilePath = new Path(url.getFile()).toOSString();
 
             ZipFile zipFile = new ZipFile(archiveFilePath);
@@ -88,13 +89,13 @@ public final class ImportDemoProjectAction extends Action {
             ArrayList fileSystemObjects = new ArrayList();
             getFilesForProject(fileSystemObjects, provider, provider.getRoot());
 
-            ImportOperation operation = new ImportOperation(new Path("TALENDDEMOS"), provider.getRoot(), provider,
+            ImportOperation operation = new ImportOperation(new Path("TALENDDEMOS"), provider.getRoot(), provider, //$NON-NLS-1$
                     new MyOverwriteQuery(), fileSystemObjects);
             operation.setContext(shell);
             operation.run(null);
 
-            MessageDialog.openInformation(shell, "Demo project imported",
-                    "Demo project has been successfully imported in your workspace");
+            MessageDialog.openInformation(shell, Messages.getString("ImportDemoProjectAction.messageDialogTitle.demoProject"), //$NON-NLS-1$
+                    Messages.getString("ImportDemoProjectAction.messageDialogContent.demoProjectImportedSuccessfully")); //$NON-NLS-1$
         } catch (IOException e) {
             MessageBoxExceptionHandler.process(e, shell);
         } catch (InvocationTargetException e) {

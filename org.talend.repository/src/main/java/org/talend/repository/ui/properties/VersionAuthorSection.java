@@ -34,6 +34,7 @@ import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 import org.talend.commons.utils.VersionUtils;
 import org.talend.core.model.properties.User;
+import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNode.ENodeType;
 
@@ -81,7 +82,7 @@ public class VersionAuthorSection extends AbstractSection {
         data.top = new FormAttachment(authorText, 0, SWT.CENTER);
         authorLabel.setLayoutData(data);
 
-        btnDown = getWidgetFactory().createButton(composite, "m", SWT.PUSH);
+        btnDown = getWidgetFactory().createButton(composite, "m", SWT.PUSH); //$NON-NLS-1$
         data = new FormData();
         data.right = new FormAttachment(100, 0);
         data.top = new FormAttachment(0, ITabbedPropertyConstants.VSPACE);
@@ -94,7 +95,7 @@ public class VersionAuthorSection extends AbstractSection {
             }
         });
 
-        btnUp = getWidgetFactory().createButton(composite, "M", SWT.PUSH);
+        btnUp = getWidgetFactory().createButton(composite, "M", SWT.PUSH); //$NON-NLS-1$
         data = new FormData();
         data.right = new FormAttachment(btnDown, 0);
         data.top = new FormAttachment(0, ITabbedPropertyConstants.VSPACE);
@@ -132,8 +133,8 @@ public class VersionAuthorSection extends AbstractSection {
      */
     @Override
     public void refresh() {
-        authorText.setText(getAuthor() != null ? getAuthor().getLogin() : "");
-        versionText.setText(getVersion() == null ? "" : getVersion());
+        authorText.setText(getAuthor() != null ? getAuthor().getLogin() : ""); //$NON-NLS-1$
+        versionText.setText(getVersion() == null ? "" : getVersion()); //$NON-NLS-1$
     }
 
     private void versionMajorUp() {

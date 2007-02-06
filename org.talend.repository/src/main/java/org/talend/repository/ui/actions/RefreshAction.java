@@ -44,7 +44,7 @@ public class RefreshAction extends Action {
         this.setText(Messages.getString("RefreshAction.text")); //$NON-NLS-1$
         this.setToolTipText(Messages.getString("RefreshAction.toolTipText")); //$NON-NLS-1$
         this.setImageDescriptor(ImageProvider.getImageDesc(EImage.REFRESH_ICON));
-        this.setActionDefinitionId("refresh");
+        this.setActionDefinitionId(Messages.getString("RefreshAction.0")); //$NON-NLS-1$
     }
 
     public void run() {

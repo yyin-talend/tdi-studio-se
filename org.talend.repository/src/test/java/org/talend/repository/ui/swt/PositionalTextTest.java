@@ -43,6 +43,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
+import org.talend.repository.i18n.Messages;
 import org.talend.repository.ui.swt.filepositionalviewer.ResizeHelper;
 
 /**
@@ -129,9 +130,9 @@ public class PositionalTextTest extends Composite {
 
     protected void setFieldSeparatorValue(String s) {
 
-        if (s != null && !s.equals("")) {
+        if (s != null && !s.equals("")) { //$NON-NLS-1$
             fieldSeparatorValue = s;
-            String[] drawLine = s.split(",");
+            String[] drawLine = s.split(","); //$NON-NLS-1$
             int oldToPrint = 0;
             for (int i = 0; i < drawLine.length; i++) {
                 // int line = (new Integer(drawLine[i]).intValue())+old;
@@ -171,13 +172,13 @@ public class PositionalTextTest extends Composite {
         vm.moveAbove(text);
         listVerticalMarker.add(vm);
 
-        // PTODO trouver la méthode pour déterminer 9 par rapport à la FONT.
+        // PTODO trouver la mï¿½thode pour dï¿½terminer 9 par rapport ï¿½ la FONT.
         // Position position = new Position(posX,(posX-3)/9);
-        // Vu de ce côté mais sans grande réponse : FontMetrics fm = gc.getFontMetrics();
+        // Vu de ce cï¿½tï¿½ mais sans grande rï¿½ponse : FontMetrics fm = gc.getFontMetrics();
         positionBarre.put(posX, (posX - decalScreen) / largeurFont);
 
         fieldSeparatorValue = calculateRegExp(positionBarre);
-        System.out.println("Field Value " + fieldSeparatorValue);
+        System.out.println(Messages.getString("PositionalTextTest.println.fieldValue") + fieldSeparatorValue); //$NON-NLS-1$
     }
 
     protected void drawOralMarker(int posX) {
@@ -195,7 +196,7 @@ public class PositionalTextTest extends Composite {
 
         positionBarre.remove(posX);
         fieldSeparatorValue = calculateRegExp(positionBarre);
-        System.out.println("Field Value " + fieldSeparatorValue);
+        System.out.println(Messages.getString("PositionalTextTest.println.fieldValue") + fieldSeparatorValue); //$NON-NLS-1$
     }
 
     protected void eraseOvalMarker(OvalMarkerEditor om, int posX, int erase) {
@@ -232,7 +233,7 @@ public class PositionalTextTest extends Composite {
             positionBarre.put(posX, posXpix);
         }
         fieldSeparatorValue = calculateRegExp(positionBarre);
-        System.out.println("Field Value " + fieldSeparatorValue);
+        System.out.println(Messages.getString("PositionalTextTest.println.fieldValue") + fieldSeparatorValue); //$NON-NLS-1$
 
         return test;
 
@@ -259,7 +260,7 @@ public class PositionalTextTest extends Composite {
 
     protected String calculateRegExp(TreeMap<Integer, Integer> positionBarre) {
 
-        String regExp = "";
+        String regExp = ""; //$NON-NLS-1$
         if (positionBarre != null && !positionBarre.isEmpty()) {
             Set cles = positionBarre.keySet();
             Iterator iterator = cles.iterator();
@@ -268,10 +269,10 @@ public class PositionalTextTest extends Composite {
             while (iterator.hasNext()) {
                 Integer i = (Integer) iterator.next();
                 toAdd = positionBarre.get(i) - toSubstract;
-                if (regExp.equals("")) {
+                if (regExp.equals("")) { //$NON-NLS-1$
                     regExp += toAdd;
                 } else {
-                    regExp += "," + toAdd;
+                    regExp += "," + toAdd; //$NON-NLS-1$
                 }
                 toSubstract = positionBarre.get(i);
             }

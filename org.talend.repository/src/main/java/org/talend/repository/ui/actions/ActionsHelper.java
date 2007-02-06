@@ -32,6 +32,7 @@ import org.talend.commons.ui.swt.actions.ITreeContextualAction;
 import org.talend.commons.utils.workbench.extensions.ExtensionImplementationProviders;
 import org.talend.commons.utils.workbench.extensions.ExtensionPointImpl;
 import org.talend.commons.utils.workbench.extensions.ISimpleExtensionPoint;
+import org.talend.repository.i18n.Messages;
 
 /**
  * DOC smallet class global comment. Detailled comment <br/>
@@ -43,18 +44,18 @@ public class ActionsHelper {
 
     private static final Comparator COMP = new ActionsLevelComparator();
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked") //$NON-NLS-1$
     public static List<ITreeContextualAction> getRepositoryContextualsActions() {
         List<ITreeContextualAction> toReturn = new ArrayList<ITreeContextualAction>();
-        ISimpleExtensionPoint actionExtensionPoint = new ExtensionPointImpl("org.talend.core.repositoryContextualsActions",
-                "Action", -1, -1);
+        ISimpleExtensionPoint actionExtensionPoint = new ExtensionPointImpl("org.talend.core.repositoryContextualsActions", //$NON-NLS-1$
+                "Action", -1, -1); //$NON-NLS-1$
         List<IConfigurationElement> extension = ExtensionImplementationProviders.getInstanceV2(actionExtensionPoint);
 
         for (IConfigurationElement current : extension) {
             try {
-                ITreeContextualAction currentAction = (ITreeContextualAction) current.createExecutableExtension("class");
+                ITreeContextualAction currentAction = (ITreeContextualAction) current.createExecutableExtension("class"); //$NON-NLS-1$
                 try {
-                    int level = Integer.parseInt(current.getAttribute("level"));
+                    int level = Integer.parseInt(current.getAttribute("level")); //$NON-NLS-1$
                     currentAction.setLevel(level);
                 } catch (NumberFormatException e) {
                     currentAction.setLevel(1000);

@@ -277,7 +277,7 @@ public class ProxyRepositoryFactory implements IProxyRepositoryFactory {
 
         // i18n
         // log.trace("New ID generated on project [" + getRepositoryContext().getProject() + "] = " + nextId);
-        String str[] = new String[] { getRepositoryContext().getProject() + "", nextId + "" };//$NON-NLS-1$
+        String str[] = new String[] { getRepositoryContext().getProject() + "", nextId + "" };//$NON-NLS-1$ //$NON-NLS-2$
         log.trace(Messages.getString("ProxyRepositoryFactory.log.newIdGenerated", str)); //$NON-NLS-1$
         return nextId;
     }
@@ -334,7 +334,7 @@ public class ProxyRepositoryFactory implements IProxyRepositoryFactory {
         this.repositoryFactoryFromProvider.deleteObjectLogical(objToDelete);
         // i18n
         // log.debug("Logical deletion [" + objToDelete + "] by " + getRepositoryContext().getUser() + ".");
-        String str[] = new String[] { objToDelete + "", getRepositoryContext().getUser() + "" };//$NON-NLS-1$
+        String str[] = new String[] { objToDelete + "", getRepositoryContext().getUser() + "" };//$NON-NLS-1$ //$NON-NLS-2$
         log.debug(Messages.getString("ProxyRepositoryFactory.log.logicalDeletion", str)); //$NON-NLS-1$
     }
 
@@ -363,7 +363,7 @@ public class ProxyRepositoryFactory implements IProxyRepositoryFactory {
         // i18n
         // log.debug("Restoration [" + objToRestore + "] by " + getRepositoryContext().getUser() + " to \"/" + path +
         // "\".");
-        String str[] = new String[] { objToRestore + "", getRepositoryContext().getUser() + "", path + "" };//$NON-NLS-1$
+        String str[] = new String[] { objToRestore + "", getRepositoryContext().getUser() + "", path + "" };//$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         log.debug(Messages.getString("ProxyRepositoryFactory.log.Restoration", str)); //$NON-NLS-1$
     }
 
@@ -395,7 +395,7 @@ public class ProxyRepositoryFactory implements IProxyRepositoryFactory {
 
         // i18n
         // log.debug("Move [" + objToMove + "] to \"" + path + "\".");
-        String str[] = new String[] { objToMove + "", path + "" };
+        String str[] = new String[] { objToMove + "", path + "" }; //$NON-NLS-1$ //$NON-NLS-2$
         log.debug(Messages.getString("ProxyRepositoryFactory.log.move", str)); //$NON-NLS-1$
         unlock(getItem(objToMove));
     }
@@ -723,7 +723,7 @@ public class ProxyRepositoryFactory implements IProxyRepositoryFactory {
 
         // i18n
         // log.info(getRepositoryContext().getUser() + " logged on " + getRepositoryContext().getProject());
-        String str[] = new String[] { getRepositoryContext().getUser() + "", getRepositoryContext().getProject() + "" }; //$NON-NLS-1$        
+        String str[] = new String[] { getRepositoryContext().getUser() + "", getRepositoryContext().getProject() + "" }; //$NON-NLS-1$ //$NON-NLS-2$        
         log.info(Messages.getString("ProxyRepositoryFactory.log.loggedOn", str)); //$NON-NLS-1$
 
         IMigrationToolService service = (IMigrationToolService) GlobalServiceRegister.getDefault().getService(

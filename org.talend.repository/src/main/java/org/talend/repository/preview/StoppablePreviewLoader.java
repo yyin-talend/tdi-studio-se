@@ -161,13 +161,13 @@ public abstract class StoppablePreviewLoader<R> {
 
             breakInfiniteLoop = true;
 
-            infoLabel.setText("   " + "Preview interrupted");
+            infoLabel.setText("   " + Messages.getString("StoppablePreviewLoader.inforLabelText.previewInterrupted")); //$NON-NLS-1$ //$NON-NLS-2$
 
         } else if (eventType == PreviewHandlerEvent.TYPE.PREVIEW_ENDED) {
 
             breakInfiniteLoop = true;
 
-            infoLabel.setText("   " + Messages.getString("FileStep2.previewIsDone"));
+            infoLabel.setText("   " + Messages.getString("FileStep2.previewIsDone")); //$NON-NLS-1$ //$NON-NLS-2$
             infoLabel.getParent().layout();
             R result = source.getResult();
             // refresh TablePreview on this step

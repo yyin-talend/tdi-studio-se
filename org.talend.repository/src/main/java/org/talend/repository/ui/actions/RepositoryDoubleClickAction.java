@@ -36,6 +36,7 @@ import org.eclipse.ui.PlatformUI;
 import org.talend.commons.ui.swt.actions.ITreeContextualAction;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNode.ENodeType;
 import org.talend.repository.model.RepositoryNode.EProperties;
@@ -131,7 +132,7 @@ public class RepositoryDoubleClickAction extends Action {
         IWorkbench workbench = PlatformUI.getWorkbench();
         IWorkbenchPage page = workbench.getActiveWorkbenchWindow().getActivePage();
         try {
-            page.showView("org.talend.repository.views.repository");
+            page.showView("org.talend.repository.views.repository"); //$NON-NLS-1$
         } catch (PartInitException e) {
             e.printStackTrace();
         }

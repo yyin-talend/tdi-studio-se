@@ -46,9 +46,9 @@ public class PasteAction extends AContextualAction {
 
     public PasteAction() {
         super();
-        this.setText("Paste");
+        this.setText(Messages.getString("PasteAction.thisText.paste")); //$NON-NLS-1$
         this.setImageDescriptor(ImageProvider.getImageDesc(EImage.PASTE_ICON));
-        this.setActionDefinitionId("pasteItem");
+        this.setActionDefinitionId("pasteItem"); //$NON-NLS-1$
         singleton = this;
     }
 
@@ -70,8 +70,8 @@ public class PasteAction extends AContextualAction {
                     if (copyObjectAction.validateAction((RepositoryNode) currentSource, target)) {
                         copyObjectAction.execute((RepositoryNode) currentSource, target);
                     } else {
-                        MessageDialog.openWarning(new Shell(), Messages.getString("PasteObjectAction.error.title"), Messages
-                                .getString("PasteObjectAction.error.labelAlreadyExists"));
+                        MessageDialog.openWarning(new Shell(), Messages.getString("PasteObjectAction.error.title"), Messages //$NON-NLS-1$
+                                .getString("PasteObjectAction.error.labelAlreadyExists")); //$NON-NLS-1$
                     }
                 } catch (Exception e) {
                     e.printStackTrace();

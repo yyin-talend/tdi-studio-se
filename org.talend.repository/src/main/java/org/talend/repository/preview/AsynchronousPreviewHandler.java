@@ -24,6 +24,7 @@ package org.talend.repository.preview;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.ListenerList;
 import org.talend.commons.exception.ExceptionHandler;
+import org.talend.repository.i18n.Messages;
 
 /**
  * DOC amaumont class global comment. Detailled comment <br/>
@@ -68,7 +69,7 @@ public class AsynchronousPreviewHandler<R> {
              * 
              * @see java.lang.Thread#run()
              */
-            @SuppressWarnings("unchecked")
+            @SuppressWarnings("unchecked") //$NON-NLS-1$
             @Override
             public void run() {
                 result = null;

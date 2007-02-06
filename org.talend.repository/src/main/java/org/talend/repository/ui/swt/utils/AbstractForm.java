@@ -33,6 +33,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.talend.repository.RepositoryPlugin;
+import org.talend.repository.i18n.Messages;
 
 /**
  * DOC tguiu class global comment. Detailled comment <br/>
@@ -220,7 +221,7 @@ public abstract class AbstractForm extends Composite {
                 statusLabel.setText(statusLabelText);
             } else {
                 statusLabel.setBackground(getDisplay().getSystemColor(SWT.COLOR_WIDGET_BACKGROUND));
-                statusLabel.setText("");
+                statusLabel.setText(""); //$NON-NLS-1$
             }
         }
         this.statusLevel = status;

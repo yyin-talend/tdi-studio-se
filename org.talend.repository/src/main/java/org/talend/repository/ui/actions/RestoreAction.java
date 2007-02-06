@@ -51,7 +51,7 @@ public class RestoreAction extends AContextualAction {
         this.setText(Messages.getString("RestoreAction.action.title")); //$NON-NLS-1$
         this.setToolTipText(Messages.getString("RestoreAction.action.toolTipText")); //$NON-NLS-1$
         this.setImageDescriptor(ImageProvider.getImageDesc(EImage.RESTORE_ICON));
-        this.setActionDefinitionId("restoreItem");
+        this.setActionDefinitionId("restoreItem"); //$NON-NLS-1$
     }
 
     public void run() {

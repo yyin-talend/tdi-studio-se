@@ -29,6 +29,7 @@ import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.utils.workbench.resources.ResourceUtils;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.BinRepositoryNode;
 import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
@@ -122,11 +123,14 @@ public class MoveObjectAction {
 
     public void execute(RepositoryNode sourceNode, RepositoryNode targetNode) throws Exception {
         if (!validateAction(sourceNode, targetNode)) {
-            log.debug("Cannot move [" + sourceNode + "] to " + targetNode);
+            // i18n
+            // log.debug("Cannot move [" + sourceNode + "] to " + targetNode);
+            String str[] = new String[] { sourceNode.toString(), targetNode.toString() };
+            log.debug(Messages.getString("MoveObjectAction.0", str)); //$NON-NLS-1$
             return;
         }
 
-        IPath targetPath = (targetNode == null ? new Path("") : RepositoryNodeUtilities.getPath(targetNode));
+        IPath targetPath = (targetNode == null ? new Path("") : RepositoryNodeUtilities.getPath(targetNode)); //$NON-NLS-1$
         IPath sourcePath = RepositoryNodeUtilities.getPath(sourceNode);
 
         IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();

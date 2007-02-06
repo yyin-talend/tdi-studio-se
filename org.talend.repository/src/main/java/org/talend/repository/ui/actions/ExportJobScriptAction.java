@@ -31,6 +31,7 @@ import org.eclipse.ui.IWorkbench;
 import org.talend.commons.ui.image.EImage;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNode.EProperties;
 import org.talend.repository.ui.wizards.exportjob.JobScriptsExportWizard;
@@ -43,7 +44,7 @@ import org.talend.repository.ui.wizards.exportjob.JobScriptsExportWizard;
  */
 public final class ExportJobScriptAction extends AContextualAction {
 
-    private static final String EXPORTJOBSCRIPTS = "Export Job Scripts";
+    private static final String EXPORTJOBSCRIPTS = "Export Job Scripts"; //$NON-NLS-1$
 
     /*
      * (non-Javadoc)

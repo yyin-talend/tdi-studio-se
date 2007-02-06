@@ -339,7 +339,7 @@ public class XPathProposalProvider implements IContentProposalProvider {
     private String extractLastWord(String currentExpr) {
         int size = currentExpr.length();
         for (int i = size - 1; i > 0; i--) {
-            if (!("" + currentExpr.charAt(i)).matches("\\w")) {
+            if (!("" + currentExpr.charAt(i)).matches("\\w")) { //$NON-NLS-1$ //$NON-NLS-2$
                 return currentExpr.substring(i + 1, currentExpr.length());
             }
         }
@@ -359,15 +359,15 @@ public class XPathProposalProvider implements IContentProposalProvider {
         String xPathExpression;
         String slash = SLASH;
 
-        if (currentExpr.trim().equals("") && isRelative) {
-            currentExpr = ".";
+        if (currentExpr.trim().equals("") && isRelative) { //$NON-NLS-1$
+            currentExpr = "."; //$NON-NLS-1$
         }
 
         if (currentExpr.endsWith(SLASH)) {
             slash = EMPTY_STRING;
         }
 
-        xPathExpression = currentExpr + slash + "*" + " | " + currentExpr + slash + "@*";
+        xPathExpression = currentExpr + slash + "*" + " | " + currentExpr + slash + "@*"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         // System.out.println("xPathExpression='"+xPathExpression+"'");
         return xPathExpression;
     }
