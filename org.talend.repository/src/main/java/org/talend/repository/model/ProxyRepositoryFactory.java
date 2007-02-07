@@ -718,6 +718,10 @@ public class ProxyRepositoryFactory implements IProxyRepositoryFactory {
      * @see org.talend.repository.model.IRepositoryFactory#logOnProject(org.talend.core.model.general.Project)
      */
     public void logOnProject(Project project) throws PersistenceException, LoginException {
+        IMigrationToolService service = (IMigrationToolService) GlobalServiceRegister.getDefault().getService(
+                IMigrationToolService.class);
+        service.executeProjectTasks(project);
+
         getRepositoryContext().setProject(project);
         this.repositoryFactoryFromProvider.logOnProject(project);
 
@@ -725,11 +729,6 @@ public class ProxyRepositoryFactory implements IProxyRepositoryFactory {
         // log.info(getRepositoryContext().getUser() + " logged on " + getRepositoryContext().getProject());
         String str[] = new String[] { getRepositoryContext().getUser() + "", getRepositoryContext().getProject() + "" }; //$NON-NLS-1$ //$NON-NLS-2$        
         log.info(Messages.getString("ProxyRepositoryFactory.log.loggedOn", str)); //$NON-NLS-1$
-
-        IMigrationToolService service = (IMigrationToolService) GlobalServiceRegister.getDefault().getService(
-                IMigrationToolService.class);
-        service.executeProjectTasks(project);
-
     }
 
     /*
