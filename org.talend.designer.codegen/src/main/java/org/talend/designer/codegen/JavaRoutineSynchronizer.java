@@ -72,6 +72,12 @@ public class JavaRoutineSynchronizer implements IRoutineSynchronizer {
             RoutineItem routineItem = (RoutineItem) routine.getProperty().getItem();
             syncRoutine(routineItem);
         }
+        
+//        
+//        for (IRepositoryObject routine : routines) {
+//            RoutineItem routineItem = (RoutineItem) routine.getProperty().getItem();
+//            syncRoutine(routineItem);
+//        }
     }
 
     /*

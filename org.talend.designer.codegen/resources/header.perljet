@@ -87,14 +87,16 @@ tStatCatcher_1_subprocess(
     }
 %>
 if (defined $opt{context}) {
-#     print(
-#         'tsInfo>  Running process with context: ',
-#         $opt{context},
-#         ' (./tUser/parameters_', $opt{context}, '.pl)',
-#         "\n\n"
-#     );
+    my $context_filename =
+        $_globals{project_name}
+        .'.job_'.$_globals{job_name}
+        .'_'.$opt{context}
+        .'.pl'
+    ;
 
-    require $opt{context};
+    use FindBin;
+    use lib $FindBin::Bin;
+    require $context_filename;
 }
 
 <%for (String routine : CodeGeneratorRoutine.getRoutineName()) {%>
