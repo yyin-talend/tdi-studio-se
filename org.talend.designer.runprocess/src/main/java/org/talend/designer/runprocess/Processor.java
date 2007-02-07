@@ -117,10 +117,11 @@ public class Processor {
         concreteProcessor.generateCode(context, statisticsPort != NO_STATISTICS, tracePort != NO_TRACES, true);
 
         IPath absCodePath = concreteProcessor.getCodeProject().getLocation().append(concreteProcessor.getCodePath());
-        IPath absContextPath = concreteProcessor.getCodeProject().getLocation().append(
-                concreteProcessor.getContextPath());
+        // MHIRT : Remove Context path in job call, only build with a context Name
+//        IPath absContextPath = concreteProcessor.getCodeProject().getLocation().append(
+//                concreteProcessor.getContextPath());
 
-        String libOption = null, libCtxOption = null, moduleDirectoryOption = null;
+        String libOption = null, moduleDirectoryOption = null; //libCtxOption = null, MHIRT remove context interpereter option
 
         if (concreteProcessor instanceof PerlProcessor) {
             String perlLib;
@@ -131,7 +132,8 @@ public class Processor {
             }
             libOption = perlLib != null && perlLib.length() > 0 ? "-I" + perlLib : ""; //$NON-NLS-1$ //$NON-NLS-2$
 
-            libCtxOption = "-I" + absContextPath.removeLastSegments(1).toOSString(); //$NON-NLS-1$ 
+            // MHIRT remove context interpereter option
+            //libCtxOption = "-I" + absContextPath.removeLastSegments(1).toOSString(); //$NON-NLS-1$ 
             // Added by ftang
 
             try {
@@ -143,10 +145,11 @@ public class Processor {
         }
 
         if (watchParam == null) {
-            return exec(absCodePath, absContextPath, Level.INFO, libOption, libCtxOption, moduleDirectoryOption,
+            // MHIRT only works with context name and remove context interpereter option
+            return exec(absCodePath, context.getName(), Level.INFO, libOption, moduleDirectoryOption,
                     statisticsPort, tracePort);
         }
-        return exec(absCodePath, absContextPath, Level.INFO, libOption, libCtxOption, moduleDirectoryOption,
+        return exec(absCodePath, context.getName(), Level.INFO, libOption, moduleDirectoryOption,
                 statisticsPort, tracePort, watchParam);
     }
 
@@ -221,18 +224,18 @@ public class Processor {
      * Code Execution, used, when you know where the code stands.
      * 
      * @param Perl Absolute Code Path
-     * @param Context path
+     * @param Context Name
      * @param Port Statistics
      * @param Port Trace
      * @return Command Process Launched
      * @throws ProcessorException
      */
-    public static Process exec(IPath absCodePath, IPath absContextPath, Level level, String perlInterpreterLibOption,
-            String perlInterpreterLibCtxOption, String perlModuleDirectoryOption, int statOption, int traceOption,
+    public static Process exec(IPath absCodePath, String contextName, Level level, String perlInterpreterLibOption,
+            String perlModuleDirectoryOption, int statOption, int traceOption,
             String... codeOptions) throws ProcessorException {
 
-        String[] cmd = getCommandLine(absCodePath, absContextPath, perlInterpreterLibOption,
-                perlInterpreterLibCtxOption, perlModuleDirectoryOption, statOption, traceOption, codeOptions);
+        String[] cmd = getCommandLine(absCodePath, contextName, perlInterpreterLibOption,
+                perlModuleDirectoryOption, statOption, traceOption, codeOptions);
 
         logCommandLine(cmd, level);
         try {
@@ -277,7 +280,7 @@ public class Processor {
      * DOC smallet Comment method "getCommandLine".
      * 
      * @param absCodePath
-     * @param absContextPath
+     * @param contextName
      * @param perlInterpreterLibOption
      * @param perlInterpreterLibCtxOption
      * @param statOption
@@ -286,8 +289,8 @@ public class Processor {
      * @return
      * @throws ProcessorException
      */
-    public static String[] getCommandLine(IPath absCodePath, IPath absContextPath, String perlInterpreterLibOption,
-            String perlInterpreterLibCtxOption, String perlModuleDirectoryOption, int statOption, int traceOption,
+    public static String[] getCommandLine(IPath absCodePath, String contextName, String perlInterpreterLibOption,
+            String perlModuleDirectoryOption, int statOption, int traceOption,
             String... codeOptions) {
 
         assert (absCodePath != null);
@@ -315,6 +318,7 @@ public class Processor {
             } else {
                 IPreferenceStore prefStore = CorePlugin.getDefault().getPreferenceStore();
                 String perlInterpreter = prefStore.getString(ITalendCorePrefConstants.PERL_INTERPRETER);
+                //String perlInterpreter = ResourcesPlugin.getWorkspace().getRoot(). getFullPath().toOSString()+"/perl.exe";
                 if (perlInterpreter == null || perlInterpreter.length() == 0) {
                     throw new ProcessorException(Messages.getString("Processor.configurePerl")); //$NON-NLS-1$
                 }
@@ -332,9 +336,10 @@ public class Processor {
             if (perlInterpreterLibOption != null && perlInterpreterLibOption.length() > 0) {
                 cmd = (String[]) ArrayUtils.add(cmd, perlInterpreterLibOption);
             }
-            if (perlInterpreterLibCtxOption != null && perlInterpreterLibCtxOption.length() > 0) {
-                cmd = (String[]) ArrayUtils.add(cmd, perlInterpreterLibCtxOption);
-            }
+//          // MHIRT remove context interpereter option
+//            if (perlInterpreterLibCtxOption != null && perlInterpreterLibCtxOption.length() > 0) {
+//                cmd = (String[]) ArrayUtils.add(cmd, perlInterpreterLibCtxOption);
+//            }
             // Added by ftang.
             if (perlModuleDirectoryOption != null && perlModuleDirectoryOption.length() > 0) {
                 cmd = (String[]) ArrayUtils.add(cmd, perlModuleDirectoryOption);
@@ -343,13 +348,13 @@ public class Processor {
             if (absCodePath != null) {
                 cmd = (String[]) ArrayUtils.add(cmd, absCodePath.toOSString());
             }
-            if (absContextPath != null) {
-                cmd = (String[]) ArrayUtils.add(cmd, CTX_ARG + absContextPath.toOSString());
-            }
         } else {
             cmd = ((JavaProcessor) processor).getCommandLine();
         }
         cmd = (String[]) ArrayUtils.addAll(cmd, codeOptions);
+        if (contextName != null) {
+            cmd = (String[]) ArrayUtils.add(cmd, CTX_ARG + contextName);
+        }
         if (statOption != -1) {
             cmd = (String[]) ArrayUtils.add(cmd, STAT_PORT_ARG + statOption);
         }

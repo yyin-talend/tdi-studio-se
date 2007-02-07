@@ -117,7 +117,7 @@ public class PerlProcessor implements IProcessor {
         filePrefix += "job_"; //$NON-NLS-1$
         filePrefix += filenameFromLabel ? escapeFilename(process.getLabel()) : process.getId();
         codePath = new Path(filePrefix + ".pl"); //$NON-NLS-1$
-        contextPath = new Path(filePrefix + "_" + escapeFilename(context.getName()) +".pl"); //$NON-NLS-1$ //$NON-NLS-2$
+        contextPath = new Path(filePrefix + "_" + escapeFilename(context.getName()) + ".pl"); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     public void generateCode(IContext context, boolean statistics, boolean trace, boolean perlProperties)
@@ -137,8 +137,8 @@ public class PerlProcessor implements IProcessor {
                 String currentPerlProject = project.getTechnicalLabel();
                 String perlContext = getCodeContext();
 
-                codeGen = service.createCodeGenerator(process, statistics, trace, perlInterpreter, perlLib, perlContext,
-                        currentPerlProject);
+                codeGen = service.createCodeGenerator(process, statistics, trace, perlInterpreter, perlLib,
+                        perlContext, currentPerlProject);
 
             } else {
                 codeGen = service.createCodeGenerator(process, statistics, trace);
@@ -168,7 +168,7 @@ public class PerlProcessor implements IProcessor {
                 String[] nodeNames = new String[breakpointNodes.size()];
                 int pos = 0;
                 for (INode node : breakpointNodes) {
-                    nodeNames[pos++] = "["+node.getUniqueName()+" main ] start"; //$NON-NLS-1$ //$NON-NLS-2$
+                    nodeNames[pos++] = "[" + node.getUniqueName() + " main ] start"; //$NON-NLS-1$ //$NON-NLS-2$
                 }
                 int[] lineNumbers = getLineNumbers(codeFile, nodeNames);
                 setBreakpoints(codeFile, lineNumbers);
@@ -355,7 +355,8 @@ public class PerlProcessor implements IProcessor {
         codeFile.deleteMarkers(perlBrekPointMarker, true, IResource.DEPTH_ZERO);
 
         IExtensionRegistry registry = Platform.getExtensionRegistry();
-        IConfigurationElement[] configElems = registry.getConfigurationElementsFor("org.eclipse.debug.core.breakpoints"); //$NON-NLS-1$
+        IConfigurationElement[] configElems = registry
+                .getConfigurationElementsFor("org.eclipse.debug.core.breakpoints"); //$NON-NLS-1$
         IConfigurationElement perlBreakConfigElem = null;
         for (IConfigurationElement elem : configElems) {
             if (elem.getAttribute("id").equals("perlLineBreakpoint")) { //$NON-NLS-1$ //$NON-NLS-2$
@@ -407,7 +408,7 @@ public class PerlProcessor implements IProcessor {
      * @see org.talend.designer.runprocess.IProcessor#getProcessorType()
      */
     public String getProcessorType() {
-         return ECodeLanguage.PERL.getName();
+        return ECodeLanguage.PERL.getName();
     }
 
     /*
@@ -430,12 +431,12 @@ public class PerlProcessor implements IProcessor {
 
     }
 
-    public static int exec(StringBuffer out, StringBuffer err, IPath absCodePath, IPath absContextPath, Level level,
-            String perlInterpreterLibOption, String perlInterpreterLibCtxOption, String perlModuleDirectoryOption,
-            int statOption, int traceOption, String... codeOptions) throws ProcessorException {
+    public static int exec(StringBuffer out, StringBuffer err, IPath absCodePath, String contextName, Level level,
+            String perlInterpreterLibOption, String perlModuleDirectoryOption, int statOption, int traceOption,
+            String... codeOptions) throws ProcessorException {
 
-        String[] cmd = Processor.getCommandLine(absCodePath, absContextPath, perlInterpreterLibOption,
-                perlInterpreterLibCtxOption, perlModuleDirectoryOption, statOption, traceOption, codeOptions);
+        String[] cmd = Processor.getCommandLine(absCodePath, contextName, perlInterpreterLibOption,
+                perlModuleDirectoryOption, statOption, traceOption, codeOptions);
 
         Processor.logCommandLine(cmd, level);
         try {

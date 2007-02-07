@@ -73,15 +73,15 @@ public class RunProcessService implements IRunProcessService {
      * (non-Javadoc)
      * 
      * @see org.talend.designer.runprocess.IRunProcessFactory#exec(java.lang.StringBuffer, java.lang.StringBuffer,
-     * org.eclipse.core.runtime.IPath, org.eclipse.core.runtime.IPath, org.apache.log4j.Level, java.lang.String,
-     * java.lang.String, int, int, java.lang.String)
+     * org.eclipse.core.runtime.IPath, java.lang.String, org.apache.log4j.Level, java.lang.String,
+     * int, int, java.lang.String)
      */
-    public int perlExec(StringBuffer out, StringBuffer err, IPath absCodePath, IPath absContextPath, Level level,
-            String perlInterpreterLibOption, String perlInterpreterLibCtxOption, String perlModuleDirectoryOption,
+    public int perlExec(StringBuffer out, StringBuffer err, IPath absCodePath, String contextName, Level level,
+            String perlInterpreterLibOption, String perlModuleDirectoryOption,
             int statOption, int traceOption, String... codeOptions) throws ProcessorException {
 
-        return PerlProcessor.exec(out, err, absCodePath, absContextPath, level, perlInterpreterLibOption,
-                perlInterpreterLibCtxOption, perlModuleDirectoryOption, statOption, traceOption, codeOptions);
+        return PerlProcessor.exec(out, err, absCodePath, contextName, level, perlInterpreterLibOption,
+                perlModuleDirectoryOption, statOption, traceOption, codeOptions);
 
     }
 

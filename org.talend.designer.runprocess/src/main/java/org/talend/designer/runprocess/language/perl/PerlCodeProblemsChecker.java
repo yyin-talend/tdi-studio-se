@@ -208,7 +208,7 @@ public class PerlCodeProblemsChecker extends CodeProblemsChecker {
         String expressionEscapedQuoted = "\"" + expressionEscaped + "\""; //$NON-NLS-1$ //$NON-NLS-2$
         // System.out.println(expressionEscapedQuoted);
         try {
-            status = PerlProcessor.exec(out, err, null, null, Level.TRACE, "-ce", expressionEscapedQuoted, "", -1, -1, //$NON-NLS-1$ //$NON-NLS-2$
+            status = PerlProcessor.exec(out, err, null, null, Level.TRACE, "-ce", expressionEscapedQuoted, -1, -1, //$NON-NLS-1$ //$NON-NLS-2$
                     new String[0]);
         } catch (ProcessorException e) {
             ExceptionHandler.process(e);
@@ -245,7 +245,7 @@ public class PerlCodeProblemsChecker extends CodeProblemsChecker {
         // System.out.println(expression);
         try {
             status = PerlProcessor.exec(out, err, null, null, 
-                    Level.TRACE, "-c", file.getAbsolutePath(), "", -1, -1, //$NON-NLS-1$ //$NON-NLS-2$
+                    Level.TRACE, "-c", file.getAbsolutePath(), -1, -1, //$NON-NLS-1$ //$NON-NLS-2$
                     new String[0]);
         } catch (ProcessorException e) {
             ExceptionHandler.process(e);
