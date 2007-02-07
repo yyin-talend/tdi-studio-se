@@ -27,8 +27,12 @@ import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -42,7 +46,6 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Group;
-import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.internal.wizards.datatransfer.DataTransferMessages;
 import org.eclipse.ui.internal.wizards.datatransfer.WizardFileSystemResourceExportPage1;
 import org.talend.core.CorePlugin;
@@ -134,6 +137,7 @@ public class JobScriptsExportWizardPage extends WizardFileSystemResourceExportPa
     protected JobScriptsExportWizardPage(String name, IStructuredSelection selection) {
         super(name, null);
         manager = createJobScriptsManager();
+
         RepositoryNode[] nodes = (RepositoryNode[]) selection.toList().toArray(new RepositoryNode[selection.size()]);
 
         List<ExportFileResource> list = new ArrayList<ExportFileResource>();
@@ -146,7 +150,8 @@ public class JobScriptsExportWizardPage extends WizardFileSystemResourceExportPa
                 IRepositoryObject repositoryObject = node.getObject();
                 if (repositoryObject.getProperty().getItem() instanceof ProcessItem) {
                     ProcessItem processItem = (ProcessItem) repositoryObject.getProperty().getItem();
-                    ExportFileResource resource = new ExportFileResource(processItem, processItem.getProperty().getLabel());
+                    ExportFileResource resource = new ExportFileResource(processItem, processItem.getProperty()
+                            .getLabel());
                     list.add(resource);
                 }
             }
@@ -178,8 +183,8 @@ public class JobScriptsExportWizardPage extends WizardFileSystemResourceExportPa
 
     private JobScriptsManager createJobScriptsManager() {
 
-        ECodeLanguage language = ((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY))
-                .getProject().getLanguage();
+        ECodeLanguage language = ((RepositoryContext) CorePlugin.getContext().getProperty(
+                Context.REPOSITORY_CONTEXT_KEY)).getProject().getLanguage();
 
         switch (language) {
         case PERL:
@@ -201,6 +206,7 @@ public class JobScriptsExportWizardPage extends WizardFileSystemResourceExportPa
     public JobScriptsExportWizardPage(IStructuredSelection selection) {
         this("jobscriptsExportPage1", selection); //$NON-NLS-1$
         setDescription(Messages.getString("JobScriptsExportWizardPage.ExportJob")); //$NON-NLS-1$
+        setTitle(DataTransferMessages.ArchiveExport_exportTitle);
     }
 
     /**
@@ -445,15 +451,18 @@ public class JobScriptsExportWizardPage extends WizardFileSystemResourceExportPa
         if (!ensureTargetIsValid()) {
             return false;
         }
+        String topFolder = getRootFolderName();
 
         List<ExportFileResource> resourcesToExport = getExportResources();
+        setTopFolder(resourcesToExport, topFolder);
 
         // Save dirty editors if possible but do not stop if not all are saved
         saveDirtyEditors();
         // about to invoke the operation so save our state
         saveWidgetValues();
         // boolean ok =executeExportOperation(new ArchiveFileExportOperationFullPath(process));
-        boolean ok = executeExportOperation(new ArchiveFileExportOperationFullPath(resourcesToExport, getDestinationValue())); // path
+        boolean ok = executeExportOperation(new ArchiveFileExportOperationFullPath(resourcesToExport,
+                getDestinationValue())); // path
         // can
         // like
         // name/name
@@ -461,6 +470,40 @@ public class JobScriptsExportWizardPage extends WizardFileSystemResourceExportPa
             manager.deleteTempFiles();
         }
         return ok;
+    }
+
+    /**
+     * Returns the root folder name.
+     * 
+     * @return
+     */
+    private String getRootFolderName() {
+        IPath path = new Path(this.getDestinationValue());
+        String subjectString = path.lastSegment();
+        Pattern regex = Pattern.compile("(.*)(?=(\\.(tar|zip))\\b)", Pattern.CANON_EQ | Pattern.CASE_INSENSITIVE
+                | Pattern.UNICODE_CASE);
+        Matcher regexMatcher = regex.matcher(subjectString);
+        if (regexMatcher.find()) {
+            subjectString = regexMatcher.group(0);
+        }
+        
+        return subjectString.trim();
+    }
+
+    private void setTopFolder(List<ExportFileResource> resourcesToExport, String topFolder) {
+        for (ExportFileResource fileResource : resourcesToExport) {
+            String directory = fileResource.getDirectoryName();
+            fileResource.setDirectoryName(topFolder + "/" + directory);
+        }
+    }
+
+    /**
+     * Answer the string to display in self as the destination type.
+     * 
+     * @return java.lang.String
+     */
+    protected String getDestinationLabel() {
+        return DataTransferMessages.ArchiveExport_destinationLabel;
     }
 
     /**
@@ -616,3 +659,4 @@ public class JobScriptsExportWizardPage extends WizardFileSystemResourceExportPa
         return ""; //$NON-NLS-1$
     }
 }
+ 
