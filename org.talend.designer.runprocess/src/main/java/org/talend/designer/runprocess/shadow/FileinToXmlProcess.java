@@ -125,7 +125,7 @@ public class FileinToXmlProcess<K extends FileInputNode> extends RepositoryObjec
      * @see org.talend.core.model.repository.IRepositoryProcess#getLabel()
      */
     public String getLabel() {
-        return "Shadow FileInput to XmlOutput"; //$NON-NLS-1$
+        return "ShadowFileInputToXmlOutput"; //$NON-NLS-1$
     }
 
     /**
