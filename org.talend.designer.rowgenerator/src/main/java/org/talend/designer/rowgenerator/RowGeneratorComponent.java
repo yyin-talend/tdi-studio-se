@@ -46,7 +46,7 @@ import org.talend.core.model.process.Problem;
 import org.talend.core.model.temp.ECodePart;
 import org.talend.designer.codegen.ICodeGeneratorService;
 import org.talend.designer.rowgenerator.external.data.ExternalRowGeneratorData;
-import org.talend.designer.rowgenerator.shadow.RowGenPreivewCodeMain;
+import org.talend.designer.rowgenerator.shadow.RowGenPreviewCodeMain;
 import org.talend.designer.rowgenerator.utils.problems.ProblemsAnalyser;
 
 /**
@@ -67,7 +67,7 @@ public class RowGeneratorComponent extends AbstractExternalNode {
 
     private ExternalRowGeneratorData externalData;
 
-    private RowGenPreivewCodeMain codeGenMain;
+    private RowGenPreviewCodeMain codeGenMain;
 
     private String number;
 
@@ -79,7 +79,7 @@ public class RowGeneratorComponent extends AbstractExternalNode {
     public void initialize() {
         initRowGeneratorMain();
         rowGeneratorMain.loadInitialParamters();
-        codeGenMain = new RowGenPreivewCodeMain(this);
+        codeGenMain = new RowGenPreviewCodeMain(this);
     }
 
     /*
@@ -199,9 +199,9 @@ public class RowGeneratorComponent extends AbstractExternalNode {
         return this.rowGeneratorMain;
     }
 
-    public RowGenPreivewCodeMain getCodeGenMain() {
+    public RowGenPreviewCodeMain getCodeGenMain() {
         if (codeGenMain == null) {
-            this.codeGenMain = new RowGenPreivewCodeMain(this);
+            this.codeGenMain = new RowGenPreviewCodeMain(this);
         }
         return this.codeGenMain;
     }

@@ -44,7 +44,7 @@ import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.Property;
-import org.talend.core.model.temp.ECodeLanguage;
+import org.talend.core.language.ECodeLanguage;
 import org.talend.designer.rowgenerator.RowGeneratorComponent;
 import org.talend.designer.rowgenerator.RowGeneratorPlugin;
 import org.talend.designer.rowgenerator.data.Parameter;
@@ -60,7 +60,7 @@ import org.talend.designer.runprocess.Processor;
  * $Id: RowGenPreivewCodeMain.java,v 1.3 2007/02/02 07:59:31 pub Exp $
  * 
  */
-public class RowGenPreivewCodeMain {
+public class RowGenPreviewCodeMain {
 
 	public static final String PREVIEW = "Preview"; //$NON-NLS-1$
 
@@ -83,7 +83,7 @@ public class RowGenPreivewCodeMain {
 	/**
 	 * qzhang RowGenPreivewCodeMain constructor comment.
 	 */
-	public RowGenPreivewCodeMain(RowGeneratorComponent component) {
+	public RowGenPreviewCodeMain(RowGeneratorComponent component) {
 		this.component = component;
 		results = new ArrayList<List<String>>();
 	}
