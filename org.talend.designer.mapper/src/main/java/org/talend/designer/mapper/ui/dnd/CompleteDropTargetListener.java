@@ -36,6 +36,7 @@ import org.talend.commons.ui.utils.TableUtils;
 import org.talend.commons.ui.ws.WindowSystem;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.MetadataColumn;
+import org.talend.core.model.metadata.MetadataTalendType;
 import org.talend.core.ui.metadata.editor.MetadataTableEditorView;
 import org.talend.designer.mapper.language.ILanguage;
 import org.talend.designer.mapper.language.LanguageProvider;
@@ -462,7 +463,7 @@ public class CompleteDropTargetListener extends DefaultDropTargetListener {
 
         uiManager.parseAllExpressionsForAllTables();
         mapperManager.getProblemsManager().checkProblemsForAllEntriesOfAllTables(true);
-        
+
         uiManager.selectLinks(dataMapTableViewTarget, selectedEntries, targetTableIsFiltersTable, true);
         tableViewerCreatorTarget.getTable().setFocus();
 
@@ -482,7 +483,7 @@ public class CompleteDropTargetListener extends DefaultDropTargetListener {
      * @param metadataColumnsBeingAdded
      * @param metadataEditorEvent
      */
-    @SuppressWarnings("unchecked") //$NON-NLS-1$
+    @SuppressWarnings("unchecked")//$NON-NLS-1$
     private void updateExpressionsOfInsertedEntries(ILanguage currentLanguage, MetadataTableEditorView metadataEditorView,
             int currentIndex, ArrayList<ITableEntry> sourceEntriesOfEntriesBeingAdded, boolean targetTableIsConstraintsTable,
             TableViewerCreator tableViewerCreatorTarget, ArrayList<IMetadataColumn> metadataColumnsBeingAdded
@@ -531,7 +532,7 @@ public class CompleteDropTargetListener extends DefaultDropTargetListener {
 
     }
 
-    @SuppressWarnings("unchecked") //$NON-NLS-1$
+    @SuppressWarnings("unchecked")//$NON-NLS-1$
     private ITableEntry getNextEntryTarget(ITableEntry currentEntryTarget, TableViewerCreator tableViewerCreatorTarget) {
         // mapperManager.get
         // currentEntryTarget.getParent()
@@ -568,12 +569,11 @@ public class CompleteDropTargetListener extends DefaultDropTargetListener {
     }
 
     private void insertNewOutputEntryFromVarEntry(ArrayList<ITableEntry> sources, ArrayList<IMetadataColumn> metadataColumnsBeingAdded,
-    // MetadataEditorEvent metadataEditorEvent,
             ITableEntry tableEntrySource, String columnName) {
         MetadataColumn metadataColumn = new MetadataColumn();
         metadataColumn.setLabel(columnName);
+        metadataColumn.setTalendType(((VarTableEntry) tableEntrySource).getType());
         metadataColumnsBeingAdded.add(metadataColumn);
-        // metadataEditorEvent.entries.add(metadataColumn);
         sources.add(tableEntrySource);
     }
 
