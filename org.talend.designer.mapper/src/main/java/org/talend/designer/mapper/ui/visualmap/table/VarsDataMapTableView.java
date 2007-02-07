@@ -146,7 +146,7 @@ public class VarsDataMapTableView extends DataMapTableView {
 
             String[] arrayTalendTypes = new String[0];
             try {
-                arrayTalendTypes = MetadataTalendType.getTalendTypes();
+                arrayTalendTypes = MetadataTalendType.getTalendTypesLabels();
             } catch (NoClassDefFoundError e) {
                 // shouln't be happend
                 e.printStackTrace();
