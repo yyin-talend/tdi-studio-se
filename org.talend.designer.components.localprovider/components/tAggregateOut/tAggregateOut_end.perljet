@@ -116,6 +116,12 @@ our @<%=destination%>;
             else if (function.equals("max")) {
                 expression.append("{max}");
             }
+            else if (function.equals("first")) {
+                expression.append("{first}");
+            }
+            else if (function.equals("last")) {
+                expression.append("{last}");
+            }
 %>
 <%=indent%>    $row[<%=indexName%>] = <%=expression%>;
 <%

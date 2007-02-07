@@ -77,6 +77,8 @@
             <ITEM NAME="MAX"    VALUE="max"/>
             <ITEM NAME="AVG"    VALUE="avg"/>
             <ITEM NAME="SUM"    VALUE="sum"/>
+            <ITEM NAME="FIRST"    VALUE="first"/>
+            <ITEM NAME="LAST"    VALUE="last"/>
           </ITEMS>
         </ITEM>
         <ITEM NAME="INPUT_COLUMN" FIELD="PREV_COLUMN_LIST" />

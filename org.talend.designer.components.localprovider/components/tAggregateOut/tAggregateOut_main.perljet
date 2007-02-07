@@ -135,6 +135,16 @@ if (<%=operationString%>{max} < <%=curval%>) {
 }
 <%
             }
+            else if (function.equals("first")) {
+%>
+<%=operationString%>{first} = <%=curval%> unless(exists(<%=operationString%>{first})) ;
+<%
+            }
+            else if (function.equals("last")) {
+%>
+<%=operationString%>{last} = <%=curval%> ;
+<%
+            }
         }
     }
 }
