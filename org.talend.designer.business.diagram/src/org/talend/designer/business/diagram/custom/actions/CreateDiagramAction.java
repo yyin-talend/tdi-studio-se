@@ -9,7 +9,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Shell;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.ui.images.BusinessImageProvider;
+import org.talend.core.ui.images.OverlayImageProvider;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.designer.business.diagram.i18n.Messages;
 import org.talend.repository.model.RepositoryNode;
@@ -31,7 +31,7 @@ public class CreateDiagramAction extends AContextualAction {
     public CreateDiagramAction() {
         super();
         Image folderImg = ImageProvider.getImage(ECoreImage.BUSINESS_PROCESS_ICON);
-        this.setImageDescriptor(BusinessImageProvider.getImageWithNew(folderImg));
+        this.setImageDescriptor(OverlayImageProvider.getImageWithNew(folderImg));
         setText(Messages.getString("CreateDiagramAction.CreateBusinessModel")); //$NON-NLS-1$
     }
 
