@@ -29,8 +29,10 @@ import org.apache.commons.lang.ArrayUtils;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationType;
@@ -317,8 +319,8 @@ public class Processor {
                 interpreter = javaInterpreter;
             } else {
                 IPreferenceStore prefStore = CorePlugin.getDefault().getPreferenceStore();
+                
                 String perlInterpreter = prefStore.getString(ITalendCorePrefConstants.PERL_INTERPRETER);
-                //String perlInterpreter = ResourcesPlugin.getWorkspace().getRoot(). getFullPath().toOSString()+"/perl.exe";
                 if (perlInterpreter == null || perlInterpreter.length() == 0) {
                     throw new ProcessorException(Messages.getString("Processor.configurePerl")); //$NON-NLS-1$
                 }
