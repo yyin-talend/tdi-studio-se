@@ -36,7 +36,7 @@ import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.DatabaseConnectionItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.ui.images.BusinessImageProvider;
+import org.talend.core.ui.images.OverlayImageProvider;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.i18n.Messages;
@@ -67,7 +67,7 @@ public class CreateConnectionAction extends AbstractCreateAction {
 
     ImageDescriptor defaultImage = ImageProvider.getImageDesc(ECoreImage.METADATA_CONNECTION_ICON);
 
-    ImageDescriptor createImage = BusinessImageProvider.getImageWithNew(ImageProvider
+    ImageDescriptor createImage = OverlayImageProvider.getImageWithNew(ImageProvider
             .getImage(ECoreImage.METADATA_CONNECTION_ICON));
 
     public CreateConnectionAction() {

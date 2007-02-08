@@ -30,7 +30,7 @@ import org.eclipse.ui.PlatformUI;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.model.properties.PositionalFileConnectionItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.ui.images.BusinessImageProvider;
+import org.talend.core.ui.images.OverlayImageProvider;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IProxyRepositoryFactory;
@@ -61,7 +61,7 @@ public class CreateFilePositionalAction extends AbstractCreateAction {
 
     ImageDescriptor defaultImage = ImageProvider.getImageDesc(ECoreImage.METADATA_FILE_POSITIONAL_ICON);
 
-    ImageDescriptor createImage = BusinessImageProvider.getImageWithNew(ImageProvider
+    ImageDescriptor createImage = OverlayImageProvider.getImageWithNew(ImageProvider
             .getImage(ECoreImage.METADATA_FILE_POSITIONAL_ICON));
 
     /**

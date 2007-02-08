@@ -34,7 +34,7 @@ import org.talend.commons.exception.MessageBoxExceptionHandler;
 import org.talend.commons.exception.SystemException;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.ui.images.BusinessImageProvider;
+import org.talend.core.ui.images.OverlayImageProvider;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.RepositoryNode;
@@ -57,7 +57,7 @@ public class CreateRoutineAction extends AbstractRoutineAction {
         setToolTipText(Messages.getString("CreateRoutineAction.toolTipText.createRoutine")); //$NON-NLS-1$
 
         Image folderImg = ImageProvider.getImage(ECoreImage.ROUTINE_ICON);
-        this.setImageDescriptor(BusinessImageProvider.getImageWithNew(folderImg));
+        this.setImageDescriptor(OverlayImageProvider.getImageWithNew(folderImg));
     }
 
     /*

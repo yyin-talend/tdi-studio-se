@@ -32,7 +32,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.ui.images.BusinessImageProvider;
+import org.talend.core.ui.images.OverlayImageProvider;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.RepositoryNode;
@@ -55,7 +55,7 @@ public class CreateFolderAction extends AContextualAction {
         this.setToolTipText(Messages.getString("CreateFolderAction.action.toolTipText")); //$NON-NLS-1$
 
         Image folderImg = ImageProvider.getImage(ECoreImage.FOLDER_CLOSE_ICON);
-        this.setImageDescriptor(BusinessImageProvider.getImageWithNew(folderImg));
+        this.setImageDescriptor(OverlayImageProvider.getImageWithNew(folderImg));
     }
 
     /*

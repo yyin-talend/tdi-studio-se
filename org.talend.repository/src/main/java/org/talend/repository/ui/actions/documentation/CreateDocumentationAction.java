@@ -31,7 +31,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.ui.images.BusinessImageProvider;
+import org.talend.core.ui.images.OverlayImageProvider;
 import org.talend.core.ui.images.CoreImageProvider;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.repository.i18n.Messages;
@@ -59,7 +59,7 @@ public class CreateDocumentationAction extends AContextualAction {
         setText(Messages.getString("CreateDocumentationAction.createDocActionText.addDoc")); //$NON-NLS-1$
         setToolTipText(Messages.getString("CreateDocumentationAction.createDocActionTipText.addDocItem")); //$NON-NLS-1$
         Image folderImg = ImageProvider.getImage(ECoreImage.DOCUMENTATION_ICON);
-        this.setImageDescriptor(BusinessImageProvider.getImageWithNew(folderImg));
+        this.setImageDescriptor(OverlayImageProvider.getImageWithNew(folderImg));
     }
 
     /*
