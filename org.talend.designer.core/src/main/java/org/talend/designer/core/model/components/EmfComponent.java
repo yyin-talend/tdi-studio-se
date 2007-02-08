@@ -648,7 +648,7 @@ public class EmfComponent implements IComponent {
                         if (param.getField() == EParameterFieldType.FILE
                                 || param.getField() == EParameterFieldType.DIRECTORY) {
                             IPath path = Path.fromOSString(defaultValue.getDefaultValue());
-                            defaultValue.setDefaultValue(path.toOSString());
+                            defaultValue.setDefaultValue(path.toPortableString());
                         }
                     } else {
                         defaultValue.setDefaultValue(defaultType.getValue());
