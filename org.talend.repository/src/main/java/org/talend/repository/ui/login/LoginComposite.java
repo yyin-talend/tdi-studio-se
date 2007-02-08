@@ -536,7 +536,6 @@ public class LoginComposite extends Composite {
 
     public User getUser() {
         User toReturn = PropertiesFactory.eINSTANCE.createUser();
-        toReturn.setId(1);
         toReturn.setLogin(user.getText());
         try {
             toReturn.setPassword(PasswordHelper.encryptPasswd(passwordText.getText()));
