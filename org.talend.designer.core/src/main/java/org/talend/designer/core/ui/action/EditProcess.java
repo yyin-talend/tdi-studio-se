@@ -89,6 +89,7 @@ public class EditProcess extends AContextualAction {
                 ((MultiPageTalendEditor) editorPart).setReadOnly(fileEditorInput.setReadOnly(false));
                 page.activate(editorPart);
             }
+            refresh(obj);
         } catch (PartInitException e) {
             MessageBoxExceptionHandler.process(e);
         } catch (PersistenceException e) {

@@ -362,7 +362,8 @@ public class RepositoryView extends ViewPart implements IRepositoryView, ITabbed
     }
 
     public void refresh(Object object) {
-        refresh();
+//        refresh();
+        viewer.refresh(object);
         if (object != null) {
             viewer.setExpandedState(object, true);
         }
