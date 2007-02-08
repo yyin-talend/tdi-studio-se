@@ -38,7 +38,7 @@ import org.talend.designer.rowgenerator.managers.RowGeneratorManager;
 import org.talend.designer.rowgenerator.ui.RowGeneratorUI;
 
 /**
- *  qzhang class global comment. Detailled comment <br/>
+ * qzhang class global comment. Detailled comment <br/>
  * 
  * $Id: RowGenMain.java,v 1.4 2007/01/31 05:20:52 pub Exp $
  * 
@@ -49,8 +49,9 @@ public class RowGenMain {
 
     private RowGeneratorManager generatorManager;
 
+    private RowGeneratorUI generatorUI;
     /**
-     *  qzhang RowGeneratorMain constructor comment.
+     * qzhang RowGeneratorMain constructor comment.
      */
     public RowGenMain(RowGeneratorComponent connector) {
         super();
@@ -59,42 +60,41 @@ public class RowGenMain {
     }
 
     /**
-     *  qzhang Comment method "loadInitialParamters".
+     * qzhang Comment method "loadInitialParamters".
      */
     public void loadInitialParamters() {
 
     }
 
     /**
-     *  qzhang Comment method "loadModelFromInternalData".
+     * qzhang Comment method "loadModelFromInternalData".
      */
     public void loadModelFromInternalData() {
 
     }
 
     /**
-     *  qzhang Comment method "createUI".
+     * qzhang Comment method "createUI".
      * 
      * @param parent
      * @return
      */
     public void createUI(Composite parent) {
-        RowGeneratorUI generatorUI = new RowGeneratorUI(parent, generatorManager);
+        generatorUI = new RowGeneratorUI(parent, generatorManager);
         generatorUI.init();
     }
 
     /**
-     *  qzhang Comment method "getMapperDialogResponse".
+     * qzhang Comment method "getMapperDialogResponse".
      * 
      * @return
      */
     public int getMapperDialogResponse() {
-        // TODO Auto-generated method stub
         return generatorManager.getUiManager().getMapperResponse();
     }
 
     /**
-     *  qzhang Comment method "getMetadataListOut".
+     * qzhang Comment method "getMetadataListOut".
      * 
      * @return
      */
@@ -103,7 +103,7 @@ public class RowGenMain {
     }
 
     /**
-     *  qzhang Comment method "createUI".
+     * qzhang Comment method "createUI".
      * 
      * @param display
      * @return
@@ -132,27 +132,37 @@ public class RowGenMain {
             shell.setBounds(boundsMapper);
         }
         createUI(shell);
+        // shell.addControlListener(new ControlListener() {
+        //
+        // public void controlMoved(ControlEvent e) {
+        // generatorUI.getDataTableView().attachLabelPosition();
+        // }
+        //
+        // public void controlResized(ControlEvent e) {
+        // generatorUI.getDataTableView().attachLabelPosition();
+        //            }
+        //
+        //        });
+        //        shell.moveAbove(null);
         shell.open();
         return shell;
     }
 
     /**
-     *  qzhang Comment method "getMapperManager".
+     * qzhang Comment method "getMapperManager".
      * 
      * @return
      */
     public RowGeneratorManager getMapperManager() {
-        // TODO Auto-generated method stub
         return null;
     }
 
     /**
-     *  qzhang Comment method "isStandAloneMode".
+     * qzhang Comment method "isStandAloneMode".
      * 
      * @return
      */
     public static boolean isStandAloneMode() {
-        // TODO Auto-generated method stub
         return false;
     }
 

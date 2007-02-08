@@ -27,6 +27,8 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.TableEditor;
+import org.eclipse.swt.events.FocusEvent;
+import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Point;
@@ -141,7 +143,7 @@ public class FunParaTableView2 extends AbstractDataTableEditorView<Parameter> {
     }
 
     private void updateData(List<Parameter> params) {
-        
+
         final Table table = this.getTable();
         final TableViewer viewer = this.getTableViewerCreator().getTableViewer();
 
@@ -190,6 +192,21 @@ public class FunParaTableView2 extends AbstractDataTableEditorView<Parameter> {
                         rowGenTableEditor2.getTableViewerCreator().getTableViewer().refresh();
                     }
 
+                });
+                combo.addFocusListener(new FocusListener() {
+
+                    public void focusGained(FocusEvent e) {
+
+                    }
+
+                    /**
+                     * Sent when a control loses focus.
+                     * 
+                     * @param e an event containing information about the focus change
+                     */
+                    public void focusLost(FocusEvent e) {
+                        combo.dispose();
+                    }
                 });
 
             }

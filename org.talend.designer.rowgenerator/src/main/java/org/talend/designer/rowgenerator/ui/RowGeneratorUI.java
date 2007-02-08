@@ -51,7 +51,6 @@ import org.talend.designer.rowgenerator.data.Function;
 import org.talend.designer.rowgenerator.data.FunctionManager;
 import org.talend.designer.rowgenerator.data.Parameter;
 import org.talend.designer.rowgenerator.external.data.ExternalRowGeneratorUiProperties;
-import org.talend.designer.rowgenerator.i18n.Messages;
 import org.talend.designer.rowgenerator.managers.RowGeneratorManager;
 import org.talend.designer.rowgenerator.managers.UIManager;
 import org.talend.designer.rowgenerator.ui.editor.MetadataColumnExt;
@@ -177,6 +176,20 @@ public class RowGeneratorUI {
             }
 
         });
+        // dataTableView.updateHeader(RowGenTableEditor2.NAME_ID_COLUMN,
+        // Messages.getString("RowGenTableEditor2.Key.TitleText"),
+        // false);
+        // dataTableView.getTable().addControlListener(new ControlListener() {
+        //
+        // public void controlMoved(ControlEvent e) {
+        // dataTableView.attachLabelPosition();
+        // }
+        //
+        // public void controlResized(ControlEvent e) {
+        // dataTableView.attachLabelPosition();
+        // }
+        //
+        // });
     }
 
     private void initBackgroundComponents() {
@@ -196,7 +209,7 @@ public class RowGeneratorUI {
         dataTableView = new RowGenTableEditor2(datasFlowViewSashForm, SWT.BORDER, metadataTableEditor, inputReadOnly,
                 !inputReadOnly, externalNode);
         dataTableView.getExtendedTableViewer().setCommandStack(generatorManager.getCommandStack());
-        dataTableView.setTitle(Messages.getString("RowGeneratorUI.SchemaTitle.Text")); //$NON-NLS-1$
+        // dataTableView.
         // resize all the columns but not the table
         for (int i = 0; i < dataTableView.getTable().getColumnCount(); i++) {
             dataTableView.getTable().getColumn(i).pack();
@@ -263,8 +276,7 @@ public class RowGeneratorUI {
      */
     private Function getAvailableFunFromValue(String value, List<Function> funs) {
         Function currentFun = null;
-        if (value != null && !"".equals(value) 
-                && value.startsWith("sub{") && value.endsWith("}")) { //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        if (value != null && !"".equals(value) && value.startsWith("sub{") && value.endsWith("}")) {
             for (Function function : funs) {
                 int indexOf = value.indexOf(function.getName());
                 if (indexOf != -1) {
