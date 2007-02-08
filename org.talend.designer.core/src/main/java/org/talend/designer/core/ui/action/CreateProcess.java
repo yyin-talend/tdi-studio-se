@@ -35,7 +35,7 @@ import org.talend.commons.exception.MessageBoxExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.ui.images.BusinessImageProvider;
+import org.talend.core.ui.images.OverlayImageProvider;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.i18n.Messages;
@@ -63,7 +63,7 @@ public class CreateProcess extends AContextualAction {
         this.setToolTipText(CREATE_LABEL);
         
         Image folderImg = ImageProvider.getImage(ECoreImage.PROCESS_ICON);
-        this.setImageDescriptor(BusinessImageProvider.getImageWithNew(folderImg));
+        this.setImageDescriptor(OverlayImageProvider.getImageWithNew(folderImg));
     }
 
     /*
