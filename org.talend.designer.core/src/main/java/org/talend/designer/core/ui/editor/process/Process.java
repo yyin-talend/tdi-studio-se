@@ -58,9 +58,11 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.views.properties.PropertySheet;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 import org.talend.commons.exception.PersistenceException;
-import org.talend.core.context.RepositoryContext;
+import org.talend.core.CorePlugin;
 import org.talend.core.language.ECodeLanguage;
+import org.talend.core.language.LanguageManager;
 import org.talend.core.model.components.IComponent;
+import org.talend.core.model.general.Project;
 import org.talend.core.model.metadata.EMetadataType;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.builder.ConvertionHelper;
@@ -79,6 +81,7 @@ import org.talend.core.model.process.INode;
 import org.talend.core.model.process.INodeConnector;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.properties.ConnectionItem;
+import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.properties.User;
 import org.talend.core.model.repository.ERepositoryObjectType;
@@ -171,8 +174,7 @@ public class Process extends Element implements IProcess {
     public Process() {
         // PTODO NRO save the language in the process and load/test it.
 
-        processLanguage = ((RepositoryContext) org.talend.core.CorePlugin.getContext().getProperty(
-                org.talend.core.context.Context.REPOSITORY_CONTEXT_KEY)).getProject().getLanguage();
+        processLanguage = LanguageManager.getCurrentLanguage();
 
         contextManager = new ContextManager(processLanguage);
         createProcessParameters();
@@ -753,7 +755,6 @@ public class Process extends Element implements IProcess {
         options.put(XMLResource.OPTION_ENCODING, "UTF-8"); //$NON-NLS-1$
 
         res.save(options);
-
         return process;
     }
 
@@ -1749,5 +1750,31 @@ public class Process extends Element implements IProcess {
             }
         }
         return matchingNodes;
+    }
+
+    public Project getProject() {
+        return ((org.talend.core.context.RepositoryContext) CorePlugin.getContext().getProperty(
+                org.talend.core.context.Context.REPOSITORY_CONTEXT_KEY)).getProject();
+    }
+
+    public void setAsMasterJob() {
+        getProject().setMasterJobId(this.getId());
+    }
+
+    public ProcessItem getMasterJob() {
+        ProcessItem item = null;
+        IProxyRepositoryFactory factory = DesignerPlugin.getDefault().getProxyRepositoryFactory();
+
+        try {
+            IRepositoryObject repositoryObject = factory.getProcess().getMember(getProject().getMasterJobId());
+            if (repositoryObject.getType() == ERepositoryObjectType.PROCESS) {
+                item = (ProcessItem) repositoryObject.getProperty().getItem();
+            }
+        } catch (PersistenceException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        return item;
     }
 }
