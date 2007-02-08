@@ -34,9 +34,9 @@ import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.model.properties.DocumentationItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
-import org.talend.core.ui.images.OverlayImageProvider;
 import org.talend.core.ui.images.CoreImageProvider;
 import org.talend.core.ui.images.ECoreImage;
+import org.talend.core.ui.images.OverlayImageProvider;
 import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
@@ -133,8 +133,8 @@ public class RepositoryLabelProvider extends LabelProvider implements IColorProv
             // }
             // }
 
-            // IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
-            // ERepositoryStatus repositoryStatus = factory.getStatus(node.getObject());
+            IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+            ERepositoryStatus repositoryStatus = factory.getStatus(node.getObject());
 
             // Gets different icons for corresponding table type(view, table, synonym),added by ftang.
             // If want to display different icons for different table type, uncomment code below.
@@ -160,7 +160,8 @@ public class RepositoryLabelProvider extends LabelProvider implements IColorProv
             // }
             // Ends
 
-            return CoreImageProvider.getImage(node.getObject().getType());
+            Image img = CoreImageProvider.getImage(node.getObject().getType());
+            return OverlayImageProvider.getImageWithStatus(img, repositoryStatus).createImage();
             // return BusinessImageProvider.getImage(node.getObject().getType(), repositoryStatus);
         }
     }
