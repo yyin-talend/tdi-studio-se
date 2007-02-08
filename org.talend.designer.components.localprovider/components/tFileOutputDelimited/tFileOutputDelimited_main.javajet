@@ -29,9 +29,29 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
             "__ROWSEPARATOR__",
             "ROWSEPARATOR"
         );
+        
+        boolean isIncludeHeader = ElementParameterParser.getValue(
+            node,
+            "__INCLUDEHEADER__"
+        ).equals("true");
 %>
 
 <%
+	if(isIncludeHeader){
+		List<IMetadataColumn> columns = metadata.getListColumns();
+		int sizeColumns = columns.size();
+		for (int i = 0; i < sizeColumns; i++) {
+			IMetadataColumn column = columns.get(i);
+		%>
+			out<%=cid %>.write("<%=column.getLabel() %>");
+		<%
+			if(i != sizeColumns - 1) {
+				%>out<%=cid %>.write(OUT_DELIM_<%=cid %>);<%
+			}
+		}%>
+		out<%=cid %>.write(<%=rowSeparator %>);
+<%
+	}
 	List< ? extends IConnection> conns = node.getIncomingConnections();
 	for (IConnection conn : conns) {
 		if (conn.getLineStyle().equals(EConnectionType.FLOW_MAIN)) {

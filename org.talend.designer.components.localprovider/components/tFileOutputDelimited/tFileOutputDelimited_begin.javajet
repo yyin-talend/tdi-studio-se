@@ -34,11 +34,27 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
             "__FIELDSEPARATOR__",
             "FIELDSEPARATOR"
         );
-%>
-
-		final String OUT_DELIM_<%=cid %> = <%=fieldSeparator %>;
         
-        java.io.BufferedWriter out<%=cid %> = new java.io.BufferedWriter(new java.io.FileWriter(<%=filename %>));
+        String encoding = ElementParameterParser.getValue(
+            node,
+            "__ENCODING__"
+        );
+        
+        boolean isAppend = ElementParameterParser.getValue(
+            node,
+            "__APPEND__"
+        ).equals("true");
+%>
+		
+		final String OUT_DELIM_<%=cid %> = <%=fieldSeparator %>;
+		
+		java.io.BufferedWriter out<%=cid %>=null;
+        try{
+        	out<%=cid %> = new java.io.BufferedWriter(new java.io.OutputStreamWriter(
+        		new java.io.FileOutputStream(<%=filename %>, <%= isAppend%>),<%= encoding%>));
+        }catch(java.io.UnsupportedEncodingException e){
+        	e.printStackTrace();
+        }
 <%
     }
 }
