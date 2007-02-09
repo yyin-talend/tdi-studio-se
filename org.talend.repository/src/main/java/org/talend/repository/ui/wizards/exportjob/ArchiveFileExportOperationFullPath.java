@@ -29,6 +29,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
@@ -56,8 +57,6 @@ public class ArchiveFileExportOperationFullPath implements IRunnableWithProgress
 
     private static final String SEPARATOR = "/"; //$NON-NLS-1$
 
-    private static final String JOB_SOURCE_FOLDER_NAME = "src"; //$NON-NLS-1$
-
     private IFileExporterFullPath exporter;
 
     private String destinationFilename;
@@ -71,8 +70,6 @@ public class ArchiveFileExportOperationFullPath implements IRunnableWithProgress
     private boolean useTarFormat = false;
 
     private boolean createLeadupStructure = true;
-
-    private String rootName;
 
     private String regEx = ".*.pl$|.*.pm$|.*.bat$|.*.sh$"; //$NON-NLS-1$
 
@@ -114,31 +111,6 @@ public class ArchiveFileExportOperationFullPath implements IRunnableWithProgress
     }
 
     /**
-     * Answer the total number of file resources that exist at or below self in the resources hierarchy.
-     * 
-     * @return int
-     * @param checkResource org.eclipse.core.resources.IResource
-     */
-    protected int countChildrenOf(String checkResource) throws CoreException {
-
-        File file = new File(checkResource);
-
-        if (file.isFile()) {
-            return 1;
-        }
-
-        int count = 0;
-
-        if (file.isDirectory()) {
-            File[] children = file.listFiles();
-            for (int i = 0; i < children.length; i++) {
-                count += countChildrenOf(children[i].getPath());
-            }
-        }
-        return count;
-    }
-
-    /**
      * Answer a boolean indicating the number of file resources that were specified for export.
      * 
      * @return int
@@ -146,21 +118,9 @@ public class ArchiveFileExportOperationFullPath implements IRunnableWithProgress
     protected int countSelectedResources() throws CoreException {
         int result = 0;
         for (ExportFileResource fileList : resourcesListToExport) {
-            for (URL filePath : fileList.getProcessResouces()) {
-                result += countChildrenOf(filePath.getPath());
-            }
+            result += fileList.getFilesCount();
         }
-
         return result;
-    }
-
-    /**
-     * Export the passed resource to the destination .zip. Export with no path leadup
-     * 
-     * @param exportResource org.eclipse.core.resources.IResource
-     */
-    protected void exportResource(String exportResource) throws InterruptedException {
-        exportResource("", exportResource, 1); //$NON-NLS-1$
     }
 
     /**
@@ -169,24 +129,21 @@ public class ArchiveFileExportOperationFullPath implements IRunnableWithProgress
      * @param exportResource org.eclipse.core.resources.IResource
      * @param leadupDepth the number of resource levels to be included in the path including the resourse itself.
      */
-    protected void exportResource(String directory, String exportResource, int leadupDepth) throws InterruptedException {
-        // if (!exportResource.isAccessible()) {
-        // return;
-        // }
+    protected void exportResource(String rootName, String directory, String exportResource, int leadupDepth)
+            throws InterruptedException {
 
         File file = new File(exportResource);
         if (file.isFile()) {
 
             String destinationName = file.getName();
             if (!"".equals(directory)) { //$NON-NLS-1$
-                destinationName = directory + file.getName();
+                destinationName = directory + SEPARATOR + file.getName();
             }
 
             if (createLeadupStructure) {
                 if (rootName != null && !"".equals(destinationName)) { //$NON-NLS-1$
                     destinationName = rootName + SEPARATOR + destinationName;
                 }
-
             }
 
             monitor.subTask(destinationName);
@@ -226,7 +183,7 @@ public class ArchiveFileExportOperationFullPath implements IRunnableWithProgress
             }
 
             for (int i = 0; i < children.length; i++) {
-                exportResource(directory + file.getName() + SEPARATOR, children[i].getPath(), leadupDepth + 1);
+                exportResource(rootName, directory + file.getName() + SEPARATOR, children[i].getPath(), leadupDepth + 1);
             }
 
         }
@@ -237,15 +194,18 @@ public class ArchiveFileExportOperationFullPath implements IRunnableWithProgress
      */
     protected void exportSpecifiedResources() throws InterruptedException {
         for (ExportFileResource fileResource : resourcesListToExport) {
-            this.rootName = fileResource.getDirectoryName();
-            for (URL url : fileResource.getProcessResouces()) {
-                String currentResource = url.getPath();
-                if (Pattern.matches(jobSourceNameRegEx, currentResource)) {
-                    exportResource(JOB_SOURCE_FOLDER_NAME + SEPARATOR, currentResource, 1);
-                } else {
-                    exportResource(currentResource);
+            String rootName = fileResource.getDirectoryName();
+
+            Set<String> paths = fileResource.getRelativePathList();
+            for (Iterator iter = paths.iterator(); iter.hasNext();) {
+                String relativePath = (String) iter.next();
+                List<URL> resource = fileResource.getResourcesByRelativePath(relativePath);
+                for (URL url : resource) {
+                    String currentResource = url.getPath();
+                    exportResource(rootName, relativePath, currentResource, 1);
                 }
             }
+
         }
     }
 
@@ -268,8 +228,7 @@ public class ArchiveFileExportOperationFullPath implements IRunnableWithProgress
     public IStatus getStatus() {
         IStatus[] errors = new IStatus[errorTable.size()];
         errorTable.toArray(errors);
-        return new MultiStatus(IDEWorkbenchPlugin.IDE_WORKBENCH, IStatus.OK, errors,
-                "", null); //$NON-NLS-1$
+        return new MultiStatus(IDEWorkbenchPlugin.IDE_WORKBENCH, IStatus.OK, errors, "", null); //$NON-NLS-1$
     }
 
     /**
