@@ -408,7 +408,10 @@ public class RowGenTableEditor2 extends AbstractDataTableEditorView<IMetadataCol
             funColumn.getTableColumn().setWidth(0);
             funColumn.getTableColumn().setResizable(false);
             funColumn.setMoveable(false);
-            if (id.equals(FUNCTION_ID_COLUMN)) {
+            if ((id.equals(FUNCTION_ID_COLUMN) && getTableViewerCreator().getColumn(PARAMETER_ID_COLUMN).getTableColumn()
+                    .getWidth() == 0)
+                    || ((id.equals(PARAMETER_ID_COLUMN)) && getTableViewerCreator().getColumn(FUNCTION_ID_COLUMN)
+                            .getTableColumn().getWidth() == 0)) {
                 funCom.setVisible(false);
             }
             if (id.equals(PREVIEW_ID_COLUMN)) {
@@ -427,7 +430,7 @@ public class RowGenTableEditor2 extends AbstractDataTableEditorView<IMetadataCol
             funColumn.getTableColumn().setResizable(true);
             funColumn.setTitle(currTitle);
             funColumn.setMoveable(true);
-            if (id.equals(FUNCTION_ID_COLUMN)) {
+            if (id.equals(FUNCTION_ID_COLUMN) || id.equals(PARAMETER_ID_COLUMN)) {
                 funCom.setVisible(true);
             }
             if (id.equals(PREVIEW_ID_COLUMN)) {
