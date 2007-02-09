@@ -1,0 +1,54 @@
+<%@ jet
+	package="org.talend.designer.codegen.translators" 
+	imports="
+		org.talend.core.model.process.INode 
+		org.talend.core.model.metadata.IMetadataTable 
+		org.talend.designer.codegen.config.CodeGeneratorArgument
+		org.talend.core.model.process.IConnection
+		org.talend.core.model.metadata.IMetadataColumn
+		
+		java.util.List
+	"
+	class="LogRowMain"
+%>
+
+<%
+	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+	INode node = (INode)codeGenArgument.getArgument();
+	boolean stats = codeGenArgument.isStatistics();
+	
+	List<IMetadataTable> metadatas = node.getMetadataList();
+	if ((metadatas!=null)&&(metadatas.size()>0)) {
+		IMetadataTable metadata = metadatas.get(0);
+		if (metadata!=null) {
+%>
+
+<%
+List< ? extends IConnection> conns = node.getIncomingConnections();
+if(conns!=null){
+	if( conns.size()>0 ){
+	%>
+StringBuffer strBuffer = new StringBuffer();
+	<%
+		IConnection conn = conns.get(0);
+		List colList = metadata.getListColumns();
+		for(int i = 0;i<colList.size();i++){
+		IMetadataColumn column = (IMetadataColumn)colList.get(i);
+			if(i!=(colList.size()-1)){	
+			%> 
+strBuffer.append(<%=conn.getName()%>.<%=column.getLabel()%>+OUTPUT_FIELD_SEPARATOR_<%=metadata.getTableName() %>);
+			<%			
+			}else{
+			%> 
+strBuffer.append(<%=conn.getName()%>.<%=column.getLabel()%>);
+			<%				
+			}
+		}
+	%>
+System.out.println(strBuffer.toString());
+	<%	
+	}
+}
+		}
+	}
+%>
