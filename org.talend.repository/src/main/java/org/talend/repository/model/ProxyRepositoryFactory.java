@@ -835,7 +835,7 @@ public class ProxyRepositoryFactory implements IProxyRepositoryFactory {
      * 
      * @see org.talend.repository.model.IProxyRepositoryFactory#isPotentiallyEditable(org.talend.core.model.properties.Item)
      */
-    public boolean isPotentiallyEditable(Item item) {
+    private boolean isPotentiallyEditable(Item item) {
         ERepositoryStatus status = getStatus(item);
         return status.isPotentiallyEditable();
     }
