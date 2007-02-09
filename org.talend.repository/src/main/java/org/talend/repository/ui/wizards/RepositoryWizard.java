@@ -24,11 +24,8 @@ package org.talend.repository.ui.wizards;
 import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.IWorkbench;
-import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.IWorkbenchWindow;
 import org.talend.commons.exception.BusinessException;
 import org.talend.commons.exception.MessageBoxExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
@@ -39,8 +36,6 @@ import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
-import org.talend.repository.model.RepositoryNode;
-import org.talend.repository.ui.views.IRepositoryView;
 
 /**
  * DOC smallet class global comment. Detailled comment <br/>
@@ -72,24 +67,6 @@ public abstract class RepositoryWizard extends Wizard {
         super();
         this.workbench = workbench;
         this.creation = creation;
-    }
-
-    protected void selectAndReveal(ISelection selection) {
-        // PTODO OCA : replace this by a code on the class createAction (sample : CreateConnectionAction)
-        // the refrech of the repositoryView must be manage by the actions and not by the Wizard.
-        IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
-
-        IWorkbenchPage page = window.getActivePage();
-        if (page == null) {
-            return;
-        }
-
-        Object obj = ((IStructuredSelection) selection).getFirstElement();
-        RepositoryNode node = (RepositoryNode) obj;
-        if (page.getActivePart() instanceof IRepositoryView) {
-            IRepositoryView viewPart = (IRepositoryView) page.getActivePart();
-            viewPart.refresh(node);
-        }
     }
 
     /**
