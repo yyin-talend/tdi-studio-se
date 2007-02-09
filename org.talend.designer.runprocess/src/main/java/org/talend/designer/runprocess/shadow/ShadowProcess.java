@@ -37,7 +37,9 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.talend.core.CorePlugin;
 import org.talend.core.model.process.IProcess;
+import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.core.utils.XmlArray;
 import org.talend.designer.runprocess.ProcessStreamTrashReader;
 import org.talend.designer.runprocess.Processor;
@@ -104,7 +106,8 @@ public class ShadowProcess<T extends IProcessDescription> {
         FileOutputXmlNode outNode = new FileOutputXmlNode("'" + outPath.toOSString() + "'", description.getEncoding()); //$NON-NLS-1$ //$NON-NLS-2$
         switch (type) {
         case FILE_DELIMITED:
-            FileInputDelimitedNode inDelimitedNode = new FileInputDelimitedNode("'" + inPath.toOSString() + "'", //$NON-NLS-1$ //$NON-NLS-2$
+            FileInputDelimitedNode inDelimitedNode = new FileInputDelimitedNode(
+                    "'" + inPath.toOSString() + "'", //$NON-NLS-1$ //$NON-NLS-2$
                     description.getRowSeparator(), description.getFieldSeparator(), description.getLimitRows(),
                     description.getHeaderRow(), description.getFooterRow(), description.getRemoveEmptyRowsToSkip());
             ps = new FileinToXmlProcess<FileInputDelimitedNode>(inDelimitedNode, outNode);
@@ -129,12 +132,14 @@ public class ShadowProcess<T extends IProcessDescription> {
             ps = new FileinToXmlProcess<FileInputRegExpNode>(inRegExpNode, outNode);
             break;
         case FILE_XML:
-            FileInputXmlNode inXmlNode = new FileInputXmlNode("'" + inPath.toOSString() + "'", description.getLoopQuery(),  //$NON-NLS-1$ //$NON-NLS-2$
+            FileInputXmlNode inXmlNode = new FileInputXmlNode(
+                    "'" + inPath.toOSString() + "'", description.getLoopQuery(), //$NON-NLS-1$ //$NON-NLS-2$
                     description.getMapping(), description.getLoopLimit());
             ps = new FileinToXmlProcess<FileInputXmlNode>(inXmlNode, outNode);
             break;
         case FILE_LDIF:
-            FileInputLdifNode inLdifNode = new FileInputLdifNode("'" + inPath.toOSString() + "'", description.getSchema()); //$NON-NLS-1$ //$NON-NLS-2$
+            FileInputLdifNode inLdifNode = new FileInputLdifNode(
+                    "'" + inPath.toOSString() + "'", description.getSchema()); //$NON-NLS-1$ //$NON-NLS-2$
             ps = new FileinToXmlProcess<FileInputLdifNode>(inLdifNode, outNode);
             break;
         default:
@@ -148,12 +153,9 @@ public class ShadowProcess<T extends IProcessDescription> {
         filename = filename.substring(0, filename.length() - inPath.getFileExtension().length());
         filename += XML_EXT;
         IPath tempPath;
-        try {
-            tempPath = PerlUtils.getProject().getLocation();
-            tempPath = tempPath.append(filename);
-        } catch (CoreException e) {
-            tempPath = new Path(filename);
-        }
+        tempPath = Path.fromOSString(CorePlugin.getDefault().getPreferenceStore().getString(
+                ITalendCorePrefConstants.FILE_PATH_TEMP));
+        tempPath = tempPath.append(filename);
 
         return tempPath;
     }
@@ -167,10 +169,10 @@ public class ShadowProcess<T extends IProcessDescription> {
             if (previousFile.exists()) {
                 previousFile.delete();
             }
-            
-//            Process ps = processor.run(process.getContextManager().getDefaultContext(), Processor.NO_STATISTICS,
-//                    Processor.NO_TRACES,Processor.WATCH_ALLOWED);//Old
-            
+
+            // Process ps = processor.run(process.getContextManager().getDefaultContext(), Processor.NO_STATISTICS,
+            // Processor.NO_TRACES,Processor.WATCH_ALLOWED);//Old
+
             process = processor.run(talendProcess.getContextManager().getDefaultContext(), Processor.NO_STATISTICS,
                     Processor.NO_TRACES, null);
             ProcessStreamTrashReader.readAndForget(process);
@@ -194,9 +196,9 @@ public class ShadowProcess<T extends IProcessDescription> {
         }
     }
 
-    
     /**
      * Destroy the current process if exists.
+     * 
      * @return error code of {@link java.lang.Process#exitValue()}
      */
     public int destroy() {
@@ -213,5 +215,5 @@ public class ShadowProcess<T extends IProcessDescription> {
         }
         return exitCode;
     }
-    
+
 }
