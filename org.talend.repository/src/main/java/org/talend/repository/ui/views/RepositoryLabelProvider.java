@@ -56,6 +56,8 @@ public class RepositoryLabelProvider extends LabelProvider implements IColorProv
 
     private static final Color INACTIVE_REPOSITORY_ENTRY = new Color(null, 200, 200, 200);
 
+    private static final Color LOCKED_REPOSITORY_ENTRY = new Color(null, 200, 0, 0);
+
     private IRepositoryView view;
 
     public RepositoryLabelProvider(IRepositoryView view) {
@@ -180,7 +182,13 @@ public class RepositoryLabelProvider extends LabelProvider implements IColorProv
         case SYSTEM_FOLDER:
             return ACTIVE_REPOSITORY_ENTRY;
         default:
-            return null;
+            IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+            ERepositoryStatus repositoryStatus = factory.getStatus(node.getObject());
+            if (repositoryStatus == ERepositoryStatus.LOCK_BY_OTHER) {
+                return LOCKED_REPOSITORY_ENTRY;
+            } else {
+                return null;
+            }
         }
     }
 
