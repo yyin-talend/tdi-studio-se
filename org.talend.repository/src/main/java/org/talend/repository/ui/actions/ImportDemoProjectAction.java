@@ -55,9 +55,9 @@ import org.talend.repository.ui.ERepositoryImages;
  */
 public final class ImportDemoProjectAction extends Action {
 
-    private static final String ACTION_TITLE = "Import demo"; //$NON-NLS-1$
+    private static final String ACTION_TITLE = Messages.getString("ImportDemoProjectAction.actionTitle"); //$NON-NLS-1$
 
-    private static final String ACTION_TOOLTIP = "Import demo project"; //$NON-NLS-1$
+    private static final String ACTION_TOOLTIP = Messages.getString("ImportDemoProjectAction.actionTooltip"); //$NON-NLS-1$
 
     private static ImportDemoProjectAction singleton;
 

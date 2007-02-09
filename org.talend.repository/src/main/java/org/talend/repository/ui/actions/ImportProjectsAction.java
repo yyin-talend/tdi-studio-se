@@ -43,9 +43,9 @@ import org.talend.repository.ui.ERepositoryImages;
  */
 public final class ImportProjectsAction extends Action implements IWorkbenchWindowActionDelegate {
 
-    private static final String ACTION_TITLE = "Import projects"; //$NON-NLS-1$
+    private static final String ACTION_TITLE = Messages.getString("ImportProjectsAction.actionTitle"); //$NON-NLS-1$
 
-    private static final String ACTION_TOOLTIP = "Import existing Talend projects"; //$NON-NLS-1$
+    private static final String ACTION_TOOLTIP = Messages.getString("ImportProjectsAction.actionTooltip");  //$NON-NLS-1$
 
     private static final String STORE_COPY_PROJECT = "WizardProjectsImportPage.STORE_COPY_PROJECT_ID"; //$NON-NLS-1$
 
