@@ -92,8 +92,6 @@ public class ComboController extends AbstractElementPropertySectionController {
      * 
      * @see org.talend.designer.core.ui.editor.properties2.editors.AbstractElementPropertySectionController#createCommand()
      */
-    // public Command createCommand() {
-    // public Command createCommand() {
     public Command createCommand() {
         repositoryTableMap = dynamicTabbedPropertySection.getRepositoryTableMap();
         repositoryConnectionItemMap = dynamicTabbedPropertySection.getRepositoryConnectionItemMap();

@@ -23,15 +23,15 @@ package org.talend.designer.core.ui.editor.properties.controllers.generator;
 
 import org.talend.designer.core.ui.editor.properties.DynamicTabbedPropertySection;
 import org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController;
-import org.talend.designer.core.ui.editor.properties.controllers.SchemaController;
+import org.talend.designer.core.ui.editor.properties.controllers.SchemaTypeController;
 
 /**
- * DOC yzhang class global comment. Detailled comment <br/>
+ * DOC nrousseau class global comment. Detailled comment <br/>
  * 
- * $Id: SchemaGenerator.java 1 2006-12-22 下午04:43:55 +0000 (下午04:43:55) yzhang $
+ * $Id: talend-code-templates.xml 1 2006-09-29 17:06:40 +0000 (ven., 29 sept. 2006) nrousseau $
  * 
  */
-public class SchemaGenerator implements IControllerGenerator {
+public class SchemaTypeGenerator implements IControllerGenerator {
 
     private DynamicTabbedPropertySection dtp;
 
@@ -41,7 +41,7 @@ public class SchemaGenerator implements IControllerGenerator {
      * @see org.talend.designer.core.ui.editor.properties.controllers.generator.IControllerGenerator#generate()
      */
     public AbstractElementPropertySectionController generate() {
-        return new SchemaController(dtp);
+        return new SchemaTypeController(dtp);
     }
 
     /*
@@ -51,7 +51,6 @@ public class SchemaGenerator implements IControllerGenerator {
      */
     public void setDynamicTabbedPropertySection(DynamicTabbedPropertySection dtp) {
         this.dtp = dtp;
-
     }
 
 }

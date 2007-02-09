@@ -55,38 +55,38 @@
                category="TalendEditor"
                id="mainTab"
                indented="false"
-               label="Main"/>
+               label="%main"/>
          <propertyTab
                afterTab="mainTab"
                category="TalendEditor"
                id="propertyTab"
                indented="false"
-               label="Properties"/>
+               label="%properties"/>
          <propertyTab
                afterTab="propertyTab"
                category="TalendEditor"
                id="viewTab"
-               label="View"/>
+               label="%view"/>
          <propertyTab
                afterTab="viewTab"
                category="TalendEditor"
                id="docTab"
-               label="Documentation"/>
+               label="%documentation"/>
          <propertyTab
                afterTab="mainTab"
                category="TalendEditor"
                id="contextTab"
-               label="Contexts"/>
+               label="%contexts"/>
          <propertyTab
                afterTab="contextTab"
                category="TalendEditor"
                id="versionsTab"
-               label="Versions"/>
+               label="%versions"/>
          <propertyTab
                afterTab="versionsTab"
                category="TalendEditor"
                id="logsTab"
-               label="Logs"/>
+               label="%logs"/>
       </propertyTabs>
    </extension>
    <extension
@@ -160,14 +160,14 @@
             class="org.talend.designer.core.ui.views.CodeView"
             icon="icons/codeViewer_view.gif"
             id="org.talend.designer.core.codeView"
-            name="Code Viewer"/>
+            name="%codeViewer"/>
                   <view
                         allowMultiple="false"
                         category="org.talend.core.root"
                         class="org.talend.designer.core.ui.views.problems.ProblemsView"
                         icon="icons/problems_view.gif"
                         id="org.talend.designer.core.ui.views.ProblemsView"
-                        name="Problems"/>
+                        name="%problems"/>
    </extension>
    <extension
          point="org.talend.core.repositoryContextualsActions">
@@ -256,7 +256,7 @@
       <extension
          point="org.talend.designer.core.generators">
       <generator
-            class="org.talend.designer.core.ui.editor.properties.controllers.generator.SchemaGenerator"
+            class="org.talend.designer.core.ui.editor.properties.controllers.generator.SchemaTypeGenerator"
             mapping="SCHEMA_TYPE"
             name="Schema Type"/>
       <generator

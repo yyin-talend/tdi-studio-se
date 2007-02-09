@@ -491,10 +491,8 @@ public class EmfComponent implements IComponent {
             newParam.setListItemsValue(new String[] { BUILTIN, REPOSITORY });
             newParam.setValue(BUILTIN);
             newParam.setNumRow(xmlParam.getNUMROW());
-            newParam.setField(EParameterFieldType.CLOSED_LIST);
-            if (xmlParam.isSetSHOW()) {
-                newParam.setShow(xmlParam.isSHOW());
-            }
+            newParam.setField(EParameterFieldType.TECHNICAL);
+            newParam.setShow(false);
             newParam.setShowIf(xmlParam.getSHOWIF());
             newParam.setNotShowIf(xmlParam.getNOTSHOWIF());
             listParam.add(newParam);
@@ -506,7 +504,7 @@ public class EmfComponent implements IComponent {
             newParam.setListItemsDisplayName(new String[] {});
             newParam.setListItemsValue(new String[] {});
             newParam.setNumRow(xmlParam.getNUMROW());
-            newParam.setField(EParameterFieldType.CLOSED_LIST);
+            newParam.setField(EParameterFieldType.TECHNICAL);
             newParam.setValue(""); //$NON-NLS-1$
             newParam.setShow(false);
             newParam.setRequired(true);

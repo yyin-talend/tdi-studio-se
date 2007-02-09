@@ -154,7 +154,7 @@ public abstract class AbstractElementPropertySectionController implements Proper
     public void init(DynamicTabbedPropertySection dtp) {
         this.dynamicTabbedPropertySection = dtp;
         hashCurControls = dtp.getHashCurControls();
-        elem = dtp.getElem();
+        elem = dtp.getElement();
         part = dtp.getPart();
         section = dtp.getSection();
         composite = dtp.getComposite();

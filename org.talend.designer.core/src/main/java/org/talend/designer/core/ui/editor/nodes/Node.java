@@ -487,6 +487,12 @@ public class Node extends Element implements INode {
         if (id.equals(EParameterName.SHOW_HINT.getName())) {
             setShowHint((Boolean) value);
         }
+        if (id.equals(EParameterName.SCHEMA_TYPE.getName()) || id.equals(EParameterName.QUERYSTORE_TYPE.getName())
+                || id.equals(EParameterName.PROPERTY_TYPE.getName())
+                || id.equals(EParameterName.PROCESS_TYPE_PROCESS.getName())) {
+            setPropertyValue(EParameterName.UPDATE_COMPONENTS.getName(), Boolean.TRUE);
+        }
+
         super.setPropertyValue(id, value);
         updateVisibleData();
     }
@@ -597,7 +603,7 @@ public class Node extends Element implements INode {
         return this.activate;
     }
 
-    @SuppressWarnings("unchecked") //$NON-NLS-1$
+    @SuppressWarnings("unchecked")//$NON-NLS-1$
     public void setActivate(final boolean activate) {
         this.activate = activate;
         nodeLabel.setActivate(activate);
@@ -781,7 +787,7 @@ public class Node extends Element implements INode {
         return currentStatus;
     }
 
-    @SuppressWarnings("unchecked") //$NON-NLS-1$
+    @SuppressWarnings("unchecked")//$NON-NLS-1$
     private void checkParameters() {
         for (IElementParameter param : this.getElementParameters()) {
             // if the parameter is required but empty, an error will be added
@@ -856,7 +862,7 @@ public class Node extends Element implements INode {
 
     private void checkModules() {
         // List<ModuleNeeded> list = ModulesNeededProvider.getModulesNeeded(getComponentName());
-        
+
         Class toEval = null;
         if (((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY)).getProject()
                 .getLanguage().equals(ECodeLanguage.JAVA)) {
@@ -865,7 +871,7 @@ public class Node extends Element implements INode {
             toEval = IPerlModuleService.class;
         }
         IModuleService moduleService = (IModuleService) GlobalServiceRegister.getDefault().getService(toEval);
-        
+
         List<ModuleNeeded> list = moduleService.getModulesNeeded(component.getName());
         for (ModuleNeeded current : list) {
             Problem problem = getProblem(current);

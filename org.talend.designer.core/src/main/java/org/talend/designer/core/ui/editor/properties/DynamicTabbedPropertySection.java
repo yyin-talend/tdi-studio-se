@@ -80,7 +80,6 @@ import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.designer.core.DesignerPlugin;
-import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
@@ -120,8 +119,6 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
 
     protected DynamicTabbedPropertyGenerator generator = DynamicTabbedPropertyGenerator.getDefault(this);;
 
-    private String oldSchemaType;
-
     private String oldProcessType;
 
     private Map<String, IMetadataTable> repositoryTableMap;
@@ -135,9 +132,8 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
     private Map<String, Query> repositoryQueryStoreMap;
 
     private String oldQueryStoreType;
-    
-    private static CommandStackEventListener commandStackEventListener;
 
+    private static CommandStackEventListener commandStackEventListener;
 
     /**
      * DOC ftang Comment method "showSchemaRepositoryList".
@@ -311,7 +307,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
     /**
      * DOC ftang Comment method "updateRepositoryList".
      */
-    @SuppressWarnings("unchecked") //$NON-NLS-1$
+    @SuppressWarnings("unchecked")//$NON-NLS-1$
     public void updateRepositoryList() {
         IProxyRepositoryFactory factory = DesignerPlugin.getDefault().getProxyRepositoryFactory();
         List<ConnectionItem> metadataConnectionsItem = null;
@@ -488,15 +484,15 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
         int maxRow;
         List<? extends IElementParameter> listParam = elem.getElementParameters();
 
-        oldSchemaType = (String) elem.getPropertyValue(EParameterName.SCHEMA_TYPE.getName());
-        if (oldSchemaType != null) {
-            if (oldSchemaType.equals(EmfComponent.REPOSITORY)) {
-                showSchemaRepositoryList(true);
-                updateRepositoryList();
-            } else {
-                showSchemaRepositoryList(false);
-            }
-        }
+//        oldSchemaType = (String) elem.getPropertyValue(EParameterName.SCHEMA_TYPE.getName());
+//        if (oldSchemaType != null) {
+//            if (oldSchemaType.equals(EmfComponent.REPOSITORY)) {
+//                showSchemaRepositoryList(true);
+//                updateRepositoryList();
+//            } else {
+//                showSchemaRepositoryList(false);
+//            }
+//        }
 
         oldQueryStoreType = (String) elem.getPropertyValue(EParameterName.QUERYSTORE_TYPE.getName());
         if (oldQueryStoreType != null) {
@@ -614,27 +610,6 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
         }
         List<? extends IElementParameter> listParam = elem.getElementParameters();
 
-        if (oldSchemaType != null) {
-            String newSchemaType = (String) elem.getPropertyValue(EParameterName.SCHEMA_TYPE.getName());
-            if (!oldSchemaType.equals(newSchemaType)) {
-                addComponents();
-            }
-        }
-
-        if (oldQueryStoreType != null) {
-            String newQueryStoreType = (String) elem.getPropertyValue(EParameterName.QUERYSTORE_TYPE.getName());
-            if (!oldQueryStoreType.equals(newQueryStoreType)) {
-                addComponents();
-            }
-        }
-
-        if (oldPropertyType != null) {
-            String newPropertyType = (String) elem.getPropertyValue(EParameterName.PROPERTY_TYPE.getName());
-            if (!oldPropertyType.equals(newPropertyType)) {
-                addComponents();
-            }
-        }
-
         if (oldProcessType != null) {
             String newProcessType = (String) elem.getPropertyValue(EParameterName.PROCESS_TYPE_PROCESS.getName());
             if (!oldProcessType.equals(newProcessType)) {
@@ -643,7 +618,6 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                 if (elem instanceof Node) {
                     ((Node) elem).checkAndRefreshNode();
                 }
-                addComponents();
             }
         }
 
@@ -801,15 +775,6 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
     }
 
     /**
-     * Getter for elem.
-     * 
-     * @return the elem
-     */
-    public Element getElem() {
-        return this.elem;
-    }
-
-    /**
      * Getter for hashCurControls.
      * 
      * @return the hashCurControls
@@ -848,7 +813,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
     /**
      * DOC yzhang Comment method "updateColumnList".
      */
-    @SuppressWarnings("unchecked") //$NON-NLS-1$
+    @SuppressWarnings("unchecked")//$NON-NLS-1$
     public void updateColumnList(List<ColumnNameChanged> columnsChanged) {
         List<String> columnList = getColumnList();
         List<String> prevColumnList = getPrevColumnList();
@@ -1095,7 +1060,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
         }
         return line;
     }
-    
+
     /**
      * Get the command stack of the Gef editor.
      * 
