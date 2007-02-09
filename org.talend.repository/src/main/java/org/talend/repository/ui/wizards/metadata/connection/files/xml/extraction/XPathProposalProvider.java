@@ -326,7 +326,7 @@ public class XPathProposalProvider implements IContentProposalProvider {
      * @param proposals
      */
     private void addTooManyNodesContentProposal(List<IContentProposal> proposals) {
-        XPathContentProposal contentProposal = new XPathContentProposal("<< Too many nodes, proposed values may be incomplete ... >>");
+        XPathContentProposal contentProposal = new XPathContentProposal(Messages.getString("XPathProposalProvider.contentProposal")); //$NON-NLS-1$
         proposals.add(contentProposal);
     }
 

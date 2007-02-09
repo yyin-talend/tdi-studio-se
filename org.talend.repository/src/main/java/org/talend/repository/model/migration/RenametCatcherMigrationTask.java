@@ -36,7 +36,7 @@ public class RenametCatcherMigrationTask extends AbstractMigrationTask implement
 
     public boolean execute(Project project) {
         try {
-            RenameComponentAction.rename("tCatcher", "tLogCatcher");
+            RenameComponentAction.rename("tCatcher", "tLogCatcher"); //$NON-NLS-1$ //$NON-NLS-2$
             return true;
         } catch (Exception e) {
             ExceptionHandler.process(e);

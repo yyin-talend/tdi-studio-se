@@ -56,7 +56,7 @@ public class LdifFileWizardPage extends WizardPage {
      */
     public LdifFileWizardPage(int step, ConnectionItem connectionItem, boolean isRepositoryObjectEditable,
             String[] existingNames) {
-        super("wizardPage");
+        super("wizardPage"); //$NON-NLS-1$
         this.step = step;
         this.connectionItem = connectionItem;
         this.existingNames = existingNames;

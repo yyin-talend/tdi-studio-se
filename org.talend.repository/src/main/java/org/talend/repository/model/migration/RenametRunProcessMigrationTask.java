@@ -36,7 +36,7 @@ public class RenametRunProcessMigrationTask extends AbstractMigrationTask implem
 
     public boolean execute(Project project) {
         try {
-            RenameComponentAction.rename("tRunProcess", "tRunJob");
+            RenameComponentAction.rename("tRunProcess", "tRunJob"); //$NON-NLS-1$ //$NON-NLS-2$
             return true;
         } catch (Exception e) {
             ExceptionHandler.process(e);

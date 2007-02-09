@@ -68,7 +68,7 @@ public class DocumentationPage extends PropertiesWizardPage {
      * Constructs a new DocumentationCreatePage.
      */
     public DocumentationPage(Property property, IPath destinationPath) {
-        super("DocumentationCreatePage", property, destinationPath);
+        super("DocumentationCreatePage", property, destinationPath); //$NON-NLS-1$
 
         setTitle(Messages.getString("DocumentationPage.thisTitle.document")); //$NON-NLS-1$
         this.filenameStatus = createOkStatus();
@@ -138,13 +138,13 @@ public class DocumentationPage extends PropertiesWizardPage {
             if (isUpdate()) {
                 filenameStatus = createOkStatus();
             } else {
-                filenameStatus = createStatus(IStatus.ERROR, "Source document is not set.");
+                filenameStatus = createStatus(IStatus.ERROR, Messages.getString("DocumentationPage.sourceDocIsNotSet")); //$NON-NLS-1$
             }
         } else {
             filePath = new Path(filenameText.getText());
             File file = filePath.toFile();
             if (!file.exists() || !file.isFile()) {
-                filenameStatus = createStatus(IStatus.ERROR, "Source document does not exists.");
+                filenameStatus = createStatus(IStatus.ERROR, Messages.getString("DocumentationPage.sourceDocDoNotExist")); //$NON-NLS-1$
                 filePath = null;
             } else {
                 filenameStatus = createOkStatus();

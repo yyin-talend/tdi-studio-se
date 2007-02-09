@@ -23,6 +23,7 @@ package org.talend.repository.model;
 
 import org.talend.commons.ui.image.IImage;
 import org.talend.core.ui.images.ECoreImage;
+import org.talend.repository.i18n.Messages;
 
 /**
  * DOC smallet class global comment. Detailled comment <br/>
@@ -40,7 +41,7 @@ public class BinRepositoryNode extends StableRepositoryNode {
      * @param type
      */
     public BinRepositoryNode(RepositoryNode parent) {
-        super(parent, "Recycle bin", null, 11);
+        super(parent, Messages.getString("BinRepositoryNode.label"), null, 11); //$NON-NLS-1$
     }
 
     /**

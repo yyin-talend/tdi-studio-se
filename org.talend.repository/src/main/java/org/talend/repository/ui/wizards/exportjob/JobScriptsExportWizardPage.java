@@ -480,7 +480,7 @@ public class JobScriptsExportWizardPage extends WizardFileSystemResourceExportPa
     private String getRootFolderName() {
         IPath path = new Path(this.getDestinationValue());
         String subjectString = path.lastSegment();
-        Pattern regex = Pattern.compile("(.*)(?=(\\.(tar|zip))\\b)", Pattern.CANON_EQ | Pattern.CASE_INSENSITIVE
+        Pattern regex = Pattern.compile("(.*)(?=(\\.(tar|zip))\\b)", Pattern.CANON_EQ | Pattern.CASE_INSENSITIVE //$NON-NLS-1$
                 | Pattern.UNICODE_CASE);
         Matcher regexMatcher = regex.matcher(subjectString);
         if (regexMatcher.find()) {
@@ -493,7 +493,7 @@ public class JobScriptsExportWizardPage extends WizardFileSystemResourceExportPa
     private void setTopFolder(List<ExportFileResource> resourcesToExport, String topFolder) {
         for (ExportFileResource fileResource : resourcesToExport) {
             String directory = fileResource.getDirectoryName();
-            fileResource.setDirectoryName(topFolder + "/" + directory);
+            fileResource.setDirectoryName(topFolder + "/" + directory); //$NON-NLS-1$
         }
     }
 

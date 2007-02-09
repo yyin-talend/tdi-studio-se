@@ -57,7 +57,7 @@ public class FilePositionalWizardPage extends WizardPage {
      */
     public FilePositionalWizardPage(int step, ConnectionItem connectionItem, boolean isRepositoryObjectEditable,
             String[] existingNames) {
-        super("wizardPage");
+        super("wizardPage"); //$NON-NLS-1$
         this.connectionItem = connectionItem;
         this.step = step;
         this.existingNames = existingNames;

@@ -38,7 +38,7 @@ import org.talend.repository.ui.wizards.PropertiesWizardPage;
  */
 public class NewRoutineWizardPage extends PropertiesWizardPage {
 
-    private static final String DESC = "Add a new routine to repository";
+    private static final String DESC = Messages.getString("NewRoutineWizardPage.description"); //$NON-NLS-1$
 
     /**
      * Constructs a new NewProjectWizardPage.

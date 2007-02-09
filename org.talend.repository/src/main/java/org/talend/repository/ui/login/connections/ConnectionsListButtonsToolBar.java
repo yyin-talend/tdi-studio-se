@@ -36,6 +36,7 @@ import org.talend.commons.ui.swt.advanced.dataeditor.commands.ExtendedTablePaste
 import org.talend.commons.ui.swt.extended.table.AbstractExtendedTableViewer;
 import org.talend.commons.ui.swt.extended.table.ExtendedTableModel;
 import org.talend.core.model.general.ConnectionBean;
+import org.talend.repository.i18n.Messages;
 
 /**
  * DOC smallet class global comment. Detailled comment <br/>
@@ -45,9 +46,9 @@ import org.talend.core.model.general.ConnectionBean;
  */
 public class ConnectionsListButtonsToolBar extends ExtendedToolbarView {
 
-    private static final String NEW_CONNECTION_LABEL = "<New connection>";
+    private static final String NEW_CONNECTION_LABEL = Messages.getString("ConnectionsListButtonsToolBar.newConnectionLabel"); //$NON-NLS-1$
 
-    private static final String COPY_CONNECTION_LABEL_PREFIX = "Copy of ";
+    private static final String COPY_CONNECTION_LABEL_PREFIX = Messages.getString("ConnectionsListButtonsToolBar.copyLabelPrefix"); //$NON-NLS-1$
 
     public ConnectionsListButtonsToolBar(Composite parent, int style, AbstractExtendedTableViewer extendedTableViewer) {
         super(parent, style, extendedTableViewer);

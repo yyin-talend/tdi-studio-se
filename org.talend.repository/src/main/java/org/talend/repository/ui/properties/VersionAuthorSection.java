@@ -75,7 +75,7 @@ public class VersionAuthorSection extends AbstractSection {
         data.top = new FormAttachment(0, ITabbedPropertyConstants.VSPACE);
         authorText.setLayoutData(data);
 
-        CLabel authorLabel = getWidgetFactory().createCLabel(composite, "Author");
+        CLabel authorLabel = getWidgetFactory().createCLabel(composite, Messages.getString("VersionAuthorSection.authorLabel")); //$NON-NLS-1$
         data = new FormData();
         data.left = new FormAttachment(0, 0);
         data.right = new FormAttachment(authorText, -ITabbedPropertyConstants.HSPACE);
@@ -116,7 +116,7 @@ public class VersionAuthorSection extends AbstractSection {
         data.top = new FormAttachment(0, ITabbedPropertyConstants.VSPACE);
         versionText.setLayoutData(data);
 
-        CLabel versionLabel = getWidgetFactory().createCLabel(composite, "Version");
+        CLabel versionLabel = getWidgetFactory().createCLabel(composite, Messages.getString("VersionAuthorSection.versionLabel")); //$NON-NLS-1$
         data = new FormData();
         data.left = new FormAttachment(authorText, ITabbedPropertyConstants.HSPACE * 3);
         data.right = new FormAttachment(versionText, -ITabbedPropertyConstants.HSPACE);

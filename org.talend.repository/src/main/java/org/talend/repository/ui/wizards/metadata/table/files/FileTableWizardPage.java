@@ -62,7 +62,7 @@ public class FileTableWizardPage extends WizardPage {
      * @param ISelection
      */
     public FileTableWizardPage(ConnectionItem connectionItem, MetadataTable metadataTable, boolean isRepositoryObjectEditable) {
-        super("wizardPage");
+        super("wizardPage"); //$NON-NLS-1$
         this.connectionItem = connectionItem;
         this.metadataTable = metadataTable;
         this.isRepositoryObjectEditable = isRepositoryObjectEditable;

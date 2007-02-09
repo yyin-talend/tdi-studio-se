@@ -55,7 +55,7 @@ public class XmlFileWizardPage extends WizardPage {
      * @param existingNames
      */
     public XmlFileWizardPage(int step, ConnectionItem connectionItem, boolean isRepositoryObjectEditable, String[] existingNames) {
-        super("wizardPage");
+        super("wizardPage"); //$NON-NLS-1$
         this.step = step;
         this.connectionItem = connectionItem;
         this.existingNames = existingNames;

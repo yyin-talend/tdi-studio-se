@@ -49,7 +49,7 @@ public class SelectorTableWizardPage extends WizardPage {
      * @param ISelection
      */
     public SelectorTableWizardPage(ConnectionItem connectionItem, MetadataTable metadataTable, boolean isRepositoryObjectEditable) {
-        super("wizardPage");
+        super("wizardPage"); //$NON-NLS-1$
         this.connectionItem = connectionItem;
         this.metadataTable = metadataTable;
         this.isRepositoryObjectEditable = isRepositoryObjectEditable;

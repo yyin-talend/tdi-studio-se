@@ -44,6 +44,7 @@ import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.Folder;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.ui.images.ECoreImage;
+import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.BinRepositoryNode;
 import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
@@ -154,7 +155,7 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
             // convert(factory.getProcess2(), processNode, ERepositoryObjectType.PROCESS, recBinNode);
 
             // 3. Routines
-            RepositoryNode codeNode = new StableRepositoryNode(root, "Code", ECoreImage.CODE_ICON, 2);
+            RepositoryNode codeNode = new StableRepositoryNode(root, Messages.getString("RepositoryContentProvider.repositoryLabel.code"), ECoreImage.CODE_ICON, 2); //$NON-NLS-1$
             nodes.add(codeNode);
 
             RepositoryNode routineNode = new RepositoryNode(null, root, ENodeType.SYSTEM_FOLDER);
@@ -262,7 +263,7 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
 
             RepositoryNode folder;
             if (container.getLabel().equals(RepositoryConstants.SYSTEM_DIRECTORY)) {
-                folder = new StableRepositoryNode(parent, "System", ECoreImage.FOLDER_CLOSE_ICON, 0);
+                folder = new StableRepositoryNode(parent, Messages.getString("RepositoryContentProvider.repositoryLabel.system"), ECoreImage.FOLDER_CLOSE_ICON, 0); //$NON-NLS-1$
             } else {
                 folder = new RepositoryNode(oFolder, parent, ENodeType.SIMPLE_FOLDER);
             }

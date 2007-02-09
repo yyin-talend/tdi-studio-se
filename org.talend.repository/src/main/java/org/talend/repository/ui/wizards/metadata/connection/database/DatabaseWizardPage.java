@@ -50,7 +50,7 @@ public class DatabaseWizardPage extends WizardPage {
      * @param existingNames
      */
     public DatabaseWizardPage(ConnectionItem connectionItem, boolean isRepositoryObjectEditable, String[] existingNames) {
-        super("wizardPage");
+        super("wizardPage"); //$NON-NLS-1$
         this.connectionItem = connectionItem;
         this.existingNames = existingNames;
         this.isRepositoryObjectEditable = isRepositoryObjectEditable;

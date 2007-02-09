@@ -69,7 +69,7 @@ public class PurposeStatusSection extends AbstractSection {
         purposeText.setLayoutData(data);
         addFocusListener(purposeText);
 
-        CLabel purposeLabel = getWidgetFactory().createCLabel(composite, "Purpose");
+        CLabel purposeLabel = getWidgetFactory().createCLabel(composite, Messages.getString("PurposeStatusSection.purposeLabel")); //$NON-NLS-1$
         data = new FormData();
         data.left = new FormAttachment(0, 0);
         data.right = new FormAttachment(purposeText, -ITabbedPropertyConstants.HSPACE);
@@ -90,7 +90,7 @@ public class PurposeStatusSection extends AbstractSection {
         // needSave = true;
         // }}, true);
 
-        CLabel statusLabel = getWidgetFactory().createCLabel(composite, "Status");
+        CLabel statusLabel = getWidgetFactory().createCLabel(composite, Messages.getString("PurposeStatusSection.statusLabel")); //$NON-NLS-1$
         data = new FormData();
         data.left = new FormAttachment(purposeText, ITabbedPropertyConstants.HSPACE * 3);
         data.right = new FormAttachment(statusText, -ITabbedPropertyConstants.HSPACE);

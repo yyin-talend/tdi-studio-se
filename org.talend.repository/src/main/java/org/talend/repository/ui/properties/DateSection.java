@@ -79,7 +79,7 @@ public class DateSection extends AbstractSection {
         creationDate.setLayoutData(data);
         creationDate.setEnabled(false);
 
-        CLabel creationLabel = getWidgetFactory().createCLabel(composite, "Creation");
+        CLabel creationLabel = getWidgetFactory().createCLabel(composite, Messages.getString("DateSection.creationLabel")); //$NON-NLS-1$
         data = new FormData();
         data.left = new FormAttachment(0, 0);
         data.right = new FormAttachment(creationDate, -ITabbedPropertyConstants.HSPACE);
@@ -94,7 +94,7 @@ public class DateSection extends AbstractSection {
         modificationDate.setLayoutData(data);
         modificationDate.setEnabled(false);
 
-        CLabel modificationLabel = getWidgetFactory().createCLabel(composite, "Modification");
+        CLabel modificationLabel = getWidgetFactory().createCLabel(composite, Messages.getString("DateSection.ModificationLabel")); //$NON-NLS-1$
         data = new FormData();
         data.left = new FormAttachment(creationDate, ITabbedPropertyConstants.HSPACE * 3);
         data.right = new FormAttachment(modificationDate, -ITabbedPropertyConstants.HSPACE);
@@ -109,7 +109,7 @@ public class DateSection extends AbstractSection {
         commitDate.setLayoutData(data);
         commitDate.setEnabled(false);
 
-         commitLabel = getWidgetFactory().createCLabel(composite, "Commit");
+         commitLabel = getWidgetFactory().createCLabel(composite, Messages.getString("DateSection.commitLabel")); //$NON-NLS-1$
         data = new FormData();
         data.left = new FormAttachment(modificationDate, ITabbedPropertyConstants.HSPACE * 3);
         data.right = new FormAttachment(commitDate, -ITabbedPropertyConstants.HSPACE);
