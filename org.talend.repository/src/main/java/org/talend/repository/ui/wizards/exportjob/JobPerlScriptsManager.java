@@ -269,7 +269,7 @@ public class JobPerlScriptsManager extends JobScriptsManager {
 
         String perlCode = project + projectSeparator + wordSeparator + jobName + perlExt;
 
-        String contextCode = project + projectSeparator + wordSeparator + jobName + wordSeparator + context + perlExt;
+        String contextCode = context;
 
         String[] cmd = new String[] { perlInterpreter, "-I" + COMPONENTS_FOLDER_NAME, perlCode, contextArg + contextCode };
 
