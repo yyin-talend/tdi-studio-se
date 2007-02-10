@@ -1,0 +1,83 @@
+<%@ jet 
+package="org.talend.designer.codegen.translators" 
+imports="
+    org.talend.core.model.process.INode 
+    org.talend.core.model.process.ElementParameterParser
+    org.talend.core.model.metadata.IMetadataTable
+    org.talend.core.model.metadata.IMetadataColumn
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    java.util.List
+    java.util.Map
+	org.talend.commons.utils.generation.CodeGenerationUtils
+" 
+class="FileOutputPositionalBegin"
+%>
+
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+boolean stats = codeGenArgument.isStatistics();
+
+List<IMetadataTable> metadatas = node.getMetadataList();
+if ((metadatas!=null)&&(metadatas.size()>0)) {
+    IMetadataTable metadata = metadatas.get(0);
+    if (metadata!=null) {
+    
+    	String encoding = ElementParameterParser.getValue(node, "__ENCODING__");
+        if (encoding!=null) {
+            if (encoding.equals("")) {
+                encoding = "undef";
+            }
+        }
+        
+        String filename = ElementParameterParser.getValue(
+            node,
+            "__FILENAME__"
+        );
+
+        boolean isIncludeHeader = ElementParameterParser.getValue(
+            node,
+            "__INCLUDEHEADER__"
+        ).equals("true");
+
+        boolean isAppend = ElementParameterParser.getValue(
+            node,
+            "__APPEND__"
+        ).equals("true");
+
+        
+      
+%>
+				
+		java.io.BufferedWriter out<%=node.getUniqueName() %>=null;
+        try{
+        	out<%=node.getUniqueName() %> = new java.io.BufferedWriter(new java.io.OutputStreamWriter(
+        		new java.io.FileOutputStream(<%=filename %>, <%= isAppend%>),<%= encoding%>));
+        }catch(java.io.UnsupportedEncodingException e){
+        	e.printStackTrace();
+        }
+        
+<%
+        if(isIncludeHeader&&!isAppend){
+        	List<Map<String, String>> formats =
+            (List<Map<String,String>>)ElementParameterParser.getObjectValue(
+                node,
+                "__FORMATS__"
+            );
+        	
+    		List<IMetadataColumn> columns = metadata.getListColumns();
+    		int sizeColumns = columns.size();
+    		for (int i = 0; i < sizeColumns; i++) {
+    			IMetadataColumn column = columns.get(i);
+    			Map<String,String> format=formats.get(i);
+    		%>
+    			out<%=node.getUniqueName() %>.write(<%=codeGenArgument.getCurrentProjectName().toLowerCase()%>.routines.StringFormatter.format("<%=column.getLabel() %>",<%=format.get("SIZE")%>,<%=format.get("PADDING_CHAR")%>,
+    					<%=format.get("ALIGN")%>,<%=format.get("KEEP")%>));
+    		<%
+    		}%>
+    		out<%=node.getUniqueName() %>.write("\n");
+<%
+		}
+    }
+}
+%>
