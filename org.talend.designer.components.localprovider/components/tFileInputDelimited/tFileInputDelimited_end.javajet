@@ -12,6 +12,7 @@
 <%
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
+	String cid = node.getUniqueName();
 %>
 
     		}
@@ -21,7 +22,6 @@
 	if ((metadatas!=null)&&(metadatas.size()>0)) {
 		IMetadataTable metadata = metadatas.get(0);
 		if (metadata!=null) {
-			String cid = metadata.getTableName();
 %>
             in<%=cid %>.close();
 <%
