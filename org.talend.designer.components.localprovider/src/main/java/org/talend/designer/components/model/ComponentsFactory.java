@@ -152,7 +152,7 @@ public class ComponentsFactory implements IComponentsFactory {
             for (int i = 0; i < files.length; i++) {
                 if (files[i].getName().endsWith(modelFileSuffix)) {
                     try {
-                        list.add(files[i].toURI().toURL());
+                        list.add(files[i].toURL());
                     } catch (Exception e) {
                         ExceptionHandler.process(e);
                     }
