@@ -1,0 +1,8 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: org.talend.designer.runprocess.nl fragment
+Bundle-SymbolicName: org.talend.designer.runprocess.nl
+Bundle-Version: 1.0.0
+Bundle-Vendor: talend
+Fragment-Host: org.talend.designer.runprocess;bundle-version="1.2.0"
+Bundle-Localization: plugin
