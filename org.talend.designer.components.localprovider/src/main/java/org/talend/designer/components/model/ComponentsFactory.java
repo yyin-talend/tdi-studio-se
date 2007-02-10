@@ -54,6 +54,8 @@ public class ComponentsFactory implements IComponentsFactory {
 
     private static Logger log = Logger.getLogger(ComponentsFactory.class);
 
+    private static final String COMPONENTS_FOLDER_NAME = "components" + File.separatorChar;//$NON-NLS-1$
+
     private static List<IComponent> componentList = null;
 
     public ComponentsFactory() {
@@ -72,7 +74,7 @@ public class ComponentsFactory implements IComponentsFactory {
         // 3. Load user components:
         loadComponentsFromFolder(userPath);
 
-        log.trace(componentList.size() + " components loaded in " + (System.currentTimeMillis() - startTime) + " ms");  //$NON-NLS-1$ //$NON-NLS-2$
+        log.trace(componentList.size() + " components loaded in " + (System.currentTimeMillis() - startTime) + " ms"); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     private void loadComponentsFromFolder(String pathSource) {
@@ -133,6 +135,31 @@ public class ComponentsFactory implements IComponentsFactory {
 
         File dir = new File(url.getPath());
         return dir;
+    }
+
+    /**
+     * Gets the model file of the component.
+     * 
+     * @param componentName
+     * @param modelFileSuffix
+     * @return
+     */
+    public List<URL> getComponentModel(String componentName, String modelFileSuffix) {
+        List<URL> list = new ArrayList<URL>();
+        File file = getComponentsLocation(COMPONENTS_FOLDER_NAME + componentName);
+        if (file.exists() && file.isDirectory()) {
+            File[] files = file.listFiles();
+            for (int i = 0; i < files.length; i++) {
+                if (files[i].getName().endsWith(modelFileSuffix)) {
+                    try {
+                        list.add(files[i].toURI().toURL());
+                    } catch (Exception e) {
+                        ExceptionHandler.process(e);
+                    }
+                }
+            }
+        }
+        return list;
     }
 
     private ResourceBundle getComponentResourceBundle(IComponent currentComp, String source) {

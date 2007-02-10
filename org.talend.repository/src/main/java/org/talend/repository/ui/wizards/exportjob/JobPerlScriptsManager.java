@@ -29,9 +29,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -56,9 +58,11 @@ import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.designer.codegen.IModuleService;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
 import org.talend.designer.core.model.utils.emf.talendfile.JobType;
+import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
 import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.i18n.Messages;
+import org.talend.repository.model.ComponentsFactoryProvider;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.ResourceModelUtils;
 import org.talend.repository.ui.wizards.exportjob.JobScriptsExportWizardPage.ExportChoice;
@@ -70,6 +74,11 @@ import org.talend.repository.ui.wizards.exportjob.JobScriptsExportWizardPage.Exp
  * 
  */
 public class JobPerlScriptsManager extends JobScriptsManager {
+
+    /**
+     * 
+     */
+    private static final String COMPONENTS_FOLDER_NAME = "components";//$NON-NLS-1$
 
     private static final String ALL_PERL_INTERPRETERS = Messages.getString("JobPerlScriptsManager.allInterpreter"); //$NON-NLS-1$
 
@@ -106,8 +115,22 @@ public class JobPerlScriptsManager extends JobScriptsManager {
             boolean needChildren = exportChoice.get(ExportChoice.needJob) && exportChoice.get(ExportChoice.needContext);
             resources.addAll(getChildrenScripts(processItem, needChildren));
             process[i].addResources(resources);
+
+            getComponentModel(processItem, process[i]);
         }
         return Arrays.asList(process);
+    }
+
+    private void getComponentModel(ProcessItem processItem, ExportFileResource resource) {
+        EList nList = processItem.getProcess().getNode();
+        Set set = new HashSet(nList);
+        for (Iterator iter = set.iterator(); iter.hasNext();) {
+            NodeType nType = (NodeType) iter.next();
+            String componentName = nType.getComponentName();
+
+            List<URL> models = ComponentsFactoryProvider.getInstance().getComponentModel(componentName, ".pm");
+            resource.addResources(COMPONENTS_FOLDER_NAME + File.separatorChar + componentName, models);
+        }
     }
 
     private List<URL> getSource(ProcessItem processItem, boolean needChoice) {
@@ -241,16 +264,14 @@ public class JobPerlScriptsManager extends JobScriptsManager {
         String perlExt = ".pl"; //$NON-NLS-1$
 
         if (perlInterpreter == null || perlInterpreter.length() == 0) {
-            // throw new
-            // ProcessorException(Messages.getString("Processor.configurePerl"));
-            // //$NON-NLS-1$
+            perlInterpreter = "perl";//$NON-NLS-1$
         }
 
         String perlCode = project + projectSeparator + wordSeparator + jobName + perlExt;
 
         String contextCode = project + projectSeparator + wordSeparator + jobName + wordSeparator + context + perlExt;
 
-        String[] cmd = new String[] { perlInterpreter, perlCode, contextArg + contextCode };
+        String[] cmd = new String[] { perlInterpreter, "-I" + COMPONENTS_FOLDER_NAME, perlCode, contextArg + contextCode };
 
         StringBuffer sb = new StringBuffer();
         sb.append(""); //$NON-NLS-1$
@@ -342,8 +363,6 @@ public class JobPerlScriptsManager extends JobScriptsManager {
         if (sourceResouces == null) {
             try {
                 List<IResource> sourceFile = new ArrayList<IResource>();
-                // IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
-                // IProject prj = root.getProject(getCurrentProjectName());
                 Project project = ((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY))
                         .getProject();
                 IProject prj = ResourceModelUtils.getProject(project);

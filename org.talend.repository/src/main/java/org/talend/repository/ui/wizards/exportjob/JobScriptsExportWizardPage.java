@@ -23,16 +23,21 @@ package org.talend.repository.ui.wizards.exportjob;
 
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.EnumMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -54,7 +59,9 @@ import org.talend.core.context.RepositoryContext;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
 import org.talend.repository.i18n.Messages;
+import org.talend.repository.model.ComponentsFactoryProvider;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNode.ENodeType;
 import org.talend.repository.model.RepositoryNode.EProperties;
@@ -150,15 +157,13 @@ public class JobScriptsExportWizardPage extends WizardFileSystemResourceExportPa
                 IRepositoryObject repositoryObject = node.getObject();
                 if (repositoryObject.getProperty().getItem() instanceof ProcessItem) {
                     ProcessItem processItem = (ProcessItem) repositoryObject.getProperty().getItem();
-                    ExportFileResource resource = new ExportFileResource(processItem, processItem.getProperty()
-                            .getLabel());
+                    ExportFileResource resource = new ExportFileResource(processItem, processItem.getProperty().getLabel());
                     list.add(resource);
                 }
             }
         }
 
         process = list.toArray(new ExportFileResource[list.size()]);
-
     }
 
     private void addTreeNode(RepositoryNode node, String path, List<ExportFileResource> list) {
@@ -178,13 +183,12 @@ public class JobScriptsExportWizardPage extends WizardFileSystemResourceExportPa
             addTreeNode((RepositoryNode) nodes[i], path + "/" //$NON-NLS-1$
                     + ((RepositoryNode) nodes[i]).getProperties(EProperties.LABEL).toString(), list);
         }
-
     }
 
     private JobScriptsManager createJobScriptsManager() {
 
-        ECodeLanguage language = ((RepositoryContext) CorePlugin.getContext().getProperty(
-                Context.REPOSITORY_CONTEXT_KEY)).getProject().getLanguage();
+        ECodeLanguage language = ((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY))
+                .getProject().getLanguage();
 
         switch (language) {
         case PERL:
@@ -461,8 +465,7 @@ public class JobScriptsExportWizardPage extends WizardFileSystemResourceExportPa
         // about to invoke the operation so save our state
         saveWidgetValues();
         // boolean ok =executeExportOperation(new ArchiveFileExportOperationFullPath(process));
-        boolean ok = executeExportOperation(new ArchiveFileExportOperationFullPath(resourcesToExport,
-                getDestinationValue())); // path
+        boolean ok = executeExportOperation(new ArchiveFileExportOperationFullPath(resourcesToExport, getDestinationValue())); // path
         // can
         // like
         // name/name
@@ -486,7 +489,7 @@ public class JobScriptsExportWizardPage extends WizardFileSystemResourceExportPa
         if (regexMatcher.find()) {
             subjectString = regexMatcher.group(0);
         }
-        
+
         return subjectString.trim();
     }
 
@@ -659,4 +662,3 @@ public class JobScriptsExportWizardPage extends WizardFileSystemResourceExportPa
         return ""; //$NON-NLS-1$
     }
 }
- 

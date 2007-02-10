@@ -73,8 +73,6 @@ public class ArchiveFileExportOperationFullPath implements IRunnableWithProgress
 
     private String regEx = ".*.pl$|.*.pm$|.*.bat$|.*.sh$"; //$NON-NLS-1$
 
-    private String jobSourceNameRegEx = ".*.properties$|.*.item$"; //$NON-NLS-1$
-
     private List<ExportFileResource> resourcesListToExport;
 
     /**
