@@ -24,6 +24,7 @@ package org.talend.designer.rowgenerator.ui.tabs;
 import java.util.List;
 
 import org.eclipse.jface.viewers.CellEditor;
+import org.eclipse.jface.viewers.ComboBoxCellEditor;
 import org.eclipse.jface.viewers.ICellModifier;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
@@ -52,7 +53,7 @@ import org.talend.designer.rowgenerator.i18n.Messages;
 import org.talend.designer.rowgenerator.ui.editor.RowGenTableEditor2;
 
 /**
- *  qzhang class global comment. Detailled comment <br/>
+ * qzhang class global comment. Detailled comment <br/>
  * 
  * $Id: FunParaTableView.java,v 1.13 2007/01/31 05:20:52 pub Exp $
  * 
@@ -74,13 +75,18 @@ public class FunParaTableView {
     private TableViewer viewer;
 
     private RowGenTableEditor2 rowGenTableEditor2;
+
+    private Function function;
+
     /**
-     *  qzhang FunParaTableView constructor comment.
+     * qzhang FunParaTableView constructor comment.
      * 
      * @param parentComposite
      * @param mainCompositeStyle
      */
-    public FunParaTableView(Composite parentComposite, int mainCompositeStyle, RowGenTableEditor2 genTableEditor2) {
+    public FunParaTableView(Composite parentComposite, int mainCompositeStyle, RowGenTableEditor2 genTableEditor2,
+            Function function) {
+        this.function = function;
         this.composite = new Composite(parentComposite, mainCompositeStyle);
         this.rowGenTableEditor2 = genTableEditor2;
         GridLayout gridLayout = new GridLayout(1, true);
@@ -89,22 +95,27 @@ public class FunParaTableView {
         composite.setLayoutData(gridData);
         newTitle();
         newTable();
-
+        update();
     }
 
     /**
-     *  qzhang Comment method "newTitle".
+     * qzhang Comment method "newTitle".
      */
     private void newTitle() {
-        titleLabel = new Label(composite, SWT.NONE);
-        titleLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-        titleLabel.setVisible(true);
+        if (titleLabel == null || titleLabel.isDisposed()) {
+            titleLabel = new Label(composite, SWT.NONE);
+            titleLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+            titleLabel.setVisible(true);
+        }
     }
 
     /**
-     *  qzhang Comment method "newTable".
+     * qzhang Comment method "newTable".
      */
     private void newTable() {
+        if (table != null) {
+            table.dispose();
+        }
         table = new Table(composite, SWT.BORDER | SWT.MULTI | SWT.FULL_SELECTION);
         viewer = buildAndLayoutTable(table);
         attachContentProvider();
@@ -113,11 +124,12 @@ public class FunParaTableView {
     }
 
     /**
-     *  qzhang Comment method "attachCellEditors".
+     * qzhang Comment method "attachCellEditors".
      * 
      * @param viewer2
      * @param table2
      */
+    @SuppressWarnings("unchecked")
     private void attachCellEditors() {
         viewer.setCellModifier(new ICellModifier() {
 
@@ -146,7 +158,7 @@ public class FunParaTableView {
                     param.setComment(value.toString());
                 } else if (VALUE_PROPERTY.equals(property)) {
                     param.setValue(value.toString());
-                    rowGenTableEditor2.getTableViewerCreator().getTableViewer().refresh(); 
+                    rowGenTableEditor2.getTableViewerCreator().getTableViewer().refresh();
                 }
                 viewer.refresh(param);
             }
@@ -156,62 +168,20 @@ public class FunParaTableView {
         // new TextCellEditor(table) });
 
         viewer.setColumnProperties(new String[] { NAME_PROPERTY, VALUE_PROPERTY, COMMENT_PROPERTY });
-
-        final TableEditor editor = new TableEditor(table);
-        // The editor must have the same size as the cell and must
-        // not be any smaller than 50 pixels.
-        editor.horizontalAlignment = SWT.LEFT;
-        editor.grabHorizontal = true;
-        editor.minimumWidth = 50;
-        // editing the second column
-        final int eDITABLECOLUMN = 1;
-        table.addSelectionListener(new SelectionAdapter() {
-
-            public void widgetSelected(SelectionEvent e) {
-                // Clean up any previous editor control
-                Control oldEditor = editor.getEditor();
-                if (oldEditor != null) {
-                    oldEditor.dispose();
+        CellEditor valueCellEditor = new TextCellEditor(table);
+        if (function != null) {
+            for (Parameter para : (List<Parameter>) function.getParameters()) {
+                if (para instanceof ListParameter) {
+                    valueCellEditor = new ComboBoxCellEditor(table, ((ListParameter) para).getValues());
                 }
-                // Identify the selected row
-                TableItem item = (TableItem) e.item;
-                if (item == null) {
-                    return;
-                }
-                Parameter param = (Parameter) item.getData();
-
-                if (param instanceof ListParameter) {
-                    createCombo((ListParameter) param, item);
-                }
-                viewer.refresh(param);
             }
+        }
+        viewer.setCellEditors(new CellEditor[] { new TextCellEditor(table), valueCellEditor, new TextCellEditor(table) });
 
-            private void createCombo(final ListParameter list, TableItem item) {
-                // The control that will be the editor must be a child of the
-                // Table
-                final Combo combo = new Combo(table, SWT.PUSH);
-                combo.setItems(list.getValues());
-
-                combo.setFocus();
-                editor.setEditor(combo, item, eDITABLECOLUMN);
-                combo.setText(list.getValue());
-                combo.addSelectionListener(new SelectionAdapter() {
-
-                    public void widgetSelected(SelectionEvent e) {
-                        list.setValue(combo.getText());
-                        viewer.refresh(list);
-                        // editor.getItem().setText(EDITABLECOLUMN, text.getText());
-                    }
-
-                });
-
-            }
-
-        });
     }
 
     /**
-     *  qzhang Comment method "attachLabelProvider".
+     * qzhang Comment method "attachLabelProvider".
      * 
      * @param viewer2
      */
@@ -253,7 +223,7 @@ public class FunParaTableView {
     }
 
     /**
-     *  qzhang Comment method "attachContentProvider".
+     * qzhang Comment method "attachContentProvider".
      * 
      * @param viewer2
      */
@@ -307,20 +277,19 @@ public class FunParaTableView {
 
     // private ComboBoxCellEditor valueCombox;
 
-    @SuppressWarnings("unchecked") //$NON-NLS-1$
-    public void update(Function function) {
+    @SuppressWarnings("unchecked")//$NON-NLS-1$
+    private void update() {
+        if (function!= null)
         setTitle(function.getDescription());
-        updateData(function.getParameters());
+        // updateData(function.getParameters());
     }
 
-    public void updateData(List<Parameter> params) {
+    private void updateData(List<Parameter> params) {
         Parameter[] newParam = new Parameter[params.size()];
         for (int i = 0; i < newParam.length; i++) {
             newParam[i] = params.get(i);
         }
-        viewer
-                .setCellEditors(new CellEditor[] { new TextCellEditor(table), new TextCellEditor(table),
-                        new TextCellEditor(table) });
+
         // for (Parameter parameter : newParam) {
         // if (parameter.getValue().indexOf(",") != -1) {
         // String[] items = parameter.getValue().split(",");
@@ -354,6 +323,5 @@ public class FunParaTableView {
     public TableViewer getViewer() {
         return this.viewer;
     }
-    
-    
+
 }

@@ -21,6 +21,7 @@
 // ============================================================================
 package org.talend.designer.rowgenerator;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -31,8 +32,13 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.talend.core.model.components.IComponent;
+import org.talend.core.model.components.IODataComponent;
+import org.talend.core.model.components.IODataComponentContainer;
 import org.talend.core.model.metadata.IMetadataTable;
+import org.talend.designer.rowgenerator.external.data.ExternalRowGenTable;
+import org.talend.designer.rowgenerator.external.data.ExternalRowGeneratorData;
 import org.talend.designer.rowgenerator.external.data.ExternalRowGeneratorUiProperties;
+import org.talend.designer.rowgenerator.external.data.IOConnection;
 import org.talend.designer.rowgenerator.i18n.Messages;
 import org.talend.designer.rowgenerator.managers.RowGeneratorManager;
 import org.talend.designer.rowgenerator.ui.RowGeneratorUI;
@@ -50,6 +56,9 @@ public class RowGenMain {
     private RowGeneratorManager generatorManager;
 
     private RowGeneratorUI generatorUI;
+
+    private List<ExternalRowGenTable> outputTables;
+
     /**
      * qzhang RowGeneratorMain constructor comment.
      */
@@ -140,10 +149,10 @@ public class RowGenMain {
         //
         // public void controlResized(ControlEvent e) {
         // generatorUI.getDataTableView().attachLabelPosition();
-        //            }
+        // }
         //
-        //        });
-        //        shell.moveAbove(null);
+        // });
+        // shell.moveAbove(null);
         shell.open();
         return shell;
     }
@@ -164,6 +173,51 @@ public class RowGenMain {
      */
     public static boolean isStandAloneMode() {
         return false;
+    }
+
+    /**
+     * qzhang Comment method "buildExternalData".
+     * 
+     * @return
+     */
+    public ExternalRowGeneratorData buildExternalData() {
+        ExternalRowGeneratorData externalData = new ExternalRowGeneratorData();
+        outputTables = new ArrayList<ExternalRowGenTable>();
+        externalData.setOutputTables(outputTables);
+        
+        return externalData;
+    }
+
+    /**
+     * qzhang Comment method "createModelFromExternalData".
+     * 
+     * @param dataComponents
+     * @param metadataList
+     * @param externalData
+     * @param b
+     */
+    public void createModelFromExternalData(IODataComponentContainer dataComponents, List<IMetadataTable> metadataList,
+            ExternalRowGeneratorData externalData, boolean b) {
+        List<IODataComponent> inputsData = dataComponents.getInputs();
+        List<IODataComponent> ouputsData = dataComponents.getOuputs();
+
+        ArrayList<IOConnection> inputs = new ArrayList<IOConnection>(inputsData.size());
+        for (IODataComponent iData : inputsData) {
+            inputs.add(new IOConnection(iData));
+        }
+        ArrayList<IOConnection> outputs = new ArrayList<IOConnection>(ouputsData.size());
+        for (IODataComponent oData : ouputsData) {
+            outputs.add(new IOConnection(oData));
+        }
+        createModelFromExternalData(inputs, outputs, metadataList, externalData, false);
+    }
+
+    public void createModelFromExternalData(List<IOConnection> inputs, List<IOConnection> outputs,
+            List<IMetadataTable> outputMetadataTables, ExternalRowGeneratorData externalData, boolean checkProblems) {
+        if (externalData == null) {
+            externalData = new ExternalRowGeneratorData();
+        }
+        generatorManager.getUiManager().setUiProperties(externalData.getUiProperties());
     }
 
 }

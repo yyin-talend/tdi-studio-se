@@ -21,46 +21,32 @@
 // ============================================================================
 package org.talend.designer.rowgenerator.external.data;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-
 /**
- * qzhang class global comment. Detailled comment <br/>
+ * DOC qzhang class global comment. Detailled comment <br/>
  * 
- * $Id: ExternalRowGeneratorData.java,v 1.3 2007/01/31 05:20:52 pub Exp $
+ * $Id: talend-code-templates.xml 1 2007-2-10 下午03:25:43 (星期五, 29 九月 2006) qzhang $
  * 
  */
-public class ExternalRowGeneratorData implements Serializable {
+public class ExternalRowGenTable {
 
-    private List<ExternalRowGenTable> outputTables = new ArrayList<ExternalRowGenTable>();
+    private String name;
 
     /**
+     * Getter for name.
      * 
+     * @return the name
      */
-    private static final long serialVersionUID = 21232132141L;
-
-    private ExternalRowGeneratorUiProperties uiProperties = new ExternalRowGeneratorUiProperties();
-
-    public ExternalRowGeneratorUiProperties getUiProperties() {
-        return this.uiProperties;
-    }
-
-    public void setUiProperties(ExternalRowGeneratorUiProperties uiProperties) {
-        this.uiProperties = uiProperties;
-    }
-
-    public List<ExternalRowGenTable> getOutputTables() {
-        return outputTables;
+    public String getName() {
+        return this.name;
     }
 
     /**
-     * Sets the outputTables.
+     * Sets the name.
      * 
-     * @param outputTables the outputTables to set
+     * @param name the name to set
      */
-    public void setOutputTables(List<ExternalRowGenTable> outputTables) {
-        this.outputTables = outputTables;
+    public void setName(String name) {
+        this.name = name;
     }
 
 }

@@ -118,6 +118,7 @@ public class UIManager {
             reductAllData();
         }
         if (response == SWT.OK) {
+            mapperManager.getRowGeneratorComponent().setNumber(generatorUI.getTabFolderEditors().getRowNumber());
             saveAllData();
         }
         if (parent instanceof Shell) {
@@ -155,7 +156,7 @@ public class UIManager {
         return this.mapperManager;
     }
 
-    @SuppressWarnings("unchecked") //$NON-NLS-1$
+    @SuppressWarnings("unchecked")//$NON-NLS-1$
     protected void saveOneColData(MetadataColumnExt bean) {
         if (bean != null && bean.getFunction() != null && mapperManager.getRowGeneratorComponent() != null) {
             String newValue = "sub{"; //$NON-NLS-1$

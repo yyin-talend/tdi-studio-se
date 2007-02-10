@@ -609,6 +609,7 @@ public class RowGenTableEditor2 extends AbstractDataTableEditorView<IMetadataCol
             }
 
             public void set(IMetadataColumn bean, String value) {
+                getMetadataTableEditor().getRowGenUI().getTabFolderEditors().getProcessPreview().renameColumn(bean, value);
                 bean.setLabel(value);
             }
 

@@ -26,13 +26,13 @@ import java.util.List;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.custom.TableEditor;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Table;
@@ -172,7 +172,7 @@ public class FunParaTableView2 extends AbstractDataTableEditorView<Parameter> {
             }
 
             private void createCombo(final ListParameter list, TableItem item) {
-                final Combo combo = new Combo(table, SWT.PUSH);
+                final CCombo combo = new CCombo(table, SWT.NONE);
 
                 combo.setItems(list.getValues());
 
@@ -213,5 +213,10 @@ public class FunParaTableView2 extends AbstractDataTableEditorView<Parameter> {
 
         });
         this.getTableViewerCreator().setInputList(params);
+    }
+    public void dispose() {
+        if (getTable() != null) {
+            getTable().dispose();
+        }
     }
 }

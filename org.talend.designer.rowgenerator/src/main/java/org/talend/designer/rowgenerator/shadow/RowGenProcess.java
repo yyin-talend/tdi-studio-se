@@ -77,16 +77,22 @@ public class RowGenProcess extends Element implements IProcess {
 
     private boolean initDone = false;
 
+    private ShadowConnection cnx;
+    
+    private LogRowNode logRowNode;
+    
+    private RowGeneratorComponent component;
+    
     public RowGenProcess(RowGeneratorComponent component) {
         // NRO save the language in the process and load/test it.
-
+        this.component = component;
         contextManager = new RowGenContextManager();
         nodes.add(component);
 
-        LogRowNode logRowNode = new LogRowNode(LOGROW);
+        logRowNode = new LogRowNode(LOGROW);
         nodes.add(logRowNode);
 
-        ShadowConnection cnx = new ShadowConnection(component, logRowNode);
+        cnx = new ShadowConnection(component, logRowNode);
         initOutCompnoent(component, cnx);
         logRowNode.setInCnx(cnx);
 
@@ -113,6 +119,8 @@ public class RowGenProcess extends Element implements IProcess {
         // }
         // }
         // if (outgoingConnections == null || outgoingConnections.size() == 0 || !hasLogRow) {
+        ooutput = component.getOutgoingConnections();
+        
         List<IConnection> cnxs = new ArrayList<IConnection>();
         cnxs.add(cnx);
         component.setOutgoingConnections(cnxs);
@@ -120,6 +128,7 @@ public class RowGenProcess extends Element implements IProcess {
 
     }
 
+    private List<? extends IConnection> ooutput;
     public RowGenProcess(Property property, RowGeneratorComponent component) {
         this(component);
         this.property = property;
@@ -541,5 +550,9 @@ public class RowGenProcess extends Element implements IProcess {
     @Override
     public String getElementName() {
         return name;
+    }
+    public void reconnection() {
+        component.getOutgoingConnections().remove(cnx);
+        component.setOutgoingConnections(ooutput);
     }
 }

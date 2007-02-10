@@ -160,7 +160,8 @@ public class RowGeneratorUI {
                 if (item.getData() != null) {
                     Function fun = ((MetadataColumnExt) item.getData()).getFunction();
                     if (fun != null) {
-                        tabFolderEditors.getParameterEditor().update(fun);
+//                        tabFolderEditors.createTableView(fun);
+                         tabFolderEditors.getParameterEditor().update(fun);
                     }
                 }
             }

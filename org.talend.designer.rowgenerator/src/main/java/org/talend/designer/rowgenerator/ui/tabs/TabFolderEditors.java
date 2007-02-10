@@ -41,12 +41,13 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
 import org.talend.designer.rowgenerator.RowGeneratorComponent;
+import org.talend.designer.rowgenerator.data.Function;
 import org.talend.designer.rowgenerator.i18n.Messages;
 import org.talend.designer.rowgenerator.ui.RowGeneratorUI;
 import org.talend.designer.rowgenerator.ui.editor.RowGenTableEditor2;
 
 /**
- *  qzhang class global comment. Detailled comment <br/>
+ * qzhang class global comment. Detailled comment <br/>
  * 
  * $Id: TabFolderEditors.java,v 1.19 2007/01/31 05:20:52 pub Exp $
  */
@@ -77,7 +78,9 @@ public class TabFolderEditors extends CTabFolder {
     private RowGeneratorComponent component;
 
     private RowGenTableEditor2 genTableEditor2;
-    
+
+    private SashForm inOutMetaEditorContainer;
+
     public TabFolderEditors(Composite parent, int style, RowGeneratorComponent component, RowGenTableEditor2 genTableEditor2) {
         super(parent, style);
         this.genTableEditor2 = genTableEditor2;
@@ -90,17 +93,17 @@ public class TabFolderEditors extends CTabFolder {
     }
 
     /**
-     *  qzhang Comment method "createComponents".
+     * qzhang Comment method "createComponents".
      */
     private void createComponents() {
 
         CTabItem item = new CTabItem(tabFolderEditors, SWT.BORDER);
         item.setText(Messages.getString("TabFolderEditors.FunParamTab.TitleText")); //$NON-NLS-1$
-        SashForm inOutMetaEditorContainer = new SashForm(tabFolderEditors, SWT.SMOOTH | SWT.HORIZONTAL | SWT.SHADOW_OUT);
+        inOutMetaEditorContainer = new SashForm(tabFolderEditors, SWT.SMOOTH | SWT.HORIZONTAL | SWT.SHADOW_OUT);
         inOutMetaEditorContainer.setLayout(new RowLayout(SWT.HORIZONTAL));
         item.setControl(inOutMetaEditorContainer);
 
-        createTableView(inOutMetaEditorContainer);
+        createTableView();
 
         item = new CTabItem(tabFolderEditors, SWT.BORDER);
         item.setText(Messages.getString("TabFolderEditors.PreviewTab.TitleText")); //$NON-NLS-1$
@@ -122,8 +125,10 @@ public class TabFolderEditors extends CTabFolder {
         tabFolderEditors.setSelection(0);
     }
 
+    private Text rowText;
+
     /**
-     *  qzhang Comment method "createPreview".
+     * qzhang Comment method "createPreview".
      * 
      * @return
      */
@@ -159,8 +164,12 @@ public class TabFolderEditors extends CTabFolder {
         fill.marginWidth = 0;
 
         header.setLayout(fill);
-        final Text rowText = new Text(header, SWT.BORDER);
-        rowText.setText(component.getNumber());
+        rowText = new Text(header, SWT.BORDER);
+        String number = component.getNumber();
+        if (number == null || "".equals(number)) {
+            number = "10";
+        }
+        rowText.setText(number);
         GridDataFactory.swtDefaults().hint(50, SWT.DEFAULT).applyTo(rowText);
 
         // rowText.getBounds().width = 100;
@@ -211,13 +220,13 @@ public class TabFolderEditors extends CTabFolder {
     }
 
     /**
-     *  qzhang Comment method "createTableView".
+     * qzhang Comment method "createTableView".
      * 
      * @param inEditorContainer
      */
-    protected void createTableView(Composite inEditorContainer) {
-        inputParameterEditor = new FunParaTableView2(inEditorContainer, SWT.BORDER, genTableEditor2);
-        inEditorContainer.setData(inputParameterEditor);
+    public void createTableView() {
+        inputParameterEditor = new FunParaTableView2(inOutMetaEditorContainer, SWT.BORDER, genTableEditor2);
+        inOutMetaEditorContainer.setData(inputParameterEditor);
         inputParameterEditor.setTitle(""); //$NON-NLS-1$
     }
 
@@ -230,12 +239,16 @@ public class TabFolderEditors extends CTabFolder {
     }
 
     /**
-     *  qzhang Comment method "setRowGeneratorUI".
+     * qzhang Comment method "setRowGeneratorUI".
      * 
      * @param generatorUI
      */
     public void setRowGeneratorUI(RowGeneratorUI generatorUI) {
         this.generatorUI = generatorUI;
+    }
+
+    public String getRowNumber() {
+        return this.rowText.getText();
     }
 
 }

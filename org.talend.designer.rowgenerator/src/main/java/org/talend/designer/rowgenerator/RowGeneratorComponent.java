@@ -36,15 +36,19 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.SystemException;
+import org.talend.core.model.components.IODataComponent;
+import org.talend.core.model.components.IODataComponentContainer;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataTable;
 import org.talend.core.model.process.AbstractExternalNode;
 import org.talend.core.model.process.EParameterFieldType;
+import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.Problem;
 import org.talend.core.model.temp.ECodePart;
 import org.talend.designer.codegen.ICodeGeneratorService;
+import org.talend.designer.rowgenerator.external.data.ExternalRowGenTable;
 import org.talend.designer.rowgenerator.external.data.ExternalRowGeneratorData;
 import org.talend.designer.rowgenerator.shadow.RowGenPreviewCodeMain;
 import org.talend.designer.rowgenerator.utils.problems.ProblemsAnalyser;
@@ -102,6 +106,7 @@ public class RowGeneratorComponent extends AbstractExternalNode {
      */
     public int open(final Display display) {
         initRowGeneratorMain();
+        rowGeneratorMain.createModelFromExternalData(getIODataComponents(), getMetadataList(), externalData, true);
         Shell shell = rowGeneratorMain.createUI(display);
         while (!shell.isDisposed()) {
             try {
@@ -119,7 +124,7 @@ public class RowGeneratorComponent extends AbstractExternalNode {
         if (RowGenMain.isStandAloneMode()) {
             display.dispose();
         }
-        rowGeneratorMain.loadModelFromInternalData();
+        rowGeneratorMain.buildExternalData();
         return rowGeneratorMain.getMapperDialogResponse();
     }
 
@@ -232,7 +237,7 @@ public class RowGeneratorComponent extends AbstractExternalNode {
      * @see org.talend.core.model.process.IExternalNode#renameInputConnection(java.lang.String, java.lang.String)
      */
     public void renameInputConnection(String oldName, String newName) {
-
+        // do nothing, because tRowGenerator has not Input Connections.
     }
 
     /*
@@ -241,7 +246,18 @@ public class RowGeneratorComponent extends AbstractExternalNode {
      * @see org.talend.core.model.process.IExternalNode#renameOutputConnection(java.lang.String, java.lang.String)
      */
     public void renameOutputConnection(String oldName, String newName) {
-
+        if (oldName == null || newName == null) {
+            throw new NullPointerException();
+        }
+        if (externalData != null) {
+            List<ExternalRowGenTable> outputTables = externalData.getOutputTables();
+            for (ExternalRowGenTable table : outputTables) {
+                if (table.getName().equals(oldName)) {
+                    table.setName(newName);
+                    break;
+                }
+            }
+        }
     }
 
     /*
@@ -369,4 +385,16 @@ public class RowGeneratorComponent extends AbstractExternalNode {
         }
     }
 
+    @Override
+    public IODataComponentContainer getIODataComponents() {
+        IODataComponentContainer inAndOut = new IODataComponentContainer();
+
+        List<IODataComponent> outputs = inAndOut.getOuputs();
+        for (IConnection currentConnection : getOutgoingConnections()) {
+            IODataComponent component = new IODataComponent(currentConnection, metadataListOut.get(0));
+            outputs.add(component);
+        }
+        return inAndOut;
+
+    }
 }

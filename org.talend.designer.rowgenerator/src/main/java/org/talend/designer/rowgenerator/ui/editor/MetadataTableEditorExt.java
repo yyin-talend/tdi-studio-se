@@ -181,4 +181,9 @@ public class MetadataTableEditorExt extends MetadataTableEditor {
     public void setRowGenUI(RowGeneratorUI ui) {
         this.ui = ui;
     }
+    
+    public RowGeneratorUI getRowGenUI() {
+        return this.ui;
+    }
+    
 }
