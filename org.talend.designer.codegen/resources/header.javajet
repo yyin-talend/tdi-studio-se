@@ -83,6 +83,15 @@ import java.util.Date;
         public static char convertchar(String s) {
             return (s != null) ? s.charAt(0) : null;
         }
+        public static Character convertCharacter(String s) {
+            return (s != null) ? s.charAt(0) : null;
+        }
+        public static boolean convertboolean(String s) {
+            return Boolean.parseBoolean(s);
+        }
+        public static Boolean convertBoolean(String s) {
+            return Boolean.parseBoolean(s);
+        }
         public static java.util.Date convertDate(String s) {
             // PTODO MHIRT Convert Date
             return java.util.Calendar.getInstance().getTime();
