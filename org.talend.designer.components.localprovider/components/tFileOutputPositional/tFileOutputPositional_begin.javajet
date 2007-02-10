@@ -23,6 +23,8 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     IMetadataTable metadata = metadatas.get(0);
     if (metadata!=null) {
     
+    	String cid = node.getUniqueName();
+    	
     	String encoding = ElementParameterParser.getValue(node, "__ENCODING__");
         if (encoding!=null) {
             if (encoding.equals("")) {
@@ -44,38 +46,101 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
             node,
             "__APPEND__"
         ).equals("true");
-
         
-      
+        List<Map<String, String>> formats =
+            (List<Map<String,String>>)ElementParameterParser.getObjectValue(
+                node,
+                "__FORMATS__"
+            );
 %>
 				
-		java.io.BufferedWriter out<%=node.getUniqueName() %>=null;
+		java.io.BufferedWriter out<%=cid %>=null;
         try{
-        	out<%=node.getUniqueName() %> = new java.io.BufferedWriter(new java.io.OutputStreamWriter(
+        	out<%=cid %> = new java.io.BufferedWriter(new java.io.OutputStreamWriter(
         		new java.io.FileOutputStream(<%=filename %>, <%= isAppend%>),<%= encoding%>));
         }catch(java.io.UnsupportedEncodingException e){
         	e.printStackTrace();
         }
         
+        int[] sizes<%=cid %>=new int[<%=formats.size()%>];
+        
+        char[][] otherFormats<%=cid %>=new char[<%=formats.size()%>][3];
+    <%
+        for(int i=0;i<formats.size();i++){
+     		Map<String,String> format=formats.get(i);
+     	%> 	
+        	sizes<%=cid %>[<%=i%>]=<%=format.get("SIZE")%>;
+    		otherFormats<%=cid %>[<%=i%>][0]=<%=format.get("PADDING_CHAR")%>;
+    		otherFormats<%=cid %>[<%=i%>][1]=<%=format.get("ALIGN")%>;
+    		otherFormats<%=cid %>[<%=i%>][2]=<%=format.get("KEEP")%>;
+    <%
+        }
+        %>     
+        
+        String tempString<%=cid %>="";
+        int tempLength<%=cid %> = 0;
+        
 <%
-        if(isIncludeHeader&&!isAppend){
-        	List<Map<String, String>> formats =
-            (List<Map<String,String>>)ElementParameterParser.getObjectValue(
-                node,
-                "__FORMATS__"
-            );
+        if(isIncludeHeader&&!isAppend){      	
         	
     		List<IMetadataColumn> columns = metadata.getListColumns();
     		int sizeColumns = columns.size();
     		for (int i = 0; i < sizeColumns; i++) {
     			IMetadataColumn column = columns.get(i);
-    			Map<String,String> format=formats.get(i);
     		%>
-    			out<%=node.getUniqueName() %>.write(<%=codeGenArgument.getCurrentProjectName().toLowerCase()%>.routines.StringFormatter.format("<%=column.getLabel() %>",<%=format.get("SIZE")%>,<%=format.get("PADDING_CHAR")%>,
-    					<%=format.get("ALIGN")%>,<%=format.get("KEEP")%>));
+    			
+    			
+    			//get  and format output String begin
+    			tempString<%=cid %>="<%=column.getLabel() %>";
+    			tempLength<%=cid %>=tempString<%=cid %>.length();
+    			
+            	if (tempLength<%=cid %> > sizes<%=cid %>[<%=i%>]) {
+                    if (otherFormats<%=cid %>[<%=i%>][2] == 'A') {
+                        tempString<%=cid %> = tempString<%=cid %>.substring(tempLength<%=cid %>-sizes<%=cid %>[<%=i%>]);
+                    } else if (otherFormats<%=cid %>[<%=i%>][2] == 'L') {
+                        tempString<%=cid %> = tempString<%=cid %>.substring(tempLength<%=cid %>-sizes<%=cid %>[<%=i%>]);
+                    } else if (otherFormats<%=cid %>[<%=i%>][2] == 'M') {
+                        int begin=(tempLength<%=cid %>-sizes<%=cid %>[<%=i%>])/2;
+                        tempString<%=cid %> = tempString<%=cid %>.substring(begin, begin+sizes<%=cid %>[<%=i%>]);
+                    } else {
+                        tempString<%=cid %> = tempString<%=cid %>.substring(0, sizes<%=cid %>[<%=i%>]);
+                    }
+                }else if(tempLength<%=cid %><sizes<%=cid %>[<%=i%>]){
+                    StringBuilder result = new StringBuilder();
+                    if (otherFormats<%=cid %>[<%=i%>][1] == 'L') {
+                        result.append(tempString<%=cid %>);
+                        for(int i=0; i< sizes<%=cid %>[<%=i%>]-tempLength<%=cid %>; i++){
+                            result.append(otherFormats<%=cid %>[<%=i%>][0]);
+                        }
+                        tempString<%=cid %> = result.toString();
+                    } else if (otherFormats<%=cid %>[<%=i%>][1] == 'R') {
+                        for(int i=0; i< sizes<%=cid %>[<%=i%>]-tempLength<%=cid %>; i++){
+                            result.append(otherFormats<%=cid %>[<%=i%>][0]);
+                        }
+                        result.append(tempString<%=cid %>);
+                        tempString<%=cid %> = result.toString();
+                    } else {
+                        int temp= (sizes<%=cid %>[<%=i%>]-tempLength<%=cid %>)/2;
+                        for(int i=0;i<temp;i++){
+                            result.append(otherFormats<%=cid %>[<%=i%>][0]);
+                        }
+                        result.append(tempString<%=cid %>);
+                        for(int i=0;i<temp;i++){
+                            result.append(otherFormats<%=cid %>[<%=i%>][0]);
+                        }
+                        if((temp+temp)!=(sizes<%=cid %>[<%=i%>]-tempLength<%=cid %>)){
+                            result.append(otherFormats<%=cid %>[<%=i%>][0]);
+                        }
+                        tempString<%=cid %> = result.toString();
+                    }        
+                }
+                //get  and format output String end
+    			
+    			
+    			out<%=cid %>.write(tempString<%=cid %>);
     		<%
     		}%>
-    		out<%=node.getUniqueName() %>.write("\n");
+    		out<%=cid %>.write("\n");
 <%
 		}
     }
