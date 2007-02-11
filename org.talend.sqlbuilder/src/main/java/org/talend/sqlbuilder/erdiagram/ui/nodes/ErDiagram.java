@@ -99,13 +99,13 @@ public class ErDiagram extends Element {
         Map<String, Column> allColumns = new HashMap<String, Column>();
         for (Table table : tables) {
             for (Column column : (List<Column>) table.getColumns()) {
-                allColumns.put(table.getElementName() + "." + column.getElementName(), column); //$NON-NLS-1$
+                allColumns.put(table.getElementName().toLowerCase() + "." + column.getElementName().toLowerCase(), column); //$NON-NLS-1$
             }
         }
 
         for (String[] strings : relations) {
-            String pk = strings[0];
-            String fk = strings[1];
+            String pk = strings[0].toLowerCase();
+            String fk = strings[1].toLowerCase();
             if (allColumns.keySet().contains(fk) && allColumns.keySet().contains(pk)) {
                 new Relation(allColumns.get(pk), allColumns.get(fk));
             }

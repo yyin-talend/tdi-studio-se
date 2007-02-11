@@ -13,7 +13,8 @@ Require-Bundle: org.eclipse.ui,
  org.talend.commons,
  org.eclipse.jface.text,
  org.talend.libraries,
- org.eclipse.ui.editors
+ org.eclipse.ui.editors,
+ org.eclipse.core.resources
 Eclipse-LazyStart: true
 Bundle-SymbolicName: org.talend.sqlbuilder; singleton:=true
 Export-Package: org.talend.sqlbuilder,

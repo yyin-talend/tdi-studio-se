@@ -39,7 +39,7 @@ import org.talend.sqlbuilder.erdiagram.ui.nodes.ErDiagram;
 import org.talend.sqlbuilder.repository.utility.SQLBuilderRepositoryNodeManager;
 
 /**
- * DOC qzhang class global comment. Detailled comment <br/>
+ * qzhang class global comment. Detailled comment <br/>
  * 
  * $Id: talend.epf 1 2006-09-29 17:06:40 +0000 (ææäº, 29 ä¹æ 2006) nrousseau $
  * 
@@ -51,7 +51,7 @@ public class TableAddAction extends SelectionAction {
     private IWorkbenchPart part;
 
     /*
-     * (non-Javadoc)
+     * (non-Java)
      * 
      * @see org.eclipse.jface.action.Action#getId()
      */
@@ -62,7 +62,7 @@ public class TableAddAction extends SelectionAction {
     }
 
     /**
-     * DOC admin TableAddAction constructor comment.
+     * admin TableAddAction constructor comment.
      * 
      * @param part
      */
@@ -73,7 +73,7 @@ public class TableAddAction extends SelectionAction {
     }
 
     /*
-     * (non-Javadoc)
+     * (non-Java)
      * 
      * @see org.eclipse.gef.ui.actions.WorkbenchPartAction#calculateEnabled()
      */
@@ -83,11 +83,11 @@ public class TableAddAction extends SelectionAction {
     }
 
     /*
-     * (non-Javadoc)
+     * (non-Java)
      * 
      * @see org.eclipse.jface.action.Action#run()
      */
-    @SuppressWarnings("unchecked") //$NON-NLS-1$
+    @SuppressWarnings("unchecked")//$NON-NLS-1$
     @Override
     public void run() {
         ErdiagramDiagramEditor erdiagramDiagramEditor = (ErdiagramDiagramEditor) part;
@@ -95,6 +95,9 @@ public class TableAddAction extends SelectionAction {
         AddTablesDialog dialog = new AddTablesDialog(new Shell(control.getShell()));
         if (control.getParent() instanceof ErDiagramComposite) {
             ErDiagramComposite parentComposite = (ErDiagramComposite) control.getParent();
+            if (parentComposite.getNodes().size() < 1) {
+                return;
+            }
             dialog.setRootNode(SQLBuilderRepositoryNodeManager.getRoot(parentComposite.getNodes().get(0)));
         }
         if (Window.OK == dialog.open()) {

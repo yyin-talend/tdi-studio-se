@@ -55,13 +55,16 @@ public class ErDiagramDialog extends Dialog {
 
     private ErDiagramComposite erComposite;
 
+    private String title;
+
     /**
      * DOC admin ErDiagramDialog constructor comment.
      * 
      * @param parentShell
      */
-    public ErDiagramDialog(Shell parentShell) {
+    public ErDiagramDialog(Shell parentShell, String title) {
         super(parentShell);
+        this.title = title;
         setShellStyle(SWT.APPLICATION_MODAL | SWT.DIALOG_TRIM | SWT.RESIZE | SWT.RESIZE | SWT.MIN | SWT.MAX);
 
     }
@@ -73,9 +76,11 @@ public class ErDiagramDialog extends Dialog {
      */
     @Override
     protected void configureShell(Shell newShell) {
-        // TODO Auto-generated method stub
         super.configureShell(newShell);
         newShell.setText(Messages.getString("ErDiagramDialog.textGenerateSelectStatement")); //$NON-NLS-1$
+        if (title != null) {
+            newShell.setText(title);
+        }
     }
 
     /*
@@ -83,7 +88,7 @@ public class ErDiagramDialog extends Dialog {
      * 
      * @see org.eclipse.jface.dialogs.Dialog#createDialogArea(org.eclipse.swt.widgets.Composite)
      */
-    @SuppressWarnings("unchecked") //$NON-NLS-1$
+    @SuppressWarnings("unchecked")//$NON-NLS-1$
     @Override
     protected Control createDialogArea(Composite parent) {
         // create a composite with standard margins and spacing

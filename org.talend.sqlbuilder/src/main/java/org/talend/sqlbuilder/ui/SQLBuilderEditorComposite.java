@@ -66,6 +66,7 @@ import org.talend.sqlbuilder.SqlBuilderPlugin;
 import org.talend.sqlbuilder.actions.AbstractEditorAction;
 import org.talend.sqlbuilder.actions.ClearTextAction;
 import org.talend.sqlbuilder.actions.ExecSQLAction;
+import org.talend.sqlbuilder.actions.GUIModificationQueryAction;
 import org.talend.sqlbuilder.actions.OpenFileAction;
 import org.talend.sqlbuilder.actions.SQLEditorSessionSwitcher;
 import org.talend.sqlbuilder.actions.SaveFileAsAction;
@@ -89,7 +90,7 @@ import org.talend.sqlbuilder.util.UIUtils;
  * 
  */
 /**
- * DOC dev class global comment. Detailled comment <br/>
+ * dev class global comment. Detailled comment <br/>
  * 
  * $Id: talend-code-templates.xml,v 1.3 2006/11/01 05:38:28 nicolas Exp $
  * 
@@ -97,588 +98,570 @@ import org.talend.sqlbuilder.util.UIUtils;
 public class SQLBuilderEditorComposite extends Composite implements ISQLEditor {
 
     private Query queryObject;
-    
-	private AbstractEditorAction clearTextAction;
 
-	private CoolBar coolBar;
+    private AbstractEditorAction clearTextAction;
 
-	private CoolBarManager coolBarMgr;
-
-	private ToolBarManager defaultToolBarMgr;
+    private CoolBar coolBar;
 
-	private AbstractEditorAction execSQLAction;
-
-	private AbstractEditorAction openFileAction;
-
-	private AbstractEditorAction exportAction;
-
-	private AbstractEditorAction saveSQLAction;
-
-	private AbstractEditorAction explainAction;
-
-	private SQLEditorSessionSwitcher sessionSwitcher;
-
-	private ToolBarManager sessionToolBarMgr;
-
-	private RepositoryNode repositoryNode;
-
-	private boolean ifLimit = true;
-
-	public static final String[] SUPPORTED_FILETYPES = new String[] { "*.txt", //$NON-NLS-1$
-			"*.sql", "*.*" }; //$NON-NLS-1$ //$NON-NLS-2$
-
-	private Text maxResultText;
-
-	private StyledText colorText;
-
-	private CTabItem tabItem;
-
-	private ConnectionParameters connParam;
-
-	private boolean isDefaultEditor;
-
-	private final String language = "tsql"; //$NON-NLS-1$
-
-	private ISQLBuilderDialog dialog;
-
-	/**
-	 * SQLBuilderEditorComposite constructor.
-	 * 
-	 * @param parent
-	 * @param tabItem
-	 * @param isDefaultEditor
-	 * @param node
-	 * @param dialog
-	 * @param connParam2
-	 * @param style
-	 */
-	public SQLBuilderEditorComposite(Composite parent, CTabItem tabItem,
-			boolean isDefaultEditor, ConnectionParameters connParam,
-			RepositoryNode node, ISQLBuilderDialog d) {
-		super(parent, SWT.NONE);
-		dialog = d;
-		this.tabItem = tabItem;
-		this.isDefaultEditor = isDefaultEditor;
-		this.connParam = connParam;
-		repositoryNode = node;
-		initialContent(this);
-		this.setRepositoryNode(node);
-	}
-
-	/**
-	 * Initializes UI compoents.
-	 * 
-	 * @param parent
-	 */
-	private void initialContent(Composite parent) {
-
-		GridLayout layout = new GridLayout();
-		layout.numColumns = 1;
-		layout.marginLeft = 0;
-		layout.horizontalSpacing = 0;
-		layout.verticalSpacing = 0;
-		layout.marginWidth = 0;
-		layout.marginHeight = 0;
-
-		this.setLayout(layout);
-		createToolBar();
-		createEditorArea(parent);
-		createStatusArea(parent);
-	}
-
-	/**
-	 * Creates UI for editor.
-	 * 
-	 * @param parent
-	 */
-	private void createEditorArea(Composite parent) {
-
-		// create divider line
-		Composite div1 = new Composite(parent, SWT.NONE);
-		GridData lgid = new GridData();
-		lgid.grabExcessHorizontalSpace = true;
-		lgid.horizontalAlignment = GridData.FILL;
-		lgid.heightHint = 1;
-		lgid.verticalIndent = 1;
-		div1.setLayoutData(lgid);
-		div1.setBackground(parent.getShell().getDisplay().getSystemColor(
-				SWT.COLOR_WIDGET_NORMAL_SHADOW));
-
-		// create text viewer
-		GridData gid = new GridData();
-		gid.grabExcessHorizontalSpace = true;
-		gid.grabExcessVerticalSpace = true;
-		gid.horizontalAlignment = GridData.FILL;
-		gid.verticalAlignment = GridData.FILL;
-		
-		ColorManager colorManager = new ColorManager(CorePlugin.getDefault()
-				.getPreferenceStore());
-		colorText = new ColorStyledText(parent, SWT.BORDER | SWT.V_SCROLL
-				| SWT.H_SCROLL, colorManager, language);
-		Font font = new Font(parent.getDisplay(), "courier", 10, SWT.NONE); //$NON-NLS-1$
-		colorText.setFont(font);
-
-		GridData gd = new GridData(GridData.FILL_BOTH);
-		colorText.setLayoutData(gd);
-
-		colorText.setText(this.connParam.getQuery());
-
-		colorText.addVerifyKeyListener(new VerifyKeyListener() {
-
-			public void verifyKey(VerifyEvent event) {
-
-				if (event.stateMask == SWT.CTRL && event.keyCode == 13) {
-					event.doit = false;
-					execSQLAction.run();
-				}
-			}
-		});
-	}
-
-	/**
-	 * Creates proposal for editor.
-	 */
-	private void createEditorProposal() {
-		try {
-			// create KeyStroke use Ctrl+Space
-			KeyStroke keyStroke = KeyStroke.getInstance("Ctrl+Space"); //$NON-NLS-1$
-			IControlContentAdapter controlContentAdapter = new StyledTextContentAdapter();
-			IContentProposalProvider contentProposalProvider = new SQLEditorProposalProvider(
-					repositoryNode, language);
-
-			SQLEditorProposalAdapter contentProposalAdapter = new SQLEditorProposalAdapter(
-					colorText, controlContentAdapter, contentProposalProvider,
-					keyStroke, new char[] { ' ', '.' });
-			contentProposalAdapter.setPropagateKeys(true);
-			contentProposalAdapter
-					.setFilterStyle(ContentProposalAdapter.FILTER_CUMULATIVE);
-			contentProposalAdapter
-					.setProposalAcceptanceStyle(ContentProposalAdapter.PROPOSAL_REPLACE);
-			contentProposalAdapter
-					.setLabelProvider(new SQLEditorLabelProvider());
-			contentProposalAdapter.setAutoActivationDelay(10);
-			contentProposalAdapter.setPopupSize(new Point(300, 200));
-		} catch (Exception e) {
-			SqlBuilderPlugin.log(Messages.getString("SQLBuilderEditorComposite.logMessage"), e); //$NON-NLS-1$
-		}
-	}
-
-	/**
-	 * Creates UI for status bar.
-	 * 
-	 * @param parent
-	 */
-	private void createStatusArea(Composite parent) {
-		// create bottom status bar
-		Composite statusBar = new Composite(parent, SWT.NULL);
-
-		GridLayout statusBarLayout = new GridLayout();
-		statusBarLayout.numColumns = 3;
-		statusBarLayout.verticalSpacing = 0;
-		statusBarLayout.marginHeight = 0;
-		statusBarLayout.marginWidth = 0;
-		statusBarLayout.marginTop = 0;
-		statusBarLayout.marginBottom = 0;
-		statusBarLayout.marginRight = 5;
-		statusBarLayout.horizontalSpacing = 5;
-		statusBarLayout.verticalSpacing = 0;
-
-		statusBar.setLayout(statusBarLayout);
-
-		GridData statusBarGridData = new GridData(SWT.FILL, SWT.BOTTOM, true,
-				false);
-		statusBarGridData.verticalIndent = 0;
-		statusBarGridData.horizontalIndent = 0;
-		statusBar.setLayoutData(statusBarGridData);
-
-		// add status line manager
-		StatusLineManager statusMgr = new StatusLineManager();
-		statusMgr.createControl(statusBar);
-
-		GridData c1Grid = new GridData();
-		c1Grid.horizontalAlignment = SWT.FILL;
-		c1Grid.verticalAlignment = SWT.BOTTOM;
-		c1Grid.grabExcessHorizontalSpace = true;
-		c1Grid.grabExcessVerticalSpace = false;
-		statusMgr.getControl().setLayoutData(c1Grid);
-
-		// add checkbox for limiting results
-		GridData c2Grid = new GridData();
-		c2Grid.horizontalAlignment = SWT.RIGHT;
-		c2Grid.verticalAlignment = SWT.CENTER;
-		c2Grid.grabExcessHorizontalSpace = false;
-		c2Grid.grabExcessVerticalSpace = false;
-
-		final Button limitResults = new Button(statusBar, SWT.CHECK);
-
-		limitResults.setText(Messages.getString("SQL_Limit_Rows_2")); //$NON-NLS-1$
-		limitResults.setSelection(true);
-		limitResults.setLayoutData(c2Grid);
-
-		// add input field for result limit
-		GridData c3Grid = new GridData();
-		c3Grid.horizontalAlignment = SWT.RIGHT;
-		c3Grid.verticalAlignment = SWT.CENTER;
-		c3Grid.grabExcessHorizontalSpace = false;
-		c3Grid.grabExcessVerticalSpace = false;
-		c3Grid.widthHint = 30;
-
-		maxResultText = new Text(statusBar, SWT.BORDER | SWT.SINGLE);
-		maxResultText.setText(IConstants.MAX_SQL_ROWS);
-		maxResultText.setLayoutData(c3Grid);
-
-		limitResults.addMouseListener(new MouseAdapter() {
-
-			// enable/disable input field when checkbox is clicked
-			public void mouseUp(MouseEvent e) {
-				maxResultText.setEnabled(limitResults.getSelection());
-				ifLimit = limitResults.getSelection();
-			}
-		});
-	}
-
-	/**
-	 * Initialize toolbar.
-	 */
-	private void createToolBar() {
-		// create coolbar
-		coolBar = new CoolBar(this, SWT.NONE);
-		coolBarMgr = new CoolBarManager(coolBar);
-
-		GridData gid = new GridData();
-		gid.horizontalAlignment = GridData.FILL;
-		coolBar.setLayoutData(gid);
-
-		// initialize default actions
-		defaultToolBarMgr = new ToolBarManager(SWT.NONE);
-
-		execSQLAction = new ExecSQLAction(SQLResultComposite.getInstance(), this);
-
-		openFileAction = new OpenFileAction();
-		openFileAction.setEditor(this);
-
-		saveSQLAction = new SaveSQLAction(this.repositoryNode, connParam
-				.getQueryObject());
-		saveSQLAction.setEditor(this);
-
-		exportAction = new SaveFileAsAction();
-		exportAction.setEditor(this);
-
-		clearTextAction = new ClearTextAction();
-		clearTextAction.setEditor(this);
-
-		addDefaultActions(defaultToolBarMgr);
-
-		// initialize session actions
-		sessionToolBarMgr = new ToolBarManager(SWT.NONE);
-
-		sessionSwitcher = new SQLEditorSessionSwitcher(this);
-		sessionToolBarMgr.add(sessionSwitcher);
-
-		// add all toolbars to parent coolbar
-		coolBar.setLocked(true);
-		coolBarMgr.add(new ToolBarContributionItem(defaultToolBarMgr));
-		coolBarMgr.add(new ToolBarContributionItem(sessionToolBarMgr));
-
-		coolBarMgr.update(true);
-	}
-
-	/**
-	 * DOC dev Comment method "setExplainPlanAction".
-	 */
-	public AbstractEditorAction addExplainPlanAction(RepositoryNode node) {
-		
-		if (SQLBuilderRepositoryNodeManager.getDbTypeFromRepositoryNode(
-				node).startsWith("Oracle")) { //$NON-NLS-1$
-			return new OracleExplainPlanAction(
-					SQLResultComposite.getInstance(), this);
-		} else if (SQLBuilderRepositoryNodeManager.getDbTypeFromRepositoryNode(
-				node).startsWith("IBM DB2")) { //$NON-NLS-1$
-			return new DB2ExplainPlanAction(
-					SQLResultComposite.getInstance(), this);
-		}
-		return null;
-	}
-
-	/**
-	 * Adds resize listener.
-	 * 
-	 * @param listener
-	 */
-	public void addResizeListener(ControlListener listener) {
-
-		coolBar.addControlListener(listener);
-	}
-
-	/**
-	 * Adds default actions.
-	 * 
-	 * @param mgr
-	 */
-	private void addDefaultActions(ToolBarManager mgr) {
-		mgr.removeAll();
-		execSQLAction.setEnabled(true);
-		mgr.add(execSQLAction);
-		mgr.add(openFileAction);
-		mgr.add(saveSQLAction);
-		mgr.add(exportAction);
-		mgr.add(clearTextAction);
-		explainAction = addExplainPlanAction(repositoryNode);
-		if (explainAction != null) {
-			mgr.add(explainAction);
-		}
-	}
-
-	/**
-	 * Refresh actions availability on the toolbar.
-	 */
-	public void refresh(final boolean sessionChanged) {
-
-		this.getShell().getDisplay().asyncExec(new Runnable() {
-
-			public void run() {
-
-				if (sessionChanged) {
-
-					// reset actions
-					addDefaultActions(defaultToolBarMgr);
-					defaultToolBarMgr.update(true);
-				}
-
-				// update session toolbar
-				sessionToolBarMgr.update(true);
-
-				coolBarMgr.update(true);
-				coolBar.update();
-			}
-		});
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.talend.sqlbuilder.ui.editor.ISQLEditor#getSessionTreeNode()
-	 */
-	public RepositoryNode getRepositoryNode() {
-		return this.repositoryNode;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.talend.sqlbuilder.ui.editor.ISQLEditor#getIfLimit()
-	 */
-	public boolean getIfLimit() {
-		return ifLimit;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.talend.sqlbuilder.ui.editor.ISQLEditor#getMaxResult()
-	 */
-	public String getMaxResult() {
-		return maxResultText.getText();
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.talend.sqlbuilder.ui.editor.ISQLEditor#setRepositoryNode(org.talend.repository.model.RepositoryNode)
-	 */
-	public void setRepositoryNode(RepositoryNode node) {
-		Assert.isNotNull(node, Messages.getString("SQLBuilderEditorComposite.assertMessage")); //$NON-NLS-1$
-		this.repositoryNode = node;
-		this.setEditorTitle(this.repositoryNode);
-		sessionSwitcher.refreshSelectedRepository();
-		createEditorProposal();
-	}
-
-	/**
-	 * Sets tab title.
-	 * 
-	 * @param node
-	 */
-	private void setEditorTitle(RepositoryNode node) {
-		String dbName = SQLBuilderRepositoryNodeManager
-				.getDatabaseNameByRepositoryNode(node);
-		String title = ""; //$NON-NLS-1$
-		String repositoryName = getRepositoryName();
-		String selectedComponentName = connParam.getSelectedComponentName();
-		if (this.isDefaultEditor
-				&& (selectedComponentName != null && selectedComponentName
-						.length() != 0)) {
-			title = selectedComponentName + "."; //$NON-NLS-1$
-		}
-		title = title + dbName + "(" + repositoryName + ").sql"; //$NON-NLS-1$ //$NON-NLS-2$
-		if (connParam.getQueryObject() != null) {
-			title = Messages.getString("SQLBuilderEditorComposite.titleQuery") + connParam.getQueryObject().getLabel(); //$NON-NLS-1$
-		} else if (dialog.getConnParameters().getQueryObject() != null) {
+    private CoolBarManager coolBarMgr;
+
+    private ToolBarManager defaultToolBarMgr;
+
+    private AbstractEditorAction execSQLAction;
+
+    private AbstractEditorAction openFileAction;
+
+    private AbstractEditorAction exportAction;
+
+    private AbstractEditorAction saveSQLAction;
+
+    private AbstractEditorAction explainAction;
+
+    private SQLEditorSessionSwitcher sessionSwitcher;
+
+    private ToolBarManager sessionToolBarMgr;
+
+    private RepositoryNode repositoryNode;
+
+    private AbstractEditorAction guiModificationQueryAction;
+
+    private boolean ifLimit = true;
+
+    public static final String[] SUPPORTED_FILETYPES = new String[] { "*.txt", //$NON-NLS-1$
+            "*.sql", "*.*" }; //$NON-NLS-1$ //$NON-NLS-2$
+
+    private Text maxResultText;
+
+    private StyledText colorText;
+
+    private CTabItem tabItem;
+
+    private ConnectionParameters connParam;
+
+    private boolean isDefaultEditor;
+
+    private final String language = "tsql"; //$NON-NLS-1$
+
+    private ISQLBuilderDialog dialog;
+
+    /**
+     * SQLBuilderEditorComposite constructor.
+     * 
+     * @param parent
+     * @param tabItem
+     * @param isDefaultEditor
+     * @param node
+     * @param dialog
+     * @param connParam2
+     * @param style
+     */
+    public SQLBuilderEditorComposite(Composite parent, CTabItem tabItem, boolean isDefaultEditor, ConnectionParameters connParam,
+            RepositoryNode node, ISQLBuilderDialog d) {
+        super(parent, SWT.NONE);
+        dialog = d;
+        this.tabItem = tabItem;
+        this.isDefaultEditor = isDefaultEditor;
+        this.connParam = connParam;
+        repositoryNode = node;
+        initialContent(this);
+        this.setRepositoryNode(node);
+    }
+
+    /**
+     * Initializes UI compoents.
+     * 
+     * @param parent
+     */
+    private void initialContent(Composite parent) {
+
+        GridLayout layout = new GridLayout();
+        layout.numColumns = 1;
+        layout.marginLeft = 0;
+        layout.horizontalSpacing = 0;
+        layout.verticalSpacing = 0;
+        layout.marginWidth = 0;
+        layout.marginHeight = 0;
+
+        this.setLayout(layout);
+        createToolBar();
+        createEditorArea(parent);
+        createStatusArea(parent);
+    }
+
+    /**
+     * Creates UI for editor.
+     * 
+     * @param parent
+     */
+    private void createEditorArea(Composite parent) {
+
+        // create divider line
+        Composite div1 = new Composite(parent, SWT.NONE);
+        GridData lgid = new GridData();
+        lgid.grabExcessHorizontalSpace = true;
+        lgid.horizontalAlignment = GridData.FILL;
+        lgid.heightHint = 1;
+        lgid.verticalIndent = 1;
+        div1.setLayoutData(lgid);
+        div1.setBackground(parent.getShell().getDisplay().getSystemColor(SWT.COLOR_WIDGET_NORMAL_SHADOW));
+
+        // create text viewer
+        GridData gid = new GridData();
+        gid.grabExcessHorizontalSpace = true;
+        gid.grabExcessVerticalSpace = true;
+        gid.horizontalAlignment = GridData.FILL;
+        gid.verticalAlignment = GridData.FILL;
+
+        ColorManager colorManager = new ColorManager(CorePlugin.getDefault().getPreferenceStore());
+        colorText = new ColorStyledText(parent, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL, colorManager, language);
+        Font font = new Font(parent.getDisplay(), "courier", 10, SWT.NONE); //$NON-NLS-1$
+        colorText.setFont(font);
+
+        GridData gd = new GridData(GridData.FILL_BOTH);
+        colorText.setLayoutData(gd);
+
+        colorText.setText(this.connParam.getQuery());
+
+        colorText.addVerifyKeyListener(new VerifyKeyListener() {
+
+            public void verifyKey(VerifyEvent event) {
+
+                if (event.stateMask == SWT.CTRL && event.keyCode == 13) {
+                    event.doit = false;
+                    execSQLAction.run();
+                }
+            }
+        });
+    }
+
+    /**
+     * Creates proposal for editor.
+     */
+    private void createEditorProposal() {
+        try {
+            // create KeyStroke use Ctrl+Space
+            KeyStroke keyStroke = KeyStroke.getInstance("Ctrl+Space"); //$NON-NLS-1$
+            IControlContentAdapter controlContentAdapter = new StyledTextContentAdapter();
+            IContentProposalProvider contentProposalProvider = new SQLEditorProposalProvider(repositoryNode, language);
+
+            SQLEditorProposalAdapter contentProposalAdapter = new SQLEditorProposalAdapter(colorText, controlContentAdapter,
+                    contentProposalProvider, keyStroke, new char[] { ' ', '.' });
+            contentProposalAdapter.setPropagateKeys(true);
+            contentProposalAdapter.setFilterStyle(ContentProposalAdapter.FILTER_CUMULATIVE);
+            contentProposalAdapter.setProposalAcceptanceStyle(ContentProposalAdapter.PROPOSAL_REPLACE);
+            contentProposalAdapter.setLabelProvider(new SQLEditorLabelProvider());
+            contentProposalAdapter.setAutoActivationDelay(10);
+            contentProposalAdapter.setPopupSize(new Point(300, 200));
+        } catch (Exception e) {
+            SqlBuilderPlugin.log(Messages.getString("SQLBuilderEditorComposite.logMessage"), e); //$NON-NLS-1$
+        }
+    }
+
+    /**
+     * Creates UI for status bar.
+     * 
+     * @param parent
+     */
+    private void createStatusArea(Composite parent) {
+        // create bottom status bar
+        Composite statusBar = new Composite(parent, SWT.NULL);
+
+        GridLayout statusBarLayout = new GridLayout();
+        statusBarLayout.numColumns = 3;
+        statusBarLayout.verticalSpacing = 0;
+        statusBarLayout.marginHeight = 0;
+        statusBarLayout.marginWidth = 0;
+        statusBarLayout.marginTop = 0;
+        statusBarLayout.marginBottom = 0;
+        statusBarLayout.marginRight = 5;
+        statusBarLayout.horizontalSpacing = 5;
+        statusBarLayout.verticalSpacing = 0;
+
+        statusBar.setLayout(statusBarLayout);
+
+        GridData statusBarGridData = new GridData(SWT.FILL, SWT.BOTTOM, true, false);
+        statusBarGridData.verticalIndent = 0;
+        statusBarGridData.horizontalIndent = 0;
+        statusBar.setLayoutData(statusBarGridData);
+
+        // add status line manager
+        StatusLineManager statusMgr = new StatusLineManager();
+        statusMgr.createControl(statusBar);
+
+        GridData c1Grid = new GridData();
+        c1Grid.horizontalAlignment = SWT.FILL;
+        c1Grid.verticalAlignment = SWT.BOTTOM;
+        c1Grid.grabExcessHorizontalSpace = true;
+        c1Grid.grabExcessVerticalSpace = false;
+        statusMgr.getControl().setLayoutData(c1Grid);
+
+        // add checkbox for limiting results
+        GridData c2Grid = new GridData();
+        c2Grid.horizontalAlignment = SWT.RIGHT;
+        c2Grid.verticalAlignment = SWT.CENTER;
+        c2Grid.grabExcessHorizontalSpace = false;
+        c2Grid.grabExcessVerticalSpace = false;
+
+        final Button limitResults = new Button(statusBar, SWT.CHECK);
+
+        limitResults.setText(Messages.getString("SQL_Limit_Rows_2")); //$NON-NLS-1$
+        limitResults.setSelection(true);
+        limitResults.setLayoutData(c2Grid);
+
+        // add input field for result limit
+        GridData c3Grid = new GridData();
+        c3Grid.horizontalAlignment = SWT.RIGHT;
+        c3Grid.verticalAlignment = SWT.CENTER;
+        c3Grid.grabExcessHorizontalSpace = false;
+        c3Grid.grabExcessVerticalSpace = false;
+        c3Grid.widthHint = 30;
+
+        maxResultText = new Text(statusBar, SWT.BORDER | SWT.SINGLE);
+        maxResultText.setText(IConstants.MAX_SQL_ROWS);
+        maxResultText.setLayoutData(c3Grid);
+
+        limitResults.addMouseListener(new MouseAdapter() {
+
+            // enable/disable input field when checkbox is clicked
+            public void mouseUp(MouseEvent e) {
+                maxResultText.setEnabled(limitResults.getSelection());
+                ifLimit = limitResults.getSelection();
+            }
+        });
+    }
+
+    /**
+     * Initialize toolbar.
+     */
+    private void createToolBar() {
+        // create coolbar
+        coolBar = new CoolBar(this, SWT.NONE);
+        coolBarMgr = new CoolBarManager(coolBar);
+
+        GridData gid = new GridData();
+        gid.horizontalAlignment = GridData.FILL;
+        coolBar.setLayoutData(gid);
+
+        // initialize default actions
+        defaultToolBarMgr = new ToolBarManager(SWT.NONE);
+
+        execSQLAction = new ExecSQLAction(SQLResultComposite.getInstance(), this);
+
+        openFileAction = new OpenFileAction();
+        openFileAction.setEditor(this);
+
+        saveSQLAction = new SaveSQLAction(this.repositoryNode, connParam.getQueryObject());
+        saveSQLAction.setEditor(this);
+
+        exportAction = new SaveFileAsAction();
+        exportAction.setEditor(this);
+
+        clearTextAction = new ClearTextAction();
+        clearTextAction.setEditor(this);
+
+        guiModificationQueryAction = new GUIModificationQueryAction(repositoryNode, connParam, dialog);
+        guiModificationQueryAction.setEditor(this);
+        
+        addDefaultActions(defaultToolBarMgr);
+
+        // initialize session actions
+        sessionToolBarMgr = new ToolBarManager(SWT.NONE);
+
+        sessionSwitcher = new SQLEditorSessionSwitcher(this);
+        sessionToolBarMgr.add(sessionSwitcher);
+
+        // add all toolbars to parent coolbar
+        coolBar.setLocked(true);
+        coolBarMgr.add(new ToolBarContributionItem(defaultToolBarMgr));
+        coolBarMgr.add(new ToolBarContributionItem(sessionToolBarMgr));
+
+        coolBarMgr.update(true);
+    }
+
+    /**
+     * dev Comment method "setExplainPlanAction".
+     */
+    public AbstractEditorAction addExplainPlanAction(RepositoryNode node) {
+
+        if (SQLBuilderRepositoryNodeManager.getDbTypeFromRepositoryNode(node).startsWith("Oracle")) { //$NON-NLS-1$
+            return new OracleExplainPlanAction(SQLResultComposite.getInstance(), this);
+        } else if (SQLBuilderRepositoryNodeManager.getDbTypeFromRepositoryNode(node).startsWith("IBM DB2")) { //$NON-NLS-1$
+            return new DB2ExplainPlanAction(SQLResultComposite.getInstance(), this);
+        }
+        return null;
+    }
+
+    /**
+     * Adds resize listener.
+     * 
+     * @param listener
+     */
+    public void addResizeListener(ControlListener listener) {
+
+        coolBar.addControlListener(listener);
+    }
+
+    /**
+     * Adds default actions.
+     * 
+     * @param mgr
+     */
+    private void addDefaultActions(ToolBarManager mgr) {
+        mgr.removeAll();
+        execSQLAction.setEnabled(true);
+        mgr.add(execSQLAction);
+        mgr.add(openFileAction);
+        mgr.add(saveSQLAction);
+        mgr.add(exportAction);
+        mgr.add(clearTextAction);
+        explainAction = addExplainPlanAction(repositoryNode);
+        if (explainAction != null) {
+            mgr.add(explainAction);
+        }
+        mgr.add(guiModificationQueryAction);
+    }
+
+    /**
+     * Refresh actions availability on the toolbar.
+     */
+    public void refresh(final boolean sessionChanged) {
+
+        this.getShell().getDisplay().asyncExec(new Runnable() {
+
+            public void run() {
+
+                if (sessionChanged) {
+
+                    // reset actions
+                    addDefaultActions(defaultToolBarMgr);
+                    defaultToolBarMgr.update(true);
+                }
+
+                // update session toolbar
+                sessionToolBarMgr.update(true);
+
+                coolBarMgr.update(true);
+                coolBar.update();
+            }
+        });
+    }
+
+    /*
+     * (non-Java)
+     * 
+     * @see org.talend.sqlbuilder.ui.editor.ISQLEditor#getSessionTreeNode()
+     */
+    public RepositoryNode getRepositoryNode() {
+        return this.repositoryNode;
+    }
+
+    /*
+     * (non-Java)
+     * 
+     * @see org.talend.sqlbuilder.ui.editor.ISQLEditor#getIfLimit()
+     */
+    public boolean getIfLimit() {
+        return ifLimit;
+    }
+
+    /*
+     * (non-Java)
+     * 
+     * @see org.talend.sqlbuilder.ui.editor.ISQLEditor#getMaxResult()
+     */
+    public String getMaxResult() {
+        return maxResultText.getText();
+    }
+
+    /*
+     * (non-Java)
+     * 
+     * @see org.talend.sqlbuilder.ui.editor.ISQLEditor#setRepositoryNode(org.talend.repository.model.RepositoryNode)
+     */
+    public void setRepositoryNode(RepositoryNode node) {
+        Assert.isNotNull(node, Messages.getString("SQLBuilderEditorComposite.assertMessage")); //$NON-NLS-1$
+        this.repositoryNode = node;
+        this.setEditorTitle(this.repositoryNode);
+        sessionSwitcher.refreshSelectedRepository();
+        createEditorProposal();
+    }
+
+    /**
+     * Sets tab title.
+     * 
+     * @param node
+     */
+    private void setEditorTitle(RepositoryNode node) {
+        String dbName = SQLBuilderRepositoryNodeManager.getDatabaseNameByRepositoryNode(node);
+        String title = ""; //$NON-NLS-1$
+        String repositoryName = getRepositoryName();
+        String selectedComponentName = connParam.getSelectedComponentName();
+        if (this.isDefaultEditor && (selectedComponentName != null && selectedComponentName.length() != 0)) {
+            title = selectedComponentName + "."; //$NON-NLS-1$
+        }
+        title = title + dbName + "(" + repositoryName + ").sql"; //$NON-NLS-1$ //$NON-NLS-2$
+        if (connParam.getQueryObject() != null) {
+            title = Messages.getString("SQLBuilderEditorComposite.titleQuery") + connParam.getQueryObject().getLabel(); //$NON-NLS-1$
+        } else if (dialog.getConnParameters().getQueryObject() != null) {
             title = Messages.getString("SQLBuilderEditorComposite.titleQuery") + dialog.getConnParameters().getQueryObject().getLabel(); //$NON-NLS-1$
         }
-		tabItem.setText(title);
-	}
+        tabItem.setText(title);
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.talend.sqlbuilder.ui.editor.ISQLEditor#getRepositoryName()
-	 */
-	public String getRepositoryName() {
-		if (repositoryNode == null) {
-			return ""; //$NON-NLS-1$
-		}
-		String repositoryName = ((SqlBuilderRepositoryObject) repositoryNode
-				.getObject()).getRepositoryName();
-		return repositoryName;
-	}
+    /*
+     * (non-Java)
+     * 
+     * @see org.talend.sqlbuilder.ui.editor.ISQLEditor#getRepositoryName()
+     */
+    public String getRepositoryName() {
+        if (repositoryNode == null) {
+            return ""; //$NON-NLS-1$
+        }
+        String repositoryName = ((SqlBuilderRepositoryObject) repositoryNode.getObject()).getRepositoryName();
+        return repositoryName;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.talend.sqlbuilder.ui.editor.ISQLEditor#getSQLToBeExecuted()
-	 */
-	public String getSQLToBeExecuted() {
-		return colorText.getText();
-	}
+    /*
+     * (non-Java)
+     * 
+     * @see org.talend.sqlbuilder.ui.editor.ISQLEditor#getSQLToBeExecuted()
+     */
+    public String getSQLToBeExecuted() {
+        return colorText.getText();
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.talend.sqlbuilder.ui.editor.ISQLEditor#setEditorContent(org.talend.sqlbuilder.util.ConnectionParameters)
-	 */
-	public void setEditorContent(ConnectionParameters connectionParameters) {
-		this.connParam = connectionParameters;
-		this.colorText.setText(connectionParameters.getQuery());
+    /*
+     * (non-Java)
+     * 
+     * @see org.talend.sqlbuilder.ui.editor.ISQLEditor#setEditorContent(org.talend.sqlbuilder.util.ConnectionParameters)
+     */
+    public void setEditorContent(ConnectionParameters connectionParameters) {
+        this.connParam = connectionParameters;
+        this.colorText.setText(connectionParameters.getQuery());
 
-	}
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.talend.sqlbuilder.ui.editor.ISQLEditor#doSaveAs()
-	 */
-	public void doSaveAs() {
-		FileDialog fileDialog = new FileDialog(this.getShell(), SWT.SAVE);
-		fileDialog.setText(Messages.getString("SQLEditor.SaveAsDialog.Title")); //$NON-NLS-1$
-		fileDialog.setFilterExtensions(SUPPORTED_FILETYPES);
-		fileDialog.setFilterNames(SUPPORTED_FILETYPES);
-		fileDialog.setFileName(tabItem.getText());
+    /*
+     * (non-Java)
+     * 
+     * @see org.talend.sqlbuilder.ui.editor.ISQLEditor#doSaveAs()
+     */
+    public void doSaveAs() {
+        FileDialog fileDialog = new FileDialog(this.getShell(), SWT.SAVE);
+        fileDialog.setText(Messages.getString("SQLEditor.SaveAsDialog.Title")); //$NON-NLS-1$
+        fileDialog.setFilterExtensions(SUPPORTED_FILETYPES);
+        fileDialog.setFilterNames(SUPPORTED_FILETYPES);
+        fileDialog.setFileName(tabItem.getText());
 
-		String path = fileDialog.open();
-		if (path == null) {
-			return;
-		}
-		BufferedWriter writer = null;
-		try {
+        String path = fileDialog.open();
+        if (path == null) {
+            return;
+        }
+        BufferedWriter writer = null;
+        try {
 
-			File file = new File(path);
-			if (file.exists()) {
-				file.delete();
-			}
+            File file = new File(path);
+            if (file.exists()) {
+                file.delete();
+            }
 
-			file.createNewFile();
+            file.createNewFile();
 
-			String content = colorText.getText();
-			writer = new BufferedWriter(new FileWriter(file));
-			writer.write(content, 0, content.length());
+            String content = colorText.getText();
+            writer = new BufferedWriter(new FileWriter(file));
+            writer.write(content, 0, content.length());
 
-		} catch (Exception e) {
+        } catch (Exception e) {
 
-			UIUtils.openErrorDialog(Messages
-					.getString("SQLEditor.SaveAsDialog.Error"), e); //$NON-NLS-1$
-		} finally {
-			if (writer != null) {
-				try {
-					writer.close();
-				} catch (Exception e) {
-					SqlBuilderPlugin.log(e.getMessage(), e);
-				}
-			}
+            UIUtils.openErrorDialog(Messages.getString("SQLEditor.SaveAsDialog.Error"), e); //$NON-NLS-1$
+        } finally {
+            if (writer != null) {
+                try {
+                    writer.close();
+                } catch (Exception e) {
+                    SqlBuilderPlugin.log(e.getMessage(), e);
+                }
+            }
 
-		}
-	}
+        }
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.talend.sqlbuilder.ui.editor.ISQLEditor#clearText()
-	 */
-	public void clearText() {
-		this.colorText.setText(""); //$NON-NLS-1$
-	}
+    /*
+     * (non-Java)
+     * 
+     * @see org.talend.sqlbuilder.ui.editor.ISQLEditor#clearText()
+     */
+    public void clearText() {
+        this.colorText.setText(""); //$NON-NLS-1$
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.talend.sqlbuilder.ui.editor.ISQLEditor#setEditorContent(java.lang.String)
-	 */
-	public void setEditorContent(String string) {
-		this.colorText.setText(string);
-	}
+    /*
+     * (non-Java)
+     * 
+     * @see org.talend.sqlbuilder.ui.editor.ISQLEditor#setEditorContent(java.lang.String)
+     */
+    public void setEditorContent(String string) {
+        this.colorText.setText(string);
+    }
 
     public String getEditorContent() {
         return colorText.getText();
     }
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.talend.sqlbuilder.ui.editor.ISQLEditor#saveSQL()
-	 */
-	public void doSaveSQL(Query query2) {
-		// TODO Auto-generated method stub
-		SQLBuilderRepositoryNodeManager repositoryNodeManager = new SQLBuilderRepositoryNodeManager();
-		List<String> existingName = repositoryNodeManager
-				.getALLQueryLabels(repositoryNode);
-		if (query2 != null
-				&& existingName.contains(query2.getLabel())) {
-			query2.setValue(colorText.getText());
-			repositoryNodeManager.saveQuery(repositoryNode, query2);
-			dialog.refreshNode(repositoryNode);
-			return;
-		}
-		SQLPropertyDialog saveSQLDialog = new SQLPropertyDialog(
-				this.getShell(), existingName);
-		saveSQLDialog.setSql(this.colorText.getText());
-//		saveSQLDialog.setQuery(connParam.getQueryObject());
-		if (Window.OK == saveSQLDialog.open()) {
-			Query query = saveSQLDialog.getQuery();
-			repositoryNodeManager.saveQuery(repositoryNode, query);
-			dialog.refreshNode(repositoryNode);
-		}
-	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.talend.sqlbuilder.ui.editor.ISQLEditor#getSessionTreeNode()
-	 */
-	public SessionTreeNode getSessionTreeNode() {
-		return null;
-	}
+    /*
+     * (non-Java)
+     * 
+     * @see org.talend.sqlbuilder.ui.editor.ISQLEditor#saveSQL()
+     */
+    public void doSaveSQL(Query query2) {
+        SQLBuilderRepositoryNodeManager repositoryNodeManager = new SQLBuilderRepositoryNodeManager();
+        List<String> existingName = repositoryNodeManager.getALLQueryLabels(repositoryNode);
+        if (query2 != null && existingName.contains(query2.getLabel())) {
+            query2.setValue(colorText.getText());
+            repositoryNodeManager.saveQuery(repositoryNode, query2);
+            dialog.refreshNode(repositoryNode);
+            return;
+        }
+        SQLPropertyDialog saveSQLDialog = new SQLPropertyDialog(this.getShell(), existingName);
+        saveSQLDialog.setSql(this.colorText.getText());
+        // saveSQLDialog.setQuery(connParam.getQueryObject());
+        if (Window.OK == saveSQLDialog.open()) {
+            Query query = saveSQLDialog.getQuery();
+            repositoryNodeManager.saveQuery(repositoryNode, query);
+            dialog.refreshNode(repositoryNode);
+        }
+    }
 
-	public void setRepositoryNode(SessionTreeNode node) {
+    /*
+     * (non-Java)
+     * 
+     * @see org.talend.sqlbuilder.ui.editor.ISQLEditor#getSessionTreeNode()
+     */
+    public SessionTreeNode getSessionTreeNode() {
+        return null;
+    }
 
-	}
+    public void setRepositoryNode(SessionTreeNode node) {
 
-	public boolean getDefaultEditor() {
-		return this.isDefaultEditor;
-	}
-	
-	/**
-	 * Getter for connParam.
-	 * @return the connParam
-	 */
-	public ConnectionParameters getConnParam() {
-		return this.connParam;
-	}
+    }
 
-    
+    public boolean getDefaultEditor() {
+        return this.isDefaultEditor;
+    }
+
+    /**
+     * Getter for connParam.
+     * 
+     * @return the connParam
+     */
+    public ConnectionParameters getConnParam() {
+        return this.connParam;
+    }
+
     public Query getQueryObject() {
         return this.queryObject;
     }
 
-    
     public void setQueryObject(Query queryObject) {
         this.queryObject = queryObject;
     }

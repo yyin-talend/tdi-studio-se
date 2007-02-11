@@ -67,7 +67,7 @@ public class GenerateSelectSQLAction extends SelectionProviderAction {
 
     private boolean isDefaultEditor;
 
-    @SuppressWarnings("unchecked") //$NON-NLS-1$
+    @SuppressWarnings("unchecked")//$NON-NLS-1$
     public GenerateSelectSQLAction(ISelectionProvider provider, ISQLBuilderDialog dialog, boolean isDefaultEditor) {
         super(provider, Messages.getString("GenerateSelectSQLAction.textCenerateSelectStatement")); //$NON-NLS-1$
         this.provider = provider;
@@ -82,7 +82,7 @@ public class GenerateSelectSQLAction extends SelectionProviderAction {
         init();
     }
 
-    @SuppressWarnings("unchecked") //$NON-NLS-1$
+    @SuppressWarnings("unchecked")//$NON-NLS-1$
     public void init() {
         selectedNodes.clear();
         IStructuredSelection structuredSelection = (IStructuredSelection) provider.getSelection();
@@ -124,7 +124,8 @@ public class GenerateSelectSQLAction extends SelectionProviderAction {
             SQLBuilderRepositoryNodeManager.increaseALLRepositoryNode();
             SQLBuilderRepositoryNodeManager.setIncrease(true);
             String query = null;
-            ErDiagramDialog erDiagramDialog = new ErDiagramDialog(dialog.getShell());
+            ErDiagramDialog erDiagramDialog = new ErDiagramDialog(dialog.getShell(), Messages
+                    .getString("GenerateSelectSQLAction.textCenerateSelectStatement")); //$NON-NLS-1$
             erDiagramDialog.setNodes(selectedNodes);
             if (Window.OK == erDiagramDialog.open()) {
                 query = erDiagramDialog.getSql();

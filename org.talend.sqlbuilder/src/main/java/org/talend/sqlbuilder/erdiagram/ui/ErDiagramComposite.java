@@ -46,7 +46,7 @@ import org.talend.sqlbuilder.repository.utility.EMFRepositoryNodeManager;
 import org.talend.sqlbuilder.repository.utility.SQLBuilderRepositoryNodeManager;
 
 /**
- * DOC qzhang class global comment. Detailled comment <br/>
+ *  qzhang class global comment. Detailled comment <br/>
  * 
  * $Id: talend.epf 1 2006-09-29 17:06:40 +0000 (ææäº, 29 ä¹æ 2006) nrousseau $
  * 
@@ -57,10 +57,8 @@ public class ErDiagramComposite extends Composite {
 
     private ErdiagramDiagramEditor editor;
 
-    private EMFRepositoryNodeManager nodeManager = new EMFRepositoryNodeManager();
-
     /**
-     * DOC admin ErDiagramComposite constructor comment.
+     *  admin ErDiagramComposite constructor comment.
      * 
      * @param parent
      * @param style
@@ -71,9 +69,9 @@ public class ErDiagramComposite extends Composite {
     }
 
     /**
-     * DOC admin Comment method "addErDiagramEditor".
+     *  admin Comment method "addErDiagramEditor".
      */
-    @SuppressWarnings("unchecked") //$NON-NLS-1$
+    @SuppressWarnings("unchecked")//$NON-NLS-1$
     private void addErDiagramEditor() {
         GridData gridData = new GridData(GridData.FILL_BOTH);
         this.setLayoutData(gridData);
@@ -91,21 +89,21 @@ public class ErDiagramComposite extends Composite {
     }
 
     /**
-     * DOC admin Comment method "createErDiagram".
+     *  admin Comment method "createErDiagram".
      * 
      * @return
      */
     private ErDiagram createErDiagram() {
         ErDiagram erDiagram = new ErDiagram();
-        erDiagram.setNodeManager(nodeManager);
+        erDiagram.setNodeManager(EMFRepositoryNodeManager.getInstance());
         List<MetadataColumn> selectedColumns = new ArrayList<MetadataColumn>();
-        List<MetadataTable> tables = nodeManager.getTables(getNodes(),selectedColumns);
+        List<MetadataTable> tables = EMFRepositoryNodeManager.getInstance().getTables(getNodes(), selectedColumns);
 
         erDiagram.setMetadataTables(tables);
-        List<String[]> fks = nodeManager.getPKFromTables(tables);
+        List<String[]> fks = EMFRepositoryNodeManager.getInstance().getPKFromTables(tables);
         for (MetadataTable metadataTable : tables) {
             Table table = new Table();
-            table.setMetadataTable(metadataTable,selectedColumns);
+            table.setMetadataTable(metadataTable, selectedColumns);
             table.setErDiagram(erDiagram);
             erDiagram.addTable(table);
         }
@@ -119,7 +117,7 @@ public class ErDiagramComposite extends Composite {
         return connection.getDatabaseType();
     }
 
-    @SuppressWarnings("unchecked") //$NON-NLS-1$
+    @SuppressWarnings("unchecked")//$NON-NLS-1$
     public String getSqlStatement() {
         String sql = ""; //$NON-NLS-1$
         List<String> tables = new ArrayList<String>();
@@ -178,7 +176,7 @@ public class ErDiagramComposite extends Composite {
     }
 
     /**
-     * DOC admin Comment method "getSelectStatement".
+     * admin Comment method "getSelectStatement".
      * 
      * @param tables
      * @param columns

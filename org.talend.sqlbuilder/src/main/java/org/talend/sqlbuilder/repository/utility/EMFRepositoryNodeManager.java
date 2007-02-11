@@ -38,7 +38,6 @@ import org.talend.core.model.metadata.builder.database.ExtractMetaDataUtils;
 import org.talend.core.model.properties.DatabaseConnectionItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.repository.model.RepositoryNode;
-import org.talend.repository.model.RepositoryNode.EProperties;
 import org.talend.sqlbuilder.Messages;
 import org.talend.sqlbuilder.SqlBuilderPlugin;
 import org.talend.sqlbuilder.dbstructure.RepositoryNodeType;
@@ -51,11 +50,23 @@ import org.talend.sqlbuilder.dbstructure.DBTreeProvider.MetadataTableRepositoryO
  * $Id: talend-code-templates.xml 1 2006-09-29 17:06:40 +0000 (Fri, 29 Sep 2006) nrousseau $
  * 
  */
-public class EMFRepositoryNodeManager {
+public final class EMFRepositoryNodeManager {
+
+    public static final String TABLE_ALIAS_PREFIX = "TableAlias:";
+
+    public static final String COLUMN_ALIAS_PREFIX = "ColumnAlias:";
+
+    private static EMFRepositoryNodeManager instance = new EMFRepositoryNodeManager();
 
     private DatabaseMetaData dbMetaData;
 
     private SQLBuilderRepositoryNodeManager rnmanager = new SQLBuilderRepositoryNodeManager();
+
+    /**
+     * qzhang EMFRepositoryNodeManager constructor comment.
+     */
+    private EMFRepositoryNodeManager() {
+    }
 
     /**
      * dev Comment method "getQueryByLabel".
@@ -65,7 +76,7 @@ public class EMFRepositoryNodeManager {
      * @return
      */
     @SuppressWarnings("unchecked")//$NON-NLS-1$
-    public static Query getQueryByLabel(RepositoryNode node, String label) {
+    public Query getQueryByLabel(RepositoryNode node, String label) {
         RepositoryNode root = null;
         if (node.getObjectType().equals(ERepositoryObjectType.METADATA_CON_QUERY)) {
             root = node.getParent().getParent();
@@ -182,28 +193,208 @@ public class EMFRepositoryNodeManager {
                 SqlBuilderPlugin.log(Messages.getString("EMFRepositoryNodeManager.logMessage"), e); //$NON-NLS-1$
             }
         }
+        if (!relations.isEmpty()) {
+            fks.addAll(relations);
+            relations.clear();
+        }
         return fks;
     }
 
-    private static List<RepositoryNode> folderdbNodes = new ArrayList<RepositoryNode>();
+    private List<String[]> relations = new ArrayList<String[]>();
 
-    public static boolean setParentNodesOverDatabaseNode(RepositoryNode databaseNode) {
-        folderdbNodes.clear();
-        RepositoryNode parentNode = databaseNode.getParent();
-        if (parentNode == null) {
-            return false;
-        } else if (parentNode.getProperties(EProperties.CONTENT_TYPE).equals(RepositoryNodeType.FOLDER)) {
-            folderdbNodes.add(parentNode);
+    @SuppressWarnings("unchecked")
+    public List<RepositoryNode> parseSqlStatement(String sql, RepositoryNode currRoot) throws Exception{
+
+        List<String> tableNames = new ArrayList<String>();
+        List<String> columnsNames = new ArrayList<String>();
+
+        parseSqlToNameList(sql, tableNames, columnsNames);
+
+        List<RepositoryNode> nodes = new ArrayList<RepositoryNode>();
+        for (RepositoryNode tableNode : currRoot.getChildren()) {
+            for (int i = 0; i < tableNames.size(); i++) {
+                String tableLabel = tableNode.getObject().getLabel();
+                boolean isNeed = false;
+                if (columnsNames.size() == 1 && columnsNames.get(0).equals("*")) {
+                    for (String string : tableNames) {
+                        if (string.equals(tableLabel.toLowerCase())) {
+                            nodes.add(tableNode);
+                            isNeed = true;
+                        }
+                    }
+                }
+                if (tableLabel != null) {
+                    for (String string : tableNames) {
+                        if (string.equals(tableLabel.toLowerCase())) {
+                            isNeed = true;
+                        }
+                    }
+                }
+                if (isNeed) {
+                    for (RepositoryNode colNode : tableNode.getChildren()) {
+                        String collabel = colNode.getObject().getLabel();
+                        if (collabel != null) {
+                            for (String string : columnsNames) {
+                                if (string.equals(collabel.toLowerCase())) {
+                                    nodes.add(colNode);
+                                }
+                                if (string.equals(tableLabel.toLowerCase() + "." + collabel.toLowerCase())) {
+                                    if (!nodes.contains(colNode)) {
+                                        nodes.add(colNode);
+                                    }
+                                }
+                                for (int j = 0; j < relations.size(); j++) {
+                                    String[] pks = relations.get(j);
+                                    String pk = pks[0];
+                                    String fk = pks[1];
+                                    boolean isSet = false;
+                                    if (pk.equals(collabel.toLowerCase())) {
+                                        isSet = true;
+                                        pk = tableLabel.toLowerCase() + "." + collabel.toLowerCase();
+                                        if (!nodes.contains(colNode)) {
+                                            nodes.add(colNode);
+                                        }
+                                    }
+                                    if (fk.equals(collabel.toLowerCase())) {
+                                        isSet = true;
+                                        fk = tableLabel.toLowerCase() + "." + collabel.toLowerCase();
+                                        if (!nodes.contains(colNode)) {
+                                            nodes.add(colNode);
+                                        }
+                                    }
+                                    if (pk.equals(tableLabel.toLowerCase() + "." + collabel.toLowerCase())) {
+                                        if (!nodes.contains(colNode)) {
+                                            nodes.add(colNode);
+                                        }
+                                    }
+                                    if (fk.equals(tableLabel.toLowerCase() + "." + collabel.toLowerCase())) {
+                                        if (!nodes.contains(colNode)) {
+                                            nodes.add(colNode);
+                                        }
+                                    }
+                                    if (isSet) {
+                                        relations.set(j, new String[] { pk, fk });
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
-        return setParentNodesOverDatabaseNode(parentNode);
+
+        return nodes;
     }
 
-    public static List<RepositoryNode> getFolderdbNodes() {
-        return folderdbNodes;
+    /**
+     * qzhang Comment method "parseSqlToNameList".
+     * 
+     * @param sql
+     * @param tableNames
+     * @param columnsNames
+     */
+    private void parseSqlToNameList(String sql, List<String> tableNames, List<String> columnsNames) throws Exception{
+        String lcSql = sql.toLowerCase();
+        String select = lcSql.split("select ")[1];
+        String[] s = select.split(" from ");
+        String[] columns = s[0].split(",");
+        String fromStr = s[1];
+        String whereStr = "";
+        int indexWhere = s[1].indexOf(" where ");
+        if (indexWhere != -1) {
+            fromStr = s[1].split(" where ")[0];
+            whereStr = s[1].split(" where ")[1];
+        }
+        String[] tables = fromStr.split(",");
+        String[] rel = whereStr.split(" and ");
+
+        for (String string : columns) {
+            int dotIndex = string.indexOf(".");
+            if (dotIndex != -1) {
+                tableNames.add(string.substring(0, dotIndex).trim());
+            }
+            columnsNames.add(string.trim());
+        }
+        for (String string : tables) {
+            String tableName = string;
+            if (string.contains(".")) {
+                tableName = string.substring(string.indexOf(".") + 1);
+            }
+            if (!tableNames.contains(tableName.trim())) {
+                tableNames.add(tableName);
+            }
+        }
+        for (int i = 0; i < rel.length; i++) {
+            String[] strs = rel[i].split("=");
+            if (strs.length == 2) {
+                strs[0] = strs[0].trim();
+                strs[1] = strs[1].trim();
+                relations.add(strs);
+            }
+        }
+
+        // fixed table Names when contains alias.
+        fixedNamesContainAlias(tableNames, TABLE_ALIAS_PREFIX);
+
+        // fixed column Names when contains alias.
+        fixedNamesContainAlias(columnsNames, COLUMN_ALIAS_PREFIX);
+
+        // replace table's alias with table real name in columnsNames.
+        for (int i = 0; i < columnsNames.size(); i++) {
+            String string = columnsNames.get(i);
+            if (string.contains(".")) {
+                columnsNames.set(i, string.substring(string.indexOf(".") + 1));
+                
+            }
+        }
     }
 
-    public static void setFolderdbNodes(List<RepositoryNode> folderdbNodes) {
-        EMFRepositoryNodeManager.folderdbNodes = folderdbNodes;
+    /**
+     * qzhang Comment method "fixedNamesContainAlias".
+     * 
+     * @param tableNames
+     */
+    private void fixedNamesContainAlias(List<String> tableNames, String prefix) throws Exception{
+        for (int i = 0; i < tableNames.size(); i++) {
+            String name = tableNames.get(i);
+            String[] aliasNames = name.split(" ");
+            List<String> tableContainAlias = new ArrayList<String>();
+            String aliasName = "";
+            String realName = "";
+            for (int j = 0; j < aliasNames.length; j++) {
+                String string = aliasNames[j];
+                if (!string.equals("")) {
+                    tableContainAlias.add(string);
+                }
+            }
+
+            if (tableContainAlias.size() == 3) {
+                realName = tableContainAlias.get(0);
+                aliasName = tableContainAlias.get(2);
+                if (!tableNames.contains(aliasName)) {
+                    tableNames.add(prefix + realName + "=" + aliasName);
+                } else {
+                    tableNames.set(tableNames.indexOf(aliasName), prefix + realName + "=" + aliasName);
+                }
+                tableNames.set(i, realName);
+            } else if (tableContainAlias.size() == 2) {
+                realName = tableContainAlias.get(0);
+                aliasName = tableContainAlias.get(1);
+                if (!tableNames.contains(aliasName)) {
+                    tableNames.add(prefix + realName + "=" + aliasName);
+                } else {
+                    tableNames.set(tableNames.indexOf(aliasName), prefix + realName + "=" + aliasName);
+                }
+                tableNames.set(i, realName);
+            } else if (tableContainAlias.size() == 1) {
+                realName = tableContainAlias.get(0);
+                tableNames.set(i, name.trim());
+            }
+        }
+    }
+
+    public static EMFRepositoryNodeManager getInstance() {
+        return instance;
     }
 
 }
