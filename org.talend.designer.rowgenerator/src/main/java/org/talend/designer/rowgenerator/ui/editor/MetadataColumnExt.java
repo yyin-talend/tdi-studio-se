@@ -74,7 +74,7 @@ public class MetadataColumnExt extends MetadataColumn {
         this.function = function;
     }
 
-    @SuppressWarnings("unchecked") //$NON-NLS-1$
+    @SuppressWarnings("unchecked")//$NON-NLS-1$
     public String getParameter() {
         String currentPara = ""; //$NON-NLS-1$
         if (this.function != null) {
@@ -108,6 +108,27 @@ public class MetadataColumnExt extends MetadataColumn {
             ext.setArrayFunctions(getArrayFunctions());
         }
         return ext;
+    }
+
+    private String preview;
+
+    /**
+     * Getter for preview.
+     * 
+     * @return the preview
+     */
+    public String getPreview() {
+        return this.preview;
+    }
+
+    /**
+     * Sets the preview.
+     * 
+     * @param preview the preview to set
+     */
+    public void setPreview(String preview) {
+        this.preview = preview;
+        function.setPreview(preview);
     }
 
     /*

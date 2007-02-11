@@ -529,6 +529,8 @@ public class RowGenTableEditor2 extends AbstractDataTableEditorView<IMetadataCol
             }
 
             public void set(MetadataColumnExt bean, String value) {
+                bean.getFunction().setPreview(value);
+                bean.setPreview(value);
             }
 
         });

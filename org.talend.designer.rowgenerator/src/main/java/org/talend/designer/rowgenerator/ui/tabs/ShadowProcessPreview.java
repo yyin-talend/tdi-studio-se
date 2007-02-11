@@ -295,6 +295,10 @@ public class ShadowProcessPreview {
         this.isChanged = isChanged;
     }
 
+    public Table getTable() {
+        return this.table;
+    }
+
     public void renameColumn(IMetadataColumn bean, String value) {
         columnNames.set(columnNames.indexOf(bean.getLabel()), value);
         columnData.clear();
