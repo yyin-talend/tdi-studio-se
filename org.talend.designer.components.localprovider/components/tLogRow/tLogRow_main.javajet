@@ -36,7 +36,7 @@ StringBuffer strBuffer = new StringBuffer();
 		IMetadataColumn column = (IMetadataColumn)colList.get(i);
 			if(i!=(colList.size()-1)){	
 			%> 
-strBuffer.append(<%=conn.getName()%>.<%=column.getLabel()%>+OUTPUT_FIELD_SEPARATOR_<%=metadata.getTableName() %>);
+strBuffer.append(<%=conn.getName()%>.<%=column.getLabel()%>+OUTPUT_FIELD_SEPARATOR_<%=node.getUniqueName() %>);
 			<%			
 			}else{
 			%> 
