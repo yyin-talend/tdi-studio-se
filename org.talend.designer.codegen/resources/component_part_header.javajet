@@ -41,7 +41,7 @@ ok_Hash.put("<%=node.getUniqueName() %>", false);
   if ((node.getProcess().getNodesOfType("tStatCatcher").size() > 0) 
       && (statCatcher.equals("true"))) {
 %>
-<%=statCatcher %>_subprocess('begin','<%=node.getUniqueName() %>');
+<%=statCatcher %>Process('begin','<%=node.getUniqueName() %>');
 start_Hash.put("<%=node.getUniqueName() %>", java.util.Calendar.getInstance().getTime());
 <%
   }

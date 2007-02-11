@@ -94,10 +94,10 @@ ok_Hash.put("<%=node.getUniqueName() %>", true);
 		String statCatcher = ElementParameterParser.getValue(node,"__TSTATCATCHER_STATS__");
 		if ((node.getProcess().getNodesOfType("tStatCatcher").size() > 0) & (statCatcher.equals("true"))) {
 %>
-tStatCatcher_1_subprocess('end','<%=node.getUniqueName() %>');
+tStatCatcher_1Process('end','<%=node.getUniqueName() %>');
 end_Hash.put("<%=node.getUniqueName() %>", java.util.Calendar.getInstance().getTime());
 
-//tStatCatcher_1_subprocess(
+//tStatCatcher_1Process(
 //    message => sprintf(
 //        '%.1f seconds',
 //        tv_interval(
@@ -113,13 +113,13 @@ end_Hash.put("<%=node.getUniqueName() %>", java.util.Calendar.getInstance().getT
 		for (IConnection outgoingConn : node.getOutgoingConnections()) {
 			if (outgoingConn.getLineStyle().equals(EConnectionType.RUN_IF_OK)) {
 %>
-<%=outgoingConn.getTarget().getUniqueName() %>_subprocess();
+<%=outgoingConn.getTarget().getUniqueName() %>Process();
 <%
 			}
 			if (outgoingConn.getLineStyle().equals(EConnectionType.RUN_IF)) {
 %>
 			if (<%=outgoingConn.getCondition() %>) {
-				<%=outgoingConn.getTarget().getUniqueName() %>_subprocess();
+				<%=outgoingConn.getTarget().getUniqueName() %>Process();
 			}
 <%
 			}
