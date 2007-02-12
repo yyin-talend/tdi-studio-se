@@ -166,23 +166,29 @@
 					JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
 					String pattern = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
 					
+					if(javaType == JavaTypesManager.STRING) {
 %>
-					if(value<%=cid %>[<%=valueN%>].length() > 0) {
+							<%=conn.getName() %>.<%=column.getLabel() %> = value<%=cid %>[<%=valueN%>];
 <%
-						if(javaType == JavaTypesManager.DATE) {
+					} else {
 %>
-							<%=conn.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_Date(value<%=cid %>[<%=valueN%>], <%= pattern %>);
-<%
-						} else {
-%>
-							<%=conn.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(value<%=cid %>[<%=valueN%>]);
-<%
+						if(value<%=cid %>[<%=valueN%>].length() > 0) {
+	<%
+							if(javaType == JavaTypesManager.DATE) {
+	%>
+								<%=conn.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_Date(value<%=cid %>[<%=valueN%>], <%= pattern %>);
+	<%
+							} else {
+	%>
+								<%=conn.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(value<%=cid %>[<%=valueN%>]);
+	<%
+							}
+	%>					
+						}else{
+							<%=conn.getName() %>.<%=column.getLabel() %> = <%=JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate)%>;
 						}
-%>					
-					}else{
-						<%=conn.getName() %>.<%=column.getLabel() %> = <%=JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate)%>;
+	<%					
 					}
-<%					
 				}
 			}
 %>
