@@ -147,7 +147,7 @@ public void <%=subTree.getName() %>Process() throws TalendException {
 	List< ? extends IConnection> rootConns = subTree.getRootNode().getOutgoingConnections();
 	if ((rootConns!=null)&&(rootConns.size()>0)) {
 %>
-		<%=createPrivateClassInstance(subTree.getRootNode(), rootConns.get(0).getName())%>
+		<%=createPrivateClassInstance(subTree.getRootNode(), rootConns.get(0).getName(), false)%>
 <%
 	}
 %>
