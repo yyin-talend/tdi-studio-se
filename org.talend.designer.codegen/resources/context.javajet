@@ -10,16 +10,9 @@
 <%
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	List<IContextParameter> parameterList = (List<IContextParameter>) codeGenArgument.getArgument();
-%>
-package <%=codeGenArgument.getCurrentProjectName().toLowerCase() + "." + codeGenArgument.getJobName().toLowerCase() +".contexts" %>;
-
-
-public class <%=codeGenArgument.getContextName() %> {
-<%
 	for (IContextParameter parameter : parameterList) {
 %>
-	public static <%=parameter.getType().getDisplayName() %> <%=parameter.getName() %> = "<%=parameter.getValue() %>"; 
+<%=parameter.getName() %>=<%=parameter.getValue() %>
 <%
 	}
 %>
-}

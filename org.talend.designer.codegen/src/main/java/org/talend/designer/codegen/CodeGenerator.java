@@ -203,7 +203,7 @@ public class CodeGenerator implements ICodeGenerator {
             if (listParameters != null) {
                 CodeGeneratorArgument codeGenArgument = new CodeGeneratorArgument();
                 codeGenArgument.setNode(listParameters);
-                codeGenArgument.setContextName(contextName);
+                codeGenArgument.setContextName(designerContext.getName());
                 codeGenArgument.setCurrentProjectName(currentProjectName);
                 codeGenArgument.setJobName(jobName);
                 

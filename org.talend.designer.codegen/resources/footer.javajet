@@ -21,14 +21,31 @@
     public static boolean watch = false;
     public static int portStats = 3334;
     public static int portTraces = 4334;
+    public static String contextStr = "<%=codeGenArgument.getContextName() %>";
     
     public static void main(String[] args) {
     	for (String arg : args) {
     		<%=process.getName() %>.evalParam(arg);
     	}
-		<% if (codeGenArgument.getContextName()!=null) { %>
-			System.out.println("tsInfo>  Running process with context: "+"<%=codeGenArgument.getContextName() %>"+" (./contexts/"+"<%=codeGenArgument.getContextName() %>"+".java)");
-		<% } %>
+    	
+    	try {
+    		java.io.InputStream inContext = <%=process.getName() %>.class.getClassLoader().getResourceAsStream("<%=codeGenArgument.getCurrentProjectName().toLowerCase() %>/<%=codeGenArgument.getJobName().toLowerCase() %>/contexts/Default.properties");    		
+    		defaultProps.load(inContext);
+    		inContext.close();
+    		context = new java.util.Properties(defaultProps);
+    		
+    		if (contextStr != "Context") {
+    			//inContext = new java.io.FileInputStream("contexts/"+contextStr+".properties");
+    			inContext = <%=process.getName() %>.class.getClassLoader().getResourceAsStream("<%=codeGenArgument.getCurrentProjectName().toLowerCase() %>/<%=codeGenArgument.getJobName().toLowerCase() %>/contexts/"+contextStr+".properties");
+				context.load(inContext);
+				inContext.close();
+			}
+		
+    		System.out.println("Running process with context: "+contextStr);
+    	} catch (java.io.IOException ie) {
+    		System.err.println("Could not load context "+contextStr);
+    		ie.printStackTrace();
+    	}
 
 <%
 		if (stats) {
@@ -58,7 +75,7 @@
 		// PTODO MHIRT Implements tStatCatcher
     	if ((1!=1)&&(process.getNodesOfType("tStatCatcher").size() > 0)) {
 %>
-	tStatCatcher_1_subprocess('begin');
+	tStatCatcher_1Process('begin');
 <%
     	}
 %>
@@ -86,8 +103,8 @@
 		// PTODO MHIRT Implements tStatsCatcher
         if (process.getNodesOfType("tStatCatcher").size() > 0) {
 %>
-	tStatCatcher_1_subprocess('end');
-	tStatCatcher_1_subprocess(sprintf('%s seconds',$_globals{duration}));
+	tStatCatcher_1_process('end');
+	tStatCatcher_1_process(sprintf('%s seconds',$_globals{duration}));
 <%
         }
 %>
@@ -115,6 +132,8 @@
     		portStats = Integer.parseInt(arg.substring(12));
     	} else if (arg.startsWith("--trace_port=")) {
     		portTraces = Integer.parseInt(arg.substring(13));
+    	} else if (arg.startsWith("--context=")) {
+    		contextStr = arg.substring(10);
     	}
 	}
 
