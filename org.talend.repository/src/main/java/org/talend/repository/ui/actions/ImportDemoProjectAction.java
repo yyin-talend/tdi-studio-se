@@ -43,9 +43,9 @@ import org.eclipse.ui.wizards.datatransfer.ImportOperation;
 import org.osgi.framework.Bundle;
 import org.talend.commons.exception.MessageBoxExceptionHandler;
 import org.talend.commons.ui.image.ImageProvider;
-import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.ui.ERepositoryImages;
+import org.talend.resources.ResourcesPlugin;
 
 /**
  * Action used to refresh a repository view.<br/>
@@ -79,7 +79,7 @@ public final class ImportDemoProjectAction extends Action {
 
     public void run() {
         try {
-            Bundle bundle = Platform.getBundle(RepositoryPlugin.PLUGIN_ID);
+            Bundle bundle = Platform.getBundle(ResourcesPlugin.PLUGIN_ID);
             URL url = FileLocator.resolve(bundle.getEntry("resources/TALENDDEMOS.zip")); //$NON-NLS-1$
             String archiveFilePath = new Path(url.getFile()).toOSString();
 
