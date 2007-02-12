@@ -179,7 +179,7 @@ public class JavaProcessor implements IProcessor {
 			this.srcCodePath = jobPackage.getPath().append(
 					fileName + JavaUtils.JAVA_EXTENSION); //$NON-NLS-1$
 			this.srcCodePath = this.srcCodePath.removeFirstSegments(1);
-			this.compliedCodePath = this.srcCodePath.removeLastSegments(1)
+            this.compliedCodePath = this.srcCodePath.removeLastSegments(1)
 					.append(fileName);
 			this.compliedCodePath = new Path(JavaUtils.JAVA_CLASSES_DIRECTORY)
 					.append(this.compliedCodePath.removeFirstSegments(1)); //$NON-NLS-1$
@@ -189,7 +189,7 @@ public class JavaProcessor implements IProcessor {
 
 			this.srcContextPath = contextPackage.getPath().append(
 					escapeFilename(context.getName())
-							+ JavaUtils.JAVA_EXTENSION); //$NON-NLS-1$
+							+ JavaUtils.JAVA_CONTEXT_EXTENSION); //$NON-NLS-1$
 			this.srcContextPath = this.srcContextPath.removeFirstSegments(1);
 			this.compliedContextPath = this.srcContextPath
 					.removeLastSegments(1).append(fileName);
