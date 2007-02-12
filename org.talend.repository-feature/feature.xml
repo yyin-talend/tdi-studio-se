@@ -2,7 +2,7 @@
 <feature
       id="org.talend.repository_feature"
       label="Repository Feature"
-      version="1.2.0.qualifier"
+      version="2.0.0.qualifier"
       provider-name=".Talend SA.">
 
    <description url="http://www.talend.com/beta/">
@@ -74,5 +74,21 @@
          download-size="0"
          install-size="0"
          version="0.0.0"/>
+
+   <plugin
+         id="org.talend.repository.localprovider.nl"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         fragment="true"
+         unpack="false"/>
+
+   <plugin
+         id="org.talend.repository.nl"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         fragment="true"
+         unpack="false"/>
 
 </feature>
