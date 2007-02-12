@@ -18,7 +18,7 @@
 	if ((metadatas!=null)&&(metadatas.size()>0)) {
 		IMetadataTable metadata = metadatas.get(0);
 		if (metadata!=null) {
-			String cid = metadata.getTableName();
+			String cid = node.getUniqueName();
 %>
 	out<%=cid %>.close();
 <%

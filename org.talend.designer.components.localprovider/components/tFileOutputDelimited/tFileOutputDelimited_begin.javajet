@@ -21,7 +21,7 @@ List<IMetadataTable> metadatas = node.getMetadataList();
 if ((metadatas!=null)&&(metadatas.size()>0)) {
     IMetadataTable metadata = metadatas.get(0);
     if (metadata!=null) {
-        String cid = metadata.getTableName();
+        String cid = node.getUniqueName();
 
         String filename = ElementParameterParser.getValueWithUIFieldKey(
             node,
@@ -61,13 +61,8 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 		
 		final String OUT_DELIM_ROWSEP_<%=cid %> = <%=rowSeparator %>;
 		
-		java.io.BufferedWriter out<%=cid %>=null;
-        try{
-        	out<%=cid %> = new java.io.BufferedWriter(new java.io.OutputStreamWriter(
+		final java.io.BufferedWriter out<%=cid %> = new java.io.BufferedWriter(new java.io.OutputStreamWriter(
         		new java.io.FileOutputStream(<%=filename %>, <%= isAppend%>),<%= encoding%>));
-        }catch(java.io.UnsupportedEncodingException e){
-        	e.printStackTrace();
-        }
 <%
 		if(isIncludeHeader&&!isAppend){
     		List<IMetadataColumn> columns = metadata.getListColumns();
