@@ -31,11 +31,13 @@ import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.designer.core.model.utils.emf.talendfile.ConnectionType;
-import org.talend.designer.core.model.utils.emf.talendfile.ElementParameterType;
 import org.talend.designer.core.model.utils.emf.talendfile.MetadataType;
 import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
-import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.ProxyRepositoryFactory;
+import org.talend.repository.model.migration.conversions.DefaultComponentConversion;
+import org.talend.repository.model.migration.conversions.IComponentConversion;
+import org.talend.repository.model.migration.filters.IComponentFilter;
+import org.talend.repository.model.migration.filters.NameComponentFilter;
 
 /**
  * DOC smallet class global comment. Detailled comment <br/>
@@ -46,6 +48,11 @@ import org.talend.repository.model.ProxyRepositoryFactory;
 public class RenameComponentAction {
 
     public static void rename(String oldName, String newName) throws PersistenceException, IOException, CoreException {
+        rename(oldName, newName, new NameComponentFilter(oldName), new DefaultComponentConversion());
+    }
+
+    public static void rename(String oldName, String newName, IComponentFilter filter, IComponentConversion conversion)
+            throws PersistenceException, IOException, CoreException {
         ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
 
         List<IRepositoryObject> list = factory.getAll(ERepositoryObjectType.PROCESS, true);
@@ -58,11 +65,16 @@ public class RenameComponentAction {
                 ProcessItem item = (ProcessItem) object.getProperty().getItem();
                 for (Object o : item.getProcess().getNode()) {
                     NodeType currentNode = (NodeType) o;
-                    if (currentNode.getComponentName().equals(oldName)) {
+
+                    if (filter.accept(currentNode)) {
+                        // TODO SML Manage with IConversion + Use List<IComponentConversion> ad param
                         currentNode.setComponentName(newName);
-                        String oldNodeUniqueName = getNodeUniqueName(currentNode);
-                        String newNodeUniqueName = oldNodeUniqueName.replaceFirst(oldName, newName);
+                        String oldNodeUniqueName = ComponentUtilities.getNodeUniqueName(currentNode);
+                        String newNodeUniqueName = ComponentUtilities.generateUniqueNodeName(newName, item);
                         replaceAllInAllNodesParameterValue(item, oldNodeUniqueName, newNodeUniqueName);
+
+                        conversion.transform(currentNode);
+
                         modified = true;
                     }
                 }
@@ -76,7 +88,7 @@ public class RenameComponentAction {
     private static void replaceAllInAllNodesParameterValue(ProcessItem item, String oldName, String newName) {
         for (Object o : item.getProcess().getNode()) {
             NodeType nt = (NodeType) o;
-            replaceInNodeParameterValue(nt, oldName, newName);
+            ComponentUtilities.replaceInNodeParameterValue(nt, oldName, newName);
             EList metaList = nt.getMetadata();
             if (metaList != null) {
                 if (!metaList.isEmpty()) {
@@ -99,26 +111,6 @@ public class RenameComponentAction {
                 currentConnection.setMetaname(newName);
             }
         }
-    }
-
-    private static void replaceInNodeParameterValue(NodeType node, String oldName, String newName) {
-        for (Object o : node.getElementParameter()) {
-            ElementParameterType t = (ElementParameterType) o;
-            String value = t.getValue();
-            if (value != null) {
-                t.setValue(value.replaceAll(oldName, newName));
-            }
-        }
-    }
-
-    private static String getNodeUniqueName(NodeType node) {
-        for (Object o : node.getElementParameter()) {
-            ElementParameterType t = (ElementParameterType) o;
-            if (t.getName().equals("UNIQUE_NAME")) { //$NON-NLS-1$
-                return t.getValue();
-            }
-        }
-        return null;
     }
 
 }

@@ -80,6 +80,7 @@ import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.INodeConnector;
 import org.talend.core.model.process.IProcess;
+import org.talend.core.model.process.UniqueNodeNameGenerator;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.Property;
@@ -489,8 +490,7 @@ public class Process extends Element implements IProcess {
         if (metadataConnectionsItem != null) {
             for (ConnectionItem connectionItem : metadataConnectionsItem) {
                 org.talend.core.model.metadata.builder.connection.Connection connection;
-                connection = (org.talend.core.model.metadata.builder.connection.Connection) connectionItem
-                        .getConnection();
+                connection = (org.talend.core.model.metadata.builder.connection.Connection) connectionItem.getConnection();
                 for (Object tableObj : connection.getTables()) {
                     MetadataTable table = (MetadataTable) tableObj;
                     if (!factory.isDeleted(table)) {
@@ -925,8 +925,7 @@ public class Process extends Element implements IProcess {
         String schemaType = (String) node.getPropertyValue(EParameterName.SCHEMA_TYPE.getName());
         if (schemaType != null) {
             if (schemaType.equals(EmfComponent.REPOSITORY)) {
-                String metaRepositoryName = (String) node.getPropertyValue(EParameterName.REPOSITORY_SCHEMA_TYPE
-                        .getName());
+                String metaRepositoryName = (String) node.getPropertyValue(EParameterName.REPOSITORY_SCHEMA_TYPE.getName());
                 IMetadataTable repositoryMetadata = getMetadataFromRepository(metaRepositoryName);
                 if (repositoryMetadata != null) {
                     repositoryMetadata = repositoryMetadata.clone();
@@ -1009,8 +1008,7 @@ public class Process extends Element implements IProcess {
                 if (metadataConnectionsItem != null) {
                     for (ConnectionItem connectionItem : metadataConnectionsItem) {
                         String value = connectionItem.getProperty().getId() + ""; //$NON-NLS-1$
-                        if (value.equals((String) node.getPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE
-                                .getName()))) {
+                        if (value.equals((String) node.getPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE.getName()))) {
                             tmpRepositoryConnection = (org.talend.core.model.metadata.builder.connection.Connection) connectionItem
                                     .getConnection();
                         }
@@ -1054,8 +1052,7 @@ public class Process extends Element implements IProcess {
                         shell.getDisplay().asyncExec(new Runnable() {
 
                             public void run() {
-                                String message = Messages
-                                        .getString("Process.IfToUpgradeProperty", node.getUniqueName()); //$NON-NLS-1$
+                                String message = Messages.getString("Process.IfToUpgradeProperty", node.getUniqueName()); //$NON-NLS-1$
                                 MessageBox mBox = new MessageBox(shell, SWT.YES | SWT.NO | SWT.ICON_QUESTION);
                                 mBox.setText(Messages.getString("Process.propertyModificationDetected")); //$NON-NLS-1$
                                 mBox.setMessage(message);
@@ -1076,8 +1073,7 @@ public class Process extends Element implements IProcess {
                                                     for (int i = 0; (i < list.length) && (!found); i++) {
                                                         if (objectValue.equals(list[i])) {
                                                             found = true;
-                                                            node.setPropertyValue(param.getName(), param
-                                                                    .getListItemsValue()[i]);
+                                                            node.setPropertyValue(param.getName(), param.getListItemsValue()[i]);
                                                         }
                                                     }
                                                 } else {
@@ -1117,8 +1113,7 @@ public class Process extends Element implements IProcess {
 
                         public void run() {
                             MessageBox mBox = new MessageBox(shell);
-                            String message = Messages.getString(
-                                    "Process.propertyChangeToBuild-in", node.getUniqueName()); //$NON-NLS-1$
+                            String message = Messages.getString("Process.propertyChangeToBuild-in", node.getUniqueName()); //$NON-NLS-1$
                             mBox.setMessage(message);
                             mBox.open();
                             node.setPropertyValue(EParameterName.PROPERTY_TYPE.getName(), EmfComponent.BUILTIN);
@@ -1164,8 +1159,8 @@ public class Process extends Element implements IProcess {
             source = (Node) nodesHashtable.get(cType.getSource());
             target = (Node) nodesHashtable.get(cType.getTarget());
             Integer lineStyleId = new Integer(cType.getLineStyle());
-            connec = new Connection(source, target, EConnectionType.getTypeFromId(lineStyleId), cType.getMetaname(),
-                    cType.getLabel());
+            connec = new Connection(source, target, EConnectionType.getTypeFromId(lineStyleId), cType.getMetaname(), cType
+                    .getLabel());
             if ((!source.isActivate()) || (!target.isActivate())) {
                 connec.setActivate(false);
             }
@@ -1482,21 +1477,7 @@ public class Process extends Element implements IProcess {
 
     public String generateUniqueNodeName(INode node) {
         String baseName = node.getComponent().getName();
-        if (baseName == null) {
-            throw new IllegalArgumentException("Component name can't be null"); //$NON-NLS-1$
-        }
-        String uniqueName = baseName + "_" + 1; //$NON-NLS-1$
-
-        int counter = 1;
-        boolean exists = true;
-        while (exists) {
-            exists = uniqueNodeNameList.contains(uniqueName);
-            if (!exists) {
-                break;
-            }
-            uniqueName = baseName + "_" + counter++; //$NON-NLS-1$
-        }
-        return uniqueName;
+        return UniqueNodeNameGenerator.generateUniqueNodeName(baseName, uniqueNodeNameList);
     }
 
     /**
