@@ -23,22 +23,22 @@
 		if (metadata!=null) {
 %>
 
-        String directory       = <%=ElementParameterParser.getValue(node, "__DIRECTORY__") %>;
-        String filemask        = <%=ElementParameterParser.getValue(node, "__FILEMASK__")%>;
-        filemask = java.util.regex.Pattern.compile("[*]").matcher(filemask).replaceAll(".*");
-        boolean case_sensitive = <%=ElementParameterParser.getValue(node, "__CASE_SENSITIVE__").equals("YES") %>;
-		if(!case_sensitive){
-        	java.util.regex.Pattern fileNamePattern = java.util.regex.Pattern.compile(filemask, java.util.regex.Pattern.CASE_INSENSITIVE);
+        String directory<%=cid %>       = <%=ElementParameterParser.getValue(node, "__DIRECTORY__") %>;
+        String filemask<%=cid %>        = <%=ElementParameterParser.getValue(node, "__FILEMASK__")%>;
+        filemask<%=cid %> = java.util.regex.Pattern.compile("[*]").matcher(filemask<%=cid %>).replaceAll(".*");
+        boolean case_sensitive<%=cid %> = <%=ElementParameterParser.getValue(node, "__CASE_SENSITIVE__").equals("YES") %>;
+		if(!case_sensitive<%=cid %>){
+        	java.util.regex.Pattern fileNamePattern = java.util.regex.Pattern.compile(filemask<%=cid %>, java.util.regex.Pattern.CASE_INSENSITIVE);
 		}        
-		java.util.regex.Pattern fileNamePattern = java.util.regex.Pattern.compile(filemask);
- 		java.io.File file=new java.io.File(directory);
-        java.io.File[] files = file.listFiles();
-        for (int i<%=cid%> = 0; i<%=cid%> < files.length; i<%=cid%>++){
-			if(!fileNamePattern.matcher(files[i<%=cid%>].getName()).find()){
+		java.util.regex.Pattern fileNamePattern = java.util.regex.Pattern.compile(filemask<%=cid %>);
+ 		java.io.File file<%=cid %>=new java.io.File(directory<%=cid %>);
+        java.io.File[] files<%=cid %> = file<%=cid %>.listFiles();
+        for (int i<%=cid%> = 0; i<%=cid%> < files<%=cid %>.length; i<%=cid%>++){
+			if(!fileNamePattern.matcher(files<%=cid %>[i<%=cid%>].getName()).find()){
 				continue;
 			}               
-			String <%=metadata.getTableName() %>_CurrentFileName = files[i<%=cid%>].getName(); 
-            String <%=metadata.getTableName() %>_CurrentFilePath = files[i<%=cid%>].getAbsolutePath();
+			String <%=metadata.getTableName() %>_CurrentFileName = files<%=cid %>[i<%=cid%>].getName(); 
+            String <%=metadata.getTableName() %>_CurrentFilePath = files<%=cid %>[i<%=cid%>].getAbsolutePath();
 <%
 		}
 	}
