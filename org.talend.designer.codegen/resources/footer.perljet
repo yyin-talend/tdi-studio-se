@@ -26,7 +26,7 @@
 <%
         if (stats) {
 %>
-StartThreadStat();
+StartThreadStat() if defined $opt{stat_port};
 <%
        }
 %>
@@ -34,7 +34,7 @@ StartThreadStat();
 <%
         if (trace) {
 %>
-StartTrace($opt{trace_port}, '127.0.0.1');
+StartTrace($opt{trace_port}, '127.0.0.1') if defined $opt{trace_port};
 <%
        }
 %>
@@ -50,7 +50,7 @@ StartTrace($opt{trace_port}, '127.0.0.1');
 <%
         if (stats) {
 %>
-StopThreadStat();
+StopThreadStat() if defined $opt{stat_port};
 <%
         }
 %>

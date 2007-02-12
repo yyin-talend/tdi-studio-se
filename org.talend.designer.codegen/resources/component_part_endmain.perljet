@@ -14,7 +14,7 @@
 <%
 if (trace) {
 %>
-sleep 2;
+sleep 2 if defined $opt{trace_port};
 <%
 }
 %>
