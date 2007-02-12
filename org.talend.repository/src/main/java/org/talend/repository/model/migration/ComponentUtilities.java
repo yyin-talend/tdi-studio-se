@@ -66,12 +66,23 @@ public class ComponentUtilities {
         return ComponentUtilities.getNodeProperty(node, "UNIQUE_NAME"); //$NON-NLS-1$
     }
 
+    public static void setNodeUniqueName(NodeType node, String newName) {
+        for (Object o : node.getElementParameter()) {
+            ElementParameterType t = (ElementParameterType) o;
+            if (t.getName().equals("UNIQUE_NAME")) {
+                t.setValue(newName);
+            }
+        }
+    }
+
     public static void replaceInNodeParameterValue(NodeType node, String oldName, String newName) {
+        String oldName2 = "\\b" + oldName + "\\b";
         for (Object o : node.getElementParameter()) {
             ElementParameterType t = (ElementParameterType) o;
             String value = t.getValue();
             if (value != null) {
-                t.setValue(value.replaceAll(oldName, newName));
+                String replaceAll = value.replaceAll(oldName2, newName);
+                t.setValue(replaceAll);
             }
         }
     }

@@ -71,6 +71,7 @@ public class RenameComponentAction {
                         currentNode.setComponentName(newName);
                         String oldNodeUniqueName = ComponentUtilities.getNodeUniqueName(currentNode);
                         String newNodeUniqueName = ComponentUtilities.generateUniqueNodeName(newName, item);
+                        ComponentUtilities.setNodeUniqueName(currentNode, newNodeUniqueName);
                         replaceAllInAllNodesParameterValue(item, oldNodeUniqueName, newNodeUniqueName);
 
                         conversion.transform(currentNode);
