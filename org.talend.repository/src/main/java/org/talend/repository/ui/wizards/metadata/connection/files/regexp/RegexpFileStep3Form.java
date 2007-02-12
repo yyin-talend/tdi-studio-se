@@ -355,8 +355,8 @@ public class RegexpFileStep3Form extends AbstractRegexpFileStepForm {
                 label[i] = Messages.getString("FileStep3.column") + i; //$NON-NLS-1$
                 if (firstRowToExtractMetadata == 1) {
                     String value = fields.get(i).getValue();
-                    if (!value.equals("")) { //$NON-NLS-1$
-                        label[i] = value;
+                    if (value != null && !value.equals("")) { //$NON-NLS-1$
+                        label[i] = value.trim().replaceAll(" ", "_");
                     }
                 }
             }
