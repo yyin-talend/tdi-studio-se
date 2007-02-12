@@ -26,7 +26,7 @@
 <%
         if (stats) {
 %>
-StartThreadStat() if defined $opt{stat_port};
+StartThreadStat($opt{stat_port}) if defined $opt{stat_port};
 <%
        }
 %>
