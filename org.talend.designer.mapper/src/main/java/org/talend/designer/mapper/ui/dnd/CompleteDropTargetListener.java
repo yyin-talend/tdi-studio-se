@@ -573,6 +573,7 @@ public class CompleteDropTargetListener extends DefaultDropTargetListener {
         MetadataColumn metadataColumn = new MetadataColumn();
         metadataColumn.setLabel(columnName);
         metadataColumn.setTalendType(((VarTableEntry) tableEntrySource).getType());
+        metadataColumn.setNullable(((VarTableEntry) tableEntrySource).isNullable());
         metadataColumnsBeingAdded.add(metadataColumn);
         sources.add(tableEntrySource);
     }

@@ -241,7 +241,7 @@ public class ContextProcessSection extends AbstractPropertySection {
             return super.getOriginalTypedValue(cellEditor, value);
         }
 
-        public String getColumnText(final CellEditor cellEditor, final Object cellEditorValue) {
+        public String getColumnText(final CellEditor cellEditor, Object bean, final Object cellEditorValue) {
             return ((EMetadataType) cellEditorValue).getDisplayName();
         }
     };

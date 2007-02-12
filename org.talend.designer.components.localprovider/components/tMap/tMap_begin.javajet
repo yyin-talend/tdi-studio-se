@@ -16,6 +16,7 @@ package="org.talend.designer.codegen.translators"
 	org.talend.designer.mapper.language.generation.JavaGenerationManager
 	org.talend.designer.mapper.language.LanguageProvider
 	org.talend.designer.mapper.model.metadata.MapperDataTestGenerator
+	org.talend.core.model.metadata.types.JavaTypesManager
 	" 
 	class="MapperBegin" 
 %>
@@ -86,10 +87,8 @@ class  <%=className%>  {
             for (int i = 0; i < lstSize; i++) {
                 ExternalMapperTableEntry varTableEntry = (ExternalMapperTableEntry) tableEntries.get(i);
                 String javaType = varTableEntry.getType();
-                if (javaType == null) {
-                    javaType = "String";
-                }
-%>	<%= javaType %> <%= varTableEntry.getName() %>;
+
+%>	<%= JavaTypesManager.getTypeToGenerate(javaType, varTableEntry.isNullable()) %> <%= varTableEntry.getName() %>;
 
 <%
             }

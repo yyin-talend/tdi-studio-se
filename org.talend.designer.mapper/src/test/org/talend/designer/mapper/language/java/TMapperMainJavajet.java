@@ -32,7 +32,7 @@ import java.util.Set;
 import org.talend.commons.utils.generation.CodeGenerationUtils;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
-import org.talend.core.model.metadata.MetadataTalendType;
+import org.talend.core.model.metadata.types.JavaTypesManager;
 import org.talend.core.model.process.AbstractExternalNode;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.IConnection;
@@ -219,7 +219,7 @@ public class TMapperMainJavajet {
                 String varsColumnName = varsTableEntry.getName();
                 String varExpression = varsTableEntry.getExpression();
                 if (varExpression == null || varExpression.trim().length() == 0) {
-                    varExpression = MetadataTalendType.getDefaultValueFromJavaType(varsTableEntry.getType());
+                    varExpression = JavaTypesManager.getDefaultValueFromJavaIdType(varsTableEntry.getType(), varsTableEntry.isNullable());
                 }
                 TableEntryLocation[] entryLocations = expressionParser.parseTableEntryLocations(varExpression);
                 ArrayList<TableEntryLocation> listCoupleForAddTablePrefix = new ArrayList<TableEntryLocation>();
@@ -452,7 +452,7 @@ public class TMapperMainJavajet {
                         String outputColumnName = outputTableEntry.getName();
                         String outputExpression = outputTableEntry.getExpression();
                         if (outputExpression == null || outputExpression.trim().length() == 0) {
-                            outputExpression = MetadataTalendType.getDefaultValueFromJavaType(outputTableEntry.getType());
+                            outputExpression = JavaTypesManager.getDefaultValueFromJavaIdType(outputTableEntry.getType(), outputTableEntry.isNullable());
                         }
 
                         String key = CodeGenerationUtils.buildProblemKey(uniqueNameComponent,

@@ -1420,8 +1420,8 @@ public abstract class DataMapTableView extends Composite {
             }
 
             @Override
-            public String getColumnText(CellEditor cellEditor, Object cellEditorTypedValue) {
-                return super.getColumnText(cellEditor, cellEditorTypedValue).replaceAll("[\r\n\t]+", " ... "); //$NON-NLS-1$ //$NON-NLS-2$
+            public String getColumnText(CellEditor cellEditor, Object bean, Object cellEditorTypedValue) {
+                return super.getColumnText(cellEditor, bean, cellEditorTypedValue).replaceAll("[\r\n\t]+", " ... "); //$NON-NLS-1$ //$NON-NLS-2$
             }
 
             @Override

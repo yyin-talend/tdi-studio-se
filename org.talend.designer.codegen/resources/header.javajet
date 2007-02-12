@@ -60,6 +60,8 @@ package <%= packageName %>;
 //use <%=routine%>;
 <%}%>
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
@@ -72,62 +74,94 @@ import java.util.Date;
  public class <%=process.getName() %> {
 
 	// WHILE WAITING FOR ROUTINES
-    private static class StringUtils {
+    public static class StringUtils {
         public static String[] split(String str, String separator) {
             return str.split(separator);
         }
-        public static char convertchar(String s) {
+    }
+
+    public static class FormatterUtils {
+
+		public static String format_Date(Date date, String pattern) {
+			SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+	        return simpleDateFormat.format(date);
+		}
+		
+	}
+    
+    public static class ParserUtils {
+        
+        public static char parseTo_Character(String s) {
             return (s != null) ? s.charAt(0) : null;
         }
-        public static Character convertCharacter(String s) {
+        
+        public static char parseTo_char(String s) {
             return (s != null) ? s.charAt(0) : null;
         }
-        public static boolean convertboolean(String s) {
-            return Boolean.parseBoolean(s);
-        }
-        public static Boolean convertBoolean(String s) {
-            return Boolean.parseBoolean(s);
-        }
-        public static java.util.Date convertDate(String s) {
-            // PTODO MHIRT Convert Date
-            return java.util.Calendar.getInstance().getTime();
-        }
-        public static Double convertDouble(String s) {
+
+        public static Double parseTo_Double(String s) {
             return Double.parseDouble(s);
         }
-        public static double convertdouble(String s) {
+        
+        public static double parseTo_double(String s) {
             return Double.parseDouble(s);
         }
-        public static float convertfloat(String s) {
+        
+        public static float parseTo_float(String s) {
             return Float.parseFloat(s);
         }
-        public static Float convertFloat(String s) {
+        
+        public static Float parseTo_Float(String s) {
             return Float.parseFloat(s);
         }
-        public static int convertint(String s) {
+        
+        public static int parseTo_int(String s) {
             return Integer.parseInt(s);
         }
-        public static Integer convertInteger(String s) {
+        
+        public static Integer parseTo_Integer(String s) {
             return Integer.parseInt(s);
         }
-        public static long convertlong(String s) {
+        
+        public static short parseTo_short(String s) {
+            return Short.parseShort(s);
+        }
+        
+        public static Short parseTo_Short(String s) {
+            return Short.parseShort(s);
+        }
+        
+        public static long parseTo_long(String s) {
             return Long.parseLong(s);
         }
-        public static Long convertLong(String s) {
+        
+        public static Long parseTo_Long(String s) {
             return Long.parseLong(s);
         }
-        public static String convertString(String s) {
+        
+        public static String parseTo_String(String s) {
             return s;
         }
+        
+        public static Date parseTo_Date(String s, String pattern) {
+			SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+			Date date = null;
+            try {
+	            date = simpleDateFormat.parse(s);
+	        } catch (ParseException e) {
+	            e.printStackTrace();
+	            System.err.println("Current string to parse '"+ s + "'");
+	        }
+            return date;
+        }
     }
-    
     
     // create and load default properties
 	private static java.util.Properties defaultProps = new java.util.Properties();
 	// create application properties with default
 	private static java.util.Properties context = null;
-	
-	
+
+
 
 	private static final String jobName = "<%=codeGenArgument.getJobName() %>";
 	private static String currentComponent = "";

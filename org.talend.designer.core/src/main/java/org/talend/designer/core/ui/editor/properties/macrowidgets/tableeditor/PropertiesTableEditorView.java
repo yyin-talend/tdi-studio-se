@@ -154,7 +154,7 @@ public class PropertiesTableEditorView<B> extends AbstractDataTableEditorView<B>
                             .setEnabled(!(param.isRepositoryValueUsed() || param.isReadOnly()));
                     column.setCellEditor(cellEditor, new CellEditorValueAdapter() {
 
-                        public String getColumnText(CellEditor cellEditor, Object cellEditorValue) {
+                        public String getColumnText(CellEditor cellEditor, Object bean, Object cellEditorValue) {
                             // System.out.println("getColumnText() cellEditorValue=" + cellEditorValue + "
                             // returnedValue=" + cellEditorValue);
 

@@ -10,6 +10,8 @@
 		org.talend.designer.codegen.config.CodeGeneratorArgument
 		java.util.List 
 		org.talend.commons.utils.generation.CodeGenerationUtils
+		org.talend.core.model.metadata.types.JavaTypesManager
+		org.talend.core.model.metadata.types.JavaType
 		org.talend.core.model.metadata.MetadataTalendType
 	" 
 	class="FileInputDelimitedBegin" 
@@ -141,33 +143,52 @@
 			if ((conn.getLineStyle().equals(EConnectionType.FLOW_MAIN))||(conn.getLineStyle().equals(EConnectionType.FLOW_REF))) {%>
 			
 			if(!str<%=cid %>.equals("")){
-			String[] value<%=cid %> = new String[<%=metadata.getListColumns().size()%>];
-			String frontChar<%=cid %>,behindChar<%=cid %>;
-			for(int i=0;i<<%=metadata.getListColumns().size()%>;i++){
-				value<%=cid %>[i] = "";
-				if(strToken<%=cid %>.hasMoreTokens()){
-					frontChar<%=cid %>=strToken<%=cid %>.nextToken();
-					if(!frontChar<%=cid %>.equals(<%=delim%>)){
-				   		value<%=cid %>[i]= frontChar<%=cid %>;
-				   		if(strToken<%=cid %>.hasMoreTokens())
-				   			behindChar<%=cid %>=strToken<%=cid %>.nextToken();
+				String[] value<%=cid %> = new String[<%=metadata.getListColumns().size()%>];
+				String frontChar<%=cid %>,behindChar<%=cid %>;
+				for(int i=0;i<<%=metadata.getListColumns().size()%>;i++){
+					value<%=cid %>[i] = "";
+					if(strToken<%=cid %>.hasMoreTokens()){
+						frontChar<%=cid %>=strToken<%=cid %>.nextToken();
+						if(!frontChar<%=cid %>.equals(<%=delim%>)){
+					   		value<%=cid %>[i]= frontChar<%=cid %>;
+					   		if(strToken<%=cid %>.hasMoreTokens()) {
+					   			behindChar<%=cid %>=strToken<%=cid %>.nextToken();
+					   		}
+						}
 					}
 				}
-			}
 			<%	
-				int valueN=0;
-				for (IMetadataColumn column: metadata.getListColumns()) {
-					%>
-				if(!value<%=cid %>[<%=valueN%>].equals("")){
-					<%=conn.getName() %>.<%=column.getLabel() %> = StringUtils.convert<%=column.getTalendType() %>(value<%=cid %>[<%=valueN%>]);
-				}else{
-					<%=conn.getName() %>.<%=column.getLabel() %> = <%=MetadataTalendType.getDefaultValueFromJavaType(column.getTalendType())%>;
+				List<IMetadataColumn> listColumns = metadata.getListColumns();
+				int sizeListColumns = listColumns.size();
+				for (int valueN=0; valueN<sizeListColumns; valueN++) {
+					IMetadataColumn column = listColumns.get(valueN);
+					String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
+					JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
+					String pattern = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
+					
+%>
+					if(value<%=cid %>[<%=valueN%>].length() > 0) {
+<%
+						if(javaType == JavaTypesManager.DATE) {
+%>
+							<%=conn.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_Date(value<%=cid %>[<%=valueN%>], <%= pattern %>);
+<%
+						} else {
+%>
+							<%=conn.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(value<%=cid %>[<%=valueN%>]);
+<%
+						}
+%>					
+					}else{
+						<%=conn.getName() %>.<%=column.getLabel() %> = <%=JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate)%>;
+					}
+<%					
 				}
-				<%valueN++;
-				}%>
+			}
+%>
 			}else{
  				<%	for (IMetadataColumn column: metadata.getListColumns()) {%>
-				<%=conn.getName() %>.<%=column.getLabel() %> = <%=MetadataTalendType.getDefaultValueFromJavaType(column.getTalendType())%>;
+				<%=conn.getName() %>.<%=column.getLabel() %> = <%=JavaTypesManager.getDefaultValueFromJavaIdType(column.getTalendType(), column.isNullable())%>;
 				<%}%>
 			}
 
@@ -180,11 +201,11 @@
 				if ((conn.getName().compareTo(firstConnName)!=0)&&((conn.getLineStyle().equals(EConnectionType.FLOW_MAIN))||(conn.getLineStyle().equals(EConnectionType.FLOW_REF)))) {
 			     for (IMetadataColumn column: metadata.getListColumns()) {%>
       				<%=conn.getName() %>.<%=column.getLabel() %> = <%=firstConnName %>.<%=column.getLabel() %>;
-				 <%}
+				 <%
+				 }
 				}
 			}
 		}
-	}
 %>
  <%
 		}

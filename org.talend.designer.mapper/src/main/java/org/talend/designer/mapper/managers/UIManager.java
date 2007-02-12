@@ -237,6 +237,7 @@ public class UIManager {
 
                     /**
                      * DOC acer Comment method "handleEvent".
+                     * 
                      * @param event
                      */
                     public void handleEvent(ListenableListEvent event) {
@@ -389,7 +390,8 @@ public class UIManager {
                     tableViewer.refresh(true);
                     IColumnEntry entry = dataMapTableView.getDataMapTable().getColumnEntries().get(event.index);
                     parseExpression(entry.getExpression(), entry, false, false, false);
-                } else if (MetadataTableEditorView.ID_COLUMN_TYPE.equals(event.column.getId())) {
+                } else if (MetadataTableEditorView.ID_COLUMN_TYPE.equals(event.column.getId())
+                        || MetadataTableEditorView.ID_COLUMN_NULLABLE.equals(event.column.getId())) {
                     mapperManager.getProblemsManager().checkProblemsForAllEntriesOfAllTables(true);
                 }
             }
@@ -690,7 +692,7 @@ public class UIManager {
      * @param isFilterTableSelected TODO
      * @param forceResetHighlightLinksForOtherTables TODO
      */
-    @SuppressWarnings("unchecked") //$NON-NLS-1$
+    @SuppressWarnings("unchecked")//$NON-NLS-1$
     public void selectLinks(DataMapTableView dataMapTableView, List<ITableEntry> selectedMetadataTableEntries,
             boolean isFilterTableSelected, boolean forceResetHighlightLinksForOtherTables) {
 
@@ -837,7 +839,7 @@ public class UIManager {
      * @param selection
      * @return
      */
-    @SuppressWarnings("unchecked") //$NON-NLS-1$
+    @SuppressWarnings("unchecked")//$NON-NLS-1$
     public List<ITableEntry> extractSelectedTableEntries(ISelection selection) {
         StructuredSelection currentSelection = (StructuredSelection) selection;
         return (List<ITableEntry>) currentSelection.toList();
@@ -924,7 +926,7 @@ public class UIManager {
     /**
      * DOC amaumont Comment method "processAllExpressions".
      */
-    @SuppressWarnings("unchecked") //$NON-NLS-1$
+    @SuppressWarnings("unchecked")//$NON-NLS-1$
     public void parseAllExpressionsForAllTables() {
         List<DataMapTableView> tablesView = tableManager.getInputsTablesView();
         tablesView.addAll(tableManager.getVarsTablesView());
@@ -939,7 +941,7 @@ public class UIManager {
      * 
      * @param newLinksMustHaveSelectedState TODO
      */
-    @SuppressWarnings("unchecked") //$NON-NLS-1$
+    @SuppressWarnings("unchecked")//$NON-NLS-1$
     public void parseAllExpressions(DataMapTableView dataMapTableView, boolean newLinksMustHaveSelectedState) {
         List<IColumnEntry> columnsEntriesList = dataMapTableView.getDataMapTable().getColumnEntries();
         parseAllExpressions(columnsEntriesList, newLinksMustHaveSelectedState);
@@ -1162,7 +1164,8 @@ public class UIManager {
                 public void run() {
 
                     TableViewerCreator tableViewerCreatorForColumns = dataMapTableView.getTableViewerCreatorForColumns();
-                    boolean propagate = MessageDialog.openQuestion(tableViewerCreatorForColumns.getTable().getShell(), Messages.getString("UIManager.propagateTitle"), //$NON-NLS-1$
+                    boolean propagate = MessageDialog.openQuestion(tableViewerCreatorForColumns.getTable().getShell(), Messages
+                            .getString("UIManager.propagateTitle"), //$NON-NLS-1$
                             Messages.getString("UIManager.propagateMessage")); //$NON-NLS-1$
                     if (propagate) {
                         TableEntryLocation previousLocation = new TableEntryLocation(currentModifiedITableEntry.getParentName(),
@@ -1499,7 +1502,7 @@ public class UIManager {
         currentSelectedTableView.getParent().layout();
         parseAllExpressions(currentSelectedTableView, false);
         parseAllExpressions(previousTableView, false);
-        
+
         mapperManager.getProblemsManager().checkProblemsForAllEntries(currentSelectedTableView, true);
         mapperManager.getProblemsManager().checkProblemsForAllEntries(previousTableView, true);
     }
@@ -1534,7 +1537,7 @@ public class UIManager {
         currentSelectedTableView.getParent().layout();
         parseAllExpressions(currentSelectedTableView, false);
         parseAllExpressions(nextTableView, false);
-        
+
         mapperManager.getProblemsManager().checkProblemsForAllEntries(currentSelectedTableView, true);
         mapperManager.getProblemsManager().checkProblemsForAllEntries(nextTableView, true);
     }
