@@ -10,6 +10,7 @@
 		org.talend.designer.codegen.config.CodeGeneratorArgument
 		java.util.List 
 		org.talend.commons.utils.generation.CodeGenerationUtils
+		org.talend.core.model.metadata.MetadataTalendType
 	" 
 	class="FileInputDelimitedBegin" 
 %>
@@ -26,14 +27,15 @@
 	if ((metadatas!=null)&&(metadatas.size()>0)) {
 		IMetadataTable metadata = metadatas.get(0);
 		if (metadata!=null) {
+
 	
 	String filename = ElementParameterParser.getValueWithUIFieldKey(node,"__FILENAME__", "FILENAME");
     String encoding = ElementParameterParser.getValue(node,"__ENCODING__");
     String myHeader = ElementParameterParser.getValue(node, "__HEADER__");
     String myLimit = ElementParameterParser.getValue(node, "__LIMIT__");
     String delim = ElementParameterParser.getValue(node, "__FIELDSEPARATOR__");
+    String row_separator = ElementParameterParser.getValue(node, "__ROWSEPARATOR__");
 %>
-
         final String IN_DELIM_<%=cid %> = <%=(((String)ElementParameterParser.getValue(node, "__FIELDSEPARATOR__")).compareTo("*")==0)
         	? "\\*"
         	: ElementParameterParser.getValueWithUIFieldKey(node, "__FIELDSEPARATOR__", "FIELDSEPARATOR") %>;
@@ -41,14 +43,11 @@
         boolean removeEmptyRow<%=cid %> = <%= ElementParameterParser.getValue(node, "__REMOVE_EMPTY_ROW__") %>;
         
         java.io.BufferedReader in<%=cid %> = null;
-		try{
         	in<%=cid %> = new java.io.BufferedReader(new java.io.InputStreamReader(
         		new java.io.FileInputStream(<%=filename %>),<%= encoding%>));
-        }catch(java.io.UnsupportedEncodingException e){
-        	e.printStackTrace();
-        }
         String str<%=cid %>;
-        int totalLine<%=cid %>=0,currentLine<%=cid %>=0,beginLine<%=cid %>=0,lastLine<%=cid %>=-1;
+        int totalLine<%=cid %>=0,currentLine<%=cid %>=0,beginLine<%=cid %>=0,lastLine<%=cid %>=-1,outputLine<%=cid %>=0;
+        int limit<%=cid %>=<%if (myLimit.equals("")) {myLimit = "-1";}%><%=myLimit %>;
         
         <% 
          	if (myHeader.equals("")) myHeader = "0"; 
@@ -56,11 +55,7 @@
         	if (header > 0){
         		%>beginLine<%=cid %>=<%=header%>+1;
       		<%}
-      		if (myLimit.equals("")) myLimit = "-1";
-      		int limit =Integer.parseInt(myLimit);
-      		if (limit > 0){
-        %>lastLine<%=cid %>=<%=header+limit%>;
-        <%}%>
+      		%>
         
         int nb_random<%=cid %> = -1;
 		<%if (ElementParameterParser.getValue(node, "__RANDOM__").equals("true")) {%>
@@ -70,7 +65,15 @@
     	
         if(footer_<%=cid %> > 0 || nb_random<%=cid %>>-1){
 			while ((str<%=cid %> = in<%=cid %>.readLine()) != null) {
+				<%if(!row_separator.equals("\"\\n\"")){%>
+        			java.util.StringTokenizer strRowToken<%=cid %>=new java.util.StringTokenizer(str<%=cid %>.trim(), IN_DELIM_<%=cid %>);
+        	 		while(strRowToken<%=cid %>.hasMoreTokens()){
+        	 		str<%=cid %>=strRowToken<%=cid %>.nextToken();
+        		<%}%>
 				totalLine<%=cid %>++;
+				<%if(!row_separator.equals("\"\\n\"")){%>
+    			}
+    			<%}%>
 			}
 		  if(footer_<%=cid %> > 0){
 			int lastLineTemp<%=cid %> = totalLine<%=cid %> - footer_<%=cid %>   < 0? 0 : totalLine<%=cid %> - footer_<%=cid %> ;
@@ -86,20 +89,22 @@
        		while(ranSet<%=cid %>.size()<nb_random<%=cid %>){
             	 ranSet<%=cid %>.add(ran<%=cid %>.nextInt(totalLine<%=cid %>));
        		}
-       		System.err.println(ranSet<%=cid %>);
        		rans<%=cid %>=ranSet<%=cid %>.toArray();
     	}
 			in<%=cid %> = null;
-			try{
         	in<%=cid %> = new java.io.BufferedReader(new java.io.InputStreamReader(
         		new java.io.FileInputStream(<%=filename %>),<%= encoding%>));
-        	}catch(java.io.UnsupportedEncodingException e){
-        	e.printStackTrace();
-        }
 		}
         java.util.StringTokenizer strToken<%=cid %>;
         int currentRan<%=cid %>=0;
         while ((str<%=cid %> = in<%=cid %>.readLine()) != null) {
+        	<%if(!row_separator.equals("\"\\n\"")){%>
+        	java.util.StringTokenizer strRowToken<%=cid %>=new java.util.StringTokenizer(str<%=cid %>.trim(), <%=row_separator %>);
+        	 while(strRowToken<%=cid %>.hasMoreTokens()){
+        	 	str<%=cid %>=strRowToken<%=cid %>.nextToken();
+        	<%}%>
+        	
+        	
        		currentLine<%=cid %>++;
        		if(nb_random<%=cid %>>-1){
        			if(currentRan<%=cid %> >= rans<%=cid %>.length){
@@ -118,6 +123,10 @@
         	}
         	if(removeEmptyRow<%=cid %> && str<%=cid %>.equals("")){
         		continue;
+        	}
+        	outputLine<%=cid %>++;
+        	if(limit<%=cid %>!=-1&& outputLine<%=cid %> > limit<%=cid %>){
+        		break;
         	}
         	strToken<%=cid %> = new java.util.StringTokenizer(str<%=cid %>.trim(), IN_DELIM_<%=cid %>, true);
 
@@ -149,12 +158,16 @@
 				int valueN=0;
 				for (IMetadataColumn column: metadata.getListColumns()) {
 					%>
-				
-				<%=conn.getName() %>.<%=column.getLabel() %> = StringUtils.convert<%=column.getTalendType() %>(value<%=cid %>[<%=valueN++%>]);
-				<%}%>
+				if(!value<%=cid %>[<%=valueN%>].equals("")){
+					<%=conn.getName() %>.<%=column.getLabel() %> = StringUtils.convert<%=column.getTalendType() %>(value<%=cid %>[<%=valueN%>]);
+				}else{
+					<%=conn.getName() %>.<%=column.getLabel() %> = <%=MetadataTalendType.getDefaultValueFromJavaType(column.getTalendType())%>;
+				}
+				<%valueN++;
+				}%>
 			}else{
  				<%	for (IMetadataColumn column: metadata.getListColumns()) {%>
-				<%=conn.getName() %>.<%=column.getLabel() %> = "";
+				<%=conn.getName() %>.<%=column.getLabel() %> = <%=MetadataTalendType.getDefaultValueFromJavaType(column.getTalendType())%>;
 				<%}%>
 			}
 
