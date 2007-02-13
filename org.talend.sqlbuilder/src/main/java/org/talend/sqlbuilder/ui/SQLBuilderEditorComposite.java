@@ -42,6 +42,8 @@ import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.custom.VerifyKeyListener;
 import org.eclipse.swt.events.ControlListener;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.VerifyEvent;
@@ -232,6 +234,13 @@ public class SQLBuilderEditorComposite extends Composite implements ISQLEditor {
                 }
             }
         });
+        colorText.addModifyListener(new ModifyListener() {
+
+            public void modifyText(ModifyEvent e) {
+                isModified = true;
+            }
+
+        });
     }
 
     /**
@@ -361,7 +370,7 @@ public class SQLBuilderEditorComposite extends Composite implements ISQLEditor {
 
         guiModificationQueryAction = new GUIModificationQueryAction(repositoryNode, connParam, dialog);
         guiModificationQueryAction.setEditor(this);
-        
+
         addDefaultActions(defaultToolBarMgr);
 
         // initialize session actions
@@ -486,6 +495,7 @@ public class SQLBuilderEditorComposite extends Composite implements ISQLEditor {
         createEditorProposal();
     }
 
+
     /**
      * Sets tab title.
      * 
@@ -499,11 +509,12 @@ public class SQLBuilderEditorComposite extends Composite implements ISQLEditor {
         if (this.isDefaultEditor && (selectedComponentName != null && selectedComponentName.length() != 0)) {
             title = selectedComponentName + "."; //$NON-NLS-1$
         }
-        title = title + dbName + "(" + repositoryName + ").sql"; //$NON-NLS-1$ //$NON-NLS-2$
+        title = title + dbName + "(" + repositoryName + ").sql"; 
         if (connParam.getQueryObject() != null) {
             title = Messages.getString("SQLBuilderEditorComposite.titleQuery") + connParam.getQueryObject().getLabel(); //$NON-NLS-1$
         } else if (dialog.getConnParameters().getQueryObject() != null) {
-            title = Messages.getString("SQLBuilderEditorComposite.titleQuery") + dialog.getConnParameters().getQueryObject().getLabel(); //$NON-NLS-1$
+            title = Messages.getString("SQLBuilderEditorComposite.titleQuery") //$NON-NLS-1$
+                    + dialog.getConnParameters().getQueryObject().getLabel();
         }
         tabItem.setText(title);
     }
@@ -537,9 +548,11 @@ public class SQLBuilderEditorComposite extends Composite implements ISQLEditor {
      */
     public void setEditorContent(ConnectionParameters connectionParameters) {
         this.connParam = connectionParameters;
-        this.colorText.setText(connectionParameters.getQuery());
+        setEditorContent(connectionParameters.getQuery());
 
     }
+
+    private boolean isModified = false;
 
     /*
      * (non-Java)
@@ -665,4 +678,18 @@ public class SQLBuilderEditorComposite extends Composite implements ISQLEditor {
     public void setQueryObject(Query queryObject) {
         this.queryObject = queryObject;
     }
+
+    public boolean isModified() {
+        return this.isModified;
+    }
+
+    /**
+     * Sets the isModified.
+     * 
+     * @param isModified the isModified to set
+     */
+    public void setModified(boolean isModified) {
+        this.isModified = isModified;
+    }
+
 }

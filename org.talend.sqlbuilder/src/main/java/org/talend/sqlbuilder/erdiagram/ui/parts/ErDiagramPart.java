@@ -131,6 +131,12 @@ public class ErDiagramPart extends AbstractGraphicalEditPart implements Property
      */
     public void propertyChange(PropertyChangeEvent evt) {
         refreshChildren();
+        ErDiagram model2 = (ErDiagram) getModel();
+        if (evt.getPropertyName().equals(ErDiagram.PROP_ISDIRTY)) {
+            model2.updateSqlText();
+        } else {
+            (model2).setDirty(true);
+        }
     }
 
 }

@@ -37,6 +37,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.sqlbuilder.Messages;
+import org.talend.sqlbuilder.ui.ISQLBuilderDialog;
 
 /**
  * DOC qzhang class global comment. Detailled comment <br/>
@@ -67,6 +68,12 @@ public class ErDiagramDialog extends Dialog {
         this.title = title;
         setShellStyle(SWT.APPLICATION_MODAL | SWT.DIALOG_TRIM | SWT.RESIZE | SWT.RESIZE | SWT.MIN | SWT.MAX);
 
+    }
+
+    private ISQLBuilderDialog dialog;
+
+    public void setDialog(ISQLBuilderDialog dialog) {
+        this.dialog = dialog;
     }
 
     /*
@@ -103,16 +110,27 @@ public class ErDiagramDialog extends Dialog {
         container.setLayout(layout);
         container.setLayoutData(new GridData(GridData.FILL_BOTH));
         applyDialogFont(container);
-        erComposite = new ErDiagramComposite(container, SWT.NONE);
+        erComposite = new ErDiagramComposite(container, SWT.VERTICAL);
         erComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
-
+        erComposite.setDialog(dialog);
         erComposite.setNodes(getNodes());
-
+        erComposite.setRootNode(null);
+        erComposite.setSqlText(sql);
+        erComposite.setWeights(new int[] { 12, 1 });
         Label separator = new Label(container, SWT.SEPARATOR | SWT.HORIZONTAL);
         separator.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
         return container;
 
+    }
+
+    private String sql;
+
+    public void setSqlText(String sql) {
+        this.sql = sql;
+        if (erComposite != null) {
+            erComposite.setSqlText(sql);
+        }
     }
 
     /**

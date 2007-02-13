@@ -29,7 +29,6 @@ import org.eclipse.emf.common.util.EList;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.window.Window;
 import org.eclipse.ui.actions.SelectionProviderAction;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.metadata.builder.connection.MetadataColumn;
@@ -41,7 +40,6 @@ import org.talend.sqlbuilder.SqlBuilderPlugin;
 import org.talend.sqlbuilder.dbstructure.RepositoryNodeType;
 import org.talend.sqlbuilder.dbstructure.SqlBuilderRepositoryObject;
 import org.talend.sqlbuilder.dbstructure.DBTreeProvider.MetadataTableRepositoryObject;
-import org.talend.sqlbuilder.erdiagram.ui.ErDiagramDialog;
 import org.talend.sqlbuilder.repository.utility.SQLBuilderRepositoryNodeManager;
 import org.talend.sqlbuilder.ui.ISQLBuilderDialog;
 import org.talend.sqlbuilder.util.ConnectionParameters;
@@ -123,22 +121,24 @@ public class GenerateSelectSQLAction extends SelectionProviderAction {
         try {
             SQLBuilderRepositoryNodeManager.increaseALLRepositoryNode();
             SQLBuilderRepositoryNodeManager.setIncrease(true);
-            String query = null;
-            ErDiagramDialog erDiagramDialog = new ErDiagramDialog(dialog.getShell(), Messages
-                    .getString("GenerateSelectSQLAction.textCenerateSelectStatement")); //$NON-NLS-1$
-            erDiagramDialog.setNodes(selectedNodes);
-            if (Window.OK == erDiagramDialog.open()) {
-                query = erDiagramDialog.getSql();
-            }
-            if (query == null) {
-                return;
-            }
+
+            // String query = null;
+            // ErDiagramDialog erDiagramDialog = new ErDiagramDialog(dialog.getShell(), Messages
+            // .getString("GenerateSelectSQLAction.textCenerateSelectStatement")); //$NON-NLS-1$
+            // erDiagramDialog.setNodes(selectedNodes);
+            // erDiagramDialog.setSqlText(null);
+            // if (Window.OK == erDiagramDialog.open()) {
+            // query = erDiagramDialog.getSql();
+            // }
+            // if (query == null) {
+            // return;
+            // }
             List<String> repositoryNames = repositoryNodeManager.getALLReposotoryNodeNames();
             ConnectionParameters connParam = new ConnectionParameters();
-            connParam.setQuery(query);
+            connParam.setQuery("");
 
             dialog.openEditor(SQLBuilderRepositoryNodeManager.getRoot(selectedNodes.get(0)), repositoryNames, connParam,
-                    isDefaultEditor);
+                    isDefaultEditor, selectedNodes);
         } catch (Throwable e) {
             SqlBuilderPlugin.log(Messages.getString("GenerateSelectSQLAction.logMessageGenerateSql"), e); //$NON-NLS-1$
         }

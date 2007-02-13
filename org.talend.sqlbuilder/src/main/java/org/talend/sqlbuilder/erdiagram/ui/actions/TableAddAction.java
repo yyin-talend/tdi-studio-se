@@ -36,7 +36,7 @@ import org.talend.sqlbuilder.erdiagram.ui.ErDiagramComposite;
 import org.talend.sqlbuilder.erdiagram.ui.commands.CreateTableCommand;
 import org.talend.sqlbuilder.erdiagram.ui.editor.ErdiagramDiagramEditor;
 import org.talend.sqlbuilder.erdiagram.ui.nodes.ErDiagram;
-import org.talend.sqlbuilder.repository.utility.SQLBuilderRepositoryNodeManager;
+import org.talend.sqlbuilder.repository.utility.EMFRepositoryNodeManager;
 
 /**
  * qzhang class global comment. Detailled comment <br/>
@@ -94,11 +94,10 @@ public class TableAddAction extends SelectionAction {
         Control control = erdiagramDiagramEditor.getGraphicalControl();
         AddTablesDialog dialog = new AddTablesDialog(new Shell(control.getShell()));
         if (control.getParent() instanceof ErDiagramComposite) {
-            ErDiagramComposite parentComposite = (ErDiagramComposite) control.getParent();
-            if (parentComposite.getNodes().size() < 1) {
+            if (EMFRepositoryNodeManager.getInstance().getRoot() == null) {
                 return;
             }
-            dialog.setRootNode(SQLBuilderRepositoryNodeManager.getRoot(parentComposite.getNodes().get(0)));
+            dialog.setRootNode(EMFRepositoryNodeManager.getInstance().getRoot());
         }
         if (Window.OK == dialog.open()) {
             List tables1 = dialog.getTables();

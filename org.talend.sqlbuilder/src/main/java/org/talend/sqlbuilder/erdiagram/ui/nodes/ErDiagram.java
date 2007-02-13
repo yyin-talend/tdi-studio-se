@@ -27,21 +27,21 @@ import java.util.List;
 import java.util.Map;
 
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
-import org.talend.sqlbuilder.repository.utility.EMFRepositoryNodeManager;
+import org.talend.sqlbuilder.erdiagram.ui.ErDiagramComposite;
 
 /**
- *  qzhang class global comment. Detailled comment <br/>
+ * qzhang class global comment. Detailled comment <br/>
  * 
  * $Id: talend.epf 1 2006-09-29 17:06:40 +0000 (ææäº, 29 ä¹æ 2006) nrousseau $
  * 
  */
 public class ErDiagram extends Element {
 
-    private EMFRepositoryNodeManager nodeManager;
-
     public static final String PROP_TABLES = "tables"; //$NON-NLS-1$
 
     public static final String PROP_RELATIONS = "relation"; //$NON-NLS-1$
+
+    public static final String PROP_ISDIRTY = "isDirty";
 
     private List<Table> tables;
 
@@ -49,13 +49,56 @@ public class ErDiagram extends Element {
 
     private List<MetadataTable> metadataTables;
 
+    private boolean isDirty = false;
+    
+    
     /**
-     *  admin ErDiagram constructor comment.
+     * Getter for isDirty.
+     * @return the isDirty
+     */
+    public boolean isDirty() {
+        return this.isDirty;
+    }
+    
+    
+    /**
+     * Sets the isDirty.
+     * @param isDirty the isDirty to set
+     */
+    public void setDirty(boolean isDirty) {
+        this.isDirty = isDirty;
+        fireStructureChange(PROP_ISDIRTY, this.isDirty);
+    }
+    
+    /**
+     * admin ErDiagram constructor comment.
      */
     public ErDiagram() {
         tables = new ArrayList<Table>();
     }
 
+    private ErDiagramComposite  erDiagramComposite;
+    
+    
+    /**
+     * Sets the erDiagramComposite.
+     * @param erDiagramComposite the erDiagramComposite to set
+     */
+    public void setErDiagramComposite(ErDiagramComposite erDiagramComposite) {
+        this.erDiagramComposite = erDiagramComposite;
+    }
+    
+    
+    /**
+     * Getter for erDiagramComposite.
+     * @return the erDiagramComposite
+     */
+    public ErDiagramComposite getErDiagramComposite() {
+        return this.erDiagramComposite;
+    }
+    public void updateSqlText() {
+        erDiagramComposite.setSqlText(erDiagramComposite.getSqlStatement());
+    }
     /**
      * 
      */
@@ -78,7 +121,6 @@ public class ErDiagram extends Element {
     @SuppressWarnings("unchecked")//$NON-NLS-1$
     public void addTable(Table table) {
         this.tables.add(table);
-
         fireStructureChange(PROP_TABLES, this.tables);
     }
 
@@ -118,13 +160,5 @@ public class ErDiagram extends Element {
 
     public void setMetadataTables(List<MetadataTable> metadataTables) {
         this.metadataTables = metadataTables;
-    }
-
-    public EMFRepositoryNodeManager getNodeManager() {
-        return this.nodeManager;
-    }
-
-    public void setNodeManager(EMFRepositoryNodeManager nodeManager) {
-        this.nodeManager = nodeManager;
     }
 }

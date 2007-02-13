@@ -112,6 +112,9 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog, IRepo
         protected boolean locked = false;
 
         public void beginTask(String name, int totalWork) {
+            if (progressIndicator == null) {
+                return;
+            }
             if (progressIndicator.isDisposed()) {
                 return;
             }
@@ -123,6 +126,9 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog, IRepo
         }
 
         public void done() {
+            if (progressIndicator == null) {
+                return;
+            }
             if (!progressIndicator.isDisposed()) {
                 progressIndicator.sendRemainingWork();
                 progressIndicator.done();
@@ -407,7 +413,7 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog, IRepo
     }
 
     /**
-     * DOC qianbing class global comment. Refreshes Detail Composite according to selection changing of the database
+     *  qianbing class global comment. Refreshes Detail Composite according to selection changing of the database
      * structure viewer. <br/>
      * 
      * $Id: talend-code-templates.xml,v 1.3 2006/11/01 05:38:28 nicolas Exp $
@@ -416,7 +422,7 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog, IRepo
     public class RefreshDetailCompositeAction extends SelectionProviderAction {
 
         /**
-         * DOC qianbing RefreshDetailCompositeAction constructor comment.
+         *  qianbing RefreshDetailCompositeAction constructor comment.
          * 
          * @param provider
          */
@@ -425,7 +431,7 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog, IRepo
         }
 
         /*
-         * (non-Javadoc)
+         * (non-Java)
          * 
          * @see org.eclipse.ui.actions.SelectionProviderAction#selectionChanged(org.eclipse.jface.viewers.IStructuredSelection)
          */
@@ -470,7 +476,7 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog, IRepo
     }
 
     /*
-     * (non-Javadoc)
+     * (non-Java)
      * 
      * @see org.eclipse.jface.window.Window#getShellListener()
      */
@@ -480,7 +486,7 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog, IRepo
 
             // int i = 0;
             /*
-             * (non-Javadoc)
+             * (non-Java)
              * 
              * @see org.eclipse.swt.events.ShellAdapter#shellActivated(org.eclipse.swt.events.ShellEvent)
              */
@@ -494,7 +500,7 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog, IRepo
             }
 
             /*
-             * (non-Javadoc)
+             * (non-Java)
              * 
              * @see org.eclipse.swt.events.ShellAdapter#shellClosed(org.eclipse.swt.events.ShellEvent)
              */
@@ -507,7 +513,7 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog, IRepo
             }
 
             /*
-             * (non-Javadoc)
+             * (non-Java)
              * 
              * @see org.eclipse.swt.events.ShellAdapter#shellDeactivated(org.eclipse.swt.events.ShellEvent)
              */
@@ -521,7 +527,7 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog, IRepo
             }
 
             /*
-             * (non-Javadoc)
+             * (non-Java)
              * 
              * @see org.eclipse.swt.events.ShellAdapter#shellDeiconified(org.eclipse.swt.events.ShellEvent)
              */
@@ -531,7 +537,7 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog, IRepo
             }
 
             /*
-             * (non-Javadoc)
+             * (non-Java)
              * 
              * @see org.eclipse.swt.events.ShellAdapter#shellIconified(org.eclipse.swt.events.ShellEvent)
              */
@@ -555,5 +561,17 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog, IRepo
     public void repositoryChanged(RepositoryChangedEvent event) {
         clean();
         structureComposite.updateStructureView(event);
+    }
+
+    /*
+     * (non-Java)
+     * 
+     * @see org.talend.sqlbuilder.ui.ISQLBuilderDialog#openEditor(org.talend.repository.model.RepositoryNode,
+     * java.util.List, org.talend.sqlbuilder.util.ConnectionParameters, boolean, java.util.List)
+     */
+    public void openEditor(RepositoryNode node, List<String> repositoryName, ConnectionParameters connParam,
+            boolean isDefaultEditor, List<RepositoryNode> nodeSel) {
+        editorComposite.setNodesSel(nodeSel);
+        editorComposite.openNewEditor(node, repositoryName, connParam, isDefaultEditor);
     }
 }

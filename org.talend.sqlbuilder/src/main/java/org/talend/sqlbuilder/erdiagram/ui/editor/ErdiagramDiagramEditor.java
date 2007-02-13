@@ -50,10 +50,11 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.actions.ActionFactory;
+import org.talend.sqlbuilder.erdiagram.ui.ErDiagramComposite;
 import org.talend.sqlbuilder.erdiagram.ui.actions.ErDiagramItemDeleteAction;
 
 /**
- * DOC qzhang class global comment. Detailled comment <br/>
+ * qzhang class global comment. Detailled comment <br/>
  * 
  * $Id: talend.epf 1 2006-09-29 17:06:40 +0000 (ææäº, 29 ä¹æ 2006) qzhang $
  * 
@@ -61,7 +62,7 @@ import org.talend.sqlbuilder.erdiagram.ui.actions.ErDiagramItemDeleteAction;
 public class ErdiagramDiagramEditor extends GraphicalEditor {
 
     private KeyHandler sharedKeyHandler;
-    
+
     private boolean savePreviouslyNeeded = false;
 
     public static final int GRID_SIZE = 32;
@@ -71,13 +72,13 @@ public class ErdiagramDiagramEditor extends GraphicalEditor {
     public static final String ID = "org.talend.sqlbuider.erdiagram.diagram.part.SqlBuilderErdiagramDiagramEditor"; //$NON-NLS-1$
 
     /**
-     * DOC admin ErdiagramDiagramEditor constructor comment.
+     * admin ErdiagramDiagramEditor constructor comment.
      */
     public ErdiagramDiagramEditor() {
         DefaultEditDomain editDomain = new DefaultEditDomain(this);
         editDomain.setDefaultTool(new PanningSelectionTool());
         setEditDomain(editDomain);
-        
+
     }
 
     protected KeyHandler getCommonKeyHandler() {
@@ -87,8 +88,8 @@ public class ErdiagramDiagramEditor extends GraphicalEditor {
         }
         return sharedKeyHandler;
     }
-    
-    @SuppressWarnings("unchecked") //$NON-NLS-1$
+
+    @SuppressWarnings("unchecked")//$NON-NLS-1$
     protected void configureGraphicalViewer() {
         super.configureGraphicalViewer();
         ScrollingGraphicalViewer viewer = (ScrollingGraphicalViewer) getGraphicalViewer();
@@ -108,7 +109,7 @@ public class ErdiagramDiagramEditor extends GraphicalEditor {
         /** * Management of the context menu ** */
         ContextMenuProvider cmProvider = new ErDiagramMenuProvider(this, viewer, getActionRegistry());
         viewer.setContextMenu(cmProvider);
-        
+
         /** * Snap To Grid ** */
         // Grid properties
         getGraphicalViewer().setProperty(SnapToGrid.PROPERTY_GRID_SPACING, new Dimension(GRID_SIZE, GRID_SIZE));
@@ -126,7 +127,7 @@ public class ErdiagramDiagramEditor extends GraphicalEditor {
     }
 
     /*
-     * (non-Javadoc)
+     * (non-Java)
      * 
      * @see org.eclipse.gef.ui.parts.GraphicalEditor#hookGraphicalViewer()
      */
@@ -135,8 +136,9 @@ public class ErdiagramDiagramEditor extends GraphicalEditor {
         getSelectionSynchronizer().addViewer(getGraphicalViewer());
     }
 
+    
     /*
-     * (non-Javadoc)
+     * (non-Java)
      * 
      * @see org.eclipse.gef.ui.parts.GraphicalEditor#init(org.eclipse.ui.IEditorSite, org.eclipse.ui.IEditorInput)
      */
@@ -150,20 +152,17 @@ public class ErdiagramDiagramEditor extends GraphicalEditor {
         return rulerComp;
     }
 
+    public void updateSqlText() {
+        if (rulerComp.getParent() instanceof ErDiagramComposite) {
+            ErDiagramComposite erComposite = (ErDiagramComposite) rulerComp.getParent();
+            erComposite.setSqlText(erComposite.getSqlStatement());
+        }
+    }
+    
     protected void createGraphicalViewer(final Composite parent) {
         rulerComp = new RulerComposite(parent, SWT.BORDER);
         super.createGraphicalViewer(rulerComp);
         rulerComp.setGraphicalViewer((ScrollingGraphicalViewer) getGraphicalViewer());
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.eclipse.gef.ui.parts.GraphicalEditor#createPartControl(org.eclipse.swt.widgets.Composite)
-     */
-    @Override
-    public void createPartControl(Composite parent) {
-        super.createPartControl(parent);
     }
 
     public void commandStackChanged(final EventObject event) {
@@ -202,13 +201,12 @@ public class ErdiagramDiagramEditor extends GraphicalEditor {
     }
 
     /*
-     * (non-Javadoc)
+     * (non-Java)
      * 
      * @see org.eclipse.ui.part.EditorPart#doSave(org.eclipse.core.runtime.IProgressMonitor)
      */
     @Override
     public void doSave(IProgressMonitor monitor) {
-        // TODO Auto-generated method stub
 
     }
 

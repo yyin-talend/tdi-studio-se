@@ -26,6 +26,9 @@ import java.beans.PropertyChangeListener;
 import java.util.List;
 
 import org.eclipse.draw2d.AbstractBorder;
+import org.eclipse.draw2d.ButtonModel;
+import org.eclipse.draw2d.ChangeEvent;
+import org.eclipse.draw2d.ChangeListener;
 import org.eclipse.draw2d.CheckBox;
 import org.eclipse.draw2d.ChopboxAnchor;
 import org.eclipse.draw2d.ColorConstants;
@@ -99,6 +102,7 @@ public class ColumnPart extends AbstractGraphicalEditPart implements PropertyCha
         } else if (evt.getPropertyName().endsWith(Column.PROP_OUTPUTS)) {
             refreshTargetConnections();
         }
+        ((Column) getModel()).getTable().getErDiagram().setDirty(true);
     }
 
     /*
@@ -257,12 +261,21 @@ public class ColumnPart extends AbstractGraphicalEditPart implements PropertyCha
          */
         private void createContents() {
 
-            Column column = (Column) getModel();
+            final Column column = (Column) getModel();
             if (!column.getElementName().equals("*")) { //$NON-NLS-1$
                 isSelected = new CheckBox();
                 isSelected.setSelected(column.isSelected());
                 setFigureCustomColumnIsSelectedFigure(isSelected);
                 this.add(isSelected);
+                isSelected.addChangeListener(new ChangeListener() {
+
+                    public void handleStateChanged(ChangeEvent event) {
+                        if (event.getPropertyName().equals(ButtonModel.SELECTED_PROPERTY)) {
+                            column.setSelected(isSelected.isSelected());
+                        }
+                    }
+
+                });
             }
 
             columnName = new Label();

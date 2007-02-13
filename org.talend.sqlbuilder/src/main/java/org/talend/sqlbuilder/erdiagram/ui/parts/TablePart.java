@@ -49,7 +49,7 @@ import org.talend.sqlbuilder.erdiagram.ui.figures.ColumnPaneFigure;
 import org.talend.sqlbuilder.erdiagram.ui.nodes.Table;
 
 /**
- * DOC qzhang class global comment. Detailled comment <br/>
+ *  qzhang class global comment. Detailled comment <br/>
  * 
  * $Id: talend.epf 1 2006-09-29 17:06:40 +0000 (ææäº, 29 ä¹æ 2006) nrousseau $
  * 
@@ -59,7 +59,7 @@ public class TablePart extends AbstractGraphicalEditPart implements PropertyChan
     protected IFigure primaryShape;
 
     /*
-     * (non-Javadoc)
+     * (non-Java)
      * 
      * @see org.eclipse.gef.editparts.AbstractEditPart#getModelChildren()
      */
@@ -69,7 +69,7 @@ public class TablePart extends AbstractGraphicalEditPart implements PropertyChan
     }
 
     /*
-     * (non-Javadoc)
+     * (non-Java)
      * 
      * @see org.eclipse.gef.editparts.AbstractGraphicalEditPart#createFigure()
      */
@@ -81,7 +81,7 @@ public class TablePart extends AbstractGraphicalEditPart implements PropertyChan
     }
 
     /*
-     * (non-Javadoc)
+     * (non-Java)
      * 
      * @see org.eclipse.gef.editparts.AbstractGraphicalEditPart#addChildVisual(org.eclipse.gef.EditPart, int)
      */
@@ -97,7 +97,7 @@ public class TablePart extends AbstractGraphicalEditPart implements PropertyChan
     }
 
     /*
-     * (non-Javadoc)
+     * (non-Java)
      * 
      * @see org.eclipse.gef.editparts.AbstractEditPart#createEditPolicies()
      */
@@ -130,7 +130,7 @@ public class TablePart extends AbstractGraphicalEditPart implements PropertyChan
     }
 
     /*
-     * (non-Javadoc)
+     * (non-Java)
      * 
      * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
      */
@@ -145,7 +145,7 @@ public class TablePart extends AbstractGraphicalEditPart implements PropertyChan
     }
 
     /**
-     * DOC admin TablePart class global comment. Detailled comment <br/>
+     *  admin TablePart class global comment. Detailled comment <br/>
      * 
      * $Id: talend.epf 1 2006-09-29 17:06:40 +0000 (ææäº, 29 ä¹æ 2006) nrousseau $
      * 
@@ -276,7 +276,7 @@ public class TablePart extends AbstractGraphicalEditPart implements PropertyChan
     }
 
     /*
-     * (non-Javadoc)
+     * (non-Java)
      * 
      * @see org.eclipse.gef.editparts.AbstractGraphicalEditPart#getContentPane()
      */

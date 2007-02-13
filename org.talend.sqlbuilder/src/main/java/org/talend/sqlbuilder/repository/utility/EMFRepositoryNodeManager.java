@@ -27,6 +27,9 @@ import java.sql.ResultSetMetaData;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.core.runtime.Preferences;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.swt.widgets.Shell;
 import org.talend.core.model.metadata.IMetadataConnection;
 import org.talend.core.model.metadata.builder.ConvertionHelper;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
@@ -38,11 +41,13 @@ import org.talend.core.model.metadata.builder.database.ExtractMetaDataUtils;
 import org.talend.core.model.properties.DatabaseConnectionItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.repository.model.RepositoryNode;
+import org.talend.sqlbuilder.IConstants;
 import org.talend.sqlbuilder.Messages;
 import org.talend.sqlbuilder.SqlBuilderPlugin;
 import org.talend.sqlbuilder.dbstructure.RepositoryNodeType;
 import org.talend.sqlbuilder.dbstructure.DBTreeProvider.MetadataColumnRepositoryObject;
 import org.talend.sqlbuilder.dbstructure.DBTreeProvider.MetadataTableRepositoryObject;
+import org.talend.sqlbuilder.util.QueryTokenizer;
 
 /**
  * qzhang class global comment. Detailled comment <br/>
@@ -51,6 +56,14 @@ import org.talend.sqlbuilder.dbstructure.DBTreeProvider.MetadataTableRepositoryO
  * 
  */
 public final class EMFRepositoryNodeManager {
+
+    private Preferences prefs = SqlBuilderPlugin.getDefault().getPluginPreferences();
+
+    private String queryDelimiter = prefs.getString(IConstants.QUERY_DELIMITER);
+
+    private String alternateDelimiter = prefs.getString(IConstants.ALTERNATE_DELIMITER);
+
+    private String commentDelimiter = prefs.getString(IConstants.COMMENT_DELIMITER);
 
     public static final String TABLE_ALIAS_PREFIX = "TableAlias:";
 
@@ -77,7 +90,7 @@ public final class EMFRepositoryNodeManager {
      */
     @SuppressWarnings("unchecked")//$NON-NLS-1$
     public Query getQueryByLabel(RepositoryNode node, String label) {
-        RepositoryNode root = null;
+        root = null;
         if (node.getObjectType().equals(ERepositoryObjectType.METADATA_CON_QUERY)) {
             root = node.getParent().getParent();
         } else {
@@ -98,11 +111,11 @@ public final class EMFRepositoryNodeManager {
         return null;
     }
 
+    private RepositoryNode root;
+
     @SuppressWarnings("unchecked")//$NON-NLS-1$
     public List<MetadataTable> getTables(List<RepositoryNode> nodes, List<MetadataColumn> selectedColumns) {
         List<MetadataTable> tables = new ArrayList<MetadataTable>();
-        IMetadataConnection iMetadataConnection = null;
-        RepositoryNode root = null;
         for (RepositoryNode node : nodes) {
             RepositoryNodeType type = SQLBuilderRepositoryNodeManager.getRepositoryType(node);
             if (type == RepositoryNodeType.DATABASE) {
@@ -123,9 +136,7 @@ public final class EMFRepositoryNodeManager {
                     tables.add(table);
                     selectedColumns.addAll(table.getColumns());
                 }
-                if (root == null) {
-                    root = SQLBuilderRepositoryNodeManager.getRoot(node);
-                }
+                root = SQLBuilderRepositoryNodeManager.getRoot(node);
 
             } else if (type == RepositoryNodeType.COLUMN) {
 
@@ -138,18 +149,26 @@ public final class EMFRepositoryNodeManager {
                 if (!tables.contains(table)) {
                     tables.add(table);
                 }
-                if (root == null) {
-                    root = SQLBuilderRepositoryNodeManager.getRoot(node);
-                }
+                root = SQLBuilderRepositoryNodeManager.getRoot(node);
             }
+            setRoot(null);
+        }
+        return tables;
+    }
 
+    /**
+     * qzhang Comment method "setRoot".
+     */
+    public void setRoot(RepositoryNode rootNode) {
+        IMetadataConnection iMetadataConnection;
+        if (rootNode != null) {
+            root = rootNode;
         }
         if (root != null) {
             iMetadataConnection = ConvertionHelper.convert((DatabaseConnection) SQLBuilderRepositoryNodeManager.getItem(root)
                     .getConnection());
             dbMetaData = rnmanager.getDatabaseMetaData(iMetadataConnection);
         }
-        return tables;
     }
 
     public List<String[]> getPKFromTables(List<MetadataTable> tables) {
@@ -202,20 +221,62 @@ public final class EMFRepositoryNodeManager {
 
     private List<String[]> relations = new ArrayList<String[]>();
 
-    @SuppressWarnings("unchecked")
-    public List<RepositoryNode> parseSqlStatement(String sql, RepositoryNode currRoot) throws Exception{
+    public String initSqlStatement(String currentSql) {
+        QueryTokenizer qt = new QueryTokenizer(currentSql, queryDelimiter, alternateDelimiter, commentDelimiter);
+        List<String> queryStrings = new ArrayList<String>();
+        while (qt.hasQuery()) {
+            String querySql = qt.nextQuery();
+            // ignore commented lines.
+            if (!querySql.startsWith("--")) { //$NON-NLS-1$
+                queryStrings.add(querySql);
+            }
+        }
+        if (queryStrings.size() < 1) {
+            MessageDialog.openError(new Shell(), Messages.getString("EMFRepositoryNodeManager.Notice.Title"), Messages
+                    .getString("EMFRepositoryNodeManager.Notice.info"));
+            return null;
+        }
+        Boolean isForce = null;
+        if (queryStrings.size() > 1) {
+            isForce = MessageDialog.openQuestion(new Shell(), Messages.getString("EMFRepositoryNodeManager.Notice.Title2"), //$NON-NLS-1$
+                    Messages.getString("EMFRepositoryNodeManager.Notice.info2")); //$NON-NLS-1$
+        }
+        String string = queryStrings.get(0).toLowerCase().replaceAll("\n", " ");
+        string = string.replaceAll("\t", " ");
+        string = string.replaceAll("\r", " ");
+        string = string.replaceAll("\"", "");
+        if (!string.startsWith("select ")) {
+            MessageDialog.openError(new Shell(), Messages.getString("EMFRepositoryNodeManager.Notice.title3"), Messages
+                    .getString("EMFRepositoryNodeManager.Notice.info3"));
+            return null;
+        }
+        if (isForce != null && !isForce.booleanValue()) {
+            return null;
+        }
+        // MessageDialog
+        // .openInformation(new Shell(), "Notice",
+        // "GUI Sql Editor maybe not show all features of your Sql Statement!\n And your full sql Statement will show in
+        // buttom of the GUI.");
+        return string;
+    }
 
+    @SuppressWarnings("unchecked")
+    public List<RepositoryNode> parseSqlStatement(String sql, RepositoryNode currRoot) throws Exception {
+        sql = initSqlStatement(sql);
+        if (sql == null) {
+            return null;
+        }
         List<String> tableNames = new ArrayList<String>();
         List<String> columnsNames = new ArrayList<String>();
 
-        parseSqlToNameList(sql, tableNames, columnsNames);
+        String[] cols = parseSqlToNameList(sql, tableNames, columnsNames);
 
         List<RepositoryNode> nodes = new ArrayList<RepositoryNode>();
         for (RepositoryNode tableNode : currRoot.getChildren()) {
             for (int i = 0; i < tableNames.size(); i++) {
                 String tableLabel = tableNode.getObject().getLabel();
                 boolean isNeed = false;
-                if (columnsNames.size() == 1 && columnsNames.get(0).equals("*")) {
+                if (cols.length == 1 && cols[0].equals("*")) {
                     for (String string : tableNames) {
                         if (string.equals(tableLabel.toLowerCase())) {
                             nodes.add(tableNode);
@@ -286,6 +347,22 @@ public final class EMFRepositoryNodeManager {
         return nodes;
     }
 
+    public String addComment(String fullSql) {
+        String commentSql = "";
+        String[] cs = fullSql.split("\n");
+        for (String string : cs) {
+            if (string.startsWith("--")) {
+                commentSql += string;
+            } else {
+                commentSql += "--" + string;
+            }
+        }
+        if (!commentSql.endsWith(queryDelimiter)) {
+            commentSql += queryDelimiter;
+        }
+        return commentSql;
+    }
+
     /**
      * qzhang Comment method "parseSqlToNameList".
      * 
@@ -293,7 +370,7 @@ public final class EMFRepositoryNodeManager {
      * @param tableNames
      * @param columnsNames
      */
-    private void parseSqlToNameList(String sql, List<String> tableNames, List<String> columnsNames) throws Exception{
+    private String[] parseSqlToNameList(String sql, List<String> tableNames, List<String> columnsNames) throws Exception {
         String lcSql = sql.toLowerCase();
         String select = lcSql.split("select ")[1];
         String[] s = select.split(" from ");
@@ -333,6 +410,15 @@ public final class EMFRepositoryNodeManager {
             }
         }
 
+        // add column's name of relations to column names.
+        for (String[] string : relations) {
+            if (!columnsNames.contains(string[0])) {
+                columnsNames.add(string[0]);
+            }
+            if (!columnsNames.contains(string[1])) {
+                columnsNames.add(string[1]);
+            }
+        }
         // fixed table Names when contains alias.
         fixedNamesContainAlias(tableNames, TABLE_ALIAS_PREFIX);
 
@@ -344,9 +430,27 @@ public final class EMFRepositoryNodeManager {
             String string = columnsNames.get(i);
             if (string.contains(".")) {
                 columnsNames.set(i, string.substring(string.indexOf(".") + 1));
-                
+
             }
         }
+        // fixed relations ,when contans alias.
+        for (int i = 0; i < relations.size(); i++) {
+            String[] strs = relations.get(i);
+            String s0 = strs[0];
+            String s1 = strs[1];
+            for (String string : tableNames) {
+                int di = s0.indexOf(".");
+                if (di > -1 && string.startsWith(TABLE_ALIAS_PREFIX) && string.endsWith(s0.substring(0, di))) {
+                    s0 = string.substring(TABLE_ALIAS_PREFIX.length(), string.indexOf("=")) + s0.substring(di);
+                }
+                di = s1.indexOf(".");
+                if (di > -1 && string.startsWith(TABLE_ALIAS_PREFIX) && string.endsWith(s1.substring(0, di))) {
+                    s1 = string.substring(TABLE_ALIAS_PREFIX.length(), string.indexOf("=")) + s1.substring(di);
+                }
+            }
+            relations.set(i, new String[] { s0, s1 });
+        }
+        return columns;
     }
 
     /**
@@ -354,7 +458,7 @@ public final class EMFRepositoryNodeManager {
      * 
      * @param tableNames
      */
-    private void fixedNamesContainAlias(List<String> tableNames, String prefix) throws Exception{
+    private void fixedNamesContainAlias(List<String> tableNames, String prefix) throws Exception {
         for (int i = 0; i < tableNames.size(); i++) {
             String name = tableNames.get(i);
             String[] aliasNames = name.split(" ");
@@ -391,6 +495,15 @@ public final class EMFRepositoryNodeManager {
                 tableNames.set(i, name.trim());
             }
         }
+    }
+
+    /**
+     * Getter for root.
+     * 
+     * @return the root
+     */
+    public RepositoryNode getRoot() {
+        return this.root;
     }
 
     public static EMFRepositoryNodeManager getInstance() {

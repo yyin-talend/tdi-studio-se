@@ -21,14 +21,23 @@
 // ============================================================================
 package org.talend.sqlbuilder.erdiagram.ui;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.draw2d.CheckBox;
+import org.eclipse.jface.operation.IRunnableWithProgress;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.SashForm;
+import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.talend.commons.ui.swt.colorstyledtext.ColorManager;
+import org.talend.commons.ui.swt.colorstyledtext.ColorStyledText;
+import org.talend.core.CorePlugin;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.metadata.builder.connection.MetadataColumn;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
@@ -44,21 +53,27 @@ import org.talend.sqlbuilder.erdiagram.ui.parts.ErDiagramPart;
 import org.talend.sqlbuilder.erdiagram.ui.parts.TablePart;
 import org.talend.sqlbuilder.repository.utility.EMFRepositoryNodeManager;
 import org.talend.sqlbuilder.repository.utility.SQLBuilderRepositoryNodeManager;
+import org.talend.sqlbuilder.ui.ISQLBuilderDialog;
+import org.talend.sqlbuilder.util.UIUtils;
 
 /**
- *  qzhang class global comment. Detailled comment <br/>
+ * qzhang class global comment. Detailled comment <br/>
  * 
  * $Id: talend.epf 1 2006-09-29 17:06:40 +0000 (ææäº, 29 ä¹æ 2006) nrousseau $
  * 
  */
-public class ErDiagramComposite extends Composite {
+public class ErDiagramComposite extends SashForm {
 
     private List<RepositoryNode> nodes;
 
     private ErdiagramDiagramEditor editor;
 
+    private StyledText sqlText;
+
+    private final String language = "tsql"; //$NON-NLS-1$
+
     /**
-     *  admin ErDiagramComposite constructor comment.
+     * admin ErDiagramComposite constructor comment.
      * 
      * @param parent
      * @param style
@@ -69,7 +84,7 @@ public class ErDiagramComposite extends Composite {
     }
 
     /**
-     *  admin Comment method "addErDiagramEditor".
+     * admin Comment method "addErDiagramEditor".
      */
     @SuppressWarnings("unchecked")//$NON-NLS-1$
     private void addErDiagramEditor() {
@@ -77,6 +92,15 @@ public class ErDiagramComposite extends Composite {
         this.setLayoutData(gridData);
 
         GridLayout layout = new GridLayout();
+        layout.verticalSpacing = 0;
+        layout.marginLeft = 0;
+        layout.marginRight = 0;
+        layout.marginBottom = 0;
+        layout.marginTop = 0;
+        layout.marginHeight = 0;
+        layout.marginWidth = 0;
+        layout.numColumns = 1;
+
         this.setLayout(layout);
 
         editor = new ErdiagramDiagramEditor();
@@ -85,35 +109,109 @@ public class ErDiagramComposite extends Composite {
         Control control = editor.getGraphicalControl();
         if (control != null) {
             control.setParent(this);
+            control.setLayoutData(gridData);
         }
+        layout = new GridLayout();
+        layout.marginLeft = 0;
+        layout.marginRight = 0;
+        layout.marginBottom = 0;
+        layout.marginTop = 0;
+        layout.marginHeight = 0;
+        layout.marginWidth = 0;
+        gridData = new GridData(GridData.FILL_HORIZONTAL);
+        gridData.heightHint = 30;
+        ColorManager colorManager = new ColorManager(CorePlugin.getDefault().getPreferenceStore());
+        int textstyle = SWT.WRAP | SWT.MULTI | SWT.READ_ONLY | SWT.V_SCROLL | SWT.BORDER;
+        sqlText = new ColorStyledText(this, textstyle, colorManager, language);
+        sqlText.setLayoutData(gridData);
+        sqlText.setText("");
+        sqlText.setBackground(getBackground());
+        // sqlText.addMouseListener(new MouseAdapter() {
+        //
+        // /*
+        // * (non-Javadoc)
+        // *
+        // * @see org.eclipse.swt.events.MouseAdapter#mouseDown(org.eclipse.swt.events.MouseEvent)
+        // */
+        // @Override
+        // public void mouseDown(MouseEvent e) {
+        // super.mouseDown(e);
+        // sqlText.setText(getSqlStatement());
+        // isModified = true;
+        // }
+        //
+        // });
+
     }
 
     /**
-     *  admin Comment method "createErDiagram".
+     * Getter for sqlText.
+     * 
+     * @return the sqlText
+     */
+    public String getSqlText() {
+        return this.sqlText.getText();
+    }
+
+    /**
+     * Sets the sqlText.
+     * 
+     * @param sqlText the sqlText to set
+     */
+    public void setSqlText(String sqlText) {
+        if (sqlText != null) {
+            this.sqlText.setText(sqlText);
+            this.sqlText.setVisible(true);
+
+        }
+    }
+
+    private ErDiagram erDiagram;
+
+    /**
+     * admin Comment method "createErDiagram".
      * 
      * @return
      */
     private ErDiagram createErDiagram() {
-        ErDiagram erDiagram = new ErDiagram();
-        erDiagram.setNodeManager(EMFRepositoryNodeManager.getInstance());
-        List<MetadataColumn> selectedColumns = new ArrayList<MetadataColumn>();
-        List<MetadataTable> tables = EMFRepositoryNodeManager.getInstance().getTables(getNodes(), selectedColumns);
+        erDiagram = new ErDiagram();
+        erDiagram.setErDiagramComposite(this);
+        IRunnableWithProgress progress = new IRunnableWithProgress() {
 
-        erDiagram.setMetadataTables(tables);
-        List<String[]> fks = EMFRepositoryNodeManager.getInstance().getPKFromTables(tables);
-        for (MetadataTable metadataTable : tables) {
-            Table table = new Table();
-            table.setMetadataTable(metadataTable, selectedColumns);
-            table.setErDiagram(erDiagram);
-            erDiagram.addTable(table);
-        }
-        erDiagram.setRelations(fks);
+            public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
+                monitor.beginTask("", IProgressMonitor.UNKNOWN);
+                try {
+                    List<MetadataColumn> selectedColumns = new ArrayList<MetadataColumn>();
+                    List<MetadataTable> tables = EMFRepositoryNodeManager.getInstance().getTables(getNodes(), selectedColumns);
+
+                    erDiagram.setMetadataTables(tables);
+                    List<String[]> fks = EMFRepositoryNodeManager.getInstance().getPKFromTables(tables);
+                    for (MetadataTable metadataTable : tables) {
+                        Table table = new Table();
+                        table.setMetadataTable(metadataTable, selectedColumns);
+                        table.setErDiagram(erDiagram);
+                        erDiagram.addTable(table);
+                    }
+                    erDiagram.setRelations(fks);
+
+                } finally {
+                    monitor.done();
+                }
+            }
+        };
+        UIUtils.runWithProgress(progress, true, dialog.getProgressMonitor(), dialog.getShell());
         return erDiagram;
     }
 
+    private ISQLBuilderDialog dialog;
+
+    public void setDialog(ISQLBuilderDialog dialog) {
+        this.dialog = dialog;
+    }
+
     private String getCurrentDbType() {
-        DatabaseConnection connection = (DatabaseConnection) ((ConnectionItem) SQLBuilderRepositoryNodeManager.getRoot(
-                getNodes().get(0)).getObject().getProperty().getItem()).getConnection();
+        DatabaseConnection connection = (DatabaseConnection) ((ConnectionItem) rootNode.getObject().getProperty().getItem())
+                .getConnection();
         return connection.getDatabaseType();
     }
 
@@ -142,7 +240,7 @@ public class ErDiagramComposite extends Composite {
                                 CheckBox isSelected = columnPart.getPrimativeFigure().getFigureCustomColumnIsSelectedFigure();
                                 if (isSelected != null && isSelected.isSelected() && !column.getElementName().equals("*")) { //$NON-NLS-1$
                                     if (getCurrentDbType().equals("PostgreSQL")) { //$NON-NLS-1$
-                                        columns.add("\"" + table.getElementName() + "\".\"" + column.getElementName() + "\""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                                        columns.add("\"" + table.getElementName() + "\".\"" + column.getElementName() + "\"");
                                     } else {
                                         columns.add(table.getElementName() + "." + column.getElementName()); //$NON-NLS-1$
                                     }
@@ -150,13 +248,19 @@ public class ErDiagramComposite extends Composite {
                                 for (Relation rel : (List<Relation>) column.getOutputs()) {
                                     Column source = rel.getSource();
                                     Column target = rel.getTarget();
-                                    if (getCurrentDbType().equals("PostgreSQL")) { //$NON-NLS-1$
-                                        wheres.add("\"" + source.getTable().getElementName() + "\".\"" + source.getElementName() //$NON-NLS-1$ //$NON-NLS-2$
-                                                + "\"=\"" + target.getTable().getElementName() + "\".\"" //$NON-NLS-1$ //$NON-NLS-2$
-                                                + target.getElementName() + "\""); //$NON-NLS-1$
+                                    if (getCurrentDbType().equals("PostgreSQL")) {
+                                        String where1 = "\"" + source.getTable().getElementName() + "\".\""
+                                                + source.getElementName() + "\"=\"" + target.getTable().getElementName()
+                                                + "\".\"" + target.getElementName() + "\"";
+                                        if (!wheres.contains(where1)) {
+                                            wheres.add(where1);
+                                        }
                                     } else {
-                                        wheres.add(source.getTable().getElementName() + "." + source.getElementName() + "=" //$NON-NLS-1$ //$NON-NLS-2$
-                                                + target.getTable().getElementName() + "." + target.getElementName()); //$NON-NLS-1$
+                                        String where1 = source.getTable().getElementName() + "." + source.getElementName() + "="
+                                                + target.getTable().getElementName() + "." + target.getElementName();
+                                        if (!wheres.contains(where1)) {
+                                            wheres.add(where1);
+                                        }
                                     }
                                 }
                             }
@@ -168,8 +272,8 @@ public class ErDiagramComposite extends Composite {
         sql = getSelectStatement(tables, columns, wheres);
         if (sql.endsWith(",")) { //$NON-NLS-1$
             return sql.substring(0, sql.length() - 1);
-        } else if (sql.endsWith("and ")) { //$NON-NLS-1$
-            return sql.substring(0, sql.length() - 4);
+        } else if (sql.endsWith(" and ")) { //$NON-NLS-1$
+            return sql.substring(0, sql.length() - 5);
         }
         return ""; //$NON-NLS-1$
 
@@ -213,6 +317,51 @@ public class ErDiagramComposite extends Composite {
     public void setNodes(List<RepositoryNode> nodes) {
         this.nodes = nodes;
         addErDiagramEditor();
+    }
+
+    private RepositoryNode rootNode;
+
+    public void setRootNode(RepositoryNode root) {
+        if (root == null && !getNodes().isEmpty()) {
+            this.rootNode = SQLBuilderRepositoryNodeManager.getRoot(getNodes().get(0));
+
+        } else {
+            this.rootNode = root;
+        }
+    }
+
+    public void updateNodes(List<RepositoryNode> nodes, String sqlText) {
+        this.nodes = nodes;
+        this.sqlText.setText(sqlText);
+        editor.getViewer().setContents(createErDiagram());
+    }
+
+    private boolean isModified = false;
+
+    /**
+     * Getter for isModified.
+     * 
+     * @return the isModified
+     */
+    public boolean isModified() {
+        return this.isModified;
+    }
+
+    /**
+     * Sets the isModified.
+     * 
+     * @param isModified the isModified to set
+     */
+    public void setModified(boolean isModified) {
+        this.isModified = isModified;
+    }
+
+    public ErdiagramDiagramEditor getEditor() {
+        return this.editor;
+    }
+
+    public ErDiagram getErDiagram() {
+        return this.erDiagram;
     }
 
 }

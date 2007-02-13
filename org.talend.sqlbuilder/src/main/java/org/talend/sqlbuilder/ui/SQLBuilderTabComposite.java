@@ -21,16 +21,18 @@
 // ============================================================================
 package org.talend.sqlbuilder.ui;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.util.Assert;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.layout.FillLayout;
-import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Shell;
 import org.talend.core.model.metadata.builder.connection.Query;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNode.EProperties;
@@ -38,6 +40,8 @@ import org.talend.sqlbuilder.Messages;
 import org.talend.sqlbuilder.SqlBuilderPlugin;
 import org.talend.sqlbuilder.dbstructure.RepositoryNodeType;
 import org.talend.sqlbuilder.dbstructure.DBTreeProvider.QueryRepositoryObject;
+import org.talend.sqlbuilder.editors.MultiPageSqlBuilderEditor;
+import org.talend.sqlbuilder.repository.utility.EMFRepositoryNodeManager;
 import org.talend.sqlbuilder.repository.utility.SQLBuilderRepositoryNodeManager;
 import org.talend.sqlbuilder.util.ConnectionParameters;
 
@@ -80,6 +84,11 @@ public class SQLBuilderTabComposite extends Composite {
         }
     }
 
+    public void openNewEditor(RepositoryNode node, List<String> repositories, ConnectionParameters connParam,
+            boolean isDefaultEditor, List<RepositoryNode> nodesSel) {
+
+    }
+
     /**
      * 
      * Creates tab folder.
@@ -113,7 +122,6 @@ public class SQLBuilderTabComposite extends Composite {
             }
         }
     }
-
     /**
      * Creates tab item.
      * 
@@ -122,10 +130,12 @@ public class SQLBuilderTabComposite extends Composite {
      * @param isDefaultEditor
      */
     private void createTabItem(RepositoryNode node, ConnectionParameters connParam, boolean isDefaultEditor) {
+        String queryStr = "";
         if (node != null) {
             CTabItem[] tabItems = tabFolder.getItems();
             for (int i = 0; i < tabItems.length; i++) {
-                SQLBuilderEditorComposite editorComposite = (SQLBuilderEditorComposite) tabItems[i].getControl();
+                SQLBuilderEditorComposite editorComposite = (SQLBuilderEditorComposite) (((CTabFolder) tabItems[i].getControl())
+                        .getItems()[0]).getControl();
                 Query query2 = editorComposite.getConnParam().getQueryObject();
                 if ((RepositoryNodeType) node.getProperties(EProperties.CONTENT_TYPE) == RepositoryNodeType.QUERY) {
                     Query query = ((QueryRepositoryObject) node.getObject()).getQuery();
@@ -137,18 +147,20 @@ public class SQLBuilderTabComposite extends Composite {
                         return;
                     }
                     connParam.setQueryObject(query);
-                } else {
-                    String queryString = connParam.getQuery();
-                    String repositoryName = connParam.getRepositoryName();
-                    if (editorComposite.getConnParam().getQuery().equals(queryString)
-                            && editorComposite.getConnParam().getRepositoryName().equals(repositoryName)) {
-                        if ("".equals(editorComposite.getEditorContent())) { //$NON-NLS-1$
-                            editorComposite.setEditorContent(queryString);
-                        } 
-                        tabFolder.setSelection(i);
-                        return;
-                    }
-                }
+                    queryStr = query.getValue();
+                } 
+                // else {
+                // String queryString = connParam.getQuery();
+                // String repositoryName = connParam.getRepositoryName();
+                // if (editorComposite.getConnParam().getQuery().equals(queryString)
+                // && editorComposite.getConnParam().getRepositoryName().equals(repositoryName)) {
+                // if ("".equals(editorComposite.getEditorContent())) { //$NON-NLS-1$
+                // editorComposite.setEditorContent(queryString);
+                // }
+                //                        tabFolder.setSelection(i);
+                //                        return;
+                //                    }
+                //                }
             }
         }
         CTabItem tabItem = null;
@@ -160,15 +172,30 @@ public class SQLBuilderTabComposite extends Composite {
         }
         node = SQLBuilderRepositoryNodeManager.getRoot(node);
 
-        SQLBuilderEditorComposite builderEditorComposite = new SQLBuilderEditorComposite(tabFolder, tabItem,
-                isDefaultEditor, connParam, node, dialog);
+        // SQLBuilderEditorComposite builderEditorComposite = new SQLBuilderEditorComposite(tabFolder, tabItem,
+        // isDefaultEditor,
+        // connParam, node, dialog);
         // builderEditorComposite.setEditorContent(connParam);
         // builderEditorComposite.setRepositoryNode(node);
-        builderEditorComposite.setQueryObject(dialog.getConnParameters().getQueryObject());
-        builderEditorComposite.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false));
+        // builderEditorComposite.setQueryObject(dialog.getConnParameters().getQueryObject());
+        // builderEditorComposite.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false));
 
-        tabItem.setControl(builderEditorComposite);
-
+        if (!"".equals(queryStr)) {
+            try {
+                nodesSel = EMFRepositoryNodeManager.getInstance().parseSqlStatement(queryStr, node);
+            } catch (Exception e) {
+                MessageDialog.openError(new Shell(), Messages.getString("SQLBuilderTabComposite.Notice.title"), Messages
+                        .getString("SQLBuilderTabComposite.Notice.Info"));
+            }
+        }
+        MultiPageSqlBuilderEditor builderEditor = new MultiPageSqlBuilderEditor(nodesSel, tabItem, isDefaultEditor, connParam,
+                node, dialog);
+        builderEditor.createPartControl(tabFolder);
+        tabItem.setControl(builderEditor.getContainer());
+        builderEditor.setSqlText(queryStr);
+        if (!nodesSel.isEmpty() && "".equals(queryStr)) {
+            builderEditor.showDesignerPage();
+        }
         // set new tab as the active one.
         tabFolder.setSelection(tabFolder.getItemCount() - 1);
 
@@ -176,6 +203,8 @@ public class SQLBuilderTabComposite extends Composite {
         tabFolder.layout();
         tabFolder.redraw();
     }
+
+    private List<RepositoryNode> nodesSel = new ArrayList<RepositoryNode>();
 
     /**
      * 
@@ -202,5 +231,13 @@ public class SQLBuilderTabComposite extends Composite {
 
     public CTabFolder getTabFolder() {
         return this.tabFolder;
+    }
+
+    public List<RepositoryNode> getNodesSel() {
+        return this.nodesSel;
+    }
+
+    public void setNodesSel(List<RepositoryNode> nodesSel) {
+        this.nodesSel = nodesSel;
     }
 }

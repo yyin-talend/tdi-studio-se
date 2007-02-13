@@ -31,7 +31,7 @@ import org.eclipse.gef.editparts.ScalableFreeformRootEditPart;
 
 
 /**
- * DOC qzhang  class global comment. Detailled comment
+ *  qzhang  class global comment. Detailled comment
  * <br/>
  *
  * $Id: talend.epf 1 2006-09-29 17:06:40 +0000 (ææäº, 29 ä¹æ 2006) nrousseau $
@@ -51,19 +51,19 @@ public class ErDiagramRootEditPart extends ScalableFreeformRootEditPart {
 
     @Override
     protected GridLayer createGridLayer() {
-        return new ErDiagramGridLayer();
+        return new GridLayer();
     }
 
     protected ScalableFreeformLayeredPane createScaledLayers() {
         ScalableFreeformLayeredPane layers = new ScalableFreeformLayeredPane();
         layers.add(new FreeformLayer(), PROCESS_BACKGROUND_LAYER);
-        layers.add(createGridLayer(), GRID_LAYER);
+        // layers.add(createGridLayer(), GRID_LAYER);
         layers.add(getPrintableLayers(), PRINTABLE_LAYERS);
         layers.add(new FeedbackLayer(), SCALED_FEEDBACK_LAYER);
         return layers;
     }
     /**
-     * DOC admin ErDiagramRootEditPart class global comment. Detailled comment
+     *  admin ErDiagramRootEditPart class global comment. Detailled comment
      * <br/>
      *
      * $Id: talend.epf 1 2006-09-29 17:06:40 +0000 (ææäº, 29 ä¹æ 2006) nrousseau $

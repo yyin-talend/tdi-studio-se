@@ -23,6 +23,7 @@ package org.talend.sqlbuilder.ui;
 
 import java.util.List;
 
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.swt.widgets.Shell;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.sqlbuilder.util.ConnectionParameters;
@@ -47,9 +48,14 @@ public interface ISQLBuilderDialog {
     public void openEditor(RepositoryNode node, List<String> repositoryName, ConnectionParameters connParam,
             boolean isDefaultEditor);
 
+    public void openEditor(RepositoryNode node, List<String> repositoryName, ConnectionParameters connParam,
+            boolean isDefaultEditor, List<RepositoryNode> nodeSel);
+    
     public ConnectionParameters getConnParameters();
 
     public void refreshNode(RepositoryNode node);
 
     public Shell getShell();
+    
+    public IProgressMonitor getProgressMonitor();
 }

@@ -71,21 +71,20 @@ public class CreateTableCommand extends Command {
                 table.setMetadataTable(metadataTable, null);
                 table.setErDiagram(erDiagram);
                 erDiagram.addTable(table);
+                erDiagram.getMetadataTables().add(metadataTable);
             }
         }
-        List<String[]> fks = erDiagram.getNodeManager().getPKFromTables(erDiagram.getMetadataTables());
+        List<String[]> fks = EMFRepositoryNodeManager.getInstance().getPKFromTables(erDiagram.getMetadataTables());
         erDiagram.setRelations(fks);
     }
 
     @Override
     public void redo() {
-        // TODO Auto-generated method stub
         super.redo();
     }
 
     @Override
     public void undo() {
-        // TODO Auto-generated method stub
         super.undo();
     }
 

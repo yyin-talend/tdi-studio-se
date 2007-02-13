@@ -28,7 +28,7 @@ import org.eclipse.draw2d.geometry.Dimension;
 import org.talend.core.model.metadata.builder.connection.MetadataColumn;
 
 /**
- * DOC qzhang class global comment. Detailled comment <br/>
+ *  qzhang class global comment. Detailled comment <br/>
  * 
  * $Id: Column.java 2006-12-25 下午03:03:20 +0000 (2006-12-25) qzhang $
  * 
@@ -63,7 +63,7 @@ public class Column extends Element {
     private Dimension size = new Dimension();
 
     /**
-     * DOC yzhang Column constructor comment.
+     *  yzhang Column constructor comment.
      */
     public Column() {
         inputs = new ArrayList<Relation>();
@@ -71,7 +71,7 @@ public class Column extends Element {
     }
 
     /**
-     * DOC yzhang Comment method "setSelected".
+     *  yzhang Comment method "setSelected".
      * 
      * @param selected
      */
@@ -81,14 +81,14 @@ public class Column extends Element {
     }
 
     /**
-     * DOC yzhang Comment method "isSelected".
+     *  yzhang Comment method "isSelected".
      */
     public boolean isSelected() {
         return selected;
     }
 
     /**
-     * DOC yzhang Comment method "getTable".
+     *  yzhang Comment method "getTable".
      * 
      * @return
      */
@@ -97,7 +97,7 @@ public class Column extends Element {
     }
 
     /*
-     * (non-Javadoc)
+     * (non-Java)
      * 
      * @see org.talend.sqlbuider.erdiagram.model.Element#getElementName()
      */
