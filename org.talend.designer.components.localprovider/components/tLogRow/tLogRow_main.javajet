@@ -28,7 +28,7 @@ List< ? extends IConnection> conns = node.getIncomingConnections();
 if(conns!=null){
 	if( conns.size()>0 ){
 	%>
-StringBuffer strBuffer = new StringBuffer();
+StringBuffer strBuffer_<%=node.getUniqueName()%> = new StringBuffer();
 	<%
 		IConnection conn = conns.get(0);
 		List colList = metadata.getListColumns();
@@ -36,16 +36,16 @@ StringBuffer strBuffer = new StringBuffer();
 		IMetadataColumn column = (IMetadataColumn)colList.get(i);
 			if(i!=(colList.size()-1)){	
 			%> 
-strBuffer.append(<%=conn.getName()%>.<%=column.getLabel()%>+OUTPUT_FIELD_SEPARATOR_<%=node.getUniqueName() %>);
+strBuffer_<%=node.getUniqueName()%>.append(<%=conn.getName()%>.<%=column.getLabel()%>+OUTPUT_FIELD_SEPARATOR_<%=node.getUniqueName() %>);
 			<%			
 			}else{
 			%> 
-strBuffer.append(<%=conn.getName()%>.<%=column.getLabel()%>);
+strBuffer_<%=node.getUniqueName()%>.append(<%=conn.getName()%>.<%=column.getLabel()%>);
 			<%				
 			}
 		}
 	%>
-System.out.println(strBuffer.toString());
+System.out.println(strBuffer_<%=node.getUniqueName()%>.toString());
 	<%	
 	}
 }
