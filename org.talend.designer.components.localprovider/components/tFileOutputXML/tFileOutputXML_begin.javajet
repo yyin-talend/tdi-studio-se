@@ -1,0 +1,90 @@
+<%@ jet
+package="org.talend.designer.codegen.translators"
+imports="
+    org.talend.core.model.process.INode 
+    org.talend.core.model.process.ElementParameterParser
+    org.talend.core.model.metadata.IMetadataTable
+    org.talend.core.model.metadata.IMetadataColumn
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    java.util.List
+    java.util.Map
+"
+class="FileOutputXMLBegin"
+%>
+
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+boolean stats = codeGenArgument.isStatistics();
+
+List<IMetadataTable> metadatas = node.getMetadataList();
+if ((metadatas!=null)&&(metadatas.size()>0)) {
+    IMetadataTable metadata = metadatas.get(0);
+    if (metadata!=null) {
+        String encoding = ElementParameterParser.getValue(node, "__ENCODING__");
+        if (encoding!=null) {
+            if (encoding.equals("")) {
+                encoding = "ISO-8859-15";
+            }
+        }
+
+        String cid = metadata.getTableName();
+        List<Map<String, String>> rootTags = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__ROOT_TAGS__");
+        String rowTag = ElementParameterParser.getValue(node, "__ROW_TAG__");
+        String colnameAsTagname = ElementParameterParser.getValue(node, "__COLNAME_AS_TAGNAME__");
+        String fieldTag = ElementParameterParser.getValue(node, "__FIELD_TAG__");
+        String split = ElementParameterParser.getValue(node, "__SPLIT__");
+        String splitEvery = ElementParameterParser.getValue(node, "__SPLIT_EVERY__");
+        String fileName = ElementParameterParser.getValue(node, "__FILENAME__");
+
+java.util.List columns = metadata.getListColumns();
+if(rootTags.size()>0){
+%>
+String[] rootTag_<%=node.getUniqueName()%> = new String[<%=rootTags.size()%>];
+<%
+	for (int i=0; i<rootTags.size(); i++){
+		Map<String, String> rootTag = rootTags.get(i);
+		%>
+rootTag_<%=node.getUniqueName()%>[<%=i%>]= <%= rootTag.get("TAG") %>;
+		<%
+	}
+}else{
+%>
+String[] rootTag_<%=node.getUniqueName()%> = new String[]{"array"};
+<%
+}
+%>
+
+String row_tag = <%=rowTag %>;
+boolean colname_as_tagname = <%=colnameAsTagname %>;
+String field_tag = <%=fieldTag %>;
+boolean split = <%=split %>;
+int split_every = <%=splitEvery %>;
+int splitedFileNo =0;
+int currentRowQtyWithinFile = 0;
+
+
+StringBuffer strBuffer_<%=node.getUniqueName()%> = new StringBuffer();
+
+<%
+if (!split.equals("true")) {
+%>
+
+java.io.FileOutputStream fos = new java.io.FileOutputStream(<%=fileName%>);
+
+try{
+	java.io.BufferedWriter out = new java.io.BufferedWriter(
+	                                new java.io.OutputStreamWriter(fos, <%=encoding%>));	                                
+
+	 
+	strBuffer_<%=node.getUniqueName()%>.append("<?xml version=\"1.0\" encoding=\""+<%= encoding %>+"\"?> \n");
+	for (int i = 0; i < rootTag_<%=node.getUniqueName()%>.length; i++) {
+		strBuffer_<%=node.getUniqueName()%>.append("<"+rootTag_<%=node.getUniqueName()%>[i]+">");		            
+    }
+    strBuffer_<%=node.getUniqueName()%>.append("\n");
+    
+<%
+    }
+  }
+}
+%>
