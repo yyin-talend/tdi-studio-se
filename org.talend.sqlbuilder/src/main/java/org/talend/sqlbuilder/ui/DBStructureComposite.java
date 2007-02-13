@@ -324,7 +324,7 @@ public class DBStructureComposite extends Composite {
     };
 
     /**
-     * DOC qianbing Comment method "makeActions". Makes actions
+     * qianbing Comment method "makeActions". Makes actions
      */
     private void makeActions() {
         generateSelectAction = new GenerateSelectSQLAction(treeViewer, builderDialog, false);

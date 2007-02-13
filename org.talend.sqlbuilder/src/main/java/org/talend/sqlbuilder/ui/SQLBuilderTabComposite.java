@@ -41,6 +41,7 @@ import org.talend.sqlbuilder.SqlBuilderPlugin;
 import org.talend.sqlbuilder.dbstructure.RepositoryNodeType;
 import org.talend.sqlbuilder.dbstructure.DBTreeProvider.QueryRepositoryObject;
 import org.talend.sqlbuilder.editors.MultiPageSqlBuilderEditor;
+import org.talend.sqlbuilder.erdiagram.ui.ErDiagramComposite;
 import org.talend.sqlbuilder.repository.utility.EMFRepositoryNodeManager;
 import org.talend.sqlbuilder.repository.utility.SQLBuilderRepositoryNodeManager;
 import org.talend.sqlbuilder.util.ConnectionParameters;
@@ -122,6 +123,7 @@ public class SQLBuilderTabComposite extends Composite {
             }
         }
     }
+
     /**
      * Creates tab item.
      * 
@@ -148,7 +150,7 @@ public class SQLBuilderTabComposite extends Composite {
                     }
                     connParam.setQueryObject(query);
                     queryStr = query.getValue();
-                } 
+                }
                 // else {
                 // String queryString = connParam.getQuery();
                 // String repositoryName = connParam.getRepositoryName();
@@ -157,10 +159,10 @@ public class SQLBuilderTabComposite extends Composite {
                 // if ("".equals(editorComposite.getEditorContent())) { //$NON-NLS-1$
                 // editorComposite.setEditorContent(queryString);
                 // }
-                //                        tabFolder.setSelection(i);
-                //                        return;
-                //                    }
-                //                }
+                // tabFolder.setSelection(i);
+                // return;
+                // }
+                // }
             }
         }
         CTabItem tabItem = null;
@@ -213,9 +215,9 @@ public class SQLBuilderTabComposite extends Composite {
      * @return a string representing sql text.
      */
     public String getDefaultTabSql() {
-        SQLBuilderEditorComposite editorComposite = (SQLBuilderEditorComposite) (((CTabFolder) tabFolder.getItems()[0].getControl())
-                .getItems()[0]).getControl();
-        
+        SQLBuilderEditorComposite editorComposite = (SQLBuilderEditorComposite) (((CTabFolder) tabFolder.getItems()[0]
+                .getControl()).getItems()[0]).getControl();
+
         return editorComposite.getSQLToBeExecuted();
     }
 
@@ -225,9 +227,15 @@ public class SQLBuilderTabComposite extends Composite {
      * @return a string representing sql text.
      */
     public String getCurrentTabSql() {
-        SQLBuilderEditorComposite editorComposite = (SQLBuilderEditorComposite) (((CTabFolder) tabFolder.getSelection().getControl())
-                .getItems()[0]).getControl();
-        return editorComposite.getSQLToBeExecuted();
+        Control control = (((CTabFolder) tabFolder.getSelection().getControl())).getSelection().getControl();
+        if (control instanceof ErDiagramComposite) {
+            return ((ErDiagramComposite) control).getSqlStatement();
+        } else if (control instanceof SQLBuilderEditorComposite) {
+            SQLBuilderEditorComposite editorComposite = (SQLBuilderEditorComposite) control;
+            return editorComposite.getSQLToBeExecuted();
+        } else {
+            return "";
+        }
     }
 
     public CTabFolder getTabFolder() {

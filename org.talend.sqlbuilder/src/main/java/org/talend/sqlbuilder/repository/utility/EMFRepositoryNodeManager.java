@@ -280,7 +280,14 @@ public final class EMFRepositoryNodeManager {
         List<RepositoryNode> nodes = new ArrayList<RepositoryNode>();
         for (RepositoryNode tableNode : currRoot.getChildren()) {
             for (int i = 0; i < tableNames.size(); i++) {
-                String tableLabel = tableNode.getObject().getLabel();
+                String tableLabel = "";
+                if (tableNode.getObject() instanceof MetadataTableRepositoryObject) {
+                    MetadataTableRepositoryObject object = (MetadataTableRepositoryObject) tableNode.getObject();
+                    tableLabel = object.getSourceName();
+                } else {
+                    tableLabel = tableNode.getObject().getLabel();
+                }
+                
                 boolean isNeed = false;
                 if (cols.length == 1 && cols[0].equals("*")) {
                     for (String string : tableNames) {
@@ -299,7 +306,13 @@ public final class EMFRepositoryNodeManager {
                 }
                 if (isNeed) {
                     for (RepositoryNode colNode : tableNode.getChildren()) {
-                        String collabel = colNode.getObject().getLabel();
+                        String collabel = "";
+                        if (colNode.getObject() instanceof MetadataColumnRepositoryObject) {
+                            MetadataColumnRepositoryObject object2 = (MetadataColumnRepositoryObject) colNode.getObject();
+                            collabel = object2.getSourceName();
+                        } else {
+                            collabel = colNode.getObject().getLabel();
+                        }
                         if (collabel != null) {
                             for (String string : columnsNames) {
                                 if (string.equals(collabel.toLowerCase())) {

@@ -220,7 +220,7 @@ public class MultiPageSqlBuilderEditor extends MultiPageEditorPart {
         if (newPageIndex == 1) {
             try {
                 String toSql = builderEditorComposite.getSQLToBeExecuted();
-                if (toSql != null && !"".equals(toSql) && builderEditorComposite.isModified()) {
+                if (toSql != null && !"".equals(toSql) && isModified()) {
                     String info = Messages.getString("Notice.InformationNotFull");
                     // "GUI Sql Editor maybe not show all features of your Sql Statement!\n And your full sql Statement
                     // will show in buttom of the GUI.";
@@ -228,7 +228,7 @@ public class MultiPageSqlBuilderEditor extends MultiPageEditorPart {
                             Messages.getString("MultiPageSqlBuilderEditor.NoticeTitle.Text"), info); //$NON-NLS-1$
 
                     List<RepositoryNode> nodeSel = EMFRepositoryNodeManager.getInstance().parseSqlStatement(toSql, rootNode);
-                    if (nodeSel == null) {
+                    if (nodeSel.isEmpty()) {
                         return;
                     }
                     editor.updateNodes(nodeSel, toSql);

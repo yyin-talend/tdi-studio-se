@@ -313,7 +313,7 @@ ITableColorProvider {
 
 
     /**
-     * DOC tguiu Comment method "createTables".
+     *  tguiu Comment method "createTables".
      * 
      * @param node
      * @param iMetadataConnection
@@ -373,7 +373,7 @@ ITableColorProvider {
     }
 
     /**
-     * DOC tguiu Comment method "createMetatable".
+     *  tguiu Comment method "createMetatable".
      * 
      * @param node
      * @param iMetadataFileDelimited
