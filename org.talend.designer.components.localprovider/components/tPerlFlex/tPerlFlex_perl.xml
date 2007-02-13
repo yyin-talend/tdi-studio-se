@@ -7,7 +7,7 @@
     
     COMPATIBILITY="ALL"
     AUTHOR="Talend"
-    RELEASE_DATE="20070210A"
+    RELEASE_DATE="20050320A"
     STARTABLE="true"
   >
     <SIGNATURE></SIGNATURE>
@@ -39,34 +39,34 @@
 
     <PARAMETER
       NAME="CODE_START"
-      FIELD="MEMO_JAVA"
+      FIELD="MEMO_PERL"
       REQUIRED="false"
       NUM_ROW="2"
       NB_LINES="9"
     >
-      <DEFAULT>// start part of your Java code</DEFAULT>
+      <DEFAULT># start part of your Perl code</DEFAULT>
     </PARAMETER>
 
     <PARAMETER
       NAME="CODE_MAIN"
-      FIELD="MEMO_JAVA"
+      FIELD="MEMO_PERL"
       REQUIRED="false"
       NUM_ROW="3"
       NB_LINES="9"
     >
-      <DEFAULT>// here is the main part of the component,
-// a piece of code executed in the row
-// loop</DEFAULT>
+      <DEFAULT># here is the main part of the component,
+# a piece of code executed in the row
+# loop</DEFAULT>
     </PARAMETER>
 
     <PARAMETER
       NAME="CODE_END"
-      FIELD="MEMO_JAVA"
+      FIELD="MEMO_PERL"
       REQUIRED="false"
       NUM_ROW="4"
       NB_LINES="9"
     >
-      <DEFAULT>// end of the component, outside/closing the loop</DEFAULT>
+      <DEFAULT># end of the component, outside/closing the loop</DEFAULT>
     </PARAMETER>
    </PARAMETERS>
 

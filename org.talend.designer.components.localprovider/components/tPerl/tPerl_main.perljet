@@ -7,7 +7,7 @@
 		org.talend.designer.codegen.config.CodeGeneratorArgument
 		java.util.List
 	"
-	class="JavaFlexMain"
+	class="PerlMain"
 %>
 
 <%
@@ -21,7 +21,7 @@
 		if (metadata!=null) {
 %>
 
-<%=ElementParameterParser.getValue(node, "__CODE_MAIN__") %>
+# nothing to do right here
     
 <%
 		}
