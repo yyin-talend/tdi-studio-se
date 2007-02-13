@@ -215,6 +215,12 @@ public class ErDiagramComposite extends SashForm {
         return connection.getDatabaseType();
     }
 
+    private String getSchema() {
+        DatabaseConnection connection = (DatabaseConnection) ((ConnectionItem) rootNode.getObject().getProperty().getItem())
+                .getConnection();
+        return connection.getSchema();
+    }
+
     @SuppressWarnings("unchecked")//$NON-NLS-1$
     public String getSqlStatement() {
         String sql = ""; //$NON-NLS-1$
@@ -229,7 +235,7 @@ public class ErDiagramComposite extends SashForm {
                         TablePart tablePart = (TablePart) object;
                         Table table = (Table) tablePart.getModel();
                         if (getCurrentDbType().equals("PostgreSQL")) { //$NON-NLS-1$
-                            tables.add("\"" + table.getElementName() + "\""); //$NON-NLS-1$ //$NON-NLS-2$
+                            tables.add("\"" + getSchema() + "\".\"" + table.getElementName() + "\""); //$NON-NLS-1$ //$NON-NLS-2$
                         } else {
                             tables.add(table.getElementName());
                         }
