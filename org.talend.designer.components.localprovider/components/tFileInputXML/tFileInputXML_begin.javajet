@@ -1,0 +1,271 @@
+<%@ jet 
+package="org.talend.designer.codegen.translators" 
+imports="
+    org.talend.core.model.process.INode 
+    org.talend.core.model.process.ElementParameterParser 
+    org.talend.core.model.metadata.IMetadataTable 
+    org.talend.core.model.metadata.IMetadataColumn 
+    org.talend.core.model.process.IConnection
+    org.talend.core.model.process.EConnectionType
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    java.util.Map
+    java.util.List
+" 
+class="FileInputXMLBegin" 
+%>
+
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+boolean stats = codeGenArgument.isStatistics();
+
+List<IMetadataTable> metadatas = node.getMetadataList();
+if ((metadatas!=null)&&(metadatas.size()>0)) {
+    IMetadataTable metadata = metadatas.get(0);
+    if (metadata!=null) {
+        String cid = node.getUniqueName();
+        
+        List<Map<String, String>> mapping =
+            (List<Map<String,String>>)ElementParameterParser.getObjectValueXML(
+                node,
+                "__MAPPING__"
+            );
+
+        String encoding = ElementParameterParser.getValue(
+            node,
+            "__ENCODING__"
+        );
+
+        String loopQuery = ElementParameterParser.getValue(
+            node,
+            "__LOOP_QUERY__"
+        );
+        String rootTag= loopQuery.substring(2);
+        System.out.println(rootTag);
+        rootTag=rootTag.substring(0,rootTag.indexOf('/'));
+        System.out.println(rootTag);
+        String loopTag= loopQuery.substring(loopQuery.lastIndexOf('/')+1);
+        
+        int length= loopTag.length();
+        if(loopTag.charAt(length-1)=='\"'){
+        	loopTag=loopTag.substring(0,length-1);
+        }
+
+        String filename = ElementParameterParser.getValue(
+            node,
+            "__FILENAME__"
+        );
+
+        String limit = ElementParameterParser.getValue(
+            node,
+            "__LIMIT__"
+        );
+
+        if (limit.equals("")) {
+            limit = "-1";
+        }
+%>
+
+			final java.io.PipedWriter pipedWriter<%= cid %>  = new java.io.PipedWriter();
+            java.io.PipedReader pipedReader<%= cid %>  = new java.io.PipedReader(pipedWriter<%= cid %> );
+            
+            
+            
+            
+
+
+
+            class GenHandler extends org.xml.sax.helpers.DefaultHandler {
+
+                java.util.Stack tags = new java.util.Stack();
+
+<%
+	for(int i=0;i<mapping.size();i++){%>
+		String <%= mapping.get(i).get("QUERY") %>;
+<%	
+	}%>
+
+
+                int limit = <%= limit %>;
+
+                int counter = 0;
+                
+                
+                class SAXWithException extends org.xml.sax.SAXException {
+
+                    Exception exception;
+
+                    public SAXWithException(Exception e) {
+                        this.exception = e;
+                    }
+
+                    @Override
+                    public void printStackTrace() {
+                        exception.printStackTrace();
+                    }
+
+                    @Override
+                    public void printStackTrace(java.io.PrintStream s) {
+                        exception.printStackTrace(s);
+                    }
+
+                    @Override
+                    public void printStackTrace(java.io.PrintWriter s) {
+                        exception.printStackTrace(s);
+                    }
+
+                }                  
+                
+                
+                
+                
+
+                // // ----------------------------------------------
+                 public void endDocument() throws org.xml.sax.SAXException {
+                     try {
+                        pipedWriter<%= cid %> .write("\n");
+                    } catch (java.io.IOException e) {
+                        throw new SAXWithException(e);
+                    }
+                 }
+                //
+                // public void startDocument() throws SAXException {
+                // System.out.println("------Parse Begin--------");
+                // }
+
+                public void startElement(String p0, String p1, String p2, org.xml.sax.Attributes p3) throws org.xml.sax.SAXException {
+                    tags.push(p2);
+                }
+                
+                          
+                
+
+                public void endElement(String p0, String p1, String p2) throws org.xml.sax.SAXException {
+                    tags.pop();
+                    
+
+
+                    if (p2.equals("<%= loopTag%>")) {
+                        if (limit == -1 || counter < limit) {
+
+                            try {
+                            
+<%
+	for(int i=0;i<mapping.size();i++){%>
+								pipedWriter<%= cid %>.write(<%= mapping.get(i).get("QUERY") %>);
+								pipedWriter<%= cid %>.write("\n");
+<%	
+	}%>                                
+
+                            } catch (java.io.IOException e) {
+                                throw new SAXWithException(e);
+                            }
+                            if (limit != -1) {
+                                counter++;
+                            }
+                        } else {
+                        	try {
+                                
+                                pipedWritertFileInputXML_1.write("\n");                                
+
+                            } catch (java.io.IOException e) {
+                                throw new SAXWithException(e);
+                            }
+                            endElement(null, "<%=rootTag %>", null);//????????????
+                        }
+
+                    }
+                }
+
+                public void characters(char[] ch, int start, int length) throws org.xml.sax.SAXException {
+                    
+                    String tag = (String) tags.peek();
+                    
+                    
+<%
+	for(int i=0;i<mapping.size();i++){%>
+					if(tag.equals("<%= mapping.get(i).get("QUERY") %>")){
+						<%= mapping.get(i).get("QUERY") %>=new String(ch, start, length);
+					}
+<%	
+	}%>                   
+
+                }
+
+            }
+
+            class Thread<%= cid %> extends Thread {
+
+                javax.xml.parsers.SAXParser saxParser = null;
+                
+                Exception e;
+
+                public Thread<%= cid %>() throws Exception {
+                    saxParser = javax.xml.parsers.SAXParserFactory.newInstance().newSAXParser();
+                    start();
+                }
+
+                public void run() {// Exception???Handle?
+                    try {
+                        saxParser.parse(new org.xml.sax.InputSource(<%= filename %>), new GenHandler());
+                    } catch (Exception e) {
+                        this.e=e;
+                        //e.printStackTrace();
+                    }
+                }
+
+            }
+
+            Exception e<%=cid%>=  new Thread<%= cid %>().e;
+
+
+            java.io.BufferedReader in<%= cid %> = new java.io.BufferedReader(pipedReader<%= cid %> );
+
+            String str="TALEND";
+            
+            while ((str = in<%= cid %>.readLine()) != null&&!str.equals("")) {   
+                
+                
+               
+                
+<%
+	List< ? extends IConnection> conns = node.getOutgoingConnections();
+	String firstConnName = "";
+	if (conns!=null) {
+		if (conns.size()>0) {
+			IConnection conn = conns.get(0);
+			firstConnName = conn.getName();
+			
+			if ((conn.getLineStyle().equals(EConnectionType.FLOW_MAIN))||(conn.getLineStyle().equals(EConnectionType.FLOW_REF))) {
+				List<IMetadataColumn> columns=metadata.getListColumns();
+				for (int i=0;i<columns.size();i++) {
+					IMetadataColumn column=columns.get(i);
+%>
+				<%=conn.getName() %>.<%=column.getLabel() %> = StringUtils.convert<%=column.getTalendType() %>(str);
+<%if(i!=columns.size()-1){%>
+				str = in<%= cid %>.readLine();
+<%}%>
+<%
+				}
+			}
+		}
+		if (conns.size()>1) {
+			for (int i=1;i<conns.size();i++) {
+				IConnection conn = conns.get(i);
+				if ((conn.getName().compareTo(firstConnName)!=0)&&((conn.getLineStyle().equals(EConnectionType.FLOW_MAIN))||(conn.getLineStyle().equals(EConnectionType.FLOW_REF)))) {
+					for (IMetadataColumn column: metadata.getListColumns()) {
+%>
+				<%=conn.getName() %>.<%=column.getLabel() %> = <%=firstConnName %>.<%=column.getLabel() %>;
+<%
+					}
+				}
+			}
+		}
+	}
+%>
+
+<%
+
+	}
+}
+%>
