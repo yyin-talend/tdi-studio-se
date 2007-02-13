@@ -377,7 +377,7 @@ public class UIManager {
         IModifiedBeanListener<IMetadataColumn> modifiedBeanListener = new IModifiedBeanListener<IMetadataColumn>() {
 
             public void handleEvent(ModifiedBeanEvent<IMetadataColumn> event) {
-                if (AbstractMetadataTableEditorView.ID_COLUMN_NAME.equals(event.column.getId()) && !event.previousValue.equals(event.newValue)) {
+                if (MetadataTableEditorView.ID_COLUMN_NAME.equals(event.column.getId()) && !event.previousValue.equals(event.newValue)) {
                     IMetadataColumn modifiedObject = (IMetadataColumn) event.bean;
                     if (modifiedObject != null) {
                         TableEntryLocation tableEntryLocation = new TableEntryLocation(dataMapTableView.getDataMapTable().getName(),
