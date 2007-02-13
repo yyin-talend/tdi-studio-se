@@ -12,7 +12,6 @@
 		org.talend.commons.utils.generation.CodeGenerationUtils
 		org.talend.core.model.metadata.types.JavaTypesManager
 		org.talend.core.model.metadata.types.JavaType
-		org.talend.core.model.metadata.MetadataTalendType
 	" 
 	class="FileInputDelimitedBegin" 
 %>
@@ -164,9 +163,9 @@
 					IMetadataColumn column = listColumns.get(valueN);
 					String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
 					JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
-					String pattern = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
+					String patternValue = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
 					
-					if(javaType == JavaTypesManager.STRING) {
+					if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT) {
 %>
 							<%=conn.getName() %>.<%=column.getLabel() %> = value<%=cid %>[<%=valueN%>];
 <%
@@ -176,7 +175,7 @@
 	<%
 							if(javaType == JavaTypesManager.DATE) {
 	%>
-								<%=conn.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_Date(value<%=cid %>[<%=valueN%>], <%= pattern %>);
+								<%=conn.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_Date(value<%=cid %>[<%=valueN%>], <%= patternValue %>);
 	<%
 							} else {
 	%>

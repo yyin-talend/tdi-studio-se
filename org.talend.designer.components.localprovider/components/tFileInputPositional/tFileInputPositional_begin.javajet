@@ -8,7 +8,8 @@
 		org.talend.core.model.process.IConnection
 		org.talend.core.model.process.EConnectionType
 		org.talend.designer.codegen.config.CodeGeneratorArgument
-		org.talend.core.model.metadata.MetadataTalendType
+		org.talend.core.model.metadata.types.JavaTypesManager
+		org.talend.core.model.metadata.types.JavaType
 		java.util.List 
 		org.talend.commons.utils.generation.CodeGenerationUtils
 	" 
@@ -137,26 +138,51 @@
 						substringBegin<%=cid %> = substringEnd<%=cid %>;
 						
 					}
-				<%}
-				int valueN=0;
-				for (IMetadataColumn column: metadata.getListColumns()) {
-					%>
-					if(!columnValue<%=cid %>[<%=valueN%>].equals("")){
-					<%=conn.getName() %>.<%=column.getLabel() %> = StringUtils.convert<%=column.getTalendType() %>(columnValue<%=cid %>[<%=valueN%>]);
-					}else{
-					<%=conn.getName() %>.<%=column.getLabel() %> = <%=MetadataTalendType.getDefaultValueFromJavaType(column.getTalendType())%>;
+				<%
+				}
+
+				List<IMetadataColumn> listColumns = metadata.getListColumns();
+				int sizeListColumns = listColumns.size();
+				for (int valueN=0; valueN<sizeListColumns; valueN++) {
+					IMetadataColumn column = listColumns.get(valueN);
+					String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
+					JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
+					String patternValue = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
+					
+					if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT) {
+%>
+							<%=conn.getName() %>.<%=column.getLabel() %> = columnValue<%=cid %>[<%=valueN%>];
+<%
+					} else {
+%>
+						if(columnValue<%=cid %>[<%=valueN%>].length() > 0) {
+	<%
+							if(javaType == JavaTypesManager.DATE) {
+	%>
+								<%=conn.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_Date(columnValue<%=cid %>[<%=valueN%>], <%= patternValue %>);
+	<%
+							} else {
+	%>
+								<%=conn.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(columnValue<%=cid %>[<%=valueN%>]);
+	<%
+							}
+	%>					
+						}else{
+							<%=conn.getName() %>.<%=column.getLabel() %> = <%=JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate)%>;
+						}
+	<%					
 					}
-				<% valueN++;
-				}%>
+				}
+			}
+%>
 			}else{
  				<%	for (IMetadataColumn column: metadata.getListColumns()) {%>
-					<%=conn.getName() %>.<%=column.getLabel() %> = <%=MetadataTalendType.getDefaultValueFromJavaType(column.getTalendType())%>;
+				<%=conn.getName() %>.<%=column.getLabel() %> = <%=JavaTypesManager.getDefaultValueFromJavaIdType(column.getTalendType(), column.isNullable())%>;
 				<%}%>
 			}
 
 	<%
 			}
-		}
 		if (conns.size()>1) {
 			for (int i=1;i<conns.size();i++) {
 				IConnection conn = conns.get(i);

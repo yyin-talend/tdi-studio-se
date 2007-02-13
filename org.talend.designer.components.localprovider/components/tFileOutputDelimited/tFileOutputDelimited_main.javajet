@@ -50,6 +50,10 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 %>
 					FormatterUtils.format_Date(<%=conn.getName() %>.<%=column.getLabel() %>, <%= pattern %>)
 <%				
+						} else if(javaType == JavaTypesManager.STRING) {
+%>
+					<%=conn.getName() %>.<%=column.getLabel() %>
+<%				
 						} else {
 %>
 					String.valueOf(<%=conn.getName() %>.<%=column.getLabel() %>)
@@ -63,7 +67,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     				%>
 	    				} // if(<%=conn.getName() %>.<%=column.getLabel() %> != null) {
     				<%
-    				} // if(column.isNullable()) {
+    				}<% /* End of block : if(column.isNullable()) { */ %>
     				
     				if(i != sizeColumns - 1) {
     					%>out<%=cid %>.write(OUT_DELIM_<%=cid %>);<%

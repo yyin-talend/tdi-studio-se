@@ -8,9 +8,9 @@
 		org.talend.core.model.process.EConnectionType
 		org.talend.core.model.process.ElementParameterParser 
 		org.talend.designer.codegen.config.CodeGeneratorArgument
-		org.talend.core.model.metadata.MetadataTalendType
 		java.util.List
 		java.util.Map
+		org.talend.core.model.metadata.types.JavaTypesManager
 	"
 	class="FileOutputPositionalMain"
 %>
@@ -53,7 +53,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 				
 				//get  and format output String begin
     			tempStringM<%=cid %>=<%				
-				if(MetadataTalendType.isJavaPrimitiveType( column.getTalendType()) ) {%>
+				if(JavaTypesManager.isJavaPrimitiveType( column.getTalendType(), column.isNullable()) ) {%>
 					String.valueOf(<%=conn.getName() %>.<%=column.getLabel() %>)<%					
 				} else {%>
 					(<%=conn.getName() %>.<%=column.getLabel() %> == null) ? 

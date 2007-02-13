@@ -154,6 +154,8 @@ public class SchemaTypeController extends AbstractElementPropertySectionControll
             } else { // else instanceof Connection
                 node = ((Connection) elem).getSource();
             }
+            String inputFamily = null;
+            
             IMetadataTable inputMetadata = null, inputMetaCopy = null;
             Connection inputConec = null;
 
@@ -162,6 +164,7 @@ public class SchemaTypeController extends AbstractElementPropertySectionControll
                 if (connec.isActivate() && connec.getLineStyle().equals(EConnectionType.FLOW_MAIN)) {
                     inputMetadata = connec.getMetadataTable();
                     inputMetaCopy = inputMetadata.clone();
+                    inputFamily = connec.getSource().getComponent().getFamily();
                     inputConec = connec;
 
                     if (connec.getSource().isReadOnly()) {
@@ -187,12 +190,14 @@ public class SchemaTypeController extends AbstractElementPropertySectionControll
             IMetadataTable originaleOutputTable = (IMetadataTable) node.getMetadataList().get(0);
             IMetadataTable outputMetaCopy = originaleOutputTable.clone();
 
+            String outputFamily = node.getComponent().getFamily();
+
             MetadataDialog metaDialog;
             if (inputMetadata != null) {
-                metaDialog = new MetadataDialog(composite.getShell(), inputMetaCopy, inputMetadata.getTableName(),
-                        outputMetaCopy, node.getUniqueName(), getCommandStack());
+                metaDialog = new MetadataDialog(composite.getShell(), inputMetaCopy, inputMetadata.getTableName(), inputFamily,
+                        outputMetaCopy, node.getUniqueName(), outputFamily, getCommandStack());
             } else {
-                metaDialog = new MetadataDialog(composite.getShell(), outputMetaCopy, node.getUniqueName(),
+                metaDialog = new MetadataDialog(composite.getShell(), outputMetaCopy, node.getUniqueName(), outputFamily,
                         getCommandStack());
             }
             metaDialog.setText(Messages.getString("SchemaController.schemaOf") + node.getLabel()); //$NON-NLS-1$
