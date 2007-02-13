@@ -52,7 +52,7 @@ public final class ComponentFilesNaming implements IComponentFileNaming {
 
     public List<String> getRequiredFilesNames(String componentName, String languageSuffix) {
         List<String> toReturn = new ArrayList<String>();
-        toReturn.add(getMainXMLFileName(componentName, languageSuffix));
+      //  toReturn.add(getMainXMLFileName(componentName, languageSuffix));
         toReturn.add(getPropertiesFileName(componentName));
         toReturn.add(getIcon32FileName(componentName));
         return toReturn;

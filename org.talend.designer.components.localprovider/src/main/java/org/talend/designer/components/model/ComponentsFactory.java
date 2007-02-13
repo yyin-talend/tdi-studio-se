@@ -106,6 +106,8 @@ public class ComponentsFactory implements IComponentsFactory {
                         loadIcons(currentFolder, currentComp);
                         componentList.add(currentComp);
                     }
+                } catch (MissingMainXMLComponentFileException e) {
+                    log.trace(currentFolder.getName() + " is not a " + getCodeLanguageSuffix() + " component",e);
                 } catch (BusinessException e) {
                     BusinessException ex = new BusinessException("Cannot load component \"" + currentFolder.getName() + "\": " //$NON-NLS-1$ //$NON-NLS-2$
                             + e.getMessage(), e);

@@ -55,27 +55,33 @@ public class ComponentFileChecker {
         checkXSD(xmlMainFile);
     }
 
-    private static void checkXSD(File file) throws BusinessException {
+    private static void checkXSD(File file) throws MalformedMainXMLComponentFileException {
         Path path = new Path(XSD_PATH);
         try {
             URL url = FileLocator.toFileURL(FileLocator.find(XSD_CONTAINER_BUNDLE, path, null));
             File schema = new File(url.getPath());
             XSDValidator.checkXSD(file, schema);
         } catch (IOException e) {
-            throw new BusinessException("Cannot find xsd (" + path.lastSegment() + ")", e); //$NON-NLS-1$ //$NON-NLS-2$
+            throw new MalformedMainXMLComponentFileException("Cannot find xsd (" + path.lastSegment() + ")", e); //$NON-NLS-1$ //$NON-NLS-2$
         } catch (SAXException e) {
-            throw new BusinessException("Does not match xsd (" + path.lastSegment() + ")", e); //$NON-NLS-1$ //$NON-NLS-2$
+            throw new MalformedMainXMLComponentFileException("Does not match xsd (" + path.lastSegment() + ")", e); //$NON-NLS-1$ //$NON-NLS-2$
         } catch (ParserConfigurationException e) {
-            throw new BusinessException("Cannot check xsd (" + path.lastSegment() + ")", e); //$NON-NLS-1$ //$NON-NLS-2$
+            throw new MalformedMainXMLComponentFileException("Cannot check xsd (" + path.lastSegment() + ")", e); //$NON-NLS-1$ //$NON-NLS-2$
         }
     }
 
-    private static void checkFiles(File folder, String languageSuffix) throws BusinessException {
+    private static void checkFiles(File folder, String languageSuffix) throws MissingComponentFileException {
+        String mainXmlFileName = ComponentFilesNaming.getInstance().getMainXMLFileName(folder.getName(), languageSuffix);
+        File mainXmlFile = new File(folder, mainXmlFileName);
+        if (!mainXmlFile.exists()) {
+            throw new MissingMainXMLComponentFileException("Cannot find file \"" + mainXmlFile.getName() + "\""); //$NON-NLS-1$ //$NON-NLS-2$
+        }
+
         for (String currentFileToCheck : ComponentFilesNaming.getInstance().getRequiredFilesNames(folder.getName(),
                 languageSuffix)) {
             File file = new File(folder, currentFileToCheck);
             if (!file.exists()) {
-                throw new BusinessException("Cannot find file \"" + file.getName() + "\""); //$NON-NLS-1$ //$NON-NLS-2$
+                throw new MissingComponentFileException("Cannot find file \"" + file.getName() + "\""); //$NON-NLS-1$ //$NON-NLS-2$
             }
         }
     }
