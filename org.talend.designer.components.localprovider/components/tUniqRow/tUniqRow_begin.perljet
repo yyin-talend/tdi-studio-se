@@ -22,14 +22,11 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     if (metadata!=null) {
         String cid = metadata.getTableName();
 
-        String caseSensitive = ElementParameterParser.getValue(
-            node,
-            "__CASE_SENSITIVE__"
-        );
+
 %>
+use Digest::MD5 qw/md5_hex/ ;
 
 my %desc_<%=cid %> = (
-    case_sensitive => <%=caseSensitive%>,
     schema        => [
 <%
         for (IMetadataColumn column: metadata.getListColumns()) {

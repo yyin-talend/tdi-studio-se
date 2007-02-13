@@ -7,6 +7,7 @@ imports="
     org.talend.core.model.process.ElementParameterParser
     org.talend.designer.codegen.config.CodeGeneratorArgument
     java.util.List
+	java.util.Map
 "
 class="UniqRowMain"
 %>
@@ -22,42 +23,49 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     if (metadata!=null) {
         String cid = metadata.getTableName();
 
-        String caseSensitive = ElementParameterParser.getValue(
-            node,
-            "__CASE_SENSITIVE__"
-        );
+        List<Map<String, String>> keyColumns =
+            (List<Map<String,String>>)ElementParameterParser.getObjectValue(
+                node,
+				"__UNIQUE_KEY__"
+            );
 
+		
         StringBuffer hashKey = new StringBuffer();
-        int column_num = 0;
 
-        boolean hasKeys = false;
+        int column_num = 0;
+        boolean useAllColumns = true ;
         for (IMetadataColumn column: metadata.getListColumns()) {
-            if (column.isKey()) {
-                hasKeys = true;
-            }
+            Map<String, String> keyColumn = keyColumns.get(column_num);
+			String keyParticipation = keyColumn.get("KEY_ATTRIBUTE");
+			if(keyParticipation.equals("true")) {
+				useAllColumns = false ;
+			}
+            column_num++;
         }
 
+        column_num = 0;
         for (IMetadataColumn column: metadata.getListColumns()) {
-            if ((column.isKey()) || (!hasKeys)) {
-              hashKey.append("{ ");
-              
-              if (caseSensitive.equals("false")) {
-                  hashKey.append("lc ");
-              }
-              
-              hashKey.append("$");
-              hashKey.append(cid);
-              hashKey.append("[");
-              hashKey.append(column_num);
-              hashKey.append("] }");
-            }
-
+            Map<String, String> keyColumn = keyColumns.get(column_num);
+			String keyParticipation = keyColumn.get("KEY_ATTRIBUTE");
+			
+			if( useAllColumns || keyParticipation.equals("true")) {
+	            hashKey.append(" ");
+				String caseSensitive = keyColumn.get("CASE_SENSITIVE");
+	            if (caseSensitive.equals("false")) {
+	                hashKey.append("lc ");
+	            }
+	            hashKey.append("$");
+	            hashKey.append(cid);
+	            hashKey.append("[");
+	            hashKey.append(column_num);
+	            hashKey.append("], ");
+			}
             column_num++;
         }
 %>
 
 $nb_line_input_<%=cid %>++;
-next if (++$<%=cid%><%=hashKey%> > 1);
+next if (++$<%=cid%>{ md5_hex( join( $; , <%=hashKey%> ) ) } > 1);
 $nb_line_output_<%=cid %>++;
     
 <%
