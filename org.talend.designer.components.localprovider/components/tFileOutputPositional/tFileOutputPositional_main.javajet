@@ -32,6 +32,11 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                 "__FORMATS__"
             );
 %>
+
+				String tempStringM<%=cid %>= null;
+				
+				int tempLengthM<%=cid %>= 0;
+				
 <%
 	List< ? extends IConnection> conns = node.getIncomingConnections();
 	for (IConnection conn : conns) {
@@ -41,64 +46,75 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 			for (int i = 0; i < sizeColumns; i++) {
 				IMetadataColumn column = columns.get(i);
 				Map<String,String> format=formats.get(i);
+				
 				%>
 				
 				
 				
 				//get  and format output String begin
-    			tempString<%=cid %>=<%				
+    			tempStringM<%=cid %>=<%				
 				if(MetadataTalendType.isJavaPrimitiveType( column.getTalendType()) ) {%>
 					String.valueOf(<%=conn.getName() %>.<%=column.getLabel() %>)<%					
 				} else {%>
 					(<%=conn.getName() %>.<%=column.getLabel() %> == null) ? 
 					"": String.valueOf(<%=conn.getName() %>.<%=column.getLabel() %>)<%
 				}%> ;
-    			tempLength<%=cid %>=tempString<%=cid %>.length();
+    			tempLengthM<%=cid %>=tempStringM<%=cid %>.length();
     			
-            	if (tempLength<%=cid %> > sizes<%=cid %>[<%=i%>]) {
-                    if (otherFormats<%=cid %>[<%=i%>][2] == 'A') {
-                        tempString<%=cid %> = tempString<%=cid %>.substring(tempLength<%=cid %>-sizes<%=cid %>[<%=i%>]);
-                    } else if (otherFormats<%=cid %>[<%=i%>][2] == 'L') {
-                        tempString<%=cid %> = tempString<%=cid %>.substring(tempLength<%=cid %>-sizes<%=cid %>[<%=i%>]);
-                    } else if (otherFormats<%=cid %>[<%=i%>][2] == 'M') {
-                        int begin=(tempLength<%=cid %>-sizes<%=cid %>[<%=i%>])/2;
-                        tempString<%=cid %> = tempString<%=cid %>.substring(begin, begin+sizes<%=cid %>[<%=i%>]);
-                    } else {
-                        tempString<%=cid %> = tempString<%=cid %>.substring(0, sizes<%=cid %>[<%=i%>]);
-                    }
-                }else if(tempLength<%=cid %><sizes<%=cid %>[<%=i%>]){
-                    StringBuilder result = new StringBuilder();
-                    if (otherFormats<%=cid %>[<%=i%>][1] == 'L') {
-                        result.append(tempString<%=cid %>);
-                        for(int i=0; i< sizes<%=cid %>[<%=i%>]-tempLength<%=cid %>; i++){
-                            result.append(otherFormats<%=cid %>[<%=i%>][0]);
+            	if (tempLengthM<%=cid %> > <%=format.get("SIZE")%>) {
+                    <%
+                    if (format.get("KEEP").equals("\'A\'")) {%>
+                        tempStringM<%=cid %> = tempStringM<%=cid %>.substring(tempLengthM<%=cid %>-<%=format.get("SIZE")%>);
+                    <%
+                    } else if (format.get("KEEP").equals("\'L\'")) {%>
+                        tempStringM<%=cid %> = tempStringM<%=cid %>.substring(tempLengthM<%=cid %>-<%=format.get("SIZE")%>);
+                    <%
+                    } else if (format.get("KEEP").equals("\'M\'")) {%>
+                        int begin<%=cid %>=(tempLengthM<%=cid %>-<%=format.get("SIZE")%>)/2;
+                        tempStringM<%=cid %> = tempStringM<%=cid %>.substring(begin<%=cid %>, begin<%=cid %>+<%=format.get("SIZE")%>);
+                    <%
+                    } else {%>
+                        tempStringM<%=cid %> = tempStringM<%=cid %>.substring(0, <%=format.get("SIZE")%>);
+                    <%
+                    }%>
+                }else if(tempLengthM<%=cid %><<%=format.get("SIZE")%>){
+                    StringBuilder result<%=cid %> = new StringBuilder();
+                    <%
+                    if (format.get("ALIGN").equals("\'L\'")) {
+                    %>
+                        result<%=cid %>.append(tempStringM<%=cid %>);
+                        for(int i=0; i< <%=format.get("SIZE")%>-tempLengthM<%=cid %>; i++){
+                            result<%=cid %>.append(<%=format.get("PADDING_CHAR")%>);
                         }
-                        tempString<%=cid %> = result.toString();
-                    } else if (otherFormats<%=cid %>[<%=i%>][1] == 'R') {
-                        for(int i=0; i< sizes<%=cid %>[<%=i%>]-tempLength<%=cid %>; i++){
-                            result.append(otherFormats<%=cid %>[<%=i%>][0]);
+                        tempStringM<%=cid %> = result<%=cid %>.toString();
+                    <%
+                    } else if (format.get("ALIGN").equals("\'R\'")) {%>
+                        for(int i=0; i< <%=format.get("SIZE")%>-tempLengthM<%=cid %>; i++){
+                            result<%=cid %>.append(<%=format.get("PADDING_CHAR")%>);
                         }
-                        result.append(tempString<%=cid %>);
-                        tempString<%=cid %> = result.toString();
-                    } else {
-                        int temp= (sizes<%=cid %>[<%=i%>]-tempLength<%=cid %>)/2;
-                        for(int i=0;i<temp;i++){
-                            result.append(otherFormats<%=cid %>[<%=i%>][0]);
+                        result<%=cid %>.append(tempStringM<%=cid %>);
+                        tempStringM<%=cid %> = result<%=cid %>.toString();
+                    <%
+                    } else {%>
+                        int temp<%=cid %>= (<%=format.get("SIZE")%>-tempLengthM<%=cid %>)/2;
+                        for(int i=0;i<temp<%=cid %>;i++){
+                            result<%=cid %>.append(<%=format.get("PADDING_CHAR")%>);
                         }
-                        result.append(tempString<%=cid %>);
-                        for(int i=0;i<temp;i++){
-                            result.append(otherFormats<%=cid %>[<%=i%>][0]);
+                        result<%=cid %>.append(tempStringM<%=cid %>);
+                        for(int i=0;i<temp<%=cid %>;i++){
+                            result<%=cid %>.append(<%=format.get("PADDING_CHAR")%>);
                         }
-                        if((temp+temp)!=(sizes<%=cid %>[<%=i%>]-tempLength<%=cid %>)){
-                            result.append(otherFormats<%=cid %>[<%=i%>][0]);
+                        if((temp<%=cid %>+temp<%=cid %>)!=(<%=format.get("SIZE")%>-tempLengthM<%=cid %>)){
+                            result<%=cid %>.append(<%=format.get("PADDING_CHAR")%>);
                         }
-                        tempString<%=cid %> = result.toString();
-                    }        
+                        tempStringM<%=cid %> = result<%=cid %>.toString();
+                    <%
+                    } %>       
                 }
                 //get  and format output String end
 				
 				
-				out<%=cid %>.write(tempString<%=cid %>);
+				out<%=cid %>.write(tempStringM<%=cid %>);
 				<%
 			}
 			%>
