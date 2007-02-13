@@ -213,9 +213,10 @@ public class SQLBuilderTabComposite extends Composite {
      * @return a string representing sql text.
      */
     public String getDefaultTabSql() {
-        Control control = tabFolder.getChildren()[0];
-        SQLBuilderEditorComposite composite = (SQLBuilderEditorComposite) control;
-        return composite.getSQLToBeExecuted();
+        SQLBuilderEditorComposite editorComposite = (SQLBuilderEditorComposite) (((CTabFolder) tabFolder.getItems()[0].getControl())
+                .getItems()[0]).getControl();
+        
+        return editorComposite.getSQLToBeExecuted();
     }
 
     /**
@@ -224,9 +225,9 @@ public class SQLBuilderTabComposite extends Composite {
      * @return a string representing sql text.
      */
     public String getCurrentTabSql() {
-        Control control = tabFolder.getSelection().getControl();
-        SQLBuilderEditorComposite composite = (SQLBuilderEditorComposite) control;
-        return composite.getSQLToBeExecuted();
+        SQLBuilderEditorComposite editorComposite = (SQLBuilderEditorComposite) (((CTabFolder) tabFolder.getSelection().getControl())
+                .getItems()[0]).getControl();
+        return editorComposite.getSQLToBeExecuted();
     }
 
     public CTabFolder getTabFolder() {

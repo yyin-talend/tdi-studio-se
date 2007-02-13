@@ -22,7 +22,6 @@
 package org.talend.sqlbuilder.ui;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.core.runtime.IProgressMonitor;

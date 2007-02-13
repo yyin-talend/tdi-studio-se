@@ -39,7 +39,7 @@ import org.talend.sqlbuilder.Messages;
 import org.talend.sqlbuilder.repository.utility.SQLBuilderRepositoryNodeManager;
 
 /**
- * DOC qzhang class global comment. Detailled comment <br/>
+ *  qzhang class global comment. Detailled comment <br/>
  * 
  * $Id: talend.epf 1 2006-09-29 17:06:40 +0000 (ææäº, 29 ä¹æ 2006) nrousseau $
  * 
@@ -55,7 +55,7 @@ public class AddTablesDialog extends Dialog {
     private List<MetadataTable> selectedTables;
 
     /**
-     * DOC admin AddTablesDialog constructor comment.
+     *  admin AddTablesDialog constructor comment.
      * 
      * @param parentShell
      */
@@ -66,7 +66,7 @@ public class AddTablesDialog extends Dialog {
     }
 
     /*
-     * (non-Javadoc)
+     * (non-Java)
      * 
      * @see org.eclipse.jface.window.Window#configureShell(org.eclipse.swt.widgets.Shell)
      */
@@ -78,7 +78,7 @@ public class AddTablesDialog extends Dialog {
     }
 
     /*
-     * (non-Javadoc)
+     * (non-Java)
      * 
      * @see org.eclipse.jface.dialogs.Dialog#createDialogArea(org.eclipse.swt.widgets.Composite)
      */
@@ -108,7 +108,7 @@ public class AddTablesDialog extends Dialog {
         return this.rootNode;
     }
 
-    @SuppressWarnings("unchecked") //$NON-NLS-1$
+    @SuppressWarnings("unchecked")//$NON-NLS-1$
     public void setRootNode(RepositoryNode rootNode) {
         this.rootNode = rootNode;
         DatabaseConnectionItem item = SQLBuilderRepositoryNodeManager.getItem(getRootNode());
@@ -118,8 +118,10 @@ public class AddTablesDialog extends Dialog {
     public List<MetadataTable> getTables() {
         return selectedTables;
     }
-    
-    /* （非 Javadoc）
+
+    /*
+     * （非 Java）
+     * 
      * @see org.eclipse.jface.dialogs.Dialog#okPressed()
      */
     @Override
@@ -129,13 +131,13 @@ public class AddTablesDialog extends Dialog {
     }
 
     /**
-     * DOC admin Comment method "setTables".
+     *  admin Comment method "setTables".
      */
     private void setTables() {
         selectedTables = new ArrayList<MetadataTable>();
         for (String string : composite1.getListTables().getSelection()) {
             for (MetadataTable table1 : tables) {
-                if (table1.getSourceName().equals(string)) {
+                if (table1.getSourceName() != null && table1.getSourceName().equals(string)) {
                     selectedTables.add(table1);
                 }
             }

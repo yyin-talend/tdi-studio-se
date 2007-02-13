@@ -121,7 +121,9 @@ public class AddTablesComposite extends Composite {
         DatabaseConnectionItem item = SQLBuilderRepositoryNodeManager.getItem(getRootNode());
         tables = ((DatabaseConnection) item.getConnection()).getTables();
         for (MetadataTable table : tables) {
-            listTables.add(table.getSourceName());
+            if (table.getSourceName() != null) {
+                listTables.add(table.getSourceName());
+            }
         }
         return div1;
     }

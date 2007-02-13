@@ -30,6 +30,7 @@ import java.util.List;
 import org.eclipse.core.runtime.Preferences;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Shell;
+import org.talend.commons.ui.swt.dialogs.ErrorDialogWidthDetailArea;
 import org.talend.core.model.metadata.IMetadataConnection;
 import org.talend.core.model.metadata.builder.ConvertionHelper;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
@@ -165,9 +166,14 @@ public final class EMFRepositoryNodeManager {
             root = rootNode;
         }
         if (root != null) {
-            iMetadataConnection = ConvertionHelper.convert((DatabaseConnection) SQLBuilderRepositoryNodeManager.getItem(root)
-                    .getConnection());
-            dbMetaData = rnmanager.getDatabaseMetaData(iMetadataConnection);
+            try {
+                iMetadataConnection = ConvertionHelper.convert((DatabaseConnection) SQLBuilderRepositoryNodeManager.getItem(root)
+                        .getConnection());
+                dbMetaData = rnmanager.getDatabaseMetaData(iMetadataConnection);
+            } catch (Exception e) {
+                String mainMsg = Messages.getString("EMFRepositoryNodeManager.DBConnection.Text"); //$NON-NLS-1$
+                new ErrorDialogWidthDetailArea(new Shell(), SqlBuilderPlugin.PLUGIN_ID, mainMsg, e.getMessage());
+            }
         }
     }
 

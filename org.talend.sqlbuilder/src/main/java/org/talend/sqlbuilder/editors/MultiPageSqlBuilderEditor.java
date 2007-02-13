@@ -109,8 +109,7 @@ public class MultiPageSqlBuilderEditor extends MultiPageEditorPart {
             setPageText(index, Messages.getString("MultiPageSqlBuilderEditor.DesignerTab.Text")); //$NON-NLS-1$
         } catch (Exception e) {
             MessageDialog.openError(getContainer().getShell(), Messages
-                    .getString("MultiPageSqlBuilderEditor.CreatePage.ErrorTitle"), Messages
-                    .getString("MultiPageSqlBuilderEditor.CreatePage.ErrorInfo"));
+                    .getString("MultiPageSqlBuilderEditor.CreatePage.ErrorTitle"), e.getMessage());
         }
 
     }
@@ -237,8 +236,7 @@ public class MultiPageSqlBuilderEditor extends MultiPageEditorPart {
                 editor.setModified(false);
             } catch (Exception e) {
                 MessageDialog.openError(getContainer().getShell(), Messages
-                        .getString("MultiPageSqlBuilderEditor.CreatePage.ErrorTitle2"), Messages
-                        .getString("MultiPageSqlBuilderEditor.CreatePage.ErrorInfo2"));
+                        .getString("MultiPageSqlBuilderEditor.CreatePage.ErrorTitle2"), e.getMessage());
             }
         } else if (newPageIndex == 0) {
             if (isModified()) {
