@@ -146,8 +146,8 @@ public class MultiPageSqlBuilderEditor extends MultiPageEditorPart {
                 return true;
             } else {
                 String orginSql = EMFRepositoryNodeManager.getInstance().initSqlStatement(
-                        builderEditorComposite.getSQLToBeExecuted());
-                String sqlText = EMFRepositoryNodeManager.getInstance().initSqlStatement(editor.getSqlText());
+                        builderEditorComposite.getSQLToBeExecuted(), false);
+                String sqlText = EMFRepositoryNodeManager.getInstance().initSqlStatement(editor.getSqlText(), false);
                 return !sqlText.trim().equals(orginSql.trim());
             }
         }
@@ -228,7 +228,7 @@ public class MultiPageSqlBuilderEditor extends MultiPageEditorPart {
                             Messages.getString("MultiPageSqlBuilderEditor.NoticeTitle.Text"), info); //$NON-NLS-1$
 
                     List<RepositoryNode> nodeSel = EMFRepositoryNodeManager.getInstance().parseSqlStatement(toSql, rootNode);
-                    if (nodeSel.isEmpty()) {
+                    if (nodeSel == null || nodeSel.isEmpty()) {
                         return;
                     }
                     editor.updateNodes(nodeSel, toSql);

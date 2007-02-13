@@ -227,7 +227,7 @@ public final class EMFRepositoryNodeManager {
 
     private List<String[]> relations = new ArrayList<String[]>();
 
-    public String initSqlStatement(String currentSql) {
+    public String initSqlStatement(String currentSql, boolean isPrompt) {
         QueryTokenizer qt = new QueryTokenizer(currentSql, queryDelimiter, alternateDelimiter, commentDelimiter);
         List<String> queryStrings = new ArrayList<String>();
         while (qt.hasQuery()) {
@@ -243,7 +243,7 @@ public final class EMFRepositoryNodeManager {
             return null;
         }
         Boolean isForce = null;
-        if (queryStrings.size() > 1) {
+        if (queryStrings.size() > 1 && isPrompt) {
             isForce = MessageDialog.openQuestion(new Shell(), Messages.getString("EMFRepositoryNodeManager.Notice.Title2"), //$NON-NLS-1$
                     Messages.getString("EMFRepositoryNodeManager.Notice.info2")); //$NON-NLS-1$
         }
@@ -268,8 +268,8 @@ public final class EMFRepositoryNodeManager {
 
     @SuppressWarnings("unchecked")
     public List<RepositoryNode> parseSqlStatement(String sql, RepositoryNode currRoot) throws Exception {
-        sql = initSqlStatement(sql);
-        if (sql == null) {
+        sql = initSqlStatement(sql, true);
+        if (sql == null || "".equals(sql)) {
             return null;
         }
         List<String> tableNames = new ArrayList<String>();
