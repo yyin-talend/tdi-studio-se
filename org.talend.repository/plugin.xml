@@ -327,6 +327,11 @@
             class="org.talend.repository.model.migration.RenametDBInputToMySQLMigrationTask"
             id="org.talend.repository.migration.renametDbInputToMySQL"
             name="Rename tDBxxTotDBMySQLxx"/>
+      <projecttask
+            beforeLogon="false"
+            class="org.talend.repository.model.migration.RenametDBInputToOracleMigrationTask"
+            id="org.talend.repository.migration.renametDbInputToOracle"
+            name="Rename tDBxxTotOraclexx"/>
    </extension>
 
 </plugin>

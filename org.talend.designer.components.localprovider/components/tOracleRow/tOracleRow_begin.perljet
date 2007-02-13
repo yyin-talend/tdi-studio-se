@@ -1,0 +1,108 @@
+<%@ jet 
+package="org.talend.designer.codegen.translators" 
+imports="
+    org.talend.core.model.process.INode 
+    org.talend.core.model.process.ElementParameterParser 
+    org.talend.core.model.metadata.IMetadataTable 
+    org.talend.core.model.metadata.IMetadataColumn
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    java.util.List
+" 
+class="OracleRowBegin" 
+%>
+
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+boolean stats = codeGenArgument.isStatistics();
+
+List<IMetadataTable> metadatas = node.getMetadataList();
+if ((metadatas!=null)&&(metadatas.size()>0)) {
+    IMetadataTable metadata = metadatas.get(0);
+    if (metadata!=null) {
+        String cid = metadata.getTableName();
+
+        String dbhost = ElementParameterParser.getValue(node, "__HOST__");
+        String dbport = ElementParameterParser.getValue(node, "__PORT__");
+        String dbname = ElementParameterParser.getValue(node, "__DBNAME__");
+        String dbuser = ElementParameterParser.getValue(node, "__USER__");
+        String dbpass = ElementParameterParser.getValue(node, "__PASS__");
+        String query  = ElementParameterParser.getValue(node, "__QUERY__");
+        String encoding = ElementParameterParser.getValue(
+            node,
+            "__ENCODING__"
+        );
+        String commitEvery = ElementParameterParser.getValue(
+            node,
+            "__COMMIT_EVERY__"
+        );
+%>
+
+use DBI;
+
+my %desc_<%=cid %> = (
+    dbhost        => <%=dbhost %>,
+    dbport        => <%=dbport %>,
+    dbname        => <%=dbname %>,
+    dbuser        => <%=dbuser %>,
+    dbpass        => <%=dbpass %>,
+    encoding      => <%=encoding %>,
+    commit_every  => <%=commitEvery %>,
+    query         => <%=query %>,
+    schema        => [
+<%
+        for (IMetadataColumn column: metadata.getListColumns()) {
+%>
+        {
+            name    => '<%=column.getLabel() %>',
+            key     => <%=column.isKey() %>,
+            type    => '<%=column.getType() %>',
+            len     => <%=column.getLength() %>,
+            null    => <%=column.isNullable() %>,
+            default => '<%=column.getDefault() %>',
+            comment => '<%=column.getComment() %>',
+        },
+<%
+        }
+%>
+    ],
+);
+
+<%
+        if (stats) {
+%>
+UpdateStat('<%=cid %>', 0);
+<%
+        }
+%>
+
+if ($desc_<%=cid %>{encoding} =~ m/^utf-?8$/i) {
+    $ENV{NLS_LANG} = 'AMERICAN_AMERICA.AL32UTF8';
+}
+elsif ($desc_<%=cid %>{encoding} =~ m/^iso-?8859-?1$/i) {
+    $ENV{NLS_LANG} = 'AMERICAN_AMERICA.WE8ISO8859P1';
+}
+
+my $dbh_<%=cid %> = DBI->connect(
+    sprintf(
+        'dbi:Oracle:host=%s;sid=%s;port=%s',
+        <%=dbhost %>,
+        <%=dbname %>,
+        <%=dbport %>,
+    ),
+    <%=dbuser %>,
+    <%=dbpass %>,
+    {
+        AutoCommit => 0,
+    }
+)
+    or die "can't connect to database";
+
+my $sth_<%=cid %>;
+
+my $nb_line_current_commit_<%=cid%> = 0;
+
+<%
+    }
+}
+%>
