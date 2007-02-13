@@ -157,9 +157,9 @@ public class EmfComponent implements IComponent {
                 loadMultipleComponentManagerFromTemplates();
 
                 // just load the externalNode plugin to check if the plugin exists.
-                if (compType.getHEADER().getEXTENSION() != null) {
-                    ExternalNodesFactory.getInstance(this.getPluginFullName());
-                }
+//                if (compType.getHEADER().getEXTENSION() != null) {
+//                    ExternalNodesFactory.getInstance(this.getPluginFullName());
+//                }
 
                 isLoaded = true;
             } catch (Exception e) {
