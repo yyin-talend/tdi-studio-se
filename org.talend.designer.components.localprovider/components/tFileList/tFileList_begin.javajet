@@ -24,13 +24,13 @@
 %>
 
         String directory<%=cid %>       = <%=ElementParameterParser.getValue(node, "__DIRECTORY__") %>;
-        String filemask<%=cid %>        = <%=ElementParameterParser.getValue(node, "__FILEMASK__")%>;
+        String filemask<%=cid %>        = <%=ElementParameterParser.getValue(node, "__FILEMASK__")%>+"$";
         filemask<%=cid %> = java.util.regex.Pattern.compile("[*]").matcher(filemask<%=cid %>).replaceAll(".*");
         boolean case_sensitive<%=cid %> = <%=ElementParameterParser.getValue(node, "__CASE_SENSITIVE__").equals("YES") %>;
-		if(!case_sensitive<%=cid %>){
-        	java.util.regex.Pattern fileNamePattern<%=cid %> = java.util.regex.Pattern.compile(filemask<%=cid %>, java.util.regex.Pattern.CASE_INSENSITIVE);
-		}        
 		java.util.regex.Pattern fileNamePattern<%=cid %> = java.util.regex.Pattern.compile(filemask<%=cid %>);
+		if(!case_sensitive<%=cid %>){
+        	fileNamePattern<%=cid %> = java.util.regex.Pattern.compile(filemask<%=cid %>, java.util.regex.Pattern.CASE_INSENSITIVE);
+		}       
  		java.io.File file<%=cid %>=new java.io.File(directory<%=cid %>);
         java.io.File[] files<%=cid %> = file<%=cid %>.listFiles();
         for (int i<%=cid%> = 0; i<%=cid%> < files<%=cid %>.length; i<%=cid%>++){
