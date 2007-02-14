@@ -35,7 +35,8 @@ import org.eclipse.jdt.internal.ui.text.JavaReconciler;
 import org.eclipse.jface.text.IDocumentExtension3;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.ui.part.EditorPart;
+import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.PlatformUI;
 import org.talend.designer.core.ISyntaxCheckableEditor;
 import org.talend.designer.core.ui.MultiPageTalendEditor;
 
@@ -114,6 +115,15 @@ public class TalendJavaEditor extends CompilationUnitEditor implements ISyntaxCh
      * @see org.talend.designer.core.ui.editor.ISyntaxCheckable#validateSyntax()
      */
     public void validateSyntax() {
+        // check if the validation is on the active editor
+        IEditorPart part = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
+        if (!(part instanceof MultiPageTalendEditor)) {
+            return;
+        }
+        MultiPageTalendEditor multi = (MultiPageTalendEditor) part;
+        if (!multi.getCodeEditor().equals(this)) {
+            return;
+        }
 
         ISourceViewer sourceViewer = getSourceViewer();
         if (sourceViewer instanceof JavaSourceViewer) {
