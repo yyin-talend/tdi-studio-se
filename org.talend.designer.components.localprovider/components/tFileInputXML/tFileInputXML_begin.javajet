@@ -10,6 +10,8 @@ imports="
     org.talend.designer.codegen.config.CodeGeneratorArgument
     java.util.Map
     java.util.List
+    org.talend.core.model.metadata.types.JavaTypesManager
+	org.talend.core.model.metadata.types.JavaType
 " 
 class="FileInputXMLBegin" 
 %>
@@ -41,11 +43,9 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
             "__LOOP_QUERY__"
         );
         String rootTag= loopQuery.substring(2);
-        System.out.println(rootTag);
         rootTag=rootTag.substring(0,rootTag.indexOf('/'));
-        System.out.println(rootTag);
-        String loopTag= loopQuery.substring(loopQuery.lastIndexOf('/')+1);
         
+        String loopTag= loopQuery.substring(loopQuery.lastIndexOf('/')+1);        
         int length= loopTag.length();
         if(loopTag.charAt(length-1)=='\"'){
         	loopTag=loopTag.substring(0,length-1);
@@ -68,11 +68,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 
 			final java.io.PipedWriter pipedWriter<%= cid %>  = new java.io.PipedWriter();
             java.io.PipedReader pipedReader<%= cid %>  = new java.io.PipedReader(pipedWriter<%= cid %> );
-            
-            
-            
-            
-
+           
 
 
             class GenHandler extends org.xml.sax.helpers.DefaultHandler {
@@ -115,15 +111,13 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                     }
 
                 }                  
-                
-                
-                
+                               
                 
 
                 // // ----------------------------------------------
                  public void endDocument() throws org.xml.sax.SAXException {
                      try {
-                        pipedWriter<%= cid %> .write("\n");
+                        pipedWriter<%= cid %> .close();
                     } catch (java.io.IOException e) {
                         throw new SAXWithException(e);
                     }
@@ -166,7 +160,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                         } else {
                         	try {
                                 
-                                pipedWritertFileInputXML_1.write("\n");                                
+                                pipedWritertFileInputXML_1.close();                                
 
                             } catch (java.io.IOException e) {
                                 throw new SAXWithException(e);
@@ -221,9 +215,9 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 
             java.io.BufferedReader in<%= cid %> = new java.io.BufferedReader(pipedReader<%= cid %> );
 
-            String str="TALEND";
+            String str<%= cid %>="TALEND";
             
-            while ((str = in<%= cid %>.readLine()) != null&&!str.equals("")) {   
+            while ((str<%= cid %> = in<%= cid %>.readLine()) != null&&!str<%= cid %>.equals("")) {   
                 
                 
                
@@ -240,10 +234,34 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 				List<IMetadataColumn> columns=metadata.getListColumns();
 				for (int i=0;i<columns.size();i++) {
 					IMetadataColumn column=columns.get(i);
+					String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
+					JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
+					String patternValue = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
+					if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT) {
 %>
-				<%=conn.getName() %>.<%=column.getLabel() %> = StringUtils.convert<%=column.getTalendType() %>(str);
+							<%=conn.getName() %>.<%=column.getLabel() %> = str<%= cid %>;
+<%
+					} else {
+%>
+						if(str<%= cid %>.length() > 0) {
+	<%
+							if(javaType == JavaTypesManager.DATE) {
+	%>
+								<%=conn.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_Date(str<%= cid %>, <%= patternValue %>);
+	<%
+							} else {
+	%>
+								<%=conn.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(str<%= cid %>);
+	<%
+							}
+	%>					
+						}else{
+							<%=conn.getName() %>.<%=column.getLabel() %> = <%=JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate)%>;
+						}
+	<%					
+					}%>
 <%if(i!=columns.size()-1){%>
-				str = in<%= cid %>.readLine();
+				str<%= cid %> = in<%= cid %>.readLine();
 <%}%>
 <%
 				}
