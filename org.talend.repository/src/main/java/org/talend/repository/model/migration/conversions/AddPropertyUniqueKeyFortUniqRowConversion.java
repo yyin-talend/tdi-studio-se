@@ -19,29 +19,32 @@
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 // ============================================================================
-package org.talend.repository.model.migration;
+package org.talend.repository.model.migration.conversions;
 
-import org.talend.commons.exception.ExceptionHandler;
-import org.talend.core.model.general.Project;
-import org.talend.core.model.migration.AbstractMigrationTask;
-import org.talend.core.model.migration.IProjectMigrationTask;
+import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
+import org.talend.repository.model.migration.ComponentUtilities;
 
 /**
- * DOC plegall class global comment. Detailled comment <br/>
+ * DOC smallet class global comment. Detailled comment <br/>
  * 
  * $Id: talend.epf 1 2006-09-29 17:06:40 +0000 (ven., 29 sept. 2006) nrousseau $
  * 
  */
-public class RenametCatcherMigrationTask extends AbstractMigrationTask implements IProjectMigrationTask {
+public class AddPropertyUniqueKeyFortUniqRowConversion implements IComponentConversion {
 
-    public boolean execute(Project project) {
-        try {
-            ModifyComponentsAction.searchAndRename("tCatcher", "tLogCatcher"); //$NON-NLS-1$ //$NON-NLS-2$
-            return true;
-        } catch (Exception e) {
-            ExceptionHandler.process(e);
-            return false;
-        }
+    private String field;
+
+    private String name;
+
+    public AddPropertyUniqueKeyFortUniqRowConversion(String name, String field) {
+        super();
+        this.field = field;
+        this.name = name;
+    }
+
+    public void transform(NodeType node) {
+        ComponentUtilities.addNodeProperty(node, name, field);
+        ComponentUtilities.setNodeProperty(node, name, ComponentUtilities.createtUniqRowV2UniqueKey(node));
     }
 
 }

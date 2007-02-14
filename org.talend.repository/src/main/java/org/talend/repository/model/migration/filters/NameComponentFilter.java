@@ -31,7 +31,7 @@ import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
  */
 public class NameComponentFilter implements IComponentFilter {
 
-    private String name;
+    protected String name;
 
     public NameComponentFilter(String name) {
         super();

@@ -36,8 +36,8 @@ public class RenametMysqlOutputBulkExecMigrationTask extends AbstractMigrationTa
 
     public boolean execute(Project project) {
         try {
-            RenameComponentAction.rename("tMysqlOutputBulkExec", "tMysqlBulkExec"); //$NON-NLS-1$ //$NON-NLS-2$
-            RenameComponentAction.rename("tMysqlOutputBulk", "tMysqlOutputBulkExec"); //$NON-NLS-1$ //$NON-NLS-2$
+            ModifyComponentsAction.searchAndRename("tMysqlOutputBulkExec", "tMysqlBulkExec"); //$NON-NLS-1$ //$NON-NLS-2$
+            ModifyComponentsAction.searchAndRename("tMysqlOutputBulk", "tMysqlOutputBulkExec"); //$NON-NLS-1$ //$NON-NLS-2$
             return true;
         } catch (Exception e) {
             ExceptionHandler.process(e);

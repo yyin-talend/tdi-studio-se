@@ -21,12 +21,15 @@
 // ============================================================================
 package org.talend.repository.model.migration;
 
+import java.util.Arrays;
+
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.model.general.Project;
 import org.talend.core.model.migration.AbstractMigrationTask;
 import org.talend.core.model.migration.IProjectMigrationTask;
 import org.talend.repository.model.migration.conversions.IComponentConversion;
 import org.talend.repository.model.migration.conversions.RemovePropertyComponentConversion;
+import org.talend.repository.model.migration.conversions.RenameComponentConversion;
 import org.talend.repository.model.migration.filters.IComponentFilter;
 import org.talend.repository.model.migration.filters.PropertyComponentFilter;
 
@@ -40,16 +43,22 @@ public class RenametDBInputToMySQLMigrationTask extends AbstractMigrationTask im
 
     public boolean execute(Project project) {
         try {
-            IComponentConversion conversion = new RemovePropertyComponentConversion("TYPE");
+            IComponentConversion removePropertyComponentConversion = new RemovePropertyComponentConversion("TYPE");
 
+            RenameComponentConversion renameComponentConversion = new RenameComponentConversion("tMysqlInput");
             IComponentFilter filter1 = new PropertyComponentFilter("tDBInput", "TYPE", "mysql;mysql");//$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-            RenameComponentAction.rename("tDBInput", "tMysqlInput", filter1, conversion); //$NON-NLS-1$ //$NON-NLS-2$
+            ModifyComponentsAction.searchAndModify(filter1, Arrays.<IComponentConversion> asList(renameComponentConversion,
+                    removePropertyComponentConversion));
 
+            renameComponentConversion.setNewName("tMysqlOutput");
             IComponentFilter filter2 = new PropertyComponentFilter("tDBOutput", "TYPE", "mysql;mysql;MYSQL");//$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-            RenameComponentAction.rename("tDBOutput", "tMysqlOutput", filter2, conversion); //$NON-NLS-1$ //$NON-NLS-2$
+            ModifyComponentsAction.searchAndModify(filter2, Arrays.<IComponentConversion> asList(renameComponentConversion,
+                    removePropertyComponentConversion));
 
+            renameComponentConversion.setNewName("tMysqlRow");
             IComponentFilter filter3 = new PropertyComponentFilter("tDBSQLRow", "TYPE", "mysql;mysql");//$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-            RenameComponentAction.rename("tDBSQLRow", "tMysqlRow", filter3, conversion); //$NON-NLS-1$ //$NON-NLS-2$
+            ModifyComponentsAction.searchAndModify(filter3, Arrays.<IComponentConversion> asList(renameComponentConversion,
+                    removePropertyComponentConversion));
 
             return true;
         } catch (Exception e) {

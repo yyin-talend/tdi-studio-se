@@ -21,27 +21,39 @@
 // ============================================================================
 package org.talend.repository.model.migration;
 
+import java.util.Arrays;
+
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.model.general.Project;
 import org.talend.core.model.migration.AbstractMigrationTask;
 import org.talend.core.model.migration.IProjectMigrationTask;
+import org.talend.repository.model.migration.conversions.AddPropertyUniqueKeyFortUniqRowConversion;
+import org.talend.repository.model.migration.conversions.IComponentConversion;
+import org.talend.repository.model.migration.conversions.RemovePropertyComponentConversion;
+import org.talend.repository.model.migration.filters.IComponentFilter;
+import org.talend.repository.model.migration.filters.NameComponentFilter;
 
 /**
- * DOC plegall class global comment. Detailled comment <br/>
+ * Use to rename tDB(Input|Output|SQLRow) into tMysql(Input|Output|Row). Related bug 540.
  * 
  * $Id: talend.epf 1 2006-09-29 17:06:40 +0000 (ven., 29 sept. 2006) nrousseau $
  * 
  */
-public class RenametCatcherMigrationTask extends AbstractMigrationTask implements IProjectMigrationTask {
+public class UpgradetUniqRowMigrationTask extends AbstractMigrationTask implements IProjectMigrationTask {
 
     public boolean execute(Project project) {
         try {
-            ModifyComponentsAction.searchAndRename("tCatcher", "tLogCatcher"); //$NON-NLS-1$ //$NON-NLS-2$
+            IComponentFilter filter1 = new NameComponentFilter("tUniqRow"); //$NON-NLS-1$
+
+            IComponentConversion removeProperty = new RemovePropertyComponentConversion("CASE_SENSITIVE"); //$NON-NLS-1$
+            IComponentConversion addProperty = new AddPropertyUniqueKeyFortUniqRowConversion("UNIQUE_KEY", "TABLE"); //$NON-NLS-1$ //$NON-NLS-2$
+
+            ModifyComponentsAction.searchAndModify(filter1, Arrays.<IComponentConversion> asList(removeProperty, addProperty));
+
             return true;
         } catch (Exception e) {
             ExceptionHandler.process(e);
             return false;
         }
     }
-
 }

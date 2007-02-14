@@ -27,9 +27,13 @@ import java.util.List;
 
 import org.eclipse.emf.common.util.EList;
 import org.talend.core.model.process.UniqueNodeNameGenerator;
-import org.talend.core.model.properties.ProcessItem;
+import org.talend.designer.core.model.utils.emf.talendfile.ColumnType;
 import org.talend.designer.core.model.utils.emf.talendfile.ElementParameterType;
+import org.talend.designer.core.model.utils.emf.talendfile.ElementValueType;
+import org.talend.designer.core.model.utils.emf.talendfile.MetadataType;
 import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
+import org.talend.designer.core.model.utils.emf.talendfile.ProcessType;
+import org.talend.designer.core.model.utils.emf.talendfile.TalendFileFactory;
 
 /**
  * DOC smallet class global comment. Detailled comment <br/>
@@ -41,17 +45,50 @@ import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
  */
 public class ComponentUtilities {
 
-    public static String getNodeProperty(NodeType node, String property) {
+    private static final String CASE_SENSITIVE = "CASE_SENSITIVE";
+
+    private static final String KEY_ATTRIBUTE = "KEY_ATTRIBUTE";
+
+    private static final String SCHEMA_COLUMN = "SCHEMA_COLUMN";
+
+    private static final String UNIQUE_NAME = "UNIQUE_NAME";
+
+    public static String getNodePropertyValue(NodeType node, String property) {
+        ElementParameterType prop = getNodeProperty(node, property);
+        if (prop == null) {
+            return null;
+        } else {
+            return prop.getValue();
+        }
+    }
+
+    private static ElementParameterType getNodeProperty(NodeType node, String property) {
         for (Object o : node.getElementParameter()) {
             ElementParameterType t = (ElementParameterType) o;
             if (t.getName().equals(property)) {
-                return t.getValue();
+                return t;
             }
         }
         return null;
     }
 
+    public static void addNodeProperty(NodeType node, String name, String field) {
+        ElementParameterType property = TalendFileFactory.eINSTANCE.createElementParameterType();
+        property.setName(name);
+        property.setField(field);
+        node.getElementParameter().add(property);
+    }
+
+    public static void setNodeProperty(NodeType node, String name, List<ElementValueType> values) {
+        ElementParameterType property = getNodeProperty(node, name);
+
+        for (ElementValueType value : values) {
+            property.getElementValue().add(value);
+        }
+    }
+
     public static void removeNodeProperty(NodeType node, String property) {
+        // TODO SML Use getNodeProperty
         EList elementParameter = node.getElementParameter();
         Iterator iterator = elementParameter.iterator();
         for (Object o = iterator.next(); iterator.hasNext(); o = iterator.next()) {
@@ -63,16 +100,12 @@ public class ComponentUtilities {
     }
 
     public static String getNodeUniqueName(NodeType node) {
-        return ComponentUtilities.getNodeProperty(node, "UNIQUE_NAME"); //$NON-NLS-1$
+        return ComponentUtilities.getNodePropertyValue(node, UNIQUE_NAME); //$NON-NLS-1$
     }
 
     public static void setNodeUniqueName(NodeType node, String newName) {
-        for (Object o : node.getElementParameter()) {
-            ElementParameterType t = (ElementParameterType) o;
-            if (t.getName().equals("UNIQUE_NAME")) {
-                t.setValue(newName);
-            }
-        }
+        ElementParameterType t = getNodeProperty(node, UNIQUE_NAME);
+        t.setValue(newName);
     }
 
     public static void replaceInNodeParameterValue(NodeType node, String oldName, String newName) {
@@ -87,12 +120,39 @@ public class ComponentUtilities {
         }
     }
 
-    public static String generateUniqueNodeName(String baseName, ProcessItem process) {
+    public static String generateUniqueNodeName(String baseName, ProcessType process) {
         List<String> uniqueNodeNameList = new ArrayList<String>();
-        for (Object o : process.getProcess().getNode()) {
+        for (Object o : process.getNode()) {
             NodeType nt = (NodeType) o;
             uniqueNodeNameList.add(getNodeUniqueName(nt));
         }
         return UniqueNodeNameGenerator.generateUniqueNodeName(baseName, uniqueNodeNameList);
+    }
+
+    public static List<ElementValueType> createtUniqRowV2UniqueKey(NodeType node) {
+        // TODO SML Move in a more specific class
+        List<ElementValueType> values = new ArrayList<ElementValueType>();
+        TalendFileFactory fileFact = TalendFileFactory.eINSTANCE;
+
+        MetadataType object = (MetadataType) node.getMetadata().get(0);
+
+        for (Object o : object.getColumn()) {
+            ColumnType tagada = (ColumnType) o;
+            ElementValueType elementValue = fileFact.createElementValueType();
+            elementValue.setElementRef(SCHEMA_COLUMN);
+            elementValue.setValue(tagada.getName());
+            values.add(elementValue);
+
+            ElementValueType elementValue2 = fileFact.createElementValueType();
+            elementValue2.setElementRef(KEY_ATTRIBUTE);
+            elementValue2.setValue(new Boolean(tagada.isKey()).toString());
+            values.add(elementValue2);
+
+            ElementValueType elementValue3 = fileFact.createElementValueType();
+            elementValue3.setElementRef(CASE_SENSITIVE);
+            elementValue3.setValue("false");
+            values.add(elementValue3);
+        }
+        return values;
     }
 }

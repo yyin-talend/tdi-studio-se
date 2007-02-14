@@ -22,20 +22,18 @@
 package org.talend.repository.model.migration;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.emf.common.util.EList;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
-import org.talend.designer.core.model.utils.emf.talendfile.ConnectionType;
-import org.talend.designer.core.model.utils.emf.talendfile.MetadataType;
 import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
 import org.talend.repository.model.ProxyRepositoryFactory;
-import org.talend.repository.model.migration.conversions.DefaultComponentConversion;
 import org.talend.repository.model.migration.conversions.IComponentConversion;
+import org.talend.repository.model.migration.conversions.RenameComponentConversion;
 import org.talend.repository.model.migration.filters.IComponentFilter;
 import org.talend.repository.model.migration.filters.NameComponentFilter;
 
@@ -45,13 +43,14 @@ import org.talend.repository.model.migration.filters.NameComponentFilter;
  * $Id: talend.epf 1 2006-09-29 17:06:40 +0000 (ven., 29 sept. 2006) nrousseau $
  * 
  */
-public class RenameComponentAction {
+public class ModifyComponentsAction {
 
-    public static void rename(String oldName, String newName) throws PersistenceException, IOException, CoreException {
-        rename(oldName, newName, new NameComponentFilter(oldName), new DefaultComponentConversion());
+    public static void searchAndRename(String oldName, String newName) throws PersistenceException, IOException, CoreException {
+        searchAndModify(new NameComponentFilter(oldName), Arrays.<IComponentConversion> asList(new RenameComponentConversion(
+                newName)));
     }
 
-    public static void rename(String oldName, String newName, IComponentFilter filter, IComponentConversion conversion)
+    public static void searchAndModify(IComponentFilter filter, List<IComponentConversion> conversions)
             throws PersistenceException, IOException, CoreException {
         ProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
 
@@ -67,49 +66,15 @@ public class RenameComponentAction {
                     NodeType currentNode = (NodeType) o;
 
                     if (filter.accept(currentNode)) {
-                        // TODO SML Manage with IConversion + Use List<IComponentConversion> ad param
-                        currentNode.setComponentName(newName);
-                        String oldNodeUniqueName = ComponentUtilities.getNodeUniqueName(currentNode);
-                        String newNodeUniqueName = ComponentUtilities.generateUniqueNodeName(newName, item);
-                        ComponentUtilities.setNodeUniqueName(currentNode, newNodeUniqueName);
-                        replaceAllInAllNodesParameterValue(item, oldNodeUniqueName, newNodeUniqueName);
-
-                        conversion.transform(currentNode);
-
+                        for (IComponentConversion conversion : conversions) {
+                            conversion.transform(currentNode);
+                        }
                         modified = true;
                     }
                 }
                 if (modified) {
                     factory.save(item);
                 }
-            }
-        }
-    }
-
-    private static void replaceAllInAllNodesParameterValue(ProcessItem item, String oldName, String newName) {
-        for (Object o : item.getProcess().getNode()) {
-            NodeType nt = (NodeType) o;
-            ComponentUtilities.replaceInNodeParameterValue(nt, oldName, newName);
-            EList metaList = nt.getMetadata();
-            if (metaList != null) {
-                if (!metaList.isEmpty()) {
-                    MetadataType firstMeta = (MetadataType) metaList.get(0);
-                    if (firstMeta.getName().equals(oldName)) {
-                        firstMeta.setName(newName);
-                    }
-                }
-            }
-        }
-        for (Object o : item.getProcess().getConnection()) {
-            ConnectionType currentConnection = (ConnectionType) o;
-            if (currentConnection.getSource().equals(oldName)) {
-                currentConnection.setSource(newName);
-            }
-            if (currentConnection.getTarget().equals(oldName)) {
-                currentConnection.setTarget(newName);
-            }
-            if (currentConnection.getMetaname().equals(oldName)) {
-                currentConnection.setMetaname(newName);
             }
         }
     }
