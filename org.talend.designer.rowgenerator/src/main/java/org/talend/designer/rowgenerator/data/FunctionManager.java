@@ -22,13 +22,21 @@
 package org.talend.designer.rowgenerator.data;
 
 import java.io.File;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.emf.common.CommonPlugin;
+import org.eclipse.emf.common.util.URI;
 import org.talend.commons.exception.ExceptionHandler;
+import org.talend.commons.utils.data.container.Content;
+import org.talend.commons.utils.data.container.ContentList;
+import org.talend.commons.utils.data.container.RootContainer;
+import org.talend.core.CorePlugin;
+import org.talend.core.context.Context;
+import org.talend.core.context.RepositoryContext;
+import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.designer.rowgenerator.RowGeneratorPlugin;
+import org.talend.repository.model.IProxyRepositoryFactory;
 
 /**
  * class global comment. Detailled comment <br/>
@@ -48,7 +56,7 @@ public class FunctionManager {
      * @param name is TalendType name.
      * @return
      */
-    @SuppressWarnings("unchecked") //$NON-NLS-1$
+    @SuppressWarnings("unchecked")//$NON-NLS-1$
     public List<Function> getFunctionByName(String name) {
         List<Function> funtions = null;
 
@@ -64,19 +72,53 @@ public class FunctionManager {
         return funtions;
     }
 
+    public RepositoryContext getRepositoryContext() {
+        Context ctx = CorePlugin.getContext();
+        return (RepositoryContext) ctx.getProperty(Context.REPOSITORY_CONTEXT_KEY);
+    }
+
     public FunctionManager() {
         List<File> files = new ArrayList<File>();
-        List<URL> list = RowGeneratorPlugin.getDefault().getPerlModuleService().getBuiltInRoutines();
-        for (int i = 0; i < list.size(); i++) {
-            URL url = list.get(i);
-            try {
-                url = FileLocator.toFileURL(url);
-                File file = new File(url.getFile());
-                files.add(file);
-            } catch (Exception e) {
-                ExceptionHandler.process(e);
+        // List<URL> list = RowGeneratorPlugin.getDefault().getPerlModuleService().getBuiltInRoutines();
+        IProxyRepositoryFactory factory = RowGeneratorPlugin.getDefault().getProxyRepositoryFactory();
+        // TODO find a better way to find routine files
+
+        try {
+
+            RootContainer<String, IRepositoryObject> routineContainer = factory.getRoutine();
+            ContentList<String, IRepositoryObject> routineAbsoluteMembers = routineContainer.getAbsoluteMembers();
+
+            for (Content<String, IRepositoryObject> object : routineAbsoluteMembers.values()) {
+                IRepositoryObject routine = (IRepositoryObject) object.getContent();
+                URI uri = CommonPlugin.asLocalURI(routine.getProperty().getItem().eResource().getURI());
+                String filePath = uri.devicePath().replaceAll("%20", " "); // to fix URI bug
+                filePath = filePath.replace(".properties", ".item");
+
+                files.add(new File(filePath));
+
+                // String completePath = ERepositoryObjectType.getFolderName(ERepositoryObjectType.ROUTINES)
+                // + IPath.SEPARATOR + factory.getRoutine().getPath().toString();
+                // Resource resource = test.getItemResource(routine.getProperty().getItem());
+                // Platform.r
+                // IFolder folder = ResourceUtils.getFolder(fsProject, completePath, false);
+                // System.out.println(folder);
+
             }
+        } catch (Exception e) {
+            ExceptionHandler.process(e);
         }
+
+        //        
+        // for (int i = 0; i < list.size(); i++) {
+        // URL url = list.get(i);
+        // try {
+        // url = FileLocator.toFileURL(url);
+        // File file = new File(url.getFile());
+        // files.add(file);
+        // } catch (Exception e) {
+        // ExceptionHandler.process(e);
+        // }
+        // }
 
         FunctionParser parser = new FunctionParser(files.toArray(new File[files.size()]));
         parser.parse();

@@ -30,6 +30,7 @@ import org.talend.designer.codegen.ICodeGeneratorService;
 import org.talend.designer.codegen.perlmodule.IPerlModuleService;
 import org.talend.designer.rowgenerator.data.FunctionManager;
 import org.talend.designer.runprocess.IRunProcessService;
+import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.IRepositoryService;
 
 /**
@@ -69,7 +70,7 @@ public class RowGeneratorPlugin extends Plugin {
         plugin = null;
         super.stop(context);
     }
-    
+
     public static void log(Exception e) {
         ExceptionHandler.process(e);
     }
@@ -84,7 +85,7 @@ public class RowGeneratorPlugin extends Plugin {
     }
 
     /**
-     *  get a implement of CodeGeneratorService.
+     * get a implement of CodeGeneratorService.
      * 
      * @return a implement of CodeGeneratorService
      */
@@ -99,7 +100,7 @@ public class RowGeneratorPlugin extends Plugin {
     }
 
     /**
-     *  get a implement of RunProcessService.
+     * get a implement of RunProcessService.
      * 
      * @return
      */
@@ -113,4 +114,8 @@ public class RowGeneratorPlugin extends Plugin {
         return (IRepositoryService) service;
     }
 
+    public IProxyRepositoryFactory getProxyRepositoryFactory() {
+        IRepositoryService service = getRepositoryService();
+        return service.getProxyRepositoryFactory();
+    }
 }
