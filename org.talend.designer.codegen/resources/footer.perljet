@@ -32,14 +32,6 @@ StartThreadStat($opt{stat_port}) if defined $opt{stat_port};
 %>
 
 <%
-        if (trace) {
-%>
-StartTrace($opt{trace_port}, '127.0.0.1') if defined $opt{trace_port};
-<%
-       }
-%>
-
-<%
 	for (INode rootNode : rootNodes) {
 %>
 <%=rootNode.getUniqueName() %>_subprocess();

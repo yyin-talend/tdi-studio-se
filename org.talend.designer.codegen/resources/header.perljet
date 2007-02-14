@@ -69,6 +69,14 @@ GetOptions(
     qw/context=s stat_port=i trace_port=i watch master_pid=i/
 );
 
+<%
+    if (trace) {
+%>
+StartTrace($opt{trace_port}, '127.0.0.1') if defined $opt{trace_port};
+<%
+    }
+%>
+
 our %_context;
 our %_globals;
 
