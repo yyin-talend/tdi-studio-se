@@ -192,16 +192,20 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 
                 javax.xml.parsers.SAXParser saxParser = null;
                 
+                org.xml.sax.InputSource inputSource=null;
+                
                 Exception e;
 
                 public Thread<%= cid %>() throws Exception {
                     saxParser = javax.xml.parsers.SAXParserFactory.newInstance().newSAXParser();
+                    inputSource=new org.xml.sax.InputSource(<%= filename %>);
+                    inputSource.setEncoding(<%= encoding %>);
                     start();
                 }
 
                 public void run() {// Exception???Handle?
                     try {
-                        saxParser.parse(new org.xml.sax.InputSource(<%= filename %>), new GenHandler());
+                        saxParser.parse(inputSource, new GenHandler());
                     } catch (Exception e) {
                         this.e=e;
                         //e.printStackTrace();
