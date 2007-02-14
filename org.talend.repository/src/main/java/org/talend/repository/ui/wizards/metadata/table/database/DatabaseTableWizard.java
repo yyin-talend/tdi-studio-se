@@ -21,6 +21,8 @@
 // ============================================================================
 package org.talend.repository.ui.wizards.metadata.table.database;
 
+import java.util.List;
+
 import org.apache.log4j.Logger;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.INewWizard;
@@ -28,13 +30,17 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchWizard;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.swt.dialogs.ErrorDialogWidthDetailArea;
+import org.talend.core.model.metadata.builder.ConvertionHelper;
+import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
+import org.talend.core.model.metadata.builder.database.ExtractMetaDataFromDataBase;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.repository.RepositoryElementDelta;
 import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
+import org.talend.repository.ui.utils.ManagerConnection;
 import org.talend.repository.ui.wizards.RepositoryWizard;
 
 /**
@@ -82,11 +88,24 @@ public class DatabaseTableWizard extends RepositoryWizard implements INewWizard 
     public void addPages() {
         setWindowTitle(Messages.getString("TableWizard.windowTitle")); //$NON-NLS-1$
 
+        boolean skipStep = false;
+
+        ManagerConnection managerConnection = new ManagerConnection();
+        managerConnection.check(ConvertionHelper.convert((DatabaseConnection) connectionItem.getConnection()));
+        if (managerConnection.getIsValide()) {
+            List<String> itemTableName = ExtractMetaDataFromDataBase.returnTablesFormConnection(ConvertionHelper.convert((DatabaseConnection) connectionItem.getConnection()));
+            if (itemTableName == null || itemTableName.isEmpty()) {
+                skipStep = true;
+            }
+        } else {
+            skipStep = true;
+        }
+
         selectorWizardPage = new SelectorTableWizardPage(connectionItem, metadataTable, isRepositoryObjectEditable());
 
         tableWizardpage = new DatabaseTableWizardPage(connectionItem, metadataTable, isRepositoryObjectEditable());
 
-        if (creation) {
+        if (creation && !skipStep) {
             selectorWizardPage.setTitle(Messages.getString("TableWizardPage.titleCreate") + " \"" + connectionItem.getProperty().getLabel() //$NON-NLS-1$ //$NON-NLS-2$
                     + "\""); //$NON-NLS-1$
             selectorWizardPage.setDescription(Messages.getString("TableWizardPage.descriptionCreate")); //$NON-NLS-1$
