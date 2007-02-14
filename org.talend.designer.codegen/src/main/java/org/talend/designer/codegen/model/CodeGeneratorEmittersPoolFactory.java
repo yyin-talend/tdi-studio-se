@@ -116,7 +116,7 @@ public final class CodeGeneratorEmittersPoolFactory {
         }
         initializeEmittersPool(jetBeans);
         initialized = true;
-        log.trace("Components compiled in " + (System.currentTimeMillis() - startTime) + " ms");
+        log.debug("Components compiled in " + (System.currentTimeMillis() - startTime) + " ms");
     }
 
     /**
