@@ -69,6 +69,7 @@ import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.editor.MetadataTableEditor;
 import org.talend.core.model.process.IProcess;
+import org.talend.core.ui.metadata.editor.AbstractMetadataTableEditorView;
 import org.talend.core.ui.metadata.editor.MetadataTableEditorView;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.mapper.external.data.ExternalMapperUiProperties;
@@ -376,7 +377,7 @@ public class UIManager {
         IModifiedBeanListener<IMetadataColumn> modifiedBeanListener = new IModifiedBeanListener<IMetadataColumn>() {
 
             public void handleEvent(ModifiedBeanEvent<IMetadataColumn> event) {
-                if (MetadataTableEditorView.ID_COLUMN_NAME.equals(event.column.getId()) && !event.previousValue.equals(event.newValue)) {
+                if (AbstractMetadataTableEditorView.ID_COLUMN_NAME.equals(event.column.getId()) && !event.previousValue.equals(event.newValue)) {
                     IMetadataColumn modifiedObject = (IMetadataColumn) event.bean;
                     if (modifiedObject != null) {
                         TableEntryLocation tableEntryLocation = new TableEntryLocation(dataMapTableView.getDataMapTable().getName(),
@@ -386,12 +387,12 @@ public class UIManager {
                     }
                     // dataMapTableViewer.refresh(event.bean, true);
                     tableViewer.refresh(true);
-                } else if (MetadataTableEditorView.ID_COLUMN_KEY.equals(event.column.getId())) {
+                } else if (AbstractMetadataTableEditorView.ID_COLUMN_KEY.equals(event.column.getId())) {
                     tableViewer.refresh(true);
                     IColumnEntry entry = dataMapTableView.getDataMapTable().getColumnEntries().get(event.index);
                     parseExpression(entry.getExpression(), entry, false, false, false);
-                } else if (MetadataTableEditorView.ID_COLUMN_TYPE.equals(event.column.getId())
-                        || MetadataTableEditorView.ID_COLUMN_NULLABLE.equals(event.column.getId())) {
+                } else if (AbstractMetadataTableEditorView.ID_COLUMN_TYPE.equals(event.column.getId())
+                        || AbstractMetadataTableEditorView.ID_COLUMN_NULLABLE.equals(event.column.getId())) {
                     mapperManager.getProblemsManager().checkProblemsForAllEntriesOfAllTables(true);
                 }
             }

@@ -141,21 +141,25 @@
 			
 			if ((conn.getLineStyle().equals(EConnectionType.FLOW_MAIN))||(conn.getLineStyle().equals(EConnectionType.FLOW_REF))) {%>
 			
-			if(!str<%=cid %>.equals("")){
-				String[] value<%=cid %> = new String[<%=metadata.getListColumns().size()%>];
-				String frontChar<%=cid %>,behindChar<%=cid %>;
-				for(int i=0;i<<%=metadata.getListColumns().size()%>;i++){
-					value<%=cid %>[i] = "";
-					if(strToken<%=cid %>.hasMoreTokens()){
-						frontChar<%=cid %>=strToken<%=cid %>.nextToken();
-						if(!frontChar<%=cid %>.equals(<%=delim%>)){
-					   		value<%=cid %>[i]= frontChar<%=cid %>;
-					   		if(strToken<%=cid %>.hasMoreTokens()) {
-					   			behindChar<%=cid %>=strToken<%=cid %>.nextToken();
-					   		}
-						}
+			boolean lineIsEmpty = str<%=cid %>.length() == 0;
+			
+			String[] value<%=cid %> = new String[<%=metadata.getListColumns().size()%>];
+			String frontChar<%=cid %>,behindChar<%=cid %>;
+			for(int i=0;i<<%=metadata.getListColumns().size()%>;i++){
+				value<%=cid %>[i] = "";
+				if(lineIsEmpty){
+					continue;
+				}
+				if(strToken<%=cid %>.hasMoreTokens()){
+					frontChar<%=cid %>=strToken<%=cid %>.nextToken();
+					if(!frontChar<%=cid %>.equals(<%=delim%>)){
+				   		value<%=cid %>[i]= frontChar<%=cid %>;
+				   		if(strToken<%=cid %>.hasMoreTokens()) {
+				   			behindChar<%=cid %>=strToken<%=cid %>.nextToken();
+				   		}
 					}
 				}
+			}
 			<%	
 				List<IMetadataColumn> listColumns = metadata.getListColumns();
 				int sizeListColumns = listColumns.size();
@@ -164,40 +168,46 @@
 					String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
 					JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
 					String patternValue = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
-					
-					if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT) {
-%>
-							<%=conn.getName() %>.<%=column.getLabel() %> = value<%=cid %>[<%=valueN%>];
-<%
-					} else {
-%>
+
+					%>					
 						if(value<%=cid %>[<%=valueN%>].length() > 0) {
-	<%
-							if(javaType == JavaTypesManager.DATE) {
-	%>
-								<%=conn.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_Date(value<%=cid %>[<%=valueN%>], <%= patternValue %>);
-	<%
+							<%
+								/** begin **/
+							if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT) {
+								/** end **/
+								%><%=conn.getName() %>.<%=column.getLabel() %> = value<%=cid %>[<%=valueN%>];<%
+								/** begin **/
+							} else if(javaType == JavaTypesManager.DATE) { 
+								/** end **/
+								%><%=conn.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_Date(value<%=cid %>[<%=valueN%>], <%= patternValue %>);<%
+								/** begin **/
 							} else {
-	%>
-								<%=conn.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(value<%=cid %>[<%=valueN%>]);
-	<%
+								/** end **/
+								%><%=conn.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(value<%=cid %>[<%=valueN%>]);<%
+								/** begin **/
 							}
-	%>					
-						}else{
-							<%=conn.getName() %>.<%=column.getLabel() %> = <%=JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate)%>;
-						}
+								/** end **/
+						%>					
+						} else {
+						<%
+							/** begin **/
+							String defaultValue = JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate, column.getDefault());
+							if(defaultValue == null) {
+							/** end **/
+								%>throw new RuntimeException("Value is empty for column : '<%= column.getLabel() %>', value is invalid or this column should be nullable or have a default value.");<%
+							/** begin **/
+							} else {
+							/** end **/
+								%><%=conn.getName() %>.<%=column.getLabel() %> = <%=defaultValue%>;<%
+							/** begin **/
+							}
+							/** end **/
+						
+						%>}
 	<%					
+	/** begin **/
 					}
 				}
-			}
-%>
-			}else{
- 				<%	for (IMetadataColumn column: metadata.getListColumns()) {%>
-				<%=conn.getName() %>.<%=column.getLabel() %> = <%=JavaTypesManager.getDefaultValueFromJavaIdType(column.getTalendType(), column.isNullable())%>;
-				<%}%>
-			}
-
-	<%
 			}
 		}
 		if (conns.size()>1) {
@@ -211,6 +221,7 @@
 				}
 			}
 		}
+	/** end **/
 %>
  <%
 		}

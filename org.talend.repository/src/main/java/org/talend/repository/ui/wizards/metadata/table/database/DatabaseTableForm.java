@@ -321,7 +321,10 @@ public class DatabaseTableForm extends AbstractForm {
                 tableCompositeHeight);
         compositeTable.setLayout(new FillLayout());
         metadataEditor = new MetadataEmfTableEditor(Messages.getString("DatabaseTableForm.metadataDescription")); //$NON-NLS-1$
-        tableEditorView = new MetadataEmfTableEditorView(compositeTable, SWT.NONE, true);
+        tableEditorView = new MetadataEmfTableEditorView(compositeTable, SWT.NONE, false);
+        tableEditorView.setDbTypeColumnsState(true, true);
+        tableEditorView.initGraphicComponents();
+        
         metadataEditor.setDefaultLabel(Messages.getString("DatabaseTableForm.metadataDefaultNewLabel")); //$NON-NLS-1$
         addUtilsButtonListeners();
     }

@@ -159,7 +159,7 @@ public class RegexpFileStep3Form extends AbstractRegexpFileStepForm {
         Composite compositeTable = Form.startNewDimensionnedGridLayout(compositeMetaData, 1, WIDTH_GRIDDATA_PIXEL, 200);
         compositeTable.setLayout(new FillLayout());
         metadataEditor = new MetadataEmfTableEditor(Messages.getString("FileStep3.metadataDescription")); //$NON-NLS-1$
-        tableEditorView = new MetadataEmfTableEditorView(compositeTable, SWT.NONE, false);
+        tableEditorView = new MetadataEmfTableEditorView(compositeTable, SWT.NONE);
 
         if (!isInWizard()) {
             // Bottom Button
