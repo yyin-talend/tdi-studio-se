@@ -30,7 +30,7 @@ COMPATIBILITY="ALL"
 
   <PARAMETERS>
     <PARAMETER NAME="CODE" FIELD="MEMO_JAVA" REQUIRED="false" NUM_ROW="1" NB_LINES="9">
-      <DEFAULT>String $foo = "bar";</DEFAULT>
+      <DEFAULT>String foo = "bar";</DEFAULT>
     </PARAMETER>
    </PARAMETERS>
 
