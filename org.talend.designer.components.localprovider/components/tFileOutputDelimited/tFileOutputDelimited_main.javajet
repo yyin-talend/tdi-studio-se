@@ -36,41 +36,41 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 					JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
 					boolean isPrimitive = JavaTypesManager.isJavaPrimitiveType( javaType, column.isNullable());
 					if(!isPrimitive) {
-    				%>
-    				
+    				%>   				
 	    				if(<%=conn.getName() %>.<%=column.getLabel() %> != null) {
     				<%
-    				} // if(column.isNullable()) {
+    				} 
+    				// if(column.isNullable()) {
     				%>
-    				
-	    				out<%=cid %>.write(<%
-    				
-						String pattern = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
-    					if(javaType == JavaTypesManager.DATE && pattern != null && pattern.trim().length() != 0) {
-%>
-					FormatterUtils.format_Date(<%=conn.getName() %>.<%=column.getLabel() %>, <%= pattern %>)
-<%				
-						} else if(javaType == JavaTypesManager.STRING) {
-%>
-					<%=conn.getName() %>.<%=column.getLabel() %>
-<%				
-						} else {
-%>
-					String.valueOf(<%=conn.getName() %>.<%=column.getLabel() %>)
-<%				
-						}
-    				
-
-    				%> );
+    						out<%=cid %>.write(
     				<%
+    				String pattern = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
+    				if (javaType == JavaTypesManager.DATE && pattern != null && pattern.trim().length() != 0) {
+%>
+								FormatterUtils.format_Date(<%=conn.getName() %>.<%=column.getLabel() %>, <%= pattern %>)
+<%				
+					} else if(javaType == JavaTypesManager.STRING) {
+%>
+								<%=conn.getName() %>.<%=column.getLabel() %>
+<%				
+					} else {
+%>
+								String.valueOf(<%=conn.getName() %>.<%=column.getLabel() %>)
+<%				
+					}
+%>
+							);
+<%
 					if(!isPrimitive) {
     				%>
 	    				} // if(<%=conn.getName() %>.<%=column.getLabel() %> != null) {
-    				<%
-    				}<% /* End of block : if(column.isNullable()) { */ %>
-    				
-    				if(i != sizeColumns - 1) {
-    					%>out<%=cid %>.write(OUT_DELIM_<%=cid %>);<%
+<%
+    				} 
+    				/* End of block : if(column.isNullable()) { */
+					if(i != sizeColumns - 1) {
+%>					
+							out<%=cid %>.write(OUT_DELIM_<%=cid %>);
+<%
     				}
     			}
     			%>
