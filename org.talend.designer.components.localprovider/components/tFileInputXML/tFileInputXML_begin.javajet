@@ -153,7 +153,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                             } catch (java.io.IOException e) {
                                 throw new SAXWithException(e);
                             }
-                            nb_line_<%=cid %>++;
+                            
                             if (limit != -1) {
                                 counter++;
                             }
@@ -222,7 +222,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
             String str<%= cid %>="TALEND";
             
             while ((str<%= cid %> = in<%= cid %>.readLine()) != null&&!str<%= cid %>.equals("")) {   
-                
+               nb_line_<%=cid %>++; 
                 
                
                 

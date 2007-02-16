@@ -21,12 +21,12 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 
 
 %>
+		globalMap.put("<%=cid %>",nb_line_<%=cid %>);
 	}
 	if(e<%=cid%>!=null){
 		throw e<%=cid%>;
 	}
 	in<%= cid %>.close();
-	globalMap.put("<%=cid %>",nb_line_<%=cid %>);
 						
 
 <%
