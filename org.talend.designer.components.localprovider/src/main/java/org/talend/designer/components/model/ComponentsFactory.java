@@ -196,13 +196,6 @@ public class ComponentsFactory implements IComponentsFactory {
         return componentList.size();
     }
 
-    public IComponent get(final int i) {
-        if (componentList == null) {
-            init();
-        }
-        return componentList.get(i);
-    }
-
     public IComponent get(final String name) {
         IComponent comp = null;
         if (componentList == null) {
