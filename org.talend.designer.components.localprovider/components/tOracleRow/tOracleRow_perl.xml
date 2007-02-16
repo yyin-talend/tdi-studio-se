@@ -132,7 +132,7 @@
 
     <IMPORTS>
       <IMPORT NAME="DBI" MODULE="DBI" REQUIRED="true" />
-      <IMPORT NAME="DBD-mysql" MODULE="DBD::mysql" REQUIRED="false" />
+      <IMPORT NAME="DBD-Oracle" MODULE="DBD::Oracle" REQUIRED="true" />
     </IMPORTS>
   </CODEGENERATION>
 
