@@ -189,7 +189,7 @@ public class XmlToXPathLinker extends TreeToTablesLinker<Object, Object> {
         removeAllLinks();
         getBackgroundRefresher().refreshBackground();
 
-        ProgressDialog progressDialog = new ProgressDialog(getTree().getShell()) {
+        ProgressDialog progressDialog = new ProgressDialog(getTree().getShell(), 1000) {
 
             private IProgressMonitor monitorWrap;
 
@@ -411,7 +411,7 @@ public class XmlToXPathLinker extends TreeToTablesLinker<Object, Object> {
     public void handleListenableListAfterTableViewerRefreshedEvent(final ListenableListEvent<SchemaTarget> event) {
         if (event.type == ListenableListEvent.TYPE.ADDED) {
 
-            ProgressDialog progressDialog = new ProgressDialog(getTree().getShell()) {
+            ProgressDialog progressDialog = new ProgressDialog(getTree().getShell(), 1000) {
 
                 private IProgressMonitor monitorWrap;
 

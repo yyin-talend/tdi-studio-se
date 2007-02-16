@@ -308,7 +308,7 @@ public class XPathProposalProvider implements IContentProposalProvider {
      */
     private String modifyXpathToSetFirstAscendant(String currentExpr) {
 
-        if (currentExpr.trim().length() > 0) {
+        if (currentExpr.trim().length() > 0 && !currentExpr.equals("/")) {
 
             do {
 
@@ -331,19 +331,19 @@ public class XPathProposalProvider implements IContentProposalProvider {
     }
 
     /**
-     * DOC amaumont Comment method "extractLastWord".
+     * Extract last word of an expression, the last character must be a letter or a number.
      * 
      * @param currentExpr
      * @return
      */
-    private String extractLastWord(String currentExpr) {
+    public static String extractLastWord(String currentExpr) {
         int size = currentExpr.length();
-        for (int i = size - 1; i > 0; i--) {
+        for (int i = size - 1; i >= 0; i--) {
             if (!("" + currentExpr.charAt(i)).matches("\\w")) { //$NON-NLS-1$ //$NON-NLS-2$
                 return currentExpr.substring(i + 1, currentExpr.length());
             }
         }
-        return currentExpr.substring(0, size);
+        return currentExpr;
     }
 
     /**

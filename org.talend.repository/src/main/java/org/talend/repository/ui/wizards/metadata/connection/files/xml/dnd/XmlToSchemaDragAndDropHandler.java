@@ -151,14 +151,14 @@ public class XmlToSchemaDragAndDropHandler {
         }
 
         public void dragSetData(DragSourceEvent event) {
-//            System.out.println("\n>>dragSetData");
+            // System.out.println("\n>>dragSetData");
             // System.out.println(event);
             // if (TableEntriesTransfer.getInstance().isSupportedType(event.dataType)) {
             // }
         }
 
         public void dragStart(DragSourceEvent event) {
-//            System.out.println("\n>>dragStart");
+            // System.out.println("\n>>dragStart");
             // System.out.println(event);
             TreeItem[] items = tree.getSelection();
             if (items.length == 0) {
@@ -202,25 +202,25 @@ public class XmlToSchemaDragAndDropHandler {
         }
 
         public void dragOver(DropTargetEvent event) {
-//            System.out.println("\n>>dragOver");
+            // System.out.println("\n>>dragOver");
 
         }
 
         public void dragLeave(DropTargetEvent event) {
-            //System.out.println("\n>>dragLeave");
-            //System.out.println(event);
+            // System.out.println("\n>>dragLeave");
+            // System.out.println(event);
         }
 
         public void dragOperationChanged(DropTargetEvent event) {
-            //System.out.println("\n>>dragOperationChanged");
+            // System.out.println("\n>>dragOperationChanged");
             // showInfos(event);
             XmlToSchemaDraggedData draggedData = XPathTransfer.getInstance().getDraggedData();
 
         }
 
         public void dropAccept(DropTargetEvent event) {
-            //System.out.println("\n>>dropAccept");
-            //System.out.println(event);
+            // System.out.println("\n>>dropAccept");
+            // System.out.println(event);
             XmlToSchemaDraggedData draggedData = XPathTransfer.getInstance().getDraggedData();
 
         }
@@ -250,7 +250,7 @@ public class XmlToSchemaDragAndDropHandler {
          * @see org.eclipse.swt.dnd.DropTargetListener#drop(org.eclipse.swt.dnd.DropTargetEvent)
          */
         public void drop(DropTargetEvent event) {
-            //System.out.println("\n>>drop");
+            // System.out.println("\n>>drop");
             DropTarget dropTarget = (DropTarget) event.getSource();
             Control control = dropTarget.getControl();
 
@@ -299,6 +299,10 @@ public class XmlToSchemaDragAndDropHandler {
                         }
 
                         SchemaTarget newTargetEntry = linker.getNewSchemaTargetEntry(relativeXPath);
+                        String name = extractLastWord(extractLastWord(relativeXPath));
+                        if (!name.equals(relativeXPath)) {
+                            newTargetEntry.setTagName(name);
+                        }
                         list.add(newTargetEntry);
                     }
                 }
@@ -323,10 +327,26 @@ public class XmlToSchemaDragAndDropHandler {
 
     }
 
+    /**
+     * Extract last word of an expression, the last character must be a letter or a number.
+     * 
+     * @param currentExpr
+     * @return
+     */
+    public static String extractLastWord(String currentExpr) {
+        int size = currentExpr.length();
+        for (int i = size - 1; i >= 0; i--) {
+            if (!("" + currentExpr.charAt(i)).matches("\\w")) { //$NON-NLS-1$ //$NON-NLS-2$
+                return currentExpr.substring(i + 1, currentExpr.length());
+            }
+        }
+        return currentExpr;
+    }
+
     public static void main(String[] args) {
         String relativePath = XPathPopulationUtil.populateColumnPath("/doc/members/member/returns", "/doc/members"); //$NON-NLS-1$ //$NON-NLS-2$
-        //System.out.println(relativePath);
+        // System.out.println(relativePath);
         relativePath = XPathPopulationUtil.populateColumnPath("/doc/members/member/returns/see/@cref", "/doc/members/member/summary/@name"); //$NON-NLS-1$ //$NON-NLS-2$
-        //System.out.println(relativePath);
+        // System.out.println(relativePath);
     }
 }

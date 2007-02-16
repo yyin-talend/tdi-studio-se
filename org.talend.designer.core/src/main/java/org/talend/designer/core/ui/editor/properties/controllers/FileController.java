@@ -43,9 +43,14 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
+import org.talend.commons.ui.utils.PathUtils;
+import org.talend.commons.utils.StringUtils;
 import org.talend.core.CorePlugin;
+import org.talend.core.language.ECodeLanguage;
+import org.talend.core.language.LanguageManager;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.utils.TalendTextUtils;
+import org.talend.core.utils.PathExtractor;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
 import org.talend.designer.core.ui.editor.nodes.Node;
@@ -62,6 +67,10 @@ public class FileController extends AbstractElementPropertySectionController {
     private static final String FILE = "FILE"; //$NON-NLS-1$
 
     private Button btnEdit;
+
+    private String currentFilePath;
+
+    private Text filePathText;
 
     /**
      * DOC yzhang FileController constructor comment.
@@ -81,6 +90,10 @@ public class FileController extends AbstractElementPropertySectionController {
     @Override
     public Command createCommand() {
         FileDialog dial = new FileDialog(composite.getShell(), SWT.NONE);
+
+        String extractedFilePath = PathExtractor.extractPath(filePathText.getText());
+        
+        dial.setFileName(new Path(extractedFilePath).toOSString());
         String file = dial.open();
         if (file != null) {
             if (!file.equals("")) { //$NON-NLS-1$
@@ -102,8 +115,8 @@ public class FileController extends AbstractElementPropertySectionController {
      * @see org.talend.designer.core.ui.editor.properties2.editors.AbstractElementPropertySectionController#createControl()
      */
     @Override
-    public Control createControl(final Composite subComposite, final IElementParameter param, final int numInRow,
-            final int nbInRow, final int top, final Control lastControl) {
+    public Control createControl(final Composite subComposite, final IElementParameter param, final int numInRow, final int nbInRow,
+            final int top, final Control lastControl) {
 
         btnEdit = getWidgetFactory().createButton(subComposite, "", SWT.PUSH); //$NON-NLS-1$
         FormData data;
@@ -123,8 +136,7 @@ public class FileController extends AbstractElementPropertySectionController {
 
         DecoratedField dField = new DecoratedField(subComposite, SWT.BORDER, new TextControlCreator());
         if (param.isRequired()) {
-            FieldDecoration decoration = FieldDecorationRegistry.getDefault().getFieldDecoration(
-                    FieldDecorationRegistry.DEC_REQUIRED);
+            FieldDecoration decoration = FieldDecorationRegistry.getDefault().getFieldDecoration(FieldDecorationRegistry.DEC_REQUIRED);
             dField.addFieldDecoration(decoration, SWT.RIGHT | SWT.TOP, false);
         }
         if (param.isRepositoryValueUsed()) {
@@ -135,18 +147,18 @@ public class FileController extends AbstractElementPropertySectionController {
         }
 
         Control cLayout = dField.getLayoutControl();
-        Text labelText = (Text) dField.getControl();
+        filePathText = (Text) dField.getControl();
         cLayout.setBackground(subComposite.getBackground());
-        labelText.setEditable(!param.isReadOnly());
+        filePathText.setEditable(!param.isReadOnly());
 
-        editionControlHelper.register(param.getName(), labelText, true);
+        editionControlHelper.register(param.getName(), filePathText, true);
 
-        addDragAndDropTarget(labelText);
+        addDragAndDropTarget(filePathText);
         if (elem instanceof Node) {
-            labelText.setToolTipText(VARIABLE_TOOLTIP + param.getVariableName());
+            filePathText.setToolTipText(VARIABLE_TOOLTIP + param.getVariableName());
         }
 
-        hashCurControls.put(param.getName(), labelText);
+        hashCurControls.put(param.getName(), filePathText);
 
         CLabel labelLabel = getWidgetFactory().createCLabel(subComposite, param.getDisplayName()); //$NON-NLS-1$
         data = new FormData();
