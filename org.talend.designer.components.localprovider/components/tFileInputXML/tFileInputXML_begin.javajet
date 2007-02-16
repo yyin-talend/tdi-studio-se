@@ -70,7 +70,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
            
 
 
-            class GenHandler extends org.xml.sax.helpers.DefaultHandler {
+            class GenHandler<%= cid %> extends org.xml.sax.helpers.DefaultHandler {
 
                 java.util.Stack tags = new java.util.Stack();
 
@@ -86,11 +86,11 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                 int counter = 0;
                 
                 
-                class SAXWithException extends org.xml.sax.SAXException {
+                class SAXWithException<%= cid %> extends org.xml.sax.SAXException {
 
                     Exception exception;
 
-                    public SAXWithException(Exception e) {
+                    public SAXWithException<%= cid %>(Exception e) {
                         this.exception = e;
                     }
 
@@ -118,7 +118,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                      try {
                         pipedWriter<%= cid %> .close();
                     } catch (java.io.IOException e) {
-                        throw new SAXWithException(e);
+                        throw new SAXWithException<%= cid %>(e);
                     }
                  }
                 //
@@ -151,7 +151,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 	}%>                                
 
                             } catch (java.io.IOException e) {
-                                throw new SAXWithException(e);
+                                throw new SAXWithException<%= cid %>(e);
                             }
                             
                             if (limit != -1) {
@@ -163,7 +163,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                                 pipedWritertFileInputXML_1.close();                                
 
                             } catch (java.io.IOException e) {
-                                throw new SAXWithException(e);
+                                throw new SAXWithException<%= cid %>(e);
                             }
                             endElement(null, "<%=rootTag %>", null);//????????????
                         }
@@ -205,7 +205,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 
                 public void run() {// Exception???Handle?
                     try {
-                        saxParser.parse(inputSource, new GenHandler());
+                        saxParser.parse(inputSource, new GenHandler<%= cid %>());
                     } catch (Exception e) {
                         this.e=e;
                         //e.printStackTrace();
