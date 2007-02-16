@@ -2,22 +2,16 @@
 	package="org.talend.designer.codegen.translators" 
 	imports="
 		org.talend.core.model.process.INode 
-		org.talend.core.model.process.ElementParameterParser
-		org.talend.core.model.metadata.IMetadataTable
-		org.talend.core.model.metadata.IMetadataColumn 
-		org.talend.core.model.process.IConnection
-		org.talend.core.model.process.EConnectionType
+		org.talend.core.model.metadata.IMetadataTable 
 		org.talend.designer.codegen.config.CodeGeneratorArgument
 		java.util.List
-		java.util.Map
 	"
-	class="FileInputXMLMain"
+	class="FileInputXMLEnd"
 %>
 
 <%
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
-boolean stats = codeGenArgument.isStatistics();
 
 List<IMetadataTable> metadatas = node.getMetadataList();
 if ((metadatas!=null)&&(metadatas.size()>0)) {
@@ -32,7 +26,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 		throw e<%=cid%>;
 	}
 	in<%= cid %>.close();
-	
+	globalMap.put("<%=cid %>",nb_line_<%=cid %>);
 						
 
 <%

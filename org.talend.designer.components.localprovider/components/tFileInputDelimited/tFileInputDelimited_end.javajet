@@ -6,7 +6,6 @@
 		org.talend.designer.codegen.config.CodeGeneratorArgument
 		org.talend.core.model.process.ElementParameterParser 
 		java.util.List
-		org.talend.designer.codegen.config.CodeGeneratorArgument
 	" 
 	class="FileInputDelimitedEnd" 
 %>
@@ -29,6 +28,7 @@
 		if (metadata!=null) {
 %>
             in<%=cid %>.close();
+            globalMap.put("<%=cid %>",nb_line_<%=cid %>);
 <%
 		}
 	}

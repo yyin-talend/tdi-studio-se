@@ -5,10 +5,8 @@
 		org.talend.core.model.metadata.IMetadataTable
 		org.talend.core.model.metadata.IMetadataColumn
 		org.talend.core.model.process.IConnection
-		org.talend.core.model.process.EConnectionType
-		org.talend.core.model.process.ElementParameterParser 
+		org.talend.core.model.process.EConnectionType 
 		org.talend.designer.codegen.config.CodeGeneratorArgument
-		org.talend.core.model.metadata.MetadataTalendType
 		org.talend.core.model.metadata.types.JavaTypesManager
 		org.talend.core.model.metadata.types.JavaType
 		java.util.List
@@ -18,7 +16,6 @@
 <%
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
-boolean stats = codeGenArgument.isStatistics();
 
 List<IMetadataTable> metadatas = node.getMetadataList();
 if ((metadatas!=null)&&(metadatas.size()>0)) {
@@ -73,6 +70,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     			}
     			%>
     			out<%=cid %>.write(OUT_DELIM_ROWSEP_<%=cid %>);
+    			nb_line_<%=cid %>++;
     <%
     		}
     	}

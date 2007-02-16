@@ -15,7 +15,7 @@
 <%
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
-	boolean stats = codeGenArgument.isStatistics();
+	String cid = node.getUniqueName();
 	
 	List<IMetadataTable> metadatas = node.getMetadataList();
 	if ((metadatas!=null)&&(metadatas.size()>0)) {
@@ -28,7 +28,7 @@ List< ? extends IConnection> conns = node.getIncomingConnections();
 if(conns!=null){
 	if( conns.size()>0 ){
 	%>
-StringBuffer strBuffer_<%=node.getUniqueName()%> = new StringBuffer();
+StringBuffer strBuffer_<%=cid%> = new StringBuffer();
 	<%
 		IConnection conn = conns.get(0);
 		List colList = metadata.getListColumns();
@@ -36,16 +36,17 @@ StringBuffer strBuffer_<%=node.getUniqueName()%> = new StringBuffer();
 		IMetadataColumn column = (IMetadataColumn)colList.get(i);
 			if(i!=(colList.size()-1)){	
 			%> 
-strBuffer_<%=node.getUniqueName()%>.append(<%=conn.getName()%>.<%=column.getLabel()%>+OUTPUT_FIELD_SEPARATOR_<%=node.getUniqueName() %>);
+strBuffer_<%=cid%>.append(<%=conn.getName()%>.<%=column.getLabel()%>+OUTPUT_FIELD_SEPARATOR_<%=cid %>);
 			<%			
 			}else{
 			%> 
-strBuffer_<%=node.getUniqueName()%>.append(<%=conn.getName()%>.<%=column.getLabel()%>);
+strBuffer_<%=cid%>.append(<%=conn.getName()%>.<%=column.getLabel()%>);
 			<%				
 			}
 		}
 	%>
-System.out.println(strBuffer_<%=node.getUniqueName()%>.toString());
+System.out.println(strBuffer_<%=cid%>.toString());
+nb_line_<%=cid %>++;
 	<%	
 	}
 }

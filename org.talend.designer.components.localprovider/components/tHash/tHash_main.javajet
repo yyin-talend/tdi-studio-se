@@ -5,7 +5,6 @@
 		org.talend.core.model.process.IConnection
 		org.talend.designer.codegen.config.CodeGeneratorArgument
 		java.util.List
-		java.util.ArrayList
 		org.talend.core.model.metadata.IMetadataTable
 		org.talend.core.model.metadata.IMetadataColumn
 		
@@ -16,7 +15,6 @@
 <%
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
-	boolean stats = codeGenArgument.isStatistics();
 
     List<IConnection> connections = (List<IConnection>) node.getIncomingConnections();
 
@@ -32,8 +30,6 @@
 <%
 			
             List<IMetadataColumn> listColumns = metadataTable.getListColumns();
-            ArrayList<String> keysNames = new ArrayList<String>();
-            ArrayList<String> keysValues = new ArrayList<String>();
             for (IMetadataColumn column : listColumns) {
                 String columnName = column.getLabel();
 %>

@@ -5,14 +5,12 @@
 		org.talend.core.model.metadata.IMetadataTable 
 		org.talend.designer.codegen.config.CodeGeneratorArgument
 		java.util.List
-		org.talend.designer.codegen.config.CodeGeneratorArgument
 	"
 	class="FileOutputDelimitedEnd"
 %>
 <%
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
-	boolean stats = codeGenArgument.isStatistics();
 
 	List<IMetadataTable> metadatas = node.getMetadataList();
 	if ((metadatas!=null)&&(metadatas.size()>0)) {
@@ -21,6 +19,7 @@
 			String cid = node.getUniqueName();
 %>
 	out<%=cid %>.close();
+	globalMap.put("<%=cid %>",nb_line_<%=cid %>);
 <%
 		}
 	}

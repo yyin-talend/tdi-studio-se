@@ -14,7 +14,6 @@ class="JavaRowMain"
 <%
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
-boolean stats = codeGenArgument.isStatistics();
 
 String cid = node.getUniqueName();
 

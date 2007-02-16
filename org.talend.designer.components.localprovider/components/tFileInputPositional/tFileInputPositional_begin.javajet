@@ -10,8 +10,7 @@
 		org.talend.designer.codegen.config.CodeGeneratorArgument
 		org.talend.core.model.metadata.types.JavaTypesManager
 		org.talend.core.model.metadata.types.JavaType
-		java.util.List 
-		org.talend.commons.utils.generation.CodeGenerationUtils
+		java.util.List
 	" 
 	class="FileInputPositionalBegin" 
 %>
@@ -20,7 +19,6 @@
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
 	String cid = node.getUniqueName();
-	boolean stats = codeGenArgument.isStatistics();
 	
 	List<IMetadataTable> metadatas = node.getMetadataList();
 	if ((metadatas!=null)&&(metadatas.size()>0)) {
@@ -45,6 +43,7 @@
             	}
        		}
 %>
+			int nb_line_<%=cid%> = 0;
 			int footer_<%=cid %>  = <% String myFooter = ElementParameterParser.getValue(node, "__FOOTER__"); if (myFooter.equals("")) myFooter = "0"; %><%=myFooter%>;
 			int limit<%=cid %>=<%if (myLimit.equals("")) {myLimit = "-1";}%><%=myLimit %>;
 		java.io.BufferedReader in<%=cid %> = null;
@@ -88,6 +87,7 @@
         	 		str<%=cid %>=strRowToken<%=cid %>.nextToken();
         	<%}%>
        		currentLine<%=cid %>++;
+       		nb_line_<%=cid %>++;
        		
        		if(currentLine<%=cid %> < beginLine<%=cid %>) {
         		continue;

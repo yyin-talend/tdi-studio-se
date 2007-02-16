@@ -19,7 +19,6 @@ class="FileInputXMLBegin"
 <%
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
-boolean stats = codeGenArgument.isStatistics();
 
 List<IMetadataTable> metadatas = node.getMetadataList();
 if ((metadatas!=null)&&(metadatas.size()>0)) {
@@ -65,7 +64,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
             limit = "-1";
         }
 %>
-
+			int nb_line_<%=cid%> = 0;
 			final java.io.PipedWriter pipedWriter<%= cid %>  = new java.io.PipedWriter();
             java.io.PipedReader pipedReader<%= cid %>  = new java.io.PipedReader(pipedWriter<%= cid %> );
            
@@ -154,6 +153,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
                             } catch (java.io.IOException e) {
                                 throw new SAXWithException(e);
                             }
+                            nb_line_<%=cid %>++;
                             if (limit != -1) {
                                 counter++;
                             }

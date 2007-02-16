@@ -9,7 +9,6 @@
 		org.talend.core.model.process.EConnectionType
 		org.talend.designer.codegen.config.CodeGeneratorArgument
 		java.util.List 
-		org.talend.commons.utils.generation.CodeGenerationUtils
 		org.talend.core.model.metadata.types.JavaTypesManager
 		org.talend.core.model.metadata.types.JavaType
 	" 
@@ -22,7 +21,6 @@
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
 	String cid = node.getUniqueName();
-	boolean stats = codeGenArgument.isStatistics();
 	
 	List<IMetadataTable> metadatas = node.getMetadataList();
 	if ((metadatas!=null)&&(metadatas.size()>0)) {
@@ -37,6 +35,8 @@
     String delim = ElementParameterParser.getValue(node, "__FIELDSEPARATOR__");
     String row_separator = ElementParameterParser.getValue(node, "__ROWSEPARATOR__");
 %>
+		int nb_line_<%=cid%> = 0;
+		
         final String IN_DELIM_<%=cid %> = <%=(((String)ElementParameterParser.getValue(node, "__FIELDSEPARATOR__")).compareTo("*")==0)
         	? "\\*"
         	: ElementParameterParser.getValueWithUIFieldKey(node, "__FIELDSEPARATOR__", "FIELDSEPARATOR") %>;
@@ -107,6 +107,7 @@
         	
         	
        		currentLine<%=cid %>++;
+       		nb_line_<%=cid %>++;
        		if(nb_random<%=cid %>>-1){
        			if(currentRan<%=cid %> >= rans<%=cid %>.length){
        				break;
