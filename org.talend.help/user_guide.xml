@@ -4,6 +4,7 @@
 <toc label="User Guide">
     <topic label="Online ressources">
    	    <topic label="Installation Guide" href="http://talendforge.org/wiki/doku.php?id=doc:installation_guide"/>
+    	<topic label="Documentation" href="http://www.talend.com/downloads-talend.htm#documentation" />
     	<topic label="Tutorial" href="http://www.talend.com/tos/tutorials/menu.php" />
     	<topic label="Forum" href="http://talendforge.org/forum/" />
     	<topic label="Bugtracker" href="http://talendforge.org/bugs/my_view_page.php" />
