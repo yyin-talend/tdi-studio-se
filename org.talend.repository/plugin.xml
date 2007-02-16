@@ -296,7 +296,7 @@
             label="Action set"
             visible="true">
          <action
-               class="org.talend.repository.ui.actions.ImportProjectsAction"
+               class="org.talend.repository.ui.actions.importproject.ImportProjectsAction"
                icon="icons/import_projects_action.gif"
                id="org.talend.repository.action3"
                label="%importProjectsAction.title"

@@ -19,33 +19,19 @@
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 // ============================================================================
-package org.talend.repository.ui.actions;
+package org.talend.repository.ui.actions.folder;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-import java.util.zip.ZipFile;
 
-import org.eclipse.core.runtime.FileLocator;
-import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.dialogs.IOverwriteQuery;
-import org.eclipse.ui.internal.wizards.datatransfer.ZipLeveledStructureProvider;
-import org.eclipse.ui.wizards.datatransfer.IImportStructureProvider;
-import org.eclipse.ui.wizards.datatransfer.ImportOperation;
-import org.osgi.framework.Bundle;
 import org.talend.commons.exception.MessageBoxExceptionHandler;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.ui.ERepositoryImages;
-import org.talend.resources.ResourcesPlugin;
+import org.talend.repository.ui.actions.importproject.ImportProjectsUtilities;
 
 /**
  * Action used to refresh a repository view.<br/>
@@ -79,21 +65,7 @@ public final class ImportDemoProjectAction extends Action {
 
     public void run() {
         try {
-            Bundle bundle = Platform.getBundle(ResourcesPlugin.PLUGIN_ID);
-            URL url = FileLocator.resolve(bundle.getEntry("resources/TALENDDEMOS.zip")); //$NON-NLS-1$
-            String archiveFilePath = new Path(url.getFile()).toOSString();
-
-            ZipFile zipFile = new ZipFile(archiveFilePath);
-            ZipLeveledStructureProvider provider = new ZipLeveledStructureProvider(zipFile);
-
-            ArrayList fileSystemObjects = new ArrayList();
-            getFilesForProject(fileSystemObjects, provider, provider.getRoot());
-
-            ImportOperation operation = new ImportOperation(new Path("TALENDDEMOS"), provider.getRoot(), provider, //$NON-NLS-1$
-                    new MyOverwriteQuery(), fileSystemObjects);
-            operation.setContext(shell);
-            operation.run(null);
-
+            ImportProjectsUtilities.importDemoProject(shell);
             MessageDialog.openInformation(shell, Messages.getString("ImportDemoProjectAction.messageDialogTitle.demoProject"), //$NON-NLS-1$
                     Messages.getString("ImportDemoProjectAction.messageDialogContent.demoProjectImportedSuccessfully")); //$NON-NLS-1$
         } catch (IOException e) {
@@ -105,45 +77,12 @@ public final class ImportDemoProjectAction extends Action {
         }
     }
 
+    public String getProjectName() {
+        return ImportProjectsUtilities.TALENDDEMOS_NAME;
+    }
+
     public void setShell(Shell shell) {
         this.shell = shell;
     }
 
-    protected boolean getFilesForProject(Collection files, IImportStructureProvider provider, Object entry) {
-        List children = provider.getChildren(entry);
-        Iterator childrenEnum = children.iterator();
-
-        while (childrenEnum.hasNext()) {
-            Object child = childrenEnum.next();
-            // Add the child, this way we get every files except the project
-            // folder itself which we don't want
-            files.add(child);
-            // We don't have isDirectory for tar so must check for children
-            // instead
-            if (provider.isFolder(child)) {
-                getFilesForProject(files, provider, child);
-            }
-        }
-        return true;
-    }
-
-    /**
-     * 
-     * DOC smallet ImportDemoProjectAction class global comment. Detailled comment <br/>
-     * 
-     * $Id: talend.epf 1 2006-09-29 17:06:40 +0000 (ven., 29 sept. 2006) nrousseau $
-     * 
-     */
-    private class MyOverwriteQuery implements IOverwriteQuery {
-
-        /*
-         * (non-Javadoc)
-         * 
-         * @see org.eclipse.ui.dialogs.IOverwriteQuery#queryOverwrite(java.lang.String)
-         */
-        public String queryOverwrite(String pathString) {
-            return pathString;
-        }
-
-    }
 }

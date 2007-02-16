@@ -71,8 +71,8 @@ import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryConstants;
 import org.talend.repository.model.RepositoryFactoryProvider;
 import org.talend.repository.ui.ERepositoryImages;
-import org.talend.repository.ui.actions.ImportDemoProjectAction;
-import org.talend.repository.ui.actions.ImportProjectsAction;
+import org.talend.repository.ui.actions.folder.ImportDemoProjectAction;
+import org.talend.repository.ui.actions.importproject.ImportProjectAsAction;
 import org.talend.repository.ui.login.connections.ConnectionsDialog;
 import org.talend.repository.ui.wizards.newproject.NewProjectWizard;
 
@@ -112,6 +112,10 @@ public class LoginComposite extends Composite {
     private Button importProjectsButton;
 
     private Button importDemoProjectButton;
+
+    private Project[] projects;
+
+    // private Button importProjectAsButton;
 
     /**
      * Constructs a new LoginComposite.
@@ -204,7 +208,7 @@ public class LoginComposite extends Composite {
         newProjectButton.setLayoutData(formData);
 
         importProjectsButton = toolkit.createButton(bottomButtons, null, SWT.PUSH);
-        ImportProjectsAction ipa = ImportProjectsAction.getInstance();
+        ImportProjectAsAction ipa = ImportProjectAsAction.getInstance();
         importProjectsButton.setText(ipa.getText());
         importProjectsButton.setToolTipText(ipa.getToolTipText());
         importProjectsButton.setImage(ImageProvider.getImage(ipa.getImageDescriptor()));
@@ -393,8 +397,12 @@ public class LoginComposite extends Composite {
 
             @Override
             public void widgetSelected(SelectionEvent e) {
-                ImportProjectsAction.getInstance().run();
+                ImportProjectAsAction.getInstance().run();
                 populateProjectList();
+                String newProject = ImportProjectAsAction.getInstance().getProjectName();
+                if (newProject != null) {
+                    selectProject(newProject);
+                }
             }
         });
 
@@ -406,8 +414,13 @@ public class LoginComposite extends Composite {
                 ImportDemoProjectAction.getInstance().setShell(getShell());
                 ImportDemoProjectAction.getInstance().run();
                 populateProjectList();
+                String newProject = ImportDemoProjectAction.getInstance().getProjectName();
+                if (newProject != null) {
+                    selectProject(newProject);
+                }
             }
         });
+
     }
 
     /**
@@ -440,6 +453,7 @@ public class LoginComposite extends Composite {
 
     private void unpopulateProjectList() {
         projectViewer.setInput(null);
+        projects = null;
         projectViewer.getControl().setEnabled(false);
     }
 
@@ -466,7 +480,6 @@ public class LoginComposite extends Composite {
                 .getRepositoryId()));
         repositoryFactory.initialize();
 
-        Project[] projects;
         try {
             projects = repositoryFactory.readProject();
         } catch (PersistenceException e) {
@@ -526,6 +539,15 @@ public class LoginComposite extends Composite {
     private void selectProject(Project goodProject) {
         projectViewer.setSelection(new StructuredSelection(new Object[] { goodProject }));
         setRepositoryContextInContext();
+    }
+
+    private void selectProject(String projectName) {
+        for (Project current : projects) {
+            if (current.getLabel().equals(projectName)) {
+                selectProject(current);
+                return;
+            }
+        }
     }
 
     public ConnectionBean getConnection() {
