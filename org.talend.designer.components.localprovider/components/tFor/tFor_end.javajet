@@ -1,0 +1,24 @@
+<%@ jet
+package="org.talend.designer.codegen.translators"
+imports="
+    org.talend.core.model.process.INode
+    org.talend.core.model.process.ElementParameterParser
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+" 
+class="ForEnd"
+%>
+
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+String cid = node.getUniqueName();
+
+String step = ElementParameterParser.getValue(node, "__STEP__");
+
+if (step.equals("")) {
+	step = "1";
+}
+%>
+	globalMap.put("<%=cid %>",globalMap.get("<%=cid %>")+ <%=step%>);
+}
+

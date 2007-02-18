@@ -1,0 +1,34 @@
+<%@ jet 
+package="org.talend.designer.codegen.translators" 
+imports="
+    org.talend.core.model.process.INode 
+    org.talend.core.model.process.ElementParameterParser
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+" 
+class="ForBegin" 
+%>
+
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+String cid = node.getUniqueName();
+
+String from = ElementParameterParser.getValue(node, "__FROM__");
+String to   = ElementParameterParser.getValue(node, "__TO__");
+
+if (from.equals("")) {
+	from = "1";
+}
+%>
+globalMap.put("<%=cid %>",<%=from%>);
+<%
+if (to.equals("")) {
+%>
+while (1) {
+<%
+} else {
+%>
+while ( globalMap.get("<%=cid %>") <= <%=to%>) {
+<%
+}
+%>
