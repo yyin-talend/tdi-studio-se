@@ -21,7 +21,11 @@
 // ============================================================================
 package org.talend.designer.codegen;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.URL;
 import java.util.List;
 
 import org.eclipse.core.resources.IFile;
@@ -38,6 +42,7 @@ import org.talend.core.model.general.Project;
 import org.talend.core.model.properties.RoutineItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.designer.codegen.javamodule.JavaModuleService;
 import org.talend.designer.runprocess.IRunProcessService;
 import org.talend.repository.model.IProxyRepositoryFactory;
 
@@ -72,12 +77,26 @@ public class JavaRoutineSynchronizer implements IRoutineSynchronizer {
             RoutineItem routineItem = (RoutineItem) routine.getProperty().getItem();
             syncRoutine(routineItem);
         }
-        
-//        
-//        for (IRepositoryObject routine : routines) {
-//            RoutineItem routineItem = (RoutineItem) routine.getProperty().getItem();
-//            syncRoutine(routineItem);
-//        }
+
+        // PTODO MHIRT Vérifier avec MHELLEBOID ou SMALLET si on ne pourrait pas faire mieux
+        try {
+            JavaModuleService jms = new JavaModuleService();
+            List<URL> systemModuleURL = jms.getModule();
+
+            for (URL url : systemModuleURL) {
+                String fileName = url.getPath();
+                if (fileName.startsWith("/")) {
+                    fileName = fileName.substring(1);
+                }
+                File f = new File(url.getPath());
+                if (f.isDirectory()) {
+                    syncModule(f.listFiles());
+                }
+            }
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 
     /*
@@ -88,17 +107,12 @@ public class JavaRoutineSynchronizer implements IRoutineSynchronizer {
     public IFile syncRoutine(RoutineItem routineItem) throws SystemException {
         try {
             IRunProcessService service = CodeGeneratorActivator.getDefault().getRunProcessService();
-            IProject javaProject;
-            javaProject = service.getJavaProject();
+            IProject javaProject = service.getJavaProject();
             Project project = ((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY))
                     .getProject();
-            IFolder rep = javaProject.getFolder(JavaUtils.JAVA_SRC_DIRECTORY + "/"
-                    + project.getTechnicalLabel().toLowerCase() + "/" + JavaUtils.JAVA_ROUTINES_DIRECTORY);
-            if (!rep.exists()) {
-                rep.create(true, true, null);
-            }
+            initRoutineFolder(javaProject, project);
             IFile file = javaProject.getFile(JavaUtils.JAVA_SRC_DIRECTORY + "/"
-                    + project.getTechnicalLabel().toLowerCase() + "/" + JavaUtils.JAVA_ROUTINES_DIRECTORY + "/"
+                    + JavaUtils.JAVA_ROUTINES_DIRECTORY + "/"
                     + routineItem.getProperty().getLabel() + JavaUtils.JAVA_EXTENSION);
 
             routineItem.getContent().setInnerContentToFile(file.getLocation().toFile());
@@ -111,5 +125,70 @@ public class JavaRoutineSynchronizer implements IRoutineSynchronizer {
         } catch (IOException e) {
             throw new SystemException(e);
         }
+    }
+
+    /**
+     * DOC mhirt Comment method "initRoutineFolder".
+     * 
+     * @param javaProject
+     * @param project
+     * @throws CoreException
+     */
+    private void initRoutineFolder(IProject javaProject, Project project) throws CoreException {
+        IFolder rep = javaProject.getFolder(JavaUtils.JAVA_SRC_DIRECTORY + "/" + JavaUtils.JAVA_ROUTINES_DIRECTORY);
+        if (!rep.exists()) {
+            rep.create(true, true, null);
+        }
+    }
+
+    private void initModuleFolder(IProject javaProject, Project project) throws CoreException {
+        IFolder rep = javaProject.getFolder(JavaUtils.JAVA_SRC_DIRECTORY + "/" + JavaUtils.JAVA_ROUTINES_DIRECTORY + "/"
+                + JavaUtils.JAVA_SYSTEM_ROUTINES_DIRECTORY);
+        if (!rep.exists()) {
+            rep.create(true, true, null);
+        }
+    }
+
+    public void copyFile(File in, IFile out) throws Exception {
+        if (out.exists()) {
+            out.delete(true, null);
+        }
+        FileInputStream fis = new FileInputStream(in);
+        out.create(fis, false, null);
+        fis.close();
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.codegen.IRoutineSynchronizer#syncRoutine(org.talend.core.model.properties.RoutineItem)
+     */
+    public IFile syncModule(File[] modules) throws SystemException {
+        try {
+            IRunProcessService service = CodeGeneratorActivator.getDefault().getRunProcessService();
+            IProject javaProject = service.getJavaProject();
+            Project project = ((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY))
+                    .getProject();
+            initModuleFolder(javaProject, project);
+
+            for (File module : modules) {
+                if (!module.isDirectory()) {
+                    IFile file = javaProject.getFile(JavaUtils.JAVA_SRC_DIRECTORY + "/"
+                            + JavaUtils.JAVA_ROUTINES_DIRECTORY + "/" + JavaUtils.JAVA_SYSTEM_ROUTINES_DIRECTORY + "/"
+                            + module.getName());
+
+                    copyFile(module, file);
+                }
+            }
+        } catch (CoreException e) {
+            throw new SystemException(e);
+        } catch (FileNotFoundException e) {
+            throw new SystemException(e);
+        } catch (IOException e) {
+            throw new SystemException(e);
+        } catch (Exception e) {
+            throw new SystemException(e);
+        }
+        return null;
     }
 }

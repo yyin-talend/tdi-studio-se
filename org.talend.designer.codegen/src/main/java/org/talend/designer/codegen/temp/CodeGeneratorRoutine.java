@@ -29,6 +29,7 @@ import org.talend.commons.exception.PersistenceException;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
+import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.general.Project;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
@@ -51,6 +52,8 @@ public final class CodeGeneratorRoutine {
 
     // PTODO MHE
     public static List<String> getRoutineName() {
+        ECodeLanguage currentLanguage = ((RepositoryContext) CorePlugin.getContext().getProperty(
+                Context.REPOSITORY_CONTEXT_KEY)).getProject().getLanguage();
         List<String> toReturn = new ArrayList<String>();
 
         RepositoryContext repositoryContext = (RepositoryContext) CorePlugin.getContext().getProperty(
@@ -62,7 +65,11 @@ public final class CodeGeneratorRoutine {
         try {
             List<IRepositoryObject> routines = repositoryFactory.getAll(ERepositoryObjectType.ROUTINES);
             for (IRepositoryObject routine : routines) {
-                toReturn.add(project.getTechnicalLabel() + "__" + routine.getLabel());
+                if (currentLanguage.equals(ECodeLanguage.JAVA)) {
+                    toReturn.add(routine.getLabel());
+                } else {
+                    toReturn.add(project.getTechnicalLabel() + "__" + routine.getLabel());
+                }
             }
         } catch (PersistenceException e) {
             ExceptionHandler.process(e);

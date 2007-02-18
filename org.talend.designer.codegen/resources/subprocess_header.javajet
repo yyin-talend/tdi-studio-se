@@ -32,10 +32,12 @@
 						hSet.add(conn.getName());
 						IMetadataTable metadata = conn.getMetadataTable();
 						boolean hasAtLeastOneKey = false;
-						for (IMetadataColumn column: metadata.getListColumns()) {
-							if (column.isKey()) {
-								hasAtLeastOneKey = true;
-								break;
+						if (metadata!=null) { 
+							for (IMetadataColumn column: metadata.getListColumns()) {
+								if (column.isKey()) {
+									hasAtLeastOneKey = true;
+									break;
+								}
 							}
 						}
 						
@@ -54,10 +56,12 @@ private class <%=conn.getName() %>Struct {
 %>
     
 	<%
-		for (IMetadataColumn column: metadata.getListColumns()) {
+		if (metadata !=null) {
+			for (IMetadataColumn column: metadata.getListColumns()) {
     %>
     	private <%= JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable()) %> <%=column.getLabel() %>;
 	<%
+			}
 		}
     %>
     
@@ -71,9 +75,10 @@ private class <%=conn.getName() %>Struct {
 			final int prime = PRIME;
 			int result = DEFAULT_HASHCODE;
 	<%
-		for (IMetadataColumn column: metadata.getListColumns()) {
-			if (column.isKey()) {
-				if (JavaTypesManager.isJavaPrimitiveType(column.getTalendType(), column.isNullable())) {
+		if (metadata !=null) {
+			for (IMetadataColumn column: metadata.getListColumns()) {
+				if (column.isKey()) {
+					if (JavaTypesManager.isJavaPrimitiveType(column.getTalendType(), column.isNullable())) {
 	%>
 				result = prime * result + this.<%=column.getLabel() %>;
 	<%
@@ -81,6 +86,7 @@ private class <%=conn.getName() %>Struct {
 	%>
 				result = prime * result + ((this.<%=column.getLabel() %> == null) ? 0 : this.<%=column.getLabel() %>.hashCode());
 	<%
+					}
 				}
 			}
 		}
@@ -98,14 +104,15 @@ private class <%=conn.getName() %>Struct {
 		if (getClass() != obj.getClass()) return false;
 		final <%=conn.getName() %>Struct other = (<%=conn.getName() %>Struct) obj;
 		<%	
-		for (IMetadataColumn column: metadata.getListColumns()) {
-			if (column.isKey()) {
-				if (JavaTypesManager.isJavaPrimitiveType(column.getTalendType(), column.isNullable())) {
+		if (metadata !=null) {
+			for (IMetadataColumn column: metadata.getListColumns()) {
+				if (column.isKey()) {
+					if (JavaTypesManager.isJavaPrimitiveType(column.getTalendType(), column.isNullable())) {
 				%>
 					if (this.<%=column.getLabel() %> != other.<%=column.getLabel() %>) 
 						return false;
 				<%
-				} else {
+					} else {
 				%>
 					if (this.<%=column.getLabel() %> == null) {
 						if (other.<%=column.getLabel() %> != null) 
@@ -113,6 +120,7 @@ private class <%=conn.getName() %>Struct {
 					} else if (!this.<%=column.getLabel() %>.equals(other.<%=column.getLabel() %>)) 
 						return false;
 				<%
+					}
 				}
 			}
     	}
