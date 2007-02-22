@@ -143,6 +143,11 @@ public class RegisterWizardPage extends WizardPage {
             }
         }
         // initiate selection of default country
+
+        //PTODO cantoine : the Locale.getDefault().getDisplayCountry() return an empty String.
+//        Locale defaultLocale = new Locale(""+Locale.getDefault(), ""+Locale.getDefault());
+//        String defaultCountry = defaultLocale.getDisplayCountry();
+
         String defaultCountry = Locale.getDefault().getDisplayCountry();
         int i = 0;
         for (String country : countryList) {

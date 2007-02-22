@@ -135,20 +135,20 @@ public class DatabaseWizard extends RepositoryWizard implements INewWizard {
         databaseWizardPage = new DatabaseWizardPage(connectionItem, isRepositoryObjectEditable(), existingNames);
 
         if (creation) {
-            propertiesWizardPage.setTitle(Messages.getString("DatabaseWizardPage.titleCreate.0")); //$NON-NLS-1$
-            propertiesWizardPage.setDescription(Messages.getString("DatabaseWizardPage.descriptionCreate.0")); //$NON-NLS-1$
+            propertiesWizardPage.setTitle(Messages.getString("DatabaseWizardPage.titleCreate.Step1")); //$NON-NLS-1$
+            propertiesWizardPage.setDescription(Messages.getString("DatabaseWizardPage.descriptionCreate.Step1")); //$NON-NLS-1$
             propertiesWizardPage.setPageComplete(false);
 
-            databaseWizardPage.setTitle(Messages.getString("DatabaseWizardPage.titleCreate.1")); //$NON-NLS-1$
-            databaseWizardPage.setDescription(Messages.getString("DatabaseWizardPage.descriptionCreate.1")); //$NON-NLS-1$
+            databaseWizardPage.setTitle(Messages.getString("DatabaseWizardPage.titleCreate.Step2")); //$NON-NLS-1$
+            databaseWizardPage.setDescription(Messages.getString("DatabaseWizardPage.descriptionCreate.Step2")); //$NON-NLS-1$
             databaseWizardPage.setPageComplete(false);
         } else {
-            propertiesWizardPage.setTitle(Messages.getString("DatabaseWizardPage.titleUpdate.0")); //$NON-NLS-1$
-            propertiesWizardPage.setDescription(Messages.getString("DatabaseWizardPage.descriptionUpdate.0")); //$NON-NLS-1$
+            propertiesWizardPage.setTitle(Messages.getString("DatabaseWizardPage.titleUpdate.Step1")); //$NON-NLS-1$
+            propertiesWizardPage.setDescription(Messages.getString("DatabaseWizardPage.descriptionUpdate.Step1")); //$NON-NLS-1$
             propertiesWizardPage.setPageComplete(isRepositoryObjectEditable());
 
-            databaseWizardPage.setTitle(Messages.getString("DatabaseWizardPage.titleUpdate.1")); //$NON-NLS-1$
-            databaseWizardPage.setDescription(Messages.getString("DatabaseWizardPage.descriptionUpdate.1")); //$NON-NLS-1$
+            databaseWizardPage.setTitle(Messages.getString("DatabaseWizardPage.titleUpdate.Step2")); //$NON-NLS-1$
+            databaseWizardPage.setDescription(Messages.getString("DatabaseWizardPage.descriptionUpdate.Step2")); //$NON-NLS-1$
             databaseWizardPage.setPageComplete(isRepositoryObjectEditable());
         }
         addPage(propertiesWizardPage);

@@ -201,7 +201,7 @@ public class XmlToXPathLinker extends TreeToTablesLinker<Object, Object> {
 
                 monitorWrap = new EventLoopProgressMonitor(monitor);
 
-                String taskName = Messages.getString("XmlToXPathLinker.0"); //$NON-NLS-1$
+                String taskName = Messages.getString("XmlToXPathLinker.Loop"); //$NON-NLS-1$
                 int totalWork = loopTableItems.length + fieldsTableItems.length;
 
                 monitorWrap.beginTask(taskName, totalWork); //$NON-NLS-1$

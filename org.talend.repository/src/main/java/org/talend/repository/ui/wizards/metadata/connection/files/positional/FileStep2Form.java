@@ -663,7 +663,7 @@ public class FileStep2Form extends AbstractPositionalFileStepForm {
 
             public void modifyText(final ModifyEvent e) {
                 if (!rowsToSkipLimitCheckboxCombo.isEmpty()) {
-                    if (!rowsToSkipLimitCheckboxCombo.isInteger() || rowsToSkipLimitCheckboxCombo.getText().equals(Messages.getString("FileStep2Form.90"))) { //$NON-NLS-1$
+                    if (!rowsToSkipLimitCheckboxCombo.isInteger() || rowsToSkipLimitCheckboxCombo.getText().equals("0")) { //$NON-NLS-1$
                         rowsToSkipLimitCheckboxCombo.deselectAll();
                         getConnection().setUseLimit(rowsToSkipLimitCheckboxCombo.isChecked());
                         getConnection().setLimitValue(0);

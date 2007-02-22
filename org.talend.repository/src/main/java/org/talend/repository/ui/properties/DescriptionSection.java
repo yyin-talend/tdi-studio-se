@@ -68,7 +68,7 @@ public class DescriptionSection extends AbstractSection {
         descriptionText.setLayoutData(data);
         addFocusListener(descriptionText);
 
-        CLabel labelLabel = getWidgetFactory().createCLabel(composite, Messages.getString("DescriptionSection.0")); //$NON-NLS-1$
+        CLabel labelLabel = getWidgetFactory().createCLabel(composite, Messages.getString("DescriptionSection.Label")); //$NON-NLS-1$
         data = new FormData();
         data.left = new FormAttachment(0, 0);
         data.right = new FormAttachment(descriptionText, -ITabbedPropertyConstants.HSPACE);
