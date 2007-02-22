@@ -41,6 +41,7 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.ProgressMonitorWrapper;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.core.runtime.jobs.Job;
@@ -48,6 +49,7 @@ import org.eclipse.emf.codegen.jet.JETEmitter;
 import org.eclipse.emf.codegen.jet.JETException;
 import org.eclipse.emf.common.CommonPlugin;
 import org.eclipse.emf.common.util.URI;
+import org.eclipse.swt.SWTException;
 import org.eclipse.ui.internal.dialogs.EventLoopProgressMonitor;
 import org.talend.commons.CommonsPlugin;
 import org.talend.commons.exception.BusinessException;
@@ -60,6 +62,7 @@ import org.talend.core.model.components.IComponentFileNaming;
 import org.talend.core.model.components.IComponentsFactory;
 import org.talend.core.model.temp.ECodePart;
 import org.talend.designer.codegen.CodeGeneratorActivator;
+import org.talend.designer.codegen.config.CodeGeneratorProgressMonitor;
 import org.talend.designer.codegen.config.JetBean;
 import org.talend.designer.codegen.config.LightJetBean;
 import org.talend.designer.codegen.config.TalendJetEmitter;
@@ -98,7 +101,7 @@ public final class CodeGeneratorEmittersPoolFactory {
         Job job = new Job(Messages.getString("CodeGeneratorEmittersPoolFactory.initMessage")) {
 
             protected IStatus run(IProgressMonitor monitor) {
-                IProgressMonitor monitorWrap = new EventLoopProgressMonitor(monitor);
+                IProgressMonitor monitorWrap = new CodeGeneratorProgressMonitor(monitor);
 
                 IComponentsFactory componentsFactory = ComponentsFactoryProvider.getInstance();
                 componentsFactory.init();
@@ -116,8 +119,12 @@ public final class CodeGeneratorEmittersPoolFactory {
                 List<TemplateUtil> templates = templatesFactory.getTemplates();
                 List<IComponent> components = componentsFactory.getComponents();
 
-                monitorWrap.beginTask(Messages.getString("CodeGeneratorEmittersPoolFactory.initMessage"),
-                        (2 * templates.size() + 4 * components.size()));
+                try {
+                    monitorWrap.beginTask(Messages.getString("CodeGeneratorEmittersPoolFactory.initMessage"),
+                            (2 * templates.size() + 4 * components.size()));
+                } catch (Exception se) {
+                    // se.printStackTrace();
+                }
 
                 for (TemplateUtil template : templates) {
                     JetBean jetBean = initializeUtilTemplate(template, codeLanguage);
@@ -250,11 +257,16 @@ public final class CodeGeneratorEmittersPoolFactory {
                         alreadyCompiledEmitters.add(jetBean);
                     }
                 } catch (JETException e) {
-                    // log.error("Error during JetEmitter initalization " + e.getMessage(), e);
+                    log.error("Error during JetEmitter initalization " + e.getMessage(), e);
                 }
                 emitterPool.put(jetBean, emitter);
             }
-            monitorWrap.worked(1);
+            
+            try {
+                monitorWrap.worked(1);
+            } catch (Exception se) {
+                // se.printStackTrace();
+            }
         }
         try {
             EmfEmittersPersistenceFactory.getInstance().saveEmittersPool(
