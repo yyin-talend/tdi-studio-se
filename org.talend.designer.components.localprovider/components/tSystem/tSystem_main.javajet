@@ -1,0 +1,87 @@
+<%@ jet
+	package="org.talend.designer.codegen.translators" 
+	imports="
+		org.talend.core.model.process.INode 
+		org.talend.core.model.process.ElementParameterParser
+		org.talend.designer.codegen.config.CodeGeneratorArgument
+	"
+	class="SystemMain"
+%>
+
+<%
+	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+	INode node = (INode)codeGenArgument.getArgument();
+	String cid = node.getUniqueName();
+	
+	String command = ElementParameterParser.getValue(node, "__COMMAND__");
+	String[] parsedCommand = command.split(" ");	
+	String outputAction  = ElementParameterParser.getValue(node, "__OUTPUT__");
+	
+	// To launch an internal command to cmd.exe (XP), you have to call :
+	// cmd.exe /c dir (for example)
+%>
+
+Runtime runtime = Runtime.getRuntime();
+final Process ps<%=cid %> = runtime.exec(new String[] { <% for (String commande : parsedCommand) { %>"<%=commande %>" ,<% } %> } );
+
+Thread normal = new Thread() {
+	public void run() {
+		try {
+			java.io.BufferedReader reader = new java.io.BufferedReader(new java.io.InputStreamReader(ps<%=cid %>.getInputStream()));
+			String line = "";
+			try {
+				while((line = reader.readLine()) != null) {
+<%
+	if (outputAction.equals("OUTPUT_TO_CONSOLE")) {
+%>
+					System.out.println(line);
+<%
+	} else if (outputAction.equals("RETRIEVE_OUTPUT")) {
+%>
+					globalMap.put("<%=cid %>",(String)globalMap.get("<%=cid %>")+"\n"+line);
+<%
+	}
+%>
+				}
+			} finally {
+				reader.close();
+			}
+		} catch(java.io.IOException ioe) {
+			ioe.printStackTrace();
+		}
+	}
+};
+normal.start();
+
+Thread error = new Thread() {
+	public void run() {
+		try {
+			java.io.BufferedReader reader = new java.io.BufferedReader(new java.io.InputStreamReader(ps<%=cid %>.getErrorStream()));
+			String line = "";
+			try {
+				while((line = reader.readLine()) != null) {
+<%
+	if (outputAction.equals("OUTPUT_TO_CONSOLE")) {
+%>
+					System.err.println(line);
+<%
+	} else if (outputAction.equals("RETRIEVE_OUTPUT")) {
+%>
+					globalMap.put("<%=cid %>",(String)globalMap.get("<%=cid %>")+"\n"+line);
+<%
+	}
+%>
+				}
+			} finally {
+				reader.close();
+			}
+		} catch(java.io.IOException ioe) {
+			ioe.printStackTrace();
+		}
+	}
+};
+error.start();
+
+int result = ps<%=cid %>.waitFor();
+normal.interrupt();
+error.interrupt();
