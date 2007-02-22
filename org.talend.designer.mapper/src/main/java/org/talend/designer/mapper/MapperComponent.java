@@ -68,6 +68,15 @@ public class MapperComponent extends AbstractExternalNode {
 
     private ExternalMapperData externalData;
 
+    
+    
+    /**
+     * DOC amaumont MapperComponent constructor comment.
+     */
+    public MapperComponent() {
+        super();
+    }
+
     /*
      * (non-Javadoc)
      * 
