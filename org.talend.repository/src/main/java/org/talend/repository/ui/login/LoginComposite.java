@@ -41,6 +41,7 @@ import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
@@ -49,6 +50,8 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.Form;
 import org.eclipse.ui.forms.widgets.FormToolkit;
@@ -71,7 +74,7 @@ import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.repository.model.RepositoryConstants;
 import org.talend.repository.model.RepositoryFactoryProvider;
 import org.talend.repository.ui.ERepositoryImages;
-import org.talend.repository.ui.actions.folder.ImportDemoProjectAction;
+import org.talend.repository.ui.actions.importproject.ImportDemoProjectAction;
 import org.talend.repository.ui.actions.importproject.ImportProjectAsAction;
 import org.talend.repository.ui.login.connections.ConnectionsDialog;
 import org.talend.repository.ui.wizards.newproject.NewProjectWizard;
@@ -83,6 +86,14 @@ import org.talend.repository.ui.wizards.newproject.NewProjectWizard;
  * 
  */
 public class LoginComposite extends Composite {
+
+    private static int horizontalMerge = 145;
+
+    private static final int HORIZONTAL_SPACE_BUTTONS = 15;
+
+    private static final int VERTICAL_SPACE = 5;
+
+    private static final int HORIZONTAL_SPACE = 5;
 
     /**
      * Colors used for Remote Object background when enabled.
@@ -132,6 +143,8 @@ public class LoginComposite extends Composite {
         Form form = toolkit.createForm(this);
         Composite formBody = form.getBody();
 
+        formBody.setBackgroundMode(SWT.INHERIT_DEFAULT);
+
         GridLayout layout = new GridLayout();
         layout.marginHeight = 0;
         layout.marginWidth = 0;
@@ -142,9 +155,15 @@ public class LoginComposite extends Composite {
         formBody.setLayout(layout);
 
         // Connections listbox:
-        toolkit.createLabel(formBody, Messages.getString("LoginComposite.connections")); //$NON-NLS-1$
+        Label connectionLabel = toolkit.createLabel(formBody, Messages.getString("LoginComposite.connections")); //$NON-NLS-1$
+        Point size = connectionLabel.computeSize(SWT.DEFAULT, SWT.DEFAULT);
+        horizontalMerge = size.x;
+        // TODO SML this method assume that this label is the longest and must be optimize
+        GridData conGrid2 = new GridData();
+        conGrid2.widthHint = horizontalMerge;
+        connectionLabel.setLayoutData(conGrid2);
+
         connectionsViewer = new ComboViewer(formBody, SWT.BORDER | SWT.READ_ONLY);
-        toolkit.adapt(connectionsViewer.getCombo());
         GridData conGrid = new GridData(GridData.FILL_HORIZONTAL);
         conGrid.horizontalSpan = 1;
         connectionsViewer.getControl().setLayoutData(conGrid);
@@ -173,35 +192,63 @@ public class LoginComposite extends Composite {
         passwordGrid.horizontalSpan = 2;
         passwordText.setLayoutData(passwordGrid);
 
+        Label emptyLabel = toolkit.createLabel(formBody, ""); //$NON-NLS-1$
+        GridData emptyLabelData = new GridData(GridData.FILL_HORIZONTAL);
+        emptyLabelData.horizontalSpan = 3;
+        emptyLabel.setLayoutData(emptyLabelData);
+
         // Project
-        toolkit.createLabel(formBody, Messages.getString("LoginComposite.project")); //$NON-NLS-1$
-        projectViewer = new ComboViewer(formBody, SWT.BORDER | SWT.READ_ONLY);
-        toolkit.adapt(projectViewer.getCombo());
-        GridData projectGrid = new GridData(GridData.FILL_HORIZONTAL);
-        projectGrid.horizontalSpan = 1;
-        projectViewer.getControl().setLayoutData(projectGrid);
+        Group group = new Group(formBody, SWT.NONE);
+        group.setText(Messages.getString("LoginComposite.project")); //$NON-NLS-1$
+        GridData projectGroupData = new GridData(GridData.FILL_HORIZONTAL);
+        projectGroupData.horizontalSpan = 3;
+        group.setLayoutData(projectGroupData);
+
+        FormData data;
+
+        FormLayout groupLayout = new FormLayout();
+        group.setLayout(groupLayout);
+
+        // Fill projects
+        fillProjectsBtn = toolkit.createButton(group, null, SWT.PUSH);
+        fillProjectsBtn.setToolTipText(Messages.getString("LoginComposite.refresh")); //$NON-NLS-1$
+        fillProjectsBtn.setImage(ImageProvider.getImage(EImage.REFRESH_ICON));
+        data = new FormData();
+        data.right = new FormAttachment(100, -HORIZONTAL_SPACE);
+        fillProjectsBtn.setLayoutData(data);
+
+        projectViewer = new ComboViewer(group, SWT.BORDER | SWT.READ_ONLY);
+        data = new FormData();
+        data.left = new FormAttachment(0, horizontalMerge + 2);
+        data.right = new FormAttachment(fillProjectsBtn, -HORIZONTAL_SPACE);
+        data.bottom = new FormAttachment(fillProjectsBtn, 0, SWT.CENTER);
+        projectViewer.getControl().setLayoutData(data);
         projectViewer.setContentProvider(new ArrayContentProvider());
         projectViewer.setLabelProvider(new ProjectLabelProvider());
 
-        // Fill projects
-        fillProjectsBtn = toolkit.createButton(formBody, null, SWT.PUSH);
-        fillProjectsBtn.setToolTipText(Messages.getString("LoginComposite.refresh")); //$NON-NLS-1$
-        fillProjectsBtn.setImage(ImageProvider.getImage(EImage.REFRESH_ICON));
-        GridData fillGrid = new GridData();
-        fillGrid.horizontalSpan = 1;
-        fillProjectsBtn.setLayoutData(fillGrid);
+        Label existingLabel = toolkit.createLabel(group, Messages.getString("LoginComposite.existing")); //$NON-NLS-1$
+        data = new FormData();
+        data.left = new FormAttachment(0, HORIZONTAL_SPACE);
+        data.bottom = new FormAttachment(projectViewer.getControl(), 0, SWT.CENTER);
+        existingLabel.setLayoutData(data);
 
         // Bottom buttons:
-        Composite bottomButtons = toolkit.createComposite(formBody);
-        // bottomButtons.setBackground(new Color(null,255,0,0));
-        GridData fillGrid2 = new GridData(GridData.FILL_HORIZONTAL);
-        fillGrid2.horizontalSpan = 3;
-        bottomButtons.setLayoutData(fillGrid2);
+        Composite bottomButtons = toolkit.createComposite(group);
+        data = new FormData();
+        data.top = new FormAttachment(projectViewer.getControl(), VERTICAL_SPACE, SWT.BOTTOM);
+        data.left = new FormAttachment(projectViewer.getControl(), 0, SWT.LEFT);
+        bottomButtons.setLayoutData(data);
         bottomButtons.setLayout(new FormLayout());
 
+        Label newProjectLabel = toolkit.createLabel(group, Messages.getString("LoginComposite.new")); //$NON-NLS-1$
+        data = new FormData();
+        data.left = new FormAttachment(0, HORIZONTAL_SPACE);
+        data.bottom = new FormAttachment(bottomButtons, 0, SWT.CENTER);
+        newProjectLabel.setLayoutData(data);
+
         newProjectButton = toolkit.createButton(bottomButtons, null, SWT.PUSH);
-        newProjectButton.setText(Messages.getString("LoginComposite.newProject")); //$NON-NLS-1$
-        newProjectButton.setToolTipText("Create a new project"); //$NON-NLS-1$
+        newProjectButton.setText(Messages.getString("LoginComposite.buttons.newProject")); //$NON-NLS-1$
+        newProjectButton.setToolTipText(Messages.getString("LoginComposite.buttons.newProject.tooltip")); //$NON-NLS-1$
         newProjectButton.setImage(ImageProvider.getImage(ERepositoryImages.NEW_PROJECT_ACTION));
         FormData formData = new FormData();
         formData.left = new FormAttachment(0);
@@ -209,20 +256,20 @@ public class LoginComposite extends Composite {
 
         importProjectsButton = toolkit.createButton(bottomButtons, null, SWT.PUSH);
         ImportProjectAsAction ipa = ImportProjectAsAction.getInstance();
-        importProjectsButton.setText(ipa.getText());
+        importProjectsButton.setText(Messages.getString("LoginComposite.buttons.importProject")); //$NON-NLS-1$
         importProjectsButton.setToolTipText(ipa.getToolTipText());
         importProjectsButton.setImage(ImageProvider.getImage(ipa.getImageDescriptor()));
         formData = new FormData();
-        formData.left = new FormAttachment(newProjectButton, 5);
+        formData.left = new FormAttachment(newProjectButton, HORIZONTAL_SPACE_BUTTONS);
         importProjectsButton.setLayoutData(formData);
 
         importDemoProjectButton = toolkit.createButton(bottomButtons, null, SWT.PUSH);
         ImportDemoProjectAction idpa = ImportDemoProjectAction.getInstance();
         importDemoProjectButton.setText(idpa.getText());
         importDemoProjectButton.setToolTipText(idpa.getToolTipText());
-        // importDemoProjectButton.setImage(ImageProvider.getImage(idpa.getImageDescriptor()));
+        importDemoProjectButton.setImage(ImageProvider.getImage(idpa.getImageDescriptor()));
         formData = new FormData();
-        formData.left = new FormAttachment(importProjectsButton, 5);
+        formData.left = new FormAttachment(importProjectsButton, HORIZONTAL_SPACE_BUTTONS);
         formData.top = new FormAttachment(0);
         formData.bottom = new FormAttachment(100);
         importDemoProjectButton.setLayoutData(formData);
@@ -277,8 +324,8 @@ public class LoginComposite extends Composite {
                 unpopulateRemoteLoginElements();
             }
             setRepositoryContextInContext();
-            updateButtons();
         }
+        updateButtons();
 
     }
 

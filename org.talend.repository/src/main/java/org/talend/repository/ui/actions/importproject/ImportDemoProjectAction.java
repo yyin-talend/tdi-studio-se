@@ -19,19 +19,21 @@
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 // ============================================================================
-package org.talend.repository.ui.actions.folder;
+package org.talend.repository.ui.actions.importproject;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Shell;
-import org.talend.commons.exception.MessageBoxExceptionHandler;
+import org.eclipse.ui.internal.dialogs.EventLoopProgressMonitor;
+import org.eclipse.ui.internal.wizards.datatransfer.TarException;
 import org.talend.commons.ui.image.ImageProvider;
+import org.talend.commons.ui.swt.dialogs.ProgressDialog;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.ui.ERepositoryImages;
-import org.talend.repository.ui.actions.importproject.ImportProjectsUtilities;
 
 /**
  * Action used to refresh a repository view.<br/>
@@ -64,17 +66,35 @@ public final class ImportDemoProjectAction extends Action {
     }
 
     public void run() {
-        try {
-            ImportProjectsUtilities.importDemoProject(shell);
-            MessageDialog.openInformation(shell, Messages.getString("ImportDemoProjectAction.messageDialogTitle.demoProject"), //$NON-NLS-1$
-                    Messages.getString("ImportDemoProjectAction.messageDialogContent.demoProjectImportedSuccessfully")); //$NON-NLS-1$
-        } catch (IOException e) {
-            MessageBoxExceptionHandler.process(e, shell);
-        } catch (InvocationTargetException e) {
-            MessageBoxExceptionHandler.process(e, shell);
-        } catch (InterruptedException e) {
-            MessageBoxExceptionHandler.process(e, shell);
-        }
+        ProgressDialog progressDialog = new ProgressDialog(shell, 1) {
+
+            private IProgressMonitor monitorWrap;
+
+            @Override
+            public void run(IProgressMonitor monitor) {
+                monitorWrap = new EventLoopProgressMonitor(monitor);
+
+                try {
+                    ImportProjectsUtilities.importDemoProject(shell, monitorWrap);
+                } catch (IOException e) {
+                    // TODO SML new InvocationTargetException(e);
+                } catch (InvocationTargetException e) {
+                    // TODO SML new InvocationTargetException(e);
+                } catch (InterruptedException e) {
+                    // TODO SML Nothing to do
+                } catch (TarException e) {
+                    // TODO SML new InvocationTargetException(e);
+                }
+
+                monitorWrap.done();
+                MessageDialog.openInformation(shell,
+                        Messages.getString("ImportDemoProjectAction.messageDialogTitle.demoProject"), //$NON-NLS-1$
+                        Messages.getString("ImportDemoProjectAction.messageDialogContent.demoProjectImportedSuccessfully")); //$NON-NLS-1$
+
+            }
+
+        };
+        progressDialog.executeProcess();
     }
 
     public String getProjectName() {

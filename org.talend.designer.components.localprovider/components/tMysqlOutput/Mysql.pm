@@ -60,7 +60,7 @@ sub getTableCreationQuery {
         $query.= '`'.$column_href->{name}.'`';
         $query.= ' '.$column_href->{dbtype};
 
-        if (defined $column_href->{len} and $column_href->{len} != -1) {
+        if (defined $column_href->{len} and $column_href->{len} > 0) {
             $query.= '(';
             $query.= $column_href->{len};
 

@@ -41,8 +41,13 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.dialogs.IOverwriteQuery;
+import org.eclipse.ui.internal.wizards.datatransfer.ArchiveFileManipulations;
+import org.eclipse.ui.internal.wizards.datatransfer.TarException;
+import org.eclipse.ui.internal.wizards.datatransfer.TarFile;
+import org.eclipse.ui.internal.wizards.datatransfer.TarLeveledStructureProvider;
 import org.eclipse.ui.internal.wizards.datatransfer.ZipLeveledStructureProvider;
 import org.eclipse.ui.wizards.datatransfer.FileSystemStructureProvider;
 import org.eclipse.ui.wizards.datatransfer.IImportStructureProvider;
@@ -109,44 +114,58 @@ public class ImportProjectsUtilities {
     }
 
     public static void importArchiveProjectAs(Shell shell, String newName, String technicalName, String sourcePath,
-            IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
+            IProgressMonitor monitor) throws InvocationTargetException, InterruptedException, TarException, IOException {
         importArchiveProject(shell, technicalName, sourcePath, monitor);
 
         afterImportAs(newName, technicalName);
     }
 
     public static void importArchiveProject(Shell shell, String technicalName, String sourcePath, IProgressMonitor monitor)
-            throws InvocationTargetException, InterruptedException {
-        ZipLeveledStructureProvider provider;
-        try {
-            provider = new ZipLeveledStructureProvider(new ZipFile(sourcePath));
-        } catch (IOException e) {
-            throw new InvocationTargetException(e);
+            throws InvocationTargetException, InterruptedException, TarException, IOException {
+
+        IImportStructureProvider provider;
+        Object source;
+
+        if (ArchiveFileManipulations.isZipFile(sourcePath)) {
+            ZipLeveledStructureProvider zipProvider = ArchiveFileManipulations.getZipStructureProvider(new ZipFile(sourcePath),
+                    shell);
+            source = zipProvider.getRoot();
+            provider = zipProvider;
+        } else if (ArchiveFileManipulations.isTarFile(sourcePath)) {
+            TarLeveledStructureProvider tarProvider = ArchiveFileManipulations.getTarStructureProvider(new TarFile(sourcePath),
+                    shell);
+            source = tarProvider.getRoot();
+            provider = tarProvider;
+        } else {
+            throw new IllegalArgumentException("File " + sourcePath + " is not a zip nither a tar file");
         }
 
-        importProject(shell, provider, provider.getRoot(), new Path(technicalName), false, true, monitor);
+        importProject(shell, provider, source, new Path(technicalName), false, true, monitor);
     }
 
-    public static void importDemoProject(Shell shell) throws IOException, InvocationTargetException, InterruptedException {
+    public static void importDemoProject(Shell shell, IProgressMonitor monitor) throws IOException, InvocationTargetException,
+            InterruptedException, TarException {
         Bundle bundle = Platform.getBundle(ResourcesPlugin.PLUGIN_ID);
         URL url = FileLocator.resolve(bundle.getEntry("resources/TALENDDEMOS.zip")); //$NON-NLS-1$
         String archiveFilePath = new Path(url.getFile()).toOSString();
 
-        importArchiveProject(shell, TALENDDEMOS_TECH_NAME, archiveFilePath, null);
+        importArchiveProject(shell, TALENDDEMOS_TECH_NAME, archiveFilePath, monitor);
     }
 
     private static void importProject(Shell shell, IImportStructureProvider provider, Object source, IPath path,
             boolean overwriteResources, boolean createContainerStructure, IProgressMonitor monitor)
             throws InvocationTargetException, InterruptedException {
+        monitor.beginTask(Messages.getString("ImportProjectsUtilities.task.importingProject"), 1); //$NON-NLS-1$
+
         ArrayList fileSystemObjects = new ArrayList();
         ImportProjectsUtilities.getFilesForProject(fileSystemObjects, provider, source);
 
-        ImportOperation operation = new ImportOperation(path, source, provider, //$NON-NLS-1$
-                new MyOverwriteQuery(), fileSystemObjects);
+        ImportOperation operation = new ImportOperation(path, source, provider, new MyOverwriteQuery(), fileSystemObjects);
         operation.setContext(shell);
         operation.setOverwriteResources(overwriteResources);
         operation.setCreateContainerStructure(createContainerStructure);
-        operation.run(monitor);
+        operation.run(new SubProgressMonitor(monitor, 1));
+        monitor.done();
     }
 
     /**
@@ -199,7 +218,7 @@ public class ImportProjectsUtilities {
             return false;
         }
         if (monitor != null) {
-            monitor.subTask(Messages.getString("ImportProjectAsWizardPage.form.checkingFolder", directory.getPath())); //$NON-NLS-1$
+            monitor.subTask(Messages.getString("ImportProjectsUtilities.task.checkingFolder", directory.getPath())); //$NON-NLS-1$
         }
         File[] contents = directory.listFiles();
         // first look for project description files
@@ -237,7 +256,7 @@ public class ImportProjectsUtilities {
             return false;
         }
         if (monitor != null) {
-            monitor.subTask(Messages.getString("ImportProjectAsWizardPage.form.checkingFolder", provider.getLabel(entry))); //$NON-NLS-1$
+            monitor.subTask(Messages.getString("ImportProjectsUtilities.task.checkingFolder", provider.getLabel(entry))); //$NON-NLS-1$
         }
         List children = provider.getChildren(entry);
         if (children == null) {

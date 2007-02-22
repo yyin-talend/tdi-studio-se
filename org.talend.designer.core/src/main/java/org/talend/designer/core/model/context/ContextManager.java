@@ -23,16 +23,14 @@ package org.talend.designer.core.model.context;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
-import org.apache.oro.text.regex.MalformedPatternException;
-import org.apache.oro.text.regex.Pattern;
-import org.apache.oro.text.regex.Perl5Compiler;
-import org.apache.oro.text.regex.Perl5Matcher;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IContextListener;
 import org.talend.core.model.process.IContextManager;
 import org.talend.core.model.process.IContextParameter;
+import org.talend.repository.model.RepositoryConstants;
 
 /**
  * DOC nrousseau class global comment. Detailled comment <br/>
@@ -119,24 +117,28 @@ public class ContextManager implements IContextManager {
             }
         }
 
-        Perl5Matcher matcher = new Perl5Matcher();
-        Perl5Compiler compiler = new Perl5Compiler();
-        Pattern pattern;
+        return Pattern.matches(RepositoryConstants.CONTEXT_AND_VARIABLE_PATTERN, contextName);
 
-        switch (language) {
-        case PERL:
-            try {
-                pattern = compiler.compile("^[A-Za-z_][A-Za-z0-9_]*$"); //$NON-NLS-1$
-                if (!matcher.matches(contextName, pattern)) {
-                    return false;
-                }
-            } catch (MalformedPatternException e) {
-                throw new RuntimeException(e);
-            }
-        default:
-        }
+        // TODO SML/NRO See with nrousseau if this new way to check name may cause some troubles
 
-        return true;
+        // Perl5Matcher matcher = new Perl5Matcher();
+        // Perl5Compiler compiler = new Perl5Compiler();
+        // Pattern pattern;
+        //
+        // switch (language) {
+        // case PERL:
+        // try {
+        // pattern = compiler.compile("^[A-Za-z_][A-Za-z0-9_]*$"); //$NON-NLS-1$
+        // if (!matcher.matches(contextName, pattern)) {
+        // return false;
+        // }
+        // } catch (MalformedPatternException e) {
+        // throw new RuntimeException(e);
+        // }
+        // default:
+        // }
+        //
+        // return true;
     }
 
     public IContext getContext(String name) {

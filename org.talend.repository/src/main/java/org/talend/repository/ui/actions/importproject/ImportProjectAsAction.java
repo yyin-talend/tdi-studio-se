@@ -30,6 +30,7 @@ import org.talend.core.ui.branding.BrandingService;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.ui.ERepositoryImages;
 import org.talend.repository.ui.wizards.newproject.ImportProjectAsWizard;
+import org.talend.repository.ui.wizards.newproject.ImportProjectWizardDialog;
 
 /**
  * Action used to refresh a repository view.<br/>
@@ -64,8 +65,7 @@ public final class ImportProjectAsAction extends Action {
 
     public void run() {
         ImportProjectAsWizard docWizard = new ImportProjectAsWizard();
-      //  docWizard.setShell(Display.getCurrent().getActiveShell());
-        WizardDialog dlg = new WizardDialog(Display.getCurrent().getActiveShell(), docWizard);
+        WizardDialog dlg = new ImportProjectWizardDialog(Display.getCurrent().getActiveShell(), docWizard);
         if (dlg.open() == IDialogConstants.OK_ID) {
             project = docWizard.getProjectName();
         } else {

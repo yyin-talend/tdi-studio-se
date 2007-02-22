@@ -184,19 +184,24 @@ public class ImportProjectAsWizardPage extends WizardPage {
         projectGroup.setLayout(layout);
         projectGroup.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
-        importManyProjectsButton = new Button(projectGroup, SWT.PUSH);
-        ImportProjectsAction ipa = ImportProjectsAction.getInstance();
-        importManyProjectsButton.setText(ipa.getText());
-        importManyProjectsButton.setToolTipText(ipa.getToolTipText());
-        importManyProjectsButton.setImage(ImageProvider.getImage(ipa.getImageDescriptor()));
+//        importManyProjectsButton = new Button(projectGroup, SWT.PUSH);
+//        ImportProjectsAction ipa = ImportProjectsAction.getInstance();
+//        importManyProjectsButton.setText(ipa.getText());
+//        importManyProjectsButton.setToolTipText(ipa.getToolTipText());
+//        importManyProjectsButton.setImage(ImageProvider.getImage(ipa.getImageDescriptor()));
+//
+//        importManyProjectsButton.addSelectionListener(new SelectionAdapter() {
+//
+//            @Override
+//            public void widgetSelected(SelectionEvent e) {
+//                ImportProjectsAction.getInstance().run();
+//            }
+//        });
+    }
 
-        importManyProjectsButton.addSelectionListener(new SelectionAdapter() {
-
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-                ImportProjectsAction.getInstance().run();
-            }
-        });
+    @Override
+    public boolean canFlipToNextPage() {
+        return true;
     }
 
     /**
@@ -305,7 +310,7 @@ public class ImportProjectAsWizardPage extends WizardPage {
             browseDirectoriesButton.setEnabled(false);
             archivePathField.setEnabled(true);
             browseArchivesButton.setEnabled(true);
-            updateProjectsList(archivePathField.getText());
+            evaluateSpecifiedPath(archivePathField.getText());
             browseArchivesButton.setFocus();
         }
     }
@@ -316,7 +321,7 @@ public class ImportProjectAsWizardPage extends WizardPage {
             browseDirectoriesButton.setEnabled(true);
             archivePathField.setEnabled(false);
             browseArchivesButton.setEnabled(false);
-            updateProjectsList(directoryPathField.getText());
+            evaluateSpecifiedPath(directoryPathField.getText());
             browseDirectoriesButton.setFocus();
         }
     }
@@ -343,7 +348,7 @@ public class ImportProjectAsWizardPage extends WizardPage {
         if (selectedDirectory != null) {
             previouslyBrowsedDirectory = selectedDirectory;
             directoryPathField.setText(previouslyBrowsedDirectory);
-            updateProjectsList(selectedDirectory);
+            evaluateSpecifiedPath(selectedDirectory);
         }
 
     }
@@ -371,12 +376,12 @@ public class ImportProjectAsWizardPage extends WizardPage {
         if (selectedArchive != null) {
             previouslyBrowsedArchive = selectedArchive;
             archivePathField.setText(previouslyBrowsedArchive);
-            updateProjectsList(selectedArchive);
+            evaluateSpecifiedPath(selectedArchive);
         }
 
     }
 
-    private void updateProjectsList(String path) {
+    private void evaluateSpecifiedPath(String path) {
         if (path.equals(lastPath)) {
             return;
         }

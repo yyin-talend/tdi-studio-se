@@ -21,6 +21,7 @@
 // ============================================================================
 package org.talend.repository.ui.wizards.newproject;
 
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 
 import org.eclipse.core.runtime.CoreException;
@@ -34,6 +35,8 @@ import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.actions.WorkspaceModifyOperation;
 import org.eclipse.ui.internal.ide.IDEWorkbenchPlugin;
 import org.eclipse.ui.internal.wizards.datatransfer.ArchiveFileManipulations;
+import org.eclipse.ui.internal.wizards.datatransfer.TarException;
+import org.eclipse.ui.internal.wizards.datatransfer.WizardProjectsImportPage;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.ui.images.ECoreImage;
 import org.talend.repository.i18n.Messages;
@@ -51,6 +54,8 @@ public class ImportProjectAsWizard extends Wizard {
     private ImportProjectAsWizardPage mainPage;
 
     private String name;
+
+    private WizardProjectsImportPage manyProjectsPage;
 
     /**
      * Constructs a new NewProjectWizard.
@@ -74,6 +79,9 @@ public class ImportProjectAsWizard extends Wizard {
         mainPage = new ImportProjectAsWizardPage();
         addPage(mainPage);
 
+        manyProjectsPage = new WizardProjectsImportPage();
+        addPage(manyProjectsPage);
+
         setWindowTitle(Messages.getString("ImportProjectAsWizard.windowTitle"));
         setDefaultPageImageDescriptor(IDEWorkbenchPlugin.getIDEImageDescriptor("wizban/importproj_wiz.png")); //$NON-NLS-1$
     }
@@ -82,62 +90,76 @@ public class ImportProjectAsWizard extends Wizard {
         return name;
     }
 
+    @Override
+    public boolean canFinish() {
+        return getContainer().getCurrentPage().isPageComplete();
+    }
+
     /**
      * @see org.eclipse.jface.wizard.Wizard#performFinish()
      */
     @Override
     public boolean performFinish() {
-        name = mainPage.getName();
-        final String technicalName = mainPage.getTechnicalName();
-        final String sourcePath = mainPage.getSourcePath();
-        final boolean isArchive = mainPage.isArchive();
+        if (getContainer().getCurrentPage().equals(manyProjectsPage)) {
+            return manyProjectsPage.createProjects();
+        } else {
+            name = mainPage.getName();
+            final String technicalName = mainPage.getTechnicalName();
+            final String sourcePath = mainPage.getSourcePath();
+            final boolean isArchive = mainPage.isArchive();
 
-        WorkspaceModifyOperation op = new WorkspaceModifyOperation() {
+            WorkspaceModifyOperation op = new WorkspaceModifyOperation() {
 
-            protected void execute(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-                try {
-                    monitor.beginTask("", 1); //$NON-NLS-1$
-                    if (monitor.isCanceled()) {
-                        throw new OperationCanceledException();
+                protected void execute(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
+                    try {
+                        monitor.beginTask("", 1); //$NON-NLS-1$
+                        if (monitor.isCanceled()) {
+                            throw new OperationCanceledException();
+                        }
+
+                        if (!isArchive) {
+                            ImportProjectsUtilities.importProjectAs(getShell(), name, technicalName, sourcePath,
+                                    new SubProgressMonitor(monitor, 1));
+                        } else {
+                            try {
+                                ImportProjectsUtilities.importArchiveProjectAs(getShell(), name, technicalName, sourcePath,
+                                        new SubProgressMonitor(monitor, 1));
+                            } catch (TarException e) {
+                                throw new InvocationTargetException(e, "Encoutering problems opening archive file");
+                            } catch (IOException e) {
+                                throw new InvocationTargetException(e, "Encoutering problems opening archive file");
+                            }
+                        }
+                    } finally {
+                        monitor.done();
                     }
-
-                    if (!isArchive) {
-                        ImportProjectsUtilities.importProjectAs(getShell(), name, technicalName, sourcePath,
-                                new SubProgressMonitor(monitor, 1));
-                    } else {
-                        ImportProjectsUtilities.importArchiveProjectAs(getShell(), name, technicalName, sourcePath,
-                                new SubProgressMonitor(monitor, 1));
-                    }
-                } finally {
-                    monitor.done();
                 }
-            }
-        };
+            };
 
-        // run the new project creation operation
-        try {
-            getContainer().run(false, true, op);
-        } catch (InterruptedException e) {
-            return false;
-        } catch (InvocationTargetException e) {
-            // one of the steps resulted in a core exception
-            Throwable t = e.getTargetException();
-            String message = Messages.getString("ImportProjectAsWizardPage.error.message");
-            IStatus status;
-            if (t instanceof CoreException) {
-                status = ((CoreException) t).getStatus();
-            } else {
-                status = new Status(IStatus.ERROR, IDEWorkbenchPlugin.IDE_WORKBENCH, 1, message, t);
+            // run the new project creation operation
+            try {
+                getContainer().run(false, true, op);
+            } catch (InterruptedException e) {
+                return false;
+            } catch (InvocationTargetException e) {
+                // one of the steps resulted in a core exception
+                Throwable t = e.getTargetException();
+                String message = Messages.getString("ImportProjectAsWizardPage.error.message");
+                IStatus status;
+                if (t instanceof CoreException) {
+                    status = ((CoreException) t).getStatus();
+                } else {
+                    status = new Status(IStatus.ERROR, IDEWorkbenchPlugin.IDE_WORKBENCH, 1, message, t);
+                }
+                ErrorDialog.openError(getShell(), message, null, status);
+                e.printStackTrace();
+                return false;
+            } finally {
+                ArchiveFileManipulations.clearProviderCache(getContainer().getShell());
             }
-            ErrorDialog.openError(getShell(), message, null, status);
-            e.printStackTrace();
-            return false;
-        } finally {
-            ArchiveFileManipulations.clearProviderCache(getContainer().getShell());
+            return true;
+
+            // MessageBoxExceptionHandler.process(e, shell);
         }
-        return true;
-
-        // MessageBoxExceptionHandler.process(e, shell);
-
     }
 }

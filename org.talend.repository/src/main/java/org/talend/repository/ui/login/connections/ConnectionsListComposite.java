@@ -105,7 +105,7 @@ public class ConnectionsListComposite extends Composite {
 
         Group group = new Group(formBody, SWT.NONE);
         group.setText(Messages.getString("ConnectionsListComposite.groupText.connection")); //$NON-NLS-1$
-        group.setBackground(new Color(null, 255, 255, 255));
+        group.setBackground(formBody.getBackground());
         FormData data = new FormData();
         data.left = new FormAttachment(0, ConnectionsDialog.HSPACE);
         data.right = new FormAttachment(100, -ConnectionsDialog.HSPACE);

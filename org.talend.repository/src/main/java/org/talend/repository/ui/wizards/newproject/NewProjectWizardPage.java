@@ -21,6 +21,7 @@
 // ============================================================================
 package org.talend.repository.ui.wizards.newproject;
 
+import java.util.Arrays;
 import java.util.regex.Pattern;
 
 import org.eclipse.core.runtime.IStatus;
@@ -39,6 +40,8 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.general.Project;
+import org.talend.core.prefs.GeneralParametersProvider;
+import org.talend.core.prefs.GeneralParametersProvider.GeneralParameters;
 import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IProxyRepositoryFactory;
@@ -209,9 +212,9 @@ public class NewProjectWizardPage extends WizardPage {
                         languageStatus = new Status(IStatus.ERROR, RepositoryPlugin.PLUGIN_ID, IStatus.OK, Messages
                                 .getString("NewProjectWizardPage.languageEmpty"), //$NON-NLS-1$
                                 null);
-                    } else if (!ECodeLanguage.PERL.getName().equals(getLanguage())) {
-                        // PTODO MHIRT Delete this check
-                        languageStatus = new Status(IStatus.WARNING, RepositoryPlugin.PLUGIN_ID, IStatus.WARNING, "Development Purpose Only", //$NON-NLS-1$
+                    } else if (!languageEnable(getLanguage())) {
+                        languageStatus = new Status(IStatus.ERROR, RepositoryPlugin.PLUGIN_ID, IStatus.WARNING, Messages
+                                .getString("NewProjectWizard.error.languageNotSupported", getLanguage()), //$NON-NLS-1$
                                 null);
                     } else {
                         languageStatus = createOkStatus();
@@ -220,6 +223,17 @@ public class NewProjectWizardPage extends WizardPage {
             }
         }
         updatePageStatus();
+    }
+
+    /**
+     * DOC smallet Comment method "languageEnable".
+     * 
+     * @param language
+     * @return
+     */
+    private boolean languageEnable(String language) {
+        String[] authorizedLanguage = GeneralParametersProvider.getStrings(GeneralParameters.AUTHORIZED_LANGUAGE);
+        return Arrays.binarySearch(authorizedLanguage, language) >= 0;
     }
 
     private void updatePageStatus() {
@@ -262,8 +276,7 @@ public class NewProjectWizardPage extends WizardPage {
     }
 
     public String getLanguage() {
-        return languageCombo.getSelectionIndex() != -1 ? languageCombo.getItem(languageCombo.getSelectionIndex())
-                : null;
+        return languageCombo.getSelectionIndex() != -1 ? languageCombo.getItem(languageCombo.getSelectionIndex()) : null;
     }
 
     private static IStatus createOkStatus() {
