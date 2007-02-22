@@ -1,0 +1,30 @@
+<%@ jet 
+	package="org.talend.designer.codegen.translators" 
+	imports="
+		org.talend.core.model.process.INode  
+		org.talend.core.model.process.ElementParameterParser
+		org.talend.designer.codegen.config.CodeGeneratorArgument
+		java.util.List
+	"
+	class="WarnMain"
+%>
+
+<%
+	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+	INode node = (INode)codeGenArgument.getArgument();
+	String cid = node.getUniqueName();
+%>
+
+<%
+			if (node.getProcess().getNodesOfType("tLogCatcher").size() > 0) {
+				List<INode> logCatchers = (List<INode>)node.getProcess().getNodesOfType("tLogCatcher");
+				for (INode logCatcher : logCatchers) {
+					if (ElementParameterParser.getValue(logCatcher, "__CATCH_TWARN__").equals("true")) {
+%>
+	<%=logCatcher.getUniqueName() %>.addMessage("tWarn", "<%=cid %>", <%=ElementParameterParser.getValue(node, "__PRIORITY__") %>, "", <%=ElementParameterParser.getValue(node, "__MESSAGE__") %>, 2);
+	<%=logCatcher.getUniqueName() %>Process();
+<%
+					}
+				}
+			}
+%>
