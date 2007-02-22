@@ -86,6 +86,7 @@ public class MetadataEmfFactory {
                     colType.setPrecision(metaCol.getPrecision());
                 }
                 colType.setType(metaCol.getTalendType());
+                colType.setSourceType(metaCol.getType());
                 listColType.add(colType);
             }
         }
@@ -124,6 +125,7 @@ public class MetadataEmfFactory {
             metaCol.setPrecision(new Integer(colType.getPrecision()));
             // }
             metaCol.setTalendType(colType.getType());
+            metaCol.setType(colType.getSourceType());
             listMetadataColumn.add(metaCol);
         }
         metadataTable.setListColumns(listMetadataColumn);
