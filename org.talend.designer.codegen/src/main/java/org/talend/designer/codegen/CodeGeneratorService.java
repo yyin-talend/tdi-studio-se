@@ -21,7 +21,9 @@
 // ============================================================================
 package org.talend.designer.codegen;
 
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.talend.core.model.process.IProcess;
+import org.talend.designer.codegen.model.CodeGeneratorEmittersPoolFactory;
 
 /**
  * DOC bqian class global comment. Provides services for CodeGenerator plugin. <br/>
@@ -65,6 +67,13 @@ public class CodeGeneratorService implements ICodeGeneratorService {
     public IRoutineSynchronizer createJavaRoutineSynchronizer() {
         // TODO Auto-generated method stub
         return new JavaRoutineSynchronizer();
+    }
+
+    /* (non-Javadoc)
+     * @see org.talend.designer.codegen.ICodeGeneratorService#initializeTemplates(org.eclipse.core.runtime.IProgressMonitor)
+     */
+    public void initializeTemplates() {
+        CodeGeneratorEmittersPoolFactory.initialize();
     }
 
 }

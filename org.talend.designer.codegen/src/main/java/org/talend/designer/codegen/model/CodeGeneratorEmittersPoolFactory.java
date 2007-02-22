@@ -39,12 +39,16 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.SubProgressMonitor;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.emf.codegen.jet.JETEmitter;
 import org.eclipse.emf.codegen.jet.JETException;
 import org.eclipse.emf.common.CommonPlugin;
 import org.eclipse.emf.common.util.URI;
+import org.eclipse.ui.internal.dialogs.EventLoopProgressMonitor;
 import org.talend.commons.CommonsPlugin;
 import org.talend.commons.exception.BusinessException;
 import org.talend.core.CorePlugin;
@@ -89,34 +93,56 @@ public final class CodeGeneratorEmittersPoolFactory {
      * initialization of the pool.
      */
     public static void initialize() {
-        IComponentsFactory componentsFactory = ComponentsFactoryProvider.getInstance();
-        componentsFactory.init();
+        // MHIRT : Add Code Generator initialisation with Progress Bar
 
-        long startTime = System.currentTimeMillis();
-        RepositoryContext repositoryContext = (RepositoryContext) CorePlugin.getContext().getProperty(
-                Context.REPOSITORY_CONTEXT_KEY);
-        ECodeLanguage codeLanguage = repositoryContext.getProject().getLanguage();
+        Job job = new Job(Messages.getString("CodeGeneratorEmittersPoolFactory.initMessage")) {
 
-        List<JetBean> jetBeans = new ArrayList<JetBean>();
+            protected IStatus run(IProgressMonitor monitor) {
+                IProgressMonitor monitorWrap = new EventLoopProgressMonitor(monitor);
 
-        CodeGeneratorInternalTemplatesFactory templatesFactory = CodeGeneratorInternalTemplatesFactoryProvider.getInstance();
-        templatesFactory.init();
-        List<TemplateUtil> templates = templatesFactory.getTemplates();
-        for (TemplateUtil template : templates) {
-            JetBean jetBean = initializeUtilTemplate(template, codeLanguage);
-            jetBeans.add(jetBean);
-        }
+                IComponentsFactory componentsFactory = ComponentsFactoryProvider.getInstance();
+                componentsFactory.init();
 
-        List<IComponent> components = componentsFactory.getComponents();
-        if (components != null) {
-            ECodePart codePart = ECodePart.MAIN;
-            for (IComponent component : components) {
-                initComponent(codeLanguage, jetBeans, codePart, component);
+                long startTime = System.currentTimeMillis();
+                RepositoryContext repositoryContext = (RepositoryContext) CorePlugin.getContext().getProperty(
+                        Context.REPOSITORY_CONTEXT_KEY);
+                ECodeLanguage codeLanguage = repositoryContext.getProject().getLanguage();
+
+                List<JetBean> jetBeans = new ArrayList<JetBean>();
+
+                CodeGeneratorInternalTemplatesFactory templatesFactory = CodeGeneratorInternalTemplatesFactoryProvider
+                        .getInstance();
+                templatesFactory.init();
+                List<TemplateUtil> templates = templatesFactory.getTemplates();
+                List<IComponent> components = componentsFactory.getComponents();
+
+                monitorWrap.beginTask(Messages.getString("CodeGeneratorEmittersPoolFactory.initMessage"),
+                        (2 * templates.size() + 4 * components.size()));
+
+                for (TemplateUtil template : templates) {
+                    JetBean jetBean = initializeUtilTemplate(template, codeLanguage);
+                    jetBeans.add(jetBean);
+                    monitorWrap.worked(1);
+                }
+
+                if (components != null) {
+                    ECodePart codePart = ECodePart.MAIN;
+                    for (IComponent component : components) {
+                        initComponent(codeLanguage, jetBeans, codePart, component);
+                        monitorWrap.worked(1);
+                    }
+                }
+
+                initializeEmittersPool(jetBeans, monitorWrap);
+                monitorWrap.done();
+                log.debug("Components compiled in " + (System.currentTimeMillis() - startTime) + " ms");
+                initialized = true;
+                return Status.OK_STATUS;
             }
-        }
-        initializeEmittersPool(jetBeans);
-        initialized = true;
-        log.debug("Components compiled in " + (System.currentTimeMillis() - startTime) + " ms");
+        };
+        job.setUser(true);
+        job.setPriority(Job.LONG);
+        job.schedule(); // start as soon as possible
     }
 
     /**
@@ -127,9 +153,10 @@ public final class CodeGeneratorEmittersPoolFactory {
      * @return
      */
     private static JetBean initializeUtilTemplate(TemplateUtil template, ECodeLanguage codeLanguage) {
-        JetBean jetBean = new JetBean(CodeGeneratorActivator.PLUGIN_ID, TemplateUtil.RESOURCES_DIRECTORY + TemplateUtil.DIR_SEP
-                + template.getResourceName() + TemplateUtil.EXT_SEP + codeLanguage.getExtension() + TemplateUtil.TEMPLATE_EXT,
-                template.getResourceName(), template.getVersion(), codeLanguage.getName(), "");
+        JetBean jetBean = new JetBean(CodeGeneratorActivator.PLUGIN_ID, TemplateUtil.RESOURCES_DIRECTORY
+                + TemplateUtil.DIR_SEP + template.getResourceName() + TemplateUtil.EXT_SEP
+                + codeLanguage.getExtension() + TemplateUtil.TEMPLATE_EXT, template.getResourceName(), template
+                .getVersion(), codeLanguage.getName(), "");
         jetBean.addClassPath("CORE_LIBRARIES", CorePlugin.PLUGIN_ID);
         jetBean.addClassPath("CODEGEN_LIBRARIES", CodeGeneratorActivator.PLUGIN_ID);
         jetBean.addClassPath("COMMON_LIBRARIES", CommonsPlugin.PLUGIN_ID);
@@ -145,17 +172,19 @@ public final class CodeGeneratorEmittersPoolFactory {
      * @param codePart
      * @param component
      */
-    private static void initComponent(ECodeLanguage codeLanguage, List<JetBean> jetBeans, ECodePart codePart, IComponent component) {
+    private static void initComponent(ECodeLanguage codeLanguage, List<JetBean> jetBeans, ECodePart codePart,
+            IComponent component) {
         // if this function returns null then there is no code to generate
         if (component.isMultipleMethods() == null) {
             return;
         }
         IComponentFileNaming fileNamingInstance = ComponentsFactoryProvider.getFileNamingInstance();
-        String templateURI = component.getPathSource() + TemplateUtil.DIR_SEP + component.getName() + TemplateUtil.DIR_SEP
+        String templateURI = component.getPathSource() + TemplateUtil.DIR_SEP + component.getName()
+                + TemplateUtil.DIR_SEP
                 + fileNamingInstance.getJetFileName(component, codeLanguage.getExtension(), codePart);
 
-        JetBean jetBean = new JetBean(IComponentsFactory.COMPONENTS_LOCATION, templateURI, component.getName(), component
-                .getVersion(), codeLanguage.getName(), codePart.getName());
+        JetBean jetBean = new JetBean(IComponentsFactory.COMPONENTS_LOCATION, templateURI, component.getName(),
+                component.getVersion(), codeLanguage.getName(), codePart.getName());
         jetBean.addClassPath("CORE_LIBRARIES", CorePlugin.PLUGIN_ID);
         jetBean.addClassPath("CODEGEN_LIBRARIES", CodeGeneratorActivator.PLUGIN_ID);
         jetBean.addClassPath("COMMON_LIBRARIES", CommonsPlugin.PLUGIN_ID);
@@ -163,7 +192,8 @@ public final class CodeGeneratorEmittersPoolFactory {
         if (component.getPluginFullName().compareTo(IComponentsFactory.COMPONENTS_LOCATION) != 0) {
             jetBean.addClassPath("EXTERNAL_COMPONENT_" + component.getPluginFullName().toUpperCase(), component
                     .getPluginFullName());
-            jetBean.setClassLoader(ExternalNodesFactory.getInstance(component.getPluginFullName()).getClass().getClassLoader());
+            jetBean.setClassLoader(ExternalNodesFactory.getInstance(component.getPluginFullName()).getClass()
+                    .getClassLoader());
         } else {
             jetBean.setClassLoader(new CodeGeneratorEmittersPoolFactory().getClass().getClassLoader());
         }
@@ -178,9 +208,11 @@ public final class CodeGeneratorEmittersPoolFactory {
     /**
      * real pool initialization.
      * 
+     * @param monitorWrap
+     * 
      * @return
      */
-    private static void initializeEmittersPool(List<JetBean> components) {
+    private static void initializeEmittersPool(List<JetBean> components, IProgressMonitor monitorWrap) {
         IProgressMonitor monitor = new NullProgressMonitor();
         IProgressMonitor sub = new SubProgressMonitor(monitor, 1);
 
@@ -192,8 +224,8 @@ public final class CodeGeneratorEmittersPoolFactory {
         emitterPool = new HashMap<JetBean, JETEmitter>();
         List<JetBean> alreadyCompiledEmitters = new ArrayList<JetBean>();
         try {
-            alreadyCompiledEmitters = loadEmfPersistentData(EmfEmittersPersistenceFactory.getInstance().loadEmittersPool(),
-                    components);
+            alreadyCompiledEmitters = loadEmfPersistentData(EmfEmittersPersistenceFactory.getInstance()
+                    .loadEmittersPool(), components);
             for (JetBean jetBean : alreadyCompiledEmitters) {
                 JETEmitter emitter = new JETEmitter(jetBean.getTemplateFullUri(), jetBean.getClassLoader());
                 emitter.setMethod(jetBean.getMethod());
@@ -205,8 +237,8 @@ public final class CodeGeneratorEmittersPoolFactory {
         }
         for (JetBean jetBean : components) {
             if (!emitterPool.containsKey(jetBean)) {
-                TalendJetEmitter emitter = new TalendJetEmitter(jetBean.getTemplateFullUri(), jetBean.getClassLoader(), jetBean
-                        .getClassName(), jetBean.getLanguage(), jetBean.getCodePart());
+                TalendJetEmitter emitter = new TalendJetEmitter(jetBean.getTemplateFullUri(), jetBean.getClassLoader(),
+                        jetBean.getClassName(), jetBean.getLanguage(), jetBean.getCodePart());
                 try {
                     for (String classKey : globalClasspath.keySet()) {
                         emitter.addVariable(classKey, globalClasspath.get(classKey));
@@ -222,9 +254,11 @@ public final class CodeGeneratorEmittersPoolFactory {
                 }
                 emitterPool.put(jetBean, emitter);
             }
+            monitorWrap.worked(1);
         }
         try {
-            EmfEmittersPersistenceFactory.getInstance().saveEmittersPool(extractEmfPersistenData(alreadyCompiledEmitters));
+            EmfEmittersPersistenceFactory.getInstance().saveEmittersPool(
+                    extractEmfPersistenData(alreadyCompiledEmitters));
         } catch (BusinessException e) {
             log.error(Messages.getString("CodeGeneratorEmittersPoolFactory.PersitentData.Error") + e.getMessage(), e); //$NON-NLS-1$
         }
@@ -241,8 +275,8 @@ public final class CodeGeneratorEmittersPoolFactory {
         for (JetBean unit : alreadyCompiledEmitters) {
             long unitCRC = extractTemplateHashCode(unit);
 
-            toReturn.add(new LightJetBean(unit.getTemplateFullUri(), unit.getClassName(), unit.getMethod().getName(), unit
-                    .getVersion(), unit.getLanguage(), unitCRC));
+            toReturn.add(new LightJetBean(unit.getTemplateFullUri(), unit.getClassName(), unit.getMethod().getName(),
+                    unit.getVersion(), unit.getLanguage(), unitCRC));
         }
         return toReturn;
     }
@@ -297,7 +331,8 @@ public final class CodeGeneratorEmittersPoolFactory {
                         log.error(Messages.getString("CodeGeneratorEmittersPoolFactory.JETEmitters.NoPresent")); //$NON-NLS-1$
                         throw new BusinessException(e);
                     } catch (ClassNotFoundException e) {
-                        log.info(Messages.getString("CodeGeneratorEmittersPoolFactory.Class.NotFound", unit.getClassName()));
+                        log.info(Messages.getString("CodeGeneratorEmittersPoolFactory.Class.NotFound", unit
+                                .getClassName()));
                     }
 
                 }
@@ -314,7 +349,8 @@ public final class CodeGeneratorEmittersPoolFactory {
      * @throws MalformedURLException
      * @throws ClassNotFoundException
      */
-    private static Method loadMethod(String methodName, JetBean unit) throws MalformedURLException, ClassNotFoundException {
+    private static Method loadMethod(String methodName, JetBean unit) throws MalformedURLException,
+            ClassNotFoundException {
         IWorkspace workspace = ResourcesPlugin.getWorkspace();
         IProject project = workspace.getRoot().getProject(".JETEmitters");
 
@@ -336,7 +372,7 @@ public final class CodeGeneratorEmittersPoolFactory {
      * @return the emitterPool
      */
     public static HashMap<JetBean, JETEmitter> getEmitterPool() {
-        if (emitterPool == null) {
+        if (!isInitialized()) {
             initialize();
         }
         return emitterPool;
