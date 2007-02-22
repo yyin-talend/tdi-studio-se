@@ -59,13 +59,13 @@ public final class ContextParameterExtractor {
      * @param text Component on wich extractor is installed.
      * @param process Process on wich context parameter is added.
      */
-    public static void installOn(final Control text, final Process process) {
+    public static void installOn(final Control text, final Process process, final String parameterName) {
         text.addKeyListener(new KeyAdapter() {
 
             @Override
             public void keyPressed(KeyEvent e) {
                 if (e.keyCode == SWT.F5) {
-                    IContextParameter parameter = buildParameterFrom(text, process.getContextManager());
+                    IContextParameter parameter = buildParameterFrom(text, process.getContextManager(), parameterName);
                     ContextParameterWizard prmWizard = new ContextParameterWizard(process.getContextManager(), parameter);
                     WizardDialog dlg = new WizardDialog(text.getShell(), prmWizard);
                     if (dlg.open() == WizardDialog.OK) {
@@ -94,7 +94,7 @@ public final class ContextParameterExtractor {
         });
     }
 
-    private static IContextParameter buildParameterFrom(final Control text, final IContextManager manager) {
+    private static IContextParameter buildParameterFrom(final Control text, final IContextManager manager, final String parameterName) {
         String nameProposal = ""; //$NON-NLS-1$
         if (text instanceof Text) {
             nameProposal = ((Text) text).getSelectionText();
@@ -111,13 +111,15 @@ public final class ContextParameterExtractor {
         }
 
         IContextParameter parameter = new ContextParameter();
-        if (manager.checkValidParameterName(nameProposal)) {
+        if (manager.checkValidParameterName(parameterName)) {
+            parameter.setName(parameterName);
+        } else if (manager.checkValidParameterName(nameProposal)) {
             parameter.setName(nameProposal);
         } else {
             parameter.setName(""); //$NON-NLS-1$
         }
         parameter.setType(EMetadataType.STRING);
-        parameter.setPrompt(nameProposal + "?"); //$NON-NLS-1$
+        parameter.setPrompt(parameterName + "?"); //$NON-NLS-1$
         parameter.setValue(nameProposal);
         return parameter;
     }

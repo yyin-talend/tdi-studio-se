@@ -190,8 +190,8 @@ public class ConnectionCreateAction extends SelectionAction {
                 boolean nameOk = false;
                 while (!nameOk) {
                     InputDialog id = new InputDialog(getWorkbenchPart().getSite().getShell(), node.getLabel()
-                            + Messages.getString("ConnectionCreateAction.1"), //$NON-NLS-1$
-                            Messages.getString("ConnectionCreateAction.2"), "", null); //$NON-NLS-1$ //$NON-NLS-2$
+                            + Messages.getString("ConnectionCreateAction.dialogTitle"), //$NON-NLS-1$
+                            Messages.getString("ConnectionCreateAction.dialogMessage"), "", null); //$NON-NLS-1$ //$NON-NLS-2$
                     id.open();
                     if (id.getReturnCode() == InputDialog.CANCEL) {
                         return;

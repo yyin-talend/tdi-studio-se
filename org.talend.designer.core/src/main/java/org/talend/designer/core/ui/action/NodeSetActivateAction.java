@@ -41,9 +41,9 @@ public class NodeSetActivateAction extends SelectionAction {
 
     public static final String ID = "org.talend.designer.core.ui.editor.action.NodeSetActivateAction"; //$NON-NLS-1$
 
-    private static final String TEXT_SET_ACTIVATE = Messages.getString("NodeSetActivateAction.1"); //$NON-NLS-1$
+    private static final String TEXT_SET_ACTIVATE = Messages.getString("NodeSetActivateAction.Activate"); //$NON-NLS-1$
 
-    private static final String TEXT_REM_ACTIVATE = Messages.getString("NodeSetActivateAction.2"); //$NON-NLS-1$
+    private static final String TEXT_REM_ACTIVATE = Messages.getString("NodeSetActivateAction.Deactivate"); //$NON-NLS-1$
 
     public NodeSetActivateAction(IWorkbenchPart part) {
         super(part);

@@ -51,7 +51,7 @@ public class MoveNodeCommand extends Command {
     public MoveNodeCommand(Node node, Point newPos) {
         this.node = node;
         this.newPos = newPos;
-        setLabel(Messages.getString("MoveNodeCommand.0")); //$NON-NLS-1$
+        setLabel(Messages.getString("MoveNodeCommand.Label")); //$NON-NLS-1$
     }
 
     @SuppressWarnings("unchecked") //$NON-NLS-1$

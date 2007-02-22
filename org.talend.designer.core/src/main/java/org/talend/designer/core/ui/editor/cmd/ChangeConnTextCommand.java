@@ -55,7 +55,7 @@ public class ChangeConnTextCommand extends Command {
         } else {
             this.newName = ""; //$NON-NLS-1$
         }
-        setLabel(Messages.getString("ChangeConnTextCommand.1")); //$NON-NLS-1$
+        setLabel(Messages.getString("ChangeConnTextCommand.Label")); //$NON-NLS-1$
     }
 
     public void execute() {

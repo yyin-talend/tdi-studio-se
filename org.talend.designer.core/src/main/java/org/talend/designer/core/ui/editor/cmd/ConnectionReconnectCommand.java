@@ -87,7 +87,7 @@ public class ConnectionReconnectCommand extends Command {
      * @param nodeSource
      */
     public void setNewSource(Node nodeSource) {
-        setLabel(Messages.getString("ConnectionReconnectCommand.0")); //$NON-NLS-1$
+        setLabel(Messages.getString("ConnectionReconnectCommand.LabelSource")); //$NON-NLS-1$
         newSource = nodeSource;
         newTarget = null;
     }
@@ -98,7 +98,7 @@ public class ConnectionReconnectCommand extends Command {
      * @param connectionTarget
      */
     public void setNewTarget(Node nodeTarget) {
-        setLabel(Messages.getString("ConnectionReconnectCommand.1")); //$NON-NLS-1$
+        setLabel(Messages.getString("ConnectionReconnectCommand.LabelTarget")); //$NON-NLS-1$
         newSource = null;
         newTarget = nodeTarget;
     }

@@ -56,7 +56,7 @@ public class MoveNodeLabelCommand extends Command {
         this.newPos = newPos;
         this.nodeSelected = nodeSelected;
         oldOffset = nodeLabel.getOffset().getCopy();
-        setLabel(Messages.getString("MoveNodeLabelCommand.0")); //$NON-NLS-1$
+        setLabel(Messages.getString("MoveNodeLabelCommand.Label")); //$NON-NLS-1$
     }
 
     public void execute() {

@@ -66,7 +66,7 @@ public class RepositoryChangeQueryCommand extends Command {
         this.value = value;
         this.propertyName = propertyName;
 
-        setLabel(Messages.getString("PropertyChangeCommand.0")); //$NON-NLS-1$
+        setLabel(Messages.getString("PropertyChangeCommand.Label")); //$NON-NLS-1$
     }
 
     private void refreshPropertyView() {

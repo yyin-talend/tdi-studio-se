@@ -75,7 +75,7 @@ public class MultiPageEditorContributor extends MultiPageEditorActionBarContribu
     }
 
     /**
-     * Prépare toutes les actions relatives au designer Gef.
+     * Prï¿½pare toutes les actions relatives au designer Gef.
      */
     protected void buildDesignActions() {
         addDesignRetargetAction(new ZoomInRetargetAction());
@@ -84,10 +84,10 @@ public class MultiPageEditorContributor extends MultiPageEditorActionBarContribu
         addDesignRetargetAction(new UndoRetargetAction());
         addDesignRetargetAction(new RedoRetargetAction());
         addDesignRetargetAction(new RetargetAction(GEFActionConstants.TOGGLE_SNAP_TO_GEOMETRY, Messages
-                .getString("MultiPageEditorContributor.0"), //$NON-NLS-1$
+                .getString("MultiPageEditorContributor.Snap"), //$NON-NLS-1$
                 IAction.AS_CHECK_BOX));
         addDesignRetargetAction(new RetargetAction(GEFActionConstants.TOGGLE_GRID_VISIBILITY, Messages
-                .getString("MultiPageEditorContributor.1"), //$NON-NLS-1$
+                .getString("MultiPageEditorContributor.Grid"), //$NON-NLS-1$
                 IAction.AS_CHECK_BOX));
 
         addDesignActionKey(ActionFactory.COPY.getId());
@@ -154,7 +154,7 @@ public class MultiPageEditorContributor extends MultiPageEditorActionBarContribu
      */
     public void contributeToMenu(final IMenuManager menubar) {
         super.contributeToMenu(menubar);
-        MenuManager viewMenu = new MenuManager(Messages.getString("MultiPageEditorContributor.2")); //$NON-NLS-1$
+        MenuManager viewMenu = new MenuManager(Messages.getString("MultiPageEditorContributor.View")); //$NON-NLS-1$
         viewMenu.add(getAction(GEFActionConstants.ZOOM_IN));
         viewMenu.add(getAction(GEFActionConstants.ZOOM_OUT));
         viewMenu.add(new Separator());

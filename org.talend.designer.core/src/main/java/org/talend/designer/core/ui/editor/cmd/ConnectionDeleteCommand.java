@@ -46,7 +46,7 @@ public class ConnectionDeleteCommand extends Command {
      * @param connection connection to delete
      */
     public ConnectionDeleteCommand(List<Connection> connectionList) {
-        setLabel(Messages.getString("ConnectionDeleteCommand.0")); //$NON-NLS-1$
+        setLabel(Messages.getString("ConnectionDeleteCommand.Label")); //$NON-NLS-1$
         this.connectionList = connectionList;
     }
 

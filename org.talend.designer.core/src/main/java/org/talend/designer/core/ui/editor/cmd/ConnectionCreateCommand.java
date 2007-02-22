@@ -64,7 +64,7 @@ public class ConnectionCreateCommand extends Command {
      * @param meta
      */
     public ConnectionCreateCommand(Node nodeSource, EConnectionType lineStyle, List<Object> listArgs) {
-        setLabel(Messages.getString("ConnectionCreateCommand.0")); //$NON-NLS-1$
+        setLabel(Messages.getString("ConnectionCreateCommand.Label")); //$NON-NLS-1$
         this.source = nodeSource;
         this.lineStyle = lineStyle;
         this.metaName = (String) listArgs.get(0);

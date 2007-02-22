@@ -108,9 +108,9 @@ public class ContextProcessSection extends AbstractPropertySection {
 
     private static final String DEFAULT_CONTEXT = "defaultContext"; //$NON-NLS-1$
 
-    private static final String MENU_TABLE = Messages.getString("ContextProcessSection.1"); //$NON-NLS-1$
+    private static final String MENU_TABLE = "menuTable"; //$NON-NLS-1$
 
-    private static final String ASK_CONFIRMATION = Messages.getString("ContextProcessSection.2"); //$NON-NLS-1$
+    private static final String ASK_CONFIRMATION = Messages.getString("ContextProcessSection.AskConfirmation"); //$NON-NLS-1$
 
     private static final int FIRST_COLUMN_WIDTH = 50;
 
@@ -191,7 +191,7 @@ public class ContextProcessSection extends AbstractPropertySection {
             final TableItem[] tableItems = table.getSelection();
 
             MenuItem menuItem = new MenuItem(menuTable, SWT.PUSH);
-            menuItem.setText(Messages.getString("ContextProcessSection.21")); //$NON-NLS-1$
+            menuItem.setText(Messages.getString("ContextProcessSection.NewParameter")); //$NON-NLS-1$
             menuItem.addListener(SWT.Selection, new Listener() {
 
                 public void handleEvent(final Event event) {
@@ -201,8 +201,8 @@ public class ContextProcessSection extends AbstractPropertySection {
 
             if (tableItems.length == 1) {
                 menuItem = new MenuItem(menuTable, SWT.PUSH);
-                menuItem.setText(Messages.getString("ContextProcessSection.22") //$NON-NLS-1$ 
-                        + tableItems[0].getText(1) + Messages.getString("ContextProcessSection.0")); //$NON-NLS-1$
+                menuItem.setText(Messages.getString("ContextProcessSection.RemoveParameter") //$NON-NLS-1$ 
+                        + tableItems[0].getText(1) + ")"); //$NON-NLS-1$
                 menuItem.addListener(SWT.Selection, new Listener() {
 
                     public void handleEvent(final Event event) {
@@ -316,8 +316,8 @@ public class ContextProcessSection extends AbstractPropertySection {
         public void handleEvent(final Event event) {
             String contextName = tabFolder.getSelection().getText();
             boolean delete = MessageDialog.openQuestion(composite.getShell(), Messages
-                    .getString("ContextProcessSection.18"), //$NON-NLS-1$
-                    Messages.getString("ContextProcessSection.19") + contextName + ")"); //$NON-NLS-1$ //$NON-NLS-2$
+                    .getString("ContextProcessSection.DeleteContext"), //$NON-NLS-1$
+                    Messages.getString("ContextProcessSection.AskDeleteContext") + contextName + ")"); //$NON-NLS-1$ //$NON-NLS-2$
 
             if (delete) {
                 removeContext(contextName);
@@ -329,8 +329,8 @@ public class ContextProcessSection extends AbstractPropertySection {
 
         public void handleEvent(final Event event) {
             InputDialog inputDial = new InputDialog(composite.getShell(),
-                    Messages.getString("ContextProcessSection.6"), //$NON-NLS-1$
-                    Messages.getString("ContextProcessSection.7"), "", null); //$NON-NLS-1$ //$NON-NLS-2$
+                    Messages.getString("ContextProcessSection.NewContext"), //$NON-NLS-1$
+                    Messages.getString("ContextProcessSection.GiveNameContext"), "", null); //$NON-NLS-1$ //$NON-NLS-2$
 
             inputDial.open();
             String returnValue = inputDial.getValue();
@@ -338,9 +338,8 @@ public class ContextProcessSection extends AbstractPropertySection {
                 if (!returnValue.equals("") && Pattern.matches(RepositoryConstants.CODE_ITEM_PATTERN, returnValue)) { //$NON-NLS-1$
                     createContext(returnValue);
                 } else {
-                    MessageDialog.openWarning(new Shell(), Messages.getString(Messages
-                            .getString("ContextProcessSection.50")), Messages //$NON-NLS-1$
-                            .getString(Messages.getString("ContextProcessSection.51"))); //$NON-NLS-1$
+                    MessageDialog.openWarning(new Shell(), Messages.getString("ContextProcessSection.OperationAborted"), Messages //$NON-NLS-1$
+                            .getString(Messages.getString("ContextProcessSection.ContextIncorrect"))); //$NON-NLS-1$
                 }
             }
         }
@@ -350,8 +349,8 @@ public class ContextProcessSection extends AbstractPropertySection {
 
         public void handleEvent(final Event event) {
             InputDialog inputDial = new InputDialog(composite.getShell(), Messages
-                    .getString("ContextProcessSection.12"), //$NON-NLS-1$
-                    Messages.getString("ContextProcessSection.13"), "", null); //$NON-NLS-1$ //$NON-NLS-2$
+                    .getString("ContextProcessSection.NewContext"), //$NON-NLS-1$
+                    Messages.getString("ContextProcessSection.GiveNameContext"), "", null); //$NON-NLS-1$ //$NON-NLS-2$
             inputDial.open();
             String newName = inputDial.getValue();
             if (newName != null) {
@@ -360,8 +359,8 @@ public class ContextProcessSection extends AbstractPropertySection {
                     renameContext(contextName, newName);
                 } else {
                     MessageDialog.openWarning(new Shell(), Messages.getString(Messages
-                            .getString("ContextProcessSection.52")), Messages //$NON-NLS-1$
-                            .getString(Messages.getString("ContextProcessSection.53"))); //$NON-NLS-1$
+                            .getString("ContextProcessSection.OperationAborted")), Messages //$NON-NLS-1$
+                            .getString(Messages.getString("ContextProcessSection.ContextIncorrect"))); //$NON-NLS-1$
                 }
             }
         }
@@ -441,8 +440,8 @@ public class ContextProcessSection extends AbstractPropertySection {
         for (int i = 0; i < process.getContextManager().getListContext().size(); i++) {
             if (process.getContextManager().getListContext().get(i).getName().equals(name)) {
                 MessageBox mBox = new MessageBox(composite.getShell(), SWT.ICON_ERROR);
-                mBox.setText(Messages.getString("ContextProcessSection.29")); //$NON-NLS-1$
-                mBox.setMessage(Messages.getString("ContextProcessSection.30")); //$NON-NLS-1$
+                mBox.setText(Messages.getString("ContextProcessSection.Error")); //$NON-NLS-1$
+                mBox.setMessage(Messages.getString("ContextProcessSection.NameExist")); //$NON-NLS-1$
                 mBox.open();
                 return;
             }
@@ -471,8 +470,8 @@ public class ContextProcessSection extends AbstractPropertySection {
     public void removeContext(final String contextName) {
         if (contextName.equals(process.getContextManager().getDefaultContext().getName())) {
             MessageBox mBox = new MessageBox(composite.getShell(), SWT.ICON_ERROR);
-            mBox.setText(Messages.getString("ContextProcessSection.31")); //$NON-NLS-1$
-            mBox.setMessage(Messages.getString("ContextProcessSection.32")); //$NON-NLS-1$
+            mBox.setText(Messages.getString("ContextProcessSection.Error")); //$NON-NLS-1$
+            mBox.setMessage(Messages.getString("ContextProcessSection.ChangeDefault")); //$NON-NLS-1$
             mBox.open();
             return;
         }
@@ -490,8 +489,8 @@ public class ContextProcessSection extends AbstractPropertySection {
         for (int i = 0; i < process.getContextManager().getListContext().size() && !found; i++) {
             if (process.getContextManager().getListContext().get(i).getName().equals(newName)) {
                 MessageBox mBox = new MessageBox(composite.getShell(), SWT.ICON_ERROR);
-                mBox.setText(Messages.getString("ContextProcessSection.33")); //$NON-NLS-1$
-                mBox.setMessage(Messages.getString("ContextProcessSection.34")); //$NON-NLS-1$
+                mBox.setText(Messages.getString("ContextProcessSection.Error")); //$NON-NLS-1$
+                mBox.setMessage(Messages.getString("ContextProcessSection.NameExist")); //$NON-NLS-1$
                 mBox.open();
                 return;
             }
@@ -660,10 +659,10 @@ public class ContextProcessSection extends AbstractPropertySection {
         column.setTitle("Prompt"); //$NON-NLS-1$
         column.setModifiable(true);
         column.setWidth(FIRST_COLUMN_WIDTH);
-        column.setToolTipHeader(Messages.getString("ContextProcessSection.38")); //$NON-NLS-1$
+        column.setToolTipHeader(Messages.getString("ContextProcessSection.CheckPrompt")); //$NON-NLS-1$
 
         column = new TableViewerCreatorColumn(tableViewerCreator);
-        column.setTitle(Messages.getString("ContextProcessSection.39")); //$NON-NLS-1$
+        column.setTitle(Messages.getString("ContextProcessSection.Name")); //$NON-NLS-1$
         column.setBeanPropertyAccessors(new IBeanPropertyAccessors<IContextParameter, String>() {
 
             public String get(IContextParameter bean) {
@@ -680,7 +679,7 @@ public class ContextProcessSection extends AbstractPropertySection {
         column.setCellEditor(textCellEditor, paramNameCellEditorValueAdapter);
 
         column = new TableViewerCreatorColumn(tableViewerCreator);
-        column.setTitle(Messages.getString("ContextProcessSection.41")); //$NON-NLS-1$
+        column.setTitle(Messages.getString("ContextProcessSection.PromptMessage")); //$NON-NLS-1$
         column.setBeanPropertyAccessors(new IBeanPropertyAccessors<IContextParameter, String>() {
 
             public String get(IContextParameter bean) {
@@ -704,7 +703,7 @@ public class ContextProcessSection extends AbstractPropertySection {
         // //////////////////////////////////////////////////////////
         // Type column
         column = new TableViewerCreatorColumn(tableViewerCreator);
-        column.setTitle(Messages.getString("ContextProcessSection.43")); //$NON-NLS-1$
+        column.setTitle(Messages.getString("ContextProcessSection.Type")); //$NON-NLS-1$
         column.setBeanPropertyAccessors(new IBeanPropertyAccessors<IContextParameter, EMetadataType>() {
 
             public EMetadataType get(IContextParameter bean) {
@@ -749,7 +748,7 @@ public class ContextProcessSection extends AbstractPropertySection {
         // //////////////////////////////////////////////////////////
 
         column = new TableViewerCreatorColumn(tableViewerCreator);
-        column.setTitle(Messages.getString("ContextProcessSection.45")); //$NON-NLS-1$
+        column.setTitle(Messages.getString("ContextProcessSection.Default")); //$NON-NLS-1$
         column.setBeanPropertyAccessors(new IBeanPropertyAccessors<IContextParameter, String>() {
 
             public String get(IContextParameter bean) {
@@ -771,7 +770,7 @@ public class ContextProcessSection extends AbstractPropertySection {
         column.setCellEditor(textCellEditor, setDirtyValueAdapter);
 
         column = new TableViewerCreatorColumn(tableViewerCreator);
-        column.setTitle(Messages.getString("ContextProcessSection.47")); //$NON-NLS-1$
+        column.setTitle(Messages.getString("ContextProcessSection.Comment")); //$NON-NLS-1$
         column.setBeanPropertyAccessors(new IBeanPropertyAccessors<IContextParameter, String>() {
 
             public String get(IContextParameter bean) {
@@ -821,7 +820,7 @@ public class ContextProcessSection extends AbstractPropertySection {
         formLayout.spacing = ITabbedPropertyConstants.VMARGIN + 1;
         dataComp.setLayout(formLayout);
 
-        CLabel label = getWidgetFactory().createCLabel(dataComp, Messages.getString("ContextProcessSection.49")); //$NON-NLS-1$
+        CLabel label = getWidgetFactory().createCLabel(dataComp, Messages.getString("ContextProcessSection.DefaultContext")); //$NON-NLS-1$
         data = new FormData();
         data.left = new FormAttachment(0);
         label.setLayoutData(data);

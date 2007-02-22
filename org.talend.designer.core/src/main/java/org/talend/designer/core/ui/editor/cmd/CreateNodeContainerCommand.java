@@ -66,7 +66,7 @@ public class CreateNodeContainerCommand extends Command {
             this.location.y = tempVar * TalendEditor.GRID_SIZE;
         }
 
-        setLabel(Messages.getString("CreateNodeCommand.0")); //$NON-NLS-1$
+        setLabel(Messages.getString("CreateNodeCommand.Label")); //$NON-NLS-1$
     }
 
     @SuppressWarnings("unchecked") //$NON-NLS-1$

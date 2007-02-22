@@ -71,7 +71,7 @@ public class ChangeValuesFromRepository extends Command {
         this.propertyName = propertyName;
         oldValues = new HashMap<String, Object>();
 
-        setLabel(Messages.getString("PropertyChangeCommand.0")); //$NON-NLS-1$
+        setLabel(Messages.getString("PropertyChangeCommand.Label")); //$NON-NLS-1$
     }
 
     private void refreshPropertyView() {

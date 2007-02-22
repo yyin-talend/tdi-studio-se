@@ -362,8 +362,8 @@ public class EmfComponent implements IComponent {
         param.setDisplayName(EParameterName.LOG.getDisplayName());
         param.setListItemsValue(new String[] { "NONE", "COUNT", "TIME", "PERF" }); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
         param.setListItemsDisplayName(new String[] {
-                Messages.getString("EmfComponent.10"), Messages.getString("EmfComponent.11"), //$NON-NLS-1$ //$NON-NLS-2$
-                Messages.getString("EmfComponent.12"), Messages.getString("EmfComponent.13") }); //$NON-NLS-1$ //$NON-NLS-2$
+                Messages.getString("EmfComponent.None"), Messages.getString("EmfComponent.Count"), //$NON-NLS-1$ //$NON-NLS-2$
+                Messages.getString("EmfComponent.Time"), Messages.getString("EmfComponent.Perf") }); //$NON-NLS-1$ //$NON-NLS-2$
         param.setField(EParameterFieldType.CLOSED_LIST);
         param.setCategory(EComponentCategory.MAIN);
         param.setNumRow(4);

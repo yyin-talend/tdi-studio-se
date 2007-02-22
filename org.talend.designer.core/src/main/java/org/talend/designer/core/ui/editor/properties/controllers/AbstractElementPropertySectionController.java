@@ -225,7 +225,7 @@ public abstract class AbstractElementPropertySectionController implements Proper
                 this.extendedProposal = ProcessProposalUtils.installOn(control, process);
                 this.checkErrorsHelper.register(control, extendedProposal);
                 // this.checkErrorsHelper.checkErrors(control, false);
-                ContextParameterExtractor.installOn(control, (Process) process);
+                ContextParameterExtractor.installOn(control, (Process) process, parameterName);
             }
 
             this.undoRedoHelper.register(control);

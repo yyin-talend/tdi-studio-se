@@ -74,7 +74,7 @@ public final class TalendEditorPaletteFactory {
         CombinedTemplateCreationEntry component;
         Hashtable<String, PaletteDrawer> ht = new Hashtable<String, PaletteDrawer>();
 
-        componentsDrawer = new PaletteDrawer(Messages.getString("TalendEditorPaletteFactory.3")); //$NON-NLS-1$
+        componentsDrawer = new PaletteDrawer(Messages.getString("TalendEditorPaletteFactory.Default")); //$NON-NLS-1$
         List<IComponent> componentList = compFac.getComponents();
         Collections.sort(componentList, new Comparator<IComponent>() {
 
@@ -209,7 +209,7 @@ public final class TalendEditorPaletteFactory {
 
     /** Create the "Tools" group. */
     private static PaletteContainer createToolsGroup() {
-        PaletteGroup toolGroup = new PaletteGroup(Messages.getString("TalendEditorPaletteFactory.4")); //$NON-NLS-1$
+        PaletteGroup toolGroup = new PaletteGroup(Messages.getString("TalendEditorPaletteFactory.Tools")); //$NON-NLS-1$
 
         // Add a selection tool to the group
         ToolEntry tool = new PanningSelectionToolEntry();

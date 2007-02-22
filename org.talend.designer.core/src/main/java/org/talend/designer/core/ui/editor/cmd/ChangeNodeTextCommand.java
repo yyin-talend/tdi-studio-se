@@ -58,7 +58,7 @@ public class ChangeNodeTextCommand extends Command {
             this.newName = ""; //$NON-NLS-1$
         }
         this.nodeLabel = nodeLabel;
-        setLabel(Messages.getString("ChangeNodeTextCommand.1")); //$NON-NLS-1$
+        setLabel(Messages.getString("ChangeNodeTextCommand.Label")); //$NON-NLS-1$
     }
 
     private void refreshPropertyView() {

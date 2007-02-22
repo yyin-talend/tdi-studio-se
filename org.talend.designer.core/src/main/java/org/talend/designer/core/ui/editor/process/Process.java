@@ -134,13 +134,13 @@ public class Process extends Element implements IProcess {
     // properties
     public static final String NODES = "nodes"; //$NON-NLS-1$
 
-    public static final String DEFAULT_CONNECTION_NAME = Messages.getString("Process.1"); //$NON-NLS-1$
+    public static final String DEFAULT_CONNECTION_NAME = "row"; //$NON-NLS-1$
 
     protected List<Node> nodes = new ArrayList<Node>();
 
     protected List<Element> elem = new ArrayList<Element>();
 
-    private String name = new String(Messages.getString("Process.2")); //$NON-NLS-1$
+    private String name = new String(Messages.getString("Process.Job")); //$NON-NLS-1$
 
     private boolean activate = true;
 

@@ -48,7 +48,7 @@ public class DeleteNodeContainerCommand extends Command {
     public DeleteNodeContainerCommand(Process process, List<Node> nodeList) {
         this.process = process;
         this.nodeList = nodeList;
-        setLabel(Messages.getString("DeleteNodeCommand.0")); //$NON-NLS-1$
+        setLabel(Messages.getString("DeleteNodeCommand.Label")); //$NON-NLS-1$
     }
 
     @SuppressWarnings("unchecked") //$NON-NLS-1$

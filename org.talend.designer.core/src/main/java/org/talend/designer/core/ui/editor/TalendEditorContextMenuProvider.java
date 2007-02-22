@@ -110,7 +110,7 @@ public class TalendEditorContextMenuProvider extends ContextMenuProvider {
                 menu.appendToGroup(GEFActionConstants.GROUP_REST, action);
             }
 
-            MenuManager subMenu = new MenuManager(Messages.getString("TalendEditorContextMenuProvider.2")); //$NON-NLS-1$
+            MenuManager subMenu = new MenuManager(Messages.getString("TalendEditorContextMenuProvider.Row")); //$NON-NLS-1$
             menu.appendToGroup(GROUP_CONNECTIONS, subMenu);
 
             action = new ConnectionCreateAction(part, EConnectionType.FLOW_MAIN);
@@ -130,7 +130,7 @@ public class TalendEditorContextMenuProvider extends ContextMenuProvider {
                 subMenu.add(action);
             }
 
-            subMenu = new MenuManager(Messages.getString("TalendEditorContextMenuProvider.3")); //$NON-NLS-1$
+            subMenu = new MenuManager(Messages.getString("TalendEditorContextMenuProvider.Trigger")); //$NON-NLS-1$
             menu.appendToGroup(GROUP_CONNECTIONS, subMenu);
 
             action = new ConnectionCreateAction(part, EConnectionType.RUN_BEFORE);

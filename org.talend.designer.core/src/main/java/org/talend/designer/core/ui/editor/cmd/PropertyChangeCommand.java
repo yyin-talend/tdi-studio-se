@@ -75,7 +75,7 @@ public class PropertyChangeCommand extends Command {
         newValue = propValue;
         toUpdate = false;
         oldElementValues = new HashMap<IElementParameter, Object>();
-        setLabel(Messages.getString("PropertyChangeCommand.0")); //$NON-NLS-1$
+        setLabel(Messages.getString("PropertyChangeCommand.Label")); //$NON-NLS-1$
     }
 
     private void refreshPropertyView() {

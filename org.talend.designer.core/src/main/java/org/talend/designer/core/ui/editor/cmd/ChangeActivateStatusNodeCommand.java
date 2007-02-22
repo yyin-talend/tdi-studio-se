@@ -52,10 +52,10 @@ public class ChangeActivateStatusNodeCommand extends Command {
         this.node = node;
         if (node.isActivate()) {
             value = false;
-            setLabel(Messages.getString("ChangeActivateStatusNodeCommand.0")); //$NON-NLS-1$
+            setLabel(Messages.getString("ChangeActivateStatusNodeCommand.Label.Active")); //$NON-NLS-1$
         } else {
             value = true;
-            setLabel(Messages.getString("ChangeActivateStatusNodeCommand.1")); //$NON-NLS-1$
+            setLabel(Messages.getString("ChangeActivateStatusNodeCommand.Label.Deactive")); //$NON-NLS-1$
         }
     }
 

@@ -131,9 +131,9 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
     void createPage0() {
         try {
             int index = addPage(designerEditor, getEditorInput());
-            setPageText(index, Messages.getString("MultiPageTalendEditor.2")); //$NON-NLS-1$
+            setPageText(index, Messages.getString("MultiPageTalendEditor.Designer")); //$NON-NLS-1$
         } catch (PartInitException e) {
-            ErrorDialog.openError(getSite().getShell(), Messages.getString("MultiPageTalendEditor.3"), //$NON-NLS-1$
+            ErrorDialog.openError(getSite().getShell(), Messages.getString("MultiPageTalendEditor.Designer.Error"), //$NON-NLS-1$
                     null, e.getStatus());
         }
     }
@@ -181,12 +181,12 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
                 PerlEditorPlugin.getDefault().setSyntaxValidationPreference(true);
             }
 
-            setPageText(index, Messages.getString("MultiPageTalendEditor.4")); //$NON-NLS-1$
+            setPageText(index, Messages.getString("MultiPageTalendEditor.Code")); //$NON-NLS-1$
         } catch (PartInitException pie) {
-            ErrorDialog.openError(getSite().getShell(), Messages.getString("MultiPageTalendEditor.3"), //$NON-NLS-1$
+            ErrorDialog.openError(getSite().getShell(), Messages.getString("MultiPageTalendEditor.Designer.Error"), //$NON-NLS-1$
                     null, pie.getStatus());
         } catch (ProcessorException pe) {
-            ErrorDialog.openError(getSite().getShell(), Messages.getString("MultiPageTalendEditor.3"), //$NON-NLS-1$
+            ErrorDialog.openError(getSite().getShell(), Messages.getString("MultiPageTalendEditor.Designer.Error"), //$NON-NLS-1$
                     pe.getMessage(), null);
         }
     }
@@ -305,7 +305,7 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
      */
     public void init(final IEditorSite site, final IEditorInput editorInput) throws PartInitException {
         if (!(editorInput instanceof IFileEditorInput) && !(editorInput instanceof ProcessEditorInput)) {
-            throw new PartInitException(Messages.getString("MultiPageTalendEditor.6")); //$NON-NLS-1$
+            throw new PartInitException(Messages.getString("MultiPageTalendEditor.InvalidInput")); //$NON-NLS-1$
         }
         setSite(site);
         setInput(editorInput);
@@ -372,7 +372,7 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
 
             } catch (ProcessorException pe) {
                 MessageBoxExceptionHandler.process(pe);
-                // ErrorDialog.openError(getSite().getShell(), Messages.getString("MultiPageTalendEditor.3"),
+                // ErrorDialog.openError(getSite().getShell(), Messages.getString("MultiPageTalendEditor.Designer.Error"),
                 // //$NON-NLS-1$
                 // pe.getMessage(), null);
             }
@@ -404,11 +404,11 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
      */
     public void setName() {
         String label = getEditorInput().getName();
-        if (getActivePage() == 1) {
-            setPartName(Messages.getString("MultiPageTalendEditor.0", label)); //$NON-NLS-1$
-        } else {
-            setPartName(Messages.getString("MultiPageTalendEditor.1", label)); //$NON-NLS-1$
-        }
+//        if (getActivePage() == 1) {
+            setPartName(Messages.getString("MultiPageTalendEditor.Job", label)); //$NON-NLS-1$
+//        } else {
+//            setPartName(Messages.getString("other Label??", label)); //$NON-NLS-1$
+//        }
     }
 
     /**
