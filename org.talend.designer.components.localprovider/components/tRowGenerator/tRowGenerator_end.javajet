@@ -1,0 +1,15 @@
+<%@ jet 
+	package="org.talend.designer.codegen.translators" 
+	imports="
+		org.talend.core.model.process.INode  
+		org.talend.designer.codegen.config.CodeGeneratorArgument
+	" 
+	class="RowGeneratorEnd" 
+%>
+
+<%
+	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+	INode node = (INode)codeGenArgument.getArgument();
+%>
+}
+globalMap.put("<%=node.getUniqueName() %>",nb_line_<%=node.getUniqueName() %>);
