@@ -29,28 +29,25 @@ currentComponent="<%=node.getUniqueName() %>";
 	if (codePart.equals(ECodePart.BEGIN)) {
 %>
 
-//=head1 <%=ElementParameterParser.getValue(node, "__COMPONENT_NAME__") %>Perl <%=node.getUniqueName() %>
-//<%=ElementParameterParser.getValue(node, "__COMMENT__") %>
-//=cut
 
 ok_Hash.put("<%=node.getUniqueName() %>", false);
-
+start_Hash.put("<%=node.getUniqueName() %>", java.util.Calendar.getInstance().getTimeInMillis());
 <%
-  String statCatcher = ElementParameterParser.getValue( node,"__TSTATCATCHER_STATS__");
-
-  if ((node.getProcess().getNodesOfType("tStatCatcher").size() > 0) 
-      && (statCatcher.equals("true"))) {
+		String statCatcher = ElementParameterParser.getValue(node,"__TSTATCATCHER_STATS__");
+		if ((node.getProcess().getNodesOfType("tStatCatcher").size() > 0) & (statCatcher.equals("true"))) {
+			for (INode statCatcherNode : node.getProcess().getNodesOfType("tStatCatcher")) {
 %>
-<%=statCatcher %>Process('begin','<%=node.getUniqueName() %>');
-start_Hash.put("<%=node.getUniqueName() %>", java.util.Calendar.getInstance().getTime());
+<%=statCatcherNode.getUniqueName() %>.addMessage("begin","<%=node.getUniqueName() %>");
+<%=statCatcherNode.getUniqueName() %>Process();
 <%
-  }
+			}
+		}
+	}
+  	
   	if ((codePart.equals(ECodePart.BEGIN))&&(stat)) {
 %>
 	runStat.updateStat("<%=node.getUniqueName() %>",0, 0); 
 <%
-	}
-
 	}
 %>
 

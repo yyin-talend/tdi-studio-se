@@ -62,11 +62,12 @@ import java.util.Date;
 	private static java.util.Properties context = null;
 
 	private static final String jobName = "<%=codeGenArgument.getJobName() %>";
+	private static final String projectName = "<%=codeGenArgument.getCurrentProjectName() %>";
 	private static String currentComponent = "";
 	private static final java.util.Map<String, Long> start_Hash = new java.util.HashMap<String, Long>(); 
 	private static final java.util.Map<String, Long> end_Hash = new java.util.HashMap<String, Long>();
 	private static final java.util.Map<String, Boolean> ok_Hash = new java.util.HashMap<String, Boolean>();
-	private static final java.util.Map<String, Integer> globalMap = new java.util.HashMap<String, Integer>();
+	private static final java.util.Map<String, Object> globalMap = new java.util.HashMap<String, Object>();
 
 <%
     if (stats) {
@@ -83,6 +84,20 @@ private static RunTrace runTrace = new RunTrace();
     }
 %>
 
+<% 
+	for (INode logCatcher : process.getNodesOfType("tLogCatcher")) {
+%>
+	LogCatcherUtils <%=logCatcher.getUniqueName() %> = new LogCatcherUtils(); 
+<%
+	}
+
+	for (INode statCatcher : process.getNodesOfType("tStatCatcher")) {
+%>
+	StatCatcherUtils <%=statCatcher.getUniqueName() %> = new StatCatcherUtils(); 
+<%
+	}
+%>
+
 private class TalendException extends Exception {
 	private Exception e = null;
 	private <%=process.getName() %> c = null;
@@ -96,7 +111,25 @@ private class TalendException extends Exception {
 	public void printStackTrace() {
 		System.err.println("Exception in component " + currentComponent);
 		e.printStackTrace();
+
 		try {
+<%
+		if (process.getNodesOfType("tLogCatcher").size() > 0) {
+			List<INode> logCatchers = (List<INode>)process.getNodesOfType("tLogCatcher");
+			for (INode logCatcher : logCatchers) {
+				if (ElementParameterParser.getValue(logCatcher, "__CATCH_JAVA_EXCEPTION__").equals("true")) {
+					// 1) add the message to the stack
+%>
+			<%=logCatcher.getUniqueName() %>.addMessage("Java Exception", currentComponent, 100, "", e.getMessage(), 1);
+<%
+					// 2) launch logCatcher subProcess
+%>
+			<%=logCatcher.getUniqueName() %>Process();
+<%
+				}
+			}
+		}
+%>
 			for (java.lang.reflect.Method m : this.getClass().getEnclosingClass().getMethods()) {
 				if (m.getName().compareTo(currentComponent + "_error") == 0) {
 					m.invoke(c, (Object[])null);
@@ -110,7 +143,12 @@ private class TalendException extends Exception {
 			this.e.printStackTrace();
 		} catch (java.lang.reflect.InvocationTargetException e) {
 			this.e.printStackTrace();
-		}
+		} 
+		<% if (process.getNodesOfType("tLogCatcher").size() > 0) { %>
+			catch (TalendException e) {
+			// do nothing
+			}
+		<% } %>
 	}
 }
 

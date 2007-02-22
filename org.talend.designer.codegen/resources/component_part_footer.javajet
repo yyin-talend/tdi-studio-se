@@ -88,26 +88,17 @@ boolean stat = codeGenArgument.isStatistics();
 %>
 
 ok_Hash.put("<%=node.getUniqueName() %>", true);
-
+end_Hash.put("<%=node.getUniqueName() %>", java.util.Calendar.getInstance().getTimeInMillis());
 
 <%
 		String statCatcher = ElementParameterParser.getValue(node,"__TSTATCATCHER_STATS__");
 		if ((node.getProcess().getNodesOfType("tStatCatcher").size() > 0) & (statCatcher.equals("true"))) {
+			for (INode statCatcherNode : node.getProcess().getNodesOfType("tStatCatcher")) {
 %>
-tStatCatcher_1Process('end','<%=node.getUniqueName() %>');
-end_Hash.put("<%=node.getUniqueName() %>", java.util.Calendar.getInstance().getTime());
-
-//tStatCatcher_1Process(
-//    message => sprintf(
-//        '%.1f seconds',
-//        tv_interval(
-//            $_globals{<%=node.getUniqueName() %>}{start},
-//            [gettimeofday]
-//        )
-//    ),
-//    origin  => '<%=node.getUniqueName() %>',
-//);
+<%=statCatcherNode.getUniqueName() %>.addMessage("end","<%=node.getUniqueName() %>");
+<%=statCatcherNode.getUniqueName() %>Process();
 <%
+			}
 		}
 		
 		for (IConnection outgoingConn : node.getOutgoingConnections()) {

@@ -22,11 +22,18 @@
     public static int portStats = 3334;
     public static int portTraces = 4334;
     public static String contextStr = "<%=codeGenArgument.getContextName() %>";
+    public static long pid = 0;
+    public static long masterPid = 0;
     
     public static void main(String[] args) {
     	for (String arg : args) {
     		<%=process.getName() %>.evalParam(arg);
     	}
+    	
+    	pid = Thread.currentThread().getId();
+    	if (masterPid==0) {
+    		masterPid = pid;
+    	} 
     	
     	try {
     		java.io.InputStream inContext = <%=process.getName() %>.class.getClassLoader().getResourceAsStream("<%=codeGenArgument.getCurrentProjectName().toLowerCase() %>/<%=codeGenArgument.getJobName().toLowerCase() %>/contexts/Default.properties");    		
@@ -71,57 +78,51 @@
 		}
 %>
 
-<%
-		// PTODO MHIRT Implements tStatCatcher
-    	if ((1!=1)&&(process.getNodesOfType("tStatCatcher").size() > 0)) {
-%>
-	tStatCatcher_1Process('begin');
-<%
-    	}
-%>
-
-	long start = java.util.Calendar.getInstance().getTimeInMillis();
 	try {
-	<%=process.getName() %> <%=process.getName() %>Class = new <%=process.getName() %>();
+		long start = java.util.Calendar.getInstance().getTimeInMillis();
+		<%=process.getName() %> <%=process.getName() %>Class = new <%=process.getName() %>();
 <%
+   	for (INode statCatcherNode : process.getNodesOfType("tStatCatcher")) {
+%>
+		<%=process.getName() %>Class.<%=statCatcherNode.getUniqueName() %>.addMessage("begin");
+		<%=process.getName() %>Class.<%=statCatcherNode.getUniqueName() %>Process();
+<%
+    }
+
 	for (INode rootNode : rootNodes) {
 %>
-	<%=process.getName() %>Class.<%=rootNode.getUniqueName() %>Process();
+		<%=process.getName() %>Class.<%=rootNode.getUniqueName() %>Process();
 <%
 	}
 %>  
+		long end = java.util.Calendar.getInstance().getTimeInMillis();
+		if (watch) {
+    		System.out.println((end-start)+" milliseconds");
+	    }
+<%
+   	for (INode statCatcherNode : process.getNodesOfType("tStatCatcher")) {
+%>
+		<%=process.getName() %>Class.<%=statCatcherNode.getUniqueName() %>.addMessage("end");
+		<%=process.getName() %>Class.<%=statCatcherNode.getUniqueName() %>.addMessage(((end-start)/1000) + " seconds");
+		<%=process.getName() %>Class.<%=statCatcherNode.getUniqueName() %>Process();
+<%
+    }
+%>
 	} catch(TalendException e) {
 		e.printStackTrace();
 	} 
-    long end = java.util.Calendar.getInstance().getTimeInMillis();
-    
-    if (watch) {
-    	System.out.println((end-start)+" milliseconds");
-    }
 
 <%
-		// PTODO MHIRT Implements tStatsCatcher
-        if (process.getNodesOfType("tStatCatcher").size() > 0) {
-%>
-	tStatCatcher_1_process('end');
-	tStatCatcher_1_process(sprintf('%s seconds',$_globals{duration}));
-<%
-        }
-%>
-  
-<%
-        if (stats) {
+    if (stats) {
 %>
 	runStat.stopThreadStat();
 <%
-        }
-%>
-<%
-        if (trace) {
+	}
+	if (trace) {
 %>
 	runTrace.stopThreadTrace();
 <%
-        }
+	}
 %>
 	}
 	
@@ -134,6 +135,8 @@
     		portTraces = Integer.parseInt(arg.substring(13));
     	} else if (arg.startsWith("--context=")) {
     		contextStr = arg.substring(10);
+    	} else if (arg.startsWith("--masterpid=")) {
+    		masterPid = Long.parseLong(arg.substring(12));
     	}
 	}
 }
