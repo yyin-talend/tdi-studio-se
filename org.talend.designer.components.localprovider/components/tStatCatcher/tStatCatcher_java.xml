@@ -1,0 +1,60 @@
+<COMPONENT>
+  <HEADER
+    PLATEFORM="ALL"
+    SERIAL=""
+    VERSION="0.1"
+    STATUS="BETA"
+    
+    COMPATIBILITY="ALL"
+    AUTHOR="Talend"
+    RELEASE_DATE="20061215A"
+    STARTABLE="true"
+  >
+    <SIGNATURE></SIGNATURE>
+  </HEADER>
+
+  <DOCUMENTATION>
+    <URL/>
+  </DOCUMENTATION>
+
+  <CONNECTORS>
+    <CONNECTOR CTYPE="FLOW" MAX_INPUT="1"/>
+    <CONNECTOR CTYPE="ITERATE" MAX_OUTPUT="1" MAX_INPUT="1"/>
+    <CONNECTOR CTYPE="BEFORE" MAX_INPUT="1"/>
+    <CONNECTOR CTYPE="AFTER" MAX_INPUT="1"/>
+    <CONNECTOR CTYPE="REFERENCE"/>
+    <CONNECTOR CTYPE="RUN_OK"/>
+    <CONNECTOR CTYPE="RUN_ERROR"/>
+    <CONNECTOR CTYPE="RUN_IF"/>
+  </CONNECTORS>
+
+  <PARAMETERS>
+    <PARAMETER
+      NAME="SCHEMA"
+      FIELD="SCHEMA_TYPE"
+      REQUIRED="true"
+      NUM_ROW="1"
+      READONLY="true"
+    >
+      <TABLE>
+        <COLUMN NAME="moment" TYPE="id_Date"/> <!-- PTODO MHIRT/NRO PATTERN="y-M-d" -->
+        <COLUMN NAME="pid" TYPE="id_Long" LENGTH="10"/>
+        <COLUMN NAME="master_pid" TYPE="id_Long" LENGTH="10"/>
+        <COLUMN NAME="project" TYPE="id_String" LENGTH="50"/>
+        <COLUMN NAME="job" TYPE="id_String" LENGTH="50"/>
+        <COLUMN NAME="context" TYPE="id_String" LENGTH="50"/>
+        <COLUMN NAME="origin" TYPE="id_String" LENGTH="255"/>
+        <COLUMN NAME="message" TYPE="id_String" LENGTH="255"/>
+      </TABLE>
+    </PARAMETER>
+   </PARAMETERS>
+
+   <CODEGENERATION>
+     <TEMPLATES>
+       <TEMPLATE MULTIPLE_METHODS="true"/>
+     </TEMPLATES>
+   </CODEGENERATION>
+
+   <RETURNS/>
+
+</COMPONENT>

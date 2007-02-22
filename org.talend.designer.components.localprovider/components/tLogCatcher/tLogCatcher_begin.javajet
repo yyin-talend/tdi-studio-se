@@ -1,0 +1,43 @@
+<%@ jet 
+	package="org.talend.designer.codegen.translators" 
+	imports="
+		org.talend.core.model.process.INode 
+		org.talend.designer.codegen.config.CodeGeneratorArgument
+		org.talend.core.model.process.IConnection
+		org.talend.core.model.process.EConnectionType
+	"
+	class="LogCatcherBegin"
+%>
+
+<%
+	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+	INode node = (INode)codeGenArgument.getArgument();
+	String cid = node.getUniqueName();
+
+%>
+	for (LogCatcherUtils.LogCatcherMessage lcm : <%=cid %>.getMessages()) {
+<%
+	for (IConnection conn : node.getOutgoingConnections()) {
+		if ((conn.getLineStyle().equals(EConnectionType.FLOW_MAIN))||(conn.getLineStyle().equals(EConnectionType.FLOW_REF))) {
+%>
+		<%=conn.getName() %>.type = lcm.getType();
+		<%=conn.getName() %>.origin = lcm.getOrigin();
+		<%=conn.getName() %>.priority = lcm.getPriority();
+		<%=conn.getName() %>.message = lcm.getErrorMessage();
+		<%=conn.getName() %>.java_error_message = lcm.getJavaErrorMessage();
+		<%=conn.getName() %>.java_error_code = lcm.getJavaErrorCode();
+		<%=conn.getName() %>.code = lcm.getJavaErrorCode();
+		
+		<%=conn.getName() %>.moment = java.util.Calendar.getInstance().getTime();
+	
+    	<%=conn.getName() %>.pid = pid;
+		<%=conn.getName() %>.master_pid = masterPid;
+	
+    	<%=conn.getName() %>.project = projectName;
+    	<%=conn.getName() %>.job = jobName;
+    	<%=conn.getName() %>.context = contextStr;
+    		
+<%
+		}
+	}
+%>
