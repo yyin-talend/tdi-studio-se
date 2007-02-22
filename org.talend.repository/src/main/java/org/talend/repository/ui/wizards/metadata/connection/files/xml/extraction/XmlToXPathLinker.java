@@ -21,6 +21,7 @@
 // ============================================================================
 package org.talend.repository.ui.wizards.metadata.connection.files.xml.extraction;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
@@ -123,7 +124,8 @@ public class XmlToXPathLinker extends TreeToTablesLinker<Object, Object> {
     public void init(Tree tree, ExtractionLoopWithXPathEditorView loopTableEditorView,
             ExtractionFieldsWithXPathEditorView fieldsTableEditorView, TreePopulator treePopulator) {
         init(tree, new Table[] { loopTableEditorView.getExtendedTableViewer().getTableViewerCreator().getTable(),
-                fieldsTableEditorView.getExtendedTableViewer().getTableViewerCreator().getTable(), }, new XmlExtractorBgRefresher(this));
+                fieldsTableEditorView.getExtendedTableViewer().getTableViewerCreator().getTable(), },
+                new XmlExtractorBgRefresher(this));
         this.treePopulator = treePopulator;
         this.loopTableEditorView = loopTableEditorView;
         this.fieldsTableEditorView = fieldsTableEditorView;
@@ -225,15 +227,22 @@ public class XmlToXPathLinker extends TreeToTablesLinker<Object, Object> {
 
                 List<SchemaTarget> schemaTargetList = fieldsTableEditorView.getModel().getBeansList();
 
-                createFieldsLinkWithProgressMonitor(monitorWrap, schemaTargetList.size() + loopTableItems.length, schemaTargetList, 0,
-                        fieldsTableItems.length);
+                createFieldsLinkWithProgressMonitor(monitorWrap, schemaTargetList.size() + loopTableItems.length,
+                        schemaTargetList, 0, fieldsTableItems.length);
 
                 monitorWrap.done();
 
             }
 
         };
-        progressDialog.executeProcess();
+
+        try {
+            progressDialog.executeProcess();
+        } catch (InvocationTargetException e) {
+            ExceptionHandler.process(e);
+        } catch (InterruptedException e) {
+            // Nothing to do
+        }
 
     }
 
@@ -245,8 +254,8 @@ public class XmlToXPathLinker extends TreeToTablesLinker<Object, Object> {
      * @param totalWork
      * @param schemaTargetList
      */
-    private void createFieldsLinkWithProgressMonitor(IProgressMonitor monitorWrap, int totalWork, List<SchemaTarget> schemaTargetList,
-            int startTableItem, int tableItemLength) {
+    private void createFieldsLinkWithProgressMonitor(IProgressMonitor monitorWrap, int totalWork,
+            List<SchemaTarget> schemaTargetList, int startTableItem, int tableItemLength) {
         monitorWrap.beginTask(Messages.getString("XmlToXPathLinker.beginTask.fieldLinksCreation"), totalWork); //$NON-NLS-1$
 
         TableItem[] fieldsTableItems = fieldsTableEditorView.getTable().getItems();
@@ -422,15 +431,22 @@ public class XmlToXPathLinker extends TreeToTablesLinker<Object, Object> {
 
                     List<SchemaTarget> addedObjects = new ArrayList<SchemaTarget>(event.addedObjects);
 
-                    XmlToXPathLinker.this.createFieldsLinkWithProgressMonitor(monitorWrap, addedObjects.size(), addedObjects, event.index,
-                            addedObjects.size());
+                    XmlToXPathLinker.this.createFieldsLinkWithProgressMonitor(monitorWrap, addedObjects.size(), addedObjects,
+                            event.index, addedObjects.size());
 
                     monitorWrap.done();
 
                 }
 
             };
-            progressDialog.executeProcess();
+
+            try {
+                progressDialog.executeProcess();
+            } catch (InvocationTargetException e) {
+                ExceptionHandler.process(e);
+            } catch (InterruptedException e) {
+                // Nothing to do
+            }
 
             getBackgroundRefresher().refreshBackground();
         } else if (event.type == ListenableListEvent.TYPE.SWAPED) {
@@ -462,7 +478,8 @@ public class XmlToXPathLinker extends TreeToTablesLinker<Object, Object> {
      * @param table
      * @param dataItem2
      */
-    private LinkDescriptor<TreeItem, Object, Table, Object> addLink(TreeItem treeItem, Object dataItem1, Table table, Object dataItem2) {
+    private LinkDescriptor<TreeItem, Object, Table, Object> addLink(TreeItem treeItem, Object dataItem1, Table table,
+            Object dataItem2) {
         LinkDescriptor<TreeItem, Object, Table, Object> link = new LinkDescriptor<TreeItem, Object, Table, Object>(
                 new TreeExtremityDescriptor(treeItem, dataItem1), new ExtremityLink<Table, Object>(table, dataItem2));
 
@@ -570,8 +587,8 @@ public class XmlToXPathLinker extends TreeToTablesLinker<Object, Object> {
                     if (treeItemFromAbsoluteXPath != null) {
                         loopXpathNodes.add(absoluteXPathFromNode);
                         uniqueLoopNodes.add(node);
-                        addLoopLink(treeItemFromAbsoluteXPath, (Object) treeItemFromAbsoluteXPath.getData(), tableItemTarget.getParent(),
-                                (XmlXPathLoopDescriptor) tableItemTarget.getData());
+                        addLoopLink(treeItemFromAbsoluteXPath, (Object) treeItemFromAbsoluteXPath.getData(), tableItemTarget
+                                .getParent(), (XmlXPathLoopDescriptor) tableItemTarget.getData());
                         alreadyProcessedXPath.add(absoluteXPathFromNode);
                     }
                 }
@@ -664,8 +681,8 @@ public class XmlToXPathLinker extends TreeToTablesLinker<Object, Object> {
                         if (!alreadyProcessedXPath.contains(absoluteXPathFromNode)) {
                             TreeItem treeItemFromAbsoluteXPath = treePopulator.getTreeItem(absoluteXPathFromNode);
                             if (treeItemFromAbsoluteXPath != null) {
-                                addFieldLink(treeItemFromAbsoluteXPath, (Object) treeItemFromAbsoluteXPath.getData(), tableItemTarget
-                                        .getParent(), (SchemaTarget) tableItemTarget.getData());
+                                addFieldLink(treeItemFromAbsoluteXPath, (Object) treeItemFromAbsoluteXPath.getData(),
+                                        tableItemTarget.getParent(), (SchemaTarget) tableItemTarget.getData());
                                 alreadyProcessedXPath.add(absoluteXPathFromNode);
                             }
                         }
@@ -755,7 +772,7 @@ public class XmlToXPathLinker extends TreeToTablesLinker<Object, Object> {
         return this.loopTableEditorView;
     }
 
-    @SuppressWarnings("unchecked") //$NON-NLS-1$
+    @SuppressWarnings("unchecked")//$NON-NLS-1$
     public void updateLinksStyleAndControlsSelection(Control currentControl) {
 
         boolean selectedControlIsTable = false;

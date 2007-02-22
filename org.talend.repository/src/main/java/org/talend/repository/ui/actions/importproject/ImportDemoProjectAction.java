@@ -30,6 +30,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.internal.dialogs.EventLoopProgressMonitor;
 import org.eclipse.ui.internal.wizards.datatransfer.TarException;
+import org.talend.commons.exception.MessageBoxExceptionHandler;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.commons.ui.swt.dialogs.ProgressDialog;
 import org.talend.repository.i18n.Messages;
@@ -71,30 +72,32 @@ public final class ImportDemoProjectAction extends Action {
             private IProgressMonitor monitorWrap;
 
             @Override
-            public void run(IProgressMonitor monitor) {
+            public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
                 monitorWrap = new EventLoopProgressMonitor(monitor);
 
                 try {
                     ImportProjectsUtilities.importDemoProject(shell, monitorWrap);
                 } catch (IOException e) {
-                    // TODO SML new InvocationTargetException(e);
-                } catch (InvocationTargetException e) {
-                    // TODO SML new InvocationTargetException(e);
-                } catch (InterruptedException e) {
-                    // TODO SML Nothing to do
+                    throw new InvocationTargetException(e);
                 } catch (TarException e) {
-                    // TODO SML new InvocationTargetException(e);
+                    throw new InvocationTargetException(e);
                 }
 
                 monitorWrap.done();
                 MessageDialog.openInformation(shell,
                         Messages.getString("ImportDemoProjectAction.messageDialogTitle.demoProject"), //$NON-NLS-1$
                         Messages.getString("ImportDemoProjectAction.messageDialogContent.demoProjectImportedSuccessfully")); //$NON-NLS-1$
-
             }
 
         };
-        progressDialog.executeProcess();
+
+        try {
+            progressDialog.executeProcess();
+        } catch (InvocationTargetException e) {
+            MessageBoxExceptionHandler.process(e.getTargetException(), shell);
+        } catch (InterruptedException e) {
+            // Nothing to do
+        }
     }
 
     public String getProjectName() {
