@@ -58,7 +58,7 @@ public class BusinessBaseEditHelper extends AbstractEditHelper {
     }
 
     /**
-     * @generated
+     * @generated NOT
      */
     protected ICommand getDestroyElementCommand(DestroyElementRequest req) {
         if (req.getElementToDestroy() != null) {
