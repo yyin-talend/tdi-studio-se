@@ -1,0 +1,64 @@
+<%@ jet 
+	package="org.talend.designer.codegen.translators" 
+	imports="
+		org.talend.core.model.process.INode 
+		org.talend.core.model.process.ElementParameterParser
+		org.talend.designer.codegen.config.CodeGeneratorArgument
+	"
+	class="MsgBoxMain"
+%>
+
+<%
+	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+	INode node = (INode)codeGenArgument.getArgument();
+	String cid = node.getUniqueName();
+	
+	int button = Integer.parseInt(ElementParameterParser.getValue(node, "__BUTTONS__"));	
+%>
+	int messageIcon<%=cid %> = javax.swing.JOptionPane.<%=ElementParameterParser.getValue(node, "__ICON__") %>;
+	String title<%=cid %> = <%=ElementParameterParser.getValue(node, "__TITLE__") %>;
+	String message<%=cid %> = <%=ElementParameterParser.getValue(node, "__MESSAGE__") %>;
+
+<%
+	switch(button) {
+		case 0:
+		// 0) OK
+%>
+		int result<%=cid %> = javax.swing.JOptionPane.showMessageDialog(null, message<%=cid %>, title<%=cid %>, messageIcon<%=cid %>);
+<%
+			break;
+		case 1:
+		// 1) OK and Cancel
+%>
+		int result<%=cid %> = javax.swing.JOptionPane.showOptionDialog(null, message<%=cid %>, title<%=cid %>, javax.swing.JOptionPane.YES_NO_OPTION, messageIcon<%=cid %>, null, new String[] { "OK", "Cancel" }, null);
+<%
+			break;
+		case 2:
+		// 2) Abort Retry Ignore
+%>
+		int result<%=cid %> = javax.swing.JOptionPane.showOptionDialog(null, message<%=cid %>, title<%=cid %>, javax.swing.JOptionPane.YES_NO_CANCEL_OPTION, messageIcon<%=cid %>, null, new String[] { "Abort", "Retry", "Ignore" }, null);
+<%
+			break;
+		case 3:
+		// 3) Yes No and Cancel
+%>
+		int result<%=cid %> = javax.swing.JOptionPane.showOptionDialog(null, message<%=cid %>, title<%=cid %>, javax.swing.JOptionPane.YES_NO_CANCEL_OPTION, messageIcon<%=cid %>, null, new String[] { "Yes", "No", "Cancel" }, null);
+<%
+			break;
+		case 4:
+		// 4) Yes and No
+%>
+		int result<%=cid %> = javax.swing.JOptionPane.showOptionDialog(null, message<%=cid %>, title<%=cid %>, javax.swing.JOptionPane.YES_NO_OPTION, messageIcon<%=cid %>, null, new String[] { "Yes", "No" }, null);
+<%
+			break;
+		case 5:
+		// 5) Retry and Cancel
+%>
+		int result<%=cid %> = javax.swing.JOptionPane.showOptionDialog(null, message<%=cid %>, title<%=cid %>, javax.swing.JOptionPane.YES_NO_OPTION, messageIcon<%=cid %>, null, new String[] { "Retry", "Cancel" }, null);
+<%
+			break;
+		default:
+			//do nothing
+			break;
+	}
+%>
