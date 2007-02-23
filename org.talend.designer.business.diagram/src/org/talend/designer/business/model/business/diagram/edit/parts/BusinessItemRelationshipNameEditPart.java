@@ -547,7 +547,7 @@ public class BusinessItemRelationshipNameEditPart extends LabelEditPart implemen
          */
         public BusinessItemRelationshipNameFigure() {
 
-            this.setText(Messages.getString("BusinessItemRelationshipNameEditPart.0")); //$NON-NLS-1$
+            this.setText(""); //$NON-NLS-1$
             createContents();
         }
 
