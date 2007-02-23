@@ -1,0 +1,390 @@
+<%@ jet 
+package="org.talend.designer.codegen.translators" 
+imports="
+    org.talend.core.model.process.INode 
+    org.talend.core.model.process.ElementParameterParser 
+    org.talend.core.model.metadata.IMetadataTable 
+    org.talend.core.model.metadata.IMetadataColumn
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    org.talend.core.model.metadata.MetadataTalendType
+    java.util.List
+    java.util.Map
+    java.util.ArrayList
+    org.talend.commons.utils.StringUtils
+" 
+class="SybaseOutputBegin" 
+%>
+
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+boolean stats = codeGenArgument.isStatistics();
+
+List<IMetadataTable> metadatas = node.getMetadataList();
+if ((metadatas!=null)&&(metadatas.size()>0)) {
+    IMetadataTable metadata = metadatas.get(0);
+    if (metadata!=null) {
+        String cid = metadata.getTableName();
+
+        String commitEvery = ElementParameterParser.getValue(
+            node,
+            "__COMMIT_EVERY__"
+        );
+
+        String dataAction = ElementParameterParser.getValue(
+            node,
+            "__DATA_ACTION__"
+        );
+        String tableAction = ElementParameterParser.getValue(
+            node,
+            "__TABLE_ACTION__"
+        );
+        String dbserver = ElementParameterParser.getValue(node, "__SERVER__");
+        String dbtable = ElementParameterParser.getValue(node, "__TABLE__");
+        String dbhost = ElementParameterParser.getValue(node, "__HOST__");
+        String dbport = ElementParameterParser.getValue(node, "__PORT__");
+        String dbname = ElementParameterParser.getValue(node, "__DBNAME__");
+        String dbuser = ElementParameterParser.getValue(node, "__USER__");
+        String dbpass = ElementParameterParser.getValue(node, "__PASS__");
+        String encoding = ElementParameterParser.getValue(
+            node,
+            "__ENCODING__"
+        );
+
+        List<Map<String, String>> addCols =
+            (List<Map<String,String>>)ElementParameterParser.getObjectValue(
+                node,
+                "__ADD_COLS__"
+        );
+
+        if (tableAction.equals("DROP_CREATE")
+            || tableAction.equals("CREATE")
+            || tableAction.equals("CREATE_IF_NOT_EXISTS")) {
+            addCols.clear();
+        }
+%>
+
+use DBI;
+use tSybaseOutput::Sybase;
+
+my %desc_<%=cid %> = (
+#    dbhost        => <%=dbhost %>,
+#    dbport        => <%=dbport %>,
+    dbserver      => <%=dbserver %>,
+    dbname        => <%=dbname %>,
+    dbtable       => <%=dbtable %>,
+    dbuser        => <%=dbuser %>,
+    dbpass        => <%=dbpass %>,
+    encoding      => <%=encoding %>,
+    commit_every  => <%=commitEvery %>,
+    schema        => [
+<%
+        for (IMetadataColumn column: metadata.getListColumns()) {
+%>
+        {
+            name    => '<%=column.getLabel() %>',
+            key     => <%=column.isKey() %>,
+            type    => '<%=column.getTalendType() %>',
+            len     => <%=column.getLength() %>,
+            precision => <%=column.getPrecision() %>,
+            null    => <%=column.isNullable() %>,
+            default => '<%=column.getDefault() %>',
+            comment => '<%=column.getComment() %>',
+        },
+<%
+        }
+%>
+    ],
+);
+
+<%
+        if (stats) {
+%>
+    UpdateStat('<%=cid %>', 0);
+<%
+        }
+%>
+
+
+my $dbh_<%=cid %> = DBI->connect(
+    sprintf(
+#        'DBI:Sybase:server=%s;database=%s;charset=%s',
+        'DBI:Sybase:server=%s;database=%s',
+        <%=dbserver %>,
+        <%=dbname %>,
+#        <%=encoding %>,
+    ),
+    <%=dbuser %>,
+    <%=dbpass %>
+)
+    or die "can't connect to database";
+
+my $sth_<%=cid %>;
+my $query;
+
+
+<%
+        if (tableAction.equals("DROP_CREATE")
+            || tableAction.equals("CREATE_IF_NOT_EXISTS")) {
+%>
+# We need the table list to know if drop or "create if not exists" is
+# relevant
+my $tabsth = $dbh_<%=cid %>->table_info();
+my @tables = ();
+
+while (my $entity = $tabsth->fetchrow_hashref()) {
+    if ($entity->{table_type} eq 'TABLE') {
+        push @tables, lc $entity->{table_name};
+    }
+}
+$tabsth->finish() ;
+
+#     print "===\n";
+#     print "existing tables:\n";
+#     print join("\n", map {"  - ".$_} @tables), "\n";
+#     print "===\n";
+
+my $test_table = lc $desc_<%=cid %>{dbtable};
+my $table_exists = grep /^$test_table$/, @tables;
+<%
+        }
+
+        if (tableAction.equals("DROP_CREATE")) {
+%>
+if ($table_exists) {
+    $query = '
+DROP TABLE '.<%=dbtable%>.'
+';
+    $sth_<%=cid %> = $dbh_<%=cid %>->prepare($query);
+
+    $sth_<%=cid %>->execute()
+        or die "can't drop table";
+
+    # the table does not exist anymore
+    $table_exists = 0;
+}
+<%
+        }
+
+        if (tableAction.equals("CREATE")
+            || tableAction.equals("DROP_CREATE")
+            || tableAction.equals("CREATE_IF_NOT_EXISTS")) {
+
+            if (tableAction.equals("CREATE_IF_NOT_EXISTS")) {
+%>
+if (not $table_exists) {
+<%
+            }
+%>
+# now we create the table
+$query = tSybaseOutput::Sybase::getTableCreationQuery(
+    tablename  => $desc_<%=cid %>{dbtable},
+    schema     => $desc_<%=cid %>{schema},
+);
+
+$sth_<%=cid %> = $dbh_<%=cid %>->prepare(
+    $query
+);
+
+$sth_<%=cid %>->execute()
+    or die "can't create table\n===\n$query\n===\n";
+<%
+            if (tableAction.equals("CREATE_IF_NOT_EXISTS")) {
+%>
+}
+<%
+            }
+        }
+
+        if (tableAction.equals("CLEAR")) {
+%>
+$query = '
+DELETE
+  FROM '.<%=dbtable%>.'
+';
+
+$sth_<%=cid %> = $dbh_<%=cid %>->prepare($query);
+$sth_<%=cid %>->execute()
+    or die "can't clear table";
+$sth_<%=cid %>->finish()
+<%
+        }
+%>
+
+my $query = '';
+
+<%
+if ((dataAction.equals("UPDATE"))
+    || (dataAction.equals("UPDATE_OR_INSERT"))
+    || (dataAction.equals("INSERT_OR_UPDATE"))
+    || (dataAction.equals("DELETE"))) {
+    List updateCols  = new ArrayList();
+    List keyCols     = new ArrayList();
+
+    for (IMetadataColumn column: metadata.getListColumns()) {
+        for(int i = 0; i < addCols.size(); i++) {
+            Map<String, String> addCol = addCols.get(i);
+            if (addCol.get("REFCOL").equals(column.getLabel())) {
+                if (addCol.get("POS").equals("BEFORE")) {
+                    updateCols.add(
+                        "'.sprintf('%s = %s', "
+                        + addCol.get("NAME")
+                        + ", "
+                        + addCol.get("SQL")
+                        + ").'"
+                    );
+                }
+            }
+        }
+
+        String currentQueryPart = column.getLabel() + " = ?";
+
+        for(int i = 0; i < addCols.size(); i++) {
+            Map<String, String> addCol = addCols.get(i);
+            if (addCol.get("REFCOL").equals(column.getLabel())) {
+                if (addCol.get("POS").equals("REPLACE")) {
+                    currentQueryPart =
+                        "'.sprintf('%s = %s', "
+                        + addCol.get("NAME")
+                        + ", "
+                        + addCol.get("SQL")
+                        + ").'"
+                    ;
+                }
+            }
+        }
+
+        if (column.isKey()) {
+            keyCols.add(currentQueryPart);
+        }
+        else {
+            updateCols.add(currentQueryPart);
+        }
+
+        for(int i = 0; i < addCols.size(); i++) {
+            Map<String, String> addCol = addCols.get(i);
+            if (addCol.get("REFCOL").equals(column.getLabel())) {
+                if (addCol.get("POS").equals("AFTER")) {
+                    updateCols.add(
+                        "'.sprintf('%s = %s', "
+                        + addCol.get("NAME")
+                        + ", "
+                        + addCol.get("SQL")
+                        + ").'"
+                    );
+                }
+            }
+        }
+    }
+
+    String keyString = StringUtils.join(keyCols.toArray(), " AND ");
+    String updateString = StringUtils.join(updateCols.toArray(), ", ");
+
+    if ((dataAction.equals("UPDATE"))
+        || (dataAction.equals("UPDATE_OR_INSERT"))
+        || (dataAction.equals("INSERT_OR_UPDATE"))) {
+%>
+
+$query = '
+UPDATE '.<%=dbtable%>.'
+  SET <%=updateString%>
+<%
+if(keyString.trim().length() > 0){
+%>
+  WHERE <%=keyString%>
+<%
+}
+%>
+';
+
+my $usth_<%=cid %> = $dbh_<%=cid %>->prepare($query);
+
+<%
+    }
+
+    if (dataAction.equals("DELETE")) {
+%>
+
+$query = '
+DELETE FROM '.<%=dbtable%>.'
+  WHERE <%=keyString%>
+';
+
+my $dsth_<%=cid %> = $dbh_<%=cid %>->prepare($query);
+
+<%
+    }
+}
+
+if ((dataAction.equals("INSERT"))
+    || (dataAction.equals("UPDATE_OR_INSERT"))
+    || (dataAction.equals("INSERT_OR_UPDATE"))) {
+    List keys = new ArrayList();
+    List parameters = new ArrayList();
+
+    for (IMetadataColumn column: metadata.getListColumns()) {
+        for(int i = 0; i < addCols.size(); i++) {
+            Map<String, String> addCol = addCols.get(i);
+            if (addCol.get("REFCOL").equals(column.getLabel())) {
+                if (addCol.get("POS").equals("BEFORE")) {
+                    keys.add("'." + addCol.get("NAME") + ".'");
+                    parameters.add("'." + addCol.get("SQL") + ".'");
+                }
+            }
+        }
+
+        String currentParameter = "?";
+        String currentKey = column.getLabel();
+        for(int i = 0; i < addCols.size(); i++) {
+            Map<String, String> addCol = addCols.get(i);
+            if (addCol.get("REFCOL").equals(column.getLabel())) {
+                if (addCol.get("POS").equals("REPLACE")) {
+                    currentKey = "'." + addCol.get("NAME") + ".'";
+                    currentParameter = "'." + addCol.get("SQL") + ".'";
+                }
+            }
+        }
+        keys.add(currentKey);
+        parameters.add(currentParameter);
+
+        for(int i = 0; i < addCols.size(); i++) {
+            Map<String, String> addCol = addCols.get(i);
+            if (addCol.get("REFCOL").equals(column.getLabel())) {
+                if (addCol.get("POS").equals("AFTER")) {
+                    keys.add("'." + addCol.get("NAME") + ".'");
+                    parameters.add("'." + addCol.get("SQL") + ".'");
+                }
+            }
+        }
+    }
+
+    // String keyString = StringUtils.join(keys.toArray(), ".','.");
+    String keyString = StringUtils.join(keys.toArray(), ", ");
+    String parametersString = StringUtils.join(parameters.toArray(), ", ");
+%>
+
+$query = '
+INSERT
+  INTO '.<%=dbtable%>.'
+  (<%=keyString%>)
+  VALUES
+  (<%=parametersString%>)
+';
+
+my $isth_<%=cid %> = $dbh_<%=cid %>->prepare($query);
+
+<%
+}
+%>
+
+my $nb_line_<%=cid%> = 0;
+my $nb_line_updated_<%=cid%>  = 0;
+my $nb_line_inserted_<%=cid%> = 0;
+my $nb_line_deleted_<%=cid%>  = 0;
+
+my $nb_line_current_commit_<%=cid%> = 0;
+
+<%
+    }
+}
+%>
