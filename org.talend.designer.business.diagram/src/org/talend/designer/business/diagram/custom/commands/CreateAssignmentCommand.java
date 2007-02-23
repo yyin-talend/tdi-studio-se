@@ -82,19 +82,20 @@ public class CreateAssignmentCommand extends AbstractTransactionalCommand {
         BusinessAssignment assignment = BusinessFactory.eINSTANCE.createBusinessAssignment();
 
         RepositoryHelper repositoryHelper = new RepositoryHelper();
-        TalendItem talendItem = repositoryHelper.createTalendItem(item);
-        // PTODO MHE check if talenditem already exists
-
-        if (talendItem == null) {
-            return CommandResult.newErrorCommandResult(Messages.getString("CreateAssignmentCommand.CannotAssign")); //$NON-NLS-1$
-        }
-
         Repository repository = businessItem.getBusinessProcess().getLocalRepositoryCopy();
         if (repository == null) {
             repository = repositoryHelper.createLocalRepositoryCopy(businessItem.getBusinessProcess());
         }
 
-        talendItem.setRepository(repository);
+        TalendItem talendItem = repositoryHelper.getTalendItem(repository, item);
+        if (talendItem == null) {
+            talendItem = repositoryHelper.createTalendItem(repository, item);
+        }
+
+        if (talendItem == null) {
+            return CommandResult.newErrorCommandResult(Messages.getString("CreateAssignmentCommand.CannotAssign")); //$NON-NLS-1$
+        }
+
         assignment.setBusinessItem(businessItem);
         assignment.setTalendItem(talendItem);
 

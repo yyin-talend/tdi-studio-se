@@ -21,24 +21,20 @@
 // ============================================================================
 package org.talend.designer.business.diagram.custom.properties;
 
-import org.eclipse.emf.ecore.EObject;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.edit.provider.IItemPropertyDescriptor;
 import org.eclipse.emf.edit.provider.IItemPropertySource;
-import org.eclipse.emf.edit.ui.action.DeleteAction;
 import org.eclipse.emf.edit.ui.provider.AdapterFactoryContentProvider;
 import org.eclipse.emf.edit.ui.provider.AdapterFactoryLabelProvider;
 import org.eclipse.gmf.runtime.diagram.ui.properties.sections.AbstractModelerPropertySection;
-import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.action.IMenuListener;
-import org.eclipse.jface.action.IMenuManager;
-import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ColumnPixelData;
 import org.eclipse.jface.viewers.ColumnWeightData;
-import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.ICellModifier;
-import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TableLayout;
@@ -51,13 +47,12 @@ import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
-import org.talend.designer.business.diagram.custom.actions.EditAction;
+import org.talend.designer.business.diagram.custom.commands.UnassignTalendItemsFromBusinessAssignmentCommand;
 import org.talend.designer.business.diagram.custom.util.EmfPropertyHelper;
 import org.talend.designer.business.diagram.custom.util.KeyHelper;
 import org.talend.designer.business.diagram.i18n.Messages;
@@ -148,8 +143,6 @@ public class AssignmentPropertySection extends AbstractModelerPropertySection {
         tableViewer.setCellEditors(cellEditors);
 
         createKeyListener(table);
-        createPopupMenu();
-        createDoubleClickListener();
 
         handleLayout(parent, table, column1, column2, column3);
     }
@@ -194,7 +187,7 @@ public class AssignmentPropertySection extends AbstractModelerPropertySection {
                     IStructuredSelection structuredSelection = (IStructuredSelection) selection;
 
                     if (event.keyCode == SWT.DEL) {
-                        getDeleteCommand(structuredSelection).run();
+                        executeDeleteCommand(structuredSelection);
                     } else if (new KeyHelper().anyModifierPressed(event.keyCode)) {
                         // do nothing for Ctrl + Y / Ctrl +Z
                     } else if (new KeyHelper().cursorPressed(event.keyCode)) {
@@ -206,51 +199,6 @@ public class AssignmentPropertySection extends AbstractModelerPropertySection {
                 }
             }
         });
-    }
-
-    /**
-     * DOC mhelleboid Comment method "createDoubleClickListener".
-     */
-    private void createDoubleClickListener() {
-        // PTODO MHE open cell editor instead
-
-        tableViewer.addDoubleClickListener(new IDoubleClickListener() {
-
-            public void doubleClick(DoubleClickEvent event) {
-                ISelection selection = tableViewer.getSelection();
-                if (selection instanceof IStructuredSelection) {
-                    IStructuredSelection structuredSelection = (IStructuredSelection) selection;
-                    getEditCommand(structuredSelection).run();
-                }
-            }
-
-        });
-    }
-
-    /**
-     * DOC mhelleboid Comment method "createPopupMenu".
-     */
-    private void createPopupMenu() {
-        MenuManager menuMgr = new MenuManager("#PopUp"); //$NON-NLS-1$
-        menuMgr.setRemoveAllWhenShown(true);
-        menuMgr.addMenuListener(new IMenuListener() {
-
-            public void menuAboutToShow(IMenuManager mgr) {
-                ISelection selection = tableViewer.getSelection();
-                if (selection instanceof IStructuredSelection) {
-                    IStructuredSelection structuredSelection = (IStructuredSelection) selection;
-
-                    IAction editCommand = getEditCommand(structuredSelection);
-                    if (editCommand != null) {
-                        mgr.add(editCommand);
-                    }
-
-                    mgr.add(getDeleteCommand(structuredSelection));
-                }
-            }
-        });
-        Menu menu = menuMgr.createContextMenu(tableViewer.getControl());
-        tableViewer.getControl().setMenu(menu);
     }
 
     /*
@@ -265,38 +213,19 @@ public class AssignmentPropertySection extends AbstractModelerPropertySection {
         tableViewer.setInput(getEObject());
     }
 
-    /**
-     * DOC mhelleboid Comment method "getEditCommand".
-     * 
-     * @param structuredSelection
-     * @return
-     */
-    private IAction getEditCommand(IStructuredSelection structuredSelection) {
-        // PTODO MHE remove it
-
-        if (structuredSelection.size() == 1) {
-            Object firstElement = structuredSelection.getFirstElement();
-            if (firstElement instanceof EObject) {
-                EObject eObject = (EObject) firstElement;
-                EStructuralFeature structuralFeature = BusinessPackage.eINSTANCE.getBusinessAssignment_Comment();
-
-                EditAction editAction = new EditAction(eObject, adapterFactory, structuralFeature);
-                editAction.setText(Messages.getString("AssignmentPropertySection.Edit")); //$NON-NLS-1$
-                return editAction;
+    private void executeDeleteCommand(IStructuredSelection structuredSelection) {
+        UnassignTalendItemsFromBusinessAssignmentCommand command =  new UnassignTalendItemsFromBusinessAssignmentCommand(getEditingDomain(), true);
+        for (Iterator iter = structuredSelection.iterator(); iter.hasNext();) {
+            Object object = (Object) iter.next();
+            if (object instanceof BusinessAssignment) {
+                BusinessAssignment businessAssignment = (BusinessAssignment) object;
+                command.addBusinessAssignment(businessAssignment);
             }
         }
-        return null;
-    }
-
-    /**
-     * DOC mhelleboid Comment method "getDeleteCommand".
-     * 
-     * @param structuredSelection
-     * @return
-     */
-    private IAction getDeleteCommand(IStructuredSelection structuredSelection) {
-        DeleteAction deleteAction = new DeleteAction(getEditingDomain(), true);
-        deleteAction.updateSelection(structuredSelection);
-        return deleteAction;
+        
+        List commands = new ArrayList();
+        commands.add(command);
+        
+        executeAsCompositeCommand(Messages.getString("AssignmentPropertySection.DeleteAssignment"), commands); //$NON-NLS-1$
     }
 }

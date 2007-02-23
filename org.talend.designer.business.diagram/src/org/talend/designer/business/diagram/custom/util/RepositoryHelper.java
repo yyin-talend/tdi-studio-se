@@ -21,9 +21,12 @@
 // ============================================================================
 package org.talend.designer.business.diagram.custom.util;
 
+import java.util.Iterator;
+
 import org.eclipse.emf.ecore.EClass;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.designer.business.model.business.BusinessAssignment;
 import org.talend.designer.business.model.business.BusinessFactory;
 import org.talend.designer.business.model.business.BusinessPackage;
 import org.talend.designer.business.model.business.BusinessProcess;
@@ -40,7 +43,23 @@ import org.talend.repository.model.RepositoryNode.EProperties;
  */
 public class RepositoryHelper {
 
-    public TalendItem createTalendItem(Object object) {
+    public TalendItem getTalendItem(Repository repository, Object object) {
+        if (object instanceof RepositoryNode) {
+            RepositoryNode repositoryNode = (RepositoryNode) object;
+            if (repositoryNode.getType() == RepositoryNode.ENodeType.REPOSITORY_ELEMENT) {
+                IRepositoryObject repositoryObject = repositoryNode.getObject();
+                for (Iterator iter = repository.getTalenditems().iterator(); iter.hasNext();) {
+                    TalendItem talendItem = (TalendItem) iter.next();
+                    if (talendItem.getId().equals(repositoryObject.getId())) {
+                        return talendItem;
+                    }
+                }
+            }
+        }
+        return null;
+    }
+    
+    public TalendItem createTalendItem(Repository repository, Object object) {
         TalendItem result = null;
 
         if (object instanceof RepositoryNode) {
@@ -51,13 +70,21 @@ public class RepositoryHelper {
                 
                 result = (TalendItem) BusinessFactory.eINSTANCE.create(getEClass(nodeType));
 
+                result.setRepository(repository);
                 result.setId(repositoryObject.getId());
                 result.setLabel(repositoryObject.getLabel());
-
             }
         }
 
         return result;
+    }
+    
+    public void unassignTalendItemsFromBusinessAssignment(BusinessAssignment businessAssignment) {
+        TalendItem talendItem = businessAssignment.getTalendItem();
+        talendItem.getAssignments().remove(businessAssignment);
+        if (talendItem.getAssignments().size() == 0) {
+            talendItem.getRepository().getTalenditems().remove(talendItem);
+        }
     }
 
     /**
