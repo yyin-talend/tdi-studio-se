@@ -82,7 +82,7 @@ public class BusinessVisualIDRegistry {
     }
 
     /**
-     * @generated
+     * @generated NOT
      */
     public static int getVisualID(String type) {
         try {

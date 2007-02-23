@@ -167,7 +167,7 @@ public class BusinessModelingAssistantProvider extends ModelingAssistantProvider
     }
 
     /**
-     * @generated
+     * @generated NOT
      */
     protected EObject selectElement(EObject[] elements) {
         Shell shell = Display.getCurrent().getActiveShell();

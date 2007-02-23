@@ -19,7 +19,7 @@ import org.talend.designer.business.model.business.diagram.edit.parts.BusinessPr
 public class BusinessCreationWizardPage extends EditorWizardPage {
 
     /**
-     * @generated
+     * @generated NOT
      */
     public BusinessCreationWizardPage(IWorkbench workbench, IStructuredSelection selection) {
         super("CreationWizardPage", workbench, selection); //$NON-NLS-1$

@@ -543,7 +543,7 @@ public class BusinessItemRelationshipNameEditPart extends LabelEditPart implemen
     public class BusinessItemRelationshipNameFigure extends org.eclipse.gmf.runtime.draw2d.ui.figures.WrapLabel {
 
         /**
-         * @generated
+         * @generated NOT
          */
         public BusinessItemRelationshipNameFigure() {
 

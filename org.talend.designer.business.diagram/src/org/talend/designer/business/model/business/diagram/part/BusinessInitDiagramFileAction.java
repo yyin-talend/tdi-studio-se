@@ -65,7 +65,7 @@ public class BusinessInitDiagramFileAction implements IObjectActionDelegate {
     }
 
     /**
-     * @generated
+     * @generated NOT
      */
     public void run(IAction action) {
         TransactionalEditingDomain editingDomain = GMFEditingDomainFactory.INSTANCE.createEditingDomain();

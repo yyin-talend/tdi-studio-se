@@ -124,7 +124,7 @@ public abstract class BusinessAbstractParser implements IParser {
     protected abstract String getStringByPattern(IAdaptable adapter, int flags, String pattern, MessageFormat processor);
 
     /**
-     * @generated
+     * @generated NOT
      */
     public IParserEditStatus isValidEditString(IAdaptable element, String editString) {
         ParsePosition pos = new ParsePosition(0);
@@ -196,7 +196,7 @@ public abstract class BusinessAbstractParser implements IParser {
     }
 
     /**
-     * @generated
+     * @generated NOT
      */
     protected Object getValidNewValue(EStructuralFeature feature, Object value) {
         EClassifier type = feature.getEType();

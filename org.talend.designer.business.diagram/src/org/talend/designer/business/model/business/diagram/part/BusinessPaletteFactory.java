@@ -28,7 +28,7 @@ public class BusinessPaletteFactory {
     }
 
     /**
-     * @generated
+     * @generated NOT
      */
     private PaletteContainer createbusiness1Group() {
         PaletteContainer paletteContainer = new PaletteDrawer(Messages.getString("BusinessPaletteFactory.Business")); //$NON-NLS-1$
@@ -46,7 +46,7 @@ public class BusinessPaletteFactory {
     }
 
     /**
-     * @generated
+     * @generated NOT
      */
     private ToolEntry createDecision1CreationTool() {
         ImageDescriptor smallImage;
@@ -65,7 +65,7 @@ public class BusinessPaletteFactory {
     }
 
     /**
-     * @generated
+     * @generated NOT
      */
     private ToolEntry createAction2CreationTool() {
         ImageDescriptor smallImage;
@@ -84,7 +84,7 @@ public class BusinessPaletteFactory {
     }
 
     /**
-     * @generated
+     * @generated NOT
      */
     private ToolEntry createTerminal3CreationTool() {
         ImageDescriptor smallImage;
@@ -103,7 +103,7 @@ public class BusinessPaletteFactory {
     }
 
     /**
-     * @generated
+     * @generated NOT
      */
     private ToolEntry createData4CreationTool() {
         ImageDescriptor smallImage;
@@ -122,7 +122,7 @@ public class BusinessPaletteFactory {
     }
 
     /**
-     * @generated
+     * @generated NOT
      */
     private ToolEntry createDocument5CreationTool() {
         ImageDescriptor smallImage;
@@ -141,7 +141,7 @@ public class BusinessPaletteFactory {
     }
 
     /**
-     * @generated
+     * @generated NOT
      */
     private ToolEntry createInput6CreationTool() {
         ImageDescriptor smallImage;
@@ -160,7 +160,7 @@ public class BusinessPaletteFactory {
     }
 
     /**
-     * @generated
+     * @generated NOT
      */
     private ToolEntry createList7CreationTool() {
         ImageDescriptor smallImage;
@@ -179,7 +179,7 @@ public class BusinessPaletteFactory {
     }
 
     /**
-     * @generated
+     * @generated NOT
      */
     private ToolEntry createDatabase8CreationTool() {
         ImageDescriptor smallImage;
@@ -198,7 +198,7 @@ public class BusinessPaletteFactory {
     }
 
     /**
-     * @generated
+     * @generated NOT
      */
     private ToolEntry createRelationship10CreationTool() {
         ImageDescriptor smallImage;

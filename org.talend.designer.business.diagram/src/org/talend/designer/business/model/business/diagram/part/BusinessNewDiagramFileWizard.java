@@ -100,7 +100,7 @@ public class BusinessNewDiagramFileWizard extends Wizard {
     }
 
     /**
-     * @generated
+     * @generated NOT
      */
     public void addPages() {
         myFileCreationPage = new WizardNewFileCreationPage(Messages
@@ -186,7 +186,7 @@ public class BusinessNewDiagramFileWizard extends Wizard {
     private class RootElementSelectorPage extends WizardPage implements ISelectionChangedListener {
 
         /**
-         * @generated
+         * @generated NOT
          */
         protected RootElementSelectorPage() {
             super(Messages.getString("BusinessNewDiagramFileWizard.SelectRootElement")); //$NON-NLS-1$
@@ -209,7 +209,7 @@ public class BusinessNewDiagramFileWizard extends Wizard {
         }
 
         /**
-         * @generated
+         * @generated NOT
          */
         private void createModelBrowser(Composite parent) {
             Composite panel = new Composite(parent, SWT.NONE);
@@ -251,7 +251,7 @@ public class BusinessNewDiagramFileWizard extends Wizard {
         }
 
         /**
-         * @generated
+         * @generated NOT
          */
         private boolean validatePage() {
             if (myDiagramRoot == null) {
