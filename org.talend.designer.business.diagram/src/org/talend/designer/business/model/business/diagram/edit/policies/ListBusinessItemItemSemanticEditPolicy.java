@@ -65,8 +65,8 @@ public class ListBusinessItemItemSemanticEditPolicy extends BusinessBaseItemSema
         if (!(req.getSource() instanceof BusinessItemShape)) {
             return UnexecutableCommand.INSTANCE;
         }
-        final BusinessProcess element = (BusinessProcess) getRelationshipContainer(req.getSource(), BusinessPackage.eINSTANCE
-                .getBusinessProcess(), req.getElementType());
+        final BusinessProcess element = (BusinessProcess) getRelationshipContainer(req.getSource(),
+                BusinessPackage.eINSTANCE.getBusinessProcess(), req.getElementType());
         if (element == null) {
             return UnexecutableCommand.INSTANCE;
         }

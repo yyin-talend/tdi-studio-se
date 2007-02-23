@@ -41,9 +41,9 @@ public class BusinessDiagramEditorUtil extends IDEEditorUtil {
     /**
      * @generated
      */
-    public static final IFile createAndOpenDiagram(DiagramFileCreator diagramFileCreator, IPath containerPath, String fileName,
-            InputStream initialContents, String kind, IWorkbenchWindow window, IProgressMonitor progressMonitor,
-            boolean openEditor, boolean saveDiagram) {
+    public static final IFile createAndOpenDiagram(DiagramFileCreator diagramFileCreator, IPath containerPath,
+            String fileName, InputStream initialContents, String kind, IWorkbenchWindow window,
+            IProgressMonitor progressMonitor, boolean openEditor, boolean saveDiagram) {
         IFile diagramFile = BusinessDiagramEditorUtil.createNewDiagramFile(diagramFileCreator, containerPath, fileName,
                 initialContents, kind, window.getShell(), progressMonitor);
         if (diagramFile != null && openEditor) {
@@ -74,8 +74,8 @@ public class BusinessDiagramEditorUtil extends IDEEditorUtil {
                         runnable.run(subProgressMonitor);
                     }
                 });
-        final Resource diagramResource = resourceSet.createResource(URI.createPlatformResourceURI(diagramFile.getFullPath()
-                .toString()));
+        final Resource diagramResource = resourceSet.createResource(URI.createPlatformResourceURI(diagramFile
+                .getFullPath().toString()));
         List affectedFiles = new ArrayList();
         affectedFiles.add(diagramFile);
 
@@ -83,7 +83,8 @@ public class BusinessDiagramEditorUtil extends IDEEditorUtil {
         AbstractTransactionalCommand command = new AbstractTransactionalCommand(editingDomain,
                 "Creating diagram and model", affectedFiles) { //$NON-NLS-1$
 
-            protected CommandResult doExecuteWithResult(IProgressMonitor monitor, IAdaptable info) throws ExecutionException {
+            protected CommandResult doExecuteWithResult(IProgressMonitor monitor, IAdaptable info)
+                    throws ExecutionException {
                 BusinessProcess model = createInitialModel();
                 diagramResource.getContents().add(model);
                 Diagram diagram = ViewService.createDiagram(model, kindParam,
@@ -97,14 +98,16 @@ public class BusinessDiagramEditorUtil extends IDEEditorUtil {
                     diagramResource.save(Collections.EMPTY_MAP);
                 } catch (IOException e) {
 
-                    BusinessDiagramEditorPlugin.getInstance().logError("Unable to store model and diagram resources", e); //$NON-NLS-1$
+                    BusinessDiagramEditorPlugin.getInstance()
+                            .logError("Unable to store model and diagram resources", e); //$NON-NLS-1$
                 }
                 return CommandResult.newOKCommandResult();
             }
         };
 
         try {
-            OperationHistoryFactory.getOperationHistory().execute(command, new SubProgressMonitor(progressMonitor, 1), null);
+            OperationHistoryFactory.getOperationHistory().execute(command, new SubProgressMonitor(progressMonitor, 1),
+                    null);
         } catch (ExecutionException e) {
             BusinessDiagramEditorPlugin.getInstance().logError("Unable to create model and diagram", e); //$NON-NLS-1$
         }

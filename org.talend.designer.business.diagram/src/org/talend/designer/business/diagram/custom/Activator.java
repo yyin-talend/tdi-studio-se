@@ -2,7 +2,6 @@ package org.talend.designer.business.diagram.custom;
 
 import org.eclipse.core.runtime.Plugin;
 import org.osgi.framework.BundleContext;
-import org.talend.designer.business.diagram.i18n.Messages;
 
 /**
  * The activator class controls the plug-in life cycle

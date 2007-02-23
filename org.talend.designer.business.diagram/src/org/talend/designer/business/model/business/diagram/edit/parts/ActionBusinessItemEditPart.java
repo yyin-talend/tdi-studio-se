@@ -100,7 +100,8 @@ public class ActionBusinessItemEditPart extends BusinessItemShapeEditPart {
      */
     protected boolean addFixedChild(EditPart childEditPart) {
         if (childEditPart instanceof ActionBusinessItemNameEditPart) {
-            ((ActionBusinessItemNameEditPart) childEditPart).setLabel(getPrimaryShape().getFigureActionBusinessItemNameFigure());
+            ((ActionBusinessItemNameEditPart) childEditPart).setLabel(getPrimaryShape()
+                    .getFigureActionBusinessItemNameFigure());
             return true;
         }
         return false;

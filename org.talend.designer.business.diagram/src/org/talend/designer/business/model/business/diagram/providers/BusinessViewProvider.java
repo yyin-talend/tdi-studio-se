@@ -76,7 +76,8 @@ public class BusinessViewProvider extends AbstractViewProvider {
         }
         EClass semanticType = getSemanticEClass(semanticAdapter);
         EObject semanticElement = getSemanticElement(semanticAdapter);
-        int nodeVID = BusinessVisualIDRegistry.getNodeVisualID(containerView, semanticElement, semanticType, semanticHint);
+        int nodeVID = BusinessVisualIDRegistry.getNodeVisualID(containerView, semanticElement, semanticType,
+                semanticHint);
         switch (nodeVID) {
         case ActionBusinessItemEditPart.VISUAL_ID:
             return ActionBusinessItemViewFactory.class;

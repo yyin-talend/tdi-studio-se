@@ -101,7 +101,8 @@ public class BusinessModelingAssistantProvider extends ModelingAssistantProvider
 
     public List getTypesForTarget(IAdaptable source, IElementType relationshipType) {
         IGraphicalEditPart editPart = (IGraphicalEditPart) source.getAdapter(IGraphicalEditPart.class);
-        IGraphicalEditPart relationShipEditPart = (IGraphicalEditPart) relationshipType.getAdapter(IGraphicalEditPart.class);
+        IGraphicalEditPart relationShipEditPart = (IGraphicalEditPart) relationshipType
+                .getAdapter(IGraphicalEditPart.class);
         if (editPart instanceof BusinessItemShapeEditPart
                 && relationshipType.equals(BusinessElementTypes.BusinessItemRelationship_3001)) {
             List types = new ArrayList();

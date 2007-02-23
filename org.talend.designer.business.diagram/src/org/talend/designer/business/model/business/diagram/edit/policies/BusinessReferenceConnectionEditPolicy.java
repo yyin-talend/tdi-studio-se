@@ -102,8 +102,8 @@ public class BusinessReferenceConnectionEditPolicy extends ConnectionEditPolicy 
      */
     protected Command createDeleteSemanticCommand(GroupRequest deleteRequest) {
         TransactionalEditingDomain editingDomain = ((IGraphicalEditPart) getHost()).getEditingDomain();
-        EditCommandRequestWrapper semReq = new EditCommandRequestWrapper(new DestroyElementRequest(editingDomain, false),
-                deleteRequest.getExtendedData());
+        EditCommandRequestWrapper semReq = new EditCommandRequestWrapper(
+                new DestroyElementRequest(editingDomain, false), deleteRequest.getExtendedData());
         Command semanticCmd = getHost().getCommand(semReq);
         if (semanticCmd != null && semanticCmd.canExecute()) {
             CompoundCommand cc = new CompoundCommand();
@@ -117,8 +117,8 @@ public class BusinessReferenceConnectionEditPolicy extends ConnectionEditPolicy 
      * @generated
      */
     private boolean showPrompt() {
-        boolean prompt = ((IPreferenceStore) ((IGraphicalEditPart) getHost()).getDiagramPreferencesHint().getPreferenceStore())
-                .getBoolean(IPreferenceConstants.PREF_PROMPT_ON_DEL_FROM_DIAGRAM);
+        boolean prompt = ((IPreferenceStore) ((IGraphicalEditPart) getHost()).getDiagramPreferencesHint()
+                .getPreferenceStore()).getBoolean(IPreferenceConstants.PREF_PROMPT_ON_DEL_FROM_DIAGRAM);
         if (prompt)
             if (showMessageDialog())
                 return true;
@@ -131,9 +131,10 @@ public class BusinessReferenceConnectionEditPolicy extends ConnectionEditPolicy 
      * @generated
      */
     private boolean showMessageDialog() {
-        MessageDialogWithToggle dialog = MessageDialogWithToggle.openYesNoQuestion(Display.getCurrent().getActiveShell(),
-                DELETE_FROM_DIAGRAM_DLG_TITLE, DELETE_FROM_DIAGRAM_DLG_MESSAGE, DELETE_FROM_MODEL_DLG_TOGGLE_LABEL, false,
-                (IPreferenceStore) ((IGraphicalEditPart) getHost()).getDiagramPreferencesHint().getPreferenceStore(),
+        MessageDialogWithToggle dialog = MessageDialogWithToggle.openYesNoQuestion(Display.getCurrent()
+                .getActiveShell(), DELETE_FROM_DIAGRAM_DLG_TITLE, DELETE_FROM_DIAGRAM_DLG_MESSAGE,
+                DELETE_FROM_MODEL_DLG_TOGGLE_LABEL, false, (IPreferenceStore) ((IGraphicalEditPart) getHost())
+                        .getDiagramPreferencesHint().getPreferenceStore(),
                 IPreferenceConstants.PREF_PROMPT_ON_DEL_FROM_DIAGRAM);
         if (dialog.getReturnCode() == IDialogConstants.YES_ID)
             return true;

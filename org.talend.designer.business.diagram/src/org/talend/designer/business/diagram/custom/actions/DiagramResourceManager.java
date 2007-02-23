@@ -76,8 +76,8 @@ public class DiagramResourceManager {
         String diagramKind = BusinessProcessEditPart.MODEL_ID;
         Shell shell = page.getWorkbenchWindow().getShell();
 
-        IFile file = BusinessDiagramEditorUtil.createNewDiagramFile(fileCreator, containerFullPath, fileName, initialContents,
-                diagramKind, shell, progressMonitor);
+        IFile file = BusinessDiagramEditorUtil.createNewDiagramFile(fileCreator, containerFullPath, fileName,
+                initialContents, diagramKind, shell, progressMonitor);
 
         return file;
     }
@@ -85,9 +85,10 @@ public class DiagramResourceManager {
     public void updateFromResource(BusinessProcessItem businessProcessItem, IFile file) {
         Resource resource = createResource(file);
 
-        BusinessProcess semantic = (BusinessProcess) EcoreUtil.getObjectByType(resource.getContents(), BusinessPackage.eINSTANCE
-                .getBusinessProcess());
-        Diagram notation = (Diagram) EcoreUtil.getObjectByType(resource.getContents(), NotationPackage.eINSTANCE.getDiagram());
+        BusinessProcess semantic = (BusinessProcess) EcoreUtil.getObjectByType(resource.getContents(),
+                BusinessPackage.eINSTANCE.getBusinessProcess());
+        Diagram notation = (Diagram) EcoreUtil.getObjectByType(resource.getContents(), NotationPackage.eINSTANCE
+                .getDiagram());
 
         businessProcessItem.setSemantic(semantic);
         businessProcessItem.setNotation(notation);
@@ -96,8 +97,8 @@ public class DiagramResourceManager {
     public void updateResource(BusinessProcessItem businessProcessItem, IFile file) {
         Resource resource = createResource(file);
 
-//don't seems to be usefull
-//        EcoreUtil.resolveAll(businessProcessItem.eResource());
+        // don't seems to be usefull
+        // EcoreUtil.resolveAll(businessProcessItem.eResource());
 
         resource.getContents().clear();
         resource.getContents().add(EcoreUtil.copy(businessProcessItem.getSemantic()));

@@ -65,7 +65,8 @@ public class BusinessBaseEditHelper extends AbstractEditHelper {
             if (req.getElementToDestroy() instanceof BusinessItem) {
                 BusinessItem businessItem = (BusinessItem) req.getElementToDestroy();
                 if (businessItem.getAssignments().size() > 0) {
-                    UnassignTalendItemsFromBusinessAssignmentCommand command = new UnassignTalendItemsFromBusinessAssignmentCommand(req.getEditingDomain(), false);
+                    UnassignTalendItemsFromBusinessAssignmentCommand command = new UnassignTalendItemsFromBusinessAssignmentCommand(
+                            req.getEditingDomain(), false);
                     for (Iterator iter = businessItem.getAssignments().iterator(); iter.hasNext();) {
                         BusinessAssignment businessAssignment = (BusinessAssignment) iter.next();
                         command.addBusinessAssignment(businessAssignment);

@@ -57,7 +57,8 @@ public class SimpleBusinessCreationWizard extends RepositoryWizard {
         this.destinationPath = destinationPath;
 
         property = PropertiesFactory.eINSTANCE.createProperty();
-        property.setAuthor(((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY)).getUser());
+        property.setAuthor(((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY))
+                .getUser());
         property.setVersion(VersionUtils.DEFAULT_VERSION);
         property.setStatusCode(""); //$NON-NLS-1$
 
@@ -79,8 +80,8 @@ public class SimpleBusinessCreationWizard extends RepositoryWizard {
 
         property.setId(nextId);
 
-        DiagramResourceManager diagramResourceManager = new DiagramResourceManager(getWorkbench().getActiveWorkbenchWindow()
-                .getActivePage(), new NullProgressMonitor());
+        DiagramResourceManager diagramResourceManager = new DiagramResourceManager(getWorkbench()
+                .getActiveWorkbenchWindow().getActivePage(), new NullProgressMonitor());
         IFile file = diagramResourceManager.createDiagramFile();
         diagramResourceManager.updateFromResource(businessProcessItem, file);
 

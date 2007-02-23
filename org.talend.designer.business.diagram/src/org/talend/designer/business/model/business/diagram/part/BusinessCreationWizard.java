@@ -26,7 +26,8 @@ public class BusinessCreationWizard extends EditorCreationWizard {
     public void init(IWorkbench workbench, IStructuredSelection selection) {
         super.init(workbench, selection);
         setWindowTitle("New Business Diagram"); //$NON-NLS-1$
-        setDefaultPageImageDescriptor(BusinessDiagramEditorPlugin.getBundledImageDescriptor("icons/wizban/NewBusinessWizard.gif")); //$NON-NLS-1$
+        setDefaultPageImageDescriptor(BusinessDiagramEditorPlugin
+                .getBundledImageDescriptor("icons/wizban/NewBusinessWizard.gif")); //$NON-NLS-1$
         setNeedsProgressMonitor(true);
     }
 }

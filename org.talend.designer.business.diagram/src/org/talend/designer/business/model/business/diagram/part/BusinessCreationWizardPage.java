@@ -32,8 +32,8 @@ public class BusinessCreationWizardPage extends EditorWizardPage {
      */
     public IFile createAndOpenDiagram(IPath containerPath, String fileName, InputStream initialContents, String kind,
             IWorkbenchWindow dWindow, IProgressMonitor progressMonitor, boolean saveDiagram) {
-        return BusinessDiagramEditorUtil.createAndOpenDiagram(getDiagramFileCreator(), containerPath, fileName, initialContents,
-                kind, dWindow, progressMonitor, isOpenNewlyCreatedDiagramEditor(), saveDiagram);
+        return BusinessDiagramEditorUtil.createAndOpenDiagram(getDiagramFileCreator(), containerPath, fileName,
+                initialContents, kind, dWindow, progressMonitor, isOpenNewlyCreatedDiagramEditor(), saveDiagram);
     }
 
     /**

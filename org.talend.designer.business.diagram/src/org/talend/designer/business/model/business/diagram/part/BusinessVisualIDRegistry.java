@@ -89,7 +89,8 @@ public class BusinessVisualIDRegistry {
             return Integer.parseInt(type);
         } catch (NumberFormatException e) {
             if (Boolean.TRUE.toString().equalsIgnoreCase(Platform.getDebugOption(DEBUG_KEY))) {
-                BusinessDiagramEditorPlugin.getInstance().logError(Messages.getString("BusinessVisualIDRegistry.ParseError") + type); //$NON-NLS-1$
+                BusinessDiagramEditorPlugin.getInstance().logError(
+                        Messages.getString("BusinessVisualIDRegistry.ParseError") + type); //$NON-NLS-1$
             }
         }
         return -1;

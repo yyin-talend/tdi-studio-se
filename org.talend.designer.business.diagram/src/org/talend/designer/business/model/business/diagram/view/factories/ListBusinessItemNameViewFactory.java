@@ -15,8 +15,8 @@ public class ListBusinessItemNameViewFactory extends BasicNodeViewFactory {
     /**
      * @generated
      */
-    protected void decorateView(View containerView, View view, IAdaptable semanticAdapter, String semanticHint, int index,
-            boolean persisted) {
+    protected void decorateView(View containerView, View view, IAdaptable semanticAdapter, String semanticHint,
+            int index, boolean persisted) {
         super.decorateView(containerView, view, semanticAdapter, semanticHint, index, persisted);
     }
 

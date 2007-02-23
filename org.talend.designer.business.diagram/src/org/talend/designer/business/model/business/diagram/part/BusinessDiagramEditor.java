@@ -109,7 +109,8 @@ public class BusinessDiagramEditor extends FileDiagramEditor implements IGotoMar
 
     protected void initializeGraphicalViewer() {
         super.initializeGraphicalViewer();
-        getDiagramGraphicalViewer().addDropTargetListener(new BusinessDiagramDropTargetListener(getDiagramGraphicalViewer()));
+        getDiagramGraphicalViewer().addDropTargetListener(
+                new BusinessDiagramDropTargetListener(getDiagramGraphicalViewer()));
     }
 
     RepositoryEditorInput repositoryEditorInput;

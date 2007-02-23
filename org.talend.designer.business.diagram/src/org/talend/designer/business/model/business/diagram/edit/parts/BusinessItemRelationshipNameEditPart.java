@@ -42,7 +42,6 @@ import org.eclipse.swt.accessibility.AccessibleEvent;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Image;
-import org.talend.designer.business.diagram.i18n.Messages;
 import org.talend.designer.business.model.business.diagram.edit.policies.BusinessTextSelectionEditPolicy;
 import org.talend.designer.business.model.business.diagram.part.BusinessVisualIDRegistry;
 import org.talend.designer.business.model.business.diagram.providers.BusinessElementTypes;
@@ -81,8 +80,8 @@ public class BusinessItemRelationshipNameEditPart extends LabelEditPart implemen
      * @generated
      */
     static {
-        registerSnapBackPosition(BusinessVisualIDRegistry.getType(BusinessItemRelationshipNameEditPart.VISUAL_ID), new Point(0,
-                40));
+        registerSnapBackPosition(BusinessVisualIDRegistry.getType(BusinessItemRelationshipNameEditPart.VISUAL_ID),
+                new Point(0, 40));
     }
 
     /**
@@ -423,7 +422,8 @@ public class BusinessItemRelationshipNameEditPart extends LabelEditPart implemen
     protected void refreshFont() {
         FontStyle style = (FontStyle) getFontStyleOwnerView().getStyle(NotationPackage.eINSTANCE.getFontStyle());
         if (style != null) {
-            FontData fontData = new FontData(style.getFontName(), style.getFontHeight(), (style.isBold() ? SWT.BOLD : SWT.NORMAL)
+            FontData fontData = new FontData(style.getFontName(), style.getFontHeight(), (style.isBold() ? SWT.BOLD
+                    : SWT.NORMAL)
                     | (style.isItalic() ? SWT.ITALIC : SWT.NORMAL));
             setFont(fontData);
         }

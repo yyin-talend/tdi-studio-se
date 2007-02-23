@@ -74,11 +74,12 @@ public class EditAction extends Action {
         Shell shell = ShellUtil.getShell();
         if (shell != null) {
             IItemPropertySource itemPropertySource = EmfPropertyHelper.getItemPropertySource(adapterFactory, eObject);
-            IItemPropertyDescriptor itemPropertyDescriptor = EmfPropertyHelper.getItemPropertyDescriptor(itemPropertySource,
-                    eObject, structuralFeature);
+            IItemPropertyDescriptor itemPropertyDescriptor = EmfPropertyHelper.getItemPropertyDescriptor(
+                    itemPropertySource, eObject, structuralFeature);
 
             if (itemPropertySource != null) {
-                EditAction.EditDialog editDialog = new EditDialog(shell, adapterFactory, itemPropertyDescriptor, eObject);
+                EditAction.EditDialog editDialog = new EditDialog(shell, adapterFactory, itemPropertyDescriptor,
+                        eObject);
                 if (editDialog.open() == Dialog.OK) {
                     itemPropertyDescriptor.setPropertyValue(eObject, editDialog.getValue());
                 }
@@ -112,8 +113,8 @@ public class EditAction extends Action {
          * @param eObject
          * @param propertyDescriptor
          */
-        protected EditDialog(Shell parentShell, AdapterFactory adapterFactory, IItemPropertyDescriptor itemPropertyDescriptor,
-                EObject eObject) {
+        protected EditDialog(Shell parentShell, AdapterFactory adapterFactory,
+                IItemPropertyDescriptor itemPropertyDescriptor, EObject eObject) {
             super(parentShell);
             this.adapterFactory = adapterFactory;
             this.itemPropertyDescriptor = itemPropertyDescriptor;

@@ -130,7 +130,8 @@ public abstract class BusinessAbstractParser implements IParser {
         ParsePosition pos = new ParsePosition(0);
         Object[] values = getEditProcessor().parse(editString, pos);
         if (values == null) {
-            return new ParserEditStatus(BusinessDiagramEditorPlugin.ID, IParserEditStatus.UNEDITABLE, Messages.getString("BusinessAbstractParser.InvalidInputAt") //$NON-NLS-1$
+            return new ParserEditStatus(BusinessDiagramEditorPlugin.ID, IParserEditStatus.UNEDITABLE, Messages
+                    .getString("BusinessAbstractParser.InvalidInputAt") //$NON-NLS-1$
                     + pos.getErrorIndex());
         }
         return validateNewValues(values);
@@ -220,7 +221,8 @@ public abstract class BusinessAbstractParser implements IParser {
                         value = new Character(s.charAt(0));
                     }
                 } else {
-                    value = new InvalidValue(Messages.getString("BusinessAbstractParser.ValueOfTypeCharacterIsExpected")); //$NON-NLS-1$
+                    value = new InvalidValue(Messages
+                            .getString("BusinessAbstractParser.ValueOfTypeCharacterIsExpected")); //$NON-NLS-1$
                 }
             } else if (Byte.TYPE.equals(iClass)) {
                 if (value instanceof Byte) {
@@ -235,7 +237,8 @@ public abstract class BusinessAbstractParser implements IParser {
                         try {
                             value = Byte.valueOf(s);
                         } catch (NumberFormatException nfe) {
-                            value = new InvalidValue(Messages.getString("BusinessAbstractParser.StringValueDoesNotConvertToByteValue")); //$NON-NLS-1$
+                            value = new InvalidValue(Messages
+                                    .getString("BusinessAbstractParser.StringValueDoesNotConvertToByteValue")); //$NON-NLS-1$
                         }
                     }
                 } else {
@@ -254,7 +257,8 @@ public abstract class BusinessAbstractParser implements IParser {
                         try {
                             value = Short.valueOf(s);
                         } catch (NumberFormatException nfe) {
-                            value = new InvalidValue(Messages.getString("BusinessAbstractParser.StringShortConverError")); //$NON-NLS-1$
+                            value = new InvalidValue(Messages
+                                    .getString("BusinessAbstractParser.StringShortConverError")); //$NON-NLS-1$
                         }
                     }
                 } else {
@@ -273,7 +277,8 @@ public abstract class BusinessAbstractParser implements IParser {
                         try {
                             value = Integer.valueOf(s);
                         } catch (NumberFormatException nfe) {
-                            value = new InvalidValue(Messages.getString("BusinessAbstractParser.StringIntegerConvertError")); //$NON-NLS-1$
+                            value = new InvalidValue(Messages
+                                    .getString("BusinessAbstractParser.StringIntegerConvertError")); //$NON-NLS-1$
                         }
                     }
                 } else {
@@ -311,7 +316,8 @@ public abstract class BusinessAbstractParser implements IParser {
                         try {
                             value = Float.valueOf(s);
                         } catch (NumberFormatException nfe) {
-                            value = new InvalidValue(Messages.getString("BusinessAbstractParser.StringFloatConvertError")); //$NON-NLS-1$
+                            value = new InvalidValue(Messages
+                                    .getString("BusinessAbstractParser.StringFloatConvertError")); //$NON-NLS-1$
                         }
                     }
                 } else {
@@ -330,7 +336,8 @@ public abstract class BusinessAbstractParser implements IParser {
                         try {
                             value = Double.valueOf(s);
                         } catch (NumberFormatException nfe) {
-                            value = new InvalidValue(Messages.getString("BusinessAbstractParser.StringDoubleConvertError")); //$NON-NLS-1$
+                            value = new InvalidValue(Messages
+                                    .getString("BusinessAbstractParser.StringDoubleConvertError")); //$NON-NLS-1$
                         }
                     }
                 } else {

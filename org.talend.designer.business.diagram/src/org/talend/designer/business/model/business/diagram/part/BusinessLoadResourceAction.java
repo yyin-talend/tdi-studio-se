@@ -46,7 +46,8 @@ public class BusinessLoadResourceAction implements IObjectActionDelegate {
         mySelectedElement = null;
         if (selection instanceof IStructuredSelection) {
             IStructuredSelection structuredSelection = (IStructuredSelection) selection;
-            if (structuredSelection.size() == 1 && structuredSelection.getFirstElement() instanceof BusinessProcessEditPart) {
+            if (structuredSelection.size() == 1
+                    && structuredSelection.getFirstElement() instanceof BusinessProcessEditPart) {
                 mySelectedElement = (BusinessProcessEditPart) structuredSelection.getFirstElement();
             }
         }

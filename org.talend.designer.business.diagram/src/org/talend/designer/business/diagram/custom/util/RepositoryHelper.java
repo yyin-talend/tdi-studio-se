@@ -58,7 +58,7 @@ public class RepositoryHelper {
         }
         return null;
     }
-    
+
     public TalendItem createTalendItem(Repository repository, Object object) {
         TalendItem result = null;
 
@@ -66,8 +66,9 @@ public class RepositoryHelper {
             RepositoryNode repositoryNode = (RepositoryNode) object;
             if (repositoryNode.getType() == RepositoryNode.ENodeType.REPOSITORY_ELEMENT) {
                 IRepositoryObject repositoryObject = repositoryNode.getObject();
-                ERepositoryObjectType nodeType = (ERepositoryObjectType) repositoryNode.getProperties(EProperties.CONTENT_TYPE);
-                
+                ERepositoryObjectType nodeType = (ERepositoryObjectType) repositoryNode
+                        .getProperties(EProperties.CONTENT_TYPE);
+
                 result = (TalendItem) BusinessFactory.eINSTANCE.create(getEClass(nodeType));
 
                 result.setRepository(repository);
@@ -78,7 +79,7 @@ public class RepositoryHelper {
 
         return result;
     }
-    
+
     public void unassignTalendItemsFromBusinessAssignment(BusinessAssignment businessAssignment) {
         TalendItem talendItem = businessAssignment.getTalendItem();
         talendItem.getAssignments().remove(businessAssignment);

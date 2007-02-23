@@ -101,7 +101,8 @@ public class AssignmentPropertySection extends AbstractModelerPropertySection {
         table.setHeaderVisible(true);
         table.setLinesVisible(true);
 
-        final String[] columnProperties = new String[] { Messages.getString("AssignmentPropertySection.Type"), Messages.getString("AssignmentPropertySection.Name"), Messages.getString("AssignmentPropertySection.Comment") }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        final String[] columnProperties = new String[] {
+                Messages.getString("AssignmentPropertySection.Type"), Messages.getString("AssignmentPropertySection.Name"), Messages.getString("AssignmentPropertySection.Comment") }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
         TableColumn column1 = new TableColumn(table, SWT.NONE);
         tableLayout.addColumnData(new ColumnPixelData(125, true));
@@ -147,7 +148,8 @@ public class AssignmentPropertySection extends AbstractModelerPropertySection {
         handleLayout(parent, table, column1, column2, column3);
     }
 
-    private void handleLayout(Composite parent, Table table, TableColumn column1, TableColumn column2, TableColumn column3) {
+    private void handleLayout(Composite parent, Table table, TableColumn column1, TableColumn column2,
+            TableColumn column3) {
         Object layoutData = parent.getLayoutData();
         if (layoutData instanceof GridData) {
             GridData gridData = (GridData) layoutData;
@@ -167,8 +169,8 @@ public class AssignmentPropertySection extends AbstractModelerPropertySection {
         // PTODO MHE find another way to itempropertysource without an eobject
         BusinessAssignment sampleBusinessAssignment = BusinessFactory.eINSTANCE.createBusinessAssignment();
         EStructuralFeature businessAssignment_Comment = BusinessPackage.eINSTANCE.getBusinessAssignment_Comment();
-        IItemPropertySource itemPropertySource = EmfPropertyHelper
-                .getItemPropertySource(adapterFactory, sampleBusinessAssignment);
+        IItemPropertySource itemPropertySource = EmfPropertyHelper.getItemPropertySource(adapterFactory,
+                sampleBusinessAssignment);
         return EmfPropertyHelper.getItemPropertyDescriptor(itemPropertySource, sampleBusinessAssignment,
                 businessAssignment_Comment);
     }
@@ -214,7 +216,8 @@ public class AssignmentPropertySection extends AbstractModelerPropertySection {
     }
 
     private void executeDeleteCommand(IStructuredSelection structuredSelection) {
-        UnassignTalendItemsFromBusinessAssignmentCommand command =  new UnassignTalendItemsFromBusinessAssignmentCommand(getEditingDomain(), true);
+        UnassignTalendItemsFromBusinessAssignmentCommand command = new UnassignTalendItemsFromBusinessAssignmentCommand(
+                getEditingDomain(), true);
         for (Iterator iter = structuredSelection.iterator(); iter.hasNext();) {
             Object object = (Object) iter.next();
             if (object instanceof BusinessAssignment) {
@@ -222,10 +225,10 @@ public class AssignmentPropertySection extends AbstractModelerPropertySection {
                 command.addBusinessAssignment(businessAssignment);
             }
         }
-        
+
         List commands = new ArrayList();
         commands.add(command);
-        
+
         executeAsCompositeCommand(Messages.getString("AssignmentPropertySection.DeleteAssignment"), commands); //$NON-NLS-1$
     }
 }

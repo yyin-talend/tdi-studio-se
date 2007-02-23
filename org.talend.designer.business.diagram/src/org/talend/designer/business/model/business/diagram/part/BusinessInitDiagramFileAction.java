@@ -76,11 +76,16 @@ public class BusinessInitDiagramFileAction implements IObjectActionDelegate {
                     .toString()), true);
             diagramRoot = (EObject) resource.getContents().get(0);
         } catch (WrappedException ex) {
-            BusinessDiagramEditorPlugin.getInstance().logError(
-                    Messages.getString("BusinessInitDiagramFileAction.UnableToLoadResource") + mySelectedModelFile.getFullPath().toString(), ex); //$NON-NLS-1$
+            BusinessDiagramEditorPlugin
+                    .getInstance()
+                    .logError(
+                            Messages.getString("BusinessInitDiagramFileAction.UnableToLoadResource") + mySelectedModelFile.getFullPath().toString(), ex); //$NON-NLS-1$
         }
         if (diagramRoot == null) {
-            MessageDialog.openError(myPart.getSite().getShell(), Messages.getString("BusinessInitDiagramFileAction.Error"), Messages.getString("BusinessInitDiagramFileAction.LoadFaild")); //$NON-NLS-1$ //$NON-NLS-2$
+            MessageDialog
+                    .openError(
+                            myPart.getSite().getShell(),
+                            Messages.getString("BusinessInitDiagramFileAction.Error"), Messages.getString("BusinessInitDiagramFileAction.LoadFaild")); //$NON-NLS-1$ //$NON-NLS-2$
             return;
         }
         Wizard wizard = new BusinessNewDiagramFileWizard(mySelectedModelFile, myPart.getSite().getPage(), mySelection,
@@ -92,7 +97,8 @@ public class BusinessInitDiagramFileAction implements IObjectActionDelegate {
         }
         wizard.setDialogSettings(initDiagramFileSettings);
         wizard.setForcePreviousAndNextButtons(false);
-        wizard.setWindowTitle(Messages.getString("BusinessInitDiagramFileAction.IntialNew") + BusinessProcessEditPart.MODEL_ID + Messages.getString("BusinessInitDiagramFileAction.DiagramFile")); //$NON-NLS-1$ //$NON-NLS-2$
+        wizard
+                .setWindowTitle(Messages.getString("BusinessInitDiagramFileAction.IntialNew") + BusinessProcessEditPart.MODEL_ID + Messages.getString("BusinessInitDiagramFileAction.DiagramFile")); //$NON-NLS-1$ //$NON-NLS-2$
 
         WizardDialog dialog = new WizardDialog(myPart.getSite().getShell(), wizard);
         dialog.create();

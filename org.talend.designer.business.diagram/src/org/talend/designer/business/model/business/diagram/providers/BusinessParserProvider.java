@@ -43,8 +43,8 @@ public class BusinessParserProvider extends AbstractProvider implements IParserP
      * @generated
      */
     protected IParser createActionBusinessItemActionBusinessItemName_4001Parser() {
-        BusinessStructuralFeatureParser parser = new BusinessStructuralFeatureParser(BusinessPackage.eINSTANCE.getBusinessItem()
-                .getEStructuralFeature("name")); //$NON-NLS-1$
+        BusinessStructuralFeatureParser parser = new BusinessStructuralFeatureParser(BusinessPackage.eINSTANCE
+                .getBusinessItem().getEStructuralFeature("name")); //$NON-NLS-1$
         return parser;
     }
 
@@ -67,8 +67,8 @@ public class BusinessParserProvider extends AbstractProvider implements IParserP
      * @generated
      */
     protected IParser createTerminalBusinessItemTerminalBusinessItemName_4002Parser() {
-        BusinessStructuralFeatureParser parser = new BusinessStructuralFeatureParser(BusinessPackage.eINSTANCE.getBusinessItem()
-                .getEStructuralFeature("name")); //$NON-NLS-1$
+        BusinessStructuralFeatureParser parser = new BusinessStructuralFeatureParser(BusinessPackage.eINSTANCE
+                .getBusinessItem().getEStructuralFeature("name")); //$NON-NLS-1$
         return parser;
     }
 
@@ -91,8 +91,8 @@ public class BusinessParserProvider extends AbstractProvider implements IParserP
      * @generated
      */
     protected IParser createDocumentBusinessItemDocumentBusinessItemName_4003Parser() {
-        BusinessStructuralFeatureParser parser = new BusinessStructuralFeatureParser(BusinessPackage.eINSTANCE.getBusinessItem()
-                .getEStructuralFeature("name")); //$NON-NLS-1$
+        BusinessStructuralFeatureParser parser = new BusinessStructuralFeatureParser(BusinessPackage.eINSTANCE
+                .getBusinessItem().getEStructuralFeature("name")); //$NON-NLS-1$
         return parser;
     }
 
@@ -115,8 +115,8 @@ public class BusinessParserProvider extends AbstractProvider implements IParserP
      * @generated
      */
     protected IParser createDatabaseBusinessItemDatabaseBusinessItemName_4004Parser() {
-        BusinessStructuralFeatureParser parser = new BusinessStructuralFeatureParser(BusinessPackage.eINSTANCE.getBusinessItem()
-                .getEStructuralFeature("name")); //$NON-NLS-1$
+        BusinessStructuralFeatureParser parser = new BusinessStructuralFeatureParser(BusinessPackage.eINSTANCE
+                .getBusinessItem().getEStructuralFeature("name")); //$NON-NLS-1$
         return parser;
     }
 
@@ -139,8 +139,8 @@ public class BusinessParserProvider extends AbstractProvider implements IParserP
      * @generated
      */
     protected IParser createListBusinessItemListBusinessItemName_4005Parser() {
-        BusinessStructuralFeatureParser parser = new BusinessStructuralFeatureParser(BusinessPackage.eINSTANCE.getBusinessItem()
-                .getEStructuralFeature("name")); //$NON-NLS-1$
+        BusinessStructuralFeatureParser parser = new BusinessStructuralFeatureParser(BusinessPackage.eINSTANCE
+                .getBusinessItem().getEStructuralFeature("name")); //$NON-NLS-1$
         return parser;
     }
 
@@ -163,8 +163,8 @@ public class BusinessParserProvider extends AbstractProvider implements IParserP
      * @generated
      */
     protected IParser createDataBusinessItemDataBusinessItemName_4006Parser() {
-        BusinessStructuralFeatureParser parser = new BusinessStructuralFeatureParser(BusinessPackage.eINSTANCE.getBusinessItem()
-                .getEStructuralFeature("name")); //$NON-NLS-1$
+        BusinessStructuralFeatureParser parser = new BusinessStructuralFeatureParser(BusinessPackage.eINSTANCE
+                .getBusinessItem().getEStructuralFeature("name")); //$NON-NLS-1$
         return parser;
     }
 
@@ -187,8 +187,8 @@ public class BusinessParserProvider extends AbstractProvider implements IParserP
      * @generated
      */
     protected IParser createInputBusinessItemInputBusinessItemName_4007Parser() {
-        BusinessStructuralFeatureParser parser = new BusinessStructuralFeatureParser(BusinessPackage.eINSTANCE.getBusinessItem()
-                .getEStructuralFeature("name")); //$NON-NLS-1$
+        BusinessStructuralFeatureParser parser = new BusinessStructuralFeatureParser(BusinessPackage.eINSTANCE
+                .getBusinessItem().getEStructuralFeature("name")); //$NON-NLS-1$
         return parser;
     }
 
@@ -211,8 +211,8 @@ public class BusinessParserProvider extends AbstractProvider implements IParserP
      * @generated
      */
     protected IParser createDecisionBusinessItemDecisionBusinessItemName_4008Parser() {
-        BusinessStructuralFeatureParser parser = new BusinessStructuralFeatureParser(BusinessPackage.eINSTANCE.getBusinessItem()
-                .getEStructuralFeature("name")); //$NON-NLS-1$
+        BusinessStructuralFeatureParser parser = new BusinessStructuralFeatureParser(BusinessPackage.eINSTANCE
+                .getBusinessItem().getEStructuralFeature("name")); //$NON-NLS-1$
         return parser;
     }
 
@@ -235,8 +235,8 @@ public class BusinessParserProvider extends AbstractProvider implements IParserP
      * @generated
      */
     protected IParser createBusinessItemRelationshipBusinessItemRelationshipName_4009Parser() {
-        BusinessStructuralFeatureParser parser = new BusinessStructuralFeatureParser(BusinessPackage.eINSTANCE.getBusinessItem()
-                .getEStructuralFeature("name")); //$NON-NLS-1$
+        BusinessStructuralFeatureParser parser = new BusinessStructuralFeatureParser(BusinessPackage.eINSTANCE
+                .getBusinessItem().getEStructuralFeature("name")); //$NON-NLS-1$
         return parser;
     }
 

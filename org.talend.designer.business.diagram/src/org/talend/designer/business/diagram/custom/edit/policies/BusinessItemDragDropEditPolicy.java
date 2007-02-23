@@ -51,8 +51,8 @@ public class BusinessItemDragDropEditPolicy extends DiagramDragDropEditPolicy {
         BusinessItem businessItem = new ElementHelper().getElement(getHost());
 
         if (businessItem != null) {
-            CreateAssignmentCommand createAssignmentCommand = new CreateAssignmentCommand(((IGraphicalEditPart) getHost())
-                    .getEditingDomain());
+            CreateAssignmentCommand createAssignmentCommand = new CreateAssignmentCommand(
+                    ((IGraphicalEditPart) getHost()).getEditingDomain());
             createAssignmentCommand.setBusinessItem(businessItem);
 
             // PTODO MHE create multiples commands

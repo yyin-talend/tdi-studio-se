@@ -44,7 +44,8 @@ public class BusinessBaseItemSemanticEditPolicy extends SemanticEditPolicy {
         IEditCommandRequest completedRequest = completeRequest(request);
         Object editHelperContext = completedRequest.getEditHelperContext();
         if (editHelperContext instanceof View
-                || (editHelperContext instanceof IEditHelperContext && ((IEditHelperContext) editHelperContext).getEObject() instanceof View)) {
+                || (editHelperContext instanceof IEditHelperContext && ((IEditHelperContext) editHelperContext)
+                        .getEObject() instanceof View)) {
             // no semantic commands are provided for pure design elements
             return null;
         }
@@ -57,8 +58,8 @@ public class BusinessBaseItemSemanticEditPolicy extends SemanticEditPolicy {
         }
         Command epCommand = getSemanticCommandSwitch(completedRequest);
         if (epCommand != null) {
-            ICommand command = epCommand instanceof ICommandProxy ? ((ICommandProxy) epCommand).getICommand() : new CommandProxy(
-                    epCommand);
+            ICommand command = epCommand instanceof ICommandProxy ? ((ICommandProxy) epCommand).getICommand()
+                    : new CommandProxy(epCommand);
             completedRequest.setParameter(BusinessBaseEditHelper.EDIT_POLICY_COMMAND, command);
         }
         Command ehCommand = null;
@@ -79,7 +80,8 @@ public class BusinessBaseItemSemanticEditPolicy extends SemanticEditPolicy {
         if (shouldProceed) {
             if (completedRequest instanceof DestroyRequest) {
                 TransactionalEditingDomain editingDomain = ((IGraphicalEditPart) getHost()).getEditingDomain();
-                Command deleteViewCommand = new ICommandProxy(new DeleteCommand(editingDomain, (View) getHost().getModel()));
+                Command deleteViewCommand = new ICommandProxy(new DeleteCommand(editingDomain, (View) getHost()
+                        .getModel()));
                 ehCommand = ehCommand == null ? deleteViewCommand : ehCommand.chain(deleteViewCommand);
             }
             return ehCommand;

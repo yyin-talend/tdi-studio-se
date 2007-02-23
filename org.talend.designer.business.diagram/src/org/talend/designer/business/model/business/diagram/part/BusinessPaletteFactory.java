@@ -58,7 +58,8 @@ public class BusinessPaletteFactory {
 
         final List elementTypes = new ArrayList();
         elementTypes.add(BusinessElementTypes.DecisionBusinessItem_1008);
-        ToolEntry result = new NodeToolEntry(Messages.getString("BusinessPaletteFactory.decision"), Messages.getString("BusinessPaletteFactory.DecisionComment"), smallImage, largeImage, elementTypes); //$NON-NLS-1$ //$NON-NLS-2$
+        ToolEntry result = new NodeToolEntry(
+                Messages.getString("BusinessPaletteFactory.decision"), Messages.getString("BusinessPaletteFactory.DecisionComment"), smallImage, largeImage, elementTypes); //$NON-NLS-1$ //$NON-NLS-2$
 
         return result;
     }
@@ -76,7 +77,8 @@ public class BusinessPaletteFactory {
 
         final List elementTypes = new ArrayList();
         elementTypes.add(BusinessElementTypes.ActionBusinessItem_1001);
-        ToolEntry result = new NodeToolEntry(Messages.getString("BusinessPaletteFactory.Action"), Messages.getString("BusinessPaletteFactory.ActionComment"), smallImage, largeImage, elementTypes); //$NON-NLS-1$ //$NON-NLS-2$
+        ToolEntry result = new NodeToolEntry(
+                Messages.getString("BusinessPaletteFactory.Action"), Messages.getString("BusinessPaletteFactory.ActionComment"), smallImage, largeImage, elementTypes); //$NON-NLS-1$ //$NON-NLS-2$
 
         return result;
     }
@@ -94,7 +96,8 @@ public class BusinessPaletteFactory {
 
         final List elementTypes = new ArrayList();
         elementTypes.add(BusinessElementTypes.TerminalBusinessItem_1002);
-        ToolEntry result = new NodeToolEntry(Messages.getString("BusinessPaletteFactory.Terminal"), Messages.getString("BusinessPaletteFactory.TerminalComment"), smallImage, largeImage, elementTypes); //$NON-NLS-1$ //$NON-NLS-2$
+        ToolEntry result = new NodeToolEntry(
+                Messages.getString("BusinessPaletteFactory.Terminal"), Messages.getString("BusinessPaletteFactory.TerminalComment"), smallImage, largeImage, elementTypes); //$NON-NLS-1$ //$NON-NLS-2$
 
         return result;
     }
@@ -112,7 +115,8 @@ public class BusinessPaletteFactory {
 
         final List elementTypes = new ArrayList();
         elementTypes.add(BusinessElementTypes.DataBusinessItem_1006);
-        ToolEntry result = new NodeToolEntry(Messages.getString("BusinessPaletteFactory.Data"), Messages.getString("BusinessPaletteFactory.DataComment"), smallImage, largeImage, elementTypes); //$NON-NLS-1$ //$NON-NLS-2$
+        ToolEntry result = new NodeToolEntry(
+                Messages.getString("BusinessPaletteFactory.Data"), Messages.getString("BusinessPaletteFactory.DataComment"), smallImage, largeImage, elementTypes); //$NON-NLS-1$ //$NON-NLS-2$
 
         return result;
     }
@@ -130,7 +134,8 @@ public class BusinessPaletteFactory {
 
         final List elementTypes = new ArrayList();
         elementTypes.add(BusinessElementTypes.DocumentBusinessItem_1003);
-        ToolEntry result = new NodeToolEntry(Messages.getString("BusinessPaletteFactory.Document"), Messages.getString("BusinessPaletteFactory.DocuemntComment"), smallImage, largeImage, elementTypes); //$NON-NLS-1$ //$NON-NLS-2$
+        ToolEntry result = new NodeToolEntry(
+                Messages.getString("BusinessPaletteFactory.Document"), Messages.getString("BusinessPaletteFactory.DocuemntComment"), smallImage, largeImage, elementTypes); //$NON-NLS-1$ //$NON-NLS-2$
 
         return result;
     }
@@ -148,7 +153,8 @@ public class BusinessPaletteFactory {
 
         final List elementTypes = new ArrayList();
         elementTypes.add(BusinessElementTypes.InputBusinessItem_1007);
-        ToolEntry result = new NodeToolEntry(Messages.getString("BusinessPaletteFactory.Input"), Messages.getString("BusinessPaletteFactory.InputComment"), smallImage, largeImage, elementTypes); //$NON-NLS-1$ //$NON-NLS-2$
+        ToolEntry result = new NodeToolEntry(
+                Messages.getString("BusinessPaletteFactory.Input"), Messages.getString("BusinessPaletteFactory.InputComment"), smallImage, largeImage, elementTypes); //$NON-NLS-1$ //$NON-NLS-2$
 
         return result;
     }
@@ -166,7 +172,8 @@ public class BusinessPaletteFactory {
 
         final List elementTypes = new ArrayList();
         elementTypes.add(BusinessElementTypes.ListBusinessItem_1005);
-        ToolEntry result = new NodeToolEntry(Messages.getString("BusinessPaletteFactory.List"), Messages.getString("BusinessPaletteFactory.ListComment"), smallImage, largeImage, elementTypes); //$NON-NLS-1$ //$NON-NLS-2$
+        ToolEntry result = new NodeToolEntry(
+                Messages.getString("BusinessPaletteFactory.List"), Messages.getString("BusinessPaletteFactory.ListComment"), smallImage, largeImage, elementTypes); //$NON-NLS-1$ //$NON-NLS-2$
 
         return result;
     }
@@ -184,7 +191,8 @@ public class BusinessPaletteFactory {
 
         final List elementTypes = new ArrayList();
         elementTypes.add(BusinessElementTypes.DatabaseBusinessItem_1004);
-        ToolEntry result = new NodeToolEntry(Messages.getString("BusinessPaletteFactory.Database"), Messages.getString("BusinessPaletteFactory.DatabaseComment"), smallImage, largeImage, elementTypes); //$NON-NLS-1$ //$NON-NLS-2$
+        ToolEntry result = new NodeToolEntry(
+                Messages.getString("BusinessPaletteFactory.Database"), Messages.getString("BusinessPaletteFactory.DatabaseComment"), smallImage, largeImage, elementTypes); //$NON-NLS-1$ //$NON-NLS-2$
 
         return result;
     }
@@ -202,7 +210,8 @@ public class BusinessPaletteFactory {
 
         final List relationshipTypes = new ArrayList();
         relationshipTypes.add(BusinessElementTypes.BusinessItemRelationship_3001);
-        ToolEntry result = new LinkToolEntry(Messages.getString("BusinessPaletteFactory.Relationshop"), Messages.getString("BusinessPaletteFactory.RelationshopComment"), smallImage, largeImage, relationshipTypes); //$NON-NLS-1$ //$NON-NLS-2$
+        ToolEntry result = new LinkToolEntry(
+                Messages.getString("BusinessPaletteFactory.Relationshop"), Messages.getString("BusinessPaletteFactory.RelationshopComment"), smallImage, largeImage, relationshipTypes); //$NON-NLS-1$ //$NON-NLS-2$
 
         return result;
     }

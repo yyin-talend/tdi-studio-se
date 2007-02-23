@@ -29,7 +29,6 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.edit.provider.IItemPropertyDescriptor;
 import org.eclipse.emf.edit.provider.IItemPropertySource;
-import org.talend.designer.business.diagram.i18n.Messages;
 
 /**
  * DOC mhelleboid class global comment. Detailled comment <br/>
@@ -47,8 +46,8 @@ public class EmfPropertyHelper {
      * @param structuralFeature TODO
      * @return
      */
-    public static IItemPropertyDescriptor getItemPropertyDescriptor(IItemPropertySource itemPropertySource, EObject eObject,
-            EStructuralFeature structuralFeature) {
+    public static IItemPropertyDescriptor getItemPropertyDescriptor(IItemPropertySource itemPropertySource,
+            EObject eObject, EStructuralFeature structuralFeature) {
         IItemPropertyDescriptor itemPropertyDescriptor = null;
 
         List propertyDescriptors = itemPropertySource.getPropertyDescriptors(eObject);

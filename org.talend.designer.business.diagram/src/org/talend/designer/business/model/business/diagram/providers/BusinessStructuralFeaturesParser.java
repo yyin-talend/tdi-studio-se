@@ -48,7 +48,8 @@ public class BusinessStructuralFeaturesParser extends BusinessAbstractParser {
             value = getValidValue(feature, value);
             values.add(value);
         }
-        return processor.format(values.toArray(new Object[values.size()]), new StringBuffer(), new FieldPosition(0)).toString();
+        return processor.format(values.toArray(new Object[values.size()]), new StringBuffer(), new FieldPosition(0))
+                .toString();
     }
 
     /**
@@ -61,7 +62,8 @@ public class BusinessStructuralFeaturesParser extends BusinessAbstractParser {
         for (int i = 0; i < values.length; i++) {
             Object value = getValidNewValue((EStructuralFeature) features.get(i), values[i]);
             if (value instanceof InvalidValue) {
-                return new ParserEditStatus(BusinessDiagramEditorPlugin.ID, IParserEditStatus.UNEDITABLE, value.toString());
+                return new ParserEditStatus(BusinessDiagramEditorPlugin.ID, IParserEditStatus.UNEDITABLE, value
+                        .toString());
             }
         }
         return ParserEditStatus.EDITABLE_STATUS;

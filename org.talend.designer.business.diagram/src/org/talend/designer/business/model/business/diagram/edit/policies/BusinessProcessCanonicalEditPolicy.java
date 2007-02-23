@@ -229,8 +229,8 @@ public class BusinessProcessCanonicalEditPolicy extends CanonicalConnectionEditP
                 continue;
             }
             CreateConnectionViewRequest.ConnectionViewDescriptor descriptor = new CreateConnectionViewRequest.ConnectionViewDescriptor(
-                    nextLinkDescriptor.getSemanticAdapter(), null, ViewUtil.APPEND, false, ((IGraphicalEditPart) getHost())
-                            .getDiagramPreferencesHint());
+                    nextLinkDescriptor.getSemanticAdapter(), null, ViewUtil.APPEND, false,
+                    ((IGraphicalEditPart) getHost()).getDiagramPreferencesHint());
             CreateConnectionViewRequest ccr = new CreateConnectionViewRequest(descriptor);
             ccr.setType(RequestConstants.REQ_CONNECTION_START);
             ccr.setSourceEditPart(sourceEditPart);

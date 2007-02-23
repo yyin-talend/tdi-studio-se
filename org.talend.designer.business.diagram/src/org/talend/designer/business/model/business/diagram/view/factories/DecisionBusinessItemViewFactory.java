@@ -34,8 +34,8 @@ public class DecisionBusinessItemViewFactory extends AbstractShapeViewFactory {
     /**
      * @generated
      */
-    protected void decorateView(View containerView, View view, IAdaptable semanticAdapter, String semanticHint, int index,
-            boolean persisted) {
+    protected void decorateView(View containerView, View view, IAdaptable semanticAdapter, String semanticHint,
+            int index, boolean persisted) {
         if (semanticHint == null) {
             semanticHint = BusinessVisualIDRegistry
                     .getType(org.talend.designer.business.model.business.diagram.edit.parts.DecisionBusinessItemEditPart.VISUAL_ID);

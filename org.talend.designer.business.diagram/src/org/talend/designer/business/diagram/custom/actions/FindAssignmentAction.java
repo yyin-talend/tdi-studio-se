@@ -105,7 +105,8 @@ public class FindAssignmentAction extends AContextualAction {
     }
 
     // PTODO MHE bug for org.eclipse.gmf.runtime.diagram.ui.internal.actions.ZoomContributionItem
-    private void zoomFitSelection(ZoomManager zoomManager, List editParts, DiagramEditPart diagramEditPart, boolean zoomOutOnly) {
+    private void zoomFitSelection(ZoomManager zoomManager, List editParts, DiagramEditPart diagramEditPart,
+            boolean zoomOutOnly) {
         Rectangle rectangle = null;
         for (Iterator iter = editParts.iterator(); iter.hasNext();) {
             EditPart editPart = (EditPart) iter.next();
@@ -189,7 +190,8 @@ public class FindAssignmentAction extends AContextualAction {
             Object object = selection.getFirstElement();
             if (object instanceof RepositoryNode) {
                 RepositoryNode repositoryNode = (RepositoryNode) object;
-                ERepositoryObjectType nodeType = (ERepositoryObjectType) repositoryNode.getProperties(EProperties.CONTENT_TYPE);
+                ERepositoryObjectType nodeType = (ERepositoryObjectType) repositoryNode
+                        .getProperties(EProperties.CONTENT_TYPE);
                 if (repositoryNode.getType() == RepositoryNode.ENodeType.REPOSITORY_ELEMENT) {
                     IEditorPart activeEditor = getActiveEditor();
                     if (activeEditor != null && activeEditor.getSite().getId().equals(BusinessDiagramEditor.ID)) {

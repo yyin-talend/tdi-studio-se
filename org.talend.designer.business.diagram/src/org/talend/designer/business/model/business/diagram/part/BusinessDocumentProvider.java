@@ -55,7 +55,8 @@ public class BusinessDocumentProvider extends FileDiagramDocumentProvider {
                 try {
                     nextResource.save(Collections.EMPTY_MAP);
                 } catch (IOException e) {
-                    BusinessDiagramEditorPlugin.getInstance().logError("Unable to save resource: " + nextResource.getURI(), e); //$NON-NLS-1$
+                    BusinessDiagramEditorPlugin.getInstance().logError(
+                            "Unable to save resource: " + nextResource.getURI(), e); //$NON-NLS-1$
                 }
             }
             monitor.worked(1);
@@ -72,7 +73,8 @@ public class BusinessDocumentProvider extends FileDiagramDocumentProvider {
             Diagram diagram = diagramDocument.getDiagram();
             if (diagram != null) {
                 Collection rules = new ArrayList();
-                for (Iterator it = diagramDocument.getEditingDomain().getResourceSet().getResources().iterator(); it.hasNext();) {
+                for (Iterator it = diagramDocument.getEditingDomain().getResourceSet().getResources().iterator(); it
+                        .hasNext();) {
                     IFile nextFile = WorkspaceSynchronizer.getFile((Resource) it.next());
                     if (nextFile != null) {
                         rules.add(computeSaveSchedulingRule(nextFile));
@@ -90,7 +92,8 @@ public class BusinessDocumentProvider extends FileDiagramDocumentProvider {
     protected FileInfo createFileInfo(IDocument document, FileSynchronizer synchronizer, IFileEditorInput input) {
         assert document instanceof DiagramDocument;
 
-        DiagramModificationListener diagramListener = new CustomModificationListener(this, (DiagramDocument) document, input);
+        DiagramModificationListener diagramListener = new CustomModificationListener(this, (DiagramDocument) document,
+                input);
         DiagramFileInfo info = new DiagramFileInfo(document, synchronizer, diagramListener);
 
         diagramListener.startListening();
@@ -130,11 +133,12 @@ public class BusinessDocumentProvider extends FileDiagramDocumentProvider {
         /**
          * @generated
          */
-        public CustomModificationListener(BusinessDocumentProvider documentProviderParameter, DiagramDocument documentParameter,
-                IFileEditorInput inputParameter) {
+        public CustomModificationListener(BusinessDocumentProvider documentProviderParameter,
+                DiagramDocument documentParameter, IFileEditorInput inputParameter) {
             super(documentProviderParameter, documentParameter, inputParameter);
             final DiagramDocument document = documentParameter;
-            NotificationFilter diagramResourceModifiedFilter = NotificationFilter.createEventTypeFilter(Notification.SET);
+            NotificationFilter diagramResourceModifiedFilter = NotificationFilter
+                    .createEventTypeFilter(Notification.SET);
             myListener = new DemultiplexingListener(diagramResourceModifiedFilter) {
 
                 protected void handleNotification(TransactionalEditingDomain domain, Notification notification) {

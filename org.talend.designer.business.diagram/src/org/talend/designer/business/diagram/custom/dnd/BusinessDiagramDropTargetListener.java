@@ -31,7 +31,6 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.TransferData;
 import org.talend.designer.business.diagram.custom.util.GmfPropertiesViewHelper;
-import org.talend.designer.business.diagram.i18n.Messages;
 
 /**
  * DOC mhelleboid class global comment. Detailled comment <br/>

@@ -33,8 +33,8 @@ public class BusinessItemRelationshipViewFactory extends ConnectionViewFactory {
     /**
      * @generated
      */
-    protected void decorateView(View containerView, View view, IAdaptable semanticAdapter, String semanticHint, int index,
-            boolean persisted) {
+    protected void decorateView(View containerView, View view, IAdaptable semanticAdapter, String semanticHint,
+            int index, boolean persisted) {
         if (semanticHint == null) {
             semanticHint = BusinessVisualIDRegistry
                     .getType(org.talend.designer.business.model.business.diagram.edit.parts.BusinessItemRelationshipEditPart.VISUAL_ID);
@@ -48,8 +48,8 @@ public class BusinessItemRelationshipViewFactory extends ConnectionViewFactory {
             view.getEAnnotations().add(shortcutAnnotation);
         }
         getViewService().createNode(semanticAdapter, view,
-                BusinessVisualIDRegistry.getType(BusinessItemRelationshipNameEditPart.VISUAL_ID), ViewUtil.APPEND, true,
-                getPreferencesHint());
+                BusinessVisualIDRegistry.getType(BusinessItemRelationshipNameEditPart.VISUAL_ID), ViewUtil.APPEND,
+                true, getPreferencesHint());
     }
 
 }

@@ -100,7 +100,8 @@ public class ListBusinessItemEditPart extends BusinessItemShapeEditPart {
      */
     protected boolean addFixedChild(EditPart childEditPart) {
         if (childEditPart instanceof ListBusinessItemNameEditPart) {
-            ((ListBusinessItemNameEditPart) childEditPart).setLabel(getPrimaryShape().getFigureListBusinessItemNameFigure());
+            ((ListBusinessItemNameEditPart) childEditPart).setLabel(getPrimaryShape()
+                    .getFigureListBusinessItemNameFigure());
             return true;
         }
         return false;
@@ -193,7 +194,8 @@ public class ListBusinessItemEditPart extends BusinessItemShapeEditPart {
     /**
      * @generated
      */
-    public class ListBusinessItemFigure extends org.talend.designer.business.diagram.custom.figures.ListBusinessItemShapeFigure {
+    public class ListBusinessItemFigure extends
+            org.talend.designer.business.diagram.custom.figures.ListBusinessItemShapeFigure {
 
         /**
          * @generated

@@ -406,7 +406,8 @@ public class ListBusinessItemNameEditPart extends CompartmentEditPart implements
     protected void refreshFont() {
         FontStyle style = (FontStyle) getFontStyleOwnerView().getStyle(NotationPackage.eINSTANCE.getFontStyle());
         if (style != null) {
-            FontData fontData = new FontData(style.getFontName(), style.getFontHeight(), (style.isBold() ? SWT.BOLD : SWT.NORMAL)
+            FontData fontData = new FontData(style.getFontName(), style.getFontHeight(), (style.isBold() ? SWT.BOLD
+                    : SWT.NORMAL)
                     | (style.isItalic() ? SWT.ITALIC : SWT.NORMAL));
             setFont(fontData);
         }

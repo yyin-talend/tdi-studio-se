@@ -36,7 +36,8 @@ public class BusinessGraphicalNodeEditPolicy extends GraphicalNodeEditPolicy {
         ICommandProxy c = (ICommandProxy) super.getConnectionCompleteCommand(request);
         CompositeCommand cc = (CompositeCommand) c.getICommand();
         TransactionalEditingDomain editingDomain = ((IGraphicalEditPart) getHost()).getEditingDomain();
-        BusinessReorientConnectionViewCommand rcvCommand = new BusinessReorientConnectionViewCommand(editingDomain, null);
+        BusinessReorientConnectionViewCommand rcvCommand = new BusinessReorientConnectionViewCommand(editingDomain,
+                null);
         rcvCommand.setEdgeAdaptor(getViewAdapter());
         cc.compose(rcvCommand);
         return c;

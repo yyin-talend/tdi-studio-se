@@ -84,8 +84,8 @@ public class BusinessNewDiagramFileWizard extends Wizard {
     /**
      * @generated
      */
-    public BusinessNewDiagramFileWizard(IFile selectedModelFile, IWorkbenchPage workbenchPage, IStructuredSelection selection,
-            EObject diagramRoot, TransactionalEditingDomain editingDomain) {
+    public BusinessNewDiagramFileWizard(IFile selectedModelFile, IWorkbenchPage workbenchPage,
+            IStructuredSelection selection, EObject diagramRoot, TransactionalEditingDomain editingDomain) {
         assert selectedModelFile != null : "Null selectedModelFile in BusinessNewDiagramFileWizard constructor"; //$NON-NLS-1$
         assert workbenchPage != null : "Null workbenchPage in BusinessNewDiagramFileWizard constructor"; //$NON-NLS-1$
         assert selection != null : "Null selection in BusinessNewDiagramFileWizard constructor"; //$NON-NLS-1$
@@ -103,13 +103,15 @@ public class BusinessNewDiagramFileWizard extends Wizard {
      * @generated
      */
     public void addPages() {
-        myFileCreationPage = new WizardNewFileCreationPage(Messages.getString("BusinessNewDiagramFileWizard.IntialNewEcoreDiagramFile"), mySelection) { //$NON-NLS-1$
+        myFileCreationPage = new WizardNewFileCreationPage(Messages
+                .getString("BusinessNewDiagramFileWizard.IntialNewEcoreDiagramFile"), mySelection) { //$NON-NLS-1$
 
             public void createControl(Composite parent) {
                 super.createControl(parent);
 
                 IContainer parentContainer = mySelectedModelFile.getParent();
-                String originalFileName = mySelectedModelFile.getProjectRelativePath().removeFileExtension().lastSegment();
+                String originalFileName = mySelectedModelFile.getProjectRelativePath().removeFileExtension()
+                        .lastSegment();
                 String fileExtension = ".business_diagram"; //$NON-NLS-1$
                 String fileName = originalFileName + fileExtension;
                 for (int i = 1; parentContainer.getFile(new Path(fileName)).exists(); i++) {
@@ -120,7 +122,8 @@ public class BusinessNewDiagramFileWizard extends Wizard {
 
         };
         myFileCreationPage.setTitle(Messages.getString("BusinessNewDiagramFileWizard.DiagramFile")); //$NON-NLS-1$
-        myFileCreationPage.setDescription(Messages.getString("BusinessNewDiagramFileWizard.CreateNewDiagram") + BusinessProcessEditPart.MODEL_ID + ""); //$NON-NLS-1$ //$NON-NLS-2$
+        myFileCreationPage
+                .setDescription(Messages.getString("BusinessNewDiagramFileWizard.CreateNewDiagram") + BusinessProcessEditPart.MODEL_ID + ""); //$NON-NLS-1$ //$NON-NLS-2$
         addPage(myFileCreationPage);
         addPage(new RootElementSelectorPage());
     }
@@ -137,8 +140,8 @@ public class BusinessNewDiagramFileWizard extends Wizard {
         }
 
         ResourceSet resourceSet = myEditingDomain.getResourceSet();
-        final Resource diagramResource = resourceSet.createResource(URI.createPlatformResourceURI(diagramFile.getFullPath()
-                .toString()));
+        final Resource diagramResource = resourceSet.createResource(URI.createPlatformResourceURI(diagramFile
+                .getFullPath().toString()));
 
         List affectedFiles = new LinkedList();
         affectedFiles.add(mySelectedModelFile);
@@ -147,10 +150,12 @@ public class BusinessNewDiagramFileWizard extends Wizard {
         AbstractTransactionalCommand command = new AbstractTransactionalCommand(myEditingDomain,
                 "Initializing diagram contents", affectedFiles) { //$NON-NLS-1$
 
-            protected CommandResult doExecuteWithResult(IProgressMonitor monitor, IAdaptable info) throws ExecutionException {
+            protected CommandResult doExecuteWithResult(IProgressMonitor monitor, IAdaptable info)
+                    throws ExecutionException {
                 int diagramVID = BusinessVisualIDRegistry.getDiagramVisualID(myDiagramRoot);
                 if (diagramVID != BusinessProcessEditPart.VISUAL_ID) {
-                    return CommandResult.newErrorCommandResult("Incorrect model object stored as a root resource object"); //$NON-NLS-1$
+                    return CommandResult
+                            .newErrorCommandResult("Incorrect model object stored as a root resource object"); //$NON-NLS-1$
                 }
                 Diagram diagram = ViewService.createDiagram(myDiagramRoot, BusinessProcessEditPart.MODEL_ID,
                         BusinessDiagramEditorPlugin.DIAGRAM_PREFERENCES_HINT);
@@ -256,7 +261,8 @@ public class BusinessNewDiagramFileWizard extends Wizard {
             boolean result = ViewService.getInstance().provides(
                     new CreateDiagramViewOperation(new EObjectAdapter(myDiagramRoot), BusinessProcessEditPart.MODEL_ID,
                             BusinessDiagramEditorPlugin.DIAGRAM_PREFERENCES_HINT));
-            setErrorMessage(result ? null : Messages.getString("BusinessNewDiagramFileWizard.InvalidDiagramRootElementSelected")); //$NON-NLS-1$
+            setErrorMessage(result ? null : Messages
+                    .getString("BusinessNewDiagramFileWizard.InvalidDiagramRootElementSelected")); //$NON-NLS-1$
             return result;
         }
 

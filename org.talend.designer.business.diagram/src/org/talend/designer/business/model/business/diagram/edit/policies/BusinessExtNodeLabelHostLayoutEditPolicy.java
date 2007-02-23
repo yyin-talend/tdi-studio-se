@@ -99,10 +99,10 @@ public class BusinessExtNodeLabelHostLayoutEditPolicy extends XYLayoutEditPolicy
      * @generated
      */
     protected Object getConstraintFor(ChangeBoundsRequest request, GraphicalEditPart child) {
-        int dx = ((Integer) ViewUtil
-                .getStructuralFeatureValue((View) child.getModel(), NotationPackage.eINSTANCE.getLocation_X())).intValue();
-        int dy = ((Integer) ViewUtil
-                .getStructuralFeatureValue((View) child.getModel(), NotationPackage.eINSTANCE.getLocation_Y())).intValue();
+        int dx = ((Integer) ViewUtil.getStructuralFeatureValue((View) child.getModel(), NotationPackage.eINSTANCE
+                .getLocation_X())).intValue();
+        int dy = ((Integer) ViewUtil.getStructuralFeatureValue((View) child.getModel(), NotationPackage.eINSTANCE
+                .getLocation_Y())).intValue();
         Rectangle r = new Rectangle(dx, dy, 0, 0);
         child.getFigure().translateToAbsolute(r);
         r.translate(request.getMoveDelta());
