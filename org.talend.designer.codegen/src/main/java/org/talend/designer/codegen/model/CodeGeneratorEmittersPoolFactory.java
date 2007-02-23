@@ -41,7 +41,6 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.core.runtime.ProgressMonitorWrapper;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.core.runtime.jobs.Job;
@@ -49,8 +48,6 @@ import org.eclipse.emf.codegen.jet.JETEmitter;
 import org.eclipse.emf.codegen.jet.JETException;
 import org.eclipse.emf.common.CommonPlugin;
 import org.eclipse.emf.common.util.URI;
-import org.eclipse.swt.SWTException;
-import org.eclipse.ui.internal.dialogs.EventLoopProgressMonitor;
 import org.talend.commons.CommonsPlugin;
 import org.talend.commons.exception.BusinessException;
 import org.talend.core.CorePlugin;
@@ -119,12 +116,8 @@ public final class CodeGeneratorEmittersPoolFactory {
                 List<TemplateUtil> templates = templatesFactory.getTemplates();
                 List<IComponent> components = componentsFactory.getComponents();
 
-                try {
-                    monitorWrap.beginTask(Messages.getString("CodeGeneratorEmittersPoolFactory.initMessage"),
-                            (2 * templates.size() + 4 * components.size()));
-                } catch (Exception se) {
-                    // se.printStackTrace();
-                }
+                monitorWrap.beginTask(Messages.getString("CodeGeneratorEmittersPoolFactory.initMessage"),
+                        (2 * templates.size() + 4 * components.size()));
 
                 for (TemplateUtil template : templates) {
                     JetBean jetBean = initializeUtilTemplate(template, codeLanguage);
@@ -135,7 +128,10 @@ public final class CodeGeneratorEmittersPoolFactory {
                 if (components != null) {
                     ECodePart codePart = ECodePart.MAIN;
                     for (IComponent component : components) {
-                        initComponent(codeLanguage, jetBeans, codePart, component);
+                        // PTODO MHIRT Temporary added while waiting for implementation of feature 624
+                        if (component.getMultipleComponentManager() == null) {
+                            initComponent(codeLanguage, jetBeans, codePart, component);
+                        }
                         monitorWrap.worked(1);
                     }
                 }
@@ -261,12 +257,8 @@ public final class CodeGeneratorEmittersPoolFactory {
                 }
                 emitterPool.put(jetBean, emitter);
             }
-            
-            try {
-                monitorWrap.worked(1);
-            } catch (Exception se) {
-                // se.printStackTrace();
-            }
+
+            monitorWrap.worked(1);
         }
         try {
             EmfEmittersPersistenceFactory.getInstance().saveEmittersPool(

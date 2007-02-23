@@ -26,6 +26,7 @@ import org.eclipse.core.runtime.IProgressMonitorWithBlocking;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.ProgressMonitorWrapper;
 import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.swt.SWTException;
 import org.eclipse.swt.widgets.Display;
 
 /**
@@ -126,9 +127,12 @@ public class CodeGeneratorProgressMonitor extends ProgressMonitorWrapper impleme
         }
 
         for (;;) {
-
-            if (!disp.readAndDispatch()) {
-                break;
+            try {
+                if (!disp.readAndDispatch()) {
+                    break;
+                }
+            } catch (SWTException se) {
+                // do nothing;
             }
 
             // Only run the event loop for so long.
