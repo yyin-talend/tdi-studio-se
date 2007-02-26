@@ -15,6 +15,7 @@ class="FileOutputXMLBegin"
 <%
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
+
 boolean stats = codeGenArgument.isStatistics();
 
 List<IMetadataTable> metadatas = node.getMetadataList();
@@ -28,60 +29,60 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
             }
         }
 
-        String cid = metadata.getTableName();
+        String cid = node.getUniqueName();
         List<Map<String, String>> rootTags = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__ROOT_TAGS__");
-        String rowTag = ElementParameterParser.getValue(node, "__ROW_TAG__");
-        String colnameAsTagname = ElementParameterParser.getValue(node, "__COLNAME_AS_TAGNAME__");
+        String rowTag = ElementParameterParser.getValue(node, "__ROW_TAG__");        
         String fieldTag = ElementParameterParser.getValue(node, "__FIELD_TAG__");
         String split = ElementParameterParser.getValue(node, "__SPLIT__");
         String splitEvery = ElementParameterParser.getValue(node, "__SPLIT_EVERY__");
         String fileName = ElementParameterParser.getValue(node, "__FILENAME__");
+        String colnameAsTagname = ElementParameterParser.getValue(node, "__COLNAME_AS_TAGNAME__");
 
 java.util.List columns = metadata.getListColumns();
 if(rootTags.size()>0){
 %>
-String[] rootTag_<%=node.getUniqueName()%> = new String[<%=rootTags.size()%>];
+String[] rootTag_<%=cid%> = new String[<%=rootTags.size()%>];
 <%
 	for (int i=0; i<rootTags.size(); i++){
 		Map<String, String> rootTag = rootTags.get(i);
 		%>
-rootTag_<%=node.getUniqueName()%>[<%=i%>]= <%= rootTag.get("TAG") %>;
+rootTag_<%=cid%>[<%=i%>]= <%= rootTag.get("TAG") %>;
 		<%
 	}
 }else{
 %>
-String[] rootTag_<%=node.getUniqueName()%> = new String[]{"array"};
+String[] rootTag_<%=cid%> = new String[]{"array"};
 <%
 }
 %>
 
-String row_tag = <%=rowTag %>;
-boolean colname_as_tagname = <%=colnameAsTagname %>;
-String field_tag = <%=fieldTag %>;
-boolean split = <%=split %>;
-int split_every = <%=splitEvery %>;
-int splitedFileNo =0;
-int currentRowQtyWithinFile = 0;
+String rowTag_<%=cid%> = <%=rowTag %>;
+<%if(!colnameAsTagname.equals("true")){%>
+String fieldTag_<%=cid%> = <%=fieldTag %>;
+<%}%>
+int splitEvery_<%=cid%> = <%=splitEvery %>;
+int splitedFileNo_<%=cid%> =0;
+int currentRowQtyWithinFile_<%=cid%> = 0;
 
 
-StringBuffer strBuffer_<%=node.getUniqueName()%> = new StringBuffer();
+StringBuffer strBuffer_<%=cid%> = new StringBuffer();
 
 <%
 if (!split.equals("true")) {
 %>
 
-java.io.FileOutputStream fos = new java.io.FileOutputStream(<%=fileName%>);
+java.io.FileOutputStream fos_<%=cid%> = new java.io.FileOutputStream(<%=fileName%>);
+java.io.BufferedWriter out_<%=cid%> = null;
 
-try{
-	java.io.BufferedWriter out = new java.io.BufferedWriter(
-	                                new java.io.OutputStreamWriter(fos, <%=encoding%>));	                                
+	 out_<%=cid%> = new java.io.BufferedWriter(
+	                                new java.io.OutputStreamWriter(fos_<%=cid%>, <%=encoding%>));	                                
 
 	 
-	strBuffer_<%=node.getUniqueName()%>.append("<?xml version=\"1.0\" encoding=\""+<%= encoding %>+"\"?> \n");
-	for (int i = 0; i < rootTag_<%=node.getUniqueName()%>.length; i++) {
-		strBuffer_<%=node.getUniqueName()%>.append("<"+rootTag_<%=node.getUniqueName()%>[i]+">");		            
+	strBuffer_<%=cid%>.append("<?xml version=\"1.0\" encoding=\""+<%= encoding %>+"\"?> \n");
+	for (int i = 0; i < rootTag_<%=cid%>.length; i++) {
+		strBuffer_<%=cid%>.append("<"+rootTag_<%=cid%>[i]+">");		            
     }
-    strBuffer_<%=node.getUniqueName()%>.append("\n");
+    strBuffer_<%=cid%>.append("\n");
     
 <%
     }

@@ -17,15 +17,18 @@ class="FileOutputXMLMain"
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
 boolean stats = codeGenArgument.isStatistics();	
-String rowTag = ElementParameterParser.getValue(node, "__ROW_TAG__");
 String split = ElementParameterParser.getValue(node, "__SPLIT__");
 List<IMetadataTable> metadatas = node.getMetadataList();
 if ((metadatas!=null)&&(metadatas.size()>0)) {
+
     IMetadataTable metadata = metadatas.get(0);
-    if (metadata!=null) {
-    String fileName = ElementParameterParser.getValue(node, "__FILENAME__");
+    String cid = node.getUniqueName();
+
+    if (metadata!=null) {    
 	String encoding = ElementParameterParser.getValue(node, "__ENCODING__");
-    String fileNameNoExtension =  fileName.substring(0,fileName.indexOf(".xml"));
+	String colnameAsTagname = ElementParameterParser.getValue(node, "__COLNAME_AS_TAGNAME__");	
+	String fileName = ElementParameterParser.getValue(node, "__FILENAME__");
+    String fileNameWithoutExtension =  fileName.substring(0,fileName.indexOf(".xml"));
         if (encoding!=null) {
             if (encoding.equals("")) {
                 encoding = "ISO-8859-15";
@@ -34,32 +37,33 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         if(split.equals("true")){
          
 %>
-if(currentRowQtyWithinFile >= split_every){
-java.io.FileOutputStream fos = new java.io.FileOutputStream(<%=fileNameNoExtension%>"+splitedFileNo+".xml");
+if(currentRowQtyWithinFile_<%=cid%> >= splitEvery_<%=cid%>){
+java.io.FileOutputStream fos_<%=cid%> = new java.io.FileOutputStream(<%=fileNameWithoutExtension%>"+splitedFileNo_<%=cid%>+".xml");
+java.io.BufferedWriter out_<%=cid%> = null;
 	try{
-	java.io.BufferedWriter out = new java.io.BufferedWriter(
-	                                new java.io.OutputStreamWriter(fos, <%=encoding%>));
+	 out_<%=cid%> = new java.io.BufferedWriter(
+	                                new java.io.OutputStreamWriter(fos_<%=cid%>, <%=encoding%>));
 	                                
-    for (int i = rootTag_<%=node.getUniqueName()%>.length-1; i >=0 ; i--) {
-			strBuffer_<%=node.getUniqueName()%>.append("</"+rootTag_<%=node.getUniqueName()%>[i]+">");		            
+    for (int i = rootTag_<%=cid%>.length-1; i >=0 ; i--) {
+			strBuffer_<%=cid%>.append("</"+rootTag_<%=cid%>[i]+">");		            
    		}
-    	out.write(strBuffer_<%=node.getUniqueName()%>.toString());   
-		out.flush();
-		out.close();
+    	out_<%=cid%>.write(strBuffer_<%=cid%>.toString());   
+		out_<%=cid%>.flush();
+		out_<%=cid%>.close();
 	
 	}catch(java.io.UnsupportedEncodingException err){
 	err.printStackTrace();
 	}
-    currentRowQtyWithinFile=0;
-    splitedFileNo++;
-    strBuffer_<%=node.getUniqueName()%> = new StringBuffer();
+    currentRowQtyWithinFile_<%=cid%>=0;
+    splitedFileNo_<%=cid%>++;
+    strBuffer_<%=cid%> = new StringBuffer();
 }
-if(currentRowQtyWithinFile==0){
-strBuffer_<%=node.getUniqueName()%>.append("<?xml version=\"1.0\" encoding=\""+<%= encoding %>+"\"?> \n");
-	for (int i = 0; i < rootTag_<%=node.getUniqueName()%>.length; i++) {
-		strBuffer_<%=node.getUniqueName()%>.append("<"+rootTag_<%=node.getUniqueName()%>[i]+">");		            
+if(currentRowQtyWithinFile_<%=cid%>==0){
+strBuffer_<%=cid%>.append("<?xml version=\"1.0\" encoding=\""+<%= encoding %>+"\"?> \n");
+	for (int i = 0; i < rootTag_<%=cid%>.length; i++) {
+		strBuffer_<%=cid%>.append("<"+rootTag_<%=cid%>[i]+">");		            
     }
-    strBuffer_<%=node.getUniqueName()%>.append("\n");
+    strBuffer_<%=cid%>.append("\n");
 }
 <%
 	  }
@@ -69,23 +73,29 @@ strBuffer_<%=node.getUniqueName()%>.append("<?xml version=\"1.0\" encoding=\""+<
     
         
 	List< ? extends IConnection> conns = node.getIncomingConnections();
-		if(conns!=null){
+		if(conns!=null && conns.size()>0){
 		IConnection conn = conns.get(0);
 		%>
-strBuffer_<%=node.getUniqueName()%>.append("<"+<%=rowTag%>+">\n");
+strBuffer_<%=cid%>.append("<"+rowTag_<%=cid%>+">\n");
       	<%		
 			for(IMetadataColumn column:metadata.getListColumns()){
+				if(colnameAsTagname.equals("true")){
 			%>
-strBuffer_<%=node.getUniqueName()%>.append("<<%=column.getLabel()%>>"+<%=conn.getName()%>.<%=column.getLabel()%>+"</<%=column.getLabel()%>>\n");			
-			<%		
+strBuffer_<%=cid%>.append("<<%=column.getLabel()%>>"+<%=conn.getName()%>.<%=column.getLabel()%>+"</<%=column.getLabel()%>>\n");		
+			<%	
+				}else{
+				%>
+strBuffer_<%=cid%>.append("<"+fieldTag_<%=cid%>+">"+<%=conn.getName()%>.<%=column.getLabel()%>+"</"+fieldTag_<%=cid%>+">\n");				
+				<%
+				}				
 			}
 		%>
-strBuffer_<%=node.getUniqueName()%>.append("</"+<%=rowTag%>+">\n");
+strBuffer_<%=cid%>.append("</"+rowTag_<%=cid%>+">\n");
 
 		<%
 		  if(split.equals("true")){
 		  %>     
-currentRowQtyWithinFile++;			  
+currentRowQtyWithinFile_<%=cid%>++;			  
 		  <%
 		  }					
 		}

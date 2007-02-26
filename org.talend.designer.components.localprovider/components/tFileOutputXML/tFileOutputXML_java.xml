@@ -20,7 +20,7 @@
    <PARAMETERS>
 
      <PARAMETER NAME="FILENAME" FIELD="FILE" NUM_ROW="1" REQUIRED="true">
-       <DEFAULT>'__COMP_DEFAULT_FILE_DIR__/out.xml'</DEFAULT>
+       <DEFAULT>"__COMP_DEFAULT_FILE_DIR__/out.xml"</DEFAULT>
      </PARAMETER>
 
     <PARAMETER
@@ -62,7 +62,7 @@
       NUM_ROW="3"
       SHOW_IF="COLNAME_AS_TAGNAME == 'false'"
     >
-      <DEFAULT>'field'</DEFAULT>
+      <DEFAULT>"field"</DEFAULT>
     </PARAMETER>
 
     <PARAMETER
