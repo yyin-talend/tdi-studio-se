@@ -9,7 +9,7 @@
             class="org.talend.scheduler.ui.SchedulerView"
             icon="icons/sample.gif"
             id="org.talend.scheduler.views.Scheduler"
-            name="Scheduler">
+            name="%schedulerName">
       </view>
    </extension>
    
