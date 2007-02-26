@@ -14,7 +14,8 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gmf.runtime.diagram.core.util.ViewUtil;
-import org.eclipse.gmf.runtime.diagram.ui.commands.SetViewMutabilityCommand;
+import org.eclipse.gmf.runtime.diagram.ui.commands.DeferredLayoutCommand;
+import org.eclipse.gmf.runtime.diagram.ui.commands.ICommandProxy;
 import org.eclipse.gmf.runtime.diagram.ui.editparts.IGraphicalEditPart;
 import org.eclipse.gmf.runtime.diagram.ui.editpolicies.CanonicalConnectionEditPolicy;
 import org.eclipse.gmf.runtime.diagram.ui.requests.CreateConnectionViewRequest;
@@ -140,8 +141,20 @@ public class BusinessProcessCanonicalEditPolicy extends CanonicalConnectionEditP
      * @generated
      */
     protected void refreshSemantic() {
-        super.refreshSemantic();
-        refreshConnections();
+        List createdViews = new LinkedList();
+        createdViews.addAll(refreshSemanticChildren());
+        List createdConnectionViews = new LinkedList();
+        createdConnectionViews.addAll(refreshSemanticConnections());
+        createdConnectionViews.addAll(refreshConnections());
+
+        if (createdViews.size() > 1) {
+            // perform a layout of the container
+            DeferredLayoutCommand layoutCmd = new DeferredLayoutCommand(host().getEditingDomain(), createdViews, host());
+            executeCommand(new ICommandProxy(layoutCmd));
+        }
+
+        createdViews.addAll(createdConnectionViews);
+        makeViewsImmutable(createdViews);
     }
 
     /**
@@ -157,7 +170,7 @@ public class BusinessProcessCanonicalEditPolicy extends CanonicalConnectionEditP
     /**
      * @generated
      */
-    private void refreshConnections() {
+    private Collection refreshConnections() {
         try {
             collectAllLinks(getDiagram());
             Collection existingLinks = new LinkedList(getDiagram().getEdges());
@@ -179,7 +192,7 @@ public class BusinessProcessCanonicalEditPolicy extends CanonicalConnectionEditP
                 }
             }
             deleteViews(existingLinks.iterator());
-            createConnections(myLinkDescriptors);
+            return createConnections(myLinkDescriptors);
         } finally {
             myLinkDescriptors.clear();
             myEObject2ViewMap.clear();
@@ -217,10 +230,11 @@ public class BusinessProcessCanonicalEditPolicy extends CanonicalConnectionEditP
     /**
      * @generated
      */
-    private void createConnections(Collection linkDescriptors) {
+    private Collection createConnections(Collection linkDescriptors) {
         if (linkDescriptors.isEmpty()) {
-            return;
+            return Collections.EMPTY_LIST;
         }
+        List adapters = new LinkedList();
         for (Iterator linkDescriptorsIterator = linkDescriptors.iterator(); linkDescriptorsIterator.hasNext();) {
             final LinkDescriptor nextLinkDescriptor = (LinkDescriptor) linkDescriptorsIterator.next();
             EditPart sourceEditPart = getEditPartFor(nextLinkDescriptor.getSource());
@@ -241,9 +255,12 @@ public class BusinessProcessCanonicalEditPolicy extends CanonicalConnectionEditP
             if (cmd != null && cmd.canExecute()) {
                 executeCommand(cmd);
                 IAdaptable viewAdapter = (IAdaptable) ccr.getNewObject();
-                SetViewMutabilityCommand.makeImmutable(viewAdapter).execute();
+                if (viewAdapter != null) {
+                    adapters.add(viewAdapter);
+                }
             }
         }
+        return adapters;
     }
 
     /**

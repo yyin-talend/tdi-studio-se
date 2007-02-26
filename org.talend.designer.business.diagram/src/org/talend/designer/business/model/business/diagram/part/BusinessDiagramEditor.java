@@ -9,6 +9,7 @@ import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.impl.AdapterImpl;
 import org.eclipse.emf.transaction.TransactionalEditingDomain;
 import org.eclipse.gef.LayerConstants;
+import org.eclipse.gmf.runtime.diagram.core.preferences.PreferencesHint;
 import org.eclipse.gmf.runtime.diagram.ui.editparts.DiagramRootEditPart;
 import org.eclipse.gmf.runtime.diagram.ui.resources.editor.ide.document.StorageDiagramDocumentProvider;
 import org.eclipse.gmf.runtime.diagram.ui.resources.editor.ide.editor.FileDiagramEditor;
@@ -105,6 +106,13 @@ public class BusinessDiagramEditor extends FileDiagramEditor implements IGotoMar
         scaledFeedbackLayer.setEnabled(false);
         scalableLayers.addLayerAfter(scaledFeedbackLayer, LayerConstants.SCALED_FEEDBACK_LAYER,
                 DiagramRootEditPart.DECORATION_UNPRINTABLE_LAYER);
+    }
+
+    /**
+     * @generated
+     */
+    protected PreferencesHint getPreferencesHint() {
+        return BusinessDiagramEditorPlugin.DIAGRAM_PREFERENCES_HINT;
     }
 
     protected void initializeGraphicalViewer() {

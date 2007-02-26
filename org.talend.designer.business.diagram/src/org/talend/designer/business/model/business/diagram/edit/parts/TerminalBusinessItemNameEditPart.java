@@ -1,5 +1,6 @@
 package org.talend.designer.business.model.business.diagram.edit.parts;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -11,7 +12,11 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.transaction.RunnableWithResult;
 import org.eclipse.gef.AccessibleEditPart;
 import org.eclipse.gef.EditPolicy;
+import org.eclipse.gef.GraphicalEditPart;
 import org.eclipse.gef.Request;
+import org.eclipse.gef.commands.Command;
+import org.eclipse.gef.editpolicies.NonResizableEditPolicy;
+import org.eclipse.gef.handles.NonResizableHandleKit;
 import org.eclipse.gef.requests.DirectEditRequest;
 import org.eclipse.gef.tools.DirectEditManager;
 import org.eclipse.gmf.runtime.common.ui.services.parser.IParser;
@@ -88,6 +93,22 @@ public class TerminalBusinessItemNameEditPart extends CompartmentEditPart implem
     protected void createDefaultEditPolicies() {
         super.createDefaultEditPolicies();
         installEditPolicy(EditPolicy.DIRECT_EDIT_ROLE, new LabelDirectEditPolicy());
+        installEditPolicy(EditPolicy.PRIMARY_DRAG_ROLE, new NonResizableEditPolicy() {
+
+            protected List createSelectionHandles() {
+                List handles = new ArrayList();
+                NonResizableHandleKit.addMoveHandle((GraphicalEditPart) getHost(), handles);
+                return handles;
+            }
+
+            public Command getCommand(Request request) {
+                return null;
+            }
+
+            public boolean understandsRequest(Request request) {
+                return false;
+            }
+        });
     }
 
     /**
