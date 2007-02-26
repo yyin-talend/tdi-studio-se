@@ -1,0 +1,52 @@
+<%@ jet 
+package="org.talend.designer.codegen.translators" 
+imports="
+    org.talend.core.model.process.INode 
+    org.talend.core.model.metadata.IMetadataTable 
+    org.talend.core.model.process.ElementParameterParser
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    java.util.List
+    java.util.Map
+"
+class="FileFetchMain"
+%>
+
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+String cid = node.getUniqueName();
+
+String directory = ElementParameterParser.getValue(node, "__DIRECTORY__");
+String uri = ElementParameterParser.getValue(node, "__URI__");
+String filename = ElementParameterParser.getValue(node, "__FILENAME__");
+
+%>
+	String fileName<%=cid %> = <%=(filename.compareTo("")!=0)?filename:"\"\""%>;
+	
+	//open directory
+	java.io.File dir<%=cid %> = new java.io.File(<%=directory %>);
+        		
+    // open url stream
+	java.net.URL url<%=cid %> = new java.net.URL(<%=uri %>);
+	java.net.URLConnection conn<%=cid %> = url<%=cid %>.openConnection();
+	
+	//open file dans la directory
+	if (fileName<%=cid %>.compareTo("")==0) {
+		fileName<%=cid %> = url<%=cid %>.getFile();
+		if (fileName<%=cid %>.compareTo("")==0) {
+			fileName<%=cid %> = "defaultfilename.txt";
+		}
+	}
+	final java.io.BufferedWriter out<%=cid %> = new java.io.BufferedWriter(new java.io.OutputStreamWriter(
+        		new java.io.FileOutputStream(new java.io.File(dir<%=cid %>, fileName<%=cid %>))));
+
+	// copy file
+	final java.io.BufferedReader reader<%=cid %> = new java.io.BufferedReader(new java.io.InputStreamReader(conn<%=cid %>.getInputStream()));
+	String line<%=cid %>;
+	while ((line<%=cid %> = reader<%=cid %>.readLine()) != null) {
+		out<%=cid %>.write(line<%=cid %>);
+	}
+	
+	//close opened object
+	reader<%=cid %>.close();
+	out<%=cid %>.close();
