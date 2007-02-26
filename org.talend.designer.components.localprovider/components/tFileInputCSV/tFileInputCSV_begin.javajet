@@ -18,8 +18,6 @@ class="FileInputCSVBegin"
 <%
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
-boolean stats = codeGenArgument.isStatistics();
-
 List<IMetadataTable> metadatas = node.getMetadataList();
 if ((metadatas!=null)&&(metadatas.size()>0)) {
     IMetadataTable metadata = metadatas.get(0);
@@ -38,18 +36,17 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     	String rowSeparator = ElementParameterParser.getValue(node, "__ROWSEPARATOR__");
     	String escapeChar = ElementParameterParser.getValue(node, "__ESCAPE_CHAR__");
     	String textEnclosure = ElementParameterParser.getValue(node, "__TEXT_ENCLOSURE__");
-    	String removeEmptyRow = ElementParameterParser.getValue(node, "__REMOVE_EMPTY_ROW__");
-    	
-    	//System.out.println(escapeChar+"  "+textEnclosure);
-    	
+    	String removeEmptyRow = ElementParameterParser.getValue(node, "__REMOVE_EMPTY_ROW__");   	
 %>		
+		int nb_line_<%=cid%> = 0;
 		int footer_<%=cid %> = <%= footer%>;
 		int totalLine<%=cid %> = 0;
 		int limit<%=cid %> = <%= limit %>;
 		int lastLine<%=cid %> = -1;
 		
+		
 		///////////////inner class end begin
-		    class CsvReader {
+		    class CsvReader<%=cid %> {
             	private java.io.Reader inputStream = null;
             
             	private String fileName = null;
@@ -124,7 +121,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
             	 *            The {@link java.nio.charset.Charset Charset} to use while
             	 *            parsing the data.
             	 */
-            	public CsvReader(String fileName, char delimiter, java.nio.charset.Charset charset)
+            	public CsvReader<%=cid %>(String fileName, char delimiter, java.nio.charset.Charset charset)
             			throws java.io.FileNotFoundException {
             		if (fileName == null) {
             			throw new IllegalArgumentException(
@@ -158,7 +155,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
             	 * @param delimiter
             	 *            The character to use as the column delimiter.
             	 */
-            	public CsvReader(String fileName, char delimiter)
+            	public CsvReader<%=cid %>(String fileName, char delimiter)
             			throws java.io.FileNotFoundException {
             		this(fileName, delimiter, java.nio.charset.Charset.forName("ISO-8859-1"));
             	}
@@ -171,7 +168,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
             	 * @param fileName
             	 *            The path to the file to use as the data source.
             	 */
-            	public CsvReader(String fileName) throws java.io.FileNotFoundException {
+            	public CsvReader<%=cid %>(String fileName) throws java.io.FileNotFoundException {
             		this(fileName, Letters.COMMA);
             	}
             
@@ -184,7 +181,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
             	 * @param delimiter
             	 *            The character to use as the column delimiter.
             	 */
-            	public CsvReader(java.io.Reader inputStream, char delimiter) {
+            	public CsvReader<%=cid %>(java.io.Reader inputStream, char delimiter) {
             		if (inputStream == null) {
             			throw new IllegalArgumentException(
             					"Parameter inputStream can not be null.");
@@ -205,7 +202,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
             	 * @param inputStream
             	 *            The stream to use as the data source.
             	 */
-            	public CsvReader(java.io.Reader inputStream) {
+            	public CsvReader<%=cid %>(java.io.Reader inputStream) {
             		this(inputStream, Letters.COMMA);
             	}
             
@@ -221,7 +218,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
             	 *            The {@link java.nio.charset.Charset Charset} to use while
             	 *            parsing the data.
             	 */
-            	public CsvReader(java.io.InputStream inputStream, char delimiter, java.nio.charset.Charset charset) {
+            	public CsvReader<%=cid %>(java.io.InputStream inputStream, char delimiter, java.nio.charset.Charset charset) {
             		this(new java.io.InputStreamReader(inputStream, charset), delimiter);
             	}
             
@@ -236,7 +233,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
             	 *            The {@link java.nio.charset.Charset Charset} to use while
             	 *            parsing the data.
             	 */
-            	public CsvReader(java.io.InputStream inputStream, java.nio.charset.Charset charset) {
+            	public CsvReader<%=cid %>(java.io.InputStream inputStream, java.nio.charset.Charset charset) {
             		this(new java.io.InputStreamReader(inputStream, charset));
             	}
             
@@ -1732,7 +1729,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
             			RecordDelimiter = Letters.NULL;
             			Comment = Letters.POUND;
             			UseComments = false;
-            			EscapeMode = CsvReader.ESCAPE_MODE_DOUBLED;
+            			EscapeMode = CsvReader<%=cid %>.ESCAPE_MODE_DOUBLED;
             			SafetySwitch = true;
             			SkipEmptyRecords = true;
             			CaptureRawRecord = true;
@@ -1770,7 +1767,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 		///////////////inner class end 
 		
 		
-		CsvReader csvReader<%=cid %>=new CsvReader(new java.io.BufferedReader(new java.io.InputStreamReader(
+		CsvReader<%=cid %> csvReader<%=cid %>=new CsvReader<%=cid %>(new java.io.BufferedReader(new java.io.InputStreamReader(
                 new java.io.FileInputStream(<%=filename %>),<%=encoding %>)), <%=delim %>);
                 
 		csvReader<%=cid %>.setRecordDelimiter(<%=rowSeparator %>);
@@ -1780,11 +1777,11 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 <%
         if(escapeChar.equals("'\\'")){
         %>
-            csvReader<%=cid %>.setEscapeMode(CsvReader.ESCAPE_MODE_BACKSLASH);
+            csvReader<%=cid %>.setEscapeMode(CsvReader<%=cid %>.ESCAPE_MODE_BACKSLASH);
 <%
         }else if(escapeChar.equals(textEnclosure)){
         %>
-            csvReader<%=cid %>.setEscapeMode(CsvReader.ESCAPE_MODE_DOUBLED);
+            csvReader<%=cid %>.setEscapeMode(CsvReader<%=cid %>.ESCAPE_MODE_DOUBLED);
 <%
         }else{
         %>
@@ -1819,7 +1816,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
          
           	csvReader<%=cid %>.close();
           
-         	csvReader<%=cid %>=new CsvReader(new java.io.BufferedReader(new java.io.InputStreamReader(
+         	csvReader<%=cid %>=new CsvReader<%=cid %>(new java.io.BufferedReader(new java.io.InputStreamReader(
                   new java.io.FileInputStream(<%=filename %>),<%=encoding %>)), <%=delim %>);
                   
           	csvReader<%=cid %>.setRecordDelimiter(<%=rowSeparator %>);
@@ -1829,11 +1826,11 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 <%
         if(escapeChar.equals("'\\'")){
         %>
-            csvReader<%=cid %>.setEscapeMode(CsvReader.ESCAPE_MODE_BACKSLASH);
+            csvReader<%=cid %>.setEscapeMode(CsvReader<%=cid %>.ESCAPE_MODE_BACKSLASH);
 <%
         }else if(escapeChar.equals(textEnclosure)){
         %>
-            csvReader<%=cid %>.setEscapeMode(CsvReader.ESCAPE_MODE_DOUBLED);
+            csvReader<%=cid %>.setEscapeMode(CsvReader<%=cid %>.ESCAPE_MODE_DOUBLED);
 <%
         }else{
         %>
