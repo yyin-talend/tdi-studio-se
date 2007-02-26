@@ -1,0 +1,59 @@
+<%@ jet 
+package="org.talend.designer.codegen.translators" 
+imports="
+	org.talend.core.model.process.ElementParameterParser
+	org.talend.core.model.metadata.IMetadataTable
+	org.talend.core.model.metadata.IMetadataColumn
+    org.talend.core.model.process.INode  
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    org.talend.core.model.process.IConnection
+    java.util.List
+    java.util.Map
+    org.talend.core.model.metadata.types.JavaTypesManager
+	org.talend.core.model.metadata.types.JavaType
+"
+class="UniqRowMain"
+%>
+
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+String cid = node.getUniqueName();
+
+String connName = "";
+if (node.getIncomingConnections().size()==1) {
+	IConnection conn = node.getIncomingConnections().get(0);
+	connName = conn.getName();
+}
+
+List<IMetadataTable> metadatas = node.getMetadataList();
+if ((metadatas!=null)&&(metadatas.size()>0)) {
+    IMetadataTable metadata = metadatas.get(0);
+    if (metadata!=null) {
+
+		List<Map<String, String>> keyColumns = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__UNIQUE_KEY__");
+		int i = 0;
+%>
+	currentRowKey<%=cid %> = ""
+<%
+		for (IMetadataColumn column: metadata.getListColumns()) {
+			Map<String, String> keyColumn = keyColumns.get(i);
+			if (keyColumn.get("KEY_ATTRIBUTE").equals("true")) {
+				JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType()); 
+%>
+	+ <%=connName %>.<%=column.getLabel() %><% if (!javaType.isPrimitive()) { %>.toString()<%=((!keyColumn.get("CASE_SENSITIVE").equals("true"))?".toLowerCase()":"")%><% } %>
+<%
+			}
+			i++;
+		} 
+%>;
+	if (!keys<%=cid %>.contains(currentRowKey<%=cid %>)) {
+		keys<%=cid %>.add(currentRowKey<%=cid %>);
+		nb_line_<%=cid %>++;
+	} else {
+		continue;
+	}
+<%
+	}
+}
+%>
