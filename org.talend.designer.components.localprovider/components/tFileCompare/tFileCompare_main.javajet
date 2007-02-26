@@ -1,0 +1,70 @@
+<%@ jet 
+package="org.talend.designer.codegen.translators" 
+imports="
+    org.talend.core.model.process.INode 
+    org.talend.core.model.process.ElementParameterParser
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    org.talend.core.model.process.IConnection
+	org.talend.core.model.process.EConnectionType
+"
+class="FileCompareMain"
+%>
+
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+String cid = node.getUniqueName();
+
+String file = ElementParameterParser.getValue(node, "__FILE__");
+Boolean print = new Boolean(ElementParameterParser.getValue(node, "__PRINT__"));
+String differMessage = ElementParameterParser.getValue(node, "__DIFFER_MESSAGE__");
+String noDifferMessage = ElementParameterParser.getValue(node, "__NO_DIFFER_MESSAGE__");
+String fileRef = ElementParameterParser.getValue(node, "__FILE_REF__");
+%>
+
+java.io.BufferedReader br<%=cid %> = new java.io.BufferedReader (new java.io.FileReader(<%=file %>));
+java.io.BufferedReader br1<%=cid %> = new java.io.BufferedReader (new java.io.FileReader(<%=fileRef %>));
+
+boolean result<%=cid %> = true;
+String str1<%=cid %> = "";
+String str2<%=cid %> = "";
+while ( ( (str1<%=cid %> = br1<%=cid %>.readLine()) !=null) && ( (str2<%=cid %> = br<%=cid %>.readLine()) !=null) ) {
+	if (str1<%=cid %>.compareTo(str2<%=cid %>)!=0) {
+		result<%=cid %> = false;
+		break;
+	}
+}
+
+String message<%=cid %> = "";
+int difference<%=cid %> = 0;
+if (result<%=cid %>) {
+	message<%=cid %> = <%=noDifferMessage%>;
+	difference<%=cid %> = 0;
+	
+} else {
+	message<%=cid %> = <%=differMessage%>;
+	difference<%=cid %> = 1;
+}
+globalMap.put("<%=cid %>",difference<%=cid %>);
+
+<%
+if (print) {
+%>
+    System.out.println(message<%=cid %>);
+<%
+}
+
+for (IConnection conn : node.getOutgoingConnections()) {
+	if ((conn.getLineStyle().equals(EConnectionType.FLOW_MAIN))||(conn.getLineStyle().equals(EConnectionType.FLOW_REF))) {
+%>
+		<%=conn.getName() %>.file = <%=file %>;
+		<%=conn.getName() %>.file_ref = <%=fileRef %>;	
+    	<%=conn.getName() %>.moment = java.util.Calendar.getInstance().getTime();
+    	<%=conn.getName() %>.job = jobName;
+		<%=conn.getName() %>.component = currentComponent;
+		<%=conn.getName() %>.differ = difference<%=cid %>;
+		<%=conn.getName() %>.message = message<%=cid %>;
+<%
+	}
+}
+%>

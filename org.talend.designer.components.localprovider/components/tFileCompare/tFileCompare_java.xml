@@ -1,0 +1,107 @@
+<COMPONENT>
+  <HEADER
+    PLATEFORM="ALL"
+    SERIAL=""
+    VERSION="0.101"
+    STATUS="ALPHA"
+    COMPATIBILITY="ALL"
+    AUTHOR="Talend"
+    RELEASE_DATE="20050320A"
+    STARTABLE="true"
+    SCHEMA_AUTO_PROPAGATE="false"
+  >
+    <SIGNATURE></SIGNATURE>
+  </HEADER>
+
+  <DOCUMENTATION>
+    <URL/>
+  </DOCUMENTATION>
+
+  <CONNECTORS>
+    <CONNECTOR CTYPE="FLOW" MAX_INPUT="1"/>
+    <CONNECTOR CTYPE="ITERATE" MAX_OUTPUT="0" MAX_INPUT="1"/>
+    <CONNECTOR CTYPE="BEFORE" MAX_INPUT="1"/>
+    <CONNECTOR CTYPE="AFTER" MAX_INPUT="1"/>
+    <CONNECTOR CTYPE="REFERENCE"/>
+    <CONNECTOR CTYPE="RUN_OK"/>
+    <CONNECTOR CTYPE="RUN_ERROR"/>
+    <CONNECTOR CTYPE="RUN_IF"/>
+  </CONNECTORS>
+
+  <PARAMETERS>
+    <PARAMETER
+      NAME="SCHEMA"
+      FIELD="SCHEMA_TYPE"
+      REQUIRED="true"
+      NUM_ROW="1"
+      READONLY="true"
+    >
+      <TABLE>
+        <COLUMN NAME="file" TYPE="id_String" LENGTH="255"/>
+        <COLUMN NAME="file_ref" TYPE="id_String" LENGTH="255"/>
+        <COLUMN NAME="moment" TYPE="id_Date"/> <!-- PTODO MHIRT/NRO Gestion de la date -->
+        <COLUMN NAME="job" TYPE="id_String" LENGTH="50"/>
+        <COLUMN NAME="component" TYPE="id_String" LENGTH="255"/>
+        <COLUMN NAME="differ" TYPE="id_Integer" LENGTH="1"/>
+        <COLUMN NAME="message" TYPE="id_String" LENGTH="255"/>
+      </TABLE>
+    </PARAMETER>
+
+    <PARAMETER
+       NAME="FILE"
+       FIELD="FILE"
+       REQUIRED="true"
+       NUM_ROW="10"
+    >
+      <DEFAULT>"__COMP_DEFAULT_FILE_DIR__/need_test.txt"</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER
+       NAME="FILE_REF"
+       FIELD="FILE"
+       REQUIRED="true"
+       NUM_ROW="20"
+    >
+      <DEFAULT>"__COMP_DEFAULT_FILE_DIR__/reference.txt"</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER
+       NAME="DIFFER_MESSAGE"
+       FIELD="TEXT"
+       REQUIRED="true"
+       NUM_ROW="30"
+    >
+      <DEFAULT>"[job " + jobName + "] Files differ"</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER
+       NAME="NO_DIFFER_MESSAGE"
+       FIELD="TEXT"
+       REQUIRED="true"
+       NUM_ROW="40"
+    >
+      <DEFAULT>"[job " + jobName + "] Files are identical"</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER
+      NAME="PRINT"
+      FIELD="CHECK"
+      REQUIRED="true"
+      NUM_ROW="50"
+    >
+      <DEFAULT>true</DEFAULT>
+    </PARAMETER>
+
+  </PARAMETERS>
+
+  <CODEGENERATION>
+    <TEMPLATES>
+      <TEMPLATE MULTIPLE_METHODS="false"/>
+    </TEMPLATES>
+  </CODEGENERATION>
+
+  <RETURNS>
+    <RETURN NAME="DIFFERENCE" TYPE="BOOLEAN" AVAILABILITY="FLOW"/>
+  </RETURNS>
+
+</COMPONENT>
