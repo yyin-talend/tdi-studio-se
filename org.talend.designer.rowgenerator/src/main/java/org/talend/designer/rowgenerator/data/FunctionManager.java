@@ -48,8 +48,6 @@ public class FunctionManager {
 
     private List<TalendType> talendTypes = null;
 
-    private static FunctionManager instance = new FunctionManager();
-
     /**
      * qzhang Comment method "getFunctionByName".
      * 
@@ -125,9 +123,4 @@ public class FunctionManager {
         talendTypes = parser.getList();
 
     }
-
-    public static FunctionManager getInstance() {
-        return instance;
-    }
-
 }

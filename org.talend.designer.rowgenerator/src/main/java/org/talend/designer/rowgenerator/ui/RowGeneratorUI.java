@@ -96,6 +96,8 @@ public class RowGeneratorUI {
 
     private RowGeneratorComponent externalNode;
 
+    private FunctionManager functionManager;
+
     public RowGeneratorUI(Composite parent, RowGeneratorManager generatorManager) {
         super();
         this.generatorManager = generatorManager;
@@ -103,6 +105,7 @@ public class RowGeneratorUI {
         externalNode = generatorManager.getRowGeneratorComponent();
         // add listeners.
         this.rowGenUIParent = parent;
+        functionManager = new FunctionManager();
     }
 
     /**
@@ -160,8 +163,8 @@ public class RowGeneratorUI {
                 if (item.getData() != null) {
                     Function fun = ((MetadataColumnExt) item.getData()).getFunction();
                     if (fun != null) {
-//                        tabFolderEditors.createTableView(fun);
-                         tabFolderEditors.getParameterEditor().update(fun);
+                        // tabFolderEditors.createTableView(fun);
+                        tabFolderEditors.getParameterEditor().update(fun);
                     }
                 }
             }
@@ -208,7 +211,7 @@ public class RowGeneratorUI {
         metadataTableEditor = new MetadataTableEditorExt(outputMetaTable, ""); //$NON-NLS-1$
         metadataTableEditor.setRowGenUI(this);
         dataTableView = new RowGenTableEditor2(datasFlowViewSashForm, SWT.BORDER, metadataTableEditor, inputReadOnly,
-                !inputReadOnly, externalNode);
+                !inputReadOnly, externalNode,functionManager);
         dataTableView.getExtendedTableViewer().setCommandStack(generatorManager.getCommandStack());
         // dataTableView.
         // resize all the columns but not the table
@@ -229,7 +232,7 @@ public class RowGeneratorUI {
         for (IMetadataColumn column : outputMetaTable2.getListColumns()) {
             if (column instanceof MetadataColumn) {
                 MetadataColumnExt ext = new MetadataColumnExt((MetadataColumn) column);
-                List<Function> funs = FunctionManager.getInstance().getFunctionByName(ext.getTalendType());
+                List<Function> funs = functionManager.getFunctionByName(ext.getTalendType());
                 String[] arrayTalendFunctions2 = new String[funs.size()];
                 for (int i = 0; i < funs.size(); i++) {
                     arrayTalendFunctions2[i] = funs.get(i).getName();
@@ -247,7 +250,7 @@ public class RowGeneratorUI {
     @SuppressWarnings("unchecked")//$NON-NLS-1$
     private Function getFunction(MetadataColumnExt bean, String talendType) {
         String value = externalNode.getColumnValue(bean);
-        List<Function> functions = FunctionManager.getInstance().getFunctionByName(talendType);
+        List<Function> functions = functionManager.getFunctionByName(talendType);
         Function currentFun = getAvailableFunFromValue(value, functions);
         if (currentFun == null) {
             currentFun = new Function();

@@ -112,6 +112,8 @@ public class RowGenTableEditor2 extends AbstractDataTableEditorView<IMetadataCol
 
     private Label empty;
 
+    private FunctionManager functionManager;
+
     /**
      * qzhang RowGenMetadataTableEditorExt constructor comment.
      * 
@@ -120,17 +122,19 @@ public class RowGenTableEditor2 extends AbstractDataTableEditorView<IMetadataCol
      * @param extendedTableModel
      * @param readOnly
      * @param toolbarVisible
+     * @param functionManager 
      */
     public RowGenTableEditor2(Composite parentComposite, int mainCompositeStyle,
             ExtendedTableModel<IMetadataColumn> extendedTableModel, boolean readOnly, boolean toolbarVisible,
-            RowGeneratorComponent rGcomponent) {
+            RowGeneratorComponent rGcomponent, FunctionManager functionManager) {
         super(parentComposite, mainCompositeStyle, extendedTableModel, readOnly, toolbarVisible, true);
         this.rGcomponent = rGcomponent;
+        this.functionManager=functionManager;
     }
 
-    public RowGenTableEditor2(Composite parentComposite, int mainCompositeStyle) {
-        super(parentComposite, mainCompositeStyle);
-    }
+//    public RowGenTableEditor2(Composite parentComposite, int mainCompositeStyle) {
+//        super(parentComposite, mainCompositeStyle);
+//    }
 
     /*
      * (non-Javadoc)
@@ -551,7 +555,7 @@ public class RowGenTableEditor2 extends AbstractDataTableEditorView<IMetadataCol
     @SuppressWarnings("unchecked")//$NON-NLS-1$
     protected Function getFunnctionByName(String talendType, String value) {
         Function func = null;
-        for (Function fun : FunctionManager.getInstance().getFunctionByName(talendType)) {
+        for (Function fun : functionManager.getFunctionByName(talendType)) {
             if (fun.getName().equals(value)) {
                 func = (Function) fun.clone();
             }
@@ -790,7 +794,7 @@ public class RowGenTableEditor2 extends AbstractDataTableEditorView<IMetadataCol
     @SuppressWarnings("unchecked")//$NON-NLS-1$
     private Function getFunction(MetadataColumnExt bean, String talendType) {
         Function currentFun = new Function();
-        List<Function> functions = FunctionManager.getInstance().getFunctionByName(talendType);
+        List<Function> functions = functionManager.getFunctionByName(talendType);
         String[] arrayTalendFunctions2 = new String[functions.size()];
         if (functions.isEmpty()) {
             currentFun.setDescription(""); //$NON-NLS-1$
