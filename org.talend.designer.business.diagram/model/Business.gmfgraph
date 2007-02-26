@@ -120,6 +120,45 @@
           name="ActionBusinessItemNameFigure"
           qualifiedClassName="org.talend.designer.business.diagram.custom.figures.BusinessItemNameFigure"/>
     </figures>
+    <figures
+        xsi:type="gmfgraph:CustomFigure"
+        referencingElements="ActorBusinessItem"
+        name="ActorBusinessItemFigure"
+        qualifiedClassName="org.talend.designer.business.diagram.custom.figures.ActorBusinessItemShapeFigure">
+      <layout
+          xsi:type="gmfgraph:StackLayout"/>
+      <children
+          xsi:type="gmfgraph:CustomFigure"
+          referencingElements="ActorBusinessItemName"
+          name="ActorBusinessItemNameFigure"
+          qualifiedClassName="org.talend.designer.business.diagram.custom.figures.BusinessItemNameFigure"/>
+    </figures>
+    <figures
+        xsi:type="gmfgraph:CustomFigure"
+        referencingElements="EllipseBusinessItem"
+        name="EllipseBusinessItemFigure"
+        qualifiedClassName="org.talend.designer.business.diagram.custom.figures.EllipseBusinessItemShapeFigure">
+      <layout
+          xsi:type="gmfgraph:StackLayout"/>
+      <children
+          xsi:type="gmfgraph:CustomFigure"
+          referencingElements="EllipseBusinessItemName"
+          name="EllipseBusinessItemNameFigure"
+          qualifiedClassName="org.talend.designer.business.diagram.custom.figures.BusinessItemNameFigure"/>
+    </figures>
+    <figures
+        xsi:type="gmfgraph:CustomFigure"
+        referencingElements="GearBusinessItem"
+        name="GearBusinessItemFigure"
+        qualifiedClassName="org.talend.designer.business.diagram.custom.figures.GearBusinessItemShapeFigure">
+      <layout
+          xsi:type="gmfgraph:StackLayout"/>
+      <children
+          xsi:type="gmfgraph:CustomFigure"
+          referencingElements="GearBusinessItemName"
+          name="GearBusinessItemNameFigure"
+          qualifiedClassName="org.talend.designer.business.diagram.custom.figures.BusinessItemNameFigure"/>
+    </figures>
   </figures>
   <nodes
       name="DecisionBusinessItem"
@@ -184,6 +223,30 @@
       xsi:type="gmfgraph:DiagramLabel"
       name="DatabaseBusinessItemName"
       figure="DatabaseBusinessItemNameFigure"
+      elementIcon="false"/>
+  <nodes
+      name="ActorBusinessItem"
+      figure="ActorBusinessItemFigure"/>
+  <nodes
+      xsi:type="gmfgraph:DiagramLabel"
+      name="ActorBusinessItemName"
+      figure="ActorBusinessItemNameFigure"
+      elementIcon="false"/>
+  <nodes
+      name="EllipseBusinessItem"
+      figure="EllipseBusinessItemFigure"/>
+  <nodes
+      xsi:type="gmfgraph:DiagramLabel"
+      name="EllipseBusinessItemName"
+      figure="EllipseBusinessItemNameFigure"
+      elementIcon="false"/>
+  <nodes
+      name="GearBusinessItem"
+      figure="GearBusinessItemFigure"/>
+  <nodes
+      xsi:type="gmfgraph:DiagramLabel"
+      name="GearBusinessItemName"
+      figure="GearBusinessItemNameFigure"
       elementIcon="false"/>
   <connections
       name="BusinessItemRelationship"

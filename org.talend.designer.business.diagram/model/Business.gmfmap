@@ -158,6 +158,63 @@
           href="Business.gmfgraph#DecisionBusinessItem"/>
     </ownedChild>
   </nodes>
+  <nodes>
+    <containmentFeature
+        href="../../org.talend.model/model/Business.ecore#//BusinessProcess/businessItems"/>
+    <ownedChild>
+      <domainMetaElement
+          href="../../org.talend.model/model/Business.ecore#//ActorBusinessItem"/>
+      <labelMappings>
+        <diagramLabel
+            href="Business.gmfgraph#ActorBusinessItemName"/>
+        <features
+            href="../../org.talend.model/model/Business.ecore#//BusinessItem/name"/>
+      </labelMappings>
+      <tool
+          xsi:type="gmftool:CreationTool"
+          href="Business.gmftool#//@palette/@tools.0/@tools.8"/>
+      <diagramNode
+          href="Business.gmfgraph#ActorBusinessItem"/>
+    </ownedChild>
+  </nodes>
+  <nodes>
+    <containmentFeature
+        href="../../org.talend.model/model/Business.ecore#//BusinessProcess/businessItems"/>
+    <ownedChild>
+      <domainMetaElement
+          href="../../org.talend.model/model/Business.ecore#//EllipseBusinessItem"/>
+      <labelMappings>
+        <diagramLabel
+            href="Business.gmfgraph#EllipseBusinessItemName"/>
+        <features
+            href="../../org.talend.model/model/Business.ecore#//BusinessItem/name"/>
+      </labelMappings>
+      <tool
+          xsi:type="gmftool:CreationTool"
+          href="Business.gmftool#//@palette/@tools.0/@tools.9"/>
+      <diagramNode
+          href="Business.gmfgraph#EllipseBusinessItem"/>
+    </ownedChild>
+  </nodes>
+  <nodes>
+    <containmentFeature
+        href="../../org.talend.model/model/Business.ecore#//BusinessProcess/businessItems"/>
+    <ownedChild>
+      <domainMetaElement
+          href="../../org.talend.model/model/Business.ecore#//GearBusinessItem"/>
+      <labelMappings>
+        <diagramLabel
+            href="Business.gmfgraph#GearBusinessItemName"/>
+        <features
+            href="../../org.talend.model/model/Business.ecore#//BusinessItem/name"/>
+      </labelMappings>
+      <tool
+          xsi:type="gmftool:CreationTool"
+          href="Business.gmftool#//@palette/@tools.0/@tools.10"/>
+      <diagramNode
+          href="Business.gmfgraph#GearBusinessItem"/>
+    </ownedChild>
+  </nodes>
   <links>
     <domainMetaElement
         href="../../org.talend.model/model/Business.ecore#//BusinessItemRelationship"/>
@@ -172,7 +229,7 @@
         href="../../org.talend.model/model/Business.ecore#//BusinessProcess/businessItems"/>
     <tool
         xsi:type="gmftool:CreationTool"
-        href="Business.gmftool#//@palette/@tools.0/@tools.9"/>
+        href="Business.gmftool#//@palette/@tools.0/@tools.12"/>
     <diagramLink
         href="Business.gmfgraph#BusinessItemRelationship"/>
     <sourceMetaFeature

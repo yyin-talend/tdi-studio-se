@@ -9,11 +9,14 @@ import org.eclipse.gmf.runtime.common.ui.services.parser.IParserProvider;
 import org.eclipse.gmf.runtime.notation.View;
 import org.talend.designer.business.model.business.BusinessPackage;
 import org.talend.designer.business.model.business.diagram.edit.parts.ActionBusinessItemNameEditPart;
+import org.talend.designer.business.model.business.diagram.edit.parts.ActorBusinessItemNameEditPart;
 import org.talend.designer.business.model.business.diagram.edit.parts.BusinessItemRelationshipNameEditPart;
 import org.talend.designer.business.model.business.diagram.edit.parts.DataBusinessItemNameEditPart;
 import org.talend.designer.business.model.business.diagram.edit.parts.DatabaseBusinessItemNameEditPart;
 import org.talend.designer.business.model.business.diagram.edit.parts.DecisionBusinessItemNameEditPart;
 import org.talend.designer.business.model.business.diagram.edit.parts.DocumentBusinessItemNameEditPart;
+import org.talend.designer.business.model.business.diagram.edit.parts.EllipseBusinessItemNameEditPart;
+import org.talend.designer.business.model.business.diagram.edit.parts.GearBusinessItemNameEditPart;
 import org.talend.designer.business.model.business.diagram.edit.parts.InputBusinessItemNameEditPart;
 import org.talend.designer.business.model.business.diagram.edit.parts.ListBusinessItemNameEditPart;
 import org.talend.designer.business.model.business.diagram.edit.parts.TerminalBusinessItemNameEditPart;
@@ -219,6 +222,78 @@ public class BusinessParserProvider extends AbstractProvider implements IParserP
     /**
      * @generated
      */
+    private IParser actorBusinessItemActorBusinessItemName_4010Parser;
+
+    /**
+     * @generated
+     */
+    private IParser getActorBusinessItemActorBusinessItemName_4010Parser() {
+        if (actorBusinessItemActorBusinessItemName_4010Parser == null) {
+            actorBusinessItemActorBusinessItemName_4010Parser = createActorBusinessItemActorBusinessItemName_4010Parser();
+        }
+        return actorBusinessItemActorBusinessItemName_4010Parser;
+    }
+
+    /**
+     * @generated
+     */
+    protected IParser createActorBusinessItemActorBusinessItemName_4010Parser() {
+        BusinessStructuralFeatureParser parser = new BusinessStructuralFeatureParser(BusinessPackage.eINSTANCE
+                .getBusinessItem().getEStructuralFeature("name")); //$NON-NLS-1$
+        return parser;
+    }
+
+    /**
+     * @generated
+     */
+    private IParser ellipseBusinessItemEllipseBusinessItemName_4011Parser;
+
+    /**
+     * @generated
+     */
+    private IParser getEllipseBusinessItemEllipseBusinessItemName_4011Parser() {
+        if (ellipseBusinessItemEllipseBusinessItemName_4011Parser == null) {
+            ellipseBusinessItemEllipseBusinessItemName_4011Parser = createEllipseBusinessItemEllipseBusinessItemName_4011Parser();
+        }
+        return ellipseBusinessItemEllipseBusinessItemName_4011Parser;
+    }
+
+    /**
+     * @generated
+     */
+    protected IParser createEllipseBusinessItemEllipseBusinessItemName_4011Parser() {
+        BusinessStructuralFeatureParser parser = new BusinessStructuralFeatureParser(BusinessPackage.eINSTANCE
+                .getBusinessItem().getEStructuralFeature("name")); //$NON-NLS-1$
+        return parser;
+    }
+
+    /**
+     * @generated
+     */
+    private IParser gearBusinessItemGearBusinessItemName_4012Parser;
+
+    /**
+     * @generated
+     */
+    private IParser getGearBusinessItemGearBusinessItemName_4012Parser() {
+        if (gearBusinessItemGearBusinessItemName_4012Parser == null) {
+            gearBusinessItemGearBusinessItemName_4012Parser = createGearBusinessItemGearBusinessItemName_4012Parser();
+        }
+        return gearBusinessItemGearBusinessItemName_4012Parser;
+    }
+
+    /**
+     * @generated
+     */
+    protected IParser createGearBusinessItemGearBusinessItemName_4012Parser() {
+        BusinessStructuralFeatureParser parser = new BusinessStructuralFeatureParser(BusinessPackage.eINSTANCE
+                .getBusinessItem().getEStructuralFeature("name")); //$NON-NLS-1$
+        return parser;
+    }
+
+    /**
+     * @generated
+     */
     private IParser businessItemRelationshipBusinessItemRelationshipName_4009Parser;
 
     /**
@@ -261,6 +336,12 @@ public class BusinessParserProvider extends AbstractProvider implements IParserP
             return getInputBusinessItemInputBusinessItemName_4007Parser();
         case DecisionBusinessItemNameEditPart.VISUAL_ID:
             return getDecisionBusinessItemDecisionBusinessItemName_4008Parser();
+        case ActorBusinessItemNameEditPart.VISUAL_ID:
+            return getActorBusinessItemActorBusinessItemName_4010Parser();
+        case EllipseBusinessItemNameEditPart.VISUAL_ID:
+            return getEllipseBusinessItemEllipseBusinessItemName_4011Parser();
+        case GearBusinessItemNameEditPart.VISUAL_ID:
+            return getGearBusinessItemGearBusinessItemName_4012Parser();
         case BusinessItemRelationshipNameEditPart.VISUAL_ID:
             return getBusinessItemRelationshipBusinessItemRelationshipName_4009Parser();
         }

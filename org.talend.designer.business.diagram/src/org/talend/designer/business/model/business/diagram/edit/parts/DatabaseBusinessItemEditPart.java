@@ -20,6 +20,9 @@ import org.talend.designer.business.model.business.diagram.edit.policies.Databas
 import org.talend.designer.business.model.business.diagram.edit.policies.DatabaseBusinessItemItemSemanticEditPolicy;
 import org.talend.designer.business.model.business.diagram.part.BusinessVisualIDRegistry;
 
+/**
+ * @generated NOT
+ */
 public class DatabaseBusinessItemEditPart extends BusinessItemShapeEditPart {
 
     /**

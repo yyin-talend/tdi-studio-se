@@ -66,6 +66,18 @@ public class BusinessEditPartFactory implements EditPartFactory {
                 return new DecisionBusinessItemEditPart(view);
             case DecisionBusinessItemNameEditPart.VISUAL_ID:
                 return new DecisionBusinessItemNameEditPart(view);
+            case ActorBusinessItemEditPart.VISUAL_ID:
+                return new ActorBusinessItemEditPart(view);
+            case ActorBusinessItemNameEditPart.VISUAL_ID:
+                return new ActorBusinessItemNameEditPart(view);
+            case EllipseBusinessItemEditPart.VISUAL_ID:
+                return new EllipseBusinessItemEditPart(view);
+            case EllipseBusinessItemNameEditPart.VISUAL_ID:
+                return new EllipseBusinessItemNameEditPart(view);
+            case GearBusinessItemEditPart.VISUAL_ID:
+                return new GearBusinessItemEditPart(view);
+            case GearBusinessItemNameEditPart.VISUAL_ID:
+                return new GearBusinessItemNameEditPart(view);
             case BusinessProcessEditPart.VISUAL_ID:
                 return new BusinessProcessEditPart(view);
             case BusinessItemRelationshipEditPart.VISUAL_ID:

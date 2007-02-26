@@ -8,6 +8,7 @@ import org.eclipse.gmf.runtime.notation.Diagram;
 import org.eclipse.gmf.runtime.notation.View;
 import org.talend.designer.business.diagram.i18n.Messages;
 import org.talend.designer.business.model.business.ActionBusinessItem;
+import org.talend.designer.business.model.business.ActorBusinessItem;
 import org.talend.designer.business.model.business.BusinessItemRelationship;
 import org.talend.designer.business.model.business.BusinessPackage;
 import org.talend.designer.business.model.business.BusinessProcess;
@@ -15,11 +16,15 @@ import org.talend.designer.business.model.business.DataBusinessItem;
 import org.talend.designer.business.model.business.DatabaseBusinessItem;
 import org.talend.designer.business.model.business.DecisionBusinessItem;
 import org.talend.designer.business.model.business.DocumentBusinessItem;
+import org.talend.designer.business.model.business.EllipseBusinessItem;
+import org.talend.designer.business.model.business.GearBusinessItem;
 import org.talend.designer.business.model.business.InputBusinessItem;
 import org.talend.designer.business.model.business.ListBusinessItem;
 import org.talend.designer.business.model.business.TerminalBusinessItem;
 import org.talend.designer.business.model.business.diagram.edit.parts.ActionBusinessItemEditPart;
 import org.talend.designer.business.model.business.diagram.edit.parts.ActionBusinessItemNameEditPart;
+import org.talend.designer.business.model.business.diagram.edit.parts.ActorBusinessItemEditPart;
+import org.talend.designer.business.model.business.diagram.edit.parts.ActorBusinessItemNameEditPart;
 import org.talend.designer.business.model.business.diagram.edit.parts.BusinessItemRelationshipEditPart;
 import org.talend.designer.business.model.business.diagram.edit.parts.BusinessItemRelationshipNameEditPart;
 import org.talend.designer.business.model.business.diagram.edit.parts.BusinessProcessEditPart;
@@ -31,6 +36,10 @@ import org.talend.designer.business.model.business.diagram.edit.parts.DecisionBu
 import org.talend.designer.business.model.business.diagram.edit.parts.DecisionBusinessItemNameEditPart;
 import org.talend.designer.business.model.business.diagram.edit.parts.DocumentBusinessItemEditPart;
 import org.talend.designer.business.model.business.diagram.edit.parts.DocumentBusinessItemNameEditPart;
+import org.talend.designer.business.model.business.diagram.edit.parts.EllipseBusinessItemEditPart;
+import org.talend.designer.business.model.business.diagram.edit.parts.EllipseBusinessItemNameEditPart;
+import org.talend.designer.business.model.business.diagram.edit.parts.GearBusinessItemEditPart;
+import org.talend.designer.business.model.business.diagram.edit.parts.GearBusinessItemNameEditPart;
 import org.talend.designer.business.model.business.diagram.edit.parts.InputBusinessItemEditPart;
 import org.talend.designer.business.model.business.diagram.edit.parts.InputBusinessItemNameEditPart;
 import org.talend.designer.business.model.business.diagram.edit.parts.ListBusinessItemEditPart;
@@ -197,6 +206,21 @@ public class BusinessVisualIDRegistry {
                 return DecisionBusinessItemNameEditPart.VISUAL_ID;
             }
             return getUnrecognizedDecisionBusinessItem_1008ChildNodeID(domainElement, semanticHint);
+        case ActorBusinessItemEditPart.VISUAL_ID:
+            if (ActorBusinessItemNameEditPart.VISUAL_ID == nodeVisualID) {
+                return ActorBusinessItemNameEditPart.VISUAL_ID;
+            }
+            return getUnrecognizedActorBusinessItem_1009ChildNodeID(domainElement, semanticHint);
+        case EllipseBusinessItemEditPart.VISUAL_ID:
+            if (EllipseBusinessItemNameEditPart.VISUAL_ID == nodeVisualID) {
+                return EllipseBusinessItemNameEditPart.VISUAL_ID;
+            }
+            return getUnrecognizedEllipseBusinessItem_1010ChildNodeID(domainElement, semanticHint);
+        case GearBusinessItemEditPart.VISUAL_ID:
+            if (GearBusinessItemNameEditPart.VISUAL_ID == nodeVisualID) {
+                return GearBusinessItemNameEditPart.VISUAL_ID;
+            }
+            return getUnrecognizedGearBusinessItem_1011ChildNodeID(domainElement, semanticHint);
         case BusinessProcessEditPart.VISUAL_ID:
             if ((semanticHint == null || ActionBusinessItemEditPart.VISUAL_ID == nodeVisualID)
                     && BusinessPackage.eINSTANCE.getActionBusinessItem().isSuperTypeOf(domainElementMetaclass)
@@ -237,6 +261,21 @@ public class BusinessVisualIDRegistry {
                     && BusinessPackage.eINSTANCE.getDecisionBusinessItem().isSuperTypeOf(domainElementMetaclass)
                     && (domainElement == null || isNodeDecisionBusinessItem_1008((DecisionBusinessItem) domainElement))) {
                 return DecisionBusinessItemEditPart.VISUAL_ID;
+            }
+            if ((semanticHint == null || ActorBusinessItemEditPart.VISUAL_ID == nodeVisualID)
+                    && BusinessPackage.eINSTANCE.getActorBusinessItem().isSuperTypeOf(domainElementMetaclass)
+                    && (domainElement == null || isNodeActorBusinessItem_1009((ActorBusinessItem) domainElement))) {
+                return ActorBusinessItemEditPart.VISUAL_ID;
+            }
+            if ((semanticHint == null || EllipseBusinessItemEditPart.VISUAL_ID == nodeVisualID)
+                    && BusinessPackage.eINSTANCE.getEllipseBusinessItem().isSuperTypeOf(domainElementMetaclass)
+                    && (domainElement == null || isNodeEllipseBusinessItem_1010((EllipseBusinessItem) domainElement))) {
+                return EllipseBusinessItemEditPart.VISUAL_ID;
+            }
+            if ((semanticHint == null || GearBusinessItemEditPart.VISUAL_ID == nodeVisualID)
+                    && BusinessPackage.eINSTANCE.getGearBusinessItem().isSuperTypeOf(domainElementMetaclass)
+                    && (domainElement == null || isNodeGearBusinessItem_1011((GearBusinessItem) domainElement))) {
+                return GearBusinessItemEditPart.VISUAL_ID;
             }
             return getUnrecognizedBusinessProcess_79ChildNodeID(domainElement, semanticHint);
         case BusinessItemRelationshipEditPart.VISUAL_ID:
@@ -362,6 +401,33 @@ public class BusinessVisualIDRegistry {
     }
 
     /**
+     * User can change implementation of this method to check some additional conditions here.
+     * 
+     * @generated
+     */
+    private static boolean isNodeActorBusinessItem_1009(ActorBusinessItem element) {
+        return true;
+    }
+
+    /**
+     * User can change implementation of this method to check some additional conditions here.
+     * 
+     * @generated
+     */
+    private static boolean isNodeEllipseBusinessItem_1010(EllipseBusinessItem element) {
+        return true;
+    }
+
+    /**
+     * User can change implementation of this method to check some additional conditions here.
+     * 
+     * @generated
+     */
+    private static boolean isNodeGearBusinessItem_1011(GearBusinessItem element) {
+        return true;
+    }
+
+    /**
      * User can change implementation of this method to handle some specific situations not covered by default logic.
      * 
      * @generated
@@ -430,6 +496,33 @@ public class BusinessVisualIDRegistry {
      * @generated
      */
     private static int getUnrecognizedDecisionBusinessItem_1008ChildNodeID(EObject domainElement, String semanticHint) {
+        return -1;
+    }
+
+    /**
+     * User can change implementation of this method to handle some specific situations not covered by default logic.
+     * 
+     * @generated
+     */
+    private static int getUnrecognizedActorBusinessItem_1009ChildNodeID(EObject domainElement, String semanticHint) {
+        return -1;
+    }
+
+    /**
+     * User can change implementation of this method to handle some specific situations not covered by default logic.
+     * 
+     * @generated
+     */
+    private static int getUnrecognizedEllipseBusinessItem_1010ChildNodeID(EObject domainElement, String semanticHint) {
+        return -1;
+    }
+
+    /**
+     * User can change implementation of this method to handle some specific situations not covered by default logic.
+     * 
+     * @generated
+     */
+    private static int getUnrecognizedGearBusinessItem_1011ChildNodeID(EObject domainElement, String semanticHint) {
         return -1;
     }
 

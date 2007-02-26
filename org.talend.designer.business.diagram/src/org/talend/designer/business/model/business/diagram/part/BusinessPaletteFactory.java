@@ -28,10 +28,10 @@ public class BusinessPaletteFactory {
     }
 
     /**
-     * @generated NOT
+     * @generated
      */
     private PaletteContainer createbusiness1Group() {
-        PaletteContainer paletteContainer = new PaletteDrawer(Messages.getString("BusinessPaletteFactory.Business")); //$NON-NLS-1$
+        PaletteContainer paletteContainer = new PaletteDrawer("business"); //$NON-NLS-1$
         paletteContainer.add(createDecision1CreationTool());
         paletteContainer.add(createAction2CreationTool());
         paletteContainer.add(createTerminal3CreationTool());
@@ -40,8 +40,11 @@ public class BusinessPaletteFactory {
         paletteContainer.add(createInput6CreationTool());
         paletteContainer.add(createList7CreationTool());
         paletteContainer.add(createDatabase8CreationTool());
+        paletteContainer.add(createActor9CreationTool());
+        paletteContainer.add(createEllipse10CreationTool());
+        paletteContainer.add(createGear11CreationTool());
         paletteContainer.add(new PaletteSeparator());
-        paletteContainer.add(createRelationship10CreationTool());
+        paletteContainer.add(createRelationship13CreationTool());
         return paletteContainer;
     }
 
@@ -200,7 +203,61 @@ public class BusinessPaletteFactory {
     /**
      * @generated NOT
      */
-    private ToolEntry createRelationship10CreationTool() {
+    private ToolEntry createActor9CreationTool() {
+        ImageDescriptor smallImage;
+        ImageDescriptor largeImage;
+
+        smallImage = BusinessElementTypes.getImageDescriptor(BusinessElementTypes.ActorBusinessItem_1009);
+
+        largeImage = smallImage;
+
+        final List elementTypes = new ArrayList();
+        elementTypes.add(BusinessElementTypes.ActorBusinessItem_1009);
+        ToolEntry result = new NodeToolEntry(Messages.getString("BusinessPaletteFactory.Actor"), Messages.getString("BusinessPaletteFactory.CreateActor"), smallImage, largeImage, elementTypes); //$NON-NLS-1$ //$NON-NLS-2$
+
+        return result;
+    }
+
+    /**
+     * @generated NOT
+     */
+    private ToolEntry createEllipse10CreationTool() {
+        ImageDescriptor smallImage;
+        ImageDescriptor largeImage;
+
+        smallImage = BusinessElementTypes.getImageDescriptor(BusinessElementTypes.EllipseBusinessItem_1010);
+
+        largeImage = smallImage;
+
+        final List elementTypes = new ArrayList();
+        elementTypes.add(BusinessElementTypes.EllipseBusinessItem_1010);
+        ToolEntry result = new NodeToolEntry(Messages.getString("BusinessPaletteFactory.Ellipse"), Messages.getString("BusinessPaletteFactory.CreateEllipse"), smallImage, largeImage, elementTypes); //$NON-NLS-1$ //$NON-NLS-2$
+
+        return result;
+    }
+
+    /**
+     * @generated NOT
+     */
+    private ToolEntry createGear11CreationTool() {
+        ImageDescriptor smallImage;
+        ImageDescriptor largeImage;
+
+        smallImage = BusinessElementTypes.getImageDescriptor(BusinessElementTypes.GearBusinessItem_1011);
+
+        largeImage = smallImage;
+
+        final List elementTypes = new ArrayList();
+        elementTypes.add(BusinessElementTypes.GearBusinessItem_1011);
+        ToolEntry result = new NodeToolEntry(Messages.getString("BusinessPaletteFactory.Gear"), Messages.getString("BusinessPaletteFactory.CreateGear"), smallImage, largeImage, elementTypes); //$NON-NLS-1$ //$NON-NLS-2$
+
+        return result;
+    }
+
+    /**
+     * @generated NOT
+     */
+    private ToolEntry createRelationship13CreationTool() {
         ImageDescriptor smallImage;
         ImageDescriptor largeImage;
 

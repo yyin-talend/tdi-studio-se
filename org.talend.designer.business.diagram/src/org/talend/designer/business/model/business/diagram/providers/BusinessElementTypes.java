@@ -146,6 +146,9 @@ public class BusinessElementTypes {
             elements.put(DataBusinessItem_1006, BusinessPackage.eINSTANCE.getDataBusinessItem());
             elements.put(InputBusinessItem_1007, BusinessPackage.eINSTANCE.getInputBusinessItem());
             elements.put(DecisionBusinessItem_1008, BusinessPackage.eINSTANCE.getDecisionBusinessItem());
+            elements.put(ActorBusinessItem_1009, BusinessPackage.eINSTANCE.getActorBusinessItem());
+            elements.put(EllipseBusinessItem_1010, BusinessPackage.eINSTANCE.getEllipseBusinessItem());
+            elements.put(GearBusinessItem_1011, BusinessPackage.eINSTANCE.getGearBusinessItem());
             elements.put(BusinessItemRelationship_3001, BusinessPackage.eINSTANCE.getBusinessItemRelationship());
         }
         return (ENamedElement) elements.get(type);
@@ -199,6 +202,21 @@ public class BusinessElementTypes {
     /**
      * @generated
      */
+    public static final IElementType ActorBusinessItem_1009 = getElementType("org.talend.designer.business.diagram.ActorBusinessItem_1009"); //$NON-NLS-1$
+
+    /**
+     * @generated
+     */
+    public static final IElementType EllipseBusinessItem_1010 = getElementType("org.talend.designer.business.diagram.EllipseBusinessItem_1010"); //$NON-NLS-1$
+
+    /**
+     * @generated
+     */
+    public static final IElementType GearBusinessItem_1011 = getElementType("org.talend.designer.business.diagram.GearBusinessItem_1011"); //$NON-NLS-1$
+
+    /**
+     * @generated
+     */
     public static final IElementType BusinessItemRelationship_3001 = getElementType("org.talend.designer.business.diagram.BusinessItemRelationship_3001"); //$NON-NLS-1$
 
     /**
@@ -228,6 +246,9 @@ public class BusinessElementTypes {
             KNOWN_ELEMENT_TYPES.add(DataBusinessItem_1006);
             KNOWN_ELEMENT_TYPES.add(InputBusinessItem_1007);
             KNOWN_ELEMENT_TYPES.add(DecisionBusinessItem_1008);
+            KNOWN_ELEMENT_TYPES.add(ActorBusinessItem_1009);
+            KNOWN_ELEMENT_TYPES.add(EllipseBusinessItem_1010);
+            KNOWN_ELEMENT_TYPES.add(GearBusinessItem_1011);
             KNOWN_ELEMENT_TYPES.add(BusinessItemRelationship_3001);
         }
         return KNOWN_ELEMENT_TYPES.contains(elementType);

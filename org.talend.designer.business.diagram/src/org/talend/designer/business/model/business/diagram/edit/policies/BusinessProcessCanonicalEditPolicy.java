@@ -29,12 +29,15 @@ import org.talend.designer.business.model.business.BusinessItemRelationship;
 import org.talend.designer.business.model.business.BusinessPackage;
 import org.talend.designer.business.model.business.BusinessProcess;
 import org.talend.designer.business.model.business.diagram.edit.parts.ActionBusinessItemEditPart;
+import org.talend.designer.business.model.business.diagram.edit.parts.ActorBusinessItemEditPart;
 import org.talend.designer.business.model.business.diagram.edit.parts.BusinessItemRelationshipEditPart;
 import org.talend.designer.business.model.business.diagram.edit.parts.BusinessProcessEditPart;
 import org.talend.designer.business.model.business.diagram.edit.parts.DataBusinessItemEditPart;
 import org.talend.designer.business.model.business.diagram.edit.parts.DatabaseBusinessItemEditPart;
 import org.talend.designer.business.model.business.diagram.edit.parts.DecisionBusinessItemEditPart;
 import org.talend.designer.business.model.business.diagram.edit.parts.DocumentBusinessItemEditPart;
+import org.talend.designer.business.model.business.diagram.edit.parts.EllipseBusinessItemEditPart;
+import org.talend.designer.business.model.business.diagram.edit.parts.GearBusinessItemEditPart;
 import org.talend.designer.business.model.business.diagram.edit.parts.InputBusinessItemEditPart;
 import org.talend.designer.business.model.business.diagram.edit.parts.ListBusinessItemEditPart;
 import org.talend.designer.business.model.business.diagram.edit.parts.TerminalBusinessItemEditPart;
@@ -87,6 +90,18 @@ public class BusinessProcessCanonicalEditPolicy extends CanonicalConnectionEditP
                 break;
             }
             case DecisionBusinessItemEditPart.VISUAL_ID: {
+                result.add(nextValue);
+                break;
+            }
+            case ActorBusinessItemEditPart.VISUAL_ID: {
+                result.add(nextValue);
+                break;
+            }
+            case EllipseBusinessItemEditPart.VISUAL_ID: {
+                result.add(nextValue);
+                break;
+            }
+            case GearBusinessItemEditPart.VISUAL_ID: {
                 result.add(nextValue);
                 break;
             }
@@ -214,6 +229,9 @@ public class BusinessProcessCanonicalEditPolicy extends CanonicalConnectionEditP
         case DataBusinessItemEditPart.VISUAL_ID:
         case InputBusinessItemEditPart.VISUAL_ID:
         case DecisionBusinessItemEditPart.VISUAL_ID:
+        case ActorBusinessItemEditPart.VISUAL_ID:
+        case EllipseBusinessItemEditPart.VISUAL_ID:
+        case GearBusinessItemEditPart.VISUAL_ID:
         case BusinessProcessEditPart.VISUAL_ID: {
             myEObject2ViewMap.put(modelElement, view);
             storeLinks(modelElement, getDiagram());

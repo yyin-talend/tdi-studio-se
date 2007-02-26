@@ -8,6 +8,8 @@ import org.eclipse.gmf.runtime.emf.type.core.IElementType;
 import org.eclipse.gmf.runtime.notation.View;
 import org.talend.designer.business.model.business.diagram.edit.parts.ActionBusinessItemEditPart;
 import org.talend.designer.business.model.business.diagram.edit.parts.ActionBusinessItemNameEditPart;
+import org.talend.designer.business.model.business.diagram.edit.parts.ActorBusinessItemEditPart;
+import org.talend.designer.business.model.business.diagram.edit.parts.ActorBusinessItemNameEditPart;
 import org.talend.designer.business.model.business.diagram.edit.parts.BusinessItemRelationshipEditPart;
 import org.talend.designer.business.model.business.diagram.edit.parts.BusinessItemRelationshipNameEditPart;
 import org.talend.designer.business.model.business.diagram.edit.parts.BusinessProcessEditPart;
@@ -19,6 +21,10 @@ import org.talend.designer.business.model.business.diagram.edit.parts.DecisionBu
 import org.talend.designer.business.model.business.diagram.edit.parts.DecisionBusinessItemNameEditPart;
 import org.talend.designer.business.model.business.diagram.edit.parts.DocumentBusinessItemEditPart;
 import org.talend.designer.business.model.business.diagram.edit.parts.DocumentBusinessItemNameEditPart;
+import org.talend.designer.business.model.business.diagram.edit.parts.EllipseBusinessItemEditPart;
+import org.talend.designer.business.model.business.diagram.edit.parts.EllipseBusinessItemNameEditPart;
+import org.talend.designer.business.model.business.diagram.edit.parts.GearBusinessItemEditPart;
+import org.talend.designer.business.model.business.diagram.edit.parts.GearBusinessItemNameEditPart;
 import org.talend.designer.business.model.business.diagram.edit.parts.InputBusinessItemEditPart;
 import org.talend.designer.business.model.business.diagram.edit.parts.InputBusinessItemNameEditPart;
 import org.talend.designer.business.model.business.diagram.edit.parts.ListBusinessItemEditPart;
@@ -28,6 +34,8 @@ import org.talend.designer.business.model.business.diagram.edit.parts.TerminalBu
 import org.talend.designer.business.model.business.diagram.part.BusinessVisualIDRegistry;
 import org.talend.designer.business.model.business.diagram.view.factories.ActionBusinessItemNameViewFactory;
 import org.talend.designer.business.model.business.diagram.view.factories.ActionBusinessItemViewFactory;
+import org.talend.designer.business.model.business.diagram.view.factories.ActorBusinessItemNameViewFactory;
+import org.talend.designer.business.model.business.diagram.view.factories.ActorBusinessItemViewFactory;
 import org.talend.designer.business.model.business.diagram.view.factories.BusinessItemRelationshipNameViewFactory;
 import org.talend.designer.business.model.business.diagram.view.factories.BusinessItemRelationshipViewFactory;
 import org.talend.designer.business.model.business.diagram.view.factories.BusinessProcessViewFactory;
@@ -39,6 +47,10 @@ import org.talend.designer.business.model.business.diagram.view.factories.Decisi
 import org.talend.designer.business.model.business.diagram.view.factories.DecisionBusinessItemViewFactory;
 import org.talend.designer.business.model.business.diagram.view.factories.DocumentBusinessItemNameViewFactory;
 import org.talend.designer.business.model.business.diagram.view.factories.DocumentBusinessItemViewFactory;
+import org.talend.designer.business.model.business.diagram.view.factories.EllipseBusinessItemNameViewFactory;
+import org.talend.designer.business.model.business.diagram.view.factories.EllipseBusinessItemViewFactory;
+import org.talend.designer.business.model.business.diagram.view.factories.GearBusinessItemNameViewFactory;
+import org.talend.designer.business.model.business.diagram.view.factories.GearBusinessItemViewFactory;
 import org.talend.designer.business.model.business.diagram.view.factories.InputBusinessItemNameViewFactory;
 import org.talend.designer.business.model.business.diagram.view.factories.InputBusinessItemViewFactory;
 import org.talend.designer.business.model.business.diagram.view.factories.ListBusinessItemNameViewFactory;
@@ -111,6 +123,18 @@ public class BusinessViewProvider extends AbstractViewProvider {
             return DecisionBusinessItemViewFactory.class;
         case DecisionBusinessItemNameEditPart.VISUAL_ID:
             return DecisionBusinessItemNameViewFactory.class;
+        case ActorBusinessItemEditPart.VISUAL_ID:
+            return ActorBusinessItemViewFactory.class;
+        case ActorBusinessItemNameEditPart.VISUAL_ID:
+            return ActorBusinessItemNameViewFactory.class;
+        case EllipseBusinessItemEditPart.VISUAL_ID:
+            return EllipseBusinessItemViewFactory.class;
+        case EllipseBusinessItemNameEditPart.VISUAL_ID:
+            return EllipseBusinessItemNameViewFactory.class;
+        case GearBusinessItemEditPart.VISUAL_ID:
+            return GearBusinessItemViewFactory.class;
+        case GearBusinessItemNameEditPart.VISUAL_ID:
+            return GearBusinessItemNameViewFactory.class;
         case BusinessItemRelationshipNameEditPart.VISUAL_ID:
             return BusinessItemRelationshipNameViewFactory.class;
         }

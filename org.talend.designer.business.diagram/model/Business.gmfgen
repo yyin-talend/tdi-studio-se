@@ -390,6 +390,144 @@
         </modelFacet>
       </labels>
     </topLevelNodes>
+    <topLevelNodes
+        visualID="1009"
+        editPartClassName="ActorBusinessItemEditPart"
+        itemSemanticEditPolicyClassName="ActorBusinessItemItemSemanticEditPolicy"
+        notationViewFactoryClassName="ActorBusinessItemViewFactory"
+        canonicalEditPolicyClassName="ActorBusinessItemCanonicalEditPolicy"
+        graphicalNodeEditPolicyClassName="ActorBusinessItemGraphicalNodeEditPolicy">
+      <diagramRunTimeClass
+          href="../../../plugin/org.eclipse.gmf.runtime.notation/model/notation.genmodel#//notation/Node"/>
+      <elementType
+          xsi:type="gmfgen:MetamodelType"
+          editHelperClassName="ActorBusinessItemEditHelper"/>
+      <viewmap
+          xsi:type="gmfgen:InnerClassViewmap"
+          className="ActorBusinessItemFigure"
+          classBody="&#xA;&#xA;/**&#xA; * @generated&#xA; */&#xA;public class ActorBusinessItemFigure extends org.talend.designer.business.diagram.custom.figures.ActorBusinessItemShapeFigure {&#xA;&#xA;&#x9;/**&#xA;&#x9; * @generated&#xA;&#x9; */&#xA;&#x9;public ActorBusinessItemFigure() {&#x9;&#xA;&#x9;&#x9;&#xA;&#x9;&#x9;org.eclipse.draw2d.StackLayout myGenLayoutManager = new org.eclipse.draw2d.StackLayout();&#xA;&#x9;&#x9;&#x9;&#xA;&#x9;&#x9;this.setLayoutManager(myGenLayoutManager);&#xA;&#xA;&#x9;&#x9;&#xA;&#xA;&#xA;&#xA;&#xA;&#x9;&#x9;createContents();&#xA;&#x9;}&#xA;&#xA;&#xA;&#x9;/**&#xA;&#x9; * @generated&#xA;&#x9; */&#xA;&#x9;private void createContents(){&#xA;&#x9;&#x9;org.talend.designer.business.diagram.custom.figures.BusinessItemNameFigure fig_0 = new org.talend.designer.business.diagram.custom.figures.BusinessItemNameFigure();&#xA;&#xA;&#xA;&#xA;&#xA;&#xA;&#xA;&#xA;&#xA;&#x9;&#x9;setFigureActorBusinessItemNameFigure(fig_0);&#xA;&#x9;&#x9;&#xA;&#x9;&#x9;Object layData0 = null;&#xA;&#xA;&#x9;&#x9;this.add(fig_0, layData0);&#xA;&#x9;}&#xA;&#x9;&#xA;&#x9;&#x9;&#xA;&#x9;/**&#xA;&#x9; * @generated&#xA;&#x9; */&#xA;&#x9;private org.talend.designer.business.diagram.custom.figures.BusinessItemNameFigure fActorBusinessItemNameFigure; &#xA;&#xA;&#x9;/**&#xA;&#x9; * @generated&#xA;&#x9; */&#xA;&#x9;public org.talend.designer.business.diagram.custom.figures.BusinessItemNameFigure getFigureActorBusinessItemNameFigure() {&#xA;&#x9;&#x9;return fActorBusinessItemNameFigure;&#xA;&#x9;}&#xA;&#x9;&#xA;&#x9;/**&#xA;&#x9; * @generated&#xA;&#x9; */&#xA;&#x9;private void setFigureActorBusinessItemNameFigure(org.talend.designer.business.diagram.custom.figures.BusinessItemNameFigure fig){&#xA;&#x9;&#x9;fActorBusinessItemNameFigure = fig;&#xA;&#x9;}&#xA;&#xA;&#xA;&#xA;&#xA;&#x9;/**&#xA;&#x9; * @generated&#xA;&#x9; */&#xA;&#x9;private boolean myUseLocalCoordinates = false;&#xA;&#xA;&#x9;/**&#xA;&#x9; * @generated&#xA;&#x9; */&#xA;&#x9;protected boolean useLocalCoordinates() {&#xA;&#x9;&#x9;return myUseLocalCoordinates;&#xA;&#x9;}&#xA;&#xA;&#x9;/**&#xA;&#x9; * @generated&#xA;&#x9; */&#xA;&#x9;protected void setUseLocalCoordinates(boolean useLocalCoordinates) {&#xA;&#x9;&#x9;myUseLocalCoordinates = useLocalCoordinates;&#xA;&#x9;}&#xA;&#x9;&#xA;&#xA;}&#xA;&#x9;&#xA;">
+        <requiredPluginIDs>org.eclipse.draw2d</requiredPluginIDs>
+        <requiredPluginIDs>org.talend.designer.business.diagram.custom</requiredPluginIDs>
+        <requiredPluginIDs>org.eclipse.gmf.runtime.draw2d.ui</requiredPluginIDs>
+      </viewmap>
+      <modelFacet>
+        <metaClass
+            href="../../org.talend.model/model/Business.genmodel#//business/ActorBusinessItem"/>
+        <containmentMetaFeature
+            href="../../org.talend.model/model/Business.genmodel#//business/BusinessProcess/businessItems"/>
+        <childMetaFeature
+            href="../../org.talend.model/model/Business.genmodel#//business/BusinessProcess/businessItems"/>
+      </modelFacet>
+      <labels
+          visualID="4010"
+          editPartClassName="ActorBusinessItemNameEditPart"
+          itemSemanticEditPolicyClassName="ActorBusinessItemNameItemSemanticEditPolicy"
+          notationViewFactoryClassName="ActorBusinessItemNameViewFactory">
+        <diagramRunTimeClass
+            href="../../../plugin/org.eclipse.gmf.runtime.notation/model/notation.genmodel#//notation/Node"/>
+        <viewmap
+            xsi:type="gmfgen:ParentAssignedViewmap"
+            getterName="getFigureActorBusinessItemNameFigure"
+            figureQualifiedClassName="org.talend.designer.business.diagram.custom.figures.BusinessItemNameFigure"/>
+        <modelFacet
+            xsi:type="gmfgen:FeatureLabelModelFacet">
+          <metaFeature
+              href="../../org.talend.model/model/Business.genmodel#//business/BusinessItem/name"/>
+        </modelFacet>
+      </labels>
+    </topLevelNodes>
+    <topLevelNodes
+        visualID="1010"
+        editPartClassName="EllipseBusinessItemEditPart"
+        itemSemanticEditPolicyClassName="EllipseBusinessItemItemSemanticEditPolicy"
+        notationViewFactoryClassName="EllipseBusinessItemViewFactory"
+        canonicalEditPolicyClassName="EllipseBusinessItemCanonicalEditPolicy"
+        graphicalNodeEditPolicyClassName="EllipseBusinessItemGraphicalNodeEditPolicy">
+      <diagramRunTimeClass
+          href="../../../plugin/org.eclipse.gmf.runtime.notation/model/notation.genmodel#//notation/Node"/>
+      <elementType
+          xsi:type="gmfgen:MetamodelType"
+          editHelperClassName="EllipseBusinessItemEditHelper"/>
+      <viewmap
+          xsi:type="gmfgen:InnerClassViewmap"
+          className="EllipseBusinessItemFigure"
+          classBody="&#xA;&#xA;/**&#xA; * @generated&#xA; */&#xA;public class EllipseBusinessItemFigure extends org.talend.designer.business.diagram.custom.figures.EllipseBusinessItemShapeFigure {&#xA;&#xA;&#x9;/**&#xA;&#x9; * @generated&#xA;&#x9; */&#xA;&#x9;public EllipseBusinessItemFigure() {&#x9;&#xA;&#x9;&#x9;&#xA;&#x9;&#x9;org.eclipse.draw2d.StackLayout myGenLayoutManager = new org.eclipse.draw2d.StackLayout();&#xA;&#x9;&#x9;&#x9;&#xA;&#x9;&#x9;this.setLayoutManager(myGenLayoutManager);&#xA;&#xA;&#x9;&#x9;&#xA;&#xA;&#xA;&#xA;&#xA;&#x9;&#x9;createContents();&#xA;&#x9;}&#xA;&#xA;&#xA;&#x9;/**&#xA;&#x9; * @generated&#xA;&#x9; */&#xA;&#x9;private void createContents(){&#xA;&#x9;&#x9;org.talend.designer.business.diagram.custom.figures.BusinessItemNameFigure fig_0 = new org.talend.designer.business.diagram.custom.figures.BusinessItemNameFigure();&#xA;&#xA;&#xA;&#xA;&#xA;&#xA;&#xA;&#xA;&#xA;&#x9;&#x9;setFigureEllipseBusinessItemNameFigure(fig_0);&#xA;&#x9;&#x9;&#xA;&#x9;&#x9;Object layData0 = null;&#xA;&#xA;&#x9;&#x9;this.add(fig_0, layData0);&#xA;&#x9;}&#xA;&#x9;&#xA;&#x9;&#x9;&#xA;&#x9;/**&#xA;&#x9; * @generated&#xA;&#x9; */&#xA;&#x9;private org.talend.designer.business.diagram.custom.figures.BusinessItemNameFigure fEllipseBusinessItemNameFigure; &#xA;&#xA;&#x9;/**&#xA;&#x9; * @generated&#xA;&#x9; */&#xA;&#x9;public org.talend.designer.business.diagram.custom.figures.BusinessItemNameFigure getFigureEllipseBusinessItemNameFigure() {&#xA;&#x9;&#x9;return fEllipseBusinessItemNameFigure;&#xA;&#x9;}&#xA;&#x9;&#xA;&#x9;/**&#xA;&#x9; * @generated&#xA;&#x9; */&#xA;&#x9;private void setFigureEllipseBusinessItemNameFigure(org.talend.designer.business.diagram.custom.figures.BusinessItemNameFigure fig){&#xA;&#x9;&#x9;fEllipseBusinessItemNameFigure = fig;&#xA;&#x9;}&#xA;&#xA;&#xA;&#xA;&#xA;&#x9;/**&#xA;&#x9; * @generated&#xA;&#x9; */&#xA;&#x9;private boolean myUseLocalCoordinates = false;&#xA;&#xA;&#x9;/**&#xA;&#x9; * @generated&#xA;&#x9; */&#xA;&#x9;protected boolean useLocalCoordinates() {&#xA;&#x9;&#x9;return myUseLocalCoordinates;&#xA;&#x9;}&#xA;&#xA;&#x9;/**&#xA;&#x9; * @generated&#xA;&#x9; */&#xA;&#x9;protected void setUseLocalCoordinates(boolean useLocalCoordinates) {&#xA;&#x9;&#x9;myUseLocalCoordinates = useLocalCoordinates;&#xA;&#x9;}&#xA;&#x9;&#xA;&#xA;}&#xA;&#x9;&#xA;">
+        <requiredPluginIDs>org.eclipse.draw2d</requiredPluginIDs>
+        <requiredPluginIDs>org.talend.designer.business.diagram.custom</requiredPluginIDs>
+        <requiredPluginIDs>org.eclipse.gmf.runtime.draw2d.ui</requiredPluginIDs>
+      </viewmap>
+      <modelFacet>
+        <metaClass
+            href="../../org.talend.model/model/Business.genmodel#//business/EllipseBusinessItem"/>
+        <containmentMetaFeature
+            href="../../org.talend.model/model/Business.genmodel#//business/BusinessProcess/businessItems"/>
+        <childMetaFeature
+            href="../../org.talend.model/model/Business.genmodel#//business/BusinessProcess/businessItems"/>
+      </modelFacet>
+      <labels
+          visualID="4011"
+          editPartClassName="EllipseBusinessItemNameEditPart"
+          itemSemanticEditPolicyClassName="EllipseBusinessItemNameItemSemanticEditPolicy"
+          notationViewFactoryClassName="EllipseBusinessItemNameViewFactory">
+        <diagramRunTimeClass
+            href="../../../plugin/org.eclipse.gmf.runtime.notation/model/notation.genmodel#//notation/Node"/>
+        <viewmap
+            xsi:type="gmfgen:ParentAssignedViewmap"
+            getterName="getFigureEllipseBusinessItemNameFigure"
+            figureQualifiedClassName="org.talend.designer.business.diagram.custom.figures.BusinessItemNameFigure"/>
+        <modelFacet
+            xsi:type="gmfgen:FeatureLabelModelFacet">
+          <metaFeature
+              href="../../org.talend.model/model/Business.genmodel#//business/BusinessItem/name"/>
+        </modelFacet>
+      </labels>
+    </topLevelNodes>
+    <topLevelNodes
+        visualID="1011"
+        editPartClassName="GearBusinessItemEditPart"
+        itemSemanticEditPolicyClassName="GearBusinessItemItemSemanticEditPolicy"
+        notationViewFactoryClassName="GearBusinessItemViewFactory"
+        canonicalEditPolicyClassName="GearBusinessItemCanonicalEditPolicy"
+        graphicalNodeEditPolicyClassName="GearBusinessItemGraphicalNodeEditPolicy">
+      <diagramRunTimeClass
+          href="../../../plugin/org.eclipse.gmf.runtime.notation/model/notation.genmodel#//notation/Node"/>
+      <elementType
+          xsi:type="gmfgen:MetamodelType"
+          editHelperClassName="GearBusinessItemEditHelper"/>
+      <viewmap
+          xsi:type="gmfgen:InnerClassViewmap"
+          className="GearBusinessItemFigure"
+          classBody="&#xA;&#xA;/**&#xA; * @generated&#xA; */&#xA;public class GearBusinessItemFigure extends org.talend.designer.business.diagram.custom.figures.GearBusinessItemShapeFigure {&#xA;&#xA;&#x9;/**&#xA;&#x9; * @generated&#xA;&#x9; */&#xA;&#x9;public GearBusinessItemFigure() {&#x9;&#xA;&#x9;&#x9;&#xA;&#x9;&#x9;org.eclipse.draw2d.StackLayout myGenLayoutManager = new org.eclipse.draw2d.StackLayout();&#xA;&#x9;&#x9;&#x9;&#xA;&#x9;&#x9;this.setLayoutManager(myGenLayoutManager);&#xA;&#xA;&#x9;&#x9;&#xA;&#xA;&#xA;&#xA;&#xA;&#x9;&#x9;createContents();&#xA;&#x9;}&#xA;&#xA;&#xA;&#x9;/**&#xA;&#x9; * @generated&#xA;&#x9; */&#xA;&#x9;private void createContents(){&#xA;&#x9;&#x9;org.talend.designer.business.diagram.custom.figures.BusinessItemNameFigure fig_0 = new org.talend.designer.business.diagram.custom.figures.BusinessItemNameFigure();&#xA;&#xA;&#xA;&#xA;&#xA;&#xA;&#xA;&#xA;&#xA;&#x9;&#x9;setFigureGearBusinessItemNameFigure(fig_0);&#xA;&#x9;&#x9;&#xA;&#x9;&#x9;Object layData0 = null;&#xA;&#xA;&#x9;&#x9;this.add(fig_0, layData0);&#xA;&#x9;}&#xA;&#x9;&#xA;&#x9;&#x9;&#xA;&#x9;/**&#xA;&#x9; * @generated&#xA;&#x9; */&#xA;&#x9;private org.talend.designer.business.diagram.custom.figures.BusinessItemNameFigure fGearBusinessItemNameFigure; &#xA;&#xA;&#x9;/**&#xA;&#x9; * @generated&#xA;&#x9; */&#xA;&#x9;public org.talend.designer.business.diagram.custom.figures.BusinessItemNameFigure getFigureGearBusinessItemNameFigure() {&#xA;&#x9;&#x9;return fGearBusinessItemNameFigure;&#xA;&#x9;}&#xA;&#x9;&#xA;&#x9;/**&#xA;&#x9; * @generated&#xA;&#x9; */&#xA;&#x9;private void setFigureGearBusinessItemNameFigure(org.talend.designer.business.diagram.custom.figures.BusinessItemNameFigure fig){&#xA;&#x9;&#x9;fGearBusinessItemNameFigure = fig;&#xA;&#x9;}&#xA;&#xA;&#xA;&#xA;&#xA;&#x9;/**&#xA;&#x9; * @generated&#xA;&#x9; */&#xA;&#x9;private boolean myUseLocalCoordinates = false;&#xA;&#xA;&#x9;/**&#xA;&#x9; * @generated&#xA;&#x9; */&#xA;&#x9;protected boolean useLocalCoordinates() {&#xA;&#x9;&#x9;return myUseLocalCoordinates;&#xA;&#x9;}&#xA;&#xA;&#x9;/**&#xA;&#x9; * @generated&#xA;&#x9; */&#xA;&#x9;protected void setUseLocalCoordinates(boolean useLocalCoordinates) {&#xA;&#x9;&#x9;myUseLocalCoordinates = useLocalCoordinates;&#xA;&#x9;}&#xA;&#x9;&#xA;&#xA;}&#xA;&#x9;&#xA;">
+        <requiredPluginIDs>org.eclipse.draw2d</requiredPluginIDs>
+        <requiredPluginIDs>org.talend.designer.business.diagram.custom</requiredPluginIDs>
+        <requiredPluginIDs>org.eclipse.gmf.runtime.draw2d.ui</requiredPluginIDs>
+      </viewmap>
+      <modelFacet>
+        <metaClass
+            href="../../org.talend.model/model/Business.genmodel#//business/GearBusinessItem"/>
+        <containmentMetaFeature
+            href="../../org.talend.model/model/Business.genmodel#//business/BusinessProcess/businessItems"/>
+        <childMetaFeature
+            href="../../org.talend.model/model/Business.genmodel#//business/BusinessProcess/businessItems"/>
+      </modelFacet>
+      <labels
+          visualID="4012"
+          editPartClassName="GearBusinessItemNameEditPart"
+          itemSemanticEditPolicyClassName="GearBusinessItemNameItemSemanticEditPolicy"
+          notationViewFactoryClassName="GearBusinessItemNameViewFactory">
+        <diagramRunTimeClass
+            href="../../../plugin/org.eclipse.gmf.runtime.notation/model/notation.genmodel#//notation/Node"/>
+        <viewmap
+            xsi:type="gmfgen:ParentAssignedViewmap"
+            getterName="getFigureGearBusinessItemNameFigure"
+            figureQualifiedClassName="org.talend.designer.business.diagram.custom.figures.BusinessItemNameFigure"/>
+        <modelFacet
+            xsi:type="gmfgen:FeatureLabelModelFacet">
+          <metaFeature
+              href="../../org.talend.model/model/Business.genmodel#//business/BusinessItem/name"/>
+        </modelFacet>
+      </labels>
+    </topLevelNodes>
     <links
         visualID="3001"
         editPartClassName="BusinessItemRelationshipEditPart"
@@ -491,6 +629,21 @@
             title="Database"
             description="Create new Database"
             genNodes="//@diagram/@topLevelNodes.3"/>
+        <entries
+            xsi:type="gmfgen:ToolEntry"
+            title="Actor"
+            description="Create new Actor"
+            genNodes="//@diagram/@topLevelNodes.8"/>
+        <entries
+            xsi:type="gmfgen:ToolEntry"
+            title="Ellipse"
+            description="Create new Ellipse"
+            genNodes="//@diagram/@topLevelNodes.9"/>
+        <entries
+            xsi:type="gmfgen:ToolEntry"
+            title="Gear"
+            description="Create new Gear"
+            genNodes="//@diagram/@topLevelNodes.10"/>
         <entries
             xsi:type="gmfgen:Separator"/>
         <entries

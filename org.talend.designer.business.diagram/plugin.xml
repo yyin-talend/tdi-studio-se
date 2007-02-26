@@ -152,6 +152,30 @@
             <popupPredefinedItem id="deleteFromDiagramAction" remove="true"/>
          </popupContribution>
          <popupContribution class="org.eclipse.gmf.runtime.diagram.ui.providers.DiagramContextMenuProvider">
+            <popupStructuredContributionCriteria objectClass="org.talend.designer.business.model.business.diagram.edit.parts.ActorBusinessItemEditPart"/>
+            <popupPredefinedItem id="deleteFromDiagramAction" remove="true"/>
+         </popupContribution>
+         <popupContribution class="org.eclipse.gmf.runtime.diagram.ui.providers.DiagramContextMenuProvider">
+            <popupStructuredContributionCriteria objectClass="org.talend.designer.business.model.business.diagram.edit.parts.ActorBusinessItemNameEditPart"/>
+            <popupPredefinedItem id="deleteFromDiagramAction" remove="true"/>
+         </popupContribution>
+         <popupContribution class="org.eclipse.gmf.runtime.diagram.ui.providers.DiagramContextMenuProvider">
+            <popupStructuredContributionCriteria objectClass="org.talend.designer.business.model.business.diagram.edit.parts.EllipseBusinessItemEditPart"/>
+            <popupPredefinedItem id="deleteFromDiagramAction" remove="true"/>
+         </popupContribution>
+         <popupContribution class="org.eclipse.gmf.runtime.diagram.ui.providers.DiagramContextMenuProvider">
+            <popupStructuredContributionCriteria objectClass="org.talend.designer.business.model.business.diagram.edit.parts.EllipseBusinessItemNameEditPart"/>
+            <popupPredefinedItem id="deleteFromDiagramAction" remove="true"/>
+         </popupContribution>
+         <popupContribution class="org.eclipse.gmf.runtime.diagram.ui.providers.DiagramContextMenuProvider">
+            <popupStructuredContributionCriteria objectClass="org.talend.designer.business.model.business.diagram.edit.parts.GearBusinessItemEditPart"/>
+            <popupPredefinedItem id="deleteFromDiagramAction" remove="true"/>
+         </popupContribution>
+         <popupContribution class="org.eclipse.gmf.runtime.diagram.ui.providers.DiagramContextMenuProvider">
+            <popupStructuredContributionCriteria objectClass="org.talend.designer.business.model.business.diagram.edit.parts.GearBusinessItemNameEditPart"/>
+            <popupPredefinedItem id="deleteFromDiagramAction" remove="true"/>
+         </popupContribution>
+         <popupContribution class="org.eclipse.gmf.runtime.diagram.ui.providers.DiagramContextMenuProvider">
             <popupStructuredContributionCriteria objectClass="org.talend.designer.business.model.business.diagram.edit.parts.BusinessItemRelationshipEditPart"/>
             <popupPredefinedItem id="deleteFromDiagramAction" remove="true"/>
          </popupContribution>
@@ -361,6 +385,39 @@
 
       <metamodel nsURI="business">
          <metamodelType
+               id="org.talend.designer.business.diagram.ActorBusinessItem_1009"
+               name="Actor"
+               kind="org.eclipse.gmf.runtime.emf.type.core.IHintedType"
+               eclass="ActorBusinessItem"
+               edithelper="org.talend.designer.business.model.business.diagram.edit.helpers.ActorBusinessItemEditHelper">
+            <param name="semanticHint" value="1009"/>
+         </metamodelType>
+      </metamodel>
+
+      <metamodel nsURI="business">
+         <metamodelType
+               id="org.talend.designer.business.diagram.EllipseBusinessItem_1010"
+               name="Ellipse"
+               kind="org.eclipse.gmf.runtime.emf.type.core.IHintedType"
+               eclass="EllipseBusinessItem"
+               edithelper="org.talend.designer.business.model.business.diagram.edit.helpers.EllipseBusinessItemEditHelper">
+            <param name="semanticHint" value="1010"/>
+         </metamodelType>
+      </metamodel>
+
+      <metamodel nsURI="business">
+         <metamodelType
+               id="org.talend.designer.business.diagram.GearBusinessItem_1011"
+               name="Gear"
+               kind="org.eclipse.gmf.runtime.emf.type.core.IHintedType"
+               eclass="GearBusinessItem"
+               edithelper="org.talend.designer.business.model.business.diagram.edit.helpers.GearBusinessItemEditHelper">
+            <param name="semanticHint" value="1011"/>
+         </metamodelType>
+      </metamodel>
+
+      <metamodel nsURI="business">
+         <metamodelType
                id="org.talend.designer.business.diagram.BusinessItemRelationship_3001"
                name="Relationship"
                kind="org.eclipse.gmf.runtime.emf.type.core.IHintedType"
@@ -389,6 +446,9 @@
          <elementType ref="org.talend.designer.business.diagram.DataBusinessItem_1006"/>
          <elementType ref="org.talend.designer.business.diagram.InputBusinessItem_1007"/>
          <elementType ref="org.talend.designer.business.diagram.DecisionBusinessItem_1008"/>
+         <elementType ref="org.talend.designer.business.diagram.ActorBusinessItem_1009"/>
+         <elementType ref="org.talend.designer.business.diagram.EllipseBusinessItem_1010"/>
+         <elementType ref="org.talend.designer.business.diagram.GearBusinessItem_1011"/>
          <elementType ref="org.talend.designer.business.diagram.BusinessItemRelationship_3001"/>
          <advice ref="org.eclipse.gmf.runtime.diagram.core.advice.notationDepdendents"/>
       </binding>

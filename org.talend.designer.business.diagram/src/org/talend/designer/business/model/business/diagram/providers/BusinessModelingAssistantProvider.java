@@ -45,6 +45,9 @@ public class BusinessModelingAssistantProvider extends ModelingAssistantProvider
             types.add(BusinessElementTypes.DataBusinessItem_1006);
             types.add(BusinessElementTypes.InputBusinessItem_1007);
             types.add(BusinessElementTypes.DecisionBusinessItem_1008);
+            types.add(BusinessElementTypes.ActorBusinessItem_1009);
+            types.add(BusinessElementTypes.EllipseBusinessItem_1010);
+            types.add(BusinessElementTypes.GearBusinessItem_1011);
             return types;
         }
         return Collections.EMPTY_LIST;
@@ -94,6 +97,9 @@ public class BusinessModelingAssistantProvider extends ModelingAssistantProvider
             types.add(BusinessElementTypes.DataBusinessItem_1006);
             types.add(BusinessElementTypes.InputBusinessItem_1007);
             types.add(BusinessElementTypes.DecisionBusinessItem_1008);
+            types.add(BusinessElementTypes.ActorBusinessItem_1009);
+            types.add(BusinessElementTypes.EllipseBusinessItem_1010);
+            types.add(BusinessElementTypes.GearBusinessItem_1011);
             return types;
         }
         return Collections.EMPTY_LIST;
@@ -114,6 +120,9 @@ public class BusinessModelingAssistantProvider extends ModelingAssistantProvider
             types.add(BusinessElementTypes.DataBusinessItem_1006);
             types.add(BusinessElementTypes.InputBusinessItem_1007);
             types.add(BusinessElementTypes.DecisionBusinessItem_1008);
+            types.add(BusinessElementTypes.ActorBusinessItem_1009);
+            types.add(BusinessElementTypes.EllipseBusinessItem_1010);
+            types.add(BusinessElementTypes.GearBusinessItem_1011);
             return types;
         }
         return Collections.EMPTY_LIST;

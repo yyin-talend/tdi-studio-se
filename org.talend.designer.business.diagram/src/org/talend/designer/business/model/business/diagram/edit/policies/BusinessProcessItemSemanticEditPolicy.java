@@ -70,6 +70,24 @@ public class BusinessProcessItemSemanticEditPolicy extends BusinessBaseItemSeman
             }
             return getMSLWrapper(new CreateDecisionBusinessItem_1008Command(req));
         }
+        if (BusinessElementTypes.ActorBusinessItem_1009 == req.getElementType()) {
+            if (req.getContainmentFeature() == null) {
+                req.setContainmentFeature(BusinessPackage.eINSTANCE.getBusinessProcess_BusinessItems());
+            }
+            return getMSLWrapper(new CreateActorBusinessItem_1009Command(req));
+        }
+        if (BusinessElementTypes.EllipseBusinessItem_1010 == req.getElementType()) {
+            if (req.getContainmentFeature() == null) {
+                req.setContainmentFeature(BusinessPackage.eINSTANCE.getBusinessProcess_BusinessItems());
+            }
+            return getMSLWrapper(new CreateEllipseBusinessItem_1010Command(req));
+        }
+        if (BusinessElementTypes.GearBusinessItem_1011 == req.getElementType()) {
+            if (req.getContainmentFeature() == null) {
+                req.setContainmentFeature(BusinessPackage.eINSTANCE.getBusinessProcess_BusinessItems());
+            }
+            return getMSLWrapper(new CreateGearBusinessItem_1011Command(req));
+        }
         return super.getCreateCommand(req);
     }
 
@@ -299,6 +317,99 @@ public class BusinessProcessItemSemanticEditPolicy extends BusinessBaseItemSeman
          * @generated
          */
         public CreateDecisionBusinessItem_1008Command(CreateElementRequest req) {
+            super(req);
+        }
+
+        /**
+         * @generated
+         */
+        protected EClass getEClassToEdit() {
+            return BusinessPackage.eINSTANCE.getBusinessProcess();
+        };
+
+        /**
+         * @generated
+         */
+        protected EObject getElementToEdit() {
+            EObject container = ((CreateElementRequest) getRequest()).getContainer();
+            if (container instanceof View) {
+                container = ((View) container).getElement();
+            }
+            return container;
+        }
+    }
+
+    /**
+     * @generated
+     */
+    private static class CreateActorBusinessItem_1009Command extends CreateElementCommand {
+
+        /**
+         * @generated
+         */
+        public CreateActorBusinessItem_1009Command(CreateElementRequest req) {
+            super(req);
+        }
+
+        /**
+         * @generated
+         */
+        protected EClass getEClassToEdit() {
+            return BusinessPackage.eINSTANCE.getBusinessProcess();
+        };
+
+        /**
+         * @generated
+         */
+        protected EObject getElementToEdit() {
+            EObject container = ((CreateElementRequest) getRequest()).getContainer();
+            if (container instanceof View) {
+                container = ((View) container).getElement();
+            }
+            return container;
+        }
+    }
+
+    /**
+     * @generated
+     */
+    private static class CreateEllipseBusinessItem_1010Command extends CreateElementCommand {
+
+        /**
+         * @generated
+         */
+        public CreateEllipseBusinessItem_1010Command(CreateElementRequest req) {
+            super(req);
+        }
+
+        /**
+         * @generated
+         */
+        protected EClass getEClassToEdit() {
+            return BusinessPackage.eINSTANCE.getBusinessProcess();
+        };
+
+        /**
+         * @generated
+         */
+        protected EObject getElementToEdit() {
+            EObject container = ((CreateElementRequest) getRequest()).getContainer();
+            if (container instanceof View) {
+                container = ((View) container).getElement();
+            }
+            return container;
+        }
+    }
+
+    /**
+     * @generated
+     */
+    private static class CreateGearBusinessItem_1011Command extends CreateElementCommand {
+
+        /**
+         * @generated
+         */
+        public CreateGearBusinessItem_1011Command(CreateElementRequest req) {
             super(req);
         }
 

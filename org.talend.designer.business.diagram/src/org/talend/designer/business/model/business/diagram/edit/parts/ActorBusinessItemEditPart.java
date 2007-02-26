@@ -15,20 +15,20 @@ import org.eclipse.gmf.runtime.gef.ui.figures.DefaultSizeNodeFigure;
 import org.eclipse.gmf.runtime.gef.ui.figures.NodeFigure;
 import org.eclipse.gmf.runtime.notation.View;
 import org.talend.designer.business.diagram.custom.edit.parts.BusinessItemShapeEditPart;
-import org.talend.designer.business.model.business.diagram.edit.policies.DataBusinessItemCanonicalEditPolicy;
-import org.talend.designer.business.model.business.diagram.edit.policies.DataBusinessItemGraphicalNodeEditPolicy;
-import org.talend.designer.business.model.business.diagram.edit.policies.DataBusinessItemItemSemanticEditPolicy;
+import org.talend.designer.business.model.business.diagram.edit.policies.ActorBusinessItemCanonicalEditPolicy;
+import org.talend.designer.business.model.business.diagram.edit.policies.ActorBusinessItemGraphicalNodeEditPolicy;
+import org.talend.designer.business.model.business.diagram.edit.policies.ActorBusinessItemItemSemanticEditPolicy;
 import org.talend.designer.business.model.business.diagram.part.BusinessVisualIDRegistry;
 
 /**
  * @generated NOT
  */
-public class DataBusinessItemEditPart extends BusinessItemShapeEditPart {
+public class ActorBusinessItemEditPart extends BusinessItemShapeEditPart {
 
     /**
      * @generated
      */
-    public static final int VISUAL_ID = 1006;
+    public static final int VISUAL_ID = 1009;
 
     /**
      * @generated
@@ -43,7 +43,7 @@ public class DataBusinessItemEditPart extends BusinessItemShapeEditPart {
     /**
      * @generated
      */
-    public DataBusinessItemEditPart(View view) {
+    public ActorBusinessItemEditPart(View view) {
         super(view);
     }
 
@@ -52,9 +52,9 @@ public class DataBusinessItemEditPart extends BusinessItemShapeEditPart {
      */
     protected void createDefaultEditPolicies() {
         super.createDefaultEditPolicies();
-        installEditPolicy(EditPolicyRoles.SEMANTIC_ROLE, new DataBusinessItemItemSemanticEditPolicy());
-        installEditPolicy(EditPolicy.GRAPHICAL_NODE_ROLE, new DataBusinessItemGraphicalNodeEditPolicy());
-        installEditPolicy(EditPolicyRoles.CANONICAL_ROLE, new DataBusinessItemCanonicalEditPolicy());
+        installEditPolicy(EditPolicyRoles.SEMANTIC_ROLE, new ActorBusinessItemItemSemanticEditPolicy());
+        installEditPolicy(EditPolicy.GRAPHICAL_NODE_ROLE, new ActorBusinessItemGraphicalNodeEditPolicy());
+        installEditPolicy(EditPolicyRoles.CANONICAL_ROLE, new ActorBusinessItemCanonicalEditPolicy());
         installEditPolicy(EditPolicy.LAYOUT_ROLE, createLayoutEditPolicy());
     }
 
@@ -87,24 +87,24 @@ public class DataBusinessItemEditPart extends BusinessItemShapeEditPart {
      * @generated
      */
     protected IFigure createNodeShape() {
-        DataBusinessItemFigure figure = new DataBusinessItemFigure();
+        ActorBusinessItemFigure figure = new ActorBusinessItemFigure();
         return primaryShape = figure;
     }
 
     /**
      * @generated
      */
-    public DataBusinessItemFigure getPrimaryShape() {
-        return (DataBusinessItemFigure) primaryShape;
+    public ActorBusinessItemFigure getPrimaryShape() {
+        return (ActorBusinessItemFigure) primaryShape;
     }
 
     /**
      * @generated
      */
     protected boolean addFixedChild(EditPart childEditPart) {
-        if (childEditPart instanceof DataBusinessItemNameEditPart) {
-            ((DataBusinessItemNameEditPart) childEditPart).setLabel(getPrimaryShape()
-                    .getFigureDataBusinessItemNameFigure());
+        if (childEditPart instanceof ActorBusinessItemNameEditPart) {
+            ((ActorBusinessItemNameEditPart) childEditPart).setLabel(getPrimaryShape()
+                    .getFigureActorBusinessItemNameFigure());
             return true;
         }
         return false;
@@ -171,7 +171,7 @@ public class DataBusinessItemEditPart extends BusinessItemShapeEditPart {
      * @generated
      */
     public EditPart getPrimaryChildEditPart() {
-        return getChildBySemanticHint(BusinessVisualIDRegistry.getType(DataBusinessItemNameEditPart.VISUAL_ID));
+        return getChildBySemanticHint(BusinessVisualIDRegistry.getType(ActorBusinessItemNameEditPart.VISUAL_ID));
     }
 
     /**
@@ -197,13 +197,13 @@ public class DataBusinessItemEditPart extends BusinessItemShapeEditPart {
     /**
      * @generated
      */
-    public class DataBusinessItemFigure extends
-            org.talend.designer.business.diagram.custom.figures.DataBusinessItemShapeFigure {
+    public class ActorBusinessItemFigure extends
+            org.talend.designer.business.diagram.custom.figures.ActorBusinessItemShapeFigure {
 
         /**
          * @generated
          */
-        public DataBusinessItemFigure() {
+        public ActorBusinessItemFigure() {
 
             org.eclipse.draw2d.StackLayout myGenLayoutManager = new org.eclipse.draw2d.StackLayout();
 
@@ -218,7 +218,7 @@ public class DataBusinessItemEditPart extends BusinessItemShapeEditPart {
         private void createContents() {
             org.talend.designer.business.diagram.custom.figures.BusinessItemNameFigure fig_0 = new org.talend.designer.business.diagram.custom.figures.BusinessItemNameFigure();
 
-            setFigureDataBusinessItemNameFigure(fig_0);
+            setFigureActorBusinessItemNameFigure(fig_0);
 
             Object layData0 = null;
 
@@ -228,21 +228,21 @@ public class DataBusinessItemEditPart extends BusinessItemShapeEditPart {
         /**
          * @generated
          */
-        private org.talend.designer.business.diagram.custom.figures.BusinessItemNameFigure fDataBusinessItemNameFigure;
+        private org.talend.designer.business.diagram.custom.figures.BusinessItemNameFigure fActorBusinessItemNameFigure;
 
         /**
          * @generated
          */
-        public org.talend.designer.business.diagram.custom.figures.BusinessItemNameFigure getFigureDataBusinessItemNameFigure() {
-            return fDataBusinessItemNameFigure;
+        public org.talend.designer.business.diagram.custom.figures.BusinessItemNameFigure getFigureActorBusinessItemNameFigure() {
+            return fActorBusinessItemNameFigure;
         }
 
         /**
          * @generated
          */
-        private void setFigureDataBusinessItemNameFigure(
+        private void setFigureActorBusinessItemNameFigure(
                 org.talend.designer.business.diagram.custom.figures.BusinessItemNameFigure fig) {
-            fDataBusinessItemNameFigure = fig;
+            fActorBusinessItemNameFigure = fig;
         }
 
         /**
