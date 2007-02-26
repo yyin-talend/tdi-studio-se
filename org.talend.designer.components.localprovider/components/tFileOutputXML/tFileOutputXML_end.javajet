@@ -2,10 +2,8 @@
 package="org.talend.designer.codegen.translators" 
 imports="
     org.talend.core.model.process.INode 
-    org.talend.core.model.metadata.IMetadataTable 
     org.talend.designer.codegen.config.CodeGeneratorArgument
     org.talend.core.model.process.ElementParameterParser
-    java.util.List    
 "
 class="FileOutputXMLEnd"
 %>
@@ -13,23 +11,17 @@ class="FileOutputXMLEnd"
 <%
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
-boolean stats = codeGenArgument.isStatistics();
 
-List<IMetadataTable> metadatas = node.getMetadataList();
-if ((metadatas!=null)&&(metadatas.size()>0)) {
-    IMetadataTable metadata = metadatas.get(0);
-    if (metadata!=null) {
-    String split = ElementParameterParser.getValue(node, "__SPLIT__");
-    String fileName = ElementParameterParser.getValue(node, "__FILENAME__");
-	String encoding = ElementParameterParser.getValue(node, "__ENCODING__");
-	String fileNameNoExtension =  fileName.substring(0,fileName.indexOf(".xml"));
-	String cid = node.getUniqueName();
+String split = ElementParameterParser.getValue(node, "__SPLIT__");
+String fileName = ElementParameterParser.getValue(node, "__FILENAME__");
+String encoding = ElementParameterParser.getValue(node, "__ENCODING__");
+String fileNameNoExtension =  fileName.substring(0,fileName.indexOf(".xml"));
+String cid = node.getUniqueName();
     
 if(split.equals("true")){
 %>
 java.io.FileOutputStream fos_<%=cid%> = new java.io.FileOutputStream(<%=fileNameNoExtension%>"+splitedFileNo_<%=cid%>+".xml");
-	try{
-	java.io.BufferedWriter out_<%=cid%> = new java.io.BufferedWriter(
+java.io.BufferedWriter out_<%=cid%> = new java.io.BufferedWriter(
 	                                new java.io.OutputStreamWriter(fos_<%=cid%>, <%=encoding%>));                              
 	   
     for (int i = rootTag_<%=cid%>.length-1; i >=0 ; i--) {
@@ -38,10 +30,6 @@ java.io.FileOutputStream fos_<%=cid%> = new java.io.FileOutputStream(<%=fileName
     	out_<%=cid%>.write(strBuffer_<%=cid%>.toString());   
 		out_<%=cid%>.flush();
 		out_<%=cid%>.close();
-	
-	}catch(java.io.UnsupportedEncodingException err){
-	err.printStackTrace();
-	}
 <%
 }
 
@@ -56,11 +44,6 @@ if (!split.equals("true")) {
 
 <%
 }
-if (stats) {
 %>
-//Statistic function had not implemented yet!
-<%
-}
-    }
-}
-%>
+
+globalMap.put("<%=cid %>",nb_line_<%=cid %>);

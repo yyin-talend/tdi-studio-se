@@ -3,8 +3,6 @@ package="org.talend.designer.codegen.translators"
 imports="
     org.talend.core.model.process.INode 
     org.talend.core.model.process.ElementParameterParser
-    org.talend.core.model.metadata.IMetadataTable
-    org.talend.core.model.metadata.IMetadataColumn
     org.talend.designer.codegen.config.CodeGeneratorArgument
     java.util.List
     java.util.Map
@@ -16,12 +14,6 @@ class="FileOutputXMLBegin"
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
 
-boolean stats = codeGenArgument.isStatistics();
-
-List<IMetadataTable> metadatas = node.getMetadataList();
-if ((metadatas!=null)&&(metadatas.size()>0)) {
-    IMetadataTable metadata = metadatas.get(0);
-    if (metadata!=null) {
         String encoding = ElementParameterParser.getValue(node, "__ENCODING__");
         if (encoding!=null) {
             if (encoding.equals("")) {
@@ -38,7 +30,6 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         String fileName = ElementParameterParser.getValue(node, "__FILENAME__");
         String colnameAsTagname = ElementParameterParser.getValue(node, "__COLNAME_AS_TAGNAME__");
 
-java.util.List columns = metadata.getListColumns();
 if(rootTags.size()>0){
 %>
 String[] rootTag_<%=cid%> = new String[<%=rootTags.size()%>];
@@ -63,7 +54,7 @@ String fieldTag_<%=cid%> = <%=fieldTag %>;
 int splitEvery_<%=cid%> = <%=splitEvery %>;
 int splitedFileNo_<%=cid%> =0;
 int currentRowQtyWithinFile_<%=cid%> = 0;
-
+int nb_line_<%=cid%> = 0;
 
 StringBuffer strBuffer_<%=cid%> = new StringBuffer();
 
@@ -86,6 +77,4 @@ java.io.BufferedWriter out_<%=cid%> = null;
     
 <%
     }
-  }
-}
 %>
