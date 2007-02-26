@@ -980,8 +980,12 @@ public class Process extends Element implements IProcess {
         IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
         IViewPart view = page.findView("org.eclipse.ui.views.PropertySheet"); //$NON-NLS-1$
         PropertySheet sheet = (PropertySheet) view;
-        TabbedPropertySheetPage tabbedPropertySheetPage = (TabbedPropertySheetPage) sheet.getCurrentPage();
-        tabbedPropertySheetPage.refresh();
+        if (sheet.getCurrentPage() instanceof TabbedPropertySheetPage) {
+            TabbedPropertySheetPage tabbedPropertySheetPage = (TabbedPropertySheetPage) sheet.getCurrentPage();
+            if (tabbedPropertySheetPage.getCurrentTab() != null) {
+                tabbedPropertySheetPage.refresh();
+            }
+        }
     }
 
     /**
