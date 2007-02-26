@@ -45,54 +45,12 @@ my $smtp_server = sprintf(
     <%= smtpPort %>,
 );
 
-<%
-if (tableValues.size() == 0) {
-%>
-
-use Net::SMTP;
-
-my $smtp = Net::SMTP->new(
-    <%= smtpHost %>,
-    Port => <%= smtpPort %>
-)
-    or die('cannot connect to SMTP host '.$smtp_server);
-$smtp->mail(<%= from %>);
-$smtp->to(<%= to %>);
-$smtp->data();
-$smtp->datasend("To: ".     <%= to %>.      "\n");
-$smtp->datasend("Cc: ".     <%= cc %>.      "\n");
-$smtp->datasend("From: ".   <%= from %>.    "\n");
-$smtp->datasend("Subject: ".<%= subject %>. "\n");
-
-<%
-for (int i = 0; i < headers.size(); i++) {
-    Map<String, String> header = headers.get(i);
-%>
-$smtp->datasend(
-    sprintf(
-        "%s: %s\n",
-        <%=header.get("KEY")%>,
-        <%=header.get("VALUE")%>
-    )
-);
-<%
-}
-%>
-
-$smtp->datasend("\n");
-$smtp->datasend(<%=message%>.               "\n");
-$smtp->dataend();
-$smtp->quit;
-
-<%
-}
-else {
-%>
-
-
 use MIME::Lite;
 use File::Basename;
 
+<%
+if( cc.length() > 0 ){
+%>
 my $msg = MIME::Lite->new(
     From    => <%= from %>,
     To      => <%= to %>,
@@ -100,6 +58,22 @@ my $msg = MIME::Lite->new(
     Subject => <%= subject %>,
     Data    => <%=message %>,
 );
+
+<%
+}
+else {
+%>
+my $msg = MIME::Lite->new(
+    From    => <%= from %>,
+    To      => <%= to %>,
+    Subject => <%= subject %>,
+    Data    => <%=message %>,
+);
+
+<%
+}
+%>
+
 
 <%
 for (int i = 0; i < headers.size(); i++) {
@@ -137,10 +111,7 @@ $msg->send(
 )
     or die('cannot send mail with attachment on '.$smtp_server);
 
-<%
-}
-%>
-    
+   
 <%
 		}
 	}
