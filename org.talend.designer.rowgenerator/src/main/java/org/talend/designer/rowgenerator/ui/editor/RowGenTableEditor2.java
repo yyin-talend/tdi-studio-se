@@ -410,6 +410,7 @@ public class RowGenTableEditor2 extends AbstractDataTableEditorView<IMetadataCol
             }
             funColumn.getTableColumn().setText("");
             funColumn.getTableColumn().setWidth(0);
+            funColumn.setWidth(0);
             funColumn.getTableColumn().setResizable(false);
             funColumn.setMoveable(false);
             if ((id.equals(FUNCTION_ID_COLUMN) && getTableViewerCreator().getColumn(PARAMETER_ID_COLUMN).getTableColumn()
@@ -423,6 +424,7 @@ public class RowGenTableEditor2 extends AbstractDataTableEditorView<IMetadataCol
             }
             getTableViewerCreator().refreshTableEditorControls();
         } else {
+            
             final TableEditorContent tableEditorContent = funColumn.getTableEditorContent();
             if (tableEditorContent == null
                     && (funColumn.getId().equals(KEY_ID_COLUMN) || funColumn.getId().equals(NULLABLE_ID_COLUMN))) {
@@ -820,6 +822,8 @@ public class RowGenTableEditor2 extends AbstractDataTableEditorView<IMetadataCol
         setExtendedTableModel(metadataTableEditor);
     }
 
+    private MetadataToolbarEditorViewExt extendedToolbar;
+
     /*
      * (non-Java)
      * 
@@ -827,7 +831,8 @@ public class RowGenTableEditor2 extends AbstractDataTableEditorView<IMetadataCol
      */
     @Override
     protected ExtendedToolbarView initToolBar() {
-        return new MetadataToolbarEditorViewExt(getMainComposite(), SWT.NONE, this.getExtendedTableViewer(), this);
+        extendedToolbar = new MetadataToolbarEditorViewExt(getMainComposite(), SWT.NONE, this.getExtendedTableViewer(), this);
+        return extendedToolbar;
     }
 
     public void setRGcomponent(RowGeneratorComponent gcomponent) {
@@ -847,6 +852,25 @@ public class RowGenTableEditor2 extends AbstractDataTableEditorView<IMetadataCol
     protected void setTableViewerCreatorOptions(TableViewerCreator<IMetadataColumn> newTableViewerCreator) {
         super.setTableViewerCreatorOptions(newTableViewerCreator);
         newTableViewerCreator.setLayoutMode(LAYOUT_MODE.DEFAULT);
+    }
+
+    public MetadataToolbarEditorViewExt getExtendedToolbar() {
+        return this.extendedToolbar;
+    }
+
+    /**
+     * qzhang Comment method "updateHeader".
+     * 
+     * @param showColumnsList
+     */
+    public void updateHeader(String[] hideColumnsList) {
+        if (hideColumnsList == null) {
+            return;
+        }
+        for (String string : hideColumnsList) {
+            updateHeader(string, null, true);
+        }
+        extendedToolbar.updateColumnsList(hideColumnsList);
     }
 
 }

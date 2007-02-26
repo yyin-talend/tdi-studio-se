@@ -34,6 +34,10 @@ import java.util.Map;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
+import org.exolab.castor.xml.MarshalException;
+import org.exolab.castor.xml.Marshaller;
+import org.exolab.castor.xml.Unmarshaller;
+import org.exolab.castor.xml.ValidationException;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.SystemException;
 import org.talend.core.model.components.IODataComponent;
@@ -185,7 +189,20 @@ public class RowGeneratorComponent extends AbstractExternalNode {
      * @see org.talend.core.model.process.AbstractExternalNode#setExternalXmlData(java.io.InputStream)
      */
     public void loadDataIn(InputStream in, Reader stringReader) throws IOException, ClassNotFoundException {
-
+        if (stringReader != null) {
+            Unmarshaller unmarshaller = new Unmarshaller(ExternalRowGeneratorData.class);
+            try {
+                externalData = (ExternalRowGeneratorData) unmarshaller.unmarshal(stringReader);
+            } catch (MarshalException e) {
+                ExceptionHandler.process(e);
+            } catch (ValidationException e) {
+                ExceptionHandler.process(e);
+            } finally {
+                if (stringReader != null) {
+                    stringReader.close();
+                }
+            }
+        }
     }
 
     /*
@@ -228,7 +245,28 @@ public class RowGeneratorComponent extends AbstractExternalNode {
      * @see org.talend.core.model.process.IExternalNode#loadDataOut(java.io.OutputStream, java.io.Writer)
      */
     public void loadDataOut(OutputStream out, Writer writer) throws IOException {
+        initRowGeneratorMain();
+        rowGeneratorMain.createModelFromExternalData(getIncomingConnections(), 
+                getOutgoingConnections(), externalData, getMetadataList(), false);
+        ExternalRowGeneratorData data = rowGeneratorMain.buildExternalData();
+        
+        if (rowGeneratorMain != null && data != null) {
 
+            try {
+                Marshaller marshaller = new Marshaller(writer);
+                marshaller.marshal(externalData);
+            } catch (MarshalException e) {
+                ExceptionHandler.process(e);
+            } catch (ValidationException e) {
+                ExceptionHandler.process(e);
+            } catch (IOException e) {
+                ExceptionHandler.process(e);
+            } finally {
+                if (writer != null) {
+                    writer.close();
+                }
+            }
+        }
     }
 
     /*

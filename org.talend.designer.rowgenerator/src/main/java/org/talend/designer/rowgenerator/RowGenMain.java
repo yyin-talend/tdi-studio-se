@@ -35,6 +35,7 @@ import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IODataComponent;
 import org.talend.core.model.components.IODataComponentContainer;
 import org.talend.core.model.metadata.IMetadataTable;
+import org.talend.core.model.process.IConnection;
 import org.talend.designer.rowgenerator.external.data.ExternalRowGenTable;
 import org.talend.designer.rowgenerator.external.data.ExternalRowGeneratorData;
 import org.talend.designer.rowgenerator.external.data.ExternalRowGeneratorUiProperties;
@@ -99,7 +100,7 @@ public class RowGenMain {
      * @return
      */
     public int getMapperDialogResponse() {
-        return generatorManager.getUiManager().getMapperResponse();
+        return generatorManager.getUiManager().getRowGenResponse();
     }
 
     /**
@@ -125,20 +126,18 @@ public class RowGenMain {
         Image createImage = imageDescriptor.createImage();
         shell.setImage(createImage);
         shell.setText(Messages.getString("RowGenMain.MainShellText", connector.getUniqueName())); //$NON-NLS-1$
-        ExternalRowGeneratorUiProperties uiProperties = new ExternalRowGeneratorUiProperties();
-        generatorManager.getUiManager().setUiProperties(uiProperties);
-        Rectangle boundsMapper = uiProperties.getBoundsMapper();
-        if (uiProperties.isShellMaximized()) {
-            shell.setMaximized(uiProperties.isShellMaximized());
+        Rectangle boundsRG = ExternalRowGeneratorUiProperties.getBoundsRowGen();
+        if (ExternalRowGeneratorUiProperties.isShellMaximized()) {
+            shell.setMaximized(ExternalRowGeneratorUiProperties.isShellMaximized());
         } else {
-            boundsMapper = uiProperties.getBoundsMapper();
-            if (boundsMapper.x < 0) {
-                boundsMapper.x = 0;
+            boundsRG = ExternalRowGeneratorUiProperties.getBoundsRowGen();
+            if (boundsRG.x < 0) {
+                boundsRG.x = 0;
             }
-            if (boundsMapper.y < 0) {
-                boundsMapper.y = 0;
+            if (boundsRG.y < 0) {
+                boundsRG.y = 0;
             }
-            shell.setBounds(boundsMapper);
+            shell.setBounds(boundsRG);
         }
         createUI(shell);
         // shell.addControlListener(new ControlListener() {
@@ -154,6 +153,7 @@ public class RowGenMain {
         // });
         // shell.moveAbove(null);
         shell.open();
+        generatorUI.getDataTableView().updateHeader(ExternalRowGeneratorUiProperties.getShowColumnsList());
         return shell;
     }
 
@@ -184,8 +184,33 @@ public class RowGenMain {
         ExternalRowGeneratorData externalData = new ExternalRowGeneratorData();
         outputTables = new ArrayList<ExternalRowGenTable>();
         externalData.setOutputTables(outputTables);
-        
+        externalData.setUiProperties(generatorManager.getUiManager().getUiProperties());
         return externalData;
+    }
+
+    /**
+     * amaumont Comment method "loadFromExternalData".
+     * 
+     * @param incomingConnections
+     * @param outgoingConnections
+     * @param externalData
+     * @param checkProblems
+     * @param metadataList
+     */
+    public void createModelFromExternalData(List<? extends IConnection> incomingConnections,
+            List<? extends IConnection> outgoingConnections, ExternalRowGeneratorData externalData,
+            List<IMetadataTable> outputMetadataTables, boolean checkProblems) {
+        ArrayList<IOConnection> inputs = createIOConnections(incomingConnections);
+        ArrayList<IOConnection> outputs = createIOConnections(outgoingConnections);
+        createModelFromExternalData(inputs, outputs, outputMetadataTables, externalData, checkProblems);
+    }
+
+    public ArrayList<IOConnection> createIOConnections(List<? extends IConnection> connections) {
+        ArrayList<IOConnection> ioConnections = new ArrayList<IOConnection>(connections.size());
+        for (IConnection connection : connections) {
+            ioConnections.add(new IOConnection(connection));
+        }
+        return ioConnections;
     }
 
     /**

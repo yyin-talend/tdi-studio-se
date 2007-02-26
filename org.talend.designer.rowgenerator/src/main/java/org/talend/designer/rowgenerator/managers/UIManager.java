@@ -21,20 +21,23 @@
 // ============================================================================
 package org.talend.designer.rowgenerator.managers;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TableItem;
 import org.talend.designer.rowgenerator.data.Parameter;
 import org.talend.designer.rowgenerator.external.data.ExternalRowGeneratorUiProperties;
 import org.talend.designer.rowgenerator.ui.RowGeneratorUI;
 import org.talend.designer.rowgenerator.ui.editor.MetadataColumnExt;
+import org.talend.designer.rowgenerator.ui.editor.MetadataToolbarEditorViewExt;
 
 /**
- * amaumont class global comment. Detailled comment <br/>
+ * qzhang class global comment. Detailled comment <br/>
  * 
  * $Id: UIManager.java,v 1.8 2007/01/31 10:31:05 pub Exp $
  * 
@@ -43,9 +46,9 @@ public class UIManager {
 
     private RowGeneratorUI generatorUI;
 
-    private int mapperResponse = SWT.NONE;
+    private int rowGenResponse = SWT.NONE;
 
-    private RowGeneratorManager mapperManager;
+    private RowGeneratorManager rgManager;
 
     private boolean shiftPressed;
 
@@ -61,11 +64,14 @@ public class UIManager {
      * @param tableManager
      * @param manager
      */
-    public UIManager(RowGeneratorManager mapperManager) {
-        this.mapperManager = mapperManager;
+    public UIManager(RowGeneratorManager rgManager) {
+        this.rgManager = rgManager;
     }
 
     public ExternalRowGeneratorUiProperties getUiProperties() {
+        if (this.uiProperties == null) {
+            this.uiProperties = new ExternalRowGeneratorUiProperties();
+        }
         return this.uiProperties;
     }
 
@@ -81,12 +87,12 @@ public class UIManager {
         this.generatorUI = generatorUI;
     }
 
-    public int getMapperResponse() {
-        return this.mapperResponse;
+    public int getRowGenResponse() {
+        return this.rowGenResponse;
     }
 
-    public void setMapperResponse(int mapperResponse) {
-        this.mapperResponse = mapperResponse;
+    public void setRowGenResponse(int rowGenResponse) {
+        this.rowGenResponse = rowGenResponse;
     }
 
     public boolean isCtrlPressed() {
@@ -111,14 +117,14 @@ public class UIManager {
      * @param response
      */
     public void closeRowGenerator(int response) {
-        setMapperResponse(response);
+        setRowGenResponse(response);
         Composite parent = generatorUI.getRowGenUIParent();
         saveCurrentUIProperties();
         if (response == SWT.CANCEL) {
             reductAllData();
         }
         if (response == SWT.OK) {
-            mapperManager.getRowGeneratorComponent().setNumber(generatorUI.getTabFolderEditors().getRowNumber());
+            rgManager.getRowGeneratorComponent().setNumber(generatorUI.getTabFolderEditors().getRowNumber());
             saveAllData();
         }
         if (parent instanceof Shell) {
@@ -149,16 +155,40 @@ public class UIManager {
      * qzhang Comment method "saveCurrentUIProperties".
      */
     private void saveCurrentUIProperties() {
-        uiProperties = new ExternalRowGeneratorUiProperties();
+        ExternalRowGeneratorUiProperties.setWeightsMainSashForm(generatorUI.getMainSashForm().getWeights());
+        ExternalRowGeneratorUiProperties.setWeightsDatasFlowViewSashForm(generatorUI.getDatasFlowViewSashForm().getWeights());
+        ExternalRowGeneratorUiProperties.setShellMaximized(generatorUI.getRowGenUIParent().getShell().getMaximized());
+        if (!ExternalRowGeneratorUiProperties.isShellMaximized()) {
+            ExternalRowGeneratorUiProperties.setBoundsRowGen(generatorUI.getRowGenUIParent().getBounds());
+        }
+        ExternalRowGeneratorUiProperties.setShowColumnsList(getShowColumnsList());
+    }
+
+    /**
+     * qzhang Comment method "getShowColumnsList".
+     * 
+     * @return
+     */
+    private String[] getShowColumnsList() {
+        List<String> cols = new ArrayList<String>();
+        MetadataToolbarEditorViewExt editorViewExt =  generatorUI.getDataTableView()
+                .getExtendedToolbar();
+        MenuItem[] items = editorViewExt.getColumnsListmenu().getItems();
+        for (MenuItem item : items) {
+            if (!item.getSelection()) {
+                cols.add(item.getData().toString());
+            }
+        }
+        return cols.toArray(new String[cols.size()]);
     }
 
     public RowGeneratorManager getMapperManager() {
-        return this.mapperManager;
+        return this.rgManager;
     }
 
     @SuppressWarnings("unchecked")//$NON-NLS-1$
     protected void saveOneColData(MetadataColumnExt bean) {
-        if (bean != null && bean.getFunction() != null && mapperManager.getRowGeneratorComponent() != null) {
+        if (bean != null && bean.getFunction() != null && rgManager.getRowGeneratorComponent() != null) {
             String newValue = "sub{"; //$NON-NLS-1$
             newValue += bean.getFunction().getName() + "("; //$NON-NLS-1$
             for (Parameter pa : (List<Parameter>) bean.getFunction().getParameters()) {
@@ -169,7 +199,7 @@ public class UIManager {
             if (bean.getFunction().getName() == null || "".equals(bean.getFunction().getName())) { //$NON-NLS-1$
                 newValue = ""; //$NON-NLS-1$
             }
-            mapperManager.getRowGeneratorComponent().setColumnValue(bean.getLabel(), newValue);
+            rgManager.getRowGeneratorComponent().setColumnValue(bean.getLabel(), newValue);
         }
 
     }

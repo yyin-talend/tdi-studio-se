@@ -67,13 +67,6 @@ import org.talend.designer.rowgenerator.ui.tabs.TabFolderEditors;
  */
 public class RowGeneratorUI {
 
-    /**
-     * Default value for middle performance in ms.
-     */
-    public static final int DEFAULT_TIME_BEFORE_NEW_BG_REFRESH = 5;
-
-    public static final int[] DEFAULT_WEIGHTS_DATAS_FLOW_SASH_FORM = new int[] { 33, 33, 34 };
-
     private SashForm datasFlowViewSashForm;
 
     private RowGeneratorManager generatorManager;
@@ -213,13 +206,14 @@ public class RowGeneratorUI {
         dataTableView = new RowGenTableEditor2(datasFlowViewSashForm, SWT.BORDER, metadataTableEditor, inputReadOnly,
                 !inputReadOnly, externalNode,functionManager);
         dataTableView.getExtendedTableViewer().setCommandStack(generatorManager.getCommandStack());
+        
         // dataTableView.
         // resize all the columns but not the table
         for (int i = 0; i < dataTableView.getTable().getColumnCount(); i++) {
             dataTableView.getTable().getColumn(i).pack();
         }
         dataTableView.getTable().getColumn(0).setWidth(0);
-
+        
     }
 
     /**
@@ -340,8 +334,8 @@ public class RowGeneratorUI {
         rowGenUIParent.addListener(SWT.Close, new Listener() {
 
             public void handleEvent(Event event) {
-                if (uiManager.getMapperResponse() == SWT.NONE) {
-                    uiManager.setMapperResponse(SWT.CANCEL);
+                if (uiManager.getRowGenResponse() == SWT.NONE) {
+                    uiManager.setRowGenResponse(SWT.CANCEL);
                 }
             }
 
@@ -367,7 +361,7 @@ public class RowGeneratorUI {
 
                 public void controlResized(ControlEvent e) {
                     if (!((Shell) e.getSource()).getMaximized()) {
-                        uiProperties.setBoundsMapper(((Shell) e.getSource()).getBounds());
+                        ExternalRowGeneratorUiProperties.setBoundsRowGen(((Shell) e.getSource()).getBounds());
                     }
                 }
             });
@@ -411,6 +405,16 @@ public class RowGeneratorUI {
 
     public RowGeneratorManager getGeneratorManager() {
         return this.generatorManager;
+    }
+
+    
+    public SashForm getDatasFlowViewSashForm() {
+        return this.datasFlowViewSashForm;
+    }
+
+    
+    public SashForm getMainSashForm() {
+        return this.mainSashForm;
     }
 
 }

@@ -86,6 +86,8 @@ public class MetadataToolbarEditorViewExt extends MetadataToolbarEditorView {
         createColumns();
     }
 
+    private Menu columnsListmenu;
+
     /**
      * qzhang Comment method "createColumns".
      */
@@ -93,7 +95,7 @@ public class MetadataToolbarEditorViewExt extends MetadataToolbarEditorView {
         final ToolBar toolBar2 = new ToolBar(toolbar, SWT.HORIZONTAL);
         final ToolItem columns = new ToolItem(toolBar2, SWT.DROP_DOWN);
         columns.setText(Messages.getString("MetadataToolbarEditorViewExt.Columns.Text")); //$NON-NLS-1$
-        final Menu menu = createMenu(columns);
+        createMenu(columns);
         columns.addSelectionListener(new SelectionAdapter() {
 
             /*
@@ -109,8 +111,8 @@ public class MetadataToolbarEditorViewExt extends MetadataToolbarEditorView {
                 ToolItem item = (ToolItem) event.widget;
                 Rectangle rect = item.getBounds();
                 Point pt = item.getParent().toDisplay(new Point(rect.x, rect.y));
-                menu.setLocation(pt.x, pt.y + rect.height);
-                menu.setVisible(true);
+                columnsListmenu.setLocation(pt.x, pt.y + rect.height);
+                columnsListmenu.setVisible(true);
                 // }
             }
         });
@@ -119,11 +121,12 @@ public class MetadataToolbarEditorViewExt extends MetadataToolbarEditorView {
     /**
      * qzhang Comment method "notuse".
      */
-    private Menu createMenu(final ToolItem columns) {
-        Menu menu = new Menu(columns.getParent().getShell());
+    private void createMenu(final ToolItem columns) {
+        columnsListmenu = new Menu(columns.getParent().getShell());
         for (int i = 0; i < items.length; i++) {
-            MenuItem item = new MenuItem(menu, SWT.CHECK);
+            MenuItem item = new MenuItem(columnsListmenu, SWT.CHECK);
             item.setText(items[i]);
+            item.setData(ids[i]);
             item.setSelection(true);
             final int j = i;
             item.addSelectionListener(new SelectionAdapter() {
@@ -135,7 +138,6 @@ public class MetadataToolbarEditorViewExt extends MetadataToolbarEditorView {
                 }
             });
         }
-        return menu;
     }
 
     /*
@@ -273,6 +275,25 @@ public class MetadataToolbarEditorViewExt extends MetadataToolbarEditorView {
         // processPreview.refreshTablePreview(genTableEditor2.getMetadataTableEditor().getMetadataColumnList(), null,
         // false);
         processPreview.setChanged(true);
+    }
+
+    public Menu getColumnsListmenu() {
+        return this.columnsListmenu;
+    }
+
+    /**
+     * qzhang Comment method "updateColumnsList".
+     * 
+     * @param hideColumnsList
+     */
+    public void updateColumnsList(String[] hideColumnsList) {
+        for (String string : hideColumnsList) {
+            for (MenuItem item : columnsListmenu.getItems()) {
+                if (item.getData().equals(string)) {
+                    item.setSelection(false);
+                }
+            }
+        }
     }
 
 }

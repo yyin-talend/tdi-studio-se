@@ -25,13 +25,11 @@ import java.io.Serializable;
 
 import org.eclipse.swt.graphics.Rectangle;
 
-
 /**
- *  qzhang  class global comment. Detailled comment
- * <br/>
- *
+ * qzhang class global comment. Detailled comment <br/>
+ * 
  * $Id: ExternalRowGeneratorUiProperties.java,v 1.2 2007/01/31 05:20:52 pub Exp $
- *
+ * 
  */
 public class ExternalRowGeneratorUiProperties implements Serializable {
 
@@ -40,66 +38,66 @@ public class ExternalRowGeneratorUiProperties implements Serializable {
      */
     private static final long serialVersionUID = 145468748235L;
 
-//  must be null by default to unmarshal correctly
-    private int[] weightsMainSashForm = new int[0];
+    // must be null by default to unmarshal correctly
+    private static int[] weightsMainSashForm = new int[0];
 
     public static final int[] DEFAULT_WEIGHTS_MAIN_SASH_FORM = new int[] { 70, 30 };
 
     // must be null by default to unmarshal correctly
-    private int[] weightsDatasFlowViewSashForm = new int[0];
+    private static int[] weightsDatasFlowViewSashForm = new int[0];
 
     public static final int[] DEFAULT_WEIGHTS_DATAS_FLOW_SASH_FORM = new int[] { 33, 33, 34 };
 
-    private Rectangle boundsMapper = new Rectangle(50, 50, 800, 600);
+    private static Rectangle boundsRowGen = new Rectangle(50, 50, 800, 600);
 
-    private boolean shellMaximized = false;
+    private static boolean shellMaximized = false;
 
-    public Rectangle getBoundsMapper() {
-        return this.boundsMapper;
+    private static String[] showColumnsList;
+
+    public static boolean isShellMaximized() {
+        return shellMaximized;
     }
 
-    public void setBoundsMapper(Rectangle boundsMapper) {
-        this.boundsMapper = boundsMapper;
+    public static void setShellMaximized(boolean shellMaximize) {
+        shellMaximized = shellMaximize;
     }
 
-    public boolean isShellMaximized() {
-        return this.shellMaximized;
+    public static String[] getShowColumnsList() {
+        return showColumnsList;
     }
 
-    public void setShellMaximized(boolean shellMaximized) {
-        this.shellMaximized = shellMaximized;
+    
+    public static void setShowColumnsList(String[] showColumnsList) {
+        ExternalRowGeneratorUiProperties.showColumnsList = showColumnsList;
     }
 
-    public int[] getWeightsDatasFlowViewSashForm() {
-        return this.weightsDatasFlowViewSashForm;
+    
+    public static Rectangle getBoundsRowGen() {
+        return boundsRowGen;
     }
 
-    /**
-     * Setter for array of exactly three values which represents width pixels of each zone (input, var and output).
-     * 
-     * @param weightsDatasFlowViewSashForm array of three values which represents width pixels of each zone (input, var
-     * and output)
-     */
-    public void setWeightsDatasFlowViewSashForm(int[] weightsDatasFlowViewSashForm) {
-        // if (weightsDatasFlowViewSashForm.length != 3) {
-        // throw new IllegalArgumentException("weightsDatasFlowViewSashForm must be an array of exactly 3 values");
-        // }
-        this.weightsDatasFlowViewSashForm = weightsDatasFlowViewSashForm;
+    
+    public static void setBoundsRowGen(Rectangle boundsRowGen) {
+        ExternalRowGeneratorUiProperties.boundsRowGen = boundsRowGen;
     }
 
-    public int[] getWeightsMainSashForm() {
-        return this.weightsMainSashForm;
+    
+    public static int[] getWeightsDatasFlowViewSashForm() {
+        return weightsDatasFlowViewSashForm;
     }
 
-    /**
-     * Setter for array of exactly two values which represents height pixels of each zone (flow view, tabs view).
-     * 
-     * @param weightsMainSashForm
-     */
-    public void setWeightsMainSashForm(int[] weightsMainSashForm) {
-        // if (weightsMainSashForm.length != 2) {
-        // throw new IllegalArgumentException("weightsMainSashForm must be an array of exactly 2 values");
-        // }
-        this.weightsMainSashForm = weightsMainSashForm;
+    
+    public static void setWeightsDatasFlowViewSashForm(int[] weightsDatasFlowViewSashForm) {
+        ExternalRowGeneratorUiProperties.weightsDatasFlowViewSashForm = weightsDatasFlowViewSashForm;
+    }
+
+    
+    public static int[] getWeightsMainSashForm() {
+        return weightsMainSashForm;
+    }
+
+    
+    public static void setWeightsMainSashForm(int[] weightsMainSashForm) {
+        ExternalRowGeneratorUiProperties.weightsMainSashForm = weightsMainSashForm;
     }
 }
