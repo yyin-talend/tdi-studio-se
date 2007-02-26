@@ -8,7 +8,7 @@
             class="org.talend.repository.ui.views.RepositoryView"
             icon="icons/repository.png"
             id="org.talend.repository.views.repository"
-            name="Repository"/>
+            name="%RepositoryView.title"/>
    </extension>
 
    <extension
