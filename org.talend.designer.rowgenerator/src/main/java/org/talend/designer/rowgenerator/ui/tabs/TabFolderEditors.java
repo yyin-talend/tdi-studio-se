@@ -39,12 +39,10 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
-import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
 import org.talend.designer.rowgenerator.RowGeneratorComponent;
 import org.talend.designer.rowgenerator.i18n.Messages;
 import org.talend.designer.rowgenerator.ui.RowGeneratorUI;
-import org.talend.designer.rowgenerator.ui.editor.MetadataColumnExt;
 import org.talend.designer.rowgenerator.ui.editor.RowGenTableEditor2;
 
 /**
@@ -208,15 +206,15 @@ public class TabFolderEditors extends CTabFolder {
         RowGenTableEditor2 editor2 = (RowGenTableEditor2) generatorUI.getDataTableView();
         processPreview.refreshTablePreview(editor2.getMetadataTableEditor().getMetadataColumnList(), getItemsByRunJob(number),
                 true);
-        if (processPreview.getTable().getItemCount() > 1) {
-            TableItem item = processPreview.getTable().getItems()[0];
-            for (int i = 1; i < processPreview.getTable().getColumnCount(); i++) {
-                MetadataColumnExt ext = (MetadataColumnExt) genTableEditor2.getTable().getItem(i - 1).getData();
-                ext.setPreview(item.getText(i));
-            }
-            genTableEditor2.getTableViewerCreator().getTableViewer().refresh();
-
-        }
+        // if (processPreview.getTable().getItemCount() > 1) {
+        // TableItem item = processPreview.getTable().getItems()[0];
+        // for (int i = 1; i < processPreview.getTable().getColumnCount(); i++) {
+        // MetadataColumnExt ext = (MetadataColumnExt) genTableEditor2.getTable().getItem(i - 1).getData();
+        // ext.setPreview(item.getText(i));
+        // }
+        // genTableEditor2.getTableViewerCreator().getTableViewer().refresh();
+        //
+        //        }
     }
 
     /**

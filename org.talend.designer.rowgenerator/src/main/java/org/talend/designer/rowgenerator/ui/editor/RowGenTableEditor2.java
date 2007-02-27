@@ -30,14 +30,18 @@ import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.ControlListener;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.TableItem;
 import org.talend.commons.ui.image.EImage;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.commons.ui.swt.advanced.dataeditor.AbstractDataTableEditorView;
@@ -66,6 +70,7 @@ import org.talend.designer.rowgenerator.data.Function;
 import org.talend.designer.rowgenerator.data.FunctionManager;
 import org.talend.designer.rowgenerator.data.Parameter;
 import org.talend.designer.rowgenerator.i18n.Messages;
+import org.talend.designer.rowgenerator.ui.RowGeneratorUI;
 
 /**
  * qzhang class global comment. Detailled comment <br/>
@@ -95,6 +100,8 @@ public class RowGenTableEditor2 extends AbstractDataTableEditorView<IMetadataCol
 
     public static final String PREVIEW_ID_COLUMN = "ID_COLUMN_PREVIEW"; //$NON-NLS-1$
 
+    private static final int TITLE_DEFAULT_HEIGHT = 25;
+
     private RowGeneratorComponent rGcomponent;
 
     // private Composite mainComposite;
@@ -122,19 +129,19 @@ public class RowGenTableEditor2 extends AbstractDataTableEditorView<IMetadataCol
      * @param extendedTableModel
      * @param readOnly
      * @param toolbarVisible
-     * @param functionManager 
+     * @param functionManager
      */
     public RowGenTableEditor2(Composite parentComposite, int mainCompositeStyle,
             ExtendedTableModel<IMetadataColumn> extendedTableModel, boolean readOnly, boolean toolbarVisible,
             RowGeneratorComponent rGcomponent, FunctionManager functionManager) {
         super(parentComposite, mainCompositeStyle, extendedTableModel, readOnly, toolbarVisible, true);
         this.rGcomponent = rGcomponent;
-        this.functionManager=functionManager;
+        this.functionManager = functionManager;
     }
 
-//    public RowGenTableEditor2(Composite parentComposite, int mainCompositeStyle) {
-//        super(parentComposite, mainCompositeStyle);
-//    }
+    // public RowGenTableEditor2(Composite parentComposite, int mainCompositeStyle) {
+    // super(parentComposite, mainCompositeStyle);
+    // }
 
     /*
      * (non-Javadoc)
@@ -214,7 +221,7 @@ public class RowGenTableEditor2 extends AbstractDataTableEditorView<IMetadataCol
 
         headerTable.setLayout(gridLayout);
         final GridData gridData = new GridData(GridData.FILL_HORIZONTAL);
-        gridData.heightHint = 20;
+        gridData.heightHint = TITLE_DEFAULT_HEIGHT;
         gridData.verticalIndent = 0;
         gridData.horizontalIndent = 0;
 
@@ -267,7 +274,7 @@ public class RowGenTableEditor2 extends AbstractDataTableEditorView<IMetadataCol
     private Label createPreviewComposite() {
         preCom = new Composite(headerTable, SWT.NONE);
         final GridLayout gridLayout = new GridLayout();
-        gridLayout.numColumns = 2;
+        gridLayout.numColumns = 3;
         gridLayout.marginLeft = 0;
         gridLayout.marginRight = 0;
         gridLayout.horizontalSpacing = 10;
@@ -278,7 +285,9 @@ public class RowGenTableEditor2 extends AbstractDataTableEditorView<IMetadataCol
         gridLayout.marginWidth = 0;
 
         final GridData gridData = new GridData(GridData.FILL_BOTH);
-        gridData.heightHint = 20;
+        gridData.heightHint = TITLE_DEFAULT_HEIGHT;
+        // gridData.horizontalAlignment = SWT.LEFT;
+        // gridData.verticalAlignment = SWT.CENTER;
 
         preCom.setLayout(gridLayout);
         preCom.setLayoutData(gridData);
@@ -287,10 +296,37 @@ public class RowGenTableEditor2 extends AbstractDataTableEditorView<IMetadataCol
         separator.setLayoutData(new GridData(GridData.FILL_VERTICAL));
 
         Label previewLabel = new Label(preCom, SWT.NONE);
-        previewLabel.setLayoutData(gridData);
+        previewLabel.setLayoutData(new GridData(GridData.FILL_VERTICAL));
         if (parentComposite.getBackground() != null && !parentComposite.getBackground().equals(previewLabel.getBackground())) {
             previewLabel.setBackground(parentComposite.getBackground());
         }
+        Button refresh = new Button(preCom, SWT.NONE);
+        refresh.setImage(ImageProvider.getImageDesc(EImage.REFRESH_ICON).createImage());
+        GridData gridData2 = new GridData(GridData.FILL_VERTICAL);
+        gridData2.horizontalAlignment = GridData.BEGINNING;
+        refresh.setLayoutData(gridData2);
+        refresh.addSelectionListener(new SelectionAdapter() {
+
+            /*
+             * (non-Javadoc)
+             * 
+             * @see org.eclipse.swt.events.SelectionAdapter#widgetSelected(org.eclipse.swt.events.SelectionEvent)
+             */
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                Table table = generatorUI.getTabFolderEditors().getProcessPreview().getTable();
+
+                if (table != null && table.getItemCount() > 1) {
+                    TableItem item = table.getItems()[0];
+                    for (int i = 1; i < table.getColumnCount(); i++) {
+                        MetadataColumnExt ext = (MetadataColumnExt) getTable().getItem(i - 1).getData();
+                        ext.setPreview(item.getText(i));
+                    }
+                    getTableViewerCreator().getTableViewer().refresh();
+
+                }
+            }
+        });
         return previewLabel;
     }
 
@@ -319,7 +355,7 @@ public class RowGenTableEditor2 extends AbstractDataTableEditorView<IMetadataCol
         funCom.setLayout(gridLayout);
 
         final GridData gridData = new GridData(GridData.FILL_BOTH);
-        gridData.heightHint = 20;
+        gridData.heightHint = TITLE_DEFAULT_HEIGHT;
         gridData.verticalIndent = 0;
         gridData.horizontalIndent = 0;
         funCom.setLayoutData(gridData);
@@ -360,7 +396,7 @@ public class RowGenTableEditor2 extends AbstractDataTableEditorView<IMetadataCol
         gridLayout.marginWidth = 0;
         schCom.setLayout(gridLayout);
         final GridData gridData = new GridData(GridData.FILL_BOTH);
-        gridData.heightHint = 20;
+        gridData.heightHint = TITLE_DEFAULT_HEIGHT;
         gridData.verticalIndent = 0;
         gridData.horizontalIndent = 0;
         schCom.setLayoutData(gridData);
@@ -390,11 +426,11 @@ public class RowGenTableEditor2 extends AbstractDataTableEditorView<IMetadataCol
         funwidth = prewidth - getTableViewerCreator().getColumn(FUNCTION_ID_COLUMN).getTableColumn().getWidth()
                 - getTableViewerCreator().getColumn(PARAMETER_ID_COLUMN).getTableColumn().getWidth();
 
-        schCom.setSize(funwidth, 20);
+        schCom.setSize(funwidth, TITLE_DEFAULT_HEIGHT);
         funCom.setLocation(schCom.getBounds().x + funwidth, schCom.getBounds().y);
-        funCom.setSize(prewidth - funwidth, 20);
+        funCom.setSize(prewidth - funwidth, TITLE_DEFAULT_HEIGHT);
         preCom.setLocation(schCom.getBounds().x + prewidth, schCom.getBounds().y);
-        preCom.setSize(w - prewidth, 20);
+        preCom.setSize(w - prewidth, TITLE_DEFAULT_HEIGHT);
         empty.setLocation(schCom.getBounds().x + w, schCom.getBounds().y);
     }
 
@@ -424,7 +460,7 @@ public class RowGenTableEditor2 extends AbstractDataTableEditorView<IMetadataCol
             }
             getTableViewerCreator().refreshTableEditorControls();
         } else {
-            
+
             final TableEditorContent tableEditorContent = funColumn.getTableEditorContent();
             if (tableEditorContent == null
                     && (funColumn.getId().equals(KEY_ID_COLUMN) || funColumn.getId().equals(NULLABLE_ID_COLUMN))) {
@@ -871,6 +907,16 @@ public class RowGenTableEditor2 extends AbstractDataTableEditorView<IMetadataCol
             updateHeader(string, null, true);
         }
         extendedToolbar.updateColumnsList(hideColumnsList);
+    }
+
+    private RowGeneratorUI generatorUI;
+
+    public RowGeneratorUI getGeneratorUI() {
+        return this.generatorUI;
+    }
+
+    public void setGeneratorUI(RowGeneratorUI generatorUI) {
+        this.generatorUI = generatorUI;
     }
 
 }

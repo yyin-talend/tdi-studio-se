@@ -204,16 +204,16 @@ public class RowGeneratorUI {
         metadataTableEditor = new MetadataTableEditorExt(outputMetaTable, ""); //$NON-NLS-1$
         metadataTableEditor.setRowGenUI(this);
         dataTableView = new RowGenTableEditor2(datasFlowViewSashForm, SWT.BORDER, metadataTableEditor, inputReadOnly,
-                !inputReadOnly, externalNode,functionManager);
+                !inputReadOnly, externalNode, functionManager);
         dataTableView.getExtendedTableViewer().setCommandStack(generatorManager.getCommandStack());
-        
+        dataTableView.setGeneratorUI(this);
         // dataTableView.
         // resize all the columns but not the table
         for (int i = 0; i < dataTableView.getTable().getColumnCount(); i++) {
             dataTableView.getTable().getColumn(i).pack();
         }
         dataTableView.getTable().getColumn(0).setWidth(0);
-        
+
     }
 
     /**
@@ -407,12 +407,10 @@ public class RowGeneratorUI {
         return this.generatorManager;
     }
 
-    
     public SashForm getDatasFlowViewSashForm() {
         return this.datasFlowViewSashForm;
     }
 
-    
     public SashForm getMainSashForm() {
         return this.mainSashForm;
     }
