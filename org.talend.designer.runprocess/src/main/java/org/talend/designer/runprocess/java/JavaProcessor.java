@@ -53,6 +53,7 @@ import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.debug.core.JDIDebugModel;
+import org.eclipse.jdt.internal.core.ClasspathEntry;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.talend.commons.exception.SystemException;
 import org.talend.commons.utils.generation.JavaUtils;
@@ -529,10 +530,7 @@ public class JavaProcessor implements IProcessor {
         List<IClasspathEntry> classpath = new ArrayList<IClasspathEntry>();
         classpath.add(jreClasspathEntry);
         classpath.add(classpathEntry);
-        classpath.add(libClasspathEntry);
-
-        IClasspathEntry[] classpathEntryArray = (IClasspathEntry[]) classpath.toArray(new IClasspathEntry[classpath
-                .size()]);
+        //classpath.add(libClasspathEntry);
 
         IFolder runtimeFolder = prj.getFolder(new Path(JavaUtils.JAVA_CLASSES_DIRECTORY)); //$NON-NLS-1$
         if (!runtimeFolder.exists()) {
@@ -547,9 +545,25 @@ public class JavaProcessor implements IProcessor {
         IFolder libFolder = prj.getFolder(new Path(JavaUtils.JAVA_LIB_DIRECTORY)); //$NON-NLS-1$
         if (!libFolder.exists()) {
             libFolder.create(false, true, null);
+        } else {
+            try {
+                for (IResource member : libFolder.members()) {
+                    if (member instanceof IFile) {
+                        classpath.add(JavaCore.newLibraryEntry(((IFile) member).getFullPath(), null, null));
+                    }
+                }
+            } catch (CoreException e) {
+                // do nothing, no cp to modifiy
+                e.printStackTrace();
+            }
         }
 
+        IClasspathEntry[] classpathEntryArray = (IClasspathEntry[]) classpath.toArray(new IClasspathEntry[classpath
+                .size()]);
+        
+
         javaProject.setRawClasspath(classpathEntryArray, null);
+
         javaProject.setOutputLocation(javaProject.getPath().append(JavaUtils.JAVA_CLASSES_DIRECTORY), null); //$NON-NLS-1$
 
         return prj;
