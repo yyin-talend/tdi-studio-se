@@ -43,11 +43,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
-import org.talend.commons.ui.utils.PathUtils;
-import org.talend.commons.utils.StringUtils;
 import org.talend.core.CorePlugin;
-import org.talend.core.language.ECodeLanguage;
-import org.talend.core.language.LanguageManager;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.utils.PathExtractor;
@@ -57,7 +53,7 @@ import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.properties.DynamicTabbedPropertySection;
 
 /**
- * DOC yzhang class global comment. Detailled comment <br/>
+ * yzhang class global comment. Detailled comment <br/>
  * 
  * $Id: FileController.java 1 2006-12-12 上午11:18:38 +0000 (上午11:18:38) yzhang $
  * 
@@ -66,20 +62,24 @@ public class FileController extends AbstractElementPropertySectionController {
 
     private static final String FILE = "FILE"; //$NON-NLS-1$
 
-    private Button btnEdit;
-
-    private String currentFilePath;
-
     private Text filePathText;
 
     /**
-     * DOC yzhang FileController constructor comment.
+     * yzhang FileController constructor comment.
      * 
      * @param parameterBean
      */
     public FileController(DynamicTabbedPropertySection dtp) {
         super(dtp);
-        // TODO Auto-generated constructor stub
+    }
+
+    /*
+     * This method will never be called.
+     * 
+     * @see org.talend.designer.core.ui.editor.properties.controllers.AbstractElementPropertySectionController#createCommand()
+     */
+    public Command createCommand() {
+        return null;
     }
 
     /*
@@ -87,17 +87,14 @@ public class FileController extends AbstractElementPropertySectionController {
      * 
      * @see org.talend.designer.core.ui.editor.properties2.editors.AbstractElementPropertySectionController#createCommand()
      */
-    @Override
-    public Command createCommand() {
+    public Command createCommand(Button button) {
         FileDialog dial = new FileDialog(composite.getShell(), SWT.NONE);
-
         String extractedFilePath = PathExtractor.extractPath(filePathText.getText());
-        
         dial.setFileName(new Path(extractedFilePath).toOSString());
         String file = dial.open();
         if (file != null) {
             if (!file.equals("")) { //$NON-NLS-1$
-                String propertyName = (String) btnEdit.getData(PROPERTY);
+                String propertyName = (String) button.getData(PROPERTY);
                 if (!elem.getPropertyValue(propertyName).equals(file)) {
                     String portableValue = Path.fromOSString(file).toPortableString();
                     return new PropertyChangeCommand(elem, propertyName, TalendTextUtils.addQuotes(portableValue));
@@ -106,7 +103,6 @@ public class FileController extends AbstractElementPropertySectionController {
             }
         }
         return null;
-
     }
 
     /*
@@ -115,10 +111,10 @@ public class FileController extends AbstractElementPropertySectionController {
      * @see org.talend.designer.core.ui.editor.properties2.editors.AbstractElementPropertySectionController#createControl()
      */
     @Override
-    public Control createControl(final Composite subComposite, final IElementParameter param, final int numInRow, final int nbInRow,
-            final int top, final Control lastControl) {
+    public Control createControl(final Composite subComposite, final IElementParameter param, final int numInRow,
+            final int nbInRow, final int top, final Control lastControl) {
 
-        btnEdit = getWidgetFactory().createButton(subComposite, "", SWT.PUSH); //$NON-NLS-1$
+        Button btnEdit = getWidgetFactory().createButton(subComposite, "", SWT.PUSH); //$NON-NLS-1$
         FormData data;
 
         btnEdit.setImage(CorePlugin.getImageDescriptor(DOTS_BUTTON).createImage());
@@ -136,7 +132,8 @@ public class FileController extends AbstractElementPropertySectionController {
 
         DecoratedField dField = new DecoratedField(subComposite, SWT.BORDER, new TextControlCreator());
         if (param.isRequired()) {
-            FieldDecoration decoration = FieldDecorationRegistry.getDefault().getFieldDecoration(FieldDecorationRegistry.DEC_REQUIRED);
+            FieldDecoration decoration = FieldDecorationRegistry.getDefault().getFieldDecoration(
+                    FieldDecorationRegistry.DEC_REQUIRED);
             dField.addFieldDecoration(decoration, SWT.RIGHT | SWT.TOP, false);
         }
         if (param.isRepositoryValueUsed()) {
@@ -209,8 +206,6 @@ public class FileController extends AbstractElementPropertySectionController {
      * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
      */
     public void propertyChange(PropertyChangeEvent evt) {
-        // TODO Auto-generated method stub
-
     }
 
     SelectionListener listenerSelection = new SelectionListener() {
@@ -220,7 +215,7 @@ public class FileController extends AbstractElementPropertySectionController {
         }
 
         public void widgetSelected(SelectionEvent e) {
-            Command cmd = createCommand();
+            Command cmd = createCommand((Button) e.getSource());
             if (cmd != null) {
                 getCommandStack().execute(cmd);
             }
