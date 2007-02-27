@@ -76,6 +76,11 @@ public class MetadataColumnExt extends MetadataColumn {
 
     @SuppressWarnings("unchecked")//$NON-NLS-1$
     public String getParameter() {
+        
+
+        // if (this.function != null && this.function.getName().equals(RowGenTableEditor2.PURE_PERL_NAME)) {
+        // return this.function.getParameter();
+        //        }
         String currentPara = ""; //$NON-NLS-1$
         if (this.function != null) {
             for (Parameter para : (List<Parameter>) function.getParameters()) {
@@ -131,13 +136,7 @@ public class MetadataColumnExt extends MetadataColumn {
         function.setPreview(preview);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.core.model.metadata.MetadataColumn#sameMetacolumnAs(org.talend.core.model.metadata.IMetadataColumn)
-     */
-    @Override
-    public boolean sameMetacolumnAs(IMetadataColumn metaColumn) {
+    public boolean sameMetacolumnAs2(IMetadataColumn metaColumn) {
         boolean b = super.sameMetacolumnAs(metaColumn);
         if (metaColumn instanceof MetadataColumnExt) {
             final MetadataColumnExt another = (MetadataColumnExt) metaColumn;

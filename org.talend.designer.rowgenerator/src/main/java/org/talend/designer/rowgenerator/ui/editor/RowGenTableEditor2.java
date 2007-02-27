@@ -40,6 +40,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.ScrollBar;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 import org.talend.commons.ui.image.EImage;
@@ -101,6 +102,10 @@ public class RowGenTableEditor2 extends AbstractDataTableEditorView<IMetadataCol
     public static final String PREVIEW_ID_COLUMN = "ID_COLUMN_PREVIEW"; //$NON-NLS-1$
 
     private static final int TITLE_DEFAULT_HEIGHT = 25;
+
+    // public static final String PURE_PERL_NAME = "custom perl";
+
+    // public static final String PURE_PERL_DESC = "Customer set your own Perl expression.";
 
     private RowGeneratorComponent rGcomponent;
 
@@ -181,6 +186,31 @@ public class RowGenTableEditor2 extends AbstractDataTableEditorView<IMetadataCol
         addListeners();
 
         addTableColumnsListener();
+
+        addHorizontalBarListener();
+    }
+
+    /**
+     * qzhang Comment method "addHorizontalBarListener".
+     */
+    private void addHorizontalBarListener() {
+        final ScrollBar horizontalBar = getTable().getHorizontalBar();
+        horizontalBar.addSelectionListener(new SelectionAdapter() {
+
+            /*
+             * (non-Java)
+             * 
+             * @see org.eclipse.swt.events.SelectionListener#widgetSelected(org.eclipse.swt.events.SelectionEvent)
+             */
+            public void widgetSelected(SelectionEvent e) {
+                e.getSource();
+                if (e.detail == SWT.DRAG) {
+                    RowGenTableEditor2.this.attachLabelPosition();
+                } else if (e.detail == SWT.NONE) {
+                    RowGenTableEditor2.this.attachLabelPosition();
+                }
+            }
+        });
     }
 
     private void addTableColumnsListener() {
@@ -308,7 +338,7 @@ public class RowGenTableEditor2 extends AbstractDataTableEditorView<IMetadataCol
         refresh.addSelectionListener(new SelectionAdapter() {
 
             /*
-             * (non-Javadoc)
+             * (non-Java)
              * 
              * @see org.eclipse.swt.events.SelectionAdapter#widgetSelected(org.eclipse.swt.events.SelectionEvent)
              */
@@ -533,13 +563,17 @@ public class RowGenTableEditor2 extends AbstractDataTableEditorView<IMetadataCol
 
             public void set(MetadataColumnExt bean, String value) {
                 // saveOneColData(bean);
+                // if (bean.getFunction() != null && bean.getFunction().getName().equals(PURE_PERL_NAME)) {
+                // bean.getFunction().setParameter(value);
+                // }
             }
 
         });
-        column.setModifiable(false);
+        column.setModifiable(true);
         column.setWeight(10);
         column.setWidth(45);
-
+        // final TextCellEditor cellEditor = new TextCellEditor(tableViewerCreator.getTable());
+        // column.setCellEditor(cellEditor);
         // //////////////////////////////////////////////////////////////////////////
         // column = new TableViewerCreatorColumn(tableViewerCreator);
         // column.setTitle("Summary");
@@ -595,11 +629,22 @@ public class RowGenTableEditor2 extends AbstractDataTableEditorView<IMetadataCol
     @SuppressWarnings("unchecked")//$NON-NLS-1$
     protected Function getFunnctionByName(String talendType, String value) {
         Function func = null;
+        // if (value.equals(PURE_PERL_NAME)) {
+        // TableViewerCreatorColumn column = getTableViewerCreator().getColumn(PARAMETER_ID_COLUMN);
+        // if (column != null) {
+        // column.setModifiable(true);
+        // }
+        // func = new Function();
+        // func.setName(PURE_PERL_NAME);
+        //
+        // func.setDescription(PURE_PERL_DESC);
+        // } else {
         for (Function fun : functionManager.getFunctionByName(talendType)) {
             if (fun.getName().equals(value)) {
                 func = (Function) fun.clone();
             }
         }
+        // }
         return func;
     }
 
@@ -849,6 +894,7 @@ public class RowGenTableEditor2 extends AbstractDataTableEditorView<IMetadataCol
             bean.setArrayFunctions(arrayTalendFunctions2);
         }
 
+        // arrayTalendFunctions2[functions.size()] = PURE_PERL_NAME;
         return currentFun;
     }
 
@@ -902,7 +948,8 @@ public class RowGenTableEditor2 extends AbstractDataTableEditorView<IMetadataCol
      * @param showColumnsList
      */
     public void updateHeader(String[] hideColumnsList) {
-        if (hideColumnsList == null) {
+        if (hideColumnsList == null || hideColumnsList.length == 0) {
+            attachLabelPosition();
             return;
         }
         for (String string : hideColumnsList) {
