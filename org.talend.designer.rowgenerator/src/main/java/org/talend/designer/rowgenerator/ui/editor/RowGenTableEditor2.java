@@ -430,7 +430,8 @@ public class RowGenTableEditor2 extends AbstractDataTableEditorView<IMetadataCol
         funCom.setLocation(schCom.getBounds().x + funwidth, schCom.getBounds().y);
         funCom.setSize(prewidth - funwidth, TITLE_DEFAULT_HEIGHT);
         preCom.setLocation(schCom.getBounds().x + prewidth, schCom.getBounds().y);
-        preCom.setSize(w - prewidth, TITLE_DEFAULT_HEIGHT);
+        // preCom.setSize(w - prewidth, TITLE_DEFAULT_HEIGHT);
+        // getTableViewerCreator().getColumn(PREVIEW_ID_COLUMN).getTableColumn().setWidth(preCom.getSize().x);
         empty.setLocation(schCom.getBounds().x + w, schCom.getBounds().y);
     }
 
@@ -578,7 +579,8 @@ public class RowGenTableEditor2 extends AbstractDataTableEditorView<IMetadataCol
         });
         column.setModifiable(false);
         column.setWeight(10);
-        column.setWidth(45);
+        column.setMinimumWidth(110);
+        column.setWidth(120);
         // ////////////////////////////////////////////////////////////////////////
 
     }
