@@ -184,6 +184,24 @@
             <popupPredefinedItem id="deleteFromDiagramAction" remove="true"/>
             <popupPredefinedItem id="deleteFromModelAction" remove="true"/>
          </popupContribution>
+         <popupContribution class="org.eclipse.gmf.runtime.diagram.ui.providers.DiagramContextMenuProvider">
+            <popupStructuredContributionCriteria objectClass="org.talend.designer.business.model.business.diagram.edit.parts.DirectionalBusinessItemRelationshipEditPart"/>
+            <popupPredefinedItem id="deleteFromDiagramAction" remove="true"/>
+         </popupContribution>
+         <popupContribution class="org.eclipse.gmf.runtime.diagram.ui.providers.DiagramContextMenuProvider">
+            <popupStructuredContributionCriteria objectClass="org.talend.designer.business.model.business.diagram.edit.parts.DirectionalBusinessItemRelationshipNameEditPart"/>
+            <popupPredefinedItem id="deleteFromDiagramAction" remove="true"/>
+            <popupPredefinedItem id="deleteFromModelAction" remove="true"/>
+         </popupContribution>
+         <popupContribution class="org.eclipse.gmf.runtime.diagram.ui.providers.DiagramContextMenuProvider">
+            <popupStructuredContributionCriteria objectClass="org.talend.designer.business.model.business.diagram.edit.parts.BidirectionalBusinessItemRelationshipEditPart"/>
+            <popupPredefinedItem id="deleteFromDiagramAction" remove="true"/>
+         </popupContribution>
+         <popupContribution class="org.eclipse.gmf.runtime.diagram.ui.providers.DiagramContextMenuProvider">
+            <popupStructuredContributionCriteria objectClass="org.talend.designer.business.model.business.diagram.edit.parts.BidirectionalBusinessItemRelationshipNameEditPart"/>
+            <popupPredefinedItem id="deleteFromDiagramAction" remove="true"/>
+            <popupPredefinedItem id="deleteFromModelAction" remove="true"/>
+         </popupContribution>
       </contributionItemProvider>
    </extension>
 
@@ -426,6 +444,28 @@
             <param name="semanticHint" value="3001"/>
          </metamodelType>
       </metamodel>
+
+      <metamodel nsURI="business">
+         <metamodelType
+               id="org.talend.designer.business.diagram.DirectionalBusinessItemRelationship_3002"
+               name="Directional Relationship"
+               kind="org.eclipse.gmf.runtime.emf.type.core.IHintedType"
+               eclass="DirectionalBusinessItemRelationship"
+               edithelper="org.talend.designer.business.model.business.diagram.edit.helpers.DirectionalBusinessItemRelationshipEditHelper">
+            <param name="semanticHint" value="3002"/>
+         </metamodelType>
+      </metamodel>
+
+      <metamodel nsURI="business">
+         <metamodelType
+               id="org.talend.designer.business.diagram.BidirectionalBusinessItemRelationship_3003"
+               name="Bidirectional Relationship"
+               kind="org.eclipse.gmf.runtime.emf.type.core.IHintedType"
+               eclass="BidirectionalBusinessItemRelationship"
+               edithelper="org.talend.designer.business.model.business.diagram.edit.helpers.BidirectionalBusinessItemRelationshipEditHelper">
+            <param name="semanticHint" value="3003"/>
+         </metamodelType>
+      </metamodel>
    </extension>
 
    <extension point="org.eclipse.gmf.runtime.emf.type.core.elementTypeBindings">
@@ -450,6 +490,8 @@
          <elementType ref="org.talend.designer.business.diagram.EllipseBusinessItem_1010"/>
          <elementType ref="org.talend.designer.business.diagram.GearBusinessItem_1011"/>
          <elementType ref="org.talend.designer.business.diagram.BusinessItemRelationship_3001"/>
+         <elementType ref="org.talend.designer.business.diagram.DirectionalBusinessItemRelationship_3002"/>
+         <elementType ref="org.talend.designer.business.diagram.BidirectionalBusinessItemRelationship_3003"/>
          <advice ref="org.eclipse.gmf.runtime.diagram.core.advice.notationDepdendents"/>
       </binding>
    </extension>

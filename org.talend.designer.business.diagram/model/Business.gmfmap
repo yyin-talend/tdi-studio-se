@@ -234,10 +234,58 @@
         href="Business.gmfgraph#BusinessItemRelationship"/>
     <sourceMetaFeature
         xsi:type="ecore:EReference"
-        href="../../org.talend.model/model/Business.ecore#//BusinessItemRelationship/source"/>
+        href="../../org.talend.model/model/Business.ecore#//BaseBusinessItemRelationship/source"/>
     <linkMetaFeature
         xsi:type="ecore:EReference"
-        href="../../org.talend.model/model/Business.ecore#//BusinessItemRelationship/target"/>
+        href="../../org.talend.model/model/Business.ecore#//BaseBusinessItemRelationship/target"/>
+  </links>
+  <links>
+    <domainMetaElement
+        href="../../org.talend.model/model/Business.ecore#//DirectionalBusinessItemRelationship"/>
+    <labelMappings
+        editPattern="">
+      <diagramLabel
+          href="Business.gmfgraph#DirectionalBusinessItemRelationshipName"/>
+      <features
+          href="../../org.talend.model/model/Business.ecore#//BusinessItem/name"/>
+    </labelMappings>
+    <containmentFeature
+        href="../../org.talend.model/model/Business.ecore#//BusinessProcess/businessItems"/>
+    <tool
+        xsi:type="gmftool:CreationTool"
+        href="Business.gmftool#//@palette/@tools.0/@tools.13"/>
+    <diagramLink
+        href="Business.gmfgraph#DirectionalBusinessItemRelationship"/>
+    <sourceMetaFeature
+        xsi:type="ecore:EReference"
+        href="../../org.talend.model/model/Business.ecore#//BaseBusinessItemRelationship/source"/>
+    <linkMetaFeature
+        xsi:type="ecore:EReference"
+        href="../../org.talend.model/model/Business.ecore#//BaseBusinessItemRelationship/target"/>
+  </links>
+  <links>
+    <domainMetaElement
+        href="../../org.talend.model/model/Business.ecore#//BidirectionalBusinessItemRelationship"/>
+    <labelMappings
+        editPattern="">
+      <diagramLabel
+          href="Business.gmfgraph#BidirectionalBusinessItemRelationshipName"/>
+      <features
+          href="../../org.talend.model/model/Business.ecore#//BusinessItem/name"/>
+    </labelMappings>
+    <containmentFeature
+        href="../../org.talend.model/model/Business.ecore#//BusinessProcess/businessItems"/>
+    <tool
+        xsi:type="gmftool:CreationTool"
+        href="Business.gmftool#//@palette/@tools.0/@tools.14"/>
+    <diagramLink
+        href="Business.gmfgraph#BidirectionalBusinessItemRelationship"/>
+    <sourceMetaFeature
+        xsi:type="ecore:EReference"
+        href="../../org.talend.model/model/Business.ecore#//BaseBusinessItemRelationship/source"/>
+    <linkMetaFeature
+        xsi:type="ecore:EReference"
+        href="../../org.talend.model/model/Business.ecore#//BaseBusinessItemRelationship/target"/>
   </links>
   <diagram>
     <diagramCanvas

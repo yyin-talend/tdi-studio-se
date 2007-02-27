@@ -10,10 +10,12 @@ import org.eclipse.gmf.runtime.emf.type.core.commands.DestroyElementCommand;
 import org.eclipse.gmf.runtime.emf.type.core.requests.CreateRelationshipRequest;
 import org.eclipse.gmf.runtime.emf.type.core.requests.DestroyElementRequest;
 import org.eclipse.gmf.runtime.notation.View;
+import org.talend.designer.business.model.business.BidirectionalBusinessItemRelationship;
 import org.talend.designer.business.model.business.BusinessItemRelationship;
 import org.talend.designer.business.model.business.BusinessItemShape;
 import org.talend.designer.business.model.business.BusinessPackage;
 import org.talend.designer.business.model.business.BusinessProcess;
+import org.talend.designer.business.model.business.DirectionalBusinessItemRelationship;
 import org.talend.designer.business.model.business.diagram.providers.BusinessElementTypes;
 
 /**
@@ -46,6 +48,14 @@ public class DatabaseBusinessItemItemSemanticEditPolicy extends BusinessBaseItem
         if (BusinessElementTypes.BusinessItemRelationship_3001 == req.getElementType()) {
             return req.getTarget() == null ? getCreateStartOutgoingBusinessItemRelationship3001Command(req)
                     : getCreateCompleteIncomingBusinessItemRelationship3001Command(req);
+        }
+        if (BusinessElementTypes.DirectionalBusinessItemRelationship_3002 == req.getElementType()) {
+            return req.getTarget() == null ? getCreateStartOutgoingDirectionalBusinessItemRelationship3002Command(req)
+                    : getCreateCompleteIncomingDirectionalBusinessItemRelationship3002Command(req);
+        }
+        if (BusinessElementTypes.BidirectionalBusinessItemRelationship_3003 == req.getElementType()) {
+            return req.getTarget() == null ? getCreateStartOutgoingBidirectionalBusinessItemRelationship3003Command(req)
+                    : getCreateCompleteIncomingBidirectionalBusinessItemRelationship3003Command(req);
         }
         return super.getCreateRelationshipCommand(req);
     }
@@ -115,6 +125,158 @@ public class DatabaseBusinessItemItemSemanticEditPolicy extends BusinessBaseItem
          */
         protected EObject doDefaultElementCreation() {
             BusinessItemRelationship newElement = (BusinessItemRelationship) super.doDefaultElementCreation();
+            if (newElement != null) {
+                newElement.setTarget((BusinessItemShape) getTarget());
+                newElement.setSource((BusinessItemShape) getSource());
+            }
+            return newElement;
+        }
+    }
+
+    /**
+     * @generated
+     */
+    protected Command getCreateStartOutgoingDirectionalBusinessItemRelationship3002Command(CreateRelationshipRequest req) {
+        return new Command() {
+        };
+    }
+
+    /**
+     * @generated
+     */
+    protected Command getCreateCompleteIncomingDirectionalBusinessItemRelationship3002Command(
+            CreateRelationshipRequest req) {
+        if (!(req.getSource() instanceof BusinessItemShape)) {
+            return UnexecutableCommand.INSTANCE;
+        }
+        final BusinessProcess element = (BusinessProcess) getRelationshipContainer(req.getSource(),
+                BusinessPackage.eINSTANCE.getBusinessProcess(), req.getElementType());
+        if (element == null) {
+            return UnexecutableCommand.INSTANCE;
+        }
+        if (req.getContainmentFeature() == null) {
+            req.setContainmentFeature(BusinessPackage.eINSTANCE.getBusinessProcess_BusinessItems());
+        }
+        return getMSLWrapper(new CreateIncomingDirectionalBusinessItemRelationship3002Command(req) {
+
+            /**
+             * @generated
+             */
+            protected EObject getElementToEdit() {
+                return element;
+            }
+        });
+    }
+
+    /**
+     * @generated
+     */
+    private static class CreateIncomingDirectionalBusinessItemRelationship3002Command extends CreateRelationshipCommand {
+
+        /**
+         * @generated
+         */
+        public CreateIncomingDirectionalBusinessItemRelationship3002Command(CreateRelationshipRequest req) {
+            super(req);
+        }
+
+        /**
+         * @generated
+         */
+        protected EClass getEClassToEdit() {
+            return BusinessPackage.eINSTANCE.getBusinessProcess();
+        };
+
+        /**
+         * @generated
+         */
+        protected void setElementToEdit(EObject element) {
+            throw new UnsupportedOperationException();
+        }
+
+        /**
+         * @generated
+         */
+        protected EObject doDefaultElementCreation() {
+            DirectionalBusinessItemRelationship newElement = (DirectionalBusinessItemRelationship) super
+                    .doDefaultElementCreation();
+            if (newElement != null) {
+                newElement.setTarget((BusinessItemShape) getTarget());
+                newElement.setSource((BusinessItemShape) getSource());
+            }
+            return newElement;
+        }
+    }
+
+    /**
+     * @generated
+     */
+    protected Command getCreateStartOutgoingBidirectionalBusinessItemRelationship3003Command(
+            CreateRelationshipRequest req) {
+        return new Command() {
+        };
+    }
+
+    /**
+     * @generated
+     */
+    protected Command getCreateCompleteIncomingBidirectionalBusinessItemRelationship3003Command(
+            CreateRelationshipRequest req) {
+        if (!(req.getSource() instanceof BusinessItemShape)) {
+            return UnexecutableCommand.INSTANCE;
+        }
+        final BusinessProcess element = (BusinessProcess) getRelationshipContainer(req.getSource(),
+                BusinessPackage.eINSTANCE.getBusinessProcess(), req.getElementType());
+        if (element == null) {
+            return UnexecutableCommand.INSTANCE;
+        }
+        if (req.getContainmentFeature() == null) {
+            req.setContainmentFeature(BusinessPackage.eINSTANCE.getBusinessProcess_BusinessItems());
+        }
+        return getMSLWrapper(new CreateIncomingBidirectionalBusinessItemRelationship3003Command(req) {
+
+            /**
+             * @generated
+             */
+            protected EObject getElementToEdit() {
+                return element;
+            }
+        });
+    }
+
+    /**
+     * @generated
+     */
+    private static class CreateIncomingBidirectionalBusinessItemRelationship3003Command extends
+            CreateRelationshipCommand {
+
+        /**
+         * @generated
+         */
+        public CreateIncomingBidirectionalBusinessItemRelationship3003Command(CreateRelationshipRequest req) {
+            super(req);
+        }
+
+        /**
+         * @generated
+         */
+        protected EClass getEClassToEdit() {
+            return BusinessPackage.eINSTANCE.getBusinessProcess();
+        };
+
+        /**
+         * @generated
+         */
+        protected void setElementToEdit(EObject element) {
+            throw new UnsupportedOperationException();
+        }
+
+        /**
+         * @generated
+         */
+        protected EObject doDefaultElementCreation() {
+            BidirectionalBusinessItemRelationship newElement = (BidirectionalBusinessItemRelationship) super
+                    .doDefaultElementCreation();
             if (newElement != null) {
                 newElement.setTarget((BusinessItemShape) getTarget());
                 newElement.setSource((BusinessItemShape) getSource());

@@ -10,6 +10,8 @@ import org.talend.designer.business.model.business.diagram.edit.parts.ActionBusi
 import org.talend.designer.business.model.business.diagram.edit.parts.ActionBusinessItemNameEditPart;
 import org.talend.designer.business.model.business.diagram.edit.parts.ActorBusinessItemEditPart;
 import org.talend.designer.business.model.business.diagram.edit.parts.ActorBusinessItemNameEditPart;
+import org.talend.designer.business.model.business.diagram.edit.parts.BidirectionalBusinessItemRelationshipEditPart;
+import org.talend.designer.business.model.business.diagram.edit.parts.BidirectionalBusinessItemRelationshipNameEditPart;
 import org.talend.designer.business.model.business.diagram.edit.parts.BusinessItemRelationshipEditPart;
 import org.talend.designer.business.model.business.diagram.edit.parts.BusinessItemRelationshipNameEditPart;
 import org.talend.designer.business.model.business.diagram.edit.parts.BusinessProcessEditPart;
@@ -19,6 +21,8 @@ import org.talend.designer.business.model.business.diagram.edit.parts.DatabaseBu
 import org.talend.designer.business.model.business.diagram.edit.parts.DatabaseBusinessItemNameEditPart;
 import org.talend.designer.business.model.business.diagram.edit.parts.DecisionBusinessItemEditPart;
 import org.talend.designer.business.model.business.diagram.edit.parts.DecisionBusinessItemNameEditPart;
+import org.talend.designer.business.model.business.diagram.edit.parts.DirectionalBusinessItemRelationshipEditPart;
+import org.talend.designer.business.model.business.diagram.edit.parts.DirectionalBusinessItemRelationshipNameEditPart;
 import org.talend.designer.business.model.business.diagram.edit.parts.DocumentBusinessItemEditPart;
 import org.talend.designer.business.model.business.diagram.edit.parts.DocumentBusinessItemNameEditPart;
 import org.talend.designer.business.model.business.diagram.edit.parts.EllipseBusinessItemEditPart;
@@ -36,6 +40,8 @@ import org.talend.designer.business.model.business.diagram.view.factories.Action
 import org.talend.designer.business.model.business.diagram.view.factories.ActionBusinessItemViewFactory;
 import org.talend.designer.business.model.business.diagram.view.factories.ActorBusinessItemNameViewFactory;
 import org.talend.designer.business.model.business.diagram.view.factories.ActorBusinessItemViewFactory;
+import org.talend.designer.business.model.business.diagram.view.factories.BidirectionalBusinessItemRelationshipNameViewFactory;
+import org.talend.designer.business.model.business.diagram.view.factories.BidirectionalBusinessItemRelationshipViewFactory;
 import org.talend.designer.business.model.business.diagram.view.factories.BusinessItemRelationshipNameViewFactory;
 import org.talend.designer.business.model.business.diagram.view.factories.BusinessItemRelationshipViewFactory;
 import org.talend.designer.business.model.business.diagram.view.factories.BusinessProcessViewFactory;
@@ -45,6 +51,8 @@ import org.talend.designer.business.model.business.diagram.view.factories.Databa
 import org.talend.designer.business.model.business.diagram.view.factories.DatabaseBusinessItemViewFactory;
 import org.talend.designer.business.model.business.diagram.view.factories.DecisionBusinessItemNameViewFactory;
 import org.talend.designer.business.model.business.diagram.view.factories.DecisionBusinessItemViewFactory;
+import org.talend.designer.business.model.business.diagram.view.factories.DirectionalBusinessItemRelationshipNameViewFactory;
+import org.talend.designer.business.model.business.diagram.view.factories.DirectionalBusinessItemRelationshipViewFactory;
 import org.talend.designer.business.model.business.diagram.view.factories.DocumentBusinessItemNameViewFactory;
 import org.talend.designer.business.model.business.diagram.view.factories.DocumentBusinessItemViewFactory;
 import org.talend.designer.business.model.business.diagram.view.factories.EllipseBusinessItemNameViewFactory;
@@ -137,6 +145,10 @@ public class BusinessViewProvider extends AbstractViewProvider {
             return GearBusinessItemNameViewFactory.class;
         case BusinessItemRelationshipNameEditPart.VISUAL_ID:
             return BusinessItemRelationshipNameViewFactory.class;
+        case DirectionalBusinessItemRelationshipNameEditPart.VISUAL_ID:
+            return DirectionalBusinessItemRelationshipNameViewFactory.class;
+        case BidirectionalBusinessItemRelationshipNameEditPart.VISUAL_ID:
+            return BidirectionalBusinessItemRelationshipNameViewFactory.class;
         }
         return null;
     }
@@ -158,6 +170,10 @@ public class BusinessViewProvider extends AbstractViewProvider {
         switch (linkVID) {
         case BusinessItemRelationshipEditPart.VISUAL_ID:
             return BusinessItemRelationshipViewFactory.class;
+        case DirectionalBusinessItemRelationshipEditPart.VISUAL_ID:
+            return DirectionalBusinessItemRelationshipViewFactory.class;
+        case BidirectionalBusinessItemRelationshipEditPart.VISUAL_ID:
+            return BidirectionalBusinessItemRelationshipViewFactory.class;
         }
         return getUnrecognizedConnectorViewClass(semanticAdapter, containerView, semanticHint);
     }

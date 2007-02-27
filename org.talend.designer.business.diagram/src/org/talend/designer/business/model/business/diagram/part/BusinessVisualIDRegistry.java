@@ -9,12 +9,14 @@ import org.eclipse.gmf.runtime.notation.View;
 import org.talend.designer.business.diagram.i18n.Messages;
 import org.talend.designer.business.model.business.ActionBusinessItem;
 import org.talend.designer.business.model.business.ActorBusinessItem;
+import org.talend.designer.business.model.business.BidirectionalBusinessItemRelationship;
 import org.talend.designer.business.model.business.BusinessItemRelationship;
 import org.talend.designer.business.model.business.BusinessPackage;
 import org.talend.designer.business.model.business.BusinessProcess;
 import org.talend.designer.business.model.business.DataBusinessItem;
 import org.talend.designer.business.model.business.DatabaseBusinessItem;
 import org.talend.designer.business.model.business.DecisionBusinessItem;
+import org.talend.designer.business.model.business.DirectionalBusinessItemRelationship;
 import org.talend.designer.business.model.business.DocumentBusinessItem;
 import org.talend.designer.business.model.business.EllipseBusinessItem;
 import org.talend.designer.business.model.business.GearBusinessItem;
@@ -25,6 +27,8 @@ import org.talend.designer.business.model.business.diagram.edit.parts.ActionBusi
 import org.talend.designer.business.model.business.diagram.edit.parts.ActionBusinessItemNameEditPart;
 import org.talend.designer.business.model.business.diagram.edit.parts.ActorBusinessItemEditPart;
 import org.talend.designer.business.model.business.diagram.edit.parts.ActorBusinessItemNameEditPart;
+import org.talend.designer.business.model.business.diagram.edit.parts.BidirectionalBusinessItemRelationshipEditPart;
+import org.talend.designer.business.model.business.diagram.edit.parts.BidirectionalBusinessItemRelationshipNameEditPart;
 import org.talend.designer.business.model.business.diagram.edit.parts.BusinessItemRelationshipEditPart;
 import org.talend.designer.business.model.business.diagram.edit.parts.BusinessItemRelationshipNameEditPart;
 import org.talend.designer.business.model.business.diagram.edit.parts.BusinessProcessEditPart;
@@ -34,6 +38,8 @@ import org.talend.designer.business.model.business.diagram.edit.parts.DatabaseBu
 import org.talend.designer.business.model.business.diagram.edit.parts.DatabaseBusinessItemNameEditPart;
 import org.talend.designer.business.model.business.diagram.edit.parts.DecisionBusinessItemEditPart;
 import org.talend.designer.business.model.business.diagram.edit.parts.DecisionBusinessItemNameEditPart;
+import org.talend.designer.business.model.business.diagram.edit.parts.DirectionalBusinessItemRelationshipEditPart;
+import org.talend.designer.business.model.business.diagram.edit.parts.DirectionalBusinessItemRelationshipNameEditPart;
 import org.talend.designer.business.model.business.diagram.edit.parts.DocumentBusinessItemEditPart;
 import org.talend.designer.business.model.business.diagram.edit.parts.DocumentBusinessItemNameEditPart;
 import org.talend.designer.business.model.business.diagram.edit.parts.EllipseBusinessItemEditPart;
@@ -283,6 +289,16 @@ public class BusinessVisualIDRegistry {
                 return BusinessItemRelationshipNameEditPart.VISUAL_ID;
             }
             return getUnrecognizedBusinessItemRelationship_3001LinkLabelID(semanticHint);
+        case DirectionalBusinessItemRelationshipEditPart.VISUAL_ID:
+            if (DirectionalBusinessItemRelationshipNameEditPart.VISUAL_ID == nodeVisualID) {
+                return DirectionalBusinessItemRelationshipNameEditPart.VISUAL_ID;
+            }
+            return getUnrecognizedDirectionalBusinessItemRelationship_3002LinkLabelID(semanticHint);
+        case BidirectionalBusinessItemRelationshipEditPart.VISUAL_ID:
+            if (BidirectionalBusinessItemRelationshipNameEditPart.VISUAL_ID == nodeVisualID) {
+                return BidirectionalBusinessItemRelationshipNameEditPart.VISUAL_ID;
+            }
+            return getUnrecognizedBidirectionalBusinessItemRelationship_3003LinkLabelID(semanticHint);
         }
         return -1;
     }
@@ -305,6 +321,14 @@ public class BusinessVisualIDRegistry {
         if (BusinessPackage.eINSTANCE.getBusinessItemRelationship().isSuperTypeOf(domainElementMetaclass)
                 && (domainElement == null || isLinkWithClassBusinessItemRelationship_3001((BusinessItemRelationship) domainElement))) {
             return BusinessItemRelationshipEditPart.VISUAL_ID;
+        } else if (BusinessPackage.eINSTANCE.getDirectionalBusinessItemRelationship().isSuperTypeOf(
+                domainElementMetaclass)
+                && (domainElement == null || isLinkWithClassDirectionalBusinessItemRelationship_3002((DirectionalBusinessItemRelationship) domainElement))) {
+            return DirectionalBusinessItemRelationshipEditPart.VISUAL_ID;
+        } else if (BusinessPackage.eINSTANCE.getBidirectionalBusinessItemRelationship().isSuperTypeOf(
+                domainElementMetaclass)
+                && (domainElement == null || isLinkWithClassBidirectionalBusinessItemRelationship_3003((BidirectionalBusinessItemRelationship) domainElement))) {
+            return BidirectionalBusinessItemRelationshipEditPart.VISUAL_ID;
         } else {
             return getUnrecognizedLinkWithClassID(domainElement);
         }
@@ -549,6 +573,24 @@ public class BusinessVisualIDRegistry {
      * 
      * @generated
      */
+    private static int getUnrecognizedDirectionalBusinessItemRelationship_3002LinkLabelID(String semanticHint) {
+        return -1;
+    }
+
+    /**
+     * User can change implementation of this method to handle some specific situations not covered by default logic.
+     * 
+     * @generated
+     */
+    private static int getUnrecognizedBidirectionalBusinessItemRelationship_3003LinkLabelID(String semanticHint) {
+        return -1;
+    }
+
+    /**
+     * User can change implementation of this method to handle some specific situations not covered by default logic.
+     * 
+     * @generated
+     */
     private static int getUnrecognizedLinkWithClassID(EObject domainElement) {
         return -1;
     }
@@ -559,6 +601,26 @@ public class BusinessVisualIDRegistry {
      * @generated
      */
     private static boolean isLinkWithClassBusinessItemRelationship_3001(BusinessItemRelationship element) {
+        return true;
+    }
+
+    /**
+     * User can change implementation of this method to check some additional conditions here.
+     * 
+     * @generated
+     */
+    private static boolean isLinkWithClassDirectionalBusinessItemRelationship_3002(
+            DirectionalBusinessItemRelationship element) {
+        return true;
+    }
+
+    /**
+     * User can change implementation of this method to check some additional conditions here.
+     * 
+     * @generated
+     */
+    private static boolean isLinkWithClassBidirectionalBusinessItemRelationship_3003(
+            BidirectionalBusinessItemRelationship element) {
         return true;
     }
 }

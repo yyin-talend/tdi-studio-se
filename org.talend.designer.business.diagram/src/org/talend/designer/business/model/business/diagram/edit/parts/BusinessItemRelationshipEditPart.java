@@ -1,16 +1,15 @@
 package org.talend.designer.business.model.business.diagram.edit.parts;
 
 import org.eclipse.draw2d.Connection;
-import org.eclipse.gmf.runtime.diagram.ui.editparts.ConnectionNodeEditPart;
 import org.eclipse.gmf.runtime.diagram.ui.editpolicies.EditPolicyRoles;
 import org.eclipse.gmf.runtime.notation.View;
-import org.talend.designer.business.diagram.custom.edit.policies.BusinessItemDragDropEditPolicy;
+import org.talend.designer.business.diagram.custom.edit.parts.BaseBusinessItemRelationShipEditPart;
 import org.talend.designer.business.model.business.diagram.edit.policies.BusinessItemRelationshipItemSemanticEditPolicy;
 
 /**
- * @generated
+ * @generated NOT
  */
-public class BusinessItemRelationshipEditPart extends ConnectionNodeEditPart {
+public class BusinessItemRelationshipEditPart extends BaseBusinessItemRelationShipEditPart {
 
     /**
      * @generated
@@ -24,10 +23,12 @@ public class BusinessItemRelationshipEditPart extends ConnectionNodeEditPart {
         super(view);
     }
 
+    /**
+     * @generated
+     */
     protected void createDefaultEditPolicies() {
         super.createDefaultEditPolicies();
         installEditPolicy(EditPolicyRoles.SEMANTIC_ROLE, new BusinessItemRelationshipItemSemanticEditPolicy());
-        installEditPolicy(EditPolicyRoles.DRAG_DROP_ROLE, new BusinessItemDragDropEditPolicy());
     }
 
     /**

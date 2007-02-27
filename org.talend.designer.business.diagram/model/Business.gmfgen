@@ -555,9 +555,9 @@
         <childMetaFeature
             href="../../org.talend.model/model/Business.genmodel#//business/BusinessProcess/businessItems"/>
         <sourceMetaFeature
-            href="../../org.talend.model/model/Business.genmodel#//business/BusinessItemRelationship/source"/>
+            href="../../org.talend.model/model/Business.genmodel#//business/BaseBusinessItemRelationship/source"/>
         <targetMetaFeature
-            href="../../org.talend.model/model/Business.genmodel#//business/BusinessItemRelationship/target"/>
+            href="../../org.talend.model/model/Business.genmodel#//business/BaseBusinessItemRelationship/target"/>
       </modelFacet>
       <labels
           visualID="4009"
@@ -570,6 +570,120 @@
             xsi:type="gmfgen:InnerClassViewmap"
             className="BusinessItemRelationshipNameFigure"
             classBody="&#xA;&#xA;/**&#xA; * @generated&#xA; */&#xA;public class BusinessItemRelationshipNameFigure extends org.eclipse.gmf.runtime.draw2d.ui.figures.WrapLabel {&#xA;&#xA;&#x9;/**&#xA;&#x9; * @generated&#xA;&#x9; */&#xA;&#x9;public BusinessItemRelationshipNameFigure() {&#x9;&#xA;&#x9;&#x9;&#xA;&#xA;&#x9;&#x9;this.setText(&quot;&quot;);&#xA;&#x9;&#x9;createContents();&#xA;&#x9;}&#xA;&#xA;&#xA;&#x9;/**&#xA;&#x9; * @generated&#xA;&#x9; */&#xA;&#x9;private void createContents(){&#xA;&#x9;}&#xA;&#x9;&#xA;&#xA;&#xA;&#xA;&#x9;/**&#xA;&#x9; * @generated&#xA;&#x9; */&#xA;&#x9;private boolean myUseLocalCoordinates = false;&#xA;&#xA;&#x9;/**&#xA;&#x9; * @generated&#xA;&#x9; */&#xA;&#x9;protected boolean useLocalCoordinates() {&#xA;&#x9;&#x9;return myUseLocalCoordinates;&#xA;&#x9;}&#xA;&#xA;&#x9;/**&#xA;&#x9; * @generated&#xA;&#x9; */&#xA;&#x9;protected void setUseLocalCoordinates(boolean useLocalCoordinates) {&#xA;&#x9;&#x9;myUseLocalCoordinates = useLocalCoordinates;&#xA;&#x9;}&#xA;&#x9;&#xA;&#xA;}&#xA;&#x9;&#xA;">
+          <attributes
+              xsi:type="gmfgen:LabelOffsetAttributes"
+              y="40"/>
+          <requiredPluginIDs>org.eclipse.draw2d</requiredPluginIDs>
+          <requiredPluginIDs>org.talend.designer.business.diagram.custom</requiredPluginIDs>
+          <requiredPluginIDs>org.eclipse.gmf.runtime.draw2d.ui</requiredPluginIDs>
+        </viewmap>
+        <modelFacet
+            xsi:type="gmfgen:FeatureLabelModelFacet"
+            editPattern="">
+          <metaFeature
+              href="../../org.talend.model/model/Business.genmodel#//business/BusinessItem/name"/>
+        </modelFacet>
+      </labels>
+    </links>
+    <links
+        visualID="3002"
+        editPartClassName="DirectionalBusinessItemRelationshipEditPart"
+        itemSemanticEditPolicyClassName="DirectionalBusinessItemRelationshipItemSemanticEditPolicy"
+        notationViewFactoryClassName="DirectionalBusinessItemRelationshipViewFactory">
+      <diagramRunTimeClass
+          href="../../../plugin/org.eclipse.gmf.runtime.notation/model/notation.genmodel#//notation/Edge"/>
+      <elementType
+          xsi:type="gmfgen:MetamodelType"
+          editHelperClassName="DirectionalBusinessItemRelationshipEditHelper"/>
+      <viewmap
+          xsi:type="gmfgen:InnerClassViewmap"
+          className="DirectionalBusinessItemRelationshipFigure"
+          classBody="&#xA;&#xA;/**&#xA; * @generated&#xA; */&#xA;public class DirectionalBusinessItemRelationshipFigure extends org.eclipse.gmf.runtime.draw2d.ui.figures.PolylineConnectionEx {&#xA;&#xA;&#x9;/**&#xA;&#x9; * @generated&#xA;&#x9; */&#xA;&#x9;public DirectionalBusinessItemRelationshipFigure() {&#xA;&#xA;&#x9;&#x9;setTargetDecoration(createTargetDecoration());&#xA;&#x9;}&#xA;&#xA;&#xA;&#x9;/**&#xA;&#x9; * @generated&#xA;&#x9; */&#xA;&#x9;private org.eclipse.draw2d.PolylineDecoration createTargetDecoration() {&#xA;org.eclipse.draw2d.PolylineDecoration df = new org.eclipse.draw2d.PolylineDecoration();&#xA;// dispatchNext?&#xA;&#xA;&#x9;&#x9;org.eclipse.draw2d.geometry.PointList pl = new org.eclipse.draw2d.geometry.PointList();&#xA;&#x9;&#x9;pl.addPoint(-1, 1);&#xA;&#x9;&#x9;pl.addPoint(0, 0);&#xA;&#x9;&#x9;pl.addPoint(-1, -1);&#xA;&#x9;&#x9;df.setTemplate(pl);&#xA;&#x9;&#x9;df.setScale(getMapMode().DPtoLP(7), getMapMode().DPtoLP(3));&#xA;&#xA;&#xA;&#xA;&#xA;&#x9;&#x9;return df;&#xA;&#x9;}&#xA;&#xA;}&#xA;&#x9;&#xA;">
+        <requiredPluginIDs>org.eclipse.draw2d</requiredPluginIDs>
+        <requiredPluginIDs>org.talend.designer.business.diagram.custom</requiredPluginIDs>
+        <requiredPluginIDs>org.eclipse.gmf.runtime.draw2d.ui</requiredPluginIDs>
+      </viewmap>
+      <modelFacet
+          xsi:type="gmfgen:TypeLinkModelFacet">
+        <metaClass
+            href="../../org.talend.model/model/Business.genmodel#//business/DirectionalBusinessItemRelationship"/>
+        <containmentMetaFeature
+            href="../../org.talend.model/model/Business.genmodel#//business/BusinessProcess/businessItems"/>
+        <childMetaFeature
+            href="../../org.talend.model/model/Business.genmodel#//business/BusinessProcess/businessItems"/>
+        <sourceMetaFeature
+            href="../../org.talend.model/model/Business.genmodel#//business/BaseBusinessItemRelationship/source"/>
+        <targetMetaFeature
+            href="../../org.talend.model/model/Business.genmodel#//business/BaseBusinessItemRelationship/target"/>
+      </modelFacet>
+      <labels
+          visualID="4013"
+          editPartClassName="DirectionalBusinessItemRelationshipNameEditPart"
+          itemSemanticEditPolicyClassName="DirectionalBusinessItemRelationshipNameItemSemanticEditPolicy"
+          notationViewFactoryClassName="DirectionalBusinessItemRelationshipNameViewFactory">
+        <diagramRunTimeClass
+            href="../../../plugin/org.eclipse.gmf.runtime.notation/model/notation.genmodel#//notation/Node"/>
+        <viewmap
+            xsi:type="gmfgen:InnerClassViewmap"
+            className="DirectionalBusinessItemRelationshipNameFigure"
+            classBody="&#xA;&#xA;/**&#xA; * @generated&#xA; */&#xA;public class DirectionalBusinessItemRelationshipNameFigure extends org.eclipse.gmf.runtime.draw2d.ui.figures.WrapLabel {&#xA;&#xA;&#x9;/**&#xA;&#x9; * @generated&#xA;&#x9; */&#xA;&#x9;public DirectionalBusinessItemRelationshipNameFigure() {&#x9;&#xA;&#x9;&#x9;&#xA;&#xA;&#x9;&#x9;this.setText(&quot;&quot;);&#xA;&#x9;&#x9;createContents();&#xA;&#x9;}&#xA;&#xA;&#xA;&#x9;/**&#xA;&#x9; * @generated&#xA;&#x9; */&#xA;&#x9;private void createContents(){&#xA;&#x9;}&#xA;&#x9;&#xA;&#xA;&#xA;&#xA;&#x9;/**&#xA;&#x9; * @generated&#xA;&#x9; */&#xA;&#x9;private boolean myUseLocalCoordinates = false;&#xA;&#xA;&#x9;/**&#xA;&#x9; * @generated&#xA;&#x9; */&#xA;&#x9;protected boolean useLocalCoordinates() {&#xA;&#x9;&#x9;return myUseLocalCoordinates;&#xA;&#x9;}&#xA;&#xA;&#x9;/**&#xA;&#x9; * @generated&#xA;&#x9; */&#xA;&#x9;protected void setUseLocalCoordinates(boolean useLocalCoordinates) {&#xA;&#x9;&#x9;myUseLocalCoordinates = useLocalCoordinates;&#xA;&#x9;}&#xA;&#x9;&#xA;&#xA;}&#xA;&#x9;&#xA;">
+          <attributes
+              xsi:type="gmfgen:LabelOffsetAttributes"
+              y="40"/>
+          <requiredPluginIDs>org.eclipse.draw2d</requiredPluginIDs>
+          <requiredPluginIDs>org.talend.designer.business.diagram.custom</requiredPluginIDs>
+          <requiredPluginIDs>org.eclipse.gmf.runtime.draw2d.ui</requiredPluginIDs>
+        </viewmap>
+        <modelFacet
+            xsi:type="gmfgen:FeatureLabelModelFacet"
+            editPattern="">
+          <metaFeature
+              href="../../org.talend.model/model/Business.genmodel#//business/BusinessItem/name"/>
+        </modelFacet>
+      </labels>
+    </links>
+    <links
+        visualID="3003"
+        editPartClassName="BidirectionalBusinessItemRelationshipEditPart"
+        itemSemanticEditPolicyClassName="BidirectionalBusinessItemRelationshipItemSemanticEditPolicy"
+        notationViewFactoryClassName="BidirectionalBusinessItemRelationshipViewFactory">
+      <diagramRunTimeClass
+          href="../../../plugin/org.eclipse.gmf.runtime.notation/model/notation.genmodel#//notation/Edge"/>
+      <elementType
+          xsi:type="gmfgen:MetamodelType"
+          editHelperClassName="BidirectionalBusinessItemRelationshipEditHelper"/>
+      <viewmap
+          xsi:type="gmfgen:InnerClassViewmap"
+          className="BidirectionalBusinessItemRelationshipFigure"
+          classBody="&#xA;&#xA;/**&#xA; * @generated&#xA; */&#xA;public class BidirectionalBusinessItemRelationshipFigure extends org.eclipse.gmf.runtime.draw2d.ui.figures.PolylineConnectionEx {&#xA;&#xA;&#x9;/**&#xA;&#x9; * @generated&#xA;&#x9; */&#xA;&#x9;public BidirectionalBusinessItemRelationshipFigure() {&#xA;&#xA;&#x9;&#x9;setSourceDecoration(createSourceDecoration());&#xA;&#x9;&#x9;setTargetDecoration(createTargetDecoration());&#xA;&#x9;}&#xA;&#xA;&#x9;/**&#xA;&#x9; * @generated&#xA;&#x9; */&#xA;&#x9;private org.eclipse.draw2d.PolylineDecoration createSourceDecoration() {&#xA;org.eclipse.draw2d.PolylineDecoration df = new org.eclipse.draw2d.PolylineDecoration();&#xA;// dispatchNext?&#xA;&#xA;&#x9;&#x9;org.eclipse.draw2d.geometry.PointList pl = new org.eclipse.draw2d.geometry.PointList();&#xA;&#x9;&#x9;pl.addPoint(-1, 1);&#xA;&#x9;&#x9;pl.addPoint(0, 0);&#xA;&#x9;&#x9;pl.addPoint(-1, -1);&#xA;&#x9;&#x9;df.setTemplate(pl);&#xA;&#x9;&#x9;df.setScale(getMapMode().DPtoLP(7), getMapMode().DPtoLP(3));&#xA;&#xA;&#xA;&#xA;&#xA;&#x9;&#x9;return df;&#xA;&#x9;}&#xA;&#xA;&#x9;/**&#xA;&#x9; * @generated&#xA;&#x9; */&#xA;&#x9;private org.eclipse.draw2d.PolylineDecoration createTargetDecoration() {&#xA;org.eclipse.draw2d.PolylineDecoration df = new org.eclipse.draw2d.PolylineDecoration();&#xA;// dispatchNext?&#xA;&#xA;&#x9;&#x9;org.eclipse.draw2d.geometry.PointList pl = new org.eclipse.draw2d.geometry.PointList();&#xA;&#x9;&#x9;pl.addPoint(-1, 1);&#xA;&#x9;&#x9;pl.addPoint(0, 0);&#xA;&#x9;&#x9;pl.addPoint(-1, -1);&#xA;&#x9;&#x9;df.setTemplate(pl);&#xA;&#x9;&#x9;df.setScale(getMapMode().DPtoLP(7), getMapMode().DPtoLP(3));&#xA;&#xA;&#xA;&#xA;&#xA;&#x9;&#x9;return df;&#xA;&#x9;}&#xA;&#xA;}&#xA;&#x9;&#xA;">
+        <requiredPluginIDs>org.eclipse.draw2d</requiredPluginIDs>
+        <requiredPluginIDs>org.talend.designer.business.diagram.custom</requiredPluginIDs>
+        <requiredPluginIDs>org.eclipse.gmf.runtime.draw2d.ui</requiredPluginIDs>
+      </viewmap>
+      <modelFacet
+          xsi:type="gmfgen:TypeLinkModelFacet">
+        <metaClass
+            href="../../org.talend.model/model/Business.genmodel#//business/BidirectionalBusinessItemRelationship"/>
+        <containmentMetaFeature
+            href="../../org.talend.model/model/Business.genmodel#//business/BusinessProcess/businessItems"/>
+        <childMetaFeature
+            href="../../org.talend.model/model/Business.genmodel#//business/BusinessProcess/businessItems"/>
+        <sourceMetaFeature
+            href="../../org.talend.model/model/Business.genmodel#//business/BaseBusinessItemRelationship/source"/>
+        <targetMetaFeature
+            href="../../org.talend.model/model/Business.genmodel#//business/BaseBusinessItemRelationship/target"/>
+      </modelFacet>
+      <labels
+          visualID="4014"
+          editPartClassName="BidirectionalBusinessItemRelationshipNameEditPart"
+          itemSemanticEditPolicyClassName="BidirectionalBusinessItemRelationshipNameItemSemanticEditPolicy"
+          notationViewFactoryClassName="BidirectionalBusinessItemRelationshipNameViewFactory">
+        <diagramRunTimeClass
+            href="../../../plugin/org.eclipse.gmf.runtime.notation/model/notation.genmodel#//notation/Node"/>
+        <viewmap
+            xsi:type="gmfgen:InnerClassViewmap"
+            className="BidirectionalBusinessItemRelationshipNameFigure"
+            classBody="&#xA;&#xA;/**&#xA; * @generated&#xA; */&#xA;public class BidirectionalBusinessItemRelationshipNameFigure extends org.eclipse.gmf.runtime.draw2d.ui.figures.WrapLabel {&#xA;&#xA;&#x9;/**&#xA;&#x9; * @generated&#xA;&#x9; */&#xA;&#x9;public BidirectionalBusinessItemRelationshipNameFigure() {&#x9;&#xA;&#x9;&#x9;&#xA;&#xA;&#x9;&#x9;this.setText(&quot;&quot;);&#xA;&#x9;&#x9;createContents();&#xA;&#x9;}&#xA;&#xA;&#xA;&#x9;/**&#xA;&#x9; * @generated&#xA;&#x9; */&#xA;&#x9;private void createContents(){&#xA;&#x9;}&#xA;&#x9;&#xA;&#xA;&#xA;&#xA;&#x9;/**&#xA;&#x9; * @generated&#xA;&#x9; */&#xA;&#x9;private boolean myUseLocalCoordinates = false;&#xA;&#xA;&#x9;/**&#xA;&#x9; * @generated&#xA;&#x9; */&#xA;&#x9;protected boolean useLocalCoordinates() {&#xA;&#x9;&#x9;return myUseLocalCoordinates;&#xA;&#x9;}&#xA;&#xA;&#x9;/**&#xA;&#x9; * @generated&#xA;&#x9; */&#xA;&#x9;protected void setUseLocalCoordinates(boolean useLocalCoordinates) {&#xA;&#x9;&#x9;myUseLocalCoordinates = useLocalCoordinates;&#xA;&#x9;}&#xA;&#x9;&#xA;&#xA;}&#xA;&#x9;&#xA;">
           <attributes
               xsi:type="gmfgen:LabelOffsetAttributes"
               y="40"/>
@@ -651,6 +765,16 @@
             title="Relationship"
             description="Create new Relationship"
             genLinks="//@diagram/@links.0"/>
+        <entries
+            xsi:type="gmfgen:ToolEntry"
+            title="Directional Relationship"
+            description="Create new Directional Relationship"
+            genLinks="//@diagram/@links.1"/>
+        <entries
+            xsi:type="gmfgen:ToolEntry"
+            title="Bidirectional Relationship"
+            description="Create new Bidirectional Relationship"
+            genLinks="//@diagram/@links.2"/>
       </groups>
     </palette>
   </diagram>

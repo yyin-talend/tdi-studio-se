@@ -45,6 +45,8 @@ public class BusinessPaletteFactory {
         paletteContainer.add(createGear11CreationTool());
         paletteContainer.add(new PaletteSeparator());
         paletteContainer.add(createRelationship13CreationTool());
+        paletteContainer.add(createDirectionalRelationship14CreationTool());
+        paletteContainer.add(createBidirectionalRelationship15CreationTool());
         return paletteContainer;
     }
 
@@ -213,7 +215,8 @@ public class BusinessPaletteFactory {
 
         final List elementTypes = new ArrayList();
         elementTypes.add(BusinessElementTypes.ActorBusinessItem_1009);
-        ToolEntry result = new NodeToolEntry(Messages.getString("BusinessPaletteFactory.Actor"), Messages.getString("BusinessPaletteFactory.CreateActor"), smallImage, largeImage, elementTypes); //$NON-NLS-1$ //$NON-NLS-2$
+        ToolEntry result = new NodeToolEntry(
+                Messages.getString("BusinessPaletteFactory.Actor"), Messages.getString("BusinessPaletteFactory.CreateActor"), smallImage, largeImage, elementTypes); //$NON-NLS-1$ //$NON-NLS-2$
 
         return result;
     }
@@ -231,7 +234,8 @@ public class BusinessPaletteFactory {
 
         final List elementTypes = new ArrayList();
         elementTypes.add(BusinessElementTypes.EllipseBusinessItem_1010);
-        ToolEntry result = new NodeToolEntry(Messages.getString("BusinessPaletteFactory.Ellipse"), Messages.getString("BusinessPaletteFactory.CreateEllipse"), smallImage, largeImage, elementTypes); //$NON-NLS-1$ //$NON-NLS-2$
+        ToolEntry result = new NodeToolEntry(
+                Messages.getString("BusinessPaletteFactory.Ellipse"), Messages.getString("BusinessPaletteFactory.CreateEllipse"), smallImage, largeImage, elementTypes); //$NON-NLS-1$ //$NON-NLS-2$
 
         return result;
     }
@@ -249,7 +253,8 @@ public class BusinessPaletteFactory {
 
         final List elementTypes = new ArrayList();
         elementTypes.add(BusinessElementTypes.GearBusinessItem_1011);
-        ToolEntry result = new NodeToolEntry(Messages.getString("BusinessPaletteFactory.Gear"), Messages.getString("BusinessPaletteFactory.CreateGear"), smallImage, largeImage, elementTypes); //$NON-NLS-1$ //$NON-NLS-2$
+        ToolEntry result = new NodeToolEntry(
+                Messages.getString("BusinessPaletteFactory.Gear"), Messages.getString("BusinessPaletteFactory.CreateGear"), smallImage, largeImage, elementTypes); //$NON-NLS-1$ //$NON-NLS-2$
 
         return result;
     }
@@ -269,6 +274,48 @@ public class BusinessPaletteFactory {
         relationshipTypes.add(BusinessElementTypes.BusinessItemRelationship_3001);
         ToolEntry result = new LinkToolEntry(
                 Messages.getString("BusinessPaletteFactory.Relationshop"), Messages.getString("BusinessPaletteFactory.RelationshopComment"), smallImage, largeImage, relationshipTypes); //$NON-NLS-1$ //$NON-NLS-2$
+
+        return result;
+    }
+
+    /**
+     * @generated
+     */
+    private ToolEntry createDirectionalRelationship14CreationTool() {
+        ImageDescriptor smallImage;
+        ImageDescriptor largeImage;
+
+        smallImage = BusinessElementTypes
+                .getImageDescriptor(BusinessElementTypes.DirectionalBusinessItemRelationship_3002);
+
+        largeImage = smallImage;
+
+        final List relationshipTypes = new ArrayList();
+        relationshipTypes.add(BusinessElementTypes.DirectionalBusinessItemRelationship_3002);
+        ToolEntry result = new LinkToolEntry(
+                Messages.getString("BusinessPaletteFactory.DirectionalRelationShip"), Messages.getString("BusinessPaletteFactory.CreateDirectionalRelationShip"), //$NON-NLS-1$ //$NON-NLS-2$
+                smallImage, largeImage, relationshipTypes);
+
+        return result;
+    }
+
+    /**
+     * @generated
+     */
+    private ToolEntry createBidirectionalRelationship15CreationTool() {
+        ImageDescriptor smallImage;
+        ImageDescriptor largeImage;
+
+        smallImage = BusinessElementTypes
+                .getImageDescriptor(BusinessElementTypes.BidirectionalBusinessItemRelationship_3003);
+
+        largeImage = smallImage;
+
+        final List relationshipTypes = new ArrayList();
+        relationshipTypes.add(BusinessElementTypes.BidirectionalBusinessItemRelationship_3003);
+        ToolEntry result = new LinkToolEntry(
+                Messages.getString("BusinessPaletteFactory.BidirectionalRelationShip"), Messages.getString("BusinessPaletteFactory.CreateBidirectionalRelationShip"), //$NON-NLS-1$ //$NON-NLS-2$
+                smallImage, largeImage, relationshipTypes);
 
         return result;
     }

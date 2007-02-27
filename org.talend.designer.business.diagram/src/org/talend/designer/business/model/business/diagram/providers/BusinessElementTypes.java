@@ -150,6 +150,10 @@ public class BusinessElementTypes {
             elements.put(EllipseBusinessItem_1010, BusinessPackage.eINSTANCE.getEllipseBusinessItem());
             elements.put(GearBusinessItem_1011, BusinessPackage.eINSTANCE.getGearBusinessItem());
             elements.put(BusinessItemRelationship_3001, BusinessPackage.eINSTANCE.getBusinessItemRelationship());
+            elements.put(DirectionalBusinessItemRelationship_3002, BusinessPackage.eINSTANCE
+                    .getDirectionalBusinessItemRelationship());
+            elements.put(BidirectionalBusinessItemRelationship_3003, BusinessPackage.eINSTANCE
+                    .getBidirectionalBusinessItemRelationship());
         }
         return (ENamedElement) elements.get(type);
     }
@@ -222,6 +226,16 @@ public class BusinessElementTypes {
     /**
      * @generated
      */
+    public static final IElementType DirectionalBusinessItemRelationship_3002 = getElementType("org.talend.designer.business.diagram.DirectionalBusinessItemRelationship_3002"); //$NON-NLS-1$
+
+    /**
+     * @generated
+     */
+    public static final IElementType BidirectionalBusinessItemRelationship_3003 = getElementType("org.talend.designer.business.diagram.BidirectionalBusinessItemRelationship_3003"); //$NON-NLS-1$
+
+    /**
+     * @generated
+     */
     private static IElementType getElementType(String id) {
         return ElementTypeRegistry.getInstance().getType(id);
     }
@@ -250,6 +264,8 @@ public class BusinessElementTypes {
             KNOWN_ELEMENT_TYPES.add(EllipseBusinessItem_1010);
             KNOWN_ELEMENT_TYPES.add(GearBusinessItem_1011);
             KNOWN_ELEMENT_TYPES.add(BusinessItemRelationship_3001);
+            KNOWN_ELEMENT_TYPES.add(DirectionalBusinessItemRelationship_3002);
+            KNOWN_ELEMENT_TYPES.add(BidirectionalBusinessItemRelationship_3003);
         }
         return KNOWN_ELEMENT_TYPES.contains(elementType);
     }

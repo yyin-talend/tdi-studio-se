@@ -25,16 +25,18 @@ import org.eclipse.gmf.runtime.emf.type.core.IElementType;
 import org.eclipse.gmf.runtime.notation.Diagram;
 import org.eclipse.gmf.runtime.notation.Edge;
 import org.eclipse.gmf.runtime.notation.View;
-import org.talend.designer.business.model.business.BusinessItemRelationship;
+import org.talend.designer.business.model.business.BaseBusinessItemRelationship;
 import org.talend.designer.business.model.business.BusinessPackage;
 import org.talend.designer.business.model.business.BusinessProcess;
 import org.talend.designer.business.model.business.diagram.edit.parts.ActionBusinessItemEditPart;
 import org.talend.designer.business.model.business.diagram.edit.parts.ActorBusinessItemEditPart;
+import org.talend.designer.business.model.business.diagram.edit.parts.BidirectionalBusinessItemRelationshipEditPart;
 import org.talend.designer.business.model.business.diagram.edit.parts.BusinessItemRelationshipEditPart;
 import org.talend.designer.business.model.business.diagram.edit.parts.BusinessProcessEditPart;
 import org.talend.designer.business.model.business.diagram.edit.parts.DataBusinessItemEditPart;
 import org.talend.designer.business.model.business.diagram.edit.parts.DatabaseBusinessItemEditPart;
 import org.talend.designer.business.model.business.diagram.edit.parts.DecisionBusinessItemEditPart;
+import org.talend.designer.business.model.business.diagram.edit.parts.DirectionalBusinessItemRelationshipEditPart;
 import org.talend.designer.business.model.business.diagram.edit.parts.DocumentBusinessItemEditPart;
 import org.talend.designer.business.model.business.diagram.edit.parts.EllipseBusinessItemEditPart;
 import org.talend.designer.business.model.business.diagram.edit.parts.GearBusinessItemEditPart;
@@ -310,10 +312,44 @@ public class BusinessProcessCanonicalEditPolicy extends CanonicalConnectionEditP
                 EObject nextValue = ((EObject) values.next());
                 int linkVID = BusinessVisualIDRegistry.getLinkWithClassVisualID(nextValue);
                 if (BusinessItemRelationshipEditPart.VISUAL_ID == linkVID) {
-                    Object structuralFeatureResult = ((BusinessItemRelationship) nextValue).getTarget();
+                    Object structuralFeatureResult = ((BaseBusinessItemRelationship) nextValue).getTarget();
                     if (structuralFeatureResult instanceof EObject) {
                         EObject dst = (EObject) structuralFeatureResult;
-                        structuralFeatureResult = ((BusinessItemRelationship) nextValue).getSource();
+                        structuralFeatureResult = ((BaseBusinessItemRelationship) nextValue).getSource();
+                        if (structuralFeatureResult instanceof EObject) {
+                            EObject src = (EObject) structuralFeatureResult;
+                            myLinkDescriptors.add(new LinkDescriptor(src, dst, nextValue, linkVID));
+                        }
+                    }
+                }
+            }
+        }
+        if (BusinessPackage.eINSTANCE.getBusinessProcess().isSuperTypeOf(containerMetaclass)) {
+            for (Iterator values = ((BusinessProcess) container).getBusinessItems().iterator(); values.hasNext();) {
+                EObject nextValue = ((EObject) values.next());
+                int linkVID = BusinessVisualIDRegistry.getLinkWithClassVisualID(nextValue);
+                if (DirectionalBusinessItemRelationshipEditPart.VISUAL_ID == linkVID) {
+                    Object structuralFeatureResult = ((BaseBusinessItemRelationship) nextValue).getTarget();
+                    if (structuralFeatureResult instanceof EObject) {
+                        EObject dst = (EObject) structuralFeatureResult;
+                        structuralFeatureResult = ((BaseBusinessItemRelationship) nextValue).getSource();
+                        if (structuralFeatureResult instanceof EObject) {
+                            EObject src = (EObject) structuralFeatureResult;
+                            myLinkDescriptors.add(new LinkDescriptor(src, dst, nextValue, linkVID));
+                        }
+                    }
+                }
+            }
+        }
+        if (BusinessPackage.eINSTANCE.getBusinessProcess().isSuperTypeOf(containerMetaclass)) {
+            for (Iterator values = ((BusinessProcess) container).getBusinessItems().iterator(); values.hasNext();) {
+                EObject nextValue = ((EObject) values.next());
+                int linkVID = BusinessVisualIDRegistry.getLinkWithClassVisualID(nextValue);
+                if (BidirectionalBusinessItemRelationshipEditPart.VISUAL_ID == linkVID) {
+                    Object structuralFeatureResult = ((BaseBusinessItemRelationship) nextValue).getTarget();
+                    if (structuralFeatureResult instanceof EObject) {
+                        EObject dst = (EObject) structuralFeatureResult;
+                        structuralFeatureResult = ((BaseBusinessItemRelationship) nextValue).getSource();
                         if (structuralFeatureResult instanceof EObject) {
                             EObject src = (EObject) structuralFeatureResult;
                             myLinkDescriptors.add(new LinkDescriptor(src, dst, nextValue, linkVID));

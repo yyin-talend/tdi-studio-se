@@ -58,6 +58,8 @@ public class BusinessModelingAssistantProvider extends ModelingAssistantProvider
         if (editPart instanceof BusinessItemShapeEditPart) {
             List types = new ArrayList();
             types.add(BusinessElementTypes.BusinessItemRelationship_3001);
+            types.add(BusinessElementTypes.DirectionalBusinessItemRelationship_3002);
+            types.add(BusinessElementTypes.BidirectionalBusinessItemRelationship_3003);
             return types;
         }
         return Collections.EMPTY_LIST;
@@ -68,6 +70,8 @@ public class BusinessModelingAssistantProvider extends ModelingAssistantProvider
         if (editPart instanceof BusinessItemShapeEditPart) {
             List types = new ArrayList();
             types.add(BusinessElementTypes.BusinessItemRelationship_3001);
+            types.add(BusinessElementTypes.DirectionalBusinessItemRelationship_3002);
+            types.add(BusinessElementTypes.BidirectionalBusinessItemRelationship_3003);
             return types;
         }
         return Collections.EMPTY_LIST;
@@ -79,6 +83,8 @@ public class BusinessModelingAssistantProvider extends ModelingAssistantProvider
         if (sourceEditPart instanceof BusinessItemShapeEditPart && targetEditPart instanceof BusinessItemShapeEditPart) {
             List types = new ArrayList();
             types.add(BusinessElementTypes.BusinessItemRelationship_3001);
+            types.add(BusinessElementTypes.DirectionalBusinessItemRelationship_3002);
+            types.add(BusinessElementTypes.BidirectionalBusinessItemRelationship_3003);
             return types;
         }
         return Collections.EMPTY_LIST;
@@ -87,7 +93,9 @@ public class BusinessModelingAssistantProvider extends ModelingAssistantProvider
     public List getTypesForSource(IAdaptable target, IElementType relationshipType) {
         IGraphicalEditPart editPart = (IGraphicalEditPart) target.getAdapter(IGraphicalEditPart.class);
         if (editPart instanceof BusinessItemShapeEditPart
-                && relationshipType.equals(BusinessElementTypes.BusinessItemRelationship_3001)) {
+                && (relationshipType.equals(BusinessElementTypes.BusinessItemRelationship_3001)
+                        || relationshipType.equals(BusinessElementTypes.DirectionalBusinessItemRelationship_3002) || relationshipType
+                        .equals(BusinessElementTypes.BidirectionalBusinessItemRelationship_3003))) {
             List types = new ArrayList();
             types.add(BusinessElementTypes.ActionBusinessItem_1001);
             types.add(BusinessElementTypes.TerminalBusinessItem_1002);
@@ -110,7 +118,9 @@ public class BusinessModelingAssistantProvider extends ModelingAssistantProvider
         IGraphicalEditPart relationShipEditPart = (IGraphicalEditPart) relationshipType
                 .getAdapter(IGraphicalEditPart.class);
         if (editPart instanceof BusinessItemShapeEditPart
-                && relationshipType.equals(BusinessElementTypes.BusinessItemRelationship_3001)) {
+                && (relationshipType.equals(BusinessElementTypes.BusinessItemRelationship_3001)
+                        || relationshipType.equals(BusinessElementTypes.DirectionalBusinessItemRelationship_3002) || relationshipType
+                        .equals(BusinessElementTypes.BidirectionalBusinessItemRelationship_3003))) {
             List types = new ArrayList();
             types.add(BusinessElementTypes.ActionBusinessItem_1001);
             types.add(BusinessElementTypes.TerminalBusinessItem_1002);

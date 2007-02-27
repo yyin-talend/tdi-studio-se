@@ -19,32 +19,38 @@
 // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 // ============================================================================
-package org.talend.designer.business.diagram.custom.properties;
+package org.talend.designer.business.diagram.custom.edit.parts;
 
-import org.eclipse.jface.viewers.IFilter;
-import org.talend.designer.business.diagram.custom.edit.parts.BaseBusinessItemRelationShipEditPart;
-import org.talend.designer.business.diagram.custom.edit.parts.BusinessItemShapeEditPart;
+import org.eclipse.gmf.runtime.diagram.ui.editparts.ConnectionNodeEditPart;
+import org.eclipse.gmf.runtime.diagram.ui.editpolicies.EditPolicyRoles;
+import org.eclipse.gmf.runtime.notation.View;
+import org.talend.designer.business.diagram.custom.edit.policies.BusinessItemDragDropEditPolicy;
 
 /**
  * DOC mhelleboid class global comment. Detailled comment <br/>
  * 
- * $Id$
+ * $Id: BusinessItemShapeEditPart.java 1 2006-09-29 17:06:40 +0000 (ven, 29 sep 2006) nrousseau $
  * 
  */
-public class AssignmentPropertySectionFilter implements IFilter {
+public abstract class BaseBusinessItemRelationShipEditPart extends ConnectionNodeEditPart {
 
     /**
-     * DOC mhelleboid AssignmentPropertySectionFilter constructor comment.
+     * DOC mhelleboid BusinessItemShapeEditPart constructor comment.
+     * 
+     * @param view
      */
-    public AssignmentPropertySectionFilter() {
-        super();
+    public BaseBusinessItemRelationShipEditPart(View view) {
+        super(view);
     }
 
-    public boolean select(Object object) {
-        if (object instanceof BusinessItemShapeEditPart)
-            return true;
-        if (object instanceof BaseBusinessItemRelationShipEditPart)
-            return true;
-        return false;
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.gmf.runtime.diagram.ui.editparts.ShapeNodeEditPart#createDefaultEditPolicies()
+     */
+    @Override
+    protected void createDefaultEditPolicies() {
+        super.createDefaultEditPolicies();
+        installEditPolicy(EditPolicyRoles.DRAG_DROP_ROLE, new BusinessItemDragDropEditPolicy());
     }
 }

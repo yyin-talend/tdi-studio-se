@@ -25,13 +25,13 @@ import org.eclipse.ui.PlatformUI;
 import org.talend.commons.ui.image.EImage;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.designer.business.diagram.custom.edit.parts.BaseBusinessItemRelationShipEditPart;
 import org.talend.designer.business.diagram.custom.edit.parts.BusinessItemShapeEditPart;
 import org.talend.designer.business.diagram.i18n.Messages;
 import org.talend.designer.business.model.business.BusinessAssignment;
 import org.talend.designer.business.model.business.BusinessItem;
 import org.talend.designer.business.model.business.BusinessProcess;
 import org.talend.designer.business.model.business.TalendItem;
-import org.talend.designer.business.model.business.diagram.edit.parts.BusinessItemRelationshipEditPart;
 import org.talend.designer.business.model.business.diagram.part.BusinessDiagramEditor;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNode.EProperties;
@@ -88,7 +88,7 @@ public class FindAssignmentAction extends AContextualAction {
             for (Iterator iter = list.iterator(); iter.hasNext();) {
                 BusinessItem businessItem = (BusinessItem) iter.next();
                 editParts.addAll(diagramGraphicalViewer.findEditPartsForElement(EMFCoreUtil.getProxyID(businessItem),
-                        BusinessItemRelationshipEditPart.class));
+                        BaseBusinessItemRelationShipEditPart.class));
                 editParts.addAll(diagramGraphicalViewer.findEditPartsForElement(EMFCoreUtil.getProxyID(businessItem),
                         BusinessItemShapeEditPart.class));
             }

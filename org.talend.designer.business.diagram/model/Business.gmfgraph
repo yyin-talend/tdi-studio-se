@@ -159,6 +159,40 @@
           name="GearBusinessItemNameFigure"
           qualifiedClassName="org.talend.designer.business.diagram.custom.figures.BusinessItemNameFigure"/>
     </figures>
+    <figures
+        xsi:type="gmfgraph:PolylineDecoration"
+        name="arrowDecoration">
+      <template
+          x="-1"
+          y="1"/>
+      <template/>
+      <template
+          x="-1"
+          y="-1"/>
+    </figures>
+    <figures
+        xsi:type="gmfgraph:PolylineConnection"
+        referencingElements="DirectionalBusinessItemRelationship"
+        name="DirectionalBusinessItemRelationshipFigure"
+        targetDecoration="arrowDecoration">
+      <children
+          xsi:type="gmfgraph:Label"
+          referencingElements="DirectionalBusinessItemRelationshipName"
+          name="DirectionalBusinessItemRelationshipNameFigure"
+          text=""/>
+    </figures>
+    <figures
+        xsi:type="gmfgraph:PolylineConnection"
+        referencingElements="BidirectionalBusinessItemRelationship"
+        name="BidirectionalBusinessItemRelationshipFigure"
+        sourceDecoration="arrowDecoration"
+        targetDecoration="arrowDecoration">
+      <children
+          xsi:type="gmfgraph:Label"
+          referencingElements="BidirectionalBusinessItemRelationshipName"
+          name="BidirectionalBusinessItemRelationshipNameFigure"
+          text=""/>
+    </figures>
   </figures>
   <nodes
       name="DecisionBusinessItem"
@@ -251,8 +285,22 @@
   <connections
       name="BusinessItemRelationship"
       figure="BusinessItemRelationshipFigure"/>
+  <connections
+      name="DirectionalBusinessItemRelationship"
+      figure="DirectionalBusinessItemRelationshipFigure"/>
+  <connections
+      name="BidirectionalBusinessItemRelationship"
+      figure="BidirectionalBusinessItemRelationshipFigure"/>
   <labels
       name="BusinessItemRelationshipName"
       figure="BusinessItemRelationshipNameFigure"
+      elementIcon="false"/>
+  <labels
+      name="DirectionalBusinessItemRelationshipName"
+      figure="DirectionalBusinessItemRelationshipNameFigure"
+      elementIcon="false"/>
+  <labels
+      name="BidirectionalBusinessItemRelationshipName"
+      figure="BidirectionalBusinessItemRelationshipNameFigure"
       elementIcon="false"/>
 </gmfgraph:Canvas>

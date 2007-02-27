@@ -10,10 +10,12 @@ import org.eclipse.gmf.runtime.notation.View;
 import org.talend.designer.business.model.business.BusinessPackage;
 import org.talend.designer.business.model.business.diagram.edit.parts.ActionBusinessItemNameEditPart;
 import org.talend.designer.business.model.business.diagram.edit.parts.ActorBusinessItemNameEditPart;
+import org.talend.designer.business.model.business.diagram.edit.parts.BidirectionalBusinessItemRelationshipNameEditPart;
 import org.talend.designer.business.model.business.diagram.edit.parts.BusinessItemRelationshipNameEditPart;
 import org.talend.designer.business.model.business.diagram.edit.parts.DataBusinessItemNameEditPart;
 import org.talend.designer.business.model.business.diagram.edit.parts.DatabaseBusinessItemNameEditPart;
 import org.talend.designer.business.model.business.diagram.edit.parts.DecisionBusinessItemNameEditPart;
+import org.talend.designer.business.model.business.diagram.edit.parts.DirectionalBusinessItemRelationshipNameEditPart;
 import org.talend.designer.business.model.business.diagram.edit.parts.DocumentBusinessItemNameEditPart;
 import org.talend.designer.business.model.business.diagram.edit.parts.EllipseBusinessItemNameEditPart;
 import org.talend.designer.business.model.business.diagram.edit.parts.GearBusinessItemNameEditPart;
@@ -318,6 +320,54 @@ public class BusinessParserProvider extends AbstractProvider implements IParserP
     /**
      * @generated
      */
+    private IParser directionalBusinessItemRelationshipDirectionalBusinessItemRelationshipName_4013Parser;
+
+    /**
+     * @generated
+     */
+    private IParser getDirectionalBusinessItemRelationshipDirectionalBusinessItemRelationshipName_4013Parser() {
+        if (directionalBusinessItemRelationshipDirectionalBusinessItemRelationshipName_4013Parser == null) {
+            directionalBusinessItemRelationshipDirectionalBusinessItemRelationshipName_4013Parser = createDirectionalBusinessItemRelationshipDirectionalBusinessItemRelationshipName_4013Parser();
+        }
+        return directionalBusinessItemRelationshipDirectionalBusinessItemRelationshipName_4013Parser;
+    }
+
+    /**
+     * @generated
+     */
+    protected IParser createDirectionalBusinessItemRelationshipDirectionalBusinessItemRelationshipName_4013Parser() {
+        BusinessStructuralFeatureParser parser = new BusinessStructuralFeatureParser(BusinessPackage.eINSTANCE
+                .getBusinessItem().getEStructuralFeature("name")); //$NON-NLS-1$
+        return parser;
+    }
+
+    /**
+     * @generated
+     */
+    private IParser bidirectionalBusinessItemRelationshipBidirectionalBusinessItemRelationshipName_4014Parser;
+
+    /**
+     * @generated
+     */
+    private IParser getBidirectionalBusinessItemRelationshipBidirectionalBusinessItemRelationshipName_4014Parser() {
+        if (bidirectionalBusinessItemRelationshipBidirectionalBusinessItemRelationshipName_4014Parser == null) {
+            bidirectionalBusinessItemRelationshipBidirectionalBusinessItemRelationshipName_4014Parser = createBidirectionalBusinessItemRelationshipBidirectionalBusinessItemRelationshipName_4014Parser();
+        }
+        return bidirectionalBusinessItemRelationshipBidirectionalBusinessItemRelationshipName_4014Parser;
+    }
+
+    /**
+     * @generated
+     */
+    protected IParser createBidirectionalBusinessItemRelationshipBidirectionalBusinessItemRelationshipName_4014Parser() {
+        BusinessStructuralFeatureParser parser = new BusinessStructuralFeatureParser(BusinessPackage.eINSTANCE
+                .getBusinessItem().getEStructuralFeature("name")); //$NON-NLS-1$
+        return parser;
+    }
+
+    /**
+     * @generated
+     */
     protected IParser getParser(int visualID) {
         switch (visualID) {
         case ActionBusinessItemNameEditPart.VISUAL_ID:
@@ -344,6 +394,10 @@ public class BusinessParserProvider extends AbstractProvider implements IParserP
             return getGearBusinessItemGearBusinessItemName_4012Parser();
         case BusinessItemRelationshipNameEditPart.VISUAL_ID:
             return getBusinessItemRelationshipBusinessItemRelationshipName_4009Parser();
+        case DirectionalBusinessItemRelationshipNameEditPart.VISUAL_ID:
+            return getDirectionalBusinessItemRelationshipDirectionalBusinessItemRelationshipName_4013Parser();
+        case BidirectionalBusinessItemRelationshipNameEditPart.VISUAL_ID:
+            return getBidirectionalBusinessItemRelationshipBidirectionalBusinessItemRelationshipName_4014Parser();
         }
         return null;
     }

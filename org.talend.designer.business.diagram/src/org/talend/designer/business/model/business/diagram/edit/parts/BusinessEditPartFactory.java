@@ -84,6 +84,14 @@ public class BusinessEditPartFactory implements EditPartFactory {
                 return new BusinessItemRelationshipEditPart(view);
             case BusinessItemRelationshipNameEditPart.VISUAL_ID:
                 return new BusinessItemRelationshipNameEditPart(view);
+            case DirectionalBusinessItemRelationshipEditPart.VISUAL_ID:
+                return new DirectionalBusinessItemRelationshipEditPart(view);
+            case DirectionalBusinessItemRelationshipNameEditPart.VISUAL_ID:
+                return new DirectionalBusinessItemRelationshipNameEditPart(view);
+            case BidirectionalBusinessItemRelationshipEditPart.VISUAL_ID:
+                return new BidirectionalBusinessItemRelationshipEditPart(view);
+            case BidirectionalBusinessItemRelationshipNameEditPart.VISUAL_ID:
+                return new BidirectionalBusinessItemRelationshipNameEditPart(view);
             }
         }
         return createUnrecognizedEditPart(context, model);
