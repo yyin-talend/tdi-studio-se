@@ -195,9 +195,9 @@ public class ProblemsManager {
      * @param forceRefreshData TODO
      */
     public void checkProblemsForAllEntriesOfAllTables(boolean forceRefreshData) {
-        List<DataMapTableView> tablesView = mapperManager.getInputsTablesView();
-        tablesView.addAll(mapperManager.getVarsTablesView());
-        tablesView.addAll(mapperManager.getOutputsTablesView());
+        List<DataMapTableView> tablesView = mapperManager.getUiManager().getInputsTablesView();
+        tablesView.addAll(mapperManager.getUiManager().getVarsTablesView());
+        tablesView.addAll(mapperManager.getUiManager().getOutputsTablesView());
         if (forceRefreshData) {
             mapperManager.getComponent().refreshMapperConnectorData();
             checkProblems();

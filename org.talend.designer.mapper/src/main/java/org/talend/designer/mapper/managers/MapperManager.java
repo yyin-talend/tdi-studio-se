@@ -83,7 +83,7 @@ public class MapperManager {
 
     private TableEntriesManager tableEntriesManager;
 
-    private TableManager tableManager;
+    TableManager tableManager;
 
     private LinkManager linkManager;
 
@@ -475,7 +475,7 @@ public class MapperManager {
         MetadataTable metadataTable = new MetadataTable();
         metadataTable.setTableName(tableName);
 
-        List<DataMapTableView> outputsTablesView = getOutputsTablesView();
+        List<DataMapTableView> outputsTablesView = uiManager.getOutputsTablesView();
         int sizeOutputsView = outputsTablesView.size();
         Control lastChild = null;
         if (sizeOutputsView - 1 >= 0) {
@@ -532,18 +532,6 @@ public class MapperManager {
         MetadataTableEditorView outputEditorView = uiManager.getOutputMetaEditorView();
         Table tableEditorView = outputEditorView.getTable();
         return tableEditorView == table;
-    }
-
-    public List<DataMapTableView> getInputsTablesView() {
-        return this.tableManager.getInputsTablesView();
-    }
-
-    public List<DataMapTableView> getOutputsTablesView() {
-        return this.tableManager.getOutputsTablesView();
-    }
-
-    public List<DataMapTableView> getVarsTablesView() {
-        return this.tableManager.getVarsTablesView();
     }
 
     public TableEntryLocation findUniqueLocation(final TableEntryLocation proposedLocation, String[] columnsBeingCreated) {

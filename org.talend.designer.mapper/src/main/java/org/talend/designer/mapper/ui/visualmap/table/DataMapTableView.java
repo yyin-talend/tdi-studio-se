@@ -267,7 +267,7 @@ public abstract class DataMapTableView extends Composite {
         nameLabel.setFont(FontProviderMapper.getFont(FontInfo.FONT_SYSTEM_BOLD));
         nameLabel.setText(abstractDataMapTable.getName());
         nameLabel.setToolTipText(abstractDataMapTable.getName());
-        nameLabel.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_CENTER | GridData.FILL_HORIZONTAL));
+        nameLabel.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING));
 
         int rightStyle = toolbarNeededToBeRightStyle() ? SWT.RIGHT : SWT.NONE;
         toolBarActions = new ToolBar(headerComposite, SWT.FLAT | rightStyle);
@@ -279,9 +279,10 @@ public abstract class DataMapTableView extends Composite {
         minimizeButton = new ToolItem(toolBarActions, SWT.PUSH);
 
         Point sizeToolBar = toolBarActions.computeSize(SWT.DEFAULT, SWT.DEFAULT);
-        GridData gridData = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
+        GridData gridData = new GridData(GridData.HORIZONTAL_ALIGN_END);
+        gridData.grabExcessHorizontalSpace = true;
+        gridData.widthHint = sizeToolBar.x;
         if (toolbarNeededToBeRightStyle() && WindowSystem.isWIN32()) {
-            gridData.widthHint = sizeToolBar.x;
             // to correct invalid margin when SWT.RIGHT style set in ToolBar
             gridData.widthHint -= 48;
         }

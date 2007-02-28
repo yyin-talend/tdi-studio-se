@@ -127,9 +127,9 @@ public class DragNDrop {
                 if (dataMapTableViewSource != null) {
                     DraggedData draggedData = new DraggedData();
 
-                    ArrayList<DataMapTableView> list = new ArrayList<DataMapTableView>(mapperManager.getVarsTablesView());
-                    list.addAll(mapperManager.getInputsTablesView());
-                    list.addAll(mapperManager.getOutputsTablesView());
+                    ArrayList<DataMapTableView> list = new ArrayList<DataMapTableView>(mapperManager.getUiManager().getVarsTablesView());
+                    list.addAll(mapperManager.getUiManager().getInputsTablesView());
+                    list.addAll(mapperManager.getUiManager().getOutputsTablesView());
 
                     for (DataMapTableView dataMapTableView : list) {
                         Table table = dataMapTableView.getTableViewerCreatorForColumns().getTable();

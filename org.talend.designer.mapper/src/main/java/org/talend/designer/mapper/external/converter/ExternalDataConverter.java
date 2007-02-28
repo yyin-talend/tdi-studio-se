@@ -153,17 +153,17 @@ public class ExternalDataConverter {
     }
 
     public ArrayList<InputTable> prepareInputTables(List<IOConnection> inputConnections, ExternalMapperData externalData) {
-        Map<String, ExternalMapperTable> nameToConnection = new HashMap<String, ExternalMapperTable>();
+        Map<String, ExternalMapperTable> nameToInputPersistentTable = new HashMap<String, ExternalMapperTable>();
         if (externalData != null) {
             for (ExternalMapperTable persistentTable : externalData.getInputTables()) {
-                nameToConnection.put(persistentTable.getName(), persistentTable);
+                nameToInputPersistentTable.put(persistentTable.getName(), persistentTable);
             }
         }
 
         ArrayList<IOConnection> remainingConnections = new ArrayList<IOConnection>(inputConnections);
         ArrayList<InputTable> inputDataMapTables = new ArrayList<InputTable>();
         for (IOConnection connection : inputConnections) {
-            ExternalMapperTable persistentTable = nameToConnection.get(connection.getName());
+            ExternalMapperTable persistentTable = nameToInputPersistentTable.get(connection.getName());
             if (connection != null) {
                 InputTable inputTable = new InputTable(this.mapperManager, connection, connection.getName());
                 inputTable.initFromExternalData(persistentTable);

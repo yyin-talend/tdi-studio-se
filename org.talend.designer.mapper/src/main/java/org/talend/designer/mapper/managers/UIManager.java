@@ -340,7 +340,7 @@ public class UIManager {
 
         if (selectAllEntries && currentZone == Zone.VARS) {
             selectAllLinks(dataMapTableView);
-            mapperManager.getVarsTablesView().get(0).getTableViewerCreatorForColumns().getTable().selectAll();
+            mapperManager.getUiManager().getVarsTablesView().get(0).getTableViewerCreatorForColumns().getTable().selectAll();
         }
 
         if (otherMetadataTableEditorView != null) {
@@ -358,11 +358,11 @@ public class UIManager {
         ToolbarZone toolbar = null;
         if (currentZone == Zone.INPUTS) {
             toolbar = getInputsZone().getToolbar();
-            toolbar.setEnabledMinimizeTablesButton(mapperManager.getInputsTablesView().size() > 0);
+            toolbar.setEnabledMinimizeTablesButton(mapperManager.getUiManager().getInputsTablesView().size() > 0);
         } else if (currentZone == Zone.OUTPUTS) {
             toolbar = getOutputsZone().getToolbar();
             ((ToolbarOutputZone) toolbar).setEnabledRemoveTableButton(currentSelectedOutputTableView != null);
-            toolbar.setEnabledMinimizeTablesButton(mapperManager.getOutputsTablesView().size() > 0);
+            toolbar.setEnabledMinimizeTablesButton(mapperManager.getUiManager().getOutputsTablesView().size() > 0);
         }
         toolbar.setEnabledMoveTableButton(true, isTableViewMoveable(currentZone, true));
         toolbar.setEnabledMoveTableButton(false, isTableViewMoveable(currentZone, false));
@@ -1402,7 +1402,7 @@ public class UIManager {
      */
     public void moveSelectedTable(Zone zone, boolean moveUp) {
         if (zone == Zone.INPUTS) {
-            List<DataMapTableView> inputsTablesView = mapperManager.getInputsTablesView();
+            List<DataMapTableView> inputsTablesView = mapperManager.getUiManager().getInputsTablesView();
             if (moveUp) {
                 moveSelectTableUp(currentSelectedInputTableView, inputsTablesView, 2);
             } else {
@@ -1410,7 +1410,7 @@ public class UIManager {
             }
             moveInputScrollBarZoneAtSelectedTable();
         } else if (zone == Zone.OUTPUTS) {
-            List<DataMapTableView> outputsTablesView = mapperManager.getOutputsTablesView();
+            List<DataMapTableView> outputsTablesView = mapperManager.getUiManager().getOutputsTablesView();
             if (moveUp) {
                 moveSelectTableUp(currentSelectedOutputTableView, outputsTablesView, 1);
             } else {
@@ -1427,7 +1427,7 @@ public class UIManager {
             if (currentSelectedInputTableView == null) {
                 return false;
             }
-            List<DataMapTableView> tablesView = mapperManager.getInputsTablesView();
+            List<DataMapTableView> tablesView = mapperManager.getUiManager().getInputsTablesView();
             int indexCurrentTable = tablesView.indexOf(currentSelectedInputTableView);
             if (moveUp) {
                 if (indexCurrentTable > 1) {
@@ -1444,7 +1444,7 @@ public class UIManager {
             if (currentSelectedOutputTableView == null) {
                 return false;
             }
-            List<DataMapTableView> tablesView = mapperManager.getOutputsTablesView();
+            List<DataMapTableView> tablesView = mapperManager.getUiManager().getOutputsTablesView();
             int indexCurrentTable = tablesView.indexOf(currentSelectedOutputTableView);
             if (moveUp) {
                 if (indexCurrentTable > 0) {
@@ -1548,11 +1548,11 @@ public class UIManager {
         List<DataMapTableView> tablesView = null;
         TablesZoneView tablesZoneView = null;
         if (zone == Zone.INPUTS) {
-            tablesView = mapperManager.getInputsTablesView();
+            tablesView = mapperManager.getUiManager().getInputsTablesView();
             tablesZoneView = getTablesZoneViewInputs();
         } else if (zone == Zone.OUTPUTS) {
             tablesZoneView = getTablesZoneViewOutputs();
-            tablesView = mapperManager.getOutputsTablesView();
+            tablesView = mapperManager.getUiManager().getOutputsTablesView();
         } else {
             throw new RuntimeException("Case not found:" + zone); //$NON-NLS-1$
         }
@@ -1613,7 +1613,7 @@ public class UIManager {
      * @param dataMapTableViewToRemove
      */
     public void removeOutputTableView(DataMapTableView dataMapTableViewToRemove) {
-        List<DataMapTableView> outputsTablesView = mapperManager.getOutputsTablesView();
+        List<DataMapTableView> outputsTablesView = mapperManager.getUiManager().getOutputsTablesView();
         int sizeList = outputsTablesView.size();
         for (int i = 0; i < sizeList; i++) {
             Control control = outputsTablesView.get(i);
@@ -1637,8 +1637,8 @@ public class UIManager {
     }
 
     public void registerCustomPaint() {
-        List<DataMapTableView> tablesView = mapperManager.getOutputsTablesView();
-        tablesView.addAll(mapperManager.getInputsTablesView());
+        List<DataMapTableView> tablesView = mapperManager.getUiManager().getOutputsTablesView();
+        tablesView.addAll(mapperManager.getUiManager().getInputsTablesView());
         for (DataMapTableView view : tablesView) {
             view.getTableViewerCreatorForColumns().setUseCustomItemColoring(false);
         }
@@ -1646,8 +1646,8 @@ public class UIManager {
     }
 
     public void unregisterCustomPaint() {
-        List<DataMapTableView> tablesView = mapperManager.getOutputsTablesView();
-        tablesView.addAll(mapperManager.getInputsTablesView());
+        List<DataMapTableView> tablesView = mapperManager.getUiManager().getOutputsTablesView();
+        tablesView.addAll(mapperManager.getUiManager().getInputsTablesView());
         for (DataMapTableView view : tablesView) {
             view.getTableViewerCreatorForColumns().setUseCustomItemColoring(false);
         }
@@ -1663,9 +1663,9 @@ public class UIManager {
     }
 
     public void unselectAllEntriesOfAllTables() {
-        List<DataMapTableView> tablesView = mapperManager.getOutputsTablesView();
-        tablesView.addAll(mapperManager.getInputsTablesView());
-        tablesView.addAll(mapperManager.getVarsTablesView());
+        List<DataMapTableView> tablesView = mapperManager.getUiManager().getOutputsTablesView();
+        tablesView.addAll(mapperManager.getUiManager().getInputsTablesView());
+        tablesView.addAll(mapperManager.getUiManager().getVarsTablesView());
         for (DataMapTableView view : tablesView) {
             view.unselectAllEntries();
         }
@@ -1686,6 +1686,18 @@ public class UIManager {
 
     private int calculateInputsLeftMarginFromLevelsCount(int countOfLevels) {
         return 5 + countOfLevels * 5;
+    }
+
+    public List<DataMapTableView> getVarsTablesView() {
+        return tableManager.getVarsTablesView();
+    }
+
+    public List<DataMapTableView> getOutputsTablesView() {
+        return tableManager.getOutputsTablesView();
+    }
+
+    public List<DataMapTableView> getInputsTablesView() {
+        return tableManager.getInputsTablesView();
     }
 
 }

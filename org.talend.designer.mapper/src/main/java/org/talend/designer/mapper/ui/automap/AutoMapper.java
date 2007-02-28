@@ -105,7 +105,7 @@ public class AutoMapper {
 
         mapperManager.getProblemsManager().checkProblems();
 
-        List<DataMapTableView> outputsTablesView = mapperManager.getOutputsTablesView();
+        List<DataMapTableView> outputsTablesView = mapperManager.getUiManager().getOutputsTablesView();
         for (DataMapTableView view : outputsTablesView) {
             mapperManager.getUiManager().parseAllExpressions(view, true);
             mapperManager.getProblemsManager().checkProblemsForAllEntries(view, true);

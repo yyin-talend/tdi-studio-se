@@ -276,13 +276,13 @@ public class MapperUI {
     }
 
     private void selectFirstInOutTablesView() {
-        List<DataMapTableView> inputsTablesView = mapperManager.getInputsTablesView();
+        List<DataMapTableView> inputsTablesView = mapperManager.getUiManager().getInputsTablesView();
         UIManager uiManager = mapperManager.getUiManager();
         if (inputsTablesView.size() > 0) {
             uiManager.selectDataMapTableView(inputsTablesView.get(0), true, false);
         }
 
-        List<DataMapTableView> outputsTablesView = mapperManager.getOutputsTablesView();
+        List<DataMapTableView> outputsTablesView = mapperManager.getUiManager().getOutputsTablesView();
         if (outputsTablesView.size() > 0) {
             uiManager.selectDataMapTableView(outputsTablesView.get(0), true, false);
         }
