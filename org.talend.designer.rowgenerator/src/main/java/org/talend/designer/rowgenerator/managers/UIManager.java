@@ -30,7 +30,9 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TableItem;
+import org.talend.designer.rowgenerator.data.FunctionManager;
 import org.talend.designer.rowgenerator.data.Parameter;
+import org.talend.designer.rowgenerator.data.StringParameter;
 import org.talend.designer.rowgenerator.external.data.ExternalRowGeneratorUiProperties;
 import org.talend.designer.rowgenerator.ui.RowGeneratorUI;
 import org.talend.designer.rowgenerator.ui.editor.MetadataColumnExt;
@@ -171,8 +173,7 @@ public class UIManager {
      */
     private String[] getShowColumnsList() {
         List<String> cols = new ArrayList<String>();
-        MetadataToolbarEditorViewExt editorViewExt =  generatorUI.getDataTableView()
-                .getExtendedToolbar();
+        MetadataToolbarEditorViewExt editorViewExt = generatorUI.getDataTableView().getExtendedToolbar();
         MenuItem[] items = editorViewExt.getColumnsListmenu().getItems();
         for (MenuItem item : items) {
             if (!item.getSelection()) {
@@ -188,20 +189,32 @@ public class UIManager {
 
     @SuppressWarnings("unchecked")//$NON-NLS-1$
     protected void saveOneColData(MetadataColumnExt bean) {
-        if (bean != null && bean.getFunction() != null && rgManager.getRowGeneratorComponent() != null) {
-            String newValue = "sub{"; //$NON-NLS-1$
-            newValue += bean.getFunction().getName() + "("; //$NON-NLS-1$
-            for (Parameter pa : (List<Parameter>) bean.getFunction().getParameters()) {
-                newValue += pa.getValue() + ","; //$NON-NLS-1$
-            }
-            newValue = newValue.substring(0, newValue.length() - 1);
-            newValue += ")}"; //$NON-NLS-1$
-            if (bean.getFunction().getName() == null || "".equals(bean.getFunction().getName())) { //$NON-NLS-1$
-                newValue = ""; //$NON-NLS-1$
-            }
-            rgManager.getRowGeneratorComponent().setColumnValue(bean.getLabel(), newValue);
+        String newValue2 = getOneColData(bean);
+        if (rgManager.getRowGeneratorComponent() != null && newValue2 != null) {
+            rgManager.getRowGeneratorComponent().setColumnValue(bean.getLabel(), newValue2);
         }
+    }
 
+    @SuppressWarnings("unchecked")//$NON-NLS-1$
+    public static String getOneColData(MetadataColumnExt bean) {
+        if (bean != null && bean.getFunction() != null) {
+            String newValue = "sub{"; //$NON-NLS-1$
+            if (bean.getFunction().getName().equals(FunctionManager.PURE_PERL_NAME)) {
+                newValue = ((StringParameter) bean.getFunction().getParameters().get(0)).getValue();
+            } else {
+                newValue += bean.getFunction().getName() + "("; //$NON-NLS-1$
+                for (Parameter pa : (List<Parameter>) bean.getFunction().getParameters()) {
+                    newValue += pa.getValue() + ","; //$NON-NLS-1$
+                }
+                newValue = newValue.substring(0, newValue.length() - 1);
+                newValue += ")}"; //$NON-NLS-1$
+                if (bean.getFunction().getName() == null || "".equals(bean.getFunction().getName())) { //$NON-NLS-1$
+                    newValue = ""; //$NON-NLS-1$
+                }
+            }
+            return newValue;
+        }
+        return null;
     }
 
 }

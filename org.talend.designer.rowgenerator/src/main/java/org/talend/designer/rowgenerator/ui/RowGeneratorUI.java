@@ -50,6 +50,7 @@ import org.talend.designer.rowgenerator.RowGeneratorComponent;
 import org.talend.designer.rowgenerator.data.Function;
 import org.talend.designer.rowgenerator.data.FunctionManager;
 import org.talend.designer.rowgenerator.data.Parameter;
+import org.talend.designer.rowgenerator.data.StringParameter;
 import org.talend.designer.rowgenerator.external.data.ExternalRowGeneratorUiProperties;
 import org.talend.designer.rowgenerator.managers.RowGeneratorManager;
 import org.talend.designer.rowgenerator.managers.UIManager;
@@ -274,14 +275,23 @@ public class RowGeneratorUI {
      */
     private Function getAvailableFunFromValue(String value, List<Function> funs) {
         Function currentFun = null;
-        if (value != null && !"".equals(value) && value.startsWith("sub{") && value.endsWith("}")) {
-            for (Function function : funs) {
-                int indexOf = value.indexOf(function.getName());
-                if (indexOf != -1) {
-                    String para = value.substring(indexOf + function.getName().length() + 1, value.length() - 2);
-                    String[] ps = para.split(","); //$NON-NLS-1$
-                    if (ps.length == function.getParameters().size()) {
-                        currentFun = (Function) function.clone(ps);
+        if (value != null) {
+            if (value.startsWith("sub{") && value.endsWith("}")) {
+                for (Function function : funs) {
+                    int indexOf = value.indexOf(function.getName());
+                    if (indexOf != -1) {
+                        String para = value.substring(indexOf + function.getName().length() + 1, value.length() - 2);
+                        String[] ps = para.split(","); //$NON-NLS-1$
+                        if (ps.length == function.getParameters().size()) {
+                            currentFun = (Function) function.clone(ps);
+                        }
+                    }
+                }
+            } else {
+                for (Function function : funs) {
+                    if (function.getName().equals(FunctionManager.PURE_PERL_NAME)) {
+                        currentFun = (Function) function.clone();
+                        ((StringParameter) currentFun.getParameters().get(0)).setValue(value);
                     }
                 }
             }

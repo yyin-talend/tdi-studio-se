@@ -70,6 +70,7 @@ import org.talend.designer.rowgenerator.RowGeneratorComponent;
 import org.talend.designer.rowgenerator.data.Function;
 import org.talend.designer.rowgenerator.data.FunctionManager;
 import org.talend.designer.rowgenerator.data.Parameter;
+import org.talend.designer.rowgenerator.data.StringParameter;
 import org.talend.designer.rowgenerator.i18n.Messages;
 import org.talend.designer.rowgenerator.ui.RowGeneratorUI;
 
@@ -102,10 +103,6 @@ public class RowGenTableEditor2 extends AbstractDataTableEditorView<IMetadataCol
     public static final String PREVIEW_ID_COLUMN = "ID_COLUMN_PREVIEW"; //$NON-NLS-1$
 
     private static final int TITLE_DEFAULT_HEIGHT = 25;
-
-    // public static final String PURE_PERL_NAME = "custom perl";
-
-    // public static final String PURE_PERL_DESC = "Customer set your own Perl expression.";
 
     private RowGeneratorComponent rGcomponent;
 
@@ -533,7 +530,6 @@ public class RowGenTableEditor2 extends AbstractDataTableEditorView<IMetadataCol
             public String get(MetadataColumnExt bean) {
                 if (bean.getFunction() != null) {
                     functComboBox.setItems(bean.getArrayFunctions());
-                    // saveOneColData(bean);
                     return bean.getFunction().getName();
                 }
                 return ""; //$NON-NLS-1$
@@ -541,7 +537,6 @@ public class RowGenTableEditor2 extends AbstractDataTableEditorView<IMetadataCol
 
             public void set(MetadataColumnExt bean, String value) {
                 bean.setFunction(RowGenTableEditor2.this.getFunnctionByName(bean.getTalendType(), value));
-                // saveOneColData(bean);
             }
 
         });
@@ -555,25 +550,22 @@ public class RowGenTableEditor2 extends AbstractDataTableEditorView<IMetadataCol
         column.setBeanPropertyAccessors(new IBeanPropertyAccessors<MetadataColumnExt, String>() {
 
             public String get(MetadataColumnExt bean) {
-                if (bean.getFunction() != null) {
-                    // saveOneColData(bean);
+                if (bean.getFunction() != null && bean.getFunction().getName().equals(FunctionManager.PURE_PERL_NAME)) {
+                    return ((StringParameter) bean.getFunction().getParameters().get(0)).getValue();
                 }
                 return bean.getParameter();
             }
 
             public void set(MetadataColumnExt bean, String value) {
-                // saveOneColData(bean);
-                // if (bean.getFunction() != null && bean.getFunction().getName().equals(PURE_PERL_NAME)) {
-                // bean.getFunction().setParameter(value);
-                // }
+                if (bean.getFunction() != null && bean.getFunction().getName().equals(FunctionManager.PURE_PERL_NAME)) {
+                    ((StringParameter) bean.getFunction().getParameters().get(0)).setValue(value);
+                }
             }
 
         });
         column.setModifiable(true);
         column.setWeight(10);
         column.setWidth(45);
-        // final TextCellEditor cellEditor = new TextCellEditor(tableViewerCreator.getTable());
-        // column.setCellEditor(cellEditor);
         // //////////////////////////////////////////////////////////////////////////
         // column = new TableViewerCreatorColumn(tableViewerCreator);
         // column.setTitle("Summary");
@@ -629,22 +621,11 @@ public class RowGenTableEditor2 extends AbstractDataTableEditorView<IMetadataCol
     @SuppressWarnings("unchecked")//$NON-NLS-1$
     protected Function getFunnctionByName(String talendType, String value) {
         Function func = null;
-        // if (value.equals(PURE_PERL_NAME)) {
-        // TableViewerCreatorColumn column = getTableViewerCreator().getColumn(PARAMETER_ID_COLUMN);
-        // if (column != null) {
-        // column.setModifiable(true);
-        // }
-        // func = new Function();
-        // func.setName(PURE_PERL_NAME);
-        //
-        // func.setDescription(PURE_PERL_DESC);
-        // } else {
         for (Function fun : functionManager.getFunctionByName(talendType)) {
             if (fun.getName().equals(value)) {
                 func = (Function) fun.clone();
             }
         }
-        // }
         return func;
     }
 
@@ -894,7 +875,6 @@ public class RowGenTableEditor2 extends AbstractDataTableEditorView<IMetadataCol
             bean.setArrayFunctions(arrayTalendFunctions2);
         }
 
-        // arrayTalendFunctions2[functions.size()] = PURE_PERL_NAME;
         return currentFun;
     }
 

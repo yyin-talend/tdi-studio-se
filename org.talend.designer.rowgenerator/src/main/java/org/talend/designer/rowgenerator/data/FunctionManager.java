@@ -36,6 +36,7 @@ import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.designer.rowgenerator.RowGeneratorPlugin;
+import org.talend.designer.rowgenerator.i18n.Messages;
 import org.talend.repository.model.IProxyRepositoryFactory;
 
 /**
@@ -45,6 +46,12 @@ import org.talend.repository.model.IProxyRepositoryFactory;
  * 
  */
 public class FunctionManager {
+
+    public static final String PURE_PERL_NAME = "...";
+
+    public static final String PURE_PERL_DESC = Messages.getString("FunctionManager.PurePerl.Desc"); //$NON-NLS-1$
+
+    public static final String PURE_PERL_PARAM = Messages.getString("FunctionManager.PurePerl.ParaName"); //$NON-NLS-1$
 
     private List<TalendType> talendTypes = null;
 
@@ -56,18 +63,27 @@ public class FunctionManager {
      */
     @SuppressWarnings("unchecked")//$NON-NLS-1$
     public List<Function> getFunctionByName(String name) {
-        List<Function> funtions = null;
+        List<Function> funtions = new ArrayList<Function>();
 
         for (TalendType talendType : talendTypes) {
             if (talendType.getName().equals(name)) {
                 funtions = talendType.getFunctions();
             }
         }
-
-        if (funtions == null) {
-            funtions = new ArrayList<Function>();
-        }
+        // funtions.add(createCustomizeFunction());
         return funtions;
+    }
+
+    private Function createCustomizeFunction() {
+        Function function = new Function();
+        function.setName(PURE_PERL_NAME);
+        function.setDescription(PURE_PERL_DESC);
+        StringParameter param = new StringParameter();
+        List<Parameter> params = new ArrayList<Parameter>();
+        param.setName(PURE_PERL_PARAM);
+        params.add(param);
+        function.setParameters(params);
+        return function;
     }
 
     public RepositoryContext getRepositoryContext() {
@@ -75,6 +91,7 @@ public class FunctionManager {
         return (RepositoryContext) ctx.getProperty(Context.REPOSITORY_CONTEXT_KEY);
     }
 
+    @SuppressWarnings("unchecked")
     public FunctionManager() {
         List<File> files = new ArrayList<File>();
         // List<URL> list = RowGeneratorPlugin.getDefault().getPerlModuleService().getBuiltInRoutines();
@@ -121,6 +138,8 @@ public class FunctionManager {
         FunctionParser parser = new FunctionParser(files.toArray(new File[files.size()]));
         parser.parse();
         talendTypes = parser.getList();
-
+        for (TalendType talendType : talendTypes) {
+            talendType.getFunctions().add(createCustomizeFunction());
+        }
     }
 }

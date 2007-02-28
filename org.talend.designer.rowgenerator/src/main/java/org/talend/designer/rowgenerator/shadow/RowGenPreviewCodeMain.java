@@ -46,8 +46,8 @@ import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.Property;
 import org.talend.designer.rowgenerator.RowGeneratorComponent;
 import org.talend.designer.rowgenerator.RowGeneratorPlugin;
-import org.talend.designer.rowgenerator.data.Parameter;
 import org.talend.designer.rowgenerator.i18n.Messages;
+import org.talend.designer.rowgenerator.managers.UIManager;
 import org.talend.designer.rowgenerator.ui.editor.MetadataColumnExt;
 import org.talend.designer.runprocess.IProcessor;
 import org.talend.designer.runprocess.IRunProcessService;
@@ -108,34 +108,16 @@ public class RowGenPreviewCodeMain {
                 MetadataColumnExt ext = (MetadataColumnExt) col;
                 Map<String, Object> value = new HashMap<String, Object>();
                 value.put(RowGeneratorComponent.COLUMN_NAME, ext.getLabel());
-                value.put(RowGeneratorComponent.ARRAY, getOneColData(ext));
+                value.put(RowGeneratorComponent.ARRAY, UIManager.getOneColData(ext));
                 map.add(value);
             }
             this.component.setTableElementParameter(map);
         } else {
             for (IMetadataColumn col : table.getListColumns()) {
                 MetadataColumnExt ext = (MetadataColumnExt) col;
-                this.component.setColumnValue(ext.getLabel(), getOneColData(ext));
+                this.component.setColumnValue(ext.getLabel(), UIManager.getOneColData(ext));
             }
         }
-    }
-
-    @SuppressWarnings("unchecked")//$NON-NLS-1$
-    public String getOneColData(MetadataColumnExt bean) {
-        if (bean != null && bean.getFunction() != null) {
-            String newValue = "sub{"; //$NON-NLS-1$
-            newValue += bean.getFunction().getName() + "("; //$NON-NLS-1$
-            for (Parameter pa : (List<Parameter>) bean.getFunction().getParameters()) {
-                newValue += pa.getValue() + ","; //$NON-NLS-1$
-            }
-            newValue = newValue.substring(0, newValue.length() - 1);
-            newValue += ")}"; //$NON-NLS-1$
-            if (bean.getFunction().getName() == null || "".equals(bean.getFunction().getName())) { //$NON-NLS-1$
-                newValue = ""; //$NON-NLS-1$
-            }
-            return newValue;
-        }
-        return null;
     }
 
     /**

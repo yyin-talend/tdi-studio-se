@@ -86,7 +86,7 @@ public class FunParaTableView2 extends AbstractDataTableEditorView<Parameter> {
         });
         column.setModifiable(false);
         column.setWidth(55);
-        column.setCellEditor(new TextCellEditor(tableViewerCreator.getTable()));
+        // column.setCellEditor(new TextCellEditor(tableViewerCreator.getTable()));
         // ////////////////////////////////////////////////////////
         column = new TableViewerCreatorColumn(tableViewerCreator);
         column.setTitle(Messages.getString("FunParaTableView2.Value"));
@@ -126,7 +126,7 @@ public class FunParaTableView2 extends AbstractDataTableEditorView<Parameter> {
         });
         column.setModifiable(false);
         column.setWidth(155);
-        column.setCellEditor(new TextCellEditor(tableViewerCreator.getTable()));
+        // column.setCellEditor(new TextCellEditor(tableViewerCreator.getTable()));
         // ////////////////////////////////////////////////////////
 
     }
@@ -214,6 +214,7 @@ public class FunParaTableView2 extends AbstractDataTableEditorView<Parameter> {
         });
         this.getTableViewerCreator().setInputList(params);
     }
+
     public void dispose() {
         if (getTable() != null) {
             getTable().dispose();
