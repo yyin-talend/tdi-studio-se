@@ -1,0 +1,62 @@
+<%@ jet 
+package="org.talend.designer.codegen.translators" 
+imports="
+    org.talend.core.model.process.INode 
+    org.talend.core.model.process.ElementParameterParser
+    org.talend.core.model.metadata.IMetadataTable
+    org.talend.core.model.metadata.IMetadataColumn
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    java.util.List
+" 
+class="FileOutputExcelBegin"
+%>
+
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+
+List<IMetadataTable> metadatas = node.getMetadataList();
+if ((metadatas!=null)&&(metadatas.size()>0)) {
+    IMetadataTable metadata = metadatas.get(0);
+    if (metadata!=null) {
+        String cid = node.getUniqueName();
+
+        String filename = ElementParameterParser.getValueWithUIFieldKey(
+            node,
+            "__FILENAME__",
+            "FILENAME"
+        );
+        
+        String sheetname= ElementParameterParser.getValue(node,"__SHEETNAME__");
+        
+        String encoding = ElementParameterParser.getValue(
+            node,
+            "__ENCODING__"
+        );
+        
+        boolean isIncludeHeader = ElementParameterParser.getValue(
+            node,
+            "__INCLUDEHEADER__"
+        ).equals("true");
+%>
+		int nb_line_<%=cid%> = 0;
+		
+		final jxl.write.WritableWorkbook writeableWorkbook<%=cid %> = jxl.Workbook.createWorkbook(new java.io.BufferedOutputStream(new java.io.PrintStream(new java.io.FileOutputStream(<%=filename%>),true,<%= encoding%>)));
+        final jxl.write.WritableSheet writableSheet<%=cid%> = writeableWorkbook<%=cid%>.createSheet(<%=sheetname%>, 0);
+        
+<%
+		if(isIncludeHeader){
+    		List<IMetadataColumn> columns = metadata.getListColumns();
+    		int sizeColumns = columns.size();
+    		for (int i = 0; i < sizeColumns; i++) {
+    			IMetadataColumn column = columns.get(i);
+    		%>	
+    			writableSheet<%=cid %>.addCell(new jxl.write.Label(<%=i%>, nb_line_<%=cid%>, "<%=column.getLabel() %>"));
+    		<%
+    		}%>
+    		nb_line_<%=cid%>++;
+<%
+		}
+    }
+}
+%>
