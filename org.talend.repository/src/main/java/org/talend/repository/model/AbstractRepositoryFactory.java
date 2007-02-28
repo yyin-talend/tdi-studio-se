@@ -31,6 +31,7 @@ import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.model.properties.ConnectionItem;
+import org.talend.core.model.properties.ContextItem;
 import org.talend.core.model.repository.IRepositoryObject;
 
 /**
@@ -144,6 +145,20 @@ public abstract class AbstractRepositoryFactory implements IRepositoryFactory {
         collect(getMetadataFileXml(), result);
         collect(getMetadataFileLdif(), result);
         collect(getMetadataConnection(), result);
+
+        return result;
+    }
+
+    // gather all the contexts
+    public List<ContextItem> getContextItem() throws PersistenceException {
+        List<ContextItem> result = new ArrayList<ContextItem>();
+
+        for (IRepositoryObject repositoryObject : getContext().getAbsoluteMembers().objects()) {
+            ContextItem contextItem = (ContextItem) repositoryObject.getProperty().getItem();
+            if (getStatus(contextItem) != ERepositoryStatus.DELETED) {
+                result.add(contextItem);
+            }
+        }
 
         return result;
     }

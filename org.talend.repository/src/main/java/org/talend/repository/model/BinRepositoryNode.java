@@ -41,7 +41,7 @@ public class BinRepositoryNode extends StableRepositoryNode {
      * @param type
      */
     public BinRepositoryNode(RepositoryNode parent) {
-        super(parent, Messages.getString("BinRepositoryNode.label"), null, 11); //$NON-NLS-1$
+        super(parent, Messages.getString("BinRepositoryNode.label"), null, 12); //$NON-NLS-1$
     }
 
     /**

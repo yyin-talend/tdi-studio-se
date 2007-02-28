@@ -66,7 +66,23 @@ public class ContextModifyCommand extends Command {
     }
 
     public void execute() {
+        // check modified type
+        for (IContextParameter param : oldContext.getContextParameterList()) {
+            String paramName = param.getName();
+            IContextParameter newParam = currentContext.getContextParameter(paramName);
+            if (!newParam.getType().equals(param.getType())) {
+                propagateType(contextManager, newParam);
+            }
+        }
         contextManager.fireContextsChangedEvent();
+        refreshPropertyView();
+    }
+
+    private void propagateType(IContextManager contextManager, IContextParameter param) {
+        for (IContext context : contextManager.getListContext()) {
+            IContextParameter paramToModify = context.getContextParameter(param.getName());
+            paramToModify.setType(param.getType());
+        }
     }
 
     @Override
@@ -100,6 +116,14 @@ public class ContextModifyCommand extends Command {
         }
 
         oldContext = tmpContext;
+        for (IContextParameter param : oldContext.getContextParameterList()) {
+            String paramName = param.getName();
+            IContextParameter newParam = currentContext.getContextParameter(paramName);
+            if (!newParam.getType().equals(param.getType())) {
+                propagateType(contextManager, newParam);
+            }
+        }
+
         contextManager.fireContextsChangedEvent();
         refreshPropertyView();
     }
@@ -134,6 +158,14 @@ public class ContextModifyCommand extends Command {
             }
         }
         oldContext = tmpContext;
+        for (IContextParameter param : oldContext.getContextParameterList()) {
+            String paramName = param.getName();
+            IContextParameter newParam = currentContext.getContextParameter(paramName);
+            if (!newParam.getType().equals(param.getType())) {
+                propagateType(contextManager, newParam);
+            }
+        }
+
         contextManager.fireContextsChangedEvent();
         refreshPropertyView();
     }

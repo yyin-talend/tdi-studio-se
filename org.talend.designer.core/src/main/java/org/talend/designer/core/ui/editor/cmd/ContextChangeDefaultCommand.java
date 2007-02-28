@@ -46,9 +46,9 @@ public class ContextChangeDefaultCommand extends Command {
 
     IContextManager contextManager;
 
-    public ContextChangeDefaultCommand(Process process, IContext newDefault) {
+    public ContextChangeDefaultCommand(IContextManager contextManager, IContext newDefault) {
         this.newDefault = newDefault;
-        contextManager = process.getContextManager();
+        this.contextManager = contextManager;
         this.oldDefault = contextManager.getDefaultContext();
         this.setLabel(Messages.getString("ContextChangeDefaultCommand.label")); //$NON-NLS-1$
     }

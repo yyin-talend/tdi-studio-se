@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.eclipse.emf.common.util.EList;
 import org.talend.commons.utils.VersionUtils;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
@@ -380,6 +381,16 @@ public class FileinToXmlProcess<K extends FileInputNode> extends RepositoryObjec
         public IContext clone() {
             return this;
         }
+
+        public boolean sameAs(IContext context) {
+            // TODO Auto-generated method stub
+            return false;
+        }
+
+        public IContextParameter getContextParameter(String parameterName) {
+            // TODO Auto-generated method stub
+            return null;
+        }
     }
 
     /**
@@ -459,6 +470,16 @@ public class FileinToXmlProcess<K extends FileInputNode> extends RepositoryObjec
 
         public IContext getContext(String name) {
             return null;
+        }
+
+        public void saveToEmf(EList contextTypeList) {
+        }
+
+        public void loadFromEmf(EList contextTypeList, String defaultContextName) {
+        }
+
+        public boolean sameAs(IContextManager contextManager) {
+            return false;
         }
     }
 

@@ -95,6 +95,10 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
         return getObjectFromFolder(ERepositoryObjectType.PROCESS, true);
     }
 
+    public RootContainer<String, IRepositoryObject> getContext() throws PersistenceException {
+        return getObjectFromFolder(ERepositoryObjectType.CONTEXT, true);
+    }
+
     public RootContainer<String, IRepositoryObject> getRoutine() throws PersistenceException {
         return getObjectFromFolder(ERepositoryObjectType.ROUTINES, true);
     }
@@ -129,14 +133,17 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
         return toReturn;
     }
 
-    protected List<IRepositoryObject> getSerializable(Project project, String id, boolean allVersion) throws PersistenceException {
+    protected List<IRepositoryObject> getSerializable(Project project, String id, boolean allVersion)
+            throws PersistenceException {
         List<IRepositoryObject> toReturn = new ArrayList<IRepositoryObject>();
 
-        ERepositoryObjectType[] repositoryObjectTypeList = new ERepositoryObjectType[] { ERepositoryObjectType.BUSINESS_PROCESS,
-                ERepositoryObjectType.DOCUMENTATION, ERepositoryObjectType.METADATA_CONNECTIONS,
-                ERepositoryObjectType.METADATA_FILE_DELIMITED, ERepositoryObjectType.METADATA_FILE_POSITIONAL,
-                ERepositoryObjectType.METADATA_FILE_REGEXP, ERepositoryObjectType.METADATA_FILE_XML,
-                ERepositoryObjectType.METADATA_FILE_LDIF, ERepositoryObjectType.PROCESS, ERepositoryObjectType.ROUTINES };
+        ERepositoryObjectType[] repositoryObjectTypeList = new ERepositoryObjectType[] {
+                ERepositoryObjectType.BUSINESS_PROCESS, ERepositoryObjectType.DOCUMENTATION,
+                ERepositoryObjectType.METADATA_CONNECTIONS, ERepositoryObjectType.METADATA_FILE_DELIMITED,
+                ERepositoryObjectType.METADATA_FILE_POSITIONAL, ERepositoryObjectType.METADATA_FILE_REGEXP,
+                ERepositoryObjectType.METADATA_FILE_XML, ERepositoryObjectType.METADATA_FILE_LDIF,
+                ERepositoryObjectType.PROCESS, ERepositoryObjectType.ROUTINES,
+                ERepositoryObjectType.CONTEXT};
         for (ERepositoryObjectType repositoryObjectType : repositoryObjectTypeList) {
             Object folder = getFolder(project, repositoryObjectType);
             toReturn.addAll(getSerializableFromFolder(folder, id, repositoryObjectType, allVersion, true, true));
@@ -144,7 +151,8 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
         return toReturn;
     }
 
-    protected abstract Object getFolder(Project project, ERepositoryObjectType repositoryObjectType) throws PersistenceException;
+    protected abstract Object getFolder(Project project, ERepositoryObjectType repositoryObjectType)
+            throws PersistenceException;
 
     public List<IRepositoryObject> getAllVersion(String id) throws PersistenceException {
         List<IRepositoryObject> serializableAllVersion = getSerializable(getRepositoryContext().getProject(), id, true);
@@ -169,26 +177,29 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
         List<IRepositoryObject> list = getAll(type, true);
 
         for (IRepositoryObject current : list) {
-            if (name.equalsIgnoreCase(current.getProperty().getLabel()) && item.getProperty().getId() != current.getProperty().getId()) {
+            if (name.equalsIgnoreCase(current.getProperty().getLabel())
+                    && item.getProperty().getId() != current.getProperty().getId()) {
                 return false;
             }
         }
         return true;
     }
 
-    protected abstract List<IRepositoryObject> getSerializableFromFolder(Object folder, String id, ERepositoryObjectType type,
-            boolean allVersion, boolean searchInChildren, boolean withDeleted) throws PersistenceException;
-
-    protected abstract <K, T> RootContainer<K, T> getObjectFromFolder(ERepositoryObjectType type, boolean onlyLastVersion)
+    protected abstract List<IRepositoryObject> getSerializableFromFolder(Object folder, String id,
+            ERepositoryObjectType type, boolean allVersion, boolean searchInChildren, boolean withDeleted)
             throws PersistenceException;
 
-    protected abstract <K, T> void addFolderMembers(ERepositoryObjectType type, Container<K, T> toReturn, Object objectFolder,
+    protected abstract <K, T> RootContainer<K, T> getObjectFromFolder(ERepositoryObjectType type,
             boolean onlyLastVersion) throws PersistenceException;
+
+    protected abstract <K, T> void addFolderMembers(ERepositoryObjectType type, Container<K, T> toReturn,
+            Object objectFolder, boolean onlyLastVersion) throws PersistenceException;
 
     protected abstract FolderHelper getFolderHelper(org.talend.core.model.properties.Project emfProject);
 
     protected Item copyFromResource(Resource createResource) throws PersistenceException {
-        Item newItem = (Item) EcoreUtil.getObjectByType(createResource.getContents(), PropertiesPackage.eINSTANCE.getItem());
+        Item newItem = (Item) EcoreUtil.getObjectByType(createResource.getContents(), PropertiesPackage.eINSTANCE
+                .getItem());
         Property property = newItem.getProperty();
         property.setId(getNextId());
         property.setAuthor(getRepositoryContext().getUser());
@@ -229,7 +240,7 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
             toEval = IPerlModuleService.class;
         }
         IModuleService service = (IModuleService) GlobalServiceRegister.getDefault().getService(toEval);
-        
+
         List<URL> routines = service.getBuiltInRoutines();
         Path path = new Path(RepositoryConstants.SYSTEM_DIRECTORY);
         for (URL url : routines) {
@@ -251,19 +262,19 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
         try {
             Property property = PropertiesFactory.eINSTANCE.createProperty();
             property.setId(getNextId());
-    
+
             String[] fragments = url.toString().split("/"); //$NON-NLS-1$
             String label = fragments[fragments.length - 1];
             String[] tmp = label.split("\\."); //$NON-NLS-1$
             property.setLabel(tmp[0]);
-    
+
             ByteArray byteArray = PropertiesFactory.eINSTANCE.createByteArray();
             stream = url.openStream();
             byte[] innerContent = new byte[stream.available()];
             stream.read(innerContent);
             stream.close();
             byteArray.setInnerContent(innerContent);
-    
+
             RoutineItem routineItem = PropertiesFactory.eINSTANCE.createRoutineItem();
             routineItem.setProperty(property);
             routineItem.setContent(byteArray);

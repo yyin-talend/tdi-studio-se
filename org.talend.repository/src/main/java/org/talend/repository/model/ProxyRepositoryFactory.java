@@ -43,6 +43,7 @@ import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.builder.connection.TableHelper;
 import org.talend.core.model.migration.IMigrationToolService;
 import org.talend.core.model.properties.ConnectionItem;
+import org.talend.core.model.properties.ContextItem;
 import org.talend.core.model.properties.FolderItem;
 import org.talend.core.model.properties.FolderType;
 import org.talend.core.model.properties.Item;
@@ -117,12 +118,15 @@ public class ProxyRepositoryFactory implements IProxyRepositoryFactory {
         if (!Pattern.matches(pattern, fileName)) {
             // i18n
             // throw new IllegalArgumentException("Label " + fileName + " does not match pattern " + pattern);
-            throw new IllegalArgumentException(Messages.getString(
-                    "ProxyRepositoryFactory.illegalArgumentException.labelNotMatchPattern", new String[] { fileName, pattern })); //$NON-NLS-1$
+            throw new IllegalArgumentException(
+                    Messages
+                            .getString(
+                                    "ProxyRepositoryFactory.illegalArgumentException.labelNotMatchPattern", new String[] { fileName, pattern })); //$NON-NLS-1$
         }
     }
 
-    private void checkFileNameAndPath(Item item, String pattern, IPath path, boolean folder) throws PersistenceException {
+    private void checkFileNameAndPath(Item item, String pattern, IPath path, boolean folder)
+            throws PersistenceException {
         String fileName = item.getProperty().getLabel();
         checkFileName(fileName, pattern);
         if (!this.repositoryFactoryFromProvider.isNameAvailable(item, null)) {
@@ -133,8 +137,8 @@ public class ProxyRepositoryFactory implements IProxyRepositoryFactory {
         }
     }
 
-    private void checkFileNameAndPath(String label, String pattern, ERepositoryObjectType type, IPath path, boolean folder)
-            throws PersistenceException {
+    private void checkFileNameAndPath(String label, String pattern, ERepositoryObjectType type, IPath path,
+            boolean folder) throws PersistenceException {
         String fileName = label;
         checkFileName(fileName, pattern);
         if (!this.repositoryFactoryFromProvider.isPathValid(type, path, label)) {
@@ -152,6 +156,15 @@ public class ProxyRepositoryFactory implements IProxyRepositoryFactory {
      */
     public List<ConnectionItem> getMetadataConnectionsItem() throws PersistenceException {
         return this.repositoryFactoryFromProvider.getMetadataConnectionsItem();
+    }
+    
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.repository.model.IProxyRepositoryFactory#getMetadataConnectionsItem()
+     */
+    public List<ContextItem> getContextItem() throws PersistenceException {
+        return this.repositoryFactoryFromProvider.getContextItem();
     }
 
     /*
@@ -253,7 +266,8 @@ public class ProxyRepositoryFactory implements IProxyRepositoryFactory {
      * @see org.talend.repository.model.IProxyRepositoryFactory#getMetadataConnection()
      */
     public RootContainer<String, IRepositoryObject> getMetadataConnection() throws PersistenceException {
-        RootContainer<String, IRepositoryObject> metadataConnection = this.repositoryFactoryFromProvider.getMetadataConnection();
+        RootContainer<String, IRepositoryObject> metadataConnection = this.repositoryFactoryFromProvider
+                .getMetadataConnection();
 
         return metadataConnection;
     }
@@ -289,6 +303,15 @@ public class ProxyRepositoryFactory implements IProxyRepositoryFactory {
      */
     public RootContainer<String, IRepositoryObject> getProcess() throws PersistenceException {
         return this.repositoryFactoryFromProvider.getProcess();
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.repository.model.IProxyRepositoryFactory#getProcess()
+     */
+    public RootContainer<String, IRepositoryObject> getContext() throws PersistenceException {
+        return this.repositoryFactoryFromProvider.getContext();
     }
 
     /*
@@ -390,7 +413,8 @@ public class ProxyRepositoryFactory implements IProxyRepositoryFactory {
      */
     public void moveObject(IRepositoryObject objToMove, IPath path) throws PersistenceException, BusinessException {
         checkDisponibilite(objToMove);
-        checkFileNameAndPath(objToMove.getProperty().getItem(), RepositoryConstants.getPattern(objToMove.getType()), path, false);
+        checkFileNameAndPath(objToMove.getProperty().getItem(), RepositoryConstants.getPattern(objToMove.getType()),
+                path, false);
         this.repositoryFactoryFromProvider.moveObject(objToMove, path);
 
         // i18n
@@ -403,7 +427,8 @@ public class ProxyRepositoryFactory implements IProxyRepositoryFactory {
     // TODO SML Renommer et finir la m�thode et la plugger dans toutes les m�thodes
     private void checkDisponibilite(IRepositoryObject objToMove) throws BusinessException {
         if (!isEditableAndLockIfPossible(objToMove)) {
-            throw new BusinessException(Messages.getString("ProxyRepositoryFactory.bussinessException.itemNonModifiable")); //$NON-NLS-1$
+            throw new BusinessException(Messages
+                    .getString("ProxyRepositoryFactory.bussinessException.itemNonModifiable")); //$NON-NLS-1$
         }
     }
 
@@ -533,7 +558,8 @@ public class ProxyRepositoryFactory implements IProxyRepositoryFactory {
             }
         }
 
-        if (source.getType() == FolderType.SYSTEM_FOLDER_LITERAL || source.getType() == FolderType.STABLE_SYSTEM_FOLDER_LITERAL) {
+        if (source.getType() == FolderType.SYSTEM_FOLDER_LITERAL
+                || source.getType() == FolderType.STABLE_SYSTEM_FOLDER_LITERAL) {
             boolean match = source.getProperty().getLabel().equals(type);
 
             for (Object current : source.getChildren()) {

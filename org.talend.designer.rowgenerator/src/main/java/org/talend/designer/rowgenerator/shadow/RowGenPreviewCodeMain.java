@@ -150,7 +150,7 @@ public class RowGenPreviewCodeMain {
         try {
             IRunProcessService runProcessService = RowGeneratorPlugin.getDefault().getRunProcessService();
             IProcessor processor = runProcessService.createCodeProcessor(proc, language, false);
-            IContext context2 = new org.talend.designer.core.model.context.Context(PREVIEW);
+            IContext context2 = new org.talend.core.model.context.JobContext(PREVIEW);
             processor.generateCode(context2, false, false, true);
 
         } catch (Exception e) {
@@ -164,7 +164,7 @@ public class RowGenPreviewCodeMain {
     protected Process runPreviewCode() {
         getProcess();
         Processor processor = new Processor(proc);
-        IContext context2 = new org.talend.designer.core.model.context.Context(PREVIEW);
+        IContext context2 = new org.talend.core.model.context.JobContext(PREVIEW);
         try {
             return processor.run(context2, Processor.NO_STATISTICS, Processor.NO_TRACES, null);
         } catch (Exception e) {

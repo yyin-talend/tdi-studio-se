@@ -134,7 +134,17 @@
              class="org.talend.repository.ui.actions.EditPropertiesAction"
              id="org.talend.repository.actions.editProperties"
              level="12"
-             name="Edit properties"/>     
+             name="Edit properties"/>
+       <Action
+             class="org.talend.repository.ui.actions.context.CreateContextAction"
+             id="org.talend.repository.createcontext"
+             level="10"
+             name="Create Context"/>
+       <Action
+             class="org.talend.repository.ui.actions.context.EditContextAction"
+             id="org.talend.repository.editcontext"
+             level="10"
+             name="Edit Context"/>     
    </extension>
    <extension
          point="org.eclipse.ui.views.properties.tabbed.propertyContributor">

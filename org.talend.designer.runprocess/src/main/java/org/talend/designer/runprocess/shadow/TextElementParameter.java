@@ -23,7 +23,6 @@ package org.talend.designer.runprocess.shadow;
 
 import java.util.List;
 
-import org.talend.core.model.metadata.EMetadataType;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IElement;
@@ -111,8 +110,8 @@ public class TextElementParameter implements IElementParameter {
      * 
      * @see org.talend.core.model.process.IElementParameter#getMetadataType()
      */
-    public EMetadataType getMetadataType() {
-        return EMetadataType.STRING;
+    public String getMetadataType() {
+        return "String"; //$NON-NLS-1$
     }
 
     /*
@@ -237,7 +236,7 @@ public class TextElementParameter implements IElementParameter {
      * 
      * @see org.talend.core.model.process.IElementParameter#setMetadataType(org.talend.core.model.metadata.EMetadataType)
      */
-    public void setMetadataType(EMetadataType metadataType) {
+    public void setMetadataType(String metadataType) {
         // Read-only
     }
 
@@ -368,7 +367,9 @@ public class TextElementParameter implements IElementParameter {
     public void setShowIf(String showIf) {
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.core.model.process.IElementParameter#getShowIf()
      */
     public String getShowIf() {
@@ -383,21 +384,27 @@ public class TextElementParameter implements IElementParameter {
     public void setNotShowIf(String notShowIf) {
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.core.model.process.IElementParameter#getNotShowIf()
      */
     public String getNotShowIf() {
         return null;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.core.model.process.IElementParameter#testIfShow(java.util.List)
      */
     public boolean isShow(List<? extends IElementParameter> listParam) {
         return false;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.core.model.process.IElementParameter#getListItemsDisplayCodeName(org.talend.core.model.temp.ECodeLanguage)
      */
     public String[] getListItemsDisplayCodeName() {
@@ -415,39 +422,51 @@ public class TextElementParameter implements IElementParameter {
         return null;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.core.model.process.IElementParameter#isShow(java.lang.String, java.lang.String, java.util.List)
      */
     public boolean isShow(String conditionShowIf, String conditionNotShowIf, List<? extends IElementParameter> listParam) {
         return false;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.core.model.process.IElementParameter#setListItemsNotShowIf(java.lang.String[])
      */
     public void setListItemsNotShowIf(String[] list) {
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.core.model.process.IElementParameter#setListItemsShowIf(java.lang.String[])
      */
     public void setListItemsShowIf(String[] list) {
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.core.model.process.IElementParameter#getDefaultValues()
      */
     public List<IElementParameterDefaultValue> getDefaultValues() {
         return null;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.core.model.process.IElementParameter#setDefaultValues(java.util.List)
      */
     public void setDefaultValues(List<IElementParameterDefaultValue> defaultValues) {
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.core.model.process.IElementParameter#setValueToDefault(java.util.List)
      */
     public void setValueToDefault(List<? extends IElementParameter> listParam) {
@@ -471,6 +490,6 @@ public class TextElementParameter implements IElementParameter {
 
     public void setBasedOnSchema(boolean basedOnSchema) {
         // TODO Auto-generated method stub
-        
+
     }
 }

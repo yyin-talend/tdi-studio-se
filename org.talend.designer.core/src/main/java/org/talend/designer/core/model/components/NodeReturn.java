@@ -22,7 +22,6 @@
 package org.talend.designer.core.model.components;
 
 import org.talend.core.language.ECodeLanguage;
-import org.talend.core.model.metadata.EMetadataType;
 import org.talend.core.model.process.INodeReturn;
 import org.talend.designer.core.i18n.Messages;
 
@@ -38,7 +37,7 @@ public class NodeReturn implements INodeReturn {
 
     private String displayName;
 
-    private EMetadataType type;
+    private String type;
 
     private String availability;
 
@@ -123,7 +122,7 @@ public class NodeReturn implements INodeReturn {
      * 
      * @see org.talend.designer.core.model.components.INodeReturn#getType()
      */
-    public EMetadataType getType() {
+    public String getType() {
         return this.type;
     }
 
@@ -132,7 +131,7 @@ public class NodeReturn implements INodeReturn {
      * 
      * @see org.talend.designer.core.model.components.INodeReturn#setType(org.talend.core.model.metadata.EMetadataType)
      */
-    public void setType(final EMetadataType type) {
+    public void setType(final String type) {
         this.type = type;
     }
 }

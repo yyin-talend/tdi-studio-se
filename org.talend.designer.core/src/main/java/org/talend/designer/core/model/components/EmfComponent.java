@@ -44,7 +44,6 @@ import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IComponentsFactory;
 import org.talend.core.model.components.IMultipleComponentItem;
 import org.talend.core.model.components.IMultipleComponentManager;
-import org.talend.core.model.metadata.EMetadataType;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataColumn;
@@ -101,11 +100,13 @@ public class EmfComponent implements IComponent {
 
     public static final String REPOSITORY = "REPOSITORY"; //$NON-NLS-1$
 
-    private static final String TEXT_BUILTIN = "Built-In"; //$NON-NLS-1$
+    public static final String TEXT_BUILTIN = "Built-In";
 
-    private static final String TEXT_REPOSITORY = "Repository"; //$NON-NLS-1$
+    public static final String TEXT_REPOSITORY = "Repository";
 
     private static final String TSTATCATCHER_NAME = "tStatCatcher"; //$NON-NLS-1$
+
+    private static final String STRING_TYPE = "String";
 
     private IMultipleComponentManager multipleComponentManager;
 
@@ -193,7 +194,7 @@ public class EmfComponent implements IComponent {
         nodeRet.setVarName("ERROR_MESSAGE", codeLanguage); //$NON-NLS-1$
         nodeRet.setDisplayName("Error Message"); //$NON-NLS-1$
         nodeRet.setName("ERROR_MESSAGE"); //$NON-NLS-1$
-        nodeRet.setType(EMetadataType.getTypeByName("STRING")); //$NON-NLS-1$
+        nodeRet.setType(STRING_TYPE); //$NON-NLS-1$
         listReturn.add(nodeRet);
 
         if (codeLanguage.equals(ECodeLanguage.PERL)) {
@@ -202,7 +203,7 @@ public class EmfComponent implements IComponent {
             nodeRet.setVarName("PERL_ERROR_MESSAGE", codeLanguage); //$NON-NLS-1$
             nodeRet.setDisplayName("Perl Error Message"); //$NON-NLS-1$
             nodeRet.setName("PERL_ERROR_MESSAGE"); //$NON-NLS-1$
-            nodeRet.setType(EMetadataType.getTypeByName("STRING")); //$NON-NLS-1$
+            nodeRet.setType(STRING_TYPE); //$NON-NLS-1$
             listReturn.add(nodeRet);
 
             nodeRet = new NodeReturn();
@@ -210,7 +211,7 @@ public class EmfComponent implements IComponent {
             nodeRet.setVarName("PERL_ERROR_CODE", codeLanguage); //$NON-NLS-1$
             nodeRet.setDisplayName("Perl Error Code"); //$NON-NLS-1$
             nodeRet.setName("PERL_ERROR_CODE"); //$NON-NLS-1$
-            nodeRet.setType(EMetadataType.getTypeByName("STRING")); //$NON-NLS-1$
+            nodeRet.setType(STRING_TYPE); //$NON-NLS-1$
             listReturn.add(nodeRet);
         }
         // ****************** end of standard returns ******************
@@ -223,7 +224,7 @@ public class EmfComponent implements IComponent {
             nodeRet.setVarName(retType.getNAME(), codeLanguage);
             nodeRet.setDisplayName(getTranslatedValue(retType.getNAME() + "." + PROP_NAME)); //$NON-NLS-1$
             nodeRet.setName(retType.getNAME());
-            nodeRet.setType(EMetadataType.getTypeByName(retType.getTYPE()));
+            nodeRet.setType(retType.getTYPE());
             listReturn.add(nodeRet);
         }
         return listReturn;
@@ -494,6 +495,7 @@ public class EmfComponent implements IComponent {
             newParam.setField(EParameterFieldType.TECHNICAL);
             newParam.setShow(false);
             newParam.setShowIf(xmlParam.getSHOWIF());
+            newParam.setReadOnly(xmlParam.isREADONLY());
             newParam.setNotShowIf(xmlParam.getNOTSHOWIF());
             listParam.add(newParam);
 
@@ -508,6 +510,7 @@ public class EmfComponent implements IComponent {
             newParam.setValue(""); //$NON-NLS-1$
             newParam.setShow(false);
             newParam.setRequired(true);
+            newParam.setReadOnly(xmlParam.isREADONLY());
             newParam.setShowIf(xmlParam.getSHOWIF());
             newParam.setNotShowIf(xmlParam.getNOTSHOWIF());
             listParam.add(newParam);

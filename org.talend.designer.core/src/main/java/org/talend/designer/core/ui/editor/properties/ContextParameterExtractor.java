@@ -31,11 +31,14 @@ import org.eclipse.swt.widgets.Text;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
-import org.talend.core.model.metadata.EMetadataType;
+import org.talend.core.language.ECodeLanguage;
+import org.talend.core.language.LanguageManager;
+import org.talend.core.model.context.JobContextParameter;
+import org.talend.core.model.metadata.MetadataTalendType;
+import org.talend.core.model.metadata.types.JavaTypesManager;
 import org.talend.core.model.process.IContextManager;
 import org.talend.core.model.process.IContextParameter;
 import org.talend.core.model.utils.ContextParameterUtils;
-import org.talend.designer.core.model.context.ContextParameter;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.wizards.ContextParameterWizard;
 
@@ -66,11 +69,13 @@ public final class ContextParameterExtractor {
             public void keyPressed(KeyEvent e) {
                 if (e.keyCode == SWT.F5) {
                     IContextParameter parameter = buildParameterFrom(text, process.getContextManager(), parameterName);
-                    ContextParameterWizard prmWizard = new ContextParameterWizard(process.getContextManager(), parameter);
+                    ContextParameterWizard prmWizard = new ContextParameterWizard(process.getContextManager(),
+                            parameter);
                     WizardDialog dlg = new WizardDialog(text.getShell(), prmWizard);
                     if (dlg.open() == WizardDialog.OK) {
-                        String replaceCode = ContextParameterUtils.getScriptCode(parameter, ((RepositoryContext) CorePlugin
-                                .getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY)).getProject().getLanguage());
+                        String replaceCode = ContextParameterUtils.getScriptCode(parameter,
+                                ((RepositoryContext) CorePlugin.getContext()
+                                        .getProperty(Context.REPOSITORY_CONTEXT_KEY)).getProject().getLanguage());
                         if (text instanceof Text) {
                             if (((Text) text).getSelectionCount() == 0) {
                                 ((Text) text).setText(replaceCode);
@@ -110,7 +115,7 @@ public final class ContextParameterExtractor {
             }
         }
 
-        IContextParameter parameter = new ContextParameter();
+        IContextParameter parameter = new JobContextParameter();
         if (manager.checkValidParameterName(parameterName)) {
             parameter.setName(parameterName);
         } else if (manager.checkValidParameterName(nameProposal)) {
@@ -118,7 +123,12 @@ public final class ContextParameterExtractor {
         } else {
             parameter.setName(""); //$NON-NLS-1$
         }
-        parameter.setType(EMetadataType.STRING);
+        ECodeLanguage curLanguage = LanguageManager.getCurrentLanguage();
+        if (curLanguage == ECodeLanguage.PERL) {
+            parameter.setType(MetadataTalendType.getDefaultTalendType());
+        } else {
+            parameter.setType(JavaTypesManager.getDefaultJavaType().getId());
+        }
         parameter.setPrompt(parameterName + "?"); //$NON-NLS-1$
         parameter.setValue(nameProposal);
         return parameter;

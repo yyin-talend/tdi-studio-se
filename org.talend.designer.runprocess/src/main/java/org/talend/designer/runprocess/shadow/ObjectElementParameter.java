@@ -23,7 +23,6 @@ package org.talend.designer.runprocess.shadow;
 
 import java.util.List;
 
-import org.talend.core.model.metadata.EMetadataType;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IElement;
@@ -111,8 +110,8 @@ public class ObjectElementParameter implements IElementParameter {
      * 
      * @see org.talend.core.model.process.IElementParameter#getMetadataType()
      */
-    public EMetadataType getMetadataType() {
-        return EMetadataType.STRING;
+    public String getMetadataType() {
+        return "String"; //$NON-NLS-1$
     }
 
     /*
@@ -237,7 +236,7 @@ public class ObjectElementParameter implements IElementParameter {
      * 
      * @see org.talend.core.model.process.IElementParameter#setMetadataType(org.talend.core.model.metadata.EMetadataType)
      */
-    public void setMetadataType(EMetadataType metadataType) {
+    public void setMetadataType(String metadataType) {
         // Read-only
     }
 

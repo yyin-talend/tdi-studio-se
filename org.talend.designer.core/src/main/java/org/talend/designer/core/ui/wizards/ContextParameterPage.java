@@ -47,7 +47,11 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
-import org.talend.core.model.metadata.EMetadataType;
+import org.talend.core.language.ECodeLanguage;
+import org.talend.core.language.LanguageManager;
+import org.talend.core.model.metadata.MetadataTalendType;
+import org.talend.core.model.metadata.types.JavaType;
+import org.talend.core.model.metadata.types.JavaTypesManager;
 import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IContextManager;
 import org.talend.core.model.process.IContextParameter;
@@ -151,7 +155,7 @@ public class ContextParameterPage extends WizardPage {
         typeViewer = new ComboViewer(container, SWT.BORDER | SWT.READ_ONLY);
         typeViewer.setContentProvider(new ArrayContentProvider());
         typeViewer.setLabelProvider(new LabelProvider());
-        typeViewer.setInput(EMetadataType.values());
+        typeViewer.setInput(MetadataTalendType.getTalendTypesLabels());
         typeViewer.getControl().setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
         // Prompt
@@ -216,17 +220,21 @@ public class ContextParameterPage extends WizardPage {
             }
         });
 
+        final ECodeLanguage curLanguage = LanguageManager.getCurrentLanguage();
         typeViewer.addSelectionChangedListener(new ISelectionChangedListener() {
 
             public void selectionChanged(SelectionChangedEvent event) {
-                EMetadataType type;
+                String type;
                 if (event.getSelection().isEmpty()) {
                     typeStatus = new Status(IStatus.ERROR, DesignerPlugin.ID, IStatus.OK, Messages
                             .getString("ContextParameterPage.typeEmpty"), null); //$NON-NLS-1$
                     type = null;
                 } else {
                     typeStatus = createOkStatus();
-                    type = (EMetadataType) ((IStructuredSelection) event.getSelection()).getFirstElement();
+                    type = (String) ((IStructuredSelection) event.getSelection()).getFirstElement();
+                }
+                if (curLanguage == ECodeLanguage.JAVA) {
+                    type = getJavaDisplayedType(type);
                 }
                 parameter.setType(type);
                 updatePageStatus();
@@ -250,6 +258,21 @@ public class ContextParameterPage extends WizardPage {
                 updatePageStatus();
             }
         });
+    }
+
+    private String getJavaDisplayedType(String originalTypedValue) {
+        JavaType javaType;
+
+        javaType = JavaTypesManager.getJavaTypeFromLabel(originalTypedValue);
+
+        String type;
+
+        if (javaType == null) {
+            type = MetadataTalendType.getDefaultTalendType();
+        } else {
+            type = javaType.getId();
+        }
+        return type;
     }
 
     public void setParameter(IContextParameter contextParameter, List<? extends IContext> contexts) {

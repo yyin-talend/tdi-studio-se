@@ -30,6 +30,7 @@ import org.talend.commons.utils.data.container.RootContainer;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.general.Project;
 import org.talend.core.model.properties.ConnectionItem;
+import org.talend.core.model.properties.ContextItem;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.properties.Status;
@@ -183,7 +184,7 @@ public interface IRepositoryFactory {
 
     void setDocumentationStatus(List<Status> list) throws PersistenceException;
 
-    void setMigrationTasksDone(Project project,List<String> list) throws PersistenceException;
+    void setMigrationTasksDone(Project project, List<String> list) throws PersistenceException;
 
     public String isServerValid() throws BusinessException;
 
@@ -199,7 +200,7 @@ public interface IRepositoryFactory {
      * DOC mhelleboid Comment method "cancel".
      * 
      * @param property
-     * @throws PersistenceException 
+     * @throws PersistenceException
      */
     public Property reload(Property property) throws PersistenceException;
 
@@ -208,6 +209,8 @@ public interface IRepositoryFactory {
     public RootContainer<String, IRepositoryObject> getDocumentation() throws PersistenceException;
 
     public RootContainer<String, IRepositoryObject> getProcess() throws PersistenceException;
+
+    public RootContainer<String, IRepositoryObject> getContext() throws PersistenceException;
 
     public RootContainer<String, IRepositoryObject> getRoutine() throws PersistenceException;
 
@@ -227,4 +230,12 @@ public interface IRepositoryFactory {
      * gather all the metadata connections (file / db / etc ...).
      */
     List<ConnectionItem> getMetadataConnectionsItem() throws PersistenceException;
+    
+    /**
+     * get all context items.
+     * 
+     * @return
+     * @throws PersistenceException
+     */
+    List<ContextItem> getContextItem() throws PersistenceException;
 }

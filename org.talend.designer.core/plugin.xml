@@ -134,7 +134,7 @@
             <input type="org.talend.designer.core.ui.editor.nodecontainer.NodeContainer"/>
          </propertySection>
          <propertySection
-               class="org.talend.designer.core.ui.editor.properties.process.ContextProcessSection"
+               class="org.talend.designer.core.ui.editor.properties.process.ContextProcessSection2"
                id="ContextProcessSection"
                tab="contextTab">
             <input type="org.talend.designer.core.ui.editor.process.Process"/>

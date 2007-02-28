@@ -21,14 +21,18 @@
 // ============================================================================
 package org.talend.designer.core.ui;
 
-import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.ui.IPartListener;
+import org.eclipse.ui.IViewPart;
+import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.views.properties.PropertySheet;
+import org.eclipse.ui.views.properties.tabbed.ISection;
+import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 import org.talend.core.model.process.IProcess;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.ui.editor.process.Process;
+import org.talend.designer.core.ui.editor.properties.process.ContextProcessSection2;
 import org.talend.designer.core.ui.views.problems.Problems;
 import org.talend.designer.runprocess.IRunProcessService;
 
@@ -61,8 +65,33 @@ public class ActiveProcessTracker implements IPartListener {
                     }
                 }
             }
+
+//            if (updateContextSection()) {
+//                mpte.getTalendEditor().setDirty(true);
+//            }
         }
     }
+
+//    private boolean updateContextSection() {
+//        boolean modified = false;
+//        IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+//        IViewPart view = page.findView("org.eclipse.ui.views.PropertySheet"); //$NON-NLS-1$
+//        PropertySheet sheet = (PropertySheet) view;
+//        if (view instanceof TabbedPropertySheetPage) {
+//            TabbedPropertySheetPage tabbedPropertySheetPage = (TabbedPropertySheetPage) sheet.getCurrentPage();
+//            if (tabbedPropertySheetPage.getCurrentTab() == null) {
+//                return modified;
+//            }
+//            ISection[] sections = tabbedPropertySheetPage.getCurrentTab().getSections();
+//            for (int i = 0; i < sections.length; i++) {
+//                if (sections[i] instanceof ContextProcessSection2) {
+//                    ContextProcessSection2 currentSection = (ContextProcessSection2) sections[i];
+//                    modified = currentSection.updateContextView();
+//                }
+//            }
+//        }
+//        return modified;
+//    }
 
     /*
      * (non-Javadoc)

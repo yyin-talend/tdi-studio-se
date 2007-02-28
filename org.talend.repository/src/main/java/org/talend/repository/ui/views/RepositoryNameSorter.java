@@ -56,24 +56,26 @@ public class RepositoryNameSorter extends ViewerSorter {
                 return 0;
             case PROCESS:
                 return 1;
-            case ROUTINES:
+            case CONTEXT:
                 return 2;
-            case METADATA:
+            case ROUTINES:
                 return 3;
-            case METADATA_CONNECTIONS:
+            case METADATA:
                 return 4;
-            case METADATA_FILE_DELIMITED:
+            case METADATA_CONNECTIONS:
                 return 5;
-            case METADATA_FILE_POSITIONAL:
+            case METADATA_FILE_DELIMITED:
                 return 6;
-            case METADATA_FILE_REGEXP:
+            case METADATA_FILE_POSITIONAL:
                 return 7;
-            case METADATA_FILE_XML:
+            case METADATA_FILE_REGEXP:
                 return 8;
-            case METADATA_FILE_LDIF:
+            case METADATA_FILE_XML:
                 return 9;
-            case DOCUMENTATION:
+            case METADATA_FILE_LDIF:
                 return 10;
+            case DOCUMENTATION:
+                return 11;
             default:
                 return 99;
             }

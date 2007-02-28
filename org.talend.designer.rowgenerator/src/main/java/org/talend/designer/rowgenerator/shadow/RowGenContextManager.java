@@ -25,13 +25,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.eclipse.emf.common.util.EList;
 import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IContextListener;
 import org.talend.core.model.process.IContextManager;
 import org.talend.core.model.process.IContextParameter;
 
 /**
- *  qzhang class global comment. Detailled comment <br/>
+ * qzhang class global comment. Detailled comment <br/>
  * 
  * $Id: RowGenContextManager.java,v 1.1 2007/02/02 07:47:01 pub Exp $
  * 
@@ -108,12 +109,12 @@ public class RowGenContextManager implements IContextManager, Cloneable {
     public IContext getContext(String name) {
         return null;
     }
+
     /**
-     *  qzhang RowGenContextManager class global comment. Detailled comment
-     * <br/>
-     *
+     * qzhang RowGenContextManager class global comment. Detailled comment <br/>
+     * 
      * $Id: RowGenContextManager.java,v 1.1 2007/02/02 07:47:01 pub Exp $
-     *
+     * 
      */
     private class EmptyContext implements IContext, Cloneable {
 
@@ -175,5 +176,25 @@ public class RowGenContextManager implements IContextManager, Cloneable {
         public IContext clone() {
             return this;
         }
+
+        public boolean sameAs(IContext context) {
+            // TODO Auto-generated method stub
+            return false;
+        }
+
+        public IContextParameter getContextParameter(String parameterName) {
+            // TODO Auto-generated method stub
+            return null;
+        }
+    }
+
+    public void saveToEmf(EList contextTypeList) {
+    }
+
+    public void loadFromEmf(EList contextTypeList, String defaultContextName) {
+    }
+
+    public boolean sameAs(IContextManager contextManager) {
+        return false;
     }
 }

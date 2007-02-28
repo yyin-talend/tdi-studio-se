@@ -21,6 +21,9 @@
 // ============================================================================
 package org.talend.designer.core.ui.editor.cmd;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.eclipse.gef.commands.Command;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchPage;
@@ -44,10 +47,13 @@ public class ContextAddParameterCommand extends Command {
 
     IContextParameter contextParam;
 
+    Map<IContext, IContextParameter> addedParameters;
+
     public ContextAddParameterCommand(IContextManager contextManager, IContextParameter contextParam) {
         this.contextManager = contextManager;
         this.contextParam = contextParam;
         this.setLabel(Messages.getString("ContextAddParameterCommand.label")); //$NON-NLS-1$
+        addedParameters = new HashMap<IContext, IContextParameter>();
     }
 
     private void refreshPropertyView() {
@@ -62,7 +68,9 @@ public class ContextAddParameterCommand extends Command {
     public void execute() {
         for (int i = 0; i < contextManager.getListContext().size(); i++) {
             IContext context = contextManager.getListContext().get(i);
-            context.getContextParameterList().add(contextParam);
+            IContextParameter toAdd = contextParam.clone();
+            addedParameters.put(context, toAdd);
+            context.getContextParameterList().add(toAdd);
         }
         contextManager.fireContextsChangedEvent();
         refreshPropertyView();
@@ -77,7 +85,7 @@ public class ContextAddParameterCommand extends Command {
     public void undo() {
         for (int i = 0; i < contextManager.getListContext().size(); i++) {
             IContext context = contextManager.getListContext().get(i);
-            context.getContextParameterList().remove(contextParam);
+            context.getContextParameterList().remove(addedParameters.get(context));
         }
         contextManager.fireContextsChangedEvent();
         refreshPropertyView();

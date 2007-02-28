@@ -154,15 +154,24 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
             convert(factory.getProcess(), processNode, ERepositoryObjectType.PROCESS, recBinNode);
             // convert(factory.getProcess2(), processNode, ERepositoryObjectType.PROCESS, recBinNode);
 
-            // 3. Routines
-            RepositoryNode codeNode = new StableRepositoryNode(root, Messages.getString("RepositoryContentProvider.repositoryLabel.code"), ECoreImage.CODE_ICON, 2); //$NON-NLS-1$
+            // 3. Context
+            RepositoryNode contextNode = new RepositoryNode(null, root, ENodeType.SYSTEM_FOLDER);
+            contextNode.setProperties(EProperties.LABEL, ERepositoryObjectType.CONTEXT);
+            contextNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.CONTEXT);
+            nodes.add(contextNode);
+
+            convert(factory.getContext(), contextNode, ERepositoryObjectType.CONTEXT, recBinNode);
+
+            // 4. Code
+            RepositoryNode codeNode = new StableRepositoryNode(root, Messages.getString("RepositoryContentProvider.repositoryLabel.code"), ECoreImage.CODE_ICON, 3); //$NON-NLS-1$
             nodes.add(codeNode);
 
+            // 4.1. Routines
             RepositoryNode routineNode = new RepositoryNode(null, root, ENodeType.SYSTEM_FOLDER);
             routineNode.setProperties(EProperties.LABEL, ERepositoryObjectType.ROUTINES);
             routineNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.ROUTINES);
             codeNode.getChildren().add(routineNode);
-            // 3.1. Snippets
+            // 4.2. Snippets
             RepositoryNode snippetsNode = new RepositoryNode(null, codeNode, ENodeType.STABLE_SYSTEM_FOLDER);
             snippetsNode.setProperties(EProperties.LABEL, ERepositoryObjectType.SNIPPETS);
             snippetsNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.SNIPPETS);
@@ -170,7 +179,7 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
 
             convert(factory.getRoutine(), routineNode, ERepositoryObjectType.ROUTINES, recBinNode);
 
-            // 4. Documentation
+            // 5. Documentation
             RepositoryNode docNode = new RepositoryNode(null, root, ENodeType.SYSTEM_FOLDER);
             docNode.setProperties(EProperties.LABEL, ERepositoryObjectType.DOCUMENTATION);
             docNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.DOCUMENTATION);
@@ -178,13 +187,13 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
 
             convert(factory.getDocumentation(), docNode, ERepositoryObjectType.DOCUMENTATION, recBinNode);
 
-            // 5. Metadata
+            // 6. Metadata
             RepositoryNode metadataNode = new RepositoryNode(null, root, ENodeType.STABLE_SYSTEM_FOLDER);
             metadataNode.setProperties(EProperties.LABEL, ERepositoryObjectType.METADATA);
             metadataNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.METADATA);
             nodes.add(metadataNode);
 
-            // 5.1. Metadata connections
+            // 6.1. Metadata connections
             RepositoryNode metadataConNode = new RepositoryNode(null, root, ENodeType.SYSTEM_FOLDER);
             metadataConNode.setProperties(EProperties.LABEL, ERepositoryObjectType.METADATA_CONNECTIONS);
             metadataConNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.METADATA_CONNECTIONS);
@@ -193,7 +202,7 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
             convert(factory.getMetadataConnection(), metadataConNode, ERepositoryObjectType.METADATA_CONNECTIONS,
                     recBinNode);
 
-            // 5.2. Metadata file delimited
+            // 6.2. Metadata file delimited
             RepositoryNode metadataFileNode = new RepositoryNode(null, root, ENodeType.SYSTEM_FOLDER);
             metadataFileNode.setProperties(EProperties.LABEL, ERepositoryObjectType.METADATA_FILE_DELIMITED);
             metadataFileNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.METADATA_FILE_DELIMITED);
@@ -202,7 +211,7 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
             convert(factory.getMetadataFileDelimited(), metadataFileNode,
                     ERepositoryObjectType.METADATA_FILE_DELIMITED, recBinNode);
 
-            // 5.3. Metadata file positional
+            // 6.3. Metadata file positional
             RepositoryNode metadataFilePositionalNode = new RepositoryNode(null, root, ENodeType.SYSTEM_FOLDER);
             metadataFilePositionalNode.setProperties(EProperties.LABEL, ERepositoryObjectType.METADATA_FILE_POSITIONAL);
             metadataFilePositionalNode.setProperties(EProperties.CONTENT_TYPE,
@@ -212,7 +221,7 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
             convert(factory.getMetadataFilePositional(), metadataFilePositionalNode,
                     ERepositoryObjectType.METADATA_FILE_POSITIONAL, recBinNode);
 
-            // 5.4. Metadata file regexp
+            // 6.4. Metadata file regexp
             RepositoryNode metadataFileRegexpNode = new RepositoryNode(null, root, ENodeType.SYSTEM_FOLDER);
             metadataFileRegexpNode.setProperties(EProperties.LABEL, ERepositoryObjectType.METADATA_FILE_REGEXP);
             metadataFileRegexpNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.METADATA_FILE_REGEXP);
@@ -221,7 +230,7 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
             convert(factory.getMetadataFileRegexp(), metadataFileRegexpNode,
                     ERepositoryObjectType.METADATA_FILE_REGEXP, recBinNode);
 
-            // 5.5. Metadata file xml
+            // 6.5. Metadata file xml
             RepositoryNode metadataFileXmlNode = new RepositoryNode(null, root, ENodeType.SYSTEM_FOLDER);
             metadataFileXmlNode.setProperties(EProperties.LABEL, ERepositoryObjectType.METADATA_FILE_XML);
             metadataFileXmlNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.METADATA_FILE_XML);
@@ -230,7 +239,7 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
             convert(factory.getMetadataFileXml(), metadataFileXmlNode, ERepositoryObjectType.METADATA_FILE_XML,
                     recBinNode);
 
-            // 5.6. Metadata file ldif
+            // 6.6. Metadata file ldif
             RepositoryNode metadataFileLdifNode = new RepositoryNode(null, root, ENodeType.SYSTEM_FOLDER);
             metadataFileLdifNode.setProperties(EProperties.LABEL, ERepositoryObjectType.METADATA_FILE_LDIF);
             metadataFileLdifNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.METADATA_FILE_LDIF);

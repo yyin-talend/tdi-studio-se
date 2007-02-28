@@ -27,11 +27,11 @@ import java.util.Random;
 
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IODataComponent;
-import org.talend.core.model.metadata.EMetadataType;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataColumn;
 import org.talend.core.model.metadata.MetadataTable;
+import org.talend.core.model.metadata.MetadataTalendType;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IElementParameter;
@@ -62,6 +62,10 @@ public class MapperDataTestGenerator {
     private boolean fixedData = true;
 
     private static final String COLUMN_NAME = "column";
+
+    private static final String STRING_TYPE = "String";
+
+    private static final String INTEGER_TYPE = "int";
 
     private GenerationManager gen;
 
@@ -160,13 +164,13 @@ public class MapperDataTestGenerator {
         MetadataColumn metadataColumn = new MetadataColumn();
         metadataColumn.setLabel("id");
         metadataColumn.setKey(true);
-        metadataColumn.setType(EMetadataType.INTEGER.toString());
+        metadataColumn.setType(INTEGER_TYPE);
         metadatColumns.add(metadataColumn);
 
         metadataColumn = new MetadataColumn();
         metadataColumn.setLabel("name");
         metadataColumn.setKey(false);
-        metadataColumn.setType(EMetadataType.STRING.toString());
+        metadataColumn.setType(STRING_TYPE);
         metadatColumns.add(metadataColumn);
 
         metadataTable.setListColumns(metadatColumns);
@@ -187,7 +191,7 @@ public class MapperDataTestGenerator {
         MetadataColumn metadataColumn = new MetadataColumn();
         metadataColumn.setLabel("id");
         metadataColumn.setKey(true);
-        metadataColumn.setType(EMetadataType.INTEGER.toString());
+        metadataColumn.setType(INTEGER_TYPE);
         metadatColumns.add(metadataColumn);
 
         metadataColumn = new MetadataColumn();
@@ -231,7 +235,7 @@ public class MapperDataTestGenerator {
         MetadataColumn metadataColumn = new MetadataColumn();
         metadataColumn.setLabel("newId");
         metadataColumn.setKey(true);
-        metadataColumn.setType(EMetadataType.INTEGER.toString());
+        metadataColumn.setType(INTEGER_TYPE);
         metadatColumns.add(metadataColumn);
 
         metadataColumn = new MetadataColumn();
@@ -273,17 +277,19 @@ public class MapperDataTestGenerator {
 
         externalData.setInputTables(generateExternalTables(TableType.INPUT, new TableType[] { TableType.INPUT }, 5, 5));
         externalData.setVarsTables(generateExternalTables(TableType.VARS, new TableType[] { TableType.INPUT }, 20));
-        externalData.setOutputTables(generateExternalTables(TableType.OUTPUT, new TableType[] { TableType.INPUT, TableType.VARS }, 20));
+        externalData.setOutputTables(generateExternalTables(TableType.OUTPUT, new TableType[] { TableType.INPUT,
+                TableType.VARS }, 20));
 
         return externalData;
     }
 
-    private List<ExternalMapperTable> generateExternalTables(TableType tableType, TableType[] tableTypes, int nExpressionsMax) {
+    private List<ExternalMapperTable> generateExternalTables(TableType tableType, TableType[] tableTypes,
+            int nExpressionsMax) {
         return generateExternalTables(tableType, tableTypes, nExpressionsMax, null);
     }
 
-    private List<ExternalMapperTable> generateExternalTables(TableType tableType, TableType[] tableTypes, int nFieldsMaxInExpression,
-            Integer nExpressionsMax) {
+    private List<ExternalMapperTable> generateExternalTables(TableType tableType, TableType[] tableTypes,
+            int nFieldsMaxInExpression, Integer nExpressionsMax) {
         List<ExternalMapperTable> tables = new ArrayList<ExternalMapperTable>();
         if (this.useConnectionsToGenerateExternalTables && tableType == TableType.INPUT) {
 
@@ -303,8 +309,8 @@ public class MapperDataTestGenerator {
                     mapperTableEntry.setName(column.getLabel());
                     if (!fixedData && rand.nextBoolean()) {
                         if (nExpressionsMax == null || nExpressions <= nExpressionsMax) {
-                            mapperTableEntry.setExpression(generateExpression(tableTypes, N_FIELDS, rand.nextInt(nFieldsMaxInExpression),
-                                    nExpressions));
+                            mapperTableEntry.setExpression(generateExpression(tableTypes, N_FIELDS, rand
+                                    .nextInt(nFieldsMaxInExpression), nExpressions));
                             nExpressions++;
                         }
                     }
@@ -337,7 +343,8 @@ public class MapperDataTestGenerator {
                         baseColumnName = COLUMN_NAME;
                     }
                     mapperTableEntry.setName(baseColumnName + j);
-                    mapperTableEntry.setExpression(generateExpression(tableTypes, N_FIELDS, rand.nextInt(nFieldsMaxInExpression), j));
+                    mapperTableEntry.setExpression(generateExpression(tableTypes, N_FIELDS, rand
+                            .nextInt(nFieldsMaxInExpression), j));
                     tableEntries.add(mapperTableEntry);
                 }
 
@@ -366,7 +373,8 @@ public class MapperDataTestGenerator {
                 // for (int iField = 0; iField < tables2.length; iField++) {
                 for (int i = 0; i < tables2.length; i++) {
                     TableType tableType = tables2[i];
-                    expression += gen.getTableColumnVariable(tableType.getBaseTableName() + (iTable + 1), COLUMN_NAME + (currentIndex));
+                    expression += gen.getTableColumnVariable(tableType.getBaseTableName() + (iTable + 1), COLUMN_NAME
+                            + (currentIndex));
                 }
                 // }
             }
@@ -376,12 +384,12 @@ public class MapperDataTestGenerator {
                 expression += (rand.nextInt(4) == 0 ? "\n" : "")
                         + (rand.nextBoolean() ? " + " : " - ")
                         + gen.getTableColumnVariable(tableType.getBaseTableName()
-                                + (tableType != TableType.VARS ? (rand.nextInt(tableType.getNTables()) + 1) : ""), FIELDS[rand
-                                .nextInt(FIELDS.length)]
-                                + (rand.nextInt(nFields) + 1))
-                        + (rand.nextInt(4) == 0 ? (rand.nextBoolean() ? " + " : " - ") + "$array_var" + rand.nextInt(10) + "[test_var]"
-                                : "")
-                        + (rand.nextInt(4) == 0 ? (rand.nextBoolean() ? " + " : " - ") + "$hash_var" + rand.nextInt(10) + "{test_var}" : "")
+                                + (tableType != TableType.VARS ? (rand.nextInt(tableType.getNTables()) + 1) : ""),
+                                FIELDS[rand.nextInt(FIELDS.length)] + (rand.nextInt(nFields) + 1))
+                        + (rand.nextInt(4) == 0 ? (rand.nextBoolean() ? " + " : " - ") + "$array_var"
+                                + rand.nextInt(10) + "[test_var]" : "")
+                        + (rand.nextInt(4) == 0 ? (rand.nextBoolean() ? " + " : " - ") + "$hash_var" + rand.nextInt(10)
+                                + "{test_var}" : "")
                         + (rand.nextInt(4) == 0 ? (rand.nextBoolean() ? " + " : " - ") + "$var" + rand.nextInt(10) : "");
             }
         }
@@ -560,7 +568,8 @@ public class MapperDataTestGenerator {
         mapperTableEntry.setName("upperCaseContent");
         mapperTableEntry.setType("String");
         mapperTableEntry.setExpression("uc " + gen.getTableColumnVariable("page", "content") + " + "
-                + gen.getTableColumnVariable("book", "id_book") + " - 2 * " + gen.getTableColumnVariable("book", "id_book"));
+                + gen.getTableColumnVariable("book", "id_book") + " - 2 * "
+                + gen.getTableColumnVariable("book", "id_book"));
         tableEntries.add(mapperTableEntry);
 
         mapperTableEntry = new ExternalMapperTableEntry();
@@ -749,7 +758,8 @@ public class MapperDataTestGenerator {
 
         mapperTableEntry = new ExternalMapperTableEntry();
         mapperTableEntry.setName("content");
-        mapperTableEntry.setExpression(gen.getTableColumnVariable(VarsTable.PREFIX_VARS_TABLE_NAME, "upperCaseContent"));
+        mapperTableEntry
+                .setExpression(gen.getTableColumnVariable(VarsTable.PREFIX_VARS_TABLE_NAME, "upperCaseContent"));
         mapperTableEntry.setType("String");
         tableEntries.add(mapperTableEntry);
 
@@ -819,7 +829,8 @@ public class MapperDataTestGenerator {
 
         mapperTableEntry = new ExternalMapperTableEntry();
         mapperTableEntry.setName("content");
-        mapperTableEntry.setExpression(gen.getTableColumnVariable(VarsTable.PREFIX_VARS_TABLE_NAME, "upperCaseContent"));
+        mapperTableEntry
+                .setExpression(gen.getTableColumnVariable(VarsTable.PREFIX_VARS_TABLE_NAME, "upperCaseContent"));
         mapperTableEntry.setType("int");
         tableEntries.add(mapperTableEntry);
 
@@ -919,8 +930,8 @@ public class MapperDataTestGenerator {
                 }
                 metadataColumn.setLabel(baseColumnName + j);
                 metadataColumn.setKey(rand.nextBoolean());
-                EMetadataType[] types = EMetadataType.values();
-                metadataColumn.setType(types[rand.nextInt(types.length - 1)].toString());
+                String[] types = MetadataTalendType.getTalendTypesLabels();
+                metadataColumn.setType(types[rand.nextInt(types.length - 1)]);
                 metadataColumn.setNullable(rand.nextBoolean());
                 metadatColumns.add(metadataColumn);
             }
@@ -951,19 +962,19 @@ public class MapperDataTestGenerator {
         MetadataColumn metadataColumn = new MetadataColumnTest();
         metadataColumn.setLabel("id_book");
         metadataColumn.setKey(true);
-        metadataColumn.setType(EMetadataType.INTEGER.toString());
+        metadataColumn.setType(INTEGER_TYPE);
         metadatColumns.add(metadataColumn);
 
         metadataColumn = new MetadataColumnTest();
         metadataColumn.setLabel("name");
         metadataColumn.setKey(false);
-        metadataColumn.setType(EMetadataType.STRING.toString());
+        metadataColumn.setType(STRING_TYPE);
         metadatColumns.add(metadataColumn);
 
         metadataColumn = new MetadataColumnTest();
         metadataColumn.setLabel("nb_pages");
         metadataColumn.setKey(false);
-        metadataColumn.setType(EMetadataType.INTEGER.toString());
+        metadataColumn.setType(INTEGER_TYPE);
         metadatColumns.add(metadataColumn);
 
         metadataTable.setListColumns(metadatColumns);
@@ -983,19 +994,19 @@ public class MapperDataTestGenerator {
 
         metadataColumn = new MetadataColumnTest();
         metadataColumn.setLabel("id");
-        metadataColumn.setType(EMetadataType.INTEGER.toString());
+        metadataColumn.setType(INTEGER_TYPE);
         metadatColumns.add(metadataColumn);
 
         metadataColumn = new MetadataColumnTest();
         metadataColumn.setLabel("id_book");
         metadataColumn.setKey(true);
-        metadataColumn.setType(EMetadataType.INTEGER.toString());
+        metadataColumn.setType(INTEGER_TYPE);
         metadatColumns.add(metadataColumn);
 
         metadataColumn = new MetadataColumnTest();
         metadataColumn.setLabel("content");
         metadataColumn.setKey(true);
-        metadataColumn.setType(EMetadataType.STRING.toString());
+        metadataColumn.setType(STRING_TYPE);
         metadatColumns.add(metadataColumn);
 
         metadataTable.setListColumns(metadatColumns);
@@ -1015,19 +1026,19 @@ public class MapperDataTestGenerator {
 
         metadataColumn = new MetadataColumnTest();
         metadataColumn.setLabel("id");
-        metadataColumn.setType(EMetadataType.INTEGER.toString());
+        metadataColumn.setType(INTEGER_TYPE);
         metadatColumns.add(metadataColumn);
 
         metadataColumn = new MetadataColumnTest();
         metadataColumn.setLabel("id_book");
         metadataColumn.setKey(true);
-        metadataColumn.setType(EMetadataType.INTEGER.toString());
+        metadataColumn.setType(INTEGER_TYPE);
         metadatColumns.add(metadataColumn);
 
         metadataColumn = new MetadataColumnTest();
         metadataColumn.setLabel("id_page_different");
         metadataColumn.setKey(true);
-        metadataColumn.setType(EMetadataType.STRING.toString());
+        metadataColumn.setType(STRING_TYPE);
         metadatColumns.add(metadataColumn);
 
         metadataTable.setListColumns(metadatColumns);
@@ -1053,19 +1064,19 @@ public class MapperDataTestGenerator {
         MetadataColumn metadataColumn = new MetadataColumnTest();
         metadataColumn.setLabel("newIdBook");
         metadataColumn.setKey(true);
-        metadataColumn.setType(EMetadataType.INTEGER.toString());
+        metadataColumn.setType(INTEGER_TYPE);
         metadatColumns.add(metadataColumn);
 
         metadataColumn = new MetadataColumnTest();
         metadataColumn.setLabel("name");
         metadataColumn.setKey(false);
-        metadataColumn.setType(EMetadataType.STRING.toString());
+        metadataColumn.setType(STRING_TYPE);
         metadatColumns.add(metadataColumn);
 
         metadataColumn = new MetadataColumnTest();
         metadataColumn.setLabel("nb_pages");
         metadataColumn.setKey(false);
-        metadataColumn.setType(EMetadataType.INTEGER.toString());
+        metadataColumn.setType(INTEGER_TYPE);
         metadatColumns.add(metadataColumn);
 
         metadataTable.setListColumns(metadatColumns);
@@ -1080,19 +1091,19 @@ public class MapperDataTestGenerator {
         metadataColumn = new MetadataColumnTest();
         metadataColumn.setLabel("idUser");
         metadataColumn.setKey(true);
-        metadataColumn.setType(EMetadataType.INTEGER.toString());
+        metadataColumn.setType(INTEGER_TYPE);
         metadatColumns.add(metadataColumn);
 
         metadataColumn = new MetadataColumnTest();
         metadataColumn.setLabel("idBook");
         metadataColumn.setKey(false);
-        metadataColumn.setType(EMetadataType.STRING.toString());
+        metadataColumn.setType(STRING_TYPE);
         metadatColumns.add(metadataColumn);
 
         metadataColumn = new MetadataColumnTest();
         metadataColumn.setLabel("content");
         metadataColumn.setKey(false);
-        metadataColumn.setType(EMetadataType.INTEGER.toString());
+        metadataColumn.setType(INTEGER_TYPE);
         metadatColumns.add(metadataColumn);
 
         metadataTable.setListColumns(metadatColumns);
@@ -1107,19 +1118,19 @@ public class MapperDataTestGenerator {
         metadataColumn = new MetadataColumnTest();
         metadataColumn.setLabel("id");
         metadataColumn.setKey(true);
-        metadataColumn.setType(EMetadataType.INTEGER.toString());
+        metadataColumn.setType(INTEGER_TYPE);
         metadatColumns.add(metadataColumn);
 
         metadataColumn = new MetadataColumnTest();
         metadataColumn.setLabel("id_book");
         metadataColumn.setKey(false);
-        metadataColumn.setType(EMetadataType.INTEGER.toString());
+        metadataColumn.setType(INTEGER_TYPE);
         metadatColumns.add(metadataColumn);
 
         metadataColumn = new MetadataColumnTest();
         metadataColumn.setLabel("content");
         metadataColumn.setKey(false);
-        metadataColumn.setType(EMetadataType.STRING.toString());
+        metadataColumn.setType(STRING_TYPE);
         metadatColumns.add(metadataColumn);
 
         metadataTable.setListColumns(metadatColumns);
@@ -1134,19 +1145,19 @@ public class MapperDataTestGenerator {
         metadataColumn = new MetadataColumnTest();
         metadataColumn.setLabel("id");
         metadataColumn.setKey(true);
-        metadataColumn.setType(EMetadataType.INTEGER.toString());
+        metadataColumn.setType(INTEGER_TYPE);
         metadatColumns.add(metadataColumn);
 
         metadataColumn = new MetadataColumnTest();
         metadataColumn.setLabel("id_book");
         metadataColumn.setKey(false);
-        metadataColumn.setType(EMetadataType.INTEGER.toString());
+        metadataColumn.setType(INTEGER_TYPE);
         metadatColumns.add(metadataColumn);
 
         metadataColumn = new MetadataColumnTest();
         metadataColumn.setLabel("content");
         metadataColumn.setKey(false);
-        metadataColumn.setType(EMetadataType.STRING.toString());
+        metadataColumn.setType(STRING_TYPE);
         metadatColumns.add(metadataColumn);
 
         metadataTable.setListColumns(metadatColumns);
@@ -1504,7 +1515,9 @@ public class MapperDataTestGenerator {
             return null;
         }
 
-        /* (non-Javadoc)
+        /*
+         * (non-Javadoc)
+         * 
          * @see org.talend.core.model.process.INode#hasConditionalOutputs()
          */
         public Boolean hasConditionalOutputs() {
