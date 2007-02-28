@@ -308,7 +308,7 @@ public class XPathProposalProvider implements IContentProposalProvider {
      */
     private String modifyXpathToSetFirstAscendant(String currentExpr) {
 
-        if (currentExpr.trim().length() > 0 && !currentExpr.equals("/")) {
+        if (currentExpr.trim().length() > 0 && !currentExpr.equals("/")) { //$NON-NLS-1$
 
             do {
 

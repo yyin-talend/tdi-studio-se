@@ -103,9 +103,9 @@ public class ImportProjectAsWizardPage extends WizardPage {
 
     private Button importManyProjectsButton;
 
-    private String previouslyBrowsedDirectory = "";
+    private String previouslyBrowsedDirectory = ""; //$NON-NLS-1$
 
-    private String previouslyBrowsedArchive = "";
+    private String previouslyBrowsedArchive = ""; //$NON-NLS-1$
 
     private String lastPath;
 

@@ -82,7 +82,7 @@ public class ImportProjectAsWizard extends Wizard {
         manyProjectsPage = new WizardProjectsImportPage();
         addPage(manyProjectsPage);
 
-        setWindowTitle(Messages.getString("ImportProjectAsWizard.windowTitle"));
+        setWindowTitle(Messages.getString("ImportProjectAsWizard.windowTitle")); //$NON-NLS-1$
         setDefaultPageImageDescriptor(IDEWorkbenchPlugin.getIDEImageDescriptor("wizban/importproj_wiz.png")); //$NON-NLS-1$
     }
 
@@ -144,7 +144,7 @@ public class ImportProjectAsWizard extends Wizard {
             } catch (InvocationTargetException e) {
                 // one of the steps resulted in a core exception
                 Throwable t = e.getTargetException();
-                String message = Messages.getString("ImportProjectAsWizardPage.error.message");
+                String message = Messages.getString("ImportProjectAsWizardPage.error.message"); //$NON-NLS-1$
                 IStatus status;
                 if (t instanceof CoreException) {
                     status = ((CoreException) t).getStatus();

@@ -100,13 +100,13 @@ public class EmfComponent implements IComponent {
 
     public static final String REPOSITORY = "REPOSITORY"; //$NON-NLS-1$
 
-    public static final String TEXT_BUILTIN = "Built-In";
+    public static final String TEXT_BUILTIN = Messages.getString("EmfComponent.builtIn"); //$NON-NLS-1$
 
-    public static final String TEXT_REPOSITORY = "Repository";
+    public static final String TEXT_REPOSITORY = Messages.getString("EmfComponent.repository"); //$NON-NLS-1$
 
     private static final String TSTATCATCHER_NAME = "tStatCatcher"; //$NON-NLS-1$
 
-    private static final String STRING_TYPE = "String";
+    private static final String STRING_TYPE = "String"; //$NON-NLS-1$
 
     private IMultipleComponentManager multipleComponentManager;
 

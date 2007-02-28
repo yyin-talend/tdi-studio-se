@@ -78,7 +78,7 @@ public class ExportFileResource {
     }
 
     public void addResources(List<URL> resources) {
-        addResources("", resources);
+        addResources("", resources); //$NON-NLS-1$
     }
 
     public ProcessItem getProcess() {

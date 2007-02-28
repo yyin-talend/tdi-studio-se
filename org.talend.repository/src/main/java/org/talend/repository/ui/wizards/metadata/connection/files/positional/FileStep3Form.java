@@ -350,7 +350,7 @@ public class FileStep3Form extends AbstractPositionalFileStepForm {
             if (firstRowToExtractMetadata == 1) {
                 String value = fields.get(i).getValue();
                 if (value != null && !value.equals("")) { //$NON-NLS-1$
-                    label[i] = value.trim().replaceAll(" ", "_");
+                    label[i] = value.trim().replaceAll(" ", "_"); //$NON-NLS-1$ //$NON-NLS-2$
                 }
             }
         }

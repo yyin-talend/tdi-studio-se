@@ -67,13 +67,13 @@ import org.talend.resources.ResourcesPlugin;
  */
 public class ImportProjectsUtilities {
 
-    public static final String TALENDDEMOS_NAME = "TalendDemos";
+    public static final String TALENDDEMOS_NAME = "TalendDemos"; //$NON-NLS-1$
 
-    public static final String TALENDDEMOS_TECH_NAME = "TALENDDEMOS";
+    public static final String TALENDDEMOS_TECH_NAME = "TALENDDEMOS"; //$NON-NLS-1$
 
-    public static final String TALEND_PROJECT_FILE_NAME = "talend.project";
+    public static final String TALEND_PROJECT_FILE_NAME = "talend.project"; //$NON-NLS-1$
 
-    public static final String OLD_TALEND_PROJECT_FILE_NAME = "talendProject";
+    public static final String OLD_TALEND_PROJECT_FILE_NAME = "talendProject"; //$NON-NLS-1$
 
     public static void importProjectAs(Shell shell, String newName, String technicalName, String sourcePath,
             IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
@@ -99,15 +99,15 @@ public class ImportProjectsUtilities {
 
         IResource file2 = containers.findMember(IProjectDescription.DESCRIPTION_FILE_NAME);
         try {
-            FilesUtils.replaceInFile("<name>.*</name>", file2.getLocation().toOSString(), "<name>" + technicalName + "</name>");
+            FilesUtils.replaceInFile("<name>.*</name>", file2.getLocation().toOSString(), "<name>" + technicalName + "</name>"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
             IResource file3 = containers.findMember(OLD_TALEND_PROJECT_FILE_NAME);
             if (!file3.exists()) {
                 file3 = containers.findMember(TALEND_PROJECT_FILE_NAME);
             }
-            FilesUtils.replaceInFile("label=\".*?\"", file3.getLocation().toOSString(), "label=\"" + newName + "\"");
-            FilesUtils.replaceInFile("technicalLabel=\".*?\"", file3.getLocation().toOSString(), "technicalLabel=\""
-                    + technicalName + "\"");
+            FilesUtils.replaceInFile("label=\".*?\"", file3.getLocation().toOSString(), "label=\"" + newName + "\""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            FilesUtils.replaceInFile("technicalLabel=\".*?\"", file3.getLocation().toOSString(), "technicalLabel=\"" //$NON-NLS-1$ //$NON-NLS-2$
+                    + technicalName + "\""); //$NON-NLS-1$
         } catch (IOException e) {
             throw new InvocationTargetException(e);
         }
@@ -137,7 +137,7 @@ public class ImportProjectsUtilities {
             source = tarProvider.getRoot();
             provider = tarProvider;
         } else {
-            throw new IllegalArgumentException("File " + sourcePath + " is not a zip nither a tar file");
+            throw new IllegalArgumentException("File " + sourcePath + " is not a zip neither a tar file");
         }
 
         importProject(shell, provider, source, new Path(technicalName), false, true, monitor);

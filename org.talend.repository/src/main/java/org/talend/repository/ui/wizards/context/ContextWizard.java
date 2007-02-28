@@ -84,7 +84,7 @@ public class ContextWizard extends RepositoryWizard implements INewWizard {
         super(workbench, creation);
         pathToSave = getPath(selection);
 
-        setWindowTitle(Messages.getString("ContextWizard.windowTitle")); //$NON-NLS-1$
+        setWindowTitle(""); //$NON-NLS-1$
         setDefaultPageImageDescriptor(ImageProvider.getImageDesc(ECoreImage.CONTEXT_WIZ));
         setNeedsProgressMonitor(true);
 
@@ -125,7 +125,7 @@ public class ContextWizard extends RepositoryWizard implements INewWizard {
             contextWizardPage0.setPageComplete(false);
         }
 
-        ContextPage contextPage = new ContextPage("test", contextManager);
+        ContextPage contextPage = new ContextPage("test", contextManager); //$NON-NLS-1$
         addPage(contextPage);
     }
 

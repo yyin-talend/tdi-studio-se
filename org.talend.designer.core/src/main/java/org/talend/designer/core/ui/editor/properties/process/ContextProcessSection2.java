@@ -53,6 +53,7 @@ import org.talend.core.model.process.IContextParameter;
 import org.talend.core.model.properties.ContextItem;
 import org.talend.core.ui.context.JobContextComposite;
 import org.talend.designer.core.DesignerPlugin;
+import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EmfComponent;
 import org.talend.designer.core.ui.MultiPageTalendEditor;
 import org.talend.designer.core.ui.editor.cmd.ContextAddCommand2;
@@ -183,7 +184,7 @@ public class ContextProcessSection2 extends AbstractPropertySection {
 
             CLabel label = new CLabel(composite, SWT.NONE);
             label.setBackground(this.getBackground());
-            label.setText("Context Type");
+            label.setText(Messages.getString("ContextProcessSection2.contextType")); //$NON-NLS-1$
 
             CCombo combo = new CCombo(composite, SWT.BORDER);
             combo.setEditable(false);
@@ -292,7 +293,7 @@ public class ContextProcessSection2 extends AbstractPropertySection {
                 repositoryContextItemMap.clear();
                 for (ContextItem contextItem : contextItemList) {
                     if (factory.getStatus(contextItem) != ERepositoryStatus.DELETED) {
-                        String name = "CONTEXT:" + contextItem.getProperty().getLabel();
+                        String name = Messages.getString("ContextProcessSection2.context") + contextItem.getProperty().getLabel(); //$NON-NLS-1$
                         String value = contextItem.getProperty().getId();
                         repositoryContextItemMap.put(name, contextItem);
                         repositoryContextValueMap.put(value, name);

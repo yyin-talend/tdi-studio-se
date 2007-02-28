@@ -45,13 +45,13 @@ import org.talend.designer.core.model.utils.emf.talendfile.TalendFileFactory;
  */
 public class ComponentUtilities {
 
-    private static final String CASE_SENSITIVE = "CASE_SENSITIVE";
+    private static final String CASE_SENSITIVE = "CASE_SENSITIVE"; //$NON-NLS-1$
 
-    private static final String KEY_ATTRIBUTE = "KEY_ATTRIBUTE";
+    private static final String KEY_ATTRIBUTE = "KEY_ATTRIBUTE"; //$NON-NLS-1$
 
-    private static final String SCHEMA_COLUMN = "SCHEMA_COLUMN";
+    private static final String SCHEMA_COLUMN = "SCHEMA_COLUMN"; //$NON-NLS-1$
 
-    private static final String UNIQUE_NAME = "UNIQUE_NAME";
+    private static final String UNIQUE_NAME = "UNIQUE_NAME"; //$NON-NLS-1$
 
     public static String getNodePropertyValue(NodeType node, String property) {
         ElementParameterType prop = getNodeProperty(node, property);
@@ -109,7 +109,7 @@ public class ComponentUtilities {
     }
 
     public static void replaceInNodeParameterValue(NodeType node, String oldName, String newName) {
-        String oldName2 = "\\b" + oldName + "\\b";
+        String oldName2 = "\\b" + oldName + "\\b"; //$NON-NLS-1$ //$NON-NLS-2$
         for (Object o : node.getElementParameter()) {
             ElementParameterType t = (ElementParameterType) o;
             String value = t.getValue();
@@ -150,7 +150,7 @@ public class ComponentUtilities {
 
             ElementValueType elementValue3 = fileFact.createElementValueType();
             elementValue3.setElementRef(CASE_SENSITIVE);
-            elementValue3.setValue("false");
+            elementValue3.setValue("false"); //$NON-NLS-1$
             values.add(elementValue3);
         }
         return values;

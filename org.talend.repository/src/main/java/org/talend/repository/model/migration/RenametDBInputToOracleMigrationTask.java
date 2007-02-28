@@ -43,19 +43,19 @@ public class RenametDBInputToOracleMigrationTask extends AbstractMigrationTask i
 
     public boolean execute(Project project) {
         try {
-            IComponentConversion removePropertyComponentConversion = new RemovePropertyComponentConversion("TYPE");
+            IComponentConversion removePropertyComponentConversion = new RemovePropertyComponentConversion("TYPE"); //$NON-NLS-1$
 
-            RenameComponentConversion renameComponentConversion = new RenameComponentConversion("tOracleInput");
+            RenameComponentConversion renameComponentConversion = new RenameComponentConversion("tOracleInput"); //$NON-NLS-1$
             IComponentFilter filter1 = new PropertyComponentFilter("tDBInput", "TYPE", "oracle;oracle");//$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
             ModifyComponentsAction.searchAndModify(filter1, Arrays.<IComponentConversion> asList(renameComponentConversion,
                     removePropertyComponentConversion));
 
-            renameComponentConversion.setNewName("tOracleOutput");
+            renameComponentConversion.setNewName("tOracleOutput"); //$NON-NLS-1$
             IComponentFilter filter2 = new PropertyComponentFilter("tDBOutput", "TYPE", "oracle;oracle;Oracle with SID");//$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
             ModifyComponentsAction.searchAndModify(filter2, Arrays.<IComponentConversion> asList(renameComponentConversion,
                     removePropertyComponentConversion));
 
-            renameComponentConversion.setNewName("tOracleRow");
+            renameComponentConversion.setNewName("tOracleRow"); //$NON-NLS-1$
             IComponentFilter filter3 = new PropertyComponentFilter("tDBSQLRow", "TYPE", "oracle;oracle");//$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
             ModifyComponentsAction.searchAndModify(filter3, Arrays.<IComponentConversion> asList(renameComponentConversion,
                     removePropertyComponentConversion));

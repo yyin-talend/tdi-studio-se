@@ -36,6 +36,7 @@ import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IContextManager;
 import org.talend.core.model.properties.ContextItem;
 import org.talend.designer.core.DesignerPlugin;
+import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.editor.properties.process.ContextProcessSection2;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.repository.model.ERepositoryStatus;
@@ -66,7 +67,7 @@ public class ContextRepositoryCommand extends Command {
         this.contextManager = process.getContextManager();
         this.contextItem = contextItem;
         oldContextList = new ArrayList<IContext>();
-        this.setLabel("Modify Context");
+        this.setLabel(Messages.getString("ContextRepositoryCommand.modifyContext")); //$NON-NLS-1$
     }
 
     @Override

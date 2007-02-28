@@ -375,14 +375,14 @@ public class DelimitedFileStep3Form extends AbstractDelimitedFileStepForm {
                     // }
                     if (numberOfCol <= fields.size()) {
                         if (fields.get(i).getValue() != null && !("").equals(fields.get(i).getValue())) { //$NON-NLS-1$
-                            label[i] = fields.get(i).getValue().trim().replaceAll(" ", "_");
+                            label[i] = fields.get(i).getValue().trim().replaceAll(" ", "_"); //$NON-NLS-1$ //$NON-NLS-2$
                         } else {
                             label[i] = Messages.getString("FileStep3.column") + " " + i; //$NON-NLS-1$ //$NON-NLS-2$
                         }
                     } else {
                         if (i < fields.size()) {
                             if (fields.get(i).getValue() != null && !("").equals(fields.get(i).getValue())) { //$NON-NLS-1$
-                                label[i] = fields.get(i).getValue().trim().replaceAll(" ", "_");
+                                label[i] = fields.get(i).getValue().trim().replaceAll(" ", "_"); //$NON-NLS-1$ //$NON-NLS-2$
                             } else {
                                 label[i] = Messages.getString("FileStep3.column") + " " + i; //$NON-NLS-1$ //$NON-NLS-2$
                             }

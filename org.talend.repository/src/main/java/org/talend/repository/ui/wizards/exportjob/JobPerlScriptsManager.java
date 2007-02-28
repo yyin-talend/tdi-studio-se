@@ -128,7 +128,7 @@ public class JobPerlScriptsManager extends JobScriptsManager {
             NodeType nType = (NodeType) iter.next();
             String componentName = nType.getComponentName();
 
-            List<URL> models = ComponentsFactoryProvider.getInstance().getComponentModel(componentName, ".pm");
+            List<URL> models = ComponentsFactoryProvider.getInstance().getComponentModel(componentName, ".pm"); //$NON-NLS-1$
             resource.addResources(COMPONENTS_FOLDER_NAME + File.separatorChar + componentName, models);
         }
     }
@@ -271,7 +271,7 @@ public class JobPerlScriptsManager extends JobScriptsManager {
 
         String contextCode = context;
 
-        String[] cmd = new String[] { perlInterpreter, "-I" + COMPONENTS_FOLDER_NAME, perlCode, contextArg + contextCode };
+        String[] cmd = new String[] { perlInterpreter, "-I" + COMPONENTS_FOLDER_NAME, perlCode, contextArg + contextCode }; //$NON-NLS-1$
 
         StringBuffer sb = new StringBuffer();
         sb.append(""); //$NON-NLS-1$
