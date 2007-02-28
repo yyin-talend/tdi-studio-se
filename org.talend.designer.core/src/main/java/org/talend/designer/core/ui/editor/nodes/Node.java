@@ -386,8 +386,8 @@ public class Node extends Element implements INode {
      */
     public void addInput(final Connection connection) {
         this.inputs.add(connection);
-        if (!isExternalNode() && component.isSchemaAutoPropagated()
-                && (connection.getLineStyle() == EConnectionType.FLOW_MAIN) && ((Process) getProcess()).isActivate()) {
+        if (!isExternalNode() && component.isSchemaAutoPropagated() && (connection.getLineStyle() == EConnectionType.FLOW_MAIN)
+                && ((Process) getProcess()).isActivate()) {
             if ((metadataList.get(0).getListColumns().size() == 0) || (outputs.size() == 0)) {
                 metadataList.get(0).setListColumns(connection.getMetadataTable().clone().getListColumns());
             }
@@ -488,8 +488,7 @@ public class Node extends Element implements INode {
             setShowHint((Boolean) value);
         }
         if (id.equals(EParameterName.SCHEMA_TYPE.getName()) || id.equals(EParameterName.QUERYSTORE_TYPE.getName())
-                || id.equals(EParameterName.PROPERTY_TYPE.getName())
-                || id.equals(EParameterName.PROCESS_TYPE_PROCESS.getName())) {
+                || id.equals(EParameterName.PROPERTY_TYPE.getName()) || id.equals(EParameterName.PROCESS_TYPE_PROCESS.getName())) {
             setPropertyValue(EParameterName.UPDATE_COMPONENTS.getName(), Boolean.TRUE);
         }
 
@@ -864,8 +863,8 @@ public class Node extends Element implements INode {
         // List<ModuleNeeded> list = ModulesNeededProvider.getModulesNeeded(getComponentName());
 
         Class toEval = null;
-        if (((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY)).getProject()
-                .getLanguage().equals(ECodeLanguage.JAVA)) {
+        if (((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY)).getProject().getLanguage().equals(
+                ECodeLanguage.JAVA)) {
             toEval = IJavaModuleService.class;
         } else {
             toEval = IPerlModuleService.class;
@@ -1107,9 +1106,11 @@ public class Node extends Element implements INode {
         checkModules();
         if (externalNode != null) {
             List<Problem> problems = externalNode.getProblems();
-            for (Problem current : problems) {
-                current.setElement(this);
-                Problems.add(current);
+            if (problems != null) {
+                for (Problem current : problems) {
+                    current.setElement(this);
+                    Problems.add(current);
+                }
             }
         }
     }
