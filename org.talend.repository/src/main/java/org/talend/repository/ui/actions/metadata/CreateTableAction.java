@@ -90,7 +90,7 @@ public class CreateTableAction extends AbstractCreateAction {
     }
 
     public void run() {
-        RepositoryNode metadataNode = getViewPart().getRoot().getChildren().get(5);
+        RepositoryNode metadataNode = getViewPart().getRoot().getChildren().get(6);
 
         // Force focus to the repositoryView and open Metadata and DbConnection nodes
         getViewPart().setFocus();
