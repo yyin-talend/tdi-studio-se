@@ -93,9 +93,9 @@ public class BusinessModelingAssistantProvider extends ModelingAssistantProvider
     public List getTypesForSource(IAdaptable target, IElementType relationshipType) {
         IGraphicalEditPart editPart = (IGraphicalEditPart) target.getAdapter(IGraphicalEditPart.class);
         if (editPart instanceof BusinessItemShapeEditPart
-                && (relationshipType.equals(BusinessElementTypes.BusinessItemRelationship_3001)
-                        || relationshipType.equals(BusinessElementTypes.DirectionalBusinessItemRelationship_3002) || relationshipType
-                        .equals(BusinessElementTypes.BidirectionalBusinessItemRelationship_3003))) {
+                && relationshipType.getEClass().getEAllSuperTypes().contains(
+                        org.talend.designer.business.model.business.BusinessPackage.eINSTANCE
+                                .getBaseBusinessItemRelationship())) {
             List types = new ArrayList();
             types.add(BusinessElementTypes.ActionBusinessItem_1001);
             types.add(BusinessElementTypes.TerminalBusinessItem_1002);
@@ -115,12 +115,10 @@ public class BusinessModelingAssistantProvider extends ModelingAssistantProvider
 
     public List getTypesForTarget(IAdaptable source, IElementType relationshipType) {
         IGraphicalEditPart editPart = (IGraphicalEditPart) source.getAdapter(IGraphicalEditPart.class);
-        IGraphicalEditPart relationShipEditPart = (IGraphicalEditPart) relationshipType
-                .getAdapter(IGraphicalEditPart.class);
         if (editPart instanceof BusinessItemShapeEditPart
-                && (relationshipType.equals(BusinessElementTypes.BusinessItemRelationship_3001)
-                        || relationshipType.equals(BusinessElementTypes.DirectionalBusinessItemRelationship_3002) || relationshipType
-                        .equals(BusinessElementTypes.BidirectionalBusinessItemRelationship_3003))) {
+                && relationshipType.getEClass().getEAllSuperTypes().contains(
+                        org.talend.designer.business.model.business.BusinessPackage.eINSTANCE
+                                .getBaseBusinessItemRelationship())) {
             List types = new ArrayList();
             types.add(BusinessElementTypes.ActionBusinessItem_1001);
             types.add(BusinessElementTypes.TerminalBusinessItem_1002);
