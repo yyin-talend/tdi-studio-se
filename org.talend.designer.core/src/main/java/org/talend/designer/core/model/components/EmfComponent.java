@@ -687,6 +687,7 @@ public class EmfComponent implements IComponent {
             talendColumn.setLength(new Integer(xmlColumn.getLENGTH()));
             talendColumn.setNullable(xmlColumn.isNULLABLE());
             talendColumn.setKey(xmlColumn.isKEY());
+            talendColumn.setPattern(xmlColumn.getPATTERN());
             talendColumnList.add(talendColumn);
         }
 

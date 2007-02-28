@@ -37,7 +37,7 @@
       READONLY="true"
     >
       <TABLE>
-        <COLUMN NAME="moment" TYPE="id_Date"/> <!-- PTODO MHIRT/NRO PATTERN="y-M-d" -->
+        <COLUMN NAME="moment" TYPE="id_Date" PATTERN="y-M-d"/>
         <COLUMN NAME="pid" TYPE="id_Long" LENGTH="10"/>
         <COLUMN NAME="master_pid" TYPE="id_Long" LENGTH="10"/>
         <COLUMN NAME="project" TYPE="id_String" LENGTH="50"/>
