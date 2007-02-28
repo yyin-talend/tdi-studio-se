@@ -22,6 +22,7 @@
 		if (metadata!=null) {
 %>
 
+use File::Spec;
 use File::Basename;
 use talend::filesOp;
 
@@ -34,7 +35,7 @@ my @files = getFileList(
 for my $filename (@files) {
 
     $_globals{<%=metadata.getTableName() %>}{CURRENT_FILE} = basename($filename);
-    $_globals{<%=metadata.getTableName() %>}{CURRENT_FILEPATH} = <%=ElementParameterParser.getValue(node, "__DIRECTORY__") %>.'/'.$filename;
+    $_globals{<%=metadata.getTableName() %>}{CURRENT_FILEPATH} = File::Spec->catfile( <%=ElementParameterParser.getValue(node, "__DIRECTORY__") %>, $filename );
 
 <%
 		}
