@@ -36,7 +36,7 @@ public class BusinessItemShapeFigure extends DefaultSizeNodeFigure {
      * DOC mhelleboid BusinessItemShapeFigure constructor comment.
      */
     public BusinessItemShapeFigure() {
-        // PTODO MHE 50
+        // PTODO mhelleboid 50
         super(50, 50);
     }
 

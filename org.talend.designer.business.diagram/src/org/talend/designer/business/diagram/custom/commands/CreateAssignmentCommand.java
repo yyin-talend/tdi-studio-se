@@ -78,7 +78,7 @@ public class CreateAssignmentCommand extends AbstractTransactionalCommand {
      */
     @Override
     protected CommandResult doExecuteWithResult(IProgressMonitor monitor, IAdaptable info) throws ExecutionException {
-        // PTODO MHE check if assignment already exist
+        // PTODO mhelleboid check if assignment already exist
         BusinessAssignment assignment = BusinessFactory.eINSTANCE.createBusinessAssignment();
 
         RepositoryHelper repositoryHelper = new RepositoryHelper();
@@ -109,7 +109,7 @@ public class CreateAssignmentCommand extends AbstractTransactionalCommand {
      */
     @Override
     public boolean canExecute() {
-        // PTODO MHE
+        // PTODO mhelleboid
         // RepositoryHelper repositoryHelper = new RepositoryHelper();
         // TalendItem talendItem = repositoryHelper.createTalendItem(item);
         // if (talendItem == null)

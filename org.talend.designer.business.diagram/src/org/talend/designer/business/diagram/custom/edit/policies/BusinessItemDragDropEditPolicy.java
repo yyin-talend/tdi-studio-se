@@ -55,7 +55,7 @@ public class BusinessItemDragDropEditPolicy extends DiagramDragDropEditPolicy {
                     ((IGraphicalEditPart) getHost()).getEditingDomain());
             createAssignmentCommand.setBusinessItem(businessItem);
 
-            // PTODO MHE create multiples commands
+            // PTODO mhelleboid create multiples commands
             for (Iterator iter = dropObjectsRequest.getObjects().iterator(); iter.hasNext();) {
                 Object talendItem = (Object) iter.next();
                 createAssignmentCommand.setItem(talendItem);

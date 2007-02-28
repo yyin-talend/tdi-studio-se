@@ -67,7 +67,7 @@ public class FindAssignmentAction extends AContextualAction {
             Diagram diagram = (Diagram) businessDiagramEditor.getDiagramEditPart().getModel();
             BusinessProcess businessProcess = (BusinessProcess) diagram.getElement();
 
-            // PTODO MHE use OCL or using a visitor
+            // PTODO mhelleboid use OCL or using a visitor
 
             List list = new ArrayList();
 
@@ -104,7 +104,7 @@ public class FindAssignmentAction extends AContextualAction {
         }
     }
 
-    // PTODO MHE bug for org.eclipse.gmf.runtime.diagram.ui.internal.actions.ZoomContributionItem
+    // PTODO mhelleboid bug for org.eclipse.gmf.runtime.diagram.ui.internal.actions.ZoomContributionItem
     private void zoomFitSelection(ZoomManager zoomManager, List editParts, DiagramEditPart diagramEditPart,
             boolean zoomOutOnly) {
         Rectangle rectangle = null;
@@ -183,7 +183,7 @@ public class FindAssignmentAction extends AContextualAction {
      * org.eclipse.jface.viewers.IStructuredSelection)
      */
     public void init(TreeViewer viewer, IStructuredSelection selection) {
-        // PTODO MHE refactor AContextualAction
+        // PTODO mhelleboid refactor AContextualAction
 
         boolean enabled = false;
         if (!selection.isEmpty() && selection.size() == 1) {

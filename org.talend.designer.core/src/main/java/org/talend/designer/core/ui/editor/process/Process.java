@@ -1615,7 +1615,7 @@ public class Process extends Element implements IProcess {
         return contextManager;
     }
 
-    // PTODO MHE remove
+    // PTODO mhelleboid remove
     public Date getCreationDate() {
         return null;
     }

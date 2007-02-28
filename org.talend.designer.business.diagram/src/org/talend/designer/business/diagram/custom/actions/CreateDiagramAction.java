@@ -47,7 +47,7 @@ public class CreateDiagramAction extends AContextualAction {
     }
 
     public void init(TreeViewer viewer, IStructuredSelection selection) {
-        // PTODO MHE refactor AContextualAction
+        // PTODO mhelleboid refactor AContextualAction
 
         repositoryNode = getRepositoryNode(selection);
         boolean enabled = false;

@@ -43,8 +43,8 @@ public class DocumentBusinessItemShapeFigure extends BusinessItemShapeFigure {
         Rectangle r = getInnerBounds();
 
         int sinHeight = r.height / 8;
-        // PTODO MHE handle zoom and size
-        // PTODO MHE have a look at graphics.drawArc
+        // PTODO mhelleboid handle zoom and size
+        // PTODO mhelleboid have a look at graphics.drawArc
         int sinPoints = 14;
 
         PointList pointList = new PointList();

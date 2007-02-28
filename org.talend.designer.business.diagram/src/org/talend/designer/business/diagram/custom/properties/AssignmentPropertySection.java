@@ -87,7 +87,7 @@ public class AssignmentPropertySection extends AbstractModelerPropertySection {
 
         composite = getWidgetFactory().createFlatFormComposite(parent);
 
-        // PTODO MHE externalize tableviewer creation
+        // PTODO mhelleboid externalize tableviewer creation
 
         adapterFactory = new BusinessItemProviderAdapterFactory();
 
@@ -166,7 +166,7 @@ public class AssignmentPropertySection extends AbstractModelerPropertySection {
     }
 
     private IItemPropertyDescriptor getItemPropertyDescriptor() {
-        // PTODO MHE find another way to itempropertysource without an eobject
+        // PTODO mhelleboid find another way to itempropertysource without an eobject
         BusinessAssignment sampleBusinessAssignment = BusinessFactory.eINSTANCE.createBusinessAssignment();
         EStructuralFeature businessAssignment_Comment = BusinessPackage.eINSTANCE.getBusinessAssignment_Comment();
         IItemPropertySource itemPropertySource = EmfPropertyHelper.getItemPropertySource(adapterFactory,

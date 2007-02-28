@@ -121,7 +121,7 @@ public class DocumentationCreateWizard extends RepositoryWizard implements IDocu
             documentationItem.setExtension(getDocFilePath().getFileExtension());
             documentationItem.setContent(byteArray);
 
-            // PTODO MHE
+            // PTODO mhelleboid
             // doc.setOriginalDocPath(getDocFilePath());
 
             repositoryFactory.create(documentationItem, mainPage.getDestinationPath());
