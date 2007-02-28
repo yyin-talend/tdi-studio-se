@@ -1,0 +1,14 @@
+<%@ jet 
+package="org.talend.designer.codegen.translators" 
+	imports="
+	" 
+	class="DbOracleMapBegin" 
+%>
+
+<%
+
+	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+	MapperComponent node = (MapperComponent) codeGenArgument.getArgument();
+	boolean stats = codeGenArgument.isStatistics();
+	
+%>

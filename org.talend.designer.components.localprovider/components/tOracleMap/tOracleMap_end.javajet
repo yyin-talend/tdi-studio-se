@@ -1,0 +1,43 @@
+<%@ jet 
+	package="org.talend.designer.codegen.translators" 
+	imports="
+	java.util.ArrayList
+	java.util.List
+	org.talend.designer.mapper.external.data.ExternalMapperData 
+	org.talend.designer.mapper.external.data.ExternalMapperTable
+	org.talend.designer.mapper.external.data.ExternalMapperTableEntry
+	org.talend.designer.codegen.config.CodeGeneratorArgument
+	org.talend.designer.mapper.MapperComponent
+
+	" 
+	class="MapperEnd" 
+%>
+
+<%
+
+	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+	MapperComponent node = (MapperComponent) codeGenArgument.getArgument();
+	boolean stats = codeGenArgument.isStatistics();
+	
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    ExternalMapperData data = (ExternalMapperData) node.getExternalData();
+
+%>
+// ###############################
+// # Lookup hashes releasing<%
+        List<ExternalMapperTable> inputTablesList = new ArrayList<ExternalMapperTable>(data.getInputTables());
+        int lstSizeInputs = inputTablesList.size();
+        for (int i = 1; i < lstSizeInputs; i++) {
+            ExternalMapperTable inputTable = (ExternalMapperTable) inputTablesList.get(i);
+            List<ExternalMapperTableEntry> tableEntries = inputTable.getMetadataTableEntries();
+            if (tableEntries == null) {
+                continue;
+            }
+            String tableName = inputTable.getName();
+%>
+globalMap.remove( "tHash_<%=tableName%>" );
+<%
+        }
+%>
+// ###############################        
