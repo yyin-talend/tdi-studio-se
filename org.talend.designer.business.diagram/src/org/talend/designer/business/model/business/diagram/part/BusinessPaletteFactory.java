@@ -279,7 +279,7 @@ public class BusinessPaletteFactory {
     }
 
     /**
-     * @generated
+     * @generated NOT
      */
     private ToolEntry createDirectionalRelationship14CreationTool() {
         ImageDescriptor smallImage;
@@ -300,7 +300,7 @@ public class BusinessPaletteFactory {
     }
 
     /**
-     * @generated
+     * @generated NOT
      */
     private ToolEntry createBidirectionalRelationship15CreationTool() {
         ImageDescriptor smallImage;
