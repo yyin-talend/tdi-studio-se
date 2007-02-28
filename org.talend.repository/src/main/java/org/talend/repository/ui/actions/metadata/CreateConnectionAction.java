@@ -84,7 +84,7 @@ public class CreateConnectionAction extends AbstractCreateAction {
      * @see org.eclipse.jface.action.Action#run()
      */
     public void run() {
-        RepositoryNode metadataNode = getViewPart().getRoot().getChildren().get(5);
+        RepositoryNode metadataNode = getViewPart().getRoot().getChildren().get(6);
         RepositoryNode dbConnectionNode = metadataNode.getChildren().get(0);
 
         // Force focus to the repositoryView and open Metadata and DbConnection nodes
