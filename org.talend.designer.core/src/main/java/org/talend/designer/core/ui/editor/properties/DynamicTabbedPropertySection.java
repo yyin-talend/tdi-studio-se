@@ -79,6 +79,7 @@ import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
+import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.model.components.EmfComponent;
@@ -1039,7 +1040,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
             break;
         default: // TEXT
             if ((tmpParam.getValue() == null) || (tmpParam.getValue().equals(""))) { //$NON-NLS-1$
-                line.put(items[0], new String("'newLine'")); //$NON-NLS-1$
+                line.put(items[0], new String(TalendTextUtils.addQuotes("newLine"))); //$NON-NLS-1$
             } else {
                 line.put(items[0], tmpParam.getValue());
             }
