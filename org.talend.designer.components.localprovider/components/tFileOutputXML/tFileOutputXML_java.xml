@@ -91,6 +91,16 @@
      <PARAMETER NAME="SCHEMA" FIELD="SCHEMA_TYPE" REQUIRED="true" NUM_ROW="6">
        <DEFAULT/> 
      </PARAMETER>
+     
+     <PARAMETER
+      NAME="REMOVE_NULL_FIELD"
+      FIELD="CHECK"
+      REQUIRED="true"
+      NUM_ROW="7"
+      SHOW_IF="1!=1"
+    >
+      <DEFAULT>false</DEFAULT>
+    </PARAMETER>
 
    </PARAMETERS>
 
