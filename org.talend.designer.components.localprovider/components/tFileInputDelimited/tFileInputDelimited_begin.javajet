@@ -159,6 +159,8 @@
 				   			behindChar<%=cid %>=strToken<%=cid %>.nextToken();
 				   		}
 					}
+				} else {
+					continue;
 				}
 			}
 			<%	
