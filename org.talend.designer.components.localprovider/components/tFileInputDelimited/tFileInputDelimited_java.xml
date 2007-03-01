@@ -133,7 +133,7 @@
 
     <PARAMETER
       NAME="ENCODING"
-      FIELD="TEXT"
+     FIELD="ENCODING_TYPE"
       NUM_ROW="7"
       REQUIRED="true"
       REPOSITORY_VALUE="ENCODING"
