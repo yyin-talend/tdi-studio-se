@@ -118,9 +118,6 @@ public class RowGenProcess extends Element implements IProcess {
         if (!component.isSubProcessStart()) {
             component.setSubProcessStart(true);
         }
-        if (!component.isMultipleMethods()) {
-            component.setMultipleMethods(true);
-        }
         if (component.isReadOnly()) {
             component.setReadOnly(false);
         }
