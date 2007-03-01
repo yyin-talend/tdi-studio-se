@@ -2,8 +2,6 @@
 	package="org.talend.designer.codegen.translators" 
 	imports="
 		org.talend.core.model.process.INode 
-		org.talend.core.model.metadata.IMetadataTable 
-		java.util.List
 		org.talend.designer.codegen.config.CodeGeneratorArgument
 	" 
 	class="DBInputEnd" 
@@ -17,6 +15,6 @@
 }
 stmt_<%=cid %>.close();
 conn_<%=cid %> .close();
-globalMap.put("<%=cid %>{NB_LINE}",nb_line_<%=cid%>);
+globalMap.put("<%=cid %>_NB_LINE",nb_line_<%=cid%>);
 
 

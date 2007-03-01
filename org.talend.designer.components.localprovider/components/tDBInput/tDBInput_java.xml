@@ -179,9 +179,9 @@
      </TEMPLATES>
 
      <IMPORTS>
-       <IMPORT NAME="DBI" MODULE="mysql-connector-java-3.1.13-bin.jar" REQUIRED="true" />
-       <IMPORT NAME="DBD-Oracle" MODULE="ojdbc14.jar" REQUIRED="false" />
-       <IMPORT NAME="DBD-Pg" MODULE="postgresql-8.1-405.jdbc3.jar" REQUIRED="false" />
+       <IMPORT NAME="Driver-MySql" MODULE="mysql-connector-java-3.1.13-bin.jar" REQUIRED="true" />
+       <IMPORT NAME="Driver-Oracle" MODULE="ojdbc14.jar" REQUIRED="false" />
+       <IMPORT NAME="Driver-Postgres" MODULE="postgresql-8.1-405.jdbc3.jar" REQUIRED="false" />
      </IMPORTS>
    </CODEGENERATION>
 
