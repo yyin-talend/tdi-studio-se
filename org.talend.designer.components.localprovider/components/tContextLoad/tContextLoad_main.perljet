@@ -1,0 +1,56 @@
+<%@ jet
+	package="org.talend.designer.codegen.translators" 
+	imports="
+		org.talend.core.model.process.INode 
+		org.talend.core.model.process.ElementParameterParser
+		org.talend.core.model.metadata.IMetadataTable 
+		org.talend.designer.codegen.config.CodeGeneratorArgument
+		java.util.List
+	"
+	class="ContextLoad"
+%>
+
+<%
+	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+	INode node = (INode)codeGenArgument.getArgument();
+	boolean stats = codeGenArgument.isStatistics();
+	
+	List<IMetadataTable> metadatas = node.getMetadataList();
+	if ((metadatas!=null)&&(metadatas.size()>0)) {
+		IMetadataTable metadata = metadatas.get(0);
+		if (metadata!=null) {
+        String cid = node.getUniqueName();
+%>
+
+if (@<%=cid %>) {
+    my($key, $value) = @<%=cid %> ;
+	if(exists($_context{$key})){
+	    $_context{$key} = $value ;
+	    $<%=cid %>_keys{$key} = 1;  
+<%
+    if (ElementParameterParser.getValue(node, "__PRINT_OPERATIONS__").equals("true")) {
+%>
+        printf STDOUT "tContextLoad set key %s with value %s \n", @<%=cid %>
+            or die "can't print to STDOUT\n";
+<%
+    }
+%>
+    }
+    else
+    {
+        warn '<%=cid %>', " invalid parameter name : $key \n" ;
+    }
+
+<%
+    if (stats) {
+%>
+    UpdateStat('<%=cid %>', 1);
+<%
+    }
+%>
+}
+    
+<%
+		}
+	}
+%>
