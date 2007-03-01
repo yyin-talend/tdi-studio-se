@@ -174,10 +174,6 @@
    </PARAMETERS>
 
    <CODEGENERATION>
-     <TEMPLATES>
-       <TEMPLATE MULTIPLE_METHODS="true"/>
-     </TEMPLATES>
-
      <IMPORTS>
        <IMPORT NAME="Driver-MySql" MODULE="mysql-connector-java-3.1.13-bin.jar" REQUIRED="true" />
        <IMPORT NAME="Driver-Oracle" MODULE="ojdbc14.jar" REQUIRED="false" />

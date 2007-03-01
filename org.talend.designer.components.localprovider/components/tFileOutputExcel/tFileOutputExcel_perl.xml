@@ -76,10 +76,6 @@
   </PARAMETERS>
 
   <CODEGENERATION>
-    <TEMPLATES>
-      <TEMPLATE MULTIPLE_METHODS="true"/>
-    </TEMPLATES>
-
     <IMPORTS>
       <IMPORT NAME="Spreadsheet-WriteExcel" MODULE="Spreadsheet::WriteExcel" REQUIRED="true" />
     </IMPORTS>

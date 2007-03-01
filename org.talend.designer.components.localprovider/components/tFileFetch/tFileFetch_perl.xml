@@ -57,10 +57,6 @@ COMPATIBILITY="ALL"
   </PARAMETERS>
 
   <CODEGENERATION>
-    <TEMPLATES>
-      <TEMPLATE MULTIPLE_METHODS="true"/>
-    </TEMPLATES>
-
      <IMPORTS>
        <IMPORT NAME="File-Fetch" MODULE="File::Fetch" REQUIRED="true" />
      </IMPORTS>

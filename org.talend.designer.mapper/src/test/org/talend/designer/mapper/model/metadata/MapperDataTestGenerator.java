@@ -1480,15 +1480,6 @@ public class MapperDataTestGenerator {
             // TODO Auto-generated method stub
         }
 
-        /*
-         * (non-Javadoc)
-         * 
-         * @see org.talend.core.model.process.INode#isMultipleMethods()
-         */
-        public Boolean isMultipleMethods() {
-            // TODO Auto-generated method stub
-            return null;
-        }
 
         /*
          * (non-Javadoc)

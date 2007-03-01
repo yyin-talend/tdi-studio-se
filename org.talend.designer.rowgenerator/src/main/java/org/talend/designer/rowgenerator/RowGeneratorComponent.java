@@ -298,15 +298,15 @@ public class RowGeneratorComponent extends AbstractExternalNode {
         }
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.talend.core.model.process.AbstractNode#isMultipleMethods()
-     */
-    @Override
-    public Boolean isMultipleMethods() {
-        return new Boolean(true);
-    }
+//    /*
+//     * (non-Javadoc)
+//     * 
+//     * @see org.talend.core.model.process.AbstractNode#isMultipleMethods()
+//     */
+//    @Override
+//    public Boolean isMultipleMethods() {
+//        return new Boolean(true);
+//    }
 
     @SuppressWarnings("unchecked")//$NON-NLS-1$
     public String getNumber() {

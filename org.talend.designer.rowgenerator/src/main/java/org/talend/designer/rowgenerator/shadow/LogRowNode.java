@@ -213,10 +213,6 @@ public class LogRowNode implements INode {
         return this.componentName;
     }
 
-    public Boolean isMultipleMethods() {
-        return component.isMultipleMethods();
-    }
-
     public Boolean hasConditionalOutputs() {
         return component.hasConditionalOutputs();
     }

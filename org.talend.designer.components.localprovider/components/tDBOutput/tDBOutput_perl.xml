@@ -222,10 +222,6 @@
   </PARAMETERS>
 
   <CODEGENERATION>
-    <TEMPLATES>
-      <TEMPLATE MULTIPLE_METHODS="true"/>
-    </TEMPLATES>
-
     <IMPORTS>
       <IMPORT NAME="DBI" MODULE="DBI" REQUIRED="true" />
       <IMPORT NAME="DBD-Oracle" MODULE="DBD::Oracle" REQUIRED="false" />

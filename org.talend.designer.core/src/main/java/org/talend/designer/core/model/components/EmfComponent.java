@@ -22,6 +22,7 @@
 package org.talend.designer.core.model.components;
 
 import java.io.File;
+import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -40,6 +41,7 @@ import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.language.ECodeLanguage;
+import org.talend.core.language.LanguageManager;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IComponentsFactory;
 import org.talend.core.model.components.IMultipleComponentItem;
@@ -54,6 +56,7 @@ import org.talend.core.model.process.ElementParameterParser;
 import org.talend.core.model.process.IElementParameterDefaultValue;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.utils.TalendTextUtils;
+import org.talend.core.model.temp.ECodePart;
 import org.talend.designer.codegen.perlmodule.ModuleNeeded;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.utils.emf.component.COLUMNType;
@@ -118,6 +121,8 @@ public class EmfComponent implements IComponent {
 
     private String pathSource;
 
+    private List<ECodePart> codePartList;
+
     public EmfComponent(File file, String pathSource) throws BusinessException {
         this.file = file;
         this.pathSource = pathSource;
@@ -165,6 +170,8 @@ public class EmfComponent implements IComponent {
                 if (compType.getHEADER().getEXTENSION() != null) {
                     ExternalNodesFactory.getInstance(this.getPluginFullName());
                 }
+
+                checkAvailableCodeParts();
 
                 isLoaded = true;
             } catch (Exception e) {
@@ -874,20 +881,20 @@ public class EmfComponent implements IComponent {
         return compType.getHEADER().isHASCONDITIONALOUTPUTS();
     }
 
-    public Boolean isMultipleMethods() {
-        Boolean multiple = Boolean.FALSE;
-        TEMPLATEType tempType;
-        EList listTempType = compType.getCODEGENERATION().getTEMPLATES().getTEMPLATE();
-
-        for (Object object : listTempType) {
-            tempType = (TEMPLATEType) object;
-            if (tempType.isSetMULTIPLEMETHODS()) {
-                multiple = new Boolean(tempType.isMULTIPLEMETHODS());
-            }
-        }
-
-        return multiple;
-    }
+    // public Boolean isMultipleMethods() {
+    // Boolean multiple = Boolean.FALSE;
+    // TEMPLATEType tempType;
+    // EList listTempType = compType.getCODEGENERATION().getTEMPLATES().getTEMPLATE();
+    //
+    // for (Object object : listTempType) {
+    // tempType = (TEMPLATEType) object;
+    // if (tempType.isSetMULTIPLEMETHODS()) {
+    // multiple = new Boolean(tempType.isMULTIPLEMETHODS());
+    // }
+    // }
+    //
+    // return multiple;
+    // }
 
     public String getName() {
         return file.getParentFile().getName();
@@ -1003,6 +1010,10 @@ public class EmfComponent implements IComponent {
         TEMPLATESType templatesType;
 
         templatesType = compType.getCODEGENERATION().getTEMPLATES();
+
+        if (templatesType == null) {
+            return;
+        }
         String input, output;
 
         input = templatesType.getINPUT();
@@ -1158,6 +1169,52 @@ public class EmfComponent implements IComponent {
             return false;
         }
         return true;
+    }
+
+    private void checkAvailableCodeParts() {
+        codePartList = new ArrayList<ECodePart>();
+        File dirFile = new File(file.getParent());
+        final String extension = "." + LanguageManager.getCurrentLanguage().getName() + "jet";
+        FilenameFilter fileNameFilter = new FilenameFilter() {
+
+            public boolean accept(File dir, String name) {
+                return name.endsWith(extension);
+            }
+        };
+
+        String[] jetFiles = dirFile.list(fileNameFilter);
+
+        for (int i = 0; i < jetFiles.length; i++) {
+            String name = jetFiles[i];
+            name = jetFiles[i].replace(getName() + "_", "");
+            name = name.replace(extension, "");
+            ECodePart part = ECodePart.getCodePartByName(name);
+            if (part != null) {
+                codePartList.add(part);
+            }
+        }
+
+        // if (multipleComponentManager != null) {
+        // TEMPLATESType templatesType;
+        // TEMPLATEType tempType;
+        //
+        // templatesType = compType.getCODEGENERATION().getTEMPLATES();
+        // EList listTempType = templatesType.getTEMPLATE();
+        // for (Object object : listTempType) {
+        // tempType = (TEMPLATEType) object;
+        // if (tempType.isSetMULTIPLEMETHODS()) {
+        // if (tempType.isMULTIPLEMETHODS()) {
+        // codePartList.add(ECodePart.BEGIN);
+        // codePartList.add(ECodePart.END);
+        // }
+        // codePartList.add(ECodePart.MAIN);
+        // }
+        // }
+        // }
+    }
+
+    public List<ECodePart> getAvailableCodeParts() {
+        return codePartList;
     }
 
 }

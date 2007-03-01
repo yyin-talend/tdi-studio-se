@@ -178,7 +178,7 @@ public final class CodeGeneratorEmittersPoolFactory {
     private static void initComponent(ECodeLanguage codeLanguage, List<JetBean> jetBeans, ECodePart codePart,
             IComponent component) {
         // if this function returns null then there is no code to generate
-        if (component.isMultipleMethods() == null) {
+        if (component.getAvailableCodeParts().size() == 0) {
             return;
         }
         IComponentFileNaming fileNamingInstance = ComponentsFactoryProvider.getFileNamingInstance();
@@ -201,9 +201,13 @@ public final class CodeGeneratorEmittersPoolFactory {
             jetBean.setClassLoader(new CodeGeneratorEmittersPoolFactory().getClass().getClassLoader());
         }
 
-        if ((component.isMultipleMethods()) && (codePart.compareTo(ECodePart.MAIN) == 0)) {
-            initComponent(codeLanguage, jetBeans, ECodePart.BEGIN, component);
-            initComponent(codeLanguage, jetBeans, ECodePart.END, component);
+        if (codePart.compareTo(ECodePart.MAIN) == 0) {
+            if (component.getAvailableCodeParts().contains(ECodePart.BEGIN)) {
+                initComponent(codeLanguage, jetBeans, ECodePart.BEGIN, component);
+            }
+            if (component.getAvailableCodeParts().contains(ECodePart.END)) {
+                initComponent(codeLanguage, jetBeans, ECodePart.END, component);
+            }
         }
         jetBeans.add(jetBean);
     }

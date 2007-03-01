@@ -59,9 +59,6 @@
   </PARAMETERS>
 
   <CODEGENERATION>
-    <TEMPLATES>
-      <TEMPLATE MULTIPLE_METHODS="true" />
-    </TEMPLATES>
     <IMPORTS>
       <IMPORT NAME="Email-Filter" MODULE="Email::Filter" REQUIRED="true" />
     </IMPORTS>

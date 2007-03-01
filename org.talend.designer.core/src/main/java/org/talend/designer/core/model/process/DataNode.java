@@ -53,7 +53,7 @@ public class DataNode extends AbstractNode {
         setComponent(component);
         setElementParameters(component.createElementParameters(this));
         setUniqueName(uniqueName);
-        setMultipleMethods(component.isMultipleMethods());
+//        setMultipleMethods(component.isMultipleMethods());
     }
 
     public DataNode() {

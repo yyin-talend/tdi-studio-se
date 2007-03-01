@@ -97,7 +97,7 @@ public class DataProcess {
         dataNode.setElementParameters(graphicalNode.getElementParameters());
         dataNode.setUniqueName(graphicalNode.getUniqueName());
         dataNode.setSubProcessStart(graphicalNode.isSubProcessStart());
-        dataNode.setMultipleMethods(graphicalNode.isMultipleMethods());
+//        dataNode.setMultipleMethods(graphicalNode.isMultipleMethods());
         dataNode.setHasConditionalOutputs(graphicalNode.hasConditionalOutputs());
         dataNode.setProcess(graphicalNode.getProcess());
         dataNode.setComponent(graphicalNode.getComponent());

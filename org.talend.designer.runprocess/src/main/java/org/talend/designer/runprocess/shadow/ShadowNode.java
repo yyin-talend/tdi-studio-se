@@ -273,10 +273,6 @@ public abstract class ShadowNode implements INode {
     public void setMappingList(List<Map<String, String>> mapping) {
         // TODO Auto-generated method stub
     }
-    
-    public Boolean isMultipleMethods() {
-        return component.isMultipleMethods();
-    }
 
     public Boolean hasConditionalOutputs() {
         return component.hasConditionalOutputs();

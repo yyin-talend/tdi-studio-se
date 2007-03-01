@@ -691,15 +691,6 @@ public class Node extends Element implements INode {
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.core.model.process.INode#isMultipleMethods()
-     */
-    public Boolean isMultipleMethods() {
-        return component.isMultipleMethods();
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
      * @see org.talend.core.model.process.INode#hasConditionnalOutputs()
      */
     public Boolean hasConditionalOutputs() {
