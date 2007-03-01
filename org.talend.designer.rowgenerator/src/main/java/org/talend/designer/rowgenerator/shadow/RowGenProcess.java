@@ -100,6 +100,9 @@ public class RowGenProcess extends Element implements IProcess {
         logRowNode.setProcess(this);
 
         createProcessParameters();
+        if (!component.isStart()) {
+            component.setStart(true);
+        }
     }
 
     /**

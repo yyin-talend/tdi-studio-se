@@ -126,7 +126,6 @@ public class UIManager {
             reductAllData();
         }
         if (response == SWT.OK) {
-            rgManager.getRowGeneratorComponent().setNumber(generatorUI.getTabFolderEditors().getRowNumber());
             saveAllData();
         }
         if (parent instanceof Shell) {
@@ -142,15 +141,18 @@ public class UIManager {
         for (int i = 0; i < items.length; i++) {
             saveOneColData((MetadataColumnExt) items[i].getData());
         }
+        rgManager.getRowGeneratorComponent().setNumber(
+                generatorUI.getDataTableView().getExtendedToolbar().getNumRows());
+
     }
 
     /**
      * qzhang Comment method "saveAllData".
      */
     private void reductAllData() {
-        List<Map<String, Object>> eps = this.getMapperManager().getOrginEP();
-        this.getMapperManager().getRowGeneratorComponent().setTableElementParameter(eps);
-        this.getMapperManager().getRowGeneratorComponent().setNumber(this.getMapperManager().getOrginNumber());
+        List<Map<String, Object>> eps = this.getRowGenManager().getOrginEP();
+        this.getRowGenManager().getRowGeneratorComponent().setTableElementParameter(eps);
+        this.getRowGenManager().getRowGeneratorComponent().setNumber(this.getRowGenManager().getOrginNumber());
     }
 
     /**
@@ -183,7 +185,7 @@ public class UIManager {
         return cols.toArray(new String[cols.size()]);
     }
 
-    public RowGeneratorManager getMapperManager() {
+    public RowGeneratorManager getRowGenManager() {
         return this.rgManager;
     }
 

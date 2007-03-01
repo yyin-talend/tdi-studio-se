@@ -21,15 +21,20 @@
 // ============================================================================
 package org.talend.designer.rowgenerator.ui.editor;
 
+import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
 import org.talend.commons.ui.swt.advanced.dataeditor.button.AddPushButton;
@@ -84,16 +89,49 @@ public class MetadataToolbarEditorViewExt extends MetadataToolbarEditorView {
         super(parent, style, extendedTableViewer);
         this.genTableEditor2 = editor2;
         createColumns();
+        createNumberRows();
+    }
+
+    private Composite numRowComposite;
+
+    private Text numRowText;
+    
+    private void createNumberRows() {
+        numRowComposite = new Composite(toolbar, SWT.NONE);
+        GridLayout layout = new GridLayout();
+        layout.numColumns = 2;
+        layout.horizontalSpacing = 4;
+        layout.marginBottom = 0;
+        layout.marginHeight = 0;
+        layout.marginLeft = 0;
+        layout.marginRight = 0;
+        layout.marginTop = 0;
+        layout.marginWidth = 0;
+
+        GridData gridData = new GridData();
+        gridData.verticalAlignment = GridData.CENTER;
+        numRowComposite.setLayout(layout);
+        // numRowComposite.setLayoutData(gridData);
+        final Label numRowLabel = new Label(numRowComposite, SWT.NONE);
+        numRowLabel.setText(Messages.getString("MetadataToolbarEditorViewExt.RowNum.LabelText"));
+        numRowText = new Text(numRowComposite, SWT.BORDER);
+        // numRowText.setEnabled(true);
+
+        // GridDataFactory.swtDefaults().hint(50, SWT.DEFAULT).applyTo(numRowText);
+        numRowText.setBackground(ColorConstants.white);
+        numRowText.setLayoutData(gridData);
     }
 
     private Menu columnsListmenu;
+
+    private ToolBar columnSelector;
 
     /**
      * qzhang Comment method "createColumns".
      */
     private void createColumns() {
-        final ToolBar toolBar2 = new ToolBar(toolbar, SWT.HORIZONTAL);
-        final ToolItem columns = new ToolItem(toolBar2, SWT.DROP_DOWN);
+        columnSelector = new ToolBar(toolbar, SWT.HORIZONTAL);
+        final ToolItem columns = new ToolItem(columnSelector, SWT.DROP_DOWN);
         columns.setText(Messages.getString("MetadataToolbarEditorViewExt.Columns.Text")); //$NON-NLS-1$
         createMenu(columns);
         columns.addSelectionListener(new SelectionAdapter() {
@@ -294,6 +332,25 @@ public class MetadataToolbarEditorViewExt extends MetadataToolbarEditorView {
                 }
             }
         }
+    }
+
+    public ToolBar getColumnSelector() {
+        return this.columnSelector;
+    }
+
+    public String getNumRows() {
+        return this.numRowText.getText();
+    }
+
+    /**
+     * qzhang Comment method "updateComponentsSize".
+     */
+    public void updateComponentsSize() {
+        String number = genTableEditor2.getGeneratorUI().getGeneratorManager().getRowGeneratorComponent().getNumber();
+        if (number == null) {
+            number = "";
+        }
+        numRowText.setText(number);
     }
 
 }

@@ -52,6 +52,8 @@ import org.talend.designer.rowgenerator.ui.editor.RowGenTableEditor2;
  */
 public class TabFolderEditors extends CTabFolder {
 
+    public static final String PREVIEW_NUMBER_ROWS = "10";
+    
     private TabFolderEditors tabFolderEditors;
 
     protected int lastSelectedTab;
@@ -164,11 +166,11 @@ public class TabFolderEditors extends CTabFolder {
 
         header.setLayout(fill);
         rowText = new Text(header, SWT.BORDER);
-        String number = component.getNumber();
-        if (number == null || "".equals(number)) {
-            number = "10";
-        }
-        rowText.setText(number);
+        // String number = component.getNumber();
+        // if (number == null || "".equals(number)) {
+        // number = "10";
+        //        }
+        rowText.setText("10");
         GridDataFactory.swtDefaults().hint(50, SWT.DEFAULT).applyTo(rowText);
 
         // rowText.getBounds().width = 100;
@@ -214,7 +216,7 @@ public class TabFolderEditors extends CTabFolder {
         // }
         // genTableEditor2.getTableViewerCreator().getTableViewer().refresh();
         //
-        //        }
+        // }
     }
 
     /**
@@ -255,8 +257,8 @@ public class TabFolderEditors extends CTabFolder {
         this.generatorUI = generatorUI;
     }
 
-    public String getRowNumber() {
-        return this.rowText.getText();
+    public RowGeneratorComponent getComponent() {
+        return this.component;
     }
 
 }

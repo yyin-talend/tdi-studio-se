@@ -154,6 +154,7 @@ public class RowGenMain {
         // shell.moveAbove(null);
         shell.open();
         generatorUI.getDataTableView().updateHeader(ExternalRowGeneratorUiProperties.getShowColumnsList());
+        generatorUI.getDataTableView().getExtendedToolbar().updateComponentsSize();
         return shell;
     }
 
