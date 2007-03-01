@@ -37,10 +37,10 @@ public class FileInputXmlNode extends FileInputNode {
     /**
      * Constructs a new FileInputNode.
      */
-    public FileInputXmlNode(String filename, String loopQuery, List<Map<String, String>> mapping, String loopLimit) {
+    public FileInputXmlNode(String filename, String loopQuery, List<Map<String, String>> mapping, String loopLimit, String encoding) {
         super("tFileInputXML"); //$NON-NLS-1$
-        String[] paramNames = new String[] { "FILENAME", "LOOP_QUERY", "MAPPING", "LIMIT" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-        Object[] paramValues = new Object[] { filename, loopQuery, mapping, loopLimit };
+        String[] paramNames = new String[] { "FILENAME", "LOOP_QUERY", "MAPPING", "LIMIT", "ENCODING" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+        Object[] paramValues = new Object[] { filename, loopQuery, mapping, loopLimit, encoding };
 
         for (int i = 0; i < paramNames.length; i++) {
             if (paramValues[i] != null) {

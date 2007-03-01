@@ -38,11 +38,11 @@ public class FileInputLdifNode extends FileInputNode {
     /**
      * Constructs a new FileInputNode.
      */
-    public FileInputLdifNode(String filename, List<IMetadataTable> metadatas) {
+    public FileInputLdifNode(String filename, List<IMetadataTable> metadatas, String encoding) {
         super("tFileInputLDIF"); //$NON-NLS-1$
 
-        String[] paramNames = new String[] { "FILENAME" }; //$NON-NLS-1$
-        String[] paramValues = new String[] { filename };
+        String[] paramNames = new String[] { "FILENAME", "ENCODING" }; //$NON-NLS-1$
+        String[] paramValues = new String[] { filename, encoding };
 
         for (int i = 0; i < paramNames.length; i++) {
             if (paramValues[i] != null) {

@@ -33,14 +33,14 @@ public class FileInputCSVNode extends FileInputNode {
      * Constructs a new FileInputCSVNode.
      */
     public FileInputCSVNode(String filename, String rowSep, String fieldSep, int limitRows, int headerRows,
-            int footerRows, String escapeChar, String textEnclosure, boolean removeEmptyRow) {
+            int footerRows, String escapeChar, String textEnclosure, boolean removeEmptyRow, String encoding) {
         super("tFileInputCSV"); //$NON-NLS-1$
 
         String[] paramNames = new String[] { "FILENAME", "ROWSEPARATOR", "FIELDSEPARATOR", "LIMIT", "HEADER", "FOOTER", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
-                "ESCAPE_CHAR", "TEXT_ENCLOSURE", "REMOVE_EMPTY_ROW" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                "ESCAPE_CHAR", "TEXT_ENCLOSURE", "REMOVE_EMPTY_ROW", "ENCODING" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         String[] paramValues = new String[] { filename, rowSep, fieldSep, Integer.toString(limitRows),
                 Integer.toString(headerRows), Integer.toString(footerRows), escapeChar, textEnclosure,
-                Boolean.toString(removeEmptyRow) };
+                Boolean.toString(removeEmptyRow), encoding };
 
         for (int i = 0; i < paramNames.length; i++) {
             if (paramValues[i] != null) {

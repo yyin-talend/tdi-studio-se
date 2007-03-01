@@ -25,6 +25,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.talend.core.model.utils.TalendTextUtils;
+
 /**
  * DOC chuger class global comment. Detailled comment <br/>
  * 
@@ -44,9 +46,9 @@ public class FileOutputXmlNode extends ShadowNode {
         TextElementParameter param1 = new TextElementParameter("FILENAME", filename); //$NON-NLS-1$
         TextElementParameter param2 = new TextElementParameter("ENCODING", encoding); //$NON-NLS-1$
         ObjectElementParameter param3 = new ObjectElementParameter("ROOT_TAGS", rootTags); //$NON-NLS-1$
-        TextElementParameter param4 = new TextElementParameter("ROW_TAG", "row"); //$NON-NLS-1$ //$NON-NLS-2$
+        TextElementParameter param4 = new TextElementParameter("ROW_TAG", TalendTextUtils.addQuotes("row")); //$NON-NLS-1$ //$NON-NLS-2$
         TextElementParameter param5 = new TextElementParameter("COLNAME_AS_TAGNAME", "false"); //$NON-NLS-1$ //$NON-NLS-2$
-        TextElementParameter param6 = new TextElementParameter("FIELD_TAG", "field"); //$NON-NLS-1$ //$NON-NLS-2$
+        TextElementParameter param6 = new TextElementParameter("FIELD_TAG", TalendTextUtils.addQuotes("field")); //$NON-NLS-1$ //$NON-NLS-2$
         TextElementParameter param7 = new TextElementParameter("SPLIT", "false"); //$NON-NLS-1$ //$NON-NLS-2$
         TextElementParameter param8 = new TextElementParameter("SPLIT_EVERY", "1000"); //$NON-NLS-1$ //$NON-NLS-2$
         //TextElementParameter param9 = new TextElementParameter("SCHEMA", null);

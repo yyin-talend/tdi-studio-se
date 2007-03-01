@@ -33,13 +33,13 @@ public class FileInputRegExpNode extends FileInputNode {
      * Constructs a new FileInputNode.
      */
     public FileInputRegExpNode(String filename, String rowSep, String regex, int limitRows, int headerRows,
-            int footerRows, boolean removeEmptyRow) {
+            int footerRows, boolean removeEmptyRow, String encoding) {
         super("tFileInputRegex"); //$NON-NLS-1$
 
         String[] paramNames = new String[] { "FILENAME", "ROWSEPARATOR", "REGEX", "LIMIT", "HEADER", "FOOTER", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
-                "REMOVE_EMPTY_ROW" }; //$NON-NLS-1$
+                "REMOVE_EMPTY_ROW", "ENCODING" }; //$NON-NLS-1$
         String[] paramValues = new String[] { filename, rowSep, regex, Integer.toString(limitRows),
-                Integer.toString(headerRows), Integer.toString(footerRows), Boolean.toString(removeEmptyRow) };
+                Integer.toString(headerRows), Integer.toString(footerRows), Boolean.toString(removeEmptyRow), encoding };
 
         for (int i = 0; i < paramNames.length; i++) {
             if (paramValues[i] != null) {
