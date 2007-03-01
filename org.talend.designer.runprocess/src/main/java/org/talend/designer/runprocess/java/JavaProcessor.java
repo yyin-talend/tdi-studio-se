@@ -46,6 +46,11 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.debug.core.DebugPlugin;
+import org.eclipse.debug.core.ILaunchConfiguration;
+import org.eclipse.debug.core.ILaunchConfigurationType;
+import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
+import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IPackageFragment;
@@ -54,6 +59,7 @@ import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.debug.core.JDIDebugModel;
 import org.eclipse.jdt.internal.core.ClasspathEntry;
+import org.eclipse.jdt.launching.IJavaLaunchConfigurationConstants;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.talend.commons.exception.SystemException;
 import org.talend.commons.utils.generation.JavaUtils;
@@ -73,6 +79,7 @@ import org.talend.designer.runprocess.IProcessor;
 import org.talend.designer.runprocess.ProcessorException;
 import org.talend.designer.runprocess.RunProcessPlugin;
 import org.talend.designer.runprocess.i18n.Messages;
+import org.talend.designer.runprocess.perl.PerlUtils;
 
 /**
  * Creat the package folder for the java file, and put the generated file to the correct folder.
@@ -666,7 +673,7 @@ public class JavaProcessor implements IProcessor {
         return this.srcContextPath;
     }
 
-    public String[] getCommandLine() {
+    public String[] getCommandLine() throws ProcessorException {
         // java -cp libdirectory/*.jar;project_path classname;
 
         // init java interpreter
@@ -674,7 +681,7 @@ public class JavaProcessor implements IProcessor {
         try {
             command = getInterpreter();
         } catch (ProcessorException e1) {
-            command = "java";
+            command = "java"; //$NON-NLS-1$
         }
 
         // init lib path
@@ -735,5 +742,24 @@ public class JavaProcessor implements IProcessor {
      */
     public String getTypeName() {
         return this.typeName;
+    }
+    
+    /* (non-Javadoc)
+     * @see org.talend.designer.runprocess.IProcessor#saveLaunchConfiguration()
+     */
+    public Object saveLaunchConfiguration() throws CoreException {
+        ILaunchConfiguration config = null;
+        ILaunchManager launchManager = DebugPlugin.getDefault().getLaunchManager();
+        String projectName = this.getCodeProject().getName();
+        ILaunchConfigurationType type = launchManager.getLaunchConfigurationType(PerlUtils.PERL_LAUNCHCONFIGURATION);       
+        if (type != null) {
+            ILaunchConfigurationWorkingCopy wc = type.newInstance(null, launchManager
+                    .generateUniqueLaunchConfigurationNameFrom(this.getCodePath().lastSegment()));
+            wc.setAttribute(IJavaLaunchConfigurationConstants.ATTR_PROJECT_NAME, projectName);
+            wc.setAttribute(IJavaLaunchConfigurationConstants.ATTR_MAIN_TYPE_NAME, this.getTypeName());
+            wc.setAttribute(IJavaLaunchConfigurationConstants.ATTR_STOP_IN_MAIN, true);
+            config = wc.doSave();
+        }
+        return config;
     }
 }
