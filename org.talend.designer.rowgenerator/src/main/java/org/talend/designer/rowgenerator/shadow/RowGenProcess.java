@@ -100,8 +100,29 @@ public class RowGenProcess extends Element implements IProcess {
         logRowNode.setProcess(this);
 
         createProcessParameters();
+        setFlags(component);
+        
+    }
+
+    /**
+     *  qzhang Comment method "setFlags".
+     * @param component
+     */
+    private void setFlags(RowGeneratorComponent component) {
         if (!component.isStart()) {
             component.setStart(true);
+        }
+        if (!component.isActivate()) {
+            component.setActivate(true);
+        }
+        if (!component.isSubProcessStart()) {
+            component.setSubProcessStart(true);
+        }
+        if (!component.isMultipleMethods()) {
+            component.setMultipleMethods(true);
+        }
+        if (component.isReadOnly()) {
+            component.setReadOnly(false);
         }
     }
 
@@ -546,7 +567,7 @@ public class RowGenProcess extends Element implements IProcess {
     }
 
     /*
-     * (non-Javadoc)
+     * (non-Java)
      * 
      * @see org.talend.core.model.process.Element#getElementName()
      */
