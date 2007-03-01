@@ -21,8 +21,14 @@
 // ============================================================================
 package org.talend.designer.runprocess;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Reader;
+
+import javax.swing.plaf.basic.BasicInternalFrameTitlePane.SystemMenuBar;
 
 /**
  * Read streams of a process. <br/>
@@ -44,18 +50,51 @@ public final class ProcessStreamTrashReader {
             boolean stopped = false;
             while (!stopped) {
                 InputStream is = process.getInputStream();
-                int len = is.available();
-                if (len > 0) {
-                    byte[] data = new byte[len];
-                    is.read(data);
+                DataInputStream din = new java.io.DataInputStream(is);
+                StringBuffer sb = new StringBuffer();
+                try{
+                String line = null;
+                    while((line=din.readLine()) != null){
+                    System.out.println("getInputStream "+line);
+                    }
+                }catch(Exception ex){
+                ex.getMessage();
+                }finally{
+                    try{
+                    is.close();
+                    }catch(Exception ex){}
                 }
-
+                
+                
+//                int len = is.available();
+//                if (len > 0) {
+//                    byte[] data = new byte[len];
+//                    is.read(data);
+//                }
+                
+                
+                
                 is = process.getErrorStream();
-                len = is.available();
-                if (len > 0) {
-                    byte[] data = new byte[len];
-                    is.read(data);
+                din = new java.io.DataInputStream(is);
+                sb = new StringBuffer();
+                try{
+                String line = null;
+                    while((line=din.readLine()) != null){
+                    System.out.println("getErrorStream "+line);
+                    }
+                }catch(Exception ex){
+                ex.getMessage();
+                }finally{
+                    try{
+                    is.close();
+                    }catch(Exception ex){}
                 }
+            
+//                len = is.available();
+//                if (len > 0) {
+//                    byte[] data = new byte[len];
+//                    is.read(data);
+//                }
 
                 try {
                     process.exitValue();
@@ -64,7 +103,7 @@ public final class ProcessStreamTrashReader {
                     // Do nothing
                 }
             }
-        } catch (IOException ioe) {
+        } catch (Exception ioe) {//IO
             // Do nothing
         }
     }
