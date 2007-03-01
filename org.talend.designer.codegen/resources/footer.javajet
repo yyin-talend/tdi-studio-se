@@ -37,15 +37,19 @@
     	
     	try {
     		java.io.InputStream inContext = <%=process.getName() %>.class.getClassLoader().getResourceAsStream("<%=codeGenArgument.getCurrentProjectName().toLowerCase() %>/<%=codeGenArgument.getJobName().toLowerCase() %>/contexts/Default.properties");    		
-    		defaultProps.load(inContext);
-    		inContext.close();
-    		context = new java.util.Properties(defaultProps);
+    		if (inContext!=null) {
+	    		defaultProps.load(inContext);
+    			inContext.close();
+	    		context = new java.util.Properties(defaultProps);
+	    	}
     		
-    		if (contextStr != "Context") {
-    			//inContext = new java.io.FileInputStream("contexts/"+contextStr+".properties");
-    			inContext = <%=process.getName() %>.class.getClassLoader().getResourceAsStream("<%=codeGenArgument.getCurrentProjectName().toLowerCase() %>/<%=codeGenArgument.getJobName().toLowerCase() %>/contexts/"+contextStr+".properties");
-				context.load(inContext);
-				inContext.close();
+    		if (contextStr.compareTo("Context")!=0) {
+    			System.err.println(contextStr);
+    			inContext = <%=process.getName() %>.class.getClassLoader().getResourceAsStream("<%=codeGenArgument.getCurrentProjectName().toLowerCase() %>/<%=codeGenArgument.getJobName().toLowerCase() %>/contexts/Shadow.properties");
+    			if (inContext!=null) {
+					context.load(inContext);
+					inContext.close();
+				}
 			}
 		
     		System.out.println("Running process with context: "+contextStr);

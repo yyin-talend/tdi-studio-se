@@ -59,7 +59,7 @@ import java.util.Date;
     // create and load default properties
 	private static java.util.Properties defaultProps = new java.util.Properties();
 	// create application properties with default
-	private static java.util.Properties context = null;
+	private static java.util.Properties context = new java.util.Properties();
 
 	private static final String jobName = "<%=codeGenArgument.getJobName() %>";
 	private static final String projectName = "<%=codeGenArgument.getCurrentProjectName() %>";
