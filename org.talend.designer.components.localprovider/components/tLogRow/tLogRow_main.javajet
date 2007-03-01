@@ -45,7 +45,7 @@ strBuffer_<%=cid%>.append(<%=conn.getName()%>.<%=column.getLabel()%>);
 			}
 		}
 	%>
-System.out.println(strBuffer_<%=cid%>.toString());
+out_<%= cid %>.println(strBuffer_<%=cid%>.toString());
 nb_line_<%=cid %>++;
 	<%	
 	}

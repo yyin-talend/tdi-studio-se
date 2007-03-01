@@ -15,5 +15,6 @@
 %>
 final String OUTPUT_FIELD_SEPARATOR_<%=node.getUniqueName() %> = <%=ElementParameterParser.getValue(node, "__FIELDSEPARATOR__") %>;
 int nb_line_<%=cid%> = 0;
+final java.io.PrintStream out_<%=cid%> = new java.io.PrintStream(new java.io.BufferedOutputStream(System.out)); 
 
 
