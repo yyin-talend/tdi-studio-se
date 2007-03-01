@@ -40,7 +40,6 @@ public class ShadowConnection implements IConnection {
     private INode source;
 
     private INode target;
-    
 
     /**
      * Constructs a new ShadowConnection.
@@ -67,6 +66,14 @@ public class ShadowConnection implements IConnection {
      * @see org.talend.core.model.process.IConnection#getMetadataTable()
      */
     public IMetadataTable getMetadataTable() {
+        if (source != null) {
+            List<IMetadataTable> metadataList = source.getMetadataList();
+            for (int i = 0; i < metadataList.size(); i++) {
+                if (metadataList.get(i).getTableName().equals(source.getUniqueName())) {
+                    return metadataList.get(i);
+                }
+            }
+        }
         return null;
     }
 
@@ -115,20 +122,26 @@ public class ShadowConnection implements IConnection {
         return null;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.core.model.process.IElement#getElementParameters()
      */
     public List<? extends IElementParameter> getElementParameters() {
         return null;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.core.model.process.IElement#setElementParameters(java.util.List)
      */
     public void setElementParameters(List<? extends IElementParameter> elementsParameters) {
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.core.model.process.IConnection#setTraceData(java.lang.String)
      */
     public void setTraceData(String traceData) {
@@ -141,6 +154,6 @@ public class ShadowConnection implements IConnection {
 
     public void setReadOnly(boolean readOnly) {
         // TODO Auto-generated method stub
-        
+
     }
 }

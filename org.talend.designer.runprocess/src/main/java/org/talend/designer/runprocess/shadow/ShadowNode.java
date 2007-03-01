@@ -27,10 +27,14 @@ import java.util.List;
 import java.util.Map;
 
 import org.talend.commons.exception.SystemException;
+import org.talend.core.language.ECodeLanguage;
+import org.talend.core.language.LanguageManager;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IComponentsFactory;
 import org.talend.core.model.components.IODataComponent;
+import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
+import org.talend.core.model.metadata.MetadataColumn;
 import org.talend.core.model.metadata.MetadataTable;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IElementParameter;
@@ -61,8 +65,10 @@ public abstract class ShadowNode implements INode {
     private List<IElementParameter> parameters;
 
     private String pluginFullName;
-    
+
     private IProcess process;
+
+    private List<IMetadataTable> metadatas;
 
     /**
      * DOC chuger ShadowNode constructor comment.
@@ -100,7 +106,7 @@ public abstract class ShadowNode implements INode {
      * 
      * @see org.talend.core.model.process.INode#setElementParameters(java.util.List)
      */
-    @SuppressWarnings("unchecked") //$NON-NLS-1$
+    @SuppressWarnings("unchecked")//$NON-NLS-1$
     public void setElementParameters(List<? extends IElementParameter> newParameters) {
         this.parameters = (List<IElementParameter>) newParameters;
     }
@@ -141,9 +147,22 @@ public abstract class ShadowNode implements INode {
      * @see org.talend.core.model.process.INode#getMetaDataList()
      */
     public List<IMetadataTable> getMetadataList() {
-        IMetadataTable meta = new MetadataTable();
-        meta.setTableName(getUniqueName());
-        return Arrays.asList(new IMetadataTable[] { meta });
+        List<IMetadataTable> metadatas = new ArrayList<IMetadataTable>();
+        MetadataTable metadata = new MetadataTable();
+        metadata.setTableName(this.getUniqueName());
+        if (LanguageManager.getCurrentLanguage().compareTo(ECodeLanguage.JAVA) == 0) {
+            List<IMetadataColumn> columns = new ArrayList<IMetadataColumn>();
+            for (int i = 0; i < 500; i++) {
+                MetadataColumn col = new MetadataColumn();
+                col.setLabel("row" + i);
+                col.setTalendType("id_String");
+                col.setType("String");
+                columns.add(col);
+            }
+            metadata.setListColumns(columns);
+        }
+        metadatas.add(metadata);
+        return metadatas;
     }
 
     /*
@@ -154,7 +173,7 @@ public abstract class ShadowNode implements INode {
     public List<Map<String, String>> getMappingList() {
         return null;
     }
-    
+
     /*
      * (non-Javadoc)
      * 
@@ -262,9 +281,9 @@ public abstract class ShadowNode implements INode {
      * @see org.talend.core.model.process.INode#setMetadataList(java.util.List)
      */
     public void setMetadataList(List<IMetadataTable> metadataList) {
-        // TODO Auto-generated method stub
-
+        this.metadatas = metadataList;
     }
+
     /*
      * (non-Javadoc)
      * 
@@ -277,7 +296,7 @@ public abstract class ShadowNode implements INode {
     public Boolean hasConditionalOutputs() {
         return component.hasConditionalOutputs();
     }
-    
+
     public IExternalNode getExternalNode() {
         return null;
     }
@@ -301,14 +320,16 @@ public abstract class ShadowNode implements INode {
 
     /**
      * Getter for process.
+     * 
      * @return the process
      */
     public IProcess getProcess() {
         return this.process;
     }
-    
+
     /**
      * Sets the process.
+     * 
      * @param process the process to set
      */
     public void setProcess(IProcess process) {

@@ -51,7 +51,7 @@ public class FileOutputXmlNode extends ShadowNode {
         TextElementParameter param6 = new TextElementParameter("FIELD_TAG", TalendTextUtils.addQuotes("field")); //$NON-NLS-1$ //$NON-NLS-2$
         TextElementParameter param7 = new TextElementParameter("SPLIT", "false"); //$NON-NLS-1$ //$NON-NLS-2$
         TextElementParameter param8 = new TextElementParameter("SPLIT_EVERY", "1000"); //$NON-NLS-1$ //$NON-NLS-2$
-        //TextElementParameter param9 = new TextElementParameter("SCHEMA", null);
+        TextElementParameter param9 = new TextElementParameter("REMOVE_NULL_FIELD", "true");
         addParameter(param1);
         addParameter(param2);
         addParameter(param3);
@@ -60,7 +60,7 @@ public class FileOutputXmlNode extends ShadowNode {
         addParameter(param6);
         addParameter(param7);
         addParameter(param8);
-        //addParameter(param9);
+        addParameter(param9);
     }
 
     /*
