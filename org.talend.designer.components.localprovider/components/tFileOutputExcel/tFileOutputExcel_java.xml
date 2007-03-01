@@ -81,7 +81,7 @@
     </TEMPLATES>
 
     <IMPORTS>
-      <IMPORT NAME="Spreadsheet-WriteExcel" MODULE="Spreadsheet::WriteExcel" REQUIRED="true" />
+      <IMPORT NAME="Java_Excel" MODULE="jxl.jar" REQUIRED="true" />
     </IMPORTS>
   </CODEGENERATION>
 

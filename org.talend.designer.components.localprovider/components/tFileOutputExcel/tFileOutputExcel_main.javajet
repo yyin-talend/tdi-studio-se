@@ -43,7 +43,10 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     										%>Boolean<%
 										}else if(javaType == JavaTypesManager.DATE){
 											%>DateTime<%
-  									    }else if(javaType == JavaTypesManager.STRING||javaType == JavaTypesManager.CHARACTER){
+  									    }else if(javaType == JavaTypesManager.STRING||
+  									    		 javaType == JavaTypesManager.CHARACTER||
+  									    		 javaType == JavaTypesManager.BYTE_ARRAY||
+  									    		 javaType == JavaTypesManager.OBJECT){
   									    	%>Label<%
     									}else{
     										%>Number<%
@@ -53,13 +56,17 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     				String pattern = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
     				if (javaType == JavaTypesManager.DATE && pattern != null && pattern.trim().length() != 0) {
 %>
-								FormatterUtils.format_Date(<%=conn.getName() %>.<%=column.getLabel() %>, <%= pattern %>)
+								<%=conn.getName() %>.<%=column.getLabel() %>, new jxl.write.WritableCellFormat(new jxl.write.DateFormat(<%=pattern %>))
 <%				
 					} else if(javaType == JavaTypesManager.CHARACTER) {
 %>
 								String.valueOf(<%=conn.getName() %>.<%=column.getLabel() %>)
 <%				
-					} else {
+					} else if(javaType == JavaTypesManager.BYTE_ARRAY||javaType == JavaTypesManager.OBJECT){
+%>					
+								<%=conn.getName() %>.<%=column.getLabel() %>.toString();
+<%					
+					}else {
 %>
 								<%=conn.getName() %>.<%=column.getLabel() %>
 <%				

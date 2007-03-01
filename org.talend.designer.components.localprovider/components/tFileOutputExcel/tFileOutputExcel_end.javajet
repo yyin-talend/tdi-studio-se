@@ -2,26 +2,15 @@
 	package="org.talend.designer.codegen.translators" 
 	imports="
 		org.talend.core.model.process.INode 
-		org.talend.core.model.metadata.IMetadataTable 
 		org.talend.designer.codegen.config.CodeGeneratorArgument
-		java.util.List
 	"
 	class="FileOutputExcelEnd"
 %>
 <%
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
-
-	List<IMetadataTable> metadatas = node.getMetadataList();
-	if ((metadatas!=null)&&(metadatas.size()>0)) {
-		IMetadataTable metadata = metadatas.get(0);
-		if (metadata!=null) {
-			String cid = node.getUniqueName();
+	String cid = node.getUniqueName();			
 %>
 	writeableWorkbook<%=cid %>.write();
 	writeableWorkbook<%=cid %>.close();
-	globalMap.put("<%=cid %>",nb_line_<%=cid %>);
-<%
-		}
-	}
-%>
+	globalMap.put("<%=cid %>{NB_LINE}",nb_line_<%=cid %>);
