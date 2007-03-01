@@ -53,6 +53,7 @@ import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.ElementParameterParser;
 import org.talend.core.model.process.IElementParameterDefaultValue;
 import org.talend.core.model.process.INode;
+import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.designer.codegen.perlmodule.ModuleNeeded;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.utils.emf.component.COLUMNType;
@@ -106,6 +107,9 @@ public class EmfComponent implements IComponent {
 
     private static final String TSTATCATCHER_NAME = "tStatCatcher"; //$NON-NLS-1$
 
+    public static final String ENCODING_TYPE_UTF_8 = "UTF-8";//$NON-NLS-1$
+    public static final String ENCODING_TYPE_ISO_8859_15 = "ISO-8859-15";//$NON-NLS-1$
+    public static final String ENCODING_TYPE_CUSTOM = "CUSTOM";//$NON-NLS-1$
     private static final String STRING_TYPE = "String"; //$NON-NLS-1$
 
     private IMultipleComponentManager multipleComponentManager;
@@ -515,6 +519,40 @@ public class EmfComponent implements IComponent {
             newParam.setNotShowIf(xmlParam.getNOTSHOWIF());
             listParam.add(newParam);
         }
+        if (type == EParameterFieldType.ENCODING_TYPE) {
+            ElementParameter newParam = new ElementParameter(node);
+            newParam.setCategory(EComponentCategory.PROPERTY);
+            newParam.setName(EParameterName.ENCODING_TYPE.getName());
+            newParam.setDisplayName(EParameterName.ENCODING_TYPE.getDisplayName());
+            newParam.setListItemsDisplayName(new String[] { ENCODING_TYPE_ISO_8859_15, ENCODING_TYPE_UTF_8,
+                    ENCODING_TYPE_CUSTOM });
+            newParam.setListItemsDisplayCodeName(new String[] { ENCODING_TYPE_ISO_8859_15, ENCODING_TYPE_UTF_8,
+                    ENCODING_TYPE_CUSTOM });
+            newParam.setListItemsValue(new String[] { ENCODING_TYPE_ISO_8859_15, ENCODING_TYPE_UTF_8,
+                    ENCODING_TYPE_CUSTOM });
+            newParam.setValue(ENCODING_TYPE_ISO_8859_15);
+            newParam.setNumRow(xmlParam.getNUMROW());
+            newParam.setField(EParameterFieldType.TECHNICAL);
+            newParam.setShow(false);
+            newParam.setShowIf(xmlParam.getSHOWIF());
+            newParam.setNotShowIf(xmlParam.getNOTSHOWIF());
+            listParam.add(newParam);
+
+            newParam = new ElementParameter(node);
+            newParam.setCategory(EComponentCategory.PROPERTY);
+            newParam.setName(EParameterName.REPOSITORY_ENCODING_TYPE.getName());
+            newParam.setDisplayName(EParameterName.REPOSITORY_ENCODING_TYPE.getDisplayName());
+            newParam.setListItemsDisplayName(new String[] {});
+            newParam.setListItemsValue(new String[] {});
+            newParam.setNumRow(xmlParam.getNUMROW());
+            newParam.setField(EParameterFieldType.TECHNICAL);
+            newParam.setValue(TalendTextUtils.addQuotes("")); //$NON-NLS-1$
+            newParam.setShow(false);
+            newParam.setRequired(true);
+            newParam.setShowIf(xmlParam.getSHOWIF());
+            newParam.setNotShowIf(xmlParam.getNOTSHOWIF());
+            listParam.add(newParam);
+        }// Ends
         if (type == EParameterFieldType.QUERYSTORE_TYPE) {
             ElementParameter newParam = new ElementParameter(node);
             newParam.setCategory(EComponentCategory.PROPERTY);

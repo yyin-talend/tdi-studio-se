@@ -156,7 +156,7 @@
 
     <PARAMETER
       NAME="ENCODING"
-      FIELD="TEXT"
+      FIELD="ENCODING_TYPE"
       NUM_ROW="8"
       REQUIRED="true"
     >

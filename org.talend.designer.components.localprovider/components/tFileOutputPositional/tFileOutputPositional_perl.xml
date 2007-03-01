@@ -101,7 +101,7 @@
 
     <PARAMETER
       NAME="ENCODING"
-      FIELD="TEXT"
+      FIELD="ENCODING_TYPE"
       NUM_ROW="5"
       REQUIRED="true"
     >

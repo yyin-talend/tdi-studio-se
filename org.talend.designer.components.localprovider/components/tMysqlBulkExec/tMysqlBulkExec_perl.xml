@@ -112,7 +112,7 @@
 
     <PARAMETER
       NAME="ENCODING"
-      FIELD="TEXT"
+      FIELD="ENCODING_TYPE"
       NUM_ROW="10"
       REQUIRED="true"
     >

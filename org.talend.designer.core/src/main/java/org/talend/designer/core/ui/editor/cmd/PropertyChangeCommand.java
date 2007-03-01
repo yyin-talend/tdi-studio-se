@@ -250,6 +250,8 @@ public class PropertyChangeCommand extends Command {
     public void modifyValue(String value) {
         newValue = value;
         elem.setPropertyValue(propName, value);
+        refreshPropertyView();
+        refreshCodeView();
     }
 
     public String getPropName() {
@@ -258,6 +260,16 @@ public class PropertyChangeCommand extends Command {
 
     public Element getElement() {
         return this.elem;
+    }
+    
+    public Object getOldValue()
+    {
+        return this.oldValue;
+    }
+    
+    public Object getNewValue()
+    {
+        return this.newValue;
     }
 
 }

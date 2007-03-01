@@ -55,6 +55,7 @@ import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.ICodeProblemsChecker;
 import org.talend.core.model.process.EComponentCategory;
 import org.talend.core.model.process.Element;
+import org.talend.core.model.process.IElement;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.Problem;
@@ -419,6 +420,10 @@ public abstract class AbstractElementPropertySectionController implements Proper
             super();
         }
     }
+    
+    protected Command getTextCommandForHelper(String paramName, String text) {
+        return new PropertyChangeCommand(elem, paramName, text);
+    }
 
     /**
      * 
@@ -451,11 +456,9 @@ public abstract class AbstractElementPropertySectionController implements Proper
                     String name = getParameterName(control);
                     String text = ControlUtils.getText(control);
 
-                    Command cmd = new PropertyChangeCommand(elem, name, text);
+                    Command cmd = getTextCommandForHelper(name, text);
 
                     getCommandStack().execute(cmd);
-                    // System.out.println("##############################################");
-                    // System.out.println("NEW COMMAND : " + text);
                 }
 
                 @Override
@@ -473,8 +476,6 @@ public abstract class AbstractElementPropertySectionController implements Proper
                             if (name.equals(lastCommand.getPropName()) && (lastCommand.getElement() == elem)) {
                                 String text = ControlUtils.getText(control);
                                 lastCommand.modifyValue(text);
-                                // System.out.println("--------------------------------------------");
-                                // System.out.println("UPDATED COMMAND : " + text);
                             }
                         }
                     }

@@ -323,5 +323,9 @@
             class="org.talend.designer.core.ui.editor.properties.controllers.generator.ProcessGenerator"
             mapping="PROCESS_TYPE"
             name="Process Type"/>
+      <generator 
+            class="org.talend.designer.core.ui.editor.properties.controllers.generator.EncodingTypeControllerGenerator" 
+            mapping="ENCODING_TYPE" 
+            name="Encoding type" />             
    </extension>
 </plugin>
