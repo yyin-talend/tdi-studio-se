@@ -80,7 +80,7 @@ strBuffer_<%=cid%>.append("<"+rowTag_<%=cid%>+">\n");
 			for(IMetadataColumn column:metadata.getListColumns()) {
 				if (removeNullField.equals("true")) {
 %>
-if (<%=conn.getName()%>.<%=column.getLabel()%>!=null) {
+if ((<%=conn.getName()%>.<%=column.getLabel()%>!=null)&&(<%=conn.getName()%>.<%=column.getLabel()%>.compareTo("")!=0)) {
 <%
 				}
 				if(colnameAsTagname.equals("true")){
