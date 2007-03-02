@@ -21,6 +21,8 @@
 // ============================================================================
 package org.talend.designer.core.ui.editor.properties;
 
+import java.util.List;
+
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyledText;
@@ -36,8 +38,10 @@ import org.talend.core.language.LanguageManager;
 import org.talend.core.model.context.JobContextParameter;
 import org.talend.core.model.metadata.MetadataTalendType;
 import org.talend.core.model.metadata.types.JavaTypesManager;
+import org.talend.core.model.process.Element;
 import org.talend.core.model.process.IContextManager;
 import org.talend.core.model.process.IContextParameter;
+import org.talend.core.model.process.IElementParameter;
 import org.talend.core.model.utils.ContextParameterUtils;
 import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.core.ui.wizards.ContextParameterWizard;
@@ -62,20 +66,19 @@ public final class ContextParameterExtractor {
      * @param text Component on wich extractor is installed.
      * @param process Process on wich context parameter is added.
      */
-    public static void installOn(final Control text, final Process process, final String parameterName) {
+    public static void installOn(final Control text, final Process process, final String parameterName, final Element elem) {
         text.addKeyListener(new KeyAdapter() {
 
+            @SuppressWarnings("unchecked")
             @Override
             public void keyPressed(KeyEvent e) {
                 if (e.keyCode == SWT.F5) {
                     IContextParameter parameter = buildParameterFrom(text, process.getContextManager(), parameterName);
-                    ContextParameterWizard prmWizard = new ContextParameterWizard(process.getContextManager(),
-                            parameter);
+                    ContextParameterWizard prmWizard = new ContextParameterWizard(process.getContextManager(), parameter);
                     WizardDialog dlg = new WizardDialog(text.getShell(), prmWizard);
                     if (dlg.open() == WizardDialog.OK) {
-                        String replaceCode = ContextParameterUtils.getScriptCode(parameter,
-                                ((RepositoryContext) CorePlugin.getContext()
-                                        .getProperty(Context.REPOSITORY_CONTEXT_KEY)).getProject().getLanguage());
+                        String replaceCode = ContextParameterUtils.getScriptCode(parameter, ((RepositoryContext) CorePlugin
+                                .getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY)).getProject().getLanguage());
                         if (text instanceof Text) {
                             if (((Text) text).getSelectionCount() == 0) {
                                 ((Text) text).setText(replaceCode);
@@ -83,6 +86,7 @@ public final class ContextParameterExtractor {
                                 ((Text) text).insert(replaceCode);
 
                             }
+                            saveContext(parameterName, elem, ((Text) text).getText());
                         } else {
                             if (text instanceof StyledText) {
                                 if (((StyledText) text).getSelectionCount() == 0) {
@@ -91,15 +95,37 @@ public final class ContextParameterExtractor {
                                     ((StyledText) text).insert(replaceCode);
 
                                 }
+                                saveContext(parameterName, elem, ((StyledText) text).getText());
                             }
                         }
                     }
                 }
             }
+
+            /**
+             * qzhang Comment method "saveContext".
+             * 
+             * @param parameterName
+             * @param elem
+             * @param replaceCode
+             */
+            private void saveContext(final String parameterName, final Element elem, String replaceCode) {
+                List<? extends IElementParameter> params = elem.getElementParameters();
+                boolean end = false;
+                for (int i = 0; i < params.size() && !end; i++) {
+                    IElementParameter parameter2 = params.get(i);
+                    if (parameter2.getName().equals(parameterName)) {
+                        parameter2.setValue(replaceCode);
+                        end = true;
+                    }
+
+                }
+            }
         });
     }
 
-    private static IContextParameter buildParameterFrom(final Control text, final IContextManager manager, final String parameterName) {
+    private static IContextParameter buildParameterFrom(final Control text, final IContextManager manager,
+            final String parameterName) {
         String nameProposal = ""; //$NON-NLS-1$
         if (text instanceof Text) {
             nameProposal = ((Text) text).getSelectionText();
