@@ -40,17 +40,20 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.talend.commons.ui.swt.dialogs.ErrorDialogWidthDetailArea;
-import org.talend.commons.ui.swt.formtools.DataTypeHelper;
+import org.talend.commons.ui.swt.formtools.PerlDataTypeHelper;
 import org.talend.commons.ui.swt.formtools.Form;
 import org.talend.commons.ui.swt.formtools.LabelledText;
 import org.talend.commons.ui.swt.formtools.UtilsButton;
 import org.talend.commons.utils.data.list.IListenableListListener;
 import org.talend.commons.utils.data.list.ListenableListEvent;
+import org.talend.core.language.ECodeLanguage;
+import org.talend.core.language.LanguageManager;
 import org.talend.core.model.metadata.MetadataTalendType;
 import org.talend.core.model.metadata.builder.connection.ConnectionFactory;
 import org.talend.core.model.metadata.builder.connection.MetadataColumn;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.editor.MetadataEmfTableEditor;
+import org.talend.core.model.metadata.types.JavaDataTypeHelper;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.ui.metadata.editor.MetadataEmfTableEditorView;
 import org.talend.core.utils.XmlArray;
@@ -358,13 +361,25 @@ public class LdifFileStep3Form extends AbstractLdifFileStepForm {
 
                 int current = firstRowToExtractMetadata;
                 while (globalType == null) {
-                    if (i >= xmlRows.get(current).getFields().size()) {
-                        globalType = "String"; //$NON-NLS-1$
-                    } else {
-                        globalType = DataTypeHelper.getTalendTypeOfValue(xmlRows.get(current).getFields().get(i).getValue());
-                        current++;
-                        if (current == xmlRows.size()) {
+                    if (LanguageManager.getCurrentLanguage() == ECodeLanguage.JAVA) {
+                        if (i >= xmlRows.get(current).getFields().size()) {
+                            globalType = "id_String"; //$NON-NLS-1$
+                        } else {
+                            globalType = JavaDataTypeHelper.getTalendTypeOfValue(xmlRows.get(current).getFields().get(i).getValue());
+                            current++;
+                            if (current == xmlRows.size()) {
+                                globalType = "id_String"; //$NON-NLS-1$
+                            }
+                        }
+                    } else { 
+                        if (i >= xmlRows.get(current).getFields().size()) {
                             globalType = "String"; //$NON-NLS-1$
+                        } else {
+                            globalType = PerlDataTypeHelper.getTalendTypeOfValue(xmlRows.get(current).getFields().get(i).getValue());
+                            current++;
+                            if (current == xmlRows.size()) {
+                                globalType = "String"; //$NON-NLS-1$
+                            }
                         }
                     }
                 }
@@ -375,10 +390,15 @@ public class LdifFileStep3Form extends AbstractLdifFileStepForm {
                     if (fields.size() > i) {
                         String value = fields.get(i).getValue();
                         if (!value.equals("")) { //$NON-NLS-1$
-                            if (!DataTypeHelper.getTalendTypeOfValue(value).equals(globalType)) {
-                                globalType = DataTypeHelper.getCommonType(globalType, DataTypeHelper.getTalendTypeOfValue(value));
-                            }
-                            if (lengthValue < value.length()) {
+                            if (LanguageManager.getCurrentLanguage() == ECodeLanguage.JAVA) {
+                                if (!JavaDataTypeHelper.getTalendTypeOfValue(value).equals(globalType)) {
+                                    globalType = JavaDataTypeHelper.getCommonType(globalType, JavaDataTypeHelper.getTalendTypeOfValue(value));
+                                }
+                            } else {
+                                if (!PerlDataTypeHelper.getTalendTypeOfValue(value).equals(globalType)) {
+                                    globalType = PerlDataTypeHelper.getCommonType(globalType, PerlDataTypeHelper.getTalendTypeOfValue(value));
+                                }
+                            }                            if (lengthValue < value.length()) {
                                 lengthValue = value.length();                                
                             }
                             int positionDecimal = 0;
@@ -396,8 +416,12 @@ public class LdifFileStep3Form extends AbstractLdifFileStepForm {
                 // define the metadataColumn to field i
                 MetadataColumn metadataColumn = ConnectionFactory.eINSTANCE.createMetadataColumn();
                 // Convert javaType to TalendType
-                String talendType = MetadataTalendType.loadTalendType(globalType, "TALENDDEFAULT", false); //$NON-NLS-1$
-                metadataColumn.setTalendType(talendType);
+                String talendType = null;
+                if (LanguageManager.getCurrentLanguage() == ECodeLanguage.JAVA) {
+                    talendType = globalType;    
+                } else {
+                    talendType = MetadataTalendType.loadTalendType(globalType, "TALENDDEFAULT", false); //$NON-NLS-1$
+                }                metadataColumn.setTalendType(talendType);
                 metadataColumn.setLength(lengthValue);
                 if (globalType.equals("FLOAT") || globalType.equals("DOUBLE")) { //$NON-NLS-1$ //$NON-NLS-2$
                     metadataColumn.setPrecision(precisionValue);
