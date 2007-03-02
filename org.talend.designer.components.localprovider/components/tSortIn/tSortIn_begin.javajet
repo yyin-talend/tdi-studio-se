@@ -1,0 +1,102 @@
+<%@ jet 
+package="org.talend.designer.codegen.translators" 
+imports="
+    org.talend.core.model.process.INode 
+    org.talend.core.model.process.ElementParameterParser 
+    org.talend.core.model.metadata.IMetadataTable 
+    org.talend.core.model.metadata.IMetadataColumn 
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    org.talend.core.model.metadata.types.JavaType
+    org.talend.core.model.metadata.types.JavaTypesManager
+    java.util.List
+    java.util.Map
+" 
+class="SortInBegin" 
+%>
+
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+
+String cid = node.getUniqueName();
+String rowName = node.getIncomingConnections().get(0).getName();
+String outRowName = node.getOutgoingConnections().get(0).getName();
+List<Map<String, String>> criteria = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__CRITERIA__");
+String origin = ElementParameterParser.getValue(node, "__ORIGIN__");
+%>
+
+	class Comparator<%=origin %> implements java.util.Comparator<<%=rowName %>Struct> {
+		public Comparator<%=origin %>() {
+		}
+<%
+List<IMetadataTable> metadatas = node.getMetadataList();
+if ((metadatas!=null)&&(metadatas.size()>0)) {
+    IMetadataTable metadata = metadatas.get(0);
+    if (metadata!=null) {
+%>
+		public int compare(<%=rowName %>Struct o1, <%=rowName %>Struct o2) {	
+<%
+	for (int i=0; i<criteria.size(); i++) {
+		Map<String, String> line = criteria.get(i);
+		String colname = line.get("COLNAME");
+		JavaType colJavaType = null;
+    	String sort = line.get("SORT");
+    	String order = line.get("ORDER");
+    	boolean asc = (order.toLowerCase().equals("asc"));
+    	
+
+		//get the Java type of that column
+		boolean result = false;
+		for (IMetadataColumn column : metadata.getListColumns()) {
+			if (column.getLabel().compareTo(colname)==0) {
+				colJavaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
+				result = true;
+			}
+		}
+		if ((result)&&(colJavaType.isPrimitive())) {
+%>
+			if (o1.<%=colname %>!=o2.<%=colname %>) {
+				return <%=(asc)?"1":"-1"%>*((o1.<%=colname %>>o2.<%=colname %>)?1:-1);
+			} else {
+
+<%
+		} else {
+%>
+			if (o1.<%=colname %>.compareTo(o2.<%=colname %>)!=0) {
+				return <%=(asc)?"1":"-1"%>*(o1.<%=colname %>.compareTo(o2.<%=colname %>));
+			} else {
+<%
+		}
+	}
+%>
+			return 0;
+<%
+	for (int i=0; i<criteria.size(); i++) {
+%>
+			}
+<%
+	}
+%>	
+		}
+	}
+	
+	java.util.List<<%=rowName %>Struct> row_aref<%=origin %> = (java.util.List<<%=rowName %>Struct>) globalMap.get("<%=origin %>");
+	Comparator<%=origin %> comp<%=cid %> = new Comparator<%=origin %>();
+	<%=rowName %>Struct[] rows<%=cid %> = (<%=rowName %>Struct[]) row_aref<%=origin %>.toArray(new <%=rowName %>Struct[] {});
+	java.util.Arrays.sort(rows<%=cid %>, comp<%=cid %> );
+	int nb_line_<%=cid %> = 0;
+	
+	for (int i<%=cid %>=0; i<%=cid %><rows<%=cid %>.length;i<%=cid %>++ ) {
+<% 
+	for (IMetadataColumn column : metadata.getListColumns()) { 
+%>
+	<%=outRowName %>.<%=column.getLabel() %> = rows<%=cid %>[i<%=cid %>].<%=column.getLabel() %>;
+<%
+	}
+%>
+		// increase number of line sorted
+    	nb_line_<%=cid %>++;
+<%
+    }
+}
+%>
