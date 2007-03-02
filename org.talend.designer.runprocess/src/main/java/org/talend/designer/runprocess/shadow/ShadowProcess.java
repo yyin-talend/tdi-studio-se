@@ -122,33 +122,33 @@ public class ShadowProcess<T extends IProcessDescription> {
             break;
         case FILE_POSITIONAL:
             FileInputPositionalNode inPositionalNode = new FileInputPositionalNode(
-                    inPath.toOSString(), //$NON-NLS-1$ //$NON-NLS-2$
+                    PathUtils.getPortablePath(inPath.toOSString()), //$NON-NLS-1$ //$NON-NLS-2$
                     description.getRowSeparator(), description.getPattern(), description.getHeaderRow(), description
                             .getFooterRow(), description.getLimitRows(), description.getRemoveEmptyRowsToSkip(),
                     description.getEncoding());
             ps = new FileinToXmlProcess<FileInputPositionalNode>(inPositionalNode, outNode);
             break;
         case FILE_CSV:
-            FileInputCSVNode inCSVNode = new FileInputCSVNode(inPath.toOSString(), description //$NON-NLS-1$ //$NON-NLS-2$
+            FileInputCSVNode inCSVNode = new FileInputCSVNode(PathUtils.getPortablePath(inPath.toOSString()), description //$NON-NLS-1$ //$NON-NLS-2$
                     .getRowSeparator(), description.getFieldSeparator(), description.getLimitRows(), description
                     .getHeaderRow(), description.getFooterRow(), description.getEscapeCharacter(), description
                     .getTextEnclosure(), description.getRemoveEmptyRowsToSkip(), description.getEncoding());
             ps = new FileinToXmlProcess<FileInputCSVNode>(inCSVNode, outNode);
             break;
         case FILE_REGEXP:
-            FileInputRegExpNode inRegExpNode = new FileInputRegExpNode(inPath.toOSString(), description //$NON-NLS-1$ //$NON-NLS-2$
+            FileInputRegExpNode inRegExpNode = new FileInputRegExpNode(PathUtils.getPortablePath(inPath.toOSString()), description //$NON-NLS-1$ //$NON-NLS-2$
                     .getRowSeparator(), description.getPattern(), description.getLimitRows(), description
                     .getHeaderRow(), description.getFooterRow(), description.getRemoveEmptyRowsToSkip(), description
                     .getEncoding());
             ps = new FileinToXmlProcess<FileInputRegExpNode>(inRegExpNode, outNode);
             break;
         case FILE_XML:
-            FileInputXmlNode inXmlNode = new FileInputXmlNode(inPath.toOSString(), description.getLoopQuery(), //$NON-NLS-1$ //$NON-NLS-2$
+            FileInputXmlNode inXmlNode = new FileInputXmlNode(PathUtils.getPortablePath(inPath.toOSString()), description.getLoopQuery(), //$NON-NLS-1$ //$NON-NLS-2$
                     description.getMapping(), description.getLoopLimit(), description.getEncoding());
             ps = new FileinToXmlProcess<FileInputXmlNode>(inXmlNode, outNode);
             break;
         case FILE_LDIF:
-            FileInputLdifNode inLdifNode = new FileInputLdifNode(inPath.toOSString(), description.getSchema(),
+            FileInputLdifNode inLdifNode = new FileInputLdifNode(PathUtils.getPortablePath(inPath.toOSString()), description.getSchema(),
                     description.getEncoding()); //$NON-NLS-1$ //$NON-NLS-2$
             ps = new FileinToXmlProcess<FileInputLdifNode>(inLdifNode, outNode);
             break;
