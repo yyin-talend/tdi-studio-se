@@ -1,0 +1,17 @@
+<%@ jet 
+	package="org.talend.designer.codegen.translators"
+	imports="
+		org.talend.core.model.process.INode  
+    	org.talend.designer.codegen.config.CodeGeneratorArgument
+    	org.talend.core.model.process.ElementParameterParser
+    " 
+	class="ArrayEnd"
+%>
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();	
+String cid = node.getUniqueName();
+String destination = ElementParameterParser.getValue(node, "__DESTINATION__");	
+%>
+
+globalMap.put("<%=destination %>",<%=destination %>);
