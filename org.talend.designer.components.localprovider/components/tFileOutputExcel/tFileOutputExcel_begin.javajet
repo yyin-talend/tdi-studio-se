@@ -6,6 +6,8 @@ imports="
     org.talend.core.model.metadata.IMetadataTable
     org.talend.core.model.metadata.IMetadataColumn
     org.talend.designer.codegen.config.CodeGeneratorArgument
+    org.talend.core.model.metadata.types.JavaTypesManager
+	org.talend.core.model.metadata.types.JavaType
     java.util.List
 " 
 class="FileOutputExcelBegin"
@@ -29,11 +31,6 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         
         String sheetname= ElementParameterParser.getValue(node,"__SHEETNAME__");
         
-        String encoding = ElementParameterParser.getValue(
-            node,
-            "__ENCODING__"
-        );
-        
         boolean isIncludeHeader = ElementParameterParser.getValue(
             node,
             "__INCLUDEHEADER__"
@@ -41,22 +38,36 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 %>
 		int nb_line_<%=cid%> = 0;
 		
-		final jxl.write.WritableWorkbook writeableWorkbook<%=cid %> = jxl.Workbook.createWorkbook(new java.io.BufferedOutputStream(new java.io.PrintStream(new java.io.FileOutputStream(<%=filename%>),true,<%= encoding%>)));
+		final jxl.WorkbookSettings workbookSettings_<%= cid %> = new jxl.WorkbookSettings();
+        workbookSettings_<%= cid %>.setEncoding(<%=ElementParameterParser.getValue(node,"__ENCODING__") %>);
+		final jxl.write.WritableWorkbook writeableWorkbook<%=cid %> = jxl.Workbook.createWorkbook(new java.io.BufferedOutputStream(new java.io.FileOutputStream(<%=filename%>))
+												, workbookSettings_<%= cid %>);
         final jxl.write.WritableSheet writableSheet<%=cid%> = writeableWorkbook<%=cid%>.createSheet(<%=sheetname%>, 0);
+
         
 <%
-		if(isIncludeHeader){
-    		List<IMetadataColumn> columns = metadata.getListColumns();
-    		int sizeColumns = columns.size();
-    		for (int i = 0; i < sizeColumns; i++) {
-    			IMetadataColumn column = columns.get(i);
-    		%>	
-    			writableSheet<%=cid %>.addCell(new jxl.write.Label(<%=i%>, nb_line_<%=cid%>, "<%=column.getLabel() %>"));
-    		<%
-    		}%>
-    		nb_line_<%=cid%>++;
-<%
+		List<IMetadataColumn> columns = metadata.getListColumns();
+    	int sizeColumns = columns.size();
+    	for (int i = 0; i < sizeColumns; i++) {
+    		IMetadataColumn column = columns.get(i);
+    		JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
+    		if (javaType == JavaTypesManager.DATE){
+    			String pattern = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
+    			if(pattern != null && pattern.trim().length() != 0){%>
+    	final jxl.write.WritableCellFormat cell_format_<%=column.getLabel() %>_<%= cid%>=new jxl.write.WritableCellFormat(new jxl.write.DateFormat(<%=pattern %>));
+<%	    		}else{%>
+		if(true){
+			throw new Exception("Date pattern must be set for column <%=column.getLabel() %> in the schema of component <%=cid %>!");
 		}
+<%				}
+			}
+			if(isIncludeHeader){%>
+		writableSheet<%=cid %>.addCell(new jxl.write.Label(<%=i%>, nb_line_<%=cid%>, "<%=column.getLabel() %>"));
+<%			}
+		}
+		if(isIncludeHeader){%>
+		nb_line_<%=cid%>++;
+<%		}
     }
 }
 %>

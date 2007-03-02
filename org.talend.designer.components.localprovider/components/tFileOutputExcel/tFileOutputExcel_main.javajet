@@ -56,7 +56,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     				String pattern = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
     				if (javaType == JavaTypesManager.DATE && pattern != null && pattern.trim().length() != 0) {
 %>
-								<%=conn.getName() %>.<%=column.getLabel() %>, new jxl.write.WritableCellFormat(new jxl.write.DateFormat(<%=pattern %>))
+								<%=conn.getName() %>.<%=column.getLabel() %>, cell_format_<%=column.getLabel() %>_<%= cid%>
 <%				
 					} else if(javaType == JavaTypesManager.CHARACTER) {
 %>
