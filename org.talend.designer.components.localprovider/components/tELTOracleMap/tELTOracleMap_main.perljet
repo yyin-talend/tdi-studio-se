@@ -52,8 +52,13 @@
             ExternalDbMapTable outputTable = outputTables.get(i);
             String sqlQuery = gm.buildSqlSelect((OracleMapperComponent) node, outputTable.getName());
             
-            %>$select_query_<%= outputTable.getName() %> = "<%= sqlQuery %>";
-            <%
+%>
+
+$_globals{<%=uniqueNameComponent %>}{QUERY}{<%= outputTable.getName() %>} = "<%= sqlQuery %>";
+$branch_<%= outputTable.getName() %>_is_active = true;
+
+
+<%
 
         }
 
