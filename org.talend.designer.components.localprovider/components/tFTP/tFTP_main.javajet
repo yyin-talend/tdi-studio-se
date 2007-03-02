@@ -1,0 +1,205 @@
+<%@ jet 
+	package="org.talend.designer.codegen.translators" 
+	imports="
+		org.talend.core.model.process.INode 
+		org.talend.core.model.metadata.IMetadataTable 
+		org.talend.core.model.process.ElementParameterParser
+		org.talend.designer.codegen.config.CodeGeneratorArgument
+		java.util.List
+                java.util.Map
+	"
+	class="FTPMain"
+%>
+
+<%
+	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+	INode node = (INode)codeGenArgument.getArgument();
+	boolean stats = codeGenArgument.isStatistics();
+	
+	List<IMetadataTable> metadatas = node.getMetadataList();
+	if ((metadatas!=null)&&(metadatas.size()>0)) {
+		IMetadataTable metadata = metadatas.get(0);
+		if (metadata!=null) {
+%>
+
+<%
+	// component id
+	String cid = node.getUniqueName();
+
+	String localdir = ElementParameterParser.getValue(node, "__LOCALDIR__");
+	String remotedir = ElementParameterParser.getValue(node, "__REMOTEDIR__");
+	String action = ElementParameterParser.getValue(node, "__ACTION__");
+
+	List<Map<String, String>> files = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__FILES__");
+
+%>
+	//record the localdir, for no command "lcd"
+	String localdir<%=cid %>  = <%=localdir%>;
+	String remotedir<%=cid %> = <%=remotedir%>;
+	
+	java.util.List<java.util.Map> list<%=cid %> = new java.util.ArrayList<java.util.Map>();
+
+<%
+    for (int i=0; i<files.size(); i++) {
+       Map<String, String> line = files.get(i);
+%>
+    
+	java.util.Map<String,String> map<%=cid %><%=i %> = new java.util.HashMap<String,String>();
+	map<%=cid %><%=i %>.put(<%= line.get("FILEMASK") %>,<%= line.get("NEWNAME") %>);
+	list<%=cid %>.add(map<%=cid %><%=i %>);
+       
+<%
+  }
+%>
+
+	ftp<%=cid %>.chdir(remotedir<%=cid %>);
+
+////////////////////////////////////////////
+<%
+	if (action.equals("get")) {
+%>
+	{
+	for (java.util.Map map<%=cid %> : list<%=cid %>) 
+	{
+	java.util.Set<String> keySet<%=cid %> = map<%=cid %>.keySet();
+   
+	for (Object key<%=cid %> : keySet<%=cid %>)
+	{     
+	String filemask<%=cid %> = (String)key<%=cid %>; 
+	String dir<%=cid %> = null;
+	String mask<%=cid %> = filemask<%=cid %>.replaceAll("\\\\", "/") ;  
+	int i<%=cid %> = filemask<%=cid %>.lastIndexOf('/');   
+	if (i<%=cid %>!=-1)
+	{
+	dir<%=cid %> = filemask<%=cid %>.substring(0, i<%=cid %>); 
+	mask<%=cid %> = filemask<%=cid %>.substring(i<%=cid %>+1);  
+    }
+    if (dir<%=cid %>!=null && !"".equals(dir<%=cid %>)) ftp<%=cid %>.chdir(dir<%=cid %>);
+    
+  	mask<%=cid %> = mask<%=cid %>.replaceAll("\\.", "\\\\.").replaceAll("\\*", ".*");
+  
+	String[] listings<%=cid %> = ftp<%=cid %>.dir(".", false);
+    for (int m<%=cid %> = 0; m<%=cid %> < listings<%=cid %>.length; m<%=cid %>++)
+     { 
+      if (listings<%=cid %>[m<%=cid %>].matches(mask<%=cid %>))
+      {
+      ftp<%=cid %>.get(localdir<%=cid %> + "/" + listings<%=cid %>[m<%=cid %>] ,listings<%=cid %>[m<%=cid %>]);
+      }
+    }
+     
+   }
+ } 
+}
+<%
+	}
+	else if (action.equals("put")) {
+%>
+
+////////////////////////////////////////////
+{
+	for (java.util.Map map<%=cid %> : list<%=cid %>) 
+	{
+   java.util.Set<String> keySet<%=cid %> = map<%=cid %>.keySet();
+      
+   for (Object key<%=cid %> : keySet<%=cid %>)
+   {     
+	String filemask<%=cid %> = (String)key<%=cid %>; 
+	String dir<%=cid %> = null;	
+	String mask<%=cid %> = filemask<%=cid %>.replaceAll("\\\\", "/") ;	
+	int i<%=cid %> = mask<%=cid %>.lastIndexOf('/');
+  
+	if (i<%=cid %>!=-1)
+	{
+	dir<%=cid %> = filemask<%=cid %>.substring(0, i<%=cid %>); 
+	mask<%=cid %> = filemask<%=cid %>.substring(i<%=cid %>+1);	 
+    }
+    if (dir<%=cid %>!=null && !"".equals(dir<%=cid %>)) localdir<%=cid %> = localdir<%=cid %> + "/" + dir<%=cid %>;  
+    
+  	mask<%=cid %> = mask<%=cid %>.replaceAll("\\.", "\\\\.").replaceAll("\\*", ".*");
+    final String finalMask<%=cid %> = mask<%=cid %>;
+    java.io.File[] listings<%=cid %> = null;       
+        java.io.File file<%=cid %> = new java.io.File(localdir<%=cid %>);
+        if (file<%=cid %>.isDirectory()) {
+            listings<%=cid %> = file<%=cid %>.listFiles(new java.io.FileFilter() {
+                public boolean accept(java.io.File pathname) {
+                    boolean result = false;
+                    if (pathname != null && pathname.isFile()) {                      
+                            result = java.util.regex.Pattern.compile(finalMask<%=cid %>).matcher(pathname.getName()).find(); 
+                    }
+                    return result;
+                }
+            });
+        } 
+    if(listings<%=cid %> != null)
+    {
+    for (int m<%=cid %> = 0; m<%=cid %> < listings<%=cid %>.length; m<%=cid %>++)
+     { 
+      if (listings<%=cid %>[m<%=cid %>].getName().matches(mask<%=cid %>))
+      {        
+         ftp<%=cid %>.put(localdir<%=cid %> + "/" + listings<%=cid %>[m<%=cid %>].getName(),listings<%=cid %>[m<%=cid %>].getName());////////////////////the main action
+      }
+    }
+    }     
+   }
+ } 
+}
+<%
+ } else if (action.equals("delete")) {
+%>
+/////////////////////////////////////
+{
+
+for (java.util.Map map<%=cid %> : list<%=cid %>) 
+{
+   java.util.Set<String> keySet<%=cid %> = map<%=cid %>.keySet(); 
+     
+   for (Object key<%=cid %> : keySet<%=cid %>)
+   {     
+	String filemask<%=cid %> = (String)key<%=cid %>; 
+	String dir<%=cid %> = null;
+	String mask<%=cid %> = filemask<%=cid %>.replaceAll("\\\\", "/") ;
+	int i<%=cid %> = filemask<%=cid %>.lastIndexOf('/');
+  
+	if (i<%=cid %>!=-1)
+	{
+	dir<%=cid %> = filemask<%=cid %>.substring(0, i<%=cid %>); 
+	mask<%=cid %> = filemask<%=cid %>.substring(i<%=cid %>+1); 
+    }
+    if (dir<%=cid %>!=null && !"".equals(dir<%=cid %>)) ftp<%=cid %>.chdir(dir<%=cid %>);
+    
+  	mask<%=cid %> = mask<%=cid %>.replaceAll("\\.", "\\\\.").replaceAll("\\*", ".*");
+  
+	String[] listings<%=cid %> = ftp<%=cid %>.dir(".", false);
+	for (int m<%=cid %> = 0; m<%=cid %> < listings<%=cid %>.length; m<%=cid %>++)
+	{  
+	if (listings<%=cid %>[m<%=cid %>].matches(mask<%=cid %>))
+	{
+	ftp<%=cid %>.delete(listings<%=cid %>[m<%=cid %>]);
+	}
+	}     
+   }
+ } 
+}
+<%
+	}
+	else if (action.equals("rename")) {
+%>
+//////////////////////////////////
+{
+	for (Object map<%=cid %> : list<%=cid %>) 
+	{  	
+  java.util.Set keySet<%=cid %> = ((java.util.Map)map<%=cid %>).keySet();   
+   for (Object key<%=cid %> : keySet<%=cid %>)
+   {     
+     ftp<%=cid %>.rename((String)key<%=cid %>, (String)((java.util.Map)map<%=cid %>).get(key<%=cid %>));
+   }
+}
+}
+<%
+}
+%>
+////////////////////////////////
+<%
+		}
+	}
+%>
