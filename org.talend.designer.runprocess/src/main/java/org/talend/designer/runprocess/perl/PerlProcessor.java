@@ -96,6 +96,9 @@ public class PerlProcessor implements IProcessor {
 
     /** Path to generated context code. */
     private IPath contextPath;
+    
+    /** Context used **/
+    private IContext context;
 
     /** Tells if filename is based on id or label of the process. */
     private boolean filenameFromLabel;
@@ -127,6 +130,7 @@ public class PerlProcessor implements IProcessor {
         filePrefix += filenameFromLabel ? escapeFilename(process.getLabel()) : process.getId();
         codePath = new Path(filePrefix + ".pl"); //$NON-NLS-1$
         contextPath = new Path(filePrefix + "_" + escapeFilename(context.getName()) + ".pl"); //$NON-NLS-1$ //$NON-NLS-2$
+        this.context = context;
     }
 
     public void generateCode(IContext context, boolean statistics, boolean trace, boolean perlProperties)
@@ -524,7 +528,7 @@ public class PerlProcessor implements IProcessor {
             wc.setAttribute(PerlUtils.ATTR_STARTUP_FILE, this.getCodePath().toOSString());
             wc.setAttribute(PerlUtils.ATTR_PROJECT_NAME, projectName);
             wc.setAttribute(PerlUtils.ATTR_WORKING_DIRECTORY, (String) null);
-            wc.setAttribute(PerlUtils.ATTR_PROGRAM_PARAMETERS, CTX_ARG + this.getContextPath().toOSString());
+            wc.setAttribute(PerlUtils.ATTR_PROGRAM_PARAMETERS, CTX_ARG + context.getName());
 
             config = wc.doSave();
         }

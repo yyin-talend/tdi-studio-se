@@ -37,6 +37,7 @@ import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IWorkspaceRoot;
+import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IExtension;
@@ -58,7 +59,6 @@ import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.debug.core.JDIDebugModel;
-import org.eclipse.jdt.internal.core.ClasspathEntry;
 import org.eclipse.jdt.launching.IJavaLaunchConfigurationConstants;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.talend.commons.exception.SystemException;
@@ -257,8 +257,8 @@ public class JavaProcessor implements IProcessor {
                 contextFile.setContents(contextStream, true, false, null);
             }
             syntaxCheck();
-
-            // Set Breakpoints in generated code file
+            
+            javaProject.getResource().getWorkspace().build(IncrementalProjectBuilder.AUTO_BUILD, null);
 
             List<INode> breakpointNodes = CorePlugin.getContext().getBreakpointNodes(process);
             if (!breakpointNodes.isEmpty()) {
@@ -281,6 +281,7 @@ public class JavaProcessor implements IProcessor {
                 int[] lineNumbers = getLineNumbers(codeFile, nodeNames);
                 setBreakpoints(codeFile, typeName, lineNumbers);
             }
+
         } catch (CoreException e1) {
             throw new ProcessorException(Messages.getString("Processor.tempFailed"), e1); //$NON-NLS-1$
         } catch (SystemException e) {
@@ -537,7 +538,7 @@ public class JavaProcessor implements IProcessor {
         List<IClasspathEntry> classpath = new ArrayList<IClasspathEntry>();
         classpath.add(jreClasspathEntry);
         classpath.add(classpathEntry);
-        //classpath.add(libClasspathEntry);
+        // classpath.add(libClasspathEntry);
 
         IFolder runtimeFolder = prj.getFolder(new Path(JavaUtils.JAVA_CLASSES_DIRECTORY)); //$NON-NLS-1$
         if (!runtimeFolder.exists()) {
@@ -567,12 +568,10 @@ public class JavaProcessor implements IProcessor {
 
         IClasspathEntry[] classpathEntryArray = (IClasspathEntry[]) classpath.toArray(new IClasspathEntry[classpath
                 .size()]);
-        
 
         javaProject.setRawClasspath(classpathEntryArray, null);
 
         javaProject.setOutputLocation(javaProject.getPath().append(JavaUtils.JAVA_CLASSES_DIRECTORY), null); //$NON-NLS-1$
-
         return prj;
 
     }
@@ -743,8 +742,10 @@ public class JavaProcessor implements IProcessor {
     public String getTypeName() {
         return this.typeName;
     }
-    
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.talend.designer.runprocess.IProcessor#saveLaunchConfiguration()
      */
     public Object saveLaunchConfiguration() throws CoreException {
