@@ -1,0 +1,17 @@
+<%@ jet 
+	package="org.talend.designer.codegen.translators" 
+	imports="
+		org.talend.core.model.process.INode 
+		org.talend.designer.codegen.config.CodeGeneratorArgument
+	" 
+	class="FileInputExcelEnd" 
+%>
+<%
+	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+	INode node = (INode)codeGenArgument.getArgument();
+	String cid = node.getUniqueName();
+%>
+				nb_line_<%=cid%>++;
+			}
+			workbook_<%=cid %>.close();
+			globalMap.put("<%=cid %>{NB_LINE}",nb_line_<%=cid %>);

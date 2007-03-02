@@ -1,0 +1,167 @@
+<%@ jet 
+	package="org.talend.designer.codegen.translators" 
+	imports="
+		org.talend.core.model.process.INode 
+		org.talend.core.model.process.ElementParameterParser 
+		org.talend.core.model.metadata.IMetadataTable 
+		org.talend.core.model.metadata.IMetadataColumn 
+		org.talend.core.model.process.IConnection
+		org.talend.core.model.process.EConnectionType
+		org.talend.designer.codegen.config.CodeGeneratorArgument
+		java.util.List 
+		org.talend.core.model.metadata.types.JavaTypesManager
+		org.talend.core.model.metadata.types.JavaType
+	" 
+	class="FileInputExcelBegin" 
+%>	
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+String cid = node.getUniqueName();
+List<IMetadataTable> metadatas = node.getMetadataList();
+if ((metadatas!=null)&&(metadatas.size()>0)) {
+	IMetadataTable metadata = metadatas.get(0);
+	if (metadata!=null) {
+    	String header = ElementParameterParser.getValue(node, "__HEADER__");
+    	String limit = ElementParameterParser.getValue(node, "__LIMIT__");
+    	String footer = ElementParameterParser.getValue(node, "__FOOTER__");
+    	String firstColumn = ElementParameterParser.getValue(node, "__FIRST_COLUMN__");
+    	String lastColumn = ElementParameterParser.getValue(node, "__LAST_COLUMN__");
+%>
+		
+		final jxl.WorkbookSettings workbookSettings_<%= cid %> = new jxl.WorkbookSettings();
+        workbookSettings_<%= cid %>.setEncoding(<%=ElementParameterParser.getValue(node,"__ENCODING__") %>);
+        final jxl.Workbook workbook_<%= cid %> = jxl.Workbook.getWorkbook(new java.io.BufferedInputStream(new java.io.FileInputStream(
+        						<%=ElementParameterParser.getValue(node,"__FILENAME__")%>)), workbookSettings_<%= cid %>);
+        final jxl.Sheet sheet_<%= cid %>  = workbook_<%= cid %>.getSheet(<%= ElementParameterParser.getValue(node, "__SHEETNAME__")%>);
+        if(sheet_<%= cid %> == null){
+        	throw new Exception("Sheet \""+<%= ElementParameterParser.getValue(node, "__SHEETNAME__")%>+"\" not exist!");
+        }
+        int nb_line_<%= cid %> = 0;            
+
+        int begin_line_<%= cid %> = <%if(header.trim().equals("")){%>0<%}else{%><%= header %><%}%>;
+        int end_line_<%= cid %> = sheet_<%= cid %>.getRows()- <%if(footer.trim().equals("")){%>0<%}else{%><%=footer%><%}%>;
+        int limit_<%= cid %> = <%if(limit.trim().equals("")){%>-1<%}else{%><%=limit%><%}%>;
+        int start_column_<%= cid %> = <%if(firstColumn.trim().equals("")){%>0<%}else{%><%=firstColumn%>-1<%}%>;
+        int end_column_<%= cid %> = <%if(lastColumn.trim().equals("")){%>sheet_<%= cid %>.getColumns()<%}else{%><%=lastColumn%><%}%>;
+
+        jxl.Cell[] row_<%= cid %> = null;
+        
+        for(int i_<%= cid %> = begin_line_<%= cid %>; i_<%= cid %> < end_line_<%= cid %>; i_<%= cid %>++){
+
+        	if (limit_<%= cid %> != -1 && nb_line_<%= cid %> >= limit_<%= cid %>) {
+        		break;
+        	}
+                
+        	row_<%= cid %> = sheet_<%= cid %>.getRow(i_<%= cid %>);     
+        
+<%
+//begin
+//
+		List< ? extends IConnection> conns = node.getOutgoingConnections();
+		String firstConnName = "";
+		if (conns!=null) {
+			if (conns.size()>0) {
+				IConnection conn = conns.get(0);
+				firstConnName = conn.getName();
+				List<IMetadataColumn> listColumns = metadata.getListColumns();
+				int size = listColumns.size();
+				if ((conn.getLineStyle().equals(EConnectionType.FLOW_MAIN))||(conn.getLineStyle().equals(EConnectionType.FLOW_REF))) {
+//
+//end%>
+			String[] temp_row_<%= cid %> = new String[<%=listColumns.size()%>];
+			int actual_end_column_<%= cid %> = end_column_<%= cid %> >	row_<%= cid %>.length ? row_<%= cid %>.length : end_column_<%= cid %>;
+			for(int i=0;i<<%=size%>;i++){							
+				if(i + start_column_<%= cid %> < actual_end_column_<%= cid %>){
+					temp_row_<%= cid %>[i] = row_<%= cid %>[i + start_column_<%= cid %>].getContents();
+				}else{
+					temp_row_<%= cid %>[i]="";
+				}								
+			}
+<%
+//start
+//
+					for (int i=0; i<size; i++) {
+						IMetadataColumn column = listColumns.get(i);
+						String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
+						JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
+						String patternValue = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
+//
+//end%>					
+			if(temp_row_<%=cid %>[<%=i%>].length() > 0) {
+<%
+//start
+//
+						if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT) {
+//
+//end%>
+			<%=conn.getName() %>.<%=column.getLabel() %> = temp_row_<%=cid %>[<%=i%>];
+<%		
+//start
+//
+						} else if(javaType == JavaTypesManager.DATE) {
+//
+//end%>
+			<%=conn.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_Date(temp_row_<%=cid %>[<%=i%>], <%= patternValue %>);
+<%
+//start
+//
+						} else {
+//
+//end%>
+			<%=conn.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_<%= typeToGenerate %>(temp_row_<%=cid %>[<%=i%>]);
+<%
+//start
+//
+						}
+//
+//end%>					
+			}else {
+<%
+//start
+//
+						String defaultValue = JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate, column.getDefault());
+						if(defaultValue == null) {
+//
+//end%>
+				throw new RuntimeException("Value is empty for column : '<%= column.getLabel() %>', value is invalid or this column should be nullable or have a default value.");
+<%
+//start
+//
+						} else {
+//
+//end%>
+				<%=conn.getName() %>.<%=column.getLabel() %> = <%=defaultValue%>;
+<%
+//start
+//
+						}
+//
+//end%>
+		}
+<%
+//start
+//
+					}
+				}
+			}
+			if (conns.size()>1) {
+				for (int i=1;i<conns.size();i++) {
+					IConnection connection = conns.get(i);
+					if ((connection.getName().compareTo(firstConnName)!=0)&&((connection.getLineStyle().equals(EConnectionType.FLOW_MAIN))||(connection.getLineStyle().equals(EConnectionType.FLOW_REF)))) {
+			    		for (IMetadataColumn column: metadata.getListColumns()) {
+//
+//end%>
+      	<%=connection.getName() %>.<%=column.getLabel() %> = <%=firstConnName %>.<%=column.getLabel() %>;
+<%
+//start
+//
+						}
+					}
+				}
+			}
+		}
+	}
+}
+//
+//end%>

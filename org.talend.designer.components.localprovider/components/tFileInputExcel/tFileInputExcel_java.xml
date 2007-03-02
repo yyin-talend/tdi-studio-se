@@ -1,0 +1,121 @@
+<COMPONENT>
+  <HEADER
+    PLATEFORM="ALL"
+    SERIAL=""
+    VERSION="0.102"
+    STATUS="ALPHA"
+    
+    COMPATIBILITY="ALL"
+    AUTHOR="Talend"
+    RELEASE_DATE="20050320A"
+    STARTABLE="true"
+  >
+    <SIGNATURE />
+  </HEADER>
+
+  <DOCUMENTATION>
+    <URL />
+  </DOCUMENTATION>
+
+  <CONNECTORS>
+    <CONNECTOR CTYPE="FLOW" MAX_INPUT="0" />
+    <CONNECTOR CTYPE="ITERATE" MAX_OUTPUT="1" MAX_INPUT="1" />
+    <CONNECTOR CTYPE="BEFORE" MAX_INPUT="1" />
+    <CONNECTOR CTYPE="AFTER" MAX_INPUT="1" />
+    <CONNECTOR CTYPE="REFERENCE" />
+    <CONNECTOR CTYPE="RUN_OK" />
+    <CONNECTOR CTYPE="RUN_ERROR" />
+    <CONNECTOR CTYPE="RUN_IF" />
+  </CONNECTORS>
+
+  <PARAMETERS>
+    <PARAMETER
+      NAME="FILENAME"
+      FIELD="FILE"
+      NUM_ROW="2"
+      REQUIRED="true"
+    >
+      <DEFAULT>"__COMP_DEFAULT_FILE_DIR__/in.xls"</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER
+      NAME="SHEETNAME"
+      FIELD="TEXT"
+      NUM_ROW="3"
+      REQUIRED="true"
+    >
+      <DEFAULT>"Sheet1"</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER
+      NAME="HEADER"
+      FIELD="TEXT"
+      NUM_ROW="4"
+    >
+      <DEFAULT>0</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER
+      NAME="FOOTER"
+      FIELD="TEXT"
+      NUM_ROW="4"
+    >
+      <DEFAULT>0</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER
+      NAME="LIMIT"
+      FIELD="TEXT"
+      NUM_ROW="4"
+    >
+      <DEFAULT />
+    </PARAMETER>
+
+    <PARAMETER
+      NAME="FIRST_COLUMN"
+      FIELD="TEXT"
+      NUM_ROW="5"
+    >
+      <DEFAULT>1</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER
+      NAME="LAST_COLUMN"
+      FIELD="TEXT"
+      NUM_ROW="5"
+    >
+      <DEFAULT/>
+    </PARAMETER>
+
+    <PARAMETER
+      NAME="SCHEMA"
+      FIELD="SCHEMA_TYPE"
+      REQUIRED="true"
+      NUM_ROW="6"
+    />
+
+    <PARAMETER
+      NAME="ENCODING"
+      FIELD="ENCODING_TYPE"
+      NUM_ROW="7"
+      REQUIRED="true"
+    >
+      <DEFAULT>"ISO-8859-15"</DEFAULT>
+    </PARAMETER>
+
+  </PARAMETERS>
+
+  <CODEGENERATION>
+    <IMPORTS>
+      <IMPORT
+        NAME="Java_Excel"
+        MODULE="jxl.jar"
+        REQUIRED="true"
+      />
+    </IMPORTS>
+  </CODEGENERATION>
+
+  <RETURNS>
+    <RETURN NAME="NB_LINE" TYPE="INTEGER" AVAILABILITY="AFTER" />
+  </RETURNS>
+</COMPONENT>
