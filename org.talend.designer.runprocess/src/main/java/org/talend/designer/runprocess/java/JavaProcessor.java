@@ -751,7 +751,8 @@ public class JavaProcessor implements IProcessor {
         ILaunchConfiguration config = null;
         ILaunchManager launchManager = DebugPlugin.getDefault().getLaunchManager();
         String projectName = this.getCodeProject().getName();
-        ILaunchConfigurationType type = launchManager.getLaunchConfigurationType(PerlUtils.PERL_LAUNCHCONFIGURATION);       
+        ILaunchConfigurationType type = launchManager
+                .getLaunchConfigurationType(IJavaLaunchConfigurationConstants.ID_JAVA_APPLICATION);
         if (type != null) {
             ILaunchConfigurationWorkingCopy wc = type.newInstance(null, launchManager
                     .generateUniqueLaunchConfigurationNameFrom(this.getCodePath().lastSegment()));
