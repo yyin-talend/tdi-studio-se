@@ -101,8 +101,14 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 //
 						} else if(javaType == JavaTypesManager.DATE) {
 //
-//end%>
-			<%=conn.getName() %>.<%=column.getLabel() %> = ParserUtils.parseTo_Date(temp_row_<%=cid %>[<%=i%>], <%= patternValue %>);
+//end%>		
+			if(<%= i%><actual_end_column_<%= cid %>){
+				try{
+					<%=conn.getName() %>.<%=column.getLabel() %> = ((jxl.DateCell)row_<%= cid %>[<%=i%> + start_column_<%= cid %>]).getDate();
+				}catch(Exception e){
+					throw new Exception("The cell format is not Date in row "+(nb_line_<%= cid %>+1)+" column "+(<%=i%> + start_column_<%= cid %>+1));
+				}
+			}
 <%
 //start
 //
