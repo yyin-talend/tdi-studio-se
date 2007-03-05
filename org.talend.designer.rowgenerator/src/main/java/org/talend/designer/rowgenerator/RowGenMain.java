@@ -26,6 +26,10 @@ import java.util.List;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ControlEvent;
+import org.eclipse.swt.events.ControlListener;
+import org.eclipse.swt.events.FocusEvent;
+import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Composite;
@@ -140,19 +144,19 @@ public class RowGenMain {
             shell.setBounds(boundsRG);
         }
         createUI(shell);
-        // shell.addControlListener(new ControlListener() {
-        //
-        // public void controlMoved(ControlEvent e) {
-        // generatorUI.getDataTableView().attachLabelPosition();
-        // }
-        //
-        // public void controlResized(ControlEvent e) {
-        // generatorUI.getDataTableView().attachLabelPosition();
-        // }
-        //
-        // });
-        // shell.moveAbove(null);
         shell.open();
+        shell.addControlListener(new ControlListener() {
+
+            public void controlMoved(ControlEvent e) {
+                generatorUI.getDataTableView().attachLabelPosition();
+            }
+
+            public void controlResized(ControlEvent e) {
+                generatorUI.getDataTableView().attachLabelPosition();
+            }
+
+        });
+        // shell.moveAbove(null);
         generatorUI.getDataTableView().updateHeader(ExternalRowGeneratorUiProperties.getShowColumnsList());
         generatorUI.getDataTableView().getExtendedToolbar().updateComponentsSize();
         return shell;

@@ -67,7 +67,7 @@ public class FunctionManager {
 
         for (TalendType talendType : talendTypes) {
             if (talendType.getName().equals(name)) {
-                funtions = talendType.getFunctions();
+                funtions.addAll(talendType.getFunctions());
             }
         }
         funtions.add(createCustomizeFunction());

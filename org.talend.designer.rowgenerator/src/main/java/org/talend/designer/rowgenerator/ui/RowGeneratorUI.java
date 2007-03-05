@@ -275,8 +275,14 @@ public class RowGeneratorUI {
      */
     private Function getAvailableFunFromValue(String value, List<Function> funs) {
         Function currentFun = null;
+        boolean isExsit = false;
+        for (Function function : funs) {
+            if (value.indexOf(function.getName()) != -1) {
+                isExsit = true;
+            }
+        }
         if (value != null) {
-            if (value.startsWith("sub{") && value.endsWith("}")) {
+            if (value.startsWith("sub{") && value.endsWith("}") && isExsit) {
                 for (Function function : funs) {
                     int indexOf = value.indexOf(function.getName());
                     if (indexOf != -1) {
