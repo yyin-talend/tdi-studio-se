@@ -83,7 +83,7 @@ public class LdifFileStep2Form extends AbstractLdifFileStepForm {
 
     private Group previewGroup;
 
-    private List<String> itemTableName;
+    public static List<String> itemTableName;
 
     private Button previewButton;
 

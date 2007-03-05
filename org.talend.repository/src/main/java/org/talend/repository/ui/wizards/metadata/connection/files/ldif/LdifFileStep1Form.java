@@ -246,6 +246,12 @@ public class LdifFileStep1Form extends AbstractLdifFileStepForm {
                 // show lines
                 fileViewerText.setText(new String(previewRows));
                 filePathIsDone = true;
+                
+                // init of List of attributes when you change the FilePath in input.
+                if(getConnection().getValue() != null && !getConnection().getValue().isEmpty()){
+                    getConnection().getValue().removeAll(getConnection().getValue());
+                }
+                
             } catch (Exception e) {
                 String msgError = Messages.getString("FileStep1.filepath") + " \"" + fileField.getText().replace("\\\\", "\\") //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
                         + "\"\n"; //$NON-NLS-1$
