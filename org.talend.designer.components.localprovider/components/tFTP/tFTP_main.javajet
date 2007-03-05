@@ -14,12 +14,6 @@
 <%
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
-	boolean stats = codeGenArgument.isStatistics();
-	
-	List<IMetadataTable> metadatas = node.getMetadataList();
-	if ((metadatas!=null)&&(metadatas.size()>0)) {
-		IMetadataTable metadata = metadatas.get(0);
-		if (metadata!=null) {
 %>
 
 <%
@@ -32,12 +26,10 @@
 
 	List<Map<String, String>> files = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__FILES__");
 
-%>
-	//record the localdir, for no command "lcd"
-	String localdir<%=cid %>  = <%=localdir%>;
+%>	
 	String remotedir<%=cid %> = <%=remotedir%>;
 	
-	java.util.List<java.util.Map> list<%=cid %> = new java.util.ArrayList<java.util.Map>();
+	java.util.List<java.util.Map<String,String>> list<%=cid %> = new java.util.ArrayList<java.util.Map<String,String>>();
 
 <%
     for (int i=0; i<files.size(); i++) {
@@ -45,7 +37,19 @@
 %>
     
 	java.util.Map<String,String> map<%=cid %><%=i %> = new java.util.HashMap<String,String>();
-	map<%=cid %><%=i %>.put(<%= line.get("FILEMASK") %>,<%= line.get("NEWNAME") %>);
+<%
+	if(action.equals("rename"))
+	{
+%>	
+		map<%=cid %><%=i %>.put(<%= line.get("FILEMASK") %>,<%= line.get("NEWNAME") %>);
+<%	}
+	else
+	{
+%>	
+		map<%=cid %><%=i %>.put(<%= line.get("FILEMASK") %>,"");
+<%	
+	}
+%>	
 	list<%=cid %>.add(map<%=cid %><%=i %>);
        
 <%
@@ -53,19 +57,22 @@
 %>
 
 	ftp<%=cid %>.chdir(remotedir<%=cid %>);
-
+	
 ////////////////////////////////////////////
 <%
 	if (action.equals("get")) {
 %>
 	{
-	for (java.util.Map map<%=cid %> : list<%=cid %>) 
+	
+	String localdir<%=cid %>  = <%=localdir%>;
+	String root<%=cid %> = ftp<%=cid %>.pwd();
+	for (java.util.Map<String, String> map<%=cid %> : list<%=cid %>) 
 	{
 	java.util.Set<String> keySet<%=cid %> = map<%=cid %>.keySet();
    
-	for (Object key<%=cid %> : keySet<%=cid %>)
+	for (String key<%=cid %> : keySet<%=cid %>)
 	{     
-	String filemask<%=cid %> = (String)key<%=cid %>; 
+	String filemask<%=cid %> = key<%=cid %>; 
 	String dir<%=cid %> = null;
 	String mask<%=cid %> = filemask<%=cid %>.replaceAll("\\\\", "/") ;  
 	int i<%=cid %> = filemask<%=cid %>.lastIndexOf('/');   
@@ -88,6 +95,7 @@
     }
      
    }
+   ftp<%=cid %>.chdir(root<%=cid %>);
  } 
 }
 <%
@@ -97,13 +105,15 @@
 
 ////////////////////////////////////////////
 {
-	for (java.util.Map map<%=cid %> : list<%=cid %>) 
+	String localdir<%=cid %>  = <%=localdir%>;	
+	for (java.util.Map<String, String> map<%=cid %> : list<%=cid %>) 
 	{
    java.util.Set<String> keySet<%=cid %> = map<%=cid %>.keySet();
       
-   for (Object key<%=cid %> : keySet<%=cid %>)
+   for (String key<%=cid %> : keySet<%=cid %>)
    {     
-	String filemask<%=cid %> = (String)key<%=cid %>; 
+	String tempdir<%=cid %> =  localdir<%=cid %>;
+	String filemask<%=cid %> = key<%=cid %>; 
 	String dir<%=cid %> = null;	
 	String mask<%=cid %> = filemask<%=cid %>.replaceAll("\\\\", "/") ;	
 	int i<%=cid %> = mask<%=cid %>.lastIndexOf('/');
@@ -113,12 +123,12 @@
 	dir<%=cid %> = filemask<%=cid %>.substring(0, i<%=cid %>); 
 	mask<%=cid %> = filemask<%=cid %>.substring(i<%=cid %>+1);	 
     }
-    if (dir<%=cid %>!=null && !"".equals(dir<%=cid %>)) localdir<%=cid %> = localdir<%=cid %> + "/" + dir<%=cid %>;  
+    if (dir<%=cid %>!=null && !"".equals(dir<%=cid %>)) tempdir<%=cid %> = tempdir<%=cid %> + "/" + dir<%=cid %>;  
     
   	mask<%=cid %> = mask<%=cid %>.replaceAll("\\.", "\\\\.").replaceAll("\\*", ".*");
     final String finalMask<%=cid %> = mask<%=cid %>;
     java.io.File[] listings<%=cid %> = null;       
-        java.io.File file<%=cid %> = new java.io.File(localdir<%=cid %>);
+        java.io.File file<%=cid %> = new java.io.File(tempdir<%=cid %>);
         if (file<%=cid %>.isDirectory()) {
             listings<%=cid %> = file<%=cid %>.listFiles(new java.io.FileFilter() {
                 public boolean accept(java.io.File pathname) {
@@ -136,7 +146,7 @@
      { 
       if (listings<%=cid %>[m<%=cid %>].getName().matches(mask<%=cid %>))
       {        
-         ftp<%=cid %>.put(localdir<%=cid %> + "/" + listings<%=cid %>[m<%=cid %>].getName(),listings<%=cid %>[m<%=cid %>].getName());////////////////////the main action
+         ftp<%=cid %>.put(tempdir<%=cid %> + "/" + listings<%=cid %>[m<%=cid %>].getName(),listings<%=cid %>[m<%=cid %>].getName());
       }
     }
     }     
@@ -148,14 +158,14 @@
 %>
 /////////////////////////////////////
 {
-
-for (java.util.Map map<%=cid %> : list<%=cid %>) 
+String root<%=cid %> = ftp<%=cid %>.pwd();
+for (java.util.Map<String, String> map<%=cid %> : list<%=cid %>) 
 {
    java.util.Set<String> keySet<%=cid %> = map<%=cid %>.keySet(); 
      
-   for (Object key<%=cid %> : keySet<%=cid %>)
+   for (String key<%=cid %> : keySet<%=cid %>)
    {     
-	String filemask<%=cid %> = (String)key<%=cid %>; 
+	String filemask<%=cid %> = key<%=cid %>; 
 	String dir<%=cid %> = null;
 	String mask<%=cid %> = filemask<%=cid %>.replaceAll("\\\\", "/") ;
 	int i<%=cid %> = filemask<%=cid %>.lastIndexOf('/');
@@ -176,8 +186,9 @@ for (java.util.Map map<%=cid %> : list<%=cid %>)
 	{
 	ftp<%=cid %>.delete(listings<%=cid %>[m<%=cid %>]);
 	}
-	}     
-   }
+	}	     
+   }  
+   ftp<%=cid %>.chdir(root<%=cid %>);   
  } 
 }
 <%
@@ -186,12 +197,12 @@ for (java.util.Map map<%=cid %> : list<%=cid %>)
 %>
 //////////////////////////////////
 {
-	for (Object map<%=cid %> : list<%=cid %>) 
+	for (java.util.Map<String, String> map<%=cid %> : list<%=cid %>) 
 	{  	
-  java.util.Set keySet<%=cid %> = ((java.util.Map)map<%=cid %>).keySet();   
-   for (Object key<%=cid %> : keySet<%=cid %>)
+    java.util.Set<String> keySet<%=cid %> = map<%=cid %>.keySet();   
+   for (String key<%=cid %> : keySet<%=cid %>)
    {     
-     ftp<%=cid %>.rename((String)key<%=cid %>, (String)((java.util.Map)map<%=cid %>).get(key<%=cid %>));
+     ftp<%=cid %>.rename(key<%=cid %>, map<%=cid %>.get(key<%=cid %>));
    }
 }
 }
@@ -199,7 +210,3 @@ for (java.util.Map map<%=cid %> : list<%=cid %>)
 }
 %>
 ////////////////////////////////
-<%
-		}
-	}
-%>

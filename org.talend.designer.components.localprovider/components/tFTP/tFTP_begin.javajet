@@ -14,11 +14,6 @@
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
 	boolean stats = codeGenArgument.isStatistics();
-	
-	List<IMetadataTable> metadatas = node.getMetadataList();
-	if ((metadatas!=null)&&(metadatas.size()>0)) {
-		IMetadataTable metadata = metadatas.get(0);
-		if (metadata!=null) {
 
 	String host = ElementParameterParser.getValue(node, "__HOST__");
 	String port = ElementParameterParser.getValue(node, "__PORT__");
@@ -26,15 +21,11 @@
 	String pass = ElementParameterParser.getValue(node, "__PASSWORD__");
 
 	// component id
-	String cid = metadata.getTableName();
+	String cid = node.getUniqueName();
 %>
-
-	//try to get the ftp connection
-	com.enterprisedt.net.ftp.FTPClient ftp<%=node.getUniqueName() %> = new com.enterprisedt.net.ftp.FTPClient(<%=host %>,<%=port %>);
-    ftp<%=node.getUniqueName() %>.login(<%=user %>, <%=pass %>);
-            
-
-<%
-		}
-	}
-%>
+	//try to get the ftp connection	
+	com.enterprisedt.net.ftp.FTPClient ftp<%=cid %> = new com.enterprisedt.net.ftp.FTPClient();
+	ftp<%=cid %>.setRemoteHost(<%=host %>);
+	ftp<%=cid %>.setRemotePort(<%=port %>);
+	ftp<%=cid %>.connect();
+    ftp<%=cid %>.login(<%=user %>, <%=pass %>);
