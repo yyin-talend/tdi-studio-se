@@ -70,7 +70,7 @@ public class FunctionManager {
                 funtions = talendType.getFunctions();
             }
         }
-        // funtions.add(createCustomizeFunction());
+        funtions.add(createCustomizeFunction());
         return funtions;
     }
 
@@ -138,8 +138,5 @@ public class FunctionManager {
         FunctionParser parser = new FunctionParser(files.toArray(new File[files.size()]));
         parser.parse();
         talendTypes = parser.getList();
-        for (TalendType talendType : talendTypes) {
-            talendType.getFunctions().add(createCustomizeFunction());
-        }
     }
 }

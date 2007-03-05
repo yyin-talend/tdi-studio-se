@@ -73,6 +73,7 @@ import org.talend.designer.rowgenerator.data.Parameter;
 import org.talend.designer.rowgenerator.data.StringParameter;
 import org.talend.designer.rowgenerator.i18n.Messages;
 import org.talend.designer.rowgenerator.ui.RowGeneratorUI;
+import org.talend.designer.rowgenerator.ui.tabs.TabFolderEditors;
 
 /**
  * qzhang class global comment. Detailled comment <br/>
@@ -341,17 +342,10 @@ public class RowGenTableEditor2 extends AbstractDataTableEditorView<IMetadataCol
              */
             @Override
             public void widgetSelected(SelectionEvent e) {
-                Table table = generatorUI.getTabFolderEditors().getProcessPreview().getTable();
+                TabFolderEditors tabFolderEditors = generatorUI.getTabFolderEditors();
+                // tabFolderEditors.getItemsByRunJob("1");
 
-                if (table != null && table.getItemCount() > 1) {
-                    TableItem item = table.getItems()[0];
-                    for (int i = 1; i < table.getColumnCount(); i++) {
-                        MetadataColumnExt ext = (MetadataColumnExt) getTable().getItem(i - 1).getData();
-                        ext.setPreview(item.getText(i));
-                    }
-                    getTableViewerCreator().getTableViewer().refresh();
-
-                }
+                preview2(tabFolderEditors);
             }
         });
         return previewLabel;
@@ -537,6 +531,7 @@ public class RowGenTableEditor2 extends AbstractDataTableEditorView<IMetadataCol
 
             public void set(MetadataColumnExt bean, String value) {
                 bean.setFunction(RowGenTableEditor2.this.getFunnctionByName(bean.getTalendType(), value));
+                bean.setChanged(true);
             }
 
         });
@@ -560,6 +555,7 @@ public class RowGenTableEditor2 extends AbstractDataTableEditorView<IMetadataCol
                 if (bean.getFunction() != null && bean.getFunction().getName().equals(FunctionManager.PURE_PERL_NAME)) {
                     ((StringParameter) bean.getFunction().getParameters().get(0)).setValue(value);
                 }
+                bean.setChanged(true);
             }
 
         });
@@ -753,6 +749,7 @@ public class RowGenTableEditor2 extends AbstractDataTableEditorView<IMetadataCol
             public void set(MetadataColumnExt bean, String value) {
                 bean.setTalendType(value);
                 bean.setFunction(RowGenTableEditor2.this.getFunction(bean, value));
+                bean.setChanged(true);
                 // saveOneColData(bean);
             }
 
@@ -948,4 +945,40 @@ public class RowGenTableEditor2 extends AbstractDataTableEditorView<IMetadataCol
         this.generatorUI = generatorUI;
     }
 
+    private int next;
+
+    /**
+     * qzhang Comment method "preview".
+     * 
+     * @param tabFolderEditors
+     */
+    protected void preview(TabFolderEditors tabFolderEditors, boolean isGenerate) {
+        // tabFolderEditors.refreshPreview(tabFolderEditors.getRowText());
+        Table table = tabFolderEditors.getProcessPreview().getTable();
+        if (table == null || table.getItemCount() < 1 || next >= table.getItemCount() || isGenerate) {
+            tabFolderEditors.refreshPreview(tabFolderEditors.getRowText());
+            next = 0;
+        }
+        TableItem item = table.getItems()[next];
+        next++;
+        for (int i = 1; i < table.getColumnCount(); i++) {
+            MetadataColumnExt ext = (MetadataColumnExt) getTable().getItem(i - 1).getData();
+            ext.setPreview(item.getText(i));
+            ext.setChanged(false);
+        }
+        getTableViewerCreator().getTableViewer().refresh();
+
+    }
+
+    protected void preview2(TabFolderEditors tabFolderEditors) {
+        boolean isGenerate = false;
+        for (int i = 0; i < getTable().getItems().length && !isGenerate; i++) {
+            MetadataColumnExt ext = (MetadataColumnExt) getTable().getItems()[i].getData();
+            if (ext.isChanged()) {
+                isGenerate = true;
+            }
+        }
+
+        preview(tabFolderEditors, isGenerate);
+    }
 }

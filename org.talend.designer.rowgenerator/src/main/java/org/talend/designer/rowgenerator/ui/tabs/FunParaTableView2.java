@@ -46,6 +46,7 @@ import org.talend.designer.rowgenerator.data.Function;
 import org.talend.designer.rowgenerator.data.ListParameter;
 import org.talend.designer.rowgenerator.data.Parameter;
 import org.talend.designer.rowgenerator.i18n.Messages;
+import org.talend.designer.rowgenerator.ui.editor.MetadataColumnExt;
 import org.talend.designer.rowgenerator.ui.editor.RowGenTableEditor2;
 
 /**
@@ -103,6 +104,9 @@ public class FunParaTableView2 extends AbstractDataTableEditorView<Parameter> {
                 }
                 String newValue = value.toString();
                 bean.setValue(newValue);
+                if (ext != null) {
+                    ext.setChanged(true);
+                }
                 rowGenTableEditor2.getTableViewerCreator().getTableViewer().refresh();
             }
 
@@ -136,8 +140,12 @@ public class FunParaTableView2 extends AbstractDataTableEditorView<Parameter> {
         return null;
     }
 
+    private MetadataColumnExt ext;
+    
     @SuppressWarnings("unchecked")//$NON-NLS-1$
-    public void update(Function function) {
+    public void update(MetadataColumnExt ext) {
+        this.ext = ext;
+        Function function = ext.getFunction();
         setTitle(function.getDescription());
         updateData(function.getParameters());
     }
@@ -189,6 +197,7 @@ public class FunParaTableView2 extends AbstractDataTableEditorView<Parameter> {
                     public void widgetSelected(SelectionEvent e) {
                         list.setValue(combo.getText());
                         viewer.refresh(list);
+                        ext.setChanged(true);
                         rowGenTableEditor2.getTableViewerCreator().getTableViewer().refresh();
                     }
 

@@ -204,7 +204,7 @@ public class TabFolderEditors extends CTabFolder {
     /**
      * qzhang Comment method "refreshPreview".
      */
-    private void refreshPreview(String number) {
+    public void refreshPreview(String number) {
         RowGenTableEditor2 editor2 = (RowGenTableEditor2) generatorUI.getDataTableView();
         processPreview.refreshTablePreview(editor2.getMetadataTableEditor().getMetadataColumnList(), getItemsByRunJob(number),
                 true);
@@ -222,7 +222,7 @@ public class TabFolderEditors extends CTabFolder {
     /**
      * qzhang Comment method "getItemsByRunJob".
      */
-    private List<List<String>> getItemsByRunJob(String number) {
+    public List<List<String>> getItemsByRunJob(String number) {
         List<List<String>> items = new ArrayList<List<String>>();
         items = generatorUI.getGeneratorManager().getRowGeneratorComponent().getCodeGenMain().getResultsByRun(refreshButton,
                 number);
@@ -259,6 +259,11 @@ public class TabFolderEditors extends CTabFolder {
 
     public RowGeneratorComponent getComponent() {
         return this.component;
+    }
+
+    
+    public String getRowText() {
+        return this.rowText.getText();
     }
 
 }

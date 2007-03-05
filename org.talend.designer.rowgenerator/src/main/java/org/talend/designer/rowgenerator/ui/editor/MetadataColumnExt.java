@@ -36,6 +36,8 @@ import org.talend.designer.rowgenerator.data.Parameter;
  */
 public class MetadataColumnExt extends MetadataColumn {
 
+    private boolean isChanged;
+    
     /**
      * qzhang MetadataColumnExt constructor comment.
      */
@@ -145,6 +147,16 @@ public class MetadataColumnExt extends MetadataColumn {
         }
         return b;
 
+    }
+
+    
+    public boolean isChanged() {
+        return this.isChanged;
+    }
+
+    
+    public void setChanged(boolean isChanged) {
+        this.isChanged = isChanged;
     }
 
 }
