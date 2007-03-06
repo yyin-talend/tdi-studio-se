@@ -6,7 +6,7 @@
 		org.talend.core.model.process.ElementParameterParser
 		org.talend.designer.codegen.config.CodeGeneratorArgument
 		java.util.List
-                java.util.Map
+        java.util.Map
 	"
 	class="FTPMain"
 %>
@@ -14,56 +14,20 @@
 <%
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
-%>
 
-<%
+	String localdir = ElementParameterParser.getValue(node, "__LOCALDIR__");	
+	String action = ElementParameterParser.getValue(node, "__ACTION__");
+	
 	// component id
 	String cid = node.getUniqueName();
-
-	String localdir = ElementParameterParser.getValue(node, "__LOCALDIR__");
-	String remotedir = ElementParameterParser.getValue(node, "__REMOTEDIR__");
-	String action = ElementParameterParser.getValue(node, "__ACTION__");
-
-	List<Map<String, String>> files = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__FILES__");
-
 %>	
-	String remotedir<%=cid %> = <%=remotedir%>;
 	
-	java.util.List<java.util.Map<String,String>> list<%=cid %> = new java.util.ArrayList<java.util.Map<String,String>>();
-
-<%
-    for (int i=0; i<files.size(); i++) {
-       Map<String, String> line = files.get(i);
-%>
-    
-	java.util.Map<String,String> map<%=cid %><%=i %> = new java.util.HashMap<String,String>();
-<%
-	if(action.equals("rename"))
-	{
-%>	
-		map<%=cid %><%=i %>.put(<%= line.get("FILEMASK") %>,<%= line.get("NEWNAME") %>);
-<%	}
-	else
-	{
-%>	
-		map<%=cid %><%=i %>.put(<%= line.get("FILEMASK") %>,"");
-<%	
-	}
-%>	
-	list<%=cid %>.add(map<%=cid %><%=i %>);
-       
-<%
-  }
-%>
-
-	ftp<%=cid %>.chdir(remotedir<%=cid %>);
 	
 ////////////////////////////////////////////
 <%
 	if (action.equals("get")) {
 %>
-	{
-	
+	{	
 	String localdir<%=cid %>  = <%=localdir%>;
 	String root<%=cid %> = ftp<%=cid %>.pwd();
 	for (java.util.Map<String, String> map<%=cid %> : list<%=cid %>) 
@@ -75,11 +39,11 @@
 	String filemask<%=cid %> = key<%=cid %>; 
 	String dir<%=cid %> = null;
 	String mask<%=cid %> = filemask<%=cid %>.replaceAll("\\\\", "/") ;  
-	int i<%=cid %> = filemask<%=cid %>.lastIndexOf('/');   
+	int i<%=cid %> = mask<%=cid %>.lastIndexOf('/');   
 	if (i<%=cid %>!=-1)
 	{
-	dir<%=cid %> = filemask<%=cid %>.substring(0, i<%=cid %>); 
-	mask<%=cid %> = filemask<%=cid %>.substring(i<%=cid %>+1);  
+	dir<%=cid %> = mask<%=cid %>.substring(0, i<%=cid %>); 
+	mask<%=cid %> = mask<%=cid %>.substring(i<%=cid %>+1);  
     }
     if (dir<%=cid %>!=null && !"".equals(dir<%=cid %>)) ftp<%=cid %>.chdir(dir<%=cid %>);
     
@@ -120,8 +84,8 @@
   
 	if (i<%=cid %>!=-1)
 	{
-	dir<%=cid %> = filemask<%=cid %>.substring(0, i<%=cid %>); 
-	mask<%=cid %> = filemask<%=cid %>.substring(i<%=cid %>+1);	 
+	dir<%=cid %> = mask<%=cid %>.substring(0, i<%=cid %>); 
+	mask<%=cid %> = mask<%=cid %>.substring(i<%=cid %>+1);	 
     }
     if (dir<%=cid %>!=null && !"".equals(dir<%=cid %>)) tempdir<%=cid %> = tempdir<%=cid %> + "/" + dir<%=cid %>;  
     
@@ -168,12 +132,12 @@ for (java.util.Map<String, String> map<%=cid %> : list<%=cid %>)
 	String filemask<%=cid %> = key<%=cid %>; 
 	String dir<%=cid %> = null;
 	String mask<%=cid %> = filemask<%=cid %>.replaceAll("\\\\", "/") ;
-	int i<%=cid %> = filemask<%=cid %>.lastIndexOf('/');
+	int i<%=cid %> = mask<%=cid %>.lastIndexOf('/');
   
 	if (i<%=cid %>!=-1)
 	{
-	dir<%=cid %> = filemask<%=cid %>.substring(0, i<%=cid %>); 
-	mask<%=cid %> = filemask<%=cid %>.substring(i<%=cid %>+1); 
+	dir<%=cid %> = mask<%=cid %>.substring(0, i<%=cid %>); 
+	mask<%=cid %> = mask<%=cid %>.substring(i<%=cid %>+1); 
     }
     if (dir<%=cid %>!=null && !"".equals(dir<%=cid %>)) ftp<%=cid %>.chdir(dir<%=cid %>);
     
