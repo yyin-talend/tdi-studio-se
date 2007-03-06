@@ -17,11 +17,13 @@
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();	
+
 String destination = ElementParameterParser.getValue(node, "__DESTINATION__");
+String rowName= node.getIncomingConnections().get(0).getName();
 %>
 
-	// PTODO MHIRT NRO : for Virtual component node.getOutgoingConnection() doesn't send RunBefore yet
-	RunBeforeStruct rs<%=cid %> = new RunBeforeStruct();
+	<%=rowName %>Struct arrayRow<%=cid %> = new <%=rowName %>Struct();
+
 <% 
 	List<IMetadataTable> metadatas = node.getMetadataList();
 	if ((metadatas!=null)&&(metadatas.size()>0)) {
@@ -30,10 +32,10 @@ String destination = ElementParameterParser.getValue(node, "__DESTINATION__");
 			for (IMetadataColumn column : metadata.getListColumns()) { 
 %>
 	// PTODO MHIRT NRO : for Virtual component node.getIncomingConnection() doesn't send row1 yet
-	rs<%=cid %>.<%=column.getLabel() %> = row1.<%=column.getLabel() %>;
+	arrayRow<%=cid %>.<%=column.getLabel() %> = <%=rowName %>.<%=column.getLabel() %>;
 <%
 			}
 		}
 	}
-%>
-	<%=destination %>.add(rs<%=cid %>);
+%>	
+	<%=destination %>.add(arrayRow<%=cid %>);

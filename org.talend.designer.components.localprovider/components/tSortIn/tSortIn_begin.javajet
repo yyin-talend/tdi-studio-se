@@ -8,6 +8,7 @@ imports="
     org.talend.designer.codegen.config.CodeGeneratorArgument
     org.talend.core.model.metadata.types.JavaType
     org.talend.core.model.metadata.types.JavaTypesManager
+    org.talend.core.model.process.IConnection
     java.util.List
     java.util.Map
 " 
@@ -19,7 +20,15 @@ CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
 
 String cid = node.getUniqueName();
-String rowName = node.getIncomingConnections().get(0).getName();
+String rowName = null;
+
+INode startNode = node.getSubProcessStartNode(true);
+for (IConnection conn : startNode.getOutgoingConnections()) {
+	if (conn.getTarget().getComponent().getName().compareTo("tArray")==0) {
+		rowName = conn.getName();
+	}
+}
+
 String outRowName = node.getOutgoingConnections().get(0).getName();
 List<Map<String, String>> criteria = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__CRITERIA__");
 String origin = ElementParameterParser.getValue(node, "__ORIGIN__");
@@ -40,7 +49,9 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 		Map<String, String> line = criteria.get(i);
 		String colname = line.get("COLNAME");
 		JavaType colJavaType = null;
+		
     	String sort = line.get("SORT");
+    	
     	String order = line.get("ORDER");
     	boolean asc = (order.toLowerCase().equals("asc"));
     	
@@ -53,20 +64,34 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 				result = true;
 			}
 		}
-		if ((result)&&(colJavaType.isPrimitive())) {
+		if (result) {
+			if (colJavaType.isPrimitive()) {
 %>
 			if (o1.<%=colname %>!=o2.<%=colname %>) {
 				return <%=(asc)?"1":"-1"%>*((o1.<%=colname %>>o2.<%=colname %>)?1:-1);
 			} else {
 
 <%
-		} else {
+			} else {
+				if (sort.compareTo("alpha")==0) {
 %>
 			if (o1.<%=colname %>.compareTo(o2.<%=colname %>)!=0) {
 				return <%=(asc)?"1":"-1"%>*(o1.<%=colname %>.compareTo(o2.<%=colname %>));
 			} else {
 <%
-		}
+				} else {
+					// try to convert column to int before the sort  
+%>
+			int o1<%=colname %>int = Integer.parseInt(o1.<%=colname %>);
+			int o2<%=colname %>int = Integer.parseInt(o2.<%=colname %>);
+			
+			if (o1<%=colname %>int!=o2<%=colname %>int) {
+				return <%=(asc)?"1":"-1"%>*((o1<%=colname %>int>o2<%=colname %>int)?1:-1);
+			} else {
+<%
+				}
+			}
+		} // end if result should always be true...
 	}
 %>
 			return 0;

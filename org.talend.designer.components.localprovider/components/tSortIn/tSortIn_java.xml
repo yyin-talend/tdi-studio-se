@@ -51,7 +51,7 @@
         <ITEM NAME="COLNAME" FIELD="COLUMN_LIST"/>
 
         <ITEM NAME="SORT" FIELD="CLOSED_LIST">
-          <ITEMS DEFAULT="NUM">
+          <ITEMS DEFAULT="ALPHA">
             <ITEM NAME="NUM" VALUE="num"/>
             <ITEM NAME="ALPHA" VALUE="alpha"/>
           </ITEMS>
