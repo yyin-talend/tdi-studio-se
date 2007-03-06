@@ -197,8 +197,6 @@ public class ProcessComposite extends Composite {
         
         traceBtn = new Button(statisticsButtonComposite, SWT.CHECK);
         traceBtn.setText(Messages.getString("ProcessComposite.trace")); //$NON-NLS-1$
-        traceBtn.setToolTipText(Messages.getString("ProcessComposite.traceHint")); //$NON-NLS-1$
-        // PTODO MHI Change this image
         traceBtn.setImage(RunProcessPlugin.imageDescriptorFromPlugin(RunProcessPlugin.PLUGIN_ID,
                 "icons/process_stat.gif").createImage()); //$NON-NLS-1$
         // traceBtn.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_CENTER | GridData.FILL_HORIZONTAL));

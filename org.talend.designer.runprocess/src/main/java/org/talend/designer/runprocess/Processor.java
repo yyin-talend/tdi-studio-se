@@ -98,7 +98,7 @@ public class Processor {
         concreteProcessor.setProcessorStates(RUNTIME);
         concreteProcessor.generateCode(context, statisticsPort != NO_STATISTICS, tracePort != NO_TRACES, true);
         if (watchParam == null) {
-            // MHIRT only works with context name and remove context interpereter option
+            // only works with context name and remove context interpereter option
             return exec(context.getName(), Level.INFO, statisticsPort, tracePort);
         }
         return exec(context.getName(), Level.INFO, statisticsPort, tracePort, watchParam);
