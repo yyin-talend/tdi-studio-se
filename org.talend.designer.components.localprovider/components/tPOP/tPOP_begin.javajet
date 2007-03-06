@@ -1,0 +1,36 @@
+<%@ jet 
+	package="org.talend.designer.codegen.translators" 
+	imports="
+		org.talend.core.model.process.INode 
+		org.talend.core.model.process.ElementParameterParser
+		org.talend.core.model.metadata.IMetadataTable
+		org.talend.designer.codegen.config.CodeGeneratorArgument
+		java.util.List
+	"
+	class="FTPBegin"
+%>
+
+<%
+	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+	INode node = (INode)codeGenArgument.getArgument();
+
+	String host = ElementParameterParser.getValue(node, "__HOST__");
+    String username = ElementParameterParser.getValue(node, "__USERNAME__");
+    String password = ElementParameterParser.getValue(node, "__PASSWORD__");
+        
+	// component id
+	String cid = node.getUniqueName();
+%>	
+	String <%=cid %>_popServer = <%=host %>;
+    String <%=cid %>_popUser = <%=username %>;
+    String <%=cid %>_popPassword = <%=password %>;
+    
+    java.util.Properties <%=cid %>_props = System.getProperties();
+    javax.mail.Session <%=cid %>_session = javax.mail.Session.getDefaultInstance(<%=cid %>_props, null);
+    
+    javax.mail.Store <%=cid %>_store = <%=cid %>_session.getStore("pop3");
+    <%=cid %>_store.connect(<%=cid %>_popServer, <%=cid %>_popUser, <%=cid %>_popPassword);
+    
+    int <%=cid %>_NB_EMAIL = 0;
+	java.util.List<String> <%=cid %>_CURRENT_FILE = new java.util.ArrayList<String>();
+	java.util.List<String> <%=cid %>_CURRENT_FILEPATH = new java.util.ArrayList<String>();    
