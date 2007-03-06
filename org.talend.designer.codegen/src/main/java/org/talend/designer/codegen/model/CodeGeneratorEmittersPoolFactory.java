@@ -93,8 +93,7 @@ public final class CodeGeneratorEmittersPoolFactory {
      * initialization of the pool.
      */
     public static void initialize() {
-        // MHIRT : Add Code Generator initialisation with Progress Bar
-
+        // Code Generator initialisation with Progress Bar
         Job job = new Job(Messages.getString("CodeGeneratorEmittersPoolFactory.initMessage")) {
 
             protected IStatus run(IProgressMonitor monitor) {
@@ -128,8 +127,7 @@ public final class CodeGeneratorEmittersPoolFactory {
                 if (components != null) {
                     ECodePart codePart = ECodePart.MAIN;
                     for (IComponent component : components) {
-                        // PTODO MHIRT Temporary added while waiting for implementation of feature 624
-                        if (component.getMultipleComponentManager() == null) {
+                        if (component.getAvailableCodeParts().size() > 0) {
                             initComponent(codeLanguage, jetBeans, codePart, component);
                         }
                         monitorWrap.worked(1);

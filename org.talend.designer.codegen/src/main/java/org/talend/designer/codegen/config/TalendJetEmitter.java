@@ -140,7 +140,6 @@ public class TalendJetEmitter extends JETEmitter {
           progressMonitor.subTask
             (CodeGenPlugin.getPlugin().getString("_UI_JETParsing_message", new Object [] { jetCompiler.getResolvedTemplateURI() }));
           jetCompiler.parse();
-          // PTODO MHIRT
           jetCompiler.getSkeleton().setClassName(templateName + codePart + templateLanguage);
           progressMonitor.worked(1);
     
