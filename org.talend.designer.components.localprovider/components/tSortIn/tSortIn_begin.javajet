@@ -101,8 +101,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 			}
 <%
 	}
-%>	
-		}
+%>
 	}
 	
 	java.util.List<<%=rowName %>Struct> row_aref<%=origin %> = (java.util.List<<%=rowName %>Struct>) globalMap.get("<%=origin %>");

@@ -31,7 +31,6 @@ String rowName= node.getIncomingConnections().get(0).getName();
 		if (metadata!=null) {
 			for (IMetadataColumn column : metadata.getListColumns()) { 
 %>
-	// PTODO MHIRT NRO : for Virtual component node.getIncomingConnection() doesn't send row1 yet
 	arrayRow<%=cid %>.<%=column.getLabel() %> = <%=rowName %>.<%=column.getLabel() %>;
 <%
 			}
