@@ -682,6 +682,7 @@ public class JavaProcessor implements IProcessor {
         } catch (ProcessorException e1) {
             command = "java"; //$NON-NLS-1$
         }
+        
 
         // init lib path
         IFolder libFolder = javaProject.getProject().getFolder(JavaUtils.JAVA_LIB_DIRECTORY); //$NON-NLS-1$
@@ -708,7 +709,7 @@ public class JavaProcessor implements IProcessor {
         IPath classPath = getCodePath().removeFirstSegments(1);
         String className = classPath.toString().replace('/', '.');
 
-        return new String[] { command, "-cp", libPath + projectPath, className }; //$NON-NLS-1$
+        return new String[] { command, "-Xms256M", "-Xmx1024M","-cp", libPath + projectPath, className }; //$NON-NLS-1$
     }
 
     /*
