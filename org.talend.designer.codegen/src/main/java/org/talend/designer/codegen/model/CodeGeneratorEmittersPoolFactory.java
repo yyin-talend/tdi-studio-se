@@ -65,6 +65,7 @@ import org.talend.designer.codegen.config.LightJetBean;
 import org.talend.designer.codegen.config.TalendJetEmitter;
 import org.talend.designer.codegen.config.TemplateUtil;
 import org.talend.designer.codegen.i18n.Messages;
+import org.talend.designer.dbmap.DbMapActivator;
 import org.talend.repository.model.ComponentsFactoryProvider;
 import org.talend.repository.model.ExternalNodesFactory;
 
@@ -189,6 +190,11 @@ public final class CodeGeneratorEmittersPoolFactory {
         jetBean.addClassPath("CORE_LIBRARIES", CorePlugin.PLUGIN_ID);
         jetBean.addClassPath("CODEGEN_LIBRARIES", CodeGeneratorActivator.PLUGIN_ID);
         jetBean.addClassPath("COMMON_LIBRARIES", CommonsPlugin.PLUGIN_ID);
+
+        // PTODO MHIRT Tmp Solution, corres ASAP 
+        if (component.getFamily().compareTo("ELT") == 0) {
+            jetBean.addClassPath("TMP_DBMAP", DbMapActivator.PLUGIN_ID);
+        }
 
         if (component.getPluginFullName().compareTo(IComponentsFactory.COMPONENTS_LOCATION) != 0) {
             jetBean.addClassPath("EXTERNAL_COMPONENT_" + component.getPluginFullName().toUpperCase(), component
