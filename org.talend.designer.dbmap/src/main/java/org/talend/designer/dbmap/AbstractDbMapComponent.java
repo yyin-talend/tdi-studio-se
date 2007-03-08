@@ -203,7 +203,7 @@ public abstract class AbstractDbMapComponent extends AbstractExternalNode {
      */
     public String getGeneratedCode() {
         try {
-            ICodeGeneratorService service = Activator.getDefault().getCodeGeneratorService();
+            ICodeGeneratorService service = DbMapActivator.getDefault().getCodeGeneratorService();
 
             return service.createCodeGenerator().generateComponentCode(this, ECodePart.MAIN);
         } catch (SystemException e) {

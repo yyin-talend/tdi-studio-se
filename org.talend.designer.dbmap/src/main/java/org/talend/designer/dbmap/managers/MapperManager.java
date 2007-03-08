@@ -45,7 +45,7 @@ import org.talend.core.model.process.IProcess;
 import org.talend.core.ui.metadata.editor.MetadataTableEditorView;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.dbmap.AbstractDbMapComponent;
-import org.talend.designer.dbmap.Activator;
+import org.talend.designer.dbmap.DbMapActivator;
 import org.talend.designer.dbmap.i18n.Messages;
 import org.talend.designer.dbmap.language.IDbLanguage;
 import org.talend.designer.dbmap.model.table.AbstractDataMapTable;
@@ -656,7 +656,7 @@ public class MapperManager {
      * @return
      */
     public String getPreviewFilePath() {
-        IRepositoryService service = Activator.getDefault().getRepositoryService();
+        IRepositoryService service = DbMapActivator.getDefault().getRepositoryService();
         return service.getPathFileName(RepositoryConstants.IMG_DIRECTORY, getPreviewFileName()).toString();
     }
 
