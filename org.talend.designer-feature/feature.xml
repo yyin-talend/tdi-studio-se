@@ -129,12 +129,6 @@
          unpack="false"/>
 
    <plugin
-         id="org.talend.designer.codegen.perlmodule"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"/>
-
-   <plugin
          id="org.junit"
          download-size="0"
          install-size="0"
@@ -349,30 +343,7 @@
          unpack="false"/>
 
    <plugin
-         id="org.talend.designer.codegen.javamodule"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.talend.designer.codegen.javamodule.nl"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         fragment="true"
-         unpack="false"/>
-
-   <plugin
          id="org.talend.designer.codegen.nl"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         fragment="true"
-         unpack="false"/>
-
-   <plugin
-         id="org.talend.designer.codegen.perlmodule.nl"
          download-size="0"
          install-size="0"
          version="0.0.0"
