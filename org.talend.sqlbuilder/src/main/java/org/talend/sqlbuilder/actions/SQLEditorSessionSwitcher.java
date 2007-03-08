@@ -43,6 +43,16 @@ import org.talend.sqlbuilder.ui.editor.ISQLEditor;
  */
 public class SQLEditorSessionSwitcher extends ControlContribution {
 
+    private String parentId;
+
+    public String getParentId() {
+        return this.parentId;
+    }
+
+    public void setParentId(String parentId) {
+        this.parentId = parentId;
+    }
+
     private ISQLEditor editor;
 
     private Combo sessionCombo;

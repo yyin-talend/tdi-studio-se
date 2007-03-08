@@ -63,9 +63,10 @@ public class ErDiagramDialog extends Dialog {
      * 
      * @param parentShell
      */
-    public ErDiagramDialog(Shell parentShell, String title) {
+    public ErDiagramDialog(Shell parentShell, String title, RepositoryNode rootNode) {
         super(parentShell);
         this.title = title;
+        this.rootNode = rootNode;
         setShellStyle(SWT.APPLICATION_MODAL | SWT.DIALOG_TRIM | SWT.RESIZE | SWT.RESIZE | SWT.MIN | SWT.MAX);
 
     }
@@ -114,7 +115,7 @@ public class ErDiagramDialog extends Dialog {
         erComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
         erComposite.setDialog(dialog);
         erComposite.setNodes(getNodes());
-        erComposite.setRootNode(null);
+        erComposite.setRootNode(rootNode);
         erComposite.setSqlText(sql);
         erComposite.setWeights(new int[] { 12, 1 });
         Label separator = new Label(container, SWT.SEPARATOR | SWT.HORIZONTAL);
@@ -123,6 +124,8 @@ public class ErDiagramDialog extends Dialog {
         return container;
 
     }
+    private RepositoryNode rootNode;
+    
 
     private String sql;
 
@@ -215,7 +218,7 @@ public class ErDiagramDialog extends Dialog {
     }
 
     /**
-     * DOC admin Comment method "getSql".
+     *  admin Comment method "getSql".
      * 
      * @return
      */
@@ -229,5 +232,10 @@ public class ErDiagramDialog extends Dialog {
 
     public void setNodes(List<RepositoryNode> nodes) {
         this.nodes = nodes;
+    }
+    
+    public void setRootNode(RepositoryNode rootNode) {
+        this.rootNode = rootNode;
+        erComposite.setRootNode(rootNode);
     }
 }

@@ -125,7 +125,7 @@ public class SQLBuilderEditorComposite extends Composite implements ISQLEditor {
 
     private RepositoryNode repositoryNode;
 
-    private AbstractEditorAction guiModificationQueryAction;
+    private GUIModificationQueryAction guiModificationQueryAction;
 
     private boolean ifLimit = true;
 
@@ -490,6 +490,7 @@ public class SQLBuilderEditorComposite extends Composite implements ISQLEditor {
     public void setRepositoryNode(RepositoryNode node) {
         Assert.isNotNull(node, Messages.getString("SQLBuilderEditorComposite.assertMessage")); //$NON-NLS-1$
         this.repositoryNode = node;
+        guiModificationQueryAction.setCurrentNode(node);
         this.setEditorTitle(this.repositoryNode);
         sessionSwitcher.refreshSelectedRepository();
         createEditorProposal();

@@ -48,6 +48,7 @@ import org.talend.sqlbuilder.SqlBuilderPlugin;
 import org.talend.sqlbuilder.dbstructure.RepositoryNodeType;
 import org.talend.sqlbuilder.dbstructure.DBTreeProvider.MetadataColumnRepositoryObject;
 import org.talend.sqlbuilder.dbstructure.DBTreeProvider.MetadataTableRepositoryObject;
+import org.talend.sqlbuilder.erdiagram.ui.ErDiagramComposite;
 import org.talend.sqlbuilder.util.QueryTokenizer;
 
 /**
@@ -266,6 +267,29 @@ public final class EMFRepositoryNodeManager {
         return string;
     }
 
+    /**
+     * qzhang Comment method "updateErDiagram".
+     * @param toSql
+     * @throws Exception
+     */
+    public void updateErDiagram(boolean isModified, ErDiagramComposite editor, String toSql, RepositoryNode rootNode) throws Exception {
+        if (toSql != null && !"".equals(toSql) && isModified) {
+            String info = Messages.getString("MultiPageSqlBuilderEditor.Notice.InformationNotFull");
+            // "GUI Sql Editor maybe not show all features of your Sql Statement!\n And your full sql Statement
+            // will show in buttom of the GUI.";
+            MessageDialog.openInformation(new Shell(),
+                    Messages.getString("MultiPageSqlBuilderEditor.NoticeTitle.Text"), info); //$NON-NLS-1$
+
+            List<RepositoryNode> nodeSel = parseSqlStatement(toSql, rootNode);
+            if (nodeSel == null || nodeSel.isEmpty()) {
+                return;
+            }
+            editor.updateNodes(nodeSel, toSql);
+        }
+        editor.setModified(false);
+    }
+    
+    
     @SuppressWarnings("unchecked")
     public List<RepositoryNode> parseSqlStatement(String sql, RepositoryNode currRoot) throws Exception {
         sql = initSqlStatement(sql, true);

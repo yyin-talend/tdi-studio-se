@@ -37,6 +37,7 @@ import org.talend.sqlbuilder.Messages;
 import org.talend.sqlbuilder.erdiagram.ui.ErDiagramComposite;
 import org.talend.sqlbuilder.repository.utility.EMFRepositoryNodeManager;
 import org.talend.sqlbuilder.ui.ISQLBuilderDialog;
+import org.talend.sqlbuilder.ui.SQLBuilderDesignerComposite;
 import org.talend.sqlbuilder.ui.SQLBuilderEditorComposite;
 import org.talend.sqlbuilder.util.ConnectionParameters;
 
@@ -48,7 +49,9 @@ import org.talend.sqlbuilder.util.ConnectionParameters;
  */
 public class MultiPageSqlBuilderEditor extends MultiPageEditorPart {
 
-    private SQLBuilderEditorComposite builderEditorComposite;
+    private SQLBuilderEditorComposite sqlEdit;
+
+    private SQLBuilderDesignerComposite sqlDesigner;
 
     private List<RepositoryNode> nodes;
 
@@ -68,8 +71,6 @@ public class MultiPageSqlBuilderEditor extends MultiPageEditorPart {
 
     public static final String ID = "org.talend.sqlbuilder.editors.MultiPageSqlBuilderEditor"; //$NON-NLS-1$
 
-    private ErDiagramComposite editor;
-
     private ConnectionParameters connParam;
 
     private CTabItem tabItem;
@@ -80,6 +81,7 @@ public class MultiPageSqlBuilderEditor extends MultiPageEditorPart {
 
     private ISQLBuilderDialog dialog;
 
+    private ErDiagramComposite erDiagramComposite;
     /*
      * (non-Java)
      * 
@@ -88,36 +90,39 @@ public class MultiPageSqlBuilderEditor extends MultiPageEditorPart {
     @Override
     protected void createPages() {
         try {
-            builderEditorComposite = new SQLBuilderEditorComposite(this.getContainer(), tabItem, isDefaultEditor, connParam,
-                    rootNode, dialog);
-            builderEditorComposite.setEditorContent(connParam);
-            builderEditorComposite.setRepositoryNode(rootNode);
-            builderEditorComposite.setQueryObject(dialog.getConnParameters().getQueryObject());
-            builderEditorComposite.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false));
+            sqlEdit = new SQLBuilderEditorComposite(this.getContainer(), tabItem, isDefaultEditor, connParam, rootNode, dialog);
+            sqlEdit.setEditorContent(connParam);
+            sqlEdit.setRepositoryNode(rootNode);
+            sqlEdit.setQueryObject(dialog.getConnParameters().getQueryObject());
+            sqlEdit.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false));
 
-            int index = addPage(builderEditorComposite);
+            int index = addPage(sqlEdit);
             setPageText(index, Messages.getString("MultiPageSqlBuilderEditor.EditTab.Text")); //$NON-NLS-1$
-
-            editor = new ErDiagramComposite(this.getContainer(), SWT.VERTICAL);
-            editor.setDialog(dialog);
-            editor.setNodes(nodes);
-            editor.setRootNode(rootNode);
-            editor.setSqlText(builderEditorComposite.getSQLToBeExecuted());
-            editor.setWeights(new int[] { 12, 1 });
+            sqlDesigner = new SQLBuilderDesignerComposite(this.getContainer(), tabItem, isDefaultEditor, connParam, rootNode,
+                    dialog, nodes);
+            sqlDesigner.setSqlText(sqlEdit.getSQLToBeExecuted());
+            sqlDesigner.setEditorContent(connParam);
+            sqlDesigner.setRepositoryNode(rootNode);
+            
+            sqlDesigner.setQueryObject(dialog.getConnParameters().getQueryObject());
+            sqlDesigner.setMaxResult(sqlEdit.getMaxResult());
+            sqlDesigner.setIfLimit(sqlEdit.getIfLimit());
+            sqlDesigner.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false));
+            
+            erDiagramComposite = sqlDesigner.getErDiagramComposite();
             EMFRepositoryNodeManager.getInstance().setRoot(rootNode);
-            index = addPage(editor);
+            index = addPage(sqlDesigner);
             setPageText(index, Messages.getString("MultiPageSqlBuilderEditor.DesignerTab.Text")); //$NON-NLS-1$
         } catch (Exception e) {
-            MessageDialog.openError(getContainer().getShell(), Messages
-                    .getString("MultiPageSqlBuilderEditor.ErrorTitle"), Messages
-                    .getString("MultiPageSqlBuilderEditor.ErrorInfo") + e.getMessage());
+            MessageDialog.openError(getContainer().getShell(), Messages.getString("MultiPageSqlBuilderEditor.ErrorTitle"),
+                    Messages.getString("MultiPageSqlBuilderEditor.ErrorInfo") + e.getMessage());
         }
-        
+
     }
 
     public void showDesignerPage() {
         setActivePage(1);
-        editor.setSqlText(editor.getSqlStatement());
+        erDiagramComposite.setSqlText(erDiagramComposite.getSqlStatement());
     }
 
     public void showEditPage() {
@@ -136,19 +141,19 @@ public class MultiPageSqlBuilderEditor extends MultiPageEditorPart {
     }
 
     public void setSqlText(String sql) {
-        editor.setSqlText(sql);
+        erDiagramComposite.setSqlText(sql);
     }
 
     public boolean isModified() {
-        if ("".equals(editor.getSqlText())) {
-            return (!"".equals(builderEditorComposite.getSQLToBeExecuted()));
+        if ("".equals(erDiagramComposite.getSqlText())) {
+            return (!"".equals(sqlEdit.getSQLToBeExecuted()));
         } else {
-            if ("".equals(builderEditorComposite.getSQLToBeExecuted())) {
+            if ("".equals(sqlEdit.getSQLToBeExecuted())) {
                 return true;
             } else {
-                String orginSql = EMFRepositoryNodeManager.getInstance().initSqlStatement(
-                        builderEditorComposite.getSQLToBeExecuted(), false);
-                String sqlText = EMFRepositoryNodeManager.getInstance().initSqlStatement(editor.getSqlText(), false);
+                String orginSql = EMFRepositoryNodeManager.getInstance().initSqlStatement(sqlEdit.getSQLToBeExecuted(), false);
+                String sqlText = EMFRepositoryNodeManager.getInstance().initSqlStatement(
+                        erDiagramComposite.getSqlText(), false);
                 return !sqlText.trim().equals(orginSql.trim());
             }
         }
@@ -220,25 +225,12 @@ public class MultiPageSqlBuilderEditor extends MultiPageEditorPart {
         setFocus();
         if (newPageIndex == 1) {
             try {
-                String toSql = builderEditorComposite.getSQLToBeExecuted();
-                if (toSql != null && !"".equals(toSql) && isModified()) {
-                    String info = Messages.getString("MultiPageSqlBuilderEditor.Notice.InformationNotFull");
-                    // "GUI Sql Editor maybe not show all features of your Sql Statement!\n And your full sql Statement
-                    // will show in buttom of the GUI.";
-                    MessageDialog.openInformation(new Shell(),
-                            Messages.getString("MultiPageSqlBuilderEditor.NoticeTitle.Text"), info); //$NON-NLS-1$
-
-                    List<RepositoryNode> nodeSel = EMFRepositoryNodeManager.getInstance().parseSqlStatement(toSql, rootNode);
-                    if (nodeSel == null || nodeSel.isEmpty()) {
-                        return;
-                    }
-                    editor.updateNodes(nodeSel, toSql);
-                }
-                editor.setModified(false);
+                String toSql = sqlEdit.getSQLToBeExecuted();
+                EMFRepositoryNodeManager.getInstance().updateErDiagram(isModified(), erDiagramComposite, toSql,
+                        rootNode);
             } catch (Exception e) {
-                MessageDialog.openError(getContainer().getShell(), Messages
-                        .getString("MultiPageSqlBuilderEditor.ErrorTitle"), Messages
-                        .getString("MultiPageSqlBuilderEditor.ErrorInfo") + e.getMessage());
+                MessageDialog.openError(getContainer().getShell(), Messages.getString("MultiPageSqlBuilderEditor.ErrorTitle"),
+                        Messages.getString("MultiPageSqlBuilderEditor.ErrorInfo") + e.getMessage());
             }
         } else if (newPageIndex == 0) {
             if (isModified()) {
@@ -250,10 +242,10 @@ public class MultiPageSqlBuilderEditor extends MultiPageEditorPart {
                     // .addComment(builderEditorComposite.getSQLToBeExecuted())
                     // + "\n";
                     // newSql += editor.getSqlText();
-                    builderEditorComposite.setEditorContent(editor.getSqlText());
+                    sqlEdit.setEditorContent(erDiagramComposite.getSqlText());
                 }
             }
-            builderEditorComposite.setModified(false);
+            sqlEdit.setModified(false);
         }
     }
 }

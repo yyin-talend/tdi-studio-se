@@ -370,4 +370,12 @@ public class ErDiagramComposite extends SashForm {
         return this.erDiagram;
     }
 
+    public void clearAll() {
+        List<Table> tables = new ArrayList<Table>();
+        tables.addAll(erDiagram.getTables());
+        for (Table table : tables) {
+            erDiagram.removeTable(table);
+        }
+        this.sqlText.setText("");
+    }
 }
