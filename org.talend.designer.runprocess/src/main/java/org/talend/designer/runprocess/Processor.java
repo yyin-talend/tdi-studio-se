@@ -225,7 +225,8 @@ public abstract class Processor implements IProcessor {
     }
 
     protected static String setStringPath(String path) {
-        return "\"" + path.replace("\\", "/") + "\"";
+        return path;
+//        return "\"" + path.replace("\\", "/") + "\"";
     }
 
     /*
