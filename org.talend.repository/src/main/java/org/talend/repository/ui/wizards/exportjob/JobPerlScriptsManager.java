@@ -28,7 +28,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -91,7 +90,7 @@ public class JobPerlScriptsManager extends JobScriptsManager {
      * @param needLauncher
      * @param needSystemRoutine
      * @param needUserRoutine
-     * @param needModel
+     * @param needModule
      * @param needJob
      * @param needContext
      * @return
@@ -106,7 +105,7 @@ public class JobPerlScriptsManager extends JobScriptsManager {
                     escapeSpace(launcher)));
             resources.addAll(getSystemRoutine(exportChoice.get(ExportChoice.needSystemRoutine)));
             resources.addAll(getUserRoutine(exportChoice.get(ExportChoice.needUserRoutine)));
-            resources.addAll(getModel(exportChoice.get(ExportChoice.needModel)));
+            resources.addAll(getModel(exportChoice.get(ExportChoice.needModule)));
             resources.addAll(getJobScripts(processItem, exportChoice.get(ExportChoice.needJob)));
 
             List<URL> srcList = getSource(processItem, exportChoice.get(ExportChoice.needSource));

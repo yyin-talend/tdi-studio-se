@@ -23,21 +23,16 @@ package org.talend.repository.ui.wizards.exportjob;
 
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.EnumMap;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.emf.common.util.EList;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -59,9 +54,7 @@ import org.talend.core.context.RepositoryContext;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.repository.IRepositoryObject;
-import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
 import org.talend.repository.i18n.Messages;
-import org.talend.repository.model.ComponentsFactoryProvider;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNode.ENodeType;
 import org.talend.repository.model.RepositoryNode.EProperties;
@@ -129,7 +122,7 @@ public class JobScriptsExportWizardPage extends WizardFileSystemResourceExportPa
         needLauncher,
         needSystemRoutine,
         needUserRoutine,
-        needModel,
+        needModule,
         needJob,
         needSource,
         needContext,
@@ -524,7 +517,7 @@ public class JobScriptsExportWizardPage extends WizardFileSystemResourceExportPa
         exportChoiceMap.put(ExportChoice.needLauncher, shellLauncherButton.getSelection());
         exportChoiceMap.put(ExportChoice.needSystemRoutine, systemRoutineButton.getSelection());
         exportChoiceMap.put(ExportChoice.needUserRoutine, userRoutineButton.getSelection());
-        exportChoiceMap.put(ExportChoice.needModel, modelButton.getSelection());
+        exportChoiceMap.put(ExportChoice.needModule, modelButton.getSelection());
         exportChoiceMap.put(ExportChoice.needJob, jobButton.getSelection());
         exportChoiceMap.put(ExportChoice.needSource, sourceButton.getSelection());
         exportChoiceMap.put(ExportChoice.needContext, contextButton.getSelection());
