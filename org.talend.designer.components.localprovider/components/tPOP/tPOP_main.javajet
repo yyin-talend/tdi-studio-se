@@ -3,11 +3,10 @@
 	imports="
 		org.talend.core.model.process.INode 
 		org.talend.core.model.process.ElementParameterParser
-		org.talend.core.model.metadata.IMetadataTable
 		org.talend.designer.codegen.config.CodeGeneratorArgument
 		java.util.List
 	"
-	class="POPEnd"
+	class="POPMain"
 %>
 
 <%
@@ -24,69 +23,69 @@
 	// component id
 	String cid = node.getUniqueName();
 %>
-	javax.mail.Folder <%=cid %>_folder = <%=cid %>_store.getDefaultFolder();
-    if (<%=cid %>_folder == null)
+	javax.mail.Folder folder_<%=cid %> = store_<%=cid %>.getDefaultFolder();
+    if (folder_<%=cid %> == null)
     throw new Exception("No default folder");
 
     // its INBOX
-    <%=cid %>_folder = <%=cid %>_folder.getFolder("INBOX");
-    if (<%=cid %>_folder == null)
+    folder_<%=cid %> = folder_<%=cid %>.getFolder("INBOX");
+    if (folder_<%=cid %> == null)
         throw new Exception("No POP3 INBOX");
 
 <%
    if (deleteFromServer.equals("true")) {
 %>
-     <%=cid %>_folder.open(javax.mail.Folder.READ_WRITE);
+     folder_<%=cid %>.open(javax.mail.Folder.READ_WRITE);
 <%
   } else
   {
 %> 
-    <%=cid %>_folder.open(javax.mail.Folder.READ_ONLY);
+    folder_<%=cid %>.open(javax.mail.Folder.READ_ONLY);
 <%
   }    
 %>	
-    javax.mail.Message[] <%=cid %>_msgs = <%=cid %>_folder.getMessages();
-    for (int <%=cid %>_counter = 0; <%=cid %>_counter < <%=cid %>_msgs.length; <%=cid %>_counter++) {
+    javax.mail.Message[] msgs_<%=cid %> = folder_<%=cid %>.getMessages();
+    for (int counter_<%=cid %> = 0; counter_<%=cid %> < msgs_<%=cid %>.length; counter_<%=cid %>++) {
 <%
    if (allEmails.equals("false")) {
 %>
-    if(<%=cid %>_counter >= <%=maxEmails%>) break; 
+    if(counter_<%=cid %> >= <%=maxEmails%>) break; 
 <%
     }
 %>                
-    javax.mail.Message <%=cid %>_message = <%=cid %>_msgs[<%=cid %>_counter];
-    <%=cid %>_message.setFlag(javax.mail.Flags.Flag.DELETED, true);    
-    String <%=cid %>_filename = <%=filenamePattern %>;
-    java.io.File <%=cid %>_file = new java.io.File(<%=outputDirectory %>, <%=cid %>_filename);
-    java.io.OutputStream <%=cid %>_os = new java.io.FileOutputStream(<%=cid %>_file);
-    java.util.Enumeration <%=cid %>_enums = <%=cid %>_message.getAllHeaders();
-    while (<%=cid %>_enums.hasMoreElements()) {
-      javax.mail.Header <%=cid %>_header = (javax.mail.Header) <%=cid %>_enums.nextElement();
-      <%=cid %>_os.write(new StringBuffer(<%=cid %>_header.getName()).append(": ").append(<%=cid %>_header.getValue()).append("\r\n").toString().getBytes());
+    javax.mail.Message message_<%=cid %> = msgs_<%=cid %>[counter_<%=cid %>];
+    message_<%=cid %>.setFlag(javax.mail.Flags.Flag.DELETED, true);    
+    String filename_<%=cid %> = <%=filenamePattern %>;
+    java.io.File file_<%=cid %> = new java.io.File(<%=outputDirectory %>, filename_<%=cid %>);
+    java.io.OutputStream os_<%=cid %> = new java.io.FileOutputStream(file_<%=cid %>);
+    java.util.Enumeration enums_<%=cid %> = message_<%=cid %>.getAllHeaders();
+    while (enums_<%=cid %>.hasMoreElements()) {
+      javax.mail.Header header_<%=cid %> = (javax.mail.Header) enums_<%=cid %>.nextElement();
+      os_<%=cid %>.write(new StringBuffer(header_<%=cid %>.getName()).append(": ").append(header_<%=cid %>.getValue()).append("\r\n").toString().getBytes());
     }
-    <%=cid %>_os.write("\r\n".getBytes());
-    java.io.InputStream <%=cid %>_in = <%=cid %>_message.getInputStream();
-    byte[] <%=cid %>_buffer = new byte[1024];
-    int <%=cid %>_length = 0;
-    while ((<%=cid %>_length = <%=cid %>_in.read(<%=cid %>_buffer, 0, 1024)) != -1) {
-      <%=cid %>_os.write(<%=cid %>_buffer, 0, <%=cid %>_length);                    
+    os_<%=cid %>.write("\r\n".getBytes());
+    java.io.InputStream in_<%=cid %> = message_<%=cid %>.getInputStream();
+    byte[] buffer_<%=cid %> = new byte[1024];
+    int length_<%=cid %> = 0;
+    while ((length_<%=cid %> = in_<%=cid %>.read(buffer_<%=cid %>, 0, 1024)) != -1) {
+      os_<%=cid %>.write(buffer_<%=cid %>, 0, length_<%=cid %>);                    
     }
-    <%=cid %>_os.close();
-    <%=cid %>_NB_EMAIL++;
-    <%=cid %>_CURRENT_FILE.add(<%=cid %>_filename);
-    <%=cid %>_CURRENT_FILEPATH.add(<%=cid %>_file.getPath());
+    os_<%=cid %>.close();
+    nb_email_<%=cid %>++;
+    current_file_<%=cid %>.add(filename_<%=cid %>);
+    current_filepath_<%=cid %>.add(file_<%=cid %>.getPath());
     }  
 
-    if (<%=cid %>_folder != null)    
+    if (folder_<%=cid %> != null)    
 <%
    if (deleteFromServer.equals("true")) {
 %>
-     <%=cid %>_folder.close(true); 
+     folder_<%=cid %>.close(true); 
 <%
   } else
   {
 %> 
-    <%=cid %>_folder.close(false);
+    folder_<%=cid %>.close(false);
 <%
   }    
 %>

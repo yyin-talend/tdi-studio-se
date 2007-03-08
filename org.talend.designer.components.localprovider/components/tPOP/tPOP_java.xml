@@ -71,7 +71,7 @@
       REQUIRED="true"
       NUM_ROW="4"
     >
-      <DEFAULT>new SimpleDateFormat("yyyyMMdd").format(new Date()) + "-" + new java.text.DecimalFormat("000000").format(tPOP_1_counter+1) + ".mail"</DEFAULT>
+      <DEFAULT>TalendDate.getDate("yyyyMMdd-hhmmss") + "_" + (counter_tPOP_1 + 1) + ".mail"</DEFAULT>
     </PARAMETER>
 
     <PARAMETER
@@ -104,7 +104,12 @@
 
   </PARAMETERS>
 
-  <CODEGENERATION/>
+  <CODEGENERATION>
+    <IMPORTS>
+      <IMPORT NAME="JavaMail" MODULE="mail.jar" REQUIRED="true" />
+      <IMPORT NAME="JAF" MODULE="activation.jar" REQUIRED="true" />
+    </IMPORTS>
+  </CODEGENERATION>
 
   <RETURNS>
     <RETURN NAME="NB_EMAIL" TYPE="INT" AVAILABILITY="AFTER"/>
