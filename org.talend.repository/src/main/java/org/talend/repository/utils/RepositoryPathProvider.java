@@ -32,32 +32,34 @@ import org.talend.core.context.RepositoryContext;
 import org.talend.core.model.general.Project;
 import org.talend.repository.model.ResourceModelUtils;
 
-
 /**
- * DOC amaumont  class global comment. Detailled comment
- * <br/>
- *
+ * DOC amaumont class global comment. Detailled comment <br/>
+ * 
  * $Id$
- *
+ * 
  */
 public class RepositoryPathProvider {
 
-    public static IPath getPathRootProject() {
-        RepositoryContext repositoryContext = (RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY);
+    public static IProject getProject() throws PersistenceException {
+        RepositoryContext repositoryContext = (RepositoryContext) CorePlugin.getContext().getProperty(
+                Context.REPOSITORY_CONTEXT_KEY);
         Project project = repositoryContext.getProject();
+        return ResourceModelUtils.getProject(project);
+    }
+
+    public static IPath getPathRootProject() {
+
         try {
-            IProject iProject = ResourceModelUtils.getProject(project);
+            IProject iProject = getProject();
             return iProject.getFullPath();
         } catch (PersistenceException e) {
             return null;
         }
     }
-    
+
     public static IPath getPathProjectFolder(String folderName) {
-        RepositoryContext repositoryContext = (RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY);
-        Project project = repositoryContext.getProject();
         try {
-            IProject iProject = ResourceModelUtils.getProject(project);
+            IProject iProject = getProject();
             IFolder folder = ResourceUtils.getFolder(iProject, folderName, true);
             return folder.getLocation();
         } catch (PersistenceException e) {
@@ -65,10 +67,20 @@ public class RepositoryPathProvider {
         }
 
     }
-    
+
+    public static IFolder getFolder(String folderName) {
+        try {
+            IProject iProject = getProject();
+            IFolder folder = ResourceUtils.getFolder(iProject, folderName, true);
+            return folder;
+        } catch (PersistenceException e) {
+            return null;
+        }
+    }
+
     public static IPath getPathFileName(String folderName, String fileName) {
         IPath pathProjectFolder = getPathProjectFolder(folderName);
         return pathProjectFolder.append(fileName);
     }
-    
+
 }

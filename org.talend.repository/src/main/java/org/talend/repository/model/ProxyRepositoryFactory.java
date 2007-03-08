@@ -27,12 +27,15 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.emf.common.util.EList;
 import org.talend.commons.exception.BusinessException;
 import org.talend.commons.exception.MessageBoxExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.utils.data.container.RootContainer;
+import org.talend.commons.utils.workbench.resources.ResourceUtils;
 import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.context.Context;
@@ -56,6 +59,7 @@ import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.repository.exception.LoginException;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.ui.views.RepositoryContentProvider.MetadataTableRepositoryObject;
+import org.talend.repository.utils.RepositoryPathProvider;
 
 /**
  * Repository factory use by client. Based on implementation provide by extension point system. This class contains all
@@ -84,6 +88,21 @@ public class ProxyRepositoryFactory implements IProxyRepositoryFactory {
             singleton = new ProxyRepositoryFactory();
         }
         return singleton;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.repository.model.IProxyRepositoryFactory#refreshJobPictureFolder()
+     */
+    public void refreshJobPictureFolder() {
+        IFolder folder = RepositoryPathProvider.getFolder(RepositoryConstants.IMG_DIRECTORY_OF_JOB_OUTLINE);
+        try {
+            folder.refreshLocal(1, null);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
     /*
@@ -118,15 +137,12 @@ public class ProxyRepositoryFactory implements IProxyRepositoryFactory {
         if (!Pattern.matches(pattern, fileName)) {
             // i18n
             // throw new IllegalArgumentException("Label " + fileName + " does not match pattern " + pattern);
-            throw new IllegalArgumentException(
-                    Messages
-                            .getString(
-                                    "ProxyRepositoryFactory.illegalArgumentException.labelNotMatchPattern", new String[] { fileName, pattern })); //$NON-NLS-1$
+            throw new IllegalArgumentException(Messages.getString(
+                    "ProxyRepositoryFactory.illegalArgumentException.labelNotMatchPattern", new String[] { fileName, pattern })); //$NON-NLS-1$
         }
     }
 
-    private void checkFileNameAndPath(Item item, String pattern, IPath path, boolean folder)
-            throws PersistenceException {
+    private void checkFileNameAndPath(Item item, String pattern, IPath path, boolean folder) throws PersistenceException {
         String fileName = item.getProperty().getLabel();
         checkFileName(fileName, pattern);
         if (!this.repositoryFactoryFromProvider.isNameAvailable(item, null)) {
@@ -137,8 +153,8 @@ public class ProxyRepositoryFactory implements IProxyRepositoryFactory {
         }
     }
 
-    private void checkFileNameAndPath(String label, String pattern, ERepositoryObjectType type, IPath path,
-            boolean folder) throws PersistenceException {
+    private void checkFileNameAndPath(String label, String pattern, ERepositoryObjectType type, IPath path, boolean folder)
+            throws PersistenceException {
         String fileName = label;
         checkFileName(fileName, pattern);
         if (!this.repositoryFactoryFromProvider.isPathValid(type, path, label)) {
@@ -157,7 +173,7 @@ public class ProxyRepositoryFactory implements IProxyRepositoryFactory {
     public List<ConnectionItem> getMetadataConnectionsItem() throws PersistenceException {
         return this.repositoryFactoryFromProvider.getMetadataConnectionsItem();
     }
-    
+
     /*
      * (non-Javadoc)
      * 
@@ -266,8 +282,7 @@ public class ProxyRepositoryFactory implements IProxyRepositoryFactory {
      * @see org.talend.repository.model.IProxyRepositoryFactory#getMetadataConnection()
      */
     public RootContainer<String, IRepositoryObject> getMetadataConnection() throws PersistenceException {
-        RootContainer<String, IRepositoryObject> metadataConnection = this.repositoryFactoryFromProvider
-                .getMetadataConnection();
+        RootContainer<String, IRepositoryObject> metadataConnection = this.repositoryFactoryFromProvider.getMetadataConnection();
 
         return metadataConnection;
     }
@@ -413,8 +428,7 @@ public class ProxyRepositoryFactory implements IProxyRepositoryFactory {
      */
     public void moveObject(IRepositoryObject objToMove, IPath path) throws PersistenceException, BusinessException {
         checkDisponibilite(objToMove);
-        checkFileNameAndPath(objToMove.getProperty().getItem(), RepositoryConstants.getPattern(objToMove.getType()),
-                path, false);
+        checkFileNameAndPath(objToMove.getProperty().getItem(), RepositoryConstants.getPattern(objToMove.getType()), path, false);
         this.repositoryFactoryFromProvider.moveObject(objToMove, path);
 
         // i18n
@@ -427,8 +441,7 @@ public class ProxyRepositoryFactory implements IProxyRepositoryFactory {
     // TODO SML Renommer et finir la m�thode et la plugger dans toutes les m�thodes
     private void checkDisponibilite(IRepositoryObject objToMove) throws BusinessException {
         if (!isEditableAndLockIfPossible(objToMove)) {
-            throw new BusinessException(Messages
-                    .getString("ProxyRepositoryFactory.bussinessException.itemNonModifiable")); //$NON-NLS-1$
+            throw new BusinessException(Messages.getString("ProxyRepositoryFactory.bussinessException.itemNonModifiable")); //$NON-NLS-1$
         }
     }
 
@@ -558,8 +571,7 @@ public class ProxyRepositoryFactory implements IProxyRepositoryFactory {
             }
         }
 
-        if (source.getType() == FolderType.SYSTEM_FOLDER_LITERAL
-                || source.getType() == FolderType.STABLE_SYSTEM_FOLDER_LITERAL) {
+        if (source.getType() == FolderType.SYSTEM_FOLDER_LITERAL || source.getType() == FolderType.STABLE_SYSTEM_FOLDER_LITERAL) {
             boolean match = source.getProperty().getLabel().equals(type);
 
             for (Object current : source.getChildren()) {
