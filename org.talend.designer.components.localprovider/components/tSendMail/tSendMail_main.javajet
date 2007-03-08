@@ -1,0 +1,53 @@
+<%@ jet 
+	package="org.talend.designer.codegen.translators" 
+	imports="
+		org.talend.core.model.process.INode
+		org.talend.designer.codegen.config.CodeGeneratorArgument	
+	"
+	class="SendMailMain"
+%>
+
+<%
+	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+	INode node = (INode)codeGenArgument.getArgument();
+	// component id
+	String cid = node.getUniqueName();
+%>
+	 java.util.Properties props_<%=cid %> = System.getProperties();     
+     props_<%=cid %>.put("mail.smtp.host", smtpHost_<%=cid %>);
+     props_<%=cid %>.put("mail.smtp.port", smtpPort_<%=cid %>);
+     javax.mail.Session session_<%=cid %> = javax.mail.Session.getDefaultInstance(props_<%=cid %>, null);    
+
+     javax.mail.Message msg_<%=cid %> = new javax.mail.internet.MimeMessage(session_<%=cid %>);
+     msg_<%=cid %>.setFrom(new javax.mail.internet.InternetAddress(from_<%=cid %>));
+     msg_<%=cid %>.setRecipients(javax.mail.Message.RecipientType.TO,javax.mail.internet.InternetAddress.parse(to_<%=cid %>, false));
+     if(cc_<%=cid %>!=null)  msg_<%=cid %>.setRecipients(javax.mail.Message.RecipientType.CC, javax.mail.internet.InternetAddress.parse(cc_<%=cid %>, false));
+     
+     msg_<%=cid %>.setSubject(subject_<%=cid %>);     
+
+	for (int i_<%=cid %> = 0; i_<%=cid %> < headers_<%=cid %>.size(); i_<%=cid %>++) {
+   		java.util.Map<String, String> header_<%=cid %> = headers_<%=cid %>.get(i_<%=cid %>);
+	    msg_<%=cid %>.setHeader(header_<%=cid %>.get("KEY"), header_<%=cid %>.get("VALUE"));		
+	}
+		
+     msg_<%=cid %>.setSentDate(new Date());     
+     javax.mail.Multipart mp_<%=cid %> = new javax.mail.internet.MimeMultipart();
+     javax.mail.internet.MimeBodyPart mbpText_<%=cid %> = new javax.mail.internet.MimeBodyPart();     
+     mbpText_<%=cid %>.setText(message_<%=cid %>);
+	 mp_<%=cid %>.addBodyPart(mbpText_<%=cid %>);
+	 	
+     for(int i_<%=cid %> = 0; i_<%=cid %> < attachments_<%=cid %>.size(); i_<%=cid %>++)
+     {
+       javax.mail.internet.MimeBodyPart mbpFile_<%=cid %> = new javax.mail.internet.MimeBodyPart();
+       String filename_<%=cid %> = attachments_<%=cid %>.get(i_<%=cid %>);        
+       javax.activation.FileDataSource fds_<%=cid %> = new javax.activation.FileDataSource(filename_<%=cid %> );
+       mbpFile_<%=cid %>.setDataHandler(new javax.activation.DataHandler(fds_<%=cid %>));
+       mbpFile_<%=cid %>.setFileName(fds_<%=cid %>.getName());
+       mp_<%=cid %>.addBodyPart(mbpFile_<%=cid %>);
+     }    
+       
+     // -- set the content --   
+      msg_<%=cid %>.setContent(mp_<%=cid %>);
+           
+     // -- Send the message --
+     javax.mail.Transport.send(msg_<%=cid %>);
