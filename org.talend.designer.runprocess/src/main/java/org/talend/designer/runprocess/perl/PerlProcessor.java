@@ -147,8 +147,8 @@ public class PerlProcessor extends Processor {
                 String currentPerlProject = project.getTechnicalLabel();
                 String perlContext = getCodeContext();
 
-                codeGen = service.createCodeGenerator(process, statistics, trace, perlInterpreter, perlLib,
-                        perlContext, currentPerlProject);
+                codeGen = service.createCodeGenerator(process, statistics, trace, perlInterpreter, perlLib, perlContext,
+                        currentPerlProject);
 
             } else {
                 codeGen = service.createCodeGenerator(process, statistics, trace);
@@ -365,8 +365,7 @@ public class PerlProcessor extends Processor {
         codeFile.deleteMarkers(perlBrekPointMarker, true, IResource.DEPTH_ZERO);
 
         IExtensionRegistry registry = Platform.getExtensionRegistry();
-        IConfigurationElement[] configElems = registry
-                .getConfigurationElementsFor("org.eclipse.debug.core.breakpoints"); //$NON-NLS-1$
+        IConfigurationElement[] configElems = registry.getConfigurationElementsFor("org.eclipse.debug.core.breakpoints"); //$NON-NLS-1$
         IConfigurationElement perlBreakConfigElem = null;
         for (IConfigurationElement elem : configElems) {
             if (elem.getAttribute("id").equals("perlLineBreakpoint")) { //$NON-NLS-1$ //$NON-NLS-2$
@@ -545,11 +544,15 @@ public class PerlProcessor extends Processor {
             throw new ProcessorException(Messages.getString("Processor.perlModuleNotFound")); //$NON-NLS-1$
         }
         perlInterpreterLibOption = perlLib != null && perlLib.length() > 0 ? "-I" + setStringPath(perlLib) : ""; //$NON-NLS-1$ //$NON-NLS-2$
-        try {
-            perlModuleDirectoryOption = "-I" + setStringPath(PerlUtils.getPerlModuleDirectoryPath().toOSString()); //$NON-NLS-1$
-        } catch (CoreException e) {
-            throw new ProcessorException(Messages.getString("Processor.perlModuleDirectoryNotFound")); //$NON-NLS-1$
-        }
+
+        // This is no usefull anymore since all libs are at the same place:
+        // try {
+        // perlModuleDirectoryOption = "-I" + setStringPath(PerlUtils.getPerlModuleDirectoryPath().toOSString());
+        // //$NON-NLS-1$
+        // } catch (CoreException e) {
+        // throw new ProcessorException(Messages.getString("Processor.perlModuleDirectoryNotFound")); //$NON-NLS-1$
+        // }
+
         IPath absCodePath = this.getCodeProject().getLocation().append(this.getCodePath());
         String[] cmd = getCommandLineByCondition(absCodePath, perlInterpreterLibOption, perlModuleDirectoryOption);
         return cmd;
