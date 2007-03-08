@@ -27,7 +27,6 @@ import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.GlobalServiceRegister;
 import org.talend.core.IService;
 import org.talend.designer.codegen.ICodeGeneratorService;
-import org.talend.designer.codegen.perlmodule.IPerlModuleService;
 import org.talend.designer.rowgenerator.data.FunctionManager;
 import org.talend.designer.runprocess.IRunProcessService;
 import org.talend.repository.model.IProxyRepositoryFactory;
@@ -92,11 +91,6 @@ public class RowGeneratorPlugin extends Plugin {
     public ICodeGeneratorService getCodeGeneratorService() {
         IService service = GlobalServiceRegister.getDefault().getService(ICodeGeneratorService.class);
         return (ICodeGeneratorService) service;
-    }
-
-    public IPerlModuleService getPerlModuleService() {
-        IService service = GlobalServiceRegister.getDefault().getService(IPerlModuleService.class);
-        return (IPerlModuleService) service;
     }
 
     /**
