@@ -512,7 +512,7 @@ public class RowGenTableEditor2 extends AbstractDataTableEditorView<IMetadataCol
         orignAllColumns(tableViewerCreator);
 
         // ///////////////////////////////////////////////////////////////////////
-        comboValueAdapter = CellEditorValueAdapterFactory.getComboAdapter("String"); //$NON-NLS-1$
+        comboValueAdapter = CellEditorValueAdapterFactory.getComboAdapterForComboCellEditor("String"); //$NON-NLS-1$
         column = new TableViewerCreatorColumn(tableViewerCreator);
         final ComboBoxCellEditor functComboBox = new ComboBoxCellEditor();
         functComboBox.create(tableViewerCreator.getTable());
@@ -638,10 +638,10 @@ public class RowGenTableEditor2 extends AbstractDataTableEditorView<IMetadataCol
                 Context.REPOSITORY_CONTEXT_KEY);
         ECodeLanguage codeLanguage = repositoryContext.getProject().getLanguage();
         if (codeLanguage == ECodeLanguage.JAVA) {
-            comboValueAdapter = CellEditorValueAdapterFactory.getComboAdapter("String"); //$NON-NLS-1$
+            comboValueAdapter = CellEditorValueAdapterFactory.getComboAdapterForComboCellEditor("String"); //$NON-NLS-1$
             dbms = MetadataTalendType.LANGUAGE_JAVA;
         } else {
-            comboValueAdapter = CellEditorValueAdapterFactory.getComboAdapter();
+            comboValueAdapter = CellEditorValueAdapterFactory.getComboAdapterForComboCellEditor();
             dbms = MetadataTalendType.TALENDDEFAULT;
         }
 
