@@ -69,7 +69,7 @@ public class PerlRoutineSynchronizer implements IRoutineSynchronizer {
         try {
             IRunProcessService service = CodeGeneratorActivator.getDefault().getRunProcessService();
             IProject perlProject;
-            perlProject = service.getProject(ECodeLanguage.JAVA);
+            perlProject = service.getProject(ECodeLanguage.PERL);
             Project project = ((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY))
                     .getProject();
             IFile file = perlProject.getFile(project.getTechnicalLabel() + "__" + routineItem.getProperty().getLabel()

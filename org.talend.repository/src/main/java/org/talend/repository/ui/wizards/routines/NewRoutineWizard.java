@@ -32,17 +32,13 @@ import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.utils.VersionUtils;
 import org.talend.core.CorePlugin;
-import org.talend.core.GlobalServiceRegister;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
-import org.talend.core.language.ECodeLanguage;
+import org.talend.core.model.general.ILibrariesService;
 import org.talend.core.model.properties.ByteArray;
 import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.properties.RoutineItem;
-import org.talend.designer.codegen.IModuleService;
-import org.talend.designer.codegen.javamodule.IJavaModuleService;
-import org.talend.designer.codegen.perlmodule.IPerlModuleService;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
@@ -85,17 +81,8 @@ public class NewRoutineWizard extends Wizard {
         routineItem = PropertiesFactory.eINSTANCE.createRoutineItem();
 
         routineItem.setProperty(property);
-       
-        Class toEval = null;
-        if (((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY)).getProject()
-                .getLanguage().equals(ECodeLanguage.JAVA)) {
-            toEval = IJavaModuleService.class;
-        } else {
-            toEval = IPerlModuleService.class;
-        }
-        IModuleService service = (IModuleService) GlobalServiceRegister.getDefault().getService(toEval);
-        
-        
+
+        ILibrariesService service = CorePlugin.getDefault().getLibrariesService();
         URL url = service.getRoutineTemplate();
         ByteArray byteArray = PropertiesFactory.eINSTANCE.createByteArray();
         InputStream stream = null;
@@ -109,7 +96,7 @@ public class NewRoutineWizard extends Wizard {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        
+
         routineItem.setContent(byteArray);
     }
 

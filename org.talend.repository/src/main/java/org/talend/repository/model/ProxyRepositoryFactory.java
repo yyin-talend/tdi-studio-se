@@ -756,6 +756,8 @@ public class ProxyRepositoryFactory implements IProxyRepositoryFactory {
      * @see org.talend.repository.model.IRepositoryFactory#logOnProject(org.talend.core.model.general.Project)
      */
     public void logOnProject(Project project) throws PersistenceException, LoginException {
+        CorePlugin.getDefault().getLibrariesService().syncLibraries();
+        
         IMigrationToolService service = (IMigrationToolService) GlobalServiceRegister.getDefault().getService(
                 IMigrationToolService.class);
         service.executeProjectTasks(project, true);

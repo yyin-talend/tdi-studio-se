@@ -87,6 +87,12 @@ public class Problems {
         add(problem);
     }
 
+    public static void addAll(List<Problem> problems) {
+        for (Problem current : problems) {
+            add(current);
+        }
+    }
+
     public static void add(Problem problem) {
         Problem oldProblem = null;
         boolean found = false;

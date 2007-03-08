@@ -27,7 +27,6 @@ import java.io.PrintWriter;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -49,13 +48,13 @@ import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.language.ECodeLanguage;
+import org.talend.core.model.general.ILibrariesService;
 import org.talend.core.model.general.Project;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.RoutineItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.prefs.ITalendCorePrefConstants;
-import org.talend.designer.codegen.IModuleService;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
 import org.talend.designer.core.model.utils.emf.talendfile.JobType;
 import org.talend.designer.core.model.utils.emf.talendfile.NodeType;
@@ -106,7 +105,7 @@ public class JobPerlScriptsManager extends JobScriptsManager {
                     escapeSpace(contextName), escapeSpace(launcher)));
             resources.addAll(getSystemRoutine(exportChoice.get(ExportChoice.needSystemRoutine)));
             resources.addAll(getUserRoutine(exportChoice.get(ExportChoice.needUserRoutine)));
-            resources.addAll(getModel(exportChoice.get(ExportChoice.needModule)));
+            resources.add(getModel(exportChoice.get(ExportChoice.needModule)));
             resources.addAll(getJobScripts(processItem, exportChoice.get(ExportChoice.needJob)));
 
             List<URL> srcList = getSource(processItem, exportChoice.get(ExportChoice.needSource));
@@ -456,18 +455,15 @@ public class JobPerlScriptsManager extends JobScriptsManager {
      * @param needModel
      * @return
      */
-    private List<URL> getModel(boolean needModel) {
-        List<URL> list = null;
+    private URL getModel(boolean needModel) {
+        URL list = null;
         if (needModel) {
             try {
-                IModuleService service = RepositoryPlugin.getDefault().getModuleService();
-                list = service.getModule();
+                ILibrariesService service = CorePlugin.getDefault().getLibrariesService();
+                list = service.getTalendRoutinesFolder();
             } catch (Exception e) {
                 ExceptionHandler.process(e);
             }
-        }
-        if (list == null) {
-            list = Collections.<URL> emptyList();
         }
         return list;
     }

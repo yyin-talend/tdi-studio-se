@@ -46,6 +46,7 @@ import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IComponentsFactory;
 import org.talend.core.model.components.IMultipleComponentItem;
 import org.talend.core.model.components.IMultipleComponentManager;
+import org.talend.core.model.general.ModuleNeeded;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataColumn;
@@ -57,7 +58,6 @@ import org.talend.core.model.process.IElementParameterDefaultValue;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.temp.ECodePart;
 import org.talend.core.model.utils.TalendTextUtils;
-import org.talend.designer.codegen.perlmodule.ModuleNeeded;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.utils.emf.component.COLUMNType;
 import org.talend.designer.core.model.utils.emf.component.COMPONENTType;
@@ -1009,7 +1009,7 @@ public class EmfComponent implements IComponent {
                     msg = Messages.getString("modules.required"); //$NON-NLS-1$
                 }
 
-                ModuleNeeded componentImportNeeds = new ModuleNeeded(this, importType.getMODULE(), msg, importType
+                ModuleNeeded componentImportNeeds = new ModuleNeeded(this.getName(), importType.getMODULE(), msg, importType
                         .isREQUIRED());
 
                 componentImportNeedsList.add(componentImportNeeds);

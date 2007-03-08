@@ -42,13 +42,10 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PlatformUI;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.core.CorePlugin;
-import org.talend.core.GlobalServiceRegister;
-import org.talend.core.context.Context;
-import org.talend.core.context.RepositoryContext;
-import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IComponentsFactory;
 import org.talend.core.model.components.IODataComponent;
+import org.talend.core.model.general.ILibrariesService;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataTable;
@@ -65,11 +62,6 @@ import org.talend.core.model.process.INodeReturn;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.process.Problem;
 import org.talend.core.model.process.Problem.ProblemStatus;
-import org.talend.designer.codegen.IModuleService;
-import org.talend.designer.codegen.javamodule.IJavaModuleService;
-import org.talend.designer.codegen.perlmodule.IPerlModuleService;
-import org.talend.designer.codegen.perlmodule.ModuleNeeded;
-import org.talend.designer.codegen.perlmodule.ModuleNeeded.ModuleStatus;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.designer.core.model.components.EParameterName;
 import org.talend.designer.core.ui.MultiPageTalendEditor;
@@ -854,36 +846,8 @@ public class Node extends Element implements INode {
     }
 
     private void checkModules() {
-        // List<ModuleNeeded> list = ModulesNeededProvider.getModulesNeeded(getComponentName());
-
-        Class toEval = null;
-        if (((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY)).getProject()
-                .getLanguage().equals(ECodeLanguage.JAVA)) {
-            toEval = IJavaModuleService.class;
-        } else {
-            toEval = IPerlModuleService.class;
-        }
-        IModuleService moduleService = (IModuleService) GlobalServiceRegister.getDefault().getService(toEval);
-
-        List<ModuleNeeded> list = moduleService.getModulesNeeded(component.getName());
-        for (ModuleNeeded current : list) {
-            Problem problem = getProblem(current);
-            if (problem != null) {
-                Problems.add(problem);
-            }
-        }
-    }
-
-    private Problem getProblem(ModuleNeeded componentImportNeeds) {
-        if (componentImportNeeds.getStatus() == ModuleStatus.INSTALLED) {
-            return null;
-        }
-        if (componentImportNeeds.getStatus() == ModuleStatus.NOT_INSTALLED && componentImportNeeds.isRequired()) {
-            return new Problem(this, "Module " + componentImportNeeds.getModuleName() + " required",
-                    ProblemStatus.ERROR);
-        }
-
-        return null;
+        ILibrariesService moduleService = CorePlugin.getDefault().getLibrariesService();
+        Problems.addAll(moduleService.getProblems(this, this));
     }
 
     private void checkLinks() {

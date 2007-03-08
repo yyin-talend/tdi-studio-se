@@ -38,12 +38,12 @@ import org.talend.commons.utils.generation.JavaUtils;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
+import org.talend.core.model.general.ILibrariesService;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.general.Project;
 import org.talend.core.model.properties.RoutineItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
-import org.talend.designer.codegen.javamodule.JavaModuleService;
 import org.talend.designer.runprocess.IRunProcessService;
 import org.talend.repository.model.IProxyRepositoryFactory;
 
@@ -79,20 +79,17 @@ public class JavaRoutineSynchronizer implements IRoutineSynchronizer {
             syncRoutine(routineItem);
         }
 
-        // PTODO MHIRT Vérifier avec MHELLEBOID ou SMALLET si on ne pourrait pas faire mieux
         try {
-            JavaModuleService jms = new JavaModuleService();
-            List<URL> systemModuleURL = jms.getModule();
+            ILibrariesService jms = CorePlugin.getDefault().getLibrariesService();
+            URL systemModuleURL = jms.getTalendRoutinesFolder();
 
-            for (URL url : systemModuleURL) {
-                String fileName = url.getPath();
-                if (fileName.startsWith("/")) {
-                    fileName = fileName.substring(1);
-                }
-                File f = new File(url.getPath());
-                if (f.isDirectory()) {
-                    syncModule(f.listFiles());
-                }
+            String fileName = systemModuleURL.getPath();
+            if (fileName.startsWith("/")) {
+                fileName = fileName.substring(1);
+            }
+            File f = new File(systemModuleURL.getPath());
+            if (f.isDirectory()) {
+                syncModule(f.listFiles());
             }
         } catch (IOException e) {
             // TODO Auto-generated catch block
@@ -112,8 +109,7 @@ public class JavaRoutineSynchronizer implements IRoutineSynchronizer {
             Project project = ((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY))
                     .getProject();
             initRoutineFolder(javaProject, project);
-            IFile file = javaProject.getFile(JavaUtils.JAVA_SRC_DIRECTORY + "/"
-                    + JavaUtils.JAVA_ROUTINES_DIRECTORY + "/"
+            IFile file = javaProject.getFile(JavaUtils.JAVA_SRC_DIRECTORY + "/" + JavaUtils.JAVA_ROUTINES_DIRECTORY + "/"
                     + routineItem.getProperty().getLabel() + JavaUtils.JAVA_EXTENSION);
 
             routineItem.getContent().setInnerContentToFile(file.getLocation().toFile());
@@ -174,9 +170,8 @@ public class JavaRoutineSynchronizer implements IRoutineSynchronizer {
 
             for (File module : modules) {
                 if (!module.isDirectory()) {
-                    IFile file = javaProject.getFile(JavaUtils.JAVA_SRC_DIRECTORY + "/"
-                            + JavaUtils.JAVA_ROUTINES_DIRECTORY + "/" + JavaUtils.JAVA_SYSTEM_ROUTINES_DIRECTORY + "/"
-                            + module.getName());
+                    IFile file = javaProject.getFile(JavaUtils.JAVA_SRC_DIRECTORY + "/" + JavaUtils.JAVA_ROUTINES_DIRECTORY + "/"
+                            + JavaUtils.JAVA_SYSTEM_ROUTINES_DIRECTORY + "/" + module.getName());
 
                     copyFile(module, file);
                 }

@@ -52,7 +52,10 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.osgi.framework.Bundle;
+import org.talend.core.CorePlugin;
+import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IComponentsFactory;
+import org.talend.core.model.general.ILibrariesService;
 import org.talend.designer.runprocess.RunProcessPlugin;
 import org.w3c.dom.Document;
 
@@ -121,18 +124,8 @@ public final class PerlUtils {
     }
 
     public static IPath getPerlModulePath() throws CoreException {
-        Bundle perlLibBundle = Platform.getBundle("org.talend.designer.codegen.perlmodule"); //$NON-NLS-1$
-        try {
-            if (!(perlLibBundle == null)) {
-                URL entry = perlLibBundle.getEntry("perl"); //$NON-NLS-1$
-                URL url = FileLocator.resolve(entry);
-                return new Path(url.getFile());
-            }
-        } catch (IOException e) {
-        }
-
-        throw new CoreException(new Status(Status.ERROR, RunProcessPlugin.PLUGIN_ID, Status.OK,
-                "Perl Module Plugin not found.", null)); //$NON-NLS-1$
+        ILibrariesService service = CorePlugin.getDefault().getLibrariesService();
+        return new Path(service.getLibrariesPath());
     }
 
     private static void writePerlIncludes(IProject prj, String[] includeEntries) throws CoreException {

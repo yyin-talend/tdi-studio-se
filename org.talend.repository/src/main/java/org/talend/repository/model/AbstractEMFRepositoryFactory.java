@@ -35,10 +35,7 @@ import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.utils.data.container.Container;
 import org.talend.commons.utils.data.container.RootContainer;
 import org.talend.core.CorePlugin;
-import org.talend.core.GlobalServiceRegister;
-import org.talend.core.context.Context;
-import org.talend.core.context.RepositoryContext;
-import org.talend.core.language.ECodeLanguage;
+import org.talend.core.model.general.ILibrariesService;
 import org.talend.core.model.general.Project;
 import org.talend.core.model.properties.ByteArray;
 import org.talend.core.model.properties.FolderItem;
@@ -49,10 +46,6 @@ import org.talend.core.model.properties.Property;
 import org.talend.core.model.properties.RoutineItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
-import org.talend.designer.codegen.IModuleService;
-import org.talend.designer.codegen.javamodule.IJavaModuleService;
-import org.talend.designer.codegen.perlmodule.IPerlModuleService;
-import org.talend.repository.i18n.Messages;
 
 /**
  * DOC smallet class global comment. Detailled comment <br/>
@@ -133,17 +126,15 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
         return toReturn;
     }
 
-    protected List<IRepositoryObject> getSerializable(Project project, String id, boolean allVersion)
-            throws PersistenceException {
+    protected List<IRepositoryObject> getSerializable(Project project, String id, boolean allVersion) throws PersistenceException {
         List<IRepositoryObject> toReturn = new ArrayList<IRepositoryObject>();
 
-        ERepositoryObjectType[] repositoryObjectTypeList = new ERepositoryObjectType[] {
-                ERepositoryObjectType.BUSINESS_PROCESS, ERepositoryObjectType.DOCUMENTATION,
-                ERepositoryObjectType.METADATA_CONNECTIONS, ERepositoryObjectType.METADATA_FILE_DELIMITED,
-                ERepositoryObjectType.METADATA_FILE_POSITIONAL, ERepositoryObjectType.METADATA_FILE_REGEXP,
-                ERepositoryObjectType.METADATA_FILE_XML, ERepositoryObjectType.METADATA_FILE_LDIF,
-                ERepositoryObjectType.PROCESS, ERepositoryObjectType.ROUTINES,
-                ERepositoryObjectType.CONTEXT};
+        ERepositoryObjectType[] repositoryObjectTypeList = new ERepositoryObjectType[] { ERepositoryObjectType.BUSINESS_PROCESS,
+                ERepositoryObjectType.DOCUMENTATION, ERepositoryObjectType.METADATA_CONNECTIONS,
+                ERepositoryObjectType.METADATA_FILE_DELIMITED, ERepositoryObjectType.METADATA_FILE_POSITIONAL,
+                ERepositoryObjectType.METADATA_FILE_REGEXP, ERepositoryObjectType.METADATA_FILE_XML,
+                ERepositoryObjectType.METADATA_FILE_LDIF, ERepositoryObjectType.PROCESS, ERepositoryObjectType.ROUTINES,
+                ERepositoryObjectType.CONTEXT };
         for (ERepositoryObjectType repositoryObjectType : repositoryObjectTypeList) {
             Object folder = getFolder(project, repositoryObjectType);
             toReturn.addAll(getSerializableFromFolder(folder, id, repositoryObjectType, allVersion, true, true));
@@ -151,8 +142,7 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
         return toReturn;
     }
 
-    protected abstract Object getFolder(Project project, ERepositoryObjectType repositoryObjectType)
-            throws PersistenceException;
+    protected abstract Object getFolder(Project project, ERepositoryObjectType repositoryObjectType) throws PersistenceException;
 
     public List<IRepositoryObject> getAllVersion(String id) throws PersistenceException {
         List<IRepositoryObject> serializableAllVersion = getSerializable(getRepositoryContext().getProject(), id, true);
@@ -185,21 +175,19 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
         return true;
     }
 
-    protected abstract List<IRepositoryObject> getSerializableFromFolder(Object folder, String id,
-            ERepositoryObjectType type, boolean allVersion, boolean searchInChildren, boolean withDeleted)
+    protected abstract List<IRepositoryObject> getSerializableFromFolder(Object folder, String id, ERepositoryObjectType type,
+            boolean allVersion, boolean searchInChildren, boolean withDeleted) throws PersistenceException;
+
+    protected abstract <K, T> RootContainer<K, T> getObjectFromFolder(ERepositoryObjectType type, boolean onlyLastVersion)
             throws PersistenceException;
 
-    protected abstract <K, T> RootContainer<K, T> getObjectFromFolder(ERepositoryObjectType type,
+    protected abstract <K, T> void addFolderMembers(ERepositoryObjectType type, Container<K, T> toReturn, Object objectFolder,
             boolean onlyLastVersion) throws PersistenceException;
-
-    protected abstract <K, T> void addFolderMembers(ERepositoryObjectType type, Container<K, T> toReturn,
-            Object objectFolder, boolean onlyLastVersion) throws PersistenceException;
 
     protected abstract FolderHelper getFolderHelper(org.talend.core.model.properties.Project emfProject);
 
     protected Item copyFromResource(Resource createResource) throws PersistenceException {
-        Item newItem = (Item) EcoreUtil.getObjectByType(createResource.getContents(), PropertiesPackage.eINSTANCE
-                .getItem());
+        Item newItem = (Item) EcoreUtil.getObjectByType(createResource.getContents(), PropertiesPackage.eINSTANCE.getItem());
         Property property = newItem.getProperty();
         property.setId(getNextId());
         property.setAuthor(getRepositoryContext().getUser());
@@ -232,16 +220,9 @@ public abstract class AbstractEMFRepositoryFactory extends AbstractRepositoryFac
     }
 
     protected void createSystemRoutines() throws PersistenceException {
-        Class toEval = null;
-        if (((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY)).getProject()
-                .getLanguage().equals(ECodeLanguage.JAVA)) {
-            toEval = IJavaModuleService.class;
-        } else {
-            toEval = IPerlModuleService.class;
-        }
-        IModuleService service = (IModuleService) GlobalServiceRegister.getDefault().getService(toEval);
+        ILibrariesService service = CorePlugin.getDefault().getLibrariesService();
 
-        List<URL> routines = service.getBuiltInRoutines();
+        List<URL> routines = service.getSystemRoutines();
         Path path = new Path(RepositoryConstants.SYSTEM_DIRECTORY);
         for (URL url : routines) {
             createRoutine(url, path);

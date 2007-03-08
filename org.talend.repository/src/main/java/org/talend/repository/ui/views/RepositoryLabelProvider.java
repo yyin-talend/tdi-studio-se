@@ -114,11 +114,23 @@ public class RepositoryLabelProvider extends LabelProvider implements IColorProv
             if (node.getObject() == null) {
                 return ImageProvider.getImage(node.getIcon());
             }
+            Image img = CoreImageProvider.getImage(node.getObject().getType());
+
+            // Manage doc extensions:
             if (node.getObject().getType() == ERepositoryObjectType.DOCUMENTATION) {
                 DocumentationItem item = (DocumentationItem) node.getObject().getProperty().getItem();
-                Image imageWithDocExt = OverlayImageProvider.getImageWithDocExt(item.getExtension());
-                return imageWithDocExt;
+                img = OverlayImageProvider.getImageWithDocExt(item.getExtension());
             }
+
+            // Manage master job case:
+            if (node.getObject().getType() == ERepositoryObjectType.PROCESS && node.getObject().getLabel().equals("Tagada")) {
+                img = OverlayImageProvider.getImageWithSpecial(img).createImage();
+            }
+
+            IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+            ERepositoryStatus repositoryStatus = factory.getStatus(node.getObject());
+
+            return OverlayImageProvider.getImageWithStatus(img, repositoryStatus).createImage();
 
             // if (node.getObject() != null && node.getObject().getType() == ERepositoryObjectType.METADATA_CON_TABLE) {
             //
@@ -134,9 +146,6 @@ public class RepositoryLabelProvider extends LabelProvider implements IColorProv
             // return CoreImageProvider.getImage(ERepositoryObjectType.METADATA_CON_TABLE);
             // }
             // }
-
-            IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
-            ERepositoryStatus repositoryStatus = factory.getStatus(node.getObject());
 
             // Gets different icons for corresponding table type(view, table, synonym),added by ftang.
             // If want to display different icons for different table type, uncomment code below.
@@ -162,8 +171,6 @@ public class RepositoryLabelProvider extends LabelProvider implements IColorProv
             // }
             // Ends
 
-            Image img = CoreImageProvider.getImage(node.getObject().getType());
-            return OverlayImageProvider.getImageWithStatus(img, repositoryStatus).createImage();
             // return BusinessImageProvider.getImage(node.getObject().getType(), repositoryStatus);
         }
     }

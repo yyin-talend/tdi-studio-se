@@ -42,11 +42,9 @@ public class ComponentsRetriever {
         File externalComponentsLocation = getExternalComponentsLocation();
         if (externalComponentsLocation != null) {
             try {
-                FilesUtils.copyFolder(externalComponentsLocation, target, true);
+                FilesUtils.copyFolder(externalComponentsLocation, target, true, null, null, true);
             } catch (IOException e) {
                 ExceptionHandler.process(e);
-                // } catch (Exception e) {
-                // ExceptionHandler.process(e);
             }
         }
     }

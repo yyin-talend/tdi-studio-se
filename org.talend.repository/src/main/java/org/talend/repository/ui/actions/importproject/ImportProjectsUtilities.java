@@ -130,6 +130,21 @@ public class ImportProjectsUtilities {
             ZipLeveledStructureProvider zipProvider = ArchiveFileManipulations.getZipStructureProvider(new ZipFile(sourcePath),
                     shell);
             source = zipProvider.getRoot();
+            // FIXME SML clean this code
+boolean ok=true;
+            for (Object o : zipProvider.getChildren(source)) {
+                String label = zipProvider.getLabel(o);
+                if (!label.equals(IProjectDescription.DESCRIPTION_FILE_NAME )&& ok) {
+                    source=o;
+                  // ok=true;
+                }else{
+                    ok=false;
+                }
+            }
+            if( !ok){
+                source = zipProvider.getRoot();
+            }
+
             provider = zipProvider;
         } else if (ArchiveFileManipulations.isTarFile(sourcePath)) {
             TarLeveledStructureProvider tarProvider = ArchiveFileManipulations.getTarStructureProvider(new TarFile(sourcePath),
@@ -140,7 +155,7 @@ public class ImportProjectsUtilities {
             throw new IllegalArgumentException("File " + sourcePath + " is not a zip neither a tar file");
         }
 
-        importProject(shell, provider, source, new Path(technicalName), false, true, monitor);
+        importProject(shell, provider, source, new Path(technicalName), false, false, monitor);
     }
 
     public static void importDemoProject(Shell shell, IProgressMonitor monitor) throws IOException, InvocationTargetException,
@@ -265,10 +280,11 @@ public class ImportProjectsUtilities {
         Iterator childrenEnum = children.iterator();
         while (childrenEnum.hasNext()) {
             Object child = childrenEnum.next();
-            // if (provider.isFolder(child)) {
-            // collectProjectFilesFromProvider(files, provider, child,
-            // level + 1, monitor);
-            // }
+            if (level < 1) {
+                if (provider.isFolder(child)) {
+                    collectProjectFilesFromProvider(files, provider, child, level + 1, monitor, searchFileName);
+                }
+            }
             String elementLabel = provider.getLabel(child);
             if (elementLabel.equals(searchFileName)) {
                 files.add(elementLabel);

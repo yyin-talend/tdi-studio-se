@@ -24,11 +24,15 @@ package org.talend.repository.ui.actions.routines;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.ui.PartInitException;
 import org.talend.commons.exception.SystemException;
+import org.talend.core.CorePlugin;
 import org.talend.core.GlobalServiceRegister;
+import org.talend.core.context.Context;
+import org.talend.core.context.RepositoryContext;
+import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.properties.RoutineItem;
 import org.talend.designer.codegen.ICodeGeneratorService;
+import org.talend.designer.codegen.IRoutineSynchronizer;
 import org.talend.repository.editor.RepositoryEditorInput;
-import org.talend.repository.i18n.Messages;
 import org.talend.repository.ui.actions.AContextualAction;
 
 /**
@@ -49,7 +53,23 @@ public abstract class AbstractRoutineAction extends AContextualAction {
     protected void openRoutineEditor(RoutineItem routineItem) throws SystemException, PartInitException {
         ICodeGeneratorService service = (ICodeGeneratorService) GlobalServiceRegister.getDefault().getService(
                 ICodeGeneratorService.class);
-        IFile file = service.createPerlRoutineSynchronizer().syncRoutine(routineItem);
+
+        ECodeLanguage lang = ((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY))
+                .getProject().getLanguage();
+        IRoutineSynchronizer routineSynchronizer;
+        switch (lang) {
+        case JAVA:
+            routineSynchronizer = service.createJavaRoutineSynchronizer();
+            break;
+        case PERL:
+            routineSynchronizer = service.createPerlRoutineSynchronizer();
+            break;
+        default:
+            throw new UnsupportedOperationException("Unknow language " + lang);
+        }
+
+        IFile file = routineSynchronizer.syncRoutine(routineItem);
+
         RepositoryEditorInput input = new RepositoryEditorInput(file, routineItem);
 
         getActivePage().openEditor(input, "org.talend.designer.core.ui.editor.StandAloneTalendPerlEditor"); //$NON-NLS-1$

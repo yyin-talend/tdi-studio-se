@@ -348,5 +348,20 @@
             id="org.talend.repository.migration.renametDbInputToOracle"
             name="Rename tDBxxTotOraclexx"/>
    </extension>
+   <extension
+         point="org.talend.core.librariesNeeded">
+      <libraryNeeded
+            context="%libraryneeded.fileldifwizard"
+            language="perl"
+            message="%libraryneeded.forthiswizard"
+            name="Net::LDAP::LDIF"
+            required="true"/>
+      <libraryNeeded
+            context="%libraryneeded.dbconnectionwizard"
+            language="java"
+            message="%libraryneeded.forsqlconnection"
+            name="mysql-connector-java-3.1.13-bin.jar"
+            required="false"/>
+   </extension>
 
 </plugin>

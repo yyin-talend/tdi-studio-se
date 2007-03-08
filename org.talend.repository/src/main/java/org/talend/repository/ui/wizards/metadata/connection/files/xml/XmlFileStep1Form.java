@@ -24,7 +24,6 @@ package org.talend.repository.ui.wizards.metadata.connection.files.xml;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 
@@ -56,16 +55,10 @@ import org.talend.commons.ui.swt.formtools.LabelledText;
 import org.talend.commons.ui.swt.formtools.UtilsButton;
 import org.talend.commons.utils.encoding.CharsetToolkit;
 import org.talend.core.CorePlugin;
-import org.talend.core.GlobalServiceRegister;
-import org.talend.core.context.Context;
-import org.talend.core.context.RepositoryContext;
-import org.talend.core.language.ECodeLanguage;
+import org.talend.core.model.general.ILibrariesService;
+import org.talend.core.model.general.ModuleNeeded.ELibraryInstallStatus;
 import org.talend.core.model.metadata.EMetadataEncoding;
 import org.talend.core.model.properties.ConnectionItem;
-import org.talend.designer.codegen.IModuleService;
-import org.talend.designer.codegen.javamodule.IJavaModuleService;
-import org.talend.designer.codegen.perlmodule.IPerlModuleService;
-import org.talend.designer.codegen.perlmodule.ModuleNeeded.ModuleStatus;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.ui.swt.utils.AbstractXmlFileStepForm;
 
@@ -368,16 +361,9 @@ public class XmlFileStep1Form extends AbstractXmlFileStepForm {
                 encodingCombo.select(0);
             }
             
-            Class toEval = null;
-            if (((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY)).getProject()
-                    .getLanguage().equals(ECodeLanguage.JAVA)) {
-                toEval = IJavaModuleService.class;
-            } else {
-                toEval = IPerlModuleService.class;
-            }
-            IModuleService moduleService = (IModuleService) GlobalServiceRegister.getDefault().getService(toEval);
+            ILibrariesService moduleService = CorePlugin.getDefault().getLibrariesService();
             try {
-                ModuleStatus status = moduleService.getModuleStatus("XML::LibXML"); //$NON-NLS-1$
+                ELibraryInstallStatus status = moduleService.getLibraryStatus("XML::LibXML"); //$NON-NLS-1$
                 if (!("INSTALLED").equals(status.name())) { //$NON-NLS-1$
                     new ErrorDialogWidthDetailArea(getShell(), PID, Messages.getString("FileStep.moduleFailure")+" XML::Lib "+Messages.getString("FileStep.moduleFailureEnd"), //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                             Messages.getString("FileStep.moduleDetailMessage")); //$NON-NLS-1$
