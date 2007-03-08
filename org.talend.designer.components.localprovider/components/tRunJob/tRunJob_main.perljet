@@ -62,9 +62,12 @@ my @arguments = (
     '--context='.<%=context %>,
 );
 
-system(
+my $error = system(
     join(' ', @arguments)
 );
+if($error){
+    die "Process <%=process %> died.\n" ;	
+}
     
 <%
 		}
