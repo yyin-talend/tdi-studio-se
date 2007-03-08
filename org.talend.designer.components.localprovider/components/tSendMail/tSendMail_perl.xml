@@ -43,7 +43,7 @@ COMPATIBILITY="ALL"
     </PARAMETER>
 
     <PARAMETER NAME="SUBJECT" FIELD="TEXT" REQUIRED="true" NUM_ROW="4">
-      <DEFAULT>'Integration Studio notification'</DEFAULT>
+      <DEFAULT>'Talend Open Studio notification'</DEFAULT>
     </PARAMETER>
 
     <PARAMETER NAME="MESSAGE" FIELD="MEMO" REQUIRED="false" NUM_ROW="5">

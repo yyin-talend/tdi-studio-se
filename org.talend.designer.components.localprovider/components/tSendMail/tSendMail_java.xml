@@ -31,7 +31,7 @@ COMPATIBILITY="ALL"
 
   <PARAMETERS>
     <PARAMETER NAME="TO" FIELD="TEXT" REQUIRED="true" NUM_ROW="1">
-      <DEFAULT>"bibi6071014@tan.com"</DEFAULT>
+      <DEFAULT>"receiver@example.com"</DEFAULT>
     </PARAMETER>
 
     <PARAMETER NAME="FROM" FIELD="TEXT" REQUIRED="true" NUM_ROW="2">
@@ -39,11 +39,11 @@ COMPATIBILITY="ALL"
     </PARAMETER>
 
     <PARAMETER NAME="CC" FIELD="TEXT" REQUIRED="false" NUM_ROW="3">
-      <DEFAULT>"bibi6071014@tan.com"</DEFAULT>
+      <DEFAULT>"carbon@example.com"</DEFAULT>
     </PARAMETER>
 
     <PARAMETER NAME="SUBJECT" FIELD="TEXT" REQUIRED="true" NUM_ROW="4">
-      <DEFAULT>"Integration Studio notification"</DEFAULT>
+      <DEFAULT>"Talend Open Studio notification"</DEFAULT>
     </PARAMETER>
 
     <PARAMETER NAME="MESSAGE" FIELD="MEMO" REQUIRED="false" NUM_ROW="5">
