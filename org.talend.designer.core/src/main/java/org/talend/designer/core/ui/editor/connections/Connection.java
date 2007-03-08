@@ -131,6 +131,9 @@ public class Connection extends Element implements IConnection {
         if (getLineStyle().equals(EConnectionType.FLOW_REF)) {
             labelText += " (" + EDesignerConnection.FLOW_REF.getLinkName() + ")"; //$NON-NLS-1$ //$NON-NLS-2$
         }
+        if (getLineStyle().equals(EConnectionType.TABLE)) {
+            labelText += " (" + EDesignerConnection.TABLE.getLinkName() + ")"; //$NON-NLS-1$ //$NON-NLS-2$
+        }
         if (label == null) {
             label = new ConnectionLabel(labelText, this);
         } else {
@@ -139,7 +142,8 @@ public class Connection extends Element implements IConnection {
             }
         }
 
-        if (source != null && (lineStyle == EConnectionType.FLOW_MAIN || lineStyle == EConnectionType.FLOW_REF)) {
+        if (source != null
+                && (lineStyle == EConnectionType.FLOW_MAIN || lineStyle == EConnectionType.FLOW_REF || lineStyle == EConnectionType.TABLE)) {
             if (source.getConnectorFromType(lineStyle).isBuiltIn()) {
                 IMetadataTable table = getMetadataTable();
                 table.setTableName(name);

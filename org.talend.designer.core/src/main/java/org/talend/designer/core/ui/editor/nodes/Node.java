@@ -191,7 +191,8 @@ public class Node extends Element implements INode {
         listConnector = this.component.createConnectors();
         metadataList = new ArrayList<IMetadataTable>();
         IMetadataTable meta = new MetadataTable();
-        if (!getConnectorFromType(EConnectionType.FLOW_MAIN).isBuiltIn()) {
+        if (!getConnectorFromType(EConnectionType.FLOW_MAIN).isBuiltIn()
+                && !getConnectorFromType(EConnectionType.TABLE).isBuiltIn()) {
             metadataList.add(meta);
         }
 
@@ -386,8 +387,8 @@ public class Node extends Element implements INode {
      */
     public void addInput(final Connection connection) {
         this.inputs.add(connection);
-        if (!isExternalNode() && component.isSchemaAutoPropagated() && (connection.getLineStyle() == EConnectionType.FLOW_MAIN)
-                && ((Process) getProcess()).isActivate()) {
+        if (!isExternalNode() && component.isSchemaAutoPropagated()
+                && (connection.getLineStyle() == EConnectionType.FLOW_MAIN) && ((Process) getProcess()).isActivate()) {
             if ((metadataList.get(0).getListColumns().size() == 0) || (outputs.size() == 0)) {
                 metadataList.get(0).setListColumns(connection.getMetadataTable().clone().getListColumns());
             }
@@ -488,7 +489,8 @@ public class Node extends Element implements INode {
             setShowHint((Boolean) value);
         }
         if (id.equals(EParameterName.SCHEMA_TYPE.getName()) || id.equals(EParameterName.QUERYSTORE_TYPE.getName())
-                || id.equals(EParameterName.PROPERTY_TYPE.getName()) || id.equals(EParameterName.PROCESS_TYPE_PROCESS.getName())
+                || id.equals(EParameterName.PROPERTY_TYPE.getName())
+                || id.equals(EParameterName.PROCESS_TYPE_PROCESS.getName())
                 || id.equals(EParameterName.ENCODING_TYPE.getName())) {
             setPropertyValue(EParameterName.UPDATE_COMPONENTS.getName(), Boolean.TRUE);
         }
@@ -789,8 +791,8 @@ public class Node extends Element implements INode {
                 case TABLE:
                     List<Map<String, String>> tableValues = (List<Map<String, String>>) param.getValue();
                     if (tableValues.size() == 0) {
-                        String errorMessage = "Parameter (" + param.getDisplayName() //$NON-NLS-1$
-                                + ") must have at least one value."; //$NON-NLS-1$
+                        String errorMessage = "Parameter (" + param.getDisplayName()
+                                + ") must have at least one value.";
                         Problems.add(ProblemStatus.ERROR, this, errorMessage);
                     }
                     break;
@@ -802,8 +804,8 @@ public class Node extends Element implements INode {
                     if (param.getListItemsValue().length != 0) {
                         value = (String) param.getValue();
                         if (value.equals("")) { //$NON-NLS-1$
-                            String errorMessage = "Parameter (" + param.getDisplayName() //$NON-NLS-1$
-                                    + ") is empty but is required."; //$NON-NLS-1$
+                            String errorMessage = "Parameter (" + param.getDisplayName()
+                                    + ") is empty but is required.";
                             Problems.add(ProblemStatus.ERROR, this, errorMessage);
                         } else {
                             boolean found = false;
@@ -813,8 +815,8 @@ public class Node extends Element implements INode {
                                 }
                             }
                             if (!found) {
-                                String errorMessage = "Parameter (" + param.getDisplayName() + ") has a value (" //$NON-NLS-1$ //$NON-NLS-2$
-                                        + value + ") that doesn't exist anymore."; //$NON-NLS-1$
+                                String errorMessage = "Parameter (" + param.getDisplayName() + ") has a value (" 
+                                        + value + ") that doesn't exist anymore.";
                                 Problems.add(ProblemStatus.ERROR, this, errorMessage);
                             }
                         }
@@ -823,7 +825,7 @@ public class Node extends Element implements INode {
                 default:
                     value = (String) param.getValue();
                     if (value.equals("")) { //$NON-NLS-1$
-                        String errorMessage = "Parameter (" + param.getDisplayName() + ") is empty but is required."; //$NON-NLS-1$ //$NON-NLS-2$
+                        String errorMessage = "Parameter (" + param.getDisplayName() + ") is empty but is required.";
                         Problems.add(ProblemStatus.ERROR, this, errorMessage);
                     }
                 }
@@ -855,8 +857,8 @@ public class Node extends Element implements INode {
         // List<ModuleNeeded> list = ModulesNeededProvider.getModulesNeeded(getComponentName());
 
         Class toEval = null;
-        if (((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY)).getProject().getLanguage().equals(
-                ECodeLanguage.JAVA)) {
+        if (((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY)).getProject()
+                .getLanguage().equals(ECodeLanguage.JAVA)) {
             toEval = IJavaModuleService.class;
         } else {
             toEval = IPerlModuleService.class;
@@ -877,7 +879,7 @@ public class Node extends Element implements INode {
             return null;
         }
         if (componentImportNeeds.getStatus() == ModuleStatus.NOT_INSTALLED && componentImportNeeds.isRequired()) {
-            return new Problem(this, "Module " + componentImportNeeds.getModuleName() + " required", //$NON-NLS-1$ //$NON-NLS-2$
+            return new Problem(this, "Module " + componentImportNeeds.getModuleName() + " required",
                     ProblemStatus.ERROR);
         }
 
@@ -888,8 +890,9 @@ public class Node extends Element implements INode {
         // check not startable components not linked
         if (!(Boolean) getPropertyValue(EParameterName.STARTABLE.getName())) {
             if ((getCurrentActiveLinksNbInput(EConnectionType.FLOW_MAIN) == 0)
-                    && (getConnectorFromType(EConnectionType.FLOW_MAIN).getMinLinkInput() == 0)) {
-                String errorMessage = "This component should have input link(s)."; //$NON-NLS-1$
+                    && (getConnectorFromType(EConnectionType.FLOW_MAIN).getMinLinkInput() == 0)
+                    & (getConnectorFromType(EConnectionType.FLOW_MAIN).getMaxLinkInput() != 0)) {
+                String errorMessage = "This component should have input link(s).";
                 Problems.add(ProblemStatus.WARNING, this, errorMessage);
             }
             if ((getCurrentActiveLinksNbInput(EConnectionType.FLOW_MAIN) == 0)
@@ -900,11 +903,12 @@ public class Node extends Element implements INode {
         }
 
         // check not startable components not linked
-        if (getConnectorFromType(EConnectionType.FLOW_MAIN).getMaxLinkInput() == 0) {
+        if ((getConnectorFromType(EConnectionType.FLOW_MAIN).getMaxLinkInput() == 0) 
+                && (getConnectorFromType(EConnectionType.FLOW_MAIN).getMaxLinkOutput() != 0)){
             if ((getCurrentActiveLinksNbOutput(EConnectionType.FLOW_MAIN) == 0)
                     && (getCurrentActiveLinksNbOutput(EConnectionType.FLOW_REF) == 0)
                     && (getCurrentActiveLinksNbOutput(EConnectionType.ITERATE) == 0)) {
-                String errorMessage = "This component should have outputs linked."; //$NON-NLS-1$
+                String errorMessage = "This component should have outputs linked.";
                 Problems.add(ProblemStatus.WARNING, this, errorMessage);
             }
         }
@@ -946,7 +950,7 @@ public class Node extends Element implements INode {
                 curLinkIn = getConnectorFromType(type).getCurLinkNbInput();
                 String typeName = EDesignerConnection.getConnection(type).getMenuName();
                 if (type == EConnectionType.FLOW_MAIN) {
-                    typeName = "Row"; //$NON-NLS-1$
+                    typeName = "Row";
                 }
 
                 if (nbMaxOut != -1) {
@@ -990,7 +994,8 @@ public class Node extends Element implements INode {
         }
         if (!isExternalNode()) {
             if (canEditSchema) {
-                if (getConnectorFromType(EConnectionType.FLOW_MAIN).getMaxLinkInput() == 0) {
+                if ((getConnectorFromType(EConnectionType.FLOW_MAIN).getMaxLinkInput() == 0)
+                        && (getConnectorFromType(EConnectionType.FLOW_MAIN).getMaxLinkOutput() != 0)) {
                     if (metadataList.get(0).getListColumns().size() == 0) {
                         String errorMessage = "No schema has been defined yet."; //$NON-NLS-1$
                         Problems.add(ProblemStatus.ERROR, this, errorMessage);
@@ -1024,7 +1029,7 @@ public class Node extends Element implements INode {
         }
 
         // test if the columns can be checked or not
-        if (component.isSchemaAutoPropagated()) {
+        if (component.isSchemaAutoPropagated() && (metadataList.size() != 0)) {
             IMetadataTable inputMeta = null, outputMeta = metadataList.get(0);
             for (Connection connection : inputs) {
                 if (connection.isActivate() && connection.getLineStyle().equals(EConnectionType.FLOW_MAIN)) {

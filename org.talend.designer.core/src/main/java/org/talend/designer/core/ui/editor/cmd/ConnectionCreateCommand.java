@@ -115,7 +115,7 @@ public class ConnectionCreateCommand extends Command {
             }
 
             if ((!lineStyle.equals(EConnectionType.FLOW_MAIN)) && (!lineStyle.equals(EConnectionType.FLOW_REF))
-                    && (!lineStyle.equals(EConnectionType.ITERATE))) {
+                    && (!lineStyle.equals(EConnectionType.ITERATE) && (!lineStyle.equals(EConnectionType.TABLE)))) {
                 if (!(Boolean) target.getPropertyValue(EParameterName.STARTABLE.getName())) {
                     return false;
                 }

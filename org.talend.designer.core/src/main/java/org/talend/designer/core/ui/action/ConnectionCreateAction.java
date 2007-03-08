@@ -87,7 +87,7 @@ public class ConnectionCreateAction extends SelectionAction {
      * 
      * @return true/false
      */
-    @SuppressWarnings("unchecked") //$NON-NLS-1$
+    @SuppressWarnings("unchecked")//$NON-NLS-1$
     private boolean canPerformAction() {
         if (getSelectedObjects().isEmpty()) {
             return false;
@@ -140,9 +140,14 @@ public class ConnectionCreateAction extends SelectionAction {
                         menuList.add(name);
                     }
                 }
-                menuList.add(NEW_OUTPUT);
+                menuList.add(getNewOutputMenuName());
             } else {
-                String menuName = EDesignerConnection.getConnection(connecType).getMenuName();
+                String menuName;
+                if (node.getConnectorFromType(connecType).isCustomName()) {
+                    menuName = getNewOutputMenuName();
+                } else {
+                    menuName = EDesignerConnection.getConnection(connecType).getMenuName();
+                }
                 setText(menuName);
                 menuList.add(menuName);
             }
@@ -152,12 +157,27 @@ public class ConnectionCreateAction extends SelectionAction {
         return false;
     }
 
+    private String getNewOutputMenuName() {
+        return NEW_OUTPUT + " (" + EDesignerConnection.getConnection(connecType).getMenuName() + ")";
+    }
+
     public List<String> getMenuList() {
         return menuList;
     }
 
     public void setMenuList(final List<String> menuList) {
         this.menuList = menuList;
+    }
+
+    private String askForConnectionName(String nodeLabel) {
+        InputDialog id = new InputDialog(getWorkbenchPart().getSite().getShell(), nodeLabel
+                + Messages.getString("ConnectionCreateAction.dialogTitle"), //$NON-NLS-1$
+                Messages.getString("ConnectionCreateAction.dialogMessage"), "", null); //$NON-NLS-1$ //$NON-NLS-2$
+        id.open();
+        if (id.getReturnCode() == InputDialog.CANCEL) {
+            return "";
+        }
+        return id.getValue();
     }
 
     /*
@@ -186,23 +206,22 @@ public class ConnectionCreateAction extends SelectionAction {
 
         Node node = (Node) nodePart.getModel();
         if (node.getConnectorFromType(connecType).isBuiltIn()) {
-            if (getText().equals(NEW_OUTPUT)) {
+            if (getText().equals(getNewOutputMenuName())) {
                 boolean nameOk = false;
                 while (!nameOk) {
-                    InputDialog id = new InputDialog(getWorkbenchPart().getSite().getShell(), node.getLabel()
-                            + Messages.getString("ConnectionCreateAction.dialogTitle"), //$NON-NLS-1$
-                            Messages.getString("ConnectionCreateAction.dialogMessage"), "", null); //$NON-NLS-1$ //$NON-NLS-2$
-                    id.open();
-                    if (id.getReturnCode() == InputDialog.CANCEL) {
+
+                    connectionName = askForConnectionName(node.getLabel());
+                    if (connectionName.equals("")) {
                         return;
                     }
-                    connectionName = id.getValue();
-                    if (node.getProcess().checkValidConnectionName(connectionName)) {
+                    if (connecType.equals(EConnectionType.TABLE)
+                            || node.getProcess().checkValidConnectionName(connectionName)) {
                         nameOk = true;
                     } else {
                         String message = Messages.getString(
                                 "ConnectionCreateAction.errorCreateConnectionName", connectionName); //$NON-NLS-1$
-                        MessageDialog.openError(getWorkbenchPart().getSite().getShell(), Messages.getString("ConnectionCreateAction.error"), message); //$NON-NLS-1$
+                        MessageDialog.openError(getWorkbenchPart().getSite().getShell(), Messages
+                                .getString("ConnectionCreateAction.error"), message); //$NON-NLS-1$
                     }
                 }
 
@@ -227,10 +246,14 @@ public class ConnectionCreateAction extends SelectionAction {
                 connectionName = meta.getTableName();
             }
         } else {
-            if (connecType.equals(EConnectionType.FLOW_MAIN)) {
-                connectionName = node.getProcess().generateUniqueConnectionName(Process.DEFAULT_CONNECTION_NAME);
+            if (node.getConnectorFromType(connecType).isCustomName()) {
+                connectionName = askForConnectionName(node.getLabel());
             } else {
-                connectionName = EDesignerConnection.getConnection(connecType).getLinkName();
+                if (connecType.equals(EConnectionType.FLOW_MAIN)) {
+                    connectionName = node.getProcess().generateUniqueConnectionName(Process.DEFAULT_CONNECTION_NAME);
+                } else {
+                    connectionName = EDesignerConnection.getConnection(connecType).getLinkName();
+                }
             }
             if (node.getMetadataList().size() == 0) {
                 meta = null;
@@ -270,7 +293,8 @@ public class ConnectionCreateAction extends SelectionAction {
          */
 
         listArgs = new ArrayList<Object>();
-        if (connecType.equals(EConnectionType.FLOW_MAIN) || connecType.equals(EConnectionType.FLOW_REF)) {
+        if (connecType.equals(EConnectionType.FLOW_MAIN) || connecType.equals(EConnectionType.FLOW_REF)
+                || connecType.equals(EConnectionType.TABLE)) {
             listArgs.add(meta.getTableName());
         } else {
             listArgs.add(node.getUniqueName());

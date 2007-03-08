@@ -48,6 +48,8 @@ public class NodeConnector implements INodeConnector {
 
     private boolean builtIn = false;
 
+    private boolean customName;
+
     /*
      * (non-Javadoc)
      * 
@@ -130,5 +132,13 @@ public class NodeConnector implements INodeConnector {
 
     public void setMinLinkOutput(int minLinkOutput) {
         this.minLinkOutput = minLinkOutput;
+    }
+
+    public boolean isCustomName() {
+        return customName;
+    }
+
+    public void setCustomName(boolean customName) {
+        this.customName = customName;
     }
 }

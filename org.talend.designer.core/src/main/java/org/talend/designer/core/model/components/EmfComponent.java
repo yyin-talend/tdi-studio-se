@@ -55,8 +55,8 @@ import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.ElementParameterParser;
 import org.talend.core.model.process.IElementParameterDefaultValue;
 import org.talend.core.model.process.INode;
-import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.model.temp.ECodePart;
+import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.designer.codegen.perlmodule.ModuleNeeded;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.utils.emf.component.COLUMNType;
@@ -111,8 +111,11 @@ public class EmfComponent implements IComponent {
     private static final String TSTATCATCHER_NAME = "tStatCatcher"; //$NON-NLS-1$
 
     public static final String ENCODING_TYPE_UTF_8 = "UTF-8";//$NON-NLS-1$
+
     public static final String ENCODING_TYPE_ISO_8859_15 = "ISO-8859-15";//$NON-NLS-1$
+
     public static final String ENCODING_TYPE_CUSTOM = "CUSTOM";//$NON-NLS-1$
+
     private static final String STRING_TYPE = "String"; //$NON-NLS-1$
 
     private IMultipleComponentManager multipleComponentManager;
@@ -926,24 +929,40 @@ public class EmfComponent implements IComponent {
         listConnector = new ArrayList<NodeConnector>();
 
         listConnType = compType.getCONNECTORS().getCONNECTOR();
-        for (int i = 0; i < listConnType.size(); i++) {
-            connType = (CONNECTORType) listConnType.get(i);
+        for (int i = 0; i < EConnectionType.values().length; i++) {
+            EConnectionType currentType = EConnectionType.values()[i];
             nodeConnector = new NodeConnector();
-            nodeConnector.setConnectionType(EConnectionType.getTypeFromName(connType.getCTYPE()));
-            if (connType.isSetMAXINPUT()) {
-                nodeConnector.setMaxLinkInput(connType.getMAXINPUT());
+            nodeConnector.setConnectionType(currentType);
+            boolean found = false;
+            for (int j = 0; j < listConnType.size(); j++) {
+                connType = (CONNECTORType) listConnType.get(j);
+                if (connType.getCTYPE().equals(currentType.getName())) {
+                    found = true;
+                    if (connType.isSetMAXINPUT()) {
+                        nodeConnector.setMaxLinkInput(connType.getMAXINPUT());
+                    }
+                    if (connType.isSetMININPUT()) {
+                        nodeConnector.setMinLinkInput(connType.getMININPUT());
+                    }
+                    if (connType.isSetMAXOUTPUT()) {
+                        nodeConnector.setMaxLinkOutput(connType.getMAXOUTPUT());
+                    }
+                    if (connType.isSetMINOUTPUT()) {
+                        nodeConnector.setMinLinkOutput(connType.getMINOUTPUT());
+                    }
+                    if (currentType == EConnectionType.TABLE) {
+                        nodeConnector.setCustomName(true);
+                    }
+                    if (connType.isSetBUILTIN()) {
+                        nodeConnector.setBuiltIn(connType.isBUILTIN());
+                    }
+                }
             }
-            if (connType.isSetMININPUT()) {
-                nodeConnector.setMinLinkInput(connType.getMININPUT());
-            }
-            if (connType.isSetMAXOUTPUT()) {
-                nodeConnector.setMaxLinkOutput(connType.getMAXOUTPUT());
-            }
-            if (connType.isSetMINOUTPUT()) {
-                nodeConnector.setMinLinkOutput(connType.getMINOUTPUT());
-            }
-            if (connType.isSetBUILTIN()) {
-                nodeConnector.setBuiltIn(connType.isBUILTIN());
+            if (!found) { // if type of link not found, then "deactivate" this link
+                nodeConnector.setMaxLinkInput(0);
+                nodeConnector.setMinLinkInput(0);
+                nodeConnector.setMaxLinkOutput(0);
+                nodeConnector.setMinLinkOutput(0);
             }
             listConnector.add(nodeConnector);
         }

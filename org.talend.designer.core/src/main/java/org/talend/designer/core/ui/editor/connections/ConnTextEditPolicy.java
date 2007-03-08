@@ -27,6 +27,7 @@ import org.eclipse.gef.requests.DirectEditRequest;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.MessageBox;
+import org.talend.core.model.process.EConnectionType;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.ui.editor.cmd.ChangeConnTextCommand;
 import org.talend.designer.core.ui.editor.nodes.Node;
@@ -48,11 +49,14 @@ public class ConnTextEditPolicy extends DirectEditPolicy {
         String labelText = (String) edit.getCellEditor().getValue();
         ConnLabelEditPart labelPart = (ConnLabelEditPart) getHost();
         Connection connec = (Connection) getHost().getParent().getModel();
-        if (!((Node) connec.getSource()).getProcess().checkValidConnectionName(labelText)) {
-            String message = Messages.getString(
-                    "ConnectionCreateAction.errorCreateConnectionName", labelText); //$NON-NLS-1$
-            MessageDialog.openError(getHost().getViewer().getControl().getShell(), Messages.getString("ConnTextEditPolicy.ErrorTitle"), message); //$NON-NLS-1$
-            return null;
+        if (connec.getLineStyle().equals(EConnectionType.FLOW_MAIN)
+                || connec.getLineStyle().equals(EConnectionType.FLOW_REF)) {
+            if (!((Node) connec.getSource()).getProcess().checkValidConnectionName(labelText)) {
+                String message = Messages.getString("ConnectionCreateAction.errorCreateConnectionName", labelText); //$NON-NLS-1$
+                MessageDialog.openError(getHost().getViewer().getControl().getShell(), Messages
+                        .getString("ConnTextEditPolicy.ErrorTitle"), message); //$NON-NLS-1$
+                return null;
+            }
         }
         ChangeConnTextCommand command = new ChangeConnTextCommand((Connection) labelPart.getParent().getModel(),
                 labelText);

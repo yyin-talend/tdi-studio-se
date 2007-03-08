@@ -26,6 +26,7 @@ import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Composite;
+import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.IConnection;
 
 /**
@@ -65,8 +66,11 @@ public class NodeLabelCellEditor extends TextCellEditor {
         text.setBackground(null);
         if (connection != null) {
             if (text.getText() != null) {
-                if (!connection.getSource().getProcess().checkValidConnectionName(text.getText(), true)) {
-                    text.setBackground(ERROR_COLOR);
+                if (connection.getLineStyle().equals(EConnectionType.FLOW_MAIN)
+                        || connection.getLineStyle().equals(EConnectionType.FLOW_REF)) {
+                    if (!connection.getSource().getProcess().checkValidConnectionName(text.getText(), true)) {
+                        text.setBackground(ERROR_COLOR);
+                    }
                 }
             }
         }

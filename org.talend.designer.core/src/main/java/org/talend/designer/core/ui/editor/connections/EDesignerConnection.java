@@ -51,7 +51,9 @@ public enum EDesignerConnection {
     RUN_IF(EConnectionType.RUN_IF, "If", Messages.getString("EDesignerConnection.RunIf"), new Integer(Graphics.LINE_DASHDOTDOT), new Color(null, new RGB(180, //$NON-NLS-1$ //$NON-NLS-2$
             100, 30))),
     ITERATE(EConnectionType.ITERATE, "Iterate", Messages.getString("EDesignerConnection.Iterator"), new Integer(Graphics.LINE_SOLID), new Color(null, new RGB( //$NON-NLS-1$ //$NON-NLS-2$
-            100, 230, 0)));
+            100, 230, 0))),
+    TABLE(EConnectionType.TABLE, "Table", Messages.getString("EDesignerConnection.Table"), new Integer(Graphics.LINE_SOLID), new Color(null, new RGB( //$NON-NLS-1$ //$NON-NLS-2$
+            0, 150, 100)));
 
     private EConnectionType connectionType;
 

@@ -165,7 +165,8 @@ public class ConnLabelEditPart extends AbstractGraphicalEditPart implements Prop
         }
         if (request.getType() == RequestConstants.REQ_DIRECT_EDIT
                 && (connectionParent.getLineStyle().equals(EConnectionType.FLOW_MAIN) || connectionParent
-                        .getLineStyle().equals(EConnectionType.FLOW_REF))) {
+                        .getLineStyle().equals(EConnectionType.FLOW_REF)|| connectionParent
+                        .getLineStyle().equals(EConnectionType.TABLE))) {
             performDirectEdit();
         }
     }
