@@ -28,34 +28,26 @@ import java.io.InputStream;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.talend.commons.exception.ExceptionHandler;
+import org.talend.commons.exception.MessageBoxExceptionHandler;
 import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IProcess;
+import org.talend.designer.core.ISyntaxCheckableEditor;
 import org.talend.designer.runprocess.i18n.Messages;
 
 /**
- * DOC chuger class global comment. Detailled comment <br/>
+ * DOC nrousseau class global comment. Detailled comment <br/>
  * 
  * $Id$
  * 
  */
-public class Processor {
-
-    public static final String RUNTIME = "runtime"; //$NON-NLS-1$
-
-    public static final String EDIT = "edit"; //$NON-NLS-1$
+public abstract class Processor implements IProcessor {
 
     private static Logger log = Logger.getLogger(Processor.class);
-
-    public static final int NO_STATISTICS = -1;
-
-    public static final int NO_TRACES = -1;
-
-    public static final int WATCH_LIMITED = -1;
-
-    public static final int WATCH_ALLOWED = 1;
 
     private static final String CTX_ARG = "--context="; //$NON-NLS-1$
 
@@ -63,20 +55,15 @@ public class Processor {
 
     private static final String TRACE_PORT_ARG = "--trace_port="; //$NON-NLS-1$
 
-    /** Process to be run. */
-    private IProcess process;
-
-    private static IProcessor processor;
+    private IContext context;
 
     /**
      * Construct a new Processor.
      * 
      * @param process Process to be run.
      */
-    public Processor(IProcess process) {
+    public Processor() {
         super();
-
-        this.process = process;
     }
 
     /**
@@ -91,19 +78,20 @@ public class Processor {
      */
     // public Process run(final IContext context, int statisticsPort, int tracePort, int swatchPort) throws
     // ProcessorException { //Old
-    public Process run(final IContext context, int statisticsPort, int tracePort, String watchParam)
-            throws ProcessorException {
-        IProcessor concreteProcessor = ProcessorUtilities.getProcessor(process, context);
-        processor = concreteProcessor;
-        concreteProcessor.setProcessorStates(RUNTIME);
-        concreteProcessor.generateCode(context, statisticsPort != NO_STATISTICS, tracePort != NO_TRACES, true);
+    public Process run(int statisticsPort, int tracePort, String watchParam) throws ProcessorException {
+        if (context == null) {
+            throw new IllegalArgumentException("Context is empty, context must be set before call"); //$NON-NLS-1$
+        }
+
+        setProcessorStates(STATES_RUNTIME);
+        generateCode(context, statisticsPort != NO_STATISTICS, tracePort != NO_TRACES, true);
         if (watchParam == null) {
             // only works with context name and remove context interpereter option
-            return exec(context.getName(), Level.INFO, statisticsPort, tracePort);
+            return exec(Level.INFO, statisticsPort, tracePort);
         }
-        return exec(context.getName(), Level.INFO, statisticsPort, tracePort, watchParam);
+        return exec(Level.INFO, statisticsPort, tracePort, watchParam);
     }
-   
+
     /**
      * Debug the process using a given context.
      * 
@@ -113,44 +101,45 @@ public class Processor {
      * @throws CoreException
      * @throws ProcessorException
      */
-    public ILaunchConfiguration debug(final IContext context) throws ProcessorException {
-        IProcessor concreteProcessor = ProcessorUtilities.getProcessor(process, context);
-        processor = concreteProcessor;
+    public ILaunchConfiguration debug() throws ProcessorException {
+        if (context == null) {
+            throw new IllegalArgumentException("Context is empty, context must be set before call"); //$NON-NLS-1$
+        }
         ILaunchConfiguration config = null;
         try {
-            concreteProcessor.setProcessorStates(Processor.EDIT);
-            concreteProcessor.generateCode(context, false, false, true);
-            config = (ILaunchConfiguration) concreteProcessor.saveLaunchConfiguration();
+            setProcessorStates(STATES_EDIT);
+            generateCode(context, false, false, true);
+            config = (ILaunchConfiguration) saveLaunchConfiguration();
         } catch (CoreException ce) {
             throw new ProcessorException(ce);
         }
         return config;
     }
-    
-    
+
     /**
      * Get the executable commandLine.
+     * 
      * @param contextName
      * @param statOption
      * @param traceOption
      * @param codeOptions
      * @return
      */
-    public static String[] getCommandLine(String contextName, int statOption, int traceOption,
-            String... codeOptions) {
+    public String[] getCommandLine(int statOption, int traceOption, String... codeOptions) {
         String[] cmd = null;
         try {
-            cmd = processor.getCommandLine();
+            cmd = getCommandLine();
 
         } catch (ProcessorException e) {
             ExceptionHandler.process(e);
-        } 
-        cmd = addCommmandLineAttch(cmd, contextName, statOption, traceOption, codeOptions);
+        }
+        cmd = addCommmandLineAttch(cmd, context.getName(), statOption, traceOption, codeOptions);
         return cmd;
     }
-    
+
     /**
      * Add the attchment condition to commmandline .
+     * 
      * @param commandLine
      * @param contextName
      * @param statOption
@@ -158,8 +147,8 @@ public class Processor {
      * @param codeOptions
      * @return
      */
-    public static String[] addCommmandLineAttch(String[] commandLine, String contextName, int statOption, int traceOption,
-            String... codeOptions) {
+    public static String[] addCommmandLineAttch(String[] commandLine, String contextName, int statOption,
+            int traceOption, String... codeOptions) {
         String[] cmd = (String[]) ArrayUtils.addAll(commandLine, codeOptions);
         if (contextName != null) {
             cmd = (String[]) ArrayUtils.add(cmd, CTX_ARG + contextName);
@@ -183,10 +172,9 @@ public class Processor {
      * @return Command Process Launched
      * @throws ProcessorException
      */
-    public static Process exec(String contextName, Level level, int statOption, int traceOption, String... codeOptions)
-            throws ProcessorException {
+    public Process exec(Level level, int statOption, int traceOption, String... codeOptions) throws ProcessorException {
 
-        String[] cmd = getCommandLine(contextName, statOption, traceOption, codeOptions);
+        String[] cmd = getCommandLine(statOption, traceOption, codeOptions);
 
         logCommandLine(cmd, level);
         try {
@@ -234,7 +222,118 @@ public class Processor {
             sb.append(' ').append(s);
         }
         log.log(level, sb.toString());
-        // IStatus status = new Status(IStatus.INFO, RunProcessPlugin.PLUGIN_ID, IStatus.OK, sb.toString(), null);
-        // RunProcessPlugin.getDefault().getLog().log(status);
+    }
+
+    protected static String setStringPath(String path) {
+        return "\"" + path.replace("\\", "/") + "\"";
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.runprocess.IProcessor#addSyntaxCheckableEditor(org.talend.designer.core.ISyntaxCheckableEditor)
+     */
+    public abstract void addSyntaxCheckableEditor(ISyntaxCheckableEditor editor);
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.runprocess.IProcessor#generateCode(org.talend.core.model.process.IContext, boolean,
+     * boolean, boolean)
+     */
+    public abstract void generateCode(IContext context, boolean statistics, boolean trace, boolean perlProperties)
+            throws ProcessorException;
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.runprocess.IProcessor#getCodeContext()
+     */
+    public abstract String getCodeContext();
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.runprocess.IProcessor#getCodePath()
+     */
+    public abstract IPath getCodePath();
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.runprocess.IProcessor#getCodeProject()
+     */
+    public abstract IProject getCodeProject();
+
+    public abstract String[] getCommandLine() throws ProcessorException;
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.runprocess.IProcessor#getContextPath()
+     */
+    public abstract IPath getContextPath();
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.runprocess.IProcessor#getInterpreter()
+     */
+    public abstract String getInterpreter() throws ProcessorException;
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.runprocess.IProcessor#getLineNumber(java.lang.String)
+     */
+    public abstract int getLineNumber(String nodeName);
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.runprocess.IProcessor#getProcessorType()
+     */
+    public abstract String getProcessorType();
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.runprocess.IProcessor#getTypeName()
+     */
+    public abstract String getTypeName();
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.runprocess.IProcessor#initPaths(org.talend.core.model.process.IContext)
+     */
+    public abstract void initPaths(IContext context) throws ProcessorException;
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.runprocess.IProcessor#saveLaunchConfiguration()
+     */
+    public abstract Object saveLaunchConfiguration() throws CoreException;
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.runprocess.IProcessor#setProcessorStates(java.lang.String)
+     */
+    public abstract void setProcessorStates(int states);
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.designer.runprocess.IProcessor#setContext(org.talend.core.model.process.IContext)
+     */
+    public void setContext(IContext context) {
+        try {
+            initPaths(context);
+        } catch (ProcessorException pe) {
+            MessageBoxExceptionHandler.process(pe);
+        }
+        this.context = context;
     }
 }

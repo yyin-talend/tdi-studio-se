@@ -44,13 +44,16 @@ import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataColumn;
 import org.talend.core.model.metadata.MetadataTable;
+import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IProcess;
 import org.talend.core.model.utils.TalendTextUtils;
 import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.core.utils.XmlArray;
+import org.talend.designer.runprocess.IProcessor;
 import org.talend.designer.runprocess.ProcessStreamTrashReader;
 import org.talend.designer.runprocess.Processor;
 import org.talend.designer.runprocess.ProcessorException;
+import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.designer.runprocess.i18n.Messages;
 import org.talend.repository.preview.IProcessDescription;
 import org.xml.sax.SAXException;
@@ -129,27 +132,30 @@ public class ShadowProcess<T extends IProcessDescription> {
             ps = new FileinToXmlProcess<FileInputPositionalNode>(inPositionalNode, outNode);
             break;
         case FILE_CSV:
-            FileInputCSVNode inCSVNode = new FileInputCSVNode(PathUtils.getPortablePath(inPath.toOSString()), description //$NON-NLS-1$ //$NON-NLS-2$
-                    .getRowSeparator(), description.getFieldSeparator(), description.getLimitRows(), description
-                    .getHeaderRow(), description.getFooterRow(), description.getEscapeCharacter(), description
-                    .getTextEnclosure(), description.getRemoveEmptyRowsToSkip(), description.getEncoding());
+            FileInputCSVNode inCSVNode = new FileInputCSVNode(PathUtils.getPortablePath(inPath.toOSString()),
+                    description //$NON-NLS-1$ //$NON-NLS-2$
+                            .getRowSeparator(), description.getFieldSeparator(), description.getLimitRows(),
+                    description.getHeaderRow(), description.getFooterRow(), description.getEscapeCharacter(),
+                    description.getTextEnclosure(), description.getRemoveEmptyRowsToSkip(), description.getEncoding());
             ps = new FileinToXmlProcess<FileInputCSVNode>(inCSVNode, outNode);
             break;
         case FILE_REGEXP:
-            FileInputRegExpNode inRegExpNode = new FileInputRegExpNode(PathUtils.getPortablePath(inPath.toOSString()), description //$NON-NLS-1$ //$NON-NLS-2$
-                    .getRowSeparator(), description.getPattern(), description.getLimitRows(), description
-                    .getHeaderRow(), description.getFooterRow(), description.getRemoveEmptyRowsToSkip(), description
-                    .getEncoding());
+            FileInputRegExpNode inRegExpNode = new FileInputRegExpNode(PathUtils.getPortablePath(inPath.toOSString()),
+                    description //$NON-NLS-1$ //$NON-NLS-2$
+                            .getRowSeparator(), description.getPattern(), description.getLimitRows(), description
+                            .getHeaderRow(), description.getFooterRow(), description.getRemoveEmptyRowsToSkip(),
+                    description.getEncoding());
             ps = new FileinToXmlProcess<FileInputRegExpNode>(inRegExpNode, outNode);
             break;
         case FILE_XML:
-            FileInputXmlNode inXmlNode = new FileInputXmlNode(PathUtils.getPortablePath(inPath.toOSString()), description.getLoopQuery(), //$NON-NLS-1$ //$NON-NLS-2$
+            FileInputXmlNode inXmlNode = new FileInputXmlNode(PathUtils.getPortablePath(inPath.toOSString()),
+                    description.getLoopQuery(), //$NON-NLS-1$ //$NON-NLS-2$
                     description.getMapping(), description.getLoopLimit(), description.getEncoding());
             ps = new FileinToXmlProcess<FileInputXmlNode>(inXmlNode, outNode);
             break;
         case FILE_LDIF:
-            FileInputLdifNode inLdifNode = new FileInputLdifNode(PathUtils.getPortablePath(inPath.toOSString()), description.getSchema(),
-                    description.getEncoding()); //$NON-NLS-1$ //$NON-NLS-2$
+            FileInputLdifNode inLdifNode = new FileInputLdifNode(PathUtils.getPortablePath(inPath.toOSString()),
+                    description.getSchema(), description.getEncoding()); //$NON-NLS-1$ //$NON-NLS-2$
             ps = new FileinToXmlProcess<FileInputLdifNode>(inLdifNode, outNode);
             break;
         default:
@@ -172,7 +178,7 @@ public class ShadowProcess<T extends IProcessDescription> {
 
     public XmlArray run() throws ProcessorException {
         IProcess talendProcess = buildProcess();
-        Processor processor = new Processor(talendProcess);
+        IProcessor processor = ProcessorUtilities.getProcessor(talendProcess);
         try {
             // Delete previous Perl generated file
             File previousFile = outPath.toFile();
@@ -183,8 +189,9 @@ public class ShadowProcess<T extends IProcessDescription> {
             // Process ps = processor.run(process.getContextManager().getDefaultContext(), Processor.NO_STATISTICS,
             // Processor.NO_TRACES,Processor.WATCH_ALLOWED);//Old
 
-            process = processor.run(talendProcess.getContextManager().getDefaultContext(), Processor.NO_STATISTICS,
-                    Processor.NO_TRACES, null);
+            IContext context = talendProcess.getContextManager().getDefaultContext();
+            processor.setContext(context);
+            process = processor.run(Processor.NO_STATISTICS, Processor.NO_TRACES, null);
             ProcessStreamTrashReader.readAndForget(process);
 
             if (!outPath.toFile().exists()) {

@@ -24,12 +24,4 @@ Require-Bundle: org.junit,
  org.eclipse.jdt.debug.ui,
  org.eclipse.jdt.launching
 Eclipse-LazyStart: true
-Export-Package: org.talend.designer.runprocess,
- org.talend.designer.runprocess.data,
- org.talend.designer.runprocess.java,
- org.talend.designer.runprocess.language,
- org.talend.designer.runprocess.language.perl,
- org.talend.designer.runprocess.perl,
- org.talend.designer.runprocess.shadow,
- org.talend.designer.runprocess.ui,
- org.talend.designer.runprocess.ui.views
+Export-Package: org.talend.designer.runprocess

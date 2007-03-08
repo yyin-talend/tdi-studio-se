@@ -33,6 +33,7 @@ import org.talend.commons.utils.data.container.RootContainer;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
+import org.talend.core.language.LanguageManager;
 import org.talend.core.model.context.JobContextManager;
 import org.talend.core.model.general.Project;
 import org.talend.core.model.process.IContext;
@@ -41,8 +42,9 @@ import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
+import org.talend.designer.runprocess.IRunProcessService;
 import org.talend.designer.runprocess.ProcessorException;
-import org.talend.designer.runprocess.perl.PerlUtils;
+import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.ProxyRepositoryFactory;
 import org.talend.scheduler.SchedulerPlugin;
@@ -74,8 +76,7 @@ public class TalendJobManager {
     public TalendJobManager() {
 
         try {
-            repositoryContext = (RepositoryContext)
-                CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY);
+            repositoryContext = (RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY);
 
             factory = ProxyRepositoryFactory.getInstance();
 
@@ -193,8 +194,8 @@ public class TalendJobManager {
                         if (o instanceof ContextType) {
                             ContextType context = (ContextType) o;
                             if (contextNameList.contains(context.getName())) {
-                              continue;
-                          }
+                                continue;
+                            }
                             contextNameList.add(context.getName());
                         }
                     }
@@ -233,8 +234,8 @@ public class TalendJobManager {
                             if (o instanceof ContextType) {
                                 ContextType context = (ContextType) o;
                                 if (contextNameList.contains(context.getName())) {
-                                  continue;
-                              }
+                                    continue;
+                                }
                                 contextNameList.add(context.getName());
                             }
                         }
@@ -258,45 +259,52 @@ public class TalendJobManager {
      * @param context
      * @return
      * @throws ProcessorException
+     * @throws ProcessorException
      */
     public String getCommandByTalendJob(String project, String jobName, String context) throws ProcessorException {
         project = project.replace("/", ""); //$NON-NLS-1$ //$NON-NLS-2$
         jobName = jobName.replace("/", ""); //$NON-NLS-1$ //$NON-NLS-2$
         context = context.replace("/", ""); //$NON-NLS-1$ //$NON-NLS-2$
-        String contextArg = Messages.getString("TalendJobManager.conetextArg"); //$NON-NLS-1$
+        // String contextArg = Messages.getString("TalendJobManager.conetextArg"); //$NON-NLS-1$
+        //
+        // String projectSeparator = ".job"; //$NON-NLS-1$
+        //
+        // String wordSeparator = "_"; //$NON-NLS-1$
+        //
+        // String perlExt = ".pl"; //$NON-NLS-1$
+        // IPreferenceStore prefStore = CorePlugin.getDefault().getPreferenceStore();
+        // String perlInterpreter = prefStore.getString(ITalendCorePrefConstants.PERL_INTERPRETER);
+        // if (perlInterpreter == null || perlInterpreter.length() == 0) {
+        // // throw new ProcessorException(Messages.getString("Processor.configurePerl")); //$NON-NLS-1$
+        // }
 
-        String projectSeparator = ".job"; //$NON-NLS-1$
+        // String perlLib = null;
+        // String exePath = null;
+        // IRunProcessService service = SchedulerPlugin.getDefault().getRunProcessService();
+        // try {
+        //            
+        // perlLib = PerlUtils.getPerlModulePath().toOSString();
+        // IProject pro = service.getProject(LanguageManager.getCurrentLanguage());
+        // IPath path = pro.getLocation();
+        //
+        // exePath = path.toOSString();
+        // } catch (Exception ee1) {
+        // SchedulerPlugin.log(ee1);
+        // // throw new ProcessorException(Messages.getString("Processor.perlModuleNotFound")); //$NON-NLS-1$
+        // }
+        //
+        // String perlLibOption = perlLib != null && perlLib.length() > 0 ? "-I" + perlLib : ""; //$NON-NLS-1$
+        // //$NON-NLS-2$
+        //
+        // String perlCode = project + projectSeparator + wordSeparator + jobName + perlExt;
+        //
+        // String contextCode = project + projectSeparator + wordSeparator + jobName + wordSeparator + context +
+        // perlExt;
+        //
+        // String[] cmd = new String[] { perlInterpreter, perlLibOption, exePath + "/" + perlCode, //$NON-NLS-1$
+        // contextArg + exePath + "/" + contextCode }; //$NON-NLS-1$
 
-        String wordSeparator = "_"; //$NON-NLS-1$
-
-        String perlExt = ".pl"; //$NON-NLS-1$
-        IPreferenceStore prefStore = CorePlugin.getDefault().getPreferenceStore();
-        String perlInterpreter = prefStore.getString(ITalendCorePrefConstants.PERL_INTERPRETER);
-        if (perlInterpreter == null || perlInterpreter.length() == 0) {
-            // throw new ProcessorException(Messages.getString("Processor.configurePerl")); //$NON-NLS-1$
-        }
-
-        String perlLib = null;
-        String exePath = null;
-        try {
-            perlLib = PerlUtils.getPerlModulePath().toOSString();
-            IProject pro = PerlUtils.getProject();
-            IPath path = pro.getLocation();
-
-            exePath = path.toOSString();
-        } catch (Exception ee1) {
-            SchedulerPlugin.log(ee1);
-            // throw new ProcessorException(Messages.getString("Processor.perlModuleNotFound")); //$NON-NLS-1$
-        }
-
-        String perlLibOption = perlLib != null && perlLib.length() > 0 ? "-I" + perlLib : ""; //$NON-NLS-1$ //$NON-NLS-2$
-
-        String perlCode = project + projectSeparator + wordSeparator + jobName + perlExt;
-
-        String contextCode = project + projectSeparator + wordSeparator + jobName + wordSeparator + context + perlExt;
-
-        String[] cmd = new String[] { perlInterpreter, perlLibOption, exePath + "/" + perlCode, //$NON-NLS-1$
-                contextArg + exePath + "/" + contextCode }; //$NON-NLS-1$
+        String[] cmd = ProcessorUtilities.getCommandLine(jobName, context, new String[] {});
 
         StringBuffer sb = new StringBuffer();
         sb.append(""); //$NON-NLS-1$

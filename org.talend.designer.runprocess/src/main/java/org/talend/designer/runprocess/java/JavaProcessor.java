@@ -76,6 +76,7 @@ import org.talend.designer.codegen.ICodeGeneratorService;
 import org.talend.designer.core.ISyntaxCheckableEditor;
 import org.talend.designer.runprocess.IJavaProcessorStates;
 import org.talend.designer.runprocess.IProcessor;
+import org.talend.designer.runprocess.Processor;
 import org.talend.designer.runprocess.ProcessorException;
 import org.talend.designer.runprocess.RunProcessPlugin;
 import org.talend.designer.runprocess.i18n.Messages;
@@ -94,7 +95,7 @@ import org.talend.designer.runprocess.perl.PerlUtils;
  * $Id: JavaProcessor.java 2007-1-22 上�?�10:53:24 yzhang $
  * 
  */
-public class JavaProcessor implements IProcessor {
+public class JavaProcessor extends Processor {
 
     /** Process to be turned in JAVA code. */
     private IProcess process;
@@ -112,10 +113,10 @@ public class JavaProcessor implements IProcessor {
     private IPath srcContextPath;
 
     /** The complied code path. */
-    private IPath compliedCodePath;
+    private IPath compiledCodePath;
 
     /** The complied context file path. */
-    private IPath compliedContextPath;
+    private IPath compiledContextPath;
 
     /** Tells if filename is based on id or label of the process. */
     private boolean filenameFromLabel;
@@ -148,6 +149,7 @@ public class JavaProcessor implements IProcessor {
 
         this.process = process;
         this.filenameFromLabel = filenameFromLabel;
+        setProcessorStates(STATES_RUNTIME);
     }
 
     /*
@@ -179,8 +181,8 @@ public class JavaProcessor implements IProcessor {
 
             this.srcCodePath = jobPackage.getPath().append(fileName + JavaUtils.JAVA_EXTENSION); //$NON-NLS-1$
             this.srcCodePath = this.srcCodePath.removeFirstSegments(1);
-            this.compliedCodePath = this.srcCodePath.removeLastSegments(1).append(fileName);
-            this.compliedCodePath = new Path(JavaUtils.JAVA_CLASSES_DIRECTORY).append(this.compliedCodePath
+            this.compiledCodePath = this.srcCodePath.removeLastSegments(1).append(fileName);
+            this.compiledCodePath = new Path(JavaUtils.JAVA_CLASSES_DIRECTORY).append(this.compiledCodePath
                     .removeFirstSegments(1)); //$NON-NLS-1$
 
             this.typeName = jobPackage.getPath().append(fileName).removeFirstSegments(2).toString().replace('/', '.');
@@ -188,8 +190,8 @@ public class JavaProcessor implements IProcessor {
             this.srcContextPath = contextPackage.getPath().append(
                     escapeFilename(context.getName()) + JavaUtils.JAVA_CONTEXT_EXTENSION); //$NON-NLS-1$
             this.srcContextPath = this.srcContextPath.removeFirstSegments(1);
-            this.compliedContextPath = this.srcContextPath.removeLastSegments(1).append(fileName);
-            this.compliedContextPath = new Path(JavaUtils.JAVA_CLASSES_DIRECTORY).append(this.compliedContextPath
+            this.compiledContextPath = this.srcContextPath.removeLastSegments(1).append(fileName);
+            this.compiledContextPath = new Path(JavaUtils.JAVA_CLASSES_DIRECTORY).append(this.compiledContextPath
                     .removeFirstSegments(1)); //$NON-NLS-1$
 
         } catch (CoreException e) {
@@ -257,21 +259,11 @@ public class JavaProcessor implements IProcessor {
                 contextFile.setContents(contextStream, true, false, null);
             }
             syntaxCheck();
-            
+
             javaProject.getResource().getWorkspace().build(IncrementalProjectBuilder.AUTO_BUILD, null);
 
             List<INode> breakpointNodes = CorePlugin.getContext().getBreakpointNodes(process);
             if (!breakpointNodes.isEmpty()) {
-                // String filePath =
-                // this.project.getFullPath().append(this.srcCodePath.toOSString()).toOSString();
-                // filePath = new
-                // Path("D:\\dev\\workspace\\runtime-New_configuration").append(filePath).toOSString();
-                // fullClassName = new
-                // Path("D:\\dev\\workspace\\runtime-New_configuration").append(fullClassName).toOSString();
-                // String typeName =
-                // javaProject.getProject().getFullPath().append(
-                // this.compliedCodePath.toOSString() + ".class").toOSString();
-
                 String typeName = getTypeName();
                 String[] nodeNames = new String[breakpointNodes.size()];
                 int pos = 0;
@@ -326,7 +318,6 @@ public class JavaProcessor implements IProcessor {
      * @see org.talend.designer.runprocess.IProcessor#getCodePath()
      */
     public IPath getCodePath() {
-        // return this.codePath; old
         return this.states.getCodePath();
     }
 
@@ -336,7 +327,6 @@ public class JavaProcessor implements IProcessor {
      * @see org.talend.designer.runprocess.IProcessor#getContextPath()
      */
     public IPath getContextPath() {
-        // return this.contextPath; old
         return this.states.getContextPath();
     }
 
@@ -641,17 +631,17 @@ public class JavaProcessor implements IProcessor {
      * 
      * @return the compliedCodePath
      */
-    public IPath getCompliedCodePath() {
-        return this.compliedCodePath;
+    public IPath getCompiledCodePath() {
+        return this.compiledCodePath;
     }
 
     /**
-     * Getter for compliedContextPath.
+     * Getter for compiledContextPath.
      * 
-     * @return the compliedContextPath
+     * @return the compiledContextPath
      */
-    public IPath getCompliedContextPath() {
-        return this.compliedContextPath;
+    public IPath getCompiledContextPath() {
+        return this.compiledContextPath;
     }
 
     /**
@@ -678,11 +668,10 @@ public class JavaProcessor implements IProcessor {
         // init java interpreter
         String command;
         try {
-            command = getInterpreter();
+            command = setStringPath(getInterpreter());
         } catch (ProcessorException e1) {
             command = "java"; //$NON-NLS-1$
         }
-        
 
         // init lib path
         IFolder libFolder = javaProject.getProject().getFolder(JavaUtils.JAVA_LIB_DIRECTORY); //$NON-NLS-1$
@@ -709,7 +698,7 @@ public class JavaProcessor implements IProcessor {
         IPath classPath = getCodePath().removeFirstSegments(1);
         String className = classPath.toString().replace('/', '.');
 
-        return new String[] { command, "-Xms256M", "-Xmx1024M","-cp", libPath + projectPath, className }; //$NON-NLS-1$
+        return new String[] { command, "-Xms256M", "-Xmx1024M", "-cp", setStringPath(libPath + projectPath), className }; //$NON-NLS-1$
     }
 
     /*
@@ -726,10 +715,10 @@ public class JavaProcessor implements IProcessor {
      * 
      * @see org.talend.designer.runprocess.IProcessor#getProcessorStates()
      */
-    public void setProcessorStates(String states) {
-        if (states.equals("runtime")) { //$NON-NLS-1$
+    public void setProcessorStates(int states) {
+        if (states == STATES_RUNTIME) {
             new JavaProcessorRuntimeStates(this);
-        } else if (states.equals("edit")) { //$NON-NLS-1$
+        } else if (states == STATES_EDIT) {
             new JavaProcessorEditStates(this);
         }
 

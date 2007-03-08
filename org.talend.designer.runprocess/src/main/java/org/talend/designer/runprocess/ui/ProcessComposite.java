@@ -54,8 +54,10 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.progress.IProgressService;
 import org.talend.core.model.process.INode;
 import org.talend.core.model.process.IProcess;
+import org.talend.designer.runprocess.IProcessor;
 import org.talend.designer.runprocess.Processor;
 import org.talend.designer.runprocess.ProcessorException;
+import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.designer.runprocess.RunProcessPlugin;
 import org.talend.designer.runprocess.data.PerformanceData;
 import org.talend.designer.runprocess.data.TraceData;
@@ -67,6 +69,7 @@ import org.talend.designer.runprocess.ui.actions.ClearTraceAction;
  * Composite showing a process. Detailled comment <br/>
  * 
  * $Id$
+ * 
  * @deprecated
  */
 public class ProcessComposite extends Composite {
@@ -74,9 +77,9 @@ public class ProcessComposite extends Composite {
     private static final int STRING_LENGTH = 256;
 
     private static final int PERF_PORT = 3334;
-    
+
     private static final int TRACE_PORT = 4334;
-    
+
     private static final int H_WEIGHT = 5;
 
     private static final int MINIMUM_HEIGHT = 65;
@@ -90,7 +93,7 @@ public class ProcessComposite extends Composite {
 
     /** Performance monitoring activated. */
     private boolean monitorPerf;
-    
+
     /** Trace monitoring activated. */
     private boolean monitorTrace;
 
@@ -99,13 +102,13 @@ public class ProcessComposite extends Composite {
 
     /** Performance button. */
     private Button perfBtn;
-    
+
     /** Trace button. */
     private Button traceBtn;
 
     /** Clear trace & performance button. */
     private Button clearTracePerfBtn;
-    
+
     /** Exec button. */
     private Button execBtn;
 
@@ -123,7 +126,7 @@ public class ProcessComposite extends Composite {
 
     /** Monitor of the running process. */
     private PerformanceMonitor perfMonitor;
-    
+
     /** Monitor of the running process. */
     private TraceMonitor traceMonitor;
 
@@ -174,7 +177,7 @@ public class ProcessComposite extends Composite {
         Composite execHeader = new Composite(execContent, SWT.NONE);
         execHeader.setLayout(layout);
         execHeader.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-        
+
         Composite statisticsComposite = new Composite(execHeader, SWT.NONE);
         layout = new GridLayout(2, false);
         layout.marginWidth = 0;
@@ -186,7 +189,7 @@ public class ProcessComposite extends Composite {
         layout.marginWidth = 0;
         statisticsButtonComposite.setLayout(layout);
         statisticsButtonComposite.setLayoutData(new GridData(GridData.FILL_VERTICAL));
-        
+
         perfBtn = new Button(statisticsButtonComposite, SWT.CHECK);
         perfBtn.setText(Messages.getString("ProcessComposite.stat")); //$NON-NLS-1$
         perfBtn.setToolTipText(Messages.getString("ProcessComposite.statHint")); //$NON-NLS-1$
@@ -194,7 +197,7 @@ public class ProcessComposite extends Composite {
                 "icons/process_stat.gif").createImage()); //$NON-NLS-1$
         // perfBtn.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_CENTER | GridData.FILL_HORIZONTAL));
         perfBtn.setEnabled(false);
-        
+
         traceBtn = new Button(statisticsButtonComposite, SWT.CHECK);
         traceBtn.setText(Messages.getString("ProcessComposite.trace")); //$NON-NLS-1$
         traceBtn.setImage(RunProcessPlugin.imageDescriptorFromPlugin(RunProcessPlugin.PLUGIN_ID,
@@ -202,14 +205,13 @@ public class ProcessComposite extends Composite {
         // traceBtn.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_CENTER | GridData.FILL_HORIZONTAL));
         traceBtn.setEnabled(false);
 
-        
         clearTracePerfBtn = new Button(statisticsComposite, SWT.CHECK);
         clearTracePerfBtn.setText(Messages.getString("ProcessComposite.clear")); //$NON-NLS-1$
         clearTracePerfBtn.setToolTipText(Messages.getString("ProcessComposite.clearHint")); //$NON-NLS-1$
         clearTracePerfBtn.setImage(RunProcessPlugin.imageDescriptorFromPlugin(RunProcessPlugin.PLUGIN_ID,
                 "icons/process_stat_clear.gif").createImage()); //$NON-NLS-1$
         clearTracePerfBtn.setEnabled(false);
-        
+
         Composite buttonBar = new Composite(execHeader, SWT.NONE);
         layout = new GridLayout(2, true);
         layout.marginWidth = 0;
@@ -284,7 +286,7 @@ public class ProcessComposite extends Composite {
                 monitorPerf = perfBtn.getSelection();
             }
         });
-        
+
         traceBtn.addSelectionListener(new SelectionAdapter() {
 
             @Override
@@ -364,7 +366,7 @@ public class ProcessComposite extends Composite {
 
         if (contextComposite.promptConfirmLauch()) {
 
-            final Processor processor = new Processor(process);
+            final IProcessor processor = ProcessorUtilities.getProcessor(process);
             IProgressService progressService = PlatformUI.getWorkbench().getProgressService();
             try {
                 progressService.runInUI(PlatformUI.getWorkbench().getProgressService(), new IRunnableWithProgress() {
@@ -384,8 +386,9 @@ public class ProcessComposite extends Composite {
                                 }
                                 int port = monitorPerf ? PERF_PORT : Processor.NO_STATISTICS;
                                 int portTrace = monitorTrace ? TRACE_PORT : Processor.NO_TRACES;
-//                                int watchPort = watchAllowed? SWATCH_PORT : Processor.WATCH_LIMITED;//Old
-                                ps = processor.run(contextComposite.getSelectedContext(), port, portTrace,null);
+                                // int watchPort = watchAllowed? SWATCH_PORT : Processor.WATCH_LIMITED;//Old
+                                processor.setContext(contextComposite.getSelectedContext());
+                                ps = processor.run(port, portTrace, null);
                                 psMonitor = new ProcessMonitor(ps);
                                 new Thread(psMonitor).start();
 
@@ -703,7 +706,7 @@ public class ProcessComposite extends Composite {
 
         private INode findNode(final String nodeId) {
             INode node = null;
-            for (Iterator< ? extends INode> i = process.getGraphicalNodes().iterator(); node == null && i.hasNext();) {
+            for (Iterator<? extends INode> i = process.getGraphicalNodes().iterator(); node == null && i.hasNext();) {
                 INode psNode = i.next();
                 if (nodeId.equals(psNode.getUniqueName())) {
                     node = psNode;
@@ -712,7 +715,7 @@ public class ProcessComposite extends Composite {
             return node;
         }
     }
-    
+
     /**
      * Trace monitor. <br/>
      * 
@@ -799,7 +802,7 @@ public class ProcessComposite extends Composite {
 
         private INode findNode(final String nodeId) {
             INode node = null;
-            for (Iterator< ? extends INode> i = process.getGraphicalNodes().iterator(); node == null && i.hasNext();) {
+            for (Iterator<? extends INode> i = process.getGraphicalNodes().iterator(); node == null && i.hasNext();) {
                 INode psNode = i.next();
                 if (nodeId.equals(psNode.getUniqueName())) {
                     node = psNode;

@@ -27,6 +27,9 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 import org.talend.commons.exception.ExceptionHandler;
+import org.talend.core.GlobalServiceRegister;
+import org.talend.core.IService;
+import org.talend.designer.runprocess.IRunProcessService;
 import org.talend.scheduler.i18n.Messages;
 
 /**
@@ -92,5 +95,15 @@ public class SchedulerPlugin extends AbstractUIPlugin {
      */
     public static void log(Exception e) {
         ExceptionHandler.process(e);
+    }
+    
+    /**
+     * DOC get a implement of RunProcessService.
+     * 
+     * @return a implement of RunProcessService
+     */
+    public IRunProcessService getRunProcessService() {
+        IService service = GlobalServiceRegister.getDefault().getService(IRunProcessService.class);
+        return (IRunProcessService) service;
     }
 }

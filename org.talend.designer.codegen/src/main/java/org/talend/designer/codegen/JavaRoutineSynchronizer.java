@@ -38,6 +38,7 @@ import org.talend.commons.utils.generation.JavaUtils;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
+import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.general.Project;
 import org.talend.core.model.properties.RoutineItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
@@ -107,7 +108,7 @@ public class JavaRoutineSynchronizer implements IRoutineSynchronizer {
     public IFile syncRoutine(RoutineItem routineItem) throws SystemException {
         try {
             IRunProcessService service = CodeGeneratorActivator.getDefault().getRunProcessService();
-            IProject javaProject = service.getJavaProject();
+            IProject javaProject = service.getProject(ECodeLanguage.JAVA);
             Project project = ((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY))
                     .getProject();
             initRoutineFolder(javaProject, project);
@@ -166,7 +167,7 @@ public class JavaRoutineSynchronizer implements IRoutineSynchronizer {
     public IFile syncModule(File[] modules) throws SystemException {
         try {
             IRunProcessService service = CodeGeneratorActivator.getDefault().getRunProcessService();
-            IProject javaProject = service.getJavaProject();
+            IProject javaProject = service.getProject(ECodeLanguage.JAVA);
             Project project = ((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY))
                     .getProject();
             initModuleFolder(javaProject, project);

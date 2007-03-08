@@ -43,8 +43,10 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.progress.IProgressService;
 import org.talend.core.model.process.IContext;
 import org.talend.core.model.process.IProcess;
+import org.talend.designer.runprocess.IProcessor;
 import org.talend.designer.runprocess.Processor;
 import org.talend.designer.runprocess.ProcessorException;
+import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.designer.runprocess.RunProcessPlugin;
 import org.talend.designer.runprocess.i18n.Messages;
 
@@ -121,10 +123,10 @@ public class ProcessDebugDialog extends Dialog {
             IRunnableWithProgress worker = new IRunnableWithProgress() {
 
                 public void run(IProgressMonitor monitor) {
-                    Processor processor = new Processor(process);
+                    IProcessor processor = ProcessorUtilities.getProcessor(process, context);
                     monitor.beginTask("Launching debugger", IProgressMonitor.UNKNOWN); //$NON-NLS-1$
                     try {
-                        ILaunchConfiguration config = processor.debug(context);
+                        ILaunchConfiguration config = processor.debug();
                         if (config != null) {
                             // PlatformUI.getWorkbench().getActiveWorkbenchWindow().addPerspectiveListener(new
                             // DebugInNewWindowListener());

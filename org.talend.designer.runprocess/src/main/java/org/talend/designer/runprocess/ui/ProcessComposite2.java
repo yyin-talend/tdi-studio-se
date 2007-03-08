@@ -59,9 +59,11 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.progress.IProgressService;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.model.process.IContext;
+import org.talend.designer.runprocess.IProcessor;
 import org.talend.designer.runprocess.ProcessMessage;
 import org.talend.designer.runprocess.Processor;
 import org.talend.designer.runprocess.ProcessorException;
+import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.designer.runprocess.RunProcessContext;
 import org.talend.designer.runprocess.RunProcessPlugin;
 import org.talend.designer.runprocess.ProcessMessage.MsgType;
@@ -490,10 +492,10 @@ public class ProcessComposite2 extends Composite {
             IRunnableWithProgress worker = new IRunnableWithProgress() {
 
                 public void run(IProgressMonitor monitor) {
-                    Processor processor = new Processor(processContext.getProcess());
+                    IProcessor processor = ProcessorUtilities.getProcessor(processContext.getProcess(), context);
                     monitor.beginTask("Launching debugger", IProgressMonitor.UNKNOWN); //$NON-NLS-1$
                     try {
-                        ILaunchConfiguration config = processor.debug(context);
+                        ILaunchConfiguration config = processor.debug();
                         if (config != null) {
                             // PlatformUI.getWorkbench().getActiveWorkbenchWindow().addPerspectiveListener(new
                             // DebugInNewWindowListener());

@@ -48,6 +48,7 @@ import org.talend.commons.exception.PersistenceException;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
+import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.general.Project;
 import org.talend.core.model.properties.ProcessItem;
 import org.talend.core.model.properties.RoutineItem;
@@ -95,14 +96,14 @@ public class JobPerlScriptsManager extends JobScriptsManager {
      * @param needContext
      * @return
      */
-    public List<ExportFileResource> getExportResources(ExportFileResource[] process, Map<ExportChoice, Boolean> exportChoice,
-            String contextName, String launcher) {
+    public List<ExportFileResource> getExportResources(ExportFileResource[] process,
+            Map<ExportChoice, Boolean> exportChoice, String contextName, String launcher) {
         for (int i = 0; i < process.length; i++) {
             ProcessItem processItem = process[i].getProcess();
             generatePerlFiles(exportChoice.get(ExportChoice.needGenerateCode), processItem, contextName);
             List<URL> resources = new ArrayList<URL>();
-            resources.addAll(getLauncher(exportChoice.get(ExportChoice.needLauncher), processItem, escapeSpace(contextName),
-                    escapeSpace(launcher)));
+            resources.addAll(getLauncher(exportChoice.get(ExportChoice.needLauncher), processItem,
+                    escapeSpace(contextName), escapeSpace(launcher)));
             resources.addAll(getSystemRoutine(exportChoice.get(ExportChoice.needSystemRoutine)));
             resources.addAll(getUserRoutine(exportChoice.get(ExportChoice.needUserRoutine)));
             resources.addAll(getModel(exportChoice.get(ExportChoice.needModule)));
@@ -212,7 +213,8 @@ public class JobPerlScriptsManager extends JobScriptsManager {
      * @param cmdSecondary
      * @param tmpFold
      */
-    private void createLauncherFile(ProcessItem process, List<URL> list, String cmdPrimary, String fileName, String tmpFold) {
+    private void createLauncherFile(ProcessItem process, List<URL> list, String cmdPrimary, String fileName,
+            String tmpFold) {
         PrintWriter pw = null;
         try {
 
@@ -270,7 +272,8 @@ public class JobPerlScriptsManager extends JobScriptsManager {
 
         String contextCode = context;
 
-        String[] cmd = new String[] { perlInterpreter, "-I" + COMPONENTS_FOLDER_NAME, perlCode, contextArg + contextCode }; //$NON-NLS-1$
+        String[] cmd = new String[] { perlInterpreter,
+                "-I" + COMPONENTS_FOLDER_NAME, perlCode, contextArg + contextCode }; //$NON-NLS-1$
 
         StringBuffer sb = new StringBuffer();
         sb.append(""); //$NON-NLS-1$
@@ -287,7 +290,8 @@ public class JobPerlScriptsManager extends JobScriptsManager {
      * @return
      */
     public String[] getLauncher() {
-        String perlIntepreter = CorePlugin.getDefault().getPreferenceStore().getString(ITalendCorePrefConstants.PERL_INTERPRETER);
+        String perlIntepreter = CorePlugin.getDefault().getPreferenceStore().getString(
+                ITalendCorePrefConstants.PERL_INTERPRETER);
         String secondaryPerlIntepreter = CorePlugin.getDefault().getPreferenceStore().getString(
                 ITalendCorePrefConstants.PERL_SECONDARY_INTERPRETER);
         String[] launchers = { ALL_PERL_INTERPRETERS, perlIntepreter, secondaryPerlIntepreter };
@@ -346,7 +350,8 @@ public class JobPerlScriptsManager extends JobScriptsManager {
     private IResource[] getAllPerlFiles() {
         if (resouces == null) {
             try {
-                IProject perlProject = RepositoryPlugin.getDefault().getRunProcessService().getPerlProject();
+                IProject perlProject = RepositoryPlugin.getDefault().getRunProcessService().getProject(
+                        ECodeLanguage.PERL);
                 resouces = perlProject.members();
             } catch (Exception e) {
                 ExceptionHandler.process(e);
@@ -362,8 +367,8 @@ public class JobPerlScriptsManager extends JobScriptsManager {
         if (sourceResouces == null) {
             try {
                 List<IResource> sourceFile = new ArrayList<IResource>();
-                Project project = ((RepositoryContext) CorePlugin.getContext().getProperty(Context.REPOSITORY_CONTEXT_KEY))
-                        .getProject();
+                Project project = ((RepositoryContext) CorePlugin.getContext().getProperty(
+                        Context.REPOSITORY_CONTEXT_KEY)).getProject();
                 IProject prj = ResourceModelUtils.getProject(project);
                 IFolder folder = prj.getFolder(ERepositoryObjectType.getFolderName(ERepositoryObjectType.PROCESS));
                 addNodeToResource(folder.members(), sourceFile);
@@ -399,7 +404,8 @@ public class JobPerlScriptsManager extends JobScriptsManager {
     private void getRoutineNames(List list, boolean isBuildin) {
         String projectName = getCurrentProjectName();
         try {
-            List<IRepositoryObject> routines = ProxyRepositoryFactory.getInstance().getAll(ERepositoryObjectType.ROUTINES);
+            List<IRepositoryObject> routines = ProxyRepositoryFactory.getInstance().getAll(
+                    ERepositoryObjectType.ROUTINES);
             for (int i = 0; i < routines.size(); i++) {
                 RoutineItem routine = (RoutineItem) routines.get(i).getProperty().getItem();
                 if (routine.isBuiltIn() == isBuildin) {
@@ -508,8 +514,8 @@ public class JobPerlScriptsManager extends JobScriptsManager {
         return getResourcesURL(resources, list);
     }
 
-    private void getChildrenJobAndContextName(String rootName, List<String> list, ProcessItem process, String projectName,
-            List<ProcessItem> processedJob) {
+    private void getChildrenJobAndContextName(String rootName, List<String> list, ProcessItem process,
+            String projectName, List<ProcessItem> processedJob) {
         if (processedJob.contains(process)) {
             // pretent circle
             return;

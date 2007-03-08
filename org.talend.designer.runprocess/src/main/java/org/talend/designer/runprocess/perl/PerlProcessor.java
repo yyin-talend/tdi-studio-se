@@ -52,7 +52,6 @@ import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.debug.core.model.IBreakpoint;
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.SystemException;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
@@ -66,12 +65,10 @@ import org.talend.core.prefs.ITalendCorePrefConstants;
 import org.talend.designer.codegen.ICodeGenerator;
 import org.talend.designer.codegen.ICodeGeneratorService;
 import org.talend.designer.core.ISyntaxCheckableEditor;
-import org.talend.designer.runprocess.IProcessor;
 import org.talend.designer.runprocess.Processor;
 import org.talend.designer.runprocess.ProcessorException;
 import org.talend.designer.runprocess.RunProcessPlugin;
 import org.talend.designer.runprocess.i18n.Messages;
-import org.talend.designer.runprocess.java.JavaProcessor;
 
 /**
  * DOC chuger class global comment. Detailled comment <br/>
@@ -79,7 +76,7 @@ import org.talend.designer.runprocess.java.JavaProcessor;
  * $Id$
  * 
  */
-public class PerlProcessor implements IProcessor {
+public class PerlProcessor extends Processor {
 
     public static final String PROCESSOR_TYPE = "perlProcessor"; //$NON-NLS-1$
 
@@ -96,8 +93,8 @@ public class PerlProcessor implements IProcessor {
 
     /** Path to generated context code. */
     private IPath contextPath;
-    
-    /** Context used **/
+
+    /** Context used * */
     private IContext context;
 
     /** Tells if filename is based on id or label of the process. */
@@ -241,7 +238,7 @@ public class PerlProcessor implements IProcessor {
         return perlInterpreter;
     }
 
-    private String escapeFilename(final String filename) {
+    private static String escapeFilename(final String filename) {
         return filename != null ? filename.replace(" ", "") : ""; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
 
@@ -429,7 +426,7 @@ public class PerlProcessor implements IProcessor {
      * 
      * @see org.talend.designer.runprocess.IProcessor#setProcessorStates(java.lang.String)
      */
-    public void setProcessorStates(String states) {
+    public void setProcessorStates(int states) {
         // do nothings for perl right now.
 
     }
@@ -448,9 +445,9 @@ public class PerlProcessor implements IProcessor {
             String perlInterpreterLibOption, String perlModuleDirectoryOption, int statOption, int traceOption,
             String... codeOptions) throws ProcessorException {
 
-//        String[] cmd = Processor.getCommandLine(absCodePath, contextName, perlInterpreterLibOption,
-//                perlModuleDirectoryOption, statOption, traceOption, codeOptions);
-        
+        // String[] cmd = Processor.getCommandLine(absCodePath, contextName, perlInterpreterLibOption,
+        // perlModuleDirectoryOption, statOption, traceOption, codeOptions);
+
         String[] cmd = getCommandLineByCondition(absCodePath, perlInterpreterLibOption, perlModuleDirectoryOption);
         cmd = Processor.addCommmandLineAttch(cmd, contextName, statOption, traceOption, codeOptions);
         Processor.logCommandLine(cmd, level);
@@ -472,16 +469,17 @@ public class PerlProcessor implements IProcessor {
             throw new ProcessorException(Messages.getString("Processor.execFailed"), ie); //$NON-NLS-1$
         }
     }
-    
+
     /**
      * get executable commandline by context conditon.
+     * 
      * @param absCodePath
      * @param perlInterpreterLibOption
      * @param perlModuleDirectoryOption
      * @return
      * @throws ProcessorException
      */
-    public static String[] getCommandLineByCondition(IPath absCodePath, String perlInterpreterLibOption,
+    private static String[] getCommandLineByCondition(IPath absCodePath, String perlInterpreterLibOption,
             String perlModuleDirectoryOption) throws ProcessorException {
         assert (absCodePath != null);
         IPreferenceStore prefStore = CorePlugin.getDefault().getPreferenceStore();
@@ -489,7 +487,7 @@ public class PerlProcessor implements IProcessor {
         if (perlInterpreter == null || perlInterpreter.length() == 0) {
             throw new ProcessorException(Messages.getString("Processor.configurePerl")); //$NON-NLS-1$
         }
-        String[] cmd = new String[] { perlInterpreter };
+        String[] cmd = new String[] { setStringPath(perlInterpreter) };
         if (perlInterpreterLibOption != null && perlInterpreterLibOption.length() > 0) {
             cmd = (String[]) ArrayUtils.add(cmd, perlInterpreterLibOption);
         }
@@ -497,7 +495,7 @@ public class PerlProcessor implements IProcessor {
             cmd = (String[]) ArrayUtils.add(cmd, perlModuleDirectoryOption);
         }
         if (absCodePath != null) {
-            cmd = (String[]) ArrayUtils.add(cmd, absCodePath.toOSString());
+            cmd = (String[]) ArrayUtils.add(cmd, setStringPath(absCodePath.toOSString()));
         }
         return cmd;
     }
@@ -546,9 +544,9 @@ public class PerlProcessor implements IProcessor {
         } catch (CoreException e) {
             throw new ProcessorException(Messages.getString("Processor.perlModuleNotFound")); //$NON-NLS-1$
         }
-        perlInterpreterLibOption = perlLib != null && perlLib.length() > 0 ? "-I" + perlLib : ""; //$NON-NLS-1$ //$NON-NLS-2$
+        perlInterpreterLibOption = perlLib != null && perlLib.length() > 0 ? "-I" + setStringPath(perlLib) : ""; //$NON-NLS-1$ //$NON-NLS-2$
         try {
-            perlModuleDirectoryOption = "-I" + PerlUtils.getPerlModuleDirectoryPath().toOSString(); //$NON-NLS-1$
+            perlModuleDirectoryOption = "-I" + setStringPath(PerlUtils.getPerlModuleDirectoryPath().toOSString()); //$NON-NLS-1$
         } catch (CoreException e) {
             throw new ProcessorException(Messages.getString("Processor.perlModuleDirectoryNotFound")); //$NON-NLS-1$
         }

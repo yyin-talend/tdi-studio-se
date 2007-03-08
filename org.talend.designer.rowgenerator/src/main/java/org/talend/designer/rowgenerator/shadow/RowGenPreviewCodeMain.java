@@ -51,7 +51,7 @@ import org.talend.designer.rowgenerator.managers.UIManager;
 import org.talend.designer.rowgenerator.ui.editor.MetadataColumnExt;
 import org.talend.designer.runprocess.IProcessor;
 import org.talend.designer.runprocess.IRunProcessService;
-import org.talend.designer.runprocess.Processor;
+import org.talend.designer.runprocess.ProcessorUtilities;
 
 /**
  * qzhang class global comment. Detailled comment <br/>
@@ -145,10 +145,10 @@ public class RowGenPreviewCodeMain {
      */
     protected Process runPreviewCode() {
         getProcess();
-        Processor processor = new Processor(proc);
         IContext context2 = new org.talend.core.model.context.JobContext(PREVIEW);
+        IProcessor processor = ProcessorUtilities.getProcessor(proc, context2);
         try {
-            return processor.run(context2, Processor.NO_STATISTICS, Processor.NO_TRACES, null);
+            return processor.run(IProcessor.NO_STATISTICS, IProcessor.NO_TRACES, null);
         } catch (Exception e) {
             ExceptionHandler.process(e);
             return null;

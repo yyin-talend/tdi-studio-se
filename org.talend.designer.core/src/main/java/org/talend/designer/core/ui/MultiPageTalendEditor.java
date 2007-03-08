@@ -83,6 +83,7 @@ import org.talend.designer.core.ui.editor.process.Process;
 import org.talend.designer.runprocess.IProcessor;
 import org.talend.designer.runprocess.IRunProcessService;
 import org.talend.designer.runprocess.ProcessorException;
+import org.talend.designer.runprocess.ProcessorUtilities;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.IRepositoryService;
 import org.talend.repository.ui.views.IRepositoryView;
@@ -149,11 +150,10 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
     void createPage1() {
         codeEditor = CodeEditorFactory.getInstance().getCodeEditor(getCurrentLang());
         IProcess process = designerEditor.getProcess();
-        IRunProcessService service = DesignerPlugin.getDefault().getRunProcessService();
-        IProcessor processor = service.createCodeProcessor(process, getCurrentLang(), true);
+        IProcessor processor = ProcessorUtilities.getProcessor(process, process.getContextManager().getDefaultContext());
 
         if (processor.getProcessorType().equals("javaProcessor")) { //$NON-NLS-1$
-            processor.setProcessorStates("edit"); //$NON-NLS-1$
+            processor.setProcessorStates(IProcessor.STATES_EDIT);
             if (codeEditor instanceof ISyntaxCheckableEditor) {
                 processor.addSyntaxCheckableEditor((ISyntaxCheckableEditor) codeEditor);
             }
@@ -163,7 +163,6 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
         }
 
         try {
-            processor.initPaths(process.getContextManager().getDefaultContext());
             IFile codeFile = ResourcesPlugin.getWorkspace().getRoot().getFile(
                     processor.getCodeProject().getFullPath().append(processor.getCodePath()));
             if (!codeFile.exists()) {
@@ -186,9 +185,6 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
         } catch (PartInitException pie) {
             ErrorDialog.openError(getSite().getShell(), Messages.getString("MultiPageTalendEditor.Designer.Error"), //$NON-NLS-1$
                     null, pie.getStatus());
-        } catch (ProcessorException pe) {
-            ErrorDialog.openError(getSite().getShell(), Messages.getString("MultiPageTalendEditor.Designer.Error"), //$NON-NLS-1$
-                    pe.getMessage(), null);
         }
     }
 
@@ -268,7 +264,7 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
         IProcessor processor = service.createCodeProcessor(process, getCurrentLang(), true);
 
         if (processor.getProcessorType().equals("javaProcessor")) { //$NON-NLS-1$
-            processor.setProcessorStates("edit"); //$NON-NLS-1$
+            processor.setProcessorStates(IProcessor.STATES_EDIT);
             if (codeEditor instanceof ISyntaxCheckableEditor) {
                 processor.addSyntaxCheckableEditor((ISyntaxCheckableEditor) codeEditor);
             }
@@ -357,7 +353,7 @@ public class MultiPageTalendEditor extends MultiPageEditorPart implements IResou
             IProcessor plProcessor = service.createCodeProcessor(process, getCurrentLang(), true);
 
             if (plProcessor.getProcessorType().equals("javaProcessor")) { //$NON-NLS-1$
-                plProcessor.setProcessorStates("edit"); //$NON-NLS-1$
+                plProcessor.setProcessorStates(IProcessor.STATES_EDIT);
                 if (codeEditor instanceof ISyntaxCheckableEditor) {
                     plProcessor.addSyntaxCheckableEditor((ISyntaxCheckableEditor) codeEditor);
                 }

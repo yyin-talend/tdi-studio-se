@@ -49,7 +49,7 @@ public class JavaProcessorRuntimeStates implements IJavaProcessorStates {
      * @see org.talend.designer.runprocess.java.IJavaStatus#getCodePath()
      */
     public IPath getCodePath() {
-        return this.javaProcessor.getCompliedCodePath();
+        return this.javaProcessor.getCompiledCodePath();
 
     }
 
@@ -59,7 +59,7 @@ public class JavaProcessorRuntimeStates implements IJavaProcessorStates {
      * @see org.talend.designer.runprocess.java.IJavaStatus#getContextPath()
      */
     public IPath getContextPath() {
-        return this.javaProcessor.getCompliedContextPath();
+        return this.javaProcessor.getCompiledContextPath();
         // return null;
     }
 
