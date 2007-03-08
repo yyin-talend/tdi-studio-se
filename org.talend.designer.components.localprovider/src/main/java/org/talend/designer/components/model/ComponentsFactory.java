@@ -107,7 +107,7 @@ public class ComponentsFactory implements IComponentsFactory {
                         componentList.add(currentComp);
                     }
                 } catch (MissingMainXMLComponentFileException e) {
-                    log.trace(currentFolder.getName() + " is not a " + getCodeLanguageSuffix() + " component",e);
+                    log.trace(currentFolder.getName() + " is not a " + getCodeLanguageSuffix() + " component", e);
                 } catch (BusinessException e) {
                     BusinessException ex = new BusinessException("Cannot load component \"" + currentFolder.getName() + "\": " //$NON-NLS-1$ //$NON-NLS-2$
                             + e.getMessage(), e);
@@ -223,5 +223,16 @@ public class ComponentsFactory implements IComponentsFactory {
             init();
         }
         return componentList;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.talend.core.model.components.IComponentsFactory#getComponentPath()
+     */
+    public URL getComponentPath() throws IOException {
+        Bundle b = Platform.getBundle(IComponentsFactory.COMPONENTS_LOCATION);
+        URL url = FileLocator.toFileURL(FileLocator.find(b, new Path(IComponentsFactory.COMPONENTS_INNER_FOLDER), null));
+        return url;
     }
 }
