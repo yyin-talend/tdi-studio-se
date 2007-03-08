@@ -33,6 +33,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.talend.commons.ui.swt.colorstyledtext.ColorManager;
+import org.talend.commons.ui.swt.colorstyledtext.MapperColorStyledText;
 import org.talend.core.CorePlugin;
 import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;

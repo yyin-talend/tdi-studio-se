@@ -31,19 +31,9 @@
         IDbLanguage currentLanguage = gm.getLanguage();
         List<IConnection> connections;
         ExternalDbMapData data;
-        if (node != null) {
-            // normal use
-            connections = (List<IConnection>) node.getIncomingConnections();
-            data = (ExternalDbMapData) node.getExternalData();
-            uniqueNameComponent = node.getUniqueName();
-        } else {
-            // Stand alone / tests
-            MapperMain.setStandAloneMode(true);
-            OracleDbMapTestGenerator testGenerator = new OracleDbMapTestGenerator(gm, false);
-            connections = testGenerator.getConnectionList();
-            data = (ExternalDbMapData) testGenerator.getExternalData();
-            uniqueNameComponent = "testUniqueNameNode";
-        }
+        connections = (List<IConnection>) node.getIncomingConnections();
+        data = (ExternalDbMapData) node.getExternalData();
+        uniqueNameComponent = node.getUniqueName();
 
         List<ExternalDbMapTable> outputTables = data.getOutputTables();
 
@@ -54,7 +44,9 @@
             
 %>
 
-$_globals{<%=uniqueNameComponent %>}{QUERY}{<%= outputTable.getName() %>} = "<%= sqlQuery %>";
+$_globals{<%=uniqueNameComponent %>}{QUERY}{<%= outputTable.getName() %>} = 
+"<%= sqlQuery %>"
+;
 $branch_<%= outputTable.getName() %>_is_active = true;
 
 

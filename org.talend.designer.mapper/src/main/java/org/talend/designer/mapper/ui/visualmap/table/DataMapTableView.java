@@ -70,6 +70,7 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
 import org.talend.commons.ui.image.EImage;
+import org.talend.commons.ui.swt.colorstyledtext.MapperColorStyledText;
 import org.talend.commons.ui.swt.extended.table.AbstractExtendedTableViewer;
 import org.talend.commons.ui.swt.proposal.ContentProposalAdapterExtended;
 import org.talend.commons.ui.swt.proposal.TextCellEditorWithProposal;
@@ -115,7 +116,6 @@ import org.talend.designer.mapper.ui.font.FontProviderMapper;
 import org.talend.designer.mapper.ui.image.ImageInfo;
 import org.talend.designer.mapper.ui.image.ImageProviderMapper;
 import org.talend.designer.mapper.ui.proposal.expression.ExpressionProposalProvider;
-import org.talend.designer.mapper.ui.tabs.MapperColorStyledText;
 import org.talend.designer.mapper.ui.tabs.StyledTextHandler;
 import org.talend.designer.mapper.ui.visualmap.zone.Zone;
 
@@ -343,6 +343,22 @@ public abstract class DataMapTableView extends Composite {
                 initColumnsOfTableColumns(tableViewerCreator);
             }
 
+            /* (non-Javadoc)
+             * @see org.talend.commons.ui.swt.extended.table.AbstractExtendedTableViewer#initTableListeners()
+             */
+            @Override
+            protected void initTableListeners() {
+                super.initTableListeners();
+                getTableViewerCreator().addCellValueModifiedListener(new ITableCellValueModifiedListener() {
+
+                    public void cellValueModified(TableCellValueModifiedEvent e) {
+                        getTableViewerCreator().getSelectionHelper().deselectAll();
+                        getTable().forceFocus();
+                    }
+                    
+                });
+            }
+            
             /*
              * (non-Javadoc)
              * 
@@ -1626,7 +1642,8 @@ public abstract class DataMapTableView extends Composite {
                 element = tableViewerCreator.getModifiedObjectInfo().getPreviousModifiedBean();
             }
             if (element != null) {
-                tableViewerCreator.getTableViewer().editElement(element, 1);
+                int indexColumn = tableViewerCreator.getColumn(ID_EXPRESSION_COLUMN).getIndex();
+                tableViewerCreator.getTableViewer().editElement(element, indexColumn);
             }
         }
     }

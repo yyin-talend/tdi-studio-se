@@ -37,10 +37,12 @@ boolean stats = codeGenArgument.isStatistics();
 
 
 String dbtable = null;
+INode previousNode = null;
 List<IConnection> connections = (List<IConnection>) node.getIncomingConnections();
-if(connections != null && connections.get(0) != null) {
+if(connections != null && connections.size() > 0 && connections.get(0) != null) {
     IConnection connection = connections.get(0);
-    String previousComponentName = connection.getSource().getUniqueName();
+    previousNode = connection.getSource();
+    String previousComponentName = previousNode.getUniqueName();
 	dbtable = "'" + connection.getName() + "'";
 	%>
 	$select_query = $_globals{<%=previousComponentName%>}{QUERY}{<%=dbtable%>};
@@ -54,23 +56,39 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     if (metadata!=null) {
         String cid = metadata.getTableName();
 
+
         String dataAction = ElementParameterParser.getValue(
-            node,
+                node,
             "__DATA_ACTION__"
         );
         String tableAction = ElementParameterParser.getValue(
-            node,
+                node,
             "__TABLE_ACTION__"
         );
-        String dbhost = ElementParameterParser.getValue(node, "__HOST__");
-        String dbport = ElementParameterParser.getValue(node, "__PORT__");
-        String dbname = ElementParameterParser.getValue(node, "__DBNAME__");
-        String dbuser = ElementParameterParser.getValue(node, "__USER__");
-        String dbpass = ElementParameterParser.getValue(node, "__PASS__");
-        String encoding = ElementParameterParser.getValue(
-            node,
-            "__ENCODING__"
+        
+        String whereClause = ElementParameterParser.getValue(
+                node,
+            "__WHERE_CLAUSE__"
         );
+        
+        String dbhost = null;
+        String dbport = null;
+        String dbname = null;
+        String dbuser = null;
+        String dbpass = null;
+        String encoding = null;
+        
+        if(previousNode != null) {
+	        dbhost = ElementParameterParser.getValue(previousNode, "__HOST__");
+	        dbport = ElementParameterParser.getValue(previousNode, "__PORT__");
+	        dbname = ElementParameterParser.getValue(previousNode, "__DBNAME__");
+	        dbuser = ElementParameterParser.getValue(previousNode, "__USER__");
+	        dbpass = ElementParameterParser.getValue(previousNode, "__PASS__");
+	        encoding = ElementParameterParser.getValue(
+	            previousNode,
+	            "__ENCODING__"
+	        );
+        }
 
 %>
 
@@ -269,8 +287,13 @@ if ((dataAction.equals("UPDATE"))
 $query = '
 UPDATE '.<%=dbtable%>.'
   SET (<%=colsString%>) = ('.$select_query.')
+<%if(whereClause.trim().length() > 0 && !whereClause.equals("''")) {%>
+  WHERE '.<%=whereClause%>.'
+<%}%>
 ';
-#  WHERE <%=keyString%>
+
+print "\n\n".$query."\n";
+
 
 my $usth_<%=cid %> = $dbh_<%=cid %>->prepare($query);
 
@@ -281,9 +304,13 @@ my $usth_<%=cid %> = $dbh_<%=cid %>->prepare($query);
 %>
 
 $query = '
-DELETE FROM '.<%=dbtable%>.'
-  WHERE <%=keyString%>
+DELETE FROM ('.$select_query.') '.<%=dbtable%>.'
+<%if(whereClause.trim().length() > 0 || !whereClause.equals("''")) {%>
+  WHERE '.<%=whereClause%>.'
+<%}%>
 ';
+
+print "\n\n".$query."\n";
 
 my $dsth_<%=cid %> = $dbh_<%=cid %>->prepare($query);
 
@@ -397,7 +424,7 @@ my $nb_rows = 0;
 <%
         if (dataAction.equals("UPDATE")) {
 %>
-$nb_rows = $usth_<%=cid %>->execute(@<%=cid%>[<%=positionsString%>])
+$nb_rows = $usth_<%=cid %>->execute()
     or die "can't execute update query\n";
 
 if ($nb_rows) {
@@ -417,7 +444,7 @@ $nb_line_inserted_<%=cid%>++;
         else if (dataAction.equals("INSERT_OR_UPDATE")) {
 %>
 if (not $isth_<%=cid %>->execute(@<%=cid%>)) {
-    $nb_rows = $usth_<%=cid %>->execute(@<%=cid%>[<%=positionsString%>])
+    $nb_rows = $usth_<%=cid %>->execute()
         or die "can't execute update query\n";
 
     if ($nb_rows) {
@@ -431,7 +458,7 @@ else {
         }
         else if (dataAction.equals("UPDATE_OR_INSERT")) {
 %>
-if ($nb_rows = $usth_<%=cid %>->execute(@<%=cid%>[<%=positionsString%>])) {
+if ($nb_rows = $usth_<%=cid %>->execute()) {
     if ($nb_rows == 0) {
         $isth_<%=cid %>->execute(@<%=cid%>)
             or die "can't execute insert query\n";
@@ -451,7 +478,7 @@ else {
         }
         else if (dataAction.equals("DELETE")) {
 %>
-$nb_rows = $dsth_<%=cid %>->execute(@<%=cid%>[<%=keyPositionsString%>])
+$nb_rows = $dsth_<%=cid %>->execute()
     or die "can't execute delete query\n";
 
 if ($nb_rows) {
