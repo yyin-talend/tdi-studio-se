@@ -123,9 +123,10 @@ public class RepositoryLabelProvider extends LabelProvider implements IColorProv
             }
 
             // Manage master job case:
-            if (node.getObject().getType() == ERepositoryObjectType.PROCESS && node.getObject().getLabel().equals("Tagada")) {
-                img = OverlayImageProvider.getImageWithSpecial(img).createImage();
-            }
+            // if (node.getObject().getType() == ERepositoryObjectType.PROCESS &&
+            // node.getObject().getLabel().equals("Tagada")) {
+            // img = OverlayImageProvider.getImageWithSpecial(img).createImage();
+            // }
 
             IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
             ERepositoryStatus repositoryStatus = factory.getStatus(node.getObject());
