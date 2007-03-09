@@ -511,6 +511,9 @@ public class JavaProcessor extends Processor {
         javaProject.setRawClasspath(classpathEntryArray, null);
 
         javaProject.setOutputLocation(javaProject.getPath().append(JavaUtils.JAVA_CLASSES_DIRECTORY), null); //$NON-NLS-1$
+        
+        CorePlugin.getDefault().getLibrariesService().checkLibraries();
+        
         return prj;
 
     }
