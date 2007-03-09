@@ -360,7 +360,19 @@
             context="%libraryneeded.dbconnectionwizard"
             language="java"
             message="%libraryneeded.forsqlconnection"
-            name="mysql-connector-java-3.1.13-bin.jar"
+            name="mysql-connector-java-5.0.4-bin.jar"
+            required="false"/>
+      <libraryNeeded
+            context="%libraryneeded.dbconnectionwizard"
+            language="java"
+            message="%libraryneeded.forsqlconnection"
+            name="ojdbc14.jar"
+            required="false"/>
+      <libraryNeeded
+            context="%libraryneeded.dbconnectionwizard"
+            language="java"
+            message="%libraryneeded.forsqlconnection"
+            name="postgresql-8.1-405.jdbc3.jar"
             required="false"/>
    </extension>
 
