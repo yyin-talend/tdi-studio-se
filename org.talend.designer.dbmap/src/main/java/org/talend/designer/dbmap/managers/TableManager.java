@@ -60,7 +60,6 @@ public class TableManager {
 
     private HashMap<String, InputTable> aliasToInputTable = new HashMap<String, InputTable>();
 
-    
     public TableManager() {
         super();
     }
@@ -71,7 +70,7 @@ public class TableManager {
      * @param view
      * @param tableData
      */
-    @SuppressWarnings("unchecked") //$NON-NLS-1$
+    @SuppressWarnings("unchecked")//$NON-NLS-1$
     void addTable(DataMapTableView view, AbstractDataMapTable tableData) {
 
         if (tableData instanceof AbstractInOutTable) {
@@ -268,10 +267,9 @@ public class TableManager {
     InputTable getInputTableFromAlias(String alias) {
         return aliasToInputTable.get(alias);
     }
-    
+
     InputTable addAlias(String alias, InputTable inputTable) {
         return aliasToInputTable.put(alias, inputTable);
     }
-    
-    
+
 }

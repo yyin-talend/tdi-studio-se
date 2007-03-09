@@ -48,7 +48,7 @@ public abstract class AbstractDbLanguage implements IDbLanguage {
         INNER_JOIN("INNER JOIN"),
         LEFT_OUTER_JOIN("LEFT OUTER JOIN"),
         RIGHT_OUTER_JOIN("RIGHT OUTER JOIN"),
-        FULL_OUTER_JOIN("FULL OUTER JOIN"), 
+        FULL_OUTER_JOIN("FULL OUTER JOIN"),
         CROSS_JOIN("CROSS JOIN");
 
         String label;
@@ -125,5 +125,5 @@ public abstract class AbstractDbLanguage implements IDbLanguage {
     public IJoinType getJoin(String joinType) {
         return JOIN.getJoin(joinType);
     }
-    
+
 }

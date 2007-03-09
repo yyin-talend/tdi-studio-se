@@ -101,12 +101,13 @@ public abstract class DbGenerationManager {
     }
 
     public String getTableColumnVariable(String tableName, String columnName) {
-        return StringHelper.replacePrms(this.language.getTemplateTableColumnVariable(), new Object[] { tableName, columnName });
+        return StringHelper.replacePrms(this.language.getTemplateTableColumnVariable(), new Object[] { tableName,
+                columnName });
     }
 
     public String getGeneratedCodeTableColumnVariable(String tableName, String columnName) {
-        return StringHelper
-                .replacePrms(this.language.getTemplateGeneratedCodeTableColumnVariable(), new Object[] { tableName, columnName });
+        return StringHelper.replacePrms(this.language.getTemplateGeneratedCodeTableColumnVariable(), new Object[] {
+                tableName, columnName });
     }
 
     public String getTableColumnVariable(TableEntryLocation location) {
@@ -142,9 +143,9 @@ public abstract class DbGenerationManager {
         return !oneConstraintIsNotEmpty;
     }
 
-    
     /**
      * Getter for language.
+     * 
      * @return the language
      */
     public IDbLanguage getLanguage() {
@@ -154,9 +155,7 @@ public abstract class DbGenerationManager {
     public IDbOperatorManager getOperatorsManager() {
         return this.language.getOperatorsManager();
     }
-    
+
     public abstract String buildSqlSelect(AbstractDbMapComponent component, String tableName);
 
-    
-    
 }

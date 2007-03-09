@@ -47,8 +47,8 @@ public class InputTable extends AbstractInOutTable {
     private String alias;
 
     private String tableName;
-    
-//    private boolean joinWithPrevious;
+
+    // private boolean joinWithPrevious;
 
     /**
      * DOC amaumont InputTable constructor comment.
@@ -89,8 +89,9 @@ public class InputTable extends AbstractInOutTable {
                 joinType = mapperManager.getCurrentLanguage().getAvailableJoins()[0];
             }
             alias = externalMapperTable.getAlias();
-            tableName = externalMapperTable.getTableName() != null ? externalMapperTable.getTableName() : connection.getName();
-//            joinWithPrevious = externalMapperTable.isJoinWithPrevious();
+            tableName = externalMapperTable.getTableName() != null ? externalMapperTable.getTableName() : connection
+                    .getName();
+            // joinWithPrevious = externalMapperTable.isJoinWithPrevious();
         }
     }
 
@@ -181,25 +182,20 @@ public class InputTable extends AbstractInOutTable {
         this.tableName = tableName;
     }
 
-    
-//    /**
-//     * Getter for joinWithPrevious.
-//     * @return the joinWithPrevious
-//     */
-//    public boolean isJoinWithPrevious() {
-//        return this.joinWithPrevious;
-//    }
+    // /**
+    // * Getter for joinWithPrevious.
+    // * @return the joinWithPrevious
+    // */
+    // public boolean isJoinWithPrevious() {
+    // return this.joinWithPrevious;
+    // }
 
-    
-//    /**
-//     * Sets the joinWithPrevious.
-//     * @param joinWithPrevious the joinWithPrevious to set
-//     */
-//    public void setJoinWithPrevious(boolean joinWithPrevious) {
-//        this.joinWithPrevious = joinWithPrevious;
-//    }
+    // /**
+    // * Sets the joinWithPrevious.
+    // * @param joinWithPrevious the joinWithPrevious to set
+    // */
+    // public void setJoinWithPrevious(boolean joinWithPrevious) {
+    // this.joinWithPrevious = joinWithPrevious;
+    // }
 
-    
-    
-    
 }

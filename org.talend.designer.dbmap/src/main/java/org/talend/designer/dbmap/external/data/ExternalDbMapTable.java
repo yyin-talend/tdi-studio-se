@@ -64,17 +64,16 @@ public class ExternalDbMapTable implements Serializable {
      * Used only for inputs.
      */
     private String alias;
-    
+
     /**
      * Used only for inputs.
      */
     private String tableName;
-    
+
     /**
      * Used only for inputs.
      */
-//    private boolean joinWithPrevious;
-    
+    // private boolean joinWithPrevious;
     public String getName() {
         return this.name;
     }
@@ -145,76 +144,75 @@ public class ExternalDbMapTable implements Serializable {
         this.rejectInnerJoin = rejectInnerJoin;
     }
 
-    
     /**
      * Getter for joinType.
+     * 
      * @return the joinType
      */
     public String getJoinType() {
         return this.joinType;
     }
 
-    
     /**
      * Sets the joinType.
+     * 
      * @param joinType the joinType to set
      */
     public void setJoinType(String joinType) {
         this.joinType = joinType;
     }
 
-    
     /**
      * Getter for alias.
+     * 
      * @return the alias
      */
     public String getAlias() {
         return this.alias;
     }
 
-    
     /**
      * Sets the alias.
+     * 
      * @param alias the alias to set
      */
     public void setAlias(String alias) {
         this.alias = alias;
     }
 
-    
     /**
      * Getter for tableName.
+     * 
      * @return the tableName
      */
     public String getTableName() {
         return this.tableName;
     }
 
-    
     /**
      * Sets the tableName.
+     * 
      * @param tableName the tableName to set
      */
     public void setTableName(String tableName) {
         this.tableName = tableName;
     }
 
-    
-//    /**
-//     * Getter for joinWithPrevious.
-//     * @return the joinWithPrevious
-//     */
-//    public boolean isJoinWithPrevious() {
-//        return this.joinWithPrevious;
-//    }
-//
-//    
-//    /**
-//     * Sets the joinWithPrevious.
-//     * @param joinWithPrevious the joinWithPrevious to set
-//     */
-//    public void setJoinWithPrevious(boolean joinWithPrevious) {
-//        this.joinWithPrevious = joinWithPrevious;
-//    }
+    // /**
+    // * Getter for joinWithPrevious.
+    // * @return the joinWithPrevious
+    // */
+    // public boolean isJoinWithPrevious() {
+    // return this.joinWithPrevious;
+    // }
+    //
+    //    
+    // /**
+    // * Sets the joinWithPrevious.
+    // * @param joinWithPrevious the joinWithPrevious to set
+    // */
+    // public void setJoinWithPrevious(boolean joinWithPrevious) {
+    // this.joinWithPrevious = joinWithPrevious;
+    // }
 
 }

@@ -49,7 +49,7 @@ public class ExternalMapperTableEntry implements Serializable {
      * nullable, used for var entries only.
      */
     private boolean nullable;
-    
+
     public ExternalMapperTableEntry() {
         super();
     }
@@ -99,24 +99,22 @@ public class ExternalMapperTableEntry implements Serializable {
         this.type = type;
     }
 
-    
     /**
      * Getter for nullable.
+     * 
      * @return the nullable
      */
     public boolean isNullable() {
         return this.nullable;
     }
 
-    
     /**
      * Sets the nullable.
+     * 
      * @param nullable the nullable to set
      */
     public void setNullable(boolean nullable) {
         this.nullable = nullable;
     }
 
-    
-    
 }

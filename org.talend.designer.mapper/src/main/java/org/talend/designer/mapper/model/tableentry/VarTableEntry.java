@@ -32,6 +32,7 @@ import org.talend.designer.mapper.model.table.AbstractDataMapTable;
 public class VarTableEntry extends TableEntry implements IColumnEntry {
 
     private String type;
+
     private boolean nullable;
 
     public VarTableEntry(AbstractDataMapTable abstractDataMapTable, String name, String expression, String type) {
@@ -61,24 +62,22 @@ public class VarTableEntry extends TableEntry implements IColumnEntry {
         this.type = type;
     }
 
-    
     /**
      * Getter for nullable.
+     * 
      * @return the nullable
      */
     public boolean isNullable() {
         return this.nullable;
     }
 
-    
     /**
      * Sets the nullable.
+     * 
      * @param nullable the nullable to set
      */
     public void setNullable(boolean nullable) {
         this.nullable = nullable;
     }
 
-    
-    
 }

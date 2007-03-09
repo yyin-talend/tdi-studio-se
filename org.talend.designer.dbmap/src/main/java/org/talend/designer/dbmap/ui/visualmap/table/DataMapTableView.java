@@ -24,7 +24,6 @@ package org.talend.designer.dbmap.ui.visualmap.table;
 import java.util.Collection;
 import java.util.List;
 
-import org.apache.commons.lang.ArrayUtils;
 import org.eclipse.jface.fieldassist.IContentProposalProvider;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ICellEditorListener;

@@ -47,8 +47,6 @@ public abstract class AbstractDataMapTable {
 
     protected MapperManager mapperManager;
 
-    
-    
     /**
      * DOC amaumont DataMapTable constructor comment.
      * 
@@ -63,7 +61,8 @@ public abstract class AbstractDataMapTable {
         if (name == null) {
             throw new IllegalArgumentException("Name's AbstractDataMapTable can't be null"); //$NON-NLS-1$
         }
-        this.tableColumnsEntriesModel = new ExtendedTableModel<IColumnEntry>(name + " : model for Columns", dataMapTableEntries); //$NON-NLS-1$
+        this.tableColumnsEntriesModel = new ExtendedTableModel<IColumnEntry>(
+                name + " : model for Columns", dataMapTableEntries); //$NON-NLS-1$
 
     }
 
@@ -127,14 +126,13 @@ public abstract class AbstractDataMapTable {
         this.tableColumnsEntriesModel.swapElements(indicesOrigin, listIndexTarget);
     }
 
-    
     /**
      * Getter for mapperManager.
+     * 
      * @return the mapperManager
      */
     public MapperManager getMapperManager() {
         return this.mapperManager;
     }
 
-    
 }

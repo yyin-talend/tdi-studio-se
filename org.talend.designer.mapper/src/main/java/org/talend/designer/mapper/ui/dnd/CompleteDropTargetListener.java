@@ -36,7 +36,6 @@ import org.talend.commons.ui.utils.TableUtils;
 import org.talend.commons.ui.ws.WindowSystem;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.MetadataColumn;
-import org.talend.core.model.metadata.MetadataTalendType;
 import org.talend.core.ui.metadata.editor.MetadataTableEditorView;
 import org.talend.designer.mapper.language.ILanguage;
 import org.talend.designer.mapper.language.LanguageProvider;

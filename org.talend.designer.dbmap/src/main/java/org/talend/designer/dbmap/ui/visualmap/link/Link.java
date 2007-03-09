@@ -74,10 +74,10 @@ public class Link implements IMapperLink {
     public void calculate() {
         point1 = this.uiManager.getTableEntryPosition(pointLinkDescriptor1.getTableEntry(), true);
         point2 = this.uiManager.getTableEntryPosition(pointLinkDescriptor2.getTableEntry(), true);
-        DataMapTableView viewTable1 = this.mapperManager.retrieveDataMapTableView(this.mapperManager.retrieveTable(pointLinkDescriptor1
-                .getTableEntry()));
-        DataMapTableView viewTable2 = this.mapperManager.retrieveDataMapTableView(this.mapperManager.retrieveTable(pointLinkDescriptor2
-                .getTableEntry()));
+        DataMapTableView viewTable1 = this.mapperManager.retrieveDataMapTableView(this.mapperManager
+                .retrieveTable(pointLinkDescriptor1.getTableEntry()));
+        DataMapTableView viewTable2 = this.mapperManager.retrieveDataMapTableView(this.mapperManager
+                .retrieveTable(pointLinkDescriptor2.getTableEntry()));
         widthTable1 = viewTable1.getBounds().width + 2 * viewTable1.getBorderWidth();
         widthTable2 = viewTable2.getBounds().width + 2 * viewTable2.getBorderWidth();
     }
@@ -109,7 +109,8 @@ public class Link implements IMapperLink {
         drawableLink.setPoint2(new Point(point2xForTraceLink, point2yOffset));
         drawableLink.setBoundsOfCalculate(boundsOfDrawing);
 
-        Rectangle boundsOfSolidLine = new Rectangle(boundsOfDrawing.x, boundsOfDrawing.y, boundsOfDrawing.width, boundsOfDrawing.height);
+        Rectangle boundsOfSolidLine = new Rectangle(boundsOfDrawing.x, boundsOfDrawing.y, boundsOfDrawing.width,
+                boundsOfDrawing.height);
         boundsOfSolidLine.y = boundsOfDrawing.y + MapperUI.OFFSET_VISIBLES_POINTS;
         boundsOfSolidLine.height = boundsOfDrawing.height - 2 * MapperUI.OFFSET_VISIBLES_POINTS;
 

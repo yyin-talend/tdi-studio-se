@@ -21,16 +21,14 @@
 // ============================================================================
 package org.talend.designer.dbmap.language;
 
-
 /**
- * DOC amaumont  class global comment. Detailled comment
- * <br/>
- *
+ * DOC amaumont class global comment. Detailled comment <br/>
+ * 
  * $Id$
- *
+ * 
  */
 public interface IJoinType {
 
     public String getLabel();
-    
+
 }

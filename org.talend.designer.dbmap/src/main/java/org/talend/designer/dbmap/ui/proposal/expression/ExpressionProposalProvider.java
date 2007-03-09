@@ -59,7 +59,8 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
      * @param tables
      * @param control
      */
-    public ExpressionProposalProvider(MapperManager mapperManager, IContentProposalProvider[] otherContentProposalProviders) {
+    public ExpressionProposalProvider(MapperManager mapperManager,
+            IContentProposalProvider[] otherContentProposalProviders) {
         super();
         this.mapperManager = mapperManager;
         this.currentLanguage = mapperManager.getCurrentLanguage();

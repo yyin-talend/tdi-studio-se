@@ -68,8 +68,6 @@ public class MapperComponent extends AbstractExternalNode {
 
     private ExternalMapperData externalData;
 
-    
-    
     /**
      * DOC amaumont MapperComponent constructor comment.
      */
@@ -83,7 +81,7 @@ public class MapperComponent extends AbstractExternalNode {
      * @see org.talend.core.model.process.AbstractExternalNode#initialize()
      */
     public void initialize() {
-        initMapperMain(); 
+        initMapperMain();
         mapperMain.loadInitialParamters();
     }
 
@@ -149,7 +147,7 @@ public class MapperComponent extends AbstractExternalNode {
     /**
      * Sort outgoingConnections for code generation as visible output zone of tMap.
      */
-    @SuppressWarnings("unchecked") //$NON-NLS-1$
+    @SuppressWarnings("unchecked")//$NON-NLS-1$
     private void sortOutputsConnectionsLikeVisualOrder() {
         List<IConnection> outgoingConnections = (List<IConnection>) getOutgoingConnections();
         Map<String, IConnection> connectionNameToOutgoingConnection = new HashMap<String, IConnection>();
@@ -266,12 +264,14 @@ public class MapperComponent extends AbstractExternalNode {
 
     /*
      * (non-Javadoc)
+     * 
      * @see org.talend.core.model.process.IExternalNode#loadDataOut(java.io.OutputStream, java.io.Writer)
      */
     public void loadDataOut(final OutputStream out, Writer writer) throws IOException {
 
         initMapperMain();
-        mapperMain.createModelFromExternalData(getIncomingConnections(), getOutgoingConnections(), externalData, getMetadataList(), false);
+        mapperMain.createModelFromExternalData(getIncomingConnections(), getOutgoingConnections(), externalData,
+                getMetadataList(), false);
         ExternalMapperData data = mapperMain.buildExternalData();
         if (mapperMain != null && data != null) {
 
@@ -379,12 +379,14 @@ public class MapperComponent extends AbstractExternalNode {
      * @param newTableName
      * @param newColumnName
      */
-    private void replaceLocationsInAllExpressions(TableEntryLocation oldLocation, TableEntryLocation newLocation, boolean tableRenamed) {
+    private void replaceLocationsInAllExpressions(TableEntryLocation oldLocation, TableEntryLocation newLocation,
+            boolean tableRenamed) {
         // replace old location by new location for all expressions in mapper
         List<ExternalMapperTable> tables = new ArrayList<ExternalMapperTable>(externalData.getInputTables());
         tables.addAll(new ArrayList<ExternalMapperTable>(externalData.getVarsTables()));
         tables.addAll(new ArrayList<ExternalMapperTable>(externalData.getOutputTables()));
-        DataMapExpressionParser dataMapExpressionParser = new DataMapExpressionParser(LanguageProvider.getCurrentLanguage());
+        DataMapExpressionParser dataMapExpressionParser = new DataMapExpressionParser(LanguageProvider
+                .getCurrentLanguage());
         // loop on all tables
         for (ExternalMapperTable table : tables) {
             List<ExternalMapperTableEntry> metadataTableEntries = table.getMetadataTableEntries();
@@ -402,8 +404,8 @@ public class MapperComponent extends AbstractExternalNode {
         } // for (ExternalMapperTable table : tables) {
     }
 
-    public void replaceLocation(TableEntryLocation oldLocation, TableEntryLocation newLocation, ExternalMapperTableEntry entry,
-            DataMapExpressionParser dataMapExpressionParser, boolean tableRenamed) {
+    public void replaceLocation(TableEntryLocation oldLocation, TableEntryLocation newLocation,
+            ExternalMapperTableEntry entry, DataMapExpressionParser dataMapExpressionParser, boolean tableRenamed) {
         String currentExpression = entry.getExpression();
         if (currentExpression == null || currentExpression.length() == 0) {
             return;
@@ -417,7 +419,8 @@ public class MapperComponent extends AbstractExternalNode {
                 newLocation.columnName = currentLocation.columnName;
             }
             if (currentLocation.equals(oldLocation)) {
-                currentExpression = dataMapExpressionParser.replaceLocation(currentExpression, currentLocation, newLocation);
+                currentExpression = dataMapExpressionParser.replaceLocation(currentExpression, currentLocation,
+                        newLocation);
             }
         } // for (int i = 0; i < tableEntryLocations.length; i++) {
         entry.setExpression(currentExpression);

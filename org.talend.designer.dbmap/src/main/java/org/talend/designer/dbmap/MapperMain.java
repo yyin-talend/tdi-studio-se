@@ -76,7 +76,8 @@ public class MapperMain {
      * @return the created shell
      */
     public Shell createUI(Display display) {
-        Shell shell = new Shell(display, SWT.APPLICATION_MODAL | SWT.BORDER | SWT.RESIZE | SWT.CLOSE | SWT.MIN | SWT.MAX | SWT.TITLE);
+        Shell shell = new Shell(display, SWT.APPLICATION_MODAL | SWT.BORDER | SWT.RESIZE | SWT.CLOSE | SWT.MIN
+                | SWT.MAX | SWT.TITLE);
 
         if (!MapperMain.isStandAloneMode()) {
             IComponent component = connector.getComponent();
@@ -86,7 +87,8 @@ public class MapperMain {
         }
         // Shell shell = new Shell(display);
         // shell.setImage(ImageProviderMapper.getImage(ImageInfo.MAPPER_ICON));
-        shell.setText(org.talend.designer.dbmap.i18n.Messages.getString("MapperMain.title") + connector.getUniqueName()); //$NON-NLS-1$
+        shell
+                .setText(org.talend.designer.dbmap.i18n.Messages.getString("MapperMain.title") + connector.getUniqueName()); //$NON-NLS-1$
         ExternalDbMapUiProperties uiProperties = mapperManager.getUiManager().getUiProperties();
         Rectangle boundsMapper = uiProperties.getBoundsMapper();
         if (uiProperties.isShellMaximized()) {
@@ -125,7 +127,8 @@ public class MapperMain {
     }
 
     public void loadModelFromInternalData() {
-        this.mapperModel = new MapperModel(mapperManager.getInputTables(), mapperManager.getOutputTables(), mapperManager.getVarsTables());
+        this.mapperModel = new MapperModel(mapperManager.getInputTables(), mapperManager.getOutputTables(),
+                mapperManager.getVarsTables());
     }
 
     /**
@@ -153,8 +156,8 @@ public class MapperMain {
      * @param metadataList
      */
     public void createModelFromExternalData(List<? extends IConnection> incomingConnections,
-            List<? extends IConnection> outgoingConnections, ExternalDbMapData externalData, List<IMetadataTable> outputMetadataTables,
-            boolean checkProblems) {
+            List<? extends IConnection> outgoingConnections, ExternalDbMapData externalData,
+            List<IMetadataTable> outputMetadataTables, boolean checkProblems) {
         ArrayList<IOConnection> inputs = createIOConnections(incomingConnections);
         ArrayList<IOConnection> outputs = createIOConnections(outgoingConnections);
         createModelFromExternalData(inputs, outputs, outputMetadataTables, externalData, checkProblems);
@@ -174,8 +177,8 @@ public class MapperMain {
         return ioConnections;
     }
 
-    public void createModelFromExternalData(IODataComponentContainer ioDataContainer, List<IMetadataTable> outputMetadataTables,
-            ExternalDbMapData externalData, boolean checkProblems) {
+    public void createModelFromExternalData(IODataComponentContainer ioDataContainer,
+            List<IMetadataTable> outputMetadataTables, ExternalDbMapData externalData, boolean checkProblems) {
         List<IODataComponent> inputsData = ioDataContainer.getInputs();
         List<IODataComponent> ouputsData = ioDataContainer.getOuputs();
 

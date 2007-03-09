@@ -266,9 +266,9 @@ public class MapperUI {
                 ((InputDataMapTableView) view).refreshLabelForJoinDropDown();
             }
         }
-        
+
         selectFirstInOutTablesView();
-        
+
         mapperManager.getUiManager().refreshSqlExpression();
     }
 
@@ -589,25 +589,26 @@ public class MapperUI {
 
         });
 
-//        varsTableZoneView.initInsertionIndicator();
-//
-//        // final Composite finalTablesZoneViewVars = tablesZoneViewVars;
-//
-//        previousControl = null;
-//        for (AbstractDataMapTable abstractDataMapTable : mapperModel.getVarsDataMapTables()) {
-//
-//            DataMapTableView dataMapTableView = new VarsDataMapTableView(varsTableZoneView, SWT.BORDER, abstractDataMapTable, mapperManager);
-//
-//            FormData formData = new FormData();
-//            formData.left = new FormAttachment(0, 0);
-//            formData.right = new FormAttachment(100, 0);
-//            formData.top = new FormAttachment(previousControl);
-//            dataMapTableView.setLayoutData(formData);
-//            previousControl = dataMapTableView;
-//            dataMapTableView.minimizeTable(abstractDataMapTable.isMinimized());
-//            // dataMapTableView.registerStyledExpressionEditor(getTabFolderEditors().getStyledTextHandler());
-//            // dataMapTableView.fillMinimumSize(false);
-//        }
+        // varsTableZoneView.initInsertionIndicator();
+        //
+        // // final Composite finalTablesZoneViewVars = tablesZoneViewVars;
+        //
+        // previousControl = null;
+        // for (AbstractDataMapTable abstractDataMapTable : mapperModel.getVarsDataMapTables()) {
+        //
+        // DataMapTableView dataMapTableView = new VarsDataMapTableView(varsTableZoneView, SWT.BORDER,
+        // abstractDataMapTable, mapperManager);
+        //
+        // FormData formData = new FormData();
+        // formData.left = new FormAttachment(0, 0);
+        // formData.right = new FormAttachment(100, 0);
+        // formData.top = new FormAttachment(previousControl);
+        // dataMapTableView.setLayoutData(formData);
+        // previousControl = dataMapTableView;
+        // dataMapTableView.minimizeTable(abstractDataMapTable.isMinimized());
+        // // dataMapTableView.registerStyledExpressionEditor(getTabFolderEditors().getStyledTextHandler());
+        // // dataMapTableView.fillMinimumSize(false);
+        // }
 
         varsTableZoneView.setSize(varsTableZoneView.computeSize(SWT.DEFAULT, SWT.DEFAULT));
     }
@@ -659,8 +660,8 @@ public class MapperUI {
 
         for (AbstractDataMapTable abstractDataMapTable : tables) {
 
-            OutputDataMapTableView dataMapTableView = uiManager.createNewOutputTableView(previousControl, abstractDataMapTable,
-                    outputTablesZoneView);
+            OutputDataMapTableView dataMapTableView = uiManager.createNewOutputTableView(previousControl,
+                    abstractDataMapTable, outputTablesZoneView);
             previousControl = dataMapTableView;
         }
         outputTablesZoneView.setSize(outputTablesZoneView.computeSize(SWT.DEFAULT, SWT.DEFAULT));
@@ -886,7 +887,7 @@ public class MapperUI {
     public OutputsZone getOutputsZone() {
         return this.outputsZone;
     }
-    
+
     public Shell getShell() {
         return mapperUIParent.getShell();
     }

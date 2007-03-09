@@ -21,7 +21,6 @@
 // ============================================================================
 package org.talend.designer.mapper.i18n;
 
-import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
 import org.talend.commons.i18n.MessagesCore;

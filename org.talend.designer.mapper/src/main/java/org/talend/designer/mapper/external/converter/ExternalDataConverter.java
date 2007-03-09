@@ -82,8 +82,8 @@ public class ExternalDataConverter {
      * @param externalData
      * @param checkProblems
      */
-    public MapperModel prepareModel(List<IOConnection> inputs, List<IOConnection> outputs, List<IMetadataTable> outputMetadataTables,
-            ExternalMapperData externalData, boolean checkProblems) {
+    public MapperModel prepareModel(List<IOConnection> inputs, List<IOConnection> outputs,
+            List<IMetadataTable> outputMetadataTables, ExternalMapperData externalData, boolean checkProblems) {
 
         if (checkProblems) {
             mapperManager.getProblemsManager().checkProblems();
@@ -117,8 +117,8 @@ public class ExternalDataConverter {
         return varsTablesList;
     }
 
-    private ArrayList<OutputTable> prepareOutputTables(List<IOConnection> outputConnections, List<IMetadataTable> outputMetadataTables,
-            ExternalMapperData externalData) {
+    private ArrayList<OutputTable> prepareOutputTables(List<IOConnection> outputConnections,
+            List<IMetadataTable> outputMetadataTables, ExternalMapperData externalData) {
         Map<String, ExternalMapperTable> nameToOutpuPersistentTable = new HashMap<String, ExternalMapperTable>();
         if (externalData != null) {
             for (ExternalMapperTable persistentTable : externalData.getOutputTables()) {
@@ -226,7 +226,8 @@ public class ExternalDataConverter {
                 if (isVarTable) {
                     externalMapperTableEntry.setType(((VarTableEntry) dataMapTableEntry).getType());
                 } else {
-                    externalMapperTableEntry.setType(((AbstractInOutTableEntry) dataMapTableEntry).getMetadataColumn().getTalendType());
+                    externalMapperTableEntry.setType(((AbstractInOutTableEntry) dataMapTableEntry).getMetadataColumn()
+                            .getTalendType());
                 }
                 perTableEntries.add(externalMapperTableEntry);
             }

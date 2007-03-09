@@ -41,7 +41,6 @@ public class ToolbarInputZone extends ToolbarZone {
     private static final String MOVE_UP_TOOLTIP = Messages.getString("ToolbarInputZone.moveupTooltip"); //$NON-NLS-1$
 
     private static final String MOVE_DOWN_TOOLTIP = Messages.getString("ToolbarInputZone.movedownTooltip"); //$NON-NLS-1$
-    
 
     /**
      * DOC amaumont MatadataToolbarEditor constructor comment.
@@ -74,11 +73,10 @@ public class ToolbarInputZone extends ToolbarZone {
         return Zone.INPUTS;
     }
 
-    
     public String getMoveUpTooltipText() {
         return MOVE_UP_TOOLTIP;
     }
-    
+
     public String getMoveDownTooltipText() {
         return MOVE_DOWN_TOOLTIP;
     }

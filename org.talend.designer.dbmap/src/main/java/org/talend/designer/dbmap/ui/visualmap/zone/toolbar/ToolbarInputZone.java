@@ -43,7 +43,6 @@ public class ToolbarInputZone extends ToolbarZone {
 
     private ToolItem removeAlias;
 
-
     public static final String MINIMIZE_TOOLTIP = Messages.getString("ToolbarInputZone.minimizeTooltip"); //$NON-NLS-1$
 
     public static final String RESTORE_TOOLTIP = Messages.getString("ToolbarInputZone.restoreTooltip"); //$NON-NLS-1$
@@ -51,7 +50,6 @@ public class ToolbarInputZone extends ToolbarZone {
     private static final String MOVE_UP_TOOLTIP = Messages.getString("ToolbarInputZone.moveupTooltip"); //$NON-NLS-1$
 
     private static final String MOVE_DOWN_TOOLTIP = Messages.getString("ToolbarInputZone.movedownTooltip"); //$NON-NLS-1$
-    
 
     /**
      * DOC amaumont MatadataToolbarEditor constructor comment.
@@ -78,14 +76,13 @@ public class ToolbarInputZone extends ToolbarZone {
 
         removeAlias = new ToolItem(getToolBarActions(), SWT.PUSH);
         removeAlias.setEnabled(false);
-        removeAlias.setImage(org.talend.commons.ui.image.ImageProvider.getImage(org.talend.commons.ui.image.ImageProvider
-                .getImageDesc(EImage.MINUS_ICON)));
+        removeAlias.setImage(org.talend.commons.ui.image.ImageProvider
+                .getImage(org.talend.commons.ui.image.ImageProvider.getImageDesc(EImage.MINUS_ICON)));
         removeAlias.setToolTipText(Messages.getString("ToolbarInputZone.widgetTooltip.removeAlias")); //$NON-NLS-1$
 
         addCommonsComponents();
-        
-    }
 
+    }
 
     /**
      * DOC amaumont Comment method "addListeners".
@@ -110,7 +107,6 @@ public class ToolbarInputZone extends ToolbarZone {
 
     }
 
-
     public String getMinimizeTooltipText() {
         return MINIMIZE_TOOLTIP;
     }
@@ -129,11 +125,10 @@ public class ToolbarInputZone extends ToolbarZone {
         return Zone.INPUTS;
     }
 
-    
     public String getMoveUpTooltipText() {
         return MOVE_UP_TOOLTIP;
     }
-    
+
     public String getMoveDownTooltipText() {
         return MOVE_DOWN_TOOLTIP;
     }
@@ -146,6 +141,5 @@ public class ToolbarInputZone extends ToolbarZone {
     public void setEnabledRemoveAliasButton(boolean enabled) {
         removeAlias.setEnabled(enabled);
     }
-
 
 }

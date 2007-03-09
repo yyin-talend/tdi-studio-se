@@ -274,7 +274,8 @@ public abstract class AbstractDbMapComponent extends AbstractExternalNode {
     public void loadDataOut(final OutputStream out, Writer writer) throws IOException {
 
         initMapperMain();
-        mapperMain.createModelFromExternalData(getIncomingConnections(), getOutgoingConnections(), externalData, getMetadataList(), false);
+        mapperMain.createModelFromExternalData(getIncomingConnections(), getOutgoingConnections(), externalData,
+                getMetadataList(), false);
         ExternalDbMapData data = mapperMain.buildExternalData();
         if (mapperMain != null && data != null) {
 
@@ -383,12 +384,14 @@ public abstract class AbstractDbMapComponent extends AbstractExternalNode {
      * @param newTableName
      * @param newColumnName
      */
-    private void replaceLocationsInAllExpressions(TableEntryLocation oldLocation, TableEntryLocation newLocation, boolean tableRenamed) {
+    private void replaceLocationsInAllExpressions(TableEntryLocation oldLocation, TableEntryLocation newLocation,
+            boolean tableRenamed) {
         // replace old location by new location for all expressions in mapper
         List<ExternalDbMapTable> tables = new ArrayList<ExternalDbMapTable>(externalData.getInputTables());
         tables.addAll(new ArrayList<ExternalDbMapTable>(externalData.getVarsTables()));
         tables.addAll(new ArrayList<ExternalDbMapTable>(externalData.getOutputTables()));
-        DataMapExpressionParser dataMapExpressionParser = new DataMapExpressionParser(getGenerationManager().getLanguage());
+        DataMapExpressionParser dataMapExpressionParser = new DataMapExpressionParser(getGenerationManager()
+                .getLanguage());
         // loop on all tables
         for (ExternalDbMapTable table : tables) {
             List<ExternalDbMapEntry> metadataTableEntries = table.getMetadataTableEntries();
@@ -406,8 +409,8 @@ public abstract class AbstractDbMapComponent extends AbstractExternalNode {
         } // for (ExternalMapperTable table : tables) {
     }
 
-    public void replaceLocation(TableEntryLocation oldLocation, TableEntryLocation newLocation, ExternalDbMapEntry entry,
-            DataMapExpressionParser dataMapExpressionParser, boolean tableRenamed) {
+    public void replaceLocation(TableEntryLocation oldLocation, TableEntryLocation newLocation,
+            ExternalDbMapEntry entry, DataMapExpressionParser dataMapExpressionParser, boolean tableRenamed) {
         String currentExpression = entry.getExpression();
         if (currentExpression == null || currentExpression.length() == 0) {
             return;
@@ -421,7 +424,8 @@ public abstract class AbstractDbMapComponent extends AbstractExternalNode {
                 newLocation.columnName = currentLocation.columnName;
             }
             if (currentLocation.equals(oldLocation)) {
-                currentExpression = dataMapExpressionParser.replaceLocation(currentExpression, currentLocation, newLocation);
+                currentExpression = dataMapExpressionParser.replaceLocation(currentExpression, currentLocation,
+                        newLocation);
             }
         } // for (int i = 0; i < tableEntryLocations.length; i++) {
         entry.setExpression(currentExpression);

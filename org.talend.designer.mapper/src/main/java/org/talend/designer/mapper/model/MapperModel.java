@@ -41,7 +41,8 @@ public class MapperModel {
 
     private List<VarsTable> varsDataMapTables;
 
-    public MapperModel(List<InputTable> inputDataMapTables, List<OutputTable> outputDataMapTables, List<VarsTable> varsDataMapTables) {
+    public MapperModel(List<InputTable> inputDataMapTables, List<OutputTable> outputDataMapTables,
+            List<VarsTable> varsDataMapTables) {
         super();
         this.inputDataMapTables = inputDataMapTables;
         this.outputDataMapTables = outputDataMapTables;

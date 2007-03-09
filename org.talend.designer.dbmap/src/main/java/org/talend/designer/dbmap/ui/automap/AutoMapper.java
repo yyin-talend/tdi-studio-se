@@ -83,7 +83,8 @@ public class AutoMapper {
                         List<IColumnEntry> inputColumnEntries = inputTable.getColumnEntries();
                         for (IColumnEntry inputEntry : inputColumnEntries) {
                             if (inputEntry.getName().equalsIgnoreCase(outputColumnName)) {
-                                outputEntry.setExpression(currentLanguage.getLocation(inputTable.getName(), inputEntry.getName()));
+                                outputEntry.setExpression(currentLanguage.getLocation(inputTable.getName(), inputEntry
+                                        .getName()));
                                 mapFound = true;
                                 break;
                             }

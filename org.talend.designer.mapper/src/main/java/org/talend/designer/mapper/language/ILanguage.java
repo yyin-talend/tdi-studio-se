@@ -75,7 +75,6 @@ public interface ILanguage {
 
     public String getLocation(String tableName);
 
-
     public ICodeProblemsChecker getCodeChecker();
 
 }

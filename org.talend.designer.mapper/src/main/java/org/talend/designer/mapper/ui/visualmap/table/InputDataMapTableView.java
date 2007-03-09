@@ -115,7 +115,8 @@ public class InputDataMapTableView extends DataMapTableView {
         if (!getInputTable().isMainConnection()) {
 
             final ToolItem rejectConstraintCheck = new ToolItem(toolBarActions, SWT.CHECK);
-            rejectConstraintCheck.setToolTipText(Messages.getString("InputDataMapTableView.widgetTooltip.rejectMainRow")); //$NON-NLS-1$
+            rejectConstraintCheck.setToolTipText(Messages
+                    .getString("InputDataMapTableView.widgetTooltip.rejectMainRow")); //$NON-NLS-1$
             boolean isInnerJoin = getInputTable().isInnerJoin();
             // Image image = ImageProviderMapper.getImage(isInnerJoin ? ImageInfo.CHECKED_ICON :
             // ImageInfo.UNCHECKED_ICON);

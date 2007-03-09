@@ -25,7 +25,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.talend.designer.mapper.external.data.ExternalMapperTableEntry;
-import org.talend.designer.mapper.i18n.Messages;
 import org.talend.designer.mapper.language.ILanguage;
 import org.talend.designer.mapper.model.tableentry.TableEntryLocation;
 import org.talend.designer.mapper.utils.DataMapExpressionParser;
@@ -49,8 +48,8 @@ public class PerlGenerationManager extends GenerationManager {
      * @param expressionParser
      * @return
      */
-    public String prefixEntryLocationsForOutputExpression(String outputExpression, DataMapExpressionParser expressionParser,
-            TableType[] possibleSources) {
+    public String prefixEntryLocationsForOutputExpression(String outputExpression,
+            DataMapExpressionParser expressionParser, TableType[] possibleSources) {
         TableEntryLocation[] entryLocations = expressionParser.parseTableEntryLocations(outputExpression);
         ArrayList<TableEntryLocation> listCoupleForAddTablePrefix = new ArrayList<TableEntryLocation>();
         boolean possibleSourceInputs = false;
@@ -66,14 +65,15 @@ public class PerlGenerationManager extends GenerationManager {
         }
 
         for (TableEntryLocation location : entryLocations) {
-            if (possibleSourceInputs && isInputTable(location.tableName) || possibleSourceVars && isVarsTable(location.tableName)) {
+            if (possibleSourceInputs && isInputTable(location.tableName) || possibleSourceVars
+                    && isVarsTable(location.tableName)) {
                 listCoupleForAddTablePrefix.add(location);
             }
         }
         String outputExpressionToWrite = outputExpression;
         if (listCoupleForAddTablePrefix.size() > 0) {
-            outputExpressionToWrite = expressionParser.addTablePrefixToColumnName(outputExpression, listCoupleForAddTablePrefix
-                    .toArray(new TableEntryLocation[0]));
+            outputExpressionToWrite = expressionParser.addTablePrefixToColumnName(outputExpression,
+                    listCoupleForAddTablePrefix.toArray(new TableEntryLocation[0]));
 
         }
         return outputExpressionToWrite;
@@ -88,7 +88,8 @@ public class PerlGenerationManager extends GenerationManager {
      * @param expressionParser
      * @return
      */
-    public String buildConditions(List<ExternalMapperTableEntry> constraintTableEntries, DataMapExpressionParser expressionParser) {
+    public String buildConditions(List<ExternalMapperTableEntry> constraintTableEntries,
+            DataMapExpressionParser expressionParser) {
         int lstSize = constraintTableEntries.size();
         StringBuilder stringBuilder = new StringBuilder();
         String and = null;
@@ -101,8 +102,8 @@ public class PerlGenerationManager extends GenerationManager {
             if (and != null && constraintExpression.trim().length() > 0) {
                 stringBuilder.append(and);
             }
-            String constraintExpressionToWrite = prefixEntryLocationsForOutputExpression(constraintExpression, expressionParser,
-                    new TableType[] { TableType.INPUT, TableType.VARS });
+            String constraintExpressionToWrite = prefixEntryLocationsForOutputExpression(constraintExpression,
+                    expressionParser, new TableType[] { TableType.INPUT, TableType.VARS });
 
             if (lstSize > 1) {
                 stringBuilder.append(" ( " + constraintExpressionToWrite + " ) "); //$NON-NLS-1$ //$NON-NLS-2$

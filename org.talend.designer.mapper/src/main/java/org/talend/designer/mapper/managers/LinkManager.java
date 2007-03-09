@@ -140,7 +140,8 @@ public class LinkManager {
                     ITableEntry targetTableEntry = linkFromLevelsList.getPointLinkDescriptor2().getTableEntry();
                     if (targetEntry == targetTableEntry) {
 
-                        if (sourceTableEntry instanceof InputColumnTableEntry && targetTableEntry instanceof InputColumnTableEntry) {
+                        if (sourceTableEntry instanceof InputColumnTableEntry
+                                && targetTableEntry instanceof InputColumnTableEntry) {
                             hasAlreadyInputTarget = true;
                         }
                         if (sourceTableEntry instanceof VarTableEntry && targetTableEntry instanceof VarTableEntry) {

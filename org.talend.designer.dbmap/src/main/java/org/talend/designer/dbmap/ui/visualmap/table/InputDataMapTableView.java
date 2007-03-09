@@ -149,13 +149,14 @@ public class InputDataMapTableView extends DataMapTableView {
         for (int i = 0; i < operators.length; i++) {
             arrayOperators[i + 1] = operators[i].getOperator();
         }
-        final ComboxCellEditorImproved typeComboEditor = new ComboxCellEditorImproved(tableViewerCreatorForColumns.getTable(),
-                arrayOperators, SWT.NONE);
+        final ComboxCellEditorImproved typeComboEditor = new ComboxCellEditorImproved(tableViewerCreatorForColumns
+                .getTable(), arrayOperators, SWT.NONE);
         typeComboEditor.addListener(new ICellEditorListener() {
 
             public void applyEditorValue() {
                 ModifiedObjectInfo modifiedObjectInfo = tableViewerCreatorForColumns.getModifiedObjectInfo();
-                InputColumnTableEntry currentInputEntry = (InputColumnTableEntry) modifiedObjectInfo.getCurrentModifiedBean();
+                InputColumnTableEntry currentInputEntry = (InputColumnTableEntry) modifiedObjectInfo
+                        .getCurrentModifiedBean();
                 currentInputEntry.setOriginalExpression(null);
                 CCombo combo = (CCombo) typeComboEditor.getControl();
                 String selectedText = combo.getText();
@@ -167,13 +168,15 @@ public class InputDataMapTableView extends DataMapTableView {
 
             public void cancelEditor() {
                 ModifiedObjectInfo modifiedObjectInfo = tableViewerCreatorForColumns.getModifiedObjectInfo();
-                InputColumnTableEntry currentInputEntry = (InputColumnTableEntry) modifiedObjectInfo.getCurrentModifiedBean();
+                InputColumnTableEntry currentInputEntry = (InputColumnTableEntry) modifiedObjectInfo
+                        .getCurrentModifiedBean();
                 // currentInputEntry.setExpression(currentInputEntry.getOriginalExpression());
             }
 
             public void editorValueChanged(boolean oldValidState, boolean newValidState) {
                 ModifiedObjectInfo modifiedObjectInfo = tableViewerCreatorForColumns.getModifiedObjectInfo();
-                InputColumnTableEntry currentInputEntry = (InputColumnTableEntry) modifiedObjectInfo.getCurrentModifiedBean();
+                InputColumnTableEntry currentInputEntry = (InputColumnTableEntry) modifiedObjectInfo
+                        .getCurrentModifiedBean();
                 if (modifiedObjectInfo.getCurrentModifiedColumn() == columnOperator) {
 
                     if (currentInputEntry != modifiedObjectInfo.getPreviousModifiedBean()) {
@@ -182,7 +185,8 @@ public class InputDataMapTableView extends DataMapTableView {
                     CCombo combo = (CCombo) typeComboEditor.getControl();
                     String selectedText = combo.getText();
                     if (!selectedText.equals("")
-                            && (currentInputEntry.getExpression() == null || currentInputEntry.getExpression().trim().length() == 0)) {
+                            && (currentInputEntry.getExpression() == null || currentInputEntry.getExpression().trim()
+                                    .length() == 0)) {
                         IDbOperator operatorFromValue = operatorsManager.getOperatorFromValue(selectedText);
                         if (operatorFromValue.getAssociatedExpression() != null) {
                             currentInputEntry.setExpression(operatorFromValue.getAssociatedExpression());
@@ -195,7 +199,8 @@ public class InputDataMapTableView extends DataMapTableView {
         });
         CCombo typeCombo = (CCombo) typeComboEditor.getControl();
         typeCombo.setEditable(true);
-        columnOperator.setCellEditor(typeComboEditor, CellEditorValueAdapterFactory.getComboAdapterForComboCellEditorImproved());
+        columnOperator.setCellEditor(typeComboEditor, CellEditorValueAdapterFactory
+                .getComboAdapterForComboCellEditorImproved());
         columnOperator.setAlignment(ALIGNMENT.CENTER);
 
         final TableViewerCreatorColumn columnExpression = new TableViewerCreatorColumn(tableViewerCreatorForColumns);
@@ -209,7 +214,7 @@ public class InputDataMapTableView extends DataMapTableView {
 
             public void set(InputColumnTableEntry bean, String value) {
                 bean.setExpression(value);
-//                mapperManager.getProblemsManager().checkProblemsForTableEntry(bean, true);
+                // mapperManager.getProblemsManager().checkProblemsForTableEntry(bean, true);
             }
 
         });
@@ -491,13 +496,15 @@ public class InputDataMapTableView extends DataMapTableView {
          */
         @Override
         public boolean canModify(Object element, String property) {
-            TableViewerCreatorColumn columnOperator = getTableViewerCreator().getColumn(InputDataMapTableView.ID_OPERATOR_COLUMN);
+            TableViewerCreatorColumn columnOperator = getTableViewerCreator().getColumn(
+                    InputDataMapTableView.ID_OPERATOR_COLUMN);
             String operator = (String) columnOperator.getBeanPropertyAccessors().get(element);
             IDbOperatorManager operatorsManager = mapperManager.getCurrentLanguage().getOperatorsManager();
             IDbOperator operatorFromValue = operatorsManager.getOperatorFromValue(operator);
             boolean columnIsExpression = DataMapTableView.ID_EXPRESSION_COLUMN.equals(property);
             return super.canModify(element, property)
-                    && (columnIsExpression && operatorFromValue != null && !operatorFromValue.isMonoOperand() || !columnIsExpression || operatorFromValue == null);
+                    && (columnIsExpression && operatorFromValue != null && !operatorFromValue.isMonoOperand()
+                            || !columnIsExpression || operatorFromValue == null);
         }
 
     }
@@ -513,7 +520,8 @@ public class InputDataMapTableView extends DataMapTableView {
         ITableEntry entry = (ITableEntry) element;
         TableViewerCreatorColumn column = (TableViewerCreatorColumn) tableViewerCreator.getColumns().get(columnIndex);
         if (column.getId().equals(ID_OPERATOR_COLUMN)) {
-            Color backgroundColor = getExpressionColorProvider().getBackgroundColor(entry.getProblems() == null ? true : false);
+            Color backgroundColor = getExpressionColorProvider().getBackgroundColor(
+                    entry.getProblems() == null ? true : false);
             if (backgroundColor != null) {
                 return backgroundColor;
             }
@@ -532,7 +540,8 @@ public class InputDataMapTableView extends DataMapTableView {
         ITableEntry entry = (ITableEntry) element;
         TableViewerCreatorColumn column = (TableViewerCreatorColumn) tableViewerCreator.getColumns().get(columnIndex);
         if (column.getId().equals(ID_OPERATOR_COLUMN)) {
-            Color foregroundColor = getExpressionColorProvider().getForegroundColor(entry.getProblems() == null ? true : false);
+            Color foregroundColor = getExpressionColorProvider().getForegroundColor(
+                    entry.getProblems() == null ? true : false);
             if (foregroundColor != null) {
                 return foregroundColor;
             }

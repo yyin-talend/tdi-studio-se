@@ -21,19 +21,9 @@
 // ============================================================================
 package org.talend.designer.mapper.model.tableentry;
 
-import java.util.Iterator;
 import java.util.List;
 
-import org.talend.core.language.ECodeLanguage;
-import org.talend.core.language.ICodeProblemsChecker;
 import org.talend.core.model.process.Problem;
-import org.talend.core.model.process.Problem.ProblemStatus;
-import org.talend.designer.mapper.i18n.Messages;
-import org.talend.designer.mapper.language.ILanguage;
-import org.talend.designer.mapper.language.LanguageProvider;
-import org.talend.designer.mapper.language.generation.JavaGenerationManager;
-import org.talend.designer.mapper.language.generation.JavaGenerationManager.PROBLEM_KEY_FIELD;
-import org.talend.designer.mapper.managers.MapperManager;
 import org.talend.designer.mapper.model.table.AbstractDataMapTable;
 
 /**

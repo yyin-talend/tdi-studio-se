@@ -52,7 +52,7 @@ public class ToolbarOutputZone extends ToolbarZone {
     private static final String MOVE_UP_TOOLTIP = Messages.getString("ToolbarOutputZone.moveupTooltip"); //$NON-NLS-1$
 
     private static final String MOVE_DOWN_TOOLTIP = Messages.getString("ToolbarOutputZone.movedownTooltip"); //$NON-NLS-1$
-    
+
     /**
      * DOC amaumont MatadataToolbarEditor constructor comment.
      * 
@@ -74,23 +74,23 @@ public class ToolbarOutputZone extends ToolbarZone {
 
         addOutputItem = new ToolItem(getToolBarActions(), SWT.PUSH);
         addOutputItem.setToolTipText(Messages.getString("ToolbarOutputZone.widgetTooltip.addOutputTable")); //$NON-NLS-1$
-        addOutputItem.setImage(org.talend.commons.ui.image.ImageProvider.getImage(org.talend.commons.ui.image.ImageProvider
-                .getImageDesc(EImage.ADD_ICON)));
+        addOutputItem.setImage(org.talend.commons.ui.image.ImageProvider
+                .getImage(org.talend.commons.ui.image.ImageProvider.getImageDesc(EImage.ADD_ICON)));
 
         removeOutputItem = new ToolItem(getToolBarActions(), SWT.PUSH);
         removeOutputItem.setEnabled(false);
-        removeOutputItem.setImage(org.talend.commons.ui.image.ImageProvider.getImage(org.talend.commons.ui.image.ImageProvider
-                .getImageDesc(EImage.MINUS_ICON)));
+        removeOutputItem.setImage(org.talend.commons.ui.image.ImageProvider
+                .getImage(org.talend.commons.ui.image.ImageProvider.getImageDesc(EImage.MINUS_ICON)));
         removeOutputItem.setToolTipText(Messages.getString("ToolbarOutputZone.widgetTooltip.removeOutputTable")); //$NON-NLS-1$
 
         addCommonsComponents();
-        
+
         new ToolItem(getToolBarActions(), SWT.SEPARATOR);
-        
+
         guessItem = new ToolItem(getToolBarActions(), SWT.PUSH);
         guessItem.setToolTipText(Messages.getString("ToolbarOutputZone.widgetTooltip.mapInputAndOutput")); //$NON-NLS-1$
         guessItem.setText(Messages.getString("ToolbarOutputZone.widgetText.autoMap")); //$NON-NLS-1$
-        
+
     }
 
     /**
@@ -115,13 +115,13 @@ public class ToolbarOutputZone extends ToolbarZone {
         });
 
         guessItem.addListener(SWT.Selection, new Listener() {
-            
+
             public void handleEvent(Event event) {
                 getMapperManager().mapAutomaticallly();
             }
-            
+
         });
-        
+
     }
 
     public String getMinimizeTooltipText() {
@@ -135,11 +135,11 @@ public class ToolbarOutputZone extends ToolbarZone {
     public String getMoveUpTooltipText() {
         return MOVE_UP_TOOLTIP;
     }
-    
+
     public String getMoveDownTooltipText() {
         return MOVE_DOWN_TOOLTIP;
     }
-    
+
     /*
      * (non-Javadoc)
      * 

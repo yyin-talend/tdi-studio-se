@@ -43,7 +43,7 @@ public class ExternalDbMapEntry implements Serializable {
     private String operator;
 
     private boolean join;
-    
+
     public ExternalDbMapEntry() {
         super();
     }
@@ -58,9 +58,10 @@ public class ExternalDbMapEntry implements Serializable {
         this.name = name;
         this.expression = expression;
     }
-    
+
     /**
      * DOC amaumont ExternalDbMapEntry constructor comment.
+     * 
      * @param name
      * @param expression
      * @param operator
@@ -106,24 +107,22 @@ public class ExternalDbMapEntry implements Serializable {
         this.operator = type;
     }
 
-    
     /**
      * Getter for join.
+     * 
      * @return the join
      */
     public boolean isJoin() {
         return this.join;
     }
 
-    
     /**
      * Sets the join.
+     * 
      * @param join the join to set
      */
     public void setJoin(boolean join) {
         this.join = join;
     }
-    
-    
-    
+
 }

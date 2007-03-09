@@ -77,7 +77,7 @@ public class AliasDialog {
         IInputValidator inputValidator = new IInputValidator() { //$NON-NLS-1$
 
             public String isValid(String newText) {
-                if (newText.length() == 0 ) {// tableManager.getInputTableFromAlias(newText) != null) {
+                if (newText.length() == 0) {// tableManager.getInputTableFromAlias(newText) != null) {
                     return Messages.getString("UIManager.aliasIsInvalid"); //$NON-NLS-1$
                 }
                 String aliasTest = aliasInternalDialog.getTableName();
@@ -147,6 +147,7 @@ public class AliasDialog {
         }
 
         String tableName;
+
         String internalTableName;
 
         Combo combo;
@@ -220,11 +221,10 @@ public class AliasDialog {
             getText().selectAll();
 
         }
-        
+
         public String getTableName() {
             return internalTableName;
         }
-        
 
     };
 

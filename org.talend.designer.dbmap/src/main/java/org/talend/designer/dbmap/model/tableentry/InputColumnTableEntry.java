@@ -33,12 +33,13 @@ import org.talend.designer.dbmap.model.table.AbstractDataMapTable;
 public class InputColumnTableEntry extends AbstractInOutTableEntry {
 
     private String operator;
-    
+
     private boolean join;
-    
+
     private String originalExpression;
-    
-    public InputColumnTableEntry(AbstractDataMapTable abstractDataMapTable, IMetadataColumn metadataColumn, String expression) {
+
+    public InputColumnTableEntry(AbstractDataMapTable abstractDataMapTable, IMetadataColumn metadataColumn,
+            String expression) {
         super(abstractDataMapTable, metadataColumn, expression);
     }
 
@@ -46,61 +47,59 @@ public class InputColumnTableEntry extends AbstractInOutTableEntry {
         super(abstractDataMapTable, metadataColumn);
     }
 
-    
     /**
      * Getter for operator.
+     * 
      * @return the operator
      */
     public String getOperator() {
         return this.operator;
     }
-    
+
     /**
      * Sets the operator.
+     * 
      * @param operator the operator to set
      */
     public void setOperator(String operator) {
         this.operator = operator;
     }
 
-    
     /**
      * Getter for join.
+     * 
      * @return the join
      */
     public boolean isJoin() {
         return this.join;
     }
 
-    
     /**
      * Sets the join.
+     * 
      * @param join the join to set
      */
     public void setJoin(boolean join) {
         this.join = join;
     }
 
-    
     /**
      * Getter for originalExpression.
+     * 
      * @return the originalExpression
      */
     public String getOriginalExpression() {
         return this.originalExpression;
     }
 
-    
     /**
-     * Sets the originalExpression.
-     * Used to save the original expression while operator is not accepted, so expression will be restored if operator has not changed.
+     * Sets the originalExpression. Used to save the original expression while operator is not accepted, so expression
+     * will be restored if operator has not changed.
+     * 
      * @param expressionBackup the originalExpression to set
      */
     public void setOriginalExpression(String originalExpression) {
         this.originalExpression = originalExpression;
     }
 
-    
-    
-    
 }

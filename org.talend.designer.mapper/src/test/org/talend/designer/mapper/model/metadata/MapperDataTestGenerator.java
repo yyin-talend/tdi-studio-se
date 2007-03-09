@@ -1480,7 +1480,6 @@ public class MapperDataTestGenerator {
             // TODO Auto-generated method stub
         }
 
-
         /*
          * (non-Javadoc)
          * 

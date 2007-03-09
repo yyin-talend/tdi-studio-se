@@ -61,38 +61,39 @@ public class ProblemsAnalyser {
         problems.clear();
 
         return null;
-        
-//        if (externalData != null) {
-//
-//            List<ExternalDbMapTable> extInputTables = new ArrayList<ExternalDbMapTable>(externalData.getInputTables());
-//            List<ExternalDbMapTable> extVarTables = new ArrayList<ExternalDbMapTable>(externalData.getVarsTables());
-//            List<ExternalDbMapTable> extOutputTables = new ArrayList<ExternalDbMapTable>(externalData.getOutputTables());
-//            // loop on all tables
-//
-//            ICodeProblemsChecker codeChecker = this.mapperManager.getCurrentLanguage().getCodeChecker();
-//            IDbLanguage currentLanguage = this.mapperManager.getCurrentLanguage();
-//            if (currentLanguage.getCodeLanguage() == ECodeLanguage.JAVA) {
-//                codeChecker.checkProblems(null);
-//            }
-//
-//            checkExpressionSyntaxProblems(extInputTables, codeChecker);
-//            checkExpressionSyntaxProblems(extVarTables, codeChecker);
-//            checkExpressionSyntaxProblems(extOutputTables, codeChecker);
-//
-//            List<? extends IConnection> incomingConnections = new ArrayList<IConnection>(this.mapperManager.getComponent()
-//                    .getIncomingConnections());
-//            ExternalDataConverter converter = new ExternalDataConverter(mapperManager);
-//            MapperMain mapperMain = mapperManager.getComponent().getMapperMain();
-//            ArrayList<IOConnection> inputsIOConnections = mapperMain.createIOConnections(incomingConnections);
-//            ArrayList<InputTable> inputTables = converter.prepareInputTables(inputsIOConnections, externalData);
-//
-//            checkKeysProblems(inputTables);
-//
-//            checkLookupTablesUnusedProblems(inputTables);
-//
-//        }
-//
-//        return getProblems();
+
+        // if (externalData != null) {
+        //
+        // List<ExternalDbMapTable> extInputTables = new ArrayList<ExternalDbMapTable>(externalData.getInputTables());
+        // List<ExternalDbMapTable> extVarTables = new ArrayList<ExternalDbMapTable>(externalData.getVarsTables());
+        // List<ExternalDbMapTable> extOutputTables = new ArrayList<ExternalDbMapTable>(externalData.getOutputTables());
+        // // loop on all tables
+        //
+        // ICodeProblemsChecker codeChecker = this.mapperManager.getCurrentLanguage().getCodeChecker();
+        // IDbLanguage currentLanguage = this.mapperManager.getCurrentLanguage();
+        // if (currentLanguage.getCodeLanguage() == ECodeLanguage.JAVA) {
+        // codeChecker.checkProblems(null);
+        // }
+        //
+        // checkExpressionSyntaxProblems(extInputTables, codeChecker);
+        // checkExpressionSyntaxProblems(extVarTables, codeChecker);
+        // checkExpressionSyntaxProblems(extOutputTables, codeChecker);
+        //
+        // List<? extends IConnection> incomingConnections = new
+        // ArrayList<IConnection>(this.mapperManager.getComponent()
+        // .getIncomingConnections());
+        // ExternalDataConverter converter = new ExternalDataConverter(mapperManager);
+        // MapperMain mapperMain = mapperManager.getComponent().getMapperMain();
+        // ArrayList<IOConnection> inputsIOConnections = mapperMain.createIOConnections(incomingConnections);
+        // ArrayList<InputTable> inputTables = converter.prepareInputTables(inputsIOConnections, externalData);
+        //
+        // checkKeysProblems(inputTables);
+        //
+        // checkLookupTablesUnusedProblems(inputTables);
+        //
+        // }
+        //
+        // return getProblems();
     }
 
     /**
@@ -117,7 +118,8 @@ public class ProblemsAnalyser {
             }
 
             if (!atLeastOneExpressionFilled) {
-                addProblem(new Problem(null, "The lookup table '" + table.getName() + "' should have at least one expression key filled. ", //$NON-NLS-1$ //$NON-NLS-2$
+                addProblem(new Problem(null,
+                        "The lookup table '" + table.getName() + "' should have at least one expression key filled. ", //$NON-NLS-1$ //$NON-NLS-2$
                         ProblemStatus.WARNING));
             }
 
@@ -143,7 +145,7 @@ public class ProblemsAnalyser {
             for (IColumnEntry entry : columnEntries) {
                 InputColumnTableEntry inputEntry = (InputColumnTableEntry) entry;
                 String columnName = entry.getName();
-//                addProblem(new Problem(null, description, ProblemStatus.WARNING));
+                // addProblem(new Problem(null, description, ProblemStatus.WARNING));
             }
         }
 

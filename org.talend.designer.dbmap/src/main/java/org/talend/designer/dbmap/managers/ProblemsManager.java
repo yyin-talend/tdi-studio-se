@@ -94,12 +94,15 @@ public class ProblemsManager {
 
                     IODataComponentContainer dataComponents = mapperNode.getIODataComponents();
 
-                    List<IODataComponent> mapperInputsDataComponent = (List<IODataComponent>) dataComponents.getInputs();
+                    List<IODataComponent> mapperInputsDataComponent = (List<IODataComponent>) dataComponents
+                            .getInputs();
                     HashMap<String, IMetadataTable> connectionNameToInputMetadataTable = new HashMap<String, IMetadataTable>();
                     for (IODataComponent dataComponent : mapperInputsDataComponent) {
-                        connectionNameToInputMetadataTable.put(dataComponent.getConnection().getName(), dataComponent.getTable());
+                        connectionNameToInputMetadataTable.put(dataComponent.getConnection().getName(), dataComponent
+                                .getTable());
                     }
-                    List<IConnection> processIncomingConnections = (List<IConnection>) processExternalNode.getIncomingConnections();
+                    List<IConnection> processIncomingConnections = (List<IConnection>) processExternalNode
+                            .getIncomingConnections();
                     for (IConnection connection : processIncomingConnections) {
                         if (connection instanceof AbstractConnection) {
                             IMetadataTable metadataTable = connectionNameToInputMetadataTable.get(connection.getName());
@@ -109,15 +112,19 @@ public class ProblemsManager {
 
                     List<IMetadataTable> metadataListOut = new ArrayList<IMetadataTable>();
 
-                    List<IODataComponent> mapperOutputsDataComponent = (List<IODataComponent>) dataComponents.getOuputs();
+                    List<IODataComponent> mapperOutputsDataComponent = (List<IODataComponent>) dataComponents
+                            .getOuputs();
                     HashMap<String, IMetadataTable> connectionNameToOutputMetadataTable = new HashMap<String, IMetadataTable>();
                     for (IODataComponent dataComponent : mapperOutputsDataComponent) {
-                        connectionNameToOutputMetadataTable.put(dataComponent.getConnection().getName(), dataComponent.getTable());
+                        connectionNameToOutputMetadataTable.put(dataComponent.getConnection().getName(), dataComponent
+                                .getTable());
                     }
-                    List<IConnection> processOutgoingConnections = (List<IConnection>) processExternalNode.getOutgoingConnections();
+                    List<IConnection> processOutgoingConnections = (List<IConnection>) processExternalNode
+                            .getOutgoingConnections();
                     for (IConnection connection : processOutgoingConnections) {
                         if (connection instanceof AbstractConnection) {
-                            IMetadataTable metadataTable = connectionNameToOutputMetadataTable.get(connection.getName());
+                            IMetadataTable metadataTable = connectionNameToOutputMetadataTable
+                                    .get(connection.getName());
                             ((AbstractConnection) connection).setMetadataTable(metadataTable);
                             metadataListOut.add(metadataTable);
                         }
@@ -231,7 +238,8 @@ public class ProblemsManager {
                 errorMessage = "Operator of input entry '" + inputEntry.getName() + "' is not set";
             }
             if (operatorIsSet && !expressionIsSet && !dbOperator.isMonoOperand()) {
-                errorMessage = "Expression of input entry '" + inputEntry.getParentName() + "." + inputEntry.getName() + "' is not set";
+                errorMessage = "Expression of input entry '" + inputEntry.getParentName() + "." + inputEntry.getName()
+                        + "' is not set";
             }
             if (errorMessage != null) {
                 problem = new Problem(null, errorMessage, ProblemStatus.ERROR);
@@ -241,7 +249,8 @@ public class ProblemsManager {
             String errorMessage = null;
             Problem problem = null;
             if (expression == null || EMPTY_STRING.equals(expression.trim())) {
-                errorMessage = "Expression of output entry '" + tableEntry.getParentName() + "." + tableEntry.getName() + "' is not set";
+                errorMessage = "Expression of output entry '" + tableEntry.getParentName() + "." + tableEntry.getName()
+                        + "' is not set";
             }
             if (errorMessage != null) {
                 problem = new Problem(null, errorMessage, ProblemStatus.ERROR);

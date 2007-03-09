@@ -75,7 +75,8 @@ public class StyleLinkFactory {
      */
     private void init() {
 
-        selectedZoneToZoneStyle = getSelectedZoneToOtherZoneStyle(ColorProviderMapper.getColor(ColorInfo.COLOR_SELECTED_ZONE_TO_ZONE_LINK));
+        selectedZoneToZoneStyle = getSelectedZoneToOtherZoneStyle(ColorProviderMapper
+                .getColor(ColorInfo.COLOR_SELECTED_ZONE_TO_ZONE_LINK));
         unselectedZoneToZoneStyle = getUnselectedZoneToZoneStyle();
 
         selectedFilterStyle = getSelectedFilterStyle();

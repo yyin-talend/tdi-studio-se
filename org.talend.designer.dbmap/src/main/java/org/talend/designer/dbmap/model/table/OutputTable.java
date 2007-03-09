@@ -52,7 +52,8 @@ public class OutputTable extends AbstractInOutTable {
 
     public OutputTable(MapperManager mapperManager, IMetadataTable metadataTable, String name) {
         super(mapperManager, metadataTable, name);
-        this.tableFiltersEntriesModel = new ExtendedTableModel<FilterTableEntry>(name + " : model for Filters", filterTableEntries); //$NON-NLS-1$
+        this.tableFiltersEntriesModel = new ExtendedTableModel<FilterTableEntry>(
+                name + " : model for Filters", filterTableEntries); //$NON-NLS-1$
     }
 
     public void initFromExternalData(ExternalDbMapTable externalMapperTable) {
@@ -63,8 +64,9 @@ public class OutputTable extends AbstractInOutTable {
             List<ExternalDbMapEntry> externalConstraintTableEntries = externalMapperTable.getCustomConditionsEntries();
             if (externalConstraintTableEntries != null) {
                 for (ExternalDbMapEntry entry : externalConstraintTableEntries) {
-                    FilterTableEntry filterTableEntry = new FilterTableEntry(this, entry.getName(), entry.getExpression());
-//                    mapperManager.getProblemsManager().checkProblemsForTableEntry(filterTableEntry, false);
+                    FilterTableEntry filterTableEntry = new FilterTableEntry(this, entry.getName(), entry
+                            .getExpression());
+                    // mapperManager.getProblemsManager().checkProblemsForTableEntry(filterTableEntry, false);
                     addFilterEntry(filterTableEntry);
                 }
             }

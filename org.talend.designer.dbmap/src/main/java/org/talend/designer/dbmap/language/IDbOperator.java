@@ -21,19 +21,17 @@
 // ============================================================================
 package org.talend.designer.dbmap.language;
 
-
 /**
- * DOC amaumont  class global comment. Detailled comment
- * <br/>
- *
+ * DOC amaumont class global comment. Detailled comment <br/>
+ * 
  * $Id$
- *
+ * 
  */
 public interface IDbOperator extends IDbKeyWord {
 
     public abstract boolean isMonoOperand();
-    
+
     public abstract String getOperator();
-    
+
     public abstract String getAssociatedExpression();
 }

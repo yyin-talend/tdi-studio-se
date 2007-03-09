@@ -178,8 +178,8 @@ public class DropContextAnalyzer {
             }
         }
 
-        if (zoneSource == Zone.VARS && zoneTarget == Zone.INPUTS || zoneSource == Zone.OUTPUTS && zoneTarget == Zone.INPUTS
-                || zoneSource == Zone.OUTPUTS && zoneTarget == Zone.VARS) {
+        if (zoneSource == Zone.VARS && zoneTarget == Zone.INPUTS || zoneSource == Zone.OUTPUTS
+                && zoneTarget == Zone.INPUTS || zoneSource == Zone.OUTPUTS && zoneTarget == Zone.VARS) {
             /*
              * VAR => INPUT OUTPUT => OUTPUT OUTPUT => INPUT OUTPUT => VAR
              */
@@ -267,13 +267,15 @@ public class DropContextAnalyzer {
                 mapOneToOneMode = false;
                 insertionEntryMode = false;
                 dropFeedback |= DND.FEEDBACK_SELECT;
-            } else if (zoneSource == Zone.INPUTS && zoneTarget == Zone.VARS || zoneSource == Zone.INPUTS && zoneTarget == Zone.OUTPUTS
-                    || zoneSource == Zone.VARS && zoneTarget == Zone.VARS || zoneSource == Zone.VARS && zoneTarget == Zone.OUTPUTS
-                    || zoneSource == Zone.OUTPUTS && zoneTarget == Zone.OUTPUTS) {
+            } else if (zoneSource == Zone.INPUTS && zoneTarget == Zone.VARS || zoneSource == Zone.INPUTS
+                    && zoneTarget == Zone.OUTPUTS || zoneSource == Zone.VARS && zoneTarget == Zone.VARS
+                    || zoneSource == Zone.VARS && zoneTarget == Zone.OUTPUTS || zoneSource == Zone.OUTPUTS
+                    && zoneTarget == Zone.OUTPUTS) {
 
                 if (isCursorOverExpressionCell) {
                     insertionEntryMode = false;
-                    if (mapperManager.getUiManager().isShiftPressed() && draggedData.getTransferableEntryList().size() > 1) {
+                    if (mapperManager.getUiManager().isShiftPressed()
+                            && draggedData.getTransferableEntryList().size() > 1) {
                         mapOneToOneMode = true;
                     } else {
                         dropFeedback |= DND.FEEDBACK_SELECT;
@@ -363,7 +365,8 @@ public class DropContextAnalyzer {
     @Override
     public String toString() {
         return "\nDropContextAnalyzer instance:" + "\n isTargetEntryValid=" + isDropValid + "\n insertionIndicatorVisible=" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-                + insertionEntryMode + "\n mapOneToOne=" + mapOneToOneMode + "\n overwriteExpression=" + overwriteExpression //$NON-NLS-1$ //$NON-NLS-2$
+                + insertionEntryMode
+                + "\n mapOneToOne=" + mapOneToOneMode + "\n overwriteExpression=" + overwriteExpression //$NON-NLS-1$ //$NON-NLS-2$
                 + "\n isCursorOverExpressionColumn=" + isCursorOverExpressionCell; //$NON-NLS-1$
     }
 

@@ -81,13 +81,13 @@ public abstract class ToolbarZone {
         upTableButton = new ToolItem(toolBarActions, SWT.PUSH);
         upTableButton.setEnabled(false);
         upTableButton.setToolTipText(getMoveUpTooltipText());
-        upTableButton.setImage(org.talend.commons.ui.image.ImageProvider.getImage(org.talend.commons.ui.image.ImageProvider
-                .getImageDesc(EImage.UP_ICON)));
+        upTableButton.setImage(org.talend.commons.ui.image.ImageProvider
+                .getImage(org.talend.commons.ui.image.ImageProvider.getImageDesc(EImage.UP_ICON)));
 
         downTableButton = new ToolItem(toolBarActions, SWT.PUSH);
         downTableButton.setEnabled(false);
-        downTableButton.setImage(org.talend.commons.ui.image.ImageProvider.getImage(org.talend.commons.ui.image.ImageProvider
-                .getImageDesc(EImage.DOWN_ICON)));
+        downTableButton.setImage(org.talend.commons.ui.image.ImageProvider
+                .getImage(org.talend.commons.ui.image.ImageProvider.getImageDesc(EImage.DOWN_ICON)));
         downTableButton.setToolTipText(getMoveDownTooltipText());
 
         new ToolItem(getToolBarActions(), SWT.SEPARATOR);
@@ -135,11 +135,11 @@ public abstract class ToolbarZone {
     }
 
     public abstract String getMinimizeTooltipText();
-    
+
     public abstract String getRestoreTooltipText();
 
     public abstract String getMoveUpTooltipText();
-    
+
     public abstract String getMoveDownTooltipText();
 
     public abstract Zone getZone();

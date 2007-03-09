@@ -133,8 +133,9 @@ public class TableEntriesManager {
                 ((OutputTable) dataMapTable).addFilterEntry((FilterTableEntry) dataMapTableEntry, index);
             }
         } else {
-            String exceptionMessage = Messages.getString("TableEntriesManager.exceptionMessage.typeIsNotValid", dataMapTableEntry //$NON-NLS-1$
-                    .getClass().toString());
+            String exceptionMessage = Messages.getString(
+                    "TableEntriesManager.exceptionMessage.typeIsNotValid", dataMapTableEntry //$NON-NLS-1$
+                            .getClass().toString());
             throw new IllegalArgumentException(exceptionMessage);
         }
         // TableEntriesManagerEvent event = new TableEntriesManagerEvent(EVENT_TYPE.ADD);
@@ -198,7 +199,8 @@ public class TableEntriesManager {
     }
 
     TableItem retrieveTableItem(ITableEntry dataMapTableEntry) {
-        DataMapTableView dataMapTableView = this.mapperManager.retrieveAbstractDataMapTableView(dataMapTableEntry.getParent());
+        DataMapTableView dataMapTableView = this.mapperManager.retrieveAbstractDataMapTableView(dataMapTableEntry
+                .getParent());
         TableItem[] tableItems = new TableItem[0];
         if (dataMapTableEntry instanceof IColumnEntry) {
             tableItems = dataMapTableView.getTableViewerCreatorForColumns().getTable().getItems();
@@ -236,11 +238,13 @@ public class TableEntriesManager {
      * @param newColumnName
      */
     public void renameEntryName(ITableEntry dataMapTableEntry, String previousColumnName, String newColumnName) {
-        TableEntryLocation tableEntryLocationKey = new TableEntryLocation(dataMapTableEntry.getParentName(), previousColumnName);
+        TableEntryLocation tableEntryLocationKey = new TableEntryLocation(dataMapTableEntry.getParentName(),
+                previousColumnName);
         // TableEntriesManager.buildLocation(dataMapTableEntry);
         ITableEntry entry = tableEntries.get(tableEntryLocationKey);
         if (entry != dataMapTableEntry) {
-            throw new IllegalStateException(Messages.getString("TableEntriesManager.exceptionMessage.tableEntriesNotSame")); //$NON-NLS-1$
+            throw new IllegalStateException(Messages
+                    .getString("TableEntriesManager.exceptionMessage.tableEntriesNotSame")); //$NON-NLS-1$
         }
         tableEntries.remove(tableEntryLocationKey);
         tableEntryLocationKey.columnName = newColumnName;

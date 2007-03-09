@@ -39,7 +39,6 @@ public abstract class AbstractLanguage implements ILanguage {
 
     protected ICodeProblemsChecker codeChecker;
 
-
     /**
      * DOC amaumont AbstractLanguage constructor comment.
      * 
@@ -76,7 +75,6 @@ public abstract class AbstractLanguage implements ILanguage {
         return codeLanguage;
     }
 
-    
     /*
      * (non-Javadoc)
      * 

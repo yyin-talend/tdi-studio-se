@@ -87,7 +87,7 @@ public class TabFolderEditors extends CTabFolder {
         createExpressionEditorTab();
 
         createSqlViewerTab();
-        
+
         tabFolderEditors.addListener(SWT.Selection, new Listener() {
 
             public void handleEvent(Event event) {
@@ -150,7 +150,8 @@ public class TabFolderEditors extends CTabFolder {
         } else {
             IPreferenceStore preferenceStore = CorePlugin.getDefault().getPreferenceStore();
             ColorManager colorManager = new ColorManager(preferenceStore);
-            styledText = new MapperColorStyledText(tabFolderEditors, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL, colorManager, "tsql");
+            styledText = new MapperColorStyledText(tabFolderEditors, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL,
+                    colorManager, "tsql");
         }
         styledText.setEnabled(false);
         item.setControl(styledText);
@@ -169,15 +170,13 @@ public class TabFolderEditors extends CTabFolder {
         return this.styledTextHandler;
     }
 
-    
     /**
      * Getter for styledSqlText.
+     * 
      * @return the styledSqlText
      */
     public StyledText getStyledSqlText() {
         return this.styledSqlText;
     }
 
-    
-    
 }

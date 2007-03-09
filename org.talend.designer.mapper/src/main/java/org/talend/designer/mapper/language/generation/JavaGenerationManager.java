@@ -24,7 +24,6 @@ package org.talend.designer.mapper.language.generation;
 import java.util.List;
 
 import org.talend.commons.utils.generation.CodeGenerationUtils;
-import org.talend.designer.mapper.MapperComponent;
 import org.talend.designer.mapper.external.data.ExternalMapperTableEntry;
 import org.talend.designer.mapper.language.ILanguage;
 import org.talend.designer.mapper.language.LanguageProvider;
