@@ -29,12 +29,14 @@ import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchWizard;
 import org.talend.commons.exception.PersistenceException;
+import org.talend.commons.ui.image.ImageProvider;
 import org.talend.commons.ui.swt.dialogs.ErrorDialogWidthDetailArea;
 import org.talend.core.model.metadata.builder.ConvertionHelper;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.metadata.builder.database.ExtractMetaDataFromDataBase;
 import org.talend.core.model.properties.ConnectionItem;
+import org.talend.core.ui.images.ECoreImage;
 import org.talend.repository.RepositoryElementDelta;
 import org.talend.repository.RepositoryPlugin;
 import org.talend.repository.i18n.Messages;
@@ -87,7 +89,8 @@ public class DatabaseTableWizard extends RepositoryWizard implements INewWizard 
 
     public void addPages() {
         setWindowTitle(Messages.getString("TableWizard.windowTitle")); //$NON-NLS-1$
-
+        setDefaultPageImageDescriptor(ImageProvider.getImageDesc(ECoreImage.METADATA_TABLE_WIZ));
+        
         boolean skipStep = false;
 
         ManagerConnection managerConnection = new ManagerConnection();
