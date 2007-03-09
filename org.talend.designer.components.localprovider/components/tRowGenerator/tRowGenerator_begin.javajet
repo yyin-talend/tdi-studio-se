@@ -59,7 +59,7 @@ int nb_max_row_<%=cid%> = <%=ElementParameterParser.getValue(node, "__NB_ROWS__"
 %>
 
 java.util.Random random<%=cid %> = new java.util.Random(); 
-for (int i=0; i<nb_max_row_<%=cid%> ;i++) {
+for (int i<%=cid %>=0; i<%=cid %><nb_max_row_<%=cid%> ;i<%=cid %>++) {
 <%
 			for (IMetadataColumn column: metadata.getListColumns()) {
 %>

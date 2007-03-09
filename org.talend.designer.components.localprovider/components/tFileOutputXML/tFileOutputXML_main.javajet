@@ -43,8 +43,8 @@ java.io.BufferedWriter out_<%=cid%> = null;
 	 out_<%=cid%> = new java.io.BufferedWriter(
 	                                new java.io.OutputStreamWriter(fos_<%=cid%>, <%=encoding%>));
 	                                
-    for (int i = rootTag_<%=cid%>.length-1; i >=0 ; i--) {
-			strBuffer_<%=cid%>.append("</"+rootTag_<%=cid%>[i]+">");		            
+    for (int i<%=cid %> = rootTag_<%=cid%>.length-1; i<%=cid %> >=0 ; i<%=cid %>--) {
+			strBuffer_<%=cid%>.append("</"+rootTag_<%=cid%>[i<%=cid %>]+">");		            
    		}
     	out_<%=cid%>.write(strBuffer_<%=cid%>.toString());   
 		out_<%=cid%>.flush();
@@ -59,8 +59,8 @@ java.io.BufferedWriter out_<%=cid%> = null;
 }
 if(currentRowQtyWithinFile_<%=cid%>==0){
 strBuffer_<%=cid%>.append("<?xml version=\"1.0\" encoding=\""+<%= encoding %>+"\"?> \n");
-	for (int i = 0; i < rootTag_<%=cid%>.length; i++) {
-		strBuffer_<%=cid%>.append("<"+rootTag_<%=cid%>[i]+">");		            
+	for (int i<%=cid %> = 0; i<%=cid %> < rootTag_<%=cid%>.length; i<%=cid %>++) {
+		strBuffer_<%=cid%>.append("<"+rootTag_<%=cid%>[i<%=cid %>]+">");		            
     }
     strBuffer_<%=cid%>.append("\n");
 }
