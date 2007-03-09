@@ -35,7 +35,6 @@ import org.eclipse.debug.core.ILaunchConfiguration;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.MessageBoxExceptionHandler;
 import org.talend.core.model.process.IContext;
-import org.talend.core.model.process.IProcess;
 import org.talend.designer.core.ISyntaxCheckableEditor;
 import org.talend.designer.runprocess.i18n.Messages;
 
@@ -225,8 +224,7 @@ public abstract class Processor implements IProcessor {
     }
 
     protected static String setStringPath(String path) {
-        return path;
-//        return "\"" + path.replace("\\", "/") + "\"";
+        return "\"" + path.replace("\\", "/") + "\"";
     }
 
     /*
