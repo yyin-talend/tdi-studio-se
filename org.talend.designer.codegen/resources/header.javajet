@@ -113,6 +113,11 @@ private class TalendException extends Exception {
 		e.printStackTrace();
 
 		try {
+			for (java.lang.reflect.Method m : this.getClass().getEnclosingClass().getMethods()) {
+				if (m.getName().compareTo(currentComponent + "_error") == 0) {
+					m.invoke(c, (Object[])null);
+				}
+			}
 <%
 		if (process.getNodesOfType("tLogCatcher").size() > 0) {
 			List<INode> logCatchers = (List<INode>)process.getNodesOfType("tLogCatcher");
@@ -130,11 +135,6 @@ private class TalendException extends Exception {
 			}
 		}
 %>
-			for (java.lang.reflect.Method m : this.getClass().getEnclosingClass().getMethods()) {
-				if (m.getName().compareTo(currentComponent + "_error") == 0) {
-					m.invoke(c, (Object[])null);
-				}
-			}
 		} catch (java.lang.SecurityException e) {
 			this.e.printStackTrace();
 		} catch (java.lang.IllegalArgumentException e) {
