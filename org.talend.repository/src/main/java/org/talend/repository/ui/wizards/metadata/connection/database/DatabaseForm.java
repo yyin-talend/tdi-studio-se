@@ -40,6 +40,8 @@ import org.talend.commons.ui.swt.formtools.LabelledCombo;
 import org.talend.commons.ui.swt.formtools.LabelledFileField;
 import org.talend.commons.ui.swt.formtools.LabelledText;
 import org.talend.commons.ui.swt.formtools.UtilsButton;
+import org.talend.core.language.ECodeLanguage;
+import org.talend.core.language.LanguageManager;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.repository.i18n.Messages;
@@ -197,9 +199,18 @@ public class DatabaseForm extends AbstractForm {
 
         // Database Type Combo
         urlDataStringConnection = new DataStringConnection();
-        dbTypeCombo = new LabelledCombo(compositeDbSettings, Messages.getString("DatabaseForm.dbType"), Messages //$NON-NLS-1$
-                .getString("DatabaseForm.dbTypeTip"), urlDataStringConnection.getItem(), 2, true); //$NON-NLS-1$
 
+        //PTODO cantoine : HIDDEN SYBASE connection in JAVA MODE.
+        if (LanguageManager.getCurrentLanguage() == ECodeLanguage.PERL) {
+            dbTypeCombo = new LabelledCombo(compositeDbSettings, Messages.getString("DatabaseForm.dbType"), Messages //$NON-NLS-1$
+                    .getString("DatabaseForm.dbTypeTip"), urlDataStringConnection.getItem(), 2, true); //$NON-NLS-1$
+        } else {
+            String [] dbJava = { "MySQL", "PostgreSQL", "Oracle with SID", "Oracle with service name", "Generic ODBC", "Microsoft SQL Server (Odbc driver)"};
+            dbTypeCombo = new LabelledCombo(compositeDbSettings, Messages.getString("DatabaseForm.dbType"), Messages //$NON-NLS-1$
+                    .getString("DatabaseForm.dbTypeTip"), dbJava, 2, true); //$NON-NLS-1$
+        }
+
+        
         // Field connectionString
         urlDataStringConnection.setSelectionIndex(dbTypeCombo.getSelectionIndex());
         urlConnectionStringText = new LabelledText(compositeDbSettings, Messages.getString("DatabaseForm.stringConnection"), 2); //$NON-NLS-1$
