@@ -34,9 +34,7 @@
     
     List<Map<String, String>> addCols =
             (List<Map<String,String>>)ElementParameterParser.getObjectValue(
-                node,
-                "__ADD_COLS__"
-            );
+                node,"__ADD_COLS__" );
     
     
     String dbname= ElementParameterParser.getValue(node, "__DBNAME__");
@@ -60,23 +58,28 @@ java.lang.Class.forName("<%=javaDbDriver %>");
 <%
 if(javaDbtype.equals("undef")){
 %>
+
 String url_<%=cid %> = "jdbc:odbc:"+<%=dbname%>;
 <%
 }else if(javaDbtype.equals("mssql")){
 %>
+
 String url_<%=cid %> = "jdbc:odbc:"+<%=dbname%>;
 <%
 }else if(javaDbtype.equals("oracle")){
 String dbSchema = ElementParameterParser.getValue(node, "__SCHEMA_DB__");
 %>
+
 String url_<%=cid %> = "jdbc:oracle:thin:@"+<%=dbhost%>+":"+<%=dbport%>+":"+<%=dbSchema%>;
 <%
 }else if(javaDbtype.equals("postgresql")){
 %>
+
 String url_<%=cid %> = "jdbc:postgresql://"+<%=dbhost%>+":"+<%=dbport%>+"/"+<%=dbname%>;
 <%
 }else if(javaDbtype.equals("mysql")){
 %>
+
 String url_<%=cid %> = "jdbc:mysql://"+<%=dbhost%>+":"+<%=dbport%>+"/"+<%=dbname%>;
 <%
 }
@@ -90,15 +93,31 @@ if(metadatas !=null && metadatas.size()>0){
 	}
 }
 %>
-
 String dbUser_<%=cid %> = <%=dbuser%>;
 String dbPwd_<%=cid %> = <%=dbpwd%>;
 
 java.sql.Connection conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>,dbUser_<%=cid%>,dbPwd_<%=cid%>);
+<%if(dataAction.equals("INSERT_OR_UPDATE")||dataAction.equals("UPDATE_OR_INSERT")){%>
+
+java.sql.PreparedStatement pstmtInsert_<%=cid %> =null;
+
+java.sql.PreparedStatement pstmtUpdate_<%=cid %> =null;
 
 java.sql.PreparedStatement pstmt_<%=cid %> =null;
 
+<%if(dataAction.equals("INSERT_OR_UPDATE")){%>
+boolean executeUpdate_<%=cid%> = false;
+<%}else{%>
+boolean executeInsert_<%=cid%> = false;
+<%}%>
+
+<%}else{%>
+
+java.sql.PreparedStatement pstmt_<%=cid %> =null;
+	
 <%
+}
+
 if (talbeAction.equals("DROP_CREATE_TABLE") || talbeAction.equals("CREATE_TABLE")){
 	if(!talbeAction.equals("CREATE_TABLE")){
 	%>
@@ -107,11 +126,13 @@ if (talbeAction.equals("DROP_CREATE_TABLE") || talbeAction.equals("CREATE_TABLE"
 			pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement("SELECT * FROM "+<%=tableName%>);
 			pstmt_<%=cid %>.execute();
 			isTableExist_<%=cid %> = true;
-		}catch(Exception err){
-			System.out.println("Table "+<%=tableName%>+" not exist!");
+		}catch(Exception e){
+			System.out.println("Table "+<%=tableName%>+"does not exist!");
 		}finally{
 			pstmt_<%=cid %>.close();
+			conn_<%=cid%>.close();
 			pstmt_<%=cid %> = null;
+			conn_<%=cid%> = null;
 		}
 		if(isTableExist_<%=cid %> ){
 	
@@ -121,14 +142,25 @@ if (talbeAction.equals("DROP_CREATE_TABLE") || talbeAction.equals("CREATE_TABLE"
 		}	
 <%
 	}
+
 List columnParamemters = new ArrayList();
+
 if(columnList != null){
+	
 	for(IMetadataColumn column:columnList){
+		
 	    String columnName = column.getLabel();
+	    
 	    int columnLen  = column.getLength()== null?0:column.getLength();
-		String columnDbtype = MetadataTalendType.getMappingTypeRetriever(dbmsId).getDefaultSelectedDbType(column.getTalendType(),true);
-		MetadataTalendType.getMappingTypeRetriever(javaDbtype);		
+	    
+	    String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
+	    
+		String columnDbtype = MetadataTalendType.getMappingTypeRetriever(dbmsId).getDefaultSelectedDbType(typeToGenerate,true);
+		
+		MetadataTalendType.getMappingTypeRetriever(javaDbtype);
+		
 		columnParamemters.add(new String [] {columnName,columnDbtype,Integer.toString(columnLen)});
+	
 	}
 }
 %>
@@ -137,30 +169,31 @@ pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement("CREATE TABLE "+<%=tableName%>+
 
 <%
 for(int i=0 ; i< columnParamemters.size(); i++){
+
 	String[] colParam = (String[])columnParamemters.get(i);
+	
 	String 	colLen = "";
+	
+	String suffix ="";
+	
 	if(colParam[1].equals("VARCHAR")){
-		colLen = colParam[2];
+	
+		suffix = "("+colParam[2]+")";
 	}
 	if(i==(columnParamemters.size()-1)){
 	%>
-		"<%=colParam[0]%> <%=colParam[1]%>(<%=colLen%>))"
+		"<%=colParam[0]%> <%=colParam[1]%><%=suffix%>"
 	<%
 		break;
 	}
 	%>
-		"<%=colParam[0]%> <%=colParam[1]%>(<%=colLen%>),"+
+		"<%=colParam[0]%> <%=colParam[1]%><%=suffix%>,"+
 	<%
 }
 	%>
 							);
 pstmt_<%=cid %>.execute();
 System.out.println("Table "+<%=tableName%>+" created.");
-	<%
-}else if (talbeAction.equals("CREATE_TABLE")){
-
-	%>
-//CREATE TABLE
 	<%
 }else if (talbeAction.equals("CLEAR_TABLE")){
 	%>
@@ -257,19 +290,21 @@ class Column{
 		return this.value;
 	}
 }
-	
-	StringBuffer insertColName = new StringBuffer();
-	
-	StringBuffer insertValueStmt = new StringBuffer();
-	
-	StringBuffer updateSetStmt = new StringBuffer();
-	
-	StringBuffer updateWhereStmt = new StringBuffer();
-	
-	List<Column> stmtStructure =  new LinkedList<Column>();
+
+StringBuffer insertColName = new StringBuffer();
+
+StringBuffer insertValueStmt = new StringBuffer();
+
+StringBuffer updateSetStmt = new StringBuffer();
+
+StringBuffer updateWhereStmt = new StringBuffer();
+
+List<Column> stmtStructure =  new LinkedList<Column>();
 
 for(IMetadataColumn column:columnList){
+
 	stmtStructure.add(new Column(column));
+
 }
 
 for(IMetadataColumn column:columnList){
@@ -300,7 +335,11 @@ for(IMetadataColumn column:columnList){
 		}
 	}
 }
+
 int counterOuter =0;
+boolean firstKey = true;
+boolean firstNoneKey = true;
+
 for(Column colStmt:stmtStructure){
 	String suffix = ",";
 	
@@ -314,11 +353,21 @@ for(Column colStmt:stmtStructure){
 			insertColName.append(replacement.getName()+suffix);
 			insertValueStmt.append(replacement.getSqlStmt()+suffix);
 			if(!colStmt.getColumn().isKey()){
+				if(!firstNoneKey){
+					updateSetStmt.append(",");
+				}else{
+					firstNoneKey = false;
+				}
 				updateSetStmt.append(replacement.getName());
-				updateSetStmt.append(replacement.getSqlStmt()+suffix);
+				updateSetStmt.append(replacement.getSqlStmt());
 			}else{
+				if(!firstKey){
+					updateWhereStmt.append(",");
+				}else{
+					firstKey = false;
+				}
 				updateWhereStmt.append(replacement.getName());
-				updateWhereStmt.append(replacement.getSqlStmt()+suffix);
+				updateWhereStmt.append(replacement.getSqlStmt());
 			}
 			counterReplace++;
 		}
@@ -335,31 +384,70 @@ for(Column colStmt:stmtStructure){
 			insertColName.append(colStmt.getName()+suffix);
 			insertValueStmt.append(colStmt.getValue()+suffix);
 			if(!colStmt.getColumn().isKey()){
+				if(!firstNoneKey){
+					updateSetStmt.append(",");
+				}else{
+					firstNoneKey = false;
+				}
 				updateSetStmt.append(colStmt.getName());
-				updateSetStmt.append(colStmt.getSqlStmt()+suffix);
+				updateSetStmt.append(colStmt.getSqlStmt());
 			}else{
+				if(!firstKey){
+					updateWhereStmt.append(",");
+				}else{
+					firstKey = false;
+				}
 				updateWhereStmt.append(colStmt.getName());
-				updateWhereStmt.append(colStmt.getSqlStmt()+suffix);
+				updateWhereStmt.append(colStmt.getSqlStmt());
 			}
 		}
 	}
 	counterOuter ++;
 }
+
+
 	if(dataAction.equals("INSERT")){
 	%>	
+	
 pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement("INSERT INTO "+<%=tableName%>+"(<%=insertColName.toString()%>) VALUES(<%=insertValueStmt.toString()%>)");
+
 	<%
 	}else if (dataAction.equals("UPDATE")){
 	%>
+	
 pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement("UPDATE "+<%=tableName%>+" SET <%=updateSetStmt.toString()%> WHERE <%=updateWhereStmt.toString()%>");
+
 	<%		
 	}else if (dataAction.equals("INSERT_OR_UPDATE")){
+	%>
+	
+pstmtInsert_<%=cid %> = conn_<%=cid%>.prepareStatement("INSERT INTO "+<%=tableName%>+"(<%=insertColName.toString()%>) VALUES(<%=insertValueStmt.toString()%>)");
+try{
+
+	pstmtUpdate_<%=cid %> = conn_<%=cid%>.prepareStatement("UPDATE "+<%=tableName%>+" SET <%=updateSetStmt.toString()%> WHERE <%=updateWhereStmt.toString()%>");
+
+}catch(Exception e){
+	
+	System.out.println("Update operation can't be executed");
+	
+}
+
 		
+	<%
 	}else if (dataAction.equals("UPDATE_OR_INSERT")){
+	%>
 		
+pstmtUpdate_<%=cid %> = conn_<%=cid%>.prepareStatement("UPDATE "+<%=tableName%>+" SET <%=updateSetStmt.toString()%> WHERE <%=updateWhereStmt.toString()%>");
+
+pstmtInsert_<%=cid %> = conn_<%=cid%>.prepareStatement("INSERT INTO "+<%=tableName%>+"(<%=insertColName.toString()%>) VALUES(<%=insertValueStmt.toString()%>)");
+			
+	<%
+			
 	}else if (dataAction.equals("DELETE")){
 	%>
+	
 pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement("DELETE  FROM "+<%=tableName%>+" WHERE <%=updateWhereStmt.toString()%>");
+
 	<%		
 	}
 	%>
