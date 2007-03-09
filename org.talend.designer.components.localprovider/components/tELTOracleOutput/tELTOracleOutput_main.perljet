@@ -418,7 +418,7 @@ if ($nb_rows) {
         else if (dataAction.equals("INSERT")) {
 %>
 
-$isth_<%=cid %>->execute(@<%=cid %>)
+$isth_<%=cid %>->execute()
     or die "can't execute insert query\n";
 
 $nb_line_inserted_<%=cid%>++;
@@ -426,7 +426,7 @@ $nb_line_inserted_<%=cid%>++;
         }
         else if (dataAction.equals("INSERT_OR_UPDATE")) {
 %>
-if (not $isth_<%=cid %>->execute(@<%=cid%>)) {
+if (not $isth_<%=cid %>->execute()) {
     $nb_rows = $usth_<%=cid %>->execute()
         or die "can't execute update query\n";
 
@@ -443,7 +443,7 @@ else {
 %>
 if ($nb_rows = $usth_<%=cid %>->execute()) {
     if ($nb_rows == 0) {
-        $isth_<%=cid %>->execute(@<%=cid%>)
+        $isth_<%=cid %>->execute()
             or die "can't execute insert query\n";
 
         $nb_line_inserted_<%=cid%>++;
