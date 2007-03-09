@@ -135,7 +135,7 @@ public final class CodeGeneratorEmittersPoolFactory {
                     }
                 }
 
-                initializeEmittersPool(jetBeans, monitorWrap);
+                initializeEmittersPool(jetBeans, codeLanguage, monitorWrap);
                 monitorWrap.done();
                 log.debug("Components compiled in " + (System.currentTimeMillis() - startTime) + " ms");
                 initialized = true;
@@ -223,7 +223,7 @@ public final class CodeGeneratorEmittersPoolFactory {
      * 
      * @return
      */
-    private static void initializeEmittersPool(List<JetBean> components, IProgressMonitor monitorWrap) {
+    private static void initializeEmittersPool(List<JetBean> components, ECodeLanguage codeLanguage, IProgressMonitor monitorWrap) {
         IProgressMonitor monitor = new NullProgressMonitor();
         IProgressMonitor sub = new SubProgressMonitor(monitor, 1);
 
@@ -235,7 +235,7 @@ public final class CodeGeneratorEmittersPoolFactory {
         emitterPool = new HashMap<JetBean, JETEmitter>();
         List<JetBean> alreadyCompiledEmitters = new ArrayList<JetBean>();
         try {
-            alreadyCompiledEmitters = loadEmfPersistentData(EmfEmittersPersistenceFactory.getInstance()
+            alreadyCompiledEmitters = loadEmfPersistentData(EmfEmittersPersistenceFactory.getInstance(codeLanguage)
                     .loadEmittersPool(), components);
             for (JetBean jetBean : alreadyCompiledEmitters) {
                 JETEmitter emitter = new JETEmitter(jetBean.getTemplateFullUri(), jetBean.getClassLoader());
@@ -269,7 +269,7 @@ public final class CodeGeneratorEmittersPoolFactory {
             monitorWrap.worked(1);
         }
         try {
-            EmfEmittersPersistenceFactory.getInstance().saveEmittersPool(
+            EmfEmittersPersistenceFactory.getInstance(codeLanguage).saveEmittersPool(
                     extractEmfPersistenData(alreadyCompiledEmitters));
         } catch (BusinessException e) {
             log.error(Messages.getString("CodeGeneratorEmittersPoolFactory.PersitentData.Error") + e.getMessage(), e); //$NON-NLS-1$

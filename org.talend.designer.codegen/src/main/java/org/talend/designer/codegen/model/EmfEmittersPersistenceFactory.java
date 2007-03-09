@@ -35,6 +35,7 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.emf.codegen.CodeGenPlugin;
 import org.eclipse.jdt.core.JavaCore;
+import org.talend.core.language.ECodeLanguage;
 
 /**
  * DOC mhirt class global comment. Detailled comment <br/>
@@ -51,13 +52,13 @@ public final class EmfEmittersPersistenceFactory {
     private EmfEmittersPersistenceFactory() {
     }
 
-    public static EmfEmittersPersistence getInstance() {
+    public static EmfEmittersPersistence getInstance(ECodeLanguage language) {
         if (singleton == null) {
 
             final IProject project = getJetProject();
             IFile iFile = null;
             if (project != null) {
-                iFile = project.getFile("JetPersistence");
+                iFile = project.getFile("JetPersistence" + language);
             }
             File file = iFile.getLocation().toFile();
 
