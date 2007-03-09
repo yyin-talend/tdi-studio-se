@@ -66,6 +66,14 @@ public class ShadowConnection implements IConnection {
      * @see org.talend.core.model.process.IConnection#getMetadataTable()
      */
     public IMetadataTable getMetadataTable() {
+        if (source != null) {
+            List<IMetadataTable> metadataList = source.getMetadataList();
+            for (int i = 0; i < metadataList.size(); i++) {
+                if (metadataList.get(i).getTableName().equals(source.getUniqueName())) {
+                    return metadataList.get(i);
+                }
+            }
+        }
         return null;
     }
 

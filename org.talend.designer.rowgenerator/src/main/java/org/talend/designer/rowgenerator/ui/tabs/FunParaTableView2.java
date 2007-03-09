@@ -47,7 +47,7 @@ import org.talend.designer.rowgenerator.data.ListParameter;
 import org.talend.designer.rowgenerator.data.Parameter;
 import org.talend.designer.rowgenerator.i18n.Messages;
 import org.talend.designer.rowgenerator.ui.editor.MetadataColumnExt;
-import org.talend.designer.rowgenerator.ui.editor.RowGenTableEditor2;
+import org.talend.designer.rowgenerator.ui.editor.MetadataTableEditorViewExt;
 
 /**
  * qzhang class global comment. Detailled comment <br/>
@@ -59,13 +59,13 @@ public class FunParaTableView2 extends AbstractDataTableEditorView<Parameter> {
 
     private static final String VALUE_PROPERTY = "Value"; //$NON-NLS-1$
 
-    private RowGenTableEditor2 rowGenTableEditor2;
+    private MetadataTableEditorViewExt rowGenTableEditor2;
 
     public FunParaTableView2(Composite parentComposite, int mainCompositeStyle) {
         super(parentComposite, mainCompositeStyle);
     }
 
-    public FunParaTableView2(Composite inEditorContainer, int border, RowGenTableEditor2 genTableEditor2) {
+    public FunParaTableView2(Composite inEditorContainer, int border, MetadataTableEditorViewExt genTableEditor2) {
         this(inEditorContainer, border);
         this.rowGenTableEditor2 = genTableEditor2;
     }
@@ -141,7 +141,7 @@ public class FunParaTableView2 extends AbstractDataTableEditorView<Parameter> {
     }
 
     private MetadataColumnExt ext;
-    
+
     @SuppressWarnings("unchecked")//$NON-NLS-1$
     public void update(MetadataColumnExt ext) {
         this.ext = ext;

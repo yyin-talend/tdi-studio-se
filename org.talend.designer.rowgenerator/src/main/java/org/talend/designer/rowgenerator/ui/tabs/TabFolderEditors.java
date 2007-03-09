@@ -43,7 +43,7 @@ import org.eclipse.swt.widgets.Text;
 import org.talend.designer.rowgenerator.RowGeneratorComponent;
 import org.talend.designer.rowgenerator.i18n.Messages;
 import org.talend.designer.rowgenerator.ui.RowGeneratorUI;
-import org.talend.designer.rowgenerator.ui.editor.RowGenTableEditor2;
+import org.talend.designer.rowgenerator.ui.editor.MetadataTableEditorViewExt;
 
 /**
  * qzhang class global comment. Detailled comment <br/>
@@ -78,11 +78,11 @@ public class TabFolderEditors extends CTabFolder {
 
     private RowGeneratorComponent component;
 
-    private RowGenTableEditor2 genTableEditor2;
+    private MetadataTableEditorViewExt genTableEditor2;
 
     private SashForm inOutMetaEditorContainer;
 
-    public TabFolderEditors(Composite parent, int style, RowGeneratorComponent component, RowGenTableEditor2 genTableEditor2) {
+    public TabFolderEditors(Composite parent, int style, RowGeneratorComponent component, MetadataTableEditorViewExt genTableEditor2) {
         super(parent, style);
         this.genTableEditor2 = genTableEditor2;
         this.component = component;
@@ -205,18 +205,9 @@ public class TabFolderEditors extends CTabFolder {
      * qzhang Comment method "refreshPreview".
      */
     public void refreshPreview(String number) {
-        RowGenTableEditor2 editor2 = (RowGenTableEditor2) generatorUI.getDataTableView();
+        MetadataTableEditorViewExt editor2 = (MetadataTableEditorViewExt) generatorUI.getDataTableView();
         processPreview.refreshTablePreview(editor2.getMetadataTableEditor().getMetadataColumnList(), getItemsByRunJob(number),
                 true);
-        // if (processPreview.getTable().getItemCount() > 1) {
-        // TableItem item = processPreview.getTable().getItems()[0];
-        // for (int i = 1; i < processPreview.getTable().getColumnCount(); i++) {
-        // MetadataColumnExt ext = (MetadataColumnExt) genTableEditor2.getTable().getItem(i - 1).getData();
-        // ext.setPreview(item.getText(i));
-        // }
-        // genTableEditor2.getTableViewerCreator().getTableViewer().refresh();
-        //
-        // }
     }
 
     /**

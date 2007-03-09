@@ -56,7 +56,7 @@ import org.talend.designer.rowgenerator.managers.RowGeneratorManager;
 import org.talend.designer.rowgenerator.managers.UIManager;
 import org.talend.designer.rowgenerator.ui.editor.MetadataColumnExt;
 import org.talend.designer.rowgenerator.ui.editor.MetadataTableEditorExt;
-import org.talend.designer.rowgenerator.ui.editor.RowGenTableEditor2;
+import org.talend.designer.rowgenerator.ui.editor.MetadataTableEditorViewExt;
 import org.talend.designer.rowgenerator.ui.footer.FooterComposite;
 import org.talend.designer.rowgenerator.ui.tabs.TabFolderEditors;
 
@@ -84,7 +84,7 @@ public class RowGeneratorUI {
 
     private boolean inputReadOnly = false;
 
-    private RowGenTableEditor2 dataTableView;
+    private MetadataTableEditorViewExt dataTableView;
 
     private MetadataTableEditorExt metadataTableEditor;
 
@@ -204,10 +204,11 @@ public class RowGeneratorUI {
         convert(outputMetaTable);
         metadataTableEditor = new MetadataTableEditorExt(outputMetaTable, ""); //$NON-NLS-1$
         metadataTableEditor.setRowGenUI(this);
-        dataTableView = new RowGenTableEditor2(datasFlowViewSashForm, SWT.BORDER, metadataTableEditor, inputReadOnly,
+        dataTableView = new MetadataTableEditorViewExt(datasFlowViewSashForm, SWT.BORDER, metadataTableEditor, inputReadOnly,
                 !inputReadOnly, externalNode, functionManager);
         dataTableView.getExtendedTableViewer().setCommandStack(generatorManager.getCommandStack());
         dataTableView.setGeneratorUI(this);
+        dataTableView.setDbTypeColumnsState(true, true, false);
         // dataTableView.
         // resize all the columns but not the table
         for (int i = 0; i < dataTableView.getTable().getColumnCount(); i++) {
@@ -415,7 +416,7 @@ public class RowGeneratorUI {
         return this.tabFolderEditors;
     }
 
-    public RowGenTableEditor2 getDataTableView() {
+    public MetadataTableEditorViewExt getDataTableView() {
         return this.dataTableView;
     }
 

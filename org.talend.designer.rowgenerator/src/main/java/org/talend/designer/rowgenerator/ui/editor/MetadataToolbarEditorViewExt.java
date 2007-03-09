@@ -23,6 +23,7 @@ package org.talend.designer.rowgenerator.ui.editor;
 
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.gef.commands.Command;
+import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -70,12 +71,13 @@ public class MetadataToolbarEditorViewExt extends MetadataToolbarEditorView {
             Messages.getString("RowGenTableEditor2.Parameters.TitleText"),
             Messages.getString("RowGenTableEditor2.Preview.TitleText"), };
 
-    private static String[] ids = new String[] { RowGenTableEditor2.KEY_ID_COLUMN, RowGenTableEditor2.TYPE_ID_COLUMN,
-            RowGenTableEditor2.LENGTH_ID_COLUMN, RowGenTableEditor2.PRECISION_ID_COLUMN, RowGenTableEditor2.NULLABLE_ID_COLUMN,
-            RowGenTableEditor2.COMMENT_ID_COLUMN, RowGenTableEditor2.FUNCTION_ID_COLUMN, RowGenTableEditor2.PARAMETER_ID_COLUMN,
-            RowGenTableEditor2.PREVIEW_ID_COLUMN };
+    private static String[] ids = new String[] { MetadataTableEditorViewExt.KEY_ID_COLUMN,
+            MetadataTableEditorViewExt.TYPE_ID_COLUMN, MetadataTableEditorViewExt.LENGTH_ID_COLUMN,
+            MetadataTableEditorViewExt.PRECISION_ID_COLUMN, MetadataTableEditorViewExt.NULLABLE_ID_COLUMN,
+            MetadataTableEditorViewExt.COMMENT_ID_COLUMN, MetadataTableEditorViewExt.FUNCTION_ID_COLUMN,
+            MetadataTableEditorViewExt.PARAMETER_ID_COLUMN, MetadataTableEditorViewExt.PREVIEW_ID_COLUMN };
 
-    private RowGenTableEditor2 genTableEditor2;
+    private MetadataTableEditorViewExt genTableEditor2;
 
     /**
      * qzhang MetadataToolbarEditorViewExt constructor comment.
@@ -85,7 +87,7 @@ public class MetadataToolbarEditorViewExt extends MetadataToolbarEditorView {
      * @param extendedTableViewer
      */
     public MetadataToolbarEditorViewExt(Composite parent, int style, AbstractExtendedTableViewer extendedTableViewer,
-            RowGenTableEditor2 editor2) {
+            MetadataTableEditorViewExt editor2) {
         super(parent, style, extendedTableViewer);
         this.genTableEditor2 = editor2;
         createColumns();
@@ -95,7 +97,7 @@ public class MetadataToolbarEditorViewExt extends MetadataToolbarEditorView {
     private Composite numRowComposite;
 
     private Text numRowText;
-    
+
     private void createNumberRows() {
         numRowComposite = new Composite(toolbar, SWT.NONE);
         GridLayout layout = new GridLayout();
@@ -111,15 +113,13 @@ public class MetadataToolbarEditorViewExt extends MetadataToolbarEditorView {
         GridData gridData = new GridData();
         gridData.verticalAlignment = GridData.CENTER;
         numRowComposite.setLayout(layout);
-        // numRowComposite.setLayoutData(gridData);
         final Label numRowLabel = new Label(numRowComposite, SWT.NONE);
         numRowLabel.setText(Messages.getString("MetadataToolbarEditorViewExt.RowNum.LabelText"));
         numRowText = new Text(numRowComposite, SWT.BORDER);
-        // numRowText.setEnabled(true);
 
-        // GridDataFactory.swtDefaults().hint(50, SWT.DEFAULT).applyTo(numRowText);
+        GridDataFactory.swtDefaults().hint(50, SWT.DEFAULT).applyTo(numRowText);
+
         numRowText.setBackground(ColorConstants.white);
-        numRowText.setLayoutData(gridData);
     }
 
     private Menu columnsListmenu;
@@ -347,8 +347,8 @@ public class MetadataToolbarEditorViewExt extends MetadataToolbarEditorView {
      */
     public void updateComponentsSize() {
         String number = genTableEditor2.getGeneratorUI().getGeneratorManager().getRowGeneratorComponent().getNumber();
-        if (number == null) {
-            number = "";
+        if (number == null || "".equals(number)) {
+            number = "100";
         }
         numRowText.setText(number);
     }

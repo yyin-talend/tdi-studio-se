@@ -35,13 +35,11 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.progress.IProgressService;
 import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.ui.swt.dialogs.ErrorDialogWidthDetailArea;
-import org.talend.core.CorePlugin;
-import org.talend.core.context.Context;
-import org.talend.core.context.RepositoryContext;
-import org.talend.core.language.ECodeLanguage;
+import org.talend.core.model.context.JobContextParameter;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.MetadataTable;
 import org.talend.core.model.process.IContext;
+import org.talend.core.model.process.IContextParameter;
 import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.Property;
 import org.talend.designer.rowgenerator.RowGeneratorComponent;
@@ -50,7 +48,6 @@ import org.talend.designer.rowgenerator.i18n.Messages;
 import org.talend.designer.rowgenerator.managers.UIManager;
 import org.talend.designer.rowgenerator.ui.editor.MetadataColumnExt;
 import org.talend.designer.runprocess.IProcessor;
-import org.talend.designer.runprocess.IRunProcessService;
 import org.talend.designer.runprocess.ProcessorUtilities;
 
 /**
@@ -73,7 +70,7 @@ public class RowGenPreviewCodeMain {
 
     private Process process;
 
-    private ECodeLanguage language;
+    // private ECodeLanguage language;
 
     private RowGenProcess proc;
 
@@ -121,31 +118,20 @@ public class RowGenPreviewCodeMain {
     }
 
     /**
-     * qzhang Comment method "getCodeGen".
-     */
-    @SuppressWarnings("unchecked")//$NON-NLS-1$
-    protected void getCodeGen() {
-        getProcess();
-        RepositoryContext repositoryContext = (RepositoryContext) CorePlugin.getContext().getProperty(
-                Context.REPOSITORY_CONTEXT_KEY);
-        language = repositoryContext.getProject().getLanguage();
-        try {
-            IRunProcessService runProcessService = RowGeneratorPlugin.getDefault().getRunProcessService();
-            IProcessor processor = runProcessService.createCodeProcessor(proc, language, false);
-            IContext context2 = new org.talend.core.model.context.JobContext(PREVIEW);
-            processor.generateCode(context2, false, false, true);
-
-        } catch (Exception e) {
-            ExceptionHandler.process(e);
-        }
-    }
-
-    /**
      * qzhang Comment method "runPreviewCode".
      */
     protected Process runPreviewCode() {
         getProcess();
         IContext context2 = new org.talend.core.model.context.JobContext(PREVIEW);
+        if (UIManager.isJavaProject()) {
+            List<IContextParameter> params = new ArrayList<IContextParameter>();
+            JobContextParameter contextParameter = new JobContextParameter();
+            contextParameter.setName(PREVIEW);
+            contextParameter.setValue(PREVIEW);
+            contextParameter.setType("String");
+            params.add(contextParameter);
+            context2.setContextParameterList(params);
+        }
         IProcessor processor = ProcessorUtilities.getProcessor(proc, context2);
         try {
             return processor.run(IProcessor.NO_STATISTICS, IProcessor.NO_TRACES, null);
@@ -214,6 +200,9 @@ public class RowGenPreviewCodeMain {
      * @return
      */
     protected void convert(String string) {
+        if (UIManager.isJavaProject()) {
+            string = string.substring(string.indexOf("\n") + 1);
+        }
         string = string.replaceAll("\r", ""); //$NON-NLS-1$ //$NON-NLS-2$
         String[] rows = string.split("\n"); //$NON-NLS-1$
         for (int i = 0; i < rows.length; i++) {

@@ -30,6 +30,10 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TableItem;
+import org.talend.core.CorePlugin;
+import org.talend.core.context.Context;
+import org.talend.core.context.RepositoryContext;
+import org.talend.core.language.ECodeLanguage;
 import org.talend.designer.rowgenerator.data.FunctionManager;
 import org.talend.designer.rowgenerator.data.Parameter;
 import org.talend.designer.rowgenerator.data.StringParameter;
@@ -141,8 +145,7 @@ public class UIManager {
         for (int i = 0; i < items.length; i++) {
             saveOneColData((MetadataColumnExt) items[i].getData());
         }
-        rgManager.getRowGeneratorComponent().setNumber(
-                generatorUI.getDataTableView().getExtendedToolbar().getNumRows());
+        rgManager.getRowGeneratorComponent().setNumber(generatorUI.getDataTableView().getExtendedToolbar().getNumRows());
 
     }
 
@@ -219,4 +222,10 @@ public class UIManager {
         return null;
     }
 
+    public static boolean isJavaProject() {
+        RepositoryContext repositoryContext = (RepositoryContext) CorePlugin.getContext().getProperty(
+                Context.REPOSITORY_CONTEXT_KEY);
+        ECodeLanguage codeLanguage = repositoryContext.getProject().getLanguage();
+        return (codeLanguage == ECodeLanguage.JAVA);
+    }
 }

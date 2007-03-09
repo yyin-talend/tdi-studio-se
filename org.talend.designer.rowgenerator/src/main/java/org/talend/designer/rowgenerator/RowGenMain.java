@@ -144,6 +144,7 @@ public class RowGenMain {
             shell.setBounds(boundsRG);
         }
         createUI(shell);
+        generatorUI.getDataTableView().getExtendedToolbar().updateComponentsSize();
         shell.open();
         shell.addControlListener(new ControlListener() {
 
@@ -158,7 +159,6 @@ public class RowGenMain {
         });
         // shell.moveAbove(null);
         generatorUI.getDataTableView().updateHeader(ExternalRowGeneratorUiProperties.getShowColumnsList());
-        generatorUI.getDataTableView().getExtendedToolbar().updateComponentsSize();
         return shell;
     }
 

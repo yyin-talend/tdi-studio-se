@@ -37,6 +37,7 @@ import org.talend.core.context.RepositoryContext;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.designer.rowgenerator.RowGeneratorPlugin;
 import org.talend.designer.rowgenerator.i18n.Messages;
+import org.talend.designer.rowgenerator.ui.editor.MetadataColumnExt;
 import org.talend.repository.model.IProxyRepositoryFactory;
 
 /**
@@ -139,4 +140,25 @@ public class FunctionManager {
         parser.parse();
         talendTypes = parser.getList();
     }
+    
+    public Function getFunction(MetadataColumnExt bean, String talendType) {
+        Function currentFun = new Function();
+        List<Function> functions = getFunctionByName(talendType);
+        String[] arrayTalendFunctions2 = new String[functions.size()];
+        if (functions.isEmpty()) {
+            currentFun.setDescription(""); //$NON-NLS-1$
+            currentFun.setPreview(""); //$NON-NLS-1$
+            currentFun.setParameters(new ArrayList<Parameter>());
+            bean.setArrayFunctions(arrayTalendFunctions2);
+        } else {
+            for (int i = 0; i < functions.size(); i++) {
+                arrayTalendFunctions2[i] = functions.get(i).getName();
+            }
+            currentFun = (Function) functions.get(0).clone();
+            bean.setArrayFunctions(arrayTalendFunctions2);
+        }
+
+        return currentFun;
+    }
+    
 }

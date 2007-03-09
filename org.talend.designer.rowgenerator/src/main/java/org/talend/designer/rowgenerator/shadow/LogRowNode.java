@@ -29,7 +29,9 @@ import org.talend.commons.exception.SystemException;
 import org.talend.core.model.components.IComponent;
 import org.talend.core.model.components.IComponentsFactory;
 import org.talend.core.model.components.IODataComponent;
+import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
+import org.talend.core.model.metadata.MetadataColumn;
 import org.talend.core.model.metadata.MetadataTable;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IElementParameter;
@@ -39,6 +41,7 @@ import org.talend.core.model.process.IProcess;
 import org.talend.core.model.temp.ECodePart;
 import org.talend.designer.codegen.ICodeGeneratorService;
 import org.talend.designer.rowgenerator.RowGeneratorPlugin;
+import org.talend.designer.rowgenerator.managers.UIManager;
 
 /**
  * qzhang class global comment. Detailled comment <br/>
@@ -73,7 +76,12 @@ public class LogRowNode implements INode {
 
         IComponentsFactory compFac = RowGeneratorPlugin.getDefault().getRepositoryService().getComponentsFactory();
         setComponent(compFac.get(componentName));
-        TextElementParameter param = new TextElementParameter("FIELDSEPARATOR", "\'|\'"); //$NON-NLS-1$ //$NON-NLS-2$
+        TextElementParameter param = null;
+        if (UIManager.isJavaProject()) {
+            param = new TextElementParameter("FIELDSEPARATOR", "\"|\"");
+        } else {
+            param = new TextElementParameter("FIELDSEPARATOR", "\'|\'"); //$NON-NLS-1$ //$NON-NLS-2$
+        }
         this.addParameter(param);
     }
 
@@ -92,9 +100,11 @@ public class LogRowNode implements INode {
      * @see org.talend.core.model.process.INode#getMetadataList()
      */
     public List<IMetadataTable> getMetadataList() {
-        IMetadataTable meta = new MetadataTable();
-        meta.setTableName(getUniqueName());
-        return Arrays.asList(new IMetadataTable[] { meta });
+        List<IMetadataTable> metadatas = new ArrayList<IMetadataTable>();
+        MetadataTable metadata = new MetadataTable();
+        metadata.setTableName(this.getUniqueName());
+        metadatas.add(metadata);
+        return metadatas;
     }
 
     /*
@@ -184,7 +194,7 @@ public class LogRowNode implements INode {
      * 
      * @see org.talend.core.model.process.IElement#setElementParameters(java.util.List)
      */
-    @SuppressWarnings("unchecked") //$NON-NLS-1$
+    @SuppressWarnings("unchecked")//$NON-NLS-1$
     public void setElementParameters(List<? extends IElementParameter> elementsParameters) {
         this.parameters = (List<IElementParameter>) elementsParameters;
     }
