@@ -286,8 +286,6 @@ if(!executeUpdate_<%=cid%>){
 	}catch(Exception e){
 	
 		executeUpdate_<%=cid%> = true;
-
-		System.out.println("Insert operation can't be executed.");
 	
 	}
 	
@@ -390,8 +388,6 @@ if(!executeInsert_<%=cid%>){
 	}catch(Exception e){
 		
 		executeInsert_<%=cid%> =true;
-		
-		System.out.println("Update operation can't be executed.");
 	}
 	<%
 	

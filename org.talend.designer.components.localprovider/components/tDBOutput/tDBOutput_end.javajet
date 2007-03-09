@@ -18,11 +18,8 @@ class="DBOutputEnd"
 	
 	if(dataAction.equals("INSERT_OR_UPDATE")||dataAction.equals("UPDATE_OR_INSERT")){
 %>
-if(pstmtUpdate_<%=cid%> != null){
 
-	pstmtInsert_<%=cid %>.close();
-	
-}else if(pstmtUpdate_<%=cid%> != null){
+if(pstmtUpdate_<%=cid%> != null){
 
 	pstmtUpdate_<%=cid %>.close();
 	

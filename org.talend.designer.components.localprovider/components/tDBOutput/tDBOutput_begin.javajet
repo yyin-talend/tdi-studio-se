@@ -437,8 +437,16 @@ pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement("UPDATE "+<%=tableName%>+" SET 
 	<%		
 	}else if (dataAction.equals("INSERT_OR_UPDATE")){
 	%>
+try{
 	
-pstmtInsert_<%=cid %> = conn_<%=cid%>.prepareStatement("INSERT INTO "+<%=tableName%>+"(<%=insertColName.toString()%>) VALUES(<%=insertValueStmt.toString()%>)");
+	pstmtInsert_<%=cid %> = conn_<%=cid%>.prepareStatement("INSERT INTO "+<%=tableName%>+"(<%=insertColName.toString()%>) VALUES(<%=insertValueStmt.toString()%>)");
+
+}catch(Exception e){
+	
+	System.out.println("Insert operation can't be executed");
+	
+}
+
 try{
 
 	pstmtUpdate_<%=cid %> = conn_<%=cid%>.prepareStatement("UPDATE "+<%=tableName%>+" SET <%=updateSetStmt.toString()%> WHERE <%=updateWhereStmt.toString()%>");
@@ -453,10 +461,25 @@ try{
 	<%
 	}else if (dataAction.equals("UPDATE_OR_INSERT")){
 	%>
-		
-pstmtUpdate_<%=cid %> = conn_<%=cid%>.prepareStatement("UPDATE "+<%=tableName%>+" SET <%=updateSetStmt.toString()%> WHERE <%=updateWhereStmt.toString()%>");
+try{
 
-pstmtInsert_<%=cid %> = conn_<%=cid%>.prepareStatement("INSERT INTO "+<%=tableName%>+"(<%=insertColName.toString()%>) VALUES(<%=insertValueStmt.toString()%>)");
+	pstmtUpdate_<%=cid %> = conn_<%=cid%>.prepareStatement("UPDATE "+<%=tableName%>+" SET <%=updateSetStmt.toString()%> WHERE <%=updateWhereStmt.toString()%>");
+
+}catch(Exception e){
+
+	System.out.println("Update operation can't be executed");
+	
+}
+
+try{
+
+	pstmtInsert_<%=cid %> = conn_<%=cid%>.prepareStatement("INSERT INTO "+<%=tableName%>+"(<%=insertColName.toString()%>) VALUES(<%=insertValueStmt.toString()%>)");
+	
+}catch(Exception e){
+	
+	System.out.println("Insert operation can't be executed");
+	
+}
 			
 	<%
 			
