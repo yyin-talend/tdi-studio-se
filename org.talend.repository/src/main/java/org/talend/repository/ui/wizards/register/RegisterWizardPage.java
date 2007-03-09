@@ -34,6 +34,7 @@ import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -121,6 +122,8 @@ public class RegisterWizardPage extends WizardPage {
         countryCombo.select(countryToSelect);
 
         createSpacer(container, 2);
+        createLegalInfos(container, 2);
+        createSpacer(container, 2);
         createHttpProxy(container, 2);
 
         setControl(container);
@@ -144,9 +147,9 @@ public class RegisterWizardPage extends WizardPage {
         }
         // initiate selection of default country
 
-        //PTODO cantoine : the Locale.getDefault().getDisplayCountry() return an empty String.
-//        Locale defaultLocale = new Locale(""+Locale.getDefault(), ""+Locale.getDefault());
-//        String defaultCountry = defaultLocale.getDisplayCountry();
+        // PTODO cantoine : the Locale.getDefault().getDisplayCountry() return an empty String.
+        // Locale defaultLocale = new Locale(""+Locale.getDefault(), ""+Locale.getDefault());
+        // String defaultCountry = defaultLocale.getDisplayCountry();
 
         String defaultCountry = Locale.getDefault().getDisplayCountry();
         int i = 0;
@@ -230,6 +233,18 @@ public class RegisterWizardPage extends WizardPage {
 
     private static IStatus createOkStatus() {
         return new Status(IStatus.OK, RepositoryPlugin.PLUGIN_ID, IStatus.OK, "", null); //$NON-NLS-1$
+    }
+
+    protected void createLegalInfos(Composite composite, int columnSpan) {
+        Composite localComposite = new Composite(composite, SWT.NONE);
+        localComposite.setLayout(new FormLayout());
+
+        GridData gd = new GridData(GridData.FILL_HORIZONTAL);
+        gd.horizontalSpan = columnSpan;
+        localComposite.setLayoutData(gd);
+
+        Label legalInfos = new Label(localComposite, SWT.NONE);
+        legalInfos.setText(Messages.getString("RegisterWizardPage.legalinfos")); //$NON-NLS-1$
     }
 
     protected void createHttpProxy(Composite composite, int columnSpan) {
