@@ -38,7 +38,7 @@ public abstract class AbstractDbLanguage implements IDbLanguage {
 
     /**
      * 
-     * DOC amaumont OracleLanguage class global comment. Detailled comment <br/>
+     * Database joints.
      * 
      * $Id$
      * 
