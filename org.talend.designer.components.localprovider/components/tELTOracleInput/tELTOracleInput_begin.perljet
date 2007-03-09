@@ -8,6 +8,7 @@ imports="
     org.talend.designer.codegen.config.CodeGeneratorArgument
     java.util.List
 " 
-class="OracleInputBegin" 
+class="ELTOracleInputBegin" 
 %>
 
+# No code to generate

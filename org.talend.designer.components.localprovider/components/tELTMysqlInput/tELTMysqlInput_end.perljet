@@ -6,7 +6,7 @@ imports="
     java.util.List
     org.talend.designer.codegen.config.CodeGeneratorArgument
 " 
-class="ELTOracleInputEnd" 
+class="ELTMysqlInputEnd" 
 %>
 
 # No code to generate

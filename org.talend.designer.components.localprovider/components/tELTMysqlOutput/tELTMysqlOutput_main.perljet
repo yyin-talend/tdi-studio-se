@@ -9,11 +9,10 @@ imports="
     org.talend.core.model.process.IConnection 
     org.talend.core.model.metadata.MetadataTalendType
     java.util.List
-    java.util.Map
     java.util.ArrayList
     org.talend.commons.utils.StringUtils
 "
-class="ELTOracleOutputMain"
+class="ELTMysqlOutputMain"
 %>
 
 <%
@@ -43,14 +42,14 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
         String cid = metadata.getTableName();
 
         String dataAction = ElementParameterParser.getValue(
-                node,
+            node,
             "__DATA_ACTION__"
         );
         String tableAction = ElementParameterParser.getValue(
-                node,
+            node,
             "__TABLE_ACTION__"
         );
-        
+
         String whereClause = ElementParameterParser.getValue(
                 node,
             "__WHERE_CLAUSE__"
@@ -78,7 +77,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
 %>
 
 use DBI;
-use tOracleOutput::Oracle;
+use tMysqlOutput::Mysql;
 
 my %desc_<%=cid %> = (
     dbhost        => <%=dbhost %>,
@@ -116,24 +115,16 @@ my %desc_<%=cid %> = (
         }
 %>
 
-if ($desc_<%=cid %>{encoding} =~ m/^utf-?8$/i) {
-    $ENV{NLS_LANG} = 'AMERICAN_AMERICA.AL32UTF8';
-}
-elsif ($desc_<%=cid %>{encoding} =~ m/^iso-?8859-?1$/i) {
-    $ENV{NLS_LANG} = 'AMERICAN_AMERICA.WE8ISO8859P1';
-}
-
 my $dbh_<%=cid %> = DBI->connect(
     sprintf(
-        'dbi:Oracle:host=%s;sid=%s;port=%s',
-        <%=dbhost %>,
+        'DBI:mysql:database=%s;host=%s;port=%s',
         <%=dbname %>,
+        <%=dbhost %>,
         <%=dbport %>,
     ),
     <%=dbuser %>,
     <%=dbpass %>,
     {
-        AutoCommit => 0,
 <%
         if (dataAction.equals("INSERT_OR_UPDATE")) {
 %>
@@ -148,13 +139,19 @@ my $dbh_<%=cid %> = DBI->connect(
 my $sth_<%=cid %>;
 my $query;
 
+if (<%=encoding%> =~ m/utf-?8/i) {
+    $query = 'set names "UTF8"';
+    $sth_<%=cid %> = $dbh_<%=cid %>->prepare($query);
+    $sth_<%=cid %>->execute();
+}
+
 <%
         if (tableAction.equals("DROP_CREATE")
             || tableAction.equals("CREATE_IF_NOT_EXISTS")) {
 %>
 # We need the table list to know if drop or "create if not exists" is
 # relevant
-my $schema = uc <%=dbuser %>;
+my $schema = '%';
 my $catalog = undef;
 my $tabsth = $dbh_<%=cid %>->table_info($catalog, $schema);
 my @tables = ();
@@ -202,9 +199,8 @@ if (not $table_exists) {
 <%
             }
 %>
-
 # now we create the table
-$query = tOracleOutput::Oracle::getTableCreationQuery(
+$query = tMysqlOutput::Mysql::getTableCreationQuery(
     tablename  => $desc_<%=cid %>{dbtable},
     schema     => $desc_<%=cid %>{schema},
 );
@@ -277,9 +273,6 @@ UPDATE '.<%=dbtable%>.'
 <%}%>
 ';
 
-print "\n\n".$query."\n";
-
-
 my $usth_<%=cid %> = $dbh_<%=cid %>->prepare($query);
 
 <%
@@ -296,6 +289,7 @@ DELETE FROM ('.$select_query.') '.<%=dbtable%>.'
 ';
 
 print "\n\n".$query."\n";
+
 
 my $dsth_<%=cid %> = $dbh_<%=cid %>->prepare($query);
 
@@ -320,8 +314,6 @@ INSERT
   ('.$select_query. ')
 ';
 
-print "\n\n".$query."\n";
-
 my $isth_<%=cid %> = $dbh_<%=cid %>->prepare($query);
 
 <%
@@ -332,8 +324,6 @@ my $nb_line_<%=cid%> = 0;
 my $nb_line_updated_<%=cid%>  = 0;
 my $nb_line_inserted_<%=cid%> = 0;
 my $nb_line_deleted_<%=cid%>  = 0;
-
-my $nb_line_current_commit_<%=cid%> = 0;
 
 <%
     }
@@ -501,7 +491,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     if (metadata!=null) {
         String cid = metadata.getTableName();
 %>
-$dbh_<%=cid %>->commit();
+
 $dbh_<%=cid %>->disconnect();
 
 <%
@@ -520,5 +510,3 @@ $_globals{<%=cid %>}{NB_LINE_DELETED}  = $nb_line_deleted_<%=cid %>;
     }
 }
 %>
-
-

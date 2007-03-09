@@ -6,7 +6,7 @@ imports="
      java.util.List
      org.talend.designer.codegen.config.CodeGeneratorArgument
 " 
-class="OracleOutputEnd" 
+class="ELTOracleOutputEnd" 
 %>
 
 <%
