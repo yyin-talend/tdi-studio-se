@@ -123,17 +123,34 @@ if (talbeAction.equals("DROP_CREATE_TABLE") || talbeAction.equals("CREATE_TABLE"
 	%>
 		boolean isTableExist_<%=cid %> = false;
 		try{
+		
 			pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement("SELECT * FROM "+<%=tableName%>);
+			
 			pstmt_<%=cid %>.execute();
+			
 			isTableExist_<%=cid %> = true;
+			
 		}catch(Exception e){
+		
 			System.out.println("Table "+<%=tableName%>+"does not exist!");
-		}finally{
+			
 			pstmt_<%=cid %>.close();
+			
 			conn_<%=cid%>.close();
+			
 			pstmt_<%=cid %> = null;
+			
 			conn_<%=cid%> = null;
+			
+		}finally{
+		
+			if(isTableExist_<%=cid %>){
+				
+				pstmt_<%=cid %>.close();
+				
+			}
 		}
+		
 		if(isTableExist_<%=cid %> ){
 	
 			pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement("DROP TABLE "+<%=tableName%>);
@@ -159,7 +176,7 @@ if(columnList != null){
 		
 		MetadataTalendType.getMappingTypeRetriever(javaDbtype);
 		
-		columnParamemters.add(new String [] {columnName,columnDbtype,Integer.toString(columnLen)});
+		columnParamemters.add(new Object [] {columnName,columnDbtype,columnLen});
 	
 	}
 }
@@ -170,24 +187,24 @@ pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement("CREATE TABLE "+<%=tableName%>+
 <%
 for(int i=0 ; i< columnParamemters.size(); i++){
 
-	String[] colParam = (String[])columnParamemters.get(i);
+	Object[] colParam = (Object[])columnParamemters.get(i);
 	
 	String 	colLen = "";
 	
 	String suffix ="";
 	
-	if(colParam[1].equals("VARCHAR")){
+	if((Integer)colParam[2]>0){
 	
-		suffix = "("+colParam[2]+")";
+		suffix = "("+(Integer)colParam[2]+")";
 	}
 	if(i==(columnParamemters.size()-1)){
 	%>
-		"<%=colParam[0]%> <%=colParam[1]%><%=suffix%>"
+		"<%=(String)colParam[0]%> <%=(String)colParam[1]%><%=suffix%>)"
 	<%
 		break;
 	}
 	%>
-		"<%=colParam[0]%> <%=colParam[1]%><%=suffix%>,"+
+		"<%=(String)colParam[0]%> <%=(String)colParam[1]%><%=suffix%>,"+
 	<%
 }
 	%>
