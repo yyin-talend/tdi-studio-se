@@ -29,6 +29,7 @@ import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchWizard;
 import org.talend.commons.exception.PersistenceException;
+import org.talend.commons.ui.image.ImageProvider;
 import org.talend.commons.ui.swt.dialogs.ErrorDialogWidthDetailArea;
 import org.talend.commons.utils.VersionUtils;
 import org.talend.core.CorePlugin;
@@ -41,6 +42,7 @@ import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.core.ui.images.ECoreImage;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.IProxyRepositoryFactory;
 import org.talend.repository.model.ProxyRepositoryFactory;
@@ -142,6 +144,8 @@ public class XmlFileWizard extends RepositoryWizard implements INewWizard {
         xmlFileWizardPage1 = new XmlFileWizardPage(1, connectionItem, isRepositoryObjectEditable(), existingNames);
         xmlFileWizardPage2 = new XmlFileWizardPage(2, connectionItem, isRepositoryObjectEditable(), existingNames);
 
+        setDefaultPageImageDescriptor(ImageProvider.getImageDesc(ECoreImage.METADATA_FILE_XML_WIZ));
+        
         if (creation) {
             setWindowTitle(Messages.getString("XmlFileWizard.windowTitleCreate")); //$NON-NLS-1$
 
