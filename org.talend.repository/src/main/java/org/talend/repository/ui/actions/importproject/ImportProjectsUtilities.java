@@ -93,7 +93,7 @@ public class ImportProjectsUtilities {
             FilesUtils.replaceInFile("<name>.*</name>", file2.getLocation().toOSString(), "<name>" + technicalName + "</name>"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
             IResource file3 = containers.findMember(OLD_TALEND_PROJECT_FILE_NAME);
-            if (!file3.exists()) {
+            if (file3 == null || !file3.exists()) {
                 file3 = containers.findMember(TALEND_PROJECT_FILE_NAME);
             }
             FilesUtils.replaceInFile("label=\".*?\"", file3.getLocation().toOSString(), "label=\"" + newName + "\""); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
