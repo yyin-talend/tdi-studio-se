@@ -23,18 +23,24 @@ package org.talend.repository.ui.actions.importproject;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.net.URL;
 
+import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.internal.dialogs.EventLoopProgressMonitor;
 import org.eclipse.ui.internal.wizards.datatransfer.TarException;
+import org.osgi.framework.Bundle;
 import org.talend.commons.exception.MessageBoxExceptionHandler;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.commons.ui.swt.dialogs.ProgressDialog;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.ui.ERepositoryImages;
+import org.talend.resources.ResourcesPlugin;
 
 /**
  * Action used to refresh a repository view.<br/>
@@ -47,6 +53,8 @@ public final class ImportDemoProjectAction extends Action {
     private static final String ACTION_TITLE = Messages.getString("ImportDemoProjectAction.actionTitle"); //$NON-NLS-1$
 
     private static final String ACTION_TOOLTIP = Messages.getString("ImportDemoProjectAction.actionTooltip"); //$NON-NLS-1$
+
+    private String lastImportedName;
 
     private static ImportDemoProjectAction singleton;
 
@@ -67,6 +75,8 @@ public final class ImportDemoProjectAction extends Action {
     }
 
     public void run() {
+        final boolean perl = !openJavaOrPerl(shell);
+
         ProgressDialog progressDialog = new ProgressDialog(shell, 1) {
 
             private IProgressMonitor monitorWrap;
@@ -76,7 +86,23 @@ public final class ImportDemoProjectAction extends Action {
                 monitorWrap = new EventLoopProgressMonitor(monitor);
 
                 try {
-                    ImportProjectsUtilities.importDemoProject(shell, monitorWrap);
+                    String archivePath;
+                    String techName;
+                    if (perl) {
+                        archivePath = "resources/TALENDDEMOSPERL.zip"; //$NON-NLS-1$
+                        techName = "TALENDDEMOS"; //$NON-NLS-1$
+                        lastImportedName = "TalendDemos"; //$NON-NLS-1$
+                    } else {
+                        archivePath = "resources/TALENDDEMOSJAVA.zip"; //$NON-NLS-1$
+                        techName = "TALENDDEMOSJAVA"; //$NON-NLS-1$
+                        lastImportedName = "TalendDemosJava"; //$NON-NLS-1$
+                    }
+
+                    Bundle bundle = Platform.getBundle(ResourcesPlugin.PLUGIN_ID);
+                    URL url = FileLocator.resolve(bundle.getEntry(archivePath));
+                    String archiveFilePath = new Path(url.getFile()).toOSString();
+
+                    ImportProjectsUtilities.importArchiveProject(shell, techName, archiveFilePath, monitorWrap);
                 } catch (IOException e) {
                     throw new InvocationTargetException(e);
                 } catch (TarException e) {
@@ -101,11 +127,20 @@ public final class ImportDemoProjectAction extends Action {
     }
 
     public String getProjectName() {
-        return ImportProjectsUtilities.TALENDDEMOS_NAME;
+        return lastImportedName;
     }
 
     public void setShell(Shell shell) {
         this.shell = shell;
     }
 
+    public static boolean openJavaOrPerl(Shell parent) {
+        String title = Messages.getString("ImportDemoProjectAction.languageSelectionDialog.title"); //$NON-NLS-1$
+        String message = Messages.getString("ImportDemoProjectAction.languageSelectionDialog.message"); //$NON-NLS-1$
+        String javabutton = Messages.getString("ImportDemoProjectAction.languageSelectionDialog.java"); //$NON-NLS-1$
+        String perlbutton = Messages.getString("ImportDemoProjectAction.languageSelectionDialog.perl"); //$NON-NLS-1$
+        MessageDialog dialog = new MessageDialog(parent, title, null, message, MessageDialog.QUESTION, new String[] { javabutton,
+                perlbutton }, 0);
+        return dialog.open() == 0;
+    }
 }

@@ -24,7 +24,6 @@ package org.talend.repository.ui.actions.importproject;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -36,11 +35,9 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspace;
-import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.dialogs.IOverwriteQuery;
@@ -52,10 +49,8 @@ import org.eclipse.ui.internal.wizards.datatransfer.ZipLeveledStructureProvider;
 import org.eclipse.ui.wizards.datatransfer.FileSystemStructureProvider;
 import org.eclipse.ui.wizards.datatransfer.IImportStructureProvider;
 import org.eclipse.ui.wizards.datatransfer.ImportOperation;
-import org.osgi.framework.Bundle;
 import org.talend.commons.utils.io.FilesUtils;
 import org.talend.repository.i18n.Messages;
-import org.talend.resources.ResourcesPlugin;
 
 /**
  * DOC smallet class global comment. Detailled comment <br/>
@@ -66,10 +61,6 @@ import org.talend.resources.ResourcesPlugin;
  * 
  */
 public class ImportProjectsUtilities {
-
-    public static final String TALENDDEMOS_NAME = "TalendDemos"; //$NON-NLS-1$
-
-    public static final String TALENDDEMOS_TECH_NAME = "TALENDDEMOS"; //$NON-NLS-1$
 
     public static final String TALEND_PROJECT_FILE_NAME = "talend.project"; //$NON-NLS-1$
 
@@ -130,18 +121,16 @@ public class ImportProjectsUtilities {
             ZipLeveledStructureProvider zipProvider = ArchiveFileManipulations.getZipStructureProvider(new ZipFile(sourcePath),
                     shell);
             source = zipProvider.getRoot();
-            // FIXME SML clean this code
-boolean ok=true;
+            boolean ok = true;
             for (Object o : zipProvider.getChildren(source)) {
                 String label = zipProvider.getLabel(o);
-                if (!label.equals(IProjectDescription.DESCRIPTION_FILE_NAME )&& ok) {
-                    source=o;
-                  // ok=true;
-                }else{
-                    ok=false;
+                if (!label.equals(IProjectDescription.DESCRIPTION_FILE_NAME) && ok) {
+                    source = o;
+                } else {
+                    ok = false;
                 }
             }
-            if( !ok){
+            if (!ok) {
                 source = zipProvider.getRoot();
             }
 
@@ -156,15 +145,6 @@ boolean ok=true;
         }
 
         importProject(shell, provider, source, new Path(technicalName), false, false, monitor);
-    }
-
-    public static void importDemoProject(Shell shell, IProgressMonitor monitor) throws IOException, InvocationTargetException,
-            InterruptedException, TarException {
-        Bundle bundle = Platform.getBundle(ResourcesPlugin.PLUGIN_ID);
-        URL url = FileLocator.resolve(bundle.getEntry("resources/TALENDDEMOS.zip")); //$NON-NLS-1$
-        String archiveFilePath = new Path(url.getFile()).toOSString();
-
-        importArchiveProject(shell, TALENDDEMOS_TECH_NAME, archiveFilePath, monitor);
     }
 
     private static void importProject(Shell shell, IImportStructureProvider provider, Object source, IPath path,
