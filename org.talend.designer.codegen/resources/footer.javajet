@@ -44,7 +44,6 @@
 	    	}
     		
     		if (contextStr.compareTo("Context")!=0) {
-    			System.err.println(contextStr);
     			inContext = <%=process.getName() %>.class.getClassLoader().getResourceAsStream("<%=codeGenArgument.getCurrentProjectName().toLowerCase() %>/<%=codeGenArgument.getJobName().toLowerCase() %>/contexts/Shadow.properties");
     			if (inContext!=null) {
 					context.load(inContext);
