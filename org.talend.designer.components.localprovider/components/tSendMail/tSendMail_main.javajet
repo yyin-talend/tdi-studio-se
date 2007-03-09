@@ -2,6 +2,7 @@
 	package="org.talend.designer.codegen.translators" 
 	imports="
 		org.talend.core.model.process.INode
+		org.talend.core.model.process.ElementParameterParser
 		org.talend.designer.codegen.config.CodeGeneratorArgument	
 	"
 	class="SendMailMain"
@@ -10,14 +11,35 @@
 <%
 	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 	INode node = (INode)codeGenArgument.getArgument();
+	String needAuth = ElementParameterParser.getValue(node, "__NEED_AUTH__");
+	String authUsername = ElementParameterParser.getValue(node, "__AUTH_USERNAME__");
+	String authPassword = ElementParameterParser.getValue(node, "__AUTH_PASSWORD__");
 	// component id
 	String cid = node.getUniqueName();
 %>
 	 java.util.Properties props_<%=cid %> = System.getProperties();     
      props_<%=cid %>.put("mail.smtp.host", smtpHost_<%=cid %>);
      props_<%=cid %>.put("mail.smtp.port", smtpPort_<%=cid %>);
+<% 
+   if ("false".equals(needAuth)) {
+%>  
+     props_<%=cid %>.put("mail.smtp.auth", "false");
      javax.mail.Session session_<%=cid %> = javax.mail.Session.getDefaultInstance(props_<%=cid %>, null);    
-
+<%
+  } else  
+  {
+%>   
+	 props_<%=cid %>.put("mail.smtp.auth", "true");
+     javax.mail.Session session_<%=cid %> = javax.mail.Session.getDefaultInstance(props_<%=cid %>, new  javax.mail.Authenticator ()
+        {         
+         protected javax.mail.PasswordAuthentication getPasswordAuthentication() {
+             return new javax.mail.PasswordAuthentication(<%=authUsername %>,<%=authPassword %>); 
+         }         
+       }     
+     );   
+<%
+  }
+%>
      javax.mail.Message msg_<%=cid %> = new javax.mail.internet.MimeMessage(session_<%=cid %>);
      msg_<%=cid %>.setFrom(new javax.mail.internet.InternetAddress(from_<%=cid %>));
      msg_<%=cid %>.setRecipients(javax.mail.Message.RecipientType.TO,javax.mail.internet.InternetAddress.parse(to_<%=cid %>, false));

@@ -70,11 +70,39 @@ COMPATIBILITY="ALL"
     </PARAMETER>
 
     <PARAMETER NAME="SMTP_HOST" FIELD="TEXT" REQUIRED="true" NUM_ROW="8">
-      <DEFAULT>"127.0.0.1"</DEFAULT>
+      <DEFAULT>"smtp.provider.com"</DEFAULT>
     </PARAMETER>
 
     <PARAMETER NAME="SMTP_PORT" FIELD="TEXT" REQUIRED="true" NUM_ROW="8">
       <DEFAULT>25</DEFAULT>
+    </PARAMETER>
+    
+    <PARAMETER
+      NAME="NEED_AUTH"
+      FIELD="CHECK"
+      REQUIRED="true"
+      NUM_ROW="8"
+    >
+      <DEFAULT>true</DEFAULT>
+    </PARAMETER>
+
+    <PARAMETER
+      NAME="AUTH_USERNAME"
+      FIELD="TEXT"
+      REQUIRED="true"
+      NUM_ROW="9"
+      SHOW_IF="NEED_AUTH == 'true'"
+    >
+      <DEFAULT>"username"</DEFAULT>
+    </PARAMETER>
+    <PARAMETER
+      NAME="AUTH_PASSWORD"
+      FIELD="TEXT"
+      REQUIRED="true"
+      NUM_ROW="9"
+      SHOW_IF="NEED_AUTH == 'true'"
+    >
+      <DEFAULT>"password"</DEFAULT>
     </PARAMETER>
   </PARAMETERS>
 
