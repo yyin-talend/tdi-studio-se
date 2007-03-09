@@ -121,7 +121,7 @@ public class ErDiagramComposite extends SashForm {
         gridData = new GridData(GridData.FILL_HORIZONTAL);
         gridData.heightHint = 30;
         ColorManager colorManager = new ColorManager(CorePlugin.getDefault().getPreferenceStore());
-        int textstyle = SWT.WRAP | SWT.MULTI | SWT.READ_ONLY | SWT.V_SCROLL | SWT.BORDER;
+        int textstyle = SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL;
         sqlText = new ColorStyledText(this, textstyle, colorManager, language);
         sqlText.setLayoutData(gridData);
         sqlText.setText("");
