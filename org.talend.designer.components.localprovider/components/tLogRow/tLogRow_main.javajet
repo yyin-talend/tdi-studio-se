@@ -6,7 +6,8 @@
 		org.talend.designer.codegen.config.CodeGeneratorArgument
 		org.talend.core.model.process.IConnection
 		org.talend.core.model.metadata.IMetadataColumn
-		
+		org.talend.core.model.metadata.types.JavaTypesManager
+		org.talend.core.model.metadata.types.JavaType		
 		java.util.List
 	"
 	class="LogRowMain"
@@ -21,35 +22,39 @@
 	if ((metadatas!=null)&&(metadatas.size()>0)) {
 		IMetadataTable metadata = metadatas.get(0);
 		if (metadata!=null) {
+			List< ? extends IConnection> conns = node.getIncomingConnections();
+			if(conns!=null){
+				if( conns.size()>0 ){
 %>
-
-<%
-List< ? extends IConnection> conns = node.getIncomingConnections();
-if(conns!=null){
-	if( conns.size()>0 ){
-	%>
 StringBuffer strBuffer_<%=cid%> = new StringBuffer();
-	<%
-		IConnection conn = conns.get(0);
-		List colList = metadata.getListColumns();
-		for(int i = 0;i<colList.size();i++){
-		IMetadataColumn column = (IMetadataColumn)colList.get(i);
-			if(i!=(colList.size()-1)){	
-			%> 
-strBuffer_<%=cid%>.append(<%=conn.getName()%>.<%=column.getLabel()%>+OUTPUT_FIELD_SEPARATOR_<%=cid %>);
-			<%			
-			}else{
-			%> 
+<%
+					IConnection conn = conns.get(0);
+					List colList = metadata.getListColumns();
+					for(int i = 0;i<colList.size();i++){
+						IMetadataColumn column = (IMetadataColumn)colList.get(i);
+						JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
+						String pattern = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
+						if (javaType == JavaTypesManager.DATE && pattern != null && pattern.trim().length() != 0) {
+%>
+strBuffer_<%=cid%>.append(FormatterUtils.format_Date(<%=conn.getName() %>.<%=column.getLabel() %>, <%= pattern %>));
+<%
+						} else {
+%>
 strBuffer_<%=cid%>.append(<%=conn.getName()%>.<%=column.getLabel()%>);
-			<%				
-			}
-		}
-	%>
+<%
+						}
+						if(i!=(colList.size()-1)){
+%> 
+strBuffer_<%=cid%>.append(OUTPUT_FIELD_SEPARATOR_<%=cid %>);
+<%
+						}
+					}
+%>
 out_<%= cid %>.println(strBuffer_<%=cid%>.toString());
 nb_line_<%=cid %>++;
-	<%	
-	}
-}
+<%	
+				}
+			}
 		}
 	}
 %>
