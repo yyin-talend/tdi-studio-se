@@ -70,8 +70,8 @@
 <!-- 
         <ITEM NAME="INSERT_OR_UPDATE" VALUE="INSERT_OR_UPDATE"/>
         <ITEM NAME="UPDATE_OR_INSERT" VALUE="UPDATE_OR_INSERT"/>
- -->        
         <ITEM NAME="DELETE"           VALUE="DELETE"/>
+ -->        
       </ITEMS>
     </PARAMETER>
 
