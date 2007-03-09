@@ -82,6 +82,8 @@ public final class CodeGeneratorEmittersPoolFactory {
 
     private static boolean initialized = false;
 
+    private static boolean initInProgress = false;
+
     private static Logger log = Logger.getLogger(CodeGeneratorEmittersPoolFactory.class);
 
     /**
@@ -94,57 +96,60 @@ public final class CodeGeneratorEmittersPoolFactory {
      * initialization of the pool.
      */
     public static void initialize() {
-        // Code Generator initialisation with Progress Bar
-        Job job = new Job(Messages.getString("CodeGeneratorEmittersPoolFactory.initMessage")) {
+        if (!initInProgress) {
+            // Code Generator initialisation with Progress Bar
+            Job job = new Job(Messages.getString("CodeGeneratorEmittersPoolFactory.initMessage")) {
+                protected IStatus run(IProgressMonitor monitor) {
+                    initInProgress = true;
+                    IProgressMonitor monitorWrap = new CodeGeneratorProgressMonitor(monitor);
 
-            protected IStatus run(IProgressMonitor monitor) {
-                IProgressMonitor monitorWrap = new CodeGeneratorProgressMonitor(monitor);
+                    IComponentsFactory componentsFactory = ComponentsFactoryProvider.getInstance();
+                    componentsFactory.init();
 
-                IComponentsFactory componentsFactory = ComponentsFactoryProvider.getInstance();
-                componentsFactory.init();
+                    long startTime = System.currentTimeMillis();
+                    RepositoryContext repositoryContext = (RepositoryContext) CorePlugin.getContext().getProperty(
+                            Context.REPOSITORY_CONTEXT_KEY);
+                    ECodeLanguage codeLanguage = repositoryContext.getProject().getLanguage();
 
-                long startTime = System.currentTimeMillis();
-                RepositoryContext repositoryContext = (RepositoryContext) CorePlugin.getContext().getProperty(
-                        Context.REPOSITORY_CONTEXT_KEY);
-                ECodeLanguage codeLanguage = repositoryContext.getProject().getLanguage();
+                    List<JetBean> jetBeans = new ArrayList<JetBean>();
 
-                List<JetBean> jetBeans = new ArrayList<JetBean>();
+                    CodeGeneratorInternalTemplatesFactory templatesFactory = CodeGeneratorInternalTemplatesFactoryProvider
+                            .getInstance();
+                    templatesFactory.init();
+                    List<TemplateUtil> templates = templatesFactory.getTemplates();
+                    List<IComponent> components = componentsFactory.getComponents();
 
-                CodeGeneratorInternalTemplatesFactory templatesFactory = CodeGeneratorInternalTemplatesFactoryProvider
-                        .getInstance();
-                templatesFactory.init();
-                List<TemplateUtil> templates = templatesFactory.getTemplates();
-                List<IComponent> components = componentsFactory.getComponents();
+                    monitorWrap.beginTask(Messages.getString("CodeGeneratorEmittersPoolFactory.initMessage"),
+                            (2 * templates.size() + 4 * components.size()));
 
-                monitorWrap.beginTask(Messages.getString("CodeGeneratorEmittersPoolFactory.initMessage"),
-                        (2 * templates.size() + 4 * components.size()));
-
-                for (TemplateUtil template : templates) {
-                    JetBean jetBean = initializeUtilTemplate(template, codeLanguage);
-                    jetBeans.add(jetBean);
-                    monitorWrap.worked(1);
-                }
-
-                if (components != null) {
-                    ECodePart codePart = ECodePart.MAIN;
-                    for (IComponent component : components) {
-                        if (component.getAvailableCodeParts().size() > 0) {
-                            initComponent(codeLanguage, jetBeans, codePart, component);
-                        }
+                    for (TemplateUtil template : templates) {
+                        JetBean jetBean = initializeUtilTemplate(template, codeLanguage);
+                        jetBeans.add(jetBean);
                         monitorWrap.worked(1);
                     }
-                }
 
-                initializeEmittersPool(jetBeans, codeLanguage, monitorWrap);
-                monitorWrap.done();
-                log.debug("Components compiled in " + (System.currentTimeMillis() - startTime) + " ms");
-                initialized = true;
-                return Status.OK_STATUS;
-            }
-        };
-        job.setUser(true);
-        job.setPriority(Job.LONG);
-        job.schedule(); // start as soon as possible
+                    if (components != null) {
+                        ECodePart codePart = ECodePart.MAIN;
+                        for (IComponent component : components) {
+                            if (component.getAvailableCodeParts().size() > 0) {
+                                initComponent(codeLanguage, jetBeans, codePart, component);
+                            }
+                            monitorWrap.worked(1);
+                        }
+                    }
+
+                    initializeEmittersPool(jetBeans, codeLanguage, monitorWrap);
+                    monitorWrap.done();
+                    log.debug("Components compiled in " + (System.currentTimeMillis() - startTime) + " ms");
+                    initialized = true;
+                    initInProgress = false;
+                    return Status.OK_STATUS;
+                }
+            };
+            job.setUser(true);
+            job.setPriority(Job.LONG);
+            job.schedule(); // start as soon as possible
+        }
     }
 
     /**
@@ -191,7 +196,7 @@ public final class CodeGeneratorEmittersPoolFactory {
         jetBean.addClassPath("CODEGEN_LIBRARIES", CodeGeneratorActivator.PLUGIN_ID);
         jetBean.addClassPath("COMMON_LIBRARIES", CommonsPlugin.PLUGIN_ID);
 
-        // PTODO MHIRT Tmp Solution, corres ASAP 
+        // PTODO MHIRT Tmp Solution, corres ASAP
         if (component.getFamily().compareTo("ELT") == 0) {
             jetBean.addClassPath("TMP_DBMAP", DbMapActivator.PLUGIN_ID);
         }
@@ -223,7 +228,8 @@ public final class CodeGeneratorEmittersPoolFactory {
      * 
      * @return
      */
-    private static void initializeEmittersPool(List<JetBean> components, ECodeLanguage codeLanguage, IProgressMonitor monitorWrap) {
+    private static void initializeEmittersPool(List<JetBean> components, ECodeLanguage codeLanguage,
+            IProgressMonitor monitorWrap) {
         IProgressMonitor monitor = new NullProgressMonitor();
         IProgressMonitor sub = new SubProgressMonitor(monitor, 1);
 
