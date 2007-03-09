@@ -22,6 +22,7 @@
 package org.talend.designer.runprocess.java;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -75,12 +76,10 @@ import org.talend.designer.codegen.ICodeGenerator;
 import org.talend.designer.codegen.ICodeGeneratorService;
 import org.talend.designer.core.ISyntaxCheckableEditor;
 import org.talend.designer.runprocess.IJavaProcessorStates;
-import org.talend.designer.runprocess.IProcessor;
 import org.talend.designer.runprocess.Processor;
 import org.talend.designer.runprocess.ProcessorException;
 import org.talend.designer.runprocess.RunProcessPlugin;
 import org.talend.designer.runprocess.i18n.Messages;
-import org.talend.designer.runprocess.perl.PerlUtils;
 
 /**
  * Creat the package folder for the java file, and put the generated file to the correct folder.
@@ -405,6 +404,7 @@ public class JavaProcessor extends Processor {
         try {
             lineNumbers = JavaProcessor.getLineNumbers(codeFile, new String[] { nodeName });
         } catch (CoreException e) {
+            lineNumbers = new int[] { 0 };
             e.printStackTrace();
         }
         return lineNumbers[0];
@@ -436,48 +436,6 @@ public class JavaProcessor extends Processor {
         for (int lineNumber = 0; lineNumber < lines.length; lineNumber++) {
             JDIDebugModel.createLineBreakpoint(codeFile, typeName, lines[lineNumber] + 1, -1, -1, 0, true, null);
         }
-
-        // final String javalBrekpointMarker =
-        // "org.eclipse.jdt.debug.javaLineBreakpointMarker";
-        // codeFile.deleteMarkers(javalBrekpointMarker, true,
-        // IResource.DEPTH_ZERO);
-        //
-        // IExtensionRegistry registry = Platform.getExtensionRegistry();
-        // IConfigurationElement[] configElems =
-        // registry.getConfigurationElementsFor("org.eclipse.debug.core.breakpoints");
-        //
-        // IConfigurationElement javaBreakConfigElem = null;
-        // for (IConfigurationElement elem : configElems) {
-        // if (elem.getAttribute("id").equals("javaLineBreakpoint")) {
-        // javaBreakConfigElem = elem;
-        // }
-        // }
-        // if (javaBreakConfigElem == null) {
-        // IStatus status = new Status(IStatus.ERROR,
-        // RunProcessPlugin.PLUGIN_ID, IStatus.OK,
-        // "Breakpoint implementation not found.", null);
-        // throw new CoreException(status);
-        // }
-        //
-        // IBreakpointManager breakpointManager =
-        // DebugPlugin.getDefault().getBreakpointManager();
-        // for (int line : lines) {
-        // IMarker breakMarker = codeFile.createMarker(javalBrekpointMarker);
-        // breakMarker.setAttribute(IBreakpoint.ID, "javaBreak" + line);
-        // breakMarker.setAttribute("org.eclipse.jdt.debug.core.typeName",
-        // typeName);
-        // breakMarker.setAttribute(IMarker.LINE_NUMBER, new Integer(line) + 1);
-        // breakMarker.setAttribute(IMarker.CHAR_START, new Integer(-1));
-        // breakMarker.setAttribute(IMarker.CHAR_END, new Integer(-1));
-        // breakMarker.setAttribute(IBreakpoint.PERSISTED, Boolean.TRUE);
-        // breakMarker.setAttribute(IBreakpoint.ENABLED, Boolean.TRUE);
-        // breakMarker.setAttribute(IBreakpoint.REGISTERED, Boolean.TRUE);
-        //
-        // IBreakpoint breakpoint = (IBreakpoint)
-        // javaBreakConfigElem.createExecutableExtension("class");
-        // breakpoint.setMarker(breakMarker);
-        // breakpointManager.addBreakpoint(breakpoint);
-        // }
     }
 
     /**
@@ -522,8 +480,6 @@ public class JavaProcessor extends Processor {
                 "org.eclipse.jdt.launching.JRE_CONTAINER")); //$NON-NLS-1$
         IClasspathEntry classpathEntry = JavaCore.newSourceEntry(javaProject.getPath().append(
                 JavaUtils.JAVA_SRC_DIRECTORY)); //$NON-NLS-1$
-        IClasspathEntry libClasspathEntry = JavaCore.newSourceEntry(javaProject.getPath().append(
-                JavaUtils.JAVA_LIB_DIRECTORY)); //$NON-NLS-1$
 
         List<IClasspathEntry> classpath = new ArrayList<IClasspathEntry>();
         classpath.add(jreClasspathEntry);
@@ -540,19 +496,12 @@ public class JavaProcessor extends Processor {
             sourceFolder.create(false, true, null);
         }
 
-        IFolder libFolder = prj.getFolder(new Path(JavaUtils.JAVA_LIB_DIRECTORY)); //$NON-NLS-1$
-        if (!libFolder.exists()) {
-            libFolder.create(false, true, null);
-        } else {
-            try {
-                for (IResource member : libFolder.members()) {
-                    if (member instanceof IFile) {
-                        classpath.add(JavaCore.newLibraryEntry(((IFile) member).getFullPath(), null, null));
-                    }
+        File externalLibDirectory = new File(CorePlugin.getDefault().getLibrariesService().getLibrariesPath());
+        if ((externalLibDirectory != null) && (externalLibDirectory.isDirectory())) {
+            for (File externalLib : externalLibDirectory.listFiles()) {
+                if (externalLib.isFile()) {
+                    classpath.add(JavaCore.newLibraryEntry(new Path(externalLib.getAbsolutePath()), null, null));
                 }
-            } catch (CoreException e) {
-                // do nothing, no cp to modifiy
-                e.printStackTrace();
             }
         }
 
@@ -674,19 +623,14 @@ public class JavaProcessor extends Processor {
         }
 
         // init lib path
-        IFolder libFolder = javaProject.getProject().getFolder(JavaUtils.JAVA_LIB_DIRECTORY); //$NON-NLS-1$
-        IPath libFolderPath = libFolder.getFullPath().removeFirstSegments(1).addTrailingSeparator();
-        String allLibPath = getCodeProject().getLocation().append(libFolderPath).toOSString();
         StringBuffer libPath = new StringBuffer();
-        try {
-            for (IResource member : libFolder.members()) {
-                if (member instanceof IFile) {
-                    IFile lib = (IFile) member;
-                    libPath.append(allLibPath + lib.getName() + JavaUtils.JAVA_CLASSPATH_SEPARATOR);
+        File externalLibDirectory = new File(CorePlugin.getDefault().getLibrariesService().getLibrariesPath());
+        if ((externalLibDirectory != null) && (externalLibDirectory.isDirectory())) {
+            for (File externalLib : externalLibDirectory.listFiles()) {
+                if (externalLib.isFile()) {
+                    libPath.append(externalLib.getAbsolutePath() + JavaUtils.JAVA_CLASSPATH_SEPARATOR);
                 }
             }
-        } catch (CoreException e) {
-            // do nothn, no cp to modifiy
         }
 
         // init project_path
