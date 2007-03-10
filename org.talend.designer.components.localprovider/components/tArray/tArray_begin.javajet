@@ -13,7 +13,12 @@ CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
 String destination = ElementParameterParser.getValue(node, "__DESTINATION__");
-String rowName= node.getIncomingConnections().get(0).getName();
+String rowName= "";
+if ((node.getIncomingConnections()!=null)&&(node.getIncomingConnections().size()>0)) {
+	rowName = node.getIncomingConnections().get(0).getName();
+} else {
+	rowName="defaultRow";
+}
 %>
 
 java.util.Arrays array<%=cid %>;

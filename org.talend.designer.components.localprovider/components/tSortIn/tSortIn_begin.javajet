@@ -29,7 +29,13 @@ for (IConnection conn : startNode.getOutgoingConnections()) {
 	}
 }
 
-String outRowName = node.getOutgoingConnections().get(0).getName();
+String outRowName = "";
+if ((node.getOutgoingConnections()!=null)&&(node.getOutgoingConnections().size()>0)) {
+	outRowName = node.getOutgoingConnections().get(0).getName();
+} else {
+	outRowName = "defaultRow";
+}
+
 List<Map<String, String>> criteria = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__CRITERIA__");
 String origin = ElementParameterParser.getValue(node, "__ORIGIN__");
 %>
