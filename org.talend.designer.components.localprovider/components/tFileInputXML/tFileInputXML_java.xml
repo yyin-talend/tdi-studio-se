@@ -63,7 +63,7 @@
       NUM_ROW="4"
       REPOSITORY_VALUE="XPATH_QUERY"
     >
-      <DEFAULT>/bills/bill/line</DEFAULT>
+      <DEFAULT>"/bills/bill/line"</DEFAULT>
     </PARAMETER>
 
     <PARAMETER
