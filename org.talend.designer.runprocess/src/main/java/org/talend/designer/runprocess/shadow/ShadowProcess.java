@@ -33,6 +33,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -148,6 +149,13 @@ public class ShadowProcess<T extends IProcessDescription> {
             ps = new FileinToXmlProcess<FileInputRegExpNode>(inRegExpNode, outNode);
             break;
         case FILE_XML:
+            List<Map<String, String>> newmappings = new ArrayList<Map<String,String>>();
+            List<Map<String, String>> oldmappings = description.getMapping();
+            for (int i=0;i<oldmappings.size();i++) {
+                Map<String, String> map = oldmappings.get(i);
+                map.put("SCHEMA_COLUMN", "row"+i);
+                newmappings.add(map);
+            }
             FileInputXmlNode inXmlNode = new FileInputXmlNode(PathUtils.getPortablePath(inPath.toOSString()),
                     description.getLoopQuery(), //$NON-NLS-1$ //$NON-NLS-2$
                     description.getMapping(), description.getLoopLimit(), description.getEncoding());
