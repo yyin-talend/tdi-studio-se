@@ -102,7 +102,8 @@ if(conns != null && conns.size()>0){
  	String defVal = JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate, column.getDefault());
  	
  	if(defVal == null) {
- 		if(typeToGenerate.equals("int")||typeToGenerate.equals("long")||typeToGenerate.equals("short")||typeToGenerate.equals("byte")){
+ 		if(typeToGenerate.equals("int")||typeToGenerate.equals("Integer")||
+ 			typeToGenerate.equals("long")||typeToGenerate.equals("short")||typeToGenerate.equals("byte")){
  			defVal = "0";
  		}else if (typeToGenerate.equals("boolean")){
  		  	defVal = "false";
@@ -110,10 +111,12 @@ if(conns != null && conns.size()>0){
  			defVal = "0.0f";
  		}else if (typeToGenerate.equals("double")){
  			defVal = "0.0";
+ 		}else if (typeToGenerate.equals("char")||typeToGenerate.equals("Character")){
+ 			defVal = "'\u0000'";
  		}
  	}else if(typeToGenerate.equals("java.util.Date")){
  		defVal = " new java.text.SimpleDateFormat().parse(\""+defVal+"\")";
- 	} 
+ 	}
  	 	
  	if(((conn.getLineStyle().equals(EConnectionType.FLOW_MAIN))||(conn.getLineStyle().equals(EConnectionType.FLOW_REF)))){
  	%> 	
@@ -123,16 +126,28 @@ if(conns != null && conns.size()>0){
  			
  		}else{
  	  	  <%
- 	  	   if(typeToGenerate.equals("byte[]")){
+ 	  	  if(typeToGenerate.equals("byte[]")){
  	  	   	typeToGenerate = "Bytes";
  	   	  }else if(typeToGenerate.equals("java.util.Date")){
  	   	  	typeToGenerate = "Date";
+ 	   	  }else if(typeToGenerate.equals("Integer")){
+ 	   	  	typeToGenerate = "Int";
  	   	  }else{
 			typeToGenerate=typeToGenerate.substring(0,1).toUpperCase()+typeToGenerate.substring(1);
 		  }
+		  
+			  if(typeToGenerate.equals("Char")||typeToGenerate.equals("Character")){
+			  %>
+			<%=firstConnName%>.<%=column.getLabel()%>=(char)rs_<%=cid %>.getShort(<%=currentColNo%>);
+			  <%
+			  }else{
+		  
  	   	 %>
 
  			<%=firstConnName%>.<%=column.getLabel()%>=rs_<%=cid %>.get<%=typeToGenerate%>(<%=currentColNo%>);
+ 			<%
+ 			  }
+ 			%>
  		}
  		
    	 <%  
