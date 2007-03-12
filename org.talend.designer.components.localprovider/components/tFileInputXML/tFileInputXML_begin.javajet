@@ -112,7 +112,7 @@ for (int i<%=cid %>=0;i<%=cid %><widgetNodes.getLength();i<%=cid %>++) {
 		if (limit.compareTo("-1")!=0) {
 %>
 	
-	if (nb_line_<%=cid %>><%=limit%>) {
+	if (nb_line_<%=cid %>><%=Integer.parseInt(limit)%>) {
 		break;
 	}
 <%
