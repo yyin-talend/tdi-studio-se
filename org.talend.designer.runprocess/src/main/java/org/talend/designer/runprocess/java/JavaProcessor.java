@@ -223,8 +223,8 @@ public class JavaProcessor extends Processor {
                 String currentJavaProject = project.getTechnicalLabel();
                 String javaContext = getContextPath().toOSString();
 
-                codeGen = service.createCodeGenerator(process, statistics, trace, javaInterpreter, javaLib,
-                        javaContext, currentJavaProject);
+                codeGen = service.createCodeGenerator(process, statistics, trace, javaInterpreter, javaLib, javaContext,
+                        currentJavaProject);
             } else {
                 codeGen = service.createCodeGenerator(process, statistics, trace);
             }
@@ -257,7 +257,10 @@ public class JavaProcessor extends Processor {
             } else {
                 contextFile.setContents(contextStream, true, false, null);
             }
-            syntaxCheck();
+            // /add the if ,by qzhang. for RowGenerator2's Preview function.
+            if (!process.getName().equals("Preview_RowGenerator2") || !process.getId().equals("Preview_RowGenerator2")) {
+                syntaxCheck();
+            }
 
             javaProject.getResource().getWorkspace().build(IncrementalProjectBuilder.AUTO_BUILD, null);
 
@@ -476,10 +479,8 @@ public class JavaProcessor extends Processor {
         }
         javaProject = JavaCore.create(prj);
 
-        IClasspathEntry jreClasspathEntry = JavaCore.newContainerEntry(new Path(
-                "org.eclipse.jdt.launching.JRE_CONTAINER")); //$NON-NLS-1$
-        IClasspathEntry classpathEntry = JavaCore.newSourceEntry(javaProject.getPath().append(
-                JavaUtils.JAVA_SRC_DIRECTORY)); //$NON-NLS-1$
+        IClasspathEntry jreClasspathEntry = JavaCore.newContainerEntry(new Path("org.eclipse.jdt.launching.JRE_CONTAINER")); //$NON-NLS-1$
+        IClasspathEntry classpathEntry = JavaCore.newSourceEntry(javaProject.getPath().append(JavaUtils.JAVA_SRC_DIRECTORY)); //$NON-NLS-1$
 
         List<IClasspathEntry> classpath = new ArrayList<IClasspathEntry>();
         classpath.add(jreClasspathEntry);
@@ -505,15 +506,14 @@ public class JavaProcessor extends Processor {
             }
         }
 
-        IClasspathEntry[] classpathEntryArray = (IClasspathEntry[]) classpath.toArray(new IClasspathEntry[classpath
-                .size()]);
+        IClasspathEntry[] classpathEntryArray = (IClasspathEntry[]) classpath.toArray(new IClasspathEntry[classpath.size()]);
 
         javaProject.setRawClasspath(classpathEntryArray, null);
 
         javaProject.setOutputLocation(javaProject.getPath().append(JavaUtils.JAVA_CLASSES_DIRECTORY), null); //$NON-NLS-1$
-        
+
         CorePlugin.getDefault().getLibrariesService().checkLibraries();
-        
+
         return prj;
 
     }
@@ -551,8 +551,7 @@ public class JavaProcessor extends Processor {
      * @return The required job package.
      * @throws JavaModelException
      */
-    private IPackageFragment getProjectPackage(IPackageFragment projectPackage, String jobName)
-            throws JavaModelException {
+    private IPackageFragment getProjectPackage(IPackageFragment projectPackage, String jobName) throws JavaModelException {
 
         IPackageFragmentRoot root = this.javaProject.getPackageFragmentRoot(projectPackage.getResource());
         IPackageFragment leave = root.getPackageFragment(jobName);

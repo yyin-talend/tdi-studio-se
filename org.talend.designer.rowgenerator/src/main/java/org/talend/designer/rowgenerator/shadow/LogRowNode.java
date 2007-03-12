@@ -31,7 +31,6 @@ import org.talend.core.model.components.IComponentsFactory;
 import org.talend.core.model.components.IODataComponent;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
-import org.talend.core.model.metadata.MetadataColumn;
 import org.talend.core.model.metadata.MetadataTable;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.IElementParameter;
@@ -65,12 +64,13 @@ public class LogRowNode implements INode {
 
     private IProcess process;
 
+    private IMetadataTable metadataTable;
     /**
      * qzhang LogRowNode constructor comment.
      */
-    public LogRowNode(String componentName) {
+    public LogRowNode(String componentName, IMetadataTable list) {
         super();
-
+        this.metadataTable = list;
         this.componentName = componentName;
         parameters = new ArrayList<IElementParameter>();
 
@@ -103,6 +103,11 @@ public class LogRowNode implements INode {
         List<IMetadataTable> metadatas = new ArrayList<IMetadataTable>();
         MetadataTable metadata = new MetadataTable();
         metadata.setTableName(this.getUniqueName());
+        if (UIManager.isJavaProject()) {
+            List<IMetadataColumn> columns = new ArrayList<IMetadataColumn>();
+            columns.addAll(metadataTable.getListColumns());
+            metadata.setListColumns(columns);
+        }
         metadatas.add(metadata);
         return metadatas;
     }

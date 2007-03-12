@@ -26,7 +26,7 @@
 %>
 
 int nb_line_<%=cid%> = 0;
-int nb_max_row_<%=cid%> = 100;
+int nb_max_row_<%=cid%> = <%=(ElementParameterParser.getValue(node, "__NB_ROWS__").equals("")? 100: ElementParameterParser.getValue(node, "__NB_ROWS__"))%>;
 
 <%
 	List<IMetadataTable> metadatas = node.getMetadataList();

@@ -88,8 +88,8 @@ public class RowGenPreviewCodeMain {
         initPerlArray();
         this.component.setNumber(number);
         Property property = PropertiesFactory.eINSTANCE.createProperty();
-        property.setLabel(PREVIEW + "RowGenerator"); //$NON-NLS-1$
-        property.setId(PREVIEW + "RowGenerator"); //$NON-NLS-1$
+        property.setLabel(PREVIEW + "_RowGenerator2"); //$NON-NLS-1$
+        property.setId(PREVIEW + "_RowGenerator2"); //$NON-NLS-1$
         proc = new RowGenProcess(property, component);
     }
 

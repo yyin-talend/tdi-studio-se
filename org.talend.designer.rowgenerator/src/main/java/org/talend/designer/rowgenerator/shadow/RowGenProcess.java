@@ -59,7 +59,7 @@ public class RowGenProcess extends Element implements IProcess {
 
     private boolean activate = true;
 
-    private String name = new String("RowGenPreviewProcess"); //$NON-NLS-1$
+    private String name = "RowGenPreviewProcess"; //$NON-NLS-1$
 
     // list where is stored each unique name for the connections
     private List<String> uniqueConnectionNameList = new ArrayList<String>();
@@ -89,7 +89,7 @@ public class RowGenProcess extends Element implements IProcess {
         contextManager = new RowGenContextManager();
         nodes.add(component);
 
-        logRowNode = new LogRowNode(LOGROW);
+        logRowNode = new LogRowNode(LOGROW, component.getMetadataList().get(0));
         nodes.add(logRowNode);
 
         cnx = new ShadowConnection(component, logRowNode);
