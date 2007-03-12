@@ -1504,30 +1504,31 @@ public class Process extends Element implements IProcess {
         setActivate(true);
     }
 
-    /**
-     * Check all active nodes and set start if necessary.
-     */
     public void checkStartNodes() {
-        // check
-
         for (Node node : nodes) {
             if ((Boolean) node.getPropertyValue(EParameterName.STARTABLE.getName())) {
-                if (node.isActivate()) {
-                    node.setStart(false);
-                    boolean isActivatedConnection = false;
-                    for (int j = 0; j < node.getIncomingConnections().size() && !isActivatedConnection; j++) {
-                        if (((Connection) node.getIncomingConnections().get(j)).isActivate()) {
-                            isActivatedConnection = true;
-                        }
+                if (node.getComponent().getFamily().equals("ELT")) {
+                    if (node.isActivate()) {
+                        node.setStart(true);
                     }
-                    if (!isActivatedConnection) {
-                        if (!isThereRefLink(node)) {
-                            node.setStart(true);
+                } else {
+                    if (node.isActivate()) {
+                        node.setStart(false);
+                        boolean isActivatedConnection = false;
+                        for (int j = 0; j < node.getIncomingConnections().size() && !isActivatedConnection; j++) {
+                            if (((Connection) node.getIncomingConnections().get(j)).isActivate()) {
+                                isActivatedConnection = true;
+                            }
                         }
-                    } else {
-                        if (node.getIncomingConnections().size() == 0) {
+                        if (!isActivatedConnection) {
                             if (!isThereRefLink(node)) {
                                 node.setStart(true);
+                            }
+                        } else {
+                            if (node.getIncomingConnections().size() == 0) {
+                                if (!isThereRefLink(node)) {
+                                    node.setStart(true);
+                                }
                             }
                         }
                     }
@@ -1535,6 +1536,37 @@ public class Process extends Element implements IProcess {
             }
         }
     }
+//    /**
+//     * Check all active nodes and set start if necessary.
+//     */
+//    public void checkStartNodes() {
+//        // check
+//
+//        for (Node node : nodes) {
+//            if ((Boolean) node.getPropertyValue(EParameterName.STARTABLE.getName())) {
+//                if (node.isActivate()) {
+//                    node.setStart(false);
+//                    boolean isActivatedConnection = false;
+//                    for (int j = 0; j < node.getIncomingConnections().size() && !isActivatedConnection; j++) {
+//                        if (((Connection) node.getIncomingConnections().get(j)).isActivate()) {
+//                            isActivatedConnection = true;
+//                        }
+//                    }
+//                    if (!isActivatedConnection) {
+//                        if (!isThereRefLink(node)) {
+//                            node.setStart(true);
+//                        }
+//                    } else {
+//                        if (node.getIncomingConnections().size() == 0) {
+//                            if (!isThereRefLink(node)) {
+//                                node.setStart(true);
+//                            }
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//    }
 
     /**
      * This function check if in this subprocess there should be a start or not depends on the ref links. If in this

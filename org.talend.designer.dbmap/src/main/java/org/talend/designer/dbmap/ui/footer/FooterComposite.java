@@ -68,11 +68,13 @@ public class FooterComposite extends Composite {
         this.setLayoutData(footerCompositeGridData);
 
         FormLayout formLayout = new FormLayout();
+        formLayout.spacing = 15;
         this.setLayout(formLayout);
 
         Button okButton = new Button(this, SWT.NONE);
         okButton.setText(Messages.getString("FooterComposite.button.OK")); //$NON-NLS-1$
         FormData okFormData = new FormData();
+        okFormData.width = 100;
         okButton.setLayoutData(okFormData);
         okButton.addSelectionListener(new SelectionListener() {
 
@@ -116,6 +118,7 @@ public class FooterComposite extends Composite {
 
         });
         FormData cancelFormData = new FormData();
+        cancelFormData.width = 100;
         cancelButton.setLayoutData(cancelFormData);
 
         // applyFormData.right = new FormAttachment(100);
