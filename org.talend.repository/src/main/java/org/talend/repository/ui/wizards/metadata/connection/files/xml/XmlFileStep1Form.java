@@ -55,6 +55,8 @@ import org.talend.commons.ui.swt.formtools.LabelledText;
 import org.talend.commons.ui.swt.formtools.UtilsButton;
 import org.talend.commons.utils.encoding.CharsetToolkit;
 import org.talend.core.CorePlugin;
+import org.talend.core.language.ECodeLanguage;
+import org.talend.core.language.LanguageManager;
 import org.talend.core.model.general.ILibrariesService;
 import org.talend.core.model.general.ModuleNeeded.ELibraryInstallStatus;
 import org.talend.core.model.metadata.EMetadataEncoding;
@@ -361,18 +363,20 @@ public class XmlFileStep1Form extends AbstractXmlFileStepForm {
                 encodingCombo.select(0);
             }
             
-            ILibrariesService moduleService = CorePlugin.getDefault().getLibrariesService();
-            try {
-                ELibraryInstallStatus status = moduleService.getLibraryStatus("XML::LibXML"); //$NON-NLS-1$
-                if (status != ELibraryInstallStatus.INSTALLED) { //$NON-NLS-1$
-                    new ErrorDialogWidthDetailArea(getShell(), PID, Messages.getString("FileStep.moduleFailure")+" XML::Lib "+Messages.getString("FileStep.moduleFailureEnd"), //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-                            Messages.getString("FileStep.moduleDetailMessage")); //$NON-NLS-1$
-                    log.error(Messages.getString("FileStep.moduleFailure")+" XML::Lib "+Messages.getString("FileStep.moduleFailureEnd")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            if (LanguageManager.getCurrentLanguage() == ECodeLanguage.PERL) {
+                ILibrariesService moduleService = CorePlugin.getDefault().getLibrariesService();
+                try {
+                    ELibraryInstallStatus status = moduleService.getLibraryStatus("XML::LibXML"); //$NON-NLS-1$
+                    if (status != ELibraryInstallStatus.INSTALLED) { //$NON-NLS-1$
+                        new ErrorDialogWidthDetailArea(getShell(), PID, Messages.getString("FileStep.moduleFailure")+" XML::LibXML "+Messages.getString("FileStep.moduleFailureEnd"), //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                                Messages.getString("FileStep.moduleDetailMessage")); //$NON-NLS-1$
+                        log.error(Messages.getString("FileStep.moduleFailure")+" XML::LibXML "+Messages.getString("FileStep.moduleFailureEnd")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                    }
+                } catch (BusinessException e) {
+                    new ErrorDialogWidthDetailArea(getShell(), PID, Messages.getString("FileStep.moduleFailure")+" XML::LibXML "+Messages.getString("FileStep.moduleFailureEnd"), e //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                            .getMessage());
+                    log.error(Messages.getString("FileStep.moduleFailure")+" XML::LibXML "+Messages.getString("FileStep.moduleFailureEnd")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 }
-            } catch (BusinessException e) {
-                new ErrorDialogWidthDetailArea(getShell(), PID, Messages.getString("FileStep.moduleFailure")+" XML::Lib "+Messages.getString("FileStep.moduleFailureEnd"), e //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-                        .getMessage());
-                log.error(Messages.getString("FileStep.moduleFailure")+" XML::Lib "+Messages.getString("FileStep.moduleFailureEnd")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
             }
         }
     }
