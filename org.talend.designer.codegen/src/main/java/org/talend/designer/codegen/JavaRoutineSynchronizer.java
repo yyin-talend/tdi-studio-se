@@ -151,7 +151,7 @@ public class JavaRoutineSynchronizer implements IRoutineSynchronizer {
             out.delete(true, null);
         }
         FileInputStream fis = new FileInputStream(in);
-        out.create(fis, false, null);
+        out.create(fis, true, null);
         fis.close();
     }
 
