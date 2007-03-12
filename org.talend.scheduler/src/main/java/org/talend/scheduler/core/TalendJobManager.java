@@ -304,7 +304,7 @@ public class TalendJobManager {
         // String[] cmd = new String[] { perlInterpreter, perlLibOption, exePath + "/" + perlCode, //$NON-NLS-1$
         // contextArg + exePath + "/" + contextCode }; //$NON-NLS-1$
 
-        String[] cmd = ProcessorUtilities.getCommandLine(jobName, context, new String[] {});
+        String[] cmd = ProcessorUtilities.getCommandLine(true, jobName, context, new String[] {});
 
         StringBuffer sb = new StringBuffer();
         sb.append(""); //$NON-NLS-1$

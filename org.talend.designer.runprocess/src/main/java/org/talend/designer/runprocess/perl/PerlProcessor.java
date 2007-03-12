@@ -448,7 +448,7 @@ public class PerlProcessor extends Processor {
         // perlModuleDirectoryOption, statOption, traceOption, codeOptions);
 
         String[] cmd = getCommandLineByCondition(absCodePath, perlInterpreterLibOption, perlModuleDirectoryOption);
-        cmd = Processor.addCommmandLineAttch(cmd, contextName, statOption, traceOption, codeOptions);
+        cmd = addCommmandLineAttch(cmd, contextName, statOption, traceOption, codeOptions);
         Processor.logCommandLine(cmd, level);
         try {
             int status = -1;

@@ -54,6 +54,8 @@ public abstract class Processor implements IProcessor {
 
     private static final String TRACE_PORT_ARG = "--trace_port="; //$NON-NLS-1$
 
+    private static boolean externalUse = false;
+
     private IContext context;
 
     /**
@@ -124,7 +126,8 @@ public abstract class Processor implements IProcessor {
      * @param codeOptions
      * @return
      */
-    public String[] getCommandLine(int statOption, int traceOption, String... codeOptions) {
+    public String[] getCommandLine(boolean externalUse, int statOption, int traceOption, String... codeOptions) {
+        setExternalUse(externalUse);
         String[] cmd = null;
         try {
             cmd = getCommandLine();
@@ -146,7 +149,7 @@ public abstract class Processor implements IProcessor {
      * @param codeOptions
      * @return
      */
-    public static String[] addCommmandLineAttch(String[] commandLine, String contextName, int statOption,
+    protected static String[] addCommmandLineAttch(String[] commandLine, String contextName, int statOption,
             int traceOption, String... codeOptions) {
         String[] cmd = (String[]) ArrayUtils.addAll(commandLine, codeOptions);
         if (contextName != null) {
@@ -173,7 +176,7 @@ public abstract class Processor implements IProcessor {
      */
     public Process exec(Level level, int statOption, int traceOption, String... codeOptions) throws ProcessorException {
 
-        String[] cmd = getCommandLine(statOption, traceOption, codeOptions);
+        String[] cmd = getCommandLine(false, statOption, traceOption, codeOptions);
 
         logCommandLine(cmd, level);
         try {
@@ -223,8 +226,20 @@ public abstract class Processor implements IProcessor {
         log.log(level, sb.toString());
     }
 
+    /**
+     * Sets the externalUse.
+     * @param externalUse the externalUse to set
+     */
+    public static void setExternalUse(boolean externalUse) {
+        Processor.externalUse = externalUse;
+    }
+
     protected static String setStringPath(String path) {
-        return "\"" + path.replace("\\", "/") + "\"";
+        if (externalUse) {
+            return "\"" + path.replace("\\", "/") + "\"";
+        } else {
+            return path;
+        }
     }
 
     /*
