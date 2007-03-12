@@ -19,6 +19,13 @@
             icon="icons/epic.gif"
             id="org.talend.designer.core.ui.editor.StandAloneTalendPerlEditor"
             name="Epic Perl Editor">
+      </editor>
+      <editor
+            class="org.talend.designer.core.ui.editor.StandAloneTalendJavaEditor"
+            extensions="java"
+            icon="icons/java.gif"
+            id="org.talend.designer.core.ui.editor.StandAloneTalendJavaEditor"
+            name="Java Editor">
       </editor> 
    </extension>
    <extension  point="org.eclipse.ui.startup">
