@@ -135,32 +135,6 @@
       <DEFAULT>""</DEFAULT>
     </PARAMETER>
 
-    <PARAMETER
-      NAME="ACTION"
-      FIELD="CLOSED_LIST"
-      NUM_ROW="6"
-    >
-      <ITEMS DEFAULT="NONE">
-        <ITEM
-          NAME="NONE"
-          VALUE="NONE"
-        />
-        <ITEM
-          NAME="DROP_CREATE_TABLE"
-          VALUE="DROP_CREATE_TABLE"
-          NOT_SHOW_IF="TYPE=='ODBC'"
-        />
-        <ITEM
-          NAME="CREATE_TABLE"
-          VALUE="CREATE_TABLE"
-          NOT_SHOW_IF="TYPE=='ODBC'"
-        />
-        <ITEM
-          NAME="CLEAR_TABLE"
-          VALUE="CLEAR_TABLE"
-        />
-      </ITEMS>
-    </PARAMETER>
 
     <PARAMETER
       NAME="DATA_ACTION"
