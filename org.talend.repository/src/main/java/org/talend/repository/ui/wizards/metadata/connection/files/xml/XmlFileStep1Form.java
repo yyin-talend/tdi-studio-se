@@ -364,7 +364,7 @@ public class XmlFileStep1Form extends AbstractXmlFileStepForm {
             ILibrariesService moduleService = CorePlugin.getDefault().getLibrariesService();
             try {
                 ELibraryInstallStatus status = moduleService.getLibraryStatus("XML::LibXML"); //$NON-NLS-1$
-                if (!("INSTALLED").equals(status.name())) { //$NON-NLS-1$
+                if (status != ELibraryInstallStatus.INSTALLED) { //$NON-NLS-1$
                     new ErrorDialogWidthDetailArea(getShell(), PID, Messages.getString("FileStep.moduleFailure")+" XML::Lib "+Messages.getString("FileStep.moduleFailureEnd"), //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                             Messages.getString("FileStep.moduleDetailMessage")); //$NON-NLS-1$
                     log.error(Messages.getString("FileStep.moduleFailure")+" XML::Lib "+Messages.getString("FileStep.moduleFailureEnd")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
