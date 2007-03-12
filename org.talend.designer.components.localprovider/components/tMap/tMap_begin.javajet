@@ -4,6 +4,7 @@ package="org.talend.designer.codegen.translators"
 	java.util.ArrayList
 	java.util.List
 	java.util.Map
+	java.util.HashMap
 	org.talend.core.model.metadata.MetadataTalendType
 	org.talend.designer.mapper.MapperMain
 	org.talend.designer.codegen.config.CodeGeneratorArgument
@@ -11,6 +12,7 @@ package="org.talend.designer.codegen.translators"
 	org.talend.designer.mapper.external.data.ExternalMapperData 
 	org.talend.designer.mapper.external.data.ExternalMapperTable
 	org.talend.designer.mapper.external.data.ExternalMapperTableEntry
+	org.talend.core.model.process.IConnection
 	org.talend.designer.mapper.language.ILanguage
 	org.talend.designer.mapper.language.generation.GenerationManagerFactory
 	org.talend.designer.mapper.language.generation.JavaGenerationManager
@@ -102,12 +104,19 @@ class  <%=className%>  {
 // ###############################
 // # Outputs initialization
 <%
-        List<ExternalMapperTable> outputTablesList = new ArrayList<ExternalMapperTable>(data.getOutputTables());
 
+		  List<IConnection> outputConnections = (List<IConnection>) node.getOutgoingConnections();
+		  Map<String, IConnection> nameToOutputConnection = new HashMap<String, IConnection>();
+        for (IConnection connection : outputConnections) {
+		  		nameToOutputConnection.put(connection.getName(), connection);
+		  }
+
+        List<ExternalMapperTable> outputTablesList = new ArrayList<ExternalMapperTable>(data.getOutputTables());
         // constants
         for (ExternalMapperTable table : outputTablesList) {
+        
             List<ExternalMapperTableEntry> tableEntries = table.getMetadataTableEntries();
-            if (tableEntries == null) {
+            if (tableEntries == null || nameToOutputConnection.get(table.getName()) == null) {
                 continue;
             }
             String tableName = table.getName();

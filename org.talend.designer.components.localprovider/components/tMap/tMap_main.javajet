@@ -6,6 +6,7 @@
 	java.util.Comparator
 	java.util.List
 	java.util.HashMap
+	java.util.Map
 	java.util.HashSet
 	java.util.Set
 	org.talend.designer.codegen.config.CodeGeneratorArgument
@@ -264,6 +265,12 @@
         boolean atLeastOneRejectInnerJoin = false;
         boolean closeTestInnerJoinConditionsBracket = false;
 
+		  List<IConnection> outputConnections = (List<IConnection>) node.getOutgoingConnections();
+		  Map<String, IConnection> nameToOutputConnection = new HashMap<String, IConnection>();
+        for (IConnection connection : outputConnections) {
+		  		nameToOutputConnection.put(connection.getName(), connection);
+		  }
+
         int lstSize = outputTablesSortedByReject.size();
         // ///////////////////////////////////////////////////////////////////
         // init of allNotRejectTablesHaveFilter and atLeastOneReject
@@ -271,6 +278,10 @@
             ExternalMapperTable outputTable = (ExternalMapperTable) outputTablesSortedByReject.get(i);
 
             String outputTableName = outputTable.getName();
+
+				if(nameToOutputConnection.get(outputTableName) == null) {
+					continue;
+				}
 
             sb.append(cr + gm.indent(indent) + outputTableName + " = null;");
 
@@ -328,10 +339,10 @@
         for (int indexCurrentTable = 0; indexCurrentTable < lstSize; indexCurrentTable++) {
             ExternalMapperTable outputTable = (ExternalMapperTable) outputTablesSortedByReject.get(indexCurrentTable);
             List<ExternalMapperTableEntry> outputTableEntries = outputTable.getMetadataTableEntries();
-            if (outputTableEntries == null) {
+            String outputTableName = outputTable.getName();
+            if (outputTableEntries == null || nameToOutputConnection.get(outputTableName) == null) {
                 continue;
             }
-            String outputTableName = outputTable.getName();
 
             List<ExternalMapperTableEntry> filters = outputTable.getConstraintTableEntries();
 
