@@ -22,6 +22,7 @@
 package org.talend.designer.codegen;
 
 import org.eclipse.jface.action.Action;
+import org.talend.core.CorePlugin;
 import org.talend.designer.codegen.model.CodeGeneratorEmittersPoolFactory;
 
 /**
@@ -45,6 +46,7 @@ public class RefreshTemplatesAction extends Action {
     @Override
     public void run() {
         CodeGeneratorEmittersPoolFactory.initialize();
+        CorePlugin.getDefault().getLibrariesService().syncLibraries();
     }
 
 }
