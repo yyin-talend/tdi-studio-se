@@ -30,6 +30,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.internal.dialogs.EventLoopProgressMonitor;
@@ -75,7 +76,11 @@ public final class ImportDemoProjectAction extends Action {
     }
 
     public void run() {
-        final boolean perl = !openJavaOrPerl(shell);
+        final Boolean perl = !openJavaOrPerl(shell);
+
+        if (perl == null) {
+            return;
+        }
 
         ProgressDialog progressDialog = new ProgressDialog(shell, 1) {
 
@@ -134,13 +139,21 @@ public final class ImportDemoProjectAction extends Action {
         this.shell = shell;
     }
 
-    public static boolean openJavaOrPerl(Shell parent) {
+    public static Boolean openJavaOrPerl(Shell parent) {
         String title = Messages.getString("ImportDemoProjectAction.languageSelectionDialog.title"); //$NON-NLS-1$
         String message = Messages.getString("ImportDemoProjectAction.languageSelectionDialog.message"); //$NON-NLS-1$
         String javabutton = Messages.getString("ImportDemoProjectAction.languageSelectionDialog.java"); //$NON-NLS-1$
         String perlbutton = Messages.getString("ImportDemoProjectAction.languageSelectionDialog.perl"); //$NON-NLS-1$
         MessageDialog dialog = new MessageDialog(parent, title, null, message, MessageDialog.QUESTION, new String[] { javabutton,
-                perlbutton }, 0);
-        return dialog.open() == 0;
+                perlbutton, IDialogConstants.CANCEL_LABEL }, 0);
+
+        switch (dialog.open()) {
+        case 0:
+            return true;
+        case 1:
+            return false;
+        default:
+            return null;
+        }
     }
 }
