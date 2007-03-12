@@ -23,7 +23,7 @@ if ((metadatas!=null)&&(metadatas.size()>0)) {
     IMetadataTable metadata = metadatas.get(0);
     if (metadata!=null) {
         // component id
-        String cid = metadata.getTableName();
+        String cid = node.getUniqueName();
         String filename = ElementParameterParser.getValue(node,"__FILENAME__");
         List<Map<String, String>> mailParts = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node,"__MAIL_PARTS__");
         List<IMetadataColumn> listColumns = metadata.getListColumns();         
