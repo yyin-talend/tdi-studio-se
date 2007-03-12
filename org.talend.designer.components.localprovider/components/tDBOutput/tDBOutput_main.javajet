@@ -200,10 +200,23 @@ if(incomingConnName != null && columnList != null){
  	  	 	}else{
 				typeToGenerate=typeToGenerate.substring(0,1).toUpperCase()+typeToGenerate.substring(1);
 			}
-		%>
+			
+			if(typeToGenerate.equals("Char")){
+			%>
+		
+pstmt_<%=cid %>.setShort(<%=counter%>,(short)<%=incomingConnName%>.<%=column.getName()%>);
+        	<%			
+			}else if(typeToGenerate.equals("Date")){
+			%>
+		
+pstmt_<%=cid %>.set<%=typeToGenerate%>(<%=counter%>,new java.sql.Date(<%=incomingConnName%>.<%=column.getName()%>.getTime()));
+        	<%			
+			}else{
+			%>
 		
 pstmt_<%=cid %>.set<%=typeToGenerate%>(<%=counter%>,<%=incomingConnName%>.<%=column.getName()%>);
-        <%
+        	<%
+        	}
         	counter++;
 		}
 	%>
@@ -224,9 +237,19 @@ nb_line_inserted_<%=cid%>++;
 			}
 			
 			if(!column.getColumn().isKey()){
-			%>
+				if(typeToGenerate.equals("Char")){
+				%>
+pstmt_<%=cid %>.setShort(<%=counterCol%>,(short)<%=incomingConnName%>.<%=column.getName()%>);
+        		<%
+				}else if(typeToGenerate.equals("Date")){
+				%>
+pstmt_<%=cid %>.set<%=typeToGenerate%>(<%=counterCol%>,new java.sql.Date(<%=incomingConnName%>.<%=column.getName()%>.getTime()));
+        		<%			
+				}else{
+				%>
 pstmt_<%=cid %>.set<%=typeToGenerate%>(<%=counterCol%>,<%=incomingConnName%>.<%=column.getName()%>);
-        	<%
+        		<%
+        		}
         		counterCol++;
 			}
 		}
@@ -242,9 +265,19 @@ pstmt_<%=cid %>.set<%=typeToGenerate%>(<%=counterCol%>,<%=incomingConnName%>.<%=
 			}
 			
 			if(column.getColumn().isKey()){
-			%>
+				if(typeToGenerate.equals("Char")){
+				%>
+pstmt_<%=cid %>.setShort(<%=counterCol%>,(short)<%=incomingConnName%>.<%=column.getName()%>);
+        		<%
+				}else if(typeToGenerate.equals("Date")){
+				%>
+pstmt_<%=cid %>.set<%=typeToGenerate%>(<%=counterCol%>,new java.sql.Date(<%=incomingConnName%>.<%=column.getName()%>.getTime()));
+        		<%			
+				}else{
+				%>
 pstmt_<%=cid %>.set<%=typeToGenerate%>(<%=counterCol%>,<%=incomingConnName%>.<%=column.getName()%>);
-        	<%
+        		<%
+        		}
         		counterCol++;
 			}
 		}
@@ -269,10 +302,22 @@ if(!executeUpdate_<%=cid%>){
  	  	 	}else{
 				typeToGenerate=typeToGenerate.substring(0,1).toUpperCase()+typeToGenerate.substring(1);
 			}
-		%>
+			if(typeToGenerate.equals("Char")){
+			%>
+		
+	pstmtInsert_<%=cid %>.setShort(<%=counterInsert%>,(short)<%=incomingConnName%>.<%=columnInsert.getName()%>);
+    	    <%
+			}else if(typeToGenerate.equals("Date")){
+			%>
+		
+	pstmtInsert_<%=cid %>.set<%=typeToGenerate%>(<%=counterInsert%>,new java.sql.Date(<%=incomingConnName%>.<%=columnInsert.getName()%>.getTime()));
+        	<%		
+			}else{
+			%>
 		
 	pstmtInsert_<%=cid %>.set<%=typeToGenerate%>(<%=counterInsert%>,<%=incomingConnName%>.<%=columnInsert.getName()%>);
-        <%
+        	<%
+        	}
         	counterInsert++;
 		}
 	%>
@@ -304,9 +349,19 @@ if(!executeUpdate_<%=cid%>){
 			}
 			
 			if(!column.getColumn().isKey()){
-			%>
+				if(typeToGenerate.equals("Char")){
+				%>
+	pstmtUpdate_<%=cid %>.setShort(<%=counterCol%>,(short)<%=incomingConnName%>.<%=column.getName()%>);
+        		<%
+				}else if(typeToGenerate.equals("Date")){
+				%>
+	pstmtUpdate_<%=cid %>.set<%=typeToGenerate%>(<%=counterCol%>,new java.sql.Date(<%=incomingConnName%>.<%=column.getName()%>.getTime()));
+        		<%			
+				}else{
+				%>
 	pstmtUpdate_<%=cid %>.set<%=typeToGenerate%>(<%=counterCol%>,<%=incomingConnName%>.<%=column.getName()%>);
-        	<%
+        		<%
+        		}
         		counterCol++;
 			}
 		}
@@ -322,9 +377,19 @@ if(!executeUpdate_<%=cid%>){
 			}
 			
 			if(column.getColumn().isKey()){
-			%>
+				if(typeToGenerate.equals("Char")){
+				%>
+	pstmtUpdate_<%=cid %>.setShort(<%=counterCol%>,(short)<%=incomingConnName%>.<%=column.getName()%>);
+        		<%				
+				}else if(typeToGenerate.equals("Date")){
+				%>
+	pstmtUpdate_<%=cid %>.set<%=typeToGenerate%>(<%=counterCol%>,new java.sql.Date(<%=incomingConnName%>.<%=column.getName()%>.getTime()));
+        		<%			
+				}else{
+				%>
 	pstmtUpdate_<%=cid %>.set<%=typeToGenerate%>(<%=counterCol%>,<%=incomingConnName%>.<%=column.getName()%>);
-        	<%
+        		<%
+        		}
         		counterCol++;
 			}
 		}
@@ -354,9 +419,19 @@ if(!executeInsert_<%=cid%>){
 			}
 			
 			if(!columnUpdate.getColumn().isKey()){
-			%>
+				if(typeToGenerate.equals("Char")){
+				%>
+	pstmtUpdate_<%=cid %>.setShort(<%=counterColUpdate%>,(short)<%=incomingConnName%>.<%=columnUpdate.getName()%>);
+        		<%					
+				}else if(typeToGenerate.equals("Date")){
+				%>
+	pstmtUpdate_<%=cid %>.set<%=typeToGenerate%>(<%=counterColUpdate%>,new java.sql.Date(<%=incomingConnName%>.<%=columnUpdate.getName()%>.getTime()));
+        		<%			
+				}else{
+				%>
 	pstmtUpdate_<%=cid %>.set<%=typeToGenerate%>(<%=counterColUpdate%>,<%=incomingConnName%>.<%=columnUpdate.getName()%>);
-        	<%
+        		<%	
+        		}
         		counterColUpdate++;
 			}
 		}
@@ -372,9 +447,19 @@ if(!executeInsert_<%=cid%>){
 			}
 			
 			if(columnUpdate.getColumn().isKey()){
-			%>
+				if(typeToGenerate.equals("Char")){
+				%>
+	pstmtUpdate_<%=cid %>.setShort(<%=counterColUpdate%>,(short)<%=incomingConnName%>.<%=columnUpdate.getName()%>);
+        		<%				
+				}else if(typeToGenerate.equals("Date")){
+				%>
+	pstmtUpdate_<%=cid %>.set<%=typeToGenerate%>(<%=counterColUpdate%>,new java.sql.Date(<%=incomingConnName%>.<%=columnUpdate.getName()%>.getTime()));
+        		<%			
+				}else{
+				%>
 	pstmtUpdate_<%=cid %>.set<%=typeToGenerate%>(<%=counterColUpdate%>,<%=incomingConnName%>.<%=columnUpdate.getName()%>);
-        	<%
+        		<%
+        		}
         		counterColUpdate++;
 			}
 		}
@@ -405,10 +490,22 @@ if(!executeInsert_<%=cid%>){
  	  	 	}else{
 				typeToGenerate=typeToGenerate.substring(0,1).toUpperCase()+typeToGenerate.substring(1);
 			}
-		%>
+			if(typeToGenerate.equals("Char")){
+			%>
+		
+	pstmtInsert_<%=cid %>.setShort(<%=counter%>,(short)<%=incomingConnName%>.<%=column.getName()%>);
+        	<%			
+			}else if(typeToGenerate.equals("Date")){
+			%>
+		
+	pstmtInsert_<%=cid %>.set<%=typeToGenerate%>(<%=counter%>,new java.sql.Date(<%=incomingConnName%>.<%=column.getName()%>.getTime()));
+        	<%			
+			}else{
+			%>
 		
 	pstmtInsert_<%=cid %>.set<%=typeToGenerate%>(<%=counter%>,<%=incomingConnName%>.<%=column.getName()%>);
-        <%
+        	<%
+        	}
         	counter++;
 		}
 	%>
@@ -435,9 +532,19 @@ if(!executeInsert_<%=cid%>){
 			}
 			
 			if(column.getColumn().isKey()){
-			%>
+				if(typeToGenerate.equals("Char")){
+				%>
+pstmt_<%=cid %>.setShort(<%=keyCounter%>,(short)<%=incomingConnName%>.<%=column.getName()%>);
+        		<%		
+				}else if(typeToGenerate.equals("Date")){
+				%>
+pstmt_<%=cid %>.set<%=typeToGenerate%>(<%=keyCounter%>,new java.sql.Date(<%=incomingConnName%>.<%=column.getName()%>.getTime()));
+        		<%			
+				}else{
+				%>
 pstmt_<%=cid %>.set<%=typeToGenerate%>(<%=keyCounter%>,<%=incomingConnName%>.<%=column.getName()%>);
-        	<%
+        		<%
+        		}
         		keyCounter++;
 			}
 		}
