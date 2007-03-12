@@ -69,9 +69,10 @@ public abstract class AbstractRoutineAction extends AContextualAction {
         }
 
         IFile file = routineSynchronizer.syncRoutine(routineItem);
-
         RepositoryEditorInput input = new RepositoryEditorInput(file, routineItem);
 
-        getActivePage().openEditor(input, "org.talend.designer.core.ui.editor.StandAloneTalendPerlEditor"); //$NON-NLS-1$
+        getActivePage().openEditor(input,
+                "org.talend.designer.core.ui.editor.StandAloneTalend" + lang.getCaseName() + "Editor"); //$NON-NLS-1$
+
     }
 }
