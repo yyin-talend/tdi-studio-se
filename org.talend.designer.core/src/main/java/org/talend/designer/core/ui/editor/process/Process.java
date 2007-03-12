@@ -1705,9 +1705,9 @@ public class Process extends Element implements IProcess {
      * @param componentName the component name
      * @return all the activated matching nodes in the process
      */
-    public List<? extends INode> getNodesOfType(String componentName) {
-        List<Node> matchingNodes = new ArrayList<Node>();
-        for (Node node : nodes) {
+    public List<INode> getNodesOfType(String componentName) {
+        List<INode> matchingNodes = new ArrayList<INode>();
+        for (INode node : getGeneratingNodes()) {
             if ((node.isActivate()) && (node.getComponent().getName() != null)
                     && (node.getComponent().getName().compareTo(componentName)) == 0) {
                 matchingNodes.add(node);
