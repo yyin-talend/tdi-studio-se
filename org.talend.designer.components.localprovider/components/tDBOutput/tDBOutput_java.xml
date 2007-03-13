@@ -163,7 +163,7 @@
       FIELD="ENCODING_TYPE"
       NUM_ROW="8"
       REQUIRED="true">
-       <DEFAULT>'ISO-8859-15'</DEFAULT>
+       <DEFAULT>"ISO-8859-15"</DEFAULT>
     </PARAMETER>
 
     <PARAMETER
@@ -176,9 +176,9 @@
     >
       <ITEMS>
 
-        <ITEM NAME="NAME" VALUE="'colname'" />
+        <ITEM NAME="NAME" VALUE="colname" />
 
-        <ITEM NAME="SQL" VALUE='"to_date(?, &apos;mm/dd/yyyy&apos;)"' />
+        <ITEM NAME="SQL" VALUE="now()" />
 
         <ITEM NAME="POS" FIELD="CLOSED_LIST">
           <ITEMS DEFAULT="BEFORE">
