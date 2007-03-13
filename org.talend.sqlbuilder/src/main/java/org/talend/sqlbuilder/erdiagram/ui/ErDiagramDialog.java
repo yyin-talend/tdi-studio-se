@@ -223,7 +223,7 @@ public class ErDiagramDialog extends Dialog {
      * @return
      */
     public String getSql() {
-        return erComposite.getSqlStatement();
+        return erComposite.getSqlText();
     }
 
     public List<RepositoryNode> getNodes() {

@@ -122,7 +122,7 @@ public class MultiPageSqlBuilderEditor extends MultiPageEditorPart {
 
     public void showDesignerPage() {
         setActivePage(1);
-        erDiagramComposite.setSqlText(erDiagramComposite.getSqlStatement());
+        erDiagramComposite.setSqlText(erDiagramComposite.getSqlText());
     }
 
     public void showEditPage() {

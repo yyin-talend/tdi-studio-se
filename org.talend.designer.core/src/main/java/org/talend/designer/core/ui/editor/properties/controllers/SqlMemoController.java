@@ -266,8 +266,12 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
      * @return
      */
     private String addStrInQuery(String input) {
-        String out = input.replaceAll("'", "\\\\\'"); //$NON-NLS-1$ //$NON-NLS-2$
-        out = "'" + out + "'"; //$NON-NLS-1$ //$NON-NLS-2$
+        String out = input;
+        if (ConnectionParameters.isJavaProject()) {
+            out = "\"" + out + "\"";
+        } else {
+            out = "'" + out + "'";
+        }
         return out;
     }
 

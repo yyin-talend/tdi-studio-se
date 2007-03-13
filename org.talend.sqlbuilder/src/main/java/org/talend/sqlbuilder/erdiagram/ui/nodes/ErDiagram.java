@@ -97,7 +97,7 @@ public class ErDiagram extends Element {
         return this.erDiagramComposite;
     }
     public void updateSqlText() {
-        erDiagramComposite.setSqlText(erDiagramComposite.getSqlStatement());
+        erDiagramComposite.updateSql();
     }
     /**
      * 

@@ -23,6 +23,10 @@ package org.talend.sqlbuilder.util;
 
 import java.util.Hashtable;
 
+import org.talend.core.CorePlugin;
+import org.talend.core.context.Context;
+import org.talend.core.context.RepositoryContext;
+import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.metadata.builder.connection.Query;
 import org.talend.repository.model.RepositoryNode;
@@ -112,6 +116,9 @@ public class ConnectionParameters {
      * @param schema the schema to set
      */
     public void setSchema(String schema) {
+        if (isJavaProject()) {
+            schema = schema.replaceAll("\"", "");
+        }
         this.schema = schema;
     }
 
@@ -185,6 +192,9 @@ public class ConnectionParameters {
      * @param filename the filename to set
      */
     public void setFilename(String filename) {
+        if (isJavaProject()) {
+            filename = filename.replaceAll("\"", "");
+        }
         this.filename = filename;
     }
 
@@ -203,6 +213,9 @@ public class ConnectionParameters {
      * @param datasource the datasource to set
      */
     public void setDatasource(String datasource) {
+        if (isJavaProject()) {
+            datasource = datasource.replaceAll("\"", "");
+        }
         this.datasource = datasource;
     }
 
@@ -221,6 +234,9 @@ public class ConnectionParameters {
      * @param dbType the dbType to set
      */
     public void setDbType(String dbType) {
+        if (isJavaProject()) {
+            dbType = dbType.replaceAll("\"", "");
+        }
         this.dbType = trimInvertedComma(hashTable.get(dbType));
     }
 
@@ -243,6 +259,9 @@ public class ConnectionParameters {
      * @param dbName the dbName to set
      */
     public void setDbName(String dbName) {
+        if (isJavaProject()) {
+            dbName = dbName.replaceAll("\"", "");
+        }
         this.dbName = trimInvertedComma(dbName);
         if (this.datasource == null || this.datasource.equals("")) { //$NON-NLS-1$
             this.datasource = this.dbName;
@@ -264,6 +283,9 @@ public class ConnectionParameters {
      * @param host the host to set
      */
     public void setHost(String host) {
+        if (isJavaProject()) {
+            host = host.replaceAll("\"", "");
+        }
         this.host = trimInvertedComma(host);
     }
 
@@ -282,6 +304,9 @@ public class ConnectionParameters {
      * @param password the password to set
      */
     public void setPassword(String password) {
+        if (isJavaProject()) {
+            password = password.replaceAll("\"", "");
+        }
         this.password = trimInvertedComma(password);
     }
 
@@ -300,6 +325,9 @@ public class ConnectionParameters {
      * @param port the port to set
      */
     public void setPort(String port) {
+        if (isJavaProject()) {
+            port = port.replaceAll("\"", "");
+        }
         this.port = trimInvertedComma(port);
     }
 
@@ -318,6 +346,9 @@ public class ConnectionParameters {
      * @param query the query to set
      */
     public void setQuery(String query) {
+        if (isJavaProject()) {
+            query = query.replaceAll("\"", "");
+        }
         this.query = query;
     }
 
@@ -336,6 +367,9 @@ public class ConnectionParameters {
      * @param userName the userName to set
      */
     public void setUserName(String userName) {
+        if (isJavaProject()) {
+            userName = userName.replaceAll("\"", "");
+        }
         this.userName = trimInvertedComma(userName);
     }
 
@@ -354,6 +388,9 @@ public class ConnectionParameters {
      * @param repositoryName the repositoryName to set
      */
     public void setRepositoryName(String repositoryName) {
+        if (isJavaProject()) {
+            repositoryName = repositoryName.replaceAll("\"", "");
+        }
         this.repositoryName = trimInvertedComma(repositoryName);
     }
 
@@ -381,8 +418,8 @@ public class ConnectionParameters {
         DataStringConnection urlDataStringConnection = new DataStringConnection();
         int dbIndex = urlDataStringConnection.getIndexOfLabel(dbType);
         urlDataStringConnection.setSelectionIndex(dbIndex);
-        String url = urlDataStringConnection.getString(-1, getHost(), getUserName(), getPassword(), getPort(),
-                getDbName(), getFilename(), getDatasource());
+        String url = urlDataStringConnection.getString(-1, getHost(), getUserName(), getPassword(), getPort(), getDbName(),
+                getFilename(), getDatasource());
         return url;
 
     }
@@ -393,6 +430,9 @@ public class ConnectionParameters {
      * @param selectedComponentName
      */
     public void setSelectedComponentName(String selectedComponentName) {
+        if (isJavaProject() && selectedComponentName.startsWith("\"")) {
+            selectedComponentName = selectedComponentName.replaceAll("\"", "");
+        }
         this.selectedComponentName = selectedComponentName;
 
     }
@@ -430,4 +470,12 @@ public class ConnectionParameters {
             status = false;
         }
     }
+
+    public static boolean isJavaProject() {
+        RepositoryContext repositoryContext = (RepositoryContext) CorePlugin.getContext().getProperty(
+                Context.REPOSITORY_CONTEXT_KEY);
+        ECodeLanguage codeLanguage = repositoryContext.getProject().getLanguage();
+        return (codeLanguage == ECodeLanguage.JAVA);
+    }
+
 }

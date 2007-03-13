@@ -228,8 +228,8 @@ public class SQLBuilderTabComposite extends Composite {
      */
     public String getCurrentTabSql() {
         Control control = (((CTabFolder) tabFolder.getSelection().getControl())).getSelection().getControl();
-        if (control instanceof ErDiagramComposite) {
-            return ((ErDiagramComposite) control).getSqlStatement();
+        if (control instanceof SQLBuilderDesignerComposite) {
+            return ((SQLBuilderDesignerComposite) control).getSQLToBeExecuted();
         } else if (control instanceof SQLBuilderEditorComposite) {
             SQLBuilderEditorComposite editorComposite = (SQLBuilderEditorComposite) control;
             return editorComposite.getSQLToBeExecuted();

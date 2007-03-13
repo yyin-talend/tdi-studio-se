@@ -155,7 +155,7 @@ public class ErdiagramDiagramEditor extends GraphicalEditor {
     public void updateSqlText() {
         if (rulerComp.getParent() instanceof ErDiagramComposite) {
             ErDiagramComposite erComposite = (ErDiagramComposite) rulerComp.getParent();
-            erComposite.setSqlText(erComposite.getSqlStatement());
+            erComposite.updateSql();
         }
     }
     

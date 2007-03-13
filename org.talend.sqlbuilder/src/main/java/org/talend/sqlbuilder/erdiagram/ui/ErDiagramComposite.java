@@ -150,7 +150,13 @@ public class ErDiagramComposite extends SashForm {
      * @return the sqlText
      */
     public String getSqlText() {
-        return this.sqlText.getText();
+        String text = sqlText.getText();
+        if ("".equals(text)) {
+            if (!"".equals(getSqlStatement())) {
+                return getSqlStatement();
+            }
+        }
+        return text;
     }
 
     /**
@@ -222,7 +228,7 @@ public class ErDiagramComposite extends SashForm {
     }
 
     @SuppressWarnings("unchecked")//$NON-NLS-1$
-    public String getSqlStatement() {
+    private String getSqlStatement() {
         String sql = ""; //$NON-NLS-1$
         List<String> tables = new ArrayList<String>();
         List<String> columns = new ArrayList<String>();
@@ -377,5 +383,12 @@ public class ErDiagramComposite extends SashForm {
             erDiagram.removeTable(table);
         }
         this.sqlText.setText("");
+    }
+
+    /**
+     * qzhang Comment method "updateSql".
+     */
+    public void updateSql() {
+        setSqlText(getSqlStatement());
     }
 }

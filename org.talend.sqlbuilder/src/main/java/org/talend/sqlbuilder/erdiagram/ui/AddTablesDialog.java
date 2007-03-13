@@ -72,7 +72,6 @@ public class AddTablesDialog extends Dialog {
      */
     @Override
     protected void configureShell(Shell newShell) {
-        // TODO Auto-generated method stub
         super.configureShell(newShell);
         newShell.setText(Messages.getString("AddTablesDialog.textAddTables")); //$NON-NLS-1$
     }
@@ -84,7 +83,6 @@ public class AddTablesDialog extends Dialog {
      */
     @Override
     protected Control createDialogArea(Composite parent) {
-        // TODO Auto-generated method stub
         Composite container = (Composite) super.createDialogArea(parent);
         GridLayout layout = new GridLayout();
         layout.numColumns = 1;
@@ -112,7 +110,8 @@ public class AddTablesDialog extends Dialog {
     public void setRootNode(RepositoryNode rootNode) {
         this.rootNode = rootNode;
         DatabaseConnectionItem item = SQLBuilderRepositoryNodeManager.getItem(getRootNode());
-        tables = ((DatabaseConnection) item.getConnection()).getTables();
+        tables = new ArrayList<MetadataTable>();
+        tables.addAll(((DatabaseConnection) item.getConnection()).getTables());
     }
 
     public List<MetadataTable> getTables() {
