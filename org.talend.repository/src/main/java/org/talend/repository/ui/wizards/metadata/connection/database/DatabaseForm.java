@@ -40,6 +40,7 @@ import org.talend.commons.ui.swt.formtools.LabelledCombo;
 import org.talend.commons.ui.swt.formtools.LabelledFileField;
 import org.talend.commons.ui.swt.formtools.LabelledText;
 import org.talend.commons.ui.swt.formtools.UtilsButton;
+import org.talend.commons.ui.utils.PathUtils;
 import org.talend.core.language.ECodeLanguage;
 import org.talend.core.language.LanguageManager;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
@@ -510,7 +511,7 @@ public class DatabaseForm extends AbstractForm {
                         setPropertiesFormEditable(true);
                         urlConnectionStringText.setEditable(false);
                     }
-                    getConnection().setFileFieldName(fileField.getText());
+                    getConnection().setFileFieldName(PathUtils.getPortablePath(fileField.getText()));
                 }
             }
         });

@@ -45,6 +45,7 @@ import org.talend.commons.ui.swt.formtools.Form;
 import org.talend.commons.ui.swt.formtools.LabelledCombo;
 import org.talend.commons.ui.swt.formtools.LabelledFileField;
 import org.talend.commons.ui.swt.formtools.UtilsButton;
+import org.talend.commons.ui.utils.PathUtils;
 import org.talend.commons.utils.encoding.CharsetToolkit;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.repository.i18n.Messages;
@@ -203,7 +204,7 @@ public class LdifFileStep1Form extends AbstractLdifFileStepForm {
         fileField.addModifyListener(new ModifyListener() {
 
             public void modifyText(final ModifyEvent e) {
-                getConnection().setFilePath(fileField.getText());
+                getConnection().setFilePath(PathUtils.getPortablePath(fileField.getText()));
                 fileViewerText.setText(Messages.getString("FileStep1.fileViewerProgress")); //$NON-NLS-1$
                 checkFilePathAndManageIt();
             }

@@ -53,6 +53,7 @@ import org.talend.commons.ui.swt.formtools.LabelledCombo;
 import org.talend.commons.ui.swt.formtools.LabelledFileField;
 import org.talend.commons.ui.swt.formtools.LabelledText;
 import org.talend.commons.ui.swt.formtools.UtilsButton;
+import org.talend.commons.ui.utils.PathUtils;
 import org.talend.commons.utils.encoding.CharsetToolkit;
 import org.talend.core.CorePlugin;
 import org.talend.core.language.ECodeLanguage;
@@ -268,7 +269,7 @@ public class XmlFileStep1Form extends AbstractXmlFileStepForm {
         fileFieldXml.addModifyListener(new ModifyListener() {
 
             public void modifyText(final ModifyEvent e) {
-                getConnection().setXmlFilePath(fileFieldXml.getText());
+                getConnection().setXmlFilePath(PathUtils.getPortablePath(fileFieldXml.getText()));
 
                 BufferedReader in = null;
                 
