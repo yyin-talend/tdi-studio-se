@@ -691,7 +691,7 @@ public class SQLBuilderRepositoryNodeManager {
     public RepositoryNode getRepositoryNodeByBuildIn(RepositoryNode node, ConnectionParameters parameters) {
         boolean isNeedSchema = !parameters.getDbType().equals("MySQL") && !parameters.getDbType().equals("Generic ODBC")
                 && !parameters.getDbType().equals("Microsoft SQL Server (Odbc driver)"); //$NON-NLS-1$
-        if ((parameters.getSchema().equals("\'\'") || parameters.getSchema().equals("")) && isNeedSchema) { //$NON-NLS-1$
+        if (isNeedSchema && (parameters.getSchema().equals("\'\'") || parameters.getSchema().equals(""))) { //$NON-NLS-1$
             parameters.setConnectionComment(Messages.getString("SQLBuilderRepositoryNodeManager.connectionComment")); //$NON-NLS-1$
             return null;
         }

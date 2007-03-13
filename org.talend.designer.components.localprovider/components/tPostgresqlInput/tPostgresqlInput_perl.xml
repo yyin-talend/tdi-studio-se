@@ -48,6 +48,16 @@
       <DEFAULT>''</DEFAULT>
     </PARAMETER>
 
+	<PARAMETER
+      NAME="TYPE"
+      FIELD="TEXT"
+      NUM_ROW="3"
+      SHOW="false"
+      REPOSITORY_VALUE="TYPE"
+    >
+      <DEFAULT>PostgreSQL</DEFAULT>
+    </PARAMETER>
+    
     <PARAMETER
       NAME="PORT"
       FIELD="TEXT"

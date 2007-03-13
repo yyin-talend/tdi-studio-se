@@ -48,6 +48,16 @@
       <DEFAULT>'SYBASE'</DEFAULT>
     </PARAMETER>
 
+	<PARAMETER
+      NAME="TYPE"
+      FIELD="TEXT"
+      NUM_ROW="3"
+      SHOW="false"
+      REPOSITORY_VALUE="TYPE"
+    >
+      <DEFAULT>Sybase ASE</DEFAULT>
+    </PARAMETER>
+    
     <PARAMETER
       NAME="DBNAME"
       FIELD="TEXT"

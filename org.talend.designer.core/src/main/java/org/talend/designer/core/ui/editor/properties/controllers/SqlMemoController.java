@@ -126,7 +126,7 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
                 }
             }
         }
-        return null;
+        return "";
     }
 
     /**
@@ -146,7 +146,7 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
                 return originalList[i];
             }
         }
-        return null;
+        return "";
     }
 
     /*
