@@ -272,7 +272,7 @@ for(Column colStmt:stmtStructure){
 				updateSetStmt.append(replacement.getSqlStmt());
 			}else{
 				if(!firstKey){
-					updateWhereStmt.append(",");
+					updateWhereStmt.append(" AND ");
 				}else{
 					firstKey = false;
 				}
@@ -303,7 +303,7 @@ for(Column colStmt:stmtStructure){
 				updateSetStmt.append(colStmt.getSqlStmt());
 			}else{
 				if(!firstKey){
-					updateWhereStmt.append(",");
+					updateWhereStmt.append(" AND ");
 				}else{
 					firstKey = false;
 				}
