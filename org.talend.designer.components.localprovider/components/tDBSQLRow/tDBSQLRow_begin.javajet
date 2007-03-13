@@ -42,7 +42,7 @@ String url_<%=cid %> = "jdbc:odbc:"+<%=dbname%>;
 }else if(javaDbtype.equals("oracle")){
 String dbSchema = ElementParameterParser.getValue(node, "__SCHEMA_DB__");
 %>
-String url_<%=cid %> = "jdbc:oracle:thin:@"+<%=dbhost%>+":"+<%=dbport%>+":"+<%=dbSchema%>;
+String url_<%=cid %> = "jdbc:oracle:thin:@"+<%=dbhost%>+":"+<%=dbport%>+":"+<%=dbname%>;
 <%
 }else if(javaDbtype.equals("postgresql")){
 %>
