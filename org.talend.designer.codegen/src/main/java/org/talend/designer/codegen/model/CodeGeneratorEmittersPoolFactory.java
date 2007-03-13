@@ -249,14 +249,7 @@ public final class CodeGeneratorEmittersPoolFactory {
                     .loadEmittersPool(), components);
             for (JetBean jetBean : alreadyCompiledEmitters) {
                 JETEmitter emitter = new JETEmitter(jetBean.getTemplateFullUri(), jetBean.getClassLoader());
-                try {
-                    emitter.setMethod(jetBean.getMethod());
-                    for (String classKey : globalClasspath.keySet()) {
-                        emitter.addVariable(classKey, globalClasspath.get(classKey));
-                    }
-                } catch (JETException e) {
-                    log.error("Error during JetEmitter initalization " + e.getMessage(), e);
-                }
+                emitter.setMethod(jetBean.getMethod());
                 emitterPool.put(jetBean, emitter);
                 monitorWrap.worked(1);
             }
