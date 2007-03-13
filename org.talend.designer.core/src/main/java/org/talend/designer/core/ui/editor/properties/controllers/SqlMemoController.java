@@ -50,6 +50,7 @@ import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.talend.commons.ui.swt.colorstyledtext.ColorManager;
 import org.talend.commons.ui.swt.colorstyledtext.ColorStyledText;
 import org.talend.core.CorePlugin;
+import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.IElementParameter;
 import org.talend.designer.core.i18n.Messages;
 import org.talend.designer.core.model.components.EParameterName;
@@ -118,6 +119,9 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
         for (IElementParameter param : (List<IElementParameter>) elem.getElementParameters()) {
             if (param.getRepositoryValue() != null) {
                 if (param.getRepositoryValue().equals(repositoryName)) {
+                    if (param.getField().equals(EParameterFieldType.CLOSED_LIST)) {
+                        return getRepositoryItemFromRepositoryName(param, repositoryName);
+                    }
                     return (String) param.getValue();
                 }
             }
@@ -133,20 +137,13 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
      * @param repositoryName
      * @return
      */
-    private String getRepositoryItemFromRepositoryName(String repositoryName) {
-        for (IElementParameter param : (List<IElementParameter>) elem.getElementParameters()) {
-            if (param.getRepositoryValue() != null) {
-                if (param.getRepositoryValue().equals(repositoryName)) {
-                    String value = (String) param.getValue();
-                    Object[] valuesList = (Object[]) param.getListItemsValue();
-                    String[] originalList = param.getListItemsDisplayName();
-                    for (int i = 0; i < valuesList.length; i++) {
-                        if (valuesList[i].equals(value)) {
-                            return originalList[i];
-                        }
-                    }
-
-                }
+    private String getRepositoryItemFromRepositoryName(IElementParameter param, String repositoryName) {
+        String value = (String) param.getValue();
+        Object[] valuesList = (Object[]) param.getListItemsValue();
+        String[] originalList = param.getListItemsDisplayName();
+        for (int i = 0; i < valuesList.length; i++) {
+            if (valuesList[i].equals(value)) {
+                return originalList[i];
             }
         }
         return null;
@@ -185,7 +182,7 @@ public class SqlMemoController extends AbstractElementPropertySectionController 
             String dbName = getValueFromRepositoryName("SID"); //$NON-NLS-1$
             connParameters.setDbName(dbName);
 
-            String type = getRepositoryItemFromRepositoryName("TYPE"); //$NON-NLS-1$
+            String type = getValueFromRepositoryName("TYPE"); //$NON-NLS-1$
             connParameters.setDbType(type);
             connParameters.setQuery(query);
             String schema = getValueFromRepositoryName("SCHEMA"); //$NON-NLS-1$
