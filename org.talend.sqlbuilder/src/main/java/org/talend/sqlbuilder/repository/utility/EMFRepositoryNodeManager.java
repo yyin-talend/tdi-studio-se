@@ -252,6 +252,7 @@ public final class EMFRepositoryNodeManager {
         string = string.replaceAll("\t", " ");
         string = string.replaceAll("\r", " ");
         string = string.replaceAll("\"", "");
+        string = string.replaceAll("\'", "");
         if (!string.startsWith("select ")) {
             MessageDialog.openError(new Shell(), Messages.getString("EMFRepositoryNodeManager.Notice.title3"), Messages
                     .getString("EMFRepositoryNodeManager.Notice.info3"));

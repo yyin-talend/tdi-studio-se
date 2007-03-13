@@ -41,7 +41,6 @@ import org.talend.sqlbuilder.SqlBuilderPlugin;
 import org.talend.sqlbuilder.dbstructure.RepositoryNodeType;
 import org.talend.sqlbuilder.dbstructure.DBTreeProvider.QueryRepositoryObject;
 import org.talend.sqlbuilder.editors.MultiPageSqlBuilderEditor;
-import org.talend.sqlbuilder.erdiagram.ui.ErDiagramComposite;
 import org.talend.sqlbuilder.repository.utility.EMFRepositoryNodeManager;
 import org.talend.sqlbuilder.repository.utility.SQLBuilderRepositoryNodeManager;
 import org.talend.sqlbuilder.util.ConnectionParameters;

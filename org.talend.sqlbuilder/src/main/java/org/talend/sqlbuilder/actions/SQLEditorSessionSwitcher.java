@@ -32,6 +32,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.sqlbuilder.Messages;
+import org.talend.sqlbuilder.editors.MultiPageSqlBuilderEditor;
 import org.talend.sqlbuilder.repository.utility.SQLBuilderRepositoryNodeManager;
 import org.talend.sqlbuilder.ui.editor.ISQLEditor;
 
@@ -92,8 +93,9 @@ public class SQLEditorSessionSwitcher extends ControlContribution {
                 public void widgetSelected(SelectionEvent e) {
                     String repoName = sessionCombo.getText();
                     RepositoryNode node = nodeManager.getRepositoryNodebyName(repoName);
-                    editor.setRepositoryNode(node);
-                    editor.refresh(true);
+                    MultiPageSqlBuilderEditor multiPageEditor = editor.getMultiPageEditor();
+                    multiPageEditor.setRepositoryNode(node);
+                    // editor.refresh(true);
                 }
             });
         }

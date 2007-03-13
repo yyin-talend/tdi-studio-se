@@ -53,6 +53,7 @@ import org.talend.sqlbuilder.actions.SaveSQLAction;
 import org.talend.sqlbuilder.actions.explain.DB2ExplainPlanAction;
 import org.talend.sqlbuilder.actions.explain.OracleExplainPlanAction;
 import org.talend.sqlbuilder.dbstructure.SqlBuilderRepositoryObject;
+import org.talend.sqlbuilder.editors.MultiPageSqlBuilderEditor;
 import org.talend.sqlbuilder.erdiagram.ui.ErDiagramComposite;
 import org.talend.sqlbuilder.repository.utility.EMFRepositoryNodeManager;
 import org.talend.sqlbuilder.repository.utility.SQLBuilderRepositoryNodeManager;
@@ -509,4 +510,19 @@ public class SQLBuilderDesignerComposite extends Composite implements ISQLEditor
         tabItem.setText(title);
     }
 
+    private MultiPageSqlBuilderEditor multiPageEditor;
+    /**
+     * Sets the multiPageEditor.
+     * @param multiPageEditor the multiPageEditor to set
+     */
+    public void setMultiPageEditor(MultiPageSqlBuilderEditor multiPageEditor) {
+        this.multiPageEditor = multiPageEditor;
+    }
+    /* (non-Javadoc)
+     * @see org.talend.sqlbuilder.ui.editor.ISQLEditor#getMultiPageEditor()
+     */
+    public MultiPageSqlBuilderEditor getMultiPageEditor() {
+        return multiPageEditor;
+    }
+    
 }

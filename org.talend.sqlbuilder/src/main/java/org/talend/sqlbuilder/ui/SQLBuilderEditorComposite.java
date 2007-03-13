@@ -76,6 +76,7 @@ import org.talend.sqlbuilder.actions.SaveSQLAction;
 import org.talend.sqlbuilder.actions.explain.DB2ExplainPlanAction;
 import org.talend.sqlbuilder.actions.explain.OracleExplainPlanAction;
 import org.talend.sqlbuilder.dbstructure.SqlBuilderRepositoryObject;
+import org.talend.sqlbuilder.editors.MultiPageSqlBuilderEditor;
 import org.talend.sqlbuilder.repository.utility.SQLBuilderRepositoryNodeManager;
 import org.talend.sqlbuilder.sessiontree.model.SessionTreeNode;
 import org.talend.sqlbuilder.ui.editor.ISQLEditor;
@@ -693,4 +694,21 @@ public class SQLBuilderEditorComposite extends Composite implements ISQLEditor {
         this.isModified = isModified;
     }
 
+    private MultiPageSqlBuilderEditor multiPageEditor;
+    /**
+     * Sets the multiPageEditor.
+     * @param multiPageEditor the multiPageEditor to set
+     */
+    public void setMultiPageEditor(MultiPageSqlBuilderEditor multiPageEditor) {
+        this.multiPageEditor = multiPageEditor;
+    }
+    /* (non-Javadoc)
+     * @see org.talend.sqlbuilder.ui.editor.ISQLEditor#getMultiPageEditor()
+     */
+    public MultiPageSqlBuilderEditor getMultiPageEditor() {
+        return multiPageEditor;
+    }
+
+    
+    
 }
