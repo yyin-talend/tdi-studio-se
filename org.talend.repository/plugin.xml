@@ -363,13 +363,13 @@
       <libraryNeeded
             context="%libraryneeded.dbconnectionwizard"
             language="java"
-            message="%libraryneeded.forsqlconnection"
+            message="%libraryneeded.fororacleconnection"
             name="ojdbc14.jar"
             required="false"/>
       <libraryNeeded
             context="%libraryneeded.dbconnectionwizard"
             language="java"
-            message="%libraryneeded.forsqlconnection"
+            message="%libraryneeded.forpostgresqlconnection"
             name="postgresql-8.1-405.jdbc3.jar"
             required="false"/>
    </extension>
