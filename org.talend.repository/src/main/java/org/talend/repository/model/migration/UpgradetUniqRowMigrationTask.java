@@ -24,6 +24,7 @@ package org.talend.repository.model.migration;
 import java.util.Arrays;
 
 import org.talend.commons.exception.ExceptionHandler;
+import org.talend.core.language.ECodeLanguage;
 import org.talend.core.model.general.Project;
 import org.talend.core.model.migration.AbstractMigrationTask;
 import org.talend.core.model.migration.IProjectMigrationTask;
@@ -42,6 +43,9 @@ import org.talend.repository.model.migration.filters.NameComponentFilter;
 public class UpgradetUniqRowMigrationTask extends AbstractMigrationTask implements IProjectMigrationTask {
 
     public boolean execute(Project project) {
+        if (project.getLanguage() != ECodeLanguage.PERL) {
+            return true;
+        }
         try {
             IComponentFilter filter1 = new NameComponentFilter("tUniqRow"); //$NON-NLS-1$
 
