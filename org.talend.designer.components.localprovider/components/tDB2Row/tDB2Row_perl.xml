@@ -63,6 +63,16 @@
       <DEFAULT>''</DEFAULT>
     </PARAMETER>
     
+    	<PARAMETER
+      NAME="TYPE"
+      FIELD="TEXT"
+      NUM_ROW="3"
+      SHOW="false"
+      REPOSITORY_VALUE="TYPE"
+    >
+      <DEFAULT>IBM DB2</DEFAULT>
+    </PARAMETER>
+    
     <PARAMETER
       NAME="USER"
       FIELD="TEXT"

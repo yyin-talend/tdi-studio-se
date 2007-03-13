@@ -68,6 +68,16 @@
     </PARAMETER>
 
     <PARAMETER
+      NAME="TYPE"
+      FIELD="TEXT"
+      NUM_ROW="3"
+      SHOW="false"
+      REPOSITORY_VALUE="TYPE"
+    >
+      <DEFAULT>MySQL</DEFAULT>
+    </PARAMETER>
+    
+    <PARAMETER
       NAME="USER"
       FIELD="TEXT"
       NUM_ROW="4"
