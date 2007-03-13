@@ -35,10 +35,14 @@ import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Table;
-import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.talend.commons.ui.swt.tableviewer.TableViewerCreator;
+import org.talend.commons.utils.data.list.IListenableListListener;
+import org.talend.commons.utils.data.list.ListenableListEvent;
 import org.talend.core.model.process.IElementParameter;
+import org.talend.designer.core.ui.editor.cmd.ChangeMetadataCommand;
+import org.talend.designer.core.ui.editor.cmd.PropertyChangeCommand;
+import org.talend.designer.core.ui.editor.nodes.Node;
 import org.talend.designer.core.ui.editor.properties.DynamicTabbedPropertySection;
 import org.talend.designer.core.ui.editor.properties.macrowidgets.tableeditor.PropertiesTableEditorModel;
 import org.talend.designer.core.ui.editor.properties.macrowidgets.tableeditor.PropertiesTableEditorView;
@@ -72,7 +76,6 @@ public class TableController extends AbstractElementPropertySectionController {
      */
     @Override
     public Command createCommand() {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -101,6 +104,14 @@ public class TableController extends AbstractElementPropertySectionController {
 
         table.setToolTipText(VARIABLE_TOOLTIP + param.getVariableName());
 
+        // add listener to tableMetadata (listen the event of the toolbars)
+        tableEditorView.getExtendedTableModel().addAfterOperationListListener(new IListenableListListener() {
+
+            public void handleEvent(ListenableListEvent event) {
+                Node node = (Node) elem;
+                node.checkAndRefreshNode();
+            }
+        });
         final Composite mainComposite = tableEditorView.getMainComposite();
 
         CLabel labelLabel2 = getWidgetFactory().createCLabel(container, param.getDisplayName());
@@ -141,8 +152,7 @@ public class TableController extends AbstractElementPropertySectionController {
 
         int currentHeightEditor = table.getHeaderHeight() + ((List) param.getValue()).size() * table.getItemHeight()
                 + table.getItemHeight() + 50;
-        int minHeightEditor = table.getHeaderHeight() + MIN_NUMBER_ROWS * table.getItemHeight() + table.getItemHeight()
-                + 50;
+        int minHeightEditor = table.getHeaderHeight() + MIN_NUMBER_ROWS * table.getItemHeight() + table.getItemHeight() + 50;
         int ySize2 = Math.max(currentHeightEditor, minHeightEditor);
 
         formData.bottom = new FormAttachment(0, top + ySize2);
