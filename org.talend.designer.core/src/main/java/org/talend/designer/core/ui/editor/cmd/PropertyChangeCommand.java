@@ -261,14 +261,12 @@ public class PropertyChangeCommand extends Command {
     public Element getElement() {
         return this.elem;
     }
-    
-    public Object getOldValue()
-    {
+
+    public Object getOldValue() {
         return this.oldValue;
     }
-    
-    public Object getNewValue()
-    {
+
+    public Object getNewValue() {
         return this.newValue;
     }
 

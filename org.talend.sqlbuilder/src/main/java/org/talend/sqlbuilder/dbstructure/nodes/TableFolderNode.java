@@ -27,8 +27,7 @@ import org.talend.sqlbuilder.SqlBuilderPlugin;
 import org.talend.sqlbuilder.sessiontree.model.SessionTreeNode;
 
 /**
- * TableTypeNode can represents a parent node for VIEW, TABLE, .. depending on
- * what the database supports.
+ * TableTypeNode can represents a parent node for VIEW, TABLE, .. depending on what the database supports.
  * 
  * @author Davy Vanherbergen
  * 
@@ -38,7 +37,6 @@ public class TableFolderNode extends AbstractFolderNode {
     private ITableInfo[] pallTables;
 
     private String porigName;
-
 
     /**
      * Create new database table object type node (view, table, etc...).
@@ -67,8 +65,8 @@ public class TableFolderNode extends AbstractFolderNode {
         }
         if (pname.equals("Table")) {
             pname = Messages.getString("DatabaseStructureView.table"); //$NON-NLS-1$
-        }if(pname.equals("Synonym"))
-        {
+        }
+        if (pname.equals("Synonym")) {
             pname = Messages.getString("DatabaseStructureView.synonym"); //$NON-NLS-1$
         }
     }
@@ -89,10 +87,8 @@ public class TableFolderNode extends AbstractFolderNode {
         return porigName;
     }
 
-
     /**
-     * Returns the type for this node. The type is always suffixed with
-     * "_FOLDER".
+     * Returns the type for this node. The type is always suffixed with "_FOLDER".
      * 
      * @return Type.
      * @see org.talend.sqlbuilder.dbstructure.nodes.INode#getType()
@@ -101,7 +97,6 @@ public class TableFolderNode extends AbstractFolderNode {
 
         return porigName + "_FOLDER"; //$NON-NLS-1$
     }
-
 
     /**
      * Load all the children of this table type.
@@ -124,48 +119,47 @@ public class TableFolderNode extends AbstractFolderNode {
         }
     }
 
-//    /**
-//     * @return ChildNodes.
-//     */
-//    @Override
-//    public INode[] getChildNodes() {
-//        INode[] nodesInDB = super.getChildNodes();
-//        RepositoryNode root = psessionNode.getRepositoryNode();
-//        if (root == null) {
-//            return nodesInDB;
-//        }
-//        List<RepositoryNode> repositoryNodes = root.getChildren();
-//        
-//        Map<String, INode> allNodes = new HashMap<String, INode>();
-//        
-//        //add db nodes.
-//        if (nodesInDB != null) {
-//            for (INode node : nodesInDB) {
-//                allNodes.put(node.getLabelText(), node);
-//            }
-//        }
-//        
-////        Set<String> repositoryTableNames = new HashSet<String>();
-//        for (RepositoryNode repositoryNode : repositoryNodes) {
-//            String repositoryName = repositoryNode.getProperties(EProperties.LABEL).toString();
-//            String tableSourceName = TableNode.getMetadataTable(repositoryNode).getSourceName();
-//            if (tableSourceName != null) {
-//                tableSourceName = tableSourceName.replaceAll("_", "-");
-//            }
-//            if (!allNodes.keySet().contains(repositoryNode.getProperties(EProperties.LABEL)) 
-//                    && !allNodes.keySet().contains(tableSourceName)) {
-//                allNodes.put(repositoryName, convert2TableNode(repositoryNode));
-//            } else {
-//                TableNode tNode = (TableNode) allNodes.get(tableSourceName);
-//                tNode.setRepositoryName(repositoryName);
-//                tNode.setCurrentRepositoryNode(repositoryNode);
-//                tNode.setSourceName(tableSourceName);
-//                SessionTreeNodeUtils.getTableNodes().add(tNode);
-//            }
-//        }
-//        
-//        return allNodes.values().toArray(new INode[]{});
-//    }
+    // /**
+    // * @return ChildNodes.
+    // */
+    // @Override
+    // public INode[] getChildNodes() {
+    // INode[] nodesInDB = super.getChildNodes();
+    // RepositoryNode root = psessionNode.getRepositoryNode();
+    // if (root == null) {
+    // return nodesInDB;
+    // }
+    // List<RepositoryNode> repositoryNodes = root.getChildren();
+    //        
+    // Map<String, INode> allNodes = new HashMap<String, INode>();
+    //        
+    // //add db nodes.
+    // if (nodesInDB != null) {
+    // for (INode node : nodesInDB) {
+    // allNodes.put(node.getLabelText(), node);
+    // }
+    // }
+    //        
+    // // Set<String> repositoryTableNames = new HashSet<String>();
+    // for (RepositoryNode repositoryNode : repositoryNodes) {
+    // String repositoryName = repositoryNode.getProperties(EProperties.LABEL).toString();
+    // String tableSourceName = TableNode.getMetadataTable(repositoryNode).getSourceName();
+    // if (tableSourceName != null) {
+    // tableSourceName = tableSourceName.replaceAll("_", "-");
+    // }
+    // if (!allNodes.keySet().contains(repositoryNode.getProperties(EProperties.LABEL))
+    // && !allNodes.keySet().contains(tableSourceName)) {
+    // allNodes.put(repositoryName, convert2TableNode(repositoryNode));
+    // } else {
+    // TableNode tNode = (TableNode) allNodes.get(tableSourceName);
+    // tNode.setRepositoryName(repositoryName);
+    // tNode.setCurrentRepositoryNode(repositoryNode);
+    // tNode.setSourceName(tableSourceName);
+    // SessionTreeNodeUtils.getTableNodes().add(tNode);
+    // }
+    // }
+    //        
+    // return allNodes.values().toArray(new INode[]{});
+    // }
 
-    
 }
