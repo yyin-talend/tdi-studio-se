@@ -76,7 +76,9 @@ while (not $ldif_<%=cid %>->eof()) {
             warn "Error lines:\n", $ldif_<%=cid %>->error_lines(), "\n";
         }
         else {
-            $<%=cid %>[ $col_id_from_name_<%=cid %>{$attribute} ] = $entry->dn();
+            if (exists $col_id_from_name_<%=cid %>{dn}) {
+                $<%=cid %>[ $col_id_from_name_<%=cid %>{dn} ] = $entry->dn();
+            }
 
             foreach my $attribute ($entry->attributes) {
                 if (exists $col_id_from_name_<%=cid %>{$attribute}) {
