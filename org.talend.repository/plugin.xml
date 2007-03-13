@@ -355,6 +355,18 @@
             name="Net::LDAP::LDIF"
             required="true"/>
       <libraryNeeded
+            context="%libraryneeded.filedelimitedwizard"
+            language="perl"
+            message="%libraryneeded.forthiswizard.csv"
+            name="Text::CSV_XS"
+            required="false"/>
+      <libraryNeeded
+            context="%libraryneeded.filexmlwizard"
+            language="perl"
+            message="%libraryneeded.forthiswizard"
+            name="XML::LibXML"
+            required="true"/>
+      <libraryNeeded
             context="%libraryneeded.dbconnectionwizard"
             language="java"
             message="%libraryneeded.forsqlconnection"
