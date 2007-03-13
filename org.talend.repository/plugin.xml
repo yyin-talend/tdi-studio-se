@@ -313,6 +313,14 @@
                style="push"
                toolbarPath="Default"
                tooltip="%importProjectsAction.toolTip"/>
+         <action
+               class="org.talend.repository.ui.actions.importproject.ExportProjectsAsAction"
+               icon="icons/export_projects_action.gif"
+               id="org.talend.repository.exportProjects"
+               label="Export project"
+               style="push"
+               toolbarPath="Default"
+               tooltip="change this tool tip"/>
       </actionSet>
    </extension>
    <extension
