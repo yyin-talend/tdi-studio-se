@@ -99,50 +99,56 @@ public final class CodeGeneratorEmittersPoolFactory {
         if (!initInProgress) {
             // Code Generator initialisation with Progress Bar
             Job job = new Job(Messages.getString("CodeGeneratorEmittersPoolFactory.initMessage")) {
+
                 protected IStatus run(IProgressMonitor monitor) {
-                    initInProgress = true;
-                    IProgressMonitor monitorWrap = new CodeGeneratorProgressMonitor(monitor);
+                    try {
+                        initInProgress = true;
+                        IProgressMonitor monitorWrap = new CodeGeneratorProgressMonitor(monitor);
 
-                    IComponentsFactory componentsFactory = ComponentsFactoryProvider.getInstance();
-                    componentsFactory.init();
+                        IComponentsFactory componentsFactory = ComponentsFactoryProvider.getInstance();
+                        componentsFactory.init();
 
-                    long startTime = System.currentTimeMillis();
-                    RepositoryContext repositoryContext = (RepositoryContext) CorePlugin.getContext().getProperty(
-                            Context.REPOSITORY_CONTEXT_KEY);
-                    ECodeLanguage codeLanguage = repositoryContext.getProject().getLanguage();
+                        long startTime = System.currentTimeMillis();
+                        RepositoryContext repositoryContext = (RepositoryContext) CorePlugin.getContext().getProperty(
+                                Context.REPOSITORY_CONTEXT_KEY);
+                        ECodeLanguage codeLanguage = repositoryContext.getProject().getLanguage();
 
-                    List<JetBean> jetBeans = new ArrayList<JetBean>();
+                        List<JetBean> jetBeans = new ArrayList<JetBean>();
 
-                    CodeGeneratorInternalTemplatesFactory templatesFactory = CodeGeneratorInternalTemplatesFactoryProvider
-                            .getInstance();
-                    templatesFactory.init();
-                    List<TemplateUtil> templates = templatesFactory.getTemplates();
-                    List<IComponent> components = componentsFactory.getComponents();
+                        CodeGeneratorInternalTemplatesFactory templatesFactory = CodeGeneratorInternalTemplatesFactoryProvider
+                                .getInstance();
+                        templatesFactory.init();
+                        List<TemplateUtil> templates = templatesFactory.getTemplates();
+                        List<IComponent> components = componentsFactory.getComponents();
 
-                    monitorWrap.beginTask(Messages.getString("CodeGeneratorEmittersPoolFactory.initMessage"),
-                            (2 * templates.size() + 4 * components.size()));
+                        monitorWrap.beginTask(Messages.getString("CodeGeneratorEmittersPoolFactory.initMessage"),
+                                (2 * templates.size() + 4 * components.size()));
 
-                    for (TemplateUtil template : templates) {
-                        JetBean jetBean = initializeUtilTemplate(template, codeLanguage);
-                        jetBeans.add(jetBean);
-                        monitorWrap.worked(1);
-                    }
-
-                    if (components != null) {
-                        ECodePart codePart = ECodePart.MAIN;
-                        for (IComponent component : components) {
-                            if (component.getAvailableCodeParts().size() > 0) {
-                                initComponent(codeLanguage, jetBeans, codePart, component);
-                            }
+                        for (TemplateUtil template : templates) {
+                            JetBean jetBean = initializeUtilTemplate(template, codeLanguage);
+                            jetBeans.add(jetBean);
                             monitorWrap.worked(1);
                         }
-                    }
 
-                    initializeEmittersPool(jetBeans, codeLanguage, monitorWrap);
-                    monitorWrap.done();
-                    log.debug("Components compiled in " + (System.currentTimeMillis() - startTime) + " ms");
-                    initialized = true;
-                    initInProgress = false;
+                        if (components != null) {
+                            ECodePart codePart = ECodePart.MAIN;
+                            for (IComponent component : components) {
+                                if (component.getAvailableCodeParts().size() > 0) {
+                                    initComponent(codeLanguage, jetBeans, codePart, component);
+                                }
+                                monitorWrap.worked(1);
+                            }
+                        }
+
+                        initializeEmittersPool(jetBeans, codeLanguage, monitorWrap);
+                        monitorWrap.done();
+                        log.debug("Components compiled in " + (System.currentTimeMillis() - startTime) + " ms");
+                        initialized = true;
+                    } catch (Exception e) {
+                        log.error("Exception during Initialization", e);
+                    } finally {
+                        initInProgress = false;
+                    }
                     return Status.OK_STATUS;
                 }
             };
@@ -196,10 +202,8 @@ public final class CodeGeneratorEmittersPoolFactory {
         jetBean.addClassPath("CODEGEN_LIBRARIES", CodeGeneratorActivator.PLUGIN_ID);
         jetBean.addClassPath("COMMON_LIBRARIES", CommonsPlugin.PLUGIN_ID);
 
-        // PTODO MHIRT Tmp Solution, corres ASAP
-        if (component.getFamily().compareTo("ELT") == 0) {
-            jetBean.addClassPath("TMP_DBMAP", DbMapActivator.PLUGIN_ID);
-        }
+        // PTODO MHIRT Tmp Solution, correct ASAP
+        jetBean.addClassPath("TMP_DBMAP", DbMapActivator.PLUGIN_ID);
 
         if (component.getPluginFullName().compareTo(IComponentsFactory.COMPONENTS_LOCATION) != 0) {
             jetBean.addClassPath("EXTERNAL_COMPONENT_" + component.getPluginFullName().toUpperCase(), component
@@ -245,8 +249,16 @@ public final class CodeGeneratorEmittersPoolFactory {
                     .loadEmittersPool(), components);
             for (JetBean jetBean : alreadyCompiledEmitters) {
                 JETEmitter emitter = new JETEmitter(jetBean.getTemplateFullUri(), jetBean.getClassLoader());
-                emitter.setMethod(jetBean.getMethod());
+                try {
+                    emitter.setMethod(jetBean.getMethod());
+                    for (String classKey : globalClasspath.keySet()) {
+                        emitter.addVariable(classKey, globalClasspath.get(classKey));
+                    }
+                } catch (JETException e) {
+                    log.error("Error during JetEmitter initalization " + e.getMessage(), e);
+                }
                 emitterPool.put(jetBean, emitter);
+                monitorWrap.worked(1);
             }
         } catch (BusinessException e) {
             // error already loggued
@@ -264,15 +276,21 @@ public final class CodeGeneratorEmittersPoolFactory {
                     if (emitter.getMethod() != null) {
                         jetBean.setMethod(emitter.getMethod());
                         jetBean.setClassName(emitter.getMethod().getDeclaringClass().getName());
-                        alreadyCompiledEmitters.add(jetBean);
+
+                        // PTODO MHIRT Tmp Solution for TELT Map Components, correct ASAP
+                        if ((!jetBean.getClassName().substring(jetBean.getClassName().lastIndexOf(".") + 1).startsWith(
+                                "TELTMysqlMap"))
+                                && (!jetBean.getClassName().substring(jetBean.getClassName().lastIndexOf(".") + 1)
+                                        .startsWith("TELTOracleMap"))) {
+                            alreadyCompiledEmitters.add(jetBean);
+                        }
                     }
                 } catch (JETException e) {
                     log.error("Error during JetEmitter initalization " + e.getMessage(), e);
                 }
                 emitterPool.put(jetBean, emitter);
+                monitorWrap.worked(1);
             }
-
-            monitorWrap.worked(1);
         }
         try {
             EmfEmittersPersistenceFactory.getInstance(codeLanguage).saveEmittersPool(
