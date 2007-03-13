@@ -52,11 +52,13 @@ import org.talend.repository.model.RepositoryNode.ENodeType;
  */
 public class RepositoryLabelProvider extends LabelProvider implements IColorProvider, IFontProvider {
 
-    private static final Color ACTIVE_REPOSITORY_ENTRY = new Color(null, 100, 100, 100);
+    private static final Color STABLE_SECONDARY_ENTRY_COLOR = new Color(null, 100, 100, 100);
 
-    private static final Color INACTIVE_REPOSITORY_ENTRY = new Color(null, 200, 200, 200);
+    private static final Color STABLE_PRIMARY_ENTRY_COLOR = new Color(null, 0, 0, 0);
 
-    private static final Color LOCKED_REPOSITORY_ENTRY = new Color(null, 200, 0, 0);
+    private static final Color INACTIVE_ENTRY_COLOR = new Color(null, 200, 200, 200);
+
+    private static final Color LOCKED_ENTRY = new Color(null, 200, 0, 0);
 
     private IRepositoryView view;
 
@@ -185,15 +187,24 @@ public class RepositoryLabelProvider extends LabelProvider implements IColorProv
         switch (node.getType()) {
         case STABLE_SYSTEM_FOLDER:
             if (node.getLabel().equals(ERepositoryObjectType.SNIPPETS.toString())) {
-                return INACTIVE_REPOSITORY_ENTRY;
+                return INACTIVE_ENTRY_COLOR;
+            }
+            if (node.getContentType() == ERepositoryObjectType.METADATA) {
+                return STABLE_PRIMARY_ENTRY_COLOR;
             }
         case SYSTEM_FOLDER:
-            return ACTIVE_REPOSITORY_ENTRY;
+            if (node.getContentType() == ERepositoryObjectType.BUSINESS_PROCESS) {
+                return STABLE_PRIMARY_ENTRY_COLOR;
+            }
+            if (node.getContentType() == ERepositoryObjectType.PROCESS) {
+                return STABLE_PRIMARY_ENTRY_COLOR;
+            }
+            return STABLE_SECONDARY_ENTRY_COLOR;
         default:
             IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
             ERepositoryStatus repositoryStatus = factory.getStatus(node.getObject());
             if (repositoryStatus == ERepositoryStatus.LOCK_BY_OTHER) {
-                return LOCKED_REPOSITORY_ENTRY;
+                return LOCKED_ENTRY;
             } else {
                 return null;
             }
