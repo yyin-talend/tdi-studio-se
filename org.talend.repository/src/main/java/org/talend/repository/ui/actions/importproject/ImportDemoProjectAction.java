@@ -100,7 +100,7 @@ public final class ImportDemoProjectAction extends Action {
                     } else {
                         archivePath = "resources/TALENDDEMOSJAVA.zip"; //$NON-NLS-1$
                         techName = "TALENDDEMOSJAVA"; //$NON-NLS-1$
-                        lastImportedName = "TalendDemosJava"; //$NON-NLS-1$
+                        lastImportedName = "talendDemosJava"; //$NON-NLS-1$
                     }
 
                     Bundle bundle = Platform.getBundle(ResourcesPlugin.PLUGIN_ID);
