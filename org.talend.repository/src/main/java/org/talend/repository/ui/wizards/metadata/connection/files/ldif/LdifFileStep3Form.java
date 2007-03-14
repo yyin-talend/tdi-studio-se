@@ -98,8 +98,7 @@ public class LdifFileStep3Form extends AbstractLdifFileStepForm {
      * 
      * @param Composite
      */
-    public LdifFileStep3Form(Composite parent, ConnectionItem connectionItem, MetadataTable metadataTable,
-            String[] existingNames) {
+    public LdifFileStep3Form(Composite parent, ConnectionItem connectionItem, MetadataTable metadataTable, String[] existingNames) {
         super(parent, connectionItem, metadataTable, existingNames);
         this.connectionItem = connectionItem;
         this.metadataTable = metadataTable;
@@ -151,7 +150,8 @@ public class LdifFileStep3Form extends AbstractLdifFileStepForm {
         // Composite Guess
         Composite compositeGuessButton = Form.startNewDimensionnedGridLayout(compositeMetaData, 2, WIDTH_GRIDDATA_PIXEL, 40);
         informationLabel = new Label(compositeGuessButton, SWT.NONE);
-        informationLabel.setText(Messages.getString("FileStep3.informationLabel") + "                                                  "); //$NON-NLS-1$ //$NON-NLS-2$
+        informationLabel
+                .setText(Messages.getString("FileStep3.informationLabel") + "                                                  "); //$NON-NLS-1$ //$NON-NLS-2$
         informationLabel.setSize(500, HEIGHT_BUTTON_PIXEL);
 
         guessButton = new UtilsButton(compositeGuessButton, Messages.getString("FileStep3.guess"), WIDTH_BUTTON_PIXEL, //$NON-NLS-1$
@@ -307,7 +307,7 @@ public class LdifFileStep3Form extends AbstractLdifFileStepForm {
             } else {
                 refreshMetaDataTable(xmlArray, getProcessDescription());
             }
-            
+
         } catch (CoreException e) {
             if (getParent().getChildren().length == 1) {
                 new ErrorDialogWidthDetailArea(getShell(), PID, Messages.getString("FileStep3.guessFailureTip") + "\n" //$NON-NLS-1$ //$NON-NLS-2$
@@ -365,17 +365,19 @@ public class LdifFileStep3Form extends AbstractLdifFileStepForm {
                         if (i >= xmlRows.get(current).getFields().size()) {
                             globalType = "id_String"; //$NON-NLS-1$
                         } else {
-                            globalType = JavaDataTypeHelper.getTalendTypeOfValue(xmlRows.get(current).getFields().get(i).getValue());
+                            globalType = JavaDataTypeHelper.getTalendTypeOfValue(xmlRows.get(current).getFields().get(i)
+                                    .getValue());
                             current++;
                             if (current == xmlRows.size()) {
                                 globalType = "id_String"; //$NON-NLS-1$
                             }
                         }
-                    } else { 
+                    } else {
                         if (i >= xmlRows.get(current).getFields().size()) {
                             globalType = "String"; //$NON-NLS-1$
                         } else {
-                            globalType = PerlDataTypeHelper.getTalendTypeOfValue(xmlRows.get(current).getFields().get(i).getValue());
+                            globalType = PerlDataTypeHelper.getTalendTypeOfValue(xmlRows.get(current).getFields().get(i)
+                                    .getValue());
                             current++;
                             if (current == xmlRows.size()) {
                                 globalType = "String"; //$NON-NLS-1$
@@ -392,14 +394,17 @@ public class LdifFileStep3Form extends AbstractLdifFileStepForm {
                         if (!value.equals("")) { //$NON-NLS-1$
                             if (LanguageManager.getCurrentLanguage() == ECodeLanguage.JAVA) {
                                 if (!JavaDataTypeHelper.getTalendTypeOfValue(value).equals(globalType)) {
-                                    globalType = JavaDataTypeHelper.getCommonType(globalType, JavaDataTypeHelper.getTalendTypeOfValue(value));
+                                    globalType = JavaDataTypeHelper.getCommonType(globalType, JavaDataTypeHelper
+                                            .getTalendTypeOfValue(value));
                                 }
                             } else {
                                 if (!PerlDataTypeHelper.getTalendTypeOfValue(value).equals(globalType)) {
-                                    globalType = PerlDataTypeHelper.getCommonType(globalType, PerlDataTypeHelper.getTalendTypeOfValue(value));
+                                    globalType = PerlDataTypeHelper.getCommonType(globalType, PerlDataTypeHelper
+                                            .getTalendTypeOfValue(value));
                                 }
-                            }                            if (lengthValue < value.length()) {
-                                lengthValue = value.length();                                
+                            }
+                            if (lengthValue < value.length()) {
+                                lengthValue = value.length();
                             }
                             int positionDecimal = 0;
                             if (value.indexOf(',') > -1) {
@@ -418,10 +423,11 @@ public class LdifFileStep3Form extends AbstractLdifFileStepForm {
                 // Convert javaType to TalendType
                 String talendType = null;
                 if (LanguageManager.getCurrentLanguage() == ECodeLanguage.JAVA) {
-                    talendType = globalType;    
+                    talendType = globalType;
                 } else {
                     talendType = MetadataTalendType.loadTalendType(globalType, "TALENDDEFAULT", false); //$NON-NLS-1$
-                }                metadataColumn.setTalendType(talendType);
+                }
+                metadataColumn.setTalendType(talendType);
                 metadataColumn.setLength(lengthValue);
                 if (globalType.equals("FLOAT") || globalType.equals("DOUBLE")) { //$NON-NLS-1$ //$NON-NLS-2$
                     metadataColumn.setPrecision(precisionValue);

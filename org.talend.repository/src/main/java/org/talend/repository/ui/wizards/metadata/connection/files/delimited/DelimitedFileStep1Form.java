@@ -245,7 +245,8 @@ public class DelimitedFileStep1Form extends AbstractDelimitedFileStepForm {
 
     /**
      * checkFileFieldsValue active fileViewer if file exist.
-     * @throws IOException 
+     * 
+     * @throws IOException
      */
     private void checkFilePathAndManageIt() {
         updateStatus(IStatus.OK, null);
@@ -264,14 +265,12 @@ public class DelimitedFileStep1Form extends AbstractDelimitedFileStepForm {
                 File file = new File(fileField.getText());
                 Charset guessedCharset = CharsetToolkit.guessEncoding(file, 4096);
                 getConnection().setEncoding(guessedCharset.displayName());
-                
+
                 String str;
                 int numberLine = 0;
                 // read the file width the limit : MAXIMUM_ROWS_TO_PREVIEW
-                in = 
-                    new BufferedReader(
-                        new InputStreamReader(new FileInputStream(fileField.getText()),
-                                guessedCharset.displayName()));
+                in = new BufferedReader(new InputStreamReader(new FileInputStream(fileField.getText()), guessedCharset
+                        .displayName()));
 
                 while (((str = in.readLine()) != null) && (numberLine <= MAXIMUM_ROWS_TO_PREVIEW)) {
                     numberLine++;
@@ -302,7 +301,8 @@ public class DelimitedFileStep1Form extends AbstractDelimitedFileStepForm {
                 try {
                     if (in != null) {
                         in.close();
-                    }                } catch (IOException e) {
+                    }
+                } catch (IOException e) {
                     msgError = msgError + Messages.getString("FileStep1.fileLocked"); //$NON-NLS-1$
                 }
             }
