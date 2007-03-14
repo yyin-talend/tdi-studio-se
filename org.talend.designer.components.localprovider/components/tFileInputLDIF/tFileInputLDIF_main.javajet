@@ -1,0 +1,104 @@
+<%@ jet 
+package="org.talend.designer.codegen.translators" 
+imports="
+		org.talend.core.model.process.INode 
+		org.talend.core.model.process.ElementParameterParser 
+		org.talend.core.model.metadata.IMetadataTable 
+		org.talend.core.model.metadata.IMetadataColumn
+		org.talend.core.model.process.IConnection
+		org.talend.core.model.process.EConnectionType
+		org.talend.designer.codegen.config.CodeGeneratorArgument
+		java.util.List
+	" 
+class="FileInputLDIFMain" 
+%>
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+
+List<IMetadataTable> metadatas = node.getMetadataList();
+if ((metadatas!=null)&&(metadatas.size()>0)) {
+    IMetadataTable metadata = metadatas.get(0);
+    if (metadata!=null) {
+        // component id
+        String cid = node.getUniqueName();               
+        List<IMetadataColumn> listColumns = metadata.getListColumns();         
+%> 
+///////////////////////////////////
+
+        for (netscape.ldap.util.LDIFRecord record_<%=cid %> = ldif_<%=cid %>.nextRecord(); record_<%=cid %> != null; record_<%=cid %> = ldif_<%=cid %>.nextRecord()) {
+
+            results_<%=cid %> = new String[] { 
+<%
+        for (IMetadataColumn column : listColumns) {
+%> 
+			"",
+<%
+        }
+%>			
+			};
+            
+            netscape.ldap.util.LDIFContent content_<%=cid %> = record_<%=cid %>.getContent();
+			
+            switch (content_<%=cid %>.getType()) {
+            
+            case netscape.ldap.util.LDIFContent.ATTRIBUTE_CONTENT:
+            
+                netscape.ldap.util.LDIFAttributeContent attrContent_<%=cid %> = (netscape.ldap.util.LDIFAttributeContent) content_<%=cid %>;
+                netscape.ldap.LDAPAttribute[] attributes_<%=cid %> = attrContent_<%=cid %>.getAttributes();
+                
+                for (int i_<%=cid %> = 0; i_<%=cid %> < filters_<%=cid %>.length; i_<%=cid %>++) {
+                
+                    for (int j_<%=cid %> = 0; j_<%=cid %> < attributes_<%=cid %>.length; j_<%=cid %>++) {
+                    
+                        netscape.ldap.LDAPAttribute attribute_<%=cid %> = attributes_<%=cid %>[j_<%=cid %>];
+                        
+                        if (filters_<%=cid %>[i_<%=cid %>].equalsIgnoreCase(attribute_<%=cid %>.getName())) {
+                        
+                            java.util.Enumeration values_<%=cid %> = attribute_<%=cid %>.getStringValues();
+                            
+                            while (values_<%=cid %>.hasMoreElements()) {
+                                String value_<%=cid %> = (String) values_<%=cid %>.nextElement();
+                                results_<%=cid %>[i_<%=cid %>] = "".equals(results_<%=cid %>[i_<%=cid %>]) ? value_<%=cid %> : results_<%=cid %>[i_<%=cid %>] + "," + value_<%=cid %>;
+                            }
+                        }
+                    }
+
+                }
+                
+                break;
+
+            case netscape.ldap.util.LDIFContent.ADD_CONTENT:
+                // LDIFAddContent addContent = (LDIFAddContent) content;
+                break;
+                
+            case netscape.ldap.util.LDIFContent.MODIFICATION_CONTENT:
+                // LDIFModifyContent modifyContent = (LDIFModifyContent) content;
+                break;
+                
+            case netscape.ldap.util.LDIFContent.DELETE_CONTENT:
+                // LDIFDeleteContent deleteContent = (LDIFDeleteContent) content;
+                break;
+            }
+            nb_line_<%=cid %>++;
+            // for output     
+<%  
+	List< ? extends IConnection> conns = node.getOutgoingConnections(); 
+    for (int j=0;j<conns.size();j++) { 
+       IConnection conn = conns.get(j);        
+       if (((conn.getLineStyle().equals(EConnectionType.FLOW_MAIN))||(conn.getLineStyle().equals(EConnectionType.FLOW_REF))))         
+       {
+       	   for (int m=0; m<listColumns.size(); m++) {
+%>            
+      		<%=conn.getName() %>.<%=listColumns.get(m).getLabel() %> = results_<%=cid %>[<%=m %>];            
+<% 
+      		}
+  	   }
+    } 
+%>
+
+/////////////////////////////////// 
+<%
+  }
+}  
+ %>
