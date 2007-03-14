@@ -88,6 +88,7 @@ public class MetadataEmfFactory {
                 colType.setType(metaCol.getTalendType());
                 colType.setSourceType(metaCol.getType());
                 colType.setPattern(metaCol.getPattern());
+//                colType.setDefaultValue(metaCol.getDefault());
                 listColType.add(colType);
             }
         }

@@ -182,6 +182,7 @@ public class MetadataRefreshAction extends SelectionProviderAction {
 				columnNode.setKey(metadataColumn.isKey());
 				columnNode.setLength(metadataColumn.getLength());
 				columnNode.setNullable(metadataColumn.isNullable());
+				columnNode.setPattern(metadataColumn.getPattern());
 				columnNode.setPrecision(metadataColumn.getPrecision());
 				columnNode.setSourceType(metadataColumn.getSourceType());
 				columnNode.setTalendType(metadataColumn.getTalendType());

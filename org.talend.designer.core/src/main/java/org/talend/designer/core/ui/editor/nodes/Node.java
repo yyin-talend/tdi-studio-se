@@ -1034,6 +1034,13 @@ public class Node extends Element implements INode {
                             } else if (!inputCol.getPrecision().equals(outputCol.getPrecision())) {
                                 equal = false;
                             }
+                            if (inputCol.getDefault() == null) {
+                                if (outputCol.getDefault() != null) {
+                                    equal = false;
+                                }
+                            } else if (!inputCol.getDefault().equals(outputCol.getDefault())) {
+                                equal = false;
+                            }
                             if (inputCol.getTalendType() == null) {
                                 if (outputCol.getTalendType() != null) {
                                     equal = false;

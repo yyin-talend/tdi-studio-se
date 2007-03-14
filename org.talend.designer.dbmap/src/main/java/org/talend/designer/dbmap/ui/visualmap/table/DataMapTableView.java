@@ -119,6 +119,7 @@ import org.talend.designer.dbmap.ui.font.FontProviderMapper;
 import org.talend.designer.dbmap.ui.image.ImageInfo;
 import org.talend.designer.dbmap.ui.image.ImageProviderMapper;
 import org.talend.designer.dbmap.ui.proposal.expression.ExpressionProposalProvider;
+import org.talend.designer.dbmap.ui.proposal.expression.KeyWordProposalProvider;
 import org.talend.designer.dbmap.ui.tabs.StyledTextHandler;
 import org.talend.designer.dbmap.ui.visualmap.zone.Zone;
 
@@ -1403,8 +1404,10 @@ public abstract class DataMapTableView extends Composite {
         if (this.expressionProposalProvider == null) {
             IContentProposalProvider[] contentProposalProviders = new IContentProposalProvider[0];
             if (!MapperMain.isStandAloneMode()) {
-                contentProposalProviders = new IContentProposalProvider[] { new ProcessProposalProvider(mapperManager
-                        .getComponent().getProcess()) };
+                contentProposalProviders = new IContentProposalProvider[] { 
+//                        new ProcessProposalProvider(mapperManager.getComponent().getProcess())
+                        new KeyWordProposalProvider("tsql", "KEYWORD1")
+                };
             }
             this.expressionProposalProvider = new ExpressionProposalProvider(mapperManager, contentProposalProviders);
         }

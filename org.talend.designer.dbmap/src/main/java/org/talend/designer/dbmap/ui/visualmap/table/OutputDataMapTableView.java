@@ -56,7 +56,6 @@ import org.talend.designer.dbmap.model.tableentry.FilterTableEntry;
 import org.talend.designer.dbmap.model.tableentry.ITableEntry;
 import org.talend.designer.dbmap.model.tableentry.OutputColumnTableEntry;
 import org.talend.designer.dbmap.ui.dnd.DragNDrop;
-import org.talend.designer.dbmap.ui.proposal.expression.ExpressionProposal;
 import org.talend.designer.dbmap.ui.visualmap.zone.Zone;
 
 /**
@@ -66,8 +65,6 @@ import org.talend.designer.dbmap.ui.visualmap.zone.Zone;
  * 
  */
 public class OutputDataMapTableView extends DataMapTableView {
-
-    protected ExpressionProposal proposal;
 
     public OutputDataMapTableView(Composite parent, int style, AbstractDataMapTable abstractDataMapTable,
             MapperManager mapperManager) {

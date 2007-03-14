@@ -59,6 +59,7 @@ public class MetadataColumnExt extends MetadataColumn {
 
         this.setLength(metadataColumn.getLength());
         this.setPrecision(metadataColumn.getPrecision());
+        this.setDefault(metadataColumn.getDefault());
 
         this.setKey(metadataColumn.isKey());
 

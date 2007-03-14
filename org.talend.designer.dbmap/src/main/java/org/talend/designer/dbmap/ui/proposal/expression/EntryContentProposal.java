@@ -109,11 +109,18 @@ public class EntryContentProposal implements IContentProposal {
             sb.append(AbstractDbLanguage.CARRIAGE_RETURN);
             sb
                     .append(separator)
-                    .append(Messages.getString("EntryContentProposal.length")).append(format(metadataColumn.getLength())); //$NON-NLS-1$
+                    .append(Messages.getString("EntryContentProposal.length")); //$NON-NLS-1$
+            if(metadataColumn.getLength() > 0) {
+                sb.append(format(metadataColumn.getLength()));
+            }
+            
             sb.append(AbstractDbLanguage.CARRIAGE_RETURN);
             sb
                     .append(separator)
-                    .append(Messages.getString("EntryContentProposal.precision")).append(format(metadataColumn.getPrecision())); //$NON-NLS-1$
+                    .append(Messages.getString("EntryContentProposal.precision")); //$NON-NLS-1$
+            if(metadataColumn.getPrecision() > 0) {
+                sb.append(format(metadataColumn.getPrecision()));
+            }
             sb.append(AbstractDbLanguage.CARRIAGE_RETURN);
             sb
                     .append(separator)
