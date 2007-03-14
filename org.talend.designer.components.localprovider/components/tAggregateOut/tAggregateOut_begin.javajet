@@ -1,0 +1,214 @@
+<%@ jet 
+package="org.talend.designer.codegen.translators" 
+imports="
+    org.talend.core.model.process.INode 
+    org.talend.core.model.metadata.IMetadataTable
+    org.talend.core.model.metadata.IMetadataColumn
+    org.talend.core.model.process.IConnection
+    org.talend.core.model.process.EConnectionType
+    org.talend.core.model.process.ElementParameterParser
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    org.talend.core.model.metadata.types.JavaTypesManager
+	org.talend.core.model.metadata.types.JavaType
+    java.util.List
+    java.util.Map
+"
+class="AggregateOutBegin"
+%>
+
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+String cid = node.getUniqueName();
+List<IMetadataTable> metadatas = node.getMetadataList();
+if ((metadatas!=null)&&(metadatas.size()>0)) {
+    IMetadataTable metadata = metadatas.get(0);
+    if (metadata!=null) {
+        List<Map<String, String>> operations = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__OPERATIONS__");
+        List<Map<String, String>> groupbys = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__GROUPBYS__");
+%>
+
+
+<%//begin
+//
+		int operationSize = operations.size();
+		if(operationSize>0){
+//
+//end%>
+
+class OperationStruct<%=cid %>{
+
+<%//begin
+//			
+        	for (int i = 0; i<operationSize; i++) {
+            	Map<String, String> operation = operations.get(i);
+            	String function = operation.get("FUNCTION");
+            	String in = operation.get("INPUT_COLUMN");
+            	String out = operation.get("OUTPUT_COLUMN");
+				
+   				if(function.equals("avg")){
+//
+//end%>
+	float <%=in %>_sum;
+	int <%=in %>_count;
+<%//start
+//
+   				}else if(function.equals("sum")){
+   					boolean hasavg = false;
+   					for(int j=0;j<operationSize && j != i; j++) {
+            			Map<String, String> operation1 = operations.get(j);
+            			if(operation1.get("FUNCTION").equals("avg") && operation1.get("INPUT_COLUMN").equals(in)){
+            				hasavg = true;
+            				break;
+            			}
+            		}
+            		if(!hasavg){
+//
+//end%>
+	float <%=in %>_sum;
+<%//start
+//
+					}
+   				}else if(function.equals("count")){
+   					boolean hasavg = false;
+   					for(int j=0;j<operationSize && j != i; j++) {
+            			Map<String, String> operation1 = operations.get(j);
+            			if(operation1.get("FUNCTION").equals("avg") && operation1.get("INPUT_COLUMN").equals(in)){
+            				hasavg = true;
+            				break;
+            			}
+            		}
+            		if(!hasavg){
+//
+//end%>
+	int <%=in %>_count;
+<%//start
+//
+					}
+   				}else{
+					List<? extends IConnection> incomingConnections = node.getIncomingConnections();
+        			if (incomingConnections != null && !incomingConnections.isEmpty()) {
+        				loop:
+        				for (IConnection conn : incomingConnections) {
+							if (conn.getLineStyle().equals(EConnectionType.FLOW_MAIN)) {
+            					IMetadataTable inMetadata = conn.getMetadataTable();
+            					for (IMetadataColumn column: inMetadata.getListColumns()) {
+            						if(column.getLabel().equals(in)){
+            							String type = JavaTypesManager.getJavaTypeFromId(column.getTalendType()).getNullableClass().getSimpleName();
+//
+//end%>
+	<%=type %> <%=in %>_<%=function %>;
+<%//start
+//
+            							//break loop;
+            						}
+            					}
+            				}
+            			}
+        			}
+   				}
+   			}
+ //
+ //end%>
+}
+
+<%//start
+//
+		}
+		int groupbySize = groupbys.size();
+		if(groupbySize > 0){
+			for(int ii = 0; ii < groupbySize; ii++){
+			String input = groupbys.get(ii).get("INPUT_COLUMN");
+			for(int i = ii; i < groupbySize; i++){
+				if(i == groupbySize - 1){
+					if(operationSize == 0){					
+//
+//end
+%>java.util.Set<String <%
+//start
+//
+					}else{
+//
+//end
+%>java.util.Map<String, OperationStruct<%=cid %><%
+//start
+//
+					}
+				}else{
+//
+//end
+%>java.util.Map<String,<%
+//start
+//
+				}
+			}
+			for(int i = ii; i < groupbySize; i++){
+//
+//end
+%>><%
+//start
+//
+			}
+//
+//end
+%> hash_<%=input %>_<%=cid %> = <%if(ii != 0){%>null;
+<%}else{%>new <%
+//start
+//
+			for(int i = 0; i < groupbySize; i++){
+				if(i == groupbySize - 1){
+					if(operationSize == 0){
+//
+//end
+%>java.util.<%if(i == 0){%>Hash<%}%>Set<String<%
+//start
+//
+					}else{
+//
+//end
+%>java.util.<%if(i == 0){%>Hash<%}%>Map<String, OperationStruct<%=cid %><%
+//start
+//
+					}
+				}else{
+//
+//end
+%>java.util.<%if(i == 0){%>Hash<%}%>Map<String,<%
+//start
+//
+				}
+			}
+			for(int i = 0; i < groupbySize; i++){
+//
+//end
+%>><%
+//start
+//
+			}
+//
+//end
+%>();
+<%}%>
+<%
+//start
+//
+		}
+		}
+		if(operationSize>0){
+//
+//end%>
+OperationStruct<%=cid %> operation_result_<%=cid %> = null;
+<%//start
+//
+		}
+//
+//end%>
+
+
+
+<%//start
+//
+	}
+}
+//
+//end%>

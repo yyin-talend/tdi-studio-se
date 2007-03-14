@@ -1,0 +1,265 @@
+<%@ jet 
+package="org.talend.designer.codegen.translators" 
+imports="
+    org.talend.core.model.process.INode 
+    org.talend.core.model.metadata.IMetadataTable
+    org.talend.core.model.metadata.IMetadataColumn
+    org.talend.core.model.process.IConnection
+    org.talend.core.model.process.EConnectionType
+    org.talend.core.model.process.ElementParameterParser
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    java.util.List
+    java.util.Map
+    org.talend.core.model.metadata.types.JavaTypesManager
+	org.talend.core.model.metadata.types.JavaType
+"
+class="AggregateOutEnd"
+%>
+
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+String cid = node.getUniqueName();
+List<IMetadataTable> metadatas = node.getMetadataList();
+if ((metadatas!=null)&&(metadatas.size()>0)) {
+    IMetadataTable metadata = metadatas.get(0);
+    if (metadata!=null) {
+        List<Map<String, String>> operations = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__OPERATIONS__");
+        List<Map<String, String>> groupbys = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__GROUPBYS__");
+		int sizeOperations = operations.size();
+		int sizeGroupbys = groupbys.size();
+		String destination = ElementParameterParser.getValue(node, "__DESTINATION__");
+//
+//end%>
+int nb_line_<%=cid %> = 0;
+java.util.List<RunBeforeStruct<%=destination %>> result_list_<%=cid %> = new java.util.ArrayList<RunBeforeStruct<%=destination %>>();
+//generate result begin
+<%//start
+//
+		List<IMetadataColumn> listColumns = metadata.getListColumns();
+		int sizeColumns = listColumns.size();
+		if(sizeOperations > 0||sizeGroupbys > 0){
+			for(int i = 0; i < sizeGroupbys; i++){
+				Map<String, String> groupby = groupbys.get(i);
+				String inputColumn = groupby.get("INPUT_COLUMN");
+				String outputColumn = groupby.get("OUTPUT_COLUMN");
+				String nextInputColumn = null;
+				if(i != sizeGroupbys - 1){
+					nextInputColumn = groupbys.get(i+1).get("INPUT_COLUMN");
+				}
+				//gen loops begin begin
+%>
+java.util.Iterator<String> <%=inputColumn%>_iterator_<%=cid %> = hash_<%=inputColumn %>_<%=cid %>.<%if((i != sizeGroupbys - 1) || sizeOperations >0 ){%>keySet().<%}%>iterator();
+while(<%=inputColumn%>_iterator_<%=cid %>.hasNext()){
+	String <%=inputColumn %>_<%=outputColumn %> = <%=inputColumn%>_iterator_<%=cid %>.next();
+<%
+				if(i == sizeGroupbys - 1){
+					if(sizeOperations > 0){
+%>
+operation_result_<%=cid %> = hash_<%=inputColumn%>_<%=cid %>.get(<%=inputColumn %>_<%=outputColumn %>);
+<%
+					}
+				}else{
+%>
+hash_<%=nextInputColumn %>_<%=cid %> = hash_<%=inputColumn %>_<%=cid %>.get(<%=inputColumn %>_<%=outputColumn %>);
+<%
+				}
+			//gen loops begin end
+			}
+%>
+
+
+
+//in the deepest begin
+RunBeforeStruct<%=destination %> aggregated_row_<%=cid %> = new RunBeforeStruct<%=destination %>();
+<%
+			next_column:
+			for(int c = 0; c < sizeColumns; c++){
+				IMetadataColumn column = listColumns.get(c);
+				String columnName = column.getLabel();
+				String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
+				JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
+				String patternValue = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
+				for(int g = 0; g < sizeGroupbys; g++){
+					Map<String, String> groupby = groupbys.get(g);
+					String inputColumn = groupby.get("INPUT_COLUMN");
+					String outputColumn = groupby.get("OUTPUT_COLUMN");
+					if(outputColumn.equals(columnName)){
+						Boolean sameType = false;
+            			
+						List<? extends IConnection> incomingConnections = node.getIncomingConnections();
+        				if (incomingConnections != null && !incomingConnections.isEmpty()) {
+        					loop:
+        					for (IConnection conn : incomingConnections) {
+								if (conn.getLineStyle().equals(EConnectionType.FLOW_MAIN)) {
+            						IMetadataTable inMetadata = conn.getMetadataTable();
+            						for (IMetadataColumn inColumn: inMetadata.getListColumns()) {
+            							if(inColumn.getLabel().equals(columnName)){
+            								sameType = (JavaTypesManager.getJavaTypeFromId(inColumn.getTalendType()) == javaType);
+            								break loop;
+            							}
+            						}
+            					}
+            				}
+        				}
+%>
+aggregated_row_<%=cid %>.<%=outputColumn %> = <%
+								/** begin **/
+							if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT) {
+								/** end **/
+								%><%=inputColumn %>_<%=outputColumn %><%
+								/** begin **/
+							} else if(javaType == JavaTypesManager.DATE) { 
+								if(sameType){
+								/** end **/
+								%>new Date(<%=inputColumn %>_<%=outputColumn %>)<%}else{%>ParserUtils.parseTo_Date(<%=inputColumn %>_<%=outputColumn %>, <%= patternValue %>)<%}
+								/** begin **/
+							} else {
+								/** end **/
+								%>ParserUtils.parseTo_<%= typeToGenerate %>(<%=inputColumn %>_<%=outputColumn %>)<%
+								/** begin **/
+							}
+								/** end **/
+						%>;
+<%
+						continue next_column;
+					}
+				}
+				
+				for(int o = 0; o < sizeOperations; o++){
+					Map<String, String> operation = operations.get(o);
+            		String function = operation.get("FUNCTION");
+            		String outOperation = operation.get("OUTPUT_COLUMN");
+            		String inOperation = operation.get("INPUT_COLUMN");
+            		if(outOperation.equals(columnName)){
+            			Boolean sameType = false;
+            			
+						List<? extends IConnection> incomingConnections = node.getIncomingConnections();
+        				if (incomingConnections != null && !incomingConnections.isEmpty()) {
+        					loop:
+        					for (IConnection conn : incomingConnections) {
+								if (conn.getLineStyle().equals(EConnectionType.FLOW_MAIN)) {
+            						IMetadataTable inMetadata = conn.getMetadataTable();
+            						for (IMetadataColumn inColumn: inMetadata.getListColumns()) {
+            							if(inColumn.getLabel().equals(inOperation)){
+            								if(function.equals("first")||function.equals("last")||function.equals("min")||function.equals("max")){
+            									sameType = (JavaTypesManager.getJavaTypeFromId(inColumn.getTalendType()) == javaType);
+            								}else if(function.equals("avg")||function.equals("sum")){
+            									sameType = (typeToGenerate.equals("float")||typeToGenerate.equals("double"));
+            								}else{
+            									sameType = (typeToGenerate.equals("int")||typeToGenerate.equals("long"));
+            								}
+            								break loop;
+            							}
+            						}
+            					}
+            				}
+        				}
+            			if(function.equals("avg")){
+%>
+float <%=outOperation %>_avg_temp = 0;
+if(operation_result_<%=cid %>.<%=inOperation %>_count > 0){
+	<%=outOperation %>_avg_temp = operation_result_<%=cid %>.<%=inOperation %>_sum / operation_result_<%=cid %>.<%=inOperation %>_count ;
+}
+<%if(sameType){%>aggregated_row_<%=cid %>.<%=outOperation %> = <%=outOperation %>_avg_temp;<%}else{%>String temps<%=outOperation %> = String.valueOf(<%if(javaType == JavaTypesManager.INTEGER || javaType == JavaTypesManager.LONG){%>(<%=typeToGenerate %>)<%}%><%=outOperation %>_avg_temp);<%}%>
+<%
+            			}else{
+							if(sameType){
+%>
+aggregated_row_<%=cid %>.<%=outOperation %> = operation_result_<%=cid %>.<%=inOperation %>_<%=function %>;
+<%
+							}else{
+%>
+String temps<%=outOperation %> = String.valueOf(<%if(function.equals("sum")&&(javaType == JavaTypesManager.INTEGER || javaType == JavaTypesManager.LONG)){%>(<%=typeToGenerate %>)<%}%>operation_result_<%=cid %>.<%=inOperation %>_<%=function %>);//??
+<%
+							}
+%>
+<%
+            			}
+            			if(!sameType){
+%>
+if(temps<%=outOperation %>.length() > 0) {
+<%
+								/** begin **/
+						if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.OBJECT) {
+								/** end **/
+%>
+aggregated_row_<%=cid %>.<%=outOperation %> = temps<%=outOperation %>;
+<%
+								/** begin **/
+							} else if(javaType == JavaTypesManager.DATE) { 
+								/** end **/
+								%>
+aggregated_row_<%=cid %>.<%=outOperation %> = ParserUtils.parseTo_Date(temps<%=outOperation %>, <%= patternValue %>);
+<%
+								/** begin **/
+							}else{
+								
+								/** end **/
+								%>
+aggregated_row_<%=cid %>.<%=outOperation %> = ParserUtils.parseTo_<%= typeToGenerate %>(temps<%=outOperation %>);
+<%
+								/** begin **/
+							}
+								/** end **/
+						%>					
+} else {
+						<%
+							/** begin **/
+							String defaultValue = JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate, column.getDefault());
+							if(defaultValue == null) {
+							/** end **/
+								%>throw new RuntimeException("Value is empty for column : '<%= column.getLabel() %>', value is invalid or this column should be nullable or have a default value.");<%
+							/** begin **/
+							} else {
+							/** end **/
+								%>
+aggregated_row_<%=cid %>.<%=outOperation %> = <%=defaultValue%>;
+<%
+							/** begin **/
+							}
+							/** end **/
+						
+						%>
+}
+<%						}
+            			continue next_column;
+            		}
+            	}
+%>
+<%				if(javaType == JavaTypesManager.STRING){%>
+aggregated_row_<%=cid %>.<%=columnName %> = "";/*empty string for String value*/
+<%
+}%>
+<%
+			}
+%>
+//in the deepest end
+result_list_<%=cid %>.add(aggregated_row_<%=cid %>);
+nb_line_<%=cid %>++;
+<%
+//in the innest end
+
+
+///gen loop end begin
+			for(int i = 0; i < sizeGroupbys; i++){
+%>
+}
+<%
+			}
+///gen loop end end
+
+
+
+
+		}//i f(sizeOperations > 0||sizeGroupbys > 0) end
+%>
+//generate result end
+globalMap.put("<%=destination %>",result_list_<%=cid %>);
+globalMap.put("<%=cid %>{NB_LINE}",nb_line_<%=cid %>);
+<%//start
+//
+	}
+}
+//
+//end all%>

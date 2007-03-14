@@ -70,7 +70,7 @@ public class DataProcess {
     }
 
     // should only be called by a starting node
-    @SuppressWarnings("unchecked") //$NON-NLS-1$
+    @SuppressWarnings("unchecked")//$NON-NLS-1$
     private static INode buildfromNode(final Node graphicalNode) {
         if (buildCheckMap.containsKey(graphicalNode)) {
             return buildCheckMap.get(graphicalNode);
@@ -97,7 +97,7 @@ public class DataProcess {
         dataNode.setElementParameters(graphicalNode.getElementParameters());
         dataNode.setUniqueName(graphicalNode.getUniqueName());
         dataNode.setSubProcessStart(graphicalNode.isSubProcessStart());
-//        dataNode.setMultipleMethods(graphicalNode.isMultipleMethods());
+        // dataNode.setMultipleMethods(graphicalNode.isMultipleMethods());
         dataNode.setHasConditionalOutputs(graphicalNode.hasConditionalOutputs());
         dataNode.setProcess(graphicalNode.getProcess());
         dataNode.setComponent(graphicalNode.getComponent());
@@ -112,7 +112,13 @@ public class DataProcess {
             dataConnec = new DataConnection();
             dataConnec.setActivate(connection.isActivate());
             dataConnec.setLineStyle(connection.getLineStyle());
-            dataConnec.setMetadataTable(connection.getMetadataTable());
+            if ((connection.getLineStyle().equals(EConnectionType.RUN_BEFORE) || connection.getLineStyle().equals(
+                    EConnectionType.RUN_AFTER))
+                    && (connection.getTarget().getMetadataList().size() > 0)) {
+                dataConnec.setMetadataTable(connection.getTarget().getMetadataList().get(0));
+            } else {
+                dataConnec.setMetadataTable(connection.getMetadataTable());
+            }
             dataConnec.setName(connection.getName());
             dataConnec.setSource(dataNode);
             dataConnec.setCondition(connection.getCondition());
@@ -136,7 +142,7 @@ public class DataProcess {
      * @param multipleComponentManager
      * @return
      */
-    @SuppressWarnings("unchecked") //$NON-NLS-1$
+    @SuppressWarnings("unchecked")//$NON-NLS-1$
     private static AbstractNode addMultipleNode(Node graphicalNode, IMultipleComponentManager multipleComponentManager) {
         AbstractNode dataNode;
         // prepare all the nodes
@@ -378,7 +384,7 @@ public class DataProcess {
         }
     }
 
-    @SuppressWarnings("unchecked") //$NON-NLS-1$
+    @SuppressWarnings("unchecked")//$NON-NLS-1$
     private static void checkFlowRefLink(final Node graphicalNode) {
         if (checkRefList.contains(graphicalNode)) {
             return;

@@ -1,0 +1,70 @@
+<%@ jet 
+package="org.talend.designer.codegen.translators" 
+imports="org.talend.core.model.process.INode 
+		org.talend.core.model.process.ElementParameterParser 
+		org.talend.core.model.metadata.IMetadataTable 
+		org.talend.core.model.metadata.IMetadataColumn 
+		org.talend.core.model.process.IConnection
+		org.talend.core.model.process.EConnectionType
+		org.talend.designer.codegen.config.CodeGeneratorArgument
+		java.util.List 
+" 
+class="ArrayInBegin" 
+%>
+
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+String cid = node.getUniqueName();
+List<IMetadataTable> metadatas = node.getMetadataList();
+if ((metadatas!=null)&&(metadatas.size()>0)) {
+    IMetadataTable metadata = metadatas.get(0);
+    if (metadata!=null) {
+    String origin = ElementParameterParser.getValue(node, "__ORIGIN__");
+%>
+
+int nb_line_<%= cid %> = 0; 
+for(RunBeforeStruct<%=origin %> row_<%=cid %> : (java.util.List<RunBeforeStruct<%=origin %>>)globalMap.get("<%=origin %>")){
+
+<%
+//begin
+//
+		List< ? extends IConnection> conns = node.getOutgoingConnections();
+		String firstConnName = "";
+		if (conns!=null) {
+			if (conns.size()>0) {
+				IConnection conn = conns.get(0);
+				firstConnName = conn.getName();
+				List<IMetadataColumn> listColumns = metadata.getListColumns();
+				int size = listColumns.size();
+				if ((conn.getLineStyle().equals(EConnectionType.FLOW_MAIN))||(conn.getLineStyle().equals(EConnectionType.FLOW_REF))) {
+					for (int i=0; i<size; i++) {
+						IMetadataColumn column = listColumns.get(i);
+//
+//end%>					
+<%=conn.getName() %>.<%=column.getLabel() %> = row_<%=cid %>.<%=column.getLabel() %>;
+<%
+//start
+//
+					}
+				}
+			}
+			if (conns.size()>1) {
+				for (int i=1;i<conns.size();i++) {
+					IConnection connection = conns.get(i);
+					if ((connection.getName().compareTo(firstConnName)!=0)&&((connection.getLineStyle().equals(EConnectionType.FLOW_MAIN))||(connection.getLineStyle().equals(EConnectionType.FLOW_REF)))) {
+			    		for (IMetadataColumn column: metadata.getListColumns()) {
+//
+//end%>
+      	<%=connection.getName() %>.<%=column.getLabel() %> = <%=firstConnName %>.<%=column.getLabel() %>;
+<%
+//start
+//
+						}
+					}
+				}
+			}
+		}
+    }
+}
+%>

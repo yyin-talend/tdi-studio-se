@@ -1,0 +1,408 @@
+<%@ jet 
+package="org.talend.designer.codegen.translators" 
+imports="
+    org.talend.core.model.process.INode 
+    org.talend.core.model.metadata.IMetadataTable
+    org.talend.core.model.metadata.IMetadataColumn
+    org.talend.core.model.process.ElementParameterParser
+    org.talend.core.model.process.IConnection
+    org.talend.core.model.process.EConnectionType
+    org.talend.designer.codegen.config.CodeGeneratorArgument
+    org.talend.core.model.metadata.types.JavaTypesManager
+	org.talend.core.model.metadata.types.JavaType
+    java.util.List
+    java.util.Map
+"
+class="AggregateOutMain"
+%>
+
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+String cid = node.getUniqueName();
+List<IMetadataTable> metadatas = node.getMetadataList();
+if ((metadatas!=null)&&(metadatas.size()>0)) {
+    IMetadataTable metadata = metadatas.get(0);
+    if (metadata!=null) {
+		List< ? extends IConnection> conns = node.getIncomingConnections();
+		for (IConnection conn : conns) {
+			if (conn.getLineStyle().equals(EConnectionType.FLOW_MAIN)) {
+				List<Map<String, String>> operations = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__OPERATIONS__");
+        		List<Map<String, String>> groupbys = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__GROUPBYS__");
+        		IMetadataTable inMetadata = conn.getMetadataTable();
+				List<IMetadataColumn> columns = inMetadata.getListColumns();
+				int sizeOperations = operations.size();
+				int sizeGroupbys = groupbys.size();
+				int sizeColumns = columns.size();
+				if(sizeGroupbys > 0){
+//
+//end%>
+String key_<%=cid %> = null;
+<%//start
+//
+					for (int i=0; i<sizeGroupbys; i++) {
+            			Map<String, String> groupby = groupbys.get(i);
+						String inputColumn = groupby.get("INPUT_COLUMN");
+						String nextInputColumn = null;
+						if(i != sizeGroupbys - 1){
+							nextInputColumn = groupbys.get(i+1).get("INPUT_COLUMN");
+						}
+						if(i < sizeGroupbys-1){
+%>
+key_<%=cid %> = String.valueOf(<%=conn.getName() %>.<%=inputColumn %>);
+if(!hash_<%=inputColumn %>_<%=cid %>.containsKey(key_<%=cid %>)){
+	hash_<%=nextInputColumn  %>_<%=cid %> = new <%
+//start
+//
+							for(int j = i+1; j < sizeGroupbys; j++){
+								if(j == sizeGroupbys - 1){
+									if(sizeOperations == 0){
+//
+//end
+%>java.util.<%if(j == i+1){%>Hash<%}%>Set<String <%
+//start
+//
+									}else{
+//
+//end
+%>java.util.<%if(j == i+1){%>Hash<%}%>Map<String, OperationStruct<%=cid %><%
+//start
+//
+									}
+								}else{
+//
+//end
+%>java.util.<%if(j == i+1){%>Hash<%}%>Map<String,<%
+//start
+//
+								}
+							}
+							for(int j = i+1; j < sizeGroupbys; j++){
+//
+//end
+%>><%
+//start
+//
+							}
+//
+//end
+%>();
+	hash_<%=inputColumn %>_<%=cid %>.put(key_<%=cid %>,hash_<%=nextInputColumn %>_<%=cid %>);                    
+}else{
+	hash_<%=nextInputColumn  %>_<%=cid %> = hash_<%=inputColumn %>_<%=cid %>.get(key_<%=cid %>);
+}
+<%//start
+//
+						}
+						if(i == sizeGroupbys-1){
+							if(sizeOperations > 0){
+//
+//end%>
+key_<%=cid %> = String.valueOf(<%=conn.getName() %>.<%=inputColumn %>);
+if(!hash_<%=inputColumn %>_<%=cid %>.containsKey(key_<%=cid %>)){
+	operation_result_<%=cid %> = new OperationStruct<%=cid %>();
+	//do first; initialize min and max start
+<%//start
+//
+								for(int j = 0; j < sizeOperations; j++){
+									Map<String, String> operation = operations.get(j);
+            						String function = operation.get("FUNCTION");
+            						String outOperation = operation.get("OUTPUT_COLUMN");
+            						String inOperation = operation.get("INPUT_COLUMN");
+									if(function.equals("first")||function.equals("min")||function.equals("max")){
+//
+//end%>
+operation_result_<%=cid %>.<%=inOperation %>_<%=function %> = <%=conn.getName() %>.<%=inOperation  %>;
+<%//start
+//
+									}
+								}
+//
+//end%>	
+	//do first; initialize min and max end
+	hash_<%=inputColumn %>_<%=cid %>.put(key_<%=cid %>,operation_result_<%=cid %>);
+}else{
+	operation_result_<%=cid %> = hash_<%=inputColumn %>_<%=cid %>.get(key_<%=cid %>);
+}
+//do last, min, max, sum, count ave start
+<%//start
+//
+								JavaType javaType = null;
+            					
+								for(int j = 0; j < sizeOperations; j++){
+									Map<String, String> operation = operations.get(j);
+            						String function = operation.get("FUNCTION");
+            						String outOperation = operation.get("OUTPUT_COLUMN");
+            						String inOperation = operation.get("INPUT_COLUMN");
+            						for (IMetadataColumn column: columns) {
+            							if(column.toString().equals(inOperation)){
+            								javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
+            								break;
+            							}
+            						}
+									if(function.equals("min")||function.equals("max")){
+										if(javaType == JavaTypesManager.BYTE_ARRAY || javaType == JavaTypesManager.OBJECT){
+											//do nothing here
+										}else if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.DATE){
+//
+//end%>
+if(operation_result_<%=cid %>.<%=inOperation %>_<%=function %>.compareTo(<%=conn.getName() %>.<%=inOperation %>) <%if(function.equals("min")){%>><%}else{%><<%}%> 0){
+	operation_result_<%=cid %>.<%=inOperation %>_<%=function %> = <%=conn.getName() %>.<%=inOperation %>;
+}
+<%//start
+//
+										}else if(javaType == JavaTypesManager.BOOLEAN){
+//
+//end%>
+if(<%if(function.equals("min")){%>!<%}%><%=conn.getName() %>.<%=inOperation %>){
+	if(<%if(function.equals("max")){%>!<%}%>operation_result_<%=cid %>.<%=inOperation %>_<%=function %>){
+		operation_result_<%=cid %>.<%=inOperation %>_<%=function %> = <%if(function.equals("min")){%>false<%}else{%>true<%}%>;
+	}
+}
+<%//start
+//
+										}else{
+										//for numbers
+//
+//end%>
+
+if(operation_result_<%=cid %>.<%=inOperation %>_<%=function %> - <%=conn.getName() %>.<%=inOperation %> <%if(function.equals("min")){%>><%}else{%><<%}%> 0){
+	operation_result_<%=cid %>.<%=inOperation %>_<%=function %> = <%=conn.getName() %>.<%=inOperation %>;
+}
+<%//start
+//
+										}
+									}
+									if(function.equals("sum")){
+										if(javaType == JavaTypesManager.BYTE_ARRAY || javaType == JavaTypesManager.OBJECT 
+											|| javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.BOOLEAN
+											|| javaType == JavaTypesManager.DATE){
+											//do nothing here
+										}else{
+											boolean hasavg = false;
+   											for(int k=0;k<sizeOperations && k != j; k++) {
+            									Map<String, String> operation1 = operations.get(k);
+            									if(operation1.get("FUNCTION").equals("avg") && operation1.get("INPUT_COLUMN").equals(inOperation)){
+            										hasavg = true;
+            										break;
+            									}
+            								}
+            								if(!hasavg){
+//
+//end%>
+operation_result_<%=cid %>.<%=inOperation %>_sum += <%=conn.getName() %>.<%=inOperation %>;
+<%//start
+//
+											}
+										}
+									}
+									if(function.equals("count")){
+										boolean hasavg = false;
+   										for(int k=0;k<sizeOperations && k != j; k++) {
+            								Map<String, String> operation1 = operations.get(k);
+            								if(operation1.get("FUNCTION").equals("avg") && operation1.get("INPUT_COLUMN").equals(inOperation)){
+            									hasavg = true;
+            									break;
+            								}
+            							}
+            							if(!hasavg){
+//
+//end%>
+operation_result_<%=cid %>.<%=inOperation %>_count ++;
+<%//start
+//
+										}
+									}
+									if(function.equals("last")){
+//
+//end%>
+operation_result_<%=cid %>.<%=inOperation %>_last = <%=conn.getName() %>.<%=inOperation %>;
+<%//start
+//
+									}
+									if(function.equals("avg")){
+										if(javaType == JavaTypesManager.BYTE_ARRAY || javaType == JavaTypesManager.OBJECT 
+											|| javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.BOOLEAN
+											|| javaType == JavaTypesManager.DATE){
+											//do nothing here
+										}else{
+//
+//end%>
+operation_result_<%=cid %>.<%=inOperation %>_count ++;
+operation_result_<%=cid %>.<%=inOperation %>_sum += <%=conn.getName() %>.<%=inOperation %>;
+<%//start
+//
+										}
+									}
+								}
+//
+//end%>	
+//do last, min, max, sum, count ave end
+					
+<%//start
+//
+							}
+							if(sizeOperations == 0){
+//
+//end%>
+key_<%=cid %> = String.valueOf(<%=conn.getName() %>.<%=inputColumn %>);
+if(!hash_<%=inputColumn %>_<%=cid %>.contains(key_<%=cid %>)){
+	hash_<%=inputColumn %>_<%=cid %>.add(key_<%=cid %>);
+}
+<%//start
+//
+							}
+//
+//end%>
+						
+<%//start
+//
+						}
+					}
+				}
+				if(sizeGroupbys == 0){
+					if(sizeOperations > 0){
+%>
+if(operation_result_<%=cid %> == null){
+	operation_result_<%=cid %> = new OperationStruct<%=cid %>();
+	//do first; initialize min and max start
+<%//start
+//
+						for(int j = 0; j < sizeOperations; j++){
+							Map<String, String> operation = operations.get(j);
+            				String function = operation.get("FUNCTION");
+            				String outOperation = operation.get("OUTPUT_COLUMN");
+            				String inOperation = operation.get("INPUT_COLUMN");
+							if(function.equals("first")||function.equals("min")||function.equals("max")){
+//
+//end%>
+operation_result_<%=cid %>.<%=inOperation %>_<%=function %> = <%=conn.getName() %>.<%=inOperation  %>;
+<%//start
+//
+							}
+						}
+//
+//end%>
+	//do first; initialize min and max end
+}	
+	//do last, min, max, sum, count ave start
+<%
+						//do all operations here....
+						JavaType javaType = null;
+            					
+						for(int j = 0; j < sizeOperations; j++){
+							Map<String, String> operation = operations.get(j);
+            				String function = operation.get("FUNCTION");
+            				String outOperation = operation.get("OUTPUT_COLUMN");
+            				String inOperation = operation.get("INPUT_COLUMN");
+            				for (IMetadataColumn column: columns) {
+            					if(column.toString().equals(inOperation)){
+            						javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
+            						break;
+            					}
+            				}
+							if(function.equals("min")||function.equals("max")){
+								if(javaType == JavaTypesManager.BYTE_ARRAY || javaType == JavaTypesManager.OBJECT){
+									//do nothing here
+								}else if(javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.DATE){
+//
+//end%>
+if(operation_result_<%=cid %>.<%=inOperation %>_<%=function %>.compareTo(<%=conn.getName() %>.<%=inOperation %>) <%if(function.equals("min")){%>><%}else{%><<%}%> 0){
+	operation_result_<%=cid %>.<%=inOperation %>_<%=function %> = <%=conn.getName() %>.<%=inOperation %>;
+}
+<%//start
+//
+								}else if(javaType == JavaTypesManager.BOOLEAN){
+//
+//end%>
+if(<%if(function.equals("min")){%>!<%}%><%=conn.getName() %>.<%=inOperation %>){
+	if(<%if(function.equals("max")){%>!<%}%>operation_result_<%=cid %>.<%=inOperation %>_<%=function %>){
+		operation_result_<%=cid %>.<%=inOperation %>_<%=function %> = <%if(function.equals("min")){%>false<%}else{%>true<%}%>;
+	}
+}
+<%//start
+//
+								}else{
+								//for numbers
+//
+//end%>
+
+if(operation_result_<%=cid %>.<%=inOperation %>_<%=function %> - <%=conn.getName() %>.<%=inOperation %> <%if(function.equals("min")){%>><%}else{%><<%}%> 0){
+	operation_result_<%=cid %>.<%=inOperation %>_<%=function %> = <%=conn.getName() %>.<%=inOperation %>;
+}
+<%//start
+//
+								}
+							}
+							if(function.equals("sum")){
+								if(javaType == JavaTypesManager.BYTE_ARRAY || javaType == JavaTypesManager.OBJECT 
+									|| javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.BOOLEAN
+									|| javaType == JavaTypesManager.DATE){
+									//do nothing here
+								}else{
+									boolean hasavg = false;
+   									for(int k=0;k<sizeOperations && k != j; k++) {
+            							Map<String, String> operation1 = operations.get(k);
+            							if(operation1.get("FUNCTION").equals("avg") && operation1.get("INPUT_COLUMN").equals(inOperation)){
+            								hasavg = true;
+            								break;
+            							}
+            						}
+            						if(!hasavg){
+//
+//end%>
+operation_result_<%=cid %>.<%=inOperation %>_sum += <%=conn.getName() %>.<%=inOperation %>;
+<%//start
+//
+									}
+								}
+							}
+							if(function.equals("count")){
+								boolean hasavg = false;
+   								for(int k=0;k<sizeOperations && k != j; k++) {
+            						Map<String, String> operation1 = operations.get(k);
+            						if(operation1.get("FUNCTION").equals("avg") && operation1.get("INPUT_COLUMN").equals(inOperation)){
+            							hasavg = true;
+            							break;
+            						}
+            					}
+            					if(!hasavg){
+//
+//end%>
+operation_result_<%=cid %>.<%=inOperation %>_count ++;
+<%//start
+//
+								}
+							}
+							if(function.equals("last")){
+//
+//end%>
+operation_result_<%=cid %>.<%=inOperation %>_last = <%=conn.getName() %>.<%=inOperation %>;
+<%//start
+//
+							}
+							if(function.equals("avg")){
+								if(javaType == JavaTypesManager.BYTE_ARRAY || javaType == JavaTypesManager.OBJECT 
+									|| javaType == JavaTypesManager.STRING || javaType == JavaTypesManager.BOOLEAN
+									|| javaType == JavaTypesManager.DATE){
+									//do nothing here
+								}else{
+//
+//end%>
+operation_result_<%=cid %>.<%=inOperation %>_count ++;
+operation_result_<%=cid %>.<%=inOperation %>_sum += <%=conn.getName() %>.<%=inOperation %>;
+<%//start
+//
+								}
+							}
+						}%>
+	//do last, min, max, sum, count ave end
+<%
+					}
+				}
+			}
+		}
+	}
+}
+//
+//end%>
