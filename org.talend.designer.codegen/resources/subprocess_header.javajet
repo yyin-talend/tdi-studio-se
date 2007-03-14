@@ -28,11 +28,17 @@
 		List<IMetadataTable> metadatas = node.getMetadataList();
 			List< ? extends IConnection> conns = node.getOutgoingConnections();
 			for (IConnection conn : conns) {
-//				if (
-//					(conn.getLineStyle().equals(EConnectionType.FLOW_MAIN))||
-//					(conn.getLineStyle().equals(EConnectionType.FLOW_REF))||
-//					(conn.getLineStyle().equals(EConnectionType.REFERENCE))
-//				) {
+				// templateOrigin is used for Virtual COmponents
+				String templateOrigin = "";
+				if (conn.getTarget()!=null) {
+					templateOrigin = ElementParameterParser.getValue(conn.getTarget(), "__ORIGIN__");
+				}
+				if (
+					(templateOrigin.compareTo("")!=0) ||
+					(conn.getLineStyle().equals(EConnectionType.FLOW_MAIN))||
+					(conn.getLineStyle().equals(EConnectionType.FLOW_REF))||
+					(conn.getLineStyle().equals(EConnectionType.REFERENCE))
+				) {
 					if (!hSet.contains(conn.getName())) {
 						hSet.add(conn.getName());
 						IMetadataTable metadata = conn.getMetadataTable();
@@ -45,10 +51,10 @@
 								}
 							}
 						}
-						String test = ElementParameterParser.getValue(conn.getTarget(), "__ORIGIN__");
+						
 %>
 
-private class <%=conn.getName() %>Struct<%=test %> {
+private class <%=conn.getName() %>Struct<%=templateOrigin %> {
 <%
 	if(hasAtLeastOneKey) {
 %>
@@ -141,7 +147,7 @@ private class <%=conn.getName() %>Struct<%=test %> {
 <%
 						}
 					}
-//				}
+				}
 	}
 %>
 
