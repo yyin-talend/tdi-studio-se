@@ -48,7 +48,9 @@ while (index>=0) {
 	 	  	   			typeToGenerate = "Bytes";
  	   	  			}else if(typeToGenerate.equals("java.util.Date")){
 	 	   	  			typeToGenerate = "Date";
- 	   	  			}else{
+ 	   	  			}else if(typeToGenerate.equals("Integer")){
+ 	   	  				typeToGenerate = "Int";
+ 	   	 			}else{
 						typeToGenerate=typeToGenerate.substring(0,1).toUpperCase()+typeToGenerate.substring(1);
 		  			}
 		  				if(parameterIndex<=counter){
