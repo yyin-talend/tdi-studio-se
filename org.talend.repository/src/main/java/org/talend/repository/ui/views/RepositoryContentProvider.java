@@ -242,16 +242,12 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
                     recBinNode);
 
             // 6.6. Metadata file ldif
-            if (LanguageManager.getCurrentLanguage() == ECodeLanguage.PERL) {
-                
-                RepositoryNode metadataFileLdifNode = new RepositoryNode(null, root, ENodeType.SYSTEM_FOLDER);
-                metadataFileLdifNode.setProperties(EProperties.LABEL, ERepositoryObjectType.METADATA_FILE_LDIF);
-                metadataFileLdifNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.METADATA_FILE_LDIF);
-                metadataNode.getChildren().add(metadataFileLdifNode);
-                convert(factory.getMetadataFileLdif(), metadataFileLdifNode, ERepositoryObjectType.METADATA_FILE_LDIF,
-                        recBinNode);
-
-            }
+            RepositoryNode metadataFileLdifNode = new RepositoryNode(null, root, ENodeType.SYSTEM_FOLDER);
+            metadataFileLdifNode.setProperties(EProperties.LABEL, ERepositoryObjectType.METADATA_FILE_LDIF);
+            metadataFileLdifNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.METADATA_FILE_LDIF);
+            metadataNode.getChildren().add(metadataFileLdifNode);
+            convert(factory.getMetadataFileLdif(), metadataFileLdifNode, ERepositoryObjectType.METADATA_FILE_LDIF,
+                    recBinNode);
 
         } catch (PersistenceException e) {
             e.printStackTrace();
