@@ -144,7 +144,12 @@
              class="org.talend.repository.ui.actions.context.EditContextAction"
              id="org.talend.repository.editcontext"
              level="10"
-             name="Edit Context"/>     
+             name="Edit Context"/>
+       <Action
+             class="org.talend.repository.ui.actions.GenerateDocAsHTMLAction"
+             id="org.talend.repository.actions.generateDocAsHTML"
+             level="98"
+             name="Generate Doc as HTML"/>     
    </extension>
    <extension
          point="org.eclipse.ui.views.properties.tabbed.propertyContributor">
