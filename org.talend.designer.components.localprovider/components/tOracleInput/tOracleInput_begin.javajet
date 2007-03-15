@@ -1,0 +1,126 @@
+<%@ jet 
+package="org.talend.designer.codegen.translators" 
+imports="
+		org.talend.core.model.process.INode 
+		org.talend.core.model.process.ElementParameterParser 
+		org.talend.core.model.metadata.IMetadataTable 
+		org.talend.core.model.metadata.IMetadataColumn
+		org.talend.designer.codegen.config.CodeGeneratorArgument
+		org.talend.core.model.process.IConnection
+		org.talend.core.model.process.EConnectionType
+		org.talend.core.model.metadata.builder.database.ExtractMetaDataUtils
+		org.talend.core.model.metadata.types.JavaTypesManager
+		org.talend.core.model.metadata.types.JavaType
+		
+		java.util.List
+" 
+class="OracleInputBegin" 
+%>
+
+<%
+	CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+	INode node = (INode)codeGenArgument.getArgument();
+	String cid = node.getUniqueName();
+	
+	String dbhost = ElementParameterParser.getValue(node, "__HOST__");
+	String dbport = ElementParameterParser.getValue(node, "__PORT__");
+	String dbname= ElementParameterParser.getValue(node, "__DBNAME__");
+	String dbuser= ElementParameterParser.getValue(node, "__USER__");
+	String dbpwd= ElementParameterParser.getValue(node, "__PASS__");
+	String dbencoding= ElementParameterParser.getValue(node, "__ENCODING__");
+	String dbquery= ElementParameterParser.getValue(node, "__QUERY__");
+	       dbquery = dbquery.replaceAll("\n","");
+    	   dbquery = dbquery.replaceAll("\r","");
+	
+	List<IMetadataTable> metadatas = node.getMetadataList();
+	if ((metadatas!=null)&&(metadatas.size()>0)) {
+		IMetadataTable metadata = metadatas.get(0);
+		if (metadata!=null) {
+%>
+int nb_line_<%=cid%> = 0;
+java.lang.Class.forName("oracle.jdbc.driver.OracleDriver");
+String url_<%=cid %> = "jdbc:oracle:thin:@"+<%=dbhost%>+":"+<%=dbport%>+":"+<%=dbname%>;
+
+String dbUser_<%=cid %> = <%=dbuser%>;
+String dbPwd_<%=cid %> = <%=dbpwd%>;
+
+java.sql.Connection conn_<%=cid%> = java.sql.DriverManager.getConnection(url_<%=cid %>,dbUser_<%=cid%>,dbPwd_<%=cid%>);
+
+java.sql.Statement stmt_<%=cid %> = conn_<%=cid%>.createStatement();
+java.sql.ResultSet rs_<%=cid %> = stmt_<%=cid %>.executeQuery(<%=dbquery%>);
+java.sql.ResultSetMetaData rsmd_<%=cid %> = rs_<%=cid %>.getMetaData();
+int colQtyInRs_<%=cid%> = rsmd_<%=cid %>.getColumnCount();
+
+globalMap.put("<%=cid %>_QUERY",<%=dbquery%>);
+
+
+<%
+List< ? extends IConnection> conns = node.getOutgoingConnections();
+List<IMetadataColumn> columnList = metadata.getListColumns();
+%>
+while (rs_<%=cid %>.next()) {
+nb_line_<%=cid%>++;
+
+<%
+if(conns != null && conns.size()>0){
+ 	IConnection conn = conns.get(0);
+ 	String firstConnName = conn.getName();
+ 	int currentColNo = 1;
+ 	for(IMetadataColumn column:columnList){
+ 	
+ 	String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
+ 	String defVal = JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate);
+ 	
+ 	if(((conn.getLineStyle().equals(EConnectionType.FLOW_MAIN))||(conn.getLineStyle().equals(EConnectionType.FLOW_REF)))){
+ 	%> 	
+ 		if(colQtyInRs_<%=cid%><<%=currentColNo%>){
+ 		
+ 			<%=firstConnName%>.<%=column.getLabel()%>=<%=defVal%>;
+ 			
+ 		}else{
+ 	  	  <%
+ 	  	  if(typeToGenerate.equals("byte[]")){
+ 	  	   	typeToGenerate = "Bytes";
+ 	   	  }else if(typeToGenerate.equals("java.util.Date")){
+ 	   	  	typeToGenerate = "Date";
+ 	   	  }else if(typeToGenerate.equals("Integer")){
+ 	   	  	typeToGenerate = "Int";
+ 	   	  }else{
+			typeToGenerate=typeToGenerate.substring(0,1).toUpperCase()+typeToGenerate.substring(1);
+		  }
+		  
+			  if(typeToGenerate.equals("Char")||typeToGenerate.equals("Character")){
+			  %>
+			<%=firstConnName%>.<%=column.getLabel()%>=rs_<%=cid %>.getString(<%=currentColNo%>).charAt(0);
+			  <%
+			  }else{
+		  
+ 	   	 %>
+
+ 			<%=firstConnName%>.<%=column.getLabel()%>=rs_<%=cid %>.get<%=typeToGenerate%>(<%=currentColNo%>);
+ 			<%
+ 			  }
+ 			%>
+ 		}
+ 		
+   	 <%  
+   	 	currentColNo++;
+    	}
+ 	}
+ 	if(conns.size()>1){
+ 		for(int connNO = 1; connNO < conns.size(); connNO++){
+ 		  IConnection conn2 = conns.get(connNO);
+ 		  if((conn2.getName().compareTo(firstConnName)!=0)&&((conn2.getLineStyle().equals(EConnectionType.FLOW_MAIN))||(conn2.getLineStyle().equals(EConnectionType.FLOW_REF)))){
+ 		  	for(IMetadataColumn column:columnList){
+ 		  %>
+ 		   	<%=conn2.getName()%>.<%=column.getLabel()%>=<%=firstConnName%>.<%=column.getLabel()%>;
+ 		  <% 
+ 		  	}
+ 		  }
+ 		}
+ 	}
+}
+		}
+	}
+%>
+
