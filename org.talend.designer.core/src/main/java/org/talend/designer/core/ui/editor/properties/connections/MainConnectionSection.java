@@ -92,7 +92,7 @@ public class MainConnectionSection extends DynamicTabbedPropertySection {
                     generator.initController();
                     AbstractElementPropertySectionController contorller = generator.getController(
                             EParameterFieldType.SCHEMA_TYPE, this);
-                    contorller.createControl(composite, cur, 0, 0, 0, null); 
+                    contorller.createControl(composite, cur, 0, 0, 0, null);
                 }
             }
 
@@ -110,7 +110,7 @@ public class MainConnectionSection extends DynamicTabbedPropertySection {
             Composite compositeEditorView = metadataTableEditorView.getMainComposite();
             compositeEditorView.setLayoutData(data);
 
-            //composite.getParent().layout();
+            // composite.getParent().layout();
             composite.layout();
         } else if (conIf()) {
             super.addComponents();
@@ -135,7 +135,8 @@ public class MainConnectionSection extends DynamicTabbedPropertySection {
     private boolean conSchema() {
         Connection connection = (Connection) elem;
         return connection.getLineStyle() == EConnectionType.FLOW_MAIN
-                || connection.getLineStyle() == EConnectionType.FLOW_REF;
+                || connection.getLineStyle() == EConnectionType.FLOW_REF
+                || connection.getLineStyle() == EConnectionType.TABLE;
     }
 
 }

@@ -161,7 +161,9 @@ public class SchemaTypeController extends AbstractElementPropertySectionControll
 
             boolean inputReadOnly = false, outputReadOnly = false;
             for (Connection connec : (List<Connection>) node.getIncomingConnections()) {
-                if (connec.isActivate() && connec.getLineStyle().equals(EConnectionType.FLOW_MAIN)) {
+                if (connec.isActivate()
+                        && (connec.getLineStyle().equals(EConnectionType.FLOW_MAIN) || connec.getLineStyle().equals(
+                                EConnectionType.TABLE))) {
                     inputMetadata = connec.getMetadataTable();
                     inputMetaCopy = inputMetadata.clone();
                     inputFamily = connec.getSource().getComponent().getFamily();
@@ -201,11 +203,11 @@ public class SchemaTypeController extends AbstractElementPropertySectionControll
 
             MetadataDialog metaDialog;
             if (inputMetadata != null) {
-                metaDialog = new MetadataDialog(composite.getShell(), inputMetaCopy, inputMetadata.getTableName(), inputFamily,
-                        outputMetaCopy, node.getUniqueName(), outputFamily, getCommandStack());
+                metaDialog = new MetadataDialog(composite.getShell(), inputMetaCopy, inputMetadata.getTableName(),
+                        inputFamily, outputMetaCopy, node.getUniqueName(), outputFamily, getCommandStack());
             } else {
-                metaDialog = new MetadataDialog(composite.getShell(), outputMetaCopy, node.getUniqueName(), outputFamily,
-                        getCommandStack());
+                metaDialog = new MetadataDialog(composite.getShell(), outputMetaCopy, node.getUniqueName(),
+                        outputFamily, getCommandStack());
             }
             metaDialog.setText(Messages.getString("SchemaController.schemaOf") + node.getLabel()); //$NON-NLS-1$
             metaDialog.setInputReadOnly(inputReadOnly);
@@ -243,7 +245,8 @@ public class SchemaTypeController extends AbstractElementPropertySectionControll
             metaCopy.setListColumns(new ArrayList<IMetadataColumn>());
 
             for (Connection connec : (List<Connection>) node.getIncomingConnections()) {
-                if (connec.isActivate() && connec.getLineStyle().equals(EConnectionType.FLOW_MAIN)) {
+                if (connec.isActivate() && connec.getLineStyle().equals(EConnectionType.FLOW_MAIN) || connec.getLineStyle().equals(
+                        EConnectionType.TABLE)) {
                     metaCopy = connec.getMetadataTable().clone();
                 }
             }
@@ -368,7 +371,8 @@ public class SchemaTypeController extends AbstractElementPropertySectionControll
             Node node = (Node) elem;
             boolean flowMainInput = false;
             for (IConnection connec : node.getIncomingConnections()) {
-                if (connec.getLineStyle().equals(EConnectionType.FLOW_MAIN)) {
+                if (connec.getLineStyle().equals(EConnectionType.FLOW_MAIN) || connec.getLineStyle().equals(
+                        EConnectionType.TABLE)) {
                     flowMainInput = true;
                 }
             }

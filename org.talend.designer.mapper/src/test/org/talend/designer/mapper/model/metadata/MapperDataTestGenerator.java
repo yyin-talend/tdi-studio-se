@@ -1286,6 +1286,10 @@ public class MapperDataTestGenerator {
 
         }
 
+        public String getUniqueName() {
+            return name;
+        }
+
     };
 
     /**

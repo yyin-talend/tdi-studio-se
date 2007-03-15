@@ -65,6 +65,7 @@ public class MetadataEmfFactory {
 
         metadataType.setComment(metadataTable.getDescription());
         metadataType.setName(metadataTable.getTableName());
+        metadataType.setLabel(metadataTable.getLabel());
         listColType = metadataType.getColumn();
 
         if (metadataTable.getListColumns() != null) {
@@ -88,7 +89,7 @@ public class MetadataEmfFactory {
                 colType.setType(metaCol.getTalendType());
                 colType.setSourceType(metaCol.getType());
                 colType.setPattern(metaCol.getPattern());
-//                colType.setDefaultValue(metaCol.getDefault());
+                colType.setDefaultValue(metaCol.getDefault());
                 listColType.add(colType);
             }
         }
@@ -106,6 +107,7 @@ public class MetadataEmfFactory {
 
         metadataTable.setDescription(metadataType.getComment());
         metadataTable.setTableName(metadataType.getName());
+        metadataTable.setLabel(metadataType.getLabel());
         listColType = metadataType.getColumn();
 
         listMetadataColumn = new ArrayList<IMetadataColumn>();
@@ -115,20 +117,13 @@ public class MetadataEmfFactory {
             metaCol.setComment(colType.getComment());
             metaCol.setKey(colType.isKey());
             metaCol.setNullable(colType.isNullable());
-            /*
-             * if (colType.getLength() == -1) { metaCol.setLength(null); } else {
-             */
             metaCol.setLength(new Integer(colType.getLength()));
-            // }
             metaCol.setLabel(colType.getName());
-            /*
-             * if (colType.getPrecision() == -1) { metaCol.setPrecision(null); } else {
-             */
             metaCol.setPrecision(new Integer(colType.getPrecision()));
-            // }
             metaCol.setTalendType(colType.getType());
             metaCol.setType(colType.getSourceType());
             metaCol.setPattern(colType.getPattern());
+            metaCol.setDefault(colType.getDefaultValue());
             listMetadataColumn.add(metaCol);
         }
         metadataTable.setListColumns(listMetadataColumn);

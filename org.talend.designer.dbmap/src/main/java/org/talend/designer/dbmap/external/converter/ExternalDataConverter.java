@@ -128,7 +128,8 @@ public class ExternalDataConverter {
         if (outputConnections != null) {
             for (IOConnection connection : outputConnections) {
                 if (connection.getConnectionType().equals(EConnectionType.FLOW_MAIN)
-                        || connection.getConnectionType().equals(EConnectionType.FLOW_REF)) {
+                        || connection.getConnectionType().equals(EConnectionType.FLOW_REF)
+                        || connection.getConnectionType().equals(EConnectionType.TABLE)) {
                     nameMetadataToOutpuConn.put(connection.getTable().getTableName(), connection);
                 }
             }

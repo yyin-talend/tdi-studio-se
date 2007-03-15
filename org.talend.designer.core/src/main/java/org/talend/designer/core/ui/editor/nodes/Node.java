@@ -527,8 +527,16 @@ public class Node extends Element implements INode {
                 copyOfMetadataList.add(metaTable.clone());
             }
             externalNode.setMetadataList(copyOfMetadataList);
-            externalNode.setIncomingConnections(getIncomingConnections());
-            externalNode.setOutgoingConnections(getOutgoingConnections());
+            // List<IConnection> copyOfconnections = new ArrayList<IConnection>();
+            // for (IConnection connec : inputs) {
+            // copyOfconnections.add(connec);
+            // }
+            externalNode.setIncomingConnections(inputs);
+            // copyOfconnections = new ArrayList<IConnection>();
+            // for (IConnection connec : outputs) {
+            // copyOfconnections.add(connec);
+            // }
+            externalNode.setOutgoingConnections(outputs);
             externalNode.setPluginFullName(getPluginFullName());
             externalNode.setElementParameters(getElementParameters());
             externalNode.setUniqueName(getUniqueName());
@@ -636,6 +644,9 @@ public class Node extends Element implements INode {
             if (metadataList.get(i).getTableName().equals(metaName)) {
                 return metadataList.get(i);
             }
+        }
+        if (metadataList.size() > 0) {
+            return metadataList.get(0);
         }
         return null;
     }
@@ -807,7 +818,7 @@ public class Node extends Element implements INode {
                                 }
                             }
                             if (!found) {
-                                String errorMessage = "Parameter (" + param.getDisplayName() + ") has a value (" 
+                                String errorMessage = "Parameter (" + param.getDisplayName() + ") has a value ("
                                         + value + ") that doesn't exist anymore.";
                                 Problems.add(ProblemStatus.ERROR, this, errorMessage);
                             }
@@ -867,8 +878,8 @@ public class Node extends Element implements INode {
         }
 
         // check not startable components not linked
-        if ((getConnectorFromType(EConnectionType.FLOW_MAIN).getMaxLinkInput() == 0) 
-                && (getConnectorFromType(EConnectionType.FLOW_MAIN).getMaxLinkOutput() != 0)){
+        if ((getConnectorFromType(EConnectionType.FLOW_MAIN).getMaxLinkInput() == 0)
+                && (getConnectorFromType(EConnectionType.FLOW_MAIN).getMaxLinkOutput() != 0)) {
             if ((getCurrentActiveLinksNbOutput(EConnectionType.FLOW_MAIN) == 0)
                     && (getCurrentActiveLinksNbOutput(EConnectionType.FLOW_REF) == 0)
                     && (getCurrentActiveLinksNbOutput(EConnectionType.ITERATE) == 0)) {
@@ -958,8 +969,10 @@ public class Node extends Element implements INode {
         }
         if (!isExternalNode()) {
             if (canEditSchema) {
-                if ((getConnectorFromType(EConnectionType.FLOW_MAIN).getMaxLinkInput() == 0)
-                        && (getConnectorFromType(EConnectionType.FLOW_MAIN).getMaxLinkOutput() != 0)) {
+                if (((getConnectorFromType(EConnectionType.FLOW_MAIN).getMaxLinkInput() == 0) && (getConnectorFromType(
+                        EConnectionType.FLOW_MAIN).getMaxLinkOutput() != 0))
+                        || ((getConnectorFromType(EConnectionType.TABLE).getMaxLinkInput() == 0) && (getConnectorFromType(
+                                EConnectionType.TABLE).getMaxLinkOutput() != 0))) {
                     if (metadataList.get(0).getListColumns().size() == 0) {
                         String errorMessage = "No schema has been defined yet."; //$NON-NLS-1$
                         Problems.add(ProblemStatus.ERROR, this, errorMessage);
@@ -979,11 +992,16 @@ public class Node extends Element implements INode {
 
         // test empty schema in built in connections (several outputs with different schema)
         if (!noSchema && (!canEditSchema || isExternalNode())) {
-            if (getConnectorFromType(EConnectionType.FLOW_MAIN).isBuiltIn()) {
+            if (getConnectorFromType(EConnectionType.FLOW_MAIN).isBuiltIn()
+                    || getConnectorFromType(EConnectionType.TABLE).isBuiltIn()) {
                 if (metadataList != null) {
                     for (IMetadataTable meta : metadataList) {
                         if (meta.getListColumns().size() == 0) {
-                            String errorMessage = "The output schema/link named \"" + meta.getTableName() //$NON-NLS-1$
+                            String tableLabel = meta.getTableName();
+                            if (meta.getLabel() != null) {
+                                tableLabel = meta.getLabel();
+                            }
+                            String errorMessage = "The output schema/link named \"" + tableLabel //$NON-NLS-1$
                                     + "\" has no column defined, please check it."; //$NON-NLS-1$
                             Problems.add(ProblemStatus.ERROR, this, errorMessage);
                         }
@@ -996,7 +1014,9 @@ public class Node extends Element implements INode {
         if (component.isSchemaAutoPropagated() && (metadataList.size() != 0)) {
             IMetadataTable inputMeta = null, outputMeta = metadataList.get(0);
             for (Connection connection : inputs) {
-                if (connection.isActivate() && connection.getLineStyle().equals(EConnectionType.FLOW_MAIN)) {
+                if (connection.isActivate()
+                        && (connection.getLineStyle().equals(EConnectionType.FLOW_MAIN) || connection.getLineStyle()
+                                .equals(EConnectionType.TABLE))) {
                     inputMeta = connection.getMetadataTable();
                 }
             }
@@ -1053,7 +1073,11 @@ public class Node extends Element implements INode {
                 }
 
                 if (!equal) {
-                    String errorMessage = "The schema in the input link \"" + inputMeta.getTableName() //$NON-NLS-1$
+                    String tableLabel = inputMeta.getTableName();
+                    if (inputMeta.getLabel() != null) {
+                        tableLabel = inputMeta.getLabel();
+                    }
+                    String errorMessage = "The schema in the input link \"" + tableLabel //$NON-NLS-1$
                             + "\" is different from the schema defined in the component."; //$NON-NLS-1$
                     Problems.add(ProblemStatus.ERROR, this, errorMessage);
                 }

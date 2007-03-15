@@ -157,4 +157,8 @@ public class ShadowConnection implements IConnection {
 
     }
 
+    public String getUniqueName() {
+        return getName();
+    }
+
 }

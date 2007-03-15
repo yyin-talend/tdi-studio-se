@@ -48,7 +48,7 @@ public class IOConnection {
      */
     public IOConnection(IConnection connection) {
         super();
-        this.name = connection.getName();
+        this.name = connection.getUniqueName();
         this.table = connection.getMetadataTable();
         this.connectionType = connection.getLineStyle();
 
@@ -62,7 +62,7 @@ public class IOConnection {
      */
     public IOConnection(IODataComponent ioDataComponent) {
         super();
-        this.name = ioDataComponent.getName();
+        this.name = ioDataComponent.getUniqueName();
         this.table = ioDataComponent.getTable();
         this.connectionType = ioDataComponent.getConnectionType();
     }

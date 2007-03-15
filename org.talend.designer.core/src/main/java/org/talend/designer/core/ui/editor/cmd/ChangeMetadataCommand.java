@@ -38,6 +38,7 @@ import org.talend.core.model.components.IODataComponentContainer;
 import org.talend.core.model.metadata.ColumnNameChanged;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.metadata.MetadataTool;
+import org.talend.core.model.process.EConnectionCategory;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.INode;
@@ -121,7 +122,7 @@ public class ChangeMetadataCommand extends Command {
     private void initializeContainer() {
         dataContainer = new IODataComponentContainer();
         for (Connection connec : (List<Connection>) node.getIncomingConnections()) {
-            if (connec.isActivate() && connec.getLineStyle().equals(EConnectionType.FLOW_MAIN)) {
+            if (connec.isActivate() && connec.getLineStyle().getCategory().equals(EConnectionCategory.MAIN)) {
                 IODataComponent input = null;
                 if (newInputMetadata == null) {
                     input = new IODataComponent(connec);
@@ -138,9 +139,8 @@ public class ChangeMetadataCommand extends Command {
         }
         for (Connection connec : (List<Connection>) node.getOutgoingConnections()) {
             if (connec.isActivate()
-                    && (connec.getLineStyle().equals(EConnectionType.FLOW_MAIN) || connec.getLineStyle().equals(
-                            EConnectionType.FLOW_REF))) {
-                if ((!connec.getSource().getConnectorFromType(EConnectionType.FLOW_MAIN).isBuiltIn())
+                    && (connec.getLineStyle().getCategory().equals(EConnectionCategory.MAIN))) {
+                if ((!connec.getSource().getConnectorFromType(connec.getLineStyle()).isBuiltIn())
                         || (connec.getMetaName().equals(newOutputMetadata.getTableName()))) {
                     IODataComponent output = new IODataComponent(connec, newOutputMetadata);
                     dataContainer.getOuputs().add(output);
@@ -212,7 +212,7 @@ public class ChangeMetadataCommand extends Command {
             for (IODataComponent currentIO : dataContainer.getOuputs()) {
                 if (currentIO.hasChanged()) {
                     INode targetNode = currentIO.getTarget();
-                    targetNode.metadataInputChanged(currentIO, currentIO.getName());
+                    targetNode.metadataInputChanged(currentIO, currentIO.getUniqueName());
                     if (isExecute) {
                         if (targetNode instanceof Node) {
                             if (!((Node) targetNode).isExternalNode() && getPropagate()) {

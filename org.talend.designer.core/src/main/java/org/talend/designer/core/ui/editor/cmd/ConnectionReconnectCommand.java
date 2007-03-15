@@ -27,6 +27,7 @@ import java.util.Iterator;
 import org.eclipse.gef.commands.Command;
 import org.talend.core.model.metadata.IMetadataColumn;
 import org.talend.core.model.metadata.IMetadataTable;
+import org.talend.core.model.process.EConnectionCategory;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.IConnection;
 import org.talend.core.model.process.INodeConnector;
@@ -75,7 +76,7 @@ public class ConnectionReconnectCommand extends Command {
         this.oldTarget = connection.getTarget();
         oldConnectionType = connection.getLineStyle();
         newConnectionType = oldConnectionType;
-        if (oldConnectionType.equals(EConnectionType.FLOW_MAIN) || oldConnectionType.equals(EConnectionType.FLOW_REF)) {
+        if (oldConnectionType.getCategory().equals(EConnectionCategory.MAIN)) {
             oldMetadataTable = connection.getMetadataTable().clone();
         }
         oldSourceSchemaType = (String) oldSource.getPropertyValue(EParameterName.SCHEMA_TYPE.getName());
@@ -190,8 +191,7 @@ public class ConnectionReconnectCommand extends Command {
             }
         }
 
-        if ((!newConnectionType.equals(EConnectionType.FLOW_MAIN))
-                && (!newConnectionType.equals(EConnectionType.FLOW_REF))
+        if ((!newConnectionType.getCategory().equals(EConnectionCategory.MAIN))
                 && (!newConnectionType.equals(EConnectionType.ITERATE))) {
             if (!(Boolean) newTarget.getPropertyValue(EParameterName.STARTABLE.getName())) {
                 return false;
@@ -238,13 +238,12 @@ public class ConnectionReconnectCommand extends Command {
             connector.setCurLinkNbOutput(connector.getCurLinkNbOutput() - 1);
             connector = newSource.getConnectorFromType(oldConnectionType);
             connector.setCurLinkNbOutput(connector.getCurLinkNbOutput() + 1);
-            if ((connection.getLineStyle().equals(EConnectionType.FLOW_MAIN) || (connection.getLineStyle()
-                    .equals(EConnectionType.FLOW_REF)))) {
+            if (connection.getLineStyle().getCategory().equals(EConnectionCategory.MAIN)) {
                 newSourceSchemaType = (String) newSource.getPropertyValue(EParameterName.SCHEMA_TYPE.getName());
-                boolean builtInNewSource = newSource.getConnectorFromType(EConnectionType.FLOW_MAIN).isBuiltIn();
-                boolean builtInOldSource = oldSource.getConnectorFromType(EConnectionType.FLOW_MAIN).isBuiltIn();
+                boolean builtInNewSource = newSource.getConnectorFromType(connection.getLineStyle()).isBuiltIn();
+                boolean builtInOldSource = oldSource.getConnectorFromType(connection.getLineStyle()).isBuiltIn();
                 if ((!builtInNewSource) && (!builtInOldSource)) {
-                    oldSource.getMetadataList().get(0).setDescription(""); //$NON-NLS-1$
+                    oldSource.getMetadataList().get(0).setDescription(null);
                     oldSource.getMetadataList().get(0).setListColumns(new ArrayList<IMetadataColumn>());
                     newSource.getMetadataList().get(0).setDescription(oldMetadataTable.getDescription());
                     newSource.getMetadataList().get(0).setListColumns(oldMetadataTable.getListColumns());
@@ -264,10 +263,10 @@ public class ConnectionReconnectCommand extends Command {
                         connection.setMetaName(newSource.getUniqueName());
                     }
                     if (!builtInOldSource) {
-                        oldSource.getMetadataList().get(0).setDescription(""); //$NON-NLS-1$
+                        oldSource.getMetadataList().get(0).setDescription(null);
                         oldSource.getMetadataList().get(0).setListColumns(new ArrayList<IMetadataColumn>());
                         IMetadataTable meta = oldMetadataTable.clone();
-                        meta.setTableName(connection.getName());
+                        meta.setTableName(connection.getUniqueName());
                         newSource.getMetadataList().add(meta);
                         connection.setMetaName(meta.getTableName());
                     }
@@ -311,28 +310,27 @@ public class ConnectionReconnectCommand extends Command {
 
     public void undo() {
         /*
-        if ((oldSource.getExternalNode() != null) && (oldSource.getExternalNode() != null)) {
-            oldSource.getProcess().removeUniqueConnectionName(oldMetadataTable.getTableName());
-        }*/
+         * if ((oldSource.getExternalNode() != null) && (oldSource.getExternalNode() != null)) {
+         * oldSource.getProcess().removeUniqueConnectionName(oldMetadataTable.getTableName()); }
+         */
         connection.setLineStyle(oldConnectionType);
         if (newSource != null) {
             INodeConnector connector = oldSource.getConnectorFromType(oldConnectionType);
             connector.setCurLinkNbOutput(connector.getCurLinkNbOutput() + 1);
             connector = newSource.getConnectorFromType(oldConnectionType);
             connector.setCurLinkNbOutput(connector.getCurLinkNbOutput() - 1);
-            if ((connection.getLineStyle().equals(EConnectionType.FLOW_MAIN) || (connection.getLineStyle()
-                    .equals(EConnectionType.FLOW_REF)))) {
-                boolean builtInNewSource = newSource.getConnectorFromType(EConnectionType.FLOW_MAIN).isBuiltIn();
-                boolean builtInOldSource = oldSource.getConnectorFromType(EConnectionType.FLOW_MAIN).isBuiltIn();
+            if (connection.getLineStyle().getCategory().equals(EConnectionCategory.MAIN)) {
+                boolean builtInNewSource = newSource.getConnectorFromType(connection.getLineStyle()).isBuiltIn();
+                boolean builtInOldSource = oldSource.getConnectorFromType(connection.getLineStyle()).isBuiltIn();
                 if ((!builtInNewSource) && (!builtInOldSource)) {
-                    newSource.getMetadataList().get(0).setDescription(""); //$NON-NLS-1$
+                    newSource.getMetadataList().get(0).setDescription(null);
                     newSource.getMetadataList().get(0).setListColumns(new ArrayList<IMetadataColumn>());
                     oldSource.getMetadataList().get(0).setDescription(oldMetadataTable.getDescription());
                     oldSource.getMetadataList().get(0).setListColumns(oldMetadataTable.getListColumns());
                     connection.setMetaName(oldSource.getUniqueName());
                 } else {
                     if (!builtInNewSource) {
-                        newSource.getMetadataList().get(0).setDescription(""); //$NON-NLS-1$
+                        newSource.getMetadataList().get(0).setDescription(null);
                         newSource.getMetadataList().get(0).setListColumns(new ArrayList<IMetadataColumn>());
                         oldSource.getMetadataList().add(oldMetadataTable);
                         connection.setMetaName(oldMetadataTable.getTableName());

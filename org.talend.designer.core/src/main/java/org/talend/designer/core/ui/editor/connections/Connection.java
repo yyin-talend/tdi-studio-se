@@ -24,6 +24,7 @@ package org.talend.designer.core.ui.editor.connections;
 import org.apache.commons.lang.ObjectUtils;
 import org.talend.core.model.metadata.IMetadataTable;
 import org.talend.core.model.process.EComponentCategory;
+import org.talend.core.model.process.EConnectionCategory;
 import org.talend.core.model.process.EConnectionType;
 import org.talend.core.model.process.EParameterFieldType;
 import org.talend.core.model.process.Element;
@@ -61,12 +62,20 @@ public class Connection extends Element implements IConnection {
 
     private String metaName;
 
+    private String uniqueName;
+
     // true if this connection is activated.
     private boolean activate = true;
 
     private boolean readOnly = false;
 
     private String traceData;
+    
+    public Connection(Node source, Node target, EConnectionType lineStyle, String metaName, String linkName, String uniqueName) {
+        this.uniqueName = uniqueName;
+        init(source, target, lineStyle, metaName, linkName);
+    }
+
 
     /**
      * The connection can be created with a given node source, target and line style The line style are described in the
@@ -79,11 +88,16 @@ public class Connection extends Element implements IConnection {
      * @param meta
      */
     public Connection(Node source, Node target, EConnectionType lineStyle, String metaName, String linkName) {
+        init(source, target, lineStyle, metaName, linkName);
+    }
+    
+    private void init(Node source, Node target, EConnectionType lineStyle, String metaName, String linkName) {
         this.lineStyle = lineStyle;
         this.metaName = metaName;
         if (lineStyle.equals(EConnectionType.FLOW_MAIN) || lineStyle.equals(EConnectionType.FLOW_REF)) {
             trace = new ConnectionTrace(this);
         }
+
         setName(linkName);
         reconnect(source, target);
         if (lineStyle.equals(EConnectionType.RUN_IF)) {
@@ -115,6 +129,25 @@ public class Connection extends Element implements IConnection {
     }
 
     /**
+     * 
+     * Only works for FLOW_MAIN, FLOW_REF or TABLE link.
+     * 
+     * @return
+     */
+    public String getUniqueName() {
+//        if (source != null) {
+//            if (source.getConnectorFromType(lineStyle).isBuiltIn()) {
+//                return metaName;
+//            }
+//        }
+        return uniqueName;
+    }
+    
+    public void setUniqueName(String uniqueName) {
+        this.uniqueName = uniqueName;
+    }
+
+    /**
      * Set the name/label of the connection.
      * 
      * @param name
@@ -123,6 +156,9 @@ public class Connection extends Element implements IConnection {
         String labelText;
 
         this.name = name;
+        if (!lineStyle.equals(EConnectionType.TABLE)) {
+            uniqueName = name;
+        }
 
         labelText = name;
         if (getLineStyle().equals(EConnectionType.FLOW_MAIN)) {
@@ -131,8 +167,14 @@ public class Connection extends Element implements IConnection {
         if (getLineStyle().equals(EConnectionType.FLOW_REF)) {
             labelText += " (" + EDesignerConnection.FLOW_REF.getLinkName() + ")"; //$NON-NLS-1$ //$NON-NLS-2$
         }
-        if (getLineStyle().equals(EConnectionType.TABLE)) {
-            labelText += " (" + EDesignerConnection.TABLE.getLinkName() + ")"; //$NON-NLS-1$ //$NON-NLS-2$
+        if (source != null) {
+            if (getLineStyle().equals(EConnectionType.TABLE)) {
+                if (getOutputId() >= 0) {
+                    labelText += " (" + EDesignerConnection.TABLE.getLinkName() + " :" + getOutputId() + ")"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                } else {
+                    labelText += " (" + EDesignerConnection.TABLE.getLinkName() + ")"; //$NON-NLS-1$ //$NON-NLS-2$
+                }
+            }
         }
         if (label == null) {
             label = new ConnectionLabel(labelText, this);
@@ -142,16 +184,38 @@ public class Connection extends Element implements IConnection {
             }
         }
 
-        if (source != null
-                && (lineStyle == EConnectionType.FLOW_MAIN || lineStyle == EConnectionType.FLOW_REF || lineStyle == EConnectionType.TABLE)) {
+        if (source != null && (lineStyle == EConnectionType.FLOW_MAIN || lineStyle == EConnectionType.FLOW_REF)) {
             if (source.getConnectorFromType(lineStyle).isBuiltIn()) {
                 IMetadataTable table = getMetadataTable();
                 table.setTableName(name);
-                metaName = name;
+                // metaName = name;
             }
         }
 
         firePropertyChange(NAME, null, name);
+    }
+
+    public void updateName() {
+        if (source == null) {
+            return;
+        }
+        String labelText = name;
+        if (getLineStyle().equals(EConnectionType.TABLE)) {
+            int id = getOutputId();
+            if (id >= 0) {
+                labelText += " (" + EDesignerConnection.TABLE.getLinkName() + " :" + id + ")"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            } else {
+                labelText += " (" + EDesignerConnection.TABLE.getLinkName() + ")"; //$NON-NLS-1$ //$NON-NLS-2$
+            }
+            if (label == null) {
+                label = new ConnectionLabel(labelText, this);
+            } else {
+                if (!label.getLabelText().equals(labelText)) {
+                    label.setLabelText(labelText);
+                }
+            }
+            firePropertyChange(NAME, null, name);
+        }
     }
 
     public ConnectionTrace getConnectionTrace() {
@@ -199,15 +263,27 @@ public class Connection extends Element implements IConnection {
      */
     public void reconnect() {
         if (!isConnected) {
-            // if (!source.getConnectorFromType(EConnectionType.FLOW_MAIN).isBuiltIn()) {
-            if (lineStyle.equals(EConnectionType.FLOW_MAIN) || lineStyle.equals(EConnectionType.FLOW_REF)) {
-                if (source.getProcess().checkValidConnectionName(name)) {
-                    source.getProcess().addUniqueConnectionName(this.name);
+            if (lineStyle.equals(EConnectionType.TABLE)) {
+                if (uniqueName == null) {
+                    uniqueName = source.getProcess().generateUniqueConnectionName("table");
                 }
-                // }
+                if (source.getConnectorFromType(lineStyle).isBuiltIn()) {
+                    IMetadataTable table = getMetadataTable();
+                    table.setTableName(uniqueName);
+                    if (table.getLabel() == null) {
+                        table.setLabel(name);
+                    }
+                    metaName = uniqueName;
+                }
+            }
+            if (lineStyle.getCategory().equals(EConnectionCategory.MAIN)) {
+                if (source.getProcess().checkValidConnectionName(uniqueName)) {
+                    source.getProcess().addUniqueConnectionName(uniqueName);
+                }
             }
             source.addOutput(this);
             target.addInput(this);
+            updateAllId();
             isConnected = true;
         }
     }
@@ -217,13 +293,14 @@ public class Connection extends Element implements IConnection {
      */
     public void disconnect() {
         if (isConnected) {
-            if (!source.getConnectorFromType(EConnectionType.FLOW_MAIN).isBuiltIn()) {
-                if (lineStyle.equals(EConnectionType.FLOW_MAIN) || lineStyle.equals(EConnectionType.FLOW_REF)) {
-                    source.getProcess().removeUniqueConnectionName(this.name);
+            if (!source.getConnectorFromType(lineStyle).isBuiltIn()) {
+                if (lineStyle.getCategory().equals(EConnectionCategory.MAIN)) {
+                    source.getProcess().removeUniqueConnectionName(uniqueName);
                 }
             }
             source.removeOutput(this);
             target.removeInput(this);
+            updateAllId();
             isConnected = false;
         }
     }
@@ -363,5 +440,25 @@ public class Connection extends Element implements IConnection {
 
     public void setReadOnly(boolean readOnly) {
         this.readOnly = readOnly;
+    }
+
+    private void updateAllId() {
+        if (source != null) {
+            for (int i = 0; i < source.getOutgoingConnections().size(); i++) {
+                Connection connection = (Connection) source.getOutgoingConnections().get(i);
+                connection.updateName();
+            }
+        }
+    }
+
+    public int getOutputId() {
+        if (source != null && source.getConnectorFromType(lineStyle).isBuiltIn()) {
+            for (int i = 0; i < source.getOutgoingConnections().size(); i++) {
+                if (source.getOutgoingConnections().get(i).equals(this)) {
+                    return i;
+                }
+            }
+        }
+        return -1;
     }
 }

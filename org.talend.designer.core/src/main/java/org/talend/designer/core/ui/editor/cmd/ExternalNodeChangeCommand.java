@@ -88,15 +88,16 @@ public class ExternalNodeChangeCommand extends Command {
 
         connectionsToDelete = new ArrayList<Connection>();
 
-        for (Connection connection : (List<Connection>) node.getOutgoingConnections()) {
+        for (IODataComponent dataComponent : (List<IODataComponent>) inAndOut.getOuputs()) {
+            IConnection connection = dataComponent.getConnection();
             boolean metadataExists = false;
             for (IMetadataTable metadata : newMetaDataList) {
                 if (connection.getMetadataTable().getTableName().equals(metadata.getTableName())) {
                     metadataExists = true;
                 }
             }
-            if (!metadataExists) {
-                connectionsToDelete.add(connection);
+            if (!metadataExists && (connection instanceof Connection)) {
+                connectionsToDelete.add((Connection) connection);
             }
         }
 
@@ -186,6 +187,9 @@ public class ExternalNodeChangeCommand extends Command {
                     cmd.execute(true);
                     metadataChanges.add(cmd);
                 }
+            }
+            if (connection instanceof Connection) {
+                ((Connection) connection).updateName();
             }
         }
 

@@ -82,7 +82,6 @@ public class ConnectionCreateCommand extends Command {
     }
 
     public boolean canExecute() {
-
         if (target != null) {
             if (source.equals(target)) {
                 return false;
@@ -138,7 +137,6 @@ public class ConnectionCreateCommand extends Command {
                     return false;
                 }
             }
-
         }
 
         return true;

@@ -120,6 +120,7 @@ public class DataProcess {
                 dataConnec.setMetadataTable(connection.getMetadataTable());
             }
             dataConnec.setName(connection.getName());
+            dataConnec.setUniqueName(connection.getUniqueName());
             dataConnec.setSource(dataNode);
             dataConnec.setCondition(connection.getCondition());
             INode target = buildfromNode((Node) connection.getTarget());

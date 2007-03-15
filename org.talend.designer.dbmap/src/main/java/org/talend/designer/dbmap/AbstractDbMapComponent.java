@@ -155,7 +155,7 @@ public abstract class AbstractDbMapComponent extends AbstractExternalNode {
             List<IConnection> outgoingConnections = (List<IConnection>) getOutgoingConnections();
             Map<String, IConnection> connectionNameToOutgoingConnection = new HashMap<String, IConnection>();
             for (IConnection connection : outgoingConnections) {
-                connectionNameToOutgoingConnection.put(connection.getName(), connection);
+                connectionNameToOutgoingConnection.put(connection.getUniqueName(), connection);
             }
 
             List<ExternalDbMapTable> outputTables = externalData.getOutputTables();

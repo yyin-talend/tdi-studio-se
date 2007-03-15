@@ -156,4 +156,8 @@ public class ShadowConnection implements IConnection {
         // TODO Auto-generated method stub
 
     }
+
+    public String getUniqueName() {
+        return getName();
+    }
 }

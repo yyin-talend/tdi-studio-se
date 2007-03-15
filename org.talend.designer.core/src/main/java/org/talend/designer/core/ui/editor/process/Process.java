@@ -698,6 +698,10 @@ public class Process extends Element implements IProcess {
                 cType.setOffsetLabelX(connec.getConnectionLabel().getOffset().x); //$NON-NLS-1$
                 cType.setOffsetLabelY(connec.getConnectionLabel().getOffset().y); //$NON-NLS-1$
                 cType.setMetaname(connec.getMetaName());
+                int id = connec.getOutputId();
+                if (id >= 0) {
+                    cType.setOutputId(id);
+                }
                 listParamType = cType.getElementParameter();
                 paramList = connec.getElementParameters();
                 saveElementParameters(fileFact, paramList, listParamType, process);
@@ -1105,7 +1109,7 @@ public class Process extends Element implements IProcess {
             target = (Node) nodesHashtable.get(cType.getTarget());
             Integer lineStyleId = new Integer(cType.getLineStyle());
             connec = new Connection(source, target, EConnectionType.getTypeFromId(lineStyleId), cType.getMetaname(),
-                    cType.getLabel());
+                    cType.getLabel(), cType.getMetaname());
             if ((!source.isActivate()) || (!target.isActivate())) {
                 connec.setActivate(false);
             }
@@ -1117,7 +1121,7 @@ public class Process extends Element implements IProcess {
             nodeConnectorSource.setCurLinkNbOutput(nodeConnectorSource.getCurLinkNbOutput() + 1);
             INodeConnector nodeConnectorTarget = target.getConnectorFromType(connec.getLineStyle());
             nodeConnectorTarget.setCurLinkNbInput(nodeConnectorTarget.getCurLinkNbInput() + 1);
-            connec.getConnectionLabel().setOffset(offset); //$NON-NLS-1$
+            connec.getConnectionLabel().setOffset(offset);
         }
     }
 
@@ -1536,37 +1540,38 @@ public class Process extends Element implements IProcess {
             }
         }
     }
-//    /**
-//     * Check all active nodes and set start if necessary.
-//     */
-//    public void checkStartNodes() {
-//        // check
-//
-//        for (Node node : nodes) {
-//            if ((Boolean) node.getPropertyValue(EParameterName.STARTABLE.getName())) {
-//                if (node.isActivate()) {
-//                    node.setStart(false);
-//                    boolean isActivatedConnection = false;
-//                    for (int j = 0; j < node.getIncomingConnections().size() && !isActivatedConnection; j++) {
-//                        if (((Connection) node.getIncomingConnections().get(j)).isActivate()) {
-//                            isActivatedConnection = true;
-//                        }
-//                    }
-//                    if (!isActivatedConnection) {
-//                        if (!isThereRefLink(node)) {
-//                            node.setStart(true);
-//                        }
-//                    } else {
-//                        if (node.getIncomingConnections().size() == 0) {
-//                            if (!isThereRefLink(node)) {
-//                                node.setStart(true);
-//                            }
-//                        }
-//                    }
-//                }
-//            }
-//        }
-//    }
+
+    // /**
+    // * Check all active nodes and set start if necessary.
+    // */
+    // public void checkStartNodes() {
+    // // check
+    //
+    // for (Node node : nodes) {
+    // if ((Boolean) node.getPropertyValue(EParameterName.STARTABLE.getName())) {
+    // if (node.isActivate()) {
+    // node.setStart(false);
+    // boolean isActivatedConnection = false;
+    // for (int j = 0; j < node.getIncomingConnections().size() && !isActivatedConnection; j++) {
+    // if (((Connection) node.getIncomingConnections().get(j)).isActivate()) {
+    // isActivatedConnection = true;
+    // }
+    // }
+    // if (!isActivatedConnection) {
+    // if (!isThereRefLink(node)) {
+    // node.setStart(true);
+    // }
+    // } else {
+    // if (node.getIncomingConnections().size() == 0) {
+    // if (!isThereRefLink(node)) {
+    // node.setStart(true);
+    // }
+    // }
+    // }
+    // }
+    // }
+    // }
+    // }
 
     /**
      * This function check if in this subprocess there should be a start or not depends on the ref links. If in this

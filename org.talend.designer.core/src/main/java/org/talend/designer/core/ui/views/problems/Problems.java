@@ -113,7 +113,9 @@ public class Problems {
             currentProblems.put(problem.getStatus(), problem);
             problem.setAction(ProblemAction.ADDED);
         } else {
-            oldProblem.setAction(ProblemAction.NONE);
+            if (oldProblem.getAction().equals(ProblemAction.DELETED)) {
+                oldProblem.setAction(ProblemAction.NONE);
+            }
         }
     }
 
