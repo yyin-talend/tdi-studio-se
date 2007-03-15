@@ -65,7 +65,6 @@ String url_<%=cid %> = "jdbc:odbc:"+<%=dbname%>;
 String url_<%=cid %> = "jdbc:odbc:"+<%=dbname%>;
 <%
 }else if(javaDbtype.equals("oracle")){
-String dbSchema = ElementParameterParser.getValue(node, "__SCHEMA_DB__");
 %>
 
 String url_<%=cid %> = "jdbc:oracle:thin:@"+<%=dbhost%>+":"+<%=dbport%>+":"+<%=dbname%>;
@@ -330,50 +329,19 @@ pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement("UPDATE "+<%=tableName%>+" SET 
 	<%		
 	}else if (dataAction.equals("INSERT_OR_UPDATE")){
 	%>
-try{
-	
-	pstmtInsert_<%=cid %> = conn_<%=cid%>.prepareStatement("INSERT INTO "+<%=tableName%>+"(<%=insertColName.toString()%>) VALUES(<%=insertValueStmt.toString()%>)");
 
-}catch(Exception e){
-	
-	System.out.println("Insert operation can't be executed");
-	
-}
+pstmtInsert_<%=cid %> = conn_<%=cid%>.prepareStatement("INSERT INTO "+<%=tableName%>+"(<%=insertColName.toString()%>) VALUES(<%=insertValueStmt.toString()%>)");
 
-try{
-
-	pstmtUpdate_<%=cid %> = conn_<%=cid%>.prepareStatement("UPDATE "+<%=tableName%>+" SET <%=updateSetStmt.toString()%> WHERE <%=updateWhereStmt.toString()%>");
-
-}catch(Exception e){
+pstmtUpdate_<%=cid %> = conn_<%=cid%>.prepareStatement("UPDATE "+<%=tableName%>+" SET <%=updateSetStmt.toString()%> WHERE <%=updateWhereStmt.toString()%>");
 	
-	System.out.println("Update operation can't be executed");
-	
-}
-
-		
 	<%
 	}else if (dataAction.equals("UPDATE_OR_INSERT")){
 	%>
-try{
 
-	pstmtUpdate_<%=cid %> = conn_<%=cid%>.prepareStatement("UPDATE "+<%=tableName%>+" SET <%=updateSetStmt.toString()%> WHERE <%=updateWhereStmt.toString()%>");
+pstmtUpdate_<%=cid %> = conn_<%=cid%>.prepareStatement("UPDATE "+<%=tableName%>+" SET <%=updateSetStmt.toString()%> WHERE <%=updateWhereStmt.toString()%>");
 
-}catch(Exception e){
-
-	System.out.println("Update operation can't be executed");
-	
-}
-
-try{
-
-	pstmtInsert_<%=cid %> = conn_<%=cid%>.prepareStatement("INSERT INTO "+<%=tableName%>+"(<%=insertColName.toString()%>) VALUES(<%=insertValueStmt.toString()%>)");
-	
-}catch(Exception e){
-	
-	System.out.println("Insert operation can't be executed");
-	
-}
-			
+pstmtInsert_<%=cid %> = conn_<%=cid%>.prepareStatement("INSERT INTO "+<%=tableName%>+"(<%=insertColName.toString()%>) VALUES(<%=insertValueStmt.toString()%>)");
+		
 	<%
 			
 	}else if (dataAction.equals("DELETE")){
