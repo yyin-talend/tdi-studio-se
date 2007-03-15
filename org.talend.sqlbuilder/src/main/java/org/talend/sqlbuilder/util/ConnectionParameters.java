@@ -322,7 +322,7 @@ public class ConnectionParameters {
      * @param query the query to set
      */
     public void setQuery(String query) {
-        this.query = trimInvertedComma(query);
+        this.query = TextUtil.removeQuots(query);
     }
 
     /**
@@ -389,8 +389,8 @@ public class ConnectionParameters {
         DataStringConnection urlDataStringConnection = new DataStringConnection();
         int dbIndex = urlDataStringConnection.getIndexOfLabel(dbType);
         urlDataStringConnection.setSelectionIndex(dbIndex);
-        String url = urlDataStringConnection.getString(-1, getHost(), getUserName(), getPassword(), getPort(), getDbName(),
-                getFilename(), getDatasource());
+        String url = urlDataStringConnection.getString(-1, getHost(), getUserName(), getPassword(), getPort(),
+                getDbName(), getFilename(), getDatasource());
         return url;
 
     }

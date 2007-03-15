@@ -398,7 +398,10 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog, IRepo
         String sql = ""; //$NON-NLS-1$
         // sql = editorComposite.getDefaultTabSql();
         sql = editorComposite.getCurrentTabSql();
-
+        if (connParameters.isJavaProject()) {
+            sql = sql.replace("\"", "\\" + "\"");
+        }
+        
         connParameters.setQuery(sql);
         super.okPressed();
     }
@@ -413,7 +416,7 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog, IRepo
     }
 
     /**
-     *  qianbing class global comment. Refreshes Detail Composite according to selection changing of the database
+     * qianbing class global comment. Refreshes Detail Composite according to selection changing of the database
      * structure viewer. <br/>
      * 
      * $Id: talend-code-templates.xml,v 1.3 2006/11/01 05:38:28 nicolas Exp $
@@ -422,7 +425,7 @@ public class SQLBuilderDialog extends Dialog implements ISQLBuilderDialog, IRepo
     public class RefreshDetailCompositeAction extends SelectionProviderAction {
 
         /**
-         *  qianbing RefreshDetailCompositeAction constructor comment.
+         * qianbing RefreshDetailCompositeAction constructor comment.
          * 
          * @param provider
          */
