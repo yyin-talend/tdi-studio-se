@@ -124,6 +124,11 @@
             id="org.talend.repositorys.actions.createroutine"
             level="10"
             name="Create routine"/>
+      <Action
+            class="org.talend.repository.ui.actions.routines.ReadRoutineAction"
+            id="org.talend.repositorys.actions.readroutine"
+            level="12"
+            name="Read routine"/>
        
        <Action
             class="org.talend.repository.ui.actions.ExportJobScriptAction"
@@ -322,10 +327,10 @@
                class="org.talend.repository.ui.actions.importproject.ExportProjectsAsAction"
                icon="icons/export_projects_action.gif"
                id="org.talend.repository.exportProjects"
-               label="Export project"
+               label="%exportProjectsAction.title"
                style="push"
                toolbarPath="Default"
-               tooltip="change this tool tip"/>
+               tooltip="%exportProjectsAction.toolTip"/>
       </actionSet>
    </extension>
    <extension

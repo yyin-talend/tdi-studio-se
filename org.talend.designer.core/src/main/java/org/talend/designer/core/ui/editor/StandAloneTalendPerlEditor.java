@@ -26,10 +26,12 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.impl.AdapterImpl;
 import org.eclipse.emf.common.util.EList;
+import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.epic.perleditor.editors.PerlEditor;
 import org.talend.commons.exception.BusinessException;
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.core.model.properties.ByteArray;
 import org.talend.core.model.properties.PropertiesFactory;
@@ -47,6 +49,8 @@ import org.talend.repository.ui.views.IRepositoryView;
  */
 public class StandAloneTalendPerlEditor extends PerlEditor {
 
+    private RepositoryEditorInput rEditorInput;
+
     /**
      * DOC smallet Comment method "getRepositoryFactory".
      */
@@ -61,7 +65,7 @@ public class StandAloneTalendPerlEditor extends PerlEditor {
 
     @Override
     public boolean isEditable() {
-        return getRepositoryFactory().getStatus(item).isEditable();
+        return !rEditorInput.isReadOnly() && getRepositoryFactory().getStatus(item).isEditable();
     }
 
     public void doSetInput(IEditorInput input) throws CoreException {
@@ -70,15 +74,22 @@ public class StandAloneTalendPerlEditor extends PerlEditor {
         IRepositoryService service = DesignerPlugin.getDefault().getRepositoryService();
         IProxyRepositoryFactory repFactory = service.getProxyRepositoryFactory();
         try {
-            RepositoryEditorInput rEditorInput = (RepositoryEditorInput) input;
+            rEditorInput = (RepositoryEditorInput) input;
             item = (RoutineItem) rEditorInput.getItem();
             item.getProperty().eAdapters().add(dirtyListener);
-            repFactory.lock(item);
+            if (!rEditorInput.isReadOnly()) {
+                repFactory.lock(item);
+            }
         } catch (PersistenceException e) {
-            e.printStackTrace();
+            ExceptionHandler.process(e);
         } catch (BusinessException e) {
             // Nothing to do
         }
+
+        IRepositoryView viewPart = (IRepositoryView) getSite().getPage().findView(IRepositoryView.VIEW_ID);
+        ILabelProvider labelProvider = (ILabelProvider) viewPart.getViewer().getLabelProvider();
+        setTitleImage(labelProvider.getImage(item.getProperty()));
+        setPartName(labelProvider.getText(item.getProperty()));
     }
 
     @Override

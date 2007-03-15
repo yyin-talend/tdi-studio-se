@@ -29,7 +29,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
-import org.talend.repository.ui.wizards.newproject.ImportProjectWizardDialog;
+import org.talend.repository.i18n.Messages;
 import org.talend.repository.ui.wizards.newproject.copyfromeclipse.TalendZipFileExportWizard;
 
 /**
@@ -48,7 +48,7 @@ public class ExportProjectsAsAction extends Action implements IWorkbenchWindowAc
         Shell activeShell = Display.getCurrent().getActiveShell();
         TalendZipFileExportWizard docWizard = new TalendZipFileExportWizard();
         WizardDialog dialog = new WizardDialog(activeShell, docWizard);
-        docWizard.setWindowTitle("Tagada");
+        docWizard.setWindowTitle(Messages.getString("ExportProjectsAsAction.actionTitle"));
         dialog.create();
         dialog.open();
     }

@@ -28,10 +28,9 @@ import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
-import org.talend.commons.exception.ExceptionHandler;
-import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.model.properties.DocumentationItem;
+import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryObject;
 import org.talend.core.ui.images.CoreImageProvider;
@@ -67,7 +66,33 @@ public class RepositoryLabelProvider extends LabelProvider implements IColorProv
         this.view = view;
     }
 
+    public String getText(Property property) {
+        StringBuffer string = new StringBuffer();
+        string.append(property.getLabel());
+        // PTODO SML [FOLDERS++] temp code
+        if (ERepositoryObjectType.getItemType(property.getItem()) != ERepositoryObjectType.FOLDER) {
+            string.append(" " + property.getVersion()); //$NON-NLS-1$
+        }
+
+        IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+        if (factory.getStatus(property.getItem()) == ERepositoryStatus.DELETED) {
+            String oldPath = property.getItem().getState().getPath();
+            string.append(" (" + oldPath + ")"); //$NON-NLS-1$ //$NON-NLS-2$
+        }
+
+        // PTODO SML [FOLDERS++] temp code
+        // if (object.getType() != ERepositoryObjectType.FOLDER) {
+        // string.append(" [" + factory.getStatus(object.getProperty().getItem()) + "]");
+        // }
+
+        return string.toString();
+    }
+
     public String getText(Object obj) {
+        if (obj instanceof Property) {
+            return getText((Property) obj);
+        }
+
         RepositoryNode node = (RepositoryNode) obj;
 
         if (node.getType() == ENodeType.REPOSITORY_ELEMENT || node.getType() == ENodeType.SIMPLE_FOLDER) {
@@ -75,33 +100,41 @@ public class RepositoryLabelProvider extends LabelProvider implements IColorProv
             if (object == null) {
                 return node.getLabel();
             }
-            StringBuffer string = new StringBuffer();
-            string.append(object.getLabel());
-            // PTODO SML [FOLDERS++] temp code
-            if (object.getType() != ERepositoryObjectType.FOLDER) {
-                string.append(" " + object.getVersion()); //$NON-NLS-1$
-            }
 
-            IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
-            try {
-                if (factory.getStatus(object) == ERepositoryStatus.DELETED) {
-                    string.append(" (" + factory.getOldPath(object) + ")"); //$NON-NLS-1$ //$NON-NLS-2$
-                }
-            } catch (PersistenceException e) {
-                ExceptionHandler.process(e);
-            }
-
-            // PTODO SML [FOLDERS++] temp code
-            // if (object.getType() != ERepositoryObjectType.FOLDER) {
-            // string.append(" [" + factory.getStatus(object.getProperty().getItem()) + "]");
-            // }
-            return string.toString();
+            return getText(object.getProperty());
         } else {
             return node.getLabel();
         }
     }
 
+    public Image getImage(Property property) {
+        ERepositoryObjectType itemType = ERepositoryObjectType.getItemType(property.getItem());
+        Image img = CoreImageProvider.getImage(itemType);
+
+        // Manage doc extensions:
+        if (itemType == ERepositoryObjectType.DOCUMENTATION) {
+            DocumentationItem item = (DocumentationItem) property.getItem();
+            img = OverlayImageProvider.getImageWithDocExt(item.getExtension());
+        }
+
+        // Manage master job case:
+        // PTODO SML
+        // if (node.getObject().getType() == ERepositoryObjectType.PROCESS &&
+        // node.getObject().getLabel().equals("Tagada")) {
+        // img = OverlayImageProvider.getImageWithSpecial(img).createImage();
+        // }
+
+        IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
+        ERepositoryStatus repositoryStatus = factory.getStatus(property.getItem());
+
+        return OverlayImageProvider.getImageWithStatus(img, repositoryStatus).createImage();
+    }
+
     public Image getImage(Object obj) {
+        if (obj instanceof Property) {
+            return getImage((Property) obj);
+        }
+
         RepositoryNode node = (RepositoryNode) obj;
 
         switch (node.getType()) {
@@ -116,65 +149,7 @@ public class RepositoryLabelProvider extends LabelProvider implements IColorProv
             if (node.getObject() == null) {
                 return ImageProvider.getImage(node.getIcon());
             }
-            Image img = CoreImageProvider.getImage(node.getObject().getType());
-
-            // Manage doc extensions:
-            if (node.getObject().getType() == ERepositoryObjectType.DOCUMENTATION) {
-                DocumentationItem item = (DocumentationItem) node.getObject().getProperty().getItem();
-                img = OverlayImageProvider.getImageWithDocExt(item.getExtension());
-            }
-
-            // Manage master job case:
-            // if (node.getObject().getType() == ERepositoryObjectType.PROCESS &&
-            // node.getObject().getLabel().equals("Tagada")) {
-            // img = OverlayImageProvider.getImageWithSpecial(img).createImage();
-            // }
-
-            IProxyRepositoryFactory factory = ProxyRepositoryFactory.getInstance();
-            ERepositoryStatus repositoryStatus = factory.getStatus(node.getObject());
-
-            return OverlayImageProvider.getImageWithStatus(img, repositoryStatus).createImage();
-
-            // if (node.getObject() != null && node.getObject().getType() == ERepositoryObjectType.METADATA_CON_TABLE) {
-            //
-            // if (node.getObject() instanceof MetadataTable) {
-            // System.out.println("node instanceof MetadataTable.");
-            // }
-            // MetadataTable metadataTable = (MetadataTable) node.getObject();
-            // String tableType = metadataTable.getType()();
-            // if (tableType!=null && tableType.equalsIgnoreCase("VIEW")) {
-            // return CoreImageProvider.getImage(ERepositoryObjectType.METADATA_CON_VIEW);
-            // }
-            // if (tableType!=null && tableType.equalsIgnoreCase("TABLE")) {
-            // return CoreImageProvider.getImage(ERepositoryObjectType.METADATA_CON_TABLE);
-            // }
-            // }
-
-            // Gets different icons for corresponding table type(view, table, synonym),added by ftang.
-            // If want to display different icons for different table type, uncomment code below.
-            // if (node.getObject() instanceof MetadataTableRepositoryObject) {
-            // String tableType = ((MetadataTableRepositoryObject) node.getObject()).getTableType();
-            // if(tableType == null)
-            // {
-            // return CoreImageProvider.getImage(node.getObject().getType());
-            // }
-            // ERepositoryObjectType tableImage;
-            // if (tableType.equals("VIEW")) {
-            // tableImage = ERepositoryObjectType.METADATA_CON_VIEW;
-            // } else if (tableType.equals("TABLE")) {
-            // tableImage = ERepositoryObjectType.METADATA_CON_TABLE;
-            //
-            // } else if (tableType.equals("SYNONYM")) {
-            // tableImage = ERepositoryObjectType.METADATA_CON_SYNONYM;
-            //
-            // } else {
-            // tableImage = ERepositoryObjectType.METADATA_CON_TABLE;
-            // }
-            // return CoreImageProvider.getImage(tableImage);
-            // }
-            // Ends
-
-            // return BusinessImageProvider.getImage(node.getObject().getType(), repositoryStatus);
+            return getImage(node.getObject().getProperty());
         }
     }
 

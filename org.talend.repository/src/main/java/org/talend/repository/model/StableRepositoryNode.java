@@ -35,8 +35,6 @@ public class StableRepositoryNode extends RepositoryNode {
 
     private String label;
 
-    private int order;
-
     /**
      * DOC smallet StableRepositoryNode constructor comment.
      * 
@@ -44,11 +42,10 @@ public class StableRepositoryNode extends RepositoryNode {
      * @param parent
      * @param type
      */
-    public StableRepositoryNode(RepositoryNode parent, String label, IImage icon, int order) {
+    public StableRepositoryNode(RepositoryNode parent, String label, IImage icon) {
         super(null, parent, ENodeType.STABLE_SYSTEM_FOLDER);
         this.label = label;
         this.icon = icon;
-        this.order = order;
     }
 
     /**
@@ -85,24 +82,6 @@ public class StableRepositoryNode extends RepositoryNode {
      */
     public void setLabel(String label) {
         this.label = label;
-    }
-
-    /**
-     * Getter for order.
-     * 
-     * @return the order
-     */
-    public int getOrder() {
-        return this.order;
-    }
-
-    /**
-     * Sets the order.
-     * 
-     * @param order the order to set
-     */
-    public void setOrder(int order) {
-        this.order = order;
     }
 
 }

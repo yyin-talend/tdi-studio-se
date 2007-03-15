@@ -408,15 +408,6 @@ public class ProxyRepositoryFactory implements IProxyRepositoryFactory {
     /*
      * (non-Javadoc)
      * 
-     * @see org.talend.repository.model.IProxyRepositoryFactory#getOldPath(org.talend.core.model.repository.IRepositoryObject)
-     */
-    public String getOldPath(IRepositoryObject obj) throws PersistenceException {
-        return this.repositoryFactoryFromProvider.getOldPath(obj);
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
      * @see org.talend.repository.model.IRepositoryFactory#moveObject(org.talend.core.model.general.Project,
      * org.talend.core.model.repository.IRepositoryObject)
      */

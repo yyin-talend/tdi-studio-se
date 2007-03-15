@@ -86,7 +86,7 @@ public class EditProcess extends AContextualAction {
                 fileEditorInput.setRepositoryNode(node);
                 page.openEditor(fileEditorInput, MultiPageTalendEditor.ID, true);
             } else {
-                ((MultiPageTalendEditor) editorPart).setReadOnly(fileEditorInput.setReadOnly(false));
+                ((MultiPageTalendEditor) editorPart).setReadOnly(fileEditorInput.setForceReadOnly(false));
                 page.activate(editorPart);
             }
             refresh(obj);

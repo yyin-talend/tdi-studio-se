@@ -85,11 +85,11 @@ public class ProcessEditorInput extends RepositoryEditorInput {
         if (readonly == null) {
             checkReadOnly();
         } else {
-            setReadOnly(readonly);
+            setForceReadOnly(readonly);
         }
     }
 
-    public boolean setReadOnly(boolean readonly) {
+    public boolean setForceReadOnly(boolean readonly) {
         if (readonly) {
             loadedProcess.setReadOnly(readonly);
             return true;

@@ -28,15 +28,17 @@ import org.eclipse.emf.common.notify.impl.AdapterImpl;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.internal.ui.javaeditor.JavaEditor;
+import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
-import org.epic.perleditor.editors.PerlEditor;
 import org.talend.commons.exception.BusinessException;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.core.model.properties.ByteArray;
 import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.properties.RoutineItem;
+import org.talend.core.model.repository.ERepositoryObjectType;
+import org.talend.core.ui.images.CoreImageProvider;
 import org.talend.designer.core.DesignerPlugin;
 import org.talend.repository.editor.RepositoryEditorInput;
 import org.talend.repository.model.IProxyRepositoryFactory;
@@ -48,6 +50,8 @@ import org.talend.repository.ui.views.IRepositoryView;
  * 
  */
 public class StandAloneTalendJavaEditor extends JavaEditor {
+
+    private RepositoryEditorInput rEditorInput;
 
     /**
      * DOC smallet Comment method "getRepositoryFactory".
@@ -63,7 +67,7 @@ public class StandAloneTalendJavaEditor extends JavaEditor {
 
     @Override
     public boolean isEditable() {
-        return getRepositoryFactory().getStatus(item).isEditable();
+        return !rEditorInput.isReadOnly() && getRepositoryFactory().getStatus(item).isEditable();
     }
 
     public void doSetInput(IEditorInput input) throws CoreException {
@@ -72,15 +76,22 @@ public class StandAloneTalendJavaEditor extends JavaEditor {
         IRepositoryService service = DesignerPlugin.getDefault().getRepositoryService();
         IProxyRepositoryFactory repFactory = service.getProxyRepositoryFactory();
         try {
-            RepositoryEditorInput rEditorInput = (RepositoryEditorInput) input;
+            rEditorInput = (RepositoryEditorInput) input;
             item = (RoutineItem) rEditorInput.getItem();
             item.getProperty().eAdapters().add(dirtyListener);
-            repFactory.lock(item);
+            if (!rEditorInput.isReadOnly()) {
+                repFactory.lock(item);
+            }
         } catch (PersistenceException e) {
             e.printStackTrace();
         } catch (BusinessException e) {
             // Nothing to do
         }
+        
+        IRepositoryView viewPart = (IRepositoryView) getSite().getPage().findView(IRepositoryView.VIEW_ID);
+        ILabelProvider labelProvider = (ILabelProvider) viewPart.getViewer().getLabelProvider();
+        setTitleImage(labelProvider.getImage(item.getProperty()));
+        setPartName(labelProvider.getText(item.getProperty()));
     }
 
     @Override
@@ -147,7 +158,9 @@ public class StandAloneTalendJavaEditor extends JavaEditor {
         }
     };
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.eclipse.jdt.internal.ui.javaeditor.JavaEditor#getCorrespondingElement(org.eclipse.jdt.core.IJavaElement)
      */
     @Override
@@ -155,13 +168,14 @@ public class StandAloneTalendJavaEditor extends JavaEditor {
         return null;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.eclipse.jdt.internal.ui.javaeditor.JavaEditor#getElementAt(int)
      */
     @Override
     protected IJavaElement getElementAt(int offset) {
         return null;
     }
-    
-    
+
 }

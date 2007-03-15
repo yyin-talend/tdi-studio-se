@@ -76,7 +76,7 @@ public class EditRoutineAction extends AbstractRoutineAction {
         RoutineItem routineItem = (RoutineItem) node.getObject().getProperty().getItem();
 
         try {
-            openRoutineEditor(routineItem);
+            openRoutineEditor(routineItem, false);
         } catch (PartInitException e) {
             MessageBoxExceptionHandler.process(e);
         } catch (SystemException e) {

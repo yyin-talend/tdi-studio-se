@@ -34,8 +34,8 @@ import org.talend.commons.exception.MessageBoxExceptionHandler;
 import org.talend.commons.exception.SystemException;
 import org.talend.commons.ui.image.ImageProvider;
 import org.talend.core.model.repository.ERepositoryObjectType;
-import org.talend.core.ui.images.OverlayImageProvider;
 import org.talend.core.ui.images.ECoreImage;
+import org.talend.core.ui.images.OverlayImageProvider;
 import org.talend.repository.i18n.Messages;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.model.RepositoryNodeUtilities;
@@ -104,7 +104,7 @@ public class CreateRoutineAction extends AbstractRoutineAction {
             refresh(node);
 
             try {
-                openRoutineEditor(routineWizard.getRoutine());
+                openRoutineEditor(routineWizard.getRoutine(), false);
             } catch (PartInitException e) {
                 MessageBoxExceptionHandler.process(e);
             } catch (SystemException e) {

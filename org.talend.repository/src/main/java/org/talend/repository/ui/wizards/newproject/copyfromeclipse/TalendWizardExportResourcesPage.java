@@ -58,6 +58,8 @@ import org.eclipse.ui.internal.ide.IDEWorkbenchPlugin;
 import org.eclipse.ui.internal.ide.dialogs.ResourceTreeAndListGroup;
 import org.eclipse.ui.model.WorkbenchContentProvider;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
+import org.talend.core.prefs.GeneralParametersProvider;
+import org.talend.core.prefs.GeneralParametersProvider.GeneralParameters;
 
 
 /**
@@ -263,9 +265,8 @@ public abstract class TalendWizardExportResourcesPage extends WizardDataTransfer
 
         //create the input element, which has the root resource
         //as its only child
-        // TODO SML Change perl project name (actually defined in designer plugin !!??)
-        
-        List<String> notExportProjects = Arrays.asList(".Perl", ".JETEmitters");
+        List<String> notExportProjects = Arrays.asList(GeneralParametersProvider
+                .getStrings(GeneralParameters.PROJECTS_EXCLUDED_FROM_EXPORT));
 
         List input = new ArrayList();
         IProject[] projects = ResourcesPlugin.getWorkspace().getRoot().getProjects();

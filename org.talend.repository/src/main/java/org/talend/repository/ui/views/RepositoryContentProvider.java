@@ -165,7 +165,9 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
             convert(factory.getContext(), contextNode, ERepositoryObjectType.CONTEXT, recBinNode);
 
             // 4. Code
-            RepositoryNode codeNode = new StableRepositoryNode(root, Messages.getString("RepositoryContentProvider.repositoryLabel.code"), ECoreImage.CODE_ICON, 3); //$NON-NLS-1$
+            RepositoryNode codeNode = new StableRepositoryNode(root, Messages
+                    .getString("RepositoryContentProvider.repositoryLabel.code"), ECoreImage.CODE_ICON); //$NON-NLS-1$
+            codeNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.ROUTINES);
             nodes.add(codeNode);
 
             // 4.1. Routines
@@ -273,7 +275,8 @@ public class RepositoryContentProvider implements IStructuredContentProvider, IT
 
             RepositoryNode folder;
             if (container.getLabel().equals(RepositoryConstants.SYSTEM_DIRECTORY)) {
-                folder = new StableRepositoryNode(parent, Messages.getString("RepositoryContentProvider.repositoryLabel.system"), ECoreImage.FOLDER_CLOSE_ICON, 0); //$NON-NLS-1$
+                folder = new StableRepositoryNode(parent,
+                        Messages.getString("RepositoryContentProvider.repositoryLabel.system"), ECoreImage.FOLDER_CLOSE_ICON); //$NON-NLS-1$
             } else {
                 folder = new RepositoryNode(oFolder, parent, ENodeType.SIMPLE_FOLDER);
             }
