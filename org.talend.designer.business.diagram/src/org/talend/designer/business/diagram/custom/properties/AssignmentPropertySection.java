@@ -93,7 +93,7 @@ public class AssignmentPropertySection extends AbstractModelerPropertySection {
 
         tableViewer = new TableViewer(composite, SWT.BORDER | SWT.MULTI | SWT.FULL_SELECTION);
         tableViewer.setContentProvider(new AdapterFactoryContentProvider(adapterFactory));
-        tableViewer.setLabelProvider(new AdapterFactoryLabelProvider(adapterFactory));
+        tableViewer.setLabelProvider(new RepositoryFactoryProxyLabelProvider(adapterFactory));
 
         Table table = tableViewer.getTable();
         TableLayout tableLayout = new TableLayout();
