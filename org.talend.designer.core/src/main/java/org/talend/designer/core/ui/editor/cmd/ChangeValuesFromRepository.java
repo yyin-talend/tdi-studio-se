@@ -132,6 +132,8 @@ public class ChangeValuesFromRepository extends Command {
         }
         if (propertyName.equals(EParameterName.PROPERTY_TYPE.getName())) {
             elem.setPropertyValue(EParameterName.PROPERTY_TYPE.getName(), value);
+            elem.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), value);
+            elem.setPropertyValue(EParameterName.QUERYSTORE_TYPE.getName(), value);
         } else {
             oldMetadata = (String) elem.getPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE.getName());
             elem.setPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE.getName(), value);

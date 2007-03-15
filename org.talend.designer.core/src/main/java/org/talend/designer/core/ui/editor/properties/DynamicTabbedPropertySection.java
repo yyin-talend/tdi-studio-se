@@ -97,7 +97,7 @@ import org.talend.repository.model.ERepositoryStatus;
 import org.talend.repository.model.IProxyRepositoryFactory;
 
 /**
- * DOC yzhang class global comment. Detailled comment <br/>
+ *  yzhang class global comment. Detailled comment <br/>
  * 
  * $Id$
  * 
@@ -137,7 +137,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
     private static CommandStackEventListener commandStackEventListener;
 
     /**
-     * DOC ftang Comment method "showSchemaRepositoryList".
+     *  ftang Comment method "showSchemaRepositoryList".
      * 
      * @param show boolean
      */
@@ -151,7 +151,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
     }
 
     /**
-     * DOC ftang Comment method "showQueryStoreRepositoryList".
+     *  ftang Comment method "showQueryStoreRepositoryList".
      * 
      * @param show
      */
@@ -165,7 +165,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
     }
 
     /**
-     * DOC ftang Comment method "showPropertyRepositoryList".
+     *  ftang Comment method "showPropertyRepositoryList".
      * 
      * @param show boolean
      */
@@ -179,7 +179,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
     }
 
     /**
-     * DOC ftang Comment method "updateProcessList".
+     *  ftang Comment method "updateProcessList".
      */
     private void updateProcessList() {
         List<String> processNameList = new ArrayList<String>();
@@ -232,7 +232,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
     }
 
     /**
-     * DOC ftang Comment method "updateContextList".
+     *  ftang Comment method "updateContextList".
      */
     private void updateContextList() {
         List<String> contextNameList = new ArrayList<String>();
@@ -304,8 +304,12 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
         return aliasName;
     }
 
+    private Map<String, List<String>> tablesMap = new HashMap<String, List<String>>();
+
+    private Map<String, List<String>> queriesMap = new HashMap<String, List<String>>();
+    
     /**
-     * DOC ftang Comment method "updateRepositoryList".
+     *  ftang Comment method "updateRepositoryList".
      */
     @SuppressWarnings("unchecked")//$NON-NLS-1$
     public void updateRepositoryList() {
@@ -326,6 +330,9 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
             repositoryTableMap.clear();
             repositoryQueryStoreMap.clear();
             repositoryConnectionItemMap.clear();
+            
+            tablesMap.clear();
+            queriesMap.clear();
             List<String> tableNamesList = new ArrayList<String>();
             List<String> tableValuesList = new ArrayList<String>();
             List<String> queryStoreNameList = new ArrayList<String>();
@@ -349,6 +356,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                         }
                     }
                 }
+                tablesMap.put(connectionItem.getProperty().getId(), tableValuesList);
                 if (connection instanceof DatabaseConnection && !connection.isReadOnly()) {
                     DatabaseConnection dbConnection = (DatabaseConnection) connection;
                     List<QueriesConnection> qcs = dbConnection.getQueries();
@@ -365,20 +373,23 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                         }
                     }
                 }
+                queriesMap.put(connectionItem.getProperty().getId(), queryStoreValuesList);
             }
             repositoryTableNameList = (String[]) tableNamesList.toArray(new String[0]);
             repositoryTableValueList = (String[]) tableValuesList.toArray(new String[0]);
             repositoryQueryNameList = (String[]) queryStoreNameList.toArray(new String[0]);
             repositoryQueryValueList = (String[]) queryStoreValuesList.toArray(new String[0]);
         }
+        initMaps();
         for (int i = 0; i < elem.getElementParameters().size(); i++) {
             IElementParameter param = elem.getElementParameters().get(i);
             if (param.getName().equals(EParameterName.REPOSITORY_SCHEMA_TYPE.getName())) {
                 param.setListItemsDisplayName(repositoryTableNameList);
                 param.setListItemsValue(repositoryTableValueList);
                 if (!repositoryTableMap.keySet().contains(param.getValue())) {
-                    if (repositoryTableNameList.length > 0) {
-                        elem.setPropertyValue(EParameterName.REPOSITORY_SCHEMA_TYPE.getName(), repositoryTableValueList[0]);
+                    if (repositoryTableNameList.length > 0 && repositoryConnectionValueList.length > 0) {
+                        elem.setPropertyValue(EParameterName.REPOSITORY_SCHEMA_TYPE.getName(), getDefaultRepository(true,
+                                repositoryConnectionValueList[0]));
                     }
                 }
             }
@@ -386,8 +397,9 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                 param.setListItemsDisplayName(repositoryQueryNameList);
                 param.setListItemsValue(repositoryQueryValueList);
                 if (!repositoryQueryStoreMap.keySet().contains(param.getValue())) {
-                    if (repositoryQueryNameList.length > 0) {
-                        elem.setPropertyValue(EParameterName.REPOSITORY_QUERYSTORE_TYPE.getName(), repositoryQueryValueList[0]);
+                    if (repositoryQueryNameList.length > 0 && repositoryConnectionValueList.length > 0) {
+                        elem.setPropertyValue(EParameterName.REPOSITORY_QUERYSTORE_TYPE.getName(), getDefaultRepository(false,
+                                repositoryConnectionValueList[0]));
                     }
                 }
             }
@@ -431,6 +443,17 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                             }
                         }
                     }
+                    if (!repositoryPropType.equals(elem.getPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE.getName()))) {
+                        if (repositoryQueryNameList.length > 0) {
+                            elem.setPropertyValue(EParameterName.REPOSITORY_QUERYSTORE_TYPE.getName(), getDefaultRepository(
+                                    false, null));
+                        }
+                        if (repositoryTableNameList.length > 0) {
+                            elem.setPropertyValue(EParameterName.REPOSITORY_SCHEMA_TYPE.getName(), getDefaultRepository(true,
+                                    null));
+                        }
+                    }
+                    
                     repositoryConnectionNameList = (String[]) connectionNamesList.toArray(new String[0]);
                     repositoryConnectionValueList = (String[]) connectionValuesList.toArray(new String[0]);
                 } else {
@@ -455,10 +478,11 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
                 }
             }
         }
+        updateQuery();
     }
 
     /**
-     * DOC ftang Comment method "getElement".
+     *  ftang Comment method "getElement".
      * 
      * @return an instance of Element
      */
@@ -584,7 +608,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
     }
 
     /*
-     * (non-Javadoc)
+     * (non-Java)
      * 
      * @see org.eclipse.ui.views.properties.tabbed.AbstractPropertySection#
      * createControls(org.eclipse.swt.widgets.Composite, org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage)
@@ -643,7 +667,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
 
     // private ISelection lastSelection;
     /*
-     * @Override (non-Javadoc)
+     * @Override (non-Java)
      * 
      * @see org.eclipse.ui.views.properties.tabbed.AbstractPropertySection# setInput(org.eclipse.ui.IWorkbenchPart,
      * org.eclipse.jface.viewers.ISelection)
@@ -717,7 +741,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
     }
 
     /**
-     * DOC yzhang Comment method "setCurRowSize" Sets the curRowSize.
+     *  yzhang Comment method "setCurRowSize" Sets the curRowSize.
      * 
      * @param curRowSize int
      */
@@ -726,19 +750,19 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
     }
 
     /**
-     * DOC dev Comment method "getRepositoryTableMap".
+     *  dev Comment method "getRepositoryTableMap".
      * 
      * @return Map
      */
     public Map<String, IMetadataTable> getRepositoryTableMap() {
-        if( this.repositoryTableMap.keySet().isEmpty()){
+        if (this.repositoryTableMap.keySet().isEmpty()) {
             updateRepositoryList();
         }
         return this.repositoryTableMap;
     }
 
     /**
-     * DOC dev Comment method "getRepositoryConnectionItemMap".
+     *  dev Comment method "getRepositoryConnectionItemMap".
      * 
      * @return Map
      */
@@ -810,7 +834,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
     }
 
     /**
-     * DOC yzhang Comment method "updateColumnList".
+     *  yzhang Comment method "updateColumnList".
      */
     @SuppressWarnings("unchecked")//$NON-NLS-1$
     public void updateColumnList(List<ColumnNameChanged> columnsChanged) {
@@ -963,7 +987,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
     }
 
     /**
-     * DOC yzhang Comment method "getColumnList".
+     *  yzhang Comment method "getColumnList".
      * 
      * @return
      */
@@ -982,7 +1006,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
     }
 
     /**
-     * DOC yzhang Comment method "getPrevColumnList".
+     *  yzhang Comment method "getPrevColumnList".
      * 
      * @return
      */
@@ -1012,7 +1036,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
     }
 
     /**
-     * DOC yzhang Comment method "createNewLine".
+     *  yzhang Comment method "createNewLine".
      * 
      * @param param
      * @return
@@ -1068,7 +1092,7 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
     }
 
     /**
-     * DOC amaumont Comment method "registerListenerForRefreshingSection".
+     *  amaumont Comment method "registerListenerForRefreshingSection".
      */
     private void registerListenerForRefreshingSection() {
         if (commandStackEventListener == null) {
@@ -1093,6 +1117,78 @@ public class DynamicTabbedPropertySection extends AbstractPropertySection {
 
             };
             getCommandStack().addCommandStackEventListener(DynamicTabbedPropertySection.commandStackEventListener);
+        }
+    }
+    @SuppressWarnings("unchecked")
+    private void updateQuery() {
+        Object propertyValue = elem.getPropertyValue(EParameterName.REPOSITORY_QUERYSTORE_TYPE.getName());
+        if (propertyValue == null || !(propertyValue instanceof String) || "".equals(propertyValue)) {
+            return;
+        }
+        if (repositoryQueryStoreMap.containsKey(propertyValue)) {
+            Query query = repositoryQueryStoreMap.get(propertyValue);
+            for (IElementParameter param : (List<IElementParameter>) elem.getElementParameters()) {
+                if (param.getField() == EParameterFieldType.MEMO_SQL) {
+                    elem.setPropertyValue(param.getName(), convertSQL(query.getValue()));
+                }
+            }
+        }
+    }
+    private String convertSQL(String sql) {
+        if (sql.startsWith("'")) { //$NON-NLS-1$
+            return sql;
+        }
+        return "'" + sql + "'"; //$NON-NLS-1$ //$NON-NLS-2$
+    }
+    private String repositoryPropType = "";
+
+    /**
+     * qzhang Comment method "getDefaultRepository".
+     * 
+     * @return
+     */
+    private String getDefaultRepository(boolean istable, String defaultPropertyValue) {
+        Object propertyValue = elem.getPropertyValue(EParameterName.REPOSITORY_PROPERTY_TYPE.getName());
+        if ((propertyValue == null || !(propertyValue instanceof String)) && defaultPropertyValue != null) {
+            propertyValue = defaultPropertyValue;
+        }
+        if (propertyValue == null || propertyValue.equals("")) {
+            return "";
+        }
+        repositoryPropType = (String) propertyValue;
+        if (istable) {
+            if (tablesMap.get(propertyValue).size() > 0) {
+                return tablesMap.get(propertyValue).get(0);
+            }
+        } else {
+            if (queriesMap.get(propertyValue).size() > 0) {
+                return queriesMap.get(propertyValue).get(0);
+            }
+        }
+        return "";
+    }
+    /**
+     * qzhang Comment method "initMaps".
+     */
+    private void initMaps() {
+        for (String key : tablesMap.keySet()) {
+            List<String> tablesName = new ArrayList<String>();
+            List<String> queriesName = new ArrayList<String>();
+            queriesName.addAll(queriesMap.get(key));
+            tablesName.addAll(tablesMap.get(key));
+            for (String string : tablesMap.get(key)) {
+                if (!string.startsWith(key)) {
+                    tablesName.remove(string);
+                }
+            }
+
+            for (String string : queriesMap.get(key)) {
+                if (!string.startsWith(key)) {
+                    queriesName.remove(string);
+                }
+            }
+            tablesMap.put(key, tablesName);
+            queriesMap.put(key, queriesName);
         }
     }
 }
