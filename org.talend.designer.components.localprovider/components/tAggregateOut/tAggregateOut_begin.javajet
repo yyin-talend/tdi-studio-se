@@ -9,7 +9,6 @@ imports="
     org.talend.core.model.process.ElementParameterParser
     org.talend.designer.codegen.config.CodeGeneratorArgument
     org.talend.core.model.metadata.types.JavaTypesManager
-	org.talend.core.model.metadata.types.JavaType
     java.util.List
     java.util.Map
 "
@@ -20,195 +19,194 @@ class="AggregateOutBegin"
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
 String cid = node.getUniqueName();
-List<IMetadataTable> metadatas = node.getMetadataList();
-if ((metadatas!=null)&&(metadatas.size()>0)) {
-    IMetadataTable metadata = metadatas.get(0);
-    if (metadata!=null) {
-        List<Map<String, String>> operations = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__OPERATIONS__");
-        List<Map<String, String>> groupbys = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__GROUPBYS__");
-%>
+List<Map<String, String>> operations = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__OPERATIONS__");
+List<Map<String, String>> groupbys = (List<Map<String,String>>)ElementParameterParser.getObjectValue(node, "__GROUPBYS__");
+int sizeOperations = operations.size();
 
-
-<%//begin
-//
-		int operationSize = operations.size();
-		if(operationSize>0){
+//pretreatment opreations before aggregating
+List<String[]> funinOperations = new java.util.ArrayList<String[]>();
+next:
+for(int i=0; i<sizeOperations; i++){
+	Map<String, String> operation = operations.get(i);
+	String fun = operation.get("FUNCTION");
+	String in = operation.get("INPUT_COLUMN");
+	if(fun.equals("sum") || fun.equals("count")){
+		for(int j=0; j<sizeOperations; j++){
+			Map<String, String> tOperation = operations.get(j);
+			if(tOperation.get("FUNCTION").equals("avg") && tOperation.get("INPUT_COLUMN").equals(in)){
+				continue next;
+			}
+		}
+	}
+	for(int j = 0; j < i; j++){
+		Map<String, String> tOperation = operations.get(j);
+		if(tOperation.get("FUNCTION").equals(fun) && tOperation.get("INPUT_COLUMN").equals(in)){
+			continue next;
+		}
+	}
+	if(fun.equals("avg")){
+		String[] funin = new String[2];
+		funin[0]="sum";
+		funin[1]=in;
+		funinOperations.add(funin);
+		funin=new String[2];
+		funin[0]="count";
+		funin[1]=in;
+		funinOperations.add(funin);
+	}else{
+		String[] funin = new String[2];
+		funin[0]=fun;
+		funin[1]=in;
+		funinOperations.add(funin);
+	}
+}
+int sizeOps = funinOperations.size();
+if(sizeOps>0){
 //
 //end%>
 
 class OperationStruct<%=cid %>{
 
 <%//begin
-//			
-        	for (int i = 0; i<operationSize; i++) {
-            	Map<String, String> operation = operations.get(i);
-            	String function = operation.get("FUNCTION");
-            	String in = operation.get("INPUT_COLUMN");
-            	String out = operation.get("OUTPUT_COLUMN");
-				
-   				if(function.equals("avg")){
+//
+	for (int i = 0; i<sizeOps; i++) {
+		String[] funin = funinOperations.get(i);
+		if(funin[0].equals("sum")){
 //
 //end%>
-	float <%=in %>_sum;
-	int <%=in %>_count;
+	float <%=funin[1] %>_sum;
 <%//start
 //
-   				}else if(function.equals("sum")){
-   					boolean hasavg = false;
-   					for(int j=0;j<operationSize && j != i; j++) {
-            			Map<String, String> operation1 = operations.get(j);
-            			if(operation1.get("FUNCTION").equals("avg") && operation1.get("INPUT_COLUMN").equals(in)){
-            				hasavg = true;
-            				break;
-            			}
-            		}
-            		if(!hasavg){
+   		}else if(funin[0].equals("count")){
 //
 //end%>
-	float <%=in %>_sum;
+	int <%=funin[1] %>_count;
 <%//start
 //
-					}
-   				}else if(function.equals("count")){
-   					boolean hasavg = false;
-   					for(int j=0;j<operationSize && j != i; j++) {
-            			Map<String, String> operation1 = operations.get(j);
-            			if(operation1.get("FUNCTION").equals("avg") && operation1.get("INPUT_COLUMN").equals(in)){
-            				hasavg = true;
-            				break;
-            			}
-            		}
-            		if(!hasavg){
+   		}else{
+			List<? extends IConnection> incomingConnections = node.getIncomingConnections();
+        	if (incomingConnections != null && !incomingConnections.isEmpty()) {
+        		for (IConnection conn : incomingConnections) {
+					if ((conn.getLineStyle().equals(EConnectionType.FLOW_MAIN)) || (conn.getLineStyle().equals(EConnectionType.FLOW_REF))) {
+        				IMetadataTable inMetadata = conn.getMetadataTable();
+       					for (IMetadataColumn column: inMetadata.getListColumns()) {
+            				if(column.getLabel().equals(funin[1])){
 //
 //end%>
-	int <%=in %>_count;
+	<%=JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable()) %> <%=funin[1] %>_<%=funin[0] %>;
 <%//start
 //
-					}
-   				}else{
-					List<? extends IConnection> incomingConnections = node.getIncomingConnections();
-        			if (incomingConnections != null && !incomingConnections.isEmpty()) {
-        				loop:
-        				for (IConnection conn : incomingConnections) {
-							if (conn.getLineStyle().equals(EConnectionType.FLOW_MAIN)) {
-            					IMetadataTable inMetadata = conn.getMetadataTable();
-            					for (IMetadataColumn column: inMetadata.getListColumns()) {
-            						if(column.getLabel().equals(in)){
-            							String type = JavaTypesManager.getJavaTypeFromId(column.getTalendType()).getNullableClass().getSimpleName();
-//
-//end%>
-	<%=type %> <%=in %>_<%=function %>;
-<%//start
-//
-            							//break loop;
-            						}
-            					}
+								break;
             				}
-            			}
-        			}
-   				}
-   			}
+						}
+					}
+				}
+  			}
+		}
+	}
  //
  //end%>
 }
 
 <%//start
 //
-		}
-		int groupbySize = groupbys.size();
-		if(groupbySize > 0){
-			for(int ii = 0; ii < groupbySize; ii++){
-			String input = groupbys.get(ii).get("INPUT_COLUMN");
-			for(int i = ii; i < groupbySize; i++){
-				if(i == groupbySize - 1){
-					if(operationSize == 0){					
+}
+int groupbySize = groupbys.size();
+for(int ii = 0; ii < groupbySize; ii++){
+	String input = groupbys.get(ii).get("INPUT_COLUMN");
+	for(int i = ii; i < groupbySize; i++){
+		if(i == groupbySize - 1){
+			if(sizeOps == 0){
 //
 //end
 %>java.util.Set<String <%
 //start
 //
-					}else{
+			}else{
 //
 //end
 %>java.util.Map<String, OperationStruct<%=cid %><%
 //start
 //
-					}
-				}else{
+			}
+		}else{
 //
 //end
 %>java.util.Map<String,<%
 //start
 //
-				}
-			}
-			for(int i = ii; i < groupbySize; i++){
+		}
+	}
+	for(int i = ii; i < groupbySize; i++){
 //
 //end
 %>><%
 //start
 //
-			}
+	}
 //
 //end
-%> hash_<%=input %>_<%=cid %> = <%if(ii != 0){%>null;
-<%}else{%>new <%
+%> hash_<%=input %>_<%=cid %> = <%
+	if(ii != 0){
+%>null;
+<%	}else{
+%>new <%
 //start
 //
-			for(int i = 0; i < groupbySize; i++){
-				if(i == groupbySize - 1){
-					if(operationSize == 0){
+		for(int i = 0; i < groupbySize; i++){
+			if(i == groupbySize - 1){
+				if(sizeOps == 0){
 //
 //end
-%>java.util.<%if(i == 0){%>Hash<%}%>Set<String<%
-//start
-//
-					}else{
-//
-//end
-%>java.util.<%if(i == 0){%>Hash<%}%>Map<String, OperationStruct<%=cid %><%
-//start
-//
+%>java.util.<%
+					if(i == 0){
+%>Hash<%
 					}
+%>Set<String<%
+//start
+//
 				}else{
 //
 //end
-%>java.util.<%if(i == 0){%>Hash<%}%>Map<String,<%
+%>java.util.<%
+					if(i == 0){
+%>Hash<%
+					}
+%>Map<String, OperationStruct<%=cid %><%
 //start
 //
 				}
+			}else{
+//
+//end
+%>java.util.<%
+				if(i == 0){
+%>Hash<%
+				}
+%>Map<String,<%
+//start
+//
 			}
-			for(int i = 0; i < groupbySize; i++){
+		}
+		for(int i = 0; i < groupbySize; i++){
 //
 //end
 %>><%
 //start
 //
-			}
+		}
 //
 //end
 %>();
-<%}%>
 <%
-//start
-//
-		}
-		}
-		if(operationSize>0){
+	}
+}
+if(sizeOps>0){
 //
 //end%>
 OperationStruct<%=cid %> operation_result_<%=cid %> = null;
 <%//start
 //
-		}
-//
-//end%>
-
-
-
-<%//start
-//
-	}
 }
 //
 //end%>

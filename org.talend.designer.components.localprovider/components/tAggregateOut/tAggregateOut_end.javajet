@@ -161,7 +161,7 @@ float <%=outOperation %>_avg_temp = 0;
 if(operation_result_<%=cid %>.<%=inOperation %>_count > 0){
 	<%=outOperation %>_avg_temp = operation_result_<%=cid %>.<%=inOperation %>_sum / operation_result_<%=cid %>.<%=inOperation %>_count ;
 }
-<%if(sameType){%>aggregated_row_<%=cid %>.<%=outOperation %> = <%=outOperation %>_avg_temp;<%}else{%>String temps<%=outOperation %> = String.valueOf(<%if(javaType == JavaTypesManager.INTEGER || javaType == JavaTypesManager.LONG){%>(<%=typeToGenerate %>)<%}%><%=outOperation %>_avg_temp);<%}%>
+<%if(sameType){%>aggregated_row_<%=cid %>.<%=outOperation %> = <%=outOperation %>_avg_temp;<%}else{%>String temps<%=outOperation %> = String.valueOf(<%if(javaType == JavaTypesManager.INTEGER || javaType == JavaTypesManager.LONG || javaType == JavaTypesManager.BYTE || javaType == JavaTypesManager.SHORT || javaType == JavaTypesManager.CHARACTER){%>(<%=typeToGenerate %>)<%}%><%=outOperation %>_avg_temp);<%}%>
 <%
             			}else{
 							if(sameType){
@@ -170,7 +170,7 @@ aggregated_row_<%=cid %>.<%=outOperation %> = operation_result_<%=cid %>.<%=inOp
 <%
 							}else{
 %>
-String temps<%=outOperation %> = String.valueOf(<%if(function.equals("sum")&&(javaType == JavaTypesManager.INTEGER || javaType == JavaTypesManager.LONG)){%>(<%=typeToGenerate %>)<%}%>operation_result_<%=cid %>.<%=inOperation %>_<%=function %>);//??
+String temps<%=outOperation %> = String.valueOf(<%if(function.equals("sum")&&(javaType == JavaTypesManager.INTEGER || javaType == JavaTypesManager.LONG || javaType == JavaTypesManager.BYTE || javaType == JavaTypesManager.SHORT || javaType == JavaTypesManager.CHARACTER)){%>(<%=typeToGenerate %>)<%}%>operation_result_<%=cid %>.<%=inOperation %>_<%=function %>);//??
 <%
 							}
 %>
