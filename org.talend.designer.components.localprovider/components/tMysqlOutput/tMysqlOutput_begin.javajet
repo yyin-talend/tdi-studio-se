@@ -301,50 +301,19 @@ pstmt_<%=cid %> = conn_<%=cid%>.prepareStatement("UPDATE "+<%=tableName%>+" SET 
 	<%		
 	}else if (dataAction.equals("INSERT_OR_UPDATE")){
 	%>
-try{
-	
-	pstmtInsert_<%=cid %> = conn_<%=cid%>.prepareStatement("INSERT INTO "+<%=tableName%>+"(<%=insertColName.toString()%>) VALUES(<%=insertValueStmt.toString()%>)");
 
-}catch(Exception e){
-	
-	System.out.println("Insert operation can't be executed");
-	
-}
+pstmtInsert_<%=cid %> = conn_<%=cid%>.prepareStatement("INSERT INTO "+<%=tableName%>+"(<%=insertColName.toString()%>) VALUES(<%=insertValueStmt.toString()%>)");
 
-try{
-
-	pstmtUpdate_<%=cid %> = conn_<%=cid%>.prepareStatement("UPDATE "+<%=tableName%>+" SET <%=updateSetStmt.toString()%> WHERE <%=updateWhereStmt.toString()%>");
-
-}catch(Exception e){
-	
-	System.out.println("Update operation can't be executed");
-	
-}
-
+pstmtUpdate_<%=cid %> = conn_<%=cid%>.prepareStatement("UPDATE "+<%=tableName%>+" SET <%=updateSetStmt.toString()%> WHERE <%=updateWhereStmt.toString()%>");
 		
 	<%
 	}else if (dataAction.equals("UPDATE_OR_INSERT")){
 	%>
-try{
+pstmtUpdate_<%=cid %> = conn_<%=cid%>.prepareStatement("UPDATE "+<%=tableName%>+" SET <%=updateSetStmt.toString()%> WHERE <%=updateWhereStmt.toString()%>");
 
-	pstmtUpdate_<%=cid %> = conn_<%=cid%>.prepareStatement("UPDATE "+<%=tableName%>+" SET <%=updateSetStmt.toString()%> WHERE <%=updateWhereStmt.toString()%>");
 
-}catch(Exception e){
-
-	System.out.println("Update operation can't be executed");
-	
-}
-
-try{
-
-	pstmtInsert_<%=cid %> = conn_<%=cid%>.prepareStatement("INSERT INTO "+<%=tableName%>+"(<%=insertColName.toString()%>) VALUES(<%=insertValueStmt.toString()%>)");
-	
-}catch(Exception e){
-	
-	System.out.println("Insert operation can't be executed");
-	
-}
-			
+pstmtInsert_<%=cid %> = conn_<%=cid%>.prepareStatement("INSERT INTO "+<%=tableName%>+"(<%=insertColName.toString()%>) VALUES(<%=insertValueStmt.toString()%>)");
+				
 	<%
 			
 	}else if (dataAction.equals("DELETE")){

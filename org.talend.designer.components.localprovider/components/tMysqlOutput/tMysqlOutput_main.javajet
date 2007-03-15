@@ -203,7 +203,7 @@ if(incomingConnName != null && columnList != null){
 			if(typeToGenerate.equals("Char")){
 			%>
 		
-pstmt_<%=cid %>.setShort(<%=counter%>,(short)<%=incomingConnName%>.<%=column.getName()%>);
+pstmt_<%=cid %>.setString(<%=counter%>,String.valueOf(<%=incomingConnName%>.<%=column.getName()%>));
         	<%			
 			}else if(typeToGenerate.equals("Date")){
 			%>
@@ -238,7 +238,7 @@ nb_line_inserted_<%=cid%>++;
 			if(!column.getColumn().isKey()){
 				if(typeToGenerate.equals("Char")){
 				%>
-pstmt_<%=cid %>.setShort(<%=counterCol%>,(short)<%=incomingConnName%>.<%=column.getName()%>);
+pstmt_<%=cid %>.setString(<%=counterCol%>,String.valueOf(<%=incomingConnName%>.<%=column.getName()%>));
         		<%
 				}else if(typeToGenerate.equals("Date")){
 				%>
@@ -266,7 +266,7 @@ pstmt_<%=cid %>.set<%=typeToGenerate%>(<%=counterCol%>,<%=incomingConnName%>.<%=
 			if(column.getColumn().isKey()){
 				if(typeToGenerate.equals("Char")){
 				%>
-pstmt_<%=cid %>.setShort(<%=counterCol%>,(short)<%=incomingConnName%>.<%=column.getName()%>);
+pstmt_<%=cid %>.setString(<%=counterCol%>,String.valueOf(<%=incomingConnName%>.<%=column.getName()%>));
         		<%
 				}else if(typeToGenerate.equals("Date")){
 				%>
@@ -304,7 +304,7 @@ if(!executeUpdate_<%=cid%>){
 			if(typeToGenerate.equals("Char")){
 			%>
 		
-	pstmtInsert_<%=cid %>.setShort(<%=counterInsert%>,(short)<%=incomingConnName%>.<%=columnInsert.getName()%>);
+	pstmtInsert_<%=cid %>.setString(<%=counterInsert%>,String.valueOf(<%=incomingConnName%>.<%=columnInsert.getName()%>));
     	    <%
 			}else if(typeToGenerate.equals("Date")){
 			%>
@@ -328,8 +328,10 @@ if(!executeUpdate_<%=cid%>){
 		nb_line_inserted_<%=cid%>++;
 	
 	}catch(Exception e){
-	
+		
 		executeUpdate_<%=cid%> = true;
+		
+		throw e;
 	
 	}
 	
@@ -350,7 +352,7 @@ if(!executeUpdate_<%=cid%>){
 			if(!column.getColumn().isKey()){
 				if(typeToGenerate.equals("Char")){
 				%>
-	pstmtUpdate_<%=cid %>.setShort(<%=counterCol%>,(short)<%=incomingConnName%>.<%=column.getName()%>);
+	pstmtUpdate_<%=cid %>.setString(<%=counterCol%>,String.valueOf(<%=incomingConnName%>.<%=column.getName()%>));
         		<%
 				}else if(typeToGenerate.equals("Date")){
 				%>
@@ -378,7 +380,7 @@ if(!executeUpdate_<%=cid%>){
 			if(column.getColumn().isKey()){
 				if(typeToGenerate.equals("Char")){
 				%>
-	pstmtUpdate_<%=cid %>.setShort(<%=counterCol%>,(short)<%=incomingConnName%>.<%=column.getName()%>);
+	pstmtUpdate_<%=cid %>.setString(<%=counterCol%>,String.valueOf(<%=incomingConnName%>.<%=column.getName()%>));
         		<%				
 				}else if(typeToGenerate.equals("Date")){
 				%>
@@ -420,7 +422,7 @@ if(!executeInsert_<%=cid%>){
 			if(!columnUpdate.getColumn().isKey()){
 				if(typeToGenerate.equals("Char")){
 				%>
-	pstmtUpdate_<%=cid %>.setShort(<%=counterColUpdate%>,(short)<%=incomingConnName%>.<%=columnUpdate.getName()%>);
+	pstmtUpdate_<%=cid %>.setString(<%=counterColUpdate%>,String.valueOf(<%=incomingConnName%>.<%=columnUpdate.getName()%>));
         		<%					
 				}else if(typeToGenerate.equals("Date")){
 				%>
@@ -448,7 +450,7 @@ if(!executeInsert_<%=cid%>){
 			if(columnUpdate.getColumn().isKey()){
 				if(typeToGenerate.equals("Char")){
 				%>
-	pstmtUpdate_<%=cid %>.setShort(<%=counterColUpdate%>,(short)<%=incomingConnName%>.<%=columnUpdate.getName()%>);
+	pstmtUpdate_<%=cid %>.setString(<%=counterColUpdate%>,String.valueOf(<%=incomingConnName%>.<%=columnUpdate.getName()%>));
         		<%				
 				}else if(typeToGenerate.equals("Date")){
 				%>
@@ -472,6 +474,8 @@ if(!executeInsert_<%=cid%>){
 	}catch(Exception e){
 		
 		executeInsert_<%=cid%> =true;
+		
+		throw e;
 	}
 	<%
 	
@@ -492,7 +496,7 @@ if(!executeInsert_<%=cid%>){
 			if(typeToGenerate.equals("Char")){
 			%>
 		
-	pstmtInsert_<%=cid %>.setShort(<%=counter%>,(short)<%=incomingConnName%>.<%=column.getName()%>);
+	pstmtInsert_<%=cid %>.setString(<%=counter%>,String.valueOf(<%=incomingConnName%>.<%=column.getName()%>));
         	<%			
 			}else if(typeToGenerate.equals("Date")){
 			%>
@@ -533,7 +537,7 @@ if(!executeInsert_<%=cid%>){
 			if(column.getColumn().isKey()){
 				if(typeToGenerate.equals("Char")){
 				%>
-pstmt_<%=cid %>.setShort(<%=keyCounter%>,(short)<%=incomingConnName%>.<%=column.getName()%>);
+pstmt_<%=cid %>.setString(<%=keyCounter%>,String.valueOf(<%=incomingConnName%>.<%=column.getName()%>));
         		<%		
 				}else if(typeToGenerate.equals("Date")){
 				%>
