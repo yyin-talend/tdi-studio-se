@@ -71,25 +71,8 @@ if(conns != null && conns.size()>0){
  	for(IMetadataColumn column:columnList){
  	
  	String typeToGenerate = JavaTypesManager.getTypeToGenerate(column.getTalendType(), column.isNullable());
- 	String defVal = JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate, column.getDefault());
+ 	String defVal = JavaTypesManager.getDefaultValueFromJavaType(typeToGenerate);
  	
- 	if(defVal == null) {
- 		if(typeToGenerate.equals("int")||typeToGenerate.equals("Integer")||
- 			typeToGenerate.equals("long")||typeToGenerate.equals("short")||typeToGenerate.equals("byte")){
- 			defVal = "0";
- 		}else if (typeToGenerate.equals("boolean")){
- 		  	defVal = "false";
- 		}else if (typeToGenerate.equals("float")){
- 			defVal = "0.0f";
- 		}else if (typeToGenerate.equals("double")){
- 			defVal = "0.0";
- 		}else if (typeToGenerate.equals("char")||typeToGenerate.equals("Character")){
- 			defVal = "'\u0000'";
- 		}
- 	}else if(typeToGenerate.equals("java.util.Date")){
- 		defVal = " new java.text.SimpleDateFormat().parse(\""+defVal+"\")";
- 	}
- 	 	
  	if(((conn.getLineStyle().equals(EConnectionType.FLOW_MAIN))||(conn.getLineStyle().equals(EConnectionType.FLOW_REF)))){
  	%> 	
  		if(colQtyInRs_<%=cid%><<%=currentColNo%>){
@@ -110,7 +93,7 @@ if(conns != null && conns.size()>0){
 		  
 			  if(typeToGenerate.equals("Char")||typeToGenerate.equals("Character")){
 			  %>
-			<%=firstConnName%>.<%=column.getLabel()%>=(char)rs_<%=cid %>.getShort(<%=currentColNo%>);
+			<%=firstConnName%>.<%=column.getLabel()%>=rs_<%=cid %>.getString(<%=currentColNo%>).charAt(0);
 			  <%
 			  }else{
 		  
