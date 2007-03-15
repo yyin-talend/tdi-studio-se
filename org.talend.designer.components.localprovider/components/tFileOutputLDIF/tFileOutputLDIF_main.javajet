@@ -1,0 +1,116 @@
+<%@ jet 
+	package="org.talend.designer.codegen.translators" 
+	imports="
+		org.talend.core.model.process.INode
+		org.talend.core.model.process.ElementParameterParser  
+		org.talend.core.model.metadata.IMetadataTable
+		org.talend.core.model.metadata.IMetadataColumn
+		org.talend.core.model.process.IConnection
+		org.talend.core.model.process.EConnectionType 
+		org.talend.designer.codegen.config.CodeGeneratorArgument
+		org.talend.core.model.metadata.types.JavaTypesManager
+		org.talend.core.model.metadata.types.JavaType
+		java.util.List
+	"
+	class="FileOutputLDIFMain"
+%>
+<%
+CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
+INode node = (INode)codeGenArgument.getArgument();
+
+List<IMetadataTable> metadatas = node.getMetadataList();
+if ((metadatas!=null)&&(metadatas.size()>0)) {
+    IMetadataTable metadata = metadatas.get(0);
+    if (metadata!=null) {
+        String cid = node.getUniqueName();
+        String changetype = ElementParameterParser.getValue(node, "__CHANGETYPE__");
+		String changes = ElementParameterParser.getValue(node, "__CHANGES__");
+
+%>
+		//////////////////////////
+<%
+    	List< ? extends IConnection> conns = node.getIncomingConnections();
+    	for (IConnection conn : conns) {
+    		if (conn.getLineStyle().equals(EConnectionType.FLOW_MAIN)) {    		
+%>    		
+<%		
+    			List<IMetadataColumn> columns = metadata.getListColumns();
+    			int sizeColumns = columns.size();
+    			for (int i = 0; i < sizeColumns; i++) {
+    				IMetadataColumn column = columns.get(i);
+					JavaType javaType = JavaTypesManager.getJavaTypeFromId(column.getTalendType());
+					boolean isPrimitive = JavaTypesManager.isJavaPrimitiveType( javaType, column.isNullable());					
+%>
+		String value_<%=column.getLabel() %>_<%=cid %> = "";
+<%					
+					if(!isPrimitive) {
+%>   				
+	    if(<%=conn.getName() %>.<%=column.getLabel() %> != null) {
+<%
+} 
+%>
+    	value_<%=column.getLabel() %>_<%=cid %> =  						
+<%
+    				String pattern = column.getPattern() == null || column.getPattern().trim().length() == 0 ? null : column.getPattern();
+    				if (javaType == JavaTypesManager.DATE && pattern != null && pattern.trim().length() != 0) {
+%>
+		FormatterUtils.format_Date(<%=conn.getName() %>.<%=column.getLabel() %>, <%= pattern %>);
+<%				
+					} else if(javaType == JavaTypesManager.STRING) {
+%>
+		<%=conn.getName() %>.<%=column.getLabel() %>;
+<%				
+					} else {
+%>
+		String.valueOf(<%=conn.getName() %>.<%=column.getLabel() %>);
+<%				
+}					
+%>
+<%
+	if(!isPrimitive) {
+%>
+	    }
+<%					
+	} 
+%>
+<% 
+	if(i==0) {
+%>		
+		netscape.ldap.util.LDIF.breakString(pw_<%=cid %>, dn_<%=cid %> + value_<%=column.getLabel() %>_<%=cid %>, wrap_<%=cid %>);
+        netscape.ldap.util.LDIF.breakString(pw_<%=cid %>, changetype_<%=cid %> + "<%=changetype %>", wrap_<%=cid %>);
+<%
+ } 
+%>						
+<% if ("delete".equals(changetype)) { break; } %>
+<% if ("modify".equals(changetype)) {   %>
+    	netscape.ldap.util.LDIF.breakString(pw_<%=cid %>, "<%=changes %>: " + "<%=column.getLabel() %>", wrap_<%=cid %>);
+    	netscape.ldap.util.LDIF.breakString(pw_<%=cid %>, "<%=column.getLabel() %>: " + value_<%=column.getLabel() %>_<%=cid %>, wrap_<%=cid %>);
+<%	if(i != sizeColumns - 1) {  %>
+		pw_<%=cid %>.write("-\n");	
+<%
+}
+%>
+<%
+}// here end the if modify
+%>
+<% if ("add".equals(changetype)) {   %>
+		netscape.ldap.util.LDIF.breakString(pw_<%=cid %>, "<%=column.getLabel() %>: " + value_<%=column.getLabel() %>_<%=cid %>, wrap_<%=cid %>);
+<%
+}
+%>	
+
+  				
+<% 
+}//here end the last for, the List "columns"
+%>						
+		pw_<%=cid %>.write('\n');
+    	nb_line_<%=cid %>++;
+<%
+	}
+}//here end the first for, the List "conns"
+%>    	
+    	//////////////////////////
+<%
+  }
+}  
+%>
