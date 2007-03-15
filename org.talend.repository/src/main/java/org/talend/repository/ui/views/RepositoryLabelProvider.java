@@ -101,6 +101,17 @@ public class RepositoryLabelProvider extends LabelProvider implements IColorProv
                 return node.getLabel();
             }
 
+            // TODO SML remove this table rustine
+            switch (object.getType()) {
+            case METADATA_CON_QUERY:
+            case METADATA_CON_SYNONYM:
+            case METADATA_CON_TABLE:
+            case METADATA_CON_VIEW:
+                return node.getLabel();
+            default:
+                break;
+            }
+
             return getText(object.getProperty());
         } else {
             return node.getLabel();
@@ -149,6 +160,18 @@ public class RepositoryLabelProvider extends LabelProvider implements IColorProv
             if (node.getObject() == null) {
                 return ImageProvider.getImage(node.getIcon());
             }
+
+            // TODO SML remove this table rustine
+            switch (node.getObject().getType()) {
+            case METADATA_CON_QUERY:
+            case METADATA_CON_SYNONYM:
+            case METADATA_CON_TABLE:
+            case METADATA_CON_VIEW:
+                return ImageProvider.getImage(node.getIcon());
+            default:
+                break;
+            }
+
             return getImage(node.getObject().getProperty());
         }
     }
