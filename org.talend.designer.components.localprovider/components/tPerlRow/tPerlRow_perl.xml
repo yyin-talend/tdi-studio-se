@@ -37,7 +37,10 @@
     </PARAMETER>
 
     <PARAMETER NAME="CODE" FIELD="MEMO_PERL" NUM_ROW="2" NB_LINES="10">
-      <DEFAULT># code sample:
+      <DEFAULT># code samples:
+#
+# # copy the whole line
+# @output_row = @input_row;
 #
 # # multiply by 2 the row identifier
 # $output_row[id] = $input_row[id] * 2;
