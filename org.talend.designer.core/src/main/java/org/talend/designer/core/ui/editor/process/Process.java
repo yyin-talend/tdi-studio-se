@@ -885,8 +885,7 @@ public class Process extends Element implements IProcess {
                                 mBox.setMessage(message);
                                 int value = mBox.open();
                                 if (value == SWT.YES) {
-                                    node.getMetadataList().remove(metadataTable);
-                                    node.getMetadataList().add(copyOfrepositoryMetadata);
+                                    metadataTable.setListColumns(copyOfrepositoryMetadata.getListColumns());
                                 } else {
                                     node.setPropertyValue(EParameterName.SCHEMA_TYPE.getName(), EmfComponent.BUILTIN);
                                 }

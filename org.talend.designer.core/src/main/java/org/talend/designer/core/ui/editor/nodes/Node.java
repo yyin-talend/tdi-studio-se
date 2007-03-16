@@ -1012,12 +1012,14 @@ public class Node extends Element implements INode {
 
         // test if the columns can be checked or not
         if (component.isSchemaAutoPropagated() && (metadataList.size() != 0)) {
+            Connection inputConnecion = null;
             IMetadataTable inputMeta = null, outputMeta = metadataList.get(0);
             for (Connection connection : inputs) {
                 if (connection.isActivate()
                         && (connection.getLineStyle().equals(EConnectionType.FLOW_MAIN) || connection.getLineStyle()
                                 .equals(EConnectionType.TABLE))) {
                     inputMeta = connection.getMetadataTable();
+                    inputConnecion = connection;
                 }
             }
 
@@ -1073,11 +1075,7 @@ public class Node extends Element implements INode {
                 }
 
                 if (!equal) {
-                    String tableLabel = inputMeta.getTableName();
-                    if (inputMeta.getLabel() != null) {
-                        tableLabel = inputMeta.getLabel();
-                    }
-                    String errorMessage = "The schema in the input link \"" + tableLabel //$NON-NLS-1$
+                    String errorMessage = "The schema in the input link \"" + inputConnecion.getName() //$NON-NLS-1$
                             + "\" is different from the schema defined in the component."; //$NON-NLS-1$
                     Problems.add(ProblemStatus.ERROR, this, errorMessage);
                 }
