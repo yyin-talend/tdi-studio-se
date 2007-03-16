@@ -19,7 +19,12 @@ class="OracleRowMain"
 CodeGeneratorArgument codeGenArgument = (CodeGeneratorArgument) argument;
 INode node = (INode)codeGenArgument.getArgument();
 String cid =  node.getUniqueName();
+%>
+commitCounter_<%=cid%>++;
 
+if(commitEvery_<%=cid%><=commitCounter_<%=cid%>){
+
+<%
 String dbquery= ElementParameterParser.getValue(node, "__QUERY__");
 boolean isSelectQuery = ((dbquery.replaceAll(" ","")).indexOf("select")) ==1 ;
 
@@ -53,16 +58,19 @@ while (index>=0) {
 		  			}
 		  				if(parameterIndex<=counter){
 						%>						
-pstmt_<%=cid %>.set<%=typeToGenerate %>(<%=parameterIndex%>,<%=conn.getName()%>.<%=column.getLabel()%>);					
+	pstmt_<%=cid %>.set<%=typeToGenerate %>(<%=parameterIndex%>,<%=conn.getName()%>.<%=column.getLabel()%>);					
 						<%
 						}
 						parameterIndex++;
 					}
 	%>
-pstmt_<%=cid %>.execute();
+	pstmt_<%=cid %>.execute();
 	<%
 				}
 			}
 	}
-
 %>
+	commitCounter_<%=cid%>=0;
+
+}
+
